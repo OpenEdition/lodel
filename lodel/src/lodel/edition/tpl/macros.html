@@ -552,13 +552,13 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
-			Pr&ecirc;te &agrave; publier
+			Pr&ecirc;t &agrave; publier
 		<ELSE/>
 			<IF COND="[#STATUS]==1">
-				Publi&eacute;e
+				Publi&eacute;
 			<ELSE/>
 				<IF COND="[#STATUS]==32">
-					Publi&eacute;e prot&eacute;g&eacute;e
+					Prot&eacute;g&eacute;
 				</IF>
 			</IF>
 		</IF>
@@ -1051,51 +1051,72 @@
 	</div>
 </DEFMACRO>
 
+
 <DEFMACRO NAME="BOUTONS_STATUT_PUBLICATION">
-	<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
 	<IF COND="[#STATUS]==-32">
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
-		|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Passer &agrave; &quot;<i>Pr&ecirc;te à publier</i>&quot;</a>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td>|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|</td>
+			</tr>
+		</table>
 	</IF>
 	<IF COND="[#STATUS]==-1">
-		|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;te &agrave; publier</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td>|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;</td>
+			</tr>
+		</table>
 	</IF>
 	<IF COND="[#STATUS]==1">
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;te &agrave; publier</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;
-		|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Prot&eacute;ger</a>&nbsp;|
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td>&nbsp;|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Prot&eacute;ger</a>&nbsp;|</td>
+			</tr>
+		</table>
 	</IF>
 	<IF COND="[#STATUS]==32">
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;te &agrave; publier</i>&quot;</span>&nbsp;
-		|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;
-		|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td>|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;</td>
+			</tr>
+		</table>
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_STATUT_DOCUMENT">
-	<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
 	<IF COND="[#STATUS]==-32">
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
-		|&nbsp;<a href="status.php?id=[#ID]&status=pret">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</a>&nbsp;|
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+				<td>|&nbsp;<a href="status.php?id=[#ID]&status=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|</td>
+			</tr>
+		</table>
 	</IF>
 	<IF COND="[#STATUS]==-1">
-		|&nbsp;<a href="status.php?id=[#ID]&status=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</span>&nbsp;|
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+				<td>|&nbsp;<a href="status.php?id=[#ID]&status=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;</td>
+			</tr>
+		</table>
 	</IF>
-	<IF COND="[#STATUS]==1">
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</span>&nbsp;|
-	</IF>
-	<IF COND="[#STATUS]==32">
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
-		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</span>&nbsp;|
+	<IF COND="[#STATUS] GT 0">
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+			</tr>
+		</table>
 	</IF>
 </DEFMACRO>
 
@@ -1104,13 +1125,13 @@
 		<IF COND="(([#STATUS]==1) AND [#EDITEUR])">
 			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">D&eacute;publier</a>
 		<ELSE/>
-			<span class="inactif">D&eacute;publier</span>
+			<span class="inactif">Prot&eacute;g&eacute;</span>
 		</IF>
 	<ELSE/>
 		<IF COND="(([#STATUS]==-1) AND [#EDITEUR])">
 			<a href="publi.php?publication=[#ID]&online=1">Publier</a>
 		<ELSE/>
-			<span class="inactif">Publier</span>
+			<span class="inactif">Brouillon</span>
 		</IF>
 	</IF>
 </DEFMACRO>
@@ -1120,13 +1141,13 @@
 		<IF COND="(([#STATUS]==1) AND [#EDITEUR])">
 			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">D&eacute;publier</a>
 		<ELSE/>
-			<span class="inactif">D&eacute;publier</span>
+			<span class="inactif">Prot&eacute;g&eacute;</span>
 		</IF>
 	<ELSE/>
 		<IF COND="(([#STATUS]==-1) AND [#EDITEUR])">
 			<a href="publi.php?id=[#ID]&online=1">Publier</a>
 		<ELSE/>
-			<span class="inactif">Publier</span>
+			<span class="inactif">Brouillon</span>
 		</IF>
 	</IF>
 </DEFMACRO>
@@ -1844,7 +1865,3 @@
 		<img src="[#SHAREURL]/images/mysql.gif" width="48" height="48" border="0" vspace="2" hspace="2">
 </DEFMACRO>
 
-
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- FIN ENSEMBLE DES ICONES UTILISEES -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->

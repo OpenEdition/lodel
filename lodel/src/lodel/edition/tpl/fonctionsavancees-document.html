@@ -19,16 +19,9 @@
 	</div>
 
 	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Statut</div>
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">V&eacute;rouillage du statut</div>
 	</div>
-
 	<table class="table_statut" width="100%" cellpadding="0" cellspacing="0" border="0">
-		<tr>
-			<td width="130"><span style="color:#333333;">Statut actuel : </td>
-			<td width="20"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
-			<td width="250"><span style="font-weight:bold; color:#333333;"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></span></td>
-			<td width="*">&nbsp;</td>
-		</tr>
 		<tr>
 			<td colspan="4"><div><MACRO NAME="BOUTONS_STATUT_DOCUMENT"></div></td>
 		</tr>
@@ -60,7 +53,7 @@
 	<IF COND="[#REDACTEUR]">	
 		<!--<a href="telecharger.php?id=[#ID]&type=4" target="_blank">
 			T&eacute;l&eacute;charger le source RTF
-		</a>-->
+		</a><br />-->
 		<div class="ligne_info">
 			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
 			<span class="texte_info">(Fonction indisponible pour le moment)</span>
@@ -74,9 +67,9 @@
 
 	<!-- Téléchargement source XML -->
 	<IF COND="[#REDACTEUR]">	
-		<!--<a href="telecharger.php?id=[#ID]&type=1" target="_blank">
+		<!--<a href="telecharger.php?id=[#ID]&type=xml" target="_blank">
 			T&eacute;l&eacute;charger le source XML
-		</a>-->
+		</a><br />-->
 		<div class="ligne_info">
 			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
 			<span class="texte_info">(Fonction indisponible pour le moment)</span>
