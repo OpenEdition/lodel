@@ -501,7 +501,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       if ($stylename[$class]) {
 	$class=$stylename[$class];
 	// for Got's pleasure:
-	#if ($arr[$i+1]=="p") $arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]);
+	if ($arr[$i+1]=="p") $arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]);
       } else {
 	$class=strtolower($class);
       }
