@@ -117,7 +117,7 @@ function search($context)
 		}
 		
 	
-		$token = preg_replace("/([A-Z][0-9A-Z]{1,2})/", ' \\1___ ', $token);	
+		$token = preg_replace("/([A-Z][0-9a-zA-Z]{1,2})/", ' \\1___ ', $token);	
 	#	echo "token=$token";
 	
 		$token = strtolower($token);
