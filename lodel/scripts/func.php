@@ -224,6 +224,7 @@ function copy_images_private (&$text,$callback,$argument,&$count,&$imglist)
     preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
     foreach ($results as $result) {
       $imgfile=$result[1];
+      if (substr($imgfile,5)=="http:") continue;
       if ($imglist[$imgfile]) {
 	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
       } else {
