@@ -36,7 +36,7 @@ authenticate(LEVEL_ADMINLODEL);
 include_once ($home."func.php");
 
 $url_retour="users.php";
-$context[privilege]=LEVEL_ADMINLODEL;
+$context[userrights]=LEVEL_ADMINLODEL;
 
 include ($home."userinc.php");
 
