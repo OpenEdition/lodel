@@ -85,6 +85,9 @@ if ($edit) { // modifie ou ajoute
 
     if ($reinstalle) $statut=-32;
 
+    //suppression de l'eventuel / a la fin de l'url
+    $context[url]=preg_replace("/\/$/","",$context[url]);
+
     mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,chemin,url,soustitre,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[chemin]','$context[url]','$context[soustitre]','$statut')") or die (mysql_error());
 
     if ($statut>-32) back(); // on revient, le site n'est pas en creation
@@ -373,7 +376,8 @@ if ($tache=="fichier") {
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
   if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  header("location: ".$context[url].str_replace("//","/",$context[chemin]."/lodel/edition"));
+  header("location: ".$context[url]."/lodel/edition");
+
   return;
 
 #  header("location: index.php");
