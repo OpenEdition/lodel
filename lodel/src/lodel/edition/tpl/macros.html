@@ -797,9 +797,8 @@
 	</div>
 </DEFMACRO>
 
-<!--[ macro ajoutee par Ghislain 30/11/03 ]-->
-<!--[ cette macro n'est pas directement utile pour Revues.org ]-->
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
+        <IF COND="[#DROITADMIN] or [#ID]">
 	<LET VAR="idparentsaved">[#ID]</LET>
 	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="ordre">
 		<BEFORE>
@@ -831,6 +830,10 @@
 			</IF>
 		</AFTER>
 	</LOOP>
+        <ELSE/>
+		<MACRO NAME="PNG_PLUS">
+		<span class="inactif">Ajouter un document : </span>
+        </IF>
 </DEFMACRO>
 
 
@@ -954,7 +957,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-	<IF COND="[#DROITEDITEUR]">
+	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		<a href="publication.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="publication.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -964,7 +967,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-	<IF COND="[#DROITEDITEUR]">
+	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		<a href="document.php?dir=down&id=[#ID]"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="document.php?dir=up&id=[#ID]"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -974,7 +977,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
-	<IF COND="[#DROITEDITEUR]">
+	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		<a href="docannexe.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="docannexe.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -987,14 +990,14 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>Voir</strong></a>&nbsp;
-		<IF COND="[#DROITEDITEUR]">
+		<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Editer</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#STATUT] lt 32">
+		<IF COND="[#DROITEDITEUR] AND ([#STATUT] lt 32) AND [#DROITGROUPE]">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1006,14 +1009,14 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<IF COND="[#DROITEDITEUR]">
+		<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Editer</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#STATUT] lt 32">
+		<IF COND="[#DROITEDITEUR] AND [#STATUT] lt 32 AND [#DROITGROUPE]">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1025,19 +1028,18 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]"><strong>Voir</strong></a>&nbsp;
-		<IF COND="[#DROITEDITEUR]">
+		<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		|&nbsp;<a href="document.php?id=[#ID]">Editer</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
 		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">Fonctions</a>&nbsp;
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_DOCUMENT">&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#STATUT] lt 32">
+		<IF COND="[#DROITEDITEUR] AND ([#STATUT] lt 32) AND [#DROITGROUPE]">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
 		</IF>
-[#MAJ]
 	</div>
 </DEFMACRO>
 
@@ -1049,7 +1051,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR]">
+					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
@@ -1064,7 +1066,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR]">
+					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
@@ -1079,7 +1081,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR]">
+					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 						&nbsp;|&nbsp;<a href="statut.php?publication=[#ID]&statut=protege">Prot&eacute;ger</a>&nbsp;|
 					<ELSE/>
 						&nbsp;|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
@@ -1094,7 +1096,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR]">
+					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;|&nbsp;
@@ -1112,7 +1114,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
-					<IF COND="[#DROITEDITEUR]">
+					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 						|&nbsp;<a href="statut.php?id=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
@@ -1127,7 +1129,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
-					<IF COND="[#DROITEDITEUR]">
+					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 						|&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
@@ -1148,13 +1150,13 @@
 
 <DEFMACRO NAME="CHANGER_STATUT_PUBLICATION">
 	<IF COND="[#STATUT] GT 0">
-		<IF COND="(([#STATUT]==1) AND [#DROITEDITEUR])">
+		<IF COND="(([#STATUT]==1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
 			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">D&eacute;publier</a>
 		<ELSE/>
 			<span class="inactif">Prot&eacute;g&eacute;</span>
 		</IF>
 	<ELSE/>
-		<IF COND="(([#STATUT]==-1) AND [#DROITEDITEUR])">
+		<IF COND="(([#STATUT]==-1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
 			<a href="publi.php?publication=[#ID]&online=1">Publier</a>
 		<ELSE/>
 			<span class="inactif">Brouillon</span>
@@ -1164,13 +1166,13 @@
 
 <DEFMACRO NAME="CHANGER_STATUT_DOCUMENT">
 	<IF COND="[#STATUT] GT 0">
-		<IF COND="(([#STATUT]==1) AND [#DROITEDITEUR])">
+		<IF COND="(([#STATUT]==1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
 			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">D&eacute;publier</a>
 		<ELSE/>
 			<span class="inactif">Prot&eacute;g&eacute;</span>
 		</IF>
 	<ELSE/>
-		<IF COND="(([#STATUT]==-1) AND [#DROITEDITEUR])">
+		<IF COND="(([#STATUT]==-1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
 			<a href="publi.php?id=[#ID]&online=1">Publier</a>
 		<ELSE/>
 			<span class="inactif">Brouillon</span>
@@ -1273,7 +1275,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
-	<IF COND="[#DROITEDITEUR]">
+	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		<div>
 			<MACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
 			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">Modifier</a>&nbsp;|

@@ -53,7 +53,7 @@ function parse_loop_extra(&$tables,
   $where=preg_replace (array(
 		    "/\(trash\)/i",
 		    "/\(ok\)/i",
-		    "/\(okgroupe\)/i"
+		    "/\(droitgroupe\)/i"
 		    ),
 	      array(
 		    "statut<=0",
@@ -217,7 +217,7 @@ function parse_variable_extra ($nomvar)
 {
   // VARIABLES SPECIALES
   //
-  if ($nomvar=="OKGROUPE") {
+  if ($nomvar=="DROITGROUPE") {
     return '($GLOBALS[droitadmin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
   }
   if (substr($nomvar,0,7)=="OPTION_") { // options
