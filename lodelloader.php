@@ -28,7 +28,7 @@
 
   /* Load and desarchive Lodel */
 
-if (file_exists("lodelconfig.php")) { msg_error("Lodel est déjà installé dans ce répertoire. Si vous souhaitez refaire une installation, effacez tous les fichiers de ce répertoire mise a part le fichier lodelloader.php et lancer à nouveau l'execution de ce script dans votre navigateur."); }
+if (file_exists("lodelconfig.php")) { msg_error("Lodel est d&eacute;j&agrave; install&eacute; dans ce r&eacute;pertoire. Si vous souhaitez refaire une installation, effacez tous les fichiers de ce r&eacute;pertoire mise a part le fichier lodelloader.php et lancer &agrave; nouveau l'execution de ce script dans votre navigateur."); }
 
 //
 // Test if gzopen exists.
@@ -37,7 +37,7 @@ if (file_exists("lodelconfig.php")) { msg_error("Lodel est déjà installé dans ce
 //
 
 if (!function_exists("gzopen")) {
-  msg_error("La librairie zlib n'a pu être trouvée sur votre serveur. Ce script d'installation automatique ne peut donc pas poursuivre. Pour installer Lodel, veuillez télécharger Lodel, décompresser l'archive puis lancer votre navigateur sur lodeladmin/install.php");
+  msg_error("La librairie zlib n'a pu &ecirc;tre trouv&eacute;e sur votre serveur. Ce script d'installation automatique ne peut donc pas poursuivre. Pour installer Lodel, veuillez t&eacute;l&eacute;charger Lodel, d&eacute;compresser l'archive puis lancer votre navigateur sur lodeladmin/install.php");
 }
 
 
@@ -64,7 +64,7 @@ if (!$chmod) {
   $testfile="testlodelinstall.php";
   @unlink($testfile);#
   $fp=@fopen($testfile,"w");
-  if (!$fp || !@fwrite($fp,'<?php echo "hello"; ?>')) msg_error("Le serveur web n'a pas les droit d'écriture sur ce répertoire. Veuillez avec votre logiciel ftp donner les droits d'écriture sur ce répertoire et relancer l'éxecution de ce script (bouton \"recharger\" sur votre navigateur)");
+  if (!$fp || !@fwrite($fp,'<?php echo "hello"; ?>')) msg_error("Le serveur web n'a pas les droit d'&eacute;criture sur ce r&eacute;pertoire. Veuillez avec votre logiciel ftp donner les droits d'&eacute;criture sur ce r&eacute;pertoire et relancer l'&eacute;xecution de ce script (bouton \"recharger\" sur votre navigateur)");
 
   $chmod=guessfilemask();
 
@@ -83,6 +83,7 @@ if (!$chmod) {
 	// strict restriction of the write right
 	if ($chmod!=($chmod & 0755)) {
 	  $chmod&=0755;
+	  @chmod(".",$chmod); // OVH needs  that !
 	  $reducedchmod=true;
 	  // let's try again
 	} else {
@@ -109,7 +110,7 @@ if (!$chmod) {
 $archiveurl="http://www.lodel.org/download/lodel-latest.zip";
 $archivefile="lodel.zip";
 if (!file_exists($archivefile)) {
-  if (!$hassocket) msg_error("La configuration de votre serveur ne permet le téléchargement automatique de Lodel. Veuillez télécharger l'archive Lodel et la poser sur le serveur dans le même répertoire que ce script en la renomant \"lodel.zip\". Relancez ensuite ce script.");
+  if (!$hassocket) msg_error("La configuration de votre serveur ne permet le t&eacute;l&eacute;chargement automatique de Lodel. Veuillez t&eacute;l&eacute;charger l'archive Lodel et la poser sur le serveur dans le m&ecirc;me r&eacute;pertoire que ce script en la renomant \"lodel.zip\". Relancez ensuite ce script.");
   $fpwrite=fopen($archivefile,"w");
   $client=new Snoopy;
   $client->read_timeout = 600;
@@ -118,7 +119,7 @@ if (!file_exists($archivefile)) {
   if ($client->status!=200) {
     fclose($fpwrite);
     @unlink($archivefile);
-    msg_error("Le téléchargement du fichier $archiveurl n'a pas fonctionné. L'erreur produite est: ".$client->response_code."\<br>Si vous ne pouvez résoudre cette erreur, veuillez télécharger l'archive Lodel et la poser sur le serveur dans le même répertoire que ce script en la renomant \"lodel.zip\". Relancez ensuite ce script d'installation automatique.");
+    msg_error("Le t&eacute;l&eacute;chargement du fichier $archiveurl n'a pas fonctionn&eacute;. L'erreur produite est: ".$client->response_code."\<br>Si vous ne pouvez r&eacute;soudre cette erreur, veuillez t&eacute;l&eacute;charger l'archive Lodel et la poser sur le serveur dans le m&ecirc;me r&eacute;pertoire que ce script en la renomant \"lodel.zip\". Relancez ensuite ce script d'installation automatique.");
   }
   fclose($fpwrite);
   @chmod($archivefile,0666 & $chmod);
@@ -1779,14 +1780,14 @@ function msg_intro() {
   open_html();
 ?>
 <p>
-Bienvenue dans l'installation de <strong>Lodel</strong>, logiciel d'édition électronique</p>
+Bienvenue dans l'installation de <strong>Lodel</strong>, logiciel d'&eacute;dition &eacute;lectronique</p>
 <p>L'installation comprend :</p>
 <ul>
-   <li>le téléchargement automatique sur le site <a href="http://www.lodel.org">http://www.lodel.org</a> de la dernière version de Lodel.</li>
+   <li>le t&eacute;l&eacute;chargement automatique sur le site <a href="http://www.lodel.org">http://www.lodel.org</a> de la derni&egrave;re version de Lodel.</li>
   <li>la configuration de Lodel pour votre serveur.</li>
 </ul>
 
-<p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappelées ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
+<p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappel&eacute;es ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
 
 
 <h2>Conditions d'utilisation de Lodel</h2>
@@ -1825,27 +1826,27 @@ function msg_chmod($chmod,$reducedchmod)
     $perm[$i]=($chmod2 & 0004) ? "lecture" : "";
     if ($chmod2 & 0002) {
       if ($perm[$i]) $perm[$i].=" et ";
-      $perm[$i].="écriture";
+      $perm[$i].="&eacute;criture";
     }
 
     $chmod2=$chmod2 >> 3;
   }
 
 
-  echo "<p>Ce script a détecté les permissions à accorder sur les fichiers et les répertoires de Lodel. Il propose les permissions suivantes:</p>\n<table border=\"1\" style=\"font-size: 90%;\"><tr><td>Utilisateur: $perm[0]</td><td>Groupe: $perm[1]</td><td>Autre: $perm[2]</td><tr></table>\n(en langage UNIX: $fileperm pour les fichiers et $dirperm pour les répertoires).";
+  echo "<p>Ce script a d&eacute;tect&eacute; les permissions &agrave; accorder sur les fichiers et les r&eacute;pertoires de Lodel. Il propose les permissions suivantes:</p>\n<table border=\"1\" style=\"font-size: 90%;\" width=\"90%\"><tr><td>Utilisateur: $perm[0]</td><td>Groupe: $perm[1]</td><td>Autre: $perm[2]</td><tr></table>\n(en langage UNIX: $fileperm pour les fichiers et $dirperm pour les r&eacute;pertoires).";
 
-  if ($chmod & 0002) { echo "<p><b>Attention</b>: donner les droits d'écriture à \"Autre\" peut, sur certains serveurs, être une serieuse faille de sécurité. Si vous avez des doutes veuillez demander conseil avant de poursuivre.</p>"; }
+  if ($chmod & 0002) { echo "<p><b>Attention</b>: donner les droits d'&eacute;criture &agrave; \"Autre\" peut, sur certains serveurs, &ecirc;tre une serieuse faille de s&eacute;curit&eacute;. Si vous avez des doutes veuillez demander conseil avant de poursuivre.</p>"; }
 
 
-  if ($reducedchmod) echo "<p>Les droits en écriture ont été restreint car la configuration du serveur ne permet pas d'éxecuter les scripts PHP avec des droits en écriture souple (ce qui est une bonne chose pour la sécurité). Cependant, il est possible que vous ne puissiez plus écrire ou éffacer les fichiers dans votre repertoire. Il vous faudra utiliser un File Manager en PHP pour le faire.</p>";
+  if ($reducedchmod) echo "<p>Les droits en &eacute;criture ont &eacute;t&eacute; restreint car la configuration du serveur ne permet pas d'&eacute;xecuter les scripts PHP avec des droits en &eacute;criture souple (ce qui est une bonne chose pour la s&eacute;curit&eacute;). Cependant, il est possible que vous ne puissiez plus &eacute;crire ou &eacute;ffacer les fichiers dans votre repertoire. Il vous faudra utiliser un File Manager en PHP pour le faire.</p>";
 
 ?>
-    <p>Si ces permissions conviennent veuillez cliquer ci-dessous. L'archive Lodel va être téléchargée ce qui peut prendre un certain temps. Merci de patienter.</p>
+    <p>Si ces permissions conviennent veuillez cliquer ci-dessous. L'archive Lodel va &ecirc;tre t&eacute;l&eacute;charg&eacute;e ce qui peut prendre un certain temps. Merci de patienter.</p>
 <form  method="post" action="lodelloader.php">
 <input type="hidden" name="chmod" value="<?php echo $chmod; ?>">
-<input type="submit" name="install" value="Télécharger Lodel">
+<input type="submit" name="install" value="T&eacute;l&eacute;charger Lodel">
 </form>
-<p>Sinon, veuillez vous reportez à l'installation pour les experts et ne pas poursuivre cette installation.</p>
+<p>Sinon, veuillez vous reportez &agrave; l'installation pour les experts et ne pas poursuivre cette installation.</p>
 
 
 
