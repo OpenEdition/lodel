@@ -95,6 +95,7 @@ class TableFieldsLogic extends Logic {
 		  "+"=>getlodeltextcontents("fieldrequired","admin"),
 		  "defaultnew"=>getlodeltextcontents("use_default_at_creation only","admin"),
 		  "permanent"=>getlodeltextcontents("permanent","admin"),
+		  "1"=>getlodeltextcontents("single","admin"),
 		  );
      renderOptions($arr,$context['condition']);
        break;
@@ -217,22 +218,25 @@ class TableFieldsLogic extends Logic {
      // manage the physical field 
      if ($vo->class && $this->oldvo->class && 
 	 $this->oldvo->class!=$vo->class) die("ERROR: field change of class is not implemented yet");
-     if (!$this->oldvo) {
-       $alter="ADD";
-     } elseif ($this->oldvo->name!=$vo->name) {
-       $alter="CHANGE ".$this->oldvo->name;
-     } elseif ($lodelfieldtypes[$this->oldvo->type]['sql']=$lodelfieldtypes[$vo->type]['sql']) {
-       $alter="MODIFY";
-     }
 
-     if ($alter) { // modify or add or rename the field
-       if (!$lodelfieldtypes[$vo->type]['sql']) die("ERROR: internal error in TableFields:: _saveRelatedTables");
-       $db->execute(lq("ALTER TABLE #_TP_".$context['class']." $alter ".$vo->name." ".$lodelfieldtypes[$vo->type]['sql'])) or dberror();
-    }
-     if ($alter || $vo->filtering!=$this->oldvo->filtering) {
-       // should be in view ??
-       require_once($GLOBALS['home']."cachefunc.php");
-       removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+     if ($vo->type!="entities") {
+       if (!$this->oldvo) {
+	 $alter="ADD";
+       } elseif ($this->oldvo->name!=$vo->name) {
+	 $alter="CHANGE ".$this->oldvo->name;
+       } elseif ($lodelfieldtypes[$this->oldvo->type]['sql']=$lodelfieldtypes[$vo->type]['sql']) {
+	 $alter="MODIFY";
+       }
+
+       if ($alter) { // modify or add or rename the field
+	 if (!$lodelfieldtypes[$vo->type]['sql']) die("ERROR: internal error in TableFields:: _saveRelatedTables ".$vo->type);
+	 $db->execute(lq("ALTER TABLE #_TP_".$context['class']." $alter ".$vo->name." ".$lodelfieldtypes[$vo->type]['sql'])) or dberror();
+       }
+       if ($alter || $vo->filtering!=$this->oldvo->filtering) {
+	 // should be in view ??
+	 require_once($GLOBALS['home']."cachefunc.php");
+	 removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+       }
      }
      unset($this->oldvo);
    }

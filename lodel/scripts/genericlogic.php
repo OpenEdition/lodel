@@ -225,7 +225,7 @@ class GenericLogic extends Logic {
 	 continue;
        }
 
-       if ($field->type!="persons" && $field->type!="entries")
+       if ($field->type!="persons" && $field->type!="entries" && $field->type!="entities")
 	 $this->_publicfields[$field->class][$field->name]=true; // this field is public
 
        if ($field->edition=="none") unset($value);
@@ -355,7 +355,17 @@ class GenericLogic extends Logic {
 	     if ($err) $error[$type][$idtype][$i]=$err;
 	   }
 	   break;
-
+	 case 'entities':   
+	   $value=&$context['entities'][$name];
+	   if (!$value) { unset($context['entities'][$name]); break; }
+	   $ids=array();
+	   foreach(explode(",",$value) as $id) if ($id>0) $ids[]=intval($id);
+	   $value=$ids;
+	   $count=$GLOBALS['db']->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE status>-64 AND id IN ('".join("','",$value)."')"));
+	   if ($GLOBALS['db']->errorno()) dberror();
+	   if ($count!=count($value)) die("ERROR: some entities in $name are invalid. Please report the bug");	    
+	   // don't check they exists, the interface ensure it ! (... hum)
+	   break;
 	 default:
 	   die("ERROR: unable to check the validity of the field ".$field->name." of type ".$field->type);
 	 } // switch

@@ -148,7 +148,7 @@
 			<input type="radio" name="[#VARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
 		</IF>
 		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
-	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#VARNAME][localfilename]"><br />
+	           <a href="#" onClick="window.open('filebrowser.php?caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#VARNAME][localfilename]"><br />
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#VARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#VARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
 		 
 	        </td></tr></table>
@@ -179,7 +179,31 @@ cp_[#NAME].writeDiv();
 <IF COND="[#TYPE] eq 'entries'">
 <FUNC NAME="EDIT_ENTRIES">
 <ELSE/>
+<!--[ --------------- ENTITIES ------------- ]-->	    
+<IF COND="[#TYPE] eq 'entities'">
+	<IF COND="[#CONDITION]==1">
+	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&single','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
+	<LOOP NAME="entities_select">
+		<DO>
+		<input type="text" id="[#VARNAME][title]" value="[#TITLE]">
+		</DO>
+		<ALTERNATIVE>
+		<input type="text" id="[#VARNAME][title]">
+		</ALTERNATIVE>
+	</LOOP>
+	<ELSE/>
+	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_ENTITIES]</a>
+	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
+	<select id="[#VARNAME][select]" row="3" multiple >
+	<LOOP NAME="entities_select">
+		<option value="[#ID]">[#TITLE]</option>
+	</LOOP>
+	</select>
+	</IF>
+<ELSE/>
 ???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
 </IF>
 </IF>
 </IF>

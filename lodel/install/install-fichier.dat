@@ -129,6 +129,8 @@ ln status.php
 
 ln filebrowser.php
 ln tpl/filebrowser.html
+ln entitybrowser.php
+ln tpl/entitybrowser.html
 
 # navigation dans la site
 

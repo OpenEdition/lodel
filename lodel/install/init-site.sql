@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS #_TP_relations (
 	idrelation	INT UNSIGNED NOT NULL auto_increment,
 	id1		INT UNSIGNED DEFAULT '0' NOT NULL,
 	id2		INT UNSIGNED DEFAULT '0' NOT NULL,
-	nature		CHAR(1) DEFAULT 'P' NOT NULL,
+	nature		VARCHAR(32) DEFAULT 'P' NOT NULL,
 
 	degree		TINYINT, # can be null
 
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS #_TP_classes (
 
 CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	id		INT UNSIGNED NOT NULL auto_increment,
-	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
+	name		VARCHAR(32) NOT NULL,		# name/identifiant unique
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 

@@ -336,8 +336,27 @@ class Entities_EditionLogic extends GenericLogic {
        }
        $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
        $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$nature);
-
      } // foreach entries and persons
+
+     // Entities
+     if ($context['entities']) {
+       $dao=getDAO("tablefields");
+       foreach(array_keys($context['entities']) as $name) {
+	 $name=addslashes($name);
+	 $vo=$dao->find("class='".$context['class']."' AND name='".$name."' AND type='entities'");
+	 if (!$vo) trigger_error("invalid name for field of type entities",E_USER_ERROR);
+	 $idrelations=array();
+	 if (is_array($context['entities'][$name])) {
+	   foreach($context['entities'][$name] as $id) {
+	     $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('".$id."','".$vo->id."','".$name."','0')")) or dberror();
+	     $idrelations[]=$db->insert_id();
+	   }
+	   print_R($idrelations);
+	 }
+	 $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
+	 $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$name);
+       } // for each entities fields
+     }
    }
 
    /**
@@ -360,8 +379,11 @@ class Entities_EditionLogic extends GenericLogic {
      } elseif ($nature=="G") {
        $naturecriteria=" AND nature='G'";
        $checkjointtable=true;
-     } else {
-       $naturecriteria=" AND nature IN ('G','E')";
+     } elseif (strlen($nature)>1) {
+       $naturecriteria=" AND nature='".$nature."'";
+       $checkjointtable=false;
+     } else  {
+       $naturecriteria=" AND nature IN ('G','E') OR LENGTH(nature)>1";
        $checkjointtable=true;
      }
 
@@ -527,6 +549,19 @@ class Entities_EditionLogic extends GenericLogic {
        }
 
      } // foreach classtype
+
+
+     // Entities
+     $result=$db->execute(lq("SELECT * FROM #_TP_relations WHERE  id1='".$vo->id."' AND LENGTH(nature)>1")) or dberror();
+     $relations=array();
+     while(!$result->EOF) {
+       $relations[$result->fields['nature']][]=$result->fields['id2'];
+       $result->MoveNext();
+     }
+     foreach($relations as $k=>$v) {
+       $context['entities'][$k]=join(",",$v);
+     }
+
      #print_r($context['persons']);      
   }
 

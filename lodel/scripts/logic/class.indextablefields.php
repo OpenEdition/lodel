@@ -63,8 +63,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
      global $home;
 
      switch($var) {
-     case "name" :
-       
+     case "name" :       
        $dao=&getDAO($context['type']=='entries' ? "entrytypes" : "persontypes");
        $vos=$dao->findMany("status>0","rank,title","type,title");
        foreach($vos as $vo) {

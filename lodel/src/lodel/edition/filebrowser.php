@@ -30,7 +30,7 @@
 
 require("siteconfig.php");
 require_once ($home."auth.php");
-authenticate(LEVEL_REDACTOR,NORECORDURL);
+authenticate(LEVEL_REDACTOR);
 
 define("UPLOADDIR",SITEROOT."CACHE/upload");
 

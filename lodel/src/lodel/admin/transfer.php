@@ -649,6 +649,7 @@ ALTER TABLE #_TP_relations ADD idrelation INT UNSIGNED NOT NULL auto_increment, 
 UPDATE #_TP_relations SET idrelation=idrelation+'.($minid-1).' ORDER BY idrelation DESC;
 ALTER TABLE #_TP_relations ADD UNIQUE (id1,id2,degree,nature);
 ALTER TABLE #_TP_relations CHANGE degree degree TINYINT;
+ALTER TABLE #_TP_relations CHANGE nature nature VARCHAR(32) DEFAULT \'P\' NOT NULL;
 ');
 	if ($err) break;
 	$report.="Ajout de idrelation a relations<br/>";
@@ -1026,8 +1027,10 @@ function addfield($classe)
     if ($fields[$tablefield]) continue;
     #echo "ici:$tablefield - create<br/>";
     #echo 'ALTER TABLE #_TP_'.$classe.' ADD     '.$tablefield.' '.$GLOBALS[sqltype][$type].'<br>';
+    $sqltype=$GLOBALS['lodelfieldtypes'][$type]['sql'];
+    if (!$sqltype) continue;
     $err=mysql_query_cmds('
-ALTER TABLE #_TP_'.$classe.' ADD     '.$tablefield.' '.$GLOBALS['lodelfieldtypes'][$type]['sql'].';
+ALTER TABLE #_TP_'.$classe.' ADD     '.$tablefield.' '.$sqltype.';
  ');
     #echo "error:$err";
     if ($err) return $err;

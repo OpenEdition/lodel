@@ -57,7 +57,7 @@ function validfield(&$text,$type,$default="")
     break;
   case "tablefield" :
     $text=strtolower($text);
-    if (!preg_match("/^[a-z0-9]+$/",$text)) return $type;
+    if (!preg_match("/^[a-z0-9]{2,}$/",$text)) return $type;
     require_once($GLOBALS['home']."fieldfunc.php");
     if (reservedword($text)) return "reservedsql";
     break;

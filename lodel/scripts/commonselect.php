@@ -33,7 +33,7 @@ function makeSelectFieldTypes($value)
 {
   require_once($GLOBALS['home']."fieldfunc.php");
   $arr2=array();
-  foreach($GLOBALS['lodelfieldtypes'] as $k=>$v) if ($v['sql']) $arr2[$k]=getlodeltextcontents($k,"common");
+  foreach($GLOBALS['lodelfieldtypes'] as $k=>$v) if ($v) $arr2[$k]=getlodeltextcontents($k,"common");
   renderOptions($arr2,$value);
 }
 
