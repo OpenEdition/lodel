@@ -117,7 +117,6 @@ if ($edit) { // modifie ou ajoute
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
   $context=array_merge($context,mysql_fetch_assoc($result));
-  print_r($context);
 }
 
 // post-traitement
@@ -126,25 +125,18 @@ posttraitement($context);
 
 $context[passwd]="";
 
+  print_r($context);
+
 
 function makeselectprivilege()
 
 {
   global $context,$userpriv;
-#ifndef LODELLIGHT
   $arr=array(LEVEL_VISITEUR=>"Visiteur",
 	     LEVEL_REDACTEUR=>"Rédacteur",
 	     LEVEL_EDITEUR=>"Editeur",
 	     LEVEL_ADMIN=>"Administrateur",
 	     );
-#else
-#  $arr=array(LEVEL_VISITEUR=>"Visiteur",
-#	     LEVEL_REDACTEUR=>"Rédacteur",
-#	     LEVEL_EDITEUR=>"Editeur",
-#	     LEVEL_ADMIN=>"Administrateur",
-#	     LEVEL_ADMINLODEL=>"Super administrateur"
-#	     );
-#endif
 
   foreach ($arr as $k=>$v) {
     $selected=$context[privilege]==$k ? "selected" : "";

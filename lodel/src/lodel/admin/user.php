@@ -37,7 +37,7 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 #if ($context[privilege]>=LEVEL_ADMINLODEL) return;
 require($home."userinc.php");
 
-echo "--\n<br/>"";
+echo "--\n<br/>";
 print_r($context);
 
 
