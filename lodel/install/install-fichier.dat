@@ -34,13 +34,16 @@ cp styles_site.css
 ln backend.php
 ln entree.php
 ln entrees.php
+ln personne.php
+ln personnes.php
+
 ln document.php
 ln docannexe.php
 ln index.php
 ln signaler.php
 ln sommaire.php
 
-# les templates du site doivent etre installe à la main... pour le moment.
+cp tpl
 
 dirsource $homesite/lodel/admin
 ln tpl/login.html

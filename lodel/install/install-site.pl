@@ -25,7 +25,7 @@
 #     along with this program; if not, write to the Free Software
 #     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-
+$extensionscripts="php";
 
 $version=shift @ARGV;
 $droitlecture=shift @ARGV;
@@ -132,15 +132,15 @@ foreach (<FILE>) {
     $toroot=~s/([^\/]+)\//..\//g;
     $toroot=~s/[^\/]+$//;
 #    print STDERR "3 $dirdest $dirsource $toroot $arg1\n";
-    $filedest=~s/\.php$/.html/ if $dirdest eq ".";
+    $filedest=~s/\.php$/.html/ if $dirdest eq "." && $extensionscripts eq "html";
     slink("$toroot$dirsource/$arg1",$filedest) unless -e $filedest;
   } elsif ($cmd eq "cp") {
-    $filedest=~s/\.php$/.html/ if $dirdest eq ".";
+    $filedest=~s/\.php$/.html/ if $dirdest eq "." && $extensionscripts eq "html";
     system ("cp -fr $dirsource/$arg1 $filedest") unless filemtime($filedest)>filemtime(" $dirsource/$arg1");
 #    print $filedest," ",$filemask," ","\n";
 #    printf "%o\n",0644 & oct($filemask);
-    
-    chmod (0644 & $filemask,$filedest);
+    $mode=(-f filedest) ? 0644 : 0755;
+    chmod ($mode & $filemask,$filedest);
   } elsif ($cmd eq "touch") {
     system ("touch $filedest") unless -e  $filedest;
     chmod (0644 & $filemask,$filedest);
