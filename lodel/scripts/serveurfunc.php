@@ -32,7 +32,7 @@ function contact_servoo ($cmds,$uploadedfiles,$destfile="")
 
 {
 
-  $options=getoption(array("servoourl","servoousername","servoopasswd"));
+  $options=getoption(array("servoourl","servoousername","servoopasswd"),"");
 
   if (!$options || !$options[servoourl]) { // get form the lodelconfig file
     $options[servoourl]=$GLOBALS[servoourl];
