@@ -48,7 +48,8 @@ $tables=array("entries",
 	      "options",
 	      "optiongroups",
 	      "characterstyles",
-	      "internalstyles");
+	      "internalstyles",
+	      "translations");
 
 foreach ($tables as $table) {
 

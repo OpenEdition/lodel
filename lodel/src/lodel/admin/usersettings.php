@@ -34,22 +34,28 @@ require($home."func.php");
 
 if ($lang) {
   if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) die("ERROR: invalid lang");
-  mysql_query("UPDATE $GLOBALS[tp]users SET lang='$lang'") or dberror();
-  setcontext("userlang","setvalue",$lang);
+  $db->execute(lq("UPDATE #_TP_users SET lang='$lang'")) or dberror();
+  setcontext("lang","setvalue",$lang);
 }
 
 if ($translationmode) {
-  setcontext("usertranslationmode","toggle");
+  setcontext("translationmode","toggle");
 }
 
-back();
+update();
+require_once($home."view.php");
+View::back();
 
 
-function setcontext($var,$operation,$value="") {
-  mysql_select_db($GLOBALS['database']);
-  $where="name='".addslashes($_COOKIE[$GLOBALS['sessionname']])."' AND iduser='".$GLOBALS['iduser']."'";
-  $result=mysql_query("SELECT context FROM $GLOBALS[tp]session WHERE ".$where) or dberror();
-  list($context)=mysql_fetch_row($result);
+function setcontext($var,$operation,$value="") 
+
+{
+  global $db;
+  usemaindb();
+  $where="name='".addslashes($_COOKIE[$GLOBALS['sessionname']])."' AND iduser='".$GLOBALS['user']['id']."'";
+  $context=$db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
+  if ($db->errorno()) dberror();
+
   $arr=unserialize($context);
   switch ($operation) {
   case "toggle" :  $arr[$var]=$arr[$var] ? 0 : 1; // toggle
@@ -59,8 +65,9 @@ function setcontext($var,$operation,$value="") {
   case "clear" : unset($arr[$var]);  // clear
     break;
   }
-  mysql_query ("UPDATE $GLOBALS[tp]session SET context='".addslashes(serialize($arr))."' WHERE ".$where) or dberror();
-  mysql_select_db($GLOBALS['currentdb']);
+
+  $db->execute(lq("UPDATE #_MTP_session SET context='".addslashes(serialize($arr))."' WHERE ".$where)) or dberror();
+  usecurrentdb();
 }
 
 ?>

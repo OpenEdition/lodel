@@ -330,7 +330,7 @@ function maketext($name,$group,$tag)
   if ($tag=="text") {
     // modify inline
     $modifyif='$context[\'righteditor\']';
-    if ($group=='interface') $modifyif.=' && $context[\'usertranslationmode\']';
+    if ($group=='interface') $modifyif.=' && $context[\'user\'][\'translationmode\']';
 
     $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/text.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
 
@@ -338,7 +338,7 @@ function maketext($name,$group,$tag)
       ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
   } else {
     // modify at the end of the file
-    ##$modify=' if ($context[\'usertranslationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
+    ##$modify=' if ($context[\'user\'][\'translationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
     $modify="";
     $fullname=strtoupper($group).'.'.strtoupper($name);
 
@@ -358,7 +358,7 @@ function parse_after(&$text)
     $closepos=strpos($text,"</body>");
     if ($closepos===false) return; // no idea what to do...
 
-    $code='<?php if ($context[\'usertranslationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
+    $code='<?php if ($context[\'user\'][\'translationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
 <form method="post" action="'.$GLOBALS['home'].'../../lodeladmin/text.php"><input type="hidden" name="edit" value="1">
  <input type="submit" value="[Update]">
 <div id="translationforms">'.join("",$this->translationform).'</div>

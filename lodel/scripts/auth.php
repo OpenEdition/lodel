@@ -77,9 +77,7 @@ function authenticate ($level=0)
 
     // pass les variables en global
    
-    $contextfromsession=unserialize($row['context']);
-    $context=array_merge($context,$contextfromsession); // recupere le contexte
-    $user=$contextfromsession['user'];
+    $user=unserialize($row['context']);
 
     if ($user['rights']<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
 

@@ -27,7 +27,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-if (!function_exists("authenticate")) die("ERROR: invalid include of translationinc.php");
+
+ die("desuet");if (!function_exists("authenticate")) die("ERROR: invalid include of translationinc.php");
 
 require_once($home."func.php");
 require_once($home."validfunc.php");

@@ -43,7 +43,7 @@ function open_session ($login) {
 
   $user['name']=$login;
 
-  $contextstr=addslashes(serialize(array("user"=>$user)));
+  $contextstr=addslashes(serialize($user));
   $expire=time()+$timeout;
   $expire2=time()+$cookietimeout;
 

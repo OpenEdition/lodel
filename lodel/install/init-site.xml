@@ -1346,7 +1346,6 @@
         description=""
 	writeright="admin"
 	protectright="adminlodel">
-
 <column name="id"
         type="INTEGER"
         default="0"
