@@ -222,7 +222,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
     if ($grouperec && $admin) change_groupe_rec($id,$groupe);
 
-    move_files($id,$files_to_move,&$sets);
+    move_files($id,$files_to_move,&$files_to_move);
 
     foreach ($sets as $nom=>$value) { $sets[$nom]=$nom."=".$value; }
     mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$sets)." WHERE identite='$id'") or die (mysql_error());
