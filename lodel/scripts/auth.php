@@ -177,7 +177,6 @@ $admin=0;
 $user=0;
 $context[shareurl]=$shareurl;
 
-
 // cherche le nom de la revue
 
 

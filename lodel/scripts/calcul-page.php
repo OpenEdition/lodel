@@ -12,15 +12,16 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   $template_cache = $cache_rep."CACHE/tpl_$base.php";
   $base=$base_rep.$base.".html";
-  //  $macro=$base_rep."macros.html";
   $template_time=myfilemtime($template_cache);
 
   if (($template_time <= myfilemtime($base)) ||
       //      ($template_time <= myfilemtime($macro)) ||
       $GLOBALS[recalcul_templates]) {
 	if ($GLOBALS[admin]) {
-          echo "<SCRIPT LANGUAGE=\"JavaScript\">if(window.defaultStatus==\"\"){window.defaultStatus=\"ATTENTION LES TEMPLATES SUIVANTS ONT ETE MODIFIES : \";}";
-          echo "window.defaultStatus+='$base | ';</SCRIPT>";
+	  $context[templatesrecompiles].="$base | ";
+
+#	  $script='<SCRIPT LANGUAGE="JavaScript">if(window.defaultStatus==""){window.defaultStatus="ATTENTION LES TEMPLATES SUIVANTS ONT ETE MODIFIES : ";}
+#window.defaultStatus+=\'$base | \';</SCRIPT>';
         }
 
     include_once ("$home/parser.php");
