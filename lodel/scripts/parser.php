@@ -87,8 +87,8 @@ class Parser {
  function Parser() { // constructor
    $this->commands=array("USE","MACRO","FUNC","LOOP","IF","LET","ELSE",
 			 "DO","DOFIRST","DOLAST","BEFORE",
-
-			 "AFTER","ALTERNATIVE","ESCAPE","CONTENT");
+			 "AFTER","ALTERNATIVE","ESCAPE","CONTENT",
+			 "SWITCH","CASE");
 
    $this->codepieces=array('sqlfetchassoc'=>"mysql_fetch_assoc(%s)",
 			   'sqlquery'=>"mysql_query(%s)",
@@ -331,10 +331,6 @@ function parse_main()
 
 {
   while ($this->ind<$this->countarr) {
-    if (substr($this->arr[$this->ind],0,1)=="/") {
-      if ($this->arr[$this->ind+1]) $this->errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
-      return;
-    }
     switch($this->arr[$this->ind]) {
     case "CONTENT" :     
       $attrs=$this->_decode_attributs($arr[$this->ind+1]);
@@ -370,13 +366,17 @@ function parse_main()
     case "AFTER" : return;
     case "BEFORE" : return;
     case "ALTERNATIVE" : return;
+    case "CASE" : return;
       break;
-    case "/MACRO" : $this->_clearposition();
+    case "/MACRO" :
+    case "/FUNC" :
+      $this->_clearposition();
       break;
     default:
       if ($this->arr[$this->ind]{0}=="/") {
-	echo "$this->ind ".$this->arr[$this->ind];
-	$this->errmsg("internal error in parse_main. Report the bug");
+	// closing tag ?
+	if ($this->arr[$this->ind+1]) $this->errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
+	return;
       } else {
 	$methodname="parse_".$this->arr[$this->ind];
 	if (method_exists($this,$methodname)) {
@@ -607,7 +607,6 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
   $loopind=$this->ind;
   do {
     $this->ind+=3;
-    #$this->parse_main2();
     $this->parse_main();
 
     #echo "decode loop content $this->ind ",$this->arr[$this->ind]," $state<br>\n";
@@ -830,7 +829,7 @@ function parse_MACRO($tag="MACRO")
     $defattr=$this->_decode_attributs($this->macrocode[$name]['attr']);
     if ($defattr['REQUIRED']) {
       $required=preg_split("/\s*,\s*/",strtoupper($defattr['REQUIRED']));
-      $optional=preg_split("/\s*,\s*/",strtoupper($defattr['OPTIONAL']));
+      //$optional=preg_split("/\s*,\s*/",strtoupper($defattr['OPTIONAL']));
 
       // check the validity of the call
       foreach ($required as $arg) {
@@ -842,10 +841,10 @@ function parse_MACRO($tag="MACRO")
     $this->_clearposition();
     // build the call
     unset($attrs['NAME']);
-    $agrs=array();
+    $args=array();
     foreach ($attrs as $attr => $val) {
       $this->parse_variable($val,"quote");
-      $args[]='"'.$attr.'"=>"'.$val.'"';
+      $args[]='"'.strtolower($attr).'"=>"'.$val.'"';
     }
     $this->arr[$this->ind].='<?php '.$macrofunc.'($context,array('.join(",",$args).')); ?>';
     //
@@ -870,12 +869,14 @@ function parse_MACRO($tag="MACRO")
 function parse_IF () 
 
 {
-  if (!preg_match("/\bCOND\s*=\s*\"([^\"]+)\"/",$this->arr[$this->ind+1],$cond)) $this->errmsg ("IF have no COND attribut",$this->ind);
-  $this->parse_variable($cond[1],false); // parse the attributs
-  $cond[1]=replace_conditions($cond[1],"php");
+  $attrs=$this->_decode_attributs($this->arr[$this->ind+1]);
+  if (!$attrs['COND']) $this->errmsg("Expecting a COND attribut in the IF tag");
+  $cond=$attrs['COND'];
+  $this->parse_variable($cond,false); // parse the attributs
+  $cond=replace_conditions($cond,"php");
 
-  $this->arr[$this->ind]="";
-  $this->arr[$this->ind+1]='<?php if ('.$cond[1].') { ?>';
+  $this->_clearposition();
+  $this->arr[$this->ind+1]='<?php if ('.$cond.') { ?>';
 
   do {
     $this->ind+=3;
@@ -884,7 +885,7 @@ function parse_IF ()
     if ($this->arr[$this->ind]=="ELSE") {
       if ($elsefound) $this->errmsg ("ELSE found twice in IF condition",$this->ind);
       $elsefound=1;
-      $this->arr[$this->ind]="";
+      $this->_clearposition();
       $this->arr[$this->ind+1]='<?php } else { ?>';
     } elseif ($this->arr[$this->ind]=="/IF") {
       $isendif=1;
@@ -893,8 +894,55 @@ function parse_IF ()
 
   if (!$isendif) $this->errmsg("IF not closed",$this->ind);
 
-  $this->arr[$this->ind]="";
+  $this->_clearposition();
   $this->arr[$this->ind+1]='<?php } ?>';  
+}
+
+
+function parse_SWITCH ()
+
+{
+  // decode attributs
+  $attrs=$this->_decode_attributs($this->arr[$this->ind+1]);
+  if (!$attrs['TEST']) $this->errmsg("Expecting a TEST attribut in the SWITCH tag");
+  $test=$attrs['TEST'];
+  $this->parse_variable($test,false); // parse the attributs
+  $test=replace_conditions($test,"php");
+
+  $this->_clearposition();
+  $this->arr[$this->ind+1]='<?php sitwch ('.$test.') { ';
+  if (trim($this->arr[$this->ind+2])) $this->errmsg("Expecting a CASE tag after the SWITCH tag");
+
+  do {
+    $this->ind+=3;
+
+    $this->parse_main();
+
+    if ($this->arr[$this->ind]=="DO") {
+      $attrs=$this->_decode_attributs($this->arr[$this->ind+1]);
+      if ($attrs['CASE']) {
+	$this->parse_variable($attrs['CASE'],false); // parse the attributs
+
+	$this->_clearposition();
+	$this->arr[$this->ind+1]='case '.$attrs['CASE'].': ?>';
+      } else {
+	die("ERROR: multiple choice case not implemented yet");
+	// multiple case
+      }
+      $this->_clearposition();
+      $this->arr[$this->ind+1]='case :';
+    } elseif ($this->arr[$this->ind]=="/DO") {
+      $this->_clearposition();
+      $this->arr[$this->ind+1]="break;\n";
+    } elseif ($this->arr[$this->ind]=="/SWITCH") {
+      $endswitch=true;
+    } else $this->errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in SWITCH condition",$this->ind);
+  } while (!$endswitch && $this->ind<$this->countarr);
+
+  if (!$endswitch) $this->errmsg("SWITCH block is not closed",$this->ind);
+
+  $this->_clearposition();
+  $this->arr[$this->ind+1]='<?php } ?>';
 }
 
 
@@ -906,7 +954,7 @@ function parse_LET () {
   $this->parse_variable($result[1],false); // parse the attributs
   $var=strtolower($result[1]);
 
-  $this->arr[$this->ind]="";
+  $this->_clearposition();
   $this->arr[$this->ind+1]='<?php ob_start(); ?>';
 
   $this->ind+=3;
@@ -914,7 +962,7 @@ function parse_LET () {
   $this->parse_main();
   if ($this->arr[$this->ind]!="/LET") $this->errmsg("&lt;/LET&gt; expected, $this->arr[$this->ind] found",$this->ind);
 
-  $this->arr[$this->ind]="";
+  $this->_clearposition();
   $this->arr[$this->ind+1]='<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
 }
 

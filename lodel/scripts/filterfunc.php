@@ -41,8 +41,8 @@ function makefilterfunc()
   //
   require_once ($home."connect.php");
   $result=$db->execute("SELECT class,#_TP_fields.name,filtrage FROM #_fieldsgroupsjoin_ WHERE #_TP_fieldgroups.status>0 AND #_TP_fields.status>0 AND filtrage!=''") or die($db->errormsg());
-  foreach ($result->fields as $row) {
-    list($class,$name,$filter)=$row;
+  while (!$result->EOF) {
+    list($class,$name,$filter)=$result->fields;
 
     // convert filter into a function
     $filters=preg_split("/\|/",$filter);
@@ -63,6 +63,8 @@ function makefilterfunc()
     }
     $filterfunc="return ".$filterfunc.";";
     $filterstr.="'$class.$name'=>'".addcslashes($filterfunc,"'")."',";
+
+    $result->MoveNext();
   }
   //if (!$filterstr) die("error interne dans filterfunc");
   // pas tres optimal. Il faudrait plutot que la boucle appel mysql_fetch_assoc dans ce cas... mais bon.

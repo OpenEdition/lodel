@@ -214,7 +214,8 @@ class XMLDB {
       $elementtag=true;
     }
 
-    foreach ($result->fields as $row) {
+    while (!$result->EOF) {
+      $row=$result->fields;
       // information for the table
       $this->_write("<$rowtag");
       foreach ($info['attr'] as $field=>$attr) {
@@ -237,6 +238,7 @@ class XMLDB {
       }
 
       $this->_write("</$rowtag>\n");
+      $result->MoveNext();
     }
     $this->_write("</$table>\n");
   }

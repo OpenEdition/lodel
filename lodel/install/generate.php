@@ -37,10 +37,12 @@ $file = "init-site.xml";
 $table="";
 $uniqueid=false;
 $rights=array();
+$uniquefields=array();
+
 
 function startElement($parser, $name, $attrs)
 {
-  global $table,$fp,$varlist,$publicfields,$rights,$uniqueid;
+  global $table,$fp,$varlist,$publicfields,$rights,$uniqueid,$currentunique,$uniquefields;
 
    switch($name) {
    case "table" :
@@ -53,14 +55,22 @@ function startElement($parser, $name, $attrs)
 
      $varlist=array();
      $publicfields=array();
+     $uniquefields=array();
      break;
    case "column" :
      $varlist[]=$attrs['name'];
-     if ($attrs['label']) {
+     if ($attrs['label'] || $attrs['visibility']=="hidden") {
        if (!$attrs['edittype']) die("ERROR: preciser un edittype pour le champ ".$attrs['name']." table $table\n");
        $condition=$attrs['required']=="true" ? "+" : "";
        $publicfields[]='"'.$attrs['name'].'"=>array("'.$attrs['edittype'].'","'.$condition.'")';
      }
+     break;
+   case "unique" :
+     $currentunique=$attrs['name'];
+     $uniquefields[$currentunique]=array();
+     break;
+   case "unique-column" :
+     $uniquefields[$currentunique][]=$attrs['name'];
      break;
    }
 }
@@ -72,7 +82,7 @@ function endElement($parser, $name)
    switch($name) {
    case "table" :
      buildDAO();
-     buildPublicFields();
+     buildLogic();
 
      $table="";
      break;
@@ -137,19 +147,34 @@ class '.$table.'DAO extends DAO {
 
 
 
-function buildPublicFields()
+function buildLogic()
 
 {
-  global $table,$publicfields;
+  global $table,$publicfields,$uniquefields;
 
   $filename="../scripts/logic/class.".$table.".php";
 
+  // public fields
   $beginre='\/\/\s*begin\{publicfields\}[^\n]+?\/\/';
   $endre='\n\s*\/\/\s*end\{publicfields\}[^\n]+?\/\/';
-
-  $newpublicfields='     return array('.join(",\n                  ",$publicfields).");";
-
+  $newpublicfields='   function _publicfields() {
+     return array('.join(",\n                  ",$publicfields).");
+             }";
   replaceInFile($filename,$beginre,$endre,$newpublicfields);
+
+  // unique fields
+  $beginre='\/\/\s*begin\{uniquefields\}[^\n]+?\/\/';
+  $endre='\n\s*\/\/\s*end\{uniquefields\}[^\n]+?\/\/';
+
+  if ($uniquefields) {
+    $newunique='
+    function _uniqueFields() {  return array(';
+    foreach ($uniquefields as $unique) {
+      $newunique.='array("'.join('","',$unique).'"),';
+    }
+    $newunique.=");  }";
+  }
+  replaceInFile($filename,$beginre,$endre,$newunique);
 }
 
 

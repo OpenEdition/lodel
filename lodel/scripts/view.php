@@ -36,7 +36,6 @@ class View {
 
 
 
-
   /** Constructor
    */
    function View() {
@@ -47,7 +46,7 @@ class View {
     * back
     */
 
-   function back();
+   function back()
 
    {
      global $db,$idsession;
@@ -72,45 +71,40 @@ class View {
 
 
    /**
-    * print
+    * render
     */
 
-   function print(&$context,$tpl,$cache=false)
+   function render(&$context,$tpl,$cache=false)
 
    {
      global $home;
 
-     if (!$cache) { // that's it !
+     if (!$cache) { // calculate the page and that's it !
        require_once ($home."calcul-page.php");
        calcul_page($context,$tpl);
        return;
      }
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      // si le fichier de mise-a-jour est plus recent
      if (!isset($this->_iscachevalid)) $this->isCacheValid();
 
      if (!$this->_iscachevalid) {
        require_once ($home."calcul-page.php");
-       $this->_calculateCacheAndOutput($context,$tpl,$cachedfile);
-     } elseif ($extension=="php") {
-       // execute le cache.
-#  echo "cache:$cachedfile";
-       $ret=include($cachedfile.".php");
-  // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
-#  echo "required: ",join(",",get_required_files()),"<br>";
-#  echo "return:$ret fichier$cachedfile.php<br/>";
-  if ($ret=="refresh") {
-    #echo "refresh";
-    require_once ($home."calcul-page.php");
-#    echo "planter?<br/>\n";
-    calculate_cache_and_output($context,$tpl,$cachedfile);
-  }
-} else {
-  // sinon affiche le cache.
-  readfile($cachedfile.".html");
-}
+       $this->_calculateCacheAndOutput($context,$tpl);
 
+       // the cache is valid... do we have a php file ?
+     } elseif ($this->_extcachedfile=="php") {
+       $ret=include($this->_cachedfile.".php");
 
+       // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
+
+       if ($ret=="refresh") { // does php say we must refresh ?
+	 require_once ($home."calcul-page.php");
+	 $this->_calculateCacheAndOutput($context,$tpl);
+       }
+     } else { // no, we have a proper html, let read it.
+       // sinon affiche le cache.
+       readfile($this->_cachedfile.".html");
+     }
    }
 
 
@@ -129,7 +123,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      $GLOBALS['cachedfile'] = substr(rawurlencode(preg_replace("/#[^#]*$/","",
 							       $_SERVER['REQUEST_URI'])), 0, 255);
 
-     // The variable $cachedfile must exist and be visible in the global scope
+     // The variable $this->_cachedfile must exist and be visible in the global scope
      // The compiled file need it to know if it must produce cacheable output or direct output.
      // An object should be created in order to avoid the global scope pollution.
 
@@ -140,10 +134,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      if (!file_exists("CACHE/".$cachedir)) {
        mkdir("CACHE/".$cachedir, 0777 & octdec($GLOBALS['filemask']));
      }
-     $GLOBALS['cachedfile'] = "CACHE/".$cachedir."/".$cachedfile;
-     $extension=file_exists($cachedfile.".php") ? "php" : "html";
+     $GLOBALS['cachedfile'] = "CACHE/".$cachedir."/".$this->_cachedfile;
+     $this->_extcachedfile=file_exists($this->_cachedfile.".php") ? "php" : "html";
 
-     if ($maj>=myfilemtime($cachedfile.".".$extension)) {
+     if ($maj>=myfilemtime($this->_cachedfile.".".$this->_extcachedfile)) {
        $this->_iscachevalid=true;
        return true;
      }
@@ -153,9 +147,9 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    }
 
    /**
-    * print cached
+    * render cached
     */
-   function printCached()
+   function renderCached()
 
    {
      return $this->view($true);
@@ -166,29 +160,36 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
    //! private from this point
 
-   function _calculateCacheAndOutput ($context,$tpl,$cachedfile) {
+   var $_cachedfile;
+   var $_extcachedfile;
+   var $_iscachevalid;
+
+
+   function _calculateCacheAndOutput ($context,$tpl) 
+
+   {
      global $home;
 
      ob_start();
-     $extension=calcul_page($context,$tpl);
+     $this->_extcachedfile=calcul_page($context,$tpl);
      $content=ob_get_contents();
      ob_end_clean();
 
-     $extension= substr($content,0,5)=='<'.'?php' ? "php" : "html";
+     $this->_extcachedfile= substr($content,0,5)=='<'.'?php' ? "php" : "html";
   
-     if ($extension=="html") {
+     if ($this->_extcachedfile=="html") {
        echo $content; // send right now the html. Do other thing later. 
        flush(); // That may save few milliseconde !
-       @unlink($cachedfile.".php"); // remove if the php file exists because it has the precedence above.
+       @unlink($this->_cachedfile.".php"); // remove if the php file exists because it has the precedence above.
      }
 
      // write the file in the cache
-     $f = fopen($cachedfile.".".$extension, "w");
+     $f = fopen($this->_cachedfile.".".$this->_extcachedfile, "w");
      fputs($f,$content);
      fclose($f);
-     if ($extension=="php") { 
+     if ($this->_extcachedfile=="php") { 
        $dontcheckrefresh=1;
-       include($cachedfile.".php"); 
+       include($this->_cachedfile.".php"); 
      }
    }
 }
@@ -200,6 +201,28 @@ function &getView()
 
   if (!$view) $view=new View;
   return $view;
+}
+
+/**
+ * Calling the right makeSelect
+ */
+
+function makeSelect(&$context,$varname,$table,$edittype)
+
+{
+  $logic=getLogic($table);
+  $logic->makeSelect($context,$varname);
+}
+
+
+function renderOptions($arr,$selected)
+
+{
+  foreach ($arr as $k=>$v) {
+    $s=$k==$selected ? "selected" : "";
+    $k=htmlentities($k);
+    echo '<option value="'.htmlentities($k).'" '.$s.'>'.$v."</option>\n";
+  }
 }
 
 ?>

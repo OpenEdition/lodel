@@ -507,7 +507,9 @@
         type="VARCHAR"
         size="64"
         required="true"
-        description="name de la table complementaire" />
+        description="name de la table complementaire"
+	visibility="hidden"
+	edittype="class" />
 <column name="tpl"
         type="VARCHAR"
         size="255"

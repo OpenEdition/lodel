@@ -49,14 +49,40 @@
 </DEFMACRO>
 
 
+<!--[ --------------------------------------------------------- 
+      Submit / Cancel / Delete bar.
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="EDIT_SUBMIT_BAR" OPTIONAL="DELETEDISABLE">
+<div class="pied_de_formulaire">
+	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
+	<IF COND="![#DELETEDISABLE] && [#ID]">
+		<MACRO NAME="DELETE_BUTTON">
+	</IF>
+</div>
+</DEFFUNC>
+
+<!--[ --------------------------------------------------------- 
+      Ok bouton to submit andgo from edit to list action
+--------------------------------------------------------------- ]-->
+<DEFMACRO NAME="SUBMIT_CANCEL_BUTTON">
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+</DEFMACRO>
+
+<DEFMACRO NAME="DELETE_BUTTON">
+		<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='index.php?do=delete&id=[#ID]&table=[#TABLE]'" />
+</DEFMACRO>
+
 
 <!--[ -----------------------------------------------------------
       Arrow up/down to change order
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="CHANGE_RANK_BUTTON" REQUIRED="table">
-<a href="edit.php?id=[#ID]&table=[#TABLE]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-<a href="edit.php?id=[#ID]&table=[#TABLE]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+<DEFFUNC NAME="CHANGE_RANK_BUTTON" REQUIRED="TABLE">
+<a href="index.php?do=changerank&id=[#ID]&table=[#TABLE]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+<a href="index.php?do=changerank&id=[#ID]&table=[#TABLE]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 </DEFFUNC>
 
 
@@ -65,15 +91,47 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="TABLE">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="TABLE" OPTIONAL="DELETEDISABLE">
 <IF COND="([#RIGHTADMIN] and [#STATUS] lt 32) or [#RIGHTADMINLODEL]">
-         |&nbsp;<a href="edit.php?id=[#ID]&table=[#TABLE]&action=modify">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+         |&nbsp;<a href="index.php?do=view&id=[#ID]&table=[#TABLE]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 <ELSE/>
 	 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
        </IF>
-<IF COND="[#STATUS] ge 32">
+
+<IF COND="[#DELETEDISABLE]">
+	  <span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
+<ELSE/>
+<IF COND="([#STATUS] ge 32)">
 	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
        <ELSE/>
-	<a href="edit.php?id=[#ID]&table=[#TABLE]&action=delete">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	<a href="index.php?do=delete&id=[#ID]&table=[#TABLE]">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
 </IF>
+</IF>
+</DEFFUNC>
+
+
+<!--[ -----------------------------------------------------------
+      Print error message given the error code
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="PRINT_ERROR_MESSAGE">
+	<IF COND="[#ERROR] eq '+'">[@COMMON.ERROR_REQUIRED_FIELD]</IF>
+	<IF COND="[#ERROR] eq '1'">[@COMMON.ERROR_FIELD_MUST_BE_UNIQUE]</IF>
+	<IF COND="[#ERROR] eq 'date'">[@COMMON.ERROR_INVALID_DATE]</IF>
+	<IF COND="[#ERROR] eq 'time'">[@COMMON.ERROR_INVALID_TIME]</IF>
+	<IF COND="[#ERROR] eq 'datetime'">[@COMMON.ERROR_INVALID_DATETIME]</IF>
+	<IF COND="[#ERROR] eq 'int'">[@COMMON.ERROR_INVALID_INTEGER]</IF>
+	<IF COND="[#ERROR] eq 'number'">[@COMMON.ERROR_INVALID_NUMBER]</IF>
+	<IF COND="[#ERROR] eq 'class'">[@COMMON.ERROR_INVALID_CLASS]</IF>
+	<IF COND="[#ERROR] eq 'type'">[@COMMON.ERROR_INVALID_TYPE]</IF>
+	<IF COND="[#ERROR] eq 'username'">[@COMMON.ERROR_INVALID_USERNAME]</IF>
+	<IF COND="[#ERROR] eq 'passwd'">[@COMMON.ERROR_INVALID_PASSWD]</IF>
+	<IF COND="[#ERROR] eq 'field'">[@COMMON.ERROR_INVALID_FIELD]</IF>
+	<IF COND="[#ERROR] eq 'style'">[@COMMON.ERROR_INVALID_STYLE]</IF>
+	<IF COND="[#ERROR] eq 'url'">[@COMMON.ERROR_INVALID_URL]</IF>
+	<IF COND="[#ERROR] eq 'email'">[@COMMON.ERROR_INVALID_EMAIL]</IF>
+	<IF COND="[#ERROR] eq 'tplfile'">[@COMMON.ERROR_INVALID_TPLFILE]</IF>
+	<IF COND="[#ERROR] eq 'textgroups'">[@COMMON.ERROR_INVALID_TEXTGROUPS]</IF>
+	<IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE]</IF>
+	<IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE]</IF>
 </DEFFUNC>

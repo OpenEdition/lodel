@@ -155,14 +155,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="list.php?table=entrytypes"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
+							<a href="index.php?do=list&table=entrytypes"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="list.php?table=persontypes"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
+							<a href="index.php?do=list&table=persontypes"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -170,7 +170,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="list.php?table=types&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
+							<a href="index.php?do=list&table=types&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -178,7 +178,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#RIGHTREDACTOR]">
-								<a href="list.php?table=types&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
+								<a href="index.php?do=list&table=types&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_TYPE]</span></span>
 							</IF>
@@ -190,7 +190,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#RIGHTREDACTOR]">
-							<a href="list.php?table=fields&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
+							<a href="index.php?do=list&table=fields&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.DOCUMENT_DATAFIELDS]</span></span></span>
 			                                </IF>
@@ -201,7 +201,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#RIGHTREDACTOR]">
-							<a href="list.php?table=fields&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
+							<a href="index.php?do=list&table=fields&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_DATAFIELDS]</span></span></span>
 			                                </IF>

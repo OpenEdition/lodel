@@ -30,11 +30,9 @@
 
 
 
-function validfield(&$text,$type,$default)
+function validfield(&$text,$type,$default="")
 
 {
-  global $db;
-
   switch ($type) {
   case "text" :
     if (!$text) $text=$default;
@@ -58,9 +56,9 @@ function validfield(&$text,$type,$default)
     break;
   case "passwd" :
   case "username" :
-    $len=strlen($text)
-    if ($len<3 || $len>12 || !preg_match("/^[0-9A-Za-z_;.?!@:,]+$/",$text) return $type;
-	break;
+    $len=strlen($text);
+    if ($len<3 || $len>12 || !preg_match("/^[0-9A-Za-z_;.?!@:,]+$/",$text)) return $type;
+    break;
   case "lang" :
     if (!preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$text)) return $type;
     break;
@@ -109,6 +107,12 @@ function validfield(&$text,$type,$default)
     $text=trim($text); // should be done elsewhere but to be sure...
     if (strpos($text,"/")!==false || $text[0]==".") return "tplfile";
     break;
+
+  case "textgroups" :
+    return $text=="site" || $text=="interface";
+    break;
+  case "select" :
+    return true; // cannot validate
   default:
     return false; // pas de validation
   }

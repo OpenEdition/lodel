@@ -28,6 +28,8 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+die("desuet");
+
 if (!(INC_LODELCONFIG)) die("inc lodelconfig");
 require_once ($home."func.php");
 

@@ -113,6 +113,7 @@ UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
 	  if ($err) return $err;
 	}
       }
+      $result->MoveNext();
     }
     #echo "ok<br />";
      

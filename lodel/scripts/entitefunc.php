@@ -106,8 +106,8 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   
 
   $result=$db->execute(lq("SELECT #_TP_fields.name,type,condition,default,allowedtags $champcritere FROM #_TP_fields,#_TP_fieldgroups WHERE idgroup=#_TP_fieldgroups.id AND class='$class' AND #_TP_fields.status>0 AND #_TP_fieldgroups.status>0 $extrawhere")) or die($db->errormsg());
-  foreach($result->fields as $row) {
-    list($name,$type,$condition,$default,$allowedtags,$critereok)=$row;
+  while (!$result->EOF) {
+    list($name,$type,$condition,$default,$allowedtags,$critereok)=$result->fields;
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
 
@@ -166,6 +166,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     if (isset($entity[$name])) {
       $sets[$name]="'".addslashes(stripslashes($entity[$name]))."'"; // this is for security reason, only the authorized $name are copied into sets. Add also the quote.
     }
+    $result->MoveNext();
   } // end of while over the results
 
   if ($error) { 
@@ -482,9 +483,10 @@ function change_usergroup_rec($id,$usergroup)
     $result=$db->execute(lq("SELECT id FROM #_TP_entities WHERE idparent IN ($idlist)")) or die($db->errormsg());
 
     $idparents=array();
-    foreach($result->fields as $row) {
-      array_push ($ids,$row['id']);
-      array_push ($idparents,$row['id']);
+    while (!$result->EOF) {
+      array_push ($ids,$result->fields['id']);
+      array_push ($idparents,$result->fields['id']);
+      $result->MoveNext();
     }
   } while ($idparents);
 
@@ -496,7 +498,7 @@ function change_usergroup_rec($id,$usergroup)
 }
 
 
-function loop_champs($context,$funcname)
+function loop_fields($context,$funcname)
 
 {
   global $db,$error;
@@ -506,18 +508,20 @@ function loop_champs($context,$funcname)
   $haveresult=$result->recordnumber()>0;
   if ($haveresult) call_user_func("code_before_$funcname",$context);
 
-  foreach ($result->fields as $row) {
-    $localcontext=array_merge($context,$row);
-    $localcontext[value]=$context[entity][$row['name']];
-    $localcontext[error]=$context[error][$row['name']];
+  while (!$result->EOF) {
+    $localcontext=array_merge($context,$result->fields);
+    $name=$result->fields['name'];
+    $localcontext['value']=$context['entity'][$name];
+    $localcontext['error']=$context['error'][$name];
 
     call_user_func("code_do_$funcname",$localcontext);
+    $result->MoveNext();
   }
 
   if ($haveresult) call_user_func("code_after_$funcname",$context);
 }
 
-function loop_champs_require() { return array("id"); }
+
 
 
 
@@ -552,10 +556,12 @@ function extrait_personnes($identity,&$context)
   $result=$db->execute(lq("SELECT * FROM #_TP_persons,#_TP_entities_persons WHERE idperson=id  AND identity='$identity'")) or die($db->errormsg());
 
   $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
-  foreach($result->field as $row) {
+  while (!$result->EOF) {
+    $row=$result->fields;
     foreach($vars as $var) {
-      $context[$var][$row[idtype]][$row[rank]]=$row[$var];
+      $context[$var][$row['idtype']][$row['rank']]=$row[$var];
     }
+    $result->MoveNext();
   }
 }
 
@@ -567,11 +573,14 @@ function extrait_entrees($identity,&$context)
   $result=$db->execute(lq("SELECT * FROM #_TP_entries,#_TP_entities_entries WHERE identry=id  AND identity='$identity'")) or die($db->errormsg());
 
   foreach($result->field as $row) {
-    if ($context[entries][$row[idtype]]) {
-      array_push($context[entries][$row[idtype]],$row['name']);
+  while (!$result->EOF) {
+    $row=$result->fields;
+    if ($context['entries'][$row['idtype']]) {
+      array_push($context['entries'][$row['idtype']],$row['name']);
     } else {
-      $context[entries][$row[idtype]]=array($row['name']);
+      $context['entries'][$row['idtype']]=array($row['name']);
     }
+    $result->MoveNext();
   }
 }
 
@@ -595,12 +604,14 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
   if (!$context[tri]) die ("ERROR: internal error in makeselectentries_rec");
   $result=$db->execute(lq("SELECT id, abrev, name FROM #_TP_entries WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[sort]")) or die($db->errormsg());
 
-  foreach($result->field as $row) {
+  while (!$result->EOF) {
+    $row=$result->fields;
     $selected=$entries && (in_array($row['abrev'],$entries) || in_array($row['name'],$entries)) ? " selected" : "";
    if ($selected) array_push($entriestrouvees,$row['name'],$row['abrev']);
    $value=$context['useabrevation'] ? $row['abrev'] : $row['name'];
     echo "<option value=\"$value\"$selected>$rep$row[name]</option>\n";
     makeselectentries_rec($row[id],$rep.$row['name']."/",$entries,$context,$entriestrouvees);
+    $result->MoveNext();
   }
 }
 
@@ -612,9 +623,11 @@ function makeselectusergroups()
       
   $result=$db->execute(lq("SELECT id,name FROM #_TP_usergroups")) or die($db->errormsg());
 
-  foreach($result->field as $row) {
-    $selected=$context['usergroup']==$row['id'] ? " SELECTED" : "";
-    echo "<OPTION VALUE=\"$row[id]\"$selected>$row[name]</OPTION>\n";
+  while (!$result->EOF) {
+    list($id,$name)=$result->fields;
+    $selected=$context['usergroup']==$id ? " SELECTED" : "";
+    echo "<OPTION VALUE=\"$row[id]\"$selected>$name</OPTION>\n";
+    $result->MoveNext();
   }
 }
 
@@ -626,10 +639,12 @@ function makeselecttype($class)
   if ($context['typedocfixe']) $critere="AND type='$context[typedoc]'";
 
   $result=$db->execute(lq("SELECT id,type,title FROM #_TP_types WHERE status>0 AND class='$class' $critere AND type NOT LIKE 'documentannexe-%'")) or die($db->errormsg());
-  foreach($result->field as $row) {
-    $selected=$context['idtype']==$row['id'] ? " selected" : "";
-    $name=$row['title'] ? $row['title'] : $row['type'];
-    echo "<option value=\"$row[id]\"$selected>$name</option>\n";
+  while (!$result->EOF) {
+    list($id,$type,$title)=$result->fields;
+    $selected=$context['idtype']==$id ? " selected" : "";
+    $title=$title ? $title : $type;
+    echo "<option value=\"$id\"$selected>$title</option>\n";
+    $result->MoveNext();
   }
 }
 

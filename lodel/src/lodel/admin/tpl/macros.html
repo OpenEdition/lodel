@@ -54,7 +54,7 @@
 <DEFMACRO NAME="TYPE_PERSONNES">
 	<LOOP NAME="persontypes">
 		<DO>
-			<input type="checkbox" name="persontype[[#ID]]" [#VALUE] /> [#TYPE]<br />
+			<input type="checkbox" name="persontype[[#ID]]" [#VALUE] /> [#TITLE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -62,7 +62,7 @@
 <DEFMACRO NAME="TYPE_ENTREES">
 	<LOOP NAME="entrytypes">
 		<DO>
-			<input type="checkbox" name="entrytype[[#ID]]" [#VALUE] /> [#TYPE]<br />
+			<input type="checkbox" name="entrytype[[#ID]]" [#VALUE] /> [#TITLE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -72,9 +72,9 @@
 <!--[ Macro servant à entrytype.html et                 ]-->
 <!--[ persontype.html                                  ]-->
 <DEFMACRO NAME="TYPE_ENTITES">
-	<LOOP NAME="typeentites">
+	<LOOP NAME="entitytypes">
 		<DO>
-			<input type="checkbox" name="typeentite[[#ID]]" [#VALUE]> [#TYPE]<br />
+		<input type="checkbox" name="entitytype[[#ID]]" [#VALUE]> [#TITLE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>

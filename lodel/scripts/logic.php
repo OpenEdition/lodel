@@ -27,12 +27,6 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-/**
- * Define public field description constant
- */
-
-define("F_REQUIRED",0x100);
-
 
 
 /**
@@ -46,27 +40,37 @@ class Logic {
    */
   var $maintable;
 
-  //var $jointable;
+  /**
+   * Give the SQL criteria which make a group from the ranking point of view.
+   */
+  var $rankcriteria;
 
 
 
   /** Constructor
    */
    function Logic($maintable) {
-     $this->$maintable=$maintable;
+     $this->maintable=$maintable;
    }
 
 
    /**
-    * view Action
+    * view an object Action
     */
-
-   function viewAction($context)
+   function viewAction(&$context,&$error)
 
    {
-     $dao=getMainTableDAO();
-     $vo=$dao->createObject();
+     $id=intval($context['id']);
+     if (!$id) return "ok"; // just add a new Object
+
+     $dao=$this->_getMainTableDAO();
+     $vo=$dao->getById($id);
+     if (!$vo) die("ERROR: can't find object $id in the table ".$this->maintable);
+     $this->_populateContext($vo,$context);
+
+     return "ok";
    }
+
 
 
    /**
@@ -80,26 +84,28 @@ class Logic {
      if (!$this->_validatePublicFields($context,$error)) {
        return "error";
      }
+     // check for unicity
+     if (!$this->_validateUniqueFields($context,$error)) {
+       return "error";
+     }
 
      // get the dao for working with the object
-     $dao=getMainTableDAO();
+     $dao=$this->_getMainTableDAO();
 
      // create or edit
      if ($context['id']) {
        $vo=$dao->getById(intval($context['id']),"id,status");
-       if ($vo) die("ERROR: try to modify an object which does not exists");
+       if (!$vo) die("ERROR: try to modify an object which does not exists");
      } else {
-       $dao->createObject($vo);
+       $vo=$dao->createObject();
      }
-
-    if ($GLOBALS['rightadminlodel']) {
-      $newstatus=$context['protected'] ? 32 : 1;
-      $vo->status=$vo->status>0 ? $newstatus : -$newstatus;
-    }
+     $newstatus=$context['protected'] ? 32 : 1; // check later if we have the rights
+     $vo->status=$vo->status>0 ? $newstatus : -$newstatus;
 
      // put the context into 
      $this->_populateObject($vo,$context);
-     $dao->save($vo);
+     if (!$dao->save($vo)) die("You don't have the rights to modify or create this object");
+     $this->_saveRelatedTables($vo,$context);
 
      return "back";
    }
@@ -108,10 +114,12 @@ class Logic {
     * Change rank action
     * Default implementation
     */
-   function changeRankAction($id,$dir)
+   function changeRankAction(&$context,&$error)
 
    {
-     $this->_changeRank($id,$dir,"status>0");
+     $id=intval($context['id']);
+     $this->_changeRank($id,$context['dir'],"status>0");
+     return "back";
    }
 
    /**
@@ -119,7 +127,7 @@ class Logic {
     * Default implementation
     */
 
-   function deleteAction($id)
+   function deleteAction(&$context,&$error)
 
    {     
      die("Abstract logic deleteAction");
@@ -132,11 +140,12 @@ class Logic {
     * @private
     */
 
-   function &getMainTableDAO() {
-     require_once($GLOBALS['home']."dao.php");
-     return getDOA($this->maintable);
-   }
 
+   function &_getMainTableDAO() {
+     require_once($GLOBALS['home']."dao.php");
+     return getDAO($this->maintable);
+   }
+   
 
    /**
     * Change the rank of an Object
@@ -156,17 +165,17 @@ class Logic {
 
      $desc=$dir>0 ? "" : "DESC";
 
-     $dao=getMainTableDAO();
+     $dao=$this->_getMainTableDAO();
      $vos=$dao->findMany($criteria,"rank $desc","id,rank");
 
      $count=count($vos);
      $newrank=$dir>0 ? 1 : $count;
-
+     
      $i=0; 
      for($i=0; $i<$count; $i++) {
        if ($vos[$i]->id==$id) {
 	 // exchange with the next if it exists
-	 if (!($vos[$i+1])) break;
+	 if (!$vos[$i+1]) break;
 	 $vos[$i+1]->rank=$newrank;
 	 $dao->save($vos[$i+1]);
 	 $newrank+=$dir;
@@ -175,10 +184,13 @@ class Logic {
 	 $vos[$i]->rank=$newrank;
 	 $dao->save($vos[$i]);
        }
+       if ($vos[$i]->id==$id) {
+	 $i++;
+       }
        $newrank+=$dir;
      }
    }
-
+   
    /**
     * Validated the public fields
     * @return return an array containing the error and warning, null otherwise.
@@ -189,11 +201,15 @@ class Logic {
 
      $publicfields=$this->_publicfields();
      foreach($publicfields as $field => $fielddescr) {
-       list($type,$condition,$validfunc)=$fielddescr;
-       if ($condition=="+" && !$context[$field]) {
-	 $error[$field]="required";
+       list($type,$condition)=$fielddescr;
+       if ($condition=="+" && 
+	   (
+	    !isset($context[$field]) ||   // not set
+	    $context[$field]===""  // or empty string
+	    )) {
+	 $error[$field]="+";
        } else {
-	 $valid=validfunc($context[$field],$type,"");
+	 $valid=validfield($context[$field],$type,"");
 	 if ($valid===false) die("ERROR: $type can not be validated in logic.php");
 	 if (is_string($valid)) $error[$field]=$valid;
        }
@@ -201,23 +217,65 @@ class Logic {
      return !isset($error);
    }
 
-
    function _publicfields() {
      die("call to abstract publicfields");
      return array();
    }
 
+
    /**
-    * Populate the object from the context. Only the public fields are inputted
+    * Validate fields which need unicity
+    * rmq: this method is limit between the logic and the dao.
     */
 
-   function _populateObject($context) {
+   function _validateUniqueFields(&$context,&$error) {
+     global $db;
+     // check the unique fields
+     
+     foreach($this->_uniqueFields() as $fields) { // all the unique set of fields
+       foreach($fields as $field) { // set of fields which has to be unique.
+	 $conditions[]=$field."='".$context[$field]."'";
+       }
+       // check
+       $ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND ".join(" AND ",$conditions));
+       if ($db->errorno) die($this->errormsg());
+       if ($ret) $error[$fields[0]]="1"; // report the error on the first field
+     }
+     return !isset($error);
+   }
+
+   function _uniqueFields() {
+     return array();
+   }
+
+
+   /**
+    * Populate the object from the context. Only the public fields are inputted.
+    * @private
+    */
+   function _populateObject(&$vo,&$context) {
      $publicfields=$this->_publicfields();
      foreach($publicfields as $field => $fielddescr) {
        $vo->$field=$context[$field];
      }
    }
-}
+
+   /**
+    * Populate the context from the object. All fields are outputted.
+    * @private
+    */
+   function _populateContext(&$vo,&$context) {
+     foreach($vo as $k=>$v) {
+       $context[$k]=$v;
+     }
+   }
+
+   /**
+    * Used in editAction to do extra operation after the object has been saved
+    */
+
+   function _saveRelatedTables($vo,$context) {}
+   } // class Logic
 
 
 /**
@@ -231,7 +289,7 @@ function &getLogic($table) {
   if ($factory[$table]) return $factory[$table]; // cache
 
   require_once($GLOBALS['home']."logic/class.$table.php");
-  $logicclass="$tableDAO";
+  $logicclass=$table."Logic";
   return $factory[$table]=new $logicclass;
 }
 

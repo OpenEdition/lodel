@@ -48,7 +48,7 @@ function gettask (&$id)
 
   $id=intval($id);
   $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0")) or die($db->errormsg());
-  if (!$row) { getView()->back(); return; }
+  if (!$row) { $view=getView(); $view->back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
@@ -397,8 +397,11 @@ function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
     if ($db->errno()==1146) return; // table does not exists... that can happen during the installation
     die($db->errormsg());
   }
-  foreach ($result->fields as $pair) {
-    $ret[$pair['name']]=$options_cache[$pair['name']]=$pair['name'];
+
+  while (!$result->EOF) {
+    list($name,$value)=$result->fields;
+    $ret[$name]=$options_cache[$name]=$value;
+    $result->MoveNext();
   }
 
   if (is_array($name)) {
@@ -409,9 +412,19 @@ function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
 }
 
 
-function getlodeltext($name,$group,$lang=-1)
+function getlodeltext($name,$group="",$lang=-1)
 
 {
+  if ($group=="") {
+    if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
+    $dotpos=strpos($name,".");
+    if ($dotpos) {
+      $group=substr($name,1,$dotpos);
+      $name=substr($name,$dotpos+1,-1);
+    } else {
+      die("ERROR: unknow group for getlodeltext");
+    }
+  }
   if ($lang==-1) $lang=$GLOBALS['userlang'];
   require_once($GLOBALS[$home]."connect.php");
   global $db;
@@ -434,7 +447,7 @@ function getlodeltext($name,$group,$lang=-1)
   return $arr;
 }
 
-function getlodeltextcontents($name,$group,$lang=-1)
+function getlodeltextcontents($name,$group="",$lang=-1)
 
 {
   list($id,$contents)=getlodeltext($name,$group,$lang);

@@ -46,8 +46,8 @@ function enregistre_entite_from_xml($context,$text,$class)
   $result=$db->execute(lq("SELECT #_TP_fields.name,style,type,traitement FROM #_TP_fields,#_TP_fieldgroups WHERE idgroup=#_TP_fieldgroups.id AND class='$class' AND #_TP_fields.status>0 AND #_TP_fieldgroups.status>0 AND style!=''")) or die($db->errormsg());
 
   $sets=array();
-  foreach ($result->fields as $row) {
-    list($name,$style,$type,$traitement)=$row;
+  while (!$result->EOF) {
+    list($name,$style,$type,$traitement)=$result->fields;
     require_once($home."textfunc.php");
 
     if ($type=="mltext") { // text multilingue
@@ -94,7 +94,8 @@ function enregistre_entite_from_xml($context,$text,$class)
 	}
       } // if found style found in the text
     } // foreach styles for mltext
-  } // foreach fields.
+    $result->MoveNext();
+  } // for each  fields.
 
   if (!$localcontext['idtype']) {
     // check if the document exists, if not we really need the type
@@ -153,8 +154,9 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
   $result=$db->execute(lq("SELECT id,style,styledescription FROM #_TP_persontypes,#_TP_entitytypes_persontypes WHERE status>0 AND idpersontype=id AND identitytype='$localcontext[idtype]'")) or die($db->errormsg());
-  foreach($result->fields as $row) {
-    list($idtype,$style,$styledescription)=$row;
+
+  while (!$result->EOF) {
+    list($idtype,$style,$styledescription)=$result->fields;
     // accouple les balises personnes et description
     // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
     // cherche toutes les balises de personnes
@@ -203,6 +205,7 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 	$i++;
       }
     } // parcourt les resultats
+    $result->MoveNext();
   } // type de personne
 }
 
@@ -278,8 +281,8 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
   $result=$db->execute(lq("SELECT id,style FROM #_TP_entrytypes,#_TP_entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'")) or die($db->errormsg());
   require_once($home."champfunc.php");
 
-  foreach ($result->fields as $row) {
-    list($idtype,$style)=$row;
+  while (!$result->EOF) {
+    list($idtype,$style)=$result->fields;
     // decode the multilingue style.
     $styles=decode_mlstyle($style);
 #    echo $idtype," ",$style,"<br/>";
@@ -301,6 +304,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 	}
       }
     }
+    $result->MoveNext();
   }
 #  print_r($localcontext);
 }

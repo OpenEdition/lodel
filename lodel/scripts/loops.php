@@ -46,17 +46,19 @@ function loop_topparentpubli(&$context,$funcname)
   $id=$context['id'];       // On récupère le paramètre id
   $result=$db->selectlimit(lq("SELECT * FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['rightvisitor'] ? -64 : 0)." ORDER BY degree DESC"),1,1) or die($db->errormsg());
 
-  foreach ($result->fields as $row) {       
+
+  while (!$result->EOF) {
     // On fait un array_merge pour récupérer toutes les infos contenues
     // dans le tableau $row et les mettre dans le tableau $context.
-    $localcontext=array_merge($context,$row);
+    $localcontext=array_merge($context,$result->fields);
     // Puis on fait appel à la fonction en concaténant avant "code_" 
     // et en lui passant en paramètre la dernière valeur.
     // C'est équivalent à un return et ça permet d'avoir les
     // valeurs accessibles en lodelscript. 
     call_user_func("code_do_$funcname",$localcontext);
-    return;
+    $result->MoveNext();
   }
+  return;
 }
 
 /*********************************************************************/
@@ -84,9 +86,10 @@ function loop_parentspublis(&$context,$funcname,$critere="")
   
   $result=$db->execute(lq("SELECT *, type  FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['rightvisitor'] ? -64 : 0)." ORDER BY degree DESC")) or die($db->errormsg());
 
-  foreach ($result->fields as $row) {
-    $localcontext=array_merge($context,$row);
+  while (!$result->EOF) {
+    $localcontext=array_merge($context,$result->fields);
     call_user_func("code_do_$funcname",$localcontext);
+    $result->MoveNext();
   }
 }
 
@@ -234,8 +237,11 @@ function previousnext ($dir,$context,$funcname,$arguments)
     $quotedtypes=join("','",explode(",",addslashes($arguments['through'])));
     if (!$quotedtypes) break;
     $result=$db->execute(lq("SELECT id FROM #_TP_types WHERE type IN ('$quotedtypes')")) or die($db->errormsg());
-    foreach($result->fields as $row) {
-      $idtypes[]=$row['id'];
+
+
+  while (!$result->EOF) {
+      $idtypes[]=$result->fields['id'];
+      $result->MoveNext();
     }
     if (!$idtypes) break;
     $types=join("','",$idtypes);

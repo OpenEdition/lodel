@@ -41,17 +41,23 @@ class DAO {
   var $sqltable;
 
   /**
-   * Unique. True if this table use unique id object
+   * Uniqueid. True if this table use unique id object
    */
-  var $unique;
+  var $uniqueid;
+
+  /**
+   * Assoc array with the right level required to read, write, protect
+   */
+  var $rights;
 
 
   /** Constructor
    */
-   function DAO($table) {
-     $this->$table=$table;
-     $this->$tableprefix=lq("#_TP_").$table;
-   }
+  function DAO($table,$uniqueid=false) {
+    $this->table=$table;
+    $this->sqltable=lq("#_TP_").$table;
+    $this->uniqueid=$uniqueid;
+  }
 
    
    /**
@@ -63,18 +69,28 @@ class DAO {
    {
      global $db;
 
+     // check the user has the basic right for modifying/creating an object
+     if ($GLOBALS['userrights']<$this->_rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
+     // check the user has the right to protect the object
+     if ( ($vo->status>=32 || $vo->status<=-32) && $GLOBALS['userrights']<$this->_rights['protect']) {
+       die("ERROR: you don't have the right to protect objects from the table ".$this->table);
+     }
+
+     //
+
      if ($vo->id>0) { // update
        foreach($vo as $k=>$v) {
 	 if (!isset($v)) continue;
 	 if ($update) $update.=",";
-	 $update.="$k=".$db->qstr($v);
+	 $update.="$k='".$v."'";
        }
-       if ($update)
-	 $db->execute("UPDATE ".$this->$sqltable." SET  $update WHERE id='".$vo->id."'") or die($db->errormsg());
+       if ($update) {
+	 $db->execute("UPDATE ".$this->sqltable." SET  $update WHERE id='".$vo->id."' ".$this->_rightscriteria("write")) or die($db->errormsg());
+       }
 
      } else { // new !
        $insert="";$values="";
-       if ($this->unique) {
+       if ($this->uniqueid) {
 	 $vo->id=uniqueid($table);
 	 $insert="id";$values="'".$vo->id."'";
        }
@@ -82,11 +98,11 @@ class DAO {
 	 if (!isset($v)) continue;
 	 if ($insert) { $insert.=","; $values.=","; }
 	 $insert.=$k;
-	 $values.=$db->qstr($v);
+	 $values.="'".$v."'";
        }
 
        if ($insert) {
-	 $db->execute("REPLACE INTO ".$this->$sqltable." (".$insert.") VALUES (".$values.")") or die($db->errormsg());
+	 $db->execute("REPLACE INTO ".$this->sqltable." (".$insert.") VALUES (".$values.")") or die($db->errormsg());
 	 if (!$vo->id) $vo->id=$db->insert_id();
        }
      }
@@ -108,10 +124,10 @@ class DAO {
    function find($criteria,$select="*") {
      global $db;
 
-     if (array_key_exists("status",get_class_vars($this->table."VO"))) $morecriteria=$GLOBALS['rightvisitor'] ? "AND status>-64" : "AND status>0";
-
      //execute select statement
-     $row=$db->getRow("SELECT ".$select." FROM ".$this->$sqltable." WHERE ($criteria) $morecriteria");
+     $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
+     $row=$db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->_rightscriteria("read"));
+     $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
      if ($row===false) die($db->errormsg());
      if (!$row) return null;
 
@@ -131,19 +147,21 @@ class DAO {
 
 
      //execute select statement
-     $morecriteria=$this->_rightscriteria("select");
-     if ($order) $order="ORDER ".$order;
-
-     $result=$db->execute("SELECT ".$select." FROM ".$this->$sqltable." WHERE ($criteria) $morecriteria $order") or die($db->errormsg());
+     $morecriteria=$this->_rightscriteria("read");
+     if ($order) $order="ORDER BY ".$order;
+     $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
+     $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) $morecriteria $order") or die($db->errormsg());
+     $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
      $i=0;
      $vos=array();
-     foreach ($result as $row) {
+     while(!$result->EOF) {
        //create new vo and
        $this->instantiateObject($vos[$i]);
        // call getFromResult
-       $this->_getFromResult($vos[$i],$row);
+       $this->_getFromResult($vos[$i],$result->fields);
        $i++;
+       $result->MoveNext();
      }
 
      // return vo's
@@ -157,15 +175,18 @@ class DAO {
    function &createObject($rankcriteria="")
 
    {
+     global $db;
+
      $this->instantiateObject($vo);
 
      if (array_key_exists("rank",$vo)) {
        // initialise the rank
-       if ($rankcriteria) $where=" WHERE ".$rankcriteria.$this->_rightscriteria("select");
-       $rank=$db->getone("SELECT MAX(rank) FROM ".$this->$sqltable.$where);
+       if ($rankcriteria) $where=" ".$rankcriteria=" AND ".$rankcriteria;
+       $rank=$db->getone("SELECT MAX(rank) FROM ".$this->sqltable." WHERE status>-64 ".$rankcriteria);
        if ($db->errorno()) die($db->errormsg());
        $vo->rank=$rank+1;
      }
+
      if (array_key_exists("status",$vo)) {
        $vo->status=1;
      }
@@ -176,7 +197,8 @@ class DAO {
     * Instantiate a new object
     */
    function instantiateObject(&$vo) {
-     $vo=new $this->$table."VO"; // the same name as the table. We don't use factory...
+     $classname=$this->table."VO";
+     $vo=new $classname; // the same name as the table. We don't use factory...
    }
 
 
@@ -185,23 +207,27 @@ class DAO {
     * @param mixed object or numeric id
     */
 
-   function deleteObject(&$vo) {
+   function deleteObject(&$mixed) {
      global $db;
 
-     if (is_object($vo)) {
+     if ($GLOBALS['userrights']<$this->_rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+
+     if (is_object($mixed)) {
+       $vo=&$mixed;
        $id=$vo->id;
        //set id on vo to 0
        $vo->id=0;
      } else {
-       $id=$vo;
+       $id=$mixed;
      }
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->$sqltable." WHERE id='$id'".$this->_rightscriteria("delete")) or die($db->errormsg());
-
+     $db->execute("DELETE FROM ".$this->sqltable." WHERE id='$id'".$this->_rightscriteria("delete")) or die($db->errormsg());
+     if ($db->affected_Rows()<=0) return false; // not the rights
      //delete the uniqueid entry if required
-     if ($this->unique) {
+     if ($this->uniqueid) {
        deleteuniqueid($id);
      }
+     return true;
    }
 
    /**
@@ -211,48 +237,59 @@ class DAO {
    function deleteObjects($criteria) {
      global $db;
 
+     // check the rights
+     if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
      $where=" WHERE (".$criteria.") ".$this->_rightscriteria("delete");
 
      // delete the uniqueid entry if required
-     if ($this->unique) {
+     if ($this->uniqueid) {
        // select before deleting
-       $result=$db->execute("SELECT id FROM ".$this->$sqltable.$where) or die($db->errormsg());
+       $result=$db->execute("SELECT id FROM ".$this->sqltable.$where) or die($db->errormsg());
        // collect the ids
        $ids=array();
        foreach ($result as $row) $ids[]=$row['id'];
        // delete the uniqueid
        deleteuniqueid($ids);
      }
+
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->$sqltable.$where) or die($db->errormsg());
+     $db->execute("DELETE FROM ".$this->sqltable.$where) or die($db->errormsg());
+     if ($db->affectedRow()<=0) return false; // not the rights
+     return true;
    }
-
-
 
 
    //! Private from this point
 
-     var $cache_rightscriteria;
+   var $cache_rightscriteria;
 
 
    /**
     * @private
     */
-   function _getFromResult(&vo, $row) {     
+
+   function _getFromResult(&$vo, $row) 
+   {
      //fill vo from the database result set
      foreach($row as $k=>$v) {
-       $vo->$$k=$v;
+       $vo->$k=$v;
      }
    }
 
 
    function _rightscriteria ($access) {
-     if (!$this->cache_rightscriteria[$access]) {
+     if (!isset($this->cache_rightscriteria[$access])) {
+
        if (array_key_exists("status",get_class_vars($this->table."VO"))) {
+
 	 $this->cache_rightscriteria[$access]=$GLOBALS['rightvisitor'] ? " AND status>-64" : " AND status>0";
-	 if (($access=="modify" || $access=="delete") && 
-	     !$GLOBALS['rightadminlodel']) $this->cache_rightscriteria[$access].=" AND status<32";
+	 if ($access=="write" && $GLOBALS['userrights']<$this->_right['protect'])
+	   $this->cache_rightscriteria[$access].=" AND status<32 AND status>-32 ";
+
        }
+
+     } else {
+       $this->cache_rightscriteria[$access]="";
      }
      return $this->cache_rightscriteria[$access];
    }
@@ -269,8 +306,8 @@ function &getDAO($table) {
 
   if ($factory[$table]) return $factory[$table]; // cache
 
-  require_once($GLOBALS['home']."dao/class.$table.php");
-  $daoclass="$tableDAO";
+  require_once($GLOBALS['home']."dao/class.".$table.".php");
+  $daoclass=$table."DAO";
   return $factory[$table]=new $daoclass;
 }
 

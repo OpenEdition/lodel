@@ -27,11 +27,17 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+  //
+  //
+  // Function to be rewritten in an Object framework: NN-relationship.
+  //
+
 function typetype_delete($typetable,$critere)
 
 {
   global $db;
-  $db->execute(lq("DELETE FROM #_TP_typeentites_".$typetable."s WHERE $critere")) or die($db->errormsg());
+  $db->execute(lq("DELETE FROM #_TP_entitytypes_".$typetable."s WHERE $critere")) or die($db->errormsg());
 }
 
 function typetype_insert($identitytype,$idtypetable,$typetable)
@@ -52,9 +58,9 @@ function typetype_insert($identitytype,$idtypetable,$typetable)
       array_push($values,"('$idtype','$idtypetable','*')");
     }
   }
-  $table=$typetable!="typeentite2" ? $typetable : "typeentite";
+  $table=$typetable!="entitytype2" ? $typetable : "entitytype";
 
-  $db->execute(lq("INSERT INTO #_TP_typeentites_".$table."s (identitytype,id$typetable,condition) VALUES ".join(",",$values))) or die($db->errormsg());
+  $db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,condition) VALUES ".join(",",$values))) or die($db->errormsg());
 }
 
 
@@ -68,7 +74,7 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
 
 {
   global $db;
-  if ($listtype=="typeentite" || $listtype=="typeentite2") {
+  if ($listtype=="entitytype" || $listtype=="entitytype2") {
     $maintable="types";
     $rank="class,type";
     $relationtable=$criteretype;
@@ -77,20 +83,19 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
     $relationtable=$listtype;
     $rank="type";
   }
-  #if ($relationtable=="typeentite2") $relationtable="typeentite";
+  
+  $result=$db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank")) or die($db->errormsg());
 
-  $result=$db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_typeentites_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank")) or die($db->errormsg());
-
-
-  foreach ($result->fields as $row) {
-    $localcontext=array_merge($context,$row);
+  while (!$result->EOF) {
+    $localcontext=array_merge($context,$result->fields);
     if (is_array($checked)) {
-      $localcontext['value']=$checked[$row['id']] ? "checked" : "";
+      $localcontext['value']=$checked[$result->fields['id']] ? "checked" : "";
     } else {
-      $localcontext['value']=$row['condition'] ? "checked" : "";
+      $localcontext['value']=$result->fields['condition'] ? "checked" : "";
     }
     
     call_user_func("code_do_$funcname",$localcontext);
+    $result->MoveNext();
   }
 }
 
