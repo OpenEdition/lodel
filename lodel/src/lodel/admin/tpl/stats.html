@@ -15,7 +15,12 @@
 </tr>
 </table>
 <br /><br />
-<table width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+<table class="texte" width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+	<tr>
+		<td colspan="2" bgcolor="#EEEEEE" class="soustitre">
+			Statistiques sur les Documents
+		</td>
+	</tr>
 	<tr>
 		<td>
 			Nombre total de documents dans la revue
@@ -49,4 +54,134 @@
 		</td>
 	</tr>
 </table>
+<br /><br />
+<IF [#NBTYPEDOCS] gt 0>
+	<table class="texte" width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+		<tr>
+			<td colspan="2" bgcolor="#EEEEEE" class="soustitre">
+				Statistiques sur les types de document
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<b>
+					<IF [#NBTYPEDOCS] gt 1>
+						<b>[#NBTYPEDOCS]</b>&nbsp;types de document
+					<ELSE/>
+						<b>[#NBTYPEDOCS]</b>&nbsp;type de document
+					</IF>
+				</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Nom du type :</b>
+			</td>
+			<td>
+				<b>Nombre de fois utilisé :</b>
+			</td>
+		</tr>
+		<BOUCLE NAME="nom_occ_type_doc">
+			<CORPS>
+				<tr>
+					<td>
+						[#NOMTYPEDOC]
+					</td>
+					<td>
+						[#NBTYPEDOC]
+					</td>
+				</tr>
+			</CORPS>
+		</BOUCLE>
+	</table>
+</IF>
+<br /><br />
+<table class="texte" width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+	<tr>
+		<td colspan="2" bgcolor="#EEEEEE" class="soustitre">
+			Statistiques sur les Publications
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre total de publications dans la revue
+		</td>
+		<td>
+			<b>[#NBPUBLIS]</b>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de publications à l'état de brouillon
+		</td>
+		<td>
+			<b>[#NBPUBLISBROUILLONS]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCPUBLISBROUILLONS]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de publications prêtes à être publiées
+		</td>
+		<td>
+			<b>[#NBPUBLISPRETES]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCPUBLISPRETES]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de publications publiées
+		</td>
+		<td>
+			<b>[#NBPUBLISPUBLIEES]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCPUBLISPUBLIEES]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de publications publiées et protégées
+		</td>
+		<td>
+			<b>[#NBPUBLISPROTEGEES]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCPUBLISPROTEGEES]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+</table>
+<br /><br />
+<IF [#NBTYPEPUBLIS] gt 0>
+	<table class="texte" width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+		<tr>
+			<td colspan="2" bgcolor="#EEEEEE" class="soustitre">
+				Statistiques sur les types de publication
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<b>
+					<IF [#NBTYPEPUBLIS] gt 1>
+						<b>[#NBTYPEPUBLIS]</b>&nbsp;types de publication
+					<ELSE/>
+						<b>[#NBTYPEPUBLIS]</b>&nbsp;type de publication
+					</IF>
+				</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Nom du type :</b>
+			</td>
+			<td>
+				<b>Nombre de fois utilisé :</b>
+			</td>
+		</tr>
+		<BOUCLE NAME="nom_occ_type_publi">
+			<CORPS>
+				<tr>
+					<td>
+						[#NOMTYPEPUBLI]
+					</td>
+					<td>
+						[#NBTYPEPUBLI]
+					</td>
+				</tr>
+			</CORPS>
+		</BOUCLE>
+	</table>
+</IF>
 <macro name="close_html">
