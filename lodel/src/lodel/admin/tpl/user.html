@@ -76,7 +76,7 @@
 			<td class="texte_intitule" align="top">Sessions</td>
 			<td align="top"><LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
 							<DO>
-								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
+								<div class="texte_info">Expire [(#EXPIRE2|formatedtime("%d/%m/%y %H:%M"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
 							</DO>
 							<ALTERNATIVE>
 								Aucune session enregistrée

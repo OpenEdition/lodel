@@ -57,9 +57,9 @@
 					<td class="ligne_admin1" align="center">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin1" align="center">[(#COURRIEL|nbsp)]</td>
 					<td class="ligne_admin1" align="center">
-						<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT='0,1'> 
+						<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
 							<DOFIRST>
-								<div class="texte_info">Sessions non closes</div>
+								<div class="texte_info"><a href="session.php?deleteuser=[#ID]">Effacer le log des sessions</a></div>
 							</DOFIRST>
 							<ALTERNATIVE>
 								<div class="texte_info">
@@ -82,9 +82,9 @@
 					<td class="ligne_admin2" align="center">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin2" align="center">[(#EMAIL|nbsp)]</td>
 					<td class="ligne_admin2" align="center">
-						<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT='0,1'> 
+						<LOOP NAME="nbsessions2" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT=""> 
 							<DOFIRST>
-								<div class="texte_info">Sessions non closes</div>
+								<a href="session.php?deleteuser=[#ID]">Effacer le log des sessions</a>
 							</DOFIRST>
 							<ALTERNATIVE>
 								<div class="texte_info">

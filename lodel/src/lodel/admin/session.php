@@ -32,13 +32,28 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 include ($home."func.php");
 
 $delete=intval($delete);
+$deleteuser=intval($deleteuser);
 
-if ($delete) {
-  mysql_db_query($database,"DELETE FROM $GLOBALS[tp]session WHERE id=$delete") or die (mysql_error());
+mysql_select_db($database);
+$ids=array();
+if ($deleteuser) {
+  $result=mysql_query("SELECT id FROM $GLOBALS[tp]session WHERE iduser='$deleteuser'") or die (mysql_error());
+  while(list($id)=mysql_fetch_row($result)) { array_push($ids,$id); }
+} elseif ($delete) {
+  array_push($ids,$delete);
 } else {
-die ("a finir");
+  die ("ERROR: unknow operation");
 }
 
+if ($ids) {
+  $idstr=join(",",$ids);
+  // remove the session
+  mysql_query("DELETE FROM $GLOBALS[tp]session WHERE id IN ($idstr)") or die (mysql_error());
+  // remove the url related to the session
+  mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession IN ($idstr)") or die (mysql_error());
+}
+
+mysql_select_db($currentdb);
 back();
 
 ?>

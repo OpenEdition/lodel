@@ -33,12 +33,11 @@ authenticate(LEVEL_VISITEUR);
 $name=$HTTP_COOKIE_VARS["session$database"];
 include_once ($home."connect.php");
 $time=time()-1;
-mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET expire2='$time' WHERE name='$name'") or die (mysql_error());
+mysql_select_db($database);
+mysql_query("UPDATE $GLOBALS[tp]session SET expire2='$time' WHERE name='$name'") or die (mysql_error());
+mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession='$idsession'") or die (mysql_error());
 setcookie($sessionname,"",$time,$urlroot);
 
-include_once($home."func.php");
-
-header ("Location: http://$SERVER_NAME$urlroot");
-#back();
+header ("Location: ".SITEROOT); // la norme ne supporte pas les chemins relatifs !!
 
 ?>
