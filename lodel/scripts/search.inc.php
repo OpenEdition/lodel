@@ -56,7 +56,7 @@ function search($context)
 	$query = $context['query'];
 	//non alphanum chars cleaning
    	 //include utf8 quotes at the end
-   	 $regs = "'\.],:*\"!\r\t\\/){}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
+   	 $regs = "'\.],:\"!\r\t\\/){}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
 #echo "regs=$regs";
    	 $query = strtr( $query , $regs , preg_replace("/./", " " , $regs ) );
 #echo "string=$string<br />\n";
@@ -83,7 +83,7 @@ function search($context)
 			$cond = "exclude";
 			$token = substr($token,1);
 		}
-		elseif($token[0]=="+")
+		elseif($token[0]=='+')
 		{
 			$cond = "include";
 			$token = substr($token,1);
@@ -91,6 +91,30 @@ function search($context)
 		else
 			$cond ="";
 		
+		//if wildcard * used
+		
+		
+		if( $token[strlen($token)-1] == '*' )
+		{
+			$end_wildcard = "%";
+			$token = substr($token,0,strlen($token)-1);
+		} 
+		else
+		{
+			$end_wildcard = "";
+			
+		}
+		if( $token[0] == '*')
+		{
+			$begin_wildcard = "%";
+			$token = substr($token,1);
+		}
+		else
+		{
+			$begin_wildcard = "";
+			
+		}
+			
 		
 		$token = removeaccents($token);
 		//foreach word search entities that match this word
@@ -102,7 +126,8 @@ function search($context)
    	 	$token = $stemmer->stem($token); */
 		
 		
-		$criteria_index = "word LIKE '$token%'";
+		$criteria_index = "word LIKE '$begin_wildcard$token$end_wildcard'";
+		#echo "criteria_index=$criteria_index bim=$end_wildcard";
 		if($context["q_field"] && $context["q_field"]!="")
 		{
 			//added by Jean Lamy - get all tablefields for q_field specified
