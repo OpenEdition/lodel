@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
@@ -26,19 +26,15 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
 if (!function_exists("file_get_contents")) {
   function file_get_contents($file) 
   {
     $fp=fopen($file,"r") or die("Impossible de lire le fichier $file");
-    while(!feof($fp)) {
-      $res.=fread($fp,2048);
-    }
+    while(!feof($fp)) $res.=fread($fp,2048);
     fclose($fp);
     return $res;
   }
 }
-
 
 function removeaccentsandspaces($string){
 return strtr(
@@ -56,85 +52,121 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 
 {
 #  $t=time();
-  $url=parse_url($url);
-  $bound=md5($files[0].microtime());
+  //
+  // create the request header
+  // Should we use the PEAR insteed ?
 
-  $request="POST $url[path] HTTP/1.1\r\nConnection: keep-alive\r\nHost: $url[host]\r\nContent-Type: multipart/form-data; boundary=---------------------------$bound\r\nKeep-Alive: 300";
+  $url=parse_url($url);
+  if (!$url[path]) $url[path]="/";
+  $boundary="---------------------------".md5($files[0].microtime());
+
+  $request="POST $url[path] HTTP/1.1\r\nConnection: keep-alive\r\nHost: $url[host]\r\nContent-Type: multipart/form-data; boundary=$boundary\r\nKeep-Alive: 300";
 
   if ($cookies) {
     list ($key, $val) = each ($cookies);
     $request.="\r\nCookie: $key=$val";
   }
 
-  $request.="\n";
+  $request.="\r\n";
 
   // envoie les variables
   foreach($vars as $var =>$val) {
-    $content.="\r\n-----------------------------$bound\r\nContent-Disposition: form-data; name=\"$var\"\r\n\r\n$val";
+    $content.="\r\n--$boundary\r\nContent-Disposition: form-data; name=\"$var\"\r\n\r\n$val";
   }
-  
+
   // envoie les fichiers
   if ($files) {
     foreach($files as $file) {
-      $content.="\r\n-----------------------------$bound\r\nContent-Disposition: form-data; name=\"file".(++$count)."\"; filename=\"$file\"\r\nContent-Type: application/octet-stream\r\n\r\n".file_get_contents($file);
+      $content.="\r\n--$boundary\r\nContent-Disposition: form-data; name=\"file".(++$count)."\"; filename=\"$file\"\r\nContent-Type: application/octet-stream\r\n\r\n".file_get_contents($file);
     }
   }
-  $content.="\r\n-----------------------------$bound--\r\n";
+  $content.="\r\n--$boundary--\r\n";
 
   $request.="Content-length: ".strlen($content)."\r\n".$content."\r\n";
 
-$port=$url[port] ? $url[port] : 80;
-$fp = fsockopen ("$url[host]", $port, $errno, $errstr, 30);
-if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
+  $port=$url[port] ? $url[port] : 80;
+  $fp = fsockopen ("$url[host]", $port, $errno, $errstr, 30);
+  if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
     
- fputs ($fp,$request);
+  if (fputs ($fp,$request)!=strlen($request)) die("ERROR: cannot write to $url[host]:$port\n");
 
-  // lit le header
+  //
+  // ok, the header is sent.
+  // let's listen the response.
+  //
+
+  // read the header
   $line="";
   while (!feof($fp) && $line!="\r\n") {
     $line=fgets($fp,1024);
+    #echo "line:".htmlentities($line)."<br/>";
     if (strpos($line,"Transfer-Encoding:")===0 && $line!="Transfer-Encoding: chunked\r\n") die ("Bug a reporter: le transfert encoding n'est pas chunked: <br>".$line);
   }
-
-  fgets($fp,1024); # contient la taille du chunk suivant
-  $line=fgets($fp,1024);
-  if (preg_match("/^ERROR:/",$line)) { return $line; }
-  if (!preg_match("/^content-length:\s*(\d+)/",$line,$result)) {
-    echo ("Le content-length n'a pas ete envoye (serveurfunc.php):<br>".$line."<br>");
-    while (!feof($fp) && !preg_match("/^content-length/",$line)) { echo $line=fgets($fp,1024),"<br>"; }
-    exit(1);
-  }
-  $size=$result[1];
-  #echo ":::<br>";
-
   if ($outfile) {
-    if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. probleme de droit contacter Luc ou Ghislain"); }
+    if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de droit sur les fichiers et repertoire surement"); }
    $fout=fopen($outfile,"w");
    if (!$fout) die("impossible d'ouvrir le fichier $outifle en ecriture");
   }
 
+  $size=-1;
   $res="";
-  while (!feof($fp) && $size) {
-    #echo "vide:",fgets($fp,1024),"<br>"; # ligne vide
-    fgets($fp,1024); # ligne vide
-    $chunksize=hexdec(fgets($fp,1024)); # lit le chunck size
-    $size-=$chunksize;
-    #echo "SIZE: $chunksize $size<br>\n";
-    
-    if ($outfile) {
-      while ($chunksize) {
-	$bytetoread=min($chunksize,2048); $chunksize-=$bytetoread;
-	fwrite($fout,fread ($fp,$bytetoread));
-      }
-    } else {
-      $res.=fread ($fp,$chunksize);
-    }
+  $retvar=array();
 
-  }
+  if (feof($fp)) die("erreur de transfert");
+
+  do {
+    $chunk_head=fgets($fp,1024);
+    if (!preg_match("/^[A-Fa-f0-9]+\s*\r\n/",$chunk_head)) {
+      #while ($chunk_head) { echo ord($chunk_head)," "; $chunk_head=substr($chunk_head,1); }
+      die ("ERROR: chunk head invalid: \"$chunk_head\"");
+    }
+    $chunksize=hexdec($chunk_head); # lit le chunck size
+    #error_log("chunk: \"$chunk_head\" $chunksize\n",3,"/tmp/log");
+    while ($chunksize) {
+      if ($outfile) {
+	$bytetoread=min($chunksize,2048);
+      } else {
+	$bytetoread=$chunksize;
+      }
+      #error_log("buf to be read $bytetoread \n",3,"/tmp/log");
+      $buf=fread ($fp,$bytetoread);
+      $byteread=strlen($buf);
+      #error_log("buf read $size\n",3,"/tmp/log");
+      $chunksize-=$byteread;
+
+      if ($size==-1) {
+	//
+	// we handle very simplified header.
+	// the processing is not good here... to improve.
+	//
+	if (preg_match("/^(ERROR|SAY):/",$buf,$result)) { return $buf; }
+	if (preg_match("/^version:\s*(.*?)\r?\n/",$buf,$result)) {
+	  $retvar[version]=$result[1];
+	  $buf=substr($buf,strlen($result[0]));
+	  if (!$buf) continue;
+	}
+	if (preg_match("/^content-length:\s*(\d+)\s*\r?\n/",$buf,$result)) {
+	  $size=$result[1];
+	  $buf=substr($buf,strlen($result[0]));
+	  if (!$buf) continue;
+	  $byteread=strlen($buf);
+	} else {
+	  die("content-length not found: \"$buf\"");
+	}
+      }
+      if ($outfile) {
+	fwrite($fout,$buf);
+      } else {
+	$res.=$buf;
+      }
+      $size-=$byteread;
+    } // while the chunk is not read 
+    fgets($fp,1024); # ligne vide
+  } while (!feof($fp) && $size!=0);
   fclose ($fp);
 
 # echo "tout ",(time()-$t),"<br>\n";
- return $res; 
+  return array($res,$retvar);
 }
 
 

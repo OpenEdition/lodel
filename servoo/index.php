@@ -78,7 +78,7 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
   // command VER ----------------
   if ($cmd[0]=="VER") {
     // send the version
-    die("SAY: ServOO; version ".VERSION."; OpenOffice.org ".OPENOFFICEVERSION."; ".MESSAGEVERSION);
+    die("SAY: ServOO; v".VERSION."; OpenOffice.org v".OPENOFFICEVERSION."; ".MESSAGEVERSION);
     // command DWL ----------------
   } elseif ($cmd[0]=="DWL") {
     // download de fichier
@@ -96,19 +96,30 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
       $auploader=$convertedfiles;
     }
     // on upload maintenant
-    echo upload($user[url],array("tache"=>$tache),$auploader,array($sessionname=>$session));
+    list($ret,$retvar)=upload($user[url],array("tache"=>$tache),$auploader,array($sessionname=>$session));
+    echo $ret;
 
-    // command CVT ----------------
+    // command CVT ---------------- conversion
   } elseif ($cmd[0]=="CVT") {
     $type=$cmd[1];
 #    $t=time();
-    if ($type=="HTMLLodel-1.0") {      
-      require_once($home."convert.php");
-      $convertedfiles=HTMLLodel($sourcefile,$msg);
-    } elseif ($type=="XHTMLLodel-1.0") {
+    #if ($type=="HTMLLodel-1.0") {      
+    #  require_once($home."convert.php");
+    #  $convertedfiles=HTMLLodel($sourcefile,$msg);
+    #} else
+    if ($type=="XHTMLLodel-1.0") {
       require_once($home."convert.php");
       $convertedfiles=XHTMLLodel($sourcefile,$msg);
     } else die("ERROR: unknow conversion type");
+#    error_log("CVT ".(time()-$t)."\n",3,"/tmp/error_log");
+    // command XVL ---------------- validation de XML
+  } elseif ($cmd[0]=="XVL") {
+    $type=$cmd[1];
+#    $t=time();
+    if ($type=="MSV") {
+      require_once($home."xmlvalidator.php");
+      $convertedfiles=xmlvalidwithMSV($sourcefile,$msg);
+    } else die("ERROR: unknow XML Validation");
 #    error_log("CVT ".(time()-$t)."\n",3,"/tmp/error_log");
     // command ZIP ----------------
   } elseif ($cmd[0]=="ZIP") {
@@ -150,6 +161,7 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
 #    $t=time();
     if ($type=="convertedfile") {
 #      error_log("fichier $convertedfiles[0]\n",3,"/tmp/log");
+      echo "version: ServOO; v".VERSION."; OpenOffice.org v".OPENOFFICEVERSION.";\n";
       echo "content-length: ".filesize($convertedfiles[0])."\n"; # envoie la longueur
 #      error_log("filesize".filesize($convertedfiles[0])."\n",3,"/tmp/log");
       readfile($convertedfiles[0]);
