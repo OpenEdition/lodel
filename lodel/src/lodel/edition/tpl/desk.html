@@ -154,7 +154,13 @@
 						</div>
 					</td>
 				</tr>
-<tr><td colspan="10">ATTENTION LES TEMPLATES SUIVANTS ONT ETE MODIFIES : [#TEMPLATESRECOMPILES]</td></tr>
+				<IF COND="[#TEMPLATESRECOMPILES]">
+				<tr>
+					<td background="images/gris.gif" colspan="10">
+						Templates modifiés : [#TEMPLATESRECOMPILES]
+					</td>
+				</tr>
+				</IF>
 			</table>
 		</td>
 	</tr>
