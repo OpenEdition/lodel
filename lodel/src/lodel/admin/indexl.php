@@ -11,9 +11,11 @@ if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
-} else $critere="id='$id'";
-if (!$restore) $critere.=" AND status>0";
-$critere.=" AND type='$type'";
+  if (!$restore) $critere.=" AND status>0";
+  $critere.=" AND type='$type'";
+} else $critere="";
+
+if (!$type) die("probleme interne contacter Ghislain");
 
 //
 // ordre
