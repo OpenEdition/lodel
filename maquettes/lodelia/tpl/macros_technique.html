@@ -13,7 +13,7 @@
 <!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
 <!-- <MACRO NAME="IN_EXTENSO">                                          -->
 <!-- <MACRO NAME="MENU_THEMES_PUBLIES">                                 -->
-<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">               -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">               -->
 <!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
 <!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
 <!-- <MACRO NAME="DROITS_POUR_METAS">                                   -->
@@ -166,7 +166,7 @@
 	</form>
 </DEFMACRO>
 
-<DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">
+<DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la date de publication parente d'un document, si elle      -->
@@ -306,9 +306,9 @@ IPR
 <!-- l'indexation par les moteurs.                                      -->
 <!-- Cette macro utilise les macros suivantes :                         -->
 <!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
-<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
 <!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
-<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">               -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
 <!-- ****************************************************************** -->
 	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003">
 	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">">
@@ -325,12 +325,10 @@ IPR
 	<!-- METADONNEES DUBLIN CORE -->
 	
 	<meta name="DC.Publisher" content="<MACRO NAME='EDITEUR_REVUE_POUR_METAS'>"
-	<MACRO NAME="DROITS_POUR_METASDC">
+	<MACRO NAME="DROITS_POUR_METAS">
 	<meta name="DC.Source" content="http://[#REVUE].revues.org/">
-	
 	<meta name="DC.Type" content="text">
 	<meta name="DC.Format" content="text/html">
-	
 	<meta name="DC.Language" content="fr">
 	<meta name="DC.Relation" content="http://www.revues.org">
 	
@@ -349,7 +347,7 @@ IPR
 		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]">
 	</LOOP>
 	
-	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">
+	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
 	
 	<IF COND="[#RESUME:FR]">
 		<meta name="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut)]">
