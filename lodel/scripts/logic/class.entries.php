@@ -46,9 +46,9 @@ class EntriesLogic extends GenericLogic {
   function viewAction(&$context,&$error)
 
   {
-    $context['classtype']="entries";
-    if ($context['id']) XXXXXXX
-    $context['class']="entries";
+    //$context['classtype']="entries";
+    //if ($context['id']) XXXXXXX
+    //$context['class']="entries";
     return GenericLogic::viewAction($context,$error);
   }
 
