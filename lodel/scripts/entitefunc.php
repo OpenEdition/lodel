@@ -152,13 +152,13 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       }
       break;
     case "int" :
-      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=intval($defaut);
+      if ((!isset($entite[$nom]) || $entite[$nom]==="") && $defaut!=="") $entite[$nom]=intval($defaut);
       if (isset($entite[$nom]) && 
 	  (!is_numeric($entite[$nom]) || intval($entite[$nom])!=$entite[$nom])) 
 	$erreur[$nom]="int";
       break;
     case "number" : 
-      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=doubleval($defaut);
+      if ((!isset($entite[$nom]) || $entite[$nom]==="") && $defaut!=="") $entite[$nom]=doubleval($defaut);
       if (isset($entite[$nom]) && 
 			!is_numeric($entite[$nom])) $erreur[$nom]="numeric";
       break;
