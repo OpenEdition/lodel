@@ -249,7 +249,7 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
       myquote($entree);
       if (!$entree) continue; // etrange elle est vide... tant pis
       // cherche l'id de l'entree si elle existe
-      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree')  AND statut>-64 AND idtype='$idtype'") or die(mysql_error());
+      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree') AND idtype='$idtype'") or die(mysql_error());
 
       #echo $entree,":",mysql_num_rows($result),"<br>";
       if (mysql_num_rows($result)) { // l'entree exists
