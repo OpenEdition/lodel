@@ -55,8 +55,6 @@ if ($maj>=myfilemtime($cache) || $recalcul_templates) {
   exit();
 }
 // sinon affiche la cache.
- $f = fopen($cache, "r");
- fpassthru($f);
-# fclose($f);
+readfile($cache);
 
 ?>
