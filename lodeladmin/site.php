@@ -62,7 +62,7 @@ if ($edit) { // modifie ou ajoute
 
 
     // verifie qu'on a qu'un site si on est en singledatabase
-    if ($singledatabase) {
+    if (!$id && $singledatabase) {
       $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE statut>-64") or die (mysql_error());
       list($numsite)=mysql_fetch_row($result);
       if ($numsite>=1) {
