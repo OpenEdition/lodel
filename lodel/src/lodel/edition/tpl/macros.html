@@ -1047,8 +1047,8 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
-				<td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td style="width:200px">
 					<IF COND="[#DROITEDITEUR]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
 					<ELSE/>
@@ -1062,8 +1062,8 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
-				<td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td style="width:200px">
 					<IF COND="[#DROITEDITEUR]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
@@ -1077,8 +1077,8 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
-				<td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td style="width:200px">
 					<IF COND="[#DROITEDITEUR]">
 						&nbsp;|&nbsp;<a href="statut.php?publication=[#ID]&statut=protege">Prot&eacute;ger</a>&nbsp;|
 					<ELSE/>
@@ -1092,8 +1092,8 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
-				<td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td style="width:200px">
 					<IF COND="[#DROITEDITEUR]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
@@ -1224,7 +1224,7 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
-			<table width="100%" class="table_docannexes" border="0">
+			<table width="100%" class="table_docannexes" border="0" cellspacing="0">
 		</BEFORE>
 		<DO>
 			<tr bgcolor="#EEEEEE">
@@ -1242,7 +1242,7 @@
 						<ELSE/>
 							<a name="[#TITRE]" href="../../docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]" target="[#TITRE]">[#TITRE]</a>
 						</IF>
-					</div>
+						</div>
 					<span class="texte_normal">[#COMMENTAIRE]</span>
 				</td>
 			</tr>
@@ -1252,6 +1252,14 @@
 				</td>
 				<td valign="top"  width="100%">
 					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+				</td>
+			</tr>
+			<tr>
+				<td width="40" align="left" valign="top" height="3">
+					
+				</td>
+				<td valign="top"  width="100%">
+						
 				</td>
 			</tr>
 		</DO>

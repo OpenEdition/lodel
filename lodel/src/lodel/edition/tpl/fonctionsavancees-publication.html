@@ -22,74 +22,87 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition de document</title>
+<title>Fonctions avancées de la publication</title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
-		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
-		<div style="padding-top:25px;">
-			<span class="texte_ligne_haut_tpl_publication">
-				Fonctions avancées de la publication
-			</span>
-		</div>
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+						<td width="50" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">
+						<img src="[#SHAREURL]/images/cadenas.png" /></td>
+						<td background="[#SHAREURL]/images/fond_haut_admin.png">
+					<span class="texte_ligne_haut_tpl_publication">Fonctions avancées de la publication
+			</span></td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td>&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;">
+							<span class="nom_document">[#IDENTIFIANT]</span>&nbsp;
+							<span class="nom_document">[#TITRE]</span>&nbsp;
+							<span class="nom_document">([#TYPE])</span>
+						</td>
+					</tr>
+				</table>
+		<table width="395" border="0" cellspacing="0" cellpadding="0">				
 	</div>
-	
-	<div class="ligne_entete">
-		<span class="nom_publi">[#IDENTIFIANT]</span>&nbsp;
-		<span class="titre_publi">[#TITRE]</span>&nbsp;
-		<span class="type_publi">([#TYPE])</span>
-	</div>
-
-	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Verrouillage du statut</div>
-	</div>
-	<table class="table_statut" width="100%" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="375" class="td_admin">
+							<div><MACRO NAME="BOUTONS_STATUT_PUBLICATION"></div>
+						</td>
+					</tr>
+				</table>
+		<table width="395" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td colspan="3"><div><MACRO NAME="BOUTONS_STATUT_PUBLICATION"></div></td>
-		</tr>
-	</table>
-
-	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
-	</div>
-	
+			<td width="375" valign="top">
+				<!--[ *************** Configuration *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/fichier_blc.png" /></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:5px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">Documents annexes</span></td>
+						<td>&nbsp;</td>
+					</tr>
+				
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="450" class="td_admin">
+		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="450" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-				<a href="metaimage.php?idpublication=[#ID]&champ=image">
-					<span class="texte_orange">Associer une image à cette publication</span>
-				</a>
-			</div>
-		</div>
+				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
+				<br />
+			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="ordre" DONTSELECT="id"]>
+					<DO>
+						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_orange">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITRE]</span></a><br />						
+					</DO>
+			</LOOP>
+
 	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-				<span class="texte_intitule">Associer une image à la publication</span><br />
+				<span class="texte_intitule">Ajouter des documents annexes</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-			</div>
-		</div>
 	</IF>
-	
-	<IF COND="[#TYPE] EQ 'serie_lineaire'">
-		<IF COND="[#DROITEDITEUR]">
-			<div class="ligne_formulaire">
-				<div class="intitule_ligne_formulaire">
-					<a href="chargesommaire.php?id=[#ID]">
-						<span class="texte_noir_gras">Charger un sommaire</span>
-					</a>
-				</div>
-			</div>
-		<ELSE/>
-			<div class="ligne_formulaire">
-				<div class="intitule_ligne_formulaire">
-					<span class="texte_intitule">Charger un sommaire</span><br />
-					<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-				</div>
-			</div>
-		</IF>
-	</IF>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+
+				</table>
+			</td>
+</tr>
+</table>
 	
 	<div class="pied_de_formulaire">
 		<form>
