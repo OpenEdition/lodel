@@ -20,36 +20,25 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<LET VAR="MSG">Formulaire d'enregistrement</LET>
+<LET VAR="MSG">Formulaire pour obtenir un nouveau mot de passe</LET>
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_LOGO_REGISTER"> 
 <form method="POST" action="register.php">
 <fieldset>
 <legend>Veuillez remplir les champs ci-dessous :</legend>
-	<input type="hidden" name="edit" value="1" />
+	<input type="hidden" name="lostpasswd" value="1" />
 	<table id="formulaire">
 		<tr>
-			<td><label for="realname">Nom et prénom :</label></td>
-			<td class="left"><input size="70" type="text" name="realname" id="realname" value="[#REALNAME]" /></td>
-		</tr>
-		[(#ERROR_REALNAME|true)<tr><td>&nbsp;</td><td class="message_erreur">Veuillez pr&eacute;ciser vos noms et prénoms svp.</td></tr>]
-		<tr>
-			<td><label for="email">Votre Email :</label><br/><span class="small">Vos identifiants et mots de passe seront envoyés à cette adresse.</span></td>
+			<td><label for="email">Votre Email :</label></td>
 			<td class="left"><input size="70" type="text" name="email" id="email" value="[#EMAIL]" /></td>
 		</tr>
 		[(#ERROR_EMAIL|true)<tr><td>&nbsp;</td><td class="message_erreur">Cet email n'est pas valide. Veuillez entrer une adresse email valide.</td></tr>]
-		<IF COND="[#ERROR_EMAIL_EXISTS]"><tr><td>&nbsp;</td><td class="message_erreur">Un compte a cette adresse mail a déjà été enregistré. Si vous avez perdu vos identifiants vous pouvez les obtenir <a href="register?lostpasswd&email=[(#EMAIL|urlencode)]">ici</a>.</td></tr></IF>
+		<IF COND="[#ERROR_EMAIL_DOESNOT_EXIST]"><tr><td>&nbsp;</td><td class="message_erreur">Aucun compte n'existe avec cet email, veuillez s'il vous plait vous <a href="register.php">enregistrer</a>.</td></tr></IF>
 		<IF COND="[#ERROR_SENDING_EMAIL]"><tr><td>&nbsp;</td><td class="message_erreur">Une erreur s'est produite au moment d'envoyer le mail avec vos identifiants. Veuillez vérifier l'adresse que vous avez entrée. Si le problème persiste merci de contacter le webmaster <a href="mailto:[#WEBMASTER]">[#WEBMASTER]</a>.</td></tr></IF>
-		<tr>
-			<td><label for="url">URL de votre site :</label></td>
-			<td class="left"><input size="70" type="text" name="url" id="url" value="[#URL]" /></td>
-		</tr>
-		<tr>
-			<td><label for="commentaire">Description de votre site :</label><br/><span class="small">(facultatif)</span></td>
-			<td class="left"><textarea name="commentaire" id="commentaire" rows="10" cols="60" >[#COMMENTAIRE]</textarea></td>
-		</tr>
 		<tr><td colspan="2"><br />
+		<IF COND="[#EMAIL_SEND]"><tr><td>&nbsp;</td><td>Un mail contenant les informations pour obtenir un nouveau mot de passe vient de vous être envoyé.</td></tr><ELSE/>
 <input class="form" type="submit" value="   Continuer    " /></td></tr>
+                 </IF>
 	</table>
 
 		

@@ -26,14 +26,22 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
 //
 // authentification
 //
 
+if (!$passwd || !$username) {
+  require("config.php");
+  require_once(TOINCLUDE."calcul-page.php");
+  calcul_page($context,"index");
+  return;
+}
+
 $passwd=md5($_REQUEST[passwd].".".$_REQUEST[username]);
 $username=addslashes($_REQUEST[username]);
 
-if (!$passwd || !$username) die("ERROR: unknown user");
+
 
 
 // connection a la database
