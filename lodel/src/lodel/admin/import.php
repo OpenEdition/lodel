@@ -31,10 +31,8 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 #authenticate();
 
-
-
 $context[importdir]=$importdir;
-$fileregexp='(model)-\w+-\d+.sql';
+$fileregexp='(site|revue)-\w+-\d+.tar.gz';
 
 $importdirs=array($importdir,"CACHE",$home."../install/plateform");
 
@@ -56,53 +54,65 @@ if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // U
 
 
 if ($fichier) {
-  require_once ($home."connect.php");  
-  require_once ($home."backupfunc.php");
-  include ($home."func.php");
-
-  if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
-
-  if (!$err) {     back();   }
-} else {
-  // verifie qu'on peut.
-  foreach(array("entites","entrees","personnes") as $table) {
-    $result=mysql_query("SELECT 1 FROM $GLOBLAS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
-    if (mysql_num_rows($result)) {
-#      $context[erreur_table]=$table;
-#      break;
-    } 
+  // detar dans le repertoire du site
+  $listfiles=`tar ztf $fichier 2>/dev/null`;
+  $dirs="";
+  foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
+    if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
   }
+  if ($dirs) {
+    #echo "tar zxf $fichier -C ".SITEROOT." $dirs 2>&1";
+    system("tar zxf $fichier -C ".SITEROOT." $dirs 2>&1")!==FALSE or die ("impossible d'executer tar");
+  }
+
+  require_once ($home."connect.php");
+  // drop les tables existantes
+  // recupere la liste des tables
+  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $tables=array();
+  while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
+  if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
+  $tmpfile=tempnam("/tmp","lodelimport_");
+  system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
+  require_once ($home."backupfunc.php");
+  if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();
+  @unlink($tmpfile);
+
+// verifie les .htaccess dans le CACHE
+  $dirs=array("CACHE","lodel/admin/CACHE","lodel/edition/CACHE","lodel/txt","lodel/rtf","lodel/sources");
+   foreach ($dirs as $dir) {
+     if (!file_exists(SITEROOT.$dir)) continue;
+     $file=SITEROOT.$dir."/.htaccess";
+     if (file_exists($file)) @unlink($file);
+     $f=@fopen ($file,"w");
+     if (!$f) {
+       $context[erreur_htaccess].=$dir." ";
+       $err=1;
+     } else {
+       fputs($f,"deny from all\n");
+       fclose ($f);
+     }
+   }
+   if (!$err) { 
+     include_once ($home."func.php"); 
+     back();
+   }
 }
 
 
 include ($home."calcul-page.php");
-calcul_page($context,"importmodel");
+calcul_page($context,"import");
 
 
 function loop_fichiers(&$context,$funcname)
 {
-  global $fileregexp,$importdirs;
+  global $importdirs;
 
   foreach ($importdirs as $dir) {
     if ( $dh= @opendir($dir)) {
       while (($file=readdir($dh))!==FALSE) {
 	if (!preg_match("/^$fileregexp$/i",$file)) continue;
-	$context[nom]=$file;
-	$context[fullname]="$dir/$file";
-
-	$fh=fopen($context[fullname],"r");
-	if (!$fh) continue;
-	$result="";
-	do {
-	  $buf.=fread($fh,1024);
-	  if (preg_match("/# comment\n(.*?\n)# end of comment\n/s",$buf,$result)) break;
-	} while(!feof($fh));
-	$lines=preg_split("/\n/",htmlentities($result[1]));
-	$context[comment]="";
-	foreach ($lines as $line) {
-	  $context[comment].=substr($line,2)."<br />";
-	}
-
+	$context[nom]="$dir/$file";
 	call_user_func("code_do_$funcname",$context);
       }
       closedir ($dh);
