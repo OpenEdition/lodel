@@ -350,13 +350,15 @@ function vignette($text,$width)
   }
 
   if (defined("SITEROOT")) $text=SITEROOT.$text;
-  return $text;
-
   if (!file_exists($text)) return "file does not exist";
 
   if (!preg_match("/^(.*)\.([^\.]+)$/",$text,$result)) return "file without extension";
 
   $vignettefile=$result[1]."-small$width.".$result[2];
+
+  return $text.":".$vignettefile;
+
+
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
   // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
   require_once($home."images.php");
