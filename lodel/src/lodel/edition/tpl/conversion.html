@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Conversion de fichier</title>
+<title>[@EDITION.FILE_CONVERSION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <script><!--
@@ -87,8 +87,8 @@ function infoChargement(nomFic){
 
 <div style="text-align:center;">
 	<div class="message_erreur">
-	      <IF COND="[#ERREUR_UPLOAD]"><td class="message_erreur">Une erreur s'est produite pendant le chargement ou de la conversion.<br>[#ERREUR_UPLOAD]
-		    [(#ERREUR_STYLESTABLEAUX|true)<br />Un tableau contient plusieurs styles de paragraphe differents. Veuillez verifier le tagage des tableaux.]
+	      <IF COND="[#ERREUR_UPLOAD]"><td class="message_erreur">[@EDITION.ERROR_UPLOADLING_CONVERSION]<br>[#ERREUR_UPLOAD] 		
+		    <IF COND="[#ERREUR_STYLESTABLEAUX]"><br />[@EDITION.ERROR_TABLE]</IF>
 	      </IF>
 	</div>
 </div>
@@ -97,10 +97,10 @@ function infoChargement(nomFic){
 
 	
 	<table width="480" border="0" align="center" valign="top" cellspacing="4" cellpadding="4">
-		<tr><td align="center" class="sous_titre_popup">S&eacute;lectionnez le fichier à convertir<br /><br /></td></tr>
-		<tr><td align="center" class="texte_normal">Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.<br /><br /></td></tr>
+		<tr><td align="center" class="sous_titre_popup">[@EDITION.SELECT_FILE_TO_CONVERT]<br /><br /></td></tr>
+		<tr><td align="center" class="texte_normal">[@EDITION.ADVICE_UPLOADING]<br /><br /></td></tr>
 		<tr><td align="center"><input type="file" name="file1" size="40"></td></tr>
-		<tr><td align="center">Convertir vers:
+		<tr><td align="center">[@EDITION.CONVERT_TO]:
 		<select name="formatconversion">
 		<?php makeselectformat(); ?>
 		</select></td></tr>
@@ -110,7 +110,7 @@ function infoChargement(nomFic){
 				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 <br /><br /><br />
-<span class="texte_info_popup">La conversion est assurée avec l'aide de :</span><br />
+<span class="texte_info_popup">[@EDITION.CONVERSION_TOOLS] :</span><br />
 <a href="http://www.openoffice.org"><MACRO NAME="PNG_LOGO_OO"></a> <!--[<a href="http://www.hj-gym.dk/~hj/writer2latex/"><MACRO NAME="PNG_LOGO_W2L"></a>]-->
 
 			</td>
