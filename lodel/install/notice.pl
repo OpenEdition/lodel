@@ -49,7 +49,7 @@ Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten,
 
 Home page: http://www.lodel.org
 
-E-Mail: info@lodel.org
+E-Mail: lodel@lodel.org
 
                           All Rights Reserved
 
