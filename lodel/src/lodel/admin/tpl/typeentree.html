@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Ajout d'un type d'index</title>
+<title>[@ADMIN.TITLE_EDITION_INDEX_TYPE]</title>
 <MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -31,7 +31,7 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un type d'index</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_EDITION_INDEX_TYPE]</td>
 	</tr>
 </table>
 
@@ -41,98 +41,108 @@
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du type d'index :</span><br />
-				<span class="texte_info">(identifiant unique)</span>
+				<span class="texte_intitule">[@ADMIN.NAME_INDEX_TYPE] :</span><br />
+				<span class="texte_info">([@ADMIN.ONLY_ID])</span>
 			</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptés: lettres, chiffres, _ et -</td></tr>]
-		<IF COND="[#ERREUR_ENTREES_EXISTENT]"><tr><td colspan="2" class="message_erreur">Ce type contient [#ERREUR_ENTREES_EXISTENT] entrée(s). Il ne peut être détruit</td></tr></IF>
+		<IF COND="#ERREUR_TYPE">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TYPE] !</td></tr>
+		</IF>
+		<IF COND="[#ERREUR_ENTREES_EXISTENT]"><tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_ENTRIES_EXIST_PART1] [#ERREUR_ENTITES_EXISTENT] [@ADMIN.ERROR_ENTRIES_EXIST_PART2].</td></tr></IF>
 		<tr>
-			<td class="texte_intitule">Titre du type d'index :</td>
+			<td class="texte_intitule">[@ADMIN.NAME_HUMAN_READABLE_INDEX_TYPE] :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
 		</tr>
-		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+		<IF COND="[#ERREUR_TITRE]">
+			<tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_TITLE]</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Style du type d'index (*):</td>
+			<td class="texte_intitule">[@ADMIN.STYLE_INDEX_TYPE] (*):</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
-		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Pour avoir des styles "multilingues", il faut indiquer la langue pour chaque style. Exemple: motcle:fr, keywords:en</td></tr>]
+		<IF COND="#ERREUR_STYLE">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_STYLE]</td></tr>
+		</IF>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template pour les entrées :</span><br />
-				<span class="texte_info">(sans l'extension .html)</span>
+				<span class="texte_intitule">[@ADMIN.NAME_TEMPLATE_FILE_FOR_ENTRIES] :</span><br />
+				<span class="texte_info">([@ADMIN.WITHOUT_EXTENSION] .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
-		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<IF COND="#ERREUR_TPL">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPL]</td></tr>
+		</IF>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template d'index :</span><br />
-				<span class="texte_info">(sans l'extension .html)</span>
+				<span class="texte_intitule">[@ADMIN.NAME_TEMPLATE_FILE_FOR_INDEX] :</span><br />
+				<span class="texte_info">([@ADMIN.WITHOUT_EXTENSION] .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
-		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<IF COND="#ERREUR_TPLINDEX">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPLINDEX]</td></tr>
+		</IF>
 	      </table>
 	    <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="10">
 	      <tr>
 			<td>
-				<input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Entrée linéaire<br />
-	                        <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /> Entrée hiérarchique
+				<input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] />[@ADMIN.LINEAR_ENTRY]<br />
+	                        <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] />[@ADMIN.HIERARCHICAL_ENTRY]
 	                </td>
 
 <!--[		</tr>
 		<tr>]-->
 			<td>
-				 <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] /> Import de nouveaux elements possible <br/>
-				<input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] /> Liste figée par l'administrateur
+				 <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] />[@ADMIN.IMPORT_NEW_ELEMENTS_AVAILABLE] <br/>
+				<input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] />[@ADMIN.LIST_FIXED_BY_ADMINISTRATOR]
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] /> Utiliser les abréviations<br />
-				<input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] /> Pas d'abréviation
+				<input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] />[@ADMIN.USE_ABBREVIATIONS]<br />
+				<input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] />[@ADMIN.NO_ABBREVIATION]
 			</td>
 <!--[		</tr>
 		<tr>]-->
 			<td>
-				<input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] /> Ordre alphabétique<br />
-				<input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] /> Ordre définit dans l'interface<br />
-				<input type="radio" name="tri" value="id" [(#TRI|eq("id"))] />Par ordre de création
+				<input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] />[@ADMIN.ALPHABETICAL_ORDER]<br />
+				<input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] />[@ADMIN.ORDER_DEFINED_IN_INTERFACE]<br />
+				<input type="radio" name="tri" value="id" [(#TRI|eq("id"))] />[@ADMIN.CREATION_ORDER]
 			</td>
 		</tr>
 		<IF COND="[#DROITADMINLODEL]">    
 			<tr><td colspan="2" class="texte_intitule">
-				<br />Type d'entrée protégé: <MACRO NAME="CASE_A_COCHER_PROTEGER"><br />
+				<br />[@ADMIN.PROTECTED_ENTRY_PROTECTED] : <MACRO NAME="CASE_A_COCHER_PROTEGER"><br />
 			</td></tr>
 		</IF>
 
-		<tr><td colspan="2"><br /><span  class="texte_intitule">Types de publication et de document qui contiennent ce type d'entrée :</span></td></tr>
+		<tr><td colspan="2"><br /><span  class="texte_intitule">[@ADMIN.PUBLICATION_OR_DOCUMENT_CONTENT_THIS_TYPE] :</span></td></tr>
 		<tr><td colspan="2">
 			<MACRO NAME="TYPE_ENTITES">
 			<br />
 			<div>
-				<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_entree', 'typeentite', true);">Tout cocher</a>&nbsp;/&nbsp;
-				<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_entree', 'typeentite', false);">Tout décocher</a>
+				<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_entree', 'typeentite', true);">[@ADMIN.CHECK_ALL]</a>&nbsp;/&nbsp;
+				<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_entree', 'typeentite', false);">[@ADMIN.UNCHECK_ALL]</a>
 			</div>
 		</td></tr>
 	</table>
 	
 	<div style="padding-top:20px; padding-left:70px; padding-right:70px;">
 		<span class="texte_normal">
-			(*) la balise et le style ne doivent contenir que des lettres non accentuées et des chiffres. <br />
-			Le style défini dans lodel.dot peut contenir des lettres accentuées, l'accent est automatiquement supprimé, et des espaces, automatiquement supprimé. <br />
-			Par exemple le style "Mot clé" dans lodel.dot doit etre défini "motcle" ici.
-                        Style peut aussi indiquer la langue. Dans ce cas, il chaque style doit etre suivi de : et la langue et chaque style est separé par une virgule. Exemple: motcle:fr, keywords:en
+			(*) [@ADMIN.HOWTO_INDEX_TYPE_1]. <br />
+			[@ADMIN.HOWTO_INDEX_TYPE_2]. <br />
+			[@ADMIN.HOWTO_INDEX_TYPE_3]
 		</span>
 	</div>
 	
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='typeentree.php?delete=1&id=[#ID]'" />
+			<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='typeentree.php?delete=1&id=[#ID]'" />
 		</IF>
 	</div>
 </form>

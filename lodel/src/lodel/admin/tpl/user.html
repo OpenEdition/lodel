@@ -22,14 +22,14 @@
 
 
 <USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition d'un utilisateur</title>
+<title>[@ADMIN.TITLE_USER_EDITION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un utilisateur</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_USER_EDITION]</td>
 	</tr>
 </table>
 
@@ -39,37 +39,45 @@
 	<input type="hidden" name="id" value="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td class="texte_intitule">Nom et prénom :</td>
+			<td class="texte_intitule">[@ADMIN.NAME_AND_SURNAME] :</td>
 			<td><input size="30" type="text" name="nom" value="[#NOM]" /></td>
 		</tr>
-		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		<IF COND="#ERREUR_NOM">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_NAME] !</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Courriel :</td>
+			<td class="texte_intitule">[@COMMON.MAIL] :</td>
 			<td><input size="30" type="text" name="courriel" value="[#COURRIEL]" /></td>
 		</tr>
-		[(#ERREUR_COURRIEL|true)<tr><td colspan="2" class="message_erreur">Le courriel n'est pas valide !</span></td></tr>]
+		<IF COND="#ERREUR_COURRIEL">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_MAIL] !</span></td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Login :</td>
+			<td class="texte_intitule">[@COMMON.LOGIN] :</td>
 			<td><input size="30" type="text" name="usernamems" value="[#USERNAMEMS]" /></td>
 		</tr>
-		[(#ERREUR_USERNAME|true)<tr><td colspan="2" class="message_erreur">Le login doit contenir entre 
-		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
-		[(#ERREUR_DUPUSERNAME|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit etre unique. 
-		Le nom que vous avez entrez existe deja.</td></tr>]
-		[(#ERREUR_DUPUSERNAMEADMIN|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit etre unique. 
-		Le nom que vous avez entrez existe deja parmi les administrateurs Lodel.</td></tr>]
+		<IF COND="#ERREUR_USERNAME">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_USERNAME]</td></tr>
+		</IF>
+		<IF COND="#ERREUR_DUPUSERNAME">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_DUPUSERNAME].</td></tr>
+		</IF>
+		<IF COND="#ERREUR_DUPUSERNAMEADMIN">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_DUPUSERNAMEADMIN].</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Mot de passe :</td>
+			<td class="texte_intitule">[@COMMON.PASSWORD] :</td>
 			<td><input size="30" type="password" name="passwdms" value="" /></td>
 		</tr>
-		[(#ERREUR_PASSWD|true)<tr><td colspan="2" class="message_erreur">Le mot de passe doit contenir entre 
-		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
+		<IF COND="#ERREUR_PASSWD">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_PASSWORD]</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Privil&egrave;ge :</td>
+			<td class="texte_intitule">[@ADMIN.RIGHTS] :</td>
 			<td><select name="privilege"><?php  makeselectprivilege(); ?></select></td>
 		<tr>
 		<tr>
-			<td class="texte_intitule">Langue :</td>
+			<td class="texte_intitule">[@COMMON.LANG] :</td>
 			<td><select name="lang"><?php  makeselectlangues_nevernil(); ?></select></td>
 		<tr>
 
@@ -83,23 +91,24 @@
 		]-->
 		<input type="hidden" name="groupes[0]" value="1">
 		<tr>
-			<td class="texte_intitule" align="top">Sessions</td>
+			<td class="texte_intitule" align="top">[@ADMIN.SESSIONS]</td>
 			<td align="top"><LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
 							<DO>
-								<div class="texte_info">Expire [(#EXPIRE2|formatedtime("%d/%m/%y %H:%M"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
+								<div class="texte_info">[@ADMIN.EXPIRE] [(#EXPIRE2|formatedtime("%d/%m/%y %H:%M"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[[@COMMON.DELETE]]<ELSE/>[[@ADMIN.DELOGG]]</IF></a></div><br />
 							</DO>
 							<ALTERNATIVE>
-								Aucune session enregistrée
+								[@ADMIN.NO_SAVED_SESSION]
 							</ALTERNATIVE>
     </LOOP></td>
 		</tr>
 	</table>
 
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='user.php?delete=1&id=[#ID]'" />
+			<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='user.php?delete=1&id=[#ID]'" />
 		</IF>
 	</div>
 </form>

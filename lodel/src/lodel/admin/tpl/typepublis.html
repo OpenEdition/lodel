@@ -23,28 +23,28 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Types de publications</title>
+<title>[@ADMIN.TITLE_PUBLICATION_TYPES]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Types de publications</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_PUBLICATION_TYPES]</td>
 	</tr>
 </table>
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="typepubli.php">Ajouter un type de publication</a>
+	<a href="typepubli.php">[@ADMIN.ADD_PUBLICATION_TYPE]</a>
 </div>
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
-		<td class="texte_noir_gras">Titre du type</td>
-		<td class="texte_noir_gras">Nom du type</td>
-		<td class="texte_noir_gras">Fichier Template</td>
-		<td class="texte_noir_gras">Fichier Template d'Edition</td>
+		<td class="texte_noir_gras">[@ADMIN.TYPE_TITLE]</td>
+		<td class="texte_noir_gras">[@ADMIN.TYPE_NAME]</td>
+		<td class="texte_noir_gras">[@ADMIN.TEMPLATE_FILE]</td>
+		<td class="texte_noir_gras">[@ADMIN.TEMPLATE_FILE_TPLEDITION]</td>
 		<td>&nbsp;</td>
 	</tr>
 	<LOOP NAME="typepubli" TABLE="types" WHERE="ok" WHERE="classe='publications'" ORDER="ordre">
@@ -78,7 +78,7 @@
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="4"><span class="texte_info">Il n'y a pas de types de publications</span></td></tr>
+			<tr><td colspan="4"><span class="texte_info">[@ADMIN.NO_PUBLICATION_TYPES]</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 </table>
@@ -87,12 +87,12 @@
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>
-				<td colspan="3" class="message_erreur">Types de publications dans la corbeille</td>
+				<td colspan="3" class="message_erreur">[@ADMIN.PUBLICATION_TYPES_IN_TRASH]</td>
 			</tr>
 			<tr>
-				<td class="texte_noir_gras"><b>Titre</b><br></td>
-				<td class="texte_noir_gras"><b>Nom</b><br></td>
-				<td class="texte_noir_gras"><b>Fichier Template</b><br></td>
+				<td class="texte_noir_gras"><b>[@ADMIN.TYPE_TITLE]</b><br></td>
+				<td class="texte_noir_gras"><b>[@ADMIN.TYPE_NAME]</b><br></td>
+				<td class="texte_noir_gras"><b>[@ADMIN.TEMPLATE_FILE]</b><br></td>
 				<td>&nbsp;</td>
 			<tr>
 	</BEFORE>
@@ -103,16 +103,16 @@
 				<td class="ligne_admin1">[#TYPE]</td>
 				<td class="ligne_admin1">[#TPL]</td>
 				<td class="ligne_admin1" style="color: #CC9933;" align="left">
-					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
-					<a href="typepubli.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a>&nbsp;|&nbsp;
+					<a href="typepubli.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
 				<td class="ligne_admin2">[#TITRE]</td>
 				<td class="ligne_admin2">[#TYPE]</td>
 				<td class="ligne_admin2">[#TPL]</td>
 				<td class="ligne_admin2" style="color: #CC9933;" align="left">
-					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
-					<a href="typepubli.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a>&nbsp;|&nbsp;
+					<a href="typepubli.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;|</div>
 				</td>
 			</IF>
 		</tr>

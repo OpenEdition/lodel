@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Ajout d'un type d'index par personne</title>
+<title>[@ADMIN.TITLE_EDITION_INDIVIDUAL_INDEX_TYPE]</title>
 <MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -31,7 +31,7 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un type d'index par personne</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_EDITION_INDIVIDUAL_INDEX_TYPE]</td>
 	</tr>
 </table>
 
@@ -41,66 +41,79 @@
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du type :</span><br />
-				<span class="texte_info">(identifiant unique)</span>
+				<span class="texte_intitule">[@ADMIN.NAME_DOCUMENT_TYPE] :</span><br />
+				<span class="texte_info">([@ADMIN.ONLY_ID])</span>
 			</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptés: lettres, chiffres, _ et -</td></tr>]
-		<IF COND="[#ERREUR_PERSONNES_EXISTENT]"><tr><td colspan="2" class="message_erreur">Ce type contient [#ERREUR_PERSONNES_EXISTENT] personne(s). Il ne peut être détruit</td></tr></IF>
+		<IF COND="#ERREUR_TYPE">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TYPE] !</td></tr>
+		</IF>
+		<IF COND="[#ERREUR_PERSONNES_EXISTENT]"><tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_INDIVIDUALS_EXIST_PART1] [#ERREUR_ENTITES_EXISTENT] [@ADMIN.ERROR_INDIVIDUALS_EXIST_PART2].</td></tr></IF>
 		<tr>
-			<td class="texte_intitule">Titre du type de personne :</td>
+			<td class="texte_intitule">[@ADMIN.TITLE_INIDIVIDUAL_TYPE] :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
 		</tr>
-		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+		<IF COND="[#ERREUR_TITRE]">
+			<tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_TITLE]</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Style du type de personne (*):</td>
+			<td class="texte_intitule">[@ADMIN.STYLE_INIDIVIDUAL_TYPE] (*):</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
-		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style valide !</td></tr>]
+		<IF COND="#ERREUR_STYLE">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_STYLE] !</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Titre de la description des personnes (*):</td>
+			<td class="texte_intitule">[@ADMIN.TITLE_INIDIVIDUAL_DESCRIPTION] (*):</td>
 			<td><input size="40" type="text" name="titredescription" value="[#TITREDESCRIPTION]" /></td>
 		</tr>
-		[(#ERREUR_TITREDESCRIPTION|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+		<IF COND="#ERREUR_TITREDESCRIPTION">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_DESCRIPTION_TITLE] !</td></tr>
+		</IF>
 
 
 		<tr>
-			<td class="texte_intitule">Style de la description des personne (*):</td>
+			<td class="texte_intitule">[@ADMIN.STYLE_INDIVIDUAL_DESCRIPTION] (*):</td>
 			<td><input size="40" type="text" name="styledescription" value="[#STYLEDESCRIPTION]" /></td>
 		</tr>
-
-		[(#ERREUR_STYLEDESCRIPTION|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style valide!</td></tr>]
+		<IF COND="#ERREUR_STYLEDESCRIPTION">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_DESCRIPTION_STYLE] !</td></tr>
+		</IF>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template pour les personnes :</span><br />
-				<span class="texte_info">(sans l'extension .html)</span>
+				<span class="texte_intitule">[@ADMIN.TEMPLATE_FILE_FOR_INDIVIDUAL] :</span><br />
+				<span class="texte_info">([@ADMIN.WITHOUT_EXTENSION] .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
-		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<IF COND="#ERREUR_TPL">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPL]</td></tr>
+		</IF>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template d'index de personne :</span><br />
-				<span class="texte_info">(sans l'extension .html)</span>
+				<span class="texte_intitule">[@ADMIN.TEMPLATE_FILE_NAME_INDIVIDUAL_INDEX] :</span><br />
+				<span class="texte_info">([@ADMIN.WITHOUT_EXTENSION] .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
-		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<IF COND="#ERREUR_TPLINDEX">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPLINDEX]</td></tr>
+		</IF>
 		<IF COND="[#DROITADMINLODEL]">    
 		<tr>
-			<td class="texte_intitule">Type de personne protégé:</td>
+			<td class="texte_intitule">[@ADMIN.PROTECTED_INDIVIDUAL_TYPE] :</td>
 			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>
 		</tr>
 		</IF>
 
 		<tr>
 			<td>
-				Types de publication et de document qui contiennent ce type d'intervenant :<br />
+				[@ADMIN.PUBLICATION_OR_DOCUMENT_TYPE_CONTENT_THIS_INDIVIDUAL_TYPE] :<br />
 				<MACRO NAME="TYPE_ENTITES">
 				<div>
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_personne', 'typeentite', true);">Tout cocher</a>&nbsp;/&nbsp;
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_personne', 'typeentite', false);">Tout décocher</a>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_personne', 'typeentite', true);">[@ADMIN.CHECK_ALL]</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_personne', 'typeentite', false);">[@ADMIN.UNCHECK_ALL]</a>
 				</div>
 			</td>  
 		</tr>
@@ -108,17 +121,18 @@
 	
 	<div style="padding-top:20px; padding-left:70px; padding-right:70px;">
 		<span class="texte_normal">
-			(*) la balise et le style ne doivent contenir que des lettres non accentuées et des chiffres.<br />
-			Le style défini dans lodel.dot peut contenir des lettres accentuées, l'accent est automatiquement supprimé, et des espaces, automatiquement supprimé. <br />
-			Par exemple le style "Mot clé" dans lodel.dot doit etre défini "motcle" ici.
+			(*) [@ADMIN.HOWTO_INDIVDUAL_TYPE_1].<br />
+			[@ADMIN.HOWTO_INDIVDUAL_TYPE_2]. <br />
+			[@ADMIN.HOWTO_INDIVDUAL_TYPE_3].
 		</span>
 	</div>
 	
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='typepersonne.php?delete=1&id=[#ID]'" />
+			<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='typepersonne.php?delete=1&id=[#ID]'" />
 		</IF>
 	</div>
 </form>
