@@ -32,11 +32,11 @@ function pub_edition (&$context,$critere)
     $result=mysql_query("SELECT ordre,meta,groupe,status FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
     if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits: sortie 1"); }
     list($ordre,$meta,$groupe,$status)=mysql_fetch_array($result);
-    if ($admin && $context[groupe]) $groupe=$context[groupe];
+    if ($admin && $context[groupe]) $groupe=intval($context[groupe]);
   } else { 
     // cherche le groupe et les droits
     if ($admin) { // on prend celui qu'on nous donne
-      $groupe=$context[groupe]; if (!$groupe) $groupe=1;
+      $groupe=intval($context[groupe]); if (!$groupe) $groupe=1;
     } elseif ($parent) { // on prend celui du parent
       $result=mysql_query("SELECT groupe FROM $GLOBALS[tableprefix]publications WHERE id='$parent' AND groupe IN ($usergroupes)") or die (mysql_error());
       if (!mysql_num_rows($result)) 	die("vous n'avez pas les droits: sortie 2");
