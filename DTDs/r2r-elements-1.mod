@@ -55,7 +55,8 @@
 <!ENTITY % r2r.texte.content
         "( #PCDATA | %Flow.mix; | %r2r.section1.qname; | %r2r.section2.qname;
         | %r2r.section3.qname; | %r2r.section4.qname;
-        | %r2r.titredoc.qname; | %r2r.legendedoc.qname; | %r2r.citation.qname; )*" >
+        | %r2r.titredoc.qname; | %r2r.legendedoc.qname; | %r2r.titreillustration.qname;
+        | %r2r.legendeillustration.qname; | %r2r.citation.qname; )*" >
 
 
 <!ELEMENT %r2r.texte.qname; %r2r.texte.content; >
@@ -77,6 +78,14 @@
 
 <!ENTITY % r2r.legendedoc.content "( #PCDATA | %Inline.mix;  )*">
 <!ELEMENT %r2r.legendedoc.qname; %r2r.legendedoc.content; >
+
+
+<!ENTITY % r2r.titreillustration.content "( #PCDATA | %Inline.mix;  )*">
+<!ELEMENT %r2r.titreillustration.qname; %r2r.titreillustration.content; >
+
+
+<!ENTITY % r2r.legendeillustration.content "( #PCDATA | %Inline.mix;  )*">
+<!ELEMENT %r2r.legendeillustration.qname; %r2r.legendeillustration.content; >
 
 
 <!ENTITY % r2r.citation.content "( #PCDATA | %Inline.mix;  )*">

@@ -63,6 +63,8 @@
 <!ENTITY % r2r.titredoc.qname "%r2r.pfx;titredoc" >
 <!ENTITY % r2r.legendedoc.qname "%r2r.pfx;legendedoc" >
 <!ENTITY % r2r.citation.qname "%r2r.pfx;citation" >
+<!ENTITY % r2r.titreillustration.qname "%r2r.pfx;titreillustration" >
+<!ENTITY % r2r.legendeillustration.qname "%r2r.pfx;legendeillustration" >
 
 
 <!-- Resume -->
