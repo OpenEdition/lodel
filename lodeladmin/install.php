@@ -46,7 +46,7 @@ header("Content-type: text/html; charset=iso-8859-1");
 // Version of lodel to be installed.
 //
 
-$versioninstall=0.7;
+$versioninstall="0.7";
 $versionsuffix="-$versioninstall";   # versioning
 
 if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
