@@ -122,7 +122,8 @@ ln tpl/documentannexe-lienexterne.html
 
 ln tpl/move.html
 ln publi.php
-ln status.php
+#removed by Jean Lamy - 2005-02-08
+#ln status.php
 
 ln filebrowser.php
 ln tpl/filebrowser.html
