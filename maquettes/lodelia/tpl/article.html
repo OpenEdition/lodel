@@ -243,24 +243,49 @@
 						<!-- Notes de bas de page. Si elles existent --->
 						<IF COND="[#NOTEBASPAGE]">
 							<div class="titre3">
-								Notes numériques:
+								Notes bas numériques:
 							</div>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("nombre"))]
 								<br />
 							</div>
 							<div class="titre3">
-								Notes littérales:
+								Notes bas littérales:
 							</div>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("lettre"))]
 								<br />
 							</div>
 							<div class="titre3">
-								Notes astérisques:
+								Notes bas astérisques:
 							</div>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("asterisque"))]
+								<br />
+							</div>
+
+						</IF>
+						<!-- Notes de fin. Si elles existent --->
+						<IF COND="[#NOTEFIN]">
+							<div class="titre3">
+								Notes fin numériques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEFIN|notes("nombre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes fin littérales:
+							</div>
+							<div class="notes"> 
+								[(#NOTEFIN|notes("lettre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes fin astérisques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEFIN|notes("asterisque"))]
 								<br />
 							</div>
 
