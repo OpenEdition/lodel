@@ -22,6 +22,8 @@ $lodelconfig="CACHE/lodelconfig-cfg.php";
 //
 $plateformdir=$root."lodel/install/plateform";
 
+$have_chmod=function_exists("chmod");
+
 if ($tache=="plateform") {
   $plateform=preg_replace("/[^A-Za-z_-]/","",$plateform);
   $lodelconfigplatform=$plateformdir."/lodelconfig-$plateform.php";
@@ -29,7 +31,7 @@ if ($tache=="plateform") {
   if (file_exists($lodelconfigplatform)) {
     // essai de copier ce fichier dans le CACHE
     if (!@copy($lodelconfigplatform,$lodelconfig)) { die ("problème de droits... étrange on a déjà vérifié"); }
-    if (fonction_exists("chmod")) @chmod($lodelconfig,0600); // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
+    if ($have_chmod) @chmod($lodelconfig,0600); // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
   } else {
     die("le fichier $lodelconfigplatform n'existe pas. Erreur interne.");
   }
@@ -72,7 +74,7 @@ if ($tache=="home") {
 	$erreur_copyscripts=1;
 	if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
 	return; }
-      @chmod($destfile,0640);
+      if ($have_chmod) @chmod($destfile,0640);
     }
     $erreur_includeincorrecte=1; // si plus loin ca plante ca peut venir du fait que l'include est incorrecte
   }
@@ -84,7 +86,7 @@ if ($tache=="home") {
 
 if ($tache=="mysql") {
   maj_lodelconfig(array("dbusername"=>$newdbusername,
-			"dbpasswd"=>$newdppasswd,
+			"dbpasswd"=>$newdbpasswd,
 			"dbhost"=>$newdbhost));
 }
 
@@ -93,9 +95,9 @@ if ($tache=="mysql") {
 //
 
 if ($tache=="database") {
-  $newmultidatabases=$newmultidatabases ? "oui" : "";
+  $newsingledatabase=$newsingledatabase ? "on" : "";
   maj_lodelconfig(array("database"=>$newdatabase ? $newdatabase : $createdatabase,
-			"multidatabases"=>$newmultidatabases,
+			"singledatabase"=>$newsingledatabase,
 			"tableprefix"=>$newtableprefix));
   if (!$newdatabase) { // il faut creer la database
     @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
@@ -133,8 +135,8 @@ $protecteddir=array("lodel/revue",
 		    "lodel/admin/tpl");
 
 if ($tache=="htaccess") {
-  if ($verify || $write) maj_lodelconfig("htaccess","oui");
-  if ($nohtaccess) maj_lodelconfig("htaccess","non");
+  if ($verify || $write) maj_lodelconfig("htaccess","on");
+  if ($nohtaccess) maj_lodelconfig("htaccess","off");
   if ($write) {
     foreach ($protecteddir as $dir) {
       if (file_exists($root.$dir) && !file_exists($root.$dir."/.htaccess")) {
@@ -181,7 +183,7 @@ if (function_exists("is_readable") && function_exists("is_writable") && function
     do { // block de control
       if ((mode($root.$file) & $mode)==$mode) break;
       // essaie de chmoder
-      if (function_exists("chmod") && @chmod ($file) && (mode($file) & $mode)==$mode) break;
+      if ($have_chmod && @chmod ($file) && (mode($file) & $mode)==$mode) break;
       if (!$entete) { probleme_droits_debut(); $entete=1; }
       probleme_droits($file,$mode);
     } while (0);
@@ -226,8 +228,8 @@ if (!$dbusername && !$dbhost) {
 
 // on cherche si on a une database
 
-if (!$database) {
-  // cherche les databases    
+if (!$database || !@mysql_query("SHOW TABLES")) {
+  // cherche les databases
   if (!($result=@mysql_query("SHOW DATABASES"))) { // probleme ?
     $erreur_connect=1;
     if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
@@ -303,7 +305,6 @@ while ($row=mysql_fetch_row($result)) {
 // ok, on a tout, on lance la copie
 $erreur_lodelconfigdir=array();
 $have_is_link=function_exists("is_link"); // fonction is_link existe ?
-$have_chmod=function_exists("chmod");     // fonction chmod existe ?
 foreach ($dirs as $dir) {
   $file=$dir."/lodelconfig.php";
   if (file_exists($root.$file) && $have_is_link && is_link($root.$file)) continue; // inutile de copie sur les links
@@ -346,19 +347,19 @@ function maj_lodelconfig($var,$val=-1)
   if (is_array($var)) {
     foreach ($var as $v =>$val) {
       if (!preg_match("/^\s*\\\$$v\s*=\s*\".*?\"/m",$text)) {	die ("la variable \$$v est introuvable dans le fichier de config.");      }
-      array_push($search,"/^(\s*\\\$$v\s*=\s*\").*?\"/m");
-      array_push($rpl,"\\1$val\"");
+      array_push($search,"/^(\s*\\\$$v\s*=\s*)\".*?\"/m");
+      array_push($rpl,'\\1"'.$val.'"');
     }
   } else {
       if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\"/m",$text)) {	die ("la variable \$$var est introuvable dans le fichier de config.");      }
-      array_push($search,"/^(\s*\\\$$var\s*=\s*\").*?\"/m");
-      array_push($rpl,"\\1$val\"");
+      array_push($search,"/^(\s*\\\$$var\s*=\s*)\".*?\"/m");
+      array_push($rpl,'\\1"'.$val.'"');
   }
   $newtext=preg_replace($search,$rpl,$text);
   if ($newtext==$text) return;
   // ecrit le fichier
   if (!(unlink($lodelconfig)) ) die ("Ne peut pas supprimer $lodelconfig. Erreur interne.");
-   return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && chmod ($lodelconfig,0640);
+   return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0640);
 }
 
 

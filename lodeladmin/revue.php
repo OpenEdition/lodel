@@ -253,6 +253,8 @@ calcul_page($context,"revue");
 function install_fichier($root,$homerevue,$homelodel)
 
 {
+  global $extensionscripts;
+
   $file="$root$homerevue/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
   if (!file_exists($file)) die("Fichier $file introuvable. Verifiez votre pactage");
   $lines=file ($file);
@@ -283,6 +285,9 @@ function install_fichier($root,$homerevue,$homelodel)
 	mkdir($arg1,octdec($arg2));
       }
     } elseif ($cmd=="ln") {
+      if ($dirdest=="." && 
+	  $extensionscripts=="html" &&
+	  $arg1!="lodelconfig.php") $dest1=preg_replace("/\.php$/",".html",$dest1);
       if (!file_exists($dest1)) {
 	$toroot=preg_replace(array("/^\.\//","/([^\/]+)\//","/[^\/]+$/"),
 			     array("","../",""),"$dirdest/$arg1");
@@ -290,6 +295,9 @@ function install_fichier($root,$homerevue,$homelodel)
 	slink("$toroot$dirsource/$arg1",$dest1);
       }
     } elseif ($cmd=="cp") {
+      if ($dirdest=="." && 
+	  $extensionscripts=="html" &&
+	  $arg1!="lodelconfig.php") $dest1=preg_replace("/\.php$/",".html",$dest1);
       mycopyrec("$root$dirsource/$arg1",$dest1);
     } elseif ($cmd=="touch") {
       if (!file_exists($dest1)) touch($dest1);
@@ -302,6 +310,7 @@ function install_fichier($root,$homerevue,$homelodel)
 
   return TRUE;
 }
+
 
 
 function htaccess ($dir) {

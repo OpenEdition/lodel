@@ -3,7 +3,7 @@
 require_once("lodelconfig.php"); // en general il est deja inclue
 
 mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die (mysql_error());
-if ($GLOBALS[revue] && $multidatabases) {
+if ($GLOBALS[revue] && $GLOBALS[singledatabase]!="on") {
   $GLOBALS[currentdb]=$GLOBALS[database]."_".$GLOBALS[revue];
 } else {
   $GLOBALS[currentdb]=$GLOBALS[database];

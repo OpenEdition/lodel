@@ -4,7 +4,7 @@
 Configuration de la base de donnée.<br>
 <p>
 Choississez une base de données ou créez en une nouvelle (si vous avez les droits).
-Cette base de donnée sera utilisée pour toutes les revues si vous ne cochez pas "Multiple base de données". Au contraire, si cette case est cochée, chaque revue aura une base de données propre (à condition d'avoir les droits pour les créer) dont le nom sera dérivé de la base de données principale. Le préfix des tables est surtout utile lorsque vous ne pouvez disposez que d'une base de données pour toutes vos applications (cas fréquent chez les hébérgeurs) dans ce cas le préfix permet de distinguer les tables LODEL de celles des autres applications (préfix a priori le mieux approprié: lodel_).
+Cette base de donnée sera utilisée pour toutes les revues si vous cochez la case "base de données unique". Au contraire, si cette case n'est pas cochée, chaque revue aura une base de données propre (à condition d'avoir les droits pour les créer) dont le nom sera dérivé de la base de données principale. Le préfix des tables est surtout utile lorsque vous ne pouvez disposez que d'une base de données pour toutes vos applications (cas fréquent chez les hébérgeurs) dans ce cas le préfix permet de distinguer les tables LODEL de celles des autres applications (préfix a priori le mieux approprié: lodel_).
 
 <p>
 
@@ -38,8 +38,8 @@ Base de données:<br>
 			</table>
 </td></tr>
 <tr><td>
-Bases de données séparées par revue<br>
-<input type="checkbox" name="newmultipledatabases" <? if ($mutlipledatabases) echo "checked"; ?>>
+Base de donnée unique:<br>
+<input type="checkbox" name="newsingledatabase" <? if ($singledatabase) echo "checked"; ?>>
 </td></tr>
 <tr><td>
 Préfix des tables:<br>

@@ -59,8 +59,11 @@ define (TYPE_MOTCLE_PERMANENT,3);
 define (TYPE_PERIODE,1);
 define (TYPE_GEOGRAPHIE,4);
 
-# Utilise pour lodellight essentiellement
+# Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
 $tableprefix="";
+
+# LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par revue. "on" ou "" (ou "off")
+$singledatabase="";
 
 # Nom de la session (cookie)
 $sessionname="session$database";

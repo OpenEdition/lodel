@@ -69,6 +69,7 @@ foreach (<FILE>) {
   $arg1=~s/\$homelodel/../g;
   $arg2=~s/\$homelodel/../g;
 
+  $filedest="$dirdest/$arg1";
   # quelle commande ?
   if ($cmd eq "dirsource") {
     $dirsource=$arg1;
@@ -77,17 +78,19 @@ foreach (<FILE>) {
   } elsif ($cmd eq "mkdir") {
     mkdir $arg1,oct($arg2);
   } elsif ($cmd eq "ln") {
-    $toroot="$dirdest/$arg1"; $toroot=~s/^\.\///g; 
+    $toroot=$filedest; $toroot=~s/^\.\///g; 
     $toroot=~s/([^\/]+)\//..\//g;
     $toroot=~s/[^\/]+$//;
 #    print STDERR "3 $dirdest $dirsource $toroot $arg1\n";
-    slink("$toroot$dirsource/$arg1","$dirdest/$arg1") unless -e "$dirdest/$arg1";
+    $filedest=~s/\.php$/.html/ if $dirdest eq ".";
+    slink("$toroot$dirsource/$arg1",$filedest) unless -e $filedest;
   } elsif ($cmd eq "cp") {
-    system ("cp -fr $dirsource/$arg1 $dirdest/$arg1") unless filemtime("$dirdest/$arg1")>filemtime(" $dirsource/$arg1");
+    $filedest=~s/\.php$/.html/ if $dirdest eq ".";
+    system ("cp -fr $dirsource/$arg1 $filedest") unless filemtime($filedest)>filemtime(" $dirsource/$arg1");
   } elsif ($cmd eq "touch") {
     system ("touch $dirdest/$arg1");
   } elsif ($cmd eq "htaccess") {
-    htaccess("$dirdest/$arg1") unless -e "$dirdest/$arg1";
+    htaccess($filedest) unless -e $filedest;
   } else {
     die ("command inconnue: \"$cmd\"");
   }

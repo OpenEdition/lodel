@@ -66,6 +66,7 @@ mkdir lodel/rtf 0770
 htaccess lodel/txt
 htaccess lodel/rtf
 
+dirsource $homerevue/lodel
 dirdestination lodel
 
 ln index.php
