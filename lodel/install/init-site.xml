@@ -1263,7 +1263,6 @@
 <column name="name"
         type="VARCHAR"
         size="255"
-        required="true"
         description="name"
         label="[@COMMON.NAME]" />
 <column name="contents"

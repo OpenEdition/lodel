@@ -43,7 +43,6 @@ class TextsLogic extends Logic {
      $this->Logic("texts");
    }
 
-
    /**
     * add/edit Action
     */
@@ -52,8 +51,8 @@ class TextsLogic extends Logic {
 
    {
      if ($context['id']) {
-     // normal edit
-     return Logic::editAction($context,$error);
+       // normal edit
+       return Logic::editAction($context,$error);
      }
      // mass edit
 
@@ -86,14 +85,19 @@ class TextsLogic extends Logic {
     * Function to create the text entry for all the languages
     */
 
-   function createTexts($name,$textgroup)
+   function createTexts($name,$textgroup="")
 
    {
      global $db;
 
+     if ($textgroup=="" && is_numeric($name)) {
+       $criteria="#_TP_texts.id='".$name."'";
+     } else {
+       $criteria="name='".$name."' AND textgroup='".$textgroup."'";
+     }
      if ($textgroup!="site") usemaindb();
 
-     $result=$db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND name='".$name."' AND textgroup='".$textgroup."' WHERE #_TP_texts.lang is NULL")) or dberror();
+     $result=$db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND ".$criteria." WHERE #_TP_texts.lang is NULL")) or dberror();
      $dao=$this->_getMainTableDAO();
 
      while (!$result->EOF) {
@@ -121,7 +125,12 @@ class TextsLogic extends Logic {
    function _saveRelatedTables($vo,$context) 
 
    {
-     $this->createTexts($vo->name,$vo->textgroup);   }
+     if ($vo->id) {
+       $this->createTexts($vo->id);
+     } else {
+       $this->createTexts($vo->name,$vo->textgroup);   
+     }
+   }
 
    function _deleteRelatedTables($id) {
      // reinitialise le cache surement.
@@ -137,10 +146,8 @@ class TextsLogic extends Logic {
              }
    // end{publicfields} automatic generation  //
 
-   // begin{uniquefields} automatic generation  //
 
-    function _uniqueFields() {  return array(array("name","lang","textgroup"),);  }
-   // end{uniquefields} automatic generation  //
+    function _uniqueFields() {  return array();  }
 
 
 } // class 
