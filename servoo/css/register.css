@@ -103,7 +103,7 @@ form.install{
 	top: 0;
 }
 #install{
-	background-image: url(../../lodeladmin/images/install_fleche_cercle.png);
+	background-image: url(../images/install_fleche_cercle.png);
 	background-repeat: no-repeat;
 	background-position: left middle;
 	position: absolute;
@@ -115,7 +115,7 @@ form.install{
 	height: 39px;
 }
 #bandeau{
-	background-image: url(../../lodeladmin/images/install_bandeau_bas.jpg);
+	background-image: url(../images/install_bandeau_bas.jpg);
 	background-repeat: repeat-x;
 	height: 63px;
 	width: 100%;
@@ -125,7 +125,7 @@ form.install{
 	top: 100px;
 }
 #bandeau h3{
-	background-image: url(../../lodeladmin/images/install_fleche_or.png);
+	background-image: url(../images/install_fleche_or.png);
 	background-repeat: no-repeat;
 	background-position: top left;
 	padding-left: 55px;
