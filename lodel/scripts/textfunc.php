@@ -349,10 +349,15 @@ function multilingue($lang,$text)
 }
 
 
-function makeurl ($rep)
+function makeurl ()
 {
-if ($GLOBALS[siteagauche]) return "http://$rep.revues.org";
-return "/$rep";
+  global $site;
+  // very bad function. Must be rewrite !
+  $server=$_SERVER['SERVER_NAME'];
+  if (!$server) $server=$GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'];
+  $server="http://".$server;
+  if ($GLOBALS[siteagauche]) return $server;
+  return $server."/$site";
 }
 
 
