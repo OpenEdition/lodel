@@ -721,9 +721,6 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
     }
 
-    require($home."objetfunc.php");
-    makeobjetstable();
-
     // fini, faire quelque chose
   } while(0);
 }
