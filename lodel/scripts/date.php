@@ -105,13 +105,21 @@ function mysqldatetime($s,$type="datetime")
   $s=trim(stripslashes($s));
   if (!$s) return "";
 
-  if ($s=="aujourd'hui" || $s=="today" || $s=="maintenant") {
+  if ($s=="aujourd'hui" || $s=="today" || $s=="maintenant" || $s=="now") {
     $timestamp=time();
+  } elseif ($s=="hier" || $s=="yesterday") {
+    $arr=localtime(time(),1);
+    $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
+		       $arr['tm_mon']+1,$arr['tm_mday']-1,1900+$arr['tm_year']);
 
-  } elseif (preg_match("/^\s*dans\s+(\d+)\s*(an|mois|jour|heure|minute)s?\s*$/i",$s,$result)) {
-    $val=$result[1];
-    $arr=localtime();
-    switch ($result[2]) {
+  } elseif ($s=="demain" || $s=="tomorrow") {
+    $arr=localtime(time(),1);
+    $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
+		       $arr['tm_mon']+1,$arr['tm_mday']+1,1900+$arr['tm_year']);
+  } elseif (preg_match("/^\s*(dans|il y a)\s+(\d+)\s*(an|mois|jour|heure|minute)s?\s*$/i",$s,$result)) {
+    $val=$result[1]=="dans" ? $result[2] : -$result[2];
+    $arr=localtime(time(),1);
+    switch ($result[3]) {
     case "an" :
       $arr['tm_year']+=$val;
       break;
