@@ -617,7 +617,7 @@ function wiki($text)
 }
 
 
-/*
+/**
  * Remove space for xml elements
  *
 */
@@ -626,7 +626,7 @@ function removespace($text) {
   return str_replace(" ","",$text);
 }
 
-/*
+/**
  * Bootstrap pour sprintf 
  * affiche l'argument selon le format
  */
@@ -635,6 +635,18 @@ function format($text,$format)
 
 {
   return sprintf($format,$text);
+}
+
+/**
+  * Detect if the document is HTML
+  * Bad heursitic
+  */
+
+
+function ishtml($text)
+
+{
+  return preg_match("/<p|br|span|ul|li|dl|strong|em\b[^><]*>/",$text);
 }
 
 ?>
