@@ -58,7 +58,7 @@
 					   rel="alternate" 
 					   type="text/html" 
 					   href="[(#CURRENTURL|dirname)]/[(#IDENTITE|makeurlwithid('document'))]"
-					   title="[(#TITRE|removefootnotes|textebrut)]" />
+					   title="[(#TITRE|removefootnotes|textebrut|htmlspecialchars)]" />
 					<id>[(#CURRENTURL|dirname)]/[(#IDENTITE|makeurlwithid('document'))]</id>
 					<modified>[#DATEPUBLI]T00:00:00Z</modified>
     				<issued>[#DATEPUBLI]T00:00:00Z</issued>
