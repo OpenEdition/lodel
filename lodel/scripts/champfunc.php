@@ -335,7 +335,7 @@ function reservedword($nom) {
 	  "STATUT",
 	  "DROITVISITEUR",
 	  "DROITREDACTEUR",
-	  "DROITEDITEUR"
+	  "DROITEDITEUR",
 	  "DROITADMIN",
 	  "DROITADMINLODEL"
 	  );
