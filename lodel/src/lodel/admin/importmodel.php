@@ -197,7 +197,7 @@ function reinitobjetstable()
 
   foreach ($conv as $maintable=>$changes) {
     $result=$db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
-    echo "$maintable...\n";
+    #echo "$maintable...\n";
     while ( ($id=$result->fields['id']) ) {
       #echo "$maintable...$id<br />\n";
       $newid=uniqueid($maintable);
