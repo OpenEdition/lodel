@@ -1,6 +1,7 @@
 <?
 
-include_once("$home/func.php");
+require_once("$home/func.php");
+require_once("$home/parserextra.php");
 
 
 function parse ($in,$out)
@@ -74,10 +75,9 @@ function parse_variable (&$text,$escape=TRUE)
 # parse les filtres
     if (preg_match("/^#($balise_regexp)((?:\|$filtre_regexp)*)$/",$expr,$subresult)) {
       $block=$subresult[0];
-      #### VARIABLE SPECIALES
-      if ($subresult[1]=="OFFLINE") {
-	$variable="(\$context[status]<0)";
-      } else { # cas general
+
+      $variable=parse_variable_extra($subresult[1]); // traitement particulier ?
+      if ($variable===FALSE) { // non, traitement normal
 	$variable="\$context[".strtolower($subresult[1])."]";
       }
       foreach(explode("|",$subresult[2]) as $fct) {
@@ -109,12 +109,10 @@ function parse_variable (&$text,$escape=TRUE)
   }
 # remplace les variables restantes
   while (preg_match("/\[\#($balise_regexp)(:$lang_regexp)?\]/",$text,$result)) {
-    ###### VARIABLES SPECIALS
-    if ($result[1]=="OFFLINE") {
-      $variable=$pre.'($context[status]<0)'.$post;
-    } elseif ($result[1]=="OKGROUPE") {
-      $variable=$pre.'($GLOBALS[admin] || in_array($context[groupe],split(",",$GLOBALS[usergroupes])))'.$post;
-    } else {
+    $variable=parse_variable_extra($result[1]); // traitement particulier ?
+    if ($variable!==FALSE) { // traitement particulier
+      $variable=$pre.$variable.$post;
+    } else { // non traitement normal
       if ($result[2]) $result[1].="_LANG".substr($result[2],1);
       $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
       }
@@ -122,6 +120,12 @@ function parse_variable (&$text,$escape=TRUE)
   }
 }
 
+
+
+//
+// cette fonction contient des specificites a Lodel.
+// il faut voir si on decide que les minitexte font partie de lodelscript ou de lodel.
+//
 
 function parse_texte(&$text)
 
@@ -204,7 +208,7 @@ function parse_cond (&$text,$offset=0) {
 
 
 
-##### traite les conditions avec IF
+##### traite les conditions avec SWITCH
 ####function parse_switch (&$text,$offset=0) {
 ####
 ####  $tag_debut="<SWITCH ";
@@ -266,7 +270,7 @@ function parse_cond (&$text,$offset=0) {
 function parse_boucle (&$text,&$fct_txt,$offset=0) 
 
 {
-  global $revue,$boucles;
+  static $boucles;
 
   $tag_debut="<LOOP ";
   $tag_fin="</LOOP>";
@@ -294,11 +298,7 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
           
       switch ($result[1]) {
       case "WHERE" :
-	$cond=$value;
-	if (strtolower($cond)=="trash") $cond="status<=0";
-	if (strtolower($cond)=="ok") $cond="status>0";
-	if (strtolower($cond)=="okgroupe") $cond='".($GLOBALS[admin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."';
-	array_push($wheres,"(".$cond.")");
+	array_push($wheres,"(".trim($value).")");
 	break;
       case "TABLE" :
 	array_push($tables,$value);
@@ -327,115 +327,19 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 
     $where=prefix_tablename(join(" AND ",$wheres));
 
-    // verifie le status
-    if (!preg_match("/\bstatus\b/i",$where)) { // test que l'element n'est pas a la poubelle
-      $teststatus=array();
-      if ($where) array_push($teststatus,$where);
-      foreach ($tables as $table) {
-	if ($table=="session") continue;
-	if ($table=="documents" || $table=="publications") {
-	  $lowstatus='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tableprefix].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
-	} else {
-	  $lowstatus="-64";
-	}
-	array_push($teststatus,"($GLOBALS[tableprefix]$table.status>\".(\$GLOBALS[visiteur] ? $lowstatus : \"0\").\")");
-      }
-      $where=join(" AND ",$teststatus);
+    //
+    // traitement specifique
+    parse_boucle_extra(&$tables,&$where);
+    //
+
+    if ($where) {
+      parse_variable($where,FALSE);
+      $where="WHERE ".$where;
     }
-    $where="WHERE ".$where;
 
-#ifndef LODELLIGHT
-    if ($revue) {
-#endif
-      ///////// CODE SPECIFIQUE -- gere les tables croisees
-      if (in_array("taches",$tables) && in_array("publications",$tables)) $where.=" AND publication=r2r_publications.id";
-
-      if (in_array("documents",$tables) && in_array("publications",$tables)) {
-	$where.=" AND publication=$GLOBALS[tableprefix]publications.id";
-      }
-
-#ifndef LODELLIGHT
-      if (in_array("documentsannexes",$tables)) {
-	$where=preg_replace(array("/\btype_lienfichier\b/i",
-				  "/\btype_liendocument\b/i",
-				  "/\btype_lienpublication\b/i",
-				  "/\btype_lienexterne\b/i",
-				  "/\btype_lieninterne\b/i"),
-			    array("type='".TYPE_LIENFICHIER."'",
-				  "type='".TYPE_LIENDOCUMENT."'",
-				  "type='".TYPE_LIENPUBLICATION."'",
-				  "type='".TYPE_LIENEXTERNE."'",
-				  "(type='".TYPE_LIENDOCUMENT."' OR type='".TYPE_LIENPUBLICATION."')"),
-			    $where);
-      }
-
-      // auteurs
-     if (in_array("auteurs",$tables) && strpos($where,"iddocument")!==FALSE) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_auteurs");
-	$where.=" AND idauteur=auteurs.id";
-      }
-      if (in_array("documents",$tables) && strpos($where,"idauteur")!==FALSE) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_auteurs");
-	$where.=" AND iddocument=documents.id";
-      }
-
-      // indexhs
-      if (in_array("indexhs",$tables) && strpos($where,"iddocument")!==FALSE) {
-	// on a besoin de la table croise documents_indexhs
-	array_push($tables,"documents_indexhs");
-	$where.=" AND idindexh=indexhs.id";
-      }
-
-      if (in_array("documents",$tables) && strpos($where,"idindexh")!==FALSE) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_indexhs");
-	$where.=" AND iddocument=documents.id";
-      }
-      if (in_array("indexhs",$tables)) {
-	$where=preg_replace(array("/type_periode/i","/type_geographie/i"),
-			    array("type='".TYPE_PERIODE."'","type='".TYPE_GEOGRAPHIE."'"),
-			    $where);
-      }
-#endif
-
-      if (in_array("indexls",$tables) && strpos($where,"iddocument")!==FALSE) {
-	// on a besoin de la table croise documents_indexls
-	array_push($tables,"documents_indexls");
-	$where.=" AND idindexl=$GLOBALS[tableprefix]indexls.id";
-      }
-      if (in_array("documents",$tables) && strpos($where,"idindexl")!==FALSE) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_indexls");
-	$where.=" AND iddocument=$GLOBALS[tableprefix]documents.id";
-      }
-      if (in_array("groupes",$tables) && strpos($where,"iduser")!==FALSE) {
-	// on a besoin de la table croise users_groupes
-	array_push($tables,"users_groupes");
-	$where.=" AND idgroupe=$GLOBALS[tableprefix]groupes.id";
-      }
-      if (in_array("indexls",$tables)) {
-	$where=preg_replace(array("/\btype_motcle_permanent\b/i",
-				  "/\btype_motcle\b/i",
-				  "/\btype_tous_motcles\b/i"),
-			    array("type='".TYPE_MOTCLE_PERMANENT."'",
-				  "type='".TYPE_MOTCLE."'",
-				  "(type='".TYPE_MOTCLE_PERMANENT."' OR type='".TYPE_MOTCLE."')"),
-			    $where);
-      }
-      if (in_array("users",$tables) && in_array("session",$tables)) {
-	$where.=" AND iduser=$GLOBALS[tableprefix]users.id";
-      }
-#ifndef LODELLIGHT
-    } // revue
-#endif
-    /////////
-
-    if ($order) { $order="ORDER BY ".substr(prefix_tablename($order),0,-3); } // enelve le , a la fin
+    if ($order) $order="ORDER BY ".substr(prefix_tablename($order),0,-3); // enelve le , a la fin (pas propre, faire un tableau)
     if ($limit) { parse_variable($limit,FALSE); $limit="LIMIT ".$limit; }
 
-    if ($where) parse_variable($where,FALSE);
 
     if (!$nom) {
       srand ((double) microtime() * 1000000);
@@ -445,31 +349,16 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
     if (!$boucles[$nom][type]) $boucles[$nom][type]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
     $issql=$boucles[$nom][type]=="sql";
 
-    ////// c'est inutile de faire une boucle, il faut juste faire un passage, la boucle est dans parse_boucle.
-    # ici attr contient la fin du fichier.
-    # on cherche s'il y a des boucles interieures
-#    do {
-## cherche le tag de fin
-#      $fin = strpos($text,$tag_fin,$offset);
-#      if ($fin===FALSE) { die ("erreur: la boucle ne se termine pas"); }
-## cherche s'il y a une deuxieme boucle a l'interieur
-#      $debut2=strpos($text,$tag_debut,$offset);
-#      $sndbcl=!($debut2===FALSE) && $debut2<$fin;
-#      if ($sndbcl)	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
-#    } while($sndbcl);
-#
-#
-
-
 # cherche le tag de fin
       $fin = strpos($text,$tag_fin,$offset);
-      if ($fin===FALSE) { die ("erreur: la boucle ne se termine pas"); }
+      if ($fin===FALSE) die ("erreur: la boucle ne se termine pas");
 # cherche s'il y a une deuxieme boucle a l'interieur
       $debut2=strpos($text,$tag_debut,$offset);
       $sndbcl=!($debut2===FALSE) && $debut2<$fin;
       if ($sndbcl) {
 	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
 	$fin = strpos($text,$tag_fin,$offset);
+	if ($fin===FALSE) die ("erreur: la boucle ne se termine pas (2)");
       }
     # content
     $attr=substr($text,$offset,$fin-$offset);
@@ -502,23 +391,6 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
     $debut = strpos($text,$tag_debut,$debut);
   } // while
 }
-
-
-function prefix_tablename ($tablename)
-
-{
-#ifndef LODELLIGHT
-  return $tablename;
-#else
-#  preg_match_all("/\b(\w+)\./",$tablename,$result);
-#  foreach ($result[1] as $tbl) {
-#    $tablename=preg_replace ("/\b$tbl\./",$GLOBALS[tableprefix].$tbl.".",$tablename);
-#  }
-#  //  echo $tablename,"<br>";
-#  return $tablename;
-#endif
-}
-    
 
 
 
@@ -556,48 +428,12 @@ function decode_content ($content,$tables=array())
     if (strpos($ret[$balise],"[#META_")!==FALSE || strpos($ret[$balise],"[(#META_")!==FALSE)  {
       $ret["META_".$balise]='$context=array_merge($context,unserialize($context[meta]));';
     }
-    //
-    // est-ce qu'on veut le texte ?
-    //
+
 #ifndef LODELLIGHT
-    if (in_array("documents",$tables)) {
-      include_once("$home/balises.php");
-
-      # as-t-on besoin des balises liees au texte ?
-      if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_lieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER)) {
-	$withtextebalises='"'.join('","',$result[1]).'"';
-      } else {
-	$withtextebalises="";
-      }
-
-      # as-t-on besoin de balises non liees au texte
-      if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_nonlieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
-	$ret["EXTRACT_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
-if (file_exists($filename)) {
-include_once ("$GLOBALS[home]/xmlfunc.php");
-$text=join("",file($filename));
-$arr=array("'.join('","',$result[1]).'");';
-	if ($withtextebalises) { // on a aussi besoin des balises liees au texte
-	  $ret["EXTRACT_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
-	}
-	$ret["EXTRACT_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
-      } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
-	$ret["EXTRACT_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
-$filename="lodel/txt/r2r-$context[id].xml";
-if (file_exists($filename)) {
-include_once ("$GLOBALS[home]/xmlfunc.php");
-$text=join("",file($filename));
-$context=array_merge($context,extract_xml('.$withtextbalises.',$text));
-}}';
-      }
-    } // table documents ?
+    // partie privee et specifique pour le decodage du contenu.
+    decode_content_extra ($balise, &$ret, $tables);
 #endif
-    //
-    // est-ce qu'on veut le prev et next publication ?
-    //
-    if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
-      $ret["EXTRACT_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
-    }
+
   } // foreach
   return $ret;
 }
@@ -607,24 +443,10 @@ $context=array_merge($context,extract_xml('.$withtextbalises.',$text));
 function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
 
 {
-#ifndef LODELLIGHT
-  if (in_array("revue",$tables) || in_array("session",$tables)) {
-    $mysqlquery='mysql_db_query($GLOBALS[database],';
-    $postquery='mysql_select_db($GLOBALS[currentdb]);';
-  } else {
-    $mysqlquery='mysql_query(';
-  }
-
-  // traitement particulier
-  if (in_array("documents",$tables)) {
-    $extrafield=",(datepubli<=NOW()) as textepublie";
-  }
-#else
-#    $mysqlquery='mysql_query(';
-#endif
+  // traitement particulier additionnel
+  list ($premysqlquery,$postmysqlquery,$extrafield)=make_boucle_code_extra($tables);
 
   $table=$GLOBALS[tableprefix].join (', $GLOBALS[tableprefix]',array_reverse(array_unique($tables)));
-
 
 
   $contents=decode_content($content,$tables);
@@ -632,8 +454,8 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
   $fct_txt.='function boucle_'.$nom.' ($context)
 {
  $generalcontext=$context;
- $result='.$mysqlquery.'"SELECT *'.$extrafield.' FROM '."$table $where $order $limit".'") or die (mysql_error());
-'.$postquery.'
+ $result='.$premysqlquery.' mysql_query("SELECT *'.$extrafield.' FROM '."$table $where $order $limit".'") or die (mysql_error());
+'.$postmysqlquery.'
  $nbrows=mysql_num_rows($result);
  $count=0;
  if ($row=mysql_fetch_assoc($result)) {
@@ -679,11 +501,6 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
   if ($contents[AFTER]) {// genere le code de apres
   $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[AFTER].'<? }';
  }
-
-//
-//  if ($contents[sinon]) {// genere le code de sinon
-//  $fct_txt.='function code_sinon_'.$nom.' ($context) { ?'.'>'.$contents[sinon].'<'.'? }';
-// }
 }
 
 
