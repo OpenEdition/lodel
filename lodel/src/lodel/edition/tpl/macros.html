@@ -657,6 +657,37 @@
 	</IF>
 </DEFMACRO>
 
+<!-- macro ajoutee par Ghislain 30/11/03 -->
+<!-- a modifier en particulier la class du div... -->
+
+<DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
+	<LET VAR="idparentsaved">[#ID]</LET>
+	<LOOP NAME="entites_de_type_valide" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="ordre">
+		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
+</DEFMACRO>
+
+<!-- macro ajoutee par Ghislain 30/11/03 -->
+<!-- a modifier en particulier la class du div... -->
+<!-- cette macro n'est pas directement utile pour Revues.org -->
+<DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
+	<LET VAR="idparentsaved">[#ID]</LET>
+	<LOOP NAME="entites_de_type_valide" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="ordre">
+		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="document.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
+</DEFMACRO>
+
+<!-- inutile
 <DEFMACRO NAME="AJOUTER_UNE_SERIE">
 	<LOOP NAME="entites_de_type_serie" TABLE="types" WHERE="tplcreation='creation-serie'">
 		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
@@ -667,6 +698,8 @@
 		<AFTER></div></AFTER>
 	</LOOP>
 </DEFMACRO>
+
+
 
 <DEFMACRO NAME="AJOUTER_UN_NUMERO">
 	<LET VAR="idduparent">[#ID]</LET>
@@ -704,6 +737,8 @@
 	</LOOP>
 </DEFMACRO>
 
+fin du inutil -->
+
 <DEFMACRO NAME="AJOUTER_UN_REGROUPEMENT">
 	<LET VAR="idduparent">[#ID]</LET>
 	<LOOP NAME="entites_de_type_regroupement" TABLE="types" WHERE="tplcreation='creation-regroupement'">
@@ -715,6 +750,8 @@
 		<AFTER></div></AFTER>
 	</LOOP>
 </DEFMACRO>
+
+
 
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
 	<div class="ligne_ajouter">

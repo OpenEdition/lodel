@@ -4,6 +4,7 @@ function typetypes_delete($critere)
 {
   mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typeentrees WHERE $critere") or die (mysql_error());
   mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typepersonnes WHERE $critere") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typeentites WHERE $critere") or die (mysql_error());
 }
 
 function typetype_delete($typetable,$critere)
@@ -29,7 +30,9 @@ function typetype_insert($idtypeentite,$idtypetable,$typetable)
       array_push($values,"('$idtype','$idtypetable','*')");
     }
   }
-  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$typetable."s (idtypeentite,id$typetable,condition) VALUES ".join(",",$values)) or die(mysql_error());
+  $table=$typetable!="typeentite2" ? $typetable : "typeentite";
+
+  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$table."s (idtypeentite,id$typetable,condition) VALUES ".join(",",$values)) or die(mysql_error());
 }
 
 
@@ -42,7 +45,7 @@ function typetype_insert($idtypeentite,$idtypetable,$typetable)
 function loop_typetable ($listtype,$criteretype,$context,$funcname)
 
 {
-  if ($listtype=="typeentite") {
+  if ($listtype=="typeentite" || $listtype=="typeentite2") {
     $maintable="types";
     $ordre="classe,type";
     $relationtable=$criteretype;
@@ -51,6 +54,7 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname)
     $relationtable=$listtype;
     $ordre="type";
   }
+  #if ($relationtable=="typeentite2") $relationtable="typeentite";
 
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]$maintable LEFT JOIN $GLOBALS[tp]typeentites_".$relationtable."s ON id$listtype=$GLOBALS[tp]$maintable.id AND id$criteretype='$context[id]' WHERE statut>0 ORDER BY $ordre") or die(mysql_error());
 

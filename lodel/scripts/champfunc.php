@@ -39,6 +39,20 @@ $GLOBALS[sqltype]=array("tinytext"=>"tinytext",
 			"longtext"=>"longtext",
 			);
 
+# fields for whom the strip_tags is applied automatically.
+
+$GLOBALS[type_autostriptags]=array("image",
+			      "fichier",
+			      "url",
+			      "date",
+			      "datetime",
+			      "time",
+			      "int",
+			      "boolean",
+			      "number",
+			      "lang",
+			      );
+
 
 // le style doit etre parfaitement valide
 function decode_mlstyle($style)

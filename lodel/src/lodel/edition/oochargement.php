@@ -24,7 +24,11 @@ if ($file1 && $file1!="none") {
     $t=time();
     $file1converted=$file1.".converted";
     $ret=convert($file1,$file1converted);
-    unlink($file1);
+    $source=$file1."-source";
+    move_uploaded_file($file1,$source);
+    $sourceoriginale=$HTTP_POST_FILES['file1']['name'];
+
+
     if ($ret) {
       $context[erreur_upload]=utf8_encode("Erreur renvoyée par le serveur OO: \"$ret\"");
       break;
@@ -47,7 +51,7 @@ if ($file1 && $file1!="none") {
     //
     //
 
-    include_once($home."balises.php");
+    require_once($home."balises.php");
     if ($sortieoo || $sortiexmloo || $sortie) $oo=TRUE;
     
     $newname=OO($file1converted,$context);
@@ -58,8 +62,13 @@ if ($file1 && $file1!="none") {
     if ($idtache) { // document ancien ?
       $row=get_tache($idtache);
       $row[fichier]=$newname;
+      $row[source]=$source;
+      $row[sourceoriginale]=$sourceoriginale;
     } else {
-      $row=array("fichier"=>$newname);
+      $row=array("fichier"=>$newname,
+		 "source"=>$source,
+		 "sourceoriginale"=>$sourceoriginale);
+
       if ($context[iddocument]) {
 	$row[iddocument]=$context[iddocument];
       } elseif ($context[idparent]) {

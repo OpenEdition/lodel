@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	type		VARCHAR(64) NOT NULL UNIQUE,
+	type		VARCHAR(64) NOT NULL,
 	titre		TINYTEXT NOT NULL,
 
 	classe		VARCHAR(64) NOT NULL,   # nom de la table complementaire
@@ -300,22 +300,31 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
 	KEY index_identite (identite)
 );
 
+# table qui decrit la possibilite de presence ou non de l'entite de type 1 dans l'entite de type 2.
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
+	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
+	idtypeentite2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
+	condition		VARCHAR(16),
+
+	KEY index_idtypeentite (idtypeentite),
+	KEY index_idtypeentite2 (idtypeentite2)
+);
 
 
-# table qui decrive la presence ou non d'un type d'entree dans un type d'entite
+# table qui decrit la presence ou non d'un type d'entree dans un type d'entite
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
-	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
 	condition		VARCHAR(16),
 
 	KEY index_idtypeentree (idtypeentree),
 	KEY index_idtypeentite (idtypeentite)
 );
 
-# table qui decrive la presence ou non d'un type d'personne dans un type d'entite
+# table qui decrit la presence ou non d'un type d'personne dans un type d'entite
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
-	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
 	condition		VARCHAR(16),
 
 	KEY index_idtypepersonne (idtypepersonne),

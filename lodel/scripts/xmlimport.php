@@ -16,7 +16,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
   $localcontext=$context;
   //xml_parse_into_struct_ns($text,&$vals,&$index);
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,style,type,traitement FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,style,type,traitement FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 AND style!=''") or die (mysql_error());
 
   $sets=array();
   while (list($nom,$style,$type,$traitement)=mysql_fetch_row($result)) {
@@ -38,7 +38,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	// type speciaux
 	if ($type=="date") { // date
 	  require_once($home."date.php");
-	  $value=mysqldate($value);
+	  $value=mysqldate(strip_tags($value));
 	}
 
 	if ($traitement) { // processing ?

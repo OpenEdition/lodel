@@ -407,7 +407,7 @@ function parse_loop()
 	$limit=$value;
 	break;
       case "SELECT" :
-	$select=$value;
+	$select=",".$value;
 	break;
       case "REQUIRE":
 	break;
@@ -438,7 +438,7 @@ function parse_loop()
 
   //
   $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
-  $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
+  $extrainselect=$select; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
   $groupby="";
 
   if (!$where) $where="1";
@@ -671,9 +671,12 @@ function make_loop_code ($name,$tables,
   // select
   if (!$contents[select]) {
 #    echo "loop: $name $ind=",$this->ind,"<br>\n";
-    $this->errmsg("no variable is used in the loop $name. Is this loop really useful ?",$this->ind);
+#    $this->errmsg("no variable is used in the loop $name. Is this loop really useful ?",$this->ind);
   }
-  $select=$contents[select].$extrainselect; // optimised
+  #echo "$contents[select] : $extrainselect<br />";
+  $select=$contents[select];
+  if (!$select) $select="1";
+  $select.=$extrainselect;
 
   // fetch_assoc_func
   if (!$contents[fetch_assoc_func]) $contents[fetch_assoc_func]="mysql_fetch_assoc";

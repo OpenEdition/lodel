@@ -29,9 +29,23 @@ if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
-  treattrash("typepersonnes",$critere);
-  return;
+  do { // block d'exception
+    include_once ($home."connect.php");
+    lock_write("typeentites_typepersonnes","typepersonnes","entites_personnes","personnes");
+
+    // check the type can be deleted.
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]personnes,$GLOBALS[tp]entites_personnes WHERE idpersonne=id AND idtype='$id' AND statut>-64 GROUP BY id") or die (mysql_error());
+    $count=mysql_num_rows($result);
+    if ($count) { $context[erreur_personnes_existent]=$count; unlock(); break; }
+
+    // delete in the joined table
+    mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typepersonnes WHERE idtypepersonne='$id'") or die (mysql_error());
+
+    $delete=2;
+    include ($home."trash.php");
+    treattrash("typepersonnes",$critere,TRUE);
+    return;
+  } while(0);
 }
 
 require($home."typetypefunc.php");
@@ -49,9 +63,9 @@ if ($edit) { // modifie ou ajoute
     if (!$context[tpl]) $err=$context[erreur_tpl]=1;
     if (!$context[tplindex]) $err=$context[erreur_tplindex]=1;
     if (!$context[titre]) $err=$context[erreur_titre]=1;
-    if (!$context[style] || !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
-    if (!$context[titredescription]) $err=$context[erreur_titredescription]=1;
-    if (!$context[styledescription] || !preg_match("/^[a-zA-Z0-9]*$/",$context[styledescription])) $err=$context[erreur_styledescription]=1;
+    if ($context[style] && !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
+    #if (!$context[titredescription]) $err=$context[erreur_titredescription]=1;
+    if ($context[styledescription] && !preg_match("/^[a-zA-Z0-9]*$/",$context[styledescription])) $err=$context[erreur_styledescription]=1;
     if ($err) break;
 
     include_once ($home."connect.php");

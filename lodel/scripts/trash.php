@@ -9,7 +9,7 @@ function deletetotrash($table,$critere)
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
   include_once ($home."connect.php");
-  mysql_query("UPDATE $GLOBALS[tp]$table SET statut=-abs(statut) WHERE $critere") or die("erreur UPDATE");
+  mysql_query("UPDATE $GLOBALS[tp]$table SET statut=-abs(statut) WHERE $critere") or die(mysql_error());
   return mysql_affected_rows()>0;
 }
 
@@ -19,7 +19,7 @@ function restorefromtrash($table,$critere)
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
   include_once ($home."connect.php");
-  mysql_query("UPDATE $GLOBALS[tp]$table SET statut=abs(statut) WHERE $critere") or die("erreur UPDATE");
+  mysql_query("UPDATE $GLOBALS[tp]$table SET statut=abs(statut) WHERE $critere") or die(mysql_error());
   return mysql_affected_rows()>0;
 }
 
@@ -33,7 +33,7 @@ function delete($table,$critere)
   return mysql_affected_rows()>0;
 }
 
-function treattrash ($table,$critere="")
+function treattrash ($table,$critere="",$lock=FALSE)
 
 {
   global $home,$delete,$restore,$id,$url_retour;
@@ -43,14 +43,18 @@ function treattrash ($table,$critere="")
   if ($delete) {
     if ($delete<2) { 
       if (!deletetotrash($table,$critere)) { die ("entite introuvable"); @Header("Location: not-found.html"); exit(); }
-      include_once($home."func.php"); back();
+      include_once($home."func.php");
+      if ($lock) unlock();
+      back();
     }
     //
     // destruction complete
     //
     if ($delete>=2) { 
       if (!delete($table,$critere)) { die ("entite introuvable");@Header("Location: not-found.html"); exit(); }
-      include_once($home."func.php"); back();
+      include_once($home."func.php");
+      if ($lock) unlock();
+      back();
     }
   }
 //
@@ -58,7 +62,9 @@ function treattrash ($table,$critere="")
 //
   if ($restore) { 
       if (!restorefromtrash($table,$critere)) { die ("entite introuvable");@Header("Location: not-found.html"); exit(); }
-      include_once($home."func.php"); back();
+      include_once($home."func.php"); 
+      if ($lock) unlock();
+      back();
   }
 
  return 0; 

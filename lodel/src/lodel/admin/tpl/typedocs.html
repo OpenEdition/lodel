@@ -35,7 +35,15 @@
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
 							|&nbsp;<a href="typedoc.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+<LOOP NAME="typeutilise2" TABLE="entites" WHERE="idtype='[#ID]'" SELECT="count(*) as nbdocuments">
+<DO>
+<span class="inactif">Associé à [#NBDOCUMENTS] documents</span>
+</DO>
+<ALTERNATIVE>
+<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
+</ALTERNATIVE>
+</LOOP>
+
 						</div>
 					</td>
 				<ELSE/>
@@ -45,7 +53,16 @@
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>
 							|&nbsp;<a href="typedoc.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+
+<LOOP NAME="typeutilise" TABLE="entites" WHERE="idtype='[#ID]'" LIMIT="0,1">
+<DO>
+<span class="inactif">Supprimer</span>
+</DO>
+<ALTERNATIVE>
+<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
+</ALTERNATIVE>
+</LOOP>
+
 						</div>
 					</td>
 				</IF>

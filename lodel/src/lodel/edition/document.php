@@ -50,12 +50,26 @@ if ($idtache) {
     $localcontext[idparent]=$tache[idparent];
     $localcontext[id]=$tache[iddocument];
     $localcontext[statut]=-64; // car le document n'est pas correcte a priori
+    // enregistre le nom du fichier original. Enleve le repertoire.
+
+    echo "sourceoriginale: $tache[sourceoriginale]";
+    $localcontext[entite][fichiersource]=$tache[sourceoriginale];
+    //    if ($tache[sourceoriginale]) $localcontext[fichiersource]=preg_replace("/.*\//","",$tache[sourceoriginale]);
     
     $text=file_get_contents($filename.".html");
     require_once($home."xmlimport.php");
     $id=enregistre_entite_from_xml($localcontext,$text,"documents");
     update_tache_etape($idtache,3); // etape 3
     $tache[iddocument]=$id;
+
+    // faut-il copier le fichier ?
+    if ($tache[source]) {
+      $dest="../sources/entite-$id.source";
+      if (!(@copy($tache[source],$dest))) die("Le fichier source $tache[source] n'a pas pu etre enregistre dans $dest");
+      @chmod($dest,0600);
+      $tache[source]=""; // la copie est faite, donc on efface le nom de la source pour la tache
+    }
+
     update_tache_context($idtache,$tache);
   } else {
     $id=$tache[iddocument];

@@ -21,6 +21,7 @@
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
 		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptés: lettres, chiffres, _ et -</td></tr>]
+		<IF COND="[#ERREUR_PERSONNES_EXISTENT]"><tr><td colspan="2" class="message_erreur">Ce type contient [#ERREUR_PERSONNES_EXISTENT] personne(s). Il ne peut être détruit</td></tr></IF>
 		<tr>
 			<td class="texte_intitule">Titre du type de personne :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>

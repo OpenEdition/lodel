@@ -7,7 +7,7 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 include_once($home."func.php");
 
 
-// calcul le critere pour determiner ce qu'il faut   editer, restorer, detruire...
+// calcul le critere pour determiner ce qu'il faut editer, restorer, detruire...
 $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
@@ -24,9 +24,23 @@ if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
-  treattrash("typeentrees",$critere);
-  return;
+  do { // block d'exception
+    include_once ($home."connect.php");
+    lock_write("typeentites_typeentrees","typeentrees","entrees");
+
+    // check the type can be deleted.
+    $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entrees WHERE idtype='$id' AND statut>-64") or die (mysql_error());
+    list($count)=mysql_fetch_row($result);
+    if ($count) { $context[erreur_entrees_existent]=$count; unlock(); break; }
+
+    // delete in the joined table
+    mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typeentrees WHERE idtypeentree='$id'") or die (mysql_error());
+
+    $delete=2;
+    include ($home."trash.php");
+    treattrash("typeentrees",$critere,TRUE);
+    return;
+  } while(0);
 }
 
 require($home."typetypefunc.php");
@@ -44,7 +58,7 @@ if ($edit) {
     if (!$context[tpl]) $err=$context[erreur_tpl]=1;
     if (!$context[tplindex]) $err=$context[erreur_tplindex]=1;
     if (!$context[titre]) $err=$context[erreur_titre]=1;
-    if (!$context[style] || !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
+    if ($context[style] && !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
     if ($err) break;
 
     include_once ($home."connect.php");

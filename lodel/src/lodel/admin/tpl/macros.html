@@ -28,7 +28,7 @@
 <DEFMACRO NAME="TYPE_PERSONNES">
 	<LOOP NAME="typepersonnes">
 		<DO>
-			[#TYPE]: <input type="checkbox" name="typepersonne[[#ID]]" [(#CONDITION|true)checked] /><br />
+			<input type="checkbox" name="typepersonne[[#ID]]" [(#CONDITION|true)checked] /> [#TYPE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -36,7 +36,7 @@
 <DEFMACRO NAME="TYPE_ENTREES">
 	<LOOP NAME="typeentrees">
 		<DO>
-			[#TYPE]: <input type="checkbox" name="typeentree[[#ID]]" [(#CONDITION|true)checked] /><br />
+			<input type="checkbox" name="typeentree[[#ID]]" [(#CONDITION|true)checked] /> [#TYPE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -47,15 +47,15 @@
 <!-- typepersonne.html                                  -->
 <DEFMACRO NAME="TYPE_ENTITES">
 	<LOOP NAME="typeentites">
-		<BEFORE>
+<!--		<BEFORE>
 			<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-		</BEFORE>
+		</BEFORE>-->
 		<DO>
-			<tr><td>[#TYPE]:</td><td><input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]></td></tr>
+			<input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]> [#TYPE]<br />
 		</DO>
-		<AFTER>
+<!--		<AFTER>
 			</table>
-		</AFTER>
+		</AFTER>-->
 	</LOOP>
 </DEFMACRO>
 <!-- ************************************************** -->

@@ -20,7 +20,7 @@ function parse_loop_extra(&$tables,
 {
   global $site;
 
-  // convertion des code specifique dans le where
+  // convertion des codes specifiques dans le where
   // ce bout de code depend du parenthesage et du trim fait dans parse_loop.
   $where=preg_replace (array(
 		    "/\(trash\)/i",
@@ -72,14 +72,15 @@ function parse_loop_extra(&$tables,
 
   // verifie le statut
   if (!preg_match("/\bstatut\b/i",$where)) { // test que l'element n'est pas a la poubelle
+    if (!(@include_once("CACHE/tablefields.php")) || !$GLOBALS[tablefields]) require_once($home."tablefields.php");
+
     $teststatut=array();
     if ($where) array_push($teststatut,$where);
     foreach ($tables as $table) {
       if (preg_match("/\sas\s+(\w+)/",$table,$result)) $table=$result[1];
-      if ($table=="session" || 
-	  $table=="documents" || 
-	  $table=="publications"||
-	  $table=="relations") continue;
+      if ($GLOBALS[tablefields][$table] &&
+	  !in_array("statut",$GLOBALS[tablefields][$table])) continue;
+      if ($table=="session") continue;
 
       if ($table=="entites") {
 	$lowstatut='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';

@@ -314,19 +314,26 @@ function paranumber (&$texte)
     */
 }
 
-// Fonction permettant de supprimer les appels de notes d'un texte.
+/** 
+ * Fonction permettant de supprimer les appels de notes d'un texte.
+ */
+
 function removefootnotes(&$text)
 {
         return preg_replace("/<a\b[^>]+>\s*<sup>\s*<small>.*?<\/small>\s*<\/sup>\s*<\/a>/is","",$text);
 }
 
-// Fonction qui dit si une date est vide ou non
+/**
+ * Fonction qui dit si une date est vide ou non
+ */
 function isadate(&$text)
 {
   return $text!="0000-00-00";
 }
 
-// Fonction qui remplace les guillemets d'un texte par leur nom d'entité (&quot;)
+/**
+ * Fonction qui remplace les guillemets d'un texte par leur nom d'entité (&quot;)
+ */
 function replacequotationmark(&$text)
 {
         return str_replace("\"","&quot;",$text);
@@ -348,9 +355,9 @@ function eq($str,$texte)
 
 { return $texte==$str ? "checked" : ""; }
 
-//
-// fonction pour les notes
-//
+/**
+ * fonction pour les notes
+ */
 
 
 function notes($type,&$texte)
@@ -366,9 +373,9 @@ function notes($type,&$texte)
   return join("",$notes);
 }
 
-//
-// fonctions pour le nettoyage de base des champs importes
-//
+/**
+ * fonctions pour le nettoyage de base des champs importes
+ */
 
 function tocss($text)
 
@@ -395,7 +402,7 @@ function isrelative($lien)
 	return !preg_match("/^\//",$test["path"]);
 }
 
-/*
+/**
  * Permet de savoir si un lien est absolu 
  */
 

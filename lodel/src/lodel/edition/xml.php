@@ -49,6 +49,13 @@ ob_end_clean();
 $arr=preg_split("/\s*(<(\/?)r2r:[^>]+>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
 #print_r($arr);
 
+// "telechargement"
+$originalname="entite-$id.xml";
+header("Content-type: application/force-download");
+header("Content-Disposition: attachment; filename=$originalname");
+#header("Content-type: application/$type");
+
+
 echo '<?xml version="1.0" encoding="utf-8" ?>';
 $tab="";
 for($i=1; $i<count($arr); $i+=3) {
@@ -57,6 +64,11 @@ for($i=1; $i<count($arr); $i+=3) {
   if (!$arr[$i+1]) $tab.="  ";
   if (trim($arr[$i+2])) { echo $tab.$arr[$i+2]."\n"; }
 }
+
+
+
+
+
 
 
 function loop_champs($context,$funcname)

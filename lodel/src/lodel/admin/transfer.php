@@ -250,13 +250,13 @@ REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,titredescription,st
     }
     if ($tables["$GLOBALS[tp]typepublis"]) {
       $err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_typepublis CHANGE nom	type		VARCHAR(64) NOT NULL UNIQUE;
+ALTER TABLE _PREFIXTABLE_typepublis CHANGE nom	type		VARCHAR(64) NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis ADD classe		VARCHAR(64) NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis ADD tplcreation	TINYTEXT NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis ADD ordre		INT UNSIGNED DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis ADD	titre	        VARCHAR(255) NOT NULL;
 UPDATE _PREFIXTABLE_typepublis SET classe=\'publications\', titre=type, tplcreation=\'publication\';
-ALTER TABLE _PREFIXTABLE_typepublis CHANGE titre	titre	        VARCHAR(255) NOT NULL UNIQUE;
+ALTER TABLE _PREFIXTABLE_typepublis CHANGE titre	titre	        VARCHAR(255) NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis CHANGE tpledit 	tpledition	TINYTEXT NOT NULL;
 DROP TABLE IF EXISTS _PREFIXTABLE_types;
 RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
@@ -396,6 +396,32 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       if ($err) break;
       $report.="Transfert des documents dans entites offset=$offset<br>";
     }
+
+    $fields=getfields("$GLOBALS[tp]publications");
+    if ($fields[directeur]) { // import les directeurs
+      include_once($home."entitefunc.php");
+
+      // cherche le type
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]typepersonnes WHERE type='auteur'") or die(mysql_error());
+      if (!mysql_num_rows($result)) die ("type inconnu ?");
+      list($idtype)=mysql_fetch_row($result);
+
+	//
+      $result=mysql_query("SELECT identite,directeur,statut FROM $GLOBALS[tp]publications,$GLOBALS[tp]entites WHERE id=identite AND directeur!=''") or die(mysql_error());
+
+      while (list($id,$directeur,$statut)=mysql_fetch_row($result)) {
+	$lcontext=array();
+	list($lcontext[prefix][$idtype][1],
+	     $lcontext[prenom][$idtype][1],
+	     $lcontext[nomfamille][$idtype][1])=
+	  extractnom($directeur);
+	enregistre_personnes ($lcontext,$id,$statut,FALSE);
+      }
+      $err=mysql_query_cmds("ALTER TABLE _PREFIXTABLE_publications DROP directeur;");
+      $report.="Importation des directeurs<br>";
+    }
+
+
     if (!$tables["$GLOBALS[tp]groupes"]) {
 	if ($err=create("groupes")) break;
 	$err=mysql_query_cmd("REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous')");
@@ -408,6 +434,9 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 
     if (!$tables["$GLOBALS[tp]typeentites_typeentrees"]) {
 	if ($err=create("typeentites_typeentrees")) break;
+    }
+    if (!$tables["$GLOBALS[tp]typeentites_typeentites"]) {
+	if ($err=create("typeentites_typeentites")) break;
     }
 
     if (!$tables["$GLOBALS[tp]groupesdechamps"]) {
@@ -456,6 +485,17 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	    }
 	  }
 	}
+	// copie le fichier original rtf
+	$rtffile="r2r-$row[identite].rtf";
+
+	if (file_exists("../rtf/$rtffile")) {
+	  array_push($updates," fichiersource='$rtffile'");
+	  $dest="../sources/entite-$row[identite].source";
+	  if (!copy("../rtf/$rtffile",$dest)) die("probleme avec la copie du fichier $rtffile dans $dest");
+	  @chmod ($dest,0600);
+	} else {
+	  $report.="Le fichier source $rtffile n'existe pas<br />";
+	}
 	if ($updates) {
 	  mysql_query("UPDATE $GLOBALS[tp]documents SET ".join(",",$updates)." WHERE identite=$row[identite]") or die (mysql_error());
 	}
@@ -463,10 +503,10 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       if ($err) break;
     }
 
+
     // efface les repertoires CACHE
     require_once($home."cachefunc.php");
     removefilesincache(".","../edition","../..");
-
 
     // fini, faire quelque chose
   } while(0);
@@ -626,6 +666,27 @@ function isotoutf8 ()
     } // parcourt les lignes
   } // parcourt les tables
   return $report;
+}
+
+function extractnom($personne) {
+  // ok, on cherche maintenant a separer le nom et le prenom
+
+  if (preg_match("/^\s*(Pr\.|Dr\.)/",$personne,$result)) {
+    $prefix=$result[1];
+    $personne=str_replace($result[0],"",$personne);
+  }
+
+  $nom=$personne;
+
+  while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
+  if ($nom) {
+    $prenom=str_replace($nom,"",$personne);
+  } else { // sinon coupe apres le premiere espace
+    if (preg_match("/^\s*(.*?)\s+([^\s]+)\s*$/i",$personne,$result)) {
+      $prenom=$result[1]; $nom=$result[2];
+    } else $nom=$personne;
+  }
+  return array($prefix,$prenom,$nom);
 }
 
 

@@ -21,6 +21,8 @@
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
 		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		[(#ERREUR_TYPE_EXISTE|true)<tr><td colspan="2" class="message_erreur">Ce type existe déjà! Choisissez un autre nom</td></tr>]
+		<IF COND="[#ERREUR_ENTITES_EXISTENT]"><tr><td colspan="2" class="message_erreur">Ce type est utilisé par [#ERREUR_ENTITES_EXISTENT] documents, il n'est pas possible de la détruire.</td></tr></IF>
 		<tr>
 			<td class="texte_intitule">Nom en clair du type de document :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
@@ -35,14 +37,29 @@
 		</tr>
 		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		<tr>
-		    <td>
-		    	Index disponible pour ce type de document :<br />
+		    <td rowspan="2">
+<!-- debut de la macro -->
+		    	<u>Type de publication et documents<br /> qui peuvent contenir ce type de documents :</u><br />
+			  <LOOP NAME="type_parent" TABLE="typeentites_typeentites" WHERE="idtypeentite='[#ID]' AND idtypeentite2=0">
+			    <DO>
+			      <input type="checkbox" name="typeentite[0]" checked>
+			    </DO>
+			    <ALTERNATIVE>
+			      <input type="checkbox" name="typeentite[0]">
+			    </ALTERNATIVE>
+			  </LOOP>
+			    (base)<br />
+			      <MACRO NAME="TYPE_ENTITES">
+<!-- fin de la macro de la macro -->
+		    </td>
+		    <td valign="top">
+		    	<u>Index disponible pour ce type de document :</u><br /><br />
 				<MACRO NAME="TYPE_ENTREES">
 		    </td>  
 		  </tr>
 		  <tr>
-		    <td>
-				Intervenant disponible pour ce type de document :<br />
+		    <td valign="top">
+			<u>Intervenant disponible pour ce type de document :</u><br />
 				<MACRO NAME="TYPE_PERSONNES">
 		    </td>  
 		  </tr>

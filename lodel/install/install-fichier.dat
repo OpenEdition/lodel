@@ -63,11 +63,11 @@ ln tpl/desk.html
 #
 
 mkdir lodel 0755
-mkdir lodel/txt 0770
-mkdir lodel/rtf 0770
+##desuet mkdir lodel/txt 0770
+##htaccess lodel/txt
 
-htaccess lodel/txt
-htaccess lodel/rtf
+mkdir lodel/sources 0770
+htaccess lodel/sources
 
 dirsource $homesite/lodel
 dirdestination lodel
