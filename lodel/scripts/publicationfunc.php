@@ -7,7 +7,7 @@
 function pub_edition (&$context,$critere) 
 
 {
-  global $home,$admin;
+  global $home,$admin,$usergroupes;
 
   if (!$context[nom]) { $context[erreur_nom]=$err=1; }
   include_once("$home/date.php");
