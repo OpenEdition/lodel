@@ -224,8 +224,10 @@ cp_[#NAME].writeDiv();
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
         <LET VAR="idtype">[#ID]</LET>
+	idtype:[#IDTYPE]
 	<LOOP NAME="persons_in_entities">
         <DO>
+	idtype:[#IDTYPE]
 		<LOOP NAME="edition_fields">
 			<BEFORE>
 			<div>

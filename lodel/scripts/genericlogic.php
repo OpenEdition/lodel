@@ -182,7 +182,7 @@ class GenericLogic extends Logic {
      
 
      $daotablefields=getDAO("tablefields");
-     $fields=$daotablefields->findMany("class='".$context['class']."' AND status>0 ","",
+     $fields=$daotablefields->findMany("(class='".$context['class']."' OR class='entities_".$context['class']."') AND status>0 ","",
 				       "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
 
      // file to move once the document id is know.
@@ -337,7 +337,10 @@ class GenericLogic extends Logic {
     $class=strtolower(substr(get_class($vo),0,-2)); // remove the VO from the class name
 
     $publicfields=$this->_publicfields();
-    if (!$publicfields[$class]) trigger_error("ERROR: internal error in GenericLogic::_populateObject. Class=".$class,E_USER_ERROR);
+    if (!$publicfields[$class]) {
+      print_r($publicfields);
+      trigger_error("ERROR: internal error in GenericLogic::_populateObject. Class=".$class,E_USER_ERROR);
+    }
     foreach($publicfields[$class] as $field => $fielddescr) {
       $vo->$field=$context[$field];
     }

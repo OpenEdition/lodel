@@ -64,7 +64,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 $varname=$context['varname'];
 	 if (!$varname) return;
 
-	 $idtype=$context['id'];
+	 $idtype=$context['idtype'];
 
 	 if (!$context['persons'][$idtype]) {
 	   call_user_func("code_alter_$funcname",$context);
@@ -91,7 +91,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 $varname=$context['varname'];
 	 if (!$varname) return;
 
-	 $idtype=$context['id'];
+	 $idtype=$context['idtype'];
 	 $ref=&$context['entries'][$idtype];
 
 	 // get the entries
@@ -259,35 +259,35 @@ class Entities_EditionLogic extends GenericLogic {
 
        //if ($context[autresentries]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentries])));
        $logic=getLogic($table);
+       $ids=array();
+       $idrelations=array();
+
        foreach ($idtypes as $idtype) {
 	 $itemscontext=$context[$table][$idtype];
 	 if (!$itemscontext) continue;
-	 $ids=array();
-	 $idrelations=array();
 	 foreach ($itemscontext as $k=>$itemcontext) {
 	   if (!is_numeric($k)) continue;
+	   $itemcontext['identity']=$vo->id;
 	   $itemcontext['idtype']=$idtype;
 	   $itemcontext['status']=$status;
 	   $ret=$logic->editAction($itemcontext,$error);	 
 	   if ($ret!="_error" && $itemcontext['id']) {
-	     $ids[]=$itemcontext['id'];
-	     $idrelations[$itemcontext['id']]=$itemcontext['idrelation'];
+	     $ids[$idtype][]=$itemcontext['id'];
+	     if ($itemcontext['idrelation']) $idrelations[]=$itemcontext['idrelation'];
 	   }
 	 }
-	 if ($ids && !$idrelations) { // new item but relation has not been created
-	   if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
-	   $db->execute(lq("DELETE FROM #_TP_relations WHERE id1='".$vo->id."' AND nature='".$nature."'")) or dberror();
-
-	   $values=array();
+       }
+       // delete relation not used
+       $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
+       $db->execute(lq("DELETE FROM #_TP_relations WHERE id1='".$vo->id."' AND nature='".$nature."' ".$criteria)) or dberror();
+       if ($ids && !$idrelations) { // new item but relation has not been created
+	 if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
+	 $values=array();
+	 foreach ($ids as $ids2) {
 	   $degree=1;
-	   foreach ($ids as $id) $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
-	   $db->execute(lq("INSERT INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
-	 } elseif ($ids && $idrelations) { // new item but relation has been created
-	   // let's delete selectively
-	   foreach($ids as $id) {
-	     $db->execute(lq("DELETE FROM #_TP_relations WHERE id1='".$vo->id."' AND nature='".$nature."' AND idrelation XXXXXXXXXXXXXXXXXXXXXXXXXX")) or dberror();
-	   }
+	   foreach ($ids2 as $id) $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
 	 }
+	 $db->execute(lq("INSERT INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
        }
      } // foreach entries and persons
    }
@@ -432,7 +432,6 @@ class Entities_EditionLogic extends GenericLogic {
      } // foreach classtype
      $ADODB_FETCH_MODE = ADODB_FETCH_DEFAULT;
      #print_r($context['persons']);      
-
   }
 
    // begin{publicfields} automatic generation  //

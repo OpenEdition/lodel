@@ -169,11 +169,6 @@ function reservedword($name) {
 	  "HOUR_MICROSECOND",
 	  "HOUR_MINUTE",
 	  "HOUR_SECOND",
-	  "ID",
-	  "IDENTITE",
-	  "IDPARENT",
-	  "IDTYPE",
-	  "IDUSER",
 	  "IF",
 	  "IGNORE",
 	  "IN",
@@ -322,7 +317,15 @@ function reservedword($name) {
 	  "STATUS",
 	  "RANK",
 	  "CLASS",
-	  "TYPE"
+	  "TYPE",
+	  "ID",
+	  "IDENTITY",
+	  "IDRELATION",
+	  "IDPARENT",
+	  "IDTYPE",
+	  "IDUSER",
+	  "IDPERSON",
+	  "IDENTRY"
 	  );
   return (in_array (strtoupper($name), $reserved_words));
 }

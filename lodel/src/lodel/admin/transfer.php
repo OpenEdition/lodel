@@ -654,6 +654,7 @@ UPDATE #_TP_entities_persons SET id=id+'.($minid-1).';
 INSERT INTO #_TP_relations (idrelation,id1,id2,degree,nature) SELECT id,identity,idperson,rank,\'G\' FROM #_TP_entities_persons;
 ALTER TABLE #_TP_entities_persons DROP identity;
 ALTER TABLE #_TP_entities_persons DROP idperson;
+ALTER TABLE #_TP_entities_persons DROP idtype;
 ALTER TABLE #_TP_entities_persons DROP rank;
 ALTER TABLE #_TP_entities_persons CHANGE id idrelation INT UNSIGNED NOT NULL auto_increment;
 DROP TABLE IF EXISTS #_TP_entities_personnes;
