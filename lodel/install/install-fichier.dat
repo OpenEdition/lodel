@@ -217,6 +217,11 @@ ln tpl/types.html
 ln tpl/edit_classes.html
 ln tpl/classes.html
 
+ln tpl/edit_internalstyles.html
+ln tpl/internalstyles.html
+ln tpl/edit_characterstyles.html
+ln tpl/characterstyles.html
+
 ln tpl/edit_entrytypes.html
 ln tpl/entrytypes.html
 

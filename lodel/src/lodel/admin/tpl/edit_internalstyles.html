@@ -1,0 +1,115 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros2.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@ADMIN.TITLE_INTERNALSTYLES_EDITION]</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_INTERNALSTYLES_EDITION]</td>
+	</tr>
+</table>
+
+						
+<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+<!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
+<input type="hidden" name="do" value="edit">
+<input type="hidden" name="table" value="internalstyles">
+<fieldset>
+  <legend>Table pour les styles internes</legend>
+  <input type="hidden" name="id" value="[#ID]">
+  <LOOP NAME="fielderror" FIELD="id">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="style">[@ADMIN.STYLE]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="style">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="surrounding">[@ADMIN.SURROUNDING_STYLE]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="surrounding" id="surrounding">
+    <?php 
+                      makeSelect($context,"surrounding","internalstyles","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="surrounding">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="conversion">[@ADMIN.CONVERSION]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="conversion" id="conversion" class="text" value="[#CONVERSION]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="conversion">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <IF COND="[#USER.RIGHTS] ge [#TABLE|rights('protect')]">
+    <label for="protected">[@ADMIN.PROTECTED_TYPE]
+        : 
+      </label>
+    <br class="nobr">
+    <IF COND="abs([#STATUS]) ge 32">
+      <input type="checkbox" name="protected" id="protected" checked>
+      <ELSE/>
+      <input type="checkbox" name="protected" id="protected">
+    </IF>
+    <br />
+    <LOOP NAME="fielderror" FIELD="protected">
+      <p class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      </p>
+    </LOOP>
+  </IF>
+</fieldset>
+
+<!--[ end{form} Automatic generated. Don't edit ]-->		    
+
+
+	<MACRO NAME="EDIT_SUBMIT_BAR">
+</form>
+
+
+
+<MACRO NAME="CLOSE_HTML">

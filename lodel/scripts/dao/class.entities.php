@@ -69,6 +69,12 @@ class entitiesDAO extends DAO {
 
 
 
+
+
+
+
+
+
  // end{definitions} automatic generation  //
 
    function _rightscriteria($access) {

@@ -586,13 +586,13 @@ UPDATE #_TP_relations SET idrelation=idrelation+'.($minid-1).';
 	if ($err) break;
 	$report.="Ajout de idrelation a relations<br/>";
       }
-      if (!$fields['location']) {
-	$err=mysql_query_cmds('
-ALTER TABLE #_TP_relations ADD location VARCHAR(255);
-');
-	if ($err) break;
-	$report.="Ajout de location a relations<br/>";
-      }
+#      if (!$fields['location']) {
+#	$err=mysql_query_cmds('
+#ALTER TABLE #_TP_relations ADD location VARCHAR(255);
+#');
+#	if ($err) break;
+#	$report.="Ajout de location a relations<br/>";
+#      }
 
       if ($tables["$GLOBALS[tp]entities_entries"]) {
 	$howmany=$db->getone(lq("SELECT COUNT(*) FROM #_TP_entities_entries"));
@@ -651,7 +651,7 @@ INSERT #_TP_personnes (idperson,prenom,nomfamille) SELECT id,g_firstname,g_famil
       }
     }
 
-
+    
     $dccreator=$db->getOne(lq("SELECT 1 FROM #_TP_persontypes WHERE g_type='dc.creator'"));
     if (!$dccreator) {
       $err=mysql_query_cmds('
@@ -660,6 +660,23 @@ UPDATE #_TP_persontypes SET g_type=\'dc.creator\' where name=\'auteur\';
       if ($err) break;
       $report.="Ajout de dc.creator<br/>";
     }
+
+    ////////////////
+    // INTERNAL STYLES
+
+    if (!$tables["$GLOBALS[tp]internalstyles"]) {
+      if ($err=create("internalstyles")) break;
+    }
+
+
+    ////////////////
+    // CHARACTER STYLES
+
+    if (!$tables["$GLOBALS[tp]characterstyles"]) {
+      if ($err=create("characterstyles")) break;
+    }
+
+
     // fini, faire quelque chose
   } while(0);
 }

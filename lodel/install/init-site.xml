@@ -25,8 +25,8 @@
      You should have received a copy of the GNU General Public License
      along with this program; if not, write to the Free Software
      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 -->
+
 <database name="lodel" defaultIdMethod="native">
 <table name="objects"
         description="">
@@ -122,11 +122,6 @@
         type="TINYINT"
         default="0"
         required="true" />
-<column name="location"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="location in the document, complement to id1" />
 <index name="index_id1">
 <index-column name="id1" />
 </index>
@@ -645,6 +640,101 @@
 <unique name="unique_type_per_class">
 <unique-column name="type" />
 <unique-column name="class" />
+</unique>
+</table>
+
+
+
+<table name="internalstyles"
+        description="Table pour les styles internes"
+	writeright="admin"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="style"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        label="[@ADMIN.STYLE]"
+	edittype="type" />
+<column name="surrounding"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        label="[@ADMIN.SURROUNDING_STYLE]"
+        edittype="select" />
+<column name="conversion"
+        type="VARCHAR"
+        size="255"
+        description="balise vers laquelle le style est convertie"
+	label="[@ADMIN.CONVERSION]"
+	edittype="text" />
+<column name="rank"
+        type="INTEGER"
+        default="0"
+        required="true" />
+<column name="status"
+        type="TINYINT"
+        default="1"
+        required="true" />
+<vcolumn name="protected"
+        label="[@ADMIN.PROTECTED_TYPE]"
+        edittype="boolean" 
+	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+<column name="upd"
+        type="TIMESTAMP" />
+<index name="index_style">
+<index-column name="style" />
+</index>
+<unique name="unique_style">
+<unique-column name="style" />
+</unique>
+</table>
+
+
+<table name="characterstyles"
+        description="Table pour les styles de caracteres"
+	writeright="admin"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="style"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        label="[@ADMIN.STYLE]"
+	edittype="type" />
+<column name="conversion"
+        type="VARCHAR"
+        size="255"
+        description="balise vers laquelle le style est convertie"
+	label="[@ADMIN.CONVERSION]"
+	edittype="text" />
+<column name="rank"
+        type="INTEGER"
+        default="0"
+        required="true" />
+<column name="status"
+        type="TINYINT"
+        default="1"
+        required="true" />
+<vcolumn name="protected"
+        label="[@ADMIN.PROTECTED_TYPE]"
+        edittype="boolean" 
+	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+<column name="upd"
+        type="TIMESTAMP" />
+<index name="index_style">
+<index-column name="style" />
+</index>
+<unique name="unique_style">
+<unique-column name="style" />
 </unique>
 </table>
 

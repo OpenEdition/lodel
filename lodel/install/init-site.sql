@@ -72,7 +72,6 @@ CREATE TABLE IF NOT EXISTS #_TP_relations (
 	id1		INT UNSIGNED DEFAULT '0' NOT NULL,
 	id2		INT UNSIGNED DEFAULT '0' NOT NULL,
 	nature		CHAR(1) DEFAULT 'P' NOT NULL,
-	location	VARCHAR(255),		# for the internal index
 
 	degree		TINYINT DEFAULT '0' NOT NULL,
 
@@ -245,6 +244,33 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
+);
+
+
+CREATE TABLE IF NOT EXISTS #_TP_internalstyles (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	style		VARCHAR(255) NOT NULL,
+	surrounding	VARCHAR(255) NOT NULL,
+	conversion	VARCHAR(255) NOT NULL,
+
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
+
+	PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS #_TP_characterstyles (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	style		VARCHAR(255) NOT NULL,
+	conversion	VARCHAR(255) NOT NULL,
+
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
+
+	PRIMARY KEY (id)
 );
 
 

@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 
-if (!$_GET['do'] || !$_POST['do']) {
+if (!$_GET['do'] && !$_POST['do']) {
   require($home."auth.php");
   authenticate(LEVEL_VISITOR);
   $context['id']=$id=intval($_GET['id']);

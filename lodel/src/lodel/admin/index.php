@@ -32,7 +32,8 @@ $tables=array("entrytypes","persontypes","entries",
 	      "tablefieldgroups","tablefields",
 	      "translations","usergroups","users",
 	      "types","classes",
-	      "options","optiongroups","useroptiongroups");
+	      "options","optiongroups","useroptiongroups",
+	      "internalstyles","characterstyles");
 
 require($home."controler.php");
 

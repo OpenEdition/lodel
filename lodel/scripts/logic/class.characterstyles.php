@@ -27,32 +27,51 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
- //
- // File generate automatically the 2005-01-05.
- //
 
 
 /**
-  * VO of table objects
-  */
+ *  Logic Characterstyle
+ */
 
-class objectsVO {
-   var $id;
-   var $class;
+class CharacterstylesLogic extends Logic {
 
-}
-
-/**
-  * DAO of table objects
-  */
-
-class objectsDAO extends DAO {
-
-   function objectsDAO() {
-       $this->DAO("objects",false);
-       $this->rights=array();
+  /** Constructor
+   */
+   function CharacterstylesLogic() {
+     $this->Logic("characterstyles");
    }
 
-}
+
+   /*---------------------------------------------------------------*/
+   //! Private or protected from this point
+   /**
+    * @private
+    */
+
+
+
+
+   // begin{publicfields} automatic generation  //
+   function _publicfields() {
+     return array("style"=>array("type","+"),
+                  "conversion"=>array("text",""));
+             }
+   // end{publicfields} automatic generation  //
+
+   // begin{uniquefields} automatic generation  //
+
+    function _uniqueFields() {  return array(array("style"),);  }
+   // end{uniquefields} automatic generation  //
+
+
+} // class 
+
+
+/*-----------------------------------*/
+/* loops                             */
+
+
+
+
 
 ?>
