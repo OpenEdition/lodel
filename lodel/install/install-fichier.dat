@@ -150,6 +150,7 @@ ln tpl/edition-theme.html
 ln publication.php
 ln tpl/publication.html
 ln tpl/publications_protegees.html
+ln inverseordre.php
 
 ln supprime.php
 ln tpl/supprime.html
