@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cenou
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+-->
+
+<database name="lodel" defaultIdMethod="native">
+<table name="sites"
+        description="Table des sites"
+        uniqueid="yes"
+	writeright="adminlodel"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="name"
+        type="VARCHAR"
+        size="64"
+        required="true" />
+<column name="title"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="title for the interface" 
+        label="[@COMMON.TITLE]"
+        edittype="text"/>
+<column name="subtitle"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="soustitle for the interface"
+        label="[@COMMON.SUBTITLE]"
+        edittype="text"/>
+<column name="path"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="chemin d'acces"
+        label="[@LODELADMIN.PATH]"
+        edittype="text"/>
+<column name="url"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="full url of the site"
+        label="[@LODELADMIN.SITE_URL]"
+        edittype="text"/>
+<column name="langdef"
+	type="CHAR"
+        size="5"
+        description="language per default"
+        label="[@LODELADMIN.DEFAULT_LANGUAGE]"
+        edittype="select"/>
+<column name="status"
+        type="TINYINT"
+        default="-1"
+        required="true" />
+<column name="upd"
+        type="TIMESTAMP" />
+<column name="creationdate"
+        type="DATETIME" />
+</table>
+
+
+<table name="session"
+        description="Table des sessions">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="name"
+        type="VARCHAR"
+        size="64"
+        required="true"/>
+<column name="iduser"
+        type="INTEGER"
+        required="true"/>
+<column name="site"
+        type="VARCHAR"
+        size="64"
+        required="true"/>
+<column name="currenturl"
+        type="VARCHAR"
+        size="4096"
+        required="true"/>
+<column name="context"
+        type="LONGVARCHAR"
+        required="true"/>
+<column name="expire"
+        type="INTEGER"
+        required="true"/>
+<column name="expire2"
+        type="INTEGER"
+        required="true"/>
+<index name="index_name">
+<index-column name="name" />
+</index>
+</table>
+
+
+<table name="urlstack"
+        description="record of the urls">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="idsession"
+        type="INTEGER"
+        required="true"/>
+<column name="currenturl"
+        type="VARCHAR"
+        size="4096"
+        required="true"/>
+<index name="index_idsession">
+<index-column name="idsession" />
+</index>
+</table>
+
+
+<table name="users"
+        description="Table des utilisateurs de lodel"
+	writeright="admin"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="username"
+        type="VARCHAR"
+        size="64"
+        required="true"
+        label="[@COMMON.LOGIN]"
+        edittype="username" />
+<column name="passwd"
+        type="VARCHAR"
+        size="64"
+        label="[@COMMON.PASSWORD]"
+        edittype="passwd" />
+<column name="name"
+        type="VARCHAR"
+        size="64"
+        label="[@ADMIN.LASTNAME_AND_FIRSTNAME]"
+        edittype="text" />
+<column name="email"
+        type="VARCHAR"
+        size="255"
+        label="[@ADMIN.EMAIL]"
+        edittype="email" />
+<column name="userrights"
+        type="TINYINT"
+        default="0"
+        required="true"
+        label="[@ADMIN.USER_RIGHTS]"
+        edittype="select" />
+<column name="lang"
+        type="CHAR"
+        size="5"
+        required="true"
+        description="user lang"
+        label="[@ADMIN.USER_LANG]"
+        edittype="lang" />
+<column name="status"
+        type="TINYINT"
+        default="1"
+        required="true" />
+<vcolumn name="usergroups"
+	label="[@ADMIN.USERGROUPS]"
+	editcondition="[#SITE] and ![#USER.ADMIN]"
+	edittype="multipleselect" />
+<vcolumn name="protected"
+        label="[@ADMIN.PROTECTED_USER]"
+        edittype="boolean" />
+<column name="upd"
+        type="TIMESTAMP" />
+<index name="index_username">
+<index-column name="username" />
+</index>
+<unique name="unique_username">
+<unique-column name="username" />
+</unique>
+</table>
+
+
+
+<table name="texts"
+        description="Table des minitextes"
+	writeright="admin"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        default="0"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="name"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="name"
+        label="[@COMMON.NAME]" />
+<column name="contents"
+        type="LONGVARCHAR"
+        description="texte"
+        label="[@ADMIN.TEXT]"
+        edittype="longtext" />
+<column name="lang"
+        type="CHAR"
+        size="5"
+        required="true"
+        description="text lang"
+        label="[@COMMON.LANG]"
+	visibility="hidden" 
+	edittype="lang"	/>
+<column name="textgroup"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="text group" 
+	visibility="hidden" 
+	edittype="text"	/>
+<column name="status"
+        type="TINYINT"
+        default="1"
+        required="true" />
+<vcolumn name="protected"
+        label="[@ADMIN.PROTECTED_OPTION]"
+        edittype="boolean" />
+<column name="upd"
+        type="TIMESTAMP" />
+<index name="index_name">
+<index-column name="name" />
+</index>
+<index name="index_lang">
+<index-column name="lang" />
+</index>
+<index name="index_textgroup">
+<index-column name="textgroup" />
+</index>
+<unique name="unique_lang">
+<unique-column name="name" />
+<unique-column name="lang" />
+<unique-column name="textgroup" />
+</unique>
+</table>
+
+
+
+
+
+<table name="translations"
+        description=""
+	writeright="admin"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        default="0"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="lang"
+        type="CHAR"
+        size="5"
+        required="true"
+        description="code of the lang"
+        label="[@ADMIN.LANG_CODE]"
+        edittype="text" />
+<column name="title"
+        type="VARCHAR"
+        size="255"
+        label="[@COMMON.LANG]"
+        edittype="text" />
+<column name="textgroups"
+        type="VARCHAR"
+        size="255"
+	visibility="hidden"
+	edittype="text"  />
+<column name="translators"
+        type="VARCHAR"
+        label="[@ADMIN.TRANSLATORS]"
+        edittype="text" />
+<column name="modificationdate"
+        type="DATE" />
+<column name="creationdate"
+        type="DATE"
+	visibility="hidden"
+	edittype="date" />
+<column name="rank"
+        type="INTEGER"
+        default="0"
+        required="true" />
+<column name="status"
+        type="TINYINT"
+        default="1"
+        required="true" />
+<vcolumn name="protected"
+        label="[@COMMON.PROTECTED]"
+        edittype="boolean" />
+<column name="upd"
+        type="TIMESTAMP" />
+<index name="index_lang">
+<index-column name="lang" />
+</index>
+<unique name="unique_lang">
+<unique-column name="lang" />
+<unique-column name="textgroups" />
+</unique>
+</table>
+</database>
+
