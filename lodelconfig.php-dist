@@ -1,5 +1,6 @@
 <?
 
+# Racine de lodel sur le systeme
 $pathroot="/path/to";
 
 
@@ -21,13 +22,16 @@ $home="$pathroot/lodel/script";
 $shareurl="http://lodel.revues.org/share";
 
 # Repertoire contenant les fichiers communs partagés
-# par exemplre $sharedir="/var/www/lodel/share";
+# par exemple $sharedir="/var/www/lodel/share";
 # ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
 $sharedir="$pathroot/share";
 
 # Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite
 # nomrevues.domain.org ou domaine.org/nomrevue
 $revueagauche=0;
+
+# Localisation des fichiers archive pour l'import de donnees
+$importdir="/www-bin/revues/import";
 
 # Timeout pour les sessions
 # en seconde

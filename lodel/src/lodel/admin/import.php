@@ -4,7 +4,7 @@ require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_SUPERADMIN,NORECORDURL);
 
-$repertoire=$context[repertoire]="/www-bin/revues/import";
+$repertoire=$context[repertoire]=$importdir;
 // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 
 if ($fichier && preg_match("/^revue-.*-\d+.tar.gz/i",$fichier) && file_exists("$repertoire/$fichier")) {
