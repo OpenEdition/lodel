@@ -331,7 +331,7 @@ if ($tache=="createrep") {
 if ($tache=="fichier") {
   // on peut installer les fichiers
   if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  $root=str_replace("//","/",LODELROOT.$context[chemin]);
+  $root=str_replace("//","/",LODELROOT.$context[chemin])."/";
 
   $siteconfigcache="CACHE/siteconfig.php";
 

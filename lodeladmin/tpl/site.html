@@ -50,7 +50,7 @@
 <input size="30" type="text" name="rep" value="[#REP]"></td>
 [(#ERREUR_REP|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom abrégé valide (sans accent, sans espace, sans caracteres speciaux)</font></td>]
 </tr>
-<LOOP NAME="siteatroot" TABLE="sites" WHERE="chemin=='/' AND statut gt -64">
+<LOOP NAME="siteatroot" TABLE="sites" WHERE="chemin='/' AND statut gt -64">
 <ALTERNATIVE>
 <tr><td><b>Installer le site à la racine:</b></td><td><input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] ></td></tr>
 </ALTERNATIVE>
