@@ -33,6 +33,8 @@
 <!-- <MACRO NAME="PRESENTER_REGROUPEMENTS">                             -->
 <!-- <MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">                            -->
 <!-- <MACRO NAME="LISTER_AUTEURS">                                      -->
+<!-- <MACRO NAME="LISTER_AUTEURS_CITATION">							    -->
+<!-- <MACRO NAME="CITATION">										    -->
 <!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
 <!-- <MACRO NAME="DESCRITION_AUTEUR">                                   -->
 <!-- <MACRO NAME="LISTER_THEMES">                                       -->
@@ -125,7 +127,7 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#SOUSTITRE]">
 	
-		[#SOUSTITRE]
+		 . [#SOUSTITRE]
 		
 	</IF>
 </DEFMACRO>
@@ -158,8 +160,8 @@
 <!-- ****************************************************************** -->
 
 				<div class="titre1">
-		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
-					 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
+		 			 <MACRO NAME="NOM_PUBLICATION"> 
+					 <br /> <MACRO NAME="TITRE_PUBLICATION">
 		 			
 					<span class="soustitrerevue">
 		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
@@ -216,22 +218,16 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<DO>
-			Paru dans 
 			<IF COND="[#TYPE]=='regroupement'"> 
 				<LOOP NAME="affiche_numero2" TABLE="publications"  WHERE="id='[#PARENT]'"> 
-					<a class="titre1" href="sommaire.html?id=[#ID]">
-						<MACRO NAME="NOM_REVUE">, n° [#NOM]  
-						<IF COND="[#TITRE]">,
-							[#TITRE]
-						</IF>.
+					<a class="titre1" href="sommaire.html?id=[#ID]">[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]
+						</IF>
 					</a>
 				</LOOP>
 			<ELSE/>
 					<a class="titre1" href="sommaire.html?id=[#ID]">
-							<MACRO NAME="NOM_REVUE"> n°[#NOM] 
-								<IF COND="[#TITRE]">,
-									[#TITRE]
-								</IF>.
+							[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]
+								</IF>
 					</a>
 			</IF>
 		</DO>
@@ -254,12 +250,11 @@
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<DO>
 		    	    	<IF COND="[#NOM]">
-							paru dans le 
-							<span class="italic">
-							<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
-								
-									n&#176; [#NOM] - [#TITRE]
-								
+							<a  href="sommaire.html?id=[#PUBLICATION]">
+								n&#176; [#NOM] 
+								<IF COND="[#TITRE]">
+									- [#TITRE]
+									</IF>.
 							</a>
 							</span>
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -268,14 +263,16 @@
             	</LOOP>
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
-					paru dans le 
-					<span class="italic">
-					<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
+					
+					<a  href="sommaire.html?id=[#PUBLICATION]">
 						
-							 n&#176; [#NOM] - [#TITRE]
+							 n&#176; [#NOM] 
+							 <IF COND="[#TITRE]">
+									- [#TITRE]
+									</IF>.
 						
 					</a>
-					</span>
+					
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 				</IF>
 	        </IF>
@@ -283,31 +280,24 @@
 	</LOOP>
 </DEFMACRO>
 
+
 <DEFMACRO NAME="PARU_DANS_SIGNALEMENT">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affiche la publication d'où provient un document que l'on a        -->
-<!-- signalé. (Lien sur la revue)                                       -->
+<!-- Affiche la publication d'où provient un document.                  -->
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans_signalement" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<DO>
-			Paru dans 
+			
 			<IF COND="[#TYPE]=='regroupement'"> 
-				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#PARENT]'"> 
-					<a class="titre1" href="sommaire.html?id=[#ID]">
-						<MACRO NAME="NOM_REVUE">, n° [#NOM]  
-						<IF COND="[#TITRE]">,
-							[#TITRE]
-						</IF>.
+				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#PARENT]'">
+					<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE">, n°[#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.
 					</a>
 				</LOOP>
 			<ELSE/>
-					<a class="titre1" href="sommaire.html?id=[#ID]">
-							<MACRO NAME="NOM_REVUE"> n°[#NOM] 
-								<IF COND="[#TITRE]">,
-									[#TITRE]
+					<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE"> n°[#NOM]<IF COND="[#TITRE]">, [#TITRE]
 								</IF>.
 					</a>
 			</IF>
@@ -366,27 +356,27 @@
 <!-- Affiche le titre de la partie Bibliographie (ici "Bibliographie")  -->
 <!-- dans la langue définie pour le texte d'un document.                -->
 <!-- ****************************************************************** -->
-	<IF COND="([#LANG] EQ 'fr') OR ([#LANG] EQ 'FR')">
-		Bibliographie
-	<ELSE/>
-		<IF COND="([#LANG] EQ 'en') OR ([#LANG] EQ 'EN')">
-			Bibliography
-		<ELSE/>
-			<IF COND="([#LANG] EQ 'it') OR ([#LANG] EQ 'IT')">
-				Bibliografia
-			<ELSE/>
-				<IF COND="([#LANG] EQ 'es') OR ([#LANG] EQ 'ES')">
-					Bibliografía
-				<ELSE/>
-					<IF COND="([#LANG] EQ 'de') OR ([#LANG] EQ 'DE')">
-						Bibliographie
-					<ELSE/>
-						Langue de document non définie
-					</IF>
-				</IF>
-			</IF>
-		</IF>
-	</IF>
+        <IF COND="([#LANG] EQ 'fr') OR ([#LANG] EQ 'FR')">
+                Références bibliographiques
+        <ELSE/>
+                <IF COND="([#LANG] EQ 'en') OR ([#LANG] EQ 'EN')">
+                        Bibliography
+                <ELSE/>
+                        <IF COND="([#LANG] EQ 'it') OR ([#LANG] EQ 'IT')">
+                                Bibliografia
+                        <ELSE/>
+                                <IF COND="([#LANG] EQ 'es') OR ([#LANG] EQ 'ES')">
+                                        Bibliografía
+                                <ELSE/>
+                                        <IF COND="([#LANG] EQ 'de') OR ([#LANG] EQ 'DE')">
+                                                Bibliographie
+                                        <ELSE/>
+                                                Langue de document non définie
+                                        </IF>
+                                </IF>
+                        </IF>
+                </IF>
+        </IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_LIGNE_DOCUMENT">
@@ -451,29 +441,37 @@
 <!-- ****************************************************************** -->
 	
 		<IF COND="[#TYPE]=='article_vide'">
-		Article <MACRO NAME="PARU_DANS_SIMPLE"> : 
-			<br />[#TITRE]
+		  [#TITRE] (Article)
 			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
+			<br/><MACRO NAME="TEXTE_INTEGRAL">
+		<MACRO NAME="PARU_DANS_SIMPLE">  <br />
+			
 		</IF>
 		<IF COND="[#TYPE]=='article'">
-			Article <MACRO NAME="PARU_DANS_SIMPLE"> :
-			<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+		 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Article)
+			<br/><MACRO NAME="TEXTE_INTEGRAL">
+			<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 		<ELSE/>
 			<IF COND="[#TYPE]=='chronique'">
-				<span class="italic">Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :
-				<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+			 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Chronique)
+			<br/><MACRO NAME="TEXTE_INTEGRAL">
+			<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 			<ELSE/>
-				<IF COND="[#TYPE]=='compte rendu'">
-					Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :
-					<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+				<IF COND="[#TYPE]=='compte-rendu'">
+					 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Compte rendu)
+					<br/><MACRO NAME="TEXTE_INTEGRAL">
+					<br /><MACRO NAME="PARU_DANS_SIMPLE"> :
+					
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
-						Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :
-						<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF><</a>
+						 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Position de thèse)
+						<br/><MACRO NAME="TEXTE_INTEGRAL">
+						<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 					<ELSE/>
 						<IF COND="[#TYPE]=='editorial'">
-							Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :
-							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+							 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Editorial)
+							<br/><MACRO NAME="TEXTE_INTEGRAL">
+							<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 						<ELSE/>
 							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]</a>
 						</IF>
@@ -482,7 +480,6 @@
 			</IF>
 		</IF>
 	</span>
-	<MACRO NAME="TEXTE_INTEGRAL">
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
 	
@@ -498,14 +495,10 @@
 	<!-- On liste en premier les séries linéaires. Il faut noter l'id de la série que l'on veut afficher dans 
 	WHERE="id='???' de la première boucle-->
 	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre">
-		<BEFORE>
-			<div class="menu1">
-				Série Linéaires :<br/ >
-			</div>
-		</BEFORE>
+		
 		<DO>
 			<div class="menu1">
-				[#NOM] 
+				Numéros
 			</div>
 			<!-- On liste tous les numéros de la série linéaire courante -->
 			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre" >
@@ -759,7 +752,9 @@
 	
 	<DO>
 			<div class="afficherdocument"> 
+				
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				
 			</div>
 		
 	</DO>
@@ -785,9 +780,7 @@
 								[#TITRE]
 							</IF>
 							
-							<IF COND="[#NOM]">
-								| [#NOM]
-							</IF>
+							
 						  
 				</div>
 				
@@ -812,11 +805,12 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#TYPE]=='article_vide'">
 	
-		[#TITRE], [#SOUSTITRE]
+		[#TITRE]<IF COND="[#SOUSTITRE]">
+		<br /> [#SOUSTITRE]</IF>
 	<ELSE/>
 		<span class="article">
 		<a class="menu2" href="document.html?id=[#ID]">
-			[#TITRE], [#SOUSTITRE]
+			[#TITRE]<IF COND="[#SOUSTITRE]"><br /> <div class="soustitre">[#SOUSTITRE]</div></IF>
 		</a>
 		</span>
 	</IF>
@@ -829,9 +823,9 @@
 <!-- Affiche simplement le titre et le sous-titre du document 			-->
 <!-- ****************************************************************** -->
 	
-			[#TITRE], [#SOUSTITRE]
-	
+			[#TITRE]<IF COND="[#SOUSTITRE]"> <br /> [#SOUSTITRE]</IF>
 </DEFMACRO>
+
 
 <DEFMACRO NAME="LISTER_AUTEURS">
 <!-- ****************************************************************** -->
@@ -840,24 +834,15 @@
 <!-- ****************************************************************** -->
 	<div class="auteur">
 	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<DOFIRST>
-			[#PRENOM] 
-			[#NOMFAMILLE]
-			
-		</DOFIRST>
-		<DO>
-			,
-			[#PRENOM] 
-			[#NOMFAMILLE]
-		</DO>
+		<DOFIRST>[#PRENOM] 	[#NOMFAMILLE]</DOFIRST>
+		<DO>, [#PRENOM]	[#NOMFAMILLE] </DO>
 		<DOLAST>
 			 et 
 			 [#PRENOM] 
 			[#NOMFAMILLE]
 		</DOLAST>
 		<ALTERNATIVE>
-			<IF COND="[#NOMFAMILLE]">
-				,
+			<IF COND="[#NOMFAMILLE]">,
 			</IF>
 		</ALTERNATIVE>
 	</LOOP>
@@ -874,35 +859,55 @@
 		<div class="auteur">
 		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-			<DOFIRST>
-				<a class="auteur" href="auteur.html?id=[#ID]">
-					
-						[#PRENOM]
-						<span class="smallcaps">[#NOMFAMILLE]</span>
-					
-				</a>
-			</DOFIRST>
-			<DO>
-				, <a class="auteur" href="auteur.html?id=[#ID]">
-						[#PRENOM]
-						<span class="smallcaps">[#NOMFAMILLE]</span>
-				</a>
-			</DO>
-			<DOLAST>
-				et 
-				<a class="auteur" href="auteur.html?id=[#ID]">
-						[#PRENOM]
-						<span class="smallcaps">[#NOMFAMILLE]</span>
-				</a>
-			</DOLAST>
-			<AFTER>
-				<IF COND="[#NOMFAMILLE]">
-					<br />
-				</IF>
-			</AFTER>
+			<DOFIRST>[#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DOFIRST>
+			<DO>, [#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DO>
+			<DOLAST> et [#PRENOM] <span class="smallcaps"> [#NOMFAMILLE]</span></DOLAST>
+			<AFTER><IF COND="[#NOMFAMILLE]"><br /></IF></AFTER>
 		</LOOP>
 		</div>
 </DEFMACRO>
+
+<DEFMACRO NAME="LISTER_AUTEURS_CITATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la liste des auteurs d'un document entre virgules, pour 	-->
+<!-- la notice bibliographique.                                         -->
+<!-- ****************************************************************** -->
+	
+	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
+		<DO>, [#PRENOM] [#NOMFAMILLE]</DO>
+		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
+		<ALTERNATIVE><IF COND="[#NOMFAMILLE]">, </IF></ALTERNATIVE>
+	</LOOP>
+	
+</DEFMACRO>
+
+<DEFMACRO NAME="CITATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche notice biblio du doc en cours                              -->
+<!-- ****************************************************************** -->
+	
+	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i> 
+	<LOOP NAME="citation" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+		<DO>
+			
+			<IF COND="[#TYPE]=='regroupement'"> 
+				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#PARENT]'"> 
+					 [#NOM]<IF COND="[#TITRE]">, [#TITRE].
+					</IF>
+				</LOOP>
+			<ELSE/>
+					[#NOM]<IF COND="[#TITRE]">, [#TITRE].
+					</IF>
+					
+			</IF>
+		</DO>
+	</LOOP>
+	<br />http://[#REVUE].revues.org/document.html?id=[#ID]
+</DEFMACRO>
+
 
 
 <DEFMACRO NAME="DESCRITION_AUTEUR"> 
@@ -965,9 +970,10 @@
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status>0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			
-			<a class="titre2" href="sommaire.html?id=[#ID]">
+			<a class="titre1" href="sommaire.html?id=[#ID]">
 					
-						Dernier numéro publié : [#NOM] 
+						Dernier numéro publié : <br />
+						[#NOM] 
 					
 				<IF COND="[#TITRE]">
 					
@@ -976,9 +982,9 @@
 			</a>
 			
 			
-				<!--<IF COND="[#DIRECTEUR]">
+				<IF COND="[#DIRECTEUR]">
 					<br /> Sous la direction de :	[#DIRECTEUR]
-				</IF>-->
+				</IF>
 			
 			
 		</DO>
@@ -1024,20 +1030,18 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
-			<strong>
-				<span class="couleur_1">
+			
+				<div class="titre1">
+					<a class="titre1" href="sommaire.html?id=[#ID]">
 					Sommaire du dernier numéro publié : [#NOM] 
-				</span>
-			</strong>
-			<IF COND="[#TITRE]">
-				<em>
-					- [#TITRE]
-				</em>
-			</IF>
-			<IF COND="[#DIRECTEUR]">
-				<br /> Sous la direction de :	[#DIRECTEUR]
-			</IF>
-			<br /><br />
+					</a>
+					<IF COND="[#DIRECTEUR]">
+						<span class="directeur_publication">
+							<br /> Sous la direction de :	[#DIRECTEUR]
+						</span>
+					</IF>
+				</div>
+					
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</DO>
 	</LOOP>
@@ -1203,7 +1207,6 @@
 <!-- affiche "Texte en ligne le xx/xx/xxxx"                             -->
 <!-- ****************************************************************** -->
 	<IF COND="[#LANG]!=''">
-		<IF COND="[#TYPE]!='presentation'">
 			<a class="texte_integral" href="document.html?id=[#ID]">
 				
 					[Texte intégral
@@ -1213,6 +1216,18 @@
 						en ligne le [#DATEPUBLI]]
 					</IF>
 			</a>
+	<ELSE/>
+		<IF COND="[#TYPE]=='article'">
+			<a class="texte_integral" href="document.html?id=[#ID]">
+					[Résumé]
+			</a>
+		<ELSE/>
+			<IF COND="[#TYPE]=='compte-rendu'">
+			<a class="texte_integral" href="document.html?id=[#ID]">
+					[Résumé]
+			</a>
+			<ELSE/>
+			</IF>
 		</IF>
 	</IF>
 </DEFMACRO>
