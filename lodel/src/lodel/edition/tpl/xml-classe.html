@@ -62,7 +62,7 @@
 <!--[ ]-->
 
 <!--[ affiche les champs ]-->
-    <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
+    <LOOP NAME="groupesdechamps" SELECT="nom,id" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       <DO>
 	<[#NOM]>
 	  <LOOP NAME="valeurs_des_champs">
