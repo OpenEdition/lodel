@@ -366,7 +366,8 @@ function OO_XHTML ($convertedfile,&$context)
 
   if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1;
   return FALSE; }
-  $file=traite_multiplelevel($file);
+  $file=traite_multiplelevel($file,$GLOBALS[multiplelevel]);
+
 
   // supprime les puces?
   $file=preg_replace ("/<\/?r2r:puces?>/","",$file);
@@ -422,7 +423,8 @@ function OO_XHTML ($convertedfile,&$context)
       if ($arr[$i]=="</span>") { // closing span
 	if ($innote) { // in a note ?
 	  $nbspan--; // let decrease the number of span we are in
-	  if ($nbspan==0) $innote=""; // out of the note.
+	  #if ($nbspan==0) { $arr[$i-1].="[[OUTNOTE]]"; $innote=""; }// out of the note.
+	  if ($nbspan==0) $innote="";// out of the note.
 	}
 	$arr[$i]=array_pop($stack);
       } elseif (!$innote) { // opening span
@@ -452,8 +454,11 @@ function OO_XHTML ($convertedfile,&$context)
 	  elseif (preg_match("/^\s*class\s*=\s*$/",$attributs[$j])) {
 	    if (preg_match("/^\s*((?:foot|end)note)/i",$attributs[$j+1],$result)) { // on a une footnote !
 	      $innote=strtolower($result[1]);
-	      $arr[$i]="";
 	      $close=""; $open="";
+	      $nbspan=1;
+	      $newattributs="";
+	      #$arr[$i+1]="[[ENTER NOTE]]".$arr[$i+1];
+
 	      break; // go out, this span must be removed.
 	    }
 	  } // end of attribut class
@@ -478,6 +483,7 @@ function OO_XHTML ($convertedfile,&$context)
       }
       if ($innote) { // are we in a note ?
 	// look for <a> tags
+	#$arr[$i+1].="[[INNOTE$nbspan]";
 	if ($arr[$i+1]) {
 	  $arr[$i+1]=preg_replace("/<a\b([^>]+>)/",
 				  '<a class="'.$innote.'call"\\1',$arr[$i+1]);
@@ -704,8 +710,8 @@ function convertCSSstyle ($style) {
   $simpleconversions=array(
 		       "font-style:italic"=>"em",
 		       "font-weight:bold"=>"strong",
-		       "text-decoration:underline"=>"u",
-		       "text-decoration:line-through"=>"strike"
+		       #"text-decoration:underline"=>"u", pas XHTML strict
+		       #"text-decoration:line-through"=>"strike"
 		       );
 
 
@@ -733,7 +739,52 @@ function convertCSSstyle ($style) {
 }
 
 
+// les balises multiplelevel. Restructure la stylisation plate de Word en une structure a plusieurs niveaux (2 niveaux en general)
 
+// > signifie que cette balise se ratache avec celle d'apres
+// rien signifie que cette balise s'entoure de la balises donner dans le tableau
+
+// * signifie toutes les balises
+// balise: signifie que cette balises
+
+function traite_multiplelevel($text,$multiplelevel)
+
+{
+  $search=array(); $rpl=array();
+
+  foreach ($multiplelevel  as $k=>$v) {
+    if (is_array($v)) {
+      $text=traite_multiplelevel($text,$v);
+      continue;
+    }
+
+    $balouvrante="<r2r:$k(?:\b[^>]+)?>";
+    $balfermante="<\/r2r:$k>";
+
+    // determine ce qu'il faut faire
+//    if (preg_replace("/^>/","",$v)) { $dir="apres"; } 
+//    elseif (preg_replace("/^</","",$v)) { $dir="avant"; }
+//    else { $dir=""; };
+    if (substr($v,0,1)==">") { $dir="apres"; $v=substr($v,1); } 
+    elseif (substr($v,0,1)=="<") { $dir="avant"; $v=substr($v,1); } 
+    else { $dir=""; };
+
+    if ($v=="*") $v="\w+";
+
+    if ($dir=="apres") { // entoure par la balise qui suit
+      array_push($search,"/((?:$balouvrante.*?$balfermante"."[\s\n\r]*)*)(<r2r:$v\b[^>]*>)/is");
+      array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui suit
+    } elseif ($dir=="avant") {
+      array_push($search,"/(<\/r2r:$v\b[^>]*>)[\s\n\r]*($balouvrante.*?$balfermante)/is");
+      array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui precede
+    } else { // entoure par la balise donne dans $v
+      array_push($search,"/$balouvrante/i","/$balfermante/i");
+      array_push($rpl,"<r2r:$v>\\0","\\0</r2r:$v>");
+    }
+  }
+  //die (join(" ",$search)."<br>".join(" ",$rpl));
+  return preg_replace ($search,$rpl,$text);
+}
 
 
 ?>
