@@ -30,7 +30,9 @@
 // securise l'entree si le fichier unlockedinstall n'existe pas.
 
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
-  require("lodelconfig.php"); // le lodelconfig.php doit exister 
+  if (!(@file("../lodelconfig.php"))) { problem_reading_lodelconfig(); die();}
+  require("lodelconfig.php");
+  // le lodelconfig.php doit exister 
   // et permettre un acces a une DB valide... 
   // meme si on reconfigure une nouvelle DB ca doit marcher... 
 
@@ -682,6 +684,33 @@ function probleme_version()
 </table>
 </body>
 ?>
+<?php }
+
+function problem_reading_lodelconfig()
+
+{
+?>
+<hmlt>
+<head>
+      <title>Installation de LODEL</title>
+</head>
+<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
+
+<h1>Installation de LODEL</h1>
+
+
+<p align="center">
+<table width="600">
+<tr>
+  <td>
+    Le fichier lodelconfig.php n'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="lodelconfig">
+<input type="submit" value="continuer">
+</form>
+  </td>
+</table>
+</body>
 <?php }
 
 
