@@ -11,7 +11,7 @@ include_once($home."connect.php");
 // cherche le document
 //
 
-$result=mysql_query("SELECT *,datepubli,(datepubli<=NOW()) as textepublie FROM documents WHERE id='$id'") or die (mysql_error());
+$result=mysql_query("SELECT *,datepubli,(datepubli<=NOW()) as textepublie FROM documents WHERE identite='$id'") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,mysql_fetch_assoc($result));
 //
