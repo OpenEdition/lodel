@@ -439,28 +439,19 @@
 <!--[ Macro plutôt destinée à la barre de navigation verticale.          ]-->
 <!--[ ****************************************************************** ]-->
 	<!--[ On liste en premier les séries linéaires ]-->
-	<LOOP NAME="aff_series_line" TABLE="entites" WHERE="type='numero' AND statut gt 0">
-		<BEFORE>
-			<div class="menu1">Numéros :</div>
-		</BEFORE>
-		<DO>
+	<LOOP NAME="aff_collec" TABLE="entites" WHERE="type='collection' AND statut gt 0">
+		
+			<div class="menu1">[#NOM] :</div>
+			
+		
+		<LOOP NAME="aff_publiparente" TABLE="entites" WHERE="idparent='[#ID]' AND statut gt 0">
 			<div class="menu2">
 				<a class="menu2" href="sommaire.html?id=[#ID]">[#NOM]</a>
 			</div>
-		</DO>
+		</LOOP>
 	</LOOP>
 	
-	<!--[ On liste ensuite les séries hiérarchiques ]-->
-	<LOOP NAME="aff_series_hier" TABLE="entites" WHERE="type='rubrique' AND statut gt 0">
-		<BEFORE>
-			<div class="menu1">rubriques :</div>
-		</BEFORE>
-		<DO>
-			<div class="menu2">
-				<a class="menu2" href="sommaire.html?id=[#ID]">[#NOM]</a>
-			</div>
-		</DO>
-	</LOOP>
+	
 </DEFMACRO>
 
 <DEFMACRO NAME="DOCUMENTS_PAR_TYPES">
@@ -806,7 +797,7 @@
 <!--[ d'une rubrique.                                                        ]-->
 <!--[ Macro destinée aux sommaires.                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="boucle_lister_rubriques" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='rubrique'">
+	<LOOP NAME="boucle_lister_publications" TABLE="publications" WHERE="idparent='[#ID]'" >
 		<DO>
 			<div class="titre2">
 				<a class="titre2" href="sommaire.html?id=[#ID]">
