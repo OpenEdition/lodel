@@ -298,6 +298,7 @@ if ($tache=="fichier") {
       calcul_page($context,"site-fichier");
       return;	
     }
+    @chmod ($siteconfigdest,0666 & octdec($GLOBALS[filemask]));
   }
   // ok siteconfig est copie.
   install_fichier($root,LODELROOT."/$versionrep/src",LODELROOT);
