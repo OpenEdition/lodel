@@ -115,7 +115,7 @@
 			<tr>
 				<td colspan="2">
 					<div class="ligne_parent_tpl_publication">
-						Les documents suivantes sont protégés :
+						Les documents suivants sont protégés :
 					</div>
 				</td>
 			</tr>
@@ -506,15 +506,21 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUT]==-1">
-			Document pr&ecirc;t &agrave; publier
+			Pr&ecirc;t &agrave; publier
 		<ELSE/>
 			<IF COND="[#STATUT]==1">
-				Document publi&eacute;
+				Publi&eacute;
+			<ELSE/>
+				<IF COND="[#STATUT]==32">
+					Prot&eacute;g&eacute;
+				</IF>
 			</IF>
 		</IF>
 	</IF>
 </DEFMACRO>
 
+
+<!--[ desuet
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
 	<IF COND="[#STATUT]==-32">
 		<a href="statut.php?publication=[#ID]&statut=pret">
@@ -553,6 +559,7 @@
 
 	<IF COND="[#STATUT]==1">&nbsp;-&nbsp;</IF>
 </DEFMACRO>
+]-->
 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
