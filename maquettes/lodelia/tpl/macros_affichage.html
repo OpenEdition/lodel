@@ -37,6 +37,7 @@
 <!-- <MACRO NAME="DESCRITION_AUTEUR">                                   -->
 <!-- <MACRO NAME="LISTER_THEMES">                                       -->
 <!-- <MACRO NAME="DERNIER_NUMERO">                                      -->
+<!-- <MACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">                      -->
 <!-- <MACRO NAME="SOMMAIRE_DERNIER_NUMERO">                             -->
 <!-- <MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">                  -->
 <!-- <MACRO NAME="DERNIER_THEME">                                       -->
@@ -135,9 +136,9 @@
 <!-- Affiche, s'il existe, le directeur d'une publication.              -->
 <!-- ****************************************************************** -->
 	<IF COND="[#DIRECTEUR]">
-	
-		Sous la direction de [#DIRECTEUR]
-		
+		<p class="directeur_publication">
+			Sous la direction de [#DIRECTEUR]
+		</p>
 	</IF>
 </DEFMACRO>
 
@@ -166,15 +167,14 @@
 							
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION">
 							
-					<p class="directeur_publication">
-		 				<MACRO NAME="DIRECTEUR_PUBLICATION">
-					</p>
-								
+					<MACRO NAME="DIRECTEUR_PUBLICATION">
+												
 				</div>
-				<div class="introduction" backgroundcolor="#FFFFFF">
-					<MACRO NAME="INTRODUCTION_COMPLETE">
-				</div>
-							
+				<IF COND="[#INTRODUCTION]">
+					<div class="introduction" backgroundcolor="#FFFFFF">
+						<MACRO NAME="INTRODUCTION_COMPLETE">
+					</div>
+				</IF>			
 
 </DEFMACRO>
 
@@ -830,18 +830,18 @@
 	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>
 			[#PRENOM] 
-			<span class="smallcaps">[#NOMFAMILLE]</span>
+			[#NOMFAMILLE]
 			
 		</DOFIRST>
 		<DO>
 			,
 			[#PRENOM] 
-			<span class="smallcaps">[#NOMFAMILLE]</span>
+			[#NOMFAMILLE]
 		</DO>
 		<DOLAST>
 			 et 
 			 [#PRENOM] 
-			<span class="smallcaps">[#NOMFAMILLE]</span>
+			[#NOMFAMILLE]
 		</DOLAST>
 		<ALTERNATIVE>
 			<IF COND="[#NOMFAMILLE]">
@@ -858,7 +858,7 @@
 <!-- Les auteurs sont cliquables (lien vers index par auteurs)          -->
 <!-- L'affichage est destiné aux sommaires : il permet une respiration. -->
 <!-- ****************************************************************** -->
-	<strong>
+	
 		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 			<DOFIRST>
@@ -870,7 +870,7 @@
 				</a>
 			</DOFIRST>
 			<DO>
-				,<a class="auteur" href="auteur.html?id=[#ID]">
+				, <a class="auteur" href="auteur.html?id=[#ID]">
 						[#PRENOM]
 						<span class="smallcaps">[#NOMFAMILLE]</span>
 				</a>
@@ -885,11 +885,10 @@
 			<AFTER>
 				<IF COND="[#NOMFAMILLE]">
 					<br />
-					&nbsp;&nbsp;&nbsp;
 				</IF>
 			</AFTER>
 		</LOOP>
-	</strong>
+	
 </DEFMACRO>
 
 <!-- ****************************************************************** -->
@@ -974,21 +973,22 @@
 	</LOOP>
 </DEFMACRO>
 
+
+
+<DEFMACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">	
 <!-- *************************************************** -->
+<!--    Version 1.0                                      -->
 <!--    Affiche le premier article du dernier numéro     -->
 <!-- (en fonction du champ date de la table publication) -->
-<!-- *************************************************** -->
-
-<DEFMACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">		
+<!-- *************************************************** -->	
 	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
-			<div class="texte">
-			<b>Extrait</b>  
-			[(#TEXTE|supprime_appels_notes|couper(1500))]
-			
+			<div class="extrait">
+			<span class="bold">Extrait du premier article :</span>  
+			[(#TEXTE|removefootnotes|couper(1500))]
 			<a href="document.html?id=[#ID]">
-			Lire la suite
+				Lire la suite
 			</a>
 			</div>
 			</IF>

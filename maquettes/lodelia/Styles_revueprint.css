@@ -10,7 +10,7 @@ body
 	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
 	 *
 	 */
-	 background-color: #BFBFBF;
+	 background-color: #ffffff;
 	 margin-left : 0;
 	 margin-top : 0;
 	 margin-bottom : 0;
@@ -248,7 +248,7 @@ A:active {
 	 */
 .titrerevue {
 	 width: auto;
-	 background-color: #F4F4F4;
+	 background-color: #ffffff;
 	 font-size: 140%;
 	 font-weight: 300;
 	 text-align: left; 
@@ -264,7 +264,7 @@ A.titrerevue {
 	font-size: 100%;
 	color: #9C3234;
 	text-decoration: none;
-	
+	border: 0;
 }
 
 A.titrerevue:hover {
@@ -273,7 +273,7 @@ A.titrerevue:hover {
 	 */
 	font-size: 90%;
 	color: #666666;
-	
+	border: 0;
 	
 }
 
@@ -283,7 +283,7 @@ A.titrerevue:active {
 	 */
 	font-size: 90%;
 	color: #666666;
-	
+	border: 0;
 	
 }
 
@@ -399,12 +399,14 @@ A.alphabet:active {
 	 */
 	width: auto;
 	height: 20;
-	background-color: #EFEFEF;
+	background-color: #ffffff;
 	font-size: small;
 	font-weight: bold;
 	color: #9C3234;
 	text-indent : 10;
+	padding: 10px;
 	margin-top: 20px;
+	border-bottom: 1px solid
 }
 
 /*****************************************************************************
@@ -565,7 +567,7 @@ A.texte_integral:active {
 	/*  
 	 * Style utilisé pour les résumés
 	 */
-	width: 561;
+	width: auto;
 	height: auto;
 	font-size: x-small;
 	color : #000000;
@@ -597,7 +599,7 @@ A.texte_integral:active {
 	/*  
 	 * Style permettant d'afficher le texte des notes ainsi que des errata, NDLR et historique
 	 */
-	width: 561;
+	width: auto;
 	height: auto;
 	font-size: 90%;
 	font-weight: small;
@@ -1038,6 +1040,7 @@ A.bouton_statut_publierOFF
 	 * Largeur du filet <hr> n°3
 	 */
 	width: 100%;
+	color: #9C3234;
 }
 
 

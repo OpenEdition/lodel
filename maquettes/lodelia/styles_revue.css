@@ -16,7 +16,7 @@ body
 	 margin-bottom : 0;
 	 margin-right : 0;
 	 font-size: 8px;
-	 font-family: Arial, Times New Roman,  Verdana, Helvetica, sans-serif;
+	 font-family: Arial, Helvetica, sans-serif, Times New Roman,  Verdana ;
 	 text-decoration: none;
 }
 
@@ -346,7 +346,6 @@ A.titre2:active {
 	 width: auto;
 	 height: 20;
 	 background-color: #9C3234;
-	 font-size: small;
 	 font-weight : bold;
 	 text-align: left; 
 	 color: #ffffff;
@@ -359,7 +358,6 @@ A.alphabet {
 	/*  
 	 *	Styles des liens non visités et visités
 	 */
-	font-size: small;
 	font-weight: bold;
 	color: #cccccc;
 	text-indent: 0;
@@ -372,7 +370,6 @@ A.alphabet:hover {
 	/*  
 	 *	Styles des liens survolés
 	 */
-	font-size: small;
 	font-weight: small;
 	color: #ffffff;
 	text-indent: 0;
@@ -383,13 +380,20 @@ A.alphabet:active {
 	/*  
 	 *	Style des liens actifs
 	 */
-	font-size: small;
 	font-weight: small;
 	color: #ffffff;
 	text-indent: 0;
 	margin: 0;
 }
 
+
+.articles_motscles {
+	/*  
+	 *	Style des liens actifs
+	 */
+	 padding: 10px;
+	 font-size: 90%;
+}
 
 /***************************************************************************/
 	
@@ -400,7 +404,6 @@ A.alphabet:active {
 	width: auto;
 	height: 20;
 	background-color: #EFEFEF;
-	font-size: small;
 	font-weight: bold;
 	color: #9C3234;
 	text-indent : 10;
@@ -417,7 +420,6 @@ A.auteur {
 	 *	Styles des liens non visités 
 	 */
 	text-decoration:none;
-	font-weight: 550;
 	color: #9C3234;
 	
 }
@@ -511,6 +513,7 @@ A.texte_integral:active {
 	 */
 	width: auto;
 	height: auto;
+	margin-top: 10px;
 }
 
 
@@ -555,7 +558,8 @@ A.texte_integral:active {
 	text-decoration: none;
 	color: #666666;
 	margin-bottom: 10px;
-	padding: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	
 }
 
@@ -589,6 +593,21 @@ A.texte_integral:active {
 	line-height: 120%;
 	text-indent : 20;
 	padding: 20px;
+	margin: 0;
+}
+
+.extrait
+{
+	/*  
+	 * 
+	 */
+	width: auto;
+	height: auto;
+	font-size: 90%;
+	text-align : justify;
+	line-height: 120%;
+	text-indent : 10;
+	padding: 10px;
 	margin: 0;
 }
 
@@ -629,6 +648,7 @@ A.texte_integral:active {
 
 .smallcaps {
 	font-variant: small-caps;
+	
 }
 
 .pluspetit {
@@ -872,99 +892,7 @@ A.menu2:active {
 	
 }
 
-/***************************************************************************************
- *	Les styles définissant les images                                                  *
- ***************************************************************************************
- */
- 
- 
- /*
-  *	les styles concernant le logo Lodelia
-  */
- 
-.partielogo1 {
- 		height: 111;
-		width: 532;
-		background-color: #ffffff;
-		background-image: url(images/logo_lodeliarouge.gif);
-		border: 0;
-		margin: 0;
-		padding: 0;
-		float: left;		
-}
 
-.partielogo2 {
- 		height: 111;
-		width: 29;
-		background-color: #ffffff;
-		background-image: url(images/right_top.gif);
-		padding: 0;
-		border: 0;
-		margin: 0;
-		
-		}
-
-/**************************************************************************************/
-
-	/*
- 	 *	l'image placée dans index.html
- 	 */
-
-.imageindex {
-	padding: 0;
-	width: auto;
-	height: 301;
-	background-image: url(images/image.jpg);
-	background-repeat : no-repeat;
-	margin: 0;
-}
-
-	
-	/*
- 	 *	Les styles définissant les différentes images du logo de Revues.org                        *
-     */
- 
- .logo_revuesorg1 {
-	height: 11;
-	width: 165;
-	background-color: #EFEFEF;
-	background-image: url(images/left_top.gif);
-	border-bottom: 3px solid #ffffff;
-	margin: 0;
-}
-
-.logo_revuesorg3 a {
-	height: 50;
-	width: 165;
-	background-color: #EFEFEF;
-	background-image: url(images/logo_revues.gif);
-	margin: 0;
-}
-
-
-
-.logo_revuesorg3 a:hover  {
-	height: 50;
-	width: 165;
-	background-color: #EFEFEF;
-	background-image: url(images/logo_revues_on.gif);
-	margin: 0;
-}
-
-
-.logo_revuesorg4 {
-	vertical-align: top;
-	height: 18;
-	width: 165;
-	background-color: #ffffff;
-	background-image: url(images/left_top2.gif);
-	border-top: 3px solid #ffffff; 
-	border-bottom: 3px solid #ffffff;
-	margin: 0;
-}
-
-
-/**************************************************************************/
 
 	 
 
@@ -1047,8 +975,7 @@ A.bouton_statut_publierOFF
 	/*  Style appliqué à l'introduction d'un numéro
 	 *
 	 */
-	font-size: x-small;
-	font-weight: small;
+	font-size: 80%;
 	text-align : justify;
 	color: #9C3234;
 }
