@@ -24,7 +24,7 @@ $row=mysql_fetch_assoc($result);
 if (!$row[id]) { header ("Location: not-found.html"); return; }
 
 if (!$row[tpl]) { 
-  header("location: ".makeurl("sommaire",$context[idparent]));
+  header("location: ".makeurlwithid("sommaire",$context[idparent]));
   return;
 }
 
