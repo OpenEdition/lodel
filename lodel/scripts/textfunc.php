@@ -356,6 +356,7 @@ function vignette($text,$width)
 
   if (!preg_match("/^(.*)\.([^\.]+)$/",$text,$result)) return "file without extension";
   echo $text,"\n";
+  die();
 
   $vignettefile=$result[1]."-small$width.".$result[2];
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
