@@ -35,6 +35,7 @@ require_once($home."func.php");
 function checkmailforattachments()
 
 {
+
   $options=getoption(array("lodelmail.host","lodelmail.user","lodelmail.passwd"),"");
   if (count($options)!=3 || !$options['lodelmail.host']) {
     die("ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ");
