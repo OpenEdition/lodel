@@ -1,13 +1,21 @@
 <?
 
-
+//function writefile ($filename,&$text)
+//{
+  ////echo "nom de fichier : $filename";
+  //return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
+//}
 
 function writefile ($filename,&$text)
-
 {
-  //echo "nom de fichier : $filename";
-  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
+ //echo "nom de fichier : $filename";
+   if (file_exists($filename)) 
+   { 
+     if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
+   }
+   return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
 }
+
 
 function get_tache (&$id)
 
