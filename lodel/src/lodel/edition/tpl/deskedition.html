@@ -77,24 +77,24 @@
 					<td align="right" valign="bottom">
 						<!--[<span class="texte_petit">Publication : </span>]-->
 						<LOOP NAME="nom_site" TABLE="sites" WHERE="rep='[#SITE]'">
-							<DO><span class="texte"><strong>[#NOM]</strong></span></DO>
+							<DO><span class="texte_petit"><strong>[#NOM]&nbsp;</strong></span></DO>
 						</LOOP>
 					</td>
-					<td width="20" heigth="25" align="center">
+					<td  heigth="25" align="center">
 						<IF COND="[#ADMINLODEL]">
-							<MACRO NAME="PNG_UTILISATEUR_ORANGE">
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Admin Lodel&nbsp;:&nbsp; </span>
 						<ELSE/>
 							<IF COND="[#DROITADMIN]">
-								<MACRO NAME="PNG_UTILISATEUR_ORANGE">
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Administrateur&nbsp;:&nbsp; </span>
 							<ELSE/>
 								<IF COND="[#DROITEDITEUR]">
-									<MACRO NAME="PNG_UTILISATEUR_JAUNE">
+									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> Editeur&nbsp;:&nbsp; </span>
 								<ELSE/>
 									<IF COND="[#DROITREDACTEUR]">
-										<MACRO NAME="PNG_UTILISATEUR_VERT">
+										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> Rédacteur&nbsp;:&nbsp; </span>
 									<ELSE/>
 										<IF COND="[#VISITEUR]">
-											<MACRO NAME="PNG_UTILISATEUR_GRIS">
+											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> Visiteur&nbsp;:&nbsp; </span>
 										</IF>
 									</IF>
 								</IF>
@@ -102,8 +102,7 @@
 						</IF>
 					</td>
 					<td valign="bottom">
-						<span class="texte_petit">Utilisateur : </span>
-						<span class="texte"><strong>[#USERNAME]</strong></span>&nbsp;
+						<span class="texte_petit"><strong>[#USERNAME]</strong></span>&nbsp;
 					</td>
 				</tr>
 			</table>
