@@ -155,6 +155,10 @@ ln tpl/edition-rubrique.html
 ln publication.php
 ln tpl/publication.html
 ln tpl/publi_erreur.html
+ln tpl/creation-serie.html
+ln tpl/creation-rubrique.html
+ln tpl/creation-numero.html
+ln tpl/creation-regroupement.html
 ln inverseordre.php
 
 ln supprime.php
