@@ -1,9 +1,30 @@
 <!-- ****************************************************************** -->
-<!-- Macros de navigation.                                              -->
+<!-- Librairie de navigation.                                           -->
+<!-- Auteurs :                                                          -->
+<!-- Marin Dacos. 2002.                                                 -->
+<!-- Nicolas Nutten. 2003.                                              -->
+<!-- Cette librairie contient :                                         -->
+<!-- <MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">                       -->
+<!-- <MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">                         -->
+<!-- <MACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">                  -->
+<!-- <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">              -->
+<!-- <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">                -->
+<!-- <MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">                        -->
+<!-- <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">                  -->
+<!-- <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">                    -->
+<!-- <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS">                           -->
+<!-- <MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">                           -->
+<!-- <MACRO NAME="BOUTON_DOCUMENT_SUIVANT">                             -->
+<!-- <MACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">                     -->
+<!-- <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">                  -->
+<!-- <MACRO NAME="EXPLORATEUR_THEMES_PUBLICATIONS">                     -->
+<!-- <MACRO NAME="EXPLORATEUR_THEMES_DOCUMENT">                         -->
+<!-- <MACRO NAME="EXPLORATEUR">                                         -->
 <!-- ****************************************************************** -->
 
 <DEFMACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton qui permet d'accéder à la publication précédente -->
 <!-- si elle existe, sinon le bouton ne s'affiche pas.                  -->
 <!-- ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        -->
@@ -26,6 +47,7 @@
 
 <DEFMACRO NAME="BOUTON_PUBLICATION_SUIVANTE">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton qui permet d'accéder à la publication suivante   -->
 <!-- si elle existe, sinon le bouton ne s'affiche pas.                  -->
 <!-- ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        -->
@@ -48,6 +70,7 @@
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bloc de navigation sans textes sous les boutons,        -->
 <!-- comprenant une fleche gauche, permettant de naviguer vers les      -->
 <!-- publications précédentes, le petit logo (icône ou autre ...) de la -->
@@ -76,6 +99,7 @@
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton avec dessous un texte "Numéro/Thème précédent"   -->
 <!-- permettant d'accéder à la publication précédente. Si elle n'existe -->
 <!-- pas le texte sous le bouton est changé par "Retour à l'accueil".   -->
@@ -88,32 +112,33 @@
 			<a href="[#PREVPUBLICATION]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
-				<font color="#000000">
+				<span style="color:Black;">
 					Thème précédent
-				</font>
+				</span>
 			</a>
 		<?}	else {?>
 			<a href="[#PREVPUBLICATION]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
-				<font color="#000000">
+				<span style="color:Black;">
 					Numéro précédent
-				</font>
+				</span>
 			</a>
 		<?}?>
 	<ELSE/>
 		<a href="index.html">
 			<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 			<br />
-			<font color="#000000">
+			<span style="color:Black;">
 				Retour à l'accueil
-			</font>
+			</span>
 		</a>
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton avec dessous un texte "Numéro/Thème suivant"     -->
 <!-- permettant d'accéder à la publication suivante. Si elle n'existe   -->
 <!-- pas le texte sous le bouton est changé par "Retour à l'accueil".   -->
@@ -126,32 +151,33 @@
 			<a href="[#NEXTPUBLICATION]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 				<br />
-				<font color="#000000">
+				<span style="color:Black;">
 					Thème précédent
-				</font>
+				</span>
 			</a>
 		<?}	else {?>
 			<a href="[#NEXTPUBLICATION]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 				<br />
-				<font color="#000000">
+				<span style="color:Black;">
 					Numéro précédent
-				</font>
+				</span>
 			</a>
 		<?}?>
 	<ELSE/>
 		<a href="index.html">
 			<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 			<br />
-			<font color="#000000">
+			<span style="color:Black;">
 				Retour à l'accueil
-			</font>
+			</span>
 		</a>
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bloc de navigation comprenant une fleche gauche,        -->
 <!-- permettant de naviguer vers les publications précédentes,          -->
 <!-- le petit logo (icône ou autre ...) de la revue permettant de       -->
@@ -181,6 +207,7 @@
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton avec dessous le texte : "Précédent", permettant  -->
 <!-- d'accéder à la publication précédente. Si elle n'existe pas le     -->
 <!-- texte sous le bouton est changé par "Retour au sommaire".          -->
@@ -189,17 +216,17 @@
 		<a href="[#PREVDOCUMENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
 			<br />
-			<font color="#000000">
+			<span style="color:Black;">
 				Précédent
-			</font>
+			</span>
 		</a>
 	<ELSE/>
 		<a href="sommaire.html?id=[#PUBLICATION]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 			<br />
-			<font color="#000000">
+			<span style="color:Black;">
 				Retour au sommaire
-			</font>
+			</span>
 		</a>
 	</IF>
 	&nbsp;
@@ -207,6 +234,7 @@
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton avec dessous le texte : "Suivant", permettant    -->
 <!-- d'accéder à la publication suivante. Si elle n'existe pas le       -->
 <!-- texte sous le bouton est changé par "Retour au sommaire".          -->
@@ -216,23 +244,24 @@
 		<a href="[#NEXTDOCUMENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT">
 			<br />
-			<font color="#000000">
+			<span style="color:Black;">
 				Suivant
-			</font>
+			</span>
 		</a>
 	<ELSE/>
 		<a href="sommaire.html?id=[#PUBLICATION]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT_SOMMAIRE">
 			<br />
-			<font color="#000000">
+			<span style="color:Black;">
 				Retour au sommaire
-			</font>
+			</span>
 		</a>
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bloc de navigation comprenant une fleche gauche,        -->
 <!-- permettant de naviguer vers les documents précédents, le petit     -->
 <!-- logo (icône ou autre ...) de la revue permettant de revenir sur    -->
@@ -262,6 +291,7 @@
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton qui permet d'accéder au document précédent si il -->
 <!-- existe, sinon affiche un bouton permettant d'aller au sommaire.    -->
 <!-- ****************************************************************** -->
@@ -280,6 +310,7 @@
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_SUIVANT">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bouton qui permet d'accéder au document suivant si il   -->
 <!-- existe, sinon affiche un bouton permettant d'aller au sommaire.    -->
 <!-- ****************************************************************** -->
@@ -298,6 +329,7 @@
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Affiche un bloc de navigation sans textes sous les boutons,        -->
 <!-- comprenant une fleche gauche, permettant de naviguer vers les      -->
 <!-- documents précédents, le petit logo (icône ou autre ...) de la     -->
@@ -326,6 +358,7 @@
 
 <DEFMACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
 <!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
 <!-- Insère une barre de navigation verticale.                          -->
 <!-- Pour modifier cette barre de navigation il faut éditer le fichier  -->
 <!-- "barre.html".                                                      -->
@@ -343,3 +376,88 @@
 <!-- ****************************************************************** -->
 	<? insert_template("barre");?> 
 </DEFMACRO>
+
+<DEFMACRO NAME="EXPLORATEUR_THEMES_PUBLICATIONS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- ****************************************************************** -->
+	<LET VAR="PUBLICATION_ENCOURS">[#ID]</LET>
+	<BOUCLE NAME="topparentpubli">
+		<LET VAR="TOP_PARENT">[#ID]</LET>
+		<MACRO NAME="EXPLORATEUR">
+	</BOUCLE>
+</DEFMACRO>
+
+<DEFMACRO NAME="EXPLORATEUR_THEMES_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- ****************************************************************** -->
+	<LET VAR="PUBLICATION_ENCOURS">[#PUBLICATION]</LET>
+	<BOUCLE NAME="topparentdoc7">
+		<LET VAR="TOP_PARENT">[#ID]</LET>
+		<MACRO NAME="EXPLORATEUR">
+	</BOUCLE>
+</DEFMACRO>
+
+<DEFMACRO NAME="EXPLORATEUR">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- ****************************************************************** -->
+	<BOUCLE TABLE="publications" WHERE="parent='[#TOP_PARENT]'" WHERE="type!='serie_hierarchique'" ORDER="ordre DESC">
+		<AVANT>
+			<table width="164" border="0" align="center" cellspacing="1" cellpadding="1">
+		</AVANT>
+		<CORPS>
+			<tr>
+				<td width="164">
+					<IF [#NOM]>
+						<IF [#TYPE]=="regroupement">
+							<p class="menugauche">
+								<IF [#ID]==[#PUBLICATION_ENCOURS]>
+									<MACRO NAME="COULEUR_SURVOL">
+								</IF>
+								<img src="images/picto_menu.gif" width="7" height="7" border="0" vspace="2" hspace="2">&nbsp;[#NOM]
+							</p>
+							<IF [#ID]==[#PUBLICATION_ENCOURS]>
+								<MACRO NAME="Font_close">
+							</IF>
+						<ELSE/>
+							<p class="menugauche">
+								&nbsp;<a class="menugauche" href="sommaire.html?id=[#ID]"><img src="images/picto_menu.gif" width="7" height="7" border="0" vspace="2" hspace="2">&nbsp;
+								<IF [#ID]==[#PUBLICATION_ENCOURS]>
+									<MACRO NAME="COULEUR_SURVOL">
+								</IF>
+								[#NOM]</a>
+							</p>
+							<IF [#ID]==[#PUBLICATION_ENCOURS]>
+								<MACRO NAME="Font_close">
+							</IF>
+						</IF>
+					<br />				
+					</IF>
+					<!-- J'affiche tous les articles issus d'un regroupement 
+					car la graphiste propose que tous les regroupements
+					soient toujours dépliés -->
+					<BOUCLE NAME="" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='regroupement'">
+						<MACRO NAME="Articles_par_regroupements">
+						<br />
+					</BOUCLE>
+					<!-- J'affiche tous les articles issus d'un thème
+					seulement si c'est le thème en cours 
+					car les thèmes ne se déplient que lorsqu'on les
+					consulte -->
+					<IF [#ID]==[#PUBLICATION_ENCOURS]>
+						<BOUCLE NAME="" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='theme'">
+							<MACRO NAME="Articles_par_regroupements">
+							<br />
+						</BOUCLE>
+					</IF>
+				</td>
+			</tr>
+		</CORPS>
+		<APRES>
+			</table>
+		</APRES>
+	</BOUCLE>
+</DEFMACRO>
+
