@@ -73,7 +73,7 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
 				<a href="oochargement.php?iddocument=[#ID]">
-					<span class="texte_noir_gras">Recharger le document</span>
+					<span class="texte_orange">Recharger le document</span>
 				</a>
 	<ELSE/>
 				<span class="texte_intitule">Recharger le document</span><br />
@@ -88,7 +88,7 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
 				<a href="deplacer.php?id=[#ID]">
-					<span class="texte_noir_gras">Déplacer ce document</span>
+					<span class="texte_orange">Déplacer ce document</span>
 				</a>
 	<ELSE/>
 				<span class="texte_intitule">Déplacer le document</span><br />
@@ -103,7 +103,7 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITREDACTEUR]">
 				<a href="telecharger.php?id=[#ID]&type=source">
-					<span class="texte_noir_gras">T&eacute;l&eacute;charger le fichier source</span>
+					<span class="texte_orange">T&eacute;l&eacute;charger le fichier source</span>
 				</a>
 	<ELSE/>
 			<span class="texte_intitule">T&eacute;l&eacute;charger le fichier source</span><br />
@@ -138,7 +138,7 @@
 					
 	<IF COND="[#DROITEDITEUR]">
 				<a href="metaimage.php?iddocument=[#ID]&champ=image">
-					<span class="texte_noir_gras">Associer une image à ce document</span>
+					<span class="texte_orange">Associer une icône à ce document</span>
 				</a>
 	<ELSE/>
 				<span class="texte_intitule">Associer une image à ce document</span><br />
@@ -147,9 +147,7 @@
 						</td>
 						<td>&nbsp;</td>
 					</tr>
-
-
-					
+				
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
@@ -158,7 +156,7 @@
 				<br />
 			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="type">
 					<DO>
-						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_noir">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITRE]</span></a><br />						
+						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_orange">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITRE]</span></a><br />						
 					</DO>
 			</LOOP>
 
@@ -199,7 +197,7 @@
 
 	<!--[ Visualisation XML ]-->
 				<a href="xml.php?id=[#ID]&view=1">
-					<span class="texte_noir_gras">Visualiser le XML</span>
+					<span class="texte_orange">Visualiser le XML</span>
 				</a>
 						</td>
 						<td width="5">&nbsp;</td>
@@ -210,7 +208,7 @@
 
 		<!--[ Téléchargement source XML ]-->
 				<a href="xml.php?id=[#ID]">
-					<span class="texte_noir_gras">T&eacute;l&eacute;charger le source XML</span>
+					<span class="texte_orange">T&eacute;l&eacute;charger le source XML</span>
 				</a>
 						</td>
 						<td width="5">&nbsp;</td>
@@ -222,7 +220,7 @@
 		<!--[ Validation XML ]-->
 	<IF COND="[#DROITREDACTEUR]">
 				<a href="xml.php?id=[#ID]&valid=1">
-					<span class="texte_noir_gras">Valider le XML</span>
+					<span class="texte_orange">Valider le XML</span>
 				</a>
 
 	<ELSE/>
