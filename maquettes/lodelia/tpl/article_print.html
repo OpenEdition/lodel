@@ -1,4 +1,3 @@
-<USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_affichage.html">
 <USE MACROFILE="macros_technique.html">
@@ -8,86 +7,61 @@
 <USE MACROFILE="macros_revue.html">
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="DESACTIVER_INDEXATION">
 <MACRO NAME="METADONNEES">
 <script language="JavaScript">window.print()</script>
-<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">
-	<td valign="top"> 
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" align="CENTER" valign="top">
-			<tr valign="top">
-				<td class="soustitre" ALIGN="CENTER" WIDTH=50% valign="middle">
-					<a href="sommaire.html?id=[#PUBLICATION]">
-						<span style="color:Black;">
-							<MACRO NAME="PARU_DANS">
-						</span>
-						<br /><br /> 
-					</a>
-				</td>
-			</tr>
-		</table>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" valign="TOP">
-			<tr>
-				<td valign="top"> 
-					<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" valign="TOP">
-						<tr> 
-							<td class="titrerevue" valign="top">
-								<MACRO NAME="FILET_3">
+	
+<div class="titrerevue">
+	
+
+<!-- Affichage d'informations dépendant  du type de document -->
+
+		<IF COND="[#TYPE]=='compte rendu'">
+			Compte-rendu
+		</IF>
+		<IF COND="[#TYPE]=='chronique'">
+			Chronique
+		</IF>
+		<IF COND="[#TYPE]=='position de these'">
+			Position de thèse
+		</IF>
+		<IF COND="[#TYPE]=='article'">
+			Article
+		</IF>
 		
-								<!-- Affichage d'informations dépendant
-								 du type de document -->
-								<IF COND="[#TYPE]=='compte rendu'">
-									<span class="soustitre">
-										Lecture de
-										<br />
-									</span>
-								</IF>
-		
-								<IF COND="[#TYPE]=='chronique'">
-									<span class="soustitre">
-										Chronique
-									<br />
-									</span>
-								</IF>
-		
-								<!-- Affichage titre -->
-								<a href="sommaire.html?id=[#IDPUBLICATION]">
-									<span class="titrerevue">
-										[#TITRE]
-									</span>
-								</a>
-		
-								<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
-								<MACRO NAME="BOUTON_EDITER_DOCUMENT">
-								<MACRO NAME="FILET_3">
-							</td>
-						</tr>
+				<a  href="document.html?id=[#ID]">
+						<IF COND="[#SURTITRE]">
+							[#SURTITRE] <br />
+						</IF>
+							
+							[#TITRE] <br />
+						
 						<IF COND="[#SOUSTITRE]">
-							<tr> 
-								<td class="soustitrerevue" valign="top"> 
-									[#SOUSTITRE]
-								</td>
-							</tr>		 
-						</IF> 
-						<tr> 
-							<td valign="top">
-							<br />
-								<table width="100%" border="0" align="center">
-									<tr>
-										<td width="100%" align="center" class="auteur">
-											<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
-											<IF COND="[#TYPE]=='note de lecture'">
-												Note de lecture par
-											</IF>
-											<MACRO NAME="LISTER_AUTEURS">
-											<MACRO NAME="BOUTON_DOCUMENT_SUIVANT">
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
+							<span class="soustitrerevue">
+								[#SOUSTITRE] <br />
+							</span>
+						</IF>
+					
+						http://[#REVUE].document.html?id=[#ID]
+						
+					</a>
+						<MACRO NAME="BOUTON_EDITER_DOCUMENT"><br />
+						<br />
+						<IF COND="[#TYPE]=='note de lecture'">
+						Note de lecture par
+					</IF>
+					<MACRO NAME="LISTER_AUTEURS"><br />
+							
+						<MACRO NAME="PARU_DANS">
+		
+		</div>
+		
+						
 						
 						<!-- Résumé en français   -->
 						<IF COND="[#RESUME:FR]">

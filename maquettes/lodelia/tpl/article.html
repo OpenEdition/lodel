@@ -19,16 +19,14 @@
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-</head>
 
-<body>
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
 	
-		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
-		de class "separation" et class "contenu" -->
-		<div class="corps">
+	<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+	de class "separation" et class "contenu" -->
+	<div class="corps">
 
 		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
 		de nav et le contenu de la page" -->
@@ -65,143 +63,137 @@
 						<IF COND="[#TYPE]=='article'">
 							Article
 						</IF>
-						
 				</div>
+			
 				<!-- Affiche les boutons pour accéder à la page imprimable et la page de signalement-->
 				<div class="signalerimprimer">
 					<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
 				</div>
+				
 			</div>
 			
 						<!-- Affiche les infos sur le document: titre, sous-titre, auteur-->
 			<div class="afficherdocument">
-						<IF COND="[#TYPE]=='note de lecture'">
-							Note de lecture par
-						</IF>
-						
-						<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
-						
-						<IF COND="[#SURTITRE]">
-						[#SURTITRE]
-						</IF>
-						
-						[#TITRE]
-						
-						<IF COND="[#SOUSTITRE]">
-						[#SOUSTITRE]
-						</IF>
-						<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+				<IF COND="[#TYPE]=='note de lecture'">
+					Note de lecture par
+				</IF>
+					<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
+				<IF COND="[#SURTITRE]">
+					[#SURTITRE]
+				</IF>
+					[#TITRE]
+				<IF COND="[#SOUSTITRE]">
+					[#SOUSTITRE]
+				</IF>
+					<MACRO NAME="BOUTON_EDITER_DOCUMENT">
 			</div>
 			
 				<!-- Erratum --->
-				<IF COND="[#ERRATUM]">
-					<div class="titre3">
-						Errata
-					</div>
-					<div class="notes"> 
-						[#ERRATUM]
-						<br />
-					</div>
-				</IF>
+			<IF COND="[#ERRATUM]">
+				<div class="titre3">
+					Errata
+				</div>
+				<div class="notes"> 
+					[#ERRATUM]
+					<br />
+				</div>
+			</IF>
 				
-				<!-- Notes de la rédaction --->
-				<IF COND="[#NDLR]">
-					<div class="titre3">
-						Notes de la rédaction
-					</div>
-					<div class="notes"> 
-						[#NDLR]
-						<br />
-					</div>
-				</IF>
+			<!-- Notes de la rédaction --->
+			<IF COND="[#NDLR]">
+				<div class="titre3">
+					Notes de la rédaction
+				</div>
+				<div class="notes"> 
+					[#NDLR]
+					<br />
+				</div>
+			</IF>
 				
-				<!-- Historique --->
-				<IF COND="[#HISTORIQUE]">
-					<div class="titre3">
-						Historique
-					</div>
-					<div class="notes"> 
-						[#HISTORIQUE]
-						<br />
-					</div>
-				</IF>
+			<!-- Historique --->
+			<IF COND="[#HISTORIQUE]">
+				<div class="titre3">
+					Historique
+				</div>
+				<div class="notes"> 
+					[#HISTORIQUE]
+					<br />
+				</div>
+			</IF>
 				
 			<!-- Affichage du résumé en français   -->
-				<IF COND="[#RESUME:FR]">
-					<div class="titre3">
-						Résumé
-					</div>
-					<div class="resume" > 
-						[#RESUME:FR]
-					</div>		
-				</IF>
+			<IF COND="[#RESUME:FR]">
+				<div class="titre3">
+					Résumé
+				</div>
+				<div class="resume" > 
+					[#RESUME:FR]
+				</div>		
+			</IF>
 				
-			
-								
-				<!-- Résumé en anglais   -->
-				<IF COND="[#RESUME:EN]">
-					<div class="titre3"> 
-						Abstract
-					</div>
-					<div class="resume" >
-						[#RESUME:EN]
-					</div>
-				</IF>
+			<!-- Résumé en anglais   -->
+			<IF COND="[#RESUME:EN]">
+				<div class="titre3"> 
+					Abstract
+				</div>
+				<div class="resume" >
+					[#RESUME:EN]
+				</div>
+			</IF>
 				
-				<!-- Résumé en espagnol   -->
-				<IF COND="[#RESUME:ES]">
-					<div class="titre3"> 
-						Extracto
-					</div>
-					<div class="resume" >
-						[#RESUME:ES]
-					</div>
-				</IF>
+			<!-- Résumé en espagnol   -->
+			<IF COND="[#RESUME:ES]">
+				<div class="titre3"> 
+					Extracto
+				</div>
+				<div class="resume" >
+					[#RESUME:ES]
+				</div>
+			</IF>
 				
-				<!-- Résumé en allemand   -->
-				<IF COND="[#RESUME:DE]">
-					<div class="titre3"> 
-						Zusammenfassung
-					</div>
-					<div class="resume" >
-						[#RESUME:DE]
-					</div>
-				</IF>
+			<!-- Résumé en allemand   -->
+			<IF COND="[#RESUME:DE]">
+				<div class="titre3"> 
+					Zusammenfassung
+				</div>
+				<div class="resume" >
+					[#RESUME:DE]
+				</div>
+			</IF>
 				
-				<!-- Résumé en italien   -->
-				<IF COND="[#RESUME:IT]">
-					<div class="titre3"> 
-						Riassunto
-					</div>
-					<div class="resume" >
-						[#RESUME:IT]
-					</div>
-				</IF>
+			<!-- Résumé en italien   -->
+			<IF COND="[#RESUME:IT]">
+				<div class="titre3"> 
+					Riassunto
+				</div>
+				<div class="resume" >
+					[#RESUME:IT]
+				</div>
+			</IF>
 	
 					
 		<!-- ----------------------------------------------------------------------- -->
 		<!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
 		<!-- ----------------------------------------------------------------------- -->
 		
-				<IF COND="[#TEXTEPUBLIE]">
+			<IF COND="[#TEXTEPUBLIE]">
 				
 				<!-- Texte. Si il existe --->
 				<IF COND="[#TEXTE]">
 					<div class="titre3">
-							<IF COND="[#TYPE]!='presentation'">
-								Texte intégral
-							</IF>
+						<IF COND="[#TYPE]!='presentation'">
+							Texte intégral
+						</IF>
 					</div>
 					<div class="texte">
-							<IF COND="[#TYPE]=='compte rendu'">
-								<IF COND="[#META_IMAGE]">
-									<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
-								</IF>
-								[#TEXTE]
-							<ELSE/>			
-								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
+						<IF COND="[#TYPE]=='compte rendu'">
+							<IF COND="[#META_IMAGE]">
+								<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
 							</IF>
-				
+							[#TEXTE]
+						<ELSE/>			
+							[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
+						</IF>
 					</div>
 				</IF>
 				
@@ -252,27 +244,23 @@
 					</div>
 				</IF>
 								
-				<!-- Si le texte n'est pas encore autorisé à être publié -->
-				<ELSE/>
+			<!-- Si le texte n'est pas encore autorisé à être publié -->
+			<ELSE/>
 				<p class="texte">
 					Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
 				</p>
-					
-				</IF>
+			</IF>
 				
-				<!-- Affiche la description de l'auteur -->		
-				<MACRO NAME="DESCRITION_AUTEUR"> 
+			<!-- Affiche la description de l'auteur -->		
+			<MACRO NAME="DESCRITION_AUTEUR"> 
 				
-				<!-- Affiche liens de navigation entre les documents  -->						
-				<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
+			<!-- Affiche liens de navigation entre les documents  -->						
+			<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				
-				<MACRO NAME="REVUES_ORG"> 		
+			<MACRO NAME="REVUES_ORG"> 		
 				
-			
-							
 		</div>
 	</div>
-	
 	
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">  
