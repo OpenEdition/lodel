@@ -75,6 +75,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
 
       if ($unzipcmd && $unzipcmd!="pclzip") { // unzip cmd
 	$filesinarchive=preg_split("/\s*\r?\n\s*/",`$unzipcmd -Z -1 $fileconverted`,-1,PREG_SPLIT_NO_EMPTY);
+	#die("la: ".join(" ",$filesinarchive));
       } else { // pclzip solution
 	require($home."pclzip.lib.php");
 	$archive=new PclZip($fileconverted);
@@ -561,7 +562,7 @@ function OO_XHTML ($convertedfile,&$context)
     function img_copy($imgfile,$ext,$count,$rand) {
       global $tmpdir;
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
-      rename($tmpdir."/".$imgfile,$newimgfile) or die ("impossible de copier l'image $imgfile dans $newimgfile");
+      rename($tmpdir."/".basename($imgfile),$newimgfile) or die ("impossible de copier l'image $imgfile dans $newimgfile");
       return $newimgfile;
     }
     include_once ($home."func.php");

@@ -110,11 +110,14 @@ function enregistre_entite_from_xml($context,$text,$classe)
 
   $id=enregistre_entite ($localcontext,0,$classe,"",FALSE); // on ne genere pas d'erreur... Tant pis !
 
-  // ok, maintenant, il faut rechercher les images et corriger leur location.
+  // ok, now, search for the image, and place them in a safe place
 
   function mv_image($imgfile,$ext,$count,$id) {
     $dir="docannexe/image/$id";
-    if (!is_dir(SITEROOT.$dir)) mkdir(SITEROOT.$dir,0700);
+    if (!is_dir(SITEROOT.$dir)) {
+      mkdir(SITEROOT.$dir);
+      @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]));
+    }
     $newfile="$dir/img-$count.$ext";
     copy($imgfile,SITEROOT.$newfile);
     @unlink($imgfile);

@@ -4958,18 +4958,19 @@
   // --------------------------------------------------------------------------------
   function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter=true)
   {
-    if (stristr(php_uname(), 'windows')) {
+    if (defined('PHP_OS') && stristr(PHP_OS, 'win')) {
+#    if (stristr(php_uname(), 'windows')) {
       // ----- Look for potential disk letter
       if (($p_remove_disk_letter) && (($v_position = strpos($p_path, ':')) != false)) {
-          $p_path = substr($p_path, $v_position+1);
+	$p_path = substr($p_path, $v_position+1);
       }
       // ----- Change potential windows directory separator
       if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0,1) == '\\')) {
-          $p_path = strtr($p_path, '\\', '/');
+	$p_path = strtr($p_path, '\\', '/');
       }
     }
     return $p_path;
   }
-  // --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
 
 ?>

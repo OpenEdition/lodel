@@ -231,6 +231,7 @@ function copy_images_private (&$text,$callback,$argument,&$count,&$imglist)
 	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
 #	echo "images: $imgfile $newimgfile <br>";
       	$text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
+	@chmod(SITEROOT.$newimgfile, 0666  & octdec($GLOBALS['filemask']));
       	$count++;
 	}
     }
@@ -506,7 +507,8 @@ function save_annex_file($dir,$file,$filename,$uploaded=TRUE) {
   if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir)) die("ERROR: unable to create the directory \"$dir\"");
+    @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]));
   }
   $filename=basename($filename); // take only the name
   if (!$file) die("ERROR: save_annex_file file is not set");
@@ -522,7 +524,6 @@ function save_annex_file($dir,$file,$filename,$uploaded=TRUE) {
       @unlink($file);
     }
   }
-
 
   @chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
   
