@@ -196,7 +196,7 @@
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
 	      <IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<input size="70" type="text" entite[[#NOM]][[#LANG]]" value="[#VALUE]">
+		<input size="70" type="text" name="entite[[#NOM]][[#LANG]]" value="[#VALUE]">
 	      </IF>
 	      <IF COND="[#EDITION] eq 'textarea10'">
 		<textarea rows="10" cols="70" name="entite[[#NOM]][[#LANG]]">[#VALUE]</textarea>
