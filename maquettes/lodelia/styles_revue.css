@@ -301,7 +301,6 @@ A.titrerevue:active {
 	 font-weight : bold;
 	 text-align: left; 
 	 color: #ffffff;
-	 padding-left:: 10px;
 	 margin-bottom: 7px;
 	 margin-top: 15px;
 	 vertical-align: middle;
@@ -317,8 +316,7 @@ A.titre2 {
 	text-indent: 0;
 	margin: 0;
 	vertical-align: middle;
-	
-	
+
 }
 
 A.titre2:hover {
@@ -342,6 +340,56 @@ A.titre2:active {
 	text-indent: 0;
 	margin: 0;
 }
+
+
+.alphabet {
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: small;
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 margin-bottom: 7px;
+	 margin-top: 15px;
+	 vertical-align: middle;
+}
+
+A.alphabet {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #cccccc;
+	text-indent: 0;
+	margin: 0;
+	vertical-align: middle;
+
+}
+
+A.alphabet:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+	
+}
+A.alphabet:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+}
+
 
 /***************************************************************************/
 	
@@ -516,7 +564,7 @@ A.texte_integral:active {
 	/*  
 	 * Style utilisé pour les résumés
 	 */
-	width: auto;
+	width: 561;
 	height: auto;
 	font-size: x-small;
 	color : #000000;
@@ -548,13 +596,12 @@ A.texte_integral:active {
 	/*  
 	 * Style permettant d'afficher le texte des notes ainsi que des errata, NDLR et historique
 	 */
-	width: auto;
+	width: 561;
 	height: auto;
 	font-size: 90%;
 	font-weight: small;
 	line-height: 120%;
 	text-align : justify;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 	padding-top: 2em;
 	padding-bottom: 2em;
 	padding-right: 2em;
@@ -757,7 +804,49 @@ A.menu2:active {
 
 /**********************************************************************************/
 
+.numerolineaire {
+	/*  
+	 * Style qui s'applique aux titres des numéros dans 
+	 * dans le sommaire linéaire
+	 */
+	height: auto;
+	width: 561;
+	background-color: #ffffff;
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
 
+
+.icone {
+	/*  
+	 * Style qui s'applique à l'icone affichée avec les titres des numéros dans 
+	 * dans le sommaire linéaire
+	 */
+	height: auto;
+	width: auto;
+	background-color: #ffffff;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	float: left;		
+}
+
+.numero {
+	/*
+	 *	
+	 */
+	height: auto;
+	width: auto;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	background-color: #F7F7F7;
+	text-decoration: none;
+	color: #666666;
+	
+	
+}
 
 /***************************************************************************************
  *	Les styles définissant les images                                                  *
