@@ -37,18 +37,16 @@
 	<br>
 
 	<div id="formulaire">
-		<div id="titre_formulaire">
-			<p>Bienvenue !<br />Merci de vous identifier :</p>
-		</div>
+		<div id="titre_formulaire">Bienvenue !<br />Merci de vous identifier :</div>
 		<form action="login.php" method="POST">
 			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 			<div id="champ_formulaire">
-				<p>Nom d'utilisateur : <input type="text" name="login" value="[#LOGIN]" /></p>
-				<p>Mot de passe : <input type="password" name="passwd" /></p>
+				Nom d'utilisateur : <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" /><br /><br />
+				Mot de passe : <input type="password" class="input_formulaire" name="passwd" />
 			</div>
 			<p>
 				<img src="[#SHAREURL]/images/vague.png" alt="" />
-				<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" alt="Valider" />
+				<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" border="0" alt="Valider" />
 			</p>
 		</form>
 	</div>

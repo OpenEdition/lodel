@@ -502,31 +502,26 @@ div.lien_popup a:hover {
 	text-align: right;
 	left: 73px;
 	width: 200px;
-}
-
-#titre_formulaire p {
 	font-family: arial;
 	font-weight: bold;
 	font-size: 14px;
 	color: #669966;
+	margin-top:10px;
+	margin-bottom:20px;
 }
 
 #champ_formulaire {
-	position: relative;
 	left: 120px;
-	width: 300px;
 	text-align: right;
 	margin-bottom: 15px;
-}
-
-#champ_formulaire p {
 	font-family: verdana;
 	font-size: 12px;
 	font-weight: bold;
 }
 
-#champ_formulaire input {
+.input_formulaire {
 	width: 142px;
+	text-align:left;
 }
 
 #credit {
