@@ -165,6 +165,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
 		      "introduction"=>"texte","conclusion"=>"texte",
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
+		      "standard"=>"texte", 
 		      "puces?"=>"texte",
 		      "bloccitation"=>"citation",
 		      "quotations"=>"citation",
