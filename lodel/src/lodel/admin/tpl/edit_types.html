@@ -48,23 +48,23 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="type">[@ADMIN.NAME_TYPE]<span class="optional">(*)</span>
+  <label for="type">[@ADMIN.NAME_TYPE]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="type" value="[#TYPE]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="type" id="type" class="text" value="[#TYPE]">
+  <br />
   <LOOP NAME="fielderror" FIELD="type">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="title">[@ADMIN.TITLE_TYPE]<span class="optional">(*)</span>
+  <label for="title">[@ADMIN.TITLE_TYPE]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="title" value="[#TITLE]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <br />
   <LOOP NAME="fielderror" FIELD="title">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
@@ -76,65 +76,65 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="tpl">[@ADMIN.TEMPLATE_FILE]
+  <label for="tpl">[@ADMIN.TEMPLATE_FILE]
         : 
       </label>
-    <input type="text" size="30" name="tpl" value="[#TPL]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
+  <br />
   <LOOP NAME="fielderror" FIELD="tpl">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="tplcreation">[@ADMIN.CREATION_TEMPLATE_FILE]
+  <label for="tplcreation">[@ADMIN.CREATION_TEMPLATE_FILE]
         : 
       </label>
-    <input type="text" size="30" name="tplcreation" value="[#TPLCREATION]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="tplcreation" id="tplcreation" class="text" value="[#TPLCREATION]">
+  <br />
   <LOOP NAME="fielderror" FIELD="tplcreation">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="tpledition">[@ADMIN.EDITION_TEMPLATE_FILE]
+  <label for="tpledition">[@ADMIN.EDITION_TEMPLATE_FILE]
         : 
       </label>
-    <input type="text" size="30" name="tpledition" value="[#TPLEDITION]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="tpledition" id="tpledition" class="text" value="[#TPLEDITION]">
+  <br />
   <LOOP NAME="fielderror" FIELD="tpledition">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="import">[@ADMIN.IMPORT_WITH_SERVOO]
+  <label for="import">[@ADMIN.IMPORT_WITH_SERVOO]
         : 
       </label>
-    <select name="import">
-      <?php 
+  <br class="nobr">
+  <select name="import" id="import">
+    <?php 
                       makeSelect($context,"import","types","select");
                   ?>
-    </select>
-  </p>
+  </select>
+  <br />
   <LOOP NAME="fielderror" FIELD="import">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
   <IF COND="[#USERRIGHTS] ge [#TABLE|rights('protect')]">
-    <p>
-      <label for="protected">[@ADMIN.PROTECTED_TYPE]
+    <label for="protected">[@ADMIN.PROTECTED_TYPE]
         : 
       </label>
-      <IF COND="abs([#STATUS]) ge 32">
-        <input type="checkbox" name="protected" checked>
-        <ELSE/>
-        <input type="checkbox" name="protected">
-      </IF>
-    </p>
+    <br class="nobr">
+    <IF COND="abs([#STATUS]) ge 32">
+      <input type="checkbox" name="protected" id="protected" checked>
+      <ELSE/>
+      <input type="checkbox" name="protected" id="protected">
+    </IF>
+    <br />
     <LOOP NAME="fielderror" FIELD="protected">
       <p class="error">
         <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
@@ -174,6 +174,6 @@
 		    </td>  
 		  </tr>
 	</table>
-	<FUNC NAME="EDIT_SUBMIT_BAR">
+	<MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
 <MACRO NAME="CLOSE_HTML">

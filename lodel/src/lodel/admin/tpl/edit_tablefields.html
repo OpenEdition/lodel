@@ -1,0 +1,258 @@
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros2.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@ADMIN.TITLE_DATAFIELD]</title>
+	<script type="text/javascript"><!--
+	
+		function confirm_change_type()
+		{
+			<IF COND="[#ID]">
+				return confirm("[@EDITION.CONFIR_CHANGE_FIELDTYPE]");
+			</IF>
+		}
+	//
+	--></script>
+
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_DATAFIELD]</td>
+	</tr>
+</table>
+
+<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
+<!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
+<input type="hidden" name="do" value="edit">
+<input type="hidden" name="table" value="tablefields">
+<fieldset>
+  <legend>table qui contient les champs supplementaires</legend>
+  <input type="hidden" name="id" value="[#ID]">
+  <LOOP NAME="fielderror" FIELD="id">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="name">[@ADMIN.NAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="name">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="title">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="style">[@ADMIN.STYLE]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="style">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="type">[@ADMIN.TYPE]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="type" id="type" onChange="confirm_change_type();">
+    <?php 
+                      makeSelect($context,"type","tablefields","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="type">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="dc">[@ADMIN.DUBLIN_CORE_EQUIVALENT]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="dc" id="dc">
+    <?php 
+                      makeSelect($context,"dc","tablefields","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="dc">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="condition">[@ADMIN.CONDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="condition" id="condition">
+    <?php 
+                      makeSelect($context,"condition","tablefields","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="condition">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="defaultvalue">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="processing">[@ADMIN.PROCESSING_IMPORT]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="processing" id="processing" class="text" value="[#PROCESSING]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="processing">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="allowedtags">[@ADMIN.ALLOWED_TAGS]
+        : 
+      </label>
+  <br class="nobr">
+  <select multiple name="allowedtags[]" id="allowedtags">
+    <?php 
+                      makeSelect($context,"allowedtags","tablefields","multipleselect");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="allowedtags">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="filtering">[@ADMIN.AUTOMATIC_FILTERING]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="filtering" id="filtering" class="text" value="[#FILTERING]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="filtering">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="edition">[@ADMIN.INTERFACE_EDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="edition" id="edition">
+    <?php 
+                      makeSelect($context,"edition","tablefields","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="edition">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="comment">[@ADMIN.COMMENT]
+        : 
+      </label>
+  <br class="nobr">
+  <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
+  <br />
+  <LOOP NAME="fielderror" FIELD="comment">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="idgroup" id="idgroup">
+    <?php 
+                      makeSelect($context,"idgroup","tablefields","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="idgroup">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
+        : 
+      </label>
+  <br class="nobr">
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
+    <ELSE/>
+    <input type="checkbox" name="protected" id="protected">
+  </IF>
+  <br />
+  <LOOP NAME="fielderror" FIELD="protected">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+</fieldset>
+
+<!--[ end{form} Automatic generated. Don't edit ]-->
+	</table>
+
+	<MACRO NAME="EDIT_SUBMIT_BAR">
+</form>
+
+<div>
+[@ADMIN.GROUP_ELEMENTS_CORRESPONDANCE] :
+<table border="1">
+<LOOP NAME="allowedtags_documentation">
+<tr><td>[#GROUPNAME]</td><td>[#ALLOWEDTAGS]</td></tr>
+</LOOP>
+</table>
+<div>
+<MACRO NAME="CLOSE_HTML">

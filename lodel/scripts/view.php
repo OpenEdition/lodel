@@ -56,19 +56,35 @@ class View {
 
      usemaindb();
 
-     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or die($db->errormsg());
+#     echo $url;
+#     $result=$db->execute(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC"));
+#     while(!$result->EOF) {
+#       print_r($result->fields);
+#       $result->MoveNext();
+#     }
+
+##     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or die($db->errormsg());
+
+     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or die($db->errormsg());
 
      list ($id,$newurl)=$result->fetchRow();
 
      if ($id) {
        $db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or die($db->errormsg());
-       header("Location: http://".$_SERVER['SERVER_NAME'].$newurl.$arg);exit;
+       $newurl="http://".$_SERVER['SERVER_NAME'].$newurl;
      } else {
-       header("Location: index.php");exit;
+       $newurl="index.php";
      }
-     usecurrentdb();
-   }
 
+     if (!headers_sent()) {
+       header("location: ".$newurl);
+       exit;
+     } else {
+       echo "<h2>Warnings seem to appear on this page. You may go on anyway by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
+       exit;
+     }
+     //usecurrentdb();
+   }
 
    /**
     * render

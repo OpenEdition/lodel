@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-23.
+ // File generate automatically the 2004-12-25.
  //
 
 
@@ -44,6 +44,7 @@ class optionsVO {
    var $value;
    var $userrights;
    var $defaultvalue;
+   var $comment;
    var $exportpolicy;
    var $rank;
    var $status;
@@ -59,7 +60,7 @@ class optionsDAO extends DAO {
 
    function optionsDAO() {
        $this->DAO("options",false);
-       $this->rights=array();
+       $this->rights=array('write'=>LEVEL_ADMIN,'protect'=>LEVEL_ADMINLODEL);
    }
 }
 

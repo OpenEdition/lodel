@@ -217,7 +217,7 @@ class DAO {
 
    /**
     * Function to delete an object value.
-    * @param mixed object or numeric id
+    * @param mixed object or numeric id or an array of ids
     */
 
    function deleteObject(&$mixed) {
@@ -228,14 +228,29 @@ class DAO {
      if (is_object($mixed)) {
        $vo=&$mixed;
        $id=$vo->id;
+       $criteria="id='$id'";
        //set id on vo to 0
        $vo->id=0;
-     } else {
+       $nbid=1;
+     } elseif (is_numeric($mixed) && $mixed>0) {
        $id=$mixed;
+       $criteria="id='$id'";
+       $nbid=1;
+     } elseif (is_array($mixed)) {
+       $id=$mixed;
+       $criteria="id IN ('".join("','",$id)."')";
+       $nbid=count($id);
+     } else {
+       die("ERROR: DAO::deleteObject does not support the type of mixed");
      }
+
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->sqltable." WHERE id='$id'".$this->_rightscriteria("write")) or die($db->errormsg());
-     if ($db->affected_Rows()<=0) return false; // not the rights
+     $db->execute("DELETE FROM ".$this->sqltable." WHERE $criteria ".$this->_rightscriteria("write")) or die($db->errormsg());
+     if ($db->affected_Rows()!=$nbid) die("ERROR: you don't have the right to delete some object in table ".$this->table);
+   // in theory, this is bad in the $mixed is an array because 
+   // some but not all of the object may have been deleted
+   // in practice, it is an error in the interface. The database may be corrupted (object in fact).
+
      //delete the uniqueid entry if required
      if ($this->uniqueid) {
        deleteuniqueid($id);

@@ -52,7 +52,7 @@ class EntryTypesLogic extends Logic {
      if ($count==0) {
        return false;
      } else {
-       return sprintf(getlodeltextcontents("cannot_delete_hasentry","common"),$count);
+       return sprintf(getlodeltextcontents("cannot_delete_hasentry","admin"),$count);
      }
      //) { $error["error_has_entities"]=$count; return "back"; }
    }

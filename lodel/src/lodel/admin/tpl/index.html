@@ -21,6 +21,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros2.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[(#SITE|strtoupper)]. [@COMMON.ADMINISTRATION]</title>
 	<script type="text/javascript"><!--
@@ -31,7 +32,7 @@
 		}
 	//
 	--></script>
-
+<MACRO NAME="JS_SELECT_URL">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -61,7 +62,12 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="options.php"><span class="texte_orange">[@ADMIN.EDIT_SITE_OPTIONS]</span></a></td>
+						[@ADMIN.OPTIONS]
+						<select onChange="select_url(this)"><option>--</option>
+                                       		<LOOP NAME="options" TABLE="optiongroups" WHERE="status gt 0" ORDER="rank">
+							<option value="index.php?do=view&table=useroptiongroups&id=[#ID]">[#TITLE]</option>
+						</LOOP>
+						</select>
 						<td>&nbsp;</td>
 					</tr>
 <!--[					<tr>
@@ -155,6 +161,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
+							<a href="index.php?do=list&table=classes"><span class="texte_orange">[@ADMIN.CLASSES]</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
 							<a href="index.php?do=list&table=entrytypes"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
@@ -170,48 +184,35 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=types&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
+							[@ADMIN.TYPE]
 							<IF COND="[#USER.REDACTOR]">
-								<a href="index.php?do=list&table=types&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
-							<ELSE/>
-								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_TYPE]</span></span>
+							<select onChange="select_url(this)"><option>--</option>
+                                        		<LOOP NAME="classes_for_types" TABLE="classes" WHERE="status gt 0" ORDER="rank">
+								<option value="index.php?do=list&table=types&class=[#CLASS]">[#TITLE]</option>
+							</LOOP>
+							</select>
 							</IF>
-						</td>			
-						<td>&nbsp;</td>
-					</tr>
-
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<IF COND="[#USER.REDACTOR]">
-							<a href="index.php?do=list&table=fields&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
-							<ELSE/>
-								<span class="texte_orange"><span class="inactif">[@ADMIN.DOCUMENT_DATAFIELDS]</span></span></span>
-			                                </IF>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
+							[@ADMIN.DATAFIELDS]
 							<IF COND="[#USER.REDACTOR]">
-							<a href="index.php?do=list&table=fields&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
-							<ELSE/>
-								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_DATAFIELDS]</span></span></span>
-			                                </IF>
+							<select onChange="select_url(this)"><option>--</option>
+                                        		<LOOP NAME="classes_for_tablefields" TABLE="classes" WHERE="status gt 0" ORDER="rank">
+								<option value="index.php?do=list&table=tablefieldgroups&idclass=[#ID]">[#TITLE]</option>
+							</LOOP>
+							</select>
+							</IF>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=options"><span class="texte_orange">[@ADMIN.MANAGE_OPTIONS]</span></a>
+							<a href="index.php?do=list&table=optiongroups"><span class="texte_orange">[@ADMIN.MANAGE_OPTIONS]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>

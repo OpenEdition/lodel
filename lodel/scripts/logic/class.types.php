@@ -62,7 +62,7 @@ class TypesLogic extends Logic {
      if ($count==0) {
        return false;
      } else {
-       return sprintf(getlodeltextcontents("cannot_delete_hasentity","common"),$count);
+       return sprintf(getlodeltextcontents("cannot_delete_hasentity","admin"),$count);
      }
      //) { $error["error_has_entities"]=$count; return "back"; }
    }
@@ -132,9 +132,16 @@ class TypesLogic extends Logic {
      global $home;
 
      require_once($home."typetypefunc.php"); 
-     typetype_delete("entrytype","identitytype='".$id."'");
-     typetype_delete("persontype","identitytype='".$id."'");
-     typetype_delete("entitytype","identitytype='".$id."'");
+
+     if (is_array($id)) {
+       $criteria="identitytype IN ('".join("','",$id)."')";
+     } else {
+       $criteria="identitytype='$id'";
+     }
+
+     typetype_delete("entrytype",$criteria);
+     typetype_delete("persontype",$criteria);
+     typetype_delete("entitytype",$criteria);
    }
 
 

@@ -196,8 +196,11 @@ ln tpl/deskadmin.html
 ln entry.php
 ln tpl/entry.html
 
-ln tpl/options.html
+ln tpl/optiongroups.html
 ln tpl/edit_options.html
+ln tpl/edit_optiongroups.html
+ln tpl/edit_useroptiongroups.html
+ln colorpicker.js
 
 ln list.php
 
@@ -213,20 +216,21 @@ ln tpl/translationgroup.html
 ln translationsexport.php
 ln translationsimport.php
 
-ln field.php
-ln tpl/field.html
-ln tpl/fields.html
-ln fieldgroup.php
-ln tpl/fieldgroup.html
-
-
 ln tpl/edit_types.html
+ln tpl/types.html
+ln tpl/edit_classes.html
+ln tpl/classes.html
 
 ln tpl/edit_entrytypes.html
 ln tpl/entrytypes.html
 
 ln tpl/edit_persontypes.html
 ln tpl/persontypes.html
+
+
+ln tpl/edit_tablefieldgroups.html
+ln tpl/tablefieldgroups.html
+ln tpl/edit_tablefields.html
 
 
 ln backup.php

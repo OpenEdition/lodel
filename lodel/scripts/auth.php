@@ -102,7 +102,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // clean the url
     $url=preg_replace("/[\?&]recalcul\w+=\w+/","",$_SERVER['REQUEST_URI']);
     if (get_magic_quotes_gpc()) $url=stripslashes($url);
-    $myurl=$db->qmagic($url);
+    $myurl=$norecordurl ? "''" : $db->qstr($url);
     $expire=$timeout+$time;
     $db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die ($db->errormsg());
 
@@ -118,9 +118,16 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
 
     // enregistre l'url de retour à partir de l'info dans la session
-    if ($row['currenturl'] && $row['currenturl']!=$url && !$norecordurl) {
+    if ($row['currenturl']!=$url && !$norecordurl) {
       $urlmd5=md5($url);
-      $db->execute(lq("INSERT INTO $GLOBALS[tp]urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5',$myurl)")) or die($db->errormsg());
+      $db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5',$myurl)")) or die($db->errormsg());
+
+#      echo $idsession," ",$myurl,"  ",$url,"  ",$urlmd5;
+#     $result=$db->execute(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"));
+#     while(!$result->EOF) {
+#       print_r($result->fields);
+#       $result->MoveNext();
+#     }
     }
     #    echo "retour:$context[url_retour]";
     //

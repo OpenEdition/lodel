@@ -129,7 +129,10 @@ function lq ($query)
 
 			  ####			"#_documentstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
 
-			  "#_tablefieldsandgroupsjoin_"=>"$GLOBALS[tableprefix]fieldgroups INNER JOIN $GLOBALS[tableprefix]fields ON $GLOBALS[tableprefix]fields.idgroup=$GLOBALS[tableprefix]fieldgroups.id",
+			  "#_tablefieldsandgroupsjoin_"=>"$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]tablefields ON $GLOBALS[tableprefix]tablefields.idgroup=$GLOBALS[tableprefix]tablefieldgroups.id",
+
+
+			  "#_tablefieldgroupsandclassesjoin_"=>"$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]classes ON $GLOBALS[tableprefix]classes.id=$GLOBALS[tableprefix]tablefieldgroups.idclass",
 			  );
 
     $query=strtr($query,$cmd);

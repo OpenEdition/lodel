@@ -33,28 +33,35 @@
 function validfield(&$text,$type,$default="")
 
 {
+  require_once($GLOBALS['home']."fieldfunc.php");
+  if ($GLOBALS['lodelfieldtypes']['autostriptags']) {
+    $text=strip_tags($text);
+  }
+
   switch ($type) {
   case "text" :
+  case "tinytext" :
+  case "longtext" :
     if (!$text) $text=$default;
     return true; // always true
     break;
   case "type" :
-    if (!preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$text)) return $type;
+    if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$text)) return $type;
     break;
   case "class" :
     $text=strtolower($text);
     if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$text)) return $type;
-    require_once($GLOBALS['home']."champfunc.php");
+    require_once($GLOBALS['home']."fieldfunc.php");
     if (reservedword($name)) return "reservedsql";
     break;
   case "tablefield" :
     $text=strtolower($text);
     if (!preg_match("/^[a-z0-9]+$/",$text)) return $type;
-    require_once($GLOBALS['home']."champfunc.php");
+    require_once($GLOBALS['home']."fieldfunc.php");
     if (reservedword($text)) return "reservedsql";
     break;
   case "style" :
-    if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
+    if ($text && !preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
     break;
   case "mlstyle" :
     $stylesarr=preg_split("/([\n,;:])/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
@@ -77,7 +84,7 @@ function validfield(&$text,$type,$default="")
     if ($len<3 || $len>12 || !preg_match("/^[0-9A-Za-z_;.?!@:,]+$/",$text)) return $type;
     break;
   case "lang" :
-    if (!preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$text)) return $type;
+    if ($text && !preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$text)) return $type;
     break;
   case "date" :
   case "datetime" :
@@ -124,11 +131,14 @@ function validfield(&$text,$type,$default="")
     $text=trim($text); // should be done elsewhere but to be sure...
     if (strpos($text,"/")!==false || $text[0]==".") return "tplfile";
     break;
-
+  case "color" :
+    if ($text && !preg_match("/^#[A-Fa-f0-9]{3,6}$/",$text)) return "color";
+    break;
   case "textgroups" :
     return $text=="site" || $text=="interface";
     break;
   case "select" :
+  case "multipleselect" :
     return true; // cannot validate
   default:
     return false; // pas de validation

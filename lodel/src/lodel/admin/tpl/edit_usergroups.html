@@ -47,27 +47,27 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="name">[@ADMIN.GROUP_NAME]
+  <label for="name">[@ADMIN.GROUP_NAME]
         : 
       </label>
-    <input type="text" size="30" name="name" value="[#NAME]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="protected">[@ADMIN.PROTECTED_USER_GROUP]
+  <label for="protected">[@ADMIN.PROTECTED_USER_GROUP]
         : 
       </label>
-    <IF COND="abs([#STATUS]) ge 32">
-      <input type="checkbox" name="protected" checked>
-      <ELSE/>
-      <input type="checkbox" name="protected">
-    </IF>
-  </p>
+  <br class="nobr">
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
+    <ELSE/>
+    <input type="checkbox" name="protected" id="protected">
+  </IF>
+  <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>

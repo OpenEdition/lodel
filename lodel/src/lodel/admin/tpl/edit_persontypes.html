@@ -48,94 +48,94 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="type">[@ADMIN.NAME_PERSON_TYPE]<span class="optional">(*)</span>
+  <label for="type">[@ADMIN.NAME_PERSON_TYPE]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="type" value="[#TYPE]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="type" id="type" class="text" value="[#TYPE]">
+  <br />
   <LOOP NAME="fielderror" FIELD="type">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="title">[@ADMIN.TITLE_PERSON_TYPE]<span class="optional">(*)</span>
+  <label for="title">[@ADMIN.TITLE_PERSON_TYPE]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="title" value="[#TITLE]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <br />
   <LOOP NAME="fielderror" FIELD="title">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="style">[@ADMIN.STYLE_PERSON_TYPE]<span class="optional">(*)</span>
+  <label for="style">[@ADMIN.STYLE_PERSON_TYPE]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="style" value="[#STYLE]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
+  <br />
   <LOOP NAME="fielderror" FIELD="style">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="titledescription">[@ADMIN.TITLE_PERSON_DESCRIPTION]<span class="optional">(*)</span>
+  <label for="titledescription">[@ADMIN.TITLE_PERSON_DESCRIPTION]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="titledescription" value="[#TITLEDESCRIPTION]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="titledescription" id="titledescription" class="text" value="[#TITLEDESCRIPTION]">
+  <br />
   <LOOP NAME="fielderror" FIELD="titledescription">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="styledescription">[@ADMIN.STYLE_PERSON_DESCRIPTION]<span class="optional">(*)</span>
+  <label for="styledescription">[@ADMIN.STYLE_PERSON_DESCRIPTION]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="styledescription" value="[#STYLEDESCRIPTION]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="styledescription" id="styledescription" class="text" value="[#STYLEDESCRIPTION]">
+  <br />
   <LOOP NAME="fielderror" FIELD="styledescription">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_PERSON]
+  <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_PERSON]
         : 
       </label>
-    <input type="text" size="30" name="tpl" value="[#TPL]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
+  <br />
   <LOOP NAME="fielderror" FIELD="tpl">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]
+  <label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]
         : 
       </label>
-    <input type="text" size="30" name="tplindex" value="[#TPLINDEX]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="tplindex" id="tplindex" class="text" value="[#TPLINDEX]">
+  <br />
   <LOOP NAME="fielderror" FIELD="tplindex">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
   <IF COND="[#USERRIGHTS] ge [#TABLE|rights('protect')]">
-    <p>
-      <label for="protected">[@ADMIN.PROTECTED_TYPE]
+    <label for="protected">[@ADMIN.PROTECTED_TYPE]
         : 
       </label>
-      <IF COND="abs([#STATUS]) ge 32">
-        <input type="checkbox" name="protected" checked>
-        <ELSE/>
-        <input type="checkbox" name="protected">
-      </IF>
-    </p>
+    <br class="nobr">
+    <IF COND="abs([#STATUS]) ge 32">
+      <input type="checkbox" name="protected" id="protected" checked>
+      <ELSE/>
+      <input type="checkbox" name="protected" id="protected">
+    </IF>
+    <br />
     <LOOP NAME="fielderror" FIELD="protected">
       <p class="error">
         <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
@@ -165,6 +165,6 @@
 		</span>
 	</div>
 	
-	<FUNC NAME="EDIT_SUBMIT_BAR">
+	<MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
 <MACRO NAME="CLOSE_HTML">

@@ -159,7 +159,8 @@ class Logic {
      $id=intval($context['id']);
      if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug");
      $dao=$this->_getMainTableDAO();
-     if (!$dao->deleteObject($id)) die("ERROR: you don't have the right to delete this type");
+     $this->_prepareDelete($dao,$context);
+     $dao->deleteObject($id);
 
      $ret=$this->_deleteRelatedTables($id);
 
@@ -226,12 +227,16 @@ class Logic {
      $desc=$dir>0 ? "" : "DESC";
 
      $dao=$this->_getMainTableDAO();
-     $vos=$dao->findMany($criteria,"rank $desc","id,rank");
+     $vos=$dao->findMany($criteria,"rank $desc, id $desc","id,rank");
 
      $count=count($vos);
      $newrank=$dir>0 ? 1 : $count;
-     
-     $i=0; 
+
+     #for($i=0; $i<$count; $i++) {
+     #  echo $vos[$i]->class,"  ";
+     #}
+     #echo "<br>";
+
      for($i=0; $i<$count; $i++) {
        if ($vos[$i]->id==$id) {
 	 // exchange with the next if it exists
@@ -297,15 +302,9 @@ class Logic {
      die("call to abstract publicfields");
      return array();
    }
-
-
-
    function _uniqueFields() {
      return array();
    }
-
-
-
 
    /**
     * Populate the object from the context. Only the public fields are inputted.
@@ -333,6 +332,12 @@ class Logic {
     * Usually it gather information used after in _saveRelatedTables
     */
    function _prepareEdit($dao,$context) {}
+
+   /**
+    * Used in deleteAction to do extra operation before the object is saved.
+    * Usually it gather information used after in _deleteRelatedTables
+    */
+   function _prepareDelete($dao,$context) {}
 
    /**
     * Used in editAction to do extra operation after the object has been saved

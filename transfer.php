@@ -205,6 +205,32 @@ ALTER TABLE _PREFIXTABLE_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL
       }
     }      
 
+    /////////////////////
+    // CLASS
+    if ($tables["$GLOBALS[tp]classes"]) {
+      if ($err=create("classes")) break; // create the classes table
+    }
+
+    /////////////////////
+    // TABLEFIELDS
+    if ($tables["$GLOBALS[tp]tablefields"]) {
+      $fields=getfields("tablefields");
+      if (!$fields['class']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_usergroups ADD class VARCHAR(64) NOT NULL;
+');
+	if ($err) break;
+	// get the class of each group
+	$result=mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0") or die(mysql_error());
+	while($row=mysql_fetch_assoc($result)) {
+	$err=mysql_query_cmds('
+UPDATE _PREFIXTABLE_tablefields SET class='.$row['class'].' WHERE idgroup='.$row['idgroup'].';
+');	  
+	}
+	$report.="Ajout de class a tablefields<br/>";
+      }
+    }      
+
     // fini, faire quelque chose
   } while(0);
 }

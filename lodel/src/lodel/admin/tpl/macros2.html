@@ -53,7 +53,7 @@
       Submit / Cancel / Delete bar.
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="EDIT_SUBMIT_BAR">
+<DEFMACRO NAME="EDIT_SUBMIT_BAR">
 <div class="pied_de_formulaire">
 	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
 	  <IF COND="[#ID]">
@@ -62,7 +62,7 @@
 		</IF>
 	  </IF>
 </div>
-</DEFFUNC>
+</DEFMACRO>
 
 <!--[ --------------------------------------------------------- 
       Ok bouton to submit andgo from edit to list action
@@ -110,7 +110,7 @@
 	 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 	  <span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
 </IF>
-	  <a href="index.php?do=copy&id=[#ID]&table=[#TABLE]">[@COMMON.COPY]</a>&nbsp;|
+	  <a href="index.php?do=copy&id=[#ID]&table=[#TABLE]">[@COMMON.COPY]</a> |
 </DEFFUNC>
 
 
@@ -130,7 +130,7 @@
 	<IF COND="[#ERROR] eq 'type'">[@COMMON.ERROR_INVALID_TYPE]</IF>
 	<IF COND="[#ERROR] eq 'username'">[@COMMON.ERROR_INVALID_USERNAME]</IF>
 	<IF COND="[#ERROR] eq 'passwd'">[@COMMON.ERROR_INVALID_PASSWD]</IF>
-	<IF COND="[#ERROR] eq 'field'">[@COMMON.ERROR_INVALID_FIELD]</IF>
+	<IF COND="[#ERROR] eq 'tablefield'">[@COMMON.ERROR_INVALID_FIELD]</IF>
 	<IF COND="[#ERROR] eq 'style'">[@COMMON.ERROR_INVALID_STYLE]</IF>
 	<IF COND="[#ERROR] eq 'mlstyle'">[@COMMON.ERROR_INVALID_MULTILINGUAL_STYLE]</IF>
 	<IF COND="[#ERROR] eq 'url'">[@COMMON.ERROR_INVALID_URL]</IF>
@@ -140,3 +140,168 @@
 	<IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE]</IF>
 	<IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE]</IF>
 </DEFFUNC>
+
+
+<!--[ -----------------------------------------------------------
+      JS to follow an url with a select
+--------------------------------------------------------------- ]-->
+<DEFMACRO NAME="JS_SELECT_URL">
+	<script type="text/javascript"><!--
+	
+		function select_url(obj) {
+			var index = obj.selectedIndex;
+			window.location=obj.options[index].value;
+		}
+	//
+	--></script>
+</DEFMACRO>
+
+
+<!--[ -----------------------------------------------------------
+      Afficher les options d'un groupe  
+--------------------------------------------------------------- ]-->
+
+
+<DEFMACRO NAME="AFFICHER_OPTIONS_DU_GROUPE">
+	<!--[ Affiche tous les champs du groupe courant ]-->
+	<LOOP NAME="options" TABLE="options" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
+		<DO>
+		<MACRO NAME="TR_LIST">
+			<td><strong>[(#NAME|nbsp)]</strong></td>
+			<td>[(#TYPE|nbsp)]</td>
+			<td>[(#DEFAULTVALUE|nbsp)]</td>
+			<td align="left" style="color: #CC9933;">
+			<div>
+				 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="options">
+                	         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="options">
+			</div>
+			</td>
+		</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD_GROUP]</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+
+<!--[ -----------------------------------------------------------
+      Widget pour l'edition des differents types de champs
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type" OPTIONAL="edition,eventattr,confirm">
+<!--[ --------------- CONFIRM--------------------------- ]-->
+<IF COND="[#CONFIRM]">
+<LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
+</IF>
+<!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
+<IF COND="[#EDITION] eq 'display'">
+<span class="displayfield">
+	<IF COND="[#TYPE] ne 'passwd'">[#VALUE]<ELSE/>*******</IF>
+<span>
+<ELSE/>
+<!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
+<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
+
+	<IF COND="[#TYPE] eq 'longtext' or [#EDITION] eq 'textarea10'">
+		<textarea rows="10" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+	<ELSE/>
+	<IF COND="[#EDITION] eq 'textarea30'">
+		<textarea rows="30" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+	<ELSE/>
+		<input size="50" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
+	</IF>
+	</IF>
+
+<ELSE/>
+<!--[ --------------- PASSWD -------------- ]-->
+<IF COND="[#TYPE] eq 'passwd'">
+<input size="50" type="password" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] >
+<ELSE/>
+<!--[ --------------- BOOLEAN -------------- ]-->
+<IF COND="[#TYPE] eq 'boolean'">
+    <input type="checkbox" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes]>
+<ELSE/>
+<!--[ --------------- MLTEXT -------------- ]-->
+<IF COND="[#TYPE] eq 'mltext'">
+  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
+    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
+	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
+    </div>
+  </LOOP>
+  <div>
+    <select name="addlanginmltext[[#VARNAME]]"><?php makeSelect($context,"","","lang"); ?></select>
+    <input class="form" type="submit" name="reload2" value="[@COMMON.ADD]">
+  </div>
+	
+<ELSE/>
+<!--[ --------------- LANG,SELECT ------------- ]-->
+<IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
+	      <select name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>
+		<?php  makeSelect($context,"value","",$context['type']); ?>
+	    </select>
+<ELSE/>
+<!--[ --------------- MULTIPLESELECT ------------- ]-->
+<IF COND="[#TYPE] eq 'multipleselect'">
+	      <select name="[#VARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
+		<?php  makeSelect($context,"value","",$context['type']); ?>
+	    </select>
+<ELSE/>
+<!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
+<IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
+	<input size="30" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]">
+
+<ELSE/>
+<!--[ --------------- IMAGE ------------- ]-->	    
+<IF COND="[#TYPE] eq 'image'">
+		
+                   <table><tr>
+		<IF COND="[#VALUE]"><img src="[(#VALUE|vignette(100))]" border="1"></IF>
+                
+	        <IF COND="[#VALUE]">
+			<input type="radio" name="[#VARNAME][radio]" value="">Conserver l'image courante<br />
+			<input type="radio" name="[#VARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
+		</IF>
+		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
+	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=[#VARNAME]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="[#VARNAME][localfilename]">&nbsp;</span><input size="40" type="text" id="[#VARNAME][localfullfilename]"><br />
+		<input type="radio" id="[#VARNAME][radioupload]" name="[#VARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#VARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
+		 
+	        </tr></table>
+	        <input  type="hidden" id="[#VARNAME][previousvalue]" VALUE="[#VALUE]">
+<ELSE/>
+<!--[ --------------- COLOR ------------- ]-->	    
+<IF COND="[#TYPE] eq 'color'">
+<script language="Javascript" src="colorpicker.js"></script>
+<script language="Javascript">
+<!--
+	var cp_[#NAME] = new ColorPicker(); // DIV style
+-->
+</script>
+<input type="text" name="[#NAME]" size="7" value="[#VALUE]">
+<a href="#" onClick="cp_[#NAME].select(document.forms[0].[#NAME],'colorpicker_[#NAME]');return false;" name="colorpicker_[#NAME]" id="colorpicker_[#NAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
+<script language="JavaScript">
+<!--
+document.forms[0].[#NAME].style.backgroundColor='[#VALUE]';
+cp_[#NAME].writeDiv();
+-->
+</script>
+<ELSE/>
+???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+<!--[ error managment ]-->
+<LOOP NAME="fielderror" FIELD="[#VARNAME]">
+<p class="error"> <FUNC NAME="PRINT_ERROR_MESSAGE" />  </p>
+</LOOP>
+</DEFFUNC>
+
+
+

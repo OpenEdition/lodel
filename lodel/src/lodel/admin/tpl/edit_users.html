@@ -48,94 +48,94 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span>
+  <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="username" value="[#USERNAME]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
+  <br />
   <LOOP NAME="fielderror" FIELD="username">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="passwd">[@COMMON.PASSWORD]
+  <label for="passwd">[@COMMON.PASSWORD]
         : 
       </label>
-    <input type="password" size="30" name="passwd">
-  </p>
+  <br class="nobr">
+  <input type="password" size="30" name="passwd" id="passwd">
+  <br />
   <LOOP NAME="fielderror" FIELD="passwd">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="name">[@ADMIN.LASTNAME_AND_FIRSTNAME]
+  <label for="name">[@ADMIN.LASTNAME_AND_FIRSTNAME]
         : 
       </label>
-    <input type="text" size="30" name="name" value="[#NAME]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="userrights">[@ADMIN.USER_RIGHTS]
+  <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>
-    <select name="userrights">
-      <?php 
+  <br class="nobr">
+  <select name="userrights" id="userrights">
+    <?php 
                       makeSelect($context,"userrights","users","select");
                   ?>
-    </select>
-  </p>
+  </select>
+  <br />
   <LOOP NAME="fielderror" FIELD="userrights">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="lang">[@ADMIN.USER_LANG]
+  <label for="lang">[@ADMIN.USER_LANG]
         : 
       </label>
-    <select name="lang">
-      <?php 
+  <br class="nobr">
+  <select name="lang" id="lang">
+    <?php 
                       makeSelect($context,"lang","users","lang");
                   ?>
-    </select>
-  </p>
+  </select>
+  <br />
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="usergroups">[@ADMIN.USERGROUPS]
+  <label for="usergroups">[@ADMIN.USERGROUPS]
         : 
       </label>
-    <select name="usergroups" multiple>
-      <?php 
+  <br class="nobr">
+  <select multiple name="usergroups[]" id="usergroups">
+    <?php 
                       makeSelect($context,"usergroups","users","multipleselect");
                   ?>
-    </select>
-  </p>
+  </select>
+  <br />
   <LOOP NAME="fielderror" FIELD="usergroups">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="protected">[@ADMIN.PROTECTED_USER]
+  <label for="protected">[@ADMIN.PROTECTED_USER]
         : 
       </label>
-    <IF COND="abs([#STATUS]) ge 32">
-      <input type="checkbox" name="protected" checked>
-      <ELSE/>
-      <input type="checkbox" name="protected">
-    </IF>
-  </p>
+  <br class="nobr">
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
+    <ELSE/>
+    <input type="checkbox" name="protected" id="protected">
+  </IF>
+  <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
@@ -160,7 +160,7 @@
 		</tr>
 	</table>
 
-	<FUNC NAME="EDIT_SUBMIT_BAR">
+	<MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
 
 

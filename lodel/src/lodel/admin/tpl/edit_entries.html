@@ -47,54 +47,54 @@
     </p>
   </LOOP>
   <IF COND="![#TYPE_FLAT]">
-    <p>
-      <label for="idparent">[@COMMON.PARENT_ENTRY]
+    <label for="idparent">[@COMMON.PARENT_ENTRY]
         : 
       </label>
-      <select name="idparent">
-        <?php 
+    <br class="nobr">
+    <select name="idparent" id="idparent">
+      <?php 
                       makeSelect($context,"idparent","entries","select");
                   ?>
-      </select>
-    </p>
+    </select>
+    <br />
     <LOOP NAME="fielderror" FIELD="idparent">
       <p class="error">
         <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
       </p>
     </LOOP>
   </IF>
-  <p>
-    <label for="name">[@ADMIN.ENTRY]<span class="optional">(*)</span>
+  <label for="name">[@ADMIN.ENTRY]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="name" value="[#NAME]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="abrev">[@ADMIN.ABBREVIATION]<span class="optional">(*)</span>
+  <label for="abrev">[@ADMIN.ABBREVIATION]<span class="optional">(*)</span>
         : 
       </label>
-    <input type="text" size="30" name="abrev" value="[#ABREV]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="abrev" id="abrev" class="text" value="[#ABREV]">
+  <br />
   <LOOP NAME="fielderror" FIELD="abrev">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="lang">[@COMMON.LANG]
+  <label for="lang">[@COMMON.LANG]
         : 
       </label>
-    <select name="lang">
-      <?php 
+  <br class="nobr">
+  <select name="lang" id="lang">
+    <?php 
                       makeSelect($context,"lang","entries","lang");
                   ?>
-    </select>
-  </p>
+  </select>
+  <br />
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
@@ -106,16 +106,16 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="protected">[@ADMIN.PERMANENT_ENTRY]
+  <label for="protected">[@ADMIN.PERMANENT_ENTRY]
         : 
       </label>
-    <IF COND="abs([#STATUS]) ge 32">
-      <input type="checkbox" name="protected" checked>
-      <ELSE/>
-      <input type="checkbox" name="protected">
-    </IF>
-  </p>
+  <br class="nobr">
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
+    <ELSE/>
+    <input type="checkbox" name="protected" id="protected">
+  </IF>
+  <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
@@ -129,7 +129,7 @@
 	<IF COND="[#ID]">
 		<LOOP NAME="adesfils" TABLE="entries" WHERE="idparent='[#ID]' AND status gt -64" LIMIT="0,1">
 	        <DO>
-			<FUNC NAME="EDIT_SUBMIT_BAR" DELETEDISBALE="true">
+			<MACRO NAME="EDIT_SUBMIT_BAR" DELETEDISBALE="true">
                  </DO>
 	        <ALTERNATIVE>
 			<FUNC NAME="EDIT_SUBMIT_BAR">

@@ -124,6 +124,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefields (
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
+	dc		TINYTEXT NOT NULL,		# type du champ
 	condition	TINYTEXT NOT NULL,		# condition
 	defaultvalue	TINYTEXT NOT NULL,		# valeur par defaut
 	processing	TINYTEXT NOT NULL,		# traitement a faire a l'import
@@ -426,13 +427,14 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_optiongroups (
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		VARCHAR(255) NOT NULL,		# type du champ
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
+	editscript	TINYTEXT NOT NULL,		# url to edit the group
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_name (name),
+	KEY index_name (name)
 );
 
 

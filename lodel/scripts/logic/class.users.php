@@ -78,7 +78,7 @@ class UsersLogic extends Logic {
        break;
      case "userrights":
        require_once($GLOBALS['home']."commonselect.php");
-       makeSelectUserRights($context,SINGLESITE);
+       makeSelectUserRights($context['userrights'],SINGLESITE);
        break;
      case "lang" :
        // get the language available in the interface
@@ -136,7 +136,7 @@ class UsersLogic extends Logic {
    function _validateFields(&$context,&$error) {
      global $db,$user;
 
-     if (!$this->Logic::_validateFields($context,$error)) return false;
+     if (!Logic::_validateFields($context,$error)) return false;
 
      // check the user has the right equal or higher to the new user
      if ($user['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");

@@ -38,13 +38,14 @@ $tplpath="../src/lodel/admin/tpl";
 $tables=array("entries",
 	      "persontypes",
 	      "entrytypes",
-	      "types",
+	      "types","classes",
 	      "tablefields",
 	      "tablefieldgroups",
 	      "users",
 	      "usergroups",
 	      "translations",
-	      "options");
+	      "options",
+	      "optiongroups");
 
 foreach ($tables as $table) {
 
@@ -57,9 +58,13 @@ foreach ($tables as $table) {
 
 
   $html=str_replace(array("<phptag>","</phptag>",
-			  "[#POSTACTION]","<ELSE></ELSE>"),
+			  "[#POSTACTION]","<ELSE></ELSE>",
+			  "<br>"),
 		    array("<"."?php ","?".">",
-			  '<'.'?php echo basename($_SERVER[\'PHP_SELF\']); ?'.'>',"<ELSE/>"),$html);
+			  '<'.'?php echo basename($_SERVER[\'PHP_SELF\']); ?'.'>',"<ELSE/>",
+			  "<br />"
+			  ),$html
+		    );
 
   if (empty($html)) {
     die('XSLT processing error: '. xslt_error($xsltproc));

@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 require($home."auth.php");
-authenticate(LEVEL_VISITOR, $do=="view" || $do=="edit" || $do=="copy" || $do=="delete");
+authenticate(LEVEL_VISITOR, $do=="view" || $do=="edit" || $do=="copy" || $do=="delete"  || $do=="changerank");
 require($home."langues.php");
 require_once($home."func.php");
 
@@ -40,10 +40,14 @@ if ($_POST) {
   $therequest=&$_GET;
 }
 
-
 if ($therequest['do']) {
   
-  $tables=array("entrytypes","persontypes","tablefields","entries","translations","usergroups","users","types","options");
+  $tables=array("entrytypes","persontypes","entries",
+		"tablefieldgroups","tablefields",
+		"translations","usergroups","users",
+		"types","classes",
+		"options","optiongroups","useroptiongroups");
+
   $table=$therequest['table'];
   if (!in_array($table,$tables)) die("ERROR: unknown table");
   $context['table']=$table;
@@ -56,8 +60,11 @@ if ($therequest['do']) {
       $context[$var]=$therequest[$var];
     }
   }
-  $context['id']=intval($therequest['id']);
-  $context['idgroup']=intval($therequest['idgroup']);
+  // ids. Warning: don't remove this, the security in the following rely on these ids are real int.
+  foreach(array("id","idgroup","idclass") as $var) {
+    $context[$var]=intval($therequest[$var]);
+  }
+  // dir
   if ($therequest['dir'] && ($therequest['dir']=="up" || 
 			     $therequest['dir']=="down" || 
 			     is_numeric($therequest['dir']))) $context['dir']=$therequest['dir'];
@@ -93,6 +100,7 @@ if ($therequest['do']) {
     break;
   case 'error' :
     $context['error']=$error;
+    print_r($error);
   case 'ok' :
     if ($do=="listAction") {
       $view->render($context,$table);

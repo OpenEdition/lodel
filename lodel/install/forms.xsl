@@ -68,40 +68,42 @@
 
             <!-- input type="text"                 -->
             <xsl:when test="@edittype='text' or @edittype='style'  or @edittype='mlstyle' 
-                            or @edittype='type' or @edittype='tplfile' or @edittype='username'">
-                <p>
+                            or @edittype='type' or @edittype='tplfile' or @edittype='username'
+                            or @edittype='tablefield'  or @edittype='class'">
+
                   <xsl:call-template name="label" />
                     <xsl:element name="input">
                         <xsl:attribute name="type">text</xsl:attribute>
                         <xsl:attribute name="size">30</xsl:attribute>
-                        <xsl:attribute name="name">
-                            <xsl:value-of select="@name"/>
-                        </xsl:attribute>
+                        <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+                        <xsl:attribute name="class">text</xsl:attribute>
                         <xsl:attribute name="value"><xsl:call-template name="lsvariable" /></xsl:attribute>
+                        <xsl:call-template name="javacheck" />
                     </xsl:element>
-                </p>
+                    <br />
                 <xsl:call-template name="error" />
             </xsl:when>
 
 
             <!-- input type="password"             -->
             <xsl:when test="@edittype='passwd'">
-                <p>
+
                   <xsl:call-template name="label" />
                   <xsl:element name="input">
                         <xsl:attribute name="type">password</xsl:attribute>
                         <xsl:attribute name="size">30</xsl:attribute>
-                        <xsl:attribute name="name">
-                            <xsl:value-of select="@name"/>
-                        </xsl:attribute>
+                        <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+                        <xsl:call-template name="javacheck" />
                     </xsl:element>
-                </p>
+                    <br />
                 <xsl:call-template name="error" />
             </xsl:when>
 
             <!-- input type="checkbox"             -->
             <xsl:when test="@edittype='boolean'">
-                <p>
+
                   <xsl:call-template name="label" />
                   <xsl:element name="IF">
                     <xsl:choose>
@@ -117,61 +119,71 @@
                     <xsl:element name="input">
                       <xsl:attribute name="type">checkbox</xsl:attribute>
                       <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                      <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
                       <xsl:attribute name="checked"></xsl:attribute>
+                      <xsl:call-template name="javacheck" />
                     </xsl:element>
                     <xsl:element name="ELSE"></xsl:element>
                     <xsl:element name="input">
                       <xsl:attribute name="type">checkbox</xsl:attribute>
                       <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                      <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+                      <xsl:call-template name="javacheck" />
                     </xsl:element>
                   </xsl:element>
-                </p>
+                  <br />
                 <xsl:call-template name="error" />
             </xsl:when>
 
             <!-- textarea                          -->
             <xsl:when test="@edittype='longtext'">
-                <p>
+
                   <xsl:call-template name="label" />
                     <xsl:element name="textarea">
                         <xsl:attribute name="size">30</xsl:attribute>
-                        <xsl:attribute name="name">
-                            <xsl:value-of select="@name"/>
-                        </xsl:attribute>
+                        <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+                        <xsl:attribute name="class">text</xsl:attribute>
                         <xsl:attribute name="row">10</xsl:attribute>
                         <xsl:attribute name="cols">60</xsl:attribute>
+                        <xsl:call-template name="javacheck" />
                             <xsl:call-template name="lsvariable" />
                     </xsl:element>
-                </p>
+                    <br />
                 <xsl:call-template name="error" />
             </xsl:when>
 
 
             <!-- select and lang                   -->
             <xsl:when test="@edittype='select' or @edittype='multipleselect' or @edittype='lang'">
-                <p>
+
                   <xsl:call-template name="label" />
                   <xsl:element name="select">
-                    <xsl:attribute name="name">
-                      <xsl:value-of select="@name"/>
-                    </xsl:attribute>
-                    <xsl:if test="@edittype='multipleselect'">
-                      <xsl:attribute name="multiple">multiple</xsl:attribute>
-                    </xsl:if>
+                    <xsl:choose>
+                      <xsl:when test="@edittype='multipleselect'">
+                        <xsl:attribute name="multiple">multiple</xsl:attribute>
+                        <xsl:attribute name="name"><xsl:value-of select="@name"/>[]</xsl:attribute>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                      </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+                    <xsl:call-template name="javacheck" />
                     <phptag>
                       makeSelect($context,"<xsl:value-of select="@name" />","<xsl:value-of select="$table" />","<xsl:value-of select="@edittype" />");
                   </phptag>
                 </xsl:element>
-              </p>
+                <br />
               <xsl:call-template name="error" />
             </xsl:when>
 
             <xsl:when test="@edittype='special'">
-                <p>
+
                   <phptag>
                     makeSpecialFormField($context,"<xsl:value-of select="@name" />","<xsl:value-of select="$table" />");
                   </phptag>
-                </p>
+                  <br />
             </xsl:when>
         </xsl:choose>
     </xsl:template>
@@ -191,18 +203,33 @@
         </xsl:if>
         : 
       </xsl:element>        
+      <br class="nobr" />
     </xsl:template>
 
     <!--                        -->
-    <!-- Make the erro          -->
+    <!-- Make the error          -->
     <!--                        -->
 
     <xsl:template name="error">
       <xsl:element name="LOOP">
         <xsl:attribute name="NAME">fielderror</xsl:attribute>
         <xsl:attribute name="FIELD"><xsl:value-of select="@name" /></xsl:attribute>
-        <p class="error"><FUNC NAME="PRINT_ERROR_MESSAGE"/></p>
+        <p class="error"> <FUNC NAME="PRINT_ERROR_MESSAGE" /> 
+        </p>
       </xsl:element>
+    </xsl:template>
+
+
+    <!--                           -->
+    <!-- Make the javacheck script -->
+    <!--                           -->
+
+    <xsl:template name="javacheck">
+      <xsl:choose>
+        <xsl:when test='@confirm'>
+          <xsl:attribute name='onChange'><xsl:value-of select="@confirm" />();</xsl:attribute>
+        </xsl:when>
+      </xsl:choose>
     </xsl:template>
 
 

@@ -27,27 +27,6 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-/* ******* A mettre dans un fichier central ******* */
-
-$GLOBALS['fieldtypes']=array("text"=>getlodeltextcontents("text","common"),
-			     "email"=>getlodeltextcontents("email","common"),
-			     "url"=>getlodeltextcontents("url","common"),
-			     "boolean"=>getlodeltextcontents("boolean","common"),
-			     "type"=>"",
-			     "class"=>"",
-			     "tablefield"=>"",
-			     "style"=>"",
-			     "mlstyle"=>"",
-			     "passwd"=>getlodeltextcontents("password","common"),
-			     "username"=>getlodeltextcontents("username","common"),
-			     "lang"=>getlodeltextcontents("lang","common"),
-			     "date"=>getlodeltextcontents("date","common"),
-			     "datetime"=>getlodeltextcontents("datetime","common"),
-			     "time"=>getlodeltextcontents("time","common"),
-			     "int"=>getlodeltextcontents("integer","common"),
-			     "number"=>getlodeltextcontents("nombre","common"),
-			     "tplfile"=>""
-			     );
 
 
 function humanfieldtype($text)
@@ -101,13 +80,11 @@ class OptionsLogic extends Logic {
      switch($var) {
      case "userrights":
        require_once($GLOBALS['home']."commonselect.php");
-       makeSelectUserRights($context,SINGLESITE);
+       makeSelectUserRights($context['userrights']);
        break;
      case "type" :
-       foreach ($GLOBALS['fieldtypes'] as $k=>$v) { 
-	 if ($v) $arr[$k]=$v;
-       }
-       renderOptions($arr,$context['type']);
+       require_once($GLOBALS['home']."commonselect.php");
+       makeSelectFieldTypes($context['type']);
        break;
      }
    }
@@ -144,6 +121,7 @@ class OptionsLogic extends Logic {
                   "type"=>array("select",""),
                   "userrights"=>array("select","+"),
                   "defaultvalue"=>array("text",""),
+                  "comment"=>array("longtext",""),
                   "exportpolicy"=>array("boolean","+"));
              }
    // end{publicfields} automatic generation  //

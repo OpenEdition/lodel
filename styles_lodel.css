@@ -760,3 +760,32 @@ H7 {font-size: 28pt; text-align: center; color: #000; line-height: 1; margin-bot
 	font-family: "Courier New", Courier, mono;
 	font-style: none;
 }
+
+
+/*************** Ajoute par Ghislain 12/04 **************/
+
+
+fieldset {
+	width:80%; }
+fieldset label {
+	text-align:right;
+	width:250px;
+	float:left;
+	padding:0.2em;
+	margin:0;
+	margin-top:0.3em; }
+
+input,select,textarea { 
+  margin:3px;
+ }
+
+input.text  {
+  height:20px;
+  width:300px; }
+
+textarea.text  {
+  height:165px;
+  width:300px; }
+
+fieldset .nobr {display:none;}  
+fieldset br { clear: left;}  

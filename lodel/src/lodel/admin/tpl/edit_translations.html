@@ -46,53 +46,53 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="lang">[@ADMIN.LANG_CODE]
+  <label for="lang">[@ADMIN.LANG_CODE]
         : 
       </label>
-    <select name="lang">
-      <?php 
+  <br class="nobr">
+  <select name="lang" id="lang">
+    <?php 
                       makeSelect($context,"lang","translations","select");
                   ?>
-    </select>
-  </p>
+  </select>
+  <br />
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="title">[@COMMON.LANG]
+  <label for="title">[@COMMON.LANG]
         : 
       </label>
-    <input type="text" size="30" name="title" value="[#TITLE]">
-  </p>
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <br />
   <LOOP NAME="fielderror" FIELD="title">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="translators">[@ADMIN.TRANSLATORS]
+  <label for="translators">[@ADMIN.TRANSLATORS]
         : 
       </label>
-    <textarea size="30" name="translators" row="10" cols="60">[#TRANSLATORS]</textarea>
-  </p>
+  <br class="nobr">
+  <textarea size="30" name="translators" id="translators" class="text" row="10" cols="60">[#TRANSLATORS]</textarea>
+  <br />
   <LOOP NAME="fielderror" FIELD="translators">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <p>
-    <label for="protected">[@COMMON.PROTECTED]
+  <label for="protected">[@COMMON.PROTECTED]
         : 
       </label>
-    <IF COND="abs([#STATUS]) ge 32">
-      <input type="checkbox" name="protected" checked>
-      <ELSE/>
-      <input type="checkbox" name="protected">
-    </IF>
-  </p>
+  <br class="nobr">
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
+    <ELSE/>
+    <input type="checkbox" name="protected" id="protected">
+  </IF>
+  <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>

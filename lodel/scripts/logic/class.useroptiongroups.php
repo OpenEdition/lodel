@@ -1,0 +1,129 @@
+<?php
+/*
+ *
+ *  LODEL - Logiciel d'Edition ELectronique.
+ *
+ *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *
+ *  Home page: http://www.lodel.org
+ *
+ *  E-Mail: lodel@lodel.org
+ *
+ *                            All Rights Reserved
+ *
+ *     This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation; either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program; if not, write to the Free Software
+ *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+
+
+
+function humanfieldtype($text)
+
+{
+  return $GLOBALS['fieldtypes'][$text];
+}
+
+/***/
+
+
+
+/**
+ *  Logic Option
+ */
+
+class UserOptionGroupsLogic extends Logic {
+
+  /** Constructor
+   */
+   function UserOptionGroupsLogic() {
+     $this->Logic("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
+   }
+
+
+   function editAction(&$context,&$error)
+
+   {
+     global $user,$home;
+     // get the dao for working with the object
+     require_once($home."dao.php");
+     $dao=getDAO("options");
+     $options=$dao->findMany("idgroup='".$context['id']."'","id,type,defaultvalue,userrights");
+
+     require_once($home."validfunc.php");
+     foreach ($options as $option) {
+       if ($option->type=="passwd" && !trim($context[$option->name])) continue; // empty password means we keep the previous one.
+       $valid=validfield($context[$option->name],$option->type,"");
+       if ($valid===false) die("ERROR: $type can not be validated in logic.php");
+       if (is_string($valid)) $error[$option->name]=$valid;
+     }
+       print_r($error);
+
+
+     if ($error) return "error";
+
+     foreach ($options as $option) {
+       if ($user['rights'] < $option->userrights) continue; // the user has not the right to do that.
+       if ($option->type=="passwd" && !trim($context[$option->name])) continue; // empty password means we keep the previous one.
+       if ($option->type!="boolean" && trim($context[$option->name])==="") $context[$option->name]=$option->defaultvalue; // default value
+       $option->value=$context[$option->name];
+       if (!$dao->save($option)) die("You don't have the rights to modify this option");
+     }
+     touch(SITEROOT."CACHE/maj");
+     return "back";
+   }
+
+
+   /**
+    * Change rank action
+    */
+   function copyAction(&$context,&$error)
+   {
+     die("ERROR: forbidden");
+   }
+
+   /**
+    * Change rank action
+    */
+   function changeRankAction(&$context,&$error)
+   {
+     die("ERROR: forbidden");
+   }
+
+   /**
+    * Delete
+    */
+
+   function deleteAction(&$context,&$error)
+   {     
+     die("ERROR: forbidden");
+   }
+
+   /*---------------------------------------------------------------*/
+   //! Private or protected from this point
+   /**
+    * @private
+    */
+
+} // class 
+
+
+/*-----------------------------------*/
+/* loops                             */
+
+
+
+
+
+?>

@@ -29,39 +29,36 @@
 
 
 
-// apres l'ajout d'un type, il faut mettre a jour le Schema XML
+// If you add a type in this list, please update the XML Schema template
 
-#$GLOBALS['fieldtypes']=array("tinytext"=>"Texte court",
-#			     "text"=>"Texte",
-#			     "mltext"=>"Texte multilingue",
-#			     "image"=>"Image",
-#			     "fichier"=>"Fichier",
-#			     "url"=>"URL",
-#			     "date"=>"Date",
-#			     "datetime"=>"Date et Heure",
-#			     "time"=>"Heure",
-#			     "int"=>"Nombre entier",
-#			     "boolean"=>"Bool&eacute;en",
-#			     "number"=>"Nombre &agrave virgule",
-#			     "lang"=>"Langue",
-#			     "longtext"=>"Texte long",
-#			     );
 
-$GLOBALS['fieldtypes']=array("tinytext"=>array("sql"=>"tinytext"),
-			     "text"=>array("sql"=>"text"),
-			     "mltext"=>array("sql"=>"text"),
-			     "image"=>array("sql"=>"tinytext","autostriptags"=>true),
-			     "fichier"=>array("sql"=>"tinytext","autostriptags"=>true),
-			     "url"=>array("sql"=>"tinytext","autostriptags"=>true),
-			     "date"=>array("sql"=>"date","autostriptags"=>true),
-			     "datetime"=>array("sql"=>"datetime","autostriptags"=>true),
-			     "time"=>array("sql"=>"time","autostriptags"=>true),
-			     "int"=>array("sql"=>"int","autostriptags"=>true),
-			     "boolean"=>array("sql"=>"tinyint","autostriptags"=>true),
-			     "number"=>array("sql"=>"double precision","autostriptags"=>true),
-			     "lang"=>array("sql"=>"char(2)","autostriptags"=>true),
-			     "longtext"=>array("sql"=>"longtext")
-			     );
+$GLOBALS['lodelfieldtypes']=
+    array("tinytext"=>     array("sql"=>"tinytext"                               ),
+	  "text"=>         array("sql"=>"text"                                   ),
+	  "mltext"=>       array("sql"=>"text"                                   ),
+	  "image"=>        array("sql"=>"tinytext",         "autostriptags"=>true),
+	  "file"=>         array("sql"=>"tinytext",         "autostriptags"=>true),
+	  "url"=>          array("sql"=>"text",             "autostriptags"=>true),
+	  "email"=>        array("sql"=>"text",             "autostriptags"=>true),
+	  "color"=>        array("sql"=>"char(10)",         "autostriptags"=>true),
+	  "date"=>         array("sql"=>"date",             "autostriptags"=>true),
+	  "datetime"=>     array("sql"=>"datetime",         "autostriptags"=>true),
+	  "time"=>         array("sql"=>"time",             "autostriptags"=>true),
+	  "int"=>          array("sql"=>"int",              "autostriptags"=>true),
+	  "boolean"=>      array("sql"=>"tinyint",          "autostriptags"=>true),
+	  "number"=>       array("sql"=>"double precision", "autostriptags"=>true),
+	  "lang"=>         array("sql"=>"char(5)",          "autostriptags"=>true),
+	  "longtext"=>     array("sql"=>"longtext"                               ),
+	  "passwd"=>       array("sql"=>"tinytext",                              ),
+	  "username"=>     array("sql"=>"tinytext",         "autostriptags"=>true),
+
+	  "type"=>         array(),
+	  "class"=>        array(),
+	  "tablefield"=>   array(),			       
+	  "style"=>        array(),
+	  "mlstyle"=>      array(),
+	  "tplfile"=>      array()
+	  );
 
 
 
@@ -87,7 +84,9 @@ function decode_mlstyle($style)
 
 function reservedword($name) {
 
-  $reserved_words = 
+  static $reserved_words;
+
+  if (!$reserved_words) $reserved_words= 
     array("ADD",
 	  "ALL",
 	  "ALTER",
@@ -329,6 +328,7 @@ function reservedword($name) {
 	  );
   return (in_array (strtoupper($name), $reserved_words));
 }
+
 
 
 
