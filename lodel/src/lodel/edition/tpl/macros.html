@@ -218,11 +218,9 @@
 	    <td>
 	      <select name="entite[[#NOM]]">
 	      <IF COND="[#CONDITION] eq '+'">
-		    <?php  makeselectlangues_nevernil($context[value]); // use [#VALUE] 
-                     ?>
+		    <?php  makeselectlangues_nevernil($context[value]); ?>
 		<ELSE/>
-		    <?php  makeselectlangues($context[value]); // use [#VALUE] 
-                     ?>
+		    <?php  makeselectlangues($context[value]); ?>
 	      </IF>
 	    </select>
 	    </td>
