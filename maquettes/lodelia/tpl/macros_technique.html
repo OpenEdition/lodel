@@ -76,7 +76,7 @@
 	<link rel="stylesheet" href="styles_revue.css">
 	<link rel="stylesheet" href="styles_revue_image.css">
 	</head>
-	<body onload="window.defaultStatus='Lodelia';" id="css-lodelia"> 
+	<body> 
 	<IF COND="[#VISITEUR]">
 		<? insert_template("desk");?>
 	</IF>
@@ -91,7 +91,7 @@
 <!-- d'afficher le tableau de bord (desk) au sommet de la page pour les -->
 <!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
 <!-- ****************************************************************** -->
-	<link rel="stylesheet" href="Styles_revueprint.css"  />
+	<link rel="stylesheet" href="styles_revue_print.css"  />
 	
 	</head>
 	<body> 
@@ -131,7 +131,9 @@
 <!-- Version 1.0                                                        -->
 <!-- Formulaire permettant d'effectuer une recherche.                   -->
 <!-- ****************************************************************** -->
+	
 	<form action="/cgi-bin/esearch/esearch.pl" method="get">
+	
 		&nbsp;<b>Chercher</b><br><br>
 		&nbsp;<input type="text" size="17" name="search" value="votre recherche" 
 			onfocus="if(this.value=='votre recherche')this.value='';" />
@@ -139,7 +141,9 @@
 		<input type=hidden name="[#REVUE]" value="CHECKED" checked [#REVUE]>
 		<input type=hidden name="addsite" value="Chercher">
 		<input type="image" border="0" name="imageField" src="images/submit.gif">
+	
 	</form>
+	
 </DEFMACRO>
 
 <DEFMACRO NAME="IN_EXTENSO">
@@ -147,26 +151,25 @@
 <!-- Version 1.0                                                        -->
 <!-- Appel du moteur de recherche In-extenso                            -->
 <!-- ****************************************************************** -->
+	<div class="formulaire1">
 	<form name="In-extenso" method="get" action="http://www.in-extenso.org/search">
-		<table width="98%" border="0" cellspacing="0" cellpadding="2" align="center">
-			<tr>
-				<td class="texte_petit_centre" background="commun/images/bleu.gif">
-					<span class="texte_trespetit_centre">
+		<div class="formulaire2>
+							
 					<input type="hidden" name="aspsk" value="true" checked>
 					<input type="hidden" name="qrls" value="true" checked>
 					<input type="hidden" name="all" value="true" checked>
 					<input type="hidden" name="ps" value="7">
 					<input type="text" size="17" name="q" value="votre recherche" onfocus="if(this.value=='votre recherche')this.value='';" />
 					<input type=hidden name="bck" value="http://[#REVUE].revues.org/">
-					<br />
+					<br /><br />
 					<input type="submit" name="Submit" value="Chercher">
 					<input type="hidden" name="rev" value="[#REVUE]" checked>
-					</span>
+					
 					<br />
-				</td>
-			</tr>
-		</table>
+		</div>
+				
 	</form>
+	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="MENU_THEMES_PUBLIES">

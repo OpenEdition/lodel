@@ -37,7 +37,7 @@
 	 background-color:#BFBFBF;
 	 margin:0;
 	 padding:0;
-	 font-size:small;
+	 font-size:8px;
 	 font-family:Arial, Helvetica, sans-serif, Times New Roman,  Verdana ;
 	 text-decoration:none;
 	 font-weight:normal;
@@ -102,7 +102,8 @@
 	border-right:20px solid #ffffff;
 	border-left:8px solid #ffffff;
 	float:left;
-	margin:0
+	margin:0;
+	
 }
 
 .contenu {
@@ -241,6 +242,7 @@ A:active {
 	 padding-top:10px;
 	 padding-bottom:10px;
 	 padding-left:10px;
+	 padding-right:10px;
 	 text-decoration:none
 }
 
@@ -387,7 +389,10 @@ A.titre2:active {
 	text-align :justify;
 	line-height:120%;
 	text-indent :10;
-	padding:10px;
+	padding-right:10px;
+	padding-left:10px;
+	padding-top:10px;
+	padding-bottom:10px;
 	margin:0;
 }
 
@@ -745,14 +750,12 @@ h6
 	padding-right:2em;
 	padding-top:2em;
 	padding-bottom:2em;
-	/*--voice-family: "\"}\"";
+	/*voice-family: "\"}\"";
  	voice-family: inherit;
-  	width:auto		
+  	width:auto*/		
 	}						
 
-html>body .texte {
- 	 width:auto */
-}
+
 
 
 /***************************************************************************************/
@@ -798,6 +801,7 @@ html>body .resume {
 	padding-right:2em;
 	padding-left:2em;
 	}
+	
 
 /*****************************************************************************************/
 
@@ -1126,6 +1130,21 @@ A.bouton_statut_publierOFF
 	font-size:xx-small
 }
 
+.formulaire1 {
+	text-align:center;
+	width:auto;
+	height:auto;
+	}
+
+.formulaire2 {
+	height:auto;
+	margin-right:auto;
+	margin-left:auto;
+	font-color :#9C3234;
+	text-align:center
+}
+
+
 
 /***************************************************************************************
  *	Styles de forme                                                                      *
@@ -1144,7 +1163,7 @@ A.bouton_statut_publierOFF
 	/*  
 	 * Diminue la taille de la police héritée  de 10%
 	 */
-	font-size:80%
+	font-size:60%
 }
 
 .plusgrand {
@@ -1171,53 +1190,7 @@ A.bouton_statut_publierOFF
 }
 
  
-.couleur_1
-{
-	/*  
-	 * Couleur dominante n°1
-	 */
-	color :#9C3234;
-}
 
-.couleur_2
-{
-	/*  
-	 * Couleur dominante n°2
-	 */
-	color :#9DD4B7;
-}
-
-.couleur_3
-{
-	/*  
-	 * Couleur dominante n°3
-	 */
-	color :#ffffff;
-}
-
-.filet_1
-{
-	/*  
-	 * Largeur du filet <hr> n°1
-	 */
-	width:30%;
-}
-
-.filet_2
-{
-	/*  
-	 * Largeur du filet <hr> n°2
-	 */
-	width:60%;
-}
-
-.filet_3
-{
-	/*  
-	 * Largeur du filet <hr> n°3
-	 */
-	width:100%;
-}
 
 .texte_petit
 {

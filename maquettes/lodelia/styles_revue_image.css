@@ -8,7 +8,7 @@
   *	les styles concernant le logo Lodelia
   */
  
-.partielogo1 {
+.partielogo1 , A.partielogo1 {
  		height: 111;
 		width: 532;
 		background-color: #ffffff;
@@ -19,7 +19,7 @@
 		float: left		
 }
 
-.partielogo2 {
+.partielogo2 , A.partielogo2 {
  		height: 111;
 		width: 29;
 		background-color: #ffffff;
@@ -115,5 +115,53 @@ A.logo_revuesorg3:hover    {
 	background-color:transparent
 }
 
+/********************************************************************************************/
 
+.couleur_1
+{
+	/*  
+	 * Couleur dominante n°1
+	 */
+	color :#9C3234;
+}
 
+.couleur_2
+{
+	/*  
+	 * Couleur dominante n°2
+	 */
+	color :#9DD4B7;
+}
+
+.couleur_3
+{
+	/*  
+	 * Couleur dominante n°3
+	 */
+	color :#ffffff;
+}
+
+.filet_1
+{
+	/*  
+	 * Largeur du filet <hr> n°1
+	 */
+	width:30%;
+	text-align:center;
+}
+
+.filet_2
+{
+	/*  
+	 * Largeur du filet <hr> n°2
+	 */
+	width:60%;
+}
+
+.filet_3
+{
+	/*  
+	 * Largeur du filet <hr> n°3
+	 */
+	width:100%;
+}

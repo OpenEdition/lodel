@@ -10,7 +10,6 @@
 <!-- <MACRO NAME="FERMER_TABLE_PRINCIPALE">                             -->
 <!-- <MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">                  -->
 <!-- <MACRO NAME="FERMER_TABLE_PRINCIPALE_IMPRIMABLE">                  -->
-<!-- <MACRO NAME="TRACER_SEPARATION_VERTICALE">                         -->
 <!-- <MACRO NAME="AFFICHER_LOGO_REVUE_ORG">                             -->
 <!-- <MACRO NAME="TRACER_LIGNE_VERTICALE">                              -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
@@ -80,30 +79,6 @@
 
 </DEFMACRO>
 
-<DEFMACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Ouvre la table principale au format imprimable, c'est à dire en    -->
-<!-- utilisant 100% de la largeur.                                      -->
-<!-- Cette Macro est destinée au fichier "article_print.html".          -->
-<!-- ****************************************************************** -->
-	<table width="80%" cellspacing="20" cellpadding="20" align="center">
-		<tr>
-			<td>
-				<div>
-</DEFMACRO>
-
-<DEFMACRO NAME="FERMER_TABLE_PRINCIPALE_IMPRIMABLE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Ferme la table principale au format imprimable.                    -->
-<!-- ****************************************************************** -->
-			</div>
-		</tr>
-	</table>
-</DEFMACRO>
-
-
 
 
 
@@ -137,22 +112,6 @@
 		&nbsp;
 	</div>
 	
-</DEFMACRO> 
-
-<DEFMACRO NAME="TRACER_LIGNE_VERTICALE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!--  Permet de tracer une ligne verticale graphique.                   -->
-<!--  (Pour encadrer sa barre verticale de navigation par exemple)      -->
-<!--  Pour changer la couleur de la ligne il faut ouvrir le fichier     -->
-<!--  "point.gif", se trouvant dans le répertoire images, avec          -->
-<!--  n'importe quel utilitaire permettant de retoucher les images au   -->
-<!--  format gif. Changer la couleur du point et écraser le fichier     -->
-<!--  lors sa sauvegarde.                                               -->
-<!-- ****************************************************************** -->
-	<td height="100%" width="1" valign="top" background="images/pointbordeau.gif">
-		&nbsp;
-	</td>
 </DEFMACRO> 
 
 <DEFMACRO NAME="NOM_REVUE">
@@ -231,7 +190,7 @@
 				
 </DEFMACRO>
 
-<DEFMACRO NAME="FILET_1">
+<!--<DEFMACRO NAME="FILET_1">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche une règle horizontale de type 1.                           -->

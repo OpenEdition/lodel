@@ -14,223 +14,228 @@
 <script language="JavaScript">window.print()</script>
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
 
-<MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">
+<table class="principale">
+	<tr>
+		<td>
+			<div>
 	
-	<div class="titre1">
-			<!-- Affichage d'informations dépendant  du type de document -->
+				<div class="titre1">
+				<!-- Affichage d'informations dépendant  du type de document -->
 		
-		<!-- Affichage d'une barre horizontale (macro-presentation.html) -->
-		<MACRO NAME="FILET_3">
+					<!-- Affichage d'une barre horizontale (macro-presentation.html) -->
+					<hr class="filet_3" />
 		
-		<!-- Affichage du type du document -->
-		<IF COND="[#TYPE]=='compte rendu'">
-			Compte-rendu
-		</IF>
-		<IF COND="[#TYPE]=='chronique'">
-			Chronique
-		</IF>
-		<IF COND="[#TYPE]=='position de these'">
-			Position de thèse
-		</IF>
-		<IF COND="[#TYPE]=='article'">
-			Article
-		</IF>
+					<!-- Affichage du type du document -->
+					<IF COND="[#TYPE]=='compte rendu'">
+						Compte-rendu
+					</IF>
+					<IF COND="[#TYPE]=='chronique'">
+						Chronique
+					</IF>
+					<IF COND="[#TYPE]=='position de these'">
+						Position de thèse
+					</IF>
+					<IF COND="[#TYPE]=='article'">
+						Article
+					</IF>
 		
-		<br />
+					<br />
 		
-		<!-- Affichage du titre, surtitre et sous-titre du doc (lien vers article.html) -->
-		<a  href="document.html?id=[#ID]">
-			<IF COND="[#SURTITRE]">
-				[#SURTITRE] <br />
-			</IF>
-							
-				[#TITRE] <br />
+					<!-- Affichage du titre, surtitre et sous-titre du doc (lien vers article.html) -->
+					<a  href="document.html?id=[#ID]">
+						<IF COND="[#SURTITRE]">
+							[#SURTITRE] <br />
+						</IF>
+								
+						[#TITRE] <br />
 						
-			<IF COND="[#SOUSTITRE]">
-				<span class="soustitrerevue">
-					[#SOUSTITRE] <br />
-				</span>
-			</IF>
-			<!-- URL du document -->	
-			<span class="pluspetit">
-				http://[#REVUE].document.html?id=[#ID]
-			</span>		
-		</a>
+						<IF COND="[#SOUSTITRE]">
+							<span class="soustitrerevue">
+								[#SOUSTITRE] <br />
+							</span>
+						</IF>
+						<!-- URL du document -->	
+						<span class="pluspetit">
+							http://[#REVUE].revues.org/document.html?id=[#ID]
+						</span>		
+					</a>		
+				
+					<!-- Bouton [E] editer le document  (macros_technique.html) -->	
+					<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+				
+					<!-- Affichage des auteurs du document du document -->
+					<br /><br />
+					<IF COND="[#TYPE]=='note de lecture'">
+						Note de lecture par
+					</IF>
+					<!--(macros_affichage.html) -->
+					<MACRO NAME="LISTER_AUTEURS">
+					<br /><br />
 		
-		<!-- Bouton [E] editer le document  (macros_technique.html) -->	
-		<MACRO NAME="BOUTON_EDITER_DOCUMENT">
-		<!-- Affichage des auteurs du document du document -->
-		<br /><br />
+					<!-- Les informations sur la publication ((macros_affichage.html) -->	
+					<MACRO NAME="PARU_DANS">
 		
-
-		<IF COND="[#TYPE]=='note de lecture'">
-			Note de lecture par
-		</IF>
-			<!--(macros_affichage.html) -->
-			<MACRO NAME="LISTER_AUTEURS">
-		<br /><br />
-		
-		<!-- Les informations sur la publication ((macros_affichage.html) -->	
-		<MACRO NAME="PARU_DANS">
-		
-		<!-- Affichage d'une barre horizontale (macro-presentation.html) -->	
-		<MACRO NAME="FILET_3">	
-	</div>
+					<!-- Affichage d'une barre horizontale (macro-presentation.html) -->	
+					<hr class="filet_3" />	
+				</div>
 		
 	
-	<!-- Notes de la rédaction --->
-	<IF COND="[#NDLR]">
-		<div class="titre3">
-			Notes de la rédaction
-		</div>
-		<div class="notes"> 
-			[#NDLR]
-		</div>
-	</IF>
+				<!-- Notes de la rédaction --->
+				<IF COND="[#NDLR]">
+					<div class="titre3">
+						Notes de la rédaction
+					</div>
+					<div class="notes"> 
+						[#NDLR]
+					</div>
+				</IF>
 				
-	<!-- Historique --->
-	<IF COND="[#HISTORIQUE]">
-		<div class="titre3">
-			Historique
-		</div>
-		<div class="notes"> 
-			[#HISTORIQUE]
-		</div>
-	</IF>
+				<!-- Historique --->
+				<IF COND="[#HISTORIQUE]">
+					<div class="titre3">
+						Historique
+					</div>
+					<div class="notes"> 
+						[#HISTORIQUE]
+					</div>
+				</IF>
 				
-	<!-- Affichage du résumé en français   -->
-	<IF COND="[#RESUME:FR]">
-		<div class="titre3">
-			Résumé
-		</div>
-		<div class="resume" > 
-			[#RESUME:FR]
-		</div>		
-	</IF>
+				<!-- Affichage du résumé en français   -->
+				<IF COND="[#RESUME:FR]">
+					<div class="titre3">
+						Résumé
+					</div>
+					<div class="resume" > 
+						[#RESUME:FR]
+					</div>		
+				</IF>
 				
-	<!-- Résumé en anglais   -->
-	<IF COND="[#RESUME:EN]">
-		<div class="titre3"> 
-			Abstract
-		</div>
-		<div class="resume" >
-			[#RESUME:EN]
-		</div>
-	</IF>
+				<!-- Résumé en anglais   -->
+				<IF COND="[#RESUME:EN]">
+					<div class="titre3"> 
+						Abstract
+					</div>
+					<div class="resume" >
+						[#RESUME:EN]
+					</div>
+				</IF>
 				
-	<!-- Résumé en espagnol   -->
-	<IF COND="[#RESUME:ES]">
-		<div class="titre3"> 
-			Extracto
-		</div>
-		<div class="resume" >
-			[#RESUME:ES]
-		</div>
-	</IF>
+				<!-- Résumé en espagnol   -->
+				<IF COND="[#RESUME:ES]">
+					<div class="titre3"> 
+						Extracto
+					</div>
+					<div class="resume" >
+						[#RESUME:ES]
+					</div>
+				</IF>
 				
-	<!-- Résumé en allemand   -->
-	<IF COND="[#RESUME:DE]">
-		<div class="titre3"> 
-			Zusammenfassung
-		</div>
-		<div class="resume" >
-			[#RESUME:DE]
-		</div>
-	</IF>
+				<!-- Résumé en allemand   -->
+				<IF COND="[#RESUME:DE]">
+					<div class="titre3"> 
+						Zusammenfassung
+					</div>
+					<div class="resume" >
+						[#RESUME:DE]
+					</div>
+				</IF>
 				
-	<!-- Résumé en italien   -->
-	<IF COND="[#RESUME:IT]">
-		<div class="titre3"> 
-			Riassunto
-		</div>
-		<div class="resume" >
-			[#RESUME:IT]
-		</div>
-	</IF>				
+				<!-- Résumé en italien   -->
+				<IF COND="[#RESUME:IT]">
+					<div class="titre3"> 
+						Riassunto
+					</div>
+					<div class="resume" >
+						[#RESUME:IT]
+					</div>
+				</IF>				
 						
 <!-- ----------------------------------------------------------------------- -->
 <!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
 <!-- ----------------------------------------------------------------------- -->
 
-	<IF COND="[#TEXTEPUBLIE]">
+				<IF COND="[#TEXTEPUBLIE]">
 				
-		<!-- Texte. Si il existe --->
-		<IF COND="[#TEXTE]">
-			<div class="titre3">
-				<IF COND="[#TYPE]!='presentation'">
-					Texte intégral
-				</IF>
-			</div>
-			<div class="texte">
-				<IF COND="[#TYPE]=='compte rendu'">
-					<!-- Si il y a une lettrine associée au texte, affichage de cette lettrine --->
-					<IF COND="[#META_IMAGE]">
-						<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
+					<!-- Texte. Si il existe --->
+					<IF COND="[#TEXTE]">
+						<div class="titre3">
+							<IF COND="[#TYPE]!='presentation'">
+								Texte intégral
+							</IF>
+						</div>
+						<div class="texte">
+							<IF COND="[#TYPE]=='compte rendu'">
+							<!-- Si il y a une lettrine associée au texte, affichage de cette lettrine --->
+								<IF COND="[#META_IMAGE]">
+									<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
+								</IF>
+								[#TEXTE]
+							<ELSE/>			
+								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
+							</IF>
+						</div>
 					</IF>
-					[#TEXTE]
-					<ELSE/>			
-					[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
-					</IF>
-			</div>
-		</IF>
 	
-		<!-- Bibliographie. Si elle existe --->
-		<IF COND="[#BIBLIOGRAPHIE]">
-			<div class="titre3"> 
-				<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
-			</div>
-			<div class="texte">
-				[#BIBLIOGRAPHIE]
-			</div>
-		</IF>
+					<!-- Bibliographie. Si elle existe --->
+					<IF COND="[#BIBLIOGRAPHIE]">
+						<div class="titre3"> 
+							<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
+						</div>
+						<div class="texte">
+							[#BIBLIOGRAPHIE]
+						</div>
+					</IF>
 				
-		<!-- Annexe. Si elle existe --->
-		<IF COND="[#ANNEXE]">
-			<div class="titre3"> 
-				Annexes
-			</div>
-			<div class="texte">
-				[#ANNEXE]
-			</div>
-		</IF>
+					<!-- Annexe. Si elle existe --->
+					<IF COND="[#ANNEXE]">
+						<div class="titre3"> 
+							Annexes
+						</div>
+						<div class="texte">
+							[#ANNEXE]
+						</div>
+					</IF>
 						
-		<!-- Documents annexes. S'il y en a au moins un --->
-		<IF COND="[#DOCUMENTSANNEXES]">
-			<div class="titre3"> 
-				Documents annexes
-			</div>
-			<div class="texte" >
-				Il y a 
-				[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
-				annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
-				<br />
-				<br />
-				<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-				<br />
-			</div>
-		</IF>
+					<!-- Documents annexes. S'il y en a au moins un --->
+					<IF COND="[#DOCUMENTSANNEXES]">
+						<div class="titre3"> 
+							Documents annexes
+						</div>
+						<div class="texte" >
+							Il y a 
+							[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
+							annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
+							<br />
+							<br />
+							<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+							<br />
+						</div>
+					</IF>
 				
-		<!-- Notes de bas de page. Si elles existent --->
-		<IF COND="[#NOTEBASPAGE]">
-			<div class="titre3">
-				Notes
-			</div>
-			<div class="notes"> 
-				[#NOTEBASPAGE]
-			</div>
-		</IF>
+					<!-- Notes de bas de page. Si elles existent --->
+					<IF COND="[#NOTEBASPAGE]">
+						<div class="titre3">
+							Notes
+						</div>
+						<div class="notes"> 
+							[#NOTEBASPAGE]
+						</div>
+					</IF>
 								
-		<!-- Si le texte n'est pas encore autorisé à être publié -->
-		<ELSE/>
-			<p class="texte">
-				Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
-			</p>
-		</IF>			
+				<!-- Si le texte n'est pas encore autorisé à être publié -->
+				<ELSE/>
+					<p class="texte">
+						Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
+					</p>
+				</IF>			
 		
-		<!-- Affiche la description de l'auteur (macros-affichage.html) -->		
-		<MACRO NAME="DESCRITION_AUTEUR">
+				<!-- Affiche la description de l'auteur (macros-affichage.html) -->		
+				<MACRO NAME="DESCRITION_AUTEUR">
 		 
-<MACRO NAME="FERMER_TABLE_PRINCIPALE_IMPRIMABLE">
+			</div>
+		</td>	
+	</tr>
+</table>
 <MACRO NAME="FERMER_HTML">  
 
 

@@ -255,11 +255,13 @@
 					<DO>
 		    	    	<IF COND="[#NOM]">
 							paru dans le 
+							<span class="italic">
 							<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
 								
 									n&#176; [#NOM] - [#TITRE]
 								
 							</a>
+							</span>
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 						</IF>
 					</DO>
@@ -267,11 +269,13 @@
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
 					paru dans le 
+					<span class="italic">
 					<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
 						
 							 n&#176; [#NOM] - [#TITRE]
 						
 					</a>
+					</span>
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 				</IF>
 	        </IF>
@@ -439,28 +443,28 @@
 <!-- ****************************************************************** -->
 	
 		<IF COND="[#TYPE]=='article_vide'">
-			<span class="italic">Article <MACRO NAME="PARU_DANS_SIMPLE"> :</span> 
+		Article <MACRO NAME="PARU_DANS_SIMPLE"> : 
 			<br />[#TITRE]
 			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
 		</IF>
 		<IF COND="[#TYPE]=='article'">
-			<span class="italic">Article <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+			Article <MACRO NAME="PARU_DANS_SIMPLE"> :
 			<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 		<ELSE/>
 			<IF COND="[#TYPE]=='chronique'">
-				<span class="italic">Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+				<span class="italic">Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :
 				<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 			<ELSE/>
 				<IF COND="[#TYPE]=='compte rendu'">
-					<span class="italic">Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+					Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :
 					<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
-						<span class="italic">Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+						Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :
 						<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF><</a>
 					<ELSE/>
 						<IF COND="[#TYPE]=='editorial'">
-							<span class="italic">Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+							Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :
 							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 						<ELSE/>
 							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]</a>
@@ -958,9 +962,8 @@
 						Dernier numéro publié : [#NOM] 
 					
 				<IF COND="[#TITRE]">
-					<em>
+					
 						- [#TITRE]
-					</em>
 				</IF>
 			</a>
 			
