@@ -69,24 +69,10 @@
 		<span class="type_document">
 		
 		<LOOP NAME="parentsentities">
-		<BEFORE>
-		([@IN]
-		</BEFORE>
-		<DOFIRST>
-			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-		</DOFIRST>
 		<DO>
-			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-			<IF COND="[#COUNT] GT 1">
-				&nbsp;>&nbsp;
-			</IF>
+			&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
 		</DO>
-		<DOLAST>
-			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-		</DOLAST>
-		<AFTER>
-		)
-		</AFTER>
+		
 		</LOOP>
 		</span>
 		
