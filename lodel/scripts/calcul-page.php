@@ -39,6 +39,12 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   global $home,$format;
 
+  if ($GLOBALS[recalcul_templates]) {
+    require_once($home."cachefunc.php");
+    removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+    $GLOBALS[recalcul_templates]=false; // to avoid to erase the CACHE again
+  }
+
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   $format=""; // en cas de nouvel appel a calcul_page
 
@@ -47,7 +53,8 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   if (!file_exists($base)) die("le template $base n'existe pas.");
   $template_time=myfilemtime($template_cache);
 
-  if (($template_time <= myfilemtime($base)) || $GLOBALS[recalcul_templates]) {
+
+  if (($template_time <= myfilemtime($base))) {
 	if ($GLOBALS[droitadmin]) $context[templatesrecompiles].="$base | ";
 
     require_once ($home."lodelparser.php");

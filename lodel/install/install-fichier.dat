@@ -61,7 +61,6 @@ ln logout.php
 
 dirsource $homesite/lodel/edition
 ln tpl/desk.html
-ln clearcache.php
 
 #
 
@@ -101,7 +100,6 @@ ln logout.php
 dirsource $homesite/lodel/edition
 ln siteconfig.php
 ln maj.php
-ln clearcache.php
 ln images
 ln tpl/macros.html
 ln tpl/deskedition.html
@@ -190,7 +188,6 @@ ln styles_site.css
 ln styles_lodel.css
 
 dirsource $homesite/lodel/edition
-ln clearcache.php
 
 # les logins
 dirsource $homesite/lodel/admin
