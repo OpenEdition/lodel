@@ -1195,62 +1195,90 @@
 <DEFMACRO NAME="CHANGER_STATUS_SWITCH">
 	<div align="center">
 		<span class="texte_trespetit_centre">
-			<IF COND="[#STATUS] gt 0">
-				<IF COND="[#STATUS] eq 1">
-					<a href="#" onClick="confirm_depublication(1,[#ID]);">
-					<!--<a href="publi.php?publication=[#ID]">-->
-						Dépublier
-					</a>
-					&nbsp;/&nbsp;Publier
-				<ELSE/>
-					Dépublier&nbsp;/&nbsp;Publier
-				</IF>
-			<ELSE/>
-				<IF COND="[#STATUS] eq -1">
-					Dépublier&nbsp;/&nbsp;
-					<a href="publi.php?publication=[#ID]&online=1">
-						Publier
-					</a>
-				<ELSE/>
-					Dépublier&nbsp;/&nbsp;Publier
-				</IF>
-			</IF>
+			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
+				<CORPS>
+					<IF COND="[#STATUS] gt 0">
+						<IF COND="[#STATUS] eq 1">
+							<a href="#" onClick="confirm_depublication(1,[#ID]);">
+							<!--<a href="publi.php?publication=[#ID]">-->
+								Dépublier
+							</a>
+							&nbsp;/&nbsp;Publier
+						<ELSE/>
+							Dépublier&nbsp;/&nbsp;Publier
+						</IF>
+					<ELSE/>
+						<IF COND="[#STATUS] eq -1">
+							Dépublier&nbsp;/&nbsp;
+							<a href="publi.php?publication=[#ID]&online=1">
+								Publier
+							</a>
+						<ELSE/>
+							Dépublier&nbsp;/&nbsp;Publier
+						</IF>
+					</IF>
+				</CORPS>
+			</LOOP>
 		</span>
 	</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="CHANGER_VERROU_SWITCH_PUBLICATIONS">
+<DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS_PUBLIE">
 	<div align="center">
 		<span class="texte_trespetit_centre">
-			<IF COND="[#STATUS]==-32">
-				Brouillon&nbsp;/&nbsp;
-				<a href="status.php?publication=[#ID]&status=pret">
-					<span class="texte_trespetit_centre">Prête à publier</span>
-				</a>
-				<br />Déprotéger&nbsp;/&nbsp;Protéger
-			</IF>
-			<IF COND="[#STATUS]==-1">
-				<a href="status.php?publication=[#ID]&status=brouillon">
-					<span class="texte_trespetit_centre">Brouillon</span>
-				</a>
-				&nbsp;/&nbsp;Prête à publier
-				<br />Déprotéger&nbsp;/&nbsp;Protéger
-			</IF>
-		
-			<IF COND="[#STATUS]==32">
-				Brouillon&nbsp;/&nbsp;Prête à publier<br />
-				<a href="status.php?publication=[#ID]&status=deprotege">
-					<span class="texte_trespetit_centre">Déprotéger</span>
-				</a>
-				&nbsp;/&nbsp;Protéger
-			</IF>
-			<IF COND="[#STATUS]==1">
-				Brouillon&nbsp;/&nbsp;Prête à publier<br />
-				Déprotéger&nbsp;/&nbsp;
-				<a href="status.php?publication=[#ID]&status=protege">
-					<span class="texte_trespetit_centre">Protéger</span>
-				</a>
-			</IF>
+			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
+				<CORPS>
+					<IF COND="[#STATUS]==-32">
+						Déprotéger&nbsp;/&nbsp;Protéger
+					</IF>
+					<IF COND="[#STATUS]==-1">
+						Déprotéger&nbsp;/&nbsp;Protéger
+					</IF>
+				
+					<IF COND="[#STATUS]==1">
+						Déprotéger&nbsp;/&nbsp;
+						<a href="status.php?publication=[#ID]&status=protege">
+							<span class="texte_trespetit_centre">Protéger</span>
+						</a>
+					</IF>
+					<IF COND="[#STATUS]==32">
+						<a href="status.php?publication=[#ID]&status=deprotege">
+							<span class="texte_trespetit_centre">Déprotéger</span>
+						</a>
+						&nbsp;/&nbsp;Protéger
+					</IF>
+				</CORPS>
+			</LOOP>			
+		</span>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS_DEPUBLIE">
+	<div align="center">
+		<span class="texte_trespetit_centre">
+			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
+				<CORPS>
+					<IF COND="[#STATUS]==-32">
+						Brouillon&nbsp;/&nbsp;
+						<a href="status.php?publication=[#ID]&status=pret">
+							<span class="texte_trespetit_centre">Prête à publier</span>
+						</a>
+					</IF>
+					<IF COND="[#STATUS]==-1">
+						<a href="status.php?publication=[#ID]&status=brouillon">
+							<span class="texte_trespetit_centre">Brouillon</span>
+						</a>
+						&nbsp;/&nbsp;Prête à publier
+					</IF>
+				
+					<IF COND="[#STATUS]==32">
+						Brouillon&nbsp;/&nbsp;Prête à publier
+					</IF>
+					<IF COND="[#STATUS]==1">
+						Brouillon&nbsp;/&nbsp;Prête à publier
+					</IF>
+				</CORPS>
+			</LOOP>			
 		</span>
 	</div>
 </DEFMACRO>
