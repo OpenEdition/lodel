@@ -407,6 +407,7 @@ function parse_loop()
   $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
   $groupby="";
 
+  if (!$where) $where="1";
   $this->parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
 			  &$where,&$order,&$groupby);
