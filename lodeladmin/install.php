@@ -217,7 +217,7 @@ if ($tache=="database") {
 	// get all table names.
 	$result=mysql_list_tables($database);
 	while ($row = mysql_fetch_row($result)) {
-	  if (preg_match("/^$tableprefix/",$row[0]) && $row[0]!=$tableprefix."users") {
+	  if (preg_match("/^$tableprefix/",$row[0])) {
 	    // let's drop it
 	    mysql_query("DROP TABLE $row[0]");
 	  }
