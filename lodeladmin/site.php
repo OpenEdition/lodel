@@ -204,12 +204,19 @@ if ($tache=="createtables") {
 
   if (!file_exists(LODELROOT."$versionrep/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
   $text=join('',file(LODELROOT."$versionrep/install/init-site.sql"));
+
+  if ($servoourl && $servoourl!="off") {
+    $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','$servoourl','32','1');\n";
+    $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
+    $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
+  }
+
 #  if (file_exists(LODELROOT."lodel/install/inserts-site.sql")) {
 #    $text.=utf8_encode(join('',file(LODELROOT."lodel/install/inserts-site.sql")));
 #  }
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
-  $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
+  $sqlcmds=preg_split ("/;\s*\n/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sqlcmds) die("le fichier init-site.sql ne contient pas de commande. Probleme!");
 
   $erreur=array();

@@ -44,15 +44,13 @@
 
 <ul>
 <li>Vérifiez que les paramètres d'accès à la base de donnée sont correctes, que l'utilisateur MySQL [#DBUSERNAME] a le droit de créer une nouvelle base de donnée (la plupart des hebergeurs ne l'acceptent pas) ou recommencer l'installation.</li>
-<li>Créer la base de donnée vous même (commande mysql ou phpMyAdmin):
+<li>Créer la base de donnée vous même (avec le client mysql ou avec phpMyAdmin) et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":
 <p>
-<code>
+<textarea cols="70" rows="3" readonly>
 [#COMMAND1];
-</code>
-<p>et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":</p>
-<code>
 [#COMMAND2];
-</code>
+
+</textarea>
 </p>
 </li>
 </ul>
@@ -69,16 +67,14 @@
 Deux possibilités:
 <ul>
 <li>
-<p>Créer la base de données [#DBNAME] en utilisant la commande SQL:</p>
+<p>Créer la base de données [#DBNAME] et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":</p>
 <p>
-<code>
+<textarea cols="70" rows="3" readonly>
 [#COMMAND1];
-</code>
-<p>et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":</p>
-<code>
 [#COMMAND2];
-</code>
-</p>
+
+</textarea>
+<p>
 </li>
 <li>
 Laisser Lodel essayer de créer la base si l'utilisateur MySQL a les droits.
