@@ -139,6 +139,7 @@ function traite_separateur($text) {
 
 function convertseparateur($result) {
   $text=trim(strip_tags($result[1]));
+  if ($text=="") return  "<hr width=\"10%\" \ >";
   if ($text=="*") return "<hr width=\"30%\" \ >";
   if ($text=="**") return "<hr width=\"50%\" \ >";
   if ($text=="***") return "<hr width=\"80%\" \ >";
