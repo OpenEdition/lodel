@@ -818,3 +818,12 @@ fieldset br { clear: left;}
   border:  2px solid #FDFAF1;
  }
 
+
+/* styles for the filebrowser */
+.filebrowser { 
+
+ }
+
+.filebrowser table { 
+  border: 1px solid #CC9933;
+ }

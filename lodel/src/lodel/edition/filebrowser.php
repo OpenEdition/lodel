@@ -35,20 +35,34 @@ authenticate(LEVEL_REDACTOR,NORECORDURL);
 define("UPLOADDIR",SITEROOT."CACHE/upload");
 
 $context['caller']=$_REQUEST['caller'];
-$deleteall=isset($_REQUEST['deleteall']);
-$delete=$_REQUEST['delete'];
 
-if (isset($_REQUEST['checkmail'])) {
+
+$selectedfiles=is_array($_POST['file']) ? array_keys($_POST['file']) : false;
+
+if (isset($_POST['checkmail'])) {
   require_once($home."imapfunc.php");
   $context['nbattattachments']=checkmailforattachments();
 
-} elseif ($deletall || $delete) {
+} elseif ($_POST['delete'] && $selectedfiles) {
+  $dh=@opendir(UPLOADDIR);
+  if (!$dh) die("ERROR: can't open upload directory");
+
+  while( ($file=readdir($dh))!==false ) {
+    if ($file[0]!="." || is_file(UPLOADDIR."/".$file)) {
+      if (in_array($file,$selectedfiles)) { // quite safe way, not efficient !
+	@unlink(UPLOADDIR."/".$file);
+      }
+    }
+  }
+} elseif ($_POST['resize'] && $_POST['newsize'] && $selectedfiles) {
+  require_once($home."images.php");
   $dh=@opendir(UPLOADDIR);
   if (!$dh) die("ERROR: can't open upload directory");
   while( ($file=readdir($dh))!==false ) {
     if ($file[0]!="." || is_file(UPLOADDIR."/".$file)) {
-      if ($deletall || $delete==$file) { // quite safe way to do for deleting only one file
-	@unlink(UPLOADDIR."/".$file);
+      if (in_array($file,$selectedfiles)) { // quite safe way, not efficient !
+	$file=UPLOADDIR."/".$file;
+	resize_image($_POST['newsize'],$file,$file);
       }
     }
   }
@@ -72,8 +86,15 @@ function loop_filelist($context,$funcname)
   while( ($file=readdir($dh))!==false ) {
     if ($file[0]=="." || !is_file(UPLOADDIR."/".$file)) continue;
     $localcontext=$context;
+    // is it an image ?
+    list($w,$h)=getimagesize(UPLOADDIR."/".$file);
+    if ($w && $h) {
+      $localcontext['imagesize']="$w x $h";
+    }
+    //
     $localcontext['name']=$file;
     $localcontext['size']=nicefilesize(filesize(UPLOADDIR."/".$file));
+    $localcontext['checked']=$_POST['file'][$file] ? "checked=\"checked\"" : "";
     call_user_func("code_do_$funcname",$localcontext);
   }
 }

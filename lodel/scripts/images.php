@@ -130,6 +130,9 @@ function resize_image ($taille,$src,&$dest)
       ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
     }
 
+    if (file_exists($dest)) unlink($dest);
+
+
     if ($result[2]==1) {
 
       if (function_exists("ImageGIF")) {

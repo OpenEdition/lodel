@@ -2,7 +2,7 @@
 <html>
 <head>
 <title></title>
-<link rel="stylesheet" href="css/style.css" type="text/css">
+<link rel="stylesheet" href="styles_lodel.css" type="text/css">
 </head>
 <SCRIPT LANGUAGE="JavaScript">
 <!-- Begin
@@ -17,24 +17,48 @@ window.close();
 }
 //  End -->
 </script>
-<body>
+<body class="filebrowser">
+
+<form  method="post" action="filebrowser.php">
+<input type="hidden" name="caller" value="[#CALLER]">
+<table>
+<tr>
+<td>[@EDITION.FILENAME]</td>
+<td>[@EDITION.FILESIZE]</td>
+<td>[@EDITION.IMAGESIZE]</td>
+<td>&nbsp;</td>
+</tr>
 
 <LOOP NAME="filelist">
 <DO>
-<div class="file">
-<div class="filename">[#NAME]</div>
-<div class="filesize">[#SIZE]</div>
-<div class="action"><a href="javascript:sendValue('[(#NAME|addslashes)]');">Sélectionner</a> | <a href="javascript:;" onClick="cf=confirm('Confirmez que vous voulez supprimer ce fichier');if (cf)window.location='filebrowser.php?caller=[#CALLER]&delete=[(#NAME|urlencode)]'; return false;">Supprimer<a/></div>
-</div>
+<tr>
+<td class="filename">[#NAME]</td>
+<td class="filesize">[#SIZE]</td>
+<td class="imagesize">[#IMAGESIZE]</td>
+<td class="action"><div><a href="javascript:sendValue('[(#NAME|addslashes)]');">Sélectionner</a> | 
+<input type="checkbox" name="file[[#NAME|htmlentities]]" [#CHECKED]>
+</div></td>
+</tr>
 </DO>
+
 </LOOP>
+</table>
 
-<div>
-<a href="javascript:;" onClick="cf=confirm('Confirmez que vous voulez supprimer tous les fichiers');if (cf)window.location='filebrowser.php?caller=[#CALLER]&deleteall'; return false;">Supprimer tous les fichiers<a/></div>
-
-<div>
-<a href="filebrowser.php?caller=[#CALLER]&checkmail">Vérifie le courrier<a/></div>
+<div class="delete">
+<input type="submit" name="delete" value="[@COMMON.DELETE]">
+</div>
+<div class="checkmail">
+<input type="submit" name="checkmail" value="[@EDITION.CHECKMAIL]">
 <IF COND="[(#NBATTATTACHMENTS|isset)]">[#NBATTATTACHMENTS] fichiers attachés chargés</IF>
+</div>
+<div class="resize">
+<input type="text" name="newsize" value="500">
+<input type="submit" name="resize" value="[@EDITION.RESIZEIMAGES]">
+</div>
+
+</form>
+
+
 
 <div>
 <a href="javascript:window.close();">Fermer la fenêtre</a>
