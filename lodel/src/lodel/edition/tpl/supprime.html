@@ -37,10 +37,10 @@
 	<tr>
 		<td align="center">
 			<br /><br />
-			<IF COND="[#NOM]"> 
+			<IF COND="[#IDENTIFIANT]"> 
 		    	<!--[ Suppression d'une publication ]-->
 				<span class="message_erreur">Confirmer la suppression de la publication suivante ?</span><br /><br />
-				<strong>[#NOM]</strong><br /><br /><br /><br />
+				<strong>[#IDENTIFIANT]</strong><br /><br /><br /><br />
 				<form action="supprime.php" method="POST">
 					<input type="hidden" name="id" value="[#ID]">
 					<input class="form" type="submit" name="supprime" value="Supprimer">

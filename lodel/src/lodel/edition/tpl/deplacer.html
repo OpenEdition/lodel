@@ -25,16 +25,6 @@
 <title>Déplacer une publication</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<!--[<h1>Cliquez sur la publication dans laquelle vous souhaitez déplacer votre document.</h1>
-<br /><br />
-<!- CETTE BOUCLE  AFFICHE LES PUBLICATIONS ->
-<LOOP NAME="Deplace_document" TABLE="publications" WHERE="idparent='[#ID]'">
-<!- FONCTION "LET" UTILISANT UNE VALEUR RECURSIVE ->
-<LET VAR="TOTO">..[#TOTO][#TOTO]</LET>
-[#TOTO]<a href="deplacer.php?iddocument=[#IDDOCUMENT]&publication=[#ID]&url_retour=[(#URL_RETOUR|urlencode)]"><FONT COLOR="BLACK">[#NOM]</FONT></a>,<Font size="-2">([#TYPE])</font><br />
-<!- CETTE BOUCLE IMBRIQUEE AFFICHE LES SOUS-PUBLICATIONS ->
-<LOOP NAME="Deplace_document"></LOOP>
-</LOOP>]-->
 
 	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
 		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
@@ -56,7 +46,7 @@
 					[#BARRE]
 					<span style="margin-left: [#MARGIN]px;">
 						<a href="deplacer.php?id=[#IDDOCUMENT]&idparent=[#ID]">
-							<font color="black">[#NOM]&nbsp;([#TYPE])</font>
+							<font color="black">[#IDENTIFIANT]&nbsp;[#TITRE]&nbsp;([#TYPE])</font>
 						</a>
 						<br />
 						<!--[ Cette boucle imbriquée affiche les sous publications ]-->

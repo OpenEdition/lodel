@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	nom		VARCHAR(64) NOT NULL, # nom utilisé en interne
+	identifiant	VARCHAR(255) NOT NULL, # nom utilisé en interne
 
 	groupe		TINYINT UNSIGNED DEFAULT '1' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,

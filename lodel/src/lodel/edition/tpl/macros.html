@@ -84,7 +84,7 @@
 		</BEFORE>
 		<DO>
 			<tr>
-				<td>[#NOM]</td>
+				<td>[#IDENTIFIANT]</td>
 				<td><IF COND="[#TITRE]">[#TITRE]<ELSE/>	...	</IF></td>
 			</tr>
 		</DO>
@@ -325,6 +325,19 @@
 		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 	</LOOP>
 </DEFMACRO>
+
+
+
+<DEFMACRO NAME="AFFICHER_IDENTIFIANT">
+	<div class="ligne_formulaire">
+		<div class="intitule_ligne_formulaire">
+			<span class="texte_intitule">Identifiant:</span>
+		</div>
+		<input size="45" type="text" name="identifiant" value="[#IDENTIFIANT]">
+		[(#ERREUR_IDENTIFIANT|true)<br /><span class="message_erreur">Vous devez préciser un identifiant !</span>]
+	</div>
+</DEFMACRO>
+
 
 <!--[ Supprimer le 02/02/04 par Ghislain
 
@@ -658,7 +671,7 @@
 		<div style="padding-top:10px;">
 			<a href="index.php?id=0"><span class="texte_edition_des_series">Edition des collections</span></a>
 			<LOOP NAME="publisparentes">
-				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#NOM]</span></a>
+				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#IDENTIFIANT]</span></a>
 			</LOOP>
 		</div>
 	</div>
@@ -879,7 +892,7 @@
 				<MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION">
 				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 				<a href="index.php?id=[#ID]">
-					<span class="nom_serie">[#NOM]</span>&nbsp;
+					<span class="nom_serie">[#IDENTIFIANT]</span>&nbsp;
 					<LOOP NAME="titre_numero_rubrique" TABLE="publications" WHERE="identite=[#ID]">
 						<span class="titre_serie">[#TITRE]</span><br />
 					</LOOP>
@@ -1150,14 +1163,14 @@
 
 <DEFMACRO NAME="NOM_TITRE_TYPE">
 	<a href="index.php?id=[#ID]">
-		<span class="nom_serie">[#NOM]</span>&nbsp;
+		<span class="nom_serie">[#IDENTIFIANT]</span>&nbsp;
 		<span class="titre_serie">[#TITRE]</span><br />
 		<span class="type_serie">([#TYPE])</span>
 	</a>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
-	<span class="nom_serie">[#NOM]</span>&nbsp;
+	<span class="nom_serie">[#IDENTIFIANT]</span>&nbsp;
 	<span class="titre_serie">[#TITRE]</span><br />
 	<span class="type_serie">([#TYPE])</span>
 </DEFMACRO>
@@ -1166,7 +1179,7 @@
 	<div class="ligne_infos_parent">
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
 		<LOOP NAME="idparent" TABLE="publications" WHERE="id='[#ID]'">
-			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#NOM]</a></span>&nbsp;
+			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#IDENTIFIANT]</a></span>&nbsp;
 			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#TITRE]</a></span><br />
 			<span class="type_parent">([#TYPE])</span>
 		</LOOP>

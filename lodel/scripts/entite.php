@@ -175,7 +175,6 @@ if ($id>0 && $dir) {
   extract_post();
   extract_files(&$context);
 
-  $context[entite][nom]=$context[entite][titre];
   $context[statut]=-1;
   if ($id=enregistre_entite($context,$id,$classe,"edition!=''")) { // ca marche... on termine
     //
@@ -209,7 +208,7 @@ if ($id>0 && $dir) {
   if (!mysql_num_rows($result)) { header("location: not-found.html"); return; }
   $context[entite]=mysql_fetch_assoc($result);
   $context[idtype]=$context[entite][idtype];
-  $context[nom]=$context[entite][nom];
+  $context[identifiant]=$context[entite][identifiant];
   extrait_personnes($id,&$context);
   extrait_entrees($id,&$context);
 } else {

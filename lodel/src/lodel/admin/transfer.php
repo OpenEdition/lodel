@@ -456,11 +456,11 @@ $err=mysql_query_cmds('
       // on ajoute l'idparent pour pouvoir faire le traitement tranquillement ensuite
 
       $err=mysql_query_cmds('
-INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,iduser,groupe,ordre,statut)
+INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,identifiant,iduser,groupe,ordre,statut)
          SELECT _PREFIXTABLE_documents.id,_PREFIXTABLE_documents.publication+'.$offset.',_PREFIXTABLE_types.id,_PREFIXTABLE_documents.titre,user,1,_PREFIXTABLE_documents.ordre,_PREFIXTABLE_documents.statut FROM _PREFIXTABLE_documents,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_documents.type;
 ALTER TABLE _PREFIXTABLE_documents CHANGE id identite	INT UNSIGNED DEFAULT 0 NOT NULL  UNIQUE;
 UPDATE _PREFIXTABLE_publications SET parent=parent+'.$offset.' WHERE parent>0;
-INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,groupe,ordre,statut)
+INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,identifiant,groupe,ordre,statut)
          SELECT _PREFIXTABLE_publications.id+'.$offset.',_PREFIXTABLE_publications.parent,_PREFIXTABLE_types.id,_PREFIXTABLE_publications.nom,1,_PREFIXTABLE_publications.ordre,_PREFIXTABLE_publications.statut FROM _PREFIXTABLE_publications,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_publications.type;
 ALTER TABLE _PREFIXTABLE_publications CHANGE id identite	INT UNSIGNED DEFAULT 0 NOT NULL  UNIQUE;
 UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
@@ -496,7 +496,7 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	myquote($row);
 	$idtype=$idtypes[$row[type]];
 	if (!$idtype) { $err="Probleme de detection du type de documentsannexes<br>"; break; }
-	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_entites (idparent,idtype,nom,ordre,statut) VALUES ('$row[iddocument]','$idtype','$row[titre]','$row[ordre]','$row[statut]')");
+	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_entites (idparent,idtype,identifiant,ordre,statut) VALUES ('$row[iddocument]','$idtype','$row[titre]','$row[ordre]','$row[statut]')");
 	if ($err) break;
 	$id=mysql_insert_id();
 

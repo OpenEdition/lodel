@@ -41,7 +41,7 @@
 	<div style="padding-top:10px;">
 		Parent : 
 		<LOOP NAME="Affiche_Parent" TABLE="publications" WHERE="id='[#IDPARENT]'">
-			<span class="nom_publi_parente">[#NOM]</span>
+			<span class="nom_publi_parente">[#IDENTIFIANT]</span>
 		</LOOP>
 	</div>
 </div>
@@ -59,13 +59,7 @@
 	<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]" />
 
 
-	<div class="ligne_formulaire">
-		<div class="intitule_ligne_formulaire">
-			<span class="texte_intitule">Nom bref:</span>
-		</div>
-		<input size="45" type="text" name="nom" value="[#NOM]">
-		[(#ERREUR_NOM|true)<br /><span class="message_erreur">Vous devez préciser un nom !</span>]
-	</div>
+	<MACRO NAME="AFFICHER_IDENTIFIANT">
 
 	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_PUBLICATIONS">
 

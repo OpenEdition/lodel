@@ -236,7 +236,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       $statut=intval($context[statut]);
       $statutset=",statut='$statut' ";
     }
-    mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]entites SET identifiant='$context[identifiant]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
     if ($grouperec && $droitadmin) change_groupe_rec($id,$groupe);
 
     move_files($id,$files_to_move,&$sets);
@@ -256,7 +256,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       if (!mysql_num_rows($result)) die("pas de type valide ?");
       list($context[idtype])=mysql_fetch_row($result);
     }
-    mysql_query("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,statut,groupe,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[nom]','$ordre','$statut','$groupe','$iduser')") or die (mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,identifiant,ordre,statut,groupe,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifiant]','$ordre','$statut','$groupe','$iduser')") or die (mysql_error());
 
     require_once($home."managedb.php");
     $id=mysql_insert_id();

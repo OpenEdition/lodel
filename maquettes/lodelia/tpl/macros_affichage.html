@@ -102,7 +102,7 @@
 			<div class="afficherdocument">
 				<a href="sommaire.html?id=[#ID]">
 					<!--[ TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION ]-->	
-					Numéro [#NOM]
+					Numéro [#IDENTIFIANT]
 				</a>
 				<MACRO NAME="TITRE_PUBLICATION">&nbsp;
 				<MACRO NAME="SOUSTITRE_PUBLICATION">&nbsp;
@@ -126,8 +126,8 @@
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
 <!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#NOM]">
-		[#NOM]
+	<IF COND="[#IDENTIFIANT]">
+		[#IDENTIFIANT]
 	<ELSE/>
 		<a href="index.html">
 			<MACRO NAME="NOM_REVUE">
@@ -231,7 +231,7 @@
 <!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
 <!--[ ****************************************************************** ]-->
 	<a class="titre1" href="sommaire.html?id=[#IDPARENT]">
-		[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]</IF>
+		[#IDENTIFIANT]<IF COND="[#TITRE]"><br /> [#TITRE]</IF>
 	</a>
 </DEFMACRO>
 
@@ -245,9 +245,9 @@
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
 <!--[ <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           ]-->
 <!--[ ****************************************************************** ]-->
-   	<IF COND="[#NOM]">
+   	<IF COND="[#IDENTIFIANT]">
 		<a  href="sommaire.html?id=[#IDPARENT]">
-			n&#176; [#NOM] 
+			n&#176; [#IDENTIFIANT] 
 			<IF COND="[#TITRE]"> - [#TITRE]	</IF>.
 		</a>
 		<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -262,7 +262,7 @@
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
 <!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
 <!--[ ****************************************************************** ]-->
-	<a  href="sommaire.html?id=[#IDPARENT]"><MACRO NAME="NOM_REVUE">, n&#176; [#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
+	<a  href="sommaire.html?id=[#IDPARENT]"><MACRO NAME="NOM_REVUE">, n&#176; [#IDENTIFIANT]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
 </DEFMACRO>
 
 
@@ -443,14 +443,14 @@
 		
 			<div class="menu1">
 			<a class="menu2" href="sommaire.html?id=[#ID]">
-			[#NOM]
+			[#IDENTIFIANT]
 			</a>
 			</div>
 			
 		
 		<LOOP NAME="aff_publiparente" TABLE="entites" WHERE="idparent='[#ID]' AND statut gt 0">
 			<div class="menu2">
-				<a class="menu2" href="sommaire.html?id=[#ID]">[#NOM]</a>
+				<a class="menu2" href="sommaire.html?id=[#ID]">[#IDENTIFIANT]</a>
 			</div>
 		</LOOP>
 	</LOOP>
@@ -758,7 +758,7 @@
 	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i>
 	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			[#NOM]<IF COND="[#TITRE]">, [#TITRE].</IF>
+			[#IDENTIFIANT]<IF COND="[#TITRE]">, [#TITRE].</IF>
 		</DO>
 	</LOOP>
 	<br />http://[#REVUE].revues.org/document.html?id=[#ID]
@@ -805,7 +805,7 @@
 		<DO>
 			<div class="titre2">
 				<a class="titre2" href="sommaire.html?id=[#ID]">
-					[#NOM]
+					[#IDENTIFIANT]
 				
 				<MACRO NAME="TITRE_PUBLICATION">
 				</a>
@@ -826,7 +826,7 @@
 		<DO>
 			<a class="titre2" href="sommaire.html?id=[#ID]">
 				Dernier numéro publié : <br />
-				[#NOM] 
+				[#IDENTIFIANT] 
 				<IF COND="[#TITRE]">
 					- [#TITRE]
 				</IF>
@@ -875,7 +875,7 @@
 		<DO>
 			<div class="titre1">
 				<a class="titre1" href="sommaire.html?id=[#ID]">
-				Sommaire du dernier numéro publié : [#NOM] 
+				Sommaire du dernier numéro publié : [#IDENTIFIANT] 
 				</a>
 				<IF COND="[#DIRECTEUR]">
 					<span class="directeur_publication">
@@ -913,7 +913,7 @@
 	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='rubrique'" LIMIT="0,1">
 		<DO>
 			<a href="sommaire.html?id=[#ID]">
-				[#NOM]
+				[#IDENTIFIANT]
 			</a>
 			<IF COND="[#TITRE]">
 				<br />
@@ -981,7 +981,7 @@
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#ICONE]">
 		<a href="sommaire.html?id=[#ID]">
-			<img src="[#ICONE]" align='left' name="[#NOM]" border='0' alt="[#NOM]" hspace="8" vspace="8">
+			<img src="[#ICONE]" align='left' name="[#IDENTIFIANT]" border='0' alt="[#IDENTIFIANT]" hspace="8" vspace="8">
 		</a>
 	</IF>
 </DEFMACRO>

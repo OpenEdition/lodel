@@ -235,7 +235,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" ORDER="ordre DESC">
 			<DO>	
 				<option value="sommaire.html?id=[#ID]">
-					[#NOM]
+					[#IDENTIFIANT]
 				</option>
 			</DO>
 		</LOOP>
@@ -414,7 +414,7 @@ IPR
 <meta name="DC.Relation" content="http://www.revues.org" />
 
 <meta name="DC.Identifier" content="http://[#REVUE].revues.org/sommaire.html?id=[#ID]" />
-<meta name="DC.Title" content="Sommaire du numéro [#NOM], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
+<meta name="DC.Title" content="Sommaire du numéro [#IDENTIFIANT], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 <meta name="DC.Date" content="[#DATE]" />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_META_SOMMAIRE">" />
 </DEFMACRO>
