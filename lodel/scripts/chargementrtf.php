@@ -112,11 +112,11 @@ function rtf($filename) {
   }
   # conversion des balises avec publication
   array_push($search,
-		     "/<r2r:(heading|titre)_(\d+)(\b[^>]+)?>/i",
-		     "/<\/r2r:(heading|titre)_(\d+)>/i");
+		     "/<r2r:(?:section|heading|titre)_(\d+\b([^>]*)>/i",
+		     "/<\/r2r:(?:section|heading|titre)_(\d+)>/i");
   array_push($rpl,
-		"<r2r:section\\2\\3>",
-		"</r2r:section\\2>");
+		"<r2r:section\\1>",
+		"</r2r:section\\1>");
   
 # recupere les alignements dans les tableaux......
 
