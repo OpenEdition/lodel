@@ -99,6 +99,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   $id=intval($context[id]);
   $idparent=intval($context[idparent]);
 
+#  print_r($context);
   //
   // check we have the right to add such an entite
   //

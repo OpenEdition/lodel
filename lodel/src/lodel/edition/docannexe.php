@@ -83,7 +83,7 @@ if ($edit) { // modifie ou ajoute
     // charge le fichier si necessaire
       if ($docfile && $docfile['tmp_name'] && $docfile['tmp_name']!="none") {
 	if ($id>0) { // we know the document id, we can copy it.
-	  $lien=save_annex_file($id,$docfile['tmp_name'],$docfile['name']);
+	  $lien=save_annex_file($id,$docfile['tmp_name'],$docfile['name'],FALSE,$erreur);
 	} else {
 	  $lien="temporaire";
 	}
@@ -146,7 +146,7 @@ if ($edit) { // modifie ou ajoute
     if (!$id && $newid &&
 	$type=="documentannexe-lienfichier" &&
 	$docfile['tmp_name']) { // we know the document id, we can copie it.
-      $lien=save_annex_file($newid,$docfile['tmp_name'],$docfile['name']);
+      $lien=save_annex_file($newid,$docfile['tmp_name'],$docfile['name'],FALSE,$erreur);
       mysql_query("UPDATE $GLOBALS[tp]documents SET lien='$lien' WHERE identite=$newid");
     }
 
