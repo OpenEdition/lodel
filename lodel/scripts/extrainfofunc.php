@@ -259,16 +259,16 @@ function gr_auteur(&$context,$plusauteurs)
 #  return $rpl;
 #}
 
-function gr_index(&$context,$indexs,$autresentrees,$bal)
+function gr_index(&$context,$entrees,$autresentrees,$bal)
 
 {
   $bal=strtolower($bal);
   // traite les indexs
   $rpl="<r2r:gr$bal>";
-  $indexs=array_merge($indexs,preg_split ("/\s*[,;]\s*/",$autresentrees));
+  $entrees=array_merge($entrees,preg_split ("/\s*[,;]\s*/",$autresentrees));
 
-  if ($indexs) {
-    foreach ($indexs as $p) {
+  if ($entrees) {
+    foreach ($entrees as $p) {
       $rpl.=writetag($bal,strip_tags(rmscript(trim($p))));
     }
   }
@@ -329,29 +329,30 @@ function makeselectindex (&$context)
      // le context doit contenir les informations sur le type a traiter
 {
   global $text;
-  preg_match_all("/<r2r:$context[balise]\b[^>]*>(.*?)<\/r2r:$context[balise]>/is",$text,$indexs,PREG_PATTERN_ORDER);
+  preg_match_all("/<r2r:$context[balise]\b[^>]*>(.*?)<\/r2r:$context[balise]>/is",$text,$entrees,PREG_PATTERN_ORDER);
 
   $entreestrouvees=array();
-  makeselectindex_rec(0,"",$indexs,$context,&$entreestrouvees);
+  makeselectindex_rec(0,"",$entrees,$context,&$entreestrouvees);
 #  echo "la:";
-#  print_r($indexs[1]);
+#  print_r($entrees[1]);
 #  echo "la2:";
 #  print_r($entreestrouvees);
-  $context[autresentrees]=join(", ",array_diff($indexs[1],$entreestrouvees));
+  $context[autresentrees]=join(", ",array_diff($entrees[1],$entreestrouvees));
 #  echo "autresnetrees  $context[autresentrees]";
 }
 
-function makeselectindex_rec($parent,$rep,$indexs,&$context,&$entreestrouvees)
+function makeselectindex_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
 
 {
   $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND typeid='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  print_r($entrees[1]);
 
   while ($row=mysql_fetch_assoc($result)) {
-    $selected=(in_array($row[abrev],$indexs[1]) || in_array($row[nom],$indexs[1])) ? " selected" : "";
+    $selected=(in_array($row[abrev],$entrees[1]) || in_array($row[nom],$entrees[1])) ? " selected" : "";
    if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
    $value=$context[useabrev] ? $row[abrev] : $row[nom];
     echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
-    makeselectindex_rec($row[id],$rep.$row[nom]."/",$indexs,$context,&$entreestrouvees);
+    makeselectindex_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
   }
 }
 
@@ -489,7 +490,7 @@ function tags2tag ($bal,&$text)
   $bal=strtolower($bal);
 
   if (preg_match ("/<r2r:$bals>\s*(.*?)\s*<\/r2r:$bals>/si",$text,$result)) {
-    $val=$result[1];
+    $val=strip_tags($result[1]);
     $tags=preg_split ("/[,;]/",preg_replace(
 					    array("/^\s*<(p|div)\b[^>]*>/si","/<\/(p|div)\b[^>]*>$/si","/\s+/"),
 					    array("",""," "),$val));

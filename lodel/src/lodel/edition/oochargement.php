@@ -12,10 +12,26 @@ if ($htmlfile && $htmlfile!="none") {
   do {
     // verifie que la variable htmlfile n'a pas ete hackee
     if (strpos(realpath($htmlfile),getenv("TMPDIR"))!=0) die("Erreur interne");
+
+    //
+    // regarde si le fichier est zipper
+    //
+    $fp=fopen($htmlfile,"r") or die("le fichier $htmlfile ne peut etre ouvert");
+    $cle=fread($fp,2);
+    if ($cle=="PK") {
+      if ($oo2) echo "extract<br>"; flush();
+      system("/usr/bin/unzip -j -p $htmlfile >$htmlfile.extracted");
+      $htmlfile.=".extracted";
+    }
+    fclose($fp);
+    //
+    //
+    //
+
     include_once($home."balises.php");
-    if ($sortie2) $oo2=TRUE;
+    if ($sortieoo2 || $sortie2) $oo2=TRUE;
     if ($oo2) {
-      $newname=OO2($htmlfile);
+      $newname=OO2($htmlfile,$context);
     } else {
       $newname=OO($htmlfile);
     }
@@ -216,7 +232,7 @@ function quote_attribut($text)
 ////////////////////// nouvelle version /////////////////////////
 
 
-function OO2 ($uploadedfile)
+function OO2 ($uploadedfile,&$context)
 
 
 {
@@ -251,15 +267,15 @@ function OO2 ($uploadedfile)
   echo "<br>";
   // conversion en HTML
   echo "2nd conversion<br>\n";flush();
-  $time1=time();
+  $time2=time();
   runDocumentConverter($uploadedfile.".sxw","html");
-  echo "temps:",time()-$time1,"<br>";
+  echo "temps:",time()-$time2,"<br>";
   echo "fin<br>\n";flush();
 
 
   $file=str_replace("\n","",join('',file("$uploadedfile.sxw.html")));
 
-  if ($GLOBALS[sortieoo]) { // on veut la sortie brute
+  if ($GLOBALS[sortieoo2]) { // on veut la sortie brute
     echo htmlentities($file);
     return;
   } elseif ($GLOBALS[sortieoohtml]) {
@@ -332,8 +348,12 @@ function OO2 ($uploadedfile)
   array_push($srch,
 	     "/.*<body\b[^>]*>/si",
 	     "/<\/body>.*/si",
-	     "/<[^>]+>/e",
-#	     "/<p\salign=\"(left|justify)\"(\s+[^>]*)>/", # enleve les alignements gauche et justify ....... surement inutile maintenant avec OO
+	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span
+	     "/(<a\b[^>]*)sdfixed>/i",
+	     "/<div type=(?:header|footer)>.*?<\/div>/is",
+	     "/<\w[^>]*>/e", // balises ouvrantes
+	     "/<\/[^>]+>/e", // balises fermantes
+	     "/<p\salign=\"(left|justify)\"(\s+[^>]*)>/", # enleve les alignements gauche et justify ....... surement inutile maintenant avec OO
 	     "/<br\b([^>]*)>/",   # XML is
 	     "/<\/br>/",	#efface
 	     "/<li>/",
@@ -346,11 +366,15 @@ function OO2 ($uploadedfile)
   array_push($rpl,
 	     '<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">',
 	     "</r2r:article>",
-	     'quote_attribut_strtolower("\\0")',
-#	     "<p\\2>",
+	     "\\1",
+	     "\\1>",
+	     "",
+	     'quote_attribut_strtolower("\\0")', // ouvrantes
+	     'strtolower("\\0")',                // fermentes
+	     "<p\\2>",
 	     "<br\\1 />",
-	     "<li />",
 	     " ",
+	     "<li />",
 	     "\\1\\2",
 	     "\\1border=\"0\"/>",
 	     "\\1 />",
@@ -358,7 +382,10 @@ function OO2 ($uploadedfile)
 	     );
 
   $time=time();
-  $file=traite_multiplelevel(preg_replace ($srch,$rpl,$file));
+  $file=preg_replace ($srch,$rpl,$file);
+  if (!traite_tableau2($file)) {     $context[erreur_stylestableaux]=1;
+  return FALSE; }
+  $file=traite_multiplelevel($file);
   echo "temps regexp: ".(time()-$time)."<br>\n";
 
   //echo htmlentities($file); exit;
@@ -368,9 +395,7 @@ function OO2 ($uploadedfile)
     if (!checkstring($file)) { echo "fichier: $newname"; echo htmlentities($file);
 return FALSE; }
 
-# traite les tableaux pour sortir les styles
-    include ($home."tableau.php");
-    $file=traite_tableau($file);
+
 
 # enleve les couples de balises r2r.
     $file=traite_couple($file);
@@ -392,15 +417,60 @@ return FALSE; }
     $newname="$uploadedfile-".rand();
   if (!writefile("$newname.html",$file)) return FALSE;
 
+  echo "total:",time()-$time1,"<br>"; flush();
+
   return $newname;
 }
 
 
 function quote_attribut_strtolower($text)
 
-{
- # quote les arguments 
-  return preg_replace("/(\w+\s*=)(\w+)/","\\1\"\\2\"",strtolower($text));
+{ 
+  $i=strpos($text,"=");
+  if ($i===FALSE) return strtolower($text);
+
+  do {
+    // attribut suivant
+    $i++;
+    $c=substr($text,$i,1);
+    $indoublequote=0;
+    $adddoublequote=0;
+    while ($c!="") {
+      if ($c=='\\') { $i+=2;   $c=substr($text,$i,1); next; } // quote
+      if ($c==" " || $c==">") {
+	if ($adddoublequote) {	  
+	  $newtext.=substr($text,0,$i).'"';
+	  break;
+	} else {
+	  $i++; // saute l'espace
+	  $c=substr($text,$i,1); 
+	  next; // espace
+	}
+      }
+      if ($c=='"') { // toggle le doublequoteflags
+	if ($indoublequote) {
+	  // on sort, donc on cherche l'attribut suivant.
+	  $newtext.=substr($text,0,$i);
+	  break;
+	} else {
+	  $newtext.=strtolower(substr($text,0,$i)); 
+	  $text=substr($text,$i);
+	  $i=0; 
+	  $indoublequote=1;	  
+	}
+      } elseif (!$indoublequote) { // il manque le quote
+	$newtext.=strtolower(substr($text,0,$i)).'"'; 
+	$text=substr($text,$i);
+	$i=0; $indoublequote=1; $adddoublequote=1;
+      }
+      $i++;
+      $c=substr($text,$i,1);
+    }
+    $text=substr($text,$i);
+    $i=strpos($text,"=");
+  } while ($i!==FALSE);
+
+  return $newtext.strtolower($text);
 }
 
 ////////////////////////////////////////////////////////
@@ -552,13 +622,46 @@ function runDocumentConverter($filename,$extension)
 
   system("$javapath/bin/java -classpath \"$openofficepath/program/classes/jurt.jar:$openofficepath/program/classes/unoil.jar:$openofficepath/program/classes/ridl.jar:$openofficepath/program/classes/sandbox.jar:$openofficepath/program/classes/juh.jar:$home/oo/classes\" DocumentConverterSimple \"$filename\" \"swriter: $format\" \"$extension\" \"$openofficepath/program/soffice \" 2>$errfile");
 
-  $errcontent=join('',file("$errfile"));
+  $errcontent=join('',file($errfile));
   if ($errcontent) {
     echo "Erreur de lancement d'execution du script java:\n";
     echo "$errcontent\n";
     return;
   }
 }
+
+
+
+function traite_tableau2(&$text)
+
+{
+  // nouveaux traitement des tableaux.
+  // decoupe les tableaux
+  $arr=preg_split("/(<table\b|<\/table>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $count=count($arr); $level=0; $err=0;
+  #echo "count=$count<br>";
+  if ($count==1) return TRUE;
+  for($i=1; $i<$count; $i+=2) {
+    if ($arr[$i]=="</table>") { // ferme
+      $level--;
+      if ($level==0) $laststyle=""; // on vient de sortir du tableau
+    } else { // on ouvre
+      $level++;
+    }
+    if ($level && preg_match_all("/<\/r2r:(\w+)>/",$arr[$i+1],$results,PREG_SET_ORDER)) {
+      foreach($results as $result) { // cherche si c'est partout le meme style
+	if ($laststyle && $laststyle!=$result[1]) { $err=1; break 2; }
+	$laststyle=$result[1];
+      }
+      $arr[$i+1]=preg_replace("/<\/?r2r:$laststyle>/","",$arr[$i+1]); // ok, on efface alors
+    }
+  }
+  if ($err) {    return FALSE;  }
+
+  $text=join("",$arr);
+  return TRUE;
+}
+
 
 
 ?>

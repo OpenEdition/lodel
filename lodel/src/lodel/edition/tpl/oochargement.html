@@ -77,7 +77,12 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 </tr>
 <TR>
 <td><input type="file" name="htmlfile" size="40"></td>
-[(#ERREUR_UPLOAD|true)<td CLASS="erreur">Une erreur s'est produite pendant le chargement.</td>]</tr>
+<IF COND="[#ERREUR_UPLOAD]">
+<td CLASS="erreur">Une erreur s'est produite pendant le chargement ou de la conversion
+[(#ERREUR_STYLESTABLEAUX|true)<br>Un tableau contient plusieurs styles de paragraphe differents. Veuillez verifier le tagage des tableaux.]
+</td>
+</IF>
+</tr>
 <TR><td>
 <br />
 
@@ -94,6 +99,7 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 <br />
 <IF COND="[#SUPERADMIN]">
 <br /><br />Super Admin:<br />
+<input class="form" type="submit" name="sortieoo2" value="Sortie Brute de OpenOffice - version 2">
 <input class="form" type="submit" name="sortie2" value="Sortie de chargement - version 2">
 </IF>
 

@@ -183,12 +183,12 @@ function traite_couple(&$text)
   global $virgule_tags,$multiparagraphe_tags;
   return preg_replace (
 		       array(
-			     "/<\/r2r:($virgule_tags)>[\s\n\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
-			     "/<\/r2r:($multiparagraphe_tags)>((?:<br>|[\s\n\r]+)*)<r2r:\\1\b[^>]*>/i", # les autres tags    
+			     "/<\/r2r:($virgule_tags)>[\s\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
+			     "/<\/r2r:($multiparagraphe_tags)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|[\s\r])*)<r2r:\\1\b[^>]*>/is", # les autres tags    
 			     ),
 		       array(
 			     ",",
-			     "\\2",
+			     "",
 			     ),
 		       $text);
 }
