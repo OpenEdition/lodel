@@ -213,6 +213,7 @@
 						Table des matières
 					</div>
 
+
 <LOOP NAME="toc" TEXT="[#TEXTE]">
  <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
  <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
@@ -266,7 +267,7 @@
 								<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 				
 						<!--[ Notes de bas de page. Si elles existent -]-->
-						<IF COND="[#NOTEBASPAGE]">
+						<IF COND="[(#NOTEBASPAGE|notes('nombre'))]">
 							<div class="titre3">
 								Notes bas numériques:
 							</div>
@@ -274,6 +275,9 @@
 								[(#NOTEBASPAGE|notes("nombre"))]
 								<br />
 							</div>
+						</IF>
+						
+						<IF COND="[(#NOTEBASPAGE|notes('lettre'))]">
 							<div class="titre3">
 								Notes bas littérales:
 							</div>
@@ -281,6 +285,9 @@
 								[(#NOTEBASPAGE|notes("lettre"))]
 								<br />
 							</div>
+						</IF>
+						
+						<IF COND="[(#NOTEBASPAGE|notes('asterisque'))]">
 							<div class="titre3">
 								Notes bas astérisques:
 							</div>
@@ -288,10 +295,10 @@
 								[(#NOTEBASPAGE|notes("asterisque"))]
 								<br />
 							</div>
-
 						</IF>
+						
 						<!--[ Notes de fin. Si elles existent -]-->
-						<IF COND="[#NOTEFIN]">
+						<IF COND="[(#NOTEFIN|notes('nombre'))]">
 							<div class="titre3">
 								Notes fin numériques:
 							</div>
@@ -299,6 +306,8 @@
 								[(#NOTEFIN|notes("nombre"))]
 								<br />
 							</div>
+						</IF>
+						<IF COND="[(#NOTEFIN|notes('lettre'))]">
 							<div class="titre3">
 								Notes fin littérales:
 							</div>
@@ -306,6 +315,8 @@
 								[(#NOTEFIN|notes("lettre"))]
 								<br />
 							</div>
+						</IF>
+						<IF COND="[(#NOTEFIN|notes('asterisque'))]">
 							<div class="titre3">
 								Notes fin astérisques:
 							</div>
@@ -313,7 +324,6 @@
 								[(#NOTEFIN|notes("asterisque"))]
 								<br />
 							</div>
-
 						</IF>
 								
 					<!--[ Si le texte n'est pas encore autorisé à être publié ]-->
