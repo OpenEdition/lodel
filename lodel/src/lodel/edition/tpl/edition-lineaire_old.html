@@ -1,16 +1,16 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'un numéro</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<MACRO NAME="TABLE_creetableinterface">
+<MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
 		<tr> 
 			<td> 
 				<table width="480" border="0" align="center" cellspacing="0" cellpadding="2"> 
 					<br>
-					<MACRO NAME="TABLE_nom_publication_serie"> 
+					<MACRO NAME="TABLE_NOM_PUBLICATION_SERIE"> 
 					<br>
 				</table>
 			</td>
@@ -22,14 +22,14 @@
 				<tr> 
 					<td> 
 						<table width="800" border="0" cellpadding="0" cellspacing="0">
-						<MACRO NAME="Numeros_non_publies">
+						<MACRO NAME="NUMEROS_NON_PUBLIES">
 						<!-- BOUCLE D'AFFICHAGE DES NUMEROS NON PUBLIES-->
 						<LOOP NAME="publication_trash" TABLE="publications" WHERE="parent=[#PARENT]" WHERE="trash" ORDER="ordre DESC"> 
-							<MACRO NAME="TR_lignesalternees">
+							<MACRO NAME="TR_LIGNESALTERNEES">
 								<td width="48"> 
 									<div align="center">
 									<a href="index.php?parent=[#ID]">
-									<MACRO NAME="GIF_numero"> 
+									<MACRO NAME="GIF_NUMERO"> 
 									</a>
 									</div>
 								</td>
@@ -54,28 +54,28 @@
 								<td width="74" valign="middle"> 
 									<div align="center">
 									<a href="index.php?parent=[#ID]">
-										<MACRO NAME="GIF_Editer_Publication_32">
+										<MACRO NAME="GIF_EDITER_PUBLICATION_32">
 									</a>
 									</div>
 								</td>
 								<td width="74" valign="middle"> 
 									<div align="center">
 									<a href="publication.php?id=[#ID]">
-										<MACRO NAME="GIF_Editer_Descriptif">
+										<MACRO NAME="GIF_EDITER_DESCRIPTIF">
 									</a>
 									</div>
 								</td>
 								<td width="74" valign="middle"> 
 									<div align="center">
 										<A HREF="publi.php?publication=[#ID]&online=1">
-											<MACRO NAME="GIF_Publier">
+											<MACRO NAME="GIF_PUBLIER">
 										</a>
 									</div>
 								</td>
 									<td width="74" align="center" valign="middle"> 
 										<div align="center">
 										<br>
-											<MACRO NAME="Associer_icone_publication">
+											<MACRO NAME="ASSOCIER_ICONE_PUBLICATION">
 										</div>
 									</td>
 								<td width="74" valign="middle"> 
@@ -87,9 +87,9 @@
 								</td>
 							</tr>
 					<ALTERNATIVE/> 
-						<MACRO NAME="TR_aucune_publication_dispo"> 
+						<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
 					</LOOP>
-					<MACRO NAME="Creer_numero">
+					<MACRO NAME="CREER_NUMERO">
 					<br>			
 					</tr>
 				</table>
@@ -106,14 +106,14 @@
 		<tr> 
 			<td bgcolor="#FFFFFF"> 
 			<table width="800" border="0" cellpadding="0" cellspacing="0">
-			<MACRO NAME="Numeros_publies">
+			<MACRO NAME="NUMEROS_PUBLIES">
 				<!-- BOUCLE D'AFFICHAGE DES NUMEROS PUBLIES-->
 				<LOOP NAME="publication" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="ok" ORDER="ordre DESC"> 
-				<MACRO NAME="TR_lignesalternees">
+				<MACRO NAME="TR_LIGNESALTERNEES">
 				<td width="48"> 
 					<div align="center">
 					<a href="../../sommaire.html?id=[#ID]">
-					<MACRO NAME="GIF_numero"> 
+					<MACRO NAME="GIF_NUMERO"> 
 					</a>
 					</div>
 				</td>
@@ -162,13 +162,13 @@
 				  </td>
 		          </tr>
 		        <ALTERNATIVE/> 
-				<MACRO NAME="TR_aucune_publication_dispo"> 
+				<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
 				</LOOP> 
-				<MACRO NAME="Creer_numero">		
+				<MACRO NAME="CREER_NUMERO">		
 		      </table>
 		    </td>
 		  </tr>
 	
-<MACRO NAME="TR_tachesencours">
+<MACRO NAME="TR_TACHESENCOURS">
 </table>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

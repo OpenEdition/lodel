@@ -419,7 +419,7 @@
 								<img src="images/picto_menu.gif" width="7" height="7" border="0" vspace="2" hspace="2">&nbsp;[#NOM]
 							</p>
 							<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
-								<MACRO NAME="Font_close">
+								<MACRO NAME="FONT_CLOSE">
 							</IF>
 						<ELSE/>
 							<p class="menugauche">
@@ -430,7 +430,7 @@
 								[#NOM]</a>
 							</p>
 							<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
-								<MACRO NAME="Font_close">
+								<MACRO NAME="FONT_CLOSE">
 							</IF>
 						</IF>
 					<br />				
@@ -439,7 +439,7 @@
 					car la graphiste propose que tous les regroupements
 					soient toujours dépliés -->
 					<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='regroupement'">
-						<MACRO NAME="Articles_par_regroupements">
+						<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 						<br />
 					</LOOP>
 					<!-- J'affiche tous les articles issus d'un thème
@@ -448,7 +448,7 @@
 					consulte -->
 					<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
 						<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='theme'">
-							<MACRO NAME="Articles_par_regroupements">
+							<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 							<br />
 						</LOOP>
 					</IF>

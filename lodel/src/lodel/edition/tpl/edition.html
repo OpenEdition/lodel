@@ -1,13 +1,13 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'une revue</title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<MACRO NAME="TABLE_creetableinterface">
+<MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="648" border="0" align="center" cellspacing="0" cellpadding="0">
-		<MACRO NAME="TR_separateur">
+		<MACRO NAME="TR_SEPARATEUR">
 		<tr>
 			<td>
 				<div align="center">
@@ -27,7 +27,7 @@
 				</div>
 			</td>
 		</tr>
-		<MACRO NAME="TR_separateur">
+		<MACRO NAME="TR_SEPARATEUR">
 		<!---------------------------->
 		<!--  AFFICHAGE DES SERIES -->
 		<!---------------------------->
@@ -49,7 +49,7 @@
 											Edition des séries
 										</font>
 									</td>
-									<MACRO NAME="titres_boutons_publications">
+									<MACRO NAME="TITRES_BOUTONS_PUBLICATIONS">
 								</tr>
 								<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
 								<tr>
@@ -60,13 +60,13 @@
 										<!--</a>-->
 										</div>
 									</td>
-									<MACRO NAME="TD_nom_type_titre">
-									<MACRO NAME="boutons_publications">
+									<MACRO NAME="TD_NOM_TYPE_TITRE">
+									<MACRO NAME="BOUTONS_PUBLICATIONS">
 								</tr>
 								<ALTERNATIVE/>
-									<MACRO NAME="TR_aucune_publication_dispo"> 
+									<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
 								</LOOP>
-								<MACRO NAME="Creer_serie">
+								<MACRO NAME="CREER_SERIE">
 							</table>
 						</td>
 					</tr>
@@ -74,5 +74,5 @@
 			</td>
 		</tr>
 	</table>
-<MACRO NAME="CLOSE_TABLE_creetableinterface">
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_TABLE_CREETABLEINTERFACE">
+<MACRO NAME="CLOSE_HTML">

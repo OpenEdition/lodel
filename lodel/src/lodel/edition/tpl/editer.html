@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition de document</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 <table width="400" border="1" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
 	<tr>
@@ -32,7 +32,7 @@
 	<br>
 	
 	<LOOP NAME="Affiche_articles" TABLE="documents" WHERE="id=[#ID]">
-		<MACRO NAME="auteurs"><br>
+		<MACRO NAME="AUTEURS"><br>
 			<em>
 				"[#TITRE]"
 			</em>
@@ -221,4 +221,4 @@
 	</IF>
 </TABLE>
 
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">
