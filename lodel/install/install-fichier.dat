@@ -47,7 +47,6 @@ ln sommaire.php
 
 dirsource $homesite/lodel/admin
 ln tpl/login.html
-ln colorpicker.js
 ln login.php
 ln logout.php
 
@@ -86,6 +85,8 @@ dirsource $homesite/lodel/admin
 ln tpl/login.html
 ln login.php
 ln logout.php
+ln colorpicker.js
+
 
 # tous les fichier de src/lodel/edition
 dirsource $homesite/lodel/edition
@@ -197,10 +198,7 @@ ln tpl/edit_optiongroups.html
 ln tpl/edit_useroptiongroups.html
 ln colorpicker.js
 
-ln list.php
-
 ln stats.php
-ln text.php
 ln tpl/text.html
 ln tpl/texts.html
 ln tpl/translations.html
