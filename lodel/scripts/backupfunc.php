@@ -294,9 +294,9 @@ function lodelprefix($table)
 {
   // remove up to the dot
   $table=preg_replace("/.*\./","",$table);
-  if (strpos($table,$GLOBALS['tp'])!==0) die("ERROR: table $table should be prefixed");
+  if (strpos($table,$GLOBALS['tableprefix'])!==0) die("ERROR: table $table should be prefixed");
 
-  $table=substr($table,strlen($GLOBALS['tp']));
+  $table=substr($table,strlen($GLOBALS['tableprefix']));
 
 
   if ($GLOBALS['currentprefix']) {
