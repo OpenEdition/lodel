@@ -447,10 +447,9 @@ cp_[#NAME].writeDiv();
 	<!--[ -----------[ SELECT ]---------- ]-->
 	
 	<IF COND="[#EDITION] == 'select'">
-	
-	<select name="[#VARNAME][]">
+	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
 		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]">[#ROOT][#G_NAME]</option>
+		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
 	<ELSE/>
