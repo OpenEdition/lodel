@@ -32,8 +32,10 @@ maketablefields();
 function maketablefields()
 
 {
+  $dbs[$GLOBALS[database]]=$GLOBALS[database].".";
+  if ($GLOBALS[database]!=$GLOBALS[currentdb]) $dbs[$GLOBALS[currentdb]]="";
 
-  foreach (array($GLOBALS[database] =>$GLOBALS[database].".", $GLOBALS[currentdb]=>"") as $db => $prefix) {
+  foreach ($dbs as $db => $prefix) {
     $result=mysql_list_tables($db) or die(mysql_error());
     while (list($table)=mysql_fetch_row($result)) {
       $result2=mysql_list_fields($db,$table);
