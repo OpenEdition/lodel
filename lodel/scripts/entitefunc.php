@@ -217,7 +217,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     }
     // change group ?
     $groupeset= ($admin && $context[groupe]) ? ", groupe=".intval($context[groupe]) : "";
-    // chage type ?
+    // change type ?
     $typeset=$context[idtype] ? ",idtype='$context[idtype]'" : "";
     // change statut ?
     $statut=get_statut($id);

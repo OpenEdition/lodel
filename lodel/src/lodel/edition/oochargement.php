@@ -41,6 +41,7 @@ require_once($home."utf8.php"); // conversion des caracteres
 $context[idparent]=intval($idparent);
 $context[iddocument]=intval($iddocument);
 $context[idtache]=$idtache=intval($idtache);
+$context[idtype]=intval($idtype);
 
 
 if ($file1 && $file1!="none") {
@@ -98,14 +99,11 @@ if ($file1 && $file1!="none") {
 
       if ($context[iddocument]) {
 	$row[iddocument]=$context[iddocument];
-    /*  } elseif ($context[idparent]>=0) {
-	$row[idparent]=$context[idparent];
       } else {
-	die("probleme dans l'interface, aucune information pour attacher le document ou la publication");
-      }*/
-     } else {
-       $row[idparent]=$context[idparent];
-     }
+	$row[idparent]=$context[idparent];
+      }
+      $row[idtype]=$context[idtype];
+
     }
     $idtache=make_tache("Import $file1_name",3,$row,$idtache);
 
@@ -196,7 +194,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "puces?"=>"texte",
 		      "bloccitation"=>"citation",
 		      "quotations"=>"citation",
-		      "typedocument"=>"typedoc",
+#		      "typedocument"=>"typedoc",
 		      "titleuser"=>"title"
 		      );
 

@@ -94,6 +94,7 @@ function infoChargement(nomFic){
 <form name="formfic" enctype="multipart/form-data" action="[#URL]" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
 	<input type="hidden" name="idparent" value="[#IDPARENT]" />	
+	<input type="hidden" name="idtype" value="[#IDTYPE]" />
 	<input type="hidden" name="iddocument" value="[#IDDOCUMENT]" />	
         <input type="hidden" name="idtache" value="[#IDTACHE]" />
 	<IF COND="[#COMMANDS]">

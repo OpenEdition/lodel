@@ -93,27 +93,14 @@ function enregistre_entite_from_xml($context,$text,$classe)
     } // foreach styles for mltext
   } // foreach fields.
 
-  // recupere les informations sur le type
-  $style=$classe=="documents" ? "typedoc" : "type"; // temporaire.
-
-  $type="";
-  if ($context[$style]) {
-    $type=addslashes($context[$style]);
-  } elseif (preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result)) {
-    $type=addslashes(trim(strip_tags($result[1])));
+  if (!$localcontext[idtype]) {
+    // check if the document exists, if not we really need the type
+    if (!$localcontext[id]) die("Preciser un type in xmlimport.php");
+    // get the idtype
+    $result=mysql_query("SELECT idtype FROM $GLOBALS[tp]entites WHERE id='$localcontext[id]'") or die(mysql_error());
+    if (!mysql_num_rows($result)) die("Internal ERROR: The entites $localcontext[id] should exists.");
+    list($localcontext[idtype])=mysql_fetch_row($result);
   }
-  if ($type) {
-    // recherche l'id du type
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$type' AND classe='$classe'") or die (mysql_error());
-    list($idtype)=mysql_fetch_row($result);
-
-    if (!$idtype) {
-      // on fait rien, mais c'est peut etre pas une bonne idee
-    }
-  } else {
-    $idtype=0;
-  }
-  $localcontext[idtype]=$idtype;
 
   enregistre_personnes_from_xml(&$localcontext,$text);
   enregistre_entrees_from_xml(&$localcontext,$text);
@@ -153,8 +140,9 @@ function enregistre_entite_from_xml($context,$text,$classe)
 function enregistre_personnes_from_xml (&$localcontext,$text)
 
 {
-  // il faudrait ajouter ici un test sur le type... mais bon, c'est pas facile parce qu'on ne connait pas encore le type !!!
-  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die (mysql_error());
+  if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
+
+  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes,$GLOBALS[tp]typeentites_typepersonnes WHERE statut>0 AND idtypepersonne=id AND idtypeentite='$lodelcontext[idtype]'") or die (mysql_error());
   while (list($idtype,$style,$styledescription)=mysql_fetch_row($result)) {
     // accouple les balises personnes et description
     // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
@@ -273,9 +261,10 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 
 {
   global $home;
-  // il faudrait ajouter ici un test sur le type... mais bon, c'est pas facile parce qu'on ne connait pas encore le type !!!
 
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
+  if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
+
+  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees,$GLOBALS[tp]typeentites_typeentrees WHERE statut>0 AND idtypeentree=id AND idtypeentree='$lodelcontext[idtype]'") or die (mysql_error());
   require_once($home."champfunc.php");
 
   while (list($idtype,$style)=mysql_fetch_row($result)) {

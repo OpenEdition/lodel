@@ -314,6 +314,8 @@
 	</LOOP>
 </DEFMACRO>
 
+<!--[ Supprimer le 02/02/04 par Ghislain
+
 <DEFMACRO NAME="AFFICHER_INFORMATIONS_DOCUMENT">
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
@@ -333,6 +335,7 @@
 		</tr>
 	</table>
 </DEFMACRO>
+]-->
 
 <!--[ ************************************************** ]-->
 
@@ -714,9 +717,9 @@
 			</BEFORE>
 			<DO>
 				<IF COND="[#NBRESULTATS] ge 4">
-					<option value="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
+					<option value="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
 				<ELSE/>
-					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
+					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
 				</IF>
 			</DO>
 			<AFTER>
@@ -743,16 +746,16 @@
 		<DO>
 			<IF COND="[#NBRESULTATS] ge 4">
 				<IF COND="[#IMPORT]==1">
-	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">[#TITRE]</option>
+	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITRE]</option>
 				<ELSE/>
-	        		<option value="document.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">[#TITRE]</option>
+	        		<option value="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITRE]</option>
 				</IF>
 			<ELSE/>
 				<MACRO NAME="PNG_PLUS">&nbsp;
 				<IF COND="[#IMPORT]==1">
-					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">Ajouter [#TITRE]</a><br />
+					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">Ajouter [#TITRE]</a><br />
 				<ELSE/>
-					<a href="document.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">Ajouter [#TITRE]</a><br />
+					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">Ajouter [#TITRE]</a><br />
 				</IF>
 			</IF>
 		</DO>

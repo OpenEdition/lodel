@@ -36,6 +36,7 @@ include_once ($home."func.php");
 if ($idtache) {
   // lit la tache en cours
   $tache=get_tache($idtache);
+  $idtype=0;
 
 #  print_r($tache);
   // cherche le fichier a traiter
@@ -48,14 +49,20 @@ if ($idtache) {
     // est-ce qu'on a encore un fichier a traiter apres celui la ?
     $context[encore]=$tache["fichierdecoupe".($ifile+1)] ? TRUE : FALSE;
     if ($ifile>1) {
-      $context[typedoc]=$tache["typedoc".$ifile];
-      if ($context[typedoc]) $context[typedocfixe]=1;
+      $typedoc=addslashes($tache["typedoc".$ifile]);
+      // recherche l'id du type
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$typedoc' AND classe='$classe'") or die (mysql_error());
+      if (!mysql_num_rows($result)) die("ERROR: Type incorrect \"$typedoc\". Verifier le stylage et le modele editorial");
+      list($context[idtype])=mysql_fetch_row($result);
+    } else {
+      $idtype=intval($tache[idtype]);
     }
     if ($filename!="processing") {
       $tache["fichierdecoupe$ifile"]="processing";
     }
   } else { // cas normal ou le fichier n'a pas ete decoupe
     $filename=$tache[fichier];
+    $idtype=intval($tache[idtype]);
     $context[encore]=0;
     if ($filename!="processing") {
       $tache[fichier]="processing";
@@ -76,6 +83,7 @@ if ($idtache) {
   if ($filename!="processing") {
     $localcontext=array();
     $localcontext[idparent]=$tache[idparent];
+    $localcontext[idtype]=$idtype;
     $localcontext[id]=$tache[iddocument];
     $localcontext[statut]=-64; // car le document n'est pas correcte a priori
     // enregistre le nom du fichier original. Enleve le repertoire.
@@ -102,7 +110,7 @@ if ($idtache) {
   } else {
     $id=$tache[iddocument];
   }
-} else {
+} else { // tache
   // rien a faire
 }
 
@@ -110,6 +118,7 @@ require_once($home."entitefunc.php");
 
 $context[id]=$id=intval($id);
 $context[idparent]=$idparent=intval($idparent);
+$context[idtype]=intval($idtype);
 
 ####if ($parent) $idparent=$parent;
 ####$context[idparent]=$idparent=intval($idparent);
@@ -185,22 +194,22 @@ if ($id>0 && $dir) {
   extrait_personnes($id,&$context);
   extrait_entrees($id,&$context);
 } else {
-  require_once ($home."validfunc.php");
-  $context[type]=trim(($type));
-  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
-  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
-  if (!mysql_num_rows($result)) die("type inconnu $context[type]");
-  list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
+#  require_once ($home."validfunc.php");
+#  $context[type]=trim($type);
+#  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
+#  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
+#  if (!mysql_num_rows($result)) die("type inconnu $context[type]");
+#  list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
   $context[entite]=array();
 }
 
 if (!$context[tplcreation]) {
-  if (!$context[idtype]) die("preciser un type");
-  $result=mysql_query("SELECT tplcreation FROM $GLOBALS[tp]types WHERE id='$context[idtype]'") or die (mysql_error());
+  if (!$context[idtype]) die("preciser un type in document.php");
+  $result=mysql_query("SELECT tplcreation FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND statut>0") or die (mysql_error());
   list($context[tplcreation])=mysql_fetch_row($result);
 }
 
-$context[idtache]=$idtache;
+$context[idtache]=intval($idtache);
 
 posttraitement($context);
 
