@@ -85,7 +85,7 @@ if ($id>0 && $delete) {
     if ( (!$context['name'] && !$id) || ($context['name'] && !preg_match("/^[\w\s]+$/",utf8_decode($context['name'])) )) $err=$context['error_nom']=1;
     if ($err) break;
 
-    if (!$context['lang']) $context['lang']=$GLOBALS['userlang'] ? $GLOBALS['userlang'] : "";
+    if (!$context['lang']) $context['lang']=$GLOBALS['user']['lang'] ? $GLOBALS['user']['lang'] : "";
 
     if ($err) break;
 

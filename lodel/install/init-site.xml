@@ -165,7 +165,7 @@
 <table name="fields"
         description="table qui contient les champs supplementaires"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 <column name="id"
         type="INTEGER"
         required="true"
@@ -279,7 +279,7 @@
 <table name="fieldgroups"
         description="table qui contient les groupes de champs pour le XML"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"
@@ -373,7 +373,7 @@
 <table name="users"
         description="Table des utilisateurs de lodel"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 <column name="id"
         type="INTEGER"
         required="true"
@@ -388,9 +388,8 @@
 <column name="passwd"
         type="VARCHAR"
         size="64"
-        required="true"
         label="[@COMMON.PASSWORD]"
-        edittype="password" />
+        edittype="passwd" />
 <column name="name"
         type="VARCHAR"
         size="64"
@@ -406,7 +405,7 @@
         default="0"
         required="true"
         label="[@ADMIN.USER_RIGHTS]"
-        edittype="int" />
+        edittype="select" />
 <column name="lang"
         type="CHAR"
         size="5"
@@ -418,7 +417,7 @@
         type="TINYINT"
         default="1"
         required="true" />
-<vcolumn name="groups"
+<vcolumn name="usergroups"
 	label="[@ADMIN.USERGROUPS]"
 	edittype="multipleselect" />
 <vcolumn name="protected"
@@ -438,7 +437,7 @@
 <table name="usergroups"
         description="Table des groupes d'utilisateurs de lodel"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"
@@ -453,6 +452,10 @@
 <column name="status"
         type="TINYINT"
         default="1"
+        required="true" />
+<column name="rank"
+        type="INTEGER"
+        default="0"
         required="true" />
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_USER_GROUP]"
@@ -489,7 +492,7 @@
         description="Table pour les types d'entites"
         uniqueid="yes"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"
@@ -568,7 +571,7 @@
         description=""
         uniqueid="yes"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"
@@ -650,7 +653,7 @@
         description=""
         uniqueid="yes"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"
@@ -850,7 +853,7 @@
 <table name="texts"
         description="Table des minitextes"
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"
@@ -1101,7 +1104,7 @@
 <table name="translations"
         description=""
 	writeright="admin"
-	protectright="lodeladmin">
+	protectright="adminlodel">
 
 <column name="id"
         type="INTEGER"

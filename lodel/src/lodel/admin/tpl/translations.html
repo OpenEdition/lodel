@@ -83,7 +83,7 @@
 		<td>&nbsp;</td>
 	      </tr>
 
-	<LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#USERLANG]'" ORDER="nom">
+	<LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#USER.LANG]'" ORDER="nom">
 		<DO>
 			<IF COND="[#COUNT]%2">
 			<tr class="ligne_admin1">

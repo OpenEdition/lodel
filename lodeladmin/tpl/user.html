@@ -34,35 +34,35 @@
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="groupes[0]" value="1">
 <tr><td><b>Nom:</b></td>
-<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
-<IF COND="[#ERREUR_NOM]">
+<td><input size="30" type="text" name="nom" value="[#NAME]"></td>
+<IF COND="[#ERROR_NAME]">
 	<td class="erreur"><font color="Red">[@ADMIN.ERROR_NAME] !</font></td>
 </IF>
 </tr>
 <tr><td><b>[@COMMON.EMAIL]</b></td>
 <td><input size="30" type="text" name="courriel" value="[#COURRIEL]"></td>
-<IF COND="[#ERREUR_COURRIEL]">
+<IF COND="[#ERROR_COURRIEL]">
 	<td class="erreur"><font color="Red">[@ADMIN.ERROR_MAIL]</font></td>
 </IF>
 </tr>
 <tr><td><b>[@COMMON.LOGIN] :</b></td>
 <td><input size="30" type="text" name="usernamems" value="[#USERNAMEMS]"></td>
-<IF COND="[#ERREUR_USERNAME]">
+<IF COND="[#ERROR_USERNAME]">
 	<td class="erreur">[@ADMIN.ERROR_USERNAME]</td>
 </IF>
-<IF COND="[#ERREUR_DUPUSERNAME]">
+<IF COND="[#ERROR_DUPUSERNAME]">
 	<td class="erreur">[@ADMIN.ERROR_USERNAME].</td>
 </IF>
 </tr>
 <tr><td><b>[@COMMON.PASSWORD] :</b></td>
 <td><input size="30" type="password" name="passwdms" value=""></td>
-<IF COND="[#ERREUR_PASSWD]">
+<IF COND="[#ERROR_PASSWD]">
 	<td class="erreur">[@ADMIN.ERROR_PASSWORD]</td>
 </IF>
 </tr>
 <tr>
 	<td><b>[@COMMON.LANG] :</b></td>
-	<td><select name="lang"><?php  makeselectlangues_nevernil(); ?></select></td>
+	<td><select name="lang"><?php  makeselectlangs_nevernil(); ?></select></td>
 <tr>
 </table>
 <IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>

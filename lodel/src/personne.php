@@ -40,7 +40,7 @@ $context[type]=$type;
 
 include_once($home."connect.php");
 $personnetable="";
-$critere=$rightvisitor ?  "" : "AND status>0";
+$critere=$user['visitor'] ?  "" : "AND status>0";
 $result=mysql_query ("SELECT * FROM $GLOBALS[tp]persons WHERE id='$id' $critere") or die($db->errormsg());
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));

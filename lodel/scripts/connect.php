@@ -60,6 +60,8 @@ if ($GLOBALS['site'] && $GLOBALS['singledatabase']!="on") {
   $GLOBALS['currentdb']=DATABASE;
 }
 
+if (!defined("SINGLESITE")) define("SINGLESITE",$GLOBALS['singledatabase']!="on"); // synonyme currently but may change in the future
+
 $GLOBALS['db']->connect(DBHOST,DBUSERNAME,DBPASSWD, $GLOBALS['currentdb']) or die($GLOBALS['db']->errormsg());
 
 $GLOBALS['tp']=$GLOBALS['tableprefix'];

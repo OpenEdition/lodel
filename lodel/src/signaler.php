@@ -40,7 +40,7 @@ include_once($home."connect.php");
 //
 // get the  document
 //
-$critere=$rightvisitor ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
+$critere=$user['visitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
 
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or die($db->errormsg());

@@ -41,7 +41,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 function authenticate ($level=0,$norecordurl=FALSE)
 
 {
-  global $context,$iduser,$userrights,$usergroups,$userlang;
+  global $context,$user;
   global $home,$timeout,$sessionname,$site;
   global $db;
 
@@ -76,25 +76,25 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     // pass les variables en global
    
-    $context=array_merge($context,unserialize($row['context'])); // recupere le contexte
-    $userrights=$context['userrights'];
-    $userlang=$context['userlang'];
-    $usergroups=$context['usergroups'];
-    $context['iduser']=$iduser=$row['iduser'];
+    $contextfromsession=unserialize($row['context']);
+    $context=array_merge($context,$contextfromsession); // recupere le contexte
+    $user=$contextfromsession['user'];
 
-    if ($userrights<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
+    if ($user['rights']<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
 
     // verifie encore une fois au cas ou...
-    if ($userrights<LEVEL_ADMINLODEL && !$site) break;
+    if ($user['rights']<LEVEL_ADMINLODEL && !$site) break;
 
-    if ($userrights>=LEVEL_ADMINLODEL) $context['rightadminlodel']=$GLOBALS['rightadminlodel']=1;
-    if ($userrights>=LEVEL_ADMIN) $context['rightadmin']=$GLOBALS['rightadmin']=1;
-    if ($userrights>=LEVEL_EDITOR) $context['righteditor']=$GLOBALS['righteditor']=1;
-    if ($userrights>=LEVEL_REDACTOR) $context['rightredactor']=$GLOBALS['rightredactor']=1;
-    if ($userrights>=LEVEL_VISITOR) $context['rightvisitor']=$GLOBALS['rightvisitor']=1;
+    $user['adminlodel']=$user['rights']>=LEVEL_ADMINLODEL;
+    $user['admin']=$user['rights']>=LEVEL_ADMIN;
+    $user['editor']=$user['rights']>=LEVEL_EDITOR;
+    $user['redactor']=$user['rights']>=LEVEL_REDACTOR;
+    $user['visitor']=$user['rights']>=LEVEL_VISITOR;
+
+    $context['user']=$user;
+
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
-
     //
     // change l'expiration de la session et l'url courrante
     //
@@ -188,10 +188,7 @@ if (!((bool) ini_get("register_globals"))) { //
 
 
 // securite... initialisation
-$userrights=0;
-$usergroups="";
-$userlang="";
-$iduser=0;
+$user=array();
 $idsession=0;
 $session="";
 
@@ -203,10 +200,6 @@ $context=array(
 	       "database"=>$GLOBALS['database']
 	       ); // tres important d'initialiser le context.
 
-
-$rightadminlodel=0;
-$rightadmin=0;
-$user=0;
 if (!$filemask) $filemask="0700";
 
 // cherche le name du site

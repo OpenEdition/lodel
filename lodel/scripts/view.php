@@ -110,7 +110,7 @@ class View {
 
    function isCacheValid()
    {
-     if ($GLOBALS['rightvisitor']) {
+     if ($GLOBALS['right']['visitor']) {
        $this->_iscachevalid=true;
        return true;
      }

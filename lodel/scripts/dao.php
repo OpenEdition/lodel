@@ -67,12 +67,13 @@ class DAO {
    function save(&$vo) // $set,$context=array())
 
    {
-     global $db;
+     global $db,$user;
 
      // check the user has the basic right for modifying/creating an object
-     if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
+     if ($user['rights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
      // check the user has the right to protect the object
-     if ( ($vo->status>=32 || $vo->status<=-32 || $vo->protect) && $GLOBALS['userrights']<$this->rights['protect']) {
+     if ( ( (isset($vo->status) && ($vo->status>=32 || $vo->status<=-32)) || $vo->protect) 
+	  && $user['rights'] < $this->rights['protect']) {
        die("ERROR: you don't have the right to protect objects from the table ".$this->table);
      }
 
@@ -222,7 +223,7 @@ class DAO {
    function deleteObject(&$mixed) {
      global $db;
 
-     if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+     if ($GLOBALS['user']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
 
      if (is_object($mixed)) {
        $vo=&$mixed;
@@ -250,7 +251,7 @@ class DAO {
      global $db;
 
      // check the rights
-     if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+     if ($GLOBALS['user']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
      $where=" WHERE (".$criteria.") ".$this->_rightscriteria("write");
 
      // delete the uniqueid entry if required
@@ -294,8 +295,8 @@ class DAO {
 
        if (array_key_exists("status",get_class_vars($this->table."VO"))) {
 
-	 $this->cache_rightscriteria[$access]=$GLOBALS['rightvisitor'] ? " AND status>-64" : " AND status>0";
-	 if ($access=="write" && $GLOBALS['userrights']<$this->rights['protect'])
+	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND status>-64" : " AND status>0";
+	 if ($access=="write" && $GLOBALS['user']['rights']<$this->rights['protect'])
 	   $this->cache_rightscriteria[$access].=" AND status<32 AND status>-32 ";
        }
 

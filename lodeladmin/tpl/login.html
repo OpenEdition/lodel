@@ -43,32 +43,32 @@
               <td width="80%"> <b><font color="#FF0000" size="+1">[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</font></b> 
                 <br />
                 <br />
-		<IF COND="[#ERREUR_LOGIN]">
+		<IF COND="[#ERROR_LOGIN]">
 			<br />
 			<br />
 			<b>[@COMMON.INVALID_LOGIN_PASSWORD]</b><br />
 			<br />
                 </IF> 
 		<b>[@COMMON.DEMAND_IDENTIFICATION]</b><br />
-		<IF COND="[#ERREUR_OPENSESSION]">
+		<IF COND="[#ERROR_OPENSESSION]">
 			<b><br />
 			[@COMMON.ERROR_OPENSESSION]<br />
 			<br />
 			</b>
 		 </IF>
-		 <IF COND="[#ERREUR_SETCOOKIE]">
+		 <IF COND="[#ERROR_SETCOOKIE]">
 		 <b><br />
                 <br />
                 [@LODELADMIN.ERROR_SETCOOKIE]</b><br />
                 <br />
                  </IF>
-		 <IF COND="[#ERREUR_TIMEOUT]">
+		 <IF COND="[#ERROR_TIMEOUT]">
 		 <br />
                 <br />
                 <b>[@COMMON.SESSION_TIMEOUT]</b><br />
                 <br />
                 </IF>
-		<IF COND="[#ERREUR_PRIVILEGE]">
+		<IF COND="[#ERROR_PRIVILEGE]">
 		 <b><br />
                 <br />
                 [@COMMON.ERROR_RIGHTS]</b><br />

@@ -99,9 +99,9 @@ if ($edit) { // modifie ou ajoute
       $result=mysql_query("SELECT lang FROM $GLOBALS[tp]translations WHERE $critere") or die($db->errormsg());
       list($context['lang'])=mysql_fetch_row($result);
     }
-    if ($context['lang']!=$userlang) { // normal case... should be different !
+    if ($context['lang']!=$user['lang']) { // normal case... should be different !
       // get all the text name, group, text in current lang for which the translation does not exists in the new lang
-      $result=mysql_query("SELECT t1.name,t1.textgroup,t1.texte FROM $GLOBALS[tp]texts as t1 LEFT OUTER JOIN $GLOBALS[tp]texts as t2 ON t1.name=t2.name AND t1.textgroup=t2.textgroup AND t2.lang='".$context['lang']."' WHERE t1.status>-64 AND t1.lang='".$userlang."' AND t2.id IS NULL AND t1.$textscritere GROUP BY t1.name,t1.textgroup") or die($db->errormsg());
+      $result=mysql_query("SELECT t1.name,t1.textgroup,t1.texte FROM $GLOBALS[tp]texts as t1 LEFT OUTER JOIN $GLOBALS[tp]texts as t2 ON t1.name=t2.name AND t1.textgroup=t2.textgroup AND t2.lang='".$context['lang']."' WHERE t1.status>-64 AND t1.lang='".$user['lang']."' AND t2.id IS NULL AND t1.$textscritere GROUP BY t1.name,t1.textgroup") or die($db->errormsg());
       do { // use multiple insert but not to much... to minimize the size of the query
 	$inserts=array(); $count=0;
 	while (($row=mysql_fetch_assoc($result)) && $count<20) {

@@ -75,9 +75,9 @@ function postprocessing(&$context)
 function maketask($name,$etape,$context,$id=0)
 
 {
-  global $iduser,$db;
+  global $user,$db;
   if (is_array($context)) $context=serialize($context);
-  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','$iduser','$context')")) or die($db->errormsg());
+  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$user['id']."','$context')")) or die($db->errormsg());
   return $db->insert_ID();
 }
 
@@ -425,7 +425,7 @@ function getlodeltext($name,$group="",$lang=-1)
       die("ERROR: unknow group for getlodeltext");
     }
   }
-  if ($lang==-1) $lang=$GLOBALS['userlang'];
+  if ($lang==-1) $lang=$GLOBALS['user']['lang'];
   require_once($GLOBALS[$home]."connect.php");
   global $db;
 
@@ -436,13 +436,13 @@ function getlodeltext($name,$group="",$lang=-1)
     $prefix="#_TP_";
   }
 
-  $critere=$GLOBALS['rightvisitor'] ? "" : "AND status>0";
+  $critere=$GLOBALS['user']['visitor'] ? "" : "AND status>0";
   $arr=$db->getrow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
   if ($arr===false) die($db->errormsg());
 
   if ($group!="site") usecurrentdb();
 
-  if (!$arr[1] && $GLOBALS['rightvisitor']) $arr[1]="@".$name;
+  if (!$arr[1] && $GLOBALS['user']['visitor']) $arr[1]="@".$name;
 
   return $arr;
 }

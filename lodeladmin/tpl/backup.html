@@ -34,13 +34,13 @@
 
 
 <div align="center"><table width="600" cellpadding="5" cellspacing="0" border="1" align="CENTER">
-<IF COND="[#OUTFILENAME] and ![#ERREUR]">
+<IF COND="[#OUTFILENAME] and ![#ERROR]">
 		    [@LODELADMIN.BACKUP_IS_DONE_ARCHIVE_AIVALABLE_HERE] : [#OUTFILENAME]<br />
 <form method="POST">
 <input class="form" type="button" value="  OK  " onClick="javascript:window.location='index.php'" />
 </form>
 <ELSE/>
-		<IF COND="[#ERREUR]">
+		<IF COND="[#ERROR]">
 		  <p>[@LODELADMIN.ERROR_COPY_FILES_VERIFY_SERVER_CAN_WRITE_OR_ENOUGH_SPACE_DIRECTORY|sprintf([#OUTFILENAME])].</p>
 		</IF>
 

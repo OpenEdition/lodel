@@ -45,9 +45,10 @@ class UsersLogic extends Logic {
    function isdeletelocked($id,$status=0) 
 
    {
-     if ($GLOBALS['iduser']==$id && 
-	 ( ($GLOBALS['site'] && $GLOBALS['userrights']<LEVEL_ADMINLODEL) ||
-	   (!$GLOBALS['site'] && $GLOBALS['userrights']==LEVEL_ADMINLODEL))) {
+     global $user;
+     if ($user['id']==$id && 
+	 ( ($GLOBALS['site'] && $user['rights']<LEVEL_ADMINLODEL) ||
+	   (!$GLOBALS['site'] && $user['rights']==LEVEL_ADMINLODEL))) {
        return getlodeltextcontents("cannot_delete_current_user","common");
      } else {
        return false;
@@ -64,14 +65,43 @@ class UsersLogic extends Logic {
 
    {
      switch($var) {
-     case "groups" :
-       $dao=getDAO("users_groups");
-       $list=$dao->findMany("status>0","rank","id","title");
+     case "usergroups" :
+       require_once($GLOBALS['home']."dao.php");
+       $dao=getDAO("usergroups");
+       $list=$dao->findMany("status>0","rank,name","id,name");
+       $arr=array();
        foreach($list as $group) {
-	 $arr[$group->id]=$group->title;
+	 $arr[$group->id]=$group->name;
        }
-       renderOptions($arr,$context['groups']);
+       if (!$arr) $arr[1]="--";
+       renderOptions($arr,$context['usergroups']);
        break;
+     case "userrights":
+       $arr=array(LEVEL_VISITOR=>getlodeltextcontents("user_visitor","common"),
+		  LEVEL_REDACTOR=>getlodeltextcontents("user_redactor","common"),
+		  LEVEL_EDITOR=>getlodeltextcontents("user_editor","common"),
+		  LEVEL_ADMIN=>getlodeltextcontents("user_admin","common"),
+		  );
+       if (SINGLESITE) 
+	 $arr[LEVEL_ADMINLODEL]=getlodeltextcontents("user_adminlodel","common");
+
+       // take only the rights below the current user rights
+       // in pratice only the ADMIN and ADMINLODEL should be authorized to add/remove users...
+       $arr2=array();
+       foreach($arr as $k=>$v) if ($GLOBALS['user']['rights']>=$k) $arr2[$k]=$v;
+       renderOptions($arr2,$context['userrights']);
+       break;
+     case "lang" :
+       // get the langage available in the interface
+       require_once($GLOBALS['home']."dao.php");
+       $dao=getDAO("translations");
+       $list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
+       $arr=array();
+       foreach($list as $lang) {
+	 $arr[$lang->lang]=$lang->title;
+       }
+       if (!$arr) $arr['fr']="Francais";
+       renderOptions($arr,$context['lang']);
      }
    }
  
@@ -81,18 +111,30 @@ class UsersLogic extends Logic {
     * @private
     */
 
+   function _populateContextRelatedTables(&$vo,&$context)
+
+   {
+     $dao=getDAO("users_usergroups");
+     $list=$dao->findMany("iduser='".$vo->id."'","","idgroup");
+     $context['usergroups']=array();
+     foreach($list as $relationobj) {
+       $context['usergroups'][]=$relationobj->idgroup;
+     }
+   }
+
    function _saveRelatedTables($vo,$context) 
 
    {
-     if (!$context['groups']) $context['groups']=array(1);
+     global $db;
+     if (!$context['usergroups']) $context['usergroups']=array(1);
 
-     // change the groups     
+     // change the usergroups     
      // first delete the group
-     $this->_deleteRelatedTables($id);
-     // now add the groups
-      foreach ($context['groups'] as $group) {
-	$group=intval($group);
-	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')")) or die($db->errormsg());
+     $this->_deleteRelatedTables($vo->id);
+     // now add the usergroups
+      foreach ($context['usergroups'] as $usergroup) {
+	$usergroup=intval($usergroup);
+	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or die($db->errormsg());
       }
    }
 
@@ -103,10 +145,10 @@ class UsersLogic extends Logic {
 
 
    function _validateFields(&$context,&$error) {
-     global $db;
+     global $db,$user;
 
      // check the user has the right equal or higher to the new user
-     if ($GLOBALS['userrights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
+     if ($user['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
 
      // Check the user is not duplicated in the main table...
      if (!usemaindb()) return; // use the main db, return if it is the same as the current one.
@@ -126,19 +168,18 @@ class UsersLogic extends Logic {
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {
-     return array("user"=>array("user","+"),
-                  "title"=>array("text","+"),
-                  "class"=>array("class","+"),
-                  "tpl"=>array("tplfile",""),
-                  "tplcreation"=>array("tplfile",""),
-                  "tpledition"=>array("tplfile",""),
-                  "import"=>array("select","+"));
+     return array("username"=>array("username","+"),
+                  "passwd"=>array("passwd",""),
+                  "name"=>array("text",""),
+                  "email"=>array("email",""),
+                  "userrights"=>array("select","+"),
+                  "lang"=>array("lang","+"));
              }
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
 
-    function _uniqueFields() {  return array(array("user","class"),);  }
+    function _uniqueFields() {  return array(array("username"),);  }
    // end{uniquefields} automatic generation  //
 
 } // class 

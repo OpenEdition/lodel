@@ -39,7 +39,7 @@ if ($set) {
   extract_post();
 
   // status less than 0 are internal option.
-  $critere=$GLOBALS[rightadminlodel] ? "status>0" : "status>0 AND status<32";
+  $critere=$GLOBALS['user']['adminlodel'] ? "status>0" : "status>0 AND status<32";
 
   $result=mysql_query("SELECT id,name,type FROM $GLOBALS[tp]options WHERE $critere") or die($db->errormsg());
   while (list($id,$name,$type)=mysql_fetch_row($result)) {

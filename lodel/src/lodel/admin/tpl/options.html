@@ -60,7 +60,7 @@
 		         <IF COND="[#TYPE] eq 'pass'">
 			<input size="30" type="password" name="option_[#NAME]"></td>
 		        <ELSE/>
-		        <IF COND="[#RIGHTADMINLODEL] or ([#STATUS] lt 32)">
+		        <IF COND="[#USER.ADMINLODEL] or ([#STATUS] lt 32)">
 		           <input size="30" type="text" name="option_[#NAME]" value="[#VALUE]">
                         <ELSE/>
 		           <input size="30" type="text" name="option_[#NAME]" value="[#VALUE]" readonly></td>
@@ -75,7 +75,7 @@
 		        	<a href="option.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 				<a href="option.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 
-		        <IF COND="[#RIGHTADMINLODEL] || [#STATUS] lt 32">
+		        <IF COND="[#USER.ADMINLODEL] || [#STATUS] lt 32">
 			&nbsp;&nbsp;|&nbsp;<a href="option.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 	                |&nbsp;<a href="option.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>
 		        <ELSE/>

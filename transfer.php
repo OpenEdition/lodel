@@ -153,7 +153,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 	if ($err) break;
       }
       if ($err) break;
-      $report.="efface les anciennes tables";
+      $report.="efface les anciennes tables<br>";
     } // fini la translation
 
     /////////////////////
@@ -192,8 +192,18 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
     } // table entite
 
 
-
-
+    /////////////////////
+    // USERGROUPS
+    if ($tables["$GLOBALS[tp]usergroups"]) {
+      $fields=getfields("usergroups");
+      if (!$fields['rank']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
+');
+	if ($err) break;
+	$report.="Ajout de rank a usergroups<br/>";
+      }
+    }      
 
     // fini, faire quelque chose
   } while(0);

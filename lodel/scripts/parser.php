@@ -212,7 +212,7 @@ function parse ($in,$out)
       if ($text{$i}<'A' || $text{$i}>'Z') continue; // not a variable
       $varname=$text{$i}; $i++;
       while (($text{$i}>='A' && $text{$i}<='Z') || 
-	     ($text{$i}>='0' && $text{$i}<='1') || 
+	     ($text{$i}>='0' && $text{$i}<='9') || 
 	     $text{$i}=="_" || $text{$i}==".") {
 	$varname.=$text{$i}; $i++;
       }
@@ -272,7 +272,7 @@ function parse ($in,$out)
 
    $variable=$this->parse_variable_extra($prefix,$name);
    if ($variable===false) { // has the variable being processed ?     
-     $variable="\$context['".strtolower($name)."']";
+     $variable="\$context['". str_replace(".","']['",strtolower($name)) ."']";
    }
 
 

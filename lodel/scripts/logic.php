@@ -68,7 +68,9 @@ class Logic {
      if (!$vo) die("ERROR: can't find object $id in the table ".$this->maintable);
      $this->_populateContext($vo,$context);
 
-     return "ok";
+     $ret=$this->_populateContextRelatedTables($vo,$context);
+
+     return $ret ? $ret : "ok";
    }
 
    /**
@@ -87,6 +89,8 @@ class Logic {
      }
      if (isset($context['title'])) {
        $context['title']=$copyof." ".$context['title'];
+     } elseif (isset($context['username'])) {
+       $context['username']=$copyof."_".$context['username'];
      }
      return $ret;
    }
@@ -182,14 +186,15 @@ class Logic {
    function isdeletelocked($id,$status=0)
 
    {
+     global $user;
      // basic
      $dao=$this->_getMainTableDAO();
      if (!$status) { // heavy... caching would be better but...
        $vo=$dao->getById(intval($id),"status");
        $status=$vo->status;
      }
-     return ($GLOBALS['userrights'] < $dao->rights['write']) ||
-       (abs($status)>=32 && $GLOBALS['userrights']< $dao->rights['protect']);
+     return ($user['rights'] < $dao->rights['write']) ||
+       (abs($status)>=32 && $user['rights']< $dao->rights['protect']);
    }
 
    /*---------------------------------------------------------------*/
@@ -266,10 +271,13 @@ class Logic {
 	    $context[$field]===""  // or empty string
 	    )) {
 	 $error[$field]="+";
+       } elseif ($type=="passwd" && !trim($context[$field]) && $context['id']>0) {
+	   // passwd can be empty only if $context[id] exists... it is a little hack but.
+	 unset($context[$field]); // remove it
        } else {
 	 $valid=validfield($context[$field],$type,"");
 	 if ($valid===false) die("ERROR: $type can not be validated in logic.php");
-	 if (is_string($valid)) $error[$field]=$valid;
+	 if (is_string($valid)) $error[$field]=$valid;      
        }
      }
      return !isset($error);
@@ -346,7 +354,11 @@ class Logic {
     * Used in deleteAction to do extra operation after the object has been deleted
     */
    function _deleteRelatedTables($id) {}
-   
+
+   /**
+    * Used in viewAction to do extra populate in the context 
+    */
+   function _populateContextRelatedTables(&$vo,&$context) {}
 
 } // class Logic
 

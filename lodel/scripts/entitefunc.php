@@ -36,14 +36,14 @@
 function getusergroup($context,$idparent)
 
 {
-  global $rightadmin,$usergroups;
+  global $user;
 
   // cherche le groupe et les rights
-  if ($rightadmin) { // on prend celui qu'on nous donne
+  if ($user['admin']) { // on prend celui qu'on nous donne
     $usergroup=intval($context[usergroup]); if (!$usergroup) $usergroup=1;
 
   } elseif ($idparent) { // on prend celui du idparent
-    $usergroup=getone("SELECT usergroup FROM #_TP_entities WHERE id='$idparent' AND usergroup IN ($usergroups)");
+    $usergroup=getone("SELECT usergroup FROM #_TP_entities WHERE id='$idparent' AND usergroup IN (".$user['groups'].")");
     if ($db->errorno()) die($db->errormsg());
     if (!$usergroup) die("ERROR: You have not the rights: (2)");
   } else {
@@ -60,9 +60,9 @@ function getusergroup($context,$idparent)
 function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror=TRUE) 
 
 {
-  global $db,$home,$rightadmin,$usergroups;
+  global $db,$home,$user;
 
-  $iduser= $GLOBALS['rightadminlodel'] ? 0 : $GLOBALS['iduser'];
+  $iduser= $user['adminlodel'] ? 0 : $user['id'];
 
   $entity=& $context['entity'];
   $context['idtype']=intval($context['idtype']);
@@ -179,14 +179,14 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
 #	     "entity_entrees","entrees","entrytypes","types");
 
   if ($id>0) { // UPDATE
-    if ($id>0 && !$GLOBALS['rightadmin']) {
+    if ($id>0 && !$user['admin']) {
       // verifie que le document est editable par cette personne
-      $hasright=getone(lq("SELECT id FROM  #_TP_entities WHERE id='$id' AND usergroup IN ($usergroups)"));
+      $hasright=getone(lq("SELECT id FROM  #_TP_entities WHERE id='$id' AND usergroup IN (".$user['groups'].")"));
       if ($db->errorno()) die($db->errormsg());
       if (!$hasright) die("ERROR: You are not allowed. This is likely due to an error in the interface");
     }
     // change group ?
-    $usergroupset=($rightadmin && $context['usergroup']) ? ", usergroup=".intval($context['usergroup']) : "";
+    $usergroupset=($user['admin'] && $context['usergroup']) ? ", usergroup=".intval($context['usergroup']) : "";
     // change type ?
     $typeset=$context['idtype'] ? ",idtype='$context[idtype]'" : "";
     // change status ?
@@ -196,7 +196,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
       $statusset=",status='$status' ";
     }
     $db->execute(lq("UPDATE #_TP_entities SET identifier='$context[identifier]' $typeset $usergroupset $statusset WHERE id='$id'")) or die($db->errormsg());
-    if ($usergrouprec && $rightadmin) change_usergroup_rec($id,$usergroup);
+    if ($usergrouprec && $user['admin']) change_usergroup_rec($id,$usergroup);
 
     move_files($id,$files_to_move,$sets);
 
@@ -245,13 +245,13 @@ function move_files($id,$files_to_move,&$sets)
     // new path to the file
     $dirdest="docannexe/$file[type]/$id";
     if (!file_exists(SITEROOT.$dirdest)) {
-      if (!@mkdir(SITEROOT.$dirdest,0777 & octdec($GLOBALS[filemask]))) die("ERROR: impossible to create the directory \"$dir\"");
+      if (!@mkdir(SITEROOT.$dirdest,0777 & octdec($GLOBALS['filemask']))) die("ERROR: impossible to create the directory \"$dir\"");
     }
     $dest=$dirdest."/".$dest;
     $sets[$file['name']]="'".addslashes($dest)."'";
     if ($src==SITEROOT.$dest) continue;
     rename($src,SITEROOT.$dest);
-    chmod (SITEROOT.$dest,0666 & octdec($GLOBALS[filemask]));
+    chmod (SITEROOT.$dest,0666 & octdec($GLOBALS['filemask']));
     @rmdir(dirname($src)); // do not complain, the directory may not be empty
   }
 }

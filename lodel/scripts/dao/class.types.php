@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-21.
+ // File generate automatically the 2004-12-22.
  //
 
 
@@ -59,7 +59,7 @@ class typesDAO extends DAO {
 
    function typesDAO() {
        $this->DAO("types",true);
-       $this->rights=array('write'=>LEVEL_ADMIN,'protect'=>LEVEL_LODELADMIN);
+       $this->rights=array('write'=>LEVEL_ADMIN,'protect'=>LEVEL_ADMINLODEL);
    }
 }
 

@@ -36,7 +36,8 @@ authenticate(LEVEL_VISITOR);
 // id pour un document
 // publication pour une publication
 
-$critere=$rightadmin ? "" : "groupe IN ($usergroups) AND ";
+
+$critere=$user['admin'] ? "" : "  groupe IN (".$user['groups'].") AND";
 
 if ($id) { // document
    $class="documents";

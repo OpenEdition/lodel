@@ -77,7 +77,7 @@
 							<span class="texte_orange">[@COMMON.LANG_SITE] :</span>
 		                                <select onchange="change_language(this)">
 	                                	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='site'" ORDER="rank">
-		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		                                <IF COND="[#USER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
 
@@ -177,7 +177,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<IF COND="[#RIGHTREDACTOR]">
+							<IF COND="[#USER.REDACTOR]">
 								<a href="index.php?do=list&table=types&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_TYPE]</span></span>
@@ -189,7 +189,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<IF COND="[#RIGHTREDACTOR]">
+							<IF COND="[#USER.REDACTOR]">
 							<a href="index.php?do=list&table=fields&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.DOCUMENT_DATAFIELDS]</span></span></span>
@@ -200,7 +200,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<IF COND="[#RIGHTREDACTOR]">
+							<IF COND="[#USER.REDACTOR]">
 							<a href="index.php?do=list&table=fields&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_DATAFIELDS]</span></span></span>
@@ -265,14 +265,14 @@
 							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
 		                                <select onchange="change_language(this)">
 	                                	<LOOP NAME="translations_interface" DATABASE="[#DATABASE]" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
-		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		                                <IF COND="[#USER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
 
 						</td>
 						<td>&nbsp;</td>
 					</tr>
-                                        <IF COND="[#RIGHTADMINLODEL]">
+                                        <IF COND="[#USER.ADMINLODEL]">
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">

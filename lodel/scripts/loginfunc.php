@@ -31,20 +31,24 @@
 
 function open_session ($login) {
 
-  global $userrights,$usergroups,$userlang,$sessionname,$timeout,$cookietimeout;
-  global $db,$urlroot,$site,$iduser;
+  global $user,$sessionname,$timeout,$cookietimeout;
+  global $db,$urlroot,$site;
 
   // timeout pour les cookies
   if (!$cookietimeout) $cookietimeout=4*3600; // to ensure compatibility
 
 
   // context
-  $contextstr=addslashes(serialize(array("userrights"=>intval($userrights),"usergroups"=>$usergroups,"userlang"=>$userlang,"username"=>$login)));
+  // "userrights"=>intval($userrights),"usergroups"=>$usergroups,"userlang"=>$userlang,"username"=>$login)
+
+  $user['name']=$login;
+
+  $contextstr=addslashes(serialize(array("user"=>$user)));
   $expire=time()+$timeout;
   $expire2=time()+$cookietimeout;
 
   usemaindb();
-  if (defined("LEVEL_ADMINLODEL") && $userrights<LEVEL_ADMINLODEL) {
+  if (defined("LEVEL_ADMINLODEL") && $user['rights']<LEVEL_ADMINLODEL) {
     if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
     $result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
@@ -58,7 +62,7 @@ function open_session ($login) {
     // name de la session
     $name=md5($login.microtime());
     // enregistre la session, si ca marche sort de la boucle
-    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')"));
+    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$user['id']."','$site','$contextstr','$expire','$expire2')"));
     if ($result) break; // ok, it's working fine
   }
   if (function_exists("unlock")) unlock(); 
@@ -73,18 +77,18 @@ function open_session ($login) {
 function check_auth ($login,&$passwd,&$site)
 
 {
-  global $db,$context,$iduser,$userrights,$usergroups,$userlang,$home;
+  global $db,$context,$user,$home;
 
   do { // block de control
     if (!$login || !$passwd) break;
 
-    $user=addslashes($login);
+    $username=addslashes($login);
     $pass=md5($passwd.$login);
 
     // cherche d'abord dans la base generale.
 
     usemaindb();
-    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$user' AND passwd='$pass' AND status>0")) or die($db->errormsg());
+    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or die($db->errormsg());
     usecurrentdb();
     if ( ($row=$result->fields) ) {
       // le user est dans la base generale
@@ -93,25 +97,26 @@ function check_auth ($login,&$passwd,&$site)
       if (!$site) break; // si $site n'est pas definie on s'ejecte
 
       // cherche ensuite dans la base du site
-      $result=$db->execute(lq("SELECT id,status,userrights FROM #_TP_users WHERE username='$user' AND passwd='$pass' AND status>0")) or die($db->errormsg());
+      $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or die($db->errormsg());
       if (!($row=$result->fields)) break;
      } else {
        break; // on s'eject
      }
     // pass les variables en global
-    $userrights=$row['userrights'];
-    $userlang=$row['lang'];
-    $context['iduser']=$iduser=$row['id'];
+    $user['rights']=$row['userrights'];
+    $user['lang']=$row['lang'];
+    $user['id']=$row['id'];
 
     // cherche les groupes pour les non administrateurs
-    if (defined("LEVEL_ADMIN") && $userrights<LEVEL_ADMIN) { // defined is useful only for the install.php
-      $result=$db->execute("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='$iduser'") or die($db->errormsg());
-      $usergroups="1"; // sont tous dans le groupe "tous"
-      while ( ($row=$result->fields) ) $usergroups.=",".$row[0];
+    if (defined("LEVEL_ADMIN") && $user['rights']<LEVEL_ADMIN) { // defined is useful only for the install.php
+      $result=$db->execute("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$user['id']."'") or die($db->errormsg());
+      $user['groups']="1"; // sont tous dans le groupe "tous"
+      while ( ($row=$result->fields) ) $user['groups'].=",".$row[0];
     } else {
-      $usergroups="";
+      $user['groups']="";
     }
-    $context['usergroups']=$usergroups;
+
+    $context['user']=$user; // export info into the context
 
     // efface les donnees de la memoire et protege pour la suite
     $passwd=0;

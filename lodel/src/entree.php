@@ -39,7 +39,7 @@ $context[id]=$id=intval($id);
 $entreetable="$GLOBALS[tp]entries";
 $typeentreetable="$GLOBALS[tp]entrytypes";
 
-$critere=$rightvisitor ?  "" : "AND $entreetable.status>0";
+$critere=$user['visitor'] ?  "" : "AND $entreetable.status>0";
 
 include_once($home."connect.php");
 $result=mysql_query ("SELECT $entreetable.*, tpl, type FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' $critere AND $typeentreetable.status>0") or die($db->errormsg());

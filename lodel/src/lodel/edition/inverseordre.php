@@ -38,8 +38,7 @@ $parent=intval($parent);
 
 
 $critere="parent='$parent' AND status>-64";
-if (!$rightadmin) $critere.=" AND groupe IN ($usergroups)";
-
+$critere.=$user['admin'] ? "" : " AND groupe IN (".$user['groups'].")";
 
 lock_write("publications");
 # cherche tous les enfants

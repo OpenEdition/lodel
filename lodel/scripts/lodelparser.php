@@ -82,7 +82,7 @@ function parse_loop_extra(&$tables,
 	      array(
 		    "status<=0",
 		    "status>0",
-		    '".($GLOBALS[rightadmin] ? "1" : "(usergroup IN ($GLOBALS[usergroups]))")."'
+		    '".($GLOBALS[user][admin] ? "1" : "(usergroup IN ($GLOBALS[user][groups]))")."'
 		    ),$where);
   //
 
@@ -143,11 +143,11 @@ function parse_loop_extra(&$tables,
       if ($realtable==lq("#_TP_session")) continue;
 
       if ($realtable==lq("#_TP_entities")) {
-	$lowstatus='"-64".($GLOBALS[rightadmin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[usergroups]))")';
+	$lowstatus='"-64".($GLOBALS[user][admin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[user][groups]))")';
       } else {
 	$lowstatus="-64";
       }
-      array_push($teststatus,"($table.status>\".(\$GLOBALS[rightvisitor] ? $lowstatus : \"0\").\")");
+      array_push($teststatus,"($table.status>\".(\$GLOBALS[user][visitor] ? $lowstatus : \"0\").\")");
     }
     $where=join(" AND ",$teststatus);
   }
@@ -241,7 +241,7 @@ function parse_variable_extra ($prefix,$varname)
   //
   if ($prefix=="#") {
     if ($varname=="GROUPRIGHT") {
-      return '($GLOBALS[rightadmin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroups])))';
+      return '($GLOBALS[right][admin] || in_array($context[group],explode(\',\',$GLOBALS[user][groups])))';
     }
     if (preg_match("/^OPTION[_.]/",$varname)) { // options
       return "getoption('".strtolower(substr($varname,7))."',$context)";
@@ -332,7 +332,7 @@ function maketext($name,$group,$tag)
     $textexists=$db->getOne("SELECT 1 FROM ".$prefix."texts WHERE name='$name' AND textgroup='$group'");
     if ($db->errorno()) die($db->errormsg());
     if (!$textexists) { // text does not exists. Have to create it.
-      $lang=$GLOBALS['userlang'] ? $GLOBALS['userlang'] : ""; // unlikely useful but...
+      $lang=$GLOBALS['user']['lang'] ? $GLOBALS['user']['lang'] : ""; // unlikely useful but...
       $db->execute("INSERT INTO ".$prefix."texts (name,textgroup,contents,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg ($db->errormsg());
     }
     if ($group!="site") usecurrentdb();

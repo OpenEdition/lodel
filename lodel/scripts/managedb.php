@@ -96,7 +96,9 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 
 {
   if (!($id>=1)) die("ERROR: id is not valid un \"supprime\"");
-  global $usergroups,$rightadmin,$context;
+  global $user,$context;
+
+
   if ($mklock) {
     lock_write("objets","entites",
 	       "publications","documents",
@@ -105,7 +107,7 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 	       "relations");
   }
 
-  $critere.=$rightadmin ? "" : " AND groupe IN ($usergroups)";
+  $critere.=$user['admin'] ? "" : " AND groupe IN (".$user['groups'].")";
 
   // verifie les tables a joindre pour le critere
   // a completer si necessaire
@@ -117,7 +119,7 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 
   $context[proteges]=array();
 
-  if (!$rightadmin) {
+  if (!$user['admin']) {
     // cherche l'id de la publication/document courante $id... verifie qu'on a les rights
     $result=mysql_query("SELECT status FROM $tables WHERE $GLOBALS[tp]entities.id='$id' $critere") or die($db->errormsg());
     if (!mysql_num_rows($result)) die("vous n'avez pas les rights. Erreur dans l'interface.");
@@ -212,7 +214,7 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
 function publi ($id,$status,$confirmation,$mklock=TRUE)
 
 {
-  global $usergroups,$rightadmin,$context;
+  global $user,$context;
 
   if ($mklock) {
     lock_write("entites",
@@ -225,7 +227,7 @@ function publi ($id,$status,$confirmation,$mklock=TRUE)
   // cherche les entitess a publier ou depublier
   //
 
-  $critere=$rightadmin ? "" : " AND groupe IN ($usergroups)";
+  $critere=$user['admin'] ? "" : " AND groupe IN (".$user['groups'].")";
 
   $ids=array();
   $context[proteges]=array();

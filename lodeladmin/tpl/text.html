@@ -48,16 +48,16 @@
 		<tr>
 			<td class="texte_intitule">[@COMMON.NAME] :</td>
 	        <IF COND="[#ID]">
-   		        <td>[#NOM]</td>
+   		        <td>[#NAME]</td>
 
                 <ELSE/>
-			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
+			<td><input size="30" type="text" name="nom" value="[#NAME]"></td>
 		</IF>
 		</tr>
-		<IF COND="[#ERREUR_NOM]">
+		<IF COND="[#ERROR_NAME]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.NARROW_NAME].</td></tr>
 		</IF>
-		<IF COND="[#ERREUR_NOM_EXISTE]">
+		<IF COND="[#ERROR_NOM_EXISTE]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_NAME_EXISTS_CHOOSE_DIFFERENT].</td></tr>
 		</IF>
 		<tr>

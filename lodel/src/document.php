@@ -40,7 +40,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$GLOBALS['rightvisitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
+$critere=$user['visitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 
 if ($identifier) {
   $identifier=addslashes(stripslashes($identifier));

@@ -68,7 +68,7 @@
 
             <!-- input type="text"                 -->
             <xsl:when test="@edittype='text' or @edittype='style'  or @edittype='mlstyle' 
-                            or @edittype='type' or @edittype='tplfile'">
+                            or @edittype='type' or @edittype='tplfile' or @edittype='username'">
                 <p>
                   <xsl:call-template name="label" />
                     <xsl:element name="input">
@@ -85,7 +85,7 @@
 
 
             <!-- input type="password"             -->
-            <xsl:when test="@edittype='password'">
+            <xsl:when test="@edittype='passwd'">
                 <p>
                   <xsl:call-template name="label" />
                   <xsl:element name="input">

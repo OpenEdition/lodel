@@ -94,7 +94,8 @@
 --------------------------------------------------------------- ]-->
 
 <DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="TABLE">
-<IF COND="([#USERRIGHTS] gt [#TABLE|rights('write')] and [#STATUS] lt 32) or ([#USERRIGHTS] gt [#TABLE|rights('protect')])">
+
+<IF COND="([#USER.RIGHTS] ge [#TABLE|rights('protect')]) or ([#USER.RIGHTS] ge [#TABLE|rights('write')] and [#STATUS] lt 32)">
          |&nbsp;<a href="index.php?do=view&id=[#ID]&table=[#TABLE]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<IF COND="[#STATUS] ge 32">
 	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;

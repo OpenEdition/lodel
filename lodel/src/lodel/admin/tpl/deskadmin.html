@@ -47,9 +47,9 @@
 				<tr>
 					<td width="100%" heigth="75">&nbsp;</td>
 
-<!--[					<td width="64" heigth="75"><IF COND="[#RIGHTEDITOR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
+<!--[					<td width="64" heigth="75"><IF COND="[#USER.EDITOR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
 			
-					<td width="64" heigth="75"><IF COND="[#RIGHTADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+					<td width="64" heigth="75"><IF COND="[#USER.ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
 			
 					<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"><span class="desk-text">[@COMMON.LOGOUT]<span></a></td>
 				</tr>
@@ -81,16 +81,16 @@
 
 					</td>
 					<td heigth="25" align="center">
-						<IF COND="[#RIGHTADMINLODEL]">
+						<IF COND="[#USER.ADMINLODEL]">
 							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp; </span>
 						<ELSE/>
-							<IF COND="[#RIGHTADMIN]">
+							<IF COND="[#USER.ADMIN]">
 								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN]&nbsp;:&nbsp; </span>
 							<ELSE/>
-								<IF COND="[#RIGHTEDITOR]">
+								<IF COND="[#USER.EDITOR]">
 									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> [@COMMON.USER_EDITOR]&nbsp;:&nbsp; </span>
 								<ELSE/>
-									<IF COND="[#RIGHTREDACTOR]">
+									<IF COND="[#USER.REDACTOR]">
 										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.USER_WRITER]&nbsp;:&nbsp; </span>
 									<ELSE/>
 										<IF COND="[#DROITVISITEUR]">
@@ -103,7 +103,7 @@
 
 					</td>
 					<td valign="bottom">
-						<span class="texte_petit"><strong>[#USERNAME]</strong></span>&nbsp;
+						<span class="texte_petit"><strong>[#USER.NAME]</strong></span>&nbsp;
 					</td>
 				</tr>
 			</table>

@@ -57,7 +57,7 @@
 			<td class="texte_intitule">[@COMMON.TYPE] :</td>
 			<td><select name="type"><?php  make_select_types($context); ?></select></td>
 		</tr>
-	    <IF COND="[#RIGHTADMINLODEL]">
+	    <IF COND="[#USER.ADMINLODEL]">
 		<tr>
 			<td class="texte_intitule">[@COMMON.PROTECTED] :</td>
 <IF COND="[#STATUS] lt 32">

@@ -57,7 +57,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
 
   if (($template_time <= myfilemtime($base))) {
-    if ($GLOBALS[rightadmin]) $context[templatesrecompiles].="$base | ";
+    if ($GLOBALS['user']['admin']) $context['templatesrecompiles'].="$base | ";
     if (!defined("TOINCLUDE")) define("TOINCLUDE",$home);
 
     require_once ($home."lodelparser.php");
@@ -69,7 +69,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   // execute le template php
   require_once($home."textfunc.php");		
-  if ($GLOBALS[showhtml] && $GLOBALS[rightvisitor]) {
+  if ($GLOBALS[showhtml] && $GLOBALS['user']['visitor']) {
     ob_start();
     require($template_cache);
     $content=ob_get_contents();
@@ -102,11 +102,11 @@ function insert_template($context,$filename)
 function mymysql_error($query,$tablename="")
 
 {
-  if ($GLOBALS[righteditor]) {
+  if ($GLOBALS['user']['editor']) {
     if ($tablename) $tablename="LOOP: ".$tablename." ";
     die("</body>".$tablename."QUERY: ".htmlentities($query)."<br><br>".mysql_error());
   } else {
-    if ($GLOBALS[contactbug]) @mail($contactbug,"[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>".htmlentities($query)."<br><br>".mysql_error());
+    if ($GLOBALS['contactbug']) @mail($contactbug,"[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>".htmlentities($query)."<br><br>".mysql_error());
     die("Une error est survenue lors de la g&eacute;n&eacute;ration de cette page. Veuillez nous excuser, nous traitons le probl&egrave;me le plus rapidement possible");
   }
 }

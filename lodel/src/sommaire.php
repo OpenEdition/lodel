@@ -42,7 +42,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$rightvisitor ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
+$critere=$user['visitor'] ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
 $critere.=" AND $GLOBALS[tp]types.status>0";
 // cherche la publication
 $relocation=FALSE;
