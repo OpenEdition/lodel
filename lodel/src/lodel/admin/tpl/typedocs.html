@@ -37,11 +37,12 @@
 							|&nbsp;<a href="typedoc.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 <LOOP NAME="typeutilise2" TABLE="entites" WHERE="idtype='[#ID]'" SELECT="count(*) as nbdocuments">
 <DO>
+<IF COND="[#NBDOCUMENTS]">
 <span class="inactif">Associé à [#NBDOCUMENTS] documents</span>
-</DO>
-<ALTERNATIVE>
+<ELSE/>
 <a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
-</ALTERNATIVE>
+</IF>
+</DO>
 </LOOP>
 
 						</div>
