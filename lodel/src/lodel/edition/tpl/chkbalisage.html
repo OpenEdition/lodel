@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Verification du balisage</title>
+<title>[@EDITION.CHECK_STYLING]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -31,28 +31,28 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Vérification du balisage</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@EDITION.CHECK_STYLING]</td>
 	</tr>
 </table>
 
 
 
 <table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-	<tr><td align="center" class="sous_titre_popup"><br />Verifiez que chaque bloc est correctement balisé<br /><br /><br /></td></tr>
-	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
+	<tr><td align="center" class="sous_titre_popup"><br />[@EDITION.ADVICE_CHECK_TAGGING]<br /><br /><br /></td></tr>
+	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">[@COMMON.CANCEL_OOIMPORT]</span></a> | <a href="[#URLSUITE]">[@COMMON.CONTINUE_OOIMPORT]</a></div></td></tr>
 </table>
 
 <LOOP NAME="partie_fichier">
 <IF COND="[#PART]=='main'">
-<h1>Partie principale</h1>
+<h1>[@EDITION.MAIN_PART]</h1>
 <ELSE/>
 <h1>[#PART]</h1>
 </IF>
 <div id="checkbalisage">
 <table class="table_popup" width="95%" border="1" cellpadding="4" align="center">
 	<tr>
-		<td><strong>Balises</strong></td>
-		<td><strong>Contenu</strong></td>
+		<td><strong>[@EDITION.STYLES]</strong></td>
+		<td><strong>[@EDITION.CONTENTS]</strong></td>
 	</tr>
 [#TABLECONTENT]
 </table>
@@ -60,7 +60,7 @@
 </LOOP>
 
 <table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
+	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">[@COMMON.CANCEL_OOIMPORT]</span></a> | <a href="[#URLSUITE]">[@COMMON.CONTINUE_OOIMPORT]</a></div></td></tr>
 </table>
 
 <MACRO NAME="CLOSE_HTML">

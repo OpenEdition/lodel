@@ -79,11 +79,11 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
 				<a href="oochargement.php?iddocument=[#ID]">
-					<span class="texte_orange">Recharger le document</span>
+					<span class="texte_orange">[@EDITION.RELOAD_FILE]</span>
 				</a>
 	<ELSE/>
-				<span class="texte_intitule">Recharger le document</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+				<span class="texte_intitule">[@EDITION.RELOAD_FILE]</span><br />
+				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_EDITOR]</span>
 	</IF>
 								</td>
 								<td width="5">&nbsp;</td>
@@ -97,11 +97,11 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
 				<a href="deplacer.php?id=[#ID]">
-					<span class="texte_orange">Déplacer ce document</span>
+					<span class="texte_orange">[@EDITION.MOVE_DOCUMENT]</span>
 				</a>
 	<ELSE/>
-				<span class="texte_intitule">Déplacer le document</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau &eacute;diteur)</span>
+				<span class="texte_intitule">[@EDITION.MOVE_DOCUMENT]</span><br />
+				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_EDITOR]</span>
 	</IF>
 									</td>
 								<td width="5">&nbsp;</td>
@@ -112,11 +112,11 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITREDACTEUR]">
 				<a href="telecharger.php?id=[#ID]&type=source">
-					<span class="texte_orange">R&eacute;cup&eacute;rer le fichier source</span>
+					<span class="texte_orange">[@EDITION.GET_SOURCE_FILE]</span>
 				</a>
 	<ELSE/>
-			<span class="texte_intitule">T&eacute;l&eacute;charger le fichier source</span><br />
-			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
+			<span class="texte_intitule">[@EDITION.DOWNLOAD_SOURCE_FILE]</span><br />
+			<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_WRITER]</span>
 	</IF>					
 								</td>
 								<td width="5">&nbsp;</td>
@@ -136,7 +136,7 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:5px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">Documents annexes</span></td>
+						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">[@EDITION.ANNEX_DOCUMENT]</span></td>
 						<td>&nbsp;</td>
 					</tr>
 				
@@ -151,7 +151,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">
-				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
+				<span class="texte_noir_gras">[@EDITION.ADD_ANNEX_DOCUMENT]<a name="docannexe"></a></span>
 				<br />
 			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="ordre" DONTSELECT="id"]>
 					<DO>
@@ -160,8 +160,8 @@
 			</LOOP>
 
 	<ELSE/>
-				<span class="texte_intitule">Ajouter des documents annexes</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+				<span class="texte_intitule">[@EDITION.ADD_ANNEX_DOCUMENTS]</span><br />
+				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_EDITOR]</span>
 	</IF>
 						</td>
 						<td>&nbsp;</td>
@@ -179,7 +179,7 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Gestion du XML</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@EDITION.XML_MANAGEMENT]</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
@@ -188,7 +188,7 @@
 
 	<!--[ Visualisation XML ]-->
 				<a href="xml.php?id=[#ID]&view=1">
-					<span class="texte_orange">Visualiser le XML</span>
+					<span class="texte_orange">[@EDITION.VISUALIZE_XML]</span>
 				</a>
 						</td>
 						<td width="5">&nbsp;</td>
@@ -199,7 +199,7 @@
 
 		<!--[ Téléchargement source XML ]-->
 				<a href="xml.php?id=[#ID]">
-					<span class="texte_orange">R&eacute;cup&eacute;rer le fichier XML</span>
+					<span class="texte_orange">[@EDITION.GET_XML_FILE]</span>
 				</a>
 						</td>
 						<td width="5">&nbsp;</td>
@@ -211,12 +211,12 @@
 		<!--[ Validation XML ]-->
 	<IF COND="[#DROITREDACTEUR]">
 				<a href="xml.php?id=[#ID]&valid=1">
-					<span class="texte_orange">Valider le XML</span>
+					<span class="texte_orange">[@EDITION.CHECK_XML]</span>
 				</a>
 
 	<ELSE/>
-			<span class="texte_intitule">Valider le XML</span><br />
-			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
+			<span class="texte_intitule">[@EDITION.CHECK_XML]</span><br />
+			<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_WRITER]</span>
 	</IF>
 
 						</td>

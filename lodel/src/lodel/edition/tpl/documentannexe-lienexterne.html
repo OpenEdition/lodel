@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Ajout d'un document annexe</title>
+<title>[@EDITION.ADD_ANNEX_DOCUMENT]</title>
 <MACRO NAME="JS_CONFIRM_SUPPRESSION">
 
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -31,12 +31,12 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Ajout d'un document annexe ...</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@EDITION.ADD_ANNEX_DOCUMENT]...</td>
 	</tr>
 </table>
 
 <div class="ligne_parent_tpl_publication">
-	 ... au document :
+	 ... [@EDITION.ADD_ANNEX_TO_DOCUMENT]:
 	<LOOP NAME="docu" TABLE="documents" WHERE="id='[#IDPARENT]'">
 		<DO>
 			<span class="nom_publi_parente">[#TITRE]</span>
@@ -57,19 +57,20 @@
 							<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un site internet</span><br /><br /></td></tr>
 			
 			<tr>
-				<td width="200" class="texte_intitule">Titre :</td>
+				<td width="200" class="texte_intitule">[@COMMON.TITLE] :</td>
 				<td><input size="60" type="text" name="titre" value="[#TITRE]"></td>
 			</tr>
 			<tr>
-				<td width="200" class="texte_intitule">Commentaire :</td>
+				<td width="200" class="texte_intitule">[@EDITION.COMMENT] :</td>
 				<td><textarea cols="45" rows="5" name="texte">[#TEXTE]</textarea></td>
 			</tr>
 			<!--[ lien externe ]-->
 				<tr>
-					<td width="200"><span class="texte_intitule">URL :</span></td>
+					<td width="200"><span class="texte_intitule">[@EDITION.URL] :</span></td>
 					<td>
-						[(#ERREUR_URLINVALIDE|true)<span class="message_erreur">L'url est invalide !</span><br />] 
-						[(#ERREUR_URLINACCESSIBLE|true)<span class="message_erreur">Impossible d'acceder à ce site !</span><br />]
+				
+						<IF COND="[#ERREUR_URLINVALIDE]"><span class="message_erreur">[@EDITION.ERROR_INVALID_URL]</span><br /></IF>
+						<IF COND="[#ERREUR_URLINACCESSIBLE]"><span class="message_erreur">[@EDITION.ERROR_NO_ACCESS_WEBSITE]</span><br /></IF>
 						<input name="lien" type="texte" size="60" value="[#LIEN]">
 					</td>
 				</tr>

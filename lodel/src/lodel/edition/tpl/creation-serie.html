@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition d'une publication</title>
+<title>[@EDITION.EDIT_PUBLICATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 	
@@ -32,7 +32,7 @@
 	<div style="padding-top:25px;">
 		<LOOP NAME="edition_du_descriptif" TABLE="types" WHERE="id=[#IDTYPE]">
 			<DO>
-				<span class="texte_ligne_haut_tpl_publication">[#TITRE] (métadonnées)</span>
+				<span class="texte_ligne_haut_tpl_publication">[#TITRE] [@EDITION.METADATA]</span>
 			</DO>
 		</LOOP>
 	</div>
@@ -46,7 +46,7 @@
 ]-->
 
 <form enctype="multipart/form-data" method="post" action="publication.php">
-	[(#ERREUR_PUBLICATION_EXISTE|true)Ce numéro existe déjà]
+	<IF COND="[#ERREUR_PUBLICATION_EXISTE]">[@EDITION.ERROR_ISSUE_EXIST]]</IF>
 	<input type="hidden" name="id" value="[#ID]" />
 	<input type="hidden" name="idparent" value="[#IDPARENT]" />
 	<input type="hidden" name="idtype" value="[#IDTYPE]" />

@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Fonctions avancées de la publication</title>
+<title>[@EDITION.PUBLICATION_FUNCTIONS]</title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <MACRO NAME="JS_CONFIRM_SUPPRESSION">
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -36,7 +36,7 @@
 						<td width="50" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">
 						<img src="[#SHAREURL]/images/cadenas.png" /></td>
 						<td background="[#SHAREURL]/images/fond_haut_admin.png">
-					<span class="texte_ligne_haut_tpl_publication">Fonctions avancées de la publication
+					<span class="texte_ligne_haut_tpl_publication">[@EDITION.PUBLICATION_FUNCTIONS]
 			</span></td>
 					</tr>
 					<tr>
@@ -70,7 +70,7 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:5px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">Documents annexes</span></td>
+						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">[@EDITION.ANNEX_DOCUMENT]</span></td>
 						<td>&nbsp;</td>
 					</tr>
 				
@@ -85,7 +85,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">
-				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
+				<span class="texte_noir_gras">[@EDITION.ADD_ANNEX_DOCUMENT]<a name="docannexe"></a></span>
 				<br />
 			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="ordre" DONTSELECT="id"]>
 					<DO>
@@ -94,8 +94,8 @@
 			</LOOP>
 
 	<ELSE/>
-				<span class="texte_intitule">Ajouter des documents annexes</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+				<span class="texte_intitule">[@EDITION.ADD_ANNEX_DOCUMENTS]</span><br />
+				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_EDITOR]</span>
 	</IF>
 						</td>
 						<td>&nbsp;</td>
