@@ -43,7 +43,7 @@ if (-e "siteconfig.php") {
       exit;
     }
   } else {
-    print STDERR "Attention: impossible de verifier si la version est correcte dans siteconfig.php\n";
+    print STDERR "Attention: La commande php ne semble pas etre disponible ou fonction. Impossible de verifier si la version est correcte dans siteconfig.php\n";
   }
 }
 
