@@ -37,7 +37,7 @@ include("tpl/install-openhtml.html");
 
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p align="justify">[@INSTALL.INDICATE_INFORMATIONS_TO_CONNECT_TO_DATABASE].</p>
+<p align="justify">[@INSTALL.GIVE_INFORMATION_TO_CONNECT_TO_DATABASE].</p>
 <?php } else { // OPTION 2 ?>
 <p>[[@INSTALL.OPTION_2]]</p>
 <p align="justify">
@@ -81,7 +81,7 @@ GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'm
 
 <?php if ($installoption==1) { // OPTION 1 ?>
     <hr style="width: 100%; height: 2px;">
-    <p align="justify"><strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :</strong> [@INSTALL.ADDRESS_INDICATED_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
+    <p align="justify"><strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :</strong> [@INSTALL.ADDRESS_GIVEN_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
         </p>
         <p align="justify"><strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :</strong> [@INSTALL.INDICATED_BY_YOUR_PROVIDER]. </p>
         <p align="justify"><strong>[@INSTALL.IF_ANY_DOUBT] : </strong>[@INSTALL.CONTACT_YOUR_PROVIDER]. </p>

@@ -38,10 +38,10 @@ include("tpl/install-openhtml.html");
 
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p align="justify">
-[@INSTALL.CHOOSE_PREEXISTING_DATABASE_OR_CREATE_NEW].<br/>[@INSTALL.USUALLY_PROVIDER_CREATE_DATABASE_SEE_TECHNICAL_SUPPORT].</p>
+[@INSTALL.CHOOSE_EXISTING_DATABASE_OR_CREATE_NEW].<br/>[@INSTALL.PROVIDER_USUALLY_CREATES_DATABASE_SEE_TECHNICAL_SUPPORT].</p>
 <?php } else { // OPTION 2 ?>
 <p align="justify">
-[@INSTALL.CAN_USE_PREEXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
+[@INSTALL.CAN_USE_EXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
 </p>
 <p>
 <code>
@@ -57,13 +57,13 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 </code>
 </p>
 <p align="justify">
-[@INSTALL.WHY_PREFIX_TABLE].
+[@INSTALL.WHY_TABLE_PREFIX].
 </p>
 <p align="justify">
-[@INSTALL.ONE_LODEL_INSTALLATION_CAN_ADMINISTRATE_SEVERAL_WEBSITES_SO_CHOOSE] : 
+[@INSTALL.SINGLE_LODEL_INSTALLATION_CAN_MANAGE_SEVERAL_WEBSITES_AND_CHOOSE] : 
 <ul>
-<li>[@INSTALL.ONE_DATABASE_FOR_ALL_WEBSITES_ADVANTAGES_INCONVENIENCES].
-<li>[@INSTALL.ONE_DATABASE_FOR_ONE_WEBSITE_PLUS_MAIN_DATABASE_RECOMMENDED_SOLUTION] !
+<li>[@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES_ADVANTAGES_DISADVANTAGES].
+<li>[@INSTALL.SINGLE_DATABASE_FOR_SINGLE_WEBSITE_PLUS_MAIN_DATABASE_RECOMMENDED_SOLUTION] !
 </ul>
 </p>
 <?php } // fin OPTION 2 ?>
@@ -71,15 +71,15 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 
 <?php  if ($erreur_createdatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf([#DATABASE])] : <?php  echo mysql_error(); ?> <?php } ?>
 
-<?php  if ($erreur_usedatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.DATABASE_USE_IMPOSSIBLE_CHECK_DATABASEUSER_RIGHTS_ERROR_IS] : <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_usedatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_USE_DATABASE_CHECK_DATABASEUSER_RIGHTS_ERROR_IS] : <?php  echo mysql_error(); ?> <?php } ?>
 
 <?php  if ($erreur_createtables) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.TABLE_CREATION_FAILED_SQL_INSTRUCTION_AND_ERROR_ARE] : <?php echo $erreur_createtables; ?> <?php } ?>
 
-<?php  if ($erreur_tablesexist) { ?> <b>[@INSTALL.WARNING]</b>: [@INSTALL.SELECTED_DATABASE_CONTENT_DATAS_FOR_LODEL_YOU_CAN_SAVE_DATAS_OR_ERASE_OR_SELECT_OTHER_DATABASES].
+<?php  if ($erreur_tablesexist) { ?> <b>[@INSTALL.WARNING]</b>: [@INSTALL.SELECTED_DATABASE_CONTENT_DATA_FOR_LODEL_YOU_MAY_SAVE_DATAS_OR_ERASE_OR_SELECT_ANOTHER_DATABASES].
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="database">
 <input type="submit" name="continue" value="[@INSTALL.CONTINUE]">
-<input type="submit" name="erasetables" value="[@INSTALL.ERASE_DATAS]">
+<input type="submit" name="erasetables" value="[@INSTALL.ERASE_DATA]">
 </form>
 <br/>
 <?php } ?>
@@ -102,7 +102,7 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 <tr>
 <td>
 <input type="radio" name="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> ></td>
-<td>[@INSTALL.USE_PREEXISTING_EMPTY_DATABASE] : <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td>
+<td>[@INSTALL.USE_EXISTING_EMPTY_DATABASE] : <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td>
 </tr>
 	                  <?php
 	                     } else {
@@ -125,7 +125,7 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 </td></tr>
 <?php if ($installoption>1) { // OPTION superieure a 1 ?>
 <tr><td>
-<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>[@INSTALL.ONE_DATABASE_FOR_ALL_WEBSITES].
+<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>[@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES].
 </td></tr>
 <tr><td>
 [@INSTALL.TABLE_PREFIX] : <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">

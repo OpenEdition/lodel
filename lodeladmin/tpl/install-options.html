@@ -36,7 +36,7 @@ include("tpl/install-openhtml.html");
 <h2>[@INSTALL.OPTIONS]</h2>
 
 <?php if ($erreur_importdir) { ?>
-<p><strong>[@INSTALL.ERROR]:</strong> [@INSTALL.SERVER_CANT_READ_DIRECTORY|sprintf([#IMPORTDIR)].</p>
+<p><strong>[@INSTALL.ERROR]:</strong> [@INSTALL.UNABLE_TO_READ_DIRECTORY_BY_WEBSERVER|sprintf([#IMPORTDIR)].</p>
 <?php } ?>
 
 
