@@ -173,12 +173,13 @@ function publi_document ($critere,$status)
     }
   } else {
     $where=$critere;
+    echo "usergroupes: $usergroupes<br>";
     if (!$admin) $where.=" AND groupe IN ($usergroupes) AND status>-32";
   }
 
   if ($status<0) { // on veut mettre hors ligne
     // verifie que les documents ne sont pas proteges
-    $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE $where AND status>=32");
+    $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE $where AND status>=32") or die (mysql_error());
     while ($row=mysql_fetch_assoc($result)) 
       if (!$context[document_protege]) {
 	$context[document_protege]=array($row[id]);
