@@ -310,7 +310,7 @@ class Entities_EditionLogic extends GenericLogic {
      }
      switch($edittype) {
      case 'lang':
-       require("lang.php");
+       require_once("lang.php");
        makeselectlangs($context[$var]);
        break;
      }

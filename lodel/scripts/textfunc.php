@@ -556,7 +556,7 @@ function humanlang($text)
 
 {
   global $home;
-  require_once("langues.php");
+  require_once("lang.php");
   return $GLOBALS[langues][$text];
 }
 

@@ -69,7 +69,7 @@ class GenericLogic extends Logic {
     // define some loop functions
      /////
 
-     require_once("langues.php");
+     require_once("lang.php");
 
      function loop_edition_fields($context,$funcname) 
 

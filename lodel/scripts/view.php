@@ -266,7 +266,7 @@ function makeSelect(&$context,$varname,$lo,$edittype="")
 
 {
   $logic=&getLogic($lo);
-  $logic->makeSelect($context,$varname);
+  $logic->makeSelect($context,$varname,$edittype);
 }
 
 
