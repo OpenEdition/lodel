@@ -56,7 +56,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM indexls WHERE $critere AND status>0") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM indexls WHERE $critere AND status>-32") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
