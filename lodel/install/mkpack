@@ -1,0 +1,27 @@
+
+if [ -e lodel ]; then
+  	echo " le repertoire lodel existe veuillez le supprimer "
+	exit	
+fi
+
+cvs -Q co -P lodeldevel
+mv lodeldevel lodel
+
+lodel/lodel/install/exportlodel 0.8
+mkdir tmp0808
+tar zxf lodel-0.8.tar.gz -C tmp0808
+
+
+# lodel latest
+rm lodel-latest.zip
+cd tmp0808/lodel
+zip -r ../../lodel-devel-latest.zip *
+cd ../..
+
+# lodel 0.8
+cd tmp0808
+zip -r ../lodel-0.8.zip *
+cd ..
+
+
+\rm -r tmp0808

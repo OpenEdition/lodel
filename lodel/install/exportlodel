@@ -38,7 +38,7 @@ fi
 FILE="lodel-$1.tar.gz"
 
 # repertoire a archiver
-DIRS="lodel/lodel-$1 lodel/lodeladmin lodel/share-$1 lodel/tpl lodel/CACHE"
+DIRS="lodel/lodel-$1 lodel/lodeladmin-$1 lodel/share-$1 lodel/tpl lodel/CACHE"
 
 # renomme les repertoires du CVS pour contenir le numero de version
 mv lodel/lodel lodel/lodel-$1
