@@ -13,8 +13,8 @@ $urlroot="/";
 $shareurl="http://mywebsite.domain.org/lodel/share";
 
 # Repertoire contenant les fichiers communs partagés
-# par exemplre $sharedir="/var/www/lodel/share"
-$sharedir="/path/to/share"
+# par exemplre $sharedir="/var/www/lodel/share";
+$sharedir="/path/to/share";
 
 # Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite
 # nomrevues.domain.org ou domaine.org/nomrevue
