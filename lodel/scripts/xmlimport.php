@@ -254,7 +254,7 @@ function decodepersonne($personne)
     if ($nom) {
       $prenom=str_replace($nom,"",$personne);
     } else { // sinon coupe apres le premiere espace
-      if (preg_match("/^(.*?)\s+([^\s]+)$/iu",trim($personne),$result)) {
+      if (preg_match("/^(.*?)\s+([^\s]+)$/i",trim($personne),$result)) {
 	$prenom=$result[1]; $nom=$result[2];
       } else $nom=$personne;
     }
