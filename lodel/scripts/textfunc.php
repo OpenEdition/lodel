@@ -215,17 +215,17 @@ function humandate($s)
    if ($result[1]>9000) return "jamais";
    if ($result[1]==0) return "";
    $mois[1]="janvier";
-   $mois[2]="février";
+   $mois[2]="fÃ©vrier";
    $mois[3]="mars";
    $mois[4]="avril";
    $mois[5]="mai";
    $mois[6]="juin";
    $mois[7]="juillet";
-   $mois[8]="août";
+   $mois[8]="aoÃ»t";
    $mois[9]="septembre";
    $mois[10]="octobre";
    $mois[11]="novembre";
-   $mois[12]="décembre";
+   $mois[12]="dÃ©cembre";
    return intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1]);
  } else {
    return $s;
