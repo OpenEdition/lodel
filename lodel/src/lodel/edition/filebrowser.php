@@ -69,8 +69,10 @@ if (isset($_POST['checkmail'])) {
 }
 
 $nodesk=true;
-require ($home."calcul-page.php");
-calcul_page($context,"filebrowser");
+
+require($home."view.php");
+$view=&getView();
+$view->render($context,"filebrowser");
 
 function loop_filelist($context,$funcname)
 
