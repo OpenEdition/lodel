@@ -414,6 +414,27 @@ function removeimages($text)
   return preg_replace('/<img\b[^>]*>/',"",$text);
 }
 
+/**
+* Fonction qui enleve les tags spécifiés
+*/
+
+function removetags($text, $tags){
+  foreach(explode(',', $tags) as $v){
+    $find[] = '/<'.trim($v).'\b[^>]*>/';
+    $find[] = '/<\/'.trim($v).'>/';
+  }
+  return preg_replace($find, "", $text);
+}
+
+/**
+* Fonction permettant de supprimer les liens.
+*/
+
+function removelinks($text)
+{
+ return removetags($text, 'a');
+} 
+
 
 /**
  * Fonction qui dit si une date est vide ou non
