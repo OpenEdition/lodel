@@ -657,106 +657,85 @@
 	</IF>
 </DEFMACRO>
 
-<!-- macro ajoutee par Ghislain 30/11/03 -->
-<!-- a modifier en particulier la class du div... -->
-
-<DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
-	<LET VAR="idparentsaved">[#ID]</LET>
-	<LOOP NAME="entites_de_type_valide" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="ordre">
-		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
+<DEFMACRO NAME="JS_AJOUTER_ENTITE">
+	<script type="text/javascript">
+	<!--
+		function ajouter_entite(obj) {
+			var index = obj.selectedIndex;
+			window.location=obj.options[index].value;
+		}
+	//-->
+	</script>
 </DEFMACRO>
 
 <!-- macro ajoutee par Ghislain 30/11/03 -->
-<!-- a modifier en particulier la class du div... -->
+<DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
+	<div class="lignes_ajouter_entite">
+		<LET VAR="idparentsaved">[#ID]</LET>
+		<LOOP NAME="nb_entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" SELECT="count(*) as nbentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'">
+			<DO>
+				<LOOP NAME="entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="titre">
+					<BEFORE>
+						<IF COND="[#NBENTITES] ge 4">
+							<MACRO NAME="PNG_PLUS">
+							<span class="texte_orange_gras">Ajouter une publicaton : </span>
+							&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
+						</IF>
+					</BEFORE>
+					<DO>
+						<IF COND="[#NBENTITES] ge 4">
+							<option value="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
+						<ELSE/>
+							<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
+						</IF>
+					</DO>
+					<AFTER>
+						<IF COND="[#NBENTITES] ge 4">
+							</select>
+						</IF>
+					</AFTER>
+				</LOOP>
+			</DO>
+		</LOOP>
+	</div>
+</DEFMACRO>
+
+<!-- macro ajoutee par Ghislain 30/11/03 -->
 <!-- cette macro n'est pas directement utile pour Revues.org -->
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
-	<LET VAR="idparentsaved">[#ID]</LET>
-	<LOOP NAME="entites_de_type_valide" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="ordre">
-		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="document.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
+	<div class="lignes_ajouter_entite">
+		<LET VAR="idparentsaved">[#ID]</LET>
+		<LOOP NAME="nb_entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" SELECT="count(*) as nbentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'">
+			<DO>
+				<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="titre">
+					<BEFORE>
+						<IF COND="[#NBENTITES] ge 4">
+							<MACRO NAME="PNG_PLUS">
+							<span class="texte_orange_gras">Ajouter un document : </span>
+							&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
+						</IF>
+					</BEFORE>
+					<DO>
+						<IF COND="[#NBENTITES] ge 4">
+							<option value="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
+						<ELSE/>
+							<MACRO NAME="PNG_PLUS">&nbsp;<a href="oochargement.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
+						</IF>
+					</DO>
+					<AFTER>
+						<IF COND="[#NBENTITES] ge 4">
+							</select>
+						</IF>
+					</AFTER>
+				</LOOP>
+			</DO>
+		</LOOP>
+	</div>
 </DEFMACRO>
-
-<!-- inutile
-<DEFMACRO NAME="AJOUTER_UNE_SERIE">
-	<LOOP NAME="entites_de_type_serie" TABLE="types" WHERE="tplcreation='creation-serie'">
-		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
-</DEFMACRO>
-
-
-
-<DEFMACRO NAME="AJOUTER_UN_NUMERO">
-	<LET VAR="idduparent">[#ID]</LET>
-	<LOOP NAME="entites_de_type_numero" TABLE="types" WHERE="tplcreation='creation-numero'">
-		<BEFORE><div class="ligne_ajouter_numero"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="AJOUTER_UNE_RUBRIQUE">
-	<LET VAR="idduparent">[#ID]</LET>
-	<LOOP NAME="entites_de_type_rubrique" TABLE="types" WHERE="tplcreation='creation-rubrique'">
-		<BEFORE><div class="ligne_ajouter_rubrique"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="AJOUTER_UNE_SOUS_RUBRIQUE">
-	<LET VAR="idduparent">[#ID]</LET>
-	<LOOP NAME="entites_de_type_rubrique" TABLE="types" WHERE="tplcreation='creation-rubrique'">
-		<BEFORE><div class="ligne_ajouter_rubrique"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
-</DEFMACRO>
-
-fin du inutil -->
-
-<DEFMACRO NAME="AJOUTER_UN_REGROUPEMENT">
-	<LET VAR="idduparent">[#ID]</LET>
-	<LOOP NAME="entites_de_type_regroupement" TABLE="types" WHERE="tplcreation='creation-regroupement'">
-		<BEFORE><div class="ligne_ajouter_regroupement"></BEFORE>
-		<DO>
-			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
-		</DO>
-		<AFTER></div></AFTER>
-	</LOOP>
-</DEFMACRO>
-
-
 
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
-	<div class="ligne_ajouter">
+	<div class="lignes_ajouter_documents">
 		<MACRO NAME="PNG_PLUS">
-		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (hors regroupement)</a>-->
 		<a href="oochargement.php?idparent=[#ID]">Ajouter un document</a>
 	</div>
 </DEFMACRO>
@@ -771,6 +750,99 @@ fin du inutil -->
 		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (dans le regroupement)</a>-->
 		<a href="oochargement.php?idparent=[#ID]">Ajouter un document</a>
 		</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_LES_SERIES">
+	<LOOP NAME="series" TABLE="publications" WHERE="idparent='0'" ORDER="ordre">
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_serie1">
+		<ELSE/>
+			<div class="ligne_serie2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+			<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+		<ALTERNATIVE>
+			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
+	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_document_isole1">
+		<ELSE/>
+			<div class="ligne_document_isole2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
+			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
+			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			</div>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
+	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_document_regroupement1">
+		<ELSE/>
+			<div class="ligne_document_regroupement2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
+			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
+			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			</div>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_NUMEROS_RUBRIQUES">
+	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent=[#ID]" WHERE="tplcreation ne 'creation-regroupement'" ORDER="ordre"> 
+		<IF COND="[#COUNT] % 2">
+			<IF COND="[#TPLCREATION] eq 'creation-numero'">
+				<div class="ligne_numero1">
+			<ELSE/>
+				<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique1"></IF>
+			</IF>
+		<ELSE/>
+			<IF COND="[#TPLCREATION] eq 'creation-numero'">
+				<div class="ligne_numero2">
+			<ELSE/>
+				<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique2"></IF>
+			</IF>
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+			<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+		<ALTERNATIVE>
+			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_LES_REGROUPEMENTS">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="tplcreation='creation-regroupement'" ORDER="ordre"> 
+		<DOFIRST>
+			<div class="ligne_regroupement1">
+				<MACRO NAME="AFFICHER_ICONE_STATUT">
+				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+				<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
+			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
+		</DOFIRST>
+		<DO>
+			<div class="ligne_regroupement1" style="margin-top:20px">
+				<MACRO NAME="AFFICHER_ICONE_STATUT">
+				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+				<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
+			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
+		</DO>
+	</LOOP> 
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_PUBLICATION">
@@ -806,7 +878,7 @@ fin du inutil -->
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		<IF COND="[#TYPE] EQ 'regroupement'">
+		<IF COND="[#TYPE] EQ 'regroupement' or [#TYPE] EQ 'regroupement-documentsannexes'">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<ELSE/>
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]">Voir</a>&nbsp;
@@ -980,122 +1052,6 @@ fin du inutil -->
 			<span class="inactif">Brouillon</span>
 		</IF>
 	</IF>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_SERIES">
-	<LOOP NAME="series" TABLE="publications" WHERE="idparent='0'" ORDER="ordre">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_serie1">
-		<ELSE/>
-			<div class="ligne_serie2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-		<ALTERNATIVE>
-			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
-		</ALTERNATIVE>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_NUMEROS">
-	<LOOP NAME="numeros" TABLE="publications" WHERE="idparent='[#ID]'" ORDER="ordre"> 
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_numero1">
-		<ELSE/>
-			<div class="ligne_numero2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-		<ALTERNATIVE>
-			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
-		</ALTERNATIVE>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
-	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_document_isole1">
-		<ELSE/>
-			<div class="ligne_document_isole2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
-			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
-			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			</div>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_document_regroupement1">
-		<ELSE/>
-			<div class="ligne_document_regroupement2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
-			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
-			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			</div>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_REGROUPEMENTS">
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre"> 
-		<DOFIRST>
-			<div class="ligne_regroupement1">
-				<MACRO NAME="AFFICHER_ICONE_STATUT">
-				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-				<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
-			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-		</DOFIRST>
-		<DO>
-			<div class="ligne_regroupement1" style="margin-top:20px">
-				<MACRO NAME="AFFICHER_ICONE_STATUT">
-				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-				<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
-			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-		</DO>
-	</LOOP> 
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_RUBRIQUES">
-	<LOOP NAME="rubriques" TABLE="publications" WHERE="idparent=[#ID]" ORDER="ordre"> 
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_rubrique1">
-		<ELSE/>
-			<div class="ligne_rubrique2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-		<ALTERNATIVE>
-			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
-		</ALTERNATIVE>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_SOUS_RUBRIQUES">	
-	<LOOP NAME="affiche_sous_rubriques" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type!='regroupement'" ORDER="ordre">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_rubrique1">
-		<ELSE/>
-			<div class="ligne_rubrique2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE">
