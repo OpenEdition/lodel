@@ -55,7 +55,7 @@
 				
 					<div class="titre2">
 						<LOOP NAME="type_periode" TABLE="typeindexs" WHERE="nom='periode'">
-							<LOOP NAME="periodes" TABLE="indexs" WHERE="id=[#ID]">
+							<LOOP NAME="les_periodes" TABLE="indexs" WHERE="type=[#ID]">
 								<DO>
 									<a class="titre2" href="chrono.html?id=[#ID]">
 										[#NOM]
@@ -67,7 +67,7 @@
 					</div>
 				
 					<LOOP NAME="type_periode2" TABLE="typeindexs" WHERE="nom='periode'">
-						<LOOP NAME="periodes2" TABLE="indexs" WHERE="id=[#ID]">
+						<LOOP NAME="periodes2" TABLE="indexs" WHERE="type=[#ID]">
 							<DO>
 								<div class="titre3">
 									<a name="[#ABREV]">

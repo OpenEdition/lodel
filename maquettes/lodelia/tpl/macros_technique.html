@@ -402,7 +402,7 @@ IPR
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_motscles_lineaires" TABLE="indexs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="KEYWORDS" content="[#MOT]" />
 	</LOOP>
 	
@@ -419,11 +419,11 @@ IPR
 	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]" />
 	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
-	<LOOP NAME="meta_dc_motscles_l" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_motscles_l" TABLE="indexs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="DC.Subject" content="[#MOT]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_dc_motscles_h" TABLE="indexhs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_motscles_h" TABLE="indexs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="DC.Subject" content="[#MOT]" />
 	</LOOP>
 	

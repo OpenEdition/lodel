@@ -53,7 +53,7 @@
 				
 				<div class="titre2">
 					<LOOP NAME="type_geographie" TABLE="typeindexs" WHERE="nom='geographie'">
-						<LOOP NAME="geographie" TABLE="indexs" WHERE="id=[#ID]">
+						<LOOP NAME="geographie" TABLE="indexs" WHERE="type=[#ID]">
 							<DO>	
 								<a class="titre2" href="geo.html?id=[#ID]">
 									[#NOM]
@@ -65,7 +65,7 @@
 				</div>
 				
 				<LOOP NAME="type_geographie2" TABLE="typeindexs" WHERE="nom='geographie'">
-					<LOOP NAME="geographie2" TABLE="indexs" WHERE="id=[#ID]">
+					<LOOP NAME="geographie2" TABLE="indexs" WHERE="type=[#ID]">
 						<DO>
 							<div class="titre3">
 								<a name="[#ABREV]">
