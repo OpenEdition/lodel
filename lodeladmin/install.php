@@ -8,7 +8,7 @@ if (!file_exists("CACHE/unlockedinstall")) {
   // on pourrait aussi remettre un fichier unlockedinstall, mais le risque est
   // de ne pas terminer l'install
   include ($home."auth.php");
-  authenticate(LEVEL_SUPERADMIN);
+  authenticate(LEVEL_ADMINLODEL);
 }
 
 
@@ -281,7 +281,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
 }
 
 //
-// Vérifie qu'il y a un super administrateur, sinon demande la creation
+// Vérifie qu'il y a un administrateur Lodel, sinon demande la creation
 //
 
 $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]users LIMIT 1") or die (mysql_error());

@@ -1,5 +1,5 @@
 <?php
-// gere les types de entrees. L'acces est reserve au superadministrateur.
+// gere les types de entrees. L'acces est reserve au adminlodelistrateur.
 
 require("siteconfig.php");
 include ($home."auth.php");

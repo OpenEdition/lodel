@@ -1,5 +1,5 @@
 <?php
-// gere les periodes. L'acces est reserve au superadministrateur.
+// gere les periodes. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des periodes.
 
 require("siteconfig.php");

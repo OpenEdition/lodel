@@ -65,7 +65,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
 {
   global $home,$admin,$usergroupes;
 
-  $iduser= $GLOBLAS[superadmin] ? 0 : $GLOBALS[iduser];
+  $iduser= $GLOBLAS[adminlodel] ? 0 : $GLOBALS[iduser];
 
   $entite=$context[entite];
 #  if (!$context[nom]) $context[erreur_nom]=$err=1;

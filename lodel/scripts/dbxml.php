@@ -14,7 +14,7 @@ function enregistre ($context,$text)
   #  die(htmlentities($text));
   global $home,$iduser;
 
-  if ($GLOBLAS[superadmin]) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs du site.
+  if ($GLOBLAS[adminlodel]) $iduser=0; // n'enregistre pas l'id des admin lodel... sinon, on risque de les confondre avec les utilisateurs du site.
 
   // enregistre le document
   include_once ($home."connect.php");

@@ -24,7 +24,7 @@ if ($login) {
     $expire2=time()+$cookietimeout;
 
     mysql_select_db($database);
-    if ($userpriv<LEVEL_SUPERADMIN) {
+    if ($userpriv<LEVEL_ADMINLODEL) {
       lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
       // verifie que c'est ok
       $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND status>=32") or die(mysql_error());

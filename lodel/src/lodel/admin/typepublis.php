@@ -1,5 +1,5 @@
 <?php
-// gere les types de publications. L'acces est reserve au superadministrateur.
+// gere les types de publications. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des types de document.
 
 require("siteconfig.php");

@@ -7,7 +7,7 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 #include_once ($home."func.php");
 
-#if ($context[privilege]>=LEVEL_SUPERADMIN) return;
+#if ($context[privilege]>=LEVEL_ADMINLODEL) return;
 include ($home."userinc.php");
 
 

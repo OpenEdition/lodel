@@ -85,7 +85,7 @@ function extract_post() {
 	global $home;
 	
 	foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
-		#if ($key!="superadmin" && $key!="admin" && $key!="editeur" && $key!="redacteur" && $key!="visiteur") { // protege
+		#if ($key!="adminlodel" && $key!="admin" && $key!="editeur" && $key!="redacteur" && $key!="visiteur") { // protege
 	  $GLOBALS[context][$key]=$val;
 		#}
 	}

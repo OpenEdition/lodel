@@ -1,5 +1,5 @@
 <?php
-// gere les utilisateurs. L'acces est reserve au superadministrateur.
+// gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
 require_once("lodelconfig.php");
@@ -115,7 +115,7 @@ function makeselectprivilege()
 #	     LEVEL_REDACTEUR=>"Rédacteur",
 #	     LEVEL_EDITEUR=>"Editeur",
 #	     LEVEL_ADMIN=>"Administrateur",
-#	     LEVEL_SUPERADMIN=>"Super administrateur"
+#	     LEVEL_ADMINLODEL=>"Super administrateur"
 #	     );
 #endif
 

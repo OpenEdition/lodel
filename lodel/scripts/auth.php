@@ -5,7 +5,7 @@ define(LEVEL_VISITEUR,1);
 define(LEVEL_REDACTEUR,2);
 define(LEVEL_EDITEUR,4);
 define(LEVEL_ADMIN,32);
-define(LEVEL_SUPERADMIN,128);
+define(LEVEL_ADMINLODEL,128);
 
 function authenticate ($level=0,$norecordurl=FALSE)
 
@@ -57,10 +57,10 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
 #ifndef LODELLIGHT
     // verifie encore une fois au cas ou...
-    if ($userpriv<LEVEL_SUPERADMIN && !$site) break;
+    if ($userpriv<LEVEL_ADMINLODEL && !$site) break;
 #endif
 
-    if ($userpriv>=LEVEL_SUPERADMIN) $context[superadmin]=$GLOBALS[superadmin]=1;
+    if ($userpriv>=LEVEL_ADMINLODEL) $context[adminlodel]=$GLOBALS[adminlodel]=1;
     if ($userpriv>=LEVEL_ADMIN) $context[admin]=$GLOBALS[admin]=1;
     if ($userpriv>=LEVEL_EDITEUR) $context[editeur]=$GLOBALS[editeur]=1;
     if ($userpriv>=LEVEL_REDACTEUR) $context[redacteur]=$GLOBALS[redacteur]=1;
@@ -184,7 +184,7 @@ $session="";
 $context=array(
 	       "version" => doubleval($version)
 	       ); // tres important d'initialiser le context.
-$superadmin=0;
+$adminlodel=0;
 $admin=0;
 $user=0;
 $context[shareurl]=$shareurl;

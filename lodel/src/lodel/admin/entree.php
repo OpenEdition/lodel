@@ -1,5 +1,5 @@
 <?php
-// gere les entrees. L'acces est reserve au superadministrateur.
+// gere les entrees. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des entrees.
 
 require("siteconfig.php");

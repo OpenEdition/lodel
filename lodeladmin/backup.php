@@ -2,7 +2,7 @@
 
 require("lodelconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_SUPERADMIN);
+authenticate(LEVEL_ADMINLODEL);
 
 
 if ($backup) {

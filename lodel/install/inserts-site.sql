@@ -35,9 +35,9 @@ REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,tpl,tplindex,status
 ############# DOCUMENTS ###############
 # groupes de champs
 
-REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre) VALUES (1,'grtitre','Groupe titre','documents',1);
-REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre) VALUES (2,'grtexte','Groupe du texte','documents',2);
-REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre) VALUES (3,'grgestion','Gestion des documents','documents',3);
+REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre,status) VALUES (1,'grtitre','Groupe titre','documents',1,32);
+REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre,status) VALUES (2,'grtexte','Groupe du texte','documents',2,32);
+REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre,status) VALUES (3,'grgestion','Gestion des documents','documents',3,32);
 
 # champs du groupe titre
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,status) VALUES (1,'titre',1,'titre','titre','text','','strip_tags("<i><b>")','text',1,32);

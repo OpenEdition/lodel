@@ -1,5 +1,5 @@
 <?php
-// gere les champs. L'acces est reserve au superadministrateur.
+// gere les champs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des champs.
 
 require("siteconfig.php");

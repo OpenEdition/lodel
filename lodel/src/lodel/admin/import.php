@@ -1,7 +1,7 @@
 <?php
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_SUPERADMIN,NORECORDURL);
+authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 
 $repertoire=$context[repertoire]=$importdir;
 // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.

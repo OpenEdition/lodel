@@ -42,6 +42,9 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(<LOOP[^>]+)\bparent\b([^>]+>)/$1idparent$2/g;
   $change+=$file=~s/(<LOOP[^>]+TABLE\s*=\s*\"documents\"[^>]+)\bpublication\b([^>]+>)/$1idparent$2/g;
 
+
+  $change+=$file=~s/\[\#SUPERADMIN\]/[\#ADMINLODEL]/g;
+
   next unless $change;
   print "$filename:",$change,"\n";
 

@@ -2,7 +2,7 @@
 // securite
 if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 
-// gere les index linéaire permanent. L'acces est reserve au superadministrateur.
+// gere les index linéaire permanent. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des index linéaire.
 
 

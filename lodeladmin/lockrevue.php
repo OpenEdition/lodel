@@ -1,11 +1,11 @@
 <?
 
-// gere les utilisateurs. L'acces est reserve au superadministrateur.
+// gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
 require("lodelconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_SUPERADMIN,NORECORDURL);
+authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 include_once ($home."func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
