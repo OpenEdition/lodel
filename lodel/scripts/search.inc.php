@@ -328,7 +328,7 @@ function loop_search(&$context,$funcname,$arguments)
    #echo $local_context['nbresults'];
    #echo $arguments['limit'];
    
-   	/*if($local_context['nbresults'] > ($currentoffset+$arguments['limit']))
+   	if($local_context['nbresults'] > ($currentoffset+$arguments['limit']))
    		$local_context[nexturl]=$currenturl.$offsetname."=".($currentoffset + $arguments['limit']);
    	else
    		$local_context[nexturl] = "";
@@ -340,7 +340,7 @@ function loop_search(&$context,$funcname,$arguments)
    	}
    	else
    		$local_context[previousurl] ="";
-   	*/
+   	
    	//test
    		$i = 0;
    	//pages precedentes
