@@ -1,6 +1,5 @@
-#!/bin/bash 
+#!/bin/bash -vx
 # vide les repertoires de cache de lodel et restaure les droits sur les fichiers/rep
-# a lancer depuis le rep lodel
 
 if [ $# -ne 1 ]
 then
@@ -28,7 +27,7 @@ for rep in $APACHECACHEWRDIR
 do
   echo "  $LODEL/$rep"
   chmod 770 $LODEL/$rep
-  rm -rf $LODEL/$rep/*
+  find $LODEL/$rep -not -name ".htaccess" -not -path "*/CVS*" -type f -exec rm -rf {} \;
   echo "  Done."
 done
 
@@ -45,4 +44,3 @@ do
     echo "  $LODEL/$rep/.htaccess present"
   fi
 done
-
