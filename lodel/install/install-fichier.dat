@@ -150,7 +150,7 @@ ln tpl/edition-lineaire.html
 ln tpl/edition-hierarchique.html
 ln tpl/edition-numero.html
 ln tpl/edition-regroupement.html
-ln tpl/edition-theme.html
+ln tpl/edition-rubrique.html
 
 ln publication.php
 ln tpl/publication.html
