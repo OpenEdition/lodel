@@ -51,7 +51,7 @@ function loop_parentsentities(&$context,$funcname,$critere="")
 function loop_toc($context,$funcname,$arguments)
 
 {
-  if (!preg_match_all("/<((?:r2r:section|h)(\d+))>(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {
+  if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {
     if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {
       if (function_exists("code_alter_$funcname")) 
 	call_user_func("code_alter_$funcname",$context);

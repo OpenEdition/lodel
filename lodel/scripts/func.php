@@ -236,9 +236,9 @@ function myfilemtime($filename)
 function update()
 
 { if (defined("SITEROOT")) {
-    touch(SITEROOT."CACHE/maj");
+    @touch(SITEROOT."CACHE/maj");
   } else {
-    touch("CACHE/maj");
+    @touch("CACHE/maj");
   }
 }
 

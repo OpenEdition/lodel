@@ -266,8 +266,9 @@ class Entities_EditionLogic extends GenericLogic {
 
      $gdao=&getGenericDAO($class,"identity");
      $gdao->instantiateObject($gvo);
-     $this->_moveImages($context);
-     $this->_populateObject($gvo,$context);
+     $context['entity']['id']=$context['id'];
+     $this->_moveImages($context['entity']);
+     $this->_populateObject($gvo,$context['entity']);
      $gvo->identity=$id;
      $this->_moveFiles($id,$this->files_to_move,$gvo);
      $gdao->save($gvo,$new);  // save the related table
