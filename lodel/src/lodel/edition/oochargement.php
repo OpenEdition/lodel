@@ -71,7 +71,7 @@ if ($_POST['fileorigin']=="upload" && $_FILES['file1'] && $_FILES['file1']['tmp_
   $source="";
 }
 
-
+require_once("servoofunc.php");
 $client=new ServOO;
 
 if ($client->error_message) {
@@ -82,8 +82,6 @@ if ($file1) {
     // verifie que la variable file1 n'a pas ete hackee
     $t=time();
     @chmod($source,0666 & octdec($GLOBALS['filemask'])); 
-
-    require_once("servoofunc.php");
 
     // get the extension...it's indicative only !
     preg_match("/\.(\w+)$/",$sourceoriginale,$result);

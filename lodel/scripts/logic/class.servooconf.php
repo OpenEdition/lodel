@@ -50,10 +50,18 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
    function listAction(&$context,&$error)
   { 
-    $dao=&getDAO("optiongroups");
-    $vo=$dao->find("name='servoo'");
-    $context['id']=$vo->id;
-    return Logic::listAction($context,$error);
+    $this->_getGroup($context);
+    return UserOptionGroupsLogic::listAction($context,$error);
+  }
+
+   /**
+    * view Action
+    */
+
+   function viewAction(&$context,&$error)
+  { 
+    $this->_getGroup($context);
+    return UserOptionGroupsLogic::viewAction($context,$error);
   }
 
    /**
@@ -62,9 +70,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
   function editAction(&$context,&$error)
   { 
-    $dao=&getDAO("optiongroups");
-    $vo=$dao->find("name='servoo'");
-    $context['id']=$vo->id;
+    $this->_getGroup($context);
     $ret=UserOptionGroupsLogic::editAction($context,$error);
 
     if ($ret=="_error") return $ret;
@@ -93,6 +99,14 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
    /**
     * @private
     */
+
+  function _getGroup(&$context)
+
+  {
+    $dao=&getDAO("optiongroups");
+    $vo=$dao->find("name='servoo'");
+    $context['id']=$vo->id;
+  }
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {
