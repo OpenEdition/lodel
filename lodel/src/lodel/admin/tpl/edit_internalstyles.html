@@ -86,6 +86,21 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="conversion"></FUNC>
     </p>
   </LOOP>
+  <label for="greedy">[@ADMIN.GREEDY]
+        : 
+      </label>
+  <br class="nobr">
+  <IF COND="[#GREEDY]">
+    <input type="checkbox" name="greedy" id="greedy" checked>
+    <ELSE/>
+    <input type="checkbox" name="greedy" id="greedy">
+  </IF>
+  <br />
+  <LOOP NAME="fielderror" FIELD="greedy">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="greedy"></FUNC>
+    </p>
+  </LOOP>
   <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_TYPE]
         : 
