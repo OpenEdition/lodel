@@ -96,7 +96,7 @@ if ($edit) { // modifie ou ajoute
     require_once ($home."connect.php");
 
     // transform the balise tab in balises
-    $balises=join(";",array_keys($context[balise]));
+    $balises=$context[balise] ? join(";",array_keys($context[balise])) : "";
 
     // lock the tables
     if ($context[classe]!="documents" && $context[classe]!="publications") die("Preciser une classe. Classe incorrecte");
