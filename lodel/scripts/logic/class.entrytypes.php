@@ -110,12 +110,12 @@ class EntryTypesLogic extends Logic {
    function _publicfields() {
      return array("type"=>array("type","+"),
                   "title"=>array("text","+"),
-                  "style"=>array("mlstyle","+"),
-                  "tpl"=>array("tplfile","+"),
-                  "tplindex"=>array("tplfile","+"),
+                  "style"=>array("mlstyle",""),
+                  "tpl"=>array("tplfile",""),
+                  "tplindex"=>array("tplfile",""),
                   "flat"=>array("boolean","+"),
-                  "newbyimportallowed"=>array("boolean","+"),
-                  "useabrevation"=>array("boolean","+"),
+                  "newbyimportallowed"=>array("boolean",""),
+                  "useabrevation"=>array("boolean",""),
                   "sort"=>array("select","+"));
              }
    // end{publicfields} automatic generation  //

@@ -193,8 +193,8 @@ ln index.php
 ln tpl/index.html
 ln tpl/deskadmin.html
 
-ln entry.php
-ln tpl/entry.html
+#ln entry.php
+#ln tpl/entry.html
 
 ln tpl/optiongroups.html
 ln tpl/edit_options.html

@@ -106,7 +106,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 			     "entities (id,idparent,idtype,identifier,usergroup,iduser,rank,status,upd)"=>"entites (id,idparent,idtype,identifiant,groupe,iduser,ordre,statut,maj)",
 			     "relations (id1,id2,nature,degree)"=>"relations (id1,id2,nature,degres)",
 			     "tablefields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
-			     "tablefieldgroups (id,name,class,title,commentaire,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
+			     "tablefieldgroups (id,name,class,title,comment,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
 			     "persons (id,lastname,firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
 			     "users (id,username,passwd,name,email,userrights,lang,status,upd)"=>"users (id,username,passwd,nom,courriel,privilege,lang,statut,maj)",
 			     "usergroups (id,name,status,upd)"=>"groupes (id,nom,statut,maj)",
@@ -215,9 +215,9 @@ ALTER TABLE _PREFIXTABLE_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL
     }
     foreach (array("publications"=>"Publications",
 		   "documents"=>"Documents",
-		   "documentsannexes"=>"Document Annexe"
+		   "documentsannexes"=>"Documents Annexes"
 		   ) as $class=>$tpl) {
-      echo "SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'<br>";
+      ##echo "SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'<br>";
       $result=mysql_query("SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'") or die(mysql_error());
       if (mysql_num_rows($result)>0) continue;
       $id=uniqueid("classes");
@@ -236,6 +236,11 @@ UPDATE _PREFIXTABLE_tablefields SET type=\'email\' WHERE type=\'mail\';
 ');
 	if ($err) break;
       $fields=getfields("tablefields");
+      if (!$fields['dc']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_tablefields ADD dc VARCHAR(10) NOT NULL;
+');
+      }
       if (!$fields['class']) {
 	$err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_tablefields ADD class VARCHAR(64) NOT NULL;

@@ -47,7 +47,7 @@ back();
 
 function setcontext($var,$operation,$value="") {
   mysql_select_db($GLOBALS['database']);
-  $where="name='".addslashes($_COOKIE[$GLOBALS[sessionname]])."' AND iduser='".$GLOBALS['iduser']."'";
+  $where="name='".addslashes($_COOKIE[$GLOBALS['sessionname']])."' AND iduser='".$GLOBALS['iduser']."'";
   $result=mysql_query("SELECT context FROM $GLOBALS[tp]session WHERE ".$where) or die($db->errormsg());
   list($context)=mysql_fetch_row($result);
   $arr=unserialize($context);
