@@ -32,38 +32,20 @@
 					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin1">[#TYPE]</td>
 					<td class="ligne_admin1">[#TPL]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+					<td class="ligne_admin1" style="color: #CC9933;" align="left">
 						<div>
 							|&nbsp;<a href="typedoc.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-<LOOP NAME="typeutilise2" TABLE="entites" WHERE="idtype='[#ID]'" SELECT="count(*) as nbdocuments">
-<DO>
-<IF COND="[#NBDOCUMENTS]">
-<span class="inactif">Associé à [#NBDOCUMENTS] documents</span>
-<ELSE/>
-<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
-</IF>
-</DO>
-</LOOP>
-
+							<MACRO NAME="TYPE_DE_DOCUMENT_UTILISE">						
 						</div>
 					</td>
 				<ELSE/>
 					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin2">[#TYPE]</td>
 					<td class="ligne_admin2">[#TPL]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<td class="ligne_admin2" style="color: #CC9933;" align="left">
 						<div>
 							|&nbsp;<a href="typedoc.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-
-<LOOP NAME="typeutilise" TABLE="entites" WHERE="idtype='[#ID]'" LIMIT="0,1">
-<DO>
-<span class="inactif">Supprimer</span>
-</DO>
-<ALTERNATIVE>
-<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
-</ALTERNATIVE>
-</LOOP>
-
+							<MACRO NAME="TYPE_DE_DOCUMENT_UTILISE">						
 						</div>
 					</td>
 				</IF>

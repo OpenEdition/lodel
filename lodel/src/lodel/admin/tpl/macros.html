@@ -191,6 +191,21 @@
 </DEFMACRO>
 <!-- ************************************************** -->
 
+<!-- Macro rajoutée le 03/12/03 *********************** -->
+<!-- Macro servant à typedocs.html                      -->
+<DEFMACRO NAME="TYPE_DE_DOCUMENT_UTILISE">
+	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
+		<DO>
+			<IF COND="[#NBDOCUMENTS]">
+				<span class="inactif">Associé à [#NBDOCUMENTS] documents</span>
+			<ELSE/>
+				<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
+			</IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+<!-- ************************************************** -->
+
 <!-- ************************************** Rajout intégration maquette ************************************** -->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!-- exemple de Javascript pour un Rollover -->
