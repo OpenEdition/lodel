@@ -57,7 +57,7 @@ ln logout.php
 
 dirsource $homerevue/lodel/admin
 ln tpl/login.html
-dirsource $homerevue/lodel/editino
+dirsource $homerevue/lodel/edition
 ln tpl/desk.html
 
 #
