@@ -44,11 +44,11 @@ include("tpl/install-openhtml.html");
 <p>
 
 <?php  if ($erreur_homeinaccessible) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.IMPOSSIBLE_TO_ACCESS_SCRIPTS_THROUGH_DIRECTORY] <?php echo "$pathroot/lodel/scripts"; ?>.<?php  } ?>
-<?php  if ($erreur_mkdir) { ?> <b>[@INSTALL.ERROR]</b>: Le répertoire "<?php echo $includepath; ?>" n'existe pas et il n'est pas possible de le créer. 
+<?php  if ($erreur_mkdir) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.DIRECTORY_NOT_EXISTING_CANT_BE_CREATED|sprintf([#INCLUDEPATH])]. 
 <h2>[@INSTALL.OPTION_1]</h2>
 <p align="justify">[@INSTALL.CHECK_INPUT_PATH_IF_NOT_CHECK_WRITING_RIGHTS_IN_PARENT_DIRECTORY] "<?php echo $includepath; ?>".</p>
 <h2>[@INSTALL.OPTION_2]</h2>
-<p align="justify">Créez manuellement le répertoire "<?php echo $includepath; ?>" et copiez-y les fichiers du répertoire lodel/scripts. Positionnez les droits pour que le serveur puisse accéder aux fichiers en lecture.</p>
+<p align="justify">[@INSTALL.CREATE_DIRECTORY_AND_COPY_FILES_IN_DIRECTORY_ADJUST_READING_RIGHTS_SERVER|sprintf([#INCLUDEPATH])].</p>
 <?php  } ?>
 
 
@@ -57,7 +57,7 @@ include("tpl/install-openhtml.html");
 <h2>[@INSTALL.OPTION_1]</h2>
 <p align="justify">[@INSTALL.CHECK_INPUT_PATH_IF_NOT_CHECK_WRITING_RIGHTS_IN_PARENT_DIRECTORY] "<?php echo $includepath; ?>".</p>
 <h2>[@INSTALL.OPTION_2]</h2>
-<p align="justify">Copiez les fichiers du répertoire lodel/scripts dans le répertoire"<?php echo $includepath; ?>". Positionnez les droits pour que le serveur puisse accéder aux fichiers en lecture.</p><?php  } ?>
+<p align="justify">[@INSTALL.COPY_FILES_FROM_DIRECTORY_TO_DIRECTORY_ADJUST_WRITING_RIGHTS_SERVER|sprintf([#INCLUDEPATH])].</p><?php  } ?>
 
 <?php  if ($erreur_includeincorrecte) { ?><b>[@INSTALL.ERROR]</b>: L'inclusion automatique dans le répertoire <?php  echo $includepath; ?> ne fonctionne pas. Vérifiez le répertoire entré ci-dessous ainsi que la configuration de php. Si le problème persiste... il n'y a pas grand chose à faire.<?php  } ?>
 
