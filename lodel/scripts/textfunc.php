@@ -375,5 +375,26 @@ function lodelbasic($text)
 			    ),traite_separateur($text));
 }
 
+//
+// Permet de savoir si un lien est relatif
+//
+
+function isrelative($lien)
+{
+	$test=parse_url($lien);
+	if($test["scheme"]) return false;
+	return !preg_match("/^\//",$test["path"]);
+}
+
+//
+// Permet de savoir si un lien est absolu
+//
+
+function isabsolute($lien)
+{ 
+	return !isrelative($lien);
+}
+
+
 
 ?>
