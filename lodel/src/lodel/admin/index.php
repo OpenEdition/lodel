@@ -32,9 +32,9 @@ require("siteconfig.php");
 require($home."auth.php");
 authenticate(LEVEL_VISITOR, $do=="view" || $do=="edit" || $do=="delete");
 require($home."langues.php");
+require_once($home."func.php");
 
 if ($_POST) {
-  require_once($home."func.php");
   extract_post();
   $therequest=&$_POST;
 } else {
@@ -93,7 +93,7 @@ if ($therequest['do']) {
     break;
   case 'error' :
     $context['error']=$error;
-    print_r($error);
+    ##print_r($error);
   case 'ok' :
     if ($do=="listAction") {
       $view->render($context,$table);

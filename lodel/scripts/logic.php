@@ -71,6 +71,26 @@ class Logic {
      return "ok";
    }
 
+   /**
+    * copy an object Action
+    */
+   function copyAction(&$context,&$error)
+
+   {
+     $ret=$this->viewAction($context,$error);
+
+     $copyof=getlodeltextcontents("copyof","common");
+     if (isset($context['name'])) {
+       $context['name']=$copyof."_".$context['name'];
+     } elseif (isset($context['type'])) {
+       $context['type']=$copyof."_".$context['type'];
+     }
+     if (isset($context['title'])) {
+       $context['title']=$copyof." ".$context['title'];
+     }
+     return $ret;
+   }
+
 
 
    /**
@@ -88,26 +108,29 @@ class Logic {
      if (!$this->_validateUniqueFields($context,$error)) {
        return "error";
      }
+     // extra check
+     if (!$this->_validateFields($context,$error)) {
+       return "error";
+     }
 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
 
      // create or edit
      if ($context['id']) {
-       $vo=$dao->getById(intval($context['id']),"id,status");
-       if (!$vo) die("ERROR: try to modify an object which does not exists");
+       $dao->instantiateObject($vo);
+       $vo->id=$context['id'];
      } else {
        $vo=$dao->createObject();
      }
-     $newstatus=$context['protected'] ? 32 : 1; // check later if we have the rights
-     $vo->status=$vo->status>0 ? $newstatus : -$newstatus;
+     if ($dao->rights['protect']) $vo->protect=$context['protected'] ? 1 : 0;
 
      // put the context into 
      $this->_populateObject($vo,$context);
      if (!$dao->save($vo)) die("You don't have the rights to modify or create this object");
-     $this->_saveRelatedTables($vo,$context);
+     $ret=$this->_saveRelatedTables($vo,$context);
 
-     return "back";
+     return $ret ? $ret : "back";
    }
 
    /**
@@ -130,7 +153,16 @@ class Logic {
    function deleteAction(&$context,&$error)
 
    {     
-     die("Abstract logic deleteAction");
+     global $db,$home;
+
+     $id=intval($context['id']);
+     if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug");
+     $dao=$this->_getMainTableDAO();
+     if (!$dao->deleteObject($id)) die("ERROR: you don't have the right to delete this type");
+
+     $ret=$this->_deleteRelatedTables($id);
+
+     return $ret ? $ret : "back";
    }
 
 
@@ -274,6 +306,14 @@ class Logic {
      return array();
    }
 
+   /**
+    * Validate fields. Used by child class.
+    */
+
+   function _validateFields(&$context,&$error) {
+     return true;
+   }
+
 
    /**
     * Populate the object from the context. Only the public fields are inputted.
@@ -301,7 +341,14 @@ class Logic {
     */
 
    function _saveRelatedTables($vo,$context) {}
-   } // class Logic
+
+   /**
+    * Used in deleteAction to do extra operation after the object has been deleted
+    */
+   function _deleteRelatedTables($id) {}
+   
+
+} // class Logic
 
 
 /*------------------------------------------------*/

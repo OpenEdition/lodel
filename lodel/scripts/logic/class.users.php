@@ -42,30 +42,6 @@ class UsersLogic extends Logic {
    }
 
 
-
-   /**
-    * Delete
-    * Default implementation
-    */
-
-   function deleteAction(&$context,&$error)
-
-   {     
-     global $db,$home;
-
-    // check the user has no entries
-     $id=intval($context['id']);
-
-     if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug");
-     $dao=$this->_getMainTableDAO();
-     if (!$dao->deleteObject($id)) die("ERROR: you don't have the right to delete this user");
-
-     $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or die($db->errormsg());
-
-     return "back";
-   }
-
-
    function isdeletelocked($id,$status=0) 
 
    {
@@ -120,8 +96,19 @@ class UsersLogic extends Logic {
    function _saveRelatedTables($vo,$context) 
 
    {
+XXXXXXXXXXXXXXXXXX
+      // change les groupes
+      mysql_query("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die($db->errormsg());
+      foreach ($groupes as $groupe) {
+	mysql_query("INSERT INTO $GLOBALS[tp]users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')") or die($db->errormsg());
+      }
+    }
    }
 
+   function _deleteRelatedTables($id) {
+     global $db;
+     $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or die($db->errormsg());
+   }
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {

@@ -53,34 +53,6 @@ class TypesLogic extends Logic {
    }
 
 
-
-   /**
-    * Delete
-    * Default implementation
-    */
-
-   function deleteAction(&$context,&$error)
-
-   {     
-     global $db,$home;
-
-    // check the type has no entries
-     $id=intval($context['id']);
-
-     if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug"); //  { return $error['reason']=$ret; return "back"; }
-
-     $dao=$this->_getMainTableDAO();
-     if (!$dao->deleteObject($id)) die("ERROR: you don't have the right to delete this type");
-
-     require_once($home."typetypefunc.php"); 
-     typetype_delete("entrytype","identitytype='".$id."'");
-     typetype_delete("persontype","identitytype='".$id."'");
-     typetype_delete("entitytype","identitytype='".$id."'");
-
-     return "back";
-   }
-
-
    function isdeletelocked($id,$status=0) 
 
    {
@@ -153,6 +125,18 @@ class TypesLogic extends Logic {
      typetype_insert($vo->id,$context['persontype'],"persontype");
      typetype_insert($vo->id,$context['entitytype'],"entitytype2");
    }
+
+
+
+   function _deleteRelatedTables($id) {
+     global $home;
+
+     require_once($home."typetypefunc.php"); 
+     typetype_delete("entrytype","identitytype='".$id."'");
+     typetype_delete("persontype","identitytype='".$id."'");
+     typetype_delete("entitytype","identitytype='".$id."'");
+   }
+
 
 
    // begin{publicfields} automatic generation  //

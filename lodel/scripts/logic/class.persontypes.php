@@ -43,29 +43,7 @@ class PersonTypesLogic extends Logic {
 
 
 
-   /**
-    * Delete
-    * Default implementation
-    */
 
-   function deleteAction(&$context,&$error)
-
-   {     
-     global $db,$home;
-
-    // check the type has no persons
-     $id=intval($context['id']);
-
-     if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug"); //  { return $error['reason']=$ret; return "back"; }
-
-     $dao=$this->_getMainTableDAO();
-     if (!$dao->deleteObject($id)) die("ERROR: you don't have the right to delete this person type");
-
-     require_once($home."typetypefunc.php"); 
-     typetype_delete("persontype","idpersontype='".$id."'");
-
-     return "back";
-   }
 
 
    function isdeletelocked($id,$status=0) 
@@ -120,6 +98,14 @@ class PersonTypesLogic extends Logic {
        typetype_delete("persontype","idpersontype='".$context['id']."'");
      }
      typetype_insert($context['entitytype'],$vo->id,"persontype");
+   }
+
+
+   function _deleteRelatedTables($id) {
+     global $home;
+
+     require_once($home."typetypefunc.php"); 
+     typetype_delete("persontype","idpersontype='".$id."'");
    }
 
 
