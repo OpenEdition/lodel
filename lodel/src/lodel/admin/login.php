@@ -30,7 +30,6 @@
 require("siteconfig.php");
 require_once("auth.php");
 
-
 if ($_POST['login']) {
   require_once("func.php");
   extract_post();
