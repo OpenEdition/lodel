@@ -43,9 +43,14 @@ function ei_pretraitement($filename,$row,&$context,&$text)
     array_push($srch,"/<r2r:$bal>/i","/<\/r2r:$bal>/i");
     array_push($rpl,"<r2r:resume lang=\"$lang\">","</r2r:resume>");
   }
-  $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>
-<!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
-'.preg_replace($srch,$rpl,$text);
+
+  $text=preg_replace($srch,$rpl,$text);
+
+  // ajoute le doctype si necessaire
+  if (!preg_match("/<!DOCTYPE.*?>/i",$text)) $text.="<!DOCTYPE article SYSTEM \"r2r-xhtml-1.dtd\">\n".$text;
+  // ajoute le xml version si necessaire
+  if (!preg_match("/<"."?xml.*?>/i",$text)) $text="<"."?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n".$text;
+
       
   if (!writefile ($filename.".balise",$text)) die ("erreur d'ecriture du fichier $filename.balise");
   if ($row[iddocument]) { # le document existe
