@@ -34,7 +34,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
     include($template_cache);
     $content=ob_get_contents();
     ob_end_clean();
-    include ("$home/showhtml.php");
+    include_once ("$home/showhtml.php");
     echo show_html($content);
     return;
   }
