@@ -93,32 +93,47 @@
 	</table>
 	<br />
 
-	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
 		<LOOP NAME="auteurs">
 			<tr>
-				<td width="200">Pr&eacute;fixe :</td>
-				<td><input size="5" type="text" name="prefix[#IND]" value="[#PREFIX]"></td>
-				<!-- ajout de ghislain le 6/4/3 -->
-				<td rowspan="3">Description :<br /><textarea name="description[#IND]" COLS="20" ROWS="3" readonly>[#DESCRIPTION]</textarea></td>
-				<!-- -->
-			</tr>
-			<tr>
-				<td width="200">Nom de famille :</td>
-				<td><input size="30" type="text" name="nomfamille[#IND]" value="[#NOMFAMILLE]"></td>
-			</tr>
-			<tr>
-				<td width="200">Prénom :</td>
-				<td><input size="30" type="text" name="prenom[#IND]" value="[#PRENOM]"></td>
-			</tr>
-<!-- suppresion de ghislain le 6/4/3			<TR>
-				<td>Affiliation:</td>
-				<td><INPUT SIZE="30" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></td>
-			</tr>
-			<TR>
-				<td>Courriel:</td>
-				<td><INPUT SIZE="30" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></td>
-			</tr>
--->
+			<td width="200">Auteur [#IND] :</td>
+				    <td>
+				      <table class="table_form_popup">
+					<tr>
+					  <td>Pr&eacute;fixe</td>
+					  <td>Pr&eacute;nom</td>
+					  <td>Nom</td>
+					  </tr>
+					<tr>
+					  <td><input size="5" type="text" name="prefix[#IND]" value="[#PREFIX]"></td>
+					  <td><input size="30" type="text" name="prenom[#IND]" value="[#PRENOM]"></td>
+					  <td><input size="30" type="text" name="nomfamille[#IND]" value="[#NOMFAMILLE]"></td>
+					  </tr>
+				      </table>
+				    </td>
+				    <td rowspan="2">Description:<br />
+				    <textarea name="description[#IND]" COLS="20" ROWS="4" readonly>[#DESCRIPTION]</textarea>
+				    </td>
+
+				  </tr>
+				  <tr>
+				    <td></td>
+				    <td>
+				    <table class="table_form_popup" >
+				      <tr>
+					<td>Fonction:</td>
+					<td>Affiliation:</td>
+					<td>Courriel:</td>
+				      </tr>
+				      <tr>
+					<td><INPUT SIZE="20" TYPE="text" NAME="fonction[#IND]" value="[#FONCTION]"></td>
+					<td><INPUT SIZE="20" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></td>
+					<td><INPUT SIZE="20" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></td>
+				      </tr>
+				      
+				    </table>
+				    </td>
+				</tr>
 		</LOOP>
 		<tr>
 			<td width="200">&nbsp;</td>

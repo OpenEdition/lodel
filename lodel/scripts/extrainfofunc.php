@@ -221,21 +221,23 @@ function gr_auteur(&$context,$plusauteurs)
 {
     $i=1;
     $rpl="<r2r:grauteur>";
-    while ($context["nomfamille$i"] || $context["prenom$i"] || $context["prefix$i"] 
+    while ($context["nomfamille$i"] || $context["prenom$i"] 
 	   ) {
-      $rpl.="<r2r:auteur ordre=\"$i\">";
-      // nompersonne
-      $rpl.="<r2r:nompersonne>\n".
+      $rpl.="<r2r:auteur ordre=\"$i\">".
+	// nompersonne
+	"<r2r:nompersonne>\n".
 	writetag("prefix",$context["prefix$i"]).
 	writetag("nomfamille",$context["nomfamille$i"]).
 	writetag("prenom",$context["prenom$i"]).
-	"</r2r:nompersonne>\n";
-      $rpl.=writetag("description",$context["description$i"]);
-
-      $rpl.="</r2r:auteur>\n";
+	"</r2r:nompersonne>\n".
+	writetag("fonction",$context["fonction$i"]).
+	writetag("affiliation",$context["affiliation$i"]).
+	writetag("courriel",$context["courriel$i"]).
+	writetag("description",$context["description$i"]).
+	"</r2r:auteur>\n";
       $i++;
     }
-    if ($plusauteurs) $rpl.="<r2r:auteur></r2r:auteur>";
+    if ($plusauteurs) $rpl.="<r2r:auteur></r2r:auteur>"; // hack un peu sale !
 
     $rpl.="</r2r:grauteur>";
 
@@ -246,7 +248,7 @@ function gr_auteur(&$context,$plusauteurs)
 #
 #{
 #  // traite les motcles
-#  if (!$context[option_motclefige]) $motcles=array_merge($motcles,preg_split ("/\s*[,;]\s*/",$context[autresmotcles]));
+#  if (!$context[option_motclefige]) $motcles=array_merge($motcles,preg_split ("/\s*[,;]\s*/",$context[resmotcles]));
 #  $rpl="<r2r:grmotcle>";
 #  if ($motcles) {
 #    foreach ($motcles as $p) {
@@ -400,8 +402,7 @@ function boucle_auteurs(&$context,$funcname)
 
 {
   global $text;
-#  $balises="(prefix|nomfamille|prenom|courriel|affiliation)";
-  $balises="(prefix|nomfamille|prenom|description)";
+  $balises="(prefix|nomfamille|prenom|description|courriel|affiliation|fonction)";
 
   preg_match_all("/<r2r:auteur\b[^>]*>(.*?)<\/r2r:auteur\s*>/is",$text,$results,PREG_SET_ORDER);
   foreach ($results as $auteur) {
@@ -428,10 +429,11 @@ function auteurs2auteur (&$text)
   // traitements speciaux:
 
   // accouple les balises auteurs et descriptionauteur
-  $text=preg_replace ("/(<\/r2r:auteurs>)\s*(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/is","\\2\\1",$text);
+  $text=preg_replace ("/(<\/r2r:auteurs>)\s*(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/s","\\2\\1",$text);
+
 
   // cherche toutes les balises auteurs
-  preg_match_all ("/<r2r:auteurs>(.*?)<\/r2r:auteurs>/si",$text,$results,PREG_SET_ORDER);
+  preg_match_all ("/<r2r:auteurs>(.*?)<\/r2r:auteurs>/s",$text,$results,PREG_SET_ORDER);
 
   $grauteur="<r2r:grauteur>";
   $i=1;
@@ -447,25 +449,51 @@ function auteurs2auteur (&$text)
       $descrauteur="";
     }
 #    echo htmlentities($descrauteur)."<br><br>\n\n";
-    $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom>"));
+    $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom><r2rc:prefix><r2rc:nom>"));
 
     while (($auteur=array_shift($auteurs))) {
       // on regarde s'il y a un prefix
-      if (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$auteur,$result3)) {
+      // d'abord on cherche s'il y a un style de caractere, sinon, on cherche les prefix classiques definis dans la variables prefixregexp.
+      if (preg_match_all("/<r2rc:prefix>(.*?)<\/r2rc:prefix>/",$auteur,$results2,PREG_SET_ORDER)) {
+	$prefix="<r2r:prefix>";
+	foreach($results2 as $result2) {
+	  $prefix.=$result2[1];
+	  $auteur=str_replace($result2[0],"",$auteur); //nettoie le champ auteur
+	}
+	$prefix.="</r2r:prefix>";
+      } elseif (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$auteur,$result3)) {
 	$prefix="<r2r:prefix>$result3[1]</r2r:prefix>";
 	$auteur=str_replace($result3[0],"",$auteur); // a partir de php 4.3.0 il faudra utiliser OFFSET_CAPTURE.
       } else {
 	$prefix="";
       }
-      if (preg_match_all("/<r2rc:prenom>(.*?)<\/r2rc:prenom>/",$auteur,$results,PREG_SET_ORDER)) {
+      // ok on le prefix
+
+      // on cherche maintenant si on a le prenom
+      $have_prenom=0; $have_nom=0;
+      if (preg_match_all("/<r2rc:prenom>(.*?)<\/r2rc:prenom>/",$auteur,$results2,PREG_SET_ORDER)) {
 	$prenoms=array(); // tableau pour les prenoms
-	$nom=$auteur;
-	foreach($results as $result) {
-	  array_push($prenoms,trim($result[1]));
-	  $nom=str_replace($result[0],"",$nom); //nettoie le nom
+	foreach($results2 as $result2) {
+	  array_push($prenoms,trim($result2[1]));
+	  $auteur=str_replace($result2[0],"",$auteur); //nettoie l'auteur
 	}
 	$prenom=join(" ",$prenoms); // join les prenoms
-      } else {
+	$nom=$auteur; // c'est le reste
+	$have_prenom=1;
+      }      
+      // on cherche maintenant si on a le nom
+      if (preg_match_all("/<r2rc:nom>(.*?)<\/r2rc:nom>/",$auteur,$results2,PREG_SET_ORDER)) {
+	$noms=array(); // tableau pour les noms
+	foreach($results2 as $result2) {
+	  array_push($noms,trim($result2[1]));
+	  $auteur=str_replace($result2[0],"",$auteur); //nettoie l'auteur
+	}
+	$nom=join(" ",$noms); // join les noms
+	if (!$have_prenom) $prenom=$auteur; // le reste c'est le prenom sauf si on a deja detecte le prenom
+	$have_nom=1;
+      }
+      // si on a pas de style de caractere, alors on essaie de deviner !
+      if (!$have_prenom && !$have_nom) {
 	// ok, on cherche maintenant a separer le nom et le prenom
 	$nom=$auteur;
 	while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
@@ -476,9 +504,23 @@ function auteurs2auteur (&$text)
 	  $prenom=$result2[1]; $nom=$result2[2];
 	}
       }
-      // on a maintenant le nom et le prenom, on ecrit le bloc
+      //
+      // on a maintenant le prefix, le nom et le prenom, on ecrit le bloc
+      //
       $grauteur.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom>$prefix</r2r:nompersonne>";
-      if ($descrauteur && !$auteurs)  $grauteur.=$descrauteur; // c'est le dernier auteur de cette liste, s'il y a un bloc description, alors c'est pour lui !
+      // est-ce qu'on a une description et est-ce qu'elle est pour cet auteur ?
+      if ($descrauteur && !$auteurs)  { // oui, c'est le dernier auteur de cette liste, s'il y a un bloc description, alors c'est pour lui !
+	// on recupere les balises du champ description
+	$balises=array("fonction","affiliation","courriel");
+	foreach ($balises as $balise) {
+	  if (preg_match("/<r2rc:$balise>(.*?)<\/r2rc:$balise>/s",$descrauteur,$result2)) {
+	    $grauteur.=writetag($balise,trim($result2[1]));
+	  }
+	} // foreach
+
+	// on efface tous les styles de caracteres
+	$grauteur.=preg_replace("/<\/?r2rc:[^>]+>/","",$descrauteur);
+      } // ok, on a traite la description
       $grauteur.="</r2r:auteur>";
       $i++;
     }
