@@ -90,6 +90,10 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
     mysql_select_db($GLOBALS['currentdb']);
 
 
+    if (!$tables["$GLOBALS[tp]translations"]) {
+      if ($err=create("translations")) break; // create the translation table
+    }
+
 
     // fini, faire quelque chose
   } while(0);

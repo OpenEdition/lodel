@@ -30,6 +30,8 @@
   /* Load and desarchive Lodel */
 
 $text=array(
+### open
+	    'open_title'=>"Chargement et installation de Lod<span class=\"or\">e</span>l",
 ### intro
 	    'intro_welcome'=>"Bienvenue dans l'installation de <strong>Lodel</strong>, logiciel d'&eacute;dition &eacute;lectronique",
 
@@ -52,6 +54,11 @@ $text=array(
 ### chmod
 
 	    'chmod_permission'=>"Ce script a d&eacute;tect&eacute; les permissions &agrave; accorder sur les fichiers et les r&eacute;pertoires de Lodel. Il propose les permissions suivantes:",
+
+	    'chmod_read_write'=>"lecture et &eacute;criture",
+	    'chmod_read'=>"lecture et &eacute;criture",
+	    'chmod_write'=>"&eacute;criture",
+
 
 	    'chmod_user'=>"Utilisateur",
 	    'chmod_group'=>"Groupe",
@@ -1730,6 +1737,7 @@ function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter=true)
 /* function for printing the messages and errors */
 
 function open_html() {
+  global $text;
   ?>
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
     <html>
@@ -1802,11 +1810,11 @@ li{
 }
 -->
 </style>
-	<title>Chargement et installation de Lodel</title>
+        <title><?php echo strip_tags($text['open_title']);?></title>
 	</head>
 	<body> 
 
-	<h1>Chargement et installation de Lod<span class="or">e</span>l</h1>
+	<h1><?php echo $text['open_title'];?></h1>
 
 
 	<div id="main">
@@ -1855,7 +1863,7 @@ if (ini_get("safe_mode")) {
 <p><?php echo $text['intro_continue']; ?></p>
 <h2><?php echo $text['intro_condition_of_use_title']; ?></h2>
 <?php echo $text['intro_condition_of_use']; ?>
-<form  method="post" action="lodelloader.php">
+<form  method="post" action="<?php echo basename(__FILE__);?>">
 <input type="submit" name="install" value="<?php echo $text['intro_install']; ?>">
 </form>
 <?php
@@ -1881,10 +1889,12 @@ function msg_chmod($chmod,$reducedchmod)
     $fileperm=($chmod2 & 0004 ? "r" : "-") .$fileperm;
     $dirperm=($chmod2 & 0004 ? "r" : "-") .$dirperm;
 
-    $perm[$i]=($chmod2 & 0004) ? "lecture" : "";
-    if ($chmod2 & 0002) {
-      if ($perm[$i]) $perm[$i].=" et ";
-      $perm[$i].="&eacute;criture";
+    if ( ( $chmod2 & 0004) && ($chmod2 & 0002) ) {
+      $perm[$i]=$text['chmod_read_write'];
+    } elseif ( $chmod2 & 0004) {
+      $perm[$i]=$text['chmod_read'];
+    } elseif ( $chmod2 & 0002) {
+      $perm[$i]=$text['chmod_write'];
     }
 
     $chmod2=$chmod2 >> 3;
@@ -1900,7 +1910,7 @@ function msg_chmod($chmod,$reducedchmod)
 
 ?>
     <p><? echo $text['chmod_continue'];?></p>
-<form  method="post" action="lodelloader.php">
+<form  method="post" action="<?php echo basename(__FILE__);?>">
 <input type="hidden" name="chmod" value="<?php echo $chmod; ?>">
 <input type="submit" name="install" value="<?php echo $text['chmod_download'];?>">
 </form>

@@ -698,7 +698,7 @@
 	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
 		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
 		<div style="padding-top:10px;">
-			<a href="index.php?id=0"><span class="texte_edition_des_series">[@INTERFACE.BASE]</span></a>
+			<a href="index.php?id=0"><span class="texte_edition_des_series">[@EDITION.BASE]</span></a>
 			<LOOP NAME="publisparentes">
 				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#IDENTIFIANT]</span></a>
 			</LOOP>
@@ -791,7 +791,7 @@
 				<IF COND="[#NBRESULTATS] ge 6">
 					<option value="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
 				<ELSE/>
-					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[@INTERFACE.ADD] [#TITRE] |</a> 
+					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[@EDITION.ADD] [#TITRE] |</a> 
 				</IF>
 			</DO>
 			<AFTER>
@@ -824,9 +824,9 @@
 			<ELSE/>
 				<MACRO NAME="PNG_PLUS">&nbsp;
 				<IF COND="[#IMPORT]==1">
-					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@INTERFACE.ADD] [#TITRE] |</a>
+					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@EDITION.ADD] [#TITRE] |</a>
 				<ELSE/>
-					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@INTERFACE.ADD] [#TITRE] |</a>
+					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@EDITION.ADD] [#TITRE] |</a>
 				</IF>
 			</IF>
 		</DO>
@@ -995,22 +995,22 @@
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>[@INTERFACE.VISUALIZE_ENTITY]</strong></a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>[@EDITION.VISUALIZE_ENTITY]</strong></a>&nbsp;
 		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="publication.php?id=[#ID]">[@INTERFACE.EDIT]</a>&nbsp;
+		|&nbsp;<a href="publication.php?id=[#ID]">[@EDITION.EDIT]</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
 		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@INTERFACE.ADVANCED_FUNCTIONS]</a>&nbsp;
+		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.ADVANCED_FUNCTIONS]</a>&nbsp;
                 <ELSE/>
-		|&nbsp;<span class="inactif">[@INTERFACE.ADVANCED_FUNCTIONS]</span>&nbsp;
+		|&nbsp;<span class="inactif">[@EDITION.ADVANCED_FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
 		<IF COND="([#STATUT] lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN])">
-		|&nbsp;<a href="supprime.php?id=[#ID]">[@INTERFACE.DELETE]</a>&nbsp;|
+		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DELETE]</a>&nbsp;|
 		<ELSE/>
-		|&nbsp;<span class="inactif">[@INTERFACE.DELETE]</span>&nbsp;|
+		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>

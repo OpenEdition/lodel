@@ -214,6 +214,12 @@ ln tpl/texte.html
 ln tpl/texte-interface.html
 ln textes.php
 ln tpl/textes.html
+ln translations.php
+ln tpl/translations.html
+ln translation.php
+ln tpl/translation.html
+ln translationgroup.php
+ln tpl/translationgroup.html
 
 ln champ.php
 ln tpl/champ.html

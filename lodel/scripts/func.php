@@ -269,7 +269,7 @@ function addmeta(&$arr,$meta="")
 }
 
 
-function back()
+function back($arg="")
 
 {
   global $database,$idsession;
@@ -280,7 +280,7 @@ function back()
   mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
 
   //echo "retourne: id=$id url=$currenturl";
-  header("Location: http://".$_SERVER[SERVER_NAME].$currenturl);exit;
+  header("Location: http://".$_SERVER[SERVER_NAME].$currenturl.$arg);exit;
 }
 
 
@@ -641,6 +641,49 @@ function myhtmlentities($text)
 
 {
   return str_replace(array("&","<",">","\""),array("&amp;","&lt;","&gt;","&quot;"),$text);
+}
+
+
+//
+// Main function to add/modify records 
+//
+
+function setrecord($table,$id,$set,$context)
+
+{
+  if ($id>0) { // update
+    foreach($set as $k=>$v) {
+      if (is_numeric($k)) { // get it from context
+	$k=$v;
+	$v=$context[$k];
+      }
+      if ($update) $update.=",";
+      $update.="$k='$v'";
+    }
+    if ($update)
+      mysql_query("UPDATE $GLOBALS[tp]$table SET  $update WHERE id='$id'") or die(mysql_error());
+  } else {
+    $insert="";$values="";
+    if ($id=="unique") {
+      $id=uniqueid($table);
+      $insert="id";$values="'".$id."'";
+    }
+    foreach($set as $k=>$v) {
+      if (is_numeric($k)) { // get it from context
+	$k=$v;
+	$v=$context[$k];
+      }
+      if ($insert) { $insert.=","; $values.=","; }
+      $insert.=$k;
+      $values.="'".$v."'";
+    }
+
+    if ($insert) {
+      mysql_query("REPLACE INTO $GLOBALS[tp]$table (".$insert.") VALUES (".$values.")") or die(mysql_error());
+      if (!$id) $id=mysql_insert_id();
+    }
+  }
+  return $id;
 }
 
 

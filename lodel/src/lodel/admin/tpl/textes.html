@@ -44,7 +44,7 @@
 		<td class="texte_noir_gras">Nom</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="textes" TABLE="textes">
+	<LOOP NAME="textes" TABLE="textes" WHERE="textgroup='[#TEXTGROUP]'" ORDER="nom">
 		<DO>
 			<IF COND="[#COUNT]%2">
 				<tr>

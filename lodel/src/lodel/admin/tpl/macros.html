@@ -157,6 +157,39 @@
 	</IF>
 </DEFMACRO>
 
+<!--[ Nouvelle macro ajouter par Ghislain, elle est bcp plus generique ]-->
+<!--[ Elle devrait convenir dans un grand nombre de cas                ]-->
+
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TRANSLATION">
+	<div>
+		<IF COND="[#DROITADMIN]">
+					<a href="translation?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+					<a href="translation?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+                       <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
+			|&nbsp;<a href="translation?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+	               <ELSE/>
+			|&nbsp;<span class="inactif>Modifier</span>&nbsp;|&nbsp;
+	               </IF>
+			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
+				<DO>
+					<IF COND="[#NBCHAMPS]">
+						<span class="inactif">Supprimer</span>&nbsp;|
+					<ELSE/><IF COND="[#STATUT] lt 32">
+						<a href="translation?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+					<ELSE/>
+						<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+					</IF></IF>
+				</DO>
+			</LOOP>
+		<ELSE/>
+			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+			<span class="inactif">Supprimer</span>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+
 <DEFMACRO NAME="AFFICHER_GROUPE">
 	<tr><td colspan="5"><hr /></td></tr>
 	<tr>

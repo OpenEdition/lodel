@@ -41,6 +41,11 @@ class LodelParser extends Parser {
   var $filterfunc_loaded=FALSE;
 
 
+  var $textstatus=array("-1"=>"à traduire","1"=>"à revoir","2"=>"traduit");
+  var $colorstatus=array("-1"=>"red","1"=>"orange",2=>"green");
+  var $translationlanglist="'fr','en','es','de'";
+
+
 function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
 			  &$select,&$where,&$ordre,&$groupby,&$having)
@@ -316,29 +321,8 @@ function maketext($name,$group,$tag)
     $modify="";
     $fullname=strtoupper($group).'.'.strtoupper($name);
 
-//    $translationlanglist="'fr','en','es','de'";
-//    $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND lang IN (".$translationlanglist.")");
-//    while(list($texte,$lang)=mysql_fetch_row($result)) {
-//      echo '<div id="'.$fullname.'"></div>';
-//    }
     if (!$this->translationform[$fullname]) { // make the modify form
-      $textstatus=array("-1"=>"à traduire","1"=>"à revoir","2"=>"traduit");
-      $colorstatus=array("-1"=>"red","1"=>"orange",2=>"green");
-
-      $optionsstr=""; $colorstr='<?php switch ($status) {
-';
-      foreach ($textstatus as $status=>$text) {
-	$optionsstr.='<option style="background-color: '.$colorstatus[$status].';" value="'.$status.'" <?php if ($status=='.$status.') echo "selected "; ?>>'.$text.'</option>';
-	$colorstr.='case '.$status.' : 
-echo "'.$colorstatus[$status].'"; 
-break;
-';
-      }
-      $colorstr.="} ?>";
-      #die($colorstr);
-	
-      $this->translationform[$fullname]='<div class="translationform"><form method="post" action="'.SITEROOT.'lodel/admin/texte.php"><input type="hidden" name="edit" value="1"><input type="hidden" name="nom" value="'.$name.'"><input type="hidden" name="textgroup" value="'.$group.'"><label for="texte">[@'.$fullname.']<?php list($id,$text,$status)=getlodeltext("'.$name.'","'.$group.'"); ?><input type="text" name="texte" size="100" value="<?php echo htmlspecialchars($text);?>"></label><input type="submit" value="[M]"></form><?php if ($id) { ?><select style="background-color: '.$colorstr.';" onchange="window.location=\''.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id;?>\&status=\'+this.options[this.selectedIndex].value" name="status">'.$optionsstr.'</select><?php } ?></div>
-';
+      $this->translationform[$fullname]='<?php mkeditlodeltext("'.$name.'","'.$group.'"); ?>';
     }
   }
 
@@ -356,8 +340,12 @@ function parse_after(&$text)
     if (!$closepos) return; // no idea what to do...
     $closepos-=strlen("</body>")+1;
 
-    $text=substr($text,0,$closepos).'<?php if ($context[\'usertranslationmode\']) { ?>'.
-      '<div id="translationforms">'.join("",$this->translationform).'</div>'.'<?php } ?>';
+    $text=substr($text,0,$closepos).'<?php if ($context[\'usertranslationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
+<form method="post" action="'.SITEROOT.'lodel/admin/texte.php"><input type="hidden" name="edit" value="1">
+ <input type="submit" value="[Update]">
+<div id="translationforms">'.join("",$this->translationform).'</div>
+<input type="submit" value="[Update]"></form>
+<?php } ?>'.
       substr($text,$closepos);
   }
 }

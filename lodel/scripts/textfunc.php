@@ -298,38 +298,6 @@ function tocable($text,$level=10)
   return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
 }
 
-## version souple qui travaille sur les div... mais c'est une mauvaise habitude.
-## function tocable($level,$text=-1)
-## 
-## {
-##   static $tocind=0;
-## 
-##   if ($text==-1) { $text=$level; $level=10; }// gestion etrange du level par defaut.
-##   $sect="1";
-##   for($i=2;$i<=$level;$i++) $sect.="|$i";
-## 
-##   $arr=preg_split("/(<\/?)(r2r:section(?:$sect)>|div\b[^>]*>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
-##   $count=count($arr);
-##   $stack=array();
-##   for($i=1; $i<$count; $i+=3) {
-##     if ($arr[$i]=="</") { // fermante
-##       $arr[$i+1].=array_pop($stack);
-##     } else { // ouvrante
-##       if (strpos("r2r:section",$arr[$i+1])===0 ||
-## 	  preg_match("/^div\b[^>]+class\s*=\s*\"section($sect)\"/",$arr[$i+1]) ) { // toc it
-## 
-## 	$tocind++;
-## 	array_push($stack,"</a>");
-## 	$arr[$i]='<a href="#tocfrom'.$tocind.'" NAME="tocto'.$tocind.'">'.$arr[$i];
-##       } else { // don't toc it
-## 	array_push($stack,"");
-##       }
-##     }
-##   } // for
-##   return join("",$arr);
-## 
-## 
-## }
 
 
 function multilingue($text,$lang)
@@ -671,6 +639,18 @@ function ishtml($text)
 
 {
   return preg_match("/<(p|br|span|ul|li|dl|strong|em)\b[^><]*>/",$text);
+}
+
+
+/*
+ * @internal
+ *
+ */
+function lodeltextcolor($status)
+
+{
+  $colorstatus=array(-1=>"red",1=>"orange",2=>"green");
+  return $colorstatus[$status];
 }
 
 ?>

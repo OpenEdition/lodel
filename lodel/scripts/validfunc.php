@@ -56,5 +56,11 @@ function isvalidmlstyle($style)
   return TRUE;
 }
 
+function isvalidlang($lang)
+
+{
+  return preg_match("/^\w\w(-\w\w)?$/",$lang);
+}
+
 
 ?>

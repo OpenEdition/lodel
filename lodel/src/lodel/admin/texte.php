@@ -43,9 +43,11 @@ if ($id>0) {
   $critere="";
 
 if ($id>0 && $delete) { 
-  require($home."trash.php");
-  $delete=2; // delete complet
-  treattrash("textes",$critere);
+  // delete in all lang
+  $result=mysql_query("SELECT nom,textgroup FROM $GLOBALS[tp]textes WHERE id='$id'") or die(mysql_error());
+  list($nom,$textgroup)=mysql_fetch_row($result);
+  mysql_query("DELETE FROM $GLOBALS[tp]textes WHERE nom='$nom' AND textgroup='$textgroup'");
+  back();
   return;
 //
 // ajoute ou edit
@@ -58,8 +60,21 @@ if ($id>0 && $delete) {
 // ajoute ou edit
 //
 } elseif ($edit) { // modifie ou ajoute
-  require_once ($home."func.php");
   extract_post();
+
+  #print_r($context);
+  if (is_array($context['texts'])) {
+    foreach ($context['texts'] as $id=>$text) {
+      $id=intval($id);
+      $status=intval($context['status'][$id]);
+      $text=preg_replace("/(\r\n\s*){2,}/","<br />",$text);
+      mysql_query ("UPDATE $GLOBALS[tp]textes SET texte='$text',statut='$status' WHERE id='$id'") or die (mysql_error());
+    }
+    touch(SITEROOT."CACHE/maj");
+    back(); ///header("HTTP/1.1 204 No Response");
+    return; 
+  }
+
   // validation
   do {
     if (!$context['textgroup']) $context['textgroup']="site";
@@ -88,7 +103,6 @@ if ($id>0 && $delete) {
     $context['texte']=preg_replace("/(\r\n\s*){2,}/","<br />",$context['texte']);
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte,textgroup,lang,statut) VALUES ('$id','$context[nom]','$context[texte]','$context[textgroup]','$context[lang]','$context[statut]')") or die (mysql_error());
-    touch(SITEROOT."CACHE/maj");
     back();
 
   } while (0);

@@ -27,16 +27,28 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-// gere les periodes. L'acces est reserve au adminlodelistrateur.
-// assure l'edition, la supression, la restauration des periodes.
 
 require("siteconfig.php");
-include ($home."auth.php");
-authenticate(LEVEL_EDITEUR);
+require($home."auth.php");
+authenticate(LEVEL_ADMIN);
+require_once($home."func.php");
+require_once($home."translationfunc.php");
+require_once($home."validfunc.php");
 
-$context['textgroup']=$textgroup=="site" ? "site" : "interface";
+// post-traitement
+$context['textgroup']=mysql_escape_string($textgroup);
+if (!isvalidlang($lang)) die("ERROR: invalid lang");
+$context['lang']=$lang;
+
+posttraitement($context);
 
 include ($home."calcul-page.php");
-calcul_page($context,"textes");
+calcul_page($context,"translationgroup");
+
 
 ?>
+
+
+
+
+
