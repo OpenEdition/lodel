@@ -255,30 +255,35 @@ if ($tache=="database") {
 }
 
 if ($tache=="admin") {
-    @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
-    @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-    @mysql_select_db($database); // selectionne la database
-    $adminusername=addslashes($adminusername);
-    $pass=md5($adminpasswd.$adminusername);
+  if ($adminpasswd2 && $adminpasswd2!=$adminpasswd) {
+    $erreur_confirm_passwd=true;
+    if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
+    return;
+  }
+  @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
+  @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+  @mysql_select_db($database); // selectionne la database
+  $adminusername=addslashes($adminusername);
+  $pass=md5($adminpasswd.$adminusername);
 
-    if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,name,email,userrights) VALUES ('$adminusername','$pass','','',128)")) {
-      $erreur_create=1;
-      if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
-      return;
-    }
-    // log this user in 
-    require_once(LODELROOT.$home."adodb/adodb.inc.php");
-    require_once(LODELROOT.$home."connect.php");
-    require(LODELROOT.$home."loginfunc.php");
-    $site="";
+  if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,name,email,userrights) VALUES ('$adminusername','$pass','','',128)")) {
+    $erreur_create=1;
+    if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
+    return;
+  }
+  // log this user in 
+  require_once(LODELROOT.$home."adodb/adodb.inc.php");
+  require_once(LODELROOT.$home."connect.php");
+  require(LODELROOT.$home."loginfunc.php");
+  $site="";
 #    echo $adminusername," ",$pass;
-
-    if (check_auth($adminusername,$adminpasswd,$site)) {
-      open_session($adminusername);
-    }
-    $pass=""; // enleve de la memoire
-    $adminpasswd="";
-}
+  
+  if (check_auth($adminusername,$adminpasswd,$site)) {
+    open_session($adminusername);
+  }
+  $pass=""; // enleve de la memoire
+  $adminpasswd="";
+ }
 
 $protecteddir=array("lodel$versionsuffix",
 		    "CACHE",
