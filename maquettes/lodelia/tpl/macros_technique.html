@@ -188,8 +188,8 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 		&nbsp;<b>Chercher</b><br><br>
 		&nbsp;<input type="text" size="17" name="search" value="votre recherche" 
 			onfocus="if(this.value=='votre recherche')this.value='';" />
-		<input type=hidden name="url_back" value="http://[#REVUE].revues.org/">
-		<input type=hidden name="[#REVUE]" value="CHECKED" checked [#REVUE]>
+		<input type=hidden name="url_back" value="http://[#SITE].revues.org/">
+		<input type=hidden name="[#SITE]" value="CHECKED" checked [#SITE]>
 		<input type=hidden name="addsite" value="Chercher">
 		<input type="image" border="0" name="imageField" src="images/submit.gif">
 	
@@ -211,10 +211,10 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 					<input type="hidden" name="all" value="true" checked>
 					<input type="hidden" name="ps" value="7">
 					<input type="text" size="17" name="q" value="votre recherche" onfocus="if(this.value=='votre recherche')this.value='';" />
-					<input type=hidden name="bck" value="http://[#REVUE].revues.org/">
+					<input type=hidden name="bck" value="http://[#SITE].revues.org/">
 					<br /><br />
 					<input type="submit" name="Submit" value="Chercher">
-					<input type="hidden" name="rev" value="[#REVUE]" checked>
+					<input type="hidden" name="rev" value="[#SITE]" checked>
 					
 					<br />
 		</div>
@@ -316,7 +316,7 @@ IPR
 <!--[ Version 1.0                                                        ]-->
 <!--[ Affichage métadonnées propres à index.html.                          ]-->
 <!--[ ****************************************************************** ]-->
-<meta name="DC.Title" content="[#REVUE]" />
+<meta name="DC.Title" content="[#SITE]" />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Page d'accueil" />
 </DEFMACRO>
 
@@ -350,7 +350,7 @@ IPR
 <DEFMACRO NAME="METADONNEES_POUR_AUTEURS">
 <!--[ ****************************************************************** ]-->
 <!--[ Version 1.0                                                        ]-->
-<!--[ Affichage métadonnées propres à auteurs.html.                      ]-->
+<!--[ Affichage métadonnées propres à personnes.html?type=auteur.                      ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index par auteurs." />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index par auteurs." />
@@ -370,7 +370,7 @@ IPR
 <DEFMACRO NAME="METADONNEES_POUR_CHRONOS">
 <!--[ ****************************************************************** ]-->
 <!--[ Version 1.0                                                        ]-->
-<!--[ Affichage métadonnées propres à chronos.html.                      ]-->
+<!--[ Affichage métadonnées propres à entrees.html?type=periode.                      ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index chronologique." />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index chronologique." />
@@ -402,18 +402,18 @@ IPR
 <!--[ METADONNEES HTML ]-->
 <meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
 <meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
-<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+<meta url="http://[#SITE].revues.org/document.html?id=[#ID]" />
 
 <!--[ METADONNEES DUBLIN CORE ]-->
 <meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
 <meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
-<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+<meta name="DC.Source" content="http://[#SITE].revues.org/" />
 <meta name="DC.Type" content="text" />
 <meta name="DC.Format" content="text/html" />
 <meta name="DC.Language" content="fr" />
 <meta name="DC.Relation" content="http://www.revues.org" />
 
-<meta name="DC.Identifier" content="http://[#REVUE].revues.org/sommaire.html?id=[#ID]" />
+<meta name="DC.Identifier" content="http://[#SITE].revues.org/sommaire.html?id=[#ID]" />
 <meta name="DC.Title" content="Sommaire du numéro [#IDENTIFIANT], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 <meta name="DC.Date" content="[#DATE]" />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_META_SOMMAIRE">" />
@@ -434,7 +434,7 @@ IPR
 <!--[ ****************************************************************** ]-->
 	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
 	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
-	<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+	<meta url="http://[#SITE].revues.org/document.html?id=[#ID]" />
 		
 	<LOOP NAME="meta_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
@@ -448,13 +448,13 @@ IPR
 	
 	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
 	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
-	<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+	<meta name="DC.Source" content="http://[#SITE].revues.org/" />
 	<meta name="DC.Type" content="text" />
 	<meta name="DC.Format" content="text/html" />
 	<meta name="DC.Language" content="fr" />
 	<meta name="DC.Relation" content="http://www.revues.org" />
 	
-	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+	<meta name="DC.Identifier" content="http://[#SITE].revues.org/document.html?id=[#ID]" />
 	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
 	<LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
@@ -490,12 +490,12 @@ IPR
 	<!--[ METADONNEES HTML ]-->
 	<meta name="GENERATOR" content="Lodel 2002" />
 	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
-	<meta URL="http://[#REVUE].revues.org" />
+	<meta URL="http://[#SITE].revues.org" />
 	<!--[ METADONNEES DUBLIN CORE ]-->
 	<meta name="DC.Type" content="text" />
 	<meta name="DC.Format" content="text/html" />
-	<meta name="DC.Identifier" content="http://[#REVUE].revues.org" />
-	<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+	<meta name="DC.Identifier" content="http://[#SITE].revues.org" />
+	<meta name="DC.Source" content="http://[#SITE].revues.org/" />
 	<meta name="DC.Language" content="fr" />
 	<meta name="DC.Relation" content="http://www.revues.org" />
 	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />

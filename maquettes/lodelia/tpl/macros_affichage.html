@@ -305,19 +305,19 @@
 <!--[ Affiche le titre de la partie Bibliographie (ici "Bibliographie")  ]-->
 <!--[ dans la langue définie pour le texte d'un document.                ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="([#LANG] EQ 'fr') OR ([#LANG] EQ 'FR')">
+	<IF COND="([#LANGUE] EQ 'fr') OR ([#LANGUE] EQ 'FR')">
 		Références bibliographiques
 	<ELSE/>
-		<IF COND="([#LANG] EQ 'en') OR ([#LANG] EQ 'EN')">
+		<IF COND="([#LANGUE] EQ 'en') OR ([#LANGUE] EQ 'EN')">
 			Bibliography
 		<ELSE/>
-			<IF COND="([#LANG] EQ 'it') OR ([#LANG] EQ 'IT')">
+			<IF COND="([#LANGUE] EQ 'it') OR ([#LANGUE] EQ 'IT')">
 				Bibliografia
 			<ELSE/>
-				<IF COND="([#LANG] EQ 'es') OR ([#LANG] EQ 'ES')">
+				<IF COND="([#LANGUE] EQ 'es') OR ([#LANGUE] EQ 'ES')">
 					Bibliografía
 				<ELSE/>
-					<IF COND="([#LANG] EQ 'de') OR ([#LANG] EQ 'DE')">
+					<IF COND="([#LANGUE] EQ 'de') OR ([#LANGUE] EQ 'DE')">
 						Bibliographie
 					<ELSE/>
 						Bibliographie
@@ -761,7 +761,7 @@
 			[#IDENTIFIANT]<IF COND="[#TITRE]">, [#TITRE].</IF>
 		</DO>
 	</LOOP>
-	<br />http://[#REVUE].revues.org/document.[#EXTENSIONSCRIPTS]?id=[#ID]
+	<br />http://[#SITE].revues.org/document.[#EXTENSIONSCRIPTS]?id=[#ID]
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRITION_AUTEUR"> 
@@ -959,7 +959,7 @@
 				</span>
 				<p>
 					<!--[ Commentaire du doc annexe ]-->
-					[#COMMENTAIRE]
+					[#COMMENTAIREINTERNE]
 				</p>
 				<p>
 					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
@@ -1051,7 +1051,7 @@
 <!--[ Dans le cas où l'article serait publié à une date ultérieure       ]-->
 <!--[ affiche "Texte en ligne le xx/xx/xxxx"                             ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#LANG]!=''">
+	<IF COND="[#LANGUE]!=''">
 		<a class="texte_integral" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			[Texte intégral
 			<IF COND="[#TEXTEPUBLIE]">
