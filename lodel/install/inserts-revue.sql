@@ -18,7 +18,7 @@ REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tplcreation,ordre,classe) VAL
 REPLACE INTO _PREFIXTABLE_types (id,type,titre,tplcreation,ordre,classe,status) VALUES(7,'documentannexe-lienfichier','sur un fichier','documentannexe-lienfichier','2','documents',32);
 REPLACE INTO _PREFIXTABLE_types (id,type,titre,tplcreation,ordre,classe,status) VALUES(8,'documentannexe-liendocument','sur un document interne','documentannexe-liendocument','3','documents',32);
 REPLACE INTO _PREFIXTABLE_types (id,type,titre,tplcreation,ordre,classe,status) VALUES(9,'documentannexe-lienpublication','sur une publication interne','documentannexe-lienpublication','5','documents',32);
-REPLACE INTO _PREFIXTABLE_types (id,type,titre,tplcreation,ordre,classe,status) VALUES(10,'documentannexe-lienexterne','sur un site externe','documentannexe-lien','6','documents',32);
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tplcreation,ordre,classe,status) VALUES(10,'documentannexe-lienexterne','sur un site externe','documentannexe-lienexterne','6','documents',32);
 
 # le groupe pour tous
 
