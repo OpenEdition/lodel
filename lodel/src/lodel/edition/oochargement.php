@@ -220,7 +220,7 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($rpl,"");
 
   // remove empty paragraph, and the empty tafs
-  array_push($srch,"/<p\b[^>]*\/>/","/<r2r:(\w+)>\s*<\/r2r:\\1>/");
+  array_push($srch,"/<p\b[^>]*\/>/","/<r2r:([^>]+)>\s*<\/r2r:\\1>/");
   array_push($rpl,"","");
 
 
@@ -307,7 +307,7 @@ function OO_XHTML ($convertedfile,&$context)
 
   // second part of the puces processing
   // remonte les balises r2r au dessus des ul et li
-  array_push($srch,"/((?:<(?:ul|li)\b[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/(?:ul|li)>\s*)+)/");
+  array_push($srch,"/((?:<(?:ul|li|ol)\b[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/(?:ul|li|ol)>\s*)+)/");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
   // third part of the puces processing
@@ -326,9 +326,9 @@ function OO_XHTML ($convertedfile,&$context)
 
 
 
-  // modifie les styles avec (user)
-  array_push($srch,"/(<\/?r2r:\w+)\(user\)/");
-  array_push($rpl,"\\1");
+  // modifie les styles avec (user) ou (web)
+  array_push($srch,"/(<\/?r2r:[^>]+?)\((user|web)\)/","/(<p [^>]*class=\"[^\"]+?)\((user|web)\)(\"[^>]*)>/");
+  array_push($rpl,"\\1","\\1\\3>");
 
   //
   // standardize the foot and end notes.
