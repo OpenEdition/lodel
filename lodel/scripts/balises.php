@@ -47,6 +47,7 @@ $balises=array ("-" => "-",
 		"typenumero"=>"Type de la publication"
 		);
 
+
 #
 # dans les deux tableaux ci-dessous on a la liste des balises qui apparaissent dans les documents, mais qui ne sont pas dans la base de donnee.
 #
@@ -93,8 +94,12 @@ $multiplelevel=array(
 #$division="(section\d+|divbiblio)"; # balises qui ne sont pas des paragraphes
 $division="(section\d+)"; # balises qui ne sont pas des paragraphes
 
+# balises qui peuvent etre constituees de plusieurs paragraphes, donc ou chaque paragraphe sera agrege.
+$multiparagraphe_tags="titre|surtitre|soustitre|resume|texte|citation|epigraphe|notebaspage|bibliographie|annexe|titredoc|legendedoc|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
+
+
 # tags qui admettent des listes separees par des virgules.
-$virgule_tags="(auteurs|periodes|geographies|motcles)";
+$virgule_tags="auteurs|periodes|geographies|motcles";
 
 
 
@@ -163,11 +168,11 @@ function traite_multiplelevel(&$text)
 function traite_couple(&$text)
 
 {
-  global $virgule_tags;
+  global $virgule_tags,$multiparagraphe_tags;
   return preg_replace (
 		       array(
-			     "/<\/r2r:$virgule_tags>[\s\n\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
-			     "/<\/r2r:([^>]+)>((?:<br>|\s|\n|\r)*)<r2r:\\1(\s+[^>]+)?>/i", # les autres tags    
+			     "/<\/r2r:($virgule_tags)>[\s\n\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
+			     "/<\/r2r:($multiparagraphe_tags)>((?:<br>|[\s\n\r]+)*)<r2r:\\1\b[^>]*>/i", # les autres tags    
 			     ),
 		       array(
 			     ",",
