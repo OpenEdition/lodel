@@ -41,21 +41,6 @@ $context[classe]="documents";
 require_once($home."connect.php");
 require_once($home."entitefunc.php");
 
-
-////
-//// cherche le document, et le template
-////
-//if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
-//
-//$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,tpl,type , datepubli,(datepubli<=NOW()) as textepublie FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
-//if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-//$context=array_merge($context,filtered_mysql_fetch_assoc($result));
-//if (!$context[tpl]) { 
-//  header("location: ".makeurl("document",$context[idparent]));
-//  return;
-//}
-
-
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,mysql_fetch_assoc($result));

@@ -349,15 +349,16 @@ function multilingue($lang,$text)
 }
 
 
-function makeurl ()
+function makeurl ($site="")
 {
-  global $site;
+  if (!$site) $site=$GLOBALS[site];
+
   // very bad function. Must be rewrite !
   $server=$_SERVER['SERVER_NAME'];
   if (!$server) $server=$GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'];
-  $server="http://".$server;
-  if ($GLOBALS[siteagauche]) return $server;
-  return $server."/$site";
+  $domain=preg_replace("/^[^\.]+\./s","",$server);
+  if ($GLOBALS[siteagauche]) return "http://".$site.$domain;
+  return $server."/".$site;
 }
 
 
@@ -566,7 +567,7 @@ function today() {
 
 function hideifearlier($date, $text) {
 
-  echo "date:$date<br />";
+#  echo "date:$date<br />";
   if ($date && ($date <= date("Y-m-d"))) return $text;
   return "";
 }

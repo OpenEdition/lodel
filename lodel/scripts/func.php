@@ -107,25 +107,24 @@ function rmscript($source) {
 
 
 function extract_post() {
-	// Extrait toutes les variables passées par la méthode post puis les stocke dans 
-	// le tableau $context
-	global $home;
+  // Extrait toutes les variables passées par la méthode post puis les stocke dans 
+  // le tableau $context
+  global $home;
 	
-	foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
-	  if (!$GLOBALS[context][$key]) // protege
-	    $GLOBALS[context][$key]=$val;
-	}
-	function clean_for_extract_post(&$var) {
-	  if (is_array($var)) {
-	    array_walk($var,"clean_for_extract_post");
-	  } else return rmscript(trim($val));
-	}
-#	print_r($GLOBALS[context]);
-	array_walk($GLOBALS[context],"clean_for_extract_post");
-#	echo "--------------------------------";
-#	print_r($GLOBALS[context]);flush();
-#	die("fini $context");
+  foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
+    if (!$GLOBALS[context][$key]) // protege
+      $GLOBALS[context][$key]=$val;
+  }
+  function clean_for_extract_post(&$var) {
+    if (is_array($var)) {
+      array_walk(&$var,"clean_for_extract_post");
+    } else {
+      $var=str_replace("\n","",rmscript(trim($var)));
+    }
+  }
+  array_walk(&$GLOBALS[context],"clean_for_extract_post");
 }
+
 
 function get_ordre_max ($table,$where="") 
 

@@ -154,7 +154,7 @@ function parse ($in,$out)
 
   $this->parse_main();
 
-  if ($this->ind!=$this->countarr) $this->errmsg("too many closing tags at the end of the file");
+  if ($this->ind!=$this->countarr) $this->errmsg("this file contains more closing tags than opening tags");
 
   $contents=join("",$this->arr);
 
@@ -235,13 +235,13 @@ function parse_texte(&$text)
   foreach ($results as $result) {
     $nom=addslashes(stripslashes($result[1]));
     if ($droitediteur) {       // cherche si le texte existe
-      include_once($home."connect.php");
+      require_once($home."connect.php");
       $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$nom'") or $this->errmsg (mysql_error());
       if (!mysql_num_rows($result2)) { // il faut creer le texte
 	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
       }
     }
-    $text=str_replace ($result[0],'<?php $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo $texte; ?>',$text);
+    $text=str_replace ($result[0],'<?php require_once($GLOBALS[home]."connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
   }
 }
 
@@ -511,7 +511,7 @@ function parse_loop()
       case "NAME":
 	break;
       case "WHERE" :
-	array_push($wheres,"(".trim(replace_conditions($value)).")");
+	array_push($wheres,"(".trim(replace_conditions($value,"sql")).")");
 	break;
       case "TABLE" :
 	$arr=preg_split("/,/",$value);
@@ -934,7 +934,7 @@ function parse_condition ()
 
 {
   if (!preg_match("/\bCOND\s*=\s*\"([^\"]+)\"/",$this->arr[$this->ind+1],$cond)) $this->errmsg ("IF have no COND attribut",$this->ind);
-  $cond[1]=replace_conditions($cond[1]);
+  $cond[1]=replace_conditions($cond[1],"php");
 
   $this->arr[$this->ind]="";
   $this->arr[$this->ind+1]='<?php if ('.$cond[1].') { ?>';
@@ -995,12 +995,12 @@ function parse_escape_code()
 
 } // clase Parser
 
-function replace_conditions($text)
+function replace_conditions($text,$style)
 
 {
   return preg_replace(
 	       array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
-	       array(">","<",">=","<=","==","!=","&&","||"),$text);
+	       array(">","<",">=","<=",($style=="sql" ? "=" : "=="),"!=","&&","||"),$text);
 }
 
 

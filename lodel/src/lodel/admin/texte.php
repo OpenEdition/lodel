@@ -60,7 +60,10 @@ if ($id>0 && ($delete || $restore)) {
     $result=mysql_query ("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND id!='$id'") or die (mysql_error());
     if (mysql_num_rows($result)>0) $err=$context[erreur_nom_existe]=1;
     if ($err) break;
-    
+
+    $context[texte]=preg_replace("/(\r\n\s*){2,}/","<br />",$context[texte]);#    for($i=0; $i<strlen($context[texte]); $i++) {
+#      echo ord($context[texte][$i])," ",$context[texte][$i],"<br>";
+#    }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte) VALUES ('$id','$context[nom]','$context[texte]')") or die (mysql_error());
 
@@ -72,6 +75,14 @@ if ($id>0 && ($delete || $restore)) {
   include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]textes WHERE $critere") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
+
+#    for($i=0; $i<strlen($context[texte]); $i++) {
+#      echo ord($context[texte][$i])," ",$context[texte][$i],"<br>";
+#    }
+
+
+#    $context[texte]=preg_replace("/<br \/>/","\r\n\r\n",$context[texte]);
+#    $context[texte]=preg_replace("/\n/","",$context[texte]);
 }
 
 // post-traitement

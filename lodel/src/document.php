@@ -49,7 +49,7 @@ if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 require_once($home."textfunc.php");
 $context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));
 if (!$context[tpl]) { 
-  header("location: ".makeurl("document",$context[idparent]));
+  header("location: ".makeurlwithid("document",$context[idparent]));
   return;
 }
 $base=$context[tpl];

@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_ADMIN);
+authenticate(LEVEL_VISITEUR);
 
 include ($home."calcul-page.php");
 calcul_page($context,"index");

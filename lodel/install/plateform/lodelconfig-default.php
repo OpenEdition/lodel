@@ -141,6 +141,8 @@ $installoption="";
 ############################################
 
 setlocale (LC_ALL,"FR");
+setlocale(LC_TIME, "FR");
+
 set_magic_quotes_runtime(0);
 ignore_user_abort();
 
