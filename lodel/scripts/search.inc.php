@@ -117,13 +117,11 @@ function search($context)
 		}
 		
 	
-		$token = preg_replace("/([A-Z][0-9a-zA-Z]{1,2})$/", ' \\1___ ', $token);	
+		//$token = preg_replace("/([A-Z][0-9a-zA-Z]{1,2})$/", ' \\1___ ', $token);	
 	#echo "token=$token";
-	
-		$token = strtolower($token);
 		//little hack because oe ligature is not supported in ISO-latin!!
-		$token = strtr($token,"\305\223","oe");	
-		$token = makeSortKey($token);
+		$token = strtolower(str_replace(array("\305\223","\305\222"),array("oe","OE"),$token));
+		
 		//foreach word search entities that match this word
 		$dao = &getDAO("search_engine");
 		
@@ -153,7 +151,7 @@ function search($context)
 		}
 		if( $context['qtype']!=""  || $context['qstatus']!="")
 		{
-			$join = "LEFT JOIN #_TP_entities ON #_TP_search_engine.identity = #_TP_entities.id";
+			$join = "INNER JOIN #_TP_entities ON #_TP_search_engine.identity = #_TP_entities.id";
 		}
 			 	
 		if( $context['qtype']!="" )

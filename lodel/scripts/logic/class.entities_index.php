@@ -58,82 +58,79 @@ class Entities_IndexLogic extends Logic
     */
   function addIndexAction(&$context,&$error)
   {
+    global $db;
     //no object identity specified
-   	if(!$context['identity'])
-   	  return "_back";
-   	 
-    $id = $context['identity'];
+    $id = $context['id'];
+   	if (!$id)
+   		die("ERROR: give the id ");
+   	   
    	 	
    	//if this entity is already indexed ==> clean
    	$this->deleteIndexAction($context,$error);
    	 	
-   	//get the entity class by the type
- 	$dao_temp = &getDAO("entities");
- 	$vo_temp = $dao_temp->find("id=$id");
- 	$dao_types = &getDAO("types");
- 	$vo_types = $dao_types->find("id=".$vo_temp->idtype);
- 	$class= $vo_types->class; //Here is the class !!
+   	$sql = "SELECT e.id, class FROM #_TP_entities as e";
+   	//join table type on idtype
+   	$sql .= " INNER JOIN #_TP_types ON e.idtype=#_TP_types.id";
+   	//where
+   	$sql .= " WHERE e.id='$id'";
+   	$row = $db->getRow(lq($sql)) ;
+   	   	
+   	if (!$row['id'])
+ 		die("ERROR: can't find object $id ".$dao_temp->table);
+ 	
+ 	$class= $row['class'];
  	if (!$class) 
  		die("ERROR: idtype is not valid in Entities_IndexLogic::addIndexAction");
- 	//get the fieldnames list to index
- 	$dao_groups = &getDAO("tablefieldgroups");
- 	$dao_fields = &getDAO("tablefields");
  	
- 	$vos_groups = $dao_groups->findMany("class='$class'","","id");
+ 	#echo "id=$id;class=$class";
+ 	
+ 	//get the fieldnames list to index
+ 	$dao_fields = &getDAO("tablefields");
  	$vos_fields = array();
- 	foreach( $vos_groups as $vo_group )
- 	{
- 		$tab = $dao_fields->findMany("idgroup=".$vo_group->id." AND weight > 0","weight DESC","id,weight,name");
- 		if(count($vos_fields) == 0)
- 			$vos_fields = $tab;
- 		else
- 			$vos_fields = array_merge($tab,$vos_fields);
- 	}
+ 	$vos_fields = $dao_fields->findMany("class='$class' AND weight > 0","weight DESC","id,weight,name");
  	#print_r($vos_fields);
- 	//no fields to index
- 	if(!$vos_fields)
+ 	
+ 	//no fields to index --> return
+ 	if(!$vos_fields) 
  		return ("_back");
  	
  	//foreach field to index, index the words
+ 	//first get the vo
+ 	//$dao = &getDAO($class);
+ 	//$vo = $dat->getById($id);
+ 	
+ 	$sql = "SELECT * FROM #_TP_$class WHERE identity='$id'";
+ 	$row = $db->getRow(lq($sql)) ;
+ 	#echo lq($sql);
+ 	if(!$row)
+ 		die("ERROR: can't find object $id in table ".lq("#_TP_$class"));
+ 	 	
  	foreach( $vos_fields as $vo_field)
  	{
- 		$dao = &getDAO($class);
- 		$vo = $dao->find("identity=$id",$vo_field->name);
- 		$field = $vo_field->name;
- 		//get the string of the current field
- 		$string = $vo->$field;
- 		//HTML tags cleaning
- 		$string = " ".preg_replace("/<[^>]*>/"," ",$string)." ";
-  		$string = $this->_decode_html_entities($string);
- 	# echo "stringnonHTML=$string";
- 		//non alphanum chars cleaning
+ 		$string = $row[$vo_field->name]; //get the string of the current field
+ 		//$string = " ".preg_replace("/<[^>]*>/"," ",$string)." ";
+ 		$string = preg_replace("/<[^>]*>/","",$string);//HTML tags cleaning
+ 		$string = $this->_decode_html_entities($string); //HTML Entities decode
  		//include utf8 quotes at the end
  		$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%Â«Â»\342\200\230\342\200\231\342\200\234\342\200\235";
  	#echo "regs=$regs";
- 		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );
+ 		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );//non alphanum chars cleaning
  	#echo "string=$string<br />\n";
- 		//particular case : two letter acronym or initials
- 		$string = preg_replace("/ ([A-Z][0-9a-zA-Z]{1,2}) /", ' \\1___ ', $string);
-		$string = strtolower( $string );
-		
-		//Separate string in tokens
-		$tokens = preg_split("/[\s]+/", $string );
- 		//Array of each word weight for this field
- 		$indexs = array();
+ 		$tokens = preg_split("/[\s]+/", $string );//Separate string in tokens
+ 		$indexs = array();//Array of each word weight for this field
  		while(list(, $token) = each($tokens))
  		{
- 		  //little hack because oe ligature is not supported in ISO-latin!!
- 		  $token = strtr($token,"\305\223","oe");	
- 		  $token = makeSortKey($token);
-	 	  
-	 	  if(strlen($token) > 3)
-	 	  {
-	 	    //simply count word number
+ 		  //particular case : two letter acronym or initials
+ 		  if(preg_match("/([A-Z][0-9A-Z]{1,2})/",$token) || strlen($token) > 3)
+ 		  {
+	 	     //little hack because oe ligature is not supported in ISO-latin!!
+	 	    $token = strtolower(str_replace(array("\305\223","\305\222"),array("oe","OE"),$token));
+ 		  	$token = makeSortKey($token);
 	 	    /*require_once("class.stemmer.inc.php");
 	 	    $stemmer = new Stemmer();
 	 	    $token = $stemmer->stem($token);*/
-	 	    $indexs[$token] ++;
- 	 	  }
+	 	    $indexs[$token] ++; //simply count word number
+	 	  }
  		}
  		$vos_index = array();
  		
@@ -164,13 +161,11 @@ class Entities_IndexLogic extends Logic
   */
   function deleteIndexAction(&$context,&$error)
   {
-    if(!$context["identity"])
-  	  return "_error";
-  	$id = $context["identity"];
-  	//get tue DAO for index
-  	$dao = &getDAO("search_engine");
-  	//delete all lines with identity=id and return
-  	if($dao->deleteObjects("identity=$id"))
+    $id = $context["id"];
+    if(!$id)
+      die("ERROR: give the id ");
+   	$dao = &getDAO("search_engine");
+  	if($dao->deleteObjects("identity=$id"))//delete all lines with identity=id and return
   	  return "_back";
   	else
   	  return "_error";
@@ -181,14 +176,9 @@ class Entities_IndexLogic extends Logic
    */
   function cleanIndexAction(&$context,&$error)
   {
-    //get tue DAO for index
-  	$dao = &getDAO("search_engine");
-  #print($dao);
-    //delete all index lines and return
-  	if($dao->deleteObjects("1"))
-  	  return "_back";
-    else
-  	  return "_back";	
+    $dao = &getDAO("search_engine");
+  	$dao->deleteObjects("1");    //delete all index lines and return
+  	return "_back";
   }
   
   /** Private function
@@ -197,8 +187,9 @@ class Entities_IndexLogic extends Logic
   function _decode_html_entities($text) 
   {
     $text= html_entity_decode($text,ENT_QUOTES,"ISO-8859-1"); #NOTE: UTF-8 does not work!
-$text= preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
-$text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
+    //$text= html_entity_decode($text,ENT_QUOTES,"UTF-8"); 
+	$text= preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
+	$text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
     return $text;
   }
   function _removeaccents($string){
@@ -210,9 +201,6 @@ $text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
    'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
 }
 
-}
-
-
-
+}//end of class
 
 ?>
