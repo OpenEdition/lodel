@@ -139,7 +139,7 @@ function mkxmlpublication($nom,$titre,$type,$parent)
   $context=array("nom"=>$nom,"titre"=>$titre,"type"=>$type,"parent"=>$parent);
 
   include_once("$home/publicationfunc.php");
-  $id=pub_edition($context);
+  $id=pub_edition($context,"");
   if (!$id) die ("erreur dans pub_edition");
   return $id;
 }

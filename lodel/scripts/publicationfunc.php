@@ -4,7 +4,7 @@
 // gere la creation et la modification d'une publication
 //
 
-function pub_edition (&$context) 
+function pub_edition (&$context,$critere) 
 
 {
   global $home,$admin;
@@ -28,6 +28,7 @@ function pub_edition (&$context)
     lock_write("publications");
   }
   if ($id>0) { // il faut rechercher le status et l'ordre
+    if (!$critere) die ("erreur interne");
     $result=mysql_query("SELECT ordre,meta,groupe,status FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
     if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
     list($ordre,$meta,$groupe,$status)=mysql_fetch_array($result);

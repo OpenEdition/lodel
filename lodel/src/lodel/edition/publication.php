@@ -44,7 +44,7 @@ if ($id>0 && $dir) {
 
   extract_post();
   // edition et sort si ca marche
-  if (pub_edition($context)) back();
+  if (pub_edition($context,$critere)) back();
 
 } elseif ($id>0) {
   include_once ("$home/connect.php");
