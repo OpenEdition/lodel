@@ -54,7 +54,7 @@ function supprime_publication ($id)
   return TRUE;
 }
 
-function supprime_document ($ids,$mklock=TRUE)
+function supprime_document ($ids,$mklock=TRUE,$deletedocannexe=TRUE)
 
 {
 #ifndef LODELLIGHT
@@ -69,33 +69,34 @@ function supprime_document ($ids,$mklock=TRUE)
   }
 
   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents WHERE id$where") or die(mysql_error());
-  mysql_query("DELETE FROM $GLOBALS[tableprefix]documentsannexes WHERE iddocument$where") or die (mysql_error());
+  if ($deletedocannexe) mysql_query("DELETE FROM $GLOBALS[tableprefix]documentsannexes WHERE iddocument$where") or die (mysql_error());
 
-  supprime_table($ids,"indexl");
+  supprime_table($ids,"indexl",TRUE,"type='".TYPE_MOTCLE."'");
 #ifndef LODELLIGHT
-  supprime_table($ids,"auteur");
+  supprime_table($ids,"auteur",TRUE);
   supprime_table($ids,"indexh",FALSE);
 #endif
   unlock();
 }
 
 # $deletetable doit etre FALSE pour les tables qu'il ne faut pas effacer comme les indexhs par exemple
-function supprime_table($ids,$table,$deletetable=TRUE)
+function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
 
 {
   $tables=$table."s";
 
   if (is_numeric($ids)) { # on a un seul document
-    $critere="iddocument=".$ids;
+    $critere.="iddocument=".$ids;
   } else {
-    $critere="iddocument IN (".join(",",$ids).")";
+    $critere.="iddocument IN (".join(",",$ids).")";
   }
   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_$tables WHERE $critere") or die (mysql_error());
 
   if (!$deletetable) return;
 
+  if ($deletecritere) $deletecritere.=" AND ";
   # efface tous les items qui ne sont pas dans documents_items
-  $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]$tables LEFT JOIN $GLOBALS[tableprefix]documents_$tables ON id=id$table WHERE id$table is NULL") or die (mysql_error());
+  $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]$tables LEFT JOIN $GLOBALS[tableprefix]documents_$tables ON id=id$table WHERE $deletecritere id$table is NULL") or die (mysql_error());
 
   $ids=array();
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
