@@ -50,6 +50,7 @@ function mois($m)
     case "jan": return 1;
     case "fev": return 2;
     case "fév": return 2;
+    case "fÃ©": return 2;
     case "mar": return 3;
     case "avr": return 4;
     case "mai": return 5;
@@ -60,10 +61,12 @@ function mois($m)
     case "nov": return 11;
     case "dec": return 12;
     case "déc": return 12;
+    case "dÃ©": return 12;
   }
   switch(substr($m,0,4)) { 
     case "juin": return 6;
     case "juil": return 7;
+	case "aoÃ»": return 8;
   }
   return 0;
 } 
