@@ -1,0 +1,85 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Ajout d'un document annexe</title>
+<script type="text/javascript">
+<!--
+	function confirm_suppression(id)
+	{
+		var msg="Etes-vous sûr de vouloir supprimer ce document annexe ?";
+		if(confirm(msg))window.location="docannexe.php?id="+id+"&delete=2";
+	}
+	
+	function popup(url) {
+		 var fenetre = window.open(url,"","scrollbars,width=400,height=300");
+	 }
+//-->
+</script>
+
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Ajout d'un document annexe ...</td>
+	</tr>
+</table>
+
+<div class="ligne_parent_tpl_publication">
+	 ... au document :
+	<LOOP NAME="docu" TABLE="documents" WHERE="id='[#IDPARENT]'">
+		<DO>
+			<span class="nom_publi_parente">[#TITRE]</span>
+		</DO>
+	</LOOP>
+</div>
+
+<form enctype="multipart/form-data" action="docannexe.php" method="POST">
+	<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+	<input type="hidden" name="id" value="[#ID]">
+	<input type="hidden" name="idparent" value="[#IDPARENT]">
+	<input type="hidden" name="idtype" value="[#IDTYPE]">
+
+	<table class="table_normale" cellpadding="5" cellspacing="0" border="0">
+			<!-- il y a bien un type, on affiche le formulaire -->
+
+							<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un site internet</span><br /><br /></td></tr>
+			
+			<tr>
+				<td width="200" class="texte_intitule">Titre :</td>
+				<td><input size="60" type="text" name="titre" value="[#TITRE]"></td>
+			</tr>
+			<tr>
+				<td width="200" class="texte_intitule">Commentaire :</td>
+				<td><textarea cols="45" rows="5" name="commentaire">[#COMMENTAIRE]</textarea></td>
+			</tr>
+			<!-- lien externe -->
+				<tr>
+					<td width="200"><span class="texte_intitule">URL :</span></td>
+					<td>
+						[(#ERREUR_URLINVALIDE|true)<span class="message_erreur">L'url est invalide !</span><br />] 
+						[(#ERREUR_URLINACCESSIBLE|true)<span class="message_erreur">Impossible d'acceder à ce site !</span><br />]
+						<input name="lien" type="texte" size="60" value="[#LIEN]">
+					</td>
+				</tr>
+			
+			<tr><td colspan="2" align="center">
+				<br /><br />
+				<IF COND="[#ID]">
+					<input class="form" type="submit" value="    Modifier    ">
+				<ELSE/>
+				<input class="form" type="submit" value="    Ajouter    ">
+				</IF>
+				&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='fonctionsavancees.php?id=[#IDPARENT]'">
+				<IF COND="[#ID]">
+					&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="  Supprimer  " onClick="javascript:confirm_suppression([#ID])">
+					<!--<a href="docannexe.php?id=[#ID]&delete=2&url_retour=[(#URL_RETOUR|urlencode)]">Supprimer</a>-->
+				</IF>
+				<br /><br />
+			</td></tr>
+
+</td>
+</tr>
+</table>
+</form>
+
+<MACRO NAME="CLOSE_HTML">
