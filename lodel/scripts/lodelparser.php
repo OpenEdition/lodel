@@ -72,6 +72,7 @@ function parse_loop_extra(&$tables,
       #print_r($tablesinselect);
       array_splice($tablesinselect,$ind+1,0,"$GLOBALS[tableprefix]entites");
       #print_r($tablesinselect);
+      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]$classe","titre");
 
       $where.=" AND $GLOBALS[tableprefix]$classe.identite=$GLOBALS[tableprefix]entites.id AND classe='$classe'";
     }
