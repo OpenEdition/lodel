@@ -58,6 +58,7 @@ class Entities_IndexLogic extends Logic
     */
   function addIndexAction(&$context,&$error)
   {
+    
     global $db;
     //no object identity specified
     $id = $context['id'];
@@ -67,7 +68,7 @@ class Entities_IndexLogic extends Logic
    	//if this entity is already indexed ==> clean
    	$this->deleteIndexAction($context,$error);
    	 	
-   	$sql = "SELECT e.id, class FROM #_TP_entities as e";
+   	$sql = "SELECT e.id, class, search FROM #_TP_entities as e";
    	//join table type on idtype
    	$sql .= " INNER JOIN #_TP_types ON e.idtype=#_TP_types.id";
    	//where
@@ -80,6 +81,9 @@ class Entities_IndexLogic extends Logic
  	$class= $row['class'];
  	if (!$class) 
  		die("ERROR: idtype is not valid in Entities_IndexLogic::addIndexAction");
+ 	//if the field search is not equal to 1, dont index the entity
+ 	if($row['search'] != 1)
+ 			return "_back";
  	
  	#echo "id=$id;class=$class";
  	
@@ -91,7 +95,7 @@ class Entities_IndexLogic extends Logic
  	
  	//no fields to index --> return
  	if(!$vos_fields) 
- 		return ("_ok");
+ 		return ("_back");
  	
  	//foreach field to index, index the words
  	//first get the vo
@@ -134,6 +138,7 @@ class Entities_IndexLogic extends Logic
  		$vos_index = array();
  		
  		//index ponderation and virtual object creation
+ 		//and update database with dao and vo (or manually)
  		$dao_index = &getDAO("search_engine");
  		foreach($indexs as  $key => $index)
  		{
@@ -142,14 +147,12 @@ class Entities_IndexLogic extends Logic
  		  $vo_index->tablefield = $vo_field->name;
  		  $vo_index->word = addslashes($key);
  		  $vo_index->weight = $indexs[$key] * $vo_field->weight; //ponderation with field weight
- 		  $vos_index[] = $vo_index;	
+ 		  $dao_index->save($vo_index,true);
  		}
- 		//update database with dao and vo (or manually)
  		
- 		foreach($vos_index as $vo)
- 		  $dao_index->save($vo,true); // force creation of items
  	}//end of foreach fields
- 	return "_ok";
+ 
+ 	return "_back";
  	
   }
  
@@ -164,7 +167,7 @@ class Entities_IndexLogic extends Logic
     if(!$id)
       die("ERROR: give the id ");
    	$dao = &getDAO("search_engine");
-  	if($dao->deleteObjects("identity=$id"))//delete all lines with identity=id and return
+  	if($dao->deleteObjects("identity='$id'"))//delete all lines with identity=id and return
   	  return "_back";
   	else
   	  return "_error";
@@ -186,9 +189,37 @@ class Entities_IndexLogic extends Logic
    */
   function rebuildIndexAction(&$context,&$error)
   {
-  	//index cleaning
-  	$dao = &getDAO("search_engine");
-  	$dao->deleteObjects("1");
+  	global $db;
+  	//TODO
+  	//recuperer les id des entites indexable (par rapport aux types) et non indexées
+  	// prendre un groupe de 10 et les indexées
+  	// ou bien récuperer le timout et tant que on a pas atteint 80% du timeout continuer
+  	$timeout = ini_get("max_execution_time");
+  	$prudent_timeout = $timeout*0.8;
+  	$start = time();
+  	//boucle sur toutes les entites a indexer.
+  	$sql = "SELECT e.id,t.class,t.search from #_TP_entities e,#_TP_types t";
+  	$sql .=" LEFT OUTER JOIN #_TP_search_engine se ON e.id=se.identity ";
+  	$sql .=" WHERE se.identity is null AND t.id=e.idtype AND t.search=1";
+  	$result=$db->execute(lq($sql));
+  	while (!$result->EOF) 
+  	{
+			//print_r($result->fields);
+			//index
+			$context["id"] = $result->fields['id'];
+			$this->addIndexAction($context,$error);
+			$current = time();
+			if(($current - $start) < $prudent_timeout)
+				$result->MoveNext();
+			else
+			{
+				//80% du timeout est dépassé, il faut rediriger.
+				//header
+				header("Location: index.php?do=rebuildIndex&lo=entities_index");
+			}	  		
+  	}
+   	return "_back";
+  	
   	 
   }
   
