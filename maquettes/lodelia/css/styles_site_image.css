@@ -1,0 +1,156 @@
+/*********************************************************************************************
+ *  Feuille de style contenant toutes les définitions d'images                               *                                   * 
+ *  Mai 2003                                                                                 *
+ *********************************************************************************************
+ */
+
+ /*
+  *	les styles concernant le logo Lodelia
+  */
+ 
+.partielogo1 , A.partielogo1 {
+ 		height: 111;
+		width: 561;
+		background-color: #ffffff;
+		background-image: url(../images/logo_lodeliarouge.gif);
+		border-bottom: 1px dotted #CC3333;
+		margin: 0;
+			
+}
+
+
+.petit_logo_barre {
+		height: 89;
+		width:135;
+		background-image:url(../images/logomodif3-135.jpg);
+		margin-right:auto;
+		margin-left:auto;
+		
+		
+}
+
+/***************************************************************************************/
+	
+	/*
+ 	 *	Les styles définissant les différentes images du logo de Revues.org                       
+     */
+ 
+ .logo-revuesorg1 {
+	height: 11px;
+	width: 165px;
+	background-color: #EFEFEF;
+	background-image: url(../images/left_top.gif);
+	border-bottom: 3px solid #ffffff;
+	margin: 0;
+}
+
+.logo-revuesorg3 {
+	height:50px;
+	width:165px;
+	margin:0;
+	background-color:#EFEFEF;
+}
+
+ a.logo-revuesorg  {
+	/*
+ 	 *	Logo avec Roll Over : définition du style quand le logo est inactif                       
+     */
+	display: block;
+	height:50px;
+	width:165px;
+	background-image:url(../images/logo_revues.gif);
+	margin:0;
+	background-color:#EFEFEF;
+	border-bottom: 3px solid #fff;
+	}
+
+	
+a.logo-revuesorg:hover    {
+	/*
+ 	 *	Logo avec Roll Over: définition du style quand le logo est survolé                     
+     */
+	background-color:#EFEFEF;
+	background-image:url(../images/logo_revues_on.gif);
+	margin:0;
+}
+
+
+.logo-revuesorg4 {
+	vertical-align:top;
+	height:18;
+	width:165;
+	background-color:#ffffff;
+	background-image:url(../images/left_top2.gif);
+	border-bottom:5px solid #ffffff;
+	margin:0;
+}
+
+.vide  {
+	/*
+ 	 *	Logo avec Roll Over: définition du style quand le logo est survolé                     
+     */
+	height:50;
+	width:165;
+	margin:0;
+	visibility:hidden;
+	background-color:transparent
+}
+
+/********************************************************************************************/
+
+.couleur_1
+{
+	/*  
+	 * Couleur dominante n°1
+	 */
+	color :#9C3234;
+}
+
+.couleur_2
+{
+	/*  
+	 * Couleur dominante n°2
+	 */
+	color :#9DD4B7;
+}
+
+.couleur_3
+{
+	/*  
+	 * Couleur dominante n°3
+	 */
+	color :#ffffff;
+}
+
+.filet_1
+{
+	/*  
+	 * Largeur du filet <hr> n°1
+	 */
+	width:30%;
+	text-align:center;
+}
+
+.filet_2
+{
+	/*  
+	 * Largeur du filet <hr> n°2
+	 */
+	width:60%;
+}
+
+.filet_3
+{
+	/*  
+	 * Largeur du filet <hr> n°3
+	 */
+	width:100%;
+}
+.imageindex {
+	padding: 0;
+	width: auto;
+	height: 301px;
+	background-image: url(../images/image.jpg);
+	background-repeat : no-repeat;
+	margin: 0;
+}
