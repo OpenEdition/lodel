@@ -116,18 +116,14 @@ foreach $filename (@ARGV) {
 
 # ajout de nom aux loop qui n'en ont pas
   $loopnb=1;
-  $change+=$file=~s/<LOOP\s+(NAME\s*=\s*""\s+){0,1}TABLE\s*=\s*/"<LOOP NAME=\"loop_".$filename.$loopnb++."\" TABLE="/eg;
+  ($name)=($filename=~m/(\w*)\.\w*$/);
+  $change+=$file=~s/<LOOP\s+(NAME\s*=\s*""\s+){0,1}TABLE\s*=\s*/"<LOOP NAME=\"loop_".$name.$loopnb++."\" TABLE="/eg;
 
 # changement de parent en idparent dans les WHERE
   $change+=$file=~s/<LOOP\s+([^>]*)WHERE\s*=\s*"parent\s*=\s*'(\[#ID\]|0)'"/<LOOP $1WHERE="idparent='$2'/g;
 
 # changement de statut><=>... en statut eq|ne... dans les WHERE
-  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*=/WHERE="statut eq /g;
-  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*>=/WHERE="statut ge /g;
-  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*>/WHERE="statut gt /g;
-  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*<=/WHERE="statut le /g;
-  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*<>/WHERE="statut ne /g;
-  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*</WHERE="statut lt /g;
+  $change+=$file=~s/(WHERE\s*=\s*")([^"]*)"/$1.callback($2).'"'/ge;
 
   next unless $change;
   print "$filename:",$change,"\n";
@@ -136,4 +132,15 @@ foreach $filename (@ARGV) {
   open (TXT,">$filename");
   print TXT $file;
   close (TXT);
+}
+
+sub callback {
+  $res = $_[0];
+  $res =~ s/=/ eq /g;
+  $res =~ s/>=/ ge /g;
+  $res =~ s/>/ gt /g;
+  $res =~ s/<=/ le /g;
+  $res =~ s/<>/ ne /g;
+  $res =~ s/</ lt /g;
+  return $res;
 }
