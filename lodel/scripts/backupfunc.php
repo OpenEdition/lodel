@@ -605,7 +605,7 @@ function importFromZip ($archive,$accepteddirs,$acceptedexts=array(),$sqlfile=""
       if (preg_match("/^(\.\/)*".str_replace("/","\/",join("|",$user_vars['accepteddirs'])).
 		     "\/$exts/",$p_header['filename'])) {
 	$p_header['filename']=SITEROOT.$p_header['filename'];
-	if (file_exists($p_header['filename'])) unlink($p_header['filename']);
+	if (file_exists($p_header['filename']) && is_file($p_header['filename'])) unlink($p_header['filename']);
 	return 1;
       }
       return 0; // don't extract
