@@ -86,14 +86,14 @@
 				<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex2" TABLE="search_engine" WHERE="identity=[#ID]" LIMIT="1">
+					<LOOP NAME="checkindex2" TABLE="search_engine" WHERE="identity='[#ID]'" LIMIT="1">
 					<DO>
-					<a href="index.php?do=deleteIndex&amp;identity=[#ID]">
-						<span class="texte_orange">[@EDITION.ENTITIES_INDEX_CLEANING]</span>
+					<a href="index.php?do=deleteIndex&amp;id=[#ID]">
+						<span class="texte_orange">[@EDITION.ENTITY_INDEX_CLEANING]</span>
 					</a>
 					</DO>
 					<ALTERNATIVE>
-						<em>[@EDITION.ENTITIES_INDEX_CLEANING]</em>
+						<em>[@EDITION.ENTITY_INDEX_CLEANING]</em>
 					</ALTERNATIVE>
 					</LOOP>
 					
@@ -102,15 +102,15 @@
 				<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex3" TABLE="search_engine" WHERE="identity=[#ID]" LIMIT="1">
+					<LOOP NAME="checkindex3" TABLE="search_engine" WHERE="identity='[#ID]'" LIMIT="1">
 					<DO>
-					<a href="index.php?do=addIndex&amp;identity=[#ID]">
-						<span class="texte_orange">[@EDITION.ENTITIES_INDEX_UPDATE]</span>
+					<a href="index.php?do=addIndex&amp;id=[#ID]">
+						<span class="texte_orange">[@EDITION.ENTITY_INDEX_UPDATE]</span>
 					</a>
 					</DO>
 					<ALTERNATIVE>
-					<a href="index.php?do=addIndex&amp;identity=[#ID]">
-						<span class="texte_orange">[@EDITION.ENTITIES_INDEX_ADD]</span>
+					<a href="index.php?do=addIndex&amp;id=[#ID]">
+						<span class="texte_orange">[@EDITION.ENTITY_INDEX_ADD]</span>
 					</a>
 					</ALTERNATIVE>
 					</LOOP>
