@@ -46,7 +46,6 @@ driver -->
 <!-- Bring in the XHTML Framework -->
 <!ENTITY % xhtml-framework.mod
      PUBLIC "-//W3C//ENTITIES XHTML Modular Framework 1.0//EN"
-            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod"  
 "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod" >
 %xhtml-framework.mod;
 
@@ -62,7 +61,6 @@ driver -->
 <!-- Hypertext Module (required) ................................. -->
 <!ENTITY % xhtml-hypertext.mod
      PUBLIC "-//W3C//ELEMENTS XHTML Hypertext 1.0//EN"
-            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod"  
 "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod" >
 %xhtml-hypertext.mod;
 
@@ -83,7 +81,6 @@ driver -->
 <!-- Inline Presentation ........................................ -->
 <!ENTITY % xhtml-inlpres.mod
      PUBLIC "-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN"
-            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlpres-1.mod"  
 "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlpres-1.mod" >
 %xhtml-inlpres.mod;
 
@@ -91,7 +88,6 @@ driver -->
 <!-- XHTML Images module  ........................................ -->
 <!ENTITY % xhtml-image.mod
      PUBLIC "-//W3C//ELEMENTS XHTML Images 1.0//EN"
-            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod"  
 "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod" >
 %xhtml-image.mod;
 
@@ -107,7 +103,6 @@ driver -->
 <!-- Document Structure Module (required)  ....................... -->
 <!ENTITY % xhtml-struct.mod
      PUBLIC "-//W3C//ELEMENTS XHTML Document Structure 1.0//EN"
-            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod"  
 "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod" >
 <!-- %xhtml-struct.mod; -->
 
