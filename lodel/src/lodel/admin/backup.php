@@ -32,7 +32,7 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 include ($home."func.php");
 
-if (system("tar --version >/dev/null"))) die("ERROR: tar command is not available on this server");
+if (system("tar --version >/dev/null")) die("ERROR: tar command is not available on this server");
 
 $context[importdir]=$importdir;
 

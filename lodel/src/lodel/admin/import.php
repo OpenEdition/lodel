@@ -32,7 +32,7 @@ authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 include ($home."func.php");
 #authenticate();
 
-if (system("tar --version >/dev/null"))) die("ERROR: tar command is not available on this server");
+if (system("tar --version >/dev/null")) die("ERROR: tar command is not available on this server");
 
 $context[importdir]=$importdir;
 $fileregexp='(site|revue)-\w+-\d+.tar.gz';
