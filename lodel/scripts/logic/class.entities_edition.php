@@ -147,7 +147,10 @@ class Entities_EditionLogic extends Logic {
 
 	 $idtype=$context['id'];
 
-	 if (!$context['persons'][$idtype]) return;
+	 if (!$context['persons'][$idtype]) {
+	   call_user_func("code_alter_$funcname",$localcontext);
+	   return;
+	 }
 	 //search the type
 	 //$dao=getDAO("persontypes");
 	 //$vo=$dao->find("type='".$varname."'","class,id");

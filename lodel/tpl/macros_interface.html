@@ -241,6 +241,9 @@ cp_[#NAME].writeDiv();
 	    	</LOOP>
             <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">	
 	</DO>
+	<ALTERNATIVE>
+            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0">
+	<ALTERNATIVE>
 	</LOOP>
         <!--[ widget available for adding new persons of this type ]-->
  	<LOOP NAME="edition_fields">
