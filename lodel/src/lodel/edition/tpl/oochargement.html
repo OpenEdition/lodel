@@ -106,21 +106,20 @@ function infoChargement(nomFic){
 
         </IF>	  
 	
-	<br /><br />
-	<table width="430" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-		<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionner le fichier à charger<br /><br /></td></tr>
+	
+	<table width="430" border="0" align="center" valign="top" cellspacing="4" cellpadding="4">
+		<tr><td align="center" class="sous_titre_popup">S&eacute;lectionner le fichier à charger<br /><br /></td></tr>
 		<tr><td align="center" class="texte_normal">Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.<br /><br /></td></tr>
 		<tr><td align="center"><input type="file" name="file1" size="40"></td></tr>
 		<tr>
 			<td align="center">
-				<br /><br />
+				<br />
 				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
-				<br />
 <!--[				<IF COND="[#ADMINLODEL]"> ]-->
-					<br /><br /><span class="texte_info_popup">Administrateur Lodel</span><br /><br /><br />
-					<input class="form" type="submit" name="sortiexmloo" value="Sortie XML Brute de OpenOffice (fichier content.xml du SXW)" /><br />
-					<input class="form" type="submit" name="sortieoo" value="Sortie Brute de OpenOffice après les 2 conversions" /><br />
+					<br /><br /><span class="texte_info_popup">Boutons réservés à l'administrateur Lodel</span><br /><br /><br />
+<!--					<input class="form" type="submit" name="sortiexmloo" value="Sortie XML Brute de OpenOffice (fichier content.xml du SXW)" /><br /> -->
+					<input class="form" type="submit" name="sortieoo" value="Sortie de OpenOffice + traitement" /><br />
 					<input class="form" type="submit" name="sortie" value="Sortie de chargement" />
 <!--[				</IF> ]-->
 			</td>
