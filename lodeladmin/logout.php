@@ -28,19 +28,19 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("lodelconfig.php");
-include ($home."auth.php");
-authenticate(LEVEL_VISITEUR);
-
+require($home."auth.php");
+authenticate(LEVEL_VISITOR);
 $name=addslashes($_COOKIE[$sessionname]);
 
-include_once ($home."connect.php");
+require_once ($home."connect.php");
 $time=time()-1;
-mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET expire2='$time' WHERE name='$name'") or die (mysql_error());
+usemaindb();
+$db->execute(lq("DELETE FROM #_TP_session WHERE name='".$name."'")) or dberror();
 setcookie($sessionname,"",$time,$urlroot);
 
-include_once($home."func.php");
+require_once($home."func.php");
 
 header ("Location: http://".$_SERVER['SERVER_NAME'].$urlroot);
-#back();
+exit();
 
 ?>
