@@ -3,14 +3,14 @@
 
 
 # type de publication
-REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('1','serie_lineaire','série linéaire','sommaire-lineaire','edition-lineaire','publication','1','publications');
-REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('2','serie_hierarchique','série hiérarchique','sommaire-hierarchique','edition-hierarchique','publication','2','publications');
-REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('3','numero','numéro','sommaire-numero','edition-numero','publication','3','publications');
-REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('4','theme','thème','sommaire-hierarchique','edition-theme','publication','4','publications');
-REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('5','regroupement','regroupement','','','publication','5','publications');
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('1','serie_lineaire','série linéaire','sommaire-lineaire','edition-lineaire','creation-serie','1','publications');
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('2','serie_hierarchique','série hiérarchique','sommaire-hierarchique','edition-hierarchique','creation-serie','2','publications');
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('3','numero','numéro','sommaire-numero','edition-numero','creation-numero','3','publications');
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('4','rubrique','rubrique','sommaire-hierarchique','edition-rubrique','creation-rubrique','4','publications');
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('5','regroupement','regroupement','','','creation-regroupement','5','publications');
+REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tpledition,tplcreation,ordre,classe) VALUES('12','regroupement-documentsannexes','regroupement de documents annexes','','','creation-regroupement','6','publications');
 
 # type de document
-
 REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tplcreation,ordre,classe) VALUES(6,'article','article','article','document','1','documents');
 REPLACE INTO _PREFIXTABLE_types (id,type,titre,tpl,tplcreation,ordre,classe,statut) VALUES(11,'objetdelarecension','objet de la recension','','-','2','documents',32);
 
