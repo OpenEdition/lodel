@@ -42,31 +42,30 @@ $context['idtask']=$idtask=intval($idtask);
 $context['idtype']=intval($idtype);
 $context['lodeltags']=intval($lodeltags);
 
-if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name']!="none") {
-    $file1=$_FILES['file1']['tmp_name'];
-    if (!is_uploaded_file($file1)) die(utf8_encode("Le fichier n'est pas un fichier chargé"));
- } else {
+if ($_POST['fileorigin']=="upload" && $_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name']!="none") {
+  $file1=$_FILES['file1']['tmp_name'];
+  if (!is_uploaded_file($file1)) die(utf8_encode("Le fichier n'est pas un fichier chargé"));
+  $sourceoriginale=$_FILES['file1']['name'];
+  $tmpdir=tmpdir(); // use here and later.
+  $source=$tmpdir."/".basename($file1)."-source";
+  move_uploaded_file($file1,$source); // move first because some provider does not allow operation in the upload dir
+} elseif ($_POST['fileorigin']=="server" && $_POST['localfile']) {
+  $sourceoriginale=basename($_POST['localfile']);
+  $file1=SITEROOT."CACHE/upload/".$sourceoriginale;
+  $tmpdir=tmpdir(); // use here and later.
+  $source=$tmpdir."/".basename($file1)."-source";
+  copy($file1,$source);
+} else {
   $file1="";
- }
-
-//elseif ($_POST['localfile']) {
-//   $file1=$_POST['localfile'];
-//   if (!preg_match("/^upload\/[^\/]+$/",$file1)) die("ERROR: the file is not valid");
-//   $file1="CACHE/".$file1;
-//} else {
-//  $file1="";
-//}
+  $sourceoriginale="";
+  $source="";
+}
 
 if ($file1) {
   do {
     // verifie que la variable file1 n'a pas ete hackee
     $t=time();
-    $tmpdir=tmpdir(); // use here and later.
-    $source=$tmpdir."/".basename($file1)."-source";
-    move_uploaded_file($file1,$source); // move first because some provider does not allow operation in the upload dir
     @chmod($source,0666 & octdec($GLOBALS['filemask'])); 
-
-    $sourceoriginale=$_FILES['file1']['name'];
 
     require_once($home."servoofunc.php");
 
@@ -77,7 +76,7 @@ if ($file1) {
     }
 
     // get the extension...it's indicative only !
-    preg_match("/\.(\w+)$/",$_FILES['file1']['name'],$result);
+    preg_match("/\.(\w+)$/",$sourceoriginale,$result);
     $ext=$result[1];
 
     $options=array(
