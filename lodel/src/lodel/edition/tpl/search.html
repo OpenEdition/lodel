@@ -45,8 +45,10 @@
 		<img src="/share-0.8/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43" />
 		<div style="padding-top:10px;">
 			<span class="texte_edition_des_series">
-	<IF COND="![#QUERY]">
-	@Nothing to search</span></a>
+			<IF COND="![#QUERY]">
+			[@EMPTY_QUERY]
+			</span>
+			</a>
 		</div>
 	</div>
 	<ELSE/>
@@ -66,7 +68,7 @@
 		
 		<span class="type_document">
 		(in
-		<a href="index.php">@base</a>
+		<a href="index.php">[@BASE]</a>
 		<LOOP NAME="parentsentities">
 		<DO>
 			:: <a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
@@ -108,7 +110,7 @@
 	</div>
 	</div>]-->
 		<p style="margin-left : 25px ; margin-top : 50px;">
-		@MESSAGE_NO_RESULTS
+		[@MESSAGE_NO_RESULTS]
 		(Exemple : Aucun document ne correspond aux termes de recherche spécifiés <strong>[#QUERY|stripslashes]</strong>)
 		</p>
 	</ALTERNATIVE>

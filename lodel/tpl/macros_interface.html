@@ -821,29 +821,29 @@ function modifymember(members,textfield){
 <!--[ Added by Jean Lamy - 2005-02-02 ]-->
 <!--[ Search engine test]-->
 <DEFMACRO NAME="YOUR_SEARCH_BAR">
-@your_search&nbsp;<strong>[#QUERY|stripslashes]</strong>&nbsp; ([#NBRESULTS] @results)</span></a>
+[@YOUR_QUERY]&nbsp;<strong>[#QUERY|stripslashes]</strong>&nbsp; ([#NBRESULTS] [@RESULTS])</span></a>
 <div style="text-align : right ; margin-right : 50px">
 <IF COND="[#Q_TYPE]">
 	<LOOP NAME="print_title_type" TABLE="types" WHERE="id=[#Q_TYPE]">
-	@in <strong>[#TITLE]</strong>
+	[@IN] <strong>[#TITLE]</strong>
 	</LOOP>
 </IF>
 <IF COND="[#Q_FIELD]">
-	@in_field <strong>[#Q_FIELD]</strong>
+	[@IN_FIELD] <strong>[#Q_FIELD]</strong>
 </IF>
 <IF COND="[#Q_STATUS]">
 (only 
 	<IF COND="[#Q_STATUS] EQ -16">
-	@draft
+	[@DRAFT]
 	</IF>
 	<IF COND="[#Q_STATUS] EQ -1">
-	@ready_to_be_published
+	[@READY_TO_BE_PUBLISHED]
 	</IF>
 	<IF COND="[#Q_STATUS] EQ 1">
-	@published
+	[@PUBLISHED]
 	</IF>
 	<IF COND="[#Q_STATUS] EQ 16">
-	@protected
+	[@PROTECTED]
 	</IF>
 )
 </IF> 
