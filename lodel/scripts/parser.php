@@ -26,6 +26,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
 function parse($in,$out)
 
 {
@@ -457,7 +458,7 @@ function parse_loop()
 	$arr=preg_split("/,/",$value);
 	if ($arr) {
 	  foreach ($arr as $value) {
-	    array_push($tables,$GLOBALS[tp].trim($value));
+	    array_push($tables,$GLOBALS[tableprefix].trim($value));
 	  }
 	}
 	break;
