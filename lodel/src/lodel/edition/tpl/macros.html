@@ -805,24 +805,34 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_NUMEROS_RUBRIQUES">
-	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent=[#ID]" WHERE="tplcreation ne 'creation-regroupement'" ORDER="ordre"> 
-		<IF COND="[#COUNT] % 2">
-			<IF COND="[#TPLCREATION] eq 'creation-numero'">
-				<div class="ligne_numero1">
+	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent=[#ID]" ORDER="ordre">
+		<DO>
+			<IF COND="[#COUNT] % 2">
+				<IF COND="[#TPLCREATION] eq 'creation-numero'">
+					<div class="ligne_numero1">
+				<ELSE/>
+					<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique1"></IF>
+				</IF>
 			<ELSE/>
-				<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique1"></IF>
+				<IF COND="[#TPLCREATION] eq 'creation-numero'">
+					<div class="ligne_numero2">
+				<ELSE/>
+					<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique2"></IF>
+				</IF>
 			</IF>
-		<ELSE/>
-			<IF COND="[#TPLCREATION] eq 'creation-numero'">
-				<div class="ligne_numero2">
-			<ELSE/>
-				<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique2"></IF>
+			<IF COND="[#TPLCREATION] ne 'creation-regroupement'">
+				<MACRO NAME="AFFICHER_ICONE_STATUT">
+				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+				<a href="index.php?id=[#ID]">
+					<span class="nom_serie">[#NOM]</span>&nbsp;
+					<LOOP NAME="titre_numero_rubrique" TABLE="publications" WHERE="identite=[#ID]">
+						<span class="titre_serie">[#TITRE]</span><br />
+					</LOOP>
+					<span class="type_serie">([#TYPE])</span>
+				</a>
+				</div>
 			</IF>
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
+		</DO>
 		<ALTERNATIVE>
 			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
 		</ALTERNATIVE>
@@ -834,8 +844,8 @@
 		<DOFIRST>
 			<div class="ligne_regroupement1">
 				<MACRO NAME="AFFICHER_ICONE_STATUT">
-				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-				<MACRO NAME="NOM_TITRE_TYPE">
+				<MACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
+				<MACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
 			</div>
 			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
 			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
@@ -843,8 +853,8 @@
 		<DO>
 			<div class="ligne_regroupement1" style="margin-top:20px">
 				<MACRO NAME="AFFICHER_ICONE_STATUT">
-				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-				<MACRO NAME="NOM_TITRE_TYPE">
+				<MACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
+				<MACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
 			</div>
 			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
 			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
@@ -885,11 +895,26 @@
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		<IF COND="[#TYPE] EQ 'regroupement' or [#TYPE] EQ 'regroupement-documentsannexes'">
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<ELSE/>
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]">Voir</a>&nbsp;
+		<IF COND="[#EDITEUR]">
+		|&nbsp;<a href="publication.php?id=[#ID]">Métas</a>&nbsp;
+		<ELSE/>
+		|&nbsp;<span class="inactif">Métas</span>&nbsp;
 		</IF>
+		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
+		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
+		<IF COND="[#EDITEUR] AND [#STATUT] lt 32">
+		|&nbsp;<a href="supprime.php?publication=[#ID]">Détruire</a>&nbsp;|
+		<ELSE/>
+		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
+	<div class="action">
+		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#EDITEUR]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Métas</a>&nbsp;
 		<ELSE/>
@@ -1068,17 +1093,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE">
-	<IF COND="[#TYPE]!='regroupement'">
-		<a href="index.php?id=[#ID]">
-			<span class="nom_serie">[#NOM]</span>&nbsp;
-			<span class="titre_serie">[#TITRE]</span><br />
-			<span class="type_serie">([#TYPE])</span>
-		</a>
-	<ELSE/>
+	<a href="index.php?id=[#ID]">
 		<span class="nom_serie">[#NOM]</span>&nbsp;
 		<span class="titre_serie">[#TITRE]</span><br />
 		<span class="type_serie">([#TYPE])</span>
-	</IF>
+	</a>
+</DEFMACRO>
+
+<DEFMACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
+	<span class="nom_serie">[#NOM]</span>&nbsp;
+	<span class="titre_serie">[#TITRE]</span><br />
+	<span class="type_serie">([#TYPE])</span>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE_PARENT">
