@@ -967,9 +967,16 @@
 <!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
 <!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent=[#ID] AND type LIKE 'documentannexe-%'" ORDER="ordre">
+	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
-			<ul class="puce">
+	<div class="titre3"> 
+		Documents annexes
+	</div>
+	<div class="texte" >
+	Il y a [#NBRESULTATS] document[(#NBRESULTATS|pluriel)] annexé[(#NBRESULTATS|pluriel)] à cet article.
+	<br />
+	<br />
+	<ul class="puce">
 		</BEFORE>
 		<DO>
 			<li>

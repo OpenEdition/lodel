@@ -59,6 +59,7 @@ REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,tr
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,status) VALUES (16,'historique',2,'historique','historique','text','','','',10,32);
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,status) VALUES (17,'pagination',2,'pagination','pagination','text','','','',11,32);
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,status) VALUES (18,'lien',2,'lien','lien','text','','','',12,32);
+REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,status) VALUES (19,'commentaire',2,'commentaire','commentaire','text','','','',13,32);
 
 # groupe gestion
 

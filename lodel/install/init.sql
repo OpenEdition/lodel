@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 	langdef		CHAR(2) NOT NULL,
 	lang		VARCHAR(64) NOT NULL,
 	options		TEXT NOT NULL,
-	meta		TEXT,
+#	meta		TEXT,
 
 	status		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,

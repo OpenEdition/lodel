@@ -23,7 +23,10 @@
 
 	<form enctype="multipart/form-data" action="metaimage.php" method="POST">
 		<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
-		<input type="hidden" name="[#IDTYPE]" value="[#ID]">
+		<input type="hidden" name="iddocument" value="[#IDDOCUMENT]">
+		<input type="hidden" name="idpublication" value="[#IDPUBLICATION]">
+		<input type="hidden" name="idsite" value="[#IDSITE]">
+		<input type="hidden" name="champ" value="[#CHAMP]">
 		<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 	
 		<br /><br />
@@ -37,7 +40,7 @@
 				</tr>
 			</IF>
 			<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionnez le fichier image à charger<br /><br /><br /></td></tr>
-			<tr><td align="center"><input name="imgfile" type="file" size="30"></td></tr>
+			<tr><td align="center"><input name="imagefile" type="file" size="30"></td></tr>
 
 			<tr><td align="center">
 				<br /><br />

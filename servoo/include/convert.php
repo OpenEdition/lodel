@@ -99,7 +99,6 @@ function HTMLLodel ($uploadedfile,$msg=TRUE)
   $uploadedfiledirname=dirname($uploadedfile);
   $files=array($uploadedfile);
   foreach ($results[1] as $imgfile) array_push($files,$uploadedfiledirname."/".$imgfile);
-
   return $files;
 }
 

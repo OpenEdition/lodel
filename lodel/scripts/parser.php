@@ -483,7 +483,7 @@ function parse_loop()
 }
 
 
-function decode_loop_content ($name,$tables=array(),$optimise=TRUE)
+function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
 
 {
   global $home;
@@ -650,7 +650,7 @@ function make_loop_code ($name,$tables,
 '.$premysqlquery.' $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
- $nbrows=mysql_num_rows($result);
+ $context[nbresultats]=mysql_num_rows($result);
  $count=0;
  if ($row=mysql_fetch_assoc($result)) {
 ?>'.$contents[BEFORE].'<?php
@@ -664,7 +664,7 @@ function make_loop_code ($name,$tables,
   }
   // gere le cas ou il y a un dernier
   if ($contents[DOLAST]) {
-    $this->fct_txt.=' if ($count==$nbrows) { '.$contents[PRE_DOLAST].'?>'.$contents[DOLAST].'<?php continue; }';
+    $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents[PRE_DOLAST].'?>'.$contents[DOLAST].'<?php continue; }';
   }    
     $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row=mysql_fetch_assoc($result));
 ?>'.$contents[AFTER].'<?php  } ';

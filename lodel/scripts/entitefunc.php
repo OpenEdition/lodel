@@ -81,7 +81,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
     if ($condition=="+" && !trim($entite[$nom])) $err=$erreur[$nom]="+";
     switch ($type) {
     case "date" : 
-      if ($entite[$nom]) {
+      if (isset($entite[$nom])) {
 	$entite[$nom]=mysqldate($entite[$nom]);
 	if (!$entite[$nom]) $err=$erreur[$nom]="date";
       }
@@ -95,7 +95,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
 			!is_numeric($entite[$nom])) $err=$erreur[$nom]="numeric";
       break;
     case "url" : if (isset($entite[$nom])) {
-      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
+#      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
+      $validchar='-0-9A-Z_a-z';
       if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $err=$erreur[$nom]="url";
     }
       break;

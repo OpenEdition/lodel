@@ -95,7 +95,6 @@ if ($edit) { // modifie ou ajoute
     } else {
       die ("erreur type incorrecte");
     }
-
     if (!$lien) { $context[erreur_lieninexistant]=$err=1; }
     // fin de chargement
 
@@ -103,25 +102,12 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     require_once($home."entitefunc.php");
-    if ($id>0) { // il faut rechercher le status, l'ordre, le groupe
-      list($ordre,$groupe,$status,$iduser1)=get_variables_perennes($context,$critere);
-    } else { 
-      $groupe=get_groupe($critere,$idparent);
-      // cherche l'ordre
-      $ordre=get_ordre_max("entites");
-      $status=-1; // non publie par defaut
-      $iduser1=$GLOBALS[superadmin] ? 0 : $iduser;
-    }
+    $context[entite][titre]=$context[titre];
+    $context[entite][commentaire]=$context[commentaire];
+    $context[entite][lien]=$lien;
+    $context[idparent]=$idparent;
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe,iduser) VALUES ('$id','$idparent','$idtype','$context[titre]','$ordre','$status','$groupe','$iduser1')") or die (mysql_error());
-
-    if (!$id) $id=mysql_insert_id();
-    mysql_query ("REPLACE INTO $GLOBALS[tp]documents (identite,titre,commentaire,lien) VALUES ('$id','$context[titre]','$context[commentaire]','$lien')") or die (mysql_error());
-
-    require_once($home."managedb.php");
-    creeparente($id,$context[idparent],FALSE);
-
-    myquote($context);
+    enregistre_entite(&$context,$id,"documents","",TRUE);
 
     back();
 

@@ -1,5 +1,9 @@
 <?
 
+function isvalidfield($nom)
+
+{ return preg_match("/^[a-zA-Z0-9]+$/",$nom); }
+
 $GLOBALS[typechamps]=array("tinytext"=>"Texte court",
 			   "text"=>"Texte",
 			   "image"=>"Image",

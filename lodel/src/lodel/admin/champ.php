@@ -49,7 +49,7 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
-    if (!$context[nom] || preg_match("/[^a-z0-9]/i",$context[nom])) $err=$context[erreur_nom]=1;
+    if (!$context[nom] || isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
     if (!$context[type]) $err=$context[erreur_type]=1;
     if ($err) break;
     include_once ($home."connect.php");

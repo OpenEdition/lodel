@@ -130,52 +130,52 @@
 					</IF>
 				
 					<!-- Affichage du résumé en français   -->
-					<IF COND="[#RESUME:FR]">
+					<IF COND="[#RESUME]">
 						<div class="titre3">
 							Résumé
 						</div>
 						<div class="resume" > 
-							[#RESUME:FR]
+							[#RESUME]
 						</div>		
 					</IF>
 					
 					<!-- Résumé en anglais   -->
-					<IF COND="[#RESUME:EN]">
+					<IF COND="[#ABSTRACT]">
 						<div class="titre3"> 
 							Abstract
 						</div>
 						<div class="resume" >
-							[#RESUME:EN]
+							[#ABSTRACT]
 						</div>
 					</IF>
 				
 					<!-- Résumé en espagnol   -->
-					<IF COND="[#RESUME:ES]">
+					<IF COND="[#EXTRACTO]">
 						<div class="titre3"> 
 							Extracto
 						</div>
 						<div class="resume" >
-							[#RESUME:ES]
+							[#EXTRACTO]
 						</div>
 					</IF>
 				
 					<!-- Résumé en allemand   -->
-					<IF COND="[#RESUME:DE]">
+					<IF COND="[#ZUSAMMENFASSUNG]">
 						<div class="titre3"> 
 							Zusammenfassung
 						</div>
 						<div class="resume" >
-							[#RESUME:DE]
+							[#ZUSAMMENFASSUNG]
 						</div>
 					</IF>
 				
 					<!-- Résumé en italien   -->
-					<IF COND="[#RESUME:IT]">
+					<IF COND="[#RIASSUNTO]">
 						<div class="titre3"> 
 							Riassunto
 						</div>
 						<div class="resume" >
-							[#RESUME:IT]
+							[#RIASSUNTO]
 						</div>
 					</IF>
 	
@@ -226,20 +226,7 @@
 						</IF>
 						
 						<!-- Documents annexes. S'il y en a au moins un --->
-						<IF COND="[#DOCUMENTSANNEXES]">
-							<div class="titre3"> 
-								Documents annexes
-							</div>
-							<div class="texte" >
-								Il y a 
-								[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
-								annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
-								<br />
-								<br />
 								<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-								<br />
-							</div>
-						</IF>
 				
 						<!-- Notes de bas de page. Si elles existent --->
 						<IF COND="[#NOTEBASPAGE]">

@@ -1,0 +1,67 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Champ de la base de données</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un champ de la base de données</td>
+	</tr>
+</table>
+
+<form method="post" action="champ.php" />
+	<input type="hidden" name="edit" value="1" />
+	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="classe" value="[#CLASSE]" />
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_intitule">Nom du champ<br /> 				<span class="texte_info">(identifiant unique)</span>:</td>
+			<td><input size="40" type="text" name="nom" value="[#NOM]" /></td>
+		</tr>
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractere accepete: lettres et chiffres uniquement</td></tr>]
+		[(#ERREUR_NOM_EXISTE|true)<tr><td colspan="2" class="message_erreur">Ce nom existe deja !</td></tr>]
+		<tr>
+			<td class="texte_intitule">Nom en clair du champ :</td>
+			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
+		</tr>
+		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+		<tr>
+			<td class="texte_intitule">Groupe du champ <br />
+             <span class="texte_info">(pour le XML et interface)</span>:</td>
+			<td><select name="idgroupe"><?php make_select_groupesdechamps() ?></select></td>
+		</tr>
+		<tr>
+			<td class="texte_intitule">Style :</td>
+			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
+		</tr>
+		<tr>
+			<td class="texte_intitule">Type:</td>
+			<td><select name="type"><?php make_select_types(); ?></select><IF COND="[#ERREUR_CONFIRMATION]"><font color="red">Modifier le type provoque en g&eacute;n&eacute;neral des pertes de donn&eacute;es, veuillez confirmer</font><input class="form" type="submit" name="confirmation" value="   Confirmer    " /></IF></td>
+		</tr>
+		<tr>
+			<td class="texte_intitule">Traitement:</td>
+			<td><select name="traitement"><?php make_select_traitements(); ?></select></td>
+		</tr>
+		<tr>
+			<td class="texte_intitule">Condition:</td>
+			<td><select name="condition"><?php make_select_conditions(); ?></select></td>
+		</tr>
+		<tr>
+			<td class="texte_intitule">Edition:</td>
+			<td><select name="edition"><?php make_select_edition(); ?></select></td>
+		</tr>
+
+
+	</table>
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]">
+			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='champ.php?delete=1&id=[#ID]'" />
+		</IF>
+	</div>
+
+</form>
+<MACRO NAME="CLOSE_HTML">

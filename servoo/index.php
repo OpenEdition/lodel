@@ -109,12 +109,14 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     // command RTN ----------------
     elseif ($cmd[0]=="RTN") {
     $type=$cmd[1];
-    $t=time();
+#    $t=time();
     if ($type=="convertedfile") {
-      #echo "fichier $convertedfiles[0]\n";
+#      error_log("fichier $convertedfiles[0]\n",3,"/tmp/log");
       echo "content-length: ".filesize($convertedfiles[0])."\n"; # envoie la longueur
+#      error_log("filesize".filesize($convertedfiles[0])."\n",3,"/tmp/log");
       readfile($convertedfiles[0]);
-      error_log("RTN ".(time()-$t)." ".date("l dS of F Y h:i:s A")."\n",3,"/tmp/error_log");
+      
+#      error_log("RTN ".(time()-$t)." ".date("l dS of F Y h:i:s A")."\n",3,"/tmp/log");
       return;
     } elseif ($type=="MSG") {
       $msg=1;
