@@ -280,7 +280,9 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
                 $tmpres[1]     = preg_replace('((,\n[\s]*CONSTRAINT[^\n,]+)+)', '', $tmpres[1]);
             }
             $schema_create .= $tmpres[1];
-        }
+        } else {
+	  die(mysql_error());
+	}
 
         $schema_create .= $auto_increment;
 

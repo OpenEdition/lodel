@@ -21,63 +21,71 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>[@LODELADMIN.TITLE_EDITION_WEBSITE]</TITLE>
+<title>[@ADMIN.TITLE_USER_EDITION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
-<tr><td><div align="center">
-<br /><br /><b>[@LODELADMIN.TITLE_EDITION_WEBSITE]</b></div></td></tr>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@LODELADMIN.TITLE_EDITION_WEBSITE]</td>
+	</tr>
 </table>
 
-<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
 
 <form method="POST" action="site.php">
 <input type="hidden" name="edit" value="1">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="url_retour" value="[#URL_RETOUR]">
-<tr><td><b>[@LODELADMIN.TITLE_WEBSITE] :</b></td>
-<td><input size="30" type="text" name="title" value="[#TITLE]"></td>
-	<IF COND="[#ERROR_TITLE]">
-		<td CLASS="error"><font color="Red">[@LODELADMIN.ERROR_NAME] !</font></td>
-	</IF>
-</tr>
-<IF COND="[#ID]">
-<tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td><td>[#DIR]</td></tr>
-<tr><td><b><IF COND="[#PATH]=='/'">[@LODELADMIN.LODELROOT_WEBSITE]<ELSE/>[@LODELADMIN.WEBSITE_IN_DIRECTORY] [#PATH]</IF></b></td>
+<fieldset>
 
+<label for="title">[@LODELADMIN.TITLE_WEBSITE] :</label> <br class="nobr">
+<input size="30" type="text" name="title" value="[#TITLE]"></br>
+<IF COND="[#ERROR_TITLE]">
+	<font color="Red">[@LODELADMIN.ERROR_NAME] !</font><br />
+</IF>
+
+
+<label for="name">[@LODELADMIN.NAME_WEBSITE]<br/>([@LODELADMIN.HOWTO_NAME_WEBSITE])</label><br class="nobr" />
+<IF COND="[#ID]">[#NAME]<br/>
 <ELSE/>
-<tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td>
-<td>
-<input size="30" type="text" name="name" value="[#NAME]"></td>
-	<IF COND="[#ERROR_NAME]">
-		<td CLASS="error"><font color="Red">[@LODELADMIN.ERROR_NAME_DIRECTORY]</font></td>
-	</IF>
-</tr>
+<input size="30" type="text" name="name" value="[#NAME]"><br/>
+<IF COND="[#ERROR_NAME]">
+<font color="Red">[@LODELADMIN.ERROR_NAME_DIRECTORY]</font><br/>
+</IF>
+</IF>
+
+
+<IF COND="[#ID]">
+<label for="path">[@LODELADMIN.WEBSITE_IN_DIRECTORY]</label><br class="nobr" />
+[#PATH]<br/>
+<ELSE/>
 <LOOP NAME="siteatroot" TABLE="sites" WHERE="path='/' AND status gt -64">
 <ALTERNATIVE>
-<tr><td><b>[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</b></td><td>
-<IF COND="[#NAME] || [#TITLE]"> <!--[ on est passe par la, c'est bon, il y a quelques choses dans ATROOT]-->
+<label for="path">[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</label><br class="nobr" />
+<IF COND="[#NAME] || [#TITLE]">
 <input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] >
 <ELSE/> <!--[ valeur par defaut ]-->
 <input size="30" type="checkbox" name="atroot" checked >
 </IF>
-</td></tr>
+<br/>
 </ALTERNATIVE>
 </LOOP>
 </IF>
 
 
-</tr>
-<tr><td><b>[@LODELADMIN.URL_WEBSITE] :</b><br />Ex : http://www.example.com/monsite</td>
-<td><input size="30" type="text" name="url" value="[#URL]"></td>
-</tr>
-<tr><td><b>[@LODELADMIN.SUBTITLE_WEBSITE] :</b></td>
-<td><input size="30" type="text" name="subtitle" value="[#SUBTITLE]"></td>
-</td></tr>
-</table><br/>
+<label for="url">[@LODELADMIN.URL_WEBSITE] :</label><br class="nobr" />
+<input size="30" type="text" name="url" value="[#URL]"><br/>
+
+
+<label for="subtitle">[@LODELADMIN.SUBTITLE_WEBSITE] :</label><br class="nobr" />
+<input size="30" type="text" name="subtitle" value="[#SUBTITLE]"><br/>
+
+
 
 <IF COND="[#ID]">
 <input class="form" type="submit" value="[@COMMON.MODIFY]"> <input class="form" type="submit" name="reinstall" value="[@LODELADMIN.REINSTALL]">
@@ -86,6 +94,8 @@
 </IF>
 </form>
 
-[<a href="site.php?delete=1&id=(#ID)">[@COMMON.DELETE]</a>]
-</div>
+<IF COND="[#ID]">
+<input class="form" type="submit" value="[@COMMON.DELETE]" onClick="window.location='site.php?delete=1&id=[#ID]';">
+</IF>
+
 <MACRO NAME="CLOSE_HTML">

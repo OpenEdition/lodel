@@ -383,7 +383,7 @@ class XMLDB {
 	  $this->state="inrecord";
 	  $this->_newrecord($name);
 	} else {
-	  die("ERROR: Invalid XML. Expecting &lt;$tag&gt; but got &lt;$name&gt;");
+ 	  die("ERROR: Invalid XML. Expecting &lt;$tag&gt; but got &lt;$name&gt;");
 	}
       } else {
 	if ($name==$this->tables[$currenttable]['rowtag']) {
@@ -412,7 +412,9 @@ class XMLDB {
 
 
 
-function endElement($parser, $name) {
+function endElement($parser, $name) 
+
+{
 
   #echo "endElement $name ".$this->state."<br/>";
   $currenttable=$this->tablestack[0];
@@ -455,19 +457,24 @@ function endElement($parser, $name) {
     if ($this->tables[$currenttable]['norowelement']) {
       if ($name==$currenttable) {
 	$this->_endtable();
-	$this->state="table";
+	#####$this->state="table";
+	$this->state="row"; // stay in the row state
       } else {
 	die("EROR: XML Invalid. Expecting &lt;/".$currenttable.".&gt; element. Found &lt;/$name&gt;");
       }
     } else {
       if ($name==$this->tables[$currenttable]['rowtag']) {
 	// nothing to do
+      } elseif ($name==$currenttable) {
+	// closing current table
+	$this->_endtable();
+	$this->state="table";
       } else {
-	die("EROR: XML Invalid. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; element. Found &lt;/$name&gt;");
+	die("EEEROR: XML Invalid. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; element. Found &lt;/$name&gt;");
       }
     }
     break;
-  case "table":
+  case "table":    
     if ($name==$currenttable) {
       $this->_endtable();
       $this->state="table";

@@ -288,8 +288,8 @@ cp_[#NAME].writeDiv();
 
 <DEFMACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
  <IF COND="[#LODELUSER.EDITOR] and (([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL])">
- 	<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
- 	|&nbsp;<a href="translationsimport.php?lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
+ 	<a href="index.php?do=export&lo=translations&lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
+ 	|&nbsp;<a href="index.php?do=import&lo=translations&lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
 <ELSE/>
  	<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;
  	|&nbsp;<span class="inactif">[@ADMIN.IMPORT]</span>&nbsp;|&nbsp;

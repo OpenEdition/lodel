@@ -48,7 +48,9 @@ if ($backup) {
   $outfile="site-$site.sql";
   $uselodelprefix=true;
   $tmpdir=tmpdir();
-  mysql_dump($currentdb,$GLOBALS['lodelsitetables'],$tmpdir."/".$outfile);
+
+  dump_site($site,$tmpdir."/".$outfile);
+
   # verifie que le fichier n'est pas vide
   if (filesize($tmpdir."/".$outfile)<=0) die ("ERROR: mysql_dump failed");
 
@@ -113,7 +115,7 @@ if ($backup) {
 #  unlock();
 #  exit;
 
-  unlock();
+#  unlock();
   if (operation($operation,$archivetmp,$archivefilename,$context)) return;
 
 #  $context[archive]=$archive;
@@ -130,8 +132,9 @@ if ($backup) {
 }
 
 
-require ($home."calcul-page.php");
-calcul_page($context,"backup");
+require ($home."view.php");
+$view=&getView();
+$view->render($context,"backup");
 
 
 ?>

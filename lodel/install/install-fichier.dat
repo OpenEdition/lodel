@@ -95,8 +95,6 @@ ln css
 ln tpl/macros.html
 ln tpl/macros2.html
 
-ln interface.js
-
 # chaine d'importation
 ln abandon.php
 ln oochargement.php
@@ -146,9 +144,7 @@ ln tpl/creation-regroupement.html
 ln inverseordre.php
 
 # suppression et fonctions avancees des documents et publications
-ln supprime.php
-ln tpl/supprime.html
-ln tpl/supprime_erreur.html
+ln tpl/delete_confirm.html
 
 ln tpl/edit_entities_advanced.html
 ln tpl/edit_entities_edition.html
@@ -198,7 +194,6 @@ ln tpl/optiongroups.html
 ln tpl/edit_options.html
 ln tpl/edit_optiongroups.html
 ln tpl/edit_useroptiongroups.html
-ln colorpicker.js
 
 ln stats.php
 ln tpl/edit_texts.html

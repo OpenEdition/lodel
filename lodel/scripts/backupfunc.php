@@ -39,8 +39,6 @@ $GLOBALS['lodelsitetables']=array("#_TP_objects",
 				  "#_TP_classes",
 				  "#_TP_entities",
 				  "#_TP_relations",
-				  "#_TP_publications",
-				  "#_TP_documents",
 				  "#_TP_tablefields",
 				  "#_TP_tablefieldgroups",
 				  "#_TP_persons",
@@ -53,17 +51,16 @@ $GLOBALS['lodelsitetables']=array("#_TP_objects",
 				  "#_TP_entries",
 				  "#_TP_tasks",
 				  "#_TP_texts",
-				  "#_TP_entities_persons",
-				  "#_TP_entities_entries",
 				  "#_TP_entitytypes_entitytypes",
-				  "#_TP_entitytypes_entrytypes",
-				  "#_TP_entitytypes_persontypes",
 				  "#_TP_options",
-				  "#_TP_translations");
+				  "#_TP_optiongroups",
+				  "#_TP_translations",
+				  "#_TP_internalstyles",
+				  "#_TP_characterstyles");
 
 $GLOBALS['lodelbasetables']=array("#_MTP_sites",
 				  "#_MTP_users",
-				  "#_MTP_urltask",
+				  "#_MTP_urlstack",
 				  "#_MTP_session");
 
 
@@ -88,6 +85,37 @@ require($home."pma/sqlparser.lib.php");
 
 
 
+function dump_site($site,$outfile,$fh=0)
+
+{
+  global $db;
+
+  if ($site && $GLOBALS['singledatabase']!="on") {
+    $dbname=DATABASE."_".$site;
+    if (!$fh) { $fh=fopen($outfile,"w"); $closefh=true; }
+    if (!$fh) die("ERROR: unable to open file $outfile for writing");
+    if (fputs($fh,"DROP DATABASE $dbname;\nCREATE DATABASE $dbname;USE $dbname;\n")===FALSE) die("ERROR: unable to write in the temporary file");
+  } else {
+    $dbname=DATABASE;
+  }
+  if (!$db->selectDB($dbname)) die("ERROR: the database $dbname does not exist or is not reactable. This is inconsistent with the sites table in the database ".DATABASE.". Please solve the problem before backing up.<br/>MySQL said: ".mysql_error());
+
+  $GLOBALS['currentprefix']="#_TP_";
+
+  $tables=$GLOBALS['lodelsitetables'];
+
+  $dao=&getDAO("classes");
+  $vos=$dao->findMany("status>0","","class,classtype");
+  foreach ($vos as $vo) {
+    $tables[]=lq("#_TP_".$vo->class);
+    if ($vo->classtype=="persons") $tables[]=lq("#_TP_entities_".$vo->class);
+  }
+
+  mysql_dump($dbname,$tables,$outfile,$fh);
+
+  if ($closefh) fclose($fh);
+}
+
 /**
  * Lock all
  *
@@ -111,7 +139,7 @@ require($home."pma/sqlparser.lib.php");
 
 
 /**
- *
+ * Operation. Propose various way to retrieve/store a file
  *
 */
 
@@ -184,6 +212,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
     $i = 0;
     while ($i < $num_tables) {
       $table = lq($tables[$i]);
+      $table = preg_replace("/.*\./","",$table); // remove the reference to the database. PMA do that itself.
       $local_query  = 'SELECT * FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table);
 	
       if ($create) PMA_exportStructure($db, $table, $crlf, $err_url);
@@ -256,19 +285,17 @@ function execute_dump($filename)
 function lodelprefix($table)
 
 {
-  static $tablefields;
-  if (!$tablefields) require($home."tablefields.php");
+  // remove up to the dot
+  $table=preg_replace("/.*\./","",$table);
+  if (strpos($table,$GLOBALS['tp'])!==0) die("ERROR: table $table should be prefixed");
 
-  if (strpos($table,$GLOBALS[tp])!==0) die("ERROR: table $table should be prefixed");
+  $table=substr($table,strlen($GLOBALS['tp']));
 
-  $table=substr($table,strlen($GLOBALS[tp]));
 
-  if ($tablefields[lq("#_TP_".$table)]) {
-    return "#_TP_".$table;
-  } elseif ($tablefields[DATABASE.".".lq("#_MTP_".$table)]) {
-    return "#_MTP_".$table;
+  if ($GLOBALS['currentprefix']) {
+    return $GLOBALS['currentprefix'].$table;
   } else {
-    die("ERROR: table $table is unknown");
+    die("ERROR: currentprefix is not defined");
   }
 }
 

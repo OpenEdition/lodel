@@ -125,14 +125,13 @@ class XMLDB_Translations extends XMLDB {
     $this->textgroups=$textgroups;
     $this->lang=$lang;
 
-    $this->XMLDB("lodeltranslations",$GLOBALS[tp]);
+    $this->XMLDB("lodeltranslations",$GLOBALS['tp']);
     $this->addTable("translations","texts");
     $this->addElement("translations","lang","title","textgroups","translators","modificationdate","creationdate");
     $this->addWhere("translations","lang='$lang'");
-    $this->addElement("texts","text");
+    $this->addElement("texts","contents");
     $this->addAttr("texts","name","textgroup","status");
     if ($lang!="all") $this->addWhere("texts","lang='$lang'");
-    require_once($GLOBALS['home']."textgroupfunc.php");
     $this->addWhere("texts",textgroupswhere($textgroups));
     $this->addJoin("translations","lang","texts","lang");
   }
@@ -153,15 +152,15 @@ class XMLDB_Translations extends XMLDB {
       //
     case "translations":
       // check the lang is ok
-      if ($this->lang!="all" && $this->lang!="" && $this->lang!=$record['lang']) return;
+      if ($this->lang!="all" && $this->lang!="" && $this->lang!=$record['lang']) { return;}
       $this->currentlang=$record['lang'];
       // look for the translation
-      $prefix=$this->textgroups=="interface" ? "#_MTP_" : "#_TP_";
-      $id=$db->getone("SELECT id FROM ".lq($prefix)."translations WHERE lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
-      if ($db->errorno()) dberror();
-
-      $record['textgroups']=$this->textgroups;
-      setrecord($table,$id,$record);
+      $dao=&getDAO("translations");
+      $vo=$dao->find("lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
+      $vo->textgroups=$this->textgroups;      
+      foreach($record as $k=>$v) { $vo->$k=addslashes($v); }
+      $dao->save($vo);
+      #print_R($vo);
       return $record['lang'];
       break;
       //
@@ -171,13 +170,13 @@ class XMLDB_Translations extends XMLDB {
       // check the lang is ok
       if (!$record['lang'] || $this->currentlang!=$record['lang']) return;
       // check the textgroup is ok
-      if (!in_array($record['textgroup'],$GLOBALS['textgroups'][$this->textgroups])) die("ERROR: Invalid textgroup");
+      if (!in_array($record['textgroup'],$GLOBALS['translations_textgroups'][$this->textgroups])) die("ERROR: Invalid textgroup");
 
-      // look for text
-      $prefix=$this->textgroups=="interface" ? "#_MTP_" : "#_TP_";
-      $id=$db->getone("SELECT id FROM ".lq($prefix)."texts WHERE name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
-      if ($db->errorno()) dberror();
-      setrecord($table,$id,$record);
+      // look for the translation
+      $dao=&getDAO("texts");
+      $vo=$dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
+      foreach($record as $k=>$v) { $vo->$k=addslashes($v); }
+      $dao->save($vo);
       return;
       break;
     }

@@ -97,7 +97,11 @@ if ($edit || $maindefault) { // modifie ou ajoute
 
     mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
-    if ($status>-32) back(); // on revient, le site n'est pas en creation
+    if ($status>-32) {
+      require($home."view.php");
+      $view=&getView();
+      $view->back(); // on revient, le site n'est pas en creation
+    }
 
     #if ($id && $oldname!=$newname) {
     #  $task="";

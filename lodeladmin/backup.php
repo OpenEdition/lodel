@@ -33,7 +33,7 @@ authenticate(LEVEL_ADMINLODEL);
 require($home."func.php");
 require($home."backupfunc.php");
 
-$context[importdir]=$importdir;
+$context['importdir']=$importdir;
 
 if ($backup) {
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
@@ -45,36 +45,20 @@ if ($backup) {
   $outfile="lodel.sql";
   $fh=fopen($dirlocked."/".$outfile,"w");
   if (!$fh) die ("ERROR: unable to open a temporary file in write mode");
-  // sauve la base generale
+  // save the main database
 
-  if (fputs($fh,"DROP DATABASE $database;\nCREATE DATABASE $database;USE $database;\n")===FALSE) die("ERROR: unable to write in the temporary file");
+  if (fputs($fh,"DROP DATABASE ".DATABASE.";\nCREATE DATABASE ".DATABASE.";USE ".DATABASE.";\n")===FALSE) die("ERROR: unable to write in the temporary file");
 
-  lock_write_all($database);
-  mysql_dump($database,$GLOBALS[lodelbasetables],"",TRUE,$fh);
-  unlock();
+  $GLOBALS['currentprefix']="#_TP_";
+  mysql_dump(DATABASE,$GLOBALS['lodelbasetables'],"",TRUE,$fh);
 
-  if (!$singledatabase) {
-    // cherche les sites
-    mysql_select_db($database);
-    $result=mysql_query("SELECT rep FROM $GLOBALS[tp]sites") or die (mysql_error());
-    while (list($rep)=mysql_fetch_row($result)) {
-      $dbname=$database."_".$rep;
-#      echo $dbname,"<br>\n"; flush();
-      if (fputs($fh,"DROP DATABASE $dbname;\nCREATE DATABASE $dbname;USE $dbname;\n")===FALSE) die("ERROR: unable to write in the temporary file");
-      if (!mysql_select_db($dbname)) die("ERROR: the database $dbname does not exist or is not reactable. This is inconsistent with the sites table of $database. Please solve the problem before backing up.<br/>MySQL replied: ".mysql_error());
-#      echo $dbname," try to locked<br>\n"; flush();
-      lock_write_all($dbname);
-#      echo $dbname," locked, let's dump<br>\n"; flush();
-      mysql_dump($dbname,$GLOBALS[lodelsitetables],"",TRUE,$fh);
-      unlock();
-
-      if (!$sqlonly) array_push($dirtotar,"$rep/lodel/sources","$rep/docannexe");
-#      echo $dbname," finish<br>"; flush();
-    }
-  } else {
-    lock_write_all($database);
-    mysql_dump($database,$GLOBALS[lodelsitetables],"",TRUE,$fh);
-    unlock();
+  // find the sites to backup
+  $result=$db->execute(lq("SELECT name FROM #_MTP_sites WHERE status>-32")) or dberror();
+  while (!$result->EOF) {
+    $name=$result->fields['name'];
+    dump_site($name,TRUE,$fh);
+    if (!$sqlonly) array_push($dirtotar,"$name/lodel/sources","$name/docannexe");
+    $result->MoveNext();
   }
   fclose($fh);
 
@@ -95,8 +79,9 @@ if ($backup) {
   if (operation($operation,$archivetmp,$archivefilename,$context)) return;
 }
 
-include ($home."calcul-page.php");
-calcul_page($context,"backup");
+require ($home."view.php");
+$view=&getView();
+$view->render($context,"backup");
 
 #function dumpdb ($dbname) 
 #

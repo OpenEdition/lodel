@@ -34,7 +34,7 @@ include ($home."func.php");
 #authenticate();
 
 
-$context[importdir]=$importdir;
+$context['importdir']=$importdir;
 $fileregexp='(site|revue)-\w+-\d+.zip';
 $importdirs=array("CACHE");
 if ($importdir) $importdirs[]=$importdir;
@@ -71,7 +71,7 @@ if ($fichier) {
 
     $db->execute(lq("DROP TABLE IF EXISTS ".join(",",$GLOBALS['lodelsitetables']))) or dberror(); 
 
-    if (!execute_dump($sqlfile)) $context[error_execute_dump]=$err=$db->errormsg();
+    if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err=$db->errormsg();
     @unlink($sqlfile);
 
     require_once($home."cachefunc.php");
@@ -103,8 +103,9 @@ if ($fichier) {
 }
 
 
-include ($home."calcul-page.php");
-calcul_page($context,"import");
+require ($home."view.php");
+$view=&getView();
+$view->render($context,"import");
 
 
 function loop_fichiers(&$context,$funcname)

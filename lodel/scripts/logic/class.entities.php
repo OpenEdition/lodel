@@ -97,8 +97,17 @@ class EntitiesLogic extends Logic {
      // needs confirmation ?
 
      if (!$context['confirm'] && $softprotectedids) {
-       $context['softprotectedentities']="'".join("','",$softprotectedids)."'";
-       return "confirm";
+       $context['softprotectedentities']=$softprotectedids;
+       function loop_protectedentities($context,$funcname) {
+	 global $db;
+	 $result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE id ".sql_in_array($context['softprotectedentities']))) or dberror();
+	 while(!$result->EOF) {
+	   $localcontext=array_merge($context,$result->fields);
+	   call_user_func("code_do_$funcname",$localcontext);
+	   $result->MoveNext();
+	 }
+       } // loop
+       return "delete_confirm";
      }
 
      // delete all the entities
@@ -294,7 +303,7 @@ class EntitiesLogic extends Logic {
        while (!$result->EOF) {
 	 $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
-	 if ($result->fields['status']>=16) $softprotectedids[]=$row['id'];
+	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];
 	 $result->MoveNext();
        }
    }

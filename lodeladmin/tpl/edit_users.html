@@ -85,7 +85,14 @@
   <label for="email">[@ADMIN.EMAIL]
         : 
       </label>
-  <br class="nobr"><span class="admin_display">[#EMAIL]</span><br />
+  <br class="nobr">
+  <input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="email">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="email"></FUNC>
+    </p>
+  </LOOP>
   <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>

@@ -69,7 +69,8 @@
             <!-- input type="text"                 -->
             <xsl:when test="@edittype='text' or @edittype='style'  or @edittype='mlstyle' 
                             or @edittype='type' or @edittype='tplfile' or @edittype='username'
-                            or @edittype='tablefield'  or @edittype='class'">
+                            or @edittype='tablefield' or @edittype='class' or @edittype='email'
+                            or @edittype='url'">
 
                   <xsl:call-template name="label" />
                     <xsl:element name="input">

@@ -52,7 +52,7 @@ class TranslationsLogic extends Logic {
 
    function listAction(&$context,&$errro) 
    {
-     $context['textgroups']=$GLOBALS['site'] ? "site" : "interface";
+     $this->_setTextGroups($context);
      return "_ok";
    }
 
@@ -63,17 +63,127 @@ class TranslationsLogic extends Logic {
    function editAction(&$context,&$error,$clean=false)
 
    {
-     $context['textgroups']=$GLOBALS['site'] ? "site" : "interface";
+     $this->_setTextGroups($context);
      if (!$context['id']) $context['modificationdate']=date("Y-m-d");
 
      return Logic::editAction($context,$error);
    }
+
+   /**
+    * export Action
+    */
+   function exportAction(&$context,&$error)
+
+   {
+     global $home;
+     require_once($home."validfunc.php");
+
+     $lang=$context['lang'];
+     if ($lang!="all" && !validfield($lang,"lang")) die("ERROR: invalid lang");
+     
+     // lock the database
+     //lock_write("translations","textes");
+
+     $tmpfile=tempnam(tmpdir(),"lodeltranslation");
+     require_once($home."translationfunc.php");
+
+     $this->_setTextGroups($context);
+     $xmldb=new XMLDB_Translations($context['textgroups'],$lang);
+
+     #$ret=$xmldb->saveToString();
+     #die($ret);
+
+     $xmldb->saveToFile($tmpfile);
+
+     $filename="translation-$lang-".date("dmy").".xml";
+ 
+     download($tmpfile,$filename);
+     @unlink ($tmpfile);
+     exit();
+
+     return "back";
+   }
+
+
+   function importAction(&$context,&$error)
+
+   {
+     global $home;
+
+     $this->_setTextGroups($context);
+     $lang="";
+
+     require_once($home."importfunc.php");
+     $file=extract_import("translation",$context,"xml");
+
+     if ($file) {
+       require_once($home."validfunc.php");
+       require_once($home."translationfunc.php");
+       $xmldb=new XMLDB_Translations($context['textgroups']);
+       
+       $xmldb->readFromFile($file);
+       update();
+
+       return "_back";
+     }
+
+
+     function loop_files(&$context,$funcname)
+
+     {
+       global $fileregexp,$importdirs,$home;
+     
+       foreach ($importdirs as $dir) {
+	 if ( $dh= @opendir($dir)) {
+	   while (($file=readdir($dh))!==FALSE) {
+	     if (!preg_match("/^$fileregexp$/i",$file)) continue;
+	     $localcontext=$context;
+	     $localcontext['filename']=$file;
+	     $localcontext['fullfilename']="$dir/$file";
+	     if ($dir=="CACHE") $localcontext['maybedeleted']=1;
+	     call_user_func("code_do_$funcname",$localcontext);	   
+	   }
+	   closedir ($dh);
+	 }
+       }
+     }
+
+     function loop_translation(&$context,$funcname)
+     
+     {
+       $arr=preg_split("/<\/?row>/",file_get_contents($context['fullfilename']));
+
+       $langs=array();
+       for($i=1; $i<count($arr); $i+=2) {
+	 $localcontext=$context;
+	 foreach (array("lang","title","creationdate","modificationdate") as $tag) {
+	   if (preg_match("/<$tag>(.*)<\/$tag>/",$arr[$i],$result)) 
+	     $localcontext[$tag]=trim(strip_tags($result[1]));
+	 }
+	 if (!$localcontext['lang']) continue;
+	 call_user_func("code_do_$funcname",$localcontext);
+       }
+     }
+     return "import_translations";
+
+   }
+   
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**
     * @private
     */
+
+   /**
+    * Set the textgroups
+    */
+
+   function _setTextGroups(&$context) 
+
+   {
+     $context['textgroups']=$GLOBALS['site'] ? "site" : "interface";
+   }
 
    /**
     * Used in editAction to do extra operation after the object has been saved
