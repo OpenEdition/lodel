@@ -47,9 +47,9 @@ function ei_pretraitement($filename,$row,&$context,&$text)
   $text=preg_replace($srch,$rpl,$text);
 
   // ajoute le doctype si necessaire
-  if (!preg_match("/<!DOCTYPE.*?>/i",$text)) $text.="<!DOCTYPE article SYSTEM \"r2r-xhtml-1.dtd\">\n".$text;
+  if (!preg_match("/<!DOCTYPE\b/i",$text)) $text="<!DOCTYPE article SYSTEM \"r2r-xhtml-1.dtd\">\n".$text;
   // ajoute le xml version si necessaire
-  if (!preg_match("/<"."?xml.*?>/i",$text)) $text="<"."?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n".$text;
+  if (!preg_match("/<"."\?xml\b/i",$text)) $text="<"."?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n".$text;
 
       
   if (!writefile ($filename.".balise",$text)) die ("erreur d'ecriture du fichier $filename.balise");
