@@ -27,7 +27,7 @@
 			<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center">
 				<tr>
 					<td>
-						Status de la publication :
+						Statut de la publication :
 					</td>
 					<td>
 						<strong><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></strong>
@@ -43,8 +43,8 @@
 <br /><br />
 <table width="800" cellpadding="5" cellspacing="1" border="1" align="center">
 	<tr>
-		<td>
-			Changer le verrou de la publication dépubliée
+		<td rowspan="2">
+			Changer le statut
 		</td>
 		<td align="center">
 			<IF COND="[#EDITEUR]">
@@ -55,9 +55,6 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
-			Changer le verrou de la publication publiée
-		</td>
 		<td align="center">
 			<IF COND="[#EDITEUR]">
 				<MACRO NAME="CHANGER_VERROU_PUBLICATIONS_PUBLIE">
