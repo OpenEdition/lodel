@@ -3,48 +3,43 @@
 <title>Editer une zone géographique</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<div align="center">
-	<table width="800" cellpadding="5" cellspacing="1" border="0" align="center">
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'une zone g&eacute;ographique</td>
+	</tr>
+</table>
+
+<form method="post" action="geographie.php">
+	<input type="hidden" name="edit" value="1">
+	<input type="hidden" name="id" value="[#ID]">
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td align="center">
-				<br />
-				<b>Editer une zone géographique</b>
-				<br />
-			</td>
-		</tr>
-	</table>
-	<form method="post" action="geographie.php">
-	<table width="800" cellpadding="5" cellspacing="1" border="0" align="center">
-		<input type="hidden" name="edit" value="1">
-		<input type="hidden" name="id" value="[#ID]">
-		<tr>
-			<td>Nom:</td>
+			<td><span class="texte_intitule">Nom :</span></td>
 			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
-			[(#ERREUR_NOM|true)<td class="erreur">Il faut préciser un nom !</td>]
 		</tr>
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
 		<tr>
-			<td>Abréviation:</td>
+			<td><span class="texte_intitule">Abr&eacute;viation :</span></td>
 			<td><input size="30" type="text" name="abrev" value="[#ABREV]"></td>
-			[(#ERREUR_ABREV|true)<td class="erreur">Il faut preciser une abbréviation</td>]
 		</tr>
+		[(#ERREUR_ABREV|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser une abr&eacute;viation !</td></tr>]
 		<tr>
-			<td>Zone géographique parente:</td>
+			<td><span class="texte_intitule">Zone g&eacute;ographique parente :</span></td>
 			<td><select name="parent"><option value="0">--</option><? make_selection_geographie(); ?></select></td>
 		</tr>
 		<tr>
-			<td>Langue :</td><td><select name="lang"><? makeselectlangues_nevernil() ?></select></td>
-		</tr>
-		<tr>
-			<td>
-				<div align="center">
-					<input class="form" type="submit" value="[Modifier(#ID|true)][Ajouter(#ID|false)]">
-				</div><br />
-				<div align="center">
-					[<a href="geographie.php?delete=1&id=(#ID)">Supprimer</a>]
-				</div>
-			</td>
+			<td><span class="texte_intitule">Langue :</span></td>
+			<td><select name="lang"><? makeselectlangues_nevernil() ?></select></td>
 		</tr>
 	</table>
-	</form>
-</div>
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='geographies.php'" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]">
+			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='geographie.php?delete=1&id=[#ID]'" />
+		</IF>
+	</div>
+</form>
 <MACRO NAME="CLOSE_HTML">

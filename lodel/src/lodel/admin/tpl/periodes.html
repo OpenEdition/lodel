@@ -25,34 +25,19 @@
 	<LOOP NAME="periodes" TABLE="indexhs" ORDER="ordre" WHERE="type_periode AND parent='[#ID]'" WHERE="ok">
 		<DO>
 			<tr>
-				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1">[#REP][(#NOM|nbsp)]</td>
-					<td class="ligne_admin1" align="center">[(#ABREV|nbsp)]</td>
-					<td class="ligne_admin1" align="center">[(#LANG|nbsp)]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="periode.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="periode.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
-							<a href="periode.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-							<a href="periode.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-
-						</div>
-					</td>
-				<ELSE/>
-					<td class="ligne_admin2">[#REP][(#NOM|nbsp)]</td>
-					<td class="ligne_admin2" align="center">[(#ABREV|nbsp)]</td>
-					<td class="ligne_admin2" align="center">[(#LANG|nbsp)]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="periode.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="periode.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
-							<a href="periode.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-							<a href="periode.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-
-						</div>
-					</td>
-				</IF>
+				<td class="ligne_admin2">[#REP][(#NOM|nbsp)]</td>
+				<td class="ligne_admin2" align="center">[(#ABREV|nbsp)]</td>
+				<td class="ligne_admin2" align="center">[(#LANG|nbsp)]</td>
+				<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<div>
+						|&nbsp;<a href="periode.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+						<a href="periode.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+						<a href="periode.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+						<a href="periode.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+					</div>
+				</td>
 			</tr>
+			<LOOP NAME="periodes"></LOOP>
 		</DO>
 	</LOOP>
 </table>
