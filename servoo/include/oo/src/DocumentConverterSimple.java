@@ -2,13 +2,18 @@ import com.sun.star.bridge.XUnoUrlResolver;
 import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.lang.XServiceInfo;
+
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.uno.UnoRuntime;
+import com.sun.star.uno.XInterface;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XStorable;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.beans.XPropertySet;
-//import com.sun.star.text.XTextDocument;
+//import com.sun.star.frame.XModel;
+//import com.sun.star.frame.XFrame;
+import com.sun.star.text.XTextDocument;
 //import com.sun.star.text.XText;
 //import com.sun.star.text.XTextRange;
 //import com.sun.star.text.XTextContent;
@@ -78,11 +83,36 @@ public class DocumentConverterSimple {
 		System.exit(1);
 	    }
 
+
+	    //XModel xModel = (XModel)UnoRuntime.queryInterface(XModel.class, xComponent);
+	    //XFrame xFrame = xModel.getCurrentController().getFrame();
+	    //xFrame.activate(); 
+
+
 	    // enregistrement du fichier
 	    // Getting an object that will offer a simple way to store a document to a URL.
 	    XStorable xstorable =
 		( XStorable ) UnoRuntime.queryInterface( XStorable.class,
 							 xComponent );
+
+	    // guess the filter if required
+	    if (DocumentConverterSimple.stringConvertType.equals("auto") && 
+		DocumentConverterSimple.stringExtension.equals("sxw")) {
+		XServiceInfo xInfo =
+		    ( XServiceInfo ) UnoRuntime.queryInterface( XServiceInfo.class,
+							 xComponent );
+		if (xInfo.supportsService("com.sun.star.text.WebDocument")) {
+		    //System.out.println("ERROR: web");	    	
+		    DocumentConverterSimple.stringConvertType="writer_web_StarOffice_XML_Writer";
+		} else {
+		    //System.out.println("ERROR: text");	    	
+		    DocumentConverterSimple.stringConvertType="swriter: StarOffice XML (Writer)";
+		}
+	    }
+	    //
+	    //System.exit(1);
+
+
           
 	    // Preparing properties for converting the document
 	    propertyvalue = new PropertyValue[ 2 ];
@@ -99,7 +129,9 @@ public class DocumentConverterSimple {
 	    stringUrl = stringUrl + "." + DocumentConverterSimple.stringExtension;
           
 	    // Storing and converting the document
-	    xstorable.storeAsURL( stringUrl, propertyvalue );
+	    //xstorable.storeAsURL( stringUrl, propertyvalue );
+	    //System.out.println("storeToURL   "+propertyvalue[ 1 ].Value+"<br>\n");
+	    xstorable.storeToURL( stringUrl, propertyvalue );
           
 	    // Getting the method dispose() for closing the document
 	    XComponent xcomponent =

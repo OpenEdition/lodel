@@ -157,7 +157,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
 
   #$xhtml=file_get_contents($xhtmlfile);
   $xhtmllines=file($xhtmlfile);
-  array_walk($xhtmllines,create_function('&$text',' $text=ltrim($text);')); // ltrim each line
+  array_walk($xhtmllines,create_function('&$text',' $text=strtr(ltrim($text),array("\n"=>"","\r"=>""));')); // ltrim each line
   $xhtml=join("",$xhtmllines);
   unset($xhtmllines); // save memory
 
@@ -311,10 +311,10 @@ function runDocumentConverter($filename,$extension)
   $errfile="$filename.err";
 
   if ($extension=="sxw") {
-    $format="swriter: StarOffice XML (Writer)";
-#    $format="writer_web_StarOffice_XML_Writer_Web_Template";
-#    $format="writer_StarOffice_XML_Writer";
-#    $extension="stw";
+#    $format="swriter: StarOffice XML (Writer)";
+#    $format="writer_web_StarOffice_XML_Writer";
+    $format="auto";
+
   } elseif ($extension=="html") {
     $format="swriter: HTML (StarWriter)";
   } else die ("probleme interne");
