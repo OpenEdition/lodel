@@ -85,7 +85,7 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     require_once($home."validfunc.php");
-    $context[nom]=trim($context[nom]);
+    $context[nom]=strtolower(trim($context[nom]));
     if (!$context[nom] || !isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
 	if (reservedword($context[nom])) $err=$context[erreur_nom_reserve]=1;
     if (!$context[type]) $err=$context[erreur_type]=1;
