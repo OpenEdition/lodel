@@ -67,10 +67,12 @@ function sendValue(s){
 <div class="delete">
 <input type="submit" name="delete" value="[@COMMON.DELETE]">
 </div>
+<?php if (function_exists("imap_open")) { ?>
 <div class="checkmail">
 <input type="submit" name="checkmail" value="[@EDITION.CHECKMAIL]">
 <IF COND="[(#NBATTATTACHMENTS|isset)]">[@EDITION.NB_ATTACHED_FILES_ARE_UPLOADED|sprintf([#NBATTATTACHMENTS])]</IF>
 </div>
+<?php } ?>
 <div class="resize">
 <input type="text" name="newsize" value="500">
 <input type="submit" name="resize" value="[@EDITION.RESIZEIMAGES]">
