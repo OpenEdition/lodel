@@ -122,10 +122,37 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
+							<a href="typeentrees.php"><span class="texte_noir_gras">Types d'index</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="typepersonnes.php"><span class="texte_noir_gras">Types d'index par personne</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
 							<a href="typedocs.php"><span class="texte_noir_gras">Types de documents</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<IF COND="[#DROITREDACTEUR]">
+								<a href="typepublis.php"><span class="texte_noir_gras">Types de publications</span></a>
+							<ELSE/>
+								<span class="texte_noir_gras"><span class="inactif">Types de publications</span></span>
+							</IF>
+						</td>			
+						<td>&nbsp;</td>
+					</tr>
+
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
@@ -141,17 +168,6 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-								<a href="typepublis.php"><span class="texte_noir_gras">Types de publications</span></a>
-							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Types de publications</span></span>
-							</IF>
-						</td>			
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<IF COND="[#DROITREDACTEUR]">
 							<a href="champs.php?classe=publications"><span class="texte_noir_gras">Champs pour les publications</span></a>
 							<ELSE/>
 								<span class="texte_noir_gras"><span class="inactif">Champs pour les publications</span></span></span>
@@ -160,20 +176,6 @@
 						<td>&nbsp;</td>
 					</tr>
 
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="typeentrees.php"><span class="texte_noir_gras">Types d'index</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="typepersonnes.php"><span class="texte_noir_gras">Types d'index par personne</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
 				</table>
 			</td>
 			<td width="375" valign="top">
