@@ -1,0 +1,77 @@
+CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index géographique complet. Il affiche indistinctement tous les    -->
+<!-- niveaux de l'arbre, il confond donc dans l'affichage une catégorie -->
+<!-- avec une sous-catégorie on pourra affiner ultérieurement.          -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
+
+<MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
+<TITLE>Index géographique</TITLE>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_GEOS">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+<table class="principale">
+	<tr>
+		
+		<td class="barrenav">
+		<!-- Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
+		les navigateurs -->
+				<? insert_template("barre");?> 
+		</td>
+	
+		<!-- Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" -->
+		<td class="corps">
+
+				<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" -->
+				<!--<div class="separation">
+					&nbsp;
+				</div>-->
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+	
+				<div class="titre1">
+					Index géographique
+				</div>
+				
+				
+					<LOOP NAME="geographies" TABLE="entrees" WHERE="type='geographie'" ORDER="ordre DESC">
+						<DO>	
+							<div class="afficherdocument">
+							<a  href="geo.html?id=[#ID]">
+								[#NOM]
+							</a>
+							</div>
+							
+						</DO>
+					</LOOP>
+				
+				
+				
+		</div>
+			</td>
+
+	</tr>
+</table>
+
+<MACRO NAME="FERMER_HTML">  
