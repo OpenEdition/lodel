@@ -14,11 +14,11 @@
 <form method="POST" action="typepubli.php">
 	<input type="hidden" name="edit" value="1">
 	<input type="hidden" name="id" value="[#ID]">
-	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td><span class="texte_intitule">Nom du type de publication :</span></td>
 			<td><input size="40" type="text" name="nom" value="[#NOM]"></td>
-			[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut preciser un nom !</td></tr>]
+			[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
 		</tr>
 		<tr>
 			<td>
@@ -26,15 +26,15 @@
 				<span class="texte_info">(sans l'extension .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]"></td>
-			[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut preciser un nom de fichier</td></tr>]
+			[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		</tr>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template d'édition fils</span><br />
+				<span class="texte_intitule">Nom du fichier template d'&eacute;dition fils :</span><br />
 		 		<span class="texte_info">Ce template est pour les fils du publication. (facultatif)</span>
 			</td>
 			<td><input size="40" type="text" name="tpledit" value="[#TPLEDIT]"></td>
-			[(#ERREUR_TPLEDIT|true)<tr><td colspan="2" class="message_erreur">Il faut preciser un nom de fichier</td></tr>]
+			[(#ERREUR_TPLEDIT|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		</tr>
 	</table>
 	<div class="pied_de_formulaire">
