@@ -28,6 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+
 // inclue les documents et les publi dans objets
 
 function makeobjetstable()
@@ -35,7 +36,7 @@ function makeobjetstable()
 {
   global $db;
 
-  $err=mysql_query_cmds_forobjetfunc('
+  $err=query_cmds_forobjectfunc('
 DELETE FROM #_TP_objets;
 INSERT INTO #_TP_objets (id,class) SELECT identity,"documents" FROM #_TP_documents;
 INSERT INTO #_TP_objets (id,class) SELECT identity,"publications" FROM #_TP_publications;
@@ -107,7 +108,7 @@ UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id.';
       foreach ($changes as $table=>$idsname) {
 	if (!is_array($idsname)) $idsname=array($idsname);
 	foreach ($idsname as $idname) {
-	  $err.=query_cmds_forobjetfunc('
+	  $err.=query_cmds_forobjectfunc('
 UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
 ');
 	  if ($err) return $err;
@@ -138,28 +139,6 @@ UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
 
 
 
-function query_cmds_forobjetfunc($cmds,$table="") 
-
-{
-  global $db;
-  if (!$sqlfile) return;
-  $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
-  if ($table) { // select the commands operating on the table  $table
-    $sql=preg_grep("/(REPLACE|INSERT)\s+INTO\s+#_TP_$table\s/i",$sql);
-  }
-  if (!$sql) return;
-
-  foreach ($sql as $cmd) {
-    $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
-    if ($cmd) {
-      if (!$db->execute($cmd)) { 
-	$err.="$cmd <font COLOR=red>".$db->errormsg()."</font><br>";
-	break; // sort, ca sert a rien de continuer
-      }
-    }
-  }
-  return $err;
-}
 
 
 ?>

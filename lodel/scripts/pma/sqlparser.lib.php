@@ -1009,6 +1009,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
                       || ($arr[$i]['type'] == 'alpha_reservedWord' && $upper_data == 'FROM')) ) {
                     $size_chain = count($chain);
                     $current_select_expr++;
+		    echo $current_select_expr," ",$chain[$size_chain - 1],"\n";
                     $subresult['select_expr'][$current_select_expr] = array(
                       'expr' => '',
                       'alias' => '',

@@ -553,6 +553,10 @@ DELETE FROM #_TP_documents WHERE identity IN ($ids);
       }
       //}
 
+      if (file_exists(SITEROOT."docannexe/fichier")) {
+	rename(SITEROOT."docannexe/fichier",SITEROOT."docannexe/file");
+      }
+
     /////////////////////
     // ENTRYTYPES
     if ($tables["$GLOBALS[tp]entrytypes"]) {

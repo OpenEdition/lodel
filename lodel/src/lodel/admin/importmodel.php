@@ -41,7 +41,8 @@ if ($file && $delete) {
     unlink($file);
   }
   //
-} elseif ($file) {
+} elseif ($file || $base) {
+  if ($base) $file=$GLOBALS['home']."../install/plateform/model-base.zip";
   require_once("connect.php");  
   require_once("backupfunc.php");
   require("func.php");
@@ -57,9 +58,10 @@ if ($file && $delete) {
   @unlink($sqlfile);
 
   // change the id in order there are minimal and unique
-  require_once("objetfunc.php");
-  $err=makeobjetstable();
-  if ($err) die($err);
+  #require_once("objectfunc.php");
+  echo "... a finir... mais vous pouvez poursuivre en cliquant sur le lien <a href=\"index.php\">ici</a>...<br>\n";
+  #$err=makeobjetstable();
+  #if ($err) die($err);
 
   require_once("cachefunc.php");
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");

@@ -469,7 +469,10 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
         // analyze the query to get the true column names, not the aliases
         // (this fixes an undefined index, also if Complete inserts 
         //  are used, we did not get the true column name in case of aliases)
-        $analyzed_sql = PMA_SQP_analyze(PMA_SQP_parse($sql_query));
+
+	# REMOVE BY GHISLAIN BECAUSE IT MAKES PROBLEMS WITH RESERVED WORD WHICH ARE NOT REALLY RESERVED
+        #$analyzed_sql = PMA_SQP_analyze(PMA_SQP_parse($sql_query));
+
 
         // Checks whether the field is an integer or not
         for ($j = 0; $j < $fields_cnt; $j++) {
@@ -495,6 +498,7 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
                 $field_blob[$j] = FALSE;
             }
         } // end for
+
 
         // Sets the scheme
         if (isset($GLOBALS['showcolumns'])) {

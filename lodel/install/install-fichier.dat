@@ -6,7 +6,7 @@ mkdir tpl 0755
 mkdir css 0755
 mkdir images 0755
 mkdir docannexe 0777
-mkdir docannexe/fichier 0777
+mkdir docannexe/file 0777
 mkdir docannexe/image 0777
 mkdir lodel 0755
 mkdir lodel/edition 0755
@@ -18,7 +18,7 @@ htaccess CACHE
 # evite que l'internaute puisse lister ces repertoires
 touch docannexe/index.html
 touch docannexe/image/index.html
-htaccess docannexe/fichier
+htaccess docannexe/file
 
 ###############################################################
 ######### repertoire site

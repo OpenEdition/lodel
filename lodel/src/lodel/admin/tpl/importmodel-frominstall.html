@@ -67,8 +67,8 @@
                       <dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
                       <dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
                       <dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
-		      <dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
-		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION_FIRST_PART] ([#LODELVERSION]) [@ADMIN.WARNING_VERSION_SECOND_PART] ([#VERSION]). [@ADMIN.VERIFY_COMPATIBILITY].</div></IF>
+		      <dd><strong>[@ADMIN.CREATION_DATE] :</strong> [(#DATE|humandate)]</dd>
+		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION])] ([#VERSION]). [@ADMIN.CHECK_COMPATIBILITY].</div></IF>
 
 
 
@@ -78,17 +78,13 @@
 		    </DO>
 			<AFTER></dl></AFTER>
 		    </LOOP>
-<hr/ >[@ADMIN.CREATE_OR_USE_OTHER_EM].
 
-<form>
-	<div id="pied_de_formulaire">
-		<input class="form" type="button" value="[@ADMIN.NO_USE_EM]" onClick="javascript:window.location='index.php';" />
-<br />
-&nbsp;<br />
-	
-</div>
-</form>
-
+<!--[<hr/ >[@ADMIN.CREATE_MY_OWN_OR_USE_ANOTHER_EM].
+			<dl>
+                         <div style="text-align: right"><a href="importmodel.php?frominstall=1&base=oui"><strong>[@ADMIN.DONT_USE_EM]</strong></a></div>
+                       </div>
+			</dl>
+]-->
 </div>
 
 </IF>  

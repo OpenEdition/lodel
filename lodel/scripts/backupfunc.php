@@ -259,7 +259,7 @@ function execute_dump($filename)
 
       #if (preg_match("/CREATE/",$pieces[$i])) echo $pieces[$i],"<br />";
 
-       PMA_mysql_query($pieces[$i]) or die(mysql_error());
+      PMA_mysql_query($pieces[$i]) or trigger_error(mysql_error()."<br>".htmlentities($pieces[$i]),E_USER_ERROR);
 #       if ($result == FALSE) {     
 #        //      echo $pieces[$i],"<br>\n"; flush();
 #	return FALSE; }
