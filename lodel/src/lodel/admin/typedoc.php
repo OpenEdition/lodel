@@ -33,7 +33,6 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 
 $classe="documents";
-$context[tplcreation]="document";
 include ($home."type.php");
 
 include ($home."calcul-page.php");

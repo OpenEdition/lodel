@@ -114,6 +114,7 @@ if ($edit) { // modifie ou ajoute
       $newstatut=$protege ? 32 : 1;
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
+    if (!$context[tplcreation]) $context[tplcreation]=preg_replace("/s$/","",$classe);
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,import,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$statut','$ordre')") or die (mysql_error());
 
