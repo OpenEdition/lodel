@@ -80,7 +80,7 @@ function parse_loop_extra(&$tables,
   if (in_array("$GLOBALS[tableprefix]entites",$tables)) {
     if (preg_match("/\bclasse\b/",$where)) {
       array_push($tables,"$GLOBALS[tableprefix]types");
-      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|statut|ordre|titre");
+      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|statut|ordre");
       $jointypesentitesadded=1;
       $where.=" AND $GLOBALS[tableprefix]entites.idtype=$GLOBALS[tableprefix]types.id";
       ## c'est inutile pour le moment: preg_replace("/\bclasse\b/","$GLOBALS[tableprefix]types.classe",$where).
@@ -88,7 +88,7 @@ function parse_loop_extra(&$tables,
 #  echo "where 1bis:",htmlentities($where),"<br>";
     if (!$jointypesentitesadded && preg_match("/\btype\b/",$where)) {
       array_push($tables,"$GLOBALS[tableprefix]types");
-      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|statut|ordre|titre");
+      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|statut|ordre");
       $where.=" AND $GLOBALS[tableprefix]entites.idtype=$GLOBALS[tableprefix]types.id";
     }
     if (preg_match("/\bparent\b/",$where)) {
