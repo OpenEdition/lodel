@@ -95,6 +95,9 @@ if ($edit) { // modifie ou ajoute
 
     require_once ($home."connect.php");
 
+    // transform the balise tab in balises
+    $balises=join(";",array_keys($context[balise]));
+
     // lock the tables
     if ($context[classe]!="documents" && $context[classe]!="publications") die("Preciser une classe. Classe incorrecte");
 
@@ -129,7 +132,7 @@ if ($edit) { // modifie ou ajoute
       $newstatut=$protege ? 32 : 1;
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,condition,defaut,traitement,balisesxhtml,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$idgroupe','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[balisesxhtml]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,condition,defaut,traitement,balises,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$idgroupe','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$balises','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
@@ -164,18 +167,25 @@ calcul_page($context,"champ");
 
 
 
-function make_select_traitements()
+function loop_balises(&$context,$funcname)
 
 {
+#  echo ":",$context[balises];
+  $balises=preg_split("/;/",$context[balises]);
+#  print_r($balises);
 
-  make_select("traitement",
-	      array(""=>"aucun",
-		    '|strip_tags'=>"Enlever toutes les balises HTML",
-		    '|strip_tags_keepnotes'=>"Enlever toutes les balises HTML sauf les appels de note",
-		    '|strip_tags_keepnotes("<i>")'=>"Enlever toutes les balises HTML sauf les appels de note et l'italique",
-		    '|strip_tags_keepnotes("<u><i>")'=>"Enlever toutes les balises HTML sauf les appels de note, l'italique et le sousligner",
-		    ));
+  $vars=array("xhtml:fontstyle","xhtml:phrase","xhtml:block","Sections","Appels de notes");
+  foreach($vars as $nom) {
+    $localcontext=$context;
+    $localcontext['count']=$count;
+    $count++;
+    $localcontext['nom']=$nom;
+    $localcontext['value']=$context['id'] ? in_array($nom,$balises) : true; // every checked by default
+    call_user_func("code_do_$funcname",$localcontext);
+  }
 }
+
+
 
 
 function make_select_conditions()
@@ -209,19 +219,6 @@ function make_select_types()
 }
 
 
-# Rajout fait par Nicolas Nutten le 27/01/04
-function make_select_balises_xhtml()
-{
-	make_select("balisesxhtml",
-				array(
-					"" => "Aucune balise",
-					"xhtml:fontstyle" => "tt, i, b, big, small",
-					"xhtml:phrase" => "em, strong, dfn, code, q, samp, kbd, var, cite, abbr, acronym, sub, sup",
-					"xhtml:block" => "p, h1, h2, h3, h4, h5, h6, div, lists, pre, hr, blockquote, address, table"
-					)
-				);
-}
-##### Fin du rajout
 
 function make_select($champ, $arr)
 
