@@ -56,23 +56,6 @@
 			</div>
 		</div>
 	</IF>
-	<!--<LOOP NAME="extract_image" TABLE="publications" WHERE="id=[#ID]">
-		<DO>-->
-			Hello world !!!
-			<IF COND="[#META_IMAGE]">
-				<table border="0">
-					<tr>
-						<td align="center">
-							<img src="../../[#IMAGE]" /><br />
-							<span class="texte_normal">[#META]</span>
-						</td>
-					</tr>
-				</table>
-			<ELSE/>
-				rien<br />
-			</IF>
-		<!--</DO>
-	</LOOP>-->
 	<IF COND="[#TYPE] EQ 'serie_lineaire'">
 		<IF COND="[#EDITEUR]">
 			<div class="ligne_formulaire">
