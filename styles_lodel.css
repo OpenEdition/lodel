@@ -20,24 +20,6 @@ img.picto_gauche {
 
 img.picto_fleche {vertical-align:bottom;}
 
-/*div.ligne_groupe1, div.ligne_groupe2 {
-	padding-left: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-div.ligne_groupe1 {background-color: #F3F3F3;}
-div.ligne_groupe2 {background-color: #FFFFFF;}
-
-div.ligne_art1, div.ligne_art2, div.ligne_serie1, div.ligne_serie2 {
-	padding-left: 10px;
-	margin-left: 30px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-div.groupe div.ligne_art1 {background-color: #F3F3F3;}
-div.groupe div.ligne_art2 {background-color: #FFFFFF;}*/
-
 div.ligne_serie1, div.ligne_serie2,
 div.ligne_numero1, div.ligne_numero2, 
 div.ligne_theme1, div.ligne_theme2, 
@@ -58,12 +40,13 @@ div.ligne_numero1 {background-color: #EDFDF3;}
 div.ligne_numero2 {background-color: #FFFFFF;}
 div.ligne_theme1 {background-color: #FFFEE8;}
 div.ligne_theme2 {background-color: #FFFFFF;}
-div.ligne_regroupement1 {background-color: #DFEDE4;}
+/*div.ligne_regroupement1 {background-color: #DFEDE4;}*/
+div.ligne_regroupement1 {background-color: #EFFFEF;}
 div.ligne_regroupement2 {background-color: #EFFFEF;}
-div.ligne_document_isole1 {background-color: #F3F3F3;}
-div.ligne_document_isole2 {background-color: #FFFFFF;}
-div.ligne_document_regroupement1 {background-color: #F3F3F3;}
-div.ligne_document_regroupement2 {background-color: #FFFFFF;}
+div.ligne_document_isole1 {background-color: #FFFFFF;}
+div.ligne_document_isole2 {background-color: #F3F3F3;}
+div.ligne_document_regroupement1 {background-color: #FFFFFF;}
+div.ligne_document_regroupement2 {background-color: #F3F3F3;}
 
 .ligne_admin1, .ligne_admin2 {padding-right: 10px;}
 .ligne_admin1 {background-color: #FDFAF1;}
@@ -96,7 +79,8 @@ div.ligne_ajouter {background-color: #E5E5E5;}
 div.ligne_ajouter_theme {background-color: #FFFEE8;}
 div.ligne_ajouter_numero {background-color: #EDFDF3;}
 div.ligne_ajouter_regroupement {background-color: #D5E4DA;}
-div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #DFEDE4;}
+/*div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #DFEDE4;}*/
+div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #EFFFEF;}
 div.ligne_ajouter_document_dans_un_regroupement2 {background-color: #EFFFEF;}
 
 /******************** DOCUMENTS **********************/
@@ -550,7 +534,7 @@ div.lien_popup a:hover {
 	font-size: small;
 	font-weight: small;
 	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-family: verdana;	
 }
 
 .fase4_rdf {
@@ -564,7 +548,7 @@ div.lien_popup a:hover {
 	font-size: x-small;
 	font-weight: small;
 	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-family: verdana;	
 }
 
 .texte_trespetit {
