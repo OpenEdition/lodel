@@ -45,7 +45,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="name">[@ADMIN.GROUP_NAME]
@@ -56,7 +56,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
     </p>
   </LOOP>
   <label for="protected">[@ADMIN.PROTECTED_USER_GROUP]
@@ -71,7 +71,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
     </p>
   </LOOP>
 </fieldset>

@@ -46,7 +46,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span>
@@ -57,7 +57,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="username">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="username"></FUNC>
     </p>
   </LOOP>
   <label for="passwd">[@COMMON.PASSWORD]
@@ -68,7 +68,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="passwd">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="passwd"></FUNC>
     </p>
   </LOOP>
   <label for="name">[@ADMIN.LASTNAME_AND_FIRSTNAME]
@@ -79,7 +79,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
     </p>
   </LOOP>
   <label for="email">[@ADMIN.EMAIL]
@@ -98,7 +98,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="userrights">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="userrights"></FUNC>
     </p>
   </LOOP>
   <label for="lang">[@ADMIN.USER_LANG]
@@ -113,7 +113,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
     </p>
   </LOOP>
   <label for="usergroups">[@ADMIN.USERGROUPS]
@@ -128,7 +128,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="usergroups">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="usergroups"></FUNC>
     </p>
   </LOOP>
   <label for="protected">[@ADMIN.PROTECTED_USER]
@@ -143,7 +143,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
     </p>
   </LOOP>
 </fieldset>

@@ -129,6 +129,7 @@ class TextsLogic extends Logic {
 
    // begin{uniquefields} automatic generation  //
 
+    function _uniqueFields() {  return array(array("name","lang","textgroup"),);  }
    // end{uniquefields} automatic generation  //
 
 

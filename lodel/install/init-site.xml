@@ -961,7 +961,7 @@
         size="255"
         description="style qui conduit a cette balises"
         label="[@ADMIN.STYLE_INDEX_TYPE]"
-        edittype="mlstyle" />
+        edittype="style" />
 <column name="g_type"
         type="VARCHAR"
         size="255"

@@ -44,7 +44,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="name">[@ADMIN.TABLEFIELDGROUP_NAME]<span class="optional">(*)</span>
@@ -55,13 +55,13 @@
   <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
     </p>
   </LOOP>
   <input type="hidden" name="class" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="class"></FUNC>
     </p>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
@@ -72,7 +72,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="title">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
     </p>
   </LOOP>
   <label for="comment">[@ADMIN.COMMENT]
@@ -83,7 +83,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="comment">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
     </p>
   </LOOP>
   <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
@@ -99,7 +99,7 @@
     <br />
     <LOOP NAME="fielderror" FIELD="protected">
       <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
       </p>
     </LOOP>
   </IF>

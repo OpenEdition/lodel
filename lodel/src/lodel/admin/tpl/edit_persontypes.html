@@ -46,7 +46,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="type">[@ADMIN.NAME_PERSON_TYPE]<span class="optional">(*)</span>
@@ -57,13 +57,13 @@
   <br />
   <LOOP NAME="fielderror" FIELD="type">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="type"></FUNC>
     </p>
   </LOOP>
   <input type="hidden" name="class" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="class"></FUNC>
     </p>
   </LOOP>
   <label for="title">[@ADMIN.TITLE_PERSON_TYPE]<span class="optional">(*)</span>
@@ -74,7 +74,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="title">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
     </p>
   </LOOP>
   <label for="style">[@ADMIN.STYLE_PERSON_TYPE]
@@ -85,7 +85,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="style">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="style"></FUNC>
     </p>
   </LOOP>
   <label for="g_type">[@ADMIN.GENERIC_EQUIVALENT]
@@ -100,7 +100,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="g_type">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="g_type"></FUNC>
     </p>
   </LOOP>
   <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_PERSON]
@@ -111,7 +111,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="tpl">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="tpl"></FUNC>
     </p>
   </LOOP>
   <label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]
@@ -122,7 +122,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="tplindex">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="tplindex"></FUNC>
     </p>
   </LOOP>
   <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
@@ -138,7 +138,7 @@
     <br />
     <LOOP NAME="fielderror" FIELD="protected">
       <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
       </p>
     </LOOP>
   </IF>
@@ -148,7 +148,7 @@
 	
 	<div style="padding-top:20px; padding-left:70px; padding-right:70px;">
 		<span class="texte_normal">
-			(*) [@ADMIN.HOWTO_INDIVDUAL_TYPE_1].<br />
+			[@ADMIN.HOWTO_INDIVDUAL_TYPE_1].<br />
 			[@ADMIN.HOWTO_INDIVDUAL_TYPE_2]. <br />
 			[@ADMIN.HOWTO_INDIVDUAL_TYPE_3].
 		</span>

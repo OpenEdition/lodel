@@ -67,12 +67,15 @@ if (!$_GET['do'] && !$_POST['do']) {
     $lo="entities_advanced";
   } elseif ($do=="view" || $do=="edit") {
     $lo="entities_edition";
+  } elseif ($do=="import") {
+    $lo="entities_import";
   } else {
     $lo="entities";
   }
   Controler::controler(array("entities",
 			     "entities_advanced",
 			     "entities_edition",
+			     "entities_import",
 			     "tasks"),$lo);
 }
 

@@ -46,7 +46,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span>
@@ -57,13 +57,13 @@
   <br />
   <LOOP NAME="fielderror" FIELD="class">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="class"></FUNC>
     </p>
   </LOOP>
   <input type="hidden" name="classtype" value="[#CLASSTYPE]">
   <LOOP NAME="fielderror" FIELD="classtype">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="classtype"></FUNC>
     </p>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
@@ -74,7 +74,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="title">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
     </p>
   </LOOP>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
@@ -89,7 +89,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
     </p>
   </LOOP>
   <label for="comment">[@ADMIN.COMMENT]
@@ -100,7 +100,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="comment">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
     </p>
   </LOOP>
 </fieldset>

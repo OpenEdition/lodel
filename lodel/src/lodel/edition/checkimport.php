@@ -48,7 +48,7 @@ $parser->init("documents");
 $parser->parse($text,$handler);
 
 $context['tablecontents']=$handler->contents();
-$context['urlnext']="index.php?do=xmlimport&idtask=$idtask";
+///$context['urlnext']="index.php?do=xmlimport&idtask=$idtask";
 
 
 require ($home."calcul-page.php");

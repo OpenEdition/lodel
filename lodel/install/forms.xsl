@@ -229,7 +229,11 @@
       <xsl:element name="LOOP">
         <xsl:attribute name="NAME">fielderror</xsl:attribute>
         <xsl:attribute name="FIELD"><xsl:value-of select="@name" /></xsl:attribute>
-        <p class="error"> <FUNC NAME="PRINT_ERROR_MESSAGE" /> 
+        <p class="error">
+          <xsl:element name="FUNC">
+            <xsl:attribute name="NAME">PRINT_ERROR_MESSAGE</xsl:attribute>
+            <xsl:attribute name="TITLE"><xsl:value-of select="@name" /></xsl:attribute>
+          </xsl:element>
         </p>
       </xsl:element>
     </xsl:template>

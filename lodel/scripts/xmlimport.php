@@ -28,8 +28,6 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-$GLOBALS['prefixregexp']="Pr\.|Dr\.";
-
 
 class XMLImportParser {
 

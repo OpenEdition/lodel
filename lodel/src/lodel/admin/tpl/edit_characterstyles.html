@@ -46,7 +46,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="style">[@ADMIN.STYLE]<span class="optional">(*)</span>
@@ -57,7 +57,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="style">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="style"></FUNC>
     </p>
   </LOOP>
   <label for="conversion">[@ADMIN.CONVERSION]
@@ -68,7 +68,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="conversion">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="conversion"></FUNC>
     </p>
   </LOOP>
   <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
@@ -84,7 +84,7 @@
     <br />
     <LOOP NAME="fielderror" FIELD="protected">
       <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
       </p>
     </LOOP>
   </IF>

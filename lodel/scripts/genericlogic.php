@@ -232,13 +232,13 @@ class GenericLogic extends Logic {
        if ($field->type!="persons" && $field->type!="entries")
 	 $this->_publicfields[$field->class][$field->name]=true; // this field is public
 
+       if ($field->edition=="none") unset($value);
+       if ($empty) $value=lodel_strip_tags($field->default,$field->allowedtags); // default value
+
        if ($field->condition=="+" && $empty) {
 	 $error[$field->name]="+"; // required
 	 continue;
        }
-       if ($field->edition=="none") unset($value);
-       if ($empty) $value=lodel_strip_tags($field->default,$field->allowedtags); // default value
-
        // clean automatically the fields when required.
        if (!is_array($value) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) $value=trim(strip_tags($value));
 

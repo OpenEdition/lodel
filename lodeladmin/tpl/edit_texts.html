@@ -45,7 +45,7 @@
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
@@ -60,19 +60,19 @@
   <br />
   <LOOP NAME="fielderror" FIELD="contents">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="contents"></FUNC>
     </p>
   </LOOP>
   <input type="hidden" name="lang" value="[#LANG]">
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
     </p>
   </LOOP>
   <input type="hidden" name="textgroup" value="[#TEXTGROUP]">
   <LOOP NAME="fielderror" FIELD="textgroup">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="textgroup"></FUNC>
     </p>
   </LOOP>
   <label for="protected">[@ADMIN.PROTECTED_OPTION]
@@ -87,7 +87,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
     </p>
   </LOOP>
 </fieldset>

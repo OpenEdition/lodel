@@ -68,7 +68,7 @@ function validfield(&$text,$type,$default="")
     $stylesarr=preg_split("/[\n,;]/",$text);
     foreach($stylesarr as $style) {
       $style=trim($style);
-      if ($style && !preg_match("/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/",$style)) return $type;
+      if ($style && !preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/",$style)) return $type;
     }
     break;
   case "style" :
@@ -76,7 +76,7 @@ function validfield(&$text,$type,$default="")
       $text=strtolower($text);
       $stylesarr=preg_split("/[\n,;]/",$text);
       foreach($stylesarr as $style) {
-	if (!preg_match("/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?$/",trim($style))) return $type;
+	if (!preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?$/",trim($style))) return $type;
       }
     }
     break;
@@ -140,7 +140,7 @@ function validfield(&$text,$type,$default="")
     $text=intval($text);
     // check it exists
     $dao=&getDAO("entities");
-    $vo=getById($text,"1");
+    $vo=$dao->getById($text,"1");
     if (!$vo) return "entity";
     break;
   case "textgroups" :

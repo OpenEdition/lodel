@@ -149,7 +149,7 @@ class Entities_EditionLogic extends GenericLogic {
     * add/edit Action
     */
 
-   function editAction(&$context,&$error)
+   function editAction(&$context,&$error,$opt=false)
 
    {
      global $user,$home;
@@ -176,6 +176,7 @@ class Entities_EditionLogic extends GenericLogic {
        // error.
        // if the entity is imported and will be checked
        // that's fine, let's continue, if not return an error
+       if ($opt==FORCE) $status=-64;
        if ($status>-64) return "_error";
      }
     
@@ -191,10 +192,14 @@ class Entities_EditionLogic extends GenericLogic {
      // create or edit the entity
      if ($id) {
        $new=false;
-       $dao->instantiateObject($vo);
-       $vo->id=$id;
+       $vo=$dao->getById($id,"id,status");
        // change the usergroup of the entity ?
        if ($user['admin'] && $context['usergroup']) $vo->usergroup=intval($context['usergroup']);
+
+       if ($vo->status<=-64) {  // like a creation
+	 $vo->status=$votype->creationstatus;
+	 $vo->creationdate=$now;
+       }
      } else {
        $new=true;
        $vo=$dao->createObject();

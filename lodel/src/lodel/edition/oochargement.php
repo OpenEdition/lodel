@@ -134,19 +134,19 @@ if ($file1) {
       $row=array();
     }
       
-    $row[fichier]=$fileconverted;
-    $row[source]=$source;
-    $row[sourceoriginale]=$sourceoriginale;
+    $row['fichier']=$fileconverted;
+    $row['source']=$source;
+    $row['sourceoriginale']=$sourceoriginale;
     // build the import
-    $row[importversion]=addslashes($convertretvar[version])."; oochargement $version;";
+    $row['importversion']=addslashes($convertretvar['version'])."; oochargement $version;";
 
     if (!$idtask) {
-      if ($context[identity]) {
-	$row[identity]=$context[identity];
+      if ($context['identity']) {
+	$row['identity']=$context['identity'];
       } else {
-	$row[idparent]=$context[idparent];
+	$row['idparent']=$context['idparent'];
       }
-      $row[idtype]=$context[idtype];
+      $row['idtype']=$context['idtype'];
     }
     $idtask=makeTask("Import $file1_name",3,$row,$idtask);
 
@@ -160,7 +160,7 @@ if ($file1) {
   } while (0); // exceptions
 }
 
-$context[url]="oochargement.php";
+$context['url']="oochargement.php";
 
 
 include ($home."calcul-page.php");

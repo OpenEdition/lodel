@@ -34,7 +34,8 @@
 	<form>
 		<input class="form" type="button" value="    [@EDITION.REDO_IMPORT]    " onClick="javascript:window.history.go(-1);">
 		<input class="form" type="button" value="    [@COMMON.CANCEL]    " onClick="javascript:window.location='index.php?do=delete&lo=tasks&id=[#IDTASK]'">
-		<input class="form" type="button" value="    [@COMMON.NEXT]    " onClick="javascript:window.location='[#URLNEXT]'">
+		<input class="form" type="button" value="    [@COMMON.NEXT]    " onClick="javascript:window.location='index.php?do=import&idtask=[#IDTASK]'">
+		<input class="form" type="button" value="    [@COMMON.IMPORT]    " onClick="javascript:window.location='index.php?do=import&idtask=[#IDTASK]&finish=oui'">
 	</form>
 </div></td></tr>
 </table>

@@ -533,7 +533,6 @@ ALTER TABLE #_TP_types ADD creationstatus TINYINT DEFAULT \'-1\' NOT NULL;
       }
     }
 
-
     /////////////////////
     // PERSONTYPES
     if ($tables["$GLOBALS[tp]persontypes"]) {

@@ -154,7 +154,7 @@ class EntryTypesLogic extends Logic {
      return array("type"=>array("type","+"),
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
-                  "style"=>array("mlstyle",""),
+                  "style"=>array("style",""),
                   "g_type"=>array("select",""),
                   "tpl"=>array("tplfile",""),
                   "tplindex"=>array("tplfile",""),
