@@ -4,13 +4,6 @@
 require_once("lodelconfig.php");
 require_once($home."connect.php");
 
-#echo "::";
-$GLOBALS[tablefields]=array();
-
-maketablefields();
-
-////////////////////////
-
 if (!function_exists("var_export")) {
 function var_export($arr,$t)
 
@@ -27,6 +20,14 @@ function var_export($arr,$t)
   return $ret.")";
 }
 }
+
+#echo "::";
+$GLOBALS[tablefields]=array();
+
+maketablefields();
+
+////////////////////////
+
 
 function maketablefields()
 
