@@ -142,7 +142,7 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 {
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes,$GLOBALS[tp]typeentites_typepersonnes WHERE statut>0 AND idtypepersonne=id AND idtypeentite='$lodelcontext[idtype]'") or die (mysql_error());
+  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes,$GLOBALS[tp]typeentites_typepersonnes WHERE statut>0 AND idtypepersonne=id AND idtypeentite='$localcontext[idtype]'") or die (mysql_error());
   echo "here: ",mysql_num_rows($result),"</br>";
   while (list($idtype,$style,$styledescription)=mysql_fetch_row($result)) {
     // accouple les balises personnes et description
