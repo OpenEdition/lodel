@@ -27,11 +27,11 @@ $balises=array ("-" => "-",
 		"recension_titre"=>"Recension Titre",
 		"recension_auteur"=>"Recension Auteur",
 		"recension_annee"=>"Recension année",
-		"recension_type"=>"Recension type"
+		"recension_type"=>"Recension type",
 
 		"droitsauteur"=>"Droits d'auteurs",
 		"erratum"=>"Erratum",
-		"ndlr"=>"NDLR",
+		"ndlr"=>"NDLR"
 		);
 
 $multiplelevel=array("section\d+"=>"texte",
