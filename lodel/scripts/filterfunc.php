@@ -27,7 +27,10 @@ function makefilterfunc()
     $filterfunc="return ".$filterfunc.";";
     $filterstr="'$classe.$nom'=>'".addslashes($filterfunc)."',";
   }
-  if (!$filterstr) die("erreur interne dans decode_loop_content_extra");
+  //if (!$filterstr) die("erreur interne dans filterfunc");
+  // pas tres optimal. Il faudrait plutot que la boucle appel mysql_fetch_assoc dans ce cas... mais bon.
+
+
   //
   // cree la fonction avec filtrage
   //
