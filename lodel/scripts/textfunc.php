@@ -132,7 +132,7 @@ function couperpara($long,$texte) {
 
 	$pos=-1;
 	do {
-		$pos=strpos($texte,"</P>",$pos+1);
+		$pos=strpos($texte,"</p>",$pos+1);
 		$long--;
 	} while ($pos!==FALSE && $long>0);
 
