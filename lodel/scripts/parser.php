@@ -328,7 +328,7 @@ function parse_variable (&$text,$escape="php")
 	$variable="\$context[".strtolower($subresult[1])."]";
       }
       foreach(explode("|",$subresult[2]) as $fct) {
-	if ($fct=="false" || $fct=="true") {
+	if ($fct=="false" || $fct=="true" || $fct=="else") {
 	  break;
 	} elseif ($fct) {
 	  // recupere les arguments de la fonction
@@ -343,6 +343,9 @@ function parse_variable (&$text,$escape="php")
       $code='<?php if (!('.$variable.')) { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($fct=="true") {
       $code='<?php if ('.$variable.') { ?>'.$pre.$post.'<?php } ?>';
+    } elseif ($fct=="else") {
+      if ($escape!="php") $this->errmsg("ERROR: else pipe function can't eb used in this context");
+      $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { echo "$tmpvar"; } else { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($escape=="php") { // traitement normal, php espace
       $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<?php echo "$tmpvar"; ?>'.$post.'<?php } ?>';
     } elseif ($escape=="quote") { // normal processing. quotemark esapce.

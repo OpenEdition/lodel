@@ -26,6 +26,37 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+
+function contact_servoo ($cmds,$uploadedfiles,$destfile="") 
+
+{
+
+  $options=getoption(array("servoourl","servoousername","servoopasswd"));
+
+  if (!$options || !$options[servoourl]) { // get form the lodelconfig file
+    $options[servoourl]=$GLOBALS[servoourl];
+    $options[servoousername]=$GLOBALS[servoousername];
+    $options[servoopasswd]=$GLOBALS[servoopasswd];
+  }
+  if (!is_array($uploadedfiles)) $uploadedfiles=array($uploadedfiles);
+
+  $ret=upload($options[servoourl],
+	      array("username"=>$options[servoousername],
+		    "passwd"=>$options[servoopasswd],
+		    "commands"=>$cmds),
+	      $uploadedfiles, # fichier a uploaded
+	      0, # cookies
+	      $destfile
+	      );
+  if ($ret) { # erreur
+    return $ret;
+  }
+}
+
+
+
+
 if (!function_exists("file_get_contents")) {
   function file_get_contents($file) 
   {

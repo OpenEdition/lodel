@@ -27,39 +27,56 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-include ($home."auth.php");
-authenticate(LEVEL_ADMIN,NORECORDURL);
+require ($home."auth.php");
+authenticate(LEVEL_ADMIN);
+require_once ($home."func.php");
+require_once ($home."optionfunc.php");
 
-include_once ($home."connect.php");
 
 
-if ($edit) {
-  $listoptions=array("motclefige","pasdemotcle","pasdeperiode","pasdegeographie","ordrepartypedoc");
-  include ($home."func.php");
+if ($set) {
   extract_post();
-  $newoptions=array();
-  foreach ($listoptions as $opt) {
-    if ($context["option_$opt"]) $newoptions["option_$opt"]=1;
+
+  // statut less than 0 are internal option.
+  $critere=$GLOBALS[droitlodeladmin] ? "statut>0" : "statut>0 AND statut<32";
+
+  $result=mysql_query("SELECT id,nom,type FROM $GLOBALS[tp]options WHERE $critere") or die (mysql_error());
+  while (list($id,$nom,$type)=mysql_fetch_row($result)) {
+    if (!isset($context["option_$nom"])
+	|| $type=="pass" && $context["option_$nom"]="") continue;
+    $v=$context["option_$nom"];
+    switch ($type) {
+    case "int": $v=intval($v);
+      break;
+    }
+    mysql_query("UPDATE $GLOBALS[tp]options SET valeur='$v' WHERE id='$id'") or die(mysql_error());
   }
-  $optionsstr=serialize($newoptions);
-  mysql_db_query($GLOBALS[database],"UPDATE sites SET options='$optionsstr' WHERE rep='$site'") or die (mysql_error());
-  mysql_select_db($GLOBALS[currentdb]);
-
-  // recherche les metas
-  $result=mysql_db_query($GLOBALS[database],"SELECT meta FROM sites WHERE rep='$site'") or die (mysql_error());
-  // ajoute les metas
-  $newmeta=addmeta($context,$meta);
-  if ($newmeta!=$meta) mysql_db_query($GLOBALS[database],"UPDATE sites SET meta='$newmeta' WHERE rep='$site'") or die (mysql_error());
-
-  back();
+  touch(SITEROOT."CACHE/maj");
+  if ($terminer) { header("location: index.php"); return; }
 }
 
-//print_r($context);
+
+posttraitement($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"options");
 
+function humantype($text)
 
+{
+  return $GLOBALS[options_types][$text];
+}
+
+
+function make_select_types($context) {
+
+
+  foreach ($GLOBALS[options_types] as $key => $value) {
+    $key=htmlentities($key);
+    $selected=$context[type]==$key ? " selected" : "";
+    echo "<option value=\"$key\"$selected>$value</option>\n";
+  }
+}
 
 ?>
 

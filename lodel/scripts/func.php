@@ -328,6 +328,44 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #  return serialize($newoptions);
 #}
 
+function getoption($nom,$extracritere=" AND type!='pass'")
+
+{
+  static $options_cache;
+  if (!$nom) return;
+
+  if (is_array($nom)) {
+    foreach ($nom as $n) {
+      if ($options_cache[$n]) { // cached ?
+	$ret[$n]=$options_cache[$n];
+      } else { // not cached, get it
+	$get[]=$n;
+      }
+    }
+    if ($get) { // some to get
+      $critere="nom IN ('".join("','",$get)."')";
+    } else { // everything in the cache, let's return
+      return $ret;
+    }
+  } else {
+    if ($options_cache[$nom]) // cached ?
+      return $options_cache[$nom];
+    $critere="nom='$nom'";
+  }
+
+  $result=mysql_query("SELECT nom,valeur FROM $GLOBALS[tp]options WHERE $critere $extracritere") or die(mysql_error());
+  while (list($n,$val)=mysql_fetch_row($result)) {
+    $options_cache[$n]=$val;
+    $ret[$n]=$val;
+  }
+
+  if (is_array($nom)) {
+    return $ret; // return an array
+  } else {
+    return $ret[$nom]; // return a string
+  }
+}
+
 
 
 function makeurlwithid ($base,$id)

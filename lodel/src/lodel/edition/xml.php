@@ -74,13 +74,7 @@ if ($valid) {
   $cmds="DWL file1; XVL MSV; RTN convertedfile;";
 
   require ($home."serveurfunc.php");
-  list($ret,$retval)=upload($servoourl,
-			    array("username"=>$servoousername,
-				  "passwd"=>$servoopasswd,
-				  "commands"=>$cmds),
-			    array($tmpfile.".zip"), # fichier a uploaded
-			    0 # cookies
-			    );
+  list($ret,$retval)=contact_servoo($cmds,array($tmpfile.".zip"));
 
   @unlink("$tmpfile.zip");
 

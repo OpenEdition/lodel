@@ -372,5 +372,20 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
 );
 
 
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	nom		VARCHAR(255) NOT NULL UNIQUE,		# nom/identifiant unique
+	type		CHAR(4),
 
-# voir le fichier inserts-revue.sql pour les inserts automatiques !
+	valeur		TEXT,		# valeur
+
+	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
+	maj		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_nom (nom),
+	KEY index_type (type)
+);
+
+

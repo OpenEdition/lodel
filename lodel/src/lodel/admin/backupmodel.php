@@ -64,7 +64,6 @@ if ($backup) {
   fputs($fh,"# ".str_replace("\n","\n# ",$description)."\n#------------\n\n");
 
 
-
   $tables=array("$GLOBALS[tp]champs",
 		"$GLOBALS[tp]groupesdechamps",
 		"$GLOBALS[tp]types",

@@ -162,39 +162,6 @@ function mkurl ($url,$extraarg)
   }
 }
 
-/* supprimer le 29/03/03 a enlever si ca fonctionne
-function mkurlretour ($urlretour,$id)
-
-{
-  global $context;
-
-  if (strpos($urlretour,"?")===FALSE) {
-    $context[url_retour]=$urlretour."?back=$id";
-  } else {
-    $context[url_retour]=$urlretour."&back=$id";
-  }
-}
-*/
-
-
-#ifndef LODELLIGHT
-function getsiteoptions ()
-
-{
-  global $home,$context,$site;
-
-  include_once ($home."connect.php");
-
-  mysql_select_db($GLOBALS[database]);
-  $result=mysql_query("SELECT options FROM $GLOBALS[tp]sites WHERE rep='$site'") or die (mysql_error());
-  if (!mysql_num_rows($result)) { die ("erreur site"); }
-
-  list($options)=mysql_fetch_array($result);
-  if ($options) $context=array_merge($context,unserialize($options));
-
-  mysql_select_db($GLOBALS[currentdb]);
-}
-#endif
 
 function getacceptedcharset($charset) {
 	// Détermine le charset a fournir au navigateur
@@ -242,26 +209,9 @@ if (!$filemask) $filemask="0700";
 
 // cherche le nom du site
 
-if ($site) {
-  $context[site]=$site;
-}
+$context[site]=$site;
 
-# else {
-#  $url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
-#  if ($siteagauche) {
-#    if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodeladmin" && $result[1]!="www") {
-#      $context[site]=$site=$result[1];
-#    } else {
-#      $context[site]=$site="";
-#    }
-#  } else {
-#    if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodeladmin") {
-#      $context[site]=$site=$result[1];
-#    } else {
-#      $context[site]=$site="";
-#    }
-#  }
-#}
+
 
 $context[charset] = getacceptedcharset($charset);
 header("Content-type: text/html; charset=$context[charset]");

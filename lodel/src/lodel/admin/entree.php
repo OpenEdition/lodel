@@ -86,7 +86,7 @@ if ($edit) { // modifie ou ajoute
     $idparent=intval($context[idparent]);
     if ($id>0) { // il faut rechercher le statut, le type et l'ordre
       $result=mysql_query("SELECT statut,idtype,ordre FROM $GLOBALS[tp]entrees WHERE id='$id'") or die (mysql_error());
-      list($statut,$context[idtype],$ordre)=mysql_fetch_array($result);
+      list($statut,$context[idtype],$ordre)=mysql_fetch_row($result);
     } else {
       $statut=1;
       if (!$context[idtype]) die ("Erreur interne. Il manque le type dans le formulaire");
@@ -107,7 +107,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysal_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   $context[statut]=-32; # valeur par defaut a la creation

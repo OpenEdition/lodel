@@ -205,6 +205,8 @@ ln tpl/entrees.html
 
 ln options.php
 ln tpl/options.html
+ln option.php
+ln tpl/option.html
 
 ln stats.php
 ln texte.php

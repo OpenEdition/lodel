@@ -160,22 +160,13 @@ calcul_page($context,"oochargement");
 function convert ($uploadedfile,$destfile)
 
 {
-  global $home,$servoourl,$servoousername,$servoopasswd;
+  global $home;
 
-  $cmds="DWL file1; CVT XHTMLLodel-1.0; ZIP converted; RTN convertedfile;";
+  require_once($home."serveurfunc.php");
 
-  require ($home."serveurfunc.php");
-  $ret=upload($servoourl,
-	      array("username"=>$servoousername,
-		    "passwd"=>$servoopasswd,
-		    "commands"=>$cmds),
-	      array($uploadedfile), # fichier a uploaded
-	      0, # cookies
-	      $destfile
-	      );
-  if ($ret) { # erreur
-    return $ret;
-  }
+  $err=contact_servoo("DWL file1; CVT XHTMLLodel-1.0; ZIP converted; RTN convertedfile;"
+		      ,$uploadedfile,$destfile);
+  if ($err) return $err;
 
   return FALSE;
 }

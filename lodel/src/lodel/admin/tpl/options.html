@@ -22,124 +22,79 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[(#SITE|nbsp)] Administration</title>
+<title>Administer les options du site</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">M&eacute;tadonn&eacute;es et options de la revue</td>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_index.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Options</td>
 	</tr>
 </table>
-<form action="options.php" method="POST">
-	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+
+<div class="ligne_ajouter_serie">
+	<MACRO NAME="PNG_PLUS">
+	<a href="option.php?type=[#TYPE_TYPE]">Ajouter une option</a>
+</div>
+<br />
+
+
+<form method="POST" action="options.php" />
+	<input type="hidden" name="set" value="1" />
+
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5" width="90%">
+<tr>
+	<td class="texte_noir_gras">Nom</td>
+	<td class="texte_noir_gras">Valeur</td>
+	<td class="texte_noir_gras">Type</td>
+	<td>&nbsp;</td>
+</tr>
+
+	<LOOP NAME="options" TABLE="options" ORDER="ordre" WHERE="statut gt 0">
+	<DO>
 		<tr>
-			<td colspan="2" align="center">
-				<br /><div class="soustitre"><strong>Métadonnées de la revue</strong></div><br />
-			</td>
+			<LET VAR="CLASSE"><IF COND="[#COUNT] % 2">ligne_admin1<ELSE/>ligne_admin2</IF></LET>
+			<td class="[#CLASSE]">[#NOM]</td>
+                        <td class="[#CLASSE]">
+		         <IF COND="[#TYPE] eq 'pass'">
+			<input size="30" type="password" name="option_[#NOM]"></td>
+		        <ELSE/>
+		        <IF COND="[#DROITADMINLODEL] or ([#STATUT] lt 32)">
+		           <input size="30" type="text" name="option_[#NOM]" value="[#VALEUR]">
+                        <ELSE/>
+		           <input size="30" type="text" name="option_[#NOM]" value="[#VALEUR]" readonly></td>
+			</IF>
+		        </td>
+			</IF>
+		         </td>
+
+
+			<td class="[#CLASSE]">[(#TYPE|humantype)]</td>
+		        <td class="[#CLASSE]" style="color: #CC9933;" align="right">
+		        	<a href="option.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+				<a href="option.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+
+		        <IF COND="[#DROITADMINLODEL] || [#STATUT] lt 32">
+			&nbsp;&nbsp;|&nbsp;<a href="option.php?id=[#ID]">Editer</a>&nbsp;
+	                |&nbsp;<a href="option.php?id=[#ID]&delete=1">Supprimer</a>
+		        <ELSE/>
+			&nbsp;&nbsp;|<span class="inactif">Editer</span>&nbsp;
+			|&nbsp;<span class="inactif">Supprimer</span>&nbsp;|&nbsp;
+			</IF>
+		        &nbsp;|&nbsp;
+			<IF COND="[#STATUT] ge 32">[Protégée]<ELSE/>[ Normal ]</IF>
+		       </td>
 		</tr>
-		<tr>
-			<td>TITRE ACCUEIL</td>
-			<td><input size="50" type="text" name="meta_title_accueil" value="[#META_TITLE_ACCUEIL]" />	</td>
-		</tr>
-		<tr>
-			<td>DC.PUBLISHER</td>
-			<td><input size="50" type="text" name="meta_dc_publisher" value="[#META_DC_PUBLISHER]" /></td>
-		</tr>
-		<tr>
-			<td>DC.PUBLISHER.DETAILS</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_publisher_details">[#META_DC_PUBLISHER_DETAILS]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.PUBLISHER.WEBMASTER</td>
-			<td><input size="50" type="text" name="meta_dc_publisher_webmaster" value="[#META_DC_PUBLISHER_WEBMASTER]" /></td>
-		</tr>
-		<tr>
-			<td>DC.PUBLISHER.GRAPHISTE</td>
-			<td><input size="50" type="text" name="meta_dc_publisher_graphiste" value="[#META_DC_PUBLISHER_GRAPHISTE]" /></td>
-		</tr>
-		<tr>
-			<td>DC.RELATION.ISPARTOF.PORTAIL</td>
-			<td><input size="50" type="text" name="meta_dc_relation_ispartof_portail" value="[#META_DC_RELATION_ISPARTOF_PORTAIL]" /></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description">[#META_DC_DESCRIPTION]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.ACCUEIL</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_accueil">[#META_DC_PUBLISHER_DETAILS]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.INDEXDEFAUT</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_indexdefaut">[#META_DC_DESCRIPTION_INDEXDEFAUT]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.SOMMAIRESDEFAUT</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_sommairesdefaut">[#META_DC_DESCRIPTION_SOMMAIRESDEFAUT]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.FR</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_fr">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_FR]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.EN</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_en">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_EN]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.ES</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_es">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_ES]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.IT</td>
-			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_it">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_IT]</textarea></td>
-		</tr>
-		<tr>
-			<td>DC.RIGHTS.DEFAUT</td>
-			<td><input size="50" type="text" name="meta_dc_rights_defaut" value="[#META_DC_RIGHTS_DEFAUT]" /></td>
-		</tr>
-		<tr>
-			<td>DC.IDENTIFIER.URLACCUEIL</td>
-			<td><input size="50" type="text" name="meta_dc_indentifier_urlaccueil" value="[#META_DC_IDENTIFIER_URLACCUEIL]" /></td>
-		</tr>
-		<tr>
-			<td>DC.LANGUAGE.DEFAUT</td>
-			<td><input size="50" type="text" name="meta_dc_language_defaut" value="[#META_DC_LANGUAGE_DEFAUT]" /></td>
-		</tr>
-		<tr>
-			<td colspan="2" align="center">
-				<br /><br /><br /><div class="soustitre"><strong>Options de la revue</strong></div><br />
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">N'accepte pas les périodes: <input type="radio" name="option_pasdeperiode" value="1" [(#OPTION_PASDEPERIODE|yes)] /> Accepte les périodes: <input type="radio" name="option_pasdeperiode" value="0" [(#OPTION_PASDEPERIODE|no)] /></td>
-		</tr>
-		<tr>
-			<td colspan="2">N'accepte pas les zones géo: <input type="radio" name="option_pasdegeographie" value="1" [(#OPTION_PASDEGEOGRAPHIE|yes)] /> Accepte les zones géo: <input type="radio" name="option_pasdegeographie" value="0" [(#OPTION_PASDEGEOGRAPHIE|no)] /></td>
-		</tr>
-		<tr>
-			<td colspan="2">N'accepte pas de mots clés: <input type="radio" name="option_pasdemotcle" value="1" [(#OPTION_PASDEMOTCLE|yes)] /> Accepte des mots clés: <input type="radio" name="option_pasdemotcle" value="0" [(#OPTION_PASDEMOTCLE|no)] /></td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				Ordre tenant compte du type de document: <input type="radio" name="option_ordrepartypedoc" value="1" [(#OPTION_ORDREPARTYPEDOC|yes)] /> 
-				Ordre  au sein de chaque regroupement<input type="radio" name="option_ordrepartypedoc" value="0" [(#OPTION_ORDREPARTYPEDOC|no)] /><br /><br />
-				<span class="texte_info">(Est utile pour la fonction "Up/Down", pour décider de la façon dont on va classer les articles.<br />Soit ce sera selon un ordre au sein des regroupements, soit ce sera dans un ordre au sein des types d'articles.</span>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">Liste figée de mots clés :<input type="radio" name="option_motclefige" value="1" [(#OPTION_MOTCLEFIGE|yes)] /> liste libre de mots clés :<input type="radio" name="option_motclefige" value="0" [(#OPTION_MOTCLEFIGE|no)] /></td>
-		</tr>
-		<tr>
-			<td colspan="2" align="center">
-				<br /><br />
-				<input class="form" type="submit" name="edit" value="  Modifier  " />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="submit" name="edit" value="  Annuler  " onClick="javascript:window.history.go(-1)" />
-				<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
-				<br /><br />
-			</td>
-		</tr>
-	</table>
+         </DO>
+         </LOOP>
+</table>
+
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   Modifier     " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="submit" name="terminer" value="    Modifier et terminer    ">&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php'">
+	</div>
 </form>
+
 
 <MACRO NAME="CLOSE_HTML">

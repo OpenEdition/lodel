@@ -62,15 +62,15 @@ if ($edit) { // modifie ou ajoute
 
     // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
-      $result=mysql_query ("SELECT options,statut,rep FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
-      list($options,$statut,$rep)=mysql_fetch_row($result);
+      $result=mysql_query ("SELECT statut,rep FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
+      list($statut,$rep)=mysql_fetch_row($result);
       $context[rep]=$rep;
     } else {
       $options=""; $statut=-32; // -32 signifie en creation
     }
     if ($reinstalle) $statut=-32;
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,url,soustitre,options,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[url]','$context[soustitre]','$options','$statut')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,url,soustitre,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[url]','$context[soustitre]','$statut')") or die (mysql_error());
 
     if ($statut>-32) back(); // on revient, le site n'est pas en creation
 
