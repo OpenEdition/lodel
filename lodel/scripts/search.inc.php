@@ -161,12 +161,12 @@ function search(&$context,$funcname,$arguments)
 		
 		
 		
-		$offsetname="offset_".substr(md5($funcname),0,5);
+		#$offsetname="offset_".substr(md5($funcname),0,5);
 		#echo $offsetname;
-		$offset = ($context[$offsetname] ? intval($context[$offsetname]) : 0);
+		#$offset = ($context[$offsetname] ? intval($context[$offsetname]) : 0);
 		#echo "offset:".$offset;
 		
-		$limit = " LIMIT $offset,".$arguments['limit'];
+		#$limit = " LIMIT $offset,".$arguments['limit'];
 		#echo "limit :".$limit;
 		$groupby = " GROUP BY identity ";
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
@@ -176,7 +176,7 @@ function search(&$context,$funcname,$arguments)
 	#echo "hey2 :".$sqlc;
 		//print_r($db->GetAll($sqlc));
 		
-		$context['nbresults'] += count($db->GetAll($sqlc));
+		#$context['nbresults'] += count($db->GetAll($sqlc));
 		//print_r($row);
 	#echo "Nombre de résultats absolu :".$nbresabs."<br />";
 		$result=$db->execute($sql) or dberror();
@@ -241,6 +241,8 @@ function search(&$context,$funcname,$arguments)
 	
 	asort($we,SORT_NUMERIC);
 	$we = array_reverse($we,true);
+	
+	
 	return $we;
 		
 } 
@@ -260,7 +262,16 @@ function search(&$context,$funcname,$arguments)
 function loop_search(&$context,$funcname,$arguments)
 {
 	$local_context = $context;
-	$results = search($local_context,$funcname,$arguments);
+	static $cache;
+	if(!isset($cache[$funcname]))
+	{
+		$results = search($local_context,$funcname,$arguments);
+		$local_context['nbresults'] = count($results);
+		$cache[$funcname] = $results;
+	}
+	$results = $cache[$funcname];
+	
+	#print_r($results);
 	$count = 0;
 	if(!$results || $local_context['nbresults'] == 0)
 	{
@@ -284,7 +295,10 @@ function loop_search(&$context,$funcname,$arguments)
 	$dao2 = &getDAO("entities");
 	//call do function with the results
 	#print_r($results);
-	foreach($results as $key => $weight)
+	$res = _array_slice_key($results,$currentoffset,$arguments['limit']);
+	#print_r($res);
+	
+	foreach($res as $key => $weight)
 	{
 		$vo = $dao2->getById($key);
 		
@@ -312,7 +326,19 @@ function loop_search(&$context,$funcname,$arguments)
 		call_user_func("code_after_$funcname",$local_context);
 		
 }
+function _array_slice_key($array, $offset, $len=-1){
 
+   if (!is_array($array))
+       return FALSE;
+
+   $length = $len >= 0? $len: count($array);
+   $keys = array_slice(array_keys($array), $offset, $length);
+   foreach($keys as $key) {
+       $return[$key] = $array[$key];
+   }
+ 
+   return $return;
+}
 
 
 /**
