@@ -195,12 +195,18 @@ unset($client);
 // Desarchive
 //
 
+$version="";
 pclzip_include();
 $ziparchive=new PclZip($archivefile);
 $ziparchive->extract(PCLZIP_OPT_REMOVE_PATH,"lodel",PCLZIP_CB_POST_EXTRACT,"setchmod");
 
 function setchmod ($p_event,&$p_header) {
-  global $chmod;
+  global $chmod,$version;
+
+  if (preg_match("/lodeladmin-(\d+(\.\d+)?)/",$p_header['filename'],$result)) {
+    $version=$result[1];
+  }
+
   chmod ($p_header['filename'],$chmod & ($p_header['folder'] ? 0777 : 0666));
   return 1;
 }
@@ -209,7 +215,7 @@ function setchmod ($p_event,&$p_header) {
 // lance sur l'installation
 //
 
-header("Location: lodeladmin/install.php?option1=1&tache=plateform&filemask=".decoct($chmod));
+header("Location: lodeladmin-$version/install.php?option1=1&tache=plateform&filemask=".decoct($chmod));
 
 
 //
