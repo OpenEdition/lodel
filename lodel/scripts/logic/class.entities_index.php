@@ -75,6 +75,7 @@ class Entities_IndexLogic extends Logic
    	 		die("ERROR: idtype is not valid in Entities_IndexLogic::addIndexAction");
    	 	//get the fieldnames list to index
    	 	$dao_groups = &getDAO("tablefieldgroups");
+   	 	print_r($dao_groups);
    	 	$dao_fields = &getDAO("tablefields");
    	 	$vos_groups = $dao_groups->findMany("class='$class'","","id");
    	 	foreach( $vos_groups as $vo_group )
