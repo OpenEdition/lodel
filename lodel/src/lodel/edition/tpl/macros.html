@@ -3,6 +3,23 @@
 <!-- Auteur : Marin Dacos, Nicolas Nutten               -->
 <!-- ************************************************** -->
 
+<!-- Macro rajoutée le 23/09/03 *********************** -->
+<!-- Cette macro est utile aux fichiers tpl :           -->
+<!-- document.html                                      -->
+<DEFMACRO NAME="JS_SIMULE_SUBMIT">
+<!-- Met la valeur "true" dans le champ caché "reload"  -->
+<!-- du formulaire, puis fait un submit du formulaire.  -->
+	<script type="text/javascript">
+	<!--
+		function reloadForm(){
+			document.forms[0].reload.value="true";
+			document.forms[0].submit();
+		}
+	//-->
+	</script>
+</DEFMACRO>
+<!-- ************************************************** -->
+
 <DEFMACRO NAME="JS_CONFIRM_DEPUBLICATION">
 	<script type="text/javascript">
 	<!--
