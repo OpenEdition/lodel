@@ -243,33 +243,13 @@ echo '<?xml version="1.0" encoding="ISO-8859-1"?>';
 			<ELSE/>
 				<LOOP NAME="desc_meta_sommaire" TABLE="types" TABLE="entites" TABLE="relations" WHERE="id1='[#IDPARENT]' AND entites.id=id2 AND entites.idtype=types.id AND classe='documents'">
 					<DO>
-						<IF COND="[#TITRE]">[#TITRE],</IF>
-						<IF COND="[#SOUSTITRE]">[#SOUSTITRE]</IF>
+						<IF COND="[#TITRE]">[(#TITRE|replacequotationmark)],</IF>
+						<IF COND="[#SOUSTITRE]">[(#SOUSTITRE|replacequotationmark)]</IF>
 					</DO>
 				</LOOP>
 			</IF>
 		</DO>
 	</LOOP>
-<!--	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
-		<IF COND="[#TEXTE]">
-			Extrait du premier article du numéro: 
-			[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
-		<ELSE/>
-			<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'" ORDER="ordre">
-				<LOOP TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
-				<DO>
-					<IF COND="[#TITRE]">
-						[#TITRE],
-					</IF>
-					<IF COND="[#SOUSTITRE]">
-						[#SOUSTITRE]
-					</IF>
-				</DO>
-				</LOOP>
-			</LOOP>
-		</IF>
-	</LOOP>
--->
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
