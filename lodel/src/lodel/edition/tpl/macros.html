@@ -717,9 +717,9 @@
 					</BEFORE>
 					<DO>
 						<IF COND="[#NBENTITES] ge 4">
-							<option value="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
+							<option value="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">[#TITRE]</option>
 						<ELSE/>
-							<MACRO NAME="PNG_PLUS">&nbsp;<a href="oochargement.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
+							<MACRO NAME="PNG_PLUS">&nbsp;<a href="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">Ajouter [#TITRE]</a><br />
 						</IF>
 					</DO>
 					<AFTER>
