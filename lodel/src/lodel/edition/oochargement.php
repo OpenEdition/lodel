@@ -1,4 +1,6 @@
-<?php#echo "server:";
+<?php
+
+#echo "server:";
 #print_r($_SERVER);
 #echo "header:"; print_r(getallheaders());
 #echo "post:"; print_r($HTTP_POST_VARS);
@@ -243,15 +245,13 @@ function OO ($convertedfile,&$context)
 
    if ($GLOBALS[sortie]) die (htmlentities($file));
 
-    function img_copy($imgfile,$ext,$count) {
-      global $rand;
-
+    function img_copy($imgfile,$ext,$count,$rand) {
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
       copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
       return $newimgfile;
     }
     include_once ($home."func.php");
-     copy_images($file,"img_copy");
+    copy_images($file,"img_copy",rand());
 
 
   // ecrit le fichier

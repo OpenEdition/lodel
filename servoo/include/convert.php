@@ -174,7 +174,9 @@ function processcontent(&$text)
   
   $convstyle=array();
   preg_match_all('/<style:style style:name="(T[^\"]+)"[^>]+?style:parent-style-name="([^\"]+)"/',$text,$results,PREG_SET_ORDER);
-  foreach ($results as $result) $convstyle[$result[1]]=$result[2];
+  foreach ($results as $result)
+    if ($result[2]!="footnote reference")
+      $convstyle[$result[1]]=$result[2];
 
   $srch=array();
   $rpl=array();

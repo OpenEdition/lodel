@@ -1,4 +1,4 @@
-<?php//
+<?php
 // traitement particulier des attributs d'une loop
 // l'essentiel des optimisations et aide a l'uitilisateur doivent
 // en general etre ajouter ici

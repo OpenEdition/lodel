@@ -174,7 +174,7 @@ function myfilemtime($filename)
 }
 
 
-function copy_images (&$text,$callback)
+function copy_images (&$text,$callback,$argument="")
 
 {
     // copy les images en lieu sur et change l'acces
@@ -187,7 +187,7 @@ function copy_images (&$text,$callback)
 	$text=str_replace($result[0],"<Img src=\"$imglist[$imgfile]\"",$text);
       } else {
 	$ext=$result[2];
-	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count);
+	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
 #	echo "images: $imgfile $newimgfile <br>";
       	$text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
       	$count++;

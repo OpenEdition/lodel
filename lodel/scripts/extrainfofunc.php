@@ -191,9 +191,7 @@ function ei_enregistrement($filename,$tache,&$context,&$text)
 
   // change le nom des images
   if (!function_exists("img_rename")) {
-    function img_rename($imgfile,$ext,$count) {
-      global $iddocument;
-      
+    function img_rename($imgfile,$ext,$count,$iddocument) {
       $newimgfile="docannexe/r2r-img-$iddocument-$count.$ext";
       if ($imgfile!=$newimgfile) {
 	rename ($imgfile,"../../$newimgfile") or die ("impossible de renomer l'image $imgfile en $newimgfile");
@@ -202,7 +200,7 @@ function ei_enregistrement($filename,$tache,&$context,&$text)
       return $newimgfile;
     }
   }
-  copy_images($text,"img_rename");
+  copy_images($text,"img_rename",$iddocument);
 
   // copie le fichier balise en lieu sur !
   if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("Erreur lors de l' ecriture du fichier. Contactez l'administrateur: ../txt/r2r-$iddocument.xml");
