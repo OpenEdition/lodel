@@ -40,7 +40,7 @@
 		<blockquote>
 			[#NOM_EXPEDITEUR] &lt;[#FROM]&gt; a visité le site "<MACRO NAME="NOM_SITE">" sur [(#CURRENTURL|dirname)] et vous conseille de visiter la page :
 			<br />
-			<a href="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('document'))]">[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('document'))]</a>
+			<a href="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]">[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]</a>
 			<br />
 			Voici son commentaire :
 			[#MESSAGE]
@@ -75,7 +75,7 @@
 	    
 				<IF COND="[#TEXTE] and ([#DATEPUBLI] ge today())">
 					<br />
-                                        <a href="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('document'))]">Le texte intégral</a> se trouve en ligne.
+                                        <a href="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]">Le texte intégral</a> se trouve en ligne.
 				</IF>
 				<br />
 			</blockquote>

@@ -170,7 +170,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 		<option value="index.[#EXTENSIONSCRIPTS]">rubriques</option>
 		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="type='rubrique'" ORDER="rank DESC">
 			<DO>	
-				<option value="[(#ID|makeurlwithid('sommaire'))]">
+				<option value="[(#ID|makeurlwithid('index'))]">
 					[#IDENTIFIANT]
 				</option>
 			</DO>
@@ -309,7 +309,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ METADONNEES HTML ]-->
 <meta name="GENERATOR" content="Lodel [#VERSION]" />
 <meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">" />
-<meta name="url" content="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('sommaire'))]" />
+<meta name="url" content="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]" />
 
 <!--[ METADONNEES DUBLIN CORE ]-->
 <meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_SITE_POUR_METAS">" />
@@ -320,7 +320,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <meta name="DC.Language" content="fr" />
 <!--[ <meta name="DC.Relation" content="" /> ]-->
 
-<meta name="DC.Identifier" content="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('sommaire'))]" />
+<meta name="DC.Identifier" content="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]" />
 
 <meta name="DC.Title" content="Sommaire du numéro [#IDENTIFIANT], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 <meta name="DC.Date" content="[#DATE]" />

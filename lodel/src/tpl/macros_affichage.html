@@ -98,7 +98,7 @@
 	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="status gt 0" WHERE="tplcreation='creation-numero'" WHERE="idparent=[#ID]" ORDER="rank ASC">
 		<DO>
 			<div class="afficherdocument">
-				<a href="[(#ID|makeurlwithid('sommaire'))]">
+				<a href="[(#ID|makeurlwithid('index'))]">
 					<!--[ TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION ]-->	
 					[#TITLE]
 				</a>
@@ -191,7 +191,7 @@
         <LOOP NAME="publication_parente" TABLE="publications" WHERE="id='[#IDPARENT]'">
         <DO>
 	<h1 class="accueil">
-	<a href="[(#ID|makeurlwithid('sommaire'))]">
+	<a href="[(#ID|makeurlwithid('index'))]">
 		[#TITLE]
 	</a>
 	</h1>
@@ -213,7 +213,7 @@
         <DO>
    	<IF COND="[#TITLE]">
 	        Paru dans : 
-		<a  href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		<a  href="[(#IDPARENT|makeurlwithid('index'))]">
                 [#TITLE]
 		</a>
 		<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -341,7 +341,7 @@
 <!--[ <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      ]-->
 <!--[ <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              ]-->
 <!--[ ****************************************************************** ]-->
-		 <h2><a href="[(#ID|makeurlwithid('document'))]">[#TITLE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a></h2> ([#TYPE])
+		 <h2><a href="[(#ID|makeurlwithid('index'))]">[#TITLE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a></h2> ([#TYPE])
 			<br />
         <MACRO NAME="PARU_DANS_SIMPLE"> 
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
@@ -359,13 +359,13 @@
 	<LOOP NAME="aff_collec" TABLE="publications" WHERE="idparent='0' AND status gt 0" ORDER="rank">
 
 			<li class="first">
-			<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITLE]</a>
+			<a href="[(#ID|makeurlwithid('index'))]">[#TITLE]</a>
 			</li>
 			
 		
 		<LOOP NAME="aff_publiparente" TABLE="publications" WHERE="idparent='[#ID]' AND status gt 0" ORDER="rank">
 			<li>
-				<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITLE]</a>
+				<a href="[(#ID|makeurlwithid('index'))]">[#TITLE]</a>
 			</li>
 		</LOOP>
 	</LOOP>
@@ -597,13 +597,13 @@
 		<div class="article">
 		
 		<h3>
-		<a href="[(#ID|makeurlwithid('document'))]">
+		<a href="[(#ID|makeurlwithid('index'))]">
 			[(#TITRE|removefootnotes)]
 		</a>
 		</h3>
 			<IF COND="[#SOUSTITRE]">
 			 <h4>
-			 <a href="[(#ID|makeurlwithid('document'))]">
+			 <a href="[(#ID|makeurlwithid('index'))]">
 			 [#SOUSTITRE]
 			 </a>
 			 </h4>
@@ -687,7 +687,7 @@
 			[#TITLE]
 		</DO>
 	</LOOP>
-	<br />[(#ID|makeurlwithid('document'))]
+	<br />[(#ID|makeurlwithid('index'))]
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRIPTION_AUTEURS"> 
@@ -729,7 +729,7 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="boucle_lister_publications" TABLE="publications" WHERE="idparent='[#ID]' AND TYPE!='regroupement'" >
 		<DO>
-				<a class="titre2" href="[(#ID|makeurlwithid('sommaire'))]">
+				<a class="titre2" href="[(#ID|makeurlwithid('index'))]">
 				<h2>
 				<MACRO NAME="TITRE_PUBLICATION">
 				</h2>
@@ -748,7 +748,7 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="status gt 0" LIMIT="0,1">
 		<DO>
-			<a  href="[(#ID|makeurlwithid('sommaire'))]">
+			<a  href="[(#ID|makeurlwithid('index'))]">
 				Dernier numéro publié : <br />
 					[#TITLE]
 			</a>
@@ -768,7 +768,7 @@
 		<IF COND="[#TEXTE]">
 			<div class="extrait">
 					[(#TEXTE|removefootnotes|couper(1500))]
-				<a href="[(#ID|makeurlwithid('document'))]" class="right">
+				<a href="[(#ID|makeurlwithid('index'))]" class="right">
 					Lire la suite
 				</a>
 			</div>
@@ -791,7 +791,7 @@
 			<h2 class="sommaire">
 				
 				<span style="font-size: smaller">Sommaire du dernier numéro en ligne :</span><br />&nbsp;<br />
-<a href="[(#ID|makeurlwithid('sommaire'))]">
+<a href="[(#ID|makeurlwithid('index'))]">
  [#TITLE] 
 				</a><br />&nbsp;<br />
 			</h2>
@@ -824,7 +824,7 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="status gt 0" WHERE="type='rubrique'" LIMIT="0,1">
 		<DO>
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				[#TITLE]
 			</a>
 		</DO>
@@ -884,7 +884,7 @@
 <!--[ Affiche, s'il elle existe, l'icône de la publication.              ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#ICONE]">
-		<a href="[(#ID|makeurlwithid('sommaire'))]">
+		<a href="[(#ID|makeurlwithid('index'))]">
 			<img src="[#ICONE]" align='left' name="[#IDENTIFIANT]" border='0' alt="[#IDENTIFIANT]" hspace="8" vspace="8">
 		</a>
 	</IF>
@@ -916,11 +916,11 @@
 		<MACRO NAME="ICONE_PUBLICATION">
 		<!--[ affiche les 1500 premiers mots du texte ]-->
 		[(#TEXTE|lettrine|couper(1500))]
-		<a  href="[(#ID|makeurlwithid('sommaire'))]">
+		<a  href="[(#ID|makeurlwithid('index'))]">
 			... lire la suite...
 		</a>
 	<ELSE/>
-		<a  href="[(#ID|makeurlwithid('sommaire'))]">
+		<a  href="[(#ID|makeurlwithid('index'))]">
 			... lire ...
 		</a>
 	</IF>
@@ -936,11 +936,11 @@
 		<br />
 		<!--[ affiche les 1500 premiers mots du texte ]-->
 		[(#TEXTE|couper(1500))]
-		<a class=" titre2" href="[(#ID|makeurlwithid('sommaire'))]">
+		<a class=" titre2" href="[(#ID|makeurlwithid('index'))]">
 			... lire la suite...
 		</a>
 	<ELSE/>
-		<a class=" titre2" href="[(#ID|makeurlwithid('sommaire'))]">
+		<a class=" titre2" href="[(#ID|makeurlwithid('index'))]">
 			... lire ...
 		</a>
 	</IF>
@@ -961,7 +961,7 @@
 						&gt;&gt; Voir le compte-rendu :
 					</div>
 <div class="afficherdocument">
-<a class="menu2" href="[(#ID|makeurlwithid('document'))]">[#TITLE] </a>
+<a class="menu2" href="[(#ID|makeurlwithid('index'))]">[#TITLE] </a>
 <br /><br />
 </div>
 </LOOP>	
@@ -971,7 +971,7 @@
 						&gt;&gt; Voir l'article recensé :
 					</h4>
 <div class="afficherdocument">
-<a href="[(#ID|makeurlwithid('document'))]">[#NOTICEBIBLIO] </a>
+<a href="[(#ID|makeurlwithid('index'))]">[#NOTICEBIBLIO] </a>
 </div>
 <br /><br />
 </LOOP>

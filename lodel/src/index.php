@@ -89,13 +89,12 @@ function printEntities($id,$identifier,&$context)
       } else {
 	$where="#_TP_entities.id='".$id."' ".$critere;
       }
-
-      $row=$db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE $where"));
+      $row=$db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ".$where));
       if ($row===false) dberror();
       if (!$row) { header ("Location: not-found.html"); return; }
       $base=$row['tpl'];
       if (!$base) { $id=$row['idparent']; $relocation=TRUE; }
-    } while (!$base && !$identifier);    
+    } while (!$base && !$identifier && $id);    
     if ($relocation) { 
       header("location: ".makeurlwithid("index",$row['id']));
       exit;

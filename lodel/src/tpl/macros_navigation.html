@@ -55,11 +55,11 @@
         <LOOP NAME="previous" ID="[#ID]">
         <DO>
 		<IF COND="[#TYPE] EQ 'numero'">
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_NUMERO_PRECEDENT">
 			</a>
 		<ELSE />
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_RUBRIQUE_PRECEDENTE">
 			</a>
 		</IF>
@@ -79,11 +79,11 @@
         <LOOP NAME="next" ID="[#ID]">
         <DO>
 		<IF COND="[#TYPE] EQ 'numero'">
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_NUMERO_SUIVANT">
 			</a>
 		<ELSE />
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_RUBRIQUE_SUIVANTE">
 			</a>
 		</IF>
@@ -132,7 +132,7 @@
         <LOOP NAME="previous" ID="[#ID]">
         <DO>
 		<IF COND="[#TYPE] EQ 'numero'">
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
 				<span style="color:Black;">
@@ -140,7 +140,7 @@
 				</span>
 			</a>
                  <ELSE/>
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
 				<span style="color:Black;">
@@ -172,7 +172,7 @@
         <LOOP NAME="next" ID="[#ID]">
         <DO>
 		<IF COND="[#TYPE] EQ 'numero'">
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 				<br />
 				<span style="color:Black;">
@@ -180,7 +180,7 @@
 				</span>
 			</a>
                  <ELSE/>
-			<a href="[(#ID|makeurlwithid('sommaire'))]">
+			<a href="[(#ID|makeurlwithid('index'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 				<br />
 				<span style="color:Black;">
@@ -233,7 +233,7 @@
 <!--[ ****************************************************************** ]-->
         <LOOP NAME="previous" ID="[#ID]" THROUGH="regroupement">
         <DO>
-		<a href="[(#ID|makeurlwithid('document'))]">
+		<a href="[(#ID|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
 			<br />
 			<span style="color:Black;">
@@ -242,7 +242,7 @@
 		</a>
 	</DO>
 	<ALTERNATIVE>
-		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		<a href="[(#IDPARENT|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 			<br />
 			<span style="color:Black;">
@@ -263,7 +263,7 @@
 	&nbsp;
         <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
         <DO>
-		<a href="[(#ID|makeurlwithid('document'))]">
+		<a href="[(#ID|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT">
 			<br />
 			<span style="color:Black;">
@@ -272,7 +272,7 @@
 		</a>
 	</DO>
 	<ALTERNATIVE>
-		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		<a href="[(#IDPARENT|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANTE_SOMMAIRE">
 			<br />
 			<span style="color:Black;">
@@ -301,7 +301,7 @@
 				<MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">
 			</td>
 			<td width="33%" class="texte_petit_centre">
-				<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+				<a href="[(#IDPARENT|makeurlwithid('index'))]">
 					<MACRO NAME="IMG_ICONE_SITE">
 					<br />
 				</a>
@@ -321,13 +321,13 @@
 <!--[ ****************************************************************** ]-->
         <LOOP NAME="previous" ID="[#ID]" THROUGH="regroupement">
         <DO>
-		<a href="[(#ID|makeurlwithid('document'))]">
+		<a href="[(#ID|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
 		</a>
 		&nbsp;&nbsp;&nbsp;
 	</DO>
 	<ALTERNATIVE>
-		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		<a href="[(#IDPARENT|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 		</a>
 		&nbsp;&nbsp;&nbsp;
@@ -343,13 +343,13 @@
 <!--[ ****************************************************************** ]-->
         <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
         <DO>
-		<a href="[(#ID|makeurlwithid('document'))]">
+		<a href="[(#ID|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT">
 		</a>
 		&nbsp;&nbsp;&nbsp;
 	</DO>
 	<ALTERNATIVE>
-		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		<a href="[(#IDPARENT|makeurlwithid('index'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT_SOMMAIRE">
 		</a>
 		&nbsp;&nbsp;&nbsp;
@@ -375,7 +375,7 @@
 				<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
 			</td>
 			<td width="70%" align="center">
-				<a title="Sommaire du numéro" href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+				<a title="Sommaire du numéro" href="[(#IDPARENT|makeurlwithid('index'))]">
 					<MACRO NAME="IMG_ICONE_SITE">
 				</a>
 			</td>
@@ -397,13 +397,13 @@
 		<div class="navigation_precedent">
                      <LOOP NAME="previous" ID="[#ID]" THROUGH="regroupement">
                      <DO>
-		                        <a href="[(#ID|makeurlwithid('document'))]">
+		                        <a href="[(#ID|makeurlwithid('index'))]">
 						&lt;&lt; Article précédent
 					</a>
 							
                       </DO>
                       <ALTERNATIVE>
-		                        <a class="navigation_precedent" href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		                        <a class="navigation_precedent" href="[(#IDPARENT|makeurlwithid('index'))]">
 						&lt;&lt; Retour au sommaire
 					</a>
 					
@@ -413,13 +413,13 @@
 		<div class="navigation_suivant">
                      <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
                      <DO>
-		                        <a href="[(#ID|makeurlwithid('document'))]">
+		                        <a href="[(#ID|makeurlwithid('index'))]">
 						Article suivant &gt;&gt; 
 					</a>
 							
                       </DO>
                       <ALTERNATIVE>
-		                        <a class="navigation_precedent" href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+		                        <a class="navigation_precedent" href="[(#IDPARENT|makeurlwithid('index'))]">
 					         Retour au sommaire &gt;&gt; 
 					</a>
 					
