@@ -173,8 +173,7 @@ function parse_cond (&$text,$offset=0) {
 
 # cherche la condition
 
-    if (!preg_match("/^[^>]*COND=\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
-
+	if (!preg_match("/^[^>]*COND\s*=\s*\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
     parse_variable($cond[1],FALSE);
     $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
 		 array(">","<",">=","<=","==","!=","&&","||"),$cond[1]);
