@@ -11,9 +11,9 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 
 	<!--  AFFICHE LES ARTICLES HORS REGROUPEMENT S'IL Y EN A  -->
-		<BOUCLE NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
+		<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
 	<!-- Affiche barre bleue de titre -->
-	<AVANT>
+	<BEFORE>
 	<tr>
 		<td width="48" height="48" valign="middle" background="images/bleu.gif">
 			<MACRO NAME="GIF_REGROUPEMENT">
@@ -28,9 +28,9 @@
 		</td>
 		<MACRO NAME="Documents_titre_bleu">
 	</tr>
-	</AVANT>
+	</BEFORE>
 			<MACRO NAME="Affiche_articles">
-		</BOUCLE>
+		</LOOP>
 			<MACRO NAME="Ajouter_document_isole">
 </table>
 <br>

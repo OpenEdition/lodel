@@ -37,7 +37,7 @@
 							</tr>
 
 							<!-- BOUCLE D'AFFICHAGE DES THEMES -->
-							<BOUCLE NAME="themes" TABLE="publications" WHERE="parent=[#PARENT]" ORDER="ordre DESC"> 
+							<LOOP NAME="themes" TABLE="publications" WHERE="parent=[#PARENT]" ORDER="ordre DESC"> 
 							<TR>
 								<td width="48" height="48" valign="middle"> 
 									<div align="center">
@@ -49,9 +49,9 @@
 								<MACRO NAME="TD_nom_type_titre">
 								<MACRO NAME="boutons_publications">
 							</tr>
-					<SINON/> 
+					<ALTERNATIVE/> 
 							<MACRO NAME="TR_aucune_publication_dispo"> 
-					</BOUCLE> 
+					</LOOP> 
 							<MACRO NAME="Creer_theme">	
 						</table>
 					</td>

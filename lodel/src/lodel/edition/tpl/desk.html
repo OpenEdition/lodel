@@ -12,35 +12,35 @@
 				<tr>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
-						<IF [#SUPERADMIN]>
+						<IF COND="[#SUPERADMIN]">
 							<A HREF="../lodel/">
 								<MACRO NAME="GIF_VISAGE_SUPERADMIN">
 							</a>
 							<br>
 							[#USERNAME]	
 						<ELSE/>
-							<IF [#ADMIN]>
+							<IF COND="[#ADMIN]">
 								<a href="index.html">
 									<MACRO NAME="GIF_VISAGE_ADMIN">
 								</a>
 								<br>
 								[#USERNAME]	
 							<ELSE/>
-								<IF [#EDITEUR]>
+								<IF COND="[#EDITEUR]">
 									<a href="index.html">
 										<MACRO NAME="GIF_VISAGE_EDITEUR">
 									</a>
 									<br>
 									[#USERNAME]	
 								<ELSE/>
-									<IF [#REDACTEUR]>
+									<IF COND="[#REDACTEUR]">
 										<a href="index.html">
 											<MACRO NAME="GIF_VISAGE_REDACTEUR">
 										</a>
 										<br>
 										[#USERNAME]	
 									<ELSE/>
-										<IF [#VISITEUR]>
+										<IF COND="[#VISITEUR]">
 											<a href="index.html">
 												<MACRO NAME="GIF_VISAGE_VISITEUR">
 											</a>
@@ -59,7 +59,7 @@
 					</td>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
-							<IF [#VISITEUR]>
+							<IF COND="[#VISITEUR]">
 								<A HREF="lodel/edition/">
 									<MACRO NAME="GIF_EDITER_32">
 								</a>
@@ -72,7 +72,7 @@
 					</td>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
-						<IF [#ADMIN]>
+						<IF COND="[#ADMIN]">
 							<A HREF="lodel/admin/">
 								<MACRO NAME="GIF_ADMINISTRER_32">
 							</a>
@@ -85,7 +85,7 @@
 					</td>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 					<div align="center">
-						<IF [#EDITEUR]>
+						<IF COND="[#EDITEUR]">
 							<a href="lodel/edition/maj.php">
 								<MACRO NAME="GIF_METTRE_A_JOUR_32">
 							</a>
@@ -100,7 +100,7 @@
 					</td>
 					<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
-							<IF [#ADMIN]>
+							<IF COND="[#ADMIN]">
 								<a href="[#URL_RECOMPILE]">
 									<MACRO NAME="GIF_RECOMPILE_32">   
 								</a>

@@ -16,23 +16,23 @@
 		Edition de document (id : [#ID])
 	</span>
 	<div align="center">
-			<BOUCLE NAME="chercheparent" table="documents" WHERE="id=[#ID]">
+			<LOOP NAME="chercheparent" table="documents" WHERE="id=[#ID]">
 					<a href="index.php?parent=[#PUBLICATION]">
 					<u>Parent</u> 
 				</IF>
-			</BOUCLE>
+			</LOOP>
 			</a>
 	<br><br>
 	<br>
 	
-	<BOUCLE NAME="Affiche_articles" TABLE="documents" WHERE="id=[#ID]">
+	<LOOP NAME="Affiche_articles" TABLE="documents" WHERE="id=[#ID]">
 		<MACRO NAME="auteurs"><br>
 			<em>
 				"[#TITRE]"
 			</em>
 			([#TYPE])
 			<br>
-	</BOUCLE>
+	</LOOP>
 	<br>
 
 	<!-- ******* -->
@@ -50,7 +50,7 @@
 		</td>
 	</tr>	 
 	<!-- Recharger -->
-	<IF [#EDITEUR]>	
+	<IF COND="[#EDITEUR]">	
 	<FORM ACTION="editer.php" METHOD="POST">
 	<tr>
 		<td width="48" height="48" >
@@ -78,7 +78,7 @@
 	</IF>
 
 	<!-- Télécharger -->
-	<IF [#REDACTEUR]>	
+	<IF COND="[#REDACTEUR]">	
 	<tr>
 		<td width="48" height="48" >
 			<div align="center">
@@ -103,7 +103,7 @@
 	</IF>
 	
 	<!-- Déplacer le document -->
-	<IF [#REDACTEUR]>	
+	<IF COND="[#REDACTEUR]">	
 	<FORM ACTION="deplacer.php" METHOD="POST">
 	<tr>
 		<td width="48" height="48" >
@@ -181,7 +181,7 @@
 	<!-- ****** -->
 	<!-- DANGER -->
 	<!-- ****** -->
-	<IF [#EDITEUR]>
+	<IF COND="[#EDITEUR]">
 	<tr>
 		<td width="48" height="48" background="images/bleu.gif">
 			<div align="center">

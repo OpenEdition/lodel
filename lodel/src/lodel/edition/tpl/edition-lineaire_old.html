@@ -24,7 +24,7 @@
 						<table width="800" border="0" cellpadding="0" cellspacing="0">
 						<MACRO NAME="Numeros_non_publies">
 						<!-- BOUCLE D'AFFICHAGE DES NUMEROS NON PUBLIES-->
-						<BOUCLE NAME="publication_trash" TABLE="publications" WHERE="parent=[#PARENT]" WHERE="trash" ORDER="ordre DESC"> 
+						<LOOP NAME="publication_trash" TABLE="publications" WHERE="parent=[#PARENT]" WHERE="trash" ORDER="ordre DESC"> 
 							<MACRO NAME="TR_lignesalternees">
 								<td width="48"> 
 									<div align="center">
@@ -86,9 +86,9 @@
 									</div>
 								</td>
 							</tr>
-					<SINON/> 
+					<ALTERNATIVE/> 
 						<MACRO NAME="TR_aucune_publication_dispo"> 
-					</BOUCLE>
+					</LOOP>
 					<MACRO NAME="Creer_numero">
 					<br>			
 					</tr>
@@ -108,7 +108,7 @@
 			<table width="800" border="0" cellpadding="0" cellspacing="0">
 			<MACRO NAME="Numeros_publies">
 				<!-- BOUCLE D'AFFICHAGE DES NUMEROS PUBLIES-->
-				<BOUCLE NAME="publication" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="ok" ORDER="ordre DESC"> 
+				<LOOP NAME="publication" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="ok" ORDER="ordre DESC"> 
 				<MACRO NAME="TR_lignesalternees">
 				<td width="48"> 
 					<div align="center">
@@ -161,9 +161,9 @@
 				  	&nbsp;
 				  </td>
 		          </tr>
-		        <SINON/> 
+		        <ALTERNATIVE/> 
 				<MACRO NAME="TR_aucune_publication_dispo"> 
-				</BOUCLE> 
+				</LOOP> 
 				<MACRO NAME="Creer_numero">		
 		      </table>
 		    </td>

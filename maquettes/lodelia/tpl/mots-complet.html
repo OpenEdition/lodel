@@ -42,7 +42,7 @@
 		</table>
 		<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER"  bordercolor="Black"> 
 			<!-- Boucle permettant d'afficher les lettres associées au mots-clefs correspondants -->
-			<BOUCLE NAME="alphabet">
+			<LOOP NAME="alphabet">
 				<CORPS>
 					<tr>
 						<td align="center" class="titre">
@@ -55,7 +55,7 @@
 					<tr>
 						<td class="texte">
 							<!-- Boucle permettant d'afficher les mots-clefs -->
-							<BOUCLE NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
+							<LOOP NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
 								<CORPS>
 									<br />
 									<a href="mot.html?id=[#ID]">
@@ -68,10 +68,10 @@
 									<br />
 		
 									<!-- Affichage des articles correspondant aux thèmes -->
-									<BOUCLE NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexl='[#ID]'">
-										<AVANT>
+									<LOOP NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexl='[#ID]'">
+										<BEFORE>
 											<table width="100%" border="0" cellspacing="2" cellpadding="2">
-										</AVANT>
+										</BEFORE>
 										<CORPS>
 											<tr>
 												<td class"texte">
@@ -79,16 +79,16 @@
 												</td>
 											</tr>
 										</COPRS>
-										<APRES>
+										<AFTER>
 											</table>
-										</APRES>
-									</BOUCLE>
+										</AFTER>
+									</LOOP>
 								</CORPS>
-							</BOUCLE>
+							</LOOP>
 						</td>
 					</tr>
 				</CORPS>
-			</BOUCLE>
+			</LOOP>
 		</table>
 		<a href="mots.html">
 			<span class="couleur_1">

@@ -8,14 +8,14 @@
 <tr>
 <td align="center">
 
-<IF [#ERREUR_FICHIERNONTROUVE]>
+<IF COND="[#ERREUR_FICHIERNONTROUVE]">
 Le fichier n'existe pas dans la base de donnée.
 <ELSE/>
 <!--
 <FORM ACTION="publi.php" METHOD="POST">
 <INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
 <INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-<IF [#STATUS] gt 0>
+<IF COND="[#STATUS] gt 0">
 <INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Mettre hors ligne">
 <ELSE/>
 <INPUT TYPE="hidden" NAME="online" VALUE="1">

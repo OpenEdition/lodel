@@ -12,7 +12,7 @@
 <INPUT TYPE="hidden" NAME="edit" VALUE="1">
 <INPUT TYPE="hidden" NAME="importsommaire" VALUE="[#IMPORTSOMMAIRE]">
 
-<IF [#IMPORTSOMMAIRE]>
+<IF COND="[#IMPORTSOMMAIRE]">
 <INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Importer ce document et continuer"> - <INPUT CLASS="form" TYPE="submit" NAME="cancel" VALUE="Ne pas importer ce document et continuer"><br>
 </IF>
 
@@ -60,7 +60,7 @@
 <TR>
 	<TD>Date de publication du texte</TD>
 		<TD>
-<IF [#DATEPUBLI]> <!-- on affiche la date -->
+<IF COND="[#DATEPUBLI]"> <!-- on affiche la date -->
 <INPUT SIZE=20 TYPE="text" NAME="datepubli" VALUE="[(#DATEPUBLI|humandate)]">[(#ERREUR_DATEPUBLI|true)Date incorrecte.]
 <ELSE/>
 <INPUT SIZE=4 TYPE="text" NAME="duree" VALUE="[#DUREE]"><SELECT NAME="dateselect"><? makeselectdate(); ?></SELECT>
@@ -72,7 +72,7 @@
 	<b><MACRO NAME="GIF_TRIANGLE">Auteurs</b>
 	</TD>
 </TR>
-<BOUCLE NAME="auteurs">
+<LOOP NAME="auteurs">
 	<TR>
 	<TD>Auteur :</TD>
 	<TD>
@@ -104,14 +104,14 @@
 		</TABLE>
 	</TD>
 	</TR>
-</BOUCLE>
+</LOOP>
 
 <TR>
 	<TD>&nbsp;</TD>
 	<TD><INPUT CLASS="form" TYPE="submit" NAME="plusauteurs" VALUE="Ajouter un auteur"></TD>
 </TR>
 
-<IF ![#OPTION_PASDEMOTCLE]>
+<IF COND="![#OPTION_PASDEMOTCLE]">
 	<TR>
 		<TD COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE"> Mots Cle</b></TD>
 	</TR>
@@ -119,7 +119,7 @@
 	<TD>Mots Cles (*):</TD>
 	<TD>
 		<SELECT MULTIPLE SIZE="10" NAME="motcles[]"><? makeselectmotcles(); ?></SELECT><BR>
-		<IF ![#OPTION_MOTCLEFIGE]>
+		<IF COND="![#OPTION_MOTCLEFIGE]">
 		Autres: <INPUT SIZE="60" TYPE="text" NAME="autresmotcles" VALUE="[#AUTRESMOTCLES]"><BR>
 		* mots séparés par des virgules ou point-virgules.
 		</IF>
@@ -127,7 +127,7 @@
 	</TR>
 </IF>
 
-<IF ![#OPTION_PASDEPERIODE]>
+<IF COND="![#OPTION_PASDEPERIODE]">
 	<TR>
 		<TD COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE">Périodes</b></TD>
 	</TR>
@@ -136,7 +136,7 @@
 		<TD><SELECT MULTIPLE SIZE="10" NAME="periodes[]"><? makeselectperiodes(); ?></SELECT></TD>
 	</TR>
 </IF>
-<IF ![#OPTION_PASDEGEOGRAPHIE]>
+<IF COND="![#OPTION_PASDEGEOGRAPHIE]">
 	<TR>
 		<TD COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE">Zone Géographique</b></TD>
 	</TR>
@@ -148,7 +148,7 @@
 
 </TABLE>
 
-<IF ![#IMPORTSOMMAIRE]>
+<IF COND="![#IMPORTSOMMAIRE]">
 <INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Terminer"> - 
 <INPUT CLASS="form" TYPE="submit" NAME="visualiserdocument" VALUE="Terminer et visualiser"> - <INPUT CLASS="form" TYPE="submit" NAME="ajouterdocannexe" VALUE="Ajouter des documents annexe"> - 
 <INPUT CLASS="form" TYPE="submit" NAME="cancel" VALUE="Abandonner"><br>
@@ -156,11 +156,11 @@
 
 </FORM>
 </TABLE>
-<IF [#ERREUR_PERIODE]>
+<IF COND="[#ERREUR_PERIODE]">
 Periodes valides:
-<BOUCLE NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre">
+<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre">
 [#ABREV]&nbsp;
-</BOUCLE>
+</LOOP>
 </IF>
 
 <MACRO NAME="close_html">

@@ -34,7 +34,7 @@ Auteur : Marin Dacos. 2002. -->
 	<!-- Affiche le tableau de bord (desk) au sommet de la page pour les
 	utilisateurs logués, comme l'admin, l'éditeur, les rédacteurs, etc. -->
 
-	<IF [#VISITEUR]>
+	<IF COND="[#VISITEUR]">
 		<? insert_template ("desk");?>
 	</IF>
 </DEFMACRO>
@@ -144,18 +144,18 @@ Auteur : Marin Dacos. 2002. -->
 <!-- Affiche la publication dont provient un document -->
 <DEFMACRO NAME="Paru_dans">
 	<!-- Affichage du nom de la publication dans laquelle a paru le document -->
-	<BOUCLE NAME="publication" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="publication" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		. Paru dans 
 		<a href="sommaire.html?id=[#ID]">
 			<font color="Black">
 					[#NOM]
-				<IF [#TITRE]>
+				<IF COND="[#TITRE]">
 						,
 						[#TITRE]
 				</IF>.
 			</font>
 		</a>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <!-- Crée un gros bloc qui affiche le titre du numéro ou du thème, sauf s'il est vide,
@@ -165,7 +165,7 @@ auquel cas il affiche le nom de la revue. Il affiche aussi le texte d'introducti
 <table width="100%" border="0" cellspacing="0" cellpadding="5" align="center" bordercolor="#000000" bordercolorlight="#000000" bordercolordark="#C0C0C0">
 	<tr>
 		<td width="100%" align="center"> 
-			<IF [#NOM]>
+			<IF COND="[#NOM]">
 				<span class="titrerevue">
 				<a href="index.html">
 					<MACRO NAME="Fontcolor_dominante_1">
@@ -187,19 +187,19 @@ auquel cas il affiche le nom de la revue. Il affiche aussi le texte d'introducti
 	<tr>
 		<td width="100%" align="center">
 			<hr width="50%">
-			<IF [#TITRE]>
+			<IF COND="[#TITRE]">
 				<span class="soustitre_centre">
 				<br>
 				[#TITRE]
 				</span>
 			</IF>
-			<IF [#SOUSTITRE]>
+			<IF COND="[#SOUSTITRE]">
 				<span class="soustitre_centre">
 				<br>
 				[#SOUSTITRE]
 				</span>
 			</IF>
-			<IF [#DIRECTEUR]>
+			<IF COND="[#DIRECTEUR]">
 				<span class="directeur_centre">
 				<br><br>
 					* * * 
@@ -212,7 +212,7 @@ auquel cas il affiche le nom de la revue. Il affiche aussi le texte d'introducti
 			</font>
 			</a>
 			<!-- Affiche le texte introductif d'une publication -->
-			<IF [#TEXTE]>
+			<IF COND="[#TEXTE]">
 				<table width="95%">
 					<tr>
 						<td class="texte_petit">
@@ -266,7 +266,7 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="NumeroPrecedent">
 	&nbsp;	&nbsp;	&nbsp;
-	<IF [#PREV]>
+	<IF COND="[#PREV]">
 		<A HREF="[#PREV]">
 			<MACRO NAME="GIF_gros_numero_precedent">
 		</A>
@@ -278,7 +278,7 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="NumeroSuivant">
 	&nbsp;	&nbsp;	&nbsp;
-	<IF [#NEXT]>
+	<IF COND="[#NEXT]">
 		<A HREF="[#NEXT]">
 			<MACRO NAME="GIF_gros_numero_suivant">
 		</A>
@@ -290,7 +290,7 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="Precedent">
 	&nbsp;	&nbsp;	&nbsp;
-	<IF [#PREV]>
+	<IF COND="[#PREV]">
 		<A HREF="[#PREV]">
 			<MACRO NAME="GIF_Precedent">
 		</A>
@@ -302,7 +302,7 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="Suivant">
 	&nbsp;	&nbsp;	&nbsp;
-	<IF [#NEXT]>
+	<IF COND="[#NEXT]">
 		<A HREF="[#NEXT]">
 			<MACRO NAME="GIF_Suivant">
 		</A>
@@ -317,7 +317,7 @@ Attention, cette routine sera changée bientôt
 	<TR>
 		<TD WIDTH="33%" class="texte_petit_centre">
 		&nbsp;
-		<IF [#PREV]>
+		<IF COND="[#PREV]">
 			<A HREF="[#PREV]">
 				<MACRO NAME="GIF_gros_numero_precedent">
 				<BR>
@@ -344,7 +344,7 @@ Attention, cette routine sera changée bientôt
 		</TD>
 		<TD WIDTH="33%" class="texte_petit_centre">
 			&nbsp;
-		<IF [#NEXT]>
+		<IF COND="[#NEXT]">
 			<A HREF="[#NEXT]">
 				<MACRO NAME="GIF_gros_numero_suivant">
 				<BR>
@@ -374,7 +374,7 @@ Attention, cette routine sera changée bientôt
 <!-- Bouton de navigation "article suivant" très sobre   -->
 
 <DEFMACRO NAME="article_suivant">
-<IF [#NEXT]>
+<IF COND="[#NEXT]">
 
 	<!-- S'il y un article suivant, affiche cet article -->
 	&nbsp;&nbsp;&nbsp;
@@ -394,7 +394,7 @@ Attention, cette routine sera changée bientôt
 <!-- Bouton de navigation "article précédent" très sobre -->
 
 <DEFMACRO NAME="article_precedent">
-	<IF [#PREV]>
+	<IF COND="[#PREV]">
 	
 	<!-- S'il y un article précédent, affiche cet article -->
 	&nbsp;&nbsp;&nbsp;
@@ -419,7 +419,7 @@ Attention, cette routine sera changée bientôt
 		<TD WIDTH="15%" align="center">
 
 			<!-- va vers article arrière ou, à défaut, vers sommaire -->
-			<IF [#PREV]>
+			<IF COND="[#PREV]">
 				<A HREF="[#PREV]">
 					<MACRO NAME="GIF_ARTICLE_PRECEDENT">
 				</A>
@@ -439,7 +439,7 @@ Attention, cette routine sera changée bientôt
 
 		<!-- va vers article avant ou, à défaut, vers sommaire -->
 		<TD WIDTH="15%" align="center">
-		<IF [#NEXT]>
+		<IF COND="[#NEXT]">
 			&nbsp;&nbsp;&nbsp;
 			<A HREF="[#NEXT]">
 				<MACRO NAME="GIF_ARTICLE_SUIVANT">
@@ -461,7 +461,7 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="boutons_colores">
-<IF [#TEXTE]>
+<IF COND="[#TEXTE]">
 	<A HREF="document.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">
 	</a>
@@ -477,8 +477,8 @@ Attention, cette routine sera changée bientôt
 <!-- -------------------------------- -->
 
 <DEFMACRO NAME="Sous_themes">
-	<BOUCLE NAME="sous_themes" TABLE="publications" WHERE="parent='[#ID]'"  WHERE="type='theme'">
-		<AVANT>
+	<LOOP NAME="sous_themes" TABLE="publications" WHERE="parent='[#ID]'"  WHERE="type='theme'">
+		<BEFORE>
 			<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0">
 				<TR>
 					<td class="partie">
@@ -489,13 +489,13 @@ Attention, cette routine sera changée bientôt
 				</tr>
 				<tr>
 					<td class="texte_sommaire_petit">	 
-						</AVANT>
+						</BEFORE>
 						<ul>
 						<li>
 						<A HREF="sommaire.html?id=[#ID]">
 							[#NOM]
 							, 
-							<IF [#TITRE]>
+							<IF COND="[#TITRE]">
 								<font color="navy">
 								<i>
 									[#TITRE]
@@ -509,12 +509,12 @@ Attention, cette routine sera changée bientôt
 							[#TEXTE]
 						</LI>
 						</UL>
-					<APRES>
+					<AFTER>
 					</td>
 				</tr>
 			</TABLE>
-					</APRES>
-	</BOUCLE>
+					</AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <!-- -------------------------------- -->
@@ -522,10 +522,10 @@ Attention, cette routine sera changée bientôt
 <!-- -------------------------------- -->
 
 <DEFMACRO NAME="liste_themes">
-	<BOUCLE NAME="sous_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
-		<AVANT>
+	<LOOP NAME="sous_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
+		<BEFORE>
 			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
-		</AVANT>
+		</BEFORE>
 				<tr>
 					<td width="100%" class="texte_petit">
 					<a href="sommaire.html?id=[#ID]">
@@ -537,7 +537,7 @@ Attention, cette routine sera changée bientôt
 							</em>
 							</strong>
 						</a>
-						<IF [#TITRE]>
+						<IF COND="[#TITRE]">
 							<font color="navy">
 							<i>
 								<strong>[#TITRE]</strong>
@@ -550,10 +550,10 @@ Attention, cette routine sera changée bientôt
 						<br>
 					</td>
 				</tr>
-				<APRES>
+				<AFTER>
 			</TABLE>
-					</APRES>
-	</BOUCLE>
+					</AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <!-- -------------------------------------------------- -->
@@ -564,34 +564,34 @@ Attention, cette routine sera changée bientôt
 	<!-- ------------------------------------ -->
 	<!-- Affiche les articles               -->
 	<!-- ------------------------------------ -->
-	<BOUCLE NAME="article" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
-	<AVANT>
+	<LOOP NAME="article" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<BEFORE>
 		<table width="95%" border="0" align="center">
-	</AVANT> 
+	</BEFORE> 
 			<TR> 
 				<TD class="texte_sommaire" valign="top"> 
 					<MACRO NAME="ligne_article">
 				</TD>
 			</TR>
-	<APRES>
+	<AFTER>
 		</TABLE>
-	</APRES>
-	</BOUCLE>
+	</AFTER>
+	</LOOP>
 	
 	<!-- ------------------------------------------------------------------------ -->
 	<!-- Affiche les regroupements puis les articles qu'ils contiennent -->
 	<!-- ------------------------------------------------------------------------ -->
 	
-	<BOUCLE NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<table width="95%" border="0" align="center">
 			<TR>
 				<td valign="top" class="partie">
 					<hr align="center" width="330">
-						<IF [#TITRE]>
+						<IF COND="[#TITRE]">
 							[#TITRE]
 							<br>
 						</IF>
-						<IF [#NOM]>
+						<IF COND="[#NOM]">
 							[#NOM]
 							<br>
 						</IF>
@@ -600,17 +600,17 @@ Attention, cette routine sera changée bientôt
 				</td>
 			</tr>
 
-			<BOUCLE NAME="article_regroupements" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+			<LOOP NAME="article_regroupements" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
 			<TR> 
 				<TD class="texte_sommaire_petit" valign="top"> 
 					<MACRO NAME="ligne_article">
 				</TD>
 			</TR>
-				<APRES>
+				<AFTER>
 		</TABLE>
-				</APRES>
-			</BOUCLE>
-	</BOUCLE>
+				</AFTER>
+			</LOOP>
+	</LOOP>
 </DEFMACRO>
 
 <!-- *************************************************** -->
@@ -619,25 +619,25 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="auteurs">
-<BOUCLE NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-	<PREMIER>
+<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<FIRST>
 		[#PRENOM] 
 		[#NOMFAMILLE]
-	</PREMIER>
+	</FIRST>
 		,
 		[#PRENOM] 
 		[#NOMFAMILLE]
-	<DERNIER>
+	<LAST>
 		 et 
 		 [#PRENOM] 
 		 [#NOMFAMILLE] 
-	</DERNIER>
-	<SINON/>
-	<IF [#NOMFAMILLE]>
+	</LAST>
+	<ALTERNATIVE/>
+	<IF COND="[#NOMFAMILLE]">
 		,
 	</IF>
-	</APRES>
-</BOUCLE>
+	</AFTER>
+</LOOP>
 </DEFMACRO>
 
 <!-- *************************************************** -->
@@ -646,23 +646,23 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="auteurs_with_url">
-<BOUCLE TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-	<PREMIER>
+	<FIRST>
 		<A HREF="auteur.html?id=[#ID]">
 		<font color="black">
 			[#PRENOM]
 			[#NOMFAMILLE]
 		</FONT>
 		</A>
-	</PREMIER>
+	</FIRST>
 	,<A HREF="auteur.html?id=[#ID]">
 	<font color="black">[#PRENOM]
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	<DERNIER>
+	<LAST>
 	et 
 	<A HREF="auteur.html?id=[#ID]">
 	<font color="black">
@@ -670,13 +670,13 @@ Attention, cette routine sera changée bientôt
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	</DERNIER>
-	<APRES>
-	<IF [#NOMFAMILLE]>
+	</LAST>
+	<AFTER>
+	<IF COND="[#NOMFAMILLE]">
 		,
 	</IF>
-	</APRES>
-</BOUCLE>
+	</AFTER>
+</LOOP>
 </DEFMACRO>
 
 <!-- *************************************************** -->
@@ -687,22 +687,22 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="auteurs_sommaires">
 <strong>
-<BOUCLE TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-	<PREMIER>
+	<FIRST>
 		<A HREF="auteur.html?id=[#ID]">
 		<font color="black">
 			[#PRENOM]
 			[#NOMFAMILLE]
 		</FONT>
 		</A>
-	</PREMIER>
+	</FIRST>
 	,<A HREF="auteur.html?id=[#ID]">
 	<font color="black">[#PRENOM]
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	<DERNIER>
+	<LAST>
 	et 
 	<A HREF="auteur.html?id=[#ID]">
 	<font color="black">
@@ -710,14 +710,14 @@ Attention, cette routine sera changée bientôt
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	</DERNIER>
-	<APRES>
-	<IF [#NOMFAMILLE]>
+	</LAST>
+	<AFTER>
+	<IF COND="[#NOMFAMILLE]">
 		<br>
 		&nbsp;&nbsp;&nbsp;
 	</IF>
-	</APRES>
-</BOUCLE>
+	</AFTER>
+</LOOP>
 </strong>
 </DEFMACRO>
 
@@ -746,9 +746,9 @@ Attention, cette routine sera changée bientôt
 <form name="pub_menu_A">
 	<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 	<option value="index.html">Numéros</option>
-	<BOUCLE NAME="pub_menu_A" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent='21'" ORDER="ordre DESC">
+	<LOOP NAME="pub_menu_A" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent='21'" ORDER="ordre DESC">
 		<option value="sommaire.html?id=[#ID]">[#NOM]</option>
-	</BOUCLE>
+	</LOOP>
 	</select>
 </form>
 </DEFMACRO>
@@ -759,11 +759,11 @@ Attention, cette routine sera changée bientôt
 <form name="pub_menu_B">
 	<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 	<option value="index.html">Thèmes</option>
-	<BOUCLE NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
+	<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
 		<option value="sommaire.html?id=[#ID]">
 			[#NOM]
 		</option>
-	</BOUCLE>
+	</LOOP>
 	</select>
 </form>
 </DEFMACRO>
@@ -802,20 +802,20 @@ Attention, cette routine sera changée bientôt
 
 <!-- Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. -->
 <DEFMACRO NAME="liste_grands_themes_id2">
-<BOUCLE NAME="liste_grands_themes_id2" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="parent='2'" ORDER="ordre ASC">
+<LOOP NAME="liste_grands_themes_id2" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="parent='2'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_triangle">[#NOM]<br>
 	</a>
-</BOUCLE>
+</LOOP>
 </DEFMACRO>
 
 <!-- Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. -->
 <DEFMACRO NAME="liste_grands_themes_id19">
-<BOUCLE NAME="liste_grands_themes_id19" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="parent='19'" ORDER="ordre ASC">
+<LOOP NAME="liste_grands_themes_id19" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="parent='19'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_triangle">[#NOM]<br>
 	</a>
-</BOUCLE>
+</LOOP>
 </DEFMACRO>
 
 <!-- *************************************************** -->
@@ -825,20 +825,20 @@ Attention, cette routine sera changée bientôt
 <!-- Affichage simple -->
 <!-- NUMEROS DE PARENT 1 -->
 <DEFMACRO NAME="liste_numeros_id_1">
-<BOUCLE NAME="liste_numeros" TABLE="publications" WHERE="ok" WHERE="parent=1" WHERE="type='numero'" ORDER="ordre ASC">
+<LOOP NAME="liste_numeros" TABLE="publications" WHERE="ok" WHERE="parent=1" WHERE="type='numero'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_triangle">[#NOM]<br>
 	</a>
-</BOUCLE>
+</LOOP>
 </DEFMACRO>
 
 <!-- Affichage plus complet -->
 <DEFMACRO NAME="affiche_numeros">
 <table width="100%" border="0">
-<BOUCLE NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
+<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
 	<tr>
 		<td>
-			<IF [#META_IMAGE]>
+			<IF COND="[#META_IMAGE]">
 			<a href="sommaire.html?id=[#ID]">
 				<IMG SRC="[#META_IMAGE]" ALIGN='left' NAME="[#NOM]" BORDER='0' alt="[#NOM]" HSPACE="8" VSPACE="8">
 				</a>
@@ -851,25 +851,25 @@ Attention, cette routine sera changée bientôt
 				</strong>
 				<br>
 			</a>
-				<IF [#TITRE]>
+				<IF COND="[#TITRE]">
 					<em>[#TITRE]</em>
 				</IF>
-				<IF [#SOUSTITRE]>
+				<IF COND="[#SOUSTITRE]">
 					<em>[#SOUSTITRE]</em>
 				</IF>
-				<IF [#DIRECTEUR]>
+				<IF COND="[#DIRECTEUR]">
 					Sous la direction de [#DIRECTEUR]<br>
 				</IF>
 				<MACRO NAME="Introduction_simple">
 		</td>
 	</tr>
-<SINON/>
+<ALTERNATIVE/>
 	<tr>
 		<td>
 	Aucun numéro disponible actuellement
 		</td>
 	</tr>
-</BOUCLE>
+</LOOP>
 </table>
 </DEFMACRO>
 
@@ -879,23 +879,23 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="Dernier_numero">		
 <!-- Affiche uniquement le dernier numéro -->
-<BOUCLE NAME="dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+<LOOP NAME="dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<a href="sommaire.html?id=[#ID]">
 			[#NOM]<br>
 		</a>
-		<IF [#TITRE]>
+		<IF COND="[#TITRE]">
 			<em>
 				[#TITRE]
 			</em>
 			<br>
 		</IF>
-		<IF [#DIRECTEUR]>
+		<IF COND="[#DIRECTEUR]">
 			<br>
 				Sous la direction de :
 				[#DIRECTEUR]
 		</IF>
 		<MACRO NAME="Introduction_simple">
-</BOUCLE>
+</LOOP>
 </DEFMACRO>
 
 <!-- *************************************************** -->
@@ -903,19 +903,19 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="Dernier_theme">
-<BOUCLE NAME="dernier_numero" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
+<LOOP NAME="dernier_numero" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
 		<a href="sommaire.html?id=[#ID]">
 			[#NOM]
 		</a>
-			<IF [#TITRE]>
+			<IF COND="[#TITRE]">
 				<br>
 				[#TITRE]
 			</IF>
-			<IF [#DIRECTEUR]>
+			<IF COND="[#DIRECTEUR]">
 				<br>
 				[#DIRECTEUR]
 			</IF>
-</BOUCLE>
+</LOOP>
 </DEFMACRO>
 
 <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
@@ -923,10 +923,10 @@ Attention, cette routine sera changée bientôt
 <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
 
 <DEFMACRO NAME="documents_annexe">
-<BOUCLE NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
-<AVANT>
+<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
+<BEFORE>
 	<TABLE>
-</AVANT>
+</BEFORE>
 		<TR>
 			<TD class="texte">
 
@@ -952,17 +952,17 @@ Attention, cette routine sera changée bientôt
 				</strong>
 			<!-- S'il s'agit d'un rédacteur, des fonctions sont proposées -->
 			<!-- modifier, ajouter, up/down                               -->
-		<IF [#REDACTEUR]>
+		<IF COND="[#REDACTEUR]">
 			<MACRO NAME="edit_docannexe">	
 		</IF>
 			</TD>
 		</TR>
-<APRES>
+<AFTER>
 	</TABLE>
-</APRES>
-</BOUCLE>
+</AFTER>
+</LOOP>
 	<!-- Propose aux rédacteurs d'ajouter un document  --->
-	<IF [#REDACTEUR]>
+	<IF COND="[#REDACTEUR]">
 		<a href="lodel/edition/docannexe.php?iddocument=[#ID]">
 			<span class="texte_tres_petit">
 				[Ajouter un document annexe]
@@ -977,11 +977,11 @@ Attention, cette routine sera changée bientôt
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
 <DEFMACRO NAME="Introduction">
-	<IF [#TEXTE]>
+	<IF COND="[#TEXTE]">
 		<table width="90%">
 				<tr>
 				<td class="texte_petit">
-					<IF [#META_IMAGE]>
+					<IF COND="[#META_IMAGE]">
 					<a href="sommaire.html?id=[#ID]">
 						<IMG SRC="[#META_IMAGE]" ALIGN='left' NAME="[#NOM]" BORDER='0' alt="[#NOM]" HSPACE="8" VSPACE="8">
 						</a>
@@ -1008,7 +1008,7 @@ Attention, cette routine sera changée bientôt
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
 <DEFMACRO NAME="Introduction_simple">
-	<IF [#TEXTE]>
+	<IF COND="[#TEXTE]">
 	<br>
 		<!-- affiche les 1500 premiers mots du texte -->
 		[(#TEXTE|couper(1500))]
@@ -1238,28 +1238,28 @@ Attention, cette routine sera changée bientôt
 
 <META NAME="GENERATOR" CONTENT="LODEL 2002">
 <META NAME="DESCRIPTION" CONTENT="Test, revue de démonstration de LODEL. Adhère à la fédération www.revues.org">
-<BOUCLE NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="author" CONTENT="[#PRENOM] [#NOMFAMILLE]">
-</BOUCLE>
+</LOOP>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <META URL="http://test.revues.org/document.html?id=[#ID]">
 <meta name="distribution" content="worldwide">
 <META NAME="REVISIT-AFTER" CONTENT="12 days">
 <meta name="rating" content="General">
 <meta NAME="ROBOTS" CONTENT="all, follow, index">
-<BOUCLE NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="KEYWORDS" CONTENT="[#MOT]">
-</BOUCLE>
+</LOOP>
 <!-- METADONNEES DUBLIN CORE -->
 
 <META NAME="DC.Title" CONTENT="[(#TITRE|textebrut)] [(#SOUSTITRE|textebrut)]">
 <META NAME="DC.Publisher" CONTENT="Société historique du Centre-Est">
-<BOUCLE NAME="meta_dc_motscles" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP NAME="meta_dc_motscles" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="DC.Subject" CONTENT="[#MOT]">
-</BOUCLE>
-<BOUCLE NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+</LOOP>
+<LOOP NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="DC.Creator" CONTENT="[#PRENOM] [#NOMFAMILLE]">
-</BOUCLE>
+</LOOP>
 <META NAME="DC.Date" CONTENT="[#DATEPUBLI]">
 <META NAME="DC.Type" CONTENT="text">
 <META NAME="DC.Format" CONTENT="text/html">
@@ -1269,7 +1269,7 @@ Attention, cette routine sera changée bientôt
 <META NAME="DC.Relation" CONTENT="http://www.revues.org">
 <META NAME="DC.Coverage" CONTENT="?">
 <META NAME="DC.Rights" CONTENT="IPR">
-<IF [#RESUME:FR]>
+<IF COND="[#RESUME:FR]">
 <META NAME="DC.Description" lang="fr" CONTENT="[(#RESUME:FR|textebrut)]">
 <ELSE/>
 <!-- Ici, j'utilise une astuce : si pas de résumé, je cherche à faire passer-->
@@ -1300,7 +1300,7 @@ Attention, cette routine sera changée bientôt
 <!-- Affiche seulement le statut -->
 
 <DEFMACRO NAME="offline">
-<IF [#REDACTEUR]>
+<IF COND="[#REDACTEUR]">
 	[<FONT COLOR="red" size="-2">(off)(#OFFLINE|true)</FONT>]
 	[<FONT COLOR="red" size="-2">(on)(#OFFLINE|false)</FONT>]
 </IF>
@@ -1310,8 +1310,8 @@ Attention, cette routine sera changée bientôt
 <!-- Afin d'éviter de générer des 404 par erreur, la dépublication ne se fait pas ici -->
 
 <DEFMACRO NAME="offline_document">
-<IF [#EDITEUR]>
-	<IF [#OFFLINE]>
+<IF COND="[#EDITEUR]">
+	<IF COND="[#OFFLINE]">
 		<A HREF="lodel/edition/publi.php?id=[#ID]&online=1">
 			<font size="-2">
 				<font color="#0000FF">[off]</font>
@@ -1329,7 +1329,7 @@ Attention, cette routine sera changée bientôt
 <!-- d'affichage des documents                           -->
 
 <DEFMACRO NAME="up_down_document">   
-<IF [#REDACTEUR]>
+<IF COND="[#REDACTEUR]">
 	<A HREF="lodel/edition/editer.php?dir=up&id=[#ID]">
 	<span class="texte_trespetit">
 		[M]
@@ -1369,7 +1369,7 @@ Attention, cette routine sera changée bientôt
 <!-- Bouton "Edit" ce document  											 -->
 
 <DEFMACRO NAME="edit">
-<IF [#REDACTEUR]>
+<IF COND="[#REDACTEUR]">
 	<A CLASS="admin" HREF="lodel/edition/editer.php?id=[#ID]">
 	<span class="texte_trespetit">
 		[E]
@@ -1380,7 +1380,7 @@ Attention, cette routine sera changée bientôt
 
 <!-- Bouton "Edit" cette publication  											 -->
 <DEFMACRO NAME="Edit_publication">
-<IF [#REDACTEUR]>
+<IF COND="[#REDACTEUR]">
 	<A CLASS="admin" HREF="lodel/edition/index.php?parent=[#IDPUBLICATION]">
 	<span class="texte_trespetit">
 		[E]

@@ -56,39 +56,39 @@
       <div align="center"><b>Session</b></div>
     </TD>
   </TR>
-  <BOUCLE NAME="users" TABLE="users" ORDER="nom" WHERE="status>0"> 
+  <LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="status>0"> 
   <TR> 
   <TD align="center" align="middle">
 		<div align="center">
-			<IF [#PRIVILEGE] EQ 64>
+			<IF COND="[#PRIVILEGE] EQ 64">
 				<A HREF="user.php?id=[#ID]">
 					<MACRO NAME="GIF_VISAGE_SUPERADMIN">
 				</a>
 				<br>
 				[#USERNAME]	
 			<ELSE/>
-			<IF [#PRIVILEGE] EQ 32>
+			<IF COND="[#PRIVILEGE] EQ 32">
 				<A HREF="user.php?id=[#ID]">
 					<MACRO NAME="GIF_VISAGE_ADMIN">
 				</a>
 				<br>
 				Administrateur	
 			<ELSE/>
-			<IF [#PRIVILEGE] EQ 4>
+			<IF COND="[#PRIVILEGE] EQ 4">
 				<A HREF="user.php?id=[#ID]">
 					<MACRO NAME="GIF_VISAGE_EDITEUR">
 				</a>
 				<br>
 				Editeur
 			<ELSE/>
-			<IF [#PRIVILEGE] EQ 2>
+			<IF COND="[#PRIVILEGE] EQ 2">
 				<A HREF="user.php?id=[#ID]">
 					<MACRO NAME="GIF_VISAGE_REDACTEUR">
 				</a>
 				<br>
 				Rédacteur	
 			<ELSE/>
-			<IF [#PRIVILEGE] EQ 1>
+			<IF COND="[#PRIVILEGE] EQ 1">
 				<A HREF="user.php?id=[#ID]">
 					<MACRO NAME="GIF_VISAGE_VISITEUR">
 				</a>
@@ -123,17 +123,17 @@
       <div align="center"><A HREF="user.php?id=[#ID]&delete=1">Supprimer</A></div>
     </TD>
     <TD> &nbsp;
-     <BOUCLE NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
-        Expire [(#EXPIRE2|date("d/m/y H:i"))] <A HREF="session.php?delete=[#ID]"><IF [#EXPIRE2] lt time()>[supprimer]<ELSE/>[déloguer]</IF></A> 
+     <LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
+        Expire [(#EXPIRE2|date("d/m/y H:i"))] <A HREF="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[déloguer]</IF></A> 
         <BR>
-        </BOUCLE> 
+        </LOOP> 
     </TD>
   </TR>
-  </BOUCLE> 
+  </LOOP> 
 </TABLE>
 
-<BOUCLE NAME="users_trash" TABLE="users" ORDER="nom" WHERE="trash">
-<AVANT>
+<LOOP NAME="users_trash" TABLE="users" ORDER="nom" WHERE="trash">
+<BEFORE>
 <div align="center"><BR><b>Dans la poubelle:</b><BR></div><br>
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
   <TR> 
@@ -152,7 +152,7 @@
     <TD> 
       <div align="center">&nbsp;</div>
     </TD>
-  </TR></AVANT>
+  </TR></BEFORE>
   <TR> 
   <TD align="center" align="middle"><img src="images/triangle.gif" alt="Périodes" border="0"></TD>
     <TD> 
@@ -165,10 +165,10 @@
       <div align="center"><A HREF="user.php?id=[#ID]&restore=1">Récup&eacute;rer</A></div>
     </TD>
     <TD><A HREF="user.php?id=[#ID]&delete=2">Supprimer définitivement</A></TD>
-  </TR><APRES>
+  </TR><AFTER>
 </TABLE>
-</APRES>
-</BOUCLE>
+</AFTER>
+</LOOP>
 
 
 </CENTER>

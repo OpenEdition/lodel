@@ -11,12 +11,12 @@ Certaines publications sont protegees.<BR><BR>
 			<td>NOM</td>
 			<td>TITRE</td>
 		</tr>
-		<BOUCLE NAME="publications_protegees">
+		<LOOP NAME="publications_protegees">
 			<CORPS>
 				<tr>
 					<td>[#NOM]</td>
 					<td>
-						<IF [#TITRE]>
+						<IF COND="[#TITRE]">
 							[#TITRE]
 						<ELSE/>
 							...
@@ -24,7 +24,7 @@ Certaines publications sont protegees.<BR><BR>
 					</td>
 				</tr>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 	</table>
 	<input type="submit" name="confirmation" value="confirmation de la depublication"> <!-- on confirme la depublication -->
 	<input type="submit" name="cancel" value="abandonner"> <!-- on abandonne la depublication-->

@@ -51,7 +51,7 @@
 									</td>
 									<MACRO NAME="titres_boutons_publications">
 								</tr>
-								<BOUCLE NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
+								<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
 								<tr>
 									<td width="48"> 
 										<div align="center">
@@ -63,9 +63,9 @@
 									<MACRO NAME="TD_nom_type_titre">
 									<MACRO NAME="boutons_publications">
 								</tr>
-								<SINON/>
+								<ALTERNATIVE/>
 									<MACRO NAME="TR_aucune_publication_dispo"> 
-								</BOUCLE>
+								</LOOP>
 								<MACRO NAME="Creer_serie">
 							</table>
 						</td>

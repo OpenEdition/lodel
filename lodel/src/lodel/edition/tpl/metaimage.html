@@ -18,7 +18,7 @@
 	<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="1000000">
 	<INPUT TYPE="hidden" name="[#IDTYPE]" VALUE="[#ID]">
 	<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
-	<IF [#IMAGE]>
+	<IF COND="[#IMAGE]">
 	<TR>
 		<TD>
 		</TD>
@@ -38,7 +38,7 @@
 		</TD>
 	</TR>
 </TABLE>
-<IF [#IMAGE]>
+<IF COND="[#IMAGE]">
 <INPUT CLASS="form" TYPE="submit" NAME="edit" VALUE="Modifier"><br>
 <INPUT CLASS="form" TYPE="submit" NAME="delete" VALUE="Supprimer">
 

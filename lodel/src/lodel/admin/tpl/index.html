@@ -45,7 +45,7 @@
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
         <tr> 
 			<td align="center" width="48">
-				<IF [#REDACTEUR]>
+				<IF COND="[#REDACTEUR]">
 					<A HREF="typepublis.php">
 					<MACRO NAME="GIF_ADMINISTRER_32">
 					</A>
@@ -54,7 +54,7 @@
 				</IF>
 			</td>
           <td align="left">
-			<IF [#REDACTEUR]>
+			<IF COND="[#REDACTEUR]">
 		  		<A HREF="typepublis.php">
 				Administrer les types de publications
 				</a>
@@ -155,7 +155,7 @@
       </table>
     </td>
   </tr>
-<IF [#ADMIN]>
+<IF COND="[#ADMIN]">
 	<MACRO NAME="TR_Separation_220">		
     <td bgcolor="#FFFFFF"> 
 			<table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
@@ -175,7 +175,7 @@
 			</table>
   </tr>
 </IF>
-<IF [#ADMIN]>
+<IF COND="[#ADMIN]">
 		<MACRO NAME="TR_Separation_220">		
 	    <td bgcolor="#FFFFFF"> 
 	      <table width="220" border="0" align="center" cellspacing="4" cellpadding="4" bordercolor="#000000">
@@ -208,7 +208,7 @@
       </table>
     </td>
   </tr>
-<IF [#ADMIN]>
+<IF COND="[#ADMIN]">
 	<MACRO NAME="TR_Separation_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
@@ -240,7 +240,7 @@
 				<tr> 
 
 
-<IF [#ADMIN]>
+<IF COND="[#ADMIN]">
 	<MACRO NAME="TR_Separation_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 

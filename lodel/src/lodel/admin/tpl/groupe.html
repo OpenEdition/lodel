@@ -23,7 +23,7 @@
 <div align="center"><INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" ></div>
 </FORM>
 
-<IF [#DELETE]>
+<IF COND="[#DELETE]">
 <div align="center"><A HREF="groupe.php?delete=2&id=[(#ID)]"><BLINK>Confirmer la suppresion</BLINK></A></div>
 <ELSE/>
 <div align="center">[<A HREF="groupe.php?delete=1&id=(#ID)">Supprimer</A>]</div>

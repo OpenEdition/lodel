@@ -10,10 +10,10 @@
 
 	<!--  AFFICHE LES ARTICLES HORS REGROUPEMENT S'IL Y EN A  -->
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-		<BOUCLE NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
+		<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
 
 		<!-- Affiche barre bleue de titre -->
-		<AVANT>
+		<BEFORE>
 		<tr>
 			<td width="48" valign="middle" background="images/bleu.gif">
 				<MACRO NAME="GIF_document">
@@ -25,9 +25,9 @@
 			</td>
 			<MACRO NAME="Documents_titre_bleu">
 			</tr>
-		</AVANT>
+		</BEFORE>
 			<MACRO NAME="Affiche_articles">
-		</BOUCLE>
+		</LOOP>
 		<!-- LIEN POUR CREER UN DOCUMENT.
 		IL DOIT ETRE HORS DE LA BOUCLE AU CAS OU IL N'Y AURAIT AUCUN DOC
 		-->
@@ -36,7 +36,7 @@
 	<br>
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<!--  AFFICHE LES REGROUPEMENTS S'IL Y EN A  -->
-	<BOUCLE NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" ORDER="ordre DESC"> 
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" ORDER="ordre DESC"> 
 		<tr>
 		<td width="48" background="images/bleu.gif">
 			<MACRO NAME="GIF_REGROUPEMENT">
@@ -46,7 +46,7 @@
 			[#NOM]
 			</font></b>
 			<font color="navy"><i>
-				<IF [#TITRE]>
+				<IF COND="[#TITRE]">
 					[#TITRE]
 				<ELSE/>
 					...
@@ -74,13 +74,13 @@
 
 	<!-- AFFICHE LES ARTICLES DU REGROUPEMENT EN COURS -->
 
-	<BOUCLE NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'"  ORDER="ordre">
+	<LOOP NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'"  ORDER="ordre">
 	<MACRO NAME="Affiche_articles">
 	<!-- FIN D'AFFICHAGE DES ARTICLES -->
-	</BOUCLE>
+	</LOOP>
 	<MACRO NAME="Ajouter_document_regroupement">
 	</tr>
-</BOUCLE> 
+</LOOP> 
 	<MACRO NAME="Creer_regroupement">
 	</table>
 <MACRO NAME="TR_tachesencours">

@@ -6,15 +6,15 @@
 	<tr>
 		<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#SUPERADMIN]><A HREF="../../lodel/admin/"><MACRO NAME="GIF_VISAGE_SUPERADMIN"></a><br>[#USERNAME]	
+			<IF COND="[#SUPERADMIN]"><A HREF="../../lodel/admin/"><MACRO NAME="GIF_VISAGE_SUPERADMIN"></a><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#ADMIN]><MACRO NAME="GIF_VISAGE_ADMIN"><br>[#USERNAME]	
+			<IF COND="[#ADMIN]"><MACRO NAME="GIF_VISAGE_ADMIN"><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#EDITEUR]><MACRO NAME="GIF_VISAGE_EDITEUR"><br>[#USERNAME]	
+			<IF COND="[#EDITEUR]"><MACRO NAME="GIF_VISAGE_EDITEUR"><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#REDACTEUR]><MACRO NAME="GIF_VISAGE_REDACTEUR"><br>[#USERNAME]	
+			<IF COND="[#REDACTEUR]"><MACRO NAME="GIF_VISAGE_REDACTEUR"><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#VISITEUR]><MACRO NAME="GIF_VISAGE_VISITEUR"><br>[#USERNAME]	
+			<IF COND="[#VISITEUR]"><MACRO NAME="GIF_VISAGE_VISITEUR"><br>[#USERNAME]	
 			<ELSE/><MACRO NAME="GIF_INACTIF"><br>Utilisateur
 			</IF>
 			</IF>
@@ -26,7 +26,7 @@
 		</td>
 		<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#REDACTEUR]>
+			<IF COND="[#REDACTEUR]">
 				<A HREF="../edition/index.php">
 				<MACRO NAME="GIF_EDITER_32">
 				</a>
@@ -38,7 +38,7 @@
 		</td>
 		<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#ADMIN]>
+			<IF COND="[#ADMIN]">
 				<A HREF="../admin/index.php">
 				<MACRO NAME="GIF_ADMINISTRER_32">
 				</a>
@@ -50,7 +50,7 @@
 		</td>
 		<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#EDITEUR]>
+			<IF COND="[#EDITEUR]">
 				<a href="maj.php">
 					<MACRO NAME="GIF_METTRE_A_JOUR_32">
 				</a>
@@ -65,7 +65,7 @@
 		</td>
 		<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 			<div align="center">
-				<IF [#ADMIN]>
+				<IF COND="[#ADMIN]">
 					<a href="[#URL_RECOMPILE]">
 						<MACRO NAME="GIF_RECOMPILE_32">   
 					</a>

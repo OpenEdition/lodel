@@ -55,7 +55,7 @@
 	</tr>
 </table>
 <br /><br />
-<IF [#NBTYPEDOCS] gt 0>
+<IF COND="[#NBTYPEDOCS] gt 0">
 	<table class="texte" width="800" cellpadding="5" cellspacing="1" border="1" align="center">
 		<tr>
 			<td colspan="2" bgcolor="#EEEEEE" class="soustitre">
@@ -65,7 +65,7 @@
 		<tr>
 			<td colspan="2" align="center">
 				<b>
-					<IF [#NBTYPEDOCS] gt 1>
+					<IF COND="[#NBTYPEDOCS] gt 1">
 						<b>[#NBTYPEDOCS]</b>&nbsp;types de document
 					<ELSE/>
 						<b>[#NBTYPEDOCS]</b>&nbsp;type de document
@@ -81,7 +81,7 @@
 				<b>Nombre de fois utilisé :</b>
 			</td>
 		</tr>
-		<BOUCLE NAME="nom_occ_type_doc">
+		<LOOP NAME="nom_occ_type_doc">
 			<CORPS>
 				<tr>
 					<td>
@@ -92,7 +92,7 @@
 					</td>
 				</tr>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 	</table>
 </IF>
 <br /><br />
@@ -144,7 +144,7 @@
 	</tr>
 </table>
 <br /><br />
-<IF [#NBTYPEPUBLIS] gt 0>
+<IF COND="[#NBTYPEPUBLIS] gt 0">
 	<table class="texte" width="800" cellpadding="5" cellspacing="1" border="1" align="center">
 		<tr>
 			<td colspan="2" bgcolor="#EEEEEE" class="soustitre">
@@ -154,7 +154,7 @@
 		<tr>
 			<td colspan="2" align="center">
 				<b>
-					<IF [#NBTYPEPUBLIS] gt 1>
+					<IF COND="[#NBTYPEPUBLIS] gt 1">
 						<b>[#NBTYPEPUBLIS]</b>&nbsp;types de publication
 					<ELSE/>
 						<b>[#NBTYPEPUBLIS]</b>&nbsp;type de publication
@@ -170,7 +170,7 @@
 				<b>Nombre de fois utilisé :</b>
 			</td>
 		</tr>
-		<BOUCLE NAME="nom_occ_type_publi">
+		<LOOP NAME="nom_occ_type_publi">
 			<CORPS>
 				<tr>
 					<td>
@@ -181,7 +181,7 @@
 					</td>
 				</tr>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 	</table>
 </IF>
 <macro name="close_html">

@@ -8,7 +8,7 @@
 <USE MACROFILE="macros_revue.html">
 
 
-<LET VAR="subject">Un article de <MACRO NAME="NOM_REVUE"> sur Revues.org signalé par <IF [#NOM_EXPEDITEUR]>[#NOM_EXPEDITEUR] <ELSE/> un ami</IF></LET>
+<LET VAR="subject">Un article de <MACRO NAME="NOM_REVUE"> sur Revues.org signalé par <IF COND="[#NOM_EXPEDITEUR]">[#NOM_EXPEDITEUR] <ELSE/> un ami</IF></LET>
 <x-html>
 <html>
 <head>
@@ -33,13 +33,13 @@
 	<MACRO NAME="PARU_DANS_SIGNALER"><br />
 	<strong>Auteur(s) :</strong> <MACRO NAME="LISTER_AUTEURS">
 	<br />
-	<strong>Titre :</strong>  <IF [#TITRE]>	[#TITRE]</IF>
-	<IF [#SOUSTITRE]>
+	<strong>Titre :</strong>  <IF COND="[#TITRE]">	[#TITRE]</IF>
+	<IF COND="[#SOUSTITRE]">
 	<br />
 	<strong>Sous-titre :</strong>						[#SOUSTITRE]
 	</IF>
 	<br />
-	<IF [#RESUME:FR]>
+	<IF COND="[#RESUME:FR]">
 	<br />		<strong>Résumé :</strong><br />
 		 [#RESUME:FR]
 	<ELSE/>
@@ -47,13 +47,13 @@
 		[(#TEXTE|couper(1000))] (...)
 	</IF>
 
-	<IF [#RESUME:EN]>
+	<IF COND="[#RESUME:EN]">
 <br />		<strong>Abstract :</strong>
 		<br />
 		[#RESUME:EN]
 	</IF>
 
-	<IF [#TEXTE]>
+	<IF COND="[#TEXTE]">
 <br />
 		<a href="http://[#REVUE].revues.org/document.html?id=[#ID]">Le texte intégral</a> se trouve en ligne.
 	</IF>

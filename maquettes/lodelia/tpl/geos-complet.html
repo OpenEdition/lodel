@@ -39,18 +39,18 @@
 			</tr>
 			<tr>
 				<td width="100%" class="soustitre">
-					<BOUCLE NAME="periodes" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
+					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
 						<CORPS>	
 							<a href="geo.html?id=[#ID]">
 								[#NOM]
 							</a>
 							&nbsp;|
 						</CORPS>
-					</BOUCLE>
+					</LOOP>
 				</td>
 			</tr>
 		</table>
-		<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
+		<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
 			<CORPS>
 				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="top"  bordercolor="Black">
 					<tr>
@@ -64,16 +64,16 @@
 					</tr>
 					<tr>
 						<td span class="texte">
-							<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+							<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
 								<CORPS>
 									<MACRO NAME="INFOS_DOCUMENT">
 								 </CORPS>
-							</BOUCLE>
+							</LOOP>
 						</td>
 					</tr>
 				</table>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 	</td>
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">

@@ -32,7 +32,7 @@
 					<MACRO NAME="TABLE_ALPHABETIQUE">
 				</td>
 			</tr>
-			<BOUCLE NAME="alphabet">
+			<LOOP NAME="alphabet">
 				<tr>
 					<td class="titre">
 						<a name="[#LETTRE]">
@@ -40,7 +40,7 @@
 						</a>
 					</td>
 				</tr>
-				<BOUCLE NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
+				<LOOP NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
 					<tr>
 						<td class="texte_centre">
 							<a href="auteur.html?id=[#ID]">
@@ -55,8 +55,8 @@
 							&nbsp;
 						</td>
 					</tr>
-				</BOUCLE>
-			</BOUCLE>
+				</LOOP>
+			</LOOP>
 		</table>
 	</td> 
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">

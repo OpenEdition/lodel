@@ -6,15 +6,15 @@
 	<tr>
 		<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#SUPERADMIN]><A HREF="../../../lodel/"><MACRO NAME="GIF_VISAGE_SUPERADMIN"></a><br>[#USERNAME]	
+			<IF COND="[#SUPERADMIN]"><A HREF="../../../lodel/"><MACRO NAME="GIF_VISAGE_SUPERADMIN"></a><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#ADMIN]><a href="../../index.html"><MACRO NAME="GIF_VISAGE_ADMIN"></a><br>[#USERNAME]	
+			<IF COND="[#ADMIN]"><a href="../../index.html"><MACRO NAME="GIF_VISAGE_ADMIN"></a><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#EDITEUR]><a href="../../index.html"><MACRO NAME="GIF_VISAGE_EDITEUR"></a><br>[#USERNAME]	
+			<IF COND="[#EDITEUR]"><a href="../../index.html"><MACRO NAME="GIF_VISAGE_EDITEUR"></a><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#REDACTEUR]><a href="../../index.html"><MACRO NAME="GIF_VISAGE_REDACTEUR"></a><br>[#USERNAME]	
+			<IF COND="[#REDACTEUR]"><a href="../../index.html"><MACRO NAME="GIF_VISAGE_REDACTEUR"></a><br>[#USERNAME]	
 			<ELSE/>
-			<IF [#VISITEUR]><a href="../../index.html"><MACRO NAME="GIF_VISAGE_VISITEUR"></a><br>[#USERNAME]	
+			<IF COND="[#VISITEUR]"><a href="../../index.html"><MACRO NAME="GIF_VISAGE_VISITEUR"></a><br>[#USERNAME]	
 			<ELSE/><MACRO NAME="GIF_INACTIF"><br>Utilisateur
 			</IF>
 			</IF>
@@ -26,7 +26,7 @@
 		</td>
 		<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#VISITEUR]>
+			<IF COND="[#VISITEUR]">
 				<A HREF="../edition/index.php">
 				<MACRO NAME="GIF_EDITER_32">
 				</a>
@@ -38,7 +38,7 @@
 		</td>
 		<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#ADMIN]>
+			<IF COND="[#ADMIN]">
 				<A HREF="../admin/index.php">
 				<MACRO NAME="GIF_ADMINISTRER_32">
 				</a>
@@ -50,7 +50,7 @@
 		</td>
 		<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 		<div align="center">
-			<IF [#EDITEUR]>
+			<IF COND="[#EDITEUR]">
 				<a href="../edition/maj.php">
 					<MACRO NAME="GIF_METTRE_A_JOUR_32">
 				</a>
@@ -63,7 +63,7 @@
 		</td>
 		<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
 			<div align="center">
-				<IF [#ADMIN]>
+				<IF COND="[#ADMIN]">
 					<a href="[#URL_RECOMPILE]">
 						<MACRO NAME="GIF_RECOMPILE_32">   
 					</a>

@@ -34,19 +34,19 @@
 		<img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0">
 	</TD>
 </TR>
-<BOUCLE NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type_tous_motcles">
+<LOOP NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type_tous_motcles">
 	<TR> 
 		<TD align="center" align="middle">
 			<img src="images/GNOME_prefs.gif" width="24" height="24" border="0">
 		</TD>
 		<TD>
-		<IF [#TYPE]==3>
+		<IF COND="[#TYPE]==3">
 			<strong>
 		</IF>
 			<font color="Navy">
 				[#MOT]
 			</font>
-		<IF [#TYPE]==3>
+		<IF COND="[#TYPE]==3">
 			</strong>
 		</IF>
 		</TD>
@@ -61,7 +61,7 @@
 			</A>
 		</TD>
 	</TR>
-</BOUCLE>
+</LOOP>
 </TABLE>
 <br>
 <br>

@@ -46,7 +46,7 @@
 	<link rel="stylesheet" href="styles_revue.css">
 	</head>
 	<body> 
-	<IF [#VISITEUR]>
+	<IF COND="[#VISITEUR]">
 		<? insert_template("desk");?>
 	</IF>
 </DEFMACRO>
@@ -127,13 +127,13 @@
 	<form name="pub_menu_B">
 		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 		<option value="index.html">Thèmes</option>
-		<BOUCLE NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
+		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
 			<CORPS>	
 				<option value="sommaire.html?id=[#ID]">
 					[#NOM]
 				</option>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 		</select>
 	</form>
 </DEFMACRO>
@@ -145,24 +145,24 @@
 <!-- existe sinon affiche "0000-00-00".                                 -->
 <!-- Cette macro est destinée à l'affichage des métadonnées.            -->
 <!-- ****************************************************************** -->
-	<BOUCLE TABLE="publications" WHERE="id='[#PUBLICATION]'">
+	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
 		<CORPS>
-			<IF [#TYPE]=="regroupement">
+			<IF COND="[#TYPE]=='regroupement'">
 			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
-	            <BOUCLE TABLE="publications" WHERE="id='[#PARENT]'">
+	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<CORPS>
-						<IF [#DATE]!="0000-00-00">
+						<IF COND="[#DATE]!='0000-00-00'">
 							<meta name="DC.Date" content="[#DATE]">
 						</IF>
 					</CORPS>
-				</BOUCLE>
+				</LOOP>
 			<ELSE/>
-				<IF [#DATE]!="0000-00-00">
+				<IF COND="[#DATE]!='0000-00-00'">
 					<meta name="DC.Date" content="[#DATE]">
 				</IF>
 			</IF>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES">
@@ -182,13 +182,13 @@
 	
 	<meta url="http://ruralia.revues.org/document.html?id=[#ID]">
 	
-	<BOUCLE NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]">
-	</BOUCLE>
+	</LOOP>
 	
-	<BOUCLE NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="KEYWORDS" content="[#MOT]">
-	</BOUCLE>
+	</LOOP>
 	
 	<!-- METADONNEES DUBLIN CORE -->
 	
@@ -205,21 +205,21 @@
 	<meta name="DC.Identifier" content="http://ruralia.revues.org/document.html?id=[#ID]">
 	<meta name="DC.Title" content="[(#TITRE|textebrut)] [(#SOUSTITRE|textebrut)]">
 
-	<BOUCLE NAME="meta_dc_motscles_l" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_motscles_l" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="DC.Subject" content="[#MOT]">
-	</BOUCLE>
+	</LOOP>
 	
-	<BOUCLE NAME="meta_dc_motscles_h" TABLE="indexhs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_motscles_h" TABLE="indexhs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="DC.Subject" content="[#MOT]">
-	</BOUCLE>
+	</LOOP>
 	
-	<BOUCLE NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]">
-	</BOUCLE>
+	</LOOP>
 	
 	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_META">
 	
-	<IF [#RESUME:FR]>
+	<IF COND="[#RESUME:FR]">
 		<meta name="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut)]">
 	<ELSE/>
 		<!-- Ici, j'utilise une astuce : si pas de résumé, je cherche à faire passer-->
@@ -245,7 +245,7 @@
 	<meta name="rating" content="General">
 	
 	<!-- METADONNEES DUBLIN CORE -->
-	<IF [#TITRE]>
+	<IF COND="[#TITRE]">
 		<meta name="DC.Title" content="[(#TITRE|textebrut)] [(#SOUSTITRE|textebrut)]">
 	<ELSE/>
 		<meta name="DC.Title" content="<MACRO NAME="DESCRIPTION_REVUE">">
@@ -260,7 +260,7 @@
 	<meta name="DC.Coverage" content="?">
 	<meta name="DC.Rights" content="IPR">
 	
-	<IF [#RESUME:FR]>
+	<IF COND="[#RESUME:FR]">
 		<meta NAME="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut)]">
 	<ELSE/>
 		<!-- Ici, j'utilise une astuce : si pas de résumé, je cherche à faire passer-->

@@ -19,9 +19,9 @@
 <!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
-<BOUCLE NAME="title" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC" WHERE="id=[#ID]">
+<LOOP NAME="title" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC" WHERE="id=[#ID]">
 	<TITLE>Index chronologique : [#NOM]</TITLE>
-</BOUCLE>
+</LOOP>
 <MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_STYLE">
 
@@ -38,18 +38,18 @@
 			</tr>
 			<tr>
 				<td width="100%" class="texte_petit_centre">
-					<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+					<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
 						<CORPS>
 							<a href="chrono.html?id=[#ID]">
 								[#NOM]
 							</a>
 							&nbsp;|
 						</CORPS>
-					</BOUCLE>
+					</LOOP>
 				</td>
 			</tr>
 		</table>
-		<BOUCLE NAME="geographie2" TABLE="indexhs" WHERE="type_periode"  WHERE="id=[#ID]" ORDER="ordre DESC">
+		<LOOP NAME="geographie2" TABLE="indexhs" WHERE="type_periode"  WHERE="id=[#ID]" ORDER="ordre DESC">
 			<CORPS>
 				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="top"  bordercolor="Black">
 					<tr>
@@ -63,16 +63,16 @@
 					</tr>
 					<tr>
 						<td span class="texte">
-							<BOUCLE NAME="articles" TABLE="documents" WHERE="idindexh='[#ID]'" WHERE="ok">
+							<LOOP NAME="articles" TABLE="documents" WHERE="idindexh='[#ID]'" WHERE="ok">
 								<CORPS>
 									<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 								</CORPS>
-							</BOUCLE>
+							</LOOP>
 						</td>
 					</tr>
 				</table>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 		<div align="center">
 			<a href="chronos-complet.html">
 				Index complet

@@ -7,19 +7,19 @@
 <br />
 	<span class="titre">
 		<div align="center">Saisie du descriptif 
-			<IF [#TYPE] EQ "serie_lineaire">
+			<IF COND="[#TYPE] EQ 'serie_lineaire'">
 			de la série linéaire
 			</IF>
-			<IF [#TYPE] EQ "serie_hierarchique">
+			<IF COND="[#TYPE] EQ 'serie_hierarchique'">
 			de la série hiérarchique
 			</IF>
-			<IF [#TYPE] EQ "numero">
+			<IF COND="[#TYPE] EQ 'numero'">
 			du numéro
 			</IF>
-			<IF [#TYPE] EQ "theme">
+			<IF COND="[#TYPE] EQ 'theme'">
 			du thème
 			</IF>
-			<IF [#TYPE] EQ "regroupement">
+			<IF COND="[#TYPE] EQ 'regroupement'">
 			du regroupement
 			</IF>
 		</div>
@@ -27,18 +27,18 @@
 	<p>
 		<span class="soustitre">
 			<div align="center">
-				<IF [#TYPE] EQ "numero">
+				<IF COND="[#TYPE] EQ 'numero'">
 				Numéro parent : 
 				</IF>
-				<IF [#TYPE] EQ "theme">
+				<IF COND="[#TYPE] EQ 'theme'">
 				Thème parent : 
 				</IF>
-				<IF [#TYPE] EQ "regroupement">
+				<IF COND="[#TYPE] EQ 'regroupement'">
 				Regroupement : 
 				</IF>
-				<BOUCLE NAME="Affiche_Parent" TABLE="publications" WHERE="id='[#PARENT]'">
+				<LOOP NAME="Affiche_Parent" TABLE="publications" WHERE="id='[#PARENT]'">
 					<strong>[#NOM]</strong>
-				</BOUCLE>
+				</LOOP>
 			</div>
 		</span>
 	</p>
@@ -59,19 +59,19 @@
 		<INPUT TYPE="hidden" NAME="importsommaire" VALUE="[#IMPORTSOMMAIRE]">
 		<tr>
 			<td background="[#SHAREURL]/images/gris.gif">
-				<IF [#TYPE] EQ "serie_lineaire">
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
 				<strong>Nom de la série</strong>*<br />
 				</IF>
-				<IF [#TYPE] EQ "serie_hierarchique">
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
 				<strong>Nom de la série</strong>*<br />
 				</IF>
-				<IF [#TYPE] EQ "numero">
+				<IF COND="[#TYPE] EQ 'numero'">
 				<strong>Tomaison ou numérotation du numéro</strong>*<br />
 				</IF>
-				<IF [#TYPE] EQ "theme">
+				<IF COND="[#TYPE] EQ 'theme'">
 				<strong>Nom abrégé du thème</strong>*<br />
 				</IF>
-				<IF [#TYPE] EQ "regroupement">
+				<IF COND="[#TYPE] EQ 'regroupement'">
 				<strong>Nom abrégé du regroupement</strong>*<br />
 				</IF>
 				<em>L'astérisque indique les champs obligatoires</em>
@@ -80,19 +80,19 @@
 				<input size="40" type="text" name="nom" value="[#NOM]">
 			</td>
 			<td  background="[#SHAREURL]/images/bleu.gif">
-				<IF [#TYPE] EQ "serie_lineaire">
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
 				<em>Version brève. Exemple : CMR pour "Cahiers du Monde russe"</em>
 				</IF>
-				<IF [#TYPE] EQ "serie_hierarchique">
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
 				<em>Version brève. Exemple : Les Cahiers pour "Espaces Temps, les Cahiers"</em>
 				</IF>
-				<IF [#TYPE] EQ "numero">
+				<IF COND="[#TYPE] EQ 'numero'">
 				<em>Exemple : Tome IV, Vol. 12</em>
 				</IF>
-				<IF [#TYPE] EQ "theme">
+				<IF COND="[#TYPE] EQ 'theme'">
 				<em>Exemple : Sociologie des organisations pour "Relecture de la sociologie des organisations"</em>
 				</IF>
-				<IF [#TYPE] EQ "regroupement">
+				<IF COND="[#TYPE] EQ 'regroupement'">
 				<em>Exemple : "I"</em>
 				</IF>
 			</td>
@@ -104,19 +104,19 @@
 		</tr>
 		<tr>
 			<td background="[#SHAREURL]/images/gris.gif">
-				<IF [#TYPE] EQ "serie_lineaire">
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
 				<strong>Titre de la série</strong><br />
 				</IF>
-				<IF [#TYPE] EQ "serie_hierarchique">
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
 				<strong>Nom de la série</strong><br />
 				</IF>
-				<IF [#TYPE] EQ "numero">
+				<IF COND="[#TYPE] EQ 'numero'">
 				<strong>Titre du numéro </strong><br />
 				</IF>
-				<IF [#TYPE] EQ "theme">
+				<IF COND="[#TYPE] EQ 'theme'">
 				<strong>Titre du thème</strong><br />
 				</IF>
-				<IF [#TYPE] EQ "regroupement">
+				<IF COND="[#TYPE] EQ 'regroupement'">
 				<strong>Titre du regroupement</strong><br />
 				</IF>
 			</td>
@@ -124,19 +124,19 @@
 				<input size="50" type="text" name="titre" value="[#TITRE]">
 			</td>
 			<td  background="[#SHAREURL]/images/bleu.gif">
-				<IF [#TYPE] EQ "serie_lineaire">
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
 				<em>Version longue. Exemple : "Cahiers du Monde russe"</em>
 				</IF>
-				<IF [#TYPE] EQ "serie_hierarchique">
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
 				<em>Version longue. Exemple : "Espaces Temps, les Cahiers"</em>
 				</IF>
-				<IF [#TYPE] EQ "numero">
+				<IF COND="[#TYPE] EQ 'numero'">
 				<em>Indiquer <u>varia</u> en cas de numéro sans thème dominant</em>
 				</IF>
-				<IF [#TYPE] EQ "theme">
+				<IF COND="[#TYPE] EQ 'theme'">
 				<em>Exemple : "Relecture de la sociologie des organisations"</em>
 				</IF>
-				<IF [#TYPE] EQ "regroupement">
+				<IF COND="[#TYPE] EQ 'regroupement'">
 				<em>Exemple : "Première partie"</em>
 				</IF>
 			</td>
@@ -177,7 +177,7 @@
 			</td>
 			<td background="[#SHAREURL]/images/bleu.gif">
 				<em>Facultatif</em><br />
-				<IF [#TYPE] EQ "regroupement">
+				<IF COND="[#TYPE] EQ 'regroupement'">
 					<em>Très rare dans le cas d'un regroupement</em>
 				</IF>
 			</td>
@@ -204,7 +204,7 @@
 				Type : [#TYPE]
 			</td>
 		</tr>
-		<IF [#ID]>
+		<IF COND="[#ID]">
 			<tr>
 				<td background="[#SHAREURL]/images/gris.gif">
 					<strong>Danger :</strong>

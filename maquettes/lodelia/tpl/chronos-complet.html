@@ -36,18 +36,18 @@
 			</tr>
 			<tr>
 				<td width="100%" class="texte_petit_centre">
-					<BOUCLE NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
 						<CORPS>
 							<a href="chrono.html?id=[#ID]">
 								[#NOM]
 							</a>
 							&nbsp;|
 						</CORPS>
-					</BOUCLE>
+					</LOOP>
 				</td>
 			</tr>
 		</table>
-		<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+		<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
 			<CORPS>
 				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="TOP"  bordercolor="Black">
 					<tr>
@@ -61,16 +61,16 @@
 					</tr>
 					<tr>
 						<td span class="texte_petit">
-							<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+							<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
 								<CORPS>
 									<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 								</CORPS>
-							</BOUCLE>
+							</LOOP>
 						</td>
 					</tr>
 				</table>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 	</td>
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">

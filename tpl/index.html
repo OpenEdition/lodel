@@ -43,21 +43,21 @@
 </tr>
 <tr>
 <td width="60%">
-		<BOUCLE NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
+		<LOOP NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
 		<div id="[#REP]" class="texte_petit">
 		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
 			<a HREF="[(#REP|makeurl)]" onmouseover="[#REP].src=triangle.sr" 
 onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
 <br>	</div>
 
-		</BOUCLE>
+		</LOOP>
 </td>
 <td width="40%">
-		<BOUCLE NAME="sel_rev" TABLE="revues" WHERE="ok" ORDER="nom">
+		<LOOP NAME="sel_rev" TABLE="revues" WHERE="ok" ORDER="nom">
 		<div id="[#REP]" class="texte_petit">
 [<a href="[(#REP|makeurl)]/lodel/edition/index.php">Editer [#REP]</a>]
 <br>	</div>
-		</BOUCLE>
+		</LOOP>
 </td>
 </tr>
 </table>

@@ -8,17 +8,17 @@
 
 <table width="75%" border="1" align="center" cellspacing="0" cellpadding="6" bordercolor="gray">
 <TR><TD><b>Nom</b></TD><TD> <div align="center"><img src="images/KDE_txt.gif" width="32" height="32"></div></TD><TD> <div align="center"><img src="images/coplanddetruire.gif" width="32" height="32"></div></TD></TR>
-<BOUCLE NAME="revues" TABLE="revues" ORDER="nom" WHERE="ok">
-  <IF [#COUNT] % 2><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
+<LOOP NAME="revues" TABLE="revues" ORDER="nom" WHERE="ok">
+  <IF COND="[#COUNT] % 2"><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
 <TD align="center"><font color="Navy"><b><i>[(#NOM|nbsp)]</i></b></font></TD>
 <TD align="center"><A HREF="revue.php?id=[#ID]">Modifier</A></TD>
 <TD align="center"><A HREF="revue.php?id=[#ID]&delete=1">Supprimer</A></TD>
 </TR>
-</BOUCLE>
+</LOOP>
 </TABLE>
 
-<BOUCLE NAME="revues_ol" TABLE="revues" ORDER="nom" WHERE="trash">
-<AVANT>
+<LOOP NAME="revues_ol" TABLE="revues" ORDER="nom" WHERE="trash">
+<BEFORE>
 <br>
 <table width="75%" border="1" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
 <tr>
@@ -28,12 +28,12 @@
 <TR>
     <TD><b>Nom</b></TD>
     <TD>&nbsp;</TD></TR>
-</AVANT>
+</BEFORE>
 
-<IF [#COUNT] % 2><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
+<IF COND="[#COUNT] % 2"><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
     <TD><font color="navy"><b>[#NOM]</b></font></TD>
 <TD><A HREF="revue.php?id=[#ID]&restore=1">Récuperer</A></TD>
 </TR>
-<APRES></TABLE></APRES>
-</BOUCLE>
+<AFTER></TABLE></AFTER>
+</LOOP>
 <MACRO NAME="close_html">

@@ -30,9 +30,9 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="Status">
-	<IF [#STATUS] GT 0>
+	<IF COND="[#STATUS] GT 0">
 		<div align="center">
-			<IF [#STATUS]==1>
+			<IF COND="[#STATUS]==1">
 				<!--<a href="publi.php?publication=[#ID]">-->
 				<a href="#" onClick="confirm_depublication(1,[#ID]);">
 					<span class="texte_trespetit_centre">
@@ -47,7 +47,7 @@
 		</div>
 	<ELSE/>
 		<div align="center">
-			<IF [#STATUS]==-1>
+			<IF COND="[#STATUS]==-1">
 			<a href="publi.php?publication=[#ID]&online=1">
 				<span class="texte_trespetit_centre">
 					Publier
@@ -63,9 +63,9 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="interrupteur_on_off_document">
-	<IF [#STATUS] GT 0>
+	<IF COND="[#STATUS] GT 0">
 		<div align="center">
-			<IF [#STATUS]==1>
+			<IF COND="[#STATUS]==1">
 				<!--<a href="publi.php?id=[#ID]">-->
 				<a href="#" onClick="confirm_depublication(0,[#ID]);">
 					<span class="texte_trespetit_centre">
@@ -80,7 +80,7 @@
 		</div>
 	<ELSE/>
 		<div align="center">
-			<IF [#STATUS]==-1>
+			<IF COND="[#STATUS]==-1">
 			<a href="publi.php?id=[#ID]&online=1">
 				<span class="texte_trespetit_centre">
 					Publier
@@ -97,7 +97,7 @@
 		
 <DEFMACRO NAME="offline_document">
 <div align="center">
-	<IF [#OFFLINE]>
+	<IF COND="[#OFFLINE]">
 		<MACRO NAME="GIF_DOCUMENT_OFF"><br>
 	<ELSE/>
 		<MACRO NAME="GIF_DOCUMENT_ON"><br>
@@ -122,7 +122,7 @@
 <DEFMACRO NAME="TD_up_publication">	
 <td width="74" align="center" valign="middle"> 
 <!-- Monter -->
-	<IF [#OFFLINE]>
+	<IF COND="[#OFFLINE]">
 			off
 	<ELSE/>
 		<div align="center">
@@ -137,7 +137,7 @@
 <DEFMACRO NAME="TD_down_publication">	
 <td width="74" align="center" valign="middle"> 
 <!-- Descendre -->
-	<IF [#OFFLINE]>
+	<IF COND="[#OFFLINE]">
 		off
 	<ELSE/>
 		<div align="center">
@@ -283,7 +283,7 @@
 		</font>
 		</b>
 		<font color="navy"><i>
-			<IF [#TITRE]>
+			<IF COND="[#TITRE]">
 				[#TITRE]
 			<ELSE/>
 				...
@@ -297,7 +297,7 @@
 				Editer
 			</a>
 		|
-		<IF [#STATUS] GT 0>
+		<IF COND="[#STATUS] GT 0">
 			<a href="publi.php?publication=[#ID]&online=0">
 				Dépublier
 			</a>
@@ -375,8 +375,8 @@
 					</td>
 					<MACRO NAME="titres_boutons_publications">
 				</tr>
-				</AVANT>
-			<BOUCLE NAME="affiche_sous_themes" TABLE="publications" WHERE="parent='[#PARENT]'"  WHERE="type!='regroupement'" ORDER="ordre DESC">
+				</BEFORE>
+			<LOOP NAME="affiche_sous_themes" TABLE="publications" WHERE="parent='[#PARENT]'"  WHERE="type!='regroupement'" ORDER="ordre DESC">
 				<tr>
 					<td width="48" height="32">
 						<div align="center">
@@ -386,7 +386,7 @@
 						<MACRO NAME="TD_nom_type_titre">
 						<MACRO NAME="boutons_publications">
 				</tr>
-			<SINON/>
+			<ALTERNATIVE/>
 				<tr>
 					<td>
 						&nbsp;
@@ -396,10 +396,10 @@
 					</td>
 				</tr>
 				</TABLE>
-			<APRES>
+			<AFTER>
 			</table>
-			</APRES>
-			</BOUCLE>
+			</AFTER>
+			</LOOP>
 
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">	
 				<tr>
@@ -758,17 +758,17 @@
 				<tr>
 					<td width="100%">
 					<a href="index.php?parent=0">Edition des Séries</a>
-					<BOUCLE NAME="publisparentes">
+					<LOOP NAME="publisparentes">
 						&nbsp;<strong>>></strong>&nbsp;<a href="index.php?parent=[#ID]">[#NOM]</a>
-					</BOUCLE>
+					</LOOP>
 					</td>
 				</tr>
 				<!-- AFFICHE LE NOM DE LA PUBLICATION-->
-				<BOUCLE NAME="parent" TABLE="publications" WHERE="id='[#PARENT]'"></SPAN>
+				<LOOP NAME="parent" TABLE="publications" WHERE="id='[#PARENT]'"></SPAN>
 				<tr>
 					<MACRO NAME="Titre_cadre">
 				</tr>
-				</BOUCLE>
+				</LOOP>
 			</table>
 		</td>
 	</tr>
@@ -784,17 +784,17 @@
 				<tr>
 					<td width="100%">
 					<a href="index.php?parent=0">Edition des Séries</a>
-					<BOUCLE NAME="themesparents">
+					<LOOP NAME="themesparents">
 						&nbsp;<strong>>></strong>&nbsp;<a href="index.php?parent=[#ID]">[#NOM]</a>
-					</BOUCLE>
+					</LOOP>
 					</td>
 				</tr>
 				<!-- AFFICHE LE NOM DE LA PUBLICATION-->
-				<BOUCLE NAME="parent" TABLE="publications" WHERE="id='[#PARENT]'">
+				<LOOP NAME="parent" TABLE="publications" WHERE="id='[#PARENT]'">
 				<tr>
 					<MACRO NAME="Titre_cadre">
 				</tr>
-				</BOUCLE>
+				</LOOP>
 			</table>
 
 		</td>
@@ -811,16 +811,16 @@
 			<tr>
 				<td width="100%">
 				<a href="index.php?parent=0">Edition des Séries</a>
-				<BOUCLE NAME="publisparentes">
+				<LOOP NAME="publisparentes">
 					&nbsp;<strong>>></strong>&nbsp;<a href="index.php?parent=[#ID]">[#NOM]</a>
-				</BOUCLE>
+				</LOOP>
 				</td>
 			</tr>
-			<BOUCLE NAME="parent" TABLE="publications" WHERE="id='[#PARENT]'">
+			<LOOP NAME="parent" TABLE="publications" WHERE="id='[#PARENT]'">
 			<tr>
 				<MACRO NAME="Titre_cadre">
 			</tr>
-			</BOUCLE>
+			</LOOP>
 	</TABLE>
 	</td>
 	</tr>
@@ -832,7 +832,7 @@
 		<span class="titre">
 			<a href="../../sommaire.html?id=[#ID]">
 				<font color="black">
-					<IF [#NOM]>
+					<IF COND="[#NOM]">
 						[#NOM]
 					<ELSE/>
 						...
@@ -844,7 +844,7 @@
 		<span class="titre">
 			<a href="../../sommaire.html?id=[#ID]">
 				<font color="black">
-					<IF [#TITRE]>
+					<IF COND="[#TITRE]">
 						<em>[#TITRE]</em>
 					<ELSE/>
 						...
@@ -868,10 +868,10 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 
 	<!--  AFFICHE LES REGROUPEMENTS S'IL Y EN A  -->
-	<BOUCLE NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="type='regroupement'" ORDER="ordre DESC"> 
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="type='regroupement'" ORDER="ordre DESC"> 
 	<tr>
 		<td width="48" background="images/bleu.gif">
-		<IF [#STATUS] GT 0>
+		<IF COND="[#STATUS] GT 0">
 			<MACRO NAME="GIF_REGROUPEMENT_ON">
 		<ELSE/>
 			<MACRO NAME="GIF_REGROUPEMENT_OFF">
@@ -883,11 +883,11 @@
 	</tr>
 
 		<!-- AFFICHE LES ARTICLES DU REGROUPEMENT EN COURS -->
-		<BOUCLE NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+		<LOOP NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
 			<MACRO NAME="Affiche_articles">
-		</BOUCLE>
+		</LOOP>
 		<MACRO NAME="Ajouter_document_regroupement">
-		</BOUCLE> 
+		</LOOP> 
 		<MACRO NAME="Creer_regroupement">
 </table>
 </DEFMACRO>
@@ -940,14 +940,14 @@
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
 <DEFMACRO NAME="TR_lignesalternees">   
-	<IF [#COUNT] % 2>
+	<IF COND="[#COUNT] % 2">
 		<tr bgcolor="#EEEEEE">
 	<ELSE/><tr bgcolor="white">
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="TD_pour_lignesalternees_48">
-<IF [#COUNT] % 2>
+<IF COND="[#COUNT] % 2">
 	<td width="48" align="center" valign="middle" background="images/gris.gif">
 <ELSE/>
 	<td width="48" align="center" valign="middle" bgcolor="white">
@@ -955,7 +955,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="TD_pour_lignesalternees_800">   
-<IF [#COUNT] % 2>
+<IF COND="[#COUNT] % 2">
 	<td width="800" valign="middle" background="images/gris.gif">
 <ELSE/>
 	<td width="800" valign="middle" bgcolor="white">
@@ -963,14 +963,14 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="TD_pour_lignesalternees_600">   
-<IF [#COUNT] % 2>
+<IF COND="[#COUNT] % 2">
 	<td width="600" valign="middle" background="images/gris.gif">
 <ELSE/><td width="600" valign="middle" bgcolor="white">
 </IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="TD_pour_lignesalternees_74">   
-<IF [#COUNT] % 2>
+<IF COND="[#COUNT] % 2">
 	<td width="74" valign="middle" class="texte_petit_centre" background="images/gris.gif">
 <ELSE/><td width="74" valign="middle" class="texte_petit_centre"  bgcolor="white">
 </IF>
@@ -1045,7 +1045,7 @@
 	<tr>
 		<td> 
 			<table id="tachesencours" width="648" align="center" border="0">
-				<boucle name="tache" table="taches" where="user='[#IDUSER]'" order="maj DESC"> 
+				<LOOP name="tache" table="taches" where="user='[#IDUSER]'" order="maj DESC"> 
 				<tr> 
 					<td>
 						[#NOM]
@@ -1054,12 +1054,12 @@
 						[#ETAPE]
 					</td>
 					<td>
-						<if [#etape]==1 ||>
+						<IF COND="[#etape]==1 ||">
 							<a href="balisage.php?id=[#ID]">
 							Continuer
 							</a>
 						<else/>
-							<if [#etape]==3><a href="extrainfo.php?id=[#ID]">
+							<IF COND="[#etape]==3"><a href="extrainfo.php?id=[#ID]">
 								Continuer
 							</a>
 							</if>
@@ -1071,7 +1071,7 @@
 						</a>
 					</td>
 				</tr>
-				<sinon/> 
+				<ALTERNATIVE/> 
 				<tr> 
 					<td>
 						<strong>
@@ -1079,7 +1079,7 @@
 						</strong>
 					</td>
 				</tr>
-				</boucle> 
+				</LOOP> 
 			</table>
 		</td>
 	</tr>
@@ -1129,32 +1129,32 @@
 <DEFMACRO NAME="auteurs">
 <!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
 <strong>
-	<BOUCLE TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<PREMIER>[#PRENOM] [#NOMFAMILLE]</PREMIER>
+	<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<FIRST>[#PRENOM] [#NOMFAMILLE]</FIRST>
 		, [#PRENOM] [#NOMFAMILLE]
-		<DERNIER> et [#PRENOM] [#NOMFAMILLE]</DERNIER>
-	</BOUCLE>
+		<LAST> et [#PRENOM] [#NOMFAMILLE]</LAST>
+	</LOOP>
 </strong>
 </DEFMACRO>
 
 <DEFMACRO NAME="auteurs_with_url">
-	<BOUCLE NAME="auteurs_with_url" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<PREMIER><a href="auteur.html?id=[#ID]"><font color="black">
+	<LOOP NAME="auteurs_with_url" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<FIRST><a href="auteur.html?id=[#ID]"><font color="black">
 		 	[#PRENOM] [#NOMFAMILLE]
-			</FONT></a></PREMIER>
+			</FONT></a></FIRST>
 			, <a href="auteur.html?id=[#ID]"><font color="black">
 			 [#PRENOM] [#NOMFAMILLE]
 			</FONT></a>
-		<DERNIER>
+		<LAST>
 			et <a href="auteur.html?id=[#ID]"><font color="black">
 			[#PRENOM] [#NOMFAMILLE]</FONT></a>
-		</DERNIER>
-	</BOUCLE>,
+		</LAST>
+	</LOOP>,
 </DEFMACRO>
 
 <DEFMACRO NAME="up_down_article">
 	<div align="center"> 
-	<IF [#REDACTEUR]>
+	<IF COND="[#REDACTEUR]">
 		<a href="editer.php?dir=up&id=[#ID]">[up]</a>
 		<a href="editer.php?dir=down&id=[#ID]">[down]</a>
 	</IF>
@@ -1162,7 +1162,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="up_down_regroupement">
-<IF [#REDACTEUR]>
+<IF COND="[#REDACTEUR]">
 	<!-- Monter -->
 		<A HREF="publication.php?id=[#ID]&dir=up">
 			[Down]
@@ -1175,7 +1175,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="EDIT">
-	<IF [#REDACTEUR]>
+	<IF COND="[#REDACTEUR]">
 	<A CLASS="admin" HREF="editer.php?id=[#ID]">[EDIT]</A>
 	</IF>
 </DEFMACRO>
@@ -1183,7 +1183,7 @@
 <DEFMACRO NAME="boutons_colores">
 	<!-- Affiche un bouton rouge si le texte intégral existe, gris s'il n'y a que le résumé-->
 	<div align="center">
-	<IF [#TEXTE]>
+	<IF COND="[#TEXTE]">
   		<A HREF="document.html?id=[#ID]">
 		<img name="bouton" border="0" src="images/bouton2.gif" width="13" height="13"></a>
     <ELSE/>
@@ -1195,7 +1195,7 @@
 
 <!-- Associe un fichier image à une publication : série, numéro, thème, regroupement -->
 <DEFMACRO NAME="Associer_icone_publication">
-<IF [#IMAGE]>
+<IF COND="[#IMAGE]">
 	<a href="metaimage.php?idpublication=[#ID]">
 		<IMG SRC="../../[#IMAGE]">
 		[#IMAGE]
@@ -1208,16 +1208,16 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUT">
-	<IF [#STATUS]==-32>
+	<IF COND="[#STATUS]==-32">
 		<MACRO NAME="GIF_DEPUBLIE_LOCK">
 	<ELSE/>
-		<IF [#STATUS]==-1>
+		<IF COND="[#STATUS]==-1">
 			<MACRO NAME="GIF_DEPUBLIE">
 		<ELSE/>
-			<IF [#STATUS]==1>
+			<IF COND="[#STATUS]==1">
 				<MACRO NAME="GIF_PUBLIE">
 			<ELSE/>
-				<IF [#STATUS]==32>
+				<IF COND="[#STATUS]==32">
 					<MACRO NAME="GIF_PUBLIE_LOCK">
 				</IF>
 			</IF>
@@ -1226,23 +1226,23 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
-	<IF [#STATUS]==-32>
+	<IF COND="[#STATUS]==-32">
 		<a href="status.php?publication=[#ID]&status=pret">
 			<span class="texte_trespetit_centre">Prêt à publier</span>
 		</a>
 	</IF>
-	<IF [#STATUS]==-1>
+	<IF COND="[#STATUS]==-1">
 		<a href="status.php?publication=[#ID]&status=brouillon">
 			<span class="texte_trespetit_centre">Brouillon</span>
 		</a>
 	</IF>
 
-	<IF [#STATUS]==32>
+	<IF COND="[#STATUS]==32">
 		<a href="status.php?publication=[#ID]&status=deprotege">
 			<span class="texte_trespetit_centre">Déprotéger</span>
 		</a>
 	</IF>
-	<IF [#STATUS]==1>
+	<IF COND="[#STATUS]==1">
 		<a href="status.php?publication=[#ID]&status=protege">
 			<span class="texte_trespetit_centre">Protéger</span>
 		</a>
@@ -1250,18 +1250,18 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_DOCUMENTS">
-	<IF [#STATUS]==-32>
+	<IF COND="[#STATUS]==-32">
 		<a href="status.php?id=[#ID]&status=pret">
 			<span class="texte_trespetit_centre">Déprotéger</span>
 		</a>
 	</IF>
-	<IF [#STATUS]==-1>
+	<IF COND="[#STATUS]==-1">
 		<a href="status.php?id=[#ID]&status=brouillon">
 			<span class="texte_trespetit_centre">Brouillon</span>
 		</a>
 	</IF>
 
-	<IF [#STATUS]==1>&nbsp;-&nbsp;</IF>
+	<IF COND="[#STATUS]==1">&nbsp;-&nbsp;</IF>
 </DEFMACRO>
 
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->

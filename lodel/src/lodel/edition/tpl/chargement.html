@@ -58,7 +58,7 @@ function infoChargement(nomFic){
 <div align="center"><span class="titre">Chargement du fichier</span></div><br>
 
 <span class="texte_petit">
-<IF [#ERREUR_FICHIERNONRTF]>
+<IF COND="[#ERREUR_FICHIERNONRTF]">
 	<div align="center" style="color:red;">
 		<strong>
 			ATTENTION<br />Le fichier que vous avez essayé d'importer n'est pas un fichier de type RTF
@@ -82,7 +82,7 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 
 <INPUT CLASS="form" TYPE="submit" VALUE="Charger">
 <br>
-<IF [#SUPERADMIN]>
+<IF COND="[#SUPERADMIN]">
 <BR><BR>Super Admin:<BR>
 <INPUT CLASS="form" TYPE="submit" NAME="sortieted" VALUE="Sortie Brute de Ted">
 <INPUT CLASS="form" TYPE="submit" NAME="sortie" VALUE="Sortie de chargement">

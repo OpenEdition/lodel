@@ -38,14 +38,14 @@
 		
 								<!-- Affichage d'informations dépendant
 								 du type de document -->
-								<IF [#TYPE]=="compte rendu">
+								<IF COND="[#TYPE]=='compte rendu'">
 									<span class="soustitre">
 										Lecture de
 										<br />
 									</span>
 								</IF>
 		
-								<IF [#TYPE]=="chronique">
+								<IF COND="[#TYPE]=='chronique'">
 									<span class="soustitre">
 										Chronique
 									<br />
@@ -64,7 +64,7 @@
 								<MACRO NAME="FILET_3">
 							</td>
 						</tr>
-						<IF [#SOUSTITRE]>
+						<IF COND="[#SOUSTITRE]">
 							<tr> 
 								<td class="soustitrerevue" valign="top"> 
 									[#SOUSTITRE]
@@ -78,7 +78,7 @@
 									<tr>
 										<td width="100%" align="center" class="auteur">
 											<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
-											<IF [#TYPE]=="note de lecture">
+											<IF COND="[#TYPE]=='note de lecture'">
 												Note de lecture par
 											</IF>
 											<MACRO NAME="LISTER_AUTEURS">
@@ -90,7 +90,7 @@
 						</tr>
 						
 						<!-- Résumé en français   -->
-						<IF [#RESUME:FR]>
+						<IF COND="[#RESUME:FR]">
 							<tr> 
 								<td class="regroupement" valign="top">
 									<br />
@@ -115,7 +115,7 @@
 						</IF>
 		
 						<!-- Résumé en anglais   -->
-						<IF [#RESUME:EN]>
+						<IF COND="[#RESUME:EN]">
 							<tr> 
 								<td class="regroupement" valign="top"> 
 									<MACRO NAME="FILET_2">
@@ -143,18 +143,18 @@
 <!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
 <!-- ----------------------------------------------------------------------- -->
 
-					<IF [#TEXTEPUBLIE]>
+					<IF COND="[#TEXTEPUBLIE]">
 					<!-- Texte ------------------------   -->
 					<table width="75%" border="0" cellspacing="0" cellpadding="0" align="CENTER">
 						<tr> 
 							<td class="titre" valign="top"> 
 								<!-- Texte. Si il existe --->
-								<IF [#TEXTE]>
+								<IF COND="[#TEXTE]">
 								<table>
 									<tr> 
 					<td colspan="3" class="regroupement" valign="top">
 						<br /><br />
-					<IF [#TYPE]!="presentation">
+					<IF COND="[#TYPE]!='presentation'">
 						<MACRO NAME="FILET_2">
 						<strong>
 							Texte intégral
@@ -175,7 +175,7 @@
 									</IF>
 									
 									<!-- Bibliographie. Si elle existe --->
-									<IF [#BIBLIOGRAPHIE]>
+									<IF COND="[#BIBLIOGRAPHIE]">
 									<table>
 										<tr> 
 											<td class="style03" valign="top"> 
@@ -196,7 +196,7 @@
 									</IF>
 									
 									<!-- Annexe. Si elle existe --->
-									<IF [#ANNEXE]>
+									<IF COND="[#ANNEXE]">
 									<table>
 										<tr> 
 											<td class="style03" valign="top"> 
@@ -217,7 +217,7 @@
 									</IF>
 
 									<!-- Documents annexes. S'il y en a au moins un --->
-									<IF [#DOCUMENTSANNEXES]>
+									<IF COND="[#DOCUMENTSANNEXES]">
 									<table>
 										<tr> 
 											<td class="regroupement" valign="top"> 
@@ -244,7 +244,7 @@
 									</IF>
 
 									<!-- Notes de bas de page. Si elles existent --->
-									<IF [#NOTEBASPAGE]>
+									<IF COND="[#NOTEBASPAGE]">
 									<table>
 										<tr> 
 											<td class="regroupement" valign="top">

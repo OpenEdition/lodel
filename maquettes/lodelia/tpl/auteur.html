@@ -41,10 +41,10 @@
 			</tr> 
 		</table>
 		<!-- Affichage de l'ensemble des documents publiés par l'auteur -->
-		<BOUCLE NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
-			<AVANT>
+		<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
+			<BEFORE>
 				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER"  bordercolor="Black">
-			</AVANT>
+			</BEFORE>
 			<CORPS>
 				<tr>
 					<td class="texte_sommaire">
@@ -52,10 +52,10 @@
 					</td>
 				</tr>
 			</CORPS>
-			<APRES>
+			<AFTER>
 				</table>
-			</APRES>
-		</BOUCLE>
+			</AFTER>
+		</LOOP>
 		<div align="center">
 			<a href="auteurs-complet.html">
 				Index des auteurs

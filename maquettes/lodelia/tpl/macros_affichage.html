@@ -60,7 +60,7 @@
 		<br />
 	</span>
 	<table width="100%" border="0">
-		<BOUCLE NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
+		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
 			<CORPS>
 				<tr>
 					<td>
@@ -83,14 +83,14 @@
 						</blockquote>
 					</td>
 				</tr>
-				<SINON/>
+				<ALTERNATIVE/>
 				<tr>
 					<td>
 						Aucun numéro disponible actuellement
 					</td>
 				</tr>
 			</CORPS>
-		</BOUCLE>
+		</LOOP>
 	</table>
 </DEFMACRO>
 
@@ -102,7 +102,7 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<IF [#NOM]>
+	<IF COND="[#NOM]">
 		<span class="titrerevue">
 			<a href="index.html">
 				<span class="couleur_1">
@@ -126,7 +126,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche, s'il existe, le titre d'une publication.                  -->
 <!-- ****************************************************************** -->
-	<IF [#TITRE]>
+	<IF COND="[#TITRE]">
 		[#TITRE]
 	</IF>
 </DEFMACRO>
@@ -136,7 +136,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche, s'il existe, le sous-titre d'une publication.             -->
 <!-- ****************************************************************** -->
-	<IF [#SOUSTITRE]>
+	<IF COND="[#SOUSTITRE]">
 		[#SOUSTITRE]
 	</IF>
 </DEFMACRO>
@@ -146,7 +146,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche, s'il existe, le directeur d'une publication.              -->
 <!-- ****************************************************************** -->
-	<IF [#DIRECTEUR]>
+	<IF COND="[#DIRECTEUR]">
 		Sous la direction de [#DIRECTEUR]
 	</IF>
 </DEFMACRO>
@@ -185,7 +185,7 @@
 								<MACRO NAME="SOUSTITRE_PUBLICATION">
 							</span>
 							<br />
-							<IF [#DIRECTEUR]!="">
+							<IF COND="[#DIRECTEUR]!=''">
 								<span class="directeur_centre">
 									* * * 
 									<br />
@@ -209,20 +209,20 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<CORPS>
 			Paru dans 
 			<a href="sommaire.html?id=[#ID]">
 				<span style="color:Black;">
 						<MACRO NAME="NOM_REVUE"> n°[#NOM]
-					<IF [#TITRE]>
+					<IF COND="[#TITRE]">
 						,
 						[#TITRE]
 					</IF>.
 				</span>
 			</a>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS_SIMPLE">
@@ -233,12 +233,12 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
 <!-- ****************************************************************** -->
-	<BOUCLE TABLE="publications" WHERE="id='[#PUBLICATION]'">
+	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
 		<CORPS>
-			<IF [#TYPE]=="regroupement">
-	            <BOUCLE TABLE="publications" WHERE="id='[#PARENT]'">
+			<IF COND="[#TYPE]=='regroupement'">
+	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<CORPS>
-		    	    	<IF [#NOM]>
+		    	    	<IF COND="[#NOM]">
 							<a ref="sommaire.html?id=[#PUBLICATION]">
 								<span style="color:Black;">
 									 n&#176; [#NOM] - [#TITRE]
@@ -247,9 +247,9 @@
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 						</IF>
 					</CORPS>
-            	</BOUCLE>
+            	</LOOP>
 	        <ELSE/>
-    	    	<IF [#NOM]>
+    	    	<IF COND="[#NOM]">
 					<a ref="sommaire.html?id=[#PUBLICATION]">
 						<span style="color:Black;">
 							 n&#176; [#NOM] - [#TITRE]
@@ -259,7 +259,7 @@
 				</IF>
 	        </IF>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS_SIGNALER">
@@ -270,20 +270,20 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<CORPS>
 			Paru dans 
 			<a href="http://[#REVUE].revues.org">
 				<span style="color:Black;">
 						<MACRO NAME="NOM_REVUE"> n°[#NOM]
-					<IF [#TITRE]>
+					<IF COND="[#TITRE]">
 						,
 						[#TITRE]
 					</IF>.
 				</span>
 			</a>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 
@@ -315,24 +315,24 @@
 <!-- Affiche la date de publication parente d'un document, si elle      -->
 <!-- existe sinon n'affiche rien.                                       -->
 <!-- ****************************************************************** -->
-	<BOUCLE TABLE="publications" WHERE="id='[#PUBLICATION]'">
+	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
 		<CORPS>
-			<IF [#TYPE]=="regroupement">
+			<IF COND="[#TYPE]=='regroupement'">
 			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
-	            <BOUCLE TABLE="publications" WHERE="id='[#PARENT]'">
+	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<CORPS>
-						<IF [#DATE]!="0000-00-00">
+						<IF COND="[#DATE]!='0000-00-00'">
 							Texte publié le : [(#DATE|humandate)]
 						</IF>
 					</CORPS>
-				</BOUCLE>
+				</LOOP>
 			<ELSE/>
-				<IF [#DATE]!="0000-00-00">
+				<IF COND="[#DATE]!='0000-00-00'">
 					Texte publié le : [(#DATE|humandate)]
 				</IF>
 			</IF>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
@@ -341,19 +341,19 @@
 <!-- Affiche le titre de la partie Bibliographie (ici "Bibliographie")  -->
 <!-- dans la langue définie pour le texte d'un document.                -->
 <!-- ****************************************************************** -->
-	<IF [#LANG]=="FR">
+	<IF COND="[#LANG]=='FR'">
 		Bibliographie
 	<ELSE/>
-		<IF [#LANG]=="EN">
+		<IF COND="[#LANG]=='EN'">
 			Bibliography
 		<ELSE/>
-			<IF [#LANG]=="IT">
+			<IF COND="[#LANG]=='IT'">
 				Bibliografia
 			<ELSE/>
-				<IF [#LANG]=="ES">
+				<IF COND="[#LANG]=='ES'">
 					Bibliografía
 				<ELSE/>
-					<IF [#LANG]=="DE">
+					<IF COND="[#LANG]=='DE'">
 						Bibliographie
 					<ELSE/>
 						Langue de document non définie
@@ -403,29 +403,29 @@
 <!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
 <!-- ****************************************************************** -->
 	<span class="texte_petit">
-		<IF [#TYPE]=="article_vide">
+		<IF COND="[#TYPE]=='article_vide'">
 			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong> [#TITRE]
-			<IF [#SOUSTITRE]>. [#SOUSTITRE]</IF>
+			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
 		</IF>
-		<IF [#TYPE]=="article">
+		<IF COND="[#TYPE]=='article'">
 			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-			<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF [#SOUSTITRE]>. [#SOUSTITRE]</IF></span></a>
+			<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 		<ELSE/>
-			<IF [#TYPE]=="chronique">
+			<IF COND="[#TYPE]=='chronique'">
 				<strong>Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-				<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF [#SOUSTITRE]>. [#SOUSTITRE]</IF></span></a>
+				<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 			<ELSE/>
-				<IF [#TYPE]=="compte rendu">
+				<IF COND="[#TYPE]=='compte rendu'">
 					<strong>Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-					<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF [#SOUSTITRE]>. [#SOUSTITRE]</IF></span></a>
+					<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 				<ELSE/>
-					<IF [#TYPE]=="position de these">
+					<IF COND="[#TYPE]=='position de these'">
 						<strong>Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-						<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF [#SOUSTITRE]>. [#SOUSTITRE]</IF></span></a>
+						<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 					<ELSE/>
-						<IF [#TYPE]=="editorial">
+						<IF COND="[#TYPE]=='editorial'">
 							<strong>Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF [#SOUSTITRE]>. [#SOUSTITRE]</IF></span></a>
+							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 						<ELSE/>
 							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]</span></a>
 						</IF>
@@ -447,11 +447,11 @@
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
 	<!-- On liste en premier les séries linéaires. -->
-	<BOUCLE NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" ORDER="ordre">
+		<BEFORE>
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 			<tr><td><h2>Série Linéaires :</td></tr>
-		</AVANT>
+		</BEFORE>
 		<CORPS>
 			<tr>
 				<td style="font-family : Verdana, Helvetica, sans-serif, Times New Roman; 
@@ -460,7 +460,7 @@
 				</td>
 			</tr>
 			<!-- On liste tous les numéros de la série linéaire courante -->
-			<BOUCLE NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'" ORDER="ordre">
+			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'" ORDER="ordre">
 				<CORPS>
 					<tr>
 						<td class="texte_trespetit">
@@ -470,22 +470,22 @@
 						</td>
 					</tr>
 				</CORPS>
-				<APRES>
+				<AFTER>
 					<tr><td>&nbsp;</td></tr>
-				</APRES>
-			</BOUCLE>
+				</AFTER>
+			</LOOP>
 		</CORPS>
-		<APRES>
+		<AFTER>
 			</table>
 			<p></p>
-		</APRES>
-	</BOUCLE>
+		</AFTER>
+	</LOOP>
 	<!-- On liste ensuite les séries hiérarchiques -->
-	<BOUCLE NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'" ORDER="ordre">
+		<BEFORE>
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 			<tr><td><h2>Série Hiérarchiques :</td></tr>
-		</AVANT>
+		</BEFORE>
 		<CORPS>
 			<tr>
 				<td style="font-family : Verdana, Helvetica, sans-serif, Times New Roman; 
@@ -494,7 +494,7 @@
 				</td>
 			</tr>
 			<!-- On liste tous les thèmes de 1er niveau de la série hiérarchique courante -->
-			<BOUCLE NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'" ORDER="ordre">
+			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'" ORDER="ordre">
 				<CORPS>
 					<tr>
 						<td class="texte_trespetit">
@@ -504,16 +504,16 @@
 						</td>
 					</tr>
 				</CORPS>
-				<APRES>
+				<AFTER>
 					<tr><td>&nbsp;</td></tr>
-				</APRES>
-			</BOUCLE>
+				</AFTER>
+			</LOOP>
 		</CORPS>
-		<APRES>
+		<AFTER>
 			</table>
 			<p></p>
-		</APRES>
-	</BOUCLE>
+		</AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="DOCUMENTS_PAR_TYPES">
@@ -548,8 +548,8 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="article" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='article'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="article" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='article'" ORDER="ordre">
+		<BEFORE>
 			<tr>
 				<td class="regroupement">
 					<MACRO NAME="FILET_1">
@@ -557,7 +557,7 @@
 					<MACRO NAME="FILET_1">
 				</td>
 			</tr>
-		</AVANT> 
+		</BEFORE> 
 		<CORPS>
 			<tr> 
 				<td class="texte_sommaire" valign="top">
@@ -565,7 +565,7 @@
 				</td>
 			</tr>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 		
 <DEFMACRO NAME="TYPE_CHRONIQUE">
@@ -576,8 +576,8 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="chr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="chr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
+		<BEFORE>
 			<tr>
 				<td class="regroupement">
 					<MACRO NAME="FILET_1">
@@ -585,7 +585,7 @@
 					<MACRO NAME="FILET_1">
 				</td>
 			</tr>
-		</AVANT>
+		</BEFORE>
 		<CORPS>
 			<tr> 
 				<td class="texte_sommaire">
@@ -593,7 +593,7 @@
 				</td>
 			</tr>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="TYPE_COMPTE_RENDU">
@@ -604,8 +604,8 @@
 <!-- <MACRO NAME="FILET_1">                                        -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="cr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="cr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
+		<BEFORE>
 			<tr>
 				<td class="regroupement">
 					<MACRO NAME="FILET_1">
@@ -613,7 +613,7 @@
 					<MACRO NAME="FILET_1">
 				</td>
 			</tr>
-		</AVANT> 
+		</BEFORE> 
 		<CORPS>
 			<tr> 
 				<td class="texte_sommaire">
@@ -621,7 +621,7 @@
 				</td>
 			</tr>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="TYPE_POSITION_DE_THESE">
@@ -632,8 +632,8 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="pdt" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="pdt" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
+		<BEFORE>
 			<tr>
 				<td class="regroupement">
 					<MACRO NAME="FILET_1">
@@ -641,7 +641,7 @@
 					<MACRO NAME="FILET_1">
 				</td>
 			</tr>
-		</AVANT>
+		</BEFORE>
 		<CORPS>
 			<tr> 
 				<td class="texte_sommaire" valign="top">
@@ -649,7 +649,7 @@
 				</td>
 			</tr>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="TYPE_NOTE_DE_LECTURE">
@@ -660,8 +660,8 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="nl" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="nl" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
+		<BEFORE>
 			<tr>
 				<td class="regroupement">
 					<MACRO NAME="FILET_1">
@@ -669,7 +669,7 @@
 					<MACRO NAME="FILET_1">
 				</td>
 			</tr>
-		</AVANT> 
+		</BEFORE> 
 		<CORPS>
 			<tr> 
 				<td class="texte_sommaire">
@@ -677,7 +677,7 @@
 				</td>
 			</tr>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="TYPE_PRESENTATION">
@@ -688,8 +688,8 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="presentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
-		<AVANT>
+	<LOOP NAME="presentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
+		<BEFORE>
 			<tr>
 				<td class="regroupement">
 					<MACRO NAME="FILET_1">
@@ -697,7 +697,7 @@
 					<MACRO NAME="FILET_1">
 				</td>
 			</tr>
-		</AVANT> 
+		</BEFORE> 
 		<CORPS>
 			<tr> 
 				<td class="texte_sommaire" valign="top">
@@ -705,7 +705,7 @@
 				</td>
 			</tr>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
@@ -727,10 +727,10 @@
 <!-- Cette Macro utilise la macro suivante :                            -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<BOUCLE TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
-	<AVANT>
+	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<BEFORE>
 		<table width="95%" border="0" align="center">
-	</AVANT>
+	</BEFORE>
 	<CORPS>
 		<tr> 
 			<td class="texte_sommaire" valign="top"> 
@@ -738,10 +738,10 @@
 			</td>
 		</tr>
 	</CORPS>
-	<APRES>
+	<AFTER>
 		</table>
-	</APRES>
-	</BOUCLE>
+	</AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="PRESENTER_REGROUPEMENTS">
@@ -752,17 +752,17 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<CORPS>
 			<table width="95%" border="0" align="center">
 				<tr>
 					<td valign="top" class="regroupement">
 						<MACRO NAME="FILET_1">
-							<IF [#TITRE]>
+							<IF COND="[#TITRE]">
 								[#TITRE]
 								<br />
 							</IF>
-							<IF [#NOM]>
+							<IF COND="[#NOM]">
 								[#NOM]
 								<br />
 							</IF>
@@ -777,7 +777,7 @@
 				</tr>
 			</table>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_DOCUMENT_CLIQUABLE">  
@@ -792,7 +792,7 @@
 <!-- ainsi cette macro ne rendra pas cliquable le titre de l'article    -->
 <!-- dans le sommaire.                                                  -->
 <!-- ****************************************************************** -->
-	<IF [#TYPE]=="article_vide">
+	<IF COND="[#TYPE]=='article_vide'">
 		<span style="color:Black;">
 			[#TITRE]
 		</span>
@@ -810,27 +810,27 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste des auteurs d'un document entre virgules.         -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<PREMIER>
+	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<FIRST>
 			[#PRENOM] 
 			[#NOMFAMILLE]
-		</PREMIER>
+		</FIRST>
 		<CORPS>
 			,
 			[#PRENOM] 
 			[#NOMFAMILLE]
 		</CORPS>
-		<DERNIER>
+		<LAST>
 			 et 
 			 [#PRENOM] 
 			 [#NOMFAMILLE] 
-		</DERNIER>
-		<SINON/>
-		<IF [#NOMFAMILLE]>
+		</LAST>
+		<ALTERNATIVE/>
+		<IF COND="[#NOMFAMILLE]">
 			,
 		</IF>
-		</APRES>
-	</BOUCLE>
+		</AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_AUTEURS_DOCUMENT">
@@ -841,16 +841,16 @@
 <!-- L'affichage est destiné aux sommaires : il permet une respiration. -->
 <!-- ****************************************************************** -->
 	<strong>
-		<BOUCLE TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-			<PREMIER>
+			<FIRST>
 				<a href="auteur.html?id=[#ID]">
 					<span style="color:Black;">
 						[#PRENOM]
 						[#NOMFAMILLE]
 					</span>
 				</a>
-			</PREMIER>
+			</FIRST>
 			<CORPS>
 				,<a href="auteur.html?id=[#ID]">
 					<span style="color:Black;">[#PRENOM]
@@ -858,7 +858,7 @@
 					</span>
 				</a>
 			</CORPS>
-			<DERNIER>
+			<LAST>
 				et 
 				<a href="auteur.html?id=[#ID]">
 					<span style="color:Black;">
@@ -866,14 +866,14 @@
 						[#NOMFAMILLE]
 					</span>
 				</a>
-			</DERNIER>
-			<APRES>
-				<IF [#NOMFAMILLE]>
+			</LAST>
+			<AFTER>
+				<IF COND="[#NOMFAMILLE]">
 					<br />
 					&nbsp;&nbsp;&nbsp;
 				</IF>
-			</APRES>
-		</BOUCLE>
+			</AFTER>
+		</LOOP>
 	</strong>
 </DEFMACRO>
 
@@ -884,10 +884,10 @@
 <!-- d'un thème.                                                        -->
 <!-- Macro destinée aux sommaires.                                      -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="boucle_lister_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
-		<AVANT>
+	<LOOP NAME="boucle_lister_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
+		<BEFORE>
 			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
-		</AVANT>
+		</BEFORE>
 		<CORPS>
 			<tr>
 				<td width="100%" class="texte_petit">
@@ -906,10 +906,10 @@
 				</td>
 			</tr>
 		</CORPS>
-		<APRES>
+		<AFTER>
 			</table>
-		</APRES>
-	</BOUCLE>
+		</AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="DERNIER_NUMERO">
@@ -919,7 +919,7 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<CORPS>
 			<a href="sommaire.html?id=[#ID]">
 				<strong>
@@ -927,18 +927,18 @@
 						Dernier numéro publié : [#NOM] 
 					</span>
 				</strong>
-				<IF [#TITRE]>
+				<IF COND="[#TITRE]">
 					<em>
 						- [#TITRE]
 					</em>
 				</IF>
-				<IF [#DIRECTEUR]>
+				<IF COND="[#DIRECTEUR]">
 					<br /> Sous la direction de :	[#DIRECTEUR]
 				</IF>
 			</a>
 			<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="SOMMAIRE_DERNIER_NUMERO">
@@ -950,25 +950,25 @@
 <!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<CORPS>
 			<strong>
 				<span class="couleur_1">
 					Sommaire du dernier numéro publié : [#NOM] 
 				</span>
 			</strong>
-			<IF [#TITRE]>
+			<IF COND="[#TITRE]">
 				<em>
 					- [#TITRE]
 				</em>
 			</IF>
-			<IF [#DIRECTEUR]>
+			<IF COND="[#DIRECTEUR]">
 				<br /> Sous la direction de :	[#DIRECTEUR]
 			</IF>
 			<br /><br />
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="DERNIER_THEME">
@@ -976,21 +976,21 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche le dernier thème en date. (en fonction du champs date)     -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
+	<LOOP NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
 		<CORPS>
 			<a href="sommaire.html?id=[#ID]">
 				[#NOM]
 			</a>
-			<IF [#TITRE]>
+			<IF COND="[#TITRE]">
 				<br />
 				[#TITRE]
 			</IF>
-			<IF [#DIRECTEUR]>
+			<IF COND="[#DIRECTEUR]">
 				<br />
 				[#DIRECTEUR]
 			</IF>
 		</CORPS>
-	</BOUCLE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
@@ -1002,10 +1002,10 @@
 <!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
 <!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
 <!-- ****************************************************************** -->
-	<BOUCLE NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
-		<AVANT>
+	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
+		<BEFORE>
 			<table>
-		</AVANT>
+		</BEFORE>
 		<CORPS>
 			<tr>
 				<td class="texte_petit">
@@ -1028,10 +1028,10 @@
 				</td>
 			</tr>
 		</CORPS>
-		<APRES>
+		<AFTER>
 			</table>
-		</APRES>
-	</BOUCLE>
+		</AFTER>
+	</LOOP>
 	<!-- Propose aux rédacteurs d'ajouter un document  --->
 	<MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">
 </DEFMACRO>
@@ -1041,7 +1041,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche, s'il elle existe, l'icône de la publication.              -->
 <!-- ****************************************************************** -->
-	<IF [#META_IMAGE]>
+	<IF COND="[#META_IMAGE]">
 		<a href="sommaire.html?id=[#ID]">
 			<img src="[#META_IMAGE]" align='left' name="[#NOM]" border='0' alt="[#NOM]" hspace="8" vspace="8">
 		</a>
@@ -1056,7 +1056,7 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- ****************************************************************** -->
-	<IF [#TEXTE]>
+	<IF COND="[#TEXTE]">
 		<table width="95%">
 			<tr>
 				<td class="texte_petit">
@@ -1081,7 +1081,7 @@
 	<table width="90%">
 		<tr>
 			<td class="texte_petit">
-				<IF [#TEXTE]>
+				<IF COND="[#TEXTE]">
 					<MACRO NAME="ICONE_PUBLICATION">
 					<!-- affiche les 1500 premiers mots du texte -->
 					[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine|couper(1500))]
@@ -1104,7 +1104,7 @@
 <!-- Affiche sans lettrine les 1500 premiers caractères de              -->
 <!-- l'introduction d'une publication.                                  -->
 <!-- ****************************************************************** -->
-	<IF [#TEXTE]>
+	<IF COND="[#TEXTE]">
 		<br />
 		<!-- affiche les 1500 premiers mots du texte -->
 		[(#TEXTE|couper(1500))]
@@ -1126,12 +1126,12 @@
 <!-- Dans le cas où l'article serait publié à une date ultérieure       -->
 <!-- affiche "Texte en ligne le xx/xx/xxxx"                             -->
 <!-- ****************************************************************** -->
-	<IF [#LANG]!="">
-		<IF [#TYPE]!="presentation">
+	<IF COND="[#LANG]!=''">
+		<IF COND="[#TYPE]!='presentation'">
 			<a href="document.html?id=[#ID]">
 				<span style="color:Black;">
 					[Texte intégral
-					<IF [#TEXTEPUBLIE]>
+					<IF COND="[#TEXTEPUBLIE]">
 						]
 					<ELSE/>
 						en ligne le [#DATEPUBLI]]
