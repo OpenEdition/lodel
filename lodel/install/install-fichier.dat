@@ -196,10 +196,8 @@ ln tpl/deskadmin.html
 ln entry.php
 ln tpl/entry.html
 
-ln options.php
 ln tpl/options.html
-ln option.php
-ln tpl/option.html
+ln tpl/edit_options.html
 
 ln list.php
 
@@ -229,6 +227,7 @@ ln tpl/entrytypes.html
 
 ln tpl/edit_persontypes.html
 ln tpl/persontypes.html
+
 
 ln backup.php
 ln tpl/backup.html

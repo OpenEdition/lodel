@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefieldgroups (
 	idclass		INT UNSIGNED DEFAULT '0' NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-	commentaire	TEXT NOT NULL,			# commentaire sur le groupe de champs
+	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -401,12 +401,15 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_persontypes (
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	name		VARCHAR(255) NOT NULL UNIQUE,		# name/identifiant unique
-	type		CHAR(4),
-	value		TEXT,	# value
+	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
+	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
+	type		VARCHAR(255) NOT NULL,		# type du champ
+	value		TEXT NOT NULL,	# value
+	defaultvalue	TEXT NOT NULL,	# value
+	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 
-	class		VARCHAR(64) NOT NULL,
-	identity	INT UNSIGNED DEFAULT '0' NOT NULL,
+	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	exportpolicy	TINYINT DEFAULT '1' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
@@ -414,7 +417,22 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
 
 	PRIMARY KEY (id),
 	KEY index_name (name),
-	KEY index_type (type)
+	KEY index_idgroup (idgroup)
+);
+
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_optiongroups (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
+	title		VARCHAR(255) NOT NULL,		# type du champ
+	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
+
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_name (name),
 );
 
 

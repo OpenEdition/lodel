@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-22.
+ // File generate automatically the 2004-12-23.
  //
 
 
@@ -39,10 +39,12 @@
 class optionsVO {
    var $id;
    var $name;
+   var $idgroup;
    var $type;
    var $value;
-   var $class;
-   var $identity;
+   var $userrights;
+   var $defaultvalue;
+   var $exportpolicy;
    var $rank;
    var $status;
    var $upd;

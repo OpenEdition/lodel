@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros2.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_ADMINISTRATE_SITE_OPTIONS]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -35,7 +36,7 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="option.php">[@ADMIN.ADD_OPTION]</a>
+	<a href="index.php?do=view&table=options&idgroup=[#IDGROUP]">[@ADMIN.ADD_OPTION]</a>
 </div>
 <br />
 
@@ -45,57 +46,34 @@
 
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5" width="90%">
 <tr>
-	<td class="texte_noir_gras">[@COMMON.NAME]</td>
-	<td class="texte_noir_gras">[@ADMIN.VALUE]</td>
-	<td class="texte_noir_gras">[@COMMON.TYPE]</td>
+	<td>[@COMMON.NAME]</td>
+	<td>[@COMMON.TYPE]</td>
+	<td>[@ADMIN.DEFAULTVALUE]</td>
 	<td>&nbsp;</td>
 </tr>
 
-	<LOOP NAME="options" TABLE="options" WHERE="class=''" ORDER="rank" WHERE="status gt 0">
+	<LOOP NAME="options" TABLE="options" WHERE="idgroup='[#ID]'" ORDER="rank" WHERE="status gt 0">
 	<DO>
-		<tr>
-			<LET VAR="CLASS"><IF COND="[#COUNT] % 2">ligne_admin1<ELSE/>ligne_admin2</IF></LET>
-			<td class="[#CLASS]">[#NAME]</td>
-                        <td class="[#CLASS]">
-		         <IF COND="[#TYPE] eq 'pass'">
-			<input size="30" type="password" name="option_[#NAME]"></td>
-		        <ELSE/>
-		        <IF COND="[#USER.ADMINLODEL] or ([#STATUS] lt 32)">
-		           <input size="30" type="text" name="option_[#NAME]" value="[#VALUE]">
-                        <ELSE/>
-		           <input size="30" type="text" name="option_[#NAME]" value="[#VALUE]" readonly></td>
-			</IF>
-		        </td>
-			</IF>
-		         </td>
+		<MACRO NAME="TR_LIST">
+			<td>[#NAME]</td>
+			<td>[(#TYPE|humanfieldtype)]</td>
+                        <td>[#DEFAULTVALUE]</td>
+		        <td style="color: #CC9933;" align="left">
+				<div>
 
-
-			<td class="[#CLASS]">[(#TYPE|humantype)]</td>
-		        <td class="[#CLASS]" style="color: #CC9933;" align="right">
-		        	<a href="option.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-				<a href="option.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-
-		        <IF COND="[#USER.ADMINLODEL] || [#STATUS] lt 32">
-			&nbsp;&nbsp;|&nbsp;<a href="option.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
-	                |&nbsp;<a href="option.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>
-		        <ELSE/>
-			&nbsp;&nbsp;|<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
-			|&nbsp;<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
-			</IF>
-		        &nbsp;|&nbsp;
-			<IF COND="[#STATUS] ge 32">[[@COMMON.PROTECTED]]<ELSE/>[[@COMMON.NORMAL]]</IF>
+               			 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="[#TABLE]">
+				 <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="[#TABLE]">
+				</div>
 		       </td>
 		</tr>
          </DO>
-         </LOOP>
+		<ALTERNATIVE>
+			<tr><td colspan="4"><span class="texte_info">[@ADMIN.NO_OPTIONS]</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
 </table>
 
-	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="[@COMMON.MODIFY]" />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="submit" name="terminer" value="[@ADMIN.MODIFY_FINISH]">&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'">
-	</div>
-</form>
 
+<MACRO NAME="OK_TOINDEX">
 
 <MACRO NAME="CLOSE_HTML">

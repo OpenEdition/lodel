@@ -27,10 +27,9 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
 require("siteconfig.php");
 require($home."auth.php");
-authenticate(LEVEL_VISITOR, $do=="view" || $do=="edit" || $do=="delete");
+authenticate(LEVEL_VISITOR, $do=="view" || $do=="edit" || $do=="copy" || $do=="delete");
 require($home."langues.php");
 require_once($home."func.php");
 
@@ -44,7 +43,7 @@ if ($_POST) {
 
 if ($therequest['do']) {
   
-  $tables=array("entrytypes","persontypes","fields","entries","translations","usergroups","users","types");
+  $tables=array("entrytypes","persontypes","tablefields","entries","translations","usergroups","users","types","options");
   $table=$therequest['table'];
   if (!in_array($table,$tables)) die("ERROR: unknown table");
   $context['table']=$table;
@@ -70,6 +69,7 @@ if ($therequest['do']) {
   $do=$do."Action";
 
   require_once($home."logic.php");
+  $logic=getLogic($table);
 
   switch($do) {
   case 'listAction' :
@@ -77,12 +77,11 @@ if ($therequest['do']) {
     break;
   default:
     // create the logic for the table
-    $logic=getLogic($table);
     if (!method_exists($logic,$do)) die("ERROR: invalid action");
-
     // call the logic action
     $ret=$logic->$do($context,$error);
   }
+
 
   // create the view
   require_once($home."view.php");
@@ -94,7 +93,6 @@ if ($therequest['do']) {
     break;
   case 'error' :
     $context['error']=$error;
-    ##print_r($error);
   case 'ok' :
     if ($do=="listAction") {
       $view->render($context,$table);
@@ -110,7 +108,6 @@ if ($therequest['do']) {
   require($home."calcul-page.php");
   calcul_page($context,"index");
 }
-
 
 
 function loop_fielderror(&$context,$funcname,$arguments)

@@ -98,7 +98,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
       if ($err=create("translations")) break; // create the translation table
     }
 
-    if (1 || $tables["$GLOBALS[tp]objets"] || !$tables["$GLOBALS[tp]objects"]) {
+    if ($tables["$GLOBALS[tp]objets"] || !$tables["$GLOBALS[tp]objects"]) {
       // traductions de la base
 
       $translationconv=array(
@@ -176,18 +176,20 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
       $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entities WHERE entitytitle!='' LIMIT 1") or die(mysql_error());
       if (!mysql_num_rows($result)) {
 	foreach (array("publications","documents") as $classe) {
+	  $fields=getfields($classe);
+	  if (!$fields['titre']) continue;
 	  $result=mysql_query("SELECT identity,titre FROM $GLOBALS[tp]$classe") or die (mysql_error());
-	  while (list($id,$titre)=mysql_fetch_row($result)) {
-	    $titre=strip_tags($titre);
-	    if (strlen($titre)>255) {
-	      $titre=substr($titre,0,256);
-	      $titre=preg_replace("/\S+$/","",$titre);
+	  while (list($id,$title)=mysql_fetch_row($result)) {
+	    $title=strip_tags($title);
+	    if (strlen($title)>255) {
+	      $title=substr($title,0,256);
+	      $title=preg_replace("/\S+$/","",$title);
 	    }
-	    $titre=addslashes($titre);
-	    mysql_query("UPDATE $GLOBALS[tp]entities set entitytitle='$titre' WHERE id='$id'") or die(mysql_error());
+	    $title=addslashes($title);
+	    mysql_query("UPDATE $GLOBALS[tp]entities set entitytitle='$title' WHERE id='$id'") or die(mysql_error());
 	  }
 	} // classes
-	$report.="Remplissage de entitytitle a partir de titre<br />\n";
+	$report.="Remplissage de entitytitle a partir de title<br />\n";
       }
     } // table entite
 
@@ -230,6 +232,51 @@ UPDATE _PREFIXTABLE_tablefields SET class='.$row['class'].' WHERE idgroup='.$row
 	$report.="Ajout de class a tablefields<br/>";
       }
     }      
+
+    ///////////////////////
+    // OPTIONS
+    if ($tables["$GLOBALS[tp]options"]) {
+      $fields=getfields("options");
+      if (!$fields['defaultvalue']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_options ADD  idgroup  INT UNSIGNED DEFAULT \'0\' NOT NULL;
+ALTER TABLE _PREFIXTABLE_options ADD  INDEX index_idgroup (idgroup);
+ALTER TABLE _PREFIXTABLE_options CHANGE name  VARCHAR(255) NOT NULL;
+ALTER TABLE _PREFIXTABLE_options CHANGE type  TINYTEXT;
+ALTER TABLE _PREFIXTABLE_options ADD  defaultvalue  TEXT;
+ALTER TABLE _PREFIXTABLE_options ADD  userrights TINYINT UNSIGNED DEFAULT \'0\' NOT NULL;
+ALTER TABLE _PREFIXTABLE_options ADD  exportpolicy  TINYINT DEFAULT \'1\' NOT NULL;
+ ');
+	if ($err) break;
+	foreach (array("s"=>"text",
+		       "pass"=>"passwd",
+		       "mail"=>"email",
+		       "col"=>"color",
+		       "i"=>"int") as $from=>$to) {
+	  $err=mysql_query_cmds('
+UPDATE _PREFIXTABLE_options SET type=\''.$to.'\' WHERE type=\''.$from.'\';
+ ');
+	  if ($err) break;
+	}
+
+	if ($err) break;
+	$report.="Mise a jour de la table options<br/>";
+      }
+    }
+    ///////////////////////
+    // OPTIONGROUPS
+    if (!$tables["$GLOBALS[tp]optiongroups"]) {
+      $err=create("optiongroups");
+      if ($err) break;
+      $err=mysql_query_cmds('
+REPLACE INTO _PREFIXTABLE_optiongroups (id,name,title,status) VALUES (1,\'servoo\',\'ServOO\',1);
+UPDATE _PREFIXTABLE_options SET idgroup=1 WHERE name LIKE \'servoo%\';
+REPLACE INTO _PREFIXTABLE_optiongroups (id,name,title,status) VALUES (2,\'features\',\'Fonctions optionnelles\',1);
+UPDATE _PREFIXTABLE_options SET idgroup=2 WHERE idgroup=0;
+ ');
+      if ($err) break;
+    }
+
 
     // fini, faire quelque chose
   } while(0);

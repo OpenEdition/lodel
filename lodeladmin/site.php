@@ -395,7 +395,7 @@ if ($task=="file") {
   }
   $import=true;
   // verifie qu'on peut importer le modele.
-  foreach(array("types","fields","persontypes","entrytypes") as $table) {
+  foreach(array("types","tablefields","persontypes","entrytypes") as $table) {
     $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE status>-64 LIMIT 0,1") or die(mysql_error());
     if (mysql_num_rows($result)) { $import=false; break; } 
   }
@@ -509,7 +509,7 @@ function slink($src,$dest) {
     @chmod(basename($dest),0777 & octdec($GLOBALS['filemask']));
     symlink($src,$dest);
   }
-  if (!file_exists($dest)) die ("impossible d'acceder au fichier $src via le lien symbolique $dest");
+  if (!file_exists($dest)) echo ("Warning: impossible d'acceder au fichier $src via le lien symbolique $dest<br>");
 }
 
 function mycopyrec($src,$dest) 

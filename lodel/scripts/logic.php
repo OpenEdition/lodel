@@ -92,6 +92,7 @@ class Logic {
      } elseif (isset($context['username'])) {
        $context['username']=$copyof."_".$context['username'];
      }
+     unset($context['id']);
      return $ret;
    }
 
@@ -127,6 +128,8 @@ class Logic {
      $this->_populateObject($vo,$context);
      if (!$dao->save($vo)) die("You don't have the rights to modify or create this object");
      $ret=$this->_saveRelatedTables($vo,$context);
+
+     touch(SITEROOT."CACHE/maj");
 
      return $ret ? $ret : "back";
    }
@@ -276,18 +279,18 @@ class Logic {
      }
      if ($error) return false;
 
-     $context=array();
+     $conditions=array();
      foreach($this->_uniqueFields() as $fields) { // all the unique set of fields
        foreach($fields as $field) { // set of fields which has to be unique.
 	 $conditions[]=$field."='".$context[$field]."'";
        }
        // check
-       $ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND ".join(" AND ",$conditions));
+       $ret=$GLOBALS['db']->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND ".join(" AND ",$conditions));
        if ($db->errorno) die($this->errormsg());
        if ($ret) $error[$fields[0]]="1"; // report the error on the first field
      }
 
-     return !empty($error);
+     return empty($error);
    }
 
    function _publicfields() {
@@ -301,13 +304,7 @@ class Logic {
      return array();
    }
 
-   /**
-    * Validate fields. Used by child class.
-    */
 
-   function _validateFields(&$context,&$error) {
-     return true;
-   }
 
 
    /**

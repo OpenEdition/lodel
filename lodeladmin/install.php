@@ -267,6 +267,7 @@ if ($tache=="admin") {
       return;
     }
     // log this user in 
+    require_once(LODELROOT.$home."adodb/adodb.inc.php");
     require_once(LODELROOT.$home."connect.php");
     require(LODELROOT.$home."loginfunc.php");
     $site="";

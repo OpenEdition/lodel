@@ -77,22 +77,11 @@ class UsersLogic extends Logic {
        renderOptions($arr,$context['usergroups']);
        break;
      case "userrights":
-       $arr=array(LEVEL_VISITOR=>getlodeltextcontents("user_visitor","common"),
-		  LEVEL_REDACTOR=>getlodeltextcontents("user_redactor","common"),
-		  LEVEL_EDITOR=>getlodeltextcontents("user_editor","common"),
-		  LEVEL_ADMIN=>getlodeltextcontents("user_admin","common"),
-		  );
-       if (SINGLESITE) 
-	 $arr[LEVEL_ADMINLODEL]=getlodeltextcontents("user_adminlodel","common");
-
-       // take only the rights below the current user rights
-       // in pratice only the ADMIN and ADMINLODEL should be authorized to add/remove users...
-       $arr2=array();
-       foreach($arr as $k=>$v) if ($GLOBALS['user']['rights']>=$k) $arr2[$k]=$v;
-       renderOptions($arr2,$context['userrights']);
+       require_once($GLOBALS['home']."commonselect.php");
+       makeSelectUserRights($context,SINGLESITE);
        break;
      case "lang" :
-       // get the langage available in the interface
+       // get the language available in the interface
        require_once($GLOBALS['home']."dao.php");
        $dao=getDAO("translations");
        $list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");

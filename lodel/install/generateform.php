@@ -39,11 +39,12 @@ $tables=array("entries",
 	      "persontypes",
 	      "entrytypes",
 	      "types",
-	      "fields",
-	      "groupfields",
+	      "tablefields",
+	      "tablefieldgroups",
 	      "users",
 	      "usergroups",
-	      "translations");
+	      "translations",
+	      "options");
 
 foreach ($tables as $table) {
 
