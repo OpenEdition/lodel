@@ -150,28 +150,31 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   }
 
   // postprocessing du fichier XHTML
-  $uploadedfile.=".xhtml";
-  if (!file_exists($uploadedfile)) die("ERROR: second conversion failed");
+  
+  $xhtmlfile=$uploadedfile.".xhtml";
+  if (!file_exists($xhtmlfile)) die("ERROR: second conversion failed");
 
 
-  $xhtml=file_get_contents($uploadedfile);
+  $xhtml=file_get_contents($xhtmlfile);
   postprocesscontentXHTML(&$xhtml,$styles);
-  writefile($uploadedfile,$xhtml);
-
-
-#  die ("ERROR: ici: $uploadedfile ".join("",file($uploadedfile)));
-
+  writefile($xhtmlfile,$xhtml);
 
   //
   // recupere le nom des images associees
   //
-  $htmlfile=join("",file($uploadedfile));
-  $uploadedfilebasename=basename($uploadedfile);
-  preg_match_all("/src=\"($uploadedfilebasename\_[^\"]+)\"/i",$htmlfile,$results,PREG_PATTERN_ORDER);
-  $uploadedfiledirname=dirname($uploadedfile);
-  $files=array($uploadedfile);
-  foreach ($results[1] as $imgfile) array_push($files,$uploadedfiledirname."/".$imgfile);
-  return $files;
+
+  preg_match_all('/<img\s+src="('.preg_quote(basename($uploadedfile)).'-img\d+\.[^\."]+)"/',$xhtml,$results,PREG_PATTERN_ORDER);
+
+  $convertedfiles=array($xhtmlfile);
+  $dir=dirname($uploadedfile);
+  if (!$dir) $dir=".";
+
+  if ($results[1]) {
+    foreach ($results[1] as $imgfile) 
+      array_push($convertedfiles,$dir."/".$imgfile);
+  }
+
+  return $convertedfiles;
 }
 
 

@@ -89,9 +89,9 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     // que faut-il uploader ?
     if ($cmd[1]=="all") {
       $auploader=$convertedfiles;
-      array_push($auploaded,$sourcefiles);
+      array_push($auploaded,$sourcefile);
     } elseif ($cmd[1]=="source") {
-      $auploader=array($sourcefiles);
+      $auploader=array($sourcefile);
     } else { // valeur par defaut
       $auploader=$convertedfiles;
     }
@@ -127,20 +127,21 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     // que faut-il zipper ?
     if ($ope=="all") {
       $azipper=$convertedfiles;
-      array_push($azipper,$sourcefiles);
+      array_push($azipper,$sourcefile);
     } elseif ($ope=="source") {
-      $azipper=array($sourcefiles);
+      $azipper=array($sourcefile);
     } else { // valeur par defaut
       $azipper=$convertedfiles;
     }
+    if (!$azipper) continue;
     // on zip maintenant
     if ($zipcmd) {
       $archive=tempnam("","arch").".zip";
       system("$zipcmd -rq $archive ".join(" ",$azipper)." 2>$archive.err");
       @array_walk($azipper,"unlink");
       if (filesize($archive.".err")>0) die("ERROR: zip failed<br>".str_replace("\n","<br>",htmlentities(@join("",@file($archive.".err")))));
-      if ($ope=="source") { // dans ce cas on met a jour la variable sourcefiles
-	$sourcefiles=$archive;
+      if ($ope=="source") { // dans ce cas on met a jour la variable sourcefile
+	$sourcefile=$archive;
       } else {
 	$convertedfiles=array($archive);
       }
@@ -153,7 +154,7 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
       system("$unzipcmd -p $sourcefile >$sourcefile.unzipped 2>$sourcefile.err");
      
       if (filesize($sourcefile.".err")>0) die("ERROR: unzip failed<br>".str_replace("\n","<br>",htmlentities(@join("",@file($sourcefile.".err")))));
-      $sourcefiles=$dest;     
+      $sourcefile=$dest;     
     } else die("ERROR: unzip undefined");
     // command RTN ----------------
     elseif ($cmd[0]=="RTN") {
