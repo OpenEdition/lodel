@@ -148,7 +148,6 @@ ln tpl/edition.html
 ln tpl/edition-lineaire.html
 ln tpl/edition-hierarchique.html
 ln tpl/edition-numero.html
-ln tpl/edition-regroupement.html
 ln tpl/edition-rubrique.html
 
 # creation et modification des publications
