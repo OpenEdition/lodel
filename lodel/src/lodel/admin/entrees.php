@@ -30,7 +30,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_ADMIN);
+authenticate(LEVEL_VISITEUR);
 include_once ($home."func.php");
 
 
