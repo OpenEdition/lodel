@@ -174,6 +174,32 @@ function getsiteoptions ()
 }
 #endif
 
+function getacceptedcharset($charset) {
+	// Détermine le charset a fournir au navigateur
+	global $HTTP_SERVER_VARS;
+	$browserversion = array (	
+						"opera" => 6,
+						"netscape" => 4,
+						"msie" => 4,
+						"ie" => 4,
+						"mozilla" => 3
+					);
+	if (!$charset) {
+		// Si ce n'est pas envoye par l'url ou par cookie, on recupere ce que demande le navigateur.
+		if ($HTTP_SERVER_VARS["HTTP_ACCEPT_CHARSET"]) {
+			// Si le navigateur retourne HTTP_ACCEPT_CHARSET on l'analyse et on en déduit le charset
+			if (preg_match("/\butf-8\b/i", $HTTP_SERVER_VARS["HTTP_ACCEPT_CHARSET"])) return "utf-8";
+			else return "iso-8859-1";
+		// Sinon on analyse le HTTP_USER_AGENT retourné par le navigateur et si ca matche on vérifie 
+		// que la version du navigateur est supérieure ou égale à la version déclarée unicode
+		} elseif ((preg_match("/\b(\w+)\W(\d+)/i", $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $matches)) && 
+				($matches[2] >= $browserversion[strtolower($matches[1])])) {
+			return "utf-8";
+		} else return "iso-8859-1"; // Si on a rien trouvé on renvoie de l'iso
+	}
+	else return $charset;
+}
+
 // securite... initialisation
 $userpriv=0;
 $usergroupes="";
@@ -210,17 +236,7 @@ if ($site) {
 	}
 }
 
-
-// charset a fournir au navigateur
-
-if (!$charset) $charset=$HTTP_SERVER_VARS["HTTP_ACCEPT_CHARSET"]; // si ce n'est pas envoye par l'url ou par cookie, on recupere ce que demande le navigateur.
-if (preg_match("/\butf-8\b/i",$charset)) {
-  $context[charset]="utf-8";
-} else { // isolatin est l'autre charset par defaut
-  $context[charset]="iso-8859-1";
-}
+$context[charset] = getacceptedcharset($charset);
 header("Content-type: text/html; charset=$context[charset]");
-
-
 
 ?>
