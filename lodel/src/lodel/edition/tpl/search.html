@@ -67,14 +67,15 @@
 		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 		
 		<span class="type_document">
-		([@IN]
+		
 		<LOOP NAME="parentsentities">
 		<DOFIRST>
+		([@IN]	
 			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
 		</DOFIRST>
 		<DO>
 			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-			<IF COND="[#NBRESULTS] GT 1">
+			<IF COND="[#COUNT] GT 1">
 				&nbsp;>&nbsp;
 			</IF>
 		</DO>
