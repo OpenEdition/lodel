@@ -81,10 +81,14 @@ function loop_parentsentities(&$context,$funcname,$critere="")
 {
 
   global $db;
-  $id=intval($context[id]);
+  $id=intval($context['id']);
   if (!$id) return;
+
+  // print the current entity
+  $localcontext=$context;
+  call_user_func("code_do_$funcname",$localcontext);
   
-  $result=$db->execute(lq("SELECT *, type  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['user']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
+  $result=$db->execute(lq("SELECT *, type  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND #_TP_entities.status>".($GLOBALS['user']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
 
   while (!$result->EOF) {
     $localcontext=array_merge($context,$result->fields);
