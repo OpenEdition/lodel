@@ -43,20 +43,23 @@
 </tr>
 <tr>
 <td width="60%">
-		<LOOP NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
+		<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="ok" ORDER="nom">
+		<DO>
 		<div id="[#REP]" class="texte_petit">
 		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
 			<a href="[(#REP|makeurl)]" onmouseover="[#REP].src=triangle.sr" 
 onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
 <br>	</div>
-
+		</DO>
 		</LOOP>
 </td>
 <td width="40%">
-		<LOOP NAME="sel_rev" TABLE="revues" WHERE="ok" ORDER="nom">
+		<LOOP NAME="sel_rev" TABLE="sites" WHERE="ok" ORDER="nom">
+		<DO>
 		<div id="[#REP]" class="texte_petit">
 [<a href="[(#REP|makeurl)]/lodel/edition/index.php">Editer [#REP]</a>]
 <br>	</div>
+		</DO>
 		</LOOP>
 </td>
 </tr>

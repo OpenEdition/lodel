@@ -38,8 +38,10 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
         <form name="Editer" method="post" action="">
               Editer&nbsp; 
         <select name="selectionner_revue" onChange="MM_jumpMenu('parent',this,0)">
-		<LOOP NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
+		<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="ok" ORDER="nom">
+			<DO>
          <option value="[(#REP|makeurl)]/lodel/edition/index.php">[#NOM]</option>
+			</DO>
 		</LOOP>
         <option selected>Choisissez</option>
         </select>
@@ -61,8 +63,10 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             <form name="Visiter" method="post" action="">
               Visiter&nbsp; <b> 
               <select name="visiter_revue" onChange="MM_jumpMenu('parent',this,0)">
-		<LOOP NAME="viste_revue" TABLE="revues"  WHERE="ok" ORDER="nom">
+		<LOOP NAME="viste_revue" TABLE="sites"  WHERE="ok" ORDER="nom">
+			<DO>
                 <option value="[(#REP|makeurl)]/index.html">[#NOM]</option>
+			</DO>
 		</LOOP>
                 <option selected>Choisissez</option>
               </select>
