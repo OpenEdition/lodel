@@ -98,15 +98,7 @@ class EntitiesLogic extends Logic {
 
      if (!$context['confirm'] && $softprotectedids) {
        $context['softprotectedentities']=$softprotectedids;
-       function loop_protectedentities($context,$funcname) {
-	 global $db;
-	 $result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE id ".sql_in_array($context['softprotectedentities']))) or dberror();
-	 while(!$result->EOF) {
-	   $localcontext=array_merge($context,$result->fields);
-	   call_user_func("code_do_$funcname",$localcontext);
-	   $result->MoveNext();
-	 }
-       } // loop
+       $this->define_loop_protectedentities();
        return "delete_confirm";
      }
 
@@ -148,8 +140,9 @@ class EntitiesLogic extends Logic {
 
      // depublish protected entity ? need confirmation.
      if (!$context['confirm'] && $status<0 && $softprotectedids) {
-       $context['softprotectedentities']="'".join("','",$softprotectedids)."'";
-       return "confirm";
+       $context['softprotectedentities']=$softprotectedids;
+       $this->define_loop_protectedentities();
+       return "unpublish_confirm";
      }
      
      $criteria=" id IN (".join(",",$ids).")";
@@ -307,6 +300,19 @@ class EntitiesLogic extends Logic {
 	 $result->MoveNext();
        }
    }
+
+  function define_loop_protectedentities()
+  {
+       function loop_protectedentities($context,$funcname) {
+	 global $db;
+	 $result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE id ".sql_in_array($context['softprotectedentities']))) or dberror();
+	 while(!$result->EOF) {
+	   $localcontext=array_merge($context,$result->fields);
+	   call_user_func("code_do_$funcname",$localcontext);
+	   $result->MoveNext();
+	 }
+       } // loop
+  }
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {

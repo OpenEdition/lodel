@@ -90,7 +90,7 @@ class XMLImportParser {
   {
     $this->handler=&$handler; // non-reentrant
 
-    $arr=preg_split("/<(\/?)soo:block(>|\s+class=\"\w+\"\s*>)/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
+    $arr=preg_split("/<(\/?)soo:block(>|\s+class=\"[^\"]*\"\s*>)/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
     $n=count($arr);
 
     unset($string); // save memory
@@ -182,7 +182,8 @@ class XMLImportParser {
     for($i=1; $i<$n; $i+=3) {
       $this->_parseOneStep($arr,$i,$datastack,$classstack,"block");
 
-      $larr=preg_split("/<(\/)?soo:inline(>|\s+class=\"\w+\"\s*>)>/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
+      $larr=preg_split("/<(\/)?soo:inline(>|\s+class=\"[^\"]*\"\s*>)/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
+      #print_R($larr);
       $nj=count($larr);
       $datastack[0].=$larr[0];
 
@@ -392,8 +393,8 @@ class XMLImportParser {
       $opening=$arr[$i]!="/";
       #echo $opening," ",$arr[$i+1],"<br>";
       if ($opening) { // opening tag
-	if (!preg_match("/class=\"(\w+)\"/",$arr[$i+1],$result)) die("ERROR: in _objectize");
-	$name=$result[1];
+	if (!preg_match("/class=\"([^\"]*)\"/",$arr[$i+1],$result)) die("ERROR: in _objectize");
+	$name=preg_replace("/\W/","",makeSortKey($result[1]));
 	$obj=&$this->commonstyles[$name];
 	#print_r($this->obj);
 	#die();

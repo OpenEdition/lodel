@@ -38,8 +38,11 @@ if (file_exists("siteconfig.php")) {
 }
 require_once ($home."auth.php");
 authenticate();
+require_once ($home."connect.php");
 
-require ($home."calcul-page.php");
-calcul_page($context,"index");
+
+require ($home."view.php");
+$view=&getView();
+$view->renderCached($context,"index");
 
 ?>
