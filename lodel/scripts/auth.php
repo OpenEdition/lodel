@@ -238,7 +238,8 @@ $context=array(
 $adminlodel=0;
 $admin=0;
 $user=0;
-$context[shareurl]=$shareurl;
+$context[shareurl]=$GLOBALS[shareurl];
+$context[extensionscripts]=$GLOBALS[extensionscripts];
 
 // cherche le nom du site
 
