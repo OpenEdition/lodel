@@ -127,28 +127,18 @@
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Ajouts au document</span></td>
-						<td>&nbsp;</td>
-					</tr>
-										
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-
-					
-	<IF COND="[#DROITEDITEUR]">
-				<a href="metaimage.php?iddocument=[#ID]&champ=icone">
-					<span class="texte_orange">Associer une icône à ce document</span>
-				</a>
-	<ELSE/>
-				<span class="texte_intitule">Associer une image à ce document</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau &eacute;diteur)</span>
-	</IF>
-						</td>
+						<td width="20" style="padding-bottom:5px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">Documents annexes</span></td>
 						<td>&nbsp;</td>
 					</tr>
 				
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="450" class="td_admin">
+		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+						</td>
+						<td>&nbsp;</td>
+					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
@@ -165,14 +155,6 @@
 				<span class="texte_intitule">Ajouter des documents annexes</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
 	</IF>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="450" class="td_admin">
-		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 						</td>
 						<td>&nbsp;</td>
 					</tr>
