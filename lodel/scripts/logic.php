@@ -102,12 +102,11 @@ class Logic {
     * add/edit Action
     */
 
-   function editAction(&$context,&$error)
+   function editAction(&$context,&$error,$clean=false)
 
    {
-     // validate the forms data
-     if (!$this->validateFields($context,$error)) {
-       return "_error";
+     if ($clean!=CLEAN) {      // validate the forms data
+       if (!$this->validateFields($context,$error)) return "_error";
      }
 
      // get the dao for working with the object
@@ -129,7 +128,7 @@ class Logic {
      if (!$dao->save($vo)) die("You don't have the rights to modify or create this object");
      $ret=$this->_saveRelatedTables($vo,$context);
 
-     touch(SITEROOT."CACHE/maj");
+     update();
 
      return $ret ? $ret : "_back";
    }
@@ -149,6 +148,8 @@ class Logic {
        foreach(explode(",",$groupfields) as $field)  $criteria.=" AND ".$field."='".$vo->$field."'";      
      }
      $this->_changeRank($id,$context['dir'],"status>0 ".$criteria);
+
+     update();
      
      return "_back";
    }
@@ -170,6 +171,8 @@ class Logic {
      $dao->deleteObject($id);
 
      $ret=$this->_deleteRelatedTables($id);
+
+     update();
 
      return $ret ? $ret : "_back";
    }

@@ -179,6 +179,7 @@ if ($task) {
 //
 // creation de la DataBase si besoin
 //
+if (defined("DATABASE")) $database=DATABASE;
 $context['dbname']=$singledatabase=="on" ? $database : $database."_".$context['name'];
 if ($task=="createdb") {
   if (!$context['name']) die ("probleme interne");
@@ -195,6 +196,9 @@ if ($task=="createdb") {
     }
     // well, it does not exist, let's create it.
     //
+    if (defined("DBUSERNAME")) $dbusername=DBUSERNAME;
+    if (defined("DBHOST")) $dbhost=DBHOST;
+    if (defined("DBPASSWD")) $dbpasswd=DBPASSWD;
     $context['command1']="CREATE DATABASE $context[dbname]";
     $context['command2']="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
     $pass=$dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : "";

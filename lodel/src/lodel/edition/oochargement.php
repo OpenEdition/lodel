@@ -36,11 +36,12 @@ authenticate(LEVEL_REDACTOR);
 include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 
-$context[idparent]=intval($idparent);
-$context[iddocument]=intval($iddocument);
-$context[idtache]=$idtache=intval($idtache);
-$context[idtype]=intval($idtype);
-$context[lodeltags]=intval($lodeltags);
+$context['idparent']=intval($idparent);
+$context['identity']=intval($identity) || intval($iddocument);
+$context['idtask']=$idtask=intval($idtask);
+$context['idtype']=intval($idtype);
+$context['lodeltags']=intval($lodeltags);
+
 
 if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name']!="none") {
   do {
@@ -118,8 +119,8 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
       break;
     }
 
-    if ($idtache) { // reimportation of an existing document ?
-      $row=get_tache($idtache);
+    if ($idtask) { // reimportation of an existing document ?
+      $row=get_task($idtask);
     } else {
       $row=array();
     }
@@ -130,22 +131,22 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     // build the import
     $row[importversion]=addslashes($convertretvar[version])."; oochargement $version;";
 
-    if (!$idtache) {
-      if ($context[iddocument]) {
-	$row[iddocument]=$context[iddocument];
+    if (!$idtask) {
+      if ($context[identity]) {
+	$row[identity]=$context[identity];
       } else {
 	$row[idparent]=$context[idparent];
       }
       $row[idtype]=$context[idtype];
     }
-    $idtache=makeTask("Import $file1_name",3,$row,$idtache);
+    $idtask=makeTask("Import $file1_name",3,$row,$idtask);
 
     if ($msg) {
-      echo '<br><a href="checkimport.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
+      echo '<br><a href="checkimport.php?id='.$idtask.'"><font size="+1">Continuer</font></a>';
       return;
     }
 
-    header("Location: checkimport.php?idtache=$idtache");
+    header("Location: checkimport.php?idtask=$idtask");
     return;
   } while (0); // exceptions
 }

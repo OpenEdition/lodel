@@ -74,6 +74,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 //$dao=getDAO("persontypes");
 	 //$vo=$dao->find("type='".$varname."'","class,id");
 	 //$class=$vo->class;
+	 #print_r($context['persons'][$idtype]);
 
 	 foreach($context['persons'][$idtype] as $degree=>$arr) {
 	   $localcontext=array_merge($context,$arr);
@@ -129,8 +130,6 @@ class Entities_EditionLogic extends GenericLogic {
 
    {
      global $user,$home;
-
-     if ($context['cancel']) return $this->cancelAction($context,$error);
 
      $id=$context['id'];
      $idparent=$context['idparent'];
@@ -204,24 +203,12 @@ class Entities_EditionLogic extends GenericLogic {
 
      $this->_saveRelatedTables($vo,$context);
 
-     if ($status>0) touch(SITEROOT."CACHE/maj");
+     update();
      //unlock();
 
      return "_back";
    }
 
-   /**
-    *
-    */
-
-   function cancelAction($context,$error)
-   {
-     // detruit la tache en cours
-     $context['idtask']=intval($context['idtask']);
-     $dao=getDAO("tasks");
-     $dao->deleteObject($context['idtask']);
-   }
-    
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
@@ -270,7 +257,7 @@ class Entities_EditionLogic extends GenericLogic {
 	   $itemcontext['identity']=$vo->id;
 	   $itemcontext['idtype']=$idtype;
 	   $itemcontext['status']=$status;
-	   $ret=$logic->editAction($itemcontext,$error);	 
+	   $ret=$logic->editAction($itemcontext,$error,CLEAN);
 	   if ($ret!="_error" && $itemcontext['id']) {
 	     $ids[$idtype][]=$itemcontext['id'];
 	     if ($itemcontext['idrelation']) $idrelations[]=$itemcontext['idrelation'];
@@ -279,7 +266,7 @@ class Entities_EditionLogic extends GenericLogic {
        }
        // delete relation not used
        $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
-       $db->execute(lq("DELETE FROM #_TP_relations WHERE id1='".$vo->id."' AND nature='".$nature."' ".$criteria)) or dberror();
+       $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$nature);
        if ($ids && !$idrelations) { // new item but relation has not been created
 	 if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
 	 $values=array();
@@ -292,13 +279,52 @@ class Entities_EditionLogic extends GenericLogic {
      } // foreach entries and persons
    }
 
-
-   // most of this should be transfered in the entries and persons logic
-   function _deleteSoftRelation($ids) {
+   /**
+    *
+    */
+    //most of this should be transfered in the entries and persons logic
+   function _deleteSoftRelation($ids,$nature="") {
      global $db;
 
-     $criteria="id1 IN (".join(",",$ids).")";
-     $db->execute(lq("DELETE FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or dberror();
+     if (is_array($ids)) {
+       $criteria="id1 IN ('".join("','",$ids)."')";
+     } elseif (is_numeric($ids)) {
+       $criteria="id1='".$ids."'";
+     } else {
+       $criteria=$ids;
+     }
+
+     if ($nature=="E") {
+       $naturecriteria=" AND nature='E'";
+     } elseif ($nature=="G") {
+       $naturecriteria=" AND nature='G'";
+       $checkjointtable=true;
+     } else {
+       $naturecriteria=" AND nature IN ('G','E')";
+       $checkjointtable=true;
+     }
+
+     if ($checkjointtable) {
+       // with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
+       // get the joint table first
+       $dao=getDAO("relations");
+       $vos=$dao->findMany($criteria.$naturecriteria,"","idrelation");
+       $ids=array();
+       foreach ($vos as $vo) { $ids[]=$vo->idrelation; }
+
+       if ($ids) {
+	 // getting the tables name from persons and persontype would be to long. Let's suppose
+	 // the number of classes are low and it is worse trying to delete in all the tables
+	 $dao=getDAO("classes");
+	 $tables=$dao->findMany("classtype='persons'","","class");
+	 $where="idrelation IN ('".join("','",$ids)."')";
+	 foreach($tables as $table) {
+	   $db->execute(lq("DELETE FROM #_TP_entities_".$table->class." WHERE ".$where)) or dberror();
+	 }
+       }
+     }
+
+     $db->execute(lq("DELETE FROM #_TP_relations WHERE ".$criteria.$naturecriteria)) or dberror();
 
      // select all the items not in entities_$table
      // those with status<=1 must be deleted
@@ -319,12 +345,12 @@ class Entities_EditionLogic extends GenericLogic {
        }
 
        if ($idstodelete) {
-	 $dao->getDAO($table);
+	 $dao=getDAO($table);
 	 $dao->deleteObject($idstodelete);
        }
 
        if ($idstounpublish) {
-	 $db->execute(lq("UPDATE #_TP_$tables SET status=-abs(status) WHERE id IN (".join(",",$idstounpublish).") AND status>=32")) or dberror();       
+	 $db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (".join(",",$idstounpublish).") AND status>=32")) or dberror();       
        }
      } // tables
    }
@@ -395,40 +421,46 @@ class Entities_EditionLogic extends GenericLogic {
      foreach (array("entries"=>array("E","identry","entrytypes"),
 		    "persons"=>array("G","idperson","persontypes")) as $table => $info) {
        list($nature,$idfield,$type)=$info;
+       $degree=0;
        
-       $result=$db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id."' AND nature='".$nature."'")) or dberror();
+       $result=$db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_relations.degree,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id."' AND nature='".$nature."'  ORDER BY degree")) or dberror();
        while (!$result->EOF) {
-	 $rank=$result->fields['rank'] ? $result->fields['rank'] : (++$rank);
+	 $degree=$result->fields['degree'] ? $result->fields['degree'] : (++$degree);
+	 unset($ref); // detach from the other references
 	 $ref=$result->fields;
+
 	 $class=$result->fields['class'];
 	 $relatedtable[$class][$result->fields['id']]=&$ref;
 	 if ($table=="persons") $relatedrelationtable[$class][$result->fields['idrelation']]=&$ref;
 
-	 $context[$table][$result->fields['idtype']][$rank]=&$ref;
+	 $context[$table][$result->fields['idtype']][$degree]=&$ref;
 	 $result->MoveNext();
        }
+
        // load related table
        if ($relatedtable) {
 	 foreach ($relatedtable as $class=>$ids) {
-	   $result=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." IN (".join(",",array_keys($ids)).")")) or dberror();
-	   while (!$result->EOF) {
-	     $id=$result->fields[$idfield];
-	     $ids[$id]=array_merge($ids[$id],$result->fields);
-	     $result->MoveNext();
+	   ##print_r($ids);
+	   $result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." IN (".join(",",array_keys($ids)).")")) or dberror();
+	   while (!$result2->EOF) {
+	     $id=$result2->fields[$idfield];
+	     $ids[$id]=array_merge($ids[$id],$result2->fields);
+	     $result2->MoveNext();
 	   }
 	 }
        }
        // load relation related table
        if ($relatedrelationtable) {
 	 foreach ($relatedrelationtable as $class=>$ids) {
-	   $result=$db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation IN (".join(",",array_keys($ids)).")")) or dberror();
-	   while (!$result->EOF) {
-	     $id=$result->fields['idrelation'];
-	     $ids[$id]=array_merge($ids[$id],$result->fields);
-	     $result->MoveNext();
+	   $result2=$db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation IN (".join(",",array_keys($ids)).")")) or dberror();
+	   while (!$result2->EOF) {
+	     $id=$result2->fields['idrelation'];
+	     $ids[$id]=array_merge($ids[$id],$result2->fields);
+	     $result2->MoveNext();
 	   }
 	 }
        }
+
      } // foreach classtype
      $ADODB_FETCH_MODE = ADODB_FETCH_DEFAULT;
      #print_r($context['persons']);      

@@ -40,7 +40,6 @@ class GenericLogic extends Logic {
    */
   var $g_name;
 
-
   /** Constructor
    */
   function GenericLogic($classtype) {
@@ -179,11 +178,12 @@ class GenericLogic extends Logic {
      global $home;
 
      // get the fields of class
-     
 
      $daotablefields=getDAO("tablefields");
      $fields=$daotablefields->findMany("(class='".$context['class']."' OR class='entities_".$context['class']."') AND status>0 ","",
 				       "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
+
+     echo "class=".get_class($this);
 
      // file to move once the document id is know.
      $this->files_to_move=array();
@@ -226,6 +226,7 @@ class GenericLogic extends Logic {
 	 unset($value);
 	 continue;
        }
+
        if ($field->type!="persons" && $field->type!="entries")
 	 $this->_publicfields[$field->class][$field->name]=true; // this field is public
 
@@ -278,7 +279,7 @@ class GenericLogic extends Logic {
 	   break;
 	 case 'persons':
 	   // get the type
-	   $dao=getDAO("persontype");
+	   $dao=getDAO("persontypes");
 	   $vo=$dao->find("type='".$name."'","class,id");
 	   $idtype=$vo->id;
 
@@ -286,7 +287,9 @@ class GenericLogic extends Logic {
 	   $localcontext=&$context['persons'][$idtype];
 	   $count=count($localcontext);
 	   for($i=0; $i<$count; $i++) {
+	     if (!$localcontext[$i]) continue;
 	     $localcontext[$i]['class']=$vo->class;
+	     $localcontext[$i]['idtype']=$idtype;
 	     $err=array();
 	     $logic->validateFields($localcontext[$i],$err);
 	     if ($err) $error['persons'][$idtype][$i]=$err;
@@ -297,6 +300,7 @@ class GenericLogic extends Logic {
 	 } // switch
        } // if valid
        } // foreach files
+
        return empty($error);
      }
 
@@ -348,7 +352,7 @@ class GenericLogic extends Logic {
 
   // begin{publicfields} automatic generation  //
   function _publicfields() {
-    if (!isset($this->_publicfields)) die("ERROR: publicfield has not be created");
+    if (!isset($this->_publicfields)) trigger_error("ERROR: publicfield has not be created in ".get_class($this)."::_publicfields",E_USER_ERROR);
     return $this->_publicfields;
   }
    // end{publicfields} automatic generation  //

@@ -54,7 +54,7 @@ class PersonsLogic extends GenericLogic {
     * add/edit Action
     */
 
-   function editAction(&$context,&$error)
+   function editAction(&$context,&$error,$clean=false)
 
    {
      global $user,$home;
@@ -70,11 +70,13 @@ class PersonsLogic extends GenericLogic {
      $votype=$daotype->getById($idtype,"class");
      $class=$context['class']=$votype->class;
 
-     if (!$this->validateFields($context,$error)) {
-       // error.
-       // if the entity is imported and will be checked
-       // that's fine, let's continue, if not return an error
-       if ($status>-64) return "_error";
+     if ($clean!=CLEAN) {
+       if (!$this->validateFields($context,$error)) {
+	 // error.
+	 // if the entity is imported and will be checked
+	 // that's fine, let's continue, if not return an error
+	 if ($status>-64) return "_error";
+       }
      }
 
      // get the dao for working with the object
@@ -123,21 +125,29 @@ class PersonsLogic extends GenericLogic {
      // save the entities_class table
      if ($context['identity']) {
        $dao=getDAO("relations");
-       $dao->instantiateObject($vo);
-       $vo->id1=intval($context['identity']);
-       $vo->id2=$id;
-       $vo->degree=intval($context['degree']);
-       $vo->nature='G';
-       $idrelation=$context['idrelation']=$dao->save($vo);
+
+       $vo=$dao->find("id1='".intval($context['identity'])."' AND id2='".$id."' AND nature='G' AND degree='".intval($context['degree'])."'","idrelation");
+
+       if (!$vo) {
+	 $dao->instantiateObject($vo);
+	 $vo->id1=intval($context['identity']);
+	 $vo->id2=$id;
+	 $vo->degree=intval($context['degree']);
+	 $vo->nature='G';
+	 $idrelation=$context['idrelation']=$dao->save($vo);
+       } else {
+	 $idrelation=$context['idrelation']=$vo->idrelation;
+       }
+
 
        $gdao=getGenericDAO("entities_".$class,"idrelation");
        $gdao->instantiateObject($gvo);
        $this->_populateObject($gvo,$context);
        $gvo->idrelation=$idrelation;
-       $gdao->save($gvo,trueXXXXXXXXXXXXXXXXXX);  // save the related table
+       $gdao->save($gvo,true);  // save the related table
      }
 
-     if ($status>0) touch(SITEROOT."CACHE/maj");
+     update();
      //unlock();
 
      return "_back";
@@ -201,14 +211,6 @@ class PersonsLogic extends GenericLogic {
 
     // delete 
   }
-
-
-
-   function _publicfields() {
-     if (!isset($this->_publicfields)) die("ERROR: publicfield has not be created");
-     return $this->_publicfields;
-   }
-
 } // class 
 
 /*------------------------------------*/

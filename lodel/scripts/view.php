@@ -51,7 +51,6 @@ class View {
    {
      global $db,$idsession;
      $url=preg_replace("/[\?&]recalcul\w+=[^&]*/","",$_SERVER['REQUEST_URI']);
-
      $offset=-1-$back;
 
      usemaindb();
@@ -108,7 +107,19 @@ class View {
        $this->_calculateCacheAndOutput($context,$tpl);
 
        // the cache is valid... do we have a php file ?
-     } elseif ($this->_extcachedfile=="php") {
+     } else {
+       $this->printCache();
+     }
+   }
+
+   /**
+    * print directly the cache. isValidCache must be called before
+    */
+
+   function printCache()
+
+   {
+     if ($this->_extcachedfile=="php") {
        $ret=include($this->_cachedfile.".php");
 
        // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
@@ -126,19 +137,19 @@ class View {
 
    function isCacheValid()
    {
-     if ($GLOBALS['right']['visitor']) {
-       $this->_iscachevalid=true;
-       return true;
-     }
+     //if ($GLOBALS['right']['visitor']) {
+     //  $this->_iscachevalid=false;
+     //  return false;
+     //}
+     require_once($GLOBALS['home']."func.php");
 
-     $maj=myfilemtime("CACHE/maj");
-
+     $maj=myfilemtime(SITEROOT."CACHE/maj");
 
      // Calculate the name of the cached file
 
-     $this->_cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",
-							       $_SERVER['REQUEST_URI'])), 0, 255);
-
+     $this->_cachedfile = substr(rawurlencode(str_replace("?id=0","",
+							  preg_replace("/#[^#]*$/","",
+								       $_SERVER['REQUEST_URI']))), 0, 255);
 
      $cachedir = substr(md5($this->_cachedfile), 0, 1);
      if ($GLOBALS['context']['charset']!="utf-8") $cachedir="il1.".$cachedir;
@@ -156,8 +167,8 @@ class View {
      // An object should be created in order to avoid the global scope pollution.
      $GLOBALS['cachedfile']=$this->_cachedfile;
 
-
-     if ($maj>=myfilemtime($this->_cachedfile.".".$this->_extcachedfile)) {
+     if ($maj < myfilemtime($this->_cachedfile.".".$this->_extcachedfile)) {
+       echo "cached: yes";
        $this->_iscachevalid=true;
        return true;
      }
@@ -169,14 +180,11 @@ class View {
    /**
     * render cached
     */
-   function renderCached()
+   function renderCached(&$context,$tpl)
 
    {
-     return $this->view($true);
+     return $this->render($context,$tpl,true);
    }
-
-
-
 
    //! private from this point
 

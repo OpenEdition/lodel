@@ -409,11 +409,19 @@ UPDATE #_TP_options SET idgroup=2 WHERE idgroup=0;
       }
 
       // create the fields in documentsannexes from documents
+     $haslien=",lien";
       foreach(array("titre","lien","texte") as $field) {
 	$result=mysql_query(lq("SELECT #_TP_tablefields.*,#_TP_tablefieldgroups.name as grp FROM #_TP_tablefieldgroups INNER JOIN #_TP_tablefields ON idgroup=#_TP_tablefieldgroups.id WHERE #_TP_tablefields.name='$field' AND #_TP_tablefieldgroups.class='documents'")) or trigger_error(mysql_error(),E_USER_ERROR);
 	$row=mysql_fetch_assoc($result);
-	if (!$row) { $err="Impossible de trouver le tablefield $field"; break 2; }
-
+	if (!$row) {
+	  if ($field=="lien") {
+	    // let's create it
+	    $row=array('name'=>'lien','title'=>'Lien','type'=>'tinytext','condition'=>'*','edition'=>'importable','status'=>32,'rank'=>100);
+	    $haslien="";
+	  } else {
+	    $err="Impossible de trouver le tablefield $field"; break 2; 
+	  }
+	}
 	$row2=$row;
 	unset($row2['grp']);
 	$row2['idgroup']=$idgroup[$row['grp']];
@@ -437,7 +445,7 @@ UPDATE #_TP_types SET class='documentsannexes' WHERE type LIKE 'documentannexe-%
 	$ids=join(",",$ids);
 	// transfert the documents
 	$err=mysql_query_cmds("
-REPLACE INTO #_TP_documentsannexes (identity,titre,texte,lien)  SELECT identity,titre,texte,lien FROM #_TP_documents WHERE identity IN ($ids);
+REPLACE INTO #_TP_documentsannexes (identity,titre,texte".$haslien.")  SELECT identity,titre,texte".$haslien." FROM #_TP_documents WHERE identity IN ($ids);
 DELETE FROM #_TP_documents WHERE identity IN ($ids);
 ");
 	if ($err) break;
@@ -569,8 +577,9 @@ ALTER TABLE #_TP_persons ADD idtype INT UNSIGNED NOT NULL DEFAULT \'0\';
 	    $vo=$dao->getById($row['idperson']);
 	    $vo->id=0; // create a new one
 	    $vo->idtype=$row['idtype']; // with a different idtype
+	    $dao->quote($vo);
 	    $newid=$dao->save($vo);
-	    $db->execute(lq("UPDATE #_TP_entries_persons SET idperson='$newid' WHERE idperson='".$row['idperson']."' AND idtype='".$row['idtype']."'")) or dberror();
+	    $db->execute(lq("UPDATE #_TP_entities_persons SET idperson='$newid' WHERE idperson='".$row['idperson']."' AND idtype='".$row['idtype']."'")) or dberror();
 	  } else {
 	    // nothing to do. Should not happends with the distinct
 	  }
@@ -587,6 +596,7 @@ ALTER TABLE #_TP_persons ADD sortkey VARCHAR(255) NOT NULL;
       $vos=$dao->findMany("1","","id,g_familyname,g_firstname");
       foreach($vos as $vo) {
 	$vo->sortkey=makeSortKey(trim($vo->g_familyname)." ".trim($vo->g_firstname));
+	$dao->quote($vo);
 	$dao->save($vo);
       }
       if ($err) break;
@@ -608,7 +618,7 @@ ALTER TABLE #_TP_persons ADD sortkey VARCHAR(255) NOT NULL;
 	}
 	$err=mysql_query_cmds('
 ALTER TABLE #_TP_relations ADD idrelation INT UNSIGNED NOT NULL auto_increment, ADD PRIMARY KEY (idrelation);
-UPDATE #_TP_relations SET idrelation=idrelation+'.($minid-1).';
+UPDATE #_TP_relations SET idrelation=idrelation+'.($minid-1).' ORDER BY idrelation DESC;
 ALTER TABLE #_TP_relations ADD UNIQUE (id1,id2,degree,nature);
 ALTER TABLE #_TP_relations CHANGE degree degree TINYINT;
 ');

@@ -35,6 +35,9 @@ authenticate(LEVEL_VISITOR);
 if (!$_GET['do'] && !$_POST['do']) {
   recordurl();
   $context['id']=$id=intval($_GET['id']);
+  require_once($home."view.php");
+  $view=new View;
+  if ($view->isCacheValid()) { $view->printCache(); return; }
   if ($id) {
     do {
       $row=$db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));
@@ -43,11 +46,11 @@ if (!$_GET['do'] && !$_POST['do']) {
       list($base,$idparent,$context[idtype])=$row;
       if (!$base) $context['id']=$row['id']=$row['idparent'];
     } while (!$base && $idparent);
-  } else {
-    $base="edition";
-  }
-  require($home."calcul-page.php");
-  calcul_page($context,$base);
+ } else {
+  $base="edition";
+ }
+  $view->renderCached($context,$base);
+  return;
 } else {
   require($home."controler.php");
   // automatic logic
@@ -65,7 +68,8 @@ if (!$_GET['do'] && !$_POST['do']) {
   }
   Controler::controler(array("entities",
 			     "entities_advanced",
-			     "entities_edition"),$lo);
+			     "entities_edition",
+			     "tasks"),$lo);
 }
 
 ?>

@@ -107,7 +107,7 @@ class Controler {
 	print_r($error);
       case '_ok' :
 	if ($do=="listAction") {
-	  $view->render($context,$lo);
+	  $view->renderCached($context,$lo);
 	} else {
 	  $view->render($context,"edit_".$lo);
 	}
@@ -117,8 +117,11 @@ class Controler {
       }
     } else {
       recordurl();
-      require($home."calcul-page.php");
-      calcul_page($context,"index");
+      require_once($home."view.php");
+      $view=new View;
+      $view->renderCached($context,"index");
+      //require($home."calcul-page.php");
+      //calcul_page($context,"index");
     }
   } // constructor
 

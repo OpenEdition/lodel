@@ -219,6 +219,11 @@ function myfilemtime($filename)
 }
 
 
+function update()
+
+{ touch(SITEROOT."CACHE/maj"); }
+
+
 function copy_images (&$text,$callback,$argument="",$count=1)
 
 {

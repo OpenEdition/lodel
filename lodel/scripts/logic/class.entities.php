@@ -67,6 +67,8 @@ class EntitiesLogic extends Logic {
      $dao=$this->_getMainTableDAO();
      $vo=$dao->getById($id,"idparent");
      $this->_changeRank($id,$context['dir'],"status<64 AND idparent='".$vo->idparent."'");
+
+     update();
      return "_back";
    }
 
@@ -109,6 +111,8 @@ class EntitiesLogic extends Logic {
      // delete the relations
      $this->_deleteSoftRelation($ids);
 
+     update();
+
      return "_back";
    }
 
@@ -146,6 +150,7 @@ class EntitiesLogic extends Logic {
      // changestatus for the relations
      $this->_publishSoftRelation($ids,$status);
 
+     update();
      return "_back";
    }
 

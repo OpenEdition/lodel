@@ -130,6 +130,17 @@ class DAO {
      return $vo->$idfield;
    }
 
+   /**
+    * Quote the field in the object
+    */
+
+  function quote(&$vo)
+
+   {
+     foreach($vo as $k=>$v) {
+       if (isset($v)) $vo->$k=addslashes($v);
+     }
+   }
 
    /**
     * Function to get a value object
