@@ -344,7 +344,7 @@ function makeselectindex (&$context)
 function makeselectindex_rec($parent,$rep,$indexs,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND type='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND typeid='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=(in_array($row[abrev],$indexs[1]) || in_array($row[nom],$indexs[1])) ? " selected" : "";
