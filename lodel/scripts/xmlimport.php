@@ -113,10 +113,10 @@ function enregistre_entite_from_xml($context,$text,$classe)
   // ok, maintenant, il faut rechercher les images et corriger leur location.
 
   function mv_image($imgfile,$ext,$count,$id) {
-    $dir="docannexe/$id";
-    if (!is_dir("../../".$dir)) mkdir("../../".$dir,0700);
+    $dir="docannexe/image/$id";
+    if (!is_dir(SITEROOT.$dir)) mkdir(SITEROOT.$dir,0700);
     $newfile="$dir/img-$count.$ext";
-    copy($imgfile,"../../".$newfile);
+    copy($imgfile,SITEROOT.$newfile);
     @unlink($imgfile);
     return $newfile;
   }
