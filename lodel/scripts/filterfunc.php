@@ -113,6 +113,8 @@ function merge_and_filter_fields(&$context,$class,&$assoc)
     if ($filters[$class.".".$k]) {
       $filter=create_function(\'$x,$context\',$filters[$class.".".$k]);
       $context[$k]=$filter($v,$localcontext);
+    } else {
+	$context[$k]=$v;
     }
   }
 }

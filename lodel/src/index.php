@@ -70,6 +70,7 @@ $view->renderCached($context,"index");
 function printEntities($id,$identifier,&$context)
 
 {
+
   global $lodeluser,$home,$db;
 
   $critere=$lodeluser['visitor'] ? "" : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
@@ -95,6 +96,7 @@ function printEntities($id,$identifier,&$context)
       $base=$row['tpl'];
       if (!$base) { $id=$row['idparent']; $relocation=TRUE; }
     } while (!$base && !$identifier && $id);    
+
     if ($relocation) { 
       header("location: ".makeurlwithid("index",$row['id']));
       exit;
@@ -103,8 +105,9 @@ function printEntities($id,$identifier,&$context)
     $row=$db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE identity='".$row['id']."'"));
     if ($row===false) dberror();
     if (!$row) die("ERROR: internal error");
-    merge_and_filter_fields($context,$class,$row);
+    merge_and_filter_fields($context,$row['class'],$row);
 
+    print_R($context);
     $view=&getView();
     $view->renderCached($context,$base);
     exit();

@@ -781,6 +781,7 @@ UPDATE #_TP_objects SET class=\'persontypes\' WHERE class=\'typepersonnes\';
 	  $ids[$result->fields['class']][]=$result->fields['id'];
 	  $result->MoveNext();
 	}
+	$err="";
 	foreach($ids as $class=>$id) {
 	  if (!$class) {
 	    // rebuild
@@ -794,7 +795,7 @@ UPDATE #_TP_objects SET class=\'persontypes\' WHERE class=\'typepersonnes\';
 	  } else {
 	    if ($class=="relations") continue;
 	    $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$class." WHERE id ".sql_in_array($id))) or dberror();
-	    if ($count!=count($id)) { $err="Objects n'est pas a jour. Probleme avec la class $class $count!=".count($id); break; }
+	    if ($count!=count($id)) { $err.="Objects n'est pas a jour. Probleme avec la class $class $count!=".count($id)."<br>"; }
 	  }
 	}
 	
