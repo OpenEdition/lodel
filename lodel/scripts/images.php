@@ -119,7 +119,7 @@ function resize_image ($taille,$src,&$dest)
     */
 
     if (!($gdv=GDVersion())) return false; // Pas de GD installé
-    //echo("GD Version: $gdv");
+
     if ($gdv >=2) {
       $im2=ImageCreateTrueColor($width,$height);
       if (!$im2) return false;
