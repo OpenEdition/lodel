@@ -88,7 +88,7 @@ Auteur : Marin Dacos. 2002. -->
 			</a>
 			|
 			Nous adhérons à
-			<A HREF="http://www.revues.org/" NAME="Fédération de revues en sciences humaines et sociales">
+			<a href="http://www.revues.org/" NAME="Fédération de revues en sciences humaines et sociales">
 				www.revues.org
 			</a>
 		</td>
@@ -105,7 +105,7 @@ Auteur : Marin Dacos. 2002. -->
 	<MACRO NAME="BOUTONS_COLORES">
 	<MACRO NAME="AUTEURS">
 	"
-	<A HREF="document.html?id=[#ID]">
+	<a href="document.html?id=[#ID]">
 		<font color="black">
 			[#TITRE]
 		</FONT>
@@ -116,7 +116,7 @@ Auteur : Marin Dacos. 2002. -->
 
 <DEFMACRO NAME="AFFICHE_ARTICLES_SANSNOM">
 	<MACRO NAME="BOUTONS_COLORES">
-	<A HREF="document.html?id=[#ID]">
+	<a href="document.html?id=[#ID]">
 		<font color="black">
 			[#TITRE]
 		</FONT>
@@ -235,7 +235,7 @@ Attention, cette routine sera changée bientôt
 -->
 
 <DEFMACRO NAME="SIGNALER">
-	<A HREF="http://www.revues.org/cgi-bin/pub.pl">
+	<a href="http://www.revues.org/cgi-bin/pub.pl">
 		<MACRO NAME="GIF_SIGNALER">
 		<br>
 		<font color="Gray">
@@ -247,7 +247,7 @@ Attention, cette routine sera changée bientôt
 <!-- Imprimer l'article
 -->
 <DEFMACRO NAME="PRINTARTICLE">   
-	<A HREF="document.html?id=[#ID]&format=print">
+	<a href="document.html?id=[#ID]&format=print">
 		Version imprimable
 	</A>
 </DEFMACRO>
@@ -267,7 +267,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="NUMEROPRECEDENT">
 	&nbsp;	&nbsp;	&nbsp;
 	<IF COND="[#PREV]">
-		<A HREF="[#PREV]">
+		<a href="[#PREV]">
 			<MACRO NAME="GIF_GROS_NUMERO_PRECEDENT">
 		</A>
 	</IF>
@@ -279,7 +279,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="NUMEROSUIVANT">
 	&nbsp;	&nbsp;	&nbsp;
 	<IF COND="[#NEXT]">
-		<A HREF="[#NEXT]">
+		<a href="[#NEXT]">
 			<MACRO NAME="GIF_GROS_NUMERO_SUIVANT">
 		</A>
 	</IF>
@@ -291,7 +291,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="PRECEDENT">
 	&nbsp;	&nbsp;	&nbsp;
 	<IF COND="[#PREV]">
-		<A HREF="[#PREV]">
+		<a href="[#PREV]">
 			<MACRO NAME="GIF_PRECEDENT">
 		</A>
 	</IF>
@@ -303,7 +303,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="SUIVANT">
 	&nbsp;	&nbsp;	&nbsp;
 	<IF COND="[#NEXT]">
-		<A HREF="[#NEXT]">
+		<a href="[#NEXT]">
 			<MACRO NAME="GIF_SUIVANT">
 		</A>
 	</IF>
@@ -318,7 +318,7 @@ Attention, cette routine sera changée bientôt
 		<TD WIDTH="33%" class="texte_petit_centre">
 		&nbsp;
 		<IF COND="[#PREV]">
-			<A HREF="[#PREV]">
+			<a href="[#PREV]">
 				<MACRO NAME="GIF_GROS_NUMERO_PRECEDENT">
 				<BR>
 				<font color="#000000">
@@ -327,7 +327,7 @@ Attention, cette routine sera changée bientôt
 			</A>
 			<!-- Si plus de numéro précédent, retour index.html -->
 		<ELSE/>
-			<A HREF="index.html">
+			<a href="index.html">
 				<MACRO NAME="GIF_GROS_NUMERO_PRECEDENT">
 				<BR>
 				<font color="#000000">
@@ -337,7 +337,7 @@ Attention, cette routine sera changée bientôt
 		</IF>
 		</TD>
 		<TD WIDTH="33%" class="texte_petit_centre">
-			<A HREF="index.html">
+			<a href="index.html">
 				<MACRO NAME="GIF_LOGO_86X62">
 				<BR>
 			</A>
@@ -345,7 +345,7 @@ Attention, cette routine sera changée bientôt
 		<TD WIDTH="33%" class="texte_petit_centre">
 			&nbsp;
 		<IF COND="[#NEXT]">
-			<A HREF="[#NEXT]">
+			<a href="[#NEXT]">
 				<MACRO NAME="GIF_GROS_NUMERO_SUIVANT">
 				<BR>
 				<font color="#000000">
@@ -354,7 +354,7 @@ Attention, cette routine sera changée bientôt
 			</A>
 		<ELSE/>
 			<!-- Si plus de numéro suivant, retour index.html -->
-			<A HREF="index.html">
+			<a href="index.html">
 				<MACRO NAME="GIF_GROS_NUMERO_SUIVANT">
 				<BR>
 				<font color="#000000">
@@ -378,14 +378,14 @@ Attention, cette routine sera changée bientôt
 
 	<!-- S'il y un article suivant, affiche cet article -->
 	&nbsp;&nbsp;&nbsp;
-	<A HREF="[#NEXT]">
+	<a href="[#NEXT]">
 		<MACRO NAME="GIF_ARTICLE_SUIVANT">
 	</A>
 	<ELSE/>
 
 	<!-- S'il n'y a plus d'article, on renvoie au sommaire de la publication -->
 	&nbsp;&nbsp;&nbsp;
-	<A HREF="sommaire.html?id=[#IDPUBLICATION]">
+	<a href="sommaire.html?id=[#IDPUBLICATION]">
 		<MACRO NAME="GIF_ARTICLE_SUIVANT_SOMMAIRE">
 	</A>
 </IF>
@@ -398,14 +398,14 @@ Attention, cette routine sera changée bientôt
 	
 	<!-- S'il y un article précédent, affiche cet article -->
 	&nbsp;&nbsp;&nbsp;
-	<A HREF="[#PREV]">
+	<a href="[#PREV]">
 		<MACRO NAME="GIF_ARTICLE_PRECEDENT">
 	</A>
 	<ELSE/>
 	
 	<!-- S'il n'y a plus d'article, on renvoie au sommaire de la publication -->
 	&nbsp;&nbsp;&nbsp;
-	<A HREF="sommaire.html?id=[#IDPUBLICATION]">
+	<a href="sommaire.html?id=[#IDPUBLICATION]">
 		<MACRO NAME="GIF_ARTICLE_PRECEDENT_SOMMAIRE">
 		</A>
 	</IF>
@@ -420,12 +420,12 @@ Attention, cette routine sera changée bientôt
 
 			<!-- va vers article arrière ou, à défaut, vers sommaire -->
 			<IF COND="[#PREV]">
-				<A HREF="[#PREV]">
+				<a href="[#PREV]">
 					<MACRO NAME="GIF_ARTICLE_PRECEDENT">
 				</A>
 			&nbsp;&nbsp;&nbsp;
 			<ELSE/>
-				<A HREF="sommaire.html?id=[#IDPUBLICATION]">
+				<a href="sommaire.html?id=[#IDPUBLICATION]">
 					<MACRO NAME="GIF_ARTICLE_PRECEDENT_SOMMAIRE">
 				</A>
 			&nbsp;&nbsp;&nbsp;
@@ -441,12 +441,12 @@ Attention, cette routine sera changée bientôt
 		<TD WIDTH="15%" align="center">
 		<IF COND="[#NEXT]">
 			&nbsp;&nbsp;&nbsp;
-			<A HREF="[#NEXT]">
+			<a href="[#NEXT]">
 				<MACRO NAME="GIF_ARTICLE_SUIVANT">
 			</A>
 		<ELSE/>
 			&nbsp;&nbsp;&nbsp;
-			<A HREF="sommaire.html?id=[#IDPUBLICATION]">
+			<a href="sommaire.html?id=[#IDPUBLICATION]">
 				<MACRO NAME="GIF_ARTICLE_SUIVANT_SOMMAIRE">
 			</A>
 		</IF>
@@ -462,11 +462,11 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="BOUTONS_COLORES">
 <IF COND="[#TEXTE]">
-	<A HREF="document.html?id=[#ID]">
+	<a href="document.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">
 	</a>
 <ELSE/>
-	<A HREF="document.html?id=[#ID]">
+	<a href="document.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE_GRIS">
 	</a>
 </IF>
@@ -492,7 +492,7 @@ Attention, cette routine sera changée bientôt
 						</BEFORE>
 						<ul>
 						<li>
-						<A HREF="sommaire.html?id=[#ID]">
+						<a href="sommaire.html?id=[#ID]">
 							[#NOM]
 							, 
 							<IF COND="[#TITRE]">
@@ -650,21 +650,21 @@ Attention, cette routine sera changée bientôt
 
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 	<FIRST>
-		<A HREF="auteur.html?id=[#ID]">
+		<a href="auteur.html?id=[#ID]">
 		<font color="black">
 			[#PRENOM]
 			[#NOMFAMILLE]
 		</FONT>
 		</A>
 	</FIRST>
-	,<A HREF="auteur.html?id=[#ID]">
+	,<a href="auteur.html?id=[#ID]">
 	<font color="black">[#PRENOM]
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
 	<LAST>
 	et 
-	<A HREF="auteur.html?id=[#ID]">
+	<a href="auteur.html?id=[#ID]">
 	<font color="black">
 		[#PRENOM]
 		[#NOMFAMILLE]
@@ -690,21 +690,21 @@ Attention, cette routine sera changée bientôt
 <LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 	<FIRST>
-		<A HREF="auteur.html?id=[#ID]">
+		<a href="auteur.html?id=[#ID]">
 		<font color="black">
 			[#PRENOM]
 			[#NOMFAMILLE]
 		</FONT>
 		</A>
 	</FIRST>
-	,<A HREF="auteur.html?id=[#ID]">
+	,<a href="auteur.html?id=[#ID]">
 	<font color="black">[#PRENOM]
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
 	<LAST>
 	et 
-	<A HREF="auteur.html?id=[#ID]">
+	<a href="auteur.html?id=[#ID]">
 	<font color="black">
 		[#PRENOM]
 		[#NOMFAMILLE]
@@ -727,7 +727,7 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="TITRE_DOCUMENT">  
 	"
-	<A HREF="document.html?id=[#ID]">
+	<a href="document.html?id=[#ID]">
 	<font color="black">
 	[#TITRE]
 	</FONT>
@@ -787,7 +787,7 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="IMPRIMER">		
-<A HREF="document.html?id=[#ID]&format=print">
+<a href="document.html?id=[#ID]&format=print">
 	<MACRO NAME="GIF_IMPRIMER">
 </a>
 <br>
@@ -1219,7 +1219,7 @@ Attention, cette routine sera changée bientôt
 <!-- Fonction javascript permettant de reculer d'une page  -->
 
 <DEFMACRO NAME="JS_RECULE"> 
-	<A HREF="javascript:history.back()" OnMouseOver="window.status='Retour-Back';return true;"><IMG SRC="/www/revues/images/back.gif" WIDTH="60" HEIGHT="60" BORDER="0" ALT="page précédente / back">
+	<a href="javascript:history.back()" OnMouseOver="window.status='Retour-Back';return true;"><IMG SRC="/www/revues/images/back.gif" WIDTH="60" HEIGHT="60" BORDER="0" ALT="page précédente / back">
 	Page précédente
 </A>
 </DEFMACRO>
@@ -1312,7 +1312,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="OFFLINE_DOCUMENT">
 <IF COND="[#EDITEUR]">
 	<IF COND="[#OFFLINE]">
-		<A HREF="lodel/edition/publi.php?id=[#ID]&online=1">
+		<a href="lodel/edition/publi.php?id=[#ID]&online=1">
 			<font size="-2">
 				<font color="#0000FF">[off]</font>
 			</font>
@@ -1330,12 +1330,12 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="UP_DOWN_DOCUMENT">   
 <IF COND="[#REDACTEUR]">
-	<A HREF="lodel/edition/editer.php?dir=up&id=[#ID]">
+	<a href="lodel/edition/editer.php?dir=up&id=[#ID]">
 	<span class="texte_trespetit">
 		[M]
 	</span>
 	</A>
-	<A HREF="lodel/edition/editer.php?dir=down&id=[#ID]">
+	<a href="lodel/edition/editer.php?dir=down&id=[#ID]">
 	<span class="texte_trespetit">
 		[D]
 	</span>
@@ -1355,12 +1355,12 @@ Attention, cette routine sera changée bientôt
 	</A>
 	 |
 	<!-- Monter -->
-		<A HREF="lodel/edition/docannexe.php?id=[#ID]&dir=up">
+		<a href="lodel/edition/docannexe.php?id=[#ID]&dir=up">
 			[Up]
 		</a>
 	 |
 	<!-- Descendre -->
-		<A HREF="lodel/edition/docannexe.php?id=[#ID]&dir=down">
+		<a href="lodel/edition/docannexe.php?id=[#ID]&dir=down">
 			[Down]
 		</a>
 </span>
@@ -1396,7 +1396,7 @@ Attention, cette routine sera changée bientôt
 <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
 
 <DEFMACRO NAME="PARENT">
-<A HREF="[(#URL_RETOUR)]">
+<a href="[(#URL_RETOUR)]">
 	<MACRO NAME="GIF_PARENT">
 </A>
 </DEFMACRO>
