@@ -18,7 +18,7 @@ if ($row[etape]==4) {  // on revient ici, donc il faut continuer a executer les 
 
     $task=get_tache($taskid);     // recupere la tache a executer
     if ($task[nom]=="mkpublication") { // est-ce la creation d'une publication ?
-      header("location: publication?id=$task[id]&importsommaire=oui");
+      header("location: publication.php?id=$task[id]&importsommaire=oui");
       return;
     } elseif ($task[nom]=="mkdocument") { // est-ce la creation d'un document ?
       header("location: extrainfo.php?id=$taskid&importsommaire=oui");
