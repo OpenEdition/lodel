@@ -38,13 +38,15 @@ class ServOO extends ServOO_Client {
     // servoo parameters
     //
 
-    $options=getoption(array("servoourl","servoousername","servoopasswd"),"");
+    $options=getoption(array("servoo.url","servoo.username","servoo.passwd",
+			     "servoo.proxyhost","servoo.proxyport"),"");
+
     if (!$options || !$options['servoourl']) { // get form the lodelconfig file
-      $options['servoourl']=$GLOBALS['servoourl'];
-      $options['servoousername']=$GLOBALS['servoousername'];
-      $options['servoopasswd']=$GLOBALS['servoopasswd'];
+      $options['servoo.url']=$GLOBALS['servoourl'];
+      $options['servoo.username']=$GLOBALS['servoousername'];
+      $options['servoo.passwd']=$GLOBALS['servoopasswd'];
     }
-    if (!$options['servoourl'] || !$options['servoousername'] || !$options['servoopasswd']) {
+    if (!$options['servoo.url'] || !$options['servoo.username'] || !$options['servoo.passwd']) {
       $this->error_message="No servoo";
       return;
     }
@@ -52,20 +54,19 @@ class ServOO extends ServOO_Client {
     //
     // proxy
     //
-    if (!$options['proxyhost']) $options['proxyhost']=$GLOBALS['proxyhost'];
-    if ($options['proxyhost']) {
-      if (!$options['proxyport']) $options['proxyport']=$GLOBALS['proxyport'];
-      if (!$options['proxyport']) $options['proxyport']="8080";
+    if (!$options['servoo.proxyhost']) $options['servoo.proxyhost']=$GLOBALS['proxyhost'];
+    if ($options['servoo.proxyhost']) {
+      if (!$options['servoo.proxyport']) $options['servoo.proxyport']=$GLOBALS['proxyport'];
+      if (!$options['servoo.proxyport']) $options['servoo.proxyport']="8080";
     }
 
-    $this->ServOO_Client($options['servoourl']);
+    $this->ServOO_Client($options['servoo.url']);
 
-    $this->setauth($options['servoousername'],$options['servoopasswd']);
+    $this->setauth($options['servoo.username'],$options['servoo.passwd']);
 
-    if ($options['proxyhost']) {
-      $this->setProxy($options['proxyhost'],$options['proxy_port']);
+    if ($options['servoo.proxyhost']) {
+      $this->setProxy($options['servoo.proxyhost'],$options['servoo.proxyport']);
     }
-
   } // constructor
 }
 

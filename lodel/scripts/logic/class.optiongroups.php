@@ -57,6 +57,32 @@ class OptiongroupsLogic extends Logic {
    }
 
 
+   /**
+    * add/edit Action
+    */
+
+   function editAction(&$context,&$error,$clean=false)
+  { 
+    $ret=Logic::editAction($context,$error);
+    if (!$error) $this->clearCache();
+    return $ret;
+  }
+   function deleteAction(&$context,&$error)
+
+  {
+    $ret=Logic::deleteAction($context,$error);
+    if (!$error) $this->clearCache();
+    return $ret;
+
+  }
+
+  function clearCache()
+  {
+    unlink(SITEROOT."CACHE/options_cache.php");
+  }
+
+
+
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**

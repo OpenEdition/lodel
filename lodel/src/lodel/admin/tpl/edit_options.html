@@ -59,6 +59,17 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="title">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
   <input type="hidden" name="idgroup" value="[#IDGROUP]">
   <LOOP NAME="fielderror" FIELD="idgroup">
     <p class="error">

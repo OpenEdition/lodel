@@ -35,15 +35,15 @@ require_once($home."func.php");
 function checkmailforattachments()
 
 {
-  $options=getoption(array("mailhostname","mailuser","mailpasswd"),"");
-  if (count($options)!=3) {
-    die("ERROR: You must fill the options mailhostname, mailuser and mailpasswd in the administration interface to use this feature");
+  $options=getoption(array("lodelmail.hostname","lodelmail.user","lodelmail.passwd"),"");
+  if (count($options)!=3 || !$options['lodelmail.hostname']) {
+    die("ERROR: To use this feature, you must create and fill the options hostname, user and passwd in the group lodelmail. See in the administration interface ");
   }
 
-  list($host,$port)=explode(":",$options['mailhostname']);
+  list($host,$port)=explode(":",$options['lodelmail.hostname']);
   $mailserver="{".$host.":".($port ? $port : "110")."/pop3}INBOX";
-  $passwd=$options['mailpasswd'];
-  $user=$options['mailuser'];
+  $passwd=$options['lodelmail.passwd'];
+  $user=$options['lodelmail.user'];
 
   $mbox=imap_open($mailserver,$user,$passwd);
 

@@ -398,6 +398,7 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
+	title		TINYTEXT,			# title
 	type		VARCHAR(255) NOT NULL,		# type du champ
 	value		TEXT NOT NULL,	# value
 	defaultvalue	TEXT NOT NULL,	# value
@@ -412,7 +413,8 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 
 	PRIMARY KEY (id),
 	KEY index_name (name),
-	KEY index_idgroup (idgroup)
+	KEY index_idgroup (idgroup),
+	UNIQUE unique_name (name,idgroup)
 );
 
 

@@ -32,7 +32,7 @@
 function humanfieldtype($text)
 
 {
-  return $GLOBALS[fieldtypes][$text];
+  return $GLOBALS['fieldtypes'][$text];
 }
 
 /***/
@@ -60,6 +60,31 @@ class OptionsLogic extends Logic {
    {
      return Logic::changeRankAction(&$context,&$error,"idgroup");
    }
+
+
+   /**
+    * add/edit Action
+    */
+
+   function editAction(&$context,&$error,$clean=false)
+  { 
+    $ret=Logic::editAction($context,$error);
+    if (!$error) $this->clearCache();
+    return $ret;
+  }
+   function deleteAction(&$context,&$error)
+
+  {
+    $ret=Logic::deleteAction($context,$error);
+    if (!$error) $this->clearCache();
+    return $ret;
+
+  }
+
+  function clearCache()
+  {
+    unlink(SITEROOT."CACHE/options_cache.php");
+  }
 
 
    /**
@@ -110,6 +135,7 @@ class OptionsLogic extends Logic {
    // begin{publicfields} automatic generation  //
    function _publicfields() {
      return array("name"=>array("text","+"),
+                  "title"=>array("text","+"),
                   "idgroup"=>array("int","+"),
                   "type"=>array("select",""),
                   "userrights"=>array("select","+"),
@@ -121,7 +147,7 @@ class OptionsLogic extends Logic {
 
    // begin{uniquefields} automatic generation  //
 
-    function _uniqueFields() {  return array(array("name"),);  }
+    function _uniqueFields() {  return array(array("name","idgroup"),);  }
    // end{uniquefields} automatic generation  //
 
 

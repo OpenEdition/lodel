@@ -1213,6 +1213,13 @@
         description="name/identifiant unique"
         label="[@COMMON.NAME]"
         edittype="text" />
+<column name="title"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="title used in the interface"
+        label="[@COMMON.TITLE]"
+        edittype="text" />
 <column name="idgroup"
         type="INTEGER"
         default="0"
@@ -1268,8 +1275,9 @@
 <index name="index_idgroup">
 <index-column name="idgroup" />
 </index>
-<unique name="unique_name">
+<unique name="unique_name_idgroup">
 <unique-column name="name" />
+<unique-column name="idgroup" />
 </unique>
 </table>
 

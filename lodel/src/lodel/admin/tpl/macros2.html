@@ -138,16 +138,18 @@
 
 <DEFMACRO NAME="AFFICHER_OPTIONS_DU_GROUPE">
 	<!--[ Affiche tous les champs du groupe courant ]-->
+        <LET VAR="groupname">[#NAME]</LET>
 	<LOOP NAME="options" TABLE="options" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
 		<DO>
 		<MACRO NAME="TR_LIST">
-			<td><strong>[(#NAME|nbsp)]</strong></td>
+			<td><strong>[(#TITLE|nbsp)]</strong></td>
+			<td>[<!-- -->#OPTION.[#GROUPNAME|strtoupper].[#NAME|strtoupper]]</td>
 			<td>[(#TYPE|nbsp)]</td>
 			<td>[(#DEFAULTVALUE|nbsp)]</td>
 			<td align="left" style="color: #CC9933;">
 			<div>
-				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-                	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="options">
+                	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="options">
 			</div>
 			</td>
 		</tr>

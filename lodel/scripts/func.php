@@ -166,7 +166,7 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
 
   while ($row=$result->fetchrow($result)) {
     if ($row['id']==$id) {
-      # intervertit avec le suivant s'il existe
+      # intervertit avec le suivant s il existe
       if (!($row2=$result->fetchrow($result))) break;
       $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'")) or dberror();
       $rank+=$dir;
@@ -227,7 +227,7 @@ function update()
 function copy_images (&$text,$callback,$argument="",$count=1)
 
 {
-    // copy les images en lieu sur et change l'acces
+    // copy les images en lieu sur et change l acces
     $imglist=array();
 
     if (is_array($text)) {
@@ -336,63 +336,47 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #  return serialize($newoptions);
 #}
 
-function getoption($name,$extracritere=" AND type!='pass'")
+function getoption($name)
 {
   global $db;
   static $options_cache;
 
   if (!$name) return;
 
-  if (is_array($name)) {
-    $returnarray=true;
-    foreach ($name as $n) {
-#      if (strpos(".",$n)!==false) { // this is a context dependent option
-#	die("ERROR: context dependent option with array get are not implemented at the moment");
-#      }
-      if ($options_cache[$n]) { // cached ?
-	$ret[$n]=$options_cache[$n];
-      } else { // not cached, get it
-	$get[]=$n;
+  if (!isset($options_cache)) {
+    $optionsfile=SITEROOT."CACHE/options_cache.php";
+
+    if (file_exists($optionsfile)) {
+      include($optionsfile);
+    } else {
+      $result=$db->execute(lq("SELECT #_TP_options.name,value,defaultvalue,#_TP_optiongroups.name as grpname FROM #_TP_options INNER JOIN #_TP_optiongroups ON #_TP_optiongroups.id=idgroup WHERE #_TP_optiongroups.status>0 AND #_TP_options.status>0"));
+      if (!$result) {
+	if ($db->errorno()!=1146) dberror(); 	
+	// table does not exists... that can happen during the installation	
+	$options_cache=array();
       }
+      // create the cache options file
+      $txt="<"."?php\n\$options_cache=array(\n";
+      while ($result && !$result->EOF) {
+	$optname=$result->fields['grpname'].".".$result->fields['name'];
+	$value=$result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+	$txt.="'".$optname."'=>'".$value."',\n";
+	$options_cache[$optname]=$value;
+	$result->MoveNext();
+      }
+      $txt.=");?".">";
+      writefile($optionsfile,$txt);
     }
-    if ($get) { // some to get
-      $critere="name IN ('".join("','",$get)."')";
-    } else { // everything in the cache, let's return
-      return $ret;
-    }
+  }
+  if (is_array($name)) {
+    foreach ($name as $n) {
+      if ($options_cache[$n]) $ret[$n]=$options_cache[$n];
+    }    
+    return $ret;
   } else {
-    $critere="";
-#    // is it a context dependent option ?
-#    $dotpos=strpos(".",$name);
-#    if ($dotpos!==false) {
-#      $class=substr($name,0,$dotpos);
-#      $name=substr($name,$dotpos+1);
-#      $critere="";
-#    }
-#    if ($options_cache[$class.".".$name]) // cached ?
-#      return $options_cache[$class.".".$name];
-
-
     if ($options_cache[$name]) // cached ?
       return $options_cache[$name];
     $critere="name='$name'";
-  }
-  $result=$db->execute(lq("SELECT name,value FROM #_TP_options WHERE $critere $extracritere"));
-  if (!$result) {
-    if ($db->errno()==1146) return; // table does not exists... that can happen during the installation
-    dberror();
-  }
-
-  while (!$result->EOF) {
-    $name=$result->fields['name'];
-    $ret[$name]=$options_cache[$name]=$result->fields['value'];
-    $result->MoveNext();
-  }
-
-  if ($returnarray) {
-    return $ret; // return an array
-  } else {
-    return $ret[$name]; // return a string
   }
 }
 

@@ -345,7 +345,9 @@ UPDATE #_TP_tablefields SET class=\''.$row['class'].'\' WHERE idgroup='.$row['id
 ALTER TABLE #_TP_options ADD  idgroup  INT UNSIGNED DEFAULT \'0\' NOT NULL;
 ALTER TABLE #_TP_options ADD  INDEX index_idgroup (idgroup);
 ALTER TABLE #_TP_options CHANGE name name VARCHAR(255) NOT NULL;
+ALTER TABLE #_TP_options ADD  UNIQUE unique_name (name,idgroup);
 ALTER TABLE #_TP_options CHANGE type type VARCHAR(255);
+ALTER TABLE #_TP_options ADD  title  TINYTEXT;
 ALTER TABLE #_TP_options ADD  defaultvalue  TEXT;
 ALTER TABLE #_TP_options ADD  comment  TEXT;
 ALTER TABLE #_TP_options ADD  userrights TINYINT UNSIGNED DEFAULT \'0\' NOT NULL;
