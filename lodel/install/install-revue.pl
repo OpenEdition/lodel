@@ -135,7 +135,6 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 @editionfile=("a_editer",
 	      "abandon",
 	      "balisage",
-	      "balises",
 	      "chargement",
 	      "chargesommaire",
 	      "chkbalisage",
