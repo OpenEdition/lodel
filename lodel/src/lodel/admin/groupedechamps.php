@@ -92,7 +92,7 @@ if ($edit) { // modifie ou ajoute
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]groupesdechamps (id,nom,titre,classe,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[classe]','$ordre','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]groupesdechamps (id,nom,titre,classe,commentaire,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[classe]','$context[commentaire]','$ordre','$statut')") or die (mysql_error());
     back();
   } while (0);
   // entre en edition
