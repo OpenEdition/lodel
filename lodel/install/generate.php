@@ -191,7 +191,8 @@ function buildLogic()
   $beginre='\/\/\s*begin\{publicfields\}[^\n]+?\/\/';
   $endre='\n\s*\/\/\s*end\{publicfields\}[^\n]+?\/\/';
   if (preg_match("/$beginre/",$file)) {
-    $newpublicfields='   function _publicfields() {
+    $newpublicfields='   
+    function _publicfields() {
      return array('.join(",\n                  ",$publicfields).");
              }";
     replaceInFile($filename,$beginre,$endre,$newpublicfields);
