@@ -106,8 +106,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   // file to move once the document id is know.
   $files_to_move=array();
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
-  while (list($nom,$type,$condition,$defaut)=mysql_fetch_row($result)) {
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut,balises FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
+  while (list($nom,$type,$condition,$defaut,$balises)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
     if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
@@ -155,13 +155,21 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       if (isset($entite[$nom]) && 
 			!is_numeric($entite[$nom])) $erreur[$nom]="numeric";
       break;
+    case "email" : 
+      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=$defaut;
+      if (isset($entite[$nom])) {
+#      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
+	$validchar='-0-9A-Z_a-z';
+	if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $erreur[$nom]="url";
+      }
+      break;
     case "url" : 
       if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=$defaut;
       if (isset($entite[$nom])) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
-      $validchar='-0-9A-Z_a-z';
-      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $erreur[$nom]="url";
-    }
+	$validchar='-0-9A-Z_a-z';
+	if (!preg_match("/^([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $erreur[$nom]="url";
+      }
       break;
     case "boolean" :
       $entite[$nom]=$entite[$nom] ? 1 : 0;
@@ -170,7 +178,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       if (is_array($entite[$nom])) {
 	$str="";
 	foreach($entite[$nom] as $lang=>$value) {
-	  $value=trim($value);
+	  $value=lodel_strip_tags(trim($value),$balises);
 	  if ($value) $str.="<r2r:ml lang=\"$lang\">$value</r2r:ml>";
 	}
 	$entite[$nom]=$str;
@@ -191,10 +199,13 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       #unset($entite[$nom]); // it must not be update... the old files must be remove later (once everything is checked)
       break;
     default :
-      if (!isset($entite[$nom])) $entite[$nom]=$defaut;
+      if ($entite[$nom]) $entite[$nom]=lodel_strip_tags($entite[$nom],$balises);
+      // recheck entite is still not empty
+      if (!$entite[$nom]) $entite[$nom]=lodel_strip_tags($defaut,$balises);
     }
-    if ($entite[$nom])
+    if ($entite[$nom]) {
       $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
+    }
   } // end of while over the results
 
   if ($erreur) { 
@@ -404,6 +415,86 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
     } // boucle sur les entrees d'un type
   } // boucle sur les type d'entree
   if ($lock) unlock();
+}
+
+
+function lodel_strip_tags($text,$balises) 
+
+{
+  global $home;
+  require_once($home."balises.php");
+  static $accepted; // cache the accepted balise;
+  global $multiplelevel,$xhtmlgroups;
+
+  // simple case.
+  if (!$balises) return strip_tags($text);
+
+  if (!$accepted[$balises]) { // not cached ?
+    $accepted[$balises]=array();
+
+    // split the groupe of balises
+    $groups=preg_split("/\s*;\s*/",$balises);
+    // feed the accepted string with accepted tags.
+    foreach ($groups as $group) {
+      // lodel groups
+      if ($multiplelevel[$group]) {
+	foreach($multiplelevel[$group] as $k=>$v) { $accepted[$balises]["r2r:$k"]=true; }
+      }
+	// xhtml groups
+      if ($xhtmlgroups[$group]) {
+	foreach($xhtmlgroups[$group] as $k=>$v) {
+	  if (is_numeric($k)) { 
+	    $accepted[$balises][$v]=true; // accept the tag with any attributs
+	  } else {
+	    // accept the tag with attributs matching unless it is already fully accepted
+	    if (!$accepted[$balises][$v]) $accepted[$balises][$k][]=$v; // add a regexp
+	  }
+	}
+      } // that was a xhtml group
+    } // foreach group
+  } // not cached.
+
+
+  $acceptedtags=$accepted[$balises];
+
+  // the simpliest case.
+  if (!$accepted) return strip_tags($text);
+
+  $arr=preg_split("/(<\/?)(\w*:?\w+)\b([^>]*>)/",stripslashes($text),-1,PREG_SPLIT_DELIM_CAPTURE);
+
+  $stack=array(); $count=count($arr);
+  for($i=1; $i<$count; $i+=4) {
+    #echo htmlentities($arr[$i].$arr[$i+1].$arr[$i+2]),"<br/>";
+    if ($arr[$i]=="</") { // closing tag
+      if (!array_pop($stack)) $arr[$i]=$arr[$i+1]=$arr[$i+2]="";
+    } else { // opening tag
+      $tag=$arr[$i+1];
+      $keep=false;
+
+#      echo $tag,"<br/>";
+      if (isset($acceptedtags[$tag])) {
+	// simple case.
+	if ($acceptedtags[$tag]===true) { // simple
+	  $keep=true;
+	} else { // must valid the regexp
+	  foreach ($acceptedtags[$tag] as $re) {
+	    #echo $re," ",$arr[$i+2]," ",preg_match("/(^|\s)$re(\s|>|$)/",$arr[$i+2]),"<br/>";
+
+	    if (preg_match("/(^|\s)$re(\s|>|$)/",$arr[$i+2])) { $keep=true; break; }
+	  }
+	}
+#	echo "keep:$keep<br/>";
+      }
+      #echo ":",$arr[$i],$arr[$i+1],$arr[$i+2]," ",htmlentities(substr($arr[$i+2],-2)),"<br/>";
+      if (substr($arr[$i+2],-2)!="/>")  // not an opening closing.
+	array_push($stack,$keep); // whether to keep the closing tag or not.
+      if (!$keep) { $arr[$i]=$arr[$i+1]=$arr[$i+2]=""; }
+
+    }
+  }
+
+  // now, we know the accepted tags
+  return join("",$arr);
 }
 
 

@@ -28,6 +28,8 @@
 
 # listes des balises et du texte affiche dans les select
 
+die("desuet");
+
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);

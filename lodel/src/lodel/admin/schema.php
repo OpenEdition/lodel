@@ -31,12 +31,14 @@ require("siteconfig.php");
 require ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
 require_once ($home."func.php");
+require_once ($home."textfunc.php");
 require_once ($home."xmlfunc.php");
 
 
 require_once($home."connect.php");
 
 $context[classe]="documents";
+$context[namespace]=makeurl()."/schema";
 
 $originalname="schema-xml.xsd";
 download("",$originalname,calculateXMLSchema($context));

@@ -35,6 +35,8 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 require_once($home."func.php");
 require_once($home."champfunc.php");
 
+require_once($home."balises.php");
+
 
 
 $id=intval($id);
@@ -174,8 +176,10 @@ function loop_balises(&$context,$funcname)
   $balises=preg_split("/;/",$context[balises]);
 #  print_r($balises);
 
-  $vars=array("xhtml:fontstyle","xhtml:phrase","xhtml:block","Sections","Appels de notes");
-  foreach($vars as $nom) {
+  #$vars=array("xhtml:fontstyle","xhtml:phrase","xhtml:block","Sections","Appels de notes");
+  $groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
+  foreach($groups as $nom) {
+    if (is_numeric($nom)) continue;
     $localcontext=$context;
     $localcontext['count']=$count;
     $count++;
