@@ -906,22 +906,20 @@ input.searchbutton
 	padding : 3px;
 }
 /* Jean Lamy Added elements for pagination*/
-.pagination
+
+div a.linkpage
 {
-	text-align : center;
-	margin : 10px 50px 10px 50px;  
-	padding : 20px ; 
-	border-top : 1px solid #CC9933; 
-}
-a.linkpage
-{
-	
+	font-size : 1.2em;
+
+	color :	#728979;
 }
 span.currentpage
 {
-	font-size : 1.2em;
+	font-size : 1.5em;
 	font-weight : bold;
-	color : #728979;
+	font-family : "Trebuchet MS";
+	color : #000;
+	
 	
 	
 }
