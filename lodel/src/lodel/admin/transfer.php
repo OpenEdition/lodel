@@ -721,6 +721,14 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
     }
 
+    # suppression des tables inutiles
+    $err=mysql_query_cmds('
+DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
+DROP TABLE IF EXISTS _PREFIXTABLE_typepublis;
+');
+    if ($err) break;
+    $report.="Suppression de typedocs et typepublis<br>\n";
+
     // fini, faire quelque chose
   } while(0);
 }
