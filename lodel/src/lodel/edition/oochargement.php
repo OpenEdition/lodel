@@ -211,14 +211,7 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,
 	     "/<object>.*?<\/object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
-#	     "/(<a\b[^>]*)sdfixed>/i",
-#	     "/<div type=(?:header|footer)>.*?<\/div>/is",
-#	     "/<\w[^>]*>/e", // balises ouvrantes
-#	     "/<\/[^>]+>/e", // balises fermantes
-#	     "/<p\salign=\"(left|justify)\"(\s+[^>]*)>/", # enleve les alignements gauche et justify ....... surement inutile maintenant avec OO
-#	     "/<br\b([^>]*)>/",   # XML is
-#	     "/<\/br>/",	#efface
-#	     "/<li>/",
+	     "/<a\s+id=\"Image[\"]+\"[^>]*\/>/i"
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?".">/i" # met border="0"
 #	     "/(<(col)\b[^>]*?)\/?".">/i", # balise seule, il faut les fermer
@@ -228,14 +221,7 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($rpl,
 	     "",
 	     "\\1",
-#	     "\\1>",
-#	     "",
-#	     'quote_attribut_strtolower("\\0")', // ouvrantes
-#	     'strtolower("\\0")',                // fermentes
-#	     "<p\\2>",
-#	     "<br\\1 />",
-#	     " ",
-#	     "<li />",
+	     "",
 	     "\\1\\2",
 	     "\\1border=\"0\"/>"
 #	     "\\1 />",
