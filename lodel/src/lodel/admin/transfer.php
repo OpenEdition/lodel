@@ -265,6 +265,22 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
       }
     }      
 
+
+    ////////////////
+    // ENTREES 1/2
+    $entryclasses=array();
+    $entrytypes=array();
+    if ($tables["$GLOBALS[tp]entrytypes"]) {
+      $entrytypesdao=getDAO("entrytypes");
+      $vos=$entrytypesdao->findMany("status>0");
+      foreach($vos as $vo) {
+	if (!$vo->class) {
+	  $entryclasses[$vo->type]=array($vo->title,"entries","identry");
+	  $entrytypes[]=$vo;
+	}
+      }
+    }
+
     ///////////////////////
     // CLASSES AND TABLEFIELDSGROUP
     if (!$tables["$GLOBALS[tp]classes"]) {
@@ -289,22 +305,27 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
 //      if ($err) break;
 //      $report.="Creation de la table classe<br>\n";
 //    }
-    foreach (array("publications"=>array("Publications","entities","identity"),
+    $classes=array("publications"=>array("Publications","entities","identity"),
 		   "documents"=>array("Documents","entities","identity"),
 		   "documentsannexes"=>array("Documents Annexes","entities","identity"),
-		   "personnes"=>array("Personnes","persons","idperson")
-		   ) as $class=>$arr) {
+		   "personnes"=>array("Personnes","persons","idperson"),
+		   );
+    if ($entryclasses) $classes+=$entryclasses;
+    foreach ($classes as $class=>$arr) {
       list ($title,$classtype,$idfield)=$arr;
       ##echo "SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'<br>";
       $result=mysql_query("SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'") or trigger_error(mysql_error(),E_USER_ERROR);
-      if (mysql_num_rows($result)>0) continue;
+      if (mysql_num_rows($result)>0) { 
+	if ($classtype=="entries") unset($entryclasses[$class]); 
+	continue; 
+      }
       $id=uniqueid("classes");
       $err=mysql_query_cmds("INSERT INTO #_TP_classes (id,class,classtype,title,status,rank) VALUES('$id','$class','$classtype','$title','32','1');");
       if ($err) break 2;
       //      $err=mysql_query_cmds("UPDATE #_TP_tablefieldgroups SET idclass='$id' WHERE class='$class';");
       //      if ($err) break 2;
 
-      $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_$class ( $idfield	INTEGER UNSIGNED  UNIQUE, KEY index_$idfield ($idfield))")) or dberror();
+      $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_$class ( $idfield INTEGER UNSIGNED UNIQUE, KEY index_$idfield ($idfield))")) or dberror();
 
       $report.="Creation de la classe $classe <br>\n";
     }
@@ -750,6 +771,52 @@ UPDATE #_TP_persontypes SET g_type=\'dc.creator\' where name=\'auteur\';
 ');
       if ($err) break;
       $report.="Ajout de dc.creator<br/>";
+    }
+
+    ////////////////
+    // ENTREES 2/2
+
+    if ($entryclasses) {
+      foreach(array_keys($entryclasses) as $class) {
+	// create the field
+	$err=mysql_query_cmds('
+INSERT INTO #_TP_tablefields ( name, idgroup, title, style, type, condition, defaultvalue, processing, allowedtags, filtering, edition, comment, status, rank, upd, g_name, editionparams, class) VALUES (\'nom\', \'0\', \'Nom\', \'\', \'tinytext\', \'*\', \'\', \'\', \'\', \'\', \'editable\', \'\', \'32\', \'12\', \'20050104115252\', \'index key\', \'\', \''.$class.'\');
+');
+	if ($err) break 2;
+	addfield($class);
+	$err=mysql_query_cmds('
+INSERT INTO #_TP_'.$class.' (identry,nom) SELECT id,g_name FROM #_TP_entries;
+');
+	if ($err) break 2;
+	$report.="Ajout des champs de $class<br/>";
+      }
+    }
+    if ($entrytypes) {
+      foreach($entrytypes as $type) {
+	$arr=preg_split("/\s*,\s*/",$type->style,-1,PREG_SPLIT_NO_EMPTY);
+	if (count($arr)<=1) continue;
+	// multilingue
+	for($i=1; $i<count($arr); $i++) {
+	  list($name,$lang)=preg_split("/\s*:\s*/",$arr[$i]);
+	  $vo=$entrytypesdao->getById($type->id); // reload because the table has changed
+	  $vo->id=0;
+	  $vo->type=$name;
+	  $vo->title=ucfirst($name);
+	  $idtype=$entrytypesdao->save($vo);
+	  $err=mysql_query_cmds('
+UPDATE #_TP_entries SET idtype='.$idtype.' WHERE idtype='.$type->id.' AND lang=\''.$lang.'\'
+');
+	  if ($err) break 3;
+	  $report.="Ajout des types multi-lingue de ".$vo->type."<br/>";
+	}	
+      }
+      if ($fields['lang']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_entries DROP lang;
+');
+	if ($err) break;
+	$report.="Supprime lang<br/>";
+      }
     }
 
     ////////////////
