@@ -52,6 +52,7 @@ $GLOBALS['lodelfieldtypes']=
 	  "passwd"=>       array("sql"=>"tinytext",                              ),
 	  "username"=>     array("sql"=>"tinytext",         "autostriptags"=>true),
 	  "entities"=>     array(                           "autostriptags"=>true),
+	  "list"=>         array("sql"=>"text",             "autostriptags"=>true),
 
 	  "type"=>         array(),
 	  "class"=>        array(),
