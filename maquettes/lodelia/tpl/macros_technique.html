@@ -7,13 +7,13 @@
 <!-- <MACRO NAME="OUVRIR_HTML">                                         -->
 <!-- <MACRO NAME="FERMER_HTML">                                         -->
 <!-- <MACRO NAME="DEFINIR_CHARSET">                                     -->
-<!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES">                                       -->
+<!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES">                           -->
 <!-- <MACRO NAME="ACTIVER_INDEXATION">                                  -->
 <!-- <MACRO NAME="DESACTIVER_INDEXATION">                               -->
 <!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
 <!-- <MACRO NAME="IN_EXTENSO">                                          -->
 <!-- <MACRO NAME="MENU_THEMES_PUBLIES">                                 -->
-<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">               -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
 <!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
 <!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
 <!-- <MACRO NAME="DROITS_POUR_METAS">                                   -->
@@ -58,7 +58,8 @@
 <!-- Permet de déclarer le charset (jeux de caractères, dépendant de la -->
 <!-- langue principale utilisée).                                       -->
 <!-- Macro à appeler dans l'entête du fichier HTML (entre les balises   -->
-<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et INSERER_FEUILLE_DE_STYLES)-->
+<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
+<!-- INSERER_FEUILLE_DE_STYLES).                                        -->
 <!-- ****************************************************************** -->
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </DEFMACRO>
@@ -84,7 +85,8 @@
 <!-- Version 1.0                                                        -->
 <!-- Autorise l'indexation par les moteurs de recherche.                -->
 <!-- Macro à appeller dans l'en-tête du fichier HTML (entre les balises -->
-<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et INSERER_FEUILLE_DE_STYLES)-->
+<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
+<!-- INSERER_FEUILLE_DE_STYLES).                                        -->
 <!-- ****************************************************************** -->
 	<meta name="ROBOTS" content="follow, index">
 </DEFMACRO>
@@ -98,7 +100,8 @@
 <!-- etc...   Evitons de faire du bruit sur les moteurs, et le web en   -->
 <!-- sortira clarifié.                                                  -->
 <!-- Macro à appeller dans l'entête du fichier HTML (entre les balises  -->
-<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et INSERER_FEUILLE_DE_STYLES)-->
+<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
+<!-- INSERER_FEUILLE_DE_STYLES).                                        -->
 <!-- ****************************************************************** -->
 	<meta name="ROBOTS" content="follow, noindex">
 </DEFMACRO>
@@ -226,7 +229,7 @@ IPR
 <DEFMACRO NAME="METADONNEES_POUR_MOT">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affichage métadonnées propres à Mot.html.                         -->
+<!-- Affichage métadonnées propres à Mot.html.                          -->
 <!-- ****************************************************************** -->
 <meta name="DC.Title" content="Index : [#MOT]">
 <meta NAME="DC.Description" lang="fr" content="Index par mot clé. [#MOT]">
@@ -292,7 +295,7 @@ IPR
 <DEFMACRO NAME="METADONNEES_POUR_GEOS">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affichage métadonnées propres à Mot.html.                         -->
+<!-- Affichage métadonnées propres à Mot.html.                          -->
 <!-- ****************************************************************** -->
 <meta name="DC.Title" content="Index géographique">
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index géographique.">
