@@ -97,9 +97,9 @@ function search($context)
 		$dao = &getDAO("index");
 		
 		//Added stemmer
-		require_once("class.stemmer.inc.php");
+		/*require_once("class.stemmer.inc.php");
    	 	$stemmer = new Stemmer();
-   	 	$token = $stemmer->stem($token); 
+   	 	$token = $stemmer->stem($token); */
 		
 		
 		$criteria_index = "word LIKE '$token%'";
