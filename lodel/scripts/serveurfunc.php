@@ -35,17 +35,17 @@ function contact_servoo ($cmds,$uploadedfiles,$destfile="")
   $options=getoption(array("servoourl","servoousername","servoopasswd"),"");
 
   if (!$options || !$options[servoourl]) { // get form the lodelconfig file
-    $options[servoourl]=$GLOBALS[servoourl];
-    $options[servoousername]=$GLOBALS[servoousername];
-    $options[servoopasswd]=$GLOBALS[servoopasswd];
+    $options['servoourl']=$GLOBALS['servoourl'];
+    $options['servoousername']=$GLOBALS['servoousername'];
+    $options['servoopasswd']=$GLOBALS['servoopasswd'];
   }
   if (!is_array($uploadedfiles)) $uploadedfiles=array($uploadedfiles);
 
-  $ret=upload($options[servoourl],
-	      array("username"=>$options[servoousername],
-		    "passwd"=>$options[servoopasswd],
+  $ret=upload($options['servoourl'],
+	      array("username"=>$options['servoousername'],
+		    "passwd"=>$options['servoopasswd'],
 		    "commands"=>$cmds,
-		    "lodelversion"=>$GLOBALS[version]),
+		    "lodelversion"=>$GLOBALS['version']),
 	      $uploadedfiles, # fichier a uploaded
 	      0, # cookies
 	      $destfile
