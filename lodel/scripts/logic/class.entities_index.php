@@ -79,6 +79,7 @@ class Entities_IndexLogic extends Logic
    	 	$vos_groups = $dao_groups->findMany("class='$class'","","id");
    	 	foreach( $vos_groups as $vo_group )
    	 	{
+   	 		print_r($vo_group);
    	 		$vos_fields = $dao_fields->findMany("idgroup=".$vo_group->id." AND weight > 0","weight DESC","id,weight,name");
    	 	}
 	 print_r($vos_fields);
