@@ -76,54 +76,7 @@ while (list($style,$titre,$type)=mysql_fetch_row($result)) {
 }
 
 
-//
-### cette zone n'est plus inutilisee
-#if ($line) { // on vient de balisage, il faut modifier les balises
-#  // lit le fichier lined
-#  $lines=explode("<!--r2rline=",join("",file($tache[fichier].".lined")));
-#
-#  $text="";
-#  $close="";
-#  $context[fichier]="";
-#  foreach ($lines as $txt) {
-#    if (preg_match("/^(\d+)-->(.*?)$/s",$txt,$match) && $line[$match[1]]!="-") {
-#      $b=$match[1];
-#      if ($line[$b]=="fin") {
-#	$text.=$close;
-#	$close="";
-#	break;
-#      } elseif ($line[$b]=="finbalise") {
-#	$text.=$close;
-#	$close="";
-#      } else {
-#	$bal=$line[$b];
-#	$val=$match[2];
-#	$context[fichier].="<tr valign=\"top\"><td>".$balises[$bal]."</td><td>$val\n";
-#
-#	if (preg_match("/^$division$/",$bal)) { // ferme tout de suite
-#	  $text.="<r2r:".$bal.">".$val."</r2r:".$bal.">\n";
-#	  $context[fichier].="<tr valign=\"top\"><td>&nbsp;</td><td>\n";
-#	} else {
-#	  $text.=$close."<r2r:".$bal.">".$val;
-#	  $close="</r2r:".$bal.">\n";
-#	}
-#
-#      }
-#    } elseif ($close) {
-#      $context[fichier].="$match[2]\n";
-#      $text.=$match[2]."\n";
-#    }
-#  }
-#  $text="<r2r:article>".$text.$close."</r2r:article>";
-##  $text=traite_couple(traite_multiplelevel($text));
-#  $text=traite_couple($text);
-#
-#  writefile ($tache[fichier].".html",$text);
-#} else { // lines est non defini, on doit donc lire le fichier xml et l'afficher
-
-
-
-  $textorig=$text=join("",file($tache[fichier].".html"));
+$textorig=$text=join("",file($tache[fichier].".html"));
 
 // cherche les sousbalises, retirent les de $balises et prepare le changement d'ecriture.
 // une sous balises est definie par la presence d'une balise HTML (le caractere < en pratique) ou parce qu'elle est vide dans $balises
