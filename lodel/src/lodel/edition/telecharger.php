@@ -49,6 +49,8 @@ if ($id>0 && $type=="xml") {
   } else {
     $originalname=$filename;
   }
+ $originalname=basename($originalname);
+
 } else die ("type ou id inconnu");
 
 if (!file_exists($rep."/".$filename)) die ("le fichier $filename n'existe pas");

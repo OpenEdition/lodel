@@ -81,8 +81,8 @@ if ($idtache) {
     // enregistre le nom du fichier original. Enleve le repertoire.
 
     #echo "sourceoriginale: $tache[sourceoriginale]";
-    $localcontext[entite][fichiersource]=$tache[sourceoriginale];
-    //    if ($tache[sourceoriginale]) $localcontext[fichiersource]=preg_replace("/.*\//","",$tache[sourceoriginale]);
+    $localcontext[entite][fichiersource]="lodel/sources/".basename($tache[sourceoriginale]);
+    // the lodel/sources is fake, only the basename is used.
     
     $text=file_get_contents($filename.".html");
     require_once($home."xmlimport.php");
@@ -92,7 +92,7 @@ if ($idtache) {
 
     // faut-il copier le fichier ?
     if ($tache[source]) {
-      $dest="../sources/entite-$id.source";
+      $dest=SITEROOT."lodel/sources/entite-$id.source";
       if (!(@copy($tache[source],$dest))) die("Le fichier source $tache[source] n'a pas pu etre enregistre dans $dest");
       @chmod($dest,0600);
       $tache[source]=""; // la copie est faite, donc on efface le nom de la source pour la tache

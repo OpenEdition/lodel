@@ -180,7 +180,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     case 'fichier' :
       if (!$entite[$nom]) break;
       // check for a hack or a bug
-      if (!preg_match("/^docannexe\/$type\/([^\.\/]+)\/[^\/]+$/",$entite[$nom],$dirresult)) die("ERROR: bad filename \"$entite[$nom]\"");
+      $lodelsource='lodel\/sources';
+      $docannexe='docannexe\/'.$type.'\/([^\.\/]+))';
+      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$entite[$nom],$dirresult)) die("ERROR: bad filename \"$entite[$nom]\"");
 
       // if the filename is not "temporary", there is nothing to do
       if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) break;
