@@ -248,6 +248,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "r2r:quotations"=>"r2r:citation",
 		      "r2r:titleuser"=>"r2r:title",
 		      "r2r:subtitleuser"=>"r2r:subtitle",
+		      "r2r:heading"=>"r2r:title",
 
 		      "r2rc:titre\d+"=>""
 		      );
@@ -268,8 +269,8 @@ function OO_XHTML ($convertedfile,&$context)
 
   // conversion des balises de sections
   array_push($srch,
-	     "/<r2r:(?:heading|titre)(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:heading|titre)(\d+)>/");
+	     "/<r2r:(?:heading|titre|title)(\d+\b([^>]*))>/",
+	     "/<\/r2r:(?:heading|titre|title)(\d+)>/");
 #	     "/<h(\d+)>/",
 #	     "/<\/h(\d+)>/");
 
