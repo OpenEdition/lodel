@@ -308,7 +308,6 @@ div.theme div.ligne_art2 {
 /************ Styles pour le tpl publication **************/
 div.ligne_haut_tpl_publication, 
 div.ligne_parent_tpl_publication,
-.texte_ligne_haut_popup,
 .texte_ligne_haut_tpl_publication {
 	font-family: Verdana;
 	font-style:italic;
@@ -420,9 +419,18 @@ div.ligne_statut {
 
 /******** Styles pour les popup **********/
 .texte_ligne_haut_popup {
+	font-family: Verdana;
+	font-style:italic;
+	color: #CC9933;
 	padding-left:10px;
 	font-size: 18px;
 	font-weight: bold;
+}
+
+.texte_info_popup {
+	font-family: verdana;
+	color: #333333;
+	font-size: 10px;
 }
 
 .sous_titre_popup {
@@ -430,6 +438,31 @@ div.ligne_statut {
 	color: #333333;
 	font-size: 12pt;
 }
+
+div.lien_popup a:link {
+	color: #CC9933;
+	font-family: verdana;
+	font-size: 10px;
+}
+
+div.lien_popup a:visited {
+	color: #CC9933;
+	font-family: verdana;
+	font-size: 10px;
+}
+
+div.lien_popup a:hover {
+	color: #FFBB03;
+	font-family: verdana;
+	font-size: 10px;
+}
+
+.table_popup {
+	font-family: Verdana;
+	color: #333333;
+	font-size: 11px;
+}
+
 /******** Fin de styles pour les popup **********/
 
 
