@@ -143,17 +143,20 @@
 <!-- Macros rajoutées le 17/10/03 ********************* -->
 <!-- Macro servant à publication.html et                -->
 <!-- document.html                                      -->
-<DEFMACRO NAME="AFFICHE_CHAMPS">
+<DEFMACRO NAME="AFFICHER_EDITION_CHAMPS">
 	<IF COND="[#TYPE] eq 'boolean'">
 		<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'mltext'">
-                <td>
-               <LOOP NAME="mltext">
-		<div>[(#LANG|humanlang)]: <input size="70" type="text" name="entite[[#NOM]][[#LANG]]" value="[#VALUE]"></div>
-	       </LOOP>
-	       <div><select name="addlanginmltext[[#NOM]]"><? makeselectlangues(); ?></select><input class="form" type="submit" name="reload2" value="Ajouter"></div>
-               </td>
+		<td>
+			<LOOP NAME="mltext">
+				<div>[(#LANG|humanlang)]: <input size="70" type="text" name="entite[[#NOM]][[#LANG]]" value="[#VALUE]"></div>
+			</LOOP>
+			<div>
+				<select name="addlanginmltext[[#NOM]]"><? makeselectlangues(); ?></select>
+				<input class="form" type="submit" name="reload2" value="Ajouter">
+			</div>
+		</td>
 	<ELSE/>
 	<IF COND="[#EDITION] eq 'text'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
@@ -168,7 +171,7 @@
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHE_ERREURS_SAISIE">
+<DEFMACRO NAME="AFFICHER_ERREURS_SAISIE">
 	<IF COND="[#ERREUR] eq '+'"><tr><td colspan="2" class="message_erreur">Ce champ est obligatoire</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date valide</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre entier</td></tr></IF>
