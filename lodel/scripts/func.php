@@ -427,7 +427,8 @@ function download($filename,$originalname="",$contents="")
   $originalname=preg_replace("/.*\//","",$originalname);
   $ext=substr($originalname,strrpos($originalname,".")+1);
   $size = $filename ? filesize($filename) : strlen($contents);
-  if($mimetype[$ext]){
+  get_PMA_define(); 
+  if($mimetype[$ext] && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
     $mime = $mimetype[$ext];
     $disposition = "inline";
   } else {
