@@ -230,6 +230,17 @@
 						<!--[ Documents annexes. S'il y en a au moins un -]-->
 						<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 				
+						<!--[ Essai notes de bas de page. Got. 23 janvier 2005 ]-->
+						<IF COND="[#NOTEBASPAGE]">
+							<h4>
+								Notes de bas de page sans différence
+							</h4>
+							<div class="notes">
+								[#NOTEBASPAGE]
+								<br />
+							</div>
+
+
 						<!--[ Notes de bas de page. Si elles existent -]-->
 						<IF COND="[(#NOTEBASPAGE|notes('nombre'))]">
 							<h4>
