@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 	nom		VARCHAR(255) NOT NULL,
 	soustitre	TINYTEXT,
 	rep		VARCHAR(64) NOT NULL,
+	chemin		VARCHAR(64) NOT NULL, ## va remplacer rep et rep devenir site (ou nom et nom devenir titre).
 	url		TINYTEXT NOT NULL,
 
 	langdef		CHAR(2) NOT NULL,

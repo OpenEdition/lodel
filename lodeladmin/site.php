@@ -62,15 +62,17 @@ if ($edit) { // modifie ou ajoute
 
     // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
-      $result=mysql_query ("SELECT statut,rep FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
-      list($statut,$rep)=mysql_fetch_row($result);
+      $result=mysql_query ("SELECT statut,rep,chemin FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
+      list($statut,$rep,$context[chemin])=mysql_fetch_row($result);
       $context[rep]=$rep;
     } else {
       $options=""; $statut=-32; // -32 signifie en creation
+      if ($context[atroot]) $context[chemin]="/";
+      if (!$context[chemin]) $context[chemin]="/".$context[rep];
     }
     if ($reinstalle) $statut=-32;
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,url,soustitre,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[url]','$context[soustitre]','$statut')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,chemin,url,soustitre,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[chemin]','$context[url]','$context[soustitre]','$statut')") or die (mysql_error());
 
     if ($statut>-32) back(); // on revient, le site n'est pas en creation
 
@@ -271,23 +273,28 @@ if ($tache=="createtables") {
 //
 
 if ($tache=="createrep") {
-  $dir=LODELROOT."/".$context[rep];
+  if (!$context[chemin]) $context[chemin]="/".$context[rep];
+  $dir=LODELROOT.$context[chemin];
   if (!file_exists($dir) || !@opendir($dir)) {
     // il faut creer le repertoire rep
     if ($installoption=="2" && !$lodeldo) {
-      if ($mano) $context[erreur_nonexists]=1;
+      if ($mano) {
+	$context[erreur_nonexists]=!file_exists($dir);
+	$context[erreur_nonaccess]=!@opendir($dir);
+      }
       require ($home."calcul-page.php");
       calcul_page($context,"site-createrep");
       return;
     }
     // on essaie
-    if (!@mkdir($dir,0777 & octdec($filemask))) {
+    if (!file_exists($dir) && !@mkdir($dir,0777 & octdec($filemask))) {
       // on y arrive pas... pas les droits surement
       $context[erreur_mkdir]=1;
       require ($home."calcul-page.php");
       calcul_page($context,"site-createrep");
       return;
     }
+    @chmod($dir,0777 & octdec($filemask));
   }
   $tache="fichier";
 }
@@ -298,16 +305,19 @@ if ($tache=="createrep") {
 
 if ($tache=="fichier") {
   // on peut installer les fichiers
-  $root=LODELROOT.$context[rep]."/";
+  if (!$context[chemin]) $context[chemin]="/".$context[rep];
+  $root=str_replace("//","/",LODELROOT.$context[chemin]);
+
   $siteconfigcache="CACHE/siteconfig.php";
 
   if ($downloadsiteconfig) { // download the siteconfig
     download($siteconfigcache,"siteconfig.php");
     return;
   }
-
   if (file_exists($siteconfigcache)) unlink($siteconfigcache);
-  if (!copy(LODELROOT."$versionrep/src/siteconfig.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
+
+  $atroot=$context[chemin]=="/" ? "root" : "";
+  if (!copy(LODELROOT."$versionrep/src/siteconfig$atroot.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
   maj_siteconfig($siteconfigcache,array("site"=>$context[rep]));
 
   $siteconfigdest=$root."siteconfig.php";
@@ -337,7 +347,8 @@ if ($tache=="fichier") {
   mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
-  header("location: ".$urlroot.$context[rep]."/lodel/edition");
+  if (!$context[chemin]) $context[chemin]="/".$context[rep];
+  header("location: ".$urlroot.preg_replace("/^\//","",$context[chemin])."/lodel/edition"));
   return;
 
 #  header("location: index.php");

@@ -38,42 +38,74 @@
 <input type="hidden" name="versionrep" value="[#VERSIONREP]">
 <input type="hidden" name="tache" value="createrep">
 
-
 <IF COND="[#INSTALLOPTION]=='1'">
-<p><strong>Lodel a échoué lors de la création du repertoire du site "[#REP]".</strong></p>
+<IF COND="[#ERREUR_MKDIR]">  <!--[ probleme de creation ]-->
+<p><strong>Lodel a échoué lors de la création du repertoire "[#CHEMIN]".</strong></p>
 C'est sûrement un probleme d'accès. Vous pouvez soit:
 <ul>
 <li>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel</li>
-<li>Créer le repertoire [#REP] et donner les droits d'écriture au serveur web sur ce repertoire</li>
+<li>Créer le repertoire [#CHEMIN] et donner les droits d'écriture au serveur web sur ce repertoire</li>
 </ul>
 <p>Attention cependant, ces approches n'offrent pas une bonne sécurité sauf si l'hébérgeur gère la séparation des utilisateurs correctement (ce qui est souvent le cas).</p>
-
+<ELSE/> <!--[ probleme d'acces uniquement ]-->
+<p><strong>Lodel n'a pas accès au repertoire "[#CHEMIN]".</strong></p>
+<p>Vous devez donner les droits d'écriture au serveur web sur ce repertoire.</p>
+<p>Attention cependant, ces approches n'offrent pas une bonne sécurité sauf si l'hébérgeur gère la séparation des utilisateurs correctement (ce qui est souvent le cas).</p>
+</IF>
 <input type="submit" value="continuer">
 </form>
 <ELSE/>
 <IF COND="[#ERREUR_MKDIR]">
-<p><strong>Lodel a échoué lors de la création du repertoire du site "[#REP]".</strong></p>
+<p><strong>Lodel a échoué lors de la création du repertoire "[#CHEMIN]".</strong></p>
 </IF>
 <IF COND="[#ERREUR_NONEXISTS]">
-<p><strong>Le repertoire du site "[#REP]" n'existe pas ou n'est pas accessible.</strong></p>
+<p><strong>Le repertoire "[#CHEMIN]" n'existe pas.</strong></p>
+<ELSE/>
+<IF COND="[#ERREUR_NONACCESS]">
+<p><strong>Le repertoire "[#CHEMIN]" n'est pas accessible.</strong></p>
 </IF>
-Il faut créer le repertoire et les fichiers necessaires pour le site.
-Plusieurs possibilités:
+</IF>
+
+<IF COND="[#CHEMIN]=='/'">
+Il faut ajuster les droits pour que le serveur web y accède et copier les fichiers necessaires pour le site.
+<ELSE/>
+Il faut créer le repertoire, ajuster les droits pour que le serveur web y accède et copier les fichiers necessaires pour le site.
+</IF>
+
+Vous avez plusieurs possibilités:
 <ul>
-<li><p>Créer le repertoire [#REP] à la racine de Lodel, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
+<li>
+<IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
+<p>lancer le commande suivante dans un shell à partir de la racine de Lodel:</p>
+<p><code>
+lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
+<ELSE/>
+<p>Créer le repertoire "[#CHEMIN]" à la racine de Lodel, donner l'accès en lecture au serveur web, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
 <p><code>
 ../lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
+</IF>
 
 </code></p>
 <p>Les droits sont specifiés par une combinaison de u (utilisateur) ,g (groupe), et/ou a (les autres utilisateurs).</p>
 <input type="submit" name="mano" value="continuer">
 </li>
-<li><p>Créer le repertoire [#REP] à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
-<input type="submit" name="lodeldo" value="Installer les fichiers dans le répertoire créé">
+
+<IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
+<!--[ rien ]-->
+<ELSE/>
+<li>
+<p>Créer le repertoire "[#CHEMIN]" à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
+<input type="submit" name="lodeldo" value="Installer les fichiers">
 </form>
 </li>
+
+</IF>
 <li><p>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel (méthode peu sûr) et laisser faire Lodel.</p>
+<IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
+<input type="submit" name="lodeldo" value="Installer les fichiers">
+<ELSE/>
 <input type="submit" name="lodeldo" value="Créer le répertoire et installer les fichiers">
+</IF>
 </li>
 <ul>
 

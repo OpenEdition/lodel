@@ -432,20 +432,6 @@ if ($servoourl!="off") {
 
 $textlc=join('',file($lodelconfig));
 
-// les deux fichiers sont différents, il faut copier le fichier lodelconfig.php
-#$dirs=array(".","lodel","lodel/admin");
-#$sitedir=array(".","lodel","lodel/edition","lodel/admin");
-#
-#// cherche les sites qui existent deja et cree le tableau $dirs
-#$result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites WHERE statut>0");
-#while ($row=mysql_fetch_row($result)) {
-#  foreach ($sitedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
-#}
-// ok, on a tout, on lance la copie
-$erreur_lodelconfigdir=array();
-$have_is_link=function_exists("is_link"); // fonction is_link existe ?
-#foreach ($dirs as $dir) {
-#  $file=$dir."/lodelconfig.php";
 
 $file="lodelconfig.php";
 

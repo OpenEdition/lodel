@@ -37,17 +37,27 @@
 <input type="hidden" name="edit" value="1">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="url_retour" value="[#URL_RETOUR]">
-<tr><td><b>Nom du site:</b></td>
+<tr><td><b>Titre du site:</b></td>
 <td><input size="30" type="text" name="nom" value="[#NOM]"></td>
 [(#ERREUR_NOM|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom !</font></td>]</tr>
-<tr><td><b>Nom du repertoire du site:</b><br />(sans espace, sans accent, sans caractere speciaux</td>
-<td>
 <IF COND="[#ID]">
-[#REP]
+<tr><td><b>Nom du site:</b><br />(sans espace, sans accent, sans caractere speciaux</td><td>[#REP]</td></tr>
+<tr><td><b><IF COND="[#CHEMIN]=='/'">Site à la racine<ELSE/>Site dans le répertoire [#CHEMIN]</IF></b></td>
+
 <ELSE/>
+<tr><td><b>Nom du site:</b><br />(sans espace, sans accent, sans caractere speciaux</td>
+<td>
 <input size="30" type="text" name="rep" value="[#REP]"></td>
 [(#ERREUR_REP|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom abrégé valide (sans accent, sans espace, sans caracteres speciaux)</font></td>]
+</tr>
+<LOOP NAME="siteatroot" TABLE="sites" WHERE="chemin=='/' AND statut>-64">
+<ALTERNATIVE>
+<tr><td><b>Installer le site à la racine:</b></td><td><input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] ></td></tr>
+</ALTERNATIVE>
+</LOOP>
 </IF>
+
+
 </tr>
 <tr><td><b>URL complète du site:</b></td>
 <td><input size="30" type="text" name="url" value="[#URL]"></td>
