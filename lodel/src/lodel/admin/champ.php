@@ -227,6 +227,7 @@ function make_select_edition()
 		 array(
 		       "editable"=>"editable",
 		       ""=>"non editable dans l'interface",
+		       "affiche"=>"affich&eacute mais non editable",
 		       "text"=>"editable sur 1 ligne",
 		       "textarea10"=>"editable sur 10 lignes",
 		       "textarea30"=>"editable sur 30 lignes",
