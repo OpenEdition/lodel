@@ -71,11 +71,14 @@ if ($file1 && $file1!="none") {
 
       if ($context[iddocument]) {
 	$row[iddocument]=$context[iddocument];
-      } elseif ($context[idparent]) {
+    /*  } elseif ($context[idparent]>=0) {
 	$row[idparent]=$context[idparent];
       } else {
 	die("probleme dans l'interface, aucune information pour attacher le document ou la publication");
-      }
+      }*/
+     } else {
+       $row[idparent]=$context[idparent];
+     }
     }
     $idtache=make_tache("Import $file1_name",3,$row,$idtache);
 
