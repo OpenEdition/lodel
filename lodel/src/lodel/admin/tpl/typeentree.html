@@ -61,7 +61,7 @@
 			<td class="texte_intitule">[@ADMIN.STYLE_INDEX_TYPE] (*):</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
-		<IF COND="#ERREUR_STYLE">
+		<IF COND="[#ERREUR_STYLE]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_STYLE]</td></tr>
 		</IF>
 		<tr>
@@ -71,7 +71,7 @@
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TPL">
+		<IF COND="[#ERREUR_TPL]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPL]</td></tr>
 		</IF>
 		<tr>
@@ -81,7 +81,7 @@
 			</td>
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TPLINDEX">
+		<IF COND="[#ERREUR_TPLINDEX]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPLINDEX]</td></tr>
 		</IF>
 	      </table>
