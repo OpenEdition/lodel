@@ -88,15 +88,22 @@ Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans c
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="database">
-<table border="1">
-
-<tr><td>
-Base de données:<br>
-			<table>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<th>
+&nbsp;
+</th>
+<th>
+Base de données :
+</th>
 			  <?php  if (!$resultshowdatabases) $resultshowdatabases=@mysql_query("SHOW DATABASES");
 	                     if (!$resultshowdatabases && mysql_error()) { // can't do show databases
 			  ?>
-			  <tr><td><input type="radio" name="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> ></td><td>Utiliser une nouvelle base de données qui existe: <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td></tr>
+<tr>
+<td>
+<input type="radio" name="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> ></td>
+<td>Utiliser une nouvelle base de données qui existe: <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td>
+</tr>
 	                  <?php
 	                     } else {
 	                     while ($row=mysql_fetch_row($resultshowdatabases)) {
@@ -123,8 +130,8 @@ Préfixe des tables:<br>
 <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
 </td></tr>
 <?php } ?>
-</table>
-<input type="submit" value="continuer">
+</table><br />
+<input type="submit" value="continuer" />
 
 </form>
 <?php  include("tpl/install-closehtml.html"); ?>

@@ -32,7 +32,12 @@ hr{
 	height: 2px;
 }
 li{
+	margin-top: 10px;
 	margin-bottom: 10px;
+}
+fieldset{
+	border: none;
+	margin: 0;
 }
 a:link {
     color: #CC6633;
@@ -52,6 +57,28 @@ p {
 	text-align: justify;
 	line-height: 18px;
 	padding-bottom: 10px;
+}
+td, th, table{
+	border: 1px solid #9CBD9C;
+	border-collapse: no-collapse;
+	margin: 0;
+	padding: 3px 5px;
+	text-align: left;
+}
+table{
+	width: 75%;
+	padding: 0;
+}
+form{
+	margin: 0;
+	padding: 0;
+}
+label{
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+	margin-top: 10px;
+	font-size: 95%;
 }
 #logo{
 	margin: 0;
@@ -99,7 +126,7 @@ p {
 }
 #main{
 	width: 90%;
-	margin: 30px 5% auto 5%;
+	margin: 30px 5% 0px 5%;
 	position: absolute;
 	top: 150px;
 }

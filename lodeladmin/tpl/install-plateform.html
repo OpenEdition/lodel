@@ -43,9 +43,8 @@ adapt&eacute;e &agrave; votre h&eacute;bergeur :
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="plateform">
 <input type="hidden" name="installoption" value="<?php echo $installoption;?>">
-<table border="1" width="75%">
-<tbody>
-<tr><td>&nbsp;</td><td>Nom de la configuration</td><td>Commentaire</td></tr>
+<table cellspacing="0" cellpadding="0">
+<tr><th>&nbsp;</th><th>Nom de la configuration</th><th>Commentaire</th></tr>
 <?php
 	    $dir=opendir($plateformdir);
 	    while ($file=readdir($dir)) {
@@ -59,7 +58,6 @@ adapt&eacute;e &agrave; votre h&eacute;bergeur :
 <tr><td><input type="radio" name="plateform" value="<?php  echo $plateform; ?>"></td><td><?php  echo $plateform; ?></td><td><?php  echo $commentaire; ?></td></tr>
 
 <?php  } ?>
-</tbody>
 </table>
 <br />
 <input type="submit" value="continuer">

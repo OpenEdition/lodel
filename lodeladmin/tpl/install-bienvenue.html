@@ -34,50 +34,56 @@ include("tpl/install-bandeau.html");
 <!--[ ce fichier n'est pas un template ]-->
 
 
-<p align="justify">Lodel est un logiciel libre soumis à la licence GNU General Public License (GPL). Il est fourni sans aucune garantie. Veuillez consulter les conditions d'utilisation <a href="#conditions">ci-dessous</a> et la licence <a href="../COPYING">ici</a>.</p>
+<p>Lodel est un logiciel libre soumis à la licence GNU General Public License (GPL). Il est fourni sans aucune garantie. Veuillez consulter les conditions d'utilisation <a href="#conditions">ci-dessous</a> et la licence <a href="../COPYING">ici</a>.</p>
 
 
 <h2>Choix du type d'installation</h2>
     <hr />
     <form method="post" action="install.php">
-      <input type="hidden" name="tache" value="droits">
+	<fieldset>
+      <input type="hidden" name="tache" value="droits" />
       <?php if ($installing) { ?>
-      <p align="justify">Une installation a &eacute;t&eacute; commenc&eacute;e, que souhaitez vous faire:</p>
-      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="continue" value="Poursuivre l'installation commenc&eacute;e."></p>
-      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option1" value="Recommencer une installation simplifi&eacute;e."></p>
-      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option2" value="Recommencer une installation avanc&eacute;e pour les experts."></p>
+      <p>Une installation a &eacute;t&eacute; commenc&eacute;e, que souhaitez vous faire:</p>
+      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="continue" value="Poursuivre l'installation commenc&eacute;e." /></p>
+      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option1" value="Recommencer une installation simplifi&eacute;e." /></p>
+      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option2" value="Recommencer une installation avanc&eacute;e pour les experts." /></p>
 <?php } else { ?>
-      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="option1" value="Installation simplifi&eacute;e."></p>
-      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="option2" value="Installation avanc&eacute;e pour les experts."></p>
+      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="option1" value="Installation simplifi&eacute;e." /></p>
+      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="option2" value="Installation avanc&eacute;e pour les experts." /></p>
 <?php } ?>
+</fieldset>
 </form>
 
     <hr />
-    <ul>
-      <li>
-	<p>L'installation simplifi&eacute;e s'adresse aux
-	  installations chez des h&eacute;bergeurs. </p>
-        </li>
+<ul>
+	<li>
+	L'installation simplifi&eacute;e s'adresse aux
+	  installations chez des h&eacute;bergeurs.
+    
         <ul>
           <li>
-            <p><strong>Avantage :</strong> elle est
+            <strong>Avantage :</strong> elle est
 simple et rapide. Cette option convient
 pour la plupart des h&eacute;bergeurs associatifs ou commerciaux car ils se chargent de la securit&eacute; li&eacute;e aux droits de fichiers.
-            <strong>Inconv&eacute;nient :</strong><strong> le niveau de s&eacute;curit&eacute; n'est pas &eacute;lev&eacute;.</strong>
-</p>
-          </li>
+            
+			</li>
+			<li>
+			<strong>Inconv&eacute;nient : le niveau de s&eacute;curit&eacute; n'est pas &eacute;lev&eacute;.</strong>
+			</li>
         </ul>
-        <li>
-          <p>L'installation avanc&eacute;e s'adresse aux administrateurs syst&egrave;me travaillant sur leur serveur.</p>
-        </li>
+</li>
+     <li>
+          L'installation avanc&eacute;e s'adresse aux administrateurs syst&egrave;me travaillant sur leur serveur.
+     
         <ul>
           <li>
-            <p><strong>Avantage :</strong> Elle est s&ucirc;re et configurable. Elle permet une gestion fine des droits de fichiers, des droits de la base de donn&eacute;e et autres options. <strong>Inconv&eacute;nient :</strong> Elle est plus complexe. Elle requiert des comp&eacute;tences minimales en administration syst&egrave;me. Il est necessaire de lire enti&egrave;rement la documentation d'installation.
-	</p>
-      </li>
+            <strong>Avantage :</strong> Elle est s&ucirc;re et configurable. Elle permet une gestion fine des droits de fichiers, des droits de la base de donn&eacute;e et autres options. 
+		 </li>
+		<li>
+			<strong>Inconv&eacute;nient :</strong> Elle est plus complexe. Elle requiert des comp&eacute;tences minimales en administration syst&egrave;me. Il est necessaire de lire enti&egrave;rement la documentation d'installation.
+      	</li>
     </ul>
-    <ul>
-    </ul>
+</li>
   </ul>
 
 <hr />
