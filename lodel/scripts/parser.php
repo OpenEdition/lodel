@@ -83,13 +83,8 @@ function parse ($in,$out)
   $this->signature=preg_replace("/\W+/","_",$out);
 
   // read the file
-  if (!function_exists("file_get_contents")) {
-    $fp=fopen ($in,"r"); 
-    while (!feof($fp)) $file.=fread($fp,1024);
-    fclose($fp);
-  } else {
-    $file = file_get_contents($in);
-  }
+  $file = file_get_contents($in);
+  
 
   $contents=stripcommentandcr($file);
 
@@ -119,9 +114,9 @@ function parse ($in,$out)
     $contents=str_replace($result[0],"",$contents); // efface le use
     $macrofile=$result[1];
     if (file_exists("tpl/".$macrofile)) {
-      $macros.=join('',file("tpl/".$macrofile));
+      $macros.=file_get_contents("tpl/".$macrofile);
     } elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
-      $macros.=join('',file($sharedir."/macros/".$macrofile));
+      $macros.=file_get_contents($sharedir."/macros/".$macrofile);
     } else {
       $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
     }
@@ -148,7 +143,7 @@ function parse ($in,$out)
   // parse les variables
   $this->parse_variable($this->arr[0]);
   for($i=1; $i<$this->countarr; $i+=3) {
-    $this->parse_variable($this->arr[$i+1],FALSE); // parse the attributs
+    ####$this->parse_variable($this->arr[$i+1],"quote"); // parse the attributs
     $this->parse_variable($this->arr[$i+2]); // parse the content
   }
   // fin
@@ -288,12 +283,12 @@ function parse_variable (&$text,$escape="php")
     } elseif ($fct=="true") {
       $code='<?php if ('.$variable.') { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($fct=="else") {
-      if ($escape!="php") $this->errmsg("ERROR: else pipe function can't eb used in this context");
+      if ($escape!="php") $this->errmsg("ERROR: else pipe function can't be used in this context");
       $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { echo "$tmpvar"; } else { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($escape=="php") { // traitement normal, php espace
       $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<?php echo "$tmpvar"; ?>'.$post.'<?php } ?>';
-    } elseif ($escape=="quote") { // normal processing. quotemark esapce.
-      $code="&lodelparserquot;.$variable.&lodelparserquot;";
+    } elseif ($escape=="quote") { 
+      $code='".'.$variable.'."';
     } else { // normal processing. no espace
       $code=$variable;
     }
@@ -303,7 +298,7 @@ function parse_variable (&$text,$escape="php")
   if ($escape=="php") {
     $pre='<?php echo '; $post='; ?>';
   } elseif ($escape=="quote")  {
-    $pre="&lodelparserquot;."; $post=".&lodelparserquot;";
+    $pre='".'; $post='."';
   } else {
     $pre=""; $post="";
   }
@@ -451,7 +446,8 @@ function parse_loop()
 
   if ($issqldef) { // definition of a SQL loop.
     foreach ($results as $result) {
-      $value=lodelparserunquote($result[2]);
+      $this->parse_variable($result[2],"quote"); // parse the attributs
+      $value=$result[2];
       switch ($result[1]) {
       case "NAME":
 	break;
@@ -503,7 +499,8 @@ function parse_loop()
     // the attributs are put into $arguments.
     foreach ($results as $result) {
       if ($result[1]=="NAME") continue;
-      $arguments[strtolower($result[1])]=lodelparserunquote($result[2]);
+      $this->parse_variable($result[2],"quote"); // parse the attributs
+      $arguments[strtolower($result[1])]=$result[2];
     }
   }
 
@@ -707,10 +704,10 @@ if ($limit && strpos($limit,",")===false) {
    if ($cleanquery) $currenturl.=$cleanquery."&";
 if ($context[nbresultats]>'.$limit.') {
 $context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$limit.');
+$context[nbresultats]--;
 } else {
 $context[nexturl]="";
 }
-if ($context[nbresultats]>0) $context[nbresultats]--;
 $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
 ';
    $limit='".$currentoffset.",'.($limit+1);
@@ -848,6 +845,7 @@ function parse_condition ()
 
 {
   if (!preg_match("/\bCOND\s*=\s*\"([^\"]+)\"/",$this->arr[$this->ind+1],$cond)) $this->errmsg ("IF have no COND attribut",$this->ind);
+  $this->parse_variable($cond[1],false); // parse the attributs
   $cond[1]=replace_conditions($cond[1],"php");
 
   $this->arr[$this->ind]="";
@@ -879,6 +877,7 @@ function parse_let () {
 
   if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"/",$this->arr[$this->ind+1],$result)) $this->errmsg ("LET have no VAR attribut");
   if (!preg_match("/^$this->variable_regexp$/i",$result[1])) $this->errmsg ("Variable \"$result[1]\"in LET is not a valide variable",$this->ind);
+  $this->parse_variable($result[1],false); // parse the attributs
   $var=strtolower($result[1]);
 
   $this->arr[$this->ind]="";
@@ -939,9 +938,6 @@ function replace_conditions($text,$style)
 }
 
 
-function lodelparserunquote($text) {
-  return str_replace("&lodelparserquot;","\"",$text);
-}
 
 function stripcommentandcr(&$text)
 
@@ -968,6 +964,18 @@ function stripcommentandcr(&$text)
 
 function quote_code($text) {
   return addcslashes($text,"'");
+}
+
+
+
+if (!function_exists("file_get_contents")) {
+  function file_get_contents($file) 
+  {
+    $fp=fopen($file,"r") or die("Impossible to read the file $file");
+    while(!feof($fp)) $res.=fread($fp,2048);
+    fclose($fp);
+    return $res;
+  }
 }
 
 

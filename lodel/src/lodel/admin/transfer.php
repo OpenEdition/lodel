@@ -29,9 +29,9 @@
 
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include ($home."func.php");
+require_once($home."func.php");
 require_once($home."champfunc.php");
 
 

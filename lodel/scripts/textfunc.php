@@ -27,6 +27,10 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+if (file_exists($home."textfunc_local.php")) require_once($home."textfunc_local.php");
+
+
 # fonction largement reprises de SPIP
 
 require_once($home."func.php");
@@ -295,9 +299,10 @@ function tocable($text,$level=10)
   function tocable_callback($result) {
       static $tocind=0;
       $tocind++;
-      return '<a href="#tocfrom'.$tocind.'" name="tocto'.$tocind.'">'.$result[0].'</a>';
+      return $result[1].'<a href="#tocfrom'.$tocind.'" id="tocto'.$tocind.'">'.$result[3].'</a>'.$result[4];
   }
-  return preg_replace_callback("/<(r2r:section(?:$sect)).*?<\/\\1>/s","tocable_callback",$text);
+
+  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
 }
 
 ## version souple qui travaille sur les div... mais c'est une mauvaise habitude.
@@ -482,7 +487,7 @@ function tocss($text,$options="")
   $srch=array();   $rpl=array();
   if ($options=="heading") {
     array_push($srch,
-	       "/<r2r:section(\d+)\b[^>]*>/",
+	       "/<r2r:section(\d+\b[^>]*)>/",
 	       "/<\/r2r:section(\d+)>/");
     array_push($rpl,
 	       '<h\\1>',
