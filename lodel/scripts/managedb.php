@@ -50,6 +50,8 @@ function supprime_publication ($id)
   } else {
     unlock();
   }
+
+  return TRUE;
 }
 
 function supprime_document ($ids,$mklock=TRUE)
