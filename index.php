@@ -27,12 +27,13 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+if (!file_exists("lodelconfig.php")) { header("location: lodeladmin/install.php"); exit; }
 
-include ("lodelconfig.php");
-include ($home."auth.php");
+require ("lodelconfig.php");
+require_once ($home."auth.php");
 authenticate();
 
-include ("$home/calcul-page.php");
+require ($home."calcul-page.php");
 calcul_page($context,"index");
 
 ?>

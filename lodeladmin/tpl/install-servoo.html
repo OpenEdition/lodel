@@ -32,7 +32,7 @@
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="servoo">
 
-<p align="center">Configuration du serveur OpenOffice.</p>
+<h3>Configuration du serveur de conversion de document ServOO</h3>
 
 <?php if ($message) { ?>
 Le ServOO <?php  echo $servoohost; ?> a répondu positivement:<br/>
@@ -43,11 +43,11 @@ Le ServOO <?php  echo $servoohost; ?> a répondu positivement:<br/>
 
 <?php } else { ?>
 
-La conversion de documents aux formats RTF, SXW ou DOC en xhtml est réalisé avec ServOO, un serveur basé sur OpenOffice.org et Writer2Latex<br />
-Deux possibilités:
+<p>La conversion de documents aux formats RTF, SXW ou DOC en xhtml est réalisée avec ServOO, un serveur basé sur OpenOffice.org et Writer2Latex</p>
+<p>Deux possibilités:</p>
 <ul>
-<li>Installer ServOO ce qui nécessite l'installation de Open Office et Java sur votre serveur! Cette installation requiert un serveur dedié et correctement protégé. <u>Ce n'est pas possible chez les hebergeurs commerciaux</u>. ServOO est distribué dans un pactage séparé de Lodel sur <a href="http://sourceforge.net/projects/lodel">http://sourceforge.net/projects/lodel</a>. Lors que ServOO est installé, entrez les paramètres de connexion ci-dessous. Si vous installez un ServOO, nous vous encourageons à la mettre a disposition du public et à vous faire enregistrer sur http://www.lodel.org/servoo</li>
-<li>Demander un compte sur un serveur ServOO publiquement accessible. La liste officielle des serveurs est disponible sur <a href="http://www.lodel.org/servoo">http://www.lodel.org/servoo</a>. Entrez les paramètres de connexion ci-dessous.
+<li>Installer vous même un ServOO : cela nécessite l'installation de Open Office et Java sur votre serveur ! Cette installation requiert un serveur dedié et correctement protégé. <u>Ce n'est que rarement possible chez les hebergeurs commerciaux</u> (à moins de disposer d'un accès de type "serveur dédié" ou "serveur virtuel"). ServOO est distribué dans un paquetage séparé de Lodel sur <a href="http://sourceforge.net/projects/lodel/" target="_new">http://sourceforge.net/projects/lodel/</a>. Lorsque ServOO est installé, entrez les paramètres de connexion ci-dessous. Si vous installez un ServOO, nous vous encourageons à le mettre à disposition du public et à vous faire enregistrer sur <a href="http://www.lodel.org/servoo/" target="_new">http://www.lodel.org/servoo/</a></li>
+<li>Demander un compte sur un serveur ServOO publiquement accessible. La liste officielle des serveurs est disponible sur <a href="http://www.lodel.org/servoo/" target="_new">http://www.lodel.org/servoo</a>. Entrez ensuite les paramètres de connexion ci-dessous.
 </li>
 <?php } ?>
 

@@ -33,6 +33,9 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   require("lodelconfig.php"); // le lodelconfig.php doit exister 
   // et permettre un acces a une DB valide... 
   // meme si on reconfigure une nouvelle DB ca doit marcher... 
+
+  if ($tache=="lodelconfig") $GLOBALS[REQUEST_URI].="?tache=lodelconfig";
+
   require($home."auth.php");
   authenticate(LEVEL_ADMINLODEL);
 }
@@ -603,7 +606,7 @@ function probleme_droits_debut()
   <td>
    <p align="center">Accès aux répertoires.</p>
 
-   <b>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache) puisse y accéder en lecture et si mentioner ci-dessous y écrire</b>
+   <b>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache ou encore www-data) puisse y accèder en lecture et, si mentioné, ci-dessous y écrire</b>
 <p></p>
 <ul>
 <?php }
@@ -630,7 +633,7 @@ function probleme_droits_fin()
 </form>
 </p>
 <p></p>
-Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br />
+Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'accès de tous les fichiers par vous-même.<br />
 LODEL est livré avec SANS AUCUNE GARANTIE.
   </td>
 </table>

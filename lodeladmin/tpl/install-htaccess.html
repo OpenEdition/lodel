@@ -45,29 +45,29 @@ foreach($erreur_htaccess as $dir) {
 
 
 <?php if ($erreur_htaccesswrite) { ?>
-<font color="red"><b>Erreur</b></font>:  Le serveur ne peut pas écrire les fichiers .htaccess dans les répertoires suivants. Veuillez ajouter les fichiers vous même et cliquer sur "Vérification".
+<font color="red"><b>Erreur</b></font> : Le serveur ne peut pas écrire les fichiers '.htaccess' dans les répertoires suivants. Veuillez ajouter les fichiers vous-même et cliquer ensuite sur "Vérification".
 
 
 
 <?php } ?>
 
-<p>Afin d'assurer un meilleur niveau de sécurité, certains répertoires doivent contenir un fichier .htaccess qui empèche l'acces au répertoire par le web. Ces fichiers ne sont pas présents dans les répertoires suivant:</p>
+<p>Afin d'assurer un meilleur niveau de sécurité, certains répertoires doivent contenir un fichier '.htaccess' qui empèche l'accès au répertoire par le web. Ces fichiers ne sont pas présents dans le(s) répertoires suivants :</p>
 
-<p>Répertroire (par rapport à la racine de LODEL)<br>
+<p>Répertoire(s) (par rapport à la racine de LODEL)<br>
 <ul><?php $writeable=print_directories();   ?></ul>
 </p>
 
-Plusieurs possibilités:
+Plusieurs possibilités s'offrent à vous :
 <ul>
 <?php  if ($writeable) { ?>
-<li>Laisser Lodel installer les .htaccess dans les repertoires où il peut écrire.<br />
+<li>Laisser Lodel installer les '.htaccess' dans les répertoires où il peut écrire.<br />
 <input type="submit" name="write" value="Installation automatique des .htaccess">
 </li>
 <? } ?>
-<li>Ajouter vous-même les .htaccess. Ces fichiers doivent contenir une seule ligne:<br /><code>deny from all</code><br />
+<li>Ajouter vous-même les '.htaccess'. A priori, ces fichiers doivent contenir une seule ligne :<br /><code>deny from all</code><br />
 <input type="submit" name="verify" value="Verification">
 </li>
-<li>Ne pas avoir de .htaccess (non recommandé à moins que le serveur ne supporte pas le .htaccess).<br />
+<li>Ne pas avoir de '.htaccess' (non recommandé à moins que le serveur ne supporte pas le '.htaccess').<br />
 <input type="submit" name="nohtaccess" value="Pas de .htaccess">
 </li>
 </ul>

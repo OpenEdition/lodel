@@ -35,13 +35,14 @@
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p>[option 1]</p>
 <p align="justify">
-Entrer les informations concernant le serveur MySQL. L'adresse du serveur est souvent disponible dans le support technique de l'hebergeur.
-Le nom d'utilisateur MySQL et le mot de passe sont personnels, et ont dù être fourni avec les autres informations concernant le compte ftp et les courriels. Attention, cependant, le nom d'utilisateur MySQL et le mot de passe sont souvent différents du nom d'utilisateur pour l'accès au site ou aux courriels.
+Entrez les informations concernant le serveur MySQL. L'adresse du serveur doit être indiquée dans la documentation technique de votre hébergeur (par exemple : mysql.monhebergeur.com, ou localhost, etc.)
+Le nom d'utilisateur MySQL et le mot de passe sont personnels : ils ont dû vous être communiqués en même temps que les autres informations concernant le compte ftp et les courriels. Attention cependant, le nom d'utilisateur MySQL et le mot de passe sont souvent différents du nom d'utilisateur pour l'accès au site ou aux courriels. 
+<br />En cas de doute : contactez votre service technique pour plus d'informations. 
 </p>
 <?php } else { // OPTION 2 ?>
 <p>[option 2]</p>
 <p align="justify">
-Spécifier les paramètres de connection sur le serveur MySQL. L'utilisateur MySQL doit avoir au minimum le droits d'USAGE sur le serveur. Pour créer un utilisateur, utiliser la commande GRANT dans mysql (ou phpMyAdmin).
+Spécifiez les paramètres de connection sur le serveur MySQL. L'utilisateur MySQL doit avoir au minimum le droits d'USAGE sur le serveur. Pour créer un utilisateur, utiliser la commande GRANT dans mysql (ou phpMyAdmin).
 <?php if (!$newdbusername) { ?>
 Par exemple:
 </p>
@@ -63,7 +64,7 @@ GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'm
 <?php } // fin OPTION 2 ?>
 
 
-<?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifiez les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="mysql">

@@ -156,16 +156,16 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 			!is_numeric($entite[$nom])) $erreur[$nom]="numeric";
       break;
     case "email" : 
-      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=$defaut;
-      if (isset($entite[$nom])) {
+      if (!$entite[$nom] && $defaut) $entite[$nom]=$defaut;
+      if ($entite[$nom]) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
 	if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $erreur[$nom]="url";
       }
       break;
     case "url" : 
-      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=$defaut;
-      if (isset($entite[$nom])) {
+      if (!$entite[$nom] && $defaut) $entite[$nom]=$defaut;
+      if ($entite[$nom]) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
 	if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$entite[$nom])) $erreur[$nom]="url";

@@ -230,7 +230,7 @@ function publi ($id,$statut,$confirmation,$mklock=TRUE)
   $context[proteges]=array();
 
   // cherche le statut (et l'id) de la publication courante
-  $result=mysql_query("SELECT id,statut FROM entites WHERE id='$id' AND statut>-32 $critere") or die(mysql_error());
+  $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entites WHERE id='$id' AND statut>-32 $critere") or die(mysql_error());
   $row=mysql_fetch_assoc($result);
 
   if (!$row) die ("Vous n'avez pas les droits sur cette publication ou ce document... il y a un probleme dans l'interface");

@@ -29,27 +29,27 @@
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="center">Configuration de la base de donnée.</p>
+<p align="center">Configuration de la base de données.</p>
 
 
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p>[option 1]</p>
 <p align="justify">
-Choisir une base de données ou en créer une nouvelle. En général, la base de donnée est créée par l'herbergeur et il n'est pas possible d'en ajouter une nouvelle. Se reporter au support technique de l'hebergeur.<p>
+Choisir une base de données existante ou en créer une nouvelle. En général, votre base de données a déjà été créée par votre herbergeur et il n'est pas possible d'en ajouter une nouvelle. Pour plus de précisions, reportez-vous au support technique de votre hebergeur.<p>
 <p align="justify">
-Le prefix de table est utile lorsqu'une seule base de donnée est disponible (comme c'est souvent le cas chez les hébergeurs) et que d'autres applications partageront la base de donnée avec Lodel. En cas de doute, utiliser "lodel_" comme prefix.
+Le préfixe de table est utile lorsque vous ne disposez que d'une seule base de données (comme c'est souvent le cas chez les hébergeurs) et que d'autres applications partageront la base de données avec Lodel. Dans ce cas, un préfixe est moyen commode de distinguer les tables utilisées par telle ou telle application. En cas de doute, utilisez tout simplement "lodel_" comme préfixe.
 </p>
 <p align="justify">
-Une installation Lodel peut gérer plusieurs sites, dans ce cas, il faut choisir:
+Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans ce cas, il faut choisir entre : 
 <ul>
-<li>Une unique base de donnée pour tous les sites.
-<li>Une base de donnée par site, en plus de la base principale.
+<li>Une unique base de données pour tous les sites.
+<li>Une base de donnéee pour chaque site, en plus de la base de données principale.
 </ul>
 </p>
 <?php } else { // OPTION 2 ?>
 <p>[option 2]</p>
 <p align="justify">
-Il est possible d'utiliser une base de donnée existante. Cependant, il est préférable de créer un base de donnée dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
+Vous pouvez utiliser une base de données existante, mais il est préférable de créer un base de données dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
 </p>
 <p>
 <code>
@@ -65,13 +65,13 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 </code>
 </p>
 <p align="justify">
-Le prefix de table est utile lorsqu'une seule base de donnée n'est disponible et que d'autres applications partageront la base de donnée avec Lodel. Cette situation n'est recommandée car elle rend difficile les migrations et les restaurations.
+Le préfixe de table est utile lorsque vous ne disposez que d'une seule base de données (comme c'est souvent le cas chez les hébergeurs) et que d'autres applications partageront la base de données avec Lodel. Cette situation rend plus difficiles les migrations et les restaurations : si vous utilisez plusieurs bases, vous pourrez gérer plus facilement les sauvegardes.
 </p>
 <p align="justify">
-Une installation Lodel peut gérer plusieurs sites, dans ce cas, il faut choisir:
+Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans ce cas, il faut choisir entre : 
 <ul>
-<li>Une unique base de donnée pour tous les sites. Cette option simplifie la creation de nouveaux sites, mais interdit rend plus délicat la restauration en cas de probleme ou le multi-versioning (coexistence de plusieurs sites utilisant différentes version de Lodel). Autrement dit, cette option impose la restauration et la migration de tous les sites simultannements.
-<li>Une base de donnée par site, en plus de la base principale. Cette solution est recommandée, mais une base de donnée devra être créée pour chaque site!
+<li>Une unique base de données pour tous les sites. Cette option simplifie la création de nouveaux sites, mais elle interdit ou rend plus délicate la restauration en cas de problèmes ou le multi-versioning (coexistence de plusieurs sites utilisant différentes versions de Lodel). Autrement dit, cette option impose la restauration et la migration de tous les sites simultanéments.
+<li>Une base de données par site, en plus de la base principale. Cette solution est recommandée, mais vous devrez alors créer une base de données pour chaque site!
 </ul>
 </p>
 <?php } // fin OPTION 2 ?>
@@ -102,15 +102,15 @@ Base de données:<br>
 			  ?>
 			  <tr><td><input type="radio" name="newdatabase" value="<?php echo $dbname; ?>" <?php echo $checked; ?>></td><td><?php echo $dbname; ?></td></tr>
 		          <?php  } ?>
-			  <tr><td><input type="radio" name="newdatabase" value="" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de donnée: <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
+			  <tr><td><input type="radio" name="newdatabase" value="" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de données: <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
 			</table>
 </td></tr>
 <tr><td>
-Base de donnée unique pour tous les sites:<br>
+Base de données unique pour tous les sites:<br>
 <input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase) echo "checked"; ?>>
 </td></tr>
 <tr><td>
-Préfix des tables:<br>
+Préfixe des tables:<br>
 <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
 </td></tr>
 </table>
