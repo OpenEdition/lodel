@@ -29,6 +29,7 @@
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+include ($home."func.php");
 #authenticate();
 
 $context[importdir]=$importdir;

@@ -53,7 +53,7 @@ if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]typeentrees.statut<32"
 if ($id>0 && ($delete || $restore)) { 
   do { // block d'exception
     include_once ($home."connect.php");
-    lock_write("typeentites_typeentrees","typeentrees","entrees");
+    lock_write("objets","typeentites_typeentrees","typeentrees","entrees");
 
     // check the type can be deleted.
     $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entrees WHERE idtype='$id' AND statut>-64") or die (mysql_error());
@@ -65,6 +65,7 @@ if ($id>0 && ($delete || $restore)) {
 
     $delete=2;
     include ($home."trash.php");
+    deleteuniqueid($id);
     treattrash("typeentrees",$critere,TRUE);
     return;
   } while(0);
@@ -94,13 +95,17 @@ if ($edit) {
 
     include_once ($home."connect.php");
 
+    lock_write("objets","typeentites_typeentrees","typeentrees");
+
     if ($id>0) { // il faut rechercher le statut
       $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]typeentrees WHERE $critere") or die (mysql_error());
       if (!mysql_num_rows($result)) die("ERROR: The 'typeentree' does not exist or you are not allowed to modify it.");
       list($statut,$ordre)=mysql_fetch_array($result);
+      typetype_delete("typeentree","idtypeentree='$id'");
     } else {
       $statut=1;
       $ordre=get_ordre_max("typeentrees");
+      $id=uniqueid("typeentrees");
     }
     if ($droitadminlodel) {
       $newstatut=$protege ? 32 : 1;
@@ -108,12 +113,10 @@ if ($edit) {
     }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$statut','$context[lineaire]','$context[nvimportable]','$context[utiliseabrev]','$context[tri]','$ordre')") or die (mysql_error());
-    if ($id) {
-      typetype_delete("typeentree","idtypeentree='$id'");
-    } else {
-      $id=mysql_insert_id();
-    }
+
     typetype_insert($typeentite,$id,"typeentree");
+
+    unlock();
     back();
 
   } while (0);
@@ -132,7 +135,9 @@ include ($home."calcul-page.php");
 calcul_page($context,"typeentree");
 
 function loop_typeentites($context,$funcname)
-{  loop_typetable ("typeentite","typeentree",$context,$funcname);}
+{
+  loop_typetable ("typeentite","typeentree",$context,$funcname, $GLOBALS[edit] ? $context[typeentite] : -1);
+}
 
 
 ?>

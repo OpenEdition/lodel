@@ -541,7 +541,7 @@ function imageheight($image)
 
 function nicefilesize($lien)
 {
-  if (defined(SITEROOT)) $lien=SITEROOT.$lien;
+  if (defined("SITEROOT")) $lien=SITEROOT.$lien;
   if (!file_exists($lien)) return "0k";
   $size=filesize($lien);
   if ($size<1024) return $size." octets";

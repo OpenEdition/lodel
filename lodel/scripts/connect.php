@@ -77,7 +77,37 @@ $GLOBALS[documentstypesjoin]="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[t
 $GLOBALS[champsgroupesjoin]="$GLOBALS[tp]groupesdechamps INNER JOIN $GLOBALS[tp]champs ON $GLOBALS[tp]champs.idgroupe=$GLOBALS[tp]groupesdechamps.id";
 
 
+//
+// fonction for handling unique id
+//
 
+/**
+ * get a unique id
+ *
+ */
+
+function uniqueid($table)
+
+{
+  mysql_query("INSERT INTO $GLOBALS[tp]objets (classe) VALUES ('$table')") or die (mysql_error());
+  return mysql_insert_id();
+}
+
+/**
+ * erase a unique id
+ *
+ */
+
+function deleteuniqueid($id)
+
+{
+
+  if (is_array($id) && $id) {
+    mysql_query("DELETE FROM $GLOBALS[tp]objets WHERE id IN (".join(",",$id).")") or die (mysql_error());
+  } else {
+    mysql_query("DELETE FROM $GLOBALS[tp]objets WHERE id='$id'") or die (mysql_error());
+  }
+}
 
 
 #$db_ok= !!@mysql_connect("localhost","apache","") &

@@ -26,18 +26,30 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require_once("siteconfig.php");
-include ($home."auth.php");
-authenticate();
-include ($home."func.php");
+if (!function_exists("authenticate")) {
+  require_once("siteconfig.php");
+  require_once($home."auth.php");
+  authenticate();
+}
+require_once($home."func.php");
 
-if (!$type || !preg_match("/[\w-]/",$type)) die("type incorrecte");
+$critere="";
+if ($id) {
+  $id=intval($id);
+  $critere="id='$id'";
+} elseif ($type) {
+  if (!preg_match("/^[\w-]*$/",$type)) die("type incorrecte");
+  $critere="type='$type'";
+} else die("argument ?");
+
+
 if ($suffix && !preg_match("/^[\w-]+$/",$suffix)) die("suffix non accepte");
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typepersonnes WHERE type='$type' AND statut>0") or die (mysql_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typepersonnes WHERE $critere AND statut>0") or die (mysql_error());
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 $context[idtype]=$context[type_id]; // import
+$context[type]=$context[type_type]; // import
 $context[type_tri]=$GLOBALS[tp]."personnes.".$context[type_tri];  // prefix par la table... ca aide
 
 $base=$context[type_tplindex].$suffix;

@@ -216,7 +216,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   $id=intval($context[id]);
   $idparent=intval($context[idparent]);
 
-  lock_write($classe,"entites","relations",
+  lock_write($classe,"objets","entites","relations",
 	     "entites_personnes","personnes",
 	     "entites_entrees","entrees","typeentrees","types");
 
@@ -256,12 +256,11 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       if (!mysql_num_rows($result)) die("pas de type valide ?");
       list($context[idtype])=mysql_fetch_row($result);
     }
+    $id=uniqueid($classe);
     mysql_query("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,identifiant,ordre,statut,groupe,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifiant]','$ordre','$statut','$groupe','$iduser')") or die (mysql_error());
 
     require_once($home."managedb.php");
-    $id=mysql_insert_id();
     creeparente($id,$context[idparent],FALSE);
-
     move_files($id,$files_to_move,&$sets);
 
     $sets[identite]="'$id'";
@@ -303,7 +302,7 @@ function move_files($id,$files_to_move,&$sets)
 function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
 
 {
-  if ($lock) lock_write("entites_personnes","personnes");
+  if ($lock) lock_write("objet","entites_personnes","personnes");
   // detruit les liens dans la table entites_personnes
  mysql_query("DELETE FROM $GLOBALS[tp]entites_personnes WHERE identite='$identite'") or die (mysql_error());
 
@@ -327,8 +326,8 @@ function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
 	  mysql_query("UPDATE $GLOBALS[tp]personnes SET statut='$statut' WHERE id='$id'") or die (mysql_error());
 	}
       } else {
-	mysql_query ("INSERT INTO $GLOBALS[tp]personnes (statut,nomfamille,prenom) VALUES ('$statut','$bal[nomfamille]','$bal[prenom]')") or die (mysql_error());
-	$id=mysql_insert_id();
+	$id=uniqueid("personnes");
+	mysql_query ("INSERT INTO $GLOBALS[tp]personnes (id,statut,nomfamille,prenom) VALUES ('$id','$statut','$bal[nomfamille]','$bal[prenom]')") or die (mysql_error());
       }
 
       $ordre=$ind;
@@ -346,7 +345,7 @@ function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
 function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
 
 {
-  if ($lock) lock_write("entites_entrees","entrees","typeentrees");
+  if ($lock) lock_write("objets","entites_entrees","entrees","typeentrees");
   // detruit les liens dans la table entites_indexhs
   mysql_query("DELETE FROM $GLOBALS[tp]entites_entrees WHERE identite='$identite'") or die (mysql_error());
 
@@ -402,8 +401,8 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
       } elseif ($typeentree[nvimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
 	// oui,il faut ajouter le mot cle
 	$abrev=$typeentree[utiliseabrev] ? strtoupper($entree) : "";
-	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,langue) VALUES ('$statut','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
-	$id=mysql_insert_id();
+	$id=uniqueid("entrees");
+	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (id,statut,nom,abrev,idtype,langue) VALUES ('$id','$statut','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
       } else {
 	$id=0;
 	// on ne l'ajoute pas... pas le droit!

@@ -26,7 +26,43 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-$type="auteur";
-if (@include("personne.html")) return;
-require("personne.php");
+
+require("siteconfig.php");
+include ($home."auth.php");
+authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+
+//
+// this script is provided for conversion purpose only.
+// it is not intented to become a feature of LODEL.
+// it may be remove in the next version
+//
+
+
+do {
+
+// cree la table si necessaire
+  require_once($home."objetfunc.php");
+
+  $err=mysql_query_cmds_forobjetfunc('
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
+	id		INT UNSIGNED DEFAULT 0 NOT NULL auto_increment,
+	classe		VARCHAR(255),
+
+	PRIMARY KEY (id)
+);
+');
+  if ($err) break;
+
+  $err=makeobjetstable();
+
+  if ($err) break;
+
+  echo "ok";
+}  while (0);
+
+echo $err;
+
+
+
+
 ?>

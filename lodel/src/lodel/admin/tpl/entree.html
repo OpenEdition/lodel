@@ -74,7 +74,14 @@
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='entree.php?delete=1&id=[#ID]'" />
+			<LOOP NAME="adesfils" TABLE="entrees" WHERE="idparent='[#ID]' AND statut gt -64" LIMIT="0,1">
+		        <DO>
+			                <span class="inactif">Supprimer</span>
+                        </DO>
+		        <ALTERNATIVE>
+			   <input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='entree.php?delete=1&id=[#ID]'" />
+		        </ALTERNATIVE>
+		        </LOOP>
 		</IF>
 	</div>
 	</form>

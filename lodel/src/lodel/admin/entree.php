@@ -45,8 +45,16 @@ $critere=$id>0 ? "id='$id'" : "";
 if ($id>0 && $delete) { 
   $delete=2; // destruction en -64;
   include ($home."trash.php");
+
+  //$result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
+  //if (!mysql_num_rows($result)) die("ERROR: The 'entree' does not exist or you are not allowed to modify it.");
+  // check this "entree" has no children.
+  $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entrees WHERE idparent='$id' AND statut>-64 LIMIT 0,1") or die (mysql_error());
+  if (mysql_num_rows($result)) die("ERROR: The 'entree' has children. Delete them first.");
+
+  mysql_query("DELETE FROM $GLOBALS[tp]entites_entrees WHERE identree='$id'") or die (mysql_error());
+  deleteuniqueid($id);
   treattrash("entrees",$critere);
-#  treattrash("entrees",$critere." AND  abs(statut)<32");
   return;
 }
 
@@ -74,6 +82,7 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
     include_once ($home."connect.php");
 
+    lock_write("objets","entrees");
     $idparent=intval($context[idparent]);
     if ($id>0) { // il faut rechercher le statut, le type et l'ordre
       $result=mysql_query("SELECT statut,idtype,ordre FROM $GLOBALS[tp]entrees WHERE id='$id'") or die (mysql_error());
@@ -83,6 +92,7 @@ if ($edit) { // modifie ou ajoute
       if (!$context[idtype]) die ("Erreur interne. Il manque le type dans le formulaire");
       $context[idtype]=intval($context[idtype]);
       $ordre=get_ordre_max("entrees"," idparent='$idparent' AND idtype='$context[idtype]'");
+      $id=uniqueid("entrees");
     }
     $newstatut=$protege ? 32 : 1;
     $statut=$statut>0 ? $newstatut : -$newstatut;

@@ -139,11 +139,6 @@ function parse ($in,$out)
   $this->countarr=count($this->arr);
   $this->fct_txt="";
 
-
-  /*  $this->parse_main1();
-      $this->parse_main2(); */
-
-
   // parse les variables
   $this->parse_variable($this->arr[0]);
   for($i=1; $i<$this->countarr; $i+=3) {
@@ -162,9 +157,9 @@ function parse ($in,$out)
 
   if ($this->fct_txt) {
     $contents='<?php 
-require_once ($GLOBALS[home]."connect.php");
 '.$this->fct_txt.'?>'.$contents;
   }
+
 
   //
   // refresh manager
@@ -197,14 +192,13 @@ require_once ($GLOBALS[home]."connect.php");
     $contents='<?php if ($GLOBALS[cachedfile]) echo \'<?php ?>\'; ?>'.$contents; // this is use to check if the output is a must be evaluated as a php or a raw file.
   }
 
-
   // clean the open/close php tags
   $contents=preg_replace(array('/\?><\?(php\b)?/',
 			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
 
   if ($charset!="utf-8") {
     #$t=microtime();
-    require_once($home."utf8.php"); // conversion des caracteres
+    require_once(TOINCLUDE."utf8.php"); // conversion des caracteres
     $contents=utf8_encode($contents);
     convertHTMLtoUTF8(&$contents);
   }
@@ -229,19 +223,19 @@ require_once ($GLOBALS[home]."connect.php");
 function parse_texte(&$text)
 
 {
-  global $home,$droitediteur;
+  global $droitediteur;
   preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
 #  print_r($results);
   foreach ($results as $result) {
     $nom=addslashes(stripslashes($result[1]));
     if ($droitediteur) {       // cherche si le texte existe
-      require_once($home."connect.php");
+      require_once(TOINCLUDE."connect.php");
       $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$nom'") or $this->errmsg (mysql_error());
       if (!mysql_num_rows($result2)) { // il faut creer le texte
 	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
       }
     }
-    $text=str_replace ($result[0],'<?php require_once($GLOBALS[home]."connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
+    $text=str_replace ($result[0],'<?php require_once(TOINCLUDE."connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
   }
 }
 
@@ -647,8 +641,6 @@ function parse_loop()
 function decode_loop_content ($name,&$content,&$options,$tables=array())
 
 {
-  global $home;
-
   $balises=array("DOFIRST"=>1,"DOLAST"=>1,"DO"=>1,"AFTER"=>0,"BEFORE"=>0,"ALTERNATIVE"=>0);
 #  if ($this->ind==349) {
 #    echo "loop $name ind=$loopind\n";
@@ -724,61 +716,6 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
     }
     $this->decode_loop_content_extra ("DO", &$content,&$options,$tables);
   }
-  
-  // partie privee et specifique pour le decodage du contenu.
-
-  foreach ($balises as $balise => $level) {
-
-  }
-
-  /*
-  if (!$tables) return $ret;
-  // OPTIMISATION
-#  echo "OPT:";
-
-  // cherche les variables a extraire. Ceci permet d'optimiser le select dans le cas ou la base de donnee contient des gros champs. Ajoute ces variables dans les wantedvars au niveau present ou au dessus en fonction de la balise dans laquelle sont les variables.
-
-  $vars=$this->wantedvars[$loopind][1];
-#  echo "opt:$name"; print_r($this->loops[$name]);
-  if ($this->loops[$name][recursive]) {
-    $vars=array_merge($vars,$this->wantedvars[$loopind][0]);
-  }
-#  echo "OPT: $name ind=",$loopind," nvars=",count($vars),"\n";
-  // is there variables to treat a our level ?
-  if (!$vars) return $ret;
-
-  if (!(@include_once("CACHE/tablefields.php")) || !$GLOBALS[tablefields]) require_once($home."tablefields.php");
-  if (!$GLOBALS[tablefields]) die("ERROR: internal error in decode_loop_content: table $table");
-
-  $selects=array();
-  $knowvars=array();
-
-#  print_r($vars);
-
-  foreach($tables as $table) {
-    if (!$GLOBALS[tablefields][$table]) {
-      require_once($home."tablefields.php");
-      if (!$GLOBALS[tablefields][$table]) die ("ERROR: unknown table $table");
-    }
-    $varstoselect=$optimize ? array_intersect($GLOBALS[tablefields][$table],$vars) : $GLOBALS[tablefields][$table];
-    $knownvars=array_merge($knownvars,$vartoselect);
-    foreach($varstoselect as $vartoselect) array_push($selects,"$table.$vartoselect");
-  }
-
-  // compute the vars we don't know at level 1
-  $diff=array_diff($this->wantedvars[$loopind][1],$knownvars);
-  // if any, transfer these variables at level 0
-  if ($diff) {
-    $this->wantedvars[$loopind][0]=array_merge($this->wantedvars[$loopind][0],$diff);
-  }
-  // no more a that level anyway.
-  $this->wantedvars[$loopind][1]=array();
-
-  if ($optimize) $ret[select]=join(",",$selects);
-#  echo "select:$name $ret[select]<br>";
-
-  return $ret;
-  */
 }
 
 
@@ -790,7 +727,6 @@ function make_loop_code ($name,$tables,
 
 {
   static $tablefields; // charge qu'une seule fois
-  global $home;
 
   if ($where) $where="WHERE ".$where;
   if ($order) $order="ORDER BY ".$order;
@@ -807,7 +743,7 @@ function make_loop_code ($name,$tables,
 
   if ($dontselect) { // DONTSELECT
     // at the moment, the dontselect should not be prefixed by the table name !
-    if (!$tablefields) require($home."tablefields.php");
+    if (!$tablefields) require(TOINCLUDE."tablefields.php");
     if (!$tablefields) die("ERROR: internal error in decode_loop_content: table $table");
 
     $selectarr=array();
@@ -822,7 +758,7 @@ function make_loop_code ($name,$tables,
     $select=join(".*,",$tablesinselect).".*";
   } 
 #elseif ($select) { // SELECT
-#    if (!$tablefields) require($home."tablefields.php");
+#    if (!$tablefields) require(TOINCLUDE."tablefields.php");
 #    if (!$tablefields) die("ERROR: internal error in decode_loop_content: table $table");
 #    // on prefix
 #    $selectarr=array();

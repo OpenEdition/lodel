@@ -26,14 +26,6 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-function typetypes_delete($critere)
-
-{
-  mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typeentrees WHERE $critere") or die (mysql_error());
-  mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typepersonnes WHERE $critere") or die (mysql_error());
-  mysql_query("DELETE FROM $GLOBALS[tp]typeentites_typeentites WHERE $critere") or die (mysql_error());
-}
-
 function typetype_delete($typetable,$critere)
 
 {
@@ -69,7 +61,7 @@ function typetype_insert($idtypeentite,$idtypetable,$typetable)
 
 
 
-function loop_typetable ($listtype,$criteretype,$context,$funcname)
+function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
 
 {
   if ($listtype=="typeentite" || $listtype=="typeentite2") {
@@ -87,6 +79,12 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname)
 
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);
+    if (is_array($checked)) {
+      $localcontext[value]=$checked[$row['id']] ? "checked" : "";
+    } else {
+      $localcontext[value]=$row[condition] ? "checked" : "";
+    }
+    
     call_user_func("code_do_$funcname",$localcontext);
   }
 }

@@ -26,12 +26,13 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require("siteconfig.php");
-include ($home."auth.php");
-authenticate();
+if (!function_exists("authenticate")) {
+  require("siteconfig.php");
+  require_once($home."auth.php");
+  authenticate();
+}
 
-
-if (!$type || !preg_match("/[\w-]/",$type)) die("type incorrecte");
+if (!$type || !preg_match("/[\w-]/",$type)) die("ERROR: unknow type '$type'");
 
 $context[id]=$id=intval($id);
 

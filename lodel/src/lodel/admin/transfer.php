@@ -89,7 +89,6 @@ if ($droptables) {
   while ($row = mysql_fetch_row($result)) if (!in_array($row[0],$dontdrop)) array_push($tables,$row[0]);
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
 
-
   $tmpfile=tempnam(tmpdir(),"lodelimport_");
   system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
   require_once ($home."backupfunc.php");
@@ -162,7 +161,7 @@ ALTER TABLE _PREFIXTABLE_users CHANGE email courriel VARCHAR(255);
       }
     }
 
-    // est-ce que la table des indexhs exists ?
+    // est-ce que la table des indexls exists ?
     // on renome
     if ($tables["$GLOBALS[tp]indexls"]) { // il faut modifier et  renomer
 
@@ -185,7 +184,7 @@ ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idparent (idparent);
 ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE idindexl identree INT UNSIGNED DEFAULT \'0\' NOT NULL;
 ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE iddocument identite INT UNSIGNED DEFAULT \'0\' NOT NULL;
 # change type en idtype
-ALTER TABLE _PREFIXTABLE_indexls CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_indexls CHANGE type	idtype		INT DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
 # change le type des motcles permanents
 UPDATE _PREFIXTABLE_indexls SET statut=32, idtype=2 WHERE idtype=3;
@@ -244,6 +243,10 @@ RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_entites_entrees;
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documents_indexhs") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
 	// ajoute dans la table le lien
+	if (!$convid[$row[idindexhs]]) {
+	  $err="La conversion de l'indexhs $row[idindexhs] est introuvable";
+	  break;
+	}
 	$cmds.="INSERT INTO _PREFIXTABLE_entites_entrees (identree,identite) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
       }
 
@@ -398,6 +401,12 @@ REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,titredescription,st
 ##      if ($err) break;
 ##      $report.="Insertions de typedocs dans types<br>";
 ##    }
+
+    if (!$tables["$GLOBALS[tp]objets"]) {
+	if ($err=create("objets")) break;
+	// a continuer....
+    }
+
 
     if (!$tables["$GLOBALS[tp]entites"]) {
       # suppression des documents avec : titre vide, type vide, publication 0 et status < 1 
@@ -559,8 +568,11 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       if (!mysql_num_rows($result)) die ("type inconnu ?");
       list($idtype)=mysql_fetch_row($result);
 
-	//
+
+      //
       $result=mysql_query("SELECT identite,directeur,statut FROM $GLOBALS[tp]publications,$GLOBALS[tp]entites WHERE id=identite AND directeur!=''") or die(mysql_error());
+
+      mysql_query("INSERT $GLOBALS[tp]objets (id,classe) SELECT id,'personnes' FROM personnes") or die(mysql_error()); // sinon on chope du duplicate keys
 
       while (list($id,$directeur,$statut)=mysql_fetch_row($result)) {
 	$lcontext=array();
@@ -568,8 +580,14 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	     $lcontext[prenom][$idtype][1],
 	     $lcontext[nomfamille][$idtype][1])=
 	  extractnom($directeur);
+	#print_r($lcontext);
 	enregistre_personnes ($lcontext,$id,$statut,FALSE);
+	#$result2=mysql_query("SELECT * FROM objets") or die(mysql_error());
+	#while ($row=mysql_fetch_assoc($result2)) { print_r($row); echo "\n\n\n"; }
+	#echo "-------------\n\n\n";
       }
+      mysql_query("DELETE FROM $GLOBALS[tp]objets") or die(mysql_error()); // faut effacer parce que c'est n'importe quoi maintenant dans cette table
+      #echo "la la\n";
       $err=mysql_query_cmds("ALTER TABLE _PREFIXTABLE_publications DROP directeur;");
       $report.="Importation des directeurs<br>";
     }
@@ -658,6 +676,10 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       }
       if ($err) break;
     }
+    require_once($home."objetfunc.php");
+    $ret=makeobjetstable();
+    $report.=$ret;
+
 
     if (!$err) {
       // efface les repertoires CACHE

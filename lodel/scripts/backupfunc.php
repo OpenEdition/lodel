@@ -32,7 +32,7 @@
 // Thanks to the authors !
 //
 
-define(LODELPREFIX,"__LODELTP__");
+define("LODELPREFIX","__LODELTP__");
 
 
 $userlink=TRUE;
@@ -174,23 +174,26 @@ function execute_dump($filename)
   $fh=fopen($filename,"r") or die("ERROR: invalid $filename");
 
   while (!feof($fh)) {
-    $buf=fread($fh,$chunk);
+    $buf=fread($fh,$chunk);    
+    #echo "<font color=\"red\">",htmlentities($buf),"</font>";
     $pieces=array();
     $buf=$lastpiece.$buf; // add the last piece in front of the buffer
     $fullstatment=PMA_splitSqlFile($pieces, $buf, PMA_MYSQL_INT_VERSION);
     $pieces_count = count($pieces);
     $pieces_to_execute=$fullstatment ? $pieces_count : $pieces_count-1;
 
+    #echo "pieces_to_execute=",$pieces_to_execute,"<br />";
+
     for ($i = 0; $i < $pieces_to_execute; $i++) {
-      // echo "<li>",$i," ",htmlentities($pieces[$i]),"</li>";
+      #echo "<li>",$i," ",htmlentities($pieces[$i]),"</li>";
       // add the prefix
 
+      #if (preg_match("/CREATE/",$pieces[$i])) echo $pieces[$i],"<br />";
 
-
-      $result = PMA_mysql_query($pieces[$i]);
-      if ($result == FALSE) {     
-        //      echo $pieces[$i],"<br>\n"; flush();
-	return FALSE; }
+       PMA_mysql_query($pieces[$i]) or die(mysql_error());
+#       if ($result == FALSE) {     
+#        //      echo $pieces[$i],"<br>\n"; flush();
+#	return FALSE; }
     }
     $lastpiece=$fullstatment ? "" : $pieces[$pieces_count-1];
   }
@@ -431,10 +434,10 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
 
         // loic1: send a fake header each 30 sec. to bypass browser timeout
         $time1     = time();
-        if ($time1 >= $time0 + 30) {
-            $time0 = $time1;
-            header('X-pmaPing: Pong');
-        } // end if
+#        if ($time1 >= $time0 + 30) {
+#            $time0 = $time1;
+#            header('X-pmaPing: Pong');
+#        } // end if
     } // end for
 
     // add any rest to the returned array

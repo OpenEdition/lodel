@@ -27,7 +27,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-define(SITEROOT,"../../");
+define("SITEROOT","../../");
 
 chdir(SITEROOT);
 require("siteconfig.php");

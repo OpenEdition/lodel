@@ -27,10 +27,12 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 // charge le fichier xml et
-require("siteconfig.php");
-include ($home."auth.php");
-authenticate();
-include ($home."func.php");
+if (!function_exists("authenticate")) {
+  require("siteconfig.php");
+  require_once ($home."auth.php");
+  authenticate();
+}
+require_once($home."func.php");
 
 $context[id]=$id=intval($id);
 

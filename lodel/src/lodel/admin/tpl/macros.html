@@ -54,7 +54,7 @@
 <DEFMACRO NAME="TYPE_PERSONNES">
 	<LOOP NAME="typepersonnes">
 		<DO>
-			<input type="checkbox" name="typepersonne[[#ID]]" [(#CONDITION|true)checked] /> [#TYPE]<br />
+			<input type="checkbox" name="typepersonne[[#ID]]" [#VALUE] /> [#TYPE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -62,7 +62,7 @@
 <DEFMACRO NAME="TYPE_ENTREES">
 	<LOOP NAME="typeentrees">
 		<DO>
-			<input type="checkbox" name="typeentree[[#ID]]" [(#CONDITION|true)checked] /> [#TYPE]<br />
+			<input type="checkbox" name="typeentree[[#ID]]" [#VALUE] /> [#TYPE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -74,7 +74,7 @@
 <DEFMACRO NAME="TYPE_ENTITES">
 	<LOOP NAME="typeentites">
 		<DO>
-			<input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]> [#TYPE]<br />
+			<input type="checkbox" name="typeentite[[#ID]]" [#VALUE]> [#TYPE]<br />
 		</DO>
 	</LOOP>
 </DEFMACRO>

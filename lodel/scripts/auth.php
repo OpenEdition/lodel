@@ -28,11 +28,11 @@
 
 
 // droit
-define(LEVEL_VISITEUR,10);
-define(LEVEL_REDACTEUR,20);
-define(LEVEL_EDITEUR,30);
-define(LEVEL_ADMIN,40);
-define(LEVEL_ADMINLODEL,128);
+define("LEVEL_VISITEUR",10);
+define("LEVEL_REDACTEUR",20);
+define("LEVEL_EDITEUR",30);
+define("LEVEL_ADMIN",40);
+define("LEVEL_ADMINLODEL",128);
 
 function authenticate ($level=0,$norecordurl=FALSE)
 
@@ -230,13 +230,13 @@ $idsession=0;
 $session="";
 
 $context=array(
-	       "version" => doubleval($version)
+	       "version" => doubleval($version),
+	       "shareurl"=>$GLOBALS[shareurl],
+	       "extensionscripts"=>$GLOBALS[extensionscripts],
 	       ); // tres important d'initialiser le context.
 $droitadminlodel=0;
 $droitadmin=0;
 $user=0;
-$context[shareurl]=$GLOBALS[shareurl];
-$context[extensionscripts]=$GLOBALS[extensionscripts];
 if (!$filemask) $filemask="0700";
 
 // cherche le nom du site

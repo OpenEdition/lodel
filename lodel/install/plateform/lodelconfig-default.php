@@ -94,14 +94,6 @@ $zipcmd="/usr/bin/zip";
 $unzipcmd="/usr/bin/unzip";
 
 
-# type lineaire (table indexls)
-define (TYPE_MOTCLE,2);
-define (TYPE_MOTCLE_PERMANENT,3);
-
-# type hierarchique (table indexhs)
-define (TYPE_PERIODE,1);
-define (TYPE_GEOGRAPHIE,4);
-
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
 $tableprefix="";
 
@@ -127,7 +119,7 @@ $servoopasswd="";
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK
 
-define(DONTUSELOCKTABLES,false);
+define("DONTUSELOCKTABLES",false);
 
 
 ############################################
@@ -149,8 +141,8 @@ ignore_user_abort();
 // securite
 $currentdb="";
 
-define (NORECORDURL,1);
+define ("NORECORDURL",1);
 
-define (INC_LODELCONFIG,1);
+define ("INC_LODELCONFIG",1);
 
 ?>

@@ -97,7 +97,7 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
   if (!($id>=1)) die("ERROR: id is not valid un \"supprime\"");
   global $usergroupes,$droitadmin,$context;
   if ($mklock) {
-    lock_write("entites",
+    lock_write("objets","entites",
 	       "publications","documents",
 	       "personnes","entites_personnes",
 	       "entrees","entites_entrees",
@@ -154,6 +154,7 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
   mysql_query("DELETE FROM $GLOBALS[tp]publications WHERE identite IN ($idlist)") or die(mysql_error());
   mysql_query("DELETE FROM $GLOBALS[tp]documents WHERE identite IN ($idlist)") or die(mysql_error());
   mysql_query("DELETE FROM $GLOBALS[tp]relations WHERE id1 IN ($idlist) OR id2 IN ($idlist)") or die(mysql_error());
+  deleteuniqueid($ids);
 
   supprime_table($ids,"personne");
   supprime_table($ids,"entree");
@@ -184,8 +185,14 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
   $ids=array();
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
   if ($ids) { 
+    // cherche ceux qui ne sont pas proteges
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (statut>-32 AND statut<32)");
+    $idstodelete=array();
+    while ($row=mysql_fetch_row($result)) { array_push ($idstodelete,$row[0]); }
     // efface ceux qui ne sont pas proteges
-    mysql_query("DELETE FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (statut>-32 AND statut<32)") or die (mysql_error());
+    mysql_query("DELETE FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$idstodelete).")") or die (mysql_error());
+    deleteuniqueid($idstodelete);
+
     // depublie ceux qui sont proteges.
     mysql_query("UPDATE $GLOBALS[tp]$tables SET statut=-abs(statut) WHERE id IN (".join(",",$ids).") AND statut>=32") or die (mysql_error());
   }

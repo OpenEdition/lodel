@@ -44,7 +44,7 @@ if ($id>0 && ($delete || $restore)) {
 
   do { // block d'exception
     include_once ($home."connect.php");
-    lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes","entites");
+    lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes","entites","objets");
     // check the type can be deleted.
     $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE statut>-64 AND $critere") or die (mysql_error());
     if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
@@ -53,10 +53,13 @@ if ($id>0 && ($delete || $restore)) {
     list($count)=mysql_fetch_row($result);
     if ($count) { $context[erreur_entites_existent]=$count; unlock(); break; }
 
-    typetypes_delete("idtypeentite='$id'");
+    typetype_delete("typeentree","idtypeentite='$id'");
+    typetype_delete("typepersonne","idtypeentite='$id'");
+    typetype_delete("typeentite","idtypeentite='$id' OR idtypeentite2='$id'");
 
     $delete=2; // supprime pour de vrai
     include ($home."trash.php");
+    deleteuniqueid($id);
     treattrash("types",$critere,TRUE);
     return;
   } while (0); // block d'exception
@@ -87,7 +90,7 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
 
     include_once ($home."connect.php");
-    lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
+    lock_write("objets","types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
 
     // verifie que ce type n'existe pas.
     $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND classe='$context[classe]' AND id!='$id'") or die (mysql_error());
@@ -97,9 +100,14 @@ if ($edit) { // modifie ou ajoute
       $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]types WHERE $critere") or die (mysql_error());
       if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
       list($statut,$ordre)=mysql_fetch_array($result);
+
+      typetype_delete("typeentree","idtypeentite='$id'");
+      typetype_delete("typepersonne","idtypeentite='$id'");
+      typetype_delete("typeentite","idtypeentite='$id'");
     } else {
       $statut=1;
       $ordre=get_ordre_max("types");
+      $id=uniqueid("types");
     }
     $context[import]=$context[import] ? 1 : 0;
     if ($droitadminlodel) {
@@ -109,11 +117,6 @@ if ($edit) { // modifie ou ajoute
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,import,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$statut','$ordre')") or die (mysql_error());
 
-    if ($id) {
-      typetypes_delete("idtypeentite='$id'");
-    } else {
-      $id=mysql_insert_id();
-    }
     typetype_insert($id,$typeentree,"typeentree");
     typetype_insert($id,$typepersonne,"typepersonne");
     typetype_insert($id,$typeentite,"typeentite2");
@@ -139,13 +142,13 @@ posttraitement($context);
 
 
 function loop_typepersonnes($context,$funcname)
-{  loop_typetable ("typepersonne","typeentite",$context,$funcname);}
+{  loop_typetable ("typepersonne","typeentite",$context,$funcname,$GLOBALS[edit] ? $context[typepersonne] : -1);}
 
 function loop_typeentrees($context,$funcname)
-{  loop_typetable ("typeentree","typeentite",$context,$funcname);}
+{  loop_typetable ("typeentree","typeentite",$context,$funcname,$GLOBALS[edit] ? $context[typeentree] : -1);}
 
 function loop_typeentites($context,$funcname)
-{  loop_typetable ("typeentite2","typeentite",$context,$funcname);}
+{  loop_typetable ("typeentite2","typeentite",$context,$funcname,$GLOBALS[edit] ? $context[typeentite] : -1);}
 
 
 ?>

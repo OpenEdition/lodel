@@ -28,6 +28,7 @@
 
 
 include_once($GLOBALS[home]."func.php");
+
 # le $ret ne sert a rien, mais s'il n'est pas la, ma version de php n'aime pas: bug eratique.
 
 # fonction d'entree pour le calcul d'une page
@@ -55,12 +56,16 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
 
   if (($template_time <= myfilemtime($base))) {
-	if ($GLOBALS[droitadmin]) $context[templatesrecompiles].="$base | ";
+    if ($GLOBALS[droitadmin]) $context[templatesrecompiles].="$base | ";
+    if (!defined("TOINCLUDE")) define("TOINCLUDE",$home);
 
     require_once ($home."lodelparser.php");
     $parser=new LodelParser;
     $parser->parse($base, $template_cache);
   }
+
+  require_once ($GLOBALS[home]."connect.php");
+
   // execute le template php
   require_once($home."textfunc.php");		
   if ($GLOBALS[showhtml] && $GLOBALS[droitvisiteur]) {

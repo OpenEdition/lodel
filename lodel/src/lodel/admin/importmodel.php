@@ -27,7 +27,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 #authenticate();
 
@@ -68,9 +68,15 @@ if ($fichier && $delete) {
 } elseif ($fichier) {
   require_once ($home."connect.php");  
   require_once ($home."backupfunc.php");
-  include ($home."func.php");
+  require ($home."func.php");
 
+  // execute the editorial model
   if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
+
+  // change the id in order there are minimal and unique
+  require_once($home."objetfunc.php");
+  makeobjetstable();
+
   require_once($home."cachefunc.php");
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
@@ -94,7 +100,7 @@ if ($fichier && $delete) {
 }
 
 
-include ($home."calcul-page.php");
+require ($home."calcul-page.php");
 calcul_page($context,"importmodel");
 
 

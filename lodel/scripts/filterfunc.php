@@ -36,7 +36,7 @@ function makefilterfunc()
   //
   // cherche les champs a filtrer
   //
-  include ($home."connect.php");
+  require_once ($home."connect.php");
   $result=mysql_query("SELECT classe,$GLOBALS[tp]champs.nom,filtrage FROM $GLOBALS[champsgroupesjoin] WHERE $GLOBALS[tp]groupesdechamps.statut>0 AND $GLOBALS[tp]champs.statut>0 AND filtrage!=''") or die (mysql_error());
   while (list($classe,$nom,$filter)=mysql_fetch_row($result)) {
 #echo $classe," ",$nom," ",$filter,"<br>\n";

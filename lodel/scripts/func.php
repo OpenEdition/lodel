@@ -56,7 +56,7 @@ function posttraitement(&$context)
       if (is_array($val)) {
 	posttraitement($context[$key]);
       } else {
-	if ($key!="meta") $context[$key]=str_replace("\n"," ",htmlspecialchars(stripslashes($val)));
+	if ($key!="meta") $context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
     }
   }
@@ -119,7 +119,7 @@ function extract_post() {
     if (is_array($var)) {
       array_walk(&$var,"clean_for_extract_post");
     } else {
-      $var=str_replace("\n","",rmscript(trim($var)));
+      $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
     }
   }
   array_walk(&$GLOBALS[context],"clean_for_extract_post");
@@ -561,7 +561,8 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
 function tmpdir()
 
 {
-  $tmpdir=defined(TMPDIR) && (TMPDIR) ? TMPDIR : "CACHE/tmp";
+  $tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
+
   if (!file_exists($tmpdir)) { 
     mkdir($tmpdir,0777  & octdec($GLOBALS[filemask])); 
   }

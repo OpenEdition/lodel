@@ -42,7 +42,7 @@ $context[idparent]=intval($idparent);
 $context[iddocument]=intval($iddocument);
 $context[idtache]=$idtache=intval($idtache);
 $context[idtype]=intval($idtype);
-
+$context[lodeltags]=intval($lodeltags);
 
 if ($file1 && $file1!="none") {
   do {
@@ -88,7 +88,7 @@ if ($file1 && $file1!="none") {
 	}
 	if (!$xhtmlfile) die("ERROR: xhtml file not found in the archive");
 
-	system("$unzipcmd -qj -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
+	system("$unzipcmd -qjo -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
 	@unlink($fileconverted);
 	// setup the rights even if it's temporary
 	$fileconverted=$xhtmlfile;
@@ -160,7 +160,7 @@ calcul_page($context,"oochargement");
 function convert ($uploadedfile,$destfile)
 
 {
-  global $home,$servoourl,$servoousername,$servoopasswd,$unzipcmd;
+  global $home,$servoourl,$servoousername,$servoopasswd;
 
   $cmds="DWL file1; CVT XHTMLLodel-1.0; ZIP converted; RTN convertedfile;";
 
@@ -187,7 +187,7 @@ function OO_XHTML ($convertedfile,&$context)
 
   $time1=time();
 
-  $file=strtr(file_get_contents($convertedfile),"\n\r","  ");
+  $file=file_get_contents($convertedfile);
 
   if ($GLOBALS[sortieoo]) { // on veut la sortie brute
     echo htmlentities($file);
@@ -214,14 +214,16 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,"/<(r2rc?:$GLOBALS[stylestransparents])\b([^>]*)>.*?<\/\\1>/");
   array_push($rpl,"");
 
-  // remove empty paragraph
-  array_push($srch,"/<p\b[^>]*\/>/");
-  array_push($rpl,"");
+  // remove empty paragraph, and the empty tafs
+  array_push($srch,"/<p\b[^>]*\/>/","/<r2r:(\w+)>\s*<\/r2r:\\1>/");
+  array_push($rpl,"","");
 
 
   // transform FAB
-#  array_push($srch,"/\[(\/?)FAB:(\w+)\]/");
-#  array_push($rpl,"<\\1r2r:\\2>");
+  if ($context[lodeltags]) {
+    array_push($srch,"/<\/?r2rc?:[^>]+>/","/\[(\/?)!--LODEL:(\w+)--\]/");
+    array_push($rpl,"","<\\1r2r:\\2>");
+  }
 
   //
   // all the regexp in the following should be rewritten in a proper parser !
@@ -232,6 +234,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "r2r:endnote(?:text)?"=>"r2r:notefin",
 		      "r2r:corpsdetexte\w*"=>"r2r:texte",
 		      "r2r:bodytext"=>"r2r:texte",
+		      "r2r:textbody"=>"r2r:texte",
 		      "r2r:introduction"=>"r2r:texte",
 		      "r2r:conclusion"=>"r2r:texte",
 		      "r2r:normal"=>"r2r:texte",
@@ -416,13 +419,14 @@ function OO_XHTML ($convertedfile,&$context)
   $file=traite_couple($file);
 
   // recupere les styles conteneurs (ceux qui ont des parentheses)
-  $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/"),
-		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>"),
+  $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/",
+			    "/(<\/?r2rc:\w+)\(\w+\)[^>]*>/"),
+		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>","\\1>"),
 		      $file);
 
 
-  // remoev any wrong caracteres in the r2r
-  $file=preg_replace ("/(<\/?r2r:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
+  // remove any wrong caracteres in the r2r
+  $file=preg_replace ("/(<\/?r2rc?:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
 
   //
   // add the "official" beginning and end of the xml file

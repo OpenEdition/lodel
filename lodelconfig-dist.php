@@ -106,7 +106,7 @@ $idagauche="";
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK
 
-define(DONTUSELOCKTABLES,false);
+define("DONTUSELOCKTABLES",false);
 
 
 ############################################
@@ -121,6 +121,6 @@ ignore_user_abort();
 $currentdb="";
 $site="";
 
-define (NORECORDURL,1);
+define ("NORECORDURL",1);
 
 ?>

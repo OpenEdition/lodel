@@ -27,8 +27,28 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-include ($home."auth.php");
+require_once($home."auth.php");
 authenticate();
+
+if ($id) {
+  require_once($home."connect.php");
+  $id=intval($id);
+  $result=mysql_query("SELECT classe FROM $GLOBALS[tp]objets WHERE id='$id'") or die(mysql_error());
+  list($classe)=mysql_fetch_row($result);
+  $script=array("documents"=>"document",
+		"publications"=>"sommaire",
+		"entrees"=>"entree",
+		"typeentrees"=>"entrees",
+		"personnes"=>"personne",
+		"typepersonnes"=>"personnes",
+		);
+  if ($script[$classe]) {
+    require($script[$classe].".".$extensionscripts);
+  } else {
+    header("location: not-found.html");
+  }
+  return;
+}
 
 $base="index";
 include ($home."cache.php");

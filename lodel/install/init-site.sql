@@ -29,6 +29,15 @@
 # table commun a documents/publications
 #
 
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	classe		VARCHAR(255),
+
+	PRIMARY KEY (id)
+);
+
+
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -46,7 +55,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	PRIMARY KEY (id),
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype),
-	KEY index_nom (nom)
+	KEY index_identifiant (identifiant)
 );
 
 #
@@ -165,7 +174,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 );
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
-	id		TINYINT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64),
 
 	statut		TINYINT DEFAULT '1' NOT NULL,
@@ -177,7 +186,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
-	idgroupe	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	idgroupe	INT UNSIGNED DEFAULT '0' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	KEY index_idgroupe (idgroupe),
@@ -262,7 +271,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	nom		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
 	langue		CHAR(2) NOT NULL,
-	idtype		TINYINT DEFAULT '0' NOT NULL,
+	idtype		INT DEFAULT '0' NOT NULL,
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	statut		TINYINT DEFAULT '1' NOT NULL,

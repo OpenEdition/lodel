@@ -39,7 +39,7 @@ require_once ($home."balises.php");
 
 
 // ajoute les balises "entrees"
-include ($home."connect.php");
+require_once ($home."connect.php");
 require_once($home."champfunc.php");
 $result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typeentrees WHERE statut>0");
 while (list($style,$titre)=mysql_fetch_row($result)) { 
