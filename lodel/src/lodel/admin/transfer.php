@@ -243,7 +243,7 @@ RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_entites_personnes;
     if (!$tables["$GLOBALS[tp]typepersonnes"]) {
 	if ($err=create("typepersonnes")) break; // recharge pour les typepersonnes
       $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,tpl,tplindex,statut,ordre) VALUES('1','auteur','auteur','auteur','auteur','auteurs','1','1');
+REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,statut,ordre) VALUES('1','auteur','auteur','auteur','description de l''auteur','descriptionauteur','auteur','auteurs','1','1');
 ");
       if ($err) break;
       $report.="Creation de typepersonnes<br>\n";

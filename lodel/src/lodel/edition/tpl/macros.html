@@ -158,6 +158,17 @@
 			</div>
 		</td>
 	<ELSE/>
+	<IF COND="[#TYPE] eq 'lang'">
+		<td>
+		  <select name="entite[[#NOM]]">
+			<IF COND="[#CONDITION] eq '+'">
+		    <?  makeselectlangues_nevernil($context[value]); // use [#VALUE] ?>
+		        <ELSE/>
+		    <?  makeselectlangues($context[value]); // use [#VALUE] ?>
+		        </IF>
+		  </select>
+		</td>
+	<ELSE/>
 	<IF COND="[#EDITION] eq 'text'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 	</IF>
@@ -166,6 +177,7 @@
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea30'">
 		<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+	</IF>
 	</IF>
 	</IF>
 	</IF>

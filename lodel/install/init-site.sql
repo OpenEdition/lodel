@@ -179,7 +179,12 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
-	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
+	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
+
+	titredescription		TINYTEXT NOT NULL,		# affichage "description de la personne"
+	styledescription		TINYTEXT NOT NULL,		# style qui conduit a la description de ce type.
+
+
 	tpl		TINYTEXT NOT NULL,			# nom du fichier template pour l'entree
 	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
 

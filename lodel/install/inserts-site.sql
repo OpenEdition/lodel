@@ -30,7 +30,7 @@ REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,l
 REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
 REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('2','motcle','mot clé','motscles','mot','mots','1','1','1','0','nom','1');
 
-REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,tpl,tplindex,statut,ordre) VALUES('1','auteur','auteur','auteur','auteur','auteurs','1','1');
+REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,statut,ordre) VALUES('1','auteur','auteur','auteur','description de l''auteur','descriptionauteur','auteur','auteurs','1','1');
 
 ############# DOCUMENTS ###############
 # groupes de champs

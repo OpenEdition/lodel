@@ -50,6 +50,8 @@ if ($edit) { // modifie ou ajoute
     if (!$context[tplindex]) $err=$context[erreur_tplindex]=1;
     if (!$context[titre]) $err=$context[erreur_titre]=1;
     if (!$context[style] || !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
+    if (!$context[titredescription]) $err=$context[erreur_titredescription]=1;
+    if (!$context[styledescription] || !preg_match("/^[a-zA-Z0-9]*$/",$context[styledescription])) $err=$context[erreur_styledescription]=1;
     if ($err) break;
 
     include_once ($home."connect.php");
@@ -67,7 +69,7 @@ if ($edit) { // modifie ou ajoute
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]typepersonnes (id,type,titre,style,tpl,tplindex,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$statut','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[titredescription]','$context[styledescription]','$context[tpl]','$context[tplindex]','$statut','$ordre')") or die (mysql_error());
     if ($id) {
       typetype_delete("typepersonne","idtypepersonne='$id'");
     } else {

@@ -106,12 +106,14 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 
 {
   // il faudrait ajouter ici un test sur le type... mais bon, c'est pas facile parce qu'on ne connait pas encore le type !!!
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die (mysql_error());
-  while (list($idtype,$style)=mysql_fetch_row($result)) {
+  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die (mysql_error());
+  while (list($idtype,$style,$styledescription)=mysql_fetch_row($result)) {
     // accouple les balises personnes et description
-    $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
+    // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
     // cherche toutes les balises de personnes
     preg_match_all ("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$results2,PREG_SET_ORDER);
+    // cherche toutes les balises de decsription de personnes
+    preg_match_all ("/<r2r:$styledescription>(.*?)<\/r2r:$styledescription>/s",$text,$results2description,PREG_SET_ORDER);
 #    echo "result2: style=$style";
 #    echo htmlentities($text);
 #    print_r($results2);
@@ -119,15 +121,13 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
     $i=1;
 
     while ($result2=array_shift($results2)) { // parcours les resultats.
+      $val=trim($result2[1]);
+      // description ?
+      $result2description=array_shift($results2description); // parcours les descriptions.
       // cherche s'il y a un bloc description
-      if (preg_match("/^(.*?)(<r2r:description>.*?<\/r2r:description>)/si",$result2[1],$result3)) { // il y a un bloc description, donc on a une description pour le dernier personne.
-	$val=trim($result3[1]);
-	// remplace descriptionauteur en description. 
-	$descrpersonne=$result3[2];
-      } else { // pas description des personnes
-	$val=trim($result2[1]);
-	$descrpersonne="";
-      }
+      $descrpersonne=$result2description ? $result2description[1] : "";
+
+
 #    echo htmlentities($descrpersonne)."<br><br>\n\n";
       $personnes=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom><r2rc:prefix><r2rc:nom>"));
 

@@ -66,22 +66,22 @@ $langues=array("fr"=>"fran\303\247ais",
 // ne rien modifier ici
 //
 
-function makeselectlangues($lang="lang") {
+function makeselectlangues($lang="") {
   global $context,$langues;
   
   echo "<option value=\"\">--</option>\n";
   foreach ($langues as $l=>$langue) {
-    $selected=$context[$lang]==$l ? " selected" : "";
+    $selected=$lang==$l ? " selected" : "";
     echo "<option value=\"$l\"$selected>$langue</option>\n";
   }
 }
 
 
-function makeselectlangues_nevernil($lang="lang") {
+function makeselectlangues_nevernil($lang="") {
   global $context,$langues;
 
   foreach ($langues as $l=>$langue) {
-    $selected=$context[$lang]==$l ? " selected" : "";
+    $selected=$lang==$l ? " selected" : "";
     echo "<option value=\"$l\"$selected>$langue</option>\n";
   }
 }

@@ -16,8 +16,11 @@ $result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typeentrees WHERE statu
 while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 
 // ajoute les balises "personnes"
-$result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typepersonnes WHERE statut>0");
-while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
+$result=mysql_query("SELECT style,titre,styledescription,titredescription FROM $GLOBALS[tp]typepersonnes WHERE statut>0");
+while ($row=mysql_fetch_row($result)) { 
+  $balises[$row[0]]=$row[1];
+  $balises[$row[2]]=$row[3];
+}
 
 // ajoute les balises "documents"
   $result=mysql_query("SELECT $GLOBALS[tp]champs.style,$GLOBALS[tp]champs.titre,$GLOBALS[tp]champs.type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  classe='documents' AND $GLOBALS[tp]champs.statut>0") or die (mysql_error());

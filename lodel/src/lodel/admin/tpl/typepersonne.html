@@ -30,7 +30,20 @@
 			<td class="texte_intitule">Style du type de personne (*):</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
-		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style !</td></tr>]
+		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style valide !</td></tr>]
+		<tr>
+			<td class="texte_intitule">Titre de la description des personnes (*):</td>
+			<td><input size="40" type="text" name="titredescription" value="[#TITREDESCRIPTION]" /></td>
+		</tr>
+		[(#ERREUR_TITREDESCRIPTION|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+
+
+		<tr>
+			<td class="texte_intitule">Style de la description des personne (*):</td>
+			<td><input size="40" type="text" name="styledescription" value="[#STYLEDESCRIPTION]" /></td>
+		</tr>
+
+		[(#ERREUR_STYLEDESCRIPTION|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style valide!</td></tr>]
 		<tr>
 			<td>
 				<span class="texte_intitule">Nom du fichier template pour les personnes :</span><br />
