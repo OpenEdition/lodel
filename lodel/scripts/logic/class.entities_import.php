@@ -344,13 +344,13 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    function processCharacterStyles($obj,$data) 
      
    {
-     return $obj->conversion.$data.closingtag($obj->conversion);
+     return $obj->conversion.$data.closetags($obj->conversion);
    }
 
    function processInternalStyles($obj,$data) 
      
    {
-     return $obj->conversion.$data.closingtag($obj->conversion);
+     return $obj->conversion.$data.closetags($obj->conversion);
    }
 
    function unknownParagraphStyle($style,$data) {
