@@ -8,9 +8,13 @@ $home="/path/to/script";
 # ATTENTION : $urlroot doit toujours se terminer par /, il ne peut etre vide
 $urlroot="/";
 
-# Repertoire contenant les fichiers communs partagés
+# URL contenant les fichiers communs partagés
 # par exemple $shareurl="http://lodel.revues.org/share";
 $shareurl="http://mywebsite.domain.org/lodel/share";
+
+# Repertoire contenant les fichiers communs partagés
+# par exemplre $sharedir="/var/www/lodel/share"
+$sharedir="/path/to/share"
 
 # Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite
 # nomrevues.domain.org ou domaine.org/nomrevue
