@@ -47,8 +47,7 @@ if ($backup) {
   $outfile="site-$site.sql";
   $uselodelprefix=true;
   $tmpdir=tmpdir();
-  mysql_dump($currentdb,$GLOBALS[lodelsitetables],$tmpdir."/".$outfile);
-
+  mysql_dump($currentdb,$GLOBALS['lodelsitetables'],$tmpdir."/".$outfile);
   # verifie que le fichier n'est pas vide
   if (filesize($tmpdir."/".$outfile)<=0) die ("ERROR: mysql_dump failed");
 

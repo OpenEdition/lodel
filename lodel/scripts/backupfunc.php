@@ -34,31 +34,34 @@
 
 define("LODELPREFIX","__LODELTP__");
 
-$GLOBALS[lodelsitetables]=array("objets",
-				"entites",
-				"relations",
-				"publications",
-				"documents",
-				"champs",
-				"groupesdechamps",
-				"personnes",
-				"users",
-				"groupes",
-				"users_groupes",
-				"types",
-				"typepersonnes",
-				"typeentrees",
-				"entrees",
-				"taches",
-				"textes",
-				"entites_personnes",
-				"entites_entrees",
-				"typeentites_typeentites",
-				"typeentites_typeentrees",
-				"typeentites_typepersonnes",
-				"options");
+$GLOBALS['lodelsitetables']=array("$GLOBALS[tp]objets",
+				  "$GLOBALS[tp]entites",
+				  "$GLOBALS[tp]relations",
+				  "$GLOBALS[tp]publications",
+				  "$GLOBALS[tp]documents",
+				  "$GLOBALS[tp]champs",
+				  "$GLOBALS[tp]groupesdechamps",
+				  "$GLOBALS[tp]personnes",
+				  "$GLOBALS[tp]users",
+				  "$GLOBALS[tp]groupes",
+				  "$GLOBALS[tp]users_groupes",
+				  "$GLOBALS[tp]types",
+				  "$GLOBALS[tp]typepersonnes",
+				  "$GLOBALS[tp]typeentrees",
+				  "$GLOBALS[tp]entrees",
+				  "$GLOBALS[tp]taches",
+				  "$GLOBALS[tp]textes",
+				  "$GLOBALS[tp]entites_personnes",
+				  "$GLOBALS[tp]entites_entrees",
+				  "$GLOBALS[tp]typeentites_typeentites",
+				  "$GLOBALS[tp]typeentites_typeentrees",
+				  "$GLOBALS[tp]typeentites_typepersonnes",
+				  "$GLOBALS[tp]options");
 
-$GLOBALS[lodelbasetables]=array("sites","users","pileurl","session");
+$GLOBALS['lodelbasetables']=array("$GLOBALS[tp]sites",
+				  "$GLOBALS[tp]users",
+				  "$GLOBALS[tp]pileurl",
+				  "$GLOBALS[tp]session");
 
 
 
