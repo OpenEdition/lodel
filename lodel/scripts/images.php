@@ -99,8 +99,8 @@ function resize_image ($taille,$src,$dest)
       }
     } else {
       if (!preg_match("/(\d+)[x\s]+(\d+)/",$taille,$result2)) break;
-      if (!($width=$result2[1])) break;
-      if (!($height=$result2[2])) break;
+      $width=$result2[1] ? $result2[1] : $result[0];
+      $height=$result2[2] ? $result2[2] : $result[1];
     }
 
     $im2=@ImageCreateTrueColor($width,$height); // GD 2.0 ?
