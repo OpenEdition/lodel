@@ -53,7 +53,7 @@ if ($edit) { // modifie ou ajoute
       $status=1;
       if (!$context[typeid]) die ("Erreur interne. Il manque le type dans le formulaire");
       $context[typeid]=intval($context[typeid]);
-      $ordre=get_ordre_max("entrees"," parent='$parent' AND type='$context[typeid]'");
+      $ordre=get_ordre_max("entrees"," parent='$parent' AND typeid='$context[typeid]'");
     }
     if ($protege) $status=32;
 
