@@ -38,16 +38,16 @@
 </div>
 <br /><br />
 <?php  $context[margin]=0; # initialise la marge ?>
+
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+<tr>
+	<td class="texte_noir_gras">Nom</td>
+	<IF COND="[#TYPE_UTILISEABREV]"><td class="texte_noir_gras">Abr&eacute;viation</td></IF>
+	<td class="texte_noir_gras">Langue</td>
+	<td>&nbsp;</td>
+</tr>
+
 <LOOP NAME="listentrees" TABLE="entrees" ORDER="[#TYPE_TRI]" WHERE="idtype='[#IDTYPE]' AND idparent='[#ID]'" WHERE="statut gt -64">
-	<BEFORE>
-		<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-		<tr>
-			<td class="texte_noir_gras">Nom</td>
-			<IF COND="[#TYPE_UTILISEABREV]"><td class="texte_noir_gras">Abr&eacute;viation</td></IF>
-			<td class="texte_noir_gras">Langue</td>
-			<td>&nbsp;</td>
-		</tr>
-	</BEFORE>
 	<DO>
 		<tr>
 			<td class="ligne_admin2">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#NOM|nbsp)]</span></td>
@@ -69,22 +69,19 @@
         <LET VAR="BARRE">[#BARRE]|</LET>
 		<LOOP NAME="listentrees"></LOOP>
 	</DO>
-	<AFTER>
-		</table>
-	</AFTER>
 </LOOP>
+</table>
+
+<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td colspan="3" class="message_erreur">Dans la corbeille</td>
+	</tr>
+	<tr>
+		<td class="texte_noir_gras"><b>Nom</b><br></td>
+		<td>&nbsp;</td>
+	</tr>
 
 <LOOP NAME="listentree_trash" TABLE="entrees" ORDER="ordre" WHERE="statut le -64" WHERE="idtype='[#IDTYPE]'">
-	<BEFORE>
-		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
-			<tr>
-				<td colspan="3" class="message_erreur">Dans la corbeille</td>
-			</tr>
-			<tr>
-				<td class="texte_noir_gras"><b>Nom</b><br></td>
-				<td>&nbsp;</td>
-			<tr>
-	</BEFORE>
 	<DO>
 		<tr>
 			<IF COND="[#COUNT] % 2">
@@ -102,8 +99,8 @@
 			</IF>
 		</tr>
 	</DO>
-	<AFTER></table></AFTER>
 </LOOP>
+</table>
 <div class="pied_de_formulaire">
 	<form>
 		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
