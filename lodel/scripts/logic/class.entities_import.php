@@ -75,6 +75,14 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      $parser->init($votype->class);
      $parser->parse(file_get_contents($task['fichier']),$this);
 
+     // save the file
+     if (!$this->id) die("ERROR: internal error in Entities_ImportLogic::importAction");
+     $sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
+     @unlink($sourcefile);
+     copy($task['fichier'],$sourcefile);
+     @chmod($sourcefile,0666 & octdec($GLOBALS['filemask']));
+     // ok
+
      #die("la");
      // close the task     
      if ($idtask) {
@@ -262,7 +270,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
        if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
 
-       $localcontext['creationsource']="import";
+       $localcontext['creationmethod']="servoo";
        $localcontext['creationinfo']=$this->task['sourceoriginale'];
        
 #print_r($localcontext);
@@ -287,16 +295,16 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    {
      if ($obj->type=="mltext") {
        $lang=$obj->lang ? $obj->lang : $GLOBALS['user']['lang'];
-       $this->_currentcontext[$obj->name][$lang].=$data;
+       $this->_currentcontext[$obj->name][$lang].=addslashes($data);
      } else {
-       $this->_currentcontext[$obj->name].=$data;
+       $this->_currentcontext[$obj->name].=addslashes($data);
      }
    }
    
    function processEntryTypes($obj,$data) 
    {
      foreach(preg_split("/,/",strip_tags($data)) as $entry) {
-       $this->_localcontext['entries'][$obj->id][]=array("g_name"=>trim($entry));
+       $this->_localcontext['entries'][$obj->id][]=array("g_name"=>trim(addslashes($entry)));
      }
    }
    
@@ -336,8 +344,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 	 } else $name=$data;
        }
      }
-     $this->_currentcontext[$g_name['firstname']]=trim($firstname);
-     $this->_currentcontext[$g_name['familyname']]=trim($name);
+     $this->_currentcontext[$g_name['firstname']]=addslashes(trim($firstname));
+     $this->_currentcontext[$g_name['familyname']]=addslashes(trim($name));
    }
 
    

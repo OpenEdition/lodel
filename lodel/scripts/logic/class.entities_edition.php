@@ -213,6 +213,8 @@ class Entities_EditionLogic extends GenericLogic {
      $vo->identifier=$context['identifier'];
      if ($this->g_name['dc.title']) $vo->g_title=$context[$this->g_name['dc.title']];
      if (!$vo->identifier) $vo->identifier=preg_replace("/\W+/","-",makeSortKey($vo->g_title));
+     if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
+     if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
 
      $id=$context['id']=$dao->save($vo);
 
@@ -234,6 +236,22 @@ class Entities_EditionLogic extends GenericLogic {
      //unlock();
 
      return $ret ? $ret : "_back";
+   }
+
+
+   function makeSelect(&$context,$var)
+
+   {
+     switch($var) {
+     case 'creationinfo':
+       if ($context['creationmethod'] && $context['creationmethod']!='form') die("ERROR: error creationmethod must be 'form' to choose the creationinfo");
+       $arr=array("xhtml"=>"XHTML",
+		  "wiki"=>"Wiki",
+		  "bb"=>"BB"
+		  );
+       renderOptions($arr,$context['creationinfo']);
+       break;
+     }
    }
 
 

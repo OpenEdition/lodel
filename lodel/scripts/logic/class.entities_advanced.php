@@ -205,6 +205,42 @@ class Entities_AdvancedLogic extends Logic {
      return "_back";
    }
 
+  /**
+   * Download
+   */
+
+  function downloadAction(&$context,&$error)
+
+  {
+    $id=$context['id'];
+
+    switch($context['type']) {
+    case 'xml':      
+      die("a implementer");
+      $filename="r2r-$id.xml";
+      $originalname=$filename;
+      $dir="../txt";
+      break;
+    case 'source' :
+      $filename="entite-$id.source";
+      $dir="../sources";
+      // get the official name 
+      $dao=$this->_getMainTableDAO();
+      $vo=$dao->getById($id,"creationmethod,creationinfo");
+      if ($vo->creationmethod!="servoo") die("ERROR: error creationmethod is not compatible with download");
+      $originalname=$vo->creationinfo ? basename($vo->creationinfo) : basename($filename);
+      break;
+    default:
+      die ("ERROR: unknow type of download in downloadAction");
+    }
+    
+    if (!file_exists($dir."/".$filename)) die ("ERROR: the filename $filename does not exists");
+
+    require_once($GLOBALS['home']."func.php");
+    download ($dir."/".$filename,$originalname);
+    exit();
+  }
+
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point

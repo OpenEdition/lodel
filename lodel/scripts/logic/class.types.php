@@ -30,7 +30,7 @@
 
 $GLOBALS['importdocument']=array(
 				 0=>array("url"=>"document.php",
-					  "title"=>"[@ADMIN.FORMS]"),
+					  "title"=>"[@COMMON.FORM]"),
 
 				 1=>array("url"=>"oochargement.php",
 					  "title"=>"ServOO")

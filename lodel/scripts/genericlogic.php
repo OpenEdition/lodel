@@ -154,10 +154,6 @@ class GenericLogic extends Logic {
    }
 
 
-   function makeSelect(&$context,$var)
-
-   {
-   }
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
@@ -442,7 +438,7 @@ function lodel_strip_tags($text,$allowedtags,$k=-1)
   // the simpliest case.
   if (!$accepted) return strip_tags($text);
 
-  $arr=preg_split("/(<\/?)(\w*:?\w+)\b([^>]*>)/",stripslashes($text),-1,PREG_SPLIT_DELIM_CAPTURE);
+  $arr=preg_split("/(<\/?)(\w*:?\w+)\b([^>]*>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
 
   $stack=array(); $count=count($arr);
   for($i=1; $i<$count; $i+=4) {
