@@ -35,25 +35,30 @@
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
 							|&nbsp;<a href="typeindex.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="typeindex.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+							<a href="typeindex.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+							<a href="typeindex.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+							<a href="typeindex.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 						</div>
 					</td>
 				<ELSE/>
 					<td class="ligne_admin2">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin2">[(#TITRE|nbsp)]</t>
-					<td class="ligne_admin1">[(#BALISE|nbsp)]</td>
+					<td class="ligne_admin2">[(#BALISE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>
 							|&nbsp;<a href="typeindex.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="typeindex.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+							<a href="typeindex.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+							<a href="typeindex.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+							<a href="typeindex.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+
 						</div>
 					</td>
 				</IF>
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="4"><span class="texte_info">Il n'y a pas de types de index</span></td></tr>
+			<tr><td colspan="5"><span class="texte_info">Il n'y a pas de types d'index</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 </table>
