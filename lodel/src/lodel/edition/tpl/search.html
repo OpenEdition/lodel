@@ -40,7 +40,7 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
-	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" TYPE="[#Q_TYPE]" STATUS="[#Q_STATUS]">
+	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" QTYPE="[#QTYPE]" QSTATUS="[#QSTATUS]" QFIELD="[#QFIELD]">
 	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
 		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
 		<div style="padding-top:10px;">
@@ -62,18 +62,25 @@
 		<ELSE/>
 			<div class="ligne_serie2">
 		</IF>
-		[#WEIGHT]<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
+		<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 		
 		<span class="type_document">
-		(in
-		<a href="index.php">[@BASE]</a>
+		([@IN]
 		<LOOP NAME="parentsentities">
+		<DOFIRST>
+			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+		</DOFIRST>
 		<DO>
-			:: <a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+			<IF COND="[#NBRESULTS] GT 1">
+				&nbsp;>&nbsp;
+			</IF>
 		</DO>
-		
+		<DOLAST>
+			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+		</DOLAST>
 		</LOOP>
 		)</span>
 		
@@ -81,35 +88,8 @@
 	</DO>
 	<ALTERNATIVE>
 	<MACRO NAME="YOUR_SEARCH_BAR">
-	<!--[	@your_search 
-		<IF COND="[#Q_TYPE]">
-			<LOOP NAME="print_title_type_2" TABLE="types" WHERE="id=[#Q_TYPE]">
-			@in <strong>[#TITLE]</strong>
-			</LOOP>
-		</IF>
-		<IF COND="[#Q_FIELD]">
-		@in_field <strong>[#Q_FIELD]</strong>
-		</IF>
-		<IF COND="[#Q_STATUS]">
-		(only 
-			<IF COND="[#Q_STATUS] EQ -16">
-				@draft
-			</IF>
-			<IF COND="[#Q_STATUS] EQ -1">
-			@ready_to_be_published
-			</IF>
-			<IF COND="[#Q_STATUS] EQ 1">
-			@published
-			</IF>
-			<IF COND="[#Q_STATUS] EQ 16">
-			@protected
-			</IF>
-			)
-		</IF> 
-		@for &quot;[#QUERY]&quot; ([#NBRESULTS] @results)</span></a>
-	</div>
-	</div>]-->
-		<p style="margin-left : 25px ; margin-top : 50px;">
+	
+		<p class="searchnoresults">
 		[@MESSAGE_NO_RESULTS]
 		(Exemple : Aucun document ne correspond aux termes de recherche spécifiés <strong>[#QUERY|stripslashes]</strong>)
 		</p>
