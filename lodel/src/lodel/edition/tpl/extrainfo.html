@@ -28,14 +28,14 @@
 	</td>
 </tr>
 <TR>
+	<td>Sur Titre:</td>
+	<td><input size="80" type="text" name="surtitre" value="[#SURTITRE]"></td>
+</tr>
+<TR>
 	<td width="100">Titre:</td>
 	<td><input size="80" type="text" name="titre" value="[#TITRE]"></td>
 	[(#ERREUR_TITRE|true)<td>Vous devez preciser un titre</td>]
 	</tr>
-<TR>
-	<td>Sur Titre:</td>
-	<td><input size="80" type="text" name="surtitre" value="[#SURTITRE]"></td>
-</tr>
 <TR>
 	<td>Sous Titre:</td>
 	<td><input size="80" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
@@ -81,7 +81,7 @@
 				<td>Prefix:</td>
 				<td><input size="5" type="text" name="prefix[#IND]" value="[#PREFIX]"></td>				    
 <!--ajout de ghislain le 6/4/3 -->
-				<td>Description:</td><td ROWSPAN="3"><textarea name="description[#IND]" COL="30" ROW="20">[#DESCRIPTION]</textarea></td>
+				<td>Description:</td><td ROWSPAN="3"><textarea name="description[#IND]" COL="30" ROW="20" readonly>[#DESCRIPTION]</textarea></td>
 			</tr>
 <!-- -->
 			<TR>
