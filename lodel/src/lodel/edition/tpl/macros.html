@@ -800,7 +800,7 @@
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
         <IF COND="[#DROITADMIN] or [#ID]">
 	<LET VAR="idparentsaved">[#ID]</LET>
-	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="ordre">
+	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe!='publications'" ORDER="ordre">
 		<BEFORE>
 			<IF COND="[#NBRESULTATS] ge 6">
 				<MACRO NAME="PNG_PLUS">
