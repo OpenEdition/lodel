@@ -333,6 +333,13 @@ DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
     }
 
     if (!$tables["$GLOBALS[tp]entites"]) {
+      # suppression des documents avec : titre vide, type vide, publication 0 et status < 1 
+      $err=mysql_query_cmds('
+DELETE FROM documents WHERE type=\'\' AND publication=\'0\' AND titre=\'\' AND statut<1;
+');
+      if ($err) break;
+      $report.="Suppression des documents avec un titre vide, type vide, publication 0 et status <1<br>";
+
       # verifie l'integrite du type de documents
       $result=mysql_query("SELECT $GLOBALS[tp]documents.id,$GLOBALS[tp]documents.type FROM  $GLOBALS[tp]documents LEFT JOIN $GLOBALS[tp]types ON $GLOBALS[tp]documents.type=$GLOBALS[tp]types.type   WHERE  $GLOBALS[tp]types.id IS NULL") or die (mysql_error());
       if (mysql_num_rows($result)) {
