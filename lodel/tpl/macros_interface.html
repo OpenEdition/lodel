@@ -726,7 +726,7 @@ function modifymember(members,textfield){
 <a href="#" onclick="if(document.getElementById('advanced_search').style.display=='none'){document.getElementById('advanced_search').style.display='inline';} else {document.getElementById('advanced_search').style.display='none';} ">
 	<span class="texte_petit">[@EDITION.SEE_ADVANCED_SEARCH]</span>
 </a>
-<span  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
+<span  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD] AND ![#QNBRESULTS]">style="display : none"</IF>>
 <fieldset class="searchfieldset">
 <legend>[@EDITION.ADVANCED_SEARCH]</legend>
 <select id="qnbresults" name="qnbresults" class="searchfields">
