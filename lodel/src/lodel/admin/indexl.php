@@ -22,7 +22,7 @@ if ($id>0 && ($delete || $restore)) {
 }
 
 if (!$type) die("probleme interne contacter Ghislain");
-$context[type]=$type; // cette variable peut etre reajuste correctement dans la suite du code (dans edite, via l'import, ou dans la clause else. Il faut quand meme positionner cette valeur au cas ou.
+$context[type]=intval($type); // cette variable peut etre reajuste correctement dans la suite du code (dans edit, via l'import, ou dans la clause. Il faut quand meme positionner cette valeur pour le cas ou on ajoute simplement un motcle
 if ($id) $critere.=" AND status>0";
 
 //
@@ -36,17 +36,18 @@ if ($edit) { // modifie ou ajoute
     if (!$context[mot]) $err=$context[erreur_mot]=1;
     if ($err) break;
     include_once ($home."connect.php");
+    $context[type]=intval($context[type]);
 
     if ($id>0) { // il faut rechercher le status
       $result=mysql_query("SELECT status FROM indexls WHERE id='$id'") or die (mysql_error());
       list($status)=mysql_fetch_array($result);
-      mysql_query ("REPLACE INTO indexls (id,mot,lang,status,type) VALUES ('$id','$context[mot]','$context[lang]','$status','$type')") or die (mysql_error());
+      mysql_query ("REPLACE INTO indexls (id,mot,lang,status,type) VALUES ('$id','$context[mot]','$context[lang]','$status','$context[type]')") or die (mysql_error());
     } else {
       // cree les mots cles
       $mots=preg_split("/\s*[,;\n]\s*/",$context[mot]);
       foreach($mots as $mot) {
 	$mot=trim(strip_tags($mot));
-	mysql_query ("INSERT INTO indexls (mot,lang,type) VALUES ('$mot','$context[lang]','$type')") or die (mysql_error());
+	mysql_query ("INSERT INTO indexls (mot,lang,type) VALUES ('$mot','$context[lang]','$context[type]')") or die (mysql_error());
       }
     }
 
