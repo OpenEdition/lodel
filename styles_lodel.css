@@ -167,22 +167,6 @@ div.pas_de_publication {
 	font-style: italic;
 }
 
-/*div.ligne_ajouter a:visited {color: #CC9933;}
-div.ligne_ajouter a:hover {color: #FFBB03;}
-
-div.ligne_ajouter_art {
-	padding-left: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background-color: #E5E5E5;
-	color: #CC9933;
-	font-weight: bold;
-}
-
-div.ligne_ajouter_art a:link {color: #CC9933;}
-div.ligne_ajouter_art a:visited {color: #CC9933;}
-div.ligne_ajouter_art a:hover {color: #FFBB03;}*/
-
 div.action {
 	font-family: verdana;	
 	font-size: 10pt;
@@ -252,28 +236,6 @@ img.illus {float: right;}
 
 div.article {margin-left: 32px;}
 
-/*div.ligne_ajouter_nongrp {
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background-color: #E0E7E1;
-	font-weight: bold;
-}
-
-div.nongroupe div.ligne_art1 {
-	background-color: #F0F6F1;
-}
-
-div.nongroupe div.ligne_art2 {
-	background-color: #FAFFFB;
-}
-
-div.theme div.ligne_art1 {
-	background-color: #F0F6F1;
-}
-
-div.theme div.ligne_art2 {
-	background-color: #FAFFFB;
-}*/
 
 /************ Styles pour le tpl publication **************/
 div.ligne_haut_tpl_publication, 
@@ -479,7 +441,7 @@ div.lien_popup a:hover {
 	position: absolute;
 	height: 171px;
 	top: 0px;
-	left: 479px;
+	left: 500px;
 }
 
 #formulaire {
