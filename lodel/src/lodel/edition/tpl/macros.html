@@ -702,9 +702,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=-1">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 					<ELSE/>
-						|&nbsp;<span class="inactif">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</span>&nbsp;|
+						|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
 					</IF>
 				</td>
 			</tr>
@@ -717,9 +717,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=-16">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=-16">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
 					<ELSE/>
-						|&nbsp;<span class="inactif">[@EDITION.GO_TO_DRAFT]</span>&nbsp;|&nbsp;
+						|&nbsp;<span class="inactif">[@EDITION.SET_DRAFT]</span>&nbsp;|&nbsp;
 					</IF>
 				</td>
 			</tr>
@@ -747,9 +747,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=1">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
 					<ELSE/>
-						|&nbsp;<span class="inactif">[@EDITION.GO_TO_PUBLISHED]</span>&nbsp;|&nbsp;
+						|&nbsp;<span class="inactif">[@EDITION.SET_PUBLISHED]</span>&nbsp;|&nbsp;
 					</IF>
 				</td>
 			</tr>
