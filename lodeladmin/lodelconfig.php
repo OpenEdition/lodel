@@ -27,9 +27,9 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-define(LODELROOT,"..");
+define(LODELROOT,"../");
 
-require(LODELROOT."/lodelconfig.php");
-$home=LODELROOT."/".$home;
+require(LODELROOT."lodelconfig.php");
+$home=LODELROOT.$home;
 
 ?>

@@ -40,7 +40,7 @@ if (is_executable("CACHE") && !file_exists("CACHE/unlockedinstall")) {
 }
 
 
-if (!defined(LODELROOT)) define(LODELROOT,".."); // acces relatif vers la racine de LODEL
+if (!defined(LODELROOT)) define(LODELROOT,"../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
 $lodelconfig="CACHE/lodelconfig-cfg.php";
 
 //
@@ -48,7 +48,7 @@ $lodelconfig="CACHE/lodelconfig-cfg.php";
 // Copie le fichier lodelconfig choisi dans le CACHE
 // Verifie qu'on peut ecrire dans le cache
 //
-$plateformdir=LODELROOT."/lodel/install/plateform";
+$plateformdir=LODELROOT."lodel/install/plateform";
 
 $have_chmod=function_exists("chmod");
 
@@ -97,8 +97,8 @@ if ($tache=="home") {
 			  "includepath"=>$newincludepath));
     $includepath=$newincludepath;
     // on essaie de creer le repertoire include
-    if (!file_exists(LODELROOT."/".$includepath)) {
-      if (!@mkdir(LODELROOT."/".$includepath,0750)) {
+    if (!file_exists(LODELROOT.$includepath)) {
+      if (!@mkdir(LODELROOT.$includepath,0750)) {
 	$erreur_mkdir=1;
 	if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
 	return;
@@ -106,11 +106,11 @@ if ($tache=="home") {
     }
     // on essai de copier dans le repertoire $includepath
     // cherche les scripts
-    $dirname=LODELROOT."/lodel/scripts";
+    $dirname=LODELROOT."lodel/scripts";
     $dir=opendir($dirname);
     while ($file=readdir($dir)) {
       $srcfile=$dirname."/".$file;
-      $destfile=LODELROOT."/$includepath/$file";
+      $destfile=LODELROOT."$includepath/$file";
       if (!is_file($srcfile) || preg_match("/~$/",$srcfile)) continue;
       if (!@copy ($srcfile,$destfile)) {
 	$erreur_copyscripts=1;
@@ -183,8 +183,8 @@ if ($tache=="htaccess") {
   if ($nohtaccess) maj_lodelconfig("htaccess","off");
   if ($write) {
     foreach ($protecteddir as $dir) {
-      if (file_exists(LODELROOT."/".$dir) && !file_exists(LODELROOT."/".$dir."/.htaccess")) {
-	$file=@fopen(LODELROOT."/".$dir."/.htaccess","w");
+      if (file_exists(LODELROOT.$dir) && !file_exists(LODELROOT.$dir."/.htaccess")) {
+	$file=@fopen(LODELROOT.$dir."/.htaccess","w");
 	if (!$file) {
 	  $erreur_htaccesswrite=1;
 	} else {
@@ -243,7 +243,7 @@ if (!$tache) {
 //
 
 // les fonctions de tests existent, donc on peut faire des tests sur les droits
-$files=array("lodeladmin/CACHE"=>7,
+$dirs=array("lodeladmin/CACHE"=>7,
 	     "lodeladmin/tpl"=>5,
 	     "lodel"=>5,
 	     "lodel/install"=>5,
@@ -253,17 +253,19 @@ $files=array("lodeladmin/CACHE"=>7,
 	     "lodeladmin/images"=>5);
 	       
 $entete=0;
-foreach ($files as $file => $mode) {
+foreach ($dirs as $dir => $mode) {
   do { // block de control
-    if ((mode(LODELROOT."/".$file) & $mode)==$mode) break;
-    // essaie de chmoder
-    if ($have_chmod && (@chmod (LODELROOT."/".$file)) && (mode(LODELROOT."/".$file) & $mode)==$mode) break;
+    if (testdirmode($dir,$mode)) break;
+    // let try to chmod
+    if ($have_chmod) {
+      @chmod (LODELROOT.$dir);
+      if (testdirmode($dir,$mode)) break;
+    }
     if (!$entete) { probleme_droits_debut(); $entete=1; }
-    probleme_droits($file,$mode);
-  } while (0);
+    probleme_droits($dir,$mode);
+  } while(0);
+  if ($entete) { probleme_droits_fin(); return; }
 }
-if ($entete) { probleme_droits_fin(); return; }
-
 
 
 // include: lodelconfig
@@ -279,7 +281,7 @@ if (@include ($lodelconfig)) {
 }
 
 // does what ./lodelconfig.php does.
-$home=LODELROOT."/".$home;
+$home=LODELROOT.$home;
 
 
 //
@@ -336,7 +338,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
   // il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
   // les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
 
-  if ($erreur_createtables=mysql_query_file(LODELROOT."/lodel/install/init.sql")) {
+  if ($erreur_createtables=mysql_query_file(LODELROOT."lodel/install/init.sql")) {
     // mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
     if (@mysql_query($sitesexistsrequest)) {
       if (!@mysql_query("DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites")) { // ok, on n'arrive vraiment a rien faire
@@ -408,8 +410,8 @@ $have_is_link=function_exists("is_link"); // fonction is_link existe ?
 $file="lodelconfig.php";
 
 // check $file is readable
-$rootlodelconfig_exists=file_exists(LODELROOT."/".$file);
-if ($rootlodelconfig_exists && !is_readable(LODELROOT."/".$file)) {
+$rootlodelconfig_exists=file_exists(LODELROOT.$file);
+if ($rootlodelconfig_exists && !is_readable(LODELROOT.$file)) {
   $erreur_exists_but_not_readable=1;
   include ("tpl/install-lodelconfig.html");
   return;
@@ -417,10 +419,10 @@ if ($rootlodelconfig_exists && !is_readable(LODELROOT."/".$file)) {
 
 // compare the two config files
 
-if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT."/".$file))) { // are they different ?
+if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // are they different ?
 
-  if (@copy($lodelconfig,LODELROOT."/".$file)) { // let copy
-    if ($have_chmod) @chmod(LODELROOT."/".$file,0600);
+  if (@copy($lodelconfig,LODELROOT.$file)) { // let copy
+    if ($have_chmod) @chmod(LODELROOT.$file,0600);
   } else { // error
     include ("tpl/install-lodelconfig.html");
     return;
@@ -508,10 +510,24 @@ LODEL est livré avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'
   die();
 }
 
-function mode($filename)
+function testdirmode($dir,$mode)
 
 {
-  return is_readable($filename)*4+is_writable($filename)*2+is_executable($filename);
+  if ($mode & 2) { // writeable ?
+    $testfile=LODELROOT.$dir."/tmp_install_test";
+    if (file_exists($testfile)) @unlink($testfile); // if I have not the write permission in the directory, I won't be able to do that.
+    $fh=@fopen($testfile,"w");
+    if (!$fh) return FALSE;
+    if (!(@fputs($fh,"Lodel is great\n"))) return FALSE;
+    fclose($fh);
+    if (!(@unlink($testfile))) return FALSE;
+  } else { // readable ?
+    $dh=@opendir(LODELROOT.$dir);
+    if (!$dh) return FALSE;
+    if (!(@readdir($dh))) return FALSE;
+    closedir($dh);
+  }    
+  return TRUE;
 }
 
 function probleme_droits_debut()
