@@ -96,7 +96,7 @@ function publi_publication ($id,$status,$confirmation)
   lock_write("publications",
 	     "documents",
 	     "auteurs","documents_auteurs",
-	     "indexs","documents_indexs"); 
+	     "entrees","documents_entrees"); 
 
   //
   // cherche les publis a publier ou depublier
@@ -155,7 +155,7 @@ function publi_document ($critere,$status)
 
   if (is_numeric($critere)) {
     $where="id=".$critere." AND status>-32";
-    lock_write("documents","auteurs","indexs","documents_auteurs","documents_indexs"); 
+    lock_write("documents","auteurs","entrees","documents_auteurs","documents_entrees"); 
     if (!$admin) {
       // verifie que le document est dans le groupe
       $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE $where AND groupe IN ($usergroupes)") or die (mysql_error());
@@ -182,7 +182,7 @@ function publi_document ($critere,$status)
 
   
   publi_table($critere,$status,"auteur");
-  publi_table($critere,$status,"index");
+  publi_table($critere,$status,"entree");
   return TRUE;
 }
 
