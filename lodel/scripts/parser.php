@@ -84,7 +84,7 @@ class Parser {
 
 
  function Parser() { // constructor
-   $this->commands=array("USE","MACRO","LOOP","IF","LET","ELSE",
+   $this->commands=array("USE","MACRO","FUNC","LOOP","IF","LET","ELSE",
 			 "DO","DOFIRST","DOLAST","BEFORE",
 			 "AFTER","ALTERNATIVE","ESCAPE","CONTENT");
  }
@@ -808,7 +808,7 @@ function make_userdefined_loop_code ($name,$contents)
  // fin ajout
 }
 
- function parse_FUNC() { parse_MACRO("FUNC"); }
+function parse_FUNC() { $this->parse_MACRO("FUNC"); }
 
 function parse_MACRO($tag="MACRO")
 
@@ -843,7 +843,7 @@ function parse_MACRO($tag="MACRO")
 	if (!isset($attrs[$arg]))  { $this->errmsg ("the macro $name required the attribut $arg"); }
       }
     }
-    $macrofunc="macrofunc_".$name."_".$this->signature;
+    $macrofunc=strtolower("macrofunc_".$name."_".$this->signature);
     
     $this->_clearposition();
     // build the call
@@ -853,21 +853,20 @@ function parse_MACRO($tag="MACRO")
       $this->parse_variable($val,"quote");
       $args[]='"'.$attr.'"=>"'.$val.'"';
     }
-    $this->arr[$this->ind]='<?php '.$macrofunc.'($context,array('.join(",",$args).')); ?>';
+    $this->arr[$this->ind].='<?php '.$macrofunc.'($context,array('.join(",",$args).')); ?>';
     //
 
-    if (!$this->funcs[$macrofunc]) {
+    if (!($this->funcs[$macrofunc])) {
       $this->funcs[$macrofunc]=true;
       // build the function 
-      $this->arr[$this->ind].='<?php function '.$macrofunc.'($context,$args) {
-         $context=array_merge($context,$args); ?>';
-      $code=$this->macrocode[$name]['code'].'<?php
-      } ?>
-';
-      $this->_split_file($code);
+      $code='<?php function '.$macrofunc.'($context,$args) {
+         $context=array_merge($context,$args); ?>
+'.$this->macrocode[$name]['code'].'
+<?php  } ?>';
+      $this->_split_file($code,"add");
     }
   } else { // normal MACRO
-    $this->_split_file($this->macrocode[$name]['code']);
+    $this->_split_file($this->macrocode[$name]['code'],"insert");
     $this->_clearposition();
   }
 }
@@ -1034,7 +1033,7 @@ function prefix_tablename ($sql)
  }
 
 
- function _split_file($contents) {
+ function _split_file($contents,$action="insert") {
    $arr=preg_split("/<(\/?(?:".join("|",$this->commands)."))\b([^>]*?)\/?>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
 
    // parse the variables
@@ -1047,10 +1046,12 @@ function prefix_tablename ($sql)
      $this->ind=0;
      $this->currentline=0;
      $this->arr=$arr;
-   } else {
-     $this->_clearposition();
+   } elseif ($action=="insert") {
      $this->arr[$this->ind+2]=$arr[count($arr)-1].$this->arr[$this->ind+2];
      array_splice($this->arr,$this->ind+2,0,array_slice($arr,0,-1));
+   } elseif ($action=="add") {
+     $this->arr[count($this->arr)-1].=$arr[0];
+     $this->arr=array_merge($this->arr,array_slice($arr,1));
    }
    $this->countarr=count($this->arr);
    if (!$this->ind) $this->ind=1;

@@ -346,18 +346,18 @@ function parse_after(&$text)
 
 {
   if ($this->translationform) {
-    // add the translations form before the body
-    $closepos=strrpos($text,"</body>");
-    if (!$closepos) return; // no idea what to do...
-    $closepos-=strlen("</body>")+1;
+    // add the translations form before the body    
+    $closepos=strpos($text,"</body>");
+    if ($closepos===false) return; // no idea what to do...
 
-    $text=substr($text,0,$closepos).'<?php if ($context[\'usertranslationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
+    $code='<?php if ($context[\'usertranslationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
 <form method="post" action="'.$GLOBALS['home'].'../../lodeladmin/text.php"><input type="hidden" name="edit" value="1">
  <input type="submit" value="[Update]">
 <div id="translationforms">'.join("",$this->translationform).'</div>
 <input type="submit" value="[Update]"></form>
-<?php } ?>'.
-      substr($text,$closepos);
+<?php } ?>';
+
+    $text=substr_replace($text,$code,$closepos,0);
   }
 }
 
