@@ -1,5 +1,4 @@
-<?
-
+<?php
 # fonction largement reprises de SPIP
 
 

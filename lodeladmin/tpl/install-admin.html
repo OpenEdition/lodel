@@ -1,9 +1,9 @@
-<? include("tpl/install-openhtml.html"); ?>
+<?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
 Création d'un super administrateur initial. Choisissez un login et un mot de passe.<br>
 <p><p>
-<? if ($erreur_create) { ?> <b>Erreur</b>: Connection au serveur <?=$dbhost ?> impossible. Vérifier les informations entrées. L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+<?php  if ($erreur_create) { ?> <b>Erreur</b>: Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="admin">
@@ -11,7 +11,7 @@ Création d'un super administrateur initial. Choisissez un login et un mot de pas
 
 <tr><td>
 Login:<br>
-<input type="text" size="20" name="adminusername" value="<?=$adminusername?>">
+<input type="text" size="20" name="adminusername" value="<?php  echo $adminusername; ?>">
 </td></tr>
 <tr><td>
 Mot de passe:<br>
@@ -22,4 +22,4 @@ Mot de passe:<br>
 
 </form>
 
-<? include("tpl/install-closehtml.html"); ?>
+<?php  include("tpl/install-closehtml.html"); ?>

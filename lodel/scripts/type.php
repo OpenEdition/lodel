@@ -1,5 +1,4 @@
-<?
-
+<?php
 include_once($home."func.php");
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...

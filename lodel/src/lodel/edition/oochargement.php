@@ -1,5 +1,4 @@
-<?
-#echo "server:";
+<?php#echo "server:";
 #print_r($_SERVER);
 #echo "header:"; print_r(getallheaders());
 #echo "post:"; print_r($HTTP_POST_VARS);

@@ -1,5 +1,4 @@
-<?
-
+<?php
 require("lodelconfig.php");
 include ($home."func.php");
 include ($home."auth.php");

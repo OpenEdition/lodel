@@ -1,4 +1,4 @@
-<? include("tpl/install-openhtml.html"); ?>
+<?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
 Choix de la plateforme
@@ -13,11 +13,11 @@ Choix de la plateforme
 	    if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
 	    $plateform=$result[1];
 ?>
-<tr><td><input type="radio" name="plateform" value="<?= $plateform ?>"></td><td><?= $plateform ?></td></tr>
+<tr><td><input type="radio" name="plateform" value="<?php  echo $plateform; ?>"></td><td><?php  echo $plateform; ?></td></tr>
 
-<? } ?>
+<?php  } ?>
 </table>
 <input type="submit" value="continuer">
 </form>
 
-<? include("tpl/install-closehtml.html"); ?>
+<?php  include("tpl/install-closehtml.html"); ?>

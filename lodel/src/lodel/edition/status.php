@@ -1,5 +1,4 @@
-<?
-
+<?php
 // change le status d'un document ou d'une publication
 
 

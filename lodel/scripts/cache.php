@@ -1,5 +1,4 @@
-<?
-
+<?php
 require_once("lodelconfig.php");
 include_once ($home."func.php");
 

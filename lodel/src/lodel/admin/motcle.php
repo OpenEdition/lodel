@@ -1,5 +1,4 @@
-<?
-
+<?php
 die("fichier a supprimer du CVS");
 // gere les mots cle permanent. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des periodes.

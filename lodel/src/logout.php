@@ -1,5 +1,4 @@
-<?
-
+<?php
 touch("CACHE/maj");
 
 if ($PHP_AUTH_PW) {

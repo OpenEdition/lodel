@@ -1,4 +1,3 @@
-<?
-if (@include("entree.html")) return;
+<?phpif (@include("entree.html")) return;
 require("entree.php");
 ?>

@@ -1,5 +1,4 @@
-<?
-
+<?php
 die("fichier a supprimer du CVS");
 
 // gere les geographies. L'acces est reserve au superadministrateur.

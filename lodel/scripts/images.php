@@ -1,5 +1,4 @@
-<?
-
+<?php
 // traitement des images
 
 

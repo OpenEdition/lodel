@@ -1,5 +1,4 @@
-<?
-
+<?php
 # listes des balises et du texte affiche dans les select
 
 require("siteconfig.php");

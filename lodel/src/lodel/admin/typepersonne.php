@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les types de personnes. L'acces est reserve au superadministrateur.
 
 require("siteconfig.php");

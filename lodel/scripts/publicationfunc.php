@@ -1,5 +1,4 @@
-<?
-
+<?php
 //
 // gere la creation et la modification d'une publication
 //

@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les types de publications. L'acces est reserve au administrateur.
 
 require("siteconfig.php");

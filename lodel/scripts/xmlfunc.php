@@ -1,5 +1,4 @@
-<?
-
+<?php
 require_once ($home."balises.php");
 
 // fonction pour parser du xml

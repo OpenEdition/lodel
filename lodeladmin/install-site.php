@@ -1,5 +1,4 @@
-<?
-
+<?php
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN);
@@ -61,7 +60,7 @@ if ($create) {
 
 <H1>Initialisation des repertoires</H1>
 
-<?
+<?php 
 
 // essaie d'ecrire dans differents repertoires.
 #ifndef LODELLIGHT

@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les types de documents. L'acces est reserve au administrateur.
 
 require("siteconfig.php");

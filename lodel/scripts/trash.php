@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 // fonction pour metre et enlever de la poubelle;
 // si $critere est numerique, il est considerer comme etant l'id

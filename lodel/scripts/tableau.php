@@ -1,5 +1,4 @@
-<?
-
+<?php
 include_once ("$GLOBALS[home]/func.php");
 
 function traite_tableau ($intext) {

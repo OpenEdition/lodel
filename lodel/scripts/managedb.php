@@ -1,5 +1,4 @@
-<?
-
+<?php
 require_once ($home."func.php");
 
 //

@@ -1,5 +1,4 @@
-<?
-
+<?php
 //
 // $balises contient toutes les balises reconnues.
 // la valeur de la balise definie l'affichage dans chkbalisage.php (et n'a aucune incidence ailleurs).

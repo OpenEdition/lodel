@@ -1,5 +1,4 @@
-<?
-
+<?php
 function typetypes_delete($critere)
 
 {

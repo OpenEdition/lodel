@@ -1,5 +1,4 @@
-<?
-
+<?php
 # Racine de lodel sur le systeme
 $pathroot="";
 

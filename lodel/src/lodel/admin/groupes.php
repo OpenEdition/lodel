@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les groupes
 
 require("siteconfig.php");

@@ -1,5 +1,4 @@
-<?
-// registre dans la base de donnée le fichier
+<?php// registre dans la base de donnée le fichier
 
 require("siteconfig.php");
 include ($home."auth.php");

@@ -1,5 +1,4 @@
-<?
-require_once("siteconfig.php");
+<?phprequire_once("siteconfig.php");
 include ($home."auth.php");
 authenticate();
 

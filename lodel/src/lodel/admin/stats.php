@@ -1,5 +1,4 @@
-<?
-// Affiche des statistiques sur le  site.
+<?php// Affiche des statistiques sur le  site.
 
 require("siteconfig.php");
 include ($home."auth.php");

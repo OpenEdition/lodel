@@ -1,5 +1,4 @@
-<?
-
+<?php
 require("lodelconfig.php");
 $rep="";
 include ($home."connect.php");
@@ -13,7 +12,7 @@ $sql=str_replace("_PREFIXTABLE_","",$sql);
 ?>
 <H1>Initialisation SQL</H1>
 
-<?
+<?php 
 
 foreach ($sql as $cmd) {
   $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
@@ -28,8 +27,7 @@ foreach ($sql as $cmd) {
 
 <H1>Initialisation des repertoires</H1>
 
-<?
-
+<?php
 # essaie d'ecrire dans differents repertoires.
 
 $dirs=array("CACHE","admin/CACHE");

@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 // regexp de reconnaissance des prefix de nom de personne
 

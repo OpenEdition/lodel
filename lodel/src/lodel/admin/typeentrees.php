@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les types d'entrees. L'acces est reserve au administrateur.
 // assure l'edition, la supression, la restauration des types de document.
 

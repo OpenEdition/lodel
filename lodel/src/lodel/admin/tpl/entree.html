@@ -31,12 +31,12 @@
 <IF COND="![#TYPE_LINEAIRE]">
 		<tr>
 			<td class="texte_intitule">entrée parente :</td>
-			<td><select name="idparent"><option value="0">--</option><? make_selection_entree(); ?></select></td>
+			<td><select name="idparent"><option value="0">--</option><?php  make_selection_entree(); ?></select></td>
 		</tr>
 </IF>
 		<tr>
 			<td class="texte_intitule">Langue :</td>
-			<td><select name="lang"><? makeselectlangues_nevernil() ?></select></td>
+			<td><select name="lang"><?php  makeselectlangues_nevernil() ?></select></td>
 		</tr>
 		<tr>
 			<td class="texte_intitule">Entrée protégée:</td>

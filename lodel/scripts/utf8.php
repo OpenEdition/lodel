@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 function convertHTMLtoUTF8 (&$text)
 

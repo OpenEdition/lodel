@@ -1,5 +1,4 @@
-<?
-
+<?php
 include_once($home."func.php");
 # fonction d'entree pour le calcul d'une page
 

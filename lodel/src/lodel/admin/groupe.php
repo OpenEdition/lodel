@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les groupe. L'acces est reserve au administrateur.
 
 require("siteconfig.php");

@@ -40,12 +40,12 @@
 		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
 		<tr>
 			<td class="texte_intitule">Privil&egrave;ge :</td>
-			<td><select name="privilege"><? makeselectprivilege(); ?></select></td>
+			<td><select name="privilege"><?php  makeselectprivilege(); ?></select></td>
 		<tr>
 		<!--
 		<tr>
 			<td class="texte_intitule">Groupes (inutile pour les admin) :</td>
-			<td><SELECT MULTIPLE SIZE="10" name="groupes[]"><? makeselectgroupes(); ?></SELECT></td>
+			<td><SELECT MULTIPLE SIZE="10" name="groupes[]"><?php  makeselectgroupes(); ?></SELECT></td>
 		<tr>
 		-->
 		<input type="hidden" name="groupes[0]" value="1">

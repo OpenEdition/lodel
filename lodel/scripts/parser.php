@@ -1,5 +1,4 @@
-<?
-
+<?php
 function parse($in,$out)
 
 {
@@ -114,7 +113,7 @@ function parse ($in,$out)
 
   $this->parse_texte($contents);
 
-  $contents='<?
+  $contents='<?php 
 require_once ($home."connect.php");
 '.$this->fct_txt.'?>'.$contents;
 
@@ -158,7 +157,7 @@ function parse_texte(&$text)
       }
     }
     $urlbase=($GLOBALS[siteagauche] || !$site) ? $urlroot : $urlroot.$site."/";
-    $text=str_replace ($result[0],'<?php $result=mysql_query("SELECT id,texte FROM textes WHERE nom=\''.$nom.'\' AND status>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><A HREF="'."$urlbase".'lodel/admin/texte.php?id=<?=$id?>">[Modifier]</A><BR><?php } echo $texte; ?>',$text);
+    $text=str_replace ($result[0],'<?php $result=mysql_query("SELECT id,texte FROM textes WHERE nom=\''.$nom.'\' AND status>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><A HREF="'."$urlbase".'lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</A><BR><?php } echo $texte; ?>',$text);
   }
 }
 

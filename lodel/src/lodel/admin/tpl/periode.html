@@ -27,11 +27,11 @@
 		[(#ERREUR_ABREV|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser une abr&eacute;viation !</td></tr>]
 		<tr>
 			<td class="texte_intitule">P&eacute;riode parente :</td>
-			<td><select name="parent"><option value="0">--</option><? make_selection_periode(); ?></select></td>
+			<td><select name="parent"><option value="0">--</option><?php  make_selection_periode(); ?></select></td>
 		</tr>
 		<tr>
 			<td class="texte_intitule">Langue :</td>
-			<td><select name="lang"><? makeselectlangues_nevernil() ?></select></td>
+			<td><select name="lang"><?php  makeselectlangues_nevernil() ?></select></td>
 		</tr>
 	</table>
 	<div class="pied_de_formulaire">

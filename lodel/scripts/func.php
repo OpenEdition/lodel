@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 function writefile ($filename,&$text)
 {

@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les types de publications. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des types de document.
 

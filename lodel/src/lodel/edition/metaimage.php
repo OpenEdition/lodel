@@ -1,5 +1,4 @@
-<?
-
+<?php
 die("en cours de (re)developpement");
 
 

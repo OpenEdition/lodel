@@ -1,9 +1,9 @@
-<? include("tpl/install-openhtml.html"); ?>
+<?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
 Configuration de l'acces au serveur MySQL.<br>
 <p><p>
-<? if ($erreur_connect) { ?> <b>Erreur</b>: Connection au serveur <?=$dbhost ?> impossible. Vérifier les informations entrées. L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+<?php  if ($erreur_connect) { ?> <b>Erreur</b>: Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="mysql">
@@ -11,11 +11,11 @@ Configuration de l'acces au serveur MySQL.<br>
 
 <tr><td>
 serveur MySQL<br>
-<input type="text" size="60" name="newdbhost" value="<?=$dbhost?>">
+<input type="text" size="60" name="newdbhost" value="<?php  echo $dbhost; ?>">
 </td></tr>
 <tr><td>
 Utilisateur MySQL<br>
-<input type="text" size="60" name="newdbusername" value="<?=$dbusername?>">
+<input type="text" size="60" name="newdbusername" value="<?php  echo $dbusername; ?>">
 </td></tr>
 <tr><td>
 Mot de passe de l'utilsateur MySQL<br>
@@ -25,4 +25,4 @@ Mot de passe de l'utilsateur MySQL<br>
 <input type="submit" value="continuer">
 
 </form>
-<? include("tpl/install-closehtml.html"); ?>
+<?php  include("tpl/install-closehtml.html"); ?>

@@ -1,5 +1,4 @@
-<?
-
+<?php
 // la publication des publications et documents
 // assure la coherence de la base de donnee
 

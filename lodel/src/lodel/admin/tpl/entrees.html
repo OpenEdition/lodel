@@ -22,7 +22,7 @@
 		<td class="texte_noir_gras">Langue</td>
 		<td>&nbsp;</td>
 	</tr>
-	<? $context[margin]=0; # initialise la marge ?>
+	<?php  $context[margin]=0; # initialise la marge ?>
 	<LOOP NAME="listentrees" TABLE="entrees" ORDER="[#TYPE_TRI]" WHERE="idtype='[#IDTYPE]' AND idparent='[#ID]'" WHERE="status gt -64">
 		<DO>
 			<tr>
@@ -44,7 +44,7 @@
 					</div>
 				</td>
 			</tr>
-		        <? $context[margin]+=10; ?> <!-- incrément de la marge -->
+		        <?php  $context[margin]+=10; ?> <!-- incrément de la marge -->
 		        <LET VAR="BARRE">[#BARRE]|</LET>
 			<LOOP NAME="listentrees"></LOOP>
 		</DO>

@@ -62,14 +62,14 @@
 	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 		<tr>
 			<td width="200">Type de document</td>
-			<td><select name="typedoc"><? makeselecttypedoc(); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</font></IF></td>
+			<td><select name="typedoc"><?php  makeselecttypedoc(); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</font></IF></td>
 		</tr>
 		<tr>
 			<td width="200">Langues du texte</td>
 			<td>
-				<select name="lang1"><? makeselectlangues("lang1"); ?></select>
-				<select name="lang2"><? makeselectlangues("lang2"); ?></select>
-				<select name="lang3"><? makeselectlangues("lang3"); ?></select>
+				<select name="lang1"><?php  makeselectlangues("lang1"); ?></select>
+				<select name="lang2"><?php  makeselectlangues("lang2"); ?></select>
+				<select name="lang3"><?php  makeselectlangues("lang3"); ?></select>
 			</td>
 		</tr>
 		<tr>
@@ -78,7 +78,7 @@
 				<IF COND="[#DATEPUBLI]"> <!-- on affiche la date -->
 					<input size=20 type="text" name="datepubli" value="[(#DATEPUBLI|humandate)]">[(#ERREUR_DATEPUBLI|true)Date incorrecte.]
 				<ELSE/>
-					<input size=4 type="text" name="duree" value="[#DUREE]"><select name="dateselect"><? makeselectdate(); ?></select>
+					<input size=4 type="text" name="duree" value="[#DUREE]"><select name="dateselect"><?php  makeselectdate(); ?></select>
 				</IF>
 			</td>
 		</tr>
@@ -157,7 +157,7 @@
 			<tr>
 				<td width="200" valign="top">[#TITRE] (*) :</td>
 				<td>
-					<select multiple size="10" name="entrees[[#ID]][]"><? makeselectentrees($context); ?></select><br />
+					<select multiple size="10" name="entrees[[#ID]][]"><?php  makeselectentrees($context); ?></select><br />
 					<IF COND="[#NEWIMPORTABLE]">
 						<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
 						* noms séparés par des virgules ou point-virgules.

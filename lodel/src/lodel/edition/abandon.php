@@ -1,5 +1,4 @@
-<?
-
+<?php
 require_once("siteconfig.php");
 if (!function_exists("authenticate")) {
   include_once ($home."auth.php");

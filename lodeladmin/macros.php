@@ -1,5 +1,4 @@
-<?
-
+<?php
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN);

@@ -1,5 +1,4 @@
-<?
-
+<?php
 function checkfile ($filename,$error=0) {
   $text=file($filename);
   return checkstring($text);

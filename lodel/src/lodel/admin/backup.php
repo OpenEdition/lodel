@@ -1,5 +1,4 @@
-<?
-
+<?php
 
 require("siteconfig.php");
 include ($home."auth.php");

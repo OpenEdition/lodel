@@ -1,4 +1,4 @@
-<? include("tpl/install-openhtml.html"); ?>
+<?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
 Configuration de la base de donnée.<br>
@@ -9,11 +9,11 @@ Cette base de donnée sera utilisée pour toutes les sites si vous cochez la case 
 <p>
 
 
-<? if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer la database "<?= $database ?>". L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+<?php  if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer la database "<?php echo $database; ?>". L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
-<? if ($erreur_usedatabase) { ?> <b>Erreur</b>: L'utilisation de cette base de données ne semble pas possible. L'utilisateur MySQL a-t-il les droits ? L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+<?php  if ($erreur_usedatabase) { ?> <b>Erreur</b>: L'utilisation de cette base de données ne semble pas possible. L'utilisateur MySQL a-t-il les droits ? L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
-<? if ($erreur_createtables) { ?> <b>Erreur</b>: La création des tables a échoué. La commande SQL et l'erreur produite sont: <?=$erreur_createtables ?> <?} ?>
+<?php  if ($erreur_createtables) { ?> <b>Erreur</b>: La création des tables a échoué. La commande SQL et l'erreur produite sont: <?php echo $erreur_createtables; ?> <?php } ?>
 
 
 <form method="post" action="install.php">
@@ -23,7 +23,7 @@ Cette base de donnée sera utilisée pour toutes les sites si vous cochez la case 
 <tr><td>
 Base de données:<br>
 			<table>
-			  <? if (!$result) $result=@mysql_query("SHOW DATABASES");
+			  <?php  if (!$result) $result=@mysql_query("SHOW DATABASES");
 			     while ($row=mysql_fetch_row($result)) {
 			     $dbname=$row[0];
 			     if ($database==$dbname) {
@@ -32,21 +32,21 @@ Base de données:<br>
 			         $checked="";
 			     }
 			  ?>
-			  <tr><td><input type="radio" name="newdatabase" value="<?=$dbname ?>" <?=$checked?>></td><td><?=$dbname ?></td></tr>
-		          <? } ?>
-			  <tr><td><input type="radio" name="newdatabase" value="" <? if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de donnée: <input type="text" size="20" name="createdatabase" value="<?=$createdatabase ?>"></td></tr>
+			  <tr><td><input type="radio" name="newdatabase" value="<?php echo $dbname; ?>" <?php echo $checked; ?>></td><td><?php echo $dbname; ?></td></tr>
+		          <?php  } ?>
+			  <tr><td><input type="radio" name="newdatabase" value="" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de donnée: <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
 			</table>
 </td></tr>
 <tr><td>
 Base de donnée unique:<br>
-<input type="checkbox" name="newsingledatabase" <? if ($singledatabase) echo "checked"; ?>>
+<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase) echo "checked"; ?>>
 </td></tr>
 <tr><td>
 Préfix des tables:<br>
-<input type="text" size="20" name="newtableprefix" value="<?=$tableprefix ?>">
+<input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix; ?>">
 </td></tr>
 </table>
 <input type="submit" value="continuer">
 
 </form>
-<? include("tpl/install-closehtml.html"); ?>
+<?php  include("tpl/install-closehtml.html"); ?>

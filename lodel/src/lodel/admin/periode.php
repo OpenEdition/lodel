@@ -1,5 +1,4 @@
-<?
-
+<?php
 die("fichier a supprimer du CVS");
 
 // gere les periodes. L'acces est reserve au superadministrateur.

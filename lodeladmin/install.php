@@ -389,15 +389,14 @@ function problem_include($filename)
 ?>
 <html>
 <body>
-<b>Impossible d'accéder au fichier <?=$filename ?><b><br>
-Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?=$filename ?> existent et sont accessibles par le serveur web<br>
+<b>Impossible d'accéder au fichier <?php echo $filename; ?><b><br>
+Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?phpecho $filename; ?> existent et sont accessibles par le serveur web<br>
 Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
 
 LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 </body>
 </html>
-<?
-
+<?php
   die();
 }
 
@@ -414,8 +413,7 @@ function probleme_droits_debut()
 <html><body>
    <b>Le(s) repertoire(s) suivant(s) pose(nt) un problème d'accès. Vérifié que ce(s) répertoire(s) existenet et que le serveur web puisse y accéder et si préciser y écrire</b>
 <p><p>
-<?
-}
+<?php}
 
 function probleme_droits($file,$mode)
 
@@ -432,7 +430,6 @@ function probleme_droits_fin()
 Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
 LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 </body></html>
-<?
-}
+<?php}
 
 ?>

@@ -1,5 +1,4 @@
-<?
-die("script desuet");
+<?phpdie("script desuet");
 // ne pas changer les valeurs numeriques
 
 $listestatus=array(

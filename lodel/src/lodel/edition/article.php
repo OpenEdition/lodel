@@ -1,5 +1,4 @@
-<?
-
+<?php
 // specifique a LODELIGHT
 #ifndef LODELLIGHT
 die("erreur");

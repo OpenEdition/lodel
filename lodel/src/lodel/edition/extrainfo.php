@@ -1,5 +1,4 @@
-<?
-
+<?php
 require_once("siteconfig.php");
 include_once ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);

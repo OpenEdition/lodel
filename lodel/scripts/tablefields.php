@@ -1,5 +1,4 @@
-<?
-
+<?php
 // build the arrays containing tables and fields
 
 require_once("lodelconfig.php");
@@ -38,7 +37,7 @@ foreach (array($GLOBALS[database],$GLOBALS[currentdb]) as $db) {
 }
 
 $fp=fopen("CACHE/tablefields.php","w");
-fputs($fp,'<? $GLOBALS[tablefields]='.var_export($GLOBALS[tablefields],TRUE).' ; ?>');
+fputs($fp,'<?php  $GLOBALS[tablefields]='.var_export($GLOBALS[tablefields],TRUE).' ; ?>');
 fclose($fp);
 
 

@@ -1,5 +1,4 @@
-<?
-
+<?php
 /*********************************************************************/
 /*  Boucle permettant de trouver depuis une publication toutes les   */
 /*  infos concernant la publication parente la plus haute dans       */

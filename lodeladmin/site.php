@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere un site. L'acces est reserve au superadministrateur.
 
 require("lodelconfig.php");

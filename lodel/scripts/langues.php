@@ -1,5 +1,4 @@
-<?
-
+<?php
 //
 // liste des langues lodel
 //

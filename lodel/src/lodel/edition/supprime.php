@@ -1,5 +1,4 @@
-<?
-
+<?php
 // suppression de documents et de publication en assurant la coherence de la base
 
 require("siteconfig.php");

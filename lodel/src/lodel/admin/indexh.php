@@ -1,5 +1,4 @@
-<?
-
+<?php
 // securite
 if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 

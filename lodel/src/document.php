@@ -1,5 +1,4 @@
-<?
-
+<?php
 // charge le fichier xml et
 require("siteconfig.php");
 include ($home."auth.php");

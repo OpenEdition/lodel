@@ -1,5 +1,4 @@
-<?
-
+<?php
 #die("lodeldevel est trop instable en ce moment car je fais des changements importants sur le code. Les rapports de bug seraient donc inutiles.<br>Merci de votre comprehension et bonnes vacances merci.<br> Ghislain le 04/08/03");
 
 require("lodelconfig.php");

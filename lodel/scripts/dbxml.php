@@ -1,5 +1,4 @@
-<?
-// fonctions pour enregistrer un document dans la base de donnée
+<?php// fonctions pour enregistrer un document dans la base de donnée
 
 require_once ($home."func.php");
 include_once ($home."xmlparser.php");

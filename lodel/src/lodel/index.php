@@ -1,1 +1,1 @@
-<? header("location: edition"); ?>
+<?phpheader("location: edition"); ?>

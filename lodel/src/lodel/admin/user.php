@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les utilisateurs. L'acces est reserve au administrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 

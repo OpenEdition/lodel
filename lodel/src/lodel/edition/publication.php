@@ -1,5 +1,4 @@
-<?
-
+<?php
 // gere les publications. L'acces est reserve aux administrateurs du site.
 // assure l'edition, la supression, la restauration des publications.
 
