@@ -33,7 +33,6 @@ div.ligne_art1, div.ligne_art2, div.ligne_serie1, div.ligne_serie2 {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-
 div.groupe div.ligne_art1 {background-color: #F3F3F3;}
 div.groupe div.ligne_art2 {background-color: #FFFFFF;}
 
@@ -43,7 +42,6 @@ div.ligne_numero1, div.ligne_numero2 {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-
 div.ligne_numero1 {background-color: #EDFDF3;}
 div.ligne_numero2 {background-color: #FFFFFF;}
 
@@ -53,7 +51,6 @@ div.ligne_theme1, div.ligne_theme2 {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-
 div.ligne_theme1 {background-color: #FFFEE8;}
 div.ligne_theme2 {background-color: #FFFFFF;}
 
@@ -64,7 +61,6 @@ div.ligne_regroupement1, div.ligne_regroupement2 {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-
 div.ligne_regroupement1 {background-color: #DFEDE4;}
 div.ligne_regroupement2 {background-color: #EFFFEF;}
 
@@ -74,7 +70,6 @@ div.ligne_document_regroupement1, div.ligne_document_regroupement2 {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-
 div.ligne_document_regroupement1 {background-color: #F3F3F3;}
 div.ligne_document_regroupement2 {background-color: #FFFFFF;}
 
@@ -255,6 +250,16 @@ div.action {
 	margin-right: 20px;
 }
 
+div.action_formulaire {
+	font-family: verdana;	
+	font-size: 10pt;
+	color: #CC9933;
+	float: right;
+	text-align: left;
+	width: 550px;
+	margin-right: 20px;
+}
+
 .inactif {
 	font-family: verdana;	
 	color: #999999;
@@ -299,6 +304,137 @@ div.theme div.ligne_art1 {
 div.theme div.ligne_art2 {
 	background-color: #FAFFFB;
 }
+
+/************ Styles pour le tpl publication **************/
+div.ligne_haut_tpl_publication, 
+div.ligne_parent_tpl_publication,
+.texte_ligne_haut_popup,
+.texte_ligne_haut_tpl_publication {
+	font-family: Verdana;
+	font-style:italic;
+	color: #CC9933;
+}
+
+div.ligne_haut_tpl_publication {
+	height:69px;
+	margin-bottom: 10px;
+}
+
+.texte_ligne_haut_tpl_publication {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+div.ligne_parent_tpl_publication {	
+	height: 35px;
+	font-size: 16px;
+	font-weight: bold;
+	padding-left: 70px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.nom_publi_parente {
+	color: #000000;
+	font-style:normal;
+}
+
+div.ligne_formulaire {
+	padding-bottom:40px;
+}
+
+div.ligne_info, div.intitule_ligne_formulaire {
+	width: 400px;
+	padding-top:5px;
+	padding-left: 70px;
+	padding-bottom:5px;
+	font-family: Verdana;
+}
+
+div.intitule_ligne_formulaire {
+	float: left;
+}
+
+.texte_info {
+	font-family: Verdana;
+	font-size: 10px;
+}
+
+.texte_intitule {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.message_erreur {
+	font-family: Verdana;
+	font-size: 10pt;
+	color: red;
+}
+
+.pied_de_formulaire {
+	text-align:center;
+	margin-bottom:40px;
+	padding-bottom:40px;
+	padding-top:40px;
+	width:100%;
+}
+
+.titre_publi, .nom_publi, .type_publi {
+	font-family: verdana;	
+	color: #CC9933;
+	text-align: left;
+}
+
+.nom_publi {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.titre_publi {
+	font-size: 12pt;
+	font-weight: normal;
+}
+
+.type_publi {
+	font-size: 10pt;
+	font-weight: normal;
+	font-style: italic;
+}
+
+.ligne_entete {
+	margin-left:70px;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+div.ligne_statut {
+	padding-top:5px;
+	padding-left: 70px;
+	padding-bottom:5px;
+	font-family: Verdana;
+	font-size: 10pt;
+}
+
+/******** Fin des styles pour le tpl publication **********/
+
+
+/******** Styles pour les popup **********/
+.texte_ligne_haut_popup {
+	padding-left:10px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.sous_titre_popup {
+	font-family: verdana;	
+	color: #333333;
+	font-size: 12pt;
+}
+/******** Fin de styles pour les popup **********/
+
+
+
+
 
 /************ Styles de la page de login ******************/
 #logo1 {
