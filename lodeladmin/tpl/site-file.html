@@ -23,13 +23,13 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Installation d'un site</TITLE>
+<TITLE>[@LODELADMIN.TITLE_INSTALLATION_WEBSITE]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Copie du fichier siteconfig.php</b></div></td></tr>
+<br /><br /><b>[@LODELADMIN.COPY_SITECONFIGPHP_FILE]</b></div></td></tr>
 </table>
 
 <div align="center">
@@ -42,18 +42,17 @@
 <table width="800" cellpadding="5" cellspacing="0" border="1" align="center"><tr><td>
 
 <IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
-<p><strong>LODEL n'a pas reussi à copier le fichier [#SITECONFIGSRC] dans [#SITECONFIGDEST]
+<p><strong>[@LODELADMIN.FAIL_TO_COPY_FILE_IN|sprintf([#SITECONFIGSRC])] [#SITECONFIGDEST]
 .</strong></p>
-<p>Etrange. Verifier la présence du fichier source et vérifier que le repertoire destination existe et que le serveur web peut y écrire. Enfin c'est etrange quand même que ca ait marché jusque là!</p>
+<p>[@LODELADMIN.WARNING_STRANGE_CHECK_SOURCE_FILE_AND_DIRECTORY_EXISTS_AND_WEBSERVER_CAN_WRITE]</p>
 <ELSE/> <!--[ OPTION2 ]-->
-
-Il faut installer le fichier siteconfig.php. Vous avez le choix entre les deux alternatives:
+[@LODELADMIN.SITECONFIGPHP_FILE_MUST_BE_INSTALLED_YOU_HAVE_TWO_POSSIBILITIES] :
 <ul>
-<li>soit télécharger le fichier siteconfig.php, le copier dans le repertoire <IF COND="[#PATH]=='/'">racine de Lodel<ELSE/>[(#PATH|substr(1))]</IF> et donnée les droits de lecture au serveur. Poursuivre quand l'opération est réalisée.<br />
+<li>[@LODELADMIN.DOWNLOAD_SITECONFIGPHP_FILE_COPY_IT_IN_DIRECTORY] <IF COND="[#PATH]=='/'">[@LODELADMIN.LODEL_ROOT]<ELSE/>[(#PATH|substr(1))]</IF>[@LODELADMIN.GIVE_READING_RIGHTS_TO_WEBSERVER_FOLLOW_WHEN_OPERATION_MADE].<br />
 <input type="submit" name="downloadsiteconfig" value="Télécharger"><input type="submit" value="continuer">
 </li>
-<li>donner les droits d'écriture au serveur web sur le repertoire <IF COND="[#PATH]=='/'">racine de Lodel<ELSE/>[(#PATH|substr(1))]</IF> puis cliquer sur "continuer".<br />
-<input type="submit" name="lodeldo" value="continuer">
+<li>[@LODELADMIN.GIVE_WRITING_RIGHTS_ON_DIRECTORY_TO_WEBSERVER] <IF COND="[#PATH]=='/'">[@LODELADMIN.LODEL_ROOT]<ELSE/>[(#PATH|substr(1))]</IF> [@LODELADMIN.CLICK_ON_CONTINUE_BUTTON].<br />
+<input type="submit" name="lodeldo" value="[@LODELADMIN.CONTINUE]">
 </li>
 </ul>
 </IF>

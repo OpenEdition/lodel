@@ -80,25 +80,24 @@
 <IF COND="[#PATH]=='/'">
 [@LODELADMIN.ADJUST_RIGHTS_FOR_SERVER_TO_ACCESS_AND_COPY_FILES_IN_WEBSITE].
 <ELSE/>
-
-Il faut créer le repertoire, ajuster les droits pour que le serveur web y accède et copier les fichiers necessaires pour le site.
+[@LODELADMIN.CREATE_DIRECTORY_ADJUST_RIGHTS_COPY_FILES].
 </IF>
 
-Vous avez plusieurs possibilités:
+[@LODELADMIN.MANY_POSSIBILITIES] :
 <ul>
 <li>
 <IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
-<p>lancer le commande suivante dans un shell à partir de la racine de Lodel:</p>
+<p>[@LODELADMIN.RUN_FOLLOWING_COMMAND_IN_SHELL_IN_LODEL_ROOT] :</p>
 <p><code>
 lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
 <ELSE/>
-<p>Créer le repertoire "[#PATH]" à la racine de Lodel, donner l'accès en lecture au serveur web, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
+<p>[@LODELADMIN.CREATE_DIRECTORY_IN_LODEL_ROOT_GIVE_READING_ACCESS_TO_SERVER_AND_IN_THIS_RUN_FOLLOWING_COMMAND_IN_SHELL|sprintf([#PATH])] :</p>
 <p><code>
 ../lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
 </IF>
 
 </code></p>
-<p>Les droits sont specifiés par une combinaison de u (utilisateur) ,g (groupe), et/ou a (les autres utilisateurs).</p>
+<p>[@LODELADMIN.HOWTO_FILE_RIGHTS].</p>
 <input type="submit" name="mano" value="[@COMMON.CONTINUE]">
 </li>
 
@@ -106,12 +105,12 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 <!--[ rien ]-->
 <ELSE/>
 <li>
-<p>Créer le repertoire "[#PATH]" à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
+<p>[@LODELADMIN.CREATE_DIRECTORY_TO_LODEL_ROOT_GIVE_WRITING_RIGHTS_ON_DIRECTORY_TO_WEBSERVER_AND_LET_IT_LODEL_WARNING_SECURITY|sprintf([#PATH])].</p>
 <input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 </li>
 
 </IF>
-<li><p>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel (méthode peu sûr) et laisser faire Lodel.</p>
+<li><p>[@LODELADMIN.GIVE_WRITING_RIGHTS_ON_LODEL_ROOT_TO_WEBSERVER_AND_LET_IT_LODEL_WARNING_SECURITY].</p>
 <IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
 <input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 <ELSE/>
@@ -126,8 +125,7 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 </form>
 
 </td></tr></table><br/>
-<p>LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
-</p>
+<p>[@LODELADMIN.NO_WARRANTY_PROVIDED_PLEASE_READ_LICENSE_FILE].</p>
 
 
 

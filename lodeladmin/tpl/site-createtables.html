@@ -23,21 +23,21 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Installation d'un site</TITLE>
+<TITLE>[@LODELADMIN.TITLE_INSTALLATION_WEBSITE]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Création de site</b></div></td></tr>
+<br /><br /><b>[@LODELADMIN.WEBSITE_CREATION]</b></div></td></tr>
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
 
-<b>LODEL a échoué dans la création des tables.</b>
-<p>Vérifier les droits de l'utilisateur MySQL. Il doit pouvoir créer les tables. </p>
+<b>[@LODELADMIN.FAIL_FOR_TABLE_CREATION].</b>
+<p>[@LODELADMIN.CHECK_DATABASE_USER_RIGHTS_WHO_MUST_BE_ABLE_TO_CREATE_TABLES]. </p>
 <p>
-Voivi la liste des commandes qui ont produit des erreurs ainsi que les erreurs renvoyées par MySQL:</p>
+[@LODELADMIN.COMMAND_LIST_MAKING_ERRORS_AND_DATABASE_SERVER_ERRORS] :</p>
 <ul>
 <LOOP NAME="errors_createtables">
 <li>[#COMMAND]: <font color="red">[#ERROR]</font></li>
@@ -51,7 +51,7 @@ Voivi la liste des commandes qui ont produit des erreurs ainsi que les erreurs r
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="task" value="createtables">
 <input type="hidden" name="versiondir" value="[#VERSIONDIR]">
-<input type="submit" value="continuer">
+<input type="submit" value="[@LODELADMIN.CONTINUE]">
 </form>
 
 
