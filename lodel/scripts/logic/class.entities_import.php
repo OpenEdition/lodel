@@ -96,7 +96,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        $sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
      }
      @unlink($sourcefile);
-     copy($task['fichier'],$sourcefile);
+     copy($task['source'],$sourcefile);
      @chmod($sourcefile,0666 & octdec($GLOBALS['filemask']));
      // ok
 
