@@ -207,7 +207,7 @@ class TableFieldsLogic extends Logic {
      // gather information for the following
      if ($context['id']) {
        $this->oldvo=$dao->getById($context['id']);
-       if (!$this->oldvo) die("ERROR: internal error in TableFields::deleteAction");
+       if (!$this->oldvo) die("ERROR: internal error in TableFields::_prepareEdit");
      }
    }
 
@@ -261,10 +261,11 @@ class TableFieldsLogic extends Logic {
 
    {
      global $db,$home;
-     print_r($this->vo);
-     die();
+
      if (!$this->vo) die("ERROR: internal error in TableFields::deleteAction");
-     $db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or dberror();
+     if ($this->vo->type!="entities") {
+       $db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or dberror();
+     }
      unset($this->vo);
 
      // should be in the view....
