@@ -26,7 +26,7 @@
  *********************************************************************************************/
   
   html>body {
-	height:5000%
+	height:100%
 }
 	
  body
@@ -47,36 +47,35 @@
  
  .principale {
  	width:775;
+	cellspacing:0;
+	cellpadding:0;
 	margin-right:auto;
 	margin-left:auto;
 	height:100%;
+	text-align:left;
+	border-left:1px solid #F33E9D;
+	border-right:1px solid #F33E9D;
+	margin-bottom:0;
 	vertical-align:top
  }
  			
- .conteneur {
- 	/*
-	 * Bloc principal contenant l'ensmble de la page. définit la largeur de la page. 
-	 */
- 	width:775;
-	text-align:left;
-	border-left:1px solid #9C3234;
-	border-right:1px solid #9C3234;
-	margin-bottom:0;
-	height:100%
-}
- 
 .barrenav {
 	/*
 	 * Style de la barre de navigation, elle est placée à gauche de l'élément de class "corps"
 	 * grâce à l'attribut "float"
+	 * 
 	 */
+	vertical-align:top;
+	cellspacing:0;
+	cellpadding:0;
 	width:167;
 	height:100%; 
 	background-color:#EFEFEF;
-	border-right:1px solid #9C3234;
+	border-right:10px solid #ffffff;
+	
 	left:0;
 	padding:0;
-	float:left
+	
 }
 
 .corps {
@@ -84,12 +83,14 @@
 	 * Style du bloc placé à droite de la barre de navigation
 	 */
 	width:auto;
-	height:100%; 
+	cellspacing:0;
+	cellpadding:0;
+	height:100%;
+	border:0; 
 	background-color:#ffffff;
 	right:0
 	
 }
-
 .separation {
 	/*
 	 * Style du bloc marquant une séparation entre la barre de nav et le reste de la page.
