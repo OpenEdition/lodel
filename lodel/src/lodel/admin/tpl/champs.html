@@ -11,14 +11,17 @@
 		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Champs des tables <b>document et publication</b></td>
 	</tr>
 </table>
-<h1>Documents</h1>(...j'ai mis du h1 a modifier)
+
+<div class="intitule_ligne_formulaire"><span style="font-size:18px">Documents</span></div>
+<br /><br />
+
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
 	<a href="groupedechamps.php?classe=documents">Ajouter un regroupement de champs pour la table document</a><br />
 	<MACRO NAME="PNG_PLUS">
 	<a href="champ.php?classe=documents">Ajouter un champs a la table document</a>
 </div>
-<br /><br />
+<br />
  
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
@@ -62,21 +65,24 @@
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="3"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
+			<tr><td colspan="6"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 	</LOOP>
 </table>
 <!-- la suite est tres similaire... faire une macro -->
 
-<h1>Publications</h1>(...j'ai mis du h1 a modifier)
+<br /><br />
+<div class="intitule_ligne_formulaire"><span style="font-size:18px">Publications</span></div>
+<br /><br />
+
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
 	<a href="groupedechamps.php?classe=publications">Ajouter un regroupement de champs pour la table publication</a><br />
 	<MACRO NAME="PNG_PLUS">
 	<a href="champ.php?classe=publications">Ajouter un champs a la table publication</a>
 </div>
-<br /><br />
+<br />
  
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
@@ -120,16 +126,11 @@
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="3"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
+			<tr><td colspan="6"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 	</LOOP>
 </table>
-
-
-
-
-
 
 <div class="pied_de_formulaire">
 	<form>
