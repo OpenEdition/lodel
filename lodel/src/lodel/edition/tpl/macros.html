@@ -77,6 +77,52 @@
 </DEFMACRO>
 <!-- ************************************************** -->
 
+<!-- Macro rajoutée le 17/09/03 *********************** -->
+<!-- Macro servant à publication.html et                -->
+<!-- extrainfo.html                                     -->
+<DEFMACRO NAME="AFFICHE_PERSONNES">
+	<LOOP NAME="personnes">
+		<tr>
+			<td width="200">[#TITRE] [#IND] :</td>
+			<td>
+				<table class="table_form_popup">
+					<tr>
+						<td>Pr&eacute;fixe</td>
+						<td>Pr&eacute;nom</td>
+						<td>Nom</td>
+					</tr>
+					<tr>
+						<td><input size="5" type="text" name="prefix[[#ID]][[#IND]]" value="[#PREFIX]"></td>
+						<td><input size="30" type="text" name="prenom[[#ID]][[#IND]]" value="[#PRENOM]"></td>
+						<td><input size="30" type="text" name="nomfamille[[#ID]][[#IND]]" value="[#NOMFAMILLE]"></td>
+					</tr>
+				</table>
+			</td>
+			<td rowspan="2">Description:<br />
+				<textarea name="description[[#ID]][[#IND]]" COLS="20" ROWS="4" readonly>[#DESCRIPTION]</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<table class="table_form_popup" >
+					<tr>
+						<td>Fonction</td>
+						<td>Affiliation</td>
+						<td>Courriel</td>
+					</tr>
+					<tr>
+						<td><input size="20" type="text" name="fonction[[#ID]][[#IND]]" value="[#FONCTION]"></td>
+						<td><input size="20" type="text" name="affiliation[[#ID]][[#IND]]" value="[#AFFILIATION]"></td>
+						<td><input size="20" type="text" name="courriel[[#ID]][[#IND]]" value="[#COURRIEL]"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</LOOP>
+</DEFMACRO>
+<!-- ************************************************** -->
+
 <DEFMACRO NAME="STATUS">
 	<IF COND="[#STATUS] GT 0">
 		<div align="center">
