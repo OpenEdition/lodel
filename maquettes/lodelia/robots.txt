@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /signaler.html
-Disallow: /styles_revue.css
-Disallow: /styles_lodel.css
