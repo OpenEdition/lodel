@@ -101,10 +101,15 @@ class GenericLogic extends Logic {
        $haveresult=!empty($result->fields);
        if ($haveresult) call_user_func("code_before_$funcname",$context);
 
+       #print_r($context);
        while (!$result->EOF) {
 	 $localcontext=array_merge($context,$result->fields);
 	 $name=$result->fields['name'];
-	 $localcontext['value']=$result->fields['edition']!="display" && is_string($context[$name]) ? htmlspecialchars($context[$name]) : $context[$name];
+	 #if ($result->type=="entries" || $result->type=="persons") {
+	 #  $localcontext['value']=$context[$name];
+	 #} else {
+	   $localcontext['value']=$result->fields['edition']!="display" && is_string($context['data'][$name]) ? htmlspecialchars($context['data'][$name]) : $context['data'][$name];
+	 #}
 	 ###$localcontext['error']=$context['error'][$name];
 	 call_user_func("code_do_$funcname",$localcontext);
 	 $result->MoveNext();
@@ -161,14 +166,12 @@ class GenericLogic extends Logic {
        $gdao=&getGenericDAO($votype->class,$this->_idfield);
        $gvo=$gdao->getById($id);
        if (!$gvo) die("ERROR: can't find object $id in the associated table. Please report this bug");
-       $this->_populateContext($gvo,$context);
+       $this->_populateContext($gvo,$context['data']);
        $ret=$this->_populateContextRelatedTables($vo,$context);
      }
 
      return $ret ? $ret : "_ok";
    }
-
-
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
@@ -219,14 +222,14 @@ class GenericLogic extends Logic {
 
        // check if the field is required or not, and rise an error if any problem.
 
-       $value=&$context[$name];
+       $value=&$context['data'][$name];
        if (!is_array($value)) $value=trim($value);
        if ($value) $value=lodel_strip_tags($value,$field->allowedtags);
 
        // is empty ?
        $empty=$type!="boolean" && (             // boolean are always true or false
-	    !isset($context[$name]) ||   // not set
-	    $context[$name]==="");       // or empty string
+	    !isset($context['data'][$name]) ||   // not set
+	    $context['data'][$name]==="");       // or empty string
 	    
 
        if ( ($context['do']=="edit" && ($field->edition=="importable" || 

@@ -90,7 +90,7 @@ if ($file1) {
     $options=array(
 		   #"predefinedblocktranslations"=>"fr",
 		   #"predefinedinlinetranslations"=>"fr",
-		   "transparentclass"=>"stylestransparents",
+		   #"transparentclass"=>"stylestransparents",
 		   "block"=>true,
 		   "inline"=>true,
 		   #"heading"=>true

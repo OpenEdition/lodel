@@ -105,7 +105,7 @@ class PersonsLogic extends GenericLogic {
 
      foreach(array("firstname","familyname") as $g) {
        if (!$this->g_name[$g]) trigger_error("ERROR: The generic field $g is required. Please edit your editorial model.",E_USER_ERROR);
-       $$g=trim($context[$this->g_name[$g]]);
+       $$g=trim($context['data'][$this->g_name[$g]]);
      }
 
      if (!$familyname && !$firstname) { $error[$this->g_name['familyname']]="+"; return "_error"; }
@@ -143,7 +143,8 @@ class PersonsLogic extends GenericLogic {
      // save the class table
      $gdao=&getGenericDAO($class,"idperson");
      $gdao->instantiateObject($gvo);
-     $this->_populateObject($gvo,$context);
+     $context['data']['id']=$context['id'];
+     $this->_populateObject($gvo,$context['data']);
      $gvo->idperson=$id;
 
      $this->_moveFiles($id,$this->files_to_move,$gvo);

@@ -832,6 +832,7 @@ fieldset br { clear: left;}
 
 /* styles form checkimport */
 .internalstyleblock { 
+  padding-left: 1px;
   border-left: 1px solid #CC9933;
 }
 

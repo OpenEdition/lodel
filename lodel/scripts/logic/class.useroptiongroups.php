@@ -80,11 +80,11 @@ class UserOptionGroupsLogic extends Logic {
      $options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");     
      require_once("validfunc.php");
      foreach ($options as $option) {
-       if ($option->type=="passwd" && !trim($context[$option->name])) continue; // empty password means we keep the previous one.
-       $valid=validfield($context[$option->name],$option->type,"",$option->name);
+       if ($option->type=="passwd" && !trim($context['data'][$option->name])) continue; // empty password means we keep the previous one.
+       $valid=validfield($context['data'][$option->name],$option->type,"",$option->name);
        if ($valid===false) die("ERROR: \"".$option->type."\" can not be validated in UserOptionGroups::editAction.php");
-       if ( ($option->type=="file" || $option->type=="image") && preg_match("/\/tmpdir-\d+\/[^\/]+$/",$context[$option->name]) ) {
-	 $dir=dirname($context[$option->name]);
+       if ( ($option->type=="file" || $option->type=="image") && preg_match("/\/tmpdir-\d+\/[^\/]+$/",$context['data'][$option->name]) ) {
+	 $dir=dirname($context['data'][$option->name]);
 	 rename(SITEROOT.$dir,SITEROOT.preg_replace("/\/tmpdir-\d+$/","/option-".$option->id,$dir));
        }
        if (is_string($valid)) $error[$option->name]=$valid;
@@ -94,9 +94,9 @@ class UserOptionGroupsLogic extends Logic {
 
      foreach ($options as $option) {
        if ($lodeluser['rights'] < $option->userrights) continue; // the user has not the right to do that.
-       if ($option->type=="passwd" && !trim($context[$option->name])) continue; // empty password means we keep the previous one.
-       if ($option->type!="boolean" && trim($context[$option->name])==="") $context[$option->name]=$option->defaultvalue; // default value
-       $option->value=$context[$option->name];
+       if ($option->type=="passwd" && !trim($context['data'][$option->name])) continue; // empty password means we keep the previous one.
+       if ($option->type!="boolean" && trim($context['data'][$option->name])==="") $context['data'][$option->name]=$option->defaultvalue; // default value
+       $option->value=$context['data'][$option->name];
        if (!$dao->save($option)) die("You don't have the rights to modify this option");
      }
      touch(SITEROOT."CACHE/maj");

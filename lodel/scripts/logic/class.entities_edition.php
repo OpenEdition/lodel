@@ -80,7 +80,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 foreach($context['persons'][$idtype] as $degree=>$arr) {
 	   if (!is_numeric($degree)) return;
 	   $localcontext=array_merge($context,$arr);
-	   $localcontext['name']=$name;
+	   $localcontext['name']=$varname;
 	   $localcontext['classtype']="persons";
 	   $localcontext['degree']=$degree;
 	   if ($degree>$maxdegree) $maxdegree=$degree;
@@ -162,7 +162,7 @@ class Entities_EditionLogic extends GenericLogic {
        $fields=$daotablefields->findMany("class='".$context['type']['class']."' AND status>0 AND type!='passwd'","",
 				       "name,defaultvalue");
        foreach($fields as $field) {
-	 $context[$field->name]=$field->defaultvalue;
+	 $context['data'][$field->name]=$field->defaultvalue;
        }
      }
 
@@ -254,7 +254,7 @@ class Entities_EditionLogic extends GenericLogic {
      // populate the entity
      if ($idtype) $vo->idtype=$idtype;
      $vo->identifier=$context['identifier'];
-     if ($this->g_name['dc.title']) $vo->g_title=strip_tags($context[$this->g_name['dc.title']],"<em><strong><span><sup><sub>");
+     if ($this->g_name['dc.title']) $vo->g_title=strip_tags($context['data'][$this->g_name['dc.title']],"<em><strong><span><sup><sub>");
      if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier($id,$vo->g_title);
      if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
      if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
@@ -266,9 +266,9 @@ class Entities_EditionLogic extends GenericLogic {
 
      $gdao=&getGenericDAO($class,"identity");
      $gdao->instantiateObject($gvo);
-     $context['entity']['id']=$context['id'];
-     $this->_moveImages($context['entity']);
-     $this->_populateObject($gvo,$context['entity']);
+     $context['data']['id']=$context['id'];
+     $this->_moveImages($context['data']);
+     $this->_populateObject($gvo,$context['data']);
      $gvo->identity=$id;
      $this->_moveFiles($id,$this->files_to_move,$gvo);
      $gdao->save($gvo,$new);  // save the related table
@@ -575,7 +575,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 $relatedtable[$class][$result->fields['id']]=&$ref;
 	 if ($table=="persons") $relatedrelationtable[$class][$result->fields['idrelation']]=&$ref;
 
-	 $context[$table][$result->fields['idtype']][$degree]=&$ref;
+	 $context[$table][$result->fields['idtype']][$degree]['data']=&$ref;
 	 $result->MoveNext();
        }
 

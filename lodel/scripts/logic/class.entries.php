@@ -106,7 +106,7 @@ class EntriesLogic extends GenericLogic {
 	 $context['id']=$vo->id;
 	 return; // nothing to do.
        } else {
-	 $context[$this->g_name['index key']]=$context['g_name'];
+	 $context['data'][$this->g_name['index key']]=$context['g_name'];
        }
      }
 
@@ -130,7 +130,7 @@ class EntriesLogic extends GenericLogic {
      }
      // populate the entry table
      if ($idtype) $vo->idtype=$idtype;
-     $vo->g_name=$context[$this->g_name['index key']];
+     $vo->g_name=$context['data'][$this->g_name['index key']];
      $vo->sortkey=makeSortKey($vo->g_name);
      #print_R($vo);
      $id=$context['id']=$dao->save($vo);
@@ -139,7 +139,8 @@ class EntriesLogic extends GenericLogic {
      // save the class table
      $gdao=&getGenericDAO($class,"identry");
      $gdao->instantiateObject($gvo);
-     $this->_populateObject($gvo,$context);
+     $context['data']['id']=$context['id'];
+     $this->_populateObject($gvo,$context['data']);
      $gvo->identry=$id;
 
      $this->_moveFiles($id,$this->files_to_move,$gvo);
@@ -187,7 +188,7 @@ class EntriesLogic extends GenericLogic {
 	    $idparent=$result->fields['idparent'];
 	    if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
 	    $d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
-	    echo $d," ";
+	    //echo $d," ";
 	    $arr["p$d"]=array($id,$fullname);
 	    $parent[$id]=$fullname;
 	    $i++;

@@ -43,7 +43,8 @@
 	<tr>
 		<td class="texte_noir_gras" align="left">[@ADMIN.STYLE]</td>
 		<td class="texte_noir_gras" align="center">[@ADMIN.SURROUNDING]</td>
-		<td class="texte_noir_gras" align="center">[@ADMIN.CONVERSION]</td>
+		<td class="texte_noir_gras" align="center">[@ADMIN.CONVERSION]</td
+		<td class="texte_noir_gras" align="center"></td>
 		<td>&nbsp;</td>
 	</tr>
 	<LOOP NAME="internalstyles" TABLE="internalstyles" ORDER="rank" WHERE="status gt 0">
@@ -52,6 +53,7 @@
 			<td><strong>[#STYLE|nbsp]</strong></td>
 			<td>[#SURROUNDING|nbsp]</td>
 			<td>[#CONVERSION|htmlspecialchars|nbsp]</td>
+			<td><IF COND="[#GREEDY]">[@ADMIN.GREEDY]</IF></td>
 			<td style="color: #CC9933;" align="left">
 			<div>
 
