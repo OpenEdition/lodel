@@ -72,13 +72,19 @@ class DAO {
      // check the user has the basic right for modifying/creating an object
      if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
      // check the user has the right to protect the object
-     if ( ($vo->status>=32 || $vo->status<=-32) && $GLOBALS['userrights']<$this->rights['protect']) {
+     if ( ($vo->status>=32 || $vo->status<=-32 || $vo->_protect) && $GLOBALS['userrights']<$this->rights['protect']) {
        die("ERROR: you don't have the right to protect objects from the table ".$this->table);
      }
 
      //
 
      if ($vo->id>0) { // update
+       $update="";
+       if ($vo->_protect) { // especiall processing for the protection
+	 $update.="status=(2*(status>0)-1)".($vo->protect>0 ? : "*32" : "");
+	 unset($vo->status);
+	 unset($vo->_protect);
+       }
        foreach($vo as $k=>$v) {
 	 if (!isset($v)) continue;
 	 if ($update) $update.=",";
@@ -89,6 +95,11 @@ class DAO {
        }
 
      } else { // new !
+       if ($vo->_protect) { // especiall processing for the protection
+	 $vo->status=(2*$vo->status-1)*($vo->_protect ? 31 : 1);
+	 unset($vo->_protect);
+       }
+
        $insert="";$values="";
        if ($this->uniqueid) {
 	 $vo->id=uniqueid($table);
