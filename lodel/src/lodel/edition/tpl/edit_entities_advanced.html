@@ -71,21 +71,6 @@
 				<!--[<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex1" TABLE="search_engine"  LIMIT="1">
-					<DO>
-					<a href="index.php?do=cleanIndex">
-						<span class="texte_orange">[@EDITION.INDEX_CLEANING]</span>
-					</a>
-					<DO>
-					<ALTERNATIVE>
-						<em>[@EDITION.INDEX_CLEANING]</em>
-					</ALTERNATIVE>
-					</LOOP>
-					</td>
-				</tr>]-->
-				<tr>
-					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-					<td width="350" class="td_admin">
 					<LOOP NAME="checkindex2" TABLE="search_engine" WHERE="identity='[#ID]'" LIMIT="1">
 					<DO>
 					<a href="index.php?do=deleteIndex&amp;id=[#ID]">
@@ -100,25 +85,7 @@
 					</LOOP>
 					
 					</td>
-				</tr>
-				<!--[<tr>
-					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex3" TABLE="search_engine" WHERE="identity='[#ID]'" LIMIT="1">
-					<DO>
-					<a href="index.php?do=addIndex&amp;id=[#ID]">
-						<span class="texte_orange">[@EDITION.ENTITY_INDEX_UPDATE]</span>
-					</a>
-					</DO>
-					<ALTERNATIVE>
-					<a href="index.php?do=addIndex&amp;id=[#ID]">
-						<span class="texte_orange">[@EDITION.ENTITY_INDEX_ADD]</span>
-					</a>
-					</ALTERNATIVE>
-					</LOOP>
-					</td>
 				</tr>]-->
-
 				</table>
 			</td>
 			<td width="375" valign="top">
