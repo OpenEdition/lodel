@@ -50,14 +50,14 @@
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
-					<td class="nom_user" align="left"><strong>[(#USERNAME|nbsp)]</strong></td>
+					<td class="ligne_admin1 nom_user"><strong>[(#USERNAME|nbsp)]</strong></td>
 					<td class="ligne_admin1" align="center">
 						<MACRO NAME="AFFICHER_PRIVILEGE">
 					</td>
 					<td class="ligne_admin1" align="center">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin1" align="center">[(#COURRIEL|nbsp)]</td>
 					<td class="ligne_admin1" align="center">
-<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
+						<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT='0,1'> 
 							<DOFIRST>
 								<div class="texte_info">Sessions non closes</div>
 							</DOFIRST>
@@ -82,7 +82,7 @@
 					<td class="ligne_admin2" align="center">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin2" align="center">[(#EMAIL|nbsp)]</td>
 					<td class="ligne_admin2" align="center">
-						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
+						<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT='0,1'> 
 							<DOFIRST>
 								<div class="texte_info">Sessions non closes</div>
 							</DOFIRST>
@@ -92,6 +92,7 @@
 								</div>					
 							</ALTERNATIVE>
 				        </LOOP>
+
 					</td>	
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>
