@@ -37,6 +37,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   authenticate(LEVEL_ADMINLODEL);
 }
 
+header("Content-type: text/html; charset=iso-8859-1");
 
 //
 // Version of lodel to be installed.
@@ -96,55 +97,6 @@ if ($tache=="plateform") {
   } while (0); // end of control bock
 }
 
-//
-// gestion du home
-//
-
-/*
-if ($tache=="home") {
-  if ($withautoinclude=="non") {
-    // changer le $pathroot et le $home
-    maj_lodelconfig(array("pathroot" => $newpathroot,
-			  "home" => "\$pathroot/lodel/scripts/",
-			  "includepath"=>""));
-    // si ca marche pas on aura l'erreur suivante
-    $erreur_homeinaccessible=1;
-  } else {
-    maj_lodelconfig(array("pathroot"=>"",
-			  "home"=>"",
-			  "includepath"=>$newincludepath));
-    $includepath=$newincludepath;
-    // on essaie de creer le repertoire include
-    if (!file_exists(LODELROOT.$includepath)) {
-      if (!@mkdir(LODELROOT.$includepath,0750)) {
-	$erreur_mkdir=1;
-	if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
-	return;
-      }
-    }
-    // on essai de copier dans le repertoire $includepath
-    // cherche les scripts
-    $dirname=LODELROOT."lodel/scripts";
-    $dir=opendir($dirname);
-    while ($file=readdir($dir)) {
-      $srcfile=$dirname."/".$file;
-      $destfile=LODELROOT."$includepath/$file";
-      if (!is_file($srcfile) || preg_match("/~$/",$srcfile)) continue;
-      if (!@copy ($srcfile,$destfile)) {
-	$erreur_copyscripts=1;
-	if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
-	return; }
-      if ($have_chmod) @chmod($destfile,0640);
-    }
-    // normalement c'est ok, mais reverfie quand meme.
-    if (file_exists("$dirname/func.php")) {
-      $erreur_includeincorrecte=1; // si plus loin ca plante ca peut venir du fait que l'include est incorrecte
-    } else {
-      $erreur_copyscripts=1;
-    }
-  }
-}
-*/
 
 //
 // gestion de mysql. Connexion mysql uniquement.
@@ -217,10 +169,15 @@ if ($tache=="htaccess") {
 
 if ($tache=="options") {
   if (!preg_match("/\/$/",$newurlroot)) $newurlroot.="/";
+  $filemask="07".
+    (5*($permission[group][read]!="")+2*($permission[group][write]!="")).
+    (5*($permission[all][read]!="")+2*($permission[all][write]!=""));
+
   maj_lodelconfig(array("urlroot"=>$newurlroot,
 			"importdir"=>$newimportdir,
 			"extensionscripts"=>$newextensionscripts,
-			"usesymlink"=>$newusesymlink));
+			"usesymlink"=>$newusesymlink,
+			"filemask"=>$filemask));
 }
 
 

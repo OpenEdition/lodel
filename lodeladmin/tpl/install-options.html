@@ -48,6 +48,25 @@
 <input type="text" size="60" name="newurlroot" value="<?php echo $urlroot; ?>">
 </td></tr>
 <tr><td>
+<p>Droits sur les fichiers:</p>
+Lorsque le serveur créée des fichiers lors de l'installation d'un site ou lors du fonction normal de Lodel, il est propriétaire des fichiers, mais peut aussi ouvrir les droits de lecture et/ou d'ecriture pour le groupe et/ou pour tous les utilisateurs. Ceci permet d'acceder aux fichiers avec un autre utilisateur, et est recommandé si vous etes chez un hebergeur qui protège les comptes utilisateurs les uns des autres ou si vous êtes l'unique utilisateur sur le serveur. Dans le cas contraire, il est conseillé de fermer les droits autant que possible sous peine par exemple de rendre accessible certains mot de passe.
+
+<div align="center">
+<table border="1" width="50%">
+<tr><td>groupe</td><td>les autres (all)</td></tr>
+<tr><td>
+<input type="checkbox" name="permission[group][read]" <?php if (octdec($filemask) & 0040) echo "checked";?>  > Lecture<br />
+<input type="checkbox" name="permission[group][write]" <?php if (octdec($filemask) & 0020) echo "checked";?> > Ecriture
+</td><td>
+<input type="checkbox" name="permission[all][read]"  <?php if (octdec($filemask) & 0004) echo "checked";?> > Lecture<br />
+<input type="checkbox" name="permission[all][write]" <?php if (octdec($filemask) & 0002) echo "checked";?> > Ecriture
+</td></tr>
+</table>
+</div>
+
+
+</td></tr>
+<tr><td>
 <p>Extension des scripts:</p>
 <p>Les scripts Lodel sont des scripts PHP, et il est recommandé d'utiliser l'extension ".php". Cependant pour des raisons esthétiques, il est possible de choisir l'extension ".html". Ceci nécessite une configuration particulière sur le serveur.</p>
 <table>
