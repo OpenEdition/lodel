@@ -52,14 +52,20 @@
 </tr>
 <LOOP NAME="siteatroot" TABLE="sites" WHERE="chemin='/' AND statut gt -64">
 <ALTERNATIVE>
-<tr><td><b>Installer le site à la racine:</b></td><td><input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] ></td></tr>
+<tr><td><b>Installer le site à la racine de Lodel:</b></td><td>
+<IF COND="[#REP] || [#NOM]"> <!--[ on est passe par la, c'est bon, il y a quelques choses dans ATROOT]-->
+<input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] >
+<ELSE/> <!--[ valeur par defaut ]-->
+<input size="30" type="checkbox" name="atroot" checked >
+</IF>
+</td></tr>
 </ALTERNATIVE>
 </LOOP>
 </IF>
 
 
 </tr>
-<tr><td><b>URL complète du site:</b></td>
+<tr><td><b>URL complète du site:</b><br />Ex: http://www.example.com/monsite</td>
 <td><input size="30" type="text" name="url" value="[#URL]"></td>
 </tr>
 <tr><td><b>Sous titre du site:</b></td>
