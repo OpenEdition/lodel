@@ -27,42 +27,7 @@
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 		<!--[ Partie haute ]-->
 		<tr>
-			<td width="375" valign="top">
-				<!--[ *************** Administrer *************** ]-->
-				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_administrer.png" /></td>
-						<td width="5" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Administrer</span></td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<LOOP NAME="typeentree" TABLE="typeentrees" WHERE="ok" ORDER="ordre">
-						<DO>
-							<tr>
-								<td width="20">&nbsp;</td>
-								<td width="350" class="td_admin">
-									<a href="entrees.php?type=[#TYPE]"><span class="texte_noir_gras">Administrer l'index : [#TITRE]</span></a>
-								</td>
-								<td width="5">&nbsp;</td>
-							</tr>
-						</DO>
-						<ALTERNATIVE>
-							<tr>
-								<td width="20">&nbsp;</td>
-								<td width="350" class="td_admin">
-									Aucun index disponible
-								</td>
-								<td width="5">&nbsp;</td>
-							</tr>
-						</ALTERNATIVE>
-					</LOOP>
-				</table>
-			</td>			
-			<td width="*" valign="top">
+			<td  width="375" valign="top">
 				<!--[ *************** Préférences *************** ]-->
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
@@ -78,6 +43,13 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
+							<a href="users.php"><span class="texte_noir_gras">Gestion des utilisateurs</span></a>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
 							<a href="textes.php"><span class="texte_noir_gras">Editer les minitextes</span></a>
 						</td>
 						<td>&nbsp;</td>
@@ -89,64 +61,6 @@
 							<span class="texte_noir_gras"><span class="inactif">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></span> (inactif)</td>
 						<td>&nbsp;</td>
 					</tr>
-				</table>
-			</td>
-		</tr>
-		<!--[ Partie basse ]-->
-		<tr>
-			<td width="375" valign="top">
-				<!--[ *************** Outils *************** ]-->
-				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
-						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Outils</span></td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="/phpmyadmin/"><span class="texte_noir_gras">Administration de la base de donn&eacute;es</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="backup.php"><span class="texte_noir_gras">Sauvegarde des donn&eacute;es</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="import.php"><span class="texte_noir_gras">Importation des donn&eacute;es</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="users.php"><span class="texte_noir_gras">Gestion des utilisateurs</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="schema.php"><span class="texte_noir_gras">Télécharger le Schéma XML</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques de la revue</span></span> (inactif)</td>
-						<td width="5">&nbsp;</td>
-					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Associer une image</span></span> (inactif)</td>
@@ -154,7 +68,45 @@
 					</tr>
 				</table>
 			</td>
-			<td valign="top">
+			<td width="375" valign="top">
+				<!--[ *************** Gestion des index *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_administrer.png" /></td>
+						<td width="5" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Gérer les index</span></td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<LOOP NAME="typeentree" TABLE="typeentrees" WHERE="ok" ORDER="ordre">
+						<DO>
+							<tr>
+								<td width="20">&nbsp;</td>
+								<td width="350" class="td_admin">
+									<a href="entrees.php?type=[#TYPE]"><span class="texte_noir_gras">Gérer l'index : [#TITRE]</span></a>
+								</td>
+								<td width="5">&nbsp;</td>
+							</tr>
+						</DO>
+						<ALTERNATIVE>
+							<tr>
+								<td width="20">&nbsp;</td>
+								<td width="350" class="td_admin">
+									Aucun index disponible
+								</td>
+								<td width="5">&nbsp;</td>
+							</tr>
+						</ALTERNATIVE>
+					</LOOP>
+				</table>
+			</td>	<!--[ fin de gerer les index ]-->
+		</tr>
+		<!--[ Partie basse ]-->
+		<tr>
+			<td width="375" valign="top">
 				<!--[ *************** Configuration *************** ]-->
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
@@ -238,6 +190,54 @@
 					</tr>
 				</table>
 			</td>
+			<td width="375" valign="top">
+				<!--[ *************** Outils *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Outils</span></td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="backup.php"><span class="texte_noir_gras">Sauvegarde des donn&eacute;es</span></a>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="import.php"><span class="texte_noir_gras">Importation des donn&eacute;es</span></a>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="schema.php"><span class="texte_noir_gras">Télécharger le Schéma XML</span></a>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="/phpmyadmin/"><span class="texte_noir_gras">Manipulation de la base de donn&eacute;es</span></a>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques de la revue</span></span> (inactif)</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+				</table>
+			</td> <!-- [ fin des outils ]-->
 		</tr>
 	</table>
 <MACRO NAME="CLOSE_HTML">
