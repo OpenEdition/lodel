@@ -84,26 +84,37 @@ function nbsp($texte)
 
 { return $texte ? $texte : "&nbsp;"; }
 
+/*
+ * Upercase the first letter of Texte
+ *
+ */
 
-function majuscules($texte) {
-	$suite = htmlentities($texte);
-	$suite = ereg_replace('&amp;', '&', $suite);
-	$suite = ereg_replace('&lt;', '<', $suite); 
-	$suite = ereg_replace('&gt;', '>', $suite); 
-	$texte = '';
-	if (ereg('^(.*)&([A-Za-z])([a-zA-Z]*);(.*)$', $suite, $regs)) {     
-		$texte .= majuscules($regs[1]);
-		$suite = $regs[4];
-		$carspe = $regs[2];
-		$accent = $regs[3];
-		if (ereg('^(acute|grave|circ|uml|cedil|slash|caron|ring|tilde|elig)$', $accent))
-			$carspe = strtoupper($carspe); 
-		if ($accent == 'elig') $accent = 'Elig';
-		$texte .= '&'.$carspe.$accent.';';
-	}
-	$texte .= strtoupper($suite);
-	return $texte;
+function majuscule($texte)
+
+{
+  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/sue",'"\\1".strtoupper("\\2")',$texte);
+  // utf-8 ok
 }
+
+#function majuscules($texte) {
+#	$suite = htmlentities($texte);
+#	$suite = ereg_replace('&amp;', '&', $suite);
+#	$suite = ereg_replace('&lt;', '<', $suite); 
+#	$suite = ereg_replace('&gt;', '>', $suite); 
+#	$texte = '';
+#	if (ereg('^(.*)&([A-Za-z])([a-zA-Z]*);(.*)$', $suite, $regs)) {     
+#		$texte .= majuscules($regs[1]);
+#		$suite = $regs[4];
+#		$carspe = $regs[2];
+#		$accent = $regs[3];
+#		if (ereg('^(acute|grave|circ|uml|cedil|slash|caron|ring|tilde|elig)$', $accent))
+#			$carspe = strtoupper($carspe); 
+#		if ($accent == 'elig') $accent = 'Elig';
+#		$texte .= '&'.$carspe.$accent.';';
+#	}
+#	$texte .= strtoupper($suite);
+#	return $texte;
+#}
 
 function justifier($letexte) {
 	$letexte = eregi_replace("^<p([[:space:]][^>]*)?".">", "", trim($letexte));
