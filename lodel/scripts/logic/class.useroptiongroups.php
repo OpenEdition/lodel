@@ -51,6 +51,24 @@ class UserOptionGroupsLogic extends Logic {
      $this->Logic("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
    }
 
+   function viewAction(&$context,$error) 
+
+   {
+     function loop_useroptions($context,$funcname)
+     {
+       global $db;
+       $result=$db->execute(lq("SELECT * FROM #_TP_options WHERE status > 0 AND idgroup='".$context['id']."' ORDER BY rank,name ")) or dberror();
+       while (!$result->EOF) {
+	 $localcontext=array_merge($context,$result->fields);
+	 $name=$result->fields['name'];
+	 if ($context[$name]) $localcontext['value']=$context[$name];
+	 call_user_func("code_do_$funcname",$localcontext);
+	 $result->MoveNext();
+       }
+     }
+     return Logic::viewAction($context,$funcname);
+   }
+
 
    function editAction(&$context,&$error)
 
@@ -68,8 +86,6 @@ class UserOptionGroupsLogic extends Logic {
        if ($valid===false) die("ERROR: $type can not be validated in logic.php");
        if (is_string($valid)) $error[$option->name]=$valid;
      }
-       print_r($error);
-
 
      if ($error) return "_error";
 

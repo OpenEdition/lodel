@@ -68,6 +68,7 @@ class OptionsLogic extends Logic {
 
    function editAction(&$context,&$error,$clean=false)
   { 
+    if (!$context['title']) $context['title']=$context['name'];
     $ret=Logic::editAction($context,$error);
     if (!$error) $this->clearCache();
     return $ret;

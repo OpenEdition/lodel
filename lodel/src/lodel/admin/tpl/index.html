@@ -66,7 +66,11 @@
 						[@ADMIN.OPTIONS]
 						<select onChange="select_url(this)"><option>--</option>
                                        		<LOOP NAME="options" TABLE="optiongroups" WHERE="status gt 0" ORDER="rank">
+							<IF COND="[#LOGIC]">
+							<option value="index.php?do=view&lo=[#LOGIC]&id=[#ID]">[#TITLE]</option>
+							<ELSE/>
 							<option value="index.php?do=view&lo=useroptiongroups&id=[#ID]">[#TITLE]</option>
+							</IF>
 						</LOOP>
 						</select>
 						<td>&nbsp;</td>

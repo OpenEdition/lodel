@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	filtering	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
+	weight		TINYINT NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur le champs
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
@@ -426,7 +427,7 @@ CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		VARCHAR(255) NOT NULL,		# type du champ
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
-	editscript	TINYTEXT NOT NULL,		# url to edit the group
+	logic		TINYTEXT NOT NULL,		# url to edit the group
 	exportpolicy	TINYINT DEFAULT '1' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,

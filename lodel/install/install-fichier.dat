@@ -193,6 +193,7 @@ ln tpl/optiongroups.html
 ln tpl/edit_options.html
 ln tpl/edit_optiongroups.html
 ln tpl/edit_useroptiongroups.html
+ln tpl/edit_servooconf.html
 
 ln stats.php
 ln tpl/edit_texts.html

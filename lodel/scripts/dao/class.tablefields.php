@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2005-01-25.
+ // File generate automatically the 2005-01-26.
  //
 
 
@@ -51,6 +51,7 @@ class tablefieldsVO {
    var $filtering;
    var $edition;
    var $editionparams;
+   var $weight;
    var $comment;
    var $idgroup;
    var $status;

@@ -33,9 +33,9 @@
  *  Logic ServOOConf
  */
 
-require("logic/useroptiongroups");
+require("logic/class.useroptiongroups.php");
 
-class ServOOConfsLogic extends UserOptionGroupsLogic {
+class ServOOConfLogic extends UserOptionGroupsLogic {
 
   /** Constructor
    */
@@ -56,7 +56,6 @@ class ServOOConfsLogic extends UserOptionGroupsLogic {
     return Logic::listAction($context,$error);
   }
 
-
    /**
     * add/edit Action
     */
@@ -66,7 +65,7 @@ class ServOOConfsLogic extends UserOptionGroupsLogic {
     $dao=&getDAO("optiongroups");
     $vo=$dao->find("name='servoo'");
     $context['id']=$vo->id;
-    $ret=Logic::editAction($context,$error);
+    $ret=UserOptionGroupsLogic::editAction($context,$error);
 
     if ($ret=="_error") return $ret;
 
@@ -80,12 +79,12 @@ class ServOOConfsLogic extends UserOptionGroupsLogic {
 
     $servoover=$client->version();
 
-    if ($client->error_message) {
+    if (preg_match("/^ERROR:/i",$servoover) || $client->error_message) {
       $error['servoo']=$client->error_message;
       return "_error";
     }
 
-    return $ret;
+    return $ret=="_ok" ? "edit_options" : $ret;
   }
 
 

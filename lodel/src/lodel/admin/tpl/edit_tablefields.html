@@ -217,6 +217,23 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="editionparams"></FUNC>
     </p>
   </LOOP>
+  <IF COND="[#CLASSTYPE]=='entities'">
+    <label for="weight">[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]
+        : 
+      </label>
+    <br class="nobr">
+    <select name="weight" id="weight">
+      <?php 
+                      makeSelect($context,"weight","tablefields","select");
+                  ?>
+    </select>
+    <br />
+    <LOOP NAME="fielderror" FIELD="weight">
+      <p class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="weight"></FUNC>
+      </p>
+    </LOOP>
+  </IF>
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>

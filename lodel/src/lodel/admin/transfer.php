@@ -392,6 +392,12 @@ UPDATE #_TP_tablefields SET edition=\'textarea\' WHERE edition LIKE \'textarea%\
 ');
 	if ($err) break;
       }
+      if (!$fields['weight']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_tablefields ADD weight TINYINT NOT NULL;
+');
+	if ($err) break;
+      }
       if (!$fields['class']) {
 	$err=mysql_query_cmds('
 ALTER TABLE #_TP_tablefields ADD class VARCHAR(64) NOT NULL, ADD INDEX index_class (class);

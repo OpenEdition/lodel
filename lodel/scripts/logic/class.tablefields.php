@@ -172,6 +172,11 @@ class TableFieldsLogic extends Logic {
      }
      renderOptions($arr2,$context['g_name']);
      break;
+     case 'weight':
+       $arr=array("0"=>getlodeltextcontents("not_indexed","admin"),
+		  "1"=>"1","2"=>"2","4"=>"4","8"=>"8");
+       renderOptions($arr,$context['weight']);
+       break;
    }
    }
 
@@ -317,6 +322,7 @@ class TableFieldsLogic extends Logic {
                   "filtering"=>array("text",""),
                   "edition"=>array("select",""),
                   "editionparams"=>array("text",""),
+                  "weight"=>array("select","+"),
                   "comment"=>array("longtext",""),
                   "idgroup"=>array("select","+"));
              }

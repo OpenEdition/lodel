@@ -86,7 +86,7 @@ class ServOO_Client {
 
     $err = $this->_soapclient->getError();
     if ($err) {
-      $this->$error_message=$err;
+      $this->error_message=$err;
     }
   }
 
@@ -434,7 +434,7 @@ class ServOO_Client {
     $ret = $this->call("version");
 
     if ($this->error) {
-      return "Error: " . $ret->error_message ."\n";
+      return "Error: " . $this->error_message ."\n";
     } else {
       return $ret;
     }
@@ -482,11 +482,14 @@ class ServOO_Client {
       $ret = $this->_soapclient->call($operation,
 				      $params,
 				      "urn:ServOO_SOAP_Server");
+
       // what do we get ?
-      if ($this->_soapclient->fault) {
+      if ($this->_soapclient->fault || $this->_soapclient->error_str) {
 	$this->error=true;
 	if (is_array($ret) && isset($ret['faultcode'])){
 	  $this->error_message=$ret['faultstring'];
+	} elseif ($this->_soapclient->error_str) {
+	  $this->error_message=$this->_soapclient->error_str;
 	} else {
 	  $this->error_message="unknown error";
 	}
