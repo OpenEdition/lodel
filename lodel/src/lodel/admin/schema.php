@@ -38,8 +38,6 @@ require_once ($home."xmlfunc.php");
 require_once($home."connect.php");
 
 $context[classe]="documents";
-$context[namespace]=makeurl()."/schema";
-
 
 $originalname="$site-schema-xml.xsd";
 download("",$originalname,calculateXMLSchema($context));

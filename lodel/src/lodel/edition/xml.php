@@ -37,7 +37,6 @@ require_once ($home."textfunc.php");
 
 $context[identite]=$context[id]=$id=intval($id);
 $context[classe]="documents";
-$context[namespace]=makeurl()."/schema";
 
 require_once($home."connect.php");
 require_once($home."entitefunc.php");
