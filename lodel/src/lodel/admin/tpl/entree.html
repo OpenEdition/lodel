@@ -29,7 +29,7 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'une entrée d'index: [#TYPE_TITRE]</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'une entrée : index par [#TYPE_TITRE] </td>
 	</tr>
 </table>
 
@@ -42,17 +42,17 @@
 			<td class="texte_intitule">Nom :</td>
 			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
 		</tr>
-		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Merci de pr&eacute;ciser un nom.</td></tr>]
 <IF COND="[#TYPE_UTILISEABREV]">
 		<tr>
 			<td class="texte_intitule">Abréviation :</td>
 			<td><input size="30" type="text" name="abrev" value="[#ABREV]"></td>
 		</tr>
-		[(#ERREUR_ABREV|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser une abr&eacute;viation !</td></tr>]
+		[(#ERREUR_ABREV|true)<tr><td colspan="2" class="message_erreur">Merci de  pr&eacute;ciser une abr&eacute;viation.</td></tr>]
 </IF>
 <IF COND="![#TYPE_LINEAIRE]">
 		<tr>
-			<td class="texte_intitule">entrée parente :</td>
+			<td class="texte_intitule">Entrée parente :</td>
 			<td><select name="idparent"><option value="0">--</option><?php  make_selection_entree(); ?></select></td>
 		</tr>
 </IF>
