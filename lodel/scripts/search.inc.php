@@ -159,7 +159,7 @@ function search(&$context,$funcname,$arguments)
 		}
 		if(!$context['lodeluser']['visitor'])
 		{
-			$criteria_index .= $criteria_index .= " AND #_TP_entities.status >= 16";	
+			$criteria_index .= " AND #_TP_entities.status >= 16";	
 		}
 		
 		
