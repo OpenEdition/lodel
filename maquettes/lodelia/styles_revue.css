@@ -713,6 +713,94 @@ h6
 	margin-left:30px
 }
 
+/*
+ *   Les styles concernant les TOC
+ */
+
+
+.toc_section1
+{
+	/*  définit les caractéristiques du titre de niveau 1 pour la toc 
+	 */
+	width:auto;
+	font-weight :bold;
+	margin-left:5px;
+	margin-bottom:25px;
+	margin-top:25px
+}
+
+.toc_section2
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 2 pour la toc 
+	 */
+	width:auto;
+	height:auto;
+	font-weight :bold;
+	margin-left:10px;
+	margin-bottom:20px;
+	margin-top:20px
+}
+
+.toc_section3
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 3 pour la toc 
+	 */
+	width:auto;
+	height:auto;
+	font-weight :bold;
+	color:#00000;
+	margin-left:15px;
+	margin-bottom:15px;
+	margin-top:15px
+}
+
+.toc_section4
+{
+	/*  définit les caractéristiques du titre de niveau 1 pour la toc 
+	 */
+	width:auto;
+	font-weight :normal;
+	font-size :small;
+	margin-left:20px;
+	margin-bottom:10px;
+	margin-top:10px
+}
+
+.toc_section5
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 2 pour la toc 
+	 */
+	width:auto;
+	height:auto;
+	font-weight :normal;
+	margin-left:25px;
+	margin-bottom:10px;
+	margin-top:10px
+}
+
+.toc_section6
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 3 pour la toc 
+	 */
+	width:auto;
+	height:auto;
+	font-size:50%;
+	font-weight :bold;
+	color:#00000;
+	margin-left:30px;
+	margin-bottom:10px;
+	margin-top:10px
+}
+
+
+
+
+
+
 /******************************************************************************************/
 
 
