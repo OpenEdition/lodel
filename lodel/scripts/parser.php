@@ -1006,7 +1006,7 @@ function stripcommentandcr(&$text)
 {
   return preg_replace (array("/\r/","/<!--\[.*?\]-->\s*\n?/s"),
 		       array("",""),
-		       ,$text);
+		       $text);
 #  return preg_replace (array("/\r/",
 #			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",
 #			     "/--+>([\s\n]*<\/SCRIPT>)/i",
