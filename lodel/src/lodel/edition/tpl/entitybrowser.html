@@ -40,21 +40,19 @@ function sendValues(){
 	obj=window.opener.document.getElementById('[#CALLER]');
 	objselect=window.opener.document.getElementById('[#CALLER][select]');
 	var pattern=/(\d+):(.*)/;
-	if (obj) {
-		var chkbox = document.getElementsByName('entities');
-		var s='';
-		while(obj.length) {
-			obj.options[0]=null;
-		}		
-		for(i=0; i<chkbox.length; i++){
-			if(chkbox[i].checked) {
-				var result = chkbox[i].value.match(pattern);
-				objselect.options[obj.length] = new Option(result[2],result[1]);
-				obj.value=obj.value+result[1]+',';
-			}
+	var chkbox = document.getElementsByName('entities');
+	var s='';
+	while(obj.length) {
+		obj.options[0]=null;
+	}		
+	for(i=0; i<chkbox.length; i++){
+		if(chkbox[i].checked) {
+			var result = chkbox[i].value.match(pattern);
+			objselect.options[objselect.length] = new Option(result[2],result[1]);
+			obj.value=obj.value+result[1]+',';
 		}
 	}
-	window.close();
+//	window.close();
 }
 //  End -->
 </script>

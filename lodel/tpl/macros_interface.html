@@ -195,11 +195,10 @@ cp_[#NAME].writeDiv();
 	<ELSE/>
 	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_ENTITIES]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
-	<select id="[#VARNAME][select]" row="3" multiple >
+	<select id="[#VARNAME][select]" row="3" multiple ></select>
 	<LOOP NAME="entities_select">
 		<option value="[#ID]">[#TITLE]</option>
 	</LOOP>
-	</select>
 	</IF>
 <ELSE/>
 ???? Don't know how to edit this field. Type: [#TYPE] !
