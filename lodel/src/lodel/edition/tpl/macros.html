@@ -761,7 +761,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_SERIES">
-	<LOOP NAME="series" TABLE="publications" WHERE="idparent='0'" ORDER="ordre">
+	<LOOP NAME="series" TABLE="publications" WHERE="idparent='0' AND tplcreation='creation-serie'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_serie1">
 		<ELSE/>
