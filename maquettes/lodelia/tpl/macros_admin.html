@@ -42,8 +42,11 @@
 <!-- "rédacteur".                                                       -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		[<font color="red" size="-2">(OFF)(#OFFLINE|true)</font>]
-		[<font color="red" size="-2">(ON)(#OFFLINE|false)</font>]
+		<IF COND="[#STATUT] ge 1">
+			<font color="red" size="-2">(ON)</font>
+		<ELSE/><IF COND="[#STATUT] le -1">
+			<font color="red" size="-2">(OFF)</font>
+		</IF></IF>
 	</IF>
 </DEFMACRO>
 
