@@ -33,8 +33,8 @@ if ($login) {
     for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme nom de session
       // nom de la session
       $name=md5($context[login].microtime());
-      // enregistre la session
-      if ((mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) or die(mysql_error()));
+      // enregistre la session, si ca marche sort de la boucle
+      if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
     }
     unlock();
     if ($i==5) { $context[erreur_opensession]=1; break; }
@@ -85,7 +85,7 @@ function check_auth (&$revue)
     // cherche d'abord dans la base generale.
 #ifndef LODELLIGHT
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
+    $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysal_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $revue="toutes les revues";
