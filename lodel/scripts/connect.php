@@ -12,7 +12,6 @@ if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {
 }
 mysql_select_db($GLOBALS[currentdb])  or die (mysql_error());
 
-
 //
 //if (!function_exists("table")) {
 //  function table($nom)

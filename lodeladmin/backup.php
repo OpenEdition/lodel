@@ -43,7 +43,7 @@ if ($backup) {
   $archivetmp=tempnam("/tmp","lodeldump_");
   $archivefilename="lodel-".date("dmy").".tar.gz";
 
-  chdir ("../..");
+  chdir (LODELROOT);
   echo "tar czf $archivetmp ".join(" ",$dirtotar)." -C /tmp $outfile\n"; flush();
 #  system("tar czf $archivetmp ".join(" ",$dirtotar)." -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
   chdir ("lodel/admin");

@@ -765,6 +765,7 @@ function make_loop_code ($name,$tables,
 
 {
   static $tablefields; // charge qu'une seule fois
+  global $home;
 
   if ($where) $where="WHERE ".$where;
   if ($order) $order="ORDER BY ".$order;

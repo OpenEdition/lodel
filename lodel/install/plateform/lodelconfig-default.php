@@ -7,7 +7,7 @@ comment */
 
 
 # Racine de lodel sur le systeme
-$pathroot="";
+$pathroot=".";
 
 
 # Base du site

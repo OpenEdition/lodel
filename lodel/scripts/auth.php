@@ -226,7 +226,7 @@ if ($site) {
 		  $context[site]=$site="";
 		}
 	} else {
-		if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodel") {
+		if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodeladmin") {
 		  $context[site]=$site=$result[1];
 		} else {
 		  $context[site]=$site="";

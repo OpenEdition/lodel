@@ -1,5 +1,8 @@
 <?
-require("../../lodelconfig.php");
-$home="../../".$home;
+
+define(LODELROOT,"..");
+
+require(LODELROOT."/lodelconfig.php");
+$home=LODELROOT."/".$home;
 
 ?>

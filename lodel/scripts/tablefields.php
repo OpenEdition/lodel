@@ -1,7 +1,7 @@
 <?php
 // build the arrays containing tables and fields
 
-require_once($home."connect.php");
+require_once($GLOBALS[home]."connect.php");
 
 // try first to get the cached array
 if (!(@include("CACHE/tablefields.php"))) {
@@ -48,12 +48,15 @@ if (!(@include("CACHE/tablefields.php"))) {
 	  }
 	}
       }
+      mysql_select_db($GLOBALS[currentdb]);
+
       $fp=fopen("CACHE/tablefields.php","w");
       fputs($fp,'<?php  $tablefields='.var_export($tablefields,TRUE).' ; ?>');
       fclose($fp);
     }
 
   maketablefields(&$tablefields);
+
 
 
 }

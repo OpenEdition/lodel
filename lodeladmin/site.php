@@ -58,6 +58,7 @@ if ($edit) { // modifie ou ajoute
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
+
 //
 // creation de la DataBase si besoin
 //
@@ -118,10 +119,10 @@ if ($tache=="createtables") {
   
   mysql_select_db($context[dbname]);
 
-  if (!file_exists("../install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
-  $text=join('',file("../install/init-site.sql"));
-  if (file_exists("../install/inserts-site.sql")) {
-    $text.=utf8_encode(join('',file("../install/inserts-site.sql")));
+  if (!file_exists(LODELROOT."/lodel/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
+  $text=join('',file(LODELROOT."/lodel/install/init-site.sql"));
+  if (file_exists(LODELROOT."lodel/install/inserts-site.sql")) {
+    $text.=utf8_encode(join('',file(LODELROOT."lodel/install/inserts-site.sql")));
   }
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
@@ -157,7 +158,7 @@ if ($tache=="createtables") {
 //
 
 if ($tache=="createrep") {
-  $dir="../../".$context[rep];
+  $dir=LODELROOT."/".$context[rep];
   if (!file_exists($dir)) {
     // il faut creer le repertoire rep
     // on essaie
@@ -190,23 +191,21 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   function cherche_version () // on encapsule a cause du include de sites config
     {
       global $lodelhomere;
-      chdir("..");
-      $dir=opendir("..");
+      $dir=opendir(LODELROOT);
       if (!$dir) die ("impossible d'acceder en ecirture le repertoire racine... etrange, n'est-il pas ?");
       $versions=array();
       while ($file=readdir($dir)) {
 	#echo $file," ";
-	if (is_dir("../".$file) && 
+	if (is_dir(LODELROOT."/".$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir("../".$file."/revue")) {
-	  if (!(@include("../$file/revue/siteconfig.php"))) {
+	    is_dir(LODELROOT."/".$file."/revue")) {
+	  if (!(@include(LODELROOT."/$file/revue/siteconfig.php"))) {
 	    echo "Warning: Impossible d'ouvrir le fichier $file/revue/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";
 	  }
 	}
       }
-      chdir("admin");
       return $versions;
     }
   $versions=cherche_version();	  
@@ -237,8 +236,8 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
 
 if ($tache=="fichier") {
   // on peut installer les fichiers
-  $root="../../".$context[rep]."/";
-  $siteconfigsrc=$root."../$versionrep/revue/siteconfig.php";
+  $root=LODELROOT."/".$context[rep]."/";
+  $siteconfigsrc=LODELROOT."/$versionrep/revue/siteconfig.php";
   $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
   if (!file_exists($siteconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
@@ -251,7 +250,7 @@ if ($tache=="fichier") {
     }
   }
   // ok siteconfig est copier.
-  install_fichier($root,"../$versionrep/revue","..");
+  install_fichier($root,LODELROOT."/$versionrep/revue",LODELROOT);
 
   // ok on a fini, on change le statut de la site
   mysql_select_db($GLOBALS[database]);
