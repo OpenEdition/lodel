@@ -94,7 +94,7 @@ function parse_loop_extra(&$tables,
 #		    '".($GLOBALS[user][admin] ? "1" : "(usergroup IN ($GLOBALS[user][groups]))")."'
 #		    ),$where);
   //
-  if ($tablefields[lq("#_TP_classes")]) {
+  if (0 && $tablefields[lq("#_TP_classes")]) {
     require_once($home."dao.php");
     $dao=getDAO("classes");
     $classes=$dao->findMany("classtype='entities'");
