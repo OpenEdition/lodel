@@ -311,7 +311,7 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #}
 
 
-function makeurl ($base,$id)
+function makeurlwithid ($base,$id)
 
 {
   if ($GLOBALS[idagauche]) {
