@@ -68,7 +68,7 @@ if ($login) {
 
     if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 
-    header ("Location: http://$SERVER_NAME$url_retour");
+    header ("Location: http://".$_SERVER['SERVER_NAME']."/".$url_retour);
     die ("$url_retour");
   } while (0);
 }
