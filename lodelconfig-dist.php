@@ -60,7 +60,7 @@ $sharedir="$pathroot/share";
 $siteagauche=0;
 
 # Repertoire pour les fichiers archive pour l'import de donnees.
-$importdir="/www-bin/revues/import";
+$importdir="/var/import";
 
 # Timeout pour les sessions
 # en seconde
