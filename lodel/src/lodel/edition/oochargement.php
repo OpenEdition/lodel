@@ -206,6 +206,10 @@ function OO_XHTML ($convertedfile,&$context)
 #  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
 #  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
+  // remonte les balises r2r au dessus des ul et li
+  array_push($srch,"/((?:<(?:ul|li)\b[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/(?:ul|li)>\s*)+)/");
+  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
+
   // autre chgt
 
   array_push($srch,
