@@ -330,8 +330,7 @@
         edittype="text" />
 <column name="weight"
         type="TINYINT"
-        required="true"
-	label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
+        label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
         edittype="select"
 	editcondition="[#CLASSTYPE]=='entities'" />
 <column name="comment"
@@ -1438,7 +1437,7 @@
 </unique>
 </table>
 
-<!-- Ajout Jlamy 26 janvier 2005 -->
+<!-- added by Jean Lamy | 2005-01-26 -->
 <table name="index"
 		description="Table contenant l'index"
 		writeright=""
@@ -1459,10 +1458,11 @@
 		type="DOUBLE"
 		default="0"
 		required="true" />
-<index name="index_index">
-<index-column name="identity" />
-<index-column name="fieldname" />
+<index name="index_word">
 <index-column name="word" />
+</index>
+<index name="index_identity">
+<index-column name="identity" />
 </index>
 </table>
 </database>
