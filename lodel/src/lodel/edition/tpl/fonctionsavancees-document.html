@@ -50,34 +50,42 @@
 	</IF>
 
 	<!-- Téléchargement source RTF -->
-	<IF COND="[#REDACTEUR]">	
-		<!--<a href="telecharger.php?id=[#ID]&type=source" target="_blank">
-			T&eacute;l&eacute;charger le source RTF
-		</a><br />-->
-		<div class="ligne_info">
+	<IF COND="[#REDACTEUR]">
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="telecharger.php?id=[#ID]&type=source" target="_blank">
+					<span class="texte_noir_gras">T&eacute;l&eacute;charger le source RTF</span>
+				</a>
+			</div>
+		</div>
+		<!--<div class="ligne_info">
 			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
 			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>
+		</div>-->
 	<ELSE/>
 		<div class="ligne_info">
 			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
 		</div>
 	</IF>
 
 	<!-- Téléchargement source XML -->
-	<IF COND="[#REDACTEUR]">	
-		<!--<a href="telecharger.php?id=[#ID]&type=xml" target="_blank">
-			T&eacute;l&eacute;charger le source XML
-		</a><br />-->
-		<div class="ligne_info">
+	<IF COND="[#REDACTEUR]">
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="telecharger.php?id=[#ID]&type=xml" target="_blank">
+					<span class="texte_noir_gras">T&eacute;l&eacute;charger le source XML</span>
+				</a>
+			</div>
+		</div>
+		<!--<div class="ligne_info">
 			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
 			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>
+		</div>-->
 	<ELSE/>
 		<div class="ligne_info">
 			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
 		</div>
 	</IF>
 	
