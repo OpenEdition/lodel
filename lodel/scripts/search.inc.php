@@ -144,7 +144,7 @@ function search(&$context,$funcname,$arguments)
 			
 			
 		}
-		if( $context['qtype']!=""  || $context['qstatus']!="")
+		if( $context['qtype']!=""  || $context['qstatus']!="" || !$context['lodeluser']['visitor'])
 		{
 			$join = "INNER JOIN #_TP_entities ON #_TP_search_engine.identity = #_TP_entities.id";
 		}
@@ -173,7 +173,7 @@ function search(&$context,$funcname,$arguments)
 		#echo "limit :".$limit;
 		$groupby = " GROUP BY identity ";
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
-	#echo "hey :".$sql;
+	echo "hey :".$sql;
 	
 		$sqlc = lq("SELECT identity FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);	
 	#echo "hey2 :".$sqlc;
