@@ -116,10 +116,10 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
   $request.="Content-length: ".strlen($content)."\r\n".$content."\r\n";
 
   $port=$url[port] ? $url[port] : 80;
-  $fp = fsockopen ("$url[host]", $port, $errno, $errstr, 30);
+  $fp = fsockopen ("$url[host]", $port, &$errno, &$errstr, 30);
   if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
     
-  if (fputs ($fp,$request)!=strlen($request)) die("ERROR: cannot write to $url[host]:$port\n");
+  if (fputs ($fp,$request)!=strlen($request)) die("ERROR: cannot write to $url[host]:$port<br />\n$errno $errstr");
 
   //
   // ok, the header is sent.
