@@ -22,14 +22,14 @@
 
 
 <USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
-<title>Groupe</title>
+<title>[@ADMIN.TITLE_GROUP_EDITION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un groupe</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_GROUP_EDITION]</td>
 	</tr>
 </table>
 <br />
@@ -37,24 +37,29 @@
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" VALUE="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-		[(#ERREUR_PUBLICATIONS_EXIST|true)<tr><td colspan="2" class="message_erreur">
-			Impossible de d&eacute;truire car une ou des publications sont attach&eacute;s à ce groupe !</td></tr>]
-		[(#ERREUR_DOCUMENTS_EXIST|true)<tr><td colspan="2" class="message_erreur">
-			Impossible de d&eacute;truire car un ou des documents sont attach&eacute;s à ce groupe !</td></tr>]
+		<IF COND="[#ERREUR_PUBLICATIONS_EXIST]">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.UNABLE_DELETE_PUBLICATIONS]</td></tr>
+		</IF>
+		<IF COND="[#ERREUR_DOCUMENTS_EXIST]">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.UNABLE_DELETE_DOCUMENTS]</td></tr>
+		</IF>
 		<tr>
-			<td class="texte_intitule">Nom :</td>
+			<td class="texte_intitule">[@COMMON.NAME] :</td>
 			<td><input SIZE="40" type="text" name="nom" value="[#NOM]" /></td>
 		</tr>
-		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		<IF COND="[#ERREUR_NOM]">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.SHORTCUT_NAME].</td></tr>
+		</IF>
 		<tr>
 			<td colspan="2" align="center">
 				<br /><br />
-				<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
+				<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />
 				<IF COND="[#DELETE]">
-					<br /><br /><input class="form" type="button" value="     Confirmer la suppresion  " onClick="javascript:window.location='groupe.php?delete=2&id=[#ID]'" />
+					<br /><br /><input class="form" type="button" value="[@COMMON.CONFIRM_DELETE]" onClick="javascript:window.location='groupe.php?delete=2&id=[#ID]'" />
 				<ELSE/>
-					[&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='groupe.php?delete=1&id=(#ID)'" />]
+					[&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='groupe.php?delete=1&id=(#ID)'" />]
 				</IF>
 			</td>
 		</tr>

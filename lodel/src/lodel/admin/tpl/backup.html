@@ -23,32 +23,32 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Backup</title>
+<title>[@ADMIN.BACKUP_TITLE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Sauvegarde des données</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.BACKUP_TITLE]</td>
 	</tr>
 </table>
 
 <form method="POST" action="backup.php">
 <input type="hidden" name="backup" value="1">
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-<tr><td>Ne sauvegarder que la base de donnée,<br />pas les fichiers associés (source, image, docannexe)</td><td><input type="checkbox" name="sqlonly" /></td></tr>
-<tr><td>Opération:</td><td>
+<tr><td>[@ADMIN.SAVE_DATABASE]<br />[@ADMIN.NO_FILE_SOURCE]</td><td><input type="checkbox" name="sqlonly" /></td></tr>
+<tr><td>[@ADMIN.SELECT_GET_FILE] :</td><td>
 <select name="operation">
-<option value="download">Télécharger</option>
-<IF COND="[#IMPORTDIR]"><option value="importdir">Enregistrer dans [#IMPORTDIR]</option></IF>
-<option value="cache">Enregistrer dans ./CACHE</option>
+<option value="download">[@COMMON.DOWNLOAD]</option>
+<IF COND="[#IMPORTDIR]"><option value="importdir">[@COMMON.SAVE_IN_DIR] [#IMPORTDIR]</option></IF>
+<option value="cache">[@COMMON.SAVE_IN_DIR] ./CACHE</option>
 </select>
 </td></tr>
 </table>
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="  Sauvegarder  ">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php'" />
+		<input class="form" type="submit" value="[@COMMON.SAVE]">
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'" />
 	</div>
 </form>
 
