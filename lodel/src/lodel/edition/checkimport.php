@@ -48,6 +48,7 @@ $parser->init("documents");
 $parser->parse($text,$handler);
 
 $context['tablecontents']=$handler->contents();
+$context['multidoc']=$handler->multidoc;
 ///$context['urlnext']="index.php?do=xmlimport&idtask=$idtask";
 
 
@@ -85,8 +86,9 @@ class XmlImportHandler {
 
     $this->_contents.="<tr><td colspan=\"2\" class=\"openclass".$class[1]."\">".$class[0]." &darr;</td></tr>";
   }
-  function closeClass($class) 
+  function closeClass($class,$multidoc=false) 
   {
+    if ($multidoc) $this->multidoc=true;
     $this->_contents.='<tr><td colspan="2" class="closeclass'.$class[1].'">'.$class[0].' &uarr;</td></tr>';
   }
 

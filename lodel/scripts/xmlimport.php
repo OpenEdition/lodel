@@ -238,7 +238,7 @@ class XMLImportParser {
     }
     // close the last tags
     while($classstack) {
-      $handler->closeClass(array_shift($classstack));
+      $handler->closeClass(array_shift($classstack),$this->multipledoc);
     }
   } // function parser
 
@@ -328,6 +328,13 @@ class XMLImportParser {
 	// new context
       }
       if ($opening) {
+	if ($obj->g_name=="dc.title" && count($classstack)==1) {
+	  if ($this->multipledoc) {
+	    $this->handler->closeClass($classstack[0],true);
+	    $this->handler->openClass($classstack[0],null,true);
+	  }
+	  $this->multipledoc=true;
+	}
 	$datastack[0]="";
       } else {
 	$this->handler->processTableFields($obj,$datastack[0]); // call the method associated with the object class

@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS #_MTP_users (
 	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
 	lang		CHAR(5) NOT NULL,       # user lang
 
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
-
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),

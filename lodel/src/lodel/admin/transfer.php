@@ -189,7 +189,13 @@ UPDATE #_TP_users SET lang=\'fr\'
       if ($err) break;
       $report.="Ajout des lang dans users (local)<br>";
     }
-
+    if (!$fields['rank']) {
+      $err=mysql_query_cmds('
+ALTER TABLE #_TP_users ADD rank INT UNSIGNED DEFAULT '0' NOT NULL
+');
+      if ($err) break;
+      $report.="Ajout de rank a users (local)<br>";
+    }
     mysql_select_db($GLOBALS['database']);
     $fields=getfields("users",$GLOBALS['database']);
     if (!$fields['lang']) {
@@ -199,6 +205,13 @@ UPDATE #_TP_users SET lang=\'fr\'
 ');
       if ($err) break;
       $report.="Ajout des lang dans users (global)<br>";
+    }
+    if (!$fields['rank']) {
+      $err=mysql_query_cmds('
+ALTER TABLE #_TP_users ADD rank INT UNSIGNED DEFAULT '0' NOT NULL
+');
+      if ($err) break;
+      $report.="Ajout de rank a users (local)<br>";
     }
     mysql_select_db($GLOBALS['currentdb']);
 

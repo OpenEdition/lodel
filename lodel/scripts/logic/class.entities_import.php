@@ -90,7 +90,11 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
      // save the file
      if (!$this->id) die("ERROR: internal error in Entities_ImportLogic::importAction");
-     $sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
+     if ($this->nbdocuments>1) {
+       $sourcefile=SITEROOT."lodel/sources/entite-multipledoc-".$task['idparent'].".source";
+     } else {
+       $sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
+     }
      @unlink($sourcefile);
      copy($task['fichier'],$sourcefile);
      @chmod($sourcefile,0666 & octdec($GLOBALS['filemask']));
@@ -253,7 +257,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    var $_localcontext;
 
-   function openClass($class,$obj=null)
+   function openClass($class,$obj=null,$multipledoc=false)
    {
      switch($class[1]) { // classtype
      case 'entries':
@@ -270,9 +274,10 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    }
 
 
-   function closeClass($class) 
+   function closeClass($class,$multipledoc=false)
 
    {
+     global $db;
      switch($class[1]) { // classtype
      case 'entries':
        break;
@@ -287,17 +292,25 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
        if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
        if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
-       if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
 
-       $localcontext['creationmethod']="servoo";
+       if ($multipledoc) { // try to find the id
+
+	 $result=$db->execute(lq("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".intval($this->nbdocuments).",1")) or dberror();	 
+	 if (!$result->EOF) $localcontext['id']=$result->fields['id'];
+	 $this->nbdocuments++;
+
+       } else if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
+
+       $localcontext['creationmethod']=$multipledoc ? "servoo;multidoc" : "servoo";
        $localcontext['creationinfo']=$this->task['sourceoriginale'];
        
 #print_r($localcontext);
-       if (!$context['finish']) $localcontext['status']=-64;
+       if ($multipledoc) $this->context['finish']="oui";
+       if (!$this->context['finish']) $localcontext['status']=-64;
 
        $error=array();
        $this->ret=$this->editAction($localcontext,$error,FORCE);
-       $this->id=$localcontext['id'];
+       if (!$this->id) $this->id=$localcontext['id']; // record the first one only
        
 #     if ($this->ret=="_error") {}
 #     print

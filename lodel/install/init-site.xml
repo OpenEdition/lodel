@@ -605,6 +605,10 @@
         type="TINYINT"
         default="1"
         required="true" />
+<column name="rank"
+        type="INTEGER"
+        default="0"
+        required="true" />
 <vcolumn name="usergroups"
 	label="[@ADMIN.USERGROUPS]"
 	editcondition="[#SITE] and ![#USER.ADMIN]"
