@@ -35,9 +35,7 @@ array_push($balises,"surtitre","titre","soustitre");
 
 if ($context[textepublie] || $visiteur) $balises=array_merge($balises,$balisesdocument_lieautexte);
 
-echo "styles reconnus dans document: ",join(" ",$balises),"<br>";
 $context=array_merge($context,extract_xml($balises,$text));
-echo "style presents dans ce document: ",join(" ",array_intersect($balises,array_keys($context))),"<br>";
 
 //
 // cherche s'il y a des documents annexe et combien
