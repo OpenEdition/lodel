@@ -379,8 +379,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	$idtypes[$type]=$row[id];
       }
       if (!file_exists(SITEROOT."docannexe/fichier")) {
-	mkdir(SITEROOT."docannexe/fichier"); 
-	chmod(SITEROOT."docannexe/fichier",0700);
+	mkdir(SITEROOT."docannexe/fichier",0700); 
       }
       // ok, on s'occupe maintenant de l'importation des documentsannexes
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documentsannexes") or die(mysql_error());
