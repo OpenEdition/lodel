@@ -106,6 +106,7 @@ class TableFieldsLogic extends Logic {
 		  "display"=>getlodeltextcontents("display_no_edit","admin"),
 		  "text"=>getlodeltextcontents("edit_text_1line","admin"),
 		  "textarea"=>getlodeltextcontents("edit_textarea","admin"),
+		  "fckeditor"=>"FCKEditor",
 		  "select"=>getlodeltextcontents("edit_select","admin"),
 		  );
        renderOptions($arr,$context['edition']);
