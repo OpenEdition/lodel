@@ -128,7 +128,7 @@ form{
 	width: 390px;
 	background-image: url(../images/coin.png);
 	background-repeat: no-repeat;
-	background-position: 45% 48%;
+	background-position: 43% 48%;
 }
 #lettre label{
 	font-size: 85%;
@@ -140,6 +140,7 @@ form{
 }
 #lettre input.rech{
 	margin-left: 50%;
+	width: 43%;
 }
 #lettre fieldset{
 	margin-top: 60px;
