@@ -558,7 +558,7 @@ function save_annex_image($dir,$file,$filename,$uploaded,&$error) {
   $tmpdir=tmpdir();
   if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
     $newfile=$tmpdir."/".basename($file);
-    if (!move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
+    if ($file!=$newfile && !move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
     $file=$newfile;
   }
   if (!filesize($file)) { $error="readerror"; return; }
