@@ -392,5 +392,93 @@ function loop_rssitem($context,$funcname,$arguments)
   if (function_exists("code_after_$funcname")) call_user_func("code_after_$funcname",$localcontext);
 }
 
+/* added 2005-03-09
+ * LOOP_PAGE_SCALE
+ * this loop walk on the array pages to print pages number and links 
+ */
+function loop_page_scale(&$context,$funcname,$arguments)
+{
+	//Local cache
+	static $cache;
+	if(!isset($cache[$funcname]))
+	{
+		$pages = _constructPages($context,$funcname,$arguments);
+		$cache[$funcname] = $page;
+	}
+	
+	$local_context = $context;
+	$local_context['pages'] = $pages;
+	if(!$local_context["pages"] || count($local_context["pages"]) == 0)
+	{
+		call_user_func("code_alter_$funcname",$local_context);
+		return;
+	}
+	//call before
+	if(function_exists("code_before_$funcname"))
+		call_user_func("code_before_$funcname",$local_context);
+				
+	foreach($local_context["pages"] as $key => $value)
+	{
+		$local_context["pagenumber"] = $key;
+		$local_context["urlpage"] = $value;
+		call_user_func("code_do_$funcname",$local_context);
+	}
+	//call after
+	if(function_exists("code_after_$funcname"))
+		call_user_func("code_after_$funcname",$local_context);
+}
 
+/*
+ * Function _constructPages 
+ * construct page listing by given nbresults and currentoffset in the results
+ * 
+ */
+function _constructPages(&$context,$funcname,$arguments)
+{
+	//get current offset and construct url
+	$arguments['limit'] = $context['limitinfo'];
+	if(!$context['limitinfo'])
+		return;
+	$offsetname=$context['offsetname'];
+	$currentoffset = ($_REQUEST[$offsetname]? $_REQUEST[$offsetname] : 0);
+	$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
+	$cleanquery=preg_replace("/(^|&)".$offsetname."=\d+/","",$_SERVER['QUERY_STRING']);
+	if ($cleanquery[0]=="&") $cleanquery=substr($cleanquery,1); 
+  if ($cleanquery) $currenturl.=$cleanquery."&";
+
+ 	//construct next url
+ 	if($context['nbresults'] > ($currentoffset+$arguments['limit']))
+ 		$context['nexturl']=$currenturl.$offsetname."=".($currentoffset + $arguments['limit']);
+ 	else
+ 		$context['nexturl'] = "";
+  //construct previous url
+  if($currentoffset > 0)
+  	$context['previousurl'] = $currenturl.$offsetname."=".($currentoffset - $arguments['limit']);
+  else
+  	$context['previousurl'] ="";
+  //construct pages table
+  $pages = array();
+  //previous pages 
+   	$i = 0;
+ 	while($i + $arguments['limit'] <= intval($currentoffset))
+ 	{
+ 		$urlpage = $currenturl.$offsetname."=".$i;
+ 		$pages[($i/$arguments['limit']+ 1)] = $urlpage;
+ 		$i += $arguments['limit'];
+ 	}
+   	
+	//add current page   
+  $pages[($currentoffset/$arguments['limit']+ 1)] = "";
+   
+  //next pages 
+  $i = $currentoffset;
+  while($i + $arguments['limit'] < $context['nbresults'])
+  {
+  	$i += $arguments['limit'];
+  	$urlpage = $currenturl.$offsetname."=".$i;
+  	$pages[($i/$arguments['limit']+ 1)] = $urlpage;
+  }
+   
+  return $pages;
+}
 ?>
