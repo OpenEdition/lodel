@@ -115,7 +115,8 @@ if ($edit) { // modifie ou ajoute
       if ($sqltype[$oldtype]!=$sqltype[$context[type]]) {
 	$alter="MODIFY";
 	if (!$confirmation) { $context[erreur_confirmation_type]=1; break; }
-      } elseif ($oldnom!=$context[nom]) {
+      }
+      if ($oldnom!=$context[nom]) {
 	$alter="CHANGE $oldnom";
       }
 

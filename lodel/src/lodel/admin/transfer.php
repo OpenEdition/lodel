@@ -29,9 +29,9 @@
 
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include ($home."func.php");
+require_once($home."func.php");
 require_once($home."champfunc.php");
 
 
@@ -73,6 +73,12 @@ if ($droptables) {
   // detar dans le repertoire du site
   $listfiles=`tar ztf $fichier 2>/dev/null`;
   $dirs="";
+  // verification de la presence de lodel/txt et lodel/rtf, indispensable pour le transfer
+  foreach (array("lodel/txt","lodel/rtf") as $dir) {
+    if (!file_exists(SITEROOT.$dir)) {
+	mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask])) or die ("impossible de creer le repertoire".SITEROOT.$dir);
+    }
+  }
   foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
     if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
   }
@@ -195,8 +201,13 @@ ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
 UPDATE _PREFIXTABLE_indexls SET statut=32, idtype=2 WHERE idtype=3;
 # change lang en langue
 ALTER TABLE _PREFIXTABLE_indexls CHANGE lang langue CHAR(2) NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents CHANGE lang langue CHAR(2) NOT NULL;
 # positionne la langue correctement
 UPDATE _PREFIXTABLE_indexls SET langue=\'fr\' WHERE langue=\'\';
+UPDATE _PREFIXTABLE_documents SET langue=\'fr\' WHERE langue=\'\';
+# suppression des champs inutiles
+ALTER TABLE _PREFIXTABLE_documents DROP intro;
+ALTER TABLE _PREFIXTABLE_documents DROP langresume;
 # ok c est bon, on peut renomer
 
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
@@ -248,12 +259,13 @@ RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_entites_entrees;
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documents_indexhs") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
 	// ajoute dans la table le lien
-	if (!$convid[$row[idindexhs]]) {
-	  $err="La conversion de l'indexhs $row[idindexhs] est introuvable";
+	if (!$convid[$row[idindexh]]) {
+	  $err="La conversion de l'indexh $row[idindexh] est introuvable";
 	  break;
 	}
-	$cmds.="INSERT INTO _PREFIXTABLE_entites_entrees (identree,identite) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
+	$cmds.="INSERT INTO _PREFIXTABLE_entites_entrees (identree,identite) VALUES ('".$convid[$row[idindexh]]."','".$row[iddocument]."');";
       }
+      if ($err) break; 
 
 #      die( preg_replace("/;/","<br>",$cmds));
       $err=mysql_query_cmds($cmds);
@@ -305,6 +317,10 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
 	if ($err) break;
 	$report.="Transforme meta_image en icone dans documents<br>\n";
       }
+      $err=mysql_query_cmds('ALTER TABLE _PREFIXTABLE_documents DROP meta;');
+      if ($err) break;
+      $report.="Suppression du champ meta de documents<br>\n";
+
     }
     if ($tables["$GLOBALS[tp]publications"]) {
       // cherche les fields de publications 
@@ -689,7 +705,10 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	    }       
 	  } 
 	  // other fields
-	  elseif (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
+	  elseif (preg_match("/<R2R:$field\s*(?:lang=\"[^\"]+\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
+            if ($field=="langue") {
+                $match[1]=strip_tags($match[1]);
+            }
 	    array_push($updates," $field='".addslashes(convertHTMLtoXHTML($field,$match[1]))."'");
 	  }
 	}
@@ -709,7 +728,8 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	  mysql_query("UPDATE $GLOBALS[tp]documents SET ".join(",",$updates)." WHERE identite=$row[identite]") or die (mysql_error());
 	}
       }
-      if ($err) break;
+      if ($err) $report.= $err."<br>Warning : l'erreur \"Le fichier ../../lodel/txt/r2r-xxx.xml n'existe pas\" indique une erreur grave seulement si le document xxx n'est pas un documentannexe-* (voir table entite et types)<br>";
+
     }
     require_once($home."objetfunc.php");
     $ret=makeobjetstable();
@@ -834,7 +854,7 @@ function create($table)
     break;
   }
   
-  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br>";
+  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",file_get_contents($file),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br>";
   
   $err=mysql_query_cmds($result[0]);
   if ($err) return $err;
@@ -970,8 +990,9 @@ function convertHTMLtoXHTML ($field,$contents)
       $contents=join("",$arr);
     } elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
 #echo "Ted document: $row[identite]<br>";
-      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
-			     '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
+      $contents=preg_replace('/<sup><small><\/small><\/sup>/s','',$contents);
+      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s','<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
+      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+id="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s','<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
 	
     }
   } // fin note R2R
@@ -981,10 +1002,12 @@ function convertHTMLtoXHTML ($field,$contents)
   $srch=array('/<a\s+name="FM(\d+)">\s*<a\s+href="#FN(\d+)">(.*?)<\/a>\s*<\/a>/s', # R2R footnote call
 	      '/<a\s+name="FM(\d+)">\s*<\/a>\s*<a\s+href="#FN(\d+)">(.*?)<\/a>/s', # R2R footnote call
 	      '/<sup>\s*<small>\s*<\/small>\s*<\/sup>/',
-	      '/<a\s+href="#_ndef_(\d+)" name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
+	      '/<a\s+href="#_ndef_(\d+)"\s+name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/',
+	      '/<a\s+href="#_ndef_(\d+)"\s+id="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
   $rpl=array('<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
 	     '<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
 	     '',
+	     '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>',
 	     '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>');
 
   // convert u in span/style

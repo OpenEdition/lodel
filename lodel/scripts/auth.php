@@ -35,6 +35,10 @@ define("LEVEL_EDITEUR",30);
 define("LEVEL_ADMIN",40);
 define("LEVEL_ADMINLODEL",128);
 
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
+
+
 function authenticate ($level=0,$norecordurl=FALSE)
 
 {
@@ -208,9 +212,9 @@ $idsession=0;
 $session="";
 
 $context=array(
-	       "version" => doubleval($version),
-	       "shareurl"=>$GLOBALS[shareurl],
-	       "extensionscripts"=>$GLOBALS[extensionscripts],
+	       "version" => $GLOBALS['version'],
+	       "shareurl"=>$GLOBALS['shareurl'],
+	       "extensionscripts"=>$GLOBALS['extensionscripts'],
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
 	       ); // tres important d'initialiser le context.
 
