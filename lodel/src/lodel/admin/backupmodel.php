@@ -77,8 +77,13 @@ if ($backup) {
   foreach ($tables as $table) {
     fputs($fh,"DELETE FROM ".lodelprefix($table).";\n");
   }
+  mysql_dump($currentdb,"",$fh,false,false,true,$tables); // get the content
 
-  mysql_dump($currentdb,"",$fh,false,false,$tables);
+  $tables=array("$GLOBALS[tp]documents",
+		"$GLOBALS[tp]publications");
+  mysql_dump($currentdb,"",$fh,true,true,false,$tables); // get the table create
+  // it may be better to recreate the field at the import rather 
+  // than using the created field. It may be more robust. Status quo at the moment.
 	    
   fclose($fh);
 

@@ -119,7 +119,7 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
  *
  */
 
-function mysql_dump($db,$output,$fh=0,$create=TRUE,$drop=TRUE,$tables=array())
+function mysql_dump($db,$output,$fh=0,$create=true,$drop=true,$contents=true,$tables=array())
 
 {
   if ($fh) {
@@ -154,7 +154,7 @@ function mysql_dump($db,$output,$fh=0,$create=TRUE,$drop=TRUE,$tables=array())
         $local_query  = 'SELECT * FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table);
 	
 	if ($create) PMA_exportStructure($db, $table, $crlf, $err_url);
-	PMA_exportData($db, $table, $crlf, $err_url, $local_query);
+	if ($contents) PMA_exportData($db, $table, $crlf, $err_url, $local_query);
         $i++;
     }
     PMA_exportDBFooter($db);

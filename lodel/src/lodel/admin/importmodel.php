@@ -78,8 +78,8 @@ if ($fichier && $delete) {
   foreach(array("entites","entrees","personnes") as $table) {
     $result=mysql_query("SELECT 1 FROM $GLOBLAS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
     if (mysql_num_rows($result)) {
-#      $context[erreur_table]=$table;
-#      break;
+      $context[erreur_table]=$table;
+      break;
     } 
   }
 }
