@@ -29,45 +29,32 @@
 	</table>
 
 	<br />
-<!-- boucles sur les groupe -->
+<!-- boucle sur les groupes de champs -->
 <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='documents' AND statut gt 0" ORDER="ordre">
 	<LOOP NAME="champs">
-	<BEFORE><!-- information sur le groupe. Ne s'affichissent que s'il y a des champs editable -->
-	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-		<tr>
-			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
-		</tr>
-	</table>
-	<br />
-	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-	</BEFORE>
+		<BEFORE><!-- information sur le groupe. Ne s'affichent que s'il y a des champs editable -->
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+				<tr>
+					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+				</tr>
+			</table>
+			<br />
+			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+		</BEFORE>
         <DO>
-		<tr>
-			<td width="200">[#TITRE]:</td>
-Nicolas, il faudrait peut etre faire une macro avec ca: commun document.html/publication.html
-<!-- debut macro -------------------------------------------- -->
-		<IF COND="[#TYPE] eq 'boolean'">
-			<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
-		</IF>
-		<IF COND="[#EDITION] eq 'text'">
-			<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
-		</IF>
-		<IF COND="[#EDITION] eq 'textarea10'">
-			<td><textarea rows="10" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
-		</IF>
-		<IF COND="[#EDITION] eq 'textarea30'">
-			<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
-		</IF>
-<!--fin macro -------------------------------------------------- -->
-		</tr>
-		<IF COND="[#ERREUR]"><tr><td colspan="2" class="message_erreur">Vous devez preciser un titre</td></tr></IF>
+			<tr>
+				<td width="200">[#TITRE]:</td>
+				<MACRO NAME="AFFICHE_CHAMPS">
+			</tr>
+			<MACRO NAME="AFFICHE_ERREURS_SAISIE">
         </DO>
         <AFTER>
-	</table>
+			</table>
         </AFTER>
     </LOOP>
 </LOOP>
+
 	<br />
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
