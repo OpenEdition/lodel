@@ -171,7 +171,9 @@ $iduser=0;
 $revue="";
 $idsession=0;
 
-$context=array(); // tres important
+$context=array(
+	       "version" => double($version)
+	       ); // tres important d'initialiser le context.
 $superadmin=0;
 $admin=0;
 $user=0;
