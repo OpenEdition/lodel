@@ -69,9 +69,6 @@ if ($edit) { // modifie ou ajoute
 	die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données. Il faut utiliser plusieurs bases de donnée ou attendre la prochaine version.<br /> Merci de votre comprehension.");
       }
     }
-    //
-
-
     // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
       $result=mysql_query ("SELECT statut,rep,chemin FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
@@ -82,6 +79,10 @@ if ($edit) { // modifie ou ajoute
       if ($context[atroot]) $context[chemin]="/";
       if (!$context[chemin]) $context[chemin]="/".$context[rep];
     }
+    if (!$context[url]) {
+      $context[url]="http://".$_SERVER['SERVER_NAME'].preg_replace("/\blodeladmin\/.*/","",$_SERVER['REQUEST_URI']).substr($context[chemin],1);
+    }
+
     if ($reinstalle) $statut=-32;
 
     mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,chemin,url,soustitre,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[chemin]','$context[url]','$context[soustitre]','$statut')") or die (mysql_error());

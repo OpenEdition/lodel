@@ -96,6 +96,14 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
   $entite=& $context[entite];
   $context[idtype]=intval($context[idtype]);
+  $id=intval($context[id]);
+  $idparent=intval($context[idparent]);
+
+  // check we have the right to add such an entite
+  $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite1='$context[idtype]'") or die(mysql_error());
+  if (mysql_num_rows($result)<=0) die("ERROR: Entities of type $context[idtype] are not allowed in entity $idparent");
+
+
   if ($champcritere) $champcritere=" AND ".$champcritere;
 
   // check for errors and build the set
@@ -198,9 +206,6 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     $context[erreur]=$erreur;
     if ($returnonerror) return FALSE;
   }
-  
-  $id=intval($context[id]);
-  $idparent=intval($context[idparent]);
 
   lock_write($classe,"objets","entites","relations",
 	     "entites_personnes","personnes",

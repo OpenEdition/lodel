@@ -53,7 +53,7 @@ Reconfigurer le ServOO:
 </li>
 <?php } ?>
 
-<?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $servoohost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo $erreur; ?> </span><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <p><b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $servoohost; ?> impossible. Vérifier les informations entrées. L'erreur produite est:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
 
 <table border="1">
 

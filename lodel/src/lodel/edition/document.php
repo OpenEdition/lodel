@@ -27,8 +27,8 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require_once("siteconfig.php");
-include_once ($home."auth.php");
+require("siteconfig.php");
+require_once ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
 
 $classe="documents";
