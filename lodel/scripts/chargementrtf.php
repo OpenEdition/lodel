@@ -23,14 +23,16 @@ if ($htmlfile && $htmlfile!="none") {
       } else {
 	$row=array("publication"=>$context[id],"fichier"=>$newname);
       }
-      if ($style) { // le fichier est style, on y va
+      //      if ($style) { // le fichier est style, on y va
 	// cree une tache
 	$idtache=make_tache("Import $htmlfile_name",3,$row,$tache);
 	header("Location: chkbalisage.php?id=$idtache");
-      } else {
-	$idtache=make_tache("Import $htmlfile_name",1,$row,$tache);
-	header("Location: balisage.php?id=$idtache");
-      }
+
+	// c'est la fin de balisage.php, snif! Les gens n'en veulent plus.
+	//      } else {
+	//$idtache=make_tache("Import $htmlfile_name",1,$row,$tache);
+	//header("Location: balisage.php?id=$idtache");
+	//}
       return;
     } else {
       $context[erreur_fichiernonrtf]=1;
