@@ -97,7 +97,7 @@ Base de données:<br>
 			  <tr><td><input type="radio" name="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> ></td><td>Utiliser une nouvelle base de données qui existe: <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td></tr>
 	                  <?php
 	                     } else {
-	                     while ($row=mysql_fetch_row($result)) {
+	                     while ($row=mysql_fetch_row($resultshowdatabases)) {
 			     $dbname=$row[0];
 			     if ($database==$dbname) {
 			         $checked="checked"; $oneischecked=1;

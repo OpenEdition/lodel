@@ -107,11 +107,15 @@ $extensionscripts="";      # extension .php ou .html pour les scripts accessible
 $idagauche="";             # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
 
 
-# configuration du serveur OO
+# configuration du ServOO
 $servoourl="";
 $servoousername="";
 $servoopasswd="";
 
+# configuration du proxy pour atteindre le ServOO
+
+$proxyhost="";
+$proxyport="8080";
 
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK

@@ -79,7 +79,75 @@ array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
 
 
 
+function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 
+{
+  require($home."Snoopy.class.php");
+  $client = new Snoopy();
+  $client->agent = "Lodel";
+  $client->read_timeout = 60;
+  $client->use_gzip = true;
+  $client->set_submit_multipart();
+
+  $options=getoption(array("proxyhost","proxyport"),"");
+  if (!$options['proxyhost']) $options['proxyhost']=$GLOBALS['proxyhost'];
+  if ($options['proxyhost']) {
+    $client->proxy_host=$options['proxyhost'];
+    if (!$options['proxyport']) $options['proxyport']=$GLOBALS['proxyport'];
+    $client->proxy_port=$options['proxyport'] ? $options['proxyport'] : 8080;
+  }
+
+  $i=0;
+  if ($files) {
+    foreach ($files as $file) {
+      $varfile="file".(++$i);
+      $postfiles[$varfile]=$file;
+    }
+  }
+  
+  if ($client->submit($url,$vars,$postfiles)) {
+    #print_r($client);
+    if ($client->status!=200) { return array("ERROR: ".$client->response_code); }
+    if ($client->timed_out) { return array("ERROR: time out"); }
+    // premiere ligne.
+    #echo $client->results;
+    $eol=strpos($client->results,"\n");
+    $firstline=$eol ? substr($client->results,0,$eol+1) : $client->results;
+
+    if (preg_match("/^(ERROR|SAY):/",$firstline)) { return array($firstline); }
+    if (preg_match("/^version:\s*(.*?)\r?\n/",$firstline,$result)) {
+      $retvar['version']=$result[1];
+    }
+    // deuxieme ligne.
+    $eol2=strpos($client->results,"\n",$eol+1);
+    if (preg_match("/^content-length:\s*(\d+)\s*\r?\n/",substr($client->results,$eol+1,$eol2-$eol1+1),$result)) {
+      $contentlength=$result[1];
+      if ($contentlength!=strlen($client->results)-($eol2+1)) {
+	return array("ERROR: the length of the file disagree with the content-length");
+      }
+	    
+    } else {
+      return array("ERROR: content-length not found during the exchange with servoo");
+    }
+
+    if ($outfile) {
+      if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de droit sur les fichiers et repertoire surement"); }
+      $fout=fopen($outfile,"w");
+      if (!$fout) die("impossible d'ouvrir le fichier $outifle en ecriture");
+      fwrite($fout,substr($client->results,$eol2+1));
+      fclose($fout);
+    } else {
+      return array(substr($client->results,$eol2+1),$retvar);
+    }
+    unset ($client->results);
+  } else {
+    return array ("ERROR: Snoopy says: ".$client->error."\n");
+  }
+
+}
+
+
+/*
 function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 
 {
@@ -203,7 +271,7 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 # echo "tout ",(time()-$t),"<br>\n";
   return array($res,$retvar);
 }
-
+*/
 
 
 
