@@ -53,8 +53,11 @@
 			<table align="right" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td align="right" valign="bottom">
-						<span class="texte_petit">Publication : </span>
-						<span class="texte"><strong>[(#SITE|nbsp)]</strong></span>
+						<!--<span class="texte_petit">Publication : </span>-->
+						<LOOP NAME="nom_site" TABLE="sites" WHERE="rep='[#SITE]'">
+							<DO><span class="texte"><strong>[#NOM]</strong></span></DO>
+						</LOOP>
+
 					</td>
 					<td width="20" heigth="25" align="center">
 						<IF COND="[#ADMINLODEL]">
