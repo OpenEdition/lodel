@@ -47,7 +47,7 @@ $openofficeclassespath="/usr/local/OpenOffice.org1.1.0/program/classes";
 define("OPENOFFICEVERSION","1.1");
 
 # message renvoie
-define ("MESSAGEVERSION","Visit http://www.lodel.org/servoo");
+define ("MESSAGEVERSION","Visit http://www.lodel.org/servoo.php");
 
 
 # host surlequel est le serveur OpenOffice
