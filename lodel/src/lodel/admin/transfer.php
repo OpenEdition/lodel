@@ -231,7 +231,7 @@ RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_documents_personnes;
     }
 
     if ($insert) {
-      chargeinserts();
+      if (!$err=chargeinserts()) break;
       $report.="Recharge le fichier init-revue.sql<br>\n";
     }
     // fini, faire quelque chose
