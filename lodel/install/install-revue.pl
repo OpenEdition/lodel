@@ -196,6 +196,7 @@ htaccess ("tpl");
 	    "r2rcheck",
 	    "r2renregistre",
 	    "rmdb",
+		"stats",
 	    "texte",
 	    "textes",
 	    "typedoc",
