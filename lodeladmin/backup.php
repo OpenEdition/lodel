@@ -67,7 +67,7 @@ if ($backup) {
       mysql_dump($dbname,"",TRUE,$fh);
       unlock();
 
-      if (!$sqlonly) array_push($dirtotar,"$rep/lodel/txt","$rep/lodel/rtf","$rep/docannexe");
+      if (!$sqlonly) array_push($dirtotar,"$rep/lodel/sources","$rep/docannexe");
 #      echo $dbname," finish<br>"; flush();
     }
   }
