@@ -1,8 +1,0 @@
-#!/bin/sh
-
-find  $1/lodel \
- -name '*.php' \
- -not -path '*/CACHE/*' \
- -not -xtype d \
- -not -name 'ess.php' \
-| tar czf lodelphp.tar.gz --files-from - $1/README  $1/lodel/install
