@@ -78,7 +78,7 @@ if ($edit) { // modifie ou ajoute
 
     if ($err) break;
 
-    lock_write("translations","textes");
+    lock_write("translations","textes","textes as t1","textes as t2");
 
     $set=array("title","translators","modificationdate","textgroups");
     if (!$id) {
