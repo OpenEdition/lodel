@@ -110,7 +110,7 @@ $GLOBALS['xhtmlgroups']['xhtml:fontstyle']=array("tt", "i", "b", "big", "small")
 $GLOBALS['xhtmlgroups']['xhtml:phrase']=array("em", "strong", "dfn", "code", "q", "samp", "span","kbd", "var", "cite", "abbr", "acronym", "sub", "sup");
 $GLOBALS['xhtmlgroups']['xhtml:block']=array("p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "lists", "pre", "hr", "blockquote", "address", "table");
 
-$GLOBALS['$xhtmlgroups']['Lien']=array("a");
+$GLOBALS['xhtmlgroups']['Lien']=array("a");
 $GLOBALS['xhtmlgroups']['Appel de Note']=array("a"=>"class=\"(foot|end)notecall\"");
 
 
