@@ -70,33 +70,6 @@ function loop_topparentdoc(&$context,$funcname)
   topparentpubli($context,funcname);
 }
 
-function loop_rubriquesparentes (&$context,$funcname) {
-	 $id=intval($context[id]);
-	 die ("a reecrire. Ghislain le 01/08/03");
-#ifndef LODELLIGHT
-	 $type="AND type='rubrique'";
-#else
-	 $type="";
-#endif
-	 if (!$id) return;
-
-	 $contexts=array(); $i=0;
-
-	$result=mysql_query("SELECT * FROM $GLOBALS[tp]publications WHERE id='$id' $type AND statut>".($GLOBALS[droitvisiteur] ? -64 : 0)) or die (mysql_error());	 
-	  while (mysql_num_rows($result)>0) {
-		$contexts[$i]=mysql_fetch_array($result);
-		$parent=$contexts[$i][parent];
-		$result=mysql_query("SELECT * FROM $GLOBALS[tp]publications WHERE id='$parent' $type AND statut>".($GLOBALS[droitvisiteur] ? -64 : 0)) or die (mysql_error());	 
-		$i++;
-	 }
-
-	$i--;
-	while ($i>=0) {
-		 $localcontext=array_merge($context,$contexts[$i]);
-		 call_user_func("code_do_$funcname",$localcontext);
-		 $i--;
-	 }
-}
 
 function loop_publisparentes(&$context,$funcname,$critere="")
 {
@@ -131,5 +104,104 @@ function loop_toc($context,$funcname,$arguments)
     call_user_func("code_do_$funcname",$localcontext);
   }
 }
+
+
+
+
+function loop_paragraphes($context,$funcname,$arguments)
+
+{
+  if (!isset($arguments[text])) {
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
+    return;
+  }
+
+  preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is",$arguments[text],$results,PREG_SET_ORDER);
+
+  $count=0;
+  foreach($results as $result) {
+    $localcontext=$context;
+    $localcontext[compteur]=(++$count);
+    $localcontext[paragraphe]=$result[0];
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+}
+
+
+
+function loop_extrait_images($context,$funcname,$arguments)
+
+{
+  if (!isset($arguments[text])) {
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
+    return;
+  }
+  if ($arguments[limit]) {
+    list($start,$length)=explode(",",$arguments[limit]);
+    $end=$start+$length;
+  } else {
+    $start=0;
+  }
+
+  $validattrs=array("src","alt","border","style","class","name");
+
+  preg_match_all("/<img\b([^>]*)>/",$arguments[text],$results,PREG_SET_ORDER);
+
+  if (!$end) $end=count($results);
+
+  $count=0;
+  for($j=$start; $j<$end; $j++)  {
+    $result=$results[$j];
+    $localcontext=$context;
+    $attrs=preg_split("/\"/",$result[1]);
+#    print_r($attrs);
+    $countattrs=2*intval(count($attrs)/2);
+    for($i=0; $i<$countattrs; $i+=2) {
+      $attr=trim(str_replace("=","",$attrs[$i]));
+#      print_r($attrs[$i]);
+#      echo ":$attr $attrs[$i]<br>";
+      if (in_array($attr,$validattrs)) $localcontext[$attr]=$attrs[$i+1];
+    }
+
+    $localcontext[compteur]=(++$count);
+    $localcontext[image]=$result[0];
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+}
+
+
+/*
+
+function loop_previous ($context,$funcname,$arguments)
+
+{
+  if (!isset($arguments[id])) {
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"previous\" requires a ID attribut");
+    return;
+  }
+
+  $id=intval($arguments[id]);
+//
+// cherche le document precedent
+//
+
+  $querybase="SELECT $GLOBALS[tp]entites.id FROM $GLOBALS[tp]entites, $GLOBALS[tp]entites as entites2  WHERE entites2.id='$id' AND $GLOBALS[tp]entites.idparent=entites2.idparent AND $GLOBALS[tp]entites.statut>0 AND entites2.statut>0 AND";
+  // precedent:
+  $result=mysql_query ("$querybase $GLOBALS[tp]entites.ordre<entites2.ordre ORDER BY $GLOBALS[tp]entites.ordre DESC LIMIT 0,1") or die (mysql_error());
+  if (mysql_num_rows($result)) {
+    list($previd)=mysql_fetch_row($result);
+
+    $localcontext=$context;
+    $localcontext[id]=$previd;
+
+    call_user_func("code_do_$funcname",$localcontext);
+
+  } else {
+    call_user_func("code_alter_$funcname",$context);
+  }
+}
+
+*/
+
 
 ?>
