@@ -84,7 +84,6 @@ function parse_boucle_extra(&$tables,&$where,&$ordre)
 	array_push($tables,"documents_auteurs");
 	$where.=" AND iddocument=documents.id";
       }
-
       // entrees
       if (in_array("entrees",$tables) && preg_match("/\biddocument\b/",$where)) {
 	// on a besoin de la table croise documents_entrees
@@ -93,8 +92,8 @@ function parse_boucle_extra(&$tables,&$where,&$ordre)
       }
 
       if (in_array("entrees",$tables) && preg_match("/\btype\b/",$where)) {
-	protect ($where,"entrees","id|status|nom");
-	protect ($ordre,"entrees","id|status|nom");
+	protect ($where,"entrees","id|status|nom|ordre");
+	protect ($ordre,"entrees","id|status|nom|ordre");
 	array_push($tables,"typeentrees");
 	$where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typeentrees.nom",$where)." AND $GLOBALS[tableprefix]entrees.typeid=$GLOBALS[tableprefix]typeentrees.id";
       }
