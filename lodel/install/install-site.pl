@@ -123,11 +123,10 @@ foreach (<FILE>) {
   } elsif ($cmd eq "mkdir") {
     unless (-e $arg1) {
       mkdir ($arg1,oct($arg2) & $filemask);
-    } else {
-      #print $arg1," ";
-      #printf "%o",oct($arg2) & $filemask;
-      chmod (oct($arg2) & $filemask,$arg1);
     }
+    #print $arg1," ";
+    #printf "%o",oct($arg2) & $filemask;
+    chmod (oct($arg2) & $filemask,$arg1);
   } elsif ($cmd eq "ln") {
     $toroot=$filedest; $toroot=~s/^\.\///g;
     $toroot=~s/([^\/]+)\//..\//g;
