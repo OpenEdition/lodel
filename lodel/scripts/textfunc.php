@@ -232,22 +232,35 @@ function humandate($s)
  }
 }
 
-function toc(&$text)
+# a supprimer
+#function toc(&$text)
+#
+#{
+#	preg_match_all("/<(H\d)>.*?<\/\\1>/i",$text,$result,PREG_PATTERN_ORDER);
+#	foreach ($result[0] as $titre) {
+#		$i++;
+#		$toc.="<A HREF=\"#to$i\" NAME=\"from$i\">$titre</A>\n";
+#	}
+#	return $toc;
+#}
+
+function tocable($level,$text=-1)
 
 {
-	preg_match_all("/<(H\d)>.*?<\/\\1>/i",$text,$result,PREG_PATTERN_ORDER);
-	foreach ($result[0] as $titre) {
-		$i++;
-		$toc.="<A HREF=\"#to$i\" NAME=\"from$i\">$titre</A>\n";
-	}
-	return $toc;
+  if ($text==-1) { $text=$level; $level=10; }// gestion etrange du level par defaut.
+  $sect="?:1";
+  for($i=2;$i<=$level;$i++) $sect.="|$i";
+
+  function tocable_callback($result) {
+      static $tocind=0;
+      $tocind++;
+      return '<a href="#tocfrom'.$tocind.'" NAME="tocto'.$tocind.'">'.$result[0].'</a>';
+  }
+  return preg_replace_callback("/<(r2r:section($sect)|div)(?:\s+class=\"section($sect)\")?>.*?<\/\\1>/is","tocable_callback",$text);
+
+
 }
 
-function tocable(&$text)
-
-{
-	return preg_replace("/<(H\d)>.*?<\/\\1>/ie","'<A HREF=\"#from'.(++\$i).'\" NAME=\"to'.\$i.'\">\\0</A>'",$text);
-}
 
 
 function makeurl ($rep)
@@ -311,7 +324,7 @@ function replacequotationmark(&$text)
 }
 
 //
-// fonction utiliser pour les options.
+// fonction utiliser pour les options (dans l'interface uniquement)
 //
 
 function yes ($texte)
@@ -342,6 +355,24 @@ function notes($type,&$texte)
     $notes=preg_grep('/<a classe="sd[^>]+>\*+<\/a>/',$results[0]);
   } else die ("type \"$type\" inconnues");
   return join("",$notes);
+}
+
+//
+// fonctions pour le nettoyage de base des champs importes
+//
+
+function lodelbasic($text)
+
+{
+  global $home;
+  include_once($home."balises.php");
+  return preg_replace(array(
+			    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
+			    "/<\/r2r:[^>]+>/i"				    				    ),
+		      array(
+			    '<div class="\\1">',
+			    "</div>"
+			    ),traite_separateur($text));
 }
 
 

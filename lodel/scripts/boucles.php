@@ -85,4 +85,19 @@ function loop_publisparentes(&$context,$funcname,$critere="")
 }
 
 
+function loop_toc($context,$funcname)
+
+{
+  if (!preg_match_all("/<(r2r:section(\d+))>(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) {
+    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) return;
+  }
+  foreach($results as $result) {
+    $localcontext=$context;
+    $localcontext[tocid]=(++$tocid);
+    $localcontext[titre]=$result[3];
+    $localcontext[niveau]=intval($result[2]);
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+}
+
 ?>

@@ -188,6 +188,12 @@
 				
 						<!-- Texte. Si il existe --->
 						<IF COND="[#TEXTE]">
+TOC
+<LOOP NAME="toc">
+<IF COND="[#NIVEAU]==1"><h1><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></h1></IF>
+<IF COND="[#NIVEAU]==2"><h2><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></h2></IF>
+<IF COND="[#NIVEAU]==3"><h3><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></h3></IF>
+</LOOP>
 							<div class="titre3">
 								<IF COND="[#TYPE]!='presentation'">
 									Texte intégral
@@ -198,9 +204,9 @@
 									<IF COND="[#META_IMAGE]">
 										<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
 									</IF>
-								[#TEXTE]
+								[(#TEXTE|lodelbasic|tocable)]
 								<ELSE/>			
-								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
+								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine|lodelbasic|tocable)]
 								</IF>
 							</div>
 						</IF>
