@@ -77,9 +77,15 @@
 <!-- afin d'éditer une publication.                                     -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<a href="lodel/edition/index.php?id=[#ID]">
-			<span class="pluspetit">[E]</span>
-		</a>
+		<IF COND="[#TYPE] EQ 'regroupement'">
+			<a href="lodel/edition/index.php?id=[#PARENT]">
+				<span class="pluspetit">[E]</span>
+			</a>
+		<ELSE/>
+			<a href="lodel/edition/index.php?id=[#ID]">
+				<span class="pluspetit">[E]</span>
+			</a>
+		</IF>
 	</IF>
 </DEFMACRO>
 
@@ -90,15 +96,19 @@
 <!-- afin d'éditer une publication depuis un document.                  -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<IF COND="[#TYPE] eq 'regroupement'">
-			<a href="lodel/edition/index.php?id=[#PARENT]">
-				<span class="pluspetit">[E]</span>
-			</a>
-		<ELSE/>
-			<a href="lodel/edition/index.php?id=[#PUBLICATION]">
-				<span class="pluspetit">[E]</span>
-			</a>
-		</IF>
+		<LOOP NAME="est_ce_un_regroupement" TABLE="publications" WHERE="id='[#PUBLICATION]'">
+			<DO>
+				<IF COND="[#TYPE] eq 'regroupement'">
+					<a href="lodel/edition/index.php?id=[#PARENT]">
+						<span class="pluspetit">[E]</span>
+					</a>
+				<ELSE/>
+					<a href="lodel/edition/index.php?id=[#ID]">
+						<span class="pluspetit">[E]</span>
+					</a>
+				</IF>
+			</DO>
+		</LOOP>
 	</IF>
 </DEFMACRO>
 
