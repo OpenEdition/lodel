@@ -730,10 +730,10 @@ function modifymember(members,textfield){
 <fieldset class="searchfieldset">
 <legend>[@EDITION.ADVANCED_SEARCH]</legend>
 <select id="qnbresults" name="qnbresults" class="searchfields">
-	<option value="10" <IF COND="[#QNBRESULTS] EQ 10">selected="selected"</IF>>10 [@EDITION.RESULTS]</option>
-	<option value="20" <IF COND="[#QNBRESULTS] EQ 20">selected="selected"</IF>>20 [@EDITION.RESULTS]</option>
-	<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 [@EDITION.RESULTS]</option>
-	<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 [@EDITION.RESULTS]</option>
+	<option value="10" <IF COND="[#QNBRESULTS] EQ 10">selected="selected"</IF>>10 [@EDITION.RESULTS_PER_PAGE]</option>
+	<option value="20" <IF COND="[#QNBRESULTS] EQ 20">selected="selected"</IF>>20 [@EDITION.RESULTS_PER_PAGE]</option>
+	<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 [@EDITION.RESULTS_PER_PAGE]</option>
+	<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 [@EDITION.RESULTS_PER_PAGE]</option>
 </select>
 <LOOP NAME="listtypes" TABLE="types" ORDER="rank">
 <BEFORE>
