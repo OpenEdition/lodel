@@ -40,7 +40,7 @@
 <div id="main">
 	  <IF COND="[#ERROR_TABLE]">
 <div id="content">
-	    <p><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_TABLE_FIRST_PART] "[#ERROR_TABLE]" [@ADMIN.ERROR_TABLE_SECOND_PART]</p>
+	    [@ADMIN.ERROR_TABLE|sprintf("[#ERREUR_TABLE]")]
 </div>
 	<div id="pied_de_formulaire">
 	    <form><input class="form" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" /></form>
