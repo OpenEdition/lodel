@@ -65,7 +65,7 @@ if ($edit) { // modifie ou ajoute
     if ($singledatabase) {
       $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE statut>-64") or die (mysql_error());
       list($numsite)=mysql_fetch_row($result);
-      if ($numsite>1) {
+      if ($numsite>=1) {
 	die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données. Il faut utiliser plusieurs bases de donnée ou attendre la prochaine version.<br /> Merci de votre comprehension.");
       }
     }
@@ -372,7 +372,7 @@ if ($tache=="fichier") {
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
   if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  header("location: ".$urlroot.preg_replace("/^\//","",$context[chemin])."/lodel/edition");
+  header("location: ".$urlroot.str_replace("//","",preg_replace("/^\//","",$context[chemin])."/lodel/edition"));
   return;
 
 #  header("location: index.php");
@@ -501,7 +501,7 @@ function mycopy($src,$dest)
 
    if (file_exists ($dest)) unlink($dest);
    if (!(@copy($src,$dest))) {
-     @chmod(basename($dest),0777 & octdec($GLOBALS[filemask]));
+     @chmod(basename($dest),0777 & octdec($filemask));
      copy($src,$dest);
    }
    @chmod($dest,0666 & octdec($filemask));
