@@ -192,9 +192,11 @@ RENAME TABLE #_TP_'.$oldtable.' TO #_TP_v07_'.$oldtable.';
 	   $err=mysql_query_cmds('
 ALTER TABLE #_TP_entities ADD creationdate DATETIME;
 ALTER TABLE #_TP_entities ADD modificationdate DATETIME;
+ALTER TABLE #_TP_entities ADD creationmethod VARCHAR(16);
+ALTER TABLE #_TP_entities ADD creationinfo TINYTEXT;
 ');
 	   if ($err) break;
-	   $report.="ajout de creationdate et modificationdate<br>";
+	   $report.="ajout de creationdate et modificationdate REFUSIONNER AVEC LE TRANSFER DU BUREAU !!!!<br>";
 	   $justcreatedate=1;
 	 }
 	 if (!$fields['g_title']) {
@@ -212,7 +214,7 @@ ALTER TABLE #_TP_entities ADD g_title TINYTEXT NOT NULL;
 	  $fields=getfields($classe);
 	  if (!$fields['titre']) continue;
 	  $result=mysql_query("SELECT identity,titre,datepubli FROM $GLOBALS[tp]$classe") or die (mysql_error());
-	  while (list($id,$title,$datepubli)=mysql_fetch_row($result)) {
+	  while (list($id,$title,$datepubli,$importversion)=mysql_fetch_row($result)) {
 	    $title=strip_tags($title);
 	    if (strlen($title)>255) {
 	      $title=substr($title,0,256);
