@@ -665,7 +665,8 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       }
     }
 
-    if (file_exists(SITEROOT."lodel/txt") && `/bin/ls lodel/txt`) {
+    $dir=SITEROOT."lodel/txt";
+    if (file_exists($dir) && `/bin/ls $dir`) {
       // importe dans les documents
       $fields=getfields("documents");
       unset($fields[identite]); // enleve identite
