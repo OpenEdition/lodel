@@ -108,8 +108,8 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/$1/igs;
   $change+=$file=~s/--+>([\s\n]*<\/SCRIPT>)/$1/igs;
   # convert the HTML comment into Lodel comment
-  $change+=$file=~s/<!--/<!--[/g;
-  $change+=$file=~s/-->/]-->/g;
+  $change+=$file=~s/<!--([^\[])/<!--[$1/g;
+  $change+=$file=~s/([^\]])-->/$1]-->/g;
   # convert SCRIPT comment
   $change+=$file=~s/(<SCRIPT\b[^>]*>)/$1<!--/gi;
   $change+=$file=~s/(<\/SCRIPT>)/-->$1/gi;
@@ -159,6 +159,6 @@ sub callback {
   $res =~ s/<=/ le /g;
   $res =~ s/<>/ ne /g;
   $res =~ s/</ lt /g;
-  $res =~ s/publication=/idparent=/g;
+  $res =~ s/publication\s*(eq|=)\s*/idparent eq /g;
   return $res;
 }
