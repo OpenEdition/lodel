@@ -198,9 +198,9 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
 	#echo $file," ";
 	if (is_dir(LODELROOT."/".$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir(LODELROOT."/".$file."/revue")) {
-	  if (!(@include(LODELROOT."/$file/revue/siteconfig.php"))) {
-	    echo "Warning: Impossible d'ouvrir le fichier $file/revue/siteconfig.php<br>";
+	    is_dir(LODELROOT."/".$file."/src")) {
+	  if (!(@include(LODELROOT."/$file/src/siteconfig.php"))) {
+	    echo "Warning: Impossible d'ouvrir le fichier $file/src/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";
 	  }
@@ -214,7 +214,7 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   if ($context[countversions]==1) {// ok, une seule version, on la choisit
     list($versionrep)=array_keys($versions);
   } elseif ($context[countversions]==0) { // aie, aucune version on crach
-    die ("Verifiez le package que vous avez, il manque le repertoire lodel/revue. L'installation ne peut etre poursuivie !");
+    die ("Verifiez le package que vous avez, il manque le repertoire lodel/src. L'installation ne peut etre poursuivie !");
   } else { // il y en a plusieurs, faut choisir
     $context[count]=count($versions);
     function makeselectversion()
@@ -237,7 +237,7 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
 if ($tache=="fichier") {
   // on peut installer les fichiers
   $root=LODELROOT."/".$context[rep]."/";
-  $siteconfigsrc=LODELROOT."/$versionrep/revue/siteconfig.php";
+  $siteconfigsrc=LODELROOT."/$versionrep/src/siteconfig.php";
   $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
   if (!file_exists($siteconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
@@ -250,7 +250,7 @@ if ($tache=="fichier") {
     }
   }
   // ok siteconfig est copier.
-  install_fichier($root,LODELROOT."/$versionrep/revue",LODELROOT);
+  install_fichier($root,LODELROOT."/$versionrep/src",LODELROOT);
 
   // ok on a fini, on change le statut de la site
   mysql_select_db($GLOBALS[database]);

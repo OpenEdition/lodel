@@ -184,7 +184,7 @@ if (function_exists("is_readable") && function_exists("is_writable") && function
 	       "lodel/install"=>5,
 	       "lodel/install/plateform"=>5,
 	       "lodel/scripts"=>5,
-	       "lodel/revue"=>5,
+	       "lodel/src"=>5,
 	       "lodeladmin/images"=>5);
 	       
   foreach ($files as $file => $mode) {
