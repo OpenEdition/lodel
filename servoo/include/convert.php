@@ -458,6 +458,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 
   $count=count($arr);
   $stack=array();
+
   for($i=1;$i<$count; $i+=4) {
 #    echo $arr[$i],":",$arr[$i+1],":",$arr[$i+2]," ",(substr($arr[$i+2],-2,1)=="/"),"--------",join("//",$stack),"\n";
 #    echo $arr[$i+3],"\n";
@@ -467,19 +468,17 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 #      echo "fermante\n";
       $arr[$i+2].=array_pop($stack);
 #      echo join(" ",$stack),"\n";
-    } elseif (preg_match("/\bclass=\"([^\"]+)\"/",$arr[$i+2],$result)) {
+    } elseif (preg_match('/\bclass="\s*([^"]+)\s*"/',$arr[$i+2],$result)) {
       $class=$result[1];
       $ns=$arr[$i+1]=="p" ? "r2r" : "r2rc";
       if ($stylename[$class]) {
 	$class=$stylename[$class];
-      } elseif ($ns=="r2r" || $ns=="r2rc") { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
+      } else {
 	$class=strtolower($class);
       }
-#      } elseif ($ns=="r2r") {
-#	$class=strtolower($class);
-#      } else {
-#	$class="";
-#      }
+      if (preg_match("/^(t\d+|footnote.*|endnote.*|internetlink)$/",$class)) { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
+	$class="";
+      }
       if ($class) {
 	$arr[$i]="<$ns:$class>".$arr[$i]; // ajoute au debut
 	if ($singletags) { // balise ouvrante/fermante

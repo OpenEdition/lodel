@@ -188,26 +188,30 @@ function OO_XHTML ($convertedfile,&$context)
 
   //
   
-  $translations=array("notesdebasdepage"=>"notebaspage",
-		      "footnote(?:text)?"=>"notebaspage",
-		      "endnote(?:text)?"=>"notefin",
-		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
-		      "introduction"=>"texte","conclusion"=>"texte",
-		      "normal"=>"texte", "normal\s*(web)"=>"texte",
-		      "standard"=>"texte", 
-		      "puces?"=>"texte",
-		      "bloccitation"=>"citation",
-		      "quotations"=>"citation",
-#		      "typedocument"=>"typedoc",
-		      "titleuser"=>"title",
-		      "subtitleuser"=>"subtitle"
+  $translations=array("r2r:notesdebasdepage"=>"r2r:notebaspage",
+		      "r2r:footnote(?:text)?"=>"r2r:notebaspage",
+		      "r2r:endnote(?:text)?"=>"r2r:notefin",
+		      "r2r:corpsdetexte\w*"=>"r2r:texte",
+		      "r2r:bodytext"=>"r2r:texte",
+		      "r2r:introduction"=>"r2r:texte",
+		      "r2r:conclusion"=>"r2r:texte",
+		      "r2r:normal"=>"r2r:texte",
+		      "r2r:normal\s*(web)"=>"r2r:texte",
+		      "r2r:standard"=>"r2r:texte", 
+		      "r2r:puces?"=>"r2r:texte",
+		      "r2r:bloccitation"=>"r2r:citation",
+		      "r2r:quotations"=>"r2r:citation",
+		      "r2r:titleuser"=>"r2r:title",
+		      "r2r:subtitleuser"=>"r2r:subtitle",
+
+		      "r2rc:titre\d+"=>""
 		      );
 
   
   foreach ($translations as $k=>$v) {
-    array_push($srch,"/<r2r:$k\b([^>]*)>/","/<\/r2r:$k\b([^>]*)>/");
+    array_push($srch,"/<$k\b([^>]*)>/","/<\/$k\b([^>]*)>/");
     if ($v) {
-	array_push($rpl,"<r2r:$v\\1>","</r2r:$v\\1>");
+	array_push($rpl,"<$v\\1>","</$v\\1>");
     } else {
 	array_push($rpl,"","");
     } 
@@ -225,6 +229,8 @@ function OO_XHTML ($convertedfile,&$context)
 	     "</r2r:section\\1>");
 #	     "<r2r:section\\1>\\0",
 #	     "\\0</r2r:section\\1>");
+
+  // clean the section
 
 
 #  // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
@@ -248,44 +254,81 @@ function OO_XHTML ($convertedfile,&$context)
   //
   // standardize the foot and end notes.
   //
-  // footnotes
-  array_push($srch,
-	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="FootnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the footnote
-	     '/<span\b[^>]*class="footnotereference"[^>]*>\s*<span class="Footnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call to the footnote
-  array_push($rpl,
-	     '<div class="footnotebody"><a class="footnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the footnote
-	     '<a class="footnotecall" \\1>\\2</a>'); # call to the footnote
-  // endnotes
-  array_push($srch,
-	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the endnote
-	     '/<span\b[^>]*class="endnotereference"[^>]*>\s*<span class="Endnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call of the endnote
-  array_push($rpl,
-	     '<div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the endnote
-	     '<a class="endnotecall" \\1>\\2</a>'); # call of the endnote
+  // footnotes definition
+  array_push($srch,'/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="FootnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s'); # declaration of the footnote
+  array_push($rpl,'<r2r:notebaspage><div class="footnotebody"><a class="footnotedefinition" \\1>\\2</a>\\3</div></r2r:notebaspage>'); # declaration of the footnote
 
+  // endnotes definition
+  array_push($srch,
+	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s'); # declaration of the endnote
+
+  array_push($rpl,'<r2r:notefin><div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div></r2r:notefin>'); # declaration of the endnote
+
+
+#  array_push($srch,
+#	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="FootnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the footnote
+#	     '/<span\b[^>]*class="footnotereference"[^>]*>\s*<span class="Footnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call to the footnote
+#  array_push($rpl,
+#	     '<div class="footnotebody"><a class="footnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the footnote
+#	     '<a class="footnotecall" \\1>\\2</a>'); # call to the footnote
+#  // endnotes
+#  array_push($srch,
+#	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the endnote
+#	     '/<span\b[^>]*class="endnotereference"[^>]*>\s*<span class="Endnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call of the endnote
+#  array_push($rpl,
+#	     '<div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the endnote
+#	     '<a class="endnotecall" \\1>\\2</a>'); # call of the endnote
+#
 
   // autre chgt
   array_push($srch,
 	     "/<object>.*?<\/object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
+	     "/(<a\s[^>]*)\/>/",
 	     "/<a\s+id=\"Image[^\"]+\"[^>]*\/>/i",
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?".">/i", # met border="0"
-	     "/(<img\b[^>\/]+style=\"[^\"]*)width:1.0ch;height:1.0ch;([^>\/]+\/?".">)/" # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
+	     "/(<img\b[^>\/]+style=\"[^\"]*)width:1.0ch;height:1.0ch;([^>\/]+\/?".">)/", # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
+	     "/<\/col\b[^>]*>/"
 	     );
 
   array_push($rpl,
 	     "",
 	     "\\1",
+	     "\\1></a>",	     
 	     "",
 	     "\\1\\2",
 	     "\\1border=\"0\" />",
-	     "\\1\\2"
+	     "\\1\\2",
+	     ""
 	     );
 
   $time=time();
-
+  // let's apply all these changes
   $file=preg_replace ($srch,$rpl,$file);
+
+  // function for cleaning the sections and the links
+  function cleanPandSPAN($result) {
+#    print_r($result);
+#    echo "----<br/>\n";
+    // check for p and span tags
+    foreach(array("p","span") as $tags) {
+      if (preg_match("/^\s*<$tags\b[^>]*>(.*)<\/$tags>\s*$/",$result[3],$result2)) {
+	if (!preg_match("/<\/$tags>.*<$tags\b[^>]*>/",$result2[1])) { // well, there is not close and open inside.
+	  $result[3]=$result2[1];
+	}
+      }
+    }
+    return "<$result[1]$result[2]>$result[3]</$result[1]>";
+  } // end of function for cleaning the sections and the links
+
+  // let's clean the sections
+  $file=preg_replace_callback(array("/<(r2r:section\d+)()>(.*?)<\/\\1>/s",
+				    "/<(a)\b([^>]*)>(.*?)<\/\\1>/s"),
+			      "cleanPandSPAN",$file);
+
+
+
 
 #  die(htmlentities($file));
 
@@ -331,35 +374,79 @@ function OO_XHTML ($convertedfile,&$context)
 
     //
     // convert graphical styles in XHTML tags
+    // and do other cleaning:
+    // 1/ remove lang attribute
+    // 2/ treat the footnote (that's not easy)
     //
     $arr=preg_split("/(<\/?span\b[^>]*>)/",$file,-1,PREG_SPLIT_DELIM_CAPTURE);
     $count=count($arr);
     $stack=array();
+    $innote="";$nbspan=0;
     for($i=1; $i<$count; $i+=2) {
       #echo htmlentities($arr[$i]),"</br>";
       if ($arr[$i]=="</span>") { // closing span
+	if ($innote) { // in a note ?
+	  $nbspan--; // let decrease the number of span we are in
+	  if ($nbspan==0) $innote=""; // out of the note.
+	}
 	$arr[$i]=array_pop($stack);
-      }
-      elseif ($arr[$i]=="<span style=\"\">") { // the style is empty, remove the span
+      } elseif (!$innote) { // opening span
+	$attributs=preg_split('/"/',substr($arr[$i],5,-1)); // there should not be any espaced "
+	#print_r($attributs);
+	$close="";
+	$open="";
+	$newattributs="";
+	for($j=0; $j<count($attributs)-1; $j+=2) {
+	  // attribut style
+	  if (preg_match('/^\s*style\s*=\s*$/',$attributs[$j])) {
+	    // there is a style to process.
+	    // there is really a style to processed
+	    list($moreopen,$moreclose,$style)=convertCSSstyle($attributs[$j+1]);
+	    $open.=$moreopen;
+	    $close=$moreclose.$close;
+	    if ($style) { // still some remaining styles ?
+	      $newattributs.=' style="'.$style.'"';
+	    }
+	  } // end of attribut style
+	  // attribut lang
+	  elseif (preg_match("/^\s*lang\s*=\s*$/",$attributs[$j])) {
+	    // delete
+	    // nothing to do
+	  } // end of attribut lang
+	  // attribut class
+	  elseif (preg_match("/^\s*class\s*=\s*$/",$attributs[$j])) {
+	    if (preg_match("/^\s*((?:foot|end)note)/i",$attributs[$j+1],$result)) { // on a une footnote !
+	      $innote=strtolower($result[1]);
+	      $arr[$i]="";
+	      $close=""; $open="";
+	      break; // go out, this span must be removed.
+	    }
+	  } // end of attribut class
+	  else {
+	    $newattributs.=" ".$attributs[$j].'="'.$attributs[$j+1].'"';
+	  }
+	} // process all the attributs
+	if ($newattributs) {
+	  $arr[$i]="<span $newattributs>";
+	  $close.="</span>";
+	} else {
+	  $arr[$i]="";
+	}
+	$arr[$i].=$open;
+	array_push($stack,$close);
+      }// opening span and note innote
+      else { // opening span and innote
+	// delete the span
 	$arr[$i]="";
 	array_push($stack,"");
+	$nbspan++;
       }
-      elseif (preg_match('/style\s*=\s*"([^"]*)"/',$arr[$i],$result)) {
-	// there is a style to process.
-// there is really a style to processed
-	list($open,$close,$style)=convertCSSstyle($result[1]);
-	if ($open && $close) { // something has changed
-	  if ($style) { // still some remaining styles ?
-	    $open="<span style=\"$style\">".$open;
-	    $close.="</span>";
-	  }
-	  $arr[$i]=$open;
-	  array_push($stack,$close);
-	} else { // do nothing
-	  array_push($stack,"</span>");
+      if ($innote) { // are we in a note ?
+	// look for <a> tags
+	if ($arr[$i+1]) {
+	  $arr[$i+1]=preg_replace("/<a\b([^>]+>)/",
+				  '<a class="'.$innote.'call"\\1',$arr[$i+1]);
 	}
-      } else { // do nothing
-	array_push($stack,"</span>");
       }
     }
     $file=join("",$arr);
@@ -391,167 +478,6 @@ function OO_XHTML ($convertedfile,&$context)
 }
 
 
-function OO_HTML ($convertedfile,&$context)
-
-{
-  global $home,$msg;
-
-  $time1=time();
-
-  $file=strtr(join('',file($convertedfile)),"\n\r","  ");
-
-  if ($GLOBALS[sortieoo]) { // on veut la sortie brute
-    echo htmlentities($file);
-    return;
-  }
-
-  convertHTMLtoUTF8($file);
-
-  // tableau search et replace
-  $srch=array(); $rpl=array();
-  // convertir les caracteres html &xxx en UTF-8
-
-  // convertir les balises (et supprimer les lettres avec accents, et les espaces diviennent des _)
-
-  array_push($srch,"/.*<body\b[^>]*>/si","/<\/body>.*/si");
-  array_push($rpl,"","");
-  
-  array_push($srch,"/\[!(\/?)--R2R(C?):([^\]]+)--\]/e");
-  array_push($rpl,"removeaccentsandspaces(strtolower('<\\1r2r\\2:\\3>'))");  
-
-  // styles transparents
-  // on efface tout ce qu'il y a entre.
-  array_push($srch,"/<(r2rc?:$GLOBALS[stylestransparents])\b([^>]*)>.*?<\/\\1>/");
-  array_push($rpl,"");
-  
-
-  $translations=array("notesdebasdepage"=>"notebaspage",
-#		      "title"=>"titre","subtitle"=>"soustitre",
-		      "document"=>"article",
-#                     "auteur"=>"auteurs",
-#		      "footnote(?:text)?"=>"notebaspage",
-#		      "endnote"=>"notefin",
-		      "footnote(?:text)?"=>"",
-		      "endnote(?:text)?"=>"",
-		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
-		      "introduction"=>"texte","conclusion"=>"texte",
-		      "normal"=>"texte", "normal\s*(web)"=>"texte",
-		      "puces?"=>"texte",
-		      "bloccitation"=>"citation",
-		      "typedocument"=>"typedoc",
-#		      "langue"=>"langues",
-		      );
-
-  
-  foreach ($translations as $k=>$v) {
-    array_push($srch,"/<r2r:$k\b([^>]*)>/","/<\/r2r:$k\b([^>]*)>/");
-    if ($v) {
-	array_push($rpl,"<r2r:$v\\1>","</r2r:$v\\1>");
-    } else {
-	array_push($rpl,"","");
-    } 
-  }
-
-  // conversion des balises avec publication
-  array_push($srch,
-	     "/<r2r:(?:heading|titre)(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:heading|titre)(\d+)>/");
-  
-  array_push($rpl,
-	     "<r2r:section\\1>",
-	     "</r2r:section\\1>");
-
-  // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
-  array_push($srch,"/<\/?r2r:notebaspage>/","/<div id=\"sdfootnote\d+\">.*?<\/div>/i");
-  array_push($rpl,"","<r2r:notebaspage>\\0</r2r:notebaspage>");
-  array_push($srch,"/<\/?r2r:notefin>/","/<div id=\"sdendnote\d+\">.*?<\/div>/i");
-  array_push($rpl,"","<r2r:notefin>\\0</r2r:notefin>");
-
-  // remonte les balises r2r
-  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
-  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
-
-  // autre chgt
-
-  array_push($srch,
-	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span
-	     "/(<a\b[^>]*)sdfixed>/i",
-	     "/<div type=(?:header|footer)>.*?<\/div>/is",
-	     "/<\w[^>]*>/e", // balises ouvrantes
-	     "/<\/[^>]+>/e", // balises fermantes
-	     "/<p\salign=\"(left|justify)\"(\s+[^>]*)>/", # enleve les alignements gauche et justify ....... surement inutile maintenant avec OO
-	     "/<br\b([^>]*)>/",   # XML is
-	     "/<\/br>/",	#efface
-	     "/<li>/",
-	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
-	     "/(<img\b[^>\/]+)\/?>/i", # met border="0"
-	     "/(<(col)\b[^>]*?)\/?>/i", # balise seule, il faut les fermer
-	     "/(<p\b[^>]*>\s*<br\s*\/>\s*<\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
-	     );
-
-  array_push($rpl,
-	     "\\1",
-	     "\\1>",
-	     "",
-	     'quote_attribut_strtolower("\\0")', // ouvrantes
-	     'strtolower("\\0")',                // fermentes
-	     "<p\\2>",
-	     "<br\\1 />",
-	     " ",
-	     "<li />",
-	     "\\1\\2",
-	     "\\1border=\"0\"/>",
-	     "\\1 />",
-	     "\\2\\1"
-	     );
-
-  $time=time();
-
-  $file=preg_replace ($srch,$rpl,$file);
-  if (!traite_tableau2($file)) {     $context[erreur_stylestableaux]=1;
-  return FALSE; }
-  $file=traite_multiplelevel($file);
-
-  if ($msg) { echo "<li>temps regexp: ".(time()-$time)." s<br>\n"; }
-
-  //echo htmlentities($file); exit;
-
-  // desuet
-  // enleve les couples de balises r2r.
-  $file=traite_couple($file);
-
-  // recupere les styles conteneurs (ceux qui ont des parentheses)
-  $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/"),
-		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>"),
-		      $file);
-  
-
-# ajoute le debut et la fin
-    $file='<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$file.'</r2r:article>';
-
-# verifie que le document est bien forme
-    include ($home."checkxml.php");
-    if (!checkstring($file)) { echo "fichier: $newname"; return FALSE; }
-
-   if ($GLOBALS[sortie]) die (htmlentities($file));
-
-    function img_copy($imgfile,$ext,$count,$rand) {
-      $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
-      copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
-      return $newimgfile;
-    }
-    include_once ($home."func.php");
-    copy_images($file,"img_copy",rand());
-
-
-  // ecrit le fichier
-  $newname="$convertedfile-".rand();
-  if (!writefile("$newname.html",$file)) return FALSE;
-
-  if ($msg) { echo "Temps total:",time()-$time1,"<br><br>"; flush(); }
-
-  return $newname;
-}
 
 
 function quote_attribut_strtolower($text)
