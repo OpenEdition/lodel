@@ -70,7 +70,11 @@
                       <dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
                       <dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
 		      <dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
-		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION_FIRST_PART] ([#LODELVERSION]) [@ADMIN.WARNING_VERSION_SECOND_PART] ([#VERSION]). [@ADMIN.VERIFY_COMPATIBILITY].</div></IF>
+		      <IF COND="[#WARNING_VERSION]">
+		      <div>
+		      <strong>[@ADMIN.VERSION] :</strong>[@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])]. [@ADMIN.VERIFY_COMPATIBILITY].
+		      </div>
+		      </IF>
 
 
 
