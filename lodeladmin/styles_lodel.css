@@ -398,10 +398,11 @@ div.intitule_ligne_formulaire {
 
 .pied_de_formulaire {
 	text-align:center;
+	margin: auto;
 	margin-bottom:40px;
 	padding-bottom:40px;
-	padding-top:40px;
-	width:800px;
+	padding-top:30px;
+	width:100%;
 }
 
 .titre_publi, .nom_publi, .type_publi,.nom_document {
@@ -857,6 +858,17 @@ fieldset br { clear: left;}
   padding: 0px;
  }
 /* -- */
+
+fieldset{
+	border: 1px solid #afcbb1;
+	margin: auto;
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+legend{
+	font-weight: bold;
+}
 
 #lodel-container{
   position: relative;
