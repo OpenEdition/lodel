@@ -646,6 +646,13 @@ ALTER TABLE #_TP_entries ADD sortkey VARCHAR(255) NOT NULL;
       if ($err) break;
       $report.="Ajout de sortkey a entries<br/>";
     }
+    if (!$fields['abrev']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_entries DROP abrev;
+');
+      if ($err) break;
+      $report.="Ajout de sortkey a entries<br/>";
+    }
   }
 
     /////////////////////
@@ -920,156 +927,6 @@ function create($table)
 
 
 
-// fonction de conversion de isolatin en utf8
-function isotoutf8 ($tables)
-
-{
-  // Tableau contenant la liste des tables à ne pas parcourrir pour gagner du temps.
-  #$blacklist=array("relations","entites_entrees","users_groupes");
-  // On parcours toutes les tables
-
-
-  foreach($tables as $table) {
-    #if(in_array ($table, $blacklist)) continue;
-
-     $report.="conversion en utf8 de  la table $table<br />\n";
-    // On parcours toutes les enregistrements de chaque table
-    $resultselect = mysql_query("SELECT * FROM $table") or trigger_error(mysql_error(),E_USER_ERROR);
-    while($valeurs = mysql_fetch_row($resultselect)) {
-      $nbtablefields = mysql_num_fields($resultselect);
-
-      // Construction de la clause SET et WHERE de l'update
-      // en parcourant toutes les valeurs de chaque enregistrement.
-      $set=array();
-      $where=array();
-      for ($i=0; $i < $nbtablefields; $i++) {
-	$type  = mysql_field_type($resultselect, $i);
-	$name  = mysql_field_name($resultselect, $i);
-				
-	// Construction de la clause SET
-        $newvaleurs = str_replace (chr(146),"'", $valeurs[$i]);
-	if(($type=="string"||$type=="blob") && $valeurs[$i]!="") array_push($set,$name."='".addslashes(utf8_encode($newvaleurs))."'");
-	  
-	// Construction de la clause WHERE
-        if (is_null($valeurs[$i])) {
-           array_push($where,$name." IS NULL");
-	} else if($type=="string"||$type=="blob") {
-	  array_push($where,$name."='".addslashes($valeurs[$i])."'");
-	} else {
-	  array_push($where,$name."='$valeurs[$i]'");
-	}
-      } // parcourt les tablefields
-      // S'il y a une modification à faire on lance la requete
-      if($set) {
-	$requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
-	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; trigger_error(mysql_error(),E_USER_ERROR); }
-      }
-    } // parcourt les lignes
-  } // parcourt les tables
-  return $report;
-}
-
-function extractnom($personne) {
-  // ok, on cherche maintenant a separer le nom et le prenom
-
-  if (preg_match("/^\s*(Pr\.|Dr\.)/",$personne,$result)) {
-    $prefix=$result[1];
-    $personne=str_replace($result[0],"",$personne);
-  }
-
-  $nom=$personne;
-
-  while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
-  if ($nom) {
-    $prenom=str_replace($nom,"",$personne);
-  } else { // sinon coupe apres le premiere espace
-    if (preg_match("/^\s*(.*?)\s+([^\s]+)\s*$/i",$personne,$result)) {
-      $prenom=$result[1]; $nom=$result[2];
-    } else $nom=$personne;
-  }
-  return array($prefix,$prenom,$nom);
-}
-
-function extract_meta($classe)
-
-{
-  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or trigger_error(mysql_error(),E_USER_ERROR);
-
-  while (list($id,$meta)=mysql_fetch_row($result)) {
-    $meta=unserialize($meta);
-    if (!$meta[meta_image]) continue;
-    $file=SITEROOT.$meta[meta_image];
-    $info=getimagesize($file);
-    if (!is_array($info)) die("ERROR: the image format has not been recognized");
-    $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
-    $ext=$exts[$info[2]-1];
-    
-    $dirdest="docannexe/image/$id";
-    $dest=$dirdest."/image.".$ext;
-
-    // copy the file
-    if(!file_exists(SITEROOT.$dirdest) && !mkdir(SITEROOT.$dirdest,0777  & octdec($GLOBALS[filemask]))) return FALSE;
-    if (!copy($file,SITEROOT.$dest)) return FALSE;
-    chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
-    unlink($file);
-
-    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or trigger_error(mysql_error(),E_USER_ERROR);
-  }
-
-  return TRUE;
-}
-
-
-function convertHTMLtoXHTML ($field,$contents)
-
-{
-  $contents=str_replace(array("\n","\t","\r")," ",$contents);
-  // footnote
-
-  if ($field=="notebaspage") {
-    // note de R2R
-#echo htmlentities($contents),"<br>";
-    if (preg_match('/<a\s+name="(FN\d+)"\s*>/',$contents)) { // ok, il y a des definitions de note R2R ici
-#echo "r2r document: $row[identite]</br>";
-      // petit nettoyage
-      $contents=preg_replace('/((?:<br><\/br>)?<a\s+name="FN\d+"><\/a>)((?:<\/\w+>)+)(<a\s+href="#FM\d+">)/','\\2\\1\\3',$contents);
-      $arr=preg_split("/<br><\/br>(?=<a\s+name=\"FN\d+\">)/",trim($contents));
-      for($i=0; $i<count($arr); $i++) {
-	if ($i==0 && trim(strip_tags($arr[$i]))=="NOTES") { $arr[0]=""; continue;}
-	if (preg_match('/^<a\s+name="FN(\d+)"><a\s+href="#FM(\d+)">(.*?)<\/a><\/a>/s',$arr[$i],$result2) ||
-	    preg_match('/^<a\s+name="FN(\d+)"><\/a><a\s+href="#FM(\d+)">(.*?)<\/a>/s',$arr[$i],$result2)) { // c'est bien le debut d'un note
-	  $arr[$i]='<div class="footnotebody"><a class="footnotedefinition" id="ftn'.$result2[1].'" href="#bodyftn'.$result2[2].'">'.$result2[3].'</a>'.substr($arr[$i],strlen($result2[0])).'</div>';
-	} else {
-	  die("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]));
-	}
-      } // toutes les notes
-      $contents=join("",$arr);
-    } elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
-#echo "Ted document: $row[identite]<br>";
-      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
-			     '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
-	
-    }
-  } // fin note R2R
-    
-    
-    // converti les appels de notes
-  $srch=array('/<a\s+name="FM(\d+)">\s*<a\s+href="#FN(\d+)">(.*?)<\/a>\s*<\/a>/s', # R2R footnote call
-	      '/<a\s+name="FM(\d+)">\s*<\/a>\s*<a\s+href="#FN(\d+)">(.*?)<\/a>/s', # R2R footnote call
-	      '/<sup>\s*<small>\s*<\/small>\s*<\/sup>/',
-	      '/<a\s+href="#_ndef_(\d+)" name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
-  $rpl=array('<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
-	     '<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
-	     '',
-	     '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>');
-
-  // convert u in span/style
-  array_push($srch,"/<u>/","/<\/u>/");
-  array_push($rpl,"<span style=\"text-decoration: underline\">","</span>");
-
-
-  return preg_replace($srch,$rpl,$contents);
-}
 
 
 function addfield($classe)

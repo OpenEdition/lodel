@@ -42,6 +42,21 @@ class EntriesLogic extends GenericLogic {
      $this->GenericLogic("entries");
    }
 
+
+   /**
+    * list action
+    */
+
+  function listAction(&$context,&$error,$clean=false)
+
+  {
+    $daotype=&getDAO("entrytypes");
+    $votype=$daotype->getById($context['idtype']);
+    if (!$votype) die("ERROR: idtype must me known in GenericLogic::viewAction");
+    $this->_populateContext($votype,$context['type']);
+    return "_ok";
+  }
+
    /**
     * add/edit Action
     */

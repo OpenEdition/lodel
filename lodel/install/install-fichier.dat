@@ -51,7 +51,6 @@ ln login.php
 ln logout.php
 
 dirsource $homesite/lodel/edition
-ln tpl/desk.html
 
 #
 
@@ -181,7 +180,6 @@ ln logout.php
 #
 
 ln tpl/macros.html
-ln tpl/macros2.html
 ln images
 ln css
 
@@ -214,6 +212,8 @@ ln tpl/characterstyles.html
 
 ln tpl/edit_entrytypes.html
 ln tpl/entrytypes.html
+ln tpl/edit_entries.html
+ln tpl/entries.html
 
 ln tpl/edit_persontypes.html
 ln tpl/persontypes.html
