@@ -40,9 +40,19 @@ class Parser {
 
   var $infilename;
   var $signature;
-  var $variable_regexp="(?:[A-Z][A-Z_0-9]*\.?)*";
+  var $variable_regexp="[A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*";
+  var $variablechar; // list of prefix for the variables
+
   var $loops=array();
+  var $funcs=array();
+  var $macrocode=array();
+
+  var $charset;
+
+  var $commands=array();
+  var $macros_txt;
   var $fct_txt;
+
 
 #  var $wantedvars;
   var $looplevel=0;
@@ -54,24 +64,30 @@ class Parser {
   var $ind;
   var $refresh="";
 
-  var $isphp; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
+  var $isphp=false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
   var $id="";
 
 
-function errmsg ($msg,$ind=0) { 
-  if ($ind) $line="line ".$this->$linearr[$ind];
-  die("LODELSCRIPT ERROR $line (".$this->infilename."): $msg");
-}
+  function errmsg ($msg,$ind=0) { 
+    if ($ind) $line="line ".$this->$linearr[$ind];
+    die("LODELSCRIPT ERROR $line (".$this->infilename."): $msg");
+  }
 
-function parse_loop_extra(&$tables,
-			  &$tablesinselect,&$extrainselect,
-			  &$select,&$where,&$rank,&$groupby,&$having) {}
-function parse_variable_extra ($nomvar) { return FALSE; }
-function parse_before($contents) {}
-function parse_after($contents) {}
-function decode_loop_content_extra ($balise,&$content,&$options,$tables) {}
-function prefix_tablename ($tablename) { return $tablename; }
+  function parse_loop_extra(&$tables,
+			    &$tablesinselect,&$extrainselect,
+			    &$select,&$where,&$rank,&$groupby,&$having) {}
+  function parse_variable_extra ($prefix,$name) { return FALSE; }
+  function parse_before($contents) {}
+  function parse_after($contents) {}
+  function decode_loop_content_extra ($balise,&$content,&$options,$tables) {}
+
+
+ function Parser() { // constructor
+   $this->commands=array("USE","MACRO","LOOP","IF","LET","ELSE",
+			 "DO","DOFIRST","DOLAST","BEFORE",
+			 "AFTER","ALTERNATIVE","ESCAPE","CONTENT");
+ }
 
 
 
@@ -83,87 +99,36 @@ function parse ($in,$out)
   $this->infilename=$in;
   if (!file_exists($in)) $this->errmsg ("Unable to read file $in");
   $this->signature=preg_replace("/\W+/","_",$out);
+  $this->fct_txt="";
+
 
   // read the file
-  $file = file_get_contents($in);
-  
+  if (!function_exists("file_get_contents")) {
+    $fp=fopen ($in,"r"); 
+    while (!feof($fp)) $file.=fread($fp,1024);
+    fclose($fp);
+  } else {
+    $file = file_get_contents($in);
+  }
 
   $contents=stripcommentandcr($file);
 
-  // search the CONTENT tag
-  if (preg_match("/<CONTENT\b([^>]*)>/",$contents,$result)) {
-    // attribut charset
-    if (preg_match("/\bCHARSET\s*=\s*\"([^\"]+)\"/",$result[1],$result2)) {
-      $charset=$result2[1];
-    } else {
-      $charset="iso-8859-1";
-    }
-    // attribut refresh
-    $this->checkforrefreshattribut($result[1]);
-
-    $contents=str_replace($result[0],"",$contents); // efface la balise
-  } else {
-    $charset="iso-8859-1";
-  }
-
-  // look for MACROFILE to be included
-  preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>\s*\n?/",$contents,$results,PREG_SET_ORDER);
-
-  // delete the </USE>
-  $contents=str_replace("</USE>","",$contents);
-
-  foreach($results as $result) {
-    $contents=str_replace($result[0],"",$contents); // efface le use
-    $macrofile=$result[1];
-    if (file_exists("tpl/".$macrofile)) {
-      $macros.=file_get_contents("tpl/".$macrofile);
-    } elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
-      $macros.=file_get_contents($sharedir."/macros/".$macrofile);
-    } else {
-      $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
-    }
-  }
-  $macros=stripcommentandcr($macros);
-
-  // parse  macros
-  $this->parse_macros($contents,$macros);
-
-  $contents = preg_replace(array("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
-				 "/^\s+/m"),
-			   array('<?php insert_template(\$context,"\\1"); ?>',
-				 ""),
-				 $contents);
-  $this->parse_before($contents); // user defined parse function
-
-
-  $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE|ESCAPE";
-  $this->arr=preg_split("/<(\/?(?:$commands))\b([^>]*)>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
-  $this->ind=0;
-  $this->currentline=0;
-  $this->countarr=count($this->arr);
-  $this->fct_txt="";
-
-  // parse les variables
-  $this->parse_variable($this->arr[0]);
-  for($i=1; $i<$this->countarr; $i+=3) {
-    ####$this->parse_variable($this->arr[$i+1],"quote"); // parse the attributs
-    $this->parse_variable($this->arr[$i+2]); // parse the content
-  }
-  // fin
-
-  $this->parse_main();
+  $this->_split_file($contents); // split the contents into commands
+  $this->parse_main();           // parse the commands
 
   if ($this->ind!=$this->countarr) $this->errmsg("this file contains more closing tags than opening tags");
 
-  $contents=join("",$this->arr);
-
+  $contents=join("",$this->arr); // recompose the file
+  unset($this->arr); // save memory now.
   $this->parse_after($contents); // user defined parse function
+
+  // remove  <DEFMACRO>.*?</DEFMACRO>
+  $contents=preg_replace("/<DEF(MACRO|FUNC)\b[^>]*>.*?<\/DEF(MACRO|FUNC)>\s*\n?/s","",$contents);
 
   if ($this->fct_txt) {
     $contents='<?php 
 '.$this->fct_txt.'?>'.$contents;
   }
-
 
   //
   // refresh manager
@@ -191,18 +156,16 @@ function parse ($in,$out)
     $code.='} ?'.'>';
     $contents='<'.'?php echo \''.quote_code($code).'\'; ?>
 '.$contents;
-    $this->isphp=FALSE;
-  }
-  
-  if ($this->isphp) {
-    $contents='<?php if ($GLOBALS[cachedfile]) echo \'<?php ?>\'; ?>'.$contents; // this is use to check if the output is a must be evaluated as a php or a raw file.
+  } elseif ($this->isphp) {
+    $contents='<?php if ($GLOBALS[cachedfile]) echo \'<?php #--# ?>\'; ?>'.$contents; // this is use to check if the output is a must be evaluated as a php or a raw file.
   }
 
   // clean the open/close php tags
   $contents=preg_replace(array('/\?><\?(php\b)?/',
-			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
+			       '/<\?php[\s\n]*\?>/'),array("",""),$contents);
 
-  if ($charset!="utf-8") {
+  if (!$this->charset) $this->charset="iso-8859-1";
+  if ($this->charset!="utf-8") {
     #$t=microtime();
     require_once(TOINCLUDE."utf8.php"); // conversion des caracteres
     $contents=utf8_encode($contents);
@@ -212,89 +175,133 @@ function parse ($in,$out)
   $fp=fopen ($out,"w") or $this->errmsg("cannot write file $out");
   fputs($fp,$contents);
   fclose($fp); 
-  if ($GLOBALS[filemask]) chmod ($out,0666 & octdec($GLOBALS[filemask]));
+  if ($GLOBALS['filemask']) chmod ($out,0666 & octdec($GLOBALS['filemask']));
 
   return $ret;
 }
 
 
-
-
-
-
-function parse_variable (&$text,$escape="php")
+ function parse_variable (&$text,$escape="php")
 
 {
-  $lang_regexp="[A-Za-z]{2}";
-  $filtre_regexp="[A-Za-z][A-Za-z_0-9]*(?:\(.*?\))?";
+  $i=strpos($text,"[");
 
-# traite les sequences [...(#BALISE)...]
+  while ($i!==false) {
+    $startvar=$i;
+    $i++;
 
-  while (preg_match("/(\[[^\[\]]*?)\((#$this->variable_regexp(?::$lang_regexp)?(?:\|$filtre_regexp)*)\)([^\[\]]*?\])/s",$text,$result)) {
-####    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1_LANG\\2",$result[2]);
+    // parenthesis syntaxe [(
+    if ($text{$i}=="(") {
+      $para=true;
+      $i++;
+    } else {
+      $para=false;
+    }
 
-  // remplace la lang
-    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1|multilingue('\\2')",$result[2]);
-
-# parse les filtres
-    if (preg_match("/^#($this->variable_regexp)((?:\|$filtre_regexp)*)$/",$expr,$subresult)) {
-      $block=$subresult[0];
-
-      $variable=$this->parse_variable_extra($subresult[1]); // traitement particulier ?
-      if ($variable===FALSE) { // non, traitement normal
-	$variable="\$context['".strtolower($subresult[1])."']";
+    if ($text{$i}=="#" || strpos($text{$i},$this->variablechar)!==false) { // 
+      $varchar=$text{$i}; $i++;
+      // look for the name of the variable now
+      if ($text{$i}<'A' || $text{$i}>'Z') continue; // not a variable
+      $varname=$text{$i}; $i++;
+      while (($text{$i}>='A' && $text{$i}<='Z') || 
+	     ($text{$i}>='0' && $text{$i}<='1') || 
+	     $text{$i}=="_" || $text{$i}==".") {
+	$varname.=$text{$i}; $i++;
       }
-      foreach(explode("|",$subresult[2]) as $fct) {
-	if ($fct=="false" || $fct=="true" || $fct=="else") {
-	  break;
-	} elseif ($fct) {
-	  // recupere les arguments de la fonction
-	  if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result2)) { $args=",".$result2[2]; $fct=$result2[1]; } else { $args=""; }
-	  $variable=$fct."(".$variable.$args.")";
+      $pipefunction="";
+
+      if ($text{$i}==":") { // a lang
+	$lang=""; $i++;
+	while ($text{$i}>='A' && $text{$i}<'Z') { $lang.=$text{$i}; $i++; }
+	$pipefunction='multilingue("'.$lang.'")|';
+      }
+
+      if ($text{$i}=="|") { // have a pipe function
+	// look for the end of the variable
+	$bracket=1;
+	$mustnewparse=false;
+	while ($bracket) {
+	  switch($text{$i}) {
+	  case "[" : $bracket++;
+	    $mustparse=true; // potentially a new variable
+	    break;
+	  case "]" : $bracket--;
+	    break;
+	  }
+	  if ($bracket>0) $pipefunction.=$text{$i};
+	  $i++;
+	}
+	$i--; // comes back to the bracket.
+	if ($para && $pipefunction{strlen($pipefunction)-1}==")") {
+	  $pipefunction=substr($pipefunction,0,-1);
+	  $i--;
+	}
+	if ($mustparse) {
+	  $this->parse_variable($pipefunction,"quote");
 	}
       }
-    }
-    $pre=substr($result[1],1);
-    $post=substr($result[3],0,-1);
-    if ($fct=="false") {
-      $code='<?php if (!('.$variable.')) { ?>'.$pre.$post.'<?php } ?>';
-    } elseif ($fct=="true") {
-      $code='<?php if ('.$variable.') { ?>'.$pre.$post.'<?php } ?>';
-    } elseif ($fct=="else") {
-      if ($escape!="php") $this->errmsg("ERROR: else pipe function can't be used in this context");
-      $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { echo "$tmpvar"; } else { ?>'.$pre.$post.'<?php } ?>';
-    } elseif ($escape=="php") { // traitement normal, php espace
-      $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<?php echo "$tmpvar"; ?>'.$post.'<?php } ?>';
-    } elseif ($escape=="quote") { 
-      $code='".'.$variable.'."';
-    } else { // normal processing. no espace
-      $code=$variable;
-    }
-    $text=str_replace($result[0],$code,$text);
-  } // while variables with pipe function
-
-  if ($escape=="php") {
-    $pre='<?php echo '; $post='; ?>';
-  } elseif ($escape=="quote")  {
-    $pre='".'; $post='."';
-  } else {
-    $pre=""; $post="";
-  }
-# search for variables without pipe function
-  while (preg_match("/\[\#($this->variable_regexp)(:$lang_regexp)?\]/",$text,$result)) {
-    $variable=$this->parse_variable_extra($result[1]); // traitement particulier ?
-    if ($variable!==FALSE) { // traitement particulier
-      $variable=$pre.$variable.$post;
-    } else { // non traitement normal
-      if ($result[2]) { // lang
-	$pre.="multilingue(";
-	$post=",'".substr($result[2],1)."')".$post;
-      }
-      $variable=$pre.'$context[\''.strtolower($result[1]).'\']'.$post;
-    }
-    $text=str_replace($result[0],$variable,$text);
-  }
+      // look for a proper end of the variable
+      if ($para && $text{$i}==")" && $text{$i+1}=="]") {
+	$i+=2;
+      } elseif (!$para && $text{$i}="]") {
+	$i++;
+      } else continue;// not a variable
+      
+      // build the variable code
+      $varcode=$this->_make_variable_code($varchar,$varname,$pipefunction,$escape);
+      $text=substr_replace($text,$varcode,$startvar,$i-$startvar);
+      $i=$startvar+strlen($varcode); // move the counter
+    } // we found a variable
+    $i=strpos($text,"[",$i);
+  } // while there are some variable
 }
+
+
+
+
+ function _make_variable_code ($prefix,$name,$pipefunction,$escape) {
+
+   $variable=$this->parse_variable_extra($prefix,$name);
+   if ($variable===false) { // has the variable being processed ?     
+     $variable="\$context['".strtolower($name)."']";
+   }
+
+
+# parse the filter
+   if ($pipefunction) { // traitement particulier ?
+     foreach(explode("|",$pipefunction) as $fct) { 
+       // note that explode is a little bit radical. It should be more advance parser
+       if ($fct=="false" || $fct=="true" || $fct=="else") $fct.="function";
+       if ($fct=="elsefunction") $fct="falsefunction";
+       if ($fct) {
+	 // get the args if any 
+	 if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result)) {
+	   $args=",".$result[2]; $fct=$result[1]; } else { $args=""; }
+       } else continue;
+       $variable=$fct."(".$variable.$args.")";
+     }
+   }
+
+   switch($escape) {     
+   case 'php' :
+     // traitement normal, php espace
+     $testcode=' echo '.$variable.';';
+     $code='<'.'?php '.$testcode.' ?'.'>';
+
+     break;
+   case 'quote' :
+     $code='".'.$variable.'."';
+     $testcode=' echo "'.$code.'";';
+     break;
+   default:
+     $code=$variable;
+   }
+
+   // unable to test the code.... 
+   // must use the PEAR::PHP_Parser
+
+   return $code;
+ }
 
 
 function countlines($ind)
@@ -311,65 +318,41 @@ function countlines($ind)
 }
 
 
-///////////// PARSE 2 /////////////////
-//
-// parse les instructions
-
-/*
-function parse_main2()
-
-{
-  if ($this->ind==0) {
-    $this->ind=1;
-  }
-  while ($this->ind<$this->countarr) {
-    if (substr($this->arr[$this->ind],0,1)=="/") return;
-
-    switch($this->arr[$this->ind]) {
-    case "LOOP" : $this->parse_loop($this->arr,$this->ind);
-      break;
-    case "IF" : $this->parse_condition($this->arr,$this->ind);
-      break;
-    case "LET" : $this->parse_let($this->arr,$this->ind);
-      break;
-      // returns
-    case "ELSE" : return;
-    case "DO" : return;
-    case "DOFIRST" : return;
-    case "DOLAST" : return;
-    case "AFTER" : return;
-    case "BEFORE" : return;
-    case "ALTERNATIVE" : return;
-      break;
-    default:
-      echo "$this->ind ".$this->arr[$this->ind];
-      $this->errmsg("internal error in parse_main. Report the bug");
-    }
-    $this->ind+=3;
-  }
-}
-*/
-
 
 function parse_main()
 
 {
-  if ($this->ind==0) {
-    $this->ind=1;
-  }
   while ($this->ind<$this->countarr) {
     if (substr($this->arr[$this->ind],0,1)=="/") {
       if ($this->arr[$this->ind+1]) $this->errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
       return;
     }
     switch($this->arr[$this->ind]) {
-    case "LOOP" : $this->parse_loop();
+    case "CONTENT" :     
+      $attrs=$this->_decode_attributs($arr[$this->ind+1]);
+      $this->charset=$attrs['CHARSET'] ? $attrs['CHARSET'] : "iso-8859-1";
+      // attribut refresh
+      $this->_checkforrefreshattribut($attrs);
+      $this->_clearposition();
       break;
-    case "IF" : $this->parse_condition();
-      break;
-    case "LET" : $this->parse_let();
-      break;
-    case "ESCAPE" : $this->parse_escape_code();
+    case "USE" :
+      $attrs=$this->_decode_attributs($this->arr[$this->ind+1]);
+      if ($attrs['MACROFILE']) {
+
+	$macrofilename=$attrs['MACROFILE'];
+	if (file_exists("tpl/".$macrofilename)) {
+	  $contents=file_get_contents("tpl/".$macrofilename);
+	} elseif ($GLOBALS['sharedir'] && file_exists($GLOBALS['sharedir']."/macros/".$macrofilename)) {
+	  $contents=file_get_contents($GLOBALS['sharedir']."/macros/".$macrofilename);
+	} else {
+	  $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
+	}
+	$this->macros_txt.=stripcommentandcr($contents);
+	$this->_clearposition();
+      } elseif ($attrs['TEMPLATEFILE']) {
+	$this->_clearposition();
+	$this->arr[$this->ind]='<?php insert_template(\$context,"'.basename($attrs['TEMPLATEFILE']).'"); ?>';
+      }
       break;
       // returns
     case "ELSE" : return;
@@ -380,18 +363,31 @@ function parse_main()
     case "BEFORE" : return;
     case "ALTERNATIVE" : return;
       break;
+    case "/MACRO" : $this->_clearposition();
+      break;
     default:
-      echo "$this->ind ".$this->arr[$this->ind];
-      $this->errmsg("internal error in parse_main. Report the bug");
+      if ($this->arr[$this->ind]{0}=="/") {
+	echo "$this->ind ".$this->arr[$this->ind];
+	$this->errmsg("internal error in parse_main. Report the bug");
+      } else {
+	$methodname="parse_".$this->arr[$this->ind];
+	if (method_exists($this,$methodname)) {
+	  call_user_func(array(&$this,$methodname));
+	} else {
+	  $this->errmsg("Unexpected tags ".$this->arr[$this->ind].". No method to call");
+	}
+      }
+      break;
     }
     $this->ind+=3;
   }
 }
 
 
-function parse_loop()
+function parse_LOOP()
 
 {
+  static $tablefields;
   $attrs=$this->arr[$this->ind+1];
 
   $this->arr[$this->ind]="";
@@ -407,53 +403,55 @@ function parse_loop()
   $tables=array();
   $arguments=array();
 
-  preg_match_all("/\s*(\w+)=\"(.*?)\"/",$attrs,$results,PREG_SET_ORDER);
+  $attrs_arr=$this->_decode_attributs($attrs,"flat");
 
   // search the loop name and determin whether the loop is the definition of a SQL loop.
-  $issqldef=FALSE;
-  foreach ($results as $result) {
-    if ($result[1]=="NAME") {
+  $issqldef=false;
+  foreach ($attrs_arr as $attr) {
+    if ($attr['name']=="NAME") {
       if ($name) $this->errmsg("name already defined in loop $name",$this->ind);
-      $name=trim($result[2]);
-    } elseif ($result[1]=="TABLE") {
-      $issqldef=TRUE;
-    } elseif ($result[1]=="REFRESH") {
-	$this->checkforrefreshattribut($result[0]);
+      $name=trim($attr['value']);
+    } elseif ($attr['name']=="TABLE") {
+      $issqldef=true;
+    } elseif ($attr['name']=="REFRESH") {
+	$this->_checkforrefreshattribut($attrs);
     }
   }
 
   if ($issqldef) { // definition of a SQL loop.
-    foreach ($results as $result) {
-      $this->parse_variable($result[2],"quote"); // parse the attributs
-      $value=$result[2];
-      switch ($result[1]) {
+    foreach ($attrs_arr as $attr) {
+      $value=$attr['value'];
+      $this->parse_variable($value,"quote"); // parse the attributs
+      switch ($attr['name']) {
       case "NAME":
 	break;
       case "DATABASE":
 	$db=trim($value);
 	break;
       case "WHERE" :
-	array_push($wheres,"(".trim(replace_conditions($value,"sql")).")");
+	$wheres[]="(".replace_conditions($value,"sql").")";
 	break;
       case "TABLE" :
-	$arr=preg_split("/,/",$value);
+	if (!$tablefields) require(TOINCLUDE."tablefields.php");
+	if (is_array($value)) { // multiple table attributs ?
+	  $arr=array();
+	  foreach ($value as $val) $arr=array_merge($arr,explode(",",$value));
+	} else { // multiple table separated by comma
+	  $arr=explode(",",$value);
+	}
 	if ($arr) {
 	  foreach ($arr as $value) {
-	    $value=trim($value);
-	    #$dotpos=strpos($value,".");
-	    #if ($dotpos===FALSE) {
-	      $value=$GLOBALS['tableprefix'].$value;
-	    #} else {
-	    #  $value=substr($value,0,$dotpos+1).$GLOBALS['tableprefix'].substr($value,$dotpos+1);
-	    #}
-	      if ($db) $value=$db.".".$value;
-
-	    array_push($tables,$value);
+	    $table=$GLOBALS['tableprefix'].trim($value);
+	    if ($tablefields[$table] || $tablefields[$GLOBALS['database'].".".$table]) { // prefix ?
+	      array_push($tables,$table);
+	    } else {
+	      array_push($tables,trim($value));
+	    }
 	  }
 	}
 	break;
       case "ORDER" :
-	array_push($orders,$value);
+	$orders[]=$value;
 	break;
       case "LIMIT" :
 	if ($limit) $this->errmsg("Attribut LIMIT should occur only once in loop $name",$this->ind);
@@ -480,17 +478,17 @@ function parse_loop()
       case "REQUIRE":
 	break;
       default:
-	$this->errmsg ("unknown attribut \"$result[1]\" in the loop $name",$this->ind);
+	$this->errmsg ("unknown attribut \"".$attr['name']."\" in the loop $name",$this->ind);
       }
     } // loop on the attributs
     // end of definition of a SQL loop
   } else {
     // ok, this is a SQL loop call or a user lopp
     // the attributs are put into $arguments.
-    foreach ($results as $result) {
-      if ($result[1]=="NAME") continue;
-      $this->parse_variable($result[2],"quote"); // parse the attributs
-      $arguments[strtolower($result[1])]=$result[2];
+    foreach ($attrs_arr as $attr) {
+      if ($attr['name']=="NAME") continue;
+      $this->parse_variable($attr['value'],"quote"); // parse the attributs
+      $arguments[strtolower($attr['name'])]=$attr['value'];
     }
   }
 
@@ -522,7 +520,7 @@ function parse_loop()
 
   if ($tables) { // loop SQL
     // check if the loop is not already defined with a different contents.
-    if ($issql && $attrs!=$this->loops[$name][attr]) $this->errmsg ("loop $name cannot be defined more than once",$this->ind);
+    if ($issql && $attrs!=$this->loops[$name]['attr']) $this->errmsg ("loop $name cannot be defined more than once",$this->ind);
 
     // the loop is not defined yet, let's define.
     if (!$issql) { // the loop has to be defined
@@ -570,7 +568,7 @@ function parse_loop()
       $code='<?php loop_'.$name.'_'.($this->signature).'($context); ?>';
       $this->ind+=3;
       if ($this->arr[$this->ind]!="/LOOP") $this->errmsg ("loop $name cannot be defined more than once");
-      $this->loops[$name][recursive]=TRUE;
+      $this->loops[$name]['recursive']=true;
 #      // copy the wanted variables from the original definition
 #      print_r($this->wantedvars);
 #      exit();
@@ -578,7 +576,7 @@ function parse_loop()
     }
   }
   if ($this->arr[$this->ind]!="/LOOP") {
-    echo ": $this->ind ".$this->arr[$this->ind]."<br>\n";
+    echo ":::: $this->ind ".$this->arr[$this->ind]."<br>\n";
     print_r($this->arr);
     $this->errmsg ("internal error in parse_loop. Report the bug");
   }
@@ -692,9 +690,9 @@ if ($limit && strpos($limit,",")===false) {
    $cleanquery=preg_replace("/(^|&)'.$offsetname.'=\d+/","",$_SERVER[\'QUERY_STRING\']);
    if ($cleanquery[0]=="&") $cleanquery=substr($cleanquery,1); 
    if ($cleanquery) $currenturl.=$cleanquery."&";
-if ($context[nbresultats]>'.$limit.') {
+if ($context[nbresults]>'.$limit.') {
 $context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$limit.');
-$context[nbresultats]--;
+$context[nbresultats]--;$context[nbresults]--;
 } else {
 $context[nexturl]="";
 }
@@ -760,11 +758,11 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
  $query="SELECT '.$select.' FROM '."$table $where $groupby $having $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
- $context[nbresultats]=mysql_num_rows($result);
+ $context[nbresultats]=$context[nbresults]=mysql_num_rows($result);
  '.$processlimit.' 
  $generalcontext=$context;
  $count=0;
- if ($row='.$options[fetch_assoc_func].'$result)) {
+ if ($row='.$options['fetch_assoc_func'].'$result)) {
 ?>'.$contents['BEFORE'].'<?php
     do {
       $context=array_merge ($generalcontext,$row);
@@ -776,9 +774,9 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
   }
   // gere le cas ou il y a un dernier
   if ($contents['DOLAST']) {
-    $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
+    $this->fct_txt.=' if ($count==$context[nbresults]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
   }    
-    $this->fct_txt.=$contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresultats] && $row='.$options['fetch_assoc_func'].'$result));
+    $this->fct_txt.=$contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresults] && $row='.$options['fetch_assoc_func'].'$result));
 ?>'.$contents['AFTER'].'<?php  } ';
 
   if ($contents['ALTERNATIVE']) $this->fct_txt.=' else {?>'.$contents['ALTERNATIVE'].'<?php }';
@@ -810,28 +808,73 @@ function make_userdefined_loop_code ($name,$contents)
  // fin ajout
 }
 
+ function parse_FUNC() { parse_MACRO("FUNC"); }
 
-function parse_macros(&$text,&$macros)
+function parse_MACRO($tag="MACRO")
 
 {
-  while (preg_match("/<MACRO(\s+NAME\s*=\s*\"(\w+)\")\s*>/",$text,$result)) {
-    if (!$result[2]) { $this->errmsg ("MACRO tag malformed"); }
-    // cherche la define
-    $search="/<DEFMACRO\s+NAME\s*=\s*\"$result[2]\"\s*>(.*?)<\/DEFMACRO>/s";
-    if (!preg_match_all($search,$text,$defs,PREG_SET_ORDER)) 
-      if (!preg_match_all($search,$macros,$defs,PREG_SET_ORDER)) { $this->errmsg ("the macro $result[2] is not defined"); }
-    $def=array_pop($defs); // recupere la derniere definission
-    $def[1]=preg_replace("/(^\n|\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
-    $text=str_replace($result[0],$def[1],$text);
-  }
-  // supprime les <DEFMACRO>.*?</DEFMACRO> et les </MACRO>
-  $text=preg_replace(array("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>\s*\n?/s","/<\/MACRO>/"),"",$text);
+  // decode attributs
+  $attrs=$this->_decode_attributs($this->arr[$this->ind+1]);
 
+  $name=trim($attrs['NAME']);
+  if (!$name) { $this->errmsg ("$tag without NAME attribut"); }
+
+  if (!isset($this->macrocode[$name])) {
+    // search for the macro define
+    $searchstr='/<DEF'.$tag.'\s+NAME\s*=\s*"'.$attrs['NAME'].'"([^>]*)>(.*?)<\/DEF'.$tag.'>/s';
+
+    #if (!preg_match_all($searchstr,$text,$defs,PREG_SET_ORDER)) 
+      if (!preg_match_all($searchstr,$this->macros_txt,$defs,PREG_SET_ORDER)) { $this->errmsg ("the macro $name is not defined"); }
+    $def=array_pop($defs); // get the last definition of the macro
+    $code=preg_replace("/(^\n|\n$)/","",$def[2]); // remove first and last line break
+
+    $this->macrocode[$name]['code']=$code;
+    $this->macrocode[$name]['attr']=$def[1];
+  } // caching
+  
+  if ($tag=="FUNC") { // we have a function macro
+    $defattr=$this->_decode_attributs($this->macrocode[$name]['attr']);
+    if ($defattr['REQUIRED']) {
+      $required=preg_split("/\s*,\s*/",strtoupper($defattr['REQUIRED']));
+      $optional=preg_split("/\s*,\s*/",strtoupper($defattr['OPTIONAL']));
+
+      // check the validity of the call
+      foreach ($required as $arg) {
+	if (!isset($attrs[$arg]))  { $this->errmsg ("the macro $name required the attribut $arg"); }
+      }
+    }
+    $macrofunc="macrofunc_".$name."_".$this->signature;
+    
+    $this->_clearposition();
+    // build the call
+    unset($attrs['NAME']);
+    $agrs=array();
+    foreach ($attrs as $attr => $val) {
+      $this->parse_variable($val,"quote");
+      $args[]='"'.$attr.'"=>"'.$val.'"';
+    }
+    $this->arr[$this->ind]='<?php '.$macrofunc.'($context,array('.join(",",$args).')); ?>';
+    //
+
+    if (!$this->funcs[$macrofunc]) {
+      $this->funcs[$macrofunc]=true;
+      // build the function 
+      $this->arr[$this->ind].='<?php function '.$macrofunc.'($context,$args) {
+         $context=array_merge($context,$args); ?>';
+      $code=$this->macrocode[$name]['code'].'<?php
+      } ?>
+';
+      $this->_split_file($code);
+    }
+  } else { // normal MACRO
+    $this->_split_file($this->macrocode[$name]['code']);
+    $this->_clearposition();
+  }
 }
 
 
 # traite les conditions avec IF
-function parse_condition () 
+function parse_IF () 
 
 {
   if (!preg_match("/\bCOND\s*=\s*\"([^\"]+)\"/",$this->arr[$this->ind+1],$cond)) $this->errmsg ("IF have no COND attribut",$this->ind);
@@ -863,7 +906,7 @@ function parse_condition ()
 
 
 
-function parse_let () {
+function parse_LET () {
 
   if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"/",$this->arr[$this->ind+1],$result)) $this->errmsg ("LET have no VAR attribut");
   if (!preg_match("/^$this->variable_regexp$/i",$result[1])) $this->errmsg ("Variable \"$result[1]\"in LET is not a valide variable",$this->ind);
@@ -883,7 +926,7 @@ function parse_let () {
 }
 
 
-function parse_escape_code()
+function parse_ESCAPE()
 
 {
   $this->arr[$this->ind]="";
@@ -896,27 +939,122 @@ function parse_escape_code()
   $this->isphp=TRUE;
 }
 
+/**
+ * Accept an array or a string
+ *
+ */
 
-
-function checkforrefreshattribut($text)
+function _checkforrefreshattribut($mixed)
 
 {
-  if (preg_match("/\bREFRESH\s*=\s*\"([^\"]+)\"/",$text,$result2)) {
-    $refresh=trim($result2[1]);
-    $timere="(?:\d+(:\d\d){0,2})"; // time regexp
-    if (!is_numeric($refresh) && !preg_match("/^$timere(?:,$timere)*$/",$refresh)) $this->errmsg("Invalid refresh time \"".$refresh."\"");
+  if (is_array($mixed)) {
+    $attrs=$mixed;
+  } else {
+    $attrs=$this->_decode_attributs($mided);
   }
-  if (!$this->refresh || 
-      (is_numeric($refresh) && 
-       is_numeric($this->refresh) &&
-       $refresh < $this->refresh)
-      ) {
-    $this->refresh=$refresh;
-  } elseif (!is_numeric($refresh) && !is_numeric($this->refresh)) {
-    $this->refresh.=",".$refresh;
-  }
+
+  if (!$attrs['REFRESH']) return;
+
+  $refresh=trim($attrs['REFRESH']);
+  $timere="(?:\d+(:\d\d){0,2})"; // time regexp
+  if (!is_numeric($refresh) && !preg_match("/^$timere(?:,$timere)*$/",$refresh)) $this->errmsg("Invalid refresh time \"".$refresh."\"");
+
+ if (!$this->refresh || 
+     (is_numeric($refresh) && 
+      is_numeric($this->refresh) &&
+      $refresh < $this->refresh)
+     ) {
+   $this->refresh=$refresh;
+ } elseif (!is_numeric($refresh) && !is_numeric($this->refresh)) {
+   $this->refresh.=",".$refresh;
+ }
 }
 
+
+function prefix_tablename ($sql)
+
+{
+  static $tablefields;
+  if (!$tablefields) require($home."tablefields.php");
+
+  $n=strlen($sql);
+
+  $inquote=false;
+
+  for ($i=0; $i < $n; $i++ ) {
+    $c=$sql{$i};
+
+    if ($inquote) { // we are in a string
+      if ($c==$quotec && !$escaped) {
+	$inquote = false;
+      } else {
+	$escaped = $c=="\\" && !$escaped;
+      }
+    } elseif ($c=='"' || $c=="'") { // quote ?
+      $inquote=true;
+      $escaped=false;
+      $quotec=$c;
+    } elseif ($c=="." && preg_match("/\b(\w+)$/",$str,$result)) { // table dot ?
+      if ($tablefields[$GLOBALS['tableprefix'].$result[1]]) {
+	// we have a table... let's prefix it
+	$ntablename=strlen($result[1]);
+	$str=substr($str,0,-$ntablename).$GLOBALS['tableprefix'].$result[1];
+      }
+    }
+    $str.=$c;
+  }
+  return $str;
+}
+
+
+ function _decode_attributs($text,$options="")
+
+ {
+   // decode attributs
+   $arr=explode('"',$text);
+   $n=count($arr);
+   for($i=0; $i<$n; $i+=2) {
+     $attr=trim(substr($arr[$i],0,strpos($arr[$i],"=")));
+     if (!$attr) continue;
+     if ($options=="flat") {
+       $ret[]=array("name"=>$attr,"value"=>$arr[$i+1]);
+     } else {
+       $ret[$attr]=$arr[$i+1];
+     }
+   }
+   return $ret;
+ }
+
+
+ function _clearposition()
+
+ {
+   $this->arr[$this->ind]=$this->arr[$this->ind+1]="";
+   $this->arr[$this->ind+2]=preg_replace("/^(\s*\n)/","",$this->arr[$this->ind+2]);
+ }
+
+
+ function _split_file($contents) {
+   $arr=preg_split("/<(\/?(?:".join("|",$this->commands)."))\b([^>]*?)\/?>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
+
+   // parse the variables
+   $this->parse_variable($arr[0]);
+   for($i=1; $i<count($arr); $i+=3) {
+     $this->parse_variable($arr[$i+2]); // parse the content
+   }
+
+   if (!$this->arr) {
+     $this->ind=0;
+     $this->currentline=0;
+     $this->arr=$arr;
+   } else {
+     $this->_clearposition();
+     $this->arr[$this->ind+2]=$arr[count($arr)-1].$this->arr[$this->ind+2];
+     array_splice($this->arr,$this->ind+2,0,array_slice($arr,0,-1));
+   }
+   $this->countarr=count($this->arr);
+   if (!$this->ind) $this->ind=1;
+ }
 } // clase Parser
 
 function replace_conditions($text,$style)

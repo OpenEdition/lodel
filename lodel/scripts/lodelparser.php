@@ -46,6 +46,14 @@ class LodelParser extends Parser {
   var $translationlanglist="'fr','en','es','de'";
 
 
+  function LodelParser() { // constructor
+    $this->Parser();
+    $this->commands[]="TEXT"; // catch the text
+    $this->variablechar="@"; // catch the @
+  }
+
+
+
 function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
 			  &$select,&$where,&$rank,&$groupby,&$having)
@@ -129,7 +137,7 @@ function parse_loop_extra(&$tables,
       } else {
 	$lowstatus="-64";
       }
-      array_push($teststatus,"($table.status>\".(\$GLOBALS[rightvisiteur] ? $lowstatus : \"0\").\")");
+      array_push($teststatus,"($table.status>\".(\$GLOBALS[rightvisitor] ? $lowstatus : \"0\").\")");
     }
     $where=join(" AND ",$teststatus);
   }
@@ -216,16 +224,30 @@ function parse_loop_extra(&$tables,
 //
 
 
-function parse_variable_extra ($varname)
+function parse_variable_extra ($prefix,$varname)
 
 {
   // VARIABLES SPECIALES
   //
-  if ($varname=="GROUPRIGHT") {
-    return '($GLOBALS[rightadmin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
+  if ($prefix=="#") {
+    if ($varname=="GROUPRIGHT") {
+      return '($GLOBALS[rightadmin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
+    }
+    if (preg_match("/^OPTION[_.]/",$varname)) { // options
+      return "getoption('".strtolower(substr($varname,7))."',$context)";
+    }
   }
-  if (preg_match("/^OPTION[_.]/",$varname) { // options
-    return "getoption('".strtolower(substr($varname,7))."',$context)";
+
+  if ($prefix=="@") {
+    $dotpos=strpos($varname,".");
+    if ($dotpos) {
+      $name=substr($varname,$dotpos+1);
+      $group=substr($varname,0,$dotpos);
+    } else {
+      $name=$varname;
+      $group="site";
+    }
+    return $this->maketext($name,$group,"@");
   }
   return FALSE;
 }
@@ -256,7 +278,7 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
 //  }
   // les filtrages automatiques
   if ($havedocuments || $havepublications) {
-    $options[fetch_assoc_func]='filtered_mysql_fetch_assoc($context,';
+    $options['fetch_assoc_func']='filtered_mysql_fetch_assoc($context,';
     if (!$this->filterfunc_loaded) {
       $this->filterfunc_loaded=TRUE;
       $this->fct_txt.='if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");';
@@ -265,41 +287,27 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
 }
 
 
+ function parse_TEXT()
 
-//
-// cette fonction contient des specificites a Lodel.
-// il faut voir si on decide que les minitexte font partie de lodelscript ou de lodel.
-//
+ {
+   $attr=$this->_decode_attributs($this->arr[$this->ind+1]);
 
-function parse_before(&$text)
+   if (!$attr['NAME']) $this->errmsg("ERROR: The TEXT tag has no NAME attribute");
+   $name=addslashes(stripslashes(trim($attr['NAME'])));
 
-{
-  preg_match_all("/<TEXT\s+([^>]*)>/",$text,$results,PREG_SET_ORDER);
-  foreach ($results as $result) {
-    $attr=$result[1];
-    // get the name
-    preg_match("/NAME\s*=\s*\"([^\"]+)\"/",$attr,$result2);
-    $name=addslashes(stripslashes(trim($result2[1])));
-    // get the group
-    preg_match("/GROUP\s*=\s*\"([^\"]+)\"/",$attr,$result2);
-    $group=addslashes(stripslashes(trim($result2[1])));
-    if (!$group) $group="site";
-    $text=str_replace($result[0],$this->maketext($name,$group,"text"),$text);
-  }
-  preg_match_all("/\[@((?:".$this->variable_regexp."\.)*)(".$this->variable_regexp.")\]/",$text,$results,PREG_SET_ORDER);
-  foreach ($results as $result) {
-    $group=addslashes(stripslashes(strtolower(trim(substr($result[1],0,-1)))));
-    $name=addslashes(stripslashes(strtolower(trim($result[2]))));
-    if (!$group) $group="site";
-    $text=str_replace($result[0],$this->maketext($name,$group,"@"),$text);
-  }
+   $group=addslashes(stripslashes(trim($attr['GROUP'])));
+   if (!$group) $group="site";
 
-}
-
+   $this->_clearposition();
+   $this->arr[$this->ind]=$this->maketext($name,$group,"text");
+ }
 
 function maketext($name,$group,$tag)
 
 {
+  $name=strtolower($name);
+  $group=strtolower($group);
+
   if ($GLOBALS['righteditor']) {       // cherche si le texte existe
     require_once(TOINCLUDE."connect.php");
     $db= ($group=="site") ? "" : $GLOBALS['database'].".";
@@ -316,19 +324,21 @@ function maketext($name,$group,$tag)
     $modifyif='$context[\'righteditor\']';
     if ($group=='interface') $modifyif.=' && $context[\'usertranslationmode\']';
 
-    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
+    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/text.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
+
+    return '<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'");'.$modify.
+      ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
   } else {
     // modify at the end of the file
-    $modify=' if ($context[\'usertranslationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
+    ##$modify=' if ($context[\'usertranslationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
+    $modify="";
     $fullname=strtoupper($group).'.'.strtoupper($name);
 
     if (!$this->translationform[$fullname]) { // make the modify form
       $this->translationform[$fullname]='<?php mkeditlodeltext("'.$name.'","'.$group.'"); ?>';
     }
+    return 'getlodeltextcontents("'.$name.'","'.$group.'")';
   }
-
-  return '<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'");'.$modify.
-    ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
 }
 
 
