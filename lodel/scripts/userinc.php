@@ -45,7 +45,7 @@ if ($edit) { // modifie ou ajoute
     // verifie l'email
     if ($context[email] && !ereg(".*\@[^\.]*\..*",$context[email])) { $context[erreur_email]=$err=1; }// repris de SPIP
       
-    if (!$groupes) { $context[erreur_groupes]=$err=1; }
+    if (!$groupes || !is_array($groupes)) { $context[erreur_groupes]=$err=1; }
  
     if ($err) break;
     include_once ($home."connect.php");
