@@ -27,8 +27,6 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-
 /**
  *  Logic Entities
  */
@@ -176,7 +174,7 @@ class Entities_EditionLogic extends GenericLogic {
        // error.
        // if the entity is imported and will be checked
        // that's fine, let's continue, if not return an error
-       if ($opt==FORCE) $status=-64;
+       if ($opt==FORCE) { $status=-64;  $ret="_error"; }
        if ($status>-64) return "_error";
      }
     
@@ -223,6 +221,7 @@ class Entities_EditionLogic extends GenericLogic {
 
      $gdao=&getGenericDAO($class,"identity");
      $gdao->instantiateObject($gvo);
+     $this->_moveImages($context);
      $this->_populateObject($gvo,$context);
      $gvo->identity=$id;
      $this->_moveFiles($id,$this->files_to_move,$gvo);
@@ -234,7 +233,7 @@ class Entities_EditionLogic extends GenericLogic {
      update();
      //unlock();
 
-     return "_back";
+     return $ret ? $ret : "_back";
    }
 
 
@@ -244,7 +243,11 @@ class Entities_EditionLogic extends GenericLogic {
     * @private
     */
 
-
+   /**
+    * method to move img link when the new id is known
+    *
+    */
+   function _moveImages(&$context) {}
 
    /**
     * Used in editAction to do extra operation after the object has been saved

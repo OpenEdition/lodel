@@ -214,8 +214,7 @@ function lodelprocessing(&$xhtml)
     }
   }
   $xhtml=join("",$arr);
-//  require_once($GLOBALS['home']."balises.php");
-//  $xhtml=multileveltagsprocessing($xhtml,$GLOBALS['multiplelevel']);
+  $xhtml=str_replace("&#39;","'",$xhtml);
 
   return false;
 }

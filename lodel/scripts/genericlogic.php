@@ -300,17 +300,18 @@ class GenericLogic extends Logic {
 	       $localcontext[]=array("g_name"=>$key);
 	     }
 	     #echo "after localcontext:";
-	     #print_R($localcontext);
+	     #
 	   }
+	   if (!is_array($localcontext)) die("ERROR: internal error in GenericLogic::validateFields");
 	   $count=count($localcontext);
 	   for($i=0; $i<$count; $i++) {
 	     if (!$localcontext[$i]) continue;
 	     $localcontext[$i]['class']=$vo->class;
 	     $localcontext[$i]['idtype']=$idtype;
 	     $err=array();
-	     ##echo "logic(".get_class($logic).")";
+	     #echo "logic(".get_class($logic).")".$vo->class."   --   ";
 	     #echo "ici  ";print_R($localcontext[$i]);
-	     #echo "\n\n";
+	     #echo "\n\n";	     
 	     $logic->validateFields($localcontext[$i],$err);
 	     if ($err) $error[$type][$idtype][$i]=$err;
 	   }

@@ -74,6 +74,19 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      $parser=new XMLImportParser();
      $parser->init($votype->class);
      $parser->parse(file_get_contents($task['fichier']),$this);
+
+     #die("la");
+     // close the task     
+     if ($idtask) {
+       $dao=&getDAO("tasks");
+       $dao->deleteObject($idtask);
+     }
+
+     if ($this->return!="_error" && $context['finish']) {
+       return "_back";
+     } else {
+       header("location: index.php?do=view&id=".$this->id);
+     }
    }
 
 
@@ -83,7 +96,77 @@ class Entities_ImportLogic extends Entities_EditionLogic {
     * @private
     */
 
+   /**
+    * method to move img link when the new id is known
+    *
+    */
+   function _moveImages(&$context) { 
+     $count=1;
+     $dir="";
+     $this->_moveImages_rec($context,$dir,$count); 
+   }
 
+   function _moveImages_rec(&$context,&$dir,&$count) 
+
+   {
+     foreach (array_keys($context) as $k) {
+       if (is_array($context[$k])) {
+	 $this->_moveImages_rec($context[$k],$dir,$count);
+	 continue;
+       }
+       $text=&$context[$k];
+       
+       preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"([^>]*>)/i",$text,$results,PREG_SET_ORDER);
+       foreach ($results as $result) {
+	 $imgfile=$result[1];	   $ext=$result[2];
+	 if (substr($imgfile,0,5)=="http:") continue; // external image
+
+	 // local.
+	 // is it in the cache ?
+	 if ($imglist[$imgfile]) { 
+	   $text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+	   
+	 } else {
+	   // not in the cache let's move it
+	   if (!$dir) {
+	     $dir="docannexe/image/".$context['id'];
+	     $this->_checkdir($dir);
+	   }
+
+	   $imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
+	   copy($imgfile,SITEROOT.$newimgfile);
+	   @unlink($imgfile);
+
+	   if ($newimgfile) { // ok, the image has been correctly copied
+#	echo "images: $imgfile $newimgfile <br>";
+	     $text=str_replace($result[0],'<img src="'.$newimgfile.'"'.$result[3],$text);
+	     @chmod(SITEROOT.$newimgfile, 0666  & octdec($GLOBALS['filemask']));
+	     $count++;
+	   } else { // no, problem copying the image
+	     $text=str_replace($result[0],"<span class=\"image_error\">[Image non convertie]</span>",$text);
+	   }
+	 }
+       }
+     }
+   }
+   function _checkdir($dir)
+
+   {
+     if (!is_dir(SITEROOT.$dir)) {
+       mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+       @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+     } else {
+       // clear the directory the first time.
+       $fd=opendir(SITEROOT.$dir);
+       if (!$fd) die("ERROR: cannot open the directory $dir");
+       while($file=readdir($fd)) {
+	 if ($file{0}==".") continue;
+	 $file=SITEROOT.$dir."/".$file;
+	 if (is_file($file)) @unlink($file);
+       }
+     }
+   }
+   
    //--------------------------------------------------//
    // definition of the handler to create the context
 
@@ -145,35 +228,54 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    function openClass($class,$obj=null)
    {
-     $this->$_localcontext=array();
+     switch($class[1]) { // classtype
+     case 'entries':
+       break;
+     case 'persons':
+       $this->_localcontext['persons'][$obj->id][]=array(); // add a person
+       $this->_currentcontext=&$this->_localcontext['persons'][$obj->id][count($this->_localcontext['persons'][$obj->id])-1];
+       break;
+     case 'entities':
+       $this->_localcontext=array();
+       $this->_currentcontext=&$this->_localcontext;
+       break;
+     }
    }
 
 
    function closeClass($class) 
+
    {
-     // let's import now.
-     $localcontext=array_merge($this->context,$this->_localcontext);
+     switch($class[1]) { // classtype
+     case 'entries':
+       break;
+     case 'persons': // come back to the main context
+       $this->_currentcontext=&$this->_localcontext;
+       break;
+     case 'entities':
+       // let's import now.
+       $localcontext=array_merge($this->context,$this->_localcontext);
 
-     if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
-     if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
-     if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
+       #print_R($localcontext);
 
-     $localcontext['creationsource']="import";
-     $localcontext['creationinfo']=$this->task['sourceoriginale'];
+       if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
+       if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
+       if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
 
-     print_R($localcontext);
-
-     $error=array();
-     $ret=$this->editAction($localcontext,$error,FORCE);#
-     if ($ret=="_error") print_R($error);
-#     print
-
-     if ($context['finish']) {
+       $localcontext['creationsource']="import";
+       $localcontext['creationinfo']=$this->task['sourceoriginale'];
        
-     } else {
+#print_r($localcontext);
+       if (!$context['finish']) $localcontext['status']=-64;
 
+       $error=array();
+       $this->return=$this->editAction($localcontext,$error,FORCE);#
+       $this->id=$localcontext['id'];
+       
+#     if ($ret=="_error") {}
+#     print
+     // move the source file and the files
      }
-     // save the source fail
    }
 
 
@@ -193,8 +295,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    
    function processEntryTypes($obj,$data) 
    {
-     foreach(preg_split("/,/",$data) as $entry) {
-       $this->_localcontext['entries'][$obj->id][]=trim($data);
+     foreach(preg_split("/,/",strip_tags($data)) as $entry) {
+       $this->_localcontext['entries'][$obj->id][]=array("g_name"=>trim($entry));
      }
    }
    
@@ -203,10 +305,10 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    {
      static $g_name_cache;
 
-       // get the generic type     
+     // get the generic type     
      if (!$g_name_cache[$obj->class]) {
        $dao=&getDAO("tablefields");
-       $vos=findMany("class='".$obj->class."' or class='entites".$obj->class."' and g_name IN ('familyname','firstname','prefix')","","name");
+       $vos=$dao->findMany("class='".$obj->class."' or class='entites_".$obj->class."' and g_name IN ('familyname','firstname','prefix')","","name,g_name");
        foreach ($vos as $vo) {
 	 $g_name_cache[$obj->class][$vo->g_name]=$vo->name;
        }
@@ -214,6 +316,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      $g_name=$g_name_cache[$obj->class];
      // ok, we have the generic type
 
+     $data=strip_tags($data);
      if (preg_match("/^\s*(".$this->prefixregexp.")\s/",$data,$result)) {
        $this->_currentcontext[$g_name['prefix']]=$result[1];
        $data=str_replace($result[0],"",$data);
@@ -233,42 +336,25 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 	 } else $name=$data;
        }
      }
-     $this->_currentcontext[$g_name['firstname']]=$firstname;
-     $this->_currentcontext[$g_name['familyname']]=$name;
+     $this->_currentcontext[$g_name['firstname']]=trim($firstname);
+     $this->_currentcontext[$g_name['familyname']]=trim($name);
    }
 
-   function openPersonTypes($obj) 
-   {
-     $this->_localcontext['persons'][$obj->id][]=array(); // add a person
-     $this->_currentcontext=&$this->_localcontext['persons'][$obj->id][count($this->_localcontext['persons'][$obj->id])-1];
-   }
-   function closePersonTypes() 
-   {
-     $this->_currentcontext=&$this->_localcontext;
-   }
    
    function processCharacterStyles($obj,$data) 
      
    {
-     //... faut regarder s'ils ce sont de vrai style dans tablefields.
-     //if ($obj->name...)
-     //return "<span style=\"background-color: gray;\">".$data."</span>";
-     return $data;
+     return $obj->conversion.$data.closingtag($obj->conversion);
    }
 
    function processInternalStyles($obj,$data) 
      
    {
-     $obj->conversion
-     //
-     //XXXXXXXXXXXXXX: faire la conversion
-     //
-     //return "--internalstyle--".$obj->style."--".$data."-- fin internal style--";
-     return $data;
+     return $obj->conversion.$data.closingtag($obj->conversion);
    }
-   
+
    function unknownParagraphStyle($style,$data) {
-     $this->_contents.="<tr><td>Style inconnu: ".$style."</td><td>".$data."</td></tr>";
+     //
    }
 
    function unknownCharacterStyle($style,$data) {
@@ -281,8 +367,6 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    // begin{uniquefields} automatic generation  //
    // end{uniquefields} automatic generation  //
-
-
 } // class 
 
 

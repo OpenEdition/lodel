@@ -166,7 +166,7 @@ class XMLImportParser {
     // proper parser. Launch the handlers
 
     $datastack=array();
-    $classstack=array($this->mainclass);
+    $classstack=array(array($this->mainclass,"entities"));
     $handler->openClass($classstack[0]);
 
 #    print_r($arr);
@@ -264,7 +264,7 @@ class XMLImportParser {
       }
       break;
     case "tablefieldsvo" :
-      $cstyles=&$this->contextstyles[$classstack[0]];
+      $cstyles=&$this->contextstyles[$classstack[0][0]];
 
       #print_r($cstyles);
       #echo "<tr><td>";
@@ -273,11 +273,11 @@ class XMLImportParser {
 
       if (!$cstyles[$obj->style]) { // context change	 ?
 	$this->handler->closeClass($classstack[0]);
-	if (!$this->contextstyles[array_shift($classstack)][$style]) {
+	$cl=array_shift($classstack);
+	if (!$this->contextstyles[$cl[0]][$style]) {
 	  // must be in the context below
 	  // if not... problem.
 	  }
-	//$cstyles=&$this->contextstyles[$classstack[0]];
 	// new context
       }
       if ($opening) {
@@ -297,7 +297,8 @@ class XMLImportParser {
 	$datastack[0]="";
       } else {
 	// change the context
-	array_unshift($classstack,$obj->class);
+	$classtype=$class=="entrytypesvo" ? "entries" : "persons";
+	array_unshift($classstack,array($obj->class, $classtype));
 	//$cstyles=&$this->contextstyles[$classstack[0]];
 
 	#echo "<tr><td>";

@@ -47,8 +47,9 @@ function gettask (&$id)
   global $db;
 
   $id=intval($id);
-  $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0")) or dberror();
-  if (!$row) { $view=getView(); $view->back(); return; }
+  $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
+  if ($row===false) dberror();
+  if (!$row) { require_once($home."view.php"); $view=new View; $view->back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
@@ -179,6 +180,19 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
 } 
 
 
+/**
+ * function returning the closing tag corresponding to the opening tag in the sequence
+ * this function could be smarter.
+ */
+
+function closetags($text) 
+{
+  $arr=preg_split("/<(\w+)\b[^>]*>/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $n=count($arr);
+  for($i=$n-1; $i>0; $i-=2) $ret.="</".$arr[$i].">";
+  return $ret;
+}
+
 
 function myquote (&$var)
 {
@@ -228,46 +242,6 @@ function update()
   }
 }
 
-
-function copy_images (&$text,$callback,$argument="",$count=1)
-
-{
-    // copy les images en lieu sur et change l acces
-    $imglist=array();
-
-    if (is_array($text)) {
-      foreach ($text as $k=>$t) {
-	copy_images_private($t,$callback,$argument,$count,$imglist);
-	$text[$k]=$t;
-      }
-    } else {
-      copy_images_private($text,$callback,$argument,$count,$imglist);
-    }
-}
-
-function copy_images_private (&$text,$callback,$argument,&$count,&$imglist)
-
-{
-  preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"([^>]*>)/i",$text,$results,PREG_SET_ORDER);
-  foreach ($results as $result) {
-    $imgfile=$result[1];
-    if (substr($imgfile,0,5)=="http:") continue;
-    if ($imglist[$imgfile]) {
-      $text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
-    } else {
-      $ext=$result[2];
-      $imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
-      if ($newimgfile) { // ok, the image has been correctly copied
-#	echo "images: $imgfile $newimgfile <br>";
-	$text=str_replace($result[0],"<img src=\"$newimgfile\"".$result[3],$text);
-	@chmod(SITEROOT.$newimgfile, 0666  & octdec($GLOBALS['filemask']));
-	$count++;
-      } else { // no, problem copying the image
-	$text=str_replace($result[0],"<span class=\"image_error\">[Image non convertie]</span>",$text);
-      }
-    }
-  }
-}
 
 
 
@@ -755,12 +729,12 @@ function setrecord($table,$id,$set,$context=array())
 function makeSortKey($text)
 
 {
-  return strtolower(strtr(
-			  strtr(utf8_decode($text),
+  return trim(strtolower(strtr(
+			  strtr(utf8_decode(strip_tags($text)),
 				'¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
 				'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 			  array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
-				'¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u')));
+				'¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'))));
 }
 
 /**

@@ -81,24 +81,16 @@ class XmlImportHandler {
 
   function openClass($class,$obj=null) 
   {
-    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">".$class."    ".$obj."  ".($obj ? $obj->type : "")."</td></tr>";
+    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">".$class[0]." ".$class[1]."    ".$obj."  ".($obj ? $obj->type : "")."</td></tr>";
   }
   function closeClass($class) 
   {
-    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">-- fin $class --</td></tr>";
+    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">-- fin ".$class[0]." ".$class[1]." --</td></tr>";
   }
 
   function processPersonTypes($obj,$data) 
   {
     $this->_contents.="<tr><td style=\"background-color: blue;\">".$obj->style."</td><td>".$data."</td></tr>";
-  }
-  function openPersonTypes($obj) 
-  {
-    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: blue;\">".$obj->type."</td></tr>";
-  }
-  function closePersonTypes() 
-  {
-    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: blue;\">-- fin --</td></tr>";
   }
 
   function processCharacterStyles($obj,$data) 
