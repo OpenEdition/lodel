@@ -138,7 +138,7 @@ while ($arr) {
     }
   } elseif ($level==0 && trim($subtext)) {
     // pas bon, zone none reconnuee
-    $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise"><div style="color: red">ZONE NON STYL&Eacute;E</div></td><td class="chkbalisagetdparagraphe">'.$subtext."</td></tr>\n";
+    $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise"><div style="color: red">PARAGRAPHE NON STYL&Eacute;</div></td><td class="chkbalisagetdparagraphe">'.$subtext."</td></tr>\n";
   } else {
     $tablescontent[$part].=$subtext;
   }
