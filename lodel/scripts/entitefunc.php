@@ -82,6 +82,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     switch ($type) {
     case "date" : 
       if (isset($entite[$nom])) {
+	include_once($home."date.php");
 	$entite[$nom]=mysqldate($entite[$nom]);
 	if (!$entite[$nom]) $err=$erreur[$nom]="date";
       }
