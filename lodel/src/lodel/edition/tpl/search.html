@@ -1,0 +1,119 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
+
+
+
+<MACRO NAME="HEADER_HEAD_OPEN">
+
+<title>[(#SITE|strtoupper)].[@COMMON.SEARCH_PAGE]</title>
+
+<MACRO NAME="JS_CONFIRM">
+<MACRO NAME="JS_SEARCH_ENGINE">
+<!--[ Rajout intégration maquette ]-->
+<MACRO NAME="JS_AJOUTER_ENTITE">
+<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+<MACRO NAME="JS_AFFICHE_IMAGE">
+<!--[ Fin rajout intégration maquette ]-->
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" TYPE="[#Q_TYPE]" STATUS="[#Q_STATUS]">
+	<div class="edition_des_series" style="background-image:url(/share-0.8/images/fond_edition_des_series.png);">
+		<img src="/share-0.8/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43" />
+		<div style="padding-top:10px;">
+			<span class="texte_edition_des_series">
+	<IF COND="![#QUERY]">
+	@Nothing to search</span></a>
+		</div>
+	</div>
+	<ELSE/>
+	<LOOP NAME="search">
+	<BEFORE>
+	<MACRO NAME="YOUR_SEARCH_BAR">
+	</BEFORE>
+	<DO>
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_serie1">
+		<ELSE/>
+			<div class="ligne_serie2">
+		</IF>
+		[#WEIGHT]<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
+		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+		
+		<span class="type_document">
+		(in
+		<a href="index.php">@base</a>
+		<LOOP NAME="parentsentities">
+		<DO>
+			:: <a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+		</DO>
+		
+		</LOOP>
+		)</span>
+		
+		</div>
+	</DO>
+	<ALTERNATIVE>
+	<MACRO NAME="YOUR_SEARCH_BAR">
+	<!--[	@your_search 
+		<IF COND="[#Q_TYPE]">
+			<LOOP NAME="print_title_type_2" TABLE="types" WHERE="id=[#Q_TYPE]">
+			@in <strong>[#TITLE]</strong>
+			</LOOP>
+		</IF>
+		<IF COND="[#Q_FIELD]">
+		@in_field <strong>[#Q_FIELD]</strong>
+		</IF>
+		<IF COND="[#Q_STATUS]">
+		(only 
+			<IF COND="[#Q_STATUS] EQ -16">
+				@draft
+			</IF>
+			<IF COND="[#Q_STATUS] EQ -1">
+			@ready_to_be_published
+			</IF>
+			<IF COND="[#Q_STATUS] EQ 1">
+			@published
+			</IF>
+			<IF COND="[#Q_STATUS] EQ 16">
+			@protected
+			</IF>
+			)
+		</IF> 
+		@for &quot;[#QUERY]&quot; ([#NBRESULTS] @results)</span></a>
+	</div>
+	</div>]-->
+		<p style="margin-left : 25px ; margin-top : 50px;">
+		@MESSAGE_NO_RESULTS
+		(Exemple : Aucun document ne correspond aux termes de recherche spécifiés <strong>[#QUERY|stripslashes]</strong>)
+		</p>
+	</ALTERNATIVE>
+	</LOOP>
+	</IF>
+
+<!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
+<MACRO NAME="CLOSE_HTML">
