@@ -472,11 +472,14 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       $ns=$arr[$i+1]=="p" ? "r2r" : "r2rc";
       if ($stylename[$class]) {
 	$class=$stylename[$class];
-      } elseif ($ns=="r2r") {
+      } elseif ($ns=="r2r" || $ns=="r2rc") { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
 	$class=strtolower($class);
-      } else {
-	$class="";
       }
+#      } elseif ($ns=="r2r") {
+#	$class=strtolower($class);
+#      } else {
+#	$class="";
+#      }
       if ($class) {
 	$arr[$i]="<$ns:$class>".$arr[$i]; // ajoute au debut
 	if ($singletags) { // balise ouvrante/fermante
