@@ -579,6 +579,19 @@ ALTER TABLE #_TP_persons ADD idtype INT UNSIGNED NOT NULL DEFAULT \'0\';
 	if ($err) break;
 	$report.="Ajout de idtype a persons<br/>";
     }
+    if (!$fields['sortkey']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_persons ADD sortkey VARCHAR(255) NOT NULL;
+');
+      $dao=getDAO("persons");      
+      $vos=$dao->findMany("1","","id,g_familyname,g_firstname");
+      foreach($vos as $vo) {
+	$vo->sortkey=makeSortKey(trim($vo->g_familyname)." ".trim($vo->g_firstname));
+	$dao->save($vo);
+      }
+      if ($err) break;
+      $report.="Ajout de sortkey a persons<br/>";
+    }
   }
 
 
