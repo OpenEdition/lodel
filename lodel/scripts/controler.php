@@ -29,6 +29,7 @@
 
 require_once($home."auth.php");
 
+xdebug_start_trace("/tmp/trace");
 
 class Controler {
 
@@ -82,6 +83,8 @@ class Controler {
       if (!preg_match("/^[a-zA-Z]+$/",$do)) die("ERROR: invalid action");
       $do=$do."Action";
 
+      require_once($home."logic.php");
+
       switch($do) {
       case 'listAction' :
 	recordurl();
@@ -90,7 +93,6 @@ class Controler {
 	  break;
 	}
       default:
-	require_once($home."logic.php");
 	$logic=&getLogic($lo);
 	// create the logic for the table
 	if (!method_exists($logic,$do)) die("ERROR: invalid action");

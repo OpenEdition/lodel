@@ -54,7 +54,7 @@ class textsVO {
 class textsDAO extends DAO {
 
    function textsDAO() {
-       $this->DAO("texts",true);
+       $this->DAO("texts",false);
        $this->rights=array('write'=>LEVEL_ADMIN,'protect'=>LEVEL_ADMINLODEL);
    }
 

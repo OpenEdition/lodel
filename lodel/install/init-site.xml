@@ -1137,9 +1137,7 @@
 <table name="texts"
         description="Table des minitextes"
 	writeright="admin"
-	protectright="adminlodel"
-        uniqueid="yes">
-
+	protectright="adminlodel">
 <column name="id"
         type="INTEGER"
         default="0"

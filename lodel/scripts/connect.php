@@ -162,7 +162,7 @@ function uniqueid($table)
 
 {
   global $db;
-  $db->execute(lq("INSERT INTO #_TP_objects (class) VALUES ('$table')"));
+  $db->execute(lq("INSERT INTO #_TP_objects (class) VALUES ('$table')")) or dberror();
   return $db->insert_id();
 }
 
