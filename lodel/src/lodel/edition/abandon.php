@@ -36,7 +36,7 @@ if (!function_exists("authenticate")) {
 $id=intval($id);
 if ($id) {
   include_once ($home."connect.php");
-  mysql_query("DELETE FROM taches WHERE id='$id'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]taches WHERE id='$id'") or die (mysql_error());
 }
 
 if ($redirect) {

@@ -168,7 +168,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       if (isset($entite[$nom])) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
-	if (!preg_match("/^([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $erreur[$nom]="url";
+	if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$entite[$nom])) $erreur[$nom]="url";
       }
       break;
     case "boolean" :
