@@ -36,6 +36,8 @@ require(TOINCLUDE."func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
+mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
+mysql_select_db($database)  or die (mysql_error());
 
 //
 // supression et restauration
@@ -77,8 +79,6 @@ if ($edit) { // modifie ou ajoute
 
     if ($err) break;
 
-    mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
-    mysql_select_db($database)  or die (mysql_error());
 
     // cherche si le name existe deja
     $result=mysql_query("SELECT id FROM $GLOBALS[tp]admins WHERE name='$context[name]' AND id!='$id'") or die (mysql_error());  

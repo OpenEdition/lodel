@@ -60,6 +60,7 @@ p {
 	text-align: justify;
 	line-height: 150%;
 	padding-bottom: 10px;
+	margin-right: 20%;
 }
 td, th, table{
 	border-collapse: no-collapse;
@@ -85,6 +86,8 @@ dt{
 	margin-bottom: 10px;
 	margin-top: 15px;
 	font-weight: bold;
+	border-bottom: 1px solid #333;
+	padding-bottom: 5px;
 }
 dd{
 	margin-bottom: 10px;
@@ -103,7 +106,7 @@ form.install{
 	top: 0;
 }
 #install{
-	background-image: url(../../lodeladmin/images/install_fleche_cercle.png);
+	background-image: url(../images/install_fleche_cercle.png);
 	background-repeat: no-repeat;
 	background-position: left middle;
 	position: absolute;
@@ -115,7 +118,7 @@ form.install{
 	height: 39px;
 }
 #bandeau{
-	background-image: url(../../lodeladmin/images/install_bandeau_bas.jpg);
+	background-image: url(../images/install_bandeau_bas.jpg);
 	background-repeat: repeat-x;
 	height: 63px;
 	width: 100%;
@@ -125,7 +128,7 @@ form.install{
 	top: 100px;
 }
 #bandeau h3{
-	background-image: url(../../lodeladmin/images/install_fleche_or.png);
+	background-image: url(../images/install_fleche_or.png);
 	background-repeat: no-repeat;
 	background-position: top left;
 	padding-left: 55px;
