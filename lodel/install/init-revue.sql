@@ -190,7 +190,6 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
-	balise		TINYTEXT NOT NULL,		# balise dans le XML
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	tpl		TINYTEXT NOT NULL,			# nom du fichier template pour l'entree
 	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
@@ -299,9 +298,9 @@ REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('theme','sommaire-
 REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('regroupement','','');
 REPLACE INTO _PREFIXTABLE_typedocs (nom,tpl,status) VALUES('article','article','1');
 REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,balise,stype,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','periodes','chrono','chronos-complet','1','0','0','1','ordre','2');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,balise,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geographies','geo','geos-complet','1','0','0','1','ordre','3');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,balise,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mots_cles','mot','mots','1','1','1','0','nom','1');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,stype,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periodes','chrono','chronos-complet','1','0','0','1','ordre','2');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographies','geo','geos-complet','1','0','0','1','ordre','3');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motscles','mot','mots','1','1','1','0','nom','1');
 
 #else
 #REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('album_photo','sommaire-album','edition-album');

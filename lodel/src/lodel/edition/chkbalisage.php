@@ -78,14 +78,18 @@ while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
   }
 
   array_push($srch,
-	     "/<\/?r2r:article>/si",
-	     "/<r2r:([^>]+)>/sie",
-	     "/<\/r2r:([^>]+)>/si");
+	     "/<\/?r2r:article>/",
+	     "/<r2r:([^>]+)>/e",
+	     "/<\/r2r:([^>]+)>/",
+	     "/<r2rc:([^>]+)>/",
+	     "/<\/r2rc:([^>]+)>/");
 
   array_push($rpl,
 	     "",
 	     "'<tr valign=\"top\"><td class=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td class=\"chkbalisagetdparagraphe\">'",	     
-	     "</td></tr>");
+	     "</td></tr>\n",
+	     "<span style=\"background-color: #F3F3F3;\">",
+	     "</span>");
   
   $context[fichier]=preg_replace($srch,$rpl,$text);
 #}

@@ -19,10 +19,7 @@ function ei_pretraitement($filename,$row,&$context,&$text)
 
   $text=join("",file ($filename.".html"));
   auteurs2auteur($text);
-  $result=mysql_query("SELECT style,balise FROM $GLOBALS[tableprefix]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
-  while ($row=mysql_fetch_assoc($result)) {
-    tags2tag($row[style],$row[balise],$text);
-  }
+  traiteentrees($text);
 
   //////////  // debut de gestion du bloc titre et meta
   // ceci pourrait etre dans une fonction plutot comme tags2tag, 
@@ -115,24 +112,24 @@ function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
   // recherche les differents type d'index
   //
   include_once($home."connect.php");
-  $result=mysql_query("SELECT id,balise FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
+  $groupeentree="<r2r:grentree>";
   while ($row=mysql_fetch_assoc($result)) {
-    //$typeindex[$row[id]]=$row[balise];
-    $effacegroupere.="gr$row[balise]|";
-    $creegroupe.=gr_index($context,$index[$row[id]],$autresentrees[$row[id]],$row[balise]);
+    $groupeentree.=gr_index($context,$index[$row[id]],$autresentrees[$row[id]],$row[nom]);
   }
+  $groupeentree.="</r2r:grentree>";
 
   //
   // efface les groupes
   //
-  $text=preg_replace ("/<r2r:($effacegroupere|grtitre|meta|grauteur)\b[^>]*>(.*?)<\/r2r:\\1>/si", // efface les champs auteurs et auteur
+  $text=preg_replace ("/<r2r:(grentree|grtitre|meta|grauteur)\b[^>]*>(.*?)<\/r2r:\\1>/si", // efface les champs auteurs et auteur
 		      "",$text);
   //
   // ajoute les groupes a la fin
   //
   $text=preg_replace("/<\/r2r:article>/i",
 		     gr_auteur($context,$context[plusauteurs]).
-		     $creegroupe.
+		     $groupeentree.
 		     gr_titre($context).
 		     gr_meta($context)."\\0",
 		     $text);
@@ -260,20 +257,18 @@ function gr_auteur(&$context,$plusauteurs)
 #  return $rpl;
 #}
 
-function gr_index(&$context,$entrees,$autresentrees,$bal)
+function gr_index(&$context,$entrees,$autresentrees,$type)
 
 {
   $bal=strtolower($bal);
   // traite les indexs
-  $rpl="<r2r:gr$bal>";
-  $entrees=array_merge($entrees,preg_split ("/\s*[,;]\s*/",$autresentrees));
+  $entrees=array_merge($entrees,preg_split ("/\s*[,;]\s*/",strip_tags(rmscript($autresentrees))));
 
   if ($entrees) {
     foreach ($entrees as $p) {
-      $rpl.=writetag($bal,strip_tags(rmscript(trim($p))));
+      $rpl.="<r2r:entree type=\"$type\">".trim($p)."</r2r:entree>";
     }
   }
-  $rpl.="</r2r:gr$bal>\n";
   return $rpl;
 }
 
@@ -330,7 +325,11 @@ function makeselectindex (&$context)
      // le context doit contenir les informations sur le type a traiter
 {
   global $text;
-  preg_match_all("/<r2r:$context[balise]\b[^>]*>(.*?)<\/r2r:$context[balise]>/is",$text,$entrees,PREG_PATTERN_ORDER);
+  // recupere les styles
+  $entreere=preg_quote($context[nom]);
+  preg_match_all("/<r2r:entree\s[^>]*?type=\"(?:$entreere)\"[^>]*>(.*?)<\/r2r:entree>/s",$text,$entrees,PREG_PATTERN_ORDER);
+
+#echo "entrees:";  print_r($entrees);
 
   $entreestrouvees=array();
   makeselectindex_rec(0,"",$entrees,$context,&$entreestrouvees);
@@ -429,10 +428,10 @@ function auteurs2auteur (&$text)
   // traitements speciaux:
 
   // accouple les balises auteurs et descriptionauteur
-  $text=preg_replace ("/(<\/r2r:auteurs>)[\s\n\r]*(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/is","\\2\\1",$text);
+  $text=preg_replace ("/(<\/r2r:auteurs>)\s*(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/is","\\2\\1",$text);
 
   // cherche toutes les balises auteurs
-  preg_match_all ("/<r2r:auteurs>\s*(.*?)\s*<\/r2r:auteurs>/si",$text,$results,PREG_SET_ORDER);
+  preg_match_all ("/<r2r:auteurs>(.*?)<\/r2r:auteurs>/si",$text,$results,PREG_SET_ORDER);
 
   $grauteur="<r2r:grauteur>";
   $i=1;
@@ -440,15 +439,15 @@ function auteurs2auteur (&$text)
   while ($result=array_shift($results)) { // parcours les resultats.
     // cherche s'il y a un bloc description
     if (preg_match("/^(.*?)(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/si",$result[1],$result2)) { // il y a un bloc description, donc on a une description pour le dernier auteur.
-      $val=$result2[1];
+      $val=trim($result2[1]);
       // remplace descriptionauteur en description.
       $descrauteur=preg_replace("/(<\/?r2r:description)auteur>/i","\\1>",$result2[2]);
     } else { // pas description des auteurs
-      $val=$result[1];
+      $val=trim($result[1]);
       $descrauteur="";
     }
 #    echo htmlentities($descrauteur)."<br><br>\n\n";
-    $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val));
+    $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom>"));
 
     while (($auteur=array_shift($auteurs))) {
       // on regarde s'il y a un prefix
@@ -458,14 +457,24 @@ function auteurs2auteur (&$text)
       } else {
 	$prefix="";
       }
-      // ok, on cherche maintenant a separer le nom et le prenom
-      $nom=$auteur;
-      while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
-      if ($nom) {
-	$prenom=str_replace($nom,"",$auteur);
-      } else { // sinon coupe apres le premiere espace
-	preg_match("/^\s*(.*)\s+([^\s]+)\s*$/i",$auteur,$result2);
-	$prenom=$result2[1]; $nom=$result2[2];
+      if (preg_match_all("/<r2rc:prenom>(.*?)<\/r2rc:prenom>/",$auteur,$results,PREG_SET_ORDER)) {
+	$prenoms=array(); // tableau pour les prenoms
+	$nom=$auteur;
+	foreach($results as $result) {
+	  array_push($prenoms,trim($result[1]));
+	  $nom=str_replace($result[0],"",$nom); //nettoie le nom
+	}
+	$prenom=join(" ",$prenoms); // join les prenoms
+      } else {
+	// ok, on cherche maintenant a separer le nom et le prenom
+	$nom=$auteur;
+	while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
+	if ($nom) {
+	  $prenom=str_replace($nom,"",$auteur);
+	} else { // sinon coupe apres le premiere espace
+	  preg_match("/^\s*(.*)\s+([^\s]+)\s*$/i",$auteur,$result2);
+	  $prenom=$result2[1]; $nom=$result2[2];
+	}
       }
       // on a maintenant le nom et le prenom, on ecrit le bloc
       $grauteur.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom>$prefix</r2r:nompersonne>";
@@ -484,30 +493,32 @@ function auteurs2auteur (&$text)
 }
 
 
-function tags2tag ($style,$balise,&$text)
+function traiteentrees (&$text)
 
 {
-  $style=strtolower($style);
-  $balise=strtolower($balise);
+  $groupe="<r2r:grentree>";
 
-  preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results,PREG_SET_ORDER);
-  $groupe="<r2r:gr$balise>\n";
-  $oldtags=array();
+  $oldtags=array(); // pour la suppression dans le texte
 
-  foreach ($results as $result) {
-    $val=strip_tags($result[1]);
-    $tags=preg_split ("/[,;]/",preg_replace(
-					    array("/^\s*<(p|div)\b[^>]*>/si","/<\/(p|div)\b[^>]*>$/si","/\s+/"),
-					    array("",""," "),$val));
-    foreach($tags as $tag) {
-      # enlever le strip_tages
-      $groupe.="<r2r:$balise>".trim(strip_tags($tag))."</r2r:$balise>";
+  $result1=mysql_query("SELECT style,nom FROM $GLOBALS[tableprefix]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result1)) {
+    $style=strtolower($row[style]);
+    preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results,PREG_SET_ORDER);
+    foreach ($results as $result) {
+      $val=strip_tags($result[1]);
+      $tags=preg_split ("/[,;]/",strip_tags($val));
+      foreach($tags as $tag) {
+	// enlever le strip_tages
+	$groupe.="<r2r:entree type=\"$row[nom]\">".trim($tag)."</r2r:entree>";
+      }
+      array_push($oldtags,$result[0]);
     }
-    array_push($oldtags,$result[0]);
   }
 
-  $groupe.="</r2r:gr$balise>\n";
-  $text=str_replace($oldtags,array($groupe),$text); // remplace le premier tag par $groupe et les autres par rien
-}
 
+  $groupe.="</r2r:grentree>\n";
+  $text=str_replace($oldtags,array($groupe),$text); // remplace le premier tag par $groupe et les autres par rien
+#  echo "entree:$groupe";
+}
+    
 ?>

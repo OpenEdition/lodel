@@ -23,7 +23,7 @@
 		<td>&nbsp;</td>
 	</tr>
 	<? $context[margin]=0; # initialise la marge ?>
-	<LOOP NAME="listentrees" TABLE="entrees" ORDER="[#TYPE_TRI]" WHERE="typeid='[#TYPEID]' AND parent='[#ID]'" WHERE="ok">
+	<LOOP NAME="listentrees" TABLE="entrees" ORDER="[#TYPE_TRI]" WHERE="typeid='[#TYPEID]' AND parent='[#ID]'" WHERE="status gt -64">
 		<DO>
 			<tr>
 				<td class="ligne_admin2">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#NOM|nbsp)]</span></td>
@@ -51,7 +51,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="listentree_trash" TABLE="entrees" ORDER="ordre" WHERE="trash" WHERE="typeid='[#TYPEID]'">
+<LOOP NAME="listentree_trash" TABLE="entrees" ORDER="ordre" WHERE="status le -64" WHERE="typeid='[#TYPEID]'">
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>

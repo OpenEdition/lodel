@@ -20,7 +20,7 @@
 	<tr>
 		<td class="texte_noir_gras">Nom du type</td>
 		<td class="texte_noir_gras">Titre du type</td>
-		<td class="texte_noir_gras">Balise XML du type</td>
+		<td class="texte_noir_gras">Style d'import</td>
 		<td class="texte_noir_gras">Fichier Template</td>
 		<td>&nbsp;</td>
 	</tr>
@@ -30,7 +30,7 @@
 				<IF COND="[#COUNT] % 2">
 					<td class="ligne_admin1">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
-					<td class="ligne_admin1">[(#BALISE|nbsp)]</td>
+					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin1">[#TPL]</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
@@ -43,7 +43,7 @@
 				<ELSE/>
 					<td class="ligne_admin2">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin2">[(#TITRE|nbsp)]</t>
-					<td class="ligne_admin2">[(#BALISE|nbsp)]</td>
+					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>

@@ -16,6 +16,7 @@ $critere=$id>0 ? "id='$id'" : "";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
+  $delete=2; // destruction en -64;
   include ($home."trash.php");
   treattrash("entrees",$critere);
   return;
@@ -29,7 +30,7 @@ if ($id>0 && $dir) {
   # cherche le parent
   $result=mysql_query ("SELECT parent FROM $GLOBALS[prefixtable]entrees WHERE $critere") or die (mysql_error());
   list($parent)=mysql_fetch_row($result);
-  chordre("entrees",$id,"parent='$parent' AND status>0",$dir);
+  chordre("entrees",$id,"parent='$parent' AND status>-64",$dir);
   back();
 }
 

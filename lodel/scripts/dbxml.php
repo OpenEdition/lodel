@@ -197,45 +197,57 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
   // detruit les liens dans la table documents_indexhs
   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_entrees WHERE iddocument='$iddocument'") or die (mysql_error());
 
-  // enregistre les indexs
-  $result=mysql_query("SELECT id,balise,newimportable,useabrev FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
-  while ($typeindex=mysql_fetch_assoc($result)) {    
-    $balise=$typeindex[balise];    $type=$typeindex[id];
-    if (!$index[$balise]) continue; // s'il n'y a pas d'entrees, on reboucle
+  // cree un hash avec les informations pour les index
+  $result=mysql_query("SELECT id,nom,newimportable,useabrev FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result)) $typeentrees[$row[nom]]=$row;
 
-    // boucle sur les differents entrees
-    foreach ($index[$balise] as $itag) {
-      $tag=$vals[$itag];
-      $entree=trim(addslashes(strip_tags($tag[value]))); // on recupere et on nettoie l'entree
-      if (!$entree) continue; // etrange elle est vide... tant pis, XML pas propre
-      // cherche la langue dans l'attribut sinon valeur par defaut.
-      $lang=($tag[attributes] && $tag[attributes][LANG]) ? strtolower($tag[attributes][LANG]) : "fr";
-      // cherche l'id de la entree si elle existe
-      $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0");
+  if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
 
-      if (mysql_num_rows($result2)) { // l'entree exists
-	list($id,$oldstatus)=mysql_fetch_array($result2);
-	if ($status>0 && $oldstatus<0) { // faut-il publier ?
-	  mysql_query("UPDATE $GLOBALS[tableprefix]entrees SET status=1 WHERE id='$id'") or die (mysql_error());	
-	}
-      } elseif ($typeindex[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
-	// oui,il faut ajouter le mot cle
-	$abrev=$typeindex[useabrev] ? strtoupper($entree) : "";
-	mysql_query ("INSERT INTO $GLOBALS[tableprefix]entrees (status,nom,abrev,typeid,lang) VALUES ('$status','$entree','$abrev','$type','$lang')") or die (mysql_error());
-	$id=mysql_insert_id();
-      } else {
-	// non, on ne l'ajoute pas... mais il y a une erreur quelque part...
-	$id=0;
-	die ("erreur interne dans enregistre_entrees: type: $balise entree: $entree");
+#  print_r($index);
+#  print_r($vals);
+#  exit();
+
+  // boucle sur les differents entrees
+  foreach ($index[entree] as $itag) {
+    $tag=$vals[$itag];
+#    print_r($tag);
+    // recherche le type de l'entree
+    if (!$tag[attributes] || !$tag[attributes][type]) die("erreur interne 1 dans enregistre_entrees");
+    $nomtype=$vals[$itag][attributes][type];
+    $typeentree=$typeentrees[$nomtype];
+    if (!$typeentree) die ("probleme dans enregistre_entrees... nomtype=$nomtype");
+    // ok, on connait le type de l'entree.
+
+    // on recupere et on nettoie le contenu de l'entree
+    $entree=trim(addslashes(strip_tags($tag[value]))); 
+    if (!$entree) continue; // etrange elle est vide... tant pis, XML pas propre
+    // cherche la langue dans l'attribut sinon valeur par defaut.
+    $lang=($tag[attributes] && $tag[attributes][lang]) ? strtolower($tag[attributes][lang]) : "fr";
+    // cherche l'id de la entree si elle existe
+    $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0");
+
+    if (mysql_num_rows($result2)) { // l'entree exists
+      list($id,$oldstatus)=mysql_fetch_array($result2);
+      if ($status>0 && $oldstatus<0) { // faut-il publier ?
+	mysql_query("UPDATE $GLOBALS[tableprefix]entrees SET status=1 WHERE id='$id'") or die (mysql_error());	
       }
-      // ajoute l'index dans la table documents_indes
-      // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
-      // une chaine et en faisant la requette a la fin !
-      if ($id)
-	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_entrees (identree,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
-
-    } // tags
-  } // balises
+    } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
+      // oui,il faut ajouter le mot cle
+      $abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
+      mysql_query ("INSERT INTO $GLOBALS[tableprefix]entrees (status,nom,abrev,typeid,lang) VALUES ('$status','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
+      $id=mysql_insert_id();
+    } else {
+      // non, on ne l'ajoute pas... mais il y a une erreur quelque part...
+      $id=0;
+      die ("erreur interne 2 dans enregistre_entrees: type: $balise entree: $entree");
+    }
+    // ajoute l'index dans la table documents_indes
+    // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
+    // une chaine et en faisant la requette a la fin !
+    if ($id)
+      mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_entrees (identree,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+    
+  } // tags
 }
 
 

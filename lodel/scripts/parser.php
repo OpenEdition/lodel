@@ -177,10 +177,9 @@ function parse_cond (&$text,$offset=0) {
 
 # cherche la condition
 
-	if (!preg_match("/^[^>]*COND\s*=\s*\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
+    if (!preg_match("/^[^>]*COND\s*=\s*\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
     parse_variable($cond[1],FALSE);
-    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
-		 array(">","<",">=","<=","==","!=","&&","||"),$cond[1]);
+    $cond[1]=replace_conditions($cond[1]);
 
     $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
 # cherche le sinon
@@ -298,7 +297,7 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
           
       switch ($result[1]) {
       case "WHERE" :
-	array_push($wheres,"(".trim($value).")");
+	array_push($wheres,"(".trim(replace_conditions($value)).")");
 	break;
       case "TABLE" :
 	array_push($tables,$value);
@@ -598,6 +597,14 @@ function stripcommentandcr(&$text)
 
 
 #### MARCHE PAS  return preg_replace ("/(<!--.*?-->)/se","preg_match('/language=\"javascript\"/i','\\1') ?  '\\1' : ''; ",$text);
+}
+
+function replace_conditions($text)
+
+{
+  return preg_replace(
+	       array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
+	       array(">","<",">=","<=","==","!=","&&","||"),$text);
 }
 
 ?>

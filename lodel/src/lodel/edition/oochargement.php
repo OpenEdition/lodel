@@ -19,7 +19,7 @@ if ($htmlfile && $htmlfile!="none") {
     $fp=fopen($htmlfile,"r") or die("le fichier $htmlfile ne peut etre ouvert");
     $cle=fread($fp,2);
     if ($cle=="PK") {
-      if ($oo2) echo "extract<br>"; flush();
+      echo "extract<br>"; flush();
       system("/usr/bin/unzip -j -p $htmlfile >$htmlfile.extracted");
       $htmlfile.=".extracted";
     }
@@ -29,12 +29,8 @@ if ($htmlfile && $htmlfile!="none") {
     //
 
     include_once($home."balises.php");
-    if ($sortieoo2 || $sortiexmloo2 || $sortie2) $oo2=TRUE;
-    if ($oo2) {
-      $newname=OO2($htmlfile,$context);
-    } else {
-      $newname=OO($htmlfile);
-    }
+    if ($sortieoo || $sortiexmloo || $sortie) $oo=TRUE;
+    $newname=OO($htmlfile,$context);
     if (!$newname) {
       $context[erreur_upload]=1;
       break;
@@ -46,10 +42,10 @@ if ($htmlfile && $htmlfile!="none") {
       $row=array("publication"=>$context[id],"fichier"=>$newname);
     }
     $idtache=make_tache("Import $htmlfile_name",3,$row,$tache);
-    if ($oo2) {
-      echo '<a href="chkbalisage.php?id='.$idtache.'">continue</a>';
-      return;
-    }
+
+    echo '<a href="chkbalisage.php?id='.$idtache.'">continue</a>';
+    return;
+
     header("Location: chkbalisage.php?id=$idtache");
     return;
   } while (0); // exceptions
@@ -62,177 +58,9 @@ calcul_page($context,"oochargement");
 
 
 
-function OO ($uploadedfile)
 
 
-{
-  global $home;
-
-  # configuration (a mettre dans lodelconfig.php plus tard).
-  $javapath="/usr/java/j2sdk1.4.1_02";
-  $openofficepath="/usr/local/OpenOffice.org1.0.3";
-
-
-  $errfile="$uploadedfile.err";
-  chmod($uploadedfile,0644); // temporaire, il faut qu'on gere le probleme des droits
-  # cette partie n'est pas secur du tout. Il va falloir reflechir fort.
-  system("$javapath/bin/java -classpath \"$openofficepath/program/classes/jurt.jar:$openofficepath/program/classes/unoil.jar:$openofficepath/program/classes/ridl.jar:$openofficepath/program/classes/sandbox.jar:$openofficepath/program/classes/juh.jar:$home/oo/classes\" DocumentConverter \"$uploadedfile\" \"swriter: HTML (StarWriter)\" \"html\" \"$openofficepath/program/soffice \" 2>$errfile");
-
-  $errcontent=join('',file("$errfile"));
-  if ($errcontent) {
-    echo "Erreur de lancement d'execution du script java:\n";
-    echo "$errcontent\n";
-    return;
-  }
-
-  $file=join('',file("$uploadedfile.html"));
-
-  if ($GLOBALS[sortieoo]) { // on veut la sortie brute
-    echo htmlentities($file);
-    return;
-  } elseif ($GLOBALS[sortieoohtml]) {
-    echo $file;
-    return;
-  }
-
-  convertHTMLtoUTF8($file);
-
-  // tableau search et replace
-  $srch=array(); $rpl=array();
-  // convertir les caracteres html &xxx en UTF-8
-
-  // convertir les balises (et supprimer les lettres avec accents, et les espaces diviennent des _)
-  
-  array_push($srch,"/\[!(\/?)--R2R:([^\]]+)--\]/e");
-  array_push($rpl,"removeaccentsandspaces('<\\1r2r:\\2>')");
-  
-
-#"mots?_cles?"=>"motcles",
-  $translations=array("notes_de_bas_de_page"=>"notebaspage",
-		      "title"=>"titre","subtitle"=>"soustitre",
-		      "document"=>"article","resume"=>"resume","auteur"=>"auteurs",
-		      "footnote_text"=>"notebaspage",
-		      "corps_de_texte\w*"=>"texte","body_text"=>"texte",
-		      "introduction"=>"texte","conclusion"=>"texte",
-		      "normal"=>"texte", "normal\s*(web)"=>"texte",
-		      "puces?"=>"texte",
-		      "bloc_citation"=>"citation",
-		      "periode"=>"periodes",
-		      "geographie"=>"geographies",
-		      "description_auteur"=>"descriptionauteur",
-		      "droits_auteur"=>"droitsauteur",
-		      "type_document"=>"typedoc",
-		      "langue"=>"langues",
-		      "titre_illustration"=>"titreillustration",
-		      "legende_illustration"=>"legendeillustration",
-		      );
-  
-  foreach ($translations as $k=>$v) {
-    array_push($srch,"/<r2r:$k(\b[^>]+)?>/i","/<\/r2r:$k>/i");
-    if ($v) {
-	array_push($rpl,"<r2r:$v\\1>","</r2r:$v>");
-    } else {
-	array_push($rpl,"","");
-    } 
-  }
-
-  // conversion des balises avec publication
-  array_push($srch,
-	     "/<r2r:(?:section|heading|titre)_(\d+\b([^>]*))>/i",
-	     "/<\/r2r:(?:section|heading|titre)_(\d+)>/i");
-  array_push($rpl,
-	     "<r2r:section\\1>",
-	     "</r2r:section\\1>");
-
-  // remonte les balises. Base sur la presence du P
-  array_push($srch,"/(<p\b[^>]*>(?:\s*<\w+[^>]*>)*)\s*<r2r:([^>]+)>(.*?)<\/r2r:\\2>(\s*(?:<\/\w+[^>]*>\s*)*<\/p>)/is");
-  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
-
-  // traitement un peu sale des footnote. L'autres solution serait de faire le marquage directement dans OO.
-
-  array_push($srch,"/<div id=\"sdfootnote\d+\">.*?<\/div>/is");
-  array_push($rpl,"<r2r:notebaspage>\\0</r2r:notebaspage>");
-
-  // autre chgt
-
-  array_push($srch,
-	     "/<[^>]+>/e",
-#	     "/<TD\b([^>]*)>(\s*(?:<[^>]+>)*\s*<DIV\s+ALIGN=\"([^\"]+)\")/is",
-#	     "/<(\/?)(?:div|p)\b/i", # enleve les attributs des div et p et remplace par des p
-	     "/<p\salign=\"(left|justify)\"(\s+[^>]*)>/", # enleve les alignements gauche et justify
-	     "/<br\b([^>]*)>/i",   # XML is
-	     "/<\/br>/i",	#efface
-	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
-	     "/(<img\b[^>\/]+)\/?>/i", # met border="0"
-	     "/.*<body\b[^>]*>/s",
-	     "/<\/body>.*/s",
-	     "/(<(col)\b[^>]*?)\/?>/i" # balise seule, il faut les fermer
-	     );
-
-  array_push($rpl,
-	     'quote_attribut(strtolower("\\0"))',
-#	     "<td\\1 align=\"\\3\">\\2",
-#	     "<\\1p",
-	     "<p\\2>",
-	     "<br\\1/>",
-	     " ",
-	     "\\1\\2",
-	     "\\1border=\"0\"/>",
-	     '<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">',
-	     "</r2r:article>",
-	     "\\1 />"
-	     );
-
-  $file=traite_multiplelevel(preg_replace ($srch,$rpl,$file));
-
-  //echo htmlentities($file); exit;
-
-# verifie que le document est bien forme
-    include ($home."checkxml.php");
-    if (!checkstring($file)) { echo "fichier: $newname"; echo htmlentities($file);
-return FALSE; }
-
-# traite les tableaux pour sortir les styles
-    include ($home."tableau.php");
-    $file=traite_tableau($file);
-
-# enleve les couples de balises r2r.
-    $file=traite_couple($file);
-
-   if ($GLOBALS[sortie]) die (htmlentities($file));
-
-    function img_copy($imgfile,$ext,$count) {
-      global $rand;
-
-      $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
-      copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
-      return $newimgfile;
-    }
-    include_once ($home."func.php");
-    copy_images($file,"img_copy");
-
-
-  // ecrit le fichier
-    $newname="$uploadedfile-".rand();
-  if (!writefile("$newname.html",$file)) return FALSE;
-
-  return $newname;
-}
-
-
-function quote_attribut($text)
-
-{
- # quote les arguments 
-
-  return preg_replace("/(\w+\s*=)(\w+)/","\\1\"\\2\"",$text);
-}
-
-
-////////////////////// nouvelle version /////////////////////////
-
-
-function OO2 ($uploadedfile,&$context)
+function OO ($uploadedfile,&$context)
 
 
 {
@@ -256,7 +84,7 @@ function OO2 ($uploadedfile,&$context)
 
   system("/usr/bin/unzip -d $tmpdir $uploadedfile.sxw content.xml 2>$errfile") or die("probleme avec unzip<br>".@join("",@file($errfile)));
   $content=join("",file("$tmpdir/content.xml"));
-  if ($GLOBALS[sortiexmloo2]) { echo htmlentities($content); exit(); }
+  if ($GLOBALS[sortiexmloo]) { echo htmlentities($content); exit(); }
   echo "<br>";
   // lit et modifie le fichier content.xml
   processcontent($content);
@@ -276,11 +104,8 @@ function OO2 ($uploadedfile,&$context)
 
   $file=str_replace("\n","",join('',file("$uploadedfile.sxw.html")));
 
-  if ($GLOBALS[sortieoo2]) { // on veut la sortie brute
+  if ($GLOBALS[sortieoo]) { // on veut la sortie brute
     echo htmlentities($file);
-    return;
-  } elseif ($GLOBALS[sortieoohtml]) {
-    echo $file;
     return;
   }
 
@@ -291,9 +116,12 @@ function OO2 ($uploadedfile,&$context)
   // convertir les caracteres html &xxx en UTF-8
 
   // convertir les balises (et supprimer les lettres avec accents, et les espaces diviennent des _)
+
+  array_push($srch,"/.*<body\b[^>]*>/si","/<\/body>.*/si");
+  array_push($rpl,"","");
   
-  array_push($srch,"/\[!(\/?)--R2R:([^\]]+)--\]/e");
-  array_push($rpl,"removeaccentsandspaces('<\\1r2r:'.strtolower('\\2').'>')");  
+  array_push($srch,"/\[!(\/?)--R2R(C?):([^\]]+)--\]/e");
+  array_push($rpl,"removeaccentsandspaces(strtolower('<\\1r2r\\2:\\3>'))");  
 
   $translations=array("notesdebasdepage"=>"notebaspage",
 		      "title"=>"titre","subtitle"=>"soustitre",
@@ -304,8 +132,6 @@ function OO2 ($uploadedfile,&$context)
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
 		      "puces?"=>"texte",
 		      "bloccitation"=>"citation",
-		      "periode"=>"periodes",
-		      "geographie"=>"geographies",
 		      "descriptionauteur"=>"descriptionauteur",
 		      "droitsauteur"=>"droitsauteur",
 		      "typedocument"=>"typedoc",
@@ -335,20 +161,14 @@ function OO2 ($uploadedfile,&$context)
   array_push($srch,"/<\/?r2r:notebaspage>/","/<div id=\"sdfootnote\d+\">.*?<\/div>/is");
   array_push($rpl,"","<r2r:notebaspage>\\0</r2r:notebaspage>");
 
+  // remonte les balises r2r
   array_push($srch,"/((?:<\w+[^>]*>\s*)+)\s*<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)*)/s");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
-
-
-  // remonte les balises. Base sur la presence du P (accepte un lien a l'interieur... ca permet de gerer les footnotes
-#  array_push($srch,"/(<p\b[^>]*>(?:\s*<\w+[^>]*>)*)\s*<r2r:([^>]+)>(.*?)<\/r2r:\\2>(\s*(?:<\/\w+[^>]*>\s*)*<\/p>)/is");
-#  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
 
   // autre chgt
 
   array_push($srch,
-	     "/.*<body\b[^>]*>/si",
-	     "/<\/body>.*/si",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span
 	     "/(<a\b[^>]*)sdfixed>/i",
 	     "/<div type=(?:header|footer)>.*?<\/div>/is",
@@ -361,12 +181,10 @@ function OO2 ($uploadedfile,&$context)
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?>/i", # met border="0"
 	     "/(<(col)\b[^>]*?)\/?>/i", # balise seule, il faut les fermer
-	     "/(<p\b[^>]*>\s*<br\/><\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
+	     "/(<p\b[^>]*>\s*<br\s*\/><\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
 	     );
 
   array_push($rpl,
-	     '<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">',
-	     "</r2r:article>",
 	     "\\1",
 	     "\\1>",
 	     "",
@@ -391,17 +209,19 @@ function OO2 ($uploadedfile,&$context)
 
   //echo htmlentities($file); exit;
 
+# enleve les couples de balises r2r.
+    $file=traite_couple($file);
+
+# ajoute le debut et la fin
+    $file='<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$file.'</r2r:article>';
+
+
 # verifie que le document est bien forme
     include ($home."checkxml.php");
     if (!checkstring($file)) { echo "fichier: $newname"; echo htmlentities($file);
 return FALSE; }
 
-
-
-# enleve les couples de balises r2r.
-    $file=traite_couple($file);
-
-   if ($GLOBALS[sortie2]) die (htmlentities($file));
+   if ($GLOBALS[sortie]) die (htmlentities($file));
 
     function img_copy($imgfile,$ext,$count) {
       global $rand;
@@ -575,7 +395,7 @@ function convertHTMLtoUTF8 (&$text)
 
 function removeaccentsandspaces($string){
 return strtr(
- strtr(utf8_decode(preg_replace("/[\s_]/","",$string)),
+ strtr(utf8_decode(preg_replace("/[\s_\r]/","",$string)),
   '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
   'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
@@ -589,8 +409,10 @@ function processcontent(&$text)
 {
   // recupere les conversions de system
   $convstyle=array();
-  preg_match_all('/<style:style style:name="([^\"]+)"[^>]+?style:parent-style-name="([^\"]+)"/',$text,$results,PREG_SET_ORDER);
+  preg_match_all('/<style:style style:name="(P[^\"]+)"[^>]+?style:parent-style-name="([^\"]+)"/',$text,$results,PREG_SET_ORDER);
   foreach ($results as $result) $convstyle[$result[1]]=$result[2];
+
+  // la solution est un peu lourdre. Il faudrait regarder si un text:p peut contenir ou pas d'uatre text:p ... ca allegerait bcp bcp le travail
 
   // solution avec split
   $closere='<\/text:[ph]>';
@@ -618,6 +440,44 @@ function processcontent(&$text)
 #  print_r($arr);
 #  exit();
   $text=join("",$arr);
+
+  //
+  // process les styles de caracteres
+  //
+  // recupere les conversion de styles de caracteres
+  
+  $convstyle=array();
+  preg_match_all('/<style:style style:name="(T[^\"]+)"[^>]+?style:parent-style-name="([^\"]+)"/',$text,$results,PREG_SET_ORDER);
+  foreach ($results as $result) $convstyle[$result[1]]=$result[2];
+
+  $srch=array();
+  $rpl=array();
+
+  if ($convstyle) {
+    // traite les caracteres en T\d
+    $stylecre=join("|",array_keys($convstyle));
+    array_push($srch,"/(<text:span text:style-name=\"($stylecre)\">)(.*?)(<\/text:span>)/ei");
+    array_push($rpl,'"\\1[!--R2RC:".$convstyle["\\2"]."--]\\3[!/--R2RC:".$convstyle["\\2"]."--]\\4"');
+  }
+
+  array_push($srch,"/(<text:span text:style-name=\"(?!T\d+\")(\w+)\">)(.*?)(<\/text:span>)/i");
+  array_push($rpl,"\\1[!--R2RC:\\2--]\\3[!/--R2RC:\\2--]\\4");
+
+
+  $text=preg_replace($srch,$rpl,$text);
+  
+
+#  print_r($convstyle);
+#  function processcharstyle($result) {
+#    global $convstyle;
+#    echo $result[2],"<br>",$convstyle;
+#    if (preg_match("/^T\d+$/",$result[2]) && !$convstyle[$result[2]]) return $result[0];
+#    return $result[1]."[!--R2RC:$result[2]--]".$result[3]."[!/--R2RC:$result[2]--]".$result[4];
+#  }
+#
+#  $text=preg_replace_callback("/(<text:span text:style-name=\"(\w+)\">)(.*?)(<\/text:span>)/i","processcharstyle",$text);
+#
+
 #  die(htmlentities($text));
 }
 
