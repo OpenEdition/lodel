@@ -83,7 +83,7 @@ class OptionsLogic extends Logic {
 
   function clearCache()
   {
-    unlink(SITEROOT."CACHE/options_cache.php");
+    @unlink(SITEROOT."CACHE/options_cache.php");
   }
 
 
