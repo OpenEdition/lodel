@@ -232,7 +232,7 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
       // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
       // une chaine et en faisant la requette a la fin !
       if ($id)
-	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_entrees (idindex,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_entrees (identree,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
 
     } // tags
   } // balises
