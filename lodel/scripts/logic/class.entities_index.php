@@ -104,13 +104,7 @@ class Entities_IndexLogic extends Logic
  		$string = $vo->$field;
  		//HTML tags cleaning
  		$string = " ".preg_replace("/<[^>]*>/"," ",$string)." ";
- 		/*require_once("utf8.php");
- 		convertHTMLtoUTF8($string);*/
- 		
- 		$string = $this->_decode_html_entities($string);
- 		
- 		
- 		 
+  		$string = $this->_decode_html_entities($string);
  	# echo "stringnonHTML=$string";
  		//non alphanum chars cleaning
  		//include utf8 quotes at the end
@@ -128,21 +122,18 @@ class Entities_IndexLogic extends Logic
  		$indexs = array();
  		while(list(, $token) = each($tokens))
  		{
- 			
- 			//convertHTMLtoUTF8($token);
- 	#echo "token=$token<br />\n";
- 			$token = makeSortKey(($token));
- 			if(strlen($token) > 3)
- 			{
- 				//simply count word number
- 				/*require_once("class.stemmer.inc.php");
- 				$stemmer = new Stemmer();
- 				$token = $stemmer->stem($token);*/
- 				$indexs[$token] ++;
- 	#echo "token=$token<br />"; 	
- 			}
- 			
- 			
+ 		  //little hack because oe ligature is not supported in ISO-latin!!
+ 		  $token = strtr($token,"\305\223","oe");	
+ 		  $token = makeSortKey($token);
+	 	  
+	 	  if(strlen($token) > 3)
+	 	  {
+	 	    //simply count word number
+	 	    /*require_once("class.stemmer.inc.php");
+	 	    $stemmer = new Stemmer();
+	 	    $token = $stemmer->stem($token);*/
+	 	    $indexs[$token] ++;
+ 	 	  }
  		}
  		$vos_index = array();
  		
@@ -210,6 +201,14 @@ $text= preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
 $text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
     return $text;
   }
+  function _removeaccents($string){
+ return strtr(
+  strtr($string,
+   'ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
+   'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
+  array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
+   'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
+}
 
 }
 

@@ -121,6 +121,8 @@ function search($context)
 	#echo "token=$token";
 	
 		$token = strtolower($token);
+		//little hack because oe ligature is not supported in ISO-latin!!
+		$token = strtr($token,"\305\223","oe");	
 		$token = makeSortKey($token);
 		//foreach word search entities that match this word
 		$dao = &getDAO("search_engine");
@@ -134,11 +136,11 @@ function search($context)
 		$criteria_index = "word LIKE '$begin_wildcard$token$end_wildcard'";
 		#echo "criteria_index=$criteria_index bim=$end_wildcard";
 		$from = "#_TP_search_engine";
-		if($context['q_field'] && $context['q_field']!="")
+		if($context['qfield'] && $context['qfield']!="")
 		{
 			//added by Jean Lamy - get all tablefields for q_field specified
 			$dao_dc_fields = &getDAO("tablefields");
-			$vos_dc_fields = $dao_dc_fields->findMany("g_name='".addslashes($context['q_field'])."'");
+			$vos_dc_fields = $dao_dc_fields->findMany("g_name='".addslashes($context['qfield'])."'");
 			$field_in = array();
 			foreach($vos_dc_fields as $vo_field)
 				$field_in[] = $vo_field->name;
@@ -149,18 +151,18 @@ function search($context)
 			
 			
 		}
-		if( $context['q_type']!=""  || $context['q_status']!="")
+		if( $context['qtype']!=""  || $context['qstatus']!="")
 		{
 			$join = "LEFT JOIN #_TP_entities ON #_TP_search_engine.identity = #_TP_entities.id";
 		}
 			 	
-		if( $context['q_type']!="" )
+		if( $context['qtype']!="" )
 		{
-			$criteria_index .=" AND #_TP_entities.idtype ='".intval($context['q_type'])."'";	
+			$criteria_index .=" AND #_TP_entities.idtype ='".intval($context['qtype'])."'";	
 		}
-		if( $context['q_status']!="")
+		if( $context['qstatus']!="")
 		{
-			$criteria_index .= " AND #_TP_entities.status ='".intval($context['q_status'])."'";	
+			$criteria_index .= " AND #_TP_entities.status ='".intval($context['qstatus'])."'";	
 		}
 		
 		$limit = " LIMIT 0,100";
@@ -303,6 +305,7 @@ require_once("view.php");
 require_once("func.php");
 $view=&getView();
 $base="search";
+
 extract_post($_GET);
 
 	
