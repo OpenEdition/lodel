@@ -98,15 +98,34 @@ function loop_toc($context,$funcname,$arguments)
   }
 
   if (!preg_match_all("/<(r2r:section(\d+))>(.*?)<\/\\1>/is",$arguments[text],$results,PREG_SET_ORDER)) {
-    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) return;
+    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) {
+      if (function_exists("code_alter_$funcname")) 
+	call_user_func("code_alter_$funcname",$context);
+      return;
+    }
   }
+
+  if (function_exists("code_before_$funcname")) 
+    call_user_func("code_before_$funcname",$context);
+
+
   foreach($results as $result) {
     $localcontext=$context;
     $localcontext[tocid]=(++$tocid);
     $localcontext[titre]=$result[3];
     $localcontext[niveau]=intval($result[2]);
-    call_user_func("code_do_$funcname",$localcontext);
+    if ($tocid==1 && function_exists("code_dofirst_$funcname")) {
+      call_user_func("code_dofirst_$funcname",$localcontext);
+    } elseif ($tocid==count($results) && function_exists("code_dolast_$funcname")) {
+      call_user_func("code_dolast_$funcname",$localcontext);
+    } else {
+      call_user_func("code_do_$funcname",$localcontext);
+    }
   }
+
+  if (function_exists("code_after_$funcname")) 
+    call_user_func("code_after_$funcname",$context);
+
 }
 
 
