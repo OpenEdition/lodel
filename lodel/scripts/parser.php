@@ -383,8 +383,8 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $nom="number".rand();
     }
 
-    $issql=$boucles[$nom]=="sql";
-    if (!$boucles[$nom]) $boucles[$nom]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
+    $issql=$boucles[$nom][type]=="sql";
+    if (!$boucles[$nom]) $boucles[$nom][type]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
     # ici attr contient la fin du fichier.
     # on cherche s'il y a des boucles interieures
     do {
@@ -400,15 +400,19 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
     $attr=substr($text,$offset,$fin-$offset);
 
     if ($tables) { // boucle SQL
-      if ($issql) die ("Impossible de redefinir la boucle $nom");
+      // cree un identifiant "presque" unique pour cette boucle
+      $md5boucle=md5($tables.$where.$order.$limit.$attr);
+      // verifie que la boucle n'a pas ete defini sous le meme nom avec un contenu different
+      if ($issql && $md5boucle!=$boucles[$nom][id]) die ("Impossible de redefinir la boucle $nom avec un code ou des arguments differents");
       make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
       $code='<? boucle_'.$nom.'($context); ?>';
-      $boucles[$nom]="sql"; // marque la boucle comme etant une boucle sql
+      $boucles[$nom][type]="sql"; // marque la boucle comme etant une boucle sql
+      $boucles[$nom][id]=$md5boucle; // enregistre l'identifiant qui caracterise la boucle
     } else {
       //      echo "$nom-->$boucles[$nom]<br>";
       if (!$issql) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
-	$boucles[$nom]++; // increment le compteur de nom de boucle
-	$newnom=$nom."_".$boucles[$nom]; // change le nom pour qu'il soit unique
+	$boucles[$nom][id]++; // increment le compteur de nom de boucle
+	$newnom=$nom."_".$boucles[$nom][id]; // change le nom pour qu'il soit unique
 	make_userdefined_boucle_code ($newnom,$attr,$fct_txt);
 	$code='<? boucle_'.$nom.'($context,"'.$newnom.'"); ?>';
       } else {
