@@ -247,7 +247,7 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
 
   // desactive le 10/03/04
 //  if ($havepublications && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$content[$balise])) {
-//    $content["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+//    $content["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication($context);';
 //  }
   // les filtrages automatiques
   if ($havedocuments || $havepublications) {
@@ -299,18 +299,12 @@ function prefix_tablename ($tablename)
 function protect4(&$sql1,&$sql2,&$sql3,&$sql4,$table,$fields)
 
 {
-  protect(&$sql1,$table,$fields);
-  protect(&$sql2,$table,$fields);
-  protect(&$sql3,$table,$fields);
-  protect(&$sql4,$table,$fields);
+  protect($sql1,$table,$fields);
+  protect($sql2,$table,$fields);
+  protect($sql3,$table,$fields);
+  protect($sql4,$table,$fields);
 }
 
-#function protect2(&$sql1,&$sql2,$table,$fields)
-#
-#{
-#  protect(&$sql1,$table,$fields);
-#  protect(&$sql2,$table,$fields);
-#}
 
 function protect (&$sql,$table,$fields)
 

@@ -41,7 +41,6 @@ function enregistre_entite_from_xml($context,$text,$classe)
   global $home;
 
   $localcontext=$context;
-  //xml_parse_into_struct_ns($text,&$vals,&$index);
 
   $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,style,type,traitement FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 AND style!=''") or die (mysql_error());
 
@@ -102,14 +101,14 @@ function enregistre_entite_from_xml($context,$text,$classe)
     list($localcontext[idtype])=mysql_fetch_row($result);
   }
 
-  enregistre_personnes_from_xml(&$localcontext,$text);
-  enregistre_entrees_from_xml(&$localcontext,$text);
+  enregistre_personnes_from_xml($localcontext,$text);
+  enregistre_entrees_from_xml($localcontext,$text);
 
 #  print_r($localcontext);
 
 #  print_r($localcontext);
 
-  $id=enregistre_entite (&$localcontext,0,$classe,"",FALSE); // on ne genere pas d'erreur... Tant pis !
+  $id=enregistre_entite ($localcontext,0,$classe,"",FALSE); // on ne genere pas d'erreur... Tant pis !
 
   // ok, maintenant, il faut rechercher les images et corriger leur location.
 

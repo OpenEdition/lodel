@@ -221,17 +221,6 @@ function humandate($s)
  }
 }
 
-# a supprimer
-#function toc(&$text)
-#
-#{
-#	preg_match_all("/<(H\d)>.*?<\/\\1>/i",$text,$result,PREG_PATTERN_ORDER);
-#	foreach ($result[0] as $titre) {
-#		$i++;
-#		$toc.="<A HREF=\"#to$i\" NAME=\"from$i\">$titre</A>\n";
-#	}
-#	return $toc;
-#}
 
 function tocable($text,$level=10)
 
@@ -318,30 +307,12 @@ function sizeattributs($text)
   $result=getImageSize($text);
   return $result[3];
 }
-/*
-function paranumber (&$texte)
-
-{
-  static $paranum_count;
-  return preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span class=\"paranum\">".(++$paranum_count)."</span>"',$texte);
-*/
-    /*
-  $p=strpos($texte,"<p>");
-  while ($p!==FALSE) {
-    $count++;
-    
-    $p=strpos($texte,"<p>",$p);
-  }
-    */
-/*
-}
-*/
 
 /** 
  * Supprimer les appels de notes de pied de page d'un texte.
  */
 
-function removefootnotes(&$text)
+function removefootnotes($text)
 {
   return preg_replace('/<a class="footnotecall"[^>]*>.*?<\/a>/s',"",$text);
 }
@@ -349,7 +320,7 @@ function removefootnotes(&$text)
  * Supprimer les appels de notes de fin de document.
  */
 
-function removeendnotes(&$text)
+function removeendnotes($text)
 {
   return preg_replace('/<a class="endnotecall"[^>]*>.*?<\/a>/s',"",$text);
 }
@@ -358,7 +329,7 @@ function removeendnotes(&$text)
  * Fonction permettant de supprimer les appels de notes d'un texte.
  */
 
-function removenotes(&$text)
+function removenotes($text)
 {
   return preg_replace('/<a class="(foot|end)notecall"[^>]*>.*?<\/a>/s',"",$text);
 }
@@ -367,7 +338,7 @@ function removenotes(&$text)
 /**
  * Fonction qui dit si une date est vide ou non
  */
-function isadate(&$text)
+function isadate($text)
 {
   return $text!="0000-00-00";
 }
@@ -375,7 +346,7 @@ function isadate(&$text)
 /**
  * Fonction qui remplace les guillemets d'un texte par leur nom d'entité (&quot;)
  */
-function replacequotationmark(&$text)
+function replacequotationmark($text)
 {
         return str_replace("\"","&quot;",$text);
 }
@@ -401,7 +372,7 @@ function eq($str,$texte)
  */
 
 
-function notes(&$texte,$type)
+function notes($texte,$type)
 {
 #  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
 #  return $texte;

@@ -239,7 +239,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     mysql_query("UPDATE $GLOBALS[tp]entites SET identifiant='$context[identifiant]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
     if ($grouperec && $droitadmin) change_groupe_rec($id,$groupe);
 
-    move_files($id,$files_to_move,&$sets);
+    move_files($id,$files_to_move,$sets);
 
     foreach ($sets as $nom=>$value) { $sets[$nom]=$nom."=".$value; }
     if ($sets) mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$sets)." WHERE identite='$id'") or die (mysql_error());
@@ -261,7 +261,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
     require_once($home."managedb.php");
     creeparente($id,$context[idparent],FALSE);
-    move_files($id,$files_to_move,&$sets);
+    move_files($id,$files_to_move,$sets);
 
     $sets[identite]="'$id'";
     mysql_query("INSERT INTO $GLOBALS[tp]$classe (".join(",",array_keys($sets)).") VALUES (".join(",",$sets).")") or die (mysql_error());
@@ -619,7 +619,7 @@ function makeselectentrees (&$context)
   $entreestrouvees=array();
   $entrees=$context[entrees][$context[id]];
 #  echo "type:",$context[id];print_r($context[entrees]);
-  makeselectentrees_rec(0,"",$entrees,$context,&$entreestrouvees);
+  makeselectentrees_rec(0,"",$entrees,$context,$entreestrouvees);
   $context[autresentrees]=$entrees ? join(", ",array_diff($entrees,$entreestrouvees)) : "";
 }
 
@@ -634,7 +634,7 @@ function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouve
    if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
    $value=$context[utiliseabrev] ? $row[abrev] : $row[nom];
     echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
-    makeselectentrees_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
+    makeselectentrees_rec($row[id],$rep.$row[nom]."/",$entrees,$context,$entreestrouvees);
   }
 }
 

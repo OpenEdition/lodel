@@ -92,7 +92,7 @@ if ($backup) {
   unlock();
   $filename="model-$site-".date("dmy").".sql";
   $operation="download";
-  if (operation($operation,$tmpfile,$filename,&$context)) return;
+  if (operation($operation,$tmpfile,$filename,$context)) return;
   @unlink ($tmpfile);
 
   header ("location: index.php");

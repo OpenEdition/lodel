@@ -82,7 +82,7 @@ if (!(@include("CACHE/tablefields.php"))) {
       fclose($fp);
     }
 
-  maketablefields(&$tablefields);
+  maketablefields($tablefields);
 
 
 

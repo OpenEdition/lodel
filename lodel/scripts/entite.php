@@ -171,13 +171,13 @@ if ($id>0 && $dir) {
 //
 } elseif ($plus || $reload || $reload2) {
   extract_post();
-  extract_files(&$context);
+  extract_files($context);
 } elseif ($edit) { // modifie ou ajoute
 //
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
   extract_post();
-  extract_files(&$context);
+  extract_files($context);
 
   $context[statut]=-1;
   if ($id=enregistre_entite($context,$id,$classe,"edition!=''")) { // ca marche... on termine
@@ -213,8 +213,8 @@ if ($id>0 && $dir) {
   $context[entite]=mysql_fetch_assoc($result);
   $context[idtype]=$context[entite][idtype];
   $context[identifiant]=$context[entite][identifiant];
-  extrait_personnes($id,&$context);
-  extrait_entrees($id,&$context);
+  extrait_personnes($id,$context);
+  extrait_entrees($id,$context);
 } else {
 #  require_once ($home."validfunc.php");
 #  $context[type]=trim($type);

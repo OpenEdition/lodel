@@ -65,7 +65,7 @@ if ($backup) {
   @unlink($tmpdir."/".$outfile); // delete the sql file
 
   unlock();
-  if (operation($operation,$archivetmp,$archivefilename,&$context)) return;
+  if (operation($operation,$archivetmp,$archivefilename,$context)) return;
 
 #  $context[archive]=$archive;
 #  $context[size]=intval(filesize("upload/$archive")/1024);

@@ -39,7 +39,7 @@ if ($login) {
   extract_post();
   do {
     include_once ($home."connect.php");
-    if (!check_auth(&$site)) {
+    if (!check_auth($site)) {
       $context[erreur_login]=1; break; 
     }
     // ouvre une session
