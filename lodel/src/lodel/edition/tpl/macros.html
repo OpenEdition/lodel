@@ -1424,7 +1424,11 @@
 					<!-- Titre du doc annexe -->
 					<MACRO NAME="GIF_TRIANGLE">
 					<strong>
-						<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						<IF COND="[#TYPE] EQ 'lienexterne'">
+							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						<ELSE/>
+							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						</IF>
 					</strong>
 				</td>
 			</tr>
@@ -1443,6 +1447,9 @@
 		<AFTER>
 			</table>
 		</AFTER>
+		<ALTERNATIVE>
+			Il n'y a aucun document annexe associé à ce document.
+		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
 
