@@ -23,13 +23,13 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Edition - Site</TITLE>
+<TITLE>[@LODELADMIN.TITLE_EDITION_WEBSITE]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Edition de site</b></div></td></tr>
+<br /><br /><b>[@LODELADMIN.TITLE_EDITION_WEBSITE]</b></div></td></tr>
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
@@ -38,22 +38,27 @@
 <input type="hidden" name="edit" value="1">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="url_retour" value="[#URL_RETOUR]">
-<tr><td><b>Titre du site:</b></td>
+<tr><td><b>[@LODELADMIN.TITLE_WEBSITE] :</b></td>
 <td><input size="30" type="text" name="nom" value="[#NOM]"></td>
-[(#ERREUR_NOM|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom !</font></td>]</tr>
+	<IF COND="[#ERREUR_NOM]">
+		<td CLASS="erreur"><font color="Red">[@LODELADMIN.ERROR_NAME] !</font></td>
+	</IF>
+</tr>
 <IF COND="[#ID]">
-<tr><td><b>Nom du site:</b><br />(sans espace, sans accent, sans caractere speciaux)</td><td>[#REP]</td></tr>
-<tr><td><b><IF COND="[#CHEMIN]=='/'">Site à la racine<ELSE/>Site dans le répertoire [#CHEMIN]</IF></b></td>
+<tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td><td>[#REP]</td></tr>
+<tr><td><b><IF COND="[#CHEMIN]=='/'">[@LODELADMIN.LODELROOT_WEBSITE]<ELSE/>[@LODELADMIN.WEBSITE_IN_DIRECTORY] [#CHEMIN]</IF></b></td>
 
 <ELSE/>
-<tr><td><b>Nom du site:</b><br />(sans espace, sans accent, sans caractere speciaux</td>
+<tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td>
 <td>
 <input size="30" type="text" name="rep" value="[#REP]"></td>
-[(#ERREUR_REP|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom abrégé valide (sans accent, sans espace, sans caracteres speciaux)</font></td>]
+	<IF COND="[#ERREUR_REP]">
+		<td CLASS="erreur"><font color="Red">[@LODELADMIN.ERROR_NAME_DIRECTORY]</font></td>
+	</IF>
 </tr>
 <LOOP NAME="siteatroot" TABLE="sites" WHERE="chemin='/' AND statut gt -64">
 <ALTERNATIVE>
-<tr><td><b>Installer le site à la racine de Lodel:</b></td><td>
+<tr><td><b>[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</b></td><td>
 <IF COND="[#REP] || [#NOM]"> <!--[ on est passe par la, c'est bon, il y a quelques choses dans ATROOT]-->
 <input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] >
 <ELSE/> <!--[ valeur par defaut ]-->
@@ -66,21 +71,21 @@
 
 
 </tr>
-<tr><td><b>URL complète du site:</b><br />Ex: http://www.example.com/monsite</td>
+<tr><td><b>[@LODELADMIN.URL_WEBSITE] :</b><br />Ex : http://www.example.com/monsite</td>
 <td><input size="30" type="text" name="url" value="[#URL]"></td>
 </tr>
-<tr><td><b>Sous titre du site:</b></td>
+<tr><td><b>[@LODELADMIN.SUBTITLE_WEBSITE] :</b></td>
 <td><input size="30" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
 </td></tr>
 </table><br/>
 
 <IF COND="[#ID]">
-<input class="form" type="submit" value="Modifier"> <input class="form" type="submit" name="reinstalle" value="Réinstaller">
+<input class="form" type="submit" value="[@COMMON.MODIFY]"> <input class="form" type="submit" name="reinstalle" value="[@LODELADMIN.REINSTALL]">
 <ELSE/>
-<input class="form" type="submit" value="Ajouter">
+<input class="form" type="submit" value="[@COMMON.ADD]">
 </IF>
 </form>
 
-[<a href="site.php?delete=1&id=(#ID)">Supprimer</a>]
+[<a href="site.php?delete=1&id=(#ID)">[@COMMON.DELETE]</a>]
 </div>
 <MACRO NAME="CLOSE_HTML">
