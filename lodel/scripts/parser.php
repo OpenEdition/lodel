@@ -185,7 +185,7 @@ function parse_main1_rec(&$ind,$loopind)
     switch($this->arr[$ind]) {
     case "LOOP" : 
       $this->countlines($ind);
-      $this->wantedvars[$ind][0]=$this->parse_variable($this->arr[$ind+1],FALSE);
+      $this->wantedvars[$ind][0]=$this->parse_variable($this->arr[$ind+1],"quote");
       if (preg_match('/\bNAME\s*=\s*"([^"]+)"/i',$this->arr[$ind+1],$result)) {
 	$funcname="loop_".$result[1]."_require";
 	if (function_exists($funcname)) $this->wantedvars[$ind][0]=array_merge($this->wantedvars[$ind][0],call_user_func($funcname));
@@ -222,7 +222,7 @@ function parse_main1_rec(&$ind,$loopind)
 }
 
 
-function parse_variable (&$text,$escape=TRUE)
+function parse_variable (&$text,$escape="php")
 
 {
   $lang_regexp="[A-Z]{2}";
@@ -260,16 +260,20 @@ function parse_variable (&$text,$escape=TRUE)
       $code='<?php if (!('.$variable.')) { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($fct=="true") {
       $code='<?php if ('.$variable.') { ?>'.$pre.$post.'<?php } ?>';
-    } elseif ($escape) {
+    } elseif ($escape=="php") { // traitement normal, php espace
       $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<?php echo "$tmpvar"; ?>'.$post.'<?php } ?>';
-    } else {
+    } elseif ($escape=="quote") { // normal processing. quotemark esapce.
+      $code="&lodelparserquot;.$variable.&lodelparserquot;";
+    } else { // normal processing. no espace
       $code=$variable;
     }
     $text=str_replace($result[0],$code,$text);
   } // while variables with pipe function
 
-  if ($escape) {
+  if ($escape=="php") {
     $pre='<?php echo "'; $post='"; ?>';
+  } elseif ($escape=="quote")  {
+    $pre="&lodelparserquot;."; $post=".&lodelparserquot;";
   } else {
     $pre=""; $post="";
   }
@@ -281,7 +285,7 @@ function parse_variable (&$text,$escape=TRUE)
     } else { // non traitement normal
       if ($result[2]) { // langue
 	$pre.="multilingue('".substr($result[2],1)."',";
-	$post.=")";
+	$post=")".$post;
       }
       $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
       }
@@ -368,37 +372,59 @@ function parse_loop()
   $select="";
   $wheres=array();
   $tables=array();
+  $arguments=array();
+
   preg_match_all("/\s*(\w+)=\"(.*?)\"/",$attrs,$results,PREG_SET_ORDER);
 
+  // search the loop name and determin whether the loop is the definition of a SQL loop.
+  $issqldef=FALSE;
   foreach ($results as $result) {
-    $value=$result[2];
-    switch ($result[1]) {
-    case "WHERE" :
-      array_push($wheres,"(".trim(replace_conditions($value)).")");
-      break;
-    case "TABLE" :
-      array_push($tables,$value);
-      break;
-    case "ORDER" :
-      array_push($orders,$value);
-      break;
-    case "LIMIT" :
-      if ($limit) $this->errmsg("limit already defined in loop $name",$this->ind);
-      $limit=$value;
-      break;
-    case "NAME":
+    if ($result[1]=="NAME") {
       if ($name) $this->errmsg("name already defined in loop $name",$this->ind);
-      $name=$value;
-      break;
-    case "SELECT" :
-      $select=$value;
-      break;
-    case "REQUIRE":
-      break;
-    default:
-      $this->errmsg ("unknow attribut \"$result[1]\" in the loop $name",$this->ind);
+      $name=trim($result[2]);
+    } elseif ($result[1]=="TABLE") {
+      $issqldef=TRUE;
     }
-  } // loop sur les attributs
+  }
+
+  if ($issqldef) { // definition of a SQL loop.
+    foreach ($results as $result) {
+      $value=lodelparserunquote($result[2]);
+      switch ($result[1]) {
+      case "NAME":
+	break;
+      case "WHERE" :
+	array_push($wheres,"(".trim(replace_conditions($value)).")");
+	break;
+      case "TABLE" :
+	array_push($tables,$value);
+	break;
+      case "ORDER" :
+	array_push($orders,$value);
+	break;
+      case "LIMIT" :
+	if ($limit) $this->errmsg("limit already defined in loop $name",$this->ind);
+	$limit=$value;
+	break;
+      case "SELECT" :
+	$select=$value;
+	break;
+      case "REQUIRE":
+	break;
+      default:
+	$this->errmsg ("unknow attribut \"$result[1]\" in the loop $name",$this->ind);
+      }
+    } // loop on the attributs
+    // end of definition of a SQL loop
+  } else {
+    // ok, this a SQL loop call or a user lopp
+    // the attributs are put into $arguments.
+    foreach ($results as $result) {
+      if ($result[1]=="NAME") continue;
+      $arguments[strtolower($result[1])]=lodelparserunquote($result[2]);
+    }
+  }
+
 
 #  echo "enter loop $name:",$this->ind,"<br>\n";
 
@@ -467,8 +493,14 @@ function parse_loop()
       $this->loops[$name][id]++; // increment le compteur de name de loop
       $newname=$name."_".$this->loops[$name][id]; // change le name pour qu'il soit unique
       $contents=$this->decode_loop_content($name);
-      $this->make_userdefined_loop_code ($newname,$contents);
-      $code='<?php loop_'.$name.'($context,"'.$newname.'"); ?>';
+      $this->make_userdefined_loop_code ($newname,$contents,$arguments);
+      // build the array for the arguments:
+      $argumentsstr="";
+      foreach ($arguments as $k=>$v) { $argumentsstr.="'$k'=>\"$v\",";}
+      // clean a little bit, the "" quote
+      $argumentsstr=preg_replace(array('/""\./','/\.""/'),array('',''),$argumentsstr);
+      // make the loop call
+      $code='<?php loop_'.$name.'($context,"'.$newname.'",array('.$argumentsstr.')); ?>';
     } else {
       // loop sql recurrente
       $code='<?php loop_'.$name.'($context); ?>';
@@ -549,15 +581,10 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
 
 
 
-#  if ($loopind==133) {   echo "ret="; print_r($ret); echo "ind=",$this->ind,"arr="; print_r($this->arr);  }
-#  echo "loop: $name $loopind ",count($tables),"\n"; print_r($this->wantedvars); echo "-----\n\n";
-
   if (!$isendloop) $this->errmsg ("end of loop $name not found",$this->ind);
 
   if ($ret["DO"]) {
     // check that the remaining content is empty
-#    echo "DO: $this->ind";
-#    print_r($this->arr);
     for($j=$loopind; $j<$this->ind; $j++) if (trim($this->arr[$j])) { $this->errmsg("In the loop $name, a part of the content is outside the tag DO",$j); }
   } else {
     for($j=$loopind; $j<$this->ind; $j+=3) {
@@ -575,12 +602,6 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
     }
     $this->decode_loop_content_extra ($balise, $tables, &$ret);
   }
-
-#  echo "debut: $loopind end:$this->ind\n<br>";
-#  if ($loopind==133) {   echo "ret="; print_r($ret); echo "ind=",$this->ind,"arr="; print_r($this->arr);  }
-#  echo "loop $name ind=$loopind\n";
-#  print_r($this->wantedvars);
-
   
   // partie privee et specifique pour le decodage du contenu.
 
@@ -793,6 +814,11 @@ function replace_conditions($text)
   return preg_replace(
 	       array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
 	       array(">","<",">=","<=","==","!=","&&","||"),$text);
+}
+
+
+function lodelparserunquote($text) {
+  return str_replace("&lodelparserquot;","\"",$text);
 }
 
 function stripcommentandcr(&$text)

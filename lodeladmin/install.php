@@ -122,7 +122,7 @@ if ($tache=="admin") {
     $adminusername=addslashes($adminusername);
     $pass=md5($adminpasswd.$adminusername);
 
-    if (!@mysql_query("REPLACE INTO $GLOBAL[tp]users (username,passwd,nom,email,privilege) VALUES ('$adminusername','$pass','','',128)")) {
+    if (!@mysql_query("REPLACE INTO $GLOBAL[tp]users (username,passwd,nom,courriel,privilege) VALUES ('$adminusername','$pass','','',128)")) {
       $pass="";  // enleve de la memoire
       $erreur_create=1;
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");

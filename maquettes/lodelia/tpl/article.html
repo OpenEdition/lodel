@@ -189,7 +189,7 @@
 					<div class="titre3">
 						Table des matières
 					</div>
-<LOOP NAME="toc">
+<LOOP NAME="toc" TEXT="[#TEXTE]">
  <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
  <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
  <IF COND="[#NIVEAU]==3"><div class="toc_section3"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>

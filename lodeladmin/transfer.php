@@ -21,6 +21,17 @@ if ($confirm) {
       }
     }
 
+    if ($tables["$GLOBALS[tp]users"]) {
+      $fields=getfields("$GLOBALS[tp]users");
+      if ($fields[email]) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_users CHANGE email courriel VARCHAR(255);
+');
+	if ($err) break;
+	$report.="Changement de email en courriel dans la table users<br>\n";
+      }
+    }
+
 
     if ($tables["$GLOBALS[tp]revues"]) {
       $err=mysql_query_cmds("RENAME TABLE _PREFIXTABLE_revues TO _PREFIXTABLE_sites;");

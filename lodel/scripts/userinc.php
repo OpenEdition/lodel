@@ -42,8 +42,8 @@ if ($edit) { // modifie ou ajoute
       if ($len<3 || $len>10) { $err=$context[erreur_passwd]=1; }
     }
 
-    // verifie l'email
-    if ($context[email] && !ereg(".*\@[^\.]*\..*",$context[email])) { $context[erreur_email]=$err=1; }// repris de SPIP
+    // verifie le courriel
+    if ($context[courriel] && !ereg(".*\@[^\.]*\..*",$context[courriel])) { $context[erreur_courriel]=$err=1; }// repris de SPIP
       
     if (!$groupes || !is_array($groupes)) { $context[erreur_groupes]=$err=1; }
  
@@ -70,7 +70,7 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,email,privilege,statut) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,courriel,privilege,statut) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[courriel]','$context[privilege]','$statut')") or die (mysql_error());
 
     if ($context[privilege]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();

@@ -95,7 +95,7 @@ if ($id>0 && $dir) {
 //
 // ajoute ou edit
 //
-} elseif ($plus || $reload) {
+} elseif ($plus || $reload || $reload2) {
   extract_post();
 } elseif ($edit) { // modifie ou ajoute
 //

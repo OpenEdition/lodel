@@ -405,5 +405,30 @@ function isabsolute($lien)
 }
 
 
+/**
+ * Enleve les tags HTML qui garde les footnotes et les endnotes de OpenOffice
+ */
+
+function strip_tags_keepnotes($keeptags,$text)
+
+{
+  $arr=preg_split("/(<sup>(?:<font\b[^>]*>)*<a class=\"sd(?:foot|end)noteanc\"[^>]+><sup>[^<>]+<\/sup><\/a>(?:<\/font>)*<\/sup>)/s",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $count=count($arr);
+  for($i=0; $i<$count; $i+=2) $arr[$i]=strip_tags($arr[$i],$keeptags);
+  return join("",$arr);
+}
+
+/**
+ * Renvoie la langue "human reading"
+ */
+
+function humanlang($text)
+
+{
+  global $home;
+  require_once($home."langues.php");
+  return $GLOBALS[langues][$text];
+}
+
 
 ?>

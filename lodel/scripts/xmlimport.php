@@ -20,7 +20,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
 
   $sets=array();
   while (list($nom,$style,$type,$traitement)=mysql_fetch_row($result)) {
-    require_once($home."traitements.php");
+    require_once($home."textfunc.php");
 
     if ($type=="mltext") { // text multilingue
       require_once($home."champfunc.php");
@@ -53,20 +53,20 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	  }
 	} // processing
 	
-	if ($type=="mltext") {
-	  $value="<r2r:ml lang=\"$lang\">$value</r2r:ml>";
-	}
+	// enleve les <P> s'ils sont aux extremites, et qu'il n'y en a pas dedans
+	// ainsi que les styles de caracteres
+	$value=addslashes(trim(preg_replace(array("/<\/?(P|BR)>/i","/<\/?r2rc:[^>]+>/"),"",$value)));
 
 	// now record the $value
-	$localcontext[entite][$nom].=addslashes($value);
-
+	if ($type=="mltext") {
+	  $localcontext[entite][$nom][$lang]=$value;
+	} else {
+	  $localcontext[entite][$nom]=$value;
+	}
       } // if found style found in the text
     } // foreach styles for mltext
   } // foreach fields.
 
-  // enleve les <P> s'ils sont aux extremites, et qu'il n'y en a pas dedans
-  $localcontext[entite]=preg_replace(array("/<\/?(P|BR)>/i","/^\s+/","/\s+$/"),
-				     array("","",""),$localcontext[entite]);
   // recupere les informations sur le type
   $style=$classe=="documents" ? "typedoc" : "type"; // temporaire.
 

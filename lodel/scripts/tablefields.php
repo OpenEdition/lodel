@@ -12,9 +12,9 @@ function var_export($arr,$t)
   foreach ($arr as $k=>$v) {
     $ret.="'$k'=>";
     if (is_array($v)) {
-      $ret.=var_export($v,TRUE).",";
+      $ret.=var_export($v,TRUE).",\n";
     } else {
-      $ret.=$v.",";
+      $ret.="'$v',\n";
     }
   }
   return $ret.")";

@@ -47,15 +47,6 @@
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
 		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
-<!--		<tr>
-			<td>
-				<span class="texte_intitule">Nom du fichier template d'&eacute;dition fils :</span><br />
-		 		<span class="texte_info">Ce template est pour les fils du index. (facultatif)</span>
-			</td>
-			<td><input size="40" type="text" name="tpledit" value="[#TPLEDIT]" /></td>
-		</tr>
-		[(#ERREUR_TPLEDIT|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
--->
 		<tr>
 			<td colspan="2">Entrée linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Entrée hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /></td>
 		</tr>

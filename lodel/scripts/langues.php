@@ -7,7 +7,7 @@ $langues=array("fr"=>"français",
 	       "en"=>"anglais",
 	       "es"=>"espagnol",
 	       "de"=>"allemand",
-		   "it"=>"italien",
+	       "it"=>"italien",
 	       "ru"=>"russe",
 	       "el"=>"grec");
 

@@ -146,7 +146,15 @@
 <DEFMACRO NAME="AFFICHE_CHAMPS">
 	<IF COND="[#TYPE] eq 'boolean'">
 		<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
-	</IF>
+	<ELSE/>
+	<IF COND="[#TYPE] eq 'mltext'">
+                <td>
+               <LOOP NAME="mltext">
+		<div>[(#LANG|humanlang)]: <input size="70" type="text" name="entite[[#NOM]][[#LANG]]" value="[#VALUE]"></div>
+	       </LOOP>
+	       <div><select name="addlanginmltext[[#NOM]]"><? makeselectlangues(); ?></select><input class="form" type="submit" name="reload2" value="Ajouter"></div>
+               </td>
+	<ELSE/>
 	<IF COND="[#EDITION] eq 'text'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 	</IF>
@@ -155,6 +163,8 @@
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea30'">
 		<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+	</IF>
+	</IF>
 	</IF>
 </DEFMACRO>
 

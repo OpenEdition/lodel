@@ -18,8 +18,11 @@ function makefilterfunc()
     $filterfunc='$x';
     foreach ($filters as $filter) {
       if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/",$filter,$result2)) { 
-	if ($result2[2]) $result2[2]=",".$result2[2];
-	$filterfunc=$result2[1].'('.$filterfunc.$result2[2].')';
+	$funcname=$result2[1]; // name of the pipe function
+	$arg=$result2[2]; // argument if any
+
+	if ($arg) $arg.=",";
+	$filterfunc=$funcname.'('.$arg.$filterfunc.')';
       } else {
 	die("invalid filter function: $filter");
       }

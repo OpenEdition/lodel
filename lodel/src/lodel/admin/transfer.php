@@ -37,6 +37,17 @@ UPDATE _PREFIXTABLE_users SET privilege=40 where privilege=32;
 ');
     if ($err) break;
 
+    if ($tables["$GLOBALS[tp]users"]) {
+      $fields=getfields("$GLOBALS[tp]users");
+      if ($fields[email]) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_users CHANGE email courriel VARCHAR(255);
+');
+	if ($err) break;
+	$report.="Changement de email en courriel dans la table users<br>\n";
+      }
+    }
+
     // est-ce que la table des indexhs exists ?
     // on renome
     if ($tables["$GLOBALS[tp]indexls"]) { // il faut modifier et  renomer
@@ -69,13 +80,16 @@ ALTER TABLE _PREFIXTABLE_indexls CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
 # change le type des motcles permanents
 UPDATE _PREFIXTABLE_indexls SET statut=32, idtype=2 WHERE idtype=3;
+# change lang en langue
+ALTER TABLE _PREFIXTABLE_indexls CHANGE lang langue CHAR(2) NOT NULL;
+# positionne la langue correctement
+UPDATE _PREFIXTABLE_indexls SET langue=\'fr\' WHERE langue=\'\';
 # ok c est bon, on peut renomer
+
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
 RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_entrees;
 DROP TABLE IF EXISTS _PREFIXTABLE_entites_entrees;
 RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_entites_entrees;
-# positionne la langue correctement
-UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 ');
       if ($err) break;
       $report.="Changement de nom et adaptation de la table indexls<br>\n";
@@ -95,7 +109,7 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 	myquote($row);
 	if ($row[statut]>-32) $row[statut]=32; // periode et geo sont permanents
 	if (!$row[lang]) $row[lang]="fr";
-	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (idparent,nom,abrev,lang,idtype,ordre,statut) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[statut]');");
+	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (idparent,nom,abrev,langue,idtype,ordre,statut) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[statut]');");
 	if ($err) break 2;
 	$newid=mysql_insert_id();
 	$convid[$row[id]]=$newid;
@@ -133,7 +147,7 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
       // on met a jour la langue au cas ou et on détruit l'ancienne table alors
       //
       $err=mysql_query_cmds('
-UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
+UPDATE _PREFIXTABLE_entrees SET langue=\'fr\' WHERE langue=\'\';
 DROP TABLE _PREFIXTABLE_documents_indexhs;
 DROP TABLE _PREFIXTABLE_indexhs;
 ');
@@ -155,23 +169,17 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
     if ($tables["$GLOBALS[tp]documents"]) {
       // cherche les fields de documents 
       $fields=getfields("$GLOBALS[tp]documents");
-      if (!$fields[commentairetype]) {
+      $champs=array("surtitre","commentaire","lien");
+      foreach ($champs as $champ) {
+	if ($fields[$champ]) continue;
 	$err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_documents ADD  commentairetype VARCHAR(4) NOT NULL;
-');
-	if ($err) break;
-	$champs=array("surtitre","commentaire","lien");
-	foreach ($champs as $champ) {
-	  if ($fields[$champ]) continue;
-	  $err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_documents ADD     '.$champ.'        TINYTEXT NOT NULL;
 ');
-	  if ($err) break;
-	}
+	if ($err) break;
 	$report.="Ajout de champs dans documents<br>\n";
       }
-    }
-    if ($tables["$GLOBALS[tp]documents_auteurs"]) {
+  }
+   if ($tables["$GLOBALS[tp]documents_auteurs"]) {
       // cherche les fields de documents 
       $fields=getfields("$GLOBALS[tp]documents_auteurs");
       if (!$fields[description]) {
@@ -249,6 +257,7 @@ ALTER TABLE _PREFIXTABLE_typepublis ADD ordre		INT UNSIGNED DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis ADD	titre	        VARCHAR(255) NOT NULL;
 UPDATE _PREFIXTABLE_typepublis SET classe=\'publications\', titre=type, tplcreation=\'publication\';
 ALTER TABLE _PREFIXTABLE_typepublis CHANGE titre	titre	        VARCHAR(255) NOT NULL UNIQUE;
+ALTER TABLE _PREFIXTABLE_typepublis CHANGE tpledit 	tpledition	TINYTEXT NOT NULL;
 DROP TABLE IF EXISTS _PREFIXTABLE_types;
 RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
 ');
@@ -417,8 +426,19 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	$file=utf8_encode(file_get_contents($filename));
 	$updates=array();
 	foreach(array_keys($fields) as $field) {
-	  if (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
-	    array_push($updates," $field='".addslashes($match[1])."'");
+	  if ($field=="resume") {
+	    if (preg_match_all("/<R2R:$field\s*(?:lang=\"(\w+)\")>(.*?)<\/R2R:$field>/is",$file,$matchs,PREG_SET_ORDER)) {
+	      $resume="";
+	      foreach ($matchs as $match) {
+		$resume.="<r2r:ml lang=\"$match[1]\">$match[2]</r2r:ml>";
+	      }
+	      array_push($updates," resume='".addslashes($resume)."'");
+	    }
+
+	  } else { // other fields
+	    if (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
+	      array_push($updates," $field='".addslashes($match[1])."'");
+	    }
 	  }
 	}
 	if ($updates) {

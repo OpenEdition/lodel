@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
 	nom		VARCHAR(64),
-	email		VARCHAR(255),
+	courriel		VARCHAR(255),
 	privilege	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
 
 	statut		TINYINT DEFAULT '1' NOT NULL,
@@ -66,4 +66,4 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
 
 # suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.
 # Administrateur par defaut. mot de passe : admintmp
-#REPLACE INTO _PREFIXTABLE_users (username,passwd,nom,email,privilege) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire','',128);
+#REPLACE INTO _PREFIXTABLE_users (username,passwd,nom,courriel,privilege) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire','',128);

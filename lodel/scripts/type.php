@@ -50,7 +50,7 @@ if ($edit) { // modifie ou ajoute
       $statut=1;
       $ordre=get_ordre_max("types");
     }
-    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledit,tplcreation,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledit]','$context[tplcreation]','$statut','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$statut','$ordre')") or die (mysql_error());
 
     if ($id) {
       typetypes_delete("idtypeentite='$id'");

@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
 	nom		VARCHAR(64),
-	email		VARCHAR(255),
+	courriel	VARCHAR(255),
 	privilege	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
 
 	statut		TINYINT DEFAULT '1' NOT NULL,
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 
 	tpl		TINYTEXT NOT NULL,			# nom du fichier template utilise dans la zone de revue
 	tplcreation	TINYTEXT NOT NULL,			# nom du fichier template pour la creation, ou information decrivant la creation
-	tpledit		TINYTEXT NOT NULL,			# nom du fichier template pour l'edition de son contenu
+	tpledition	TINYTEXT NOT NULL,			# nom du fichier template pour l'edition de son contenu
 
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 	statut		TINYINT DEFAULT '1' NOT NULL,
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	nom		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
-	lang		CHAR(2) NOT NULL,
+	langue		CHAR(2) NOT NULL,
 	idtype		TINYINT DEFAULT '0' NOT NULL,
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_personnes (
 	idtype			INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le entite
 
 	ordre			TINYINT UNSIGNED NOT NULL DEFAULT '0',
-	prefix             	TINYTEXT NOT NULL,
+	prefixe             	TINYTEXT NOT NULL,
 	description             TEXT NOT NULL,
 	fonction		TINYTEXT NOT NULL,
 	affiliation		TINYTEXT NOT NULL,

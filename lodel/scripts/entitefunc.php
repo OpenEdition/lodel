@@ -77,7 +77,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
   require_once ($home."connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
   while (list($nom,$type,$condition)=mysql_fetch_row($result)) {
-    require_once($home."traitements.php");
+    require_once($home."textfunc.php");
     if ($condition=="+" && !trim($entite[$nom])) $err=$erreur[$nom]="+";
     switch ($type) {
     case "date" : 
@@ -103,6 +103,15 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
     case "boolean" :
       $entite[$nom]=$entite[$nom] ? 1 : 0;
       break;
+    case "mltext" :
+      if (is_array($entite[$nom])) {
+	$str="";
+	foreach($entite[$nom] as $lang=>$value) {
+	  $value=trim($value);
+	  if ($value) $str.="<r2r:ml lang=\"$lang\">$value</r2r:ml>";
+	}
+	$entite[$nom]=$str;
+      }
     }
     $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
   } // end of while over the results
@@ -449,6 +458,37 @@ function makeselectdate() {
 }
 
 
+function loop_mltext($context,$funcname) {
+
+#  print_r($context[value]);
+  if (is_array($context[value])) {
+    foreach($context[value] as $lang=>$value) {
+      $localcontext=$context;
+      $localcontext[lang]=$lang;
+      $localcontext[value]=$value;
+      call_user_func("code_do_$funcname",$localcontext);
+    }
+  # pas super cette regexp... mais l'argument a deja ete processe !
+  } elseif (preg_match_all("/&lt;r2r:ml lang\s*=&quot;(\w+)&quot;&gt;(.*?)&lt;\/r2r:ml&gt;/s",$context[value],$results,PREG_SET_ORDER)) {
+
+    foreach($results as $result) {
+      $localcontext=$context;
+      $localcontext[lang]=$result[1];
+      $localcontext[value]=$result[2];
+      call_user_func("code_do_$funcname",$localcontext);
+    }
+  }
+
+  $lang=$context[addlanginmltext][$context[nom]];
+#  echo "lang=$lang  $context[nom]";
+#  print_r($context[addlanginmltext]);
+  if ($lang) {
+    $localcontext=$context;
+    $localcontext[lang]=$lang;
+    $localcontext[value]="";
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+}
 
 
 ?>
