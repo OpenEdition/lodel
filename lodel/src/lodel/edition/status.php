@@ -37,6 +37,8 @@ if ($publication) {
   $id=intval($id);
 
   mysql_query("UPDATE $GLOBALS[tableprefix]documents SET status=$newstatus WHERE id='$id' AND $critere") or die(mysql_error());
+} else {
+  die("specifier une publication");
 }
 
 back();

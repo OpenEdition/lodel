@@ -65,7 +65,9 @@ function enregistre ($context,&$text)
 
 // valeur par defaut
   $id=$context[iddocument] ? $context[iddocument] : 0;
-  $status=$context[status] ? $context[status] : -1;
+
+  $status=-1; // ne pas mettre une valuer positive ici. Ca pose probleme avec les tables auteurs, indexls et indexhs
+  //$status=$context[statusdocument] ? $context[statusdocument] : -1;
 
   // ecrit dans la base de donnee le document
   mysql_query ("INSERT INTO documents (id,status,titre,soustitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
@@ -92,8 +94,6 @@ function extract_langue ($balises,&$vals,&$index,$defaut="")
   foreach ($balises as $bal) {
     // balise avec l'attribut
     $langs=array();
-#    echo "$bal $defaut<br>";
-#    print_r($index);
     if (!$index[$bal]) continue;
     foreach($index[$bal] as $ind) {
       $tag=$vals[$ind];
@@ -163,8 +163,6 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
 
 {
   if (!$GLOBALS[context][option_pasdemotcle]) $balises[TYPE_MOTCLE]="motcle";
-#  print_r($index); echo "<br><br>";
-#  print_r($vals); echo "<br><br>";
 
   if (!$balises) return;
 
@@ -172,15 +170,11 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
    mysql_query("DELETE FROM documents_indexls WHERE iddocument='$iddocument'") or die (mysql_error());
 
   foreach ($balises as $type => $balise) {
-#    echo "<br>$balise...";
     if (!$index[$balise]) continue;
-#    echo "yes";
     foreach ($index[$balise] as $itag) {
       $tag=$vals[$itag];
-#      print_r($tag);
       $indexl=trim(addslashes(strip_tags(strtr($tag[value],"\n"," "))));
       if (!$indexl) continue;
-#      echo "<br>mot:$indexl";
       if ($tag[attributes] && $tag[attributes][lang]) $lang=strtolower($tag[attributes][lang]);
       // cherche si le mot cle existe deja existe deja
       $result=mysql_query("SELECT id FROM indexls WHERE mot='$indexl' AND lang='$lang'");
@@ -190,7 +184,6 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
 #	if ($type==TYPE_PERIODE) { // type que l'on ajoute pas
 #	  $id=0;
 #	} else {
-	  //	  echo "--$type";
 #	  echo "INSERT INTO indexls (mot,type,lang) VALUES ('$indexl','$type','$lang')<BR>";
 	  mysql_query ("INSERT INTO indexls (status,mot,type,lang) VALUES ('-1','$indexl','$type','$lang')") or die (mysql_error());
 	  $id=mysql_insert_id();
@@ -235,7 +228,6 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
 	# on ne l'ajoute pas... mais il y a une erreur quelque part...
 	$id=0;
       }
-#      echo "indexh: $indexh $id<br>";
 
       // ajoute l'indexh dans la table documents_indexhs
       if ($id)
