@@ -1746,7 +1746,7 @@ li{
 	</head>
 	<body> 
 
-	<h1>Chargement et installation de L<span class="or">O</span>DEL</h1>
+	<h1>Chargement et installation de LOD<span class="or">E</span>L</h1>
 
 
 	<div id="main">
