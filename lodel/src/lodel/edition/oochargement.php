@@ -219,6 +219,11 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($rpl,"");
 
 
+  // transform FAB
+  array_push($srch,"/\[(\/?)FAB:(\w+)\]/");
+  array_push($rpl,"<\\1r2r:\\2>");
+
+
   //
   
   $translations=array("r2r:notesdebasdepage"=>"r2r:notebaspage",
@@ -283,8 +288,8 @@ function OO_XHTML ($convertedfile,&$context)
 #  array_push($rpl,"","<r2r:notefin>\\0</r2r:notefin>");
 
   // remonte les balises r2r
-#  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
-#  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
+  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
+  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
   // second part of the puces processing
   // remonte les balises r2r au dessus des ul et li
