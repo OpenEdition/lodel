@@ -76,7 +76,7 @@ function change_image($filename,$id,$classe,$champ)
 // traitement des images
 
 
-function resize_image ($taille,$src,$dest)
+function resize_image ($taille,$src,&$dest)
 
 {
   do { // exception
@@ -104,6 +104,7 @@ function resize_image ($taille,$src,$dest)
       $height=$result2[2] ? $result2[2] : $result[1];
     }
 
+    /*
     if (function_exists("ImageCreateTrueColor")) { // GD 2.0
       $im2=ImageCreateTrueColor($width,$height); // GD 2.0 ?
       if (!$im2) return false;
@@ -115,10 +116,40 @@ function resize_image ($taille,$src,$dest)
     } else {
       return false;
     }
+    */
 
-    if ($result[2]==1) { ImageGIF($im2,$dest); }
-    elseif ($result[2]==2) { ImageJPEG($im2,$dest); }
-    elseif ($result[2]==3) { ImagePNG($im2,$dest); }
+    if (!($gdv=GDVersion())) return false; // Pas de GD installé
+
+    if ($gdv >=2) {
+      $im2=ImageCreateTrueColor($width,$height);
+      if (!$im2) return false;
+      ImageCopyResampled($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
+    } else {
+      $im2=ImageCreate($width,$height);
+      if (!$im2) return false;
+      ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
+    }
+
+    if ($result[2]==1) {
+
+      if (function_exists("ImageGIF")) {
+	ImageGIF($im2,$dest); 
+      } else {      // sometimes writing GIF is not allowed... make a PNG it's anyway better.
+	// make a PNG rather
+	$dest=preg_replace("/\.gif$/i",".png",$dest);
+	$result[2]=2;
+      }
+    }
+    if ($result[2]==2) {
+      if (function_exists("ImageJPEG")) {
+	ImageJPEG($im2,$dest); 
+      } else {
+	// make a PNG rather
+	$dest=preg_replace("/\.jpe?g$/i",".png",$dest);
+	$result[2]=2;
+      }
+    }
+    if ($result[2]==3) { ImagePNG($im2,$dest); }
 
     return true;
   } while (0); // exception
@@ -127,9 +158,34 @@ function resize_image ($taille,$src,$dest)
 }
 
 
+/**
+ * Get which version of GD is installed, if any.
+ *
+ * Returns the version (1 or 2) of the GD extension.
+ */
+function GDVersion() {
+  static $gdversion;
+  if ($gdversion) return $gdversion;
 
+  // method since 4.3.0
+  if (function_exists("gd_info")) {
+    $info=gd_info();
+    preg_match('/\d+/',$info["GD Version"], $gd);
+    $gdversion=$gd[0];
+    if ($gdversion) return $gdversion;
+  }
 
-
-
+  // brute force
+  if (! extension_loaded('gd')) { return; }
+  ob_start();
+  phpinfo(8);
+  $info=ob_get_contents();
+  ob_end_clean();
+  $info=stristr($info, 'gd version');
+  preg_match('/\d+/', $info, $gd);
+  $gdversion=$gd[0];
+  
+  return $gdversion;
+} // en
 
 ?>

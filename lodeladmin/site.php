@@ -130,11 +130,12 @@ if ($tache=="version") {
       if (!$dir) die ("impossible d'acceder en ecriture le repertoire racine... etrange, n'est-il pas ?");
       $versions=array();
       while ($file=readdir($dir)) {
+	if ($file[0]===".") continue;
 	#echo $file," ";
-	if (is_dir(LODELROOT."/".$file) && 
+	if (is_dir(LODELROOT.$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir(LODELROOT."/".$file."/src")) {
-	  if (!(@include(LODELROOT."/$file/src/siteconfig.php"))) {
+	    is_dir(LODELROOT.$file."/src")) {
+	  if (!(@include(LODELROOT."$file/src/siteconfig.php"))) {
 	    echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";
@@ -234,6 +235,7 @@ if ($tache=="createtables") {
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
+  $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('signalermail','s','inactif','32','1');\n"; 
 
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
@@ -317,7 +319,7 @@ if ($tache=="createrep") {
   }
   // on essaie d'ecrire dans tpl si root
   if ($context[chemin]=="/") {
-    if (!@touch(LODELROOT."tpl/testecriture")) {
+    if (!writefile(LODELROOT."tpl/testecriture","")) {
       $context[erreur_tplaccess]=1;
       require ($home."calcul-page.php");
       calcul_page($context,"site-createrep");
@@ -377,6 +379,10 @@ if ($tache=="fichier") {
   } else {
     install_fichier($root,"../$versionrep/src",LODELROOT);
   }
+
+  // clear the CACHEs
+  require_once($home."cachefunc.php");
+  removefilesincache($root,$root."lodel/edition",$root."lodel/admin");
 
   // ok on a fini, on change le statut du site
   mysql_select_db($GLOBALS[database]);
@@ -464,7 +470,7 @@ function install_fichier($root,$homesite,$homelodel)
 	  $arg1!="lodelconfig.php") $dest1=preg_replace("/\.php$/",".html",$dest1);
       mycopyrec("$root$dirsource/$arg1",$dest1);
     } elseif ($cmd=="touch") {
-      if (!file_exists($dest1)) touch($dest1);
+      if (!file_exists($dest1)) writefile($dest1,"");
       @chmod($dest1,0666 & octdec($GLOBALS['filemask']));
     } elseif ($cmd=="htaccess") {
       if (!file_exists("$dest1/.htaccess")) htaccess($dest1);

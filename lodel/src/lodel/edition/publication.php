@@ -31,7 +31,7 @@
 // assure l'edition, la supression, la restauration des publications.
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 
 $classe="publications";

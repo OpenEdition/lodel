@@ -106,7 +106,7 @@ array_push($rpl,
 #	     "",
 #	     "'<tr valign=\"top\"><td classe=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td classe=\"chkbalisagetdparagraphe\">'",	     
 #	     "</td></tr>\n",
-	     "<span style=\"background-color: #F3F3F3;\">",
+	     "<span title=\"\\1\" style=\"background-color: #F3F3F3;\">",
 	     "</span>");
 
 $text=preg_replace($srch,$rpl,$text);

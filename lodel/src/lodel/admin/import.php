@@ -36,7 +36,8 @@ include ($home."func.php");
 
 $context[importdir]=$importdir;
 $fileregexp='(site|revue)-\w+-\d+.zip';
-$importdirs=array($importdir,"CACHE");
+$importdirs=array("CACHE");
+if ($importdir) $importdirs[]=$importdir;
 
 
 $archive=$_FILES['archive']['tmp_name'];

@@ -73,6 +73,12 @@ if ($droptables) {
   // detar dans le repertoire du site
   $listfiles=`tar ztf $fichier 2>/dev/null`;
   $dirs="";
+  // verification de la presence de lodel/txt et lodel/rtf, indispensable pour le transfer
+  foreach (array("lodel/txt","lodel/rtf") as $dir) {
+    if (!file_exists(SITEROOT.$dir)) {
+	mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask])) or die ("impossible de creer le repertoire".SITEROOT.$dir);
+    }
+  }
   foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
     if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
   }

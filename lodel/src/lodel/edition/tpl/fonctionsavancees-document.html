@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[#TITRE]</title>
+<title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="JS_CONFIRM_SUPPRESSION">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -70,7 +70,11 @@
 					</tr>
 
 	<!--[ Recharger le fichier ]-->
-		<tr>
+<LET VAR="iddocument">[#ID]</LET>
+  <LOOP NAME="importOO" TABLE="types" WHERE="id='[#IDTYPE]'" SELECT="import"> 
+	<DO>
+      <IF COND="[#IMPORT] eq '1'"> 		
+							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
@@ -83,7 +87,10 @@
 	</IF>
 								</td>
 								<td width="5">&nbsp;</td>
-								
+			</tr>
+      </IF>
+      </DO>
+  </LOOP> 								
 		<!--[ Déplacer le document ]-->
 			<tr>
 								<td width="20">&nbsp;</td>
