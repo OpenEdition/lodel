@@ -26,18 +26,104 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
 require("siteconfig.php");
 include ($home."auth.php");
-#authenticate(LEVEL_ADMINLODEL);
-authenticate();
+authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 include ($home."func.php");
+require_once($home."champfunc.php");
 
-$err="";
-$report="";
 
-if ($confirm) {
-  $tables=gettables();
-  do { // block de control
+$context[importdir]=$importdir;
+$fileregexp='(site|revue)-\w+-\d+.tar.gz';
+$importdirs=array($importdir,"CACHE");
+
+
+$archive=$HTTP_POST_FILES['archive']['tmp_name'];
+$context['erreur_upload']=$HTTP_POST_FILES['archive']['error'];
+if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // Upload
+  $prefix="*";
+  $fichier=$archive;
+
+} elseif ($fichier && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$fichier,$result) && file_exists($fichier)) { // fichier sur le disque
+  $prefix=$result[1];
+
+} else { // rien
+  $fichier="";
+}
+
+if ($droptables) {
+  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $tables=array();
+  while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
+  if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error());
+  $tables=array("$GLOBALS[tp]champs",
+		"$GLOBALS[tp]groupesdechamps",
+		"$GLOBALS[tp]types",
+		"$GLOBALS[tp]typepersonnes",
+		"$GLOBALS[tp]typeentrees",
+		"$GLOBALS[tp]typeentites_typeentites",
+		"$GLOBALS[tp]typeentites_typeentrees",
+		"$GLOBALS[tp]typeentites_typepersonnes");
+
+  foreach ($tables as $table) create($table);
+  $report="";
+} elseif ($fichier) {
+  // detar dans le repertoire du site
+  $listfiles=`tar ztf $fichier 2>/dev/null`;
+  $dirs="";
+  foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
+    if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
+  }
+  if ($dirs) {
+    #echo "tar zxf $fichier -C ".SITEROOT." $dirs 2>&1";
+    system("tar zxf $fichier -C ".SITEROOT." $dirs 2>&1")!==FALSE or die ("impossible d'executer tar");
+  }
+
+  require_once ($home."connect.php");
+  // drop les tables existantes
+  // recupere la liste des tables
+  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $tables=array();
+  $dontdrop=array("champs","groupesdechamps","types","typepersonnes","typeentrees","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
+  while ($row = mysql_fetch_row($result)) if (!in_array($row[0],$dontdrop)) array_push($tables,$row[0]);
+  if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
+
+
+  $tmpfile=tempnam("/tmp","lodelimport_");
+  system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
+  require_once ($home."backupfunc.php");
+  if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();
+  @unlink($tmpfile);
+
+  $err="";
+  $report="";
+
+  $report.=isotoutf8($tables);
+
+  # plus tard
+  #require_once($home."cachefunc.php");
+  #removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+
+// verifie les .htaccess dans le CACHE
+  $dirs=array("CACHE","lodel/admin/CACHE","lodel/edition/CACHE","lodel/txt","lodel/rtf","lodel/sources");
+   foreach ($dirs as $dir) {
+     if (!file_exists(SITEROOT.$dir)) continue;
+     $file=SITEROOT.$dir."/.htaccess";
+     if (file_exists($file)) @unlink($file);
+     $f=@fopen ($file,"w");
+     if (!$f) {
+       $context[erreur_htaccess].=$dir." ";
+       $err=1;
+     } else {
+       fputs($f,"deny from all\n");
+       fclose ($f);
+     }
+   }
+
+
+   $tables=gettables();
+   do { // block de control
 
     foreach (array_keys($tables) as $table) {
       $result=mysql_query("SHOW CREATE TABLE $table") or die(mysql_error());
@@ -79,11 +165,6 @@ ALTER TABLE _PREFIXTABLE_users CHANGE email courriel VARCHAR(255);
     // est-ce que la table des indexhs exists ?
     // on renome
     if ($tables["$GLOBALS[tp]indexls"]) { // il faut modifier et  renomer
-
-      // converti toutes la base en UTF-8
-      // c'est a cet endroit, mais ca pourrait etre ailleurs
-      $report.=isotoutf8();
-
 
       // ajoute les champs
       $err=mysql_query_cmds('
@@ -196,15 +277,7 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
     }
     if ($tables["$GLOBALS[tp]documents"]) {
       // cherche les fields de documents 
-      $fields=getfields("documents");
-      $champs=array("surtitre","commentaire","lien","image");
-      foreach ($champs as $champ) {
-	if ($fields[$champ]) continue;
-	$err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_documents ADD     '.$champ.'        TINYTEXT NOT NULL;
-');
-	if ($err) break;
-      }
+      if ( ($err=addfield("documents")) ) break;
       $report.="Ajout de champs dans documents<br>\n";
 
       if ($fields["meta"]) {
@@ -216,15 +289,7 @@ ALTER TABLE _PREFIXTABLE_documents ADD     '.$champ.'        TINYTEXT NOT NULL;
     }
     if ($tables["$GLOBALS[tp]publications"]) {
       // cherche les fields de publications 
-      $fields=getfields("publications");
-      $champs=array("surtitre","image");
-      foreach ($champs as $champ) {
-	if ($fields[$champ]) continue;
-	$err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_publications ADD     '.$champ.'        TINYTEXT NOT NULL;
-');
-	if ($err) break;
-      }
+      if ( ($err=addfield("publications")) ) break;
       $report.="Ajout de champs dans publications<br>\n";
 
       if ($fields["meta"]) {
@@ -305,32 +370,34 @@ REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,titredescription,st
       if ($err) break;
       $report.="Creation de typepersonnes<br>\n";
     }
-    if ($tables["$GLOBALS[tp]typepublis"]) {
-      $err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_typepublis CHANGE nom	type		VARCHAR(64) NOT NULL;
-ALTER TABLE _PREFIXTABLE_typepublis ADD classe		VARCHAR(64) NOT NULL;
-ALTER TABLE _PREFIXTABLE_typepublis ADD tplcreation	TINYTEXT NOT NULL;
-ALTER TABLE _PREFIXTABLE_typepublis ADD ordre		INT UNSIGNED DEFAULT 0 NOT NULL;
-ALTER TABLE _PREFIXTABLE_typepublis ADD	titre	        VARCHAR(255) NOT NULL;
-UPDATE _PREFIXTABLE_typepublis SET classe=\'publications\', titre=type, tplcreation=\'publication\';
-ALTER TABLE _PREFIXTABLE_typepublis CHANGE titre	titre	        VARCHAR(255) NOT NULL;
-ALTER TABLE _PREFIXTABLE_typepublis CHANGE tpledit 	tpledition	TINYTEXT NOT NULL;
-ALTER TABLE _PREFIXTABLE_typepublis ADD	import		TINYINT DEFAULT \'0\' NOT NULL;
-DROP TABLE IF EXISTS _PREFIXTABLE_types;
-RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
-');
-      if ($err) break;
-      $report.="Transformation de typepublis en types<br>";
-    }
-    if ($tables["$GLOBALS[tp]typedocs"]) {
-      $err=mysql_query_cmds('
-INSERT INTO _PREFIXTABLE_types (type,titre,tpl,statut,classe,tplcreation,import)
-          SELECT nom,nom,tpl,statut,"documents","document",1 FROM _PREFIXTABLE_typedocs;
-DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
-');
-      if ($err) break;
-      $report.="Insertions de typedocs dans types<br>";
-    }
+
+
+##    if ($tables["$GLOBALS[tp]typepublis"]) {
+##      $err=mysql_query_cmds('
+##ALTER TABLE _PREFIXTABLE_typepublis CHANGE nom	type		VARCHAR(64) NOT NULL;
+##ALTER TABLE _PREFIXTABLE_typepublis ADD classe		VARCHAR(64) NOT NULL;
+##ALTER TABLE _PREFIXTABLE_typepublis ADD tplcreation	TINYTEXT NOT NULL;
+##ALTER TABLE _PREFIXTABLE_typepublis ADD ordre		INT UNSIGNED DEFAULT 0 NOT NULL;
+##ALTER TABLE _PREFIXTABLE_typepublis ADD	titre	        VARCHAR(255) NOT NULL;
+##UPDATE _PREFIXTABLE_typepublis SET classe=\'publications\', titre=type, tplcreation=\'publication\';
+##ALTER TABLE _PREFIXTABLE_typepublis CHANGE titre	titre	        VARCHAR(255) NOT NULL;
+##ALTER TABLE _PREFIXTABLE_typepublis CHANGE tpledit 	tpledition	TINYTEXT NOT NULL;
+##ALTER TABLE _PREFIXTABLE_typepublis ADD	import		TINYINT DEFAULT \'0\' NOT NULL;
+##DROP TABLE IF EXISTS _PREFIXTABLE_types;
+##RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
+##');
+##      if ($err) break;
+##      $report.="Transformation de typepublis en types<br>";
+##    }
+##    if ($tables["$GLOBALS[tp]typedocs"]) {
+##      $err=mysql_query_cmds('
+##INSERT INTO _PREFIXTABLE_types (type,titre,tpl,statut,classe,tplcreation,import)
+##          SELECT nom,nom,tpl,statut,"documents","document",1 FROM _PREFIXTABLE_typedocs;
+##DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
+##');
+##      if ($err) break;
+##      $report.="Insertions de typedocs dans types<br>";
+##    }
 
     if (!$tables["$GLOBALS[tp]entites"]) {
       # suppression des documents avec : titre vide, type vide, publication 0 et status < 1 
@@ -341,7 +408,7 @@ DELETE FROM documents WHERE type=\'\' AND publication=\'0\' AND titre=\'\' AND s
       $report.="Suppression des documents avec un titre vide, type vide, publication 0 et status <1<br>";
 
       # verifie l'integrite du type de documents
-      $result=mysql_query("SELECT $GLOBALS[tp]documents.id,$GLOBALS[tp]documents.type FROM  $GLOBALS[tp]documents LEFT JOIN $GLOBALS[tp]types ON $GLOBALS[tp]documents.type=$GLOBALS[tp]types.type   WHERE  $GLOBALS[tp]types.id IS NULL") or die (mysql_error());
+      $result=mysql_query("SELECT $GLOBALS[tp]documents.id,$GLOBALS[tp]documents.type FROM $GLOBALS[tp]documents LEFT JOIN $GLOBALS[tp]types ON $GLOBALS[tp]documents.type=$GLOBALS[tp]types.type   WHERE  $GLOBALS[tp]types.id IS NULL") or die (mysql_error());
       if (mysql_num_rows($result)) {
 	$err="<fond color=\"red\">Des documents ont un type impossible &agrave; trouver dans la tables des types</font><br>";
 	while ($row=mysql_fetch_assoc($result)) {
@@ -349,6 +416,11 @@ DELETE FROM documents WHERE type=\'\' AND publication=\'0\' AND titre=\'\' AND s
 	}
 	break;
       }
+$err=mysql_query_cmds(' 
+	UPDATE _PREFIXTABLE_publications SET type="collection" WHERE type LIKE "serie%";
+	UPDATE _PREFIXTABLE_publications SET type="rubrique" WHERE type="theme";
+');
+
       # verifie l'integrite du type de publications
       $result=mysql_query("SELECT $GLOBALS[tp]publications.id,$GLOBALS[tp]publications.type FROM  $GLOBALS[tp]publications LEFT JOIN $GLOBALS[tp]types ON $GLOBALS[tp]publications.type=$GLOBALS[tp]types.type   WHERE $GLOBALS[tp]types.id IS NULL") or die (mysql_error());
       if (mysql_num_rows($result)) {
@@ -358,21 +430,21 @@ DELETE FROM documents WHERE type=\'\' AND publication=\'0\' AND titre=\'\' AND s
 	}
 	break;
       }
-$err=mysql_query_cmds(' 
-	INSERT INTO _PREFIXTABLE_types (type, titre, tpl, tpledition, tplcreation, ordre, classe) VALUES ("regroupement-documentsannexes","regroupement de documents annexes", "", "", "creation-regroupement", 0, "publications"); 
-	UPDATE _PREFIXTABLE_types SET titre="série linéaire", tplcreation="creation-serie" WHERE type="serie_lineaire"; 
-	UPDATE _PREFIXTABLE_types SET titre="série hiérarchique", tplcreation="creation-serie" WHERE type="serie_hierarchique"; 
-	UPDATE _PREFIXTABLE_types SET titre="regroupement", tplcreation="creation-regroupement", tpl="", tpledition="" WHERE type="regroupement"; 
-	UPDATE _PREFIXTABLE_types SET titre="numéro", tplcreation="creation-numero" WHERE type="numero"; 
-	UPDATE _PREFIXTABLE_types SET type="rubrique", tpledition="edition-rubrique", tplcreation="creation-rubrique", titre="rubrique" WHERE type="theme";
-'); 
-if($err) break; 
-$report.='
-        Ajout du type regroupement-documentsannexes<br />
-        Transformation des titres des types<br />
-        Suppression des �ventuelles valeurs de tpl et tpledition pour un regroupement<br />
-        Nouveau tpl de creation pour chacun des types<br />
-';
+#$err=mysql_query_cmds(' 
+#	INSERT INTO _PREFIXTABLE_types (type, titre, tpl, tpledition, tplcreation, ordre, classe) VALUES ("regroupement-documentsannexes","regroupement de documents annexes", "", "", "creation-regroupement", 0, "publications"); 
+#	UPDATE _PREFIXTABLE_types SET titre="série linéaire", tplcreation="creation-serie" WHERE type="serie_lineaire"; 
+#	UPDATE _PREFIXTABLE_types SET titre="série hiérarchique", tplcreation="creation-serie" WHERE type="serie_hierarchique"; 
+#	UPDATE _PREFIXTABLE_types SET titre="regroupement", tplcreation="creation-regroupement", tpl="", tpledition="" WHERE type="regroupement"; 
+#	UPDATE _PREFIXTABLE_types SET titre="numéro", tplcreation="creation-numero" WHERE type="numero"; 
+#	UPDATE _PREFIXTABLE_types SET type="rubrique", tpledition="edition-rubrique", tplcreation="creation-rubrique", titre="rubrique" WHERE type="theme";
+#'); 
+#if($err) break; 
+#$report.='
+#        Ajout du type regroupement-documentsannexes<br />
+#        Transformation des titres des types<br />
+#        Suppression des �ventuelles valeurs de tpl et tpledition pour un regroupement<br />
+#        Nouveau tpl de creation pour chacun des types<br />
+#';
 
       // recupere l'id max des documents
       $result=mysql_query("SELECT max(id) FROM $GLOBALS[tp]documents") or die(mysql_error());
@@ -382,6 +454,7 @@ $report.='
       // ok, on cree la table entites maintenant
       if ($err=create("entites")) break;
       // on ajoute l'idparent pour pouvoir faire le traitement tranquillement ensuite
+
       $err=mysql_query_cmds('
 INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,iduser,groupe,ordre,statut)
          SELECT _PREFIXTABLE_documents.id,_PREFIXTABLE_documents.publication+'.$offset.',_PREFIXTABLE_types.id,_PREFIXTABLE_documents.titre,user,1,_PREFIXTABLE_documents.ordre,_PREFIXTABLE_documents.statut FROM _PREFIXTABLE_documents,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_documents.type;
@@ -397,14 +470,14 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       if ($err) break;
       // ok, on s'occupe des documents annexes maintenant.
 
-      // on commence par les types de document annexes
-      $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienfichier','sur un fichier','documentannexe-lienfichier','2','documents',32);
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-liendocument','sur un document interne','documentannexe-liendocument','3','documents',32);
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienpublication','sur une publication interne','documentannexe-lienpublication','5','documents',32);
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienexterne','sur un site externe','documentannexe-lien','6','documents',32);
-");
-      if ($err) break;
+#      // on commence par les types de document annexes
+#      $err=mysql_query_cmds("
+#INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienfichier','sur un fichier','documentannexe-lienfichier','2','documents',32);
+#INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-liendocument','sur un document interne','documentannexe-liendocument','3','documents',32);
+#INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienpublication','sur une publication interne','documentannexe-lienpublication','5','documents',32);
+#INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienexterne','sur un site externe','documentannexe-lienexterne','6','documents',32);
+#");
+#      if ($err) break;
 
       // on construit le idtype de conversion
       $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]types WHERE type LIKE 'documentannexe-%'") or die (mysql_error());
@@ -482,7 +555,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       include_once($home."entitefunc.php");
 
       // cherche le type
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]typepersonnes WHERE type='auteur'") or die(mysql_error());
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]typepersonnes WHERE type='directeur de publication'") or die(mysql_error());
       if (!mysql_num_rows($result)) die ("type inconnu ?");
       list($idtype)=mysql_fetch_row($result);
 
@@ -520,11 +593,11 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 
     if (!$tables["$GLOBALS[tp]groupesdechamps"]) {
       if ($err=create("groupesdechamps")) break;
-      if ($err=chargeinserts("groupesdechamps")) break;
+      #if ($err=chargeinserts("groupesdechamps")) break;
     }
     if (!$tables["$GLOBALS[tp]champs"]) {
       if ($err=create("champs")) break;
-      if ($err=chargeinserts("champs")) break;
+      #if ($err=chargeinserts("champs")) break;
 
       $fields[documents]=getfields("documents");
       $fields[publications]=getfields("publications");
@@ -581,14 +654,16 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       if ($err) break;
     }
 
-
-    // efface les repertoires CACHE
-    require_once($home."cachefunc.php");
-    removefilesincache(".","../edition","../..");
+    if (!$err) {
+      // efface les repertoires CACHE
+      require_once($home."cachefunc.php");
+      removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+    }
 
     // fini, faire quelque chose
   } while(0);
 }
+
 
 $context[erreur]=$err;
 $context[report]=$report;
@@ -662,21 +737,21 @@ function getfields($table)
 
 
 # pose des problemes... ca ecrase les anciens types
-function chargeinserts($table)
-
-{
-  global $home,$report;
-      // charge l'install
-  $file=$home."../install/inserts-site.sql";
-  if (!file_exists($file)) {
-    $err="Le fichier $file n'existe pas !";
-    break;
-  }
-  $err=mysql_query_cmds(utf8_encode(join("",file($file))),$table);
-  if ($err) return $err;
-  $report.="Import des insert dans la table $table<br>";
-  return FALSE;
-}
+#function chargeinserts($table)
+#
+#{
+#  global $home,$report;
+#      // charge l'install
+#  $file=$home."../install/inserts-site.sql";
+#  if (!file_exists($file)) {
+#    $err="Le fichier $file n'existe pas !";
+#    break;
+#  }
+#  $err=mysql_query_cmds(utf8_encode(join("",file($file))),$table);
+#  if ($err) return $err;
+#  $report.="Import des insert dans la table $table<br>";
+#  return FALSE;
+#}
 
 function create($table) 
 
@@ -700,16 +775,15 @@ function create($table)
 
 
 // fonction de conversion de isolatin en utf8
-function isotoutf8 ()
+function isotoutf8 ($tables)
 
 {
-
-  $result = mysql_list_tables($GLOBALS[currentdb]) or die(mysql_error());
-
   // Tableau contenant la liste des tables � ne pas parcourrir pour gagner du temps.
   #$blacklist=array("relations","entites_entrees","users_groupes");
   // On parcours toutes les tables
-  while (list($table) = mysql_fetch_row($result)) {
+
+
+  foreach($tables as $table) {
     #if(in_array ($table, $blacklist)) continue;
 
      $report.="conversion en utf8 de  la table $table<br />\n";
@@ -849,6 +923,46 @@ function convertHTMLtoXHTML ($field,$contents)
 
 
   return preg_replace($srch,$rpl,$contents);
+}
+
+
+function addfield($classe)
+
+{
+  $fields=getfields($classe);
+
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe'") or die(mysql_error());
+
+  #echo "classe:$classe<br/>";
+  while (list($champ,$type)=mysql_fetch_row($result)) {
+    #echo "ici:$champ $type<br/>";
+    if ($fields[$champ]) continue;
+    #echo "ici:$champ - create<br/>";
+    #echo 'ALTER TABLE _PREFIXTABLE_'.$classe.' ADD     '.$champ.' '.$GLOBALS[sqltype][$type].'<br>';
+    $err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_'.$classe.' ADD     '.$champ.' '.$GLOBALS[sqltype][$type].';
+ ');
+    #echo "error:$err";
+    if ($err) return $err;
+  }
+  return false;
+}
+
+
+function loop_fichiers(&$context,$funcname)
+{
+  global $importdirs,$fileregexp;
+
+  foreach ($importdirs as $dir) {
+    if ( $dh= @opendir($dir)) {
+      while (($file=readdir($dh))!==FALSE) {
+	if (!preg_match("/^$fileregexp$/i",$file)) continue;
+	$context[nom]="$dir/$file";
+	call_user_func("code_do_$funcname",$context);
+      }
+      closedir ($dh);
+    }
+  }
 }
 
 ?>
