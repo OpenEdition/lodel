@@ -236,7 +236,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 				Extrait du premier article du numéro: 
 				[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
 			<ELSE/>
-				<LOOP NAME="desc_meta_sommaire" TABLE="types" TABLE="entites" TABLE="relations" WHERE="id1='[#IDPARENT]' AND entites.id=id2 AND entites.idtype=types.id AND classe='documents'">
+				<LOOP NAME="desc_meta_sommaire" TABLE="documents" TABLE="relations" WHERE="id1='[#IDPARENT]' AND id=id2">
 					<DO>
 						<IF COND="[#TITRE]">[(#TITRE|replacequotationmark)],</IF>
 						<IF COND="[#SOUSTITRE]">[(#SOUSTITRE|replacequotationmark)]</IF>
