@@ -242,6 +242,10 @@ class Entities_EditionLogic extends GenericLogic {
      update();
      //unlock();
 
+     if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
+       header("location: ".SITEROOT."index.php?id=".$id);
+       exit();
+     }
      return $ret ? $ret : "_back";
    }
 
