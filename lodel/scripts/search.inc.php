@@ -243,7 +243,7 @@ function search(&$context,$funcname,$arguments)
 	print_r($we);
 	echo "<br />----------------------------<br />";
 	*/
-	//TODO : sort array we by value
+	
 	asort($we,SORT_NUMERIC);
 	$we = array_reverse($we,true);
 	return $we;
@@ -251,43 +251,47 @@ function search(&$context,$funcname,$arguments)
 } 
 
 /*
- * NOTA BENE :
- * 	Avec le tableau res, on peut par une boucle LODELSCRIPT afficher chaque resultat.
+ * LOOP SEARCH 
+ * affichage des résultats d'une recherche
+ * avec gestion de la pagination
  * 
  */
 
 function loop_search(&$context,$funcname,$arguments)
 {
-	#print_r($arguments);
-	
 	$local_context = $context;
 	$results = search($local_context,$funcname,$arguments);
-	#echo "nb res :".$local_context['nbresults'];
-	
 	$count = 0;
 	if(!$results || count($local_context['nbresults'])==0)
 	{
 		//echo "coucou";
-		//$local_context['nbresults'] = 0;
 		call_user_func("code_alter_$funcname",$local_context);
 		return;
 	}
-	
-	//$local_context['nbresults'] = count($results);
-	$limit = $local_context['qnbresults'];
 	$offsetname="offset_".substr(md5($funcname),0,5);
+	$currentoffset = ($_REQUEST[$offsetname]? $_REQUEST[$offsetname] : 0);
+#echo $offsetname;
 
-	#echo $offsetname;
-	
+	//call before function
 	if(function_exists("code_before_$funcname"))
+	{
+		$local_context["result_from"] = $currentoffset+1;
+		
+		if($local_context['nbresults'] < ($currentoffset+$arguments['limit']))
+			$local_context["result_to"] = $local_context['nbresults'];
+		else
+			$local_context["result_to"] = $currentoffset+$arguments['limit'];
+			
+		
 		call_user_func("code_before_$funcname",$local_context);
+	}
 	
+	//call do function with the results
 	foreach($results as $key => $weight)
 	{
-		
 		$dao2 = &getDAO("entities");
 		$vo = $dao2->getById($key);
-		//print_r($vo);
+	#print_r($vo);
 		$local_context['id'] = $key;
 		$local_context['weight'] = $weight;
 		$local_context['idparent'] = $vo->idparent;
@@ -308,91 +312,74 @@ function loop_search(&$context,$funcname,$arguments)
 		$local_context['rank'] = $vo->rank ;
 		$local_context['upd'] = $vo->upd ;
 		$local_context['count'] = $count;
-		//To complete
 		call_user_func("code_do_$funcname",$local_context);
 		$count++;
 	}
+	
+	//call after function
 	if(function_exists("code_after_$funcname"))
 	{
-		$offsetname="offset_".substr(md5($funcname),0,5);
+		//get current offset and construct url
 		$currentoffset = ($_REQUEST[$offsetname]? $_REQUEST[$offsetname] : 0);
-				
-		
 		$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
 		$cleanquery=preg_replace("/(^|&)".$offsetname."=\d+/","",$_SERVER['QUERY_STRING']);
-		#echo "cleanquery :".$cleanquery;
-   	if ($cleanquery[0]=="&")
-   		$cleanquery=substr($cleanquery,1); 
-   	if ($cleanquery) 
-   		$currenturl.=$cleanquery."&";
-   #echo $local_context['nbresults'];
-   #echo $arguments['limit'];
+		if ($cleanquery[0]=="&") $cleanquery=substr($cleanquery,1); 
+   	if ($cleanquery) $currenturl.=$cleanquery."&";
    
+   	//construct next url
    	if($local_context['nbresults'] > ($currentoffset+$arguments['limit']))
    		$local_context[nexturl]=$currenturl.$offsetname."=".($currentoffset + $arguments['limit']);
    	else
    		$local_context[nexturl] = "";
-   	#echo $local_context[nexturl];
-   	
-   	if($currentoffset > 0)
-   	{
+    
+    //construct previous url
+  	if($currentoffset > 0)
    		$local_context[previousurl] = $currenturl.$offsetname."=".($currentoffset - $arguments['limit']);
-   	}
    	else
    		$local_context[previousurl] ="";
    	
-   	//test
-   		$i = 0;
-   	//pages precedentes
+   	//construct pages table
    	$pages = array();
+   	
+   	//previous pages 
+   	$i = 0;
    	while($i + $arguments['limit'] <= $currentoffset)
    	{
    			$urlpage = $currenturl.$offsetname."=".$i;
-   			#echo "<a href=\"".$urlpage."\">page ". ($i/$arguments['limit']+ 1)."</a>";
    			$pages[($i/$arguments['limit']+ 1)] = $urlpage;
    			$i += $arguments['limit'];
    	}
-   	#print_r($pages);
+		//add current page   
    	$pages[($currentoffset/$arguments['limit']+ 1)] = "";
-   	 #print_r($pages);
-   	//pages suivantes
-   	$i = $currentoffset;
    
+   	//next pages 
+   	$i = $currentoffset;
    	while($i + $arguments['limit'] < $local_context['nbresults'])
    	{
    			$i += $arguments['limit'];
    			$urlpage = $currenturl.$offsetname."=".$i;
-   			#echo "<a href=\"".$urlpage."\">page ". ($i/$arguments['limit']+ 1)."</a>";
    			$pages[($i/$arguments['limit']+ 1)] = $urlpage;
-   			
    	}
-   	#print_r($pages);
    	if(count($pages))
    		$local_context["pages"] = $pages;
-   
-   	
-   	
-   	#echo "currentoffset=$currentoffset";
-   	
-   	
-   	
 		call_user_func("code_after_$funcname",$local_context);
-		
-		
-		
-	}
+	}//end code_after call
 		
 }
+
+/*
+ * LOOP_AFFICHES_PAGES
+ * this loop walk on the array pages to print pages number and links 
+ */
 
 function loop_affiche_pages(&$context,$funcname,$arguments)
 {
 	$local_context = $context;
 	//affichages des pages precedentes
 	
+	//call before
 	if(function_exists("code_before_$funcname"))
-	{
 		call_user_func("code_before_$funcname",$local_context);
-	}
 	
 	if($local_context["pages"])
 	{
@@ -403,13 +390,10 @@ function loop_affiche_pages(&$context,$funcname,$arguments)
 			call_user_func("code_do_$funcname",$local_context);
 		}
 	}
+
+	//call after
 	if(function_exists("code_after_$funcname"))
-	{
 		call_user_func("code_after_$funcname",$local_context);
-	}
-	
-	
-		
 }
 
 
