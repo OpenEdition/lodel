@@ -53,9 +53,12 @@
 		<IF COND="[#TYPE]=='passwd'"><LET VAR="value"></LET></IF>
 		<!--[ print the group ]-->
 		<label for="[#NAME]">[#NAME] :</label>
-		<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" />
+		<FUNC NAME="PRINT_EDIT_FIELD" FULLVARNAME="data[[#NAME]]" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" />
 		<br />
 		</DO>
+		<ALTERNATIVE>
+			[@ADMIN.NO_OPTIONS_FOR_THIS_GROUP]
+		</ALTERNATIVE>
 	</LOOP>
 	</fieldset>
 <div class="pied_de_formulaire">
