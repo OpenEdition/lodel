@@ -30,11 +30,12 @@
 
 
 
-function validfield(&$text,$type,$default="")
+function validfield(&$text,$type,$default="",$name="")
 
 {
+  static $tmpdir;
   require_once("fieldfunc.php");
-  if ($GLOBALS['lodelfieldtypes']['autostriptags']) {
+  if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
     $text=strip_tags($text);
   }
 
@@ -151,6 +152,67 @@ function validfield(&$text,$type,$default="")
   case "select" :
   case "multipleselect" :
     return true; // cannot validate
+  case "mltext" :
+    if (is_array($text)) {
+      $str="";
+      foreach($text as $lang=>$v) {	       
+	if ($lang!="empty" && $v) $str.="<r2r:ml lang=\"".$lang."\">$v</r2r:ml>";
+      }
+      $text=$str;
+    }
+    return true;
+  case 'image' :
+  case 'file' :
+    if (!is_array($text)) { unset($text); break; }
+    if (!$name) trigger_error("ERROR: \$name is not set in validfunc.php",E_USER_ERROR);
+    switch($text['radio']) {
+    case 'upload':
+      // let's upload
+      $files=&$_FILES[$name];
+      // look for an error ?
+      if (!$files || $files['error']['upload'] ||
+	  !$files['tmp_name']['upload'] || $files['tmp_name']['upload']=="none") { 
+	unset($text); 
+	return "upload";
+	break; 
+      }
+      // check if the tmpdir is defined
+      if (!$tmpdir[$type]) { 
+	// look for a unique dirname.
+	do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
+      }
+      // let's transfer
+      $text=save_annex_file($type,$tmpdir[$type],$files['tmp_name']['upload'],
+			     $files['name']['upload'],true,true,$err);
+      if ($err) return $err;
+      return true;
+    case 'serverfile':
+      // check if the tmpdir is defined
+      if (!$tmpdir[$type]) { 
+	// look for a unique dirname.
+	do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
+      }
+      
+      // let's move
+      $text=basename($text['localfilename']);
+      $text=save_annex_file($type,$tmpdir[$type],SITEROOT."CACHE/upload/$text",
+			    $text,false,false,$err);
+      if ($err) return $err;
+      return true;
+    case 'delete':
+      $filetodelete=true;
+    case '' :
+      // validate	     
+      $text=$text['previousvalue'];
+      if (!$text) break;
+      if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/",$text)) {
+	die("ERROR: invalid filename of type $type");
+      }
+      if ($filetodelete) { unlink(SITEROOT.$text); $text=""; unset($filetodelete);}
+      return true;
+    default:
+      die("ERROR: unknow radio value for $name");
+    } // switch
   default:
     return false; // pas de validation
   }

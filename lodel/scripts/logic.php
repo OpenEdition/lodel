@@ -303,7 +303,7 @@ class Logic {
 	 unset($context[$field]); // remove it
        } else {
 	 $valid=validfield($context[$field],$type,"");
-	 if ($valid===false) die("ERROR: $type can not be validated in logic.php");
+	 if ($valid===false) die("ERROR: \"$type\" can not be validated in logic.php");
 	 if (is_string($valid)) $error[$field]=$valid;      
        }
      }

@@ -215,17 +215,18 @@ class GenericLogic extends Logic {
      foreach ($fields as $field) {
        if ($field->g_name) $this->g_name[$field->g_name]=$field->name; // save the generic field
        $type=$field->type;
+       $name=$field->name;
 
        // check if the field is required or not, and rise an error if any problem.
 
-       $value=&$context[$field->name];
+       $value=&$context[$name];
        if (!is_array($value)) $value=trim($value);
        if ($value) $value=lodel_strip_tags($value,$field->allowedtags);
 
        // is empty ?
        $empty=$type!="boolean" && (             // boolean are always true or false
-	    !isset($context[$field->name]) ||   // not set
-	    $context[$field->name]==="");       // or empty string
+	    !isset($context[$name]) ||   // not set
+	    $context[$name]==="");       // or empty string
 	    
 
        if ( ($context['do']=="edit" && ($field->edition=="importable" || 
@@ -250,13 +251,13 @@ class GenericLogic extends Logic {
        }
 
        if ($type!="persons" && $type!="entries" && $type!="entities")
-	 $this->_publicfields[$field->class][$field->name]=true; // this field is public
+	 $this->_publicfields[$field->class][$name]=true; // this field is public
 
        if ($field->edition=="none") unset($value);
        if ($empty) $value=lodel_strip_tags($field->default,$field->allowedtags); // default value
 
        if ($field->condition=="+" && $empty) {
-	 $error[$field->name]="+"; // required
+	 $error[$name]="+"; // required
 	 continue;
        }
        // clean automatically the fields when required.
@@ -264,84 +265,23 @@ class GenericLogic extends Logic {
 
        // special processing depending on the type.
 
-       $valid=validfield($value,$type,$field->default);
+       $valid=validfield($value,$type,$field->default,$name);
        if ($valid===true) {
 	 // good, nothing to do.
-       } elseif (is_string($valid)) {
-	 $error[$field->name]=$valid; 	 // error
-       } else {
-	 $name=$field->name;
-	 // not validated... let's try other type
-	 switch($type) {
-	 case "mltext" :
-	   #print_r($value);
-	   #echo ":$value:";
-	   if (is_array($value)) {
-	     $str="";
-	     foreach($value as $lang=>$v) {	       
-	       if ($lang!="empty" && $v) $str.="<r2r:ml lang=\"$lang\">$v</r2r:ml>";
-	     }
-	     $value=$str;
-	   }
-	   break;
-	 case 'image' :
-	 case 'file' :
-	   if (!is_array($value)) { unset($value); break; }
-	   switch($value['radio']) {
-	   case 'upload':
-	     // let's upload
-	     $files=&$_FILES[$name];
-	     // look for an error ?
-	     if (!$files || $files['error']['upload'] ||
-		 !$files['tmp_name']['upload'] || $files['tmp_name']['upload']=="none") { 
-	       unset($value); 
-	       $error[$name]="upload";
-		 break; 
-	     }
-	     // check if the tmpdir is defined
-	     if (!$tmpdir[$type]) { 
-	       // look for a unique dirname.
-	       do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
-	     }
-	     // let's transfer
-	     $value=save_annex_file($type,$tmpdir[$type],$files['tmp_name']['upload'],
-				    $files['name']['upload'],true,true,$err);
-	     if ($err) $error[$name]=$err;
-	     break;
-	   case 'serverfile':
-	     // check if the tmpdir is defined
-	     if (!$tmpdir[$type]) { 
-	       // look for a unique dirname.
-	       do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
-	     }
-
-	     // let's move
-	     $value=basename($value['localfilename']);
-	     $value=save_annex_file($type,$tmpdir[$type],SITEROOT."CACHE/upload/$value",
-				    $value,false,false,$err);
-	     if ($err) $error[$name]=$err;
-	     break;
-	   case 'delete':
-	     $filetodelete=true;
-	   case '' :
-	     // validate	     
-	     $value=$value['previousvalue'];
-	     if (!$value) break;
-	     if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/",$value)) {
-		   die("ERROR: invalid filename of type $type");
-	     }
-	     if ($filetodelete) { unlink(SITEROOT.$value); $value=""; unset($filetodelete);}
-	     break;
-	 default:
-	     die("ERROR: unknow radio value for $name");
-	 } // switch
-
+	 if ($type=="file" || $type=="image") {
 	   if (preg_match("/\/tmpdir-\d+\/[^\/]+$/",$value)) {
 	     // add this file to the file to move.
 	     $this->files_to_move[$name]=array('filename'=>$value,'type'=>$type,'name'=>$name);           	   }
 	   break;
-       case 'persons':
-       case 'entries' :
+	 }
+       } elseif (is_string($valid)) {
+	 $error[$name]=$valid; 	 // error
+       } else {
+	 $name=$name;
+	 // not validated... let's try other type
+	 switch($type) {
+	 case 'persons':
+	 case 'entries' :
 	   // get the type
 	   if ($type=="persons") {
 	     $dao=&getDAO("persontypes");
@@ -390,7 +330,7 @@ class GenericLogic extends Logic {
 	   // don't check they exists, the interface ensure it ! (... hum)
 	   break;
 	 default:
-	   die("ERROR: unable to check the validity of the field ".$field->name." of type ".$type);
+	   die("ERROR: unable to check the validity of the field ".$name." of type ".$type);
 	 } // switch
        } // if valid
        } // foreach files
