@@ -178,6 +178,7 @@ or
  	<!--[ Added by Jean Lamy | 2005-01-27 | paramedition management ]-->
  	<!--[ Modified by Jean Lamy | 2005-01-28 | macro add ]-->
  	<MACRO NAME="FCK_EDITOR_PARAMETERS">
+   
     <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
     <script>
     	var fck_[#VARNAME]_editor = new FCKeditor('[#VARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
@@ -190,7 +191,7 @@ or
     	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
     	fck_[#VARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
     	<?$context["value"] = str_replace("\n","",$context["value"]) ?>
-    	<?$context["value"] = str_replace("\r","",$context["value"]) ?>
+    	<?$context["value"] = str_replace("\r","",$context["value"]); ?>
     	fck_[#VARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
     	fck_[#VARNAME]_editor.Create();
     	
@@ -717,7 +718,7 @@ function modifymember(members,textfield){
 
 <!--[ Added by Jean Lamy - 2005-02-02]-->
 <!--[ Search engine test]-->
-<DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield">
+<DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
 <form name="search" action="search.php" method="get">
 <input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
@@ -728,7 +729,12 @@ function modifymember(members,textfield){
 <span  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
 <fieldset class="searchfieldset">
 <legend>[@EDITION.ADVANCED_SEARCH]</legend>
-
+<select id="qnbresults" name="qnbresults" class="searchfields">
+	<option value="10" <IF COND="[#QNBRESULTS] EQ 10">selected="selected"</IF>>10 [@EDITION.RESULTS]</option>
+	<option value="20" <IF COND="[#QNBRESULTS] EQ 20">selected="selected"</IF>>20 [@EDITION.RESULTS]</option>
+	<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 [@EDITION.RESULTS]</option>
+	<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 [@EDITION.RESULTS]</option>
+</select>
 <LOOP NAME="listtypes" TABLE="types" ORDER="rank">
 <BEFORE>
 	&nbsp;[@EDITION.SEARCH_IN_TYPE]&nbsp;
@@ -763,6 +769,7 @@ function modifymember(members,textfield){
 	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>[@COVERAGE]</option>
 	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>[@RIGHTS]</option>
 </select>
+
 
 </fieldset>
 </span>
