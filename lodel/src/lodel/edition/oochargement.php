@@ -73,31 +73,36 @@ if ($file1 && $file1!="none") {
     $cle=fread($fp,2);
     if ($cle=="PK") {
       if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
-      if ($unzipcmd) { // all this part should be rewritten, put in a proper function, and work either with unzip or ZIP du php.
-	$filesinarchive=preg_split("/\s*\r?\n\s*/",`$unzipcmd -Z -1 $fileconverted`,-1,PREG_SPLIT_NO_EMPTY);
-	$extractfiles=array();
-	// look for the files. Check the extension.
-	$xhtmlfile="";
-	foreach ($filesinarchive as $file) {
-	  if (preg_match("/\.xhtml$/",$file)) { // xhtml
-	    $xhtmlfile=$tmpdir."/".basename($file);
-	    array_push($extractfiles,$file); 
-	  }
-	  if (preg_match("/\.(jpg|gif|png)$/",$file)) 	  // image
-	    array_push($extractfiles,$file);
-	}
-	if (!$xhtmlfile) die("ERROR: xhtml file not found in the archive");
 
-	system("$unzipcmd -qjo -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
-	@unlink($fileconverted);
-	// setup the rights even if it's temporary
-	$fileconverted=$xhtmlfile;
-	foreach ($extractfiles as $file) {
-	  chmod($tmpdir."/".basename($file),0666 & octdec($GLOBALS[filemask])); 
+#      if ($unzipcmd) {
+#	$filesinarchive=preg_split("/\s*\r?\n\s*/",`$unzipcmd -Z -1 $fileconverted`,-1,PREG_SPLIT_NO_EMPTY);
+#      } else {
+	require($home."pclzip.lib.php");
+	$archive=new PclZip($fileconverted);
+	$filesinarchive=$archive->listContent();
+#      }
+      $extractfiles=array();
+      // look for the files. Check the extension.
+      $xhtmlfile="";
+      foreach ($filesinarchive as $file) {
+	$file=$file['filename'];
+	if (preg_match("/\.xhtml$/",$file)) { // xhtml
+	  $xhtmlfile=$tmpdir."/".basename($file);
+	  array_push($extractfiles,$file); 
 	}
-      } else {
-	die("ERROR: \$unzipcmd is not configured.");
-	// TODO: use ZIP du php if available
+	if (preg_match("/\.(jpg|gif|png)$/",$file)) 	  // image
+	  array_push($extractfiles,$file);
+      }
+      if (!$xhtmlfile) die("ERROR: xhtml file not found in the archive");
+
+      $archive->extract(PCLZIP_OPT_PATH,$tmpdir,PCLZIP_OPT_REMOVE_ALL_PATH);
+      #system("$unzipcmd -qjo -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
+
+      @unlink($fileconverted);
+      // setup the rights even if it's temporary
+      $fileconverted=$xhtmlfile;
+      foreach ($extractfiles as $file) {
+	chmod($tmpdir."/".basename($file),0666 & octdec($GLOBALS[filemask])); 
       }
     }
     fclose($fp);
