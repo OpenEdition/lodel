@@ -35,7 +35,7 @@
 								<MACRO NAME="titres_boutons_publications">
 							</tr>
 							<!-- BOUCLE D'AFFICHAGE DES THEMES -->
-							<LOOP NAME="numeros" TABLE="publications" WHERE="parent=[#PARENT]" ORDER="ordre DESC"> 
+							<LOOP NAME="numeros" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre DESC"> 
 							<TR>
 								<td width="48" height="48" valign="middle"> 
 									<div align="center">
@@ -50,7 +50,7 @@
 					<ALTERNATIVE/> 
 							<MACRO NAME="TR_aucune_publication_dispo"> 
 					</LOOP> 
-							<MACRO NAME="Creer_numero">	<A HREF="chargesommaire.php?id=[#PARENT]">Charge un sommaire</A>
+							<MACRO NAME="Creer_numero">	<a href="chargesommaire.php?id=[#ID]">Charge un sommaire</A>
 						</table>
 					</td>
 				</tr>
