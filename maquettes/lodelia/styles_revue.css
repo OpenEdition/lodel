@@ -1381,26 +1381,12 @@ A.petittexte:active {
 font-size:small;
 font-weight:small;
 text-align :justify;
-font-family:"Verdana, Helvetica, sans-serif, Times New Roman";
+font-family:Verdana;
 }
 
 .texte_petit_lodelbarre {
 font-size:x-small;
 font-weight:small;
 text-align :justify;
-font-family:"Verdana, Helvetica, sans-serif, Times New Roman";
+font-family:Verdana;
 }
-
-
-
-
-
-
-
-
-	 
-
-
-
-
-
