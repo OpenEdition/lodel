@@ -337,4 +337,10 @@ function paranumber (&$texte)
     */
 }
 
+// Fonction permettant de supprimer les appels de notes d'un texte.
+function supprime_appels_notes(&$text)
+{
+        return preg_replace("/<a\b[^>]+>\s*<sup>\s*<small>.*?<\/small>\s*<\/sup>\s*<\/a>/is","",$text);
+}
+
 ?>
