@@ -128,7 +128,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	</IF>
 </head>
 	<body> 
-	<IF COND="[#VISITEUR]">
+	<IF COND="[#DROITVISITEUR]">
 		<? insert_template("desk");?>
 	</IF>
 </DEFMACRO>
@@ -146,7 +146,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	
 	</head>
 	<body> 
-	<IF COND="[#VISITEUR]">
+	<IF COND="[#DROITVISITEUR]">
 		<? insert_template("desk");?>
 	</IF>
 </DEFMACRO>
