@@ -29,7 +29,6 @@
 
 require_once($home."auth.php");
 
-xdebug_start_trace("/tmp/trace");
 
 class Controler {
 
