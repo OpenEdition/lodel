@@ -94,7 +94,7 @@ if ($edit && !$reject) {
     require_once (TOINCLUDE."calcul-page.php");
     ob_start();
     calcul_page($context,"register-mail");
-    $content=ob_get_contents();
+    $content=str_replace("\n","\r\n",ob_get_contents());
     ob_end_clean();
 
     // send the registration mail
