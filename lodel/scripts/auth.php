@@ -21,7 +21,8 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if (!$name) break;
 
     include_once("$home/connect.php");
-    if (!($result=mysql_db_query ($database,"SELECT id,iduser,revue,context,expire,expire2,currenturl FROM $GLOBALS[tableprefix]session WHERE name='$name'")))  break;
+    mysql_select_db($database);
+    if (!($result=mysql_query ("SELECT id,iduser,revue,context,expire,expire2,currenturl FROM $GLOBALS[tableprefix]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
     $GLOBALS[idsession]=$idsession=$row[id];
 
@@ -45,7 +46,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if ($userpriv<$level) { header("location: login.php?erreur_privilege=1&".$retour); exit; }
 
 #ifndef LODELLIGHT
-    // verifie encore...
+    // verifie encore une fois au cas ou...
     if ($userpriv<LEVEL_SUPERADMIN && !$revue) break;
 #endif
 
@@ -54,46 +55,56 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if ($userpriv>=LEVEL_EDITEUR) $context[editeur]=$GLOBALS[editeur]=1;
     if ($userpriv>=LEVEL_REDACTEUR) $context[redacteur]=$GLOBALS[redacteur]=1;
     if ($userpriv>=LEVEL_VISITEUR) $context[visiteur]=$GLOBALS[visiteur]=1;
-
     // efface les donnees de la memoire et protege pour la suite
     $HTTP_COOKIE_VARS[session]=0;
 
+    //
     // change l'expiration de la session et l'url courrante
+    //
 
-
-    $url=$GLOBALS[REQUEST_URI];
+    // nettoie l'url
+    $url=preg_replace("/[\?&]recalcul\w+=oui/","",$GLOBALS[REQUEST_URI]);
     if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
     if (!$norecordurl) $update=",currenturl='$url'"; // si norecordurl ne change rien
 
     $expire=$timeout+$time;
-    mysql_db_query($database,"UPDATE $GLOBALS[tableprefix]session SET expire='$expire'$update WHERE name='$name'") or die (mysql_error());
+    mysql_query("UPDATE $GLOBALS[tableprefix]session SET expire='$expire'$update WHERE name='$name'") or die (mysql_error());
+
     //
     // gestion de l'url de retour
     //
     if ($back) {
       // on detruit l'entree dans la pile
       $back=intval($back);
-      mysql_db_query ($database,"DELETE FROM $GLOBALS[tableprefix]pileurl WHERE id='$back' AND idsession='$idsession'") or die (mysql_error());
+      mysql_query ("DELETE FROM $GLOBALS[tableprefix]pileurl WHERE id='$back' AND idsession='$idsession'") or die (mysql_error());
     }
     $urlmd5=md5($url);
 
     // enregistre l'url de retour à partir de l'info dans la session
     if ($row[currenturl] && $row[currenturl]!=$url && !$norecordurl && !$back) {
-      mysql_db_query ($database,"INSERT INTO $GLOBALS[tableprefix]pileurl (idsession,url,urlretour) VALUES ('$idsession','$urlmd5','$row[currenturl]')") or die (mysql_error());
-      mkurlretour($row[currenturl],mysql_insert_id());
+      mysql_query ("INSERT INTO $GLOBALS[tableprefix]pileurl (idsession,url,urlretour) VALUES ('$idsession','$urlmd5','$row[currenturl]')") or die (mysql_error());
+      $context[url_retour]=mkurl($row[currenturl],"back=".mysql_insert_id());
     } else {
       // cherche l'url de retour dans la base de donnee
-      $result=mysql_db_query ($database,"SELECT urlretour,id FROM $GLOBALS[tableprefix]pileurl WHERE idsession='$idsession' AND url='$urlmd5' ORDER BY id DESC LIMIT 0,1") or die (mysql_error());
+      $result=mysql_query ("SELECT urlretour,id FROM $GLOBALS[tableprefix]pileurl WHERE idsession='$idsession' AND url='$urlmd5' ORDER BY id DESC LIMIT 0,1") or die (mysql_error());
       if (mysql_num_rows($result)) {
 	list($urlretour,$id)=mysql_fetch_row($result);
-	mkurlretour($urlretour,$id);
+	$context[url_retour]=mkurl($urlretour,"back=$id");
       } else {	
 	$context[url_retour]="";
       }
     }
-#    echo "retour:$context[url_retour]";
+    #    echo "retour:$context[url_retour]";
+    //
+    // fin de gestion de l'url de retour
+    //
 
-    mysql_select_db($GLOBALS[currentdb])  or die (mysql_error());
+    $context[url_recompile]=mkurl($url,"recalcul_templates=oui");
+
+    //
+    // relselection la DB de la revue comme DB par defaut.
+    //
+    mysql_select_db($GLOBALS[currentdb]) or die (mysql_error());
     return; // ok !!!
   } while (0);
 
@@ -108,6 +119,18 @@ function authenticate ($level=0,$norecordurl=FALSE)
   }
 }
 
+
+function mkurl ($url,$extraarg)
+
+{
+  if (strpos($url,"?")===FALSE) {
+    return $url."?".$extraarg;
+  } else {
+    return $url."&".$extraarg;
+  }
+}
+
+/* supprimer le 29/03/03 a enlever si ca fonctionne
 function mkurlretour ($urlretour,$id)
 
 {
@@ -119,6 +142,8 @@ function mkurlretour ($urlretour,$id)
     $context[url_retour]=$urlretour."&back=$id";
   }
 }
+*/
+
 
 #ifndef LODELLIGHT
 function getrevueoptions ()
@@ -128,7 +153,8 @@ function getrevueoptions ()
 
   include_once ("$home/connect.php");
 
-  $result=mysql_db_query($GLOBALS[database],"SELECT $GLOBALS[tableprefix]options FROM revues WHERE rep='$revue'") or die (mysql_error());
+  mysql_select_db($GLOBALS[database]);
+  $result=mysql_query("SELECT $GLOBALS[tableprefix]options FROM revues WHERE rep='$revue'") or die (mysql_error());
   if (!mysql_num_rows($result)) { die ("erreur revue"); }
 
   list($options)=mysql_fetch_array($result);
@@ -145,12 +171,13 @@ $iduser=0;
 $revue="";
 $idsession=0;
 
-$context=array(); // tres important
+$context=array(
+	       "version" => doubleval($version)
+	       ); // tres important d'initialiser le context.
 $superadmin=0;
 $admin=0;
 $user=0;
 $context[shareurl]=$shareurl;
-
 
 // cherche le nom de la revue
 

@@ -1,29 +1,29 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Import</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo">
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO">
 <TABLE WIDTH="600" CELLPADDING="5" CELLSPACING="0" BORDER="0" ALIGN="CENTER">
 <TR>
 	<td>
 		<br><br><br>
 		Il est recommandé de faire une sauvegarde de la base de données avant d'en importer une nouvelle:
-		<A HREF="backup.php">Sauvegarde</A>
+		<a href="backup.php">Sauvegarde</a>
 		<br><br><br>
 		Pour importer une base de donnée, vous devez charger le fichier tar.gz  sur le serveur dans le repertoire de [#REPERTOIRE].
-	</TD>
-</TR>
+	</td>
+</tr>
 <TR>
-	<TD>
+	<td>
 		Liste des fichiers disponibles:<P>
-		<BOUCLE NAME="fichiers">
+		<LOOP NAME="fichiers">
 			>> 	<strong>[#NOM]</strong> >> 
-			<A HREF="import.php?fichier=[(#NOM|urlencode)]">
+			<a href="import.php?fichier=[(#NOM|urlencode)]">
 			Importer
-		</A>
+		</a>
 		<BR>
-</BOUCLE>
+</LOOP>
 	</td>
 </tr>
 </TABLE>
-<MACRO NAME="close_html">  
+<MACRO NAME="CLOSE_HTML">  

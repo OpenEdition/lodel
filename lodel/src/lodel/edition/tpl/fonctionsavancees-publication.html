@@ -1,0 +1,113 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Edition de document</title>
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="center">
+	<tr>
+		<td align="center">
+			<span class="titre">Fonctions Avancées</span><br />
+			<span class="soustitre">de la publication</span>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<span class="titre">[#NOM]</span>
+		</td>
+	</tr>
+</table>
+<br />
+<div align="center"><a href="index.php?id=[#PARENT]">Retour</a></div>
+<br />
+<table width="400" cellpadding="0" cellspacing="1" border="1" align="center">
+	<tr>
+		<td>
+			<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center">
+				<tr>
+					<td>
+						<strong>Statut de la publication :</strong>
+					</td>
+					<td>
+						<MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI">
+					</td>
+					<td>
+						<MACRO NAME="AFFICHER_ICONE_STATUT">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br /><br />
+<table width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+	<tr>
+		<td rowspan="2">
+			<IF COND="[#EDITEUR]">
+				<strong>Changer le statut</strong>
+			<ELSE/>
+				<strong>Changer le statut</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
+			</IF>
+		</td>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_VERROU_PUBLICATIONS_DEPUBLIE">
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_VERROU_PUBLICATIONS_PUBLIE">
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<IF COND="[#EDITEUR]">
+				<strong>Associer une image à la publication</strong>
+			<ELSE/>
+				<strong>Associer une image à la publication</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
+			</IF>
+		</td>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<a href="metaimage.php?idpublication=[#ID]">
+					<span class="texte_trespetit_centre">Image ...</span>
+				</a>
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+	<IF COND="[#TYPE] EQ 'serie_lineaire'">
+		<tr>
+			<td>
+				<IF COND="[#EDITEUR]">
+					<strong>Charger un sommaire</strong>
+				<ELSE/>
+					<strong>Charger un sommaire</strong><br />
+					<em>(Fonction accessible à partir du niveau editeur)</em>
+				</IF>
+			</td>
+			<td align="center">
+				<IF COND="[#EDITEUR]">
+					<a href="chargesommaire.php?id=[#ID]">
+						<span class="texte_trespetit_centre">Charger ...</span>
+					</a>
+				<ELSE/>
+					<MACRO NAME="GIF_INACTIF">
+				</IF>
+			</td>
+		</tr>
+	</IF>
+</table>
+
+<MACRO NAME="CLOSE_HTML">

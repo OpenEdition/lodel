@@ -1,10 +1,10 @@
 <?
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_SUPERADMIN,NORECORDURL);
 
-$repertoire=$context[repertoire]="/www-bin/revues/import";
+$repertoire=$context[repertoire]=$importdir;
 // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 
 if ($fichier && preg_match("/^revue-.*-\d+.tar.gz/i",$fichier) && file_exists("$repertoire/$fichier")) {
@@ -56,18 +56,21 @@ include ("$home/calcul-page.php");
 calcul_page($context,"import");
 
 
-function boucle_fichiers(&$context)
-
-
+function boucle_fichiers(&$context,$funcname)
 {
   global $repertoire;
-  $dir=opendir($repertoire);
-  while (($file=readdir($dir))!==FALSE) {
-    if (!preg_match("/^revue-.*-\d+.tar.gz/i",$file)) continue;
-    $context[nom]=$file;
-    code_boucle_fichiers($context);
+  if ( $dir= @opendir($repertoire)) {
+    while (($file=readdir($dir))!==FALSE) {
+      if (!preg_match("/^revue-.*-\d+.tar.gz/i",$file)) continue;
+      $context[nom]=$file;
+      //code_boucle_fichiers($context);
+  	call_user_func("code_boucle_$funcname",$context);
+    }
+    closedir ($dir);
   }
-  closedir ($dir);
+  else {
+    die ("Le repertoire $repertoire n'existe pas !");
+  }
 }
 
 

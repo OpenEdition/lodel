@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Chargement de fichier</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 <script>
 <!--
 
@@ -20,9 +20,9 @@ function infoChargement(nomFic){
   else
   {
 	  var colData = "";
-	  colData = "<br><br><font color='navy' size='2' face='Arial'>";
-	  colData += "<b>Le fichier</b><br>";
-//	  colData += nomFic + "<br>";	
+	  colData = "<br /><br /><font color='navy' size='2' face='Arial'>";
+	  colData += "<b>Le fichier</b><br />";
+//	  colData += nomFic + "<br />";	
 	  colData += "<b>est en cours de téléchargement</b>";
 	
 	
@@ -54,39 +54,47 @@ function infoChargement(nomFic){
 </script>
 
 <table width="430" border="0" align="center" cellspacing="4" cellpadding="4">
-<TR><TD>
-<div align="center"><span class="titre">Chargement du fichier</span></div><br>
+<TR><td>
+<div align="center"><span class="titre">Chargement du fichier</span></div><br />
 
 <span class="texte_petit">
+<IF COND="[#ERREUR_FICHIERNONRTF]">
+	<div align="center" style="color:red;">
+		<strong>
+			ATTENTION<br />Le fichier que vous avez essayé d'importer n'est pas un fichier de type RTF
+		</strong>
+		<br />
+	</div>
+</IF>
 Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.
 
-<FORM NAME="formfic" ENCTYPE="multipart/form-data" ACTION="chargement.php" METHOD=POST onsubmit="return infoChargement(document.formfic.htmlfile.value)">
-<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="5000000">
-<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<INPUT TYPE="hidden" name="tache" VALUE="[#TACHE]">
-<strong>Fichier:</strong></TD>
-</TR>
+<form name="formfic" enctype="multipart/form-data" action="chargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)">
+<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="tache" value="[#TACHE]">
+<strong>Fichier:</strong></td>
+</tr>
 <TR>
-<TD><input type="file" name="htmlfile" size="40"></TD>
-[(#ERREUR_UPLOAD|true)<TD CLASS="erreur">Une erreur s'est produite pendant le chargement.</TD>]</TR>
-<TR><TD>
-<br>
+<td><input type="file" name="htmlfile" size="40"></td>
+[(#ERREUR_UPLOAD|true)<td CLASS="erreur">Une erreur s'est produite pendant le chargement.</td>]</tr>
+<TR><td>
+<br />
 
-<INPUT CLASS="form" TYPE="submit" VALUE="Charger">
-<br>
-<IF [#SUPERADMIN]>
-<BR><BR>Super Admin:<BR>
-<INPUT CLASS="form" TYPE="submit" NAME="sortieted" VALUE="Sortie Brute de Ted">
-<INPUT CLASS="form" TYPE="submit" NAME="sortie" VALUE="Sortie de chargement">
+<input class="form" type="submit" value="Charger">
+<br />
+<IF COND="[#SUPERADMIN]">
+<br /><br />Super Admin:<br />
+<input class="form" type="submit" name="sortieted" value="Sortie Brute de Ted">
+<input class="form" type="submit" name="sortie" value="Sortie de chargement">
 </IF>
 <div align="center" id='info' style="text-decoration:blink ">
 </div>
-</FORM>
-<br>
-<br>
+</form>
+<br />
+<br />
 
-<A HREF="index.php">Revenir</A>
+<a href="index.php">Revenir</a>
 </td></tr>
-</TABLE>
+</table>
 
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">
