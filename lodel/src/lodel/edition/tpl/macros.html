@@ -997,7 +997,7 @@
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
 		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="publication.php?id=[#ID]">[@EDITION.EDIT]</a>&nbsp;
+		|&nbsp;<a href="publication.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
