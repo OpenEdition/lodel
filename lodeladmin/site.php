@@ -382,7 +382,7 @@ if ($tache=="fichier") {
 
   // clear the CACHEs
   require_once($home."cachefunc.php");
-  removefilesincache($root,$root."lodel/edition",$root."lodel/admin");
+  removefilesincache(LODELROOT,$root,$root."lodel/edition",$root."lodel/admin");
 
   // ok on a fini, on change le statut du site
   mysql_select_db($GLOBALS[database]);
