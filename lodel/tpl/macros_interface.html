@@ -234,16 +234,12 @@ cp_[#NAME].writeDiv();
 			<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][[#DEGREE]][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 			<br />
 		        </DO>
-        	<AFTER>
+	        	<AFTER>
                         <a href="#" onClick="deletepersons(this); return false;">[@COMMON.DELETE]</a>
 			</div>
-	               <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">	
-        	</AFTER>
-		<ALTERNATIVE>
-	               <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0">	
-		</ALTERNATIVE>
-	    </LOOP>
-
+        		</AFTER>
+	    	</LOOP>
+            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">	
 	</DO>
 	</LOOP>
         <!--[ widget available for adding new persons of this type ]-->
