@@ -69,7 +69,7 @@
 <p>Fonction d'archivage ZIP:</p>
 
 <p>Si vous souhaitez utiliser ces fonctionalités l'import par ServOO ou le systeme de sauvegarde de Lodel, veuillez choisir une des deux options:</p>
-<ul>
+<ul style="list-style-type:none;">
 <li>
 <p>
 <input type="radio" name="pclzip" value="pclzip" <?php if ($unzipcmd=='pclzip' && $zipcmd=='pclzip') { echo "checked";}?> >Utiliser PclZip. Pour cela, assurez vous que l'extension zlib est installée <?php if (function_exists('gzopen')) { ?>(ce qui semble être le cas) <?php } else { ?>(<strong>ce qui ne semble pas être le cas</strong>)<?php } ?>
