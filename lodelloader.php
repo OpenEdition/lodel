@@ -1673,67 +1673,83 @@ function open_html() {
   ?>
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
     <html>
-    <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859">
     <meta name="ROBOTS" content="nofollow, noindex">
-    <style type="text/css">
-    <!--
-    a:link {
-    color: #CC6633;
-    text-decoration: none;
-  }
- a:visited {
-  color: #666666;
-  }
- a:hover {
-  color: #CC0000;
-  }
- a:active {
-  color: #333366;
-  }
-  p {
-    font-family: Verdana,Arial;
-    font-size: 14px;
-  color: #544A35;
-    text-align: justify;
-    line-height: 18px;
-    padding-bottom: 10px;
-  }
-  h1 {
-    font-family: Verdana,Arial;
-    font-size: 25px;
-  color: #544A35;
-    text-align: center;
-    padding-bottom: 20px;
-  }
-  h2 {
-    font-family: Verdana,Arial;
-    font-size: 20px;
-  color: #544A35;
-    text-align: center;
-    padding-bottom: 20px;
-  }
-  h3 {
-    font-family: Verdana,Arial;
-    font-size: 18px;
-  color: #544A35;
-    text-align: center;
-    padding-bottom: 20px;
-  }
-
-  -->
-    </style>
 
 
 	<head>
+<style type="text/css">
+<!--
+body{
+	margin: 0;
+	background-color: #fff;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+	color: #333;
+}
+a:link {
+    color: #CC6633;
+    text-decoration: none;
+}
+a:visited {
+	color: #666666;
+}
+a:hover {
+	color: #FFAD00;
+}
+a:active {
+	color: #333366;
+}
+p {
+	color: #544A35;
+	text-align: justify;
+	line-height: 18px;
+	padding-bottom: 10px;
+}
+h1{
+    font-family: Verdana,Arial;
+    font-size: 25px;
+  	color: #63944A;
+    text-align: center;
+	margin-top: 50px;
+    margin-bottom: 50px;
+}
+h2{
+	font-family: Verdana,Arial;
+	font-size: 20px;
+	color: #544A35;
+	text-align: center;
+	padding-bottom: 20px;
+}
+h3{
+	font-family: Verdana,Arial;
+	font-size: 18px;
+	color: #544A35;
+	text-align: center;
+	padding-bottom: 20px;
+}
+li{
+	margin-bottom: 10px;
+}
+#main{
+	border: 2px solid #63944A;
+	width: 600px;
+	margin: auto;
+	padding: 20px;
+}
+.or{
+	color: #FFAD00;
+}
+-->
+</style>
 	<title>Chargement et installation de LODEL</title>
 	</head>
-	<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
+	<body> 
 
-	<h1>Chargement et installation de LODEL</h1>
+	<h1>Chargement et installation de L<span class="or">O</span>DEL</h1>
 
 
-	<div align="center">
+	<div id="main">
 	<table width="600">
 	<tr>
 	<td>
@@ -1745,6 +1761,7 @@ function close_html() {
   </td>
     </table>
     </div>
+<br />&nbsp;<br />
     </body>
     <?php
 }
@@ -1760,23 +1777,23 @@ function msg_error($msg) {
 function msg_intro() {
   open_html();
 ?>
-<p align="center">
-Bienvenue dans l'installation de <b>LODEL</b>, logiciel d'édition électronique</p>
-<p>L'installation comprend:</p>
+<p>
+Bienvenue dans l'installation de <strong>LODEL</strong>, logiciel d'édition électronique</p>
+<p>L'installation comprend :</p>
 <ul>
-    <li>le téléchargement automatiquement sur le site http://www.lodel.org la dernière version de Lodel.</li>
+   <li>le téléchargement automatique sur le site <a href="http://www.lodel.org">http://www.lodel.org</a> de la dernière version de Lodel.</li>
   <li>la configuration de Lodel pour votre serveur.</li>
 </ul>
 
 <p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappelé ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
 
 
-<h2>Condition d'utilisation de Lodel</h2>
-<p align="justify">Ce programme est un logiciel libre&nbsp;; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation&nbsp;; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure. </p>
-<p align="justify">Ce programme est distribu&eacute; dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE&nbsp;; sans m&egrave;me la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de d&eacute;tails, voir la Licence Publique G&eacute;n&eacute;rale GNU. </p>
-<p align="justify">Un exemplaire de la Licence Publique G&eacute;n&eacute;rale GNU doit &ecirc;tre fourni avec ce programme&nbsp;; si ce n'est pas le cas, &eacute;crivez &agrave; la Free Software Foundation Inc., 675 Mass Ave, Cambridge, MA 02139, Etats-Unis. </p>
+<h2>Conditions d'utilisation de Lodel</h2>
+<p>Ce programme est un logiciel libre&nbsp;; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation&nbsp;; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure. </p>
+<p>Ce programme est distribu&eacute; dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE&nbsp;; sans m&egrave;me la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de d&eacute;tails, voir la <a href="http://www.gnu.org/licenses/gpl.txt">Licence Publique G&eacute;n&eacute;rale GNU</a>. </p>
+<p>Un exemplaire de la Licence Publique G&eacute;n&eacute;rale GNU doit &ecirc;tre fourni avec ce programme&nbsp;; si ce n'est pas le cas, &eacute;crivez &agrave; la Free Software Foundation Inc., 675 Mass Ave, Cambridge, MA 02139, Etats-Unis. </p>
 
-<p>GNU General Public License&nbsp;: <a href="http://www.gnu.org/licenses/gpl.txt">licence</a></p>
+<p><a href="http://www.gnu.org/licenses/gpl.txt"><strong>GNU General Public License</strong></a></p>
 
 <form  method="post" action="lodelloader.php">
 <input type="submit" name="install" value="Installer Lodel">
