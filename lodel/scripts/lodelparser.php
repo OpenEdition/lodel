@@ -239,8 +239,8 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 }
 
 
-function prefixtablesindatabase($table) {
-  if ($table=="site" || $table=="session") return $GLOBALS[database].".".$table;
+function prefixtablesindatabase(&$table) {
+  if ($table=="site" || $table=="session") $table=$GLOBALS[database].".".$table;
 }
 
 
