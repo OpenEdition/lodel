@@ -91,14 +91,14 @@
 							<a href="champ.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 
 		<IF COND="([#DROITADMIN] and [#STATUT] lt 32) or [#DROITADMINLODEL]">
-                         |&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+                         |&nbsp;<a href="champ.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
                 <ELSE/>
-   	                 |&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+   	                 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 	        </IF>
 		<IF COND="[#STATUT] ge 32">
-			<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+			<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
 		<ELSE/> <!--[ non protégé ]-->
-			<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+			<a href="champ.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
@@ -109,51 +109,51 @@
 					<a href="groupedechamps.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 					<a href="groupedechamps.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
                        <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
-			|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+			|&nbsp;<a href="groupedechamps.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	               <ELSE/>
-			|&nbsp;<span class="inactif>Modifier</span>&nbsp;|&nbsp;
+			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 	               </IF>
 			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
 				<DO>
 					<IF COND="[#NBCHAMPS]">
-						<span class="inactif">Supprimer</span>&nbsp;|
+						<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
 					<ELSE/><IF COND="[#STATUT] lt 32">
-						<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+						<a href="groupedechamps.php?delete=1&id=[#ID]">[@COMMON.DELETE]</a>&nbsp;|
 					<ELSE/>
-						<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+						<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
 					</IF></IF>
 				</DO>
 			</LOOP>
 		<ELSE/>
-			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
-			<span class="inactif">Supprimer</span>&nbsp;|
+			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_ENTREES">
 	<IF COND="([#DROITADMIN] and [#STATUT] lt 32) or [#DROITADMINLODEL]">
-	         |&nbsp;<a href="typeentree.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+	         |&nbsp;<a href="typeentree.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<ELSE/>
-		 |&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+		 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
         </IF>
         <IF COND="[#STATUT] ge 32">
-		  <span class="inactif">Supprimer (Protégé)</span>&nbsp;|&nbsp;
+		  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
         <ELSE/>
-		<a href="typeentree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+		<a href="typeentree.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
 	<IF COND="([#DROITADMIN] and [#STATUT] lt 32) or [#DROITADMINLODEL]">
-	         |&nbsp;<a href="typepersonne.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+	         |&nbsp;<a href="typepersonne.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<ELSE/>
-		 |&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+		 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
         </IF>
         <IF COND="[#STATUT] ge 32">
-		  <span class="inactif">Supprimer (Protégé)</span>&nbsp;|&nbsp;
+		  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
         <ELSE/>
-		<a href="typepersonne.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+		<a href="typepersonne.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
 	</IF>
 </DEFMACRO>
 
@@ -167,25 +167,25 @@
 					<a href="translation.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 					<a href="translation.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
                        <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
-			|&nbsp;<a href="translation.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+			|&nbsp;<a href="translation.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	               <ELSE/>
-			|&nbsp;<span class="inactif>Modifier</span>&nbsp;|&nbsp;
+			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 	               </IF>
 	               <IF COND="[#STATUT] lt 32">
-				<a href="translation?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+				<a href="translation?delete=1&id=[#ID]">[@COMMON.DELETE]</a>&nbsp;|
 			<ELSE/>
-				<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+				<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
 			</IF>
 		<ELSE/>
-			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
-			<span class="inactif">Supprimer</span>&nbsp;|
+			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
 		</IF>
 		<IF COND="[#DROITEDITEUR] and (([#STATUT] lt 32) or [#DROITADMINLODEL])">
-			<a href="translationsexport.php?lang=[#LANG]">Exporter</a>&nbsp;
-			|&nbsp;<a href="translationsimport.php?lang=[#LANG]">Importer</a>&nbsp;|&nbsp;
+			<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
+			|&nbsp;<a href="translationsimport.php?lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
                <ELSE/>
-			<span class="inactif>Exporter</span>&nbsp;
-			|&nbsp;<span class="inactif>Importer</span>&nbsp;|&nbsp;
+			<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;
+			|&nbsp;<span class="inactif">[@ADMIN.IMPORT]</span>&nbsp;|&nbsp;
                </IF>
 	</div>
 </DEFMACRO>
@@ -232,7 +232,7 @@
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="5"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
+			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD_GROUP]</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
@@ -250,19 +250,19 @@
 <!--[ Macro servant à users.html                         ]-->
 <DEFMACRO NAME="AFFICHER_PRIVILEGE">
 	<IF COND="[#PRIVILEGE] EQ 128">
-		<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
+		<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />[@COMMON.ADMINLODEL]
 	<ELSE/>
 		<IF COND="[#PRIVILEGE] EQ 40">
-			<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur
+			<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />[@COMMON.ADMIN]
 		<ELSE/>
 			<IF COND="[#PRIVILEGE] EQ 30">
-				<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />Editeur
+				<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />[@COMMON.EDITOR]
 			<ELSE/>
 				<IF COND="[#PRIVILEGE] EQ 20">
-					<MACRO NAME="PNG_UTILISATEUR_VERT"><br />R&eacute;dacteur
+					<MACRO NAME="PNG_UTILISATEUR_VERT"><br />[@COMMON.WRITER]
 				<ELSE/>
 					<IF COND="[#PRIVILEGE] EQ 10">
-						<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />Visiteur
+						<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />[@COMMON.VISITOR]
 					</IF>
 				</IF>
 			</IF>
@@ -275,7 +275,7 @@
 <!--[ Macro servant à entrees.html                       ]-->
 <DEFMACRO NAME="AUCUNE_ENTREE_DISPONIBLE">
 	<div class="pas_de_publication">
-		Aucune entrée disponible
+		[@ADMIN.NO_ENTRY_AVAILABLE]
 	</div>
 </DEFMACRO>
 <!--[ ************************************************** ]-->
@@ -285,25 +285,25 @@
 <!--[ Macro servant à typedocs.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_DOCUMENT">
         <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
-            |&nbsp;<a href="typedoc.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+            |&nbsp;<a href="typedoc.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
         <ELSE/>
-            |&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+            |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
         </IF>
 	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
 		<DO>
 			<IF COND="[#NBDOCUMENTS]">
 				<span class="inactif">
 					<IF COND="[#NBDOCUMENTS] gt 1">
-						Supprimer (Associé à [#NBDOCUMENTS] documents)&nbsp;|
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
 					<ELSE/>
-						Supprimer (Associé à [#NBDOCUMENTS] document)&nbsp;|
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
 					</IF>
 				</span>
 			<ELSE/>
 	                <IF COND="[#STATUT] ge 32">
-		              <span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+		              <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
                         <ELSE/>
-				<a href="typedoc.php?id=[#ID]&delete=1">Supprimer&nbsp;|</a>
+				<a href="typedoc.php?id=[#ID]&delete=1">[@COMMON.DELETE]&nbsp;|</a>
 			</IF>
 	                </IF>
 		</DO>
@@ -314,25 +314,25 @@
 <!--[ Macro servant à typepublis.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PUBLICATION">
         <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
-            |&nbsp;<a href="typepubli.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+            |&nbsp;<a href="typepubli.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
         <ELSE/>
-            |&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+            |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
         </IF>
 	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
 		<DO>
 			<IF COND="[#NBDOCUMENTS]">
 				<span class="inactif">
 					<IF COND="[#NBDOCUMENTS] gt 1">
-						Supprimer (Associé à [#NBDOCUMENTS] documents)&nbsp;|
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
 					<ELSE/>
-						Supprimer (Associé à [#NBDOCUMENTS] document)&nbsp;|
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
 					</IF>
 				</span>
 			<ELSE/>
 	                <IF COND="[#STATUT] ge 32">
-		              <span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+		              <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
                         <ELSE/>
-				<a href="typepubli.php?id=[#ID]&delete=1">Supprimer&nbsp;|</a>
+				<a href="typepubli.php?id=[#ID]&delete=1">[@COMMON.DELETE]&nbsp;|</a>
 			</IF>
 	                </IF>
 		</DO>
@@ -341,7 +341,7 @@
 
 <!--[ Macro servant à typedoc.html et typepubli.html     ]-->
 <DEFMACRO NAME="CHOIX_TYPES_PARENTS">
-	<u>Type de publication et documents<br /> qui peuvent contenir ce type de documents :</u><br />
+	<u>[@COMMON.PUBLICATIONS_DOCUMENTS_TYPE]<br /> [@ADMIN.CONTAINS_THIS_TYPE] :</u><br />
 	<LOOP NAME="types_parents" TABLE="typeentites_typeentites" WHERE="idtypeentite='[#ID]' AND idtypeentite2=0">
 		<DO><input type="checkbox" name="typeentite[0]" checked></DO>
 		<ALTERNATIVE><input type="checkbox" name="typeentite[0]"></ALTERNATIVE>

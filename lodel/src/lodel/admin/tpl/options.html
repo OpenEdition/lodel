@@ -23,19 +23,19 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Administer les options du site</title>
+<title>[@ADMIN.TITLE_ADMINISTRATE_SITE_OPTIONS]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_index.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Options</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_ADMINISTRATE_SITE_OPTIONS]</td>
 	</tr>
 </table>
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="option.php">Ajouter une option</a>
+	<a href="option.php">[@ADMIN.ADD_OPTION]</a>
 </div>
 <br />
 
@@ -45,9 +45,9 @@
 
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5" width="90%">
 <tr>
-	<td class="texte_noir_gras">Nom</td>
-	<td class="texte_noir_gras">Valeur</td>
-	<td class="texte_noir_gras">Type</td>
+	<td class="texte_noir_gras">[@COMMON.NAME]</td>
+	<td class="texte_noir_gras">[@ADMIN.VALUE]</td>
+	<td class="texte_noir_gras">[@COMMON.TYPE]</td>
 	<td>&nbsp;</td>
 </tr>
 
@@ -76,14 +76,14 @@
 				<a href="option.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 
 		        <IF COND="[#DROITADMINLODEL] || [#STATUT] lt 32">
-			&nbsp;&nbsp;|&nbsp;<a href="option.php?id=[#ID]">Editer</a>&nbsp;
-	                |&nbsp;<a href="option.php?id=[#ID]&delete=1">Supprimer</a>
+			&nbsp;&nbsp;|&nbsp;<a href="option.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
+	                |&nbsp;<a href="option.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>
 		        <ELSE/>
-			&nbsp;&nbsp;|<span class="inactif">Editer</span>&nbsp;
-			|&nbsp;<span class="inactif">Supprimer</span>&nbsp;|&nbsp;
+			&nbsp;&nbsp;|<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
+			|&nbsp;<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
 			</IF>
 		        &nbsp;|&nbsp;
-			<IF COND="[#STATUT] ge 32">[Protégée]<ELSE/>[ Normal ]</IF>
+			<IF COND="[#STATUT] ge 32">[[@COMMON.PROTECTED]]<ELSE/>[[@COMMON.NORMAL]]</IF>
 		       </td>
 		</tr>
          </DO>
@@ -91,9 +91,9 @@
 </table>
 
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="   Modifier     " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="submit" name="terminer" value="    Modifier et terminer    ">&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php'">
+		<input class="form" type="submit" value="[@COMMON.MODIFY]" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="submit" name="terminer" value="[@ADMIN.MODIFY_FINISH]">&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'">
 	</div>
 </form>
 
