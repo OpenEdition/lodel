@@ -158,7 +158,7 @@ Auteur : Marin Dacos. 2002. -->
 	</LOOP>
 </DEFMACRO>
 
-<!-- Crée un gros bloc qui affiche le titre du numéro ou du thème, sauf s'il est vide,
+<!-- Crée un gros bloc qui affiche le titre du numéro ou de la rubrique, sauf s'il est vide,
 auquel cas il affiche le nom de la revue. Il affiche aussi le texte d'introduction-->
 
 <DEFMACRO NAME="TITRE_PUBLICATION">
@@ -473,17 +473,17 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!-- -------------------------------- -->
-<!-- Affiche les sous-thèmes du thème -->
+<!-- Affiche les sous-rubriques de la rubrique -->
 <!-- -------------------------------- -->
 
-<DEFMACRO NAME="SOUS_THEMES">
-	<LOOP NAME="sous_themes" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type='theme'">
+<DEFMACRO NAME="SOUS_RUBRIQUES">
+	<LOOP NAME="sous_rubriques" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type='rubrique'">
 		<BEFORE>
 			<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0">
 				<TR>
 					<td class="partie">
 						<hr align="center" width="330">
-							Sous-thèmes
+							Sous-rubriques
 						<hr align="center" width="330">
 					</td>
 				</tr>
@@ -518,11 +518,11 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!-- -------------------------------- -->
-<!-- Affiche les thèmes d'une série  -->
+<!-- Affiche les rubriques d'une série  -->
 <!-- -------------------------------- -->
 
-<DEFMACRO NAME="LISTE_THEMES">
-	<LOOP NAME="sous_themes" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='theme'">
+<DEFMACRO NAME="LISTE_RUBRIQUES">
+	<LOOP NAME="sous_rubriques" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='rubrique'">
 		<BEFORE>
 			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
 		</BEFORE>
@@ -564,7 +564,7 @@ Attention, cette routine sera changée bientôt
 	<!-- ------------------------------------ -->
 	<!-- Affiche les articles               -->
 	<!-- ------------------------------------ -->
-	<LOOP NAME="article" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<LOOP NAME="article" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 	<BEFORE>
 		<table width="95%" border="0" align="center">
 	</BEFORE> 
@@ -600,7 +600,7 @@ Attention, cette routine sera changée bientôt
 				</td>
 			</tr>
 
-			<LOOP NAME="article_regroupements" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+			<LOOP NAME="article_regroupements" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 			<TR> 
 				<TD class="texte_sommaire_petit" valign="top"> 
 					<MACRO NAME="LIGNE_ARTICLE">
@@ -725,7 +725,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!-- *************************************************** -->
-<!-- Liste des numéros et liste des thèmes               -->
+<!-- Liste des numéros et liste des rubriques               -->
 <!-- *************************************************** -->
 
 
@@ -742,13 +742,13 @@ Attention, cette routine sera changée bientôt
 </form>
 </DEFMACRO>
 
-<!--  Menu déroulant affichant la liste des publications de type thème, publiées -->
+<!--  Menu déroulant affichant la liste des publications de type rubrique, publiées -->
 
-<DEFMACRO NAME="PUBLICATIONS_THEMES">
+<DEFMACRO NAME="PUBLICATIONS_RUBRIQUES">
 <form name="pub_menu_B">
 	<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 	<option value="index.html">Thèmes</option>
-	<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
+	<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" ORDER="ordre DESC">
 		<option value="sommaire.html?id=[#ID]">
 			[#NOM]
 		</option>
@@ -786,12 +786,12 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>	
 
 <!-- *************************************************** -->
-<!-- Affiche la liste des publications de type thème, publiées, sans parent -->
+<!-- Affiche la liste des publications de type rubrique, publiées, sans parent -->
 <!-- *************************************************** -->
 
 <!-- Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. -->
-<DEFMACRO NAME="LISTE_GRANDS_THEMES_ID2">
-<LOOP NAME="liste_grands_themes_id2" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="idparent='2'" ORDER="ordre ASC">
+<DEFMACRO NAME="LISTE_GRANDES_RUBRIQUES_ID2">
+<LOOP NAME="liste_grands_rubriques_id2" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" WHERE="idparent='2'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">[#NOM]<br>
 	</a>
@@ -799,8 +799,8 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!-- Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. -->
-<DEFMACRO NAME="LISTE_GRANDS_THEMES_ID19">
-<LOOP NAME="liste_grands_themes_id19" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="idparent='19'" ORDER="ordre ASC">
+<DEFMACRO NAME="LISTE_GRANDES_RUBRIQUES_ID19">
+<LOOP NAME="liste_grands_rubriques_id19" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" WHERE="idparent='19'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">[#NOM]<br>
 	</a>
@@ -888,11 +888,11 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!-- *************************************************** -->
-<!-- Affiche le dernier thème (en fonction du champ date) -->
+<!-- Affiche la dernière rubrique (en fonction du champ date) -->
 <!-- *************************************************** -->
 
-<DEFMACRO NAME="DERNIER_THEME">
-<LOOP NAME="dernier_numero" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
+<DEFMACRO NAME="DERNIERE_RUBRIQUE">
+<LOOP NAME="dernier_numero" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='rubrique'" LIMIT="0,1">
 		<a href="sommaire.html?id=[#ID]">
 			[#NOM]
 		</a>

@@ -18,8 +18,8 @@
 <!-- <MACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">                     -->
 <!-- <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">                     -->
 <!-- <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">                  -->
-<!-- <MACRO NAME="EXPLORATEUR_THEMES_PUBLICATIONS">                     -->
-<!-- <MACRO NAME="EXPLORATEUR_THEMES_DOCUMENT">                         -->
+<!-- <MACRO NAME="EXPLORATEUR_RUBRIQUES_PUBLICATIONS">                     -->
+<!-- <MACRO NAME="EXPLORATEUR_RUBRIQUES_DOCUMENT">                         -->
 <!-- <MACRO NAME="EXPLORATEUR">                                         -->
 <!-- ****************************************************************** -->
 
@@ -35,7 +35,7 @@
 		<? $pos = strpos(strtolower($context[type]), "numero");
 	  		if ($pos === false) {?> 
 			<a href="[#PREVPUBLICATION]">
-				<MACRO NAME="IMG_BOUTON_THEME_PRECEDENT">
+				<MACRO NAME="IMG_BOUTON_RUBRIQUE_PRECEDENTE">
 			</a>
 		<?}	else {?>
 			<a href="[#PREVPUBLICATION]">
@@ -58,7 +58,7 @@
 		<? $pos = strpos(strtolower($context[type]), "numero");
 	  		if ($pos === false) {?> 
 			<a href="[#NEXTPUBLICATION]">
-				<MACRO NAME="IMG_BOUTON_THEME_SUIVANT">
+				<MACRO NAME="IMG_BOUTON_RUBRIQUE_SUIVANTE">
 			</a>
 		<?}	else {?>
 			<a href="[#NEXTPUBLICATION]">
@@ -416,7 +416,7 @@
 	<? insert_template("barre");?> 
 </DEFMACRO>
 
-<DEFMACRO NAME="EXPLORATEUR_THEMES_PUBLICATIONS">
+<DEFMACRO NAME="EXPLORATEUR_RUBRIQUES_PUBLICATIONS">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- ****************************************************************** -->
@@ -427,7 +427,7 @@
 	</LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="EXPLORATEUR_THEMES_DOCUMENT">
+<DEFMACRO NAME="EXPLORATEUR_RUBRIQUES_DOCUMENT">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- ****************************************************************** -->
@@ -485,12 +485,12 @@
 						<br />
 					</LOOP>
 -->
-					<!-- J'affiche tous les articles issus d'un thème
-					seulement si c'est le thème en cours 
-					car les thèmes ne se déplient que lorsqu'on les
+					<!-- J'affiche tous les articles issus d'une rubrique
+					seulement si c'est la rubrique en cours 
+					car les rubriques ne se déplient que lorsqu'on les
 					consulte -->
 <!-- Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
-						<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='theme'">
+						<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='rubrique'">
 							<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 							<br />
 						</LOOP>

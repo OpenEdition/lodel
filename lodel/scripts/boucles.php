@@ -43,11 +43,11 @@ function loop_topparentdoc(&$context,$funcname)
   topparentpubli($context,funcname);
 }
 
-function loop_themesparents (&$context,$funcname) {
+function loop_rubriquesparentes (&$context,$funcname) {
 	 $id=intval($context[id]);
 	 die ("a reecrire. Ghislain le 01/08/03");
 #ifndef LODELLIGHT
-	 $type="AND type='theme'";
+	 $type="AND type='rubrique'";
 #else
 	 $type="";
 #endif

@@ -554,17 +554,17 @@
 	</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="AJOUTER_UN_THEME">
-	<div class="ligne_ajouter_theme">
+<DEFMACRO NAME="AJOUTER_UNE_RUBRIQUE">
+	<div class="ligne_ajouter_rubrique">
 		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=theme&idparent=[#ID]">Ajouter un thème</a>
+		<a href="publication.php?type=rubrique&idparent=[#ID]">Ajouter une rubrique</a>
 	</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="AJOUTER_UN_SOUS_THEME">
-	<div class="ligne_ajouter_theme">
+<DEFMACRO NAME="AJOUTER_UNE_SOUS_RUBRIQUE">
+	<div class="ligne_ajouter_rubrique">
 		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=theme&idparent=[#ID]">Ajouter un sous-thème</a>
+		<a href="publication.php?type=rubrique&idparent=[#ID]">Ajouter un sous-rubrique</a>
 	</div>
 </DEFMACRO>
 
@@ -853,12 +853,12 @@
 	</LOOP> 
 </DEFMACRO>
 
-<DEFMACRO NAME="LISTER_LES_THEMES">
-	<LOOP NAME="themes" TABLE="publications" WHERE="idparent=[#ID]" ORDER="ordre"> 
+<DEFMACRO NAME="LISTER_LES_RUBRIQUES">
+	<LOOP NAME="rubriques" TABLE="publications" WHERE="idparent=[#ID]" ORDER="ordre"> 
 		<IF COND="[#COUNT] % 2">
-			<div class="ligne_theme1">
+			<div class="ligne_rubrique1">
 		<ELSE/>
-			<div class="ligne_theme2">
+			<div class="ligne_rubrique2">
 		</IF>
 			<MACRO NAME="AFFICHER_ICONE_STATUT">
 			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
@@ -870,12 +870,12 @@
 	</LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="LISTER_LES_SOUS_THEMES">	
-	<LOOP NAME="affiche_sous_themes" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type!='regroupement'" ORDER="ordre">
+<DEFMACRO NAME="LISTER_LES_SOUS_RUBRIQUES">	
+	<LOOP NAME="affiche_sous_rubriques" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type!='regroupement'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
-			<div class="ligne_theme1">
+			<div class="ligne_rubrique1">
 		<ELSE/>
-			<div class="ligne_theme2">
+			<div class="ligne_rubrique2">
 		</IF>
 			<MACRO NAME="AFFICHER_ICONE_STATUT">
 			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">

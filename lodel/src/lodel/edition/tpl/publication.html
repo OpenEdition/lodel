@@ -21,7 +21,7 @@
 			<IF COND="[#TYPE] EQ 'numero'">
 				Numéro parent : 
 			</IF>
-			<IF COND="[#TYPE] EQ 'theme'">
+			<IF COND="[#TYPE] EQ 'rubrique'">
 				Thème parent : 
 			</IF>
 			<IF COND="[#TYPE] EQ 'regroupement'">
@@ -57,8 +57,8 @@
 					<span class="texte_intitule">Tomaison ou numérotation du numéro*</span><br />
 					<span class="texte_info">Exemple : Tome IV, Vol. 12</span>
 				</IF>
-				<IF COND="[#TYPE] EQ 'theme'">
-					<span class="texte_intitule">Nom abrégé du thème*</span><br />
+				<IF COND="[#TYPE] EQ 'rubrique'">
+					<span class="texte_intitule">Nom abrégé de la rubrique*</span><br />
 					<span class="texte_info">Exemple : Sociologie des organisations pour "Relecture de la sociologie des organisations"</span>
 				</IF>
 				<IF COND="[#TYPE] EQ 'regroupement'">
@@ -82,10 +82,10 @@
 				</IF>
 				<IF COND="[#TYPE] EQ 'numero'">
 					<span class="texte_intitule">Titre du numéro </span><br />
-					<span class="texte_info">Indiquer <u>varia</u> en cas de numéro sans thème dominant</span>
+					<span class="texte_info">Indiquer <u>varia</u> en cas de numéro sans rubrique dominant</span>
 				</IF>
-				<IF COND="[#TYPE] EQ 'theme'">
-					<span class="texte_intitule">Titre du thème</span><br />
+				<IF COND="[#TYPE] EQ 'rubrique'">
+					<span class="texte_intitule">Titre de la rubrique</span><br />
 					<span class="texte_info">Exemple : "Relecture de la sociologie des organisations"</span>
 				</IF>
 				<IF COND="[#TYPE] EQ 'regroupement'">

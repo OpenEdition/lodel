@@ -13,7 +13,7 @@
 <!-- <MACRO NAME="DESACTIVER_INDEXATION">                               -->
 <!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
 <!-- <MACRO NAME="IN_EXTENSO">                                          -->
-<!-- <MACRO NAME="MENU_THEMES_PUBLIES">                                 -->
+<!-- <MACRO NAME="MENU_RUBRIQUES_PUBLIEES">                                 -->
 <!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
 <!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
 <!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
@@ -183,16 +183,16 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="MENU_THEMES_PUBLIES">
+<DEFMACRO NAME="MENU_RUBRIQUES_PUBLIEES">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Menu déroulant affichant la liste des publications de type thème,  -->
+<!-- Menu déroulant affichant la liste des publications de type rubrique,  -->
 <!-- qui sont publiés.                                                  -->
 <!-- ****************************************************************** -->
 	<form name="pub_menu_B">
 		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 		<option value="index.html">Thèmes</option>
-		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
+		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" ORDER="ordre DESC">
 			<DO>	
 				<option value="sommaire.html?id=[#ID]">
 					[#NOM]

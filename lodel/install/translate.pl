@@ -47,6 +47,22 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/\[GIF_VISAGE_SUPERADMIN\]/[GIF_VISAGE_ADMINLODEL]/g;
   $change+=$file=~s/\[\#STATUS\]/[\#STATUT]/g;
 
+# changement theme en rubrique
+  $change+=$file=~s/UN_SOUS_THEME/UNE_SOUS_RUBRIQUE/g;
+  $change+=$file=~s/UN_THEME/UNE_RUBRIQUE/g;
+  $change+=$file=~s/GRANDS_THEMES/GRANDES_RUBRIQUES/g;
+  $change+=$file=~s/THEMES_PUBLIES/RUBRIQUES_PUBLIEES/g;
+  $change+=$file=~s/THEME_PRECEDENT/RUBRIQUE_PRECEDENTE/g;
+  $change+=$file=~s/THEME_SUIVANT/RUBRIQUE_SUIVANTE/g;
+  $change+=$file=~s/DERNIER_THEME/DERNIERE_RUBRIQUE/g;
+  $change+=$file=~s/THEME/RUBRIQUE/g;
+  $change+=$file=~s/le\s*dernier\s*th[e|è]me/la dernière rubrique/g;
+  $change+=$file=~s/un\s*sous-th[e|è]me/une sous-rubrique/g;
+  $change+=$file=~s/du\s*th[e|è]me/de la rubrique/g;
+  $change+=$file=~s/le\s*th[e|è]me/la rubrique/g;
+  $change+=$file=~s/un\s*th[e|è]me/une rubrique/g;
+  $change+=$file=~s/th[e|è]me/rubrique/g;
+
 
   next unless $change;
   print "$filename:",$change,"\n";

@@ -22,7 +22,9 @@ img.picto_fleche {vertical-align:bottom;}
 
 div.ligne_serie1, div.ligne_serie2,
 div.ligne_numero1, div.ligne_numero2, 
+/* div.ligne_theme* reste pour la compatibilité avec lodel < 0.7 */
 div.ligne_theme1, div.ligne_theme2, 
+div.ligne_rubrique1, div.ligne_rubrique2, 
 div.ligne_regroupement1, div.ligne_regroupement2, 
 div.ligne_document_isole1, div.ligne_document_isole2, 
 div.ligne_document_regroupement1, div.ligne_document_regroupement2 {
@@ -38,8 +40,11 @@ div.ligne_serie1 {background-color: #FDFAF1;}
 div.ligne_serie2 {background-color: #FFFFFF;}
 div.ligne_numero1 {background-color: #EDFDF3;}
 div.ligne_numero2 {background-color: #FFFFFF;}
+/* div.ligne_theme* reste pour la compatibilité avec lodel < 0.7 */
 div.ligne_theme1 {background-color: #FFFEE8;}
 div.ligne_theme2 {background-color: #FFFFFF;}
+div.ligne_rubrique1 {background-color: #FFFEE8;}
+div.ligne_rubrique2 {background-color: #FFFFFF;}
 /*div.ligne_regroupement1 {background-color: #DFEDE4;}*/
 div.ligne_regroupement1 {background-color: #EFFFEF;}
 div.ligne_regroupement2 {background-color: #EFFFEF;}
@@ -56,7 +61,9 @@ div.ligne_ajouter,
 div.ligne_ajouter_serie, 
 div.ligne_ajouter_numero, 
 div.ligne_ajouter_regroupement, 
+/* div.ligne_ajouter_theme reste pour la compatibilité avec lodel < 0.7 */
 div.ligne_ajouter_theme,
+div.ligne_ajouter_rubrique,
 div.ligne_ajouter_document_dans_un_regroupement1, 
 div.ligne_ajouter_document_dans_un_regroupement2  {
 	margin-top: 10px;
@@ -76,7 +83,9 @@ div.ligne_ajouter_document_dans_un_regroupement2 {
 
 div.ligne_ajouter_serie {background-color: #FDFAF1;}
 div.ligne_ajouter {background-color: #E5E5E5;}
+/* div.ligne_ajouter_theme reste pour la compatibilité avec lodel < 0.7 */
 div.ligne_ajouter_theme {background-color: #FFFEE8;}
+div.ligne_ajouter_rubrique {background-color: #FFFEE8;}
 div.ligne_ajouter_numero {background-color: #EDFDF3;}
 div.ligne_ajouter_regroupement {background-color: #D5E4DA;}
 /*div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #DFEDE4;}*/

@@ -38,12 +38,12 @@
 <!-- <MACRO NAME="CITATION">										    -->
 <!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
 <!-- <MACRO NAME="DESCRITION_AUTEUR">                                   -->
-<!-- <MACRO NAME="LISTER_THEMES">                                       -->
+<!-- <MACRO NAME="LISTER_RUBRIQUES">                                       -->
 <!-- <MACRO NAME="DERNIER_NUMERO">                                      -->
 <!-- <MACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">                      -->
 <!-- <MACRO NAME="SOMMAIRE_DERNIER_NUMERO">                             -->
 <!-- <MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">                  -->
-<!-- <MACRO NAME="DERNIER_THEME">                                       -->
+<!-- <MACRO NAME="DERNIERE_RUBRIQUE">                                       -->
 <!-- <MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">                          -->
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
@@ -146,7 +146,7 @@
 <DEFMACRO NAME="PRESENTER_PUBLICATION">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Crée un bloc qui affiche le titre du numéro ou du thème, sauf s'il -->
+<!-- Crée un bloc qui affiche le titre du numéro ou de la rubrique, sauf s'il -->
 <!-- est vide, auquel cas il affiche le nom de la revue. Affiche        --> 
 <!-- également le texte d'introduction, s'il existe, avec une lettrine. -->
 <!-- Cette macro fait appel aux macros suivantes :                      -->
@@ -176,7 +176,7 @@
 <DEFMACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Crée un bloc qui affiche le titre du numéro ou du thème, sauf s'il -->
+<!-- Crée un bloc qui affiche le titre du numéro ou de la rubrique, sauf s'il -->
 <!-- est vide, auquel cas il affiche le nom de la revue.                --> 
 <!-- Cette macro fait appel aux macros suivantes :                      -->
 <!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
@@ -413,7 +413,7 @@
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche les séries linéaires et leurs numéros de 1er niveau puis   -->
-<!-- les séries hierarchiques et leurs thèmes de premier niveau.        -->
+<!-- les séries hierarchiques et leurs rubriques de premier niveau.        -->
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
 	<!-- On liste en premier les séries linéaires -->
@@ -429,7 +429,7 @@
 	</LOOP>
 	
 	<!-- On liste ensuite les séries hiérarchiques -->
-	<LOOP NAME="aff_series_hier" TABLE="types" TABLE="entites" WHERE="type='theme'">
+	<LOOP NAME="aff_series_hier" TABLE="types" TABLE="entites" WHERE="type='rubrique'">
 		<BEFORE>
 			<div class="menu1">Thèmes :</div>
 		</BEFORE>
@@ -793,14 +793,14 @@
 </LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="LISTER_THEMES">
+<DEFMACRO NAME="LISTER_RUBRIQUES">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affiche les thèmes d'une série hiérarchique ou les sous thèmes     -->
-<!-- d'un thème.                                                        -->
+<!-- Affiche les rubriques d'une série hiérarchique ou les sous rubriques     -->
+<!-- d'une rubrique.                                                        -->
 <!-- Macro destinée aux sommaires.                                      -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="boucle_lister_themes" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='theme'">
+	<LOOP NAME="boucle_lister_rubriques" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='rubrique'">
 		<DO>
 			<div class="titre2">
 				<a class="titre2" href="sommaire.html?id=[#ID]">
@@ -903,12 +903,12 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="DERNIER_THEME">
+<DEFMACRO NAME="DERNIERE_RUBRIQUE">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affiche le dernier thème en date. (en fonction du champs date)     -->
+<!-- Affiche la dernière rubrique en date. (en fonction du champs date)     -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='theme'" LIMIT="0,1">
+	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='rubrique'" LIMIT="0,1">
 		<DO>
 			<a href="sommaire.html?id=[#ID]">
 				[#NOM]
