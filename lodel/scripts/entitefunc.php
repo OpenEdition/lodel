@@ -94,8 +94,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
   $iduser= $GLOBLAS[adminlodel] ? 0 : $GLOBALS[iduser];
 
-  $entite=$context[entite];
-#  if (!$context[nom]) $context[erreur_nom]=$err=1;
+  $entite=& $context[entite];
   $context[idtype]=intval($context[idtype]);
   if ($champcritere) $champcritere=" AND ".$champcritere;
 
@@ -111,7 +110,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   while (list($nom,$type,$condition,$defaut)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
-    if ($condition=="+" && !isset($defaut) && !trim($entite[$nom])) $err=$erreur[$nom]="+";
+    if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
     // clean automatically the fields when required.
     if (trim($entite[$nom]) && in_array($type,$GLOBALS[type_autostriptags])) $entite[$nom]=trim(strip_tags($entite[$nom]));
     // special processing depending on the type.
@@ -142,26 +141,26 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 	  die("valeur par defaut non reconnue: \"$defaut\"");
 	}
       } else {
-	$err=$erreur[$nom]="date";
+	$erreur[$nom]="date";
       }
       break;
     case "int" :
       if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=intval($defaut);
       if (isset($entite[$nom]) && 
 	  (!is_numeric($entite[$nom]) || intval($entite[$nom])!=$entite[$nom])) 
-	$err=$erreur[$nom]="int";
+	$erreur[$nom]="int";
       break;
     case "number" : 
       if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=doubleval($defaut);
       if (isset($entite[$nom]) && 
-			!is_numeric($entite[$nom])) $err=$erreur[$nom]="numeric";
+			!is_numeric($entite[$nom])) $erreur[$nom]="numeric";
       break;
     case "url" : 
       if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=$defaut;
       if (isset($entite[$nom])) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
       $validchar='-0-9A-Z_a-z';
-      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $err=$erreur[$nom]="url";
+      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $erreur[$nom]="url";
     }
       break;
     case "boolean" :
@@ -179,10 +178,15 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       break;
     case 'image' :
     case 'fichier' :
-      // verifie que c'est un nom correct
-      if (!preg_match("/^docannexe\/$type\/tmp-\d+\/[^\/]+$/",$entite[$nom])) $erreur[$nom]="filename";
-      $files_to_move[$nom]=array(filename=>$entite[$nom],type=>$type,nom=>$nom);
-      unset($entite[$nom]); // it must not be update... the old files must be remove later (once everything is checked)
+      if (!$entite[$nom]) break;
+      // check for a hack or a bug
+      if (!preg_match("/^docannexe\/$type\/([^\.\/]+)\/[^\/]+$/",$entite[$nom],$dirresult)) die("ERROR: bad filename $entite[nom]");
+
+      // if the filename is not "temporary", there is nothing to do
+      if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) break;
+      // add this file to the file to move.
+      $files_to_move[$nom]=array(filename=>$entite[$nom],type=>$type,name=>$nom);
+      #unset($entite[$nom]); // it must not be update... the old files must be remove later (once everything is checked)
       break;
     default :
       if (!isset($entite[$nom])) $entite[$nom]=$defaut;
@@ -191,7 +195,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
   } // end of while over the results
 
-  if ($err) { 
+  if ($erreur) { 
     $context[erreur]=$erreur;
     if ($returnonerror) return FALSE;
   }
@@ -222,10 +226,10 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
     if ($grouperec && $admin) change_groupe_rec($id,$groupe);
 
-    move_files($id,$files_to_move,&$files_to_move);
+    move_files($id,$files_to_move,&$sets);
 
     foreach ($sets as $nom=>$value) { $sets[$nom]=$nom."=".$value; }
-    mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$sets)." WHERE identite='$id'") or die (mysql_error());
+    if ($sets) mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$sets)." WHERE identite='$id'") or die (mysql_error());
 
   } else { // INSERT
     require_once($home."entitefunc.php");
@@ -247,7 +251,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
     move_files($id,$files_to_move,&$sets);
 
-    mysql_query("INSERT INTO $GLOBALS[tp]$classe (identite,".join(",",array_keys($sets)).") VALUES ('$id',".join(",",$sets).")") or die (mysql_error());
+    if ($sets) mysql_query("INSERT INTO $GLOBALS[tp]$classe (identite,".join(",",array_keys($sets)).") VALUES ('$id',".join(",",$sets).")") or die (mysql_error());
   }  
 
   enregistre_personnes($context,$id,$statut,FALSE);
@@ -263,13 +267,17 @@ function move_files($id,$files_to_move,&$sets)
   foreach ($files_to_move as $file) {
     $src=SITEROOT.$file[filename];
     $dest=basename($file[filename]); // basename
+    if (!$dest) die("ERROR: error in move_files");
     // new path to the file
-    $sets[$file[nom]]="docannexe/$file[type]/$id/$dest";
-    $dest=SITEROOT.$sets[$file[nom]];
-    if ($src==$dest) continue;
-    copy($src,$dest);
-    chmod ($dest,0600);
-    unlink($src);
+    $dirdest="docannexe/$file[type]/$id";
+    if (!file_exists(SITEROOT.$dirdest)) {
+      if (!@mkdir(SITEROOT.$dirdest,0700)) die("ERROR: impossible to create the directory \"$dir\"");
+    }
+    $dest=$dirdest."/".$dest;
+    $sets[$file[name]]="'".addslashes($dest)."'";
+    if ($src==SITEROOT.$dest) continue;
+    rename($src,SITEROOT.$dest);
+    chmod (SITEROOT.$dest,0600);
     @rmdir(dirname($src)); // do not complain, the directory may not be empty
   }
 }

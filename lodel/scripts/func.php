@@ -485,9 +485,10 @@ function save_annex_file($dir,$file,$filename) {
   if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0755)) die("ERROR: impossible to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0755)) die("ERROR: unable to create the directory \"$dir\"");
   }
-  $filename=preg_replace("/.*\//","",$filename); // take only the name
+  $filename=basename($filename); // take only the name
+  if (!$file) die("ERROR: save_annex_file file is not set");
   $dest=$dir."/".$filename;
   if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
 
@@ -503,22 +504,33 @@ function save_annex_file($dir,$file,$filename) {
  *
  */
 
-function save_annex_image($dir,$file,$filename) {
+function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
 
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
   if (is_numeric($dir)) $dir="docannexe/image/$dir";
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0700)) die("ERROR: impossible to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0700)) die("ERROR: unable to create the directory \"$dir\"");
   }
+  if (!$file) die("ERROR: save_annex_file file is not set");
   $info=getimagesize($file);
   if (!is_array($info)) die("ERROR: the format of the image has not been recognized");
   $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
   $ext=$exts[$info[2]-1];
 
-  $filename=preg_replace(array("/.*\//","/\.\w+$/"),array("",""),$filename); // take only the name, remove the extension
+  $filename=preg_replace("/\.\w+$/","",basename($filename)); // take only the name, remove the extensio
   $dest=$dir."/".$filename.".".$ext;
-  if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
+  if ($uploaded) {
+    if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
+  } else {
+    // try to move
+    if (!(@rename($file,SITEROOT.$dest))) {
+      // no, so try to copy
+      if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
+      // and try to delete
+      @unlink($file);
+    }
+  }
 
   @chmod(SITEROOT.$dest, 0600);
   

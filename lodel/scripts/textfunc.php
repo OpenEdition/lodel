@@ -307,6 +307,7 @@ return "/$rep";
 function vignette($width,$text)
 
 {
+  if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/",$text)) return;
   if (defined("SITEROOT")) $text=SITEROOT.$text;
   if (!file_exists($text)) return;
 

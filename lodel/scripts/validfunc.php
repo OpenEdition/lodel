@@ -28,7 +28,7 @@
 
 
 function isvalidtype($nom) 
-{return preg_match("/^[a-zA-Z0-9_-]+$/",$nom);}
+{return preg_match("/^[a-zA-Z0-9_-][a-zA-Z0-9_ -]*$/",$nom);}
 
 function isvalidfield($nom) 
 {return preg_match("/^[a-zA-Z0-9]+$/",$nom);}
