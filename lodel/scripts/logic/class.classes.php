@@ -122,13 +122,13 @@ class ClassesLogic extends Logic {
 
      // delete associated types
      // collect the type to delete
-     $dao=getDAO("Types");
+     $dao=getDAO("types");
      $types=$dao->findMany("idclass='".$id."'","id");
      $ids=array();
      foreach($types as $type) $ids[]=$type->id;
 
      $dao->deleteObject($ids);
-     $logic=getLogic("Types");
+     $logic=getLogic("types");
      $logic->_deleteRelatedTables($ids);
  
      unset($this->vo);

@@ -54,7 +54,6 @@ class OptionsLogic extends Logic {
 
    /**
     * Change rank action
-    * Default implementation
     */
    function changeRankAction(&$context,&$error)
 
