@@ -102,24 +102,36 @@
         </AFTER>
     </LOOP>
 </DEFMACRO>
+<!--[ ************************************************** ]-->
 <!--[ Added by Jean Lamy | 2005-01-28 | parameters management macro ]-->
+<!--[ Syntax :
+	width,height,skin,autodetectlanguage,language,mode
+
+example :
+	800,600,silver,true
+or
+	100,400, office2003,false,fr	
+
+]-->
+<!--[ ************************************************** ]-->
 <DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
 <?
  		$parameters = explode(",",$context['editionparams']);
+ 		
  		if( is_array($parameters) )
  		{
  			//Width (by default will be 600px)
- 			$context["fck_width"] = (($parameters[0] && is_integer($parameters[0]))  ? $parameters[0] : 600);
+ 			$context["fck_width"] = (($parameters[0])  ? intval($parameters[0]) : 600);
  			//Height (by default will be 400px)
- 			$context["fck_height"] = (($parameters[1] && is_integer($parameters[1])) ? $parameters[1] : 400);
+ 			$context["fck_height"] = (($parameters[1]) ? intval($parameters[1]) : 400);
  			//SkinName (by default will be default :p)
- 			$context["fck_skin"] = (($parameters[2] && is_dir("../skins/".$parameters[2])) ? $parameters[2] : "default");
- 			//AutodetectLanguage (by default will be on true)
- 			$context["fck_autodetectlanguage"] = (($parameters[3] && is_bool($parameters[3])) ? $parameters[3] : "true");
+ 			$context["fck_skin"] = (($parameters[2]) ? trim($parameters[2]) : "default");
+ 			//AutodetectLanguage (by default will be on true
+ 			$context["fck_autodetectlanguage"] = (($parameters[3]) ? $parameters[3] : "true");
  			//Language (by default will be empty)
- 			$context["fck_language"] = ($parameters[3] ? $parameters[3] : "fr");
+ 			$context["fck_language"] = ($parameters[4] ? $parameters[4] : "fr");
  			//Advenced mode or not
- 			$context["fck_mode"] = (($parameters[4] && $parameters[4]=="Advanced") ? "Default" : "Simple" );
+ 			$context["fck_mode"] = (($parameters[5] && $parameters[5]=="Advanced") ? "Default" : "Simple" );
  				
  		}
  		else
@@ -131,6 +143,7 @@
  			$context["fck_language"] = "fr";
  			$context["fck_mode"] = "Simple";
  		}
+ 		
 ?>
 </DEFMACRO>
 
@@ -173,10 +186,14 @@
  		</IF>
  	   	fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
     	fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
+    	fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
     	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
     	fck_[#VARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-    	fck_[#VARNAME]_editor.Value='[#VALUE|html_entity_decode|addslashes]';
+    	<?$context["value"] = str_replace("\n","",$context["value"]) ?>
+    	<?$context["value"] = str_replace("\r","",$context["value"]) ?>
+    	fck_[#VARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
     	fck_[#VARNAME]_editor.Create();
+    	
     </script>
     <ELSE/>   
 
@@ -696,3 +713,5 @@ function modifymember(members,textfield){
 -->
 </script>
 </DEFFUNC>
+
+
