@@ -396,6 +396,13 @@ function processcontentXHTML(&$content,&$styles)
 
   $styles=preg_replace("/<style:style\s+[^>]*style:name=\"[PT]\d+\"[^>\/]*(?:\/>|>.*?<\/style:style>)/s","",$styles);
   $styles=str_replace("</office:styles>",join("",$results[0])."</office:styles>",$styles);
+
+  // transforme les heading en paragraph
+  $content=preg_replace(array("/<text:h\s([^>]*)text:level=\"\d+\"([^>]*>)/",
+			      "/(<\/?text:)h\b([^>]*>)/"),
+			array("<text:p \\1\\2",
+			      "\\1p\\2",
+			      ),$content);
 }
 
 
@@ -419,9 +426,14 @@ function postprocesscontentXHTML(&$xhtml,$styles)
   $count=count($arr);
   $stack=array();
   for($i=1;$i<$count; $i+=4) {
-    #echo $arr[$i],":",$arr[$i+1],":",$arr[$i+2],"<br>\n";
+#    echo $arr[$i],":",$arr[$i+1],":",$arr[$i+2]," ",(substr($arr[$i+2],-2,1)=="/"),"--------",join("//",$stack),"\n";
+#    echo $arr[$i+3],"\n";
+    $singletags=substr($arr[$i+2],-2,1)=="/";
+
     if ($arr[$i]=="</") { // balise fermante
+#      echo "fermante\n";
       $arr[$i+2].=array_pop($stack);
+#      echo join(" ",$stack),"\n";
     } elseif (preg_match("/\bclass=\"([^\"]+)\"/",$arr[$i+2],$result)) {
       $class=$result[1];
       $ns=$arr[$i+1]=="p" ? "r2r" : "r2rc";
@@ -434,15 +446,15 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       }
       if ($class) {
 	$arr[$i]="<$ns:$class>".$arr[$i]; // ajoute au debut
-	if (substr($arr[$i+2],-2,1)=="/") { // balise ouvrante/fermante
+	if ($singletags) { // balise ouvrante/fermante
 	  $arr[$i+2].="</$ns:$class>";
 	} else {
 	  array_push($stack,"</$ns:$class>");
 	}
-      } else {
+      } elseif (!$singletags) {
 	array_push($stack,"");
       }
-    } elseif (substr($arr[$i+2],-2,1)!="/") {
+    } elseif (!$singletags) {
       // c'est une ouvrante non fermante
       array_push($stack,"");
     }

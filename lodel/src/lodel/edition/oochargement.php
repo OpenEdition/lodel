@@ -146,7 +146,6 @@ function OO_XHTML ($convertedfile,&$context)
   // tableau search et replace
   $srch=array(); $rpl=array();
 
-
   array_push($srch,
 	     "/.*?<style\b[^>]*type=\"text\/css\"[^>]*>(.*?)<\/style>.*?<body\b[^>]*>/s",
 	     "/.*<body\b[^>]*>/s",
@@ -184,15 +183,15 @@ function OO_XHTML ($convertedfile,&$context)
   // conversion des balises de sections
   array_push($srch,
 	     "/<r2r:(?:heading|titre)(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:heading|titre)(\d+)>/",
-	     "/<h(\d+)>/",
-	     "/<\/h(\d+)>/");
+	     "/<\/r2r:(?:heading|titre)(\d+)>/");
+#	     "/<h(\d+)>/",
+#	     "/<\/h(\d+)>/");
 
   array_push($rpl,
 	     "<r2r:section\\1>",
-	     "</r2r:section\\1>",
-	     "<r2r:section\\1>\\0",
-	     "\\0</r2r:section\\1>");
+	     "</r2r:section\\1>");
+#	     "<r2r:section\\1>\\0",
+#	     "\\0</r2r:section\\1>");
 
 
 #  // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
@@ -374,6 +373,7 @@ function OO_HTML ($convertedfile,&$context)
   // autre chgt
 
   array_push($srch,
+	     "/<object>.*?</object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span
 	     "/(<a\b[^>]*)sdfixed>/i",
 	     "/<div type=(?:header|footer)>.*?<\/div>/is",
@@ -390,6 +390,7 @@ function OO_HTML ($convertedfile,&$context)
 	     );
 
   array_push($rpl,
+	     "",
 	     "\\1",
 	     "\\1>",
 	     "",
@@ -605,8 +606,17 @@ function traite_couple(&$text)
 
 
   // determine les $multiparagraphe_tags
-  $result=mysql_query("SELECT style FROM champs WHERE statut>0") or die(mysql_error());
-  while (list($style)=mysql_fetch_row($result)) $multiparagraphe_tags_arr[]=$style;
+  $result=mysql_query("SELECT style,type FROM champs WHERE statut>0") or die(mysql_error());
+  $multiparagraphe_tags_arr=array();
+  while (list($style,$type)=mysql_fetch_row($result)) {
+    if ($type=="mltext") { // text multilingue
+      require_once($home."champfunc.php");
+      $multiparagraphe_tags_arr=
+	array_merge($multiparagraphe_tags_arr,decode_mlstyle($style));
+    } else {
+      array_push($multiparagraphe_tags_arr,$style);
+    }
+  }
 
   $virgule_tags=join("|",$virgule_tags_arr);
   $multiparagraphe_tags=join("|",$multiparagraphe_tags_arr);
