@@ -1,15 +1,15 @@
 <?
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 
-include_once ("$home/connect.php");
+include_once ($home."connect.php");
 
 
 if ($edit) {
   $listoptions=array("motclefige","pasdemotcle","pasdeperiode","pasdegeographie","ordrepartypedoc");
-  include ("$home/func.php");
+  include ($home."func.php");
   extract_post();
   $newoptions=array();
   foreach ($listoptions as $opt) {
@@ -30,7 +30,7 @@ if ($edit) {
 
 //print_r($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"options");
 
 

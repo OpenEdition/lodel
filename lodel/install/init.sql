@@ -1,7 +1,4 @@
 
-#DROP TABLE _PREFIXTABLE_revues;
-#DROP TABLE _PREFIXTABLE_users;
-#DROP TABLE _PREFIXTABLE_session;
 
 #ifndef LODELLIGHT
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_revues (
@@ -68,17 +65,6 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
 );
 
 
-
-INSERT INTO _PREFIXTABLE_users (username,passwd,nom,email,privilege) VALUES ('ghislain','7db6d3bc74d968b6b6bec99ef6fcaa61','administrateur temporaire','',128);
-
-#ifndef LODELLIGHT
-INSERT INTO _PREFIXTABLE_users (username,passwd,nom,email,privilege) VALUES ('marin','924cfce1cd8643af9e146a9f3ba75cf3','administrateur temporaire','',128);
-
-INSERT INTO _PREFIXTABLE_users (username,passwd,nom,email,privilege) VALUES ('luc','96ea5ed3e1d5aa07350d38706e275577','administrateur temporaire','',128);
-#endif
-
-# temporaire !
-
-#ifndef LODELLIGHT
-INSERT INTO _PREFIXTABLE_revues (nom,rep,options) VALUES ('Test','test','');
-#endif
+# suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.
+# Administrateur par defaut. mot de passe : admintmp
+#REPLACE INTO _PREFIXTABLE_users (username,passwd,nom,email,privilege) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire','',128);

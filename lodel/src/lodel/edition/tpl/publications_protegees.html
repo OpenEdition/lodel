@@ -1,0 +1,34 @@
+<USE MACROFILE="macros.html"><html>
+<body>
+
+Certaines publications sont protegees.<br /><br />
+
+<form method="post" action="publi.php">
+	<input type="hidden" name="publication" value="[#PUBLICATION]">
+	<input type="hidden" name="online" value="0"> <!-- on depublie -->
+	<table border=1 width="50%">
+		<tr>
+			<td>NOM</td>
+			<td>TITRE</td>
+		</tr>
+		<LOOP NAME="publications_protegees">
+			<DO>
+				<tr>
+					<td>[#NOM]</td>
+					<td>
+						<IF COND="[#TITRE]">
+							[#TITRE]
+						<ELSE/>
+							...
+						</IF>
+					</td>
+				</tr>
+			</DO>
+		</LOOP>
+	</table>
+	<input type="submit" name="confirmation" value="confirmation de la depublication"> <!-- on confirme la depublication -->
+	<input type="submit" name="cancel" value="abandonner"> <!-- on abandonne la depublication-->
+</form>
+
+</body>
+</html>

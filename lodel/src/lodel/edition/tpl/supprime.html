@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Suppression de document</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 
 <table width="800" border="0" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
@@ -16,29 +16,29 @@
   </tr>
   
 <tr>
-    <td align="center"> <div align="center"><IF [#NOM]> 
+    <td align="center"> <div align="center"><IF COND="[#NOM]"> 
       <!-- Suppression d'un publication -->
-      <font color="Red">Confirmer la suppression de la publication suivante ?</font><br>
-      <br>
-      <b>[#NOM]</b><br>
-      <FORM ACTION="supprime.php" METHOD="POST">
-        <INPUT CLASS="form" TYPE="submit" NAME="supprime" VALUE="Supprimer">
-        <INPUT TYPE="hidden" NAME="publication" VALUE="[#ID]">
-      </FORM>
+      <font color="Red">Confirmer la suppression de la publication suivante ?</font><br />
+      <br />
+      <b>[#NOM]</b><br />
+      <form action="supprime.php" method="POST">
+        <input class="form" type="submit" name="supprime" value="Supprimer">
+        <input type="hidden" name="publication" value="[#ID]">
+      </form>
       <ELSE/> 
       <!-- Suppression d'un document -->
-      Confirmer la suppression du document suivant ?<br>
-      <br>
-      "<b>[#TITRE]</b>"<br>
-      <FORM ACTION="supprime.php" METHOD="POST">
-        <INPUT CLASS="form" TYPE="submit" NAME="supprime" VALUE="Supprimer">
-        <INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-      </FORM>
-      </IF> <br>
-<br>
-<A HREF="[#URL_RETOUR]"><b><font size="+1">Annuler</font></b></a></div>
+      Confirmer la suppression du document suivant ?<br />
+      <br />
+      "<b>[#TITRE]</b>"<br />
+      <form action="supprime.php" method="POST">
+        <input class="form" type="submit" name="supprime" value="Supprimer">
+        <input type="hidden" name="id" value="[#ID]">
+      </form>
+      </IF> <br />
+<br />
+<a href="[#URL_RETOUR]"><b><font size="+1">Annuler</font></b></a></div>
 </td>
-</TR>
-</TABLE>
+</tr>
+</table>
 
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

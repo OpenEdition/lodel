@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 
+	surtitre	TEXT NOT NULL,
 	titre		TEXT NOT NULL,
 	soustitre	TEXT NOT NULL,
 	intro		TEXT NOT NULL,
@@ -264,7 +265,10 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_auteurs (
 	idauteur		INT UNSIGNED DEFAULT '0' NOT NULL,
 	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
+
 	ordre			TINYINT NOT NULL DEFAULT '0',
+	prefix             	VARCHAR(64) NOT NULL,
+	description             TEXT NOT NULL,
 
 	KEY index_idauteur (idauteur),
 	KEY index_iddocument (iddocument)
