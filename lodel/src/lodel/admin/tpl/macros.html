@@ -336,8 +336,8 @@
 <DEFMACRO NAME="CHOIX_TYPES_PARENTS">
 	<u>[@COMMON.PUBLICATIONS_DOCUMENTS_TYPE]<br /> [@ADMIN.CONTAINS_THIS_TYPE] :</u><br />
 	<LOOP NAME="types_parents" TABLE="entitytypes_entitytypes" WHERE="identitytype='[#ID]' AND identitytype2=0">
-		<DO><input type="checkbox" name="typeentite[0]" checked></DO>
-		<ALTERNATIVE><input type="checkbox" name="typeentite[0]"></ALTERNATIVE>
+		<DO><input type="checkbox" name="entitytype[0]" checked></DO>
+		<ALTERNATIVE><input type="checkbox" name="entitytype[0]"></ALTERNATIVE>
 	</LOOP>
 	(base)<br />
 	<MACRO NAME="TYPE_ENTITES">
