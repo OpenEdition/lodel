@@ -1,0 +1,21 @@
+<? include("tpl/install-openhtml.html"); ?>
+<!-- ce fichier n'est pas un template -->
+
+Une erreur est intervenue lors de la copie du fichier de configuration "lodelconfig.php" dans les répertoires ci-dessous. Ceci est probablement dù au droits d'ecriture sur ces repertoires. Si vous souhaitez que le serveur fasse l'operation, il faut lui permettre d'écrire dans ces répertoires. Cependant, pour plus de sécurité, il est vivement conseillé de gérer les droits d'accès par vous même et de façon stricte. Dans ce cas, faites la copie à la main du fichier lodel/admin/<?=$lodelconfig ?> (sans y porté aucune modifications) dans les répertoires ci-dessous, et assurer les droits d'écriture et de lecture les plus restreints possibles (lecture pour le serveur, écriture pour personne sinon vous-même).<p>
+
+LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
+<p>
+<p>
+<p><p>Répertroire (par rapport à la racine de LODEL):<br>
+<?
+
+foreach($erreur_lodelconfigdir as $dir) {
+	      if ($dir==".") { echo " (racine)<br>"; }  else echo "$dir<br>";
+}
+?>
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="lodelconfig">
+<input type="submit" value="continuer">
+</form>
+<? include("tpl/install-closehtml.html"); ?>

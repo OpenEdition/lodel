@@ -122,7 +122,7 @@ if ($tache=="admin") {
     $adminusername=addslashes($adminusername);
     $pass=md5($adminpasswd.$adminusername);
 
-    if (!@mysql_query("INSERT INTO $GLOBAL[tp]users (username,passwd,nom,email,privilege) VALUES ('$adminusername','$pass','','',128)")) {
+    if (!@mysql_query("REPLACE INTO $GLOBAL[tp]users (username,passwd,nom,email,privilege) VALUES ('$adminusername','$pass','','',128)")) {
       $pass="";  // enleve de la memoire
       $erreur_create=1;
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
@@ -244,7 +244,7 @@ if (!$dbusername && !$dbhost) {
 
 // on cherche si on a une database
 
-if (!$database || !@mysql_query("SHOW TABLES")) {
+if (!$database) {
   // cherche les databases
   if (!($result=@mysql_query("SHOW DATABASES"))) { // probleme ?
     $erreur_connect=1;
@@ -254,14 +254,27 @@ if (!$database || !@mysql_query("SHOW TABLES")) {
     if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
     return;
   }
-} elseif (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
+} 
+
+$sitesexistsrequest="SELECT id,status,nom FROM $GLOBALS[tableprefix]sites LIMIT 1";
+
+if (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
   $erreur_usedatabase=1;
   if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
   return;
-} else { // on cree les tables si necessaire
+} elseif (!@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
+  // non, alors on cree les tables
+
   // il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
   // les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
+
   if ($erreur_createtables=mysql_query_file("../install/init.sql")) {
+    // mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
+    if (@mysql_query($sitesexistsrequest)) {
+      if (!@mysql_query("DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites")) { // ok, on n'arrive vraiment a rien faire
+	$erreur_createtables.="<br /><br />La commande DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites n'a pas pu être executée. On ne peut vraiment rien faire !";
+      }
+    }
     if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
     return;
   }
@@ -271,7 +284,7 @@ if (!$database || !@mysql_query("SHOW TABLES")) {
 // Vérifie qu'il y a un super administrateur, sinon demande la creation
 //
 
-$result=mysql_query("SELECT id FROM users LIMIT 1") or die (mysql_error());
+$result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]users LIMIT 1") or die (mysql_error());
 if (!mysql_num_rows($result)) { // il faut demander la creation d'un admin
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
   return;
@@ -314,7 +327,7 @@ $dirs=array(".","lodel","lodel/admin");
 $sitedir=array(".","lodel","lodel/edition","lodel/admin");
 
 // cherche les sites qui existent deja et cree le tableau $dirs
-$result=mysql_query("SELECT rep FROM $GLOBALS[tp]sites WHERE status>0");
+$result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites WHERE status>0");
 while ($row=mysql_fetch_row($result)) {
   foreach ($sitedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
 }
@@ -382,7 +395,7 @@ function maj_lodelconfig($var,$val=-1)
 function mysql_query_file($filename) 
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tp]",
+  $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tableprefix]",
 		       join('',file($filename)));
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
@@ -399,7 +412,7 @@ function mysql_query_file($filename)
   return $err;
 }
 
-function problem_include($filename)
+function probleme_include($filename)
 
 {
 ?>

@@ -1,0 +1,31 @@
+<?php  include("tpl/install-openhtml.html"); ?>
+<!-- ce fichier n'est pas un template -->
+
+<p align="center">
+Bienvenue dans l'installation de <b>LODEL</b>, <b>LO</b>giciel d'<b>ED</b>ition &eacute;<b>L</b>ectronique</p>
+
+<h2>Options d'installation</h2>
+<p align="justify">
+L'installation de LODEL peut se faire de deux façons, en fonction du systeme sur lequel le logiciel est installé et des éxigences de securité:
+
+La solution la plus simple, l'option 1, consiste a laisser LODEL gérer les droits de fichier. Cette option convient sur la plupart des hebergeurs commerciaux car ils gèrent eux même la securité liée au droits de fichier, la base de donnée est créee, etc. Cependant, cette option peut ne pas offrir une securite suffisante. Pour une gestion "sérée" des droits de fichiers et des droits de la base de donnée, il est necessaire de lire entièrement la documentation d'installation et de suivre les consignes de l'option 2.<br />
+En résumé l'option 1 s'adresse aux installations chez les hébergeurs, et l'option 2 s'adresse essentiellement aux administrateurs systèmes.
+</p>
+
+
+<h2>Condition d'utilisation</h2>
+<p align="justify">Ce programme est un logiciel libre&nbsp;; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation&nbsp;; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure. </p>
+<p align="justify">Ce programme est distribu&eacute; dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE&nbsp;; sans m&egrave;me la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de d&eacute;tails, voir la Licence Publique G&eacute;n&eacute;rale GNU. </p>
+<p align="justify">Un exemplaire de la Licence Publique G&eacute;n&eacute;rale GNU doit &ecirc;tre fourni avec ce programme&nbsp;; si ce n'est pas le cas, &eacute;crivez &agrave; la Free Software Foundation Inc., 675 Mass Ave, Cambridge, MA 02139, Etats-Unis. </p>
+
+<p>GNU General Public License&nbsp;: <A HREF="../../COPYING">licence</A></p>
+
+
+
+<br />
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="droits">
+<input type="submit" value="continuer">
+</form>
+
+<?php  include("tpl/install-closehtml.html"); ?>
