@@ -162,9 +162,11 @@ function search($context)
 		{
 			$criteria_index .= " AND #_TP_entities.status ='".intval($context['q_status'])."'";	
 		}
-		$sql = lq("SELECT * FROM ".$from." ".$join." WHERE ".$criteria_index);
+		
+		$limit = " LIMIT 0,100";
+		$sql = lq("SELECT identity,weight FROM ".$from." ".$join." WHERE ".$criteria_index.$limit);
 	#echo "hey :".$sql;
-		$result=$db->execute($sql);
+		$result=$db->execute($sql) or dberror();
 		$we_temp = array();
 		while(!$result->EOF)
 		{
