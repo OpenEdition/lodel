@@ -86,7 +86,7 @@ function check_auth (&$site)
     // cherche d'abord dans la base generale.
 #ifndef LODELLIGHT
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT id,statut,privilege FROM users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysal_error());
+    $result=mysql_query ("SELECT id,statut,privilege FROM users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
