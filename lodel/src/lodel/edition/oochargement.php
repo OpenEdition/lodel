@@ -457,6 +457,14 @@ function OO_XHTML ($convertedfile,&$context)
     }
 
     //
+    $file=preg_replace(array('/(<(?:p|span)\s+lang="ar-\w\w"\s+style=")/',
+			     '/(<(?:p|span)\s+lang="ar-\w\w")(?!\s+style=")/'),
+		       array('\\1direction: rtl;align: right;',
+			     '\\1 style="direction: rtl;align: right;"'),$file);
+		 
+
+
+    //
     // convert graphical styles in XHTML tags
     // and do other cleaning:
     // 1/ remove lang attribute
@@ -785,7 +793,7 @@ function convertCSSstyle ($style) {
       }
     }
   }
-  return array($open,$close,trim(join("",$styles)));
+  return array($open,$close,trim(join(";",$styles)));
 }
 
 
