@@ -538,30 +538,30 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
 
 
 
-function backupME($sqlfile,$sqlonly) {
+function backupME($sqlfile,$dirs) {
   global $zipcmd;
 
-  $acceptedexts=array("html","css");
+  if (!is_array($dirs)) $dirs=array();
+
+  $acceptedexts=array("html","js","css","png","jpg","jpeg","gif","tiff");
 
   $tmpdir=tmpdir();
   $archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
 
-  if (!$sqlonly) {
-    // search dirs to archive. Dirs must contains file !
-    $dirs=array();
-    foreach (array("tpl","css") as $dir) {
-      if (!file_exists(SITEROOT.$dir)) continue;
-      $dh=opendir(SITEROOT.$dir);
-      while ( ($file=readdir($dh)) && !preg_match("/\.(".join("|",$acceptedexts).")$/",$file)) {}
-      if ($file) $dirs[]=$dir;
-      closedir($dh);
-    }
+  // search dirs to archive. Dirs must contains file !
+  $zipdirs=array();
+  foreach ($dirs as $dir) {
+    if (!file_exists(SITEROOT.$dir)) continue;
+    $dh=opendir(SITEROOT.$dir);
+    while ( ($file=readdir($dh)) && !preg_match("/\.(".join("|",$acceptedexts).")$/",$file)) {}
+    if ($file) $zipdirs[]=$dir;
+    closedir($dh);
   }
   //
 
   if ($zipcmd && $zipcmd!="pclzip") {
-    if ($dirs) {
-      foreach ($dirs as $dir) {
+    if ($zipdirs) {
+      foreach ($zipdirs as $dir) {
 	foreach($acceptedexts as $ext) {
 	  $files.=" $dir/*.$ext";
 	}
@@ -577,7 +577,7 @@ function backupME($sqlfile,$sqlonly) {
   } else { // pclzip
     require($home."pclzip.lib.php");
     $archive=new PclZip ($archivetmp);
-    if ($dirs) {
+    if ($zipdirs) {
       // function to exclude files and rename directories
       function preadd($p_event,&$p_header,$user_vars) {
 	$p_header['stored_filename']=preg_replace("/^".preg_quote($user_vars['tmpdir'],"/")."\//","",$p_header['stored_filename']);
@@ -587,7 +587,7 @@ function backupME($sqlfile,$sqlonly) {
 			  "|sql)$/",$p_header['stored_filename']);
       }
       // end of function to exclude files
-      foreach ($dirs as $dir) { $files[]=SITEROOT.$dir; }
+      foreach ($zipdirs as $dir) { $files[]=SITEROOT.$dir; }
       $files[]=$sqlfile;
       $archive->user_vars=array("tmpdir"=>$tmpdir,"acceptedexts"=>$acceptedexts);
       $res=$archive->create($files,

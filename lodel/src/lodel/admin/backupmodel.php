@@ -34,9 +34,9 @@ authenticate(LEVEL_ADMIN);
 require_once($home."func.php");
 
 
-$context[importdir]=$importdir;
+$context['importdir']=$importdir;
 
-if ($backup) {
+if ($_POST['backup']) {
   extract_post();
 
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
@@ -82,11 +82,20 @@ if ($backup) {
   foreach ($tables as $table) {
     fputs($fh,"DELETE FROM ".$table.";\n");
   }
+  $currentprefix="#_TP_";
   $GLOBALS['showcolumns']=true; // use by PMA to print the fields.
   mysql_dump($currentdb,$tables,"",$fh,false,false,true); // get the content
 
-  // add the options
-  mysql_dump($currentdb,"options",$fh,false,false,true,"","exportpolicy>0");
+  // select the optiongroups to export
+  $dao=&getDAO("optiongroups");
+  $vos=$dao->findMany("exportpolicy>0 AND status>0","","name,id");
+
+  $ids=array();
+  foreach($vos as $vo) { $ids[]=$vo->id; }
+  fputs($fh,"DELETE FROM #_TP_optiongroups;\n");
+  mysql_dump($currentdb,array("#_TP_optiongroups"),"",$fh,false,false,true,"*","id ".sql_in_array($ids));
+  fputs($fh,"DELETE FROM #_TP_options;\n");
+  mysql_dump($currentdb,array("#_TP_options"),"",$fh,false,false,true,"id,idgroup,name,title,type,defaultvalue,comment,userrights,rank,status","idgroup ".sql_in_array($ids)); // select everything but the value
 
   // get the classe table
   $dao=&getDAO("classes");
@@ -106,7 +115,9 @@ if ($backup) {
 
   #unlock();
 
-  $zipfile=backupME($tmpfile,$context['sqlonly']);
+  $dirs=array();
+  foreach(array("tpl","css","images") as $dir) if ($context[$dir]) $dirs[]=$dir;
+  $zipfile=backupME($tmpfile,$dirs);
 
   $filename="model-$site-".date("dmy").".zip";
   $operation="download";
@@ -119,8 +130,8 @@ if ($backup) {
 }
 
 
-include ($home."calcul-page.php");
-calcul_page($context,"backupmodel");
-
+require ($home."view.php");
+$view=&getView();
+$view->render($context,"backupmodel");
 
 ?>

@@ -39,8 +39,16 @@
 <input type="hidden" name="backup" value="1">
 
 
-	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-<tr><td>[@ADMIN.SAVE_TPL]</td><td><input type="checkbox" name="sqlonly" /></td></tr>
+
+<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+<tr><td>[@ADMIN.INCLUDE_THE_FILES_IN_THE_FOLLOWING_DIRECTORIES]:</td><td>
+<input type="checkbox" name="tpl" checked />tpl
+<input type="checkbox" name="css" checked />css
+<input type="checkbox" name="images" checked />images
+</td></tr>
+</table>
+
+
 </table>
 
 
@@ -56,11 +64,13 @@
 <tr><td>[@COMMON.DESCRIPTION] :</td><td><textarea cols="60" rows="6" name="description">[#DESCRIPTION]</textarea></td></tr>
 <tr><td>[@COMMON.AUTHOR] :</td><td><input type="text" size="30" name="author" value="[#AUTHOR]"></td></tr>
 <tr><td>[@ADMIN.MODELVERSION] :</td><td><input type="text" size="30" name="modelversion" value="[#MODELVERSION]"></td></tr>
+
+
 <!--[<tr><td>Opération:</td><td>
 <select name="operation">
-<option value="download">Télécharger</option>
-<IF COND="[#IMPORTDIR]"><option value="importdir">Enregistrer dans [#IMPORTDIR]</option></IF>
-<option value="cache">Enregistrer dans ./CACHE</option>
+<option value="download">[@COMMON.DOWNLOAD]</option>
+<IF COND="[#IMPORTDIR]"><option value="importdir">[@COMMON.SAVE_IN_DIR|sprintf([#IMPORTDIR])]</option></IF>
+<option value="cache">[@COMMON.SAVE_IN_DIR|sprintf("./CACHE")]</option>
 </select>
 </td></tr>]-->
 </table>

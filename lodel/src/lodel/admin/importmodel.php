@@ -47,8 +47,8 @@ if ($file && $delete) {
   require ($home."func.php");
 
   $sqlfile=tempnam(tmpdir(),"lodelimport_");
-  $accepteddirs=array("tpl","css");
-  $acceptedexts=array("html","css");
+  $accepteddirs=array("tpl","css","images");
+  $acceptedexts=array("html","js","css","png","jpg","jpeg","gif","tiff");
 
   if (!importFromZip($file,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['error_extract']=1; break; }
 
@@ -70,7 +70,7 @@ if ($file && $delete) {
   }
 } else {
   // check the table exists
-  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $result=mysql_list_tables($GLOBALS['currentdb']);
   $existingtables=array();
   while ($row = mysql_fetch_row($result)) array_push($existingtables,$row[0]);
   
@@ -80,20 +80,22 @@ if ($file && $delete) {
 				"$GLOBALS[tp]persons"),$existingtables) as $table) {
     $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or dberror();
     if (mysql_num_rows($result)) {
-      $context[error_table]=$table;
+      $context['error_table']=$table;
       break;
     } 
   }
 }
 
 
-require ($home."calcul-page.php");
+require ($home."view.php");
+$view=&getView();
+
 
 if ($frominstall) {
-  $context[frominstall]=1;
-  calcul_page($context,"importmodel-frominstall");
+  $context['frominstall']=1;
+  $view->render($context,"importmodel-frominstall");
 } else {
-  calcul_page($context,"importmodel");
+  $view->render($context,"importmodel");
 }
 
 
@@ -108,7 +110,7 @@ function loop_files(&$context,$funcname)
 	$localcontext=$context;
 	$localcontext['filename']=$file;
 	$localcontext['fullfilename']="$dir/$file";
-	if ($dir=="CACHE") $localcontext[maybedeleted]=1;
+	if ($dir=="CACHE") $localcontext['maybedeleted']=1;
 
 	// open ZIP archive and extract model.sql
 	if ($unzipcmd && $unzipcmd!="pclzip") {
@@ -144,7 +146,7 @@ function loop_files(&$context,$funcname)
 	#echo doubleval($localcontext[lodelversion]), ":",$GLOBALS[version],"<br />\n";
 
 	// check only the major version, sub-version are not checked
-	if (doubleval($localcontext[lodelversion])!=doubleval($GLOBALS[version])) $localcontext[warning_version]=1;
+	if (doubleval($localcontext['lodelversion'])!=doubleval($GLOBALS['version'])) $localcontext['warning_version']=1;
 	call_user_func("code_do_$funcname",$localcontext);
       }
       closedir ($dh);
