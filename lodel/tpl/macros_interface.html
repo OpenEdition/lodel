@@ -833,10 +833,13 @@ function modifymember(members,textfield){
 	</IF>
 )
 </IF>
-<span style="font-variant :  normal">
 
+<IF COND="[#NBRESULTS] GT 0">
+<span style="font-variant :  normal">
 ([@EDITION.SEARCH_RESULTS_INFORMATIONS|sprintf([#RESULT_FROM],[#RESULT_TO],[#NBRESULTS])])
 </span>
+</IF>
+
  
 </div>
 </div>
