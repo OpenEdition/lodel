@@ -202,7 +202,7 @@ class EntriesLogic extends GenericLogic {
       foreach($arr as $row) {
 	$arr2[$row[0]]=$row[1];
       }
-      renderOptions($arr2);
+      renderOptions($arr2,$context[$var]);
       break;
     }
   }
