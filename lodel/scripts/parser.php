@@ -652,7 +652,7 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
   // no more a that level anyway.
   $this->wantedvars[$loopind][1]=array();
 
-  $ret[select]=join(",",$selects);
+  if ($optimize) $ret[select]=join(",",$selects);
 #  echo "select:$name $ret[select]<br>";
 
   return $ret;
