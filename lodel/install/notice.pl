@@ -111,9 +111,9 @@ E-Mail: lodel@lodel.org
   $notice=~s/\s+$//mg;
 
   if ($type eq "html" || $type eq "mod" || $type eq "dtd") {
-    $notice="<!--\n".$notice."-->\n";
+    $notice="<!--\n".$notice."\n-->\n";
   } elsif ($type eq "php" || $type eq "css") {
-    $notice="/*\n".$notice."*/";
+    $notice="/*\n".$notice."\n*/";
   }
 
   return $notice;
