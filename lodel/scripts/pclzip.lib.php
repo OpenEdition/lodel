@@ -471,6 +471,7 @@
 
     // ----- Look if the $p_filelist is really an array
     $p_result_list = array();
+
     if (is_array($p_filelist))
     {
       // ----- Call the create fct
@@ -1761,7 +1762,6 @@
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
     }
-
     // ----- Open the zip file
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Open file in binary read mode");
     if (($v_result=$this->privOpenFd('rb')) != 1)
@@ -1779,6 +1779,7 @@
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
     }
+
 
     // ----- Go to beginning of File
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Position in file : ".ftell($this->zip_fd)."'");
@@ -2142,7 +2143,10 @@
           $v_path = "";
 
         // ----- Read the directory for files and sub-directories
-        $p_hdir = opendir($p_filename);
+        $p_hdir = @opendir($p_filename);
+	if (!$p_hdir) {
+	  return $v_result ;
+	}
         $p_hitem = readdir($p_hdir); // '.' directory
         $p_hitem = readdir($p_hdir); // '..' directory
         while (($p_hitem = readdir($p_hdir)) !== false)
@@ -2395,6 +2399,7 @@
       {
         // ----- Set the file properties
         $p_header['filename'] .= '/';
+        $p_header['stored_filename'] .= '/';
         $p_header['filename_len']++;
         $p_header['size'] = 0;
         $p_header['external'] = 0x41FF0010;   // Value for a folder : to be checked

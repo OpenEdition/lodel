@@ -32,7 +32,6 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 include ($home."func.php");
 
-if (system("tar --version >/dev/null")) die("ERROR: tar command is not available on this server");
 
 $context[importdir]=$importdir;
 
@@ -54,15 +53,65 @@ if ($backup) {
   if (filesize($tmpdir."/".$outfile)<=0) die ("ERROR: mysql_dump failed");
 
   // tar les sites et ajoute la base
-  $archivetmp=tempnam($tmpdir,"lodeldump_");
-  $archivefilename="site-$site-".date("dmy").".tar.gz";
+  $archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
+#  $archivefilename="site-$site-".date("dmy").".tar.gz";
+  $archivefilename="site-$site-".date("dmy").".zip";
 
-  $dirs=$sqlonly ? "" : "--exclude lodel/sources/.htaccess --exclude docannexe/fichier/.htaccess --exclude docannexe/image/index.html lodel/sources docannexe";
+#  $dirs=$sqlonly ? "" : "--exclude lodel/sources/.htaccess --exclude docannexe/fichier/.htaccess --exclude docannexe/image/index.html lodel/sources docannexe";
+
+  $excludes=array("lodel/sources/.htaccess","docannexe/fichier/.htaccess","docannexe/image/index.html","docannexe/index.html","docannexe/image/tmpdir-\*","docannexe/tmp\*");
+  $dirs=$sqlonly ? "" : "lodel/sources docannexe";
+
+
 #  echo "/bin/tar czf $archivetmp -C ".SITEROOT." $dirs -C $tmpdir $outfile\n"; flush();
 
-  system("/bin/tar czf $archivetmp -C ".SITEROOT." $dirs -C ".($tmpdir[0]=="/" ? $tmpdir : "lodel/admin/".$tmpdir)." $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
-  if (!file_exists($archivetmp)) die ("ERROR: the tar command does not produce any output");
+###  system("/bin/tar czf $archivetmp -C ".SITEROOT." $dirs -C ".($tmpdir[0]=="/" ? $tmpdir : "lodel/admin/".$tmpdir)." $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
+
+#  echo $zipcmd;
+  if ($zipcmd && $zipcmd!="pclzip") {
+    if (!$sqlonly) {
+      if (!chdir(SITEROOT)) die ("ERROR: can't chdir in SITEROOT");
+      $prefixdir=$tmpdir[0]=="/" ? "" : "lodel/admin/";
+      $excludefiles=$excludes ? " -x ".join(" -x ",$excludes) : "";
+      system($zipcmd." -q $prefixdir$archivetmp -r $dirs $excludefiles");
+      if (!chdir("lodel/admin")) die ("ERROR: can't chdir in lodel/admin");
+      system($zipcmd." -q -g $archivetmp -j $tmpdir/$outfile");
+    } else {
+      system($zipcmd." -q $archivetmp -j $tmpdir/$outfile");
+    }
+  } else { // pclzip
+    require($home."pclzip.lib.php");
+    $archive=new PclZip ($archivetmp);
+    if (!$sqlonly) {
+      // function to exclude files and rename directories
+      function preadd($p_event,&$p_header) {
+	global $excludes,$tmpdir; // that's bad to depend on globals like that
+	$p_header['stored_filename']=preg_replace("/^".preg_quote($tmpdir,"/")."\//","",$p_header['stored_filename']);
+
+	foreach ($excludes as $exclude) {
+	  if (preg_match ("/^".str_replace('\\\\\*','.*',preg_quote($exclude,"/"))."$/",$p_header['stored_filename'])) return 0;
+	}
+	return 1;
+      }
+      // end of function to exclude files
+      $archive->create(array(SITEROOT."lodel/sources",
+			     SITEROOT."docannexe",
+			     $tmpdir."/".$outfile
+			     ),
+		       PCLZIP_OPT_REMOVE_PATH,SITEROOT,
+		       PCLZIP_CB_PRE_ADD, 'preadd'
+		       );
+    } else {
+      $archive->create($tmpdir."/".$outfile,PCLZIP_OPT_REMOVE_ALL_PATH);
+    }
+  } // end of pclzip option
+
+  if (!file_exists($archivetmp)) die ("ERROR: the zip command or library does not produce any output");
   @unlink($tmpdir."/".$outfile); // delete the sql file
+
+#  echo $archivetmp;
+#  unlock();
+#  exit;
 
   unlock();
   if (operation($operation,$archivetmp,$archivefilename,$context)) return;

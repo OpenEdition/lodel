@@ -78,20 +78,35 @@ function textebrut($letexte) {
   return $letexte;
 }
 
+
+#function couper($texte,$long) {
+#  $texte = substr($texte, 0, ($long +20) * 2); /* heuristique pour prendre seulement le necessaire */
+#
+#  $arr=preg_split("/<(\/?)([^>]+)>/",$texte,-1,PREG_SPLIT_DELIM_CAPTURE);
+#  $count=count($arr);
+#  $long-=strlen($arr[0]);
+#   if ($long<0) ...
+#  for($i=1; $i<$count; $i+=3) {
+#    
+#  }
+#}
+
 function couper($texte,$long) {
   $texte2 = substr($texte, 0, $long * 2); /* heuristique pour prendre seulement le necessaire */
   if (strlen($texte2) < strlen($texte)) $plus_petit = true;
-  $texte = ereg_replace("\[([^\[]*)->([^]]*)\]","\\1", $texte2);
-  
-  // supprimer les notes
-  $texte = ereg_replace("\[\[([^]]|\][^]])*\]\]", "", $texte);
+#  $texte = ereg_replace("\[([^\[]*)->([^]]*)\]","\\1", $texte2); 
+#  // supprimer les notes
+#  $texte = ereg_replace("\[\[([^]]|\][^]])*\]\]", "", $texte);
   
   $texte2 = substr($texte." ", 0, $long);
   $texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
   if ((strlen($texte2) + 3) < strlen($texte)) $plus_petit = true;
-  if ($plus_petit) $texte2 .= ' (...)';
-  return $texte2;
+##  if ($plus_petit) $texte2 .= ' (...)';
+  return trim($texte2);
 }
+
+
+
 
 function couperpara($texte,$long) {
 

@@ -32,10 +32,9 @@ authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 include ($home."func.php");
 #authenticate();
 
-if (system("tar --version >/dev/null")) die("ERROR: tar command is not available on this server");
 
 $context[importdir]=$importdir;
-$fileregexp='(site|revue)-\w+-\d+.tar.gz';
+$fileregexp='(site|revue)-\w+-\d+.zip';
 $importdirs=array($importdir,"CACHE");
 
 
@@ -54,15 +53,60 @@ if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // U
 
 
 if ($fichier) {
-  // detar dans le repertoire du site
-  $listfiles=`tar ztf $fichier 2>/dev/null`;
-  $dirs="";
-  foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
-    if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
-  }
-  if ($dirs) {
-    #echo "tar zxf $fichier -C ".SITEROOT." $dirs 2>&1";
-    system("tar zxf $fichier -C ".SITEROOT." $dirs 2>&1")!==FALSE or die ("impossible d'executer tar");
+#  // detar dans le repertoire du site
+#  $listfiles=`tar ztf $fichier 2>/dev/null`;
+#  $dirs="";
+#  foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
+#    if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
+#  }
+#  if ($dirs) {
+#    #echo "tar zxf $fichier -C ".SITEROOT." $dirs 2>&1";
+#    system("tar zxf $fichier -C ".SITEROOT." $dirs 2>&1")!==FALSE or die ("impossible d'executer tar");
+#  }
+
+
+  $tmpfile=tempnam(tmpdir(),"lodelimport_");
+  $accepteddirs=array("lodel/txt","lodel/rtf","lodel/sources","docannexe/fichier","docannexe/image");
+  #system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
+
+  if ($unzipcmd && $unzipcmd!="pclzip") {
+    $listfiles=`$unzipcmd -Z -1 $fichier`;
+    $dirs="";
+    foreach ($accepteddirs as $dir) {
+      if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\//m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir."/* ".$dir."/*/* ";
+    }
+    if (!chdir (SITEROOT)) die("ERROR: chdir fails");
+    system ($unzipcmd." -oq $fichier  $dirs");
+    if (!chdir ("lodel/admin")) die("ERROR: chdir 2 fails");
+    system ($unzipcmd." -qp $fichier  $prefix-*.sql >$tmpfile");
+  } else { // PCLZIP
+    require($home."pclzip.lib.php");
+    $archive=new PclZip($fichier);
+    // function callback
+    function preextract($p_event, &$p_header) { // choose the files to extract
+      global $accepteddirs,$prefix,$tmpfile;
+      if (preg_match("/^(\.\/)*$prefix-.*\.sql$/",$p_header['filename'])) { // extract the sql file
+	unlink($tmpfile); // remove the tmpfile if not it is not overwriten... 
+	//                   may cause problem if the file is recreated but it's so uncertain !
+	$p_header['filename']=$tmpfile;
+	return 1;
+      }
+      if (preg_match("/^(\.\/)*".str_replace("/","\/",join("|",$accepteddirs))."\//",$p_header['filename'])) {
+	$p_header['filename']=SITEROOT.$p_header['filename'];
+	return 1;
+      }
+      return 0; // don't extract
+    }
+    function postextract($p_event, &$p_header) { // chmod
+      global $tmpfile;
+      if ($p_header['filename']!=$tmpfile && file_exists($p_header['filename'])) {
+	@chmod($p_header['filename'],octdec($GLOBALS[filemask]) & 
+	       (substr($p_header['filename'],-1)=="/" ? 0777 : 0666));
+      }
+      return 1;
+    }
+    $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract',
+		      PCLZIP_CB_POST_EXTRACT, 'postextract');
   }
 
   require_once ($home."connect.php");
@@ -73,8 +117,6 @@ if ($fichier) {
 
   mysql_query("DROP TABLE IF EXISTS ".join(",",$GLOBALS[lodelsitetables])) or die(mysql_error()); 
 
-  $tmpfile=tempnam(tmpdir(),"lodelimport_");
-  system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
   if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();
   @unlink($tmpfile);
 
