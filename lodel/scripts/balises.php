@@ -106,7 +106,7 @@ $multiplelevel=array(
 $division="(section\d+)"; # balises qui ne sont pas des paragraphes
 
 # balises qui peuvent etre constituees de plusieurs paragraphes, donc ou chaque paragraphe sera agrege.
-$multiparagraphe_tags="titre|surtitre|soustitre|resume|texte|citation|epigraphe|notebaspage|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
+$multiparagraphe_tags="titre|surtitre|soustitre|texte|citation|epigraphe|notebaspage|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
 
 
 # tags qui admettent des listes separees par des virgules.
@@ -120,6 +120,7 @@ $virgule_tags="auteurs|periodes|geographies|motcles|langues";
 
 include_once ($home."langues.php");
 $balises=array_merge($balises,$balisesmotcle,$balisesresume);
+$multiparagraphe_tags.="|".join("|",array_keys($langresume));
 
 #########################################################################
 # export les variables dans le scope global
