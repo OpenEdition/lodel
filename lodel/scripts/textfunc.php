@@ -27,6 +27,10 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+if (file_exists($home."textfunc_local.php")) require_once($home."textfunc_local.php");
+
+
 # fonction largement reprises de SPIP
 
 require_once($home."func.php");
