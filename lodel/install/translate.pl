@@ -138,6 +138,9 @@ foreach $filename (@ARGV) {
   next unless $change;
   print "$filename:",$change,"\n";
 
+# changement de insert_template 
+  $change+=$file=~s/<\?\s+insert_template\s*\("(\w+)"\);\s*\?>/<USE TEMPLATEFILE="$1">/g;
+
 # ecriture du fichier
   open (TXT,">$filename");
   print TXT $file;
