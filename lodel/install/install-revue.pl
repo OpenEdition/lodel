@@ -70,9 +70,9 @@ print "Revue\n";
 
 slink ("../styles_lodel.css","styles_lodel.css");
 
-`/bin/cp $homerevue/styles_revue.css styles_revue.css` if -e "$homerevue/styles_revue.css";
+`/bin/cp $homerevue/styles_revue.css styles_revue.css` if (-e "$homerevue/styles_revue.css")&&!(-e "styles_revue.css");
 
-`/bin/cp -r $homerevue/images .` if -e "$homerevue/images";
+`/bin/cp -r $homerevue/images .` if (-e "$homerevue/images")&&!(-e "images");
 ####copier images et style_revues.....
 
 @revuefile=(
