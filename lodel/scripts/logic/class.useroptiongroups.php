@@ -81,6 +81,7 @@ class UserOptionGroupsLogic extends Logic {
        if (!$dao->save($option)) die("You don't have the rights to modify this option");
      }
      touch(SITEROOT."CACHE/maj");
+     @unlink(SITEROOT."CACHE/options_cache.php");
      return "_back";
    }
 

@@ -70,6 +70,7 @@ class OptionsLogic extends Logic {
   { 
     $ret=Logic::editAction($context,$error);
     if (!$error) $this->clearCache();
+    echo "clearcache:option";
     return $ret;
   }
    function deleteAction(&$context,&$error)
