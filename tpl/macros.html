@@ -619,25 +619,14 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="AUTEURS">
-<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-	<FIRST>
-		[#PRENOM] 
-		[#NOMFAMILLE]
-	</FIRST>
-		,
-		[#PRENOM] 
-		[#NOMFAMILLE]
-	<LAST>
-		 et 
-		 [#PRENOM] 
-		 [#NOMFAMILLE] 
-	</LAST>
-	<ALTERNATIVE/>
-	<IF COND="[#NOMFAMILLE]">
-		,
-	</IF>
-	</AFTER>
-</LOOP>
+<!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
+<strong>
+        <LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+                <DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
+                , [#PRENOM] [#NOMFAMILLE]
+                <DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
+        </LOOP>
+</strong>
 </DEFMACRO>
 
 <!-- *************************************************** -->
@@ -649,20 +638,20 @@ Attention, cette routine sera changée bientôt
 <LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-	<FIRST>
+	<DOFIRST>
 		<a href="auteur.html?id=[#ID]">
 		<font color="black">
 			[#PRENOM]
 			[#NOMFAMILLE]
 		</FONT>
 		</A>
-	</FIRST>
+	</DOFIRST>
 	,<a href="auteur.html?id=[#ID]">
 	<font color="black">[#PRENOM]
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	<LAST>
+	<DOLAST>
 	et 
 	<a href="auteur.html?id=[#ID]">
 	<font color="black">
@@ -670,7 +659,7 @@ Attention, cette routine sera changée bientôt
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	</LAST>
+	</DOLAST>
 	<AFTER>
 	<IF COND="[#NOMFAMILLE]">
 		,
@@ -689,20 +678,20 @@ Attention, cette routine sera changée bientôt
 <strong>
 <LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-	<FIRST>
+	<DOFIRST>
 		<a href="auteur.html?id=[#ID]">
 		<font color="black">
 			[#PRENOM]
 			[#NOMFAMILLE]
 		</FONT>
 		</A>
-	</FIRST>
+	</DOFIRST>
 	,<a href="auteur.html?id=[#ID]">
 	<font color="black">[#PRENOM]
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	<LAST>
+	<DOLAST>
 	et 
 	<a href="auteur.html?id=[#ID]">
 	<font color="black">
@@ -710,7 +699,7 @@ Attention, cette routine sera changée bientôt
 		[#NOMFAMILLE]
 	</FONT>
 	</A>
-	</LAST>
+	</DOLAST>
 	<AFTER>
 	<IF COND="[#NOMFAMILLE]">
 		<br>
@@ -863,13 +852,13 @@ Attention, cette routine sera changée bientôt
 				<MACRO NAME="INTRODUCTION_SIMPLE">
 		</td>
 	</tr>
-<ALTERNATIVE/>
+<ALTERNATIVE>
 	<tr>
 		<td>
 	Aucun numéro disponible actuellement
 		</td>
 	</tr>
-</LOOP>
+</ALTERNATIVE></LOOP>
 </table>
 </DEFMACRO>
 
