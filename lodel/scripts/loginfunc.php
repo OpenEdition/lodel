@@ -43,7 +43,7 @@ function open_session ($login) {
   $expire2=time()+$cookietimeout;
 
   mysql_select_db($database);
-  if ($userpriv<LEVEL_ADMINLODEL) {
+  if (defined("LEVEL_ADMINLODEL") && $userpriv<LEVEL_ADMINLODEL) {
     if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
     $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
@@ -99,7 +99,7 @@ function check_auth ($login,&$passwd,&$site)
     $context[iduser]=$iduser=$row[id];
 
     // cherche les groupes pour les non administrateurs
-    if ($userpriv<LEVEL_ADMIN) {
+    if (defined("LEVEL_ADMIN") && $userpriv<LEVEL_ADMIN) { // defined is useful only for the install.php
       $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
       $usergroupes="1"; // sont tous dans le groupe "tous"
       while ($row=mysql_fetch_row($result)) $usergroupes.=",".$row[0];
