@@ -65,9 +65,12 @@ fi
 find $DIRS $EXTRADIRS \
         -path '*/r2r/*' \
         -o \( -path '*/CACHE/*' -and -not -name '.htaccess' \) \
-        -o -path '*/CVS*' \
+        -o -name 'CVS' \
+        -o -path '*/CVS/*' \
         -o -path '*/src/tpl/*' \
         -o -path '*/src/css/*' \
+        -o -name 'lodelia' \
+        -o -path '*/lodelia/*' \
         -o -name '*~' \
         -o -name '*.tmp' \
         -o -name '#*#' \
