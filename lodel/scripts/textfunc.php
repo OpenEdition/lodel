@@ -328,13 +328,13 @@ function sizeattributs($text)
   $result=getImageSize($text);
   return $result[3];
 }
-
+/*
 function paranumber (&$texte)
 
 {
   static $paranum_count;
   return preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span class=\"paranum\">".(++$paranum_count)."</span>"',$texte);
-
+*/
     /*
   $p=strpos($texte,"<p>");
   while ($p!==FALSE) {
@@ -343,7 +343,9 @@ function paranumber (&$texte)
     $p=strpos($texte,"<p>",$p);
   }
     */
+/*
 }
+*/
 
 /** 
  * Fonction permettant de supprimer les appels de notes d'un texte.
