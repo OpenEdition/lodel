@@ -112,6 +112,9 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     if ($type=="XHTMLLodel-1.0") {
       require_once($home."convert.php");
       $convertedfiles=XHTMLLodel($sourcefile,$msg);
+    } elseif ($type=="OpenOffice.org") {
+      require_once($home."convert.php");
+      $convertedfiles=OpenOfficeorg($sourcefile,$cmd[2],$msg);
     } else die("ERROR: unknow conversion type");
 #    error_log("CVT ".(time()-$t)."\n",3,"/tmp/error_log");
     // command XVL ---------------- validation de XML

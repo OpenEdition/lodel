@@ -42,38 +42,11 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   //
   // regarde si le fichier est zipper
   //
-  $fp=fopen($uploadedfile,"r") or die("le fichier $uploadedfile ne peut etre ouvert");
-  $cle=fread($fp,2);
-  fclose($fp);
 
-  $issxw=0;
+  list($issxw,$tounlink)=checkZippedFile($uploadedfile);
 
-  if ($cle=="PK") {
-    // verifie ce qu'il y a dedans
-    $f=escapeshellcmd($uploadedfile);
-    $filesinarchive=`$GLOBALS[unzipcmd] -Z -1 $f`;
-    if (substr_count($filesinarchive,"\n")==1) {
-      // combien de fichier dans l'archive ?
-      // s'il n'y a q'un fichier alors on le dezippe. 
-      // S'il y en a plusieurs c'est surement un sxw
-      if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
-      exec_unzip("-j -p $uploadedfile >$uploadedfile.extracted",$errfile);
-      // normalement, il ne doit pas y avoir d'erreur parce qu'on a deja fait un unzip
-      // en fait c'est pas vrai, on peut avoir des problemes de disque (permission ou disk space).
-      $uploadedfile.=".extracted";
-      $tounlink=1;
-    } else {
-      // regarde si c'est un SXW
-      $arr=preg_split("/\n/",$filesinarchive);
-      if (in_array("content.xml",$arr) && 
-	  in_array("styles.xml",$arr) &&
-	  in_array("meta.xml",$arr)) $issxw=1;
-      // sinon ne fait rien
-    }
-  }
 
   if (!$issxw) {
-
     if ($msg) {
       echo "<h2>Conversions du fichier importe par OO</h2>";
       echo "<p>En cas d'arret avant la fin de la 2eme conversion veuillez envoyer les informations sur lodel-devel</p>";
@@ -188,6 +161,37 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
 
 
   return $convertedfiles;
+}
+
+
+function OpenOfficeorg($uploadedfile,$extension,$msg=TRUE)
+
+{
+  //
+  // regarde si le fichier est zipper
+  //
+
+  list($issxw,$tounlink)=checkZippedFile($uploadedfile);
+
+  if ($msg) {
+    echo "<h2>Conversions du fichier importe par OO</h2>";
+    echo "<p>En cas d'arret avant la fin de la 2eme conversion veuillez envoyer les informations sur lodel-devel</p>";
+    flush();
+  }
+  chmod($uploadedfile,0644); // temporaire, il faut qu'on gere le probleme des droits
+  // cette partie n'est pas secur du tout. Il va falloir reflechir fort.
+  if ($msg) {  echo "<li>conversion au format $extension<br>\n";flush(); $time1=time(); }
+    
+  runDocumentConverter($uploadedfile,$extension);
+  if ($tounlink) unlink($uploadedfile); // ne detruit pas l'original
+  // solution avec unzip, ca serait mieux avec libzip
+  // dezip le fichier content
+
+  $uploadedfile.=".".$extension;
+  
+  if (!file_exists($uploadedfile)) die("ERROR: first OO conversion failed");
+
+  return array($uploadedfile);
 }
 
 
@@ -322,9 +326,14 @@ function runDocumentConverter($filename,$extension)
 #    $format="swriter: StarOffice XML (Writer)";
 #    $format="writer_web_StarOffice_XML_Writer";
     $format="auto";
-
   } elseif ($extension=="html") {
     $format="swriter: HTML (StarWriter)";
+  } elseif ($extension=="doc") {
+    $format="swriter: MS Word 97";
+  } elseif ($extension=="rtf") {
+    $format="swriter: Rich Text Format";
+  } elseif ($extension=="pdf") {
+    $format="writer_pdf_Export";
   } else die ("probleme interne");
 
   myexec("$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"$format\" \"$extension\" \"$servoohost\" \"$servooport\"",$errfile,"java script DocumentConverter failed");
@@ -549,6 +558,40 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 }
 
 
+function checkZippedFile(&$uploadedfile)
+
+{
+  $fp=fopen($uploadedfile,"r") or die("le fichier $uploadedfile ne peut etre ouvert");
+  $cle=fread($fp,2);
+  fclose($fp);
+
+  $issxw=0;
+
+  if ($cle=="PK") {
+    // verifie ce qu'il y a dedans
+    $f=escapeshellcmd($uploadedfile);
+    $filesinarchive=`$GLOBALS[unzipcmd] -Z -1 $f`;
+    if (substr_count($filesinarchive,"\n")==1) {
+      // combien de fichier dans l'archive ?
+      // s'il n'y a q'un fichier alors on le dezippe. 
+      // S'il y en a plusieurs c'est surement un sxw
+      if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
+      exec_unzip("-j -p $uploadedfile >$uploadedfile.extracted",$errfile);
+      // normalement, il ne doit pas y avoir d'erreur parce qu'on a deja fait un unzip
+      // en fait c'est pas vrai, on peut avoir des problemes de disque (permission ou disk space).
+      $uploadedfile.=".extracted";
+      $tounlink=1;
+    } else {
+      // regarde si c'est un SXW
+      $arr=preg_split("/\n/",$filesinarchive);
+      if (in_array("content.xml",$arr) && 
+	  in_array("styles.xml",$arr) &&
+	  in_array("meta.xml",$arr)) $issxw=1;
+      // sinon ne fait rien
+    }
+  }
+  return array($issxw,$tounlink);
+}
 
 
 ?>
