@@ -1,4 +1,4 @@
-* edition/index.php
+** edition/index.php
 
 on peut appler index.php?parent=xx ou index.php?id=xx. Dans le second cas, il permet d'editer la publi qui contient xx et non les fils de xx.
 
