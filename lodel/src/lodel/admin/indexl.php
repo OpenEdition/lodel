@@ -12,10 +12,9 @@ $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
   if (!$restore) $critere.=" AND status>0";
-  $critere.=" AND type='$type'";
+  if ($type) $critere.=" AND type='$type'";
 } else $critere="";
 
-if (!$type) die("probleme interne contacter Ghislain");
 
 //
 // ordre
@@ -28,10 +27,13 @@ if ($id>0 && ($delete || $restore)) {
   include ("$home/trash.php");
   treattrash("indexls",$critere);
   return;
+}
+if (!$type) die("probleme interne contacter Ghislain");
+
 //
 // ajoute ou edit
 //
-} elseif ($edit) { // modifie ou ajoute
+if ($edit) { // modifie ou ajoute
   // pretraitement des entrees... met le resultat dans $context
   extract_post();
   // validation
