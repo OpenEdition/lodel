@@ -415,7 +415,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	$idtypes[$type]=$row[id];
       }
       if (!file_exists(SITEROOT."docannexe/fichier")) {
-	mkdir(SITEROOT."docannexe/fichier",0700); 
+	mkdir(SITEROOT."docannexe/fichier",0777 & octdec($GLOBALS[filemask])); 
       }
       // ok, on s'occupe maintenant de l'importation des documentsannexes
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documentsannexes") or die(mysql_error());
@@ -429,9 +429,9 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 
 	if ($type=="lienfichier") { // deplace le fichier si necessaire.
 	  $dest="docannexe/fichier/$id/lien";
-	  if(!mkdir(SITEROOT."docannexe/fichier/$id",0700)) break;
+	  if(!mkdir(SITEROOT."docannexe/fichier/$id",0777 & octdec($GLOBALS[filemask]))) break;
 	  if (!copy(SITEROOT.$row[lien],SITEROOT.$dest)) break;
-	  chmod (SITEROOT.$dest,0600);
+	  chmod (SITEROOT.$dest,0666  & octdec($GLOBALS[filemask]));
 	  unlink(SITEROOT.$row[lien]);
 	  $row[lien]=$dest;
 	}
@@ -610,7 +610,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	  array_push($updates," fichiersource='$rtffile'");
 	  $dest="../sources/entite-$row[identite].source";
 	  if (!copy("../rtf/$rtffile",$dest)) die("probleme avec la copie du fichier $rtffile dans $dest");
-	  @chmod ($dest,0600);
+	  @chmod ($dest,0666 & octdec($GLOBALS[filemask]));
 	} else {
 	  $report.="Le fichier source $rtffile n'existe pas<br />";
 	}
@@ -827,9 +827,9 @@ function extract_meta($classe)
     $dest=$dirdest."/image.".$ext;
 
     // copy the file
-    if(!file_exists(SITEROOT.$dirdest) && !mkdir(SITEROOT.$dirdest,0700)) return FALSE;
+    if(!file_exists(SITEROOT.$dirdest) && !mkdir(SITEROOT.$dirdest,0777  & octdec($GLOBALS[filemask]))) return FALSE;
     if (!copy($file,SITEROOT.$dest)) return FALSE;
-    chmod(SITEROOT.$dest, 0600);
+    chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
     unlink($file);
 
     mysql_query("UPDATE $GLOBALS[tp]$classe SET image='$dest' WHERE id='$id'") or die(mysql_error());

@@ -105,7 +105,7 @@ $rtfname="$row[fichier].rtf";
 if (file_exists($rtfname)) { 
   $dest="../rtf/r2r-pub-$parent.rtf";
   copy ($rtfname,$dest);
-  chmod($dest,0644) or die ("impossible de chmod'er $dest");
+  chmod($dest,0666  & octdec($GLOBALS[filemask])) or die ("impossible de chmod'er $dest");
 }
 
 

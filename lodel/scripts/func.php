@@ -34,7 +34,7 @@ function writefile ($filename,&$text)
    { 
      if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
    }
-   return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
+   return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0666 & octdec($GLOBALS[filemask]));
 }
 
 
@@ -486,14 +486,14 @@ function save_annex_file($dir,$file,$filename) {
   if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0755)) die("ERROR: unable to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");
   }
   $filename=basename($filename); // take only the name
   if (!$file) die("ERROR: save_annex_file file is not set");
   $dest=$dir."/".$filename;
   if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
 
-  @chmod(SITEROOT.$dest, 0600);
+  @chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
   
   return $dest;
 }
@@ -513,7 +513,7 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
   if (is_numeric($dir)) $dir="docannexe/image/$dir";
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0700)) die("ERROR: unable to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");
   }
   if (!$file) die("ERROR: save_annex_file file is not set");
   if ($uploaded && $tmpdir && dirname($file)!=$tmpdir) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
@@ -540,7 +540,7 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
     }
   }
 
-  @chmod(SITEROOT.$dest, 0600);
+  @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS[filemask]));
   
   return $dest;
 }

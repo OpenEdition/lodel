@@ -107,7 +107,7 @@ if ($idtache) {
     if ($tache[source]) {
       $dest=SITEROOT."lodel/sources/entite-$id.source";
       if (!(@copy($tache[source],$dest))) die("Le fichier source $tache[source] n'a pas pu etre enregistre dans $dest");
-      @chmod($dest,0600);
+      @chmod($dest,0666 & octdec($GLOBALS[filemask]));
       $tache[source]=""; // la copie est faite, donc on efface le nom de la source pour la tache
     }
 

@@ -28,18 +28,17 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Importation des donn&eacute;es</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Importation de modèle</td>
 	</tr>
 </table>
 
 
-	  <IF COND="[#ERREUR_HTACCESS]">
+	  <IF COND="[#ERREUR_TABLE]">
 <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
 
-	    <p><strong>Erreur:</strong> l'import s'est déroulé correctement, mais Lodel n'a pas pu installer les fichiers .htaccess dans les répertoires suivant: [#ERREUR_HTACCESS].</p>
-	    <p>Veuillez les installer vous-même. Les fichiers .htaccess doivent contenir une ligne de code:<br /><code>deny from all</code><p>
+	    <p><strong>Erreur:</strong> La base de donnée n'est pas vide. La table "[#ERREUR_TABLE]" contient encore des informations. Veuillez supprimer tous les documents, publications, mots clés, etc avant de procéder à l'importation d'un nouveau modele editorial</p>
 		    </td>
 		</tr>
 </table>
@@ -52,29 +51,29 @@
 <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
-			<br /><br />
-			<span class="texte_intitule">Il est recommand&eacute; de faire une sauvegarde de la base de donn&eacute;es avant d'en importer une nouvelle :</span>
-			<div><a href="backup.php">SAUVEGARDE DE LA BASE DE DONNEES</a></div>
-			<br /><br /><br />
+<br />
 		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'importation de la base de donnée. Verifier l'integrité de votre archive. La base installée est sûrement corrompue maintenant. Veuillez importer une archive valide. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
 		    <IF COND="[#ERREUR_READING]"><strong>Erreur:</strong> Le fichier archive n'a pas pu être lu ou ne contient pas de fichier.<br /><br /></IF>
 
-			Pour importer une base de donn&eacute;es, deux possibilités:
+			Pour importer un modèle éditorial, vous pouvez:
 		<ul>
 		  <li>
-		    <p>Transferer par ftp le fichier tar.gz  sur le serveur dans le r&eacute;pertoire de [#IMPORTDIR] ou dans le repertoire CACHE.</p>
-		    <p>Liste des fichiers disponibles actuellement:</p>
+		    <p>Selectionner un des modèles livré avec Lodel</p>
+		    <p>Liste des modèles disponibles:</p>
 		    <LOOP NAME="fichiers">
    		    <DO>
-		      <div><strong>[#NOM]</strong> &gt;&gt; <a href="import.php?fichier=[(#NOM|urlencode)]">Importer</a></div><br />
+		      <table border="1">
+		      <tr><td><div><strong>[#NOM]</strong> &gt;&gt; <a href="importmodel.php?fichier=[(#FULLNAME|urlencode)]">Importer</a></div></td></tr>
+		      <tr><td>[#COMMENT]</td></tr>
+		      </table>
 		    </DO>
 		    </LOOP>
 		</li>
 		<li>
-		  <p>Charger un  fichier par HTTP/POST (ci-dessous). Attention, la taille maximale du fichier autorisée sur les serveurs est souvent restreinte. Votre configuration indique: <?php echo ini_get('post_max_size'); ?></p>
+		  <p>Charger un modèle (attention à la version !)</p>
       <IF COND="[#ERREUR_UPLOAD]"><b>Erreur</b> lors du chargement!</IF>
                   <p>
-    Archive: <form name="formfic" enctype="multipart/form-data" action="import.php" method="post"  />
+    Archive: <form name="formfic" enctype="multipart/form-data" action="importmodel.php" method="post"  />
       <input type="file" name="archive" size="40">
       <input class="form" type="submit" value="Charger" />	  
       </form>

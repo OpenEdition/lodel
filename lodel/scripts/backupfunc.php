@@ -117,7 +117,7 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
  *
  */
 
-function mysql_dump($db,$output,$drop=TRUE,$fh=0)
+function mysql_dump($db,$output,$fh=0,$create=TRUE,$drop=TRUE,$tables=array())
 
 {
   if ($fh) {
@@ -131,12 +131,13 @@ function mysql_dump($db,$output,$drop=TRUE,$fh=0)
   $err_url = $GLOBALS['PHP_SELF']."?erreur=1";
   $crlf = PMA_whichCrlf();
 
-  $tables     = PMA_mysql_list_tables($db);
-  if (!$tables) die (mysql_error());
-  $num_tables = ($tables) ? @mysql_numrows($tables) : 0;
-  if ($num_tables == 0) { return; }
-
-
+  if (!$tables) {
+    $results = PMA_mysql_list_tables($db);
+    if (!$results) die (mysql_error());
+    $num_tables = @mysql_numrows($results);
+    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($result,$i);
+  }
+  $num_tables=count($tables);
 
 
 #} elseif ($export_type == 'database') {
@@ -147,16 +148,11 @@ function mysql_dump($db,$output,$drop=TRUE,$fh=0)
 #    }
     $i = 0;
     while ($i < $num_tables) {
-        $table = PMA_mysql_tablename($tables, $i);
+        $table = $tables[$i];
         $local_query  = 'SELECT * FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table);
-#        if ((isset($tmp_select) && strpos(' ' . $tmp_select, '|' . $table . '|'))
-#            || !isset($tmp_select)) {
-
-#            if (isset($GLOBALS[$what . '_structure']))
-	      PMA_exportStructure($db, $table, $crlf, $err_url);
- #           if (isset($GLOBALS[$what . '_data'])) 
-	      PMA_exportData($db, $table, $crlf, $err_url, $local_query);
-#        }
+	
+	if ($create) PMA_exportStructure($db, $table, $crlf, $err_url);
+	PMA_exportData($db, $table, $crlf, $err_url, $local_query);
         $i++;
     }
     PMA_exportDBFooter($db);

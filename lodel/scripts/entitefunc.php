@@ -280,7 +280,7 @@ function move_files($id,$files_to_move,&$sets)
     $sets[$file[name]]="'".addslashes($dest)."'";
     if ($src==SITEROOT.$dest) continue;
     rename($src,SITEROOT.$dest);
-    chmod (SITEROOT.$dest,0600);
+    chmod (SITEROOT.$dest,0666 & octdec($GLOBALS[filemask]));
     @rmdir(dirname($src)); // do not complain, the directory may not be empty
   }
 }
