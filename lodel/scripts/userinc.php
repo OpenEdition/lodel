@@ -56,6 +56,10 @@ $critere="id='$id' AND statut>0";
 if ($edit) { // modifie ou ajoute
 
   extract_post();
+  // "ms" stands for Manager Safe. Avoid auto-completion.
+  $context[username]=$context[usernamems];
+  $context[passwd]=$context[passwdms];
+
   // validation
   do {
     $len=strlen($context[username]);
@@ -116,8 +120,14 @@ if ($edit) { // modifie ou ajoute
   $id=intval($id);
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
+  $context[username]="";
   $context=array_merge($context,mysql_fetch_assoc($result));
+  $context[usernamems]=$context[username];
 }
+
+
+
+
 
 // post-traitement
 posttraitement($context);
