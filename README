@@ -1,0 +1,67 @@
+
+LODEL - Logiciel d'Edition ELectronique.
+
+Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, 
+                         Nicolas Nutten, Anne Gentil-Beccot
+
+Home page: http://www.lodel.org
+
+E-Mail: lodel@lodel.org
+
+Resume:
+-------
+Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des articles issus d'un traitement de texte. Il allie puissance de configuration (schémas XML dynamiques) et simplicité d'utilisation. Lodel appartient à la famille des CMS (Content managing systems).
+
+----------------------------------------------------------------------------------------
+
+Licence
+-------
+
+Lodel est un logiciel libre sous licence GPL. Lisez la licence dans le fichier COPYING.
+
+----------------------------------------------------------------------------------------
+
+Logiciel d'Edition ELectronique
+-------------------------------
+
+Lodel est un logiciel d'édition électronique dédié à l'édition de périodiques scientifiques en ligne. Fruit de quatre années d'expérience concrète d'édition électronique, Lodel a été concue par Ghislain Picard et Marin Dacos et développer par une large équipe.
+
+* Une mise en ligne simple et rapide
+
+Exclusivement disponible "online", ce logiciel permet de publier des sites en important des articles issus d'un traitement de texte ou d'un logiciel de PAO, après un prétraitement rapide. Lodel a été conçu pour permettre une mise en ligne simplifiée qui puisse être assurée par des équipes avec des compétences informatiques minimales. Le logiciel est par ailleurs, adapté aux conditions concrètes et variées de travail des utilisateurs (Macintosh, PC, etc.), ce qui augmente sa simplicité d'adaptation.
+
+Le logiciel est pensé pour permettre une mise en ligne très rapide sans céder sur la qualité et sur les normes, mise en ligne rapide, adaptée à la fois au rythme lent de l'édition papier, mais également aux rythmes spécifiques de l'édition électronique.
+
+Un système élaboré de gabarits graphiques (template) permet aux sites de se doter d'une charte graphique spécifique marquant sa personnalité. Cela permet également de séparer totalement la forme du fond, c'est-à-dire de dissocier les processus liés aux contenus de ceux qui sont liés à la mise en forme, permettant ainsi aux éditeurs de se concentrer sur leur travail éditorial.
+
+* Interopérabilité et évolutibilité
+
+Lodel utilise des technologies favorisant l'interopérabilité et la réutilisation future des données : il produit du XML et du Dublin Core.
+
+----------------------------------------------------------------------------------------
+
+Installation rapide
+-------------------
+
+Se reporter à la documentation pour des explications détaillées.
+
+Pour une installation rapide:
+
+    * Télécharger l'archive lodel-X.X.tar.gz sur le site http://sourceforge.net/projects/lodel
+    * Décompresser l'archive à la racine de votre site.
+    * Aller sur la page http://www.votresite.org/ ou http://www.votresite.org/lodel en fonction de l'architecture de votre systeme.
+    * Suivez les instructions.
+
+Pour assurer une sécurité optimale, en particulier les droits de fichier, il convient de se reporter à la documentation d'installation.
+
+----------------------------------------------------------------------------------------
+
+Remerciements
+-------------
+
+Merci à tous les contributeurs: Gautier Poupeau, Francois Lermigeaux, Pierre Mounier, Jean Christophe Peyssard, Laurent Godard.
+
+Merci aux projets OpenSource: OpenOffice.org, Writer2Latex, phpMyAdmin, Ted, SourceForge.net
+
+
