@@ -141,6 +141,9 @@ foreach $filename (@ARGV) {
 # changement de #COMMENTAIRE en #COMMENTAIREINTERNE
   $change+=$file=~s/\[\#COMMENTAIRE\]/\[\#COMMENTAIREINTERNE\]/g;
 
+# changement de #REVUE en #SITE
+  $change+=$file=~s/\[\#REVUE\]/\[\#SITE\]/g;
+
   next unless $change;
   print "$filename:",$change,"\n";
 
