@@ -43,28 +43,28 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="users.php"><span class="texte_noir_gras">Gestion des utilisateurs</span></a>
+							<a href="users.php"><span class="texte_noir_gras">Utilisateurs et droits</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="textes.php"><span class="texte_noir_gras">Editer les minitextes</span></a>
-						</td>
-						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<!--[<a href="options.php"><span class="texte_noir_gras">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></a></td>]-->
-							<span class="texte_noir_gras"><span class="inactif">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></span> (inactif)</td>
+							<span class="texte_noir_gras"><span class="inactif">M&eacute;tadonn&eacute;es et options (inactif)</span></span> </td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Associer une image</span></span> (inactif)</td>
+						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Associer une image au site (inactif)</span></span> </td>
 						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="textes.php"><span class="texte_noir_gras">Minitextes</span></a>
+						</td>
+						<td>&nbsp;</td>
 					</tr>
 				</table>
 			</td>
@@ -111,32 +111,32 @@
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
-						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_modele.png" /></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Configuration</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Mod&egrave;le &eacute;ditorial</span></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="importmodel.php"><span class="texte_noir_gras">Importer un modèle éditorial</span></a>
+							<a href="importmodel.php"><span class="texte_noir_gras">Importer un mod&egrave;le &eacute;ditorial</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="backupmodel.php"><span class="texte_noir_gras">Sauvegarde du modèle éditorial</span></a>
+							<a href="backupmodel.php"><span class="texte_noir_gras">Sauvegarder le mod&egrave;le &eacute;ditorial</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typedocs.php"><span class="texte_noir_gras">Administrer les types de documents</span></a>
+							<a href="typedocs.php"><span class="texte_noir_gras">Types de documents</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -144,9 +144,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=documents"><span class="texte_noir_gras">Gestion des champs pour les documents</span></a>
+							<a href="champs.php?classe=documents"><span class="texte_noir_gras">Champs pour les documents</span></a>
 							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Gestion des champs pour les documents</span></span></span>
+								<span class="texte_noir_gras"><span class="inactif">Ces champs pour les documents</span></span></span>
 			                                </IF>
 						</td>
 						<td>&nbsp;</td>
@@ -155,9 +155,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-								<a href="typepublis.php"><span class="texte_noir_gras">Administrer les types de publications</span></a>
+								<a href="typepublis.php"><span class="texte_noir_gras">Types de publications</span></a>
 							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Administrer les types de publications</span></span>
+								<span class="texte_noir_gras"><span class="inactif">Types de publications</span></span>
 							</IF>
 						</td>			
 						<td>&nbsp;</td>
@@ -166,9 +166,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=publications"><span class="texte_noir_gras">Gestion des champs pour les publications</span></a>
+							<a href="champs.php?classe=publications"><span class="texte_noir_gras">Champs pour les publications</span></a>
 							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Gestion des champs pour les publications</span></span></span>
+								<span class="texte_noir_gras"><span class="inactif">Champs pour les publications</span></span></span>
 			                                </IF>
 						</td>
 						<td>&nbsp;</td>
@@ -177,14 +177,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typeentrees.php"><span class="texte_noir_gras">Administrer les types d'index</span></a>
+							<a href="typeentrees.php"><span class="texte_noir_gras">Types d'index</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typepersonnes.php"><span class="texte_noir_gras">Administrer les types d'index par personne</span></a>
+							<a href="typepersonnes.php"><span class="texte_noir_gras">Types d'index par personne</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -233,7 +233,7 @@
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques de la revue</span></span> (inactif)</td>
+						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques du site</span></span> (inactif)</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 				</table>
