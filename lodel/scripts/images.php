@@ -86,7 +86,7 @@ function resize_image ($taille,$src,$dest)
     elseif ($result[2]==2) { $im=@ImageCreateFromJPEG($src); }
     elseif ($result[2]==3) { $im=@ImageCreateFromPNG($src); }
     else { break; }
-    if (!$im) break; // erreur de chargement
+    if (!$im) return false; // erreur de chargement
 
     // taille de l'image a produire
     if (is_numeric($taille)) { // la plus grande taille
@@ -107,7 +107,8 @@ function resize_image ($taille,$src,$dest)
     if ($im2) { // GD 2.0
       ImageCopyResampled($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
     } else { // GD 1.0
-      $im2=ImageCreate($width,$height);
+      $im2=@ImageCreate($width,$height);
+      if (!$im2) return false;
       ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
     }
 
@@ -115,9 +116,10 @@ function resize_image ($taille,$src,$dest)
     elseif ($result[2]==2) { ImageJPEG($im2,$dest); }
     elseif ($result[2]==3) { ImagePNG($im2,$dest); }
 
-    return;
+    return true;
   } while (0); // exception
   copy($src,$dest);
+  return true;
 }
 
 
