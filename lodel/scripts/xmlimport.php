@@ -63,10 +63,12 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	$value=$result2[1];
 
 	// type speciaux
+	/* done in entitefunc.php
 	if ($type=="date") { // date
 	  require_once($home."date.php");
 	  $value=mysqldate(strip_tags($value));
 	}
+	*/
 	#echo "traitement:$traitement";
 	if ($traitement) { // processing ?
 	  $traitements=preg_split("/\|/",$traitement);
