@@ -54,13 +54,14 @@
 
 		    <h3>Installation du modèle éditorial.</h3>
                       
+Choisissez le type de site que vous voulez installer en adoptant un
+modèle éditorial parmi ceux qui vous sont proposés.
 
-
-		    <h4>Selectionnez un modèle éditorial :</h4>
 		    <LOOP NAME="fichiers">
 			<BEFORE><dl></BEFORE>
    		    <DO>
 
+			<hr />
                       <div>
 		      <dt><strong>[#TITLE]</strong></dt>
                       <dd>[#DESCRIPTION]</dd>
@@ -68,7 +69,6 @@
                       <dd><strong>Version du modèle :</strong> [#MODELVERSION]</dd>
                       <dd><strong>Auteur :</strong> [#AUTHOR]</dd>
 		      <dd><strong>Date de création :</strong> [(#DATE|humandate)]</dd>
-				<hr />
 		      <IF COND="[#WARNING_VERSION]"><div><strong>Version:</strong> Attention, la version de ce modèle editorial ([#LODELVERSION]) n'est pas la même que celle de Lodel ([#VERSION]). Verifier la compatibilité.</div></IF>
 
 
@@ -79,15 +79,22 @@
 		    </DO>
 			<AFTER></dl></AFTER>
 		    </LOOP>
-</div>
+<hr/ >
+Si vous souhaitez créer un modèle éditorial ou utiliser un autre modèle éditorial, vous pourrez
+ le faire dans la zone d'administration de Lodel.
+
+
 <form>
 	<div id="pied_de_formulaire">
-		<input class="form" type="button" value="    Ne pas installer de modèle éditorial    " onClick="javascript:window.location='index.php';" />
+		<input class="form" type="button" value="    N'utiliser aucun modèle éditorial prédéfini    " onClick="javascript:window.location='index.php';" />
 <br />
 &nbsp;<br />
 	
 </div>
 </form>
+
+</div>
+
 </IF>  
 </div>
 </body>
