@@ -481,11 +481,148 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
 
 
 
+function backupME($sqlfile,$sqlonly) {
+  global $zipcmd;
+
+  $acceptedexts=array("html","css");
+
+  $tmpdir=tmpdir();
+  $archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
+
+  if (!$sqlonly) {
+    // search dirs to archive. Dirs must contains file !
+    $dirs=array();
+    foreach (array("tpl","css") as $dir) {
+      if (!file_exists(SITEROOT.$dir)) continue;
+      $dh=opendir(SITEROOT.$dir);
+      while ( ($file=readdir($dh)) && !preg_match("/\.(".join("|",$acceptedexts).")$/",$file)) {}
+      if ($file) $dirs[]=$dir;
+      closedir($dh);
+    }
+  }
+  //
+
+  if ($zipcmd && $zipcmd!="pclzip") {
+    if ($dirs) {
+      foreach ($dirs as $dir) {
+	foreach($acceptedexts as $ext) {
+	  $files.=" $dir/*.$ext";
+	}
+      }
+      if (!chdir(SITEROOT)) die ("ERROR: can't chdir in SITEROOT");
+      $prefixdir=$tmpdir[0]=="/" ? "" : "lodel/admin/";
+      system($zipcmd." -q $prefixdir$archivetmp $files");
+      if (!chdir("lodel/admin")) die ("ERROR: can't chdir in lodel/admin");
+      system($zipcmd." -q -g $archivetmp -j $sqlfile");
+    } else {
+      system($zipcmd." -q $archivetmp -j $sqlfile");
+    }
+  } else { // pclzip
+    require($home."pclzip.lib.php");
+    $archive=new PclZip ($archivetmp);
+    if ($dirs) {
+      // function to exclude files and rename directories
+      function preadd($p_event,&$p_header,$user_vars) {
+	$p_header['stored_filename']=preg_replace("/^".preg_quote($user_vars['tmpdir'],"/")."\//","",$p_header['stored_filename']);
+
+	#echo $p_header['stored_filename'],"<br>";
+	return preg_match("/\.(".join("|",$user_vars['acceptedexts']).
+			  "|sql)$/",$p_header['stored_filename']);
+      }
+      // end of function to exclude files
+      foreach ($dirs as $dir) { $files[]=SITEROOT.$dir; }
+      $files[]=$sqlfile;
+      $archive->user_vars=array("tmpdir"=>$tmpdir,"acceptedexts"=>$acceptedexts);
+      $res=$archive->create($files,
+			    PCLZIP_OPT_REMOVE_PATH,SITEROOT,
+			    PCLZIP_CB_PRE_ADD, 'preadd'
+			    );
+      if (!$res) die("ERROR: Error while creating zip archive: ".$archive->error_string);
+    } else {
+      $archive->create($sqlfile,PCLZIP_OPT_REMOVE_ALL_PATH);
+    }
+  } // end of pclzip option
+
+  return $archivetmp;
+}
 
 
+function importFromZip ($archive,$accepteddirs,$acceptedexts=array(),$sqlfile="")
 
+{
+  global $unzipcmd;
 
+  $tmpdir=tmpdir();
 
+  // use UNZIP command
+  if ($unzipcmd && $unzipcmd!="pclzip") {
+      $listfiles=`$unzipcmd -Z -1 $archive`;
+      if (!$listfiles)  return false;
+      $dirs="";
+      foreach ($accepteddirs as $dir) {
+	if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\//m",$listfiles) && 
+	    file_exists(SITEROOT.$dir)) {
+	  if ($acceptedexts) {
+	    foreach($acceptedexts as $ext) {
+	      $dirs.=$dir."/*.$ext ".$dir."/*/*.$ext ";
+	    }
+	  } else {
+	    $dirs.=$dir."/* ".$dir."/*/* ";
+	  }
+	}
+      }
+      if (!chdir (SITEROOT)) die("ERROR: chdir fails");
+      system ($unzipcmd." -oq $archive  $dirs");
+      if (!chdir ("lodel/admin")) die("ERROR: chdir 2 fails");
+      if ($sqlfile) {
+	system ($unzipcmd." -qp $archive  *.sql >$sqlfile");
+	if (filesize($sqlfile)<=0)  return false;
+      }
+
+  } else { // use PCLZIP library
+      require($home."pclzip.lib.php");
+      $archive=new PclZip($archive);
+
+      // functions callback
+      function preextract($p_event, &$p_header, $user_vars) { // choose the files to extract
+	//echo $p_header['filename'],"<br>";
+	if (preg_match("/^(\.\/)*.*\.sql$/",$p_header['filename'])) { // extract the sql file
+	  unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
+	  //                   may cause problem if the file is recreated but it's so uncertain !
+	  $p_header['filename']=$user_vars['sqlfile'];
+	  return 1;
+	}
+	$exts=$user_vars['acceptedexts'] ? ".*\.(".join("|",$user_vars['acceptedexts']).")$" : "";
+
+	if (preg_match("/^(\.\/)*".str_replace("/","\/",join("|",$user_vars['accepteddirs'])).
+		       "\/$exts/",$p_header['filename'])) {
+	  $p_header['filename']=SITEROOT.$p_header['filename'];
+	  return 1;
+	}
+	return 0; // don't extract
+      }
+
+      function postextract($p_event, &$p_header, $user_vars) { // chmod
+	#if ($p_header['filename']!=$user_vars{'sqlfile'} && 
+	#    file_exists($p_header['filename'])) {
+	  @chmod($p_header['filename'],octdec($GLOBALS[filemask]) & 
+		 (substr($p_header['filename'],-1)=="/" ? 0777 : 0666));
+        #}
+	return 1;
+      }
+      $archive->user_vars=array("sqlfile"=>$sqlfile,
+				"accepteddirs"=>$accepteddirs,
+				"acceptedexts"=>$acceptedexts,
+				"tmpdir"=>$tmpdir);
+      $res=$archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract',
+			PCLZIP_CB_POST_EXTRACT, 'postextract');
+
+      if (!$res) die("ERROR: unable to extract $archive.<br>".$archive->error_string);
+      if (filesize($sqlfile)<=0) return false;
+  }
+
+  return true;
+}
 
 
 

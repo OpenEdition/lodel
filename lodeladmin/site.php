@@ -260,28 +260,28 @@ if ($tache=="createtables") {
     return;
   }
 
-  // ajoute le modele editorial
-  // on le cherche d'abord.
-  $fichier=LODELROOT."$versionrep/install/plateform/model-default.sql";
-  #echo $fichier," ",file_exists($fichier);
-  #die("");
-  if (file_exists($fichier)) {
-    $import=true;
-    // verifie qu'on peut importer le modele.
-    foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
-      if (mysql_num_rows($result)) { $import=false; break; } 
-    }
-
-    if ($import) {
-      require_once ($home."backupfunc.php");
-      // execute the editorial model
-      if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
-      // change the id in order there are minimal and unique
-      require_once($home."objetfunc.php");
-      makeobjetstable();
-    }
-  }
+#  // ajoute le modele editorial
+#  // on le cherche d'abord.
+#  $fichier=LODELROOT."$versionrep/install/plateform/model-default.sql";
+#  #echo $fichier," ",file_exists($fichier);
+#  #die("");
+#  if (file_exists($fichier)) {
+#    $import=true;
+#    // verifie qu'on peut importer le modele.
+#    foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
+#      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+#      if (mysql_num_rows($result)) { $import=false; break; } 
+#    }
+#
+#    if ($import) {
+#      require_once ($home."backupfunc.php");
+#      // execute the editorial model
+#      if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
+#      // change the id in order there are minimal and unique
+#      require_once($home."objetfunc.php");
+#      makeobjetstable();
+#    }
+#  }
 
   $tache="createrep";
 }
@@ -381,8 +381,22 @@ if ($tache=="fichier") {
   mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
-  if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  header("location: ".$context[url]."/lodel/edition");
+
+  // ajouter le modele editorial ?
+  $import=true;
+  // verifie qu'on peut importer le modele.
+  foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+    if (mysql_num_rows($result)) { $import=false; break; } 
+  }
+
+  if (!$context['chemin']) $context['chemin']="/".$context['rep'];
+  if ($import) {
+    header("location: ".$context['url']."/lodel/edition/importmodel.php");
+  } else {
+    header("location: ".$context['url']."/lodel/edition");
+  }
+
 
   return;
 

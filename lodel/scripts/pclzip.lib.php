@@ -154,6 +154,8 @@
     var $error_code = 1;
     var $error_string = '';
 
+    var $user_vars;
+
   // --------------------------------------------------------------------------------
   // Function : PclZip()
   // Description :
@@ -2319,7 +2321,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_ADD].'(PCLZIP_CB_PRE_ADD, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_ADD].'(PCLZIP_CB_PRE_ADD, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Change the file status
         $p_header['status'] = "skipped";
@@ -2424,7 +2426,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_POST_ADD].'(PCLZIP_CB_POST_ADD, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_POST_ADD].'(PCLZIP_CB_POST_ADD, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Ignored
         $v_result = 1;
@@ -3069,7 +3071,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Change the file status
         $p_entry['status'] = "skipped";
@@ -3272,7 +3274,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header,$this->user_vars);');
 
       // ----- Look for abort result
       if ($v_result == 2) {
@@ -3320,7 +3322,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Change the file status
         $p_entry['status'] = "skipped";
@@ -3396,7 +3398,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header,$this->user_vars);');
 
       // ----- Look for abort result
       if ($v_result == 2) {

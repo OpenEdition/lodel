@@ -34,7 +34,7 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 
 
 $context[importdir]=$importdir;
-$fileregexp='(model)-\w+(?:-\d+)?.sql';
+$fileregexp='(model)-\w+(?:-\d+)?.zip';
 
 $importdirs=array("CACHE",$importdir,$home."../install/plateform");
 
@@ -43,7 +43,7 @@ $archive=$_FILES['archive']['tmp_name'];
 $context['erreur_upload']=$_FILES['archive']['error'];
 if (!$context['erreur_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
   $fichier=$_FILES['archive']['name'];
-  if (!preg_match("/^$fileregexp$/",$fichier)) $fichier="model-import-".date("dmy").".sql";
+  if (!preg_match("/^$fileregexp$/",$fichier)) $fichier="model-import-".date("dmy").".zip";
 
   if (!move_uploaded_file($archive,"CACHE/".$fichier)) die("ERROR: a problem occurs while moving the uploaded file.");
 
@@ -70,8 +70,15 @@ if ($fichier && $delete) {
   require_once ($home."backupfunc.php");
   require ($home."func.php");
 
+  $sqlfile=tempnam(tmpdir(),"lodelimport_");
+  $accepteddirs=array("tpl","css");
+  $acceptedexts=array("html","css");
+
+  if (!importFromZip($fichier,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['erreur_extract']=1; break; }
+
   // execute the editorial model
-  if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
+  if (!execute_dump($sqlfile)) $context['erreur_execute_dump']=$err=mysql_error();
+  @unlink($sqlfile);
 
   // change the id in order there are minimal and unique
   require_once($home."objetfunc.php");
@@ -106,7 +113,7 @@ calcul_page($context,"importmodel");
 
 function loop_fichiers(&$context,$funcname)
 {
-  global $fileregexp,$importdirs;
+  global $fileregexp,$importdirs,$home;
 
   foreach ($importdirs as $dir) {
     if ( $dh= @opendir($dir)) {
@@ -117,20 +124,27 @@ function loop_fichiers(&$context,$funcname)
 	$localcontext[fullname]="$dir/$file";
 	if ($dir=="CACHE") $localcontext[maybedeleted]=1;
 
-	$fh=fopen($localcontext[fullname],"r");
-	if (!$fh) continue;
+	// open ZIP archive and extract model.sql
+	if ($unzipcmd && $unzipcmd!="pclzip") {
+	  $line=`$unzipcmd $dir/$file -c model.sql`;
+	} else {
+	  require($home."pclzip.lib.php");
+	  $archive=new PclZip("$dir/$file");
+	  $arr=$archive->extract(PCLZIP_OPT_BY_NAME,"model.sql",
+				 PCLZIP_OPT_EXTRACT_AS_STRING);
+	  $line=$arr[0]['content'];
+	}
+	if (!$line) continue;
+
 	$xml="";
-	do {
-	  $buf.=fread($fh,1024);
-	  if (preg_match("/<model>(.*?)<\/model>/s",$buf,$result)) {
-	    $lines=preg_split("/\n/",$result[1]);
-	    $xml="";
-	    foreach ($lines as $line) {
-	      $xml.=substr($line,2);
-	    }
-	    break;
+	if (preg_match("/<model>(.*?)<\/model>/s",$line,$result)) {
+	  $lines=preg_split("/\n/",$result[1]);
+	  $xml="";
+	  foreach ($lines as $line) {
+	    $xml.=substr($line,2);
 	  }
-	} while(!feof($fh));
+	}
+
 	foreach (array("lodelversion","description","author","date") as $tag) {
 	  if (preg_match("/<$tag>(.*?)<\/$tag>/",$xml,$result)) {
 	    $localcontext[$tag]=str_replace(array("\n","\r","<",">"),

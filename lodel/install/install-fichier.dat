@@ -3,6 +3,7 @@
 
 mkdir CACHE 0777
 mkdir tpl 0755
+mkdir css 0755
 mkdir images 0755
 mkdir docannexe 0777
 mkdir docannexe/fichier 0777
@@ -43,7 +44,7 @@ ln index.php
 ln signaler.php
 ln sommaire.php
 
-cp tpl
+### desuet. cp tpl
 
 dirsource $homesite/lodel/admin
 ln tpl/login.html

@@ -46,7 +46,7 @@ if ($backup) {
 
   lock_write_all($currentdb);
 
-  $tmpfile=tempnam(tmpdir(),"lodelbackupmodel");
+  $tmpfile=tmpdir()."/model.sql";
   $fh=fopen($tmpfile,"w");
 
   $description='<model>
@@ -90,10 +90,14 @@ if ($backup) {
   if (filesize($tmpfile)<=0) die ("ERROR: mysql_dump failed");
 
   unlock();
-  $filename="model-$site-".date("dmy").".sql";
+
+  $zipfile=backupME($tmpfile,$context['sqlonly']);
+
+  $filename="model-$site-".date("dmy").".zip";
   $operation="download";
-  if (operation($operation,$tmpfile,$filename,$context)) return;
+  if (operation($operation,$zipfile,$filename,$context)) return;
   @unlink ($tmpfile);
+  @unlink ($zipfile);
 
   header ("location: index.php");
   return;
