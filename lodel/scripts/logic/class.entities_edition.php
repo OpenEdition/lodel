@@ -148,7 +148,7 @@ class Entities_EditionLogic extends Logic {
 	 $idtype=$context['id'];
 
 	 if (!$context['persons'][$idtype]) {
-	   call_user_func("code_alter_$funcname",$localcontext);
+	   call_user_func("code_alter_$funcname",$context);
 	   return;
 	 }
 	 //search the type
