@@ -459,3 +459,15 @@ CREATE TABLE IF NOT EXISTS #_TP_translations (
 	KEY index_lang (lang),
 	UNIQUE unique_lang_groups (lang,textgroups)
 );
+
+CREATE TABLE IF NOT EXISTS #_TP_search_engine (
+	identity int(10) unsigned NOT NULL DEFAULT '0',
+	tablefield varchar(32) NOT NULL DEFAULT '',
+	word varchar(30) NOT NULL DEFAULT '',
+	weight double NOT NULL DEFAULT '0',
+	KEY index_word (word),
+	KEY index_identity (identity)
+);
+
+
+
