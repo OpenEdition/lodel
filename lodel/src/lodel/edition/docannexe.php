@@ -129,7 +129,7 @@ if ($edit) { // modifie ou ajoute
     require_once($home."entitefunc.php");
     $context[entite][nom]=$context[titre];
     $context[entite][titre]=$context[titre];
-    $context[entite][commentaire]=$context[commentaire];
+    $context[entite][texte]=$context[texte];
     $context[entite][lien]=$lien;
     $context[idparent]=$idparent;
 
