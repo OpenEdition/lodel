@@ -10,7 +10,7 @@ $version="";
 
 $versionsuffix=$version ? "-$version" : "";
 
-$home="$pathroot/lodel$versionsuffix/scripts";
+$home="$pathroot/lodel$versionsuffix/scripts/";
 $sharedir.=$versionsuffix;
 $shareurl.=$versionsuffix;
 
