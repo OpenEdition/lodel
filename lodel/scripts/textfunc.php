@@ -3,10 +3,6 @@
 # fonction largement reprises de SPIP
 
 
-function PtoBR($texte){
-	$texte=eregi_replace("</p>", "\n", $texte);
-	return eregi_replace("<p([[:space:]][^>]*)?".">", "<br>", $texte);
-}
 
 #function cleanurl ($texte)
 #
