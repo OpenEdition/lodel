@@ -43,8 +43,8 @@ class datatableVO {
 
 class datatableDAO extends DAO {
 
-   function datatableDAO($table) {
-     $this->DAO($table,false,"identity");
+  function datatableDAO($table,$idfield) {
+     $this->DAO($table,false,$idfield);
 
      // create the class
    }

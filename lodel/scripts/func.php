@@ -771,7 +771,7 @@ function setrecord($table,$id,$set,$context=array())
  *
  */
 
-function &getDAO($table,$args=null) {
+function &getDAO($table,$arg1=null,$agr2=null) {
   static $factory; // cache
 
   if ($factory[$table]) return $factory[$table]; // cache
@@ -779,8 +779,8 @@ function &getDAO($table,$args=null) {
   require_once($GLOBALS['home']."dao.php");
   require_once($GLOBALS['home']."dao/class.".$table.".php");
   $daoclass=$table."DAO";
-  if (isset($args)) {
-    return $factory[$table]=new $daoclass ($args);
+  if (isset($arg2)) {
+    return $factory[$table]=new $daoclass ($args,$agrs2);
   } else {
     return $factory[$table]=new $daoclass;
   }

@@ -305,36 +305,6 @@ class Entities_EditionLogic extends Logic {
    }
     
 
-   /**
-    * makeSelect
-    */
-
-   function makeSelect(&$context,$var)
-
-   {
-     switch($var) {
-       case "entries" :
-/*
-function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouvees)
-
-{
-  if (!$context[tri]) die ("ERROR: internal error in makeselectentries_rec");
-  $result=$db->execute(lq("SELECT id, abrev, name FROM #_TP_entries WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[sort]")) or dberror();
-
-  while (!$result->EOF) {
-    $row=$result->fields;
-    $selected=$entries && (in_array($row['abrev'],$entries) || in_array($row['name'],$entries)) ? " selected" : "";
-   if ($selected) array_push($entriestrouvees,$row['name'],$row['abrev']);
-   $value=$context['useabrevation'] ? $row['abrev'] : $row['name'];
-    echo "<option value=\"$value\"$selected>$rep$row[name]</option>\n";
-    makeselectentries_rec($row[id],$rep.$row['name']."/",$entries,$context,$entriestrouvees);
-    $result->MoveNext();
-  }
-}*/
-     }
-   }
-
-
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**
