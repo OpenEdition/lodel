@@ -1131,13 +1131,11 @@
 
 <DEFMACRO NAME="AUTEURS">
 <!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
-<strong>
 	<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		, [#PRENOM] [#NOMFAMILLE]
 		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
 	</LOOP>
-</strong>
 </DEFMACRO>
 
 <DEFMACRO NAME="AUTEURS_WITH_URL">
@@ -1414,74 +1412,6 @@
 	<IF COND="[#STATUS]==1">&nbsp;-&nbsp;</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche les documents annexes.                                     -->
-<!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
-<!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
-<!-- ****************************************************************** -->
-	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
-		<BEFORE>
-			<table>
-		</BEFORE>
-		<DO>
-			<tr>
-				<td class="texte_petit">
-					<!-- Titre du doc annexe -->
-					<MACRO NAME="GIF_TRIANGLE">
-					<strong>
-						<IF COND="[#TYPE] EQ 'lienexterne'">
-							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
-						<ELSE/>
-							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
-						</IF>
-					</strong>
-				</td>
-			</tr>
-			<tr>
-				<td class="texte_petit">
-					<!-- Commentaire du doc annexe -->
-					[#COMMENTAIRE]
-				</td>
-			</tr>
-			<tr>
-				<td class="texte_petit">
-					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
-				</td>
-			</tr>
-		</DO>
-		<AFTER>
-			</table>
-		</AFTER>
-		<ALTERNATIVE>
-			Il n'y a aucun document annexe associé à ce document.
-		</ALTERNATIVE>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton         -->
-<!-- [modifier] pour modifier le document annexe ou sa description      -->
-<!-- ainsi que des boutons [haut] [bas] pour changer son ordre.         -->
-<!-- ****************************************************************** -->
-	<IF COND="[#EDITEUR]">
-		<span class="texte_tres_petit">
-			<!-- Modifier -->
-			<a class="admin" href="docannexe.php?id=[#ID]&[#RETOUR]">[modifier]</a>
-			 |
-			<!-- Monter -->
-				<a href="docannexe.php?id=[#ID]&dir=up">[haut]</a>
-			 |
-			<!-- Descendre -->
-				<a href="docannexe.php?id=[#ID]&dir=down">[bas]</a>
-		</span>
-	</IF>
-</DEFMACRO>
-
 <!-- ************************************** Rajout intégration maquette ************************************** -->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!-- exemple de Javascript pour un Rollover -->
@@ -1723,6 +1653,16 @@
 	</IF>
 </DEFMACRO>
 
+<DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
+	<IF COND="[#EDITEUR]">
+		<a href="docannexe.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+		<a href="docannexe.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+	<ELSE/>
+		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
+		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
+	</IF>
+</DEFMACRO>
+
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
@@ -1762,33 +1702,51 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_STATUT_PUBLICATION">
-	<div class="action_formulaire">
-		<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
-		<IF COND="[#STATUS]==-32">
-			|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-			|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Prête à publiée</a>&nbsp;
-			|&nbsp;<span class="inactif">Publiée</span>&nbsp;
-			|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
-		</IF>
-		<IF COND="[#STATUS]==-1">
-			|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Brouillon</a>&nbsp;
-			|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
-			|&nbsp;<span class="inactif">Publiée</span>&nbsp;
-			|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
-		</IF>
-		<IF COND="[#STATUS]==1">
-			|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-			|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
-			|&nbsp;<span class="inactif">Publiée</span>&nbsp;
-			|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Publiée protégée</a>&nbsp;|
-		</IF>
-		<IF COND="[#STATUS]==32">
-			|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-			|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
-			|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Publiée</a>&nbsp;
-			|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
-		</IF>
-	</div>
+	<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
+	<IF COND="[#STATUS]==-32">
+		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+		|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Prête à publiée</a>&nbsp;
+		|&nbsp;<span class="inactif">Publiée</span>&nbsp;
+		|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+	</IF>
+	<IF COND="[#STATUS]==-1">
+		|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Brouillon</a>&nbsp;
+		|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
+		|&nbsp;<span class="inactif">Publiée</span>&nbsp;
+		|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+	</IF>
+	<IF COND="[#STATUS]==1">
+		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+		|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
+		|&nbsp;<span class="inactif">Publiée</span>&nbsp;
+		|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Publiée protégée</a>&nbsp;|
+	</IF>
+	<IF COND="[#STATUS]==32">
+		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+		|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
+		|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Publiée</a>&nbsp;
+		|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTONS_STATUT_DOCUMENT">
+	<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
+	<IF COND="[#STATUS]==-32">
+		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+		|&nbsp;<a href="status.php?id=[#ID]&status=pret">Prêt à publié</a>&nbsp;|
+	</IF>
+	<IF COND="[#STATUS]==-1">
+		|&nbsp;<a href="status.php?id=[#ID]&status=brouillon">Brouillon</a>&nbsp;
+		|&nbsp;<span class="inactif">Prêt à publié</span>&nbsp;|
+	</IF>
+	<IF COND="[#STATUS]==1">
+		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+		|&nbsp;<span class="inactif">Prêt à publié</span>&nbsp;|
+	</IF>
+	<IF COND="[#STATUS]==32">
+		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+		|&nbsp;<span class="inactif">Prêt à publié</span>&nbsp;|
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_STATUT_PUBLICATION">
@@ -1894,7 +1852,7 @@
 		</IF>
 			<MACRO NAME="AFFICHER_ICONE_STATUT">
 			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			<MACRO NAME="NOM_TITRE_TYPE">
 			</div>
 		<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
 		<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
@@ -1961,6 +1919,59 @@
 	<span class="titre_document">" [#TITRE] "</span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 	<span class="type_document">([#TYPE])</span>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les documents annexes.                                     -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
+		<BEFORE>
+			<table class="table_docannexes">
+		</BEFORE>
+		<DO>
+			<tr>
+				<td width="40" align="left" valign="top">
+					<IF COND="[#STATUS] GT 0">
+						<MACRO NAME="PNG_ANNEXE">
+					<ELSE/>
+						<MACRO NAME="PNG_ANNEXE_GRIS">
+					</IF>
+				</td>
+				<td width="300">
+					<div>
+						<IF COND="[#TYPE] EQ 'lienexterne'">
+							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						<ELSE/>
+							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						</IF>
+					</div>
+					<br /><span class="texte_normal">[#COMMENTAIRE]</span>
+				</td>
+				<td valign="top">
+					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+				</td>
+			</tr>
+		</DO>
+		<AFTER>
+			</table>
+		</AFTER>
+		<ALTERNATIVE>
+			<span class="texte_info">Il n'y a aucun document annexe associé à ce document.</span>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+	<IF COND="[#EDITEUR]">
+		<div>
+			<MACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
+			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]&[#RETOUR]">Modifier</a>&nbsp;|
+		</div>
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_LOGO_LODEL">
@@ -2158,6 +2169,15 @@
 <DEFMACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">
 	<img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" class="picto_gauche" width="4" height="15" />
 </DEFMACRO>
+
+<DEFMACRO NAME="PNG_ANNEXE">
+	<img src="[#SHAREURL]/images/annexe.png" class="picto" width="11" height="19" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_ANNEXE_GRIS">
+	<img src="[#SHAREURL]/images/annexe_gris.png" class="picto" width="11" height="19" />
+</DEFMACRO>
+
 <!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 
 <DEFMACRO NAME="GIF_PUBLIE">

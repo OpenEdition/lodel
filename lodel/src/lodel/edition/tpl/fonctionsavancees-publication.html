@@ -24,23 +24,24 @@
 		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Statut</div>
 	</div>
 
-	<div class="ligne_statut">
-		<MACRO NAME="AFFICHER_ICONE_STATUT">
-		<span style="font-weight:bold;"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></span>
-		<MACRO NAME="BOUTONS_STATUT_PUBLICATION">
-	</div>
+	<table class="table_statut" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+			<td width="200"><span style="font-weight:bold; color:#333333;"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></span></td>
+			<td><div><MACRO NAME="BOUTONS_STATUT_PUBLICATION"></div></td>
+		</tr>
+	</table>
 
 	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajout</div>
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
 	</div>
 	
 	<IF COND="[#EDITEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
-				<span class="texte_intitule">Associer une image à la publication</span>
-			</div>
-			<div class="action_formulaire">
-				<a href="metaimage.php?idpublication=[#ID]">Ajouter l'image ...</a>
+				<a href="metaimage.php?idpublication=[#ID]">
+					<span class="texte_noir_gras">Associer une image à cette publication</span>
+				</a>
 			</div>
 		</div>
 	<ELSE/>
@@ -49,9 +50,6 @@
 				<span class="texte_intitule">Associer une image à la publication</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
 			</div>
-			<div class="action_formulaire">
-				<span class="inactif">Ajouter l'image ...</span>
-			</div>
 		</div>
 	</IF>
 
@@ -59,10 +57,9 @@
 		<IF COND="[#EDITEUR]">
 			<div class="ligne_formulaire">
 				<div class="intitule_ligne_formulaire">
-					<span class="texte_intitule">Charger un sommaire</span>
-				</div>
-				<div class="action_formulaire">
-					<a href="chargesommaire.php?id=[#ID]">Charger ...</a>
+					<a href="chargesommaire.php?id=[#ID]">
+						<span class="texte_noir_gras">Charger un sommaire</span>
+					</a>
 				</div>
 			</div>
 		<ELSE/>
@@ -70,9 +67,6 @@
 				<div class="intitule_ligne_formulaire">
 					<span class="texte_intitule">Charger un sommaire</span><br />
 					<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-				</div>
-				<div class="action_formulaire">
-					<span class="inactif">Charger ...</span>
 				</div>
 			</div>
 		</IF>
