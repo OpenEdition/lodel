@@ -222,7 +222,7 @@ function lodelprocessing(&$xhtml)
   }
   $xhtml=join("",$arr);
 */
-  $xhtml=str_replace("&#39;","'",$xhtml);
+  $xhtml=str_replace(array("&#39;","&apos;"),array("'","'"),$xhtml);
 
   return false;
 }
