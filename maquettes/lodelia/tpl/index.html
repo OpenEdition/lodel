@@ -1,47 +1,54 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
 <MACRO NAME="OUVRIR_HTML">
-<title>Ruralia, revue de l'association des ruralistes français</title>
-<MACRO NAME="meta">
+<title><MACRO NAME="NOM_REVUE"></title>
+<MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td width="100%" valign="top">
-			<table width="100%" border="0" cellspacing="0" align="center"  height="421">
-				<tr>
-					<td valign="top" class="texte_petit_centre">
-						<div align="center">
-							<a href="sommaire.html?id=9">
-								<MACRO NAME="IMG_LOGO_REVUE">
-							</a>
-						</div>
-						<br />
-						<br />
-							<MACRO NAME="DERNIER_NUMERO">
-						<br />
-					</td>
-				</tr>
-				<tr>
-					<td class="texte_petit">
-					<blockquote>
-						<br />
-							<TEXTE NAME="nouveaute">
-					</blockquote>
-					</td>
-				</tr>
-				<tr>
-					<td class="texte_petit">
+	<td width="100%" valign="top">
+		<table width="100%" border="0" cellspacing="0" align="center"  height="421">
+			<tr>
+				<td valign="top" class="texte_petit_centre">
+					<div align="center">
+						<a href="sommaire.html?id=9">
+							<MACRO NAME="IMG_LOGO_REVUE">
+						</a>
+					</div>
 					<br />
-					<img src="images/couverture.gif" alt="Ruralia" border="0">
-					
-						<MACRO NAME="REVUES_ORG">
-					</td>
-				</tr>
-			</table>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+					<br />
+						<MACRO NAME="DERNIER_NUMERO">
+						<br />
+						<MACRO NAME="SOMMAIRE_DERNIER_NUMERO">
+					<br />
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+				<blockquote>
+					<br />
+						<TEXTE NAME="nouveaute">
+				</blockquote>
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+				<br />
+				<img src="images/couverture.gif" alt="Ruralia" border="0">
+				
+					<MACRO NAME="REVUES_ORG">
+				</td>
+			</tr>
+		</table>
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

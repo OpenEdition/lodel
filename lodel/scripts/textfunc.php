@@ -132,7 +132,7 @@ function couperpara($long,$texte) {
 
 	$pos=-1;
 	do {
-		$pos=strpos($texte,"</P>",$pos+1);
+		$pos=strpos($texte,"</p>",$pos+1);
 		$long--;
 	} while ($pos!==FALSE && $long>0);
 
@@ -337,4 +337,21 @@ function paranumber (&$texte)
     */
 }
 
+// Fonction permettant de supprimer les appels de notes d'un texte.
+function removefootnotes(&$text)
+{
+        return preg_replace("/<a\b[^>]+>\s*<sup>\s*<small>.*?<\/small>\s*<\/sup>\s*<\/a>/is","",$text);
+}
+
+// Fonction qui dit si une date est vide ou non
+function isadate(&$text)
+{
+  return $text!="0000-00-00";
+}
+
+// Fonction qui remplace les guillemets d'un texte par leur nom d'entité (&quot;)
+function replacequotationmark(&$text)
+{
+        return str_replace("\"","&quot;",$text);
+}
 ?>

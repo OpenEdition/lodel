@@ -1,6 +1,6 @@
 <?
 
-include_once ("lodelconfig.php");
+require_once("revueconfig.php");
 if (!function_exists("authenticate")) {
   include_once ("$home/auth.php");
   authenticate(LEVEL_EDITEUR,NORECORDURL);
@@ -15,6 +15,7 @@ if ($id) {
 
 if ($redirect) {
   header("Location: $redirect");
+  return;
 } else {
   include_once ("$home/func.php"); back();
 }

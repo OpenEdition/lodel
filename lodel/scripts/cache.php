@@ -1,6 +1,6 @@
 <?
 
-include_once ("lodelconfig.php");
+require_once("lodelconfig.php");
 include_once ("$home/func.php");
 
 
@@ -11,9 +11,8 @@ if (!function_exists("authenticate")) {
 
 
 
-if ($redacteur) {
+if ($visiteur) {
   include ("$home/calcul-page.php");
-  if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   calcul_page($context,$base);
   return;
 }
@@ -39,10 +38,9 @@ $cache = "CACHE/$rep_cache/$cache";
 ///$maj=myfilemtime($cache)+10;
 
 // si le fichier de mise-a-jour est plus recent
-if ($maj>=myfilemtime($cache)) {
+if ($maj>=myfilemtime($cache) || $recalcul_templates) {
   include ("$home/calcul-page.php");
   ob_start();
-  if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   calcul_page($context,$base);
   $content=ob_get_contents();
   ob_end_clean();

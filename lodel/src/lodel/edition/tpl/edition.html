@@ -1,6 +1,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="header_head_open">
 <title>Edition d'une revue</title>
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <MACRO NAME="header_head_close">
 <MACRO NAME="header_logo"> 
 
@@ -48,15 +49,15 @@
 											Edition des séries
 										</font>
 									</td>
-								<MACRO NAME="titres_boutons_publications">
+									<MACRO NAME="titres_boutons_publications">
 								</tr>
 								<BOUCLE NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
 								<tr>
 									<td width="48"> 
 										<div align="center">
-										<a href="../../sommaire.html?id=[#ID]">
-											<MACRO NAME="GIF_SERIE">
-										</a>
+										<!--<a href="index.php?parent=[#ID]">-->
+											<MACRO NAME="AFFICHER_ICONE_STATUT">
+										<!--</a>-->
 										</div>
 									</td>
 									<MACRO NAME="TD_nom_type_titre">

@@ -1,6 +1,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="header_head_open">
 <title>Edition d'une série linéaire</title>
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <MACRO NAME="header_head_close">
 <MACRO NAME="header_logo"> 
 
@@ -15,7 +16,6 @@
 				</table>
 			</td>
 		</tr>
-
 	<!-- AFFICHE LES THEMES -->
 	<tr>
 		<td>
@@ -34,15 +34,14 @@
 								</td>
 								<MACRO NAME="titres_boutons_publications">
 							</tr>
-
 							<!-- BOUCLE D'AFFICHAGE DES THEMES -->
 							<BOUCLE NAME="numeros" TABLE="publications" WHERE="parent=[#PARENT]" ORDER="ordre DESC"> 
 							<TR>
 								<td width="48" height="48" valign="middle"> 
 									<div align="center">
-									<a href="../../sommaire.html?id=[#ID]">
-										<MACRO NAME="GIF_NUMERO">
-									</a>
+									<!--<a href="index.php?parent=[#ID]">-->
+										<MACRO NAME="AFFICHER_ICONE_STATUT">
+									<!--</a>-->
 									</div>
 								</td>
 								<MACRO NAME="TD_nom_type_titre">
@@ -51,7 +50,7 @@
 					<SINON/> 
 							<MACRO NAME="TR_aucune_publication_dispo"> 
 					</BOUCLE> 
-							<MACRO NAME="Creer_numero">	
+							<MACRO NAME="Creer_numero">	<A HREF="chargesommaire.php?id=[#PARENT]">Charge un sommaire</A>
 						</table>
 					</td>
 				</tr>

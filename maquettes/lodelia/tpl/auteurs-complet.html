@@ -1,10 +1,18 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Auteur : Marin Dacos					   -->
-<!-- Date de création : août 2002.              -->
-<!-- Dernière modification majeure : janv. 2003 -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Date de création : août 2002.                                      -->
+<!-- Dernière modification majeure : janvier 2003.                      -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>Index par auteurs</TITLE>
@@ -21,7 +29,7 @@
 			</tr>
 			<tr>
 				<td>
-					<MACRO NAME="table_alpha">
+					<MACRO NAME="TABLE_ALPHABETIQUE">
 				</td>
 			</tr>
 			<BOUCLE NAME="alphabet">
@@ -37,12 +45,12 @@
 					<tr>
 						<td class="soustitre">
 							<a href="auteur.html?id=[#ID]">
-								<span class="couleur_dominante1">
+								<span class="couleur_1">
 									[#PRENOM] 
 									[#NOMFAMILLE]
 								</span>
 							</a>
-							<MACRO NAME="offline">
+							<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
 						</td>
 						<td>
 							&nbsp;

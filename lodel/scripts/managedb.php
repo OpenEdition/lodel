@@ -41,7 +41,7 @@ function supprime_publication ($id)
   mysql_query("DELETE FROM $GLOBALS[tableprefix]publications WHERE id IN ($idlist)") or die(mysql_error());
   # cherche les ids
 
-  $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE publication IN $id") or die (mysql_error());
+  $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE publication IN ($idlist)") or die (mysql_error());
 
   $ids=array();
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
@@ -50,6 +50,8 @@ function supprime_publication ($id)
   } else {
     unlock();
   }
+
+  return TRUE;
 }
 
 function supprime_document ($ids,$mklock=TRUE)
@@ -66,8 +68,8 @@ function supprime_document ($ids,$mklock=TRUE)
     $where=" IN (".join(",",$ids).")";
   }
 
-  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents WHERE id $where") or die(mysql_error());
-  mysql_query("DELETE FROM $GLOBALS[tableprefix]documentsannexes WHERE iddocument $where") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents WHERE id$where") or die(mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tableprefix]documentsannexes WHERE iddocument$where") or die (mysql_error());
 
   supprime_table($ids,"indexl");
 #ifndef LODELLIGHT

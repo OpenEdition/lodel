@@ -1,19 +1,27 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!--
-	Index chronologique complet (il affiche indistinctement tous les niveaux de l'arbre)
-	(il confond donc dans l'affichage une catégorie avec une sous-catégorie )
-	(on pourra affiner ultérieurement).
-	Auteur : Marin Dacos.
-	Création : septembre 2002.
-	Dernière modification majeure : Janvier 2003.
--->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index chronologique complet. Il affiche indistinctement tous les   -->
+<!-- niveaux de l'arbre, il confond donc dans l'affichage une catégorie -->
+<!-- avec une sous-catégorie. On pourra affiner ultérieurement.         -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : Janvier 2003.                      -->
+<!-- ****************************************************************** -->
+
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>Index chronologique</TITLE>
-<MACRO NAME="meta">
+<MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
@@ -21,7 +29,7 @@
 		<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
 			<tr>
 				<td width="100%" align="center" valign="middle" class="titre">
-					<span class="couleur_dominante1">
+					<span class="couleur_1">
 						Index chronologique
 					</span>
 				</td>
@@ -29,34 +37,39 @@
 			<tr>
 				<td width="100%" class="texte_petit_centre">
 					<BOUCLE NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-						<a href="chrono.html?id=[#ID]">
-							[#NOM]
-						</a>
-						&nbsp;|
+						<CORPS>
+							<a href="chrono.html?id=[#ID]">
+								[#NOM]
+							</a>
+							&nbsp;|
+						</CORPS>
 					</BOUCLE>
 				</td>
 			</tr>
 		</table>
-
 		<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-			<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td align="CENTER" width="50%" valign="MIDDLE" class="soustitre">
-						<span class="couleur_dominante1">
-							<a name="[#ABREV]">
-								[#NOM]
-							</a>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td span class="texte_petit">
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-						<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
-					</BOUCLE>
-					</td>
-				</tr>
-			</table>
+			<CORPS>
+				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="TOP"  bordercolor="Black">
+					<tr>
+						<td align="center" width="50%" valign="MIDDLE" class="soustitre">
+							<span class="couleur_1">
+								<a name="[#ABREV]">
+									[#NOM]
+								</a>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td span class="texte_petit">
+							<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+								<CORPS>
+									<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+								</CORPS>
+							</BOUCLE>
+						</td>
+					</tr>
+				</table>
+			</CORPS>
 		</BOUCLE>
 	</td>
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">

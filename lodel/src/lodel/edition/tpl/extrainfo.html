@@ -10,6 +10,11 @@
 
 <INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
 <INPUT TYPE="hidden" NAME="edit" VALUE="1">
+<INPUT TYPE="hidden" NAME="importsommaire" VALUE="[#IMPORTSOMMAIRE]">
+
+<IF [#IMPORTSOMMAIRE]>
+<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Importer ce document et continuer"> - <INPUT CLASS="form" TYPE="submit" NAME="cancel" VALUE="Ne pas importer ce document et continuer"><br>
+</IF>
 
 <TABLE WIDTH="800" CELLPADDING=5 CELLSPACING=1 BORDER=0 BGCOLOR="white">
 <TR>
@@ -27,6 +32,10 @@
 	<TD><INPUT SIZE="80" TYPE="text" NAME="titre" value="[#TITRE]"></TD>
 	[(#ERREUR_TITRE|true)<TD>Vous devez preciser un titre</TD>]
 	</TR>
+<TR>
+	<TD>Sur Titre:</TD>
+	<TD><INPUT SIZE="80" TYPE="text" NAME="surtitre" value="[#SURTITRE]"></TD>
+</TR>
 <TR>
 	<TD>Sous Titre:</TD>
 	<TD><INPUT SIZE="80" TYPE="text" NAME="soustitre" value="[#SOUSTITRE]"></TD>
@@ -70,8 +79,11 @@
 		<TABLE>
 			<TR>
 				<TD>Prefix:</TD>
-				<TD><INPUT SIZE="5" TYPE="text" NAME="prefix[#IND]" value="[#PREFIX]"></TD>
+				<TD><INPUT SIZE="5" TYPE="text" NAME="prefix[#IND]" value="[#PREFIX]"></TD>				    
+<!--ajout de ghislain le 6/4/3 -->
+				<TD>Description:</TD><TD ROWSPAN="3"><TEXTAREA NAME="description[#IND]" COL="30" ROW="20">[#DESCRIPTION]</TEXTAREA></TD>
 			</TR>
+<!-- -->
 			<TR>
 				<TD>Nom de famille:</TD>
 				<TD><INPUT SIZE="30" TYPE="text" NAME="nomfamille[#IND]" value="[#NOMFAMILLE]"></TD>
@@ -80,7 +92,7 @@
 				<TD>Prénom:</TD>
 				<TD><INPUT SIZE="30" TYPE="text" NAME="prenom[#IND]" value="[#PRENOM]"></TD>
 			</TR>
-			<TR>
+<!-- suppresion de ghislain le 6/4/3			<TR>
 				<TD>Affiliation:</TD>
 				<TD><INPUT SIZE="30" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></TD>
 			</TR>
@@ -88,6 +100,7 @@
 				<TD>Courriel:</TD>
 				<TD><INPUT SIZE="30" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></TD>
 			</TR>
+-->
 		</TABLE>
 	</TD>
 	</TR>
@@ -135,9 +148,11 @@
 
 </TABLE>
 
+<IF ![#IMPORTSOMMAIRE]>
 <INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Terminer"> - 
 <INPUT CLASS="form" TYPE="submit" NAME="visualiserdocument" VALUE="Terminer et visualiser"> - <INPUT CLASS="form" TYPE="submit" NAME="ajouterdocannexe" VALUE="Ajouter des documents annexe"> - 
 <INPUT CLASS="form" TYPE="submit" NAME="cancel" VALUE="Abandonner"><br>
+</IF>
 
 </FORM>
 </TABLE>

@@ -13,9 +13,8 @@
 		</td>
 	<td align="center">
 	<span class="titre">
-		Edition de document
+		Edition de document (id : [#ID])
 	</span>
-	<br>
 	<div align="center">
 			<BOUCLE NAME="chercheparent" table="documents" WHERE="id=[#ID]">
 					<a href="index.php?parent=[#PUBLICATION]">
@@ -23,6 +22,18 @@
 				</IF>
 			</BOUCLE>
 			</a>
+	<br><br>
+	<br>
+	
+	<BOUCLE NAME="Affiche_articles" TABLE="documents" WHERE="id=[#ID]">
+		<MACRO NAME="auteurs"><br>
+			<em>
+				"[#TITRE]"
+			</em>
+			([#TYPE])
+			<br>
+	</BOUCLE>
+	<br>
 
 	<!-- ******* -->
 	<!-- EDITER  -->
@@ -38,70 +49,6 @@
 				<strong>Edition</strong>
 		</td>
 	</tr>	 
-	<IF [#REDACTEUR]>
-		<!-- Editer -->
-		<FORM ACTION="editer.php" METHOD="POST">
-		<tr>
-			<td width="48" height="48" >
-				<div align="center">
-					<input type="image" border="0" name="imageField" src="images/KDE_txt.gif" width="32" height="32" border="0">
-				</div>
-			</td>
-			<td width="400" >
-				<strong><a href="editer.php?id=[#ID]&edit=1&[#URL_RETOUR]">Editer les métadonnées</a></strong>
-					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-					<INPUT TYPE="hidden" NAME="edit" VALUE="1">
-					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-			</td>
-		</tr>	 
-		</FORM>
-	<ELSE/>
-		<tr>
-			<td>
-				<MACRO NAME="GIF_Inactif">
-			</td>
-			<td>
-				Contactez l'éditeur pour éditer les métadonnées
-			</td>
-		</tr>
-	</IF>
-
-	<!-- Publier or not publier -->
-	<IF [#EDITEUR]>
-		<FORM ACTION="publi.php" METHOD="POST">
-		<tr>
-			<td width="48" height="48" >
-				<div align="center">
-				<IF [#STATUS] gt 0>
-					<MACRO NAME="GIF_INPUT_DEPUBLIER">
-					<ELSE/>
-					<MACRO NAME="GIF_INPUT_PUBLIER">
-				</IF>
-				</div>
-			</td>
-			<td width="400" >
-					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-					<IF [#STATUS] gt 0>
-						<strong>Dépublier le document</strong>
-					<ELSE/>
-					<INPUT TYPE="hidden" NAME="online" VALUE="1">
-						<strong>Publier le document</strong>
-					</IF>
-			</td>
-		</tr>
-	</FORM>	
-	<ELSE/>
-		<tr>
-			<td>
-				<MACRO NAME="GIF_Inactif">
-			</td>
-			<td>
-				Contactez l'éditeur pour publier ou dépublier ce document.
-			</td>
-		</tr>
-	</IF>
-	
 	<!-- Recharger -->
 	<IF [#EDITEUR]>	
 	<FORM ACTION="editer.php" METHOD="POST">
@@ -126,6 +73,31 @@
 			</td>
 			<td>
 				Contactez l'éditeur pour recharger ce document.
+			</td>
+		</tr>
+	</IF>
+
+	<!-- Télécharger -->
+	<IF [#REDACTEUR]>	
+	<tr>
+		<td width="48" height="48" >
+			<div align="center">
+			<a href="../../lodel/rtf/r2r-[#ID].rtf" target="_blank">
+				<MACRO NAME="GIF_TELECHARGER">
+			</a>
+			</div>
+		</td>
+		<td width="400">
+			<strong>Télécharger le source RTF</strong>
+		  </td>
+	</tr>	 
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_Inactif">
+			</td>
+			<td>
+				Demandez le source RTF à un rédacteur ou à l'éditeur.
 			</td>
 		</tr>
 	</IF>
@@ -196,7 +168,7 @@
 	<tr>
 		<td width="48" height="48" >
 		  	<div align="center">
-			<MACRO NAME="GIF_INPUT_ASSOCIER_IMAGE">
+			<MACRO NAME="GIF_AJOUTER_IMAGE">
 			</div>
 		</td>
 		<td width="400" >
@@ -220,24 +192,6 @@
 				<strong>Danger</strong>
 		</td>
 	</tr>	 
-	<!-- Supprimer -->
-	
-	<tr>
-		<td width="48" height="48" >
-		  	<div align="center">
-			&nbsp;
-			</div>
-		</td>
-		<td width="400" >
-		<FORM ACTION="supprime.php" METHOD="POST">
-			<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-			<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-			<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Supprimer le document">
-		</FORM>
-		</td>
-	</tr>	 
-	
-	
 	<!-- Edition avancée (XML) -->
 	
 	<tr>

@@ -1,9 +1,19 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- Barre de navigation de la revue "Ruralia"
-Auteur : Marin Dacos.
-Date de création : juin 2002.
-Dernière modification majeure : août 2002 -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Barre de navigation verticale de la revue.                         -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Date de création : juin 2002.                                      -->
+<!-- Dernière modification majeure : août 2002.                         -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="TRACER_LIGNE_VERTICALE">
 <td width="210" align="center" valign="top" background="images/gris.gif" class="texte_petit">
@@ -14,7 +24,7 @@ Dernière modification majeure : août 2002 -->
 			</td>
 			<td class="texte_petit_centre"> 
 				<a href="index.html">
-				<MACRO NAME="IMG_ICONE_REVUE">
+					<MACRO NAME="IMG_ICONE_REVUE">
 				</a>
 			</td>
 			<td width="18">
@@ -27,13 +37,11 @@ Dernière modification majeure : août 2002 -->
 			<td class="texte_petit_centre"> 
 				<a href="index.html">
 					<strong>
-						<span class="couleur_dominante1">
+						<span class="couleur_1">
 							<MACRO NAME="NOM_REVUE">
 							<br />
 							<em>
-								Brève description
-								<br />
-							 	de la Revue
+								<MACRO NAME="DESCRIPTION_REVUE">
 							</em>
 						</span>
 					</strong>
@@ -55,7 +63,7 @@ Dernière modification majeure : août 2002 -->
 		</tr>
 		<tr>
 			<td class="texte_petit_centre">
-				<span class="couleur_dominante1">
+				<span class="couleur_1">
 					<strong>
 						Index
 					</strong>
@@ -64,23 +72,26 @@ Dernière modification majeure : août 2002 -->
 		</tr>
 		<tr>
 			<td class="texte_petit">
-				<BLOCKQUOTE>
-					<a href="auteurs-complet.html">
-						<MACRO NAME="IMG_triangle">
-						Par auteurs
-					</a>
-					<br />
-					<a href="chronos-complet.html">
-						<MACRO NAME="IMG_triangle">
-						Par périodes
-					</a>
-					<br />
-				</BLOCKQUOTE>
+				<a href="geos-complet.html">
+					<MACRO NAME="IMG_TRIANGLE">
+					Géographique
+				</a>
+				<br />
+				<a href="auteurs-complet.html">
+					<MACRO NAME="IMG_TRIANGLE">
+					Par auteurs
+				</a>
+				<br />
+				<a href="chronos-complet.html">
+					<MACRO NAME="IMG_TRIANGLE">
+					Par périodes
+				</a>
+				<br />
 			</td>
 		</tr>
 		<tr>
 			<td class="texte_petit_centre">
-				<span class="couleur_dominante1">
+				<span class="couleur_1">
 					<strong>
 						Nous écrire
 						<br />
@@ -91,7 +102,7 @@ Dernière modification majeure : août 2002 -->
 		<tr>
 			<td class="texte_trespetit">
 				<BLOCKQUOTE>
-				<MACRO NAME="IMG_triangle">
+				<MACRO NAME="IMG_TRIANGLE">
 				<a href="mailto:ruralia@revues.org">
 					Ruralia@revues.org
 				</a>
@@ -102,14 +113,14 @@ Dernière modification majeure : août 2002 -->
 		<tr>
 			<td class="texte_trespetit_centre">
 				<br />
-				<hr width="25%" align="center" />
+				<MACRO NAME="FILET_1">
 				<br />
 				<em><MACRO NAME="NOM_REVUE"></em> adhère à Revues.org<br />
 				<br />
 				<MACRO NAME="IMG_REVUES_ORG"> 
 				<br />
 				<br />
-				<hr width="25%" align="center" />
+				<MACRO NAME="FILET_1">
 				<br />
 			</td>
 		</tr>
@@ -125,5 +136,5 @@ Dernière modification majeure : août 2002 -->
 		</tr>
 	</table>
 </td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+<MACRO NAME="TRACER_LIGNE_VERTICALE">
 

@@ -5,7 +5,8 @@
 function writefile ($filename,&$text)
 
 {
-  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f);
+  //echo "nom de fichier : $filename";
+  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
 }
 
 function get_tache (&$id)
@@ -32,24 +33,26 @@ function posttraitement(&$context)
       if (is_array($val)) {
 	posttraitement($context[$key]);
       } else {
-	if ($key!="meta") $context[$key]=htmlspecialchars(stripslashes($val));
+	if ($key!="meta") $context[$key]=str_replace("\n"," ",htmlspecialchars(stripslashes($val)));
       }
     }
   }
 }
 
-
+//
+// $context est soit un tableau qui sera serialise soit une chaine deja serialise
+//
 
 function make_tache($nom,$etape,$context,$id=0)
 
 {
   global $iduser;
-  $contextstr=serialize($context);
-  mysql_query("REPLACE INTO $GLOBALS[tableprefix]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$contextstr')") or die (mysql_error());
+  if (is_array($context)) $context=serialize($context);
+  mysql_query("REPLACE INTO $GLOBALS[tableprefix]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$context')") or die (mysql_error());
   return mysql_insert_id();
 }
 
-function update_taches($id,$etape)
+function update_tache_etape($id,$etape)
 
 {
   mysql_query("UPDATE $GLOBALS[tableprefix]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
@@ -57,19 +60,38 @@ function update_taches($id,$etape)
 # if (mysql_affected_rows()!=1) die ("Erreur d'update de id=$id");
 }
 
+//
+// previouscontext est la chaine serialisee
+// newcontext est un array
+
+function update_tache_context($id,$newcontext,$previouscontext="")
+
+{
+  if ($previouscontext) { // on merge les deux contextes
+    $contextstr=serialize(array_merge(unserialize($previouscontext),$newcontext));
+  } else {
+    $contextstr=serialize($newcontext);
+  }
+
+  mysql_query("UPDATE $GLOBALS[tableprefix]taches SET context='$contextstr' WHERE id='$id'") or die (mysql_error());
+
+}
+
 function rmscript($source) {
+	// Remplace toutes les balises ouvrantes susceptibles de lancer un script
 	return eregi_replace("<(\%|\?|( *)script)", "&lt;\\1", $source);
 }
 
 
 function extract_post() {
-  global $home;
-
-  foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
-#    if ($key!="superadmin" && $key!="admin" && $key!="editeur" && $key!="redacteur" && $key!="visiteur") { // protege
-      $GLOBALS[context][$key]=rmscript(trim($val));
-#    }
-  }
+	// Extrait toutes les variables passées par la méthode post puis les stocke dans 
+	// le tableau $context
+	global $home;
+	foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
+		#if ($key!="superadmin" && $key!="admin" && $key!="editeur" && $key!="redacteur" && $key!="visiteur") { // protege
+		$GLOBALS[context][$key]=rmscript(trim($val));
+		#}
+	}
 }
 
 function get_ordre_max ($table,$where="") 
@@ -130,13 +152,13 @@ function copy_images (&$text,$callback)
 
 {
     // copy les images en lieu sur et change l'acces
-    preg_match_all("/<IMG\s+SRC=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
+    preg_match_all("/<img\s+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
     $count=1;
     $imglist=array();
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+	$text=str_replace($result[0],"<Img src=\"$imglist[$imgfile]\"",$text);
       } else {
 	$ext=$result[2];
 	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count);
@@ -179,13 +201,13 @@ function back()
 
 {
   global $database,$idsession;
-
+  //echo "idsession = $idsession<br>\n";
   $result=mysql_db_query($database,"SELECT id,currenturl FROM $GLOBALS[tableprefix]session WHERE id='$idsession'") or die (mysql_error());
   list ($id,$currenturl)=mysql_fetch_row($result);
 
   mysql_db_query($database,"UPDATE $GLOBALS[tableprefix]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
 
-#  echo "retourne: $currenturl";
+  //echo "retourne: id=$id url=$currenturl";
   header("Location: http://$GLOBALS[SERVER_NAME]$currenturl");exit;
 }
 
@@ -221,15 +243,18 @@ function translate_xmldata($data)
 
 
 function unlock()
-
-{ mysql_query("UNLOCK TABLES") or die (mysql_error()); }
+{
+	// Dévérouille toutes les tables vérouillées précédemment par la 
+	// fonction lock_write()
+	mysql_query("UNLOCK TABLES") or die (mysql_error());
+}
 
 
 function lock_write()
-
-{ 
-  $list=func_get_args();
-  mysql_query("LOCK TABLES $GLOBALS[tableprefix]".join (" WRITE ,".$GLOBALS[tableprefix],$list)." WRITE") or die (mysql_error());
+{
+	// Vérouille toutes les tables en écriture
+	$list=func_get_args();
+	mysql_query("LOCK TABLES $GLOBALS[tableprefix]".join (" WRITE ,".$GLOBALS[tableprefix],$list)." WRITE") or die (mysql_error());
 }
 
 ?>

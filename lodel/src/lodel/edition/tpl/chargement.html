@@ -58,6 +58,14 @@ function infoChargement(nomFic){
 <div align="center"><span class="titre">Chargement du fichier</span></div><br>
 
 <span class="texte_petit">
+<IF [#ERREUR_FICHIERNONRTF]>
+	<div align="center" style="color:red;">
+		<strong>
+			ATTENTION<br />Le fichier que vous avez essayé d'importer n'est pas un fichier de type RTF
+		</strong>
+		<br />
+	</div>
+</IF>
 Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.
 
 <FORM NAME="formfic" ENCTYPE="multipart/form-data" ACTION="chargement.php" METHOD=POST onsubmit="return infoChargement(document.formfic.htmlfile.value)">

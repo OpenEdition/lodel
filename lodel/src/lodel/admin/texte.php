@@ -3,7 +3,7 @@
 // gere les periodes. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des periodes.
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ("$home/func.php");

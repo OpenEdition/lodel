@@ -1,11 +1,18 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><MACRO NAME="OUVRIR_HTML">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+<MACRO NAME="OUVRIR_HTML">
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="DESACTIVER_INDEXATION">
-<MACRO NAME="meta">
+<MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu"> 
+
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<!-- Affiche la barre verticale de navigation -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
@@ -13,7 +20,7 @@
 		<table width="90%" border="0" cellspacing="0" cellpadding="0" align="center" valign="TOP">
 			<tr>
 				<td class="titrerevue" valign="top">
-					<hr align="center" width="100%" />
+					<MACRO NAME="FILET_3">
 					<!-- Affichage d'informations dépendant
 					 du type de document -->
 					<span class="texte_centre">
@@ -26,8 +33,8 @@
 							[#TITRE]
 						</span>
 					</a>
-					<MACRO NAME="offline_document">
-					<MACRO NAME="edit">
+					<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+					<MACRO NAME="BOUTON_EDITER_DOCUMENT">
 				</td>
 			</tr>
 			<IF [#SOUSTITRE]>
@@ -49,7 +56,7 @@
 								<span class="texte_trespetit_centre">
 									[#URL]
 								</span>
-								<hr align="center" width="100%" />
+								<MACRO NAME="FILET_3">
 							</td>
 						</tr>
 					</table>
