@@ -108,7 +108,7 @@ class PersonsLogic extends GenericLogic {
        $$g=trim($context[$this->g_name[$g]]);
      }
 
-     if (!$familyname && !$firstname) { $context[$this->g_name['familyname']]="+"; return "_error"; }
+     if (!$familyname && !$firstname) { $error[$this->g_name['familyname']]="+"; return "_error"; }
 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
