@@ -88,9 +88,6 @@ function parse ($in,$out)
 
   $contents=stripcommentandcr($file);
 
-  $contents = preg_replace("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
-			   '<?php insert_template(\$context,"\\1"); ?>',$contents);
-
   // search the CONTENT tag
   if (preg_match("/<CONTENT\b([^>]*)>/",$contents,$result)) {
     // attribut charset
@@ -131,6 +128,10 @@ function parse ($in,$out)
 
   // parse  macros
   $this->parse_macros($contents,$macros);
+
+  $contents = preg_replace("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
+			   '<?php insert_template(\$context,"\\1"); ?>',$contents);
+
 
   $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE|ESCAPE";
   $this->arr=preg_split("/<(\/?(?:$commands))\b([^>]*)>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
