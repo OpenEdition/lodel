@@ -125,6 +125,13 @@
 			         <xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS]>
 			         <ELSE/>
 			         <xsd:element name="[#NOM]" [#OCCURS]>
+		                 <IF COND="[#COMMENTAIRE]">
+			            <xsd:annotation>
+					<xsd:documentation xml:lang="fr">
+						[#COMMENTAIRE]
+					</xsd:documentation>
+				    </xsd:annotation>
+                                </IF>
 				      <LOOP NAME="xsdtypes"> <!--[ create the complex type ]-->
 					<BEFORE>
 					  <xsd:complexType mixed="true">
@@ -139,15 +146,6 @@
 					</AFTER>
 			              </LOOP>				  
 				 </IF>
-
-		                 <IF COND="[#COMMENTAIRE]">
-			            <xsd:annotation>
-					<xsd:documentation xml:lang="fr">
-						[#COMMENTAIRE]
-					</xsd:documentation>
-				    </xsd:annotation>
-                                </IF>
-
 				</xsd:element>
 	    </DO>
 	  </LOOP>
