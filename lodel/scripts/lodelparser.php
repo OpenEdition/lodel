@@ -304,7 +304,7 @@ function prefixtablesindatabase(&$table) {
 #  }
   if (($GLOBALS[database]!=$GLOBALS[currentdb]) &&
       ($table=="$GLOBALS[tp]sites" || 
-       $table=="$GLOBALS[tp]session") {
+       $table=="$GLOBALS[tp]session")) {
     $table=$GLOBALS[database].".".$table;
   }
 }
