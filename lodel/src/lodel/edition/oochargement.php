@@ -223,7 +223,7 @@ function OO_XHTML ($convertedfile,&$context)
 	     "\\1",
 	     "",
 	     "\\1\\2",
-	     "\\1border=\"0\"/>"
+	     "\\1border=\"0\" />"
 #	     "\\1 />",
 #	     "\\2\\1"
 	     );
