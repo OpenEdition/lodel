@@ -38,7 +38,7 @@ if (!function_exists("file_get_contents")) {
 
 function removeaccentsandspaces($string){
 return strtr(
- strtr(utf8_decode(preg_replace("/[\s_\r;,\.=+-]/","",$string)),
+ strtr(utf8_decode(preg_replace("/[\s_\r;,\.=+]/","",$string)),
   '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜİàáâãäåçèéêëìíîïñòóôõöøùúûüıÿ',
   'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 array('Ş' => 'TH', 'ş' => 'th', 'Ğ' => 'DH', 'ğ' => 'dh', 'ß' => 'ss',
