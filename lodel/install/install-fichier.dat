@@ -32,6 +32,7 @@ ln auteur.php
 # lie tous les fichiers du repertoire
 ln auteurs-complet.php
 ln auteurs.php
+
 ln chrono.php
 ln chronos-complet.php
 ln chronos.php
@@ -162,6 +163,11 @@ mkdir lodel/admin/tpl 0755
 mkdir lodel/admin/CACHE 0770
 mkdir lodel/admin/upload 0770
 
+dirdestination lodel/admin
+
+htaccess CACHE
+htaccess tpl
+
 dirsource . # repertoire de la revue
 ln lodelconfig.php
 ln revueconfig.php
@@ -171,16 +177,12 @@ ln styles_lodel.css
 # les logins
 dirsource $homerevue/lodel/admin
 ln tpl/login.html
-dirsource lodel/admin
+dirsource $homelodel/lodel/admin
 ln login.php
 ln logout.php
 
-
-
-dirdestination lodel/admin
 dirsource $homerevue/lodel/admin
-htaccess CACHE
-htaccess tpl
+
 #
 
 ln tpl/macros.html
@@ -196,6 +198,7 @@ ln motcles.php
 ln tpl/motcles.html
 ln indexl.php
 
+
 ln periode.php
 ln tpl/periode.html
 ln periodes.php
@@ -205,6 +208,7 @@ ln tpl/geographie.html
 ln geographies.php
 ln tpl/geographies.html
 ln indexh.php
+
 
 ln options.php
 ln tpl/options.html
