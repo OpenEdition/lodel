@@ -65,6 +65,10 @@ div.ligne_document_isole2 {background-color: #FFFFFF;}
 div.ligne_document_regroupement1 {background-color: #F3F3F3;}
 div.ligne_document_regroupement2 {background-color: #FFFFFF;}
 
+.ligne_admin1, .ligne_admin2 {padding-right: 10px;}
+.ligne_admin1 {background-color: #FDFAF1;}
+.ligne_admin2 {background-color: #FFFFFF;}
+
 div.ligne_ajouter, 
 div.ligne_ajouter_serie, 
 div.ligne_ajouter_numero, 
@@ -347,6 +351,7 @@ div.intitule_ligne_formulaire {
 }
 
 .texte_noir_gras {
+	font-family: Verdana;
 	font-weight: bold;
 	font-size: 10pt;
 	color:#333333;
