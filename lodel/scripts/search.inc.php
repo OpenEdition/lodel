@@ -62,7 +62,7 @@ function search($context)
    	 $query = strtr( $query , $regs , preg_replace("/./", " " , $regs ) );
 #echo "string=$string<br />\n";
    	 //particular case : two letter acronym or initials
-   	 $query = preg_replace("/\s([A-Z][0-9A-Z]{1,2})\s/", ' \\1___ ', $query);
+   	 //$query = preg_replace("/\s([A-Z][0-9A-Z]{1,2})\s/", ' \\1___ ', $query);
 	//$query = strtolower( $query );
 			
 	//cut query string in token
@@ -121,7 +121,7 @@ function search($context)
 	#echo "token=$token";
 		//little hack because oe ligature is not supported in ISO-latin!!
 		$token = strtolower(str_replace(array("\305\223","\305\222"),array("oe","OE"),$token));
-		
+		$token = makeSortKey($token);
 		//foreach word search entities that match this word
 		$dao = &getDAO("search_engine");
 		
