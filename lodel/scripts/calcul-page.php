@@ -5,8 +5,9 @@ include_once("$home/func.php");
 
 function calcul_page(&$context,$lbase="",$cache_rep="",$base_rep="tpl/") {
 
-  global $base,$home;
+  global $base,$home,$format;
 
+  if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   if (!$lbase) $lbase=$base;
 
   $template_cache = $cache_rep."CACHE/tpl_$lbase.php";

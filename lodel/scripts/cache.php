@@ -13,7 +13,6 @@ if (!function_exists("authenticate")) {
 
 if ($visiteur) {
   include ("$home/calcul-page.php");
-  if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   calcul_page($context,$base);
   return;
 }
@@ -42,7 +41,6 @@ $cache = "CACHE/$rep_cache/$cache";
 if ($maj>=myfilemtime($cache) || $recalcul_templates) {
   include ("$home/calcul-page.php");
   ob_start();
-  if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   calcul_page($context,$base);
   $content=ob_get_contents();
   ob_end_clean();
