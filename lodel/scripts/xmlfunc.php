@@ -50,7 +50,6 @@ function extract_xml ($balises,&$text)
       // cherche la langue
 	$lang="";
       if ($b=="resume" && $result[1]) {
-	echo "ICI";
 	// cherche la langue
 	if (preg_match("/lang\s*=\s*\"([^\"]+)\"/i",$result[1],$result2)) {
 	  $lang="_lang".$result2[1];
