@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
 	filtrage	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
+	commentaire	TEXT NOT NULL,			# commentaire sur le champs
 
 	statut		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -117,6 +118,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
 	classe		VARCHAR(64) NOT NULL,   	# nom de la table complementaire
 
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	commentaire	TEXT NOT NULL,			# commentaire sur le groupe de champs
 
 	statut		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
