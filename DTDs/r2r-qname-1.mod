@@ -105,6 +105,7 @@
 
 <!-- Groupe Titre -->
 <!ENTITY % r2r.grtitre.qname "%r2r.pfx;grtitre" >
+<!ENTITY % r2r.surtitre.qname "%r2r.pfx;surtitre" >
 <!ENTITY % r2r.titre.qname "%r2r.pfx;titre" >
 <!ENTITY % r2r.soustitre.qname "%r2r.pfx;soustitre" >
 

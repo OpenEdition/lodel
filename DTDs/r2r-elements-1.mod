@@ -165,13 +165,16 @@
 
 
 <!-- Groupe Titre -->
-<!ENTITY % r2r.grtitre.content "(%r2r.titre.qname; , %r2r.soustitre.qname;?)">
+<!ENTITY % r2r.grtitre.content "(%r2r.surtitre.qname; , %r2r.titre.qname; , %r2r.soustitre.qname;?)">
 <!ELEMENT %r2r.grtitre.qname; %r2r.grtitre.content; >
+
+
+<!ENTITY % r2r.surtitre.content "( #PCDATA | %Inline.mix; )*" >
+<!ELEMENT %r2r.surtitre.qname; %r2r.surtitre.content; >
 
 
 <!ENTITY % r2r.titre.content "( #PCDATA | %Inline.mix; )*" >
 <!ELEMENT %r2r.titre.qname; %r2r.titre.content; >
-
 
 
 <!ENTITY % r2r.soustitre.content "( #PCDATA | %Inline.mix; )*" >
