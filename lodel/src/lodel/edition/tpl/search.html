@@ -52,7 +52,7 @@
 		</div>
 	</div>
 	<ELSE/>
-	<LOOP NAME="search">
+	<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
 	<BEFORE>
 	<MACRO NAME="YOUR_SEARCH_BAR">
 	</BEFORE>
@@ -78,6 +78,29 @@
 		
 		</div>
 	</DO>
+	<AFTER>
+		<LOOP NAME="affiche_pages">
+		<BEFORE>
+			<div class="pagination" style="text-align : center ; margin : 10px 50px 10px 50px ;  padding : 20px ; border-top : 1px solid #CC9933 ">
+		</BEFORE>
+		<DO>
+			<IF COND="[#URLPAGE] NE ''">
+				<a class="linkpage" href="[#URLPAGE]">
+			<ELSE/>
+				<span class="currentpage">
+			</IF>
+			[#NUMPAGE]
+			<IF COND="[#URLPAGE] NE ''">
+				</a>
+			<ELSE/>
+				</span>
+			</IF>
+		</DO>
+		<AFTER>
+			</div>
+		</AFTER>
+		</LOOP>
+	</AFTER>
 	<ALTERNATIVE>
 	<MACRO NAME="YOUR_SEARCH_BAR">
 	
@@ -86,6 +109,9 @@
 		</p>
 	</ALTERNATIVE>
 	</LOOP>
+	
+	
+	
 	</IF>
 
 <!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
