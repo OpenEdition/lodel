@@ -19,33 +19,31 @@
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="METADONNEES">
 <MACRO NAME="JS_ROLLOVER"> 
-<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES"> 	 	
 
 <table class="principale">
 	<tr>
-		<td>
-
-		<div class="conteneur">
-
-
-			<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
-			<div class="barrenav">
+		
+		<td class="barrenav">
+		<!-- Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
+		les navigateurs -->
 				<? insert_template("barre");?> 
-			</div>
+		</td>
 	
-			<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
-			de class "separation" et class "contenu" -->
-			<div class="corps">
+		<!-- Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" -->
+		<td class="corps">
 
 				<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
 				de nav et le contenu de la page" -->
-				<div class="separation">
+				<!--<div class="separation">
 					&nbsp;
-				</div>
+				</div>-->
 		
 				<!-- ce div permet d'intégrer le  contenu de la page" -->
 				<div class="contenu">
-		
+					
+					
 					<!-- logo de Lodelia-->
 					<MACRO NAME="IMG_LOGO_LODELIA">
 			
@@ -275,12 +273,9 @@
 					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				
 					<MACRO NAME="REVUES_ORG"> 		
-				</div>
 			</div>
+			</td>
 
-		</div>
-		
-		</td>
 	</tr>
 </table>
 
