@@ -9,38 +9,17 @@
 		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
 		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
 	</div>
-
-	<br>
-	[(#ERREUR_LOGIN|true)<br>
-	<br>
-	<b> Nom d'utilisateur ou mot de passe incorrect</b><br>
-	<br>
-	] <b>Merci de vous identifier</b><br>
-	[(#ERREUR_OPENSESSION|true)<b><br>
-	Impossible d'ouvrir une session. contactez l'administrateur<br>
-	<br>
-	</b>]
-	[(#REVUEBLOQUEE|true)<b><br>
-	La revue est bloquee impossible de se loguer (sauf super admin). La revue est probablement en maintenance.<br>]
-	[(#ERREUR_SETCOOKIE|true)<b><br>
-	<br>
-	Impossible de poser un cookie</b><br>
-	<br>
-	] [(#ERREUR_TIMEOUT|true)<br>
-	<br>
-	<b>La session a expiré</b><br>
-	<br>
-	] [(#ERREUR_PRIVILEGE|true)<b><br>
-	<br>
-	Vous n'avez pas les droits pour acc&eacute;der &agrave; cette 
-	page</b><br>
-	<br>
-
 	<div id="formulaire">
 		<div id="titre_formulaire">Bienvenue !<br />Merci de vous identifier :</div>
 		<form action="login.php" method="POST">
 			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 			<div id="champ_formulaire">
+				[(#ERREUR_LOGIN|true)<span class="message_erreur">Nom d'utilisateur ou mot de passe incorrect.</span><br /><br />]
+				[(#ERREUR_OPENSESSION|true)<span class="message_erreur">Impossible d'ouvrir une session. contactez l'administrateur.</span><br /><br />]
+				[(#REVUEBLOQUEE|true)<span class="message_erreur">La revue est bloquee impossible de se loguer (sauf super admin). La revue est probablement en maintenance.</span><br /><br />]
+				[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]
+				[(#ERREUR_TIMEOUT|true)<span class="message_erreur">La session a expiré.</span><br /><br />]
+				[(#ERREUR_PRIVILEGE|true)<span class="message_erreur">Vous n'avez pas les droits pour acc&eacute;der &agrave; cette page.</span><br /><br />]
 				Nom d'utilisateur : <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" /><br /><br />
 				Mot de passe : <input type="password" class="input_formulaire" name="passwd" />
 			</div>
