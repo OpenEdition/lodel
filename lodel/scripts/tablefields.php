@@ -31,7 +31,8 @@ foreach (array($GLOBALS[database] =>$GLOBALS[database].".", $GLOBALS[currentdb]=
     $result2=mysql_list_fields($db,$table);
     $nfields=mysql_num_fields($result2);
     for($j=0; $j<$nfields; $j++) {
-      array_push($GLOBALS[tablefields][$prefix.$table],mysql_field_name($result2,$j));
+      $GLOBALS[tablefields][$prefix.$table]=array();
+	  array_push($GLOBALS[tablefields][$prefix.$table],mysql_field_name($result2,$j));
     }
   }
 }
