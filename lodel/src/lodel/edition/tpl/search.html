@@ -78,34 +78,7 @@
 		</div>
 	</DO>
 	<AFTER>
-	<LOOP NAME="affiche_pages">
-		<BEFORE>
-			<div class="pagination" style="text-align : center ; margin : 10px 50px 10px 50px ;  padding : 20px ; border-top : 1px solid #CC9933 ">
-			<IF COND="[#PREVIOUSURL]">
-			<a href="[#PREVIOUSURL]" title="[@EDITION.PREVIOUS_PAGE]">&lt;&lt;</a>
-		</IF>
-			
-		</BEFORE>
-		<DO>
-			<IF COND="[#URLPAGE] NE ''">
-				<a class="linkpage" href="[#URLPAGE]" title="[@EDITION.PAGE_NUMBER] [#NUMPAGE]">
-			<ELSE/>
-				<span class="currentpage">
-			</IF>
-			[#NUMPAGE]
-			<IF COND="[#URLPAGE] NE ''">
-				</a>
-			<ELSE/>
-				</span>
-			</IF>
-		</DO>
-		<AFTER>
-		<IF COND="[#NEXTURL]">
-			<a href="[#NEXTURL]" title="[@EDITION.NEXT_PAGE]">&gt;&gt;</a>
-		</IF>
-			</div>
-		</AFTER>
-		</LOOP>
+		<MACRO NAME="BOTTOM_RESULTS_PAGES">
 	</AFTER>
 	<ALTERNATIVE>
 	<MACRO NAME="YOUR_SEARCH_BAR">
