@@ -67,10 +67,10 @@ if ($id>0 && ($delete || $restore)) {
   if (!mysql_num_rows($result)) die("ERROR: The field does not exist or you are not allowed to delete it.");
   list($nom,$classe)=mysql_fetch_row($result);
   mysql_query("ALTER TABLE $GLOBALS[tp]$classe DROP COLUMN $nom") or die (mysql_error());
+  require_once($home."cachefunc.php");
+  removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
   require ($home."trash.php");
   treattrash("champs",$critere);
-  require_once($home."cachefunc.php");
-  removefilesincache(".","../edition","../..");
   return;
 }
 
