@@ -59,6 +59,9 @@ class TextsLogic extends Logic {
 
      if (is_array($context['contents'])) {
        $dao=$this->_getMainTableDAO();
+
+       if ($GLOBALS['lodeluser']['translationmode']!="site") usemaindb();
+
        foreach ($context['contents'] as $id=>$contents) {
 	 if (!is_numeric($id)) continue;
 	 $dao->instantiateObject($vo);
@@ -68,9 +71,12 @@ class TextsLogic extends Logic {
 	 if (!$vo->status) $vo->status=-1;
 	 $dao->save($vo);
        }
+       if ($GLOBALS['lodeluser']['translationmode']!="site") usecurrentdb();
        update();
      }
 
+     require_once("cachefunc.php");
+     clearcache();
 
      return "_back";
    }
@@ -84,6 +90,9 @@ class TextsLogic extends Logic {
 
    {
      global $db;
+
+     if ($textgroup!="site") usemaindb();
+
      $result=$db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND name='".$name."' AND textgroup='".$textgroup."' WHERE #_TP_texts.lang is NULL")) or dberror();
      $dao=$this->_getMainTableDAO();
 
@@ -96,6 +105,7 @@ class TextsLogic extends Logic {
        $dao->save($vo);
        $result->MoveNext();
      }
+     if ($textgroup!="site") usecurrentdb();
    }
 
    /*---------------------------------------------------------------*/

@@ -335,7 +335,7 @@ function maketext($name,$group,$tag)
     $modifyif='$context[\'righteditor\']';
     if ($group=='interface') $modifyif.=' && $context[\'lodeluser\'][\'translationmode\']';
 
-    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/text.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
+    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/index.php?do=edit&lo=texts&id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
 
     return '<?php getlodeltext("'.$name.'","'.$group.'",$id,$text,$status);'.$modify.
       ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
@@ -361,8 +361,10 @@ function parse_after(&$text)
     if ($closepos===false) return; // no idea what to do...
 
     $code='<?php if ($context[\'lodeluser\'][\'translationmode\']) { require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
-<form method="post" action="'.$GLOBALS['home'].'../../lodeladmin/text.php"><input type="hidden" name="edit" value="1">
- <input type="submit" value="[Update]">
+<form method="post" action="index.php"><input type="hidden" name="edit" value="1">
+<input type="hidden" name="do" value="edit">
+<input type="hidden" name="lo" value="texts">
+<input type="submit" value="[Update]">
 <div id="translationforms">'.join("",$this->translationform).'</div>
 <input type="submit" value="[Update]"></form>
 <?php } ?>';
@@ -371,10 +373,19 @@ function parse_after(&$text)
   }
   if ($this->translationtags) {
     // add the code for the translations
+##    $text='<'.'?php
+##  $langfile="CACHE/lang/".$GLOBALS[\'la\']."/".basename(__FILE__);
+##  $maj="CACHE/langmaj"; if (defined("SITEROOT")) $maj=SITEROOT.$maj;
+##  if (myfilemtime($maj)>=myfilemtime($langfile)) {
+##    generateLangCache($GLOBALS[\'la\'],$langfile,array('.join(",",$this->translationtags).'));
+##  } else {
+##    require_once($langfile);
+##  }
+##?'.'>
+##'.$text;
     $text='<'.'?php
-  $langfile="CACHE/lang/".$GLOBALS[\'la\']."/".basename(__FILE__);
-  $maj="CACHE/langmaj"; if (defined("SITEROOT")) $maj=SITEROOT.$maj;
-  if (myfilemtime($maj)>=myfilemtime($langfile)) {
+  $langfile="CACHE/lang-".$GLOBALS[\'la\']."/".basename(__FILE__);
+  if (!file_exists($langfile)) {
     generateLangCache($GLOBALS[\'la\'],$langfile,array('.join(",",$this->translationtags).'));
   } else {
     require_once($langfile);

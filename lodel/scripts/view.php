@@ -299,8 +299,8 @@ function generateLangCache($lang,$file,$tags)
   }
   $dir=dirname($file);
   if (!is_dir($dir)) {
-    @mkdir("CACHE/lang",0777 & octdec($GLOBALS['filemask']));
-    @chmod("CACHE/lang",0777 & octdec($GLOBALS['filemask']));
+    #@mkdir("CACHE/lang",0777 & octdec($GLOBALS['filemask']));
+    #@chmod("CACHE/lang",0777 & octdec($GLOBALS['filemask']));
     @mkdir($dir,0777 & octdec($GLOBALS['filemask']));
     @chmod($dir,0777 & octdec($GLOBALS['filemask']));
   }

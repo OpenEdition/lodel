@@ -145,7 +145,7 @@ class ClassesLogic extends Logic {
 
      if ($alter) {        // update the CACHE ?
        require_once("cachefunc.php");
-       removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+       clearcache();
      }
    }
 
@@ -184,7 +184,7 @@ class ClassesLogic extends Logic {
 
      // should be in the view....
      require_once("cachefunc.php");
-     removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+     clearcache();
      //
 
      return "_back";

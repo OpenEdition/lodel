@@ -240,7 +240,7 @@ class TableFieldsLogic extends Logic {
        if ($alter || $vo->filtering!=$this->oldvo->filtering) {
 	 // should be in view ??
 	 require_once("cachefunc.php");
-	 removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+	 clearcache();
        }
      }
      unset($this->oldvo);
@@ -265,7 +265,7 @@ class TableFieldsLogic extends Logic {
 
      // should be in the view....
      require_once("cachefunc.php");
-     removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+     clearcache();
      //
 
      return "_back";

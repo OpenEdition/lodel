@@ -43,11 +43,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   if ($_REQUEST['clearcache']) {
     require_once("cachefunc.php");   
-    if (defined("SITEROOT")) {
-      removefilesincache( SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
-    } else {
-      removefilesincache( "." );
-    }
+    clearcache();
     $_REQUEST['clearcache']=false; // to avoid to erase the CACHE again
   }
 

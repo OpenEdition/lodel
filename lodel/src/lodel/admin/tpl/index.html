@@ -105,7 +105,11 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#LODELUSER.TRANSLATIONMODE]">[@ADMIN.GET_OUT]<ELSE/>[@ADMIN.ENTER_IN]</IF> [@ADMIN.TRANSLATION_MODE]</span></a>
+							<IF COND="[#LODELUSER.TRANSLATIONMODE]=='site'">
+							<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE]</span></a>
+							<ELSE/>
+							<a href="usersettings.php?translationmode=site"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE]</span></a>
+							</IF>
 
 						</td>
 						<td>&nbsp;</td>
@@ -324,9 +328,20 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="../../../lodeladmin/index.php?do=list&lo=translations"><span class="texte_orange">[@ADMIN.ADMINISTRATE_INTERFACE_TRANSLATIONS]</span></a>
+							<?php $context['lodeladminpath']=$GLOBALS['home']."../lodeladmin-".$version; // it is not wonderfull..... ?>
+							<a href="[#LODELADMINPATH]/index.php?do=list&lo=translations"><span class="texte_orange">[@ADMIN.ADMINISTRATE_INTERFACE_TRANSLATIONS]</span></a>
 						</td>
 						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+
+							<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
+							<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE]</span></a>
+							<ELSE/>
+							<a href="usersettings.php?translationmode=interface"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE]</span></a>
+							</IF>
 					</tr>
                                         </IF>
 				</table>

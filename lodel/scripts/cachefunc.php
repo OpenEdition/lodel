@@ -28,6 +28,16 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+function clearcache()
+
+{
+  if (defined("SITEROOT")) {
+    removefilesincache( SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+  } else {
+    removefilesincache( "." );
+  }
+}
+
 function removefilesincache()
 
 {

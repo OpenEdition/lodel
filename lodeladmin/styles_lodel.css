@@ -873,3 +873,33 @@ legend{
 #lodel-container{
   position: relative;
 }
+
+
+/* Added by Jean Lamy */
+.searchfields
+{
+	font-size : x-small;
+	border : 1px solid gray;
+}
+
+input.searchbutton
+{
+	font-size : x-small;
+}
+.searchinfos
+{
+	text-align : right ; 
+	margin-right : 50px;
+}
+.searchnoresults
+{
+	margin-left : 25px ;
+	margin-top : 50px;
+}
+.searchfieldset
+{
+	color : #728979;
+	margin : 5px 5px 0px 5px ;
+	background-color: #eee;
+	padding : 3px;
+}

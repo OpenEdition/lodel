@@ -39,7 +39,15 @@ if ($lang) {
 }
 
 if ($translationmode) {
-  setcontext("translationmode","toggle");
+  switch($translationmode) {
+  case 'off':
+    setcontext("translationmode","clear");
+    break;
+  case 'site':
+  case 'interface':
+    setcontext("translationmode","setvalue",$translationmode);
+    break;
+  }
 }
 
 update();
