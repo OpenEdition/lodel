@@ -106,7 +106,7 @@ function parse_loop_extra(&$tables,
       // auteurs
      if (in_array("personnes",$tables)) {
        // fait ca en premier
-       if (preg_match("/\biddocument\b/",$where)) {
+       if (preg_match("/\b(iddocument|identite)\b/",$where)) {
 	 // on a besoin de la table croisee entites_personnes
 	 array_push($tables,"entites_personnes");
 	 array_push($tablesinselect,"entites_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
@@ -138,7 +138,7 @@ function parse_loop_extra(&$tables,
 	  array_push($tables,"typeentrees");
 	  $where.=" AND $GLOBALS[tp]entrees.idtype=$GLOBALS[tp]typeentrees.id";
 	}
-	if (preg_match("/\biddocument\b/",$where)) {
+       if (preg_match("/\b(iddocument|identite)\b/",$where)) {
 	  // on a besoin de la table croise entites_entrees
 	  array_push($tables,"entites_entrees");
 	  $where=preg_replace("/\biddocument\b/","identite",$where);

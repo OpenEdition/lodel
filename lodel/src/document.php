@@ -17,7 +17,7 @@ $critere=$visiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]type
 //
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
 
-$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,tpl,type , datepubli,(datepubli<=NOW()) as textepublie FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
+$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,filtered_mysql_fetch_assoc($result));
 if (!$context[tpl]) { 
@@ -27,24 +27,6 @@ if (!$context[tpl]) {
 
 $base=$context[tpl];
 
-/*
-//
-// charge le fichier XML et extrait les balises
-//
-if (!file_exists("lodel/txt/r2r-$id.xml")) { header ("Location: not-found.html"); return; }
-$text=join("",file("lodel/txt/r2r-$id.xml"));
-
-require ($home."balises.php");
-require ($home."xmlfunc.php");
-
-
-$balises=$balisesdocument_nonlieautexte;
-array_push($balises,"surtitre","titre","soustitre");
-
-if ($context[textepublie] || $visiteur) $balises=array_merge($balises,$balisesdocument_lieautexte);
-
-$context=array_merge($context,extract_xml($balises,$text));
-*/
 
 //
 // cherche s'il y a des documents annexe et combien
