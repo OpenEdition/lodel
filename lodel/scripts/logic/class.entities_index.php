@@ -76,11 +76,12 @@ class Entities_IndexLogic extends Logic
    	 	//get the fieldnames list to index
    	 	$dao_groups = &getDAO("tablefieldgroups");
    	 	$dao_fields = &getDAO("tablefields");
+   	 	print_r($dao_fields);
    	 	$vos_groups = $dao_groups->findMany("class='$class'","","id");
    	 	foreach( $vos_groups as $vo_group )
    	 	{
    	 		print_r($vo_group);
-   	 		echo "idgroup=".$vo_group->id." AND weight > 0";
+   	 		
    	 		$vos_fields = $dao_fields->findMany("idgroup=".$vo_group->id." AND weight > 0","weight DESC","id,weight,name");
    	 	}
 	 print_r($vos_fields);
