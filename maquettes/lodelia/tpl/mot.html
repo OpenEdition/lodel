@@ -1,11 +1,20 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Cette page affiche les articles correspondants à un mot-clef sélectionné par ID -->
-<!-- Auteur : Marin Dacos et Poupeau gautier -->
-<!-- Date de création : août 2002.           -->
-<!-- Dernière modification majeure : septembre 2002 -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Cette page affiche les articles correspondants à un mot-clef       -->
+<!-- sélectionné par ID.                                                -->
+<!-- Auteur : Marin Dacos et Poupeau Gautier.                           -->
+<!-- Date de création : août 2002.                                      -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>[#MOT]</TITLE>
@@ -13,41 +22,41 @@
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top"> 
-
-			<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER" valign="TOP"> 
-				<tr>
-					<td  align="center" class="titre"> 
-						<!-- Affichage du mot recherché dans l'index -->
-							Mot clé : " 
-							<span class="couleur_dominante1">
-								[#MOT] " 
-							</span>
-					</td> 
-				</tr>
-			</table>
-			<br />
-			<table width="95%" border=0 cellspacing=0 cellpadding=15 align="CENTER" bordercolor="Black"> 
-				<!-- Affichage des articles correspondant aux mots clés -->
-				<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexl='[#ID]'">
-				<tr>
-					<td class="texte_sommaire">
-						<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
-					</td>
-				</tr>
-				</BOUCLE>
-				<tr>
-					<td class="texte_petit_centre">
-						<a href="mots.html">
-							<strong>
-								Index par mots clés
-							</strong>
-						</a>
-					</td>
-				</tr>
-			</table>
-
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+	<td valign="top"> 
+		<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER" valign="TOP"> 
+			<tr>
+				<td  align="center" class="titre"> 
+					<!-- Affichage du mot recherché dans l'index -->
+					Mot clé : " 
+					<span class="couleur_1">
+						[#MOT] " 
+					</span>
+				</td> 
+			</tr>
+		</table>
+		<br />
+		<table width="95%" border=0 cellspacing=0 cellpadding=15 align="CENTER" bordercolor="Black"> 
+			<!-- Affichage des articles correspondant aux mots clés -->
+			<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexl='[#ID]'">
+				<CORPS>
+					<tr>
+						<td class="texte_sommaire">
+							<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+						</td>
+					</tr>
+				</CORPS>
+			</BOUCLE>
+			<tr>
+				<td class="texte_petit_centre">
+					<a href="mots.html">
+						<strong>
+							Index par mots clés
+						</strong>
+					</a>
+				</td>
+			</tr>
+		</table>
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">
