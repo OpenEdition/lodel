@@ -266,10 +266,10 @@ class TableFieldsLogic extends Logic {
    {
      global $db;
      if ($context['idgroup']) {
-       list($class,$context['classtype'])=$db->getRow(lq("SELECT #_TP_classes.class,classtype FROM #_tablefieldgroupsandclassesjoin_ WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."'")) or dberror();
-       if ($context['class'] && $context['class']!=$class) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
-       $context['class']=$class;
-
+       $row=$db->getRow(lq("SELECT #_TP_classes.class,classtype FROM #_tablefieldgroupsandclassesjoin_ WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."'")) or dberror();
+       if ($context['class'] && $context['class']!=$row['class']) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
+       $context['class']=$row['class'];
+       $context['classtype']=$row['classtype'];
      } else {
        if (substr($context['class'],0,9)=="entities_") {
 	 $class=substr($context['class'],9);
@@ -302,7 +302,7 @@ class TableFieldsLogic extends Logic {
      return array("name"=>array("tablefield","+"),
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
-                  "style"=>array("style",""),
+                  "style"=>array("mlstyle",""),
                   "type"=>array("select","+"),
                   "g_name"=>array("select",""),
                   "condition"=>array("select","+"),

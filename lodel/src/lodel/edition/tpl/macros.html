@@ -264,10 +264,10 @@
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
 	<div class="ligne_formulaire">
 		<div class="intitule_ligne_formulaire">
-			<span class="texte_intitule">[@EDITION.IDENTIFY]:</span>
+			<span class="texte_intitule">[@EDITION.IDENTIFIER]:</span>
 		</div>
 		<input size="45" type="text" name="identifier" value="[#IDENTIFIER]">
-		<IF COND="[#ERROR_IDENTIFIER]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFY]</span></IF>
+		<IF COND="[#ERROR_IDENTIFIER]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFIER]</span></IF>
 	</div>
 </DEFMACRO>
 
@@ -718,10 +718,10 @@
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
-		<IF COND="(abs([#STATUS]) lt 32) AND (([#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN])">
-		|&nbsp;<a href="index.php?do=delete&id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
+		<IF COND="(abs([#STATUS]) lt 16) AND (([#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN])">
+		|&nbsp;<a href="index.php?do=delete&id=[#ID]">[@EDITION.DELETE]</a>&nbsp;|
 		<ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
+		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>

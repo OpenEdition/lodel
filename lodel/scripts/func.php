@@ -285,31 +285,6 @@ function addmeta(&$arr,$meta="")
 }
 
 
-/*
-function back($arg="",$back=-1)
-
-{
-  //
-  // this function use the fact that mysql generate id in increasing order
-  //
-  global $database,$idsession;
-
-  $url=preg_replace("/[\?&]recalcul\w+=oui/","",$_SERVER['REQUEST_URI']);
-
-  $offset=-1-$back;
-
-  $result=mysql_db_query($database,"SELECT id,url FROM #_TP_urlstack WHERE url!='' AND url!='".mysql_escape_string($url)."' AND idsession='$idsession' ORDER BY id DESC LIMIT $offset,1") or dberror();
-  list ($id,$newurl)=mysql_fetch_row($result);
-
-  if ($id) {
-    mysql_db_query($database,"DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'") or dberror();
-    header("Location: http://".$_SERVER['SERVER_NAME'].$newurl.$arg);exit;
-  } else {
-    header("Location: index.php");exit;
-  }
-}
-*/
-
 
 function translate_xmldata($data) 
 
@@ -409,8 +384,8 @@ function getoption($name,$extracritere=" AND type!='pass'")
   }
 
   while (!$result->EOF) {
-    list($name,$value)=$result->fields;
-    $ret[$name]=$options_cache[$name]=$value;
+    $name=$result->fields['name'];
+    $ret[$name]=$options_cache[$name]=$result->fields['value'];
     $result->MoveNext();
   }
 

@@ -50,23 +50,16 @@ class View {
 
    {
      global $db,$idsession;
-     $url=preg_replace("/[\?&]recalcul\w+=[^&]*/","",$_SERVER['REQUEST_URI']);
+     $url=preg_replace("/[\?&]clearcache=[^&]*/","",$_SERVER['REQUEST_URI']);
      $offset=-1-$back;
 
      usemaindb();
 
-#     echo $url;
-#     $result=$db->execute(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC"));
-#     while(!$result->EOF) {
-#       print_r($result->fields);
-#       $result->MoveNext();
-#     }
-
-##     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or dberror();
-
      $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or dberror();
 
-     list ($id,$newurl)=$result->fetchRow();
+     $row=$result->fetchRow();
+     $id=$row['id'];
+     $newurl=$row['url'];
 
      if ($id) {
        $db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or dberror();
@@ -166,6 +159,8 @@ class View {
      // The compiled file need it to know if it must produce cacheable output or direct output.
      // An object should be created in order to avoid the global scope pollution.
      $GLOBALS['cachedfile']=$this->_cachedfile;
+
+     if ($_REQUEST['clearcache']) return false;
 
      if ($maj < myfilemtime($this->_cachedfile.".".$this->_extcachedfile)) {
        echo "cached: yes";

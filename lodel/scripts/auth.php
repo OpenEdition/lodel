@@ -101,26 +101,13 @@ function authenticate ($level=0)
     //
 
     // clean the url
-    $url=preg_replace("/[\?&]recalcul\w+=\w+/","",$_SERVER['REQUEST_URI']);
+    $url=preg_replace("/[\?&]clearcache=\w+/","",$_SERVER['REQUEST_URI']);
     if (get_magic_quotes_gpc()) $url=stripslashes($url);
     $myurl=$norecordurl ? "''" : $db->qstr($url);
     $expire=$timeout+$time;
     $db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die ($db->errormsg());
 
-
-    //
-    // gestion de l'url de retour
-    //
-    #if ($back) {
-    #  // on detruit l'entree dans la pile
-    #  $back=intval($back);
-    #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or dberror();
-    #}
-    #    echo "retour:$context[url_retour]";
-    //
-    // fin de gestion de l'url de retour
-    //
-    $context['url_recompile']=mkurl($url,"recalcul_templates=oui");
+    $context['clearcacheurl']=mkurl($url,"clearcache=oui");
     usecurrentdb();
     return; // ok !!!
   } while (0);

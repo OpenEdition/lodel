@@ -63,33 +63,10 @@ class GenericLogic extends Logic {
    /**
     * view an object Action
     */
-   function viewAction(&$context,&$error)
+  function viewAction(&$context,&$error)
 
-   {
-     
-     $id=$context['id'];
-     if ($id) {
-       $dao=$this->_getMainTableDAO();
-       $vo=$dao->getById($id);
-       if (!$vo) die("ERROR: can't find object $id in the table ".$this->maintable);
-       $this->_populateContext($vo,$context);
-       $idtype=$vo->idtype;
-     } else {
-       $idtype=$context['idtype'];
-     }
-
-     $daotype=&getDAO($this->_typetable);
-     $votype=$daotype->getById($idtype);
-     $this->_populateContext($votype,$context['type']);
-     
-     if ($id) {
-       $gdao=&getGenericDAO($votype->class,$this->_idfield);
-       $gvo=$gdao->getById($id);
-       if (!$gvo) die("ERROR: can't find object $id in the associated table. Please report this bug");
-       $this->_populateContext($gvo,$context);
-       $ret=$this->_populateContextRelatedTables($vo,$context);
-     }
-
+  {
+    // define some loop functions
      /////
 
      require_once($GLOBALS['home']."langues.php");
@@ -112,9 +89,8 @@ class GenericLogic extends Logic {
        while (!$result->EOF) {
 	 $localcontext=array_merge($context,$result->fields);
 	 $name=$result->fields['name'];
-	 $localcontext['value']=htmlspecialchars($context[$name]);
-	 $localcontext['error']=$context['error'][$name];
-
+	 $localcontext['value']=$result->fields['edition']!="display" ? htmlspecialchars($context[$name]) : $context[$name];
+	 ###$localcontext['error']=$context['error'][$name];
 	 call_user_func("code_do_$funcname",$localcontext);
 	 $result->MoveNext();
        }       
@@ -123,7 +99,7 @@ class GenericLogic extends Logic {
      /////
 
      /////
-       function loop_mltext($context,$funcname) 
+       function loop_mltext(&$context,$funcname) 
        {
 	 if (is_array($context['value'])) {
 	   foreach($context['value'] as $lang=>$value) {
@@ -152,6 +128,27 @@ class GenericLogic extends Logic {
 	 //  call_user_func("code_do_$funcname",$localcontext);
 	 //}
        }
+
+    $id=$context['id'];
+    if ($id && !$error) {
+      $dao=$this->_getMainTableDAO();
+      $vo=$dao->getById($id);
+      if (!$vo) die("ERROR: can't find object $id in the table ".$this->maintable);
+      $this->_populateContext($vo,$context);
+    }
+
+     $daotype=&getDAO($this->_typetable);
+     $votype=$daotype->getById($context['idtype']);
+     $this->_populateContext($votype,$context['type']);
+     
+     if ($id && !$error) {
+       $gdao=&getGenericDAO($votype->class,$this->_idfield);
+       $gvo=$gdao->getById($id);
+       if (!$gvo) die("ERROR: can't find object $id in the associated table. Please report this bug");
+       $this->_populateContext($gvo,$context);
+       $ret=$this->_populateContextRelatedTables($vo,$context);
+     }
+
 
      return $ret ? $ret : "_ok";
    }
@@ -211,9 +208,9 @@ class GenericLogic extends Logic {
 	    $context[$field->name]==="");       // or empty string
 	    
 
-       if ( ($context['edit'] && ($field->edition=="importable" || 
-				  $field->edition=="none" || 
-				  $field->edition=="display")) ) {
+       if ( ($context['do']=="edit" && ($field->edition=="importable" || 
+					$field->edition=="none" || 
+					$field->edition=="display")) ) {
 	 // in edition interface and field is not editable in the interface
 
 	 if ($field->condition!="+") { // the field is not required.
@@ -251,7 +248,7 @@ class GenericLogic extends Logic {
        if ($valid===true) {
 	 // good, nothing to do.
        } elseif (is_string($valid)) {
-	 $error[$name]=$valid; 	 // error
+	 $error[$field->name]=$valid; 	 // error
        } else {
 	 $type=$field->type;
 	 $name=$field->name;

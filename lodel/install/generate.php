@@ -117,6 +117,7 @@ xml_parser_free($xml_parser);
 
 
 function buildDAO() {
+  global $table,$uniqueid,$varlist,$rights;
 
 
   $text.='

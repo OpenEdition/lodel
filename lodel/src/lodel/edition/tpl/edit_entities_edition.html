@@ -68,7 +68,11 @@
 			<td align="center">
 					<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]"> - 
 					<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]"> - 
-					<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]">
+<IF COND="[#IDTASK]">
+			    <input class="form" type="button" value="    [@COMMON.CANCEL]    " onClick="javascript:window.location='index.php?do=delete&lo=tasks&id=[#IDTASK]'">
+<ELSE/>
+					<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onClick="javascript:window.location='index.php?id=[#IDPARENT]'">
+</IF>
 			</td>
 		</tr>
 	</table>

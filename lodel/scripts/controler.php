@@ -103,6 +103,7 @@ class Controler {
 	$view->back();
 	break;
       case '_error' :
+	$logic->viewAction($context,$error); // in case anything is needed to be put in the context
 	$context['error']=$error;
 	print_r($error);
       case '_ok' :

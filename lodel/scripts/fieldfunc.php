@@ -277,9 +277,6 @@ function reservedword($name) {
 	  "TINYINT",
 	  "TINYTEXT",
 	  "TO",
-	  "TPL",
-	  "TPLCREATION",
-	  "TPLEDITION",
 	  "TRAILING",
 	  "TRUE",
 	  "TYPE",
@@ -325,7 +322,12 @@ function reservedword($name) {
 	  "IDTYPE",
 	  "IDUSER",
 	  "IDPERSON",
-	  "IDENTRY"
+	  "IDENTRY",
+	  "ERROR",
+	  "TPL",
+	  "TPLCREATION",
+	  "TPLEDITION",
+	  "EDIT",
 	  );
   return (in_array (strtoupper($name), $reserved_words));
 }

@@ -108,6 +108,9 @@ class EntitiesLogic extends Logic {
      foreach(array_keys($classes) as $class) {
        $db->execute(lq("DELETE FROM #_TP_$class WHERE identity IN (".join(",",$ids).")")) or dberror();
      }
+     // delete hierarchy
+     $db->execute(lq("DELETE FROM #_TP_relations WHERE nature='P' AND ( id1 IN (".join(",",$ids).") OR id2 IN (".join(",",$ids)."))")) or dberror();
+
      // delete the relations
      $this->_deleteSoftRelation($ids);
 
@@ -174,7 +177,7 @@ class EntitiesLogic extends Logic {
      $idrelation=array();
      while(!$result->EOF) {
        $nature=$result->fields['nature'];
-       $idrelation[$nature]=$result->fields['idrelation'];
+       $idrelation[$nature][]=$result->fields['idrelation'];
        $result->MoveNext();
      }
 
@@ -202,7 +205,7 @@ class EntitiesLogic extends Logic {
 
        if ($idstodelete) {
 	 $logic=&getLogic($table);
-	 $localcontext=array("ids"=>$idstodelete,"idrelation"=>$idrelation[$nature]);
+	 $localcontext=array("id"=>$idstodelete,"idrelation"=>$idrelation[$nature]);
 	 $localerror=array();
 	 $logic->deleteAction($localcontext,$localerror);
        }
@@ -275,7 +278,7 @@ class EntitiesLogic extends Logic {
        if ($criteria) $criteria="AND ".$criteria;
        $row=$db->getRow(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$id."' ".$criteria));
        if ($row===false) dberror();
-       if (!$row['hasrights']) die("This object is locked. Please report the bug");
+       if (!$row['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
 
        // list the entities to delete
        $ids=array($id);

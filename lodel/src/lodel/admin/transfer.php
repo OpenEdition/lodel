@@ -140,7 +140,9 @@ RENAME TABLE #_TP_'.$oldtable.' TO #_TP_v07_'.$oldtable.';
 	if ($err) break;
 
 	/////////// duplicate the table
+	$db->SetFetchMode(ADODB_FETCH_NUM);
 	list($t,$create)=$db->getRow(lq("SHOW CREATE TABLE #_TP_$oldtable"));
+	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 	$select_arr=explode(",",preg_replace("/[()]/","",$select));
 	$values_arr=explode(",",preg_replace("/[()]/","",$values));
 	for($i=0; $i<count($select_arr); $i++) {

@@ -56,8 +56,7 @@ class Entities_EditionLogic extends GenericLogic {
    function viewAction(&$context,&$error)
 
    {
-     $ret = GenericLogic::viewAction($context,$error);
-     
+     // define some loop functions
      /////
      function loop_persons_in_entities($context,$funcname)
        {
@@ -65,6 +64,8 @@ class Entities_EditionLogic extends GenericLogic {
 	 if (!$varname) return;
 
 	 $idtype=$context['idtype'];
+	 if (!$idtype) die("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities");
+	 if (!is_numeric($idtype)) return;
 
 	 if (!$context['persons'][$idtype]) {
 	   call_user_func("code_alter_$funcname",$context);
@@ -74,7 +75,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 //$dao=&getDAO("persontypes");
 	 //$vo=$dao->find("type='".$varname."'","class,id");
 	 //$class=$vo->class;
-	 #print_r($context['persons'][$idtype]);
+	 //print_r($context['persons'][$idtype]);
 
 	 foreach($context['persons'][$idtype] as $degree=>$arr) {
 	   $localcontext=array_merge($context,$arr);
@@ -98,6 +99,8 @@ class Entities_EditionLogic extends GenericLogic {
        if (!$varname) return;
 
        $idtype=$context['idtype'];
+       if (!is_numeric($idtype)) return;
+
        $dao=&getDAO("entrytypes");
        $votype=$dao->getById($idtype,"id,sort,flat");
        if (!$votype) die("ERROR: internal error in loop_entries_in_entities");
@@ -109,7 +112,7 @@ class Entities_EditionLogic extends GenericLogic {
      function loop_entries_in_entities_rec ($context,$funcname,&$votype,&$checkarr) 
      {
        global $db;
-     
+
        // get the entries
        $result=$db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='".$votype->id."' AND idparent='".$context['id']."' AND status>-64 ORDER BY ".$votype->sort)) or dberror();
        while (!$result->EOF) {
@@ -123,8 +126,19 @@ class Entities_EditionLogic extends GenericLogic {
 	 $result->MoveNext();
        }
      }
-	 
      /////
+
+     $ret = GenericLogic::viewAction($context,$error);
+
+     if (!$context['id'] && !$error) { // add
+       $daotablefields=&getDAO("tablefields");
+       $fields=$daotablefields->findMany("class='".$context['type']['class']."' AND status>0 AND type!='passwd'","",
+				       "name,defaultvalue");
+       foreach($fields as $field) {
+	 $context[$field->name]=$field->defaultvalue;
+       }
+     }
+
      return $ret ? $ret : "_ok";
    }
 
@@ -194,6 +208,7 @@ class Entities_EditionLogic extends GenericLogic {
      if ($idtype) $vo->idtype=$idtype;
      $vo->identifier=$context['identifier'];
      if ($this->g_name['dc.title']) $vo->g_title=$context[$this->g_name['dc.title']];
+     if (!$vo->identifier) $vo->identifier=preg_replace("/\W+/","-",$vo->g_title);
 
      $id=$context['id']=$dao->save($vo);
 

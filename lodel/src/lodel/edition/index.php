@@ -43,7 +43,11 @@ if (!$_GET['do'] && !$_POST['do']) {
       $row=$db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));
       if ($row==false) dberror();
       if (!$row) { header ("Location: not-found.html"); return; }
-      list($base,$idparent,$context[idtype])=$row;
+
+      $base=$row['tpledition'];
+      $idparent=$row['idparent'];
+      $context['idtype']=$row['idtype'];
+
       if (!$base) $context['id']=$row['id']=$row['idparent'];
     } while (!$base && $idparent);
  } else {

@@ -60,6 +60,8 @@ class Logic {
    function viewAction(&$context,&$error)
 
    {
+     if ($error) return; // nothing to do if it is an error.
+
      $id=intval($context['id']);
      if (!$id) return "_ok"; // just add a new Object
 
@@ -125,7 +127,7 @@ class Logic {
 
      // put the context into 
      $this->_populateObject($vo,$context);
-     if (!$dao->save($vo)) die("You don't have the rights to modify or create this object");
+     if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object",E_USER_ERROR);
      $ret=$this->_saveRelatedTables($vo,$context);
 
      update();
@@ -165,7 +167,7 @@ class Logic {
      global $db,$home;
 
      $id=$context['id'];
-     if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug");
+     if ($this->isdeletelocked($id)) trigger_error("This object is locked for deletion. Please report the bug",E_USER_ERROR);
      $dao=$this->_getMainTableDAO();
      $this->_prepareDelete($dao,$context);
      $dao->deleteObject($id);

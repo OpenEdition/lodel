@@ -139,18 +139,31 @@ class EntriesLogic extends GenericLogic {
     */
 
 
+   /**
+    * Used in deleteAction to do extra operation after the object has been deleted
+    */
+   function _deleteRelatedTables($id) 
 
-   function _deleteRelatedTables($id) {
-     global $home;
+  {
+    global $db;
+    $result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_entrytypes INNER JOIN #_TP_entries ON idtype=#_TP_entrytypes.id WHERE #_TP_entries.id='".$id."'")) or dberror();
+		 
+    while (!$result->EOF) {
+      $class=$result->fields['class'];
 
-     if (is_array($id)) {
-       $criteria="identry IN ('".join("','",$id)."')";
-     } else {
-       $criteria="identry='$id'";
-     }
-     
-     $db->execute(lq("DELETE FROM #_TP_entities_entries WHERE ".$criteria)) or dberror();
-   }
+      $gdao=&getGenericDAO($class,"identry");
+      $gdao->deleteObject($id);
+
+      $result->MoveNext();
+    }
+    if ($this->idrelation) {
+      $gdao=&getDAO("relations","idrelation");
+      $gdao->delete("id2 IN ('".join("','",$this->idrelation)."')");
+    }
+
+    // delete 
+  }
+
 } // class 
 
 

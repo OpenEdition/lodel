@@ -49,7 +49,6 @@ $GLOBALS['db']=ADONewConnection(DBDRIVER);
 $GLOBALS['db']->debug = false;
 
 
-
 //
 //
 //
@@ -63,7 +62,7 @@ if ($GLOBALS['site'] && $GLOBALS['singledatabase']!="on") {
 if (!defined("SINGLESITE")) define("SINGLESITE",$GLOBALS['singledatabase']!="on"); // synonyme currently but may change in the future
 
 $GLOBALS['db']->connect(DBHOST,DBUSERNAME,DBPASSWD, $GLOBALS['currentdb']) or dberror();
-
+$GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp']=$GLOBALS['tableprefix'];
 
 /*------------------------------------------------------------------------------*/

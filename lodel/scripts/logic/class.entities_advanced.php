@@ -163,7 +163,9 @@ class Entities_AdvancedLogic extends Logic {
 	 $values="";
 	 $dmax=0;
 	 while (!$result->EOF) {
-	   list($id1,$degree)=$result->fields;
+	   $id1=$result->fields['id1'];
+	   $degree=$result->fields['degree'];
+
 	   $parents[$degree]=$id1;
 	   if ($degree>$dmax) $dmax=$degree;
 	   $values.="('".$id1."','".$id."','P','".($degree+1)."'),";
@@ -177,7 +179,9 @@ class Entities_AdvancedLogic extends Logic {
 
 	 $delete="";
 	 while (!$result->EOF) {
-	   list($id2,$degree)=$result->fields;
+	   $id1=$result->fields['id2'];
+	   $degree=$result->fields['degree'];
+
 	   $delete.=" (id2='".$id2."' AND degree>".$degree.") OR "; // remove all the parent above $id.
 	   for ($d=0; $d<=$dmax; $d++) { // fore each degree
 	     $values.="('".$parents[$d]."','".$id2."','P','".($degree+$d+1)."'),"; // add all the parent

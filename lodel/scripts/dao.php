@@ -153,7 +153,7 @@ class DAO {
    * Function to get many value object
    */
   function getByIds($ids,$select="*") {
-    return $this->findMany($this->idfield.(is_array($ids) ? " IN ('".join("','",$ids)."')" : "='".$ids."'"),$select);
+    return $this->findMany($this->idfield.(is_array($ids) ? " IN ('".join("','",$ids)."')" : "='".$ids."'"),"",$select);
   }
 
 
@@ -257,7 +257,7 @@ class DAO {
    function deleteObject(&$mixed) {
      global $db;
 
-     if ($GLOBALS['user']['rights'] < $this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+     if ($GLOBALS['user']['rights'] < $this->rights['write']) trigger_error("ERROR: you don't have the right to delete object from the table ".$this->table,E_USER_ERROR);
 
      $idfield=$this->idfield;
      if (is_object($mixed)) {
@@ -295,7 +295,7 @@ class DAO {
      }
      //execute delete statement
      $db->execute("DELETE FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("write")) or dberror();
-     if ($db->affected_Rows()<$nbid) die("ERROR: you don't have the right to delete some object in table ".$this->table);
+     if ($db->affected_Rows()<$nbid) trigger_error("ERROR: you don't have the right to delete some objects in table ".$this->table,E_USER_ERROR);
    // in theory, this is bad in the $mixed is an array because 
    // some but not all of the object may have been deleted
    // in practice, it is an error in the interface. The database may be corrupted (object in fact).
@@ -348,7 +348,9 @@ class DAO {
        if ($classvars && array_key_exists("status",$classvars)) {
 
 	 $status=$this->sqltable.".status";
-	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND $status>-64" : " AND $status>0";
+###	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND $status>-64" : " AND $status>0";
+	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? "" : " AND $status>0";
+
 	 if ($access=="write" && $GLOBALS['user']['rights'] < $this->rights['protect'])
 	   $this->cache_rightscriteria[$access].=" AND $status<32 AND $status>-32 ";
        }

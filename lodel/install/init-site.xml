@@ -256,7 +256,7 @@
         size="255"
         description="style qui conduit a cette balises"
         label="[@ADMIN.STYLE]"
-        edittype="style" />
+        edittype="mlstyle" />
 <column name="type"
         type="VARCHAR"
         size="255"

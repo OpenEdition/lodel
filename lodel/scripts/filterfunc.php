@@ -42,10 +42,11 @@ function makefilterfunc()
   require_once ($home."connect.php");
   $result=$db->execute("SELECT class,#_TP_fields.name,filtrage FROM #_fieldsgroupsjoin_ WHERE #_TP_fieldgroups.status>0 AND #_TP_fields.status>0 AND filtrage!=''") or dberror();
   while (!$result->EOF) {
-    list($class,$name,$filter)=$result->fields;
+    //list($class,$name,$filter)=$result->fields;
+    $row==$result->fields;
 
     // convert filter into a function
-    $filters=preg_split("/\|/",$filter);
+    $filters=preg_split("/\|/",$row['filter']);
     $filterfunc='$x';
     foreach ($filters as $filter) {
       if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/",$filter,$result2)) { 
@@ -62,7 +63,7 @@ function makefilterfunc()
       } // do nothing if $filter is empty
     }
     $filterfunc="return ".$filterfunc.";";
-    $filterstr.="'$class.$name'=>'".addcslashes($filterfunc,"'")."',";
+    $filterstr.="'".$row['class'].$row['name']."=>'".addcslashes($filterfunc,"'")."',";
 
     $result->MoveNext();
   }
