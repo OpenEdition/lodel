@@ -1,9 +1,30 @@
+table {
+	/*  
+	 * Elements de styles d'une table par défaut 
+	 */
+	border: 0; 
+	cellspacing: 0; 
+	cellpadding: 0; 
+	
+}
+
+
+table.premiere  {
+	/*  
+	 * Elements de styles de la table principale : pas active
+	 */
+	width: 775;
+	height: 100%;
+	align: center;
+	vertical-align: top;
+}
+
 A.bouton_statut_publierOFF
 {
 	/*  
 	 * Style des boutons qui servent à modifier le statut d'une publication. 
 	 */
-	color: blue;
+	color: #181B90;
 	font-size: xx-small;
 		
 }
@@ -13,7 +34,7 @@ A.bouton_statut_publierOFF
 	/*  
 	 * Style des boutons qui servent à modifier le statut d'une publication. 
 	 */
-	color: red;
+	color: #B20404;
 	font-size: xx-small;
 	
 }
@@ -312,7 +333,11 @@ sup
 	font-weight: bold;
 	color: #9C3234;
 	font-family: arial, helvetica, sans-serif;
-	margin: 20px 0px 20px 10px;
+	border-bottom: 3px solid #ffffff;
+	border-top: 3px solid #ffffff;
+	padding-top: 10px;
+	margin-left: 5px;
+} 
 
 .bibliographie
 {
@@ -382,6 +407,7 @@ sup
 	
 	font-family: arial, helvetica, sans-serif;
 	text-decoration:none;
+	
 }
 
 A:hover {
@@ -924,7 +950,7 @@ td {
 	 */
 
 
-table.titrerevue , td.titrerevue {
+table.titrerevue , td.titrerevue  {
 	
 	 width: 100%;
 	 vertical-align: middle;
@@ -936,6 +962,21 @@ table.titrerevue , td.titrerevue {
 	 margin-left: 10;
 	 color: #9C3234;
 	 line-height: 150%;
+	 
+}
+
+.titrerevue {
+
+	 width: auto;
+	 background-color: #F4F4F4;
+	 font-size: large;
+	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #9C3234;
+	 line-height: 150%;
+	 margin-bottom: 15px;
+	 
 }
 
 
@@ -1009,6 +1050,21 @@ td.titre2 {
 	 margin-left : 10;
 }
 
+.titre2 {
+	
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: medium;
+	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 text-indent: 10;
+	 margin-bottom: 15px;
+	 margin-top: 15px;
+}
+
 /***************************************************************************************
  *	Les liens de class "Titre2"                                                         *
  ***************************************************************************************
@@ -1021,7 +1077,7 @@ A.titre2 {
 	 */
 	font-size: small;
 	font-weight: bold;
-	color: #ffffff;
+	color: #cccccc;
 	font-family: Times New Roman, arial, helvetica, sans-serif;
 	margin-left : 10;
 }
@@ -1059,18 +1115,26 @@ td.signalerimprimer {
 		 
 }
 
-table.afficherdocument , td.afficherdocument  {
-	/* 
-	 * Pour afficher les informations sur un document dans article.html
-	 */
-	vertical-align: middle;
-	width: 561;
-	background-color: #F7F7F7;
-	font-size: small;
-	text-decoration: none;
-	font-weight: bold;
-	color: #666666;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
+.titre21 {
+	
+	 width: 500;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: medium;
+	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 text-indent: 10;
+	 margin-bottom: 15px;
+	 float: left;
+}
+
+.signalerimprimer {
+	 width: 61;
+	 height: 20;
+	 background-color: #9C3234;
+	 margin-right:0;
 }
 
 td.titre3 {
@@ -1086,10 +1150,111 @@ td.titre3 {
 }
 
 
+
 /***************************************************************************************
- *	Style des éléments de navigation entre les documents                               *
+ *	Les styles définissant les différentes images du logo de Revues.org                           *
  ***************************************************************************************
  */
+ 
+ .logo_revuesorg1 {
+	vertical-align: top;
+	height: 11;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/left_top.gif);
+	border-bottom: 3px solid #ffffff;
+	margin: 0;
+}
+
+
+
+
+A.logo_revuesorg3 {
+	vertical-align: top;
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues.gif);
+	margin: 0;
+}
+
+
+
+A.logo_revuesorg3:hover {
+	vertical-align: top;
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues_on.gif);
+	margin: 0;
+}
+
+
+.logo_revuesorg4 {
+	vertical-align: top;
+	height: 18;
+	width: 165;
+	background-color: #ffffff;
+	background-image: url(images/left_top2.gif);
+	border-top: 3px solid #ffffff; 
+	border-bottom: 3px solid #ffffff;
+	margin: 0;
+}
+
+.directeur_publication {
+	padding-left: 20px;
+	font-size: medium;
+}
+
+/***************************************************************************************
+ *	Styles concernant l'affichage dans article.html                                    *
+ ***************************************************************************************
+ */
+
+ table.afficherdocument , td.afficherdocument  {
+	/* 
+	 * Pour afficher les informations sur un document dans article.html.
+	 */
+	vertical-align: middle;
+	width: 561;
+	background-color: #F7F7F7;
+	font-size: small;
+	text-decoration: none;
+	font-weight: bold;
+	color: #666666;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	
+}
+ 
+.afficherdocument  {
+	/* 
+	 * Pour afficher les informations sur un document dans article.html.
+	 */
+	width: auto;
+	background-color: #F7F7F7;
+	font-size: small;
+	text-decoration: none;
+	font-weight: bold;
+	color: #666666;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	margin-bottom: 5px;
+	
+}
+
+.descriptionauteur {
+   /*  
+    *	Style de la description de l'auteur appelée dans le document 
+	*/
+	 
+	font-size: small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	line-height: 120%;
+	text-indent : 20;
+	margin-left: 20px;
+}
+
 .navigation_precedent {
 	/*  
 	 *	td aligné à gauche, contenant lien vers document précédent 
@@ -1126,84 +1291,82 @@ td.titre3 {
 	padding-right: 1em;
 }
 
+
 /***************************************************************************************
- *	Les styles définissant les différentes images du logo de Revues.org                           *
+ *	Les styles définissant les différents éléments du logo Lodelia                     *
  ***************************************************************************************
  */
  
- td.logo_revuesorg1 {
-	vertical-align: top;
-	height: 11;
-	width: 165;
+.partielogo1 {
+ 		height: 111;
+		width: 532;
+		background-color: #ffffff;
+		background-image: url(images/logo_lodeliarouge.gif);
+		border: 0;
+		float: left;		
+}
+
+.partielogo2 {
+ 		height: 111;
+		width: 29;
+		background-color: #ffffff;
+		background-image: url(images/right_top.gif);
+		border: 0;
+
+		}
+
+
+
+
+.barrenav {
+
+	width: 165; 
+	height: 100%;
 	background-color: #EFEFEF;
-	background-image: url(images/left_top.gif);
-	border: 0; 
+	float: left;
+	border-left: 1px solid #9C3234;
+	border-right: 1px solid #9C3234;
+	margin: 0;
 }
 
 
-td.logo_revuesorg2 {
-	vertical-align: top;
-	height: 3;
-	width: 165;
+
+.corps {
+	width: auto;
+	height: 100%;
 	background-color: #ffffff;
-	background-image: url(images/spacer.gif);
-	border: 0; 
+	border-right: 1px solid #9C3234;
+	margin: 0;
 }
 
-A.logo_revuesorg3 {
-	vertical-align: top;
-	height: 50;
-	width: 165;
+.separation {
+	height: 100%;
 	background-color: #EFEFEF;
-	background-image: url(images/logo_revues.gif);
-	border: 0; 
+	width: 18px;
+	border-right: 20px solid #ffffff;
+	border-left: 8px solid #ffffff;
+	float: left;
+	margin: 0;
 }
 
-A.logo_revuesorg3 {
-	vertical-align: top;
-	height: 50;
-	width: 165;
-	background-color: #EFEFEF;
-	background-image: url(images/logo_revues.gif);
-	border: 0; 
+.contenu {
+	width: auto;
+	height: 100%;
+	margin: 0;
+	
 }
 
-A.logo_revuesorg3:hover {
-	vertical-align: top;
-	height: 50;
-	width: 165;
-	background-color: #EFEFEF;
-	background-image: url(images/logo_revues_on.gif);
-	border: 0; 
+.docregroupement {
+	width: auto;
+	height: auto;
 }
 
-
-td.logo_revuesorg4 {
-	vertical-align: top;
-	height: 18;
-	width: 165;
-	background-color: #ffffff;
-	background-image: url(images/left_top2.gif);
-	border: 0; 
-}
-
-.directeur_publication {
-	padding-left: 20px;
-	font-size: medium;
+.imageindex {
+	width: 561;
+	height: 301;
+	background-image: url(images/image.jpg);
+	margin-right: 0;
 }
 
 
-
-.descriptionauteur {
-   /*  
-    *	Style de la description de l'auteur appelée dans le document 
-	*/
 	 
-	font-size: small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
-	line-height: 120%;
-	text-indent : 20;
-	margin-left: 20px;
-}
