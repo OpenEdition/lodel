@@ -73,7 +73,7 @@ $critere.=" AND statut>0";
 
 if ($id>0 && $dir) {
   # cherche le parent
-  chordre("types",$id,"statut>0",$dir);
+  chordre("types",$id,"statut>0 AND classe='$classe'",$dir);
   back();
 }
 //
