@@ -38,35 +38,40 @@
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td class="texte_intitule">Nom et prénom :</td>
-			<td><input size="30" type="text" name="realname" value="[#REALNAME]" /></td>
+			<td><input size="50" type="text" name="realname" value="[#REALNAME]" /></td>
 		</tr>
 		[(#ERREUR_REALNAME|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
 		<tr>
 			<td class="texte_intitule">Email :</td>
-			<td><input size="30" type="text" name="email" value="[#EMAIL]" /></td>
+			<td><input size="50" type="text" name="email" value="[#EMAIL]" /></td>
 		</tr>
 		[(#ERREUR_EMAIL|true)<tr><td colspan="2" class="message_erreur">Le courriel n'est pas valide !</span></td></tr>]
 		<tr>
 			<td class="texte_intitule">Login :</td>
-			<td><input size="30" type="text" name="usernamems" value="[#USERNAMEMS]" /></td>
+			<td><input size="50" type="text" name="usernamems" value="[#USERNAMEMS]" /></td>
 		</tr>
 		[(#ERREUR_USERNAME|true)<tr><td colspan="2" class="message_erreur">Le login doit contenir des lettres et chiffres . et @ uniquement</td></tr>]
 		[(#ERREUR_DUPNAME|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit etre unique. 
 		Le nom que vous avez entrez existe deja.</td></tr>]
 		<tr>
 			<td class="texte_intitule">Mot de passe :</td>
-			<td><input size="30" type="password" name="passwdms" value="" /></td>
+			<td><input size="50" type="password" name="passwdms" value="" /></td>
 		</tr>
 		[(#ERREUR_PASSWD|true)<tr><td colspan="2" class="message_erreur">Le mot de passe doit contenir entre 
 		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
 		<tr>
 			<td class="texte_intitule">Url :</td>
-			<td><input size="30" type="text" name="url" value="[#URL]" /></td>
+			<td><input size="50" type="text" name="url" value="[#URL]" /></td>
 		</tr>
 		<tr>
 			<td class="texte_intitule">Priorité :</td>
 			<td><select name="priority"><?php  makeselectpriority(); ?></select></td>
 		<tr>
+		<tr>
+			<td class="texte_intitule">Commentaire :</td>
+			<td><textarea name="commentaire" rows="10" cols="70" >[#COMMENTAIRE]</textarea></td>
+		</tr>
+
 	</table>
 
 	<div class="pied_de_formulaire">

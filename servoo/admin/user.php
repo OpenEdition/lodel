@@ -84,7 +84,7 @@ if ($edit) {
     break;
   }
 
-  mysql_query("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority) VALUES ('$id','$context[username]','$passwd','$context[url]','$context[realname]','$context[email]','$context[priority]')") or die(mysql_error());
+  mysql_query("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$context[username]','$passwd','$context[url]','$context[realname]','$context[email]','$context[priority]','$context[commentaire]')") or die(mysql_error());
 
   header("location: users.php");
   return;

@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS users (
 	realname	TINYTEXT,
 	email		TINYTEXT,
 	priority	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	commentaire	TEXT,
 
 	status		TINYINT DEFAULT '1' NOT NULL,
 
