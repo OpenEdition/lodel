@@ -92,8 +92,8 @@ class EntryTypesLogic extends Logic {
      case "edition" :
        $arr=array(
 		  "pool"=>getlodeltextcontents("edit_pool","admin"),
-		  "multipleselect"=>getlodeltextcontents("edit_multipleselect","admin"),
-		  "select"=>getlodeltextcontents("edit_select","admin"),
+		  //"multipleselect"=>getlodeltextcontents("edit_multipleselect","admin"),
+		  //"select"=>getlodeltextcontents("edit_select","admin"),
 		  );
        renderOptions($arr,$context['edition']);
        break;
