@@ -58,7 +58,7 @@ class Entities_IndexLogic extends Logic
    	 {
  	 	//no object identity specified
    	 	if(!$context['identity'])
-   	 		return "_ok";
+   	 		return "_back";
    	 	
    	 	$id = $context['identity'];
    	 	
@@ -84,7 +84,7 @@ class Entities_IndexLogic extends Logic
 	# print_r($vos_fields);
    	 	//no fields to index
    	 	if(!$vos_fields)
-   	 		return ("_error");
+   	 		return ("_back");
    	 	
    	 	//foreach field to index, index the words
    	 	foreach( $vos_fields as $vo_field)
