@@ -23,9 +23,9 @@ function makefilterfunc()
 
 	if ($arg) $arg.=",";
 	$filterfunc=$funcname.'('.$arg.$filterfunc.')';
-      } else {
+      } elseif ($filter) {
 	die("invalid filter function: $filter");
-      }
+      } // do nothing if $filter is empty
     }
     $filterfunc="return ".$filterfunc.";";
     $filterstr="'$classe.$nom'=>'".addslashes($filterfunc)."',";
