@@ -140,13 +140,17 @@ function get_ordre_max ($table,$where="")
   return $ordre+1;
 }
 
-function chordre($table,$id,$critere,$dir,$inverse="")
+function chordre($table,$id,$critere,$dir,$inverse="",$jointables="")
 
 {
   $table=$GLOBALS[tp].$table;
   $dir=$dir=="up" ? -1 : 1;  if ($inverse) $dir=-$dir;
   $desc=$dir>0 ? "" : "DESC";
-  $result=mysql_query("SELECT id,ordre FROM $table WHERE $critere ORDER BY ordre $desc") or die (mysql_error());
+  if ($jointables) {
+    $jointables=",".$GLOBALS[tp].
+      trim(join(",".$GLOBALS[tp],preg_split("/,\s*/",$jointables)));
+  }
+  $result=mysql_query("SELECT $table.id,$table.ordre FROM $table $jointables WHERE $critere ORDER BY $table.ordre $desc") or die (mysql_error());
 
   $ordre=$dir>0 ? 1 : mysql_num_rows($result);
   while ($row=mysql_fetch_assoc($result)) {

@@ -155,12 +155,13 @@ if ($id>0 && !$droitadmin) {
 } else $critere="";
 
 if ($id>0 && $dir) {
-  lock_write("entites");
+  lock_write("entites","types");
   # cherche le parent
   $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entites WHERE id='$id' $critere") or die (mysql_error());
   if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
   list($idparent)=mysql_fetch_row($result);
-  chordre("entites",$id,"idparent='$idparent'",$dir);
+  $critere=$classe=="publications" ? "AND classe='publications'" : "AND classe!='publications'";
+  chordre("entites",$id,"idparent='$idparent' AND idtype=$GLOBALS[tp]types.id AND $GLOBALS[tp]entites.statut>-64 $critere",$dir,"","types");
   touch(SITEROOT."CACHE/maj");
   unlock("entites");
   back();
