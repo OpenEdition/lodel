@@ -24,6 +24,7 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <MACRO NAME="JS_ROLLOVER">
+
 <div id="desk" style="background-image: url([#SHAREURL]/images/bandeau.jpg); background-repeat:no-repeat; background-color:#FFFFFF;">
 <table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
@@ -48,16 +49,22 @@
 					</td>
 			
 					<td width="57" heigth="75">
-						<a href="[#SITEROOT]lodel/admin/index.php">
-						<IF COND="[#CURRENTURL|strpos('admin')]">	
-							<MACRO NAME="PNG_MENU_ADMIN_ACTIF">
+				
+						<IF COND="![#LODELUSER.REDACTOR]">
+							<MACRO NAME="PNG_MENU_ADMIN_GRIS">
 						<ELSE/>
-							<MACRO NAME="PNG_MENU_ADMIN">
-						</IF>
-							<span class="desk-text">
-								[@COMMON.ADMINISTRATION]
-							</span>
-						</a>
+							<a href="[#SITEROOT]lodel/admin/index.php">
+							<IF COND="[#CURRENTURL|strpos('admin')]">	
+								<MACRO NAME="PNG_MENU_ADMIN_ACTIF">
+							<ELSE/>
+								<MACRO NAME="PNG_MENU_ADMIN">
+							</IF>
+							</IF>
+								<span class="desk-text">
+									[@COMMON.ADMINISTRATION]
+								</span>
+							</a>
+						
 					</td>
 			
 					<td width="57" heigth="75">
@@ -120,7 +127,7 @@
 
 <!--[					<td width="64" heigth="75"><IF COND="[#LODELUSER.EDITOR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
 			
-					<td width="64" heigth="75"><IF COND="[#LODELUSER.ADMIN]"><a href="[#CLEARCACHEURL]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+					<td width="64" heigth="75"><IF COND="[#LODELUSER.ADMIN]"><a href="[#CLEARCACHEURL]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"><span class="desk-text">[@COMMON.COMPILE]</span></IF></td>
 			
 					<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"><span class="desk-text">[@COMMON.LOGOUT]<span></a></td>
 				</tr>
@@ -163,7 +170,7 @@
 									<IF COND="[#LODELUSER.REDACTOR]">
 										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.USER_WRITER]&nbsp;:&nbsp; </span>
 									<ELSE/>
-										<IF COND="[#DROITVISITEUR]">
+										<IF COND="[#LODELUSER.VISITOR]">
 											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> [@COMMON.USER_VISITOR]&nbsp;:&nbsp; </span>
 										</IF>
 									</IF>
