@@ -60,18 +60,7 @@
 <!-- ****************************************************************** -->
 <?php 
 header("Content-type: application/xml");
-echo '<?xml version="1.0" encoding="utf-8"?>';
-?>
-</DEFMACRO>
-
-<DEFMACRO NAME="ENTETE_XML_ISOLATIN1">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Cette macro est utile aux fichiers rss                             -->
-<!-- ****************************************************************** -->
-<?php 
-header("Content-type: application/xml");
-echo '<?xml version="1.0" encoding="ISO-8859-1"?>';
+echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 ?>
 </DEFMACRO>
 
