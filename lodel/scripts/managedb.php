@@ -170,15 +170,17 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
 
 
 
-function publi ($id,$statut,$confirmation)
+function publi ($id,$statut,$confirmation,$mklock=TRUE)
 
 {
   global $usergroupes,$admin,$context;
 
-  lock_write("entites",
-	     "personnes","entites_personnes",
-	     "entrees","entites_entrees",
-	     "relations"); 
+  if ($mklock) {
+    lock_write("entites",
+	       "personnes","entites_personnes",
+	       "entrees","entites_entrees",
+	       "relations"); 
+  }
 
   //
   // cherche les entitess a publier ou depublier
