@@ -68,7 +68,7 @@
 								<td width="5">&nbsp;</td>
 								
 				</tr>
-				<tr>
+				<!--[<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
 					<LOOP NAME="checkindex1" TABLE="search_engine"  LIMIT="1">
@@ -82,24 +82,26 @@
 					</ALTERNATIVE>
 					</LOOP>
 					</td>
-				</tr>
+				</tr>]-->
 				<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
 					<LOOP NAME="checkindex2" TABLE="search_engine" WHERE="identity='[#ID]'" LIMIT="1">
 					<DO>
 					<a href="index.php?do=deleteIndex&amp;id=[#ID]">
-						<span class="texte_orange">[@EDITION.ENTITY_INDEX_CLEANING]</span>
+						<span class="texte_orange">[@EDITION.ENTITY_INDEX_EXCLUSION]</span>
 					</a>
 					</DO>
 					<ALTERNATIVE>
-						<em>[@EDITION.ENTITY_INDEX_CLEANING]</em>
+						<a href="index.php?do=addIndex&amp;id=[#ID]">
+							<span class="texte_orange">[@EDITION.ENTITY_INDEX_INCLUSION]</span>
+						</a>
 					</ALTERNATIVE>
 					</LOOP>
 					
 					</td>
 				</tr>
-				<tr>
+				<!--[<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
 					<LOOP NAME="checkindex3" TABLE="search_engine" WHERE="identity='[#ID]'" LIMIT="1">
@@ -115,7 +117,7 @@
 					</ALTERNATIVE>
 					</LOOP>
 					</td>
-				</tr>
+				</tr>]-->
 
 				</table>
 			</td>
