@@ -164,7 +164,7 @@ function mkxmldocument($text,$publication)
   $row[publication]=$publication;
 
   include_once($home."extrainfofunc.php");
-  $context=array();
+  $context=array("typedoc"=>"article"); // la valeur du typedoc est remplace si presente dans le fichiers.
   ei_pretraitement($filename,$row,$context,$text);
 
   if (!$context[lang1]) {
