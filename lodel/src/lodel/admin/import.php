@@ -59,14 +59,18 @@ calcul_page($context,"import");
 function boucle_fichiers(&$context,$funcname)
 {
   global $repertoire;
-  $dir=opendir($repertoire);
-  while (($file=readdir($dir))!==FALSE) {
-    if (!preg_match("/^revue-.*-\d+.tar.gz/i",$file)) continue;
-    $context[nom]=$file;
-    //code_boucle_fichiers($context);
-	call_user_func("code_boucle_$funcname",$context);
+  if ( $dir= @opendir($repertoire)) {
+    while (($file=readdir($dir))!==FALSE) {
+      if (!preg_match("/^revue-.*-\d+.tar.gz/i",$file)) continue;
+      $context[nom]=$file;
+      //code_boucle_fichiers($context);
+  	call_user_func("code_boucle_$funcname",$context);
+    }
+    closedir ($dir);
   }
-  closedir ($dir);
+  else {
+    die ("Le repertoire $repertoire n'existe pas !");
+  }
 }
 
 
