@@ -39,7 +39,7 @@
 	</table>
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='typepublis.php'" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
 			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='typepubli.php?delete=1&id=[#ID]'" />
 		</IF>

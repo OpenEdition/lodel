@@ -38,7 +38,7 @@
 		<tr>
 			<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
 				<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='motcles.php'" />
+				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
 				<IF COND="[#ID]">
 					&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='motcle.php?delete=2&id=[#ID]'" />
 				</IF>
