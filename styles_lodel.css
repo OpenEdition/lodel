@@ -808,7 +808,7 @@ fieldset br { clear: left;}
   border:  2px solid #FDFAF1;
  }
 
-.personseditionarea { 
+.personseditionarea, .entrieseditionarea{ 
   margin-left: 50px;
   border:  2px solid #FDFAF1;
  }

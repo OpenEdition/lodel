@@ -476,7 +476,8 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
 	 unset($value);
 	 continue;
        }
-       $this->_publicfields[$field->name]=true; // this field is public
+       if ($field->type!="persons" && $field->type!="entries")
+	 $this->_publicfields[$field->name]=true; // this field is public
 
        if ($field->condition=="+" && $empty) {
 	 $error[$field->name]="+"; // required

@@ -166,9 +166,14 @@ cp_[#NAME].writeDiv();
 <ELSE/>
 <!--[ --------------- PERSONS ------------- ]-->	    
 <IF COND="[#TYPE] eq 'persons'">
-<FUNC NAME="edit_persons">
+<FUNC NAME="EDIT_PERSONS">
+<ELSE/>
+<!--[ --------------- ENTRIES ------------- ]-->	    
+<IF COND="[#TYPE] eq 'entries'">
+<FUNC NAME="EDIT_ENTRIES">
 <ELSE/>
 ???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
 </IF>
 </IF>
 </IF>
@@ -215,7 +220,7 @@ cp_[#NAME].writeDiv();
       Widget for editing person
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="edit_persons">
+<DEFFUNC NAME="EDIT_PERSONS">
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
 	<LOOP NAME="persons_in_entities">
@@ -257,11 +262,63 @@ cp_[#NAME].writeDiv();
   </div>
 </DEFFUNC>
 
+
 <!--[ -----------------------------------------------------------
-      JS for advanced feature in the edition of entities
+      Widget for editing entry
 --------------------------------------------------------------- ]-->
 
-<DEFMACRO NAME="JS_MLTEXT">
+<DEFFUNC NAME="EDIT_ENTRIES">
+  <div id="entries_[#VARNAME]" class="entrieseditionarea" >
+        <LOOP NAME="entrytypes" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND type='[#VARNAME]' AND classes.classtype='entries'">
+	<!--[ -----------[ SELECT ]---------- ]-->
+	<IF COND="[#EDITION]=='select'">
+	<select name="[#VARNAME][]">
+		<LOOP NAME="entries_in_entities">
+		<option value="[#G_NAME|htmlspecialchars]">[#G_NAME]</option>
+		</LOOP>
+	</select>
+	<ELSE/>
+	<!--[ -----------[ POOL ]---------- ]-->
+	<IF COND="[#EDITION]=='pool'">
+	<FUNC NAME="JS_POOL">
+	<table>
+	<tr><td>
+	<select multiple size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
+		<LOOP NAME="entries_in_entities">
+		<option value="[#G_NAME|htmlspecialchars]">[#G_NAME]</option>
+		</LOOP>
+	</select>
+	</td><td>
+		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]')"/><br/>
+		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]')"/>
+	<td>	
+	<select multiple size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
+	</select>
+	</td>
+	</tr>
+	<IF COND="[#NEWBYIMPORTALLOWED]">
+	<tr><td></td><td></td>
+	<td><input type="button" value="^" onclick="addmembertxt('member_more_entries_[#VARNAME]', 'pool_member_[#VARNAME]')"/></td></tr>
+	<tr><td colspan="3"><input size="50" type="text" id="member_more_entries_[#VARNAME]" name="member_more_entries_[#VARNAME]" /></td></tr>
+	</IF>
+	</table>
+
+
+
+	</IF>
+	</IF>
+
+	</LOOP>
+    </div>
+</DEFFUNC>
+
+
+<!--[ -----------------------------------------------------------
+      JS for advanced feature in the edition of entities
+
+	A Transferer dans le fichier edit_entities_edition.html !!!!!!!!!!!!!!!!!!!!!
+--------------------------------------------------------------- ]-->
+<DEFMACRO NAME="JS_EDITION_ENTITIES">
 	<script type="text/javascript">
 <!--
 
@@ -360,3 +417,67 @@ window.status=degreeobj;
 </DEFMACRO>
 
 
+
+<!--[ -----------------------------------------------------------
+      JS for the pool. Defined in a function to appear only once
+
+	A Transferer dans le fichier edit_entities_edition.html !!!!!!!!!!!!!!!!!!!!!
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="JS_POOL">
+<script type="text/javascript">
+<!--
+function addmember(candidats, membres){      var cand = document.getElementById(candidats);
+   var memb = document.getElementById(membres);
+   for(i=0; i<cand.length; i++){
+       if(cand.options[i].selected){
+           opttxt = cand.options[i].text;
+           optval = cand.options[i].value;
+           dbl = false;
+           if(memb.length > 0){
+               for(j=0; j < memb.length; j++){
+                   if(memb.options[j].value == optval){
+                       dbl = true;
+                   }
+               }
+           }
+           if(dbl == false){
+               newopt = new Option(opttxt, optval);
+               memb.options[memb.length] = newopt;
+           }
+       }
+   }
+}
+
+function addmembertxt(candidats, membres){      var cand = document.getElementById(candidats);
+   var memb = document.getElementById(membres);
+   var tab = cand.value.split(",");
+   for(i=0; i<tab.length; i++){
+       opttxt = tab[i];
+       optval = tab[i];
+       dbl = false;
+       if(memb.length > 0){
+           for(j=0; j < memb.length; j++){
+               if(memb.options[j].value == optval){
+                   dbl = true;
+               }
+           }
+       }
+       if(dbl == false){
+           newopt = new Option(opttxt, optval);
+           memb.options[memb.length] = newopt;
+       }
+   }
+}
+
+function removemember(membres){      
+   var memb = document.getElementById(membres);
+   if(memb.length>0){
+       for(i=0; i<memb.length; i++){
+           if(memb.options[i].selected) memb.options[i] = null;
+       }
+   }
+}
+-->
+</script>
+</DEFFUNC>
