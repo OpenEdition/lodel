@@ -62,21 +62,21 @@
 </tr>
 <tr>
 <td width="60%">
-		<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="ok" ORDER="nom">
+		<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="status gt 0" ORDER="title">
 		<DO>
-		<div id="[#REP]" class="texte_petit">
+		<div id="[#NAME]" class="texte_petit">
 		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
-			<a href="[#URL]" onmouseover="[#REP].src=triangle.sr" 
-onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
+			<a href="[#URL]" onmouseover="[#NAME].src=triangle.sr" 
+onmouseout="[#NAME].src=triangle2.src"><font color="#000000">[#TITLE]</font></a>
 <br>	</div>
 		</DO>
 		</LOOP>
 </td>
 <td width="40%">
-		<LOOP NAME="sel_rev" TABLE="sites" WHERE="ok" ORDER="nom">
+		<LOOP NAME="sel_rev" TABLE="sites" WHERE="status gt 0" ORDER="name">
 		<DO>
-		<div id="[#REP]" class="texte_petit">
-[<a href="[#URL]/lodel/edition/index.php">Editer [#REP]</a>]
+		<div id="[#NAME]" class="texte_petit">
+[<a href="[#URL]/lodel/edition/index.php">Editer [#TITLE]</a>]
 <br>	</div>
 		</DO>
 		</LOOP>
