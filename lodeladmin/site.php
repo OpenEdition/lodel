@@ -232,7 +232,6 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   }
   $tache="fichier";
 }   // on connait le repertoire dans lequel est la "bonne" version de lodel/site
-if ($tache) $context[versionrep]=$versionrep;
 
 
 
@@ -242,7 +241,7 @@ if ($tache=="fichier") {
   $siteconfigsrc=$root."../$versionrep/revue/siteconfig.php";
   $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
-  if (!file_exists($reveconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
+  if (!file_exists($siteconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
     // on essaie de copier alors
     if (!@copy($siteconfigsrc,$siteconfigdest)) {
       $context[erreur_ecriture]=1;
@@ -258,6 +257,8 @@ if ($tache=="fichier") {
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
   back();
 }
+
+if ($tache) $context[versionrep]=$versionrep;
 
 
 // post-traitement
