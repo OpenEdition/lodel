@@ -1,9 +1,10 @@
-<USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Informations complémentaires : métadonnées</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="800" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+<!--<table width="800" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
 <tr>
 <td>
 <form action="extrainfo.php" method="POST">
@@ -60,7 +61,7 @@
 <TR>
 	<td>Date de publication du texte</td>
 		<td>
-<IF COND="[#DATEPUBLI]"> <!-- on affiche la date -->
+<IF COND="[#DATEPUBLI]"> <!- on affiche la date ->
 <input size=20 type="text" name="datepubli" value="[(#DATEPUBLI|humandate)]">[(#ERREUR_DATEPUBLI|true)Date incorrecte.]
 <ELSE/>
 <input size=4 type="text" name="duree" value="[#DUREE]"><select name="dateselect"><? makeselectdate(); ?></select>
@@ -80,10 +81,10 @@
 			<TR>
 				<td>Prefix:</td>
 				<td><input size="5" type="text" name="prefix[#IND]" value="[#PREFIX]"></td>				    
-<!--ajout de ghislain le 6/4/3 -->
+<!-ajout de ghislain le 6/4/3 ->
 				<td>Description:</td><td ROWSPAN="3"><textarea name="description[#IND]" COL="30" ROW="20" readonly>[#DESCRIPTION]</textarea></td>
 			</tr>
-<!-- -->
+<!- ->
 			<TR>
 				<td>Nom de famille:</td>
 				<td><input size="30" type="text" name="nomfamille[#IND]" value="[#NOMFAMILLE]"></td>
@@ -92,7 +93,7 @@
 				<td>Prénom:</td>
 				<td><input size="30" type="text" name="prenom[#IND]" value="[#PRENOM]"></td>
 			</tr>
-<!-- suppresion de ghislain le 6/4/3			<TR>
+<!- suppresion de ghislain le 6/4/3			<TR>
 				<td>Affiliation:</td>
 				<td><INPUT SIZE="30" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></td>
 			</tr>
@@ -100,7 +101,7 @@
 				<td>Courriel:</td>
 				<td><INPUT SIZE="30" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></td>
 			</tr>
--->
+->
 		</table>
 	</td>
 	</tr>
@@ -161,6 +162,203 @@ Periodes valides:
 <LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre">
 [#ABREV]&nbsp;
 </LOOP>
-</IF>
+</IF>-->
 
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition des métadonnées du document</td>
+	</tr>
+</table>
+
+<form action="extrainfo.php" method="post" target="_top">
+	<input type="hidden" name="id" value="[#ID]">
+	<input type="hidden" name="edit" value="1">
+	<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]">
+	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+		<tr>
+			<td align="center">
+				<IF COND="[#IMPORTSOMMAIRE]">
+					<input class="form" type="submit" name="submit" value="   Importer ce document et continuer   "> - <input class="form" type="submit" name="cancel" value="Ne pas importer ce document et continuer"><br />
+				</IF>
+			</td>
+		</tr>
+	</table>
+
+	<br />
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Titre</td>
+		</tr>
+	</table>
+	<br />
+
+	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+		<tr>
+			<td width="200">Sur Titre:</td>
+			<td><input size="70" type="text" name="surtitre" value="[#SURTITRE]"></td>
+		</tr>
+		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Vous devez preciser un titre</td></tr>]
+		<tr>
+			<td width="100">Titre:</td>
+			<td><input size="70" type="text" name="titre" value="[#TITRE]"></td>
+		</tr>
+		<tr>
+			<td width="200">Sous Titre:</td>
+			<td><input size="70" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
+		</tr>
+	</table>
+
+	<br />
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Information sur le document</td>
+		</tr>
+	</table>
+	<br />
+	
+	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+		<tr>
+			<td width="200">Type de document</td>
+			<td><select name="typedoc"><? makeselecttypedoc(); ?></select></td>
+		</tr>
+		<tr>
+			<td width="200">Langues du texte</td>
+			<td>
+				<select name="lang1"><? makeselectlangues("lang1"); ?></select>
+				<select name="lang2"><? makeselectlangues("lang2"); ?></select>
+				<select name="lang3"><? makeselectlangues("lang3"); ?></select>
+			</td>
+		</tr>
+		<tr>
+			<td width="200">Date de publication du texte</td>
+			<td>
+				<IF COND="[#DATEPUBLI]"> <!-- on affiche la date -->
+					<input size=20 type="text" name="datepubli" value="[(#DATEPUBLI|humandate)]">[(#ERREUR_DATEPUBLI|true)Date incorrecte.]
+				<ELSE/>
+					<input size=4 type="text" name="duree" value="[#DUREE]"><select name="dateselect"><? makeselectdate(); ?></select>
+				</IF>
+			</td>
+		</tr>
+	</table>
+
+	<br />
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Auteurs</td>
+		</tr>
+	</table>
+	<br />
+
+	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+		<LOOP NAME="auteurs">
+			<tr>
+				<td width="200">Pr&eacute;fixe :</td>
+				<td><input size="5" type="text" name="prefix[#IND]" value="[#PREFIX]"></td>
+				<!-- ajout de ghislain le 6/4/3 -->
+				<td rowspan="3">Description :<br /><textarea name="description[#IND]" COLS="20" ROWS="3" readonly>[#DESCRIPTION]</textarea></td>
+				<!-- -->
+			</tr>
+			<tr>
+				<td width="200">Nom de famille :</td>
+				<td><input size="30" type="text" name="nomfamille[#IND]" value="[#NOMFAMILLE]"></td>
+			</tr>
+			<tr>
+				<td width="200">Prénom :</td>
+				<td><input size="30" type="text" name="prenom[#IND]" value="[#PRENOM]"></td>
+			</tr>
+<!-- suppresion de ghislain le 6/4/3			<TR>
+				<td>Affiliation:</td>
+				<td><INPUT SIZE="30" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></td>
+			</tr>
+			<TR>
+				<td>Courriel:</td>
+				<td><INPUT SIZE="30" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></td>
+			</tr>
+-->
+		</LOOP>
+		<tr>
+			<td width="200">&nbsp;</td>
+			<td><input class="form" type="submit" name="plusauteurs" value="   Ajouter un auteur   "></td>
+		</tr>
+	</table>
+
+	<IF COND="![#OPTION_PASDEMOTCLE]">
+		<br />
+		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<tr>
+				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Mots cl&eacute;s</td>
+			</tr>
+		</table>
+		<br />
+	
+		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<tr>
+				<td width="200" valign="top">Mots Cles (*) :</td>
+				<td>
+					<select multiple size="10" name="motcles[]"><? makeselectmotcles(); ?></select><br />
+					<IF COND="![#OPTION_MOTCLEFIGE]">
+						<br /><br />Autres : <input size="60" type="text" name="autresmotcles" value="[#AUTRESMOTCLES]"><br /><br />
+						* mots séparés par des virgules ou point-virgules.
+					</IF>
+				</td>
+			</tr>
+		</table>
+	</IF>
+
+	<IF COND="![#OPTION_PASDEPERIODE]">
+		<br />
+		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<tr>
+				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Périodes</td>
+			</tr>
+		</table>
+		<br />
+
+		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<tr>
+				<td width="200" valign="top">Periodes (*) :</td>
+				<td align="left"><select multiple size="10" name="periodes[]"><? makeselectperiodes(); ?></select></td>
+			</tr>
+		</table>
+	</IF>
+	
+	<IF COND="![#OPTION_PASDEGEOGRAPHIE]">
+		<br />
+		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<tr>
+				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Zone Géographique</td>
+			</tr>
+		</table>
+		<br />
+
+		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<tr>
+				<td width="200" valign="top">Geographies (*) :</td>
+				<td><select multiple size="10" name="geographies[]"><? makeselectgeographies(); ?></select></td>
+			</tr>
+		</table>
+	</IF>
+
+	<IF COND="![#IMPORTSOMMAIRE]">
+		<br /><br />
+		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<tr>
+				<td align="center">
+					<input class="form" type="submit" name="submit" value="     Terminer    "> - 
+					<input class="form" type="submit" name="visualiserdocument" value="Terminer et visualiser"> - 
+					<!-- <input class="form" type="submit" name="ajouterdocannexe" value="Ajouter des documents annexe"> - -->
+					<input class="form" type="submit" name="cancel" value=" Abandonner ">
+				</td>
+			</tr>
+		</table>
+	</IF>
+
+</form>
 <MACRO NAME="CLOSE_HTML">
