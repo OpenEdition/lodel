@@ -65,17 +65,22 @@ REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,tr
 
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (31,'fichiersassocies',3,'fichiersassocies','','fichier','','','',1,32);
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (32,'datepubli',3,'datepubli','datepubli','date','','','',2,32);
+REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (33,'image',3,'image','','fichier','','','',3,32);
 
 ################# PUBLICATIONS #################
 # groupes de champs
 
-REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre) VALUES (10,'grtitre','Groupe titre','publications',1);
-
+REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre,statut) VALUES (10,'grtitre','Groupe titre','publications',1,32);
+REPLACE INTO  _PREFIXTABLE_groupesdechamps (id,nom,titre,classe,ordre,statut) VALUES (11,'grgestion','Gestion des publications','publications',2,32);
 
 # champs du groupe titre
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (51,'titre',10,'titre','titre','text','','strip_tags("<i><b>")','text',1,32);
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (52,'surtitre',10,'surtitre','surtitre','text','','strip_tags("<i><b>")','text',2,32);
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (53,'soustitre',10,'soustitre','soustitre','text','','strip_tags("<i><b>")','text',3,32);
+
+# groupe gestion
+
+REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (61,'image',11,'image','','fichier','','','',1,32);
 
 # champs du groupe texte
 
