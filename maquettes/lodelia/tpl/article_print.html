@@ -1,10 +1,18 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><MACRO NAME="OUVRIR_HTML">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+<MACRO NAME="OUVRIR_HTML">
 <title>[(#TITRE|textebrut)]</title>
-<MACRO NAME="meta">
+<MACRO NAME="DESACTIVER_INDEXATION">
+<MACRO NAME="METADONNEES">
 <script language="JavaScript">window.print()</script>
-<MACRO NAME="INSERER_STYLE">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">
 	<td valign="top"> 
@@ -12,10 +20,10 @@
 			<tr valign="top">
 				<td class="soustitre" ALIGN="CENTER" WIDTH=50% valign="middle">
 					<a href="sommaire.html?id=[#PUBLICATION]">
-						<font color="#000000"> 
-							<MACRO NAME="PARU_DANS"><br />
-						<br /> 
-						</font>
+						<span style="color:Black;">
+							<MACRO NAME="PARU_DANS">
+						</span>
+						<br /><br /> 
 					</a>
 				</td>
 			</tr>
@@ -26,18 +34,18 @@
 					<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" valign="TOP">
 						<tr> 
 							<td class="titrerevue" valign="top">
-								<hr align="center" width="100%" />
+								<MACRO NAME="FILET_3">
 		
 								<!-- Affichage d'informations dépendant
 								 du type de document -->
-								<IF [#TYPE]=="compte rendu">
+								<IF COND="[#TYPE]=='compte rendu'">
 									<span class="soustitre">
 										Lecture de
 										<br />
 									</span>
 								</IF>
 		
-								<IF [#TYPE]=="chronique">
+								<IF COND="[#TYPE]=='chronique'">
 									<span class="soustitre">
 										Chronique
 									<br />
@@ -51,12 +59,12 @@
 									</span>
 								</a>
 		
-								<MACRO NAME="offline_document">
-								<MACRO NAME="edit">
-								<hr align="center" width="100%" />
+								<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+								<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+								<MACRO NAME="FILET_3">
 							</td>
 						</tr>
-						<IF [#SOUSTITRE]>
+						<IF COND="[#SOUSTITRE]">
 							<tr> 
 								<td class="soustitrerevue" valign="top"> 
 									[#SOUSTITRE]
@@ -70,7 +78,7 @@
 									<tr>
 										<td width="100%" align="center" class="auteur">
 											<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
-											<IF [#TYPE]=="note de lecture">
+											<IF COND="[#TYPE]=='note de lecture'">
 												Note de lecture par
 											</IF>
 											<MACRO NAME="LISTER_AUTEURS">
@@ -82,15 +90,15 @@
 						</tr>
 						
 						<!-- Résumé en français   -->
-						<IF [#RESUME:FR]>
+						<IF COND="[#RESUME:FR]">
 							<tr> 
-								<td class="partie" valign="top">
+								<td class="regroupement" valign="top">
 									<br />
-									<hr ALIGN="CENTER" SIZE="1" width="60%" />
-									<b>
+									<MACRO NAME="FILET_2">
+									<strong>
 										Résumé
-									</b>
-									<hr align="CENTER" size="1" width="60%" />
+									</strong>
+									<MACRO NAME="FILET_2">
 								</td>
 							</tr>
 							<tr> 
@@ -107,14 +115,14 @@
 						</IF>
 		
 						<!-- Résumé en anglais   -->
-						<IF [#RESUME:EN]>
+						<IF COND="[#RESUME:EN]">
 							<tr> 
-								<td class="partie" valign="top"> 
-									<hr align="CENTER" size="1" width="60%" />
-									<b>
+								<td class="regroupement" valign="top"> 
+									<MACRO NAME="FILET_2">
+									<strong>
 										Abstract
-									</b>
-									<hr align="CENTER" size="1" width="60%" />
+									</strong>
+									<MACRO NAME="FILET_2">
 								</td>
 							</tr>
 							<tr> 
@@ -135,23 +143,23 @@
 <!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
 <!-- ----------------------------------------------------------------------- -->
 
-					<IF [#TEXTEPUBLIE]>
+					<IF COND="[#TEXTEPUBLIE]">
 					<!-- Texte ------------------------   -->
 					<table width="75%" border="0" cellspacing="0" cellpadding="0" align="CENTER">
 						<tr> 
 							<td class="titre" valign="top"> 
 								<!-- Texte. Si il existe --->
-								<IF [#TEXTE]>
+								<IF COND="[#TEXTE]">
 								<table>
 									<tr> 
-					<td colspan="3" class="partie" valign="top">
+					<td colspan="3" class="regroupement" valign="top">
 						<br /><br />
-					<IF [#TYPE]!="presentation">
-						<HR ALIGN="CENTER" SIZE="1" width="60%" />
-						<b>
+					<IF COND="[#TYPE]!='presentation'">
+						<MACRO NAME="FILET_2">
+						<strong>
 							Texte intégral
-						</b>
-						<hr align="CENTER" size="1" width="60%" />
+						</strong>
+						<MACRO NAME="FILET_2">
 					</IF>
 <br />
 
@@ -167,16 +175,16 @@
 									</IF>
 									
 									<!-- Bibliographie. Si elle existe --->
-									<IF [#BIBLIOGRAPHIE]>
+									<IF COND="[#BIBLIOGRAPHIE]">
 									<table>
 										<tr> 
 											<td class="style03" valign="top"> 
-												<hr align="CENTER" size="1" width="60%" />
-												<b>
+												<MACRO NAME="FILET_2">
+												<strong>
 													Bibliographie
-												</b>
+												</strong>
 												<br />
-												<hr align="CENTER" size="1" width="60%" />
+												<MACRO NAME="FILET_2">
 											</td>
 										<tr>
 											<td class="texte" valign="top">
@@ -188,16 +196,16 @@
 									</IF>
 									
 									<!-- Annexe. Si elle existe --->
-									<IF [#ANNEXE]>
+									<IF COND="[#ANNEXE]">
 									<table>
 										<tr> 
 											<td class="style03" valign="top"> 
-												<hr align="CENTER" size="1" width="60%" />
-												<b>
+												<MACRO NAME="FILET_2">
+												<strong>
 													Annexes
-												</b>
+												</strong>
 												<br />
-												<hr align="CENTER" size="1" width="60%" />
+												<MACRO NAME="FILET_2">
 											</td>
 										<tr>
 											<td class="texte" valign="top">
@@ -209,15 +217,15 @@
 									</IF>
 
 									<!-- Documents annexes. S'il y en a au moins un --->
-									<IF [#DOCUMENTSANNEXES]>
+									<IF COND="[#DOCUMENTSANNEXES]">
 									<table>
 										<tr> 
-											<td class="partie" valign="top"> 
-												<hr align="CENTER" size="1" width="60%" />
+											<td class="regroupement" valign="top"> 
+												<MACRO NAME="FILET_2">
 												<div align="center">
 													Documents annexes
 												</div>
-												<hr align="CENTER" size="1" width="60%" />
+												<MACRO NAME="FILET_2">
 											</td>
 										<tr>
 											<td class="texte" valign="top">
@@ -228,7 +236,7 @@
 													 à cet article.
 												<br />
 												<br />
-												<MACRO NAME="documents_annexe">
+												<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 												<br />
 											</td>
 										</tr>
@@ -236,16 +244,16 @@
 									</IF>
 
 									<!-- Notes de bas de page. Si elles existent --->
-									<IF [#NOTEBASPAGE]>
+									<IF COND="[#NOTEBASPAGE]">
 									<table>
 										<tr> 
-											<td class="partie" valign="top">
+											<td class="regroupement" valign="top">
 												<br />
-												<HR ALIGN="CENTER" SIZE="1" width="60%" />
-												<B>
+												<MACRO NAME="FILET_2">
+												<b>
 													Notes
-												</B>
-												<hr align="CENTER" size="1" width="60%" />
+												</b>
+												<MACRO NAME="FILET_2">
 											</td>
 										</tr>
 										<tr>

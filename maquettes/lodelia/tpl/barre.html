@@ -1,120 +1,121 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- Barre de navigation de la revue "Ruralia"
-Auteur : Marin Dacos.
-Date de création : juin 2002.
-Dernière modification majeure : août 2002 -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Barre de navigation verticale de la revue.                         -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Date de création : juin 2002.                                      -->
+<!-- Dernière modification majeure : août 2002.                         -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="TRACER_LIGNE_VERTICALE">
-<td width="210" align="center" valign="top" background="images/gris.gif" class="texte_petit">
-	<table width="210" border="0" align="center">
-		<tr>
-			<td width="18">
-				<MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">
-			</td>
-			<td class="texte_petit_centre"> 
-				<a href="index.html">
-				<MACRO NAME="IMG_ICONE_REVUE">
-				</a>
-			</td>
-			<td width="18">
-				<MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">
-			</td>
-		</tr>
+<td width="165" align="center" valign="top"  class="texte_petit" bgcolor="#EFEFEF">
+	<table width="165" border="0" align="center" cellspacing="0" cellpadding="0">
+	<MACRO NAME="AFFICHER_LOGO_REVUE_ORG">
 	</table>
-	<table width="100%" border="0" align="center">
+	
+	<table width="100%" border="0" align="center" bgcolor="#EFEFEF">
 		<tr>
 			<td class="texte_petit_centre"> 
+			<br>
 				<a href="index.html">
 					<strong>
-						<span class="couleur_dominante1">
+						
 							<MACRO NAME="NOM_REVUE">
-							<br />
-							<em>
-								Brève description
-								<br />
-							 	de la Revue
-							</em>
-						</span>
+							<br/>
+							<MACRO NAME="DESCRIPTION_REVUE">
+						
 					</strong>
 				</a>
-				<br />
+				<br/><br/>
 			</td>
 		</tr>
 	</table>
-	<table width="100%" border="0" align="center">
+	
+	<table width="100%" border="0" align="center" valign="top">
 		<tr>
-			<td class="texte_petit_centre"> 
-				<MACRO NAME="FORMULAIRE_RECHERCHE">
+			<td>
+				<table valign="top" border="0" cellspacing="0" cellpadding="0"  bgcolor="#EFEFEF">
+					<tr >
+						<td valign="top"  height="3" width="165" bgcolor="#ffffff">
+							<img src="images/spacer.gif" height="3" width="165"  border="0">
+						</td>
+					</tr>
+					<tr>
+						<td valign="middle" width="165" height="100" bgcolor="#E7E7E7" class="chercher" >
+						<strong>
+							<MACRO NAME="FORMULAIRE_RECHERCHE">
+						</strong>
+						</td>
+					</tr>
+					<tr >
+						<td valign="top"  height="3" width="165" bgcolor="#ffffff">
+							<img src="images/spacer.gif" height="3" width="165"  border="0">
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
+		
 		<tr>
-			<td class="texte_petit">
+			<td>
+				<br>
 				<MACRO NAME="AFFICHER_TOUT">
 			</td>
 		</tr>
 		<tr>
-			<td class="texte_petit_centre">
-				<span class="couleur_dominante1">
-					<strong>
-						Index
-					</strong>
-				</span>
+			<td class="menu1" >
+			<MACRO NAME="FILET_1">
+			<br />
+				Index
 			</td>
 		</tr>
 		<tr>
-			<td class="texte_petit">
-				<BLOCKQUOTE>
-					<a href="auteurs-complet.html">
-						<MACRO NAME="IMG_triangle">
-						Par auteurs
-					</a>
-					<br />
-					<a href="chronos-complet.html">
-						<MACRO NAME="IMG_triangle">
-						Par périodes
-					</a>
-					<br />
-				</BLOCKQUOTE>
-			</td>
-		</tr>
-		<tr>
-			<td class="texte_petit_centre">
-				<span class="couleur_dominante1">
-					<strong>
-						Nous écrire
-						<br />
-					</strong>
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<td class="texte_trespetit">
-				<BLOCKQUOTE>
-				<MACRO NAME="IMG_triangle">
-				<a href="mailto:ruralia@revues.org">
-					Ruralia@revues.org
+			<td class="menu2">
+				<a class="menu2" href="geos-complet.html">
+					Géographique
 				</a>
-				&nbsp;
-				</BLOCKQUOTE>
+				<br />
+				<a class="menu2" href="auteurs-complet.html">
+					Par auteurs
+				</a>
+				<br />
+				<a class="menu2" href="chronos-complet.html">
+					Par périodes
+				</a>
+				<br /><br>
 			</td>
 		</tr>
 		<tr>
-			<td class="texte_trespetit_centre">
-				<br />
-				<hr width="25%" align="center" />
-				<br />
-				<em><MACRO NAME="NOM_REVUE"></em> adhère à Revues.org<br />
-				<br />
-				<MACRO NAME="IMG_REVUES_ORG"> 
-				<br />
-				<br />
-				<hr width="25%" align="center" />
-				<br />
+			<td class="menu1">
+			<MACRO NAME="FILET_1">
+			<br />
+				Nous écrire
 			</td>
 		</tr>
+		<tr>
+			<td class="menu2">
+				
+				
+				<a class="menu2" href="mailto:lodelia@revues.org">
+					Lodelia@revues.org
+				</a>
+				
+				
+			</td>
+		</tr>
+		
 		<tr>
 			<td valign="bottom" class="texte_petit_centre">
+				<br />
+				<MACRO NAME="FILET_1">
 				<br />
 				<a href="lodel/edition/">
 					<span class="texte_trespetit_centre">
@@ -125,5 +126,5 @@ Dernière modification majeure : août 2002 -->
 		</tr>
 	</table>
 </td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+
 

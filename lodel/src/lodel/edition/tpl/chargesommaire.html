@@ -1,0 +1,92 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Chargement de fichier</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<script>
+<!--
+
+function wait(delay){
+	string="pauseforalert("+delay+");";
+	setTimeout(string,delay);
+}
+
+
+function infoChargement(nomFic){
+  if(nomFic == "")
+  {
+  	alert("Aucun fichier n'a été selectionné");
+  }
+  else
+  {
+	  var colData = "";
+	  colData = "<br /><br /><font color='navy' size='2' face='Arial'>";
+	  colData += "<b>Le fichier</b><br />";
+//	  colData += nomFic + "<br />";	
+	  colData += "<b>est en cours de téléchargement</b>";
+	
+	
+	  
+	  if (document.getElementById) 
+	  {
+		// IE 5 et NN 6 code
+		document.getElementById('info').innerHTML = colData;
+		document.getElementById('info').style.visibility = "visible";
+
+	  }
+	  else 
+	  	if (document.layers) // IE4 code
+	  	{
+	    		document.layers['info'].document.open();
+	    		document.layers['info'].document.write(colData);
+	    		document.layers['info'].document.close();
+	    		document.layers['info'].visibility = "show";
+	  	}
+	  	else // NN4 code
+	  	{
+	    		document.all.info.innerHTML = colData;
+	    		document.all['info'].style.visibility= "visible";
+	  	}	 
+ }
+}
+
+//-->
+</script>
+
+<table width="430" border="0" align="center" cellspacing="4" cellpadding="4">
+<TR><td>
+<div align="center"><span class="titre">Chargement du fichier</span></div><br />
+
+<span class="texte_petit">
+Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.
+
+<form name="formfic" enctype="multipart/form-data" action="chargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)">
+<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="tache" value="[#TACHE]">
+<strong>Fichier:</strong></td>
+</tr>
+<TR>
+<td><input type="file" name="htmlfile" size="40"></td>
+[(#ERREUR_UPLOAD|true)<td CLASS="erreur">Une erreur s'est produite pendant le chargement.</td>]</tr>
+<TR><td>
+<br />
+
+<input class="form" type="submit" value="Charger">
+<br />
+<IF COND="[#SUPERADMIN]">
+<br /><br />Super Admin:<br />
+<input class="form" type="submit" name="sortieted" value="Sortie Brute de Ted">
+<input class="form" type="submit" name="sortie" value="Sortie de chargement">
+</IF>
+<div align="center" id='info' style="text-decoration:blink ">
+</div>
+</form>
+<br />
+<br />
+
+<a href="index.php">Revenir</a>
+</td></tr>
+</table>
+
+<MACRO NAME="CLOSE_HTML">

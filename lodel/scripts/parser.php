@@ -10,23 +10,23 @@ function parse ($in,$out)
   if (!file_exists($in)) die ("impossible de lire $in");
   $file = join('',file($in));
 
-  $contents=stripcomment($file);
+  $contents=stripcommentandcr($file);
 
 // cherche les fichiers a inclure
-  preg_match_all("/<use\s+macrofile\s*=\s*\"([^\"]+)\"\s*>/i",$contents,$results,PREG_SET_ORDER);
+  preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>\s*\n?/",$contents,$results,PREG_SET_ORDER);
 
   foreach($results as $result) {
     	$contents=str_replace($result[0],"",$contents); // efface le use
-	$macrofile="tpl/".$result[1];
-	if (file_exists($macrofile)) {
-	    $macros.=join('',file($macrofile));
-	} elseif ($sharedir && file_exists($sharedir."/".$macrofile)) {
-	    $macros.=join('',file($sharedir."/".$macrofile));
+	$macrofile=$result[1];
+	if (file_exists("tpl/".$macrofile)) {
+	    $macros.=join('',file("tpl/".$macrofile));
+	} elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
+	    $macros.=join('',file($sharedir."/macros/".$macrofile));
 	} else {
-		die ("le fichier macros $result[1] n'existe pas");
+	  die ("le fichier macros $result[1] n'existe pas");
 	}
   }
-  $macros=stripcomment($macros);
+  $macros=stripcommentandcr($macros);
 
   // parse les macros
   parse_macros($contents,$macros);
@@ -46,11 +46,11 @@ function parse ($in,$out)
   parse_texte($contents);
 
   $contents='<?
-include ("lodelconfig.php");include_once ("$home/connect.php");
+require_once ("$home/connect.php");
 '.$fct.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
-			       '/<\?\s*\?>/'),array("",""),$contents);
+			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
 
   $f=fopen ($out,"w");
   fputs($f,$contents);
@@ -125,10 +125,9 @@ function parse_variable (&$text,$escape=TRUE)
 
 function parse_texte(&$text)
 
-
 {
   global $home,$editeur,$urlroot,$revue;
-  preg_match_all("/<TEXTE\s*NAME=\"([^\"]+)\"\s*>/i",$text,$results,PREG_SET_ORDER);
+  preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
 #  print_r($results);
   foreach ($results as $result) {
     $nom=$result[1]; myquote($nom);
@@ -143,6 +142,7 @@ function parse_texte(&$text)
     $text=str_replace ($result[0],'<? $result=mysql_query("SELECT id,texte FROM textes WHERE nom=\''.$nom.'\' AND status>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><A HREF="'."$urlbase".'lodel/admin/texte.php?id=<?=$id?>">[Modifier]</A><BR><? } echo $texte; ?>',$text);
   }
 }
+
 
 # traite les conditions avec IF
 function parse_cond (&$text,$offset=0) {
@@ -173,11 +173,10 @@ function parse_cond (&$text,$offset=0) {
 
 # cherche la condition
 
-    if (!preg_match("/^\s*(.*?)\s*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
-
+	if (!preg_match("/^[^>]*COND\s*=\s*\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
     parse_variable($cond[1],FALSE);
-    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\band\b/i","/\bor\b/i"),
-		 array(">","<",">=","<=","==","&&","||"),$cond[1]);
+    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
+		 array(">","<",">=","<=","==","!=","&&","||"),$cond[1]);
 
     $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
 # cherche le sinon
@@ -203,26 +202,87 @@ function parse_cond (&$text,$offset=0) {
 }
 
 
+
+
+##### traite les conditions avec IF
+####function parse_switch (&$text,$offset=0) {
+####
+####  $tag_debut="<SWITCH ";
+####  $tag_case="<CASE>";
+####  $tag_fin="</SWITCH>";
+####  $lendebut=strlen($tag_debut);
+####  $lenfin=strlen($tag_fin);
+####
+####  $debut = strpos($text,$tag_debut,$offset);
+####  while ($debut!==FALSE) {
+####    $offset=$debut+$lendebut;
+####
+####    do {
+##### cherche le tag de fin
+####      $fin = strpos($text,$tag_fin,$offset);
+####      if ($fin===FALSE) { die ("erreur le IF ne se termine pas"); }
+##### cherche s'il y a un deuxieme IF a l'interieur
+####      $debut2=strpos($text,$tag_debut,$offset);
+####      $sndif=$debut2!==FALSE && $debut2<$fin;
+####      if ($sndif) parse_cond($text,$offset); // oui, on le traite d'abord
+####    } while($sndif);
+####
+####    $switch_txt=substr($text,$offset,$fin-$offset);
+####
+##### ok, maintenant, on traite le switch
+####
+##### cherche la variable
+####
+####    if (!preg_match("/^[^>]*VAR\s*=\s*\"(.*?)\"[^>]*>/",$switch_txt,$var)) die ("erreur. La balise IF ne contient pas de condition");
+####
+####    parse_variable($cond[1],FALSE);
+####    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\band\b/i","/\bor\b/i"),
+####		 array(">","<",">=","<=","==","&&","||"),$cond[1]);
+####
+####    $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
+##### cherche le sinon
+####    $sinon=strpos($if_txt,$tag_sinon);
+####    if (!($sinon==FALSE)) {
+####      $else_txt=substr($if_txt,$sinon+strlen($tag_sinon));
+####      $if_txt=substr($if_txt,0,$sinon);
+####    } else {
+####      $else_txt="";
+####    }
+##### genere la code
+####
+####    $code='<'.'? if ('.$cond[1].') { ?'.'>'.$if_txt.'<'.'? }';
+####    if ($else_txt) $code.=' else { ?'.'>'.$else_txt.'<'.'? }';
+####    $code.='?'.'>';
+####
+##### fait le remplacement
+####
+####    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
+####
+####    $debut = strpos($text,$tag_debut,$offset);
+####  }
+####}
+####
+
 function parse_boucle (&$text,&$fct_txt,$offset=0) 
 
 {
   global $revue,$boucles;
 
-  // passe les boucles en majuscules !
-  $text=preg_replace("/<(\/?)boucle\b/","<\\1BOUCLE",$text);
-
-  $tag_debut="<BOUCLE ";
-  $tag_fin="</BOUCLE>";
+  $tag_debut="<LOOP ";
+  $tag_fin="</LOOP>";
   $lendebut=strlen($tag_debut);
   $lenfin=strlen($tag_fin);
 
   $debut = strpos($text,$tag_debut,$offset);
-  while (!($debut===FALSE)) {
+  $fin = strpos($text,$tag_fin,$offset);
+  // la comparaison $debut<$fin permet de finir quand on depasse le scope de l'appelant
+  while ($debut!==FALSE && $debut<$fin) {
 
     $offset=$debut+$lendebut;
 
 # cherche les attributs de la boucle
     $attr=substr($text,$offset);
+
     $nom=$order=$limit="";
     $wheres=array();
     $tables=array();
@@ -232,28 +292,28 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $attr=substr($attr,$matchlen); // attribut suivant
       $value=trim($result[2]);
           
-      switch (strtolower($result[1])) {
-      case "where" :
+      switch ($result[1]) {
+      case "WHERE" :
 	$cond=$value;
 	if (strtolower($cond)=="trash") $cond="status<=0";
 	if (strtolower($cond)=="ok") $cond="status>0";
 	if (strtolower($cond)=="okgroupe") $cond='".($GLOBALS[admin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."';
 	array_push($wheres,"(".$cond.")");
 	break;
-      case "table" :
+      case "TABLE" :
 	array_push($tables,$value);
 	break;
-      case "order" :
+      case "ORDER" :
 	$order.=$value." , ";
 	break;
-      case "limit" :
+      case "LIMIT" :
 	$limit=$value;
 	break;
-      case "name":
+      case "NAME":
 	$nom=$value;
 	break;
       default:
-	die ("erreur, attribut inconnu");
+	die ("erreur, attribut inconnu dans la boucle $nom");
       }
     } // boucle sur les attributs
     # cherche le > de fin
@@ -327,7 +387,6 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 	array_push($tables,"documents_indexhs");
 	$where.=" AND idindexh=indexhs.id";
       }
-      
 
       if (in_array("documents",$tables) && strpos($where,"idindexh")!==FALSE) {
 	// on a besoin de la table croise documents_auteurs
@@ -383,36 +442,64 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $nom="number".rand();
     }
 
-    $isdefined=$boucles[$nom];
-    $boucles[$nom]=1; # marque la boucle comme definie
+    if (!$boucles[$nom][type]) $boucles[$nom][type]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
+    $issql=$boucles[$nom][type]=="sql";
+
+    ////// c'est inutile de faire une boucle, il faut juste faire un passage, la boucle est dans parse_boucle.
     # ici attr contient la fin du fichier.
     # on cherche s'il y a des boucles interieures
-    do {
+#    do {
+## cherche le tag de fin
+#      $fin = strpos($text,$tag_fin,$offset);
+#      if ($fin===FALSE) { die ("erreur: la boucle ne se termine pas"); }
+## cherche s'il y a une deuxieme boucle a l'interieur
+#      $debut2=strpos($text,$tag_debut,$offset);
+#      $sndbcl=!($debut2===FALSE) && $debut2<$fin;
+#      if ($sndbcl)	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
+#    } while($sndbcl);
+#
+#
+
+
 # cherche le tag de fin
       $fin = strpos($text,$tag_fin,$offset);
       if ($fin===FALSE) { die ("erreur: la boucle ne se termine pas"); }
 # cherche s'il y a une deuxieme boucle a l'interieur
       $debut2=strpos($text,$tag_debut,$offset);
       $sndbcl=!($debut2===FALSE) && $debut2<$fin;
-      if ($sndbcl) parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
-    } while($sndbcl);
+      if ($sndbcl) {
+	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
+	$fin = strpos($text,$tag_fin,$offset);
+      }
     # content
     $attr=substr($text,$offset,$fin-$offset);
 
     if ($tables) { // boucle SQL
-      if ($isdefined) die ("Impossible de redefinir la boucle $nom");
-      make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
+      // cree un identifiant "presque" unique pour cette boucle
+      $md5boucle=md5($tables.$where.$order.$limit.$attr);
+      // verifie que la boucle n'a pas ete defini sous le meme nom avec un contenu different
+      if ($issql && $md5boucle!=$boucles[$nom][id]) die ("Impossible de redefinir la boucle $nom avec un code ou des arguments differents");
+      if (!$issql) { // on la definit
+	make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
+	$boucles[$nom][id]=$md5boucle; // enregistre l'identifiant qui caracterise la boucle
+	$boucles[$nom][type]="sql"; // marque la boucle comme etant une boucle sql
+      }
+      $code='<? boucle_'.$nom.'($context); ?>';
     } else {
-      //      echo "$nom-->$boucles[$nom]<br>";
-      if (!$isdefined) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
-	make_userdefined_boucle_code ($nom,$attr,$fct_txt);
+      if (!$issql) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
+	$boucles[$nom][id]++; // increment le compteur de nom de boucle
+	$newnom=$nom."_".$boucles[$nom][id]; // change le nom pour qu'il soit unique
+	make_userdefined_boucle_code ($newnom,$attr,$fct_txt);
+	$code='<? boucle_'.$nom.'($context,"'.$newnom.'"); ?>';
+      } else {
+	// boucle sql recurrente
+	$code='<? boucle_'.$nom.'($context); ?>';
       }
     }
-    $code='<? boucle_'.$nom.'($context); ?>';
-
     $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
-    $debut = strpos($text,$tag_debut,$debut);
 
+    $fin = strpos($text,$tag_fin,$debut);
+    $debut = strpos($text,$tag_debut,$debut);
   } // while
 }
 
@@ -438,66 +525,69 @@ function prefix_tablename ($tablename)
 function decode_content ($content,$tables=array())
 
 {
+  global $home,$balisesdocument_lieautexte,$balisesdocument_nonlieautexte;
   $ret=array();
+
 # cherche s'il y a un avant
-  $balises=array("avant","apres","premier","dernier","corps");
+#  $balises=array("avant","apres","premier","dernier","corps");
+  $balises=array("BEFORE","AFTER","DOFIRST","DOLAST","DO","ALTERNATIVE");
   
   foreach ($balises as $balise) {
-    if ((strpos($content,"<$balise>")!==FALSE || strpos($content,"<".strtoupper($balise).">")!==FALSE)) {
-      if (!preg_match ("/<$balise>(.*?)<\/$balise>/is",$content,$result)) { die ("la balise $balise n'est pas fermee dans la boucle $nom"); }
+    if (strpos($content,"<$balise>")!==FALSE) {
+      if (!preg_match ("/<$balise>(.*?)<\/$balise>/s",$content,$result)) { die ("la balise $balise n'est pas fermee dans la boucle $nom"); }
       $ret[$balise]=$result[1];
       $content=str_replace($result[0],"",$content); // enleve le bloc avant
     }
   }
 
-  // cherche s'il y a un sinon
-  $ret[sinon]="";
-  $sinonpos=strpos($content,"<SINON/>"); // en majuscules
-  if ($sinonpos===FALSE) { $sinonpos=strpos($content,"<sinon/>"); } // ou en minuscules
-  if (!($sinonpos===FALSE)) {
-    $ret[sinon]='<? else {?>'.substr($content,$sinonpos+strlen("<SINON/>")).'<?}?>'; // recupere le bloc sinon
-    $content=substr($content,0,$sinonpos); // recupere le bloc avant sinon
-  }
-  if ($ret[corps]) {
+  if ($ret["DO"]) {
     if (trim($content)) die("Une partie du contenu de la boucle $nom n'est pas dans l'une des balises &lt;corps&gt;  &lt;avant&gt;  &lt;apres&gt; &lt;premier&gt; &lt;dernier&gt;<br>");
   } else {
-    $ret[corps]=$content;
+    $ret["DO"]=$content;
   }
   // OPTIMISATION
   // cherche les META et les extract
-  $balises=array("premier","dernier","corps");
+  $balises=array("DOFIRST","DOLAST","DO");
 
   foreach ($balises as $balise) {
     //
     // meta
     //
-    if (strpos($ret[$balise],"[#META_")!==FALSE || (strpos($ret[$balise],"[(#META_")!==FALSE))  {
-      $ret["meta_".$balise]='$context=array_merge($context,unserialize($context[meta]));';
+    if (strpos($ret[$balise],"[#META_")!==FALSE || strpos($ret[$balise],"[(#META_")!==FALSE)  {
+      $ret["META_".$balise]='$context=array_merge($context,unserialize($context[meta]));';
     }
     //
     // est-ce qu'on veut le texte ?
     //
 #ifndef LODELLIGHT
     if (in_array("documents",$tables)) {
-      $withtexte=preg_match("/\[\(?#TEXTE\b/",$ret[$balise]);
+      include_once("$home/balises.php");
 
-      if (preg_match_all("/\[\(?#(RESUME|SURTITRE|SOUSTITRE|NOTEBASPAGE|ANNEXE|BIBLIOGRAPHIE)\b/",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
-	$ret["extract_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
+      # as-t-on besoin des balises liees au texte ?
+      if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_lieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER)) {
+	$withtextebalises='"'.join('","',$result[1]).'"';
+      } else {
+	$withtextebalises="";
+      }
+
+      # as-t-on besoin de balises non liees au texte
+      if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_nonlieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
+	$ret["EXTRACT_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
 $arr=array("'.join('","',$result[1]).'");';
-	if ($withtexte) { // on a aussi besoin du texte
-	  $ret["extract_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,"TEXTE");';
+	if ($withtextebalises) { // on a aussi besoin des balises liees au texte
+	  $ret["EXTRACT_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
 	}
-	$ret["extract_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
-      } elseif ($withtexte) { // le texte seulement
-	$ret["extract_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
+	$ret["EXTRACT_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
+      } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
+	$ret["EXTRACT_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
 $filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
-$context=array_merge($context,extract_xml(array("TEXTE"),$text));
+$context=array_merge($context,extract_xml('.$withtextbalises.',$text));
 }}';
       }
     } // table documents ?
@@ -506,7 +596,7 @@ $context=array_merge($context,extract_xml(array("TEXTE"),$text));
     // est-ce qu'on veut le prev et next publication ?
     //
     if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
-      $ret["extract_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+      $ret["EXTRACT_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
     }
   } // foreach
   return $ret;
@@ -547,21 +637,25 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
  $nbrows=mysql_num_rows($result);
  $count=0;
  if ($row=mysql_fetch_assoc($result)) {
-?>'.$contents[avant].'<?
+?>'.$contents[BEFORE].'<?
     do {
       $context=array_merge ($generalcontext,$row);
       $context[count]=$count;
       $count++;';
   // gere le cas ou il y a un premier
-  if ($contents[premier]) {
-    $fct_txt.=' if ($count==1) { '.$contents[meta_premier].$contents[extract_premier].' ?>'.$contents[premier].'<? continue; }';
+  if ($contents[DOFIRST]) {
+    $fct_txt.=' if ($count==1) { '.$contents[META_DOFIRST].$contents[EXTRACT_DOFIRST].' ?>'.$contents[DOFIRST].'<? continue; }';
   }
   // gere le cas ou il y a un dernier
-  if ($contents[dernier]) {
-    $fct_txt.=' if ($count==$nbrows) { '.$contents[meta_dernier].$contents[extract_dernier].'?>'.$contents[dernier].'<? continue; }';
+  if ($contents[DOLAST]) {
+    $fct_txt.=' if ($count==$nbrows) { '.$contents[META_DOLAST].$contents[EXTRACT_DOLAST].'?>'.$contents[DOLAST].'<? continue; }';
   }    
-    $fct_txt.=$contents[meta_corps].$contents[extract_corps].' ?>'.$contents[corps].'<?    } while ($row=mysql_fetch_assoc($result));
-?>'.$contents[apres].'<?  } ?>'.$contents[sinon].'<?
+    $fct_txt.=$contents[META_DO].$contents[EXTRACT_DO].' ?>'.$contents["DO"].'<?    } while ($row=mysql_fetch_assoc($result));
+?>'.$contents[AFTER].'<?  } ';
+
+  if ($ret[ALTERNATIVE]) $fct_txt.=' else {?>'.$ret[ALTERNATIVE].'<?}';
+
+    $fct_txt.='
  mysql_free_result($result);
 }
 ';
@@ -574,14 +668,16 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
   $contents=decode_content($content);
 
 // cree la fonction boucle
-  $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents[corps].'<? }';
-
-  if ($contents[avant]) { // genere le code de avant
-  $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[avant].'<? }';
+  if ($contents["DO"]) {
+    $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents["DO"].'<? }';
   }
 
-  if ($contents[apres]) {// genere le code de apres
-  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[apres].'<? }';
+  if ($contents[BEFORE]) { // genere le code de avant
+    $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[BEFORE].'<? }';
+  }
+
+  if ($contents[AFTER]) {// genere le code de apres
+  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[AFTER].'<? }';
  }
 
 //
@@ -594,16 +690,17 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
 function parse_macros(&$text,&$macros)
 
 {
-  while (preg_match("/<macro(\s+name\s*=\s*\"(\w+)\")\s*>/i",$text,$result)) {
+  while (preg_match("/<MACRO(\s+NAME\s*=\s*\"(\w+)\")\s*>/",$text,$result)) {
     if (!$result[2]) { die ("erreur: une balise macro est mal formee"); }
     // cherche la define
-    $search="/<defmacro\s+name\s*=\s*\"$result[2]\"\s*>(.*?)<\/defmacro>/is";
-    if (!preg_match($search,$macros,$def)) 
-      if (!preg_match($search,$text,$def)) { die ("erreur: la macro $result[2] n'est pas definie"); }
-    $def[1]=preg_replace("/(^\r?\n|\r?\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
+    $search="/<DEFMACRO\s+NAME\s*=\s*\"$result[2]\"\s*>(.*?)<\/DEFMACRO>/s";
+    if (!preg_match_all($search,$text,$defs,PREG_SET_ORDER)) 
+      if (!preg_match_all($search,$macros,$defs,PREG_SET_ORDER)) { die ("erreur: la macro $result[2] n'est pas definie"); }
+    $def=array_pop($defs); // recupere la derniere definission
+    $def[1]=preg_replace("/(^\n|\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
     $text=str_replace($result[0],$def[1],$text);
   }
-  $text=preg_replace("/<defmacro[^>]*>.*?<\/defmacro>/is","",$text);
+  $text=preg_replace("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>\s*\n?/s","",$text);
 }
 
 
@@ -620,7 +717,7 @@ function parse_let (&$text,$offset=0) {
     $offset=$debut+$lendebut;
 # cherche l'attribut
     $let_txt=substr($text,$offset);
-    if (!preg_match("/^\s*VAR=\"(\w+)\"[^>]*>/i",$let_txt,$result)) die ("erreur la variable n'est pas definie dans le let");
+    if (!preg_match("/^\s*VAR=\"(\w+)\"[^>]*>/",$let_txt,$result)) die ("erreur la variable n'est pas definie dans le let");
     $var=strtolower($result[1]);
     $offset+=strlen($result[0]);
 
@@ -649,7 +746,7 @@ function parse_let (&$text,$offset=0) {
   }
 }
 
-function stripcomment(&$text)
+function stripcommentandcr(&$text)
 
 {
 #  return $text;
@@ -658,13 +755,16 @@ function stripcomment(&$text)
 #    if (!preg_match("/javascript/i",$comment)) str_replace
 #  }
 
-  return preg_replace (array("/(<SCRIPT\b[^>]*>[\s\n\r]*)<!--+/i",
-			     "/--+>([\s\n\r]*<\/SCRIPT>)/i",
-			     "/<!--.*?-->/s",
+
+  return preg_replace (array("/\r/",
+			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",
+			     "/--+>([\s\n]*<\/SCRIPT>)/i",
+			     "/<!--.*?-->\s*\n?/s",
 			     "/<SCRIPT\b[^>]*>/i",
 			     "/<\/SCRIPT>/i"
 			     ),
-		       array("\\1",
+		       array("",
+			     "\\1",
 			     "\\1",
 			     "",
 			     "\\0<!--",

@@ -1,0 +1,1218 @@
+<!-- ****************************************************************** -->
+<!-- Librairie d'affichage                                              -->
+<!-- Auteurs :                                                          -->
+<!-- Marin Dacos. 2002.                                                 -->
+<!-- Nicolas Nutten. 2003.                                              -->
+<!-- Cette librairie contient :                                         -->
+<!-- <MACRO NAME="AFFICHER_NUMEROS_PUBLIES">                            -->
+<!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
+<!-- <MACRO NAME="TITRE_PUBLICATION">                                   -->
+<!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
+<!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
+<!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
+<!-- <MACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">             -->
+<!-- <MACRO NAME="PARU_DANS">                                           -->
+<!-- <MACRO NAME="PARU_DANS_SIMPLE">                                    -->
+<!-- <MACRO NAME="PARU_DANS_SIGNALER">                                  -->
+<!-- <MACRO NAME="INFOS_DOCUMENT">		                                -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE">                            -->
+<!-- <MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">                          -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- <MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">                     -->
+<!-- <MACRO NAME="AFFICHER_TOUT">                                       -->
+<!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
+<!-- <MACRO NAME="TYPE_ARTICLE">                                        -->
+<!-- <MACRO NAME="TYPE_CHRONIQUE">                                      -->
+<!-- <MACRO NAME="TYPE_COMPTE_RENDU">                                   -->
+<!-- <MACRO NAME="TYPE_POSITION_DE_THESE">                              -->
+<!-- <MACRO NAME="TYPE_NOTE_DE_LECTURE">                                -->
+<!-- <MACRO NAME="TYPE_PRESENTATION">                                   -->
+<!-- <MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">                          -->
+<!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
+<!-- <MACRO NAME="PRESENTER_REGROUPEMENTS">                             -->
+<!-- <MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">                            -->
+<!-- <MACRO NAME="LISTER_AUTEURS">                                      -->
+<!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
+<!-- <MACRO NAME="LISTER_THEMES">                                       -->
+<!-- <MACRO NAME="DERNIER_NUMERO">                                      -->
+<!-- <MACRO NAME="SOMMAIRE_DERNIER_NUMERO">                             -->
+<!-- <MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">                  -->
+<!-- <MACRO NAME="DERNIER_THEME">                                       -->
+<!-- <MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">                          -->
+<!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
+<!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
+<!-- <MACRO NAME="INTRODUCTION_COURTE">                                 -->
+<!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
+<!-- <MACRO NAME="TEXTE_INTEGRAL">                                      -->
+<!-- ****************************************************************** -->
+
+<DEFMACRO NAME="AFFICHER_NUMEROS_PUBLIES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la liste des publications de type numéro, publiées         -->
+<!-- ****************************************************************** -->
+	<span class="titre_centre">
+		<br />
+		<strong>
+			<div align="center">
+			<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
+				Les numéros de <em><MACRO NAME="NOM_REVUE"></em>
+			</div>
+		</strong>
+		<br />
+	</span>
+	<table width="100%" border="0">
+		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
+			<DO>
+				<tr>
+					<td>
+						<blockquote>
+							<MACRO NAME="ICONE_PUBLICATION">
+							<a href="sommaire.html?id=[#ID]">
+								<strong>
+									<span class="soustitre_centre, couleur_1">
+										<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
+										Numéro [#NOM]
+									</span>
+								</strong>
+								<br />
+							</a>
+							<em><MACRO NAME="TITRE_PUBLICATION"></em>&nbsp;
+							<em><MACRO NAME="SOUSTITRE_PUBLICATION"></em>&nbsp;
+							<MACRO NAME="DIRECTEUR_PUBLICATION">
+							<br />
+							<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
+						</blockquote>
+					</td>
+				</tr>
+			</DO>
+			<ALTERNATIVE>
+				<tr>
+					<td>
+						Aucun numéro disponible actuellement
+					</td>
+				</tr>
+			</ALTERNATIVE>
+		</LOOP>
+	</table>
+</DEFMACRO>
+
+<DEFMACRO NAME="NOM_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, s'il existe, le nom de la publication sinon affiche le    -->
+<!-- nom de la revue.                                                   -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="NOM_REVUE">                                           -->
+<!-- ****************************************************************** -->
+	<IF COND="[#NOM]">
+		
+				
+					[#NOM]
+				
+		
+	<ELSE/>
+		<span class="titre_centre">
+			<a href="index.html">
+				<span class="couleur_1">
+					<MACRO NAME="NOM_REVUE">
+				</span>
+			</a>
+		</span>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="TITRE_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, s'il existe, le titre d'une publication.                  -->
+<!-- ****************************************************************** -->
+	<IF COND="[#TITRE]">
+		
+		[#TITRE]
+		
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="SOUSTITRE_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, s'il existe, le sous-titre d'une publication.             -->
+<!-- ****************************************************************** -->
+	<IF COND="[#SOUSTITRE]">
+		[#SOUSTITRE]
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="DIRECTEUR_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, s'il existe, le directeur d'une publication.              -->
+<!-- ****************************************************************** -->
+	<IF COND="[#DIRECTEUR]">
+		Sous la direction de [#DIRECTEUR]
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="PRESENTER_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Crée un bloc qui affiche le titre du numéro ou du thème, sauf s'il -->
+<!-- est vide, auquel cas il affiche le nom de la revue. Affiche        --> 
+<!-- également le texte d'introduction, s'il existe, avec une lettrine. -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
+<!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
+<!-- <MACRO NAME="TITRE_PUBLICATION">                                   -->
+<!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
+<!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
+<!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
+<!-- ****************************************************************** -->
+<table border="0" cellspacing="0" cellpadding="0" width="100%"  background-color="#ffffff">
+<tr>
+	<td  valign="middle">
+		<table  width="100%" valign="middle" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="561" class="titre1">
+		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
+		 		</td>
+			</tr>
+			<tr>
+				<td width="561" class="titre1">
+		 <MACRO NAME="SOUSTITRE_PUBLICATION">
+		 		</td>
+			</tr>
+		 	<tr>
+				<td width="561" class="titre1">
+		 	<IF COND="[#DIRECTEUR]!=''">
+					
+						<MACRO NAME="DIRECTEUR_PUBLICATION">
+					
+			</IF>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td class="introduction" backgroundcolor="#FFFFFF">
+		<MACRO NAME="INTRODUCTION_COMPLETE">
+	</td>
+</tr>
+</table>					
+
+</DEFMACRO>
+
+<DEFMACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Crée un bloc qui affiche le titre du numéro ou du thème, sauf s'il -->
+<!-- est vide, auquel cas il affiche le nom de la revue. Affiche        --> 
+<!-- également le texte d'introduction, s'il existe, avec une lettrine. -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
+<!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
+<!-- <MACRO NAME="TITRE_PUBLICATION">                                   -->
+<!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
+<!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
+<!-- ****************************************************************** -->
+<table border="0" cellspacing="0" cellpadding="0" width="561"  bgcolor="#ffffff">
+<tr>
+	<td  valign="middle"  background-color="#E0E0E0">
+		<table  width="561" valign="middle" background-color="#E0E0E0">
+			<tr>
+				<td class="titre1">
+		 			 Sommaire du numéro : <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
+		 		</td>
+			</tr>
+			<tr>
+				<td class="titre1">
+		 <MACRO NAME="SOUSTITRE_PUBLICATION">
+		 		</td>
+			</tr>
+		 	<tr>
+				<td class="titre1">
+		 	<IF COND="[#DIRECTEUR]!=''">
+					<span class="directeur_centre">
+						<MACRO NAME="DIRECTEUR_PUBLICATION">
+					</span>	
+			</IF>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>					
+</DEFMACRO>
+
+<DEFMACRO NAME="PARU_DANS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la publication d'où provient un document.                  -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="NOM_REVUE">                                           -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+		<DO>
+			Paru dans 
+			<a href="sommaire.html?id=[#ID]">
+				<span style="color:Black;">
+						<MACRO NAME="NOM_REVUE"> n°[#NOM]
+					<IF COND="[#TITRE]">
+						,
+						[#TITRE]
+					</IF>.
+				</span>
+			</a>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="PARU_DANS_SIMPLE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la publication d'où provient un document.                  -->
+<!-- (sobrement, c'est pour les index)                                  -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
+<!-- ****************************************************************** -->
+	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
+		<DO>
+			<IF COND="[#TYPE]=='regroupement'">
+	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
+					<DO>
+		    	    	<IF COND="[#NOM]">
+							<a href="sommaire.html?id=[#PUBLICATION]">
+								<span style="color:Black;">
+									 n&#176; [#NOM] - [#TITRE]
+								</span>
+							</a>
+							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+						</IF>
+					</DO>
+            	</LOOP>
+	        <ELSE/>
+    	    	<IF COND="[#NOM]">
+					<a href="sommaire.html?id=[#PUBLICATION]">
+						<span style="color:Black;">
+							 n&#176; [#NOM] - [#TITRE]
+						</span>
+					</a>
+					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+				</IF>
+	        </IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="PARU_DANS_SIGNALER">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la publication d'où provient un document que l'on a        -->
+<!-- signalé. (Lien sur la revue)                                       -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="NOM_REVUE">                                           -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+		<DO>
+			Paru dans 
+			<a href="http://[#REVUE].revues.org">
+				<span style="color:Black;">
+						<MACRO NAME="NOM_REVUE"> n°[#NOM]
+					<IF COND="[#TITRE]">
+						,
+						[#TITRE]
+					</IF>.
+				</span>
+			</a>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+
+<DEFMACRO NAME="INFOS_DOCUMENT">		
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche en une ligne des informations concernant l'article : le ou -->
+<!-- les auteurs, le titre cliquable amenant à l'article et la          -->
+<!-- publication d'où provient l'article.                               -->
+<!-- Cette macro est plutôt destinée aux index.                         -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="LISTER_AUTEURS">                                      -->
+<!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
+<!-- <MACRO NAME="PARU_DANS_SIMPLE">                                    -->
+<!-- ****************************************************************** -->
+	<MACRO NAME="LISTER_AUTEURS">
+	<a href="document.html?id=[#ID]">
+		<span style="color:Black;">
+			[#TITRE],
+		</span>
+	</a>
+	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+	<MACRO NAME="PARU_DANS_SIMPLE">
+</DEFMACRO>
+
+<DEFMACRO NAME="DATE_PUBLICATION_PARENTE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la date de publication parente d'un document, si elle      -->
+<!-- existe sinon n'affiche rien.                                       -->
+<!-- ****************************************************************** -->
+	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
+		<DO>
+			<IF COND="[#TYPE]=='regroupement'">
+			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
+	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
+					<DO>
+						<IF COND="[#DATE]!='0000-00-00'">
+							Texte publié le : [(#DATE|humandate)]
+						</IF>
+					</DO>
+				</LOOP>
+			<ELSE/>
+				<IF COND="[#DATE]!='0000-00-00'">
+					Texte publié le : [(#DATE|humandate)]
+				</IF>
+			</IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le titre de la partie Bibliographie (ici "Bibliographie")  -->
+<!-- dans la langue définie pour le texte d'un document.                -->
+<!-- ****************************************************************** -->
+	<IF COND="[#LANG]=='FR'">
+		Bibliographie
+	<ELSE/>
+		<IF COND="[#LANG]=='EN'">
+			Bibliography
+		<ELSE/>
+			<IF COND="[#LANG]=='IT'">
+				Bibliografia
+			<ELSE/>
+				<IF COND="[#LANG]=='ES'">
+					Bibliografía
+				<ELSE/>
+					<IF COND="[#LANG]=='DE'">
+						Bibliographie
+					<ELSE/>
+						Langue de document non définie
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche en une ligne un point, l'auteur cliquable le titre et des  -->
+<!-- boutons supplémentaires pour les les admin/editeurs/rédacteur.     -->
+<!-- Cette macro est plutôt destinée aux sommaires                      -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
+<!-- <MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">                            -->
+<!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
+<!-- <MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">                         -->
+<!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
+<!-- <MACRO NAME="TEXTE_INTEGRAL">                                      -->
+<!-- ****************************************************************** -->
+	<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
+	<MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">
+	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+	<MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">
+	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+	<MACRO NAME="TEXTE_INTEGRAL">
+</DEFMACRO>
+
+<DEFMACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche en une ligne toutes les informations concernant l'article  -->
+<!-- sans afficher le ou les auteurs. Affiche le titre et le sous-titre -->
+<!-- s'il existe, sous forme de lien amenant à l'article, le type de    -->
+<!-- l'article (par ex: chronique, compte rendu, etc ...) la            -->
+<!-- publication d'où provient l'article et un lien "Texte intégral" ou -->
+<!-- "Texte en ligne le xx/xx/xxxx".                                    -->
+<!-- Macro destinée aux index par auteurs.                              --> 
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="PARU_DANS_SIMPLE">                                    -->
+<!-- <MACRO NAME="TEXTE_INTEGRAL">                                      -->
+<!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
+<!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
+<!-- ****************************************************************** -->
+	<span class="texte_petit">
+		<IF COND="[#TYPE]=='article_vide'">
+			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong> [#TITRE]
+			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
+		</IF>
+		<IF COND="[#TYPE]=='article'">
+			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
+			<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+		<ELSE/>
+			<IF COND="[#TYPE]=='chronique'">
+				<strong>Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
+				<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+			<ELSE/>
+				<IF COND="[#TYPE]=='compte rendu'">
+					<strong>Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
+					<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+				<ELSE/>
+					<IF COND="[#TYPE]=='position de these'">
+						<strong>Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
+						<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+					<ELSE/>
+						<IF COND="[#TYPE]=='editorial'">
+							<strong>Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
+							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+						<ELSE/>
+							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]</span></a>
+						</IF>
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</span>
+	<MACRO NAME="TEXTE_INTEGRAL">
+	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_TOUT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les séries linéaires et leurs numéros de 1er niveau puis   -->
+<!-- les séries hierarchiques et leurs thèmes de premier niveau.        -->
+<!-- Macro plutôt destinée à la barre de navigation verticale.          -->
+<!-- ****************************************************************** -->
+	<!-- On liste en premier les séries linéaires. -->
+	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre">
+		<BEFORE>
+			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+			<tr><td class="menu1" valign="top" align="left" height="11" width="165" bgcolor="#EFEFEF">Série Linéaires :<br/ ></td></tr>
+		</BEFORE>
+		<DO>
+			<tr>
+				<td class="menu1">
+				<br>
+					[#NOM] 
+				</td>
+			</tr>
+			<!-- On liste tous les numéros de la série linéaire courante -->
+			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
+				<DO>
+					<tr>
+						<td class="menu2" valign="top" align="right"  width="165" bgcolor="#EFEFEF">
+							<a  class="menu2" href="sommaire.html?id=[#ID]">
+								[#NOM]
+							</a>
+						</td>
+					</tr>
+				</DO>
+				<AFTER>
+					<tr><td>&nbsp;</td></tr>
+				</AFTER>
+			</LOOP>
+		</DO>
+		<AFTER>
+			</table>
+			<p></p>
+		</AFTER>
+	</LOOP>
+	<!-- On liste ensuite les séries hiérarchiques -->
+	<LOOP NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'"  WHERE="status>0" ORDER="ordre">
+		<BEFORE>
+			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+			<tr><td class="menu1">Série Hiérarchiques :</td></tr>
+		</BEFORE>
+		<DO>
+			<tr>
+				<td class="menu1">
+					[#NOM]
+				</td>
+			</tr>
+			<!-- On liste tous les thèmes de 1er niveau de la série hiérarchique courante -->
+			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
+				<DO>
+					<tr>
+						<td class="menu2">
+							<a href="sommaire.html?id=[#ID]">
+								[#NOM]
+							</a>
+						</td>
+					</tr>
+				</DO>
+				<AFTER>
+					<tr><td>&nbsp;</td></tr>
+				</AFTER>
+			</LOOP>
+		</DO>
+		<AFTER>
+			</table>
+			<p></p>
+		</AFTER>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="DOCUMENTS_PAR_TYPES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la liste des articles en les classant par type.            -->
+<!-- ATTENTION, chaque type est codé en dur, il doivent être adaptés à  -->
+<!-- chaque publication spécifique.                                     -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="TYPE_ARTICLE">                                        -->
+<!-- <MACRO NAME="TYPE_POSITION_DE_THESE">                              -->
+<!-- <MACRO NAME="TYPE_COMPTE_RENDU">                                   -->
+<!-- <MACRO NAME="TYPE_NOTE_DE_LECTURE">                                -->
+<!-- <MACRO NAME="TYPE_CHRONIQUE">                                      -->
+<!-- <MACRO NAME="TYPE_PRESENTATION">                                   -->
+<!-- ****************************************************************** -->
+	<table>
+		<MACRO NAME="TYPE_ARTICLE">
+		<MACRO NAME="TYPE_POSITION_DE_THESE">
+		<MACRO NAME="TYPE_COMPTE_RENDU">
+		<MACRO NAME="TYPE_NOTE_DE_LECTURE">
+		<MACRO NAME="TYPE_CHRONIQUE">
+		<MACRO NAME="TYPE_PRESENTATION">
+	</table>
+</DEFMACRO>
+
+<DEFMACRO NAME="TYPE_ARTICLE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les articles de type "article".                            -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                             -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="article" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='article'" ORDER="ordre">
+		<BEFORE>
+			<tr>
+				<td class="regroupement">
+					<MACRO NAME="FILET_1">
+						Articles
+					<MACRO NAME="FILET_1">
+				</td>
+			</tr>
+		</BEFORE> 
+		<DO>
+			<tr> 
+				<td class="texte_sommaire" valign="top">
+					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				</td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+		
+<DEFMACRO NAME="TYPE_CHRONIQUE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les articles de type "chronique".                          -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                             -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="chr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
+		<BEFORE>
+			<tr>
+				<td class="regroupement">
+					<MACRO NAME="FILET_1">
+						Chroniques
+					<MACRO NAME="FILET_1">
+				</td>
+			</tr>
+		</BEFORE>
+		<DO>
+			<tr> 
+				<td class="texte_sommaire">
+					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				</td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="TYPE_COMPTE_RENDU">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les articles de type "compte rendu".                       -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                        -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="cr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
+		<BEFORE>
+			<tr>
+				<td class="regroupement">
+					<MACRO NAME="FILET_1">
+						Comptes Rendus 
+					<MACRO NAME="FILET_1">
+				</td>
+			</tr>
+		</BEFORE> 
+		<DO>
+			<tr> 
+				<td class="texte_sommaire">
+					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				</td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="TYPE_POSITION_DE_THESE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les articles de type "position de these".                  -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                             -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="pdt" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
+		<BEFORE>
+			<tr>
+				<td class="regroupement">
+					<MACRO NAME="FILET_1">
+						Positions de thèse
+					<MACRO NAME="FILET_1">
+				</td>
+			</tr>
+		</BEFORE>
+		<DO>
+			<tr> 
+				<td class="texte_sommaire" valign="top">
+					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				</td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="TYPE_NOTE_DE_LECTURE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les articles de type "note de lecture".                    -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                             -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="nl" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
+		<BEFORE>
+			<tr>
+				<td class="regroupement">
+					<MACRO NAME="FILET_1">
+						Notes de lecture 
+					<MACRO NAME="FILET_1">
+				</td>
+			</tr>
+		</BEFORE> 
+		<DO>
+			<tr> 
+				<td class="texte_sommaire">
+					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				</td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="TYPE_PRESENTATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les articles de type "presentation".                       -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                             -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="presentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
+		<BEFORE>
+			<tr>
+				<td class="regroupement">
+					<MACRO NAME="FILET_1">
+						Informations
+					<MACRO NAME="FILET_1">
+				</td>
+			</tr>
+		</BEFORE> 
+		<DO>
+			<tr> 
+				<td class="texte_sommaire" valign="top">
+					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+				</td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Présente les articles puis les regroupements et leurs articles.    -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
+<!-- <MACRO NAME="PRESENTER_REGROUPEMENTS">                             -->
+<!-- ****************************************************************** -->
+	<table width="561" align="left">
+	<tr>
+		<td>
+			<MACRO NAME="PRESENTER_DOCUMENTS">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<MACRO NAME="PRESENTER_REGROUPEMENTS">
+		</td>
+	</tr>
+	</table>
+</DEFMACRO>
+
+<DEFMACRO NAME="PRESENTER_DOCUMENTS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Présente les articles                                              -->
+<!-- Cette Macro utilise la macro suivante :                            -->
+<!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
+<!-- ****************************************************************** -->
+	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<BEFORE>
+		<table width="561" border="0" align="left" cellspacing="4">
+	</BEFORE>
+	<DO>
+		<tr> 
+			<td valign="top" bgcolor="#F7F7F7"> 
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</td>
+		</tr>
+	</DO>
+	<AFTER>
+		</table>
+	</AFTER>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="PRESENTER_REGROUPEMENTS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Présente les regroupements et les articles qu'ils contiennent.     -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="FILET_1">                                             -->
+<!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+		<DO>
+			<table width="561" border="0" align="left">
+				<tr>
+					<td valign="top" width="561" height="15" bgcolor="#ffffff">
+						<img src="images/spacer.gif" width="561" height="15"  border="0">
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="561" height="15" class="regroupement2">
+						
+							<IF COND="[#TITRE]">
+								[#TITRE]
+								
+							</IF>
+							
+							<IF COND="[#NOM]">
+							
+							| [#NOM]
+								<br />
+							</IF>
+						
+						<br />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="561" height="15" background-color="#ffffff">
+						<img src="images/spacer.gif" width="561" height="15"  border="0">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<MACRO NAME="PRESENTER_DOCUMENTS">
+					</td>
+				</tr>
+			</table>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="TITRE_DOCUMENT_CLIQUABLE">  
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche simplement le titre du document et le rend cliquable.      -->
+<!-- Remarque : Si on veut mettre en ligne des articles vides pour      -->
+<!-- avoir dans les sommaires les titres des futurs articles. Il faut   -->
+<!-- créer un nouveau type de document dans la partie administration    -->
+<!-- de lodel.                                                          -->
+<!-- Par exemple : pour les articles vides créer un type "article_vide" -->
+<!-- ainsi cette macro ne rendra pas cliquable le titre de l'article    -->
+<!-- dans le sommaire.                                                  -->
+<!-- ****************************************************************** -->
+	<IF COND="[#TYPE]=='article_vide'">
+	
+		[#TITRE]
+	<ELSE/>
+		<a class="menu2" href="document.html?id=[#ID]">
+			[#TITRE]
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_AUTEURS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la liste des auteurs d'un document entre virgules.         -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<DOFIRST>
+			[#PRENOM] 
+			[#NOMFAMILLE]
+		</DOFIRST>
+		<DO>
+			,
+			[#PRENOM] 
+			[#NOMFAMILLE]
+		</DO>
+		<DOLAST>
+			 et 
+			 [#PRENOM] 
+			 [#NOMFAMILLE] 
+		</DOLAST>
+		<ALTERNATIVE>
+			<IF COND="[#NOMFAMILLE]">
+				,
+			</IF>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_AUTEURS_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la liste des auteurs d'un document entre virgules          -->
+<!-- Les auteurs sont cliquables (lien vers index par auteurs)          -->
+<!-- L'affichage est destiné aux sommaires : il permet une respiration. -->
+<!-- ****************************************************************** -->
+	<strong>
+		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
+			<DOFIRST>
+				<a class="auteur" href="auteur.html?id=[#ID]">
+					
+						[#PRENOM]
+						[#NOMFAMILLE]
+					
+				</a>
+			</DOFIRST>
+			<DO>
+				,<a class="auteur" href="auteur.html?id=[#ID]">
+						[#PRENOM]
+						[#NOMFAMILLE]
+				</a>
+			</DO>
+			<DOLAST>
+				et 
+				<a class="auteur" href="auteur.html?id=[#ID]">
+						[#PRENOM]
+						[#NOMFAMILLE]
+				</a>
+			</DOLAST>
+			<AFTER>
+				<IF COND="[#NOMFAMILLE]">
+					<br />
+					&nbsp;&nbsp;&nbsp;
+				</IF>
+			</AFTER>
+		</LOOP>
+	</strong>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_THEMES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les thèmes d'une série hiérarchique ou les sous thèmes     -->
+<!-- d'un thème.                                                        -->
+<!-- Macro destinée aux sommaires.                                      -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="boucle_lister_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
+		<BEFORE>
+			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
+		</BEFORE>
+		<DO>
+			<tr>
+				<td width="100%" class="texte_petit">
+					<a href="sommaire.html?id=[#ID]">
+						<strong>
+							<span class="couleur_1">
+								[#NOM]
+							</span>
+						</strong>
+					</a>
+					<span class="couleur_3">
+						<strong><MACRO NAME="TITRE_PUBLICATION"></strong>
+					</span>
+					<MACRO NAME="INTRODUCTION_COURTE">
+					<br />
+				</td>
+			</tr>
+		</DO>
+		<AFTER>
+			</table>
+		</AFTER>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="DERNIER_NUMERO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le dernier numéro en date. (en fonction du champs date)    -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+		<DO>
+			<a class="titre2" href="sommaire.html?id=[#ID]">
+				<strong>
+					
+						Dernier numéro publié : [#NOM] 
+					
+				</strong>
+				<IF COND="[#TITRE]">
+					<em>
+						- [#TITRE]
+					</em>
+				</IF>
+				<IF COND="[#DIRECTEUR]">
+					<br /> Sous la direction de :	[#DIRECTEUR]
+				</IF>
+			</a>
+			<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="SOMMAIRE_DERNIER_NUMERO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le sommaire du dernier numéro en date. (en fonction du     -->
+<!-- champs date).                                                      -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
+<!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+		<DO>
+			<strong>
+				<span class="couleur_1">
+					Sommaire du dernier numéro publié : [#NOM] 
+				</span>
+			</strong>
+			<IF COND="[#TITRE]">
+				<em>
+					- [#TITRE]
+				</em>
+			</IF>
+			<IF COND="[#DIRECTEUR]">
+				<br /> Sous la direction de :	[#DIRECTEUR]
+			</IF>
+			<br /><br />
+			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le sommaire du dernier numéro en date. (en fonction du     -->
+<!-- champs date).                                                      -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
+<!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+		<DO>
+			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+
+<DEFMACRO NAME="DERNIER_THEME">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le dernier thème en date. (en fonction du champs date)     -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
+		<DO>
+			<a href="sommaire.html?id=[#ID]">
+				[#NOM]
+			</a>
+			<IF COND="[#TITRE]">
+				<br />
+				[#TITRE]
+			</IF>
+			<IF COND="[#DIRECTEUR]">
+				<br />
+				[#DIRECTEUR]
+			</IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les documents annexes.                                     -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="IMG_PUCE">                                            -->
+<!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
+<!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
+		<BEFORE>
+			<table>
+		</BEFORE>
+		<DO>
+			<tr>
+				<td class="texte_petit">
+					<!-- Titre du doc annexe -->
+					<MACRO NAME="IMG_PUCE">
+					<strong>
+						<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+					</strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+					<!-- Commentaire du doc annexe -->
+					[#COMMENTAIRE]
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+				</td>
+			</tr>
+		</DO>
+		<AFTER>
+			</table>
+		</AFTER>
+	</LOOP>
+	<!-- Propose aux rédacteurs d'ajouter un document  --->
+	<MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">
+</DEFMACRO>
+
+<DEFMACRO NAME="ICONE_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, s'il elle existe, l'icône de la publication.              -->
+<!-- ****************************************************************** -->
+	<IF COND="[#META_IMAGE]">
+		<a href="sommaire.html?id=[#ID]">
+			<img src="[#META_IMAGE]" align='left' name="[#NOM]" border='0' alt="[#NOM]" hspace="8" vspace="8">
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="INTRODUCTION_COMPLETE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si elle existe, l'introduction d'une publication, avec    -->
+<!-- une icône et une lettrine.                                         -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
+<!-- ****************************************************************** -->
+	<IF COND="[#TEXTE]">
+		<table width="561" class="introduction">
+			<tr>
+				<td>
+					<MACRO NAME="ICONE_PUBLICATION">
+					[(#TEXTE|avantlettrine)]
+					<span class="lettrine">[(#TEXTE|lettrine)]</span>
+					[(#TEXTE|apreslettrine)]
+				</td>
+			</tr>
+		</table>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="INTRODUCTION_COURTE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche avec une icône et une lettrine les 1500 premiers           -->
+<!-- caractères de l'introduction d'une publication.                    -->
+<!-- Cette macro fait appel à la macro suivante :                       -->
+<!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
+<!-- ****************************************************************** -->
+	<table width="90%">
+		<tr>
+			<td class="texte_petit">
+				<IF COND="[#TEXTE]">
+					<MACRO NAME="ICONE_PUBLICATION">
+					<!-- affiche les 1500 premiers mots du texte -->
+					[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine|couper(1500))]
+					<a href="sommaire.html?id=[#ID]">
+						... lire la suite...
+					</a>
+				<ELSE/>
+					<a href="sommaire.html?id=[#ID]">
+						... lire ...
+					</a>
+				</IF>
+			</td>
+		</tr>
+	</table>
+</DEFMACRO>
+
+<DEFMACRO NAME="INTRODUCTION_COURTE_SIMPLE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche sans lettrine les 1500 premiers caractères de              -->
+<!-- l'introduction d'une publication.                                  -->
+<!-- ****************************************************************** -->
+	<IF COND="[#TEXTE]">
+		<br />
+		<!-- affiche les 1500 premiers mots du texte -->
+		[(#TEXTE|couper(1500))]
+		<a href="sommaire.html?id=[#ID]">
+			... lire la suite...
+		</a>
+	<ELSE/>
+		<a href="sommaire.html?id=[#ID]">
+			... lire ...
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="TEXTE_INTEGRAL">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche un lien "Texte Integral" si l'article est publié           -->
+<!-- intégralement, en cliquant sur ce lien on accède à l'article.      -->
+<!-- Dans le cas où l'article serait publié à une date ultérieure       -->
+<!-- affiche "Texte en ligne le xx/xx/xxxx"                             -->
+<!-- ****************************************************************** -->
+	<IF COND="[#LANG]!=''">
+		<IF COND="[#TYPE]!='presentation'">
+			<a class="texte_integral" href="document.html?id=[#ID]">
+				
+					[Texte intégral
+					<IF COND="[#TEXTEPUBLIE]">
+						]
+					<ELSE/>
+						en ligne le [#DATEPUBLI]]
+					</IF>
+				</span>
+			</a>
+		</IF>
+	</IF>
+</DEFMACRO>

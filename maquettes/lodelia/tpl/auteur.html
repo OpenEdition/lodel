@@ -1,59 +1,69 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- Cette page permet d'afficher tous les documents publiés par un auteur dans une revue.
-Auteur : Gautier Poupeau. Août 2002.
-Dernière modification par Marin Dacos en septembre 2002. -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Cette page permet d'afficher tous les documents publiés par un     -->
+<!-- auteur dans une revue.                                             -->
+<!-- Auteur : Gautier Poupeau. Août 2002.                               -->
+<!-- Dernière modification par Marin Dacos en septembre 2002.           -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>[#PRENOM] [#NOMFAMILLE]</TITLE>
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
-
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_AUTEUR">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<!-- Affichage de la barre verticale de navigation -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td align="center" valign="top"> 
-
+	<td align="center" valign="top"> 
 		<!-- Affichage du titre et de l'auteur  -->
-			<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER"  bordercolor="Black">
-				<tr>
-					<td width="100%" class="soustitre">
-						Articles publiés dans <em><MACRO NAME="NOM_REVUE"></em> par 
-					</td> 
-				</tr> 
-				<tr>
-					<td width="100%" class="titre">
-					<hr width="330" align="CENTER" />
-						<span class="couleur_dominante1">
-							[#PRENOM] [#NOMFAMILLE]	
-						</span>
-						<MACRO NAME="offline">
-					<hr width="330" align="CENTER" />
-					</td> 
-				</tr> 
-			</table>
-
+		<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER"  bordercolor="Black">
+			<tr>
+				<td width="100%" class="soustitre">
+					Articles publiés dans <em><MACRO NAME="NOM_REVUE"></em> par 
+				</td> 
+			</tr> 
+			<tr>
+				<td width="100%" class="titre">
+					<MACRO NAME="FILET_1">
+					<span class="couleur_1">
+						[#PRENOM] [#NOMFAMILLE]	
+					</span>
+					<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
+					<MACRO NAME="FILET_1">
+				</td> 
+			</tr> 
+		</table>
 		<!-- Affichage de l'ensemble des documents publiés par l'auteur -->
-		<BOUCLE NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
-				<AVANT>
-					<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER"  bordercolor="Black">
-				</AVANT>
-
-						<tr>
-							<td class="texte_sommaire">
-								<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
-							</td>
-						</tr>
-
-				<APRES>
-					</table>
-				</APRES>
-			</BOUCLE>
-			<div align="center">
-				<a href="auteurs-complet.html">
-					Index des auteurs
-				</a>
-			</div>
-		</td>
+		<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
+			<BEFORE>
+				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER"  bordercolor="Black">
+			</BEFORE>
+			<DO>
+				<tr>
+					<td class="texte_sommaire">
+						<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
+					</td>
+				</tr>
+			</DO>
+			<AFTER>
+				</table>
+			</AFTER>
+		</LOOP>
+		<div align="center">
+			<a href="auteurs-complet.html">
+				Index des auteurs
+			</a>
+		</div>
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

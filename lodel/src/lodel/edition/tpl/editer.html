@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition de document</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 <table width="400" border="1" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
 	<tr>
@@ -13,16 +13,77 @@
 		</td>
 	<td align="center">
 	<span class="titre">
-		Edition de document
+		Edition de document (id : [#ID])
 	</span>
-	<br>
 	<div align="center">
-			<BOUCLE NAME="chercheparent" table="documents" WHERE="id=[#ID]">
-					<a href="index.php?parent=[#PUBLICATION]">
-					<u>Parent</u> 
-				</IF>
-			</BOUCLE>
+			<LOOP NAME="chercheparent" TABLE="documents" WHERE="id=[#ID]">
+				<LOOP NAME="sort_du_regroupement" TABLE="publications" WHERE="id=[#PUBLICATION]">
+					<IF COND="[#TYPE] eq 'regroupement'">
+						<a href="index.php?id=[#PARENT]">
+						<u>Parent</u>
+					<ELSE/>
+						<a href="index.php?id=[#ID]">
+						<u>Parent</u>
+					</IF>
+				</LOOP>
+			</LOOP>
 			</a>
+	<br><br>
+	<br>
+	
+	<LOOP NAME="Affiche_articles" TABLE="documents" WHERE="id=[#ID]">
+		<MACRO NAME="AUTEURS"><br>
+			<em>
+				"[#TITRE]"
+			</em>
+			([#TYPE])
+			<br>
+	</LOOP>
+	<br>
+
+	<!-- *********** -->
+	<!-- VERROUILLER -->
+	<!-- *********** -->
+
+	<tr>
+		<td width="48" height="48" background="images/bleu.gif">
+			<div align="center">
+				&nbsp;
+			</div>
+		</td>
+		<td width="400" class="soustitre" background="images/bleu.gif">
+				<strong>VERROU</strong>
+		</td>
+	</tr>	 
+	<LOOP NAME="status_publication" TABLE="documents" WHERE="id=[#ID]">
+		<tr>
+			<td width="48" height="48">
+				<div align="center">
+					<MACRO NAME="AFFICHER_ICONE_STATUT">
+				</div>
+			</td>
+			<td width="400" class="soustitre">
+				<MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT">
+			</td>
+		</tr>	 
+	</LOOP>
+	<tr>
+		<td width="48" height="48" >
+			<IF COND="[#EDITEUR]">
+				&nbsp;
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+		<td align="center">
+			Changer le verrou de la publication dépubliée : <br />
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_VERROU_DOCUMENTS_DEPUBLIE">
+			<ELSE/>
+				-&nbsp;/&nbsp;-
+			</IF>
+		</td>
+	</tr>
 
 	<!-- ******* -->
 	<!-- EDITER  -->
@@ -38,72 +99,8 @@
 				<strong>Edition</strong>
 		</td>
 	</tr>	 
-	<IF [#REDACTEUR]>
-		<!-- Editer -->
-		<FORM ACTION="editer.php" METHOD="POST">
-		<tr>
-			<td width="48" height="48" >
-				<div align="center">
-					<input type="image" border="0" name="imageField" src="images/KDE_txt.gif" width="32" height="32" border="0">
-				</div>
-			</td>
-			<td width="400" >
-				<strong><a href="editer.php?id=[#ID]&edit=1&[#URL_RETOUR]">Editer les métadonnées</a></strong>
-					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-					<INPUT TYPE="hidden" NAME="edit" VALUE="1">
-					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-			</td>
-		</tr>	 
-		</FORM>
-	<ELSE/>
-		<tr>
-			<td>
-				<MACRO NAME="GIF_Inactif">
-			</td>
-			<td>
-				Contactez l'éditeur pour éditer les métadonnées
-			</td>
-		</tr>
-	</IF>
-
-	<!-- Publier or not publier -->
-	<IF [#EDITEUR]>
-		<FORM ACTION="publi.php" METHOD="POST">
-		<tr>
-			<td width="48" height="48" >
-				<div align="center">
-				<IF [#STATUS] gt 0>
-					<MACRO NAME="GIF_INPUT_DEPUBLIER">
-					<ELSE/>
-					<MACRO NAME="GIF_INPUT_PUBLIER">
-				</IF>
-				</div>
-			</td>
-			<td width="400" >
-					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-					<IF [#STATUS] gt 0>
-						<strong>Dépublier le document</strong>
-					<ELSE/>
-					<INPUT TYPE="hidden" NAME="online" VALUE="1">
-						<strong>Publier le document</strong>
-					</IF>
-			</td>
-		</tr>
-	</FORM>	
-	<ELSE/>
-		<tr>
-			<td>
-				<MACRO NAME="GIF_Inactif">
-			</td>
-			<td>
-				Contactez l'éditeur pour publier ou dépublier ce document.
-			</td>
-		</tr>
-	</IF>
-	
 	<!-- Recharger -->
-	<IF [#EDITEUR]>	
+	<IF COND="[#EDITEUR]">	
 	<FORM ACTION="editer.php" METHOD="POST">
 	<tr>
 		<td width="48" height="48" >
@@ -122,16 +119,41 @@
 	<ELSE/>
 		<tr>
 			<td>
-				<MACRO NAME="GIF_Inactif">
+				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
 				Contactez l'éditeur pour recharger ce document.
 			</td>
 		</tr>
 	</IF>
+
+	<!-- Télécharger -->
+	<IF COND="[#REDACTEUR]">	
+	<tr>
+		<td width="48" height="48" >
+			<div align="center">
+			<a href="../../lodel/rtf/r2r-[#ID].rtf" target="_blank">
+				<MACRO NAME="GIF_TELECHARGER">
+			</a>
+			</div>
+		</td>
+		<td width="400">
+			<strong>Télécharger le source RTF</strong>
+		  </td>
+	</tr>	 
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_INACTIF">
+			</td>
+			<td>
+				Demandez le source RTF à un rédacteur ou à l'éditeur.
+			</td>
+		</tr>
+	</IF>
 	
 	<!-- Déplacer le document -->
-	<IF [#REDACTEUR]>	
+	<IF COND="[#REDACTEUR]">	
 	<FORM ACTION="deplacer.php" METHOD="POST">
 	<tr>
 		<td width="48" height="48" >
@@ -151,7 +173,7 @@
 	<ELSE/>
 		<tr>
 			<td>
-				<MACRO NAME="GIF_Inactif">
+				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
 				Contactez l'éditeur pour déplacer ce document.
@@ -196,7 +218,9 @@
 	<tr>
 		<td width="48" height="48" >
 		  	<div align="center">
-			<MACRO NAME="GIF_INPUT_ASSOCIER_IMAGE">
+				<a href="metaimage.php?iddocument=[#ID]">
+					<MACRO NAME="GIF_AJOUTER_IMAGE">
+				</a>
 			</div>
 		</td>
 		<td width="400" >
@@ -209,7 +233,7 @@
 	<!-- ****** -->
 	<!-- DANGER -->
 	<!-- ****** -->
-	<IF [#EDITEUR]>
+	<IF COND="[#EDITEUR]">
 	<tr>
 		<td width="48" height="48" background="images/bleu.gif">
 			<div align="center">
@@ -220,24 +244,6 @@
 				<strong>Danger</strong>
 		</td>
 	</tr>	 
-	<!-- Supprimer -->
-	
-	<tr>
-		<td width="48" height="48" >
-		  	<div align="center">
-			&nbsp;
-			</div>
-		</td>
-		<td width="400" >
-		<FORM ACTION="supprime.php" METHOD="POST">
-			<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-			<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-			<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Supprimer le document">
-		</FORM>
-		</td>
-	</tr>	 
-	
-	
 	<!-- Edition avancée (XML) -->
 	
 	<tr>
@@ -246,7 +252,7 @@
 			&nbsp;
 			</div>
 		</td>
-		<td width="400" >
+		<td width="400" align="center">
 			<FORM ACTION="a_editer.php" METHOD="POST">
 				<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Edition avancée (XML)">
 				<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
@@ -261,4 +267,4 @@
 	</IF>
 </TABLE>
 
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

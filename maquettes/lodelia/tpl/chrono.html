@@ -1,69 +1,85 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!--
-	Index chronologique d'un seul niveau (il affiche indistinctement tous les niveaux de l'arbre)
-	(il confond donc dans l'affichage une catégorie avec une sous-catégorie )
-	(on pourra affiner ultérieurement).
-	Auteur : Marin Dacos.
-	Création : septembre 2002.
-	Dernière modification majeure : septembre 2002.
--->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index chronologique d'un seul niveau. Il affiche indistinctement   -->
+<!-- tous les niveaux de l'arbre, il confond donc dans l'affichage une  -->
+<!-- catégorie avec une sous-catégorie. On pourra affiner               -->
+<!-- ultérieurement.                                                    -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
+
 <MACRO NAME="OUVRIR_HTML">
-<BOUCLE NAME="title" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC" WHERE="id=[#ID]">
+<LOOP NAME="title" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC" WHERE="id=[#ID]">
 	<TITLE>Index chronologique : [#NOM]</TITLE>
-</BOUCLE>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+</LOOP>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_CHRONO">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top"> 
-			<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td width="100%" align="center" valign="middle" class="titre">
-						<span class="couleur_dominante1">
-							Index chronologique
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td width="100%" class="texte_petit_centre">
-						<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+	<td valign="top"> 
+		<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
+			<tr>
+				<td width="100%" align="center" valign="middle" class="titre">
+					<span class="couleur_1">
+						Index chronologique
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%" class="texte_petit_centre">
+					<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+						<DO>
 							<a href="chrono.html?id=[#ID]">
 								[#NOM]
 							</a>
 							&nbsp;|
-						</BOUCLE>
-					</td>
-				</tr>
-			</table>
-			<BOUCLE NAME="geographie2" TABLE="indexhs" WHERE="type_periode"  WHERE="id=[#ID]" ORDER="ordre DESC">
-			<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td ALIGN="CENTER" VALIGN="MIDDLE" class="soustitre">
-						<a name="[#ABREV]">
-						<span class="couleur_dominante1">
-							[#NOM]
-						</span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td span class="texte">
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="idindexh='[#ID]'" WHERE="ok">
-						<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
-					</BOUCLE>
-					</td>
-				</tr>
-			</table>
-			</BOUCLE>
-			<div align="center">
-				<a href="chronos-complet.html">
-					Index complet
-				</a>
-			</div>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+						</DO>
+					</LOOP>
+				</td>
+			</tr>
+		</table>
+		<LOOP NAME="geographie2" TABLE="indexhs" WHERE="type_periode"  WHERE="id=[#ID]" ORDER="ordre DESC">
+			<DO>
+				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="top"  bordercolor="Black">
+					<tr>
+						<td align="center" valign="middle" class="soustitre">
+							<a name="[#ABREV]">
+							<span class="couleur_1">
+								[#NOM]
+							</span>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td span class="texte">
+							<LOOP NAME="articles" TABLE="documents" WHERE="idindexh='[#ID]'" WHERE="ok">
+								<DO>
+									<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+								</DO>
+							</LOOP>
+						</td>
+					</tr>
+				</table>
+			</DO>
+		</LOOP>
+		<div align="center">
+			<a href="chronos-complet.html">
+				Index complet
+			</a>
+		</div>
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

@@ -1,0 +1,148 @@
+<!-- ****************************************************************** -->
+<!-- Librairie Admin                                                    -->
+<!-- Auteurs :                                                          -->
+<!-- Marin Dacos. 2002.                                                 -->
+<!-- Nicolas Nutten. 2003.                                              -->
+<!-- Cette librairie contient :                                         -->
+<!-- <MACRO NAME="AFFICHER_STATUT_DOCUMENT">                            -->
+<!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
+<!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
+<!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
+<!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
+<!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
+<!-- <MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">                         -->
+<!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	                        -->
+<!-- ****************************************************************** -->
+
+<DEFMACRO NAME="AFFICHER_STATUT_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le statut du document, si on a au moins le niveau          -->
+<!-- "rédacteur".                                                       -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		[<font color="red" size="-2">(OFF)(#OFFLINE|true)</font>]
+		[<font color="red" size="-2">(ON)(#OFFLINE|false)</font>]
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le statut du document et permet aux éditeurs de le publier -->
+<!-- Afin d'éviter de générer des 404 par erreur, la dépublication      -->
+<!-- ne se fait pas dans cette macro.                                   -->
+<!-- ****************************************************************** -->
+	<IF COND="[#EDITEUR]">
+		<IF COND="[#OFFLINE]">
+			<a class="bouton_statut_publierOFF" href="lodel/edition/publi.php?id=[#ID]&online=1">
+				<span class="bouton_statut_publierOFF">[OFF]</span>
+			</a>
+		<ELSE/>
+				<span class="bouton_statut_publierON">[ON]</span>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton         -->
+<!-- [Ajouter un document annexe].                                      -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		<a href="lodel/edition/docannexe.php?iddocument=[#ID]">
+			<span class="texte_tres_petit">
+				[Ajouter un document annexe]
+			</span>
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_EDITER_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     -->
+<!-- afin d'éditer un document.                                         -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		<a class="admin" href="lodel/edition/editer.php?id=[#ID]">
+			<span class="texte_trespetit">[E]</span>
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_EDITER_PUBLICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     -->
+<!-- afin d'éditer une publication.                                     -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		<a class="titre2" href="lodel/edition/index.php?id=[#ID]">
+			<span class="texte_trespetit">[E]</span>
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     -->
+<!-- afin d'éditer une publication depuis un document.                  -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		<IF COND="[#TYPE] eq 'regroupement'">
+			<a class="admin" href="lodel/edition/index.php?id=[#PARENT]">
+				<span class="texte_trespetit">[E]</span>
+			</a>
+		<ELSE/>
+			<a class="admin" href="lodel/edition/index.php?id=[#PUBLICATION]">
+				<span class="texte_trespetit">[E]</span>
+			</a>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche si on a au moins le niveau "rédacteur" des boutons pour    -->
+<!-- changer l'ordre d'affichage des documents.                         -->
+<!-- Les boutons sont disponibles de deux aspects différents :          -->
+<!-- Soit sous forme de textes, soit sous forme d'images, l'aspect par  -->
+<!-- défaut sont les images. Pour passer d'un aspect à l'autre il       -->
+<!-- suffit de commenter les lignes soit des images soit des textes.    -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		<a href="lodel/edition/editer.php?dir=up&id=[#ID]">
+			<!--<span class="texte_trespetit">[haut]</span>-->
+			<MACRO NAME="IMG_HAUT">
+		</a>
+		<a href="lodel/edition/editer.php?dir=down&id=[#ID]">
+		<!--<span class="texte_trespetit">[bas]</span>-->
+			<MACRO NAME="IMG_BAS">
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton         -->
+<!-- [modifier] pour modifier le document annexe ou sa description      -->
+<!-- ainsi que des boutons [haut] [bas] pour changer son ordre.         -->
+<!-- ****************************************************************** -->
+	<IF COND="[#REDACTEUR]">
+		<span class="texte_tres_petit">
+			<!-- Modifier -->
+			<a class="admin" href="lodel/edition/docannexe.php?id=[#ID]&[#RETOUR]">[modifier]</a>
+			 |
+			<!-- Monter -->
+				<a href="lodel/edition/docannexe.php?id=[#ID]&dir=up">[haut]</a>
+			 |
+			<!-- Descendre -->
+				<a href="lodel/edition/docannexe.php?id=[#ID]&dir=down">[bas]</a>
+		</span>
+	</IF>
+</DEFMACRO>

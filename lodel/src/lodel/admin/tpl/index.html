@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>[(#REVUE|nbsp)] Administration</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 <table width="75%" border="0" cellspacing="0" cellpadding="0" align="center" bordercolor="White">
 	<tr> 
@@ -40,22 +40,22 @@
 	<table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
 	<tr>
 		<td>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
   <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
         <tr> 
 			<td align="center" width="48">
-				<IF [#REDACTEUR]>
-					<A HREF="typepublis.php">
+				<IF COND="[#REDACTEUR]">
+					<a href="typepublis.php">
 					<MACRO NAME="GIF_ADMINISTRER_32">
-					</A>
+					</a>
 				<ELSE/>
 					<MACRO NAME="GIF_INACTIF">
 				</IF>
 			</td>
           <td align="left">
-			<IF [#REDACTEUR]>
-		  		<A HREF="typepublis.php">
+			<IF COND="[#REDACTEUR]">
+		  		<a href="typepublis.php">
 				Administrer les types de publications
 				</a>
 			<ELSE/>
@@ -66,23 +66,23 @@
     </table>
   </td>
   </tr>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
 	  <tr> 
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" align="center" cellspacing="4" cellpadding="4">
         <tr> 
         <td align="center" width="48">
-		<A HREF="typedocs.php">
+		<a href="typedocs.php">
 		  	<MACRO NAME="GIF_INDEX_LINEAIRE">
-			</A>
+			</a>
 		</td>
-          <td align="left"><A HREF="typedocs.php">Administrer les types de documents</a></td>
+          <td align="left"><a href="typedocs.php">Administrer les types de documents</a></td>
         </tr>
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
         <tr> 
@@ -100,30 +100,30 @@
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
         <tr> 
-          <td align="center" width="48"><A HREF="periodes.php">
-					<MACRO NAME="GIF_INDEX_HIERARCHIQUE"></A></td>
-          <td align="left"><A HREF="periodes.php">Administrer la liste des p&eacute;riodes</a></td>
+          <td align="center" width="48"><a href="periodes.php">
+					<MACRO NAME="GIF_INDEX_HIERARCHIQUE"></a></td>
+          <td align="left"><a href="periodes.php">Administrer la liste des p&eacute;riodes</a></td>
         </tr>
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
         <tr> 
           <td align="center" width="48">
-			  	<A HREF="geographies.php">
+			  	<a href="geographies.php">
 					<MACRO NAME="GIF_INDEX_HIERARCHIQUE">
-				</A>
+				</a>
 			</td>
 			<td align="left">
-		  		<A HREF="geographies.php">
+		  		<a href="geographies.php">
 					Administrer la liste des zones géographiques
 				</a>
 			</td>
@@ -141,7 +141,7 @@
 		<table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
 				<tr> 
   
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center" bordercolor="#000000">
         <tr> 
@@ -155,33 +155,33 @@
       </table>
     </td>
   </tr>
-<IF [#ADMIN]>
-	<MACRO NAME="TR_Separation_220">		
+<IF COND="[#ADMIN]">
+	<MACRO NAME="TR_SEPARATION_220">		
     <td bgcolor="#FFFFFF"> 
 			<table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
 			<tr> 
 				<tr> 
 					<td align="center" width="48">
-						<A HREF="options.php">
+						<a href="options.php">
 							<MACRO NAME="GIF_ADMINISTRER_32">
-						</A>
+						</a>
 					</td>
 					<td align="left">
-							<A HREF="options.php">
+							<a href="options.php">
 								Editer les metadonn&eacute;es et des options de la revue
-							</A>
+							</a>
 					</td>
 				</tr>
 			</table>
   </tr>
 </IF>
-<IF [#ADMIN]>
-		<MACRO NAME="TR_Separation_220">		
+<IF COND="[#ADMIN]">
+		<MACRO NAME="TR_SEPARATION_220">		
 	    <td bgcolor="#FFFFFF"> 
 	      <table width="220" border="0" align="center" cellspacing="4" cellpadding="4" bordercolor="#000000">
 	        <tr> 
 				<td align="center" width="48">
-					<MACRO NAME="Associer_icone_publication">
+					<MACRO NAME="ASSOCIER_ICONE_PUBLICATION">
 				</td>
 				<td align="left">
 					Associer une image<br>
@@ -192,7 +192,7 @@
 	</td>
 </tr>
 </IF>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" align="center" cellspacing="4" cellpadding="4" bordercolor="#000000">
         <tr> 
@@ -208,8 +208,8 @@
       </table>
     </td>
   </tr>
-<IF [#ADMIN]>
-	<MACRO NAME="TR_Separation_220">		
+<IF COND="[#ADMIN]">
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" align="center" cellspacing="4" cellpadding="4" bordercolor="#000000">
@@ -240,19 +240,19 @@
 				<tr> 
 
 
-<IF [#ADMIN]>
-	<MACRO NAME="TR_Separation_220">		
+<IF COND="[#ADMIN]">
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" align="center" border="0" cellspacing="4" cellpadding="4" bordercolor="#000000">
         <tr> 
 			<td align="center" width="45">
-		  		<a href="http://r1.revues.org/phpmyadmin/">
+		  		<a href="/phpmyadmin/">
 					<MACRO NAME="GIF_PHPMYADMIN">
 				</a>
 			</td>
           <td align="left">
-			  	<a href="http://r1.revues.org/phpmyadmin/">
+			  	<a href="/phpmyadmin/">
 					Accès à PhpMyAdmin (danger)
 				</a>
 			</td>
@@ -261,7 +261,7 @@
     </td>
   </tr>
 </IF>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" align="center" border="0" cellspacing="4" cellpadding="4" bordercolor="#000000">
@@ -280,7 +280,7 @@
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr>
     <td bgcolor="#FFFFFF">
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center" bordercolor="#000000">
@@ -299,7 +299,26 @@
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_220">		
+	<MACRO NAME="TR_SEPARATION_220">		
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="220" border="0" cellspacing="4" cellpadding="4" align="center" bordercolor="#000000">
+        <tr> 
+			<td align="center" width="48">
+		  		<a href="stats.php">
+					<MACRO NAME="GIF_STATS_32">  
+				</a>
+			</td>
+			<td align="left">
+		  		<a href="stats.php">
+					Statistiques de la revue
+				</a>
+			</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+	<MACRO NAME="TR_SEPARATION_220">		
   <tr> 
     <td bgcolor="#FFFFFF"> 
       <table width="220" border="0" cellspacing="4" cellpadding="4" align="center">
@@ -322,4 +341,4 @@
 		</td>
 
 </table>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

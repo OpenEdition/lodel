@@ -1,223 +1,938 @@
-.couleur_dominante1
+A.bouton_statut_publierOFF
 {
-	color : #316148;
+	/*  
+	 * Style des boutons qui servent à modifier le statut d'une publication. 
+	 */
+	color: blue;
+	font-size: xx-small;
+		
 }
 
-.couleur_dominante2
+.bouton_statut_publierON
 {
+	/*  
+	 * Style des boutons qui servent à modifier le statut d'une publication. 
+	 */
+	color: red;
+	font-size: xx-small;
+	
+}
+
+p
+{
+	/*  
+	 * Redéfinit les marges au dessus et en dessous des paragraphes formatés 
+	 * avec la balise <p>
+	 */
+	margin-bottom : 3;
+	margin-top : 3;
+}
+ 
+sup
+{
+	/*
+	 * Redéfinit la taille et la position d'un texte placé en exposant avec
+	 * la balise <sup>
+	 */
+	font-size: small;
+	font-weight: small;
+	vertical-align : 10%;
+}
+
+.couleur_1
+{
+	/*  
+	 * Couleur dominante n°1
+	 */
+	color : #9C3234;
+}
+
+.couleur_2
+{
+	/*  
+	 * Couleur dominante n°2
+	 */
 	color : #9DD4B7;
 }
 
-.couleur_dominante3
+.couleur_3
 {
-	color : Navy;
+	/*  
+	 * Couleur dominante n°3
+	 */
+	color : #ffffff;
 }
 
-.texte {
+.filet_1
+{
+	/*  
+	 * Largeur du filet <hr> n°1
+	 */
+	width: 30%;
+}
+
+.filet_2
+{
+	/*  
+	 * Largeur du filet <hr> n°2
+	 */
+	width: 60%;
+}
+
+.filet_3
+{
+	/*  
+	 * Largeur du filet <hr> n°3
+	 */
+	width: 100%;
+}
+
+
+
+.introduction
+{
+	/*  Style appliqué à l'introduction d'un numéro
+	 *
+	 */
 	font-size: x-small;
 	font-weight: small;
 	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	line-height: 150%;
-	text-indent : 30;
+	color: #9C3234;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 }
 
-.fase4_rdf {
-	font-size: x-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_petit {
+.texte
+{
+	/*  
+	 *
+	 */
 	font-size: xx-small;
 	font-weight: small;
 	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	line-height: 100%;
+	text-indent : 20;
 }
 
-.texte_trespetit {
+.texte_petit
+{
+	/*  
+	 *
+	 */
 	font-size: xx-small;
 	font-weight: small;
 	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 }
 
-.texte_centre {
+.texte_trespetit
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_trespetit_navigation
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_trespetit_centre_navigation
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_centre
+{
+	/*  
+	 *
+	 */
 	font-size: small;
 	font-weight: small;
 	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
-.texte_petit_centre {
-	font-size: x-small;
-	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_trespetit_centre {
-	font-size: xx-small;
-	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_sommaire {
+.texte_petit_centre
+{
+	/*  
+	 *
+	 */
 	font-size: small;
 	font-weight: small;
-	text-align : left;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.navigation {
-	font-size: x-small;
-	font-weight: small;
 	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-color : #9C3234;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
-.barretitre {
-	font-size: x-small;
-	font-weight: small;
-	text-align : left;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.citation {
-	font-size: xx-small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	padding-left : 60px;
-	padding-right : 60px;
-}
-
-
-.notes {
-	font-size: x-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.appeldenote {
+.texte_trespetit_centre
+{
+	/*  
+	 *
+	 */
 	font-size: xx-small;
 	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-
-A:link, A:visited, A:active {
-	text-decoration: none;
-	color: Blue;
-	font-style : normal;
-}
-
-A:hover {
-	color: Red;
-}
-
-.resume
-{
-	font-size: x-small;
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman"font-size : x-small;
-	color : #454545;
-	text-align : justify;
-}
-
-.titre
-{
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : large;
-	color : black;
 	text-align : center;
-	font-weight : bold;
-	font-variant : small-caps;
-	font-style : normal;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_sommaire
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: normal;
+	text-align : left;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.texte_sommaire_petit
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.texte_presentation
+{
+	/*  
+	 *
+	 */
+	font-size: small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	line-height: 120%;
+	text-indent : 0;
 }
 
 .titrerevue
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : large;
-	color : Navy;
+	/*  
+	 *
+	 */
+	font-size: large;
+	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
+	font-weight : bold;
+	text-align: left; 
+	margin-left: 10;
+	color: #9C3234;
+	line-height: 150%;
+}
+
+
+
+.soustitrerevue
+{
+	/*  
+	 *
+	 */
+	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : small;
+	color : black;
+	text-align : center;
+}
+
+.directeur
+{
+	/*  
+	 *
+	 */
+	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : small;
+	color : black;
 	text-align : center;
 	font-weight : bold;
+}
+
+.navigation
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.barretitre
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.citation
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	text-align : justify;
+	text-indent : 0;
+	margin-left : 20;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+		
+}
+
+.discret, A.discret:link, A.discret:hover, A.discret:visited, A.discret:active
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	color : #AAAAAA;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+
+	/*  Style attribué au texte introduisant le moteur de recherche interne.
+ 	 *
+ 	 */
+
+.chercher {
+	font-size: 10 pt;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+	margin: 20px 0px 20px 10px;
+
+.bibliographie
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	line-height: 100%;
+	text-indent : 0;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.notes
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	line-height: 90%;
+	text-align : justify;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.appeldenote
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+
+
+/*********************************************************************************************
+ *  Les liens Hypertexte                                                                     * 
+ *                                                                                           *
+ *  hover: quand le curseur survole le lien                                                  * 
+ *  link: lien non-visité                                                                    *
+ *  visited: lien visité                                                                     *
+ *  active: lien activé                                                                      *
+ *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit    *
+ *	placer un class dans la balise <a href>:                                                 *
+ *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les        * 
+ *  états du lien (active, hover...).                                                        *
+ *********************************************************************************************
+ */
+
+ 
+ /********************************************************************************************
+  *	style des liens par défaut                                                               *
+  ********************************************************************************************
+  */
+  
+   A {
+   	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+}
+
+A:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
+
+A:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+/***************************************************************************************
+ *	Les liens de class "Titre2"                                                         *
+ ***************************************************************************************
+ */
+
+A.titre2 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #cccccc;
+	font-family: arial, helvetica, sans-serif;
+	margin-left : 10;
+}
+
+A.titre2:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #ffffff;
+	font-family: arial, helvetica, sans-serif;
+}
+A.titre2:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #ffffff;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+
+/*****************************************************************************
+ *	style des liens pointant vers les auteurs                                *
+ *****************************************************************************
+ */ 
+ 
+A.auteur {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+A.auteur:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
+
+A.auteur:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+
+/*	**************************************************************************
+ *	style des liens de class "menu1"                                         *
+ *	**************************************************************************
+ */
+ 
+
+A.menu1 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: 9 pt;
+	text-decoration:none;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+} 
+
+A.menu1:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+ 	font-size: 9 pt;
+	text-decoration:none;
+	font-weight: bold;
+	color: #333333;
+	font-family: arial, helvetica, sans-serif;
+} 
+A.menu1:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #333333;
+	font-family: arial, helvetica, sans-serif;
+} 
+
+
+/* ****************************************************************************
+ *	Styles des liens de class "Menu2".									      *
+ *	***************************************************************************
+ */
+
+
+
+A.menu2 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+} 
+
+A.menu2:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+ 	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #333333;
+	font-family: arial, helvetica, sans-serif;
+} 
+
+A.menu2:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #333333;
+	font-family: arial, helvetica, sans-serif;
+} 
+
+
+	
+	
+/*  *****************************************************************************
+ *	Styles des liens qui pointent vers les textes intégraux dans les sommaires.	*
+ *	*****************************************************************************
+ */
+
+
+
+A.texte_integral {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #666666;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+
+A.texte_integral:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+A.texte_integral:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+
+}
+
+
+
+
+ /*	style des liens 
+  */
+
+A.petittexte {
+	font-size: xx-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+}
+
+A.petittexte:hover {
+	font-size: xx-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
+
+A.petittexte:active {
+	font-size: xx-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+
+
+
+.resume
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	color : #000000;
+	text-align : justify;
+	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.titre
+{
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : medium;
+	color : black;
+	text-align : right;
+	font-weight : medium;
 	font-style : normal;
 }
 
 .soustitre
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : medium;
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : small;
 	color : black;
-	text-align : center;
+	text-align : right;
+	font-style : normal;
 }
 
-.soustitrerevue
-{
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : medium;
-	color : Navy;
-	text-align : center;
-}
 
-.partie
+.regroupement
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : medium;
-	color : navy;
-	text-align : center;
+	/*  
+	 *
+	 */
+	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : small;
+	color : black;
+	text-align : left;
 }
 
 .auteur
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	/*  
+	 *
+	 */
+	text-align : right;
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 	font-size : small;
-	color : Navy;
-	text-align : center;
-	font-weight : bold;
+	color : 1;
+	text-align : right;
+	font-weight : medium;
 }
 
-.directeur
+.auteur_sommaire
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
-	color : Navy;
-	text-align : center;
-	font-weight : bold;
+	/*  
+	 *
+	 */
+	text-align : left;
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : x-small;
+	color : 1;
+	font-variant : small-caps;
 }
 
-.tableau {
-	font-size: x-small;
+.auteur_recension
+{
+	/*  
+	 *
+	 */
+	text-align : right;
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : x-small;
+	color : 1;
+	text-align : right;
+	font-variant : small-caps;
+}
+
+.auteur_indexarticles
+{
+	/*  
+	 *
+	 */
+	text-align: center;
+	font-variant : small-caps;
 	font-weight: normal;
-	text-align : justify;
+	font-size: x-small;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+	
+.integral
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	color : Grey;
+	font-weight: light;
+	text-align : right;
 }
 
-	H1 {
+.indexlettrine
+{
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : small;
+	color : black;
+	font-weight : bold;
+	text-align : left;
+}
+
+.indextexte
+{
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : x-small;
+	color : black;
+	font-weight : light;
+	text-align : left;
+}
+
+body
+{
+	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
+	 *
+	 */
+	 background-color: #BFBFBF;
+	 margin-left : 0;
+	 margin-top : 0;
+	 margin-bottom : 0;
+	 margin-right : 0;
+}
+
+.titre1 {
 	font-size: medium;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: justify;
+	font-weight: bold;
+	color: #9C3234;
+	background-color: #E0E0E0;
+	font-family: arial, helvetica, sans-serif;
 }
-	H2 {
+
+.regroupement2 {
 	font-size: small;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: left
+	font-weight: bold;
+	color: #cccccc;
+	background-color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
 }
-	H3 {
+
+.section1
+{
+	/*  définit les caractéristiques du titre de de niveau 1 : h1
+	 *
+	 */
+	font-weight : large;
+	font-size : medium;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	text-align: left;
+	text-indent : 0;
+	line-height: 100%;
+}
+
+
+
+h2
+{
+	/*  
+	 *
+	 */
+	font-weight : normal;
+	font-size: small;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	text-align: left;
+	text-indent : 0;
+}
+
+h3
+{
+	/*  
+	 *
+	 */
 	font-size: x-small;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 	text-align: left;
 	color: #00000
 }
-	H4 {font-size: x-small; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000};
-	H5 {font-size: 10pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
-	H6 {
-	font-size: 10pt;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman;";
+
+h4
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman;";
 	text-align: left;
+	color: #000000;
+}
+
+h5
+{
+	/*  
+	 *
+	 */
+	font-size: 10pt;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman;";
+	text-align: left;
+	color: #000000;
+	line-height: 1;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+	
+h6
+{
+	/*  
+	 *
+	 */
+	font-size: small;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-variant : small-caps;
+	font-style : normal;
+	text-align: center;
+	text-indent : 0;
 	color: Black;
 }
-	H7 {font-size: 28pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: center; color: #00000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
+
+h7
+{
+	/*  
+	 *
+	 */
+	font-size: large;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif;"; 
+	font-weight : bold;
+	text-align: center; 
+	color: #ff0000;
+	line-height: 150%;
+}
+
+
+	/*Styles des menus dans la barre de navigation
+	 */
+
+.menu1 {
+	font-size: small;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+	
+	
+	
+} 
+.menu2 {
+	font-size: small;
+	font-weight: bold;
+	color: #000000;
+	font-family: arial, helvetica, sans-serif;
+	text-align: right;
+} 
+
+	/* Style du formulaire de recherche
+	 */
+
+.chercher {
+	font-size: 10 pt;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+	margin-left: 2em;
+}

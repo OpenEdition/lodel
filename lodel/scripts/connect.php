@@ -1,6 +1,6 @@
 <?
 
-include_once("lodelconfig.php"); // en general il est deja inclue
+require_once("lodelconfig.php"); // en general il est deja inclue
 
 mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die (mysql_error());
 if ($GLOBALS[revue]) {

@@ -1,47 +1,96 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
-<MACRO NAME="OUVRIR_HTML">
-<title>Ruralia, revue de l'association des ruralistes français</title>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
 
+<script type="text/javascript">
+
+function SwitchImg()
+{ //start
+  var rem, keep=0, store, obj, switcher=new Array, history=document.Data;
+    for (rem=0; rem < (SwitchImg.arguments.length-2); rem+=3) {
+    	store = SwitchImg.arguments[(navigator.appName == 'Netscape')?rem:rem+1];
+    if ((store.indexOf('document.layers[')==0 && document.layers==null) ||
+        (store.indexOf('document.all[')==0 && document.all==null))
+         store = 'document'+store.substring(store.lastIndexOf('.'),store.length);
+         obj = eval(store);
+    if (obj != null) {
+   	   switcher[keep++] = obj;
+      switcher[keep++] = (history==null || history[keep-1]!=obj)?obj.src:history[keep];
+      obj.src = SwitchImg.arguments[rem+2];
+  } }
+  document.Data = switcher;
+} //end
+
+function RestoreImg()
+{ //start
+  if (document.Data != null)
+    for (var rem=0; rem<(document.Data.length-1); rem+=2)
+      document.Data[rem].src=document.Data[rem+1];
+} //end
+</script>
+
+<MACRO NAME="OUVRIR_HTML">
+<title><MACRO NAME="NOM_REVUE"></title>
+<MACRO NAME="METADONNEES">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td width="100%" valign="top">
-			<table width="100%" border="0" cellspacing="0" align="center"  height="421">
-				<tr>
-					<td valign="top" class="texte_petit_centre">
-						<div align="center">
-							<a href="sommaire.html?id=9">
-								<MACRO NAME="IMG_LOGO_REVUE">
-							</a>
-						</div>
-						<br />
-						<br />
-							<MACRO NAME="DERNIER_NUMERO">
-						<br />
-					</td>
-				</tr>
-				<tr>
-					<td class="texte_petit">
-					<blockquote>
-						<br />
-							<TEXTE NAME="nouveaute">
-					</blockquote>
-					</td>
-				</tr>
-				<tr>
-					<td class="texte_petit">
-					<br />
-					<img src="images/couverture.gif" alt="Ruralia" border="0">
-					
-						<MACRO NAME="REVUES_ORG">
-					</td>
-				</tr>
-			</table>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+	<MACRO NAME="TRACER_SEPARATION_VERTICALE">
+	<td width="561" valign="top"  bgcolor="#ffffff">
+		<MACRO NAME="IMG_LOGO_LODELIA">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center"  height="100%">
+			<tr>
+				<td  class="titrerevue" valign="middle" width="561" height="30" bgcolor="#F4F4F4">
+					<MACRO NAME="NOM_REVUE"> | Style ".titrerevue"
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" width="561" height="15" bgcolor="#ffffff">
+					<img src="images/spacer.gif" width="561" height="15"  border="0">
+				</td>
+			</tr>
+			<tr>
+				<td class="titre2"  valign="middle" width="561" height="20" bgcolor="#9C3234">
+					<MACRO NAME="DERNIER_NUMERO"> | Style ".titre2" 
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" width="561" height="15" bgcolor="#ffffff">
+					<img src="images/spacer.gif" width="561" height="15"  border="0">
+				</td>
+			</tr>
+			<tr>
+				<td valign="middle" width="561">
+				<MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" width="561" height="5" bgcolor="#ffffff">
+					<img src="images/spacer.gif" width="561" height="5"  border="0">
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" width="561"  bgcolor="#ffffff" align="right">
+					<img src="images/image.jpg" width="560"  border="0">
+				</td>
+			</tr>
+			<tr>
+				<td>
+				<TEXT NAME="nouveaute">
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+				<MACRO NAME="REVUES_ORG"> 
+				</td>
+			</tr>
+		</table>
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

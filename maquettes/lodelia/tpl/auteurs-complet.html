@@ -1,14 +1,24 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Auteur : Marin Dacos					   -->
-<!-- Date de création : août 2002.              -->
-<!-- Dernière modification majeure : janv. 2003 -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Date de création : août 2002.                                      -->
+<!-- Dernière modification majeure : janvier 2003.                      -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>Index par auteurs</TITLE>
-<MACRO NAME="INSERER_STYLE">
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_AUTEURS">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
@@ -21,10 +31,10 @@
 			</tr>
 			<tr>
 				<td>
-					<MACRO NAME="table_alpha">
+					<MACRO NAME="TABLE_ALPHABETIQUE">
 				</td>
 			</tr>
-			<BOUCLE NAME="alphabet">
+			<LOOP NAME="alphabet">
 				<tr>
 					<td class="titre">
 						<a name="[#LETTRE]">
@@ -33,30 +43,30 @@
 						</a>
 					</td>
 				</tr>
-				<BOUCLE NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
+				<LOOP NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
 					<tr>
 						<td class="soustitre">
 							<a href="auteur.html?id=[#ID]">
-								<span class="couleur_dominante1">
+								<span class="couleur_1">
 									[#PRENOM] 
 									[#NOMFAMILLE]
 								</span>
 							</a>
-							<MACRO NAME="offline">
+							<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
 						</td>
 						<td>
 							&nbsp;
 						</td>
 					</tr>
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idauteur='[#ID]'">
+					<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idauteur='[#ID]'">
 						<tr>
 							<td>
 								<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
 							</td>
 						</tr>
-					</BOUCLE>
-				</BOUCLE>
-			</BOUCLE>
+					</LOOP>
+				</LOOP>
+			</LOOP>
 		</table>
 	</td> 
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">

@@ -1,68 +1,81 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!--
-	Index géographique complet (il affiche indistinctement tous les niveaux de l'arbre)
-	(il confond donc dans l'affichage une catégorie avec une sous-catégorie )
-	(on pourra affiner ultérieurement).
-	Auteur : Marin Dacos.
-	Création : septembre 2002.
-	Dernière modification majeure : septembre 2002.
--->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index géographique complet. Il affiche indistinctement tous les    -->
+<!-- niveaux de l'arbre, il confond donc dans l'affichage une catégorie -->
+<!-- avec une sous-catégorie on pourra affiner ultérieurement.          -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>Index géographique</TITLE>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_GEOS">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top"> 
-			<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td class="titre" align="center"> 
-						<br />
-						<a href="mots-complet.html">
-								<span class="couleur_dominante1">
-									Index géographique
-								</span>
-						</a>
-						<br />
-					</td>
-				</tr>
-				<tr>
-					<td width="100%" class="soustitre">
-						<BOUCLE NAME="periodes" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
+	<td valign="top"> 
+		<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
+			<tr>
+				<td class="titre" align="center"> 
+					<br />
+					<a href="mots-complet.html">
+						<span class="couleur_1">
+							Index géographique
+						</span>
+					</a>
+					<br />
+				</td>
+			</tr>
+			<tr>
+				<td width="100%" class="soustitre">
+					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
+						<DO>	
 							<a href="geo.html?id=[#ID]">
-									[#NOM]
+								[#NOM]
 							</a>
 							&nbsp;|
-						</BOUCLE>
-					</td>
-				</tr>
-			</table>
-
-			<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-			<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td ALIGN="CENTER" WIDTH="50%" VALIGN="MIDDLE" class="soustitre">
-						<a name="[#ABREV]">
-								<span class="couleur_dominante1">
+						</DO>
+					</LOOP>
+				</td>
+			</tr>
+		</table>
+		<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
+			<DO>
+				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="top"  bordercolor="Black">
+					<tr>
+						<td align="center" width="50%" valign="middle" class="soustitre">
+							<a name="[#ABREV]">
+								<span class="couleur_1">
 									[#NOM]
 								</span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td span class="texte">
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-						<MACRO NAME="INFOS_DOCUMENT">
-					</BOUCLE>
-					</td>
-				</tr>
-			</table>
-			</BOUCLE>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td span class="texte">
+							<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+								<DO>
+									<MACRO NAME="INFOS_DOCUMENT">
+								 </DO>
+							</LOOP>
+						</td>
+					</tr>
+				</table>
+			</DO>
+		</LOOP>
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">
