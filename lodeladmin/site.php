@@ -330,7 +330,7 @@ if ($tache=="fichier") {
   mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
-  header("location: ".$urlroot.$context[rep]."/lodel/admin");
+  header("location: ".$urlroot.$context[rep]."/lodel/edition");
   return;
 
 #  header("location: index.php");
