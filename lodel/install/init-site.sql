@@ -32,7 +32,7 @@
 
 
 CREATE TABLE IF NOT EXISTS #_TP_objects (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	class		VARCHAR(64),
 
 	PRIMARY KEY (id)

@@ -188,7 +188,6 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
 function closetags($text) 
 {
   preg_match_all("/<(\w+)\b[^>]*>/",$text,$results,PREG_PATTERN_ORDER);
-  print_R($results);
   $n=count($results[1]);
   for($i=$n-1; $i>=0; $i--) $ret.="</".$results[1][$i].">";
   return $ret;
