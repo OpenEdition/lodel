@@ -4,7 +4,60 @@
  *********************************************************************************************
  */
 
-
+ 
+ /*********************************************************************************************
+ *  Structure commune:
+ *		body 		
+ *			.conteneur
+ *				.principale		
+ *					.barrenav
+ *					.corps
+ *						.separation
+ *						.contenu
+ *							
+ *
+ *	******************************************************************************************
+ * Index.html
+ *						.contenu
+ *		 					.titre1
+ *								A.titre1
+ *								.soustitrerevue
+ *							.titre2
+ *								A.titre2
+ *							.extrait
+ *							.texte_trespetit_centre
+  *********************************************************************************************
+ * barre.html
+ *					.barrenav
+ * 						.titrebarre
+ *						.chercher	
+ *						.menu1
+ *							A.menu1
+ *						.menu2
+ *							A.menu2
+ *						.texte_trespetit_centre
+ *						
+ * *******************************************************************************************
+ * Sommaire.html
+ *						.contenu
+ *                      	.titre1
+ *								.soustitrerevue
+ *								.directeurpublication
+ *							.docregroupement
+ *								.afficherdocument
+ *									.A.auteur
+ *									.article
+ *										.menu2
+ *									.bouton_statut_publierON
+ *									.A.texte_integral
+ *								.titre2
+ *							..texte_trespetit_centre
+ /*********************************************************************************************
+ *  Les éléments principaux                                                                   * 
+  *********************************************************************************************
+ */
+ 
+ 
 body
 {
 	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
@@ -18,6 +71,9 @@ body
 	 font-size: small;
 	 font-family: Arial, Helvetica, sans-serif, Times New Roman,  Verdana ;
 	 text-decoration: none;
+	 font-weight: normal;
+	 text-indent: 0;
+	 
 }
 
 table {
@@ -65,8 +121,8 @@ p {
 	 * Redéfinit les marges au dessus et en dessous des paragraphes formatés 
 	 * avec la balise <p>
 	 */
-	margin-bottom : 3;
-	margin-top : 3;
+	margin-bottom : 2;
+	margin-top : 2;
 }
  
 sup {
@@ -80,30 +136,28 @@ sup {
 }
 
 /********************************************************************************************
-  *	Les différents niveaux de titre                                                             *
+  *	Les différents niveaux de titre contenus à l'intérieur des textes                                                            *
   ********************************************************************************************
   */
 
-.section1
+h1
 {
-	/*  définit les caractéristiques du titre de de niveau 1 : h1
-	 *
+	/*  définit les caractéristiques du titre de niveau 1 : h1	
 	 */
-	font-weight : large;
+	font-weight : bold;
 	font-size : 140%;
-	text-align: left;
 	text-indent : 0;
 	line-height: 100%;
+	
 }
-
 
 
 h2
 {
 	/*  
-	 *
+	 *définit les caractéristiques du titre de niveau 2 : h2	
 	 */
-	font-weight : normal;
+	font-weight : bold;
 	font-size: 130%;
 	text-align: left;
 	text-indent : 0;
@@ -112,7 +166,7 @@ h2
 h3
 {
 	/*  
-	 *
+	 *	définit les caractéristiques du titre de niveau 3 : h3	
 	 */
 	font-size: 120%;
 	text-align: left;
@@ -122,7 +176,7 @@ h3
 h4
 {
 	/*  
-	 *
+	 *	définit les caractéristiques du titre de niveau 4 : h4
 	 */
 	font-size: 110%;
 	text-align: left;
@@ -132,7 +186,7 @@ h4
 h5
 {
 	/*  
-	 *
+	 * définit les caractéristiques du titre de niveau 5 : h5	
 	 */
 	font-size: 100%;
 	text-align: left;
@@ -147,7 +201,7 @@ h5
 h6
 {
 	/*  
-	 *
+	 *	définit les caractéristiques du titre de niveau 6 : h6	
 	 */
 	font-size: 90%;
 	font-variant : small-caps;
@@ -156,6 +210,87 @@ h6
 	text-indent : 0;
 	color: Black;
 }
+
+
+.section1
+{
+	/*  définit les caractéristiques du titre de niveau 1 : section1	
+	 */
+	font-weight : bold;
+	font-size : 140%;
+	margin-left: 5px;
+	margin-bottom: 25px;
+	margin-top: 25px;
+	
+}
+
+
+.section2
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 2 : section2	
+	 */
+	font-weight : bold;
+	font-size: 130%;
+	margin-left: 10px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	
+}
+
+.section3
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 3 : section3	
+	 */
+	font-size: 120%;
+	font-weight : bold;
+	color: #00000;
+	margin-left: 15px;
+	margin-bottom: 15px;
+	margin-top: 15px;
+	
+}
+
+.section4
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 4 : section4	
+	 */
+	font-size: 110%;
+	font-weight: bold;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	color: #000000;
+}
+
+.section5
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 5 : section5	
+	 */
+	font-size: 100%;
+	font-weight: bold;
+	color: #000000;
+	margin-left: 25px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+	
+.section6
+{
+	/*  
+	 *	définit les caractéristiques du titre de niveau 6 : section6	
+	 */
+	font-size: 90%;
+	font-weight: bold;
+	color: #000000;
+	margin-left: 30px;
+	
+
+}
+
 
 /*********************************************************************************************
  *  Les liens Hypertexte                                                                     * 
@@ -202,9 +337,10 @@ A:active {
 	
 }
 
-
 /*********************************************************************************************
  *  Les différentes class liées aux éléments de structure des pages.                         * 
+ *	 - .conteneur																			 *
+ *   - .principale
  *   - .barrenav                                                                             *
  *	 - .corps                                                                                *
  *	 - .separation                                                                           *
@@ -212,10 +348,25 @@ A:active {
  *********************************************************************************************
  */
 	
+ .conteneur {
+ 	/*
+	 * Bloc purememnt structurel. Pas de propriété particulière, l'attribut text-align: center
+	 * permet de centrer le bloc imbriqué
+	 */
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
 
  .principale {
- 	width: auto;
+ 	/*
+	 * Bloc principal contenant l'ensmble de la page. définit la largeur de la page. 
+	 */
+ 	width: 775;
+	margin-right: auto;
+	margin-left: auto;
 	height: 100%;
+	text-align: left;
 }
  
 .barrenav {
@@ -246,7 +397,7 @@ A:active {
 
 .separation {
 	/*
-	 * Style du bloc marquant une sépération entre la barre de nav et le reste de la page.
+	 * Style du bloc marquant une séparation entre la barre de nav et le reste de la page.
 	 * Ce bloc est contenu dans le bloc de class "corps", il se situe à gauche du bloc de class
 	 * "contenu"
 	 */
@@ -268,18 +419,16 @@ A:active {
 	margin: 0;
 }
 
-
-
-
  /********************************************************************************************
- *  Les  class liées aux titres                                                              * 
+ *  Les  class communes à toutes les pages                                                   * 
  *********************************************************************************************
  */
- 	/* Style .titrerevue  
+ 	/* Style .titre1
 	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
 	 * A 
 	 */
-.titrerevue {
+	 
+.titre1  {
 	 width: auto;
 	 background-color: #F4F4F4;
 	 font-size: 140%;
@@ -288,34 +437,29 @@ A:active {
 	 color: #9C3234;
 	 line-height: 120%;
 	 margin-bottom: 15px;
+	 text-decoration: none;
 }
 
-A.titrerevue {
+A.titre1  {
 	/*  
-	 *	Styles des liens non visités et visités des liens des éléments de classe "titrerevue"
+	 *	Styles des liens non visités et visités de class .titre1
 	 */
-	font-size: 100%;
-	color: #9C3234;
-	text-decoration: none;
-	
+	 font-size: 100%;
+	 text-decoration: none;
 }
 
-A.titrerevue:hover {
+A.titre1:hover {
 	/*  
-	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
+	 *	Styles des liens survolés des liens des éléments de classe "titre1"
 	 */
-	color: #666666;
-	font-size: 100%;
-	
+	color: #666666;	
 }
 
-A.titrerevue:active {
+A.titre1:active {
 	/*  
-	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
+	 *	Style des liens actifs des liens des éléments de classe "titre1"
 	 */
 	color: #666666;
-	font-size: 100%;
-	
 }
 
 /*************************************************************************/
@@ -328,7 +472,6 @@ A.titrerevue:active {
 	 width: auto;
 	 height: 20;
 	 background-color: #9C3234;
-	 font-size: small;
 	 font-weight : bold;
 	 text-align: left; 
 	 color: #ffffff;
@@ -342,8 +485,6 @@ A.titre2 {
 	/*  
 	 *	Styles des liens non visités et visités
 	 */
-	font-size: small;
-	font-weight: bold;
 	color: #cccccc;
 	text-indent: 0;
 	margin: 0;
@@ -355,7 +496,6 @@ A.titre2:hover {
 	/*  
 	 *	Styles des liens survolés
 	 */
-	font-size: small;
 	font-weight: small;
 	color: #ffffff;
 	text-indent: 0;
@@ -366,65 +506,10 @@ A.titre2:active {
 	/*  
 	 *	Style des liens actifs
 	 */
-	font-size: small;
 	font-weight: small;
 	color: #ffffff;
 	text-indent: 0;
 	margin: 0;
-}
-
-
-.alphabet {
-	 width: auto;
-	 height: 20;
-	 background-color: #9C3234;
-	 font-weight : bold;
-	 text-align: left; 
-	 color: #ffffff;
-	 margin-bottom: 7px;
-	 margin-top: 15px;
-	 vertical-align: middle;
-}
-
-A.alphabet {
-	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	font-weight: bold;
-	color: #cccccc;
-	text-indent: 0;
-	margin: 0;
-	vertical-align: middle;
-
-}
-
-A.alphabet:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	font-weight: small;
-	color: #ffffff;
-	text-indent: 0;
-	margin: 0;
-	
-}
-A.alphabet:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-weight: small;
-	color: #ffffff;
-	text-indent: 0;
-	margin: 0;
-}
-
-
-.articles_motscles {
-	/*  
-	 *	Style des liens actifs
-	 */
-	 padding: 10px;
-	 font-size: 90%;
 }
 
 /***************************************************************************/
@@ -433,6 +518,7 @@ A.alphabet:active {
 	/*  
 	 * Style .titre3 
 	 */
+	 
 	width: auto;
 	height: 20;
 	background-color: #EFEFEF;
@@ -442,82 +528,7 @@ A.alphabet:active {
 	margin-top: 20px;
 }
 
-/*****************************************************************************
- *	style des liens pointant vers les auteurs                                *
- *****************************************************************************
- */ 
- 
-A.auteur {
-	/*  
-	 *	Styles des liens non visités 
-	 */
-	text-decoration:none;
-	color: #9C3234;
-	
-}
-
-A.auteur:visited {
-	/*  
-	 *	Styles des liens  visités
-	 */
-	color: #9C3234;
-	}
-
-A.auteur:hover , A.auteur:active {
-	/*  
-	 *	Styles des liens survolés et actifs
-	 */
-	color: #666666;
-	
-}
-
-	
-/*  *****************************************************************************
- *	Styles des liens qui pointent vers les textes intégraux dans les sommaires.	*
- *	*****************************************************************************
- */
-
-
-
-A.texte_integral {
-	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	color: #666666;
-	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif;
-}
-
-
-A.texte_integral:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	color: #333333;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
-}
-
-A.texte_integral:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	color: #333333;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
-
-}
-
-/*********************************************************************************************
- *  Les  class utlisées dans la page "sommaire.html"                                         * 
- *********************************************************************************************
-*/
+/***************************************************************************/
 
 .soustitrerevue
 {
@@ -529,8 +540,84 @@ A.texte_integral:active {
 	font-weight: normal;
 	font-style: italic;
 }
+
+
+
+/*****************************************************************************
+ *	style des liens pointant vers les auteurs                                *
+ *****************************************************************************
+ */ 
+
+.auteur {
+	/*
+	 *	style des auteurs
+	 */
+	 color: #9C3234;
+}
  
  
+A.auteur {
+	/*  
+	 *	Styles des liens non visités 
+	 */
+	text-decoration:none;
+	color: #9C3234;
+}
+
+A.auteur:visited {
+	/*  
+	 *	Styles des liens  visités
+	 */
+	color: #9C3234;
+}
+
+A.auteur:hover , A.auteur:active {
+	/*  
+	 *	Styles des liens survolés et actifs
+	 */
+	color: #666666;
+}
+
+/*  *****************************************************************************
+ *	Styles des liens qui pointent vers les textes intégraux                 	*
+ *	*****************************************************************************
+ */
+
+A.texte_integral {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #666666;
+}
+
+A.texte_integral:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+}
+
+A.texte_integral:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+}
+
+/*********************************************************************************************
+ *  Les  class spécifiques utilisées dans la page "sommaire.html"                                         * 
+ *********************************************************************************************
+*/
+
 .directeur_publication {
 	/*  
 	 * Style utilisé pour le directeur de la publication
@@ -538,6 +625,8 @@ A.texte_integral:active {
 	padding-left: 20px;
 	font-size: 75%;
 }
+
+/****************************************************************************/
 
 .docregroupement {
 	/*
@@ -548,38 +637,7 @@ A.texte_integral:active {
 	margin-top: 10px;
 }
 
-
-/***************************************************************************************
- *	Styles concernant l'affichage dans article.html                                    *
- ***************************************************************************************
- */
- 
- /*
-  * Les styles titre21 et signaler imprimer 
-  */
- 
- .titre21 {
-	
-	 width: 500;
-	 height: 20;
-	 background-color: #9C3234;
-	 font-size: medium;
-	  font-weight : bold;
-	 text-align: left; 
-	 color: #ffffff;
-	 text-indent: 10;
-	 margin-bottom: 15px;
-	 float: left;
-}
-
-.signalerimprimer {
-	 width: 61;
-	 height: 20;
-	 background-color: #9C3234;
-	 margin-right:0;
-}
- 
- /******************************************************************************************/
+/****************************************************************************/
 
 .afficherdocument  {
 	/* 
@@ -587,13 +645,14 @@ A.texte_integral:active {
 	 */
 	width: auto;
 	background-color: #F7F7F7;
-	text-decoration: none;
 	color: #666666;
 	margin-bottom: 6px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	
 }
+
+/*****************************************************************************/
 
 .article {
 	font-size: x-small;
@@ -685,6 +744,15 @@ A.texte_integral:active {
 	padding-right: 2em;
 	padding-bottom: 2em;
 }
+
+ul {
+	font-size: small;
+}	
+
+ul.puce {
+	list-style-image: url(images/trianglebordeau.gif);
+}
+
 
 /***************************************************************************************/
 
@@ -885,7 +953,27 @@ A.menu2:active {
 	margin: 0; 
 }
 
+ /***************************************************************************************
+ *	Styles titre21 et signalerimprimer                                                 *
+ ***************************************************************************************
+ */
  
+ /*
+  * Les styles titre21 et signaler imprimer, ils s'insèrent dans le style .titre2
+  */
+ 
+ .titre21 {
+	
+	 width: 495;
+	 float: left;
+}
+
+.signalerimprimer {
+	 width: 61;
+	 height: 20;
+	 margin-right:0;
+}
+
 	
 
 /**********************************************************************************/
@@ -932,6 +1020,62 @@ A.menu2:active {
 	color: #666666;
 	
 	
+}
+
+
+
+
+.alphabet {
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 margin-bottom: 7px;
+	 margin-top: 15px;
+	 vertical-align: middle;
+}
+
+A.alphabet {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-weight: bold;
+	color: #cccccc;
+	text-indent: 0;
+	margin: 0;
+	vertical-align: middle;
+
+}
+
+A.alphabet:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+	
+}
+A.alphabet:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+}
+
+
+.articles_motscles {
+	/*  
+	 *	Style des liens actifs
+	 */
+	 padding: 10px;
+	 font-size: 90%;
 }
 
 
@@ -1346,13 +1490,7 @@ A.petittexte:active {
 
 
 
-.titre1 {
-	font-size: medium;
-	font-weight: bold;
-	color: #9C3234;
-	background-color: #E0E0E0;
-	
-}
+
 
 .regroupement2 {
 	font-size: small;

@@ -242,11 +242,11 @@ A:active {
  *  Les  class liées aux titres                                                              * 
  *********************************************************************************************
  */
- 	/* Style .titrerevue  
+ 	/* Style .titre1  
 	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
 	 * A 
 	 */
-.titrerevue {
+.titre1 {
 	 width: auto;
 	 background-color: #ffffff;
 	 font-size: 140%;
@@ -257,9 +257,9 @@ A:active {
 	 margin-bottom: 15px;
 }
 
-A.titrerevue {
+A.titre1 {
 	/*  
-	 *	Styles des liens non visités et visités des liens des éléments de classe "titrerevue"
+	 *	Styles des liens non visités et visités des liens des éléments de classe "titre1"
 	 */
 	font-size: 100%;
 	color: #9C3234;
@@ -267,9 +267,9 @@ A.titrerevue {
 	border: 0;
 }
 
-A.titrerevue:hover {
+A.titre1:hover {
 	/*  
-	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
+	 *	Styles des liens survolés des liens des éléments de classe "titre1"
 	 */
 	font-size: 90%;
 	color: #666666;
@@ -277,9 +277,9 @@ A.titrerevue:hover {
 	
 }
 
-A.titrerevue:active {
+A.titre1:active {
 	/*  
-	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
+	 *	Style des liens actifs des liens des éléments de classe "titre1"
 	 */
 	font-size: 90%;
 	color: #666666;
@@ -1375,15 +1375,6 @@ A.petittexte:active {
 	text-align : left;
 }
 
-
-
-.titre1 {
-	font-size: medium;
-	font-weight: bold;
-	color: #9C3234;
-	background-color: #E0E0E0;
-	
-}
 
 .regroupement2 {
 	font-size: small;

@@ -4,7 +4,6 @@
  *********************************************************************************************
  */
 
-
  /*
   *	les styles concernant le logo Lodelia
   */
@@ -46,6 +45,8 @@
 	margin: 0;
 }
 
+
+/***************************************************************************************/
 	
 	/*
  	 *	Les styles définissant les différentes images du logo de Revues.org                       
@@ -61,7 +62,10 @@
 }
 
 
-.logo_revuesorg3 a {
+.logo_revuesorg3 a  {
+	/*
+ 	 *	Logo avec Roll Over : définition du style quand le logo est inactif                       
+     */
 	height: 50;
 	width: 165;
 	background-color: #EFEFEF;
@@ -71,8 +75,10 @@
 }
 
 
-
 .logo_revuesorg3 a:hover  {
+	/*
+ 	 *	Logo avec Roll Over: définition du style quand le logo est survolé                     
+     */
 	height: 50;
 	width: 165;
 	background-color: #EFEFEF;
