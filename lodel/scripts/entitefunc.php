@@ -4,7 +4,8 @@
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  *
  *  Home page: http://www.lodel.org
  *
@@ -118,7 +119,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   // ok, we are allowed to modifiy/add this entity.
   //
 
-  ###if ($champcritere) $champcritere=" AND ".$champcritere;
+  // for new entite, all the field must be set with the defaut value if any.
+  // for the old entite, the criteria must be true to modifie the field.
+  if ($champcritere && $id) $extrawhere=" AND ".$champcritere;
   if ($champcritere) $champcritere=",(".$champcritere.")";
 
   // check for errors and build the set
@@ -130,12 +133,12 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   $files_to_move=array();
   
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut,balises $champcritere FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut,balises $champcritere FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $extrawhere") or die (mysql_error());
   while (list($nom,$type,$condition,$defaut,$balises,$critereok)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
 
-    if ($critereok) {
+    if ( !$champcritere || $critereok) {
       if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
     } else {
       $entite[$nom]="";
