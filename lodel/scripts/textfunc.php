@@ -353,7 +353,10 @@ function paranumber (&$texte)
 
 function removefootnotes(&$text)
 {
-        return preg_replace("/<a\b[^>]+>\s*<sup>\s*<small>.*?<\/small>\s*<\/sup>\s*<\/a>/is","",$text);
+  return preg_replace(array('/<a\b[^>]+\bid=\"bodyftn\d+\"[^>]*>.*?<\/a>/s',
+			    '/<span\b[^>]+class="footnoteanchor"[^>]*>[\s\n]*<\/span>/i',
+			    '/<span\b[^>]+class="footnotereference"[^>]*>[\s\n]*<\/span>/i')
+		      ,"",$text);
 }
 
 /**
@@ -395,13 +398,14 @@ function eq($str,$texte)
 
 function notes($type,&$texte)
 {
-  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
+#  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
+  preg_match_all('/<p\b[^>]*>.*?<\/p>/',$texte,$results,PREG_PATTERN_ORDER);
   if ($type=="nombre") {
-    $notes=preg_grep('/<a class="sd[^>]+>[0-9]+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a [^>]*\bid="ftn\d+"[^>]+>[0-9]+<\/a>/',$results[0]);
   } elseif ($type=="lettre") {
-    $notes=preg_grep('/<a class="sd[^>]+>[a-zA-Z]+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a [^>]*\bid="ftn\d+"[^>]+>[a-zA-Z]+<\/a>/',$results[0]);
   } elseif ($type=="asterisque") {
-    $notes=preg_grep('/<a class="sd[^>]+>\*+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a [^>]*\bid="ftn\d+"[^>]+>\*+<\/a>/',$results[0]);
   } else die ("type \"$type\" inconnues");
   return join("",$notes);
 }
@@ -453,7 +457,7 @@ function strip_tags_keepnotes($keeptags,$text=-1)
 
 {
   if (is_numeric($text)) { $text=$keeptags; $keeptags=""; }
-  $arr=preg_split("/(<sup>(?:<font\b[^>]*>)*<a class=\"sd(?:foot|end)noteanc\"[^>]+><sup>[^<>]+<\/sup><\/a>(?:<\/font>)*<\/sup>)/s",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $arr=preg_split('/(<span\b[^>]+class="footnotereference"[^>]*>\s*<span\b[^>]+class="footnoteanchor"[^>]*>\s*<a\b[^>]+\bid=\"bodyftn\d+\"[^>]*>.*?<\/a>\s*<\/span>\s*<\/span>)/is',$text,-1,PREG_SPLIT_DELIM_CAPTURE);
   $count=count($arr);
   for($i=0; $i<$count; $i+=2) $arr[$i]=strip_tags($arr[$i],$keeptags);
   return join("",$arr);
@@ -573,7 +577,7 @@ function nicefilesize($lien)
 function wiki($text) 
 
 {
-  include('wikirenderer/WikiRenderer.lib.php');
+  require_once('wikirenderer/WikiRenderer.lib.php');
   $wkr = new WikiRenderer();
   return "processed:".($wkr->render($text));
 }
