@@ -347,18 +347,22 @@ Will be reimplemented using a proper XML parser.
   array_push($srch,"/(<\/?r2r:[^>]+?)\((user|web)\)/","/(<p [^>]*class=\"[^\"]+?)\((user|web)\)(\"[^>]*)>/");
   array_push($rpl,"\\1","\\1\\3>");
 
+#  $file=preg_replace ($srch,$rpl,$file);
+#  echo htmlentities($file); exit;
+
+
   //
   // standardize the foot and end notes.
   //
   // footnotes definition
-  array_push($srch,'/(?:<r2r:\w+>\s*)?<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="FootnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>(?:\s*<\/r2r:\w+>)?/s'); # declaration of the footnote
-  array_push($rpl,'<r2r:notebaspage><div class="footnotebody"><a class="footnotedefinition" \\1>\\2</a>\\3</div></r2r:notebaspage>'); # declaration of the footnote
+  array_push($srch,'/(?:<r2r:\w+>\s*)?<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+([^>]*?)\s+class="FootnoteSymbol"([^>]*)>(.*?)<\/a>\s*<\/span>(.*?)<\/p>(?:\s*<\/r2r:\w+>)?/s'); # declaration of the footnote
+  array_push($rpl,'<r2r:notebaspage><div class="footnotebody"><a class="footnotedefinition" \\1 \\2>\\3</a>\\4</div></r2r:notebaspage>'); # declaration of the footnote
 
   // endnotes definition
   array_push($srch,
-	     '/(?:<r2r:\w+>\s*)?<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>(?:\s*<\/r2r:\w+>)?/s'); # declaration of the endnote
+	     '/(?:<r2r:\w+>\s*)?<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+([^>]*?)\s+class="EndnoteSymbol"([^>]*)>(.*?)<\/a>\s*<\/span>(.*?)<\/p>(?:\s*<\/r2r:\w+>)?/s'); # declaration of the endnote
 
-  array_push($rpl,'<r2r:notefin><div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div></r2r:notefin>'); # declaration of the endnote
+  array_push($rpl,'<r2r:notefin><div class="endnotebody"><a class="endnotedefinition" \\1 \\2>\\3</a>\\4</div></r2r:notefin>'); # declaration of the endnote
 
 
 #  array_push($srch,
