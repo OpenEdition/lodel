@@ -79,7 +79,6 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $contextfromsession=unserialize($row['context']);
     $context=array_merge($context,$contextfromsession); // recupere le contexte
     $user=$contextfromsession['user'];
-
     if ($user['rights']<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
 
     // verifie encore une fois au cas ou...

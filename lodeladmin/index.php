@@ -30,10 +30,10 @@
 if (!file_exists("../lodelconfig.php")) { header("location: install.php"); exit; }
 
 require("lodelconfig.php");
-require ($home."auth.php");
-authenticate(LEVEL_ADMINLODEL);
+require($home."auth.php");
 
-require ($home."calcul-page.php");
-calcul_page($context,"index");
+$tables=array("texts","translations","users");
+$level=LEVEL_ADMINLODEL;
+require($home."controler.php");
 
 ?>

@@ -28,9 +28,9 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
+require($home."auth.php");
 
 if (!$_GET['do'] && !$_POST['do']) {
-  require($home."auth.php");
   authenticate(LEVEL_VISITOR);
   $context['id']=$id=intval($_GET['id']);
   if ($id) {
@@ -49,6 +49,7 @@ if (!$_GET['do'] && !$_POST['do']) {
 } else {
   $tables=array("entities");
   $table="entities";
+  $level=LEVEL_VISITOR;
   require($home."controler.php");
 }
 

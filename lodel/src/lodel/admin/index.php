@@ -35,6 +35,7 @@ $tables=array("entrytypes","persontypes","entries",
 	      "options","optiongroups","useroptiongroups",
 	      "internalstyles","characterstyles");
 
+$level=LEVEL_VISITOR;
 require($home."controler.php");
 
 

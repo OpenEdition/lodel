@@ -30,6 +30,7 @@
 // gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
+die("desuet");
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
