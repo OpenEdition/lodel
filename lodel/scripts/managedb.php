@@ -157,7 +157,7 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
   if ($ids) { 
     // efface ceux qui ne sont pas proteges
-    mysql_query("DELETE FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (statut>-32 OR statut<32)") or die (mysql_error());
+    mysql_query("DELETE FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (statut>-32 AND statut<32)") or die (mysql_error());
     // depublie ceux qui sont proteges.
     mysql_query("UPDATE $GLOBALS[tp]$tables SET statut=-abs(statut) WHERE id IN (".join(",",$ids).") AND statut>=32") or die (mysql_error());
   }
