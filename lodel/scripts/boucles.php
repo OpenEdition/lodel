@@ -262,9 +262,15 @@ function loop_rss ($context,$funcname,$arguments)
   define ("DIRECTORY_SEPARATOR","/");
 
   if (!isset($arguments[url])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"previous\" requires a URL attribut");
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"rss\" requires a URL attribut");
     return;
   }
+  if ($arguments[refresh] && !is_numeric($arguments[refresh])) {
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ");
+    $arguments[refresh]=0;
+  }
+
+
   require_once($home."magpierss/rss_fetch.inc");
 
   $rss = fetch_rss( $arguments['url'] , $arguments['refresh'] ? $arguments['refresh'] : 3600);
