@@ -284,6 +284,11 @@ ln tpl/users.html
 ln transfer.php
 ln tpl/transfer.html
 
+ln importmodel.php
+ln tpl/importmodel.html
+ln backupmodel.php
+ln tpl/backupmodel.html
+
 ln session.php
 ln cleanxml.php
 
