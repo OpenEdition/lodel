@@ -390,7 +390,7 @@ function problem_include($filename)
 <html>
 <body>
 <b>Impossible d'accéder au fichier <?php echo $filename; ?><b><br>
-Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?phpecho $filename; ?> existent et sont accessibles par le serveur web<br>
+Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?php echo $filename; ?> existent et sont accessibles par le serveur web<br>
 Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
 
 LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
