@@ -407,36 +407,51 @@ if (!function_exists("file_get_contents")) {
  * 
  */
 
+
 function download($filename,$originalname="",$contents="")
 
 {
-  // taken from phpMyAdmin
-  // Download
-  if (!$originalname) $originalname=$filename;
-  if ($filename && !is_readable($filename)) die ("ERROR: The file \"$filename\" is not readable");
-  $originalname=preg_replace("/.*\//","",$originalname);
+  $mimetype = array(
+		    'doc'=>'application/msword',
+		    'htm'=>'text/html',
+		    'html'=>'text/html',
+		    'jpg'=>'image/jpeg',
+		    'gif'=>'image/gif',
+		    'png'=>'image/png',
+		    'pdf'=>'application/pdf',
+		    'txt'=>'text/plain',
+		    'xls'=>'application/vnd.ms-excel'
+		    );
 
-  get_PMA_define();
-// bcenou: DOES NOT WORK WHITH IE MAC
-  $isaMAC = preg_match("/Mac_PowerPC/i", $_SERVER['HTTP_USER_AGENT']);
-  if(!$isaMAC){
-  	header("Content-type: application/force-download");
-  	header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-  }
-  // lem9 & loic1: IE need specific headers
-// bcenou: ONLY FOR IE MAC, DOES NOT WORK WHITH IE WIN
-  if (PMA_USR_BROWSER_AGENT == 'IE' && $isaMAC) {
-    header('Content-Disposition: inline; filename="' . $originalname . '"');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: public');
+  if (!$originalname) $originalname=$filename;
+  $originalname=preg_replace("/.*\//","",$originalname);
+  $ext=substr($originalname,strrpos($originalname,".")+1);
+  $size = $filename ? filesize($filename) : strlen($contents);
+  if($mimetype[$ext]){
+    $mime = $mimetype[$ext];
+    $disposition = "inline";
   } else {
-    $size=$filename ? filesize($filename) : strlen($contents);
-    header('Content-Disposition: attachment; filename="' . $originalname . '"');
-    header('Content-Length: '.$size.'"');
-    header('Pragma: no-cache');
+    $mime = "application/force-download";
+    $disposition = "attachment";
   }
-  if ($filename) { readfile($filename); } else { echo $contents; }
+  if ($filename) {
+    $fp=fopen($filename,"rb");
+    if (!$fp) die ("ERROR: The file \"$filename\" is not readable");
+  }
+  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
+  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
+  header("Content-type: $mime\n");
+  header("Content-transfer-encoding: binary\n");
+  header("Content-length: ".$size."\n");
+  header("Content-disposition: $disposition; filename=\"$originalname\"\n");
+  sleep(1); // don't know why... (from on uk.php.net)
+  if ($filename) {
+    fpassthru($fp); 
+  } else { 
+    echo $contents; 
+  }
 }
+
 
 // taken from phpMyAdmin 2.5.4
 
