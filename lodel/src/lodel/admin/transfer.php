@@ -663,14 +663,16 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	$alter=$fields[$row[classe]][$row[nom]] ? "MODIFY" : "ADD";
 	mysql_query("ALTER TABLE $GLOBALS[tp]$row[classe] $alter $row[nom] ".$sqltype[$row[type]]) or die (mysql_error());
       }
+    }
 
+    if (file_exists(SITEROOT."lodel/txt") && `/bin/ls lodel/txt`) {
       // importe dans les documents
       $fields=getfields("documents");
       unset($fields[identite]); // enleve identite
       unset($fields[meta]); // enleve meta
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
-	$filename="../txt/r2r-$row[identite].xml";
+	$filename=SITEROOT."lodel/txt/r2r-$row[identite].xml";
 	if (!file_exists($filename)) { $err.="Le fichier $filename n'existe pas<br>"; continue; }
 	$file=utf8_encode(file_get_contents($filename));
 	$updates=array();
@@ -689,6 +691,7 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	    array_push($updates," $field='".addslashes(convertHTMLtoXHTML($field,$match[1]))."'");
 	  }
 	}
+	unlink($filename);
 	// copie le fichier original rtf
 	$rtffile="r2r-$row[identite].rtf";
 
