@@ -165,7 +165,7 @@ if ($tache=="admin") {
     $adminusername=addslashes($adminusername);
     $pass=md5($adminpasswd.$adminusername);
 
-    if (!@mysql_query("REPLACE INTO $GLOBAL[tp]users (username,passwd,nom,courriel,privilege) VALUES ('$adminusername','$pass','','',128)")) {
+    if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,nom,courriel,privilege) VALUES ('$adminusername','$pass','','',128)")) {
       $pass="";  // enleve de la memoire
       $erreur_create=1;
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
@@ -242,29 +242,28 @@ if (!$tache) {
 // Vérifie les droits sur les fichiers, (verifie juste les droits d'apache, pas les droits des autres users, et verifie les droits minimum, pas de verification de la securite) dans la zone admin
 //
 
-if (function_exists("mode")) {
-  // les fonctions de tests existent, donc on peut faire des tests sur les droits
-  $files=array("lodeladmin/CACHE"=>7,
-	       "lodeladmin/tpl"=>5,
-	       "lodel"=>5,
-	       "lodel/install"=>5,
-	       "lodel/install/plateform"=>5,
-	       "lodel/scripts"=>5,
-	       "lodel/src"=>5,
-	       "lodeladmin/images"=>5);
+// les fonctions de tests existent, donc on peut faire des tests sur les droits
+$files=array("lodeladmin/CACHE"=>7,
+	     "lodeladmin/tpl"=>5,
+	     "lodel"=>5,
+	     "lodel/install"=>5,
+	     "lodel/install/plateform"=>5,
+	     "lodel/scripts"=>5,
+	     "lodel/src"=>5,
+	     "lodeladmin/images"=>5);
 	       
-  $entete=0;
-  foreach ($files as $file => $mode) {
-    do { // block de control
-      if ((mode(LODELROOT."/".$file) & $mode)==$mode) break;
-      // essaie de chmoder
-      if ($have_chmod && (@chmod (LODELROOT."/".$file)) && (mode(LODELROOT."/".$file) & $mode)==$mode) break;
-      if (!$entete) { probleme_droits_debut(); $entete=1; }
-      probleme_droits($file,$mode);
-    } while (0);
-  }
-  if ($entete) { probleme_droits_fin(); return; }
-} // sinon on suppose que le serveur a les bons droits... hum
+$entete=0;
+foreach ($files as $file => $mode) {
+  do { // block de control
+    if ((mode(LODELROOT."/".$file) & $mode)==$mode) break;
+    // essaie de chmoder
+    if ($have_chmod && (@chmod (LODELROOT."/".$file)) && (mode(LODELROOT."/".$file) & $mode)==$mode) break;
+    if (!$entete) { probleme_droits_debut(); $entete=1; }
+    probleme_droits($file,$mode);
+  } while (0);
+}
+if ($entete) { probleme_droits_fin(); return; }
+
 
 
 // include: lodelconfig
@@ -534,7 +533,7 @@ function probleme_droits_debut()
   <td>
    <p align="center">Accès aux répertoires.</p>
 
-   <b>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache) puisse y accéder en lecture et si mentioner ci-dessosu y écrire</b>
+   <b>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache) puisse y accéder en lecture et si mentioner ci-dessous y écrire</b>
 <p></p>
 <ul>
 <?php }
@@ -542,7 +541,7 @@ function probleme_droits_debut()
 function probleme_droits($file,$mode)
 
 {
- echo "<li>Répertoire: $file<br> droits requis: lecture, exécution"; if ($mode & 4 == 4) echo ", <u>écriture</u>";
+ echo "<li>Répertoire: $file<br> droits requis: lecture, exécution"; if (($mode & 2) == 2) echo ", <u>écriture</u>";
  echo "<p></p>\n";
 }
 
