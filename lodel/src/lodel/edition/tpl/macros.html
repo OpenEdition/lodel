@@ -1265,23 +1265,23 @@
 			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
 				<DO>
 					<IF COND="[#STATUS]==-32">
-						Déprotéger&nbsp;/&nbsp;Protéger
+						Autoriser la dépublication&nbsp;/&nbsp;Interdire la dépublication
 					</IF>
 					<IF COND="[#STATUS]==-1">
-						Déprotéger&nbsp;/&nbsp;Protéger
+						Autoriser la dépublication&nbsp;/&nbsp;Interdire la dépublication
 					</IF>
 				
 					<IF COND="[#STATUS]==1">
-						Déprotéger&nbsp;/&nbsp;
+						Autoriser la dépublication&nbsp;/&nbsp;
 						<a href="status.php?publication=[#ID]&status=protege">
-							<span class="texte_trespetit_centre">Protéger</span>
+							<span class="texte_trespetit_centre">Interdire la dépublication</span>
 						</a>
 					</IF>
 					<IF COND="[#STATUS]==32">
 						<a href="status.php?publication=[#ID]&status=deprotege">
-							<span class="texte_trespetit_centre">Déprotéger</span>
+							<span class="texte_trespetit_centre">Autoriser la dépublication</span>
 						</a>
-						&nbsp;/&nbsp;Protéger
+						&nbsp;/&nbsp;Interdire la dépublication
 					</IF>
 				</DO>
 			</LOOP>			
