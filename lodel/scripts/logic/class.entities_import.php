@@ -313,6 +313,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    function processTableFields($obj,$data) 
    {
      global $db;
+     $data=preg_replace('/(<p\b[^>]+class=")[^"]*"/','\\1'.$obj->style.'"',$data);
      if ($obj->type=="file" || $obj->type=="image") {
        // nothing...
      } elseif ($obj->type=="mltext") {
