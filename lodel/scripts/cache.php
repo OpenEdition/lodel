@@ -24,11 +24,9 @@ if (!$maj) $maj=myfilemtime("CACHE/maj");
 
 $cache = substr(rawurlencode(preg_replace("/#[^#]*$/","",$REQUEST_URI)), 0, 255);
 $rep_cache = substr(md5($cache), 0, 1);
+if ($context[charset]!="utf-8") $rep_cache="il1.".$rep_cache;
 if (!file_exists("CACHE/$rep_cache")) {
   mkdir("CACHE/$rep_cache", 0777);
-#ifndef LODELLIGHT
-  chmod("CACHE/$rep_cache", 0777); 
-#endif
 }
 $cache = "CACHE/$rep_cache/$cache";
 

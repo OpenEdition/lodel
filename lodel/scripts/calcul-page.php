@@ -1,11 +1,10 @@
 <?php
+
 include_once($home."func.php");
 # fonction d'entree pour le calcul d'une page
 
-# on sort du UTF-8 par defaut (et uniquement pour le moment)
-$context[charset]="utf-8";
-
-
+# on sort du UTF-8 par defaut
+# sinon, on applique une regle un peu dictatorialle, c'est l'iso-latin1
 
 function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
@@ -21,12 +20,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   if (($template_time <= myfilemtime($base)) ||
       //      ($template_time <= myfilemtime($macro)) ||
       $GLOBALS[recalcul_templates]) {
-	if ($GLOBALS[admin]) {
-	  $context[templatesrecompiles].="$base | ";
-
-#	  $script='<SCRIPT LANGUAGE="JavaScript">if(window.defaultStatus==""){window.defaultStatus="ATTENTION LES TEMPLATES SUIVANTS ONT ETE MODIFIES : ";}
-#window.defaultStatus+=\'$base | \';</SCRIPT>';
-        }
+	if ($GLOBALS[admin]) $context[templatesrecompiles].="$base | ";
 
     include_once ($home."lodelparser.php");
     $parser=new LodelParser;
@@ -45,7 +39,17 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
     return;
   }
   include_once($home."boucles.php");
-  include($template_cache);
+
+  if ($context[charset]=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
+    include($template_cache);
+  } else {
+    // isolatin est l'autre charset par defaut
+    ob_start();
+    include($template_cache);
+    $contents=ob_get_contents();
+    ob_end_clean();
+    echo utf8_decode($contents);
+  }
   return;
 }
 

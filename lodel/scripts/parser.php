@@ -113,9 +113,11 @@ function parse ($in,$out)
 
   $this->parse_texte($contents);
 
-  $contents='<?php 
+  if ($this->fct_txt) {
+    $contents='<?php 
 require_once ($home."connect.php");
 '.$this->fct_txt.'?>'.$contents;
+  }
 
   $contents=preg_replace(array('/\?><\?(php\b)?/',
 			       '/<\?[\s\n]*\?>/'),array("",""),$contents);

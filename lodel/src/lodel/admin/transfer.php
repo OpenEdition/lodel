@@ -13,6 +13,12 @@ if ($confirm) {
     // est-ce que la table des indexhs exists ?
     // on renome
     if ($tables["$GLOBALS[tp]indexls"]) { // il faut modifier et  renomer
+
+      // converti toutes la base en UTF-8
+      // c'est a cet endroit, mais ca pourrait etre ailleurs
+      $report.=isotoutf8();
+
+
       // ajoute les champs
       $err=mysql_query_cmds('
 # renome mot en nom et retaille
@@ -337,7 +343,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
 	}
       }
       if ($err) break;
-      $report.="Transfer des documents dans entites offset=$offset<br>";
+      $report.="Transfert des documents dans entites offset=$offset<br>";
     }
     if (!$tables["$GLOBALS[tp]groupes"]) {
 	if ($err=create("groupes")) break;
@@ -381,7 +387,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
       while ($row=mysql_fetch_assoc($result)) {
 	$filename="../txt/r2r-$row[identite].xml";
 	if (!file_exists($filename)) { $err.="Le fichier $filename n'existe pas<br>"; continue; }
-	$file=join("",file($filename));
+	$file=utf8_encode(file_get_contents($filename));
 	$updates=array();
 	foreach(array_keys($fields) as $field) {
 	  if (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
@@ -507,5 +513,55 @@ function create($table)
   $report.="Création de la table $table<br>";
   return FALSE;
 }
+
+
+
+// fonction de conversion de isolatin en utf8
+function isotoutf8 ()
+
+{
+
+  $result = mysql_list_tables($GLOBALS[currentdb]) or die(mysql_error());
+
+  // Tableau contenant la liste des tables à ne pas parcourrir pour gagner du temps.
+  #$blacklist=array("relations","entites_entrees","users_groupes");
+  // On parcours toutes les tables
+  while (list($table) = mysql_fetch_row($result)) {
+    #if(in_array ($table, $blacklist)) continue;
+
+     $report.="conversion en utf8 de  la table $table<br />\n";
+    // On parcours toutes les enregistrements de chaque table
+    $resultselect = mysql_query("SELECT * FROM $table") or die(mysql_error());
+    while($valeurs = mysql_fetch_row($resultselect)) {
+      $nbchamps = mysql_num_fields($resultselect);
+
+      // Construction de la clause SET et WHERE de l'update
+      // en parcourant toutes les valeurs de chaque enregistrement.
+      $set=array();
+      $where=array();
+      for ($i=0; $i < $nbchamps; $i++) {
+	$type  = mysql_field_type($resultselect, $i);
+	$name  = mysql_field_name($resultselect, $i);
+				
+	// Construction de la clause SET
+	if(($type=="string"||$type=="blob") && $valeurs[$i]!="") array_push($set,$name."='".addslashes(utf8_encode($valeurs[$i]))."'");
+	  
+	// Construction de la clause WHERE
+	if($type=="string"||$type=="blob") {
+	  array_push($where,$name."='".addslashes($valeurs[$i])."'");
+	} else {
+	  array_push($where,$name."='$valeurs[$i]'");
+	}
+      // S'il y a une modification à faire on lance la requete
+	if($set) {
+	  $requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
+	  if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die(mysql_error()); }
+	}
+      } // parcourt les champs
+    } // parcourt les lignes
+  } // parcourt les tables
+  return $report;
+}
+
 
 ?>

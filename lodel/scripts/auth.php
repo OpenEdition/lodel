@@ -210,6 +210,17 @@ if ($site) {
 	}
 }
 
-// pour le moment on est en utf-8 par defaut
-header("Content-type: text/html; charset=utf-8");
+
+// charset a fournir au navigateur
+
+if (!$charset) $charset=$HTTP_SERVER_VARS["HTTP_ACCEPT_CHARSET"]; // si ce n'est pas envoye par l'url ou par cookie, on recupere ce que demande le navigateur.
+if (preg_match("/\butf-8\b/i",$charset)) {
+  $context[charset]="utf-8";
+} else { // isolatin est l'autre charset par defaut
+  $context[charset]="iso-8859-1";
+}
+header("Content-type: text/html; charset=$context[charset]");
+
+
+
 ?>
