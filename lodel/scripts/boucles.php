@@ -212,7 +212,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
     // ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
     // not found, well, we look for the next/previous parent above and it's first/last son.
 
-    $result=mysql_query ("SELECT e3.*,type,classe FROM $GLOBALS[tp]entites as e0, $GLOBALS[tp]entites as e1, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types ON e3.idtype=types.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.ordre".$compare."e1.ordre AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.statut>$statutmin AND e1.statut>$statutmin AND e2.statut>$statutmin AND e3.statut>$statutmin ORDER BY e2.ordre ".$sort.", e3.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
+    $result=mysql_query ("SELECT e3.*,type,classe FROM $GLOBALS[tp]entites as e0, $GLOBALS[tp]entites as e1, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types ON e3.idtype=$GLOBALS[tp]types.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.ordre".$compare."e1.ordre AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.statut>$statutmin AND e1.statut>$statutmin AND e2.statut>$statutmin AND e3.statut>$statutmin ORDER BY e2.ordre ".$sort.", e3.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
 
     if (mysql_num_rows($result)) {
       $localcontext=array_merge($context,mysql_fetch_assoc($result));
