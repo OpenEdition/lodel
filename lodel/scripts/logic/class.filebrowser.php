@@ -45,6 +45,12 @@ class FileBrowserLogic {
    }
 
 
+   function viewAction(&$context,&$error)
+
+   {
+     return "filebrowser";
+   }
+
    /**
     * dispatcher Action
     */

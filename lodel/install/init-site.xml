@@ -1384,13 +1384,18 @@
         description="Table des groupes d'options"
 	writeright="admin"
 	protectright="adminlodel">
-
 <column name="id"
         type="INTEGER"
         default="0"
         required="true"
         primaryKey="true"
         autoIncrement="true" />
+<column name="idparent"
+        type="INTEGER"
+        default="0"
+        required="true"
+	edittype="int"
+	visibility="hidden" />
 <column name="name"
         type="VARCHAR"
         size="255"
@@ -1435,6 +1440,9 @@
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
+<index name="index_idparent">
+<index-column name="idparent" />
+</index>
 <index name="index_name">
 <index-column name="name" />
 </index>

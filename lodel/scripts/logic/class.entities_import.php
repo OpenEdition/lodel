@@ -107,7 +107,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      }
 
      if ($this->ret!="_error" && $context['finish']) {
-       return "_back";
+       return $this->ret;
+       #return "_back";
      } elseif ($this->ret!="_error") {
        return "_location: index.php?do=view&id=".$this->id;
      } else {

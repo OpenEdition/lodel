@@ -286,7 +286,7 @@ class Entities_EditionLogic extends GenericLogic {
      }
 
      update();
-	
+
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
        return "_location: ".SITEROOT.makeurlwithid($id);
      }

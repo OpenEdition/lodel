@@ -426,6 +426,7 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 
 CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	id		INT UNSIGNED NOT NULL auto_increment,
+	idparent	INT UNSIGNED NOT NULL,
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		VARCHAR(255) NOT NULL,		# type du champ
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
@@ -437,7 +438,8 @@ CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_name (name)
+	KEY index_name (name),
+	KEY index_idparent (idparent)
 );
 
 
