@@ -827,3 +827,8 @@ fieldset br { clear: left;}
 .filebrowser table { 
   border: 1px solid #CC9933;
  }
+
+
+#lodel-container{
+  position: relative;
+}

@@ -69,11 +69,11 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
     $parser->parse($base, $template_cache);
   }
 
-  require_once ($GLOBALS[home]."connect.php");
+  require_once ($GLOBALS['home']."connect.php");
 
   // execute le template php
   require_once($home."textfunc.php");		
-  if ($GLOBALS[showhtml] && $GLOBALS['user']['visitor']) {
+  if ($GLOBALS['showhtml'] && $GLOBALS['user']['visitor']) {
     ob_start();
     require($template_cache);
     $content=ob_get_contents();
@@ -84,7 +84,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   }
   require_once($home."loops.php");
 
-  if ($context[charset]=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
+  if ($context['charset']=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
     require($template_cache);
   } else {
     // isolatin est l'autre charset par defaut

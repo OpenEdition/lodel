@@ -362,15 +362,15 @@ function parse_main()
       }
       break;
       // returns
-    case "ELSE" : return;
-    case "DO" : return;
-    case "DOFIRST" : return;
-    case "DOLAST" : return;
-    case "AFTER" : return;
-    case "BEFORE" : return;
-    case "ALTERNATIVE" : return;
-    case "CASE" : return;
-      break;
+    case "ELSE" :
+    case "DO" :
+    case "DOFIRST" :
+    case "DOLAST" :
+    case "AFTER" :
+    case "BEFORE" :
+    case "ALTERNATIVE":
+    case "CASE":
+      return;
     case "/MACRO" :
     case "/FUNC" :
       $this->_clearposition();
@@ -969,7 +969,7 @@ function parse_LET () {
   $this->ind+=3;
   #$this->parse_main2();
   $this->parse_main();
-  if ($this->arr[$this->ind]!="/LET") $this->errmsg("&lt;/LET&gt; expected, $this->arr[$this->ind] found",$this->ind);
+  if ($this->arr[$this->ind]!="/LET") $this->errmsg("&lt;/LET&gt; expected, ".$this->arr[$this->ind]." found",$this->ind);
 
   $this->_clearposition();
   $this->arr[$this->ind+1]='<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
@@ -979,14 +979,19 @@ function parse_LET () {
 function parse_ESCAPE()
 
 {
-  $this->arr[$this->ind]="";
-  $this->arr[$this->ind+1]="";
-  $this->arr[$this->ind+2]='<? if ($GLOBALS[cachedfile]) { echo \''.quote_code($this->arr[$this->ind+2]).'\'; } else {?>'.$this->arr[$this->ind+2].'<?php } ?>';
-  $this->ind+=3;
-  if ($this->arr[$this->ind]!="/ESCAPE") $this->errmsg("&lt;/ESCAPE&gt; expected, $this->arr[$this->ind] found",$this->ind);
-  $this->arr[$this->ind]="";
-
+  $escapeind=$this->ind;
+  $this->_clearposition();
   $this->isphp=TRUE;
+  $this->ind+=3;
+
+  $this->parse_main();
+  if ($this->arr[$this->ind]!="/ESCAPE") $this->errmsg("&lt;/ESCAPE&gt; expected, ".$this->arr[$this->ind]." found",$this->ind);
+
+  for($i=$escapeind; $i< $this->ind; $i+=3) {
+    if (trim($this->arr[$i+2]))
+      $this->arr[$i+2]='<? if ($GLOBALS[\'cachedfile\']) { echo \''.quote_code($this->arr[$i+2]).'\'; } else {?>'.$this->arr[$i+2].'<?php } ?>';    
+  }
+  $this->_clearposition();
 }
 
 /**
