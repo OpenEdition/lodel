@@ -162,6 +162,7 @@ if ($tache=="plateform") {
       $needoptions=true;
     }
   }
+  if ($installoption==1) $arr['extensionscripts']="php";
 
   $arr['chooseoptions']=$needoptions && $installoption==1 ? "oui" : "non";
   maj_lodelconfig($arr);
@@ -787,9 +788,6 @@ function problem($msg)
 function probleme_droits_debut()
 
 {
-include('tpl/install-openhtml.html');
-$current = "droits";
-include('tpl/install-bandeau.html');
 ?>
 <h2>Accès aux répertoires.</h2>
 <p align="center">
@@ -822,7 +820,6 @@ function probleme_droits_fin()
 Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'accès de tous les fichiers par vous-même.<br />
 LODEL est livré avec SANS AUCUNE GARANTIE.</p>
 <?php
-include('tpl/install-closehtml.html');
  }
 
 ?>
