@@ -37,99 +37,50 @@
 <MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-		
-	
-		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" ]-->
-
-
-				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" ]-->
-				<!--[<div class="separation">
-					&nbsp;
-				</div>]-->
-					<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-					<table class="main" cellpadding="0" cellspacing="0">
-					<tr>
-					<td class="barre">
-					<div id="barrenav">
-					<USE TEMPLATEFILE="barre">
+<table class="main" cellpadding="0" cellspacing="0">
+<tr>
+	<td class="barre">
+	<div id="barrenav">
+		<USE TEMPLATEFILE="barre">
+	</div>
+	</td>
+	<td class="middle">
+		<IF COND="![#QUERY]">
+					<MACRO NAME="EMPTY_SEARCH">
+		<ELSE/>
+			<!--[ Contenu de la page de résultat ]-->
+			<div id="contenu">
+				<h1 class="accueil">
+						<MACRO NAME="NOM_SITE"> 
+				</h1>
+				<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
+				<BEFORE>
+					<h2>Votre recherche : <em>[#QUERY|stripslashes]</em></h2>
+					<MACRO NAME="PRINT_SEARCH_CRITERIA">
+					<MACRO NAME="PRINT_SEARCH_NBRESULTS">
+					<div class="results">
+				</BEFORE>
+				<DO>
+					<MACRO NAME="PRINT_ONE_SEARCH_RESULT">
+				</DO>
+				<AFTER>
 					</div>
-					</td>
-					<td class="middle">
-					<div id="contenu">
-				
-
-						<!--[ logo du site]-->
-			
-						<!--[ Affiche le titre de la revue avec les style titre1  ]-->
-						
-						
-	<IF COND="![#QUERY]">
-	<h1 class="accueil">
-			Attention, votre requête est vide
-	</h1>
-	<div style="padding-top:10px;">
-			<span class="texte_edition_des_series">
-			</span>
-			</a>
+					<MACRO NAME="PRINT_PAGE_SCALE">
+				</AFTER>	
+				<ALTERNATIVE>
+				<!-- [ Alternative is called when no results are found for a query]-->
+					<h2>Votre recherche : [#QUERY|stripslashes]</h2>
+					<MACRO NAME="PRINT_SEARCH_CRITERIA">
+					<MACRO NAME="PRINT_NO_RESULT_MESSAGE">
+				</ALTERNATIVE>
+				</LOOP>
+			</IF>
+			<!--[ Affiche lien footer vers Lodel ]-->
+			<div id="footer">
+				<MACRO NAME="LODEL_ORG">
+			</div>
 		</div>
-	</div>
-	<ELSE/>
-	<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
-	<BEFORE>
-	<h1 class="accueil">
-			<MACRO NAME="NOM_SITE">
-	</h1>
-	<h2>Votre recherche : <em>[#QUERY|stripslashes]</em></h2>
-	<p class="searchresults">
-		(résultats <strong>[#RESULTFROM]</strong> à <strong>[#RESULTTO]</strong> de <strong>[#NBRESULTS]</strong>)
-	</p>
-	<div class="results">
-			<span class="texte_edition_des_series">
-	</BEFORE>
-	<DO>
-		<div class="article">
-	   	<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-  		<span class="auteur">
-			<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
-				<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
-					, [#G_FIRSTNAME] [#G_FAMILYNAME]
-				<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
-			</LOOP>
-			</span>
-			<br />
-			<span class="type_document">([#TYPE])</span>
-			<span class="type_document">
-			<LOOP NAME="parentsentities">
-			<DO>
-				&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-			</DO>
-			</LOOP>
-			</span>
-		</div>
-	</DO>
-	<AFTER>
-	</div>
-		<MACRO NAME="PRINT_PAGE_SCALE">
-	</AFTER>	
-	
-	<ALTERNATIVE>
-	<h1 class="accueil">
-			<MACRO NAME="NOM_SITE"> 
-	</h1>
-	<h2>Votre recherche : [#QUERY|stripslashes] a donnée [#NBRESULTS] résultats.</h2>
-		<p class="searchnoresults">
-			Aucun résultat pour la recherche <strong>[#QUERY|stripslashes]</strong>
-		</p>
-	</ALTERNATIVE>
-	</LOOP>
-	</IF>
-	<!--[ Affiche lien vers Lodel ]-->
-	<div id="footer">
-		<MACRO NAME="LODEL_ORG">
-	</div>
-	</div>
-</td></tr>
+	</td>
+</tr>
 </table>
 <MACRO NAME="FERMER_HTML">  

@@ -149,7 +149,7 @@ abus@
 	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>Format</option>
 	<option value="DC.Source" <IF COND="[#QFIELD] EQ 'DC.Source'">selected="selected"</IF>>Source</option>
 	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>Langue</option>
-	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>Courverture</option>
+	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>Couverture</option>
 	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>Copyrights</option>
 </select>
 
@@ -157,3 +157,75 @@ abus@
 </span>
 </form>		
 </DEFFUNC>
+<!--[ ****************************************************************** ]-->
+<!--[ version 1.0                                                        ]-->
+<!--[ Affichage lorsque la requête est vide															 ]-->
+<!--[ ****************************************************************** ]-->
+<DEFMACRO NAME="EMPTY_SEARCH">
+<div id="contenu">
+	<h1 class="accueil">
+		<MACRO NAME="NOM_SITE">
+	</h1>
+	<p class="searchnoresults">
+		Votre requête est vide !
+	</p>
+</div>
+</DEFMACRO>
+<!--[ ****************************************************************** ]-->
+<!--[ version 1.0                                                        ]-->
+<!--[ Affichage des critères de recherches lorsqu'ils sont présents			 ]-->
+<!--[ ****************************************************************** ]-->
+<DEFMACRO NAME="PRINT_SEARCH_CRITERIA">
+<IF COND="[#QTYPE] OR [#QFIELD] OR [#QSTATUS]">
+		<p class="infosearch">
+			<span style="color : #fff ; background-color : #9CBD9C">critères : </span>
+			&nbsp;
+			<IF COND="[#QTYPE]">
+			<LOOP NAME="print_title_type" TABLE="types" WHERE="id='[#QTYPE]'">
+	 			type :&nbsp;<strong>[#TITLE]</strong>
+			</LOOP>
+			</IF>
+			<IF COND="[#QFIELD]">
+			- champ :&nbsp;<strong>[#QFIELD]</strong>
+			</IF>
+			<IF COND="[#QSTATUS]">
+			- status :&nbsp;
+			
+		</IF>
+	</p>
+</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="PRINT_SEARCH_NBRESULTS">
+<p class="searchresults">
+	(résultats <strong>[#RESULTFROM]</strong> à <strong>[#RESULTTO]</strong> de <strong>[#NBRESULTS]</strong>)
+</p>
+</DEFMACRO>
+
+<DEFMACRO NAME="PRINT_ONE_SEARCH_RESULT">
+<div class="article">
+	<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+  <span class="auteur">
+	<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+	<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+			, [#G_FIRSTNAME] [#G_FAMILYNAME]
+	<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+	</LOOP>
+	</span>
+	<br />
+	<span class="type_document">([#TYPE])</span>
+	<span class="type_document">
+	<LOOP NAME="parentsentities">
+		<DO>
+			&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+		</DO>
+	</LOOP>
+	</span>
+</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="PRINT_NO_RESULT_MESSAGE">
+<p class="searchnoresults">
+	Aucun résultat pour la recherche <strong>[#QUERY|stripslashes]</strong>
+</p>
+</DEFMACRO>
