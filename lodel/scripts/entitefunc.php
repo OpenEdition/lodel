@@ -118,7 +118,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   // ok, we are allowed to modifiy/add this entity.
   //
 
-  if ($champcritere) $champcritere=" AND ".$champcritere;
+  ###if ($champcritere) $champcritere=" AND ".$champcritere;
+  if ($champcritere) $champcritere=",(".$champcritere.")";
 
   // check for errors and build the set
   $sets=array();
@@ -127,12 +128,19 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
   // file to move once the document id is know.
   $files_to_move=array();
+  
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut,balises FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
-  while (list($nom,$type,$condition,$defaut,$balises)=mysql_fetch_row($result)) {
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut,balises $champcritere FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0") or die (mysql_error());
+  while (list($nom,$type,$condition,$defaut,$balises,$critereok)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
-    if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
+
+    if ($critereok) {
+      if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
+    } else {
+      $entite[$nom]="";
+    }
+
     // clean automatically the fields when required.
     if (!is_array($entite[$nom]) && trim($entite[$nom]) && in_array($type,$GLOBALS[type_autostriptags])) $entite[$nom]=trim(strip_tags($entite[$nom]));
     // special processing depending on the type.

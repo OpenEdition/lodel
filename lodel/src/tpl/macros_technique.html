@@ -3,7 +3,6 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -168,25 +167,6 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ INSERER_FEUILLE_DE_STYLES).                                        ]-->
 <!--[ ****************************************************************** ]-->
 	<meta name="ROBOTS" content="follow, noindex" />
-</DEFMACRO>
-<DEFMACRO NAME="FORMULAIRE_RECHERCHE">
-<!--[ ****************************************************************** ]-->
-<!--[ version 2.0                                                        ]-->
-<!--[ Formulaire permettant d'effectuer une recherche.                   ]-->
-<!--[ ****************************************************************** ]-->
-	
-	<form action="/cgi-bin/esearch/esearch.pl" method="get">
-	<fieldset>
-		<label for="search">Chercher</label>
-		<input type="text" size="16" name="search" id="search" value="votre recherche" 
-			onfocus="if(this.value=='votre recherche')this.value='';" />
-		<input type="image"  name="imageField" src="images/submit.gif" />
-		<input type="hidden" name="url_back" value="http://[#SITE].revues.org/" />
-		<input type="hidden" name="[#SITE]" value="CHECKED" checked="checked" />
-		<input type="hidden" name="addsite" value="Chercher" />
-	</fieldset>
-	</form>
-	
 </DEFMACRO>
 
 <DEFMACRO NAME="MENU_RUBRIQUES_PUBLIEES">
@@ -548,7 +528,4 @@ function RestoreImg()
 		<img src="[#SHAREURL]/images/back.gif" width="60" height="60" alt="page précédente / back" />
 		Page précédente
 	</a>
-</DEFMACRO>
-<DEFMACRO NAME="mail_abus">
-abus@revues.org
 </DEFMACRO>

@@ -316,7 +316,7 @@
 				<tr>
 					<td width="200" valign="top">[#TITRE] (*) :</td>
 					<td>
-						<select multiple style="width:250px" name="entrees[[#ID]][]"><?php  makeselectentrees($context); // use [#ID] [#TRI] ?></select><br />
+						<select multiple size="10" style="width:250px" name="entrees[[#ID]][]"><?php  makeselectentrees($context); ?></select><br />
 						<IF COND="[#NVIMPORTABLE]">
 							<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
 							* noms séparés par des virgules ou point-virgules.
