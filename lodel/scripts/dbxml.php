@@ -1,9 +1,9 @@
 <?
 // fonctions pour enregistrer un document dans la base de donnée
 
-include_once ("$home/func.php");
-include ("$home/xmlparser.php");
-include ("$home/xmlfunc.php");
+require_once ("$home/func.php");
+include_once ("$home/xmlparser.php");
+include_once ("$home/xmlfunc.php");
 
 
 function enregistre ($context,&$text)
@@ -41,18 +41,19 @@ function enregistre ($context,&$text)
   $lang=extract_langue (array("resume","texte"),$vals,$index,$langue);
 
   // recupere les informations dans le fichier et nettoie
-  $lcontext=extract_xml(array("titre","soustitre","typedoc"),$text);
+  $lcontext=extract_xml(array("titre","soustitre","surtitre","typedoc"),$text);
   $lcontext[titre]=strip_tags($lcontext[titre],"<I><U>");
   $lcontext[soustitre]=strip_tags($lcontext[soustitre],"<I><U>");
+  $lcontext[surtitre]=strip_tags($lcontext[surtitre],"<I><U>");
   $lcontext[typedoc]=strip_tags($lcontext[typedoc]);
 
   // enleve les <P> s'ils sont aux extremites, et qu'il n'y en a pas dedans
-  /*  $lcontext=preg_replace("/^<P[^>]*>(((?>[^<]+)(?!<P[^>]*>)<?)*)<\/P>$/i",
-  			"\\1",$lcontext); */
   $lcontext=preg_replace(array("/<\/?(P|BR)>/i","/^\s+/","/\s+$/"),
 			 array("","",""),$lcontext);
 
   myquote($context);  myquote($lcontext);  myquote($lang);
+
+  lock_write("documents","indexls","auteurs","indexhs","documents_auteurs","documents_indexls","documents_indexhs");
 
   // recherche l'ordre
   if ($context[ordre]) {
@@ -61,14 +62,19 @@ function enregistre ($context,&$text)
     $ordre=get_ordre_max("documents","publication='$context[publication]'");
   }
 
-####  pour modifier un document, il faut le supprimer proprement puis l'inserer. Le syste;e doit produire une erreur si le document existe
+####  pour modifier un document, il faut le supprimer proprement puis l'inserer. Le systeme doit produire une erreur si le document existe
 
 // valeur par defaut
   $id=$context[iddocument] ? $context[iddocument] : 0;
-  $status=$context[status] ? $context[status] : -1;
+
+  $status=-1; // ne pas mettre une valuer positive ici. Ca pose probleme avec les tables auteurs, indexls et indexhs
+  //$status=$context[statusdocument] ? $context[statusdocument] : -1;
+
+  // reverifie ici que le document n'a pas un titre vide... pour pister le bug des documents vide.
+  if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document vide. Envoyer un mail sur lodel-devel.");
 
   // ecrit dans la base de donnee le document
-  mysql_query ("INSERT INTO documents (id,status,titre,soustitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
+  mysql_query ("INSERT INTO documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
 
   $id=mysql_insert_id();
 
@@ -77,6 +83,8 @@ function enregistre ($context,&$text)
   enregistre_auteurs($id,$vals,$index);
   enregistre_indexls($id,$vals,$index); // mots cles, etc...
   enregistre_indexhs($id,$vals,$index); // indexhs, etc...
+
+  unlock();
 
   return $id;
 }
@@ -92,8 +100,6 @@ function extract_langue ($balises,&$vals,&$index,$defaut="")
   foreach ($balises as $bal) {
     // balise avec l'attribut
     $langs=array();
-#    echo "$bal $defaut<br>";
-#    print_r($index);
     if (!$index[$bal]) continue;
     foreach($index[$bal] as $ind) {
       $tag=$vals[$ind];
@@ -125,22 +131,28 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
     $tag=$vals[$ind];
     if ($tag[type]!="open") { continue; }
     $tag=$vals[++$ind]; // on rentre dans le tag auteur
+    $context=array();
     while ($tag[tag]!="auteur") {
-      $lcontext[strtolower($tag[tag])]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+      $b=strtolower($tag[tag]);
+#      echo $b,"<br>";
+#      if ($b=="description") {
+#	// il faut reconstruire le bloc description... c'est chiant ca !
+#	//	$context[description]=rebuildxml($b,$vals,$ind);
+#	// temporaire
+#	$context[description]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+#      } else {
+	$context[$b]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+#      }
       $tag=$vals[++$ind]; // on rentre dans le tag auteur
     }
 
-    // extrait les balises
-    foreach (array("prefix","nomfamille","prenom","affiliation","courriel") as $b) {
-      $$b=$lcontext[$b];
-    }
-
     // cherche si l'auteur existe deja
-    $result=mysql_query("SELECT id FROM auteurs WHERE nomfamille='".$nomfamille."' AND prenom='".$prenom."'");
+    $result=mysql_query("SELECT id FROM auteurs WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'");
     if (mysql_num_rows($result)>0) {
       list($id)=mysql_fetch_array($result);
     } else { // il faut ajouter l'auteur
-      mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom,affiliation,courriel) VALUES ('-1','$prefix','$nomfamille','$prenom','$affiliation','$courriel')") or die (mysql_error());
+# supprimer le 6/4/3     mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom,affiliation,courriel) VALUES ('-1','$prefix','$nomfamille','$prenom','$affiliation','$courriel')") or die (mysql_error());
+      mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom) VALUES ('-1','$context[prefix]','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
       $id=mysql_insert_id();
     }
   
@@ -153,8 +165,8 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
     }
 
     // ajoute l'auteur dans la table documents_auteurs
-
-    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre) VALUES ('$id','$iddocument','$ordre')") or die (mysql_error());
+    // ainsi que la description
+    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre,description,prefix) VALUES ('$id','$iddocument','$ordre','$context[description]','$context[prefix]')") or die (mysql_error());
   }
 }
 
@@ -163,8 +175,6 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
 
 {
   if (!$GLOBALS[context][option_pasdemotcle]) $balises[TYPE_MOTCLE]="motcle";
-#  print_r($index); echo "<br><br>";
-#  print_r($vals); echo "<br><br>";
 
   if (!$balises) return;
 
@@ -172,15 +182,11 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
    mysql_query("DELETE FROM documents_indexls WHERE iddocument='$iddocument'") or die (mysql_error());
 
   foreach ($balises as $type => $balise) {
-#    echo "<br>$balise...";
     if (!$index[$balise]) continue;
-#    echo "yes";
     foreach ($index[$balise] as $itag) {
       $tag=$vals[$itag];
-#      print_r($tag);
       $indexl=trim(addslashes(strip_tags(strtr($tag[value],"\n"," "))));
       if (!$indexl) continue;
-#      echo "<br>mot:$indexl";
       if ($tag[attributes] && $tag[attributes][lang]) $lang=strtolower($tag[attributes][lang]);
       // cherche si le mot cle existe deja existe deja
       $result=mysql_query("SELECT id FROM indexls WHERE mot='$indexl' AND lang='$lang'");
@@ -190,7 +196,6 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
 #	if ($type==TYPE_PERIODE) { // type que l'on ajoute pas
 #	  $id=0;
 #	} else {
-	  //	  echo "--$type";
 #	  echo "INSERT INTO indexls (mot,type,lang) VALUES ('$indexl','$type','$lang')<BR>";
 	  mysql_query ("INSERT INTO indexls (status,mot,type,lang) VALUES ('-1','$indexl','$type','$lang')") or die (mysql_error());
 	  $id=mysql_insert_id();
@@ -235,7 +240,6 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
 	# on ne l'ajoute pas... mais il y a une erreur quelque part...
 	$id=0;
       }
-#      echo "indexh: $indexh $id<br>";
 
       // ajoute l'indexh dans la table documents_indexhs
       if ($id)
@@ -244,6 +248,25 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
     } // tags
   } // balises
 }
+
+
+/*
+function rebuildxml($name,$vals,$ind);
+
+{
+  $ret=$tag[value];
+  while (($tag=$vals[++$ind]) && ($tag[tag]!="description")) {
+    if ($tag[type]=="open") {
+      $ret.=translate_xmldata($tag[value]).rebuild_opentag($tag[name],$tag[attr]);
+    } elseif  ($tag[type]=="close") {
+      $ret.=translate_xmldata($tag[value])."</$tag[name]>";
+    } elseif  ($tag[type]=="complete") {
+      $ret.=rebuild_opentag($tag[name],$tag[attr]).translate_xmldata($tag[value])."</$tag[name]>";
+    }
+=$tag[value];
+  }
+}
+*/
 
 
 ?>

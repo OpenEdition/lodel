@@ -10,8 +10,11 @@ if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
-} else $critere="id='$id'";
-$critere.=" AND type='$type'";
+  if (!$restore) $critere.=" AND status>0";
+  $critere.=" AND type='$type'";
+} else $critere="";
+
+if (!$type) die("probleme interne contacter Ghislain");
 
 //
 // ordre
@@ -60,7 +63,7 @@ if ($id>0 && $dir) {
   // entre en edition
 } elseif ($id>0) {
   include_once ("$home/connect.php");
-  $result=mysql_query("SELECT * FROM indexhs WHERE $critere AND status>0") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM indexhs WHERE $critere") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 

@@ -3,18 +3,16 @@
 // gere les utilisateurs. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-include ("lodelconfig.php");
+require("lodelconfig.php");
 include ("$home/auth.php");
-authenticate(LEVEL_SUPERADMIN);
+authenticate(LEVEL_SUPERADMIN,NORECORDURL);
 include_once ("$home/func.php");
 
 $url_retour="revues.php";
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
-if ($id>0) {
-  $critere="id='$id'";
-} else $critere="id='$id'";
+$critere="id='$id'";
 
 //
 // supression et restauration
@@ -29,7 +27,6 @@ if ($id>0 && ($delete || $restore)) {
 } 
 
 if ($edit) { // modifie ou ajoute
-
   extract_post();
   // validation
   do {
@@ -57,9 +54,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ("$home/connect.php");
-  $critere.=" AND status>0";
-
-  $result=mysql_query("SELECT * FROM revues WHERE $critere") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM revues WHERE $critere  AND status>0") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
@@ -70,6 +65,3 @@ include ("$home/calcul-page.php");
 calcul_page($context,"revue");
 
 ?>
-
-
-

@@ -1,12 +1,17 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'une revue</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
-
-<MACRO NAME="TABLE_creetableinterface">
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<!-- Rajout intégration maquette -->
+<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+<MACRO NAME="JS_AFFICHE_IMAGE">
+<!-- Fin rajout intégration maquette -->
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<!--
+<MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="648" border="0" align="center" cellspacing="0" cellpadding="0">
-		<MACRO NAME="TR_separateur">
+		<MACRO NAME="TR_SEPARATEUR">
 		<tr>
 			<td>
 				<div align="center">
@@ -22,17 +27,14 @@
 					<span class="Titre">
 						[#USERNAME]
 					</span>
-					<br>
+					<br />
 				</div>
 			</td>
 		</tr>
-		<MACRO NAME="TR_separateur">
-		<!---------------------------->
-		<!--  AFFICHAGE DES SERIES -->
-		<!---------------------------->
+		<MACRO NAME="TR_SEPARATEUR">
 		<tr> 
 			<td bgcolor="#FFFFFF"> 
-				<br>
+				<br />
 				<table width="648" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr> 
 						<td> 
@@ -45,27 +47,27 @@
 									</td>
 									<td width="400" valign="middle" background="images/bleu.gif" class="titre">
 										<font color="#000000">
-											Edition des séries
+											Edition des Séries
 										</font>
 									</td>
-								<MACRO NAME="titres_boutons_publications">
+									<MACRO NAME="TITRES_BOUTONS_PUBLICATIONS">
 								</tr>
-								<BOUCLE NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
+								<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
 								<tr>
 									<td width="48"> 
 										<div align="center">
-										<a href="../../sommaire.html?id=[#ID]">
-											<MACRO NAME="GIF_SERIE">
-										</a>
+										<!-<a href="index.php?id=[#ID]">->
+											<MACRO NAME="AFFICHER_ICONE_STATUT">
+										<!-</a>->
 										</div>
 									</td>
-									<MACRO NAME="TD_nom_type_titre">
-									<MACRO NAME="boutons_publications">
+									<MACRO NAME="TD_NOM_TYPE_TITRE">
+									<MACRO NAME="BOUTONS_PUBLICATIONS">
 								</tr>
-								<SINON/>
-									<MACRO NAME="TR_aucune_publication_dispo"> 
-								</BOUCLE>
-								<MACRO NAME="Creer_serie">
+								<ALTERNATIVE>
+									<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
+								</ALTERNATIVE></LOOP>
+								<MACRO NAME="CREER_SERIE">
 							</table>
 						</td>
 					</tr>
@@ -73,5 +75,11 @@
 			</td>
 		</tr>
 	</table>
-<MACRO NAME="CLOSE_TABLE_creetableinterface">
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_TABLE_CREETABLEINTERFACE">
+-->
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<MACRO NAME="CHEMIN_PARCOURU">
+<MACRO NAME="AJOUTER_UNE_SERIE">
+<MACRO NAME="LISTER_LES_SERIES">
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
+<MACRO NAME="CLOSE_HTML">

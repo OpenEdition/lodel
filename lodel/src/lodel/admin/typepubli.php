@@ -2,7 +2,7 @@
 
 // gere les types de publications. L'acces est reserve au superadministrateur.
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 include_once("$home/func.php");

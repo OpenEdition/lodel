@@ -1,93 +1,102 @@
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Index des mots clés complet            -->
-<!-- Auteur : Marin Dacos et Poupeau gautier -->
-<!-- Date de création : août 2002.           -->
-<!-- Dernière modification majeure : août 2002 -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index des mots clés complet.                                       -->
+<!-- Auteur : Marin Dacos et Poupeau Gautier.                           -->
+<!-- Date de création : août 2002.                                      -->
+<!-- Dernière modification majeure : août 2002.                         -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <TITLE>Index par mots clés</TITLE>
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top" class="texte_petit_centre"> 
+<table class="principale"><tr><td><div class="conteneur">
 
-			<table width="100%" align="center">
-				<tr> 
-					<td class="titre" align="center"> 
-						<br />
-						<a href="mots-complet.html">
-								<span class="couleur_dominante1">
-									Index par mots clés
-								</span>
-						</a>
-						<br />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<MACRO NAME="Table_alpha">
-					</td>
-				</tr>
-			</table>
+		<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+		<div class="barrenav">
+			<? insert_template("barre");?> 
+		</div>
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
 
-			<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER"  bordercolor="Black"> 
-
+			<!-- ce div permet d'intégrer les lignes horizontales qui créent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+				
+				<!-- Titre de la page style "titre1" -->
+				<div class="titre1">
+					Index par mots clés
+				</div>
+			
+				<div class="titre2">
+							
+								<MACRO NAME="TABLE_ALPHABETIQUE">
+							
+						</div>
+					
 				<!-- Boucle permettant d'afficher les lettres associées au mots-clefs correspondants -->
-				<BOUCLE NAME="alphabet">
-					<tr>
-						<td align="center" class="titre">
-							<A NAME=[#LETTRE]>
-									[#LETTRE]
+				<LOOP NAME="alphabet">
+					<DO>
+						<div class="titre3">
+							<a name=[#LETTRE]>
+								[#LETTRE]
 								&nbsp;
-							</A>
-						</td>
-					</tr>
-					<tr>
-						<td class="texte">
-
-							<!-- Boucle permettant d'afficher les mots-clefs -->
-							<BOUCLE NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
-
-								<br />
-								<a href="mot.html?id=[#ID]">
-								<span class="couleur_dominante1">
-									<strong>
-										[#MOT]
-									</strong>
-								</span>
-								</a>
-								<br />
-
+							</a>
+						</div>
+						
+						<!-- Boucle permettant d'afficher les mots-clefs -->
+						<LOOP NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
+							<DO>
+								<div class="afficherdocument">
+									<span class="bold">
+										<a  href="mot.html?id=[#ID]">
+											 [#MOT]
+										</a>
+									</span>
+								</div>
+																
 								<!-- Affichage des articles correspondant aux thèmes -->
-									<BOUCLE NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexl='[#ID]'">
-									<AVANT>
-										<table width="100%" border="0" cellspacing="2" cellpadding="2">
-									</AVANT>
-										<tr>
-											<td class"texte">
-												<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
-											</td>
-										</tr>
-									<APRES>
-										</table>
-									</APRES>
-									</BOUCLE>
-							</BOUCLE>
-						</td>
-					</tr>
-				</BOUCLE>
-			</table>
-			<a href="mots.html">
-				<span class="couleur_dominante1">
-					Index court
-				</span>
-			</a>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
-<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+								<LOOP NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexl='[#ID]'">
+									<DO>
+										<div class="afficherdocument">
+											<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+										</div>
+									</DO>
+								</LOOP>
+							</DO>
+						</LOOP>
+					</DO>
+				</LOOP>
+				
+				<div class="titre2">
+					<a class="titre2" href="mots.html">
+						>> Index court des mots clés.
+				 	</a>
+				</div>
+				<MACRO NAME="REVUES_ORG">	
+			</div>
+		</div>
+		
+</div></td></tr></table>
 <MACRO NAME="FERMER_HTML">
