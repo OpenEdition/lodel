@@ -703,8 +703,11 @@ function make_loop_code ($name,$tables,
 
   // special treatment for limit when only one value is given.
   $limit=$selectparts['limit'];
+
 if ($limit && strpos($limit,",")===false) {
+  
    $offsetname="offset_".substr(md5($name),0,5);
+   
    $preprocesslimit='
     $currentoffset=intval(($_REQUEST[\''.$offsetname.'\'])/'.$limit.')*'.$limit.';';
    $processlimit='
@@ -714,13 +717,15 @@ if ($limit && strpos($limit,",")===false) {
    if ($cleanquery) $currenturl.=$cleanquery."&";
 if ($context[nbresults]>'.$limit.') {
 $context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$limit.');
-$context[nbresultats]--;$context[nbresults]--;
+//$context[nbresultats]--;$context[nbresults]--;
 } else {
 $context[nexturl]="";
-}
-$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
+}'.
+'$context[offsetname] ='.$offsetname.';'.
+'$context[limitinfo] = '.$limit.';'.
+'$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
 ';
-   $limit='".$currentoffset.",'.($limit+1);
+   $limit='".$currentoffset.",'.($limit);
  } 
   if ($limit) $limit="LIMIT ".$limit;
 
@@ -761,12 +766,21 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
 //
 // genere le code pour parcourir la loop
 //
+
+	
+
   $this->fct_txt.='function loop_'.$name.' ($context)
 {'.$preprocesslimit.'
- $query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '.($options['showsql'] ? 'echo htmlentities($query);' : '').'
-  $result='.sprintf($options['sqlquery'],'$query').sprintf($options['sqlerror'],'$query','$name').';
+ $query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";' .
+ '$result ='.sprintf($options['sqlquery'],'$query').sprintf($options['sqlerror'],'$query','$name').';'.
+ $postmysqlquery.
+ '$row='.sprintf($options['sqlfetchassoc'],'$result').';'.
+ '$context[nbresultats]=$context[nbresults] = $row[nbresults] ;'.
+ 
+ 	'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '.($options['showsql'] ? 'echo htmlentities($query);' : '').'
+  $query ; $result='.sprintf($options['sqlquery'],'$query').sprintf($options['sqlerror'],'$query','$name').';
 '.$postmysqlquery.'
- $context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'],'$result').';
+ //$context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'],'$result').';
  '.$processlimit.' 
  $generalcontext=$context;
  $count=0;
@@ -793,6 +807,8 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
  '.sprintf($options['sqlfree'],'$result').';
 }
 ';
+
+
 }
 
 
