@@ -666,7 +666,6 @@ A:hover {
 
 .resume
 {
-	font-style : italic;
 	color : #454545;
 	text-align : justify;
 }
@@ -754,4 +753,5 @@ H7 {font-size: 28pt; text-align: center; color: #000; line-height: 1; margin-bot
 
 #checkbalisage  *{
 	font-family: "Courier New", Courier, mono;
+	font-style: none;
 }
