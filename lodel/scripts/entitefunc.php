@@ -98,6 +98,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
       $validchar='-0-9A-Z_a-z';
       if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $err=$erreur[$nom]="url";
+      break;
+    case "boolean" :
+      $entite[$nom]=$entite[$nom] ? 1 : 0;
     }
       break;
     }
@@ -227,7 +230,7 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
 	$entrees=preg_split("/,/",$context[autresentrees][$idtype]);
       }
     } elseif (!$entrees) continue;
-    $result=mysql_query("SELECT newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE statut>0 AND id='$idtype'") or die (mysql_error());
+    $result=mysql_query("SELECT nvimportable,utiliseabrev FROM $GLOBALS[tp]typeentrees WHERE statut>0 AND id='$idtype'") or die (mysql_error());
     if (mysql_num_rows($result)!=1) die ("erreur interne");
     $typeentree=mysql_fetch_assoc($result);
 
@@ -244,9 +247,9 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
 	if ($statut>0 && $oldstatut<0) { // faut-il publier ?
 	  mysql_query("UPDATE $GLOBALS[tp]entrees SET statut=abs(statut) WHERE id='$id'") or die (mysql_error());	
 	}
-      } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
+      } elseif ($typeentree[nvimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
 	// oui,il faut ajouter le mot cle
-	$abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
+	$abrev=$typeentree[utiliseabrev] ? strtoupper($entree) : "";
 	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,lang) VALUES ('$statut','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
 	$id=mysql_insert_id();
       } else {
@@ -397,7 +400,7 @@ function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouve
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$entrees && (in_array($row[abrev],$entrees) || in_array($row[nom],$entrees)) ? " selected" : "";
    if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
-   $value=$context[useabrev] ? $row[abrev] : $row[nom];
+   $value=$context[utiliseabrev] ? $row[abrev] : $row[nom];
     echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
     makeselectentrees_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
   }

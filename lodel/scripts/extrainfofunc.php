@@ -353,7 +353,7 @@ function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouve
   while ($row=mysql_fetch_assoc($result)) {
     $selected=(in_array($row[abrev],$entrees[1]) || in_array($row[nom],$entrees[1])) ? " selected" : "";
    if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
-   $value=$context[useabrev] ? $row[abrev] : $row[nom];
+   $value=$context[utiliseabrev] ? $row[abrev] : $row[nom];
     echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
     makeselectentrees_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
   }

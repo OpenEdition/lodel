@@ -1,10 +1,10 @@
 <?php
 
 // droit
-define(LEVEL_VISITEUR,1);
-define(LEVEL_REDACTEUR,2);
-define(LEVEL_EDITEUR,4);
-define(LEVEL_ADMIN,32);
+define(LEVEL_VISITEUR,10);
+define(LEVEL_REDACTEUR,20);
+define(LEVEL_EDITEUR,30);
+define(LEVEL_ADMIN,40);
 define(LEVEL_ADMINLODEL,128);
 
 function authenticate ($level=0,$norecordurl=FALSE)

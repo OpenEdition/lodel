@@ -60,21 +60,35 @@
 			<td colspan="2">Entrée linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Entrée hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /></td>
 		</tr>
 		<tr>
-			<td colspan="2">Import de nouveaux elements possible: <input type="radio" name="newimportable" value="1" [(#NEWIMPORTABLE|yes)] /> Liste figée par l'administrateur: <input type="radio" name="newimportable" value="0" [(#NEWIMPORTABLE|no)] /></td>
+			<td colspan="2">Import de nouveaux elements possible: <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] /> Liste figée par l'administrateur: <input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] /></td>
 		</tr>
 		<tr>
-			<td colspan="2">Utiliser les abréviations: <input type="radio" name="useabrev" value="1" [(#USEABREV|yes)] /> Pas d'abréviation: <input type="radio" name="useabrev" value="0" [(#USEABREV|no)] /></td>
+			<td colspan="2">Utiliser les abréviations: <input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] /> Pas d'abréviation: <input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] /></td>
 		</tr>
 		<tr>
 			<td colspan="2">Ordre alphabétique: <input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] /> Ordre définit dans l'interface: <input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] />Par ordre de création: <input type="radio" name="tri" value="1" [(#TRI|eq("1"))] /></td>
 		</tr>
+		<IF COND="[#ADMINLODEL]">    
+		<tr>
+			<td class="texte_intitule">Type d'entree protégé:</td>
+
+<IF COND="abs([#STATUT]) lt 32">
+			<td><input type="checkbox" name="protege"></td>
+<ELSE/>
+			<td><input type="checkbox" name="protege" checked></td>
+</IF>
+		</tr>
+		</IF>
+
 		  <tr>
 		    <td>
 		      Type de publi et document qui contiennent ce type d'intervenant:<br>
-<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
+Faire une macro avec cette boucle. Ghislain 24/08/03. idem dans typepersonne.
+<!-- debut -->
 		      <LOOP NAME="typeentites">
 			[#TYPE]: <input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]><br>
 		      </LOOP>
+<!-- fin -->
 		    </td>  
 		  </tr>
 

@@ -206,8 +206,8 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 
 # options
 	lineaire	TINYINT DEFAULT '0' NOT NULL,
-	newimportable	TINYINT DEFAULT '0' NOT NULL,
-	useabrev	TINYINT DEFAULT '0' NOT NULL,
+	nvimportable	TINYINT DEFAULT '0' NOT NULL,
+	utiliseabrev	TINYINT DEFAULT '0' NOT NULL,
 	tri		VARCHAR(64) NOT NULL DEFAULT 'ordre' NOT NULL, # 
 
 	maj		TIMESTAMP,

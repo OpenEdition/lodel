@@ -11,16 +11,7 @@ include_once($home."func.php");
 $id=intval($id);
 $critere=$id>0 ? "id='$id'" : "";
 
-//
-// supression et restauration
-//
-if ($id>0 && ($delete || $restore)) { 
-  die("pas encore implemente");
-  $delete=2; // destruction en -64;
-  include ($home."trash.php");
-  treattrash("groupesdechamps",$critere);
-  return;
-}
+
 
 //
 // ordre
@@ -30,10 +21,23 @@ if ($id>0 && $dir) {
   # cherche le groupe
   $result=mysql_query ("SELECT classe FROM $GLOBALS[tp]groupesdechamps WHERE $critere") or die (mysql_error());
   list($classe)=mysql_fetch_row($result);
-  chordre("groupeschamps",$id,"classe='$classe' AND statut>-64",$dir);
+  chordre("groupesdechamps",$id,"classe='$classe' AND statut>-64",$dir);
   back();
 }
 
+if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
+
+//
+// supression et restauration
+//
+if ($id>0 && ($delete || $restore)) { 
+  $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]champs WHERE idgroupe='$id'") or die (mysql_error());
+  if (mysql_num_rows($result)) die("ERROR: the field group is not empty. Clear it before deletion");
+  $delete=2; // destruction en -64;
+  include ($home."trash.php");
+  treattrash("groupesdechamps",$critere);
+  return;
+}
 
 //
 // ajoute ou edit
@@ -48,14 +52,18 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le statut et l'ordre
-      $result=mysql_query("SELECT statut,ordre,classe FROM $GLOBALS[tp]groupeschamps WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT statut,ordre,classe FROM $GLOBALS[tp]groupesdechamps WHERE $critere") or die (mysql_error());
+      if (!mysql_num_rows($result)) die("ERROR: The field group does not exist or you are not allowed to modify it.");
       list($statut,$ordre,$classe)=mysql_fetch_array($result);
     } else {
       $statut=1;
       if (!$context[classe]) die ("Erreur interne. Il manque la classe dans le formulaire");
       $ordre=get_ordre_max("groupesdechamps"," classe='$context[classe]'");
     }
-    if ($protege) $statut=$id && $statut>0 ? 32 : -32;
+    if ($adminlodel) {
+      $newstatut=$protege ? 32 : 1;
+      $statut=$statut>0 ? $newstatut : -$newstatut;    
+    }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]groupesdechamps (id,nom,titre,classe,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[classe]','$ordre','$statut')") or die (mysql_error());
     back();
@@ -63,13 +71,14 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]groupesdechamps WHERE $critere AND statut>-32") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]groupesdechamps WHERE $critere AND statut>-64") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("ERROR: The field does not exist or you are not allowed to modify it.");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 } else {
   // cherche le classe.
   if ($classe && preg_match("/[\w-]/",$classe)) {
     $context[classe]=$classe;
-  } else die("preciser une classe");
+  } else die("ERROR: Invalid class passed as argument");
 }
 
 

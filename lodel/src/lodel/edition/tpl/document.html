@@ -45,7 +45,21 @@
         <DO>
 		<tr>
 			<td width="200">[#TITRE]:</td>
+Nicolas, il faudrait peut etre faire une macro avec ca: commun document.html/publication.html
+<!-- debut macro -------------------------------------------- -->
+		<IF COND="[#TYPE] eq 'boolean'">
+			<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
+		</IF>
+		<IF COND="[#EDITION] eq 'text'">
 			<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
+		</IF>
+		<IF COND="[#EDITION] eq 'textarea10'">
+			<td><textarea rows="10" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+		</IF>
+		<IF COND="[#EDITION] eq 'textarea30'">
+			<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+		</IF>
+<!--fin macro -------------------------------------------------- -->
 		</tr>
 		<IF COND="[#ERREUR]"><tr><td colspan="2" class="message_erreur">Vous devez preciser un titre</td></tr></IF>
         </DO>

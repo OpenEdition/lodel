@@ -4,7 +4,7 @@ function isvalidfield($nom)
 { return preg_match("/^[a-zA-Z0-9]+$/",$nom); }
 
 function isvalidstyle($nom)
-{ return preg_match("/^[a-zA-Z0-9_]+$/",$nom); }
+{ return preg_match("/^[a-zA-Z0-9]+$/",$nom); }
 
 $GLOBALS[typechamps]=array("tinytext"=>"Texte court",
 			   "text"=>"Texte",
@@ -16,6 +16,7 @@ $GLOBALS[typechamps]=array("tinytext"=>"Texte court",
 			   "datetime"=>"Date et Heure",
 			   "time"=>"Heure",
 			   "int"=>"Nombre entier",
+			   "boolean"=>"Bool&eacute;en",
 			   "number"=>"Nombre &agrave virgule",
 			   "lang"=>"Langue",
 			   "longtext"=>"Texte long",
@@ -31,6 +32,7 @@ $GLOBALS[sqltype]=array("tinytext"=>"tinytext",
 			"datetime"=>"datetime",
 			"time"=>"time",
 			"int"=>"int",
+			"boolean"=>"tinyint",
 			"number"=>"double precision",
 			"lang"=>"tinytext",
 			"longtext"=>"longtext",

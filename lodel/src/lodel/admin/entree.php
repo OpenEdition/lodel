@@ -55,7 +55,8 @@ if ($edit) { // modifie ou ajoute
       $context[idtype]=intval($context[idtype]);
       $ordre=get_ordre_max("entrees"," idparent='$idparent' AND idtype='$context[idtype]'");
     }
-    if ($protege) $statut=$id && $statut>0 ? 32 : -32;    
+    $newstatut=$protege ? 32 : 1;
+    $statut=$statut>0 ? $newstatut : -$newstatut;
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,lang,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$context[idtype]')") or die (mysql_error());
 

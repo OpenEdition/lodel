@@ -159,6 +159,9 @@ Nicolas faudrait mettre [ #TITRE] ici a la place des condtions,stp
         <DO>
 		<tr>
 			<td width="200">[#TITRE]:</td>
+		<IF COND="[#TYPE] eq 'boolean'">
+			<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
+		</IF>
 		<IF COND="[#EDITION] eq 'text'">
 			<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 		</IF>
@@ -168,6 +171,7 @@ Nicolas faudrait mettre [ #TITRE] ici a la place des condtions,stp
 		<IF COND="[#EDITION] eq 'textarea30'">
 			<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
 		</IF>
+		
 		</tr>
 		<IF COND="[#ERREUR] eq '+'"><tr><td colspan="2" class="message_erreur">Ce champ est obligatoire</td></tr></IF>
 		<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date valide</td></tr></IF>

@@ -46,6 +46,19 @@
 			</td>
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
+		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<IF COND="[#ADMINLODEL]">    
+		<tr>
+			<td class="texte_intitule">Type de personne protégé:</td>
+
+<IF COND="abs([#STATUT]) lt 32">
+			<td><input type="checkbox" name="protege"></td>
+<ELSE/>
+			<td><input type="checkbox" name="protege" checked></td>
+</IF>
+		</tr>
+		</IF>
+
 		  <tr>
 		    <td>
 		      Type de publi et document qui contiennent ce type d'intervenant:<br>
@@ -56,7 +69,6 @@
 		    </td>  
 		  </tr>
 
-		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 	</table>
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;

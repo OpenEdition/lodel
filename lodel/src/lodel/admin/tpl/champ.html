@@ -37,6 +37,7 @@
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
 		[(#ERREUR_MLSTYLE|true)<tr><td colspan="2" class="message_erreur">Les styles "multilingues" doivent preciser la langue. Exemple "resume:fr, abstract:en"</td></tr>]
+		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Les styles ne peuvent contenir que les caracteres de a à z et de 0 a 9. Pas d'accent, pas d'espace.</td></tr>]
 		<tr>
 			<td class="texte_intitule">Type:</td>
 			<td><select name="type"><?php make_select_types(); ?></select><IF COND="[#ERREUR_CONFIRMATION]"><font color="red">Modifier le type provoque en g&eacute;n&eacute;neral des pertes de donn&eacute;es, veuillez confirmer</font><input class="form" type="submit" name="confirmation" value="   Confirmer    " /></IF></td>
@@ -57,7 +58,17 @@
 			<td class="texte_intitule">Filtrage :</td>
 			<td><input size="40" type="text" name="filtrage" value="[#FILTRAGE]" /></td>
 		</tr>
+		<IF COND="[#ADMINLODEL]">    
+		<tr>
+			<td class="texte_intitule">Champ protégé:</td>
 
+<IF COND="abs([#STATUT]) lt 32">
+			<td><input type="checkbox" name="protege"></td>
+<ELSE/>
+			<td><input type="checkbox" name="protege" checked></td>
+</IF>
+		</tr>
+		</IF>
 
 	</table>
 	<div class="pied_de_formulaire">

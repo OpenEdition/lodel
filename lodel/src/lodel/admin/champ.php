@@ -52,9 +52,16 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
+    $context[nom]=trim($context[nom]);
     if (!$context[nom] || !isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
     if (!$context[type]) $err=$context[erreur_type]=1;
-    if ($context[type]=="mltext" && !isvalidmlstyle($context[style])) $err=$context[erreur_mlstyle]=1;
+    $context[style]=trim($context[style]);
+    if ($context[type]=="mltext") {
+      if ($context[style] && !isvalidmlstyle($context[style])) $err=$context[erreur_mlstyle]=1;
+    } else {
+      if ($context[style] && !isvalidstyle($context[style])) $err=$context[erreur_style]=1;
+    }
+
     if ($err) break;
     include_once ($home."connect.php");
 
@@ -85,7 +92,11 @@ if ($edit) { // modifie ou ajoute
       $ordre=get_ordre_max("champs"," idgroupe='$context[idgroupe]'");
       $alter="ADD";
     }
-    if ($protege) $statut=$id && $statut>0 ? 32 : -32;    
+    // adminlodel only are allow to protect/unprotect
+    if ($adminlodel) {
+      $newstatut=$protege ? 32 : 1;
+      $statut=$statut>0 ? $newstatut : -$newstatut;    
+    }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,traitement,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 

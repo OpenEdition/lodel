@@ -13,6 +13,13 @@ if ($id>0) {
   $critere="id='$id'";
 } else $critere="";
 
+if ($id>0 && $dir) {
+  // search the parent
+  chordre("typeentrees",$id,"statut>0",$dir);
+  back();
+}
+
+if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
 //
 // supression et restauration
 //
@@ -26,15 +33,10 @@ require($home."typetypefunc.php");
 
 $critere.=" AND statut>0";
 
-if ($id>0 && $dir) {
-  # cherche le parent
-  chordre("typeentrees",$id,"statut>0",$dir);
-  back();
-}
 //
 // ajoute ou edit
 //
-if ($edit) { // modifie ou ajoute
+if ($edit) {
   extract_post();
   // validation
   do {
@@ -48,14 +50,19 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le statut
-      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]typeentrees WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]typeentrees WHERE $critere") or die (mysql_error());
+      if (!mysql_num_rows($result)) die("ERROR: The 'typeentree' does not exist or you are not allowed to modify it.");
       list($statut,$ordre)=mysql_fetch_array($result);
     } else {
       $statut=1;
       $ordre=get_ordre_max("typeentrees");
     }
+    if ($adminlodel) {
+      $newstatut=$protege ? 32 : 1;
+      $statut=$statut>0 ? $newstatut : -$newstatut;    
+    }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$statut','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$statut','$context[lineaire]','$context[nvimportable]','$context[utiliseabrev]','$context[tri]','$ordre')") or die (mysql_error());
     if ($id) {
       typetype_delete("typeentree","idtypeentree='$id'");
     } else {
@@ -69,6 +76,7 @@ if ($edit) { // modifie ou ajoute
   $id=intval($id);
   include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]typeentrees WHERE $critere") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("ERROR: The 'typeentree' does not exist or you are not allowed to modify it.");
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 

@@ -13,6 +13,18 @@ if ($id>0) {
   $critere="id='$id'";
 } else $critere="";
 
+
+//
+// order
+//
+if ($id>0 && $dir) {
+  # cherche le parent
+  chordre("typepersonnes",$id,"statut>0",$dir);
+  back();
+}
+
+if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
+
 //
 // supression et restauration
 //
@@ -26,11 +38,6 @@ require($home."typetypefunc.php");
 
 $critere.=" AND statut>0";
 
-if ($id>0 && $dir) {
-  # cherche le parent
-  chordre("typepersonnes",$id,"statut>0",$dir);
-  back();
-}
 //
 // ajoute ou edit
 //
@@ -48,11 +55,16 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le statut
-      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]typepersonnes WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]typepersonnes WHERE $critere") or die (mysql_error());
+      if (!mysql_num_rows($result)) die("ERROR: 'typepersonne' does not exist or you are not allowed to modify it.");
       list($statut,$ordre)=mysql_fetch_array($result);
     } else {
       $statut=1;
       $ordre=get_ordre_max("typepersonnes");
+    }
+    if ($adminlodel) {
+      $newstatut=$protege ? 32 : 1;
+      $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]typepersonnes (id,type,titre,style,tpl,tplindex,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$statut','$ordre')") or die (mysql_error());
@@ -70,6 +82,7 @@ if ($edit) { // modifie ou ajoute
   $id=intval($id);
   include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]typepersonnes WHERE $critere") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("ERROR: 'typepersonne' does not exist or you are not allowed to modify it.");
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 

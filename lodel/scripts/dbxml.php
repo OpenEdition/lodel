@@ -177,7 +177,7 @@ function enregistre_entrees ($identite,&$vals,&$index,$statut)
   if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
 
   // cree un hash avec les informations pour les index
-  $result=mysql_query("SELECT id,type,newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type,nvimportable,utiliseabrev FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) $typeentrees[$row[type]]=$row;
 
 #  print_r($index);
@@ -208,9 +208,9 @@ function enregistre_entrees ($identite,&$vals,&$index,$statut)
       if ($statut>0 && $oldstatut<0) { // faut-il publier ?
 	mysql_query("UPDATE $GLOBALS[tp]entrees SET statut=1 WHERE id='$id'") or die (mysql_error());	
       }
-    } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
+    } elseif ($typeentree[nvimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
       // oui,il faut ajouter le mot cle
-      $abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
+      $abrev=$typeentree[utiliseabrev] ? strtoupper($entree) : "";
       mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,lang) VALUES ('$statut','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
       $id=mysql_insert_id();
     } else {

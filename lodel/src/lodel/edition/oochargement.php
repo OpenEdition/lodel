@@ -144,6 +144,12 @@ function OO ($convertedfile,&$context)
   array_push($srch,"/\[!(\/?)--R2R(C?):([^\]]+)--\]/e");
   array_push($rpl,"removeaccentsandspaces(strtolower('<\\1r2r\\2:\\3>'))");  
 
+  // styles transparents
+  // on efface tout ce qu'il y a entre.
+  array_push($srch,"/<r2r:($GLOBALS[stylestransparents])\b([^>]*)>.*?<\/r2r:\\1>/");
+  array_push($rpl,"");
+  
+
   $translations=array("notesdebasdepage"=>"notebaspage",
 #		      "title"=>"titre","subtitle"=>"soustitre",
 		      "document"=>"article",
@@ -160,6 +166,7 @@ function OO ($convertedfile,&$context)
 		      "typedocument"=>"typedoc",
 #		      "langue"=>"langues",
 		      );
+
   
   foreach ($translations as $k=>$v) {
     array_push($srch,"/<r2r:$k\b([^>]*)>/","/<\/r2r:$k\b([^>]*)>/");

@@ -21,7 +21,21 @@ if ($confirm) {
       }
     }
 
+    // changement du niveau des utilisateurs
 
+    //Ancienne valeur
+    //(LEVEL_VISITEUR,1);
+    //(LEVEL_REDACTEUR,2);
+    //(LEVEL_EDITEUR,4);
+    //(LEVEL_ADMIN,32);
+
+    $err=mysql_query_cmds('
+UPDATE _PREFIXTABLE_users SET privilege=10 where privilege=1;
+UPDATE _PREFIXTABLE_users SET privilege=20 where privilege=2;
+UPDATE _PREFIXTABLE_users SET privilege=30 where privilege=4;
+UPDATE _PREFIXTABLE_users SET privilege=40 where privilege=32;
+');
+    if ($err) break;
 
     // est-ce que la table des indexhs exists ?
     // on renome
@@ -131,9 +145,9 @@ DROP TABLE _PREFIXTABLE_indexhs;
     if (!$tables["$GLOBALS[tp]typeentrees"]) { // il faut creer cette table, et les autres...
       if ($err=create("typeentrees")) break;
       $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','chronos','1','0','0','1','ordre','2');
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','mots','1','1','1','0','nom','1');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','chronos','1','0','0','1','ordre','2');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','mots','1','1','1','0','nom','1');
 ");
 	$report.="Creation de typeentrees<br>\n";
 	if ($err) break;
