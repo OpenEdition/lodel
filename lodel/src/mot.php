@@ -9,7 +9,7 @@ $context[id]=$id=intval($id);
 
 include_once("$home/connect.php");
 $result=mysql_query ("SELECT * FROM indexls WHERE id='$id'") or die (mysql_error());
-$context=mysql_fetch_array($result);
+$context=array_merge($context,mysql_fetch_array($result));
 
 $base="mot";
 

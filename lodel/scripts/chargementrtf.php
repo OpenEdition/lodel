@@ -112,7 +112,7 @@ function rtf($filename) {
   }
   # conversion des balises avec publication
   array_push($search,
-		     "/<r2r:(?:section|heading|titre)_(\d+\b([^>]*)>/i",
+		     "/<r2r:(?:section|heading|titre)_(\d+\b([^>]*))>/i",
 		     "/<\/r2r:(?:section|heading|titre)_(\d+)>/i");
   array_push($rpl,
 		"<r2r:section\\1>",

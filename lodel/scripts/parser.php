@@ -50,7 +50,7 @@ require("lodelconfig.php");include_once ("$home/connect.php");
 '.$fct.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
-			       '/<\?\s*\?>/'),array("",""),$contents);
+			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
 
   $f=fopen ($out,"w");
   fputs($f,$contents);
@@ -756,6 +756,7 @@ function stripcommentandcr(&$text)
 #  foreach ($results[0] as $comment) {
 #    if (!preg_match("/javascript/i",$comment)) str_replace
 #  }
+
 
   return preg_replace (array("/\r/",
 			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",

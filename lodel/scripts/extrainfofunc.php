@@ -411,9 +411,9 @@ function auteurs2auteur (&$text)
 
     while (($auteur=array_shift($auteurs))) {
       // on regarde s'il y a un prefix
-      if (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$auteur,$result)) {
-	$prefix="<r2r:prefix>$result[1]</r2r:prefix>";
-	$auteur=str_replace($result[0],"",$auteur); // a partir de php 4.3.0 il faudra utiliser OFFSET_CAPTURE.
+      if (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$auteur,$result3)) {
+	$prefix="<r2r:prefix>$result3[1]</r2r:prefix>";
+	$auteur=str_replace($result3[0],"",$auteur); // a partir de php 4.3.0 il faudra utiliser OFFSET_CAPTURE.
       } else {
 	$prefix="";
       }

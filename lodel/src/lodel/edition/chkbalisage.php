@@ -60,7 +60,7 @@ if ($line) { // on vient de balise, il faut modifier les balises
     if (!$v || strpos($v,"<")!==FALSE) { // sous balises
       array_push($srch,"/<r2r:$b>/si");array_push($rpl,$v); // balises ouvrante
       // balises fermante:
-      preg_match_all("/<(\w+)\b[^>]+>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
+      preg_match_all("/<(\w+)\b[^>]*>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
       $v="";
       while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'ordre inverse, et transforme les en balises fermantes
       array_push($srch,"/<\/r2r:$b>/si");array_push($rpl,$v); // balises ouvrante

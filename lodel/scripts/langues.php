@@ -18,7 +18,7 @@ $langues=array("fr"=>"français",
 
 
 $langresume=array("resume"=>"fr",
-		  "abstract","en",
+		  "abstract"=>"en",
 		  ""=>"es",
 		  ""=>"de",
 		  ""=>"ru",
