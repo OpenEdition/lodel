@@ -77,7 +77,11 @@ foreach $filename (@ARGV) {
 
   $change+=$file=~s/\[\#SUPERADMIN\]/[\#ADMINLODEL]/g;
   $change+=$file=~s/\[GIF_VISAGE_SUPERADMIN\]/[GIF_VISAGE_ADMINLODEL]/g;
+
+# changement de status en statut
   $change+=$file=~s/\[\#STATUS\]/[\#STATUT]/g;
+  $change+=$file=~s/\bstatus\b/statut/g;
+  $change+=$file=~s/\bSTATUS\b/STATUT/g;
 
 # changement theme en rubrique
   $change+=$file=~s/UN_SOUS_THEME/UNE_SOUS_RUBRIQUE/g;
@@ -110,6 +114,20 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(<SCRIPT\b[^>]*>)/$1<!--/gi;
   $change+=$file=~s/(<\/SCRIPT>)/-->$1/gi;
 
+# ajout de nom aux loop qui n'en ont pas
+  $loopnb=1;
+  $change+=$file=~s/<LOOP\s+(NAME\s*=\s*""\s+){0,1}TABLE\s*=\s*/"<LOOP NAME=\"loop_".$filename.$loopnb++."\" TABLE="/eg;
+
+# changement de parent en idparent dans les WHERE
+  $change+=$file=~s/<LOOP\s+([^>]*)WHERE\s*=\s*"parent\s*=\s*'(\[#ID\]|0)'"/<LOOP $1WHERE="idparent='$2'/g;
+
+# changement de statut><=>... en statut eq|ne... dans les WHERE
+  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*=/WHERE="statut eq /g;
+  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*>=/WHERE="statut ge /g;
+  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*>/WHERE="statut gt /g;
+  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*<=/WHERE="statut le /g;
+  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*<>/WHERE="statut ne /g;
+  $change+=$file=~s/WHERE\s*=\s*"\s*statut\s*</WHERE="statut lt /g;
 
   next unless $change;
   print "$filename:",$change,"\n";
