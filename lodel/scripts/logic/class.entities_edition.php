@@ -264,7 +264,7 @@ class Entities_EditionLogic extends GenericLogic {
      //unlock();
 
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
-       header("location: ".SITEROOT."index.php?id=".$id);
+       header("location: ".SITEROOT.makeurlwithid($id));
        exit();
      }
      return $ret ? $ret : "_back";
