@@ -259,8 +259,6 @@ function OO_XHTML ($convertedfile,&$context)
     include ($home."checkxml.php");
     if (!checkstring($file)) { echo "fichier: $newname"; return FALSE; }
 
-   if ($GLOBALS[sortie]) die (htmlentities($file));
-
     function img_copy($imgfile,$ext,$count,$rand) {
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
       copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
@@ -269,6 +267,7 @@ function OO_XHTML ($convertedfile,&$context)
     include_once ($home."func.php");
     copy_images($file,"img_copy",rand());
 
+    if ($GLOBALS[sortie]) die (htmlentities($file));
 
   // ecrit le fichier
   $newname="$convertedfile-".rand();
