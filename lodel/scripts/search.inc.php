@@ -159,7 +159,7 @@ function search(&$context,$funcname,$arguments)
 		}
 		if(!$context['lodeluser']['visitor'])
 		{
-			$criteria_index .= " AND #_TP_entities.status >= 16";	
+			$criteria_index .= " AND #_TP_entities.status >= 1";	
 		}
 		
 		
@@ -173,7 +173,7 @@ function search(&$context,$funcname,$arguments)
 		#echo "limit :".$limit;
 		$groupby = " GROUP BY identity ";
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
-	echo "hey :".$sql;
+	#echo "hey :".$sql;
 	
 		$sqlc = lq("SELECT identity FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);	
 	#echo "hey2 :".$sqlc;
