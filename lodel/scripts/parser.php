@@ -483,7 +483,7 @@ function parse_loop()
 }
 
 
-function decode_loop_content ($name,$tables=array(),$optimise)
+function decode_loop_content ($name,$tables=array(),$optimise=TRUE)
 
 {
   global $home;
