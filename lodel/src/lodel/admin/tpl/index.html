@@ -37,7 +37,7 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Pr&eacute;f&eacute;rences</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Configuration</span></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
@@ -73,12 +73,12 @@
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_administrer.png" /></td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_index.png" /></td>
 						<td width="5" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Gérer les index</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Gestion des index</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<LOOP NAME="typeentree" TABLE="typeentrees" WHERE="ok" ORDER="ordre">
@@ -86,7 +86,7 @@
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-									<a href="entrees.php?type=[#TYPE]"><span class="texte_noir_gras">Gérer l'index : [#TITRE]</span></a>
+									<a href="entrees.php?type=[#TYPE]"><span class="texte_noir_gras">[(#TITRE|majuscules)]</span></a>
 								</td>
 								<td width="5">&nbsp;</td>
 							</tr>
@@ -117,20 +117,6 @@
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Mod&egrave;le &eacute;ditorial</span></td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="importmodel.php"><span class="texte_noir_gras">Importer un mod&egrave;le &eacute;ditorial</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="backupmodel.php"><span class="texte_noir_gras">Sauvegarder le mod&egrave;le &eacute;ditorial</span></a>
-						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
@@ -220,6 +206,20 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
+							<a href="importmodel.php"><span class="texte_noir_gras">Importer un mod&egrave;le &eacute;ditorial</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="backupmodel.php"><span class="texte_noir_gras">Sauvegarder le mod&egrave;le &eacute;ditorial</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
 							<a href="schema.php"><span class="texte_noir_gras">Télécharger le Schéma XML</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
@@ -233,7 +233,7 @@
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques du site</span></span> (inactif)</td>
+						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques du site (inactif)</span></span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 				</table>

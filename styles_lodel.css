@@ -611,6 +611,13 @@ div.lien_popup a:hover {
 	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
+.texte_petit_lodelbarre{
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman"
+}
+
 .navigation {
 	font-size: x-small;
 	font-weight: small;
