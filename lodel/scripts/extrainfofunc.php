@@ -1,7 +1,7 @@
 <?
 
 
-// regexp de reconnaissance des prefix de nom d'auteur
+// regexp de reconnaissance des prefix de nom de personne
 
 $prefixregexp="Pr\.|Dr\.";
 
@@ -18,7 +18,7 @@ function ei_pretraitement($filename,$row,&$context,&$text)
   global $langresume,$home;
 
   $text=join("",file ($filename.".html"));
-  auteurs2auteur($text);
+  traitepersonnes($text);
   traiteentrees($text);
 
   //////////  // debut de gestion du bloc titre et meta
@@ -81,10 +81,10 @@ $text='<'.'?xml version="1.0" encoding="ISO-8859-1" ?'.'>
 
 //
 // verifie les entrees et enregistre dans la base sauf s'il y a erreur
-//  ou si on souhaite ajouter un auteur
+//  ou si on souhaite ajouter une personne
 //
 
-function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
+function ei_edition($filename,$row,&$context,&$text,&$entrees,&$autresentrees,&$plus)
 
 {
   global $home;
@@ -98,7 +98,10 @@ function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
 
   extract_post();
   // suppression des slashes
-  mystripslashes($context);  mystripslashes($motcles);  mystripslashes($periodes);   mystripslashes($geographies);
+  $time=microtime();
+  mystripslashes($context);
+  mystripslashes($autresentrees);  
+  mystripslashes($entrees);
 
   // verifie que le titre est present
   if (!$context[titre]) $err=$context[erreur_titre]=1;
@@ -109,26 +112,35 @@ function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
     // fin de la validation
   }
   //
-  // recherche les differents type d'index
+  // recherche les differents type d'entrees
   //
   include_once($home."connect.php");
   $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
   $groupeentree="<r2r:grentree>";
   while ($row=mysql_fetch_assoc($result)) {
-    $groupeentree.=gr_index($context,$index[$row[id]],$autresentrees[$row[id]],$row[nom]);
+    $groupeentree.=gr_entrees($context,$entrees[$row[id]],$autresentrees[$row[id]],$row[nom]);
   }
   $groupeentree.="</r2r:grentree>";
+  //
+  // recherche les differents type de personnes
+  //
+  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typepersonnes WHERE status>0") or die (mysql_error());
+  $groupepersonne="<r2r:grpersonne>";
+  while ($row=mysql_fetch_assoc($result)) {
+    $groupepersonne.=gr_personne($context,$row[id],$plus[$row[id]],$row[nom]);
+  }
+  $groupepersonne.="</r2r:grpersonne>";
 
   //
   // efface les groupes
   //
-  $text=preg_replace ("/<r2r:(grentree|grtitre|meta|grauteur)\b[^>]*>(.*?)<\/r2r:\\1>/si", // efface les champs auteurs et auteur
+  $text=preg_replace ("/<r2r:(grentree|grtitre|meta|grpersonne)\b[^>]*>(.*?)<\/r2r:\\1>/si",
 		      "",$text);
   //
   // ajoute les groupes a la fin
   //
   $text=preg_replace("/<\/r2r:article>/i",
-		     gr_auteur($context,$context[plusauteurs]).
+		     $groupepersonne.
 		     $groupeentree.
 		     gr_titre($context).
 		     gr_meta($context)."\\0",
@@ -145,7 +157,7 @@ function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
 		       array("\\1",$lang ? "\\1 lang=\"$lang\">" : "\\1>"),$text);
   }
 
-  if ($err || $context[plusauteurs]) {
+  if ($err || $context[plus]) {
     writefile ($balisefilename,$text);
     return FALSE;
   }
@@ -216,31 +228,26 @@ function ei_enregistrement($filename,$row,&$context,&$text)
 //
 
 
-function gr_auteur(&$context,$plusauteurs)
+function gr_personne(&$context,$idtype,$plus,$type)
 
 {
     $i=1;
-    $rpl="<r2r:grauteur>";
-    while ($context["nomfamille$i"] || $context["prenom$i"] 
-	   ) {
-      $rpl.="<r2r:auteur ordre=\"$i\">".
+    while ($context[nomfamille][$idtype][$i] || $context[prenom][$idtype][$i]) {
+      $rpl.="<r2r:personne type=\"$type\" ordre=\"$i\">".
 	// nompersonne
 	"<r2r:nompersonne>\n".
-	writetag("prefix",$context["prefix$i"]).
-	writetag("nomfamille",$context["nomfamille$i"]).
-	writetag("prenom",$context["prenom$i"]).
+	writetag("prefix",$context[prefix][$idtype][$i]).
+	writetag("nomfamille",$context[nomfamille][$idtype][$i]).
+	writetag("prenom",$context[prenom][$idtype][$i]).
 	"</r2r:nompersonne>\n".
-	writetag("fonction",$context["fonction$i"]).
-	writetag("affiliation",$context["affiliation$i"]).
-	writetag("courriel",$context["courriel$i"]).
-	writetag("description",$context["description$i"]).
-	"</r2r:auteur>\n";
+	writetag("fonction",$context[fonction][$idtype][$i]).
+	writetag("affiliation",$context[affiliation][$idtype][$i]).
+	writetag("courriel",$context[courriel][$idtype][$i]).
+	writetag("description",$context[description][$idtype][$i]).
+	"</r2r:personne>\n";
       $i++;
     }
-    if ($plusauteurs) $rpl.="<r2r:auteur></r2r:auteur>"; // hack un peu sale !
-
-    $rpl.="</r2r:grauteur>";
-
+    if ($plus) $rpl.="<r2r:personne type=\"$type\"></r2r:personne>"; // hack un peu sale !
     return $rpl;
 }
 
@@ -259,11 +266,11 @@ function gr_auteur(&$context,$plusauteurs)
 #  return $rpl;
 #}
 
-function gr_index(&$context,$entrees,$autresentrees,$type)
+function gr_entrees(&$context,$entrees,$autresentrees,$type)
 
 {
   $bal=strtolower($bal);
-  // traite les indexs
+  // traite les entreess
   $entrees=array_merge($entrees,preg_split ("/\s*[,;]\s*/",strip_tags(rmscript($autresentrees))));
 
   if ($entrees) {
@@ -316,14 +323,8 @@ function makeselecttypedoc()
   }
 }
 
-#function makeselectperiodes()
-#{ makeselectindexhs("periode",TYPE_PERIODE); }
-#function makeselectgeographies()
-#{ makeselectindexhs("geographie",TYPE_GEOGRAPHIE); }
 
-
-
-function makeselectindex (&$context)
+function makeselectentrees (&$context)
      // le context doit contenir les informations sur le type a traiter
 {
   global $text;
@@ -334,7 +335,7 @@ function makeselectindex (&$context)
 #echo "entrees:";  print_r($entrees);
 
   $entreestrouvees=array();
-  makeselectindex_rec(0,"",$entrees,$context,&$entreestrouvees);
+  makeselectentrees_rec(0,"",$entrees,$context,&$entreestrouvees);
 #  echo "la:";
 #  print_r($entrees[1]);
 #  echo "la2:";
@@ -343,10 +344,10 @@ function makeselectindex (&$context)
 #  echo "autresnetrees  $context[autresentrees]";
 }
 
-function makeselectindex_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
+function makeselectentrees_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND typeid='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 #  print_r($entrees[1]);
 
   while ($row=mysql_fetch_assoc($result)) {
@@ -354,7 +355,7 @@ function makeselectindex_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
    if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
    $value=$context[useabrev] ? $row[abrev] : $row[nom];
     echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
-    makeselectindex_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
+    makeselectentrees_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
   }
 }
 
@@ -397,141 +398,164 @@ function makeselectdate() {
   }
 }
 
+$balisespersonnes=array("prefix","nomfamille","prenom","description","courriel","affiliation","fonction");
 
-function boucle_auteurs(&$context,$funcname)
+
+function boucle_personnes(&$context,$funcname)
 
 {
+  global $balisespersonnes;
+
+  $balisesre=join("|",$balisespersonnes);
+  // le context doit contenir le nom du type a traiter
   global $text;
-  $balises="(prefix|nomfamille|prenom|description|courriel|affiliation|fonction)";
 
-  preg_match_all("/<r2r:auteur\b[^>]*>(.*?)<\/r2r:auteur\s*>/is",$text,$results,PREG_SET_ORDER);
-  foreach ($results as $auteur) {
-    preg_match_all("/<r2r:$balises\b[^>]*>(.*?)<\/r2r:\\1\s*>/is",$auteur[1],$result,PREG_SET_ORDER);
+  // supprime les entrees existantes dans le context
+  $localcontext=$context;
+  foreach($balisespersonnes as $b) unset($localcontext[$b]);
 
+  $personnere=preg_quote($context[nom]);
+  preg_match_all("/<r2r:personne\b[^>]*?type=\"$personnere\"[^>]*>(.*?)<\/r2r:personne\s*>/is",$text,$results,PREG_SET_ORDER);
+  foreach ($results as $personne) {
+    preg_match_all("/<r2r:($balisesre)\b[^>]*>(.*?)<\/r2r:\\1\s*>/is",$personne[1],$results2,PREG_SET_ORDER);
     $ind++;
-    $localcontext=$context;
-    $localcontext[ind]=$ind;
-    if ($result) {
-      foreach ($result as $champ) { 
-#	$localcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
-	$localcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes($champ[2])); }
+    $localcontext2=$localcontext;
+    $localcontext2[ind]=$ind;
+    if ($results2) {
+      foreach ($results2 as $result2) {
+	$localcontext2[$result2[1]]=
+	  trim(htmlspecialchars(stripslashes($result2[2]))); 
+      }
     }
-	call_user_func("code_boucle_$funcname",$localcontext);
+    call_user_func("code_boucle_$funcname",$localcontext2);
   }
 }
 
+//////////////////////
+//
+//  function de transformation des styles en balises XML LODEL
+//
 
-//////////////////////// function de transformation des balises 's ///////////
-
-function auteurs2auteur (&$text)
+function traitepersonnes (&$text)
 
 {
-  // traitements speciaux:
+  $groupe="<r2r:grpersonne>";
 
-  // accouple les balises auteurs et descriptionauteur
-  $text=preg_replace ("/(<\/r2r:auteurs>)\s*(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/s","\\2\\1",$text);
+  $oldtags=array(); // pour la suppression dans le texte
 
+  $result1=mysql_query("SELECT style,nom FROM $GLOBALS[tableprefix]typepersonnes WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  while ($typepersonne=mysql_fetch_assoc($result1)) {
+    $style=strtolower($typepersonne[style]);
+    // accouple les balises personnes et description
+    $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/s","\\2\\1",$text);
+    // cherche toutes les balises de personnes
+    preg_match_all ("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$results,PREG_SET_ORDER);
 
-  // cherche toutes les balises auteurs
-  preg_match_all ("/<r2r:auteurs>(.*?)<\/r2r:auteurs>/s",$text,$results,PREG_SET_ORDER);
+    $i=1;
 
-  $grauteur="<r2r:grauteur>";
-  $i=1;
-
-  while ($result=array_shift($results)) { // parcours les resultats.
-    // cherche s'il y a un bloc description
-    if (preg_match("/^(.*?)(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/si",$result[1],$result2)) { // il y a un bloc description, donc on a une description pour le dernier auteur.
-      $val=trim($result2[1]);
-      // remplace descriptionauteur en description.
-      $descrauteur=preg_replace("/(<\/?r2r:description)auteur>/i","\\1>",$result2[2]);
-    } else { // pas description des auteurs
-      $val=trim($result[1]);
-      $descrauteur="";
+    while ($result=array_shift($results)) { // parcours les resultats.
+      // cherche s'il y a un bloc description
+      if (preg_match("/^(.*?)(<r2r:description>.*?<\/r2r:description>)/si",$result[1],$result2)) { // il y a un bloc description, donc on a une description pour le dernier personne.
+	$val=trim($result2[1]);
+	// remplace descriptionauteur en description. 
+#### a supprimer
+#      $descrauteur=preg_replace("/(<\/?r2r:description)auteur>/i","\\1>",$result2[2]);
+	$descrpersonne=$result2[2];
+	
+      } else { // pas description des personnes
+	$val=trim($result[1]);
+	$descrpersonne="";
     }
-#    echo htmlentities($descrauteur)."<br><br>\n\n";
-    $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom><r2rc:prefix><r2rc:nom>"));
+#    echo htmlentities($descrpersonne)."<br><br>\n\n";
+      $personnes=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom><r2rc:prefix><r2rc:nom>"));
 
-    while (($auteur=array_shift($auteurs))) {
-      // on regarde s'il y a un prefix
-      // d'abord on cherche s'il y a un style de caractere, sinon, on cherche les prefix classiques definis dans la variables prefixregexp.
-      if (preg_match_all("/<r2rc:prefix>(.*?)<\/r2rc:prefix>/",$auteur,$results2,PREG_SET_ORDER)) {
-	$prefix="<r2r:prefix>";
-	foreach($results2 as $result2) {
-	  $prefix.=$result2[1];
-	  $auteur=str_replace($result2[0],"",$auteur); //nettoie le champ auteur
-	}
-	$prefix.="</r2r:prefix>";
-      } elseif (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$auteur,$result3)) {
-	$prefix="<r2r:prefix>$result3[1]</r2r:prefix>";
-	$auteur=str_replace($result3[0],"",$auteur); // a partir de php 4.3.0 il faudra utiliser OFFSET_CAPTURE.
-      } else {
-	$prefix="";
-      }
-      // ok on le prefix
+      while (($personne=array_shift($personnes))) {
 
-      // on cherche maintenant si on a le prenom
-      $have_prenom=0; $have_nom=0;
-      if (preg_match_all("/<r2rc:prenom>(.*?)<\/r2rc:prenom>/",$auteur,$results2,PREG_SET_ORDER)) {
-	$prenoms=array(); // tableau pour les prenoms
-	foreach($results2 as $result2) {
-	  array_push($prenoms,trim($result2[1]));
-	  $auteur=str_replace($result2[0],"",$auteur); //nettoie l'auteur
-	}
-	$prenom=join(" ",$prenoms); // join les prenoms
-	$nom=$auteur; // c'est le reste
-	$have_prenom=1;
-      }      
-      // on cherche maintenant si on a le nom
-      if (preg_match_all("/<r2rc:nom>(.*?)<\/r2rc:nom>/",$auteur,$results2,PREG_SET_ORDER)) {
-	$noms=array(); // tableau pour les noms
-	foreach($results2 as $result2) {
-	  array_push($noms,trim($result2[1]));
-	  $auteur=str_replace($result2[0],"",$auteur); //nettoie l'auteur
-	}
-	$nom=join(" ",$noms); // join les noms
-	if (!$have_prenom) $prenom=$auteur; // le reste c'est le prenom sauf si on a deja detecte le prenom
-	$have_nom=1;
-      }
-      // si on a pas de style de caractere, alors on essaie de deviner !
-      if (!$have_prenom && !$have_nom) {
-	// ok, on cherche maintenant a separer le nom et le prenom
-	$nom=$auteur;
-	while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
-	if ($nom) {
-	  $prenom=str_replace($nom,"",$auteur);
-	} else { // sinon coupe apres le premiere espace
-	  preg_match("/^\s*(.*)\s+([^\s]+)\s*$/i",$auteur,$result2);
-	  $prenom=$result2[1]; $nom=$result2[2];
-	}
-      }
-      //
-      // on a maintenant le prefix, le nom et le prenom, on ecrit le bloc
-      //
-      $grauteur.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom>$prefix</r2r:nompersonne>";
-      // est-ce qu'on a une description et est-ce qu'elle est pour cet auteur ?
-      if ($descrauteur && !$auteurs)  { // oui, c'est le dernier auteur de cette liste, s'il y a un bloc description, alors c'est pour lui !
-	// on recupere les balises du champ description
-	$balises=array("fonction","affiliation","courriel");
-	foreach ($balises as $balise) {
-	  if (preg_match("/<r2rc:$balise>(.*?)<\/r2rc:$balise>/s",$descrauteur,$result2)) {
-	    $grauteur.=writetag($balise,trim($result2[1]));
-	  }
-	} // foreach
+	list ($prefix,$prenom,$nom)=decodepersonne($personne);
 
-	// on efface tous les styles de caracteres
-	$grauteur.=preg_replace("/<\/?r2rc:[^>]+>/","",$descrauteur);
-      } // ok, on a traite la description
-      $grauteur.="</r2r:auteur>";
-      $i++;
+	$groupe.="<r2r:personne type=\"$typepersonne[nom]\" ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom>$prefix</r2r:nompersonne>";
+	// est-ce qu'on a une description et est-ce qu'elle est pour cet personne ?
+	if ($descrpersonne && !$personnes)  { // oui, c'est le dernier personne de cette liste, s'il y a un bloc description, alors c'est pour lui !
+	  // on recupere les balises du champ description
+	  $balises=array("fonction","affiliation","courriel");
+	  foreach ($balises as $balise) {
+	    if (preg_match("/<r2rc:$balise>(.*?)<\/r2rc:$balise>/s",$descrpersonne,$result2)) {
+	      $groupe.=writetag($balise,trim($result2[1]));
+	    }
+	  } // foreach
+	  
+	  // on efface tous les styles de caracteres
+	  $groupe.=preg_replace("/<\/?r2rc:[^>]+>/","",$descrpersonne);
+	} // ok, on a traite la description
+	$groupe.="</r2r:personne>";
+	$i++;
+      }
+      array_push($oldtags,$result[0]);
+    } // parcourt les resultats
+  } // type de personne
+  $groupe.="</r2r:grpersonne>\n";
+
+  $text=str_replace($oldtags,array($groupe),$text); // remplace le premier tag par $groupe et les autres par rien
+}
+
+
+function decodepersonne($personne) 
+
+{
+  // on regarde s'il y a un prefix
+  // d'abord on cherche s'il y a un style de caractere, sinon, on cherche les prefix classiques definis dans la variables prefixregexp.
+  if (preg_match_all("/<r2rc:prefix>(.*?)<\/r2rc:prefix>/",$personne,$results,PREG_SET_ORDER)) {
+    $prefix="<r2r:prefix>";
+    foreach($results as $result) {
+      $prefix.=$result[1];
+      $personne=str_replace($result[0],"",$personne); //nettoie le champ personne
     }
-    $text=str_replace($result[0],"",$text); // efface ce bloc
-  } // fin du traitement speciale des auteurs
-  $grauteur.="</r2r:grauteur>\n";
+    $prefix.="</r2r:prefix>";
+  } elseif (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$personne,$result2)) {
+    $prefix="<r2r:prefix>$result2[1]</r2r:prefix>";
+    $personne=str_replace($result2[0],"",$personne); // a partir de php 4.3.0 il faudra utiliser OFFSET_CAPTURE.
+  } else {
+    $prefix="";
+  }
+  // ok on le prefix
 
-  // ajoute ce bloc a la fin
-  $bal="</r2r:article>";
-  //   die("$grauteur");
-  $text=str_replace($bal,$grauteur.$bal,$text);
+
+  // on cherche maintenant si on a le prenom
+  $have_prenom=0; $have_nom=0;
+  if (preg_match_all("/<r2rc:prenom>(.*?)<\/r2rc:prenom>/",$personne,$results,PREG_SET_ORDER)) {
+    $prenoms=array(); // tableau pour les prenoms
+    foreach($results as $result) {
+      array_push($prenoms,trim($result[1]));
+      $personne=str_replace($result[0],"",$personne); //nettoie l'personne
+    }
+    $prenom=join(" ",$prenoms); // join les prenoms
+    $nom=$personne; // c'est le reste
+    $have_prenom=1;
+  }      
+  // on cherche maintenant si on a le nom
+  if (preg_match_all("/<r2rc:nom>(.*?)<\/r2rc:nom>/",$personne,$results,PREG_SET_ORDER)) {
+    $noms=array(); // tableau pour les noms
+    foreach($results as $result) {
+      array_push($noms,trim($result[1]));
+      $personne=str_replace($result[0],"",$personne); //nettoie l'personne
+    }
+    $nom=join(" ",$noms); // join les noms
+    if (!$have_prenom) $prenom=$personne; // le reste c'est le prenom sauf si on a deja detecte le prenom
+    $have_nom=1;
+  }
+  // si on a pas de style de caractere, alors on essaie de deviner !
+  if (!$have_prenom && !$have_nom) {
+    // ok, on cherche maintenant a separer le nom et le prenom
+    $nom=$personne;
+    while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
+    if ($nom) {
+      $prenom=str_replace($nom,"",$personne);
+    } else { // sinon coupe apres le premiere espace
+      preg_match("/^\s*(.*)\s+([^\s]+)\s*$/i",$personne,$result);
+      $prenom=$result[1]; $nom=$result[2];
+    }
+  }
+  return array($prefix,$prenom,$nom);
 }
 
 
@@ -556,8 +580,6 @@ function traiteentrees (&$text)
       array_push($oldtags,$result[0]);
     }
   }
-
-
   $groupe.="</r2r:grentree>\n";
   $text=str_replace($oldtags,array($groupe),$text); // remplace le premier tag par $groupe et les autres par rien
 #  echo "entree:$groupe";

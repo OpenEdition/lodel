@@ -20,12 +20,12 @@
 		<td class="texte_noir_gras">Liste des Mots clés</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type_tous_motcles">
+	<LOOP NAME="motcles" TABLE="entrees" WHERE="type='motcle'" ORDER="mot" WHERE="type_tous_motcles">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
 					<td class="ligne_admin1">
-						<IF COND="[#TYPE]==3"><strong>[#MOT]</strong><ELSE/>[#MOT]</IF>
+						<IF COND="[#TYPE]==3"><strong>[#NOM]</strong><ELSE/>[#NOM]</IF>
 					</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
@@ -36,7 +36,7 @@
 					</td>
 				<ELSE/>
 					<td class="ligne_admin2">
-						<IF COND="[#TYPE]==3"><strong>[#MOT]</strong><ELSE/>[#MOT]</IF>
+						<IF COND="[#TYPE]==3"><strong>[#NOM]</strong><ELSE/>[#NOM]</IF>
 					</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>

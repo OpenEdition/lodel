@@ -65,7 +65,7 @@
 							</a>
 						</div>
 				
-						<LOOP NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
+						<LOOP NAME="auteurs1" TABLE="personnes" WHERE="type='auteur'" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
 							<div class="afficherdocument">
 								<a class="auteur" href="auteur.html?id=[#ID]">
 									[#PRENOM] 

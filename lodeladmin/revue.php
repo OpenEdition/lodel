@@ -106,9 +106,13 @@ if ($tache=="createtables") {
   
   mysql_select_db($context[dbname]);
   if (!file_exists("../install/init-revue.sql")) die ("impossible de faire l'installation, le fichier init-revue.sql est absent");
+  $text=join('',file("../install/init-revue.sql"));
+  if (file_exists("../install/inserts-revue.sql")) {
+    $text.=utf8_encode(join('',file("../install/inserts-revue.sql")));
+  }
 
-  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tableprefix],
-		       join('',file("../install/init-revue.sql")));
+  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tableprefix],$text);
+
 
   $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sqlcmds) die("le fichier init-revue.sql ne contient pas de commande. Probleme!");

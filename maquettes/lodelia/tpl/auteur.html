@@ -59,7 +59,7 @@
 								[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
 							</div>
 				
-							<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
+							<LOOP NAME="articles" TABLE="documents" WHERE="idpersonne='[#ID]'" WHERE="ok" ORDER="datepubli">
 								<DO>
 									<div class="afficherdocument">
 										<!-- Liste des articles publiés par l'auteur dans la revue -->

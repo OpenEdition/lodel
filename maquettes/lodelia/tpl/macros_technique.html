@@ -62,7 +62,7 @@
 <!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
 <!-- INSERER_FEUILLE_DE_STYLES).                                        -->
 <!-- ****************************************************************** -->
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
 </DEFMACRO>
 
 <DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES">
@@ -285,8 +285,8 @@ IPR
 <!-- Version 1.0                                                        -->
 <!-- Affichage métadonnées propres à Mot.html.                          -->
 <!-- ****************************************************************** -->
-<meta name="DC.Title" content="Index : [#MOT]" />
-<meta NAME="DC.Description" lang="fr" content="Index par mot clé. [#MOT]" />
+<meta name="DC.Title" content="Index : [#NOM]" />
+<meta NAME="DC.Description" lang="fr" content="Index par mot clé. [#NOM]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_MOTS">
@@ -396,12 +396,12 @@ IPR
 	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
 	<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]" />
 		
-	<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
 	<LOOP NAME="meta_motscles_lineaires" TABLE="entrees" WHERE="iddocument='[#ID]' AND type='motcle'" ORDER="ordre">
-		<meta name="KEYWORDS" content="[#MOT]" />
+		<meta name="KEYWORDS" content="[#NOM]" />
 	</LOOP>
 	
 	<!-- METADONNEES DUBLIN CORE -->
@@ -418,10 +418,10 @@ IPR
 	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
 	<LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
-		<meta name="DC.Subject" content="[#MOT]" />
+		<meta name="DC.Subject" content="[#NOM]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	

@@ -833,7 +833,7 @@
 <!-- Affiche la liste des auteurs d'un document entre virgules.         -->
 <!-- ****************************************************************** -->
 	<div class="auteur">
-	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>[#PRENOM] 	[#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM]	[#NOMFAMILLE] </DO>
 		<DOLAST>
@@ -857,7 +857,7 @@
 <!-- L'affichage est destiné aux sommaires : il permet une respiration. -->
 <!-- ****************************************************************** -->
 		<div class="auteur">
-		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 			<DOFIRST>[#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DOFIRST>
 			<DO>, [#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DO>
@@ -874,7 +874,7 @@
 <!-- la notice bibliographique.                                         -->
 <!-- ****************************************************************** -->
 	
-	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM] [#NOMFAMILLE]</DO>
 		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
@@ -915,11 +915,11 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste description des auteurs dans le document          -->
 <!-- ****************************************************************** -->
-<LOOP TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
+<LOOP TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
  <IF COND="[#DESCRIPTION]">
  	<div class="titre3">
 		Quelques mots à propos de 
-			<LOOP TABLE="auteurs"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
+			<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
 				<a class="auteur" href="auteur.html?id=[#ID]">
 						
 					[#PRENOM]

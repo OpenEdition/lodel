@@ -90,11 +90,22 @@ function extract_post() {
 	// Extrait toutes les variables passées par la méthode post puis les stocke dans 
 	// le tableau $context
 	global $home;
+	
 	foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
 		#if ($key!="superadmin" && $key!="admin" && $key!="editeur" && $key!="redacteur" && $key!="visiteur") { // protege
-		$GLOBALS[context][$key]=rmscript(trim($val));
+	  $GLOBALS[context][$key]=$val;
 		#}
 	}
+	function clean_for_extract_post(&$var) {
+	  if (is_array($var)) {
+	    array_walk($var,"clean_for_extract_post");
+	  } else return rmscript(trim($val));
+	}
+#	print_r($GLOBALS[context]);
+	array_walk($GLOBALS[context],"clean_for_extract_post");
+#	echo "--------------------------------";
+#	print_r($GLOBALS[context]);flush();
+#	die("fini $context");
 }
 
 function get_ordre_max ($table,$where="") 
@@ -138,9 +149,10 @@ function myquote (&$var)
 
 {
   if (is_array($var)) {
-    foreach ($var as $k => $v) { $var[$k]=addslashes(stripslashes($v)); }
+    array_walk($var,"myquote");
+    return $var;
   } else {
-    $var=addslashes(stripslashes($var));
+    return $var=addslashes(stripslashes($var));
   }
 }
 
@@ -149,9 +161,10 @@ function mystripslashes (&$var)
 
 {
   if (is_array($var)) {
-    foreach ($var as $k => $v) { $var[$k]=stripslashes($v); }
+    array_walk($var,"mystripslashes");
+    return $var;
   } else {
-    $var=stripslashes($var);
+    return $var=stripslashes($var);
   }
 }
 

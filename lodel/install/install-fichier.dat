@@ -207,6 +207,11 @@ ln tpl/entree.html
 ln entrees.php
 ln tpl/entrees.html
 
+ln personne.php
+ln tpl/personne.html
+ln personnes.php
+ln tpl/personnes.html
+
 
 ln periode.php
 ln tpl/periode.html
@@ -247,6 +252,11 @@ ln typeentree.php
 ln tpl/typeentree.html
 ln typeentrees.php
 ln tpl/typeentrees.html
+
+ln typepersonne.php
+ln tpl/typepersonne.html
+ln typepersonnes.php
+ln tpl/typepersonnes.html
 
 ln backup.php
 ln tpl/backup.html

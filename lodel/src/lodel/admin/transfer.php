@@ -9,11 +9,7 @@ $err="";
 $report="";
 
 if ($confirm) {
-  // recupere la liste des tables
-  $result=mysql_list_tables($GLOBALS[currentdb]);
-  $tables=array();
-  while ($row = mysql_fetch_row($result)) $tables[$row[0]]=TRUE;
-
+  $tables=gettables();
   do { // block de control
     // est-ce que la table des indexhs exists ?
     // on renome
@@ -33,14 +29,15 @@ ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_abrev (abrev);
 # ajoute l index sur parent
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_parent (parent);
 # change le nom de l index dans la table de liaison
-ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE idindexl idindex INT UNSIGNED DEFAULT \'0\' NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE idindexl identree INT UNSIGNED DEFAULT \'0\' NOT NULL;
 # change le type des motcles permanents
 UPDATE _PREFIXTABLE_indexls SET status=32, type=2 WHERE type=3;
 # ok c est bon, on peut renomer
-RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_indexs;
-RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_documents_indexs;
+DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
+RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_entrees;
+RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_documents_entrees;
 # positionne la langue correctement
-UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
+UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 ');
       if ($err) break;
       $report.="Changement de nom et adaptation de la table indexls<br>\n";
@@ -48,7 +45,7 @@ UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
 
     // est-ce que la table des indexhs exists ?
     if ($tables["$GLOBALS[prefixtable]indexhs"]) { // fusion !
-      lock_write("indexhs","indexs","documents_indexhs","documents_indexs");
+      lock_write("indexhs","entrees","documents_indexhs","documents_entrees");
       $result=mysql_query("SELECT * FROM $GLOBALS[prefixtable]indexhs") or die (mysql_error());
 
       //
@@ -60,13 +57,13 @@ UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
 	myquote($row);
 	if ($row[status]>-32) $row[status]=32; // periode et geo sont permanents
 	if (!$row[lang]) $row[lang]="fr";
-	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_indexs (parent,nom,abrev,lang,type,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
+	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (parent,nom,abrev,lang,type,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
 	if ($err) break 2;
 	$newid=mysql_insert_id();
 	$convid[$row[id]]=$newid;
 	$oldparent[$newid]=$row[parent];
       }
-      $report.="Importation de la table indexhs dans indexs (1/2)<br>\n";
+      $report.="Importation de la table indexhs dans entrees (1/2)<br>\n";
       //
       //
       // modifie les parents
@@ -74,7 +71,7 @@ UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
       $cmds="";
       foreach($convid as $oldid=>$newid) { // parcourt les nvx champs
 	if ($oldparent[$newid])
-	  $cmds.="UPDATE _PREFIXTABLE_indexs SET parent=".$convid[$oldparent[$newid]]." WHERE id=$newid;";
+	  $cmds.="UPDATE _PREFIXTABLE_entrees SET parent=".$convid[$oldparent[$newid]]." WHERE id=$newid;";
       }
       $err=mysql_query_cmds($cmds);
       if ($err) break;
@@ -86,19 +83,19 @@ UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
       $result=mysql_query("SELECT * FROM $GLOBALS[prefixtable]documents_indexhs") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
 	// ajoute dans la table le lien
-	$cmds.="INSERT INTO _PREFIXTABLE_documents_indexs (idindex,iddocument) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
+	$cmds.="INSERT INTO _PREFIXTABLE_documents_entrees (identree,iddocument) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
       }
 
 #      die( preg_replace("/;/","<br>",$cmds));
       $err=mysql_query_cmds($cmds);
       if ($err) break;
-      $report.="Importation de la table documents_indexhs dans documents_indexs<br>\n";
+      $report.="Importation de la table documents_indexhs dans documents_entrees<br>\n";
 
       //
       // on met a jour la langue au cas ou et on détruit l'ancienne table alors
       //
       $err=mysql_query_cmds('
-UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
+UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 DROP TABLE _PREFIXTABLE_documents_indexhs;
 DROP TABLE _PREFIXTABLE_indexhs;
 ');
@@ -106,33 +103,37 @@ DROP TABLE _PREFIXTABLE_indexhs;
       if ($err) break;
       $report.="Destruction de la table indexhs et documents_indexhs<br>\n";
     }
-    if ($tables["$GLOBALS[prefixtable]typeindexs"]) { // il faut renommer cette table
-      $err=mysql_query_cmds('
-RENAME TABLE _PREFIXTABLE_typeindexs TO _PREFIXTABLE_typeentrees;
-');
-      if ($err) break;
-      $report.="Conversion de typeindexs<br>\n";
-    }
-    if ($tables["$GLOBALS[prefixtable]indexs"]) { // il faut renommer cette table
-      $err=mysql_query_cmds('
-RENAME TABLE _PREFIXTABLE_indexs TO _PREFIXTABLE_entrees;
-ALTER TABLE _PREFIXTABLE_entrees CHANGE type	typeid		TINYINT DEFAULT 0 NOT NULL;
-ALTER TABLE _PREFIXTABLE_entrees ADD INDEX index_typeid (typeid);
-');
-      if ($err) break;
-      $report.="Conversion de indexs<br>\n";
-    }
-    if ($tables["$GLOBALS[prefixtable]documents_indexs"]) { // il faut renommer cette table
-      $err=mysql_query_cmds('
-RENAME TABLE _PREFIXTABLE_documents_indexs TO _PREFIXTABLE_documents_entrees;
-ALTER TABLE  _PREFIXTABLE_documents_entrees  CHANGE idindex identree		INT UNSIGNED DEFAULT 0 NOT NULL;
-ALTER TABLE _PREFIXTABLE_documents_entrees ADD INDEX  index_identree (identree);
-');
-      if ($err) break;
-      $report.="Conversion de documents_indexs<br>\n";
-    }
+    $tables=gettables(); // remet a jour la liste des tables;
+#    if ($tables["$GLOBALS[prefixtable]typeindexs"]) { // il faut renommer cette table
+#      $err=mysql_query_cmds('
+#DROP TABLE IF EXISTS _PREFIXTABLE_typeentrees;
+#RENAME TABLE _PREFIXTABLE_typeindexs TO _PREFIXTABLE_typeentrees;
+#');
+#      if ($err) break;
+#      $report.="Conversion de typeindexs<br>\n";
+#    }
+#    if ($tables["$GLOBALS[prefixtable]indexs"]) { // il faut renommer cette table
+#      $err=mysql_query_cmds('
+#RENAME TABLE _PREFIXTABLE_indexs TO _PREFIXTABLE_entrees;
+#ALTER TABLE _PREFIXTABLE_entrees CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
+#ALTER TABLE _PREFIXTABLE_entrees ADD INDEX index_idtype (idtype);
+#');
+#      if ($err) break;
+#      $report.="Conversion de indexs<br>\n";
+#    }
+#    if ($tables["$GLOBALS[prefixtable]documents_indexs"]) { // il faut renommer cette table
+#      $err=mysql_query_cmds('
+#RENAME TABLE _PREFIXTABLE_documents_indexs TO _PREFIXTABLE_documents_entrees;
+#ALTER TABLE  _PREFIXTABLE_documents_entrees  CHANGE idindex identree		INT UNSIGNED DEFAULT 0 NOT NULL;
+#ALTER TABLE _PREFIXTABLE_documents_entrees ADD INDEX  index_identree (identree);
+#');
+#      if ($err) break;
+#      $report.="Conversion de documents_indexs<br>\n";
+#    }
+    $tables=gettables(); // remet a jour la liste des tables;
     if (!$tables["$GLOBALS[prefixtable]typeentrees"]) { // il faut creer cette table, et les autres...
-      if (!rechargeinit()) break;
+      $insert=1;
+      if ($err=create("typeentrees")) break;
     } else {
       $fields=getfields("$GLOBALS[prefixtable]typeentrees");
       if (!$fields[tplindex]) {
@@ -141,7 +142,7 @@ ALTER TABLE _PREFIXTABLE_typeentrees ADD	tplindex	TINYTEXT NOT NULL;
 ');
 	if ($err) break;
 	$report.="Ajout de la colonne tplindex a typeentree<br>\n";
-	if (!rechargeinit()) break; // recharge pour les typeentrees
+	$insert=1;
       }
       if (!$fields[style]) {
 	$err=mysql_query_cmds('
@@ -149,13 +150,13 @@ ALTER TABLE _PREFIXTABLE_typeentrees ADD	style	TINYTEXT NOT NULL;
 ');
 	if ($err) break;
 	$report.="Ajout de la colonne style a typeentree<br>\n";
-	if (!rechargeinit()) break; // recharge pour les typeentrees
+	$insert=1;
       }
     }
     if ($tables["$GLOBALS[prefixtable]documents"]) {
       // cherche les fields de documents 
-      $documentsfields=getfields("$GLOBALS[prefixtable]documents");
-      if (!$documentsfields[surtitre]) {
+      $fields=getfields("$GLOBALS[prefixtable]documents");
+      if (!$fields[surtitre]) {
 	$err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_documents ADD     surtitre	TEXT NOT NULL;
 ');
@@ -173,20 +174,61 @@ ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     description             TEXT 
 	if ($err) break;
 	$report.="Ajout du champ description dans documents_auteurs<br>\n";
       }
-      if (!$fields[prefix]) {
+      $champs=array("prefix","fonction","affiliation","courriel");
+      foreach ($champs as $champ) {
+	if ($fields[$champ]) continue;
 	$err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     prefix             	VARCHAR(64) NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     '.$champ.'        TINYTEXT NOT NULL;
 ');
 	if ($err) break;
-	$report.="Ajout du champ prefix dans documents_auteurs<br>\n";
+	$report.="Ajout du champ $champ dans documents_auteurs<br>\n";
       }
     }
+    if ($tables["$GLOBALS[prefixtable]auteurs"]) {
+      // cherche les fields de documents 
+      $fields=getfields("$GLOBALS[prefixtable]auteurs");
+      $champs=array("prefix","fonction","affiliation","courriel");
+      foreach ($champs as $champ) {
+	if (!$fields[$champ]) continue;
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_auteurs DROP     '.$champ.';
+');
+	if ($err) break;
+	$report.="Suppression du champ $champ dans auteurs<br>\n";
+      }
+    }
+    $tables=gettables(); // remet a jour la liste des tables;
+    // mise en place de personne
+    if ($tables["$GLOBALS[prefixtable]auteurs"]) {
+      $err=mysql_query_cmds('
+DROP TABLE IF EXISTS _PREFIXTABLE_personnes;
+RENAME TABLE _PREFIXTABLE_auteurs TO _PREFIXTABLE_personnes; 
+');
+      if ($err) break;
+      $report.="Renomage de la table auteurs<br>\n";
+    }
+    if ($tables["$GLOBALS[prefixtable]documents_auteurs"]) {
+      $err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_documents_auteurs CHANGE idauteur idpersonne INT UNSIGNED DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_auteurs ADD INDEX index_idpersonne (idpersonne);
+ALTER TABLE _PREFIXTABLE_documents_auteurs ADD idtype INT UNSIGNED DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_auteurs ADD INDEX index_idtype (idtype);
+UPDATE _PREFIXTABLE_documents_auteurs SET idtype=1;
+DROP TABLE IF EXISTS _PREFIXTABLE_documents_personnes;
+RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_documents_personnes;
+');
+      if ($err) break;
+      $report.="Modification de documents_auteurs et renommage<br>\n";
+    }
+    $tables=gettables(); // remet a jour la liste des tables;
+    if (!$tables["$GLOBALS[prefixtable]typepersonnes"]) {
+	if ($err=create("typepersonnes")) break; // recharge pour les typepersonnes
+    }
 
-
-	
-
-
-
+    if ($insert) {
+      chargeinserts();
+      $report.="Recharge le fichier init-revue.sql<br>\n";
+    }
     // fini, faire quelque chose
   } while(0);
 }
@@ -218,6 +260,16 @@ function mysql_query_cmds($cmds)
   return $err;
 }
 
+function gettables()
+
+{
+  // recupere la liste des tables
+  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $tables=array();
+  while ($row = mysql_fetch_row($result)) $tables[$row[0]]=TRUE;
+  return $tables;
+}
+
 function getfields($table)
 
 {
@@ -231,7 +283,25 @@ function getfields($table)
   return $arr;
 }
 
-function rechargeinit() 
+
+
+function chargeinserts() 
+
+{
+  global $home,$report;
+      // charge l'install
+  $file=$home."../install/inserts-revue.sql";
+  if (!file_exists($file)) {
+    $err="Le fichier $file n'existe pas !";
+    break;
+  }
+  $err=mysql_query_cmds(utf8_encode(join('',file($file))));
+  if ($err) return $err;
+  $report.="Création des tables<br>";
+  return FALSE;
+}
+
+function create($table) 
 
 {
   global $home,$report;
@@ -241,10 +311,13 @@ function rechargeinit()
     $err="Le fichier $file n'existe pas !";
     break;
   }
-  $err=mysql_query_cmds(join('',file($file)));
-  if ($err) return FALSE;
-  $report.="Création des tables<br>";
-  return TRUE;
+  
+  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-revue.sql<br>";
+  
+  $err=mysql_query_cmds($result[0]);
+  if ($err) return $err;
+  $report.="Création de la table $table<br>";
+  return FALSE;
 }
 
 ?>

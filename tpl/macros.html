@@ -22,7 +22,7 @@ Auteur : Marin Dacos. 2002. -->
 <!-- Déclare le charset (jeux de caractère, dépendant de la langue principale utilisée) -->
 
 <DEFMACRO NAME="CHARSET_FR">  
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
 </DEFMACRO>
 
 <!-- Fermeture de header : appeler la feuille de style de la revue -->
@@ -1230,7 +1230,7 @@ Attention, cette routine sera changée bientôt
 <LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="author" CONTENT="[#PRENOM] [#NOMFAMILLE]">
 </LOOP>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=[#CHARSET]">
 <META URL="http://test.revues.org/document.html?id=[#ID]">
 <meta name="distribution" content="worldwide">
 <META NAME="REVISIT-AFTER" CONTENT="12 days">

@@ -12,7 +12,7 @@ if (!$type || !preg_match("/[\w-]/",$type)) die("type incorrecte");
 include_once($home."connect.php");
 $result=mysql_query ("SELECT * FROM typeentrees WHERE nom='$type'") or die (mysql_error());
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
-$context[typeid]=$context[type_id]; // import
+$context[idtype]=$context[type_id]; // import
 $context[type_tri]=$GLOBALS[tableprefix]."entrees.".$context[type_tri]; // prefix par la table... ca aide
 
 include ($home."calcul-page.php");

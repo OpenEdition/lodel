@@ -6,7 +6,7 @@
 //
 
 
-function parse_boucle_extra(&$tables,&$where,&$ordre)
+function parse_boucle_extra(&$tables,&$tablesinselect,&$where,&$ordre,&$groupby)
 
 {
   global $revue;
@@ -72,31 +72,48 @@ function parse_boucle_extra(&$tables,&$where,&$ordre)
       //
 
       // auteurs
-     if (in_array("auteurs",$tables) && preg_match("/\biddocument\b/",$where)) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_auteurs");
-	$where.=" AND idauteur=auteurs.id";
-      }
-      if (in_array("documents",$tables) && preg_match("/\bidauteur\b/",$where)) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_auteurs");
-	$where.=" AND iddocument=documents.id";
-      }
-      // entrees
-      if (in_array("entrees",$tables) && preg_match("/\biddocument\b/",$where)) {
-	// on a besoin de la table croise documents_entrees
-	array_push($tables,"documents_entrees");
-	$where.=" AND identree=$GLOBALS[tableprefix]entrees.id";
-      }
+     if (in_array("personnes",$tables)) {
+       // fait ca en premier
+       if (preg_match("/\biddocument\b/",$where)) {
+	 // on a besoin de la table croisee documents_personnes
+	 array_push($tables,"documents_personnes");
+	 array_push($tablesinselect,"documents_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
+	 $where.=" AND idpersonne=$GLOBALS[tableprefix]personnes.id";
+       }
+       if (preg_match("/\btype\b/",$where)) {
+	 protect2($where,$ordre,"personnes","id|status|nom");
+	 protect2($where,$ordre,"documents_personnes","ordre");
 
-      if (in_array("entrees",$tables) && preg_match("/\btype\b/",$where)) {
-	protect ($where,"entrees","id|status|nom|ordre");
-	protect ($ordre,"entrees","id|status|nom|ordre");
-	array_push($tables,"typeentrees");
-	$where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typeentrees.nom",$where)." AND $GLOBALS[tableprefix]entrees.typeid=$GLOBALS[tableprefix]typeentrees.id";
+	 array_push($tables,"typepersonnes");
+	 // maintenant, il y a deux solutuions
+	 if (!in_array("documents_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
+	   array_push($tables,"documents_personnes");
+	   $groupby.=" $GLOBALS[tableprefix]documents_personnes.idpersonne";
+	 }
+	 $where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typepersonnes.nom",$where)." AND $GLOBALS[tableprefix]documents_personnes.idtype=$GLOBALS[tableprefix]typepersonnes.id AND $GLOBALS[tableprefix]documents_personnes.idpersonne=$GLOBALS[tableprefix]personnes.id";
+       }
+     }
+     if (in_array("documents",$tables) && preg_match("/\bidpersonne\b/",$where)) {
+	// on a besoin de la table croise documents_personnes
+	array_push($tables,"documents_personnes");
+	$where.=" AND iddocument=documents.id";
+     }
+     // entrees
+     if (in_array("entrees",$tables)) {
+	if (preg_match("/\btype\b/",$where)) {
+	  protect ($where,"entrees","id|status|nom|ordre");
+	  protect ($ordre,"entrees","id|status|nom|ordre");
+	  array_push($tables,"typeentrees");
+	  $where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typeentrees.nom",$where)." AND $GLOBALS[tableprefix]entrees.idtype=$GLOBALS[tableprefix]typeentrees.id";
+	}
+	if (preg_match("/\biddocument\b/",$where)) {
+	  // on a besoin de la table croise documents_entrees
+	  array_push($tables,"documents_entrees");
+	  $where.=" AND identree=$GLOBALS[tableprefix]entrees.id";
+	}
       }
       if (in_array("documents",$tables) && preg_match("/\bidentree\b/",$where)) {
-	// on a besoin de la table croise documents_auteurs
+	// on a besoin de la table croise documents_entrees
 	array_push($tables,"documents_entrees");
 	$where.=" AND iddocument=$GLOBALS[tableprefix]documents.id";
       }
@@ -243,6 +260,13 @@ function prefix_tablename ($tablename)
 #  //  echo $tablename,"<br>";
 #  return $tablename;
 #endif
+}
+
+function protect2(&$sql1,&$sql2,$table,$fields)
+
+{
+  protect(&$sql1,$table,$fields);
+  protect(&$sql2,$table,$fields);
 }
 
 function protect (&$sql,$table,$fields)

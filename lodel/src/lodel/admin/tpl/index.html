@@ -23,12 +23,9 @@
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin">
-				<IF COND="[#REDACTEUR]">
-					<a href="typepublis.php"><span class="texte_noir_gras">Administrer les types de publications</span></a>
-				<ELSE/>
-					<span class="texte_noir_gras"><span class="inactif">Administrer les types de publications</span></span>
-				</IF>
+				<a href="entrees.php?type=motcle"><span class="texte_noir_gras">Administrer l'index par mot cl&eacute;</span></a>
 			</td>
+
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin">
 				<a href="textes.php"><span class="texte_noir_gras">Editer les minitextes</span></a>
@@ -38,37 +35,10 @@
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin">
-				<a href="typedocs.php"><span class="texte_noir_gras">Administrer les types de documents</span></a>
-			</td>
-			<td width="20">&nbsp;</td>
-			<td width="350" class="td_admin"><a href="options.php"><span class="texte_noir_gras">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></a></td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td width="20">&nbsp;</td>
-			<td width="350" class="td_admin">
-				<a href="typeentrees.php"><span class="texte_noir_gras">Administrer les types d'index</span></a>
-			</td>
-			<td width="20">&nbsp;</td>
-			<td width="350">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td width="20">&nbsp;</td>
-			<td width="350" class="td_admin">
-				<a href="entrees.php?type=motcle"><span class="texte_noir_gras">Administrer l'index par mot cl&eacute;</span></a>
-			</td>
-			<td width="20">&nbsp;</td>
-			<td width="350">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td width="20">&nbsp;</td>
-			<td width="350" class="td_admin">
 				<a href="entrees.php?type=periode"><span class="texte_noir_gras">Administrer la liste des p&eacute;riodes</span></a>
 			</td>
 			<td width="20">&nbsp;</td>
-			<td width="350">&nbsp;</td>
+			<td width="350" class="td_admin"><a href="options.php"><span class="texte_noir_gras">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></a></td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
@@ -81,35 +51,61 @@
 			<td>&nbsp;</td>
 		</tr>
 		
-		<!-- Outils -->
+		<!-- Outils et Configuration-->
 		<tr>
 			<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
 			<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
-			<td height="62" style="padding-top:25px;">&nbsp;</td>
+			<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
+			<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
+<!-- j'enleve parce que je sais pas a quoi ca sert, mais c'est pas forcement juste 			<td height="62" style="padding-top:25px;">&nbsp;</td> -->
 		</tr>
 		<tr>
 			<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 			<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Outils</span></td>
+			<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+			<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Configuration</span></td>
 			<td style="padding-bottom:15px;">&nbsp;</td>
 		</tr>
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin"><a href="/phpmyadmin/"><span class="texte_noir_gras">Administration de la base de donn&eacute;es</span></a></td>
+			<td width="20">&nbsp;</td>
+			<td width="350" class="td_admin">
+				<a href="typedocs.php"><span class="texte_noir_gras">Administrer les types de documents</span></a>
+			</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin"><a href="backup.php"><span class="texte_noir_gras">Sauvegarde des donn&eacute;es</span></a></td>
+			<td width="20">&nbsp;</td>
+			<td width="350" class="td_admin">
+				<IF COND="[#REDACTEUR]">
+					<a href="typepublis.php"><span class="texte_noir_gras">Administrer les types de publications</span></a>
+				<ELSE/>
+					<span class="texte_noir_gras"><span class="inactif">Administrer les types de publications</span></span>
+				</IF>
+			</td>
+
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin"><a href="import.php"><span class="texte_noir_gras">Importation des donn&eacute;es</span></a></td>
+			<td width="20">&nbsp;</td>
+			<td width="350" class="td_admin">
+				<a href="typeentrees.php"><span class="texte_noir_gras">Administrer les types d'index</span></a>
+			</td>
+
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td width="350" class="td_admin"><a href="users.php"><span class="texte_noir_gras">Gestion des utilisateurs</span></a></td>
+			<td width="20">&nbsp;</td>
+			<td width="350" class="td_admin">
+				<a href="typepersonnes.php"><span class="texte_noir_gras">Administrer les types d'index par personne</span></a>
+			</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>

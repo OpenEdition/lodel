@@ -27,8 +27,9 @@ $base=$context[tpl];
 if (!file_exists("lodel/txt/r2r-$id.xml")) { header ("Location: not-found.html"); return; }
 $text=join("",file("lodel/txt/r2r-$id.xml"));
 
-include ($home."xmlfunc.php");
-include ($home."balises.php");
+require ($home."balises.php");
+require ($home."xmlfunc.php");
+
 
 $balises=$balisesdocument_nonlieautexte;
 array_push($balises,"surtitre","titre","soustitre");

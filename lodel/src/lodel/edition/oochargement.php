@@ -4,6 +4,7 @@ require("revueconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
 include ($home."func.php");
+require_once($home."utf8.php"); // conversion des caracteres
 
 $context[id]=intval($id);
 $context[tache]=$tache=intval($tache);
@@ -106,7 +107,7 @@ function OO ($uploadedfile,&$context)
   echo "fin<br>\n";flush();
 
 
-  $file=str_replace("\n"," ",join('',file("$uploadedfile.sxw.html")));
+  $file=strtr(join('',file("$uploadedfile.sxw.html")),"\n\r","  ");
 
   if ($GLOBALS[sortieoo]) { // on veut la sortie brute
     echo htmlentities($file);
@@ -158,20 +159,20 @@ function OO ($uploadedfile,&$context)
 
   // conversion des balises avec publication
   array_push($srch,
-	     "/<r2r:(?:section|heading|titre)(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:section|heading|titre)(\d+)>/");
+	     "/<r2r:(?:heading|titre)(\d+\b([^>]*))>/",
+	     "/<\/r2r:(?:heading|titre)(\d+)>/");
   array_push($rpl,
 	     "<r2r:section\\1>",
 	     "</r2r:section\\1>");
 
   // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
-  array_push($srch,"/<\/?r2r:notebaspage>/","/<div id=\"sdfootnote\d+\">.*?<\/div>/is");
+  array_push($srch,"/<\/?r2r:notebaspage>/","/<div id=\"sdfootnote\d+\">.*?<\/div>/i");
   array_push($rpl,"","<r2r:notebaspage>\\0</r2r:notebaspage>");
-  array_push($srch,"/<\/?r2r:notefin>/","/<div id=\"sdendnote\d+\">.*?<\/div>/is");
+  array_push($srch,"/<\/?r2r:notefin>/","/<div id=\"sdendnote\d+\">.*?<\/div>/i");
   array_push($rpl,"","<r2r:notefin>\\0</r2r:notefin>");
 
   // remonte les balises r2r
-  array_push($srch,"/((?:<\w+[^>]*>\s*)+)\s*<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)*)/s");
+  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
 
@@ -190,7 +191,7 @@ function OO ($uploadedfile,&$context)
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?>/i", # met border="0"
 	     "/(<(col)\b[^>]*?)\/?>/i", # balise seule, il faut les fermer
-	     "/(<p\b[^>]*>\s*<br\s*\/><\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
+	     "/(<p\b[^>]*>\s*<br\s*\/>\s*<\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
 	     );
 
   array_push($rpl,
@@ -305,103 +306,6 @@ function quote_attribut_strtolower($text)
 
 ////////////////////////////////////////////////////////
 
-
-
-function convertHTMLtoUTF8 (&$text)
-
-{
-  $hash=array(
-	      "eacute"=>'é',
-	      "Eacute"=>'É',
-	      "iacute"=>'í',
-	      "Iacute"=>'Í',
-	      "oacute"=>'ó',
-	      "Oacute"=>'Ó',
-	      "aacute"=>'á',
-	      "Aacute"=>'Á',
-	      "uacute"=>'ú',
-	      "Uacute"=>'Ú',
-
-	      "egrave"=>'è',
-	      "Egrave"=>'È',
-	      "agrave"=>'à',
-	      "Agrave"=>'À',
-	      "ugrave"=>'ù',
-	      "Ugrave"=>'Ù',
-	      "ograve"=>'ò',
-	      "Ograve"=>'Ò',
-
-	      "ecirc"=>'ê',
-	      "Ecirc"=>'Ê',
-	      "icirc"=>'î',
-	      "Icirc"=>'Î',
-	      "ocirc"=>'ô',
-	      "Ocirc"=>'Ô',
-	      "acirc"=>'â',
-	      "Acirc"=>'Â',
-	      "ucirc"=>'û',
-	      "Ucirc"=>'Û',
-
-	      "Atilde"=>'Ã',
-	      "Auml"=>'Ä',
-	      "AElig"=>'Æ',
-	      "OElig"=>"\305\222",
-	      "oelig"=>"\305\223",
-	      "Ccedil"=>'Ç',
-	      "Euml"=>'Ë',
-	      "Igrave"=>'Ì',
-	      "Ntilde"=>'Ñ',
-	      "Iuml"=>'Ï',
-	      "Ograve"=>'Ò',
-	      "Oacute"=>'Ó',
-	      "Ocirc"=>'Ô',
-	      "Otilde"=>'Õ',
-	      "Ouml"=>'Ö',
-	      "Uuml"=>'Ü',
-
-	      "atilde"=>'ã',
-	      "auml"=>'ä',
-	      "aelig"=>'æ',
-	      "ccedil"=>'ç',
-	      "euml"=>'ë',
-	      "igrave"=>'ì',
-	      "iuml"=>'ï',
-	      "ntilde"=>'ñ',
-	      "ograve"=>'ò',
-	      "otilde"=>'õ',
-	      "ouml"=>'ö',
-	      "uuml"=>'ü',
-	      "yacute"=>'ý',
-	      "yuml"=>'ÿ',
-	      "Aring" =>"\303\205",
-	      "aring" =>"\303\245",
-	      "curren"=>"\302\244",
-	      "micro"=> "\302\265",
-	      "Oslash"=>"\303\230",
-	      "cent"=>"\302\242",
-	      "pound"=>"\302\243",
-	      "ordf"=>"\302\252",
-	      "copy"=>"\302\251",
-	      "para"=>"\303\266",
-	      "plusmm"=>"\302\261",
-	      "THORN"=>"\303\236",
-	      "shy"=>"\302\255",
-	      "not"=>"\302\254",
-	      "hellip"=>"\342\200\246",
-	      "laquo"=>'«',
-	      "raquo"=>'»',
-	      "lsquo"=>"\342\200\230",
-	      "rsquo"=>"\342\200\231",
-	      "ldquo"=>"\342\200\234",
-	      "rdquo"=>"\342\200\235",
-	      "deg"=>'°',
-	      "nbsp"=>"�\240",
-	      "mdash"=>"\342\200\224",
-	      "ndash"=>"\342\200\223"
-	      );
-
-  $text=preg_replace("/&(\w+);/e",'$hash[\\1] ? $hash[\\1] : "\\0"',$text);
-}
 
 
 function removeaccentsandspaces($string){

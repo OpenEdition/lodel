@@ -28,20 +28,7 @@ if ($id) {
 }
 
 include ($home."boucles.php");
-
 include ($home."calcul-page.php");
 calcul_page($context,$base);
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,6 +3,9 @@
 include_once($home."func.php");
 # fonction d'entree pour le calcul d'une page
 
+# on sort du UTF-8 par defaut (et uniquement pour le moment)
+$context[charset]="utf-8";
+
 function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   global $home,$format;

@@ -34,7 +34,7 @@ function enregistre ($context,&$text)
 
   myquote($context);  myquote($lcontext);  myquote($lang);
 
-  lock_write("documents","auteurs","entrees","documents_auteurs","documents_entrees","typeentrees");
+  lock_write("documents","personnes","entrees","documents_personnes","documents_entrees","typeentrees","typepersonnes");
 
   // recherche l'ordre
   if ($context[ordre]) {
@@ -50,17 +50,17 @@ function enregistre ($context,&$text)
   $statusdocument=$context[statusdocument] ? $context[statusdocument] : -1;
 
   // reverifie ici que le document n'a pas un titre vide... pour pister le bug des documents vide.
-  if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document vide. Envoyer un mail sur lodel-devel.");
+  if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document avec titre vide. Envoyer un mail sur lodel-devel: $lcontext[titre]<br><br>".htmlentities($text));
 
   // ecrit dans la base de donnee le document
   mysql_query ("INSERT INTO $GLOBALS[tableprefix]documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$statusdocument','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
 
   $id=mysql_insert_id();
 
-  // ajoutes les auteurs, et index
+  // ajoutes les personnes, et index
 
   $status=$statusdocument>0 ? 1 : -1;
-  enregistre_auteurs($id,$vals,$index,$status);  // ajoute les auteurs
+  enregistre_personnes($id,$vals,$index,$status);  // ajoute les personnes
   enregistre_entrees($id,$vals,$index,$status); // indexs, etc...
 
   unlock();
@@ -98,97 +98,61 @@ function extract_langue ($balises,&$vals,&$index,$defaut="")
 }
 
 
-function enregistre_auteurs ($iddocument,&$vals,&$index,$status)
+function enregistre_personnes ($iddocument,&$vals,&$index,$status)
 
 {
-  // detruit les liens dans la table documents_auteurs
- mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_auteurs WHERE iddocument='$iddocument'") or die (mysql_error());
+  // detruit les liens dans la table documents_personnes
+ mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_personnes WHERE iddocument='$iddocument'") or die (mysql_error());
 
-  if (!$index[auteur]) return;
+  if (!$index[personne]) return;
 
-  foreach($index[auteur] as $ind) {
+  // cree un hash avec les informations pour les index
+  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typepersonnes WHERE status>0") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result)) $typepersonnes[$row[nom]]=$row;
+
+
+  foreach($index[personne] as $ind) {
     $tag=$vals[$ind];
     if ($tag[type]!="open") { continue; }
-    $tag=$vals[++$ind]; // on rentre dans le tag auteur
+    // recherche le type de la personne
+    if (!$tag[attributes] || !$tag[attributes][type]) die("erreur interne 1 dans enregistre_personnes");
+    $nomtype=$tag[attributes][type];
+    $typepersonne=$typepersonnes[$nomtype];
+    if (!$typepersonne) die ("probleme dans enregistre_personnes... nomtype=$nomtype");
+
+    $tag=$vals[++$ind]; // on rentre dans le tag personne
     $context=array();
-    while ($tag[tag]!="auteur") {
+    while ($tag[tag]!="personne") {
       $b=strtolower($tag[tag]);
-#      echo $b,"<br>";
-#      if ($b=="description") {
-#	// il faut reconstruire le bloc description... c'est chiant ca !
-#	//	$context[description]=rebuildxml($b,$vals,$ind);
-#	// temporaire
-#	$context[description]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
-#      } else {
-	$context[$b]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
-#      }
-      $tag=$vals[++$ind]; // on rentre dans le tag auteur
+      $context[$b]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+      $tag=$vals[++$ind]; // on rentre dans le tag personne
     }
 
-    // cherche si l'auteur existe deja
-    $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]auteurs WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
-    if (mysql_num_rows($result)>0) { // ok, l'auteur existe deja
+    // cherche si l'personne existe deja
+    $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]personnes WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
+    if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
       list($id,$oldstatus)=mysql_fetch_array($result); // on recupere sont id et sont status
-      if ($status>0 && $oldstatus<0) { // Faut-il publier l'auteur ?
-	mysql_query("UPDATE $GLOBALS[tableprefix]auteurs SET status=1 WHERE id='$id'") or die (mysql_error());
+      if ($status>0 && $oldstatus<0) { // Faut-il publier l'personne ?
+	mysql_query("UPDATE $GLOBALS[tableprefix]personnes SET status=1 WHERE id='$id'") or die (mysql_error());
       }
     } else {
-      mysql_query ("INSERT INTO $GLOBALS[tableprefix]auteurs (status,prefix,nomfamille,prenom) VALUES ('$status','$context[prefix]','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tableprefix]personnes (status,nomfamille,prenom) VALUES ('$status','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
       $id=mysql_insert_id();
     }
   
-    // cherche l'ordre de l'auteur
+    // cherche l'ordre de l'personne
     if ($tag[attributes] &&
 	$tag[attributes][ORDRE]) { // l'ordre est specifiee
       $ordre=$tag[attributes][ORDRE];
     } else {
-      $ordre=get_ordre_max("documents_auteurs","iddocument='$iddocument'");
+      $ordre=get_ordre_max("documents_personnes","iddocument='$iddocument'");
     }
 
-    // ajoute l'auteur dans la table documents_auteurs
+    // ajoute l'personne dans la table documents_personnes
     // ainsi que la description
-    mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_auteurs (idauteur,iddocument,ordre,description,prefix) VALUES ('$id','$iddocument','$ordre','$context[description]','$context[prefix]')") or die (mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_personnes (idpersonne,iddocument,idtype,ordre,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$iddocument','$typepersonne[id]','$ordre','$context[description]','$context[prefix]','$context[affiliation]','$context[fonction]','$context[courriel]')") or die (mysql_error());
   }
 }
-
-/*
-function enregistre_indexls ($iddocument,&$vals,&$index,$status)
-
-{
-  if (!$GLOBALS[context][option_pasdemotcle]) $balises[TYPE_MOTCLE]="motcle";
-
-  if (!$balises) return;
-
-  // detruit les liens dans la table documents_indexls
-   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_indexls WHERE iddocument='$iddocument'") or die (mysql_error());
-
-  foreach ($balises as $type => $balise) {
-    if (!$index[$balise]) continue;
-    foreach ($index[$balise] as $itag) {
-      $tag=$vals[$itag];
-      $indexl=trim(addslashes(strip_tags(strtr($tag[value],"\n"," "))));
-      if (!$indexl) continue;
-      if ($tag[attributes] && $tag[attributes][lang]) $lang=strtolower($tag[attributes][lang]);
-      // cherche si le mot cle existe deja existe deja
-      $result=mysql_query("SELECT id,status FROM indexls WHERE mot='$indexl' AND lang='$lang'");
-      if (mysql_num_rows($result)) { // existe-t-il ?
-	list($id,$oldstatus)=mysql_fetch_array($result); // oui, on recupere sont id et sont status
-	if ($status>0 && $oldstatus<0) { // faut-il publier ce mot cle ?
-	  mysql_query("UPDATE $GLOBALS[tableprefix]indexls SET status=1 WHERE id='$id'") or die (mysql_error());	
-	}
-      } else { // il faut ajouter le mot cle
-	  mysql_query ("INSERT INTO $GLOBALS[tableprefix]indexls (status,mot,type,lang) VALUES ('$status','$indexl','$type','$lang')") or die (mysql_error());
-	  $id=mysql_insert_id();
-      }
-
-      // ajoute le mot cle dans la table documents_auteurs
-      if ($id)
-	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_indexls (idindexl,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
-
-    } // tags
-  } // balises
-}
-*/
 
 
 function enregistre_entrees ($iddocument,&$vals,&$index,$status)
@@ -197,11 +161,11 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
   // detruit les liens dans la table documents_indexhs
   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_entrees WHERE iddocument='$iddocument'") or die (mysql_error());
 
+  if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
+
   // cree un hash avec les informations pour les index
   $result=mysql_query("SELECT id,nom,newimportable,useabrev FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) $typeentrees[$row[nom]]=$row;
-
-  if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
 
 #  print_r($index);
 #  print_r($vals);
@@ -224,7 +188,7 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
     // cherche la langue dans l'attribut sinon valeur par defaut.
     $lang=($tag[attributes] && $tag[attributes][lang]) ? strtolower($tag[attributes][lang]) : "fr";
     // cherche l'id de la entree si elle existe
-    $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0");
+    $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0 AND idtype='$typeentree[id]'") or die(mysql_error());
 
     if (mysql_num_rows($result2)) { // l'entree exists
       list($id,$oldstatus)=mysql_fetch_array($result2);
@@ -234,14 +198,14 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
     } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
       // oui,il faut ajouter le mot cle
       $abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
-      mysql_query ("INSERT INTO $GLOBALS[tableprefix]entrees (status,nom,abrev,typeid,lang) VALUES ('$status','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tableprefix]entrees (status,nom,abrev,idtype,lang) VALUES ('$status','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
       $id=mysql_insert_id();
     } else {
       // non, on ne l'ajoute pas... mais il y a une erreur quelque part...
       $id=0;
       die ("erreur interne 2 dans enregistre_entrees: type: $balise entree: $entree");
     }
-    // ajoute l'index dans la table documents_indes
+    // ajoute l'entree dans la table documents_entrees
     // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
     // une chaine et en faisant la requette a la fin !
     if ($id)

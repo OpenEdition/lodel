@@ -1,6 +1,6 @@
 <?
-require("revueconfig.php");
-$base="auteurs-complet";
-include ($home."baseindex.php");
-
+$type="auteur";
+$suffix="-complet";
+if (@include("personnes.html")) return;
+require("personnes.php");
 ?>

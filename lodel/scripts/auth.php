@@ -65,7 +65,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // nettoie l'url
     $url=preg_replace("/[\?&]recalcul\w+=oui/","",$GLOBALS[REQUEST_URI]);
     if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
-    if (!$norecordurl) $update=",currenturl='$url'"; // si norecordurl ne change rien
+    if (!$norecordurl) $update=", currenturl='$url'"; // si norecordurl ne change rien
 
     $expire=$timeout+$time;
     mysql_query("UPDATE $GLOBALS[tableprefix]session SET expire='$expire'$update WHERE name='$name'") or die (mysql_error());
@@ -200,4 +200,7 @@ if ($revueagauche) {
 #else
 #	  $context[revue]=$revue="";
 #endif
+
+// pour le moment on est en utf-8 par defaut
+header("Content-type: text/html; charset=utf-8");
 ?>

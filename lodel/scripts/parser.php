@@ -13,6 +13,18 @@ function parse ($in,$out)
 
   $contents=stripcommentandcr($file);
 
+  // cherche la balise content
+  if (preg_match("/<CONTENT\b([^>]*)>/",$contents,$result)) {
+    if (preg_match("/CHARSET\s*=\s*\"[^\"]+\"/",$result[1],$result2)) {
+      $charset=$result[1];
+    } else {
+      $charset="iso-8859-1";
+    }
+    $contents=str_replace($result[0],"",$contents); // efface la balise
+  } else {
+    $charset="iso-8859-1";
+  }
+
 // cherche les fichiers a inclure
   preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>\s*\n?/",$contents,$results,PREG_SET_ORDER);
 
@@ -53,6 +65,12 @@ require_once ($home."connect.php");
   $contents=preg_replace(array('/\?><\?/',
 			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
 
+  if ($charset!="utf-8") {
+    $t=microtime();
+    require_once($home."utf8.php"); // conversion des caracteres
+    $contents=utf8_encode($contents);
+    convertHTMLtoUTF8(&$contents);
+  }
   $f=fopen ($out,"w");
   fputs($f,$contents);
   fclose($f); 
@@ -328,7 +346,9 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 
     //
     // traitement specifique
-    parse_boucle_extra(&$tables,&$where,&$order);
+    $tablesinselect=$tables; // ce sont les tables qui seront demande dans le select. Les autres tables de $tables ne seront pas demandees
+    $groupby="";
+    parse_boucle_extra(&$tables,&$tablesinselect,&$where,&$order,&$groupby);
     //
 
     if ($where) {
@@ -372,7 +392,7 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       // verifie que la boucle n'a pas ete defini sous le meme nom avec un contenu different
       if ($issql && $md5boucle!=$boucles[$nom][id]) die ("Impossible de redefinir la boucle $nom avec un code ou des arguments differents");
       if (!$issql) { // on la definit
-	make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
+	make_boucle_code($nom,$tables,$tablesinselect,$where,$order,$limit,$groupby,$attr,$fct_txt);
 	$boucles[$nom][id]=$md5boucle; // enregistre l'identifiant qui caracterise la boucle
 	$boucles[$nom][type]="sql"; // marque la boucle comme etant une boucle sql
       }
@@ -443,21 +463,27 @@ function decode_content ($content,$tables=array())
 
 
 
-function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
+function make_boucle_code ($nom,$tables,$tablesinselect,$where,$order,$limit,$groupby,$content,&$fct_txt)
 
 {
   // traitement particulier additionnel
-  list ($premysqlquery,$postmysqlquery,$extrafield)=make_boucle_code_extra($tables);
+  list ($premysqlquery,$postmysqlquery,$select)=make_boucle_code_extra($tables);
 
   $table=$GLOBALS[tableprefix].join (', $GLOBALS[tableprefix]',array_reverse(array_unique($tables)));
 
+  $contents=decode_content($content,$tablesinselect);
 
-  $contents=decode_content($content,$tables);
+  if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
+
+  $select=join(".*,",$tablesinselect).".*".$select;
+
+#### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): SELECT '.$select.' FROM '."$table $where $groupby $order $limit".' <br>";
+
 # genere le code pour parcourir la boucle
   $fct_txt.='function boucle_'.$nom.' ($context)
 {
  $generalcontext=$context;
-'.$premysqlquery.' $result=mysql_query("SELECT *'.$extrafield.' FROM '."$table $where $order $limit".'") or die (mysql_error());
+'.$premysqlquery.' $result=mysql_query("SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'") or die (mysql_error());
 '.$postmysqlquery.'
  $nbrows=mysql_num_rows($result);
  $count=0;
@@ -608,4 +634,3 @@ function replace_conditions($text)
 }
 
 ?>
-

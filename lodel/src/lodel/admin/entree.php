@@ -48,17 +48,17 @@ if ($edit) { // modifie ou ajoute
 
     $parent=intval($context[parent]);
     if ($id>0) { // il faut rechercher le status, le type et l'ordre
-      $result=mysql_query("SELECT status,typeid,ordre FROM entrees$GLOBALS[prefixtable] WHERE id='$id'") or die (mysql_error());
-      list($status,$context[typeid],$ordre)=mysql_fetch_array($result);
+      $result=mysql_query("SELECT status,idtype,ordre FROM entrees$GLOBALS[prefixtable] WHERE id='$id'") or die (mysql_error());
+      list($status,$context[idtype],$ordre)=mysql_fetch_array($result);
     } else {
       $status=1;
-      if (!$context[typeid]) die ("Erreur interne. Il manque le type dans le formulaire");
-      $context[typeid]=intval($context[typeid]);
-      $ordre=get_ordre_max("entrees"," parent='$parent' AND typeid='$context[typeid]'");
+      if (!$context[idtype]) die ("Erreur interne. Il manque le type dans le formulaire");
+      $context[idtype]=intval($context[idtype]);
+      $ordre=get_ordre_max("entrees"," parent='$parent' AND idtype='$context[idtype]'");
     }
     if ($protege) $status=32;
 
-    mysql_query ("REPLACE INTO $GLOBALS[prefixtable]entrees (id,parent,nom,abrev,ordre,lang,status,typeid) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[typeid]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[prefixtable]entrees (id,parent,nom,abrev,ordre,lang,status,idtype) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[idtype]')") or die (mysql_error());
 
     back();
 
@@ -71,17 +71,17 @@ if ($edit) { // modifie ou ajoute
 }
 
 // cherche le type. As-t-on l'id ou du texte ?
-if ($context[typeid]) {
-  $critere="id='".intval($context[typeid])."'";
+if ($context[idtype]) {
+  $critere="id='".intval($context[idtype])."'";
 } elseif ($type && preg_match("/[\w-]/",$type)) {
   $critere="nom='$type'";
 } else die("preciser un type");
 
 include_once($home."connect.php");
 $result=mysql_query ("SELECT * FROM $GLOBALS[prefixtable]typeentrees WHERE $critere AND status>0") or die (mysql_error());
-if (!mysql_num_rows($result)) die("type incorrecte ($context[typeid],$type)");
+if (!mysql_num_rows($result)) die("type incorrecte ($context[idtype],$type)");
 $context= array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
-$context[typeid]=$context[type_id]; // importe l'id du type dans type
+$context[idtype]=$context[type_id]; // importe l'id du type dans type
 
 
 
@@ -100,7 +100,7 @@ function make_selection_entree($parent=0,$rep="")
 {
   global $context;
 
-  $result=mysql_query("SELECT nom,id FROM $GLOBALS[prefixtable]entrees WHERE typeid='$context[typeid]' AND parent='".intval($parent)."' ORDER BY $context[type_tri]") or die (mysql_error());
+  $result=mysql_query("SELECT nom,id FROM $GLOBALS[prefixtable]entrees WHERE idtype='$context[idtype]' AND parent='".intval($parent)."' ORDER BY $context[type_tri]") or die (mysql_error());
   while ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
     $selected=$row[id]==$context[parent] ? " SELECTED" : "";
     echo "<OPTION VALUE=\"$row[id]\"$selected>$rep$row[nom]</OPTION>\n";

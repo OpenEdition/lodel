@@ -15,6 +15,10 @@ include ($home."connect.php");
 $result=mysql_query("SELECT style,titre FROM $GLOBALS[prefixtable]typeentrees WHERE status>0");
 while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 
+// ajoute les balises "personnes"
+$result=mysql_query("SELECT style,titre FROM $GLOBALS[prefixtable]typepersonnes WHERE status>0");
+while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
+
 //
 ### cette zone n'est plus inutilisee
 #if ($line) { // on vient de balisage, il faut modifier les balises
@@ -91,7 +95,7 @@ while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 	     "<span style=\"background-color: #F3F3F3;\">",
 	     "</span>");
   
-  $context[fichier]=preg_replace($srch,$rpl,$text);
+  $context[fichier]=preg_replace($srch,$rpl,traite_separateur($text));
 #}
 
 if (preg_match("/<r2r:(titrenumero|nomnumero|typenumero)>/i",$text)) {

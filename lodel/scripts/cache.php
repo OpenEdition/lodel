@@ -17,6 +17,7 @@ if ($visiteur) {
   return;
 }
 
+
 if (!$maj) $maj=myfilemtime("CACHE/maj");
 
 
@@ -51,10 +52,9 @@ if ($maj>=myfilemtime($cache) || $recalcul_templates) {
   $f = fopen($cache, "w");
   fputs($f,$content);
   fclose($f);
-
-  exit();
+} else {
+  // sinon affiche la cache.
+  readfile($cache);
 }
-// sinon affiche la cache.
-readfile($cache);
 
 ?>

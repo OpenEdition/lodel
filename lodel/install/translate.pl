@@ -33,6 +33,10 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(TABLE=\"indexls\")/TABLE=\"entrees\" WHERE=\"type='motcle'\"/g;
   $change+=$file=~s/\[\#MOT\]/[\#NOM]/g;
 
+# chgt de auteur en personne
+  $change+=$file=~s/(TABLE=\"auteurs\")/TABLE=\"personnes\" WHERE=\"type='auteur'\"/g;
+  $change+=$file=~s/(<LOOP[^>]+id)auteur([^>]+>)/$1personne$2/g;
+
   next unless $change;
   print "$filename:",$change,"\n";
 

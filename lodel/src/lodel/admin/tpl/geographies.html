@@ -22,7 +22,7 @@
 		<td class="texte_noir_gras">Langue</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="geographies" TABLE="indexhs" ORDER="ordre" WHERE="type_geographie AND parent='[#ID]'" WHERE="ok">
+	<LOOP NAME="geographies" TABLE="indexhs" ORDER="ordre" WHERE="type='geographie' AND parent='[#ID]'" WHERE="ok">
 		<DO>
 			<tr>
 				<td class="ligne_admin2">[#REP][(#NOM|nbsp)]</td>
@@ -42,7 +42,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="geographies_trash" TABLE="indexhs" ORDER="ordre" WHERE="trash" WHERE="type_geographie">
+<LOOP NAME="geographies_trash" TABLE="indexhs" ORDER="ordre" WHERE="trash" WHERE="type='geographie'">
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>

@@ -445,7 +445,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 	<html>
 	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
@@ -460,7 +460,7 @@
 
 <DEFMACRO NAME="AUTEURS">
 <!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
-	<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		, [#PRENOM] [#NOMFAMILLE]
 		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
@@ -468,7 +468,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AUTEURS_WITH_URL">
-	<LOOP NAME="auteurs_with_url" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="auteurs_with_url" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>
 			<a href="auteur.html?id=[#ID]">
 				<font color="black">

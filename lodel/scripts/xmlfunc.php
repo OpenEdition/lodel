@@ -1,5 +1,6 @@
 <?
 
+require_once ($home."balises.php");
 
 // fonction pour parser du xml
 
@@ -32,22 +33,17 @@ function extract_xml ($balises,&$text)
   foreach ($balises as $b) {
     if ($b!=strtolower($b)) die("Informez Ghislain de ce \"bug\"<BR>balise $b");
 
-    if (preg_match_all ("/<r2r:$b\b([^>]*)>(.*?)<\/r2r:$b>/si",$text,$results,PREG_SET_ORDER)) {
+    if (preg_match_all ("/<r2r:$b\b([^>]*)>(.*?)<\/r2r:$b>/s",$text,$results,PREG_SET_ORDER)) {
 	foreach ($results as $result) {
 	  /////temporaire... doit devenir du XSL
 	  // avril 03: ca ne deviendra pas du XSL.
       $result[2]=preg_replace(array(
-#				    "/<(\/)?r2r:section(\d+)>/i",
 				    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
-				    "/<\/r2r:[^>]+>/i"
-#				    "/".chr(0xB7)."/"
-				    ),
+				    "/<\/r2r:[^>]+>/i"				    				    ),
 			      array(
-#				    "<\\1h\\2>",
 				    "<div class=\"\\1\">",
 				    "</div>"
-#				    "<img src=\"images/puce.gif\">"
-				    ),$result[2]);
+				    ),traite_separateur($result[2]));
       ///// fin temporaire
       // cherche la langue
 	$lang="";

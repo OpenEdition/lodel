@@ -98,8 +98,8 @@ $multiplelevel=array(
 		     "section4"=>">*",
 		     "section3"=>">*",
 		     "section2"=>">*",
-		     "section1"=>">*"
-
+		     "section1"=>">*",
+		     "separateur"=>">*"
 );
 
 
@@ -194,5 +194,27 @@ function traite_couple(&$text)
 			     ),
 		       $text);
 }
+
+//
+// traite les separateurs
+//
+
+function traite_separateur($text) {
+  return preg_replace_callback("/<r2r:separateur>(.*?)<\/r2r:separateur>/","convertseparateur",$text);
+}
+
+//
+// fonction callback de conversion des separateurs en balises HTML
+//
+
+function convertseparateur($result) {
+  $text=trim(strip_tags($result[1]));
+  if ($text=="*") return "<hr width=\"30%\" \ >";
+  if ($text=="**") return "<hr width=\"50%\" \ >";
+  if ($text=="***") return "<hr width=\"80%\" \ >";
+  if ($text=="****") return "<hr \ >";
+  return "";
+}
+
 
 ?>

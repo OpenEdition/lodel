@@ -4,7 +4,7 @@ require("lodelconfig.php");
 include ($home."auth.php");
 
 // timeout pour les cookies
-$cookietimeout=2*3600;
+$cookietimeout=4*3600;
 
 
 if ($login) {
@@ -26,7 +26,7 @@ if ($login) {
     if ($userpriv<LEVEL_SUPERADMIN) {
       lock_write("revues","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur revue.
       // verifie que c'est ok
-      $result=mysql_query("SELECT 1 FROM revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
       if (mysql_num_rows($result)) { $context[erreur_revuebloquee]=1; unlock(); break; }
     }
 

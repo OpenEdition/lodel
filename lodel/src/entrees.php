@@ -4,16 +4,17 @@ include ($home."auth.php");
 authenticate();
 include ($home."func.php");
 
-if (!$type || !preg_match("/[\w-]/",$type)) die("type incorrecte");
+if (!$type || !preg_match("/^[\w-]*$/",$type)) die("type incorrecte");
+if ($suffix && !preg_match("/^[\w-]+$/",$suffix)) die("suffix non accepte");
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT * FROM typeentrees WHERE nom='$type'") or die (mysql_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tableprefix]typeentrees WHERE nom='$type' AND status>0") or die (mysql_error());
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
-$context[typeid]=$context[type_id]; // import
+$context[idtype]=$context[type_id]; // import
 $context[type_tri]=$GLOBALS[tableprefix]."entrees.".$context[type_tri];  // prefix par la table... ca aide
 
-$base=$context[type_tplindex];
-include ($home."cache.php");
+$base=$context[type_tplindex].$suffix;
+require ($home."cache.php");
 
 
 function boucle_alphabet(&$context,$funcname)

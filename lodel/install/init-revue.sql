@@ -102,16 +102,13 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documentsannexes (
 
 #ifndef LODELLIGHT
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_auteurs (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_personnes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	prefix		TINYTEXT NOT NULL,
+#	prefix		TINYTEXT NOT NULL,
 	nomfamille	TINYTEXT NOT NULL,
 	prenom		TINYTEXT NOT NULL,
-	fonction	TINYTEXT NOT NULL,
-	affiliation	TINYTEXT NOT NULL,
-	courriel	VARCHAR(255),
-	site		TEXT NOT NULL,
-	bio		TEXT NOT NULL,
+#	site		TEXT NOT NULL, #
+#	bio		TEXT NOT NULL, # inutile pour le moment
 
 	status		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
@@ -186,6 +183,24 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepublis (
 );
 
 
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	nom		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
+	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
+	tpl		TINYTEXT NOT NULL,			# nom du fichier template pour l'entree
+	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
+
+	ordre		INT DEFAULT '0' NOT NULL,	# ordre sert pour l'interface.
+	status		TINYINT DEFAULT '1' NOT NULL,
+
+
+	maj		TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY index_nom (nom)
+);
+
+
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
@@ -218,7 +233,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	nom		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
 	lang		CHAR(2) NOT NULL,
-	typeid		TINYINT DEFAULT '0' NOT NULL,
+	idtype		TINYINT DEFAULT '0' NOT NULL,
 	ordre		INT DEFAULT '0' NOT NULL,
 
 	status		TINYINT DEFAULT '1' NOT NULL,
@@ -228,7 +243,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	KEY index_nom (nom),
 	KEY index_abrev (abrev),
 	KEY index_parent (parent),
-	KEY index_typeid (typeid)
+	KEY index_idtype (idtype)
 );
 
 
@@ -260,16 +275,21 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_auteurs (
-	idauteur		INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_personnes (
+	idpersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
 	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idtype			INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le document
 
 	ordre			TINYINT NOT NULL DEFAULT '0',
-	prefix             	VARCHAR(64) NOT NULL,
+	prefix             	TINYTEXT NOT NULL,
 	description             TEXT NOT NULL,
+	fonction		TINYTEXT NOT NULL,
+	affiliation		TINYTEXT NOT NULL,
+	courriel		TINYTEXT NOT NULL,
 
-	KEY index_idauteur (idauteur),
-	KEY index_iddocument (iddocument)
+	KEY index_idpersonne (idpersonne),
+	KEY index_iddocument (iddocument),
+	KEY index_idtype (idtype)
 );
 
 
@@ -282,31 +302,5 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_entrees (
 );
 
 
-#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_indexls (
-#	idindexl		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
-#
-#	KEY index_idindexl (idindexl),
-#	KEY index_iddocument (iddocument)
-#);
 
-#ifndef LODELLIGHT
-REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('serie_lineaire','sommaire-lineaire','edition-lineaire');
-REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('serie_hierarchique','sommaire-hierarchique','edition-hierarchique');
-REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('numero','sommaire-numero','edition-numero');
-REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('theme','sommaire-hierarchique','edition-theme');
-REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('regroupement','','');
-REPLACE INTO _PREFIXTABLE_typedocs (nom,tpl,status) VALUES('article','article','1');
-REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,stype,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periodes','chrono','chronos-complet','1','0','0','1','ordre','2');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographies','geo','geos-complet','1','0','0','1','ordre','3');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motscles','mot','mots','1','1','1','0','nom','1');
-
-#else
-#REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('album_photo','sommaire-album','edition-album');
-#REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('theme_photo','sommaire-photo','edition-photo');
-#REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('rubrique','sommaire-rubrique','edition-rubrique');
-#REPLACE INTO _PREFIXTABLE_typedocs (nom,tpl,status) VALUES('article','article','1');
-#REPLACE INTO _PREFIXTABLE_typedocs (nom,tpl,status) VALUES('photo','photo','1');
-#REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous');
-#endif
+# voir le fichier inserts-revue.sql pour les inserts automatiques !
