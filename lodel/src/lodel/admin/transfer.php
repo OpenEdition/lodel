@@ -227,6 +227,7 @@ RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_documents_personnes;
     $tables=gettables(); // remet a jour la liste des tables;
     if (!$tables["$GLOBALS[prefixtable]typepersonnes"]) {
 	if ($err=create("typepersonnes")) break; // recharge pour les typepersonnes
+	$insert=1;
     }
 
     if ($insert) {
