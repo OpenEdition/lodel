@@ -70,16 +70,20 @@ class EntriesLogic extends GenericLogic {
 	 if ($status>-64) return "_error";
        }
      }
+     if (!$this->g_name['index key']) die("ERROR: The generic field 'index key' is required. Please edit your editorial model.");
 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
 
-     if ($this->g_name['index key']) $indexkey=$context[$this->g_name['index key']];
-
-     if (!$id && $indexkey) {
+     if ($context['g_name']) {
        // search if the entries exists
-       $vo=$dao->find("g_name='".$indexkey."' AND lang='".$context['lang']."' AND idtype='".$idtype."' AND status>-64","id");
-       $new=false;
+       $vo=$dao->find("g_name='".$context['g_name']."' AND idtype='".$idtype."' AND status>-64","id");
+       if ($vo->id) {
+	 $context['id']=$vo->id;
+	 return; // nothing to do.
+       } else {
+	 $context[$this->g_name['index key']]=$context['g_name'];
+       }
      }
 
      if (!$vo) {
@@ -98,11 +102,12 @@ class EntriesLogic extends GenericLogic {
      }
      // populate the entry table
      if ($idtype) $vo->idtype=$idtype;
-     $vo->g_name=$indexkey;
-     $vo->sortkey=makeSortKey($indexkey);
-     $vo->lang=$context['lang'];
+     $vo->g_name=$context[$this->g_name['index key']];
+     $vo->sortkey=makeSortKey($vo->g_name);
+     #print_R($vo);
      $id=$context['id']=$dao->save($vo);
-
+     #echo $id;
+     #print_R($dao);
      // save the class table
      $gdao=&getGenericDAO($class,"identry");
      $gdao->instantiateObject($gvo);

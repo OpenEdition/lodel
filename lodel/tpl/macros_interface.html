@@ -302,17 +302,17 @@ cp_[#NAME].writeDiv();
 	</td><td>
 		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')"/><br/>
 		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]]')"/>&nbsp;
-<input type="button" value="Modify" onclick="modifymember('pool_member_[#VARNAME]', 'entrees[[#ID]][]')"/>
 	<td>	
 	<select multiple size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
 	</select>
 	</td>
-	</tr>
 	<IF COND="[#NEWBYIMPORTALLOWED]">
-	<tr><td></td><td></td>
-	<td><input type="button" value="^" onclick="addmembertxt('member_more_entries_[#VARNAME]', 'pool_member_[#VARNAME]','entries[[#IDTYPE]]')"/></td></tr>
-	<tr><td colspan="3"><input size="50" type="text" id="member_more_entries_[#VARNAME]" name="member_more_entries_[#VARNAME]" /></td></tr>
+	<td>
+	<input type="button" value="[@COMMON.ADD]" onclick="addnewmember('pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')"/><br/>
+	<input type="button" value="[@COMMON.MODIFY]" onclick="modifymember('pool_member_[#VARNAME]', 'entries[[#ID]]')"/>
+	</td>
 	</IF>
+	</tr>
 	</table>
 
 
@@ -482,29 +482,7 @@ function addmember(candidats, membres, textfield){
 				newopt = new Option(opttxt, optval);
 				memb.options[memb.length] = newopt;
 			}
-		}
-	}
-	updatetxt(textfield, membres);
-}
-
-function addmembertxt(candidats, membres, textfield){	
-	var cand = document.getElementById(candidats);
-	var memb = document.getElementById(membres);
-	var tab = cand.value.split(",");
-	for(i=0; i<tab.length; i++){
-		opttxt = trim(tab[i]);
-		optval = 'fromtxt|'+trim(tab[i]);
-		dbl = false;
-		if(memb.length > 0){
-			for(j=0; j < memb.length; j++){
-				if(memb.options[j].value == optval){
-					dbl = true;
-				}
-			}
-		}
-		if(dbl == false && optval.replace('fromtxt|','')){
-			newopt = new Option(opttxt, optval);
-			memb.options[memb.length] = newopt;
+			cand.options[i].selected=false;
 		}
 	}
 	updatetxt(textfield, membres);
@@ -512,7 +490,6 @@ function addmembertxt(candidats, membres, textfield){
 
 function removemember(membres, textfield){	
 	var memb = document.getElementById(membres);
-	var txt = document.getElementById(textfield);
 	if(memb.length>0){
 		for(i=0; i < memb.length; i++){
 			if(memb.options[i].selected){
@@ -524,34 +501,62 @@ function removemember(membres, textfield){
 	updatetxt(textfield, membres);
 }
 
-function updatetxt(textfield, selectfield, sep){
+
+function addnewmember(membres, textfield) {
+
+	var val = prompt("[@EDITION.ENTER_LIST_OF_WORDS]","");
+	if (val==null) return;
+
+	var memb = document.getElementById(membres);
+	var tab = val.split(",");
+	for(i=0; i<tab.length; i++){
+		opttxt = trim(tab[i]);
+		optval = trim(tab[i]);
+		dbl = false;
+		if(memb.length > 0){
+			for(j=0; j < memb.length; j++){
+				if(memb.options[j].value == optval){
+					dbl = true;
+				}
+			}
+		}
+		if(dbl == false && optval){
+			newopt = new Option(opttxt, optval);
+			memb.options[memb.length] = newopt;
+		}
+	}
+	updatetxt(textfield, membres);
+}
+
+
+function updatetxt(textfield, selectfield){
 	var txt = document.getElementById(textfield);
 	var slct = document.getElementById(selectfield);
 	var str = ''
-	if(!sep)sep=",";
 	if(slct.length > 0){
 		for(i=0; i< slct.length; i++){
-			str += slct.options[i].value + sep;
-			str = str.replace('fromtxt|','')
+			str += slct.options[i].value + ',';
 		}
 	}
-	txt.value = str.substring(0, str.length - sep.length);
+	txt.value = str.substring(0, str.length - 1);
 }
+
 
 function modifymember(members,textfield){
 	memb = document.getElementById(members);
-	var a = new RegExp("fromtxt\|(\w+)");
 	if(memb.length>0){
 		for(i=0; i < memb.length; i++){
-			if(memb.options[i].selected && memb.options[i].value.match(a)){
-				var val = prompt("",memb.options[i].value.replace('fromtxt|',''));
-				if(val == null)val=memb.options[i].value.replace('fromtxt|','');
+			if(memb.options[i].selected){
+				var val = prompt("",memb.options[i].value);
+				if(val == null) break;//val=memb.options[i].value; // get out, stop editing!
+				val=val.replace(/,/," ");
 				if(val != ''){
-					memb.options[i].value = 'fromtxt|'+val;
+					memb.options[i].value = val;
 					memb.options[i].text = val;
 				}else{
 					memb.options[i]=null;
 				}
+
 			}
 		}
 	}

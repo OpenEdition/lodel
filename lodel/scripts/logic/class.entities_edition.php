@@ -371,8 +371,10 @@ class Entities_EditionLogic extends GenericLogic {
        }
 
        if ($idstodelete) {
-	 $dao=&getDAO($table);
-	 $dao->deleteObject($idstodelete);
+	 $logic=&getLogic($table);
+	 $localcontext=array("id"=>$idstodelete,"idrelation"=>array());
+	 $err=array();
+	 $logic->deleteAction($localcontext,$err);
        }
 
        if ($idstounpublish) {
@@ -450,6 +452,9 @@ class Entities_EditionLogic extends GenericLogic {
        $degree=0;
        
        $result=$db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_relations.degree,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id."' AND nature='".$nature."'  ORDER BY degree")) or dberror();
+
+       $relatedtable=array();
+       $relatedrelationtable=array();
        while (!$result->EOF) {
 	 $degree=$result->fields['degree'] ? $result->fields['degree'] : (++$degree);
 	 unset($ref); // detach from the other references

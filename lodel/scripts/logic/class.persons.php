@@ -83,7 +83,8 @@ class PersonsLogic extends GenericLogic {
      $dao=$this->_getMainTableDAO();
 
      foreach(array("firstname","familyname") as $g) {
-       if ($this->g_name[$g]) $$g=$context[$this->g_name[$g]];
+       if (!$this->g_name[$g]) die("ERROR: The generic field $g is required. Please edit your editorial model.");
+       $$g=$context[$this->g_name[$g]];
      }
 
      if (!$id && $familyname) {
@@ -167,13 +168,21 @@ class PersonsLogic extends GenericLogic {
    function _prepareDelete($dao,&$context) 
 
   {
-    $this->vos=$dao->getByIds($context['id']);
+    global $db;
 
-    if ($context['idrelation']) {
+    // get the classes
+    $this->classes=array();
+    $result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_persontypes INNER JOIN #_TP_persons ON idtype=#_TP_persontypes.id WHERE #_TP_persons.id ".sql_in_array($context['id']))) or dberror();		 
+    while (!$result->EOF) {
+      $this->classes[]=$result->fields['class'];
+      $result->MoveNext();
+    }
+
+    if (isset($context['idrelation'])) {
       $this->idrelation=$context['idrelation'];
     } else {
       $dao=&getDAO("relations");
-      $this->vos=$dao->getByIds($context['id']);
+      $vos=$dao->getByIds($context['id']);
       $this->idrelation=array();
       foreach ($vos as $vo) {
 	$this->idrelation[]=$vo->id;
@@ -189,11 +198,8 @@ class PersonsLogic extends GenericLogic {
 
   {
     global $db;
-    $result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_persontypes INNER JOIN #_TP_persons ON idtype=#_TP_persontypes.id WHERE #_TP_persons.id='".$id."'")) or dberror();
-		 
-    while (!$result->EOF) {
-      $class=$result->fields['class'];
 
+    foreach ($this->classes as $class) {
       $gdao=&getGenericDAO($class,"idperson");
       $gdao->deleteObject($id);
 
@@ -201,8 +207,6 @@ class PersonsLogic extends GenericLogic {
 	$gdao=&getGenericDAO("entities_".$class,"idrelation");
 	$gdao->deleteObject($this->idrelation);
       }
-
-      $result->MoveNext();
     }
     if ($this->idrelation) {
       $gdao=&getDAO("relations","idrelation");

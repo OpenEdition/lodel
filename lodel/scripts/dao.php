@@ -121,7 +121,6 @@ class DAO {
 	 $insert.=$k;
 	 $values.="'".$v."'";
        }
-
        if ($insert) {
 	 $db->execute("REPLACE INTO ".$this->sqltable." (".$insert.") VALUES (".$values.")") or dberror();
 	 if (!$vo->$idfield) $vo->$idfield=$db->insert_id();

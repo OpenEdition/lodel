@@ -762,6 +762,15 @@ function makeSortKey($text)
 				'¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u')));
 }
 
+/**
+ * generate the SQL criteria depending whether ids is an array or a number
+ */
+
+function sql_in_array($ids) 
+
+{
+  return is_array($ids) ? "IN ('".join("','",$ids)."')" : "='".$ids."'";
+}
 
 /**
  * DAO factory

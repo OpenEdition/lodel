@@ -292,11 +292,8 @@ class GenericLogic extends Logic {
 
 	   $logic=&getLogic($type); // the logic is used to validate
 	   $localcontext=&$context[$type][$idtype];
-	   #if ($type=="entries") {
-	   #  echo "localcontext:";
-	   #  print_R($localcontext);
-	   #}
-	   if (!is_array($localcontext)) {
+
+	   if ($type=="entries" && !is_array($localcontext)) {
 	     $keys=explode(",",$localcontext);
 	     $localcontext=array();
 	     foreach($keys as $key) {
