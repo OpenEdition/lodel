@@ -79,7 +79,7 @@ function OO ($uploadedfile)
   // convertir les balises (et supprimer les lettres avec accents, et les espaces diviennent des _)
   
   array_push($srch,"/\[!(\/?)--R2R:([^\]]+)--\]/e");
-  array_push($rpl,"strtr('<\\1r2r:\\2>','ÈËÍ‡‚ \n','eeeaa__')");
+  array_push($rpl,"removeaccentsandspaces('<\\1r2r:\\2>')");
   
 
 
@@ -140,7 +140,8 @@ function OO ($uploadedfile)
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?>/i", # met border="0"
 	     "/.*<body\b[^>]*>/s",
-	     "/<\/body>.*/s"
+	     "/<\/body>.*/s",
+	     "/(<(col)\b[^>]*?)\/?>/i" # balise seule, il faut les fermer
 	     );
 
   array_push($rpl,
@@ -153,7 +154,8 @@ function OO ($uploadedfile)
 	     "\\1\\2",
 	     "\\1border=\"0\"/>",
 	     '<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">',
-	     "</r2r:article>"
+	     "</r2r:article>",
+	     "\\1 />"
 	     );
 
   $file=traite_multiplelevel(preg_replace ($srch,$rpl,$file));
@@ -275,6 +277,16 @@ function convertHTMLtoUTF8 (&$text)
 	      );
 
   $text=preg_replace("/&(\w+);/e",'$hash[\\1] ? $hash[\\1] : "\\0"',$text);
+}
+
+
+function removeaccentsandspaces($string){
+return strtr(
+ strtr(utf8_decode($string),
+  '¶¥®∏æ¿¡¬√ƒ≈«»… ÀÃÕŒœ—“”‘’÷ÿŸ⁄€‹›‡·‚„‰ÂÁËÈÍÎÏÌÓÔÒÚÛÙıˆ¯˘˙˚¸˝ˇ '."\n",
+  'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy__'),
+array('ﬁ' => 'TH', '˛' => 'th', '–' => 'DH', '' => 'dh', 'ﬂ' => 'ss',
+  'º' => 'OE', 'Ω' => 'oe', '∆' => 'AE', 'Ê' => 'ae', 'µ' => 'u'));
 }
 
 ?>
