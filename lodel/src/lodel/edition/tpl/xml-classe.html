@@ -20,7 +20,7 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">  
+<article xmlns="http://www.lodel.org" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
 
 <!--[ affiche les personnes ]-->
     <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
@@ -28,7 +28,7 @@
 	<gr[#TYPE]>
 	  <LOOP NAME="lespersonnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
 	    <DO>
-	      <[#TYPE] ordre="[#ORDRE]">
+	      <[#TYPE]>
 		[<prefix>(#PREFIX)</prefix>]
 		<prenom>[(#PRENOM)]</prenom>
 		<nomfamille>[(#NOMFAMILLE)]</nomfamille>
