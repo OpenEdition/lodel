@@ -2,9 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -27,288 +27,287 @@
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
 <USE MACROFILE="macros_presentation.html">
-<USE MACROFILE="macros_revue.html">
+<USE MACROFILE="macros_site.html">
+
+
+<!--[ ****************************************************************** ]-->
+<!--[ Cette page affiche les documents de type article.                  ]-->
+<!--[ Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                ]-->
+<!--[ Dernière modification majeure en mai 2003.                         ]-->
+<!--[ ****************************************************************** ]-->
+
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)]</title>
-<MACRO NAME="DESACTIVER_INDEXATION">
 <MACRO NAME="METADONNEES">
-<script language="JavaScript"><!--window.print()--></script>
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
+		
+		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale.  ]-->
+				<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
+				<div id="contenu">					
+					<!--[ logo du site]-->
+						<h1 class="nom-site">
+						[#MSG]
+						<MACRO NAME="IMG_LOGO_SITE">
+						</h1>
+			
+					<!--[ Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+					titre et nom du numéro, ]-->		
+						<MACRO NAME="PARU_DANS"> 
+						<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+			
+			
+					<strong>
+						<!--[ Affiche le type du document]-->	
+				                <LOOP NAME="type_du_document" TABLE="types" WHERE="id='[#IDTYPE]'">Type de document : [#TITRE]</LOOP>
+					</strong>			
+						<!--[ Affiche les boutons pour accéder à la page imprimable et la page de signalement]-->
+						<div class="signalerimprimer">
+							<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
+						</div>
+				
+					
+			
+					<!--[ Affiche les infos sur le document: titre, sous-titre, auteur]-->
+					<div class="affichagedocument">			
+				               <!--  Auteurs : -->
+						<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
 
-<table class="principale">
-	<tr>
-		<td>
-			<div>
-	
-				<div class="titre1">
-				<!--[ Affichage d'informations dépendant  du type de document ]-->
-		
-					<!--[ Affichage d'une barre horizontale (macro-presentation.html) ]-->
-					<hr class="filet_3" />
-		
-					<!--[ Affichage du type du document ]-->
-					<IF COND="[#TYPE]=='compte rendu'">
-						Compte-rendu
-					</IF>
-					<IF COND="[#TYPE]=='chronique'">
-						Chronique
-					</IF>
-					<IF COND="[#TYPE]=='position de these'">
-						Position de thèse
-					</IF>
-					<IF COND="[#TYPE]=='article'">
-						Article
-					</IF>
-		
-					<br />
-		
-					<!--[ Affichage du titre, surtitre et sous-titre du doc (lien vers article.html) ]-->
-					<a  href="document.html?id=[#ID]">
 						<IF COND="[#SURTITRE]">
-							[#SURTITRE] <br />
+							<h3>[#SURTITRE]</h3>
 						</IF>
-								
-						[#TITRE] <br />
-						
+							<h2 class="titre-doc">[#TITRE]</h2>
 						<IF COND="[#SOUSTITRE]">
-							<span class="soustitrerevue">
-								[#SOUSTITRE] <br />
-							</span>
+							<h3 class="titre-doc">[#SOUSTITRE]</h3>
 						</IF>
-						<!--[ URL du document ]-->	
-						<span class="pluspetit">
-							http://[#SITE].revues.org/document.html?id=[#ID]
-						</span>		
-					</a>		
-				
-					<!--[ Bouton [E] editer le document  (macros_technique.html) ]-->	
-					<MACRO NAME="BOUTON_EDITER_DOCUMENT">
-				
-					<!--[ Affichage des auteurs du document du document ]-->
-					<br /><br />
-					<IF COND="[#TYPE]=='note de lecture'">
-						Note de lecture par
+						<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+					</div>
+			
+					<!--[ Erratum -]-->
+					<IF COND="[#ERRATUM]">
+						<h4>
+							Errata
+						</h4>
+						<div class="notes"> 
+							[(#ERRATUM|tocss)]
+							<br />
+						</div>
 					</IF>
-					<!--[(macros_affichage.html) ]-->
-					<MACRO NAME="LISTER_AUTEURS">
-					<br /><br />
-		
-					<!--[ Les informations sur la publication ((macros_affichage.html) ]-->	
-					<MACRO NAME="PARU_DANS">
-		
-					<!--[ Affichage d'une barre horizontale (macro-presentation.html) ]-->	
-					<hr class="filet_3" />	
-				</div>
-				
-				<!--[ Notes de la rédaction -]-->
-				<IF COND="[#ERRATUM]">
-					<div class="titre3">
-						errata
-					</div>
-					<div class="notes"> 
-						[(#ERRATUM|tocss)]
-					</div>
-				</IF>
-	
-				<!--[ Notes de la rédaction -]-->
-				<IF COND="[#NDLR]">
-					<div class="titre3">
-						Notes de la rédaction
-					</div>
-					<div class="notes"> 
-						[(#NDLR|tocable|tocss)]
-					</div>
-				</IF>
-				
-				<!--[ Historique -]-->
-				<IF COND="[#HISTORIQUE]">
-					<div class="titre3">
-						Historique
-					</div>
-					<div class="notes"> 
-						[(#HISTORIQUE|tocss)]
-					</div>
-				</IF>
-				
-				<!--[ Affichage du résumé en français   ]-->
-				<IF COND="[#RESUME:FR]">
-					<div class="titre3">
-						Résumé
-					</div>
-					<div class="resume" > 
-						[(#RESUME:FR|tocss)]
-					</div>		
-				</IF>
-				
-				<!--[ Résumé en anglais   ]-->
-				<IF COND="[#RESUME:EN]">
-					<div class="titre3"> 
-						Abstract
-					</div>
-					<div class="resume" >
-						[(#RESUME:EN|tocss)]
-					</div>
-				</IF>
-				
-				<!--[ Résumé en espagnol   ]-->
-				<IF COND="[#RESUME:ES]">
-					<div class="titre3"> 
-						Extracto
-					</div>
-					<div class="resume" >
-						[(#RESUME:ES|tocss)]
-					</div>
-				</IF>
-				
-				<!--[ Résumé en allemand   ]-->
-				<IF COND="[#RESUME:DE]">
-					<div class="titre3"> 
-						Zusammenfassung
-					</div>
-					<div class="resume" >
-						[(#RESUME:DE|tocss)]
-					</div>
-				</IF>
-				
-				<!--[ Résumé en italien   ]-->
-				<IF COND="[#RESUME:IT]">
-					<div class="titre3"> 
-						Riassunto
-					</div>
-					<div class="resume" >
-						[(#RESUME:IT|tocss)]
-					</div>
-				</IF>				
 						
-<!--[ ----------------------------------------------------------------------- ]-->
-<!--[ Cette partie ne s'affiche que si le texte est autorisé à la publication ]-->
-<!--[ ----------------------------------------------------------------------- ]-->
+					<!--[ Notes de la rédaction -]-->
+					<IF COND="[#NDLR]">
+						<h4>
+							Notes de la rédaction
+						</h4>
+						<div class="notes"> 
+							[(#NDLR|tocss)]
+							<br />
+						</div>
+					</IF>
+				
+					<!--[ Historique -]-->
+					<IF COND="[#HISTORIQUE]">
+						<h4>
+							Historique
+						</h4>
+						<div class="notes"> 
+							[(#HISTORIQUE|tocss)]
+							<br />
+						</div>
+					</IF>
+				
+					<!--[ Affichage du résumé en français   ]-->
+					<IF COND="[#RESUME:FR]">
+						<h4>
+							Résumé
+						</h4>
+							[(#RESUME:FR|tocss)]
+					</IF>
+					
+					<!--[ Résumé en anglais   ]-->
+					<IF COND="[#RESUME:EN]">
+						<h4>
+							Abstract
+						</h4>
+							[(#RESUME:EN|tocss)]
+					</IF>
+				
+					<!--[ Résumé en espagnol   ]-->
+					<IF COND="[#RESUME:ES]">
+						<h4>
+							Extracto
+						</h4>
+							[(#RESUME:ES|tocss)]
+					</IF>
+				
+					<!--[ Résumé en allemand   ]-->
+					<IF COND="[#RESUME:DE]">
+						<h4>
+							Zusammenfassung
+						</h4>
+							[(#RESUME:DE|tocss)]
+					</IF>
+				
+					<!--[ Résumé en italien   ]-->
+					<IF COND="[#RESUME:IT]">
+						<h4>
+							Riassunto
+						</h4>
+							[(#RESUME:IT|tocss)]
+					</IF>
+	
+					
+		<!--[ ----------------------------------------------------------------------- ]-->
+		<!--[ Cette partie ne s'affiche que si le texte est autorisé à la publication ]-->
+		<!--[ ----------------------------------------------------------------------- ]-->
+					<IF COND="[#DATEPUBLI] le today()">
+					<div id="toc">
+					<h4>
+						Table des matières
+					</h4>
 
-				<IF COND="[#TEXTEPUBLIE]">
-				
-					<!--[ Texte. Si il existe -]-->
-					<IF COND="[#TEXTE]">
-						<div class="titre3">
-							<IF COND="[#TYPE]!='presentation'">
-								Texte intégral
+
+                                         <LOOP NAME="toc" TEXT="[#TEXTE]">
+                                          <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+                                          <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+                                          <IF COND="[#NIVEAU]==3"><div class="toc_section3"><a  href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+                                          <IF COND="[#NIVEAU]==4"><div class="toc_section4"><a href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+                                          <IF COND="[#NIVEAU]==5"><div class="toc_section5"><a  href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+                                          <IF COND="[#NIVEAU]==6"><div class="toc_section6"><a  href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+                                         </LOOP>
+					</div>
+						<!--[ Texte. Si il existe -]-->
+						<IF COND="[#TEXTE]">
+							<div class="icone">
+							<IF COND="[#ICONE]">
+							<img src="[#ICONE]" alt="[#IDENTIFIANT]" hspace="4" vspace="4" border="1" align="left">
 							</IF>
-						</div>
-						<div class="texte">
-							<IF COND="[#TYPE]=='compte rendu'">
-							<!--[ Si il y a une lettrine associée au texte, affichage de cette lettrine -]-->
-								<IF COND="[#ICONE]">
-									<img src="[#ICONE]" alt="[#IDENTIFIANT]" hspace="4" vspace="4" border="1" align="left">
-								</IF>
-								[#TEXTE]
-							<ELSE/>			
-								[(#TEXTE|tocable|tocss|lettrine)]
-							</IF>
-						</div>
-					</IF>
-	
-					<!--[ Bibliographie. Si elle existe -]-->
-					<IF COND="[#BIBLIOGRAPHIE]">
-						<div class="titre3"> 
-							<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
-						</div>
-						<div class="texte">
-							[(#BIBLIOGRAPHIE|tocss)]
-						</div>
-					</IF>
-				
-					<!--[ Annexe. Si elle existe -]-->
-					<IF COND="[#ANNEXE]">
-						<div class="titre3"> 
-							Annexes
-						</div>
-						<div class="texte">
-							[(#ANNEXE|tocss)]
-						</div>
-					</IF>
-						
-					<!--[ Documents annexes. S'il y en a au moins un -]-->
-					<IF COND="[#DOCUMENTSANNEXES]">
-						<div class="titre3"> 
-							Documents annexes
-						</div>
-						<div class="texte" >
-							Il y a 
-							[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
-							annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
-							<br />
-							<br />
-							<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-							<br />
-						</div>
-					</IF>
-				
-					<!--[ Notes de bas de page. Si elles existent -]-->
-						<IF COND="[#NOTEBASPAGE]">
-							<div class="titre3">
-								Notes bas numériques:
+                                                        </div>
+							<div class="texte">
+							[(#TEXTE|tocable|tocss|lettrine)]
 							</div>
+						</IF>
+				
+						<!--[ Bibliographie. Si elle existe -]-->
+						<IF COND="[#BIBLIOGRAPHIE]">
+
+				                        <h4>
+								<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
+							</h4>
+							<div class="bibliographie">
+								[(#BIBLIOGRAPHIE|tocss)]
+							</div>
+						</IF>
+				
+						<!--[ Annexe. Si elle existe -]-->
+						<IF COND="[#ANNEXE]">
+							<h4>
+								Annexes
+							</h4>
+							<div class="texte">
+								[(#ANNEXE|tocss)]
+							</div>
+						</IF>
+						
+						<!--[ Documents annexes. S'il y en a au moins un -]-->
+						<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+				
+						<!--[ Notes de bas de page. Si elles existent -]-->
+						<IF COND="[(#NOTEBASPAGE|notes('nombre'))]">
+							<h4>
+								Notes de base de page numériques:
+							</h4>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("nombre"))]
 								<br />
 							</div>
-							<div class="titre3">
-								Notes bas littérales:
-							</div>
+						</IF>
+						
+						<IF COND="[(#NOTEBASPAGE|notes('lettre'))]">
+							<h4>
+								Notes de bas de page littérales:
+							</h4>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("lettre"))]
 								<br />
 							</div>
-							<div class="titre3">
-								Notes bas astérisques:
-							</div>
+						</IF>
+						
+						<IF COND="[(#NOTEBASPAGE|notes('asterisque'))]">
+							<h4>
+								Notes de bas de page astérisques:
+							</h4>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("asterisque"))]
 								<br />
 							</div>
-
 						</IF>
+						
 						<!--[ Notes de fin. Si elles existent -]-->
-						<IF COND="[#NOTEFIN]">
-							<div class="titre3">
-								Notes fin numériques:
-							</div>
+						<IF COND="[(#NOTEFIN|notes('nombre'))]">
+							<h4>
+								Notes de fin numériques:
+							</h4>
 							<div class="notes"> 
 								[(#NOTEFIN|notes("nombre"))]
 								<br />
 							</div>
-							<div class="titre3">
-								Notes fin littérales:
-							</div>
+						</IF>
+						<IF COND="[(#NOTEFIN|notes('lettre'))]">
+							<h4>
+								Notes de fin littérales:
+							</h4>
 							<div class="notes"> 
 								[(#NOTEFIN|notes("lettre"))]
 								<br />
 							</div>
-							<div class="titre3">
-								Notes fin astérisques:
-							</div>
+						</IF>
+						<IF COND="[(#NOTEFIN|notes('asterisque'))]">
+							<h4>
+								Notes de fin astérisques:
+							</h4>
 							<div class="notes"> 
 								[(#NOTEFIN|notes("asterisque"))]
 								<br />
 							</div>
-
 						</IF>
 								
-				<!--[ Si le texte n'est pas encore autorisé à être publié ]-->
-				<ELSE/>
-					<p class="texte">
-						Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
-					</p>
-				</IF>			
-		
-				<!--[ Affiche la description de l'auteur (macros-affichage.html) ]-->		
-				<MACRO NAME="DESCRITION_AUTEUR">
-		 
+					<!--[ Si le texte n'est pas encore autorisé à être publié ]-->
+					<ELSE/>
+						<p class="texte">
+							Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
+						</p>
+					</IF>
+					
+					<!--[ Affiche la notice bibliographique du document en cours ]-->		
+					<h4>
+						Pour citer cet article
+					</h4>
+					<div class="pourciter">
+						<MACRO NAME="CITATION"> 
+					</div>
+				
+					<!--[ Affiche la description des auteurs ]-->		
+					<MACRO NAME="DESCRIPTION_AUTEURS">
+
+									
+					<MACRO NAME="RECENSIONS">
+
+					<!--[ Affiche liens de navigation entre les documents  ]-->						
+					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
+				
+<div id="footer"><MACRO NAME="LODEL_ORG"></div>
 			</div>
-		</td>	
-	</tr>
+</td></tr>
 </table>
 <MACRO NAME="FERMER_HTML">  
-
 

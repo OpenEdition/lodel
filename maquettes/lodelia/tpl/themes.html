@@ -28,20 +28,23 @@
 <USE MACROFILE="macros_presentation.html">
 <USE MACROFILE="macros_site.html">
 
+
 <!--[ ****************************************************************** ]-->
-<!--[ Cette page affiche les articles correspondants à un mot-clef       ]-->
-<!--[ sélectionné par ID.                                                ]-->
-<!--[ Auteur : Marin Dacos et Poupeau Gautier.                           ]-->
-<!--[ Date de création : août 2002.                                      ]-->
+<!--[ Index géographique complet. Il affiche indistinctement tous les    ]-->
+<!--[ niveaux de l'arbre, il confond donc dans l'affichage une catégorie ]-->
+<!--[ avec une sous-catégorie on pourra affiner ultérieurement.          ]-->
+<!--[ Auteur : Marin Dacos.                                              ]-->
+<!--[ Création : septembre 2002.                                         ]-->
 <!--[ Dernière modification majeure : septembre 2002.                    ]-->
 <!--[ ****************************************************************** ]-->
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>[#NOM]</TITLE>
+<TITLE>Index thématique</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
-<MACRO NAME="METADONNEES_POUR_MOTS">
+<MACRO NAME="METADONNEES_POUR_GEOS">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
 					<table class="main" cellpadding="0" cellspacing="0">
 					<tr>
 					<td class="barre">
@@ -55,25 +58,31 @@
 		
 				<!--[ logo du site]-->
 				<MACRO NAME="IMG_LOGO_SITE">
-
-				<!--[ Titre du site ]-->
-				<h1 class="accueil">
-					"[#NOM]" dans <MACRO NAME="NOM_SITE">
+	
+				<h1>
+					Index thématique
 				</h1>
-
-				<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'" ORDER="datepubli">
-					<DO>
-						<div class="afficherdocument">
-							<!--[ Liste des documents où apparait ce mot clé ]-->
-							<MACRO NAME="INFOS_DOCUMENT">	
-						</div>
-					</DO>
-				</LOOP>
-					<a href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
-						&gt;&gt; Index des mots clés.
-					 </a>
+		
+			
+						<LET VAR="IDREC">0</LET>
+						<LOOP NAME="themes" TABLE="entrees" WHERE="type='theme' AND idparent='[#IDREC]' " ORDER="ordre DESC">
+					        <BEFORE><ul></BEFORE>
+							<DO>
+					                    <li>
+								<div class="afficherdocument">
+								<a  href="entree.[#EXTENSIONSCRIPTS]?id=[#ID]">
+									[#NOM]
+								</a>
+								</div>
+					                    <LET VAR="IDREC">[#ID]</LET>
+							    <LOOP NAME="themes"></LOOP>
+					                    </li>
+							</DO>
+					        <AFTER></ul></AFTER>
+						</LOOP>
 		<div id="footer"><MACRO NAME="LODEL_ORG"></div>
 		</div>
 </td></tr>
 </table>
+
 <MACRO NAME="FERMER_HTML">  

@@ -1,9 +1,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -35,12 +35,10 @@
 <!--[ <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">                     ]-->
 <!--[ <MACRO NAME="ACTIVER_INDEXATION">                                  ]-->
 <!--[ <MACRO NAME="DESACTIVER_INDEXATION">                               ]-->
-<!--[ <MACRO NAME="FORMULAIRE_RECHERCHE">                                ]-->
-<!--[ <MACRO NAME="IN_EXTENSO">                                          ]-->
 <!--[ <MACRO NAME="MENU_RUBRIQUES_PUBLIEES">                             ]-->
 <!--[ <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 ]-->
-<!--[ <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        ]-->
-<!--[ <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            ]-->
+<!--[ <MACRO NAME="DESCRIPTION_SITE_POUR_METAS">                        ]-->
+<!--[ <MACRO NAME="EDITEUR_SITE_POUR_METAS">                            ]-->
 <!--[ <MACRO NAME="DROITS_POUR_METAS">                                   ]-->
 <!--[ <MACRO NAME="METADONNEES">                                         ]-->
 <!--[ <MACRO NAME="METADONNEES_POUR_AUTEUR">                             ]-->
@@ -60,17 +58,17 @@
 
 <DEFMACRO NAME="OUVRIR_HTML">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Ouvre la page HTML                                                 ]-->
 <!--[ ****************************************************************** ]-->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
 <head>
 </DEFMACRO> 
 
 <DEFMACRO NAME="FERMER_HTML">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Ferme la page HTML                                                 ]-->
 <!--[ ****************************************************************** ]-->
 	</body>
@@ -79,19 +77,18 @@
 
 <DEFMACRO NAME="LIEN_SYNDICATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Lien vers la page présentant les différents flux RSS               ]-->
 <!--[ ****************************************************************** ]-->
-	<a href="backend.html">
-		<div class="revuesorg">
+	          <a href="backend.[#EXTENSIONSCRIPTS]" class="rss">
+
 			<MACRO NAME="IMG_RSS">
-		</div>
-	</a>
+                  </a>
 </DEFMACRO>
 
 <DEFMACRO NAME="ENTETE_XML">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Cette macro est utile aux fichiers rss                             ]-->
 <!--[ ****************************************************************** ]-->
 <?php 
@@ -102,31 +99,27 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 
 <DEFMACRO NAME="DEFINIR_CHARSET">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Permet de déclarer le charset (jeux de caractères, dépendant de la ]-->
 <!--[ langue principale utilisée).                                       ]-->
 <!--[ Macro à appeler dans l'entête du fichier HTML (entre les balises   ]-->
 <!--[ <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               ]-->
 <!--[ INSERER_FEUILLE_DE_STYLES).                                        ]-->
 <!--[ ****************************************************************** ]-->
-	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Permet d'appeler la feuille de style CSS de la revue, de fermer    ]-->
+<!--[ version 2.0                                                        ]-->
+<!--[ Permet d'appeler la feuille de style CSS du site,     de fermer    ]-->
 <!--[ l'en-tête de la page HTML puis d'ouvrir le corps de la page et     ]-->
 <!--[ d'afficher le tableau de bord (desk) au sommet de la page pour les ]-->
 <!--[ utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... ]-->
 <!--[ ****************************************************************** ]-->
-	<link rel="stylesheet" href="styles_revue.css">
-	<link rel="stylesheet" href="styles_revue_image.css">
-	<IF COND="[#STYLECSS]">
-		<style type="text/css">         
-			[#STYLECSS]
-		</style>
-	</IF>
+	<link rel="stylesheet" type="text/css" href="css/styles_site.css" media="screen" title="Lodelia rouge" />
+	<link rel="stylesheet" type="text/css" media="print" href="css/styles_site_print.css" />
+	<link rel="stylesheet" type="text/css" href="css/styles_site_image.css" media="screen" />
 </head>
 	<body> 
 	<IF COND="[#DROITVISITEUR]">
@@ -136,14 +129,14 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 
 <DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Permet d'appeler la feuille de style CSS pour la version imprimable]--> 
-<!--[ de la revue, de fermer     										]-->
+<!--[ du site, de fermer     										]-->
 <!--[ l'en-tête de la page HTML puis d'ouvrir le corps de la page et     ]-->
 <!--[ d'afficher le tableau de bord (desk) au sommet de la page pour les ]-->
 <!--[ utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... ]-->
 <!--[ ****************************************************************** ]-->
-	<link rel="stylesheet" href="styles_revue_print.css"  />
+	<link rel="stylesheet" href="css/styles_site_print.css"  />
 	
 	</head>
 	<body> 
@@ -154,18 +147,18 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 
 <DEFMACRO NAME="ACTIVER_INDEXATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Autorise l'indexation par les moteurs de recherche.                ]-->
 <!--[ Macro à appeller dans l'en-tête du fichier HTML (entre les balises ]-->
 <!--[ <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               ]-->
 <!--[ INSERER_FEUILLE_DE_STYLES).                                        ]-->
 <!--[ ****************************************************************** ]-->
-	<meta name="ROBOTS" content="follow, index">
+	<meta name="ROBOTS" content="follow, index" />
 </DEFMACRO>
 
 <DEFMACRO NAME="DESACTIVER_INDEXATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Interdit l'indexation de la page par les moteurs.                  ]-->
 <!--[ Très utile pour éviter les redondances des divers formats de pages.]-->
 <!--[ Pages à exclure : format d'impression, signalement par courriel,   ]-->
@@ -175,67 +168,40 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               ]-->
 <!--[ INSERER_FEUILLE_DE_STYLES).                                        ]-->
 <!--[ ****************************************************************** ]-->
-	<meta name="ROBOTS" content="follow, noindex">
+	<meta name="ROBOTS" content="follow, noindex" />
 </DEFMACRO>
-
 <DEFMACRO NAME="FORMULAIRE_RECHERCHE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Formulaire permettant d'effectuer une recherche.                   ]-->
 <!--[ ****************************************************************** ]-->
 	
 	<form action="/cgi-bin/esearch/esearch.pl" method="get">
-	
-		&nbsp;<b>Chercher</b><br><br>
-		&nbsp;<input type="text" size="17" name="search" value="votre recherche" 
+	<fieldset>
+		<label for="search">Chercher</label>
+		<input type="text" size="16" name="search" id="search" value="votre recherche" 
 			onfocus="if(this.value=='votre recherche')this.value='';" />
-		<input type=hidden name="url_back" value="http://[#SITE].revues.org/">
-		<input type=hidden name="[#SITE]" value="CHECKED" checked [#SITE]>
-		<input type=hidden name="addsite" value="Chercher">
-		<input type="image" border="0" name="imageField" src="images/submit.gif">
-	
+		<input type="image"  name="imageField" src="images/submit.gif" />
+		<input type="hidden" name="url_back" value="http://[#SITE].revues.org/" />
+		<input type="hidden" name="[#SITE]" value="CHECKED" checked="checked" />
+		<input type="hidden" name="addsite" value="Chercher" />
+	</fieldset>
 	</form>
 	
-</DEFMACRO>
-
-<DEFMACRO NAME="IN_EXTENSO">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Appel du moteur de recherche In-extenso                            ]-->
-<!--[ ****************************************************************** ]-->
-	<div class="formulaire1">
-	<form name="In-extenso" method="get" action="http://www.in-extenso.org/search">
-		<div class="formulaire2>
-							
-					<input type="hidden" name="aspsk" value="true" checked>
-					<input type="hidden" name="qrls" value="true" checked>
-					<input type="hidden" name="all" value="true" checked>
-					<input type="hidden" name="ps" value="7">
-					<input type="text" size="17" name="q" value="votre recherche" onfocus="if(this.value=='votre recherche')this.value='';" />
-					<input type=hidden name="bck" value="http://[#SITE].revues.org/">
-					<br /><br />
-					<input type="submit" name="Submit" value="Chercher">
-					<input type="hidden" name="rev" value="[#SITE]" checked>
-					
-					<br />
-		</div>
-				
-	</form>
-	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="MENU_RUBRIQUES_PUBLIEES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Menu déroulant affichant la liste des publications de type rubrique,  ]-->
 <!--[ qui sont publiés.                                                  ]-->
 <!--[ ****************************************************************** ]-->
 	<form name="pub_menu_B">
 		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
-		<option value="index.html">rubriques</option>
-		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" ORDER="ordre DESC">
+		<option value="index.[#EXTENSIONSCRIPTS]">rubriques</option>
+		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="type='rubrique'" ORDER="ordre DESC">
 			<DO>	
-				<option value="sommaire.html?id=[#ID]">
+				<option value="[(#ID|makeurlwithid('sommaire'))]">
 					[#IDENTIFIANT]
 				</option>
 			</DO>
@@ -246,7 +212,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 
 <DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la date de publication parente d'un document, si elle      ]-->
 <!--[ existe sinon affiche "0000-00-00".                                 ]-->
 <!--[ Cette macro est destinée à l'affichage des métadonnées.            ]-->
@@ -262,7 +228,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 
 <DEFMACRO NAME="DESCRIPTION_META_SOMMAIRE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Cette macro est destinée à l'affichage des métadonnées.            ]-->
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="extrait_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
@@ -282,160 +248,132 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	</LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affichage de la description de la revue pour les métadonnées HTML. ]-->
-<!--[ Ceci est fondamental pour la sémantisation du WEB et la qualité de ]-->
-<!--[ l'indexation par les moteurs. Pensez à personnaliser cette macro.  ]-->
-<!--[ ****************************************************************** ]-->
-INSEREZ ICI LA DESCRIPTION DE VOTRE REVUE
-</DEFMACRO>
-
-<DEFMACRO NAME="EDITEUR_REVUE_POUR_METAS">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affichage de l'éditeur de la revue pour les métadonnées du D.C.    ]-->
-<!--[ Ceci est fondamental pour la sémantisation du WEB et la qualité de ]-->
-<!--[ l'indexation par les moteurs. Pensez à personnaliser cette macro.  ]-->
-<!--[ ****************************************************************** ]-->
-INSEREZ ICI LE NOM DE VOTRE EDITEUR
-</DEFMACRO>
-
-<DEFMACRO NAME="DROITS_POUR_METAS">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affichage des droits les métadonnées du Dublin Core.               ]-->
-<!--[ Ceci est fondamental pour la sémantisation du WEB et la qualité de ]-->
-<!--[ l'indexation par les moteurs. Pensez à personnaliser cette macro.  ]-->
-<!--[ ****************************************************************** ]-->
-IPR
-</DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à index.html.                          ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="[#SITE]" />
-<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Page d'accueil" />
+<meta name="DC.Description" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">. Page d'accueil" />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_MOT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à Mot.html.                          ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index : [#NOM]" />
-<meta NAME="DC.Description" lang="fr" content="Index par mot clé. [#NOM]" />
+<meta name="DC.Description" lang="fr" content="Index par mot clé. [#NOM]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_MOTS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à Mots.html.                         ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index par mots clés" />
-<meta NAME="DC.Description" lang="fr" content="Index par mots clés." />
+<meta name="DC.Description" lang="fr" content="Index par mots clés." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_AUTEUR">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à auteur.html.                       ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="[#PRENOM] [#NOMFAMILLE]" />
-<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index par auteur." />
+<meta name="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">. Index par auteur." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_AUTEURS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affichage métadonnées propres à personnes.html?type=auteur.                      ]-->
+<!--[ version 2.0                                                        ]-->
+<!--[ Affichage métadonnées propres à auteurs.html.                      ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index par auteurs." />
-<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index par auteurs." />
+<meta name="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">. Index par auteurs." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_CHRONO">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à chrono.html.                       ]-->
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="DCtitle" TABLE="entrees" WHERE="type='periode'">
 		<meta name="DC.Title" content="Index chronologique : [#NOM]." />
 	</LOOP>
-<meta NAME="DC.Description" lang="fr" content="Index chronologique." />
+<meta name="DC.Description" lang="fr" content="Index chronologique." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_CHRONOS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affichage métadonnées propres à entrees.html?type=periode.                      ]-->
+<!--[ version 2.0                                                        ]-->
+<!--[ Affichage métadonnées propres à chronos.html.                      ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index chronologique." />
-<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index chronologique." />
+<meta name="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">. Index chronologique." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_GEO">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à geo.html.                          ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index : [#NOM]" />
-<meta NAME="DC.Description" lang="fr" content="Index géographique." />
+<meta name="DC.Description" lang="fr" content="Index géographique." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_GEOS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à Geo.html.                          ]-->
 <!--[ ****************************************************************** ]-->
 <meta name="DC.Title" content="Index géographique" />
-<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index géographique." />
+<meta name="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">. Index géographique." />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_SOMMAIRES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à sommaire.html.                     ]-->
 <!--[ ****************************************************************** ]-->
 <!--[ METADONNEES HTML ]-->
-<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
-<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
-<meta url="http://[#SITE].revues.org/document.html?id=[#ID]" />
+<meta name="GENERATOR" content="Lodel [#VERSION]" />
+<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">" />
+<meta name="url" content="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('sommaire'))]" />
 
 <!--[ METADONNEES DUBLIN CORE ]-->
-<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_SITE_POUR_METAS">" />
 <meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
-<meta name="DC.Source" content="http://[#SITE].revues.org/" />
+<meta name="DC.Source" content="[(#CURRENTURL|dirname)]" />
 <meta name="DC.Type" content="text" />
 <meta name="DC.Format" content="text/html" />
 <meta name="DC.Language" content="fr" />
-<meta name="DC.Relation" content="http://www.revues.org" />
+<!--[ <meta name="DC.Relation" content="" /> ]-->
 
-<meta name="DC.Identifier" content="http://[#SITE].revues.org/sommaire.html?id=[#ID]" />
+<meta name="DC.Identifier" content="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('sommaire'))]" />
+
 <meta name="DC.Title" content="Sommaire du numéro [#IDENTIFIANT], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 <meta name="DC.Date" content="[#DATE]" />
-<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_META_SOMMAIRE">" />
+<meta name="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_META_SOMMAIRE">" />
 </DEFMACRO>
 
 
 <DEFMACRO NAME="METADONNEES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage des métadonnées HTML et DUBLIN CORE.                     ]-->
 <!--[ Ceci est fondamental pour la sémantisation du WEB et la qualité de ]-->
 <!--[ l'indexation par les moteurs.                                      ]-->
 <!--[ Cette macro utilise les macros suivantes :                         ]-->
-<!--[ <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        ]-->
-<!--[ <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            ]-->
+<!--[ <MACRO NAME="DESCRIPTION_SITE_POUR_METAS">                        ]-->
+<!--[ <MACRO NAME="EDITEUR_SITE_POUR_METAS">                            ]-->
 <!--[ <MACRO NAME="DROITS_POUR_METASDC">                                 ]-->
 <!--[ <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 ]-->
 <!--[ ****************************************************************** ]-->
-	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
-	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
-	<meta url="http://[#SITE].revues.org/document.html?id=[#ID]" />
+	<meta name="GENERATOR" content="Lodel [#VERSION]" />
+	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">" />
+	<meta name="URL" content="[#CURRENTURL]" />
 		
 	<LOOP NAME="meta_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
@@ -447,15 +385,16 @@ IPR
 	
 	<!--[ METADONNEES DUBLIN CORE ]-->
 	
-	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_SITE_POUR_METAS">" />
 	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
-	<meta name="DC.Source" content="http://[#SITE].revues.org/" />
+        <meta name="DC.Source" content="[(#CURRENTURL|dirname)]" />
 	<meta name="DC.Type" content="text" />
 	<meta name="DC.Format" content="text/html" />
 	<meta name="DC.Language" content="fr" />
-	<meta name="DC.Relation" content="http://www.revues.org" />
+<!--[	<meta name="DC.Relation" content="" /> ]-->
+	<meta name="DC.Identifier" content="[#CURRENTURL]" />
 	
-	<meta name="DC.Identifier" content="http://[#SITE].revues.org/document.html?id=[#ID]" />
+
 	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
 	<LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
@@ -480,32 +419,32 @@ IPR
 
 <DEFMACRO NAME="METADONNEES_POUR_INDEX">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affichage des métadonnées HTML et DUBLIN CORE pour les index.      ]-->
 <!--[ Pensez à personnaliser ces métadonnées.                            ]-->
 <!--[ Cette macro utilise les macros suivantes :                         ]-->
-<!--[ <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        ]-->
+<!--[ <MACRO NAME="DESCRIPTION_SITE_POUR_METAS">                        ]-->
 <!--[ <MACRO NAME="DROITS_POUR_METASDC">                                 ]-->
-<!--[ <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          ]-->
+<!--[ <MACRO NAME="EDITEUR_SITE_POUR_METASDC">                          ]-->
 <!--[ ****************************************************************** ]-->
 	<!--[ METADONNEES HTML ]-->
-	<meta name="GENERATOR" content="Lodel 2002" />
-	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
-	<meta URL="http://[#SITE].revues.org" />
+	<meta name="GENERATOR" content="Lodel [#VERSION]" />
+	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">" />
+        <meta name="url" content="[(#CURRENTURL|dirname)]" />
 	<!--[ METADONNEES DUBLIN CORE ]-->
 	<meta name="DC.Type" content="text" />
 	<meta name="DC.Format" content="text/html" />
-	<meta name="DC.Identifier" content="http://[#SITE].revues.org" />
-	<meta name="DC.Source" content="http://[#SITE].revues.org/" />
+	<meta name="DC.Identifier" content="[(#CURRENTURL|dirname)]" />
+	<meta name="DC.Source" content="[(#CURRENTURL|dirname)]" />
 	<meta name="DC.Language" content="fr" />
-	<meta name="DC.Relation" content="http://www.revues.org" />
+<!--[	<meta name="DC.Relation" content="" />  ]-->
 	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
-	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_SITE_POUR_METAS">" />
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_JUMPMENU">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Fonction javascript destinée à faire des listes déroulantes menant ]-->
 <!--[ à une URL.                                                         ]-->
 <!--[ ****************************************************************** ]-->
@@ -521,7 +460,7 @@ IPR
 
 <DEFMACRO NAME="JS_CHANGE_IMAGE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Fonction javascript permettant de changer une image survolée par   ]-->
 <!--[ la souris.                                                         ]-->
 <!--[ ****************************************************************** ]-->
@@ -555,7 +494,7 @@ IPR
 
 <DEFMACRO NAME="JS_OUVRE_FENETRE"> 
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Fonction javascript d'ouverture de fenêtre volante.                ]-->
 <!--[ ****************************************************************** ]-->
 <script language="JavaScript"><!-- 
@@ -569,10 +508,10 @@ IPR
 
 <DEFMACRO NAME="JS_ROLLOVER"> 
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Permet de faire un roll over sur une image.                        ]-->
 <!--[ ****************************************************************** ]-->
-<script language="javascript"><!--
+<script type="text/javascript"><!--
 
 function SwitchImg()
 { //start
@@ -602,12 +541,15 @@ function RestoreImg()
 
 <DEFMACRO NAME="JS_BOUTON_PAGE_PRECEDENTE"> 
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Fonction javascript qui affiche un bouton permettant de reculer    ]-->
 <!--[ d'une page. (Equivalent au bouton PRECEDENT ou BACK du navigateur) ]-->
 <!--[ ****************************************************************** ]-->
 	<a href="javascript:history.back()" OnMouseOver="window.status='Retour-Back';return true;">
-		<img src="/www/revues/images/back.gif" width="60" height="60" border="0" alt="page précédente / back">
+		<img src="[#SHAREURL]/images/back.gif" width="60" height="60" alt="page précédente / back" />
 		Page précédente
 	</a>
+</DEFMACRO>
+<DEFMACRO NAME="mail_abus">
+abus@revues.org
 </DEFMACRO>

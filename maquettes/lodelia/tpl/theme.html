@@ -2,8 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -28,20 +29,24 @@
 <USE MACROFILE="macros_presentation.html">
 <USE MACROFILE="macros_site.html">
 
+
 <!--[ ****************************************************************** ]-->
-<!--[ Cette page affiche les articles correspondants à un mot-clef       ]-->
-<!--[ sélectionné par ID.                                                ]-->
-<!--[ Auteur : Marin Dacos et Poupeau Gautier.                           ]-->
-<!--[ Date de création : août 2002.                                      ]-->
+<!--[ Index géographique d'un seul niveau. Il affiche indistinctement    ]-->
+<!--[ tous les niveaux de l'arbre, il confond donc dans l'affichage une  ]-->
+<!--[ catégorie avec une sous-catégorie. On pourra affiner               ]-->
+<!--[ ultérieurement.                                                    ]-->
+<!--[ Auteur : Marin Dacos.                                              ]-->
+<!--[ Création : septembre 2002.                                         ]-->
 <!--[ Dernière modification majeure : septembre 2002.                    ]-->
 <!--[ ****************************************************************** ]-->
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>[#NOM]</TITLE>
+<TITLE>Index thématique : [#NOM]</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
-<MACRO NAME="METADONNEES_POUR_MOTS">
+<MACRO NAME="METADONNEES_POUR_GEO">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
 					<table class="main" cellpadding="0" cellspacing="0">
 					<tr>
 					<td class="barre">
@@ -50,30 +55,38 @@
 					</div>
 					</td>
 					<td class="middle">
+		
 			<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
 			<div id="contenu">
 		
 				<!--[ logo du site]-->
 				<MACRO NAME="IMG_LOGO_SITE">
-
-				<!--[ Titre du site ]-->
-				<h1 class="accueil">
-					"[#NOM]" dans <MACRO NAME="NOM_SITE">
+					
+				<!--[ Affichage de l'entrée de l'index géo]-->
+				<h1>
+					[#NOM]
 				</h1>
-
+					
+				<!--[ Liste des articles ]-->
 				<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'" ORDER="datepubli">
 					<DO>
 						<div class="afficherdocument">
-							<!--[ Liste des documents où apparait ce mot clé ]-->
-							<MACRO NAME="INFOS_DOCUMENT">	
+							<!--[ Liste des documents liés à cette entrée d'index ]-->
+							<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 						</div>
 					</DO>
 				</LOOP>
+			
+				<h2>
 					<a href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
-						&gt;&gt; Index des mots clés.
+						&gt;&gt; Index thématique.
 					 </a>
+				</h2>
+			
 		<div id="footer"><MACRO NAME="LODEL_ORG"></div>
 		</div>
 </td></tr>
 </table>
+
 <MACRO NAME="FERMER_HTML">  
+				

@@ -2,8 +2,7 @@
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -47,7 +46,7 @@
 
 <DEFMACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton qui permet d'accéder à la publication précédente ]-->
 <!--[ si elle existe, sinon le bouton ne s'affiche pas.                  ]-->
 <!--[ ****************************************************************** ]-->
@@ -55,11 +54,11 @@
         <LOOP NAME="previous" ID="[#ID]">
         <DO>
 		<IF COND="[#TYPE] EQ 'numero'">
-			<a href="[(#ID|makeurlwithid('sommaire')]">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_NUMERO_PRECEDENT">
 			</a>
 		<ELSE />
-			<a href="[(#ID|makeurlwithid('sommaire')]">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_RUBRIQUE_PRECEDENTE">
 			</a>
 		</IF>
@@ -70,7 +69,7 @@
 
 <DEFMACRO NAME="BOUTON_PUBLICATION_SUIVANTE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton qui permet d'accéder à la publication suivante   ]-->
 <!--[ si elle existe, sinon le bouton ne s'affiche pas.                  ]-->
 <!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
@@ -79,11 +78,11 @@
         <LOOP NAME="next" ID="[#ID]">
         <DO>
 		<IF COND="[#TYPE] EQ 'numero'">
-			<a href="[(#ID|makeurlwithid('sommaire')]">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_NUMERO_SUIVANT">
 			</a>
 		<ELSE />
-			<a href="[(#ID|makeurlwithid('sommaire')]">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_RUBRIQUE_SUIVANTE">
 			</a>
 		</IF>
@@ -94,7 +93,7 @@
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bloc de navigation sans textes sous les boutons,        ]-->
 <!--[ comprenant une fleche gauche, permettant de naviguer vers les      ]-->
 <!--[ publications précédentes, le petit logo (icône ou autre ...) de la ]-->
@@ -110,12 +109,12 @@
 				<MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">
 			</td>
 			<td width="70%" align="center">
-				<a href="index.html">
-					<MACRO NAME="IMG_ICONE_REVUE">
+				<a href="index.[#EXTENSIONSCRIPTS]">
+					<MACRO NAME="IMG_ICONE_SITE">
 				</a>
 			</td>
 			<td width="15%" align="center">
-				<DEFMACRO NAME="BOUTON_PUBLICATION_SUIVANTE">
+				<MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">
 			</td>
 		</tr>
 	</table>
@@ -123,7 +122,7 @@
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton avec dessous un texte "Numéro/rubrique précédent"   ]-->
 <!--[ permettant d'accéder à la publication précédente. Si elle n'existe ]-->
 <!--[ pas le texte sous le bouton est changé par "Retour à l'accueil".   ]-->
@@ -136,7 +135,7 @@
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
 				<span style="color:Black;">
-					rubrique précédent
+					rubrique précédente
 				</span>
 			</a>
                  <ELSE/>
@@ -150,7 +149,7 @@
                  </IF>
 	</DO>
         <ALTERNATIVE>
-		<a href="index.html">
+		<a href="index.[#EXTENSIONSCRIPTS]">
 			<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 			<br />
 			<span style="color:Black;">
@@ -163,7 +162,7 @@
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton avec dessous un texte "Numéro/rubrique suivant"     ]-->
 <!--[ permettant d'accéder à la publication suivante. Si elle n'existe   ]-->
 <!--[ pas le texte sous le bouton est changé par "Retour à l'accueil".   ]-->
@@ -190,7 +189,7 @@
                  </IF>
 	</DO>
         <ALTERNATIVE>
-		<a href="index.html">
+		<a href="index.[#EXTENSIONSCRIPTS]">
 			<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 			<br />
 			<span style="color:Black;">
@@ -203,7 +202,7 @@
 
 <DEFMACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bloc de navigation comprenant une fleche gauche,        ]-->
 <!--[ permettant de naviguer vers les publications précédentes,          ]-->
 <!--[ le petit logo (icône ou autre ...) de la revue permettant de       ]-->
@@ -213,27 +212,20 @@
 <!--[ <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">              ]-->
 <!--[ <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">                ]-->
 <!--[ ****************************************************************** ]-->
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" align="CENTER" valign="TOP"  bordercolor="Black">
-		<tr>
-			<td width="33%" class="texte_petit_centre">
+	<div class="navigation_precedent">
 				<MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">
-			</td>
-			<td width="33%" class="texte_petit_centre">
-				<a href="index.html">
-					<MACRO NAME="IMG_ICONE_REVUE">
-					<br />
+				<a href="index.[#EXTENSIONSCRIPTS]">
+					<MACRO NAME="IMG_ICONE_SITE">
 				</a>
-			</td>
-			<td width="33%" class="texte_petit_centre">
+	</div>
+	<div class="navigation_suivant">
 				<MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">
-			</td>
-		</tr>
-	</table>
+	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton avec dessous le texte : "Précédent", permettant  ]-->
 <!--[ d'accéder à la publication précédente. Si elle n'existe pas le     ]-->
 <!--[ texte sous le bouton est changé par "Retour au sommaire".          ]-->
@@ -262,7 +254,7 @@
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton avec dessous le texte : "Suivant", permettant    ]-->
 <!--[ d'accéder à la publication suivante. Si elle n'existe pas le       ]-->
 <!--[ texte sous le bouton est changé par "Retour au sommaire".          ]-->
@@ -292,7 +284,7 @@
 
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bloc de navigation comprenant une fleche gauche,        ]-->
 <!--[ permettant de naviguer vers les documents précédents, le petit     ]-->
 <!--[ logo (icône ou autre ...) de la revue permettant de revenir sur    ]-->
@@ -309,7 +301,7 @@
 			</td>
 			<td width="33%" class="texte_petit_centre">
 				<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
-					<MACRO NAME="IMG_ICONE_REVUE">
+					<MACRO NAME="IMG_ICONE_SITE">
 					<br />
 				</a>
 			</td>
@@ -322,7 +314,7 @@
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton qui permet d'accéder au document précédent si il ]-->
 <!--[ existe, sinon affiche un bouton permettant d'aller au sommaire.    ]-->
 <!--[ ****************************************************************** ]-->
@@ -344,7 +336,7 @@
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_SUIVANT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton qui permet d'accéder au document suivant si il   ]-->
 <!--[ existe, sinon affiche un bouton permettant d'aller au sommaire.    ]-->
 <!--[ ****************************************************************** ]-->
@@ -366,7 +358,7 @@
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bloc de navigation sans textes sous les boutons,        ]-->
 <!--[ comprenant une fleche gauche, permettant de naviguer vers les      ]-->
 <!--[ documents précédents, le petit logo (icône ou autre ...) de la     ]-->
@@ -382,8 +374,8 @@
 				<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
 			</td>
 			<td width="70%" align="center">
-				<a name="Sommaire du numéro" id="Sommaire du numéro" href="sommaire.html?id=[#IDPARENT]">
-					<MACRO NAME="IMG_ICONE_REVUE">
+				<a title="Sommaire du numéro" href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+					<MACRO NAME="IMG_ICONE_SITE">
 				</a>
 			</td>
 			<td width="15%" align="center">
@@ -395,7 +387,7 @@
 
 
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bloc de navigation avec textes sans boutons,            ]-->
 <!--[ ****************************************************************** ]-->
 
@@ -417,7 +409,7 @@
                       </ALTERNATIVE>		
                       </LOOP>
 		</div>
-		<div class="navigation_suivant" class="navigation_suivant">
+		<div class="navigation_suivant">
                      <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
                      <DO>
 		                        <a href="[(#ID|makeurlwithid('document'))]">
@@ -439,7 +431,7 @@
 
 <DEFMACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Insère une barre de navigation verticale.                          ]-->
 <!--[ Pour modifier cette barre de navigation il faut éditer le fichier  ]-->
 <!--[ "barre.html".                                                      ]-->
@@ -460,7 +452,7 @@
 
 <DEFMACRO NAME="EXPLORATEUR_RUBRIQUES_PUBLICATIONS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ ****************************************************************** ]-->
 	<LET VAR="PUBLICATION_ENCOURS">[#ID]</LET>
 	<LOOP NAME="topparentpubli">
@@ -471,7 +463,7 @@
 
 <DEFMACRO NAME="EXPLORATEUR_RUBRIQUES_DOCUMENT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ ****************************************************************** ]-->
 	<LET VAR="PUBLICATION_ENCOURS">[#IDPARENT]</LET>
 	<LOOP NAME="topparentdoc7">

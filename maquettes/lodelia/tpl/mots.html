@@ -2,9 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -27,7 +27,7 @@
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
 <USE MACROFILE="macros_presentation.html">
-<USE MACROFILE="macros_revue.html">
+<USE MACROFILE="macros_site.html">
 
 <!--[ ****************************************************************** ]-->
 <!--[ Index des mots clés.                                               ]-->
@@ -38,82 +38,61 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>Index par mots clés</TITLE>
+<title>Index par mots clés</title>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_MOTS">
-<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre"> 
-		</td>
-		
-		<td class="separation">&nbsp;</td>
-	
-		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" ]-->
-		<td class="corps">
-
-				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" ]-->
-				<!--[<div class="separation">
-					&nbsp;
-				</div>]-->
-		
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
 			<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-			<div class="contenu">
+			<div id="contenu">
 		
-				<!--[ logo de Lodelia]-->
-				<MACRO NAME="IMG_LOGO_LODELIA">
+				<!--[ logo du site]-->
+				<MACRO NAME="IMG_LOGO_SITE">
 			
 				<!--[ Titre de la page style "titre1" ]-->
-				<div class="titre1">
+				<h1 class="accueil">
 					Index des mots clés
-				</div>
+				</h1>
 			
-				<div class="titre2">
+				<div class="alphabet">
 						
 							<MACRO NAME="TABLE_ALPHABETIQUE">
 										
 				</div>
-		
+				<dl id="alphabet">
 				<LOOP NAME="alphabet">
 					<DO>
-						<div class="titre3">
+						<dt>
 							<a name="[#LETTRE]">
 								[#LETTRE]
 								&nbsp;
 							</a>
-						</div>
+						</dt>
 			
 			<!--[ Boucle permettant d'afficher les mots-clefs ]-->
 						<LOOP NAME="motcles" TABLE="entrees" WHERE="substring(nom,1,1)='[#LETTRE]' AND type='motcle' AND statut gt 0" ORDER="[#TYPE_TRI]">
 							<DO>
-								<div class="afficherdocument">
-									<a href="mot.html?id=[#ID]">
+								<dd>
+									<a href="entree.[#EXTENSIONSCRIPTS]?id=[#ID]">
 										[#NOM]
 									</a>
-								</div>
+								</dd>
 							</DO>
 						</LOOP>
 				</DO>
 			</LOOP>
-			
-			<div class="titre2">
-				<a class="titre2" href="mots-complet.html">
-					&gt;&gt; Index complet des mots clés.
-				 </a>
-			</div>
-		<MACRO NAME="REVUES_ORG">
+			</dl>
+		<div id="footer">
+		<MACRO NAME="LODEL_ORG">
+		</div>
 	</div>
-			</td>
-
-	</tr>
+</td></tr>
 </table>
-
 <MACRO NAME="FERMER_HTML">  

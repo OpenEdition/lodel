@@ -1,9 +1,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -21,20 +21,22 @@
 
 
 <USE MACROFILE="macros_technique.html">
+<USE MACROFILE="macros_site.html">
 <MACRO NAME="ENTETE_XML">
 
 <rss version="0.92">
 	<channel>
-		<title>Lodelia</title>
-		<link>http://lodelia.revues.org/</link>
-		<description>Actualités scientifiques</description>
+	        <LOOP NAME="titre_site" TABLE="sites" WHERE="rep='[#SITE]'">
+		<title>[#TITRE]</title>
+	        </LOOP>
+		<link>[(#CURRENTURL|dirname)]</link>
+		<description><MACRO NAME="DESCRIPTION_SITE_POUR_METAS"></description>
 		<language>fr</language>
 		<LOOP NAME="derniers_articles" TABLE="publications" WHERE="statut gt 0 AND type='numero'" LIMIT="0,10">
 			<DO>
 				<item>
 					<title>[#NOM]</title>
-					<link>http://[#SITE].revues.org/sommaire[#IDENTITE].html</link>
-					<description>[#TEXTE]</description>
+					<link>[(#CURRENTURL|dirname)]/[(#IDENTITE|makeurlwithid('document'))]</link>					<description>[#TEXTE]</description>
 				</item>
 			</DO>
 		</LOOP>

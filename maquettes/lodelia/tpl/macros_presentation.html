@@ -2,8 +2,7 @@
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -27,26 +26,25 @@
 <!--[ Nicolas Nutten. 2003.                                              ]-->
 <!--[ Cette librairie contient :                                         ]-->
 <!--[ <MACRO NAME="BOUTON_SIGNALER">                                     ]-->
-<!--[ <MACRO NAME="BOUTON_IMPRIMER">		                                ]-->
+<!--[ <MACRO NAME="BOUTON_IMPRIMER">	                                 ]-->
 <!--[ <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">                             ]-->
 <!--[ <MACRO NAME="FERMER_TABLE_PRINCIPALE">                             ]-->
 <!--[ <MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">                  ]-->
 <!--[ <MACRO NAME="FERMER_TABLE_PRINCIPALE_IMPRIMABLE">                  ]-->
-<!--[ <MACRO NAME="AFFICHER_LOGO_REVUE_ORG">                             ]-->
 <!--[ <MACRO NAME="TRACER_LIGNE_VERTICALE">                              ]-->
-<!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
-<!--[ <MACRO NAME="DESCRIPTION_REVUE">                                   ]-->
-<!--[ <MACRO NAME="REVUES_ORG">                                          ]-->
+<!--[ <MACRO NAME="NOM_SITE">                                            ]-->
+<!--[ <MACRO NAME="DESCRIPTION_SITE">                                    ]-->
+<!--[ <MACRO NAME="LODEL_ORG">                                           ]-->
 <!--[ <MACRO NAME="TABLE_ALPHABETIQUE">                                  ]-->
 <!--[ ****************************************************************** ]-->
 
 <DEFMACRO NAME="BOUTON_SIGNALER">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton proposant de signaler la page en cours à un ami. ]-->
 <!--[ ****************************************************************** ]-->
 	
-				<a href="signaler.html?id=[#ID]">
+				<a href="signaler.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					<MACRO NAME="IMG_BOUTON_SIGNALER2">
 				</a>
 			
@@ -54,11 +52,11 @@
 
 <DEFMACRO NAME="BOUTON_IMPRIMER">		
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton permettant de mettre le document au format       ]-->
 <!--[ d'impression.                                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<a href="document.html?id=[#ID]&format=print">
+	<a href="[(#ID|makeurlwithid('document'))]?format=print">
 		<MACRO NAME="IMG_BOUTON_IMPRIMER2">
 	</a>
 	<br />
@@ -66,7 +64,7 @@
 
 <DEFMACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Ouvre la table principale, celle qui englobe toute la page dans    ]-->
 <!--[ une cellule.                                                       ]-->
 <!--[ Il faut penser à ouvrir (et à fermer) cette cellule avec les       ]-->
@@ -85,7 +83,7 @@
 
 <DEFMACRO NAME="FERMER_TABLE_PRINCIPALE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Ferme la table principale.                                         ]-->
 <!--[ ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      ]-->
 <!--[ fermé la cellule principale avec le marqueur </td> !!!             ]-->
@@ -98,11 +96,9 @@
 
 </DEFMACRO>
 
-
-
 <DEFMACRO NAME="AFFICHER_LOGO_REVUE_ORG">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[  Permet d'afficher le logo avec roll over de Revues.org, ce        ]-->
 <!--[  logo est composé de plusieurs éléments                            ]-->
 <!--[  Utilisation du javascript pour faire fonctionner le roll over		]-->
@@ -110,13 +106,13 @@
 <!--[  possibilité de faire avec le CSS mais le logo n'apparait pas sous ]-->
 <!--[  Mozilla avec cette technique                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<div class="logo_revuesorg1"> 
+	<div class="logo-revuesorg1"> 
 		&nbsp; 
 	</div>
 		
 	<div>
-		<a href="http://www.revues.org" target="_blank" onMouseOut="RestoreImg()" onMouseOver="SwitchImg('logo_revues','logo_revues','images/logo_revues_on.gif')">
-			<img src="images/logo_revues.gif" width="165" name="logo_revues" height="50" alt="revues.org" border="0">
+		<a href="http://www.revues.org" onclick="window.open(this.href,'',''); return false;" class="logo-revuesorg">
+			&nbsp;
 		</a>
 	</div>
 
@@ -126,7 +122,7 @@
 		</a>
 	</div>]-->
 		
-	<div class="logo_revuesorg4" >
+	<div class="logo-revuesorg4" >
 		&nbsp;
 	</div>
 	
@@ -134,7 +130,7 @@
 
 <DEFMACRO NAME="FILET_1"> 	 
 <!--[ ****************************************************************** ]--> 	 
-<!--[ Version 1.0                                                        ]--> 	 
+<!--[ version 2.0                                                        ]--> 	 
 <!--[ Affiche une règle horizontale de type 1.                           ]--> 	 
 <!--[ Pour séparer des parties par exemple.                              ]--> 	 
 <!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
@@ -145,7 +141,7 @@
   	 
 <DEFMACRO NAME="FILET_2"> 	 
 <!--[ ****************************************************************** ]--> 	 
-<!--[ Version 1.0                                                        ]--> 	 
+<!--[ version 2.0                                                        ]--> 	 
 <!--[ Affiche une règle horizontale de type 2.                           ]--> 	 
 <!--[ Pour séparer des parties par exemple.                              ]--> 	 
 <!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
@@ -156,7 +152,7 @@
  	 
 <DEFMACRO NAME="FILET_3"> 	 
 <!--[ ****************************************************************** ]--> 	 
-<!--[ Version 1.0                                                        ]--> 	 
+<!--[ version 2.0                                                        ]--> 	 
 <!--[ Affiche une règle horizontale de type 3.                           ]--> 	 
 <!--[ Pour séparer des parties par exemple.                              ]--> 	 
 <!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
@@ -165,46 +161,31 @@
         <hr class="filet_3" /> 	 
 </DEFMACRO>
 
-<DEFMACRO NAME="NOM_REVUE">
+<DEFMACRO NAME="NOM_SITE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affiche le nom de la revue.                                        ]-->
+<!--[ version 2.0                                                        ]-->
+<!--[ Affiche le nom du site.                                            ]-->
 <!--[ ****************************************************************** ]-->
 	[#SITE]
 </DEFMACRO>
 
-<DEFMACRO NAME="DESCRIPTION_REVUE">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affiche une Brève description de la revue.                         ]-->
-<!--[ Remplacer le texte entre les '#' par le texte adéquat.             ]-->
-<!--[ ****************************************************************** ]-->
-	Revue scientifique
-</DEFMACRO>
 
-
-
-<DEFMACRO NAME="REVUES_ORG">
+<DEFMACRO NAME="LODEL_ORG">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Mention de l'adhésion du site à Revues.org                         ]-->
+<!--[ version 2.0                                                        ]-->
+<!--[ Mention de l'adhésion du site à Lodel.org                          ]-->
 <!--[ ****************************************************************** ]-->
-<div class="revuesorg">
+<div class="lodelorg">
 	Page générée par
 		<a href="http://www.lodel.org">
 			 Lodel
-		</a>
-	-
-	Nous adhérons à
-		<a href="http://www.revues.org/" name="Fédération de revues en sciences humaines et sociales">
-			www.revues.org
 		</a>
 </div>
 </DEFMACRO>
 
 <DEFMACRO NAME="TABLE_ALPHABETIQUE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Table alphabétique qui peut se placer en début d'index et qui      ]-->
 <!--[ permet d'accélérer la navigation dans la page grâce à des liens    ]-->
 <!--[ internes.                                                          ]-->

@@ -3,8 +3,7 @@
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -28,7 +27,7 @@
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
 <USE MACROFILE="macros_presentation.html">
-<USE MACROFILE="macros_revue.html">
+<USE MACROFILE="macros_site.html">
 
 
 <!--[ ****************************************************************** ]-->
@@ -41,50 +40,40 @@
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)] Sommaire [#IDENTIFIANT]</title>
-<!--[ <MACRO NAME="METADONNEES_POUR_SOMMAIRES"> ]-->
-<MACRO NAME="JS_ROLLOVER">
+<MACRO NAME="METADONNEES_POUR_SOMMAIRES">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<table class="principale">
-	<tr>
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
+       <div id="contenu">
 		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre"> 
-		</td>
-	
-		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" ]-->
-		<td class="corps">
-
-				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" ]-->
-				<!--[<div class="separation">
-					&nbsp;
-				</div>]-->
-		
-			<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-			<div class="contenu">
-		
-				<!--[ logo de Lodelia]-->
-				<MACRO NAME="IMG_LOGO_LODELIA">
+	<!--[ logo du site]-->
+						<h1 class="nom-site">
+						[#MSG]
+						<MACRO NAME="IMG_LOGO_SITE">
+						</h1>
 				
-				<!--[ Présente les infos concernant la publication : titre revue, nom et titre du numéro]-->
-				<MACRO NAME="PRESENTER_PUBLICATION">
+	<!--[ Présente les infos concernant la publication : titre revue, nom et titre du numéro]-->
+	<MACRO NAME="PRESENTER_PUBLICATION">
 			
-				<MACRO NAME="PRESENTER_DOCUMENTS">
-				<MACRO NAME="PRESENTER_REGROUPEMENTS">
+	<MACRO NAME="PRESENTER_DOCUMENTS">
+	<MACRO NAME="PRESENTER_REGROUPEMENTS">
 					
-				<MACRO NAME="LISTER_RUBRIQUES">
+	<MACRO NAME="LISTER_RUBRIQUES">
 				
-<MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
-				<MACRO NAME="REVUES_ORG">
-	
-		</div>
-			</td>
+        <MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
 
-	</tr>
+<div id="footer">
+	<MACRO NAME="LODEL_ORG">
+</div>
+	</div>
+
+</td></tr>
 </table>
-
 <MACRO NAME="FERMER_HTML">  
