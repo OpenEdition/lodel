@@ -13,14 +13,14 @@ if ($create) {
   do { // bloc de controle
     if (!$rep) $err=$context[erreur_nomrepertoireabsent]=1; // 
     if (preg_match("/\W/",$rep)) $err=$context[erreur_nomrepertoire]=1;
-    if (!$revue)  $err=$context[erreur_nomrevue]=1;
+    if (!$site)  $err=$context[erreur_nomsite]=1;
     
     if (!$err) break;
     require ($home."calcul-page.php");
-    calcul_page($context,"install-revue");
+    calcul_page($context,"install-site");
     return;
   } while (0);
-  // ok, on cree la revue dans la base principale
+  // ok, on cree la site dans la base principale
   include ($home."connect.php");
   mysql_select_db($GLOBALS[database]);
   mysql_query("INSERT ");
@@ -33,16 +33,16 @@ if ($create) {
 
 
   {
-  $revue=$rep;
+  $site=$rep;
   include ($home."connect.php");
 
-  if (!file_exists("../install/init-revue.sql")) die ("impossible de faire l'installation, le fichier init-revue.sql est absent");
+  if (!file_exists("../install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
 
   $sqlfile=str_replace("_PREFIXTABLE_",$tableprefix,
-		       join('',file("../install/init-revue.sql")));
+		       join('',file("../install/init-site.sql")));
 
   $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
-  if (!$sqlcmds) die("le fichier init-revue.sql ne contient pas de commande. Probleme!");
+  if (!$sqlcmds) die("le fichier init-site.sql ne contient pas de commande. Probleme!");
 
   $erreur_sqls=array();
   foreach ($sqlcmds as $cmd) {
@@ -51,7 +51,7 @@ if ($create) {
   }
   if ($erreur_sqls) {
     require ($home."calcul-page.php");
-    calcul_page($context,"install-revue-errsql");
+    calcul_page($context,"install-site-errsql");
     return;
   }
 }
@@ -93,7 +93,7 @@ foreach ($dirs as $dir) {
 #endif
 
 //
-// creation de l'administrateur de la revue
+// creation de l'administrateur du site
 //
 
 ?>

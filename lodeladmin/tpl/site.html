@@ -1,17 +1,17 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Edition - Revue</TITLE>
+<TITLE>Edition - Site</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Edition de revue</b></div></td></tr>
+<br /><br /><b>Edition de site</b></div></td></tr>
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
 
-<form method="POST" action="revue.php">
+<form method="POST" action="site.php">
 <input type="hidden" name="edit" value="1">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="url_retour" value="[#URL_RETOUR]">
@@ -35,6 +35,6 @@
 </IF>
 </form>
 
-[<a href="revue.php?delete=1&id=(#ID)">Supprimer</a>]
+[<a href="site.php?delete=1&id=(#ID)">Supprimer</a>]
 </div>
 <MACRO NAME="CLOSE_HTML">

@@ -145,7 +145,7 @@ require_once ($home."connect.php");
 function parse_texte(&$text)
 
 {
-  global $home,$editeur,$urlroot,$revue;
+  global $home,$editeur,$urlroot,$site;
   preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
 #  print_r($results);
   foreach ($results as $result) {
@@ -157,7 +157,7 @@ function parse_texte(&$text)
 	mysql_query("INSERT INTO textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
       }
     }
-    $urlbase=($GLOBALS[revueagauche] || !$revue) ? $urlroot : $urlroot.$revue."/";
+    $urlbase=($GLOBALS[siteagauche] || !$site) ? $urlroot : $urlroot.$site."/";
     $text=str_replace ($result[0],'<?php $result=mysql_query("SELECT id,texte FROM textes WHERE nom=\''.$nom.'\' AND status>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><A HREF="'."$urlbase".'lodel/admin/texte.php?id=<?=$id?>">[Modifier]</A><BR><?php } echo $texte; ?>',$text);
   }
 }

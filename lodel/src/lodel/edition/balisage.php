@@ -2,7 +2,7 @@
 
 # listes des balises et du texte affiche dans les select
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ($home."func.php");

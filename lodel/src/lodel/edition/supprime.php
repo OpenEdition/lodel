@@ -2,7 +2,7 @@
 
 // suppression de documents et de publication en assurant la coherence de la base
 
-require("revueconfig.php");
+require("siteconfig.php");
 require ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 require_once ($home."func.php");

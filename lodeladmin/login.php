@@ -14,7 +14,7 @@ if ($login) {
   extract_post();
   do {
     include_once ($home."connect.php");
-    if (!check_auth(&$revue)) {
+    if (!check_auth(&$site)) {
       $context[erreur_login]=1; break; 
     }
     // ouvre une session
@@ -26,17 +26,17 @@ if ($login) {
 
     mysql_select_db($database);
     if ($userpriv<LEVEL_SUPERADMIN) {
-      lock_write("revues","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur revue.
+      lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
       // verifie que c'est ok
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
-      if (mysql_num_rows($result)) { $context[erreur_revuebloquee]=1; unlock(); break; }
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND status>=32") or die(mysql_error());
+      if (mysql_num_rows($result)) { $context[erreur_sitebloquee]=1; unlock(); break; }
     }
 
     for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme nom de session
       // nom de la session
       $name=md5($context[login].microtime());
       // enregistre la session, si ca marche sort de la boucle
-      if (mysql_query("INSERT INTO $GLOBALS[tp]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
+      if (mysql_query("INSERT INTO $GLOBALS[tp]session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')")) break;
     }
     unlock();
     if ($i==5) { $context[erreur_opensession]=1; break; }
@@ -51,14 +51,14 @@ if ($login) {
 $context[passwd]=$passwd=0;
 
 
-// variable: revuebloquee
-if ($context[erreur_revue_bloquee]) { // on a deja verifie que la revue est bloquee.
-  $context[revuebloquee]=1;
-} else { // test si la revue est bloquee dans la DB.
+// variable: sitebloquee
+if ($context[erreur_site_bloquee]) { // on a deja verifie que la site est bloquee.
+  $context[sitebloquee]=1;
+} else { // test si la site est bloquee dans la DB.
   include_once ($home."connect.php");
   mysql_select_db($database);
-  $result=mysql_query("SELECT 1 FROM revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
-  $context[revuebloquee]=mysql_num_rows($result);
+  $result=mysql_query("SELECT 1 FROM sites WHERE rep='$site' AND status>=32") or die(mysql_error());
+  $context[sitebloquee]=mysql_num_rows($result);
 }
 
 
@@ -73,7 +73,7 @@ calcul_page($context,"login");
 
 
 
-function check_auth (&$revue)
+function check_auth (&$site)
 
 {
   global $context,$iduser,$userpriv,$usergroupes;
@@ -90,11 +90,11 @@ function check_auth (&$revue)
     $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysal_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
-      $revue="toutes les revues";
+      $site="toutes les sites";
      } else { // le user n'est pas dans la base generale
-      if (!$revue) break; // si $revue n'est pas definie on s'ejecte
+      if (!$site) break; // si $site n'est pas definie on s'ejecte
 
-      // cherche ensuite dans la base de la revue
+      // cherche ensuite dans la base de la site
       mysql_select_db($GLOBALS[currentdb]);
       $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;

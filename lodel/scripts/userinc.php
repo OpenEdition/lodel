@@ -8,11 +8,6 @@ include_once($home."auth.php"); // secu
 if ($userpriv<LEVEL_ADMIN) return; // secu
 include_once ($home."func.php");
 
-if ($revue) {
-  $db=$database."_".$revue;
-} else {
-  $db=$database;
-}
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
@@ -57,7 +52,7 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     // cherche si le username existe deja
-    $result=mysql_db_query($db,"SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
     if (mysql_num_rows($result)>0) { $context[erreur_dupusername]=$err=1; }
 
     if ($context[privilege]>$userpriv) { $err=1; } // securite
@@ -65,7 +60,7 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
 
     if ($id>0) { // il faut rechercher le status et (peut etre) le passwd
-      $result=mysql_db_query($db,"SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
       list($passwd_db,$status)=mysql_fetch_array($result);
     } else {
       $status=1;
@@ -76,13 +71,13 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_db_query ($db,"REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,email,privilege,status) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$status')") or die (mysql_query());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,email,privilege,status) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$status')") or die (mysql_error());
 
     if ($context[privilege]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();
 
       // change les groupes
-      mysql_db_query($db,"DELETE FROM $GLOBALS[tp]users_groupes WHERE iduser='$id'") or die (mysql_error());
+      mysql_query("DELETE FROM $GLOBALS[tp]users_groupes WHERE iduser='$id'") or die (mysql_error());
       foreach ($groupes as $groupe) {
 	mysql_query("INSERT INTO $GLOBALS[tp]users_groupes (idgroupe, iduser) VALUES  ('$groupe','$id')") or die (mysql_error());
       }
@@ -92,9 +87,9 @@ if ($edit) { // modifie ou ajoute
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_db_query($db,"SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
+  $id=intval($id);
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
   $context=array_merge($context,mysql_fetch_assoc($result));
 }

@@ -13,13 +13,13 @@ if ($backup) {
   $outfiles=dumpdb ($database);
 
   include ($home."connect.php");
-  // cherche les revues
-  $result=mysql_db_query($database,"SELECT rep FROM revues") or die (mysql_error());
+  // cherche les sites
+  $result=mysql_db_query($database,"SELECT rep FROM sites") or die (mysql_error());
   while ($row=mysql_fetch_row($result)) {
     $outfiles.=" ".dumpdb ($database."_".$row[0]);
   }
 
-  // tar les revues et ajoute la base
+  // tar les sites et ajoute la base
   $archive="lodel-".date("dmy").".tar.gz";
 
   chdir ("../..");

@@ -1,9 +1,9 @@
 <?
 
-// gere les publications. L'acces est reserve aux administrateurs de la revue.
+// gere les publications. L'acces est reserve aux administrateurs du site.
 // assure l'edition, la supression, la restauration des publications.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include($home."func.php");

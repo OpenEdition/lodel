@@ -2,7 +2,7 @@
 // script de nettoyage des fichiers XML.
 // utile lorsque les versions se succede.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 include_once($home."func.php");

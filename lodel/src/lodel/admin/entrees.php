@@ -1,7 +1,7 @@
 <?
 // gere un index. L'acces est reserve au administrateur.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 include_once ($home."func.php");

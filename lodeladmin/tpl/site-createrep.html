@@ -1,20 +1,20 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Edition - Revue</TITLE>
+<TITLE>Installation d'un site</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Création de revue</b></div></td></tr>
+<br /><br /><b>Création de site</b></div></td></tr>
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
 
 
 
-<b>LODEL a échoué lors de la création le repertoire de la revue "[#REP]" à la racine de LODEL.</b><p>
-Si vous souhaitez gérer vous même les droits d'accès (solution la plus sûre), créer ce repertoire et lancer le script Perl lodel/install/install-revue.pl<br>
+<b>LODEL a échoué lors de la création le repertoire de la site "[#REP]" à la racine de LODEL.</b><p>
+Si vous souhaitez gérer vous même les droits d'accès (solution la plus sûre), créer ce repertoire et lancer le script Perl lodel/install/install-site.pl<br>
 Si vous souhaitez laisser LODEL copier les fichiers vous devez créer le répertoire et donner au serveur web les droits d'écriture sur ce répertoire. En général, cette méthode n'est pas sûre, sauf chez certains herbergeurs comme free.fr (information sans garantie)<br>
 Enfin, vous pouvez laisser LODEL tout gérer en donnant au serveur web les droits d'écriture au répertoire racine de LODEL. Cette méthode n'est pas sûre.
 
@@ -23,7 +23,7 @@ LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'i
 
 </td></tr></table><br/>
 
-<form method="post" action="revue.php">
+<form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="tache" value="createrep">
 <input type="submit" value="continuer">

@@ -3,7 +3,7 @@
 // change le status d'un document ou d'une publication
 
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ($home."func.php");

@@ -295,12 +295,12 @@ $textlc=join('',file($lodelconfig));
 
 // les deux fichiers sont différents, il faut copier le fichier lodelconfig.php
 $dirs=array(".","lodel","lodel/admin");
-$revuedir=array(".","lodel","lodel/edition","lodel/admin");
+$sitedir=array(".","lodel","lodel/edition","lodel/admin");
 
-// cherche les revues qui existent deja et cree le tableau $dirs
-$result=mysql_query("SELECT rep FROM $GLOBALS[tp]revues WHERE status>0");
+// cherche les sites qui existent deja et cree le tableau $dirs
+$result=mysql_query("SELECT rep FROM $GLOBALS[tp]sites WHERE status>0");
 while ($row=mysql_fetch_row($result)) {
-  foreach ($revuedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
+  foreach ($sitedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
 }
 // ok, on a tout, on lance la copie
 $erreur_lodelconfigdir=array();

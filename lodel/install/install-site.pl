@@ -9,20 +9,20 @@ unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
 }
 $versionsuffix=$version=="devel" ? "" : "-".$version;
 
-$homerevue="../lodel$versionsuffix/revue";
-$homerevuetpl="../../lodel$versionsuffix/revue";
+$homesite="../lodel$versionsuffix/revue";
+$homesitetpl="../../lodel$versionsuffix/revue";
 
-unless (-e $homerevue) {
+unless (-e $homesite) {
   print STDERR "La version '$version' n'existe pas sur le disque\n";
   exit;
 }
 
-unless (-e "revueconfig.php") {
-  print STDERR "Installation du fichier revueconfig.php. Verifier le contenu.\n";
-  system ("cp $homerevue/revueconfig.php .");
+unless (-e "siteconfig.php") {
+  print STDERR "Installation du fichier siteconfig.php. Verifier le contenu.\n";
+  system ("cp $homesite/siteconfig.php .");
   if (!$version || $version>=0.4 ) {
-    unless (-e "revueconfig.php") {
-      print STDERR "Impossible de copier le fichier revueconfig.php\n";
+    unless (-e "siteconfig.php") {
+      print STDERR "Impossible de copier le fichier siteconfig.php\n";
       exit;
     }
   }
@@ -30,20 +30,20 @@ unless (-e "revueconfig.php") {
 
 slink ("../lodelconfig.php","lodelconfig.php");
 
-if (-e "revueconfig.php") {
+if (-e "siteconfig.php") {
   $php=`php -v`;
   if ($php) {
     $checkversion=`php -q -C ../lodel$versionsuffix/install/version.php`;
     if ($checkversion=~/error/) {
-      print STDERR "Erreur lors du parsage du fichier revueconfig.php:\n\n$checkversion";
+      print STDERR "Erreur lors du parsage du fichier siteconfig.php:\n\n$checkversion";
       exit;
     }
     if ($version!=$checkversion) {
-      print "La version dans revueconfig.php $checkversion est differente de $version\n";
+      print "La version dans siteconfig.php $checkversion est differente de $version\n";
       exit;
     }
   } else {
-    print STDERR "Attention: impossible de verifier si la version est correcte dans revueconfig.php\n";
+    print STDERR "Attention: impossible de verifier si la version est correcte dans siteconfig.php\n";
   }
 }
 
@@ -52,7 +52,7 @@ if (-e "revueconfig.php") {
 # charge le fichier d'install
 
 
-open (FILE,"$homerevue/../install/install-fichier.dat") or die ("impossible d'ouvrir install-fichier.dat");
+open (FILE,"$homesite/../install/install-fichier.dat") or die ("impossible d'ouvrir install-fichier.dat");
 
 my $dirsource=".";
 my $dirdest=".";
@@ -64,8 +64,8 @@ foreach (<FILE>) {
   next unless $_;
 
   my ($cmd,$arg1,$arg2)=split;
-  $arg1=~s/\$homerevue/$homerevue/g;
-  $arg2=~s/\$homerevue/$homerevue/g;
+  $arg1=~s/\$homesite/$homesite/g;
+  $arg2=~s/\$homesite/$homesite/g;
   $arg1=~s/\$homelodel/../g;
   $arg2=~s/\$homelodel/../g;
 

@@ -1,6 +1,6 @@
 <?
 
-include ("revueconfig.php");
+include ("siteconfig.php");
 echo $version;
 
 ?>

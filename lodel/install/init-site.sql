@@ -84,11 +84,14 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
 	classe		VARCHAR(64) NOT NULL,   # nom de la table complementaire
-	nom		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
+
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
+	condition	TINYTEXT NOT NULL,		# condition
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 

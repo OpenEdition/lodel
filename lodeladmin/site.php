@@ -1,6 +1,6 @@
 <?
 
-// gere une revue. L'acces est reserve au superadministrateur.
+// gere un site. L'acces est reserve au superadministrateur.
 
 require("lodelconfig.php");
 include ($home."auth.php");
@@ -19,7 +19,7 @@ $critere="id='$id'";
 //
 if ($id>0 && ($delete || $restore)) { 
   include ($home."trash.php");
-  treattrash("revues",$critere);
+  treattrash("sites",$critere);
   return;
 }
 //
@@ -35,18 +35,18 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
     include_once ($home."connect.php");
 
-    // lit les informations options, status, etc... si la revue existe deja
+    // lit les informations options, status, etc... si le site existe deja
     if ($id) {
-      $result=mysql_query ("SELECT options,status FROM $GLOBALS[tp]revues WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query ("SELECT options,status FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
       list($options,$status)=mysql_fetch_row($result);
     } else {
       $options=""; $status=-32; // -32 signifie en creation
     }
     if ($reinstalle) $status=-32;
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]revues (id,nom,rep,soustitre,options,status) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$status')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,soustitre,options,status) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$status')") or die (mysql_error());
 
-    if ($status>-32) back(); // on revient, la revue n'est pas en creation
+    if ($status>-32) back(); // on revient, le site n'est pas en creation
 
     if (!$id) $context[id]=$id=mysql_insert_id();
     $tache="createdb"; 
@@ -55,7 +55,7 @@ if ($edit) { // modifie ou ajoute
 
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]revues WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
@@ -72,7 +72,7 @@ if ($tache=="createdb") {
     if (!@mysql_query($context[command])) {
       $context[erreur]=mysql_error();
       require ($home."calcul-page.php");
-      calcul_page($context,"revue-createdb");
+      calcul_page($context,"site-createdb");
       return;
     }
   }
@@ -89,7 +89,7 @@ if ($tache=="grant") {
       $context[erreur]=mysql_error();
       $context[command].=" IDENTIFIED BY 'mot de passe, chut !'";
       require ($home."calcul-page.php");
-      calcul_page($context,"revue-grant");
+      calcul_page($context,"site-grant");
       return;
     } 
   }
@@ -97,7 +97,7 @@ if ($tache=="grant") {
 }
 
 //
-// creation des tables des revues
+// creation des tables des sites
 //
 
 if ($tache=="createtables") {
@@ -105,17 +105,17 @@ if ($tache=="createtables") {
   include_once ($home."connect.php");
   
   mysql_select_db($context[dbname]);
-  if (!file_exists("../install/init-revue.sql")) die ("impossible de faire l'installation, le fichier init-revue.sql est absent");
-  $text=join('',file("../install/init-revue.sql"));
-  if (file_exists("../install/inserts-revue.sql")) {
-    $text.=utf8_encode(join('',file("../install/inserts-revue.sql")));
+  if (!file_exists("../install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
+  $text=join('',file("../install/init-site.sql"));
+  if (file_exists("../install/inserts-site.sql")) {
+    $text.=utf8_encode(join('',file("../install/inserts-site.sql")));
   }
 
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
 
   $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
-  if (!$sqlcmds) die("le fichier init-revue.sql ne contient pas de commande. Probleme!");
+  if (!$sqlcmds) die("le fichier init-site.sql ne contient pas de commande. Probleme!");
 
   $erreur=array();
   foreach ($sqlcmds as $cmd) {
@@ -135,7 +135,7 @@ if ($tache=="createtables") {
       } while ($erreur);
     }
     require ($home."calcul-page.php");
-    calcul_page($context,"revue-createtables");
+    calcul_page($context,"site-createtables");
     return;
   }
 
@@ -144,7 +144,7 @@ if ($tache=="createtables") {
 
 
 //
-// Creer le repertoire principale de la revue
+// Creer le repertoire principale de la site
 //
 
 if ($tache=="createrep") {
@@ -156,7 +156,7 @@ if ($tache=="createrep") {
       // on y arrive pas... pas les droits surement
       $context[erreur_mkdir]=1;
       require ($home."calcul-page.php");
-      calcul_page($context,"revue-createrep");
+      calcul_page($context,"site-createrep");
       return;
     }
     if (file_exists("chmod")) @chmod($dir,0700); // pour etre sur.
@@ -178,7 +178,7 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   // a la plupart des cas.
 
   // cherche les differentes versions de lodel
-  function cherche_version () // on encapsule a cause du include de revues config
+  function cherche_version () // on encapsule a cause du include de sites config
     {
       global $lodelhomere;
       $dir=opendir("../..");      
@@ -187,9 +187,9 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
       while ($file=readdir($dir)) {
 	if (is_dir("../../".$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir("../../".$file."/revue")) {
-	  if (!(@include("../../$file/revue/revueconfig.php"))) {
-	    echo "Warning: Impossible d'ouvrir le fichier $file/revue/revueconfig.php<br>";
+	    is_dir("../../".$file."/site")) {
+	  if (!(@include("../../$file/site/siteconfig.php"))) {
+	    echo "Warning: Impossible d'ouvrir le fichier $file/site/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";
 	  }
@@ -203,7 +203,7 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   if ($context[countversions]==1) {// ok, une seule version, on la choisit
     list($versionrep)=array_keys($versions);
   } elseif ($context[countversions]==0) { // aie, aucune version on crach
-    die ("Verifiez le package que vous avez, il manque le repertoire lodel/revue. L'installation ne peut etre poursuivie !");
+    die ("Verifiez le package que vous avez, il manque le repertoire lodel/site. L'installation ne peut etre poursuivie !");
   } else { // il y en a plusieurs, faut choisir
     $context[count]=count($versions);
     function makeselectversion()
@@ -215,11 +215,11 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
 	}
       }
     require ($home."calcul-page.php");
-    calcul_page($context,"revue-version");
+    calcul_page($context,"site-version");
     return;	
   }
   $tache="fichier";
-}   // on connait le repertoire dans lequel est la "bonne" version de lodel/revue
+}   // on connait le repertoire dans lequel est la "bonne" version de lodel/site
 if ($tache) $context[versionrep]=$versionrep;
 
 
@@ -227,23 +227,23 @@ if ($tache) $context[versionrep]=$versionrep;
 if ($tache=="fichier") {
   // on peut installer les fichiers
   $root="../../".$context[rep]."/";
-  $revueconfigsrc=$root."../$versionrep/revue/revueconfig.php";
-  $revueconfigdest=$root."revueconfig.php";
+  $siteconfigsrc=$root."../$versionrep/site/siteconfig.php";
+  $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
-  if (!file_exists($reveconfigdest) || file($revueconfigsrc)!=file($revueconfigdest)) {
+  if (!file_exists($reveconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
     // on essaie de copier alors
-    if (!copy($revueconfigsrc,$revueconfigdest)) {
+    if (!copy($siteconfigsrc,$siteconfigdest)) {
       $context[erreur_ecriture]=1;
       require ($home."calcul-page.php");
-      calcul_page($context,"revue-fichier");
+      calcul_page($context,"site-fichier");
       return;	
     }
   }
-  // ok revueconfig est copier.
-  install_fichier($root,"../$versionrep/revue","..");
+  // ok siteconfig est copier.
+  install_fichier($root,"../$versionrep/site","..");
 
-  // ok on a fini, on change le status de la revue
-  mysql_query ("UPDATE $GLOBALS[tp]revues SET status=1 WHERE id='$id'") or die (mysql_error());
+  // ok on a fini, on change le status de la site
+  mysql_query ("UPDATE $GLOBALS[tp]sites SET status=1 WHERE id='$id'") or die (mysql_error());
   back();
 }
 
@@ -252,23 +252,23 @@ if ($tache=="fichier") {
 posttraitement ($context);
 
 include ($home."calcul-page.php");
-calcul_page($context,"revue");
+calcul_page($context,"site");
 
 
-function install_fichier($root,$homerevue,$homelodel)
+function install_fichier($root,$homesite,$homelodel)
 
 {
   global $extensionscripts;
 
-  $file="$root$homerevue/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
+  $file="$root$homesite/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
   if (!file_exists($file)) die("Fichier $file introuvable. Verifiez votre pactage");
   $lines=file ($file);
 
   $dirsource=".";
   $dirdest=".";
 
-  $search=array("/\#.*$/",'/\$homerevue/','/\$homelodel/');
-  $rpl=array ("",$homerevue,$homelodel);
+  $search=array("/\#.*$/",'/\$homesite/','/\$homelodel/');
+  $rpl=array ("",$homesite,$homelodel);
 
   foreach ($lines as $line) {
     $line=rtrim(preg_replace($search,$rpl,$line));

@@ -3,12 +3,12 @@
 die("en cours de (re)developpement");
 
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ($home."func.php");
 
-if ($idrevue) { $id=intval($idrevue); $type="revue"; $db=$database; }
+if ($idsite) { $id=intval($idsite); $type="site"; $db=$database; }
 elseif ($iddocument) { $id=intval($iddocument); $type="document"; $db=$currentdb; }
 elseif ($idpublication) { $id=intval($idpublication); $type="publication"; $db=$currentdb; }
 else { die("erreur"); }

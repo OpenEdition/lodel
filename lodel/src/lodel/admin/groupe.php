@@ -2,7 +2,7 @@
 
 // gere les groupe. L'acces est reserve au administrateur.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 include_once($home."func.php");

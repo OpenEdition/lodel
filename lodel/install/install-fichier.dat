@@ -16,7 +16,7 @@ touch docannexe/index.html
 touch lodel/admin/upload/index.html
 
 ###############################################################
-######### repertoire revue
+######### repertoire site
 
 dirdestination .
 dirsource $homelodel
@@ -24,7 +24,7 @@ dirsource $homelodel
 ln lodelconfig.php
 ln styles_lodel.css
 
-dirsource $homerevue
+dirsource $homesite
 cp styles_revue.css
 cp images
 ln auteur.php
@@ -49,15 +49,15 @@ ln mots.php
 ln signaler.php
 ln sommaire.php
 
-# les templates de la revue doivent etre installe à la main... pour le moment.
+# les templates du site doivent etre installe à la main... pour le moment.
 
 dirsource $homelodel/lodel/admin
 ln login.php
 ln logout.php
 
-dirsource $homerevue/lodel/admin
+dirsource $homesite/lodel/admin
 ln tpl/login.html
-dirsource $homerevue/lodel/edition
+dirsource $homesite/lodel/edition
 ln tpl/desk.html
 
 #
@@ -69,7 +69,7 @@ mkdir lodel/rtf 0770
 htaccess lodel/txt
 htaccess lodel/rtf
 
-dirsource $homerevue/lodel
+dirsource $homesite/lodel
 dirdestination lodel
 
 ln index.php
@@ -86,21 +86,21 @@ dirdestination lodel/edition
 htaccess CACHE
 htaccess tpl
 
-dirsource . # repertoire de la revue
+dirsource . # repertoire du site
 ln lodelconfig.php
-ln revueconfig.php
+ln siteconfig.php
 ln styles_revue.css
 ln styles_lodel.css
 
 # les logins
-dirsource $homerevue/lodel/admin
+dirsource $homesite/lodel/admin
 ln tpl/login.html
 dirsource $homelodel/lodel/admin
 ln login.php
 ln logout.php
 
 # tous les fichier de revue/lodel/edition
-dirsource $homerevue/lodel/edition
+dirsource $homesite/lodel/edition
 ln maj.php
 ln images
 ln tpl/macros.html
@@ -140,7 +140,7 @@ ln tpl/deplacer.html
 ln publi.php
 ln status.php
 
-# navigation dans la revue
+# navigation dans la site
 
 ln index.php
 ln tpl/edition.html
@@ -176,20 +176,20 @@ dirdestination lodel/admin
 htaccess CACHE
 htaccess tpl
 
-dirsource . # repertoire de la revue
+dirsource . # repertoire du site
 ln lodelconfig.php
-ln revueconfig.php
+ln siteconfig.php
 ln styles_revue.css
 ln styles_lodel.css
 
 # les logins
-dirsource $homerevue/lodel/admin
+dirsource $homesite/lodel/admin
 ln tpl/login.html
 dirsource $homelodel/lodel/admin
 ln login.php
 ln logout.php
 
-dirsource $homerevue/lodel/admin
+dirsource $homesite/lodel/admin
 
 #
 

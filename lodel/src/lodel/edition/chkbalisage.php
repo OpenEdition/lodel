@@ -1,5 +1,5 @@
 <?
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
 include ($home."func.php");

@@ -10,8 +10,8 @@ function enregistre ($context,&$text)
 
 {
   #  die(htmlentities($text));
-  global $home,$iduser,$revue,$superadmin;
-  if ($superadmin) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs de la revue.
+  global $home,$iduser,$superadmin;
+  if ($superadmin) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs du site.
 
   // enregistre le document
   include_once ($home."connect.php");

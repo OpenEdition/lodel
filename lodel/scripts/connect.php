@@ -3,8 +3,8 @@
 require_once("lodelconfig.php"); // en general il est deja inclue
 
 mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die (mysql_error());
-if ($GLOBALS[revue] && $GLOBALS[singledatabase]!="on") {
-  $GLOBALS[currentdb]=$GLOBALS[database]."_".$GLOBALS[revue];
+if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {
+  $GLOBALS[currentdb]=$GLOBALS[database]."_".$GLOBALS[site];
 } else {
   $GLOBALS[currentdb]=$GLOBALS[database];
 }
@@ -16,12 +16,12 @@ mysql_select_db($GLOBALS[currentdb])  or die (mysql_error());
 //  function table($nom)
 //
 //    { 
-//	global $revue;
-//	if ($nom=="revues"  || $nom=="session" || ($nom=="users" && !$revue)) {
+//	global $site;
+//	if ($nom=="sites"  || $nom=="session" || ($nom=="users" && !$site)) {
 //	  return "r2r_$nom";
 //	} else {
-//	  if (!$revue) { die ("repertoire non valide: $revue table: $nom"); }
-//	  return "r2r_".$revue."_".$nom;
+//	  if (!$site) { die ("repertoire non valide: $site table: $nom"); }
+//	  return "r2r_".$site."_".$nom;
 //	}
 //    }
 //}

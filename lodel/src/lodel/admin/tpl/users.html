@@ -6,7 +6,7 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Gestion des utilisateurs de [(#REVUE|nbsp)]</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Gestion des utilisateurs de [(#SITE|nbsp)]</td>
 	</tr>
 </table>
 
@@ -53,7 +53,7 @@
 					<td class="ligne_admin1" align="center">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin1" align="center">[(#EMAIL|nbsp)]</td>
 					<td class="ligne_admin1" align="center">
-						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
+						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
 							<DO>
 								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
 							</DO>
@@ -91,7 +91,7 @@
 					<td class="ligne_admin2" align="center">[(#NOM|nbsp)]</td>
 					<td class="ligne_admin2" align="center">[(#EMAIL|nbsp)]</td>
 					<td class="ligne_admin2" align="center">
-						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
+						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
 							<DO>
 								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
 							</DO>

@@ -11,7 +11,7 @@ $urlroot="/";
 
 # Emplacement des scripts
 # par exemple $home="/var/www/lodel/scripts";
-# cette variable est ecrasee dans revueconfig.php a partir de la version 0.5
+# cette variable est ecrasee dans siteconfig.php a partir de la version 0.5
 # elle pourra alors etre supprimee de ce script
 # cette variable doit se terminer par / obligatoirement.
 $home="$pathroot/lodel/scripts";
@@ -27,9 +27,9 @@ $shareurl="";
 # ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
 $sharedir="$pathroot/share";
 
-# Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite
-# nomrevues.domain.org ou domaine.org/nomrevue
-$revueagauche=0;
+# Specifie si le nom du site se trouve a gauche dans l'url ou a droite
+# nomsites.domain.org ou domaine.org/nomsite
+$siteagauche=0;
 
 # Localisation des fichiers archive pour l'import de donnees
 $importdir="/www-bin/revues/import";
@@ -72,7 +72,7 @@ define (TYPE_GEOGRAPHIE,4);
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
 $tableprefix="";
 
-# LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par revue. "on" ou "" (ou "off")
+# LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par site. "on" ou "" (ou "off")
 $singledatabase="";
 
 
@@ -95,7 +95,7 @@ $serveuroopasswd="ruralia";
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration
-$includepath=""; # pour les revues qui ont un include automatique (defini par php.ini)
+$includepath=""; # pour les sites qui ont un include automatique (defini par php.ini)
 $htaccess="on";    # 
 $usesymlink="";
 

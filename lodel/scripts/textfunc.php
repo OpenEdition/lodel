@@ -253,7 +253,7 @@ function tocable(&$text)
 
 function makeurl ($rep)
 {
-if ($GLOBALS[revueagauche]) return "http://$rep.revues.org";
+if ($GLOBALS[siteagauche]) return "http://$rep.revues.org";
 return "/$rep";
 }
 

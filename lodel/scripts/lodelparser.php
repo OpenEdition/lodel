@@ -17,7 +17,7 @@ function parse_loop_extra(&$tables,
 			    &$where,&$ordre,&$groupby)
 
 {
-  global $revue;
+  global $site;
 
   // convertion des code specifique dans le where
   // ce bout de code depend du parenthesage et du trim fait dans parse_loop.
@@ -91,7 +91,7 @@ function parse_loop_extra(&$tables,
   }
 #  echo "where 2:",htmlentities($where),"<br>";
 
-    if ($revue) {
+    if ($site) {
       ///////// CODE SPECIFIQUE -- gere les tables croisees
       if (in_array("taches",$tables) && in_array("publications",$tables)) $where.=" AND publication=r2r_publications.id";
 
@@ -157,7 +157,7 @@ function parse_loop_extra(&$tables,
       if (in_array("users",$tables) && in_array("session",$tables)) {
 	$where.=" AND iduser=$GLOBALS[tp]users.id";
       }
-    } // revue
+    } // site
 
     array_walk($tables,"prefixtablesindatabase");
     array_walk($tablesinselect,"prefixtablesindatabase");
@@ -241,7 +241,7 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 
 
 function prefixtablesindatabase($table) {
-  if ($table=="revue" || $table=="session") return $GLOBALS[database].".".$table;
+  if ($table=="site" || $table=="session") return $GLOBALS[database].".".$table;
 }
 
 

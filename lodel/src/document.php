@@ -1,7 +1,7 @@
 <?
 
 // charge le fichier xml et
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate();
 include ($home."func.php");

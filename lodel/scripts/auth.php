@@ -11,7 +11,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
 {
   global $HTTP_COOKIE_VARS,$context,$iduser,$userpriv,$usergroupes;
-  global $home,$urlroot,$timeout,$database,$sessionname,$revue,$back;
+  global $home,$urlroot,$timeout,$database,$sessionname,$site,$back;
 
   $retour="url_retour=".urlencode($GLOBALS[REQUEST_URI]);
 
@@ -21,14 +21,14 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     include_once($home."connect.php");
     mysql_select_db($database);
-    if (!($result=mysql_query ("SELECT id,iduser,revue,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
+    if (!($result=mysql_query ("SELECT id,iduser,site,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
     $GLOBALS[idsession]=$idsession=$row[id];
     $GLOBALS[session]=$name;
 
 #ifndef LODELLIGHT
-    // verifie qu'on est dans la bonne revue
-    if ($row[revue]!="toutes les revues" && $row[revue]!=$revue) break;
+    // verifie qu'on est dans la bonne site
+    if ($row[site]!="toutes les sites" && $row[site]!=$site) break;
 #endif
 
     // verifie que la session n'est pas expiree
@@ -47,7 +47,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
 #ifndef LODELLIGHT
     // verifie encore une fois au cas ou...
-    if ($userpriv<LEVEL_SUPERADMIN && !$revue) break;
+    if ($userpriv<LEVEL_SUPERADMIN && !$site) break;
 #endif
 
     if ($userpriv>=LEVEL_SUPERADMIN) $context[superadmin]=$GLOBALS[superadmin]=1;
@@ -102,7 +102,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $context[url_recompile]=mkurl($url,"recalcul_templates=oui");
 
     //
-    // relselection la DB de la revue comme DB par defaut.
+    // relselection la DB du site comme DB par defaut.
     //
     mysql_select_db($GLOBALS[currentdb]) or die (mysql_error());
     return; // ok !!!
@@ -146,16 +146,16 @@ function mkurlretour ($urlretour,$id)
 
 
 #ifndef LODELLIGHT
-function getrevueoptions ()
+function getsiteoptions ()
 
 {
-  global $home,$context,$revue;
+  global $home,$context,$site;
 
   include_once ($home."connect.php");
 
   mysql_select_db($GLOBALS[database]);
-  $result=mysql_query("SELECT $GLOBALS[tp]options FROM revues WHERE rep='$revue'") or die (mysql_error());
-  if (!mysql_num_rows($result)) { die ("erreur revue"); }
+  $result=mysql_query("SELECT $GLOBALS[tp]options FROM sites WHERE rep='$site'") or die (mysql_error());
+  if (!mysql_num_rows($result)) { die ("erreur site"); }
 
   list($options)=mysql_fetch_array($result);
   if ($options) $context=array_merge($context,unserialize($options));
@@ -168,7 +168,7 @@ function getrevueoptions ()
 $userpriv=0;
 $usergroupes="";
 $iduser=0;
-$revue="";
+$site="";
 $idsession=0;
 $session="";
 
@@ -180,27 +180,23 @@ $admin=0;
 $user=0;
 $context[shareurl]=$shareurl;
 
-// cherche le nom de la revue
+// cherche le nom du site
 
 
-#ifndef LODELLIGHT
 $url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
-if ($revueagauche) {
+if ($siteagauche) {
 	if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodel" && $result[1]!="www") {
-	  $context[revue]=$revue=$result[1];
+	  $context[site]=$site=$result[1];
 	} else {
-	  $context[revue]=$revue="";
+	  $context[site]=$site="";
 	}
 } else {
 	if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodel") {
-	  $context[revue]=$revue=$result[1];
+	  $context[site]=$site=$result[1];
 	} else {
-	  $context[revue]=$revue="";
+	  $context[site]=$site="";
 	}
 }
-#else
-#	  $context[revue]=$revue="";
-#endif
 
 // pour le moment on est en utf-8 par defaut
 header("Content-type: text/html; charset=utf-8");

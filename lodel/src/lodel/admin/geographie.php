@@ -5,7 +5,7 @@ die("fichier a supprimer du CVS");
 // gere les geographies. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des geographies.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 include_once($home."func.php");

@@ -5,6 +5,6 @@ include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN);
 
 include ($home."calcul-page.php");
-calcul_page($context,"revues");
+calcul_page($context,"sites");
 
 ?>

@@ -2,7 +2,7 @@
 
 // gere les types de documents. L'acces est reserve au administrateur.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 

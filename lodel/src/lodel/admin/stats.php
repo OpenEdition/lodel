@@ -1,7 +1,7 @@
 <?
-// Affiche des statistiques sur la revue.
+// Affiche des statistiques sur le  site.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 # ghi ####### ne pas mettre de NORECORDURL ici

@@ -1,21 +1,21 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Edition - Revue</TITLE>
+<TITLE>Installation d'un site</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Création de revue</b></div></td></tr>
+<br /><br /><b>Création de site</b></div></td></tr>
 </table>
 
 <div align="center">
 <IF COND="ERREUR_ECRITURE">
-<b>LODEL n'a pas reussi à copier le fichier [#VERSIONREP]/revue/revueconfig.php dans le repertoire [#REP].</b> <br>
-Vous pouvez faire la copie vous même, ou donner les droits d'écriture au serveur web sur le repertoire [#REP] et s'il existe sur le fichier [#REP]/revueconfig.php.
+<b>LODEL n'a pas reussi à copier le fichier [#VERSIONREP]/site/siteconfig.php dans le repertoire [#REP].</b> <br>
+Vous pouvez faire la copie vous même, ou donner les droits d'écriture au serveur web sur le repertoire [#REP] et s'il existe sur le fichier [#REP]/siteconfig.php.
 </IF>
 
-<form method="post" action="revue.php">
+<form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="tache" value="fichier">
 <input type="hidden" name="versionrep" value="[#VERSIONREP]">

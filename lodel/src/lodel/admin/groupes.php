@@ -2,7 +2,7 @@
 
 // gere les groupes
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 

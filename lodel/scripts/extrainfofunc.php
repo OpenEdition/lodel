@@ -43,7 +43,7 @@ function ei_pretraitement($filename,$tache,&$context,&$text)
   } elseif (preg_match("/<r2r:langues>(.*?)<\/r2r:langues>/s",$text,$result)) { // cherche la balises langues
     list($context[lang1],$context[lang2],$context[lang3])=preg_split("/\s*,\s*/",strtolower(strip_tags($result[1])),3);
     $text=str_replace($result[0],"",$text);
-  } elseif (preg_match("/<r2r:texte\b/i",$text)) { // langue par default, le francais. Il faudra aller chercher la langue par defaut dans la table de la revue...
+  } elseif (preg_match("/<r2r:texte\b/i",$text)) { // langue par default, le francais. Il faudra aller chercher la langue par defaut dans la table du site...
     $context[lang1]="fr";
 
   }

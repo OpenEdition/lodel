@@ -1,8 +1,8 @@
 <?
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_ADMIN);
+authenticate(LEVEL_SUPERADMIN);
 include ($home."func.php");
 
 $err="";
@@ -436,7 +436,7 @@ function getfields($table)
 ##{
 ##  global $home,$report;
 ##      // charge l'install
-##  $file=$home."../install/inserts-revue.sql";
+##  $file=$home."../install/inserts-site.sql";
 ##  if (!file_exists($file)) {
 ##    $err="Le fichier $file n'existe pas !";
 ##    break;
@@ -452,13 +452,13 @@ function create($table)
 {
   global $home,$report;
       // charge l'install
-  $file=$home."../install/init-revue.sql";
+  $file=$home."../install/init-site.sql";
   if (!file_exists($file)) {
     $err="Le fichier $file n'existe pas !";
     break;
   }
   
-  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-revue.sql<br>";
+  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br>";
   
   $err=mysql_query_cmds($result[0]);
   if ($err) return $err;

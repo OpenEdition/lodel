@@ -1,9 +1,9 @@
 <?
 
-// gere les types de publications. L'acces est reserve au superadministrateur.
+// gere les types de personnes. L'acces est reserve au administrateur.
 // assure l'edition, la supression, la restauration des types de document.
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 

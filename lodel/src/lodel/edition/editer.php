@@ -1,7 +1,7 @@
 <?
 // 
 
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ($home."func.php");
@@ -12,7 +12,7 @@ if ($id>0 && $dir) {
   # cherche le parent
   $result=mysql_query ("SELECT idparent,idtype FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
   list($idparent,$idtype)=mysql_fetch_row($result);
-  getrevueoptions ();
+  getsiteoptions ();
   $critere=$options[ordrepartypedoc] ? "AND idtype='$idtype'": "";
   chordre("entites",$id,"idparent='$idparent' $critere",$dir);
   back();

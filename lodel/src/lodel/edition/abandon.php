@@ -1,6 +1,6 @@
 <?
 
-require_once("revueconfig.php");
+require_once("siteconfig.php");
 if (!function_exists("authenticate")) {
   include_once ($home."auth.php");
   authenticate(LEVEL_EDITEUR,NORECORDURL);

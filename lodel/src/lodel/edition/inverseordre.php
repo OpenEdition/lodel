@@ -1,15 +1,12 @@
 <?
 
-// gere les publications. L'acces est reserve aux administrateurs de la revue.
-// assure l'edition, la supression, la restauration des publications.
-
-require("revueconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include($home."func.php");
 
-// calcul le critere pour determiner le user a editer, restorer, detruire...
 
+die("a reecrire avec entite");
 $parent=intval($parent);
 
 
