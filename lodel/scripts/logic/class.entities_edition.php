@@ -209,7 +209,7 @@ class Entities_EditionLogic extends GenericLogic {
      if ($idtype) $vo->idtype=$idtype;
      $vo->identifier=$context['identifier'];
      if ($this->g_name['dc.title']) $vo->g_title=$context[$this->g_name['dc.title']];
-     if (!$vo->identifier) $vo->identifier=preg_replace("/\W+/","-",$vo->g_title);
+     if (!$vo->identifier) $vo->identifier=preg_replace("/\W+/","-",makeSortKey($vo->g_title));
 
      $id=$context['id']=$dao->save($vo);
 
