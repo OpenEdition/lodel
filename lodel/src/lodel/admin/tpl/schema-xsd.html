@@ -59,12 +59,22 @@
 	<!-- les groupes de champs -->
 	    <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       	<DO>
-	        <xsd:element ref="[#NOM]">
+	        [<xsd:annotation>
+				<xsd:documentation xml:lang="fr">
+					(#COMMENTAIRE)
+				</xsd:documentation>
+			</xsd:annotation>]
+			<xsd:element ref="[#NOM]">
 			 <xsd:complexType>
 		            <xsd:sequence>
 
 		<LOOP NAME="champs" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
 	    		<DO>
+		        [<xsd:annotation>
+					<xsd:documentation xml:lang="fr">
+						(#COMMENTAIRE)
+					</xsd:documentation>
+				</xsd:annotation>]
 				<IF COND="[#TYPE] eq 'boolean'">
 				<xsd:element name="[#NOM]" type="xsd:boolean"/>
 				<ELSE/>
