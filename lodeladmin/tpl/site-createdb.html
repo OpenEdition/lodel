@@ -48,7 +48,7 @@ GRANT ALL ON [#DBNAME].* TO [#DBUSERNAME]@[#DBHOST];
 </code>
 </p>
 
-<IF [#TACHE]>
+<IF COND="[#TACHE]">
 <p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
 <p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
 </IF>
