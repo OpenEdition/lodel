@@ -3,6 +3,26 @@
 <!-- Auteurs :                                                          -->
 <!-- Marin Dacos. 2002.                                                 -->
 <!-- Nicolas Nutten. 2003.                                              -->
+<!-- Cette librairie contient :                                         -->
+<!-- <MACRO NAME="OUVRIR_HTML">                                         -->
+<!-- <MACRO NAME="FERMER_HTML">                                         -->
+<!-- <MACRO NAME="DEFINIR_CHARSET">                                     -->
+<!-- <MACRO NAME="INSERER_STYLE">                                       -->
+<!-- <MACRO NAME="ACTIVER_INDEXATION">                                  -->
+<!-- <MACRO NAME="DESACTIVER_INDEXATION">                               -->
+<!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
+<!-- <MACRO NAME="IN_EXTENSO">                                          -->
+<!-- <MACRO NAME="MENU_THEMES_PUBLIES">                                 -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">               -->
+<!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          -->
+<!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
+<!-- <MACRO NAME="METADONNEES">                                         -->
+<!-- <MACRO NAME="METADONNEES_POUR_INDEX">                              -->
+<!-- <MACRO NAME="JS_JUMPMENU">                                         -->
+<!-- <MACRO NAME="JS_CHANGE_IMAGE">                                     -->
+<!-- <MACRO NAME="JS_OUVRE_FENETRE">                                    -->
+<!-- <MACRO NAME="JS_BOUTON_PAGE_PRECEDENTE">                           -->
 <!-- ****************************************************************** -->
 
 <DEFMACRO NAME="OUVRIR_HTML">
@@ -138,7 +158,7 @@
 	</form>
 </DEFMACRO>
 
-<DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_META">
+<DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la date de publication parente d'un document, si elle      -->
@@ -165,22 +185,55 @@
 	</LOOP>
 </DEFMACRO>
 
+<DEFMACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage de la description de la revue pour les métadonnées HTML. -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
+<!-- ****************************************************************** -->
+	<meta name="DESCRIPTION" content="Description de la revue .....">
+</DEFMACRO>
+
+<DEFMACRO NAME="EDITEUR_REVUE_POUR_METASDC">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage de l'éditeur de la revue pour les métadonnées du D.C.    -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
+<!-- ****************************************************************** -->
+	<meta name="DC.Publisher" content="INSEREZ ICI LE NOM DE VOTRE EDITEUR">
+</DEFMACRO>
+
+<DEFMACRO NAME="DROITS_POUR_METASDC">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage des droits les métadonnées du Dublin Core.               -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
+<!-- ****************************************************************** -->
+	<meta name="DC.Rights" content="IPR">
+</DEFMACRO>
+
 <DEFMACRO NAME="METADONNEES">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affichage des métadonnées HTML et DUBLIN CORE.                     -->
 <!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
-<!-- l'indexation par les moteurs. Pensez à personnaliser ces           -->
-<!-- métadonnées en indiquant le nom de votre publication, son url, son -->
-<!-- éditeur, etc...                                                    -->
+<!-- l'indexation par les moteurs.                                      -->
+<!-- Cette macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          -->
+<!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">               -->
 <!-- ****************************************************************** -->
-	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos">
-	<meta name="DESCRIPTION" content="Ruralia, revue de sciences humaines étudiant le monde rural dans toutes ses dimensions, adhère à la fédération www.revues.org">
+	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003">
+	<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
 	<meta name="distribution" content="worldwide">
 	<meta name="REVISIT-AFTER" content="40 days">
 	<meta name="rating" content="General">
 	
-	<meta url="http://ruralia.revues.org/document.html?id=[#ID]">
+	<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]">
 	
 	<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]">
@@ -192,17 +245,17 @@
 	
 	<!-- METADONNEES DUBLIN CORE -->
 	
-	<meta name="DC.Publisher" content="Association des ruralistes français">
-	<meta name="DC.Source" content="http://ruralia.revues.org/">
+	<MACRO NAME="EDITEUR_REVUE_POUR_METASDC">
+	<meta name="DC.Source" content="http://[#REVUE].revues.org/">
 	
 	<meta name="DC.Type" content="text">
 	<meta name="DC.Format" content="text/html">
 	
 	<meta name="DC.Language" content="fr">
-	<meta name="DC.Rights" content="IPR">
+	<MACRO NAME="DROITS_POUR_METASDC">
 	<meta name="DC.Relation" content="http://www.revues.org">
 	
-	<meta name="DC.Identifier" content="http://ruralia.revues.org/document.html?id=[#ID]">
+	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]">
 	<meta name="DC.Title" content="[(#TITRE|textebrut)] [(#SOUSTITRE|textebrut)]">
 
 	<LOOP NAME="meta_dc_motscles_l" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
@@ -217,7 +270,7 @@
 		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]">
 	</LOOP>
 	
-	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_META">
+	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METASDC">
 	
 	<IF COND="[#RESUME:FR]">
 		<meta name="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut)]">
@@ -234,12 +287,16 @@
 <!-- Version 1.0                                                        -->
 <!-- Affichage des métadonnées HTML et DUBLIN CORE pour les index.      -->
 <!-- Pensez à personnaliser ces métadonnées.                            -->
+<!-- Cette macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
+<!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          -->
 <!-- ****************************************************************** -->
 	<!-- METADONNEES HTML -->
 	<meta name="GENERATOR" content="Lodel 2002">
-	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE">">
+	<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
 	<meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1">
-	<meta URL="http://test.revues.org">
+	<meta URL="http://[#REVUE].revues.org">
 	<meta name="distribution" content="worldwide">
 	<meta name="REVISIT-AFTER" content="24 days">
 	<meta name="rating" content="General">
@@ -253,12 +310,12 @@
 	
 	<meta name="DC.Type" content="text">
 	<meta name="DC.Format" content="text/html">
-	<meta name="DC.Identifier" content="http://test.revues.org">
-	<meta name="DC.Source" content="http://test.revues.org/">
+	<meta name="DC.Identifier" content="http://[#REVUE].revues.org">
+	<meta name="DC.Source" content="http://[#REVUE].revues.org/">
 	<meta name="DC.Language" content="fr">
 	<meta name="DC.Relation" content="http://www.revues.org">
 	<meta name="DC.Coverage" content="?">
-	<meta name="DC.Rights" content="IPR">
+	<MACRO NAME="DROITS_POUR_METASDC">
 	
 	<IF COND="[#RESUME:FR]">
 		<meta NAME="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut)]">
@@ -269,7 +326,7 @@
 	</IF>
 	
 	<meta name="DC.Description" lang="en" content="[(#RESUME:EN|textebrut)]">
-	<meta name="DC.Publisher" content="INSEREZ ICI LE NOM DE VOTRE EDITEUR">
+	<MACRO NAME="EDITEUR_REVUE_POUR_METASDC">
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_JUMPMENU">
