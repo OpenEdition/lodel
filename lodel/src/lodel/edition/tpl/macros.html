@@ -66,6 +66,23 @@
 	--></script>
 </DEFMACRO>
 
+<DEFMACRO NAME="JS_CONFIRM_SUPPRESSION">
+<script type="text/javascript"><!--
+
+	function confirm_suppression(id)
+	{
+		var msg="Etes-vous sûr de vouloir supprimer ce document annexe ?";
+		if(confirm(msg))window.location="docannexe.php?id="+id+"&delete=2";
+	}
+	
+	function popup(url) {
+		 var fenetre = window.open(url,"","scrollbars,width=400,height=300");
+	 }
+//
+--></script>
+</DEFMACRO>
+
+
 <!--[ Macros rajoutées le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
@@ -381,37 +398,26 @@
 
 <!--[ ************************************************** ]-->
 
-<DEFMACRO NAME="STATUT">
+<DEFMACRO NAME="STATUT_DOCUMENT_ANNEXE">
 	<IF COND="[#STATUT] GT 0">
-		<div align="center">
 			<IF COND="[#STATUT]==1">
 				<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">
-					<span class="texte_trespetit_centre">
 						D&eacute;publier
-					</span>
 				</a>
 			<ELSE/>
-				<span class="texte_trespetit_centre">
 					&nbsp;-&nbsp;
-				</span>
 			</IF>
-		</div>
 	<ELSE/>
-		<div align="center">
 			<IF COND="[#STATUT]==-1">
 			<a href="publi.php?publication=[#ID]&online=1">
-				<span class="texte_trespetit_centre">
 					Publier
-				</span>
 			</a>
 			<ELSE/>
-				<span class="texte_trespetit_centre">
 					&nbsp;-&nbsp;
-				</span>
 			</IF>
-		</div>
 	</IF>
 </DEFMACRO>
+
 
 <DEFMACRO NAME="HEADER_LOGO">   
 <BODY bgcolor="#FFFFFF" text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0">
@@ -1221,15 +1227,15 @@
 			<table width="100%" class="table_docannexes" border="0">
 		</BEFORE>
 		<DO>
-			<tr>
-				<td width="40" align="left" valign="top">
+			<tr bgcolor="#EEEEEE">
+				<td width="40" align="left" valign="top" bgcolor="#EEEEEE">
 					<IF COND="[#STATUT] GT 0">
 						<MACRO NAME="PNG_ANNEXE">
 					<ELSE/>
 						<MACRO NAME="PNG_ANNEXE_GRIS">
 					</IF>
 				</td>
-				<td width="280">
+				<td width="100%" valign="top" bgcolor="#EEEEEE">
 					<div>
 						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
 							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
@@ -1239,7 +1245,12 @@
 					</div>
 					<span class="texte_normal">[#COMMENTAIRE]</span>
 				</td>
-				<td valign="top">
+			</tr>
+			<tr>
+				<td width="40" align="left" valign="top">
+					&nbsp;
+				</td>
+				<td valign="top"  width="100%">
 					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
 				</td>
 			</tr>
@@ -1258,6 +1269,8 @@
 		<div>
 			<MACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
 			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">Modifier</a>&nbsp;|
+			<MACRO NAME="STATUT_DOCUMENT_ANNEXE">&nbsp;|
+			<a href="javascript:confirm_suppression([#ID])">Supprimer</a>
 		</div>
 	</IF>
 </DEFMACRO>

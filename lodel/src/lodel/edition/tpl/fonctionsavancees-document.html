@@ -23,6 +23,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[#TITRE]</title>
+<MACRO NAME="JS_CONFIRM_SUPPRESSION">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 	
@@ -103,7 +104,7 @@
 								<td width="350" class="td_admin">
 	<IF COND="[#DROITREDACTEUR]">
 				<a href="telecharger.php?id=[#ID]&type=source">
-					<span class="texte_orange">T&eacute;l&eacute;charger le fichier source</span>
+					<span class="texte_orange">R&eacute;cup&eacute;rer le fichier source</span>
 				</a>
 	<ELSE/>
 			<span class="texte_intitule">T&eacute;l&eacute;charger le fichier source</span><br />
@@ -208,7 +209,7 @@
 
 		<!--[ Téléchargement source XML ]-->
 				<a href="xml.php?id=[#ID]">
-					<span class="texte_orange">T&eacute;l&eacute;charger le source XML</span>
+					<span class="texte_orange">R&eacute;cup&eacute;rer le fichier XML</span>
 				</a>
 						</td>
 						<td width="5">&nbsp;</td>
