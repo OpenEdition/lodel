@@ -88,6 +88,11 @@ function rtf($filename) {
  array_push($search,"/(<a\b[^>]+href\s*=)\"([^\"]+)\"/ie");
  array_push($rpl,"'\\1\"'.strtr('\\2',array('&'=>'&amp;')).'\"'");
 
+
+# resoud le probleme des balises intempestives inutiles dans les notes de bas de page
+ array_push($search,"/<sup><small></small></sup>/i");
+ array_push($rpl,"");
+
   # conversion de balises
   $translations=array("mots?_cles?"=>"motcles","notes_de_bas_de_page"=>"notebaspage",
 		      "title"=>"titre","subtitle"=>"soustitre",
