@@ -8,71 +8,34 @@
 
 $balises=array ("-" => "-",
 		"titre" => "Titre",
-		"Titre 1" => "Titre 1",
-		"Titre 2" => "Titre 2",
-		"Titre 3" => "Titre 3",
-		"Titre 4" => "Titre 4",
-		"Titre 5" => "Titre 5",
-		"Titre 6" => "Titre 6",
 		"surtitre" => "Surtitre",
-		"Surtitre" => "Surtitre",
 		"soustitre" => "Sous-titre",
-		"Sous-titre" => "Sous-titre",
 		"auteurs" => "Auteurs",
-		"Auteur" => "Auteur",
 		"motcles" => "Mots Clés",
-		"Mots Cles" => "Mots Clés",
 		"periodes" => "Périodes",
 		"geographies" => "Géographie",
-		"Periode" => "Période",
-		"Geographie" => "Géographie",
 		"resume" => "Résumé",
-		"Resume" => "Résumé",
-		"Abstract" => "Abstract",
-		"Extracto" => "Extracto",
-		"Riassunto" => "Riassunto",
-		"Zusammenfassung" => "Zusammenfassung",
 		"texte" => "Texte",
 		"citation" => "<blockquote>",
-		"Citation" => "<blockquote>",
 		"epigraphe" => "Epigraphe",
-		"Epigraphe" => "Epigraphe",
 		"notebaspage" => "Notes",
-		"Notes bas de page" => "Notes de bas de page",
 		"typedoc" => "Type de doc",
-		"Type document" => "Type de document",
 		"finbalise" => "fin",
 		"bibliographie"=>"Bibliographie",
-		"Bibliographie"=>"Bibliographie",
 		"annexe"=>"Annexe",
-		"Annexes"=>"Annexes",
 		"section1"=>"<h1>",
-		"Section 1"=>"<h1>",
 		"section2"=>"<h2>",
-		"Section 2"=>"<h2>",
 		"section3"=>"<h3>",
-		"Section 3"=>"<h3>",
 		"section4"=>"<h4>",
-		"Section 4"=>"<h4>",
-		"Section 5"=>"<h5>",
-		"Section 6"=>"<h6>",
 		"titredoc"=>"Titre de document",
-		"Titre Illustration"=>"Titre Illustration",
 		"legendedoc"=>"Légende de document",
-		"Legende Illustration"=>"Légende Illustration",
 		"droitsauteur"=>"Droits d'auteurs",
-		"Droits Auteur"=>"Droits d'auteurs",
 		"erratum"=>"Erratum",
-		"Erratum"=>"Erratum",
 		"ndlr"=>"NDLR",
-		"NDLR"=>"NDLR",
 		"historique"=>"Historique",
-		"Historique"=>"Historique",
 		"pagination"=>"Pagination",
-		"Pagination"=>"Pagination",
 # champs auteurs
 		"descriptionauteur"=>"Description de l'auteur précédent",
-		"Description Auteur"=>"Description de l'auteur",
 #		"affiliation"=>"<span class=\"affiliation\">",
 #		"courriel"=>"<span class=\"courriel\">",
 #
@@ -91,28 +54,16 @@ $balises=array ("-" => "-",
     # balises qui ne sont extraites que lorsque le texte est publie.
 $balisesdocument_lieautexte=array("texte",
 				  "notebaspage",
-				  "Notes bas de page",
 				  "annexe",
-				  "Annexes",
 				  "erratum",
-				  "Erratum",
 				  "ndlr",
-				  "NDLR",
 				  "historique",
-				  "Historique"
 				  );
 
     # balises qui sont toujours extraites, meme si le texte n'est pas publie.
 $balisesdocument_nonlieautexte=array("resume",
-					 "Resume",
-					 "Abstract",
-					 "Extracto",
-					 "Riassunto",
-					 "Zusammenfassung",
 				     "droitsauteur",
-					 "Droits Auteur",
-				     "pagination",
-					 "Pagination"
+				     "pagination"
 				     );
 
 //
@@ -121,13 +72,9 @@ $balisesdocument_nonlieautexte=array("resume",
 $multiplelevel=array(
 #		     "divbiblio"=>"bibliographie",
 		     "citation"=>"texte",
-		     "Citation"=>"texte",
 		     "epigraphe"=>"texte",
-		     "Epigraphe"=>"texte",
 		     "titredoc"=>"texte",
 		     "legendedoc"=>"texte",
-			 "Titre Illustration"=>"texte",
-			 "Legende Illustration"=>"texte",
 
 		     // les styles description auteurs
 # supprimer pour le moment tant que Ted ne lit pas les styles de caracteres
@@ -136,17 +83,12 @@ $multiplelevel=array(
 
 		     // l'ordre est important ci-dessous (marche pas avec section\d+)
 		     "section6"=>">*", // non utilise a priori
-		     "Section 6"=>">*", // non utilise a priori
 		     "section5"=>">*", // non utilise a priori
-		     "Section 5"=>">*", // non utilise a priori
 		     "section4"=>">*",
-		     "Section 4"=>">*",
 		     "section3"=>">*",
-		     "Section 3"=>">*",
 		     "section2"=>">*",
-		     "Section 2"=>">*",
-		     "section1"=>">*",
-		     "Section 1"=>">*",
+		     "section1"=>">*"
+
 );
 
 
