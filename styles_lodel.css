@@ -1,44 +1,31 @@
 /***************** Ajout intégration maquette Lodel ****************/
 
-.texte_edition_des_series {
-	font-size: 16px;
-	font-weight : bold;
-	font-style:italic;
-	color: #728979;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.tab_edition_des_series {
-	margin-top: 10px;
-}
-
 a:link {text-decoration: none; color: #CC9933;}
 a:visited {text-decoration: none; color: #CC9933;}
 a:hover {text-decoration: underline;}
 
-img.picto, img.picto_statut {
+img.picto, img.picto_statut, img.picto_fleche {
 	border: none;
 	vertical-align: bottom;
 }
 
-img.picto_statut {
+img.picto_gauche {
 	float:left;
 	margin-right:10px;
 }
 
-div.ligne_groupe1 {
-	padding-left: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background-color: #F3F3F3;
+img.picto_fleche {
+	vertical-align:bottom;
 }
 
-div.ligne_groupe2 {
+div.ligne_groupe1, div.ligne_groupe2 {
 	padding-left: 20px;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background-color: #FFFFFF;
 }
+
+div.ligne_groupe1 {background-color: #F3F3F3;}
+div.ligne_groupe2 {background-color: #FFFFFF;}
 
 div.ligne_art1, div.ligne_art2, div.ligne_serie1, div.ligne_serie2 {
 	padding-left: 40px;
@@ -50,8 +37,33 @@ div.ligne_art1, div.ligne_art2, div.ligne_serie1, div.ligne_serie2 {
 div.groupe div.ligne_art1 {background-color: #F3F3F3;}
 div.groupe div.ligne_art2 {background-color: #FFFFFF;}
 
-div.serie div.ligne_serie1 {background-color: #FDFAF1;}
-div.serie div.ligne_serie2 {background-color: #FFFFFF;}
+div.ligne_numero1, div.ligne_numero2 {
+	padding-left: 40px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+div.ligne_numero1 {background-color: #F3F3F3;}
+div.ligne_numero2 {background-color: #FFFFFF;}
+
+/******************** SERIES **********************/
+div.edition_des_series {
+	margin-top: 10px;
+	height:43px;
+}
+
+.texte_edition_des_series {
+	font-size: 16px;
+	font-weight : bold;
+	font-style:italic;
+	color: #728979;
+	font-family: Verdana;
+	vertical-align:middle;
+}
+
+div.ligne_serie1 {background-color: #FDFAF1;}
+div.ligne_serie2 {background-color: #FFFFFF;}
+div.ligne_ajouter_serie {background-color: #FDFAF1;}
 
 .titre_serie, .nom_serie, .type_serie {
 	font-family: verdana;	
@@ -69,15 +81,57 @@ div.serie div.ligne_serie2 {background-color: #FFFFFF;}
 	font-weight: normal;
 }
 
-
 .type_serie {
 	font-size: 8pt;
 	font-weight: normal;
 	font-style: italic;
 }
+/******************** FIN SERIES **********************/
+
+
+/******************** Infos publi parente **********************/
+div.ligne_infos_parent {
+	margin-top: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.titre_parent, .nom_parent, .type_parent {
+	font-family: verdana;	
+	color: #333333;
+	text-align: left;
+}
+
+.nom_parent {
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+.titre_parent {
+	font-size: 10pt;
+	font-weight: normal;
+}
+
+.type_parent {
+	font-size: 8pt;
+	font-weight: normal;
+	font-style: italic;
+}
+/******************** Fin Infos publi parente **********************/
+
+
+
+div.pas_de_publication {
+	margin-top: 50px;
+	font-family: verdana;
+	font-size: 12pt;
+	text-align:center;
+	font-weight: bold;
+	font-style: italic;
+}
 
 div.ligne_ajouter, div.ligne_ajouter_serie {
-	margin-top: 5px;
+	margin-top: 10px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	padding-left: 10px;
@@ -87,8 +141,6 @@ div.ligne_ajouter, div.ligne_ajouter_serie {
 }
 
 div.ligne_ajouter {background-color: #E5E5E5;}
-div.ligne_ajouter_serie {background-color: #FDFAF1;}
-
 div.ligne_ajouter a:visited {color: #CC9933;}
 div.ligne_ajouter a:hover {color: #FFBB03;}
 

@@ -1575,7 +1575,6 @@
 	        $debut = "" ;
 	        $fin = substr($texte, -$long2);
 	
-	
 	        if(($off = strlen($texte)-$long2) > 0) {
 	                $debut = substr($texte, 0, $off);
 	                if(strlen($debut) > $long1 + 5) { // debut est suffisament long
@@ -1589,20 +1588,15 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHEMIN_PARCOURU">
-	<table class="tab_edition_des_series" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td width="38" height="43"><MACRO NAME="PNG_PICTO_EDITION_DES_SERIES"></td>
-			<td height="43" align="left" valign="middle" background="[#SHAREURL]/images/fond_edition_des_series.png">
-				<a href="index.php?id=0"><span class="texte_edition_des_series">Edition des Séries</span></a>
-				<LOOP NAME="publisparentes">
-					&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]">[#NOM]</a>
-				</LOOP>
-			</td>
-			<td width="*" height="43" background="[#SHAREURL]/images/fond_edition_des_series.png">
-				&nbsp;
-			</td>
-		</tr>
-	</table>
+	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
+		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
+		<div style="padding-top:10px;">
+			<a href="index.php?id=0"><span class="texte_edition_des_series">Edition des Séries</span></a>
+			<LOOP NAME="publisparentes">
+				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#NOM]</span></a>
+			</LOOP>
+		</div>
+	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUT">
@@ -1623,13 +1617,27 @@
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="AJOUTER_SERIE">
+<DEFMACRO NAME="AJOUTER_UNE_SERIE">
 	<div class="ligne_ajouter_serie">
 		<MACRO NAME="PNG_MOINS">
 		<a href="publication.php?type=serie_lineaire">Ajouter une série linéaire</a>
 		<br />
 		<MACRO NAME="PNG_MOINS">
 		<a href="publication.php?type=serie_hierarchique">Ajouter une série hiérarchique</a>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="AJOUTER_UN_NUMERO">
+	<div class="ligne_ajouter">
+		<MACRO NAME="PNG_MOINS">
+		<a href="publication.php?type=numero&parent=[#ID]">Ajouter un nouveau numero</a>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="AJOUTER_UN_THEME">
+	<div class="ligne_ajouter">
+		<MACRO NAME="PNG_MOINS">
+		<a href="publication.php?type=theme&parent=[#ID]">Ajouter un nouveau thème</a>
 	</div>
 </DEFMACRO>
 
@@ -1645,6 +1653,7 @@
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 	<div class="action">
+		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		|&nbsp;<a href="../../sommaire.html?id=[#ID]">Voir</a>&nbsp;
 		<IF COND="[#EDITEUR]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Métas</a>&nbsp;
@@ -1654,20 +1663,11 @@
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
 		|&nbsp;<MACRO NAME="CHANGER_STATUS">&nbsp;
 		<IF COND="[#EDITEUR]">
-		|&nbsp;<a href="supprime.php?publication=[#ID]">Détruire</a>&nbsp;
+		|&nbsp;<a href="supprime.php?publication=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
 		</IF>
-		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 	</div>
-</DEFMACRO>
-
-<DEFMACRO NAME="NOM_TITRE_TYPE">
-	<a href="index.php?id=[#ID]">
-		<span class="nom_serie">[#NOM]</span>&nbsp;
-		<span class="titre_serie">[#TITRE]</span><br />
-		<span class="type_serie">([#TYPE])</span>
-	</a>
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_STATUS">
@@ -1686,6 +1686,81 @@
 	</IF>
 </DEFMACRO>
 
+<DEFMACRO NAME="LISTER_LES_SERIES">
+	<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre">
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_serie1">
+		<ELSE/>
+			<div class="ligne_serie2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+			<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+		<ALTERNATIVE>
+			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_LES_NUMEROS">
+	<LOOP NAME="numeros" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre"> 
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_numero1">
+		<ELSE/>
+			<div class="ligne_numero2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+			<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+		<ALTERNATIVE>
+			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="LISTER_LES_THEMES">
+	<LOOP NAME="themes" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre"> 
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_numero1">
+		<ELSE/>
+			<div class="ligne_numero2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+			<MACRO NAME="NOM_TITRE_TYPE">
+			</div>
+		<ALTERNATIVE>
+			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE">
+	<div class="pas_de_publication">
+		Aucune publication disponible
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="NOM_TITRE_TYPE">
+	<a href="index.php?id=[#ID]">
+		<span class="nom_serie">[#NOM]</span>&nbsp;
+		<span class="titre_serie">[#TITRE]</span><br />
+		<span class="type_serie">([#TYPE])</span>
+	</a>
+</DEFMACRO>
+
+<DEFMACRO NAME="NOM_TITRE_TYPE_PARENT">
+	<div class="ligne_infos_parent">
+		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
+		<LOOP NAME="parent" TABLE="publications" WHERE="id='[#ID]'">
+			<span class="nom_parent">[#NOM]</span>&nbsp;
+			<span class="titre_parent">[#TITRE]</span><br />
+			<span class="type_parent">([#TYPE])</span>
+		</LOOP>
+	</div>
+</DEFMACRO>
 
 <DEFMACRO NAME="PNG_LOGO_LODEL">
 	<img src="[#SHAREURL]/images/logo_lodel.png" width="318" height="75" border="0" vspace="0" hspace="0" />
@@ -1837,28 +1912,28 @@
 
 <!-- png editions des series -->
 <DEFMACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
-	<img src="[#SHAREURL]/images/picto_edition_des_series.png" width="38" height="43" border="0" vspace="0" hspace="0" />
+	<img src="[#SHAREURL]/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">
-	<img src="[#SHAREURL]/images/fleche_edition_des_series.png" width="17" height="17" border="0" vspace="0" hspace="0" />
+	<img src="[#SHAREURL]/images/fleche_edition_des_series.png" class="picto_fleche" width="17" height="17" />
 </DEFMACRO>
 
 <!-- png statut -->
 <DEFMACRO NAME="PNG_STATUT_BROUILLON">
-	<img src="[#SHAREURL]/images/statut_brouillon.png" class="picto_statut" width="23" height="24" />
+	<img src="[#SHAREURL]/images/statut_brouillon.png" class="picto_gauche" width="23" height="24" alt="Brouillon" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUT_PRET">
-	<img src="[#SHAREURL]/images/statut_pret.png" class="picto_statut" width="23" height="24" />
+	<img src="[#SHAREURL]/images/statut_pret.png" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUT_PUBLIE">
-	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_statut" width="23" height="24" />
+	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_gauche" width="23" height="24" alt="Publié" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUT_PROTEGE">
-	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_statut" width="23" height="24" />
+	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publié protégé" />
 </DEFMACRO>
 
 <!-- png plié/déplié -->
@@ -1868,6 +1943,11 @@
 
 <DEFMACRO NAME="PNG_MOINS">
 	<img src="[#SHAREURL]/images/plie.png" class="picto" width="13" height="14" />
+</DEFMACRO>
+
+<!-- png divers -->
+<DEFMACRO NAME="PNG_PICTO_INFOS_PARENT">
+	<img src="[#SHAREURL]/images/picto_infos_parent.png" class="picto_gauche" width="24" height="31" />
 </DEFMACRO>
 
 <!-- ************************************** Fin Rajout intégration maquette ************************************** -->

@@ -79,23 +79,7 @@
 -->
 <!-- ************************************** Rajout intégration maquette ************************************** -->
 <MACRO NAME="CHEMIN_PARCOURU">
-<MACRO NAME="AJOUTER_SERIE">
-<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre">
-	<div class="serie">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_serie1">
-		<ELSE/>
-			<div class="ligne_serie2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			<!--<ALTERNATIVE>
-				<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
-			</ALTERNATIVE>-->
-		</div>
-	</div>		
-</LOOP>
-
+<MACRO NAME="AJOUTER_UNE_SERIE">
+<MACRO NAME="LISTER_LES_SERIES">
 <!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 <MACRO NAME="CLOSE_HTML">

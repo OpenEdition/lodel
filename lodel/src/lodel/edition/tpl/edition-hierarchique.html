@@ -2,9 +2,14 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'une série hiérarchique</title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<!-- Rajout intégration maquette -->
+<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+<MACRO NAME="JS_AFFICHE_IMAGE">
+<!-- Fin rajout intégration maquette -->
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
+<!--
 <MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
 		<tr> 
@@ -17,7 +22,6 @@
 			</td>
 		</tr>
 
-	<!-- AFFICHE LES THEMES -->
 	<tr>
 		<td>
 			<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
@@ -36,14 +40,13 @@
 								<MACRO NAME="TITRES_BOUTONS_PUBLICATIONS">
 							</tr>
 
-							<!-- BOUCLE D'AFFICHAGE DES THEMES -->
 							<LOOP NAME="themes" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre DESC"> 
 							<TR>
 								<td width="48" height="48" valign="middle"> 
 									<div align="center">
-									<!--<a href="index.php?parent=[#ID]">-->
+									<!-<a href="index.php?parent=[#ID]">->
 										<MACRO NAME="AFFICHER_ICONE_STATUT">
-									<!--</a>-->
+									<!-</a>->
 									</div>
 								</td>
 								<MACRO NAME="TD_NOM_TYPE_TITRE">
@@ -59,5 +62,11 @@
 			</table>
 		</td>
 	</tr>
-</table>
+</table>-->
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<MACRO NAME="CHEMIN_PARCOURU">
+<MACRO NAME="NOM_TITRE_TYPE_PARENT">
+<MACRO NAME="AJOUTER_UN_THEME">
+<MACRO NAME="LISTER_LES_THEMES">
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 <MACRO NAME="CLOSE_HTML">
