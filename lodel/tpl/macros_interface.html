@@ -446,12 +446,21 @@ cp_[#NAME].writeDiv();
 
 	<!--[ -----------[ SELECT ]---------- ]-->
 	
-	<IF COND="[#EDITION] EQ 'select' or [#EDITION] EQ 'multipleselect' ">
-	<select <IF COND="[#EDITION] EQ 'multipleselect'">multiple="multiple" size="10" </IF> id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
+	<IF COND="[#EDITION] EQ 'select'">
+	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
+	<ELSE/>
+	<!--[ -----------[ MULTIPLE SELECT ]---------- ]-->
+	<IF COND="[#EDITION] EQ 'multipleselect'">
+		<select multiple="multiple" style="width:250px" id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
+		<LOOP NAME="entries_in_entities">
+		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
+		</LOOP>
+	</select>
+	
 	<ELSE/>
 	<!--[ -----------[ POOL ]---------- ]-->
 	<IF COND="[#EDITION] EQ 'pool'">
@@ -469,7 +478,7 @@ cp_[#NAME].writeDiv();
 		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')"/><br/>
 		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]]')"/>&nbsp;
 	<td>	
-	<select multiple size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
+	<select multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
 	</select>
 	</td>
 	<IF COND="[#NEWBYIMPORTALLOWED]">
@@ -486,6 +495,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 
 
 
+	</IF>
 	</IF>
 	</IF>
 
