@@ -48,7 +48,7 @@ function gettask (&$id)
 
   $id=intval($id);
   $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0")) or die($db->errormsg());
-  if (!$row) { back(); return; }
+  if (!$row) { getView()->back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
@@ -278,7 +278,7 @@ function addmeta(&$arr,$meta="")
 }
 
 
-
+/*
 function back($arg="",$back=-1)
 
 {
@@ -301,7 +301,7 @@ function back($arg="",$back=-1)
     header("Location: index.php");exit;
   }
 }
-
+*/
 
 
 function translate_xmldata($data) 

@@ -99,6 +99,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   $sets=array();
   require_once ($home."connect.php");
   require_once ($home."champfunc.php");
+  require_once ($home."validfunc.php");
 
   // file to move once the document id is know.
   $files_to_move=array();
@@ -119,83 +120,48 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     // clean automatically the fields when required.
     if (!is_array($entity[$name]) && trim($entity[$name]) && $GLOBALS['fieldtypes'][$type]['autostriptags']) $entity[$name]=trim(strip_tags($entity[$name]));
     // special processing depending on the type.
-    switch ($type) {
-    case "date" :
-    case "datetime" :
-    case "time" :
-      include_once($home."date.php");
-      if ($entity[$name]) {
-	$entity[$name]=mysqldatetime($entity[$name],$type);
-	if (!$entity[$name]) $error[$name]=$type;
-      } elseif ($default) {
-	$dt=mysqldatetime($default,$type);
-	if ($dt) {
-	  $entity[$name]=$dt;
-	} else {
-	  die("valeur par default non reconnue: \"$default\"");
-	}
-      }
-      break;
-    case "int" :
-      if ((!isset($entity[$name]) || $entity[$name]==="") && $default!=="") $entity[$name]=intval($default);
-      if (isset($entity[$name]) && 
-	  (!is_numeric($entity[$name]) || intval($entity[$name])!=$entity[$name])) 
-	$error[$name]="int";
-      break;
-    case "number" : 
-      if ((!isset($entity[$name]) || $entity[$name]==="") && $default!=="") $entity[$name]=doubleval($default);
-      if (isset($entity[$name]) && 
-			!is_numeric($entity[$name])) $error[$name]="numeric";
-      break;
-    case "email" : 
-      if (!$entity[$name] && $default) $entity[$name]=$default;
-      if ($entity[$name]) {
-#      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
-	$validchar='-0-9A-Z_a-z';
-	if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entity[$name])) $error[$name]="url";
-      }
-      break;
-    case "url" : 
-      if (!$entity[$name] && $default) $entity[$name]=$default;
-      if ($entity[$name]) {
-#      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
-	$validchar='-0-9A-Z_a-z';
-	if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$entity[$name])) $error[$name]="url";
-      }
-      break;
-    case "boolean" :
-      $entity[$name]=$entity[$name] ? 1 : 0;
-      break;
-    case "mltext" :
-      if (is_array($entity[$name])) {
+
+    $valid=validfield($entity[$name],$type,$default);
+    if ($type="text" && $valid===true) {
+      // good, nothing to do.
+      // text is handle in a particular way here
+    } elseif (is_string($valid)) {
+      // error
+      $error[$name]=$valid;
+    } else {
+      // not validated... let's try other type
+      switch($type) {
+      case "mltext" :
+      if (is_array($text)) {
 	$str="";
-	foreach($entity[$name] as $lang=>$value) {
+	foreach($text as $lang=>$value) {
 	  $value=lodel_strip_tags(trim($value),$allowedtags);
 	  if ($value) $str.="<r2r:ml lang=\"$lang\">$value</r2r:ml>";
 	}
-	$entity[$name]=$str;
+	$text=$str;
       }
       break;
     case 'image' :
     case 'fichier' :
       if ($context['error'][$name]) {  $error[$name]=$context['error'][$name]; break; } // error has been already detected
-      if (is_array($entity[$name])) unset($entity[$name]);
-      if (!$entity[$name] || $entity[$name]=="none") break;
+      if (is_array($text)) unset($text);
+      if (!$text || $text=="none") break;
       // check for a hack or a bug
       $lodelsource='lodel\/sources';
       $docannexe='docannexe\/'.$type.'\/([^\.\/]+)';
-      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$entity[$name],$dirresult)) die("ERROR: bad filename in $name \"$entity[$name]\"");
+      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$text,$dirresult)) die("ERROR: bad filename in $name \"$text\"");
 
       // if the filename is not "temporary", there is nothing to do
       if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) break;
       // add this file to the file to move.
-      $files_to_move[$name]=array('filename'=>$entity[$name],'type'=>$type,'name'=>$name);
-      #unset($entity[$name]); // it must not be update... the old files must be remove later (once everything is checked)
+      $files_to_move[$name]=array('filename'=>$text,'type'=>$type,'name'=>$name);
+      #unset($text); // it must not be update... the old files must be remove later (once everything is checked)
       break;
-    default :
-      if (isset($entity[$name])) $entity[$name]=lodel_strip_tags($entity[$name],$allowedtags);
-      // recheck entity is still not empty
-      if (!isset($entity[$name])) $entity[$name]=lodel_strip_tags($default,$allowedtags);
+      default :
+	if (isset($entity[$name])) $entity[$name]=lodel_strip_tags($entity[$name],$allowedtags);
+	// recheck entity is still not empty
+	if (!isset($entity[$name])) $entity[$name]=lodel_strip_tags($default,$allowedtags);
+      }
     }
     if (isset($entity[$name])) {
       $sets[$name]="'".addslashes(stripslashes($entity[$name]))."'"; // this is for security reason, only the authorized $name are copied into sets. Add also the quote.

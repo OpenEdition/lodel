@@ -61,7 +61,7 @@ class Logic {
     * view Action
     */
 
-   function editAction($context)
+   function viewAction($context)
 
    {
      $dao=getMainTableDAO();
@@ -73,12 +73,13 @@ class Logic {
     * add/edit Action
     */
 
-   function editAction($context)
+   function editAction(&$context,&$error)
 
    {
      // validate the forms data
-     $valid=$this->_validatePublicFields($context);
-     if (is_string($valid)) return $valid;
+     if (!$this->_validatePublicFields($context,$error)) {
+       return "error";
+     }
 
      // get the dao for working with the object
      $dao=getMainTableDAO();
@@ -100,7 +101,7 @@ class Logic {
      $this->_populateObject($vo,$context);
      $dao->save($vo);
 
-     return BACK;
+     return "back";
    }
 
    /**
@@ -182,7 +183,7 @@ class Logic {
     * Validated the public fields
     * @return return an array containing the error and warning, null otherwise.
     */
-   function _validatePublicFields($context) {
+   function _validatePublicFields(&$context,&$error) {
 
      require_once($GLOBALS['home']."validfunc.php");
 
@@ -197,7 +198,7 @@ class Logic {
 	 if (is_string($valid)) $error[$field]=$valid;
        }
      }
-     return $error;
+     return !isset($error);
    }
 
 

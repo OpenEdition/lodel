@@ -28,17 +28,95 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-function isvalidclass($name) 
-{return preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$name);}
 
-function isvalidtype($name) 
-{return preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$name);}
 
-function isvalidfield($name) 
-{return preg_match("/^[a-zA-Z0-9]+$/",$name);}
+function validfield(&$text,$type,$default)
 
-function isvalidstyle($name)
-{ return preg_match("/^[a-zA-Z0-9]+$/",$name); }
+{
+  global $db;
+
+  switch ($type) {
+  case "text" :
+    if (!$text) $text=$default;
+    return true; // always true
+    break;
+  case "type" :
+    if (!preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$text)) return $type;
+    break;
+  case "class" :
+    if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$text)) return $type;
+    require_once($GLOBALS['home']."champfunc.php");
+    if (reservedword($name)) return "reservedsql";
+    break;
+  case "field" :
+    if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
+    require_once($GLOBALS['home']."champfunc.php");
+    if (reservedword($name)) return "reservedsql";
+    break;
+  case "style" :
+    if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
+    break;
+  case "passwd" :
+  case "username" :
+    $len=strlen($text)
+    if ($len<3 || $len>12 || !preg_match("/^[0-9A-Za-z_;.?!@:,]+$/",$text) return $type;
+	break;
+  case "lang" :
+    if (!preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$text)) return $type;
+    break;
+  case "date" :
+  case "datetime" :
+  case "time" :
+    require_once($GLOBALS['home']."date.php");
+    if ($text) {
+      $text=mysqldatetime($text,$type);
+      if (!$text) return $type;
+    } elseif ($default) {
+      $dt=mysqldatetime($default,$type);
+      if ($dt) {
+	$text=$dt;
+      } else {
+	die("ERROR: default value not a date or time: \"$default\"");
+      }
+    }
+    break;
+  case "int" :
+    if ((!isset($text) || $text==="") && $default!=="") $text=intval($default);
+    if (isset($text) && (!is_numeric($text) || intval($text)!=$text)) return "int";
+    break;
+  case "number" : 
+    if ((!isset($text) || $text==="") && $default!=="") $text=doubleval($default);
+    if (isset($text) && !is_numeric($text)) return "numeric";
+    break;
+  case "email" : 
+    if (!$text && $default) $text=$default;
+    if ($text) {
+      $validchar='-0-9A-Z_a-z';
+      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$text)) return "email";
+    }
+    break;
+  case "url" : 
+    if (!$text && $default) $text=$default;
+    if ($text) {
+      $validchar='-0-9A-Z_a-z';
+      if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$text)) return "url";
+    }
+    break;
+  case "boolean" :
+    $text=$text ? 1 : 0;
+    break;
+  case "tplfile" :
+    $text=trim($text); // should be done elsewhere but to be sure...
+    if (strpos($text,"/")!==false || $text[0]==".") return "tplfile";
+    break;
+  default:
+    return false; // pas de validation
+  }
+
+  return true; // validated
+}
+
+
 
 
 function isvalidmlstyle($style)
@@ -59,11 +137,8 @@ function isvalidmlstyle($style)
   return TRUE;
 }
 
-function isvalidlang($lang)
 
-{
-  return preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$lang);
-}
+
 
 
 ?>
