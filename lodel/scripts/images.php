@@ -82,10 +82,10 @@ function resize_image ($taille,$src,$dest)
 
     // cherche le type de l'image
     $result=getimagesize($src);
-    if ($result[2]==1) { $im=@ImageCreateFromGIF($src); }
-    elseif ($result[2]==2) { $im=@ImageCreateFromJPEG($src); }
-    elseif ($result[2]==3) { $im=@ImageCreateFromPNG($src); }
-    else { break; }
+    if ($result[2]==1) { $im=ImageCreateFromGIF($src); }
+    elseif ($result[2]==2) { $im=ImageCreateFromJPEG($src); }
+    elseif ($result[2]==3) { $im=ImageCreateFromPNG($src); }
+    else { return false; }
     if (!$im) return false; // erreur de chargement
 
     // taille de l'image a produire

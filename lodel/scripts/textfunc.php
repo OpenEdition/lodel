@@ -358,12 +358,13 @@ function vignette($text,$width)
 
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
 
+  // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
+  require_once($home."images.php");
+
   return $text.":".$vignettefile;
 
 
 
-  // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
-  require_once($home."images.php");
   if (!resize_image($width,$text,$vignettefile,"+")) return "image resizing failed";
   return $vignettefile;
 }
