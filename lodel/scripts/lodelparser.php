@@ -296,10 +296,15 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 
 
 function prefixtablesindatabase(&$table) {
+#  if (($GLOBALS[database]!=$GLOBALS[currentdb]) &&
+#      ($table=="$GLOBALS[tp]sites" || 
+#       $table=="$GLOBALS[tp]session" ||
+#       $table=="$GLOBALS[tp]users")) {
+#    $table=$GLOBALS[database].".".$table;
+#  }
   if (($GLOBALS[database]!=$GLOBALS[currentdb]) &&
       ($table=="$GLOBALS[tp]sites" || 
-       $table=="$GLOBALS[tp]session" ||
-       $table=="$GLOBALS[tp]users")) {
+       $table=="$GLOBALS[tp]session") {
     $table=$GLOBALS[database].".".$table;
   }
 }
