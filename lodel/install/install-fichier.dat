@@ -207,10 +207,10 @@ ln tpl/entree.html
 ln entrees.php
 ln tpl/entrees.html
 
-ln personne.php
-ln tpl/personne.html
-ln personnes.php
-ln tpl/personnes.html
+#ln personne.php
+#ln tpl/personne.html
+#ln personnes.php
+#ln tpl/personnes.html
 
 
 ln periode.php
