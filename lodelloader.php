@@ -1840,7 +1840,7 @@ function msg_chmod($chmod,$reducedchmod)
   if ($reducedchmod) echo "<p>Les droits en écriture ont été restreint car la configuration du serveur ne permet pas d'éxecuter les scripts PHP avec des droits en écriture souple (ce qui est une bonne chose pour la sécurité). Cependant, il est possible que vous ne puissiez plus écrire ou éffacer les fichiers dans votre repertoire. Il vous faudra utiliser un File Manager en PHP pour le faire.</p>";
 
 ?>
-    <p>Si ces permissions conviennent veuillez cliquer sur continuer. L'archive Lodel va être téléchargée ce qui peut prendre un certain temps. Merci de patienter.</p>
+    <p>Si ces permissions conviennent veuillez cliquer ci-dessous. L'archive Lodel va être téléchargée ce qui peut prendre un certain temps. Merci de patienter.</p>
 <form  method="post" action="lodelloader.php">
 <input type="hidden" name="chmod" value="<?php echo $chmod; ?>">
 <input type="submit" name="install" value="Télécharger Lodel">
