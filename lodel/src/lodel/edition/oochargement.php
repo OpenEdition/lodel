@@ -97,9 +97,9 @@ function OO ($uploadedfile)
 		      "description_auteur"=>"descriptionauteur",
 		      "droits_auteur"=>"droitsauteur",
 		      "type_document"=>"typedoc",
-		      "langue"=>"langues"
-			  "titre_illustration"=>"titreillustration",
-			  "legende_illustration"=>"legendeillustration",
+		      "langue"=>"langues",
+		      "titre_illustration"=>"titreillustration",
+		      "legende_illustration"=>"legendeillustration",
 		      );
   
   foreach ($translations as $k=>$v) {
