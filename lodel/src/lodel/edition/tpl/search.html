@@ -46,7 +46,7 @@
 		<div style="padding-top:10px;">
 			<span class="texte_edition_des_series">
 			<IF COND="![#QUERY]">
-			[@EDITION.WARGING_EMPTY_QUERY]
+			[@WARNING_EMPTY_QUERY]
 			</span>
 			</a>
 		</div>
@@ -82,7 +82,7 @@
 	<MACRO NAME="YOUR_SEARCH_BAR">
 	
 		<p class="searchnoresults">
-		[@EDITION.SEARCH_MESSAGE_NO_RESULTS|sprintf($query)]
+		[@EDITION.SEARCH_MESSAGE_NO_RESULTS|sprintf([#QUERY])]
 		</p>
 	</ALTERNATIVE>
 	</LOOP>
