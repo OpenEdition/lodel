@@ -41,7 +41,7 @@ class ServOO extends ServOO_Client {
     $options=getoption(array("servoo.url","servoo.username","servoo.passwd",
 			     "servoo.proxyhost","servoo.proxyport"),"");
 
-    if (!$options || !$options['servoourl']) { // get form the lodelconfig file
+    if (!$options || !$options['servoo.url']) { // get form the lodelconfig file
       $options['servoo.url']=$GLOBALS['servoourl'];
       $options['servoo.username']=$GLOBALS['servoousername'];
       $options['servoo.passwd']=$GLOBALS['servoopasswd'];
