@@ -91,13 +91,13 @@
 			<tr>
 				<td colspan="2">
 					<div class="ligne_parent_tpl_publication">
-						Les publications suivantes sont protégées :
+						[@EDITION.FOLLOWING_PUBLICATIONS_PROTECTED]:
 					</div>
 				</td>
 			</tr>
 			<tr>
-				<td><span style="font-size:120%; font-weight:bold;">NOM</span><br /><br /></td>
-				<td><span style="font-size:120%; font-weight:bold;">TITRE</span><br /><br /></td>
+				<td><span style="font-size:120%; font-weight:bold;">[@COMMON.NAME]</span><br /><br /></td>
+				<td><span style="font-size:120%; font-weight:bold;">[@COMMON.TITLE]</span><br /><br /></td>
 			</tr>
 		</BEFORE>
 		<DO>
@@ -115,12 +115,12 @@
 			<tr>
 				<td colspan="2">
 					<div class="ligne_parent_tpl_publication">
-						Les documents suivants sont protégés :
+						[@EDITION.FOLLOWING_DOCUMENTS_PROTECTED]:
 					</div>
 				</td>
 			</tr>
 		    <tr>
-				<td><span style="font-size:120%; font-weight:bold;">NOM</span><br /><br /></td>
+				<td><span style="font-size:120%; font-weight:bold;">[@COMMON.NAME]</span><br /><br /></td>
 				<td></td>
 			</tr>
 		</BEFORE>
@@ -144,9 +144,9 @@
 				<td>
 					<table class="table_form_popup">
 						<tr>
-							<td>Pr&eacute;fixe</td>
-							<td>Pr&eacute;nom</td>
-							<td>Nom</td>
+							<td>[@COMMON.PREFIX]</td>
+							<td>[@COMMON.FIRST_NAME]</td>
+							<td>[@COMMON.LAST_NAME]</td>
 						</tr>
 						<tr>
 							<td><input size="5" type="text" name="prefix[[#ID]][[#IND]]" value="[#PREFIX]"></td>
@@ -155,7 +155,7 @@
 						</tr>
 					</table>
 				</td>
-				<td rowspan="2">Description:<br />
+				<td rowspan="2">[@COMMON.DESCRIPTION]:<br />
 					<textarea name="description[[#ID]][[#IND]]" COLS="20" ROWS="4" readonly>[#DESCRIPTION]</textarea>
 				</td>
 			</tr>
@@ -164,9 +164,9 @@
 				<td>
 					<table class="table_form_popup" >
 						<tr>
-							<td>Fonction</td>
-							<td>Affiliation</td>
-							<td>Courriel</td>
+							<td>[@EDITION.OFFICE]</td>
+							<td>[@EDITION.AFFILIATION]</td>
+							<td>[@COMMON.EMAIL]</td>
 						</tr>
 						<tr>
 							<td><input size="20" type="text" name="fonction[[#ID]][[#IND]]" value="[#FONCTION]"></td>
@@ -233,9 +233,9 @@
 		<td><IF COND="[#VALUE]">
                    <table><tr>
 		<td><img src="[(#VALUE|vignette(80))]" border="1"></td>
-                <td>Nom: [(#VALUE|basename)]<br />
-                    Supprimer: <input type="checkbox" name="entite[[#NOM]][delete]" ><br />
-			      Changer: <input size="40" type="file" name="entite[[#NOM]]">
+                <td>[@COMMON.NAME]: [(#VALUE|basename)]<br />
+                   [@COMMON.DELETE]: <input type="checkbox" name="entite[[#NOM]][delete]" ><br />
+			      [@EDITION.CHANGE]: <input size="40" type="file" name="entite[[#NOM]]">
 </td>
 	           </tr></table>
                   <ELSE/>
@@ -259,15 +259,15 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ERREURS_SAISIE">
-	<IF COND="[#ERREUR] eq '+'"><tr><td colspan="2" class="message_erreur">Ce champ est obligatoire</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date valide</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'time'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une heure valide</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'datetime'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date et heure valide</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre entier</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'readerror'"><tr><td colspan="2" class="message_erreur">Le fichier n'existe pas ou n'a pas pu être téléchargé</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'imageformat'"><tr><td colspan="2" class="message_erreur">Le format de l'image n'a pas été reconnu</td></tr></IF>
-	<IF COND="[#ERREUR] eq 'url'"><tr><td colspan="2" class="message_erreur">Veuillez entrer une url valide</td></tr></IF>
+	<IF COND="[#ERREUR] eq '+'"><tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_REQUIRED_FIELD]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_DATE]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'time'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_TIME]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'datetime'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_DATE_TIME]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_NOT_AN_INTEGER]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_NUMBER]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'readerror'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_MISSING_FILE]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'imageformat'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_FORMAT_IMAGE]</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'url'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_INVALID_URL]</td></tr></IF>
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
@@ -319,10 +319,10 @@
 					<td>
 						<select multiple size="10" style="width:250px" name="entrees[[#ID]][]"><?php  makeselectentrees($context); ?></select><br />
 						<IF COND="[#NVIMPORTABLE]">
-							<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
-							* noms séparés par des virgules ou point-virgules.
+							<br /><br />[@EDITION.OTHER_ENTRIES]: <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
+						[@EDITION.SEPARATE_NAMES_BY_COMMA_OR_SEMICOLON]
 						<ELSE/>
-							<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
+							<IF COND="[#AUTRESENTREES]"><br /><br />[@EDITION.FOLLOWING_IMPORTED_ENTRIES_NOT_FOUND] : [#AUTRESENTREES]<br /><br /></IF>
 						</IF>
 					</td>
 				</tr>
@@ -364,10 +364,10 @@
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
 	<div class="ligne_formulaire">
 		<div class="intitule_ligne_formulaire">
-			<span class="texte_intitule">Identifiant:</span>
+			<span class="texte_intitule">[@EDITION.IDENTIFIER]:</span>
 		</div>
 		<input size="45" type="text" name="identifiant" value="[#IDENTIFIANT]">
-		[(#ERREUR_IDENTIFIANT|true)<br /><span class="message_erreur">Vous devez préciser un identifiant !</span>]
+		<IF COND="[#ERREUR_IDENTIFIANT]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFIER]</span></IF>
 	</div>
 </DEFMACRO>
 
@@ -401,7 +401,7 @@
 	<IF COND="[#STATUT] GT 0">
 			<IF COND="[#STATUT]==1">
 				<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">
-						D&eacute;publier
+					[@EDITION.UNPUBLISH]
 				</a>
 			<ELSE/>
 					&nbsp;-&nbsp;
@@ -409,7 +409,7 @@
 	<ELSE/>
 			<IF COND="[#STATUT]==-1">
 			<a href="publi.php?publication=[#ID]&online=1">
-					Publier
+				[@EDITION.PUBLISH]
 			</a>
 			<ELSE/>
 					&nbsp;-&nbsp;
@@ -485,16 +485,16 @@
 
 <DEFMACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI">
 	<IF COND="[#STATUT]==-32">
-		Brouillon
+	    [@EDITION.DRAFT]
 	<ELSE/>
 		<IF COND="[#STATUT]==-1">
-			Pr&ecirc;t &agrave; publier
+			[@EDITION.READY_TO_BE_PUBLISHED]
 		<ELSE/>
 			<IF COND="[#STATUT]==1">
-				Publi&eacute;
+				[@EDITION.PUBLISHED]
 			<ELSE/>
 				<IF COND="[#STATUT]==32">
-					Prot&eacute;g&eacute;
+					[@COMMON.PROTECTED]
 				</IF>
 			</IF>
 		</IF>
@@ -503,16 +503,16 @@
 
 <DEFMACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT">
 	<IF COND="[#STATUT]==-32">
-		Brouillon
+		[@EDITION.DRAFT]
 	<ELSE/>
 		<IF COND="[#STATUT]==-1">
-			Pr&ecirc;t &agrave; publier
+			[@EDITION.READY_TO_BE_PUBLISHED]
 		<ELSE/>
 			<IF COND="[#STATUT]==1">
-				Publi&eacute;
+				[@EDITION.PUBLISHED]
 			<ELSE/>
 				<IF COND="[#STATUT]==32">
-					Prot&eacute;g&eacute;
+				[@COMMON.PROTECTED]
 				</IF>
 			</IF>
 		</IF>
@@ -783,7 +783,7 @@
 			<BEFORE>
 				<IF COND="[#NBRESULTATS] ge 6">
 					<MACRO NAME="PNG_PLUS">
-					<span class="texte_orange_gras">Ajouter une publication : </span>
+					<span class="texte_orange_gras">[@EDITION.ADD_PUBLICATION]: </span>
 					&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
 				</IF>
 			</BEFORE>
@@ -810,7 +810,7 @@
 		<BEFORE>
 			<IF COND="[#NBRESULTATS] ge 6">
 				<MACRO NAME="PNG_PLUS">
-				<span class="texte_orange_gras">Ajouter un document : </span>
+				<span class="texte_orange_gras">[@EDITION.ADD_DOCUMENT] : </span>
 				&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected>--</option>
 			</IF>
 		</BEFORE>
@@ -838,7 +838,7 @@
 	</LOOP>
         <ELSE/>
 		<MACRO NAME="PNG_PLUS">
-		<span class="inactif">Ajouter un document : </span>
+		<span class="inactif">[@EDITION.ADD_DOCUMENT] : </span>
         </IF>
 </DEFMACRO>
 
@@ -999,7 +999,7 @@
 		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="publication.php?id=[#ID]">[@EDITION.EDIT]</a>&nbsp;
 		<ELSE/>
-		|&nbsp;<span class="inactif">Editer</span>&nbsp;
+		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
 		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.ADVANCED_FUNCTIONS]</a>&nbsp;
@@ -1020,20 +1020,20 @@
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="publication.php?id=[#ID]">Editer</a>&nbsp;
+		|&nbsp;<a href="publication.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 		<ELSE/>
-		|&nbsp;<span class="inactif">Editer</span>&nbsp;
+		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
 		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
+		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
                 <ELSE/>
-		|&nbsp;<span class="inactif">Fonctions</span>&nbsp;
+		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
 		<IF COND="(([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]) AND [#STATUT] lt 32">
-		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
+		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
-		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
+		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
@@ -1041,22 +1041,22 @@
 <DEFMACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]"><strong>Voir</strong></a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
 		<IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="document.php?id=[#ID]">Editer</a>&nbsp;
+		|&nbsp;<a href="document.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 		<ELSE/>
-		|&nbsp;<span class="inactif">Editer</span>&nbsp;
+		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
 		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">Fonctions</a>&nbsp;
+		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
                 <ELSE/>
-		|&nbsp;<span class="inactif">Fonctions</span>&nbsp;
+		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_DOCUMENT">&nbsp;
 		<IF COND="(([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]) AND [#STATUT] lt 32">
-		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
+		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
-		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
+		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
@@ -1070,9 +1070,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
 		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-						|&nbsp;<a href="statut.php?publication=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
+						|&nbsp;<a href="statut.php?publication=[#ID]&statut=pret">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 					<ELSE/>
-						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
+						|&nbsp;<span class="inactif">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</span>&nbsp;|
 					</IF>
 				</td>
 			</tr>
@@ -1085,9 +1085,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
 		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-						|&nbsp;<a href="statut.php?publication=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="statut.php?publication=[#ID]&statut=brouillon">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
 					<ELSE/>
-						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
+						|&nbsp;<span class="inactif">[@EDITION.GO_TO_DRAFT]</span>&nbsp;|&nbsp;
 					</IF>
 				</td>
 			</tr>
@@ -1100,9 +1100,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
 		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-						&nbsp;|&nbsp;<a href="statut.php?publication=[#ID]&statut=protege">Prot&eacute;ger</a>&nbsp;|
+						&nbsp;|&nbsp;<a href="statut.php?publication=[#ID]&statut=protege">[@COMMON.PROTECT]</a>&nbsp;|
 					<ELSE/>
-						&nbsp;|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
+						&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
 					</IF>
 				</td>
 			</tr>
@@ -1115,9 +1115,9 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
 		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-						|&nbsp;<a href="statut.php?publication=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="statut.php?publication=[#ID]&statut=deprotege">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
 					<ELSE/>
-						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;|&nbsp;
+						|&nbsp;<span class="inactif">[@EDITION.GO_TO_PUBLISHED]</span>&nbsp;|&nbsp;
 					</IF>
 				</td>
 			</tr>
@@ -1133,9 +1133,9 @@
               <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
               <td>
                               <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-                      |&nbsp;<a href="statut.php?id=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=pret">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
                   <ELSE/>
-                      |&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
+                      |&nbsp;<span class="inactif">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</span>&nbsp;|
                   </IF>
               </td>
           </tr>
@@ -1148,9 +1148,9 @@
               <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
               <td>
                               <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-                      |&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
                   <ELSE/>
-                      |&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
+                      |&nbsp;<span class="inactif">[@EDITION.GO_TO_DRAFT]</span>&nbsp;|&nbsp;
                   </IF>
               </td>
           </tr>
@@ -1162,9 +1162,9 @@
               <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
               <td>
                               <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-                      |&nbsp;<a href="statut.php?id=[#ID]&statut=protege">Prot&eacute;ger</a>&nbsp;|
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=protege">[@COMMON.PROTECT]</a>&nbsp;|
                   <ELSE/>
-                      |&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
+                      |&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
                   </IF>
               </td>
           </tr>
@@ -1176,9 +1176,9 @@
               <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
               <td>
                               <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-                      |&nbsp;<a href="statut.php?id=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=deprotege">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
                   <ELSE/>
-                      |&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;|&nbsp;
+                      |&nbsp;<span class="inactif">[@EDITION.GO_TO_PUBLISHED]</span>&nbsp;|&nbsp;
                   </IF>
               </td>
           </tr>
@@ -1190,22 +1190,22 @@
 	<IF COND="[#STATUT] GT 0">
 		<IF COND="([#STATUT]==1)">
                    <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
-			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">D&eacute;publier</a>
+			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
                     <ELSE/>
-			<span class="inactif">D&eacute;publier</span>
+			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>
 		<ELSE/>
-			<span class="inactif">Prot&eacute;g&eacute;</span>
+			<span class="inactif">[@COMMON.PROTECTED]</span>
 		</IF>
 	<ELSE/>
 		<IF COND="([#STATUT]==-1)">
                    <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
-			<a href="publi.php?publication=[#ID]&online=1">Publier</a>
+			<a href="publi.php?publication=[#ID]&online=1">[@EDITION.PUBLISH]</a>
                    <ELSE/>
-			<span class="inactif">Publier</span>
+			<span class="inactif">[@EDITION.PUBLISH]</span>
                    </IF>
 		<ELSE/>
-			<span class="inactif">Brouillon</span>
+			<span class="inactif">[@EDITION.DRAFT]</span>
 		</IF>
 	</IF>
 </DEFMACRO>
@@ -1323,7 +1323,7 @@
 			</table>
 		</AFTER>
 		<ALTERNATIVE>
-			<span class="texte_info" style="padding-left:00px"><MACRO NAME="PNG_ANNEXE_GRIS_NO"> Il n'y a aucun document annexe associ&eacute; à ce document.</span>
+			<span class="texte_info" style="padding-left:00px"><MACRO NAME="PNG_ANNEXE_GRIS_NO">[@EDITION.NO_ANNEX_DOCUMENT]</span>
 		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
@@ -1332,9 +1332,9 @@
 	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
 		<div>
 			<MACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
-			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">Modifier</a>&nbsp;|
+			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">[@COMMON.MODIFY] </a>&nbsp;|
 			<MACRO NAME="STATUT_DOCUMENT_ANNEXE">&nbsp;|
-			<a href="javascript:confirm_suppression([#ID])">Supprimer</a>
+			<a href="javascript:confirm_suppression([#ID])">[@COMMON.DELETE]</a>
 		</div>
 	</IF>
 </DEFMACRO>
