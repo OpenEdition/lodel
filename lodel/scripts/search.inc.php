@@ -94,7 +94,7 @@ function search($context)
 		
 		$token = removeaccents($token);
 		//foreach word search entities that match this word
-		$dao = &getDAO("index");
+		$dao = &getDAO("search_engine");
 		
 		//Added stemmer
 		/*require_once("class.stemmer.inc.php");

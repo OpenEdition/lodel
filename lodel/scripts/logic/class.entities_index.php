@@ -46,7 +46,7 @@ class Entities_IndexLogic extends Logic
    	 */
    	function Entities_IndexLogic() 
    	{
-		$this->Logic("dictionary");
+		$this->Logic("search_engine");
    	}
    	
    	/**
@@ -135,7 +135,7 @@ class Entities_IndexLogic extends Logic
    	 		$vos_index = array();
    	 		
    	 		//index ponderation and virtual object creation
-   	 		$dao_index = &getDAO("dictionary");
+   	 		$dao_index = &getDAO("search_engine");
    	 		foreach($indexs as  $key => $index)
    	 		{
    	 			$dao_index->instantiateObject($vo_index);
@@ -165,7 +165,7 @@ class Entities_IndexLogic extends Logic
    	  			return "_error";
    	  		$id = $context["identity"];
    	  		//get tue DAO for index
-   	  		$dao = &getDAO("dictionary");
+   	  		$dao = &getDAO("search_engine");
    	  		//delete all lines with identity=id and return
    	  		if($dao->deleteObjects("identity=$id"))
    	  			return "_back";
@@ -181,7 +181,7 @@ class Entities_IndexLogic extends Logic
    	   function cleanIndexAction(&$context,&$error)
    	   {
    	   		//get tue DAO for index
-   	  		$dao = &getDAO("dictionary");
+   	  		$dao = &getDAO("search_engine");
    	  	#print($dao);
    	  		//delete all index lines and return
    	  		if($dao->deleteObjects("1"))
