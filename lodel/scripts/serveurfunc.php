@@ -44,7 +44,8 @@ function contact_servoo ($cmds,$uploadedfiles,$destfile="")
   $ret=upload($options[servoourl],
 	      array("username"=>$options[servoousername],
 		    "passwd"=>$options[servoopasswd],
-		    "commands"=>$cmds),
+		    "commands"=>$cmds,
+		    "lodelversion"=>$GLOBALS[version]),
 	      $uploadedfiles, # fichier a uploaded
 	      0, # cookies
 	      $destfile
