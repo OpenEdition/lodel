@@ -65,7 +65,7 @@ GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'm
 
 <hr style="width: 100%; height: 2px;">
 
-<?php  if ($erreur_connect) { ?> <b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.IMPOSSIBLE_TO_CONNECT_TO_DATABASE_SERVER_ERROR_IS]: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.UNABLE_TO_CONNECT_TO_DATABASE_SERVER_ERROR_IS]: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="mysql" />
@@ -81,10 +81,10 @@ GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'm
 
 <?php if ($installoption==1) { // OPTION 1 ?>
     <hr style="width: 100%; height: 2px;">
-    <p align="justify"><strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :</strong> [@INSTALL.ADDRESS_INDICATED_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_HOSTER]
+    <p align="justify"><strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :</strong> [@INSTALL.ADDRESS_INDICATED_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
         </p>
-        <p align="justify"><strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :</strong> [@INSTALL.INDICATED_BY_YOUR_HOSTER]. </p>
-        <p align="justify"><strong>[@INSTALL.IF_ANY_DOUBT] : </strong>[@INSTALL.CONTACT_YOUR_HOSTER]. </p>
+        <p align="justify"><strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :</strong> [@INSTALL.INDICATED_BY_YOUR_PROVIDER]. </p>
+        <p align="justify"><strong>[@INSTALL.IF_ANY_DOUBT] : </strong>[@INSTALL.CONTACT_YOUR_PROVIDER]. </p>
 
 <?php } // fin OPTION 1 ?>
 

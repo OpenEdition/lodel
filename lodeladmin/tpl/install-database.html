@@ -38,7 +38,7 @@ include("tpl/install-openhtml.html");
 
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p align="justify">
-[@INSTALL.CHOOSE_PREEXISTING_DATABASE_OR_CREATE_NEW].<br/>[@INSTALL.USUALLY_HOSTER_CREATE_DATABASE_SEE_TECHNICAL_SUPPORT].</p>
+[@INSTALL.CHOOSE_PREEXISTING_DATABASE_OR_CREATE_NEW].<br/>[@INSTALL.USUALLY_PROVIDER_CREATE_DATABASE_SEE_TECHNICAL_SUPPORT].</p>
 <?php } else { // OPTION 2 ?>
 <p align="justify">
 [@INSTALL.CAN_USE_PREEXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
@@ -69,7 +69,7 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 <?php } // fin OPTION 2 ?>
 
 
-<?php  if ($erreur_createdatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf([#DATABASE])] : <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_createdatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf([#DATABASE])] : <?php  echo mysql_error(); ?> <?php } ?>
 
 <?php  if ($erreur_usedatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.DATABASE_USE_IMPOSSIBLE_CHECK_DATABASEUSER_RIGHTS_ERROR_IS] : <?php  echo mysql_error(); ?> <?php } ?>
 

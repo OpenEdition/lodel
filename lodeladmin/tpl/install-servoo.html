@@ -55,7 +55,7 @@ include("tpl/install-openhtml.html");
 
 <?php } ?>
 
-<?php  if ($erreur_connect) { ?> <p><b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.IMPOSSIBLE_TO_CONNECT_TO_SERVER_CHECK_DATAS_ERROR_IS|sprintf([#SERVOOHOST])]:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <p><b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.UNABLE_TO_CONNECT_TO_SERVER_CHECK_DATAS_ERROR_IS|sprintf([#SERVOOHOST])]:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
 
 
 <hr style="width: 100%; height: 2px;">

@@ -43,7 +43,7 @@ include("tpl/install-openhtml.html");
 [@INSTALL.IF_NOT_LODEL_NEEDS_AUTOMATICALLY_INCLUDED_DIRECTORY_PHP_CONFIGURATION_VARIABLE_"INCLUDEPATH"_THEN_CHOOSE_SECOND_OPTION_AND_SPECIFY_RELATIVE_PATH_TO_DIRECTORY].
 <p>
 
-<?php  if ($erreur_homeinaccessible) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.IMPOSSIBLE_TO_ACCESS_SCRIPTS_THROUGH_DIRECTORY] <?php echo "$pathroot/lodel/scripts"; ?>.<?php  } ?>
+<?php  if ($erreur_homeinaccessible) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_ACCESS_SCRIPTS_THROUGH_DIRECTORY] <?php echo "$pathroot/lodel/scripts"; ?>.<?php  } ?>
 <?php  if ($erreur_mkdir) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.DIRECTORY_NOT_EXISTING_CANT_BE_CREATED|sprintf([#INCLUDEPATH])]. 
 <h2>[@INSTALL.OPTION_1]</h2>
 <p align="justify">[@INSTALL.CHECK_INPUT_PATH_IF_NOT_CHECK_WRITING_RIGHTS_IN_PARENT_DIRECTORY] "<?php echo $includepath; ?>".</p>
@@ -52,7 +52,7 @@ include("tpl/install-openhtml.html");
 <?php  } ?>
 
 
-<?php  if ($erreur_copyscripts) { ?><b>[@INSTALL.ERROR]</b>: [@INSTALL_IMPOSSIBLE_COPY_SCRIPTS_IN_DIRECTORY] <?php  echo $includepath; ?>.
+<?php  if ($erreur_copyscripts) { ?><b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_COPY_SCRIPTS_IN_DIRECTORY] <?php  echo $includepath; ?>.
 
 <h2>[@INSTALL.OPTION_1]</h2>
 <p align="justify">[@INSTALL.CHECK_INPUT_PATH_IF_NOT_CHECK_WRITING_RIGHTS_IN_PARENT_DIRECTORY] "<?php echo $includepath; ?>".</p>
