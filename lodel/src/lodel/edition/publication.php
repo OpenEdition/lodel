@@ -45,7 +45,7 @@ if ($id>0 && $dir) {
 
   extract_post();
   // edition et sort si ca marche
-  if (enregistre_entite($context,$id,"publications",$critere)) back();
+  if (enregistre_entite($context,$id,"publications")) back();
 
 } elseif ($id>0) {
   include_once ($home."connect.php");
