@@ -436,7 +436,7 @@ function parse_LOOP()
       case "NAME":
 	break;
       case "DATABASE":
-	$db=trim($value);
+	$database=trim($value).".";
 	break;
       case "WHERE" :
 	$wheres[]="(".replace_conditions($value,"sql").")";
@@ -450,7 +450,7 @@ function parse_LOOP()
 	}
 	if ($arr) {
 	  foreach ($arr as $value) {
-	    array_push($tables,trim($value));
+	    array_push($tables,$database.trim($value));
 	  }
 	}
 	break;
@@ -568,8 +568,8 @@ function parse_LOOP()
     //
     if (!$issql) {// the loop is not defined yet, thus it is a user loop
       //
-      $this->loops[$name][id]++; // increment the name count
-      $newname=$name."_".$this->loops[$name][id]; // change the name in order to be unique
+      $this->loops[$name]['id']++; // increment the name count
+      $newname=$name."_".$this->loops[$name]['id']; // change the name in order to be unique
       $this->decode_loop_content($name,$contents,$options);
       $this->make_userdefined_loop_code ($newname,$contents,$arguments);
       // build the array for the arguments:
@@ -1043,7 +1043,7 @@ function prefixTablesInSQL ($sql)
       $inquote=true;
       $escaped=false;
       $quotec=$c;
-    } elseif ($c=="." && preg_match("/\b(\w+)$/",$str,$result)) { // table dot ?
+    } elseif ($c=="." && preg_match("/\b((?:\w+\.)?\w+)$/",$str,$result)) { // table dot ?
       $prefixedtable=$this->prefixTableName($result[1]);
       if ($prefixedtable!=$result[1]) {
 	// we have a table... let's prefix it

@@ -378,18 +378,23 @@ function prefixTableName($table)
   static $tablefields;
   if (!$tablefields) require($home."tablefields.php");
 
-  if (preg_match("/\b(\w+)(\s+as\s+\w+)\b/i",$table,$result)) {
+  if (preg_match("/\b((?:\w+\.)?\w+)(\s+as\s+\w+)\b/i",$table,$result)) {
     $table=$result[1];
     $alias=$result[2];
   }
+  if (preg_match("/\b(\w+\.)(\w+)\b/",$table,$result)) {
+    $table=$result[2];
+    $dbname=$result[1];
+    if ($dbname=="lodelmain.") $dbname=DATABASE.".";
+  }
 
   $prefixedtable=lq("#_TP_".$table);
-  if ($tablefields[$prefixedtable]) {
+  if ($tablefields[$prefixedtable] && ($dbname=="" || $dbname==$GLOBALS['currentdb'].".")) {
     return $prefixedtable.$alias;
-  } elseif ($tablefields[lq("#_MTP_".$table)]) {
+  } elseif ($tablefields[lq("#_MTP_".$table)] && ($dbname=="" || $dbname==DATABASE.".")) {
     return lq("#_MTP_".$table).$alias;
   } else {
-    return $table.$alias;
+    return $dname.$table.$alias;
   }
    
   //if (!SINGLESITE && ($table==lq("#_MTP_sites") || $table==lq("#_MTP_session"))) {

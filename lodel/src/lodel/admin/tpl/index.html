@@ -293,7 +293,7 @@
 						<td width="350" class="td_admin">
 							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
 		                                <select onchange="change_language(this)">
-	                                	<LOOP NAME="translations_interface" DATABASE="[#DATABASE]" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
+	                                	<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
 		                                <IF COND="[#USER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>

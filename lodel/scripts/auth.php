@@ -185,7 +185,7 @@ $context=array(
 	       "shareurl"=>$GLOBALS['shareurl'],
 	       "extensionscripts"=>$GLOBALS['extensionscripts'],
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'],
-	       "database"=>$GLOBALS['database'],
+	       #"database"=>defined("DATABASE") ? DATABASE : $GLOBALS['database'],
 	       "siteroot"=>defined("SITEROOT") ? SITEROOT : "",
 	       ); // tres important d'initialiser le context.
 
