@@ -67,6 +67,7 @@
 						</h1>
 					
 					<LOOP NAME="dix_derniers_articles" TABLE="documents" WHERE="type = 'article'" LIMIT="10" ORDER="datepubli DESC">
+					<BEFORE><h3>Les dix derniers articles publiés :</h3></BEFORE>
 	  				<DO>
 	    				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 	  				</DO>
