@@ -269,6 +269,7 @@ function gr_titre(&$context)
 
 {
     return "<r2r:grtitre>".
+      writetag("surtitre",strip_tags(rmscript(trim($context[surtitre])),"<I>")).
       writetag("titre",strip_tags(rmscript(trim($context[titre])),"<I>")).
       writetag("soustitre",strip_tags(rmscript(trim($context[soustitre])),"<I>")).
       "</r2r:grtitre>\n";
