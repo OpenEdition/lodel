@@ -281,25 +281,30 @@ function loop_search(&$context,$funcname,$arguments)
 	//call before function
 	if(function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname",$local_context);
-
+	$dao2 = &getDAO("entities");
 	//call do function with the results
+	print_r($results);
 	foreach($results as $key => $weight)
 	{
-		$dao2 = &getDAO("entities");
 		$vo = $dao2->getById($key);
-		foreach($vo as $key => $value)
-			$local_context[$key] = $value;
-		#print_r($vo);
-		$local_context['weight'] = $weight;
-		$local_context['idtype'] = $vo->idtype;
-		$dao_type = &getDAO("types");
-		$vo_type = $dao_type->getByID($vo->idtype);
-		$local_context['type'] = $vo_type->type;
-		//added information on tpledition
-		$local_context['tpledition'] = $vo_type->tpledition;
-		$local_context['count'] = $count;
-		call_user_func("code_do_$funcname",$local_context);
-		$count++;
+		
+		if($vo->id)
+		{
+			#print_r($vo);
+			foreach($vo as $key => $value)
+				$local_context[$key] = $value;
+			#print_r($vo);
+			$local_context['weight'] = $weight;
+			$local_context['idtype'] = $vo->idtype;
+			$dao_type = &getDAO("types");
+			$vo_type = $dao_type->getByID($vo->idtype);
+			$local_context['type'] = $vo_type->type;
+			//added information on tpledition
+			$local_context['tpledition'] = $vo_type->tpledition;
+			$local_context['count'] = $count;
+			call_user_func("code_do_$funcname",$local_context);
+			$count++;
+		}
 	}
 	
 	//call after function
@@ -314,15 +319,13 @@ function loop_search(&$context,$funcname,$arguments)
  * Results page script - Lodel part
  * 
  */
-
+include_once("connect.php");
 require_once("view.php");
 require_once("func.php");
+
 $view=&getView();
 $base="search";
-
 extract_post($_GET);
-
-	
 recordurl();	
 $view->renderCached($context,$base);
 return;
