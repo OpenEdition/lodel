@@ -214,6 +214,7 @@ function make_select_balises_xhtml()
 					"" => "Aucune balise",
 					"xhtml:fontstyle" => "tt, i, b, big, small",
 					"xhtml:phrase" => "em, strong, dfn, code, q, samp, kbd, var, cite, abbr, acronym, sub, sup"
+					"xhtml:block" => "p, h1, h2, h3, h4, h5, h6, div, lists, pre, hr, blockquote, address, table"
 					)
 				);
 }
