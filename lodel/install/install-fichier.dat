@@ -123,8 +123,6 @@ ln tpl/documentannexe-lienexterne.html
 
 ln metaimage.php
 ln tpl/metaimage.html
-ln a_editer.php
-ln tpl/a_editer.html
 ln deplacer.php
 ln tpl/deplacer.html
 ln publi.php
