@@ -99,7 +99,7 @@ do {  // exception
   }
 } while (0);
 
-if ($previd) $context[prevdocument]=makeurl("document",$previd);
+if ($previd) $context[prevdocument]=makeurlwithid("document",$previd);
 
 // fin suivant et precedent
 
