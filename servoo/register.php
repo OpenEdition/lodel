@@ -79,7 +79,7 @@ if ($edit && !$reject) {
       $passwd.= $chars[rand()%strlen($chars)];
     }
 
-    $encodedpasswd=md5($passwd.".".$context[username]);
+    $encodedpasswd=md5($passwd.".".$username);
 
     // ok, add the user.
     mysql_query("INSERT INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$username','$encodedpasswd','$context[url]','$context[realname]','$context[email]','5','$context[commentaire]')") or die(mysql_error());
@@ -137,10 +137,10 @@ return;
 
 
 function generate_login($string){
-  return preg_replace("/\W/","",strtr(
+  return strtolower ( preg_replace("/\W/","",strtr(
 	       strtr(utf8_decode($string),
 		     '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
 		     'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 	       array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
-		     '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u')));
+		     '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'))) );
 }
