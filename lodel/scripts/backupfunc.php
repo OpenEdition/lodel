@@ -557,51 +557,59 @@ function importFromZip ($archive,$accepteddirs,$acceptedexts=array(),$sqlfile=""
 
   // use UNZIP command
   if ($unzipcmd && $unzipcmd!="pclzip") {
-      $listfiles=`$unzipcmd -Z -1 $archive`;
-      if (!$listfiles)  return false;
-      $dirs="";
-      foreach ($accepteddirs as $dir) {
-	if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\//m",$listfiles) && 
-	    file_exists(SITEROOT.$dir)) {
-	  if ($acceptedexts) {
-	    foreach($acceptedexts as $ext) {
-	      $dirs.=$dir."/*.$ext ".$dir."/*/*.$ext ";
-	    }
-	  } else {
-	    $dirs.=$dir."/* ".$dir."/*/* ";
+    // find files to unzip
+    $listfiles=`$unzipcmd -Z -1 $archive`;
+    if (!$listfiles)  return false;
+    $dirs="";
+    foreach ($accepteddirs as $dir) {
+      if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\//m",$listfiles) && 
+	  file_exists(SITEROOT.$dir)) {
+	if ($acceptedexts) {
+	  foreach($acceptedexts as $ext) {
+	    $dirs.=$dir."/*.$ext ".$dir."/*/*.$ext ";
 	  }
+	} else {
+	  $dirs.=$dir."/* ".$dir."/*/* ";
 	}
       }
-      if (!chdir (SITEROOT)) die("ERROR: chdir fails");
-      system ($unzipcmd." -oq $archive  $dirs");
-      if (!chdir ("lodel/admin")) die("ERROR: chdir 2 fails");
-      if ($sqlfile) {
-	system ($unzipcmd." -qp $archive  *.sql >$sqlfile");
-	if (filesize($sqlfile)<=0)  return false;
-      }
+    }
+    if (!chdir (SITEROOT)) die("ERROR: chdir fails");
 
+    // erase the files if there exists
+    $listfiles=preg_split("/\n/",`$unzipcmd -Z -1 $archive $dirs`);
+    foreach ($listfiles as $file) {
+      if (file_exists($file))	unlink($file);
+    }
+    //
+    system ($unzipcmd." -oq $archive  $dirs");
+    if (!chdir ("lodel/admin")) die("ERROR: chdir 2 fails");
+    if ($sqlfile) {
+      system ($unzipcmd." -qp $archive  *.sql >$sqlfile");
+      if (filesize($sqlfile)<=0)  return false;
+    }
   } else { // use PCLZIP library
-      require($home."pclzip.lib.php");
-      $archive=new PclZip($archive);
+    require($home."pclzip.lib.php");
+    $archive=new PclZip($archive);
 
-      // functions callback
-      function preextract($p_event, &$p_header, $user_vars) { // choose the files to extract
-	//echo $p_header['filename'],"<br>";
-	if (preg_match("/^(\.\/)*.*\.sql$/",$p_header['filename'])) { // extract the sql file
-	  unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
-	  //                   may cause problem if the file is recreated but it's so uncertain !
-	  $p_header['filename']=$user_vars['sqlfile'];
-	  return 1;
-	}
-	$exts=$user_vars['acceptedexts'] ? ".*\.(".join("|",$user_vars['acceptedexts']).")$" : "";
-
-	if (preg_match("/^(\.\/)*".str_replace("/","\/",join("|",$user_vars['accepteddirs'])).
-		       "\/$exts/",$p_header['filename'])) {
-	  $p_header['filename']=SITEROOT.$p_header['filename'];
-	  return 1;
-	}
-	return 0; // don't extract
+    // functions callback
+    function preextract($p_event, &$p_header, $user_vars) { // choose the files to extract
+      //echo $p_header['filename'],"<br>";
+      if (preg_match("/^(\.\/)*.*\.sql$/",$p_header['filename'])) { // extract the sql file
+	unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
+	//                   may cause problem meanwhile if the file is recreated but it's so uncertain !
+	$p_header['filename']=$user_vars['sqlfile'];
+	return 1;
       }
+      $exts=$user_vars['acceptedexts'] ? ".*\.(".join("|",$user_vars['acceptedexts']).")$" : "";
+
+      if (preg_match("/^(\.\/)*".str_replace("/","\/",join("|",$user_vars['accepteddirs'])).
+		     "\/$exts/",$p_header['filename'])) {
+	$p_header['filename']=SITEROOT.$p_header['filename'];
+	if (file_exists($p_header['filename'])) unlink($p_header['filename']);
+	return 1;
+      }
+      return 0; // don't extract
+    }
 
       function postextract($p_event, &$p_header, $user_vars) { // chmod
 	#if ($p_header['filename']!=$user_vars{'sqlfile'} && 
