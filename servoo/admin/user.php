@@ -40,9 +40,9 @@ $id=intval($id);
 //
 // supression et restauration
 //
-if ($id>0 && ($delete || $restore)) { 
-  include (TOINCLUDE."trash.php");
-  treattrash("users");
+if ($id>0 && $delete) { 
+  mysql_query("DELETE FROM $GLOBALS[tp]users WHERE id='$id'") or die(mysql_error());
+  header("Location: users.php");
   return;
 }
 
