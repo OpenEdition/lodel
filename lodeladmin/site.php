@@ -372,7 +372,7 @@ if ($tache=="fichier") {
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
   if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  header("location: ".$urlroot.str_replace("//","",preg_replace("/^\//","",$context[chemin])."/lodel/edition"));
+  header("location: ".$context[url].str_replace("//","",$context[chemin])."/lodel/edition"));
   return;
 
 #  header("location: index.php");

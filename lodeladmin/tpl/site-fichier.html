@@ -48,10 +48,10 @@
 
 Il faut installer le fichier siteconfig.php. Vous avez le choix entre les deux alternatives:
 <ul>
-<li>soit télécharger le fichier siteconfig.php, le copier dans le repertoire [#REP] et donnée les droits de lecture au serveur. Poursuivre quand l'opération est réalisée.<br />
+<li>soit télécharger le fichier siteconfig.php, le copier dans le repertoire <IF COND="[#CHEMIN]=='/'">racine de Lodel<ELSE/>[(#CHEMIN|substr(1))]</IF> et donnée les droits de lecture au serveur. Poursuivre quand l'opération est réalisée.<br />
 <input type="submit" name="downloadsiteconfig" value="Télécharger"><input type="submit" value="continuer">
 </li>
-<li>donner les droits d'écriture au serveur web sur le repertoire [#REP] et poursuivre.<br />
+<li>donner les droits d'écriture au serveur web sur le repertoire <IF COND="[#CHEMIN]=='/'">racine de Lodel<ELSE/>[(#CHEMIN|substr(1))]</IF> puis cliquer sur "continuer".<br />
 <input type="submit" value="continuer">
 </li>
 </ul>
