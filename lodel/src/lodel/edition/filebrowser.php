@@ -68,7 +68,7 @@ if (isset($_POST['checkmail'])) {
   }
 }
 
-
+$nodesk=true;
 require ($home."calcul-page.php");
 calcul_page($context,"filebrowser");
 

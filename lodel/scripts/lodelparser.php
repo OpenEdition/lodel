@@ -370,22 +370,23 @@ function parse_after(&$text)
 
 
   // add the code for the desk
-
-  $desk='<'.'?php if ($GLOBALS[\'user\'][\'visitor\'] || $GLOBALS[\'user\'][\'adminlodel\']) { // insert the desk
+  if (!$GLOBALS['nodesk']) {
+    $desk='<'.'?php if ($GLOBALS[\'user\'][\'visitor\'] || $GLOBALS[\'user\'][\'adminlodel\']) { // insert the desk
     calcul_page($context,"desk","",$GLOBALS[\'home\']."../tpl/");
   } else {
   } ?'.'>';
 
-  $bodystarttag=strpos($text,"<body");
-  if ($bodystart!==false) {
-    $bodyendtag=strpos($text,">",$bodystarttag);
-    $text=substr_replace($text,$desk.'<div id="lodel-container">',$bodyendtag+1,0);
-    unset($desk);
-    $len=strlen($text)-30; // optimise a little bit the search
-    if ($len<0) $len=0;
-    $endbody=strpos($text,"</body",$len);
-    if ($endbody===false) $endbody=strpos($text,"</body",0);
-    $text=substr_replace($text,'</div>',$endbody,0); 
+    $bodystarttag=strpos($text,"<body");
+    if ($bodystart!==false) {
+      $bodyendtag=strpos($text,">",$bodystarttag);
+      $text=substr_replace($text,$desk.'<div id="lodel-container">',$bodyendtag+1,0);
+      unset($desk);
+      $len=strlen($text)-30; // optimise a little bit the search
+      if ($len<0) $len=0;
+      $endbody=strpos($text,"</body",$len);
+      if ($endbody===false) $endbody=strpos($text,"</body",0);
+      $text=substr_replace($text,'</div>',$endbody,0); 
+    }
   }
 }
 
