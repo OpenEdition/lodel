@@ -137,7 +137,7 @@ if ($tache=="plateform") {
   $me=$_SERVER['PHP_SELF'];
   if ($me) {
     // enleve moi
-    $urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
+    $urlroot=preg_replace("/\/+lodeladmin$versionsuffix\/install.php$/","",$me);
     if ($urlroot==$me) die("ERROR: the install.php script is not at the right place, please report this bug.");
     if (LODELROOT!="../") die("ERROR: the lodeladmin directory has been moved, please report this bug.");
 
@@ -289,8 +289,8 @@ if ($tache=="admin") {
 $protecteddir=array("lodel$versionsuffix",
 		    "CACHE",
 		    "tpl",
-		    "lodeladmin/CACHE",
-		    "lodeladmin/tpl");
+		    "lodeladmin$versionsuffix/CACHE",
+		    "lodeladmin$versionsuffix/tpl");
 
 if ($tache=="htaccess") {
   if ($verify || $write) maj_lodelconfig("htaccess","on");
@@ -385,14 +385,14 @@ if (!$tache) {
 
 // les fonctions de tests existent, donc on peut faire des tests sur les droits
 $dirs=array("CACHE"=>7,
-	    "lodeladmin/CACHE"=>7,
-	    "lodeladmin/tpl"=>5,
+	    "lodeladmin$versionsuffix/CACHE"=>7,
+	    "lodeladmin$versionsuffix/tpl"=>5,
 	    "lodel$versionsuffix"=>5,
 	    "lodel$versionsuffix/install"=>5,
 	    "lodel$versionsuffix/install/plateform"=>5,
 	    "lodel$versionsuffix/scripts"=>5,
 	    "lodel$versionsuffix/src"=>5,
-	    "lodeladmin/images"=>5);
+	    "lodeladmin$versionsuffix/images"=>5);
 
 $have_chmod=function_exists("chmod");
 	       
@@ -440,12 +440,11 @@ if (file_exists($lodelconfig) && (@include($lodelconfig))) {
 }
 
 // does what ./lodelconfig.php does.
-ini_set('include_path',LODELROOT. PATH_SEPARATOR . ini_get("include_path"));
-
+ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
 //
 // essaie d'etablir si on accede au script func.php
 //
-if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
+if ((@include("func.php"))!=568) { // on accede au fichier func.php
 #  // il faut determiner si on fonctionne avec un $home ou si on fonctionne avec un include automatique.
 #  // essaie de deviner le repertoire absolu
 #  if (!$pathroot && function_exists("realpath")) {

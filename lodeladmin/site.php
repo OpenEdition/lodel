@@ -62,7 +62,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
   // validation
 
   do {
-    if (!$context['title']) { $context[error_title]=$err=1; }
+    if (!$context['title']) { $context['error_title']=$err=1; }
     if (!$id && (!$context['name'] || preg_match("/\W/",$context['name']))) { $context['error_name']=$err=1; }
     if ($err) break;
     require_once("connect.php");
@@ -70,7 +70,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 
     // verifie qu'on a qu'un site si on est en singledatabase
     if (!$id && $singledatabase=="on") {
-      $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE status>-32") or die (mysql_error());
+      $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE status>-32 AND name!='".$context['name']."'") or die (mysql_error());
       list($numsite)=mysql_fetch_row($result);
       if ($numsite>=1) {
 	die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données. Il faut utiliser plusieurs bases de donnée ou attendre la prochaine version.<br /> Merci de votre comprehension.");
@@ -87,7 +87,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
       if (!$context['path']) $context['path']="/".$context['name'];
     }
     if (!$context[url]) {
-      $context[url]="http://".$_SERVER['SERVER_NAME'].preg_replace("/\blodeladmin\/.*/","",$_SERVER['REQUEST_URI']).substr($context['path'],1);
+      $context[url]="http://".$_SERVER['SERVER_NAME'].preg_replace("/\blodeladmin-\d+(\.\d+)?\/.*/","",$_SERVER['REQUEST_URI']).substr($context['path'],1);
     }
 
     if ($reinstall) $status=-32;

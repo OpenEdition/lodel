@@ -92,7 +92,8 @@ $view=&getView();
 
 
 if ($frominstall) {
-  $context['frominstall']=1;
+  $context['frominstall']=true;
+  $GLOBALS['nodesk']=true;
   $view->render($context,"importmodel-frominstall");
 } else {
   $view->render($context,"importmodel");

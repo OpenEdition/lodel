@@ -42,6 +42,7 @@ DIRS="lodel/lodel-$1 lodel/lodeladmin lodel/share-$1 lodel/tpl lodel/CACHE"
 
 # renomme les repertoires du CVS pour contenir le numero de version
 mv lodel/lodel lodel/lodel-$1
+mv lodel/lodeladmin lodel/lodeladmin-$1
 mv lodel/share lodel/share-$1
 
 EXTRADIRS=""
@@ -80,6 +81,7 @@ find $DIRS $EXTRADIRS \
 
 # restauration des noms des repertoires
 mv lodel/lodel-$1 lodel/lodel
+mv lodel/lodeladmin-$1 lodel/lodeladmin
 mv lodel/share-$1 lodel/share
 if [ $# -eq 2 ]
 then
