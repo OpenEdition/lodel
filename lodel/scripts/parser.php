@@ -351,7 +351,7 @@ function parse_variable (&$text,$escape="php")
   } // while variables with pipe function
 
   if ($escape=="php") {
-    $pre='<?php echo "'; $post='"; ?>';
+    $pre='<?php echo '; $post='; ?>';
   } elseif ($escape=="quote")  {
     $pre="&lodelparserquot;."; $post=".&lodelparserquot;";
   } else {
