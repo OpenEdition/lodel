@@ -20,22 +20,9 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
-<title>Enregistrement</title>
-<MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
-
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="images/fond_haut_popup_edition.png">Enregistrement</td>
-	</tr>
-</table>
-
-<table class="table_normale" style="margin-top:30px; margin-right: 50px;" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-         <td>Le mail avec vos paramètres de connection vient d'être envoyé.<br />Bonnes conversions !</td>
-	</tr>
-</table>
+<LET VAR="MSG">Enregistrement effectué</LET>
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_LOGO_REGISTER"> 
+        <p><strong>Le mail avec vos paramètres de connection vient d'être envoyé.</strong><br /><strong>Bonnes conversions !</strong></p>
 
 <MACRO NAME="CLOSE_HTML">

@@ -94,11 +94,14 @@ if ($edit && !$reject) {
     require_once (TOINCLUDE."calcul-page.php");
     ob_start();
     calcul_page($context,"register-mail");
-    $content=ob_get_contents();
+    $content=str_replace("\n","\r\n",ob_get_contents());
     ob_end_clean();
 
     // send the registration mail
-    if (!mail ($context[email],$context[subject],$content,"From: $context[from]")) {
+	$headers  = "MIME-Version: 1.0\r\n";
+   	$headers .= "Content-type: text/plain; charset=utf-8\r\n";    
+	$headers .= "From: $context[from]\r\n";
+    if (!mail ($context[email],$context[subject],$content,$headers)) {
       $context[error_sending_email]=1;
       mysql_query("DELETE FROM $GLOBALS[tp]users WHERE id='$id'") or die(mysql_error());
       break; 
