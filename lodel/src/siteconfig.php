@@ -42,4 +42,6 @@ $home="../lodel$versionsuffix/scripts/";
 $sharedir="../".$sharedir.$versionsuffix;
 $shareurl.=$versionsuffix;
 
+if (!defined(SITEROOT)) define(SITEROOT,"");
+
 ?>

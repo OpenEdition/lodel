@@ -139,7 +139,7 @@ if ($edit) { // modifie ou ajoute
     }
     if ($alter || $context[filtrage]!=$oldfiltrage) {
       require_once($home."cachefunc.php");
-      removefilesincache(".","../edition","../..");
+      removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
     }
     unlock();
     back();
