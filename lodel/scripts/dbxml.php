@@ -34,7 +34,7 @@ function enregistre ($context,&$text)
 
   myquote($context);  myquote($lcontext);  myquote($lang);
 
-  lock_write("entites","documents","personnes","entrees","documents_personnes","documents_entrees","typeentrees","typepersonnes","relations","types");
+  lock_write("entites","documents","personnes","entrees","entites_personnes","entites_entrees","typeentrees","typepersonnes","relations","types");
 
   // recherche l'ordre
   if ($context[ordre]) {
@@ -108,11 +108,11 @@ function extract_langue ($balises,&$vals,&$index,$defaut="")
 }
 
 
-function enregistre_personnes ($iddocument,&$vals,&$index,$status)
+function enregistre_personnes ($identite,&$vals,&$index,$status)
 
 {
-  // detruit les liens dans la table documents_personnes
- mysql_query("DELETE FROM $GLOBALS[tp]documents_personnes WHERE iddocument='$iddocument'") or die (mysql_error());
+  // detruit les liens dans la table entites_personnes
+ mysql_query("DELETE FROM $GLOBALS[tp]entites_personnes WHERE identite='$identite'") or die (mysql_error());
 
   if (!$index[personne]) return;
 
@@ -155,21 +155,21 @@ function enregistre_personnes ($iddocument,&$vals,&$index,$status)
 	$tag[attributes][ORDRE]) { // l'ordre est specifiee
       $ordre=$tag[attributes][ORDRE];
     } else {
-      $ordre=get_ordre_max("documents_personnes","iddocument='$iddocument'");
+      $ordre=get_ordre_max("entites_personnes","identite='$identite'");
     }
 
-    // ajoute l'personne dans la table documents_personnes
+    // ajoute l'personne dans la table entites_personnes
     // ainsi que la description
-    mysql_query("INSERT INTO $GLOBALS[tp]documents_personnes (idpersonne,iddocument,idtype,ordre,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$iddocument','$typepersonne[id]','$ordre','$context[description]','$context[prefix]','$context[affiliation]','$context[fonction]','$context[courriel]')") or die (mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]entites_personnes (idpersonne,identite,idtype,ordre,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$identite','$typepersonne[id]','$ordre','$context[description]','$context[prefix]','$context[affiliation]','$context[fonction]','$context[courriel]')") or die (mysql_error());
   }
 }
 
 
-function enregistre_entrees ($iddocument,&$vals,&$index,$status)
+function enregistre_entrees ($identite,&$vals,&$index,$status)
 
 {
-  // detruit les liens dans la table documents_indexhs
-  mysql_query("DELETE FROM $GLOBALS[tp]documents_entrees WHERE iddocument='$iddocument'") or die (mysql_error());
+  // detruit les liens dans la table entites_indexhs
+  mysql_query("DELETE FROM $GLOBALS[tp]entites_entrees WHERE identite='$identite'") or die (mysql_error());
 
   if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
 
@@ -215,11 +215,11 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
       $id=0;
       die ("erreur interne 2 dans enregistre_entrees: type: $balise entree: $entree");
     }
-    // ajoute l'entree dans la table documents_entrees
+    // ajoute l'entree dans la table entites_entrees
     // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
     // une chaine et en faisant la requette a la fin !
     if ($id)
-      mysql_query("INSERT INTO $GLOBALS[tp]documents_entrees (identree,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+      mysql_query("INSERT INTO $GLOBALS[tp]entites_entrees (identree,identite) VALUES ('$id','$identite')") or die (mysql_error());
     
   } // tags
 }

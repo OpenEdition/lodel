@@ -24,12 +24,14 @@ ALTER TABLE _PREFIXTABLE_indexls ADD abrev VARCHAR(15) NOT NULL;
 ALTER TABLE _PREFIXTABLE_indexls ADD parent INT UNSIGNED DEFAULT \'0\' NOT NULL;
 # ajoute l index sur nom
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_nom (nom);
+ALTER TABLE _PREFIXTABLE_indexls DROP INDEX index_mot;
 # ajoute l index sur abrev
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_abrev (abrev);
 # ajoute l index sur parent
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_parent (parent);
 # change le nom de l index dans la table de liaison
 ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE idindexl identree INT UNSIGNED DEFAULT \'0\' NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE iddocument identite INT UNSIGNED DEFAULT \'0\' NOT NULL;
 # change type en idtype
 ALTER TABLE _PREFIXTABLE_indexls CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
@@ -38,8 +40,8 @@ UPDATE _PREFIXTABLE_indexls SET status=32, idtype=2 WHERE idtype=3;
 # ok c est bon, on peut renomer
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
 RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_entrees;
-DROP TABLE IF EXISTS _PREFIXTABLE_documents_entrees;
-RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_documents_entrees;
+DROP TABLE IF EXISTS _PREFIXTABLE_entites_entrees;
+RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_entites_entrees;
 # positionne la langue correctement
 UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 ');
@@ -49,7 +51,7 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 
     // est-ce que la table des indexhs exists ?
     if ($tables["$GLOBALS[tp]indexhs"]) { // fusion !
-      lock_write("indexhs","entrees","documents_indexhs","documents_entrees");
+      lock_write("indexhs","entrees","documents_indexhs","entites_entrees");
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]indexhs") or die (mysql_error());
 
       //
@@ -87,13 +89,13 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documents_indexhs") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
 	// ajoute dans la table le lien
-	$cmds.="INSERT INTO _PREFIXTABLE_documents_entrees (identree,iddocument) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
+	$cmds.="INSERT INTO _PREFIXTABLE_entites_entrees (identree,identite) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
       }
 
 #      die( preg_replace("/;/","<br>",$cmds));
       $err=mysql_query_cmds($cmds);
       if ($err) break;
-      $report.="Importation de la table documents_indexhs dans documents_entrees<br>\n";
+      $report.="Importation de la table documents_indexhs dans entites_entrees<br>\n";
 
       //
       // on met a jour la langue au cas ou et on détruit l'ancienne table alors
@@ -107,33 +109,6 @@ DROP TABLE _PREFIXTABLE_indexhs;
       if ($err) break;
       $report.="Destruction de la table indexhs et documents_indexhs<br>\n";
     }
-    $tables=gettables(); // remet a jour la liste des tables;
-#    if ($tables["$GLOBALS[tp]typeindexs"]) { // il faut renommer cette table
-#      $err=mysql_query_cmds('
-#DROP TABLE IF EXISTS _PREFIXTABLE_typeentrees;
-#RENAME TABLE _PREFIXTABLE_typeindexs TO _PREFIXTABLE_typeentrees;
-#');
-#      if ($err) break;
-#      $report.="Conversion de typeindexs<br>\n";
-#    }
-#    if ($tables["$GLOBALS[tp]indexs"]) { // il faut renommer cette table
-#      $err=mysql_query_cmds('
-#RENAME TABLE _PREFIXTABLE_indexs TO _PREFIXTABLE_entrees;
-#ALTER TABLE _PREFIXTABLE_entrees CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
-#ALTER TABLE _PREFIXTABLE_entrees ADD INDEX index_idtype (idtype);
-#');
-#      if ($err) break;
-#      $report.="Conversion de indexs<br>\n";
-#    }
-#    if ($tables["$GLOBALS[tp]documents_indexs"]) { // il faut renommer cette table
-#      $err=mysql_query_cmds('
-#RENAME TABLE _PREFIXTABLE_documents_indexs TO _PREFIXTABLE_documents_entrees;
-#ALTER TABLE  _PREFIXTABLE_documents_entrees  CHANGE idindex identree		INT UNSIGNED DEFAULT 0 NOT NULL;
-#ALTER TABLE _PREFIXTABLE_documents_entrees ADD INDEX  index_identree (identree);
-#');
-#      if ($err) break;
-#      $report.="Conversion de documents_indexs<br>\n";
-#    }
     $tables=gettables(); // remet a jour la liste des tables;
     if (!$tables["$GLOBALS[tp]typeentrees"]) { // il faut creer cette table, et les autres...
       if ($err=create("typeentrees")) break;
@@ -210,12 +185,16 @@ RENAME TABLE _PREFIXTABLE_auteurs TO _PREFIXTABLE_personnes;
     if ($tables["$GLOBALS[tp]documents_auteurs"]) {
       $err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_documents_auteurs CHANGE idauteur idpersonne INT UNSIGNED DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_auteurs CHANGE iddocument identite INT UNSIGNED DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_documents_auteurs ADD INDEX index_idpersonne (idpersonne);
+ALTER TABLE _PREFIXTABLE_documents_auteurs DROP INDEX index_idauteur;
+ALTER TABLE _PREFIXTABLE_documents_auteurs ADD INDEX index_identite (identite);
+ALTER TABLE _PREFIXTABLE_documents_auteurs DROP INDEX index_iddocument;
 ALTER TABLE _PREFIXTABLE_documents_auteurs ADD idtype INT UNSIGNED DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_documents_auteurs ADD INDEX index_idtype (idtype);
 UPDATE _PREFIXTABLE_documents_auteurs SET idtype=1;
-DROP TABLE IF EXISTS _PREFIXTABLE_documents_personnes;
-RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_documents_personnes;
+DROP TABLE IF EXISTS _PREFIXTABLE_entites_personnes;
+RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_entites_personnes;
 ');
       if ($err) break;
       $report.="Modification de documents_auteurs et renommage<br>\n";
@@ -367,6 +346,15 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
 	if ($err) break;
 	$report.="Creation de la table groupe<br>\n";
     }
+
+    if (!$tables["$GLOBALS[tp]typeentites_typepersonnes"]) {
+	if ($err=create("typeentites_typepersonnes")) break;
+    }
+
+    if (!$tables["$GLOBALS[tp]typeentites_typeentrees"]) {
+	if ($err=create("typeentites_typeentrees")) break;
+    }
+
 
 #    if (!$tables["$GLOBALS[tp]champs"]) {
 #	if ($err=create("champs")) break;

@@ -23,7 +23,7 @@
 		<td class="texte_noir_gras">Fichier Template d'Edition</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="typepubli" TABLE="types" WHERE="ok" WHERE="class='publications'" ORDER="ordre">
+	<LOOP NAME="typepubli" TABLE="types" WHERE="ok" WHERE="classe='publications'" ORDER="ordre">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
@@ -55,7 +55,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="typepubli_trash" TABLE="types" ORDER="ordre" WHERE="trash" WHERE="class='publications'">
+<LOOP NAME="typepubli_trash" TABLE="types" ORDER="ordre" WHERE="trash" WHERE="classe='publications'">
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>

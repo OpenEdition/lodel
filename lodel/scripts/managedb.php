@@ -72,8 +72,8 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
   if ($mklock) {
     lock_write("entites",
 	       "publications","documents",
-	       "personnes","documents_personnes",
-	       "entrees","documents_entrees",
+	       "personnes","entites_personnes",
+	       "entrees","entites_entrees",
 	       "relations");
   }
 
@@ -142,17 +142,17 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
   $tables=$table."s";
 
   if (is_numeric($ids)) { # on a un seul document
-    $critere.="iddocument=".$ids;
+    $critere.="identite=".$ids;
   } else {
-    $critere.="iddocument IN (".join(",",$ids).")";
+    $critere.="identite IN (".join(",",$ids).")";
   }
-  mysql_query("DELETE FROM $GLOBALS[tp]documents_$tables WHERE $critere") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]entites_$tables WHERE $critere") or die (mysql_error());
 
   if (!$deletetable) return;
 
   if ($deletecritere) $deletecritere.=" AND ";
-  # efface tous les items qui ne sont pas dans documents_items... ce sont ceux qu'il faut detruire ou depublie
-  $result=mysql_query("SELECT id FROM $GLOBALS[tp]$tables LEFT JOIN $GLOBALS[tp]documents_$tables ON id=id$table WHERE $deletecritere id$table is NULL") or die (mysql_error());
+  # efface tous les items qui ne sont pas dans entites_items... ce sont ceux qu'il faut detruire ou depublie
+  $result=mysql_query("SELECT id FROM $GLOBALS[tp]$tables LEFT JOIN $GLOBALS[tp]entites_$tables ON id=id$table WHERE $deletecritere id$table is NULL") or die (mysql_error());
   
   $ids=array();
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
@@ -177,8 +177,8 @@ function publi ($id,$status,$confirmation)
   global $usergroupes,$admin,$context;
 
   lock_write("entites",
-	     "personnes","documents_personnes",
-	     "entrees","documents_entrees",
+	     "personnes","entites_personnes",
+	     "entrees","entites_entrees",
 	     "relations"); 
 
   //
@@ -242,12 +242,12 @@ function publi_table($critere,$status,$table)
 # mais cette procedure risque de buguer a terme.
   $tables=$table."s";
 # cherches les id$tables a changer
-  # iddocument ?
+  # identite ?
   if (is_numeric($critere)) { # on a un seul document
-    $iddocument=intval($critere);
-    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]documents_$tables WHERE iddocument=$iddocument") or die (mysql_error());
+    $identite=intval($critere);
+    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables WHERE identite=$identite") or die (mysql_error());
   } else { # on a une condition sur les documents
-    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]documents_$tables,$GLOBALS[tp]entites WHERE iddocument=id AND $critere AND status>-32") or die (mysql_error());
+    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables,$GLOBALS[tp]entites WHERE identite=id AND $critere AND status>-32") or die (mysql_error());
   }
   $ids=array();
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
@@ -262,7 +262,7 @@ function publi_table($critere,$status,$table)
   } else { // status<0
     # la c'est plus complique, il faut selectionner les $tables qui n'ont pas de document online... celui qu'on publie
 
-    $result=mysql_query ("SELECT id$table FROM $GLOBALS[tp]documents_$tables, $GLOBALS[tp]entites WHERE iddocument=$GLOBALS[tp]entites.id AND $GLOBALS[tp]entites.status>0 AND id$table IN ($idlist)") or die (mysql_error());
+    $result=mysql_query ("SELECT id$table FROM $GLOBALS[tp]entites_$tables, $GLOBALS[tp]entites WHERE identite=$GLOBALS[tp]entites.id AND $GLOBALS[tp]entites.status>0 AND id$table IN ($idlist)") or die (mysql_error());
     $ids=array();
     while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
     if ($ids) $where="AND id NOT IN (".join(",",$ids).")";

@@ -47,7 +47,6 @@
 	</div>
 	<form method="post" action="publication.php">
 		[(#ERREUR_PUBLICATION_EXISTE|true)Ce numéro existe déjà]
-		<input type="hidden" name="edit" value="1" />
 		<input type="hidden" name="id" value="[#ID]" />
 		<input type="hidden" name="idparent" value="[#IDPARENT]" />
 		<input type="hidden" name="idtype" value="[#IDTYPE]" />
@@ -135,12 +134,13 @@
 		</div>
 		
 		<div class="ligne_formulaire">
-	<!-- boucle sur les types de personne --><!--
-        <LOOP NAME="typepersonnes" TABLE="typepersonnes" WHERE="status gt 0" ORDER="ordre">		    
+	<!-- boucle sur les types de personne -->
+CODE HTML A REPRENDRESTP NICOLAS... surement faire une macro en commun avec extrainfo.html
+        <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">		    
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
 			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE] <input class="form" type="submit" name="plus[[#ID]]" value="Ajouter"></td>
 		</tr>
 	</table>
 	<br />
@@ -149,7 +149,7 @@
 
 		<LOOP NAME="personnes">
 			<tr>
-			<td width="200">Personnes [#IND] :</td>
+			<td width="200">[#TITRE] [#IND] :</td>
 				    <td>
 				      <table class="table_form_popup">
 					<tr>
@@ -188,12 +188,34 @@
 				    </td>
 				</tr>
 		</LOOP>
-		<tr>
-			<td width="200">&nbsp;</td>
-			<td><input class="form" type="submit" name="plus[[#ID]]" value="   Ajouter une autre personne   "></td>
-		</tr>
 	</table>
-	</LOOP> --><!-- fin de la boucle sur les types d'auteurs -->
+	</LOOP><!-- fin de la boucle sur les types d'auteurs -->
+        <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">
+		<br />
+		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<tr>
+				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+			</tr>
+		</table>
+		<br />
+	
+		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<tr>
+				<td width="200" valign="top">[#TITRE] (*) :</td>
+				<td>
+					<select multiple size="10" name="entrees[[#ID]][]"><? makeselectentrees($context); ?></select><br />
+					<IF COND="[#NEWIMPORTABLE]">
+						<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
+						* noms séparés par des virgules ou point-virgules.
+					<ELSE/>
+						<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
+					</IF>
+				</td>
+			</tr>
+		</table>
+	</LOOP>
+
 		</div>
 
 
@@ -207,7 +229,7 @@
 		</div>
 
 		<div class="pied_de_formulaire">
-			<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="form" type="submit" name="edit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<IF COND="[#ID]">
 				<input class="form" type="button" value="Supprimer" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />

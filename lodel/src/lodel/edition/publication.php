@@ -39,17 +39,20 @@ if ($id>0 && $dir) {
 //
 // ajoute ou edit
 //
+} elseif ($plus) {
+  extract_post();
 } elseif ($edit) { // modifie ou ajoute
   include ($home."publicationfunc.php");
 
   extract_post();
   // edition et sort si ca marche
-  if (pub_edition($context,"id='$id'".$critere)) back();
-
+  if(pub_edition($context,"id='$id'".$critere)) back();
 } elseif ($id>0) {
   include_once ($home."connect.php");
   $result=mysql_query("SELECT *, type  FROM  $GLOBALS[publicationstypesjoin] WHERE $GLOBALS[tp]entites.id='$id'  $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
+  extrait_personnes($id,&$context);
+  extrait_entrees($id,&$context);
 } else {
   include_once ($home."textfunc.php");
   $context[type]=trim(rmscript(strip_tags($type)));
@@ -95,19 +98,81 @@ function makeselectgroupes()
 }
 
 
-/*
 function boucle_personnes(&$context,$funcname)
 
 {
   global $id; // id de la publication
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]personnes,$GLOBALS[tp]documents_personnes WHERE idpersonne=id AND idtype='$context[id]' AND iddocument='$id'") or die(mysql_error());
-  while ($row=mysql_fetch_assoc($result)) {
-    $localcontext=array_merge($context,$row);
+  $ind=0;
+  $idtype=$context[id];
+  $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
+  do {
+    $vide=TRUE;
+    $localcontext=$context;
+    $localcontext[ind]=++$ind;
+    foreach($vars as $v) {
+      $localcontext[$v]=$context[$v][$idtype][$ind];
+      if ($vide && $localcontext[$v]) $vide=FALSE;
+    }
+    if ($vide && !$GLOBALS[plus][$idtype]) break;
     call_user_func("code_boucle_$funcname",$localcontext);
+    if ($vide) break;
+  } while (1);
+}
+
+function extrait_personnes($identite,&$context)
+
+{
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]personnes,$GLOBALS[tp]entites_personnes WHERE idpersonne=id  AND identite='$identite'") or die(mysql_error());
+
+  $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
+  while($row=mysql_fetch_assoc($result)) {
+    foreach($vars as $var) {
+      $context[$var][$row[idtype]][$row[ordre]]=$row[$var];
+    }
   }
 }
-*/
+
+function extrait_entrees($identite,&$context)
+
+{
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees,$GLOBALS[tp]entites_entrees WHERE identree=id  AND identite='$identite'") or die(mysql_error());
+
+  while($row=mysql_fetch_assoc($result)) {
+    if ($context[entrees][$row[idtype]]) {
+      array_push($context[entrees][$row[idtype]],$row[nom]);
+    } else {
+      $context[entrees][$row[idtype]]=array($row[nom]);
+    }
+  }
+}
+
+
+function makeselectentrees (&$context)
+     // le context doit contenir les informations sur le type a traiter
+{
+  $entreestrouvees=array();
+  $entrees=$context[entrees][$context[id]];
+  echo "type:",$context[id];print_r($context[entrees]);
+  makeselectentrees_rec(0,"",$entrees,$context,&$entreestrouvees);
+  $context[autresentrees]=join(", ",array_diff($entrees,$entreestrouvees));
+}
+
+function makeselectentrees_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
+
+{
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tp]entrees WHERE parent='$parent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+
+  while ($row=mysql_fetch_assoc($result)) {
+    $selected=$entrees && (in_array($row[abrev],$entrees) || in_array($row[nom],$entrees)) ? " selected" : "";
+   if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
+   $value=$context[useabrev] ? $row[abrev] : $row[nom];
+    echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
+    makeselectentrees_rec($row[id],$rep.$row[nom]."/",$entrees,$context,&$entreestrouvees);
+  }
+}
+
+
 
 
 ?>

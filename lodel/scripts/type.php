@@ -42,6 +42,7 @@ if ($edit) { // modifie ou ajoute
 
     include_once ($home."connect.php");
 
+    lock_write("types","typeentites_typeentrees","typeentites_typepersonnes");
     if ($id>0) { // il faut rechercher le status
       $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tp]types WHERE id='$id'") or die (mysql_error());
       list($status,$ordre)=mysql_fetch_array($result);
@@ -49,10 +50,18 @@ if ($edit) { // modifie ou ajoute
       $status=1;
       $ordre=get_ordre_max("types");
     }
-
-
     mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledit,tplcreation,status,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledit]','$context[tplcreation]','$status','$ordre')") or die (mysql_error());
 
+    require($home."typetypefunc.php");
+    if ($id) {
+      typetypes_delete("idtypeentite='$id'");
+    } else {
+      $id=mysql_insert_id();
+    }
+    typetype_insert($id,$typeentree,"typeentree");
+    typetype_insert($id,$typepersonne,"typepersonne");
+
+    unlock();
     back();
 
   } while (0);
@@ -66,5 +75,22 @@ if ($edit) { // modifie ou ajoute
 // post-traitement
 posttraitement($context);
 
+
+function boucle_typeentrees (&$context,$funcname)
+{ boucle_typetable("typeentree",$context,$funcname); }
+
+function boucle_typepersonnes (&$context,$funcname)
+{ boucle_typetable("typepersonne",$context,$funcname); }
+
+function boucle_typetable ($typetable,&$context,$funcname)
+
+{
+  $result=mysql_query("SELECT * FROM ".$GLOBALS[tp].$typetable."s LEFT JOIN $GLOBALS[tp]typeentites_".$typetable."s ON id$typetable=".$GLOBALS[tp].$typetable."s.id AND idtypeentite='$context[id]' WHERE status>0") or die(mysql_error());
+
+  while ($row=mysql_fetch_assoc($result)) {
+    $localcontext=array_merge($context,$row);
+    call_user_func("code_boucle_$funcname",$localcontext);
+  }
+}
 
 ?>

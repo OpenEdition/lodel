@@ -264,10 +264,10 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_personnes (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_personnes (
 	idpersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
-	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
-	idtype			INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le document
+	identite		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idtype			INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le entite
 
 	ordre			TINYINT UNSIGNED NOT NULL DEFAULT '0',
 	prefix             	TINYTEXT NOT NULL,
@@ -277,17 +277,40 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_personnes (
 	courriel		TINYTEXT NOT NULL,
 
 	KEY index_idpersonne (idpersonne),
-	KEY index_iddocument (iddocument),
+	KEY index_identite (identite),
 	KEY index_idtype (idtype)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_entrees (
+# decrit le liens entre les entites et les entrees
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
 	identree		INT UNSIGNED DEFAULT '0' NOT NULL,
-	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
+	identite		INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	KEY index_identree (identree),
-	KEY index_iddocument (iddocument)
+	KEY index_identite (identite)
+);
+
+
+
+# table qui decrive la presence ou non d'un type d'entree dans un type d'entite
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
+	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
+	condition		VARCHAR(16),
+
+	KEY index_idtypeentree (idtypeentree),
+	KEY index_idtypeentite (idtypeentite)
+);
+
+# table qui decrive la presence ou non d'un type d'personne dans un type d'entite
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
+	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
+	condition		VARCHAR(16),
+
+	KEY index_idtypepersonne (idtypepersonne),
+	KEY index_idtypeentite (idtypeentite)
 );
 
 

@@ -60,7 +60,7 @@ if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
   if (preg_match("/^ERROR:/",$line)) { return $line; }
   if (!preg_match("/^content-length:\s*(\d+)/",$line,$result)) {
     echo ("Le content-length n'a pas ete envoye (serveurfunc.php):<br>".$line."<br>");
-    while (!feof($fp) && !preg_match("/^content-length/",$line)) { echo $line=fgets($fp),"<br>"; }
+    while (!feof($fp) && !preg_match("/^content-length/",$line)) { echo $line=fgets($fp,1024),"<br>"; }
     exit(1);
   }
   $size=$result[1];

@@ -32,6 +32,25 @@
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
+		    <td>
+		      Index disponible pour ce type de publi:<br>
+<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
+		      <LOOP NAME="typeentrees">
+			[#TYPE]: <input type="checkbox" name="typeentree[[#ID]]" [(#CONDITION|true)checked]><br>
+		      </LOOP>
+		    </td>  
+		  </tr>
+
+		  <tr>
+		    <td>
+		      Intervenant disponible pour ce type de publi:<br>
+<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
+		      <LOOP NAME="typepersonnes">
+			[#TYPE]: <input type="checkbox" name="typepersonne[[#ID]]" [(#CONDITION|true)checked]><br>
+		      </LOOP>
+		    </td>  
+		  </tr>
+
 		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 	</table>
 	<div class="pied_de_formulaire">

@@ -13,6 +13,13 @@ if ($fichier && preg_match("/^revue-.*-\d+.tar.gz/i",$fichier) && file_exists("$
   // detar dans le repertoire de la revue
   system("tar zxf $fichier -C ../../ lodel/txt lodel/rtf docannexe 2>&1")!==FALSE or die ("impossible d'executer tar");
 
+  // drop les tables existantes
+  // recupere la liste des tables
+  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $tables=array();
+  while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
+  mysql_query("DROP TABLE ".join(",",$tables)) or die(mysql_error());
+  //
    system("tar zxf $fichier -O 'revue-*.sql' | $mysqldir/mysql $currentdb -h $dbhost -u $dbusername -p$dbpasswd 2>/tmp/import.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
 #   system("tar zxf $fichier -O 'revue-*.sql' 2>/tmp/import.tmp | /usr/local/mysql/bin/mysql $currentdb -u $dbusername -p$dbpasswd 2>>/tmp/impot.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
 

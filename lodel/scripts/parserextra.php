@@ -89,9 +89,9 @@ function parse_boucle_extra(&$tables,
       ///////// CODE SPECIFIQUE -- gere les tables croisees
       if (in_array("taches",$tables) && in_array("publications",$tables)) $where.=" AND publication=r2r_publications.id";
 
-      if (in_array("documents",$tables) && in_array("publications",$tables)) {
-	$where.=" AND publication=$GLOBALS[tp]publications.id";
-      }
+#      if (in_array("documents",$tables) && in_array("publications",$tables)) {
+#	$where.=" AND publication=$GLOBALS[tp]publications.id";
+#      }
       //
       // les regexp ci-dessous sont insuffisantes, il faudrait tester que ce n'est pas dans une zone quotee de la clause where !!!!
       //
@@ -100,27 +100,28 @@ function parse_boucle_extra(&$tables,
      if (in_array("personnes",$tables)) {
        // fait ca en premier
        if (preg_match("/\biddocument\b/",$where)) {
-	 // on a besoin de la table croisee documents_personnes
-	 array_push($tables,"documents_personnes");
-	 array_push($tablesinselect,"documents_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
+	 // on a besoin de la table croisee entites_personnes
+	 array_push($tables,"entites_personnes");
+	 array_push($tablesinselect,"entites_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
+	 $where=preg_replace("/\biddocument\b/","identite",$where);
 	 $where.=" AND idpersonne=$GLOBALS[tp]personnes.id";
        }
        if (preg_match("/\btype\b/",$where)) {
 	 protect2($where,$ordre,"personnes","id|status");
-	 protect2($where,$ordre,"documents_personnes","ordre");
+	 protect2($where,$ordre,"entites_personnes","ordre");
 	 array_push($tables,"typepersonnes");
 	 // maintenant, il y a deux solutuions
-	 if (!in_array("documents_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
-	   array_push($tables,"documents_personnes");
-	   $groupby.=" $GLOBALS[tp]documents_personnes.idpersonne";
+	 if (!in_array("entites_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
+	   array_push($tables,"entites_personnes");
+	   $groupby.=" $GLOBALS[tp]entites_personnes.idpersonne";
 	 }
-	 $where.=" AND $GLOBALS[tp]documents_personnes.idtype=$GLOBALS[tp]typepersonnes.id AND $GLOBALS[tp]documents_personnes.idpersonne=$GLOBALS[tp]personnes.id";
+	 $where.=" AND $GLOBALS[tp]entites_personnes.idtype=$GLOBALS[tp]typepersonnes.id AND $GLOBALS[tp]entites_personnes.idpersonne=$GLOBALS[tp]personnes.id";
        }
      }
      if (in_array("entites",$tables) && preg_match("/\bidpersonne\b/",$where)) {
-	// on a besoin de la table croise documents_personnes
-	array_push($tables,"documents_personnes");
-	$where.=" AND iddocument=$GLOBALS[tp]entites.id";
+	// on a besoin de la table croise entites_personnes
+	array_push($tables,"entites_personnes");
+	$where.=" AND $GLOBALS[tp]entites_personnes.identites=$GLOBALS[tp]entites.id";
      }
      // entrees
      if (in_array("entrees",$tables)) {
@@ -131,15 +132,16 @@ function parse_boucle_extra(&$tables,
 	  $where.=" AND $GLOBALS[tp]entrees.idtype=$GLOBALS[tp]typeentrees.id";
 	}
 	if (preg_match("/\biddocument\b/",$where)) {
-	  // on a besoin de la table croise documents_entrees
-	  array_push($tables,"documents_entrees");
+	  // on a besoin de la table croise entites_entrees
+	  array_push($tables,"entites_entrees");
+	  $where=preg_replace("/\biddocument\b/","identite",$where);
 	  $where.=" AND identree=$GLOBALS[tp]entrees.id";
 	}
       }
       if (in_array("entites",$tables) && preg_match("/\bidentree\b/",$where)) {
-	// on a besoin de la table croise documents_entrees
-	array_push($tables,"documents_entrees");
-	$where.=" AND iddocument=$GLOBALS[tp]entites.id";
+	// on a besoin de la table croise entites_entrees
+	array_push($tables,"entites_entrees");
+	$where.=" AND $GLOBALS[tp]entites_entrees.identite=$GLOBALS[tp]entites.id";
       }
       if (in_array("groupes",$tables) && preg_match("/\biduser\b/",$where)) {
 	// on a besoin de la table croise users_groupes
