@@ -33,6 +33,9 @@ function open_session ($login) {
   global $userpriv,$usergroupes,$sessionname,$timeout,$cookietimeout;
   global $database,$urlroot,$site,$iduser;
 
+  // timeout pour les cookies
+  if (!$cookietimeout) $cookietimeout=4*3600; // to ensure compatibility
+
 
   // context
   $contextstr=serialize(array("userpriv"=>intval($userpriv),"usergroupes"=>$usergroupes,"username"=>$login));
@@ -58,9 +61,6 @@ function open_session ($login) {
   }
   if (function_exists("unlock")) unlock(); 
   if ($i==5) return "erreur_opensession";
-
-  // timeout pour les cookies
-  if (!$cookietimeout) $cookietimeout=4*3600; // to ensure compatibility
 
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 }
