@@ -218,10 +218,10 @@ if ($tache=="database") {
   } else { // normal case
     $set=array();
 
-    if (isset($newsingledatabase)) {
+    @include($lodelconfig);    // insert the lodelconfig. Should not be a problem.
+  
+    if ($installoption>1) {
       $set['singledatabase']=$newsingledatabase ? "on" : "";
-    }
-    if (isset($newtableprefix)) {
       $set['tableprefix']=$newtableprefix;
     }
 
