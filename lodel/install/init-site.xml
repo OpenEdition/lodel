@@ -170,35 +170,6 @@
 </table>
 
 
-<table name="publications"
-        description="Table des champs pour les publications déterminés par le ME">
-<column name="identity"
-        type="INTEGER"
-        required="true" />
-<index name="index_identity">
-<index-column name="identity" />
-</index>
-<unique name="unique_identity">
-<unique-column name="identity" />
-</unique>
-</table>
-
-
-
-<table name="documents"
-        description="Table des champs pour les documents déterminés par le ME">
-<column name="identity"
-        type="INTEGER"
-        required="true" />
-<index name="index_identity">
-<index-column name="identity" />
-</index>
-<unique name="unique_identity">
-<unique-column name="identity" />
-</unique>
-</table>
-
-
 
 <table name="classes"
         description="table qui contient les classes"
