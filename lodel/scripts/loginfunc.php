@@ -110,7 +110,7 @@ function check_auth ($login,&$passwd,&$site)
       $result=$db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$lodeluser['id']."'")) or dberror();
       $lodeluser['groups']="1"; // sont tous dans le groupe "tous"
       while ( ($row=$result->fields) ) {
-	$lodeluser['groups'].=",".$row[0];
+	$lodeluser['groups'].=",".$row['idgroup'];
 	$result->MoveNext();
       }
     } else {
