@@ -41,7 +41,8 @@ $critere=$id>0 ? "id='$id'" : "";
 //
 // supression et restauration
 //
-if ($id>0 && ($delete || $restore)) { 
+#if ($id>0 && ($delete || $restore)) { 
+if ($id>0 && $delete) { 
   $delete=2; // destruction en -64;
   include ($home."trash.php");
   treattrash("entrees",$critere);
