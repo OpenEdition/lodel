@@ -26,7 +26,7 @@
  *********************************************************************************************/
   
   html>body {
-	height:3000%
+	height:5000%
 }
 	
  body
@@ -155,21 +155,13 @@ p {
 	margin-top:2px
 }
  
-sup {
-	/*
-	 * Redéfinit la taille et la position d'un texte placé en exposant avec
-	 * la balise <sup>
-	 */
-	font-size:small;
-	font-weight:small;
-	vertical-align:10%
-}
+
 
 ul {
 	/*
 	 * Définit style des listes à puce par défaut
 	 */
-	font-size:small;
+	font-size:100%;
 }	
 
 
@@ -345,6 +337,7 @@ A.titre2:active {
 	color:#666666;
 	margin-bottom:6px;
 	padding-top:5px;
+	padding-right:5px;
 	padding-bottom:5px
 	
 }
@@ -358,8 +351,7 @@ A.titre2:active {
 	font-size:80%;
 	text-align:justify;
 	line-height:150%;
-	text-indent:10
-	
+		
 }
 
 /*****************************************************************************/
@@ -742,8 +734,8 @@ h6
 	 */
 	height:auto;
 	width:561;
+	line-height:140%;
 	font-size:90%;
-	font-weight:small;
 	text-align :justify;
 	text-indent :20;
 	padding-left:2em;
@@ -788,6 +780,31 @@ html>body .resume {
 	 width:auto
 }
 
+/***************************************************************************************/
+
+.bibliographie
+{
+	/*  
+	 * Style utilisé pour les bibliographies
+	 */
+	width:561;
+	height:auto;
+	font-size:90%;
+	color :#000000;
+	line-height:140%;
+	text-align :justify;
+	padding-right:2em;
+	padding-top:2em;
+	padding-bottom:2em;
+	voice-family:"\"}\"";
+ 	voice-family:inherit;
+  	width:561px		
+	}						
+
+html>body .bibliographie {
+	 width:auto
+}
+
 /******************************************************************************************/
 
 .notes
@@ -813,6 +830,31 @@ html>body .notes {
 	 width:auto
 }
 	
+**************************************************************
+ 
+/*
+ * Styles nécessaires pour les appels de notes
+ */
+
+small {
+	font-size: x-small;
+	font-weight: x-small;
+	text-align:justify;
+}
+
+.fase4_rdf {
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	
+}
+
+.appeldenote {
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	
+}
 
 /*****************************************************************************************/
 
@@ -851,6 +893,23 @@ html>body .descriptionauteur {
 	margin-left:20;
 }
 
+/*****************************************************************************************/
+
+.pourciter {
+	/*  
+	 * Style des notices bibliographiques dans le document en cours
+	 */
+	width:561;
+	height:auto;
+	color :#000000;
+	padding-left:2em;
+	padding-right:2em;
+	padding-top:2em;
+	padding-bottom:2em;
+	voice-family:"\"}\"";
+ 	voice-family:inherit;
+  	width:561		
+	}			
 
 /*****************************************************************************************/
 
@@ -883,7 +942,7 @@ ul.puce {
 	 *	td aligné à gauche, contenant lien vers document précédent 
 	 */
 	
-	width:400;
+	width:300;
 	background-color:#E0E0E0;
 	float:left;
 	text-align:left
@@ -939,7 +998,6 @@ ul.puce {
 	font-weight:500;
 	text-align :center;
 	font-color :#9C3234;
-	font-family:"Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 	padding-top:20px;
 	padding-bottom:20px
 }
