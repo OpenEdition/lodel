@@ -342,6 +342,7 @@ function vignette($text,$width)
 
 {
   global $home;
+  return $text;
   //  if (preg_match("/^<img\b[^>]+src=\"([^\">]+)\"/",$text,$result)) $text=$result[1];
   if (!$text) return;
 
