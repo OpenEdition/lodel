@@ -343,24 +343,26 @@ function OO_XHTML ($convertedfile,&$context)
   // autre chgt
   array_push($srch,
 	     "/<object>.*?<\/object>/is",
-	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
+#	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
 	     "/(<a\s[^>]*)\/>/",
 	     "/<a\s+id=\"Image[^\"]+\"[^>]*\/>/i",
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?".">/i", # met border="0"
 	     "/(<img\b[^>\/]+style=\"[^\"]*)width:\s*1.0ch;height:\s*1.0ch;([^>\/]+\/?".">)/", # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
-	     "/<\/?col\b[^>]*>/"
+	     "/<\/?col\b[^>]*>/",
+	     "/\s{2,}/" # suppress double or higher number of space.
 	     );
 
   array_push($rpl,
 	     "",
-	     "\\1",
+#	     "\\1",
 	     "\\1></a>",	     
 	     "",
 	     "\\1\\2",
 	     "\\1border=\"0\" />",
 	     "\\1\\2",
-	     ""
+	     "",
+	     " "
 	     );
 
   $time=time();
@@ -741,7 +743,6 @@ function convertCSSstyle ($style) {
 		       #"text-decoration:underline"=>"u", pas XHTML strict
 		       #"text-decoration:line-through"=>"strike"
 		       );
-
 
   for($j=0; $j<$count; $j++) {
     // simple conversion
