@@ -392,6 +392,8 @@ INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,groupe,ordre,statut)
 ALTER TABLE _PREFIXTABLE_publications CHANGE id identite	INT UNSIGNED DEFAULT 0 NOT NULL  UNIQUE;
 UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 ');
+
+      $report.="Changement des id de publications, offset=$offset<br>";
       if ($err) break;
       // ok, on s'occupe des documents annexes maintenant.
 
