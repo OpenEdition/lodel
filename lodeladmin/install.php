@@ -258,19 +258,20 @@ if ($tache=="admin") {
     $pass=md5($adminpasswd.$adminusername);
 
     if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,nom,courriel,privilege) VALUES ('$adminusername','$pass','','',128)")) {
-      $pass="";  // enleve de la memoire
       $erreur_create=1;
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
       return;
     }
     // log this user in 
-    require($home."loginfunc.php");
+    require(LODELROOT.$home."loginfunc.php");
     $site="";
-    if (check_auth($adminusername,&$pass,&$site)) {
+#    echo $adminusername," ",$pass;
+
+    if (check_auth($adminusername,$adminpasswd,$site)) {
       open_session($adminusername);
     }
-
     $pass=""; // enleve de la memoire
+    $adminpasswd="";
 }
 
 $protecteddir=array("lodel$versionsuffix",
@@ -444,6 +445,7 @@ if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
 #  return;
   die ("ERROR: unable to access the ".$home."func.php file from lodeladmin. Check the file exists and the rights and/or report the bug.");
 }
+
 
 //
 // essaie la connection a la base de donnée

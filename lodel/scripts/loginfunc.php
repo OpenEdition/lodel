@@ -26,6 +26,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+
 function open_session ($login) {
 
   global $userpriv,$usergroupes,$sessionname,$timeout,$cookietimeout;
@@ -38,19 +40,22 @@ function open_session ($login) {
 
   mysql_select_db($database);
   if ($userpriv<LEVEL_ADMINLODEL) {
-    lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
+    if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
-    if (mysql_num_rows($result)) { unlock(); return "erreur_sitebloque"; }
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
+    if (mysql_num_rows($result)) { 
+      if (function_exists("unlock")) unlock(); 
+      return "erreur_sitebloque"; 
+    }
   }
 
   for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme nom de session
     // nom de la session
     $name=md5($login.microtime());
     // enregistre la session, si ca marche sort de la boucle
-    if (mysql_query("INSERT INTO $GLOBALS[tp]session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')")) break;
+    if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')")) break;
   }
-  unlock();
+  if (function_exists("unlock")) unlock(); 
   if ($i==5) return "erreur_opensession";
 
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
@@ -71,7 +76,7 @@ function check_auth ($login,&$passwd,&$site)
     // cherche d'abord dans la base generale.
 
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+    $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
@@ -80,7 +85,7 @@ function check_auth ($login,&$passwd,&$site)
 
       // cherche ensuite dans la base du site
       mysql_select_db($GLOBALS[currentdb]);
-      $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+      $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;
      } else {
        break; // on s'eject
@@ -91,7 +96,7 @@ function check_auth ($login,&$passwd,&$site)
 
     // cherche les groupes pour les non administrateurs
     if ($userpriv<LEVEL_ADMIN) {
-      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tp]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
+      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
       $usergroupes="1"; // sont tous dans le groupe "tous"
       while ($row=mysql_fetch_row($result)) $usergroupes.=",".$row[0];
     } else {
