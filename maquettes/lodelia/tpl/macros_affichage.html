@@ -1095,7 +1095,7 @@
 <!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
 <!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
+	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]" ORDER="ordre">
 		<BEFORE>
 			<ul class="puce">
 		</BEFORE>
