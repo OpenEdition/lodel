@@ -447,7 +447,7 @@ cp_[#NAME].writeDiv();
 	<!--[ -----------[ SELECT ]---------- ]-->
 	
 	<IF COND="[#EDITION] EQ 'select'">
-	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
+	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
@@ -455,12 +455,35 @@ cp_[#NAME].writeDiv();
 	<ELSE/>
 	<!--[ -----------[ MULTIPLE SELECT ]---------- ]-->
 	<IF COND="[#EDITION] EQ 'multipleselect'">
-		<select multiple="multiple" size="10" style="width:250px" id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]">
+	<script type="text/javascript">
+	<!--
+	function myupdatetxt(textfield, selectfield)
+	{
+		var txt = document.getElementById(textfield);
+		var slct = document.getElementById(selectfield);
+		var str = '';
+		if(slct.length > 0)
+		{
+			for(i=0; i< slct.length; i++)
+			{
+				if(slct.options[i].selected==true)
+					str += slct.options[i].value + ',';
+			}
+		}
+		txt.value = str.substring(0, str.length - 1);
+	}
+	-->
+	</script>
+	<table>
+	<tr><td>
+	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
+	<select onchange="myupdatetxt('entries[[#IDTYPE]]','pool_member_[#VARNAME]')" multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
+		<option  value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
-	
+	</td></tr>	
+	</table>
 	<ELSE/>
 	<!--[ -----------[ POOL ]---------- ]-->
 	<IF COND="[#EDITION] EQ 'pool'">
@@ -475,8 +498,8 @@ cp_[#NAME].writeDiv();
 		</LOOP>
 	</select>
 	</td><td>
-		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')"/><br/>
-		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]]')"/>&nbsp;
+		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')" /><br/>
+		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]]')" />&nbsp;
 	<td>	
 	<select multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
 	</select>
