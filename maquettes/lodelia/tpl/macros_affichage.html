@@ -439,8 +439,8 @@
 <!--[ Macro plutôt destinée à la barre de navigation verticale.          ]-->
 <!--[ ****************************************************************** ]-->
 	<!--[ On liste en premier les séries linéaires ]-->
-	<LOOP NAME="aff_collec" TABLE="entites" WHERE="idparent='0' AND statut gt 0">
-		
+	<LOOP NAME="aff_collec" TABLE="entites" WHERE="idparent='0' AND statut gt 0" ORDER="ordre">
+
 			<div class="menu1">
 			<a class="menu2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			[#IDENTIFIANT]
@@ -448,7 +448,7 @@
 			</div>
 			
 		
-		<LOOP NAME="aff_publiparente" TABLE="entites" WHERE="idparent='[#ID]' AND statut gt 0">
+		<LOOP NAME="aff_publiparente" TABLE="entites" WHERE="idparent='[#ID]' AND statut gt 0" ORDER="ordre">
 			<div class="menu2">
 				<a class="menu2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">[#IDENTIFIANT]</a>
 			</div>

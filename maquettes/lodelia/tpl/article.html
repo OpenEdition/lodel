@@ -96,6 +96,10 @@
 							Article
 						</IF>
 						</div>
+
+<LOOP NAME="EXTRAIT_IMAGES" TEXT="[#TEXTE]" LIMIT="1,2">
+[(#IMAGE|htmlentities)]  [#SRC]<br>
+</LOOP>
 			
 						<!--[ Affiche les boutons pour accéder à la page imprimable et la page de signalement]-->
 						<div class="signalerimprimer">

@@ -49,21 +49,21 @@
 <!--[ Version 1.0                                                        ]-->
 <!--[ Affiche un bouton qui permet d'accéder à la publication précédente ]-->
 <!--[ si elle existe, sinon le bouton ne s'affiche pas.                  ]-->
-<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
 <!--[ ****************************************************************** ]-->
 	&nbsp;	&nbsp;	&nbsp;
-	<IF COND="[#PREVPUBLICATION]">
-		<? $pos = strpos(strtolower($context[type]), "numero");
-	  		if ($pos === false) {?> 
-			<a href="[#PREVPUBLICATION]">
-				<MACRO NAME="IMG_BOUTON_RUBRIQUE_PRECEDENTE">
-			</a>
-		<?}	else {?>
-			<a href="[#PREVPUBLICATION]">
+        <LOOP NAME="previous" ID="[#ID]">
+        <DO>
+		<IF COND="[#TYPE] EQ 'numero'">
+			<a href="[(#ID|makeurlwithid('sommaire')]">
 				<MACRO NAME="IMG_BOUTON_NUMERO_PRECEDENT">
 			</a>
-		<?}?>
-	</IF>
+		<ELSE />
+			<a href="[(#ID|makeurlwithid('sommaire')]">
+				<MACRO NAME="IMG_BOUTON_RUBRIQUE_PRECEDENTE">
+			</a>
+		</IF>
+	</DO>
+        </LOOP>
 	&nbsp;	&nbsp;	&nbsp;
 </DEFMACRO>
 
@@ -75,18 +75,19 @@
 <!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
 <!--[ ****************************************************************** ]-->
 	&nbsp;	&nbsp;	&nbsp;
-	<IF COND="[#NEXTPUBLICATION]">
-		<? $pos = strpos(strtolower($context[type]), "numero");
-	  		if ($pos === false) {?> 
-			<a href="[#NEXTPUBLICATION]">
-				<MACRO NAME="IMG_BOUTON_RUBRIQUE_SUIVANTE">
-			</a>
-		<?}	else {?>
-			<a href="[#NEXTPUBLICATION]">
+        <LOOP NAME="next" ID="[#ID]">
+        <DO>
+		<IF COND="[#TYPE] EQ 'numero'">
+			<a href="[(#ID|makeurlwithid('sommaire')]">
 				<MACRO NAME="IMG_BOUTON_NUMERO_SUIVANT">
 			</a>
-		<?}?>
-	</IF>
+		<ELSE />
+			<a href="[(#ID|makeurlwithid('sommaire')]">
+				<MACRO NAME="IMG_BOUTON_RUBRIQUE_SUIVANTE">
+			</a>
+		</IF>
+	</DO>
+        </LOOP>
 	&nbsp;	&nbsp;	&nbsp;
 </DEFMACRO>
 
@@ -125,29 +126,29 @@
 <!--[ Affiche un bouton avec dessous un texte "Numéro/rubrique précédent"   ]-->
 <!--[ permettant d'accéder à la publication précédente. Si elle n'existe ]-->
 <!--[ pas le texte sous le bouton est changé par "Retour à l'accueil".   ]-->
-<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
 <!--[ ****************************************************************** ]-->
 	&nbsp;
-	<IF COND="[#PREVPUBLICATION]">
-		<? $pos = strpos(strtolower($context[type]), "numero");
-	  		if ($pos === false) {?> 
-			<a href="[#PREVPUBLICATION]">
+        <LOOP NAME="previous" ID="[#ID]">
+        <DO>
+		<IF COND="[#TYPE] EQ 'numero'">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
 				<span style="color:Black;">
 					rubrique précédent
 				</span>
 			</a>
-		<?}	else {?>
-			<a href="[#PREVPUBLICATION]">
+                 <ELSE/>
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 				<br />
 				<span style="color:Black;">
 					Numéro précédent
 				</span>
 			</a>
-		<?}?>
-	<ELSE/>
+                 </IF>
+	</DO>
+        <ALTERNATIVE>
 		<a href="index.html">
 			<MACRO NAME="IMG_BOUTON_PUBLICATION_PRECEDENTE">
 			<br />
@@ -155,7 +156,8 @@
 				Retour à l'accueil
 			</span>
 		</a>
-	</IF>
+        </ALTERNATIVE>
+        </LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">
@@ -164,29 +166,29 @@
 <!--[ Affiche un bouton avec dessous un texte "Numéro/rubrique suivant"     ]-->
 <!--[ permettant d'accéder à la publication suivante. Si elle n'existe   ]-->
 <!--[ pas le texte sous le bouton est changé par "Retour à l'accueil".   ]-->
-<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
 <!--[ ****************************************************************** ]-->
 	&nbsp;
-	<IF COND="[#NEXTPUBLICATION]">
-		<? $pos = strpos(strtolower($context[type]), "numero");
-	  		if ($pos === false) {?> 
-			<a href="[#NEXTPUBLICATION]">
+        <LOOP NAME="next" ID="[#ID]">
+        <DO>
+		<IF COND="[#TYPE] EQ 'numero'">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 				<br />
 				<span style="color:Black;">
-					rubrique suivant
+					rubrique suivante
 				</span>
 			</a>
-		<?}	else {?>
-			<a href="[#NEXTPUBLICATION]">
+                 <ELSE/>
+			<a href="[(#ID|makeurlwithid('sommaire'))]">
 				<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 				<br />
 				<span style="color:Black;">
 					Numéro suivant
 				</span>
 			</a>
-		<?}?>
-	<ELSE/>
+                 </IF>
+	</DO>
+        <ALTERNATIVE>
 		<a href="index.html">
 			<MACRO NAME="IMG_BOUTON_PUBLICATION_SUIVANTE">
 			<br />
@@ -194,7 +196,8 @@
 				Retour à l'accueil
 			</span>
 		</a>
-	</IF>
+        </ALTERNATIVE>
+        </LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
@@ -234,24 +237,26 @@
 <!--[ d'accéder à la publication précédente. Si elle n'existe pas le     ]-->
 <!--[ texte sous le bouton est changé par "Retour au sommaire".          ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#PREVDOCUMENT]">
-		<a href="[#PREVDOCUMENT]">
+        <LOOP NAME="previous" ID="[#ID]" THROUGH="regroupement">
+        <DO>
+		<a href="[(#ID|makeurlwithid('document'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
 			<br />
 			<span style="color:Black;">
 				Précédent
 			</span>
 		</a>
-	<ELSE/>
-		<a href="sommaire.html?id=[#IDPARENT]">
+	</DO>
+	<ALTERNATIVE>
+		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 			<br />
 			<span style="color:Black;">
 				Retour au sommaire
 			</span>
 		</a>
-	</IF>
-	&nbsp;
+	</ALTERNATIVE>	
+        <LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">
@@ -262,23 +267,26 @@
 <!--[ texte sous le bouton est changé par "Retour au sommaire".          ]-->
 <!--[ ****************************************************************** ]-->
 	&nbsp;
-	<IF COND="[#NEXTDOCUMENT]">
-		<a href="[#NEXTDOCUMENT]">
+        <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
+        <DO>
+		<a href="[(#ID|makeurlwithid('document'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT">
 			<br />
 			<span style="color:Black;">
-				Suivant
+				Précédent
 			</span>
 		</a>
-	<ELSE/>
-		<a href="sommaire.html?id=[#IDPARENT]">
-			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT_SOMMAIRE">
+	</DO>
+	<ALTERNATIVE>
+		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANTE_SOMMAIRE">
 			<br />
 			<span style="color:Black;">
 				Retour au sommaire
 			</span>
 		</a>
-	</IF>
+	</ALTERNATIVE>	
+        <LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS">
@@ -299,7 +307,7 @@
 				<MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">
 			</td>
 			<td width="33%" class="texte_petit_centre">
-				<a href="sommaire.html?id=[#IDPARENT]">
+				<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
 					<MACRO NAME="IMG_ICONE_REVUE">
 					<br />
 				</a>
@@ -317,17 +325,20 @@
 <!--[ Affiche un bouton qui permet d'accéder au document précédent si il ]-->
 <!--[ existe, sinon affiche un bouton permettant d'aller au sommaire.    ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#PREVDOCUMENT]">
-		<a href="[#PREVDOCUMENT]">
+        <LOOP NAME="previous" ID="[#ID]" THROUGH="regroupement">
+        <DO>
+		<a href="[(#ID|makeurlwithid('document'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
 		</a>
 		&nbsp;&nbsp;&nbsp;
-	<ELSE/>
-		<a href="sommaire.html?id=[#IDPARENT]">
+	</DO>
+	<ALTERNATIVE>
+		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 		</a>
 		&nbsp;&nbsp;&nbsp;
-	</IF>
+	</ALTERNATIVE>	
+        <LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_SUIVANT">
@@ -336,17 +347,20 @@
 <!--[ Affiche un bouton qui permet d'accéder au document suivant si il   ]-->
 <!--[ existe, sinon affiche un bouton permettant d'aller au sommaire.    ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#NEXTDOCUMENT]">
-		&nbsp;&nbsp;&nbsp;
-		<a href="[#NEXTDOCUMENT]">
+        <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
+        <DO>
+		<a href="[(#ID|makeurlwithid('document'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT">
 		</a>
-	<ELSE/>
 		&nbsp;&nbsp;&nbsp;
-		<a href="sommaire.html?id=[#IDPARENT]">
+	</DO>
+	<ALTERNATIVE>
+		<a href="[(#IDPARENT|makeurlwithid('sommaire'))]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT_SOMMAIRE">
 		</a>
-	</IF>
+		&nbsp;&nbsp;&nbsp;
+	</ALTERNATIVE>	
+        </LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">
@@ -387,30 +401,36 @@
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 	<div class="navigation">
 		<div class="navigation_precedent">
-				<IF COND="[#PREVDOCUMENT]">
-					<a class="navigation_precedent" href="[#PREVDOCUMENT]">
+                     <LOOP NAME="previous" ID="[#ID]" THROUGH="regroupement">
+                     <DO>
+		                        <a href="[(#ID|makeurlwithid('document'))]">
 						&lt;&lt; Article précédent
 					</a>
 							
-				<ELSE/>
-					<a class="navigation_precedent" href="sommaire.html?id=[#IDPARENT]">
+                      </DO>
+                      <ALTERNATIVE>
+		                        <a class="navigation_precedent" href="[(#IDPARENT|makeurlwithid('sommaire'))]">
 						&lt;&lt; Retour au sommaire
 					</a>
-							
-				</IF>
+					
+                      </ALTERNATIVE>		
+                      </LOOP>
 		</div>
 		<div class="navigation_suivant" class="navigation_suivant">
-				<IF COND="[#NEXTDOCUMENT]">
-						
-					<a class="navigation_suivant" href="[#NEXTDOCUMENT]">
-						Article suivant &gt;&gt;
+                     <LOOP NAME="next" ID="[#ID]" THROUGH="regroupement">
+                     <DO>
+		                        <a href="[(#ID|makeurlwithid('document'))]">
+						Article suivant &gt;&gt; 
 					</a>
-				<ELSE/>
-						
-					<a class="navigation_suivant" href="sommaire.html?id=[#IDPARENT]">
-						 Retour au sommaire &gt;&gt;
+							
+                      </DO>
+                      <ALTERNATIVE>
+		                        <a class="navigation_precedent" href="[(#IDPARENT|makeurlwithid('sommaire'))]">
+					         Retour au sommaire &gt;&gt; 
 					</a>
-				</IF>
+					
+                      </ALTERNATIVE>		
+                      </LOOP>
 		</div>
 	</div>
 </DEFMACRO>

@@ -203,12 +203,13 @@ function previousnext ($dir,$context,$funcname,$arguments)
     if (!$arguments[through]) break;
     $quotedtypes=join("','",explode(",",addslashes($arguments[through])));
     if (!$quotedtypes) break;
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type IN ('$quotedtypes')");
+    while (list($idtype)=mysql_fetch_row($result)) { $idtypes[]=$idtype; }
+    $types=join("','",$idtypes);
     // ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
     // not found, well, we look for the next/previous parent above and it's first/last son.
-    $result=mysql_query ("SELECT e2.*,t2.type FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e0, $GLOBALS[tp]types as t2 WHERE id2='$id' AND e2.idtype=t2.id AND e0.id=$id AND degres=2 AND $GLOBALS[tp]entites.idparent=id1 AND $GLOBALS[tp]entites.statut>0 AND e2.statut>0 AND $GLOBALS[tp]types.type IN ('$quotedtypes') AND $GLOBALS[tp]entites.ordre".$compare."e0.ordre ORDER BY $GLOBALS[tp]entites.ordre ".$sort.", e2.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
 
-
-    echo "SELECT e2.*,t2.type FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e0, $GLOBALS[tp]types as t2 WHERE id2='$id' AND e2.idtype=t2.id AND e0.id=$id AND degres=2 AND $GLOBALS[tp]entites.idparent=id1 AND $GLOBALS[tp]entites.statut>0 AND e2.statut>0 AND $GLOBALS[tp]types.type IN ('$quotedtypes') AND $GLOBALS[tp]entites.ordre".$compare."e0.ordre ORDER BY $GLOBALS[tp]entites.ordre ".$sort.", e2.ordre ".$sort." LIMIT 0,1";
+    $result=mysql_query ("SELECT e3.*,type FROM $GLOBALS[tp]entites as e0, $GLOBALS[tp]entites as e1, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types ON e3.idtype=types.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.ordre".$compare."e1.ordre AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.statut>0 AND e1.statut>0 AND e2.statut>0 AND e3.statut>0 ORDER BY e2.ordre ".$sort.", e3.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
 
     if (mysql_num_rows($result)) {
       $localcontext=array_merge($context,mysql_fetch_assoc($result));
