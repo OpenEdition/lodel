@@ -177,7 +177,8 @@ while ($arr) {
     // balise ouvrante
     $level++;
     $bal=array_shift($arr);
-    if ($balisesdocumentassocie[$bal] || $bal==$styleforcss) { // change the part
+#    if ($balisesdocumentassocie[$bal] || $bal==$styleforcss) { // change the part
+    if ($balisesdocumentassocie[$bal]) { // change the part
       $part=$bal;
     } else { // others balises
       $textbal=$balises[strtolower(trim($bal))];
@@ -188,7 +189,8 @@ while ($arr) {
     // balise fermante
     $level--;
     $bal=array_shift($arr);
-    if ($balisesdocumentassocie[$bal] || $bal==$styleforcss) { // end of a part
+#    if ($balisesdocumentassocie[$bal] || $bal==$styleforcss) { // end of a part
+    if ($balisesdocumentassocie[$bal]) { // end of a part
       $part="main";
     } else {
       $tablescontent[$part].="</td></td>\n";
@@ -202,8 +204,8 @@ while ($arr) {
 }
 
 // backup the stylecss in the context
-$context[$styleforcss]=$tablescontent[$styleforcss];
-unset($tablescontent[$styleforcss]);
+#$context[$styleforcss]=$tablescontent[$styleforcss];
+#unset($tablescontent[$styleforcss]);
 
 if (count($tablescontent)>1) { // ok il faut decouper le fichier
 

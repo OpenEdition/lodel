@@ -168,14 +168,18 @@ function OO_XHTML ($convertedfile,&$context)
 
   convertHTMLtoUTF8($file);
 
+  // get the CSS definition
+  preg_match("/<style\b[^>]*type=\"text\/css\"[^>]*>(.*?)<\/style>/",$file,$result);
+  $css=$result[1];
+
+
   // tableau search et replace
   $srch=array(); $rpl=array();
 
   array_push($srch,
-	     "/.*?<style\b[^>]*type=\"text\/css\"[^>]*>(.*?)<\/style>.*?<body\b[^>]*>/s",
 	     "/.*<body\b[^>]*>/s",
 	     "/<\/body>.*/s");
-  array_push($rpl,"<r2r:$GLOBALS[styleforcss]>\\1</r2r:$GLOBALS[styleforcss]>","","");
+  array_push($rpl,"","");
   
   // styles transparents
   // on efface tout ce qu'il y a entre.
@@ -284,12 +288,69 @@ function OO_XHTML ($convertedfile,&$context)
   $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/"),
 		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>"),
 		      $file);
-  
 
-# ajoute le debut et la fin
+  //
+  // add the "official" beginning and end of the xml file
+  //
     $file='<r2r:document xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$file.'</r2r:document>';
 
-# verifie que le document est bien forme
+
+    // clean the CSS class by inlining the definition
+    //
+    if ($css) {
+      $styles=array();
+      // build a table of the style
+      $cssarr=preg_split("/\{([^\}]*)\}/",$css,-1,PREG_SPLIT_DELIM_CAPTURE);
+      for($i=0; $i<count($cssarr); $i+=2) {	
+	$style=trim($cssarr[$i]);
+	if (preg_match("/^\w+\.[PT]\d+$/",$style)) $styles[$style]=$cssarr[$i+1]." "; // add a space to be sure it is TRUE.
+      }
+
+      if ($styles) {
+	// look for the style in the file, and replace by the style
+	$file=preg_replace('/((<(\w+)\b[^>]+)class="([PT]\d+)")/e','($styles["\\3.\\4"]) ? "\\2style=\"".trim($styles["\\3.\\4"])."\"" : "\\1" ',$file);
+      }
+    }
+
+    //
+    // convert graphical styles in XHTML tags
+    //
+    $arr=preg_split("/(<\/?span\b[^>]*>)/",$file,-1,PREG_SPLIT_DELIM_CAPTURE);
+    $count=count($arr);
+    $stack=array();
+    for($i=1; $i<$count; $i+=2) {
+      #echo htmlentities($arr[$i]),"</br>";
+      if ($arr[$i]=="</span>") { // closing span
+	$arr[$i]=array_pop($stack);
+      }
+      elseif ($arr[$i]=="<span style=\"\">") { // the style is empty, remove the span
+	$arr[$i]="";
+	array_push($stack,"");
+      }
+      elseif (preg_match('/style\s*=\s*"([^"]*)"/',$arr[$i],$result)) {
+	// there is a style to process.
+// there is really a style to processed
+	list($open,$close,$style)=convertCSSstyle($result[1]);
+	if ($open && $close) { // something has changed
+	  if ($style) { // still some remaining styles ?
+	    $open="<span style=\"$style\">".$open;
+	    $close.="</span>";
+	  }
+	  $arr[$i]=$open;
+	  array_push($stack,$close);
+	} else { // do nothing
+	  array_push($stack,"</span>");
+	}
+      } else { // do nothing
+	array_push($stack,"</span>");
+      }
+    }
+    $file=join("",$arr);
+
+
+    //
+    // check the document is well-formed
+    //
     include ($home."checkxml.php");
     if (!checkstring($file)) { echo "fichier: $newname"; return FALSE; }
 
@@ -654,6 +715,45 @@ function traite_couple(&$text)
 			     ),
 		       $text);
 }
+
+
+
+function convertCSSstyle ($style) {
+
+  $styles=preg_split("/\s*;\s*/",$style);
+  $count=count($styles);
+
+  $simpleconversions=array(
+		       "font-style:italic"=>"em",
+		       "font-weight:bold"=>"strong",
+		       "text-decoration:underline"=>"u",
+		       "text-decoration:line-through"=>"strike"
+		       );
+
+
+  for($j=0; $j<$count; $j++) {
+    // simple conversion
+    if ( ($t=$simpleconversions[$styles[$j]]) ) {
+      $open.="<$t>";
+      $close="</$t>".$close;
+      $styles[$j]="";
+    }
+    // indice and superscript
+    if (preg_match("/^font-size:\d\d?%$/",$styles[$j]) && $styles[$j+1]) {
+      if ($styles[$j+1]=="vertical-align:sub") {
+	$open.="<sub>";
+	$close.="</sub>".$close;
+	$styles[$j]=$styles[$j+1]="";
+      } elseif ($styles[$j+1]=="vertical-align:super") {
+	$open.="<sup>";
+	$close="</sup>".$close;
+	$styles[$j]=$styles[$j+1]="";
+      }
+    }
+  }
+  return array($open,$close,trim(join("",$styles)));
+}
+
 
 
 

@@ -85,12 +85,6 @@ $balises=array ("-" => "-",
 
 $stylestransparents="paragraphetransparent|caracteretransparent";
 
-//
-// style for the CSS
-//
-
-$styleforcss="stylecss";
-
 
 #
 # dans les deux tableaux ci-dessous on a la liste des balises qui apparaissent dans les documents, mais qui ne sont pas dans la base de donnee.
