@@ -71,7 +71,7 @@
 				<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex1" TABLE="index"  LIMIT="1">
+					<LOOP NAME="checkindex1" TABLE="dictionary"  LIMIT="1">
 					<DO>
 					<a href="index.php?do=cleanIndex">
 						<span class="texte_orange">Purger l'index</span>
@@ -86,7 +86,7 @@
 				<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex2" TABLE="index" WHERE="identity=[#ID]" LIMIT="1">
+					<LOOP NAME="checkindex2" TABLE="dictionary" WHERE="identity=[#ID]" LIMIT="1">
 					<DO>
 					<a href="index.php?do=deleteIndex&amp;identity=[#ID]">
 						<span class="texte_orange">Supprimer cette entité de l'index</span>
@@ -102,7 +102,7 @@
 				<tr>
 					<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 					<td width="350" class="td_admin">
-					<LOOP NAME="checkindex3" TABLE="index" WHERE="identity=[#ID]" LIMIT="1">
+					<LOOP NAME="checkindex3" TABLE="dictionary" WHERE="identity=[#ID]" LIMIT="1">
 					<DO>
 					<a href="index.php?do=addIndex&amp;identity=[#ID]">
 						<span class="texte_orange">Mettre à jour cette entité dans l'index</span>
