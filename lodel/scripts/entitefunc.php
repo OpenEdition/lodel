@@ -425,9 +425,12 @@ function extrait_entrees($identite,&$context)
 {
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees,$GLOBALS[tp]entites_entrees WHERE identree=id  AND identite='$identite'") or die(mysql_error());
 
-  $context[entrees][$row[idtype]]=array();
   while($row=mysql_fetch_assoc($result)) {
-    array_push($context[entrees][$row[idtype]],$row[nom]);
+    if ($context[entrees][$row[idtype]]) {
+      array_push($context[entrees][$row[idtype]],$row[nom]);
+    } else {
+      $context[entrees][$row[idtype]]=array($row[nom]);
+    }
   }
 }
 
@@ -442,7 +445,7 @@ function makeselectentrees (&$context)
   $entrees=$context[entrees][$context[id]];
 #  echo "type:",$context[id];print_r($context[entrees]);
   makeselectentrees_rec(0,"",$entrees,$context,&$entreestrouvees);
-  $context[autresentrees]=join(", ",array_diff($entrees,$entreestrouvees));
+  $context[autresentrees]=$entrees ? join(", ",array_diff($entrees,$entreestrouvees)) : "";
 }
 
 function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouvees)
