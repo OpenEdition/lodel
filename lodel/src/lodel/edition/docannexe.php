@@ -59,10 +59,10 @@ $critere="id='$id'";
 //
 if ($id>0 && $dir) {
   # cherche le parent
-  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entities WHERE id='$id'") or die($db->errormsg());
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entities WHERE id='$id'") or dberror();
   list($idparent)=mysql_fetch_row($result);
   // recupere les type de documents annexe
-  $result=mysql_query ("SELECT id FROM $GLOBALS[tp]types WHERE type LIKE 'documentannexe-%'") or die($db->errormsg());
+  $result=mysql_query ("SELECT id FROM $GLOBALS[tp]types WHERE type LIKE 'documentannexe-%'") or dberror();
   $idtypes=array();
   while ($row=mysql_fetch_assoc($result)) { array_push($idtypes,$row[id]); }
   chrank("entites",$id,"idparent='$idparent' AND idtype IN (".join(",",$idtypes).")",$dir);
@@ -81,7 +81,7 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     if (!$idtype) die("il faut preciser l'idtype");
-    $result=mysql_query("SELECT type FROM $GLOBALS[tp]types WHERE id='$idtype' AND status>0") or die($db->errormsg());
+    $result=mysql_query("SELECT type FROM $GLOBALS[tp]types WHERE id='$idtype' AND status>0") or dberror();
   if (!mysql_num_rows($result)) die ("type '$type' inconnu (1)");
   list($type)=mysql_fetch_row($result);
 
@@ -98,7 +98,7 @@ if ($edit) { // modifie ou ajoute
       } else {
 	// recherche le lien
 	include_once ($home."connect.php");
-	$result=mysql_query("SELECT lien FROM $GLOBALS[tp]documents WHERE identity='$id'") or die($db->errormsg());
+	$result=mysql_query("SELECT lien FROM $GLOBALS[tp]documents WHERE identity='$id'") or dberror();
 	list($lien)=mysql_fetch_row($result);
       }
     } elseif ($type=="documentannexe-liendocument") {
@@ -163,7 +163,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,$GLOBALS[tp]types.type,tplcreation FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die($db->errormsg());
+  $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,$GLOBALS[tp]types.type,tplcreation FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or dberror();
   $context=array_merge($context,mysql_fetch_assoc($result));
   if ($context[type]=="documentannexe-liendocument" || $context[type]=="documentannexe-lienpublication") {
     // recupere le numero
@@ -182,7 +182,7 @@ if ($edit) { // modifie ou ajoute
 if (!$tplcreation) {
   // cherche le tpl
   $critere=$idtype ? "id='$idtype'" : "type='$type'";
-    $result=mysql_query("SELECT tplcreation,id, type FROM $GLOBALS[tp]types WHERE $critere AND status>0") or die($db->errormsg());
+    $result=mysql_query("SELECT tplcreation,id, type FROM $GLOBALS[tp]types WHERE $critere AND status>0") or dberror();
   if (!mysql_num_rows($result)) die ("type '$type' inconnu");
   list($tplcreation,$context[idtype],$context[type])=mysql_fetch_row($result);
 }

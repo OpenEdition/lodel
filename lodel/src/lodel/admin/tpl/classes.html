@@ -38,7 +38,7 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&table=classes">[@ADMIN.ADD_CLASS]</a>
+	<a href="index.php?do=view&table=classes&classtype=[#CLASSTYPE]">[@ADMIN.ADD_CLASS]</a>
 </div>
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
@@ -47,7 +47,7 @@
 		<td class="texte_noir_gras">[@ADMIN.CLASS_NAME]</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="classes" TABLE="classes" WHERE="status gt 0" ORDER="rank">
+	<LOOP NAME="classes" TABLE="classes" WHERE="classtype='[#CLASSTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
 			<MACRO NAME="TR_LIST">
 				<td><strong>[(#TITLE|nbsp)]</strong></td>

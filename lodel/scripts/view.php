@@ -63,14 +63,14 @@ class View {
 #       $result->MoveNext();
 #     }
 
-##     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or die($db->errormsg());
+##     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND url!=".$db->qstr($url)." AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or dberror();
 
-     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or die($db->errormsg());
+     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or dberror();
 
      list ($id,$newurl)=$result->fetchRow();
 
      if ($id) {
-       $db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or die($db->errormsg());
+       $db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or dberror();
        $newurl="http://".$_SERVER['SERVER_NAME'].$newurl;
      } else {
        $newurl="index.php";

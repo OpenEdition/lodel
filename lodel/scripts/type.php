@@ -49,10 +49,10 @@ if ($id>0 && ($delete || $restore)) {
     include_once ($home."connect.php");
     lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes","entites","objets");
     // check the type can be deleted.
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or die($db->errormsg());
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or dberror();
     if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
     // check the type can be deleted.
-    $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entities WHERE idtype='$id' AND status>-64") or die($db->errormsg());
+    $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entities WHERE idtype='$id' AND status>-64") or dberror();
     list($count)=mysql_fetch_row($result);
     if ($count) { $context[error_entites_existent]=$count; unlock(); break; }
 
@@ -96,11 +96,11 @@ if ($edit) { // modifie ou ajoute
     lock_write("objets","types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
 
     // verifie que ce type n'existe pas.
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND class='$context[class]' AND id!='$id'") or die($db->errormsg());
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND class='$context[class]' AND id!='$id'") or dberror();
     if (mysql_num_rows($result)) { unlock(); $context[error_type_existe]=1; break; }
 
     if ($id>0) { // il faut rechercher le status
-      $result=mysql_query("SELECT status,rank FROM $GLOBALS[tp]types WHERE $critere") or die($db->errormsg());
+      $result=mysql_query("SELECT status,rank FROM $GLOBALS[tp]types WHERE $critere") or dberror();
       if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
       list($status,$rank)=mysql_fetch_array($result);
 
@@ -119,7 +119,7 @@ if ($edit) { // modifie ou ajoute
     }
     if (!$context[tplcreation]) $context[tplcreation]=preg_replace("/s$/","",$class);
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,title,class,tpl,tpledition,tplcreation,import,status,rank) VALUES ('$id','$context[type]','$context[title]','$class','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$status','$rank')") or die($db->errormsg());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,title,class,tpl,tpledition,tplcreation,import,status,rank) VALUES ('$id','$context[type]','$context[title]','$class','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$status','$rank')") or dberror();
 
     typetype_insert($id,$typeentree,"typeentree");
     typetype_insert($id,$typepersonne,"typepersonne");
@@ -132,7 +132,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or die($db->errormsg());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or dberror();
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   $context[import]=($class=="documents") && 

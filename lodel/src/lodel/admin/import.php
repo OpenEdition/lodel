@@ -69,9 +69,9 @@ if ($fichier) {
     // drop les tables existantes
     // recupere la liste des tables
 
-    mysql_query("DROP TABLE IF EXISTS ".join(",",$GLOBALS[lodelsitetables])) or die($db->errormsg()); 
+    $db->execute(lq("DROP TABLE IF EXISTS ".join(",",$GLOBALS['lodelsitetables']))) or dberror(); 
 
-    if (!execute_dump($sqlfile)) $context[error_execute_dump]=$err=->errormsg();
+    if (!execute_dump($sqlfile)) $context[error_execute_dump]=$err=$db->errormsg();
     @unlink($sqlfile);
 
     require_once($home."cachefunc.php");
@@ -96,9 +96,9 @@ if ($fichier) {
   } while(0);
 
   if (!$err) { 
-    include_once ($home."func.php"); 
+    require_once ($home."view.php"); 
     touch(SITEROOT."CACHE/maj");
-    back();
+    View::back();
   }
 }
 

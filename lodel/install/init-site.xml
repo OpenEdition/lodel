@@ -85,6 +85,10 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
+<column name="creationdate"
+        type="DATETIME" />
+<column name="modificationdate"
+        type="DATETIME" />
 <index name="index_idparent">
 <index-column name="idparent" />
 </index>
@@ -180,6 +184,12 @@
         description="identifiant unique"
         label="[@ADMIN.NAME]"
         edittype="class" />
+<column name="classtype"
+        type="VARCHAR"
+        size="64"
+        required="true"
+        visibility="hidden"
+        edittype="class" />
 <column name="title"
         type="VARCHAR"
         size="255"
@@ -231,7 +241,9 @@
         type="VARCHAR"
         size="64"
         required="true"
-        description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"/>
+        description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
+        visibility="hidden"
+        edittype="class"/>
 <column name="title"
         type="VARCHAR"
         size="255"
@@ -244,7 +256,8 @@
         size="255"
         description="style qui conduit a cette balises"
         label="[@ADMIN.STYLE]"
-        edittype="style" />
+        edittype="style"
+	editcondition="[#CLASSTYPE]=='entities'" />
 <column name="type"
         type="VARCHAR"
         size="255"
@@ -253,11 +266,11 @@
         label="[@ADMIN.TYPE]"
         edittype="select"
 	confirm="confirm_change_type" /> <!-- confirmation is required for this type -->
-<column name="dc"
+<column name="g_name"
         type="VARCHAR"
         size="255"
-        description="champ dublin core equivalent"
-        label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
+        description="champ generique equivalent"
+        label="[@ADMIN.GENERIC_EQUIVALENT]"
         edittype="select"/>
 <column name="condition"
         type="VARCHAR"
@@ -295,6 +308,12 @@
         description="input pour l edition"
         label="[@ADMIN.INTERFACE_EDITION]"
         edittype="select" />
+<column name="editionparams"
+        type="VARCHAR"
+        size="255"
+        description="params pour l edition"
+        label="[@ADMIN.PARAMETER_FOR_EDITION]"
+        edittype="text" />
 <column name="comment"
         type="LONGVARCHAR"
         description="commentaire sur le champs"
@@ -305,7 +324,8 @@
         default="0"
         required="true"
 	label="[@ADMIN.DATAFIELDGROUP]"
-	edittype="select"/>
+	edittype="select"
+	editcondition="[#CLASSTYPE]=='entities'" />
 <column name="status"
         type="TINYINT"
         default="1"
@@ -325,6 +345,9 @@
 </index>
 <index name="index_idgroup">
 <index-column name="idgroup" />
+</index>
+<index name="g_name">
+<index-column name="g_name" />
 </index>
 <unique name="unique_fieldclass">
 <unique-column name="name" />
@@ -402,18 +425,18 @@
         required="true"
         primaryKey="true"
         autoIncrement="true" />
-<column name="lastname"
+<column name="g_familyname"
         type="VARCHAR"
         size="255"
-        required="true"
-        label="[@COMMON.LASTNAME]"
-        edittype="text" />
-<column name="firstname"
+        required="true" />
+<column name="g_firstname"
         type="VARCHAR"
         size="255"
-        required="true"
-        label="[@COMMON.FIRSTNAME]"
-        edittype="text" />
+        required="true" />
+<column name="sortkey"
+        type="VARCHAR"
+        size="255" 
+	description="define the alphabetic order. suppleant partial support of utf-8 in mysql"/>
 <column name="status"
         type="TINYINT"
         default="1"
@@ -653,20 +676,12 @@
         description="style qui conduit a ce type"
         label="[@ADMIN.STYLE_PERSON_TYPE]"
         edittype="style" />
-<column name="titledescription"
+<column name="g_type"
         type="VARCHAR"
         size="255"
-        required="true"
-        description="affichage description de la personne"
-        label="[@ADMIN.TITLE_PERSON_DESCRIPTION]"
-        edittype="text" />
-<column name="styledescription"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="style qui conduit a la description de ce type."
-        label="[@ADMIN.STYLE_PERSON_DESCRIPTION]"
-        edittype="style" />
+        description="type generique equivalent"
+        label="[@ADMIN.GENERIC_EQUIVALENT]"
+        edittype="select"/>
 <column name="tpl"
         type="VARCHAR"
         size="255"
@@ -697,6 +712,9 @@
 <index name="index_type">
 <index-column name="type" />
 </index>
+<index name="index_g_type">
+<index-column name="g_type" />
+</index>
 <unique name="unique_type">
 <unique-column name="type" />
 </unique>
@@ -722,6 +740,9 @@
         description="name/identifiant unique"
         label="[@ADMIN.NAME_INDEX_TYPE]"
         edittype="type" />
+<column name="class"
+        type="VARCHAR"
+        size="64" />
 <column name="title"
         type="VARCHAR"
         size="255"
@@ -766,15 +787,16 @@
         required="true"
         label="[@ADMIN.FLAT_INDEX]" 
 	edittype="boolean"/>
+<column name="edition"
+        type="VARCHAR"
+        size="255"
+        description="input pour l edition"
+        label="[@ADMIN.INTERFACE_EDITION]"
+        edittype="select" />
 <column name="newbyimportallowed"
         type="TINYINT"
         default="0"
         label="[@ADMIN.NEWIMPORTALLOWED]"
-	edittype="boolean" />
-<column name="useabrevation"
-        type="TINYINT"
-        default="0"
-        label="[@ADMIN.USEABBREVIATION]"
 	edittype="boolean" />
 <column name="sort"
         type="VARCHAR"
@@ -814,18 +836,16 @@
 	label="[@COMMON.PARENT_ENTRY]"
 	edittype="select"
 	editcondition="![#TYPE_FLAT]"/>
-<column name="name"
+<column name="g_name"
         type="VARCHAR"
         size="255"
         required="true"
         label="[@ADMIN.ENTRY]"
         edittype="text" />
-<column name="abrev"
+<column name="sortkey"
         type="VARCHAR"
-        size="15"
-        required="true"
-        label="[@ADMIN.ABBREVIATION]"
-        edittype="text" />
+        size="255" 
+	description="define the alphabetic order. suppleant partial support of utf-8 in mysql"/>
 <column name="lang"
         type="CHAR"
         size="2"
@@ -851,11 +871,8 @@
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
-<index name="index_name">
-<index-column name="name" />
-</index>
-<index name="index_abrev">
-<index-column name="abrev" />
+<index name="index_g_name">
+<index-column name="g_name" />
 </index>
 <index name="index_idparent">
 <index-column name="idparent" />

@@ -41,12 +41,12 @@ $context[type]=$type;
 include_once($home."connect.php");
 $personnetable="";
 $critere=$user['visitor'] ?  "" : "AND status>0";
-$result=mysql_query ("SELECT * FROM $GLOBALS[tp]persons WHERE id='$id' $critere") or die($db->errormsg());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]persons WHERE id='$id' $critere") or dberror();
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 
-$result=mysql_query ("SELECT tpl FROM $GLOBALS[tp]persontypes WHERE type='$type' AND status>0") or die($db->errormsg());
+$result=mysql_query ("SELECT tpl FROM $GLOBALS[tp]persontypes WHERE type='$type' AND status>0") or dberror();
 list($base)=mysql_fetch_row($result);
 
 include ($home."cache.php");

@@ -76,10 +76,10 @@ if ($edit) {
 
     $id=intval($id);
     if ($id>0) { // il faut rechercher l'rank
-      $result=mysql_query("SELECT rank,valeur FROM $GLOBALS[tp]options WHERE id='$id'") or die($db->errormsg());
+      $result=mysql_query("SELECT rank,valeur FROM $GLOBALS[tp]options WHERE id='$id'") or dberror();
       list($rank,$valeur)=mysql_fetch_row($result);
     } else {
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]options WHERE name='$context[name]'") or die($db->errormsg());
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]options WHERE name='$context[name]'") or dberror();
       if (mysql_num_rows($result)) { $context[error_nom_existe]=$err=1; break; }
       $rank=get_max_rank("options","status>0");
       $valeur="";
@@ -87,7 +87,7 @@ if ($edit) {
 
     $status=$GLOBALS['user']['adminlodel'] && $protege ? "32" : "1";
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]options (id,name,type,status,rank,valeur) VALUES ('$id','$context[name]','$context[type]','$status','$rank','$valeur')") or die($db->errormsg());
+    mysql_query("REPLACE INTO $GLOBALS[tp]options (id,name,type,status,rank,valeur) VALUES ('$id','$context[name]','$context[type]','$status','$rank','$valeur')") or dberror();
 
     touch(SITEROOT."CACHE/maj");
     unlock();
@@ -96,7 +96,7 @@ if ($edit) {
   } while (0);
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]options WHERE $critere") or die($db->errormsg());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]options WHERE $critere") or dberror();
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 

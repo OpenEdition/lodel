@@ -88,7 +88,7 @@ function check_auth ($login,&$passwd,&$site)
     // cherche d'abord dans la base generale.
 
     usemaindb();
-    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or die($db->errormsg());
+    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or dberror();
     usecurrentdb();
     if ( ($row=$result->fields) ) {
       // le user est dans la base generale
@@ -97,7 +97,7 @@ function check_auth ($login,&$passwd,&$site)
       if (!$site) break; // si $site n'est pas definie on s'ejecte
 
       // cherche ensuite dans la base du site
-      $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or die($db->errormsg());
+      $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or dberror();
       if (!($row=$result->fields)) break;
      } else {
        break; // on s'eject
@@ -109,7 +109,7 @@ function check_auth ($login,&$passwd,&$site)
 
     // cherche les groupes pour les non administrateurs
     if (defined("LEVEL_ADMIN") && $user['rights']<LEVEL_ADMIN) { // defined is useful only for the install.php
-      $result=$db->execute("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$user['id']."'") or die($db->errormsg());
+      $result=$db->execute("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$user['id']."'") or dberror();
       $user['groups']="1"; // sont tous dans le groupe "tous"
       while ( ($row=$result->fields) ) $user['groups'].=",".$row[0];
     } else {

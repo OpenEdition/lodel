@@ -47,7 +47,7 @@ class PersonTypesLogic extends Logic {
    {
      global $db;
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_persons WHERE idtype='$id' AND status>-64"));
-     if ($db->errorno)  die($db->errormsg());
+     if ($db->errorno)  dberror();
      if ($count==0) {
        return false;
      } else {
@@ -92,8 +92,7 @@ class PersonTypesLogic extends Logic {
      return array("type"=>array("type","+"),
                   "title"=>array("text","+"),
                   "style"=>array("style","+"),
-                  "titledescription"=>array("text","+"),
-                  "styledescription"=>array("style","+"),
+                  "g_type"=>array("select",""),
                   "tpl"=>array("tplfile",""),
                   "tplindex"=>array("tplfile",""));
              }

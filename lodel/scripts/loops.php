@@ -44,7 +44,7 @@ function loop_topparentpubli(&$context,$funcname)
   // $context est un tableau qui contient une pile. Si on fait $context[toto] 
   // alors [#TOTO] sera accessible dans lodelscript !!!
   $id=$context['id'];       // On récupère le paramètre id
-  $result=$db->selectlimit(lq("SELECT * FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['user']['visitor'] ? -64 : 0)." ORDER BY degree DESC"),1,1) or die($db->errormsg());
+  $result=$db->selectlimit(lq("SELECT * FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['user']['visitor'] ? -64 : 0)." ORDER BY degree DESC"),1,1) or dberror();
 
 
   while (!$result->EOF) {
@@ -84,7 +84,7 @@ function loop_parentspublis(&$context,$funcname,$critere="")
   $id=intval($context[id]);
   if (!$id) return;
   
-  $result=$db->execute(lq("SELECT *, type  FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['user']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT *, type  FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['user']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
 
   while (!$result->EOF) {
     $localcontext=array_merge($context,$result->fields);
@@ -227,7 +227,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
 
   do {
     $row=$db->getRow($querybase);
-    if ($row===false) die($db->errormsg());
+    if ($row===false) dberror();
     if ($row) { // found
       $localcontext=array_merge($context,$row);
       break;
@@ -236,7 +236,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
     if (!$arguments['through']) break;
     $quotedtypes=join("','",explode(",",addslashes($arguments['through'])));
     if (!$quotedtypes) break;
-    $result=$db->execute(lq("SELECT id FROM #_TP_types WHERE type IN ('$quotedtypes')")) or die($db->errormsg());
+    $result=$db->execute(lq("SELECT id FROM #_TP_types WHERE type IN ('$quotedtypes')")) or dberror();
 
 
   while (!$result->EOF) {
@@ -249,7 +249,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
     // not found, well, we look for the next/previous parent above and it's first/last son.
 
     $row=$db->getrow(lq("SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.rank".$compare."e1.rank AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin AND e3.status>$statusmin AND  ".sql_not_xor("t0.class='publications'","t3.class='publications'")." ORDER BY e2.rank ".$sort.", e3.rank ".$sort));
-    if ($row===false) die($db->errormsg());
+    if ($row===false) dberror();
 
     if ($row) {
       $localcontext=array_merge($context,$row);

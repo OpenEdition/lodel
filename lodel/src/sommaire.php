@@ -61,7 +61,7 @@ if ($id || $identifier) {
       $where="$GLOBALS[tp]entities.id='$id' ".$critere;
     }
 
-    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or die($db->errormsg());
+    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or dberror();
     if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
     $row=filtered_mysql_fetch_assoc($context,$result);
     $base=$row[tpl];

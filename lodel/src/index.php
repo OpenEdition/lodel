@@ -34,7 +34,7 @@ authenticate();
 if ($id) {
   require_once($home."connect.php");
   $id=intval($id);
-  $result=mysql_query("SELECT class FROM $GLOBALS[tp]objects WHERE id='$id'") or die($db->errormsg());
+  $result=mysql_query("SELECT class FROM $GLOBALS[tp]objects WHERE id='$id'") or dberror();
   list($class)=mysql_fetch_row($result);
   $script=array("documents"=>"document",
 		"publications"=>"sommaire",

@@ -40,7 +40,7 @@ function makefilterfunc()
   // cherche les champs a filtrer
   //
   require_once ($home."connect.php");
-  $result=$db->execute("SELECT class,#_TP_fields.name,filtrage FROM #_fieldsgroupsjoin_ WHERE #_TP_fieldgroups.status>0 AND #_TP_fields.status>0 AND filtrage!=''") or die($db->errormsg());
+  $result=$db->execute("SELECT class,#_TP_fields.name,filtrage FROM #_fieldsgroupsjoin_ WHERE #_TP_fieldgroups.status>0 AND #_TP_fields.status>0 AND filtrage!=''") or dberror();
   while (!$result->EOF) {
     list($class,$name,$filter)=$result->fields;
 

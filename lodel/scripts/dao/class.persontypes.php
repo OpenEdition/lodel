@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-28.
+ // File generate automatically the 2005-01-03.
  //
 
 
@@ -41,8 +41,7 @@ class persontypesVO {
    var $type;
    var $title;
    var $style;
-   var $titledescription;
-   var $styledescription;
+   var $g_type;
    var $tpl;
    var $tplindex;
    var $rank;

@@ -46,7 +46,7 @@ $tmpfile=tempnam(tmpdir(),"lodeltranslation");
 
 require_once($home."xmldbfunc.php");
 
-$result=mysql_query("SELECT textgroups FROM $GLOBALS[tp]translations WHERE lang='$lang'") or die($db->errormsg());
+$result=mysql_query("SELECT textgroups FROM $GLOBALS[tp]translations WHERE lang='$lang'") or dberror();
 list($textgroups)=mysql_fetch_row($result); // get the first one
 // assume all have the same group
 

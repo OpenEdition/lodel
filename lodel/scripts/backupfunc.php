@@ -98,14 +98,14 @@ function lock_write_all($db)
 
 {
   // recupere la liste des tables
-  $result=PMA_mysql_list_tables($db) or die($db->errormsg());
-  if (!$result) die($db->errormsg());
+  $result=PMA_mysql_list_tables($db) or dberror();
+  if (!$result) dberror();
   $num_tables = mysql_numrows($result);
   for($i = 0; $i<$num_tables; $i++) {
     $tables[] = PMA_mysql_tablename($result, $i);
   }
   if (!$tables) die("WARNING: no table to lock in database \"$db\"");
-  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or die($db->errormsg());
+  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or dberror();
 }
 
 
@@ -167,7 +167,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
 
   if (!$tables) die("ERROR: tables is not defined in mysql_dump");
 #    $results = PMA_mysql_list_tables($db);
-#    if (!$results) die($db->errormsg());
+#    if (!$results) dberror();
 #    $num_tables = @mysql_numrows($results);
 #    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($results,$i);
 #  }

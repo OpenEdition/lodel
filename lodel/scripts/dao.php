@@ -50,13 +50,19 @@ class DAO {
    */
   var $rights;
 
+  /**
+   * Assoc array with the right level required to read, write, protect
+   */
+  var $idfield;
+
 
   /** Constructor
    */
-  function DAO($table,$uniqueid=false) {
+  function DAO($table,$uniqueid=false,$idfield="id") {
     $this->table=$table;
     $this->sqltable=lq("#_TP_").$table;
     $this->uniqueid=$uniqueid;
+    $this->idfield=$idfield;
   }
 
    
@@ -68,6 +74,7 @@ class DAO {
 
    {
      global $db,$user;
+     $idfield=$this->idfield;
 
      // check the user has the basic right for modifying/creating an object
      if ($user['rights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
@@ -76,10 +83,8 @@ class DAO {
 	  && $user['rights'] < $this->rights['protect']) {
        die("ERROR: you don't have the right to protect objects from the table ".$this->table);
      }
-
      //
-
-     if ($vo->id>0) { // update
+     if ($vo->$idfield >0) { // update
        $update="";
        if (isset($vo->protect)) { // special processing for the protection
 	 $update="status=(2*(status>0)-1)".($vo->protect ? "*32" : "");
@@ -87,12 +92,12 @@ class DAO {
 	 unset($vo->protect);
        }
        foreach($vo as $k=>$v) {
-	 if (!isset($v)) continue;
+	 if (!isset($v) || $k==$idfield) continue;
 	 if ($update) $update.=",";
 	 $update.="$k='".$v."'";
        }
        if ($update) {
-	 $db->execute("UPDATE ".$this->sqltable." SET  $update WHERE id='".$vo->id."' ".$this->rightscriteria("write")) or die($db->errormsg());
+	 $db->execute("UPDATE ".$this->sqltable." SET  $update WHERE ".$idfield."='".$vo->$idfield."' ".$this->rightscriteria("write")) or dberror();
        }
 
      } else { // new !
@@ -102,10 +107,8 @@ class DAO {
        }
 
        $insert="";$values="";
-       if ($this->uniqueid) {
-	 $vo->id=uniqueid($table);
-	 $insert="id";$values="'".$vo->id."'";
-       }
+       if ($this->uniqueid) $vo->$idfield=uniqueid($table);
+
        foreach($vo as $k=>$v) {
 	 if (!isset($v)) continue;
 	 if ($insert) { $insert.=","; $values.=","; }
@@ -114,11 +117,11 @@ class DAO {
        }
 
        if ($insert) {
-	 $db->execute("REPLACE INTO ".$this->sqltable." (".$insert.") VALUES (".$values.")") or die($db->errormsg());
-	 if (!$vo->id) $vo->id=$db->insert_id();
+	 $db->execute("REPLACE INTO ".$this->sqltable." (".$insert.") VALUES (".$values.")") or dberror();
+	 if (!$vo->$idfield) $vo->$idfield=$db->insert_id();
        }
      }
-     return $vo->id;
+     return $vo->$idfield;
    }
 
 
@@ -126,7 +129,7 @@ class DAO {
     * Function to get a value object
     */
    function getById($id,$select="*") {
-     return $this->find("id='$id'",$select);
+     return $this->find($this->idfield."='$id'",$select);
    }
 
    /**
@@ -141,7 +144,7 @@ class DAO {
      #echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read");
      #print_r($row);
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
-     if ($row===false) die($db->errormsg());
+     if ($row===false) dberror();
      if (!$row) return null;
 
      // create new vo and call getFromResult
@@ -155,7 +158,7 @@ class DAO {
    /**
     * Function to get many value object
     */
-   function findMany($criteria,$order,$select="*") {
+   function findMany($criteria,$order="",$select="*") {
      global $db;
 
 
@@ -163,7 +166,7 @@ class DAO {
      $morecriteria=$this->rightscriteria("read");
      if ($order) $order="ORDER BY ".$order;
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
-     $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) $morecriteria $order") or die($db->errormsg());
+     $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) $morecriteria $order") or dberror();
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
      $i=0;
@@ -196,7 +199,7 @@ class DAO {
        // initialise the rank
        if ($rankcriteria) $where=" ".$rankcriteria=" AND ".$rankcriteria;
        $rank=$db->getone("SELECT MAX(rank) FROM ".$this->sqltable." WHERE status>-64 ".$rankcriteria);
-       if ($db->errorno()) die($db->errormsg());
+       if ($db->errorno()) dberror();
        $vo->rank=$rank+1;
      }
 
@@ -225,27 +228,28 @@ class DAO {
 
      if ($GLOBALS['user']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
 
+     $idfield=$this->idfield;
      if (is_object($mixed)) {
        $vo=&$mixed;
-       $id=$vo->id;
-       $criteria="id='$id'";
+       $id=$vo->$idfield;
+       $criteria=$idfield."='$id'";
        //set id on vo to 0
-       $vo->id=0;
+       $vo->$idfield=0;
        $nbid=1;
      } elseif (is_numeric($mixed) && $mixed>0) {
        $id=$mixed;
-       $criteria="id='$id'";
+       $criteria=$idfield."='$id'";
        $nbid=1;
      } elseif (is_array($mixed)) {
        $id=$mixed;
-       $criteria="id IN ('".join("','",$id)."')";
+       $criteria=$idfield." IN ('".join("','",$id)."')";
        $nbid=count($id);
      } else {
        die("ERROR: DAO::deleteObject does not support the type of mixed");
      }
 
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("write")) or die($db->errormsg());
+     $db->execute("DELETE FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("write")) or dberror();
      if ($db->affected_Rows()!=$nbid) die("ERROR: you don't have the right to delete some object in table ".$this->table);
    // in theory, this is bad in the $mixed is an array because 
    // some but not all of the object may have been deleted
@@ -272,7 +276,7 @@ class DAO {
      // delete the uniqueid entry if required
      if ($this->uniqueid) {
        // select before deleting
-       $result=$db->execute("SELECT id FROM ".$this->sqltable.$where) or die($db->errormsg());
+       $result=$db->execute("SELECT id FROM ".$this->sqltable.$where) or dberror();
        // collect the ids
        $ids=array();
        foreach ($result as $row) $ids[]=$row['id'];
@@ -281,7 +285,7 @@ class DAO {
      }
 
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->sqltable.$where) or die($db->errormsg());
+     $db->execute("DELETE FROM ".$this->sqltable.$where) or dberror();
      if ($db->affectedRow()<=0) return false; // not the rights
      return true;
    }

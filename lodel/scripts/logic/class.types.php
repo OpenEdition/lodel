@@ -58,7 +58,7 @@ class TypesLogic extends Logic {
    {
      global $db;
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE idtype='$id' AND status>-64"));
-     if ($db->errorno)  die($db->errormsg());
+     if ($db->errorno)  dberror();
      if ($count==0) {
        return false;
      } else {
@@ -75,13 +75,7 @@ class TypesLogic extends Logic {
    function changeRankAction(&$context,&$error)
 
    {
-     global $db;
-
-     $id=intval($context['id']);
-     $dao=$this->_getMainTableDAO();
-     $vo=$dao->getById($id,"class");
-     $this->_changeRank($id,$context['dir'],"status>0 AND class='".$vo->class."'");
-     return "back";
+     return Logic::changeRankAction(&$context,&$error,"class");
    }
 
 

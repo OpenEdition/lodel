@@ -137,12 +137,19 @@ class Logic {
    /**
     * Change rank action
     * Default implementation
+    * $link the fields to make the define the group within which the rank is done.    
     */
-   function changeRankAction(&$context,&$error)
+   function changeRankAction(&$context,&$error,$groupfields="")
 
    {
-     $id=intval($context['id']);
-     $this->_changeRank($id,$context['dir'],"status>0");
+     $id=$context['id'];
+     if ($groupfields) {
+       $dao=$this->_getMainTableDAO();
+       $vo=$dao->getById($id,$groupfields);
+       foreach(explode(",",$groupfields) as $field)  $criteria.=" AND ".$field."='".$vo->$field."'";      
+     }
+     $this->_changeRank($id,$context['dir'],"status>0 ".$criteria);
+     
      return "back";
    }
 
@@ -327,19 +334,19 @@ class Logic {
     * Used in editAction to do extra operation before the object is saved.
     * Usually it gather information used after in _saveRelatedTables
     */
-   function _prepareEdit($dao,$context) {}
+   function _prepareEdit($dao,&$context) {}
 
    /**
     * Used in deleteAction to do extra operation before the object is saved.
     * Usually it gather information used after in _deleteRelatedTables
     */
-   function _prepareDelete($dao,$context) {}
+   function _prepareDelete($dao,&$context) {}
 
    /**
     * Used in editAction to do extra operation after the object has been saved
     */
 
-   function _saveRelatedTables($vo,$context) {}
+   function _saveRelatedTables($vo,&$context) {}
 
    /**
     * Used in deleteAction to do extra operation after the object has been deleted

@@ -221,7 +221,7 @@ function reservedword($name) {
 	  "MOD",
 	  "MRG_MYISAM",
 	  "NATURAL",
-	  "NOM",
+	  "NAME",
 	  "NOT",
 	  "NO_WRITE_TO_BINLOG",
 	  "NULL",
@@ -232,7 +232,6 @@ function reservedword($name) {
 	  "OPTIONALLY",
 	  "OR",
 	  "ORDER",
-	  "ORDRE",
 	  "OUT",
 	  "OUTER",
 	  "OUTFILE",
@@ -319,12 +318,10 @@ function reservedword($name) {
 
 # reserver par LODEL
 
-	  "STATUT",
-	  "DROITVISITEUR",
-	  "DROITREDACTEUR",
-	  "DROITEDITEUR",
-	  "DROITADMIN",
-	  "DROITADMINLODEL"
+	  "STATUS",
+	  "RANK",
+	  "CLASS",
+	  "TYPE"
 	  );
   return (in_array (strtoupper($name), $reserved_words));
 }

@@ -135,6 +135,21 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <label for="edition">[@ADMIN.INTERFACE_EDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="edition" id="edition">
+    <?php 
+                      makeSelect($context,"edition","entrytypes","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="edition">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
   <label for="newbyimportallowed">[@ADMIN.NEWIMPORTALLOWED]
         : 
       </label>
@@ -146,21 +161,6 @@
   </IF>
   <br />
   <LOOP NAME="fielderror" FIELD="newbyimportallowed">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-    </p>
-  </LOOP>
-  <label for="useabrevation">[@ADMIN.USEABBREVIATION]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="[#USEABREVATION]">
-    <input type="checkbox" name="useabrevation" id="useabrevation" checked>
-    <ELSE/>
-    <input type="checkbox" name="useabrevation" id="useabrevation">
-  </IF>
-  <br />
-  <LOOP NAME="fielderror" FIELD="useabrevation">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>

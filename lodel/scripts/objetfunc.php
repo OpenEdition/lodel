@@ -94,7 +94,7 @@ INSERT INTO #_TP_objets (id,class) SELECT identity,"publications" FROM #_TP_publ
 	      );
 
   foreach ($conv as $maintable=>$changes) {
-    $result=$db->execute(lq("SELECT id FROM #_TP_$maintable")) or die($db->errormsg());
+    $result=$db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
     #echo "$maintable...\n";
     while ($id=$result->fields("id")) {
       #echo "$maintable...$id<br />\n";
@@ -125,7 +125,7 @@ UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
   foreach ($tables as $table=>$idsname) {
     foreach ($idsname as $idname) {
       $count=$db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
-      if ($count===false) die($db->errormsg());
+      if ($count===false) dberror();
 
       if ($count) $err.="<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n";
     }

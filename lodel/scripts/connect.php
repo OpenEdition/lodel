@@ -62,11 +62,20 @@ if ($GLOBALS['site'] && $GLOBALS['singledatabase']!="on") {
 
 if (!defined("SINGLESITE")) define("SINGLESITE",$GLOBALS['singledatabase']!="on"); // synonyme currently but may change in the future
 
-$GLOBALS['db']->connect(DBHOST,DBUSERNAME,DBPASSWD, $GLOBALS['currentdb']) or die($GLOBALS['db']->errormsg());
+$GLOBALS['db']->connect(DBHOST,DBUSERNAME,DBPASSWD, $GLOBALS['currentdb']) or dberror();
 
 $GLOBALS['tp']=$GLOBALS['tableprefix'];
 
 /*------------------------------------------------------------------------------*/
+
+
+function dberror()
+
+{
+  global $db;
+  $ret=trigger_error($db->errormsg(),E_USER_ERROR);
+}
+
 
 $GLOBALS['maindb']="";
 $GLOBALS['savedb']="";
@@ -155,7 +164,7 @@ function uniqueid($table)
 {
   global $db;
   $db->execute(lq("INSERT INTO #_TP_objects (class) VALUES ('$table')"));
-  return $db->insert_id;
+  return $db->insert_id();
 }
 
 /**

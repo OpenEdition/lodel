@@ -63,7 +63,7 @@ if ($idtache) {
     if ($ifile>1) {
       $typedoc=addslashes($tache["typedoc".$ifile]);
       // recherche l'id du type
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$typedoc' AND class='$class'") or die($db->errormsg());
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$typedoc' AND class='$class'") or dberror();
       if (!mysql_num_rows($result)) die("ERROR: Type incorrect \"$typedoc\". Verifier le stylage et le modele editorial");
       list($idtype)=mysql_fetch_row($result);
     } else {
@@ -157,7 +157,7 @@ if ($id>0 && !$user['admin']) {
 if ($id>0 && $dir) {
   lock_write("entites","types");
   # cherche le parent
-  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entities WHERE id='$id' $critere") or die($db->errormsg());
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entities WHERE id='$id' $critere") or dberror();
   if (!mysql_num_rows($result)) { die ("vous n'avez pas les rights"); }
   list($idparent)=mysql_fetch_row($result);
   $critere=$class=="publications" ? "AND class='publications'" : "AND class!='publications'";
@@ -216,7 +216,7 @@ if ($id>0 && $dir) {
  // edit
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]$class.*, $GLOBALS[tp]entities.*  FROM $GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]$class ON $GLOBALS[tp]entities.id=$GLOBALS[tp]$class.identity WHERE $GLOBALS[tp]entities.id='$id' $critere") or die($db->errormsg());
+  $result=mysql_query("SELECT $GLOBALS[tp]$class.*, $GLOBALS[tp]entities.*  FROM $GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]$class ON $GLOBALS[tp]entities.id=$GLOBALS[tp]$class.identity WHERE $GLOBALS[tp]entities.id='$id' $critere") or dberror();
   if (!mysql_num_rows($result)) { header("location: not-found.html"); return; }
   $context[entite]=mysql_fetch_assoc($result);
   $context[idtype]=$context[entite][idtype];
@@ -227,7 +227,7 @@ if ($id>0 && $dir) {
 #  require_once ($home."validfunc.php");
 #  $context[type]=trim($type);
 #  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
-#  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND status>0") or die($db->errormsg());
+#  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND status>0") or dberror();
 #  if (!mysql_num_rows($result)) die("type inconnu $context[type]");
 #  list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
   $context[entite]=array();
@@ -235,12 +235,12 @@ if ($id>0 && $dir) {
 
 if (!$context[tplcreation]) {
   if (!$context[idtype] && $id) {
-    $result=mysql_query("SELECT tplcreation,idtype,type FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die($db->errormsg());
+    $result=mysql_query("SELECT tplcreation,idtype,type FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or dberror();
     if (!mysql_num_rows($result)) die("ERROR: document without type (???)");
     list($context[tplcreation],$context[idtype],$context[type])=mysql_fetch_row($result);
   } else {
     if (!$context[idtype]) die("preciser un type in document.php");
-    $result=mysql_query("SELECT tplcreation,type FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND status>0") or die($db->errormsg());
+    $result=mysql_query("SELECT tplcreation,type FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND status>0") or dberror();
     list($context[tplcreation],$context[type])=mysql_fetch_row($result);
   }
 }
@@ -294,7 +294,7 @@ function extract_files(&$context,$class)
 
   require_once($home."connect.php");
   // look for the field we have to download.
-  $result=mysql_query("SELECT $GLOBALS[tp]tablefields.name,type FROM $GLOBALS[tp]tablefields,$GLOBALS[tp]tablefieldgroups WHERE idgroup=$GLOBALS[tp]tablefieldgroups.id AND class='$class' AND $GLOBALS[tp]tablefields.status>0 AND $GLOBALS[tp]tablefieldgroups.status>0 AND edition!='' AND (type='image' OR type='fichier')") or die($db->errormsg());
+  $result=mysql_query("SELECT $GLOBALS[tp]tablefields.name,type FROM $GLOBALS[tp]tablefields,$GLOBALS[tp]tablefieldgroups WHERE idgroup=$GLOBALS[tp]tablefieldgroups.id AND class='$class' AND $GLOBALS[tp]tablefields.status>0 AND $GLOBALS[tp]tablefieldgroups.status>0 AND edition!='' AND (type='image' OR type='fichier')") or dberror();
 
   if (!mysql_num_rows($result)) return;
 

@@ -140,6 +140,6 @@ function PMA_mysqlDie($error_message = '', $the_query = '',
 		      $is_modify_link = TRUE, $back_url = '',
 		      $exit = TRUE)
 {
-	 die($db->errormsg());
+	 dberror();
 }
 ?>

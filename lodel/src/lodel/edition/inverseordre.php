@@ -42,10 +42,10 @@ $critere.=$user['admin'] ? "" : " AND groupe IN (".$user['groups'].")";
 
 lock_write("publications");
 # cherche tous les enfants
-$result=mysql_query ("SELECT max(rank) FROM $GLOBALS[tp]publications WHERE $critere") or die($db->errormsg());
+$result=mysql_query ("SELECT max(rank) FROM $GLOBALS[tp]publications WHERE $critere") or dberror();
 if (!mysql_num_rows($result)) { die ("vous n'avez pas les rights"); }
 list($max)=mysql_fetch_row($result);
-mysql_query("UPDATE $GLOBALS[tp]publications SET rank=$max-rank WHERE $critere") or die($db->errormsg());
+mysql_query("UPDATE $GLOBALS[tp]publications SET rank=$max-rank WHERE $critere") or dberror();
 
 unlock("publications");
 back();

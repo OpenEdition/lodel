@@ -69,8 +69,9 @@ function parse_loop_extra(&$tables,
 			  &$select,&$where,&$rank,&$groupby,&$having)
 
 {
-  global $site,$home;
+  global $site,$home,$db;
   static $tablefields; // charge qu'une seule fois
+  if (!$tablefields) require($home."tablefields.php");
 
   // convertion des codes specifiques dans le where
   // ce bout de code depend du parenthesage et du trim fait dans parse_loop.
@@ -85,64 +86,53 @@ function parse_loop_extra(&$tables,
 		    '".($GLOBALS[user][admin] ? "1" : "(usergroup IN ($GLOBALS[user][groups]))")."'
 		    ),$where);
   //
-
-  $classes=array("documents","publications");
-  foreach ($classes as $class) {
-    // gere les tables principales liees a entites
-    $ind=array_search("#_TP_$class",$tables);
-    if ($ind!==FALSE && $ind!==NULL) {
-      array_push($tables,"#_TP_entities");
-      // put entites just after the class table
-      #print_r($tablesinselect);
-      array_splice($tablesinselect,$ind+1,0,"#_TP_entities");
-      #print_r($tablesinselect);
-      protect5($select,$where,$rank,$groupby,$having,"#_TP_$class","title");
-
-      $where.=" AND #_TP_$class.identity=#_TP_entities.id AND class='$class'";
+  if ($tablefields[lq("#_TP_classes")]) {
+    require_once($home."dao.php");
+    $dao=getDAO("classes");
+    $classes=$dao->findMany("classtype='entities'");
+    foreach ($classes as $class) {
+      // gere les tables principales liees a entites
+      $ind=array_search($class->name,$tables);
+      if ($ind!==FALSE && $ind!==NULL) {
+	array_push($tables,"entities");
+	// put entites just after the class table
+	array_splice($tablesinselect,$ind+1,0,"entities");
+	protect5($select,$where,$rank,$groupby,$having,$class,"title");
+	$where.=" AND ".$class->name.".identity=entities.id AND class='".$class->name."'";
+      }
     }
   }
+
 #  echo "where 1:",htmlentities($where),"<br>";
-  if (in_array("#_TP_entities",$tables)) {
-    if (preg_match("/\bclass\b/",$where)) {
-      array_push($tables,"#_TP_types");
-      protect5($select,$where,$rank,$groupby,$having,"#_TP_entities","id|status|rank");
+  if (in_array("entities",$tables)) {
+    if (preg_match("/\bclass\b/",$where) || preg_match("/\btype\b/",$where)) {
+      array_push($tables,"types");
+      protect5($select,$where,$rank,$groupby,$having,"entities","id|status|rank");
       $jointypesentitiesadded=1;
-      $where.=" AND #_TP_entities.idtype=#_TP_types.id";
-      ## c'est inutile pour le moment: preg_replace("/\bclass\b/","#_TP_types.class",$where).
-    }
-#  echo "where 1bis:",htmlentities($where),"<br>";
-    if (!$jointypesentitiesadded && preg_match("/\btype\b/",$where)) {
-      array_push($tables,"#_TP_types");
-      protect5($select,$where,$rank,$groupby,$having,"#_TP_entities","id|status|rank");
-      $where.=" AND #_TP_entities.idtype=#_TP_types.id";
+      $where.=" AND entities.idtype=types.id";
     }
     if (preg_match("/\bparent\b/",$where)) {
-      array_push($tables,"#_TP_entities as entities_interne2");
-      protect5($select,$where,$rank,$groupby,$having,"#_TP_entities","id|idtype|identifier|groupe|user|rank|status|idparent");
-      $where=preg_replace("/\bparent\b/","entities_interne2.identifier",$where)." AND entities_interne2.id=#_TP_entities.idparent";
+      array_push($tables,"entities as entities_interne2");
+      protect5($select,$where,$rank,$groupby,$having,"entities","id|idtype|identifier|usergroup|iduser|rank|status|idparent|creationdate|modificationdate|g_title");
+      $where=preg_replace("/\bparent\b/","entities_interne2.identifier",$where)." AND entities_interne2.id=entities.idparent";
     }
-    if (in_array("#_TP_types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
-      $extrainselect.=", #_TP_types.type , #_TP_types.class";
+    if (in_array("types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
+      $extrainselect.=", types.type , types.class";
     }
   }// fin de entities
 
   // verifie le status
   if (!preg_match("/\bstatus\b/i",$where)) { // test que l'element n'est pas a la poubelle
-    if (!$tablefields) require($home."tablefields.php");
     $teststatus=array();
     if ($where) array_push($teststatus,$where);
     foreach ($tables as $table) {
-      if (preg_match("/\b(\w+)\s+as\s+(\w+)\b/i",$table,$result)) {
-	$realtable=$result[2];
-	$table=$result[1];
-      } else {
-	$realtable=$table;
-      }
+      
+      $realtable=$this->prefixTableName($table);
       if ($tablefields[$realtable] &&
 	  !in_array("status",$tablefields[$realtable])) continue;
-      if ($realtable==lq("#_TP_session")) continue;
+      if ($realtable=="session") continue;
 
-      if ($realtable==lq("#_TP_entities")) {
+      if ($realtable=="entities") {
 	$lowstatus='"-64".($GLOBALS[user][admin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[user][groups]))")';
       } else {
 	$lowstatus="-64";
@@ -159,73 +149,58 @@ function parse_loop_extra(&$tables,
       // les regexp ci-dessous sont insuffisantes, il faudrait tester que ce n'est pas dans une zone quotee de la clause where !!!!
       //
 
-      // auteurs
-     if (in_array("#_TP_persons",$tables)) {
-       // fait ca en premier
-       if (preg_match("/\b(iddocument|identity)\b/",$where)) {
-	 // on a besoin de la table croisee entities_persons
-	 array_push($tables,"#_TP_entities_persons");
-	 array_push($tablesinselect,"#_TP_entities_persons"); // on veut aussi recuperer les infos qui viennent de cette table
-	 $where=preg_replace("/\biddocument\b/","identity",$where);
-	 $where.=" AND idperson=#_TP_persons.id";
-       }
-       if (preg_match("/\btype\b/",$where)) {
-	 protect5($select,$where,$rank,$groupby,$having,"#_TP_persons","id|status");
-	 protect5($select,$where,$rank,$groupby,$having,"#_TP_entities_persons","rank");
-	 array_push($tables,"#_TP_persontypes");
-	 // maintenant, il y a deux solutuions
-	 if (!in_array("#_TP_entities_persons",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
-	   array_push($tables,"#_TP_entities_persons");
-	   $groupby.=" #_TP_entities_persons.idperson";
-	 }
-	 $where.=" AND #_TP_entities_persons.idtype=#_TP_persontypes.id AND #_TP_entities_persons.idperson=#_TP_persons.id";
-       }
-     }
-     if (in_array("#_TP_entities",$tables) && preg_match("/\bidpersonne\b/",$where)) {
+      // persons and entries
+      foreach(array("persons"=>"persontypes",
+		    "entries"=>"entrytypes") as $table=>$typetable) {
+	if (in_array($table,$tables)) {
+	  // fait ca en premier
+	  if (preg_match("/\b(iddocument|identity)\b/",$where)) {
+	    // on a besoin de la table croisee entities_persons
+	    $alias="entities_".$table."_internal"; // use alias for security
+	    array_push($tables,"relations as ".$alias); ###,"entities_persons");
+	    $where=preg_replace("/\b(iddocument|identity)\b/",$alias.".id1",$where);
+	    $where.=" AND $alias.id2=$table.id";
+	  }
+	  if (preg_match("/\b(type|g_type)\b/",$where)) {
+	    protect5($select,$where,$rank,$groupby,$having,$table,"id|status|rank");
+	    array_push($tables,$typetable);
+	    $where.=" AND ".$table.".idtype=".$typetable.".id";
+	  }
+	}
+      }
+
+      foreach(array("persons"=>"idpersonne|idperson",
+		    "entries"=>"identree|identry") as $table=>$regexp) {
+	if (in_array("entities",$tables) && preg_match("/\b($regexp)\b/",$where)) {
 	// on a besoin de la table croise entites_personnes
-	array_push($tables,"#_TP_entities_persons");
-	$where.=" AND #_TP_entities_persons.identity=#_TP_entities.id";
-     }
-     // entrees
-     if (in_array("#_TP_entries",$tables)) {
-	if (preg_match("/\btype\b/",$where)) {
-	  protect5($select,$where,$rank,$groupby,$having,"#_TP_entries","id|status|rank");
-	  array_push($tables,"#_TP_entrytypes");
-	  $where.=" AND #_TP_entries.idtype=#_TP_entrytypes.id";
-	}
-       if (preg_match("/\b(iddocument|identity)\b/",$where)) {
-	  // on a besoin de la table croise entites_entrees
-	  array_push($tables,"#_TP_entities_entries");
-	  $where=preg_replace("/\biddocument\b/","identity",$where);
-	  $where.=" AND identry=#_TP_entries.id";
+	  $alias="entities_".$table."_internal2"; // use alias for security
+	  array_push($tables,"relations as ".$alias);
+	  preg_replace("/\b($re)\b/",$alias.".id2",$where);
+	  $where.=" AND $alias.id1=entities.id";
 	}
       }
-      if (in_array("#_TP_entities",$tables) && preg_match("/\bidentree\b/",$where)) {
-	// on a besoin de la table croise entites_entrees
-	array_push($tables,"#_TP_entities_entries");
-	$where.=" AND #_TP_entities_entries.identity=#_TP_entities.id";
-      }
-      if (in_array("#_TP_usergroups",$tables) && preg_match("/\biduser\b/",$where)) {
+
+      if (in_array("usergroups",$tables) && preg_match("/\biduser\b/",$where)) {
 	// on a besoin de la table croise users_groupes
-	array_push($tables,"#_TP_users_usergroups");
-	$where.=" AND idgroup=#_TP_usergroups.id";
+	array_push($tables,"users_usergroups");
+	$where.=" AND idgroup=usergroups.id";
       }
-      if (in_array("#_TP_users",$tables) && in_array("#_TP_session",$tables)) {
-	$where.=" AND iduser=#_TP_users.id";
+      if (in_array("users",$tables) && in_array("session",$tables)) {
+	$where.=" AND iduser=users.id";
       }
-      if (in_array("#_TP_tablefields",$tables) && preg_match("/\bclass\b/",$where)) {
-	// on a besoin de la table croise groupesdechamps
-	protect5($select,$where,$rank,$groupby,$having,"#_TP_tablefields","id|status|rank");
-	array_push($tables,"#_TP_tablefieldgroups");
-	$where.=" AND #_TP_tablefieldgroups.id=#_TP_tablefields.idgroup";
-	$extrainselect.=", #_TP_tablefieldgroups.class";
-     }
      // entrees
 
     } // site
 
-    array_walk($tables,"prefixtablesindatabase");
-    array_walk($tablesinselect,"prefixtablesindatabase");
+    $where=lq($where);
+    $extrainselect=lq($extrainselect);
+
+    #print_r($tables);
+
+    array_walk($tables,"prefixTableNameRef");
+    array_walk($tablesinselect,"prefixTableNameRef");
+    #print_r($tables);
+    #echo "--<br>";
 }
 
 
@@ -330,7 +305,7 @@ function maketext($name,$group,$tag)
       $prefix=lq("#_TP_");
     }
     $textexists=$db->getOne("SELECT 1 FROM ".$prefix."texts WHERE name='$name' AND textgroup='$group'");
-    if ($db->errorno()) die($db->errormsg());
+    if ($db->errorno()) dberror();
     if (!$textexists) { // text does not exists. Have to create it.
       $lang=$GLOBALS['user']['lang'] ? $GLOBALS['user']['lang'] : ""; // unlikely useful but...
       $db->execute("INSERT INTO ".$prefix."texts (name,textgroup,contents,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg ($db->errormsg());
@@ -381,22 +356,44 @@ function parse_after(&$text)
 }
 
 
+
+function prefixTableName($table)
+
+{
+  global $home;
+  static $tablefields;
+  if (!$tablefields) require($home."tablefields.php");
+
+  if (preg_match("/\b(\w+)(\s+as\s+\w+)\b/i",$table,$result)) {
+    $table=$result[1];
+    $alias=$result[2];
+  }
+
+  $prefixedtable=lq("#_TP_".$table);
+  if ($tablefields[$prefixedtable]) {
+    return $prefixedtable.$alias;
+  } elseif ($tablefields[DATABASE.".".$prefixedtable]) {
+    return DATABASE.".".$prefixedtable.$alias;
+  } else {
+    return $table.$alias;
+  }
+   
+  //if (!SINGLESITE && ($table==lq("#_MTP_sites") || $table==lq("#_MTP_session"))) {
+  // $table=DATABASE.".".$table;
+  //
+}
+
+
+
 } // end of the class LodelParser
 
 
-function prefixtablesindatabase(&$table) {
-#  if (($GLOBALS[database]!=$GLOBALS[currentdb]) &&
-#      ($table=="#_TP_sites" || 
-#       $table=="#_TP_session" ||
-#       $table=="#_TP_users")) {
-#    $table=$GLOBALS[database].".".$table;
-#  }
-  if ((DATABASE!=$GLOBALS[currentdb]) &&
-      ($table=="$GLOBALS[tp]sites" || 
-       $table=="$GLOBALS[tp]session")) {
-    $table=DATABASE.".".$table;
-  }
-}
+function prefixTableNameRef(&$table) { $table=LodelParser::prefixTableName($table); }
+
+/**
+ * Function to prefix automatically the name of a table.
+ * sera tablefields for this.
+ */
 
 
 // prefix les tables si necessaire

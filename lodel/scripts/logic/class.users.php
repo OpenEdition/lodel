@@ -123,13 +123,13 @@ class UsersLogic extends Logic {
      // now add the usergroups
       foreach ($context['usergroups'] as $usergroup) {
 	$usergroup=intval($usergroup);
-	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or die($db->errormsg());
+	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or dberror();
       }
    }
 
    function _deleteRelatedTables($id) {
      global $db;
-     $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or die($db->errormsg());
+     $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or dberror();
    }
 
 

@@ -43,7 +43,7 @@ function enregistre_entite_from_xml($context,$text,$class)
 
   $localcontext=$context;
 
-  $result=$db->execute(lq("SELECT #_TP_tablefields.name,style,type,traitement FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 AND style!=''")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT #_TP_tablefields.name,style,type,traitement FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 AND style!=''")) or dberror();
 
   $sets=array();
   while (!$result->EOF) {
@@ -102,7 +102,7 @@ function enregistre_entite_from_xml($context,$text,$class)
     if (!$localcontext['id']) die("Preciser un type in xmlimport.php");
     // get the idtype
     $localcontext['idtype']=$db->getone(lq("SELECT idtype FROM #_TP_entities WHERE id='$localcontext[id]'"));
-    if ($db->errorno()) die($db->errormsg());
+    if ($db->errorno()) dberror();
     if (!$localcontext['idtype']) die("ERROR: The entites $localcontext[id] should exists.");
   }
 
@@ -129,13 +129,13 @@ function enregistre_entite_from_xml($context,$text,$class)
     return $newfile;
   }
   $row=getrow(lq("SELECT * FROM #_TP_$class WHERE identity='$id'"));
-  if ($row===false) die($db->errormsg());
+  if ($row===false) dberror();
 
   require_once($home."func.php");
   copy_images($row,"mv_image",$id);
   myaddslashes($row);
   foreach ($row as $field=>$value) { $row[$field]=$field."='".$value."'"; }
-  $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$row)." WHERE identity='$id'")) or die($db->errormsg());
+  $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$row)." WHERE identity='$id'")) or dberror();
   // fin du deplacement des images
 
 
@@ -153,7 +153,7 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=$db->execute(lq("SELECT id,style,styledescription FROM #_TP_persontypes,#_TP_entitytypes_persontypes WHERE status>0 AND idpersontype=id AND identitytype='$localcontext[idtype]'")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT id,style,styledescription FROM #_TP_persontypes,#_TP_entitytypes_persontypes WHERE status>0 AND idpersontype=id AND identitytype='$localcontext[idtype]'")) or dberror();
 
   while (!$result->EOF) {
     list($idtype,$style,$styledescription)=$result->fields;
@@ -278,7 +278,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=$db->execute(lq("SELECT id,style FROM #_TP_entrytypes,#_TP_entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT id,style FROM #_TP_entrytypes,#_TP_entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'")) or dberror();
   require_once($home."champfunc.php");
 
   while (!$result->EOF) {

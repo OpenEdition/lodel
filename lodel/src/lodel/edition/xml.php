@@ -42,14 +42,14 @@ $context[class]="documents";
 require_once($home."connect.php");
 require_once($home."entitefunc.php");
 
-$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or die($db->errormsg());
+$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or dberror();
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 //
 // cherche s'il y a des documents annexe et combien
 //
-$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entities.status>0 AND type LIKE 'documentannexe-%'") or die($db->errormsg());
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entities.status>0 AND type LIKE 'documentannexe-%'") or dberror();
 list($context[documentsannexes])=mysql_fetch_row($result);
 
 # calculate the page and store it into $contents
@@ -111,7 +111,7 @@ function loop_valeurs_des_champs($context,$funcname)
 {
   global $error;
 
-  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank") or die($db->errormsg());
+  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank") or dberror();
 
   $haveresult=mysql_num_rows($result)>0;
   if ($haveresult && function_exists("code_before_$funcname")) 

@@ -37,7 +37,7 @@ function deletetotrash($table,$critere)
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
   include_once ($home."connect.php");
-  mysql_query("UPDATE $GLOBALS[tp]$table SET status=-abs(status) WHERE $critere") or die($db->errormsg());
+  mysql_query("UPDATE $GLOBALS[tp]$table SET status=-abs(status) WHERE $critere") or dberror();
   return mysql_affected_rows()>0;
 }
 
@@ -47,7 +47,7 @@ function restorefromtrash($table,$critere)
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
   include_once ($home."connect.php");
-  mysql_query("UPDATE $GLOBALS[tp]$table SET status=abs(status) WHERE $critere") or die($db->errormsg());
+  mysql_query("UPDATE $GLOBALS[tp]$table SET status=abs(status) WHERE $critere") or dberror();
   return mysql_affected_rows()>0;
 }
 
@@ -57,7 +57,7 @@ function delete($table,$critere)
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
   include_once ($home."connect.php");
-  mysql_query("DELETE FROM $GLOBALS[tp]$table WHERE $critere") or die($db->errormsg());
+  mysql_query("DELETE FROM $GLOBALS[tp]$table WHERE $critere") or dberror();
   return mysql_affected_rows()>0;
 }
 

@@ -36,8 +36,8 @@ $name=addslashes($_COOKIE[$sessionname]);
 require_once ($home."connect.php");
 $time=time()-1;
 usemaindb();
-$db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or die($db->errormsg());
-$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or die($db->errormsg());
+$db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or dberror();
+$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or dberror();
 setcookie($sessionname,"",$time,$urlroot);
 
 header ("Location: ".SITEROOT); // la norme ne supporte pas les chemins relatifs !!

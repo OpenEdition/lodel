@@ -47,16 +47,46 @@ class ClassesLogic extends Logic {
 
    {
      global $db;
-     $count=$db->getOne(lq("SELECT count(*) FROM #_entitiestypesjoin_ INNER JOIN #_TP_classes ON #_TP_types.class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_entities.status>-64 AND #_TP_types.status>-64  AND #_TP_classes.status>-64"));
-     if ($db->errorno)  die($db->errormsg());
+
+     $dao=$this->_getMainTableDAO();
+     $vo=$dao->getById($id,"classtype");
+
+     $types=ClassesLogic::typestable($vo->classtype);
+     switch ($vo->classtype) {
+     case "entities":
+       $msg="cannot_delete_hasentities";
+       break;
+     case "entries":
+       $msg="cannot_delete_hasentries";
+       break;
+       $msg="cannot_delete_haspersons";
+     }
+     $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$vo->classtype." INNER JOIN #_".$types." ON idtype=".$types.".id INNER JOIN #_TP_classes ON ".$types.".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_".$vo->classtype.".status>-64 AND ".$types.".status>-64  AND #_TP_classes.status>-64"));
+
+     if ($db->errorno)  dberror();
      if ($count==0) {
        return false;
      } else {
-       return sprintf(getlodeltextcontents("cannot_delete_hasentity","admin"),$count);
+       return sprintf(getlodeltextcontents($msg,"admin"),$count);
      }
      //) { $error["error_has_entities"]=$count; return "back"; }
    }
 
+
+   /**
+    * Return the type table associated with the classtype
+    */
+
+   function typestable($classtype) {
+     switch ($classtype) {
+     case "entities":
+       return "types";
+     case "entries":
+       return "entrytypes";
+     case "persons" :
+       return "persontypes";
+     }
+   }
     
 
    /*---------------------------------------------------------------*/
@@ -81,19 +111,34 @@ class ClassesLogic extends Logic {
    {
      global $db;
 
-
      //----------------new, create the table
      if (!$this->oldvo->class) {
-       $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_".$vo->class." ( identity	INTEGER UNSIGNED  UNIQUE, KEY index_identity (identity))")) or die($db->errormsg());
+       switch($vo->classtype) {
+       case 'entities' :
+	 $create="identity	INTEGER UNSIGNED  UNIQUE, KEY index_identity (identity)";
+	 break;
+       case 'entries' :
+	 $create="identry	INTEGER UNSIGNED  UNIQUE, KEY index_identry (identry)";
+	 break;
+       case 'persons' :
+	 $create="idperson	INTEGER UNSIGNED  UNIQUE, KEY index_idperson (idperson)";
+	 $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_entities_".$vo->class." ( id INTEGER UNSIGNED UNIQUE, KEY index_id (id) )")) or dberror();
+	 break;
+       }
+
+       $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_".$vo->class." ( ".$create." )")) or dberror();
        $alter=true;
 
        //---------------- change class name ?
      } elseif ($this->oldvo->class!=$vo->class) {
        // change table name 
-       $db->execute(lq("RENAME TABLE #_TP_".$this->oldvo->class." TO #_TP_".$vo->class)) or die($db->errormsg());
+       $db->execute(lq("RENAME TABLE #_TP_".$this->oldvo->class." TO #_TP_".$vo->class)) or dberror();
+       if ($vo->classtype=="persons") {
+	 $db->execute(lq("RENAME TABLE #_TP_entities_".$this->oldvo->class." TO #_TP_entities_".$vo->class)) or dberror();
+       }
        // update tablefields, objects and types
        foreach(array("objects","types","tablefields") as $table) {
-	 $db->execute(lq("UPDATE #_TP_".$table." SET class='".$vo->class."' WHERE class='".$this->oldvo->class."'")) or die($db->errormsg());
+	 $db->execute(lq("UPDATE #_TP_".$table." SET class='".$vo->class."' WHERE class='".$this->oldvo->class."'")) or dberror();
        }
        $alter=true;
      }
@@ -118,17 +163,19 @@ class ClassesLogic extends Logic {
    {
      global $db,$home;
      if (!$this->vo) die("ERROR: internal error in Classes::deleteAction");
-     $db->execute(lq("DROP TABLE #_TP_".$this->vo->class)) or die($db->errormsg());
-
+     $db->execute(lq("DROP TABLE #_TP_".$this->vo->class)) or dberror();
+     if ($this->vo->classtype=="persons") {
+       $db->execute(lq("DROP TABLE #_TP_entities_".$this->vo->class)) or dberror();
+     }
      // delete associated types
      // collect the type to delete
-     $dao=getDAO("types");
-     $types=$dao->findMany("idclass='".$id."'","id");
+     $dao=getDAO(ClassesLogic::typestable($this->vo->classtype));
+     $types=$dao->findMany("class='".$this->vo->class."'","id");
      $ids=array();
      foreach($types as $type) $ids[]=$type->id;
 
      $dao->deleteObject($ids);
-     $logic=getLogic("types");
+     $logic=getLogic(ClassesLogic::typestable($this->vo->classtype));
      $logic->_deleteRelatedTables($ids);
  
      unset($this->vo);
@@ -145,6 +192,7 @@ class ClassesLogic extends Logic {
    // begin{publicfields} automatic generation  //
    function _publicfields() {
      return array("class"=>array("class","+"),
+                  "classtype"=>array("class","+"),
                   "title"=>array("text","+"),
                   "comment"=>array("longtext",""));
              }

@@ -200,7 +200,7 @@ class XMLDB {
     //
     // Query
 
-    $result=$db->execute(lq("SELECT $select FROM ".$this->tp.$table.$where)) or die($db->errormsg());
+    $result=$db->execute(lq("SELECT $select FROM ".$this->tp.$table.$where)) or dberror();
     
     if ($result->recordcount()<=0) return;
 

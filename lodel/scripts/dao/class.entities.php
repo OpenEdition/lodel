@@ -48,6 +48,8 @@ class entitiesVO {
    var $rank;
    var $status;
    var $upd;
+   var $creationdate;
+   var $modificationdate;
 
 }
 
@@ -61,6 +63,9 @@ class entitiesDAO extends DAO {
        $this->DAO("entities",true);
        $this->rights=array('write'=>LEVEL_REDACTOR,'protect'=>LEVEL_REDACTOR);
    }
+
+
+
 
 
 

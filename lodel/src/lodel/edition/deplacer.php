@@ -27,6 +27,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+die("desuet");
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
@@ -39,18 +41,18 @@ if ($idparent) {
   lock_write("entites","relations","typeentites_typeentites","entites as parent","entites as fils");
   // check whether we have the right or not
   if ($idparent>0) { // yeah there is a parent
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities as parent,$GLOBALS[tp]entities as fils WHERE parent.id='$idparent' AND fils.id='$id' AND idtypeentite2=parent.idtype AND identitytype=fils.idtype") or die($db->errormsg());
+    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities as parent,$GLOBALS[tp]entities as fils WHERE parent.id='$idparent' AND fils.id='$id' AND idtypeentite2=parent.idtype AND identitytype=fils.idtype") or dberror();
   } else { // no parent, the base.
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities as fils WHERE fils.id='$id' AND idtypeentite2=0 AND identitytype=fils.id") or die($db->errormsg());
+    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities as fils WHERE fils.id='$id' AND idtypeentite2=0 AND identitytype=fils.id") or dberror();
   }
   if (mysql_num_rows($result)<=0) die("ERROR: Can move the entities $id into $idparent. Check the editorial model.");
 
   // yes we have the right
 
-  mysql_query ("UPDATE $GLOBALS[tp]entities SET idparent='$idparent' WHERE id='$id'") or die($db->errormsg());
+  mysql_query ("UPDATE $GLOBALS[tp]entities SET idparent='$idparent' WHERE id='$id'") or dberror();
   if (mysql_affected_rows()) { // on a effectivement changer l'id du parent
     // cherche les nouveaux parents de $id
-    $result=mysql_query("SELECT id1,degree FROM $GLOBALS[tp]relations WHERE id2='$idparent' AND nature='P'") or die($db->errormsg());
+    $result=mysql_query("SELECT id1,degree FROM $GLOBALS[tp]relations WHERE id2='$idparent' AND nature='P'") or dberror();
 
     $values="";
     $dmax=0;
@@ -63,7 +65,7 @@ if ($idparent) {
 
     // recherche les enfants
     $delete="";
-    $result=mysql_query("SELECT id2,degree FROM $GLOBALS[tp]relations WHERE id1='$id' AND nature='P'") or die($db->errormsg());
+    $result=mysql_query("SELECT id2,degree FROM $GLOBALS[tp]relations WHERE id1='$id' AND nature='P'") or dberror();
     while ($row=mysql_fetch_assoc($result)) {
       $delete.=" (id2='$row[id2]' AND degree>$row[degree]) OR "; // efface tous les parents au dessus de $id.
       for ($d=0; $d<=$dmax; $d++) { // pour chaque degree
@@ -76,8 +78,8 @@ if ($idparent) {
  
 #   echo $values,"<br>",$delete;
     // detruit les liens vers le parent de id
-    mysql_query ("DELETE FROM $GLOBALS[tp]relations WHERE ($delete) AND nature='P'") or die($db->errormsg());
-    mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degree) VALUES $values") or die($db->errormsg());
+    mysql_query ("DELETE FROM $GLOBALS[tp]relations WHERE ($delete) AND nature='P'") or dberror();
+    mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degree) VALUES $values") or dberror();
     touch(SITEROOT."CACHE/maj");
   }
   unlock();

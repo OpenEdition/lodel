@@ -41,13 +41,32 @@ class TableFieldsLogic extends Logic {
      $this->Logic("tablefields");
    }
 
+   /**
+    * view an object Action
+    */
+   function viewAction(&$context,&$error)
 
+   {
+     global $db;
+
+     $ret=Logic::viewAction($context,$error);
+     $this->_getClass($context);
+     return $ret;
+   }
+
+   /**
+    * edit/add an object Action
+    */
    function editAction(&$context,&$error)
 
    {
      global $db;
      // get the class from the idgroup
-     $context['class']=$db->getOne(lq("SELECT class FROM #_TP_tablefieldgroups,#_TP_classes WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."' AND idclass=#_TP_classes.id")) or die($db->errormsg());
+     if ($context['idgroup']) {
+	 $class=$db->getOne(lq("SELECT class FROM #_TP_tablefieldgroups,#_TP_classes WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."' AND idclass=#_TP_classes.id")) or dberror();
+	 if ($context['class'] && $context['class']!=$class) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
+	 $context['class']=$class;
+     }
      // must be done before the validation
      return Logic::editAction($context,$error);
    }
@@ -60,13 +79,7 @@ class TableFieldsLogic extends Logic {
    function changeRankAction(&$context,&$error)
 
    {
-     global $db;
-
-     $id=intval($context['id']);
-     $dao=$this->_getMainTableDAO();
-     $vo=$dao->getById($id,"idgroup");
-     $this->_changeRank($id,$context['dir'],"status>0 AND idgroup='".$vo->idgroup."'");
-     return "back";
+     return Logic::changeRankAction(&$context,&$error,"idgroup,class");
    }
 
 
@@ -85,18 +98,21 @@ class TableFieldsLogic extends Logic {
      case "condition" :
        $arr=array(
 		  "*"=>getlodeltextcontents("nocondition","admin"),
-		  "+"=>getlodeltextcontents("fieldrequired","admin")
-		  );	
+		  "+"=>getlodeltextcontents("fieldrequired","admin"),
+		  "defaultnew"=>getlodeltextcontents("use_default_at_creation only","admin"),
+		  "permanent"=>getlodeltextcontents("permanent","admin"),
+		  );
      renderOptions($arr,$context['condition']);
        break;
      case "edition" :
        $arr=array(
-		  "editable"=>getlodeltextcontents("editable","admin"),
-		  ""=>getlodeltextcontents("noneditable","admin"),
-		  "display"=>getlodeltextcontents("displaynoneditable","admin"),
-		  "text"=>getlodeltextcontents("editabletext_1line","admin"),
-		  "textarea10"=>getlodeltextcontents("editabletext_10line","admin"),
-		  "textarea30"=>getlodeltextcontents("editabletext_30line","admin")
+		  "editable"=>getlodeltextcontents("edit_in_the_interface","admin"),
+		  "importable"=>getlodeltextcontents("no_edit_but_import","admin"),
+		  "none"=>getlodeltextcontents("no_change","admin"),
+		  "display"=>getlodeltextcontents("display_no_edit","admin"),
+		  "text"=>getlodeltextcontents("edit_text_1line","admin"),
+		  "textarea"=>getlodeltextcontents("edit_textarea","admin"),
+		  "select"=>getlodeltextcontents("edit_select","admin"),
 		  );
        renderOptions($arr,$context['edition']);
        break;
@@ -119,27 +135,45 @@ class TableFieldsLogic extends Logic {
        }
        renderOptions($arr,$context['idgroup']);
        break;
-   case "dc" :
-     $dcfields=array("Title","Subject","Description","Publisher","Date","Format","Identifier","Source","Language","Relation","Coverage","Rights");
-
+   case "g_name" :
+     if (!$context['classtype']) $this->_getClass($context);
+     switch ($context['classtype']) {
+     case 'entities':
+       $g_namefields=array("DC.Title","DC.Description",
+			    "DC.Publisher","DC.Date",
+			    "DC.Format","DC.Identifier",
+			    "DC.Source","DC.Language",
+			    "DC.Relation","DC.Coverage",
+			    "DC.Rights");
+       break;
+     case 'persons':
+       $g_namefields=array("Firstname","Familyname");
+       break;
+     case 'entities_persons':
+       break;
+     case 'entries':
+       $g_namefields=array("Index key");
+       break;
+     default:
+       trigger_error("class type ?",E_USER_ERROR);
+     }
 //"Creator",
 //"Contributor",
 //"Type"
-
      $dao=$this->_getMainTableDAO();
-     $tablefields=$dao->findMany("class='".$context['class']."'","","dc,title");     
+     $tablefields=$dao->findMany("class='".$context['class']."'","","g_name,title");     
      foreach($tablefields as $tablefield) { $arr[$tablefield->dc]=$tablefield->title; }
 
      $arr2=array(""=>"--");
-     foreach($dcfields as $dc) {
-       $ldc=strtolower($dc);
-       if ($arr[$ldc]) {
-	 $arr2[$ldc]=$dc." &rarr; ".$arr[$ldc];
+     foreach($g_namefields as $g_name) {
+       $lg_name=strtolower($g_name);
+       if ($arr[$lg_name]) {
+	 $arr2[$lg_name]=$g_name." &rarr; ".$arr[$lg_name];
        } else {
-	 $arr2[$ldc]=$dc;
+	 $arr2[$lg_name]=$g_name;
        }
      }
-     renderOptions($arr2,$context['dc']);
+     renderOptions($arr2,$context['g_name']);
      break;
    }
    }
@@ -158,7 +192,7 @@ class TableFieldsLogic extends Logic {
      if ($oldidgroup!=$idgroup) {
 	$set['rank']=get_rank_max("fields","idgroup='$idgroup'");      
 	// check the new group has the same class (extra security)
-	$result=mysql_query("SELECT 1 FROM $GLOBALS[tp]tablefieldgroups WHERE id='$idgroup' AND class='".$context['class']."'") or die($db->errormsg());
+	$result=mysql_query("SELECT 1 FROM $GLOBALS[tp]tablefieldgroups WHERE id='$idgroup' AND class='".$context['class']."'") or dberror();
 	if (mysql_num_rows($result)!=1) die("ERROR: the new and the old group of the field are not in the same class");
       }**/
 
@@ -180,8 +214,8 @@ class TableFieldsLogic extends Logic {
      require_once($home."fieldfunc.php");
 
      // remove the dc for all the other fields
-     if ($vo->dc) {
-       $db->execute(lq("UPDATE #_TP_tablefields SET dc='' WHERE dc='".$vo->dc."' AND id!='".$vo->id."' AND class='".$vo->class."'")) or die($db->errormsg());
+     if ($vo->g_name) {
+       $db->execute(lq("UPDATE #_TP_tablefields SET g_name='' WHERE g_name='".$vo->g_name."' AND id!='".$vo->id."' AND class='".$vo->class."'")) or dberror();
      }
 
      // manage the physical field 
@@ -197,7 +231,7 @@ class TableFieldsLogic extends Logic {
 
      if ($alter) { // modify or add or rename the field
        if (!$lodelfieldtypes[$vo->type]['sql']) die("ERROR: internal error in TableFields:: _saveRelatedTables");
-       $db->execute(lq("ALTER TABLE #_TP_".$context['class']." $alter ".$vo->name." ".$lodelfieldtypes[$vo->type]['sql'])) or die($db->errormsg());
+       $db->execute(lq("ALTER TABLE #_TP_".$context['class']." $alter ".$vo->name." ".$lodelfieldtypes[$vo->type]['sql'])) or dberror();
     }
      if ($alter || $vo->filtering!=$this->oldvo->filtering) {
        // should be in view ??
@@ -221,7 +255,7 @@ class TableFieldsLogic extends Logic {
    {
      global $db,$home;
      if (!$this->vo) die("ERROR: internal error in TableFields::deleteAction");
-     $db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or die($db->errormsg());
+     $db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or dberror();
      unset($this->vo);
 
      // should be in the view....
@@ -232,7 +266,26 @@ class TableFieldsLogic extends Logic {
      return "back";
    }
 
+   function _getClass(&$context)
 
+   {
+     global $db;
+     if ($context['idgroup']) {
+       list($class,$context['classtype'])=$db->getRow(lq("SELECT class,classtype FROM #_TP_tablefieldgroups,#_TP_classes WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."' AND idclass=#_TP_classes.id")) or dberror();
+       if ($context['class'] && $context['class']!=$class) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
+       $context['class']=$class;
+
+     } else {
+       if (substr($context['class'],0,9)=="entities_") {
+	 $class=substr($context['class'],9);
+	 $classtype="entities_";
+       } else {
+	 $class=$context['class'];
+       }
+       $classtype.=$db->getOne(lq("SELECT classtype FROM #_TP_classes WHERE class='".$class."'"));
+       $context['classtype']=$classtype;
+     }
+   }
 
    /**
     *
@@ -252,16 +305,18 @@ class TableFieldsLogic extends Logic {
    // begin{publicfields} automatic generation  //
    function _publicfields() {
      return array("name"=>array("tablefield","+"),
+                  "class"=>array("class","+"),
                   "title"=>array("text","+"),
                   "style"=>array("style",""),
                   "type"=>array("select","+"),
-                  "dc"=>array("select",""),
+                  "g_name"=>array("select",""),
                   "condition"=>array("select","+"),
                   "defaultvalue"=>array("text",""),
                   "processing"=>array("text",""),
                   "allowedtags"=>array("multipleselect",""),
                   "filtering"=>array("text",""),
                   "edition"=>array("select",""),
+                  "editionparams"=>array("text",""),
                   "comment"=>array("longtext",""),
                   "idgroup"=>array("select","+"));
              }

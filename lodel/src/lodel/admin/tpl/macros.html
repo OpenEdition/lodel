@@ -207,9 +207,9 @@
         </tr>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
+<DEFFUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" REQUIRED="where">
 	<!--[ Affiche tous les champs du groupe courant ]-->
-	<LOOP NAME="fields" TABLE="tablefields" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
+	<LOOP NAME="fields" TABLE="tablefields" ORDER="rank,name" WHERE="status gt 0" WHERE="[#WHERE]">
 		<DO>
 		<MACRO NAME="TR_LIST">
 			<td><strong>[(#TITLE|nbsp)]</strong></td>
@@ -225,10 +225,10 @@
 		</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD_GROUP]</span></td></tr>
+			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD]</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
-</DEFMACRO>
+</DEFFUNC>
 
 <DEFMACRO NAME="CASE_A_COCHER_PROTEGER">
 	<IF COND="abs([#STATUS]) lt 32">

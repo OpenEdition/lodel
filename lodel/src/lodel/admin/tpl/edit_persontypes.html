@@ -81,24 +81,17 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <label for="titledescription">[@ADMIN.TITLE_PERSON_DESCRIPTION]<span class="optional">(*)</span>
+  <label for="g_type">[@ADMIN.GENERIC_EQUIVALENT]
         : 
       </label>
   <br class="nobr">
-  <input type="text" size="30" name="titledescription" id="titledescription" class="text" value="[#TITLEDESCRIPTION]">
+  <select name="g_type" id="g_type">
+    <?php 
+                      makeSelect($context,"g_type","persontypes","select");
+                  ?>
+  </select>
   <br />
-  <LOOP NAME="fielderror" FIELD="titledescription">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-    </p>
-  </LOOP>
-  <label for="styledescription">[@ADMIN.STYLE_PERSON_DESCRIPTION]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="styledescription" id="styledescription" class="text" value="[#STYLEDESCRIPTION]">
-  <br />
-  <LOOP NAME="fielderror" FIELD="styledescription">
+  <LOOP NAME="fielderror" FIELD="g_type">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>

@@ -103,7 +103,7 @@
 		<DO>
 			<tr>
 				<td>[#IDENTIFIER]</td>
-				<td><IF COND="[#ENTITYTITLE]">[#ENTITYTITLE]<ELSE/>	...	</IF></td>
+				<td><IF COND="[#G_TITLE]">[#G_TITLE]<ELSE/>	...	</IF></td>
 			</tr>
 		</DO>
 	</LOOP>
@@ -126,7 +126,7 @@
 		</BEFORE>
 		<DO>
 			<tr>
-				<td colspan="2"><IF COND="[#ENTITYTITLE]">[#ENTITYTITLE]<ELSE/>	...	</IF></td>
+				<td colspan="2"><IF COND="[#G_TITLE]">[#G_TITLE]<ELSE/>	...	</IF></td>
 			</tr>
 		</DO>
 	</LOOP>
@@ -457,31 +457,31 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AUTEURS">
-	<LOOP NAME="auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
-		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
-		, [#PRENOM] [#NOMFAMILLE]
-		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
+	<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+		<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+		, [#G_FIRSTNAME] [#G_FAMILYNAME]
+		<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
 	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AUTEURS_WITH_URL">
-	<LOOP NAME="auteurs_with_url" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
+	<LOOP NAME="auteurs_with_url" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="rank">
 		<DOFIRST>
-			<a href="[(#ID|makeurlwithid('auteur'))]">
+			<a href="[#ID|makeurlwithid]">
 				<font color="black">
-				 	[#PRENOM] [#NOMFAMILLE]
+				 	[#G_FIRSTNAME] [#G_FAMILYNAME]
 				</font>
 			</a>
 		</DOFIRST>
-			, <a href="[(#ID|makeurlwithid('auteur'))]">
+			, <a href="[#ID|makeurlwithid]">
 				<font color="black">
-					 [#PRENOM] [#NOMFAMILLE]
+					 [#G_FIRSTNAME] [#G_FAMILYNAME]
 				</font>
 			</a>
 		<DOLAST>
-			et <a href="[(#ID|makeurlwithid('auteur'))]">
+			et <a href="[#ID|makeurlwithid]">
 				<font color="black">
-					[#PRENOM] [#NOMFAMILLE]
+					[#G_FIRSTNAME] [#G_FAMILYNAME]
 				</font>
 			</a>
 		</DOLAST>
@@ -794,7 +794,7 @@
 			</BEFORE>
 			<DO>
 				<IF COND="[#NBRESULTATS] ge 6">
-					<option value="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITLE]</option>
+					<option value="index.php?do=view&idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITLE]</option>
 				<ELSE/>
 					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[@EDITION.ADD] [#TITLE] |</a> 
 				</IF>
@@ -931,7 +931,7 @@
 				<a href="index.php?id=[#ID]">
 					<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
 					<LOOP NAME="titre_numero_rubrique" TABLE="entities, types" WHERE="identity=[#ID]  AND types.id=idtype AND class='publications'">
-						<span class="titre_serie">[#ENTITYTITLE]</span><br />
+						<span class="titre_serie">[#G_TITLE]</span><br />
 					</LOOP>
 					<span class="type_serie">([#TYPE])</span>
 				</a>
@@ -1248,14 +1248,14 @@
 <DEFMACRO NAME="NOM_TITRE_TYPE">
 	<a href="index.php?id=[#ID]">
 		<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
-		<span class="titre_serie">[#ENTITYTITLE]</span><br />
+		<span class="titre_serie">[#G_TITLE]</span><br />
 		<span class="type_serie">([#TYPE])</span>
 	</a>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
 	<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
-	<span class="titre_serie">[#ENTITYTITLE]</span><br />
+	<span class="titre_serie">[#G_TITLE]</span><br />
 	<span class="type_serie">([#TYPE])</span>
 </DEFMACRO>
 
@@ -1264,14 +1264,14 @@
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
 		<LOOP NAME="idparent" TABLE="entities,types" WHERE="id='[#ID]' AND types.id=idtype">
 			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#IDENTIFIER]</a></span>&nbsp;
-			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#ENTITYTITLE]</a></span><br />
+			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#G_TITLE]</a></span><br />
 			<span class="type_parent">([#TYPE])</span>
 		</LOOP>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-	<span class="titre_document">" [(#ENTITYTITLE|removefootnotes)] "</span>&nbsp;
+	<span class="titre_document">" [(#G_TITLE|removefootnotes)] "</span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 	<span class="type_document">([#TYPE])</span>
 </DEFMACRO>
@@ -1283,7 +1283,7 @@
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="rank">
+	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="idparent='[#ID]'" ORDER="rank">
 		<BEFORE>
 			<table width="100%" class="table_docannexes" border="0" cellspacing="0">
 		</BEFORE>
@@ -1299,9 +1299,9 @@
 				<td width="100%" valign="top" bgcolor="#EEEEEE">
 					<div>
 						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
-							<a name="[#ENTITYTITLE]" href="[#LIEN]" target="[#TITLE]">[#TITLE]</a>
+							<a name="[#G_TITLE]" href="[#LIEN]" target="[#TITLE]">[#TITLE]</a>
 						<ELSE/>
-							<a name="[#ENTITYTITLE]" href="../../docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]" target="[#ENTITYTITLE]">[#ENTITYTITLE]</a>
+							<a name="[#G_TITLE]" href="../../docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]" target="[#G_TITLE]">[#G_TITLE]</a>
 						</IF>
 						</div>
 					<span class="texte_normal">[#COMMENTAIRE]</span>

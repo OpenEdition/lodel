@@ -78,7 +78,7 @@ if ($file && $delete) {
   foreach(array_intersect(array("$GLOBALS[tp]entities",
 				"$GLOBALS[tp]entries",
 				"$GLOBALS[tp]persons"),$existingtables) as $table) {
-    $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or die($db->errormsg());
+    $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or dberror();
     if (mysql_num_rows($result)) {
       $context[error_table]=$table;
       break;

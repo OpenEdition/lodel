@@ -47,7 +47,7 @@ function gettask (&$id)
   global $db;
 
   $id=intval($id);
-  $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0")) or die($db->errormsg());
+  $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0")) or dberror();
   if (!$row) { $view=getView(); $view->back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
@@ -77,7 +77,7 @@ function maketask($name,$etape,$context,$id=0)
 {
   global $user,$db;
   if (is_array($context)) $context=serialize($context);
-  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$user['id']."','$context')")) or die($db->errormsg());
+  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$user['id']."','$context')")) or dberror();
   return $db->insert_ID();
 }
 
@@ -85,7 +85,7 @@ function updatetask_step($id,$step)
 
 {
   global $db;
-  $db->exxecute(lq("UPDATE #_TP_tasks SET step='$step' WHERE id='$id'")) or die($db->errormsg());
+  $db->exxecute(lq("UPDATE #_TP_tasks SET step='$step' WHERE id='$id'")) or dberror();
 }
 
 //
@@ -102,7 +102,7 @@ function updatetask_context($id,$newcontext,$previouscontext="")
     $contextstr=serialize($newcontext);
   }
 
-  $db->execute(lq("UPDATE #_TP_tasks SET context='$contextstr' WHERE id='$id'")) or die($db->errormsg());
+  $db->execute(lq("UPDATE #_TP_tasks SET context='$contextstr' WHERE id='$id'")) or dberror();
 
 }
 
@@ -141,7 +141,7 @@ function get_max_rank ($table,$where="")
 
   #require_once ($GLOBALS[home]."connect.php");
   $rank=$db->getone("SELECT MAX(rank) FROM #_TP_$table $where");
-  if ($db->errorno()) die($db->errormsg());
+  if ($db->errorno()) dberror();
 
   return $rank+1;
 }
@@ -158,7 +158,7 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
     $jointables=",#_TP_".
       trim(join(",#_TP_",preg_split("/,\s*/",$jointables)));
   }
-  $result=$db->execute(lq("SELECT $table.id,$table.rank FROM $table $jointables WHERE $critere ORDER BY $table.rank $desc")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT $table.id,$table.rank FROM $table $jointables WHERE $critere ORDER BY $table.rank $desc")) or dberror();
 
   $rank=$dir>0 ? 1 : mysql_num_rows($result);
 
@@ -166,11 +166,11 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
     if ($row['id']==$id) {
       # intervertit avec le suivant s'il existe
       if (!($row2=$result->fetchrow($result))) break;
-      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'")) or die($db->errormsg());
+      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'")) or dberror();
       $rank+=$dir;
     }
     if ($row['rank']!=$rank) {
-      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row[id]'")) or die($db->errormsg());
+      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row[id]'")) or dberror();
     }
     $rank+=$dir;
   }
@@ -291,11 +291,11 @@ function back($arg="",$back=-1)
 
   $offset=-1-$back;
 
-  $result=mysql_db_query($database,"SELECT id,url FROM #_TP_urlstack WHERE url!='' AND url!='".mysql_escape_string($url)."' AND idsession='$idsession' ORDER BY id DESC LIMIT $offset,1") or die($db->errormsg());
+  $result=mysql_db_query($database,"SELECT id,url FROM #_TP_urlstack WHERE url!='' AND url!='".mysql_escape_string($url)."' AND idsession='$idsession' ORDER BY id DESC LIMIT $offset,1") or dberror();
   list ($id,$newurl)=mysql_fetch_row($result);
 
   if ($id) {
-    mysql_db_query($database,"DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'") or die($db->errormsg());
+    mysql_db_query($database,"DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'") or dberror();
     header("Location: http://".$_SERVER['SERVER_NAME'].$newurl.$arg);exit;
   } else {
     header("Location: index.php");exit;
@@ -317,7 +317,7 @@ function translate_xmldata($data)
 #  // Dévérouille toutes les tables vérouillées précédemment par la 
 #  // fonction lock_write()
 #  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-#    $db->execute(lq("UNLOCK TABLES") or die($db->errormsg());
+#    $db->execute(lq("UNLOCK TABLES") or dberror();
 #}
 #
 #
@@ -326,7 +326,7 @@ function translate_xmldata($data)
 #  // Vérouille toutes les tables en écriture
 #  $list=func_get_args();
 #  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-#     $db->execute(lq("LOCK TABLES #_TP_".join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE") or die($db->errormsg());
+#     $db->execute(lq("LOCK TABLES #_TP_".join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE") or dberror();
 #}
 
 function prefix_keys($prefix,$arr)
@@ -395,7 +395,7 @@ function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
   $result=$db->execute(lq("SELECT name,value FROM #_TP_options WHERE $critere $extracritere"));
   if (!$result) {
     if ($db->errno()==1146) return; // table does not exists... that can happen during the installation
-    die($db->errormsg());
+    dberror();
   }
 
   while (!$result->EOF) {
@@ -438,7 +438,7 @@ function getlodeltext($name,$group="",$lang=-1)
 
   $critere=$GLOBALS['user']['visitor'] ? "" : "AND status>0";
   $arr=$db->getrow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
-  if ($arr===false) die($db->errormsg());
+  if ($arr===false) dberror();
 
   if ($group!="site") usecurrentdb();
 
@@ -455,7 +455,7 @@ function getlodeltextcontents($name,$group="",$lang=-1)
 }
 
 
-function makeurlwithid ($base,$id)
+function makeurlwithid ($id,$base="index")
 
 {
   if (is_numeric($base)) { $t=$id; $id=$base; $base=$t; } // exchange
@@ -734,7 +734,7 @@ function setrecord($table,$id,$set,$context=array())
       $update.="$k=".$db->qstr($v);
     }
     if ($update)
-      $db->execute("UPDATE $table SET  $update WHERE id='$id'") or die($db->errormsg());
+      $db->execute("UPDATE $table SET  $update WHERE id='$id'") or dberror();
   } else {
     $insert="";$values="";
     if (is_string($id) && $id=="unique") {
@@ -752,7 +752,8 @@ function setrecord($table,$id,$set,$context=array())
     }
 
     if ($insert) {
-      $db->execute("REPLACE INTO #_TP_$table (".$insert.") VALUES (".$values.")") or die($db->errormsg());
+
+      $db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or dberror();
       if (!$id) $id=$db->insert_id();
     }
   }

@@ -161,37 +161,13 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=classes"><span class="texte_orange">[@ADMIN.CLASSES]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=entrytypes"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=persontypes"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							[@ADMIN.TYPE]
-							<IF COND="[#USER.REDACTOR]">
+							[@ADMIN.CLASSES]
 							<select onChange="select_url(this)"><option>--</option>
-                                        		<LOOP NAME="classes_for_types" TABLE="classes" WHERE="status gt 0" ORDER="rank">
-								<option value="index.php?do=list&table=types&class=[#CLASS]">[#TITLE]</option>
+                                        		<LOOP NAME="classtypes">
+								<option value="index.php?do=list&table=classes&classtype=[#CLASSTYPE]">[#TITLE]</option>
 							</LOOP>
 							</select>
-							</IF>
+
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -200,12 +176,42 @@
 						<td width="350" class="td_admin">
 							[@ADMIN.DATAFIELDS]
 							<IF COND="[#USER.REDACTOR]">
+								<select onChange="select_url(this)"><option>--</option>
+									<LOOP NAME="classtypes">
+									<option value="" style="color: gray;">[#TITLE] </option>
+									<LOOP NAME="classes_for_tablefields" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
+										<option value="index.php?do=list&table=tablefieldgroups&idclass=[#ID]" style="padding-left:20px;"> [#TITLE]</option>
+									</LOOP>
+									</LOOP>
+									</select>
+							</IF>
+
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							[@ADMIN.TYPE]
+							<IF COND="[#USER.REDACTOR]">
 							<select onChange="select_url(this)"><option>--</option>
-                                        		<LOOP NAME="classes_for_tablefields" TABLE="classes" WHERE="status gt 0" ORDER="rank">
-								<option value="index.php?do=list&table=tablefieldgroups&idclass=[#ID]">[#TITLE]</option>
+							<LOOP NAME="classtypes">
+							<option value="" style="color: gray;">[#TITLE] </option>
+							<LOOP NAME="classes_for_types" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
+								<IF COND="[#CLASSTYPE]=='entities'">
+									<option value="index.php?do=list&table=types&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+								<ELSE/>
+								<IF COND="[#CLASSTYPE]=='entries'">
+									<option value="index.php?do=list&table=entrytypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+								<ELSE/>
+									<option value="index.php?do=list&table=persontypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+								</IF>
+>								</IF>
+								
+							</LOOP>
 							</LOOP>
 							</select>
-							</IF>
+					</IF>
 						</td>
 						<td>&nbsp;</td>
 					</tr>

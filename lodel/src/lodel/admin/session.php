@@ -38,7 +38,7 @@ $deleteuser=intval($deleteuser);
 mysql_select_db($database);
 $ids=array();
 if ($deleteuser) {
-  $result=mysql_query("SELECT id FROM $GLOBALS[tp]session WHERE iduser='$deleteuser'") or die($db->errormsg());
+  $result=mysql_query("SELECT id FROM $GLOBALS[tp]session WHERE iduser='$deleteuser'") or dberror();
   while(list($id)=mysql_fetch_row($result)) { array_push($ids,$id); }
 } elseif ($delete) {
   array_push($ids,$delete);
@@ -49,9 +49,9 @@ if ($deleteuser) {
 if ($ids) {
   $idstr=join(",",$ids);
   // remove the session
-  mysql_query("DELETE FROM $GLOBALS[tp]session WHERE id IN ($idstr)") or die($db->errormsg());
+  mysql_query("DELETE FROM $GLOBALS[tp]session WHERE id IN ($idstr)") or dberror();
   // remove the url related to the session
-  mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession IN ($idstr)") or die($db->errormsg());
+  mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession IN ($idstr)") or dberror();
 }
 
 mysql_select_db($currentdb);

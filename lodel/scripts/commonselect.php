@@ -38,7 +38,6 @@ function makeSelectFieldTypes($value)
 }
 
 
-
 function makeSelectUserRights($value,$adminlodel)
 
 {

@@ -44,7 +44,7 @@ function getusergroup($context,$idparent)
 
   } elseif ($idparent) { // on prend celui du idparent
     $usergroup=getone("SELECT usergroup FROM #_TP_entities WHERE id='$idparent' AND usergroup IN (".$user['groups'].")");
-    if ($db->errorno()) die($db->errormsg());
+    if ($db->errorno()) dberror();
     if (!$usergroup) die("ERROR: You have not the rights: (2)");
   } else {
     die("ERROR: You have not the rights: (3)");
@@ -75,7 +75,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   //
   if ($id>0) {
     $row=$db->getrow(lq("SELECT idparent,idtype FROM #_TP_entities WHERE id='$id'"));
-    if ($row===false) die($db->errormsg());
+    if ($row===false) dberror();
     list($idparent,$context['idtype'])=$row;
   }
   if ($idparent>0) {
@@ -84,7 +84,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     $condition=$db->getone(lq("SELECT condition FROM #_TP_entitytypes_entitytypes WHERE identitytype2=0 AND identitytype='$context[idtype]'"));
 
   }
-  if ($db->errorno()) die($db->errormsg());
+  if ($db->errorno()) dberror();
   if ($condition===false) die("ERROR: Entities of type '$context[idtype]' are not allowed in entity $idparent");
   //
   // ok, we are allowed to modifiy/add this entity.
@@ -105,7 +105,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   $files_to_move=array();
   
 
-  $result=$db->execute(lq("SELECT #_TP_tablefields.name,type,condition,default,allowedtags $champcritere FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 $extrawhere")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT #_TP_tablefields.name,type,condition,default,allowedtags $champcritere FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 $extrawhere")) or dberror();
   while (!$result->EOF) {
     list($name,$type,$condition,$default,$allowedtags,$critereok)=$result->fields;
     require_once($home."textfunc.php");
@@ -182,7 +182,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     if ($id>0 && !$user['admin']) {
       // verifie que le document est editable par cette personne
       $hasright=getone(lq("SELECT id FROM  #_TP_entities WHERE id='$id' AND usergroup IN (".$user['groups'].")"));
-      if ($db->errorno()) die($db->errormsg());
+      if ($db->errorno()) dberror();
       if (!$hasright) die("ERROR: You are not allowed. This is likely due to an error in the interface");
     }
     // change group ?
@@ -195,13 +195,13 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
       $status=intval($context['status']);
       $statusset=",status='$status' ";
     }
-    $db->execute(lq("UPDATE #_TP_entities SET identifier='$context[identifier]' $typeset $usergroupset $statusset WHERE id='$id'")) or die($db->errormsg());
+    $db->execute(lq("UPDATE #_TP_entities SET identifier='$context[identifier]' $typeset $usergroupset $statusset WHERE id='$id'")) or dberror();
     if ($usergrouprec && $user['admin']) change_usergroup_rec($id,$usergroup);
 
     move_files($id,$files_to_move,$sets);
 
     foreach ($sets as $name=>$value) { $sets[$name]=$name."=".$value; }
-    if ($sets) $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$sets)." WHERE identity='$id'")) or die($db->errormsg());
+    if ($sets) $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$sets)." WHERE identity='$id'")) or dberror();
 
   } else { // INSERT
     require_once($home."entitefunc.php");
@@ -212,18 +212,18 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     $status=$context['status'] ? intval($context['status']) : -1; // non publie par default
     if (!$context['idtype']) { // prend le premier venu
       $context['idtype']=getone(lq("SELECT id FROM #_TP_types WHERE class='$class' AND status>0 ORDER BY rank"));
-      if ($db->errorno()) die($db->errormsg());
+      if ($db->errorno()) dberror();
       if ($context['idtype']===false) die("pas de type valide ?");
     }
     $id=uniqueid($class);
-    $db->execute(lq("INSERT INTO #_TP_entities (id,idparent,idtype,identifier,rank,status,usergroup,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifier]','$rank','$status','$usergroup','$iduser')")) or die($db->errormsg());
+    $db->execute(lq("INSERT INTO #_TP_entities (id,idparent,idtype,identifier,rank,status,usergroup,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifier]','$rank','$status','$usergroup','$iduser')")) or dberror();
 
     require_once($home."managedb.php");
     creeparente($id,$context['idparent'],false);
     move_files($id,$files_to_move,$sets);
 
     $sets['identity']="'$id'";
-    $db->execute(lq("INSERT INTO #_TP_$class (".join(",",array_keys($sets)).") VALUES (".join(",",$sets).")")) or die($db->errormsg());
+    $db->execute(lq("INSERT INTO #_TP_$class (".join(",",array_keys($sets)).") VALUES (".join(",",$sets).")")) or dberror();
   }  
 
   enregistre_personnes($context,$id,$status,false);
@@ -264,7 +264,7 @@ function enregistre_personnes (&$context,$identity,$status,$lock=TRUE)
   global $db;
   if ($lock) lock_write("objet","entities_persons","persons");
   // detruit les liens dans la table entites_personnes
-  $db->execute(lq("DELETE FROM #_TP_entities_persons WHERE identity='$identity'")) or die($db->errormsg());
+  $db->execute(lq("DELETE FROM #_TP_entities_persons WHERE identity='$identity'")) or dberror();
 
  if (!$context[nomfamille]) { if ($lock) unlock(); return; }
 
@@ -282,22 +282,22 @@ function enregistre_personnes (&$context,$identity,$status,$lock=TRUE)
       if (!$bal[prenom] && !$bal[nomfamille]) continue;
       // cherche si l'personne existe deja
       $row=getrow("SELECT id,status FROM #_TP_persons WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'");
-      if ($row===false) die($db->errormsg());
+      if ($row===false) dberror();
       if ($row) { // ok, the person already exists
 	list($id,$oldstatus)=$row; // on recupere sont id et sont status
 	if (($status>0 && $oldstatus<0) || ($oldstatus<=-64 && $status>$oldstatus)) { // Faut-il publier l'personne ?
-	  $db->execute(lq("UPDATE #_TP_persons SET status='$status' WHERE id='$id'")) or die($db->errormsg());
+	  $db->execute(lq("UPDATE #_TP_persons SET status='$status' WHERE id='$id'")) or dberror();
 	}
       } else {
 	$id=uniqueid("personnes");
-	$db->execute(lq("INSERT INTO #_TP_persons (id,status,nomfamille,prenom) VALUES ('$id','$status','$bal[nomfamille]','$bal[prenom]')")) or die($db->errormsg());
+	$db->execute(lq("INSERT INTO #_TP_persons (id,status,nomfamille,prenom) VALUES ('$id','$status','$bal[nomfamille]','$bal[prenom]')")) or dberror();
       }
 
       $rank=$ind;
 
       // ajoute l'personne dans la table entites_personnes
       // ainsi que la description
-      $db->execute(lq("INSERT INTO #_TP_entities_persons (idperson,identity,idtype,rank,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$identity','$idtype','$rank','$bal[description]','$bal[prefix]','$bal[affiliation]','$bal[fonction]','$bal[courriel]')")) or die($db->errormsg());
+      $db->execute(lq("INSERT INTO #_TP_entities_persons (idperson,identity,idtype,rank,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$identity','$idtype','$rank','$bal[description]','$bal[prefix]','$bal[affiliation]','$bal[fonction]','$bal[courriel]')")) or dberror();
     } // boucle sur les ind
   } // boucle sur les types
   if ($lock) unlock();
@@ -310,7 +310,7 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
 {
   if ($lock) lock_write("objets","entity_entries","entries","entrytypes");
   // detruit les liens dans la table entites_indexhs
-  $db->execute(lq("DELETE FROM #_TP_entities_entries WHERE identity='$identity'")) or die($db->errormsg());
+  $db->execute(lq("DELETE FROM #_TP_entities_entries WHERE identity='$identity'")) or dberror();
 
  if ($status>-64 && $status<-1) $status=-1;
  if ($status>1) $status=1;
@@ -332,8 +332,8 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
       }
     } elseif (!$entries) continue;
     $entrytype=getrow(lq("SELECT newbyimportallowed,useabrevation FROM #_TP_entrytypes WHERE status>0 AND id='$idtype'"));
-    if ($entrytype===false) die($db->errormsg());
-    if (!$entrytype) die ("ERROR: internal error in enregistre_entries");
+    if ($entrytype===false) dberror();
+     if (!$entrytype) die ("ERROR: internal error in enregistre_entries");
 
 
     foreach ($entries as $entry) {
@@ -351,7 +351,7 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
       // cherche l'id de l'entree si elle existe
       $langcriteria=$lang ? "AND lang='$lang'" : "";
       $row=getrow(lq("SELECT id,status FROM #_TP_entries WHERE (abrev='$entry' OR name='$entry') AND idtype='$idtype' $langcriteria"));
-      if ($row===false) die($db->errormsg());
+      if ($row===false) dberror();
 
       if ($row) { // l'entree exists
 	list($id,$oldstatus)=$row;
@@ -359,13 +359,13 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
 	if ($oldstatus<=-64 && $status>$oldstatus) $statusset=$status;
 	if ($status>0 && $oldstatus<0) $statusset="abs(status)"; // faut-il publier ?
 	if ($statusset) {
-	  $db->execute(lq("UPDATE #_TP_entries SET status=$statusset WHERE id='$id'")) or die($db->errormsg());	
+	  $db->execute(lq("UPDATE #_TP_entries SET status=$statusset WHERE id='$id'")) or dberror();	
 	}
       } elseif ($entrytype[newbyimportallowed]) { // l'entree n'existe pas. est-ce qu'on a le right de l'ajouter ?
 	// oui,il faut ajouter le mot cle
 	$abrev=$entrytype[useabrevation] ? strtoupper($entry) : "";
 	$id=uniqueid("entries");
-	$db->execute(lq("INSERT INTO #_TP_entries (id,status,name,abrev,idtype,lang) VALUES ('$id','$status','$entry','$abrev','$idtype','$lang')")) or die($db->errormsg());
+	$db->execute(lq("INSERT INTO #_TP_entries (id,status,name,abrev,idtype,lang) VALUES ('$id','$status','$entry','$abrev','$idtype','$lang')")) or dberror();
       } else {
 	$id=0;
 	// on ne l'ajoute pas... pas le right!
@@ -374,7 +374,7 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
       // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
       // une chaine et en faisant la requette a la fin !
       if ($id) {
-	$db->execute(lq("INSERT INTO #_TP_entities_entries (identry,identity) VALUES ('$id','$identity')")) or die($db->errormsg());
+	$db->execute(lq("INSERT INTO #_TP_entities_entries (identry,identity) VALUES ('$id','$identity')")) or dberror();
       }
     } // boucle sur les entrees d'un type
   } // boucle sur les type d'entree
@@ -480,7 +480,7 @@ function change_usergroup_rec($id,$usergroup)
   do {
     $idlist=join(",",$idparents);
     // cherche les fils de idparents
-    $result=$db->execute(lq("SELECT id FROM #_TP_entities WHERE idparent IN ($idlist)")) or die($db->errormsg());
+    $result=$db->execute(lq("SELECT id FROM #_TP_entities WHERE idparent IN ($idlist)")) or dberror();
 
     $idparents=array();
     while (!$result->EOF) {
@@ -493,7 +493,7 @@ function change_usergroup_rec($id,$usergroup)
   // update toutes les publications
   $idlist=join(",",$ids);
 
-  $db->execute(lq("UPDATE #_TP_entities SET usergroup='$usergroup' WHERE id IN ($idlist)")) or die($db->errormsg());
+  $db->execute(lq("UPDATE #_TP_entities SET usergroup='$usergroup' WHERE id IN ($idlist)")) or dberror();
   # cherche les ids
 }
 
@@ -503,7 +503,7 @@ function loop_fields($context,$funcname)
 {
   global $db,$error;
 
-  $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 AND edition!='' ORDER BY rank")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 AND edition!='' ORDER BY rank")) or dberror();
 
   $haveresult=$result->recordnumber()>0;
   if ($haveresult) call_user_func("code_before_$funcname",$context);
@@ -553,7 +553,7 @@ function loop_personnes_require() { return array("id"); }
 function extrait_personnes($identity,&$context)
 
 {
-  $result=$db->execute(lq("SELECT * FROM #_TP_persons,#_TP_entities_persons WHERE idperson=id  AND identity='$identity'")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT * FROM #_TP_persons,#_TP_entities_persons WHERE idperson=id  AND identity='$identity'")) or dberror();
 
   $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
   while (!$result->EOF) {
@@ -570,7 +570,7 @@ function extrait_entrees($identity,&$context)
 {
   global $db;
 
-  $result=$db->execute(lq("SELECT * FROM #_TP_entries,#_TP_entities_entries WHERE identry=id  AND identity='$identity'")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT * FROM #_TP_entries,#_TP_entities_entries WHERE identry=id  AND identity='$identity'")) or dberror();
 
   foreach($result->field as $row) {
   while (!$result->EOF) {
@@ -602,7 +602,7 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
 
 {
   if (!$context[tri]) die ("ERROR: internal error in makeselectentries_rec");
-  $result=$db->execute(lq("SELECT id, abrev, name FROM #_TP_entries WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[sort]")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT id, abrev, name FROM #_TP_entries WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[sort]")) or dberror();
 
   while (!$result->EOF) {
     $row=$result->fields;
@@ -621,7 +621,7 @@ function makeselectusergroups()
 {
   global $context,$db;
       
-  $result=$db->execute(lq("SELECT id,name FROM #_TP_usergroups")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT id,name FROM #_TP_usergroups")) or dberror();
 
   while (!$result->EOF) {
     list($id,$name)=$result->fields;
@@ -638,7 +638,7 @@ function makeselecttype($class)
 
   if ($context['typedocfixe']) $critere="AND type='$context[typedoc]'";
 
-  $result=$db->execute(lq("SELECT id,type,title FROM #_TP_types WHERE status>0 AND class='$class' $critere AND type NOT LIKE 'documentannexe-%'")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT id,type,title FROM #_TP_types WHERE status>0 AND class='$class' $critere AND type NOT LIKE 'documentannexe-%'")) or dberror();
   while (!$result->EOF) {
     list($id,$type,$title)=$result->fields;
     $selected=$context['idtype']==$id ? " selected" : "";

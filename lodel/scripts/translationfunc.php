@@ -65,7 +65,7 @@ function mkeditlodeltext($name,$textgroup,$lang=-1)
       //
       // Translated texte
       //
-#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or die($db->errormsg());
+#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or dberror();
 # $divs=""; 
 # while (list($text,$lang)=mysql_fetch_row($result)) { 
 #    echo \'<a href="">[\'.$lang.\']</a> \'; 
@@ -140,7 +140,7 @@ class XMLDB_Translations extends XMLDB {
       // look for the translation
       $prefix=$this->textgroups=="interface" ? "#_MTP_" : "#_TP_";
       $id=$db->getone("SELECT id FROM ".lq($prefix)."translations WHERE lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
-      if ($db->errorno()) die($db->errormsg());
+      if ($db->errorno()) dberror();
 
       $record['textgroups']=$this->textgroups;
       setrecord($table,$id,$record);
@@ -158,7 +158,7 @@ class XMLDB_Translations extends XMLDB {
       // look for text
       $prefix=$this->textgroups=="interface" ? "#_MTP_" : "#_TP_";
       $id=$db->getone("SELECT id FROM ".lq($prefix)."texts WHERE name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
-      if ($db->errorno()) die($db->errormsg());
+      if ($db->errorno()) dberror();
       setrecord($table,$id,$record);
       return;
       break;

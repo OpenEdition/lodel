@@ -40,7 +40,7 @@ require_once($home."connect.php");
 
 $critere=$user['visitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 
-$result=mysql_query("SELECT lien,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere AND type LIKE 'documentannexe-%'") or die($db->errormsg());
+$result=mysql_query("SELECT lien,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere AND type LIKE 'documentannexe-%'") or dberror();
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 list($lien,$type)=mysql_fetch_row($result);
 

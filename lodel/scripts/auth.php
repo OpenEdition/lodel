@@ -35,7 +35,7 @@ define("LEVEL_EDITOR",30);
 define("LEVEL_ADMIN",40);
 define("LEVEL_ADMINLODEL",128);
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
 
 
 function authenticate ($level=0,$norecordurl=FALSE)
@@ -113,14 +113,14 @@ function authenticate ($level=0,$norecordurl=FALSE)
     #if ($back) {
     #  // on detruit l'entree dans la pile
     #  $back=intval($back);
-    #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or die($db->errormsg());
+    #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or dberror();
     #}
 
 
     // enregistre l'url de retour à partir de l'info dans la session
     if ($row['currenturl']!=$url && !$norecordurl) {
       $urlmd5=md5($url);
-      $db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5',$myurl)")) or die($db->errormsg());
+      $db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5',$myurl)")) or dberror();
 
 #      echo $idsession," ",$myurl,"  ",$url,"  ",$urlmd5;
 #     $result=$db->execute(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"));

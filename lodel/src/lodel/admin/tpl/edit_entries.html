@@ -63,24 +63,13 @@
       </p>
     </LOOP>
   </IF>
-  <label for="name">[@ADMIN.ENTRY]<span class="optional">(*)</span>
+  <label for="g_name">[@ADMIN.ENTRY]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
-  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <input type="text" size="30" name="g_name" id="g_name" class="text" value="[#G_NAME]">
   <br />
-  <LOOP NAME="fielderror" FIELD="name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-    </p>
-  </LOOP>
-  <label for="abrev">[@ADMIN.ABBREVIATION]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="abrev" id="abrev" class="text" value="[#ABREV]">
-  <br />
-  <LOOP NAME="fielderror" FIELD="abrev">
+  <LOOP NAME="fielderror" FIELD="g_name">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>

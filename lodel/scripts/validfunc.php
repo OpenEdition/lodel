@@ -49,6 +49,7 @@ function validfield(&$text,$type,$default="")
     if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$text)) return $type;
     break;
   case "class" :
+  case "classtype" :
     $text=strtolower($text);
     if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$text)) return $type;
     require_once($GLOBALS['home']."fieldfunc.php");
@@ -60,21 +61,19 @@ function validfield(&$text,$type,$default="")
     require_once($GLOBALS['home']."fieldfunc.php");
     if (reservedword($text)) return "reservedsql";
     break;
-  case "style" :
     if ($text && !preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
     break;
   case "mlstyle" :
-    $stylesarr=preg_split("/([\n,;:])/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
-    if ($stylesarr) {
-      $count=count($stylesarr);
-      for($i=0; $i<$count; $i+=4) {
-	if (!preg_match("/^[a-zA-Z0-9]+$/",trim($stylesarr[$i]))) return $type;
-	if ($i==$count-1) break;
-	if ($stylesarr[$i+1]!=":") return $type; // le separateur
-	if (!preg_match("/^\s*([a-z]{2}|--)\s*$/",$stylesarr[$i+2])) return $type; // la langue
-	if ($stylesarr[$i+3]==":") return $type; // les autres separateurs
-	//$k=trim($stylesarr[$i+1]);
-	//$stylesassoc[$k]=trim($stylesarr[$i+1]);
+    $stylesarr=preg_split("/[\n,;]/",$text);
+    foreach($stylesarr as $style) {
+      if (!preg_match("/^[a-zA-Z0-9]+\s*:\s*([a-zA-Z]{2}|--)$/",trim($style))) return $type;
+    }
+    break;
+  case "style" :
+    if ($text) {
+      $stylesarr=preg_split("/[\n,;]/",$text);
+      foreach($stylesarr as $style) {
+	if (!preg_match("/^[a-zA-Z0-9]+$/",trim($style))) return $type;
       }
     }
     break;

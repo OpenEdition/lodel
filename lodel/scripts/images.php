@@ -41,7 +41,7 @@ function change_image($filename,$id,$class,$champ)
     $db=$GLOBALS[currentdb];
   }
   
-  $result=mysql_db_query($db,"SELECT $champ FROM $GLOBALS[tp]$class WHERE $critere") or die($db->errormsg());
+  $result=mysql_db_query($db,"SELECT $champ FROM $GLOBALS[tp]$class WHERE $critere") or dberror();
   if (!mysql_num_rows($result)) die("Erreur interne. Le $critere ne repond pas dans $class");
   list($oldimagefile)=mysql_fetch_row($result);
 

@@ -58,13 +58,7 @@ class OptionsLogic extends Logic {
    function changeRankAction(&$context,&$error)
 
    {
-     global $db;
-
-     $id=intval($context['id']);
-     $dao=$this->_getMainTableDAO();
-     $vo=$dao->getById($id,"idgroup");
-     $this->_changeRank($id,$context['dir'],"status>0 AND idgroup='".$vo->idgroup."'");
-     return "back";
+     return Logic::changeRankAction(&$context,&$error,"idgroup");
    }
 
 

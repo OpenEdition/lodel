@@ -98,7 +98,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
       if ($err=create("translations")) break; // create the translation table
     }
 
-    if ($tables["$GLOBALS[tp]objets"] || !$tables["$GLOBALS[tp]objects"]) {
+    if ($tables["$GLOBALS[tp]objets"]) {
       // traductions de la base
 
       $translationconv=array(
@@ -107,17 +107,17 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 			     "relations (id1,id2,nature,degree)"=>"relations (id1,id2,nature,degres)",
 			     "tablefields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
 			     "tablefieldgroups (id,name,class,title,comment,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
-			     "persons (id,lastname,firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
+			     "persons (id,g_familyname,g_firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
 			     "users (id,username,passwd,name,email,userrights,lang,status,upd)"=>"users (id,username,passwd,nom,courriel,privilege,lang,statut,maj)",
 			     "usergroups (id,name,status,upd)"=>"groupes (id,nom,statut,maj)",
 			     "users_usergroups (idgroup,iduser)"=>"users_groupes (idgroupe,iduser)",
 			     "types (id,type,title,class,tpl,tplcreation,tpledition,import,rank,status,upd)"=>"types (id,type,titre,classe,tpl,tplcreation,tpledition,import,ordre,statut,maj)",
 			     "persontypes (id,type,title,style,titledescription,styledescription,tpl,tplindex,rank,status,upd)"=>"typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,ordre,statut,maj)",
 			     "entrytypes (id,type,title,style,tpl,tplindex,rank,status,flat,newbyimportallowed,useabrevation,sort,upd)"=>"typeentrees (id,type,titre,style,tpl,tplindex,ordre,statut,lineaire,nvimportable,utiliseabrev,tri,maj)",
-			     "entries (id,idparent,name,abrev,lang,idtype,rank,status,upd)"=>"entrees (id,idparent,nom,abrev,langue,idtype,ordre,statut,maj)",
+			     "entries (id,idparent,g_name,abrev,lang,idtype,rank,status,upd)"=>"entrees (id,idparent,nom,abrev,langue,idtype,ordre,statut,maj)",
 			     "tasks (id,name,step,user,context,status,upd)"=>"taches (id,nom,etape,user,context,statut,maj)",
 			     "texts (id,name,contents,lang,textgroup,status,upd)"=>"textes (id,nom,texte,lang,textgroup,statut,maj)",
-			     "entities_persons (idperson,identity,idtype,rank,prefix,description,function,affiliation,email)"=>"entites_personnes (idpersonne,identite,idtype,ordre,prefix,description,fonction,affiliation,courriel)",
+			     "entities_persons (idperson,identity,idtype,rank,prefix,description,fonction,affiliation,courriel)"=>"entites_personnes (idpersonne,identite,idtype,ordre,prefix,description,fonction,affiliation,courriel)",
 			     "entities_entries (identry,identity)"=>"entites_entrees (identree,identite)",
 			     "entitytypes_entitytypes (identitytype,identitytype2,condition)"=>"typeentites_typeentites (idtypeentite,idtypeentite2,condition)",
 			     "entitytypes_entrytypes (identitytype,identrytype,condition)"=>"typeentites_typeentrees (idtypeentite,idtypeentree,condition)",
@@ -131,29 +131,38 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 	list($newtable,$values)=explode(" ",$new);
 	list($oldtable,$select)=explode(" ",$old);
 	$select=preg_replace("/[()]/","",$select);
-	if ($newtable==$oldtable) {
-	  if ($tables["$GLOBALS[tp]$oldtable"."_old"]) continue; // deja fait.
-	  $err=mysql_query_cmds("RENAME TABLE _PREFIXTABLE_$oldtable TO _PREFIXTABLE_$oldtable"."_old;");
-	  $oldtable.="_old";
+	#if ($tables["$GLOBALS[tp]$oldtable"."_old"]) continue; // deja fait.
+	$err=mysql_query_cmds("RENAME TABLE _PREFIXTABLE_$oldtable TO _PREFIXTABLE_v07_$oldtable");
+	$oldtable="v07_".$oldtable;
+	if ($err) break;
 
-	  if ($err) break;
-	} else {
-	  if ($tables["$GLOBALS[tp]$newtable"]) continue; // deja fait
+	/////////// duplicate the table
+	list($t,$create)=$db->getRow(lq("SHOW CREATE TABLE #_TP_$oldtable"));
+	$select_arr=explode(",",preg_replace("/[()]/","",$select));
+	$values_arr=explode(",",preg_replace("/[()]/","",$values));
+	for($i=0; $i<count($select_arr); $i++) {
+	  $create=str_replace("`$select_arr[$i]`","`$values_arr[$i]`",$create);
 	}
-	$err=create($newtable);
+	$create=str_replace(lq("`#_TP_$oldtable`"),lq("`#_TP_$newtable`"),$create);
+	$err=mysql_query_cmds($create);
+	///////////
+
+
+	//
 	if ($err) break;
 	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable $values SELECT $select FROM _PREFIXTABLE_$oldtable");
 	if ($err) break;
 	array_push($todelete,$oldtable);
 	$report.="traduction de la table $oldtable<br>\n";
       }
+      $tables=gettables();
       if ($err) break;
-      foreach ($todelete as $table) {
-	$err=mysql_query_cmds("DROP TABLE _PREFIXTABLE_$table;");
-	if ($err) break;
-      }
-      if ($err) break;
-      $report.="efface les anciennes tables<br>";
+      #foreach ($todelete as $table) {
+      #	$err=mysql_query_cmds("DROP TABLE _PREFIXTABLE_$table;");
+      #if ($err) break;
+      #}
+      #if ($err) break;
+      #$report.="efface les anciennes tables<br>";
     } // fini la translation
   
 
@@ -170,26 +179,46 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 
 
       /////////////////////
-    // ENTITYTITLE
+    // ENTITIES
 
        if ($tables["$GLOBALS[tp]entities"]) {
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entities WHERE entitytitle!='' LIMIT 1") or die(mysql_error());
-      if (!mysql_num_rows($result)) {
+	 $fields=getfields("entities");
+	 if (!$fields['creationdate']) {
+	   $err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_entities ADD creationdate DATETIME;
+ALTER TABLE _PREFIXTABLE_entities ADD modificationdate DATETIME;
+');
+	   if ($err) break;
+	   $report.="ajout de creationdate et modificationdate<br>";
+	   $justcreatedate=1;
+	 }
+	 if (!$fields['g_title']) {
+	   $err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_entities ADD g_title TINYTEXT NOT NULL;
+');
+	   if ($err) break;
+	   $report.="ajout de g_title<br>";
+	   $justcreatedate=1;
+	 }
+
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entities WHERE g_title!='' LIMIT 1") or trigger_error(mysql_error(),E_USER_ERROR);
+      if ($justcreatedate || !mysql_num_rows($result)) {
 	foreach (array("publications","documents") as $classe) {
 	  $fields=getfields($classe);
 	  if (!$fields['titre']) continue;
-	  $result=mysql_query("SELECT identity,titre FROM $GLOBALS[tp]$classe") or die (mysql_error());
-	  while (list($id,$title)=mysql_fetch_row($result)) {
+	  $result=mysql_query("SELECT identity,titre,datepubli FROM $GLOBALS[tp]$classe") or die (mysql_error());
+	  while (list($id,$title,$datepubli)=mysql_fetch_row($result)) {
 	    $title=strip_tags($title);
 	    if (strlen($title)>255) {
 	      $title=substr($title,0,256);
 	      $title=preg_replace("/\S+$/","",$title);
 	    }
 	    $title=addslashes($title);
-	    mysql_query("UPDATE $GLOBALS[tp]entities set entitytitle='$title' WHERE id='$id'") or die(mysql_error());
+	    mysql_query("UPDATE $GLOBALS[tp]entities set g_title='$title', creationdate='$datepubli', modificationdate='$datepubli' WHERE id='$id'") or trigger_error(mysql_error(),E_USER_ERROR);
 	  }
 	} // classes
-	$report.="Remplissage de entitytitle a partir de title<br />\n";
+	$report.="Remplissage de g_title, creationdate et modificationdate<br />\n";
+
       }
 
       // decrease the protected status!
@@ -215,25 +244,40 @@ ALTER TABLE _PREFIXTABLE_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL
       }
     }      
 
-    /////////////////////
-    // CLASS
-    if ($tables["$GLOBALS[tp]classes"]) {
-      if ($err=create("classes")) break; // create the classes table
-      $report.="Creation de la table classes <br>\n";
+    ///////////////////////
+    // CLASSES AND TABLEFIELDSGROUP
+    if (!$tables["$GLOBALS[tp]classes"]) {
+      $err=create("classes");
+      if ($err) break;
+      $err=mysql_query_cmds('
+REPLACE INTO _PREFIXTABLE_classes (id,class,title,status) VALUES (1,\'publications\',\'Publications\',1);
+REPLACE INTO _PREFIXTABLE_classes (id,class,title,status) VALUES (2,\'documents\',\'Documents\',1);
+ALTER TABLE _PREFIXTABLE_tablefieldgroups ADD  idclass  INT UNSIGNED DEFAULT \'0\' NOT NULL;
+ALTER TABLE _PREFIXTABLE_tablefieldgroups ADD  INDEX index_idclass (idclass);
+UPDATE _PREFIXTABLE_tablefieldgroups SET idclass=1 WHERE class=\'publications\';
+UPDATE _PREFIXTABLE_tablefieldgroups SET idclass=2 WHERE class=\'documents\';
+ALTER TABLE _PREFIXTABLE_tablefieldgroups DROP  class;
+ ');
+      if ($err) break;
+      $report.="Creation de la table classe<br>\n";
     }
-    foreach (array("publications"=>"Publications",
-		   "documents"=>"Documents",
-		   "documentsannexes"=>"Documents Annexes"
-		   ) as $class=>$tpl) {
+    foreach (array("publications"=>array("Publications","entities","identity"),
+		   "documents"=>array("Documents","entities","identity"),
+		   "documentsannexes"=>array("Documents Annexes","entities","identity"),
+		   "personnes"=>array("Personnes","persons","idperson")
+		   ) as $class=>$arr) {
+      list ($title,$classtype,$idfield)=$arr;
       ##echo "SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'<br>";
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'") or die(mysql_error());
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'") or trigger_error(mysql_error(),E_USER_ERROR);
       if (mysql_num_rows($result)>0) continue;
       $id=uniqueid("classes");
-      $err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_classes (id,class,title,status,rank) VALUES('$id','$class','$tpl','32','1');\n");
+      $err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_classes (id,class,classtype,title,status,rank) VALUES('$id','$class','$classtype','$title','32','1');\n");
       if ($err) break 2;
+
+      $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_$class ( $idfield	INTEGER UNSIGNED  UNIQUE, KEY index_$idfield ($idfield))")) or dberror();
+
       $report.="Creation de la classe $classe <br>\n";
     }
-   
 
     /////////////////////
     // TABLEFIELDS
@@ -241,13 +285,24 @@ ALTER TABLE _PREFIXTABLE_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL
 	$err=mysql_query_cmds('
 UPDATE _PREFIXTABLE_tablefields SET type=\'file\' WHERE type=\'fichier\';
 UPDATE _PREFIXTABLE_tablefields SET type=\'email\' WHERE type=\'mail\';
+UPDATE _PREFIXTABLE_tablefields SET edition=\'importable\' WHERE edition=\'\';
 ');
 	if ($err) break;
       $fields=getfields("tablefields");
-      if (!$fields['dc']) {
+      if (!$fields['g_name']) {
 	$err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_tablefields ADD dc VARCHAR(10) NOT NULL;
+ALTER TABLE _PREFIXTABLE_tablefields ADD g_name VARCHAR(255) NOT NULL;
+ALTER TABLE _PREFIXTABLE_tablefields ADD INDEX index_g_name (g_name);
 ');
+      }
+      if (!$fields['editionparams']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_tablefields ADD editionparams TINYTEXT NOT NULL;
+UPDATE _PREFIXTABLE_tablefields SET editionparams=\'30\' WHERE edition=\'textarea30\';
+UPDATE _PREFIXTABLE_tablefields SET editionparams=\'10\' WHERE edition=\'textarea10\';
+UPDATE _PREFIXTABLE_tablefields SET edition=\'textarea\' WHERE edition LIKE \'textarea%\';
+');
+	if ($err) break;
       }
       if (!$fields['class']) {
 	$err=mysql_query_cmds('
@@ -256,7 +311,7 @@ ALTER TABLE _PREFIXTABLE_tablefields ADD class VARCHAR(64) NOT NULL;
 
 	if ($err) break;
 	// get the class of each group
-	$result=mysql_query("SELECT $GLOBALS[tp]tablefieldgroups.id,$GLOBALS[tp]classes.class FROM $GLOBALS[tp]tablefieldgroups,$GLOBALS[tp]classes WHERE idclass=$GLOBALS[tp]classes.id AND $GLOBALS[tp]tablefieldgroups.status>0 AND $GLOBALS[tp]classes.status>0") or die(mysql_error());
+	$result=mysql_query("SELECT $GLOBALS[tp]tablefieldgroups.id,$GLOBALS[tp]classes.class FROM $GLOBALS[tp]tablefieldgroups,$GLOBALS[tp]classes WHERE idclass=$GLOBALS[tp]classes.id AND $GLOBALS[tp]tablefieldgroups.status>0 AND $GLOBALS[tp]classes.status>0") or trigger_error(mysql_error(),E_USER_ERROR);
 	while($row=mysql_fetch_assoc($result)) {
 	  $err=mysql_query_cmds('
 UPDATE _PREFIXTABLE_tablefields SET class=\''.$row['class'].'\' WHERE idgroup='.$row['id'].';
@@ -265,6 +320,7 @@ UPDATE _PREFIXTABLE_tablefields SET class=\''.$row['class'].'\' WHERE idgroup='.
 	$report.="Ajout de class a tablefields<br/>";
       }
     }      
+    
 
     ///////////////////////
     // OPTIONS
@@ -311,62 +367,51 @@ UPDATE _PREFIXTABLE_options SET idgroup=2 WHERE idgroup=0;
       if ($err) break;
     }
 
-    ///////////////////////
-    // CLASSES AND TABLEFIELDSGROUP
-    if (!$tables["$GLOBALS[tp]classes"]) {
-      $err=create("classes");
-      if ($err) break;
-      $err=mysql_query_cmds('
-REPLACE INTO _PREFIXTABLE_classes (id,class,title,status) VALUES (1,\'publications\',\'Publications\',1);
-REPLACE INTO _PREFIXTABLE_classes (id,class,title,status) VALUES (2,\'documents\',\'Documents\',1);
-ALTER TABLE _PREFIXTABLE_tablefieldgroups ADD  idclass  INT UNSIGNED DEFAULT \'0\' NOT NULL;
-ALTER TABLE _PREFIXTABLE_tablefieldgroups ADD  INDEX index_idclass (idclass);
-UPDATE _PREFIXTABLE_tablefieldgroups SET idclass=1 WHERE class=\'publications\';
-UPDATE _PREFIXTABLE_tablefieldgroups SET idclass=2 WHERE class=\'documents\';
-ALTER TABLE _PREFIXTABLE_tablefieldgroups DROP  class;
- ');
-      if ($err) break;
-    }
 
 
     ///////////////////////
       // DOCUMENTSANNEXES
 
    if (!$tables["$GLOBALS[tp]documentsannexes"]) {
-     $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_documentsannexes ( identity	INTEGER UNSIGNED  UNIQUE, KEY index_identity (identity))")) or die($db->errormsg());
      $idgroup=array();
      $idclassdocannexes=$db->getOne(lq("SELECT id FROM #_TP_classes WHERE class='documentsannexes'"));
-     if ($db->errorno)  die($db->errormsg());
+     if ($db->errorno)  dberror();
       $idclassdocuments=$db->getOne(lq("SELECT id FROM #_TP_classes WHERE class='documents'"));
-     if ($db->errorno)  die($db->errormsg());
+     if ($db->errorno)  dberror();
      if (!$idclassdocuments || !$idclassdocannexes) die("hum... pas facile...");
-
       // create the group of fields for documentsannexe from those in documents
      foreach(array("grtitre","grgestion","grtexte") as $grp) {
 
-       $query="SELECT id FROM $GLOBALS[tp]tablefieldgroups  WHERE name='$grp' ";
-       $result=mysql_query($query." AND idclass='$idclassdocsannexes'") or die(mysql_error());
+       $query="SELECT * FROM $GLOBALS[tp]tablefieldgroups  WHERE name='$grp' ";
+       $result=mysql_query($query." AND idclass='$idclassdocsannexes'") or trigger_error(mysql_error(),E_USER_ERROR);
        if (mysql_num_rows($result)>0) {
 	 list($idgroup[$grp])=mysql_fetch_row($result);
        } else {
-	 $result=mysql_query($query." AND idclass='$idclassdocuments'") or die(mysql_error());
+	 $result=mysql_query($query." AND idclass='$idclassdocuments'") or trigger_error(mysql_error(),E_USER_ERROR);
 	 $row=mysql_fetch_assoc($result);
-	 echo "row:$row";print_r($row);
+	 #echo "row:$row";print_r($row);
 	 if (!$row) { $err="Impossible de trouver le groupe de champ $grp"; break 2; }
 	 $row['idclass']=$idclassdocannexes;
+	 $row['id']=0; // create a new one
+	 #print_r($row);
 	 setrecord("tablefieldgroups",0,$row);
 	 $idgroup[$grp]=mysql_insert_id();
        }
       }
+     #echo "!$idclassdocuments || !$idclassdocannexes<br>";
+
       // create the fields from fields in documentsannexes from documents
       foreach(array("titre","lien","texte") as $field) {
-	$result=mysql_query("SELECT $GLOBALS[tp]tablefields.*,$GLOBALS[tp]tablefieldgroups.name as grp FROM $GLOBALS[tp]tablefieldgroups INNER JOIN $GLOBALS[tp]tablefields ON idgroup=$GLOBALS[tp]tablefieldgroups.id WHERE $GLOBALS[tp]tablefields.name='$field' AND idclass='$idclassdocuments'") or die(mysql_error());
+	#echo lq("SELECT #_TP_tablefields.*,#_TP_tablefieldgroups.name as grp FROM #_TP_tablefieldgroups INNER JOIN #_TP_tablefields ON idgroup=#_TP_tablefieldgroups.id WHERE #_TP_tablefields.name='$field' AND idclass='$idclassdocuments'");
+	$result=mysql_query(lq("SELECT #_TP_tablefields.*,#_TP_tablefieldgroups.name as grp FROM #_TP_tablefieldgroups INNER JOIN #_TP_tablefields ON idgroup=#_TP_tablefieldgroups.id WHERE #_TP_tablefields.name='$field' AND idclass='$idclassdocuments'")) or trigger_error(mysql_error(),E_USER_ERROR);
 	$row=mysql_fetch_assoc($result);
 	if (!$row) { $err="Impossible de trouver le tablefield $field"; break 2; }
 
 	$row2=$row;
 	unset($row2['grp']);
 	$row2['idgroup']=$idgroup[$row['grp']];
+	$row2['class']='documentsannexes';
+	$row2['id']=0;
 	setrecord("tablefields",0,$row2);
       }
       addfield("documentsannexes");
@@ -376,7 +421,7 @@ ALTER TABLE _PREFIXTABLE_tablefieldgroups DROP  class;
 UPDATE _PREFIXTABLE_types SET class='documentsannexes' WHERE type LIKE 'documentannexe-%';
 ");
       // get the documents to transfer
-      $result=mysql_query("SELECT $GLOBALS[tp]entites.id FROM $GLOBALS[tp]entites,$GLOBALS[tp]types WHERE idtype=$GLOBALS[tp]types.id AND type LIKE 'documentannexe-%'") or die(mysql_error());
+      $result=mysql_query("SELECT $GLOBALS[tp]entities.id FROM $GLOBALS[tp]entities,$GLOBALS[tp]types WHERE idtype=$GLOBALS[tp]types.id AND type LIKE 'documentannexe-%'") or trigger_error(mysql_error(),E_USER_ERROR);
       $ids=array();
       while(list($id)=mysql_fetch_row($result)) $ids[]=$id;
       if (!$ids) {
@@ -393,9 +438,169 @@ DELETE FROM _PREFIXTABLE_documents WHERE identity IN ($ids);
       }
     }
 
+    /////////////////////
+    // ENTRYTYPES
+    if ($tables["$GLOBALS[tp]entrytypes"]) {
+      $fields=getfields("entrytypes");
+      if (!$fields['class']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_entrytypes ADD class		VARCHAR(64) NOT NULL;
+UPDATE _PREFIXTABLE_entrytypes SET class=type;
+');
+	if ($err) break;
+	$report.="Ajout de class a entrytypes<br/>";
+      }
+//      if (!$fields['edition']) {
+//	$err=mysql_query_cmds('
+//ALTER TABLE _PREFIXTABLE_entrytypes ADD edition TINYTEXT NOT NULL;
+//UPDATE _PREFIXTABLE_entrytypes SET edition=\'pool\';
+//');
+//	if ($err) break;
+//	$report.="Ajout de edition a entrytypes<br/>";
+//      }
+      if ($fields['useabrevation']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_entrytypes DROP useabrevation;
+');
+	if ($err) break;
+	$report.="Supprime useabrevation<br/>";
+      }
+    }      
+    /////////////////////
+    // PERSONTYPES
+    if ($tables["$GLOBALS[tp]persontypes"]) {
+      $fields=getfields("persontypes");
+      if (!$fields['class']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_persontypes ADD class VARCHAR(64) NOT NULL;
+UPDATE _PREFIXTABLE_persontypes SET class=type;
+');
+	if ($err) break;
+	$report.="Ajout de class a persontypes<br/>";
+      }
+      if (!$fields['g_type']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_persontypes ADD g_type VARCHAR(255) NOT NULL;
+ALTER TABLE _PREFIXTABLE_persontypes ADD INDEX index_g_type (g_type);
+UPDATE _PREFIXTABLE_persontypes SET g_type=\'dc.creator\' WHERE type=\'auteur\';
+');
+	if ($err) break;
+	$report.="Ajout de g_type a persontypes<br/>";
+      }
+//      if (!$fields['edition']) {
+//	$err=mysql_query_cmds('
+//ALTER TABLE _PREFIXTABLE_persontypes ADD edition TINYTEXT NOT NULL;
+//UPDATE _PREFIXTABLE_persontypes SET edition=\'\';
+//');
+//	if ($err) break;
+//	$report.="Ajout de edition a persontypes<br/>";
+//      }
+    }
+ 
+
+  if ($tables["$GLOBALS[tp]persons"]) {
+    $fields=getfields("persons");
+    if (!$fields['idtype']) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_persons ADD idtype INT UNSIGNED NOT NULL DEFAULT \'0\';
+');
+	// look for the links
+	$result=$db->execute(lq("SELECT DISTINCT idperson,idtype FROM #_TP_entities_persons")) or dberror();
+	$type=array();
+	while(!$result->EOF) {
+	  if (!$type[$result->idperson]) {
+	    // set it
+	    $db->execute(lq("UPDATE #_TP_persons SET idtype='".$result->idtype."' WHERE id='".$result->idperson."'")) or dberror();
+	    $type[$result->idperson]=$result->idtype;
+	  } elseif ($type[$result->idperson]!=$result->idtype) {
+	    // boring case.
+	    require_once($home."dao.php");
+	    $dao=getDAO("persons");
+	    $vo=$dao->getById($result->idperson);
+	    $vo->id=0; // create a new one
+	    $vo->idtype=$result->idtype; // with a different idtype
+	    $newid=$dao->save($vo);
+	    $db->execute(lq("UPDATE #_TP_entries_persons SET idperson='$newid' WHERE idperson='".$result->idperson."' AND idtype='".$result->idtype."'")) or dberror();
+	  } else {
+	    // nothing to do. Should not happends with the distinct
+	  }
+	  $result->MoveNext();
+	}
+	if ($err) break;
+	$report.="Ajout de idtype a persons<br/>";
+    }
+  }
 
 
+    /////////////////////
+    // RELATIONS
+    if ($tables["$GLOBALS[tp]relations"]) {
+      $fields=getfields("relations");
+      if (!$fields['idrelation']) {
+	$howmany=$db->getone(lq("SELECT COUNT(*) FROM #_TP_relations"));
+	for($i=0; $i<$howmany; $i++) {
+	  $id=uniqueid("relations");
+	  if ($i==0) $minid=$id;
+	}
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_relations ADD idrelation INT UNSIGNED NOT NULL auto_increment, ADD PRIMARY KEY (idrelation);
+UPDATE _PREFIXTABLE_relations SET idrelation=idrelation+'.($minid-1).';
+');
+	if ($err) break;
+	$report.="Ajout de idrelation a relations<br/>";
+      }
 
+      if ($tables["$GLOBALS[tp]entities_entries"]) {
+	$howmany=$db->getone(lq("SELECT COUNT(*) FROM #_TP_entities_entries"));
+	for($i=0; $i<$howmany; $i++) {
+	  $id=uniqueid("relations");
+	  if ($i==0) $minid=$id;
+	}
+
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_entities_entries ADD id INT UNSIGNED NOT NULL auto_increment, ADD PRIMARY KEY (id);
+UPDATE _PREFIXTABLE_entities_entries SET id=id+'.($minid-1).';
+INSERT INTO _PREFIXTABLE_relations (idrelation,id1,id2,nature) SELECT id,identity,identry,\'E\' FROM _PREFIXTABLE_entities_entries;
+DROP TABLE _PREFIXTABLE_entities_entries;
+');
+	if ($err) break;
+	$report.="Ajout des entities_entries a relations et suppression de la table<br/>";
+      }
+
+
+      if ($tables["$GLOBALS[tp]entities_persons"]) {
+	// create uniqueid
+	$howmany=$db->getone(lq("SELECT COUNT(*) FROM #_TP_entities_persons"));
+	for($i=0; $i<$howmany; $i++) {
+	  $id=uniqueid("relations");
+	  if ($i==0) $minid=$id;
+	}
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_entities_persons ADD id INT UNSIGNED DEFAULT \'0\' NOT NULL auto_increment, ADD PRIMARY KEY (id);
+UPDATE _PREFIXTABLE_entities_persons SET id=id+'.($minid-1).';
+INSERT INTO _PREFIXTABLE_relations (idrelation,id1,id2,degree,nature) SELECT id,identity,idperson,rank,\'G\' FROM _PREFIXTABLE_entities_persons;
+ALTER TABLE _PREFIXTABLE_entities_persons DROP identity;
+ALTER TABLE _PREFIXTABLE_entities_persons DROP idperson;
+ALTER TABLE _PREFIXTABLE_entities_persons DROP rank;
+DROP TABLE IF EXISTS _PREFIXTABLE_entities_personnes;
+RENAME TABLE _PREFIXTABLE_entities_persons TO  _PREFIXTABLE_entities_personnes;
+UPDATE _PREFIXTABLE_persontypes SET class=\'personnes\';
+');
+
+	if ($err) break;
+	$report.="Ajout des entities_persons a relations<br/>";
+      }
+    }
+
+
+    $dccreator=$db->getOne(lq("SELECT 1 FROM #_TP_persontypes WHERE g_type='dc.creator'"));
+    if (!$dccreator) {
+      $err=mysql_query_cmds('
+UPDATE _PREFIXTABLE_persontypes SET g_type=\'dc.creator\' where name=\'auteur\';
+');
+      if ($err) break;
+      $report.="Ajout de dc.creator<br/>";
+    }
     // fini, faire quelque chose
   } while(0);
 }
@@ -524,7 +729,7 @@ function isotoutf8 ($tables)
 
      $report.="conversion en utf8 de  la table $table<br />\n";
     // On parcours toutes les enregistrements de chaque table
-    $resultselect = mysql_query("SELECT * FROM $table") or die(mysql_error());
+    $resultselect = mysql_query("SELECT * FROM $table") or trigger_error(mysql_error(),E_USER_ERROR);
     while($valeurs = mysql_fetch_row($resultselect)) {
       $nbtablefields = mysql_num_fields($resultselect);
 
@@ -552,7 +757,7 @@ function isotoutf8 ($tables)
       // S'il y a une modification à faire on lance la requete
       if($set) {
 	$requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
-	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die(mysql_error()); }
+	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; trigger_error(mysql_error(),E_USER_ERROR); }
       }
     } // parcourt les lignes
   } // parcourt les tables
@@ -583,7 +788,7 @@ function extractnom($personne) {
 function extract_meta($classe)
 
 {
-  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or die(mysql_error());
+  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or trigger_error(mysql_error(),E_USER_ERROR);
 
   while (list($id,$meta)=mysql_fetch_row($result)) {
     $meta=unserialize($meta);
@@ -603,7 +808,7 @@ function extract_meta($classe)
     chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
     unlink($file);
 
-    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or trigger_error(mysql_error(),E_USER_ERROR);
   }
 
   return TRUE;
@@ -668,7 +873,7 @@ function addfield($classe)
   require_once($GLOBALS['home']."fieldfunc.php");
   $fields=getfields($classe);
 
-  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]tablefields WHERE class='$classe'") or die(mysql_error());
+  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]tablefields WHERE class='$classe'") or trigger_error(mysql_error(),E_USER_ERROR);
 
   #echo "classe:$classe<br/>";
   while (list($tablefield,$type)=mysql_fetch_row($result)) {
@@ -721,7 +926,7 @@ function setrecord($table,$id,$set,$context=array())
       $update.="$k=".$db->qstr($v);
     }
     if ($update)
-      $db->execute("UPDATE $table SET  $update WHERE id='$id'") or die($db->errormsg());
+      $db->execute("UPDATE $table SET  $update WHERE id='$id'") or dberror();
   } else {
     $insert="";$values="";
     if (is_string($id) && $id=="unique") {
@@ -739,7 +944,7 @@ function setrecord($table,$id,$set,$context=array())
     }
 
     if ($insert) {
-      $db->execute("REPLACE INTO #_TP_$table (".$insert.") VALUES (".$values.")") or die($db->errormsg());
+      $db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or dberror();
       if (!$id) $id=$db->insert_id();
     }
   }

@@ -139,6 +139,7 @@
 	<IF COND="[#ERROR] eq 'textgroups'">[@COMMON.ERROR_INVALID_TEXTGROUPS]</IF>
 	<IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE]</IF>
 	<IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE]</IF>
+	<IF COND="[#ERROR] eq 'reservedsql'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL]</IF>
 </DEFFUNC>
 
 
@@ -150,7 +151,7 @@
 	
 		function select_url(obj) {
 			var index = obj.selectedIndex;
-			window.location=obj.options[index].value;
+			if (obj.options[index].value) window.location=obj.options[index].value;
 		}
 	//
 	--></script>
@@ -305,3 +306,11 @@ cp_[#NAME].writeDiv();
 
 
 
+
+<!--[ -----------------------------------------------------------
+      Affichage des types de classes et des classes
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="select_url_classes" REQUIRED="url">
+
+</DEFFUNC>

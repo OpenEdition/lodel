@@ -42,7 +42,7 @@ if ($id>0) {
 
 if ($id>0 && $delete) { 
   // delete in all lang
-  $result=mysql_query("SELECT name,textgroup FROM $GLOBALS[tp]texts WHERE id='$id' AND $textgroupswhere") or die($db->errormsg());
+  $result=mysql_query("SELECT name,textgroup FROM $GLOBALS[tp]texts WHERE id='$id' AND $textgroupswhere") or dberror();
   if (mysql_num_rows($result)) {
     list($name,$textgroup)=mysql_fetch_row($result);
     mysql_query("DELETE FROM $GLOBALS[tp]texts WHERE name='$name' AND textgroup='$textgroup'");
@@ -68,7 +68,7 @@ if ($id>0 && $delete) {
       $id=intval($id);
       $status=intval($context['status'][$id]);
       $text=preg_replace("/(\r\n\s*){2,}/","<br />",$text);
-      mysql_query ("UPDATE $GLOBALS[tp]texts SET texte='$text',status='$status' WHERE id='$id' AND $textgroupswhere") or die($db->errormsg());
+      mysql_query ("UPDATE $GLOBALS[tp]texts SET texte='$text',status='$status' WHERE id='$id' AND $textgroupswhere") or dberror();
     }
     if (defined("SITEROOT")) {
       touch(SITEROOT."CACHE/maj");
@@ -90,12 +90,12 @@ if ($id>0 && $delete) {
     if ($err) break;
 
     if ($id) {
-      $result=mysql_query ("SELECT name,textgroup,lang,status FROM $GLOBALS[tp]texts WHERE id='$id' AND $textgroupswhere") or die($db->errormsg());
+      $result=mysql_query ("SELECT name,textgroup,lang,status FROM $GLOBALS[tp]texts WHERE id='$id' AND $textgroupswhere") or dberror();
       if (!mysql_num_rows($result)) die("ERROR: incompatible id and textgroups in textinc.php");
       $context=array_merge($context,mysql_fetch_assoc($result));
 
     } elseif ($context['name'] && $context['textgroup'] && $context['lang']) {
-      $result=mysql_query ("SELECT id,textgroup,lang,status FROM $GLOBALS[tp]texts WHERE name='$context[name]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or die($db->errormsg());
+      $result=mysql_query ("SELECT id,textgroup,lang,status FROM $GLOBALS[tp]texts WHERE name='$context[name]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or dberror();
       while($row=mysql_fetch_assoc($result)) {
 	##if ($id && $id!=$row['id']) { $err=$context[error_nom_existe]=1; break; }
 	if (!$id) { $id=$row['id'];  $context=array_merge($context,$row); break; }
@@ -107,7 +107,7 @@ if ($id>0 && $delete) {
 
     $context['texte']=preg_replace("/(\r\n\s*){2,}/","<br />",$context['texte']);
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]texts (id,name,texte,textgroup,lang,status) VALUES ('$id','$context[name]','$context[texte]','$context[textgroup]','$context[lang]','$context[status]')") or die($db->errormsg());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]texts (id,name,texte,textgroup,lang,status) VALUES ('$id','$context[name]','$context[texte]','$context[textgroup]','$context[lang]','$context[status]')") or dberror();
     back();
 
   } while (0);

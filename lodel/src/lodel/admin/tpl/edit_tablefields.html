@@ -45,6 +45,7 @@
 	</tr>
 </table>
 
+
 <form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
@@ -68,6 +69,12 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <input type="hidden" name="class" value="[#CLASS]">
+  <LOOP NAME="fielderror" FIELD="class">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
         : 
       </label>
@@ -79,17 +86,19 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <label for="style">[@ADMIN.STYLE]
+  <IF COND="[#CLASSTYPE]=='entities'">
+    <label for="style">[@ADMIN.STYLE]
         : 
       </label>
-  <br class="nobr">
-  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
-  <br />
-  <LOOP NAME="fielderror" FIELD="style">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-    </p>
-  </LOOP>
+    <br class="nobr">
+    <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
+    <br />
+    <LOOP NAME="fielderror" FIELD="style">
+      <p class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      </p>
+    </LOOP>
+  </IF>
   <label for="type">[@ADMIN.TYPE]
         : 
       </label>
@@ -105,17 +114,17 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <label for="dc">[@ADMIN.DUBLIN_CORE_EQUIVALENT]
+  <label for="g_name">[@ADMIN.GENERIC_EQUIVALENT]
         : 
       </label>
   <br class="nobr">
-  <select name="dc" id="dc">
+  <select name="g_name" id="g_name">
     <?php 
-                      makeSelect($context,"dc","tablefields","select");
+                      makeSelect($context,"g_name","tablefields","select");
                   ?>
   </select>
   <br />
-  <LOOP NAME="fielderror" FIELD="dc">
+  <LOOP NAME="fielderror" FIELD="g_name">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
@@ -198,6 +207,17 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="editionparams">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>
@@ -209,21 +229,23 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
+  <IF COND="[#CLASSTYPE]=='entities'">
+    <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
         : 
       </label>
-  <br class="nobr">
-  <select name="idgroup" id="idgroup">
-    <?php 
+    <br class="nobr">
+    <select name="idgroup" id="idgroup">
+      <?php 
                       makeSelect($context,"idgroup","tablefields","select");
                   ?>
-  </select>
-  <br />
-  <LOOP NAME="fielderror" FIELD="idgroup">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-    </p>
-  </LOOP>
+    </select>
+    <br />
+    <LOOP NAME="fielderror" FIELD="idgroup">
+      <p class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      </p>
+    </LOOP>
+  </IF>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
         : 
       </label>
@@ -246,6 +268,7 @@
 
 	<MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
+
 
 <div>
 [@ADMIN.GROUP_ELEMENTS_CORRESPONDANCE] :

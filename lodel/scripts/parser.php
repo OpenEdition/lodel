@@ -448,14 +448,8 @@ function parse_LOOP()
 	  $arr=explode(",",$value);
 	}
 	if ($arr) {
-	  if (!$tablefields) require(TOINCLUDE."tablefields.php");
 	  foreach ($arr as $value) {
-	    $table=$GLOBALS['tableprefix'].trim($value);
-	    if ($tablefields[$table] || $tablefields[DATABASE.".".$table]) { // prefix ?
-	      array_push($tables,$table);
-	    } else {
-	      array_push($tables,trim($value));
-	    }
+	    array_push($tables,trim($value));
 	  }
 	}
 	break;
@@ -509,8 +503,8 @@ function parse_LOOP()
     $this->errmsg("the name of the loop on table(s) \"".join(" ",$tables)."\" is not defined",$this->ind);
   }
 
-  $where=$this->prefix_tablename(join(" AND ",$wheres));
-  $order=$this->prefix_tablename(join(",",$orders));
+  $where=join(" AND ",$wheres);
+  $order=join(",",$orders);
 
   //
   $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
@@ -521,21 +515,39 @@ function parse_LOOP()
 			  $tablesinselect,$extrainselect,
 			  $select,$where,$order,$groupby,$having);
   //
+  $where=$this->prefixTablesInSQL($where);
+  $order=$this->prefixTablesInSQL($order);
+  $groupby=$this->prefixTablesInSQL($groupby);
+  $having=$this->prefixTablesInSQL($having);
+  $select=$this->prefixTablesInSQL($select);
+  $extrainselect=$this->prefixTablesInSQL($extrainselect);
 
 
-  if (!$this->loops[$name][type]) $this->loops[$name][type]="def"; // toggle the loop as defined, if it is not already
-  $issql=$this->loops[$name][type]=="sql"; // boolean for the SQL loops
+  if (!$this->loops[$name]['type']) $this->loops[$name]['type']="def"; // toggle the loop as defined, if it is not already
+  $issql=$this->loops[$name]['type']=="sql"; // boolean for the SQL loops
 
 
   if ($tables) { // loop SQL
     // check if the loop is not already defined with a different contents.
     if ($issql && $attrs!=$this->loops[$name]['attr']) $this->errmsg ("loop $name cannot be defined more than once",$this->ind);
 
+    // get the contents
+    $looplevel=1;
+    $iclose=$this->ind;
+    do {
+      $iclose+=3;
+      if ($this->arr[$iclose]=="/LOOP") $looplevel--;
+      if ($this->arr[$iclose]=="LOOP") $looplevel++;
+    } while ($iclose<$this->countarr && $looplevel);
+    $md5contents=md5(join(array_slice($this->arr,$this->ind,$iclose-$this->ind)));
+    // ok, we have the content, now we can decide what to do.
+
     // the loop is not defined yet, let's define.
     if (!$issql) { // the loop has to be defined
-      $this->loops[$name][ind]=$this->ind; // save the index position
-      $this->loops[$name][attr]=$attrs; // save an id
-      $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
+      $this->loops[$name]['ind']=$this->ind; // save the index position
+      $this->loops[$name]['attr']=$attrs; // save an id
+      $this->loops[$name]['type']="sql"; // marque la loop comme etant une loop sql
+      $this->loops[$name]['md5contents']=$md5contents; // set the contents md5
 
       $this->decode_loop_content($name,$contents,$options,$tablesinselect);
       $this->make_loop_code($name.'_'.($this->signature),$tables,
@@ -543,17 +555,16 @@ function parse_LOOP()
 			    $select,$dontselect,
 			    $where,$order,$limit,$groupby,$having,
 			    $contents,$options);
-    } else { // boucle redefinie identiquement (enfin on espere)
+    } elseif ($this->loops[$name]['md5contents']==$md5contents) { // boucle redefinie identiquement
       // on passe le contenu... on le connait deja
-      $looplevel=1;
       do {
 	$this->arr[$this->ind]="";
 	$this->arr[$this->ind+1]="";
 	$this->arr[$this->ind+2]="";
 	$this->ind+=3;
-	if ($this->arr[$this->ind]=="/LOOP") $looplevel--;
-	if ($this->arr[$this->ind]=="LOOP") $looplevel++;
-      } while ($this->ind<$this->countarr && $looplevel);
+      } while ($this->ind<$iclose);
+    } else {
+      $this->errmsg ("loop $name cannot be defined more than once with different contents",$this->ind);
     }
     $code='<?php loop_'.$name.'_'.($this->signature).'($context); ?>';
   } else {
@@ -1013,12 +1024,11 @@ function _checkforrefreshattribut($mixed)
 }
 
 
-function prefix_tablename ($sql)
+function prefixTablesInSQL ($sql)
 
 {
-  static $tablefields;
-  if (!$tablefields) require($home."tablefields.php");
-
+  if (!method_exists($this,"prefixTableName")) return $sql;
+  ##echo $sql,"<br>";
   $n=strlen($sql);
 
   $inquote=false;
@@ -1037,14 +1047,16 @@ function prefix_tablename ($sql)
       $escaped=false;
       $quotec=$c;
     } elseif ($c=="." && preg_match("/\b(\w+)$/",$str,$result)) { // table dot ?
-      if ($tablefields[$GLOBALS['tableprefix'].$result[1]]) {
+      $prefixedtable=$this->prefixTableName($result[1]);
+      if ($prefixedtable!=$result[1]) {
 	// we have a table... let's prefix it
 	$ntablename=strlen($result[1]);
-	$str=substr($str,0,-$ntablename).$GLOBALS['tableprefix'].$result[1];
+	$str=substr($str,0,-$ntablename).$prefixedtable;
       }
     }
     $str.=$c;
   }
+  #echo "to:",$str,"<br>";
   return $str;
 }
 
