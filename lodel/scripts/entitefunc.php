@@ -305,6 +305,7 @@ function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
 	$t=$strip ? strip_tags($context[$var][$idtype][$ind]) : $context[$var][$idtype][$ind];
 	$bal[$var]=trim(addslashes(stripslashes($t)));
       }
+      if (!$bal[prenom] && !$bal[nomfamille]) continue;
       // cherche si l'personne existe deja
       $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]personnes WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'") or die (mysql_error());
       if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
