@@ -317,7 +317,7 @@ if ($tache=="createrep") {
   }
   // on essaie d'ecrire dans tpl si root
   if ($context[chemin]=="/") {
-    if (!@touch(LODELROOT."tpl/testecriture")) {
+    if (!writefile(LODELROOT."tpl/testecriture","")) {
       $context[erreur_tplaccess]=1;
       require ($home."calcul-page.php");
       calcul_page($context,"site-createrep");
