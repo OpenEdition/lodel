@@ -87,7 +87,6 @@ ln login.php
 ln logout.php
 ln colorpicker.js
 
-
 # tous les fichier de src/lodel/edition
 dirsource $homesite/lodel/edition
 ln siteconfig.php
@@ -96,6 +95,8 @@ ln images
 ln css
 ln tpl/macros.html
 ln tpl/macros2.html
+
+ln interface.js
 
 # chaine d'importation
 ln abandon.php

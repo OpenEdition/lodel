@@ -59,6 +59,7 @@ class TypesLogic extends Logic {
    function viewAction(&$context,&$error)
 
    {
+     if ($error) return;
      if (!$context['id']) {
        // creation
        $context['creationstatus']=-1;

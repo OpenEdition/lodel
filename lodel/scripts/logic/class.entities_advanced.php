@@ -54,6 +54,7 @@ class Entities_AdvancedLogic extends Logic {
    function viewAction(&$context,&$error)
 
    {
+     if ($error) return;
      recordurl();
 
      $id=$context['id'];

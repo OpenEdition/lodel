@@ -293,7 +293,9 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    function processTableFields($obj,$data) 
    {
-     if ($obj->type=="mltext") {
+     if ($obj->type=="file" || $obj->type=="image") {
+       // nothing...
+     } elseif ($obj->type=="mltext") {
        $lang=$obj->lang ? $obj->lang : $GLOBALS['user']['lang'];
        $this->_currentcontext[$obj->name][$lang].=addslashes($data);
      } else {

@@ -112,6 +112,10 @@ class Controler {
 	$view->back();
 	break;
       case '_error' :
+	// hum... needs to remove the slashes... don't really like that, because some value may still 
+	// come from  database or lodel. Doing this way is not a security issue but may forbide
+	// user to use \' in there text
+	mystripslashes($context);
 	$logic->viewAction($context,$error); // in case anything is needed to be put in the context
 	$context['error']=$error;
 	print_r($error);

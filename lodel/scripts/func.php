@@ -568,89 +568,63 @@ function get_PMA_define()
 }
 
 /**
- * Save the files associated with a entites (annex file). 
+ * Save the file or image files associated with a entites (annex file). Check it is a valid image.
  *
  * @param    dir    If $dir is numeric it is the id of the entites. In the other case, $dir should be a temporary directory.
  *
  */
 
-function save_annex_file($dir,$file,$filename,$uploaded,&$error) {
+function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error) 
 
-  $error=FALSE;
+{
 
+  if ($type!="file" && $type!="image") die("ERROR: type is not a valid file type");
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
-  if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
-
-  if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"$dir\"");
-    @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
-  }
-  $filename=basename($filename); // take only the name
+  if (is_numeric($dir)) $dir="docannexe/$type/$dir";
   if (!$file) die("ERROR: save_annex_file file is not set");
-  $dest=$dir."/".$filename;
-  if ($uploaded) {
-    if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
-  } else {
-    // try to move
-    if (!(@rename($file,SITEROOT.$dest))) {
-      // no that fails,  try then to copy
-      if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
-      // and try to delete
-      @unlink($file);
+
+  if ($type=="image") { // check this is really an image
+    if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
+      $tmpdir=tmpdir();
+      $newfile=$tmpdir."/".basename($file);
+      if ($file!=$newfile && !move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
+      $file=$newfile;
     }
+    if (!filesize($file)) { $error="readerror"; return; }
+    $info=getimagesize($file);
+    if (!is_array($info)) { $error="imageformat"; return; }
+    $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
+    $ext=$exts[$info[2]-1];
+
+    if (!$ext) { $error="imageformat"; return; }
+  } 
+
+  checkdocannexedir($dir);
+
+  if ($type=="image") {
+    $filename=preg_replace("/\.\w+$/","",basename($filename)); // take only the name, remove the extensio
+    $dest=$dir."/".$filename.".".$ext;
+  } else {
+    $dest=$dir."/".basename($filename);
   }
 
-  @chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS['filemask']));
-  
+  if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
+  // and try to delete
+  if ($move) @unlink($file);
+
+  @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
+
   return $dest;
 }
 
-/**
- * Save the image files associated with a entites (annex file). Check it is a valid image.
- *
- * @param    dir    If $dir is numeric it is the id of the entites. In the other case, $dir should be a temporary directory.
- *
- */
+function checkdocannexedir($dir)
 
-function save_annex_image($dir,$file,$filename,$uploaded,&$error) {
-
-  $error=FALSE;
-
-  if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
-  if (is_numeric($dir)) $dir="docannexe/image/$dir";
-  if (!$file) die("ERROR: save_annex_file file is not set");
-
-  $tmpdir=tmpdir();
-  if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
-    $newfile=$tmpdir."/".basename($file);
-    if ($file!=$newfile && !move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
-    $file=$newfile;
-  }
-  if (!filesize($file)) { $error="readerror"; return; }
-  $info=getimagesize($file);
-  if (!is_array($info)) { $error="imageformat"; return; }
-  $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
-  $ext=$exts[$info[2]-1];
-
-  if (!$ext) { $error="imageformat"; return; }
-
+{
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) die("ERROR: impossible to create the directory \"$dir\"");
+    @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+    writefile(SITEROOT.$dir."/index.html","");
   }
-
-  $filename=preg_replace("/\.\w+$/","",basename($filename)); // take only the name, remove the extensio
-  $dest=$dir."/".$filename.".".$ext;
-  // try to move
-  if (!(@rename($file,SITEROOT.$dest))) {
-    // no that fails,  try then to copy
-    if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
-    // and try to delete
-    @unlink($file);
-  }
-
-  @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
-  
-  return $dest;
 }
 
 

@@ -35,7 +35,7 @@ define("LEVEL_EDITOR",30);
 define("LEVEL_ADMIN",40);
 define("LEVEL_ADMINLODEL",128);
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
+error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
 
 
 function authenticate ($level=0)

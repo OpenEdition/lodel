@@ -150,6 +150,7 @@ class Entities_EditionLogic extends GenericLogic {
    function editAction(&$context,&$error,$opt=false)
 
    {
+     if ($context['cancel']) return "_back";
      global $user,$home;
      $id=$context['id'];
      $idparent=$context['idparent'];

@@ -263,20 +263,62 @@ class GenericLogic extends Logic {
 	   break;
 	 case 'image' :
 	 case 'file' :
-	   if ($error[$name]) {  unset($value); break; } // error has been already detected
-	   if (is_array($value)) unset($value);
-	   if (!$value || $value=="none") { unset($value); break; }
-	   // check for a hack or a bug
-	   $lodelsource='lodel\/sources';
-	   $docannexe='docannexe\/'.$type.'\/([^\.\/]+)';
-	   if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$value,$dirresult)) die("ERROR: bad filename in $name \"$value\"");
-	   // if the filename is not "temporary", there is nothing to do
-	   if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) { unset($value); break; }
-	   // add this file to the file to move.
-	   $this->files_to_move[$name]=array('filename'=>$value,'type'=>$type,'name'=>$name);           
+	   if (!is_array($value)) { unset($value); break; }
+	   switch($value['radio']) {
+	   case 'upload':
+	     // let's upload
+	     $files=&$_FILES[$name];
+	     // look for an error ?
+	     if (!$files || $files['error']['upload'] ||
+		 !$files['tmp_name']['upload'] || $files['tmp_name']['upload']=="none") { 
+	       unset($value); 
+	       $error[$name]="upload";
+		 break; 
+	     }
+	     // check if the tmpdir is defined
+	     if (!$tmpdir[$type]) { 
+	       // look for a unique dirname.
+	       do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
+	     }
+	     // let's transfer
+	     $value=save_annex_file($type,$tmpdir[$type],$files['tmp_name']['upload'],
+				    $files['name']['upload'],true,true,$err);
+	     if ($err) $error[$name]=$err;
+	     break;
+	   case 'serverfile':
+	     // check if the tmpdir is defined
+	     if (!$tmpdir[$type]) { 
+	       // look for a unique dirname.
+	       do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
+	     }
+
+	     // let's move
+	     $value=basename($value['localfilename']);
+	     $value=save_annex_file($type,$tmpdir[$type],SITEROOT."CACHE/upload/$value",
+				    $value,false,false,$err);
+	     if ($err) $error[$name]=$err;
+	     break;
+	   case 'delete':
+	     $filetodelete=true;
+	   case '' :
+	     // validate	     
+	     $value=$value['previousvalue'];
+	     if (!$value) break;
+	     if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/",$value)) {
+		   die("ERROR: invalid filename of type $type");
+	     }
+	     if ($filetodelete) { unlink(SITEROOT.$value); $value=""; unset($filetodelete);}
+	     break;
+	 default:
+	     die("ERROR: unknow radio value for $name");
+	 } // switch
+
+	   if (preg_match("/\/tmpdir-\d+\/[^\/]+$/",$value)) {
+	     // add this file to the file to move.
+	     $this->files_to_move[$name]=array('filename'=>$value,'type'=>$type,'name'=>$name);           	   }
 	   break;
-	 case 'persons':
-	 case 'entries' :
+       case 'persons':
+       case 'entries' :
 	   // get the type
 	   if ($type=="persons") {
 	     $dao=&getDAO("persontypes");
@@ -333,11 +375,9 @@ class GenericLogic extends Logic {
 	if (!$dest) die("ERROR: error in move_files");
 	// new path to the file
 	$dirdest="docannexe/".$file['type']."/".$id;
-	if (!file_exists(SITEROOT.$dirdest)) {
-	  if (!@mkdir(SITEROOT.$dirdest,0777 & octdec($GLOBALS['filemask']))) die("ERROR: impossible to create the directory \"$dir\"");
-	}
+	checkdocannexedir($dirdest);
 	$dest=$dirdest."/".$dest;
-	$vo->$file['name']="'".addslashes($dest)."'";
+	$vo->$file['name']=addslashes($dest);
 	if ($src==SITEROOT.$dest) continue;
 	rename($src,SITEROOT.$dest);
 	chmod (SITEROOT.$dest,0666 & octdec($GLOBALS['filemask']));
