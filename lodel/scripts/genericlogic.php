@@ -139,6 +139,7 @@ class GenericLogic extends Logic {
 
      $daotype=&getDAO($this->_typetable);
      $votype=$daotype->getById($context['idtype']);
+    if (!$votype) die("ERROR: idtype must me known in GenericLogic::viewAction");
      $this->_populateContext($votype,$context['type']);
      
      if ($id && !$error) {

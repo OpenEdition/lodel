@@ -87,7 +87,7 @@ function infoChargement(nomFic){
 </table>
 
 <!--[ Propose OOImport ? ]-->
-<IF COND="![#IDDOCUMENT]">
+<IF COND="![#IDENTITY]">
 <div><a href="index.php?do=view&idparent=[#IDPARENT]&idtype=[#IDTYPE]">[@EDITION.IMPORT_IN_FORM]</a></div>
 </IF>
 
