@@ -1,0 +1,146 @@
+/* CSS Document */
+body{
+	margin: 0;
+	background-color: #fff;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+	color: #333;
+}
+h1{
+    font-family: Verdana,Arial;
+    font-size: 25px;
+  	color: #63944A;
+    text-align: center;
+	margin-top: 50px;
+    margin-bottom: 50px;
+}
+h2{
+	font-family: Verdana,Arial;
+	font-size: 20px;
+	color: #544A35;
+	text-align: center;
+	padding-bottom: 20px;
+}
+h3{
+	font-family: Verdana,Arial;
+	font-size: 18px;
+	color: #544A35;
+	text-align: center;
+	padding-bottom: 20px;
+}
+hr{
+	height: 2px;
+}
+li{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+fieldset{
+	border: none;
+	margin: 0;
+}
+a:link {
+    color: #CC6633;
+    text-decoration: none;
+}
+a:visited {
+	color: #666666;
+}
+a:hover {
+	color: #FFAD00;
+}
+a:active {
+	color: #333366;
+}
+p {
+	color: #544A35;
+	text-align: justify;
+	line-height: 18px;
+	padding-bottom: 10px;
+}
+td, th, table{
+	border: 1px solid #9CBD9C;
+	border-collapse: no-collapse;
+	margin: 0;
+	padding: 3px 5px;
+	text-align: left;
+}
+table{
+	width: 75%;
+	padding: 0;
+	margin: auto;
+}
+form{
+	margin: 0;
+	padding: 0;
+}
+label{
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+	margin-top: 10px;
+	font-size: 95%;
+}
+dt{
+	margin-bottom: 10px;
+}
+dd{
+	margin-bottom: 10px;
+	text-align: justify;
+}
+form.install{
+	margin-top: 10px;
+}
+#logo{
+	margin: 0;
+	text-align: left;
+	width: 521px;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+#install{
+	background-image: url(../images/install_fleche_cercle.png);
+	background-repeat: no-repeat;
+	background-position: left middle;
+	position: absolute;
+	right: 0;
+	top: 20px;
+	margin-right: 2%;
+	padding-left: 75px;
+	padding-top: 5px;
+	height: 39px;
+}
+#bandeau{
+	background-image: url(../images/install_bandeau_bas.jpg);
+	background-repeat: repeat-x;
+	height: 63px;
+	width: 100%;
+	clear: both;
+	position: absolute;
+	left: 0;
+	top: 100px;
+}
+#bandeau h3{
+	background-image: url(../images/install_fleche_or.png);
+	background-repeat: no-repeat;
+	background-position: top left;
+	padding-left: 55px;
+	height: 41px;
+	width: 100%;
+	text-align: left;
+	font-size: 13px;
+	margin: 0;
+	padding-top: 8px;
+	margin-top: 24px;
+	margin-left: 10px;
+}
+#main{
+	width: 90%;
+	margin: 30px 5% 0px 5%;
+	position: absolute;
+	top: 150px;
+}
+.or{
+	color: #FFAD00;
+}

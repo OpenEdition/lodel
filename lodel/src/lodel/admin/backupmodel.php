@@ -52,12 +52,18 @@ if ($backup) {
   $description='<model>
 <lodelversion>'.$version.'</lodelversion>
 <date>'.date("Y-m-d").'</date>
+<title>
+'.myhtmlentities(stripslashes($context[title])).'
+</title>
 <description>
 '.myhtmlentities(stripslashes($context[description])).'
 </description>
 <author>
 '.myhtmlentities(stripslashes($context[author])).'
 </author>
+<modelversion>
+'.myhtmlentities(stripslashes($context[modelversion])).'
+</modelversion>
 </model>
  ';
 

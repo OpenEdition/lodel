@@ -60,13 +60,15 @@
 		  <li>
 		    <p>Selectionner un des modèles livré avec Lodel</p>
 		    <p>Liste des modèles disponibles:</p>
+
 		    <LOOP NAME="fichiers">
    		    <DO>
-		      <table border="1">
+		      <table border="1" width="100%">
 		      <tr>
-			    <td><div><strong>[#NOM]</strong></div></td>
-			    <td><div><a href="importmodel.php?fichier=[(#FULLNAME|urlencode)]">Importer</a> <IF COND="[#MAYBEDELETED]"><a href="importmodel.php?delete=1&fichier=[(#FULLNAME|urlencode)]">| Effacer</a></IF></div></td>
+			    <td><div><strong>[#FILENAME]</strong></div></td>
+			    <td><div><a href="importmodel.php?fichier=[(#FULLNAME|urlencode)]">Importer</a> <IF COND="[#MAYBEDELETED]"><a href="importmodel.php?delete=1&fichier=[(#FULLFILENAME|urlencode)]">| Effacer</a></IF></div></td>
 			  </tr>
+		      <IF COND="[#TITLE]"><tr><td>Titre:</td><td>[#TITLE]</td></tr></IF>
 		      <IF COND="[#DESCRIPTION]"><tr><td>Description:</td><td>[#DESCRIPTION]</td></tr></IF>
 		      <IF COND="[#AUTHOR]"><tr><td>Auteur:</td><td>[#AUTHOR]</td></tr></IF>
 		      <tr><td>Date:</td><td>[(#DATE|humandate)]</td></tr>

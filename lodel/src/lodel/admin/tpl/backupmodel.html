@@ -33,14 +33,27 @@
 	</tr>
 </table>
 
-
 <form method="POST" action="backupmodel.php">
 <input type="hidden" name="backup" value="1">
-	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 
-<tr><td>Description:</td><td><textarea cols="50" rows="4" name="description">[#DESCRIPTION]</textarea></td></tr>
-<tr><td>Auteur:</td><td><input type="text"  name="author">[#AUTHOR]</author></td></tr>
+
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 <tr><td>Ne pas sauvegarder les fichiers associés (template et css)</td><td><input type="checkbox" name="sqlonly" /></td></tr>
+</table>
+
+
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="  Sauvegarder  ">
+		<input class="form" type="button" value=" Annuler / Retour " onClick="javascript:window.location='index.php'" />
+	</div>
+<hr width="30%" />
+Les informations ci-dessous sont facultatives a moins que vous souhaitez distribuer ce modèle éditorial.
+
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+<tr><td>Titre:</td><td><input type="text" size="70" name="title" value="[#TITLE]"></td></tr>
+<tr><td>Description:</td><td><textarea cols="60" rows="6" name="description">[#DESCRIPTION]</textarea></td></tr>
+<tr><td>Auteur:</td><td><input type="text" size="30" name="author" value="[#AUTHOR]"></td></tr>
+<tr><td>Version:</td><td><input type="text" size="30" name="modelversion" value="[#MODELVERSION]"></td></tr>
 <!--[<tr><td>Opération:</td><td>
 <select name="operation">
 <option value="download">Télécharger</option>
@@ -49,10 +62,6 @@
 </select>
 </td></tr>]-->
 </table>
-	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="  Sauvegarder  ">
-		<input class="form" type="button" value=" Annuler / Retour " onClick="javascript:window.location='index.php'" />
-	</div>
 </form>
 
 <MACRO NAME="CLOSE_HTML">

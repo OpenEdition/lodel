@@ -93,6 +93,7 @@ dirsource $homesite/lodel/edition
 ln siteconfig.php
 ln maj.php
 ln images
+ln css
 ln tpl/macros.html
 ln tpl/deskedition.html
 
@@ -191,6 +192,7 @@ ln logout.php
 
 ln tpl/macros.html
 ln images
+ln css
 
 ln index.php
 ln tpl/index.html
@@ -259,6 +261,7 @@ ln tpl/transfer.html
 
 ln importmodel.php
 ln tpl/importmodel.html
+ln tpl/importmodel-frominstall.html
 ln backupmodel.php
 ln tpl/backupmodel.html
 

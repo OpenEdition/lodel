@@ -1,0 +1,98 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+<USE MACROFILE="macros.html">
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="ROBOTS" content="nofollow, noindex" />
+
+
+<title>Installation de LODEL</title>
+<link rel="stylesheet" type="text/css" href="css/install.css" />
+</head>
+<body> 
+<h1 id="logo"><img src="images/install_bandeau.jpg" alt="Lodel Logiciel d'édition électronique" /></h1>
+<h2 id="install">installation</h2>
+<div id="bandeau"></div>
+<div id="main">
+	  <IF COND="[#ERREUR_TABLE]">
+<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td>
+	    <p><strong>Erreur:</strong> La base de donnée n'est pas vide. La table "[#ERREUR_TABLE]" contient encore des informations. Veuillez supprimer tous les documents, publications, mots clés, etc avant de procéder à l'importation d'un nouveau modele editorial</p>
+		    </td>
+		</tr>
+</table>
+	<div class="pied_de_formulaire">
+	    <form><input class="form" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" /></form>
+
+	</div>
+	    <ELSE/>
+
+<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td>
+<br />
+		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'installation du modèle éditorial. Verifier l'integrité de votre archive zip. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
+		    <IF COND="[#ERREUR_READING]"><strong>Erreur:</strong> Le fichier archive n'a pas pu être lu ou ne contient pas de fichier.<br /><br /></IF>
+
+		    <p>Installation du modèle éditorial.</p>
+                      
+
+
+		    <p>Selectionner un modèle éditorial:</p>
+		    <LOOP NAME="fichiers">
+   		    <DO>
+                         <hr>
+
+                      <div>
+		      <div>[#TITLE]</div>
+                      <div>[#DESCRIPTION]</div>
+                      <div>Nom du fichier: [#FILENAME]</div>
+                      <div>Version du modèle: [#MODELVERSION]</div>
+                      <div>Auteur: [#AUTHOR]</div>
+		      <div>Date de création: [(#DATE|humandate)]</div>
+		      <IF COND="[#WARNING_VERSION]"><div><strong>Version:</strong> Attention, la version de ce modèle editorial ([#LODELVERSION]) n'est pas la même que celle de Lodel ([#VERSION]). Verifier la compatibilité.</div></IF>
+
+
+
+                         <div><a href="importmodel.php?frominstall=1&fichier=[(#FULLFILENAME|urlencode)]">Installer ce modèle</a></div>
+                       </div>
+
+		    </DO>
+		    </LOOP>
+ 	      </table>
+	      </td>
+	    </tr>
+</table>
+<form>
+	<div class="pied_de_formulaire">
+		<input class="form" type="button" value="    Ne pas installer de modèle éditorial    " onClick="javascript:window.location='index.php';" />
+	</div>
+</form>
+</IF>  
+</div>
+</body>
+</html>

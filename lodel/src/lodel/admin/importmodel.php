@@ -32,7 +32,6 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 #authenticate();
 
 
-
 $context[importdir]=$importdir;
 $fileregexp='(model)-\w+(?:-\d+)?.zip';
 
@@ -87,7 +86,10 @@ if ($fichier && $delete) {
   require_once($home."cachefunc.php");
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
-  if (!$err) {     back();   }
+  if (!$err) {
+    if ($frominstall) { header ("location: ../edition"); die(); }
+    back();
+  }
 } else {
 
 
@@ -108,7 +110,13 @@ if ($fichier && $delete) {
 
 
 require ($home."calcul-page.php");
-calcul_page($context,"importmodel");
+
+if ($frominstall) {
+  $context[frominstall]=1;
+  calcul_page($context,"importmodel-frominstall");
+} else {
+  calcul_page($context,"importmodel");
+}
 
 
 function loop_fichiers(&$context,$funcname)
@@ -120,8 +128,8 @@ function loop_fichiers(&$context,$funcname)
       while (($file=readdir($dh))!==FALSE) {
 	if (!preg_match("/^$fileregexp$/i",$file)) continue;
 	$localcontext=$context;
-	$localcontext[nom]=$file;
-	$localcontext[fullname]="$dir/$file";
+	$localcontext['filename']=$file;
+	$localcontext['fullfilename']="$dir/$file";
 	if ($dir=="CACHE") $localcontext[maybedeleted]=1;
 
 	// open ZIP archive and extract model.sql
@@ -145,7 +153,7 @@ function loop_fichiers(&$context,$funcname)
 	  }
 	}
 
-	foreach (array("lodelversion","description","author","date") as $tag) {
+	foreach (array("lodelversion","title","description","author","date","version") as $tag) {
 	  if (preg_match("/<$tag>(.*?)<\/$tag>/s",$xml,$result)) {
 	    $localcontext[$tag]=utf8_encode(str_replace(array("\r","<",">","\n"),
 							array("","&lt;","&gt;","<br />"),
