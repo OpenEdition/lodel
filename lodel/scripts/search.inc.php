@@ -256,8 +256,8 @@ function loop_search(&$context,$funcname,$arguments)
 		$dao_type = &getDAO("types");
 		$vo_type = $dao_type->getByID($vo->idtype);
 		$local_context["type"] = $vo_type->type;
-		
-		
+		//added information on tpledition
+		$local_context["tpledition"] = $vo_type->tpledition;
 		$local_context["g_title"] = $vo->g_title;
 		$local_context["status"] = $vo->status;
 		$local_context["identifier"] = $vo->identifier;
