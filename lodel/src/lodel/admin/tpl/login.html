@@ -3,6 +3,7 @@
 <meta name="ROBOTS" content="nofollow, noindex">
 <title>Identification</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
+<!--
 <MACRO NAME="HEADER_LOGO"> 
 
 <CENTER>
@@ -76,5 +77,59 @@
   
 
 </CENTER>
+-->
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<MACRO NAME="HEADER_LOGO_LOGIN">
+	<div>
+		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
+		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
+	</div>
 
+	<br>
+	[(#ERREUR_LOGIN|true)<br>
+	<br>
+	<b> Nom d'utilisateur ou mot de passe incorrect</b><br>
+	<br>
+	] <b>Merci de vous identifier</b><br>
+	[(#ERREUR_OPENSESSION|true)<b><br>
+	Impossible d'ouvrir une session. contactez l'administrateur<br>
+	<br>
+	</b>]
+	[(#REVUEBLOQUEE|true)<b><br>
+	La revue est bloquee impossible de se loguer (sauf super admin). La revue est probablement en maintenance.<br>]
+	[(#ERREUR_SETCOOKIE|true)<b><br>
+	<br>
+	Impossible de poser un cookie</b><br>
+	<br>
+	] [(#ERREUR_TIMEOUT|true)<br>
+	<br>
+	<b>La session a expiré</b><br>
+	<br>
+	] [(#ERREUR_PRIVILEGE|true)<b><br>
+	<br>
+	Vous n'avez pas les droits pour acc&eacute;der &agrave; cette 
+	page</b><br>
+	<br>
+
+	<div id="formulaire">
+		<div id="titre_formulaire">
+			<p>Bienvenue !<br />Merci de vous identifier :</p>
+		</div>
+		<form action="login.php" method="POST">
+			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
+			<div id="champ_formulaire">
+				<p>Nom d'utilisateur : <input type="text" name="login" value="[#LOGIN]"/></p>
+				<p>Mot de passe : <input type="password" name="passwd" /></p>
+			</div>
+			<p>
+				<img src="[#SHAREURL]/images/vague.png" alt="" />
+				<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" alt="Valider" />
+			</p>
+		</form>
+	</div>
+	<div id="credit">
+		<p>LODEL est un logiciel d'édition électronique créé par revues.org</p>
+		<img src="[#SHAREURL]/images/revues.png" alt="" />
+	</div>
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 <MACRO NAME="CLOSE_HTML">
