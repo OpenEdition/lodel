@@ -34,9 +34,9 @@ if ($login) {
       // nom de la session
       $name=md5($context[login].microtime());
       // enregistre la session
-      if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
+      if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) or die(mysql_error());
     }
-    if ($userpriv<LEVEL_SUPERADMIN) unlock();
+    unlock();
     if ($i==5) { $context[erreur_opensession]=1; break; }
 
     if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) { $context[erreur_setcookie]=1; break;}
@@ -60,6 +60,17 @@ if ($context[erreur_revue_bloquee]) { // on a deja verifie que la revue est bloq
 }
 
 
+$context[url_retour]=$url_retour;
+$context[erreur_timeout]=$erreur_timeout;
+$context[erreur_privilege]=$erreur_privilege;
+
+
+
+include ("$home/calcul-page.php");
+calcul_page($context,"login");
+
+
+
 function check_auth (&$revue)
 
 {
@@ -74,7 +85,7 @@ function check_auth (&$revue)
     // cherche d'abord dans la base generale.
 #ifndef LODELLIGHT
     mysql_select_db($GLOBALS[database]);
-    if (!($result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
+    $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")))  or die(mysal_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $revue="toutes les revues";
@@ -83,7 +94,7 @@ function check_auth (&$revue)
 
       // cherche ensuite dans la base de la revue
       mysql_select_db($GLOBALS[currentdb]);
-      if (!($result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
+      $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")))  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;
     }
 #else
@@ -96,7 +107,7 @@ function check_auth (&$revue)
 
     // cherche les groupes pour les non administrateurs
     if ($userpriv<LEVEL_ADMIN) {
-      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$iduser'");
+      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
       $usergroupes="1"; // sont tous dans le groupe "tous"
       while ($row=mysql_fetch_row($result)) $usergroupes.=",".$row[0];
     } else {
@@ -112,15 +123,4 @@ function check_auth (&$revue)
 
   return false;
 }
-
-$context[url_retour]=$url_retour;
-$context[erreur_timeout]=$erreur_timeout;
-$context[erreur_privilege]=$erreur_privilege;
-
-
-
-include ("$home/calcul-page.php");
-calcul_page($context,"login");
-
-
 ?>
