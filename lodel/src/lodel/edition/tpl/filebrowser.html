@@ -69,7 +69,7 @@ function sendValue(s){
 </div>
 <div class="checkmail">
 <input type="submit" name="checkmail" value="[@EDITION.CHECKMAIL]">
-<IF COND="[(#NBATTATTACHMENTS|isset)]">[@EDITION.NB_ATTACHED_FILES_ARE_UPLOADED|sprintf(#NBATTATTACHMENTS)]</IF>
+<IF COND="[(#NBATTATTACHMENTS|isset)]">[@EDITION.NB_ATTACHED_FILES_ARE_UPLOADED|sprintf([#NBATTATTACHMENTS])]</IF>
 </div>
 <div class="resize">
 <input type="text" name="newsize" value="500">
