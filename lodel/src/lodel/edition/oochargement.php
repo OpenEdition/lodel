@@ -242,6 +242,11 @@ Will be reimplemented using a proper XML parser.
     array_push($rpl,"","<\\1r2r:\\2>");
   }
 
+  // remove ww-styles
+  array_push($srch,"/(<\/?r2r:)ww-([^>]+>)/");
+  array_push($rpl,"\\1\\2");
+
+
   //
   // all the regexp in the following should be rewritten in a proper parser !
   //
