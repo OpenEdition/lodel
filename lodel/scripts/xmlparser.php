@@ -2,24 +2,6 @@
 
 include_once ("$GLOBALS[home]/func.php");
 
-# function extract_xml ($balises,&$vals,&$index,$lowercase=FALSE)
-# 
-# {
-#   $ret=array();
-#   if (!is_array($balises)) $balises=array($balises);
-#   foreach ($balises as $b) {
-#     if (!$index[$b]) continue;
-#     foreach ($index[$b] as $ind) {
-# 	if ($lowercase) {
-# 	  $ret[strtolower($b)].=$vals[$ind][value];
-# 	} else {
-# 	  $ret[$b].=$vals[$ind][value];
-# 	}
-#     }
-#   }
-#   return $ret;
-# }
-
 
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
 
@@ -53,6 +35,17 @@ function xml_parse_into_struct_ns(&$text,&$values,&$index) {
   $index=$GLOBALS[into_struct_ns_index];
 }
 
+function rebuild_opentag($name,$attrs)
+
+{
+  $ret="<$name";
+  foreach ($attrs as $att => $val) {
+    $ret.=" $att=\"".translate_xmldata($val)."\"";
+  }
+  $ret.=">";
+}
+
+
 
 function xml_parse_into_struct_ns_startElement($parser, $name, $attrs) {
   //  echo $name,"<br>";flush();
@@ -69,11 +62,7 @@ function xml_parse_into_struct_ns_startElement($parser, $name, $attrs) {
     $GLOBALS[into_struct_ns_data]="";
     $GLOBALS[into_struct_ns_ind]++; 
   } else { # reconstruit le tags
-    $GLOBALS[into_struct_ns_data].="<$name";
-    foreach ($attrs as $att => $val) {
-      $GLOBALS[into_struct_ns_data].=" $att=\"".translate_xmldata($val)."\"";
-    }
-    $GLOBALS[into_struct_ns_data].=">";
+    $GLOBALS[into_struct_ns_data].=rebuild_opentag($name,$attrs);
   }
 }
 

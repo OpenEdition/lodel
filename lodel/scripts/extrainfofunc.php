@@ -120,7 +120,6 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
     $row[datepubli]=date("Y-m-d",mktime(0,0,0,$time[4]+1,$time[3],$time[5]));
   }
   // enregistre dans la base
-  //    echo htmlentities($text); return;
   include_once ("$home/dbxml.php");
   $iddocument=enregistre($row,$text);
 
@@ -151,7 +150,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
   // efface le fichier balise
   if (file_exists($balisefilename)) unlink($balisefilename);
 
-  return 1; // ok on a finit correctement
+  return $iddocument; // ok on a finit correctement
 }
 
 
@@ -167,7 +166,9 @@ function gr_auteur(&$context,$plusauteurs)
 {
     $i=1;
     $rpl="<r2r:grauteur>";
-    while ($context["nomfamille$i"] || $context["prenom$i"] || $context["affiliation$i"] || $context["courriel$i"] || $context["prefix$i"]) {
+    while ($context["nomfamille$i"] || $context["prenom$i"] || $context["prefix$i"] 
+	   // supprimer le 6/4/3 || $context["affiliation$i"] || $context["courriel$i"]
+	   ) {
       $rpl.="<r2r:auteur ordre=\"$i\">";
       // nompersonne
       $rpl.="<r2r:nompersonne>\n".
@@ -176,10 +177,12 @@ function gr_auteur(&$context,$plusauteurs)
 	writetag("prenom",$context["prenom$i"]).
 	"</r2r:nompersonne>\n";
 
-      // affiliation
-      $rpl.=writetag("affiliation",$context["affiliation$i"]);
-      // courriel
-      $rpl.=writetag("courriel",$context["courriel$i"]);
+//      // affiliation
+//      $rpl.=writetag("affiliation",$context["affiliation$i"]);
+//      // courriel
+//      $rpl.=writetag("courriel",$context["courriel$i"]);
+
+      $rpl.=writetag("description",$context["description$i"]);
 
       $rpl.="</r2r:auteur>\n";
       $i++;
@@ -351,7 +354,8 @@ function boucle_auteurs(&$context,$funcname)
 
 {
   global $text;
-  $balises="(prefix|nomfamille|prenom|courriel|affiliation)";
+#  $balises="(prefix|nomfamille|prenom|courriel|affiliation)";
+  $balises="(prefix|nomfamille|prenom|description)";
 
   preg_match_all("/<r2r:auteur\b[^>]*>(.*?)<\/r2r:auteur\s*>/is",$text,$results,PREG_SET_ORDER);
   foreach ($results as $auteur) {
@@ -361,7 +365,9 @@ function boucle_auteurs(&$context,$funcname)
     $localcontext=$context;
     $localcontext[ind]=$ind;
     if ($result) {
-      foreach ($result as $champ) { $localcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
+      foreach ($result as $champ) { 
+#	$localcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
+	$localcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes($champ[2])); }
     }
 	call_user_func("code_boucle_$funcname",$localcontext);
   }
@@ -374,20 +380,31 @@ function auteurs2auteur (&$text)
 
 {
   // traitements speciaux:
-  if (preg_match ("/<r2r:auteurs>\s*(.*?)\s*<\/r2r:auteurs>/si",$text,$result)) {
-    $val=strip_tags($result[1]);
-    $auteurs=preg_split ("/\s*[,;]\s*/",$val);
-    $val="<r2r:grauteur>";
-    $i=1;
-    foreach($auteurs as $auteur) {
-      // affiliation
-      if (preg_match("/\[([^\]]+)\]/",$auteur,$result2)) {
-	$auteur=str_replace($result2[0],"",$auteur);
-	$affiliation=$result2[1];
-      } else {
-	$affiliation="";
-      }
-      // essaie de deviner le nom et le prenom. Le nom est en majuscule
+
+  // accouple les balises auteurs et descriptionauteur
+  $text=preg_replace ("/(<\/r2r:auteurs>)[\s\n\r]*(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/is","\\2\\1",$text);
+
+  // cherche toutes les balises auteurs
+  preg_match_all ("/<r2r:auteurs>\s*(.*?)\s*<\/r2r:auteurs>/si",$text,$results,PREG_SET_ORDER);
+
+  $grauteur="<r2r:grauteur>";
+  $i=1;
+
+  while ($result=array_shift($results)) { // parcours les resultats.
+    // cherche s'il y a un bloc description
+    if (preg_match("/^(.*?)(<r2r:descriptionauteur>.*?<\/r2r:descriptionauteur>)/si",$result[1],$result2)) { // il y a un bloc description, donc on a une description pour le dernier auteur.
+      $val=$result2[1];
+      // remplace descriptionauteur en description.
+      $descrauteur=preg_replace("/(<\/?r2r:description)auteur>/i","\\1>",$result2[2]);
+    } else { // pas description des auteurs
+      $val=$result[1];
+      $descrauteur="";
+    }
+    echo htmlentities($descrauteur)."<br><br>\n\n";
+    $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val));
+
+    while (($auteur=array_shift($auteurs))) {
+      // ok, on cherche maintenant a separer le nom et le prenom
       $nom=$auteur;
       while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
       if ($nom) {
@@ -396,14 +413,20 @@ function auteurs2auteur (&$text)
 	preg_match("/^\s*(.*)\s+([^\s]+)\s*$/i",$auteur,$result2);
 	$prenom=$result2[1]; $nom=$result2[2];
       }
-      $val.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom></r2r:nompersonne>";
-      if ($affiliation) $val.="<r2r:affiliation>$affiliation</r2r:affiliation>";
-      $val.="</r2r:auteur>";
+      // on a maintenant le nom et le prenom, on ecrit le bloc
+      $grauteur.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom></r2r:nompersonne>";
+      if ($descrauteur && !$auteurs)  $grauteur.=$descrauteur; // c'est le dernier auteur de cette liste, s'il y a un bloc description, alors c'est pour lui !
+      $grauteur.="</r2r:auteur>";
       $i++;
     }
-    $val.="</r2r:grauteur>\n";
-    $text=str_replace($result[0],$val,$text);
+    $text=str_replace($result[0],"",$text); // efface ce bloc
   } // fin du traitement speciale des auteurs
+  $grauteur.="</r2r:grauteur>\n";
+
+  // ajoute ce bloc a la fin
+  $bal="</r2r:article>";
+  //   die("$grauteur");
+  $text=str_replace($bal,$grauteur.$bal,$text);
 }
 
 

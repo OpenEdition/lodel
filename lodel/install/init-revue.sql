@@ -266,6 +266,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_auteurs (
 	idauteur		INT UNSIGNED DEFAULT '0' NOT NULL,
 	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
 	ordre			TINYINT NOT NULL DEFAULT '0',
+	description             TEXT NOT NULL,
 
 	KEY index_idauteur (idauteur),
 	KEY index_iddocument (iddocument)

@@ -127,21 +127,22 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
     if ($tag[type]!="open") { continue; }
     $tag=$vals[++$ind]; // on rentre dans le tag auteur
     while ($tag[tag]!="auteur") {
-      $lcontext[strtolower($tag[tag])]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+      $b=strtolower($tag[tag]);
+      if ($b=="description") { // il faut reconstruire le bloc description... c'est chiant ca !
+	//	$context[description]=rebuildxml($b,$vals,$ind);
+      } else {
+	$context[$b]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+      }
       $tag=$vals[++$ind]; // on rentre dans le tag auteur
     }
 
-    // extrait les balises
-    foreach (array("prefix","nomfamille","prenom","affiliation","courriel") as $b) {
-      $$b=$lcontext[$b];
-    }
-
     // cherche si l'auteur existe deja
-    $result=mysql_query("SELECT id FROM auteurs WHERE nomfamille='".$nomfamille."' AND prenom='".$prenom."'");
+    $result=mysql_query("SELECT id FROM auteurs WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'");
     if (mysql_num_rows($result)>0) {
       list($id)=mysql_fetch_array($result);
     } else { // il faut ajouter l'auteur
-      mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom,affiliation,courriel) VALUES ('-1','$prefix','$nomfamille','$prenom','$affiliation','$courriel')") or die (mysql_error());
+# supprimer le 6/4/3     mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom,affiliation,courriel) VALUES ('-1','$prefix','$nomfamille','$prenom','$affiliation','$courriel')") or die (mysql_error());
+      mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom) VALUES ('-1','$context[prefix]','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
       $id=mysql_insert_id();
     }
   
@@ -154,8 +155,8 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
     }
 
     // ajoute l'auteur dans la table documents_auteurs
-
-    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre) VALUES ('$id','$iddocument','$ordre')") or die (mysql_error());
+    // ainsi que la description
+    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre,description) VALUES ('$id','$iddocument','$ordre','$description')") or die (mysql_error());
   }
 }
 
@@ -237,6 +238,25 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
     } // tags
   } // balises
 }
+
+
+/*
+function rebuildxml($name,$vals,$ind);
+
+{
+  $ret=$tag[value];
+  while (($tag=$vals[++$ind]) && ($tag[tag]!="description")) {
+    if ($tag[type]=="open") {
+      $ret.=translate_xmldata($tag[value]).rebuild_opentag($tag[name],$tag[attr]);
+    } elseif  ($tag[type]=="close") {
+      $ret.=translate_xmldata($tag[value])."</$tag[name]>";
+    } elseif  ($tag[type]=="complete") {
+      $ret.=rebuild_opentag($tag[name],$tag[attr]).translate_xmldata($tag[value])."</$tag[name]>";
+    }
+=$tag[value];
+  }
+}
+*/
 
 
 ?>

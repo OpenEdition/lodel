@@ -1,4 +1,11 @@
 <?
+
+//
+// $balises contient toutes les balises reconnues.
+// la valeur de la balise definie l'affichage dans chkbalisage.php (et n'a aucune incidence ailleurs).
+// les balises principales doivent etre associe a leur nom litteral
+// les ss balises doivent etre associees a une/ou des balises html ou etre vide.
+
 $balises=array ("-" => "-",
 		"titre" => "Titre",
 		"surtitre" => "Surtitre",
@@ -9,17 +16,17 @@ $balises=array ("-" => "-",
 		"geographies" => "Géographie",
 		"resume" => "Résumé",
 		"texte" => "Texte",
-		"citation" => "Citation",
+		"citation" => "<blockquote>",
 		"epigraphe" => "Epigraphe",
 		"notebaspage" => "Notes",
 		"typedoc" => "Type de doc",
 		"finbalise" => "fin",
 		"bibliographie"=>"Bibliographie",
 		"annexe"=>"Annexe",
-		"section1"=>"Section 1",
-		"section2"=>"Section 2",
-		"section3"=>"Section 3",
-		"section4"=>"Section 4",
+		"section1"=>"<h1>",
+		"section2"=>"<h2>",
+		"section3"=>"<h3>",
+		"section4"=>"<h4>",
 		"titredoc"=>"Titre de document",
 		"legendedoc"=>"Légende de document",
 		"droitsauteur"=>"Droits d'auteurs",
@@ -27,12 +34,17 @@ $balises=array ("-" => "-",
 		"ndlr"=>"NDLR",
 		"historique"=>"Historique",
 		"pagination"=>"Pagination",
+# champs auteurs
+		"descriptionauteur"=>"Description de l'auteur précédent",
+		"affiliation"=>"<span class=\"affiliation\">",
+		"courriel"=>"<span class=\"courriel\">",
 #
 # balises pour l'import de sommaire
 
 		"regroupement"=>"Regroupement",
-		"titrenumero"=>"Titre du numéro",
-		"nomnumero"=>"Nom du numéro"
+		"titrenumero"=>"Titre de la publication",
+		"nomnumero"=>"Nom de la publication",
+		"typenumero"=>"Type de la publication"
 		);
 
 #
@@ -53,19 +65,32 @@ $balisesdocument_nonlieautexte=array("resume",
 				     "pagination",
 				     );
 
-
-# balises a plusieurs niveaux
-
-$multiplelevel=array("section\d+"=>"texte",
-		     "divbiblio"=>"bibliographie",
+//
+// balises a plusieurs niveaux
+// voir les codes ci-dessous
+$multiplelevel=array(
+#		     "divbiblio"=>"bibliographie",
 		     "citation"=>"texte",
 		     "epigraphe"=>"texte",
 		     "titredoc"=>"texte",
-		     "legendedoc"=>"texte");
+		     "legendedoc"=>"texte",
+		     // les styles description auteurs
+		     "affiliation"=>"descriptionauteur",
+		     "courriel"=>"descriptionauteur",
+
+		     // l'ordre est important ci-dessous (marche pas avec section\d+)
+		     "section6"=>">*", // non utilise a priori
+		     "section5"=>">*", // non utilise a priori
+		     "section4"=>">*",
+		     "section3"=>">*",
+		     "section2"=>">*",
+		     "section1"=>">*",
+);
 
 
 # utilise par chkbalises apres un balisage.php A supprimer si on supprime balisage.php
-$division="(section\d+|divbiblio)"; # balises qui ne sont pas des paragraphes
+#$division="(section\d+|divbiblio)"; # balises qui ne sont pas des paragraphes
+$division="(section\d+)"; # balises qui ne sont pas des paragraphes
 
 # tags qui admettent des listes separees par des virgules.
 $virgule_tags="(auteurs|periodes|geographies|motcles)";
@@ -89,6 +114,14 @@ $GLOBALS[balisesdocument_nonlieautexte]=$balisesdocument_nonlieautexte;
 #########################################################################
 
 
+// les balises multiplelevel. Restructure la stylisation plate de Word en une structure a plusieurs niveaux (2 niveaux en general)
+
+// > signifie que cette balise se ratache avec celle d'apres
+// rien signifie que cette balise s'entoure de la balises donner dans le tableau
+
+// * signifie toutes les balises
+// balise: signifie que cette balises
+
 function traite_multiplelevel(&$text)
 
 {
@@ -97,9 +130,31 @@ function traite_multiplelevel(&$text)
   $search=array(); $rpl=array();
 
   foreach ($multiplelevel  as $k=>$v) {
-    array_push($search,"/<r2r:$k(\b[^>]+)?>/i","/<\/r2r:$k>/i");
-    array_push($rpl,"<r2r:$v>\\0","\\0</r2r:$v>");
+    $balouvrante="<r2r:$k(?:\b[^>]+)?>";
+    $balfermante="<\/r2r:$k>";
+
+    // determine ce qu'il faut faire
+//    if (preg_replace("/^>/","",$v)) { $dir="apres"; } 
+//    elseif (preg_replace("/^</","",$v)) { $dir="avant"; }
+//    else { $dir=""; };
+    if (substr($v,0,1)==">") { $dir="apres"; $v=substr($v,1); } 
+    elseif (substr($v,0,1)=="<") { $dir="avant"; $v=substr($v,1); } 
+    else { $dir=""; };
+
+    if ($v=="*") $v="\w+";
+
+    if ($dir=="apres") { // entoure par la balise qui suit
+      array_push($search,"/($balouvrante.*?$balfermante)[\s\n\r]*(<r2r:$v(?:\b[^>]+)?>)/is");
+      array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui suit
+    } elseif ($dir=="avant") {
+      array_push($search,"/(<r2r:$v(?:\b[^>]+)?>)[\s\n\r]*($balouvrante.*?$balfermante)/is");
+      array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui precede
+    } else { // entoure par la balise donne dans $v
+      array_push($search,"/$balouvrante/i","/$balfermante/i");
+      array_push($rpl,"<r2r:$v>\\0","\\0</r2r:$v>");
+    }
   }
+  //die (join(" ",$search)."<br>".join(" ",$rpl));
   return preg_replace ($search,$rpl,$text);
 }
 

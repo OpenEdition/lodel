@@ -98,6 +98,7 @@ function rtf($filename) {
 		      "bloc_citation"=>"citation",
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
+		      "description_auteur"=>"descriptionauteur"
 		      );
   foreach ($translations as $k=>$v) {
     array_push($search,"/<r2r:$k(\b[^>]+)?>/i","/<\/r2r:$k>/i");

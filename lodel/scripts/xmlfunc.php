@@ -35,11 +35,13 @@ function extract_xml ($balises,&$text)
 	foreach ($results as $result) {
 	  /////temporaire... doit devenir du XSL
 	  // avril 03: ca ne deviendra pas du XSL.
-      $result[2]=preg_replace(array("/<(\/)?r2r:section(\d+)>/i",
+      $result[2]=preg_replace(array(
+#				    "/<(\/)?r2r:section(\d+)>/i",
 				    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
 				    "/<\/r2r:[^>]+>/i",
 				    "/".chr(0xB7)."/"),
-			      array("<\\1h\\2>",
+			      array(
+#				    "<\\1h\\2>",
 				    "<div class=\"\\1\">",
 				    "</div>",
 				    "<img src=\"images/puce.gif\">"),$result[2]);

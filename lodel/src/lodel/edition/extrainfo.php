@@ -19,7 +19,8 @@ require_once("$home/extrainfofunc.php");
 // ce bloc peut etre appele par plusieurs scripts.
 
 if ($edit || $plusauteurs) {
-  if (ei_edition($filename,$row,$context,$text,$motcles,$periodes,$geographies)) {
+  $iddocument=ei_edition($filename,$row,$context,$text,$motcles,$periodes,$geographies);
+  if ($iddocument) { // ca marcher... on termine
     //
     // termine en redirigeant correctement
     // 
