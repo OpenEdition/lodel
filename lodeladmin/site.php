@@ -367,7 +367,7 @@ if ($tache=="fichier") {
   }
   // ok siteconfig est copie.
   if ($context[chemin]=="/") { // c'est un peu sale ca.
-    install_fichier($root,"$versionrep/src",LODELROOT);
+    install_fichier($root,"$versionrep/src","");
   } else {
     install_fichier($root,"../$versionrep/src",LODELROOT);
   }

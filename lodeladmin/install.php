@@ -62,7 +62,6 @@ if ($erase_and_option2) { $option2=true; @unlink($lodelconfig); }
 if ($option1) $installoption="1";
 if ($option2) $installoption="2";
 
-
 //
 // choix de la plateforme
 // Copie le fichier lodelconfig choisi dans le CACHE
@@ -616,7 +615,7 @@ function probleme_droits($file,$mode)
 function probleme_droits_fin()
 
 {
-  global $option;
+  global $installoption;
 ?>
 </ul>
 <p></p>
