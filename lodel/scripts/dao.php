@@ -108,7 +108,7 @@ class DAO {
 
      } else { // new !
        if (isset($vo->protect)) { // special processing for the protection
-	 $vo->status=(2*$vo->status-1)*($vo->protect ? 32 : 1);
+	 $vo->status=($vo->status > 0 ? 1 : -1)*($vo->protect ? 32 : 1);
 	 unset($vo->protect);
        }
 

@@ -367,7 +367,7 @@ function falsefunction($text,$text2)
 
 function removefootnotes($text)
 {
-  return preg_replace('/<a class="footnotecall"[^>]*>.*?<\/a>/s',"",$text);
+  return preg_replace('/<a\s+class="footnotecall"[^>]*>.*?<\/a>/s',"",$text);
 }
 /** 
  * Supprimer les appels de notes de fin de document.
@@ -375,7 +375,7 @@ function removefootnotes($text)
 
 function removeendnotes($text)
 {
-  return preg_replace('/<a class="endnotecall"[^>]*>.*?<\/a>/s',"",$text);
+  return preg_replace('/<a\s+class="endnotecall"[^>]*>.*?<\/a>/s',"",$text);
 }
 
 /** 
@@ -384,7 +384,7 @@ function removeendnotes($text)
 
 function removenotes($text)
 {
-  return preg_replace('/<a class="(foot|end)notecall"[^>]*>.*?<\/a>/s',"",$text);
+  return preg_replace('/<a\s+class="(foot|end)notecall"[^>]*>.*?<\/a>/s',"",$text);
 }
 
 
@@ -460,15 +460,28 @@ function notes($texte,$type)
 {
 #  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
 #  return $texte;
-  preg_match_all('/<div class="(?:foot|end)notebody"[^>]*>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
+  //  preg_match_all('/<(div|p) class="(?:foot|end)note(?:body|text)"[^>]*>.*?<\/\\1>/',$texte,$results,PREG_PATTERN_ORDER);
+
+  // be cool... just select the paragraph or division.
+  preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/',$texte,$results,PREG_PATTERN_ORDER);
 #  print_r($results);
-  if ($type=="nombre") {
-    $notes=preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?[0-9]+\]?<\/a>/',$results[0]);
-  } elseif ($type=="lettre") {
-    $notes=preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?[a-zA-Z]+\]?<\/a>/',$results[0]);
-  } elseif ($type=="asterisque") {
-    $notes=preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?\*+\]?<\/a>/',$results[0]);
-  } else die ("type \"$type\" inconnues");
+  $notere='<a\s+[^>]*\bclass="(foot|end)note(definition|symbol)[^>]*>';
+  switch($type) {
+  case 'nombre':
+  case 'number':
+    $notes=preg_grep('/'.$notere.'\[?[0-9]+\]?<\/a>/i',$results[0]);
+    break;
+  case 'lettre':
+  case 'letter':
+    $notes=preg_grep('/'.$notere.'\[?[a-zA-Z]+\]?<\/a>/i',$results[0]);
+    break;
+  case 'asterisque':
+  case 'star':
+    $notes=preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i',$results[0]);
+    break;
+  default:
+    die ("unknown note type \"$type\"");
+  }
   return join("",$notes);
 }
 
