@@ -1,10 +1,10 @@
 <?
 // 
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 $id=intval($id);
 
@@ -49,7 +49,7 @@ $context[id]=$id;
 
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"editer");
 
 

@@ -1,0 +1,25 @@
+<? include("tpl/install-openhtml.html"); ?>
+<!-- ce fichier n'est pas un template -->
+
+Création d'un super administrateur initial. Choisissez un login et un mot de passe.<br>
+<p><p>
+<? if ($erreur_create) { ?> <b>Erreur</b>: Connection au serveur <?=$dbhost ?> impossible. Vérifier les informations entrées. L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="admin">
+<table border="1">
+
+<tr><td>
+Login:<br>
+<input type="text" size="20" name="adminusername" value="<?=$adminusername?>">
+</td></tr>
+<tr><td>
+Mot de passe:<br>
+<input type="password" size="20" name="adminpasswd" value="">
+</td></tr>
+</table>
+<input type="submit" value="continuer">
+
+</form>
+
+<? include("tpl/install-closehtml.html"); ?>

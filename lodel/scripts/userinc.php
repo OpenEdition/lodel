@@ -3,10 +3,10 @@
 // gere les utilisateurs. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-include_once ("lodelconfig.php");
-include_once("$home/auth.php"); // secu
+require_once("lodelconfig.php");
+include_once($home."auth.php"); // secu
 if ($userpriv<LEVEL_ADMIN) return; // secu
-include_once ("$home/func.php");
+include_once ($home."func.php");
 
 if ($revue) {
   $db=$database."_".$revue;
@@ -21,7 +21,7 @@ $id=intval($id);
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("users");
   return;
 }
@@ -54,7 +54,7 @@ if ($edit) { // modifie ou ajoute
     if (!$groupes) { $context[erreur_groupes]=$err=1; }
  
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     // cherche si le username existe deja
     $result=mysql_db_query($db,"SELECT id FROM $GLOBALS[tableprefix]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
@@ -93,7 +93,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_db_query($db,"SELECT * FROM $GLOBALS[tableprefix]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
   $context=array_merge($context,mysql_fetch_assoc($result));

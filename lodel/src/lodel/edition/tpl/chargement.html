@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Chargement de fichier</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 <script>
 <!--
 
@@ -20,9 +20,9 @@ function infoChargement(nomFic){
   else
   {
 	  var colData = "";
-	  colData = "<br><br><font color='navy' size='2' face='Arial'>";
-	  colData += "<b>Le fichier</b><br>";
-//	  colData += nomFic + "<br>";	
+	  colData = "<br /><br /><font color='navy' size='2' face='Arial'>";
+	  colData += "<b>Le fichier</b><br />";
+//	  colData += nomFic + "<br />";	
 	  colData += "<b>est en cours de téléchargement</b>";
 	
 	
@@ -53,40 +53,98 @@ function infoChargement(nomFic){
 //-->
 </script>
 
-<table width="430" border="0" align="center" cellspacing="4" cellpadding="4">
-<TR><TD>
-<div align="center"><span class="titre">Chargement du fichier</span></div><br>
+<!--<table width="430" border="0" align="center" cellspacing="4" cellpadding="4">
+<TR><td>
+<div align="center"><span class="titre">Chargement du fichier</span></div><br />
 
 <span class="texte_petit">
+<IF COND="[#ERREUR_FICHIERNONRTF]">
+	<div align="center" style="color:red;">
+		<strong>
+			ATTENTION<br />Le fichier que vous avez essayé d'importer n'est pas un fichier de type RTF
+		</strong>
+		<br />
+	</div>
+</IF>
 Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.
 
-<FORM NAME="formfic" ENCTYPE="multipart/form-data" ACTION="chargement.php" METHOD=POST onsubmit="return infoChargement(document.formfic.htmlfile.value)">
-<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="5000000">
-<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<INPUT TYPE="hidden" name="tache" VALUE="[#TACHE]">
-<strong>Fichier:</strong></TD>
-</TR>
+<form name="formfic" enctype="multipart/form-data" action="chargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)">
+<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="tache" value="[#TACHE]">
+<strong>Fichier:</strong></td>
+</tr>
 <TR>
-<TD><input type="file" name="htmlfile" size="40"></TD>
-[(#ERREUR_UPLOAD|true)<TD CLASS="erreur">Une erreur s'est produite pendant le chargement.</TD>]</TR>
-<TR><TD>
-<br>
+<td><input type="file" name="htmlfile" size="40"></td>
+[(#ERREUR_UPLOAD|true)<td CLASS="erreur">Une erreur s'est produite pendant le chargement.</td>]</tr>
+<TR><td>
+<br />
 
-<INPUT CLASS="form" TYPE="submit" VALUE="Charger">
-<br>
-<IF [#SUPERADMIN]>
-<BR><BR>Super Admin:<BR>
-<INPUT CLASS="form" TYPE="submit" NAME="sortieted" VALUE="Sortie Brute de Ted">
-<INPUT CLASS="form" TYPE="submit" NAME="sortie" VALUE="Sortie de chargement">
+<input class="form" type="submit" value="Charger">
+<br />
+<IF COND="[#SUPERADMIN]">
+<br /><br />Super Admin:<br />
+<input class="form" type="submit" name="sortieted" value="Sortie Brute de Ted">
+<input class="form" type="submit" name="sortie" value="Sortie de chargement">
 </IF>
 <div align="center" id='info' style="text-decoration:blink ">
 </div>
-</FORM>
-<br>
-<br>
+</form>
+<br />
+<br />
 
-<A HREF="index.php">Revenir</A>
+<a href="index.php">Revenir</a>
 </td></tr>
-</TABLE>
+</table>-->
 
-<MACRO NAME="close_html">
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Chargement de fichier</td>
+	</tr>
+</table>
+
+<div style="text-align:center;">
+	<div class="message_erreur">
+		<IF COND="[#ERREUR_FICHIERNONRTF]">
+			ATTENTION<br />Le fichier que vous avez essayé d'importer n'est pas un fichier de type RTF
+		</IF>
+	</div>
+</div>
+
+<form name="formfic" enctype="multipart/form-data" action="chargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)">
+	<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+	<input type="hidden" name="id" value="[#ID]">
+	<input type="hidden" name="tache" value="[#TACHE]">
+	
+	<br /><br />
+	<table width="430" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
+		<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionner le fichier à charger<br /><br /></td></tr>
+		<tr><td align="center" class="texte_normal">Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.<br /><br /></td></tr>
+		<tr><td align="center"><input type="file" name="htmlfile" size="40"></td></tr>
+		<tr>
+			<td align="center">
+				<br /><br />
+				<input class="form" type="submit" value="    Charger    " />&nbsp;&nbsp;&nbsp;&nbsp;
+				<LOOP NAME="" TABLE="publications" WHERE="id=[#ID]">
+					<IF COND="[#TYPE]=='regroupement'">
+						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+					<ELSE/>
+						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#ID]';" />
+					</IF>
+				</LOOP>
+				<br />
+				<IF COND="[#SUPERADMIN]">
+					<br /><br /><span class="texte_info_popup">Administrateur Lodel</span><br /><br /><br />
+					<input class="form" type="submit" name="sortieted" value="Sortie Brute de Ted" />&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="form" type="submit" name="sortie" value="Sortie de chargement" />
+				</IF>
+			</td>
+			[(#ERREUR_UPLOAD|true)<td class="message_erreur">Une erreur s'est produite pendant le chargement.</td>]
+		</tr>
+	</table>
+	<div align="center" id="info" class="texte_normal">
+	</div>
+</form>
+
+<MACRO NAME="CLOSE_HTML">

@@ -9,61 +9,60 @@ if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...
 $id=intval($id);
-if ($id>0) {
-  $critere="id='$id'";
-} else $critere="id='$id'";
-if (!$restore) $critere.=" AND status>0";
-$critere.=" AND type='$type'";
+$critere=$id>0 ? "id='$id'" : "";
 
-//
-// ordre
-//
 
 //
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("indexls",$critere);
   return;
+}
+
+if (!$type) die("probleme interne contacter Ghislain");
+$context[type]=intval($type); // cette variable peut etre reajuste correctement dans la suite du code (dans edit, via l'import, ou dans la clause. Il faut quand meme positionner cette valeur pour le cas ou on ajoute simplement un motcle
+
 //
 // ajoute ou edit
 //
-} elseif ($edit) { // modifie ou ajoute
+if ($edit) { // modifie ou ajoute
   // pretraitement des entrees... met le resultat dans $context
   extract_post();
   // validation
   do {
     if (!$context[mot]) $err=$context[erreur_mot]=1;
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
+    $context[type]=intval($context[type]);
 
     if ($id>0) { // il faut rechercher le status
       $result=mysql_query("SELECT status FROM indexls WHERE id='$id'") or die (mysql_error());
       list($status)=mysql_fetch_array($result);
-      mysql_query ("REPLACE INTO indexls (id,mot,lang,status,type) VALUES ('$id','$context[mot]','$context[lang]','$status','$type')") or die (mysql_error());
+      mysql_query ("REPLACE INTO indexls (id,mot,lang,status,type) VALUES ('$id','$context[mot]','$context[lang]','$status','$context[type]')") or die (mysql_error());
     } else {
       // cree les mots cles
       $mots=preg_split("/\s*[,;\n]\s*/",$context[mot]);
       foreach($mots as $mot) {
 	$mot=trim(strip_tags($mot));
-	mysql_query ("INSERT INTO indexls (mot,lang,type) VALUES ('$mot','$context[lang]','$type')") or die (mysql_error());
+	mysql_query ("INSERT INTO indexls (mot,lang,type) VALUES ('$mot','$context[lang]','$context[type]')") or die (mysql_error());
       }
     }
 
-    include_once("$home/func.php");back();
+    include_once($home."func.php");back();
 
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  include_once ("$home/connect.php");
-  $result=mysql_query("SELECT * FROM indexls WHERE $critere") or die (mysql_error());
+  include_once ($home."connect.php");
+  $result=mysql_query("SELECT * FROM indexls WHERE $critere AND status>-32") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
 // post-traitement
 posttraitement($context);
 
-include("$home/langues.php");
+include($home."langues.php");
 
 ?>

@@ -1,7 +1,7 @@
 <?
-include ("lodelconfig.php");
+require("revueconfig.php");
 
 $base="geos-complet";
-include ("$home/baseindex.php");
+include ($home."baseindex.php");
 
 ?>

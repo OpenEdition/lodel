@@ -1,0 +1,35 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<TITLE>Edition - Revue</TITLE>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
+<tr><td><div align="center">
+<br /><br /><b>Création de revue</b></div></td></tr>
+</table>
+
+<div align="center">
+<form method="post" action="revue.php">
+<table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
+<tr><td>
+
+<table><tr>
+<td>Choississez une version:<br>
+Le répertoire est indiqué suivi entre paranthèse de la version trouvée dans le fichier revueconfig.php</td>
+<td width="60%"><select size="5" name="versionrep"><? makeselectversion(); ?></select></td></tr></tr></td>
+</table>
+
+
+
+
+</td></tr></table><br/>
+
+
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="tache" value="fichier">
+<input type="submit" value="continuer">
+</form>
+
+
+<MACRO NAME="CLOSE_HTML">
