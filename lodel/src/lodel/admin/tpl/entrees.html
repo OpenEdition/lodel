@@ -34,13 +34,13 @@
 			<td class="ligne_admin2" align="center">[(#LANGUE|nbsp)]</td>
 			<td class="ligne_admin2" style="color: #CC9933;" align="right">
 				<div>
-					|&nbsp;<a href="entree.php?id=[#ID]">Modifier</a>&nbsp;
-					|&nbsp;<a href="entree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
-					<IF COND="abs([#STATUT]) ge 32">[Protégée]<ELSE/>[ Normal ]</IF>&nbsp;|&nbsp;
-					<IF COND="[#TYPE_TRI] eq 'ordre'">
+					<IF COND="[#TYPE_TRI] eq 'entrees.ordre'">
 						<a href="entree.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 						<a href="entree.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 					</IF>
+					|&nbsp;<a href="entree.php?id=[#ID]">Modifier</a>&nbsp;
+					|&nbsp;<a href="entree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+					<IF COND="abs([#STATUT]) ge 32">[Protégée]<ELSE/>[ Normal ]</IF>&nbsp;|&nbsp;
 				</div>
 			</td>
 		</tr>
