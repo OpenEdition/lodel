@@ -161,7 +161,7 @@ function myfilemtime($filename)
   return file_exists($filename) ? filemtime($filename) : 0;
 }
 
-
+/*
 function copy_images (&$text,$callback)
 
 {
@@ -182,6 +182,29 @@ function copy_images (&$text,$callback)
 	}
     }
 }
+*/
+
+function copy_images (&$text,$callback,$argument="")
+
+{
+    // copy les images en lieu sur et change l'acces
+    preg_match_all("/<img\s+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
+    $count=1;
+    $imglist=array();
+    foreach ($results as $result) {
+      $imgfile=$result[1];
+      if ($imglist[$imgfile]) {
+        $text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+      } else {
+        $ext=$result[2];
+        $imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
+#       echo "images: $imgfile $newimgfile <br>";
+        $text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
+        $count++;
+        }
+    }
+}
+
 
 
 //function addmeta(&$meta) # liste variable de valeurs
