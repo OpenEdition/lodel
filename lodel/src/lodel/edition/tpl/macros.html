@@ -957,7 +957,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+	<IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) OR [#DROITADMIN]">
 		<a href="publication.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="publication.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -967,7 +967,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-	<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+	<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		<a href="document.php?dir=down&id=[#ID]"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="document.php?dir=up&id=[#ID]"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -990,14 +990,18 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>Voir</strong></a>&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Editer</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
+		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
+                <ELSE/>
+		|&nbsp;<span class="inactif">Fonctions</span>&nbsp;
+                </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
-		<IF COND="[#DROITEDITEUR] AND ([#STATUT] lt 32) AND [#DROITGROUPE]">
+		<IF COND="([#STATUT] lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN])">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1009,14 +1013,18 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Editer</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
+		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
+                <ELSE/>
+		|&nbsp;<span class="inactif">Fonctions</span>&nbsp;
+                </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#STATUT] lt 32 AND [#DROITGROUPE]">
+		<IF COND="(([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]) AND [#STATUT] lt 32">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1028,14 +1036,18 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]"><strong>Voir</strong></a>&nbsp;
-		<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		<IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="document.php?id=[#ID]">Editer</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Editer</span>&nbsp;
 		</IF>
+		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">Fonctions</a>&nbsp;
+                <ELSE/>
+		|&nbsp;<span class="inactif">Fonctions</span>&nbsp;
+                </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_DOCUMENT">&nbsp;
-		<IF COND="[#DROITEDITEUR] AND ([#STATUT] lt 32) AND [#DROITGROUPE]">
+		<IF COND="(([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]) AND [#STATUT] lt 32">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1051,7 +1063,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
@@ -1066,7 +1078,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
@@ -1081,7 +1093,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 						&nbsp;|&nbsp;<a href="statut.php?publication=[#ID]&statut=protege">Prot&eacute;ger</a>&nbsp;|
 					<ELSE/>
 						&nbsp;|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
@@ -1096,7 +1108,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td style="width:200px">
-					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;|&nbsp;
@@ -1114,7 +1126,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
-					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 						|&nbsp;<a href="statut.php?id=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
@@ -1129,7 +1141,7 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
-					<IF COND="[#DROITEDITEUR] AND [#DROITGROUPE]">
+		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 						|&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
@@ -1150,14 +1162,22 @@
 
 <DEFMACRO NAME="CHANGER_STATUT_PUBLICATION">
 	<IF COND="[#STATUT] GT 0">
-		<IF COND="(([#STATUT]==1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
+		<IF COND="([#STATUT]==1)">
+                   <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
 			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">D&eacute;publier</a>
+                    <ELSE/>
+			<span class="inactif">D&eacute;publier</span>
+                    </IF>
 		<ELSE/>
 			<span class="inactif">Prot&eacute;g&eacute;</span>
 		</IF>
 	<ELSE/>
-		<IF COND="(([#STATUT]==-1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
+		<IF COND="([#STATUT]==-1)">
+                   <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
 			<a href="publi.php?publication=[#ID]&online=1">Publier</a>
+                   <ELSE/>
+			<span class="inactif">Publier</span>
+                   </IF>
 		<ELSE/>
 			<span class="inactif">Brouillon</span>
 		</IF>
@@ -1166,14 +1186,22 @@
 
 <DEFMACRO NAME="CHANGER_STATUT_DOCUMENT">
 	<IF COND="[#STATUT] GT 0">
-		<IF COND="(([#STATUT]==1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
+		<IF COND="([#STATUT]==1)">
+                   <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
 			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">D&eacute;publier</a>
+                    <ELSE/>
+			<span class="inactif">D&eacute;publier</span>
+                    </IF>
 		<ELSE/>
 			<span class="inactif">Prot&eacute;g&eacute;</span>
 		</IF>
 	<ELSE/>
-		<IF COND="(([#STATUT]==-1) AND [#DROITEDITEUR] AND [#DROITGROUPE])">
+		<IF COND="([#STATUT]==-1)">
+                   <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
 			<a href="publi.php?id=[#ID]&online=1">Publier</a>
+                   <ELSE/>
+			<span class="inactif">Publier</span>
+                   </IF>
 		<ELSE/>
 			<span class="inactif">Brouillon</span>
 		</IF>
