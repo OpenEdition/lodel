@@ -33,11 +33,12 @@ authenticate(LEVEL_VISITOR);
 
 require($home."controler.php");
 Controler::controler(array("entrytypes","persontypes","entries",
-	      "tablefieldgroups","tablefields","indextablefields",
-	      "translations","usergroups","users",
-	      "types","classes",
-	      "options","optiongroups","useroptiongroups",
-	      "internalstyles","characterstyles"));
+			   "tablefieldgroups","tablefields","indextablefields",
+			   "translations","texts",
+			   "usergroups","users",
+			   "types","classes",
+			   "options","optiongroups","useroptiongroups",
+			   "internalstyles","characterstyles"));
 
 
 function loop_classtypes ($context,$funcname)
