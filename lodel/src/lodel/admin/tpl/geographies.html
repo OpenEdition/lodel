@@ -1,71 +1,80 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Administer l'index par zones géographiques</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Index par zones g&eacute;ographiques</td>
+	</tr>
+</table>
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR><TD>
-<div align="center"><span class="titre">Index par zones géographiques</span></div><br>
-<div align="center"><A HREF="geographie.php"><b>Ajouter une zone géographique</b></A></div><br>
-</td></tr>
-</TABLE>
+<div class="ligne_ajouter_serie">
+	<MACRO NAME="PNG_MOINS">
+	<a href="geographie.php">Ajouter une zone g&eacute;ographique</a>
+</div>
+<br /><br />
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td class="texte_noir_gras">Nom</td>
+		<td class="texte_noir_gras">Abr&eacute;viation</td>
+		<td class="texte_noir_gras">Langue</td>
+		<td>&nbsp;</td>
+	</tr>
+	<LOOP NAME="geographies" TABLE="indexhs" ORDER="ordre" WHERE="type_geographie AND parent='[#ID]'" WHERE="ok">
+		<DO>
+			<tr>
+				<td class="ligne_admin2">[#REP][(#NOM|nbsp)]</td>
+				<td class="ligne_admin2" align="center">[(#ABREV|nbsp)]</td>
+				<td class="ligne_admin2" align="center">[(#LANG|nbsp)]</td>
+				<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<div>
+						|&nbsp;<a href="geographie.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+						<a href="geographie.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+						<a href="geographie.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+						<a href="geographie.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+					</div>
+				</td>
+			</tr>
+			<LOOP NAME="geographies"></LOOP>
+		</DO>
+	</LOOP>
+</table>
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
-<TR>
-<td>&nbsp;</td>
-<TD align="center">
-	<div align="center"><b>Nom</b></div>
-</TD>
-<TD align="center">
-	<div align="center"><b>Abréviation</b></div>
-</TD>
-<TD align="center">
-	<img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0" align="center">
-</TD>
-<TD align="center">
-	<img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0" align="center">
-</TD>
-<TD align="center">
-	<img src="images/up_24.gif" width="24" height="24" alt="Monter" border="0" align="center">
-</TD>
-<TD align="center">
-	<img src="images/down_24.gif" width="24" height="24" alt="Descendre" border="0" align="center">
-</TD>
-</TR>
-<BOUCLE NAME="geographies" TABLE="indexhs" ORDER="ordre" WHERE="type_geographie AND parent='[#ID]'" WHERE="ok">
-<TR>
-<TD align="center" align="middle"><img src="images/triangle.gif" alt="Zone géo" border="0"></TD>
-<TD align="center"><b><font color="Navy">[#REP][(#NOM|nbsp)]</font></b></TD>
-<TD align="center"><b>[(#ABREV|nbsp)]</b></TD>
-<TD align="center"><A HREF="geographie.php?id=[#ID]">Modifier</A></TD>
-<TD align="center"><A HREF="geographie.php?id=[#ID]&delete=1">Supprimer</A></TD>
-<TD align="center"><A HREF="geographie.php?id=[#ID]&dir=up">[up]</A></TD>
-<TD align="center"><A HREF="geographie.php?id=[#ID]&dir=down">[down]</A></TD>
-</TR>
-<BOUCLE NAME="geographies"></BOUCLE>
-</BOUCLE>
-</TABLE>
-
-<BOUCLE NAME="geographies_trash" TABLE="indexhs" ORDER="ordre" WHERE="trash" WHERE="type_geographie">
-<AVANT>
-<b><div align="center"><BR>Dans la poubelle:<BR></div></b><br>
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
-<TR><TD align="center"><b>Nom</b></TD><TD>&nbsp;</TD></TR>
-</AVANT>
-
-<TR>
-<TD align="center"><font color="Navy"><b>[#NOM]</b></font></TD>
-<TD><A HREF="geographie.php?id=[#ID]&restore=1">Récuperer</A></TD>
-<TD><A HREF="geographie.php?id=[#ID]&delete=2">Détruire définitivement</A></TD>
-</TR>
-<APRES></TABLE></APRES>
-</BOUCLE>
-
-
-</CENTER>
-
-</TD></TR>
-
-</TABLE>
-<MACRO NAME="close_html">
+<LOOP NAME="geographies_trash" TABLE="indexhs" ORDER="ordre" WHERE="trash" WHERE="type_geographie">
+	<BEFORE>
+		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
+			<tr>
+				<td colspan="3" class="message_erreur">Dans la corbeille</td>
+			</tr>
+			<tr>
+				<td class="texte_noir_gras"><b>Nom</b><br></td>
+				<td>&nbsp;</td>
+			<tr>
+	</BEFORE>
+	<DO>
+		<tr>
+			<IF COND="[#COUNT] % 2">
+				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1" style="color: #CC9933;" align="right">
+					<div>|&nbsp;<a href="geographie.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
+					<a href="geographie.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+				</td>
+			<ELSE/>
+				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<div>|&nbsp;<a href="geographie.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
+					<a href="geographie.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+				</td>
+			</IF>
+		</tr>
+	</DO>
+	<AFTER></table></AFTER>
+</LOOP>
+<div class="pied_de_formulaire">
+	<form>
+		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
+	</form>
+</div>
+<MACRO NAME="CLOSE_HTML">

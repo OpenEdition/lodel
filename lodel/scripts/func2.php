@@ -95,7 +95,7 @@ function get_ordre_max ($table,$where="")
   if ($where) $where="WHERE ".$where;
 
 
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tableprefix]$table $where") or die (mysql_error());
   if (mysql_num_rows($result)) list($ordre)=mysql_fetch_array($result);
   if (!$ordre) $ordre=0;

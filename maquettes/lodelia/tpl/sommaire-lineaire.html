@@ -1,26 +1,60 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Sommaire de séries linéaire.         -->
-<!-- Auteur : Marin Dacos.					 -->
-<!-- Date de création : août 2002.           -->
-<!-- Dernière modification majeure : septembre 2002 -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+<!-- ****************************************************************** -->
+<!-- Sommaire de séries linéaire.                                       -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Date de création : août 2002.                                      -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <TITLE>[(#TITRE|textebrut)] Sommaire [#NOM]</TITLE>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td valign="top">
-	<MACRO NAME="PRESENTER_PUBLICATION">
-	<MACRO NAME="affiche_numeros">
+<table class="principale">
+	<tr>
+		<td>
+
+		<div class="conteneur">
+
+
+			<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+			<div class="barrenav">
+				<? insert_template("barre");?> 
+			</div>
+	
+			<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+			de class "separation" et class "contenu" -->
+			<div class="corps">
+
+				<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" -->
+				<div class="separation">
+					&nbsp;
+				</div>
+		
+				<!-- ce div permet d'intégrer le  contenu de la page" -->
+				<div class="contenu">
+		
+					<!-- logo de Lodelia-->
+					<MACRO NAME="IMG_LOGO_LODELIA">
+				
+	
+				<!-- Présente les infos concernant la publication : titre et sous-titre de la revue-->
+				
+				<MACRO NAME="AFFICHER_NUMEROS_PUBLIES">
 	<br />
-	<MACRO NAME="REVUES_ORG">
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
-<MACRO NAME="FERMER_TABLE_PRINCIPALE">
-<META NAME="FERMER_HTML">
+				<MACRO NAME="REVUES_ORG">
+	
+	</div>
+</div>
+	
+</div></td></tr></table>
+<MACRO NAME="FERMER_HTML">

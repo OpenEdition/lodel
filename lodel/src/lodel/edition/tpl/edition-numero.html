@@ -1,45 +1,21 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'un numéro : articles, regroupements </title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
-<br>
-	<MACRO NAME="TABLE_creetableinterface_large">	
-	<MACRO NAME="TABLE_nom_publication_numero"> 
-<br>
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<!-- Rajout intégration maquette -->
+<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+<MACRO NAME="JS_AFFICHE_IMAGE">
+<MACRO NAME="JS_POPUP">
+<!-- Fin rajout intégration maquette -->
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-	<!--  AFFICHE LES ARTICLES HORS REGROUPEMENT S'IL Y EN A  -->
-		<BOUCLE NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
-	<!-- Affiche barre bleue de titre -->
-	<AVANT>
-	<tr>
-		<td width="48" height="48" valign="middle" background="images/bleu.gif">
-			<MACRO NAME="GIF_REGROUPEMENT">
-		</td>
-		<td width="800" valign="middle" background="images/bleu.gif" class="texte">
-			<strong>
-				Documents non regroupés
-			</strong>
-			<!-- LIEN POUR CREER UN DOCUMENT.
-			IL DOIT ETRE HORS DE LA BOUCLE AU CAS OU IL N'Y AURAIT AUCUN DOC
-			-->
-		</td>
-		<MACRO NAME="Documents_titre_bleu">
-	</tr>
-	</AVANT>
-			<MACRO NAME="Affiche_articles">
-		</BOUCLE>
-			<MACRO NAME="Ajouter_document_isole">
-</table>
-<br>
-
-<!--  AFFICHE LES REGROUPEMENT S'IL Y EN A  -->
-<MACRO NAME="Affiche_regroupements">
-
-</td>
-</tr>
-</table>
-<br>
-<MACRO NAME="close_html">
-
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+	<MACRO NAME="CHEMIN_PARCOURU">
+	<MACRO NAME="NOM_TITRE_TYPE_PARENT">
+	<MACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
+	<MACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
+	<MACRO NAME="AJOUTER_UN_REGROUPEMENT">
+	<MACRO NAME="LISTER_LES_REGROUPEMENTS">
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
+<MACRO NAME="CLOSE_HTML">

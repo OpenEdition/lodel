@@ -1,0 +1,234 @@
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Cette page affiche les documents de type article.                  -->
+<!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
+<!-- Dernière modification majeure en mai 2003.                         -->
+<!-- ****************************************************************** -->
+
+
+<MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
+<title>[(#TITRE|textebrut)]</title>
+<MACRO NAME="METADONNEES">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+<table class="principale"><tr><td><div class="conteneur">
+
+		<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+		<div class="barrenav">
+			<? insert_template("barre");?> 
+		</div>
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+			
+				<!-- Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+				titre et nom du numéro, -->		
+				<div class="titre1">
+					[#TITRE] 
+					<IF COND="[#SOUSTITRE]">
+						<span class="soustitrerevue">[#SOUSTITRE]</span>
+					</IF>
+					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+				</div>				
+			
+			
+				<!-- Erratum --->
+				<IF COND="[#ERRATUM]">
+					<div class="titre3">
+						Errata
+					</div>
+					<div class="notes"> 
+						[#ERRATUM]
+						<br />
+					</div>
+				</IF>
+				
+				<!-- Notes de la rédaction --->
+				<IF COND="[#NDLR]">
+				<div class="titre3">
+					Notes de la rédaction
+				</div>
+				<div class="notes"> 
+					[#NDLR]
+					<br />
+				</div>
+				</IF>
+				
+				<!-- Historique --->
+				<IF COND="[#HISTORIQUE]">
+					<div class="titre3">
+						Historique
+					</div>
+					<div class="notes"> 
+						[#HISTORIQUE]
+						<br />
+					</div>
+				</IF>
+				
+				<!-- Affichage du résumé en français   -->
+				<IF COND="[#RESUME:FR]">
+					<div class="titre3">
+						Résumé
+					</div>
+					<div class="resume" > 
+						[#RESUME:FR]
+					</div>		
+				</IF>
+				
+				<!-- Résumé en anglais   -->
+				<IF COND="[#RESUME:EN]">
+					<div class="titre3"> 
+						Abstract
+					</div>
+					<div class="resume" >
+						[#RESUME:EN]
+					</div>
+				</IF>
+				
+				<!-- Résumé en espagnol   -->
+				<IF COND="[#RESUME:ES]">
+					<div class="titre3"> 
+						Extracto
+					</div>
+					<div class="resume" >
+						[#RESUME:ES]
+					</div>
+				</IF>
+				
+				<!-- Résumé en allemand   -->
+				<IF COND="[#RESUME:DE]">
+					<div class="titre3"> 
+						Zusammenfassung
+					</div>
+					<div class="resume" >
+						[#RESUME:DE]
+					</div>
+				</IF>
+				
+				<!-- Résumé en italien   -->
+				<IF COND="[#RESUME:IT]">
+					<div class="titre3"> 
+						Riassunto
+					</div>
+					<div class="resume" >
+						[#RESUME:IT]
+					</div>
+				</IF>
+	
+					
+		<!-- ----------------------------------------------------------------------- -->
+		<!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
+		<!-- ----------------------------------------------------------------------- -->
+		
+			<IF COND="[#TEXTEPUBLIE]">
+				
+				<!-- Texte. Si il existe --->
+				<IF COND="[#TEXTE]">
+					<div class="titre3">
+						<IF COND="[#TYPE]!='presentation'">
+							Texte intégral
+						</IF>
+					</div>
+					<div class="texte">
+						<IF COND="[#TYPE]=='compte rendu'">
+							<IF COND="[#META_IMAGE]">
+								<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
+							</IF>
+							[#TEXTE]
+						<ELSE/>			
+							[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
+						</IF>
+					</div>
+				</IF>
+				
+				<!-- Bibliographie. Si elle existe --->
+				<IF COND="[#BIBLIOGRAPHIE]">
+					<div class="titre3"> 
+						<DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
+					</div>
+					<div class="texte">
+						[#BIBLIOGRAPHIE]
+					</div>
+				</IF>
+				
+				<!-- Annexe. Si elle existe --->
+				<IF COND="[#ANNEXE]">
+					<div class="titre3"> 
+						Annexes
+					</div>
+					<div class="texte">
+						[#ANNEXE]
+					</div>
+				</IF>
+						
+				<!-- Documents annexes. S'il y en a au moins un --->
+				<IF COND="[#DOCUMENTSANNEXES]">
+					<div class="titre3"> 
+						Documents annexes
+					</div>
+					<div class="texte" >
+						Il y a 
+						[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
+						annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
+						<br />
+						<br />
+						<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+						<br />
+					</div>
+				</IF>
+				
+				<!-- Notes de bas de page. Si elles existent --->
+				<IF COND="[#NOTEBASPAGE]">
+					<div class="titre3">
+						Notes
+					</div>
+					<div class="notes"> 
+						[#NOTEBASPAGE]
+						<br />
+					</div>
+				</IF>
+								
+			<!-- Si le texte n'est pas encore autorisé à être publié -->
+			<ELSE/>
+				<p class="texte">
+					Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
+				</p>
+			</IF>
+				
+			<!-- Affiche la description de l'auteur -->		
+			<MACRO NAME="DESCRITION_AUTEUR"> 
+				
+			<!-- Affiche liens de navigation entre les documents  -->						
+			<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
+				
+			<MACRO NAME="REVUES_ORG"> 		
+				
+		</div>
+	</div>
+	
+</div></td></tr></table>
+<MACRO NAME="FERMER_HTML">  
+

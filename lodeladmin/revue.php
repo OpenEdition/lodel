@@ -3,24 +3,22 @@
 // gere les utilisateurs. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
-authenticate(LEVEL_SUPERADMIN);
-include_once ("$home/func.php");
+require("lodelconfig.php");
+include ($home."auth.php");
+authenticate(LEVEL_SUPERADMIN,NORECORDURL);
+include_once ($home."func.php");
 
 $url_retour="revues.php";
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
-if ($id>0) {
-  $critere="id='$id'";
-} else $critere="id='$id'";
+$critere="id='$id'";
 
 //
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("revues",$critere);
   return;
 //
@@ -29,7 +27,6 @@ if ($id>0 && ($delete || $restore)) {
 } 
 
 if ($edit) { // modifie ou ajoute
-
   extract_post();
   // validation
   do {
@@ -37,7 +34,7 @@ if ($edit) { // modifie ou ajoute
     if (!$context[rep] || preg_match("/\W/",$context[rep])) { $context[erreur_rep]=$err=1; }
     elseif (!is_dir("../../$context[rep]")) { $context[erreur_rep_not_exists]=$err=1; }    
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     // lit les informations options, status, etc... si la revue existe deja
     if ($id) {
@@ -56,20 +53,15 @@ if ($edit) { // modifie ou ajoute
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  include_once ("$home/connect.php");
-  $critere.=" AND status>0";
-
-  $result=mysql_query("SELECT * FROM revues WHERE $critere") or die ("erreur SELECT");
+  include_once ($home."connect.php");
+  $result=mysql_query("SELECT * FROM revues WHERE $critere  AND status>0") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
 // post-traitement
 posttraitement ($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"revue");
 
 ?>
-
-
-

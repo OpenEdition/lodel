@@ -1,6 +1,6 @@
 <?
-include ("lodelconfig.php");
+require("revueconfig.php");
 $base="auteurs-complet";
-include ("$home/baseindex.php");
+include ($home."baseindex.php");
 
 ?>

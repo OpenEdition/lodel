@@ -8,40 +8,43 @@ if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...
 $id=intval($id);
-if ($id>0) {
-  $critere="id='$id'";
-} else $critere="id='$id'";
-$critere.=" AND type='$type'";
+$critere=$id>0 ? "id='$id'" : "";
+
+//
+// supression et restauration
+//
+if ($id>0 && ($delete || $restore)) { 
+  include ($home."trash.php");
+  treattrash("indexhs",$critere);
+  return;
+}
 
 //
 // ordre
 //
-
 if ($id>0 && $dir) {
-  include_once("$home/connect.php");
+  include_once($home."connect.php");
   # cherche le parent
   $result=mysql_query ("SELECT parent FROM indexhs WHERE $critere") or die (mysql_error());
   list($parent)=mysql_fetch_row($result);
   chordre("indexhs",$id,"parent='$parent' AND status>0",$dir);
   back();
-//
-// supression et restauration
-//
-} elseif ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
-  treattrash("indexhs",$critere);
-  return;
+}
+
+if (!$type) die("probleme interne contacter Ghislain");
+$critere.=" AND type='$type'";
+
 //
 // ajoute ou edit
 //
-} elseif ($edit) { // modifie ou ajoute
+if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
     if (!$context[nom]) $err=$context[erreur_nom]=1;
     if (!$context[abrev]) $err=$context[erreur_abrev]=1;
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     $parent=intval($context[parent]);
     if ($id>0) { // il faut rechercher le status, le type et l'ordre
@@ -59,13 +62,13 @@ if ($id>0 && $dir) {
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  include_once ("$home/connect.php");
-  $result=mysql_query("SELECT * FROM indexhs WHERE $critere AND status>0") or die ("erreur SELECT");
+  include_once ($home."connect.php");
+  $result=mysql_query("SELECT * FROM indexhs WHERE $critere AND status>-32") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
 // post-traitement
 posttraitement($context);
 
-include("$home/langues.php");
+include($home."langues.php");
 ?>

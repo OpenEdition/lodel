@@ -1,17 +1,17 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'un numéro</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<MACRO NAME="TABLE_creetableinterface">
+<MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
 		<tr> 
 			<td> 
 				<table width="480" border="0" align="center" cellspacing="0" cellpadding="2"> 
-					<br>
-					<MACRO NAME="TABLE_nom_publication_serie"> 
-					<br>
+					<br />
+					<MACRO NAME="TABLE_NOM_PUBLICATION_SERIE"> 
+					<br />
 				</table>
 			</td>
 		</tr>
@@ -22,60 +22,60 @@
 				<tr> 
 					<td> 
 						<table width="800" border="0" cellpadding="0" cellspacing="0">
-						<MACRO NAME="Numeros_non_publies">
+						<MACRO NAME="NUMEROS_NON_PUBLIES">
 						<!-- BOUCLE D'AFFICHAGE DES NUMEROS NON PUBLIES-->
-						<BOUCLE NAME="publication_trash" TABLE="publications" WHERE="parent=[#PARENT]" WHERE="trash" ORDER="ordre DESC"> 
-							<MACRO NAME="TR_lignesalternees">
+						<LOOP NAME="publication_trash" TABLE="publications" WHERE="parent=[#PARENT]" WHERE="trash" ORDER="ordre DESC"> 
+							<MACRO NAME="TR_LIGNESALTERNEES">
 								<td width="48"> 
 									<div align="center">
 									<a href="index.php?parent=[#ID]">
-									<MACRO NAME="GIF_numero"> 
+									<MACRO NAME="GIF_NUMERO"> 
 									</a>
 									</div>
 								</td>
 								<td width="600" valign="middle">
-									<A HREF="index.php?parent=[#ID]">
+									<a href="index.php?parent=[#ID]">
 									<b><font color="navy">
 									[#NOM]
 									</font></b>
-									</A> 
+									</a> 
 									<font size="-2" color="navy">
 									([#TYPE])
 									 </font>
-									 <font color="navy"><br><i>
+									 <font color="navy"><br /><i>
 									 [#TITRE]
 									 </i>
 									 <a href="../../sommaire.html?id=[#ID]">
 										 [Sommaire]
 									 </a>
 									 </font>
-									 <br>
+									 <br />
 								</td>
 								<td width="74" valign="middle"> 
 									<div align="center">
 									<a href="index.php?parent=[#ID]">
-										<MACRO NAME="GIF_Editer_Publication_32">
+										<MACRO NAME="GIF_EDITER_PUBLICATION_32">
 									</a>
 									</div>
 								</td>
 								<td width="74" valign="middle"> 
 									<div align="center">
 									<a href="publication.php?id=[#ID]">
-										<MACRO NAME="GIF_Editer_Descriptif">
+										<MACRO NAME="GIF_EDITER_DESCRIPTIF">
 									</a>
 									</div>
 								</td>
 								<td width="74" valign="middle"> 
 									<div align="center">
-										<A HREF="publi.php?publication=[#ID]&online=1">
-											<MACRO NAME="GIF_Publier">
+										<a href="publi.php?publication=[#ID]&online=1">
+											<MACRO NAME="GIF_PUBLIER">
 										</a>
 									</div>
 								</td>
 									<td width="74" align="center" valign="middle"> 
 										<div align="center">
-										<br>
-											<MACRO NAME="Associer_icone_publication">
+										<br />
+											<MACRO NAME="ASSOCIER_ICONE_PUBLICATION">
 										</div>
 									</td>
 								<td width="74" valign="middle"> 
@@ -86,11 +86,11 @@
 									</div>
 								</td>
 							</tr>
-					<SINON/> 
-						<MACRO NAME="TR_aucune_publication_dispo"> 
-					</BOUCLE>
-					<MACRO NAME="Creer_numero">
-					<br>			
+					<ALTERNATIVE> 
+						<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
+					</ALTERNATIVE></LOOP>
+					<MACRO NAME="CREER_NUMERO">
+					<br />			
 					</tr>
 				</table>
 			</td>
@@ -106,32 +106,32 @@
 		<tr> 
 			<td bgcolor="#FFFFFF"> 
 			<table width="800" border="0" cellpadding="0" cellspacing="0">
-			<MACRO NAME="Numeros_publies">
+			<MACRO NAME="NUMEROS_PUBLIES">
 				<!-- BOUCLE D'AFFICHAGE DES NUMEROS PUBLIES-->
-				<BOUCLE NAME="publication" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="ok" ORDER="ordre DESC"> 
-				<MACRO NAME="TR_lignesalternees">
+				<LOOP NAME="publication" TABLE="publications" WHERE="parent='[#PARENT]'" WHERE="ok" ORDER="ordre DESC"> 
+				<MACRO NAME="TR_LIGNESALTERNEES">
 				<td width="48"> 
 					<div align="center">
 					<a href="../../sommaire.html?id=[#ID]">
-					<MACRO NAME="GIF_numero"> 
+					<MACRO NAME="GIF_NUMERO"> 
 					</a>
 					</div>
 				</td>
 				<td width="600" valign="middle">
-					<A HREF="index.php?parent=[#ID]">
+					<a href="index.php?parent=[#ID]">
 					<b><font color="navy">
 						[#NOM]
 					</font></b>
-					</A> 
+					</a> 
 					<font size="-2" color="navy">
 						([#TYPE])
 					 </font>
-					 <font color="navy"><br><i>
+					 <font color="navy"><br /><i>
 						 [#TITRE]
 					 </i>
 					 <a href="../../sommaire.html?id=[#ID]">
 						 [Sommaire]
-					 </a></font><br>
+					 </a></font><br />
 				</td>
 				<td width="74" valign="middle"> 
 					<div align="center">
@@ -142,14 +142,14 @@
 		          </td>
 		          <td width="74" align="center" valign="middle"> 
 					<div align="center">
-					<A HREF="publication.php?id=[#ID]&dir=up">
+					<a href="publication.php?id=[#ID]&dir=up">
 					<img src="images/up_18.gif" width="18" height="18" alt="Up" border="0">
 					</a>
 					</div>
 		          </td>
 		          <td width="74" align="center" valign="middle"> 
 					<div align="center">
-					<A HREF="publication.php?id=[#ID]&dir=down">
+					<a href="publication.php?id=[#ID]&dir=down">
 					<img src="images/down_24.gif" width="18" height="18" alt="down" border="0">
 					</a>
 					</div>
@@ -161,14 +161,14 @@
 				  	&nbsp;
 				  </td>
 		          </tr>
-		        <SINON/> 
-				<MACRO NAME="TR_aucune_publication_dispo"> 
-				</BOUCLE> 
-				<MACRO NAME="Creer_numero">		
+		        <ALTERNATIVE> 
+				<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
+				</ALTERNATIVE></LOOP> 
+				<MACRO NAME="CREER_NUMERO">		
 		      </table>
 		    </td>
 		  </tr>
 	
-<MACRO NAME="TR_tachesencours">
+<MACRO NAME="TR_TACHESENCOURS">
 </table>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

@@ -1,0 +1,30 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<TITLE>Edition - Revue</TITLE>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
+<tr><td><div align="center">
+<br /><br /><b>Création de revue</b></div></td></tr>
+</table>
+
+<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
+
+<b>LODEL n'a pas réussi a donner les droits à l'utilisateur MySQL sur la base de données [#DBNAME]</b><br>
+L'erreur renvoyée par le serveur MySQL est: [#ERREUR].<p>
+Vous pouvez donner les droits en utilisant la commande SQL:<br>
+[#COMMAND]<br>
+ou changer les droits généraux (sur *.*) de l'utilisateur MySQL (méthode moins sûre).
+<p><p>
+
+</td></tr></table><br/>
+
+<form method="post" action="revue.php">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="tache" value="grant">
+<input type="submit" value="continuer">
+</form>
+
+
+<MACRO NAME="CLOSE_HTML">
