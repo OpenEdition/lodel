@@ -199,6 +199,13 @@
 		</b>
 		</div>
 	</td>
+	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
+		<div align="center">
+		<b>
+			Fonctions<br />avancées
+		</b>
+		</div>
+	</td>
 	<td width="74"  background="images/bleu.gif" class="texte_trespetit_centre"> 
 	<div align="center">
 		<b>
@@ -337,6 +344,11 @@
 	<td width="74" align="center" valign="middle" class="texte_trespetit">
 		<MACRO NAME="up_down_publication">
 	</td>
+	<td width="74" align="center" valign="middle" class="texte_trespetit">
+		<a href="index.php?format=publisfa">
+			<MACRO NAME="GIF_FONCTIONS_AVANCEES">
+		</a>
+	</td>
 	<td width="74" valign="middle">
 		<div align="center">
 		<a href="supprime.php?publication=[#ID]">
@@ -462,6 +474,7 @@
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
+  	  <td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -485,6 +498,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+    <td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -540,6 +554,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -554,6 +569,7 @@
 	  <td width="74">&nbsp;</td>
 	  <td width="74">&nbsp;</td>
 	  <td width="74">&nbsp;</td>
+  	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
@@ -1212,12 +1228,12 @@
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
 	<IF [#STATUS]==-32>
 		<a href="status.php?publication=[#ID]&status=pret">
-			<span class="texte_trespetit_centre">Déprotéger</span>
+			<span class="texte_trespetit_centre">Prêt à publier</span>
 		</a>
 	</IF>
 	<IF [#STATUS]==-1>
 		<a href="status.php?publication=[#ID]&status=brouillon">
-			<span class="texte_trespetit_centre">Protéger</span>
+			<span class="texte_trespetit_centre">Brouillon</span>
 		</a>
 	</IF>
 
