@@ -39,7 +39,6 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   global $home,$format;
 
-
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   $format=""; // en cas de nouvel appel a calcul_page
 

@@ -80,11 +80,8 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     if ($userpriv<$level) { header("location: login.php?erreur_privilege=1&".$retour); exit; }
 
-#ifndef LODELLIGHT
     // verifie encore une fois au cas ou...
     if ($userpriv<LEVEL_ADMINLODEL && !$site) break;
-#endif
-
     if ($userpriv>=LEVEL_ADMINLODEL) $context[adminlodel]=$GLOBALS[adminlodel]=1;
     if ($userpriv>=LEVEL_ADMIN) $context[admin]=$GLOBALS[admin]=1;
     if ($userpriv>=LEVEL_EDITEUR) $context[editeur]=$GLOBALS[editeur]=1;
