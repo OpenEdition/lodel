@@ -83,7 +83,7 @@
 <!-- afin d'éditer une publication.                                     -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<a class="admin" href="lodel/edition/index.php?parent=[#ID]">
+		<a class="admin" href="lodel/edition/index.php?id=[#ID]">
 			<span class="texte_trespetit">[E]</span>
 		</a>
 	</IF>
@@ -97,11 +97,11 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
 		<IF COND="[#TYPE] eq 'regroupement'">
-			<a class="admin" href="lodel/edition/index.php?parent=[#PARENT]">
+			<a class="admin" href="lodel/edition/index.php?id=[#PARENT]">
 				<span class="texte_trespetit">[E]</span>
 			</a>
 		<ELSE/>
-			<a class="admin" href="lodel/edition/index.php?parent=[#PUBLICATION]">
+			<a class="admin" href="lodel/edition/index.php?id=[#PUBLICATION]">
 				<span class="texte_trespetit">[E]</span>
 			</a>
 		</IF>
