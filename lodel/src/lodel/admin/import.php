@@ -40,7 +40,7 @@ if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) &&
   $prefix=$result[1];
 
   // detar dans le repertoire du site
-  system("tar zxf $fichier -C ../../ lodel/txt lodel/rtf docannexe 2>&1")!==FALSE or die ("impossible d'executer tar");
+  system("tar zxf $fichier -C ../../ lodel/sources docannexe 2>&1")!==FALSE or die ("impossible d'executer tar");
 
   require_once ($home."connect.php");
   // drop les tables existantes
