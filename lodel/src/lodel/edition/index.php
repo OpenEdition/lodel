@@ -30,6 +30,7 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
 
+print_r($context);
 
 $context[id]=$id=intval($id);
 $context[idtype]=0;
