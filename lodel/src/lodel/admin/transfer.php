@@ -36,9 +36,9 @@ require_once($home."func.php");
 require_once($home."fieldfunc.php");
 require_once($home."connect.php");
 
-$context['confirm']=intval($confirm);
+$context['confirm']=intval($_POST['confirm']);
 
-if ($confirm) {
+if ($_POST['confirm']) {
   $tables=gettables();
   do { // block de control
 
