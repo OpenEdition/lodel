@@ -290,8 +290,8 @@ Will be reimplemented using a proper XML parser.
 
   // conversion des balises de sections
   array_push($srch,
-	     "/<r2r:(?:heading|titre|title)(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:heading|titre|title)(\d+)>/");
+	     "/<r2r:(?:heading|titre|title|\d\|?biblitit|\d\|?anntitre)(\d+\b([^>]*))>/",
+	     "/<\/r2r:(?:heading|titre|title|\d\|?biblitit|\d\|?anntitre)(\d+)>/");
 #	     "/<h(\d+)>/",
 #	     "/<\/h(\d+)>/");
 
