@@ -431,3 +431,15 @@ span.currentpage
 	font-family : courier,"Trebuchet MS",arial;
 	color : #000;
 }
+p.searchresults
+{
+	text-align : right;
+	font-size  : 90%;
+	padding-bottom : 5px;
+	border-bottom : 1px solid black;
+}
+div.results
+{
+	margin-left : 5px;
+	font-size : 95%;
+}
