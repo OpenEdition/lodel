@@ -1,0 +1,66 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Edition d'une publication</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+	
+<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
+	<MACRO NAME="PNG_PICTO_POPUP_EDITION">
+	<div style="padding-top:25px;">
+		<LOOP NAME="edition_du_descriptif" TABLE="types" WHERE="id=[#IDTYPE]">
+			<DO>
+				<span class="texte_ligne_haut_tpl_publication">[#TITRE] (métadonnées)</span>
+			</DO>
+		</LOOP>
+	</div>
+</div>
+
+<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+	<div style="padding-top:10px;">
+		Parent : 
+		<LOOP NAME="Affiche_Parent" TABLE="publications" WHERE="id='[#IDPARENT]'">
+			<span class="nom_publi_parente">[#NOM]</span>
+		</LOOP>
+	</div>
+</div>
+
+<div class="ligne_info">
+	<span class="texte_info">L'astérisque (*) indique les champs obligatoires.</span>
+</div>
+
+<form method="post" action="publication.php">
+	[(#ERREUR_PUBLICATION_EXISTE|true)Ce numéro existe déjà]
+	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="idparent" value="[#IDPARENT]" />
+	<input type="hidden" name="idtype" value="[#IDTYPE]" />
+	<input type="hidden" name="groupe" value="1" />
+	<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]" />
+
+
+	<div class="ligne_formulaire">
+		<div class="intitule_ligne_formulaire">
+			<span class="texte_intitule">Nom bref:</span>
+		</div>
+		<input size="45" type="text" name="nom" value="[#NOM]">
+		[(#ERREUR_NOM|true)<br /><span class="message_erreur">Vous devez préciser un nom !</span>]
+	</div>
+
+	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_PUBLICATIONS">
+
+	<br />
+	<MACRO NAME="AFFICHER_TYPES_PERSONNES">
+
+	<br />
+	<MACRO NAME="AFFICHER_TYPES_ENTREES">
+
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" name="edit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]">
+			<input class="form" type="button" value="Supprimer" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />
+		</IF>
+	</div>
+	
+</form>
+<MACRO NAME="CLOSE_HTML">
