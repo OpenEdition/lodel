@@ -114,7 +114,7 @@ class XMLImportParser {
       if (!$isave && $class=="internalstylesvo") {
 	$forcenext=false;
 	if ($obj->surrounding=="-*") {
-	  echo "la ",$arr[$i-3];
+	  #echo "la ",$arr[$i-3];
 	  // check what is the previous on.
 	  if ($arr[$i-3]=="/" && strtolower(get_class($arr[$i-2]))=="tablefieldsvo") {
 	    // good, put the closing tag further
@@ -262,7 +262,7 @@ class XMLImportParser {
 	array_unshift($datastack,"");
       } else {
 	$call="process".substr($class,0,-2);
-	echo count($datastack);
+	#echo count($datastack);
 	$data=array_shift($datastack);	
 	$datastack[0].=$this->handler->$call($obj,$data); // call the method associated with the object class
       }
