@@ -30,7 +30,7 @@
 
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_EDITEUR);
+authenticate(LEVEL_EDITOR);
 require_once($home."func.php");
 require_once($home."validfunc.php");
 require_once($home."translationfunc.php");

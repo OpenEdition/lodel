@@ -64,13 +64,13 @@
 		
 			
 						<LET VAR="IDREC">0</LET>
-						<LOOP NAME="themes" TABLE="entrees" WHERE="type='theme' AND idparent='[#IDREC]' " ORDER="ordre DESC">
+						<LOOP NAME="themes" TABLE="entries" WHERE="type='theme' AND idparent='[#IDREC]' " ORDER="rank DESC">
 					        <BEFORE><ul></BEFORE>
 							<DO>
 					                    <li>
 								<div class="afficherdocument">
 								<a  href="entree.[#EXTENSIONSCRIPTS]?id=[#ID]">
-									[#NOM]
+									[#NAME]
 								</a>
 								</div>
 					                    <LET VAR="IDREC">[#ID]</LET>

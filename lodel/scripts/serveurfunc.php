@@ -33,7 +33,7 @@ function contact_servoo ($cmds,$uploadedfiles,$destfile="")
 
 {
 
-  $options=getoption(array("servoourl","servoousername","servoopasswd"),"");
+  $options=getoption(array("servoourl","servoousername","servoopasswd"),array(),"");
 
   if (!$options || !$options['servoourl']) { // get form the lodelconfig file
     $options['servoourl']=$GLOBALS['servoourl'];
@@ -53,7 +53,7 @@ function contact_servoo ($cmds,$uploadedfiles,$destfile="")
 	      0, # cookies
 	      $destfile
 	      );
-  if ($ret) { # erreur
+  if ($ret) { # error
     return $ret;
   }
 }
@@ -134,7 +134,7 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
     }
 
     if ($outfile) {
-      if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de droit sur les fichiers et repertoire surement"); }
+      if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de right sur les fichiers et repertoire surement"); }
       $fout=fopen($outfile,"w");
       if (!$fout) die("impossible d'ouvrir le fichier $outifle en ecriture");
       fwrite($fout,substr($client->results,$eol2+1));
@@ -206,7 +206,7 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
     if (strpos($line,"Transfer-Encoding:")===0 && $line!="Transfer-Encoding: chunked\r\n") die ("Bug a reporter: le transfert encoding n'est pas chunked: <br>".$line);
   }
   if ($outfile) {
-    if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de droit sur les fichiers et repertoire surement"); }
+    if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de right sur les fichiers et repertoire surement"); }
    $fout=fopen($outfile,"w");
    if (!$fout) die("impossible d'ouvrir le fichier $outifle en ecriture");
   }
@@ -215,7 +215,7 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
   $res="";
   $retvar=array();
 
-  if (feof($fp)) die("erreur de transfert");
+  if (feof($fp)) die("error de transfert");
 
   do {
     $chunk_head=fgets($fp,1024);

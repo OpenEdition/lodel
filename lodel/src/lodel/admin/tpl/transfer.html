@@ -25,7 +25,7 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Administration de site : [(#SITE|nbsp)]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
@@ -55,14 +55,14 @@ Opérations réussies:<br>
 [#REPORT]
 <p><p>
 </IF>
-<IF COND="[#ERREUR]">
+<IF COND="[#ERROR]">
 Opérations qui ont échoué:<br>
-[#ERREUR]
+[#ERROR]
 <p><p>
 </IF>
 
-<IF COND="![#CONFIRM] || [#ERREUR]">
-   <form method="POST" action="transfer.php">
+<IF COND="![#CONFIRM] || [#ERROR]">
+   <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
 		<input class="form" type="submit" name="confirm" value="Continuer" />
 </form>
 </IF>

@@ -87,7 +87,7 @@ function infoChargement(nomFic){
 
 <div style="text-align:center;">
 	<div class="message_erreur">
-	      <IF COND="[#ERREUR]"><td class="message_erreur">[@EDITION.ERROR_UPLOADLING]<br />[#ERREUR]
+	      <IF COND="[#ERROR]"><td class="message_erreur">[@EDITION.ERROR_UPLOADLING]<br />[#ERROR]
 	      </IF>
 	</div>
 </div>
@@ -111,7 +111,7 @@ function infoChargement(nomFic){
 <br /><br /><br />
 <span class="texte_info_popup">[@EDITION.CONVERSION_TOOLS]:</span><br />
 <a href="http://www.openoffice.org"><MACRO NAME="PNG_LOGO_OO"></a> <a href="http://www.hj-gym.dk/~hj/writer2latex/"><MACRO NAME="PNG_LOGO_W2L"></a>
-				<IF COND="[#DROITADMINLODEL]"> 
+				<IF COND="[#RIGHTADMINLODEL]"> 
 					<br /><br /><span class="texte_info_popup">[@EDITION.BUTTONS_ADMIN_LODEL]</span><br /><br />
 <!--					<input class="form" type="submit" name="sortiexmloo" value="Sortie XML Brute de OpenOffice (fichier content.xml du SXW)" /><br /> -->
 					<input class="form" type="submit" name="sortieoo" value="[@EDITION.OUTPUT_OO_PLUS_PROCESSING]" /><br />

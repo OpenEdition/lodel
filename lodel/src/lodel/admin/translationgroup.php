@@ -40,7 +40,7 @@ $context['textgroup']=mysql_escape_string($textgroup);
 if (!isvalidlang($lang)) die("ERROR: invalid lang");
 $context['lang']=$lang;
 
-posttraitement($context);
+postprocessing($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"translationgroup");

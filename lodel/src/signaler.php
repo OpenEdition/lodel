@@ -40,10 +40,10 @@ include_once($home."connect.php");
 //
 // get the  document
 //
-$critere=$droitvisiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
+$critere=$rightvisiteur ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
 
-$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
+$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 require_once($home."textfunc.php");
 $context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));
@@ -59,8 +59,8 @@ if ($envoi) {
   // validation
   do {
 
-    if (!$context[to]) { $err=$context[erreur_to]=1; }
-    if (!$context[from]) { $err=$context[erreur_from]=1; }
+    if (!$context[to]) { $err=$context[error_to]=1; }
+    if (!$context[from]) { $err=$context[error_from]=1; }
 
     if ($err) break;
 
@@ -81,7 +81,7 @@ if ($envoi) {
 	$headers .= "From: $context[from]\r\n";
    // envoie le mail
    //
-   if (!mail ($context[to],$context[subject],$content,$headers)) { $context[erreur_mail]=1; break; }     //
+   if (!mail ($context[to],$context[subject],$content,$headers)) { $context[error_mail]=1; break; }     //
 
     header ("location: ".makeurlwithid($id,"document"));
     return;

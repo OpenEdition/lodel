@@ -44,7 +44,7 @@ $context['textgroupswhere']=textgroupswhere($context['textgroups']);
 
 
 
-posttraitement($context);
+postprocessing($context);
 
 require($home."calcul-page.php");
 calcul_page($context,"translations");

@@ -35,8 +35,8 @@ function makeobjetstable()
 {
   $err=mysql_query_cmds_forobjetfunc('
 DELETE FROM _PREFIXTABLE_objets;
-INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"documents" FROM _PREFIXTABLE_documents;
-INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"publications" FROM _PREFIXTABLE_publications;
+INSERT INTO _PREFIXTABLE_objets (id,class) SELECT identity,"documents" FROM _PREFIXTABLE_documents;
+INSERT INTO _PREFIXTABLE_objets (id,class) SELECT identity,"publications" FROM _PREFIXTABLE_publications;
 ');
   if ($err) return $err;
 
@@ -51,11 +51,11 @@ INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"publications" FROM 
 		"typeentrees"=>array("id"),
 		"entrees"=>array("id","idparent","idtype"),
 		"personnes"=>array("id"),
-		"entites_personnes"=>array("idpersonne","idtype"),
-		"entites_entrees"=>array("identree"),
-		"typeentites_typeentrees"=>array("idtypeentree","idtypeentite"),
-		"typeentites_typepersonnes"=>array("idtypepersonne","idtypeentite"),
-		"typeentites_typeentites"=>array("idtypeentite","idtypeentite2")
+		"entites_personnes"=>array("idperson","idtype"),
+		"entites_entrees"=>array("identry"),
+		"typeentites_typeentrees"=>array("identrytype","identitytype"),
+		"typeentites_typepersonnes"=>array("idpersontype","identitytype"),
+		"typeentites_typeentites"=>array("identitytype","idtypeentite2")
 		);
 
   foreach ($tables as $table=>$idsname) {
@@ -69,24 +69,24 @@ INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"publications" FROM 
 
   $conv=array(
 	      "personnes"=>array(
-				 "entites_personnes"=>"idpersonne",
+				 "entites_personnes"=>"idperson",
 				 ),
 	      "entrees"=>array(
-			      "entites_entrees"=>"identree",
+			      "entites_entrees"=>"identry",
 			      "entrees"=>"idparent",
 			      ),
 	      "types"=>array(
 			     "entites"=>"idtype",
-			     "typeentites_typeentites"=>array("idtypeentite","idtypeentite2"),
-			     "typeentites_typeentrees"=>"idtypeentite",
-			     "typeentites_typepersonnes"=>"idtypeentite",
+			     "typeentites_typeentites"=>array("identitytype","idtypeentite2"),
+			     "typeentites_typeentrees"=>"identitytype",
+			     "typeentites_typepersonnes"=>"identitytype",
 			     ),
 	      "typepersonnes"=>array(
-				     "typeentites_typepersonnes"=>"idtypepersonne",
+				     "typeentites_typepersonnes"=>"idpersontype",
 				     "entites_personnes"=>"idtype",
 				     ),
 	      "typeentrees"=>array(
-				   "typeentites_typeentrees"=>"idtypeentree",
+				   "typeentites_typeentrees"=>"identrytype",
 				   "entrees"=>"idtype",
 				   )
 	      );

@@ -44,9 +44,9 @@
 		<tr>
 			<td>
 
-				<LOOP NAME="Deplace_document" TABLE="entites" WHERE="idparent='[#ID]' AND classe='publications'" ORDER="ordre">
+				<LOOP NAME="Deplace_document" TABLE="entities" WHERE="idparent='[#ID]' AND class='publications'" ORDER="rank">
 					[#BARRE]
-		                        <LOOP NAME="deplace_droit" TABLE="typeentites_typeentites,entites" WHERE="id='[#IDDOCUMENT]' AND idtypeentite=idtype AND idtypeentite2='[#IDTYPE]'" SELECT="condition">
+		                        <LOOP NAME="deplace_droit" TABLE="typeentites_typeentites,entites" WHERE="id='[#IDDOCUMENT]' AND identitytype=idtype AND identitytype2='[#IDTYPE]'" SELECT="condition">
 		                        <DO>
 		                        <!--[ on a le droit de la deplacer ici ]-->
 					<span style="margin-left: [#MARGIN]px;">

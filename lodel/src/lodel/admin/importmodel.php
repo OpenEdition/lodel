@@ -50,10 +50,10 @@ if ($fichier && $delete) {
   $accepteddirs=array("tpl","css");
   $acceptedexts=array("html","css");
 
-  if (!importFromZip($fichier,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['erreur_extract']=1; break; }
+  if (!importFromZip($fichier,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['error_extract']=1; break; }
 
   // execute the editorial model
-  if (!execute_dump($sqlfile)) $context['erreur_execute_dump']=$err=mysql_error();
+  if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err=mysql_error();
   @unlink($sqlfile);
 
   // change the id in order there are minimal and unique
@@ -75,12 +75,12 @@ if ($fichier && $delete) {
   while ($row = mysql_fetch_row($result)) array_push($existingtables,$row[0]);
   
   // verifie qu'on peut importer le modele.
-  foreach(array_intersect(array("$GLOBALS[tp]entites",
-				"$GLOBALS[tp]entrees",
-				"$GLOBALS[tp]personnes"),$existingtables) as $table) {
-    $result=mysql_query("SELECT 1 FROM $table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+  foreach(array_intersect(array("$GLOBALS[tp]entities",
+				"$GLOBALS[tp]entries",
+				"$GLOBALS[tp]persons"),$existingtables) as $table) {
+    $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or die(mysql_error());
     if (mysql_num_rows($result)) {
-      $context[erreur_table]=$table;
+      $context[error_table]=$table;
       break;
     } 
   }

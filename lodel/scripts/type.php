@@ -37,7 +37,7 @@ if ($id>0) {
 
 require($home."typetypefunc.php");
 
-if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]types.statut<32";
+if ($id && !$rightadminlodel) $critere.=" AND $GLOBALS[tp]types.status<32";
 //
 // supression et restauration
 //
@@ -47,16 +47,16 @@ if ($id>0 && ($delete || $restore)) {
     include_once ($home."connect.php");
     lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes","entites","objets");
     // check the type can be deleted.
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE statut>-64 AND $critere") or die (mysql_error());
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or die (mysql_error());
     if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
     // check the type can be deleted.
-    $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entites WHERE idtype='$id' AND statut>-64") or die (mysql_error());
+    $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entities WHERE idtype='$id' AND status>-64") or die (mysql_error());
     list($count)=mysql_fetch_row($result);
-    if ($count) { $context[erreur_entites_existent]=$count; unlock(); break; }
+    if ($count) { $context[error_entites_existent]=$count; unlock(); break; }
 
-    typetype_delete("typeentree","idtypeentite='$id'");
-    typetype_delete("typepersonne","idtypeentite='$id'");
-    typetype_delete("typeentite","idtypeentite='$id' OR idtypeentite2='$id'");
+    typetype_delete("typeentree","identitytype='$id'");
+    typetype_delete("typepersonne","identitytype='$id'");
+    typetype_delete("typeentite","identitytype='$id' OR idtypeentite2='$id'");
 
     $delete=2; // supprime pour de vrai
     include ($home."trash.php");
@@ -66,15 +66,15 @@ if ($id>0 && ($delete || $restore)) {
   } while (0); // block d'exception
 }
 
-$critere.=" AND statut>0";
+$critere.=" AND status>0";
 
 //
-// ordre
+// rank
 //
 
 if ($id>0 && $dir) {
   # cherche le parent
-  chordre("types",$id,"statut>0 AND classe='$classe'",$dir);
+  chrank("types",$id,"status>0 AND class='$class'",$dir);
   back();
 }
 //
@@ -86,38 +86,38 @@ if ($edit) { // modifie ou ajoute
   do {
     require($home."validfunc.php");
     $context[type]=trim($context[type]);
-    if (!$context[type] || !isvalidtype($context[type])) $err=$context[erreur_type]=1;
-    //    if (!$context[tpl]) $err=$context[erreur_tpl]=1;
+    if (!$context[type] || !isvalidtype($context[type])) $err=$context[error_type]=1;
+    //    if (!$context[tpl]) $err=$context[error_tpl]=1;
     if ($err) break;
 
     include_once ($home."connect.php");
     lock_write("objets","types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
 
     // verifie que ce type n'existe pas.
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND classe='$context[classe]' AND id!='$id'") or die (mysql_error());
-    if (mysql_num_rows($result)) { unlock(); $context[erreur_type_existe]=1; break; }
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND class='$context[class]' AND id!='$id'") or die (mysql_error());
+    if (mysql_num_rows($result)) { unlock(); $context[error_type_existe]=1; break; }
 
-    if ($id>0) { // il faut rechercher le statut
-      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]types WHERE $critere") or die (mysql_error());
+    if ($id>0) { // il faut rechercher le status
+      $result=mysql_query("SELECT status,rank FROM $GLOBALS[tp]types WHERE $critere") or die (mysql_error());
       if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
-      list($statut,$ordre)=mysql_fetch_array($result);
+      list($status,$rank)=mysql_fetch_array($result);
 
-      typetype_delete("typeentree","idtypeentite='$id'");
-      typetype_delete("typepersonne","idtypeentite='$id'");
-      typetype_delete("typeentite","idtypeentite='$id'");
+      typetype_delete("typeentree","identitytype='$id'");
+      typetype_delete("typepersonne","identitytype='$id'");
+      typetype_delete("typeentite","identitytype='$id'");
     } else {
-      $statut=1;
-      $ordre=get_ordre_max("types");
+      $status=1;
+      $rank=get_rank_max("types");
       $id=uniqueid("types");
     }
     $context[import]=$context[import] ? 1 : 0;
-    if ($droitadminlodel) {
-      $newstatut=$protege ? 32 : 1;
-      $statut=$statut>0 ? $newstatut : -$newstatut;    
+    if ($rightadminlodel) {
+      $newstatus=$protege ? 32 : 1;
+      $status=$status>0 ? $newstatus : -$newstatus;    
     }
-    if (!$context[tplcreation]) $context[tplcreation]=preg_replace("/s$/","",$classe);
+    if (!$context[tplcreation]) $context[tplcreation]=preg_replace("/s$/","",$class);
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,import,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$statut','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,title,class,tpl,tpledition,tplcreation,import,status,rank) VALUES ('$id','$context[type]','$context[title]','$class','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$status','$rank')") or die (mysql_error());
 
     typetype_insert($id,$typeentree,"typeentree");
     typetype_insert($id,$typepersonne,"typepersonne");
@@ -130,17 +130,17 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE statut>-64 AND $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
-  $context[import]=($classe=="documents") && 
+  $context[import]=($class=="documents") && 
     $servoourl &&  
     $servoousername && 
     $servoopasswd ? 1 : 0;
 }
 
 // post-traitement
-posttraitement($context);
+postprocessing($context);
 
 
 function loop_typepersonnes($context,$funcname)

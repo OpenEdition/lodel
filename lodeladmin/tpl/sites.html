@@ -33,7 +33,7 @@
 <tr><td><b>Nom</b></td><td> <div align="center"><img src="images/KDE_txt.gif" width="32" height="32"></div></td><td> <div align="center"><img src="images/coplanddetruire.gif" width="32" height="32"></div></td></tr>
 <LOOP NAME="sites" TABLE="sites" ORDER="nom" WHERE="ok">
   <IF COND="[#COUNT] % 2"><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
-<td align="center"><font color="Navy"><b><i>[(#NOM|nbsp)]</i></b></font></td>
+<td align="center"><a href="[#URL]">[(#NOM|nbsp)]</a></td>
 <td align="center"><a href="site.php?id=[#ID]">Modifier</a></td>
 <td align="center"><a href="site.php?id=[#ID]&delete=1">Supprimer</a></td>
 <td align="center"><IF COND="[#STATUT] ge 32"><a href="locksite.php?id=[#ID]&unlock=1">Débloque</a><ELSE/><a href="locksite.php?id=[#ID]&lock=1">Bloque</a></IF></td>

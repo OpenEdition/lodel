@@ -34,12 +34,12 @@
 </table>
 
 
-	  <IF COND="[#ERREUR_TABLE]">
+	  <IF COND="[#ERROR_TABLE]">
 <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
 
-	    <p><strong>[@COMMON.ERROR] :</strong> L[@ADMIN.ERROR_TABLE_FIRST_PART] "[#ERREUR_TABLE]" [@ADMIN.ERROR_TABLE_SECOND_PART]</p>
+	    <p><strong>[@COMMON.ERROR] :</strong> L[@ADMIN.ERROR_TABLE_FIRST_PART] "[#ERROR_TABLE]" [@ADMIN.ERROR_TABLE_SECOND_PART]</p>
 		    </td>
 		</tr>
 </table>
@@ -52,8 +52,8 @@
 <table class="table_normale" width="90%" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
-		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
-		    <IF COND="[#ERREUR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
+		    <IF COND="[#ERROR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]<br /><br /></IF>
+		    <IF COND="[#ERROR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
 
 		    <h3>[@ADMIN.EM_INSTALL].</h3>
                       [@ADMIN.CHOOSE_EM].
@@ -85,7 +85,7 @@
 		  <p>Ajouter un modèle à la liste ci-dessus:</p>
       <IF COND="[#ERROR_UPLOAD]"><b>[@COMMON.ERROR]</b> [@ADMIN.UPLOAD_IN] !</IF>
                   <p>
-    <form name="formfic" enctype="multipart/form-data" action="importmodel.php" method="post"  />
+    <form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
       <input type="file" name="archive" size="40">
       <input class="form" type="submit" value="[@ADMIN.UPLOAD]" />	  
       </form>

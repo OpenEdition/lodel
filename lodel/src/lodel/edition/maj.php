@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 require($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 
 require_once ($home."func.php");
 writefile(SITEROOT."CACHE/maj");

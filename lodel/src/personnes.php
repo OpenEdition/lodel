@@ -47,7 +47,7 @@ if ($id) {
 if ($suffix && !preg_match("/^[\w-]+$/",$suffix)) die("suffix non accepte");
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typepersonnes WHERE $critere AND statut>0") or die (mysql_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]persontypes WHERE $critere AND status>0") or die (mysql_error());
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 $context[idtype]=$context[type_id]; // import
 $context[type]=$context[type_type]; // import

@@ -42,15 +42,15 @@ mysql_select_db($GLOBALS[currentdb])  or die ("ERROR select: ".mysql_error());
 
 //
 //if (!function_exists("table")) {
-//  function table($nom)
+//  function table($name)
 //
 //    { 
 //	global $site;
-//	if ($nom=="sites"  || $nom=="session" || ($nom=="users" && !$site)) {
-//	  return "r2r_$nom";
+//	if ($name=="sites"  || $name=="session" || ($name=="users" && !$site)) {
+//	  return "r2r_$name";
 //	} else {
-//	  if (!$site) { die ("repertoire non valide: $site table: $nom"); }
-//	  return "r2r_".$site."_".$nom;
+//	  if (!$site) { die ("repertoire non valide: $site table: $name"); }
+//	  return "r2r_".$site."_".$name;
 //	}
 //    }
 //}
@@ -65,17 +65,17 @@ $GLOBALS['tp']=$GLOBALS['tableprefix'];
 
 
 
-$GLOBALS[publicationsjoin]="$GLOBALS[tp]entites INNER JOIN $GLOBALS[tp]publications ON $GLOBALS[tp]entites.id=$GLOBALS[tp]publications.identite";
+$GLOBALS['publicationsjoin']="$GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]publications ON $GLOBALS[tp]entities.id=$GLOBALS[tp]publications.identity";
 
-$GLOBALS[documentsjoin]="$GLOBALS[tp]entites INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entites.id=$GLOBALS[tp]documents.identite";
+$GLOBALS['documentsjoin']="$GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entities.id=$GLOBALS[tp]documents.identity";
 
-$GLOBALS[entitestypesjoin]="$GLOBALS[tp]types INNER JOIN $GLOBALS[tp]entites ON $GLOBALS[tp]types.id=$GLOBALS[tp]entites.idtype";
+$GLOBALS['entitestypesjoin']="$GLOBALS[tp]types INNER JOIN $GLOBALS[tp]entities ON $GLOBALS[tp]types.id=$GLOBALS[tp]entities.idtype";
 
-$GLOBALS[publicationstypesjoin]="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]publications ON $GLOBALS[tp]entites.id=$GLOBALS[tp]publications.identite";
+$GLOBALS['publicationstypesjoin']="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]publications ON $GLOBALS[tp]entities.id=$GLOBALS[tp]publications.identity";
 
-$GLOBALS[documentstypesjoin]="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entites.id=$GLOBALS[tp]documents.identite";
+$GLOBALS['documentstypesjoin']="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entities.id=$GLOBALS[tp]documents.identity";
 
-$GLOBALS[champsgroupesjoin]="$GLOBALS[tp]groupesdechamps INNER JOIN $GLOBALS[tp]champs ON $GLOBALS[tp]champs.idgroupe=$GLOBALS[tp]groupesdechamps.id";
+$GLOBALS['fieldsandgroupsjoin']="$GLOBALS[tp]fieldgroups INNER JOIN $GLOBALS[tp]fields ON $GLOBALS[tp]fields.idgroup=$GLOBALS[tp]fieldgroups.id";
 
 
 //
@@ -90,7 +90,7 @@ $GLOBALS[champsgroupesjoin]="$GLOBALS[tp]groupesdechamps INNER JOIN $GLOBALS[tp]
 function uniqueid($table)
 
 {
-  mysql_query("INSERT INTO $GLOBALS[tp]objets (classe) VALUES ('$table')") or die (mysql_error());
+  mysql_query("INSERT INTO $GLOBALS[tp]objects (class) VALUES ('$table')") or die (mysql_error());
   return mysql_insert_id();
 }
 
@@ -104,9 +104,9 @@ function deleteuniqueid($id)
 {
 
   if (is_array($id) && $id) {
-    mysql_query("DELETE FROM $GLOBALS[tp]objets WHERE id IN (".join(",",$id).")") or die (mysql_error());
+    mysql_query("DELETE FROM $GLOBALS[tp]objects WHERE id IN (".join(",",$id).")") or die (mysql_error());
   } else {
-    mysql_query("DELETE FROM $GLOBALS[tp]objets WHERE id='$id'") or die (mysql_error());
+    mysql_query("DELETE FROM $GLOBALS[tp]objects WHERE id='$id'") or die (mysql_error());
   }
 }
 

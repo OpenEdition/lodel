@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 require($home."auth.php");
-authenticate(LEVEL_VISITEUR,NORECORDURL);
+authenticate(LEVEL_VISITOR,NORECORDURL);
 require($home."func.php");
 
 if ($lang) {

@@ -32,24 +32,24 @@
 // charge le fichier xml et
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_VISITEUR);
+authenticate(LEVEL_VISITOR);
 require_once ($home."func.php");
 require_once ($home."textfunc.php");
 
-$context[identite]=$context[id]=$id=intval($id);
-$context[classe]="documents";
+$context[identity]=$context[id]=$id=intval($id);
+$context[class]="documents";
 
 require_once($home."connect.php");
 require_once($home."entitefunc.php");
 
-$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
+$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 //
 // cherche s'il y a des documents annexe et combien
 //
-$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entites.statut>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entities.status>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
 list($context[documentsannexes])=mysql_fetch_row($result);
 
 # calculate the page and store it into $contents
@@ -109,16 +109,16 @@ if ($valid) {
 function loop_valeurs_des_champs($context,$funcname)
 
 {
-  global $erreur;
+  global $error;
 
-  $result=mysql_query("SELECT nom,type FROM $GLOBALS[tp]champs WHERE idgroupe='$context[id]' AND statut>0 ORDER BY ordre") or die(mysql_error());
+  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]fields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank") or die(mysql_error());
 
   $haveresult=mysql_num_rows($result)>0;
   if ($haveresult && function_exists("code_before_$funcname")) 
     call_user_func("code_before_$funcname",$context);
 
   while ($row=mysql_fetch_assoc($result)) {
-    $row[value]=$context[$row[nom]];
+    $row[value]=$context[$row[name]];
     call_user_func("code_do_$funcname",$row);
   }
   if ($haveresult && function_exists("code_after_$funcname")) 
@@ -138,18 +138,18 @@ function loop_valeurs_des_champs_require() { return array("id"); }
 function namespace($text)
 {
   $ns="xhtml";
-    // place l'espace de nom sur toutes les balises xhtml
+    // place l'espace de name sur toutes les balises xhtml
   $text = preg_replace(array("/<(\/?)(\w+(\s+[^>]*)?>)/", // add xhtml
 			     "/(<\/?)r2r:/"),   // remove r2r
 		       array("<\\1$ns:\\2",
 			     "\\1"),$text);
-	// puis place l'espace de nom sur les attributs
+	// puis place l'espace de name sur les attributs
 #	return preg_replace_callback("/(<($ns):\w+)((\s+\w+\s*=\s*\"[^\"]*\")+)/", "callback_ns_attributes", $text);
 	return $text;
 } 
 
 /**
- * Fonction de callback permettant d'ajouter un espace de nom aux attributs d'une balise xhtml.
+ * Fonction de callback permettant d'ajouter un espace de name aux attributs d'une balise xhtml.
  */
 /*
 function callback_ns_attributes($matches){

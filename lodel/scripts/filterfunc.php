@@ -38,9 +38,9 @@ function makefilterfunc()
   // cherche les champs a filtrer
   //
   require_once ($home."connect.php");
-  $result=mysql_query("SELECT classe,$GLOBALS[tp]champs.nom,filtrage FROM $GLOBALS[champsgroupesjoin] WHERE $GLOBALS[tp]groupesdechamps.statut>0 AND $GLOBALS[tp]champs.statut>0 AND filtrage!=''") or die (mysql_error());
-  while (list($classe,$nom,$filter)=mysql_fetch_row($result)) {
-#echo $classe," ",$nom," ",$filter,"<br>\n";
+  $result=mysql_query("SELECT class,$GLOBALS[tp]fields.name,filtrage FROM $GLOBALS[champsgroupesjoin] WHERE $GLOBALS[tp]fieldgroups.status>0 AND $GLOBALS[tp]fields.status>0 AND filtrage!=''") or die (mysql_error());
+  while (list($class,$name,$filter)=mysql_fetch_row($result)) {
+#echo $class," ",$name," ",$filter,"<br>\n";
     // converti filtrage en fonction.
     $filters=preg_split("/\|/",$filter);
     $filterfunc='$x';
@@ -59,9 +59,9 @@ function makefilterfunc()
       } // do nothing if $filter is empty
     }
     $filterfunc="return ".$filterfunc.";";
-    $filterstr.="'$classe.$nom'=>'".addcslashes($filterfunc,"'")."',";
+    $filterstr.="'$class.$name'=>'".addcslashes($filterfunc,"'")."',";
   }
-  //if (!$filterstr) die("erreur interne dans filterfunc");
+  //if (!$filterstr) die("error interne dans filterfunc");
   // pas tres optimal. Il faudrait plutot que la boucle appel mysql_fetch_assoc dans ce cas... mais bon.
 
 

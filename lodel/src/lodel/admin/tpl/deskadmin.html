@@ -47,9 +47,9 @@
 				<tr>
 					<td width="100%" heigth="75">&nbsp;</td>
 
-<!--[					<td width="64" heigth="75"><IF COND="[#DROITEDITEUR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
+<!--[					<td width="64" heigth="75"><IF COND="[#RIGHTEDITOR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
 			
-					<td width="64" heigth="75"><IF COND="[#DROITADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+					<td width="64" heigth="75"><IF COND="[#RIGHTADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
 			
 					<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"><span class="desk-text">[@COMMON.LOGOUT]<span></a></td>
 				</tr>
@@ -76,21 +76,21 @@
 					<td align="right" valign="bottom">
 						<!--[<span class="texte_petit">Publication : </span>]-->
 						<LOOP NAME="nom_site" TABLE="sites" WHERE="rep='[#SITE]'">
-							<DO><span class="texte_petit"><strong>[#NOM]</strong></span></DO>
+							<DO><span class="texte_petit"><strong>[#NAME]</strong></span></DO>
 						</LOOP>
 
 					</td>
 					<td heigth="25" align="center">
-						<IF COND="[#DROITADMINLODEL]">
+						<IF COND="[#RIGHTADMINLODEL]">
 							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp; </span>
 						<ELSE/>
-							<IF COND="[#DROITADMIN]">
+							<IF COND="[#RIGHTADMIN]">
 								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN]&nbsp;:&nbsp; </span>
 							<ELSE/>
-								<IF COND="[#DROITEDITEUR]">
+								<IF COND="[#RIGHTEDITOR]">
 									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> [@COMMON.USER_EDITOR]&nbsp;:&nbsp; </span>
 								<ELSE/>
-									<IF COND="[#DROITREDACTEUR]">
+									<IF COND="[#RIGHTREDACTOR]">
 										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.USER_WRITER]&nbsp;:&nbsp; </span>
 									<ELSE/>
 										<IF COND="[#DROITVISITEUR]">

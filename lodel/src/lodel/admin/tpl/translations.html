@@ -47,7 +47,7 @@
 		<td>&nbsp;</td>
 		<td class="texte_noir_gras">[@ADMIN.TRANSLATE_GROUPS]</td>
 	</tr>
-	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="ordre">
+	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
 			<IF COND="[#COUNT]%2">
 			<tr class="ligne_admin1">
@@ -58,7 +58,7 @@
                         <td>[#LANG]</td>
 		        <td><MACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_IMPORTER_TRANSLATION"></td>
 		        <td>
-		       <LOOP NAME="textgroups1" TABLE="textes" WHERE="textgroup LIKE '[#TEXTGROUPS].%'" GROUPBY="textgroup" ORDER="textgroup">
+		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="textgroup LIKE '[#TEXTGROUPS].%'" GROUPBY="textgroup" ORDER="textgroup">
 		             <a href="translationgroup.php?textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
 		        </LOOP>
 		        </td>
@@ -71,19 +71,19 @@
 <h1>[@ADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 
-       <LOOP NAME="textgroups" TABLE="textes" WHERE="textgroup LIKE '[#TEXTGROUPS].%'" GROUPBY="textgroup" ORDER="textgroup">
+       <LOOP NAME="textgroups" TABLE="texts" WHERE="textgroup LIKE '[#TEXTGROUPS].%'" GROUPBY="textgroup" ORDER="textgroup">
        <tr><td colspan="3" class="textgroup"><h2>[@ADMIN_GROUP] [(#TEXTGROUP|strtoupper)]</h2>
        </td></tr>
 
 	      <tr>
 		<td class="texte_noir_gras">[@COMMON.NAME]</td>
-                <LOOP NAME="translations2" TABLE="translations" ORDER="ordre">
+                <LOOP NAME="translations2" TABLE="translations" ORDER="rank">
                 <td class="texte_noir_gras">[#LANG]</td>
 		</LOOP>
 		<td>&nbsp;</td>
 	      </tr>
 
-	<LOOP NAME="textes" TABLE="textes" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#USERLANG]'" ORDER="nom">
+	<LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#USERLANG]'" ORDER="nom">
 		<DO>
 			<IF COND="[#COUNT]%2">
 			<tr class="ligne_admin1">
@@ -91,11 +91,11 @@
 			<tr class="ligne_admin2">
 			</IF>
 				<td ><IF COND="[#TEXTE]">[(#TEXTE|couper(30))]<ELSE/>[(#NOM|strtoupper)]</IF></td>
-		                <LOOP NAME="translations3" TABLE="translations" ORDER="ordre">
+		                <LOOP NAME="translations3" TABLE="translations" ORDER="rank">
 		                        <td>
-		                        <LOOP NAME="lang_of_text" TABLE="textes" WHERE="nom='[#NOM]' AND textgroup='[#TEXTGROUP]' AND lang='[#LANG]'">
+		                        <LOOP NAME="lang_of_text" TABLE="texts" WHERE="nom='[#NAME]' AND textgroup='[#TEXTGROUP]' AND lang='[#LANG]'">
 
-		                            <a style="background-color: [(#STATUT|lodeltextcolor)]" href="texte.php?id=[#ID]">o</a>
+		                            <a style="background-color: [(#STATUS|lodeltextcolor)]" href="texte.php?id=[#ID]">o</a>
 		                            
 		                        </LOOP>
                                         </td>

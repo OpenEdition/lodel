@@ -42,10 +42,10 @@ if ($id>0) {
 
 if ($id>0 && $delete) { 
   // delete in all lang
-  $result=mysql_query("SELECT nom,textgroup FROM $GLOBALS[tp]textes WHERE id='$id' AND $textgroupswhere") or die(mysql_error());
+  $result=mysql_query("SELECT name,textgroup FROM $GLOBALS[tp]texts WHERE id='$id' AND $textgroupswhere") or die(mysql_error());
   if (mysql_num_rows($result)) {
-    list($nom,$textgroup)=mysql_fetch_row($result);
-    mysql_query("DELETE FROM $GLOBALS[tp]textes WHERE nom='$nom' AND textgroup='$textgroup'");
+    list($name,$textgroup)=mysql_fetch_row($result);
+    mysql_query("DELETE FROM $GLOBALS[tp]texts WHERE name='$name' AND textgroup='$textgroup'");
   }
   back();
   return;
@@ -54,7 +54,7 @@ if ($id>0 && $delete) {
 //
 } elseif ($status && $id) { // modifie ou ajoute
   $status=intval($status);
-  mysql_query("UPDATE $GLOBALS[tp]textes SET statut='$status' WHERE $critere AND $textgroupswhere");
+  mysql_query("UPDATE $GLOBALS[tp]texts SET status='$status' WHERE $critere AND $textgroupswhere");
   back();
 //
 // ajoute ou edit
@@ -68,7 +68,7 @@ if ($id>0 && $delete) {
       $id=intval($id);
       $status=intval($context['status'][$id]);
       $text=preg_replace("/(\r\n\s*){2,}/","<br />",$text);
-      mysql_query ("UPDATE $GLOBALS[tp]textes SET texte='$text',statut='$status' WHERE id='$id' AND $textgroupswhere") or die (mysql_error());
+      mysql_query ("UPDATE $GLOBALS[tp]texts SET texte='$text',status='$status' WHERE id='$id' AND $textgroupswhere") or die (mysql_error());
     }
     if (defined("SITEROOT")) {
       touch(SITEROOT."CACHE/maj");
@@ -82,7 +82,7 @@ if ($id>0 && $delete) {
   // validation
   do {
     if (!$context['textgroup']) $context['textgroup']="site";
-    if ( (!$context['nom'] && !$id) || ($context['nom'] && !preg_match("/^[\w\s]+$/",utf8_decode($context['nom'])) )) $err=$context['erreur_nom']=1;
+    if ( (!$context['name'] && !$id) || ($context['name'] && !preg_match("/^[\w\s]+$/",utf8_decode($context['name'])) )) $err=$context['error_nom']=1;
     if ($err) break;
 
     if (!$context['lang']) $context['lang']=$GLOBALS['userlang'] ? $GLOBALS['userlang'] : "";
@@ -90,31 +90,31 @@ if ($id>0 && $delete) {
     if ($err) break;
 
     if ($id) {
-      $result=mysql_query ("SELECT nom,textgroup,lang,statut FROM $GLOBALS[tp]textes WHERE id='$id' AND $textgroupswhere") or die (mysql_error());
+      $result=mysql_query ("SELECT name,textgroup,lang,status FROM $GLOBALS[tp]texts WHERE id='$id' AND $textgroupswhere") or die (mysql_error());
       if (!mysql_num_rows($result)) die("ERROR: incompatible id and textgroups in textinc.php");
       $context=array_merge($context,mysql_fetch_assoc($result));
 
-    } elseif ($context['nom'] && $context['textgroup'] && $context['lang']) {
-      $result=mysql_query ("SELECT id,textgroup,lang,statut FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or die (mysql_error());
+    } elseif ($context['name'] && $context['textgroup'] && $context['lang']) {
+      $result=mysql_query ("SELECT id,textgroup,lang,status FROM $GLOBALS[tp]texts WHERE name='$context[name]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or die (mysql_error());
       while($row=mysql_fetch_assoc($result)) {
-	##if ($id && $id!=$row['id']) { $err=$context[erreur_nom_existe]=1; break; }
+	##if ($id && $id!=$row['id']) { $err=$context[error_nom_existe]=1; break; }
 	if (!$id) { $id=$row['id'];  $context=array_merge($context,$row); break; }
       }
       if ($err) break;
     } else {
-      $context['statut']=-1;
+      $context['status']=-1;
     }
 
     $context['texte']=preg_replace("/(\r\n\s*){2,}/","<br />",$context['texte']);
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte,textgroup,lang,statut) VALUES ('$id','$context[nom]','$context[texte]','$context[textgroup]','$context[lang]','$context[statut]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]texts (id,name,texte,textgroup,lang,status) VALUES ('$id','$context[name]','$context[texte]','$context[textgroup]','$context[lang]','$context[status]')") or die (mysql_error());
     back();
 
   } while (0);
   // entre en edition
 } elseif ($id>0) {
   require_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]textes WHERE $critere AND $textgroupswhere") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]texts WHERE $critere AND $textgroupswhere") or die ("error SELECT");
   if (!mysql_num_rows($result)) die("ERROR: incompatible id and textgroups in textinc.php");
   $context=array_merge($context,mysql_fetch_assoc($result));
 

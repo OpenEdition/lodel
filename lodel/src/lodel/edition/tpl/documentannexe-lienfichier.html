@@ -39,7 +39,7 @@
 	 ... [@EDITION.ADD_ANNEX_TO_DOCUMENT] :
 	<LOOP NAME="docu" TABLE="documents" WHERE="id='[#IDPARENT]'">
 		<DO>
-			<span class="nom_publi_parente">[#TITRE]</span>
+			<span class="nom_publi_parente">[#TITLE]</span>
 		</DO>
 	</LOOP>
 </div>
@@ -56,7 +56,7 @@
 				<tr><td align="center" colspan="2"><span class="titre_publi">[@EDITION.UPLOAD_FILE]</span><br /><br /></td></tr>			
 			<tr>
 				<td width="200" class="texte_intitule">[@COMMON.TITLE] :</td>
-				<td><input size="60" type="text" name="titre" value="[#TITRE]"></td>
+				<td><input size="60" type="text" name="titre" value="[#TITLE]"></td>
 			</tr>
 			<tr>
 				<td width="200" class="texte_intitule">[@EDITION.COMMENT] :</td>
@@ -73,11 +73,11 @@
 							<span class="texte_normal">[@EDITION.CURRENT_FILE] : </span>
 							<span class="texte_noir_gras">[#LIEN]</span><br />
 						</IF>						
-						<IF COND="[#ERREUR_LIENINEXISTANT]"><span class="message_erreur">[@EDITION.ERROR_MISSING_FILE]</span><br /></IF>
+						<IF COND="[#ERROR_LIENINEXISTANT]"><span class="message_erreur">[@EDITION.ERROR_MISSING_FILE]</span><br /></IF>
 						<input name="docfile" type="file" size="45">
 					</td>
 				</tr>				
-				<IF COND="[#ERREUR_UPLOAD]"><tr><td colspan="2" align="center"><span class="message_erreur">[@EDITION.ERROR_UPLOAD]</span></td></tr></IF>
+				<IF COND="[#ERROR_UPLOAD]"><tr><td colspan="2" align="center"><span class="message_erreur">[@EDITION.ERROR_UPLOAD]</span></td></tr></IF>
 			
 			<tr><td colspan="2" align="center">
 				<br /><br />

@@ -47,7 +47,7 @@
 		<td class="texte_noir_gras" align="center">[@ADMIN.SESSIONS]</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="statut gt 0 AND privilege lt 128">
+	<LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="status gt 0 AND privilege lt 128">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
@@ -123,14 +123,14 @@
 		<tr>
 			<IF COND="[#COUNT] % 2">
 				<td class="ligne_admin1">[(#USERNAME|nbsp)]</td>
-				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1">[#NAME]</td>
 				<td class="ligne_admin1" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="user.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a>&nbsp;|&nbsp;
 					<a href="user.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
 				<td class="ligne_admin2">[(#USERNAME|nbsp)]</td>
-				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2">[#NAME]</td>
 				<td class="ligne_admin2" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="user.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a>&nbsp;|&nbsp;
 					<a href="user.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;|</div>

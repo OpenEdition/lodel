@@ -86,9 +86,9 @@
 							</a>
 						</dt>
 				
-						<LOOP NAME="auteurs1" TABLE="personnes" WHERE="type='auteur'" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
+						<LOOP NAME="auteurs1" TABLE="persons" WHERE="type='auteur'" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
 							<dd>
-								<IF COND="[#STATUT] ge 1">
+								<IF COND="[#STATUS] ge 1">
 									<a class="auteur" href="personne.[#EXTENSIONSCRIPTS]?id=[#ID]&amp;type=[#TYPE]">
 										[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>
 									</a>

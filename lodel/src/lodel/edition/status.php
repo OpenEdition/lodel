@@ -27,17 +27,46 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-// gere les types de publications. L'acces est reserve au administrateur.
+// change le status d'un document ou d'une publication
+
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_ADMIN,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
+include ($home."func.php");
 
-$classe="publications";
-include ($home."type.php");
+include_once ($home."connect.php");
 
-include ($home."calcul-page.php");
-calcul_page($context,"typepubli");
+if ($status=="protege") {
+  $newstatut=+32;
+} elseif ($status=="deprotege") {
+  $newstatut=+1;
+} elseif ($status=="brouillon") {
+  $newstatut=-32;
+} elseif ($status=="pret") {
+  $newstatut=-1;
+} else {
+  die ("status invalide");
+}
 
+// ce script permet de changer le status, mais pas lui faire changer de signe.
+// pour publie ou depublie (changer le signe de status) il faut utiliser publi.php
+
+// le status ne doit pas changer de signe...
+$critere=$newstatut>0 ? "status>0" : "status<0";
+
+if ($publication) {
+  $id=intval($publication);
+} elseif ($id) {
+  $id=intval($id);
+} else {
+  die("specifier une publication");
+}
+ 
+mysql_query("UPDATE $GLOBALS[tp]entities SET status=$newstatut WHERE id='$id' AND $critere") or die(mysql_error());
+
+
+back();
+return;
 
 ?>

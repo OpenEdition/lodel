@@ -28,10 +28,10 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-// droit
-define("LEVEL_VISITEUR",10);
-define("LEVEL_REDACTEUR",20);
-define("LEVEL_EDITEUR",30);
+// right
+define("LEVEL_VISITOR",10);
+define("LEVEL_REDACTOR",20);
+define("LEVEL_EDITOR",30);
 define("LEVEL_ADMIN",40);
 define("LEVEL_ADMINLODEL",128);
 
@@ -42,7 +42,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 function authenticate ($level=0,$norecordurl=FALSE)
 
 {
-  global $context,$iduser,$userpriv,$usergroupes,$userlang;
+  global $context,$iduser,$userrights,$usergroupes,$userlang;
   global $home,$timeout,$database,$sessionname,$site;
 
   $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);
@@ -74,27 +74,27 @@ function authenticate ($level=0,$norecordurl=FALSE)
       } else {
 	break;
       }
-      header("location: $login?erreur_timeout=1&".$retour); exit();
+      header("location: $login?error_timeout=1&".$retour); exit();
     }
 
     // pass les variables en global
    
     $context=array_merge($context,unserialize($row['context'])); // recupere le contexte
-    $userpriv=$context['userpriv'];
+    $userrights=$context['userrights'];
     $userlang=$context['userlang'];
     $usergroupes=$context['usergroupes'];
     $context['iduser']=$iduser=$row['iduser'];
 
-    if ($userpriv<$level) { header("location: login.php?erreur_privilege=1&".$retour); exit(); }
+    if ($userrights<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
 
     // verifie encore une fois au cas ou...
-    if ($userpriv<LEVEL_ADMINLODEL && !$site) break;
+    if ($userrights<LEVEL_ADMINLODEL && !$site) break;
 
-    if ($userpriv>=LEVEL_ADMINLODEL) $context['droitadminlodel']=$GLOBALS['droitadminlodel']=1;
-    if ($userpriv>=LEVEL_ADMIN) $context['droitadmin']=$GLOBALS['droitadmin']=1;
-    if ($userpriv>=LEVEL_EDITEUR) $context['droitediteur']=$GLOBALS['droitediteur']=1;
-    if ($userpriv>=LEVEL_REDACTEUR) $context['droitredacteur']=$GLOBALS['droitredacteur']=1;
-    if ($userpriv>=LEVEL_VISITEUR) $context['droitvisiteur']=$GLOBALS['droitvisiteur']=1;
+    if ($userrights>=LEVEL_ADMINLODEL) $context['rightadminlodel']=$GLOBALS['rightadminlodel']=1;
+    if ($userrights>=LEVEL_ADMIN) $context['rightadmin']=$GLOBALS['rightadmin']=1;
+    if ($userrights>=LEVEL_EDITOR) $context['righteditor']=$GLOBALS['righteditor']=1;
+    if ($userrights>=LEVEL_REDACTOR) $context['rightredactor']=$GLOBALS['rightredactor']=1;
+    if ($userrights>=LEVEL_VISITOR) $context['rightvisiteur']=$GLOBALS['rightvisiteur']=1;
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
 
@@ -124,7 +124,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if ($row['currenturl'] && $row['currenturl']!=$url && !$norecordurl) {
       #if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
       $urlmd5=md5($url);
-      mysql_query ("INSERT INTO $GLOBALS[tp]pileurl (idsession,url,urlretour) VALUES ('$idsession','$urlmd5','$myurl')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tp]urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5','$myurl')") or die (mysql_error());
       #$context['url_retour']=mkurl($row['currenturl'],"back=".mysql_insert_id());
       #} else {
       #// cherche l'url de retour dans la base de donnee
@@ -208,7 +208,7 @@ if (!((bool) ini_get("register_globals"))) { //
 
 
 // securite... initialisation
-$userpriv=0;
+$userrights=0;
 $usergroupes="";
 $userlang="";
 $iduser=0;
@@ -224,12 +224,12 @@ $context=array(
 	       ); // tres important d'initialiser le context.
 
 
-$droitadminlodel=0;
-$droitadmin=0;
+$rightadminlodel=0;
+$rightadmin=0;
 $user=0;
 if (!$filemask) $filemask="0700";
 
-// cherche le nom du site
+// cherche le name du site
 
 $context['site']=$site;
 

@@ -31,7 +31,7 @@ die("-- a finir --");
 
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 require_once($home."func.php");
 require_once($home."validfunc.php");
 
@@ -52,14 +52,14 @@ $xmldb->readFromString('
 <modificationdate>0000-00-00</modificationdate>
 <creationdate>2004-10-23</creationdate>
 <textes>
-<texte nom="admin_user_and_rights" textgroup="admin" statut="1"></texte>
-<texte nom="add" textgroup="edition" statut="2">Ajouter</texte>
-<texte nom="visualize_entity" textgroup="edition" statut="2"></texte>
-<texte nom="edit" textgroup="edition" statut="1">Edite</texte>
-<texte nom="advanced_functions" textgroup="edition" statut="1">Fonctions avancees</texte>
-<texte nom="delete" textgroup="edition" statut="-1">Supprime</texte>
-<texte nom="base" textgroup="edition" statut="2">ddd4442d</texte>
-<texte nom="" textgroup="" statut="1">Utilisateur et droits</texte>
+<texte name="admin_user_and_rights" textgroup="admin" status="1"></texte>
+<texte name="add" textgroup="edition" status="2">Ajouter</texte>
+<texte name="visualize_entity" textgroup="edition" status="2"></texte>
+<texte name="edit" textgroup="edition" status="1">Edite</texte>
+<texte name="advanced_functions" textgroup="edition" status="1">Fonctions avancees</texte>
+<texte name="delete" textgroup="edition" status="-1">Supprime</texte>
+<texte name="base" textgroup="edition" status="2">ddd4442d</texte>
+<texte name="" textgroup="" status="1">Utilisateur et rights</texte>
 </textes>
 </row></translations>
 </lodeltranslations>');

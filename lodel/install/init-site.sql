@@ -31,32 +31,32 @@
 #
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objects (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	classe		VARCHAR(255),
+	class		VARCHAR(64),
 
 	PRIMARY KEY (id)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	identifiant	VARCHAR(255) NOT NULL, # nom utilisé en interne
+	identifier	VARCHAR(255) NOT NULL, # nom utilisé en interne
 
-	groupe		TINYINT UNSIGNED DEFAULT '1' NOT NULL,
+	usergroup	TINYINT UNSIGNED DEFAULT '1' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	statut		TINYINT DEFAULT '-1' NOT NULL,
-	maj		TIMESTAMP,
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '-1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype),
-	KEY index_identifiant (identifiant)
+	KEY index_identifier (identifier)
 );
 
 #
@@ -68,25 +68,25 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_relations (
 	id2		INT UNSIGNED DEFAULT '0' NOT NULL,
 	nature		CHAR(1) DEFAULT 'P' NOT NULL,
 
-	degres		TINYINT DEFAULT '0' NOT NULL,
+	degree		TINYINT DEFAULT '0' NOT NULL,
 
 	KEY index_id1 (id1),
 	KEY index_id2 (id2),
-	KEY index_degres (degres),
+	KEY index_degree (degree),
 	KEY index_nature (nature)
 );
 
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
-	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
-	KEY index_identite (identite)
+	identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
+	KEY index_identite (identity)
 );
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
-	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
-	KEY index_identite (identite)
+	identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
+	KEY index_identite (identity)
 );
 
 
@@ -96,63 +96,63 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 # table qui contient les champs supplementaires
 #
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fields (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
-	idgroupe	INT UNSIGNED DEFAULT '0' NOT NULL,
+	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
+	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
 	condition	TINYTEXT NOT NULL,		# condition
-	defaut		TINYTEXT NOT NULL,		# valeur par defaut
-	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
-	balises         TINYTEXT NOT NULL,		# balises acceptees
-	filtrage	TEXT NOT NULL,			# traitement a faire a l'exportation
+	defaultvalue	TINYTEXT NOT NULL,		# valeur par defaut
+	processing	TINYTEXT NOT NULL,		# traitement a faire a l'import
+	allowedtags 	TINYTEXT NOT NULL,		# balises acceptees
+	filtering	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
-	commentaire	TEXT NOT NULL,			# commentaire sur le champs
+	comment		TEXT NOT NULL,			# commentaire sur le champs
 
-	statut		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom),
-	KEY index_idgroupe (idgroupe)
+	KEY index_name (name),
+	KEY index_idgroup (idgroup)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fieldgroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
-	classe		VARCHAR(64) NOT NULL,   	# nom de la table complementaire
+	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
+	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
-	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	commentaire	TEXT NOT NULL,			# commentaire sur le groupe de champs
 
-	statut		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom),
-	KEY index_classe (classe)
+	KEY index_name (name),
+	KEY index_class (class)
 );
 
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_personnes (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_persons (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 #	prefix		TINYTEXT NOT NULL,
-	nomfamille	TINYTEXT NOT NULL,
-	prenom		TINYTEXT NOT NULL,
+	lastname	TINYTEXT NOT NULL,
+	firstname	TINYTEXT NOT NULL,
 #	site		TEXT NOT NULL, #
 #	bio		TEXT NOT NULL, # inutile pour le moment
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id)
 );
@@ -162,36 +162,36 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
-	nom		VARCHAR(64),
-	courriel	VARCHAR(255),
-	privilege	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	name		VARCHAR(64),
+	email		VARCHAR(255),
+	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
 	lang		CHAR(5) NOT NULL,       # user lang
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
 
-	maj		TIMESTAMP,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
 );
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_usergroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(64),
+	name		VARCHAR(64),
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom)
+	KEY index_name (name)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
-	idgroupe	INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_usergroups (
+	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	KEY index_idgroupe (idgroupe),
+	KEY index_idgroup (idgroup),
 	KEY index_iduser (iduser)
 );
 
@@ -199,66 +199,66 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL,
-	titre		TINYTEXT NOT NULL,
+	title		TINYTEXT NOT NULL,
 
-	classe		VARCHAR(64) NOT NULL,   # nom de la table complementaire
+	class		VARCHAR(64) NOT NULL,   # name de la table complementaire
 
-	tpl		TINYTEXT NOT NULL,			# nom du fichier template utilise dans la zone de revue
-	tplcreation	TINYTEXT NOT NULL,			# nom du fichier template pour la creation, ou information decrivant la creation
-	tpledition	TINYTEXT NOT NULL,			# nom du fichier template pour l'edition de son contenu
+	tpl		TINYTEXT NOT NULL,			# name du fichier template utilise dans la zone de revue
+	tplcreation	TINYTEXT NOT NULL,			# name du fichier template pour la creation, ou information decrivant la creation
+	tpledition	TINYTEXT NOT NULL,			# name du fichier template pour l'edition de son contenu
 
 	import		TINYINT DEFAULT '0' NOT NULL,		# 1=import par OO
 
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_persontypes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	type		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
-	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
+	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
 
-	titredescription		TINYTEXT NOT NULL,		# affichage "description de la personne"
+	titledescription		TINYTEXT NOT NULL,		# affichage "description de la personne"
 	styledescription		TINYTEXT NOT NULL,		# style qui conduit a la description de ce type.
 
 
-	tpl		TINYTEXT NOT NULL,			# nom du fichier template pour l'entree
-	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
+	tpl		TINYTEXT NOT NULL,			# name du fichier template pour l'entree
+	tplindex	TINYTEXT NOT NULL,			# name du fichier template pour l'index
 
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,	# ordre sert pour l'interface.
-	statut		TINYINT DEFAULT '1' NOT NULL,
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,	# rank sert pour l'interface.
+	status		TINYINT DEFAULT '1' NOT NULL,
 
 
-	maj		TIMESTAMP,
+	upd		TIMESTAMP,
 	PRIMARY KEY (id),
 	KEY index_type (type)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrytypes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	type		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
-	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
+	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
-	tpl		TINYTEXT NOT NULL,			# nom du fichier template pour l'entree
-	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
+	tpl		TINYTEXT NOT NULL,			# name du fichier template pour l'entree
+	tplindex	TINYTEXT NOT NULL,			# name du fichier template pour l'index
 
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,	# ordre sert pour l'interface.
-	statut		TINYINT DEFAULT '1' NOT NULL,
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,	# rank sert pour l'interface.
+	status		TINYINT DEFAULT '1' NOT NULL,
 
 # options
-	lineaire	TINYINT DEFAULT '0' NOT NULL,
-	nvimportable	TINYINT DEFAULT '0' NOT NULL,
-	utiliseabrev	TINYINT DEFAULT '0' NOT NULL,
-	tri		VARCHAR(64) NOT NULL DEFAULT 'ordre' NOT NULL, # 
+	flat		TINYINT DEFAULT '0' NOT NULL,
+	newbyimportallowed	TINYINT DEFAULT '0' NOT NULL,
+	useabrevation	TINYINT DEFAULT '0' NOT NULL,
+	sort		VARCHAR(64) NOT NULL DEFAULT 'rank' NOT NULL, # 
 
-	maj		TIMESTAMP,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
@@ -267,20 +267,20 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entries (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
-	nom		VARCHAR(255) NOT NULL,
+	name		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
-	langue		CHAR(2) NOT NULL,
+	lang		CHAR(2) NOT NULL,
 	idtype		INT DEFAULT '0' NOT NULL,
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom),
+	KEY index_name (name),
 	KEY index_abrev (abrev),
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype)
@@ -288,111 +288,113 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_taches (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tasks (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		TINYTEXT NOT NULL,
-	etape		TINYINT NOT NULL DEFAULT '0',
+	name		TINYTEXT NOT NULL,
+	step		TINYINT NOT NULL DEFAULT '0',
 	user		INT UNSIGNED DEFAULT '0' NOT NULL,
 	context		TEXT,
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(255) NOT NULL,  # name
-	texte		TEXT,                   # texte
+	name		VARCHAR(255) NOT NULL,  # name
+	contents		TEXT,                   # texte
 
 	lang		CHAR(5) NOT NULL,       # text lang
 	textgroup	VARCHAR(255) NOT NULL,   # text group
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom),
+	KEY index_name (name),
 	KEY index_lang (lang),
 	KEY index_textgroup (textgroup)
 );
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_personnes (
-	idpersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
-	identite		INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_persons (
+	idperson		INT UNSIGNED DEFAULT '0' NOT NULL,
+	identity		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype			INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le entite
 
-	ordre			TINYINT UNSIGNED NOT NULL DEFAULT '0',
+	rank			TINYINT UNSIGNED NOT NULL DEFAULT '0',
 	prefix             	TINYTEXT NOT NULL,
 	description             TEXT NOT NULL,
-	fonction		TINYTEXT NOT NULL,
+	function		TINYTEXT NOT NULL,
 	affiliation		TINYTEXT NOT NULL,
-	courriel		TINYTEXT NOT NULL,
+	email			TINYTEXT NOT NULL,
 
-	KEY index_idpersonne (idpersonne),
-	KEY index_identite (identite),
+	KEY index_idperson (idperson),
+	KEY index_identity (identity),
 	KEY index_idtype (idtype)
 );
 
 
 # decrit le liens entre les entites et les entrees
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
-	identree		INT UNSIGNED DEFAULT '0' NOT NULL,
-	identite		INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_entries (
+	identry		INT UNSIGNED DEFAULT '0' NOT NULL,
+	identity		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	KEY index_identree (identree),
-	KEY index_identite (identite)
+	KEY index_identry (identry),
+	KEY index_identity (identity)
 );
 
 # table qui decrit la possibilite de presence ou non de l'entite de type 1 dans l'entite de type 2.
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
-	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
-	idtypeentite2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entitytypes (
+	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
+	identitytype2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
 	condition		VARCHAR(16),
 
-	KEY index_idtypeentite (idtypeentite),
-	KEY index_idtypeentite2 (idtypeentite2)
+	KEY index_identitytype (identitytype),
+	KEY index_identitytype2 (identitytype2)
 );
 
 
 # table qui decrit la presence ou non d'un type d'entree dans un type d'entite
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
-	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
-	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entrytypes (
+	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL,
+	identrytype		INT UNSIGNED DEFAULT '0' NOT NULL,
 	condition		VARCHAR(16),
 
-	KEY index_idtypeentree (idtypeentree),
-	KEY index_idtypeentite (idtypeentite)
+	KEY index_identrytype (identrytype),
+	KEY index_identitytype (identitytype)
 );
 
-# table qui decrit la presence ou non d'un type d'personne dans un type d'entite
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
-	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
-	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_persontypes (
+	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idpersontype		INT UNSIGNED DEFAULT '0' NOT NULL,
 	condition		VARCHAR(16),
 
-	KEY index_idtypepersonne (idtypepersonne),
-	KEY index_idtypeentite (idtypeentite)
+	KEY index_idpersontype (idpersontype),
+	KEY index_identitytype (identitytype)
 );
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(255) NOT NULL UNIQUE,		# nom/identifiant unique
+	name		VARCHAR(255) NOT NULL UNIQUE,		# name/identifiant unique
 	type		CHAR(4),
+	value		TEXT,	# value
 
-	valeur		TEXT,		# valeur
+	class		VARCHAR(64) NOT NULL,
+	identity	INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom),
+	KEY index_name (name),
 	KEY index_type (type)
 );
 
@@ -407,12 +409,10 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_translations (
 	modificationdate	DATE,
 	creationdate		DATE,
 
-	ordre			INT UNSIGNED DEFAULT '0' NOT NULL,
-	statut			TINYINT DEFAULT '1' NOT NULL,
-	maj			TIMESTAMP,
+	rank			INT UNSIGNED DEFAULT '0' NOT NULL,
+	status			TINYINT DEFAULT '1' NOT NULL,
+	upd			TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_lang (lang)
 );
-
-

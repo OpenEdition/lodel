@@ -39,13 +39,13 @@
 <DEFMACRO NAME="AFFICHER_STATUT_DOCUMENT">
 <!--[ ****************************************************************** ]-->
 <!--[ version 2.0                                                        ]-->
-<!--[ Affiche le statut du document, si on a au moins le niveau          ]-->
+<!--[ Affiche le status du document, si on a au moins le niveau          ]-->
 <!--[ "rédacteur".                                                       ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
-		<IF COND="[#STATUT] ge 1">
+	<IF COND="[#RIGHTREDACTOR]">
+		<IF COND="[#STATUS] ge 1">
 			<font color="red" size="-2">(Online)</font>
-		<ELSE/><IF COND="[#STATUT] le -1">
+		<ELSE/><IF COND="[#STATUS] le -1">
 			<font color="red" size="-2">(Offline)</font>
 		</IF></IF>
 	</IF>
@@ -54,11 +54,11 @@
 <DEFMACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 <!--[ ****************************************************************** ]-->
 <!--[ version 2.0                                                        ]-->
-<!--[ Affiche le statut du document et permet aux éditeurs de le publier ]-->
+<!--[ Affiche le status du document et permet aux éditeurs de le publier ]-->
 <!--[ Afin d'éviter de générer des 404 par erreur, la dépublication      ]-->
 <!--[ ne se fait pas dans cette macro.                                   ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITEDITEUR]">
+	<IF COND="[#RIGHTEDITOR]">
 		<IF COND="[#OFFLINE]">
 			<a class="bouton_statut_publierOFF" href="lodel/edition/publi.php?id=[#ID]&online=1">
 				<span class="bouton_statut_publierOFF">(Offline)</span>
@@ -75,7 +75,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton         ]-->
 <!--[ [Ajouter un document annexe].                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 		<a href="lodel/edition/fonctionsavancees.php?id=[#ID]#docannexe">
 			[Ajouter un document annexe]
 		</a>
@@ -88,7 +88,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
 <!--[ afin d'éditer un document.                                         ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 		<a href="lodel/edition/document.php?id=[#ID]"><span class="pluspetit">[E]</span></a>
 	</IF>
 </DEFMACRO>
@@ -99,7 +99,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
 <!--[ afin d'éditer une publication.                                     ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 			<a href="lodel/edition/index.php?id=[#ID]">
 				<span class="pluspetit">[E]</span>
 			</a>
@@ -112,7 +112,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
 <!--[ afin d'éditer une publication depuis un document.                  ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 				<a href="lodel/edition/index.php?id=[#IDPARENT]">
 					<span class="pluspetit">[E]</span>
 				</a>
@@ -129,7 +129,7 @@
 <!--[ défaut sont les images. Pour passer d'un aspect à l'autre il       ]-->
 <!--[ suffit de commenter les lignes soit des images soit des textes.    ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 		<a href="lodel/edition/document.php?dir=up&id=[#ID]">
 			<!--[<span class="texte_trespetit">[haut]</span>]-->
 			<MACRO NAME="IMG_HAUT">
@@ -148,7 +148,7 @@
 <!--[ [modifier] pour modifier le document annexe ou sa description      ]-->
 <!--[ ainsi que des boutons [haut] [bas] pour changer son ordre.         ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 		<span class="texte_tres_petit">
 			<!--[ Modifier ]-->
 			<a class="admin" href="lodel/edition/docannexe.php?id=[#ID]&[#RETOUR]">[modifier]</a>

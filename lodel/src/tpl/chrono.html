@@ -43,7 +43,7 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<title>Index chronologique : [#NOM]</title>
+<title>Index chronologique : [#NAME]</title>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_CHRONO">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
@@ -65,11 +65,11 @@
 				
 			<!--[ Affichage de l'entrée de l'index par période]-->
 			<h1>
-				[#NOM]
+				[#NAME]
 			</h1>
 			
 			<!--[ Liste des articles ]-->
-			<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'" ORDER="datepubli">
+			<LOOP NAME="articles" TABLE="documents" WHERE="identry='[#ID]'" ORDER="datepubli">
 				<DO>
 					<div class="afficherdocument">
 						<!--[ Liste des documents liés à cette entrée d'index ]-->

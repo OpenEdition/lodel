@@ -40,7 +40,7 @@ class Parser {
 
   var $infilename;
   var $signature;
-  var $variable_regexp="[A-Z][A-Z_0-9]*";
+  var $variable_regexp="(?:[A-Z][A-Z_0-9]*\.?)*";
   var $loops=array();
   var $fct_txt;
 
@@ -61,12 +61,12 @@ class Parser {
 
 function errmsg ($msg,$ind=0) { 
   if ($ind) $line="line ".$this->$linearr[$ind];
-  die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
+  die("LODELSCRIPT ERROR $line (".$this->infilename."): $msg");
 }
 
 function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
-			  &$select,&$where,&$ordre,&$groupby,&$having) {}
+			  &$select,&$where,&$rank,&$groupby,&$having) {}
 function parse_variable_extra ($nomvar) { return FALSE; }
 function parse_before($contents) {}
 function parse_after($contents) {}
@@ -233,7 +233,7 @@ function parse_variable (&$text,$escape="php")
   while (preg_match("/(\[[^\[\]]*?)\((#$this->variable_regexp(?::$lang_regexp)?(?:\|$filtre_regexp)*)\)([^\[\]]*?\])/s",$text,$result)) {
 ####    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1_LANG\\2",$result[2]);
 
-  // remplace la langue
+  // remplace la lang
     $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1|multilingue('\\2')",$result[2]);
 
 # parse les filtres
@@ -242,7 +242,7 @@ function parse_variable (&$text,$escape="php")
 
       $variable=$this->parse_variable_extra($subresult[1]); // traitement particulier ?
       if ($variable===FALSE) { // non, traitement normal
-	$variable="\$context[".strtolower($subresult[1])."]";
+	$variable="\$context['".strtolower($subresult[1])."']";
       }
       foreach(explode("|",$subresult[2]) as $fct) {
 	if ($fct=="false" || $fct=="true" || $fct=="else") {
@@ -286,11 +286,11 @@ function parse_variable (&$text,$escape="php")
     if ($variable!==FALSE) { // traitement particulier
       $variable=$pre.$variable.$post;
     } else { // non traitement normal
-      if ($result[2]) { // langue
+      if ($result[2]) { // lang
 	$pre.="multilingue(";
 	$post=",'".substr($result[2],1)."')".$post;
       }
-      $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
+      $variable=$pre.'$context[\''.strtolower($result[1]).'\']'.$post;
     }
     $text=str_replace($result[0],$variable,$text);
   }
@@ -879,7 +879,7 @@ function parse_let () {
   if ($this->arr[$this->ind]!="/LET") $this->errmsg("&lt;/LET&gt; expected, $this->arr[$this->ind] found",$this->ind);
 
   $this->arr[$this->ind]="";
-  $this->arr[$this->ind+1]='<?php $context['.$var.']=ob_get_contents();  ob_end_clean(); ?>';
+  $this->arr[$this->ind+1]='<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
 }
 
 

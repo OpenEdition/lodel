@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-if (file_exists($home."boucles_local.php")) require_once($home."boucles_local.php");
+if (file_exists($home."loops_local.php")) require_once($home."loops_local.php");
 
 /*********************************************************************/
 /*  Boucle permettant de trouver depuis une publication toutes les   */
@@ -44,7 +44,7 @@ function loop_topparentpubli(&$context,$funcname)
   // alors [#TOTO] sera accessible dans lodelscript !!!
   $id=$context[id];       // On récupère le paramètre id
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entites.id=id1 AND id2='$id' AND $GLOBALS[tp]entites.statut>".($GLOBALS[droitvisiteur] ? -64 : 0)." ORDER BY degres DESC LIMIT 1,1") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entities.id=id1 AND id2='$id' AND $GLOBALS[tp]entities.status>".($GLOBALS[rightvisiteur] ? -64 : 0)." ORDER BY degree DESC LIMIT 1,1") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {       
     // On fait un array_merge pour récupérer toutes les infos contenues
@@ -75,12 +75,12 @@ function loop_topparentdoc(&$context,$funcname)
 }
 
 
-function loop_publisparentes(&$context,$funcname,$critere="")
+function loop_parentspublis(&$context,$funcname,$critere="")
 {
   $id=intval($context[id]);
   if (!$id) return;
   
-  $result=mysql_query("SELECT *, type  FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entites.id=id1 AND id2='$id' AND $GLOBALS[tp]entites.statut>".($GLOBALS[droitvisiteur] ? -64 : 0)." ORDER BY degres DESC") or die (mysql_error());
+  $result=mysql_query("SELECT *, type  FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entities.id=id1 AND id2='$id' AND $GLOBALS[tp]entities.status>".($GLOBALS[rightvisiteur] ? -64 : 0)." ORDER BY degree DESC") or die (mysql_error());
     
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);
@@ -93,7 +93,7 @@ function loop_toc($context,$funcname,$arguments)
 
 {
   if (!isset($arguments[text])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"toc\" requires a TEXT attribut");
+    if ($GLOBALS[rightvisiteur]) die("ERROR: the loop \"toc\" requires a TEXT attribut");
     return;
   }
 
@@ -112,7 +112,7 @@ function loop_toc($context,$funcname,$arguments)
   foreach($results as $result) {
     $localcontext=$context;
     $localcontext[tocid]=(++$tocid);
-    $localcontext[titre]=$result[3];
+    $localcontext[title]=$result[3];
     $localcontext[niveau]=intval($result[2]);
     if ($tocid==1 && function_exists("code_dofirst_$funcname")) {
       call_user_func("code_dofirst_$funcname",$localcontext);
@@ -131,11 +131,11 @@ function loop_toc($context,$funcname,$arguments)
 
 
 
-function loop_paragraphes($context,$funcname,$arguments)
+function loop_paragraphs($context,$funcname,$arguments)
 
 {
   if (!isset($arguments[text])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
+    if ($GLOBALS[rightvisiteur]) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
     return;
   }
 
@@ -152,11 +152,11 @@ function loop_paragraphes($context,$funcname,$arguments)
 
 
 
-function loop_extrait_images($context,$funcname,$arguments)
+function loop_extract_images($context,$funcname,$arguments)
 
 {
   if (!isset($arguments[text])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
+    if ($GLOBALS[rightvisiteur]) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
     return;
   }
   if ($arguments[limit]) {
@@ -198,7 +198,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
 
 {
   if (!isset($arguments[id])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"previous\" requires a ID attribut");
+    if ($GLOBALS[rightvisiteur]) die("ERROR: the loop \"previous\" requires a ID attribut");
     return;
   }
 
@@ -214,9 +214,9 @@ function previousnext ($dir,$context,$funcname,$arguments)
     $compare=">";
   }
 
-  $statutmin=$GLOBALS[droitvisiteur] ? -32 : 0;
+  $statusmin=$GLOBALS[rightvisiteur] ? -32 : 0;
 
-  $querybase="SELECT e3.*,t3.type,t3.classe FROM $GLOBALS[tp]entites as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.statut>$statutmin AND e0.statut>$statutmin AND e3.ordre".$compare."e0.ordre AND ".mysql_not_xor("t0.classe='publications'","t3.classe='publications'")." ORDER BY e3.ordre ".$sort." LIMIT 0,1";
+  $querybase="SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.status>$statusmin AND e0.status>$statusmin AND e3.rank".$compare."e0.rank AND ".mysql_not_xor("t0.class='publications'","t3.class='publications'")." ORDER BY e3.rank ".$sort." LIMIT 0,1";
 
   do {
     $result=mysql_query ($querybase) or die (mysql_error());
@@ -235,7 +235,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
     // ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
     // not found, well, we look for the next/previous parent above and it's first/last son.
 
-    $result=mysql_query ("SELECT e3.*,t3.type,t3.classe FROM $GLOBALS[tp]entites as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entites as e1, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.ordre".$compare."e1.ordre AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.statut>$statutmin AND e1.statut>$statutmin AND e2.statut>$statutmin AND e3.statut>$statutmin AND  ".mysql_not_xor("t0.classe='publications'","t3.classe='publications'")." ORDER BY e2.ordre ".$sort.", e3.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
+    $result=mysql_query ("SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.rank".$compare."e1.rank AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin AND e3.status>$statusmin AND  ".mysql_not_xor("t0.class='publications'","t3.class='publications'")." ORDER BY e2.rank ".$sort.", e3.rank ".$sort." LIMIT 0,1") or die (mysql_error());
 
     if (mysql_num_rows($result)) {
       $localcontext=array_merge($context,mysql_fetch_assoc($result));
@@ -289,11 +289,11 @@ function loop_rss ($context,$funcname,$arguments)
   define ("DIRECTORY_SEPARATOR","/");
 
   if (!isset($arguments[url])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"rss\" requires a URL attribut");
+    if ($GLOBALS[rightvisiteur]) die("ERROR: the loop \"rss\" requires a URL attribut");
     return;
   }
   if ($arguments[refresh] && !is_numeric($arguments[refresh])) {
-    if ($GLOBALS[droitvisiteur]) die("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ");
+    if ($GLOBALS[rightvisiteur]) die("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ");
     $arguments[refresh]=0;
   }
 
@@ -303,7 +303,7 @@ function loop_rss ($context,$funcname,$arguments)
   $rss = fetch_rss( $arguments['url'] , $arguments['refresh'] ? $arguments['refresh'] : 3600);
 
   if (!$rss) {
-    if ($GLOBALS[droitediteur]) {
+    if ($GLOBALS[righteditor]) {
       echo "<b>Warning: Erreur de connection RSS sur l'url ",$arguments['url'],"</b><br/>";
     } else {
       if ($GLOBALS[contactbug]) @mail($contactbug,"[WARNING] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de connection RSS sur l'url ".$arguments['url']);

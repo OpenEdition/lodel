@@ -35,7 +35,7 @@ require($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 #include_once ($home."func.php");
 
-#if ($context[privilege]>=LEVEL_ADMINLODEL) return;
+#if ($context[userrights]>=LEVEL_ADMINLODEL) return;
 require($home."userinc.php");
 
 

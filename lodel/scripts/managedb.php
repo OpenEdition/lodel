@@ -43,13 +43,13 @@ function creeparente($id,$idparent,$lock=TRUE)
   if ($lock) lock_write("relations");
   // on ne peut pas faire un INSERT SELECT parce que c'est la meme table !
 
-  $result=mysql_query("SELECT id1,degres FROM $GLOBALS[tp]relations WHERE id2='$idparent' AND nature='P'") or die(mysql_error());
+  $result=mysql_query("SELECT id1,degree FROM $GLOBALS[tp]relations WHERE id2='$idparent' AND nature='P'") or die(mysql_error());
   while ($row=mysql_fetch_assoc($result)) {
-    $values.="('$row[id1]','$id','P','".($row[degres]+1)."'),";
+    $values.="('$row[id1]','$id','P','".($row[degree]+1)."'),";
   }
   $values.="('$idparent','$id','P',1)";
 
-  mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degres) VALUES $values") or die(mysql_error());
+  mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degree) VALUES $values") or die(mysql_error());
   if ($lock) unlock();
 }
 
@@ -69,13 +69,13 @@ function loop_documents_proteges(&$context,$funcname)
   proteges($context,$funcname,"documents");
 }
 
-function proteges (&$context,$funcname,$classe) 
+function proteges (&$context,$funcname,$class) 
 
 {
   // cherche les ids
   if (!$context[proteges]) return;
   $ids=join(",",$context[proteges]);
-  $result=mysql_query("SELECT *,type  FROM ($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]$classe ON identite=$GLOBALS[tp]entites.id WHERE $GLOBALS[tp]entites.id IN ($ids) AND $GLOBALS[tp]types.classe='$classe'") or die (mysql_error());
+  $result=mysql_query("SELECT *,type  FROM ($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]$class ON identity=$GLOBALS[tp]entities.id WHERE $GLOBALS[tp]entities.id IN ($ids) AND $GLOBALS[tp]types.class='$class'") or die (mysql_error());
   $haveresults=mysql_num_rows($result);
   if ($haveresults && function_exists("code_before_$funcname"))  call_user_func("code_before_$funcname",$localcontext);
   while ($row=mysql_fetch_assoc($result)) {
@@ -96,7 +96,7 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 
 {
   if (!($id>=1)) die("ERROR: id is not valid un \"supprime\"");
-  global $usergroupes,$droitadmin,$context;
+  global $usergroupes,$rightadmin,$context;
   if ($mklock) {
     lock_write("objets","entites",
 	       "publications","documents",
@@ -105,7 +105,7 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 	       "relations");
   }
 
-  $critere.=$droitadmin ? "" : " AND groupe IN ($usergroupes)";
+  $critere.=$rightadmin ? "" : " AND groupe IN ($usergroupes)";
 
   // verifie les tables a joindre pour le critere
   // a completer si necessaire
@@ -117,13 +117,13 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 
   $context[proteges]=array();
 
-  if (!$droitadmin) {
-    // cherche l'id de la publication/document courante $id... verifie qu'on a les droits
-    $result=mysql_query("SELECT statut FROM $tables WHERE $GLOBALS[tp]entites.id='$id' $critere") or die(mysql_error());
-    if (!mysql_num_rows($result)) die("vous n'avez pas les droits. Erreur dans l'interface.");
+  if (!$rightadmin) {
+    // cherche l'id de la publication/document courante $id... verifie qu'on a les rights
+    $result=mysql_query("SELECT status FROM $tables WHERE $GLOBALS[tp]entities.id='$id' $critere") or die(mysql_error());
+    if (!mysql_num_rows($result)) die("vous n'avez pas les rights. Erreur dans l'interface.");
     if (!$confirmation) {
       $row=mysql_fetch_assoc($result);
-      if ($row[statut]>=32) {
+      if ($row[status]>=32) {
 	// ajoute au tableau des entitess protegees cet id
 	array_push($context[proteges],$id);
       }
@@ -135,11 +135,11 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 
   // cherche les entites a detruire...
 
-  $result=mysql_query("SELECT $GLOBALS[tp]entites.id,$GLOBALS[tp]entites.statut FROM $tables,$GLOBALS[tp]relations WHERE id1='$id' AND id2=$GLOBALS[tp]entites.id AND nature='P' $critere") or die(mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]entities.id,$GLOBALS[tp]entities.status FROM $tables,$GLOBALS[tp]relations WHERE id1='$id' AND id2=$GLOBALS[tp]entities.id AND nature='P' $critere") or die(mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     array_push ($ids,$row[id]);
-    if (!$confirmation && $row[statut]>=32) {
+    if (!$confirmation && $row[status]>=32) {
       // ajoute au tableau des entites protegees cet id
       array_push($context[proteges],$row[id]);
     }
@@ -151,9 +151,9 @@ function supprime ($id, $confirmation=false, $mklock=true, $critere="")
   // delete toutes les entitess
   $idlist=join(",",$ids);
 
-  mysql_query("DELETE FROM $GLOBALS[tp]entites WHERE id IN ($idlist)") or die(mysql_error());
-  mysql_query("DELETE FROM $GLOBALS[tp]publications WHERE identite IN ($idlist)") or die(mysql_error());
-  mysql_query("DELETE FROM $GLOBALS[tp]documents WHERE identite IN ($idlist)") or die(mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]entities WHERE id IN ($idlist)") or die(mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]publications WHERE identity IN ($idlist)") or die(mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]documents WHERE identity IN ($idlist)") or die(mysql_error());
   mysql_query("DELETE FROM $GLOBALS[tp]relations WHERE id1 IN ($idlist) OR id2 IN ($idlist)") or die(mysql_error());
   deleteuniqueid($ids);
 
@@ -171,9 +171,9 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
   $tables=$table."s";
 
   if (is_numeric($ids)) { # on a un seul document
-    $critere="identite=".$ids;
+    $critere="identity=".$ids;
   } else {
-    $critere="identite IN (".join(",",$ids).")";
+    $critere="identity IN (".join(",",$ids).")";
   }
   mysql_query("DELETE FROM $GLOBALS[tp]entites_$tables WHERE $critere") or die (mysql_error());
 
@@ -187,7 +187,7 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
   if ($ids) { 
     // cherche ceux qui ne sont pas proteges
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (statut>-32 AND statut<32)");
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (status>-32 AND status<32)");
     $idstodelete=array();
     while ($row=mysql_fetch_row($result)) { array_push ($idstodelete,$row[0]); }
 
@@ -198,7 +198,7 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
     }
 
     // depublie ceux qui sont proteges.
-    mysql_query("UPDATE $GLOBALS[tp]$tables SET statut=-abs(statut) WHERE id IN (".join(",",$ids).") AND statut>=32") or die (mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$tables SET status=-abs(status) WHERE id IN (".join(",",$ids).") AND status>=32") or die (mysql_error());
   }
 }
 
@@ -209,10 +209,10 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
 
 
 
-function publi ($id,$statut,$confirmation,$mklock=TRUE)
+function publi ($id,$status,$confirmation,$mklock=TRUE)
 
 {
-  global $usergroupes,$droitadmin,$context;
+  global $usergroupes,$rightadmin,$context;
 
   if ($mklock) {
     lock_write("entites",
@@ -225,29 +225,29 @@ function publi ($id,$statut,$confirmation,$mklock=TRUE)
   // cherche les entitess a publier ou depublier
   //
 
-  $critere=$droitadmin ? "" : " AND groupe IN ($usergroupes)";
+  $critere=$rightadmin ? "" : " AND groupe IN ($usergroupes)";
 
   $ids=array();
   $context[proteges]=array();
 
-  // cherche le statut (et l'id) de la publication courante
-  $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entites WHERE id='$id' AND statut>-32 $critere") or die(mysql_error());
+  // cherche le status (et l'id) de la publication courante
+  $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]entities WHERE id='$id' AND status>-32 $critere") or die(mysql_error());
   $row=mysql_fetch_assoc($result);
 
-  if (!$row) die ("Vous n'avez pas les droits sur cette publication ou ce document... il y a un probleme dans l'interface");
+  if (!$row) die ("Vous n'avez pas les rights sur cette publication ou ce document... il y a un probleme dans l'interface");
 
     // verifie que la publication est depubliable
-    // elle n'est pas depubliable si on n'a pas confirme et si son statut est 32 ou plus.
-  if ($statut<0 && !$confirmation && $row[statut]>=32) {
+    // elle n'est pas depubliable si on n'a pas confirme et si son status est 32 ou plus.
+  if ($status<0 && !$confirmation && $row[status]>=32) {
     // ajoute au tableau des entitess protegees cet id
     array_push($context[proteges],$row[id]);
   }
   array_push ($ids,$row[id]);
 
-  $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entites,$GLOBALS[tp]relations WHERE id1='$id' AND id2=id AND nature='P' AND  statut>-32 $critere") or die(mysql_error());
+  $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]entities,$GLOBALS[tp]relations WHERE id1='$id' AND id2=id AND nature='P' AND  status>-32 $critere") or die(mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
-    if ($statut<0 && !$confirmation && $row[statut]>=32) {
+    if ($status<0 && !$confirmation && $row[status]>=32) {
       // ajoute au tableau des entitess protegees cet id
       array_push($context[proteges],$row[id]);
     }
@@ -260,13 +260,13 @@ function publi ($id,$statut,$confirmation,$mklock=TRUE)
 
   $critere=" id IN (".join(",",$ids).")";
 
-  // mais attention, il ne faut pas reduire le statut quand on publie
-  $extracritere=$statut>0 ? " AND statut<$statut" : ""; 
+  // mais attention, il ne faut pas reduire le status quand on publie
+  $extracritere=$status>0 ? " AND status<$status" : ""; 
 
-  mysql_query("UPDATE $GLOBALS[tp]entites SET statut=$statut WHERE $critere $extracritere") or die(mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]entities SET status=$status WHERE $critere $extracritere") or die(mysql_error());
 
-  publi_table($critere,$statut,"personne");
-  publi_table($critere,$statut,"entree");
+  publi_table($critere,$status,"personne");
+  publi_table($critere,$status,"entree");
 
   return TRUE;
 }
@@ -274,42 +274,42 @@ function publi ($id,$statut,$confirmation,$mklock=TRUE)
 
   
 
-function publi_table($critere,$statut,$table)
+function publi_table($critere,$status,$table)
 
 {
-  $statut=$statut>0 ? 1 : -1; // dans les tables le statut est seulement a +1 ou -1
+  $status=$status>0 ? 1 : -1; // dans les tables le status est seulement a +1 ou -1
 
-# on pourrait utiliser le statut comme un compteur du nombre de document qui y 
+# on pourrait utiliser le status comme un compteur du nombre de document qui y 
 # font reference, et ainsi mettre hors ligne facilement les personnes,
 # mais cette procedure risque de buguer a terme.
   $tables=$table."s";
 # cherches les id$tables a changer
-  # identite ?
+  # identity ?
 
   if (is_numeric($critere)) { # on a un seul document
-    $identite=intval($critere);
-    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables WHERE identite=$identite") or die (mysql_error());
+    $identity=intval($critere);
+    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables WHERE identity=$identity") or die (mysql_error());
   } else { # on a une condition sur les documents
-    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables,$GLOBALS[tp]entites WHERE identite=id AND $critere AND statut>-32") or die (mysql_error());
+    $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables,$GLOBALS[tp]entities WHERE identity=id AND $critere AND status>-32") or die (mysql_error());
   }
   $ids=array();
   while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
   if (!$ids) return; # il n'y a rien a modifier
   $idlist=join(",",$ids);
 
-  if ($statut>0) {
+  if ($status>0) {
     // dans ce cas c'est simple
-    mysql_query ("UPDATE $GLOBALS[tp]$tables SET statut=abs(statut) WHERE id IN ($idlist)") or die (mysql_error());
+    mysql_query ("UPDATE $GLOBALS[tp]$tables SET status=abs(status) WHERE id IN ($idlist)") or die (mysql_error());
    
 
-  } else { // statut<0
+  } else { // status<0
     # la c'est plus complique, il faut selectionner les $tables qui n'ont pas de document online... celui qu'on publie
 
-    $result=mysql_query ("SELECT id$table FROM $GLOBALS[tp]entites_$tables, $GLOBALS[tp]entites WHERE identite=$GLOBALS[tp]entites.id AND $GLOBALS[tp]entites.statut>0 AND id$table IN ($idlist)") or die (mysql_error());
+    $result=mysql_query ("SELECT id$table FROM $GLOBALS[tp]entites_$tables, $GLOBALS[tp]entities WHERE identity=$GLOBALS[tp]entities.id AND $GLOBALS[tp]entities.status>0 AND id$table IN ($idlist)") or die (mysql_error());
     $ids=array();
     while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
     if ($ids) $where="AND id NOT IN (".join(",",$ids).")";
-    mysql_query("UPDATE $GLOBALS[tp]$tables SET statut=-abs(statut) WHERE id IN ($idlist) $where") or die (mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$tables SET status=-abs(status) WHERE id IN ($idlist) $where") or die (mysql_error());
   }
 }
 

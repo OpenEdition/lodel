@@ -43,7 +43,7 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>Index thématique : [#NOM]</TITLE>
+<TITLE>Index thématique : [#NAME]</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_GEO">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
@@ -63,11 +63,11 @@
 					
 				<!--[ Affichage de l'entrée de l'index géo]-->
 				<h1>
-					[#NOM]
+					[#NAME]
 				</h1>
 					
 				<!--[ Liste des articles ]-->
-				<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'" ORDER="datepubli">
+				<LOOP NAME="articles" TABLE="documents" WHERE="identry='[#ID]'" ORDER="datepubli">
 					<DO>
 						<div class="afficherdocument">
 							<!--[ Liste des documents liés à cette entrée d'index ]-->

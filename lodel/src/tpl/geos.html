@@ -63,13 +63,13 @@
 		
 			
 						<LET VAR="IDREC">0</LET>
-						<LOOP NAME="geographies" TABLE="entrees" WHERE="type='geographie' AND idparent='[#IDREC]' " ORDER="ordre DESC">
+						<LOOP NAME="geographies" TABLE="entries" WHERE="type='geographie' AND idparent='[#IDREC]' " ORDER="rank DESC">
 					        <BEFORE><ul></BEFORE>
 							<DO>
 					                    <li>
 								<div class="afficherdocument">
 								<a  href="entree.[#EXTENSIONSCRIPTS]?id=[#ID]">
-									[#NOM]
+									[#NAME]
 								</a>
 								</div>
 					                    <LET VAR="IDREC">[#ID]</LET>

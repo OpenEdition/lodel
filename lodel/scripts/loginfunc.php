@@ -31,7 +31,7 @@
 
 function open_session ($login) {
 
-  global $userpriv,$usergroupes,$userlang,$sessionname,$timeout,$cookietimeout;
+  global $userrights,$usergroupes,$userlang,$sessionname,$timeout,$cookietimeout;
   global $database,$urlroot,$site,$iduser;
 
   // timeout pour les cookies
@@ -39,29 +39,29 @@ function open_session ($login) {
 
 
   // context
-  $contextstr=addslashes(serialize(array("userpriv"=>intval($userpriv),"usergroupes"=>$usergroupes,"userlang"=>$userlang,"username"=>$login)));
+  $contextstr=addslashes(serialize(array("userrights"=>intval($userrights),"usergroupes"=>$usergroupes,"userlang"=>$userlang,"username"=>$login)));
   $expire=time()+$timeout;
   $expire2=time()+$cookietimeout;
 
   mysql_select_db($database);
-  if (defined("LEVEL_ADMINLODEL") && $userpriv<LEVEL_ADMINLODEL) {
+  if (defined("LEVEL_ADMINLODEL") && $userrights<LEVEL_ADMINLODEL) {
     if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]sites WHERE name='$site' AND status>=32") or die(mysql_error());
     if (mysql_num_rows($result)) { 
       if (function_exists("unlock")) unlock(); 
-      return "erreur_sitebloque"; 
+      return "error_sitebloque"; 
     }
   }
 
-  for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme nom de session
-    // nom de la session
+  for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme name de session
+    // name de la session
     $name=md5($login.microtime());
     // enregistre la session, si ca marche sort de la boucle
     if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')")) break;
   }
   if (function_exists("unlock")) unlock(); 
-  if ($i==5) return "erreur_opensession";
+  if ($i==5) return "error_opensession";
 
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 }
@@ -70,7 +70,7 @@ function open_session ($login) {
 function check_auth ($login,&$passwd,&$site)
 
 {
-  global $context,$iduser,$userpriv,$usergroupes,$userlang;
+  global $context,$iduser,$userrights,$usergroupes,$userlang;
 
   do { // block de control
     if (!$login || !$passwd) break;
@@ -81,7 +81,7 @@ function check_auth ($login,&$passwd,&$site)
     // cherche d'abord dans la base generale.
 
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT * FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+    $result=mysql_query ("SELECT * FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
@@ -90,19 +90,19 @@ function check_auth ($login,&$passwd,&$site)
 
       // cherche ensuite dans la base du site
       mysql_select_db($GLOBALS[currentdb]);
-      $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+      $result=mysql_query ("SELECT id,status,userrights FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;
      } else {
        break; // on s'eject
      }
     // pass les variables en global
-    $userpriv=$row['privilege'];
+    $userrights=$row['userrights'];
     $userlang=$row['lang'];
     $context['iduser']=$iduser=$row['id'];
 
     // cherche les groupes pour les non administrateurs
-    if (defined("LEVEL_ADMIN") && $userpriv<LEVEL_ADMIN) { // defined is useful only for the install.php
-      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
+    if (defined("LEVEL_ADMIN") && $userrights<LEVEL_ADMIN) { // defined is useful only for the install.php
+      $result=mysql_query("SELECT idgroup FROM $GLOBALS[tableprefix]users_usergroups WHERE iduser='$iduser'") or die(mysql_error());
       $usergroupes="1"; // sont tous dans le groupe "tous"
       while ($row=mysql_fetch_row($result)) $usergroupes.=",".$row[0];
     } else {

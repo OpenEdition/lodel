@@ -1672,7 +1672,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
             );
             $keywords_no_newline_cnt           = 12;
 
-            // These reserved words introduce a privilege list
+            // These reserved words introduce a userrights list
             $keywords_priv_list                = array(
                 'GRANT',
                 'REVOKE'
@@ -1839,14 +1839,14 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
                             // reserved word at beginning of query
                             // so do not put a newline before
                             //
-                            // also we must not be inside a privilege list
+                            // also we must not be inside a userrights list
                             if ($i > 0) {
                                 if (!$in_priv_list) {
                                     $before    .= $space_alpha_reserved_word;
                                 }
                             } else {
                             // on first keyword, check if it introduces a
-                            // privilege list
+                            // userrights list
                                 if (PMA_STR_binarySearchInArr($arr[$i]['data'], $keywords_priv_list, $keywords_priv_list_cnt)) {
                                     $in_priv_list = TRUE;
                                 } 

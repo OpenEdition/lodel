@@ -38,9 +38,9 @@ $id=intval($id);
 
 require_once($home."connect.php");
 
-$critere=$droitvisiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
+$critere=$rightvisiteur ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 
-$result=mysql_query("SELECT lien,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere AND type LIKE 'documentannexe-%'") or die (mysql_error());
+$result=mysql_query("SELECT lien,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere AND type LIKE 'documentannexe-%'") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 list($lien,$type)=mysql_fetch_row($result);
 

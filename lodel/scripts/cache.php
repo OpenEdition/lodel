@@ -37,7 +37,7 @@ if (!function_exists("authenticate")) {
 }
 
 
-if ($GLOBALS[droitvisiteur]) {
+if ($GLOBALS[rightvisiteur]) {
   require ($home."calcul-page.php");
   calcul_page($context,$base);
   return;
@@ -47,7 +47,7 @@ if ($GLOBALS[droitvisiteur]) {
 if (!$maj) $maj=myfilemtime("CACHE/maj");
 
 
-// Calcul du nom du fichier cache
+// Calcul du name du fichier cache
 
 $cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",$_SERVER['REQUEST_URI'])), 0, 255);
 // The variable $cachedfile must exist and be visible in the global scope

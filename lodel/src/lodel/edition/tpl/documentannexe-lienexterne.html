@@ -39,7 +39,7 @@
 	[@EDITION.ADD_ANNEX_TO_DOCUMENT]:
 	<LOOP NAME="docu" TABLE="documents" WHERE="id='[#IDPARENT]'">
 		<DO>
-			<span class="nom_publi_parente">[#TITRE]</span>
+			<span class="nom_publi_parente">[#TITLE]</span>
 		</DO>
 	</LOOP>
 </div>
@@ -58,7 +58,7 @@
 			
 			<tr>
 				<td width="200" class="texte_intitule">[@COMMON.TITLE] :</td>
-				<td><input size="60" type="text" name="titre" value="[#TITRE]"></td>
+				<td><input size="60" type="text" name="titre" value="[#TITLE]"></td>
 			</tr>
 			<tr>
 				<td width="200" class="texte_intitule">[@EDITION.COMMENT] :</td>
@@ -69,8 +69,8 @@
 					<td width="200"><span class="texte_intitule">[@EDITION.URL] :</span></td>
 					<td>
 				
-						<IF COND="[#ERREUR_URLINVALIDE]"><span class="message_erreur">[@EDITION.ERROR_INVALID_URL]</span><br /></IF>
-						<IF COND="[#ERREUR_URLINACCESSIBLE]"><span class="message_erreur">[@EDITION.ERROR_NO_ACCESS_WEBSITE]</span><br /></IF>
+						<IF COND="[#ERROR_URLINVALIDE]"><span class="message_erreur">[@EDITION.ERROR_INVALID_URL]</span><br /></IF>
+						<IF COND="[#ERROR_URLINACCESSIBLE]"><span class="message_erreur">[@EDITION.ERROR_NO_ACCESS_WEBSITE]</span><br /></IF>
 						<input name="lien" type="texte" size="60" value="[#LIEN]">
 					</td>
 				</tr>

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-include_once($GLOBALS[home]."func.php");
+require_once($GLOBALS[home]."func.php");
 
 # le $ret ne sert a rien, mais s'il n'est pas la, ma version de php n'aime pas: bug eratique.
 
@@ -57,7 +57,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
 
   if (($template_time <= myfilemtime($base))) {
-    if ($GLOBALS[droitadmin]) $context[templatesrecompiles].="$base | ";
+    if ($GLOBALS[rightadmin]) $context[templatesrecompiles].="$base | ";
     if (!defined("TOINCLUDE")) define("TOINCLUDE",$home);
 
     require_once ($home."lodelparser.php");
@@ -69,7 +69,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   // execute le template php
   require_once($home."textfunc.php");		
-  if ($GLOBALS[showhtml] && $GLOBALS[droitvisiteur]) {
+  if ($GLOBALS[showhtml] && $GLOBALS[rightvisiteur]) {
     ob_start();
     require($template_cache);
     $content=ob_get_contents();
@@ -78,7 +78,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
     echo show_html($content);
     return;
   }
-  require_once($home."boucles.php");
+  require_once($home."loops.php");
 
   if ($context[charset]=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
     require($template_cache);
@@ -102,12 +102,12 @@ function insert_template($context,$filename)
 function mymysql_error($query,$tablename="")
 
 {
-  if ($GLOBALS[droitediteur]) {
+  if ($GLOBALS[righteditor]) {
     if ($tablename) $tablename="LOOP: ".$tablename." ";
     die("</body>".$tablename."QUERY: ".htmlentities($query)."<br><br>".mysql_error());
   } else {
     if ($GLOBALS[contactbug]) @mail($contactbug,"[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>".htmlentities($query)."<br><br>".mysql_error());
-    die("Une erreur est survenue lors de la g&eacute;n&eacute;ration de cette page. Veuillez nous excuser, nous traitons le probl&egrave;me le plus rapidement possible");
+    die("Une error est survenue lors de la g&eacute;n&eacute;ration de cette page. Veuillez nous excuser, nous traitons le probl&egrave;me le plus rapidement possible");
   }
 }
 

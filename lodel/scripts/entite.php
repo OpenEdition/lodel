@@ -30,7 +30,7 @@
 
 require_once ($home."func.php");
 
-if ($classe=="publications") {
+if ($class=="publications") {
   $visualisationscript="sommaire";
   $modificationscript="publication";
 } else {
@@ -41,7 +41,7 @@ if ($classe=="publications") {
 
 if ($idtache) {
   // lit la tache en cours
-  $tache=get_tache($idtache);
+  $tache=gettask($idtache);
   $idtype=0;
 
   if ($tache['massimport']) {
@@ -63,7 +63,7 @@ if ($idtache) {
     if ($ifile>1) {
       $typedoc=addslashes($tache["typedoc".$ifile]);
       // recherche l'id du type
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$typedoc' AND classe='$classe'") or die (mysql_error());
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$typedoc' AND class='$class'") or die (mysql_error());
       if (!mysql_num_rows($result)) die("ERROR: Type incorrect \"$typedoc\". Verifier le stylage et le modele editorial");
       list($idtype)=mysql_fetch_row($result);
     } else {
@@ -98,13 +98,13 @@ if ($idtache) {
     $localcontext[idparent]=$tache[idparent];
     $localcontext[idtype]=$idtype;
     $localcontext[id]=$tache[iddocument];
-    $localcontext[statut]=-64; // car le document n'est pas correcte a priori
-    // enregistre le nom du fichier original. Enleve le repertoire.
+    $localcontext[status]=-64; // car le document n'est pas correcte a priori
+    // enregistre le name du fichier original. Enleve le repertoire.
 
     if (!$tablefields) require($home."tablefields.php");
     if ($tablefields && (
-			 !in_array("fichiersource",$tablefields["$GLOBALS[tp]$classe"]) ||
-			 !in_array("importversion",$tablefields["$GLOBALS[tp]$classe"]))) {
+			 !in_array("fichiersource",$tablefields["$GLOBALS[tp]$class"]) ||
+			 !in_array("importversion",$tablefields["$GLOBALS[tp]$class"]))) {
       die("ERROR: pour que l'importation fonctionne correctement, il est vivement conseiller de créer les champs <b>fichiersource</b> et <b>importversion</b> dans le modèle éditorial. Ces champs doivent avoir le type \"texte court\".<br /><a href=\"../admin\">Adminstration</a>");
     }
 
@@ -117,8 +117,8 @@ if ($idtache) {
     
     $text=file_get_contents($filename);
     require_once($home."xmlimport.php");
-    $id=enregistre_entite_from_xml($localcontext,$text,$classe);
-    update_tache_etape($idtache,3); // etape 3
+    $id=enregistre_entite_from_xml($localcontext,$text,$class);
+    updatetask_etape($idtache,3); // etape 3
     $tache[iddocument]=$id;
 
     // faut-il copier le fichier ?
@@ -126,10 +126,10 @@ if ($idtache) {
       $dest=SITEROOT."lodel/sources/entite-$id.source";
       if (!(@copy($tache[source],$dest))) die("Le fichier source $tache[source] n'a pas pu etre enregistre dans $dest");
       @chmod($dest,0666 & octdec($GLOBALS[filemask]));
-      $tache[source]=""; // la copie est faite, donc on efface le nom de la source pour la tache
+      $tache[source]=""; // la copie est faite, donc on efface le name de la source pour la tache
     }
 
-    update_tache_context($idtache,$tache);
+    updatetask_context($idtache,$tache);
   } else {
     $id=$tache[iddocument];
   }
@@ -150,18 +150,18 @@ if ($cancel) { // pas de idtache, on s'en va tout simplement
   back();
 }
 
-if ($id>0 && !$droitadmin) {
+if ($id>0 && !$rightadmin) {
   $critere=" AND groupe IN ($usergroupes)";
 } else $critere="";
 
 if ($id>0 && $dir) {
   lock_write("entites","types");
   # cherche le parent
-  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entites WHERE id='$id' $critere") or die (mysql_error());
-  if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entities WHERE id='$id' $critere") or die (mysql_error());
+  if (!mysql_num_rows($result)) { die ("vous n'avez pas les rights"); }
   list($idparent)=mysql_fetch_row($result);
-  $critere=$classe=="publications" ? "AND classe='publications'" : "AND classe!='publications'";
-  chordre("entites",$id,"idparent='$idparent' AND idtype=$GLOBALS[tp]types.id AND $GLOBALS[tp]entites.statut>-64 $critere",$dir,"","types");
+  $critere=$class=="publications" ? "AND class='publications'" : "AND class!='publications'";
+  chrank("entites",$id,"idparent='$idparent' AND idtype=$GLOBALS[tp]types.id AND $GLOBALS[tp]entities.status>-64 $critere",$dir,"","types");
   touch(SITEROOT."CACHE/maj");
   unlock("entites");
   back();
@@ -178,17 +178,17 @@ if ($id>0 && $dir) {
 //
 } elseif ($plus || $reload || $reload2) {
   extract_post();
-  extract_files($context,$classe);
+  extract_files($context,$class);
 
 } elseif ($edit) { // modifie ou ajoute
 //
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
   extract_post();
-  extract_files($context,$classe);
+  extract_files($context,$class);
 
-  $context[statut]=-1;
-  if ($id=enregistre_entite($context,$id,$classe,"edition!=''")) { // ca marche... on termine
+  $context[status]=-1;
+  if ($id=enregistre_entite($context,$id,$class,"edition!=''")) { // ca marche... on termine
     //
     // termine en redirigeant correctement
     //
@@ -198,7 +198,7 @@ if ($id>0 && $dir) {
       }
       $tache["fichierdecoupe$ifile"]="finished";
       $tache[iddocument]=0; // on a fini, donc on ne garde pas cet id
-      update_tache_context($idtache,$tache);
+      updatetask_context($idtache,$tache);
       header("location: $modificationscript.php?idtache=$idtache");
       return;
     } elseif ($ajouterdocannexe) {
@@ -216,18 +216,18 @@ if ($id>0 && $dir) {
  // edit
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]$classe.*, $GLOBALS[tp]entites.*  FROM $GLOBALS[tp]entites INNER JOIN $GLOBALS[tp]$classe ON $GLOBALS[tp]entites.id=$GLOBALS[tp]$classe.identite WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]$class.*, $GLOBALS[tp]entities.*  FROM $GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]$class ON $GLOBALS[tp]entities.id=$GLOBALS[tp]$class.identity WHERE $GLOBALS[tp]entities.id='$id' $critere") or die (mysql_error());
   if (!mysql_num_rows($result)) { header("location: not-found.html"); return; }
   $context[entite]=mysql_fetch_assoc($result);
   $context[idtype]=$context[entite][idtype];
-  $context[identifiant]=$context[entite][identifiant];
+  $context[identifier]=$context[entite][identifier];
   extrait_personnes($id,$context);
   extrait_entrees($id,$context);
 } else {
 #  require_once ($home."validfunc.php");
 #  $context[type]=trim($type);
 #  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
-#  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
+#  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND status>0") or die (mysql_error());
 #  if (!mysql_num_rows($result)) die("type inconnu $context[type]");
 #  list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
   $context[entite]=array();
@@ -235,19 +235,19 @@ if ($id>0 && $dir) {
 
 if (!$context[tplcreation]) {
   if (!$context[idtype] && $id) {
-    $result=mysql_query("SELECT tplcreation,idtype,type FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entites.id='$id'") or die (mysql_error());
+    $result=mysql_query("SELECT tplcreation,idtype,type FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die (mysql_error());
     if (!mysql_num_rows($result)) die("ERROR: document without type (???)");
     list($context[tplcreation],$context[idtype],$context[type])=mysql_fetch_row($result);
   } else {
     if (!$context[idtype]) die("preciser un type in document.php");
-    $result=mysql_query("SELECT tplcreation,type FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND statut>0") or die (mysql_error());
+    $result=mysql_query("SELECT tplcreation,type FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND status>0") or die (mysql_error());
     list($context[tplcreation],$context[type])=mysql_fetch_row($result);
   }
 }
 
 $context[idtache]=intval($idtache);
 
-posttraitement($context);
+postprocessing($context);
 
 require_once($home."langues.php");
 
@@ -255,7 +255,7 @@ require ($home."calcul-page.php");
 calcul_page($context,$context[tplcreation]);
 
 
-function extract_files(&$context,$classe)
+function extract_files(&$context,$class)
 
 {
   global $home;
@@ -267,33 +267,42 @@ function extract_files(&$context,$classe)
 #  print_r($files);
 
   // remove files with error or not uploaded
-  foreach ($files['tmp_name'] as $nom=>$f) {
-    if ($context['entite'][$nom]['delete']) { // delete the image
-      unset($files['tmp_name'][$nom]);
-      $context['entite'][$nom]="";
-    } elseif (!$f || $files['error'][$nom]!=0) { // uploaded ?
-      // nothing to do
-      unset($files['tmp_name'][$nom]);
-      // take the previous value
-      $context['entite'][$nom]=$context['entite'][$nom][previousvalue];
-      // check for hack or bug
-      if ($context['entite'][$nom] && !preg_match("/^docannexe\/(image|fichier)\/[^\.\/]+\/[^\/]+$/",$context['entite'][$nom])) die("ERROR: invalid filename");
-    }
+  foreach ($files['tmp_name'] as $name=>$f) {
+    if ($context['entite'][$name]['delete']) { // delete the image
+      unset($files['tmp_name'][$name]);
+      $context['entite'][$name]="";
+    } elseif (!$f || $files['error'][$name]!=0) { // uploaded ?
+      // no upload
+      print_r($context['entite']);
+      echo "ici $name ".$context['entite'][$name]['previousvalue']."<br>";
+      // check for a file in upload ?
+      if (preg_match("/^upload\/[^\/]+$/",$context['entite'][$name]['previousvalue'])) {
+	$files['tmp_name'][$name]=$files['name'][$name]="CACHE/".$context['entite'][$name]['previousvalue'];
+	$fromlocaldir[$name]=true; // the files is not uploaded by POST
+      } else {
+	// nothing to do
+	unset($files['tmp_name'][$name]);
+	// take the previous value
+	$context['entite'][$name]=$context['entite'][$name]['previousvalue'];
+	// check for hack or bug
+	if ($context['entite'][$name] && !preg_match("/^docannexe\/(image|fichier)\/[^\.\/]+\/[^\/]+$/",$context['entite'][$name])) die("ERROR: invalid filename");
+      }
+    } // no upload
   }
   // if no files to upload, return.
   if (!$files['tmp_name']) return;
 
   require_once($home."connect.php");
   // look for the field we have to download.
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 AND edition!='' AND (type='image' OR type='fichier')") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class' AND $GLOBALS[tp]fields.status>0 AND $GLOBALS[tp]fieldgroups.status>0 AND edition!='' AND (type='image' OR type='fichier')") or die (mysql_error());
 
   if (!mysql_num_rows($result)) return;
 
   require_once($home."func.php");
   
   // transfer
-  while (list($nom,$type)=mysql_fetch_row($result)) {
-    if (!$files['tmp_name'][$nom]) continue;     // should not happend
+  while (list($name,$type)=mysql_fetch_row($result)) {
+    if (!$files['tmp_name'][$name]) continue;     // should not happend
 
     if (!$tmpdir[$type]) { // check if the tmpdir is defined
       // look for a unique dirname.
@@ -302,13 +311,13 @@ function extract_files(&$context,$classe)
       } while (file_exists(SITEROOT.$tmpdir[$type]));
     }
     if ($type=="fichier") {
-      $context['entite'][$nom]=save_annex_file($tmpdir[$type],$files['tmp_name'][$nom],$files['name'][$nom],TRUE,$erreur);
+      $context['entite'][$name]=save_annex_file($tmpdir[$type],$files['tmp_name'][$name],$files['name'][$name],!$fromlocaldir[$name],$error);
     } elseif ($type=="image") {
-      $context['entite'][$nom]=save_annex_image($tmpdir[$type],$files['tmp_name'][$nom],$nom,TRUE,$erreur);
+      $context['entite'][$name]=save_annex_image($tmpdir[$type],$files['tmp_name'][$name],$name,!$fromlocaldir[$name],$error);
     }
-    if ($erreur) { // error ?
-      $context['erreur'][$nom]=$erreur;
-      $context['entite'][$nom]="";
+    if ($error) { // error ?
+      $context['error'][$name]=$error;
+      $context['entite'][$name]="";
     }
   }
 }

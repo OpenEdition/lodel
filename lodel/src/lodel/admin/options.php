@@ -38,26 +38,26 @@ require_once ($home."optionfunc.php");
 if ($set) {
   extract_post();
 
-  // statut less than 0 are internal option.
-  $critere=$GLOBALS[droitadminlodel] ? "statut>0" : "statut>0 AND statut<32";
+  // status less than 0 are internal option.
+  $critere=$GLOBALS[rightadminlodel] ? "status>0" : "status>0 AND status<32";
 
-  $result=mysql_query("SELECT id,nom,type FROM $GLOBALS[tp]options WHERE $critere") or die (mysql_error());
-  while (list($id,$nom,$type)=mysql_fetch_row($result)) {
-    if (!isset($context["option_$nom"])
-	|| ($type=="pass" && $context["option_$nom"]=="")) continue;
-    $v=$context["option_$nom"];
+  $result=mysql_query("SELECT id,name,type FROM $GLOBALS[tp]options WHERE $critere") or die (mysql_error());
+  while (list($id,$name,$type)=mysql_fetch_row($result)) {
+    if (!isset($context["option_$name"])
+	|| ($type=="pass" && $context["option_$name"]=="")) continue;
+    $v=$context["option_$name"];
     switch ($type) {
     case "int": $v=intval($v);
       break;
     }
-    mysql_query("UPDATE $GLOBALS[tp]options SET valeur='$v' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]options SET value='$v' WHERE id='$id'") or die(mysql_error());
   }
   touch(SITEROOT."CACHE/maj");
   if ($terminer) { header("location: index.php"); return; }
 }
 
 
-posttraitement($context);
+postprocessing($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"options");

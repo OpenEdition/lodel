@@ -34,7 +34,7 @@
 	</tr>
 </table>
 
-<form method="POST" action="texte.php">
+<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
 	<input type="hidden" name="textgroup" value="[#TEXTGROUP]" />
@@ -48,13 +48,13 @@
 		<tr>
 			<td class="texte_intitule">[@COMMON.NAME] :</td>
 	        <IF COND="[#ID]">
-   		        <td>[#NOM]</td>
+   		        <td>[#NAME]</td>
 
                 <ELSE/>
-			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
+			<td><input size="30" type="text" name="nom" value="[#NAME]"></td>
 		</IF>
 		</tr>
-		<IF COND="[#ERREUR_NOM]">
+		<IF COND="[#ERROR_NAME]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.NARROW_NAME].</td></tr>
 		</IF>
 		<IF COND="#ERREUR_NOM_EXISTE">

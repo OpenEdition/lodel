@@ -32,7 +32,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 
@@ -58,7 +58,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
 
     // the ServOO should return nothing, if it return, it's an ERROR or a SAY comment.
     if ($ret) {
-      $context[erreur_upload]=utf8_encode("Erreur renvoyée par le serveur OO: \"$ret\"");
+      $context[error_upload]=utf8_encode("Erreur renvoyée par le serveur OO: \"$ret\"");
       break;
     }
 

@@ -30,10 +30,10 @@
 
 function writefile ($filename,$text)
 {
- //echo "nom de fichier : $filename";
+ //echo "name de fichier : $filename";
    if (file_exists($filename)) 
    { 
-     if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
+     if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de right contacter Luc ou Ghislain");
    }
    $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
    @chmod ($filename,0666 & octdec($GLOBALS['filemask']));
@@ -41,23 +41,24 @@ function writefile ($filename,$text)
 }
 
 
-function get_tache (&$id)
+function gettask (&$id)
 
 {
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id' AND statut>0") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]tasks WHERE id='$id' AND status>0") or die (mysql_error());
   if (!($row=mysql_fetch_assoc($result))) { back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
 
-function posttraitement(&$context)
+
+function postprocessing(&$context)
 
 {
   if ($context) {
     foreach($context as $key=>$val) {
       if (is_array($val)) {
-	posttraitement($context[$key]);
+	postprocessing($context[$key]);
       } else {
 	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
@@ -69,19 +70,19 @@ function posttraitement(&$context)
 // $context est soit un tableau qui sera serialise soit une chaine deja serialise
 //
 
-function make_tache($nom,$etape,$context,$id=0)
+function maketask($name,$etape,$context,$id=0)
 
 {
   global $iduser;
   if (is_array($context)) $context=serialize($context);
-  mysql_query("REPLACE INTO $GLOBALS[tp]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$context')") or die (mysql_error());
+  mysql_query("REPLACE INTO $GLOBALS[tp]tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','$iduser','$context')") or die (mysql_error());
   return mysql_insert_id();
 }
 
-function update_tache_etape($id,$etape)
+function updatetask_step($id,$step)
 
 {
-  mysql_query("UPDATE $GLOBALS[tp]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]tasks SET step='$step' WHERE id='$id'") or die (mysql_error());
  # ne pas faire ca, car si la tache n'est pas modifiee, il renvoie 0
 # if (mysql_affected_rows()!=1) die ("Erreur d'update de id=$id");
 }
@@ -90,7 +91,7 @@ function update_tache_etape($id,$etape)
 // previouscontext est la chaine serialisee
 // newcontext est un array
 
-function update_tache_context($id,$newcontext,$previouscontext="")
+function updatetask_context($id,$newcontext,$previouscontext="")
 
 {
   if ($previouscontext) { // on merge les deux contextes
@@ -99,7 +100,7 @@ function update_tache_context($id,$newcontext,$previouscontext="")
     $contextstr=serialize($newcontext);
   }
 
-  mysql_query("UPDATE $GLOBALS[tp]taches SET context='$contextstr' WHERE id='$id'") or die (mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]tasks SET context='$contextstr' WHERE id='$id'") or die (mysql_error());
 
 }
 
@@ -131,20 +132,20 @@ function clean_request_variable(&$var) {
 }
 
 
-function get_ordre_max ($table,$where="") 
+function get_max_rank ($table,$where="") 
 
 {
   if ($where) $where="WHERE ".$where;
 
   #require_once ($GLOBALS[home]."connect.php");
-  $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tp]$table $where") or die (mysql_error());
-  if (mysql_num_rows($result)) list($ordre)=mysql_fetch_row($result);
-  if (!$ordre) $ordre=0;
+  $result=mysql_query ("SELECT MAX(rank) FROM $GLOBALS[tp]$table $where") or die (mysql_error());
+  if (mysql_num_rows($result)) list($rank)=mysql_fetch_row($result);
+  if (!$rank) $rank=0;
 
-  return $ordre+1;
+  return $rank+1;
 }
 
-function chordre($table,$id,$critere,$dir,$inverse="",$jointables="")
+function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
 
 {
   $table=$GLOBALS['tp'].$table;
@@ -154,20 +155,20 @@ function chordre($table,$id,$critere,$dir,$inverse="",$jointables="")
     $jointables=",".$GLOBALS['tp'].
       trim(join(",".$GLOBALS['tp'],preg_split("/,\s*/",$jointables)));
   }
-  $result=mysql_query("SELECT $table.id,$table.ordre FROM $table $jointables WHERE $critere ORDER BY $table.ordre $desc") or die (mysql_error());
+  $result=mysql_query("SELECT $table.id,$table.rank FROM $table $jointables WHERE $critere ORDER BY $table.rank $desc") or die (mysql_error());
 
-  $ordre=$dir>0 ? 1 : mysql_num_rows($result);
+  $rank=$dir>0 ? 1 : mysql_num_rows($result);
   while ($row=mysql_fetch_assoc($result)) {
     if ($row['id']==$id) {
       # intervertit avec le suivant s'il existe
       if (!($row2=mysql_fetch_assoc($result))) break;
-      mysql_query("UPDATE $table SET ordre='$ordre' WHERE id='$row2[id]'") or die (mysql_error());
-      $ordre+=$dir;
+      mysql_query("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'") or die (mysql_error());
+      $rank+=$dir;
     }
-    if ($row['ordre']!=$ordre) {
-      mysql_query("UPDATE $table SET ordre='$ordre' WHERE id='$row[id]'") or die (mysql_error());
+    if ($row['rank']!=$rank) {
+      mysql_query("UPDATE $table SET rank='$rank' WHERE id='$row[id]'") or die (mysql_error());
     }
-    $ordre+=$dir;
+    $rank+=$dir;
   }
 } 
 
@@ -284,11 +285,11 @@ function back($arg="",$back=-1)
 
   $offset=-1-$back;
 
-  $result=mysql_db_query($database,"SELECT id,urlretour FROM $GLOBALS[tp]pileurl WHERE urlretour!='' AND urlretour!='".mysql_escape_string($url)."' AND idsession='$idsession' ORDER BY id DESC LIMIT $offset,1") or die (mysql_error());
+  $result=mysql_db_query($database,"SELECT id,url FROM $GLOBALS[tp]urlstack WHERE url!='' AND url!='".mysql_escape_string($url)."' AND idsession='$idsession' ORDER BY id DESC LIMIT $offset,1") or die (mysql_error());
   list ($id,$newurl)=mysql_fetch_row($result);
 
   if ($id) {
-    mysql_db_query($database,"DELETE FROM $GLOBALS[tp]pileurl WHERE id>='$id' AND idsession='$idsession'") or die (mysql_error());
+    mysql_db_query($database,"DELETE FROM $GLOBALS[tp]urlstack WHERE id>='$id' AND idsession='$idsession'") or die (mysql_error());
     header("Location: http://".$_SERVER['SERVER_NAME'].$newurl.$arg);exit;
   } else {
     header("Location: index.php");exit;
@@ -345,13 +346,16 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #  return serialize($newoptions);
 #}
 
-function getoption($nom,$extracritere=" AND type!='pass'")
+function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
 {
   static $options_cache;
-  if (!$nom) return;
+  if (!$name) return;
 
-  if (is_array($nom)) {
-    foreach ($nom as $n) {
+  if (is_array($name)) {
+    foreach ($name as $n) {
+      if (strpos(".",$n)!==false) { // this is a context dependent option
+	die("ERROR: context dependent option with array get are not implemented at the moment");
+      }
       if ($options_cache[$n]) { // cached ?
 	$ret[$n]=$options_cache[$n];
       } else { // not cached, get it
@@ -359,30 +363,39 @@ function getoption($nom,$extracritere=" AND type!='pass'")
       }
     }
     if ($get) { // some to get
-      $critere="nom IN ('".join("','",$get)."')";
+      $critere="name IN ('".join("','",$get)."')";
     } else { // everything in the cache, let's return
       return $ret;
     }
   } else {
-    if ($options_cache[$nom]) // cached ?
-      return $options_cache[$nom];
-    $critere="nom='$nom'";
+    $critere="";
+    // is it a context dependent option ?
+    $dotpos=strpos(".",$name);
+    if ($dotpos!==false) {
+      $class=substr($name,0,$dotpos);
+      $name=substr($name,$dotpos+1);
+      $critere="";
+    }
+
+    if ($options_cache[$class.".".$name] // cached ?
+      return $options_cache[$class.".".$name];
+    $critere="name='$name'";
   }
 
-  $result=mysql_query("SELECT nom,valeur FROM $GLOBALS[tableprefix]options WHERE $critere $extracritere");
+  $result=mysql_query("SELECT name,value FROM $GLOBALS[tableprefix]options WHERE $critere $extracritere");
   if (!$result) {
     if (mysql_errno()==1146) return; // table does not exists... that can happen during the installation
-    mysql_erro();
+    die(mysql_error());
   }
   while (list($n,$val)=mysql_fetch_row($result)) {
     $options_cache[$n]=$val;
     $ret[$n]=$val;
   }
 
-  if (is_array($nom)) {
+  if (is_array($name)) {
     return $ret; // return an array
   } else {
-    return $ret[$nom]; // return a string
+    return $ret[$name]; // return a string
   }
 }
 
@@ -394,11 +407,18 @@ function getlodeltext($name,$group,$lang=-1)
   require_once($GLOBALS[$home]."connect.php");
 
   $db= ($group=="site") ? "" : $GLOBALS['database'].".";
-  $critere=$GLOBALS['droitvisiteur'] ? "" : "AND statut>0";
-  $result=mysql_query("SELECT id,texte,statut FROM $db$GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC") or die(mysql_error());
+  $critere=$GLOBALS['rightvisitor'] ? "" : "AND status>0";
+  $result=mysql_query("SELECT id,contents,status FROM $db$GLOBALS[tp]texts WHERE name='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC") or die(mysql_error());
   $arr=mysql_fetch_row($result);
-  if (!$arr[1] && $GLOBALS['droitvisiteur']) $arr[1]="@".$name;
+  if (!$arr[1] && $GLOBALS['rightvisitor']) $arr[1]="@".$name;
   return $arr;
+}
+
+function getlodeltextcontents($name,$group,$lang=-1)
+
+{
+  list($id,$contents)=getlodeltext($name,$group,$lang);
+  return $contents;
 }
 
 
@@ -703,7 +723,7 @@ function setrecord($table,$id,$set,$context=array())
 }
 
 
-// valeur de retour identifiant ce script
+// valeur de retour identifier ce script
 return 568;
 
 ?>

@@ -34,7 +34,7 @@
 	</tr>
 </table>
 
-<form method="POST" action="backupmodel.php">
+<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
 <input type="hidden" name="backup" value="1">
 
 

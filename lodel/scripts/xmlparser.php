@@ -99,7 +99,7 @@ function xml_parse_into_struct_ns_endElement($parser, $name) {
   if (strpos($name,"r2r:")===0) {
     $ind=$GLOBALS[into_struct_ns_ind];
     $name=substr($name,4);
-    // cherche le dernier tag ouvert avec ce nom
+    // cherche le dernier tag ouvert avec ce name
     $openind=array_last($GLOBALS[into_struct_ns_index][$name]);
     if ($openind!=$ind-1) {
       $GLOBALS[into_struct_ns_values][$openind][type]="open";

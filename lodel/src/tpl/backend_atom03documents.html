@@ -41,7 +41,7 @@
 		[(#CURRENTURL|dirname)]
 		</id>
 		<tagline><MACRO NAME="DESCRIPTION_SITE_POUR_METAS"></tagline>
-<LOOP NAME="derniere_datepubli" TABLE="documents" WHERE="statut gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="1" ORDER="datepubli DESC">
+<LOOP NAME="derniere_datepubli" TABLE="documents" WHERE="status gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="1" ORDER="datepubli DESC">
 	<modified>[#DATEPUBLI]T00:00:00Z</modified>
 </LOOP>
 	<generator
@@ -49,7 +49,7 @@
      version="[#VERSION]">
 	Lodel
 	</generator>		
-<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="statut gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="0,10" ORDER="datepubli DESC">
+<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="status gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="0,10" ORDER="datepubli DESC">
 			<DO>
 				<entry>
 					<title>[(#TITRE|removefootnotes|textebrut)]</title>

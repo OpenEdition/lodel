@@ -228,7 +228,7 @@ class WikiInlineParser {
       }
       if(!$tag->isDummy ){
          //--- on n'a pas trouvé le tag de fin
-         // on met en erreur
+         // on met en error
          $this->error=true;
          return false;
       }else
@@ -249,13 +249,13 @@ class WikiInlineParser {
 
 
 /**
- * classe de base pour la transformation des élements de type bloc
+ * class de base pour la transformation des élements de type bloc
  * @abstract
  */
 class WikiRendererBloc {
 
     /**
-    * @var string  code identifiant le type de bloc
+    * @var string  code identifier le type de bloc
     */
    var $type='';
 
@@ -277,7 +277,7 @@ class WikiRendererBloc {
    var $_closeNow=false;
 
    /**
-    * @var WikiRenderer      référence à la classe principale
+    * @var WikiRenderer      référence à la class principale
     */
    var $engine=null;
 
@@ -414,7 +414,7 @@ class WikiRenderer {
    var $inlineParser=null;
 
    /**
-    * liste des lignes où il y a une erreur wiki
+    * liste des lignes où il y a une error wiki
     */
    var $errors;
 
@@ -462,7 +462,7 @@ class WikiRenderer {
             $this->_closeBloc();
          }else{
 
-            // detection de debut de bloc (liste, tableau, hr, titre)
+            // detection de debut de bloc (liste, tableau, hr, title)
             foreach($this->_blocList as $bloc){
                if($bloc->detect($ligne))
                   break;

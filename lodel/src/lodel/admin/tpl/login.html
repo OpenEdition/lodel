@@ -35,12 +35,12 @@
 	<div id="formulaire">
 		<div id="titre_formulaire">
 			[@COMMON.WELCOME_ON] 
-			<LOOP NAME="nom_site" TABLE="sites" WHERE="rep='[#SITE]'">
-				<DO><span class="texte"><strong>[#NOM]</strong></span></DO>
+			<LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
+				<DO><span class="texte"><strong>[#TITLE]</strong></span></DO>
 			</LOOP>
 			<br />[@COMMON.DEMAND_IDENTIFICATION] :
 		</div>
-		<form action="login.php" method="POST">
+		<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
 			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 			<div id="champ_formulaire">
 				<IF COND="[#CHARSET] ne 'utf-8'">
@@ -48,20 +48,20 @@
 						[@COMMON.BROWSER_UTF8].<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8].
 					</span><br /><br />
 				</IF>
-				<IF COND="[#ERREUR_LOGIN]">
+				<IF COND="[#ERROR_LOGIN]">
 					<span class="message_erreur">[@COMMON.INVALID_LOGIN_PASSWORD].</span><br /><br />
 				</IF>
-				<IF COND="[#ERREUR_OPENSESSION]">
+				<IF COND="[#ERROR_OPENSESSION]">
 					<span class="message_erreur">[@COMMON.ERROR_OPENSESSION].</span><br /><br />
 				</IF>
-				<IF COND="[#ERREUR_SITEBLOQUE]">
+				<IF COND="[#ERROR_SITEBLOQUE]">
 					<span class="message_erreur">[@COMMON.BLOCK_SITE].</span><br /><br />
 				</IF>
 				<!--[[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]]-->
-				<IF COND="[#ERREUR_TIMEOUT]">
+				<IF COND="[#ERROR_TIMEOUT]">
 					<span class="message_erreur">[@COMMON.SESSION_TIMEOUT].</span><br /><br />
 				</IF>
-				<IF COND="[#ERREUR_PRIVILEGE]">
+				<IF COND="[#ERROR_PRIVILEGE]">
 					<span class="message_erreur">[@COMMON.ERROR_RIGHTS].</span><br /><br />
 				</IF>
 				[@COMMON.LOGIN] : <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" /><br /><br />

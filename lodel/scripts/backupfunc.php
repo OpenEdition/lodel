@@ -35,34 +35,34 @@
 
 define("LODELPREFIX","__LODELTP__");
 
-$GLOBALS['lodelsitetables']=array("$GLOBALS[tp]objets",
-				  "$GLOBALS[tp]entites",
+$GLOBALS['lodelsitetables']=array("$GLOBALS[tp]objects",
+				  "$GLOBALS[tp]entities",
 				  "$GLOBALS[tp]relations",
 				  "$GLOBALS[tp]publications",
 				  "$GLOBALS[tp]documents",
-				  "$GLOBALS[tp]champs",
-				  "$GLOBALS[tp]groupesdechamps",
-				  "$GLOBALS[tp]personnes",
+				  "$GLOBALS[tp]fields",
+				  "$GLOBALS[tp]fieldgroups",
+				  "$GLOBALS[tp]persons",
 				  "$GLOBALS[tp]users",
-				  "$GLOBALS[tp]groupes",
-				  "$GLOBALS[tp]users_groupes",
+				  "$GLOBALS[tp]usergroups",
+				  "$GLOBALS[tp]users_usergroups",
 				  "$GLOBALS[tp]types",
-				  "$GLOBALS[tp]typepersonnes",
-				  "$GLOBALS[tp]typeentrees",
-				  "$GLOBALS[tp]entrees",
-				  "$GLOBALS[tp]taches",
-				  "$GLOBALS[tp]textes",
-				  "$GLOBALS[tp]entites_personnes",
-				  "$GLOBALS[tp]entites_entrees",
-				  "$GLOBALS[tp]typeentites_typeentites",
-				  "$GLOBALS[tp]typeentites_typeentrees",
-				  "$GLOBALS[tp]typeentites_typepersonnes",
+				  "$GLOBALS[tp]persontypes",
+				  "$GLOBALS[tp]entrytypes",
+				  "$GLOBALS[tp]entries",
+				  "$GLOBALS[tp]tasks",
+				  "$GLOBALS[tp]texts",
+				  "$GLOBALS[tp]entities_persons",
+				  "$GLOBALS[tp]entities_entries",
+				  "$GLOBALS[tp]entitytypes_entitytypes",
+				  "$GLOBALS[tp]entitytypes_entrytypes",
+				  "$GLOBALS[tp]entitytypes_persontypes",
 				  "$GLOBALS[tp]options",
 				  "$GLOBALS[tp]translations");
 
 $GLOBALS['lodelbasetables']=array("$GLOBALS[tp]sites",
 				  "$GLOBALS[tp]users",
-				  "$GLOBALS[tp]pileurl",
+				  "$GLOBALS[tp]urltask",
 				  "$GLOBALS[tp]session");
 
 
@@ -125,7 +125,7 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
     $context[outfilename]=$operation=="cache" ? 
       "CACHE/$archivefilename" : $GLOBALS[importdir]."/$archivefilename";
     if (!(@rename($archivetmp,$context[outfilename]))) {
-      $context[erreur]=1;
+      $context[error]=1;
       return FALSE;
     } else {
       // ok, continue
@@ -162,7 +162,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
   }
 
   $GLOBALS['drop']=$drop;
-  $err_url = $GLOBALS['PHP_SELF']."?erreur=1";
+  $err_url = $GLOBALS['PHP_SELF']."?error=1";
   $crlf = PMA_whichCrlf();
 
   if (!$tables) die("ERROR: tables is not defined in mysql_dump");

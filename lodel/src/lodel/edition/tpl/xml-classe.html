@@ -27,14 +27,14 @@
 
 
   <!--[ affiche les personnes ]-->
-  <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+  <LOOP NAME="persontypes" TABLE="persontypes" TABLE="typeentites_persontypes" WHERE="idpersontype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
     <DO>
-	<LOOP NAME="lespersonnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
+	<LOOP NAME="lespersonnes" TABLE="persons" WHERE="identity='[#IDENTITE]' and idtype='[#ID]'" ORDER="rank">
 	  <BEFORE>
             <gr[(#TYPE|removespace)]>
           </BEFORE>
 	  <DO>
-	    <[(#TYPE|removespace)] ordre="[#ORDRE]">
+	    <[(#TYPE|removespace)] ordre="[#RANK]">
 	    [<prefix>(#PREFIX)</prefix>]
 	    <prenom>[(#PRENOM)]</prenom>
 	    <nomfamille>[(#NOMFAMILLE)]</nomfamille>
@@ -53,15 +53,15 @@
   <!--[ ]-->
 
   <!--[ affiche les entrees ]-->
-  <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+  <LOOP NAME="entrytypes" TABLE="entrytypes" TABLE="typeentites_entrytypes" WHERE="identrytype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
     <DO>
-	<LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]' AND identite='[#IDENTITE]'" ORDER="ordre">
+	<LOOP NAME="lesentrees" TABLE="entries" WHERE="idtype='[#ID]' AND identity='[#IDENTITE]'" ORDER="rank">
 	  <BEFORE>
             <gr[(#TYPE|removespace)]>
           </BEFORE>
 	  <DO>
 	    <[(#TYPE|removespace)]>
-	    <nom>[#NOM]</nom>
+	    <nom>[#NAME]</nom>
 	    <abrev>[#ABREV]</abrev>
 	    </[(#TYPE|removespace)]>
 	  </DO>
@@ -74,9 +74,9 @@
   <!--[ ]-->
 
   <!--[ affiche les champs ]-->
-  <LOOP NAME="groupesdechamps" SELECT="nom,id" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
+  <LOOP NAME="groupesdechamps" SELECT="nom,id" TABLE="fieldgroups" WHERE="class='[#CLASS]'" ORDER="rank">
     <DO>
-      <[#NOM]>
+      <[#NAME]>
       <LOOP NAME="valeurs_des_champs">
 	<DO>
 	  <!--[ transforme some invalide entry ]-->
@@ -85,22 +85,22 @@
 	  <!--[ do we need the output this value ? ]-->
 	  <IF COND="[#VALUE] and [#CONDITION]!='+'">
 	    <IF COND="[#TYPE] eq 'boolean'">
-	      <[#NOM]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NOM]>
+	      <[#NAME]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NAME]>
 	    <ELSE/>
 	    <IF COND="[#TYPE] eq 'mltext'">
 		  <LOOP NAME="mltext">
 		    <DO>
-		      <[#NOM] lang="[#LANG]">[(#VALUE|namespace)]</[#NOM]>
+		      <[#NAME] lang="[#LANG]">[(#VALUE|namespace)]</[#NAME]>
 	            </DO>
                   </LOOP>
              <ELSE/>
              <IF COND="[#TYPE] eq 'lang'">
-	        <[#NOM]>[#VALUE]</[#NOM]>
+	        <[#NAME]>[#VALUE]</[#NAME]>
             <ELSE/>
         	<IF COND="[#TYPE] eq 'date'">
-        	  <[#NOM]>[#VALUE]</[#NOM]>
+        	  <[#NAME]>[#VALUE]</[#NAME]>
             <ELSE/>
-	        <[#NOM]>[(#VALUE|namespace)]</[#NOM]>
+	        <[#NAME]>[(#VALUE|namespace)]</[#NAME]>
             </IF>
             </IF>
             </IF>
@@ -109,7 +109,7 @@
 
         </DO>
       </LOOP>
-       </[#NOM]>
+       </[#NAME]>
       </DO>
     </LOOP>
 

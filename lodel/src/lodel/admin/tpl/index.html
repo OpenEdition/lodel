@@ -66,7 +66,7 @@
 <!--[					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="textes.php"><span class="texte_orange">[@ADMIN.LITTLE_TEXTS]</span></a>
+							<a href="texts.php"><span class="texte_orange">[@ADMIN.LITTLE_TEXTS]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr> ]-->
@@ -75,7 +75,7 @@
 						<td width="350" class="td_admin">
 							<span class="texte_orange">[@COMMON.LANG_SITE] :</span>
 		                                <select onchange="change_language(this)">
-	                                	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='site'" ORDER="ordre">
+	                                	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='site'" ORDER="rank">
 		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
@@ -113,12 +113,12 @@
 						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.INDEX_ADMINISTRATION]</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
-					<LOOP NAME="typeentree" TABLE="typeentrees" WHERE="ok" ORDER="ordre">
+					<LOOP NAME="entrytype" TABLE="entrytypes" WHERE="ok" ORDER="rank">
 						<DO>
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-									<a href="entrees.php?type=[#TYPE]"><span class="texte_orange">[(#TITRE|majuscule)]</span></a>
+									<a href="entries.php?type=[#TYPE]"><span class="texte_orange">[(#TITRE|majuscule)]</span></a>
 								</td>
 								<td width="5">&nbsp;</td>
 							</tr>
@@ -154,14 +154,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typeentrees.php"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
+							<a href="entrytypes.php"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typepersonnes.php"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
+							<a href="persontypes.php"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -169,15 +169,15 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typedocs.php"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
+							<a href="doctypes.php"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<IF COND="[#DROITREDACTEUR]">
-								<a href="typepublis.php"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
+							<IF COND="[#RIGHTREDACTOR]">
+								<a href="publitypes.php"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_TYPE]</span></span>
 							</IF>
@@ -188,8 +188,8 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
+							<IF COND="[#RIGHTREDACTOR]">
+							<a href="fields.php?class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.DOCUMENT_DATAFIELDS]</span></span></span>
 			                                </IF>
@@ -199,8 +199,8 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
+							<IF COND="[#RIGHTREDACTOR]">
+							<a href="fields.php?class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_DATAFIELDS]</span></span></span>
 			                                </IF>
@@ -263,7 +263,7 @@
 						<td width="350" class="td_admin">
 							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
 		                                <select onchange="change_language(this)">
-	                                	<LOOP NAME="translations_interface" DATABASE="[#DATABASE]" TABLE="translations" WHERE="textgroups='interface'" ORDER="ordre">
+	                                	<LOOP NAME="translations_interface" DATABASE="[#DATABASE]" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
 		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
@@ -271,7 +271,7 @@
 						</td>
 						<td>&nbsp;</td>
 					</tr>
-                                        <IF COND="[#DROITADMINLODEL]">
+                                        <IF COND="[#RIGHTADMINLODEL]">
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">

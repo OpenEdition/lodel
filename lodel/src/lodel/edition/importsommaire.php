@@ -30,14 +30,14 @@
 die("importsommaire: desuet");
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 include ($home."func.php");
 include ($home."langues.php");
 
 if ($cancel) include ("abandon.php");
 
 # recupere les infos dans le fichier xml
-$row=get_tache($idtache);
+$row=gettask($idtache);
 
 //////////// prepare la creation des publications et documents
 
@@ -60,7 +60,7 @@ $text=preg_replace("/<\/?r2r:article\b[^>]*>/i","",$text);
 //$tasks=array();
 
 //
-// cherche le nom et le titre du sommaire
+// cherche le name et le title du sommaire
 //
 
 foreach(array("titrenumero","nomnumero","typenumero") as $bal) {
@@ -118,17 +118,17 @@ include("abandon.php");
 // functions
 
 
-function mkxmlpublication($nom,$titre,$type,$idparent)
+function mkxmlpublication($name,$title,$type,$idparent)
 
 {
   global $home;
 
-  myquote($nom); myquote($titre); myquote($type);
+  myquote($name); myquote($title); myquote($type);
 
   // cherche le type dans la base
   if ($type) {
     // recherche l'id du type
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$type' AND classe='publications'") or die (mysql_error());
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$type' AND class='publications'") or die (mysql_error());
     list($idtype)=mysql_fetch_row($result);
   } else {
     $idtype=0;
@@ -139,14 +139,14 @@ function mkxmlpublication($nom,$titre,$type,$idparent)
     // on fait rien, mais c'est peut etre pas une bonne idee
   }
 
-  $nom=strip_tags($nom,"<I><B><U>");$titre=strip_tags($titre,"<I><B><U>");
+  $name=strip_tags($name,"<I><B><U>");$title=strip_tags($title,"<I><B><U>");
 
-  $localcontext=array("nom"=>$nom,"idtype"=>$idtype,"idparent"=>$idparent,
-		      "entite"=>array("titre"=>$titre));
+  $localcontext=array("name"=>$name,"idtype"=>$idtype,"idparent"=>$idparent,
+		      "entite"=>array("title"=>$title));
 
-  $id=enregistre_entite($localcontext,0,"publications","",FALSE); // ne declenche pas d'erreur
+  $id=enregistre_entite($localcontext,0,"publications","",FALSE); // ne declenche pas d'error
 
-  if (!$id) die ("erreur dans mkxmlpublication");
+  if (!$id) die ("error dans mkxmlpublication");
   return $id;
 }
 
@@ -157,7 +157,7 @@ function mkxmldocument($text,$idpublication)
   // ajoute les debuts et fins corrects
   $text='<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$text.'</r2r:article>';
 
-  $localcontext=array("idparent"=>$idpublication,"statut"=>-1);
+  $localcontext=array("idparent"=>$idpublication,"status"=>-1);
   enregistre_entite_from_xml($localcontext,$text,"documents");
 }
 

@@ -53,10 +53,10 @@ function checkstring (&$text,$error=0) {
       echo "<font color=red>";
       echo preg_replace("/\n/se","'<br><b>'.((\$GLOBALS[line]++)+2).'</b> '",htmlspecialchars(substr($text,xml_get_current_byte_index($xml_parser)-2)));
       echo "</font>\n";
-      echo sprintf("<br><H2>XML erreur: %s ligne %d</H2>",
+      echo sprintf("<br><H2>XML error: %s ligne %d</H2>",
 		   xml_error_string(xml_get_error_code($xml_parser)),
 		   xml_get_current_line_number($xml_parser));
-      echo "L'erreur se situe avant la zone rouge. Elle peut être due à une erreur bien au dessus la ligne donnée par le parser<br>";
+      echo "L'error se situe avant la zone rouge. Elle peut être due à une error bien au dessus la ligne donnée par le parser<br>";
       echo "<br>".htmlentities($text);
 
       xml_parser_free($xml_parser);

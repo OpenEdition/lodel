@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_VISITEUR);
+authenticate(LEVEL_VISITOR);
 
 $name=addslashes($_COOKIE[$sessionname]);
 
@@ -37,7 +37,7 @@ include_once ($home."connect.php");
 $time=time()-1;
 mysql_select_db($database);
 mysql_query("UPDATE $GLOBALS[tp]session SET expire2='$time' WHERE name='$name'") or die (mysql_error());
-mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession='$idsession'") or die (mysql_error());
+mysql_query("DELETE FROM $GLOBALS[tp]urlstack WHERE idsession='$idsession'") or die (mysql_error());
 setcookie($sessionname,"",$time,$urlroot);
 
 header ("Location: ".SITEROOT); // la norme ne supporte pas les chemins relatifs !!

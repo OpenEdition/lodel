@@ -30,7 +30,7 @@
 // charge le fichier xml et
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_VISITEUR);
+authenticate(LEVEL_VISITOR);
 require_once ($home."func.php");
 require_once ($home."textfunc.php");
 require_once ($home."xmlfunc.php");
@@ -38,7 +38,7 @@ require_once ($home."xmlfunc.php");
 
 require_once($home."connect.php");
 
-$context[classe]="documents";
+$context[class]="documents";
 
 $originalname="$site-schema-xml.xsd";
 download("",$originalname,calculateXMLSchema($context));

@@ -34,7 +34,7 @@
 	</tr>
 </table>
 
-<form method="POST" action="backup.php">
+<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
 <input type="hidden" name="backup" value="1">
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 <tr><td>[@ADMIN.SAVE_DATABASE_ONLY]<br />[@ADMIN.NO_FILE_SOURCE]</td><td><input type="checkbox" name="sqlonly" /></td></tr>

@@ -32,7 +32,7 @@
 	<div style="padding-top:25px;">
 		<LOOP NAME="edition_du_descriptif" TABLE="types" WHERE="id=[#IDTYPE]">
 			<DO>
-				<span class="texte_ligne_haut_tpl_publication">[#TITRE] [@EDITION.METADATA]</span>
+				<span class="texte_ligne_haut_tpl_publication">[#TITLE] [@EDITION.METADATA]</span>
 			</DO>
 		</LOOP>
 	</div>
@@ -46,7 +46,7 @@
 ]-->
 
 <form enctype="multipart/form-data" method="post" action="publication.php">
-	<IF COND="[#ERREUR_PUBLICATION_EXISTE]">[@EDITION.ERROR_ISSUE_EXIST]</IF>
+	<IF COND="[#ERROR_PUBLICATION_EXISTE]">[@EDITION.ERROR_ISSUE_EXISTS]</IF>
 	<input type="hidden" name="id" value="[#ID]" />
 	<input type="hidden" name="idparent" value="[#IDPARENT]" />
 	<input type="hidden" name="idtype" value="[#IDTYPE]" />

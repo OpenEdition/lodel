@@ -94,13 +94,18 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
       if ($err=create("translations")) break; // create the translation table
     }
 
+    die("ajouter la destruction de   intro text NOT NULL,
+  langresume varchar(64) NOT NULL default '',
+  lang varchar(64) NOT NULL default '',
+  meta text,");
+
 
     // fini, faire quelque chose
   } while(0);
 }
 
 
-$context[erreur]=$err;
+$context[error]=$err;
 $context[report]=$report;
 
 require($home."calcul-page.php");
@@ -260,30 +265,30 @@ function isotoutf8 ($tables)
 }
 
 function extractnom($personne) {
-  // ok, on cherche maintenant a separer le nom et le prenom
+  // ok, on cherche maintenant a separer le name et le prenom
 
   if (preg_match("/^\s*(Pr\.|Dr\.)/",$personne,$result)) {
     $prefix=$result[1];
     $personne=str_replace($result[0],"",$personne);
   }
 
-  $nom=$personne;
+  $name=$personne;
 
-  while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
-  if ($nom) {
-    $prenom=str_replace($nom,"",$personne);
+  while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
+  if ($name) {
+    $prenom=str_replace($name,"",$personne);
   } else { // sinon coupe apres le premiere espace
     if (preg_match("/^\s*(.*?)\s+([^\s]+)\s*$/i",$personne,$result)) {
-      $prenom=$result[1]; $nom=$result[2];
-    } else $nom=$personne;
+      $prenom=$result[1]; $name=$result[2];
+    } else $name=$personne;
   }
-  return array($prefix,$prenom,$nom);
+  return array($prefix,$prenom,$name);
 }
 
-function extract_meta($classe)
+function extract_meta($class)
 
 {
-  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or die(mysql_error());
+  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$class WHERE meta LIKE '%meta_image%'") or die(mysql_error());
 
   while (list($id,$meta)=mysql_fetch_row($result)) {
     $meta=unserialize($meta);
@@ -303,7 +308,7 @@ function extract_meta($classe)
     chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
     unlink($file);
 
-    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$class SET icone='$dest' WHERE id='$id'") or die(mysql_error());
   }
 
   return TRUE;
@@ -320,7 +325,7 @@ function convertHTMLtoXHTML ($field,$contents)
     // note de R2R
 #echo htmlentities($contents),"<br>";
     if (preg_match('/<a\s+name="(FN\d+)"\s*>/',$contents)) { // ok, il y a des definitions de note R2R ici
-#echo "r2r document: $row[identite]</br>";
+#echo "r2r document: $row[identity]</br>";
       // petit nettoyage
       $contents=preg_replace('/((?:<br><\/br>)?<a\s+name="FN\d+"><\/a>)((?:<\/\w+>)+)(<a\s+href="#FM\d+">)/','\\2\\1\\3',$contents);
       $arr=preg_split("/<br><\/br>(?=<a\s+name=\"FN\d+\">)/",trim($contents));
@@ -330,12 +335,12 @@ function convertHTMLtoXHTML ($field,$contents)
 	    preg_match('/^<a\s+name="FN(\d+)"><\/a><a\s+href="#FM(\d+)">(.*?)<\/a>/s',$arr[$i],$result2)) { // c'est bien le debut d'un note
 	  $arr[$i]='<div class="footnotebody"><a class="footnotedefinition" id="ftn'.$result2[1].'" href="#bodyftn'.$result2[2].'">'.$result2[3].'</a>'.substr($arr[$i],strlen($result2[0])).'</div>';
 	} else {
-	  die("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]));
+	  die("La ".($i+1)."eme note mal forme dans le document $row[identity]:<br>".htmlentities($arr[$i]));
 	}
       } // toutes les notes
       $contents=join("",$arr);
     } elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
-#echo "Ted document: $row[identite]<br>";
+#echo "Ted document: $row[identity]<br>";
       $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
 			     '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
 	
@@ -362,21 +367,21 @@ function convertHTMLtoXHTML ($field,$contents)
 }
 
 
-function addfield($classe)
+function addfield($class)
 
 {
-  $fields=getfields($classe);
+  $fields=getfields($class);
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe'") or die(mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class'") or die(mysql_error());
 
-  #echo "classe:$classe<br/>";
+  #echo "class:$class<br/>";
   while (list($champ,$type)=mysql_fetch_row($result)) {
     #echo "ici:$champ $type<br/>";
     if ($fields[$champ]) continue;
     #echo "ici:$champ - create<br/>";
-    #echo 'ALTER TABLE _PREFIXTABLE_'.$classe.' ADD     '.$champ.' '.$GLOBALS[sqltype][$type].'<br>';
+    #echo 'ALTER TABLE _PREFIXTABLE_'.$class.' ADD     '.$champ.' '.$GLOBALS[sqltype][$type].'<br>';
     $err=mysql_query_cmds('
-ALTER TABLE _PREFIXTABLE_'.$classe.' ADD     '.$champ.' '.$GLOBALS[sqltype][$type].';
+ALTER TABLE _PREFIXTABLE_'.$class.' ADD     '.$champ.' '.$GLOBALS[sqltype][$type].';
  ');
     #echo "error:$err";
     if ($err) return $err;
@@ -393,7 +398,7 @@ function loop_fichiers(&$context,$funcname)
     if ( $dh= @opendir($dir)) {
       while (($file=readdir($dh))!==FALSE) {
 	if (!preg_match("/^$fileregexp$/i",$file)) continue;
-	$context[nom]="$dir/$file";
+	$context[name]="$dir/$file";
 	call_user_func("code_do_$funcname",$context);
       }
       closedir ($dh);

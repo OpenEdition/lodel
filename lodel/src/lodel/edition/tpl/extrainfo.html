@@ -50,13 +50,13 @@
 
 	<br />
 <!--[ boucles sur les groupe ]-->
-<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='documents' AND statut gt 0" ORDER="ordre">
+<LOOP NAME="groupesdechamps" TABLE="fieldgroups" WHERE="class='documents' AND status gt 0" ORDER="rank">
 	<LOOP NAME="champs">
 	<BEFORE><!--[ information sur le groupe. Ne s'affichissent que s'il y a des champs editable ]-->
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
 			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
 		</tr>
 	</table>
 	<br />
@@ -64,10 +64,10 @@
 	</BEFORE>
         <DO>
 		<tr>
-			<td width="200">[#TITRE]:</td>
-			<td><input size="70" type="text" name="document[[#NOM]]" value="[#VALUE]"></td>
+			<td width="200">[#TITLE]:</td>
+			<td><input size="70" type="text" name="document[[#NAME]]" value="[#VALUE]"></td>
 		</tr>
-		<IF COND="[#ERREUR]"><tr><td colspan="2" class="message_erreur">Vous devez preciser un titre</td></tr></IF>
+		<IF COND="[#ERROR]"><tr><td colspan="2" class="message_erreur">Vous devez preciser un titre</td></tr></IF>
         </DO>
         <AFTER>
 	</table>
@@ -91,9 +91,9 @@
 		<tr>
 			<td width="200">Langues du texte</td>
 			<td>
-				<select name="lang1"><?php  makeselectlangues("lang1"); ?></select>
-				<select name="lang2"><?php  makeselectlangues("lang2"); ?></select>
-				<select name="lang3"><?php  makeselectlangues("lang3"); ?></select>
+				<select name="lang1"><?php  makeselectlangs("lang1"); ?></select>
+				<select name="lang2"><?php  makeselectlangs("lang2"); ?></select>
+				<select name="lang3"><?php  makeselectlangs("lang3"); ?></select>
 			</td>
 		</tr>
 		<tr>
@@ -110,12 +110,12 @@
 
 	<br />
 	<!--[ boucle sur les types de personne ]-->
-	<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+	<LOOP NAME="persontypes" TABLE="persontypes" TABLE="typeentites_persontypes" WHERE="idpersontype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
 				</tr>
 			</table>
 			<br />
@@ -131,20 +131,20 @@
 	</LOOP>
 	<!--[ fin de la boucle sur les types d'auteurs ]-->
 	
-	<LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+	<LOOP NAME="entrytypes" TABLE="entrytypes" TABLE="typeentites_entrytypes" WHERE="identrytype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
 			<br />
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
 				</tr>
 			</table>
 			<br />
 	
 			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 				<tr>
-					<td width="200" valign="top">[#TITRE] (*) :</td>
+					<td width="200" valign="top">[#TITLE] (*) :</td>
 					<td>
 						<select multiple size="10" name="entrees[[#ID]][]"><?php  makeselectentrees($context); ?></select><br />
 						<IF COND="[#NEWIMPORTABLE]">

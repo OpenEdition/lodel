@@ -30,9 +30,9 @@
 
 require("siteconfig.php");
 require_once ($home."auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 
-$classe="documents";
+$class="documents";
 require_once ($home."entite.php");
 
 ?>

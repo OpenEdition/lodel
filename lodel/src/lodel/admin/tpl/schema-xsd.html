@@ -19,7 +19,7 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-<--[ Warning: the loop name must be different for the ones in lodel/edition/xml-classe.html because the two templates can be imported in the same script ]-->
+<--[ Warning: the loop name must be different for the ones in lodel/edition/xml-class.html because the two templates can be imported in the same script ]-->
 
 <LOOP NAME="URL_SITE" TABLE="sites" WHERE="rep='[#SITE]'">
 <xsd:schema targetNamespace="[#URL]/schema"
@@ -37,7 +37,7 @@
 	<xsd:complexType name="articleType">
             <xsd:sequence>
 	<!--[ les groupes de personnes ]-->
-    	<LOOP NAME="typepersonnes_xsd" TABLE="typepersonnes" WHERE="statut gt 0" ORDER="ordre">
+    	<LOOP NAME="persontypes_xsd" TABLE="persontypes" WHERE="status gt 0" ORDER="rank">
 		<DO>
             <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
 		      <xsd:complexType>
@@ -49,7 +49,7 @@
 		</DO>
    	</LOOP>
 	<!--[ les groupes d'entrees ]-->
-    	<LOOP NAME="typeentrees_xsd" TABLE="typeentrees" WHERE="statut gt 0" ORDER="ordre">
+    	<LOOP NAME="entrytypes_xsd" TABLE="entrytypes" WHERE="status gt 0" ORDER="rank">
 	      	<DO>
                 <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
 		     <xsd:complexType>
@@ -62,9 +62,9 @@
 		</DO>
 	</LOOP>
 	<!--[ les groupes de champs ]-->
-	    <LOOP NAME="groupesdechamps_xsd" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
+	    <LOOP NAME="groupesdechamps_xsd" TABLE="fieldgroups" WHERE="class='[#CLASS]'" ORDER="rank">
       	<DO>
-			<xsd:element name="[#NOM]">
+			<xsd:element name="[#NAME]">
 		<IF COND="[#COMMENTAIRE]">
 	        <xsd:annotation>
 				<xsd:documentation xml:lang="fr">
@@ -76,7 +76,7 @@
 			 <xsd:complexType>
 		            <xsd:sequence>
 
-		<LOOP NAME="champs_xsd" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
+		<LOOP NAME="champs_xsd" TABLE="fields" WHERE="idgroup='[#ID]'" ORDER="rank">
 	    		<DO>
 			<!--[ define the minOccurs and maxOccurs and put it in [#OCCURS] variable ]-->
 			<IF COND="[#CONDITION]=='+'">
@@ -126,9 +126,9 @@
 				</IF>	
 				</IF>
                                  <IF COND="[#XSDTYPE]">
-			         <xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS]>
+			         <xsd:element name="[#NAME]" type="[#XSDTYPE]" [#OCCURS]>
 			         <ELSE/>
-			         <xsd:element name="[#NOM]" [#OCCURS]>
+			         <xsd:element name="[#NAME]" [#OCCURS]>
 		                 <IF COND="[#COMMENTAIRE]">
 			            <xsd:annotation>
 					<xsd:documentation xml:lang="fr">
@@ -142,7 +142,7 @@
 					    <xsd:choice minOccurs="0" maxOccurs="unbounded">
 					</BEFORE>
 					<DO>
-					  <xsd:group ref="[#NOM]" />
+					  <xsd:group ref="[#NAME]" />
 			                 </DO>
 					<AFTER>
 					    </xsd:choice>
@@ -168,7 +168,7 @@
 				<xsd:element name="typedoc">
 					<xsd:simpleType>
 						<xsd:restriction base="xsd:string">
-						<LOOP NAME="typedoc_xsd" TABLE="types" WHERE="classe='documents' AND statut gt 0">
+						<LOOP NAME="typedoc_xsd" TABLE="types" WHERE="class='documents' AND status gt 0">
 							<xsd:enumeration value="[#TYPE]"/>
 						</LOOP>
 						</xsd:restriction>

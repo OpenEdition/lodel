@@ -42,7 +42,7 @@ class WikiRendererConfig {
 
    /**
    * liste des balises de type bloc autorisées.
-   * Attention, ordre important (p en dernier, car c'est le bloc par defaut..)
+   * Attention, rank important (p en dernier, car c'est le bloc par defaut..)
    */
    var $bloctags = array('title'=>true, 'list'=>true,
    'pre'=>true,'hr'=>true, 'blockquote'=>true,'definition'=>true,'table'=>true, 'p'=>true);
@@ -57,9 +57,9 @@ class WikiRendererConfig {
 
 
    /**
-    * indique le sens dans lequel il faut interpreter le nombre de signe de titre
-    * true -> ! = titre , !! = sous titre, !!! = sous-sous-titre
-    * false-> !!! = titre , !! = sous titre, ! = sous-sous-titre
+    * indique le sens dans lequel il faut interpreter le nombre de signe de title
+    * true -> ! = title , !! = sous title, !!! = sous-sous-title
+    * false-> !!! = title , !! = sous title, ! = sous-sous-title
     */
    var $headerOrder=false;
    var $escapeSpecialChars=true;
@@ -244,7 +244,7 @@ class WRB_hr extends WikiRendererBloc {
 }
 
 /**
- * traite les signes de types titre
+ * traite les signes de types title
  */
 class WRB_title extends WikiRendererBloc {
    var $type='title';

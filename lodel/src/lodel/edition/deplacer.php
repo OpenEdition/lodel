@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 include ($home."func.php");
 
 $context[iddocument]=$id=intval($id);
@@ -39,35 +39,35 @@ if ($idparent) {
   lock_write("entites","relations","typeentites_typeentites","entites as parent","entites as fils");
   // check whether we have the right or not
   if ($idparent>0) { // yeah there is a parent
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites as parent,$GLOBALS[tp]entites as fils WHERE parent.id='$idparent' AND fils.id='$id' AND idtypeentite2=parent.idtype AND idtypeentite=fils.idtype") or die(mysql_error());
+    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities as parent,$GLOBALS[tp]entities as fils WHERE parent.id='$idparent' AND fils.id='$id' AND idtypeentite2=parent.idtype AND identitytype=fils.idtype") or die(mysql_error());
   } else { // no parent, the base.
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites as fils WHERE fils.id='$id' AND idtypeentite2=0 AND idtypeentite=fils.id") or die(mysql_error());
+    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities as fils WHERE fils.id='$id' AND idtypeentite2=0 AND identitytype=fils.id") or die(mysql_error());
   }
   if (mysql_num_rows($result)<=0) die("ERROR: Can move the entities $id into $idparent. Check the editorial model.");
 
   // yes we have the right
 
-  mysql_query ("UPDATE $GLOBALS[tp]entites SET idparent='$idparent' WHERE id='$id'") or die (mysql_error());
+  mysql_query ("UPDATE $GLOBALS[tp]entities SET idparent='$idparent' WHERE id='$id'") or die (mysql_error());
   if (mysql_affected_rows()) { // on a effectivement changer l'id du parent
     // cherche les nouveaux parents de $id
-    $result=mysql_query("SELECT id1,degres FROM $GLOBALS[tp]relations WHERE id2='$idparent' AND nature='P'") or die(mysql_error());
+    $result=mysql_query("SELECT id1,degree FROM $GLOBALS[tp]relations WHERE id2='$idparent' AND nature='P'") or die(mysql_error());
 
     $values="";
     $dmax=0;
     while ($row=mysql_fetch_assoc($result)) {
-      $parents[$row[degres]]=$row[id1];
-      if ($row[degres]>$dmax) $dmax=$row[degres];
-      $values.="('$row[id1]','$id','P','".($row[degres]+1)."'),";
+      $parents[$row[degree]]=$row[id1];
+      if ($row[degree]>$dmax) $dmax=$row[degree];
+      $values.="('$row[id1]','$id','P','".($row[degree]+1)."'),";
     }
     $parents[0]=$idparent;
 
     // recherche les enfants
     $delete="";
-    $result=mysql_query("SELECT id2,degres FROM $GLOBALS[tp]relations WHERE id1='$id' AND nature='P'") or die(mysql_error());
+    $result=mysql_query("SELECT id2,degree FROM $GLOBALS[tp]relations WHERE id1='$id' AND nature='P'") or die(mysql_error());
     while ($row=mysql_fetch_assoc($result)) {
-      $delete.=" (id2='$row[id2]' AND degres>$row[degres]) OR "; // efface tous les parents au dessus de $id.
-      for ($d=0; $d<=$dmax; $d++) { // pour chaque degres
-	$values.="('$parents[$d]','$row[id2]','P','".($row[degres]+$d+1)."'),"; // ajoute tous les parents
+      $delete.=" (id2='$row[id2]' AND degree>$row[degree]) OR "; // efface tous les parents au dessus de $id.
+      for ($d=0; $d<=$dmax; $d++) { // pour chaque degree
+	$values.="('$parents[$d]','$row[id2]','P','".($row[degree]+$d+1)."'),"; // ajoute tous les parents
       }
     }
 
@@ -77,7 +77,7 @@ if ($idparent) {
 #   echo $values,"<br>",$delete;
     // detruit les liens vers le parent de id
     mysql_query ("DELETE FROM $GLOBALS[tp]relations WHERE ($delete) AND nature='P'") or die (mysql_error());
-    mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degres) VALUES $values") or die(mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degree) VALUES $values") or die(mysql_error());
     touch(SITEROOT."CACHE/maj");
   }
   unlock();
@@ -86,7 +86,7 @@ if ($idparent) {
 }
 
 $context[id]=0;
-posttraitement($context);
+postprocessing($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"deplacer");

@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 
 
 $context[id]=intval($id);

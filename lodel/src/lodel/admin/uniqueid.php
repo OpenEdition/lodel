@@ -47,7 +47,7 @@ do {
   $err=mysql_query_cmds_forobjetfunc('
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
 	id		INT UNSIGNED DEFAULT 0 NOT NULL auto_increment,
-	classe		VARCHAR(255),
+	class		VARCHAR(255),
 
 	PRIMARY KEY (id)
 );

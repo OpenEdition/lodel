@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ("$home/auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 
 $id=intval($id);
 if ($id>0 && $type=="xml") {
@@ -39,13 +39,13 @@ if ($id>0 && $type=="xml") {
 } elseif ($id>0 && $type=="source") {
  $filename="entite-$id.source";
  $rep="../sources";
- // cherche le nom original du fichier
+ // cherche le name original du fichier
 
  require($home."tablefields.php");
  $table=$GLOBALS[tp]."documents";
  if ($tablefields[$table] && 
       in_array("fichiersource",$tablefields[$table])) {
-    $result=mysql_query("SELECT fichiersource FROM $GLOBALS[tp]documents WHERE identite='$id'") or die(mysql_error());
+    $result=mysql_query("SELECT fichiersource FROM $GLOBALS[tp]documents WHERE identity='$id'") or die(mysql_error());
     list($originalname)=mysql_fetch_row($result);
   } else {
     $originalname=$filename;

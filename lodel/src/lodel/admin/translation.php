@@ -32,14 +32,14 @@
 
 require("siteconfig.php");
 require($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 
 $context['textgroups']="site";
 
 require($home."translationinc.php");
 
 // post-traitement
-posttraitement($context);
+postprocessing($context);
 
 require($home."calcul-page.php");
 calcul_page($context,"translation");

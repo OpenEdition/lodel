@@ -33,7 +33,7 @@ function calculateXML ($context)
 {
   require_once ($home."calcul-page.php");
   ob_start();
-  calcul_page($context,"xml-classe","",SITEROOT."lodel/edition/tpl/");
+  calcul_page($context,"xml-class","",SITEROOT."lodel/edition/tpl/");
   $contents=ob_get_contents();
   ob_end_clean();
 
@@ -100,12 +100,12 @@ function loop_xsdtypes(&$context,$funcname)
 
   if ($balises) call_user_func("code_before_$funcname",$context);
 
-  foreach($balises as $nom) {
-    if (is_numeric($nom)) continue;
+  foreach($balises as $name) {
+    if (is_numeric($name)) continue;
     $localcontext=$context;
     $localcontext['count']=$count;
     $count++;
-    $localcontext['nom']=preg_replace("/\s/","_",$nom);
+    $localcontext['name']=preg_replace("/\s/","_",$name);
     call_user_func("code_do_$funcname",$localcontext);
   }
   if ($balises) call_user_func("code_after_$funcname",$context);

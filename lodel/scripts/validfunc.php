@@ -28,14 +28,14 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-function isvalidtype($nom) 
-{return preg_match("/^[a-zA-Z0-9_-][a-zA-Z0-9_ -]*$/",$nom);}
+function isvalidtype($name) 
+{return preg_match("/^[a-zA-Z0-9_-][a-zA-Z0-9_ -]*$/",$name);}
 
-function isvalidfield($nom) 
-{return preg_match("/^[a-zA-Z0-9]+$/",$nom);}
+function isvalidfield($name) 
+{return preg_match("/^[a-zA-Z0-9]+$/",$name);}
 
-function isvalidstyle($nom)
-{ return preg_match("/^[a-zA-Z0-9]+$/",$nom); }
+function isvalidstyle($name)
+{ return preg_match("/^[a-zA-Z0-9]+$/",$name); }
 
 
 function isvalidmlstyle($style)
@@ -47,7 +47,7 @@ function isvalidmlstyle($style)
   for($i=0; $i<$count; $i+=4) {
     if (!isvalidstyle(trim($stylesarr[$i]))) return FALSE; // le style 
     if ($stylesarr[$i+1]!=":") return FALSE; // le separateur
-    if (!preg_match("/^\s*([a-z]{2}|--)\s*$/",$stylesarr[$i+2])) return FALSE; // la langue
+    if (!preg_match("/^\s*([a-z]{2}|--)\s*$/",$stylesarr[$i+2])) return FALSE; // la lang
     if ($stylesarr[$i+3]==":") return FALSE; // les autres separateurs
 
     $k=trim($stylesarr[$i+1]);

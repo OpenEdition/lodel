@@ -31,7 +31,7 @@
 // assure l'edition, la supression, la restauration des utilisateurs.
 
 if (!function_exists("authenticate")) die("ERROR: invalid include of userinc.php");
-if ($userpriv<LEVEL_ADMIN) return; // secu
+if ($userrights<LEVEL_ADMIN) return; // secu
 require_once ($home."func.php");
 
 
@@ -43,7 +43,7 @@ $id=intval($id);
 //
 if ($id>0 && ($delete | $restore)) { 
   if ($delete>=2) {
-    mysql_query ("DELETE FROM $GLOBALS[tp]users_groupes WHERE iduser='$id'") or die(mysql_error());
+    mysql_query ("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die(mysql_error());
   }
 
   require ($home."trash.php");
@@ -52,7 +52,7 @@ if ($id>0 && ($delete | $restore)) {
 }
 
 
-$critere="id='$id' AND statut>0";
+$critere="id='$id' AND status>0";
 
 //
 // ajoute ou edit
@@ -68,41 +68,41 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     $len=strlen($context[username]);
-    if ($len<3 || $len>10 || !preg_match("/^[0-9A-Za-z]+$/",$context[username])) { $err=$context[erreur_username]=1; }
+    if ($len<3 || $len>10 || !preg_match("/^[0-9A-Za-z]+$/",$context[username])) { $err=$context[error_username]=1; }
 
-    if (!$context[nom]) { $context[erreur_nom]=$err=1; }
+    if (!$context[name]) { $context[error_nom]=$err=1; }
     $passwd=$context[passwd];
     if ($passwd || !$id) { // si le pass a ete modifie
       $len=strlen($passwd);
-      if ($len<3 || $len>10) { $err=$context[erreur_passwd]=1; }
+      if ($len<3 || $len>10) { $err=$context[error_passwd]=1; }
     }
 
     // verifie le courriel
-    if ($context[courriel] && !ereg(".*\@[^\.]*\..*",$context[courriel])) { $context[erreur_courriel]=$err=1; }// repris de SPIP
+    if ($context[courriel] && !ereg(".*\@[^\.]*\..*",$context[courriel])) { $context[error_courriel]=$err=1; }// repris de SPIP
       
-    if (!$groupes || !is_array($groupes)) { $context[erreur_groupes]=$err=1; }
+    if (!$groupes || !is_array($groupes)) { $context[error_groupes]=$err=1; }
  
     if ($err) break;
     include_once ($home."connect.php");
 
     // cherche si le username existe deja
     $result=mysql_query("SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
-    if (mysql_num_rows($result)>0) { $context[erreur_dupusername]=$err=1; }
+    if (mysql_num_rows($result)>0) { $context[error_dupusername]=$err=1; }
     if ($GLOBALS[database]!=$GLOBALS[currentdb]) {
       // cherche si le username existe deja
       $result=mysql_query("SELECT id FROM $GLOBALS[database].$GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
-      if (mysql_num_rows($result)>0) { $context[erreur_dupusernameadmin]=$err=1; }
+      if (mysql_num_rows($result)>0) { $context[error_dupusernameadmin]=$err=1; }
     }
 
-    if ($context[privilege]>$userpriv) { $err=1; } // securite
+    if ($context[userrights]>$userrights) { $err=1; } // securite
 
     if ($err) break;
 
-    if ($id>0) { // il faut rechercher le statut et (peut etre) le passwd
-      $result=mysql_query("SELECT passwd,statut FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
-      list($passwd_db,$statut)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le status et (peut etre) le passwd
+      $result=mysql_query("SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
+      list($passwd_db,$status)=mysql_fetch_array($result);
     } else {
-      $statut=1;
+      $status=1;
     }
     if (!$passwd) { // pas de passwd... on prend celui de la base de donnee
       $passwd=$passwd_db;
@@ -110,15 +110,15 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,courriel,privilege,lang,statut) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[courriel]','$context[privilege]','$context[lang]','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,name,courriel,userrights,lang,status) VALUES ('$id','$context[username]','$passwd','$context[name]','$context[courriel]','$context[userrights]','$context[lang]','$status')") or die (mysql_error());
 
-    if ($context[privilege]<LEVEL_ADMIN) {
+    if ($context[userrights]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();
 
       // change les groupes
-      mysql_query("DELETE FROM $GLOBALS[tp]users_groupes WHERE iduser='$id'") or die (mysql_error());
+      mysql_query("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die (mysql_error());
       foreach ($groupes as $groupe) {
-	mysql_query("INSERT INTO $GLOBALS[tp]users_groupes (idgroupe, iduser) VALUES  ('$groupe','$id')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tp]users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')") or die (mysql_error());
       }
     }
 
@@ -140,7 +140,7 @@ require_once($home."langues.php");
 
 
 // post-traitement
-posttraitement($context);
+postprocessing($context);
 
 
 $context[passwd]="";
@@ -150,15 +150,15 @@ $context[passwd]="";
 function makeselectprivilege()
 
 {
-  global $context,$userpriv;
-  $arr=array(LEVEL_VISITEUR=>"Visiteur",
-	     LEVEL_REDACTEUR=>"R&eacute;dacteur",
-	     LEVEL_EDITEUR=>"Editeur",
+  global $context,$userrights;
+  $arr=array(LEVEL_VISITOR=>"Visiteur",
+	     LEVEL_REDACTOR=>"R&eacute;dacteur",
+	     LEVEL_EDITOR=>"Editeur",
 	     LEVEL_ADMIN=>"Administrateur",
 	     );
 
   foreach ($arr as $k=>$v) {
-    $selected=$context[privilege]==$k ? "selected" : "";
+    $selected=$context[userrights]==$k ? "selected" : "";
     echo "<option value=\"$k\" $selected>$v</option>\n";
   }
 }
@@ -170,17 +170,17 @@ function makeselectgroupes()
 
   // cherche les groupes de l'utilisateur
   $groupes=array();
-  if ($context[id] && $context[privilege]<LEVEL_ADMIN) {
-    $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tp]users_groupes WHERE iduser='$context[id]'") or die (mysql_error());
+  if ($context[id] && $context[userrights]<LEVEL_ADMIN) {
+    $result=mysql_query("SELECT idgroup FROM $GLOBALS[tp]users_usergroups WHERE iduser='$context[id]'") or die (mysql_error());
     while ($row=mysql_fetch_row($result)) array_push($groupes,$row[0]);
   }
 
-  // cherche le nom des groupes sauf le groupe "tous"
-  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tp]groupes WHERE id>1") or die (mysql_error());
+  // cherche le name des groupes sauf le groupe "tous"
+  $result=mysql_query("SELECT id,name FROM $GLOBALS[tp]usergroups WHERE id>1") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=in_array($row[id],$groupes) ? " SELECTED" : "";
-    echo "<OPTION VALUE=\"$row[id]\"$selected>$row[nom]</OPTION>\n";
+    echo "<OPTION VALUE=\"$row[id]\"$selected>$row[name]</OPTION>\n";
   }
 }
 

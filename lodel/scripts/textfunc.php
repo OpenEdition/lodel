@@ -216,8 +216,8 @@ function spip ($letexte)
 		     /* 2 */ 	"$puce ",
 		     /* 3 */ 	"\n<br>$puce ",
 		     /* 4 */		"\n<p>",
-		     /* 5 */ 	"$debut_intertitre",
-		     /* 6 */ 	"$fin_intertitre",
+		     /* 5 */ 	"$debut_intertitle",
+		     /* 6 */ 	"$fin_intertitle",
 		     /* 7 */ 	"<b>",
 		     /* 8 */ 	"</b>",
 		     /* 9 */ 	"<i>",
@@ -413,7 +413,7 @@ function isadate($text)
 }
 
 /**
- * Fonction qui remplace les guillemets d'un texte par leur nom d'entité (&quot;)
+ * Fonction qui remplace les guillemets d'un texte par leur name d'entité (&quot;)
  */
 function replacequotationmark($text)
 {
@@ -520,7 +520,7 @@ function strip_tags_keepnotes($text,$keeptags="")
 }
 
 /**
- * Renvoie la langue "human reading"
+ * Renvoie la lang "human reading"
  */
 
 function humanlang($text)
@@ -583,9 +583,14 @@ function imageheight($image)
 
 function nicefilesize($lien)
 {
-  if (defined("SITEROOT")) $lien=SITEROOT.$lien;
-  if (!file_exists($lien)) return "0k";
-  $size=filesize($lien);
+  if (is_numeric($lien)) {
+    $size=$lien;
+  } else {
+    if (defined("SITEROOT")) $lien=SITEROOT.$lien;
+    if (!file_exists($lien)) return "0k";
+    $size=filesize($lien);
+  }
+
   if ($size<1024) return $size." octets";
 
   foreach(array("k","M","G","T") as $unit) {

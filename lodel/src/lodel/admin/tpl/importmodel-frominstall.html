@@ -38,9 +38,9 @@
 <h2 id="install">[@COMMON.INSTALL]</h2>
 <div id="bandeau"><h3>[@ADMIN.EM_INSTALL]</h3></div>
 <div id="main">
-	  <IF COND="[#ERREUR_TABLE]">
+	  <IF COND="[#ERROR_TABLE]">
 <div id="content">
-	    <p><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_TABLE_FIRST_PART] "[#ERREUR_TABLE]" [@ADMIN.ERROR_TABLE_SECOND_PART]</p>
+	    <p><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_TABLE_FIRST_PART] "[#ERROR_TABLE]" [@ADMIN.ERROR_TABLE_SECOND_PART]</p>
 </div>
 	<div id="pied_de_formulaire">
 	    <form><input class="form" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" /></form>
@@ -50,8 +50,8 @@
 
 <div id="content">
 <br />
-		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
-		    <IF COND="[#ERREUR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
+		    <IF COND="[#ERROR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]<br /><br /></IF>
+		    <IF COND="[#ERROR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
 
 		    <h3>[@ADMIN.EM_INSTALL].</h3>
                       [@ADMIN.CHOOSE_EM]

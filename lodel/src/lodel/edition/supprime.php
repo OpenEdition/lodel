@@ -31,7 +31,7 @@
 
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 require_once ($home."func.php");
 
 
@@ -46,10 +46,10 @@ if ($supprime || $confirmation) {
   if (!supprime($id,$confirmation)) {
     $context[id]=$id;
     // post-traitement
-    posttraitement($context);
+    postprocessing($context);
     
     include ($home."calcul-page.php");
-    calcul_page($context,"supprime_erreur");
+    calcul_page($context,"supprime_error");
     return;
   }
   touch(SITEROOT."CACHE/maj");
@@ -57,14 +57,14 @@ if ($supprime || $confirmation) {
   return;
 }
 
-posttraitement($context);
+postprocessing($context);
 
 
-$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entites.id='$id'") or die (mysql_error());
+$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die (mysql_error());
 if (mysql_num_rows($result)<=0) { header("location: not-found.html"); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
-$result=mysql_query("SELECT * FROM $GLOBALS[tp]$context[classe] WHERE identite='$id'") or die (mysql_error());
+$result=mysql_query("SELECT * FROM $GLOBALS[tp]$context[class] WHERE identity='$id'") or die (mysql_error());
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 

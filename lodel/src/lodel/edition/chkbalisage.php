@@ -29,12 +29,12 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 include ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
-$tache=get_tache($idtache);
+$tache=gettask($idtache);
 
 require_once ($home."balises.php");
 
@@ -42,37 +42,37 @@ require_once ($home."balises.php");
 // ajoute les balises "entrees"
 require_once ($home."connect.php");
 require_once($home."champfunc.php");
-$result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typeentrees WHERE statut>0");
-while (list($style,$titre)=mysql_fetch_row($result)) { 
+$result=mysql_query("SELECT style,title FROM $GLOBALS[tp]entrytypes WHERE status>0");
+while (list($style,$title)=mysql_fetch_row($result)) { 
   $styles=decode_mlstyle($style);
   foreach($styles as $lang => $style) {
     if ($lang && $lang!="--") { // multi-language
-      $balises[$style]=$titre." ($lang)";
+      $balises[$style]=$title." ($lang)";
     } else { // single-language
-      $balises[$style]=$titre;
+      $balises[$style]=$title;
     }
   }
 }
 
 
 // ajoute les balises "personnes"
-$result=mysql_query("SELECT style,titre,styledescription,titredescription FROM $GLOBALS[tp]typepersonnes WHERE statut>0");
+$result=mysql_query("SELECT style,title,styledescription,titledescription FROM $GLOBALS[tp]persontypes WHERE status>0");
 while ($row=mysql_fetch_row($result)) { 
   $balises[$row[0]]=$row[1];
   $balises[$row[2]]=$row[3];
 }
 
 // ajoute les balises "documents"
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.style,$GLOBALS[tp]champs.titre,$GLOBALS[tp]champs.type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  classe='documents' AND $GLOBALS[tp]champs.statut>0") or die (mysql_error());
-while (list($style,$titre,$type)=mysql_fetch_row($result)) { 
+  $result=mysql_query("SELECT $GLOBALS[tp]fields.style,$GLOBALS[tp]fields.title,$GLOBALS[tp]fields.type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND  class='documents' AND $GLOBALS[tp]fields.status>0") or die (mysql_error());
+while (list($style,$title,$type)=mysql_fetch_row($result)) { 
   if ($type=="mltext") {
     require_once($home."champfunc.php");
     $styles=decode_mlstyle($style);
     foreach($styles as $lang => $style) {
-      $balises[$style]=$titre." ($lang)";
+      $balises[$style]=$title." ($lang)";
     }
   } else {
-    $balises[$style]=$titre;
+    $balises[$style]=$title;
   }
 }
 
@@ -85,10 +85,10 @@ $srch=array(); $rpl=array();
 foreach ($balises as $b=>$v) {
   if (!$v || strpos($v,"<")!==FALSE) { // sous balises
     array_push($srch,"/<r2r:$b>/si");array_push($rpl,$v); // balises ouvrante
-    // balises fermantes, il faut inverser leur ordre
+    // balises fermantes, il faut inverser leur rank
     preg_match_all("/<(\w+)\b[^>]*>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
     $v="";
-    while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'ordre inverse, et transforme les en balises fermantes
+    while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'rank inverse, et transforme les en balises fermantes
     array_push($srch,"/<\/r2r:$b>/si");array_push($rpl,$v);
     
     $balises[$b]=""; // supprime cette sousbalises (ca change rien normalement)
@@ -104,7 +104,7 @@ array_push($srch,
 
 array_push($rpl,
 #	     "",
-#	     "'<tr valign=\"top\"><td classe=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td classe=\"chkbalisagetdparagraphe\">'",	     
+#	     "'<tr valign=\"top\"><td class=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td class=\"chkbalisagetdparagraphe\">'",	     
 #	     "</td></tr>\n",
 	     "<span title=\"\\1\" style=\"background-color: #F3F3F3;\">",
 	     "</span>");
@@ -185,7 +185,7 @@ if (count($tablescontent)>1) { // ok il faut decouper le fichier
 #  die (htmlentities($texts[main]));
 
   
-  update_tache_context($idtache,$tache);
+  updatetask_context($idtache,$tache);
 }
 
 

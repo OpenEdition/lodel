@@ -41,8 +41,8 @@ if ($importdir) $importdirs[]=$importdir;
 
 
 $archive=$_FILES['archive']['tmp_name'];
-$context['erreur_upload']=$_FILES['archive']['error'];
-if (!$context['erreur_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
+$context['error_upload']=$_FILES['archive']['error'];
+if (!$context['error_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
   $prefixre="(site|revue)";
   $prefixunix="{site,revue}";
   $fichier=$archive;
@@ -62,7 +62,7 @@ if ($fichier) {
 
     require_once ($home."backupfunc.php");
 
-    if (!importFromZip($fichier,$accepteddirs,array(),$sqlfile)) { $err=$context[erreur_extract]=1; break; }
+    if (!importFromZip($fichier,$accepteddirs,array(),$sqlfile)) { $err=$context[error_extract]=1; break; }
 
     require_once ($home."connect.php");
 
@@ -71,7 +71,7 @@ if ($fichier) {
 
     mysql_query("DROP TABLE IF EXISTS ".join(",",$GLOBALS[lodelsitetables])) or die(mysql_error()); 
 
-    if (!execute_dump($sqlfile)) $context[erreur_execute_dump]=$err=mysql_error();
+    if (!execute_dump($sqlfile)) $context[error_execute_dump]=$err=mysql_error();
     @unlink($sqlfile);
 
     require_once($home."cachefunc.php");
@@ -85,7 +85,7 @@ if ($fichier) {
       if (file_exists($file)) @unlink($file);
       $f=@fopen ($file,"w");
       if (!$f) {
-	$context[erreur_htaccess].=$dir." ";
+	$context[error_htaccess].=$dir." ";
 	$err=1;
       } else {
 	fputs($f,"deny from all\n");
@@ -115,7 +115,7 @@ function loop_fichiers(&$context,$funcname)
     if ( $dh= @opendir($dir)) {
       while (($file=readdir($dh))!==FALSE) {
 	if (!preg_match("/^$fileregexp$/i",$file)) continue;
-	$context[nom]="$dir/$file";
+	$context[name]="$dir/$file";
 	call_user_func("code_do_$funcname",$context);
       }
       closedir ($dh);

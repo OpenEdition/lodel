@@ -32,7 +32,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_REDACTEUR,NORECORDURL);
+authenticate(LEVEL_REDACTOR,NORECORDURL);
 include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 
@@ -63,9 +63,9 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     // the ServOO should return nothing, if it return, it's an ERROR or a SAY comment.
     if ($ret) {
       if ($ret=="noservoo") {
-	$context['erreur']="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
+	$context['error']="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
       } else {
-	$context['erreur']=utf8_encode("Erreur renvoyée par le ServOO: \"$ret\"");
+	$context['error']=utf8_encode("Erreur renvoyée par le ServOO: \"$ret\"");
       }
       break;
     }
@@ -107,7 +107,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
       if ($unzipcmd && $unzipcmd!="pclzip") { // unzip cmd
 	$filestoextract=escapeshellcmd("$fileconverted ".join(" ",$extractfiles));
 	$ret=`$unzipcmd -qjo -d $tmpdir $filestoextract 2>&1`;
-	if ($ret) { $context[erreur]=utf8_encode("Erreur renvoyée par la commande unzip: $ret"); break; }
+	if ($ret) { $context[error]=utf8_encode("Erreur renvoyée par la commande unzip: $ret"); break; }
       } else {
 	$archive->extract(PCLZIP_OPT_PATH,$tmpdir,PCLZIP_OPT_REMOVE_ALL_PATH);
       }
@@ -130,11 +130,11 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     
     $err=OO_XHTML($fileconverted,$context);
     if ($err) {
-      $context[erreur]="Erreur dans la fonction OO";
+      $context[error]="Erreur dans la fonction OO";
       break;
     }
     if ($idtache) { // reimportation of an existing document ?
-      $row=get_tache($idtache);
+      $row=gettask($idtache);
     } else {
       $row=array();
     }
@@ -153,7 +153,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
       }
       $row[idtype]=$context[idtype];
     }
-    $idtache=make_tache("Import $file1_name",3,$row,$idtache);
+    $idtache=maketask("Import $file1_name",3,$row,$idtache);
 
     if ($msg) {
       echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
@@ -271,7 +271,7 @@ Will be reimplemented using a proper XML parser.
 		      "r2r:subtitleuser"=>"r2r:subtitle",
 		      "r2r:heading"=>"r2r:title",
 
-		      "r2rc:titre\d+"=>""
+		      "r2rc:title\d+"=>""
 		      );
 
   
@@ -290,8 +290,8 @@ Will be reimplemented using a proper XML parser.
 
   // conversion des balises de sections
   array_push($srch,
-	     "/<r2r:(?:heading|titre|title|\d\|?biblitit|\d\|?anntitre)(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:heading|titre|title|\d\|?biblitit|\d\|?anntitre)(\d+)>/");
+	     "/<r2r:(?:heading|title|title|\d\|?biblitit|\d\|?anntitle)(\d+\b([^>]*))>/",
+	     "/<\/r2r:(?:heading|title|title|\d\|?biblitit|\d\|?anntitle)(\d+)>/");
 #	     "/<h(\d+)>/",
 #	     "/<\/h(\d+)>/");
 
@@ -446,7 +446,7 @@ Will be reimplemented using a proper XML parser.
 
   //  die(htmlentities($file));
 
-  if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1; return true; }
+  if (!traite_tableau2_xhtml($file)) {     $context[error_stylestableaux]=1; return true; }
   $file=traite_multiplelevel($file,$GLOBALS[multiplelevel]);
 
 
@@ -784,14 +784,14 @@ function traite_couple(&$text)
 
   // determine les $virgule_tags
   require_once($home."connect.php");
-  $result=mysql_query("SELECT style FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die(mysql_error());
+  $result=mysql_query("SELECT style FROM $GLOBALS[tp]entrytypes WHERE status>0") or die(mysql_error());
   while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
-  $result=mysql_query("SELECT style FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die(mysql_error());
+  $result=mysql_query("SELECT style FROM $GLOBALS[tp]persontypes WHERE status>0") or die(mysql_error());
   while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
 
 
   // determine les $multiparagraphe_tags
-  $result=mysql_query("SELECT style,type FROM $GLOBALS[tp]champs WHERE statut>0") or die(mysql_error());
+  $result=mysql_query("SELECT style,type FROM $GLOBALS[tp]fields WHERE status>0") or die(mysql_error());
   $multiparagraphe_tags_arr=array();
   while (list($style,$type)=mysql_fetch_row($result)) {
     if ($type=="mltext") { // text multilingue

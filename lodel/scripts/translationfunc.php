@@ -65,7 +65,7 @@ function mkeditlodeltext($name,$textgroup,$lang=-1)
       //
       // Translated texte
       //
-#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]textes WHERE nom=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or die(mysql_error());
+#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or die(mysql_error());
 # $divs=""; 
 # while (list($text,$lang)=mysql_fetch_row($result)) { 
 #    echo \'<a href="">[\'.$lang.\']</a> \'; 
@@ -112,7 +112,7 @@ class XMLDB_Translations extends XMLDB {
     $this->addElement("translations","lang","title","textgroups","translators","modificationdate","creationdate");
     $this->addWhere("translations","lang='$lang'");
     $this->addElement("textes",array("texte","text"));
-    $this->addAttr("textes","nom","textgroup","statut");
+    $this->addAttr("textes","name","textgroup","status");
     if ($lang!="all") $this->addWhere("textes","lang='$lang'");
     require_once($GLOBALS['home']."textgroupfunc.php");
     $this->addWhere("textes",textgroupswhere($textgroups));
@@ -154,7 +154,7 @@ class XMLDB_Translations extends XMLDB {
       if (!in_array($record['textgroup'],$GLOBALS['textgroups'][$this->textgroups])) die("ERROR: Invalid textgroup");
 
       // look for text
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='".$record['nom']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'") or die(mysql_error());
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]texts WHERE name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'") or die(mysql_error());
       list($id)=mysql_fetch_row($result);
 #      echo $id," ";
 #      print_r($record);

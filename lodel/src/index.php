@@ -34,8 +34,8 @@ authenticate();
 if ($id) {
   require_once($home."connect.php");
   $id=intval($id);
-  $result=mysql_query("SELECT classe FROM $GLOBALS[tp]objets WHERE id='$id'") or die(mysql_error());
-  list($classe)=mysql_fetch_row($result);
+  $result=mysql_query("SELECT class FROM $GLOBALS[tp]objects WHERE id='$id'") or die(mysql_error());
+  list($class)=mysql_fetch_row($result);
   $script=array("documents"=>"document",
 		"publications"=>"sommaire",
 		"entrees"=>"entree",
@@ -43,8 +43,8 @@ if ($id) {
 		"personnes"=>"personne",
 		"typepersonnes"=>"personnes",
 		);
-  if ($script[$classe]) {
-    require($script[$classe].".".$extensionscripts);
+  if ($script[$class]) {
+    require($script[$class].".".$extensionscripts);
   } else {
     header("location: not-found.html");
   }

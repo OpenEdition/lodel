@@ -30,7 +30,7 @@
 //
 // $balises contient toutes les balises reconnues.
 // la valeur de la balise definie l'affichage dans chkbalisage.php (et n'a aucune incidence ailleurs).
-// les balises principales doivent etre associe a leur nom litteral
+// les balises principales doivent etre associe a leur name litteral
 // les ss balises doivent etre associees a une/ou des balises html ou etre vide.
 
 $GLOBALS['balises']=array ("-" => "-",
@@ -86,7 +86,7 @@ $GLOBALS['multiplelevel']['texte Lodel']=array(
 					       "legendeillustration"=>"texte");
 
 $GLOBALS['multiplelevel']['Sections']=array(
-					    // l'ordre est important ci-dessous (marche pas avec section\d+)
+					    // l'rank est important ci-dessous (marche pas avec section\d+)
 					    "section10"=>">*", // non utilise a priori
 					    "section9"=>">*", // non utilise a priori
 					    "section8"=>">*",

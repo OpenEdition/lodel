@@ -53,12 +53,12 @@ if ($id>0 && $delete) {
 }
 
 //
-// ordre
+// rank
 //
 if ($id>0 && $dir) {
   include_once($home."connect.php");
   # cherche le parent
-  chordre("options",$id,"statut>0",$dir);
+  chordre("options",$id,"status>0",$dir);
   back();
 }
 
@@ -70,24 +70,24 @@ if ($id>0 && $dir) {
 if ($edit) {
   extract_post();
   do { // block de control
-    if (!$context[nom] || preg_match("/\W/",$context[$nom])) { $context[erreur_nom]=$err=1; }
+    if (!$context[name] || preg_match("/\W/",$context[$name])) { $context[error_nom]=$err=1; }
     
     if ($err) break;
 
     $id=intval($id);
-    if ($id>0) { // il faut rechercher l'ordre
-      $result=mysql_query("SELECT ordre,valeur FROM $GLOBALS[tp]options WHERE id='$id'") or die (mysql_error());
-      list($ordre,$valeur)=mysql_fetch_row($result);
+    if ($id>0) { // il faut rechercher l'rank
+      $result=mysql_query("SELECT rank,valeur FROM $GLOBALS[tp]options WHERE id='$id'") or die (mysql_error());
+      list($rank,$valeur)=mysql_fetch_row($result);
     } else {
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]options WHERE nom='$context[nom]'") or die (mysql_error());
-      if (mysql_num_rows($result)) { $context[erreur_nom_existe]=$err=1; break; }
-      $ordre=get_ordre_max("options","statut>0");
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]options WHERE name='$context[name]'") or die (mysql_error());
+      if (mysql_num_rows($result)) { $context[error_nom_existe]=$err=1; break; }
+      $rank=get_max_rank("options","status>0");
       $valeur="";
     }
 
-    $statut=$GLOBALS[droitadminlodel] && $protege ? "32" : "1";
+    $status=$GLOBALS[rightadminlodel] && $protege ? "32" : "1";
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]options (id,nom,type,statut,ordre,valeur) VALUES ('$id','$context[nom]','$context[type]','$statut','$ordre','$valeur')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]options (id,name,type,status,rank,valeur) VALUES ('$id','$context[name]','$context[type]','$status','$rank','$valeur')") or die (mysql_error());
 
     touch(SITEROOT."CACHE/maj");
     unlock();
@@ -101,7 +101,7 @@ if ($edit) {
 }
 
 // post-traitement
-posttraitement($context);
+postprocessing($context);
 
 
 #require_once($home."langues.php");

@@ -179,7 +179,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	<form name="pub_menu_B">
 		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 		<option value="index.[#EXTENSIONSCRIPTS]">rubriques</option>
-		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="type='rubrique'" ORDER="ordre DESC">
+		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="type='rubrique'" ORDER="rank DESC">
 			<DO>	
 				<option value="[(#ID|makeurlwithid('sommaire'))]">
 					[#IDENTIFIANT]
@@ -211,7 +211,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ version 2.0                                                        ]-->
 <!--[ Cette macro est destinée à l'affichage des métadonnées.            ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="extrait_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
+	<LOOP NAME="extrait_premier_article" TABLE="documents" ORDER="rank ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<DO>
 			<IF COND="[#TEXTE]">
 				Extrait du premier article du numéro: 
@@ -219,7 +219,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 			<ELSE/>
 				<LOOP NAME="desc_meta_sommaire" TABLE="documents" TABLE="relations" WHERE="id1='[#IDPARENT]' AND id=id2">
 					<DO>
-						<IF COND="[#TITRE]">[(#TITRE|replacequotationmark)],</IF>
+						<IF COND="[#TITLE]">[(#TITRE|replacequotationmark)],</IF>
 						<IF COND="[#SOUSTITRE]">[(#SOUSTITRE|replacequotationmark)]</IF>
 					</DO>
 				</LOOP>
@@ -243,8 +243,8 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à Mot.html.                          ]-->
 <!--[ ****************************************************************** ]-->
-<meta name="DC.Title" content="Index : [#NOM]" />
-<meta name="DC.Description" lang="fr" content="Index par mot clé. [#NOM]" />
+<meta name="DC.Title" content="Index : [#NAME]" />
+<meta name="DC.Description" lang="fr" content="Index par mot clé. [#NAME]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_MOTS">
@@ -279,8 +279,8 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à chrono.html.                       ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="DCtitle" TABLE="entrees" WHERE="type='periode'">
-		<meta name="DC.Title" content="Index chronologique : [#NOM]." />
+	<LOOP NAME="DCtitle" TABLE="entries" WHERE="type='periode'">
+		<meta name="DC.Title" content="Index chronologique : [#NAME]." />
 	</LOOP>
 <meta name="DC.Description" lang="fr" content="Index chronologique." />
 </DEFMACRO>
@@ -299,7 +299,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ version 2.0                                                        ]-->
 <!--[ Affichage métadonnées propres à geo.html.                          ]-->
 <!--[ ****************************************************************** ]-->
-<meta name="DC.Title" content="Index : [#NOM]" />
+<meta name="DC.Title" content="Index : [#NAME]" />
 <meta name="DC.Description" lang="fr" content="Index géographique." />
 </DEFMACRO>
 
@@ -355,12 +355,12 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">" />
 	<meta name="URL" content="[#CURRENTURL]" />
 		
-	<LOOP NAME="meta_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_auteurs" TABLE="persons" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="rank">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_motscles_lineaires" TABLE="entrees" WHERE="iddocument='[#ID]' AND type='motcle'" ORDER="ordre">
-		<meta name="KEYWORDS" content="[#NOM]" />
+	<LOOP NAME="meta_motscles_lineaires" TABLE="entries" WHERE="iddocument='[#ID]' AND type='motcle'" ORDER="rank">
+		<meta name="KEYWORDS" content="[#NAME]" />
 	</LOOP>
 	
 	<!--[ METADONNEES DUBLIN CORE ]-->
@@ -377,11 +377,11 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 
 	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
-	<LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
-		<meta name="DC.Subject" content="[#NOM]" />
+	<LOOP NAME="meta_dc_motscles" TABLE="entries" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="rank">
+		<meta name="DC.Subject" content="[#NAME]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_dc_auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
 		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
@@ -535,7 +535,7 @@ function RestoreImg()
 <!--[ version 1.0                                                        ]-->
 <!--[ Affiche la liste des auteurs d'un document pour fil atom           ]-->
 <!--[ ****************************************************************** ]-->
-		<LOOP NAME="lister_auteurs_document" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<LOOP NAME="lister_auteurs_document" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
 			<DO><author>
 			<name>[#PRENOM] [#NOMFAMILLE]</name>
 			</author></DO>

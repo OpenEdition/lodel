@@ -36,12 +36,12 @@
 <br />
 
 <?php mkeditlodeltextJS(); ?>
-<form method="post" action="texte.php">
+<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
 <input type="hidden" name="edit" value="1">
 <input type="hidden" name="textgroup" value="[#TEXTGROUP]">
 <input type="hidden" name="lang" value="[#LANG]">
 <div id="translationforms">
-<LOOP NAME="textes" TABLE="textes" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="nom" SELECT="nom,textgroup">
+<LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="nom" SELECT="nom,textgroup">
 <?php mkeditlodeltext($context['nom'],$context['textgroup'],$context['lang']);?>
 </LOOP>
 </div>

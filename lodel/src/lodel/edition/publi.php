@@ -39,7 +39,7 @@
 
 
 // pour les publications dans l'url on peut recevoir
-// online: si vrai met le statut a 1 si faux met le statut a 0
+// online: si vrai met le status a 1 si faux met le status a 0
 // confirmation: si vrai alors depublie meme si les publications sont protegees
 
 // pour les documents dans l'url on peut recevoir
@@ -48,17 +48,17 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 include ($home."func.php");
 
 include_once ($home."connect.php");
 
 if ($cancel) back();
 
-$statut=$online ? 1 : -1;
+$status=$online ? 1 : -1;
 
-// l'utilisation dans ce script d'un statut de +32 ou -32 n'est pas recommander parce qu'il opere de facon recurrente.
-// utiliser plutot statut.php pour ajuster le statut.
+// l'utilisation dans ce script d'un status de +32 ou -32 n'est pas recommander parce qu'il opere de facon recurrente.
+// utiliser plutot status.php pour ajuster le status.
 
 if ($publication) {
   $id=intval($publication);
@@ -68,13 +68,13 @@ if ($publication) {
 
 require($home."managedb.php");
 
-if (!publi($id,$statut,$confirmation)) { // publications protegees ?
+if (!publi($id,$status,$confirmation)) { // publications protegees ?
   $context[id]=$id;
   // post-traitement
-  posttraitement($context);
+  postprocessing($context);
 
   include ($home."calcul-page.php");
-  calcul_page($context,"publi_erreur");
+  calcul_page($context,"publi_error");
   return;
 }
 

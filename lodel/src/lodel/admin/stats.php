@@ -47,8 +47,8 @@ if(!$nbdocs) $nbdocs=1;  // Evite les divisions par zéro
 
 # ghi ##### if ($nbblocs) {
 // Nombre de documents en brouillon
-# ghi ##### certains de tes tests sur les statut ne sont pas correctes. -32 est la limite entre brouillon et pas brouillon. Donc ici la condition est <=-32 je sais que ca marche... pour le moment. Si un jour on utilise les valeurs intermediaires tes stat ne marcheront plus... c'est pas tres grave, mais fait attention a ca parce que ce genre de chose laisse traine des incompatibilite tres difficile a debuguer.
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE statut<-1") or die (mysql_error());
+# ghi ##### certains de tes tests sur les status ne sont pas correctes. -32 est la limite entre brouillon et pas brouillon. Donc ici la condition est <=-32 je sais que ca marche... pour le moment. Si un jour on utilise les valeurs intermediaires tes stat ne marcheront plus... c'est pas tres grave, mais fait attention a ca parce que ce genre de chose laisse traine des incompatibilite tres difficile a debuguer.
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE status<-1") or die (mysql_error());
 list($context[nbdocsbrouillons])=mysql_fetch_row($result);
 # ghi ####### cette definition est inutile car tu ne te sers q'une fois de nbdocsbrouillons, utilise donc plutot $context[nbdocsbrouillons] directement. Ca permet d'eviter de charger l'espace global. Ca permet surtout de ne pas avoir des variables "inutiles" source de bugs et d'insecurite
 $nbdocsbrouillons=$context[nbdocsbrouillons];
@@ -59,7 +59,7 @@ $context[percdocsbrouillons]=round(($nbdocsbrouillons*100)/$nbdocs);
 # ghi ##### tu peux soit mettre autant de if que de requete sur documents, soit en mettre une unique et mettre toutes tes requetes a l'interieur.
 
 // Nombre de documents prêt à être publiés
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE statut>-32 AND statut<0") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE status>-32 AND status<0") or die (mysql_error());
 list($context[nbdocsprets])=mysql_fetch_row($result);
 $nbdocsprets=$context[nbdocsprets];
 # ghi ##### meme remarque pour le nombre de variables
@@ -68,7 +68,7 @@ $context[percdocsprets]=round(($nbdocsprets*100)/$nbdocs);
 
 // Nombre de documents publiés
 # ghi ##### requete inutile car tu connais le nombre total de doc, et tu as tester les doc negatif... un peu d'arithmetique suffit donc. Epargne les acces DB au maximum.
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE statut>0") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE status>0") or die (mysql_error());
 list($context[nbdocspublies])=mysql_fetch_row($result);
 $nbdocspublies=$context[nbdocspublies];
 # ghi ##### meme remarque pour le nombre de variables
@@ -76,7 +76,7 @@ $nbdocspublies=$context[nbdocspublies];
 $context[percdocspublies]=round(($nbdocspublies*100)/$nbdocs);
 
 
-# ghi #### tes trois dernieres boucles (certes la derniere est inutile donc ce que je dis ne se justifie pas a 100%, mais a partir de trois il faut le faire) pourrait etre faite via une fonciton a trois arguments: le premier serait le nom de la variable ("nbdocspublies" par exemple), le deuxieme le critere et le troisieme $nbdocs. C'est important de faire ca, car premierement + de fonction = moins de bug, et deuxieme tu economises le parser php. N'oublie pas que php n'est pas pre-compiler, mais interpreter a chaque fois.
+# ghi #### tes trois dernieres boucles (certes la derniere est inutile donc ce que je dis ne se justifie pas a 100%, mais a partir de trois il faut le faire) pourrait etre faite via une fonciton a trois arguments: le premier serait le name de la variable ("nbdocspublies" par exemple), le deuxieme le critere et le troisieme $nbdocs. C'est important de faire ca, car premierement + de fonction = moins de bug, et deuxieme tu economises le parser php. N'oublie pas que php n'est pas pre-compiler, mais interpreter a chaque fois.
 # ghi #### pour les publications ca se justifie pleinement vu que tu as encore plus de test.
 
 //////////////////////////////////  Publications
@@ -88,28 +88,28 @@ $nbpublis=$context[nbpublis];
 if(!$nbpublis) $nbpublis=1;  // Evite les divisions par zéro
 
 // Nombre de publications en brouillon
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut<-1") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status<-1") or die (mysql_error());
 list($context[nbpublisbrouillons])=mysql_fetch_row($result);
 $nbpublisbrouillons=$context[nbpublisbrouillons];
 // pourcentage
 $context[percpublisbrouillons]=round(($nbpublisbrouillons*100)/$nbpublis);
 
 // Nombre de publications prêt à être publiées
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut>-32 AND statut<0") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status>-32 AND status<0") or die (mysql_error());
 list($context[nbpublispretes])=mysql_fetch_row($result);
 $nbpublispretes=$context[nbpublispretes];
 // pourcentage
 $context[percpublispretes]=round(($nbpublispretes*100)/$nbpublis);
 
 // Nombre de publications publiées
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut>0 AND statut<32") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status>0 AND status<32") or die (mysql_error());
 list($context[nbpublispubliees])=mysql_fetch_row($result);
 $nbpublispubliees=$context[nbpublispubliees];
 // pourcentage
 $context[percpublispubliees]=round(($nbpublispubliees*100)/$nbpublis);
 
 // Nombre de publications publiées protégées
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut>1") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status>1") or die (mysql_error());
 list($context[nbpublisprotegees])=mysql_fetch_row($result);
 $nbpublisprotegees=$context[nbpublisprotegees];
 // pourcentage
@@ -143,8 +143,8 @@ list($context[nbtypepublis])=mysql_fetch_row($result);
 function loop_nom_occ_type_publi(&$context,$funcname)
 {
 # ghi #### a quoi sert le type AS nomtypepubli, type suffit pas ?
-# ghi #### je presume que tu as fait ca pour avoir un nom plus explicite que type.
-# ghi #### si c'est bien ca, je comprends ton souhait d'un cote. D'un autre cote, il pose un probleme assez important, c'est le manque de standardisation. Ton template ne sera surement pas modifie par quelqu'un d'autre d'ici un bon bout de temps, mais si c'est le cas, il va devoir aller dans ton code pour savoir le nom de la variable. Le plus simple est evident de rester standart lodel, c'est a dire de garder type qui certe est peu signifiant, mais est general et marche partout dans lodel. Cette volonte de standardiser, et non de specialiser a permis a lodelscript d'etre assez facilement utilisable par les gens. Ils savent quelle variable ils peuvent utiliser parce que ce sont toujours les memes. Donc garde type, meme si ca te dit rien.
+# ghi #### je presume que tu as fait ca pour avoir un name plus explicite que type.
+# ghi #### si c'est bien ca, je comprends ton souhait d'un cote. D'un autre cote, il pose un probleme assez important, c'est le manque de standardisation. Ton template ne sera surement pas modifie par quelqu'un d'autre d'ici un bon bout de temps, mais si c'est le cas, il va devoir aller dans ton code pour savoir le name de la variable. Le plus simple est evident de rester standart lodel, c'est a dire de garder type qui certe est peu signifiant, mais est general et marche partout dans lodel. Cette volonte de standardiser, et non de specialiser a permis a lodelscript d'etre assez facilement utilisable par les gens. Ils savent quelle variable ils peuvent utiliser parce que ce sont toujours les memes. Donc garde type, meme si ca te dit rien.
 # ghi #### derniere remarque, nom_occ_type_publi ... nombre_occurence_type_publi est pas bcp plus long, et bcp plus claire.
 	$result=mysql_query("SELECT type AS nomtypepubli, COUNT(type) AS nbtypepubli FROM $GLOBALS[tp]publications GROUP BY type") or die (mysql_error());
 	while($row=mysql_fetch_array($result,MYSQL_ASSOC))

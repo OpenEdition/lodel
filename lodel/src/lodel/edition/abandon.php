@@ -30,14 +30,14 @@
 require_once("siteconfig.php");
 if (!function_exists("authenticate")) {
   require_once ($home."auth.php");
-  authenticate(LEVEL_REDACTEUR,NORECORDURL);
+  authenticate(LEVEL_REDACTOR,NORECORDURL);
 }
 
 // detruit la tache en cours
 $idtache=intval($idtache);
 if ($idtache) {
   require_once ($home."connect.php");
-  mysql_query("DELETE FROM $GLOBALS[tp]taches WHERE id='$idtache'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]tasks WHERE id='$idtache'") or die (mysql_error());
 }
 
 if ($redirect) {

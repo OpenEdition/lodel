@@ -39,9 +39,9 @@ $listestatus=array(
 
 function makeselectstatus(&$context) {
   global $listestatus;
-  foreach ($listestatus as $statut =>$statusstr) {
-    $selected=$statut==$context[statut] ? "SELECTED" : "";
-    echo "<OPTION $selected VALUE=\"$statut\">$statusstr</OPTION>";
+  foreach ($listestatus as $status =>$statusstr) {
+    $selected=$status==$context[status] ? "SELECTED" : "";
+    echo "<OPTION $selected VALUE=\"$status\">$statusstr</OPTION>";
   }
 }
 

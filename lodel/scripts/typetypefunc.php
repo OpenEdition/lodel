@@ -33,26 +33,26 @@ function typetype_delete($typetable,$critere)
   mysql_query("DELETE FROM $GLOBALS[tp]typeentites_".$typetable."s WHERE $critere") or die (mysql_error());
 }
 
-function typetype_insert($idtypeentite,$idtypetable,$typetable)
+function typetype_insert($identitytype,$idtypetable,$typetable)
 
 {
   // l'un ou l'autre des idtype doit etre un array, l'autre est un id fixe.
   //
-  if (!$idtypeentite || !$idtypetable) return;
+  if (!$identitytype || !$idtypetable) return;
 
   $values=array();
   if (is_array($idtypetable)) {
     foreach($idtypetable as $idtype=>$cond) {
-      array_push($values,"('$idtypeentite','$idtype','*')");
+      array_push($values,"('$identitytype','$idtype','*')");
     }
   } else {
-    foreach($idtypeentite as $idtype=>$cond) {
+    foreach($identitytype as $idtype=>$cond) {
       array_push($values,"('$idtype','$idtypetable','*')");
     }
   }
   $table=$typetable!="typeentite2" ? $typetable : "typeentite";
 
-  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$table."s (idtypeentite,id$typetable,condition) VALUES ".join(",",$values)) or die(mysql_error());
+  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$table."s (identitytype,id$typetable,condition) VALUES ".join(",",$values)) or die(mysql_error());
 }
 
 
@@ -67,16 +67,16 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
 {
   if ($listtype=="typeentite" || $listtype=="typeentite2") {
     $maintable="types";
-    $ordre="classe,type";
+    $rank="class,type";
     $relationtable=$criteretype;
   } else {
     $maintable=$listtype."s";
     $relationtable=$listtype;
-    $ordre="type";
+    $rank="type";
   }
   #if ($relationtable=="typeentite2") $relationtable="typeentite";
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$maintable LEFT JOIN $GLOBALS[tp]typeentites_".$relationtable."s ON id$listtype=$GLOBALS[tp]$maintable.id AND id$criteretype='$context[id]' WHERE statut>0 ORDER BY $ordre") or die(mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$maintable LEFT JOIN $GLOBALS[tp]typeentites_".$relationtable."s ON id$listtype=$GLOBALS[tp]$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank") or die(mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);

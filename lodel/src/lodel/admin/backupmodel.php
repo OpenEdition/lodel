@@ -71,14 +71,14 @@ if ($backup) {
   fputs($fh,"# ".str_replace("\n","\n# ",$description)."\n#------------\n\n");
 
 
-  $tables=array("$GLOBALS[tp]champs",
-		"$GLOBALS[tp]groupesdechamps",
+  $tables=array("$GLOBALS[tp]fields",
+		"$GLOBALS[tp]fieldgroups",
 		"$GLOBALS[tp]types",
-		"$GLOBALS[tp]typepersonnes",
-		"$GLOBALS[tp]typeentrees",
-		"$GLOBALS[tp]typeentites_typeentites",
-		"$GLOBALS[tp]typeentites_typeentrees",
-		"$GLOBALS[tp]typeentites_typepersonnes");
+		"$GLOBALS[tp]persontypes",
+		"$GLOBALS[tp]entrytypes",
+		"$GLOBALS[tp]entitytypes_entitytypes",
+		"$GLOBALS[tp]entitytypes_entrytypes",
+		"$GLOBALS[tp]entitytypes_persontypes");
 
   foreach ($tables as $table) {
     fputs($fh,"DELETE FROM ".lodelprefix($table).";\n");

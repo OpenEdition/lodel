@@ -41,7 +41,7 @@ function removefilesincache()
     while ( ($file=readdir($fd))!==false ) {
       #echo $rep," ",$file," ",(substr($file,0,1)==".") || ($file=="CVS"),"<br />";
 
-      if ((substr($file,0,1)==".") || ($file=="CVS")) continue;
+      if (($file[0]==".") || ($file=="CVS") || ($file=="upload")) continue;
       $file=$rep."/".$file;
       if (is_dir($file)) {
 	$rep2=$file;

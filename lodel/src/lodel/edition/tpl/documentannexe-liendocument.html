@@ -39,7 +39,7 @@
 	[@EDITION.ADD_ANNEX_TO_DOCUMENT]:
 	<LOOP NAME="docu" TABLE="documents" WHERE="id='[#IDPARENT]'">
 		<DO>
-			<span class="nom_publi_parente">[#TITRE]</span>
+			<span class="nom_publi_parente">[#TITLE]</span>
 		</DO>
 	</LOOP>
 </div>
@@ -57,7 +57,7 @@
 			
 			<tr>
 				<td width="200" class="texte_intitule">[@COMMON.TITLE]:</td>
-				<td><input size="60" type="text" name="titre" value="[#TITRE]"></td>
+				<td><input size="60" type="text" name="titre" value="[#TITLE]"></td>
 			</tr>
 			<tr>
 				<td width="200" class="texte_intitule">[@EDITION.COMMENT]:</td>
@@ -67,7 +67,7 @@
 				<tr>
 					<td width="200"><span class="texte_intitule">[@EDITION.DOCUMENT_ID] :</span></td>
 					<td>
-						<IF COND="[#ERREUR_DOCUMENTINEXISTANT]"><span class="message_erreur">[@EDITION.MISSING_DOCUMENT]</span></IF>
+						<IF COND="[#ERROR_DOCUMENTINEXISTANT]"><span class="message_erreur">[@EDITION.MISSING_DOCUMENT]</span></IF>
 						<div><input name="lien" type="texte" size="5" value="[#LIEN]"><!--[&nbsp;<a href="javascript:void(0);">Aide</a>]--></div>
 					</td>
 				</tr>			

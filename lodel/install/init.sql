@@ -29,20 +29,20 @@
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(255) NOT NULL,
-	soustitre	TINYTEXT,
-	rep		VARCHAR(64) NOT NULL,
-	chemin		VARCHAR(64) NOT NULL, ## va remplacer rep et rep devenir site (ou nom et nom devenir titre).
+	title		VARCHAR(255) NOT NULL,
+	subtitle	TINYTEXT,
+	name		VARCHAR(64) NOT NULL,
+	path		VARCHAR(64) NOT NULL,
 	url		TINYTEXT NOT NULL,
 
 	langdef		CHAR(2) NOT NULL,
 	lang		VARCHAR(64) NOT NULL,
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_rep (rep)
+	KEY index_name (name)
 );
 
 
@@ -50,12 +50,12 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
-	nom		VARCHAR(64),
-	courriel	VARCHAR(255),
-	privilege	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	name		VARCHAR(64),
+	email		VARCHAR(255),
+	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
 	lang		CHAR(5) NOT NULL,       # text lang
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
 
 	maj		TIMESTAMP,
 
@@ -80,32 +80,32 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_urlstack (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment, # faudrait generer le probleme du overflow
 	idsession	INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	url		CHAR(32) BINARY NOT NULL, # cle md5 de l'url en cours
-	urlretour	MEDIUMBLOB NOT NULL, # url de retour de l'url en cours
+	urlmd5		CHAR(32) BINARY NOT NULL, # cle md5 de l'url en cours
+	url		MEDIUMBLOB NOT NULL, # url de retour de l'url en cours
 
 	PRIMARY KEY (id),
 	KEY index_idsession (idsession),
-	KEY index_url (url)
+	KEY index_urlmd5 (urlmd5)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	nom		VARCHAR(255) NOT NULL,  # name
-	texte		TEXT,                   # texte
+	name		VARCHAR(255) NOT NULL,  # name
+	contents	TEXT,                   # texte
 
 	lang		CHAR(5) NOT NULL,       # text lang
 	textgroup	VARCHAR(255) NOT NULL,   # text group
 
-	statut		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom),
+	KEY index_name (name),
 	KEY index_lang (lang),
 	KEY index_textgroup (textgroup)
 );
@@ -121,14 +121,13 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_translations (
 	modificationdate	DATE,
 	creationdate		DATE,
 
-	ordre			INT UNSIGNED DEFAULT '0' NOT NULL,
-	statut			TINYINT DEFAULT '1' NOT NULL,
-	maj			TIMESTAMP,
+	rank			INT UNSIGNED DEFAULT '0' NOT NULL,
+	status			TINYINT DEFAULT '1' NOT NULL,
+	upd			TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_lang (lang)
 );
-
 
 
 

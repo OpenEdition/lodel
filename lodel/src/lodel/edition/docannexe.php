@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_EDITEUR,NORECORDURL);
+authenticate(LEVEL_EDITOR,NORECORDURL);
 include ($home."func.php");
 
 $idparent=intval($idparent);
@@ -55,17 +55,17 @@ if ($id>0 && ($delete || $restore)) {
 $critere="id='$id'";
 
 //
-// ordre
+// rank
 //
 if ($id>0 && $dir) {
   # cherche le parent
-  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entities WHERE id='$id'") or die (mysql_error());
   list($idparent)=mysql_fetch_row($result);
   // recupere les type de documents annexe
   $result=mysql_query ("SELECT id FROM $GLOBALS[tp]types WHERE type LIKE 'documentannexe-%'") or die (mysql_error());
   $idtypes=array();
   while ($row=mysql_fetch_assoc($result)) { array_push($idtypes,$row[id]); }
-  chordre("entites",$id,"idparent='$idparent' AND idtype IN (".join(",",$idtypes).")",$dir);
+  chrank("entites",$id,"idparent='$idparent' AND idtype IN (".join(",",$idtypes).")",$dir);
   touch(SITEROOT."CACHE/maj");
   back();
 }
@@ -81,7 +81,7 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     if (!$idtype) die("il faut preciser l'idtype");
-    $result=mysql_query("SELECT type FROM $GLOBALS[tp]types WHERE id='$idtype' AND statut>0") or die (mysql_error());
+    $result=mysql_query("SELECT type FROM $GLOBALS[tp]types WHERE id='$idtype' AND status>0") or die (mysql_error());
   if (!mysql_num_rows($result)) die ("type '$type' inconnu (1)");
   list($type)=mysql_fetch_row($result);
 
@@ -90,7 +90,7 @@ if ($edit) { // modifie ou ajoute
     // charge le fichier si necessaire
       if ($docfile && $docfile['tmp_name'] && $docfile['tmp_name']!="none") {
 	if ($id>0) { // we know the document id, we can copy it.
-	  $lien=save_annex_file($id,$docfile['tmp_name'],$docfile['name'],FALSE,$erreur);
+	  $lien=save_annex_file($id,$docfile['tmp_name'],$docfile['name'],FALSE,$error);
 	} else {
 	  $lien="temporaire";
 	}
@@ -98,24 +98,24 @@ if ($edit) { // modifie ou ajoute
       } else {
 	// recherche le lien
 	include_once ($home."connect.php");
-	$result=mysql_query("SELECT lien FROM $GLOBALS[tp]documents WHERE identite='$id'") or die (mysql_error());
+	$result=mysql_query("SELECT lien FROM $GLOBALS[tp]documents WHERE identity='$id'") or die (mysql_error());
 	list($lien)=mysql_fetch_row($result);
       }
     } elseif ($type=="documentannexe-liendocument") {
       $lien=intval($context[lien]);
       // cherche si le documents existe
-      $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents WHERE identite='$lien'") or die (mysql_query());
+      $result=mysql_query("SELECT identity FROM $GLOBALS[tp]documents WHERE identity='$lien'") or die (mysql_query());
       if (mysql_num_rows($result)<1) {
-	$err=$context[erreur_documentinexistant]=1;
+	$err=$context[error_documentinexistant]=1;
       } else {
 	$lien=makeurlwithid ("document",$lien);
       }
     } elseif ($type=="documentannexe-lienpublication") {
       $lien=intval($context[lien]);
       // cherche si le documents existe
-      $result=mysql_query("SELECT identite FROM $GLOBALS[tp]publications WHERE identite='$lien'") or die (mysql_query());
+      $result=mysql_query("SELECT identity FROM $GLOBALS[tp]publications WHERE identity='$lien'") or die (mysql_query());
       if (mysql_num_rows($result)<1) {
-	$err=$context[erreur_publicationinexistant]=1;
+	$err=$context[error_publicationinexistant]=1;
       } else {
 	$lien=makeurlwithid ("sommaire",$lien);
       }
@@ -124,27 +124,27 @@ if ($edit) { // modifie ou ajoute
       $lien=$context[lien];
       if ($lien && !preg_match("/http:\/\//i",$lien)) $lien="http://".$lien;
       $url=parse_url($lien);
-      if (!$url[host] || !preg_match("/^[\w-]+(\.[\w-]+)+$/",$url[host])) { $context[erreur_urlinvalide]=$err=1; }
+      if (!$url[host] || !preg_match("/^[\w-]+(\.[\w-]+)+$/",$url[host])) { $context[error_urlinvalide]=$err=1; }
     } else {
-      die ("erreur type incorrecte");
+      die ("error type incorrecte");
     }
-    if (!$lien) { $context[erreur_lieninexistant]=$err=1; }
+    if (!$lien) { $context[error_lieninexistant]=$err=1; }
     // fin de chargement
 
     if ($err) break;
     require_once ($home."connect.php");
     require_once($home."entitefunc.php");
-    $context[entite][nom]=$context[titre];
-    $context[entite][titre]=$context[titre];
+    $context[entite][name]=$context[title];
+    $context[entite][title]=$context[title];
     $context[entite][texte]=$context[texte];
     $context[entite][lien]=$lien;
     $context[idparent]=$idparent;
 
-    $newid=enregistre_entite($context,$id,"documents","",FALSE); // ne retourne pas quand il y a une erreur !
+    $newid=enregistre_entite($context,$id,"documents","",FALSE); // ne retourne pas quand il y a une error !
 
 #    if ($newid===FALSE) {
-#      print_r($context[erreur]);
-#      foreach ($context[erreur] as $champ=>$msg) { $context["erreur_".$champ]=$msg; }
+#      print_r($context[error]);
+#      foreach ($context[error] as $champ=>$msg) { $context["error_".$champ]=$msg; }
 #      break;
 #    }
 #    echo "newid:$newid<br/>";
@@ -153,8 +153,8 @@ if ($edit) { // modifie ou ajoute
     if (!$id && $newid &&
 	$type=="documentannexe-lienfichier" &&
 	$docfile['tmp_name']) { // we know the document id, we can copie it.
-      $lien=save_annex_file($newid,$docfile['tmp_name'],$docfile['name'],FALSE,$erreur);
-      mysql_query("UPDATE $GLOBALS[tp]documents SET lien='$lien' WHERE identite=$newid");
+      $lien=save_annex_file($newid,$docfile['tmp_name'],$docfile['name'],FALSE,$error);
+      mysql_query("UPDATE $GLOBALS[tp]documents SET lien='$lien' WHERE identity=$newid");
     }
 
     back();
@@ -163,7 +163,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,$GLOBALS[tp]types.type,tplcreation FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id'") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,$GLOBALS[tp]types.type,tplcreation FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
   if ($context[type]=="documentannexe-liendocument" || $context[type]=="documentannexe-lienpublication") {
     // recupere le numero
@@ -182,7 +182,7 @@ if ($edit) { // modifie ou ajoute
 if (!$tplcreation) {
   // cherche le tpl
   $critere=$idtype ? "id='$idtype'" : "type='$type'";
-    $result=mysql_query("SELECT tplcreation,id, type FROM $GLOBALS[tp]types WHERE $critere AND statut>0") or die (mysql_error());
+    $result=mysql_query("SELECT tplcreation,id, type FROM $GLOBALS[tp]types WHERE $critere AND status>0") or die (mysql_error());
   if (!mysql_num_rows($result)) die ("type '$type' inconnu");
   list($tplcreation,$context[idtype],$context[type])=mysql_fetch_row($result);
 }
@@ -191,7 +191,7 @@ $context[id]=$id;
 
 
 // post-traitement
-posttraitement($context);
+postprocessing($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,$tplcreation);

@@ -75,7 +75,7 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche le nombre des textes intégraux publiés dans le site.       ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="nbtip" TABLE="documents" SELECT="count(*) as nbtextesintegraux" WHERE="texte ne '' AND tplcreation='chargement' AND datepubli le NOW() AND statut gt '-1'">
+	<LOOP NAME="nbtip" TABLE="documents" SELECT="count(*) as nbtextesintegraux" WHERE="texte ne '' AND tplcreation='chargement' AND datepubli le NOW() AND status gt '-1'">
 		<DO>
 			Nombre de textes intégraux publiés : [#NBTEXTESINTEGRAUX]
 		</DO>
@@ -95,12 +95,12 @@
 		</span>
 	</div>
 		
-	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="statut gt 0" WHERE="tplcreation='creation-numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
+	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="status gt 0" WHERE="tplcreation='creation-numero'" WHERE="idparent=[#ID]" ORDER="rank ASC">
 		<DO>
 			<div class="afficherdocument">
 				<a href="[(#ID|makeurlwithid('sommaire'))]">
 					<!--[ TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION ]-->	
-					[#TITRE]
+					[#TITLE]
 				</a>
 				<MACRO NAME="SOUSTITRE_PUBLICATION">&nbsp;
 				<br />
@@ -119,8 +119,8 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche, s'il existe, le titre d'une publication.                  ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#TITRE]">
-		[#TITRE]
+	<IF COND="[#TITLE]">
+		[#TITLE]
 	</IF>
 </DEFMACRO>
 
@@ -192,7 +192,7 @@
         <DO>
 	<h1 class="accueil">
 	<a href="[(#ID|makeurlwithid('sommaire'))]">
-		[#TITRE]
+		[#TITLE]
 	</a>
 	</h1>
          </DO>
@@ -211,10 +211,10 @@
 <!--[ ****************************************************************** ]-->
         <LOOP NAME="paru_dans_simple_publication" TABLE="publications" WHERE="id='[#IDPARENT]'">
         <DO>
-   	<IF COND="[#TITRE]">
+   	<IF COND="[#TITLE]">
 	        Paru dans : 
 		<a  href="[(#IDPARENT|makeurlwithid('sommaire'))]">
-                [#TITRE]
+                [#TITLE]
 		</a>
 		<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 	</IF>
@@ -341,7 +341,7 @@
 <!--[ <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      ]-->
 <!--[ <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              ]-->
 <!--[ ****************************************************************** ]-->
-		 <h2><a href="[(#ID|makeurlwithid('document'))]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a></h2> ([#TYPE])
+		 <h2><a href="[(#ID|makeurlwithid('document'))]">[#TITLE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a></h2> ([#TYPE])
 			<br />
         <MACRO NAME="PARU_DANS_SIMPLE"> 
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
@@ -356,16 +356,16 @@
 <!--[ Macro plutôt destinée à la barre de navigation verticale.          ]-->
 <!--[ ****************************************************************** ]-->
 	<!--[ On liste en premier les séries linéaires ]-->
-	<LOOP NAME="aff_collec" TABLE="publications" WHERE="idparent='0' AND statut gt 0" ORDER="ordre">
+	<LOOP NAME="aff_collec" TABLE="publications" WHERE="idparent='0' AND status gt 0" ORDER="rank">
 
 			<li class="first">
-			<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITRE]</a>
+			<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITLE]</a>
 			</li>
 			
 		
-		<LOOP NAME="aff_publiparente" TABLE="publications" WHERE="idparent='[#ID]' AND statut gt 0" ORDER="ordre">
+		<LOOP NAME="aff_publiparente" TABLE="publications" WHERE="idparent='[#ID]' AND status gt 0" ORDER="rank">
 			<li>
-				<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITRE]</a>
+				<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITLE]</a>
 			</li>
 		</LOOP>
 	</LOOP>
@@ -403,7 +403,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="article" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='article'" ORDER="ordre">
+	<LOOP NAME="article" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='article'" ORDER="rank">
 		<BEFORE>
 			<h2>
 				Articles
@@ -425,7 +425,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="chr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
+	<LOOP NAME="chr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='chronique'" ORDER="rank">
 		<BEFORE>
 			<h2>
 				Chroniques
@@ -447,7 +447,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="cr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
+	<LOOP NAME="cr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='compte rendu'" ORDER="rank">
 		<BEFORE>
 			<h2>
 				Comptes Rendus 
@@ -469,7 +469,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="pdt" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
+	<LOOP NAME="pdt" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='position de these'" ORDER="rank">
 		<BEFORE>
 			<h2>
 				Positions de thèse
@@ -491,7 +491,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="nl" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
+	<LOOP NAME="nl" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='note de lecture'" ORDER="rank">
 		<BEFORE>
 			<h2>
 				Notes de lecture 
@@ -513,7 +513,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="presentation" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
+	<LOOP NAME="presentation" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='presentation'" ORDER="rank">
 		<BEFORE>
 			<h2>
 				Informations
@@ -548,7 +548,7 @@
 <!--[ Cette Macro utilise la macro suivante :                            ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="presenter_documents" TABLE="documents" WHERE="idparent='[#IDENTITE]'" ORDER="ordre">
+	<LOOP NAME="presenter_documents" TABLE="documents" WHERE="idparent='[#IDENTITE]'" ORDER="rank">
 		<DO>
 			<div class="afficherdocument">
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
@@ -565,11 +565,11 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="PRESENTER_DOCUMENTS">                                 ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#IDENTITE]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#IDENTITE]'" WHERE="type='regroupement'" ORDER="rank DESC">
 		<DO>
 			<h2 class="regroup">
-				<IF COND="[#TITRE]">
-					[#TITRE]
+				<IF COND="[#TITLE]">
+					[#TITLE]
 				</IF>
 			</h2>
 			<MACRO NAME="PRESENTER_DOCUMENTS">
@@ -591,7 +591,7 @@
 <!--[ dans le sommaire.                                                  ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#TYPE]=='article_vide'">
-		[#TITRE]<IF COND="[#SOUSTITRE]">
+		[#TITLE]<IF COND="[#SOUSTITRE]">
 		<br /> [#SOUSTITRE]</IF>
 	<ELSE/>
 		<div class="article">
@@ -618,7 +618,7 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche simplement le titre et le sous-titre du document 			]-->
 <!--[ ****************************************************************** ]-->
-	[#TITRE]<IF COND="[#SOUSTITRE]"> <br /> [#SOUSTITRE]</IF>
+	[#TITLE]<IF COND="[#SOUSTITRE]"> <br /> [#SOUSTITRE]</IF>
 </DEFMACRO>
 
 
@@ -628,7 +628,7 @@
 <!--[ Affiche la liste des auteurs d'un document entre virgules.         ]-->
 <!--[ ****************************************************************** ]-->
 	<div class="auteur">
-	<LOOP NAME="LISTER_AUTEURS_auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="LISTER_AUTEURS_auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
 		<DOFIRST>[#PRENOM] 	[#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM]	[#NOMFAMILLE] </DO>
 		<DOLAST>
@@ -652,7 +652,7 @@
 <!--[ L'affichage est destiné aux sommaires : il permet une respiration. ]-->
 <!--[ ****************************************************************** ]-->
 	<div class="auteur">
-		<LOOP NAME="lister_auteurs_document" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<LOOP NAME="lister_auteurs_document" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
 			<DOFIRST>[#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DOFIRST>
 			<DO>, [#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DO>
 			<DOLAST> et [#PRENOM] <span class="smallcaps"> [#NOMFAMILLE]</span></DOLAST>
@@ -667,7 +667,7 @@
 <!--[ Affiche la liste des auteurs d'un document entre virgules, pour 	]-->
 <!--[ la notice bibliographique.                                         ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="LISTER_AUTEURS_CITATION_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="LISTER_AUTEURS_CITATION_auteurs" TABLE="persons" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="rank">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM] [#NOMFAMILLE]</DO>
 		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
@@ -681,10 +681,10 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche notice biblio du doc en cours                              ]-->
 <!--[ ****************************************************************** ]-->
-	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <em><MACRO NAME="NOM_SITE">,</em>
+	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITLE]&raquo;. <em><MACRO NAME="NOM_SITE">,</em>
 	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			[#TITRE]
+			[#TITLE]
 		</DO>
 	</LOOP>
 	<br />[(#ID|makeurlwithid('document'))]
@@ -695,7 +695,7 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste description des auteurs dans le document          ]-->
 <!--[ ****************************************************************** ]-->
-<LOOP NAME="description_auteur" TABLE="personnes" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
+<LOOP NAME="description_auteur" TABLE="persons" WHERE="iddocument='[#ID]'" ORDER="rank"> 
 	<DO>
 		<IF COND="[#DESCRIPTION]">
 		 	<h4>
@@ -746,11 +746,11 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche le dernier numéro en date. (en fonction du champs date)    ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="statut gt 0" LIMIT="0,1">
+	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="status gt 0" LIMIT="0,1">
 		<DO>
 			<a  href="[(#ID|makeurlwithid('sommaire'))]">
 				Dernier numéro publié : <br />
-					[#TITRE]
+					[#TITLE]
 			</a>
 		</DO>
 	</LOOP>
@@ -763,8 +763,8 @@
 <!--[ (en fonction du champ date de la table publication) ]-->
 <!--[ *************************************************** ]-->
 	<!--[<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">]-->	
-	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
-		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
+	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="status gt 0" WHERE="type='numero'" LIMIT="0,1">
+		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="rank ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			<div class="extrait">
 					[(#TEXTE|removefootnotes|couper(1500))]
@@ -786,13 +786,13 @@
 <!--[ <MACRO NAME="PRESENTER_PUBLICATION">                               ]-->
 <!--[ <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<h2 class="sommaire">
 				
 				<span style="font-size: smaller">Sommaire du dernier numéro en ligne :</span><br />&nbsp;<br />
 <a href="[(#ID|makeurlwithid('sommaire'))]">
- [#TITRE] 
+ [#TITLE] 
 				</a><br />&nbsp;<br />
 			</h2>
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
@@ -809,7 +809,7 @@
 <!--[ <MACRO NAME="PRESENTER_PUBLICATION">                               ]-->
 <!--[ <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</DO>
@@ -822,10 +822,10 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche la dernière rubrique en date. (en fonction du champs date)     ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='rubrique'" LIMIT="0,1">
+	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="status gt 0" WHERE="type='rubrique'" LIMIT="0,1">
 		<DO>
 			<a href="[(#ID|makeurlwithid('sommaire'))]">
-				[#TITRE]
+				[#TITLE]
 			</a>
 		</DO>
 	</LOOP>
@@ -840,7 +840,7 @@
 <!--[ <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         ]-->
 <!--[ <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
+	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="rank">
 		<BEFORE>
 	<h4>
 		Documents annexes
@@ -856,9 +856,9 @@
 				<!--[ Titre du doc annexe ]-->
 				<span class="bold">
 	                                <IF COND="[#TYPE]=='documentannexe-lienfichier'">
-					<a title="[#TITRE]" href="docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]</a> ([(#LIEN|nicefilesize)])
+					<a title="[#TITLE]" href="docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITLE]</a> ([(#LIEN|nicefilesize)])
 	                                <ELSE/>
-					<a title="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+					<a title="[#TITLE]" href="[#LIEN]" target="[#TITLE]">[#TITLE]</a>
 	                                </IF>
 				</span>
 				<p>
@@ -961,7 +961,7 @@
 						&gt;&gt; Voir le compte-rendu :
 					</div>
 <div class="afficherdocument">
-<a class="menu2" href="[(#ID|makeurlwithid('document'))]">[#TITRE] </a>
+<a class="menu2" href="[(#ID|makeurlwithid('document'))]">[#TITLE] </a>
 <br /><br />
 </div>
 </LOOP>	

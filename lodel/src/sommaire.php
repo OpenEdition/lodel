@@ -42,8 +42,8 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$droitvisiteur ? " AND $GLOBALS[tp]entites.statut>=-1" : " AND $GLOBALS[tp]entites.statut>0";
-$critere.=" AND $GLOBALS[tp]types.statut>0";
+$critere=$rightvisiteur ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
+$critere.=" AND $GLOBALS[tp]types.status>0";
 // cherche la publication
 $relocation=FALSE;
 $base="";
@@ -51,22 +51,22 @@ $base="";
 
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");
 
-if ($id || $identifiant) {
+if ($id || $identifier) {
   require_once($home."textfunc.php");
   do {
-    if ($identifiant) {
-      $identifiant=addslashes(stripslashes($identifiant));
-      $where="$GLOBALS[tp]entites.identifiant='$identifiant' ".$critere;
+    if ($identifier) {
+      $identifier=addslashes(stripslashes($identifier));
+      $where="$GLOBALS[tp]entities.identifier='$identifier' ".$critere;
     } else {
-      $where="$GLOBALS[tp]entites.id='$id' ".$critere;
+      $where="$GLOBALS[tp]entities.id='$id' ".$critere;
     }
 
-    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or die (mysql_error());
+    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or die (mysql_error());
     if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
     $row=filtered_mysql_fetch_assoc($context,$result);
     $base=$row[tpl];
     if (!$base) { $id=$row[idparent]; $relocation=TRUE; }
-  } while (!$base && !$identifiant);
+  } while (!$base && !$identifier);
   if ($relocation) { 
     header("location: ".makeurlwithid("sommaire",$row[id]));
     return;

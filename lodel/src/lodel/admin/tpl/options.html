@@ -40,7 +40,7 @@
 <br />
 
 
-<form method="POST" action="options.php" />
+<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 	<input type="hidden" name="set" value="1" />
 
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5" width="90%">
@@ -51,31 +51,31 @@
 	<td>&nbsp;</td>
 </tr>
 
-	<LOOP NAME="options" TABLE="options" ORDER="ordre" WHERE="statut gt 0">
+	<LOOP NAME="options" TABLE="options" WHERE="class=''" ORDER="rank" WHERE="status gt 0">
 	<DO>
 		<tr>
-			<LET VAR="CLASSE"><IF COND="[#COUNT] % 2">ligne_admin1<ELSE/>ligne_admin2</IF></LET>
-			<td class="[#CLASSE]">[#NOM]</td>
-                        <td class="[#CLASSE]">
+			<LET VAR="CLASS"><IF COND="[#COUNT] % 2">ligne_admin1<ELSE/>ligne_admin2</IF></LET>
+			<td class="[#CLASS]">[#NAME]</td>
+                        <td class="[#CLASS]">
 		         <IF COND="[#TYPE] eq 'pass'">
-			<input size="30" type="password" name="option_[#NOM]"></td>
+			<input size="30" type="password" name="option_[#NAME]"></td>
 		        <ELSE/>
-		        <IF COND="[#DROITADMINLODEL] or ([#STATUT] lt 32)">
-		           <input size="30" type="text" name="option_[#NOM]" value="[#VALEUR]">
+		        <IF COND="[#RIGHTADMINLODEL] or ([#STATUS] lt 32)">
+		           <input size="30" type="text" name="option_[#NAME]" value="[#VALUE]">
                         <ELSE/>
-		           <input size="30" type="text" name="option_[#NOM]" value="[#VALEUR]" readonly></td>
+		           <input size="30" type="text" name="option_[#NAME]" value="[#VALUE]" readonly></td>
 			</IF>
 		        </td>
 			</IF>
 		         </td>
 
 
-			<td class="[#CLASSE]">[(#TYPE|humantype)]</td>
-		        <td class="[#CLASSE]" style="color: #CC9933;" align="right">
+			<td class="[#CLASS]">[(#TYPE|humantype)]</td>
+		        <td class="[#CLASS]" style="color: #CC9933;" align="right">
 		        	<a href="option.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 				<a href="option.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 
-		        <IF COND="[#DROITADMINLODEL] || [#STATUT] lt 32">
+		        <IF COND="[#RIGHTADMINLODEL] || [#STATUS] lt 32">
 			&nbsp;&nbsp;|&nbsp;<a href="option.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 	                |&nbsp;<a href="option.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>
 		        <ELSE/>
@@ -83,7 +83,7 @@
 			|&nbsp;<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
 			</IF>
 		        &nbsp;|&nbsp;
-			<IF COND="[#STATUT] ge 32">[[@COMMON.PROTECTED]]<ELSE/>[[@COMMON.NORMAL]]</IF>
+			<IF COND="[#STATUS] ge 32">[[@COMMON.PROTECTED]]<ELSE/>[[@COMMON.NORMAL]]</IF>
 		       </td>
 		</tr>
          </DO>

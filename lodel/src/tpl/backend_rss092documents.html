@@ -28,15 +28,15 @@
 <rss version="0.92">
 	<channel>
 	        <LOOP NAME="titre_site" TABLE="sites" WHERE="rep='[#SITE]'">
-		<title>[#TITRE]</title>
+		<title>[#TITLE]</title>
 	        </LOOP>
 		<link>[(#CURRENTURL|dirname)]</link>
 		<description><MACRO NAME="DESCRIPTION_SITE_POUR_METAS"></description>
 		<language>fr</language>
-		<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="statut gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="0,10">
+		<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="status gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="0,10">
 			<DO>
 				<item>
-					<title>[#TITRE]</title>
+					<title>[#TITLE]</title>
 					<link>[(#CURRENTURL|dirname)]/[(#IDENTITE|makeurlwithid('document'))]</link>
 					<description>[#RESUME:FR]</description>
 				</item>

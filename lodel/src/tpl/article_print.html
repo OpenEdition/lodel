@@ -65,7 +65,7 @@
 			
 					<strong>
 						<!--[ Affiche le type du document]-->	
-				                <LOOP NAME="type_du_document" TABLE="types" WHERE="id='[#IDTYPE]'">Type de document : [#TITRE]</LOOP>
+				                <LOOP NAME="type_du_document" TABLE="types" WHERE="id='[#IDTYPE]'">Type de document : [#TITLE]</LOOP>
 					</strong>			
 						<!--[ Affiche les boutons pour accéder à la page imprimable et la page de signalement]-->
 						<div class="signalerimprimer">
@@ -82,7 +82,7 @@
 						<IF COND="[#SURTITRE]">
 							<h3>[#SURTITRE]</h3>
 						</IF>
-							<h2 class="titre-doc">[#TITRE]</h2>
+							<h2 class="titre-doc">[#TITLE]</h2>
 						<IF COND="[#SOUSTITRE]">
 							<h3 class="titre-doc">[#SOUSTITRE]</h3>
 						</IF>

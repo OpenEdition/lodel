@@ -36,17 +36,17 @@ $GLOBALS[prefixregexp]="Pr\.|Dr\.";
 require_once($home."entitefunc.php");
 
 
-function enregistre_entite_from_xml($context,$text,$classe)
+function enregistre_entite_from_xml($context,$text,$class)
 
 {
   global $home;
 
   $localcontext=$context;
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,style,type,traitement FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 AND style!=''") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,style,type,traitement FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class' AND $GLOBALS[tp]fields.status>0 AND $GLOBALS[tp]fieldgroups.status>0 AND style!=''") or die (mysql_error());
 
   $sets=array();
-  while (list($nom,$style,$type,$traitement)=mysql_fetch_row($result)) {
+  while (list($name,$style,$type,$traitement)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
 
     if ($type=="mltext") { // text multilingue
@@ -55,10 +55,10 @@ function enregistre_entite_from_xml($context,$text,$classe)
     } else {
       $stylesarr=array($style);
     }
-    if ($localcontext[entite][$nom]) die ("Error: Two fields have the same name. Please correct in admin/champs.php");
+    if ($localcontext[entite][$name]) die ("Error: Two fields have the same name. Please correct in admin/champs.php");
     foreach ($stylesarr as $lang=>$style) {
       // look for that tag
-#    echo "$nom $style $type $traitement<br>";
+#    echo "$name $style $type $traitement<br>";
       if (preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result2)) {
 	$value=$result2[1];
 
@@ -87,9 +87,9 @@ function enregistre_entite_from_xml($context,$text,$classe)
 
 	// now record the $value
 	if ($type=="mltext") {
-	  $localcontext[entite][$nom][$lang]=$value;
+	  $localcontext[entite][$name][$lang]=$value;
 	} else {
-	  $localcontext[entite][$nom]=$value;
+	  $localcontext[entite][$name]=$value;
 	}
       } // if found style found in the text
     } // foreach styles for mltext
@@ -99,7 +99,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
     // check if the document exists, if not we really need the type
     if (!$localcontext[id]) die("Preciser un type in xmlimport.php");
     // get the idtype
-    $result=mysql_query("SELECT idtype FROM $GLOBALS[tp]entites WHERE id='$localcontext[id]'") or die(mysql_error());
+    $result=mysql_query("SELECT idtype FROM $GLOBALS[tp]entities WHERE id='$localcontext[id]'") or die(mysql_error());
     if (!mysql_num_rows($result)) die("Internal ERROR: The entites $localcontext[id] should exists.");
     list($localcontext[idtype])=mysql_fetch_row($result);
   }
@@ -111,7 +111,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
 
 #  print_r($localcontext);
 
-  $id=enregistre_entite ($localcontext,0,$classe,"",FALSE); // on ne genere pas d'erreur... Tant pis !
+  $id=enregistre_entite ($localcontext,0,$class,"",FALSE); // on ne genere pas d'error... Tant pis !
 
   // ok, now, search for the image, and place them in a safe place
 
@@ -126,13 +126,13 @@ function enregistre_entite_from_xml($context,$text,$classe)
     @unlink($imgfile);
     return $newfile;
   }
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$classe WHERE identite='$id'") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$class WHERE identity='$id'") or die (mysql_error());
   $row=mysql_fetch_assoc($result);
   require_once($home."func.php");
   copy_images($row,"mv_image",$id);
   myaddslashes($row);
   foreach ($row as $field=>$value) { $row[$field]=$field."='".$value."'"; }
-  mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$row)." WHERE identite='$id'") or die (mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]$class SET ".join(",",$row)." WHERE identity='$id'") or die (mysql_error());
   // fin du deplacement des images
 
 
@@ -148,7 +148,7 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 {
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes,$GLOBALS[tp]typeentites_typepersonnes WHERE statut>0 AND idtypepersonne=id AND idtypeentite='$localcontext[idtype]'") or die (mysql_error());
+  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]persontypes,$GLOBALS[tp]entitytypes_persontypes WHERE status>0 AND idpersontype=id AND identitytype='$localcontext[idtype]'") or die (mysql_error());
   while (list($idtype,$style,$styledescription)=mysql_fetch_row($result)) {
     // accouple les balises personnes et description
     // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
@@ -171,14 +171,14 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 
 
 #    echo htmlentities($descrpersonne)."<br><br>\n\n";
-      $personnes=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom><r2rc:prefix><r2rc:nom>"));
+      $personnes=preg_split ("/\s*[,;]\s*/",strip_tags($val,"<r2rc:prenom><r2rc:prefix><r2rc:name>"));
 
       while (($personne=array_shift($personnes))) {
 
-	list ($prefix,$prenom,$nom)=decodepersonne($personne);
-	#echo "personne: $personne ; $nom<br>\n";
+	list ($prefix,$prenom,$name)=decodepersonne($personne);
+	#echo "personne: $personne ; $name<br>\n";
 
-	$localcontext[nomfamille][$idtype][$i]=$nom;
+	$localcontext[nomfamille][$idtype][$i]=$name;
 	$localcontext[prefix][$idtype][$i]=$prefix;
 	$localcontext[prenom][$idtype][$i]=$prenom;
 
@@ -232,34 +232,34 @@ function decodepersonne($personne)
       $personne=str_replace($result[0],"",$personne); //nettoie l'personne
     }
     $prenom=join(" ",$prenoms); // join les prenoms
-    $nom=$personne; // c'est le reste
+    $name=$personne; // c'est le reste
     $have_prenom=1;
   }      
-  // on cherche maintenant si on a le nom
-  if (preg_match_all("/<r2rc:nom>(.*?)<\/r2rc:nom>/",$personne,$results,PREG_SET_ORDER)) {
+  // on cherche maintenant si on a le name
+  if (preg_match_all("/<r2rc:name>(.*?)<\/r2rc:name>/",$personne,$results,PREG_SET_ORDER)) {
     $noms=array(); // tableau pour les noms
     foreach($results as $result) {
       array_push($noms,trim($result[1]));
       $personne=str_replace($result[0],"",$personne); //nettoie l'personne
     }
-    $nom=join(" ",$noms); // join les noms
+    $name=join(" ",$noms); // join les noms
     if (!$have_prenom) $prenom=$personne; // le reste c'est le prenom sauf si on a deja detecte le prenom
     $have_nom=1;
   }
   // si on a pas de style de caractere, alors on essaie de deviner !
   if (!$have_prenom && !$have_nom) {
-    // ok, on cherche maintenant a separer le nom et le prenom
-    $nom=$personne;
-    while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
-    if ($nom) {
-      $prenom=str_replace($nom,"",$personne);
+    // ok, on cherche maintenant a separer le name et le prenom
+    $name=$personne;
+    while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
+    if ($name) {
+      $prenom=str_replace($name,"",$personne);
     } else { // sinon coupe apres le premiere espace
       if (preg_match("/^(.*?)\s+([^\s]+)$/i",trim($personne),$result)) {
-	$prenom=$result[1]; $nom=$result[2];
-      } else $nom=$personne;
+	$prenom=$result[1]; $name=$result[2];
+      } else $name=$personne;
     }
   }
-  return array($prefix,$prenom,$nom);
+  return array($prefix,$prenom,$name);
 }
 
 
@@ -270,7 +270,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees,$GLOBALS[tp]typeentites_typeentrees WHERE statut>0 AND idtypeentree=id AND idtypeentite='$localcontext[idtype]'") or die (mysql_error());
+  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]entrytypes,$GLOBALS[tp]entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'") or die (mysql_error());
   require_once($home."champfunc.php");
 
   while (list($idtype,$style)=mysql_fetch_row($result)) {
@@ -287,7 +287,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 	foreach($tags as $tag) {
 	  if ($lang && $lang!="--") { // is the language really defined ?
 	    $localcontext[entrees][$idtype][$i][lang]=$lang;
-	    $localcontext[entrees][$idtype][$i][nom]=trim($tag);
+	    $localcontext[entrees][$idtype][$i][name]=trim($tag);
 	  } else {
 	    $localcontext[entrees][$idtype][$i]=trim($tag);
 	  }

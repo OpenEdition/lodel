@@ -29,20 +29,20 @@
 
 
 
-function change_image($filename,$id,$classe,$champ)
+function change_image($filename,$id,$class,$champ)
      // change l'image si $filename existe
      // detruit l'image si $filename contient "delete"
 {
-  if ($classe=="sites") {
+  if ($class=="sites") {
     $critere="id='$id'";
     $db=$GLOBALS[database];
   } else {
-    $critere="identite='$id'";
+    $critere="identity='$id'";
     $db=$GLOBALS[currentdb];
   }
   
-  $result=mysql_db_query($db,"SELECT $champ FROM $GLOBALS[tp]$classe WHERE $critere") or die (mysql_error());
-  if (!mysql_num_rows($result)) die("Erreur interne. Le $critere ne repond pas dans $classe");
+  $result=mysql_db_query($db,"SELECT $champ FROM $GLOBALS[tp]$class WHERE $critere") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("Erreur interne. Le $critere ne repond pas dans $class");
   list($oldimagefile)=mysql_fetch_row($result);
 
   $newimagefile="";
@@ -59,7 +59,7 @@ function change_image($filename,$id,$classe,$champ)
     else return FALSE;
 
     if ($oldimagefile && file_exists(SITEROOT.$oldimagefile)) unlink(SITEROOT.$oldimagefile);
-    $newimagefile="docannexe/img-$classe-$champ-$id.$ext";
+    $newimagefile="docannexe/img-$class-$champ-$id.$ext";
     //    if ($context[taille]) {
     //      include_once($home."images.php");
     //      resize_image($context[taille],$filename,"../../$newimagefile");
@@ -87,7 +87,7 @@ function resize_image ($taille,$src,&$dest)
     elseif ($result[2]==2 && function_exists("ImageCreateFromJPEG")) { $im=ImageCreateFromJPEG($src); }
     elseif ($result[2]==3 && function_exists("ImageCreateFromPNG")) { $im=ImageCreateFromPNG($src); }
     else { return false; }
-    if (!$im) return false; // erreur de chargement
+    if (!$im) return false; // error de chargement
 
     // taille de l'image a produire
     if (is_numeric($taille)) { // la plus grande taille

@@ -41,14 +41,14 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_document">[#TITRE]</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_document">[#TITLE]</span></td>
 						<td>&nbsp;</td>
 					</tr>
 					
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<div><MACRO NAME="BOUTONS_STATUT_DOCUMENT"></div>
+							<div><MACRO NAME="BOUTONS_STATUS_DOCUMENT"></div>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
@@ -77,7 +77,7 @@
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#DROITEDITEUR]">	
+	<IF COND="[#RIGHTEDITOR]">	
 				<a href="oochargement.php?iddocument=[#ID]">
 					<span class="texte_orange">[@EDITION.RELOAD_FILE]</span>
 				</a>
@@ -95,7 +95,7 @@
 			<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#DROITEDITEUR]">	
+	<IF COND="[#RIGHTEDITOR]">	
 				<a href="deplacer.php?id=[#ID]">
 					<span class="texte_orange">[@EDITION.MOVE_DOCUMENT]</span>
 				</a>
@@ -110,7 +110,7 @@
 		<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 				<a href="telecharger.php?id=[#ID]&type=source">
 					<span class="texte_orange">[@EDITION.GET_SOURCE_FILE]</span>
 				</a>
@@ -150,12 +150,12 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
-	<IF COND="[#DROITEDITEUR]">
+	<IF COND="[#RIGHTEDITOR]">
 				<span class="texte_noir_gras">[@EDITION.ADD_ANNEX_DOCUMENT]<a name="docannexe"></a></span>
 				<br />
-			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="ordre" DONTSELECT="id"]>
+			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="rank" DONTSELECT="id"]>
 					<DO>
-						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_orange">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITRE]</span></a><br />						
+						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_orange">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITLE]</span></a><br />						
 					</DO>
 			</LOOP>
 
@@ -209,7 +209,7 @@
 						<td width="350" class="td_admin">
 
 		<!--[ Validation XML ]-->
-	<IF COND="[#DROITREDACTEUR]">
+	<IF COND="[#RIGHTREDACTOR]">
 				<a href="xml.php?id=[#ID]&valid=1">
 					<span class="texte_orange">[@EDITION.CHECK_XML]</span>
 				</a>
