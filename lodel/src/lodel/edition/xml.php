@@ -48,7 +48,7 @@ $context=array_merge($context,mysql_fetch_assoc($result));
 //
 // cherche s'il y a des documents annexe et combien
 //
-$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBAL[tp]entites.statut>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entites.statut>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
 list($context[documentsannexes])=mysql_fetch_row($result);
 
 # calculate the page and store it into $contents
