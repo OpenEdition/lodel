@@ -98,6 +98,18 @@
 						</IF>
 					</div>
 					</td>
+					<td background="images/gris.gif" valign="middle" class="texte_trespetit_centre">
+						<div align="center">
+							<IF [#ADMIN]>
+								<a href="[#URL_RECOMPILE]">
+									<MACRO NAME="GIF_RECOMPILE_32">   
+								</a>
+								<br />Recompile
+							<ELSE/>
+								<MACRO NAME="GIF_INACTIF">
+							</IF>
+						</div>
+					</td>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
 						<a href="lodel/edition/">
