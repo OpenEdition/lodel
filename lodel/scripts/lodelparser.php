@@ -360,7 +360,7 @@ function parse_after(&$text)
     $closepos=strpos($text,"</body>");
     if ($closepos===false) return; // no idea what to do...
 
-    $code='<?php if ($context[\'lodeluser\'][\'translationmode\']) { require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
+    $code='<?php if ($context[\'lodeluser\'][\'translationmode\']=="interface") { require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
 <form method="post" action="index.php"><input type="hidden" name="edit" value="1">
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="texts">
