@@ -5,7 +5,7 @@
 <MACRO NAME="HEADER_LOGO"> 
 
 <MACRO NAME="TABLE_CREETABLEINTERFACE_LARGE">
-<br>
+<br />
 	<MACRO NAME="TABLE_NOM_PUBLICATION_NUMERO"> 
 
 	<!--  AFFICHE LES ARTICLES HORS REGROUPEMENT S'IL Y EN A  -->
@@ -32,8 +32,8 @@
 		IL DOIT ETRE HORS DE LA BOUCLE AU CAS OU IL N'Y AURAIT AUCUN DOC
 		-->
 		<MACRO NAME="AJOUTER_DOCUMENT_ISOLE">
-	</TABLE>
-	<br>
+	</table>
+	<br />
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<!--  AFFICHE LES REGROUPEMENTS S'IL Y EN A  -->
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" ORDER="ordre DESC"> 
@@ -54,12 +54,12 @@
 			</i></font>
 			<font size="-2" color="navy">
 			([#TYPE])
-			</font><br>
+			</font><br />
 			<a href="publication.php?id=[#ID]">
 				Editer
 			</a>
 			|
-			<A HREF="publi.php?publication=[#ID]&online=1">
+			<a href="publi.php?publication=[#ID]&online=1">
 				Publier
 			</a>
 			|

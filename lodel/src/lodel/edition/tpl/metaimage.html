@@ -7,49 +7,49 @@
 	<tr>
 		<td align="center">
 
-<span class="titre">Associer une image<br>
+<span class="titre">Associer une image<br />
  à une publication ou à un document</span>
 <font color="red">
-[(#ERREUR_CHARGEMENT|true)Erreur de chargement !<br>]
-[(#ERREUR_IMAGE|true)Le fichier n'est pas une image !<br>]<br>
-<br></font>
-<TABLE WIDTH=500 CELLPADDING=5 CELLSPACING=0 BORDER=0 BGCOLOR="white">
-	<FORM ENCTYPE="multipart/form-data" ACTION="metaimage.php" METHOD="POST">
-	<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="1000000">
-	<INPUT TYPE="hidden" name="[#IDTYPE]" VALUE="[#ID]">
-	<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
+[(#ERREUR_CHARGEMENT|true)Erreur de chargement !<br />]
+[(#ERREUR_IMAGE|true)Le fichier n'est pas une image !<br />]<br />
+<br /></font>
+<table WIDTH=500 CELLPADDING=5 CELLSPACING=0 BORDER=0 BGCOLOR="white">
+	<form enctype="multipart/form-data" action="metaimage.php" method="POST">
+	<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+	<input type="hidden" name="[#IDTYPE]" value="[#ID]">
+	<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 	<IF COND="[#IMAGE]">
 	<TR>
-		<TD>
-		</TD>
-		<TD>
+		<td>
+		</td>
+		<td>
 			<IMG SRC="../../[#IMAGE]">
-			<br>
+			<br />
 			[#IMAGE]
-		</TD>
-		</TR>
+		</td>
+		</tr>
 	</IF>
 	<TR>
-		<TD>
+		<td>
 		Images:
-		</TD>
-		<TD>
+		</td>
+		<td>
 		<INPUT NAME="imgfile" TYPE="file" SIZE="30">
-		</TD>
-	</TR>
-</TABLE>
+		</td>
+	</tr>
+</table>
 <IF COND="[#IMAGE]">
-<INPUT CLASS="form" TYPE="submit" NAME="edit" VALUE="Modifier"><br>
-<INPUT CLASS="form" TYPE="submit" NAME="delete" VALUE="Supprimer">
+<input class="form" TYPE="submit" NAME="edit" VALUE="Modifier"><br />
+<input class="form" TYPE="submit" NAME="delete" VALUE="Supprimer">
 
 <ELSE/>
-<INPUT CLASS="form" TYPE="submit" NAME="edit" VALUE="Ajouter">
+<input class="form" TYPE="submit" NAME="edit" VALUE="Ajouter">
 </IF>
 </FORM>
-<br>
-<br>
+<br />
+<br />
 </td>
 </tr>
-</TABLE>
+</table>
 
 <MACRO NAME="CLOSE_HTML">

@@ -6,156 +6,156 @@
 <table width="800" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
 <tr>
 <td>
-<FORM ACTION="extrainfo.php" METHOD="POST">
+<form action="extrainfo.php" method="POST">
 
-<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
-<INPUT TYPE="hidden" NAME="edit" VALUE="1">
-<INPUT TYPE="hidden" NAME="importsommaire" VALUE="[#IMPORTSOMMAIRE]">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="edit" value="1">
+<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]">
 
 <IF COND="[#IMPORTSOMMAIRE]">
-<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Importer ce document et continuer"> - <INPUT CLASS="form" TYPE="submit" NAME="cancel" VALUE="Ne pas importer ce document et continuer"><br>
+<input class="form" type="submit" name="submit" value="Importer ce document et continuer"> - <input class="form" type="submit" name="cancel" value="Ne pas importer ce document et continuer"><br />
 </IF>
 
-<TABLE WIDTH="800" CELLPADDING=5 CELLSPACING=1 BORDER=0 BGCOLOR="white">
+<table WIDTH="800" CELLPADDING=5 CELLSPACING=1 BORDER=0 BGCOLOR="white">
 <TR>
-	<TD ALIGN="CENTER" COLSPAN="2" class="titre">
-	<br><div align="center">Edition des métadonnées du document </div></b><br>
-	</TD>
-</TR>
+	<td ALIGN="CENTER" COLSPAN="2" class="titre">
+	<br /><div align="center">Edition des métadonnées du document </div></b><br />
+	</td>
+</tr>
 <TR>
-	<TD COLSPAN="2" background="images/gris.gif">
+	<td COLSPAN="2" background="images/gris.gif">
 	<b><MACRO NAME="GIF_TRIANGLE">Titre</b>
-	</TD>
-</TR>
+	</td>
+</tr>
 <TR>
 	<td width="100">Titre:</td>
-	<TD><INPUT SIZE="80" TYPE="text" NAME="titre" value="[#TITRE]"></TD>
-	[(#ERREUR_TITRE|true)<TD>Vous devez preciser un titre</TD>]
-	</TR>
+	<td><input size="80" type="text" name="titre" value="[#TITRE]"></td>
+	[(#ERREUR_TITRE|true)<td>Vous devez preciser un titre</td>]
+	</tr>
 <TR>
-	<TD>Sur Titre:</TD>
-	<TD><INPUT SIZE="80" TYPE="text" NAME="surtitre" value="[#SURTITRE]"></TD>
-</TR>
+	<td>Sur Titre:</td>
+	<td><input size="80" type="text" name="surtitre" value="[#SURTITRE]"></td>
+</tr>
 <TR>
-	<TD>Sous Titre:</TD>
-	<TD><INPUT SIZE="80" TYPE="text" NAME="soustitre" value="[#SOUSTITRE]"></TD>
-</TR>
+	<td>Sous Titre:</td>
+	<td><input size="80" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
+</tr>
 <TR>
-	<TD COLSPAN="2" background="images/gris.gif">
+	<td COLSPAN="2" background="images/gris.gif">
 	<b><MACRO NAME="GIF_TRIANGLE">Informations sur le document</b>
-	</TD>
-</TR>
+	</td>
+</tr>
 <TR>
-	<TD>Type de document</TD>
-		<TD><SELECT NAME="typedoc"><? makeselecttypedoc(); ?></SELECT></TD>
-</TR>
+	<td>Type de document</td>
+		<td><select name="typedoc"><? makeselecttypedoc(); ?></select></td>
+</tr>
 <TR>
-	<TD>Langues du texte</TD>
-		<TD>
-			  <SELECT NAME="lang1"><? makeselectlangues("lang1"); ?></SELECT>
-			  <SELECT NAME="lang2"><? makeselectlangues("lang2"); ?></SELECT>
-			  <SELECT NAME="lang3"><? makeselectlangues("lang3"); ?></SELECT>
-		</TD>
-</TR>
+	<td>Langues du texte</td>
+		<td>
+			  <select name="lang1"><? makeselectlangues("lang1"); ?></select>
+			  <select name="lang2"><? makeselectlangues("lang2"); ?></select>
+			  <select name="lang3"><? makeselectlangues("lang3"); ?></select>
+		</td>
+</tr>
 <TR>
-	<TD>Date de publication du texte</TD>
-		<TD>
+	<td>Date de publication du texte</td>
+		<td>
 <IF COND="[#DATEPUBLI]"> <!-- on affiche la date -->
-<INPUT SIZE=20 TYPE="text" NAME="datepubli" VALUE="[(#DATEPUBLI|humandate)]">[(#ERREUR_DATEPUBLI|true)Date incorrecte.]
+<input size=20 type="text" name="datepubli" value="[(#DATEPUBLI|humandate)]">[(#ERREUR_DATEPUBLI|true)Date incorrecte.]
 <ELSE/>
-<INPUT SIZE=4 TYPE="text" NAME="duree" VALUE="[#DUREE]"><SELECT NAME="dateselect"><? makeselectdate(); ?></SELECT>
+<input size=4 type="text" name="duree" value="[#DUREE]"><select name="dateselect"><? makeselectdate(); ?></select>
 </IF>
-		</TD>
-</TR>
+		</td>
+</tr>
 <TR>
-	<TD COLSPAN="2" background="images/gris.gif">
+	<td COLSPAN="2" background="images/gris.gif">
 	<b><MACRO NAME="GIF_TRIANGLE">Auteurs</b>
-	</TD>
-</TR>
+	</td>
+</tr>
 <LOOP NAME="auteurs">
 	<TR>
-	<TD>Auteur :</TD>
-	<TD>
-		<TABLE>
+	<td>Auteur :</td>
+	<td>
+		<table>
 			<TR>
-				<TD>Prefix:</TD>
-				<TD><INPUT SIZE="5" TYPE="text" NAME="prefix[#IND]" value="[#PREFIX]"></TD>				    
+				<td>Prefix:</td>
+				<td><input size="5" type="text" name="prefix[#IND]" value="[#PREFIX]"></td>				    
 <!--ajout de ghislain le 6/4/3 -->
-				<TD>Description:</TD><TD ROWSPAN="3"><TEXTAREA NAME="description[#IND]" COL="30" ROW="20">[#DESCRIPTION]</TEXTAREA></TD>
-			</TR>
+				<td>Description:</td><td ROWSPAN="3"><textarea name="description[#IND]" COL="30" ROW="20">[#DESCRIPTION]</textarea></td>
+			</tr>
 <!-- -->
 			<TR>
-				<TD>Nom de famille:</TD>
-				<TD><INPUT SIZE="30" TYPE="text" NAME="nomfamille[#IND]" value="[#NOMFAMILLE]"></TD>
-			</TR>
+				<td>Nom de famille:</td>
+				<td><input size="30" type="text" name="nomfamille[#IND]" value="[#NOMFAMILLE]"></td>
+			</tr>
 			<TR>
-				<TD>Prénom:</TD>
-				<TD><INPUT SIZE="30" TYPE="text" NAME="prenom[#IND]" value="[#PRENOM]"></TD>
-			</TR>
+				<td>Prénom:</td>
+				<td><input size="30" type="text" name="prenom[#IND]" value="[#PRENOM]"></td>
+			</tr>
 <!-- suppresion de ghislain le 6/4/3			<TR>
-				<TD>Affiliation:</TD>
-				<TD><INPUT SIZE="30" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></TD>
-			</TR>
+				<td>Affiliation:</td>
+				<td><INPUT SIZE="30" TYPE="text" NAME="affiliation[#IND]" value="[#AFFILIATION]"></td>
+			</tr>
 			<TR>
-				<TD>Courriel:</TD>
-				<TD><INPUT SIZE="30" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></TD>
-			</TR>
+				<td>Courriel:</td>
+				<td><INPUT SIZE="30" TYPE="text" NAME="courriel[#IND]" value="[#COURRIEL]"></td>
+			</tr>
 -->
-		</TABLE>
-	</TD>
-	</TR>
+		</table>
+	</td>
+	</tr>
 </LOOP>
 
 <TR>
-	<TD>&nbsp;</TD>
-	<TD><INPUT CLASS="form" TYPE="submit" NAME="plusauteurs" VALUE="Ajouter un auteur"></TD>
-</TR>
+	<td>&nbsp;</td>
+	<td><input class="form" type="submit" name="plusauteurs" value="Ajouter un auteur"></td>
+</tr>
 
 <IF COND="![#OPTION_PASDEMOTCLE]">
 	<TR>
-		<TD COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE"> Mots Cle</b></TD>
-	</TR>
+		<td COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE"> Mots Cle</b></td>
+	</tr>
 	<TR>
-	<TD>Mots Cles (*):</TD>
-	<TD>
-		<SELECT MULTIPLE SIZE="10" NAME="motcles[]"><? makeselectmotcles(); ?></SELECT><BR>
+	<td>Mots Cles (*):</td>
+	<td>
+		<select multiple size="10" name="motcles[]"><? makeselectmotcles(); ?></select><br />
 		<IF COND="![#OPTION_MOTCLEFIGE]">
-		Autres: <INPUT SIZE="60" TYPE="text" NAME="autresmotcles" VALUE="[#AUTRESMOTCLES]"><BR>
+		Autres: <input size="60" type="text" name="autresmotcles" value="[#AUTRESMOTCLES]"><br />
 		* mots séparés par des virgules ou point-virgules.
 		</IF>
-	</TD>
-	</TR>
+	</td>
+	</tr>
 </IF>
 
 <IF COND="![#OPTION_PASDEPERIODE]">
 	<TR>
-		<TD COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE">Périodes</b></TD>
-	</TR>
+		<td COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE">Périodes</b></td>
+	</tr>
 	<TR>
-		<TD>Periodes (*):</TD>
-		<TD><SELECT MULTIPLE SIZE="10" NAME="periodes[]"><? makeselectperiodes(); ?></SELECT></TD>
-	</TR>
+		<td>Periodes (*):</td>
+		<td><select multiple size="10" name="periodes[]"><? makeselectperiodes(); ?></select></td>
+	</tr>
 </IF>
 <IF COND="![#OPTION_PASDEGEOGRAPHIE]">
 	<TR>
-		<TD COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE">Zone Géographique</b></TD>
-	</TR>
+		<td COLSPAN="2" background="images/gris.gif"><b><MACRO NAME="GIF_TRIANGLE">Zone Géographique</b></td>
+	</tr>
 	<TR>
-		<TD>Geographies (*):</TD>
-		<TD><SELECT MULTIPLE SIZE="10" NAME="geographies[]"><? makeselectgeographies(); ?></SELECT></TD>
-	</TR>
+		<td>Geographies (*):</td>
+		<td><select multiple size="10" name="geographies[]"><? makeselectgeographies(); ?></select></td>
+	</tr>
 </IF>
 
-</TABLE>
+</table>
 
 <IF COND="![#IMPORTSOMMAIRE]">
-<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Terminer"> - 
-<INPUT CLASS="form" TYPE="submit" NAME="visualiserdocument" VALUE="Terminer et visualiser"> - <INPUT CLASS="form" TYPE="submit" NAME="ajouterdocannexe" VALUE="Ajouter des documents annexe"> - 
-<INPUT CLASS="form" TYPE="submit" NAME="cancel" VALUE="Abandonner"><br>
+<input class="form" type="submit" name="submit" value="Terminer"> - 
+<input class="form" type="submit" name="visualiserdocument" value="Terminer et visualiser"> - <input class="form" type="submit" name="ajouterdocannexe" value="Ajouter des documents annexe"> - 
+<input class="form" type="submit" name="cancel" value="Abandonner"><br />
 </IF>
 
-</FORM>
-</TABLE>
+</form>
+</table>
 <IF COND="[#ERREUR_PERIODE]">
 Periodes valides:
 <LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre">

@@ -13,42 +13,42 @@
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
 						<IF COND="[#SUPERADMIN]">
-							<A HREF="../lodel/">
+							<a href="../lodel/">
 								<MACRO NAME="GIF_VISAGE_SUPERADMIN">
 							</a>
-							<br>
+							<br />
 							[#USERNAME]	
 						<ELSE/>
 							<IF COND="[#ADMIN]">
 								<a href="index.html">
 									<MACRO NAME="GIF_VISAGE_ADMIN">
 								</a>
-								<br>
+								<br />
 								[#USERNAME]	
 							<ELSE/>
 								<IF COND="[#EDITEUR]">
 									<a href="index.html">
 										<MACRO NAME="GIF_VISAGE_EDITEUR">
 									</a>
-									<br>
+									<br />
 									[#USERNAME]	
 								<ELSE/>
 									<IF COND="[#REDACTEUR]">
 										<a href="index.html">
 											<MACRO NAME="GIF_VISAGE_REDACTEUR">
 										</a>
-										<br>
+										<br />
 										[#USERNAME]	
 									<ELSE/>
 										<IF COND="[#VISITEUR]">
 											<a href="index.html">
 												<MACRO NAME="GIF_VISAGE_VISITEUR">
 											</a>
-											<br>
+											<br />
 											[#USERNAME]	
 										<ELSE/>
 											<MACRO NAME="GIF_INACTIF">
-											<br>
+											<br />
 											Utilisateur
 										</IF>
 									</IF>
@@ -60,26 +60,26 @@
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
 							<IF COND="[#VISITEUR]">
-								<A HREF="lodel/edition/">
+								<a href="lodel/edition/">
 									<MACRO NAME="GIF_EDITER_32">
 								</a>
 							<ELSE/>
 								<MACRO NAME="GIF_INACTIF">
 							</IF>
-							<br>
+							<br />
 							Editer
 						</div>
 					</td>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
 						<IF COND="[#ADMIN]">
-							<A HREF="lodel/admin/">
+							<a href="lodel/admin/">
 								<MACRO NAME="GIF_ADMINISTRER_32">
 							</a>
 						<ELSE/>
 						<MACRO NAME="GIF_INACTIF">
 						</IF>
-						<br>
+						<br />
 						Administrer
 						</div>
 					</td>
@@ -89,10 +89,10 @@
 							<a href="lodel/edition/maj.php">
 								<MACRO NAME="GIF_METTRE_A_JOUR_32">
 							</a>
-							<br>
+							<br />
 								Mettre à jour
 						<ELSE/>
-							<MACRO NAME="GIF_INACTIF"><br>
+							<MACRO NAME="GIF_INACTIF"><br />
 							
 							Mettre à jour
 						</IF>
@@ -121,7 +121,7 @@
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
 							<MACRO NAME="PARENT">
-							<br>
+							<br />
 							Retour
 						</div>
 					</td>
@@ -130,17 +130,17 @@
 							<a href="index.html">
 								<MACRO NAME="GIF_WWW_32">
 							</a>
-							<br>
+							<br />
 								Site
 						</div>
 					</td>
 					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
 						<div align="center">
-							<!--<A HREF="../lodeldoc/" target="lodeldoc">-->
-							<A HREF="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc">
+							<!--<a href="../lodeldoc/" target="lodeldoc">-->
+							<a href="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc">
 								<MACRO NAME="GIF_LODELDOC_32">
-							</A>
-							<br>
+							</a>
+							<br />
 								LodelDoc
 						</div>
 					</td>
@@ -149,7 +149,7 @@
 							<a href="logout.php">
 								<MACRO NAME="GIF_LOGOFF_32">
 							</a>
-							<br>
+							<br />
 							LogOFF
 						</div>
 					</td>

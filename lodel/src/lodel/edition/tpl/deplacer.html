@@ -4,12 +4,12 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <h1>Cliquez sur la publication dans laquelle vous souhaitez déplacer votre document.</h1>
-<br><br>
+<br /><br />
 <!-- CETTE BOUCLE  AFFICHE LES PUBLICATIONS -->
 <LOOP NAME="Deplace_document" TABLE="publications" WHERE="parent='[#ID]'">
 <!-- FONCTION "LET" UTILISANT UNE VALEUR RECURSIVE -->
 <LET VAR="TOTO">..[#TOTO][#TOTO]</LET>
-[#TOTO]<A HREF="deplacer.php?iddocument=[#IDDOCUMENT]&publication=[#ID]&url_retour=[(#URL_RETOUR|urlencode)]"><FONT COLOR="BLACK">[#NOM]</FONT></A>,<Font size="-2">([#TYPE])</font><br>
+[#TOTO]<a href="deplacer.php?iddocument=[#IDDOCUMENT]&publication=[#ID]&url_retour=[(#URL_RETOUR|urlencode)]"><FONT COLOR="BLACK">[#NOM]</FONT></a>,<Font size="-2">([#TYPE])</font><br />
 <!-- CETTE BOUCLE IMBRIQUEE AFFICHE LES SOUS-PUBLICATIONS -->
 <LOOP NAME="Deplace_document"></LOOP>
 </LOOP>

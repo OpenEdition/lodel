@@ -41,6 +41,50 @@
 	</LOOP>
 	<br>
 
+	<!-- *********** -->
+	<!-- VERROUILLER -->
+	<!-- *********** -->
+
+	<tr>
+		<td width="48" height="48" background="images/bleu.gif">
+			<div align="center">
+				&nbsp;
+			</div>
+		</td>
+		<td width="400" class="soustitre" background="images/bleu.gif">
+				<strong>VERROU</strong>
+		</td>
+	</tr>	 
+	<LOOP NAME="status_publication" TABLE="documents" WHERE="id=[#ID]">
+		<tr>
+			<td width="48" height="48">
+				<div align="center">
+					<MACRO NAME="AFFICHER_ICONE_STATUT">
+				</div>
+			</td>
+			<td width="400" class="soustitre">
+				<MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT">
+			</td>
+		</tr>	 
+	</LOOP>
+	<tr>
+		<td width="48" height="48" >
+			<IF COND="[#EDITEUR]">
+				&nbsp;
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+		<td align="center">
+			Changer le verrou de la publication dépubliée : <br />
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_VERROU_DOCUMENTS_DEPUBLIE">
+			<ELSE/>
+				-&nbsp;/&nbsp;-
+			</IF>
+		</td>
+	</tr>
+
 	<!-- ******* -->
 	<!-- EDITER  -->
 	<!-- ******* -->
@@ -174,7 +218,9 @@
 	<tr>
 		<td width="48" height="48" >
 		  	<div align="center">
-			<MACRO NAME="GIF_AJOUTER_IMAGE">
+				<a href="metaimage.php?iddocument=[#ID]">
+					<MACRO NAME="GIF_AJOUTER_IMAGE">
+				</a>
 			</div>
 		</td>
 		<td width="400" >
@@ -206,7 +252,7 @@
 			&nbsp;
 			</div>
 		</td>
-		<td width="400" >
+		<td width="400" align="center">
 			<FORM ACTION="a_editer.php" METHOD="POST">
 				<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Edition avancée (XML)">
 				<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
