@@ -136,6 +136,7 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "abandon",
 	      "balisage",
 	      "chargement",
+	      "oochargement",
 	      "chargesommaire",
 	      "chkbalisage",
           "docannexe",
