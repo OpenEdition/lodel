@@ -40,7 +40,7 @@ if ($row[etape]==4) {  // on revient ici, donc il faut continuer a executer les 
 // creer le repertoire pour y mettre les differents fichiers "xml".
 $dir=$row[fichier].".dir";
 if (!file_exists($dir)) {
-  mkdir($dir) or die ("impossible de creer le repertoire $row[fichier]");
+  mkdir($dir,0700) or die ("impossible de creer le repertoire $row[fichier]");
 }
 
 // lit le fichier
