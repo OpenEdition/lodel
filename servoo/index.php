@@ -62,6 +62,8 @@ mysql_query("INSERT INTO $GLOBALS[tp]log (iduser,commands) VALUES ('$user[id]','
 
 require ($home."serveurfunc.php");
 
+define(VERSION,"0.99");
+
 
 //
 // on traite les commandes maintenant
@@ -73,8 +75,12 @@ $convertedfiles=array(); // fichier provenant de la conversion
 $msg=0; // retourne ou pas des messages
 
 foreach ($cmdsarr as $cmd) { // boucle sur les commandes
+  // command VER ----------------
+  if ($cmd[0]=="VER") {
+    // send the version
+    die("SAY: ServOO; version ".VERSION."; visit http://www.lodel.org/servoo");
     // command DWL ----------------
-  if ($cmd[0]=="DWL") {
+  } elseif ($cmd[0]=="DWL") {
     // download de fichier
     if (!is_uploaded_file($_FILES[$cmd[1]]['tmp_name'])) die("ERROR: file download");
     $sourcefile=$_FILES[$cmd[1]]['tmp_name'];
