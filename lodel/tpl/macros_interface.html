@@ -87,7 +87,7 @@
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
 
         <IF COND="[#EDITION] eq 'textarea' or (![#EDITION] and [#TYPE] eq 'longtext')">
-		<textarea rows="[#EDITIONPARAM|defaultvalue('10')]" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+		<textarea rows="[#EDITIONPARAMS|defaultvalue('10')]" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
         <ELSE/>
 	<IF COND="[#EDITION] eq 'textarea10'">
 		<textarea rows="10" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
@@ -95,7 +95,7 @@
 	<IF COND="[#EDITION] eq 'textarea30'">
 		<textarea rows="30" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
 	<ELSE/>
-		<input size="50" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
+		<input size="[#EDITIONPARAMS|defaultvalue('50')]" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
 	</IF>
 	</IF>
         </IF>
@@ -202,7 +202,7 @@ cp_[#NAME].writeDiv();
   <div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 	<label class="labelmltext">XXX</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
-	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.ERASE]</a>
+	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
   </div>
   <div>
 	  <select onChange="addlanginmltext(this,'[#VARNAME]');"><?php makeselectlangs(); ?></select>
@@ -217,6 +217,7 @@ cp_[#NAME].writeDiv();
 
 <DEFFUNC NAME="edit_persons">
   <div id="persons_[#VARNAME]" class="personseditionarea" >
+        <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
 	<LOOP NAME="persons_in_entities">
         <DO>
 		<LOOP NAME="edition_fields">
@@ -225,15 +226,34 @@ cp_[#NAME].writeDiv();
 			</BEFORE>
 		        <DO>
 			  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
-			<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+			<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][[#DEGREE]][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 			<br />
 		        </DO>
         	<AFTER>
+                        <a href="#" onClick="deletepersons(this); return false;">[@COMMON.DELETE]</a>
 			</div>
+                        <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">
         	</AFTER>
 	    </LOOP>
 	</DO>
 	</LOOP>
+        <!--[ widget available for adding new persons of this type ]-->
+ 	<LOOP NAME="edition_fields">
+		<BEFORE>
+	       <div id="persons_[#VARNAME]_for_copy" style="display:none">
+			</BEFORE>
+		        <DO>
+			  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+			<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+			<br />
+		        </DO>
+        	<AFTER>
+                        <a href="#" onClick="deletepersons(this,'[#VARNAME]'); return false;">[@COMMON.DELETE]</a>
+			</div>
+        	</AFTER>
+	    </LOOP>
+         <a href="#" onClick="addpersons(this,'[#VARNAME]'); return false;">[@COMMON.ADD]</a>
+      </LOOP>
   </div>
 </DEFFUNC>
 
@@ -280,6 +300,45 @@ cp_[#NAME].writeDiv();
 			}
 			obj.parentNode.removeChild(obj);
 		}
+
+                function addpersons(obj,name) {
+			var block=document.getElementById('persons_'+name+'_for_copy');
+			var clone=block.cloneNode(true);
+			clone.style.display='block';
+
+                        degreeobj=document.getElementsByName('persons['+name+'][maxdegree]');
+window.status=degreeobj;
+			// other fields
+			clone.setAttribute('id','');
+			changeNameAttributes(clone,degreeobj[0].value);
+                        degreeobj[0].value++;
+			
+			document.getElementById('persons_'+name).appendChild(clone);
+			obj.selectedIndex=0;
+		}
+
+		function deletepersons(obj,name) 
+		{
+			// get the edit box
+			obj=obj.parentNode;
+			var edit=obj.getElementsByTagName("input");
+                        var bconfirm=false;
+                        for(i=0; i<edit.length; i++) {
+                           if (edit[i].value.length>0) bconfirm=true;
+                        }
+			edit=obj.getElementsByTagName("textarea");
+                        for(i=0; i<edit.length; i++) {
+                           if (edit[i].value.length>0) bconfirm=true;
+                        }
+			if (edit.length<1) {
+				edit=obj.getElementsByTagName("textarea");
+			}
+			if (bconfirm) {
+			 if (!confirm("[@EDITION.CONFIRMATION_DELETE_PERSONS]")) return;
+			}
+			obj.parentNode.removeChild(obj);
+                        // don't decrease the degree, so that we are sure it is always maximal
+		}                
 
 
 		function changeNameAttributes(obj,index)

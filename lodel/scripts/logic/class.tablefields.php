@@ -181,8 +181,8 @@ class TableFieldsLogic extends Logic {
 
 
    /*** In 0.7 we check the field is not moved in another class... it's not 100% required in fact
-    function _validateFields(&$context,&$error) {
-     if (!Logic::_validateFields($context,$error)) return false;
+    function validateFields(&$context,&$error) {
+     if (!Logic::validateFields($context,$error)) return false;
      // check the group does not change 
      if ($oldidgroup!=$idgroup) {
 	$set['rank']=get_rank_max("fields","idgroup='$idgroup'");      

@@ -150,12 +150,12 @@ class Entities_EditionLogic extends Logic {
 	 $vo=$dao->find("type='".$varname."'","class,id");
 	 $class=$vo->class;
 
-	 foreach($context['persons'][$vo->id] as $rank=>$arr) {
+	 foreach($context['persons'][$vo->id] as $degree=>$arr) {
 	   $localcontext=array_merge($context,$arr);
 	   $localcontext['name']=$name;
 	   $localcontext['class']=$class;
 	   $localcontext['classtype']="persons";
-	   $localcontext['rank']=$rank;
+	   $localcontext['degree']=$degree;
 	   call_user_func("code_do_$funcname",$localcontext);
 	 }
        }	  
@@ -196,7 +196,7 @@ class Entities_EditionLogic extends Logic {
      $votype=$daotype->getById($context['idtype'],"class,creationstatus");
      $class=$context['class']=$votype->class;
 
-     if (!$this->_validateFields($context,$error)) {
+     if (!$this->validateFields($context,$error)) {
        // error.
        // if the entity is imported and will be checked
        // that's fine, let's continue, if not return an error
@@ -392,7 +392,7 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
     * Validated the public fields and the unicity as usual and in addition the typescompatibility
     *
     */
-   function _validateFields(&$context,&$error) {
+   function validateFields(&$context,&$error) {
      global $home;
 
      // get the fields of class
@@ -491,6 +491,22 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
 	   if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) { unset($value); break; }
 	   // add this file to the file to move.
 	   $this->files_to_move[$name]=array('filename'=>$value,'type'=>$type,'name'=>$name);           
+	   break;
+	 case 'persons':
+	   // get the type
+	   $dao=getDAO("persontype");
+	   $vo=$dao->find("type='".$name."'","class,id");
+	   $idtype=$vo->id;
+
+	   $logic=getLogic("persons"); // the logic is used to validate
+	   $localcontext=&$context['persons'][$idtype];
+	   $count=count($localcontext);
+	   for($i=0; $i<$count; $i++) {
+	     $localcontext[$i]['class']=$vo->class;
+	     $err=array();
+	     $logic->validateFields($localcontext[$i],$err);
+	     if ($err) $error['persons'][$idtype][$i]=$err;
+	   }
 	   break;
 	 default:
 	   die("ERROR: unable to check the validity of the field ".$field->name." of type ".$field->type);

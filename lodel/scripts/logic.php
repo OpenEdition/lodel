@@ -106,7 +106,7 @@ class Logic {
 
    {
      // validate the forms data
-     if (!$this->_validateFields($context,$error)) {
+     if (!$this->validateFields($context,$error)) {
        return "_error";
      }
 
@@ -263,7 +263,7 @@ class Logic {
     * Validated the public fields and the unicity.
     * @return return an array containing the error and warning, null otherwise.
     */
-   function _validateFields(&$context,&$error) 
+   function validateFields(&$context,&$error) 
 
    {
      global $db;

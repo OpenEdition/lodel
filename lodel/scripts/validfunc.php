@@ -146,6 +146,8 @@ function validfield(&$text,$type,$default="")
     break;
   case "select" :
   case "multipleselect" :
+  case "persons" :
+  case "entries" :
     return true; // cannot validate
   default:
     return false; // pas de validation
