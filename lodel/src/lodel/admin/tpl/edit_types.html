@@ -140,6 +140,21 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="creationstatus"></FUNC>
     </p>
   </LOOP>
+  <label for="search">[@ADMIN.INDEX_DOCUMENT]
+        : 
+      </label>
+  <br class="nobr">
+  <IF COND="[#SEARCH]">
+    <input type="checkbox" name="search" id="search" checked>
+    <ELSE/>
+    <input type="checkbox" name="search" id="search">
+  </IF>
+  <br />
+  <LOOP NAME="fielderror" FIELD="search">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="search"></FUNC>
+    </p>
+  </LOOP>
   <label for="display">[@ADMIN.DISPLAY]
         : 
       </label>

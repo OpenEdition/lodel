@@ -245,6 +245,7 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 	import		TINYINT DEFAULT '0' NOT NULL,		# 1=import par OO
 	display		VARCHAR(10),				# where/how to display this type
 	creationstatus	TINYINT DEFAULT '-1' NOT NULL,		# status for the new entities created with this type
+	search		TINYINT DEFAULT '1' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
@@ -460,11 +461,13 @@ CREATE TABLE IF NOT EXISTS #_TP_translations (
 	UNIQUE unique_lang_groups (lang,textgroups)
 );
 
+
 CREATE TABLE IF NOT EXISTS #_TP_search_engine (
-	identity int(10) unsigned NOT NULL DEFAULT '0',
-	tablefield varchar(32) NOT NULL DEFAULT '',
-	word varchar(30) NOT NULL DEFAULT '',
-	weight double NOT NULL DEFAULT '0',
+	identity		INT UNSIGNED NOT NULL DEFAULT '0',
+	tablefield 		VARCHAR(32) NOT NULL DEFAULT '',
+	word			VARCHAR(30) NOT NULL DEFAULT '',
+	WEIGHT 			DOUBLE NOT NULL DEFAULT '0',
+
 	KEY index_word (word),
 	KEY index_identity (identity)
 );

@@ -208,7 +208,7 @@ class Entities_EditionLogic extends GenericLogic {
 
      // get the class 
      $daotype=&getDAO("types");
-     $votype=$daotype->getById($context['idtype'],"class,creationstatus");
+     $votype=$daotype->getById($context['idtype'],"class,creationstatus,search");
      
      $class=$context['class']=$votype->class;
      if (!$class) die("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
@@ -281,11 +281,11 @@ class Entities_EditionLogic extends GenericLogic {
 
      if ($ret=="_error") return "_error";
 
-			//TO ADD HERE : INDEX THE ENTITY - Jean Lamy
-			require_once("class.entities_index.php");
-			$lo_entities_index = new Entities_IndexLogic();
-			$lo_entities_index->addIndexAction($context,$error);
-			//END TO ADD	
+     if ($votype->search) {
+       require_once("class.entities_index.php");
+       $lo_entities_index = new Entities_IndexLogic();
+       $lo_entities_index->addIndexAction($context,$error);
+     }
 	
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
        return "_location: ".SITEROOT.makeurlwithid($id);

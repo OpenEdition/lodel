@@ -764,6 +764,13 @@
         description="status for the new document"
         label="[@ADMIN.STATUS_OF_NEW_DOCUMENTS]"
         edittype="select" />
+<column name="search"
+        type="TINYINT"
+        default="1"
+        required="true"
+        description=""
+        label="[@ADMIN.INDEX_DOCUMENT]"
+        edittype="boolean" />
 <column name="display"
         type="VARCHAR"
         size="10"

@@ -63,6 +63,7 @@ class TypesLogic extends Logic {
      if (!$context['id']) {
        // creation
        $context['creationstatus']=-1;
+       $context['search']=1;
        $context['tpledition']="edition";
        $context['tplcreation']="entities";
        return "_ok";
@@ -182,6 +183,7 @@ class TypesLogic extends Logic {
                   "tpledition"=>array("tplfile",""),
                   "import"=>array("select","+"),
                   "creationstatus"=>array("select","+"),
+                  "search"=>array("boolean","+"),
                   "display"=>array("select",""));
              }
    // end{publicfields} automatic generation  //

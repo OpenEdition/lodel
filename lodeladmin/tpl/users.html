@@ -49,7 +49,7 @@
 		<td class="texte_noir_gras" align="center">[@ADMIN.SESSIONS]</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="users" TABLE="users" ORDER="username" WHERE="status gt 0">
+	<LOOP NAME="users" TABLE="users" ORDER="rank,username" WHERE="status gt 0">
 		<DO>
 			<MACRO NAME="TR_LIST">
 			<td><strong>[(#USERNAME|nbsp)]</strong></td>
