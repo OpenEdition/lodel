@@ -454,7 +454,7 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
   $fct_txt.='function boucle_'.$nom.' ($context)
 {
  $generalcontext=$context;
- $result='.$premysqlquery.' mysql_query("SELECT *'.$extrafield.' FROM '."$table $where $order $limit".'") or die (mysql_error());
+ mysql_select_db($GLOBALS[database]); $result=mysql_query("SELECT *'.$extrafield.' FROM '."$table $where $order $limit".'") or die (mysql_error());
 '.$postmysqlquery.'
  $nbrows=mysql_num_rows($result);
  $count=0;
