@@ -93,6 +93,7 @@ if ($therequest['do']) {
     break;
   case 'error' :
     $context['error']=$error;
+    print_r($error);
   case 'ok' :
     if ($do=="listAction") {
       $view->render($context,$table);

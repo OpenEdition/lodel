@@ -55,16 +55,16 @@ function validfield(&$text,$type,$default="")
     if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
     break;
   case "mlstyle" :
-    if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
-    $stylesarr=preg_split("/([\n,:])/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+    $stylesarr=preg_split("/([\n,;:])/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
     if ($stylesarr) {
       $count=count($stylesarr);
       for($i=0; $i<$count; $i+=4) {
 	if (!preg_match("/^[a-zA-Z0-9]+$/",trim($stylesarr[$i]))) return $type;
+	if ($i==$count-1) break;
 	if ($stylesarr[$i+1]!=":") return $type; // le separateur
 	if (!preg_match("/^\s*([a-z]{2}|--)\s*$/",$stylesarr[$i+2])) return $type; // la langue
 	if ($stylesarr[$i+3]==":") return $type; // les autres separateurs
-	$k=trim($stylesarr[$i+1]);
+	//$k=trim($stylesarr[$i+1]);
 	//$stylesassoc[$k]=trim($stylesarr[$i+1]);
       }
     }

@@ -183,7 +183,7 @@
           <xsl:value-of select="@name"/>
         </xsl:attribute>
         <xsl:value-of select="@label"/>
-        <xsl:if test="@required='true' and not(@edittype='select' or @editype='lang' or @editype='boolean')">
+        <xsl:if test="@required='true' and not(@edittype='select' or @edittype='lang' or @edittype='boolean')">
           <span class="optional">(*)</span>
         </xsl:if>
         : 

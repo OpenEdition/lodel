@@ -371,7 +371,9 @@
 
 
 <table name="users"
-        description="Table des utilisateurs de lodel">
+        description="Table des utilisateurs de lodel"
+	writeright="admin"
+	protectright="lodeladmin">
 <column name="id"
         type="INTEGER"
         required="true"
