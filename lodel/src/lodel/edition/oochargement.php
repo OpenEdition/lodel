@@ -170,7 +170,6 @@ function OO_XHTML ($convertedfile,&$context)
 		      "bloccitation"=>"citation",
 		      "quotations"=>"citation",
 		      "typedocument"=>"typedoc",
-		      "\w+\(user\)"=>""
 		      );
 
   
@@ -211,8 +210,12 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,"/((?:<(?:ul|li)\b[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/(?:ul|li)>\s*)+)/");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
-  // autre chgt
+  // modifie les styles avec (user)
+  array_push($srch,"/(<\/?r2r:\w+)\(user\)/");
+  array_push($rpl,"\\1");
 
+
+  // autre chgt
   array_push($srch,
 	     "/<object>.*?<\/object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
