@@ -35,6 +35,7 @@ if (!function_exists("authenticate")) {
 if (!$type || !preg_match("/[\w-]/",$type)) die("ERROR: unknow type '$type'");
 
 $context[id]=$id=intval($id);
+$context[type]=$type;
 
 include_once($home."connect.php");
 $personnetable="";
