@@ -37,6 +37,10 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 #if ($context[privilege]>=LEVEL_ADMINLODEL) return;
 require($home."userinc.php");
 
+echo "--\n<br/>"";
+print_r($context);
+
+
 
 require($home."calcul-page.php");
 calcul_page($context,"user");

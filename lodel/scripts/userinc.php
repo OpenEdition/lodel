@@ -117,6 +117,7 @@ if ($edit) { // modifie ou ajoute
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
   $context=array_merge($context,mysql_fetch_assoc($result));
+  print_r($context);
 }
 
 // post-traitement
