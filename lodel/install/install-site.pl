@@ -28,17 +28,25 @@
 
 
 $version=shift @ARGV;
-$droits=shift @ARGV;
+$droitlecture=shift @ARGV;
+$droitecriture=shift @ARGV;
 
-die("install-site.pl [version] [uga]") unless $droits;
+die('install-site.pl version droit_de_lecture droit_d_ecriture
+Les droits sont donnés sous la forme d\'une combinaison de u (user) g (group) et a (all)
+ex: install-site.pl 0.7 uga ug
+') unless $droitlecture && $droitecriture;
 
-$filemask="0";
+$filemask=0;
 
-$filemask.=$droits=~/u/ ? "7" : "0";
-$filemask.=$droits=~/g/ ? "7" : "0";
-$filemask.=$droits=~/a/ ? "7" : "0";
+$filemask|=0500 if $droitlecture=~/u/;
+$filemask|=0050 if $droitlecture=~/g/;
+$filemask|=0005 if $droitlecture=~/a/;
 
+$filemask|=0200 if $droitecriture=~/u/;
+$filemask|=0020 if $droitecriture=~/g/;
+$filemask|=0002 if $droitecriture=~/a/;
 
+printf "%o",$filemask;
 
 unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
   print STDERR "Veuillez preciser un numero de version ou devel\n";
@@ -113,7 +121,13 @@ foreach (<FILE>) {
   } elsif ($cmd eq "dirdestination") {
     $dirdest=$arg1;
   } elsif ($cmd eq "mkdir") {
-    mkdir $arg1,oct($arg2) & oct($filemask);
+    unless (-e $arg1) {
+      mkdir ($arg1,oct($arg2) & $filemask);
+    } else {
+      print $arg1," ";
+      printf "%o",oct($arg2) & $filemask;
+      chmod (oct($arg2) & $filemask,$arg1);
+    }
   } elsif ($cmd eq "ln") {
     $toroot=$filedest; $toroot=~s/^\.\///g;
     $toroot=~s/([^\/]+)\//..\//g;
@@ -127,10 +141,10 @@ foreach (<FILE>) {
 #    print $filedest," ",$filemask," ","\n";
 #    printf "%o\n",0644 & oct($filemask);
     
-    chmod (0644 & oct($filemask),$filedest);
+    chmod (0644 & $filemask,$filedest);
   } elsif ($cmd eq "touch") {
     system ("touch $filedest") unless -e  $filedest;
-    chmod (0644 & oct($filemask),$filedest);
+    chmod (0644 & $filemask,$filedest);
   } elsif ($cmd eq "htaccess") {
     htaccess($filedest) if -e $filedest;
   } else {
@@ -168,5 +182,5 @@ sub htaccess {
   open(HT,">$dir/.htaccess") or die "Impossible d'ecrire dans $dir";
   print HT "deny from all\n";
   close (HT);
-  chmod (0644 & oct($filemask), "$dir/.htaccess") or die "Can't chmod $dir/.htaccess";
+  chmod (0644 & $filemask, "$dir/.htaccess") or die "Can't chmod $dir/.htaccess";
 }

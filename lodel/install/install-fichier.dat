@@ -29,7 +29,6 @@ ln styles_lodel.css
 
 dirsource $homesite
 cp styles_site.css
-cp images
 ln auteur.php
 
 # lie tous les fichiers du repertoire
