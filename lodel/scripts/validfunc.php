@@ -116,17 +116,25 @@ function validfield(&$text,$type,$default="",$name="")
     if (isset($text) && !is_numeric($text)) return "numeric";
     break;
   case "email" : 
+    
     if (!$text && $default) $text=$default;
     if ($text) {
-      $validchar='-0-9A-Z_a-z';
-      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$text)) return "email";
+     /* $validchar='-0-9A-Z_a-z';
+      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$text)) return "email";*/
+      if(!_validEmail($text))
+   			return 'email';
+ 
     }
     break;
   case "url" : 
     if (!$text && $default) $text=$default;
-    if ($text) {
-      $validchar='-0-9A-Z_a-z';
-      if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$text)) return "url";
+    if ($text) 
+    {
+    	if(!_validUrl($text))
+    		return "url";
+    	
+    /*  $validchar='-0-9A-Z_a-z';
+      if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$text)) return "url";*/
     }
     break;
   case "boolean" :
@@ -221,4 +229,70 @@ function validfield(&$text,$type,$default="",$name="")
   return true; // validated
 }
 
+/**
+ * Function that validate an email adresses
+ * Check if the domain exists and if the username is valid
+ * Thanks to Alejandro Gervasio and Anonymous Loozah for the article and the code :
+ * original source code :http://www.devshed.com/showblog/7775/Email-Address-Verification-with-PHP
+ * @param $email email adress to validate
+ * 
+ */
+
+function _validEmail($email)
+{
+	  // checks proper syntax
+	//timeout  
+	$timeout = intval(50*(ini_get("max_execution_time")/100));
+	if (!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $email))
+	return false;
+
+	// gets domain name
+	list($username,$domain)=split('@',$email);
+	// checks for if MX records in the DNS
+	$mxhosts = array();
+	if(!getmxrr($domain, $mxhosts)) 
+	{
+		// no mx records, ok to check domain
+		if (!@fsockopen($domain,25,$errno,$errstr,$timeout)) 
+			return false;
+		else 
+			return true;
+	} 
+	else 
+	{
+		// mx records found
+		foreach ($mxhosts as $host) 
+			if (@fsockopen($host,25,$errno,$errstr,$timeout)) 
+				return true;
+		return false;
+	}
+}
+
+/**
+ * Function that validate an url
+ * Parse the url to check the scheme and the host.
+ * 
+ * @param $url Internet adress to be validated
+ */
+
+function _validUrl($url)
+{
+	$parsedurl = parse_url($url);
+	#print_r($parsedurl);
+	if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp)$/i",@$parsedurl['scheme'])  || empty($parsedurl['host']))
+		return false;
+	else
+	{
+		if(function_exists('checkdnsrr')) // the function checkdnsrr doest not exists on Windows plateforms
+		{
+			if(checkdnsrr($parsedurl['host'], 'A'))
+				return true;
+			else
+				return false;
+		}
+		else
+			return true;
+	}
+
+}
 ?>
