@@ -331,7 +331,6 @@ class DAO {
 	//echo "sql="."DELETE FROM ".$this->sqltable.$where;
      //execute delete statement
      $db->execute("DELETE FROM ".$this->sqltable.$where) or dberror();
-     //Modified By Jean Lamy -- replaced affectedrow() by Affected_Rows()
      if ($db->Affected_Rows()<=0) return false; // not the rights
      return true;
    }
