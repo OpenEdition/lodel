@@ -311,12 +311,15 @@ function runDocumentConverter($filename,$extension)
   $errfile="$filename.err";
 
   if ($extension=="sxw") {
-    $format="StarOffice XML (Writer)";
+    $format="swriter: StarOffice XML (Writer)";
+#    $format="writer_web_StarOffice_XML_Writer_Web_Template";
+#    $format="writer_StarOffice_XML_Writer";
+#    $extension="stw";
   } elseif ($extension=="html") {
-    $format="HTML (StarWriter)";
+    $format="swriter: HTML (StarWriter)";
   } else die ("probleme interne");
 
-  myexec("$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"swriter: $format\" \"$extension\" \"$servoohost\" \"$servooport\"",$errfile,"java script DocumentConverter failed");
+  myexec("$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"$format\" \"$extension\" \"$servoohost\" \"$servooport\"",$errfile,"java script DocumentConverter failed");
 }
 
 

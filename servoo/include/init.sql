@@ -31,7 +31,12 @@ CREATE TABLE IF NOT EXISTS users (
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
 	url		TINYTEXT,
-	statut		TINYINT DEFAULT '1' NOT NULL,
+
+	realname	TINYTEXT,
+	email		TINYTEXT,
+	priority	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+
+	status		TINYINT DEFAULT '1' NOT NULL,
 
 	maj		TIMESTAMP,
 
@@ -49,3 +54,44 @@ CREATE TABLE IF NOT EXISTS log (
 
 	PRIMARY KEY (id)
 );
+
+
+
+
+# Administration of the ServOO
+
+CREATE TABLE IF NOT EXISTS admins (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	name		VARCHAR(64) BINARY NOT NULL UNIQUE,
+	passwd		VARCHAR(64) BINARY NOT NULL,
+
+	realname	TINYTEXT,
+	email		TINYTEXT,
+	rights		TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+
+	status		TINYINT DEFAULT '1' NOT NULL,
+
+	maj		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_name (name)
+);
+
+CREATE TABLE IF NOT EXISTS session (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	name		VARCHAR(64) BINARY NOT NULL UNIQUE,
+	idadmin		INT UNSIGNED DEFAULT '0' NOT NULL,
+
+	context		TEXT,
+	timeout		INT,  # temps d'expiration entre deux access
+	timeout2	INT,  # expiration de cette session
+
+	PRIMARY KEY (id),
+	KEY index_name (name)
+);
+
+
+
+# Administrateur par defaut. mot de passe : admintmp
+
+REPLACE INTO admins (name,passwd,realname,rights) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire',128);

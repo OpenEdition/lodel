@@ -64,4 +64,53 @@ function writefile ($filename,&$text)
 }
 }
 
+
+function myfilemtime($filename)
+
+{
+  return file_exists($filename) ? filemtime($filename) : 0;
+}
+
+
+
+function rmscript($source) {
+	// Remplace toutes les balises ouvrantes susceptibles de lancer un script
+	return eregi_replace("<(\%|\?|( *)script)", "&lt;\\1", $source);
+}
+
+
+function extract_post() {
+  // Extrait toutes les variables passées par la méthode post puis les stocke dans 
+  // le tableau $context
+  global $home;
+	
+  foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
+    if (!$GLOBALS[context][$key]) // protege
+      $GLOBALS[context][$key]=$val;
+  }
+  function clean_for_extract_post(&$var) {
+    if (is_array($var)) {
+      array_walk(&$var,"clean_for_extract_post");
+    } else {
+      $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
+    }
+  }
+  array_walk(&$GLOBALS[context],"clean_for_extract_post");
+}
+
+
+function posttraitement(&$context)
+
+{
+  if ($context) {
+    foreach($context as $key=>$val) {
+      if (is_array($val)) {
+	posttraitement($context[$key]);
+      } else {
+	if ($key!="meta") $context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+      }
+    }
+  }
+}
+
 ?>

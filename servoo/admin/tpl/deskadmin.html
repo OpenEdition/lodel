@@ -1,0 +1,95 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<MACRO NAME="JS_ROLLOVER">
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr bgcolor="#FFFFFF">
+		<td width="318" heigth="75"><MACRO NAME="PNG_LOGO_LODEL"></td>
+
+		<td width="431" align="left" heigth="75" background="[#SHAREURL]/images/logo_lodel_droite.png" style="background-repeat:no-repeat;">
+			<table align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="100%" heigth="75">&nbsp;</td>
+			
+					<td width="57" heigth="75"><a href="index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"></a></td>
+			
+			
+					<td width="57" heigth="75"><a href="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"></a></td>
+				</tr>
+			</table>
+		</td>
+		<td width="*" align="left" heigth="75">
+			<table width="100%" align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="100%" heigth="75">&nbsp;</td>
+
+			
+					<td width="64" heigth="75"><IF COND="[#DROITADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+			
+					<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"></a></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<table bgcolor="#FFFFFF" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="173" heigth="25" valign="top"><MACRO NAME="PNG_LOGO_LODEL_BAS"></td>
+		
+		<td class="texte_petit_lodelbarre">
+	    ServOO [#VERSION]. Jeu de caractères : [#CHARSET].
+
+			<IF COND="[#TEMPLATESRECOMPILES]">
+				<span class="texte_petit_lodelbarre"> Templates modifiés : [#TEMPLATESRECOMPILES]</span>
+			</IF>
+		</td>
+
+
+		<td>
+			<table align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td heigth="25" align="center">
+						<IF COND="[#DROITADMINLODEL]">
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Admin Lodel&nbsp;:&nbsp; </span>
+						<ELSE/>
+							<IF COND="[#DROITADMIN]">
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Administrateur&nbsp;:&nbsp; </span>
+							<ELSE/>
+										<IF COND="[#DROITSVISITEUR]">
+											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> Visiteur&nbsp;:&nbsp; </span>
+										</IF>
+							</IF>
+						</IF>
+
+					</td>
+					<td valign="bottom">
+						<span class="texte_petit"><strong>[#USERNAME]</strong></span>&nbsp;
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr><td width="100%" height="1" background="[#SHAREURL]/images/separateur.png"></td></tr>
+</table>

@@ -27,18 +27,54 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+require("config.php");
+require(TOINCLUDE."auth.php");
+authenticate(LEVEL_ADMIN);
+require(TOINCLUDE."func.php");
 
-// connection a la database
-require("../config.php");
 mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
 mysql_select_db($database)  or die (mysql_error());
 
+$id=intval($id);
+
+//
+// supression et restauration
+//
+if ($id>0 && ($delete || $restore)) { 
+  include (TOINCLUDE."trash.php");
+  treattrash("users");
+  return;
+}
+
+
+$critere="id='$id' AND status>0";
+
+
 
 if ($edit) {
+  extract_post();
+  // "ms" stands for Manager Safe. Avoid auto-completion.
+  $context[username]=$context[usernamems];
+  $context[passwd]=$context[passwdms];
+
   do { // exception
-    $id=intval($id);
+    $len=strlen($context[username]);
+    if (!preg_match("/^[0-9A-Za-z@\.]+$/",$context[username])) { $err=$context[erreur_username]=1; }
+
+    if (!$context[realname]) { $context[erreur_realname]=$err=1; }
+    $passwd=$context[passwd];
+    if ($passwd || !$id) { // si le pass a ete modifie
+      $len=strlen($passwd);
+      if ($len<3 || $len>10) { $err=$context[erreur_passwd]=1; }
+    }
+
+    // verifie le email
+    if ($context[email] && !ereg(".*\@[^\.]*\..*",$context[email])) { $context[erreur_email]=$err=1; }// repris de SPIP
+      
+    if ($err) break;
+
     if ($passwd) {
-    $passwd=md5($passwd.".".$username);
+    $passwd=md5($context[passwd].".".$context[username]);
   } elseif ($id) {
     $result=mysql_query("SELECT passwd FROM $GLOBALS[tp]users WHERE id='$id'");
     list($passwd)=mysql_fetch_row($result);
@@ -48,58 +84,50 @@ if ($edit) {
     break;
   }
 
-  myquote($username); myquote($url);
+  mysql_query("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority) VALUES ('$id','$context[username]','$passwd','$context[url]','$context[realname]','$context[email]','$context[priority]')") or die(mysql_error());
 
-
-  mysql_query("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,url) VALUES ('$id','$username','$passwd','$url')") or die(mysql_error());
-
-  echo "ok";
+  header("location: users.php");
   return;
   } while (0);
 }
 
 
 if ($id) {
-  $result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE id='$id' AND statut>0")  or die(mysal_error());
-  $user=mysql_fetch_assoc($result);
-  $user[passwd]="";
+  $result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE id='$id' AND status>0")  or die(mysql_error());
+  $context=array_merge($context,mysql_fetch_assoc($result));
+  $context[passwd]="";
+  $context[usernamems]=$context[username];
 }
 
 
-function myquote (&$var)
+// post-traitement
+posttraitement($context);
+
+
+$context[passwd]="";
+
+
+require(TOINCLUDE."calcul-page.php");
+calcul_page($context,"user");
+
+
+
+
+
+function makeselectpriority()
 
 {
-  if (is_array($var)) {
-    array_walk($var,"myquote");
-    return $var;
-  } else {
-    return $var=addslashes(stripslashes($var));
+  global $context,$adminpriv;
+  $arr=array(10=>"Basse",
+	     100=>"Normal",
+	     200=>"Elev&eacute;e",
+	     );
+
+  echo $context[priority];
+  if (!$context[priority]) $context[priority]=100;
+
+  foreach ($arr as $k=>$v) {
+    $selected=$context[priority]==$k ? "selected" : "";
+    echo "<option value=\"$k\" $selected>$v</option>\n";
   }
 }
-
-
-?>
-<form method="POST" action="user.php">
-	<input type="hidden" name="edit" value="1" />
-	<input type="hidden" name="id" value="<?=$id ?>" />
-	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-		<tr>
-			<td class="texte_intitule">Login :</td>
-			<td><input size="30" type="text" name="username" value="<?=$user[username] ?>" /></td>
-		</tr>
-		<tr>
-			<td class="texte_intitule">Mot de passe :</td>
-			<td><input size="30" type="password" name="passwd" value="" /></td>
-		</tr>
-		<tr>
-			<td class="texte_intitule">URL :</td>
-			<td><input size="30" type="text" name="url" value="<?=$user[url] ?>" /></td>
-		</tr>
-
-	</table>
-
-	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value=" <? if ($id) { ?>Modifier<? } else { ?>Ajouter<? } ?>    " />&nbsp;&nbsp;&nbsp;&nbsp;
-	</div>
-</form>
-

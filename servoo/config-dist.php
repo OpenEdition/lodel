@@ -43,6 +43,13 @@ $javapath="/usr/java/j2sdk1.4.1_02";
 # directory to the OpenOffice classes.
 $openofficeclassespath="/usr/local/OpenOffice.org1.1.0/program/classes";
 
+# version d'OpenOffice
+define("OPENOFFICEVERSION","1.1");
+
+# message renvoie
+define ("MESSAGEVERSION","Visit http://www.lodel.org/servoo");
+
+
 # host surlequel est le serveur OpenOffice
 $servoohost="localhost";
 
@@ -61,5 +68,19 @@ $tp="";
 # chemin relatif pour le repertoire d'include
 
 $home="include/";
+
+# URL contenant les fichiers communs partagés
+# par exemple $shareurl="http://lodel.revues.org/share";
+# la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
+$shareurl="/share";
+
+
+# Nom de la session (cookie)
+$sessionname="sessionservoo";
+
+# Timeout pour les sessions
+# en seconde
+$logintimeout=120*60;
+
 
 ?>
