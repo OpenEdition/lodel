@@ -123,7 +123,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
     echo "<li>extraction des styles du fichier content.xml contenu dans le SXW et ajout dans styles.xml<br>\n";flush();
   }
   // modifie les fichiers content.xml et styles
-  processcontentXHTML(&$content,&$styles);
+  processcontentXHTML($content,$styles);
 
   // ecrit le fichier content.xml
   if (!writefile("$tmpdir/content.xml",$content)) die("ERROR: writing $tmpdir/content.xml file failed");
@@ -161,7 +161,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   $xhtml=join("",$xhtmllines);
   unset($xhtmllines); // save memory
 
-  postprocesscontentXHTML(&$xhtml,$styles);
+  postprocesscontentXHTML($xhtml,$styles);
   writefile($xhtmlfile,$xhtml);
 
   //

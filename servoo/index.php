@@ -30,8 +30,8 @@
 // authentification
 //
 
-$passwd=md5($passwd.".".$username);
-$username=addslashes($username);
+$passwd=md5($_REQUEST[passwd].".".$_REQUEST[username]);
+$username=addslashes($_REQUEST[username]);
 
 if (!$passwd || !$username) die("ERROR: unknown user");
 
@@ -55,6 +55,8 @@ unset($passwd);
 //
 // Enregistre les informations sur la requete
 //
+
+$commands=$_REQUEST[commands];
 
 mysql_query("INSERT INTO $GLOBALS[tp]log (iduser,commands) VALUES ('$user[id]','".addslashes($commands)."')") or die(mysql_error());
 
