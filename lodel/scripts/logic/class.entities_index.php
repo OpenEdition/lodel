@@ -262,12 +262,11 @@ class Entities_IndexLogic extends Logic
 	{
 		global $db;
 		if(!$id)return false;
-		if($nature!='E' && $nature!='P' && $nature!='G')return false;
+		if($nature!='E' && $nature!='G') return false;
 		if($nature=="G"){	$table1 = "persons";$table2 = "person";}
-		if($nature=="P"){	return ;} // don't know how to do it
 		if($nature=="E"){	$table1 = "entries";$table2 = "entry";}
 		
-		//build query to select the good fields to index for the entry or the person
+		//build query to select the right fields to index for the entry or the person
 		if($nature=='G' || $nature=='E')
 		{
 			$sql = "SELECT DISTINCT tf.name, tf.weight, e.id, t.class
