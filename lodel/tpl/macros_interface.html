@@ -735,7 +735,7 @@ function modifymember(members,textfield){
 <LOOP NAME="listtypes" TABLE="types"   ORDER="rank">
 <BEFORE>
 	<select  name="q_type" style="font-size : 10px;border : 1px solid gray" onchange="updatefields(this);">
-	<option id="[#CLASS]_[#ID]" value=""> -- [@SELECT A TYPE] -- </option>
+	<option id="[#CLASS]_[#ID]" value=""> -- [@SELECT_A_TYPE] -- </option>
 </BEFORE>
 <DO>
 	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#Q_TYPE]">selected="selected"</IF>>[#TITLE]</option>
@@ -747,7 +747,7 @@ function modifymember(members,textfield){
 
 &nbsp;&nbsp;[@STATUS]&nbsp;:&nbsp;
 <select  name="q_status" style="border : 1px solid gray ; font-size : 10px;">
-	<option value=""> -- [@SELECT A STATUS] -- </option>
+	<option value=""> -- [@SELECT_A_STATUS] -- </option>
 	<option value="+16" <IF COND="[#Q_STATUS] EQ 16">selected="selected"</IF>>@protected</option>
 	<option value="+1" <IF COND="[#Q_STATUS] EQ 1">selected="selected"</IF>>@published</option>
 	<option value="-1" <IF COND="[#Q_STATUS] EQ -1">selected="selected"</IF>>@ready_to_be_published</option>
