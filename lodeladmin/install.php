@@ -178,6 +178,7 @@ if ($tache=="options") {
 			"extensionscripts"=>$newextensionscripts,
 			"usesymlink"=>$newusesymlink,
 			"filemask"=>$filemask,
+			"contactbug"=>$newcontactbug,
 			"unzipcmd"=>$newunzipcmd));
 }
 

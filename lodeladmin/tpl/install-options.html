@@ -63,8 +63,6 @@ Lorsque le serveur créée des fichiers lors de l'installation d'un site ou lors d
 </td></tr>
 </table>
 </div>
-
-
 </td></tr>
 <tr><td>
 <p>Extension des scripts:</p>
@@ -76,6 +74,11 @@ Lorsque le serveur créée des fichiers lors de l'installation d'un site ou lors d
 <td>.html:</td><td><input type="radio" name="newextensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
 </tr>
 </table>
+</td></tr>
+<tr><td>
+<p>Mail de contact en cas de bug dans les maquettes (templates):</p>
+<p>Lodel peut envoyer un mail quand il rencontre certains bugs et qu'il ne peut pas afficher l'erreur à l'écran (en fait quand c'est un internaute non identifié qui navigue). Laisser vide si vous ne souhaitez pas d'envoie de mail.</p>
+<input type="text" size="60" name="newcontactbug" value="<?php echo $contactbug; ?>">
 </td></tr>
 <tr><td>
 <p>Utiliser des liens symboliques:</p>
