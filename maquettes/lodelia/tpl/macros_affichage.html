@@ -822,7 +822,7 @@
 	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i>
 	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			[#NOM]<IF COND="[#TITRE]">, [#TITRE].
+			[#NOM]<IF COND="[#TITRE]">, [#TITRE].</IF>
 		</DO>
 	</LOOP>
 	<br />http://[#REVUE].revues.org/document.html?id=[#ID]
