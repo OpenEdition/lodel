@@ -70,7 +70,7 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(<LOOP[^>]+id)auteur([^>]+>)/$1personne$2/g;
 # chgt du a la fusion publications documents
   $change+=$file=~s/\[\#PUBLICATION\]/[\#IDPARENT]/g;
-####  $change+=$file=~s/\[\#PARENT\]/[\#IDPARENT]/g;
+  $change+=$file=~s/\[\#PARENT\]/[\#IDPARENT]/g;
   $change+=$file=~s/(<LOOP[^>]+TABLE\s*=\s*\"publications\"[^>]+\b(?:parent|id)='?)(\d+)/ $1.($2+$offset); /ge;
   $change+=$file=~s/(<LOOP[^>]+)\bparent\b([^>]+>)/$1idparent$2/g;
 
@@ -142,5 +142,6 @@ sub callback {
   $res =~ s/<=/ le /g;
   $res =~ s/<>/ ne /g;
   $res =~ s/</ lt /g;
+  $res =~ s/publication=/idparent=/g;
   return $res;
 }
