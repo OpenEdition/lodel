@@ -259,7 +259,7 @@ function extract_files(&$context,$classe="documents")
       // take the previous value
       $context['entite'][$nom]=$context['entite'][$nom][previousvalue];
       // check for hack or bug
-      if (!preg_match("/^docannexe\/(image|fichier)\/[^\.\/]+\/[^\/]+$/",$context['entite'][$nom])) die("ERROR: invalid filename");
+      if ($context['entite'][$nom] && !preg_match("/^docannexe\/(image|fichier)\/[^\.\/]+\/[^\/]+$/",$context['entite'][$nom])) die("ERROR: invalid filename");
     }
   }
   // if no files to upload, return.
