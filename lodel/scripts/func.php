@@ -592,6 +592,12 @@ function tmpdir()
   return $tmpdir;
 }
 
+function myhtmlentities($text)
+
+{
+  return str_replace(array("&","<",">","\""),array("&amp;","&lt;","&gt;","&quot;"),$text);
+}
+
 
 // valeur de retour identifiant ce script
 return 568;

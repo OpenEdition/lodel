@@ -53,10 +53,10 @@ if ($backup) {
 <lodelversion>'.$version.'</lodelversion>
 <date>'.date("Y-m-d").'</date>
 <description>
-'.htmlentities(stripslashes($context[description])).'
+'.myhtmlentities(stripslashes($context[description])).'
 </description>
 <author>
-'.htmlentities(stripslashes($context[author])).'
+'.myhtmlentities(stripslashes($context[author])).'
 </author>
 </model>
  ';
