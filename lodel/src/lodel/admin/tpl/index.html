@@ -250,7 +250,9 @@
 						<td width="350" class="td_admin">
 							<span class="texte_orange">Langue de l'interface:</span>
 		                                <select onchange="change_language(this)">
-		                                <?php makeselectlangues_nevernil($context[userlang]); ?>
+	                                	<LOOP NAME="translations" TABLE="translations" ORDER="ordre">
+		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		                                </LOOP>
 		                                </select>
 
 						</td>
