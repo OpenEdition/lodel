@@ -64,7 +64,8 @@ if ($valid) {
   $contents=calculateXMLSchema($context);
   writefile($tmpfile.".xsd",$contents);
   if (!$zipcmd) die("ERROR: the zip command is required for validating XML using ServOO. Configure lodelconfig.php");
-  system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$tmpfile.err");
+  $errfile=$tmpfile.".err";
+  system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$errfile");
   if (filesize($errfile)>0) die("ERROR: $errormsg<br />".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
 
   @unlink("$tmpfile.xml");
