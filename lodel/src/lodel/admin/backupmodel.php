@@ -77,7 +77,9 @@ if ($_POST['backup']) {
 		"#_TP_types",
 		"#_TP_persontypes",
 		"#_TP_entrytypes",
-		"#_TP_entitytypes_entitytypes");
+		"#_TP_entitytypes_entitytypes",
+		"#_TP_characterstyles",
+		"#_TP_internalstyles");
 
   foreach ($tables as $table) {
     fputs($fh,"DELETE FROM ".$table.";\n");
