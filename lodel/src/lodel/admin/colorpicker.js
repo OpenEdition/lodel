@@ -512,7 +512,7 @@ function PopupWindow_showPopup(anchorname) {
 	this.y += this.offsetY;
 	// alert(document.getElementById('desk').style.height); //debug
 	// bcenou : retrait de la hauteur du desk
-	this.y -= document.getElementById('desk').style.height;
+	// this.y -= document.getElementById('desk').style.height;
 	if (!this.populated && (this.contents != "")) {
 		this.populated = true;
 		this.refresh();
@@ -521,17 +521,17 @@ function PopupWindow_showPopup(anchorname) {
 		// Show the DIV object
 		if (this.use_gebi) {
 			document.getElementById(this.divName).style.left = this.x + "px";
-			document.getElementById(this.divName).style.top = this.y + "px";
+			//document.getElementById(this.divName).style.top = this.y + "px";
 			document.getElementById(this.divName).style.visibility = "visible";
 			}
 		else if (this.use_css) {
 			document.all[this.divName].style.left = this.x;
-			document.all[this.divName].style.top = this.y;
+			//document.all[this.divName].style.top = this.y;
 			document.all[this.divName].style.visibility = "visible";
 			}
 		else if (this.use_layers) {
 			document.layers[this.divName].left = this.x;
-			document.layers[this.divName].top = this.y;
+			//document.layers[this.divName].top = this.y;
 			document.layers[this.divName].visibility = "visible";
 			}
 		}
