@@ -12,7 +12,7 @@ function calcul_page(&$context,$lbase="",$cache_rep="",$base_rep="tpl/") {
   $template_cache = $cache_rep."CACHE/tpl_$lbase.php";
   $lbase=$base_rep.$lbase.".html";
   //  $macro=$base_rep."macros.html";
-  //  $template_time=myfilemtime($template_cache);
+  $template_time=myfilemtime($template_cache);
 
   if (($template_time <= myfilemtime($lbase)) ||
       //      ($template_time <= myfilemtime($macro)) ||

@@ -15,7 +15,7 @@ if ($htmlfile && $htmlfile!="none") include ("$home/chargementrtf.php");
 
 
 include ("$home/calcul-page.php");
-calcul_page($context,"chargement");
+calcul_page($context,"chargesommaire");
 
 
 

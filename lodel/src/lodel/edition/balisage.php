@@ -106,7 +106,7 @@ xml_parser_free($xml_parser);
 
 if (!writefile($row[fichier].".lined",$txt)) {}
 // update la base de donnee
-update_taches($id,2); // etape 2
+update_tache_etape($id,2); // etape 2
 
 $context[fichier]=$html;
 

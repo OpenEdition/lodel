@@ -15,14 +15,40 @@ $langues=array("fr"=>"français",
 // conversion des styles de resume en langue
 //
 
+
+
 $langresume=array("resume"=>"fr",
-		  "abstract"=>"en",
+		  "abstract","en",
 		  ""=>"es",
 		  ""=>"de",
 		  ""=>"ru",
 		  ""=>"el");
 
+// les balises et leur signification en clair (pour chkbalises.php)
 
+$balisesresume=array("resume"=>"Résumé",
+		    "abstract"=>"Abstract"
+		    );
+
+//
+// conversion des styles de motcles
+//
+
+$langmotcle=array("motcles"=>"fr",
+		  "keywords"=>array("en","Keywords"),
+		  ""=>"es",
+		  ""=>"de",
+		  ""=>"ru",
+		  ""=>"el");
+
+// les balises et leur signification en clair (pour chkbalises.php)
+
+$balisesmotcle=array("motcles"=>"Mot Clés",
+		     "keywords"=>"Keywords"
+		     );
+
+
+############################################################################
 //
 // ne rien modifier ici
 //

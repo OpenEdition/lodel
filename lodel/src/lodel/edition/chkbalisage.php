@@ -51,6 +51,7 @@ if ($line) { // on vient de balise, il faut modifier les balises
 
   writefile ($row[fichier].".html",$text);
 } else { // lines est non defini, on doit donc lire le fichier xml et l'afficher
+  $text=join("",file($row[fichier].".html"));
   $context[fichier]=preg_replace(array("/<\/?r2r:article>/si",
 				       "/<(\/?)r2r:section(\d+)>/si",
 				       "/<(\/?)r2r:divbiblio>/si",
@@ -63,20 +64,18 @@ if ($line) { // on vient de balise, il faut modifier les balises
 					"<\\1blockquote>",
 					 "'<tr valign=\"top\"><td>'.\$balises[strtolower('\\1')].'</td><td>'",
 					 "</td></tr>"),
-				   join("",file($row[fichier].".html")));
+				 $text);
 }
-echo "$row[fichier]<BR>";
+
+if (preg_match("/<r2r:(titrenumero|nomnumero)>/i",$text)) {
+  $context[urlsuite]="importsommaire.php?id=$id";
+} else {
+  $context[urlsuite]="extrainfo.php?id=$id";
+}
+
 
 $context[id]=$id;
 include ("$home/calcul-page.php");
 calcul_page($context,"chkbalisage");
 
 ?>
-
-
-
-
-
-
-
-

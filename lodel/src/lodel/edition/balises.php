@@ -8,7 +8,6 @@ $balises=array ("-" => "-",
 		"periodes" => "Périodes",
 		"geographies" => "Géographie",
 		"resume" => "Résumé",
-		"abstract" => "Abstract",
 		"texte" => "Texte",
 		"citation" => "Citation",
 		"notebaspage" => "Notes",
@@ -24,14 +23,20 @@ $balises=array ("-" => "-",
 		"titredoc"=>"Titre de document",
 		"legendedoc"=>"Légende de document",
 
-		"recension_titre"=>"Recension Titre",
-		"recension_auteur"=>"Recension Auteur",
-		"recension_annee"=>"Recension année",
-		"recension_type"=>"Recension type",
+#		"recension_titre"=>"Recension Titre",
+#		"recension_auteur"=>"Recension Auteur",
+#		"recension_annee"=>"Recension année",
+#		"recension_type"=>"Recension type",
 
 		"droitsauteur"=>"Droits d'auteurs",
 		"erratum"=>"Erratum",
-		"ndlr"=>"NDLR"
+		"ndlr"=>"NDLR",
+#
+# balises pour l'import de sommaire
+
+		"regroupement"=>"Regroupement",
+		"titrenumero"=>"Titre du numéro",
+		"nomnumero"=>"Nom du numéro"
 		);
 
 $multiplelevel=array("section\d+"=>"texte",
@@ -44,6 +49,13 @@ $division="(section\d+|divbiblio)"; # balises qui ne sont pas des paragraphes
 
 $virgule_tags="(auteurs|periodes|geographies|motcles)";
 
+
+#########################################################################
+
+# ajoute les balises definies dans langues.php
+
+include ("$home/langues.php");
+$balises=array_merge($balises,$balisesmotcle,$balisesresume);
 
 #########################################################################
 

@@ -8,15 +8,25 @@ include ("$home/langues.php");
 
 if ($cancel) include ("abandon.php");
 
-# recupere les infos dans le fichier xml
+# lit la tache en cours
 $row=get_tache($id);
 
+# est-ce qu'on est dans un sous-tache
+if ($row["task$row[etape]"]) { // il y a un sous tache
+  $row=$row["document$row[etape]"];
+  $subtask=1;
+} else { // sinon on est dans la tache principale
+  $subtask=0;
+  $filename=$row[fichier];
+}
+$context[subtask]=$subtask;
+
 if ($edit || $plusauteurs) {
-  $balisefile=$row[fichier].".balise";
-  if (file_exists($balisefile) && filemtime($balisefile)>filemtime($row[fichier].".html")) {
+  $balisefile=$filename.".balise";
+  if (file_exists($balisefile) && filemtime($balisefile)>filemtime($filename.".html")) {
     $text=join("",file ($balisefile));
   } else {
-    $text=join("",file ($row[fichier].".html"));
+    $text=join("",file ($filename.".html"));
   }
 #die ("$text");
   do {
@@ -98,7 +108,7 @@ if ($edit || $plusauteurs) {
     // copie le fichier balise en lieu sur !
     if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("Erreur lors de l' ecriture du fichier. Contactez l'administrateur");
     // et le rtf s'il existe
-    $rtfname="$row[fichier].rtf";
+    $rtfname="$filename.rtf";
     if (file_exists($rtfname)) { 
       $dest="../rtf/r2r-$iddocument.rtf";
       copy ($rtfname,$dest);
@@ -107,6 +117,9 @@ if ($edit || $plusauteurs) {
     // efface le fichier balise
     if (file_exists($balisefile)) unlink($balisefile);
 
+    //
+    // termine en redirigeant correctement
+    // 
     if ($ajouterdocannexe) {
       $redirect="docannexe.php?iddocument=$iddocument";
     } elseif ($visualiserdocument) {
@@ -114,13 +127,13 @@ if ($edit || $plusauteurs) {
     } else {
       $redirect="";
     }
-    // clot la tache et renvoie sur index.php
+    // clot la tache et renvoie sur au bon endroit
     include ("abandon.php");
     return;
   } while (0); // exception
 } // edit
 else {
-  $text=join("",file ($row[fichier].".html"));
+  $text=join("",file ($filename.".html"));
   auteurs2auteur($text);
   if (!$context[option_pasdeperiode]) tags2tag("periode",$text);
   if (!$context[option_pasdemotcle]) tags2tag("motcle",$text);
@@ -147,7 +160,7 @@ else {
   }
   $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>'.preg_replace($srch,$rpl,$text);
       
-  writefile ($row[fichier].".balise",$text);
+  writefile ($filename.".balise",$text);
   if ($row[iddocument]) { # le document existe
 # on recupere la date de publication du texte
     $result=mysql_query("SELECT datepubli from documents WHERE id='$row[iddocument]'") or die (mysql_error());
@@ -160,7 +173,7 @@ foreach ($balises_sstag as $b) {
   $context[$b]=strip_tags($context[$b]);
 }
 
-update_taches($id,3); // etape 3
+update_tache_etape($id,3); // etape 3
 $context[id]=$id;
 
 posttraitement($context);

@@ -15,6 +15,7 @@ if ($id) {
 
 if ($redirect) {
   header("Location: $redirect");
+  return;
 } else {
   include_once ("$home/func.php"); back();
 }
