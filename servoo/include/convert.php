@@ -168,17 +168,24 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   //
   // recupere le nom des images associees
   //
-
-  preg_match_all('/<img\s+src="('.preg_quote(basename($uploadedfile)).'-img\d+\.[^\."]+)"/',$xhtml,$results,PREG_PATTERN_ORDER);
+ 
+#  preg_match_all('/<img\s+src="('.preg_quote(basename($uploadedfile)).'-img\d+\.[^\."]+)"/',$xhtml,$results,PREG_PATTERN_ORDER);
+  preg_match_all('/<img\s+src="('.preg_quote($uploadedfile,"/").'-img\d+\.[^\."]+)"/',$xhtml,$results,PREG_PATTERN_ORDER);
 
   $convertedfiles=array($xhtmlfile);
-  $dir=dirname($uploadedfile);
-  if (!$dir) $dir=".";
+#  $dir=dirname($uploadedfile);
+#  if (!$dir) $dir=".";
+
+#  die ("ERROR: ".join(" ",$results[1]));
 
   if ($results[1]) {
     foreach ($results[1] as $imgfile) 
-      array_push($convertedfiles,$dir."/".$imgfile);
+#      array_push($convertedfiles,$dir."/".$imgfile);
+      array_push($convertedfiles,$imgfile);
   }
+#  die("ERROR: $uploadedfile ".join(" ",$convertedfiles));
+
+
 
   return $convertedfiles;
 }
