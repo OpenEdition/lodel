@@ -1008,9 +1008,9 @@
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
 		<IF COND="([#STATUT] lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN])">
-		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DELETE]</a>&nbsp;|
+		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
+		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
