@@ -20,55 +20,62 @@
 <TITLE>[#PRENOM] [#NOMFAMILLE]</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_AUTEUR">
+<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-
-	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
 	
-		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
-		de class "separation" et class "contenu" -->
-		<div class="corps">
+				<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div  -->
+				<div class="barrenav">
+					<? insert_template("barre");?> 
+				</div>
+	
+					<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+					de class "separation" et class "contenu" -->
+					<div class="corps">
 
-		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-		de nav et le contenu de la page" -->
-		<div class="separation">
-			&nbsp;
-		</div>
+						<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+						de nav et le contenu de la page" -->
+						<div class="separation">
+							&nbsp;
+						</div>
 		
-		<!-- ce div permet d'intégrer le  contenu de la page" -->
-		<div class="contenu">
+						<!-- ce div permet d'intégrer le  contenu de la page" -->
+						<div class="contenu">
 		
-			<!-- logo de Lodelia-->
-			<MACRO NAME="IMG_LOGO_LODELIA">
+							<!-- logo de Lodelia-->
+							<MACRO NAME="IMG_LOGO_LODELIA">
 			
-			<!-- Titre de la revue -->
-			<div class="titre1">
-				Articles parus dans <MACRO NAME="NOM_REVUE">
-			</div>
+							<!-- Titre de la revue -->
+							<div class="titre1">
+								Articles parus dans <MACRO NAME="NOM_REVUE">
+							</div>
 				
-			<!-- Nom et prénom de l'auteur -->
-			<div class="titre2">
-				[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
-			</div>
+							<!-- Nom et prénom de l'auteur -->
+							<div class="titre2">
+								[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
+							</div>
 				
-			<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
-				<DO>
-					<div class="afficherdocument">
-						<!-- Liste des articles publiés par l'auteur dans la revue -->
-						<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
-					</div>
-				</DO>
-			</LOOP>
+							<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
+								<DO>
+									<div class="afficherdocument">
+										<!-- Liste des articles publiés par l'auteur dans la revue -->
+										<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
+									</div>
+								</DO>
+							</LOOP>
 						
-			<div class="titre2">
-				 <a class="titre2" class="auteur" href="auteurs-complet.html">
-					>> Index des auteurs
-				 </a>
-		 	 </div>
+							<div class="titre2">
+								 <a class="titre2" class="auteur" href="auteurs-complet.html">
+									>> Index des auteurs
+								 </a>
+		 					 </div>
 		
-			<MACRO NAME="REVUES_ORG">
-		</div>
-	</div>
+							<MACRO NAME="REVUES_ORG">
+						</div>
+					</div>
+				
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
+
 <MACRO NAME="FERMER_HTML">

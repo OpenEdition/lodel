@@ -25,12 +25,15 @@
 </LOOP>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_GEO">
+<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	
-	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
+
+		<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+		<div class="barrenav">
+			<? insert_template("barre");?> 
+		</div>
 	
 		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
 		de class "separation" et class "contenu" -->
@@ -69,9 +72,9 @@
 					 </a>
 				</div>
 			
-			<MACRO NAME="REVUES_ORG">
+				<MACRO NAME="REVUES_ORG">
+			</div>
 		</div>
-	</div>
 	
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

@@ -254,9 +254,10 @@
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<DO>
 		    	    	<IF COND="[#NOM]">
+							paru dans le 
 							<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
 								
-									Paru dans le n&#176; [#NOM] - [#TITRE]
+									n&#176; [#NOM] - [#TITRE]
 								
 							</a>
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -265,9 +266,10 @@
             	</LOOP>
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
+					paru dans le 
 					<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
 						
-							Paru dans le  n&#176; [#NOM] - [#TITRE]
+							 n&#176; [#NOM] - [#TITRE]
 						
 					</a>
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -437,30 +439,31 @@
 <!-- ****************************************************************** -->
 	
 		<IF COND="[#TYPE]=='article_vide'">
-			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong> [#TITRE]
+			<span class="italic">Article <MACRO NAME="PARU_DANS_SIMPLE"> :</span> 
+			<br />[#TITRE]
 			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
 		</IF>
 		<IF COND="[#TYPE]=='article'">
-			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-			<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+			<span class="italic">Article <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+			<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 		<ELSE/>
 			<IF COND="[#TYPE]=='chronique'">
-				<strong>Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-				<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+				<span class="italic">Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+				<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 			<ELSE/>
 				<IF COND="[#TYPE]=='compte rendu'">
-					<strong>Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-					<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+					<span class="italic">Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+					<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
-						<strong>Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-						<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF><</a>
+						<span class="italic">Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+						<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF><</a>
 					<ELSE/>
 						<IF COND="[#TYPE]=='editorial'">
-							<strong>Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-							<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
+							<span class="italic">Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</span>
+							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 						<ELSE/>
-							<a class="menu2" href="document.html?id=[#ID]">[#TITRE]</a>
+							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]</a>
 						</IF>
 					</IF>
 				</IF>
@@ -773,7 +776,7 @@
 							<IF COND="[#NOM]">
 								| [#NOM]
 							</IF>
-						   
+						  
 				</div>
 				
 				<MACRO NAME="PRESENTER_DOCUMENTS">
@@ -946,26 +949,27 @@
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche le dernier numéro en date. (en fonction du champs date)    -->
-<!-- Cette macro fait appel à la macro suivante :                       -->
-<!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status>0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
+			
 			<a class="titre2" href="sommaire.html?id=[#ID]">
 					
 						Dernier numéro publié : [#NOM] 
 					
-				
 				<IF COND="[#TITRE]">
 					<em>
 						- [#TITRE]
 					</em>
 				</IF>
-				<IF COND="[#DIRECTEUR]">
-					<br /> Sous la direction de :	[#DIRECTEUR]
-				</IF>
 			</a>
-			<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
+			
+			
+				<!--<IF COND="[#DIRECTEUR]">
+					<br /> Sous la direction de :	[#DIRECTEUR]
+				</IF>-->
+			
+			
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -977,7 +981,8 @@
 <!--    Version 1.0                                      -->
 <!--    Affiche le premier article du dernier numéro     -->
 <!-- (en fonction du champ date de la table publication) -->
-<!-- *************************************************** -->	
+<!-- *************************************************** -->
+	<!--<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">-->	
 	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
@@ -1147,11 +1152,11 @@
 					<MACRO NAME="ICONE_PUBLICATION">
 					<!-- affiche les 1500 premiers mots du texte -->
 					[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine|couper(1500))]
-					<a href="sommaire.html?id=[#ID]">
+					<a  href="sommaire.html?id=[#ID]">
 						... lire la suite...
 					</a>
 				<ELSE/>
-					<a href="sommaire.html?id=[#ID]">
+					<a  href="sommaire.html?id=[#ID]">
 						... lire ...
 					</a>
 				</IF>
@@ -1167,11 +1172,11 @@
 		<br />
 		<!-- affiche les 1500 premiers mots du texte -->
 		[(#TEXTE|couper(1500))]
-		<a href="sommaire.html?id=[#ID]">
+		<a class=" titre2" href="sommaire.html?id=[#ID]">
 			... lire la suite...
 		</a>
 	<ELSE/>
-		<a href="sommaire.html?id=[#ID]">
+		<a class=" titre2" href="sommaire.html?id=[#ID]">
 			... lire ...
 		</a>
 	</IF>

@@ -57,8 +57,11 @@
 <!-- Pour refermer cette table veuillez utiliser de préférence la       -->
 <!-- Macro : <MACRO NAME="FERMER_TABLE_PRINCIPALE">                     -->
 <!-- ****************************************************************** -->
-			<div class="conteneur">
-				<div class="principale">
+<table class="principale">
+	<tr>
+		<td>
+
+		<div class="conteneur">
 				
 </DEFMACRO>
 
@@ -69,8 +72,12 @@
 <!-- ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      -->
 <!-- fermé la cellule principale avec le marqueur </td> !!!             -->
 <!-- ****************************************************************** -->
-				</div>
-			</div>
+		</div>
+		
+		</td>
+	</tr>
+</table>
+
 </DEFMACRO>
 
 <DEFMACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">
@@ -105,23 +112,31 @@
 <!-- Version 1.0                                                        -->
 <!--  Permet d'afficher le logo avec roll over de Revues.org, ce        -->
 <!--  logo est composé de plusieurs éléments                            -->
+<!--  Utilisation du javascript pour faire fonctionner le roll over		-->
+<!--  Ne fonctionne pas avec Mozilla                                	-->
+<!--  possibilité de faire avec le CSS mais le logo n'apparait pas sous -->
+<!--  Mozilla avec cette technique                                      -->
 <!-- ****************************************************************** -->
-<div class="logo_revuesorg1"> 
-	&nbsp; 
-</div>
-
-	
-		<a class="logo_revuesorg3" href="http://www.revues.org" target="_blank" title="logo de Revues.org">
-			<div class="logo_revuesorg3">
-				<a class="logo_revuesorg3" href="http://www.revues.org" target="_blank" title="logo de Revues.org">
-				</a>
-			</div>
+	<div class="logo_revuesorg1"> 
+		&nbsp; 
+	</div>
+		
+	<div>
+		<a href="http://www.revues.org" target="_blank" onMouseOut="RestoreImg()" onMouseOver="SwitchImg('logo_revues','logo_revues','images/logo_revues_on.gif')">
+			<img src="images/logo_revues.gif" width="165" name="logo_revues" height="50" alt="revues.org" border="0">
 		</a>
-	
+	</div>
 
-<div class="logo_revuesorg4" >
-	&nbsp;
-</div>
+	<!--<div class="logo_revuesorg1">
+		<a class="logo_revuesorg3" href="http://www.revues.org" target="_blank" title="logo de Revues.org">
+			&nbsp; 
+		</a>
+	</div>-->
+		
+	<div class="logo_revuesorg4" >
+		&nbsp;
+	</div>
+	
 </DEFMACRO> 
 
 <DEFMACRO NAME="TRACER_LIGNE_VERTICALE">

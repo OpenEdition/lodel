@@ -18,54 +18,56 @@
 <MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="METADONNEES">
+<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	
-	<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
-	de class "separation" et class "contenu" -->
-	<div class="corps">
 
-		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-		de nav et le contenu de la page" -->
-		<div class="separation">
-			&nbsp;
+		<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+		<div class="barrenav">
+			<? insert_template("barre");?> 
 		</div>
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
 		
-		<!-- ce div permet d'intégrer le  contenu de la page" -->
-		<div class="contenu">
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
 		
-			<!-- logo de Lodelia-->
-			<MACRO NAME="IMG_LOGO_LODELIA">
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
 			
-			<!-- Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
-			titre et nom du numéro, -->		
-			<div class="titre1">
-				[#TITRE] 
-				<IF COND="[#SOUSTITRE]">
-				<span class="soustitrerevue">[#SOUSTITRE]</span>
-				</IF>
-				<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
-			</div>				
-			
-			
+				<!-- Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+				titre et nom du numéro, -->		
+				<div class="titre1">
+					[#TITRE] 
+					<IF COND="[#SOUSTITRE]">
+						<span class="soustitrerevue">[#SOUSTITRE]</span>
+					</IF>
+					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+				</div>				
 			
 			
 				<!-- Erratum --->
-			<IF COND="[#ERRATUM]">
-				<div class="titre3">
-					Errata
-				</div>
-				<div class="notes"> 
-					[#ERRATUM]
-					<br />
-				</div>
-			</IF>
+				<IF COND="[#ERRATUM]">
+					<div class="titre3">
+						Errata
+					</div>
+					<div class="notes"> 
+						[#ERRATUM]
+						<br />
+					</div>
+				</IF>
 				
-			<!-- Notes de la rédaction --->
-			<IF COND="[#NDLR]">
+				<!-- Notes de la rédaction --->
+				<IF COND="[#NDLR]">
 				<div class="titre3">
 					Notes de la rédaction
 				</div>
@@ -73,68 +75,68 @@
 					[#NDLR]
 					<br />
 				</div>
-			</IF>
+				</IF>
 				
-			<!-- Historique --->
-			<IF COND="[#HISTORIQUE]">
-				<div class="titre3">
-					Historique
-				</div>
-				<div class="notes"> 
-					[#HISTORIQUE]
-					<br />
-				</div>
-			</IF>
+				<!-- Historique --->
+				<IF COND="[#HISTORIQUE]">
+					<div class="titre3">
+						Historique
+					</div>
+					<div class="notes"> 
+						[#HISTORIQUE]
+						<br />
+					</div>
+				</IF>
 				
-			<!-- Affichage du résumé en français   -->
-			<IF COND="[#RESUME:FR]">
-				<div class="titre3">
-					Résumé
-				</div>
-				<div class="resume" > 
-					[#RESUME:FR]
-				</div>		
-			</IF>
+				<!-- Affichage du résumé en français   -->
+				<IF COND="[#RESUME:FR]">
+					<div class="titre3">
+						Résumé
+					</div>
+					<div class="resume" > 
+						[#RESUME:FR]
+					</div>		
+				</IF>
 				
-			<!-- Résumé en anglais   -->
-			<IF COND="[#RESUME:EN]">
-				<div class="titre3"> 
-					Abstract
-				</div>
-				<div class="resume" >
-					[#RESUME:EN]
-				</div>
-			</IF>
+				<!-- Résumé en anglais   -->
+				<IF COND="[#RESUME:EN]">
+					<div class="titre3"> 
+						Abstract
+					</div>
+					<div class="resume" >
+						[#RESUME:EN]
+					</div>
+				</IF>
 				
-			<!-- Résumé en espagnol   -->
-			<IF COND="[#RESUME:ES]">
-				<div class="titre3"> 
-					Extracto
-				</div>
-				<div class="resume" >
-					[#RESUME:ES]
-				</div>
-			</IF>
+				<!-- Résumé en espagnol   -->
+				<IF COND="[#RESUME:ES]">
+					<div class="titre3"> 
+						Extracto
+					</div>
+					<div class="resume" >
+						[#RESUME:ES]
+					</div>
+				</IF>
 				
-			<!-- Résumé en allemand   -->
-			<IF COND="[#RESUME:DE]">
-				<div class="titre3"> 
-					Zusammenfassung
-				</div>
-				<div class="resume" >
-					[#RESUME:DE]
-				</div>
-			</IF>
+				<!-- Résumé en allemand   -->
+				<IF COND="[#RESUME:DE]">
+					<div class="titre3"> 
+						Zusammenfassung
+					</div>
+					<div class="resume" >
+						[#RESUME:DE]
+					</div>
+				</IF>
 				
-			<!-- Résumé en italien   -->
-			<IF COND="[#RESUME:IT]">
-				<div class="titre3"> 
-					Riassunto
-				</div>
-				<div class="resume" >
-					[#RESUME:IT]
-				</div>
-			</IF>
+				<!-- Résumé en italien   -->
+				<IF COND="[#RESUME:IT]">
+					<div class="titre3"> 
+						Riassunto
+					</div>
+					<div class="resume" >
+						[#RESUME:IT]
+					</div>
+				</IF>
 	
 					
 		<!-- ----------------------------------------------------------------------- -->
