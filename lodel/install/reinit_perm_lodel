@@ -2,7 +2,7 @@
 # vide les repertoires de cache de lodel et restaure les droits sur les fichiers/rep
 # a lancer depuis le rep lodel
 
-LODEL="/var/www"
+LODEL="/www/revues/lodeldevel"
 
 APACHECACHEWRDIR="lodel/admin/CACHE lodel/CACHE CACHE lodel/admin/upload"
 
