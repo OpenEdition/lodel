@@ -91,9 +91,9 @@ function couper($texte,$long) {
 #  $texte = substr($texte, 0, ($long +50) * 3); /* heuristique pour prendre seulement le necessaire */
 
   $GLOBALS['textfunc_hasbeencut']=false;
-
   $open=strpos($texte,"<");
-  if ($open===FALSE || $open>$long) return couper_sans_tags($texte,$long);
+  if ($open===false || $open>$long) return couper_sans_tags($texte,$long);
+
   $long-=$open;
   $stack=array();
 
@@ -112,7 +112,7 @@ function couper($texte,$long) {
 
     if ($open===FALSE || $piecelen>$long) 
       return substr($texte,0,$close+1).
-	couper_sans_tags(substr($texte,$close+1,$long),$long).
+	couper_sans_tags(substr($texte,$close+1,$long+2),$long).  // 2 pour laisser de la marge
 	join("",array_reverse($stack));	
 
     $long-=$piecelen;
@@ -122,13 +122,8 @@ function couper($texte,$long) {
 }
 
 function couper_sans_tags($texte,$long) {
-  #$texte2 = substr($texte, 0, ($long+10)* 1.1); /* heuristique pour prendre seulement le necessaire */
-#  if (strlen($texte2) < strlen($texte)) $plus_petit = true;
-  
   $texte2 = substr($texte." ", 0, $long);
-  if (strlen($texte2)<strlen($texte)) $GLOBALS['textfunc_hasbeencut']=true;
-
-#  echo ":",$texte2;
+  if (strlen($texte2)<strlen($texte)) { $GLOBALS['textfunc_hasbeencut']=true;}
   $texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
   return trim($texte2);
 }
