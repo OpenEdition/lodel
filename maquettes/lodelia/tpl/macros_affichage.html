@@ -255,14 +255,14 @@
 	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<DO>
 			Paru dans 
-			<a href="sommaire.html?id=[#ID]">
-				<span style="color:Black;">
+			<a class="titrerevue" href="sommaire.html?id=[#ID]">
+				
 						<MACRO NAME="NOM_REVUE"> n°[#NOM]
 					<IF COND="[#TITRE]">
 						,
 						[#TITRE]
 					</IF>.
-				</span>
+				
 			</a>
 		</DO>
 	</LOOP>
@@ -423,6 +423,28 @@
 <!-- ****************************************************************** -->
 	<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
 	<MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">
+	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+	<MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">
+	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+	<MACRO NAME="TEXTE_INTEGRAL">
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_LIGNE_DOCUMENT_NONCLIQUABLE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche en une ligne un point, l'auteur cliquable le titre et des  -->
+<!-- boutons supplémentaires pour les les admin/editeurs/rédacteur.     -->
+<!-- Cette macro est plutôt destinée aux sommaires                      -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
+<!-- <MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">                            -->
+<!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
+<!-- <MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">                         -->
+<!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
+<!-- <MACRO NAME="TEXTE_INTEGRAL">                                      -->
+<!-- ****************************************************************** -->
+	<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
+	<MACRO NAME="TITRE_DOCUMENT">
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 	<MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">
 	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
@@ -847,7 +869,8 @@
 <DEFMACRO NAME="TITRE_DOCUMENT_CLIQUABLE">  
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affiche simplement le titre du document et le rend cliquable.      -->
+<!-- Affiche simplement le titre et le sous-titre 						-->
+<!-- du document et le rend cliquable.      							-->
 <!-- Remarque : Si on veut mettre en ligne des articles vides pour      -->
 <!-- avoir dans les sommaires les titres des futurs articles. Il faut   -->
 <!-- créer un nouveau type de document dans la partie administration    -->
@@ -858,12 +881,23 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#TYPE]=='article_vide'">
 	
-		[#TITRE]
+		[#TITRE], [#SOUSTITRE]
 	<ELSE/>
 		<a class="menu2" href="document.html?id=[#ID]">
-			[#TITRE]
+			[#TITRE], [#SOUSTITRE]
 		</a>
 	</IF>
+	
+</DEFMACRO>
+
+<DEFMACRO NAME="TITRE_DOCUMENT">  
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche simplement le titre et le sous-titre du document 			-->
+<!-- ****************************************************************** -->
+	
+			[#TITRE], [#SOUSTITRE]
+	
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_AUTEURS">
@@ -875,6 +909,9 @@
 		<DOFIRST>
 			[#PRENOM] 
 			[#NOMFAMILLE]
+			<LOOP NAME="DescriptionAuteur" TABLE="documents_auteurs" WHERE="id='[#ID]'">
+				[#DESCRIPTION]
+			</LOOP>
 		</DOFIRST>
 		<DO>
 			,

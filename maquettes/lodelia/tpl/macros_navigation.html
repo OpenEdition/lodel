@@ -16,6 +16,7 @@
 <!-- <MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">                           -->
 <!-- <MACRO NAME="BOUTON_DOCUMENT_SUIVANT">                             -->
 <!-- <MACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">                     -->
+<!-- <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">                     -->
 <!-- <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">                  -->
 <!-- <MACRO NAME="EXPLORATEUR_THEMES_PUBLICATIONS">                     -->
 <!-- <MACRO NAME="EXPLORATEUR_THEMES_DOCUMENT">                         -->
@@ -355,6 +356,36 @@
 		</tr>
 	</table>
 </DEFMACRO>
+
+<DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
+		<td class="navigation_precedent">
+				<IF COND="[#PREVDOCUMENT]">
+					<a class="navigation_precedent" href="[#PREVDOCUMENT]">
+						<< Article précédent
+					</a>
+							
+				<ELSE/>
+					<a class="navigation_precedent" href="sommaire.html?id=[#PUBLICATION]">
+						<< Retour au sommaire
+					</a>
+							
+				</IF>
+		</td>
+		<td class="navigation_suivant" class="navigation_suivant">
+				<IF COND="[#NEXTDOCUMENT]">
+						
+					<a class="navigation_suivant" href="[#NEXTDOCUMENT]">
+						Article suivant >>
+					</a>
+				<ELSE/>
+						
+					<a class="navigation_suivant" href="sommaire.html?id=[#PUBLICATION]">
+						 Retour au sommaire >>
+					</a>
+				</IF>
+		</td>
+</DEFMACRO>
+
 
 <DEFMACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
 <!-- ****************************************************************** -->

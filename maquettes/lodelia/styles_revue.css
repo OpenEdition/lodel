@@ -112,6 +112,8 @@ sup
 	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 	line-height: 100%;
 	text-indent : 20;
+	padding: 2em
+	
 }
 
 .texte_petit
@@ -227,19 +229,7 @@ sup
 	text-indent : 0;
 }
 
-.titrerevue
-{
-	/*  
-	 *
-	 */
-	font-size: large;
-	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
-	font-weight : bold;
-	text-align: left; 
-	margin-left: 10;
-	color: #9C3234;
-	line-height: 150%;
-}
+
 
 
 
@@ -346,6 +336,10 @@ sup
 	line-height: 90%;
 	text-align : justify;
 	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	padding-top: 2em;
+	padding-bottom: 2em;
+	padding-right: 2em;
+	padding-left: 2em;
 }
 
 .appeldenote
@@ -384,72 +378,33 @@ sup
    	/*  
 	 *	Styles des liens non visités et visités
 	 */
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #9C3234;
+	
 	font-family: arial, helvetica, sans-serif;
+	text-decoration:none;
 }
 
 A:hover {
 	/*  
 	 *	Styles des liens survolés
 	 */
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
+	
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
+	text-decoration:none;
 }
 
 A:active {
 	/*  
 	 *	Style des liens actifs
 	 */
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
+	
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
-}
-
-
-/***************************************************************************************
- *	Les liens de class "Titre2"                                                         *
- ***************************************************************************************
- */
-
-A.titre2 {
-	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	font-size: small;
-	font-weight: bold;
-	color: #cccccc;
-	font-family: arial, helvetica, sans-serif;
-	margin-left : 10;
-}
-
-A.titre2:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	font-size: x-small;
-	font-weight: small;
 	text-decoration:none;
-	color: #ffffff;
-	font-family: arial, helvetica, sans-serif;
 }
-A.titre2:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #ffffff;
-	font-family: arial, helvetica, sans-serif;
-}
+
+
+
 
 
 
@@ -460,7 +415,7 @@ A.titre2:active {
  
 A.auteur {
 	/*  
-	 *	Styles des liens non visités et visités
+	 *	Styles des liens non visités 
 	 */
 	font-size: small;
 	text-decoration:none;
@@ -469,6 +424,16 @@ A.auteur {
 	font-family: arial, helvetica, sans-serif;
 }
 
+A.auteur:visited {
+	/*  
+	 *	Styles des liens  visités
+	 */
+	font-size: small;
+	text-decoration:none;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+}
 
 A.auteur:hover {
 	/*  
@@ -660,7 +625,12 @@ A.petittexte:active {
 	font-size: x-small;
 	color : #000000;
 	text-align : justify;
-	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-top: 2em;
+	padding-bottom: 5em;
+	font-family : Times New Roman, Arial, Verdana, Helvetica, sans-serif, Times New Roman;
+	
 }
 
 .titre
@@ -936,3 +906,213 @@ h7
 	font-family: arial, helvetica, sans-serif;
 	margin-left: 2em;
 }
+
+td {
+	/* Style précisant la taille, la couleur d'arrière plan 
+	 * des td des tables
+	 */
+	vertical-align: top;
+	
+}
+
+
+	/* Style .titrerevue  
+	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
+	 * A 
+	 */
+
+
+td.titrerevue {
+	
+	 width: 561;
+	 height: 30;
+	 vertical-align: middle;
+	 background-color: #F4F4F4;
+	 font-size: large;
+	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
+	 font-weight : bold;
+	 text-align: left; 
+	 margin-left: 10;
+	 color: #9C3234;
+	 line-height: 150%;
+}
+	
+A.titrerevue {
+
+	/*  
+	 *	Styles des liens non visités et visités des liens des éléments de classe "titrerevue"
+	 */
+	
+	color: #9C3234;
+	text-decoration:none;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	
+}
+
+A.titrerevue:hover {
+	/*  
+	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
+	 */
+	
+	text-decoration:none;
+	color: #666666;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+}
+A.titrerevue:active {
+	/*  
+	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
+	 */
+	
+	text-decoration:none;
+	color: #666666;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+}
+
+td.blocblanc {
+	
+	 width: 561;
+	 height: 15;
+	 vertical-align: top;
+	 background-color: #ffffff;
+		 
+}
+
+td.blocblanc6 {
+	
+	 width: 561;
+	 height: 6;
+	 vertical-align: top;
+	 background-color: #ffffff;
+		 
+}
+
+td.titre2 {
+	
+	 width: 561;
+	 height: 20;
+	 vertical-align: middle;
+	 background-color: #9C3234;
+	 font-size: small;
+	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 text-indent: 10;
+	 margin-left : 10;
+}
+
+/***************************************************************************************
+ *	Les liens de class "Titre2"                                                         *
+ ***************************************************************************************
+ */
+
+
+A.titre2 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #ffffff;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	margin-left : 10;
+}
+
+A.titre2:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #ffffff;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+}
+A.titre2:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #ffffff;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+}
+
+td.signalerimprimer {
+	
+	 width: 60;
+	 height: 20;
+	 vertical-align: middle;
+	 background-color: #9C3234;
+	 align: right; 
+	 padding-right: 0;
+	 text-align: right;
+		 
+}
+
+td.afficherdocument  {
+	vertical-align: middle;
+	width: 561;
+	background-color: #F7F7F7;
+	font-size: small;
+	text-decoration: none;
+	font-weight: bold;
+	color: #666666;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+}
+
+td.titre3 {
+	vertical-align: middle;
+	width: 561;
+	height: 20;
+	background-color: #EFEFEF;
+	font-size: small;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	text-indent : 10;
+}
+
+
+/***************************************************************************************
+ *	Style des éléments de navigation entre les documents                               *
+ ***************************************************************************************
+ */
+.navigation_precedent {
+	/*  
+	 *	td aligné à gauche, contenant lien vers document précédent 
+	 */
+	
+	vertical-align: middle;
+	align: left;
+	width: 300;
+	height: 20;
+	background-color: #E0E0E0;
+	font-size: small;
+	text-align: left;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	padding-left: 1em;
+}
+
+.navigation_suivant {
+	/*  
+	 *	td aligné à droite, contenant lien vers document suivant 
+	 */
+	 
+	vertical-align: middle;
+	align: right;
+	width: 261;
+	height: 20;
+	background-color: #E0E0E0;
+	font-size: small;
+	text-align: right;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: Times New Roman, arial, helvetica, sans-serif;
+	padding-right: 1em;
+}
+
+
