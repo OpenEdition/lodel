@@ -28,7 +28,7 @@ REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous');
 
 REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','chronos','1','0','0','1','ordre','2');
 REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
-REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','mots','1','1','1','0','nom','1');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motscles','mot','mots','1','1','1','0','nom','1');
 
 REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,tpl,tplindex,status,ordre) VALUES('1','auteur','auteur','auteurs','auteur','auteurs','1','1');
 
