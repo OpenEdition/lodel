@@ -328,7 +328,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<?php $context['lodeladminpath']=$GLOBALS['home']."../lodeladmin-".$version; // it is not wonderfull..... ?>
+							<?php $context['lodeladminpath']=$GLOBALS['home']."../../lodeladmin".($version ? "-$version" : ""); // this is not wonderfull..... ?>
 							<a href="[#LODELADMINPATH]/index.php?do=list&lo=translations"><span class="texte_orange">[@ADMIN.ADMINISTRATE_INTERFACE_TRANSLATIONS]</span></a>
 						</td>
 						<td>&nbsp;</td>
