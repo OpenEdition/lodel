@@ -190,12 +190,12 @@
 						Table des matières
 					</div>
 <LOOP NAME="toc">
- <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
- <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
- <IF COND="[#NIVEAU]==3"><div class="toc_section3"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
- <IF COND="[#NIVEAU]==4"><div class="toc_section4"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
- <IF COND="[#NIVEAU]==5"><div class="toc_section5"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
- <IF COND="[#NIVEAU]==6"><div class="toc_section6"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+ <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+ <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+ <IF COND="[#NIVEAU]==3"><div class="toc_section3"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+ <IF COND="[#NIVEAU]==4"><div class="toc_section4"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+ <IF COND="[#NIVEAU]==5"><div class="toc_section5"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
+ <IF COND="[#NIVEAU]==6"><div class="toc_section6"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
 
 </LOOP>
 				
@@ -313,7 +313,9 @@
 					<MACRO NAME="DESCRITION_AUTEUR"> 
 					
 					
-				
+									
+					<MACRO NAME="RECENSIONS">
+
 					<!-- Affiche liens de navigation entre les documents  -->						
 					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				

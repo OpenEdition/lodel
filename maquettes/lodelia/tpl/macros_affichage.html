@@ -448,6 +448,7 @@
 <!-- contenus dans les numéros de cette série.                          -->
 <!-- Il faut mettre en dur l'id de la série                             -->
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
+<!-- Modifiée en octobre 2003 par Nicolas Nutten                        -->  
 <!-- ****************************************************************** -->
 	<LOOP NAME="aff_series_presentation" TABLE="types" TABLE="entites" TABLE="relations" WHERE="id1='#indiquer ici id de la serie presentation#' AND entites.id=id2 AND entites.idtype=types.id AND classe='documents'">
 		<BEFORE>
@@ -1069,3 +1070,35 @@
 		</IF>
 	</IF>
 </DEFMACRO>
+
+<DEFMACRO NAME="RECENSIONS">
+
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les recensions, ou les documents recensés s'il y en a      -->
+<!-- ****************************************************************** -->
+
+
+<LOOP NAME="parent_compterendu" TABLE="documents" WHERE="id='[#IDPARENT]'">
+	<div class="titre3">
+						Compte-rendu
+					</div>
+		
+		<br>[#TITRE] <br>
+<a href="http://lodelia.revues.org/document[#ID].html">http://lodelia.revues.org/document[#ID].html</a>
+<br><br>
+</LOOP>	
+<LOOP NAME="parent_compterendu2" TABLE="documents" WHERE="idparent='[#ID]'">
+
+		<div class="titre3">
+						Article recensé
+					</div>
+<br>		[#TITRE] 
+	<br>
+<a href="http://lodelia.revues.org/document[#ID].html">http://lodelia.revues.org/document[#ID].html</a>
+<br><br>
+</LOOP>
+					
+				
+</DEFMACRO>	
+		
