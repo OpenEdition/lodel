@@ -157,7 +157,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
 
   #$xhtml=file_get_contents($xhtmlfile);
   $xhtmllines=file($xhtmlfile);
-  array_walk($xhtmllines,create_function('&$text',' $text=trim($text);')); // trim each line
+  array_walk($xhtmllines,create_function('&$text',' $text=ltrim($text);')); // ltrim each line
   $xhtml=join("",$xhtmllines);
   unset($xhtmllines); // save memory
 
