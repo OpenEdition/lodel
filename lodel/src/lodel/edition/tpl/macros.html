@@ -48,8 +48,8 @@
 		function confirm_depublication(publi)
 		// Si publi = 1 : publication sinon : document.
 		{
-			var msgdoc="Etes-vous sûr de vouloir dépublier ce document ?";
-			var msgpubli="Etes-vous sûr de vouloir dépublier cette publication ?";
+			var msgdoc="[@EDITION.CONFIRMATION_UNPUBLISH_DOCUMENT] ?";
+			var msgpubli="[@EDITION.CONFIRMATION_UNPUBLISH_PUBLICATION] ?";
 			{
 				if(publi)
 				{
@@ -72,7 +72,7 @@
 
 	function confirm_suppression(id)
 	{
-		var msg="Etes-vous sûr de vouloir supprimer ce document annexe ?";
+		var msg="[@EDITION.CONFIRMATION_DELETE_ANNEX_DOCUMENT] ?";
 		if(confirm(msg))window.location="docannexe.php?id="+id+"&delete=2";
 	}
 	

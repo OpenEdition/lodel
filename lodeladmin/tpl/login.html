@@ -24,7 +24,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <meta name="ROBOTS" content="nofollow, noindex">
-<TITLE>Login administrateur Lodel</TITLE>
+<TITLE>[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <br />
@@ -40,36 +40,45 @@
                   <br />
                 </div>
               </td>
-              <td width="80%"> <b><font color="#FF0000" size="+1">Administrateur Lodel</font></b> 
+              <td width="80%"> <b><font color="#FF0000" size="+1">[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</font></b> 
                 <br />
                 <br />
-                [(#ERREUR_LOGIN|true)<br />
+		<IF COND="[#ERREUR_LOGIN]">
+			<br />
+			<br />
+			<b>[@COMMON.INVALID_LOGIN_PASSWORD]</b><br />
+			<br />
+                </IF> 
+		<b>[@COMMON.DEMAND_IDENTIFICATION]</b><br />
+		<IF COND="[#ERREUR_OPENSESSION]">
+			<b><br />
+			[@COMMON.ERROR_OPENSESSION]<br />
+			<br />
+			</b>
+		 </IF>
+		 <IF COND="[#ERREUR_SETCOOKIE]">
+		 <b><br />
                 <br />
-                <b> Nom d'utilisateur ou mot de passe incorrect</b><br />
+                [@LODELADMIN.ERROR_SETCOOKIE]</b><br />
                 <br />
-                ] <b>Merci de vous identifier</b><br />
-                [(#ERREUR_OPENSESSION|true)<b><br />
-                Impossible d'ouvrir une session. contactez l'administrateur<br />
+                 </IF>
+		 <IF COND="[#ERREUR_TIMEOUT]">
+		 <br />
                 <br />
-                </b>] [(#ERREUR_SETCOOKIE|true)<b><br />
+                <b>[@COMMON.SESSION_TIMEOUT]</b><br />
                 <br />
-                Impossible de poser un cookie</b><br />
+                </IF>
+		<IF COND="[#ERREUR_PRIVILEGE]">
+		 <b><br />
                 <br />
-                ] [(#ERREUR_TIMEOUT|true)<br />
+                [@COMMON.ERROR_RIGHTS]</b><br />
                 <br />
-                <b>La session a expiré</b><br />
-                <br />
-                ] [(#ERREUR_PRIVILEGE|true)<b><br />
-                <br />
-                Vous n'avez pas les droits pour acc&eacute;der &agrave; cette 
-                page</b><br />
-                <br />
-                ] </td>
+                </IF> </td>
             </tr>
  <form action="login.php" method="POST">
 <input type="hidden" name="url_retour" value="[#URL_RETOUR]">           <tr> 
                 <td> 
-                  <div align="right"><b>Nom d'utilisateur:</b></div>
+                  <div align="right"><b>[@COMMON.LOGIN]:</b></div>
                 </td>
                 <td width="80%"> 
            <input type="text" name="login" value="[#LOGIN]">
@@ -77,7 +86,7 @@
               </tr>
               <tr> 
                 <td> 
-                  <div align="right"><b>Mot de passe:</b></div>
+                  <div align="right"><b>[@COMMON.PASSWORD]:</b></div>
                 </td>
                 <td width="80%"> 
    <input type="password" name="passwd">
@@ -85,7 +94,7 @@
 
 
 
-<input class="form" type="submit" name="submit" value="Loger">
+<input class="form" type="submit" name="submit" value="[@COMMON.LOGIN]">
 
             </form>
           </table>

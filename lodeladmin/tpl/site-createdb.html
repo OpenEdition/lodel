@@ -23,13 +23,13 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Installation d'un site</TITLE>
+<TITLE>[@LODELADMIN.TITLE_INSTALLATION_WEBSITE]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Création de site</b></div></td></tr>
+<br /><br /><b>[@LODELADMIN.CREATION_WEBSITE]</b></div></td></tr>
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="center"><tr><td>
@@ -40,12 +40,12 @@
 <input type="hidden" name="versionrep" value="[#VERSIONREP]">
 
 <IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
-<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
-<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
+<p><b>[@LODELADMIN.LODEL_DONT_SUCCESS_CREATE_DATABASE] [#DBNAME]</b></p>
+<p>[@LODELADMIN.ERROR_MYSQL] : [#ERREUR].</p>
 
 <ul>
-<li>Vérifiez que les paramètres d'accès à la base de donnée sont correctes, que l'utilisateur MySQL [#DBUSERNAME] a le droit de créer une nouvelle base de donnée (la plupart des hebergeurs ne l'acceptent pas) ou recommencer l'installation.</li>
-<li>Créer la base de donnée vous même (avec le client mysql ou avec phpMyAdmin) et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":
+<li>[@LODELADMIN.HOWTO_PARAMETERS_MYSQL_CREATE_DATABASE|sprintf("[#DBUSERNAME]")].</li>
+<li>[@LODELADMIN.CREATE_DATABASE_YOURSELF_OR_GIVE_ALL_RIGHTS_TO_USER] "[#DBUSERNAME]@[#DBHOST]":
 <p>
 <textarea cols="70" rows="3" readonly>
 [#COMMAND1];
@@ -62,13 +62,13 @@
 
 
 <IF COND="[#ERREUR]">
-<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME] et a donner les droits à l'utilisateur MySQL [#DBUSERNAME]@[#DBHOST]</b></p>
-<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
+<p><b>[@LODELADMIN.LODEL_DONT_SUCCESS_CREATE_DATABASE_AND_GIVE_RIGHTS_MYSQL_USER|sprintf("[#DBNAME]")] [#DBUSERNAME]@[#DBHOST]</b></p>
+<p>[@LODELADMIN.ERROR_MYSQL] : [#ERREUR].</p>
 </IF>
-Deux possibilités:
+[@LODELADMIN.TWO_POSSIBILITIES] :
 <ul>
 <li>
-<p>Créer la base de données [#DBNAME] et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":</p>
+<p>[@LODELADMIN.CREATE_DATABASE_GIVE_ALL_RIGHTS_MYSQL_USER|sprintf("[#DBNAME]")] "[#DBUSERNAME]@[#DBHOST]":</p>
 <p>
 <textarea cols="70" rows="3" readonly>
 [#COMMAND1];
@@ -78,14 +78,14 @@ Deux possibilités:
 <p>
 </li>
 <li>
-Laisser Lodel essayer de créer la base si l'utilisateur MySQL a les droits.
-<input type="submit" name="lodeldo" value="Essayer de créer la base de donnée">
+[@LODELADMIN.LET_LODEL_TRY_CREATE_IF_MYSQL_USER_HAS_RIGHTS].
+<input type="submit" name="lodeldo" value="[@LODELADMIN.TRY_CREATE_DATABASE]">
 </li>
 </ul>
 </IF>
 
 </td></tr></table><br/>
-<input type="submit" value="continuer">
+<input type="submit" value="[@COMMON.CONTINUE]">
 
 </form>
 </div>

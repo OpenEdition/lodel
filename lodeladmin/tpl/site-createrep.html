@@ -23,13 +23,13 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<TITLE>Installation d'un site</TITLE>
+<TITLE>[@LODELADMIN.TITLE_INSTALLATION_WEBSITE]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Création de site</b></div></td></tr>
+<br /><br /><b>[@LODELADMIN.CREATION_WEBSITE]</b></div></td></tr>
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
@@ -41,45 +41,46 @@
 
 
 <IF COND="[#ERREUR_TPLACCESS]">
-<p><strong>Lodel ne peut pas écrire dans le repertoire tpl.</strong></p>
-<p>Veuillez donner les droits d'ecriture au serveur sur le repertoire tpl (celui à la racine) le temps de l'installation. Vous pouvez ensuite enlever le droit en écriture.</strong></p>
-<input type="submit" value="continuer">
+<p><strong>[@LODELADMIN.LODEL_CANT_CREATE_IN_TPL_DIRECTORY].</strong></p>
+<p>[@LODELADMIN.HOWTO_WRITING_RIGHTS_IN_TPL_DIRECTORY].</strong></p>
+<input type="submit" value="[@COMMON.CONTINUE]">
 <ELSE/>
 
 <IF COND="[#INSTALLOPTION]=='1'">
 <IF COND="[#ERREUR_MKDIR]">  <!--[ probleme de creation ]-->
-<p><strong>Lodel a échoué lors de la création du repertoire "[#CHEMIN]".</strong></p>
-C'est sûrement un probleme d'accès. Vous pouvez soit:
+<p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#CHEMIN]".</strong></p>
+[@LODELADMIN.ACESS_PROBLEM_SO_YOU_CAN] :
 <ul>
-<li>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel</li>
-<li>Créer le repertoire [#CHEMIN] et donner les droits d'écriture au serveur web sur ce repertoire</li>
+<li>[@LODELADMIN.GIVE_WRITING_RIGHTS_ROOT_DIRECTORY]</li>
+<li>[@LODELADMIN.CREATE_DIRECTORY_AND_GIVE_WRITING_RIGHTS_FOR_THIS_DIRECTORY[sprintf("[#CHEMIN]")]</li>
 </ul>
-<p>Attention cependant, ces approches n'offrent pas une bonne sécurité sauf si l'hébérgeur gère la séparation des utilisateurs correctement (ce qui est souvent le cas).</p>
+<p>[@LODELADMIN.WARNING_SECURITY_PROBLEM].</p>
 <ELSE/> <!--[ probleme d'acces uniquement ]-->
-<p><strong>Lodel n'a pas accès au repertoire "[#CHEMIN]".</strong></p>
-<p>Vous devez donner les droits d'écriture au serveur web sur ce repertoire.</p>
-<p>Attention cependant, ces approches n'offrent pas une bonne sécurité sauf si l'hébérgeur gère la séparation des utilisateurs correctement (ce qui est souvent le cas).</p>
+<p><strong>[@LODELADMIN.LODEL_DONT_ACCESS_TO_DIRECTORY] "[#CHEMIN]".</strong></p>
+<p>[@LODELADMIN.YOU_MUST_GIVE_WRITING_RIGHTS_TO_SERVER_ON_THIS_DIRECTORY].</p>
+<p>[@LODELADMIN.WARNING_SECURITY_PROBLEM].</p>
 </IF>
 <IF COND="[#ERREUR_TPLACCESS]">
-<p><strong>Lodel ne peut pas écrire dans le repertoire tpl<strong></p>
-<p>Veuillez donner les droits d'ecriture au serveur sur ce repertoire.</p>
+<p><strong>[@LODELADMIN.LODEL_CANT_WRITE_IN_TPL_DIRECTORY]<strong></p>
+<p>[@LODELADMIN.GIVE_WRITING_RIGHTS_TO_SERVER_ON_THIS_DIRECTORY].</p>
 </IF>
 <input type="submit" value="continuer">
 <ELSE/>
 <IF COND="[#ERREUR_MKDIR]">
-<p><strong>Lodel a échoué lors de la création du repertoire "[#CHEMIN]".</strong></p>
+<p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#CHEMIN]".</strong></p>
 </IF>
 <IF COND="[#ERREUR_NONEXISTS]">
-<p><strong>Le repertoire "[#CHEMIN]" n'existe pas.</strong></p>
+<p><strong>[@LODELADMIN.DIRECTORY_DONT_EXIST|sprintf("[#CHEMIN]")].</strong></p>
 <ELSE/>
 <IF COND="[#ERREUR_NONACCESS]">
-<p><strong>Le repertoire "[#CHEMIN]" n'est pas accessible.</strong></p>
+<p><strong>[@LODELADMIN.DIRECTORY_NOT_AVAILABLE|sprintf("[#CHEMIN]")]].</strong></p>
 </IF>
 </IF>
 
 <IF COND="[#CHEMIN]=='/'">
-Il faut ajuster les droits pour que le serveur web y accède et copier les fichiers necessaires pour le site.
+[@LODELADMIN.ADJUST_RIGHTS_FOR_SERVER_TO_ACCESS_AND_COPY_FILES_IN_WEBSITE].
 <ELSE/>
+
 Il faut créer le repertoire, ajuster les droits pour que le serveur web y accède et copier les fichiers necessaires pour le site.
 </IF>
 
@@ -98,7 +99,7 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 
 </code></p>
 <p>Les droits sont specifiés par une combinaison de u (utilisateur) ,g (groupe), et/ou a (les autres utilisateurs).</p>
-<input type="submit" name="mano" value="continuer">
+<input type="submit" name="mano" value="[@COMMON.CONTINUE]">
 </li>
 
 <IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
@@ -106,15 +107,15 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 <ELSE/>
 <li>
 <p>Créer le repertoire "[#CHEMIN]" à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
-<input type="submit" name="lodeldo" value="Installer les fichiers">
+<input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 </li>
 
 </IF>
 <li><p>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel (méthode peu sûr) et laisser faire Lodel.</p>
 <IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
-<input type="submit" name="lodeldo" value="Installer les fichiers">
+<input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 <ELSE/>
-<input type="submit" name="lodeldo" value="Créer le répertoire et installer les fichiers">
+<input type="submit" name="lodeldo" value="[@LODELADMIN.CREATE_DIRECTORY_INSTALL_FILES]">
 </IF>
 </li>
 <ul>

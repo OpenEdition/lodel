@@ -87,11 +87,11 @@
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
 
 <DEFMACRO NAME="GIF_LODELDOC_32">   
-	<img src="[#SHAREURL]/images/KDE_info.gif" width="32" height="32" border="0" vspace="2" hspace="2" alt="LODELdoc">
+	<img src="[#SHAREURL]/images/KDE_info.gif" width="32" height="32" border="0" vspace="2" hspace="2" alt="[@LODELADMIN.LODEL_DOCUMENTATION]">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_LOGOFF_32">   
-	<img src="[#SHAREURL]/images/KDE_cafe.gif" width="32" height="32" border="0" vspace="2" hspace="2" alt="LogOFF">
+	<img src="[#SHAREURL]/images/KDE_cafe.gif" width="32" height="32" border="0" vspace="2" hspace="2" alt="[@LODELADMIN.LOGOFF]">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_ADMINISTRER_32">
@@ -107,7 +107,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_EDITER_RUBRIQUE_48">
-	<img src="[#SHAREURL]/images/KDEwrite48.gif" width="48" height="48" border="0" alt="Editer rubrique">
+	<img src="[#SHAREURL]/images/KDEwrite48.gif" width="48" height="48" border="0" alt="[@LODELADMIN.EDIT_PUBLICATIONS]">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_EDITER_RUBRIQUE_32">
@@ -127,7 +127,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_LODEL_BIG">
-	<img src="[#SHAREURL]/images/lodel_big.gif" width="330" height="71" border="0" alt="Accueil site">
+	<img src="[#SHAREURL]/images/lodel_big.gif" width="330" height="71" border="0" alt="[@LODELADMIN.HOME]">
 </DEFMACRO>
 
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
@@ -291,9 +291,9 @@
 			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
 		</IF>
 		<IF COND="[#DROITEDITEUR] and (([#STATUT] lt 32) or [#DROITADMINLODEL])">
-			<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;|&nbsp;
+			<a href="translationsexport.php?lang=[#LANG]">[@LODELADMIN.EXPORT]</a>&nbsp;|&nbsp;
                <ELSE/>
-			<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;|&nbsp;
+			<span class="inactif">[@LODELADMIN.EXPORT]</span>&nbsp;|&nbsp;
                </IF>
 	</div>
 </DEFMACRO>
@@ -310,7 +310,7 @@
 	</tr>
         <tr>
                <td colspan="4">
-	       <div><MACRO NAME="PNG_PLUS"><a href="champ.php?classe=[#CLASSE]&idgroupe=[#ID]">Ajouter un champs à ce groupe</a></div>
+	       <div><MACRO NAME="PNG_PLUS"><a href="champ.php?classe=[#CLASSE]&idgroupe=[#ID]">[@LODELADMIN.ADD_DATAFIELD_IN_GROUP]</a></div>
                </td>
         </tr>
 </DEFMACRO>
@@ -515,121 +515,121 @@
 
 <!--[ png accueil ]-->
 <DEFMACRO NAME="PNG_MENU_ACCUEIL">
-	<img src="[#SHAREURL]/images/menu_accueil.png" id="img_menu_accueil" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+	<img src="[#SHAREURL]/images/menu_accueil.png" id="img_menu_accueil" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@LODELADMIN.HOME]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_ACCUEIL_ACTIF">
-	<img src="[#SHAREURL]/images/menu_accueil_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+	<img src="[#SHAREURL]/images/menu_accueil_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@LODELADMIN.HOME]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_ACCUEIL_SURVOL">
-	<img src="[#SHAREURL]/images/menu_accueil_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+	<img src="[#SHAREURL]/images/menu_accueil_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@LODELADMIN.HOME]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_ACCUEIL_GRIS">
-	<img src="[#SHAREURL]/images/menu_accueil_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+	<img src="[#SHAREURL]/images/menu_accueil_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@LODELADMIN.HOME]" />
 </DEFMACRO>
 
 <!--[ png voir ]-->
 <DEFMACRO NAME="PNG_MENU_VOIR">
-	<img src="[#SHAREURL]/images/menu_voir.png" id="img_menu_voir" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+	<img src="[#SHAREURL]/images/menu_voir.png" id="img_menu_voir" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.VIEW]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_VOIR_ACTIF">
-	<img src="[#SHAREURL]/images/menu_voir_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+	<img src="[#SHAREURL]/images/menu_voir_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.VIEW]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_VOIR_SURVOL">
-	<img src="[#SHAREURL]/images/menu_voir_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+	<img src="[#SHAREURL]/images/menu_voir_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.VIEW]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_VOIR_GRIS">
-	<img src="[#SHAREURL]/images/menu_voir_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+	<img src="[#SHAREURL]/images/menu_voir_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.VIEW]" />
 </DEFMACRO>
 
 <!--[ png admin ]-->
 <DEFMACRO NAME="PNG_MENU_ADMIN">
-	<img src="[#SHAREURL]/images/menu_admin.png" id="img_menu_admin" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+	<img src="[#SHAREURL]/images/menu_admin.png" id="img_menu_admin" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.ADMINISTRATION]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_ADMIN_ACTIF">
-	<img src="[#SHAREURL]/images/menu_admin_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+	<img src="[#SHAREURL]/images/menu_admin_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.ADMINISTRATION]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_ADMIN_SURVOL">
-	<img src="[#SHAREURL]/images/menu_admin_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+	<img src="[#SHAREURL]/images/menu_admin_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.ADMINISTRATION]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_ADMIN_GRIS">
-	<img src="[#SHAREURL]/images/menu_admin_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+	<img src="[#SHAREURL]/images/menu_admin_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.ADMINISTRATION]" />
 </DEFMACRO>
 
 <!--[ png aide ]-->
 <DEFMACRO NAME="PNG_MENU_AIDE">
-	<img src="[#SHAREURL]/images/menu_aide.png" id="img_menu_aide" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+	<img src="[#SHAREURL]/images/menu_aide.png" id="img_menu_aide" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.HELP]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_AIDE_ACTIF">
-	<img src="[#SHAREURL]/images/menu_aide_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+	<img src="[#SHAREURL]/images/menu_aide_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.HELP]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_AIDE_SURVOL">
-	<img src="[#SHAREURL]/images/menu_aide_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+	<img src="[#SHAREURL]/images/menu_aide_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.HELP]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_AIDE_GRIS">
-	<img src="[#SHAREURL]/images/menu_aide_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+	<img src="[#SHAREURL]/images/menu_aide_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.HELP]" />
 </DEFMACRO>
 
 <!--[ png deconnecte ]-->
 <DEFMACRO NAME="PNG_MENU_DECONNECTE">
-	<img src="[#SHAREURL]/images/menu_deconnecte.png" id="img_menu_deconnecte" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+	<img src="[#SHAREURL]/images/menu_deconnecte.png" id="img_menu_deconnecte" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.LOGOUT]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_DECONNECTE_ACTIF">
-	<img src="[#SHAREURL]/images/menu_deconnecte_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+	<img src="[#SHAREURL]/images/menu_deconnecte_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.LOGOUT]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_DECONNECTE_SURVOL">
-	<img src="[#SHAREURL]/images/menu_deconnecte_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+	<img src="[#SHAREURL]/images/menu_deconnecte_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.LOGOUT]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_DECONNECTE_GRIS">
-	<img src="[#SHAREURL]/images/menu_deconnecte_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+	<img src="[#SHAREURL]/images/menu_deconnecte_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.LOGOUT]" />
 </DEFMACRO>
 
 <!--[ png maj ]-->
 <DEFMACRO NAME="PNG_MENU_MAJ">
-	<img src="[#SHAREURL]/images/menu_maj.png" id="img_menu_maj" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+	<img src="[#SHAREURL]/images/menu_maj.png" id="img_menu_maj" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.UPDATE]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_MAJ_ACTIF">
-	<img src="[#SHAREURL]/images/menu_maj_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+	<img src="[#SHAREURL]/images/menu_maj_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.UPDATE]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_MAJ_SURVOL">
-	<img src="[#SHAREURL]/images/menu_maj_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+	<img src="[#SHAREURL]/images/menu_maj_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.UPDATE]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_MAJ_GRIS">
-	<img src="[#SHAREURL]/images/menu_maj_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+	<img src="[#SHAREURL]/images/menu_maj_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.UPDATE]" />
 </DEFMACRO>
 
 <!--[ png recompiler ]-->
 <DEFMACRO NAME="PNG_MENU_RECOMPILER">
-	<img src="[#SHAREURL]/images/menu_recompiler.png" id="img_menu_recompiler" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+	<img src="[#SHAREURL]/images/menu_recompiler.png" id="img_menu_recompiler" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.COMPILE]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_RECOMPILER_ACTIF">
-	<img src="[#SHAREURL]/images/menu_recompiler_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+	<img src="[#SHAREURL]/images/menu_recompiler_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.COMPILE]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_RECOMPILER_SURVOL">
-	<img src="[#SHAREURL]/images/menu_recompiler_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+	<img src="[#SHAREURL]/images/menu_recompiler_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.COMPILE]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MENU_RECOMPILER_GRIS">
-	<img src="[#SHAREURL]/images/menu_recompiler_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+	<img src="[#SHAREURL]/images/menu_recompiler_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="[@COMMON.COMPILE]" />
 </DEFMACRO>
 
 <!--[ png utilisateurs ]-->
