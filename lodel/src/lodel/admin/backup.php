@@ -53,7 +53,7 @@ if ($backup) {
   $archivefilename="site-$site-".date("dmy").".tar.gz";
 
   chdir ("../..");
-  system("/bin/tar czf $archivetmp lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
+  system("/bin/tar czf $archivetmp --exclude=lodel/sources/.htaccess --exclude=docannexe/fichier/.htaccess --exclude=docannexe/image/index.html lodel/sources docannexe -C /tmp $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
 
   if (!file_exists($archivetmp)) die ("ERROR: the tar command does not produce any output");
   chdir ("lodel/admin");
