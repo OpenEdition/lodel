@@ -188,6 +188,14 @@ function convert ($uploadedfile,$destfile)
 function OO_XHTML ($convertedfile,&$context)
 
 {
+/**************************
+IMPORTANT NOTICE
+
+This function is an horrible hack. Don't modify it.
+Will be reimplemented using a proper XML parser.
+
+***************************/
+
   global $home,$msg;
 
   $time1=time();
@@ -283,6 +291,7 @@ function OO_XHTML ($convertedfile,&$context)
   // clean the section
 
 
+/*
   // first part of the puces processing
   array_push($srch,
 	     "/<li>\s+(<r2r:puces?".">)/", # remove space between li and puces (need for the looking before)
@@ -310,20 +319,24 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,"/((?:<(?:ul|li|ol)\b[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/(?:ul|li|ol)>\s*)+)/");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
+
   // third part of the puces processing
   array_push($srch,
 	     "/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
-	     "/(<r2r:puces?>)(?!<ul\b[^>]*>)/", // puces not followed by ul
-	     "/<\/ul>\s+(<\/r2r:puces?>)/", // remove space between puce and closing ul (for the next regexp)
-	     "/(?<!<\/ul>)(<\/r2r:puces?>)/" // puces not precessed by a ul
+	     "/(<r2r:puces?".">)(?!<ul\b[^>]*>)/", // puces not followed by ul
+	     "/<\/ul>\s+(<\/r2r:puces?".">)/", // remove space between puce and closing ul (for the next regexp)
+	     "/(?<!<\/ul>)(<\/r2r:puces?".">)/" // puces not precessed by a ul
 	     );
   array_push($rpl,
 	     "",
 	     "\\1<ul>",
 	     "</ul>\\1",
-	     "</ul>\\1");
+	     "</ul>\\1"
+	     );
+*/
 
-
+#  $file=preg_replace ($srch,$rpl,$file);
+#  echo htmlentities($file); die();
 
 
   // modifie les styles avec (user) ou (web)
@@ -411,8 +424,11 @@ function OO_XHTML ($convertedfile,&$context)
 				    "/<(a)\b([^>]*)>(.*?)<\/\\1>/s"),
 			      "cleanPandSPAN",$file);
 
+  // let's clean the list
+  $file=cleanList($file);
+  // ok, cleaned
 
-#  die(htmlentities($file));
+  //  die(htmlentities($file));
 
   if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1; return true; }
   $file=traite_multiplelevel($file,$GLOBALS[multiplelevel]);
@@ -849,6 +865,51 @@ function traite_multiplelevel($text,$multiplelevel)
   }
   //die (join(" ",$search)."<br>".join(" ",$rpl));
   return preg_replace ($search,$rpl,$text);
+}
+
+
+function cleanList($text)
+
+{
+  $arr=preg_split("/(<\/?(?:ul|ol)\b[^>]*>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $count=count($arr);
+  $arr[0]=addList($arr[0]);
+  $inlist=0; $start=0;
+  for($i=1; $i<$count; $i+=2) {
+    if ($arr[$i][1]=="/") { // closing
+      $inlist--;
+      if ($inlist==0) { $arr[$i].="</r2r:puces>"; } // end of a list
+    } else { // opening
+      if ($inlist==0) { $arr[$i]="<r2r:puces>".$arr[$i]; } // beginning of a list
+      $inlist++;
+    }
+    if ($inlist>0) { // in a list
+      $arr[$i+1]=preg_replace("/<\/?(?:p|div|r2r:puces?)\b[^>]*>/"," ",$arr[$i+1]);
+    } else { // out of any list
+      $arr[$i+1]=addList($arr[$i+1]);
+    }
+  }
+  $text=join("",$arr);
+
+  return preg_replace("/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
+		      "",$text);
+}
+
+function addList($text)
+
+{ // especially for RTF file where there are some puces but no li
+  return preg_replace(array(
+			   "/<r2r:(puces?)>(.*?)<\/r2r:\\1>/", // put li
+			   "/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
+			   "/(<r2r:puces?>)/",  // add ul
+			   "/(<\/r2r:puces?>)/" // add /ul
+			   ),
+		     array("<r2r:\\1><li>\\2</li></r2r:\\1>",
+			   "",
+			   "\\1<ul>",
+			   "</ul>\\1"
+			   ),$text);
+
 }
 
 
