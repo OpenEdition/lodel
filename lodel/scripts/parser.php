@@ -184,6 +184,10 @@ function parse_main1_rec(&$ind,$loopind)
     case "LOOP" : 
       $this->countlines($ind);
       $this->wantedvars[$ind][0]=$this->parse_variable($this->arr[$ind+1],FALSE);
+      if (preg_match('/\bNAME\s*=\s*"([^"]+)"/i',$this->arr[$ind+1],$result)) {
+	$funcname="loop_".$result[1]."_require";
+	if (function_exists($funcname)) $this->wantedvars[$ind][0]=array_merge($this->wantedvars[$ind][0],call_user_func($funcname));
+      }
       $this->wantedvars[$ind][1]=$this->parse_variable($this->arr[$ind+2]);
       $ind+=3;
       $this->parse_main1_rec($ind,$ind-3);
@@ -353,6 +357,7 @@ function parse_loop()
   $name="";
   $orders=array();
   $limit="";
+  $select="";
   $wheres=array();
   $tables=array();
   preg_match_all("/\s*(\w+)=\"(.*?)\"/",$attrs,$results,PREG_SET_ORDER);
@@ -376,6 +381,11 @@ function parse_loop()
     case "NAME":
       if ($name) $this->errmsg("name already defined in loop $name",$this->ind);
       $name=$value;
+      break;
+    case "SELECT" :
+      $select=$value;
+      break;
+    case "REQUIRE":
       break;
     default:
       $this->errmsg ("unknow attribut \"$result[1]\" in the loop $name",$this->ind);
@@ -425,7 +435,7 @@ function parse_loop()
       $this->loops[$name][attr]=$attrs; // save an id
       $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
 
-      $contents=$this->decode_loop_content($name,$tablesinselect);
+      $contents=$this->decode_loop_content($name,$tablesinselect,$select!="*");
       $this->make_loop_code($name,$tables,
 			    $tablesinselect,$extrainselect,
 			    $where,$order,$limit,$groupby,$contents);
@@ -473,7 +483,7 @@ function parse_loop()
 }
 
 
-function decode_loop_content ($name,$tables=array())
+function decode_loop_content ($name,$tables=array(),$optimise)
 
 {
   global $home;
@@ -580,23 +590,23 @@ function decode_loop_content ($name,$tables=array())
   // is there variables to treat a our level ?
   if (!$vars) return $ret;
 
-  if (!(@include_once("CACHE/tablefields.php"))) require_once($home."tablefields.php");
+  if (!(@include_once("CACHE/tablefields.php")) || !$GLOBALS[tablefields]) require_once($home."tablefields.php");
+  if (!$GLOBALS[tablefields]) die("ERROR: internal error in decode_loop_content: table $table");
 
   $selects=array();
   $knowvars=array();
 
 #  print_r($vars);
-#  print_r($GLOBALS[tablefields][$table]);
-  /*foreach($tables as $table) {
-    $varstoselect=array_intersect($GLOBALS[tablefields][$table],$vars);
+
+  foreach($tables as $table) {
+    if (!$GLOBALS[tablefields][$table]) {
+      require_once($home."tablefields.php");
+      if (!$GLOBALS[tablefields][$table]) die ("ERROR: unknown table $table");
+    }
+    $varstoselect=$optimize ? array_intersect($GLOBALS[tablefields][$table],$vars) : $GLOBALS[tablefields][$table];
     $knownvars=array_merge($knownvars,$vartoselect);
     foreach($varstoselect as $vartoselect) array_push($selects,"$table.$vartoselect");
-  }*/
-  foreach($tables as $table) {
-   $varstoselect=$GLOBALS[tablefields][$table];
-   $knownvars=array_merge($knownvars,$vartoselect);
-   foreach($varstoselect as $vartoselect) array_push($selects,"$table.$vartoselect");
- }
+  }
 
   // compute the vars we don't know at level 1
   $diff=array_diff($this->wantedvars[$loopind][1],$knownvars);

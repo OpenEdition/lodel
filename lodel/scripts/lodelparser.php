@@ -191,6 +191,17 @@ function parse_variable_extra ($nomvar)
 function decode_loop_content_extra ($balise,$tables,&$ret)
 
 {
+
+
+    //
+    // est-ce qu'on veut le prev et next publication ?
+    //
+  if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
+    $ret["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+  }
+}
+
+/*
   global $home,$balisesdocument_lieautexte,$balisesdocument_nonlieautexte;
 
   //
@@ -225,15 +236,7 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 }}';
     }
   } // table documents ?
-
-
-    //
-    // est-ce qu'on veut le prev et next publication ?
-    //
-  if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
-    $ret["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
-  }
-}
+*/
 // fin fonction decode_content_extra
 
 }
