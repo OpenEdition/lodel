@@ -158,20 +158,25 @@ function search($context)
 		{
 			$criteria_index .=" AND #_TP_entities.idtype ='".intval($context['qtype'])."'";	
 		}
-		if( $context['qstatus']!="")
+		if( $context['qstatus']!="" && $context["visitor"])
 		{
 			$criteria_index .= " AND #_TP_entities.status ='".intval($context['qstatus'])."'";	
 		}
 		
-		$limit = " LIMIT 0,100";
-		$sql = lq("SELECT identity,weight FROM ".$from." ".$join." WHERE ".$criteria_index.$limit);
+		
+		
+		$limit = " LIMIT 0,".$context["qnbresults"];
+		$groupby = " GROUP BY identity ";
+		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
 	#echo "hey :".$sql;
 		$result=$db->execute($sql) or dberror();
 		$we_temp = array();
+		//$we_temp = $db->getarray($sql) or dberror();
+		//print_r($we_temp);
 		while(!$result->EOF)
 		{
 			$row = $result->fields;
-			$we_temp[$row['identity']] += $row['weight'];
+			$we_temp[$row['identity']] = $row['weight'];
 			$result->MoveNext();
 		}
 		
@@ -235,10 +240,7 @@ function search($context)
  * 	Avec le tableau res, on peut par une boucle LODELSCRIPT afficher chaque resultat.
  * 
  */
-function loop_search_public(&$context,$funcname)
-{
-	
-}
+
 function loop_search(&$context,$funcname,$arguments)
 {
 	$local_context = $context;
@@ -295,9 +297,6 @@ function loop_search(&$context,$funcname,$arguments)
  * Results page script - Lodel part
  * 
  */
-
-
-
 
 require_once("view.php");
 require_once("func.php");
