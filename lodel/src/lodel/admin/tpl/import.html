@@ -23,13 +23,13 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Import</title>
+<title>[@ADMIN.DATA_IMPORT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Importation des donn&eacute;es</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.DATA_IMPORT]</td>
 	</tr>
 </table>
 
@@ -39,8 +39,8 @@
 	<tr>
 		<td>
 
-	    <p><strong>Erreur:</strong> l'import s'est déroulé correctement, mais Lodel n'a pas pu installer les fichiers .htaccess dans les répertoires suivant: [#ERREUR_HTACCESS].</p>
-	    <p>Veuillez les installer vous-même. Les fichiers .htaccess doivent contenir une ligne de code:<br /><code>deny from all</code><p>
+	    <p><strong>[@COMMON.ERROR] :</strong> [@ADMIN.IMPORT_OK_BUT_NO_HTACCESS] : [#ERREUR_HTACCESS].</p>
+	    <p>[@ADMIN.INSTALL_HTACCESS_COMMAND] :<br /><code>deny from all</code><p>
 		    </td>
 		</tr>
 </table>
@@ -54,31 +54,31 @@
 	<tr>
 		<td>
 			<br /><br />
-			<span class="texte_intitule">Il est recommand&eacute; de faire une sauvegarde de la base de donn&eacute;es avant d'en importer une nouvelle :</span>
-			<div><a href="backup.php">SAUVEGARDE DE LA BASE DE DONNEES</a></div>
+			<span class="texte_intitule">[@ADMIN.SAVE_DATABASE_BEFORE_NEW] :</span>
+			<div><a href="backup.php">[@ADMIN_SAVE_DATABASE]</a></div>
 			<br /><br /><br />
-		    <IF COND="[#ERREUR_EXTRACT]"><strong>Erreur:</strong> Le fichier archive ne semble pas être un fichier ZIP valide. Veuillez verifier l'intégrité de votre archive.<br /><br /></IF>
-		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'importation de la base de donnée. Verifier l'integrité de votre archive. La base installée est sûrement corrompue maintenant. Veuillez importer une archive valide. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
-		    <IF COND="[#ERREUR_READING]"><strong>Erreur:</strong> Le fichier archive n'a pas pu être lu ou ne contient pas de fichier.<br /><br /></IF>
+		    <IF COND="[#ERREUR_EXTRACT]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXTRACT].<br /><br /></IF>
+		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
+		    <IF COND="[#ERREUR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
 
-			Pour importer une base de donn&eacute;es, deux possibilités:
+			[@ADMIN.HOWTO_IMPORT_DATABASE] :
 		<ul>
 		  <li>
-		    <p>Transferer par ftp le fichier .zip  sur le serveur dans le r&eacute;pertoire de [#IMPORTDIR] ou dans le repertoire [#SITE]/lodel/admin/CACHE.</p>
-		    <p>Liste des fichiers disponibles actuellement:</p>
+		    <p>[@ADMIN.TRANSFER_ZIP_FTP_IN] [#IMPORTDIR] [@ADMIN.OR_DIR] [#SITE]/lodel/admin/CACHE.</p>
+		    <p>[@ADMIN.FILES_LIST] :</p>
 		    <LOOP NAME="fichiers">
    		    <DO>
-		      <div><strong>[#NOM]</strong> &gt;&gt; <a href="import.php?fichier=[(#NOM|urlencode)]">Importer</a></div><br />
+		      <div><strong>[#NOM]</strong> &gt;&gt; <a href="import.php?fichier=[(#NOM|urlencode)]">[@ADMIN.IMPORT]</a></div><br />
 		    </DO>
 		    </LOOP>
 		</li>
 		<li>
-		  <p>Charger un  fichier par HTTP/POST (ci-dessous). Attention, la taille maximale du fichier autorisée sur les serveurs est souvent restreinte. Votre configuration indique: <?php echo ini_get('post_max_size'); ?></p>
-      <IF COND="[#ERREUR_UPLOAD]"><b>Erreur</b> lors du chargement!</IF>
+		  <p>[@ADMIN.LOAD_FILE_POST_PHP_CONFIGURATION] : <?php echo ini_get('post_max_size'); ?></p>
+      <IF COND="[#ERREUR_UPLOAD]"><b>[@COMMON.ERROR] </b> [@ADMIN.IN_LOAD] !</IF>
                   <p>
     Archive: <form name="formfic" enctype="multipart/form-data" action="import.php" method="post"  />
       <input type="file" name="archive" size="40">
-      <input class="form" type="submit" value="Charger" />	  
+      <input class="form" type="submit" value="[@ADMIN.LOAD]" />	  
       </form>
 		</li>
 	      </ul>
@@ -87,7 +87,7 @@
 </table>
 <form>
 	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />
 	</div>
 </form>
 </IF>  
