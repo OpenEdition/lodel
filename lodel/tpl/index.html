@@ -26,7 +26,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
   <tr> 
     <td bgcolor="#FFFFFF" align="center">&nbsp;</td>
   </tr>
-	<MACRO NAME="TR_Separation_330">		
+	<MACRO NAME="TR_SEPARATION_330">		
   <tr> 
     <td bgcolor="#FFFFFF" align="center"> 
       <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
@@ -38,9 +38,9 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
         <form name="Editer" method="post" action="">
               Editer&nbsp; 
         <select name="selectionner_revue" onChange="MM_jumpMenu('parent',this,0)">
-		<BOUCLE NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
+		<LOOP NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
          <option value="[(#REP|makeurl)]/lodel/edition/index.php">[#NOM]</option>
-		</BOUCLE>
+		</LOOP>
         <option selected>Choisissez</option>
         </select>
         </form>
@@ -49,7 +49,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_330">		
+	<MACRO NAME="TR_SEPARATION_330">		
   <tr> 
     <td bgcolor="#FFFFFF" align="center"> 
       <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
@@ -61,9 +61,9 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             <form name="Visiter" method="post" action="">
               Visiter&nbsp; <b> 
               <select name="visiter_revue" onChange="MM_jumpMenu('parent',this,0)">
-		<BOUCLE NAME="viste_revue" TABLE="revues"  WHERE="ok" ORDER="nom">
+		<LOOP NAME="viste_revue" TABLE="revues"  WHERE="ok" ORDER="nom">
                 <option value="[(#REP|makeurl)]/index.html">[#NOM]</option>
-		</BOUCLE>
+		</LOOP>
                 <option selected>Choisissez</option>
               </select>
               </b> 
@@ -73,7 +73,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_330">		
+	<MACRO NAME="TR_SEPARATION_330">		
   <tr> 
     <td bgcolor="#FFFFFF" align="center"> 
       <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
@@ -85,9 +85,9 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             <form name="Administrer" method="post" action="">
               Administrer 
               <select name="administrer_revue" onChange="MM_jumpMenu('parent',this,0)">
-		<BOUCLE NAME="administre_revue" TABLE="revues"  WHERE="ok" ORDER="nom">
+		<LOOP NAME="administre_revue" TABLE="revues"  WHERE="ok" ORDER="nom">
 			  <option value="[(#REP|makeurl)]/lodel/admin/index.php">[#NOM]</option>
-		</BOUCLE>
+		</LOOP>
                 <option selected>Choisissez</option>
 </option>
               </select>
@@ -97,7 +97,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_330">		
+	<MACRO NAME="TR_SEPARATION_330">		
   <tr> 
     <td bgcolor="#FFFFFF" align="center"> 
       <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
@@ -111,7 +111,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_330">		
+	<MACRO NAME="TR_SEPARATION_330">		
   <tr> 
     <td bgcolor="#FFFFFF" align="center"> 
       <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
@@ -125,7 +125,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
     </td>
   </tr>
-	<MACRO NAME="TR_Separation_330">		
+	<MACRO NAME="TR_SEPARATION_330">		
   <tr> 
     <td bgcolor="#FFFFFF" align="center"> 
       <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
@@ -144,7 +144,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
     </td>
   </tr>
-  	<MACRO NAME="TR_Separation_330">		
+  	<MACRO NAME="TR_SEPARATION_330">		
   <tr>
     <td bgcolor="#FFFFFF" align="center">
       <div align="center"><a href="http://www.revues.org">http://www.revues.org</a></div>

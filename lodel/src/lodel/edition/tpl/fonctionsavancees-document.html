@@ -1,0 +1,172 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Edition de document</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
+		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
+		<div style="padding-top:25px;">
+			<span class="texte_ligne_haut_tpl_publication">
+				Edition des Fonctions Avancées de la publication
+			</span>
+		</div>
+	</div>
+	
+	<div class="ligne_entete">
+		<span class="titre_doc_fa">" [#TITRE] "</span>&nbsp;
+		<span class="auteurs_doc_fa"><MACRO NAME="AUTEURS"></span>&nbsp;
+		<span class="type_doc_fa">([#TYPE])</span>
+	</div>
+
+	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Statut</div>
+	</div>
+
+	<table class="table_statut" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+			<td width="200"><span style="font-weight:bold; color:#333333;"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></span></td>
+			<td><div><MACRO NAME="BOUTONS_STATUT_DOCUMENT"></div></td>
+		</tr>
+	</table>
+
+	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Edition sur le document</div>
+	</div>
+	
+	<!-- Recharger le fichier -->
+	<IF COND="[#EDITEUR]">	
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="editer.php?id=[#ID]&charge=1">
+					<span class="texte_noir_gras">Recharger le fichier</span>
+				</a>
+			</div>
+		</div>
+	<ELSE/>
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Recharger le fichier</span><br />
+				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+			</div>
+		</div>
+	</IF>
+
+	<!-- Téléchargement source RTF -->
+	<IF COND="[#REDACTEUR]">	
+		<!--<a href="telecharger.php?id=[#ID]&type=4" target="_blank">
+			T&eacute;l&eacute;charger le source RTF
+		</a>-->
+		<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>
+	<ELSE/>
+		<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>
+	</IF>
+
+	<!-- Téléchargement source XML -->
+	<IF COND="[#REDACTEUR]">	
+		<!--<a href="telecharger.php?id=[#ID]&type=1" target="_blank">
+			T&eacute;l&eacute;charger le source XML
+		</a>-->
+		<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>
+	<ELSE/>
+		<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>
+	</IF>
+	
+	<!-- Déplacer le document -->
+	<IF COND="[#EDITEUR]">	
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="deplacer.php?iddocument=[#ID]">
+					<span class="texte_noir_gras">Déplacer ce document</span>
+				</a>
+			</div>
+		</div>
+	<ELSE/>
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Déplacer ce document</span><br />
+				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+			</div>
+		</div>
+	</IF>
+
+	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
+	</div>
+	
+	<IF COND="[#EDITEUR]">
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="metaimage.php?iddocument=[#ID]">
+					<span class="texte_noir_gras">Associer une image à cette publication</span>
+				</a>
+			</div>
+		</div>
+	<ELSE/>
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Associer une image à la publication</span><br />
+				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+			</div>
+		</div>
+	</IF>
+
+	<IF COND="[#EDITEUR]">
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="docannexe.php?iddocument=[#ID]">
+					<span class="texte_noir_gras">Ajouter des documents annexes</span>
+				</a>
+			</div>
+		</div>
+	<ELSE/>
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Ajouter des documents annexes</span><br />
+				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+			</div>
+		</div>
+	</IF>
+	
+	<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+
+	<!-- Edition avancée (XML) -->
+	<IF COND="[#SUPERADMIN]">
+		<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+			<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Danger ! (Fonction réservée aux Administrateurs Lodel)</div>
+		</div>
+
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="a_editer.php?id=[#ID]"><span class="texte_noir_gras">Edition avancée (XML)</span></a>
+			</div>
+		</div>
+	</IF>
+
+	<div class="pied_de_formulaire">
+		<form>
+			<LOOP NAME="" TABLE="publications" WHERE="id=[#PUBLICATION]">
+				<DO>
+					<IF COND="[#TYPE] EQ 'regroupement'">
+						<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#PARENT]'" />						
+					<ELSE/>
+						<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#ID]'" />
+					</IF>
+				</DO>
+			</LOOP>
+		</form>
+	</div>
+
+<MACRO NAME="CLOSE_HTML">

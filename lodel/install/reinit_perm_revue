@@ -2,23 +2,18 @@
 # reinitialisation des droits sur les fichiers et repertoires d'un revue
 # Luc Santeramo/300103
 
-
-# rep contenant la revue
-LODEL="/www/revues/lodeldevel"
-
-#######
-
 if [ $# -ne 1 ]
 then
-  echo " usage $0 <revue>"
+  echo " usage $0 <repertoire de la revue> "
   exit
 fi
+
+LODEL="$1"
 
 APACHEWRDIR="lodel/txt lodel/rtf docannexe lodel/admin/upload"
 APACHECACHEWRDIR="CACHE lodel/edition/CACHE lodel/admin/CACHE"
 
 USERWRFILES="tpl images styles_revue.css robots.txt"
-
 
 HTACCESSDIR="CACHE tpl lodel/txt lodel/rtf lodel/edition/CACHE lodel/admin/CACHE lodel/admin/tpl lodel/edition/tpl"
 
@@ -32,25 +27,25 @@ echo "Changement des droits de la revue $1 :"
 
 for rep in $APACHEWRDIR
 do
-  echo "  $LODEL/$1/$rep"
-  chmod 770 $LODEL/$1/$rep
+  echo "  $LODEL/$rep"
+  chmod 770 $LODEL/$rep
   echo "  Done."
-  echo "  fichiers contenus dans $LODEL/$1/$rep"
-  chmod 660 $LODEL/$1/$rep/*
+  echo "  fichiers contenus dans $LODEL/$rep"
+  chmod 660 $LODEL/$rep/*
   echo "  Done."
 done
 
 # mise a jour des droits sur les rep et fichiers
 # accessible en ecriture par l'utilisateur
 
-echo "  $LODEL/$1"
-chmod g+w $LODEL/$1
+echo "  $LODEL"
+chmod g+w $LODEL
 echo "  Done."
 
 for files in $USERWRFILES
 do
   echo "  $files"
-  chmod -R g+w $LODEL/$1/$files
+  chmod -R g+w $LODEL/$files
   echo "  Done."
 done
 
@@ -59,9 +54,9 @@ done
 # nettoyage des repertoires de cache
 for rep in $APACHECACHEWRDIR
 do
-  echo "  $LODEL/$1/$rep"
-  chmod 770 $LODEL/$1/$rep
-  rm -rf $LODEL/$1/$rep/*
+  echo "  $LODEL/$rep"
+  chmod 770 $LODEL/$rep
+  rm -rf $LODEL/$rep/*
   echo "  Done."
 done
 
@@ -70,16 +65,16 @@ echo " "
 echo "Verification de la presence des .htaccess :"
 for rep in $HTACCESSDIR
 do
-  if [ ! -e "$LODEL/$1/$rep/.htaccess" ]
+  if [ ! -e "$LODEL/$rep/.htaccess" ]
   then
-    echo "$HTACCESSCONTENT" > "$LODEL/$1/$rep/.htaccess"
-    echo "  $LODEL/$1/$rep/.htaccess absent"
+    echo "$HTACCESSCONTENT" > "$LODEL/$rep/.htaccess"
+    echo "  $LODEL/$rep/.htaccess absent"
     echo "  Cree."
   else
-    echo "  $LODEL/$1/$rep/.htaccess present"
+    echo "  $LODEL/$rep/.htaccess present"
   fi
-  echo "  Changement des permissions sur le fichier $LODEL/$1/$rep/.htaccess"
-  chmod 644 $LODEL/$1/$rep/.htaccess
-  ls -al $LODEL/$1/$rep/.htaccess
+  echo "  Changement des permissions sur le fichier $LODEL/$rep/.htaccess"
+  chmod 644 $LODEL/$rep/.htaccess
+  ls -al $LODEL/$rep/.htaccess
   echo "  Ok."
 done

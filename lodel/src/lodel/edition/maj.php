@@ -1,11 +1,11 @@
 <?
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 
 touch("../../CACHE/maj");
 
-include_once ("$home/func.php"); back();
+include_once ($home."func.php"); back();
 
 ?>
