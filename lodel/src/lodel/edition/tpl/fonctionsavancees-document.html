@@ -22,120 +22,140 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Documents : fonctions avancées</title>
+<title>[#TYPE] : fonctions avancées</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
-		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
-		<div style="padding-top:25px;">
-			<span class="texte_ligne_haut_tpl_publication">
-				Fonctions avancées
-			</span>
-		</div>
-	</div>
 	
-	<div class="ligne_entete">
-		<span class="titre_doc_fa">" [#TITRE] "</span>&nbsp;
-		<span class="auteurs_doc_fa"><MACRO NAME="AUTEURS"></span>&nbsp;
-		<span class="type_doc_fa">([#TYPE])</span>
-	</div>
-
-	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Verrouillage du statut</div>
-	</div>
-	<table class="table_statut" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+		<!--[ Partie haute ]-->
 		<tr>
-			<td colspan="4"><div><MACRO NAME="BOUTONS_STATUT_DOCUMENT"></div></td>
-		</tr>
-	</table>
+			<td  width="375" valign="top">
+				<!--[ *************** Préférences *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_preferences.png" /></td>
+						<td background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[#TITRE]</span></td>
+						<td>&nbsp;</td>
+					</tr>
+					
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<div><MACRO NAME="BOUTONS_STATUT_DOCUMENT"></div>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
 
-	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Edition</div>
-	</div>
-	
+				</table>
+			</td>
+			<td width="375" valign="top">
+				<!--[ *************** Gestion des index *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_index.png" /></td>
+						<td width="5" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Edition</span></td>
+						<td width="5">&nbsp;</td>
+					</tr>
+
 	<!--[ Recharger le fichier ]-->
+		<tr>
+								<td width="20">&nbsp;</td>
+								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="oochargement.php?iddocument=[#ID]">
 					<span class="texte_noir_gras">Recharger le document</span>
 				</a>
-			</div>
-		</div>
 	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<span class="texte_intitule">Recharger le document</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-			</div>
-		</div>
 	</IF>
-
+								</td>
+								<td width="5">&nbsp;</td>
+								
 		<!--[ Déplacer le document ]-->
+			<tr>
+								<td width="20">&nbsp;</td>
+								<td width="350" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">	
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="deplacer.php?id=[#ID]">
 					<span class="texte_noir_gras">Déplacer ce document</span>
 				</a>
-			</div>
-		</div>
 	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<span class="texte_intitule">Déplacer le document</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-			</div>
-		</div>
+				<span class="texte_info">(Fonction accessible à partir du niveau &eacute;diteur)</span>
 	</IF>
-	
+									</td>
+								<td width="5">&nbsp;</td>
+								
 	<!--[ Téléchargement source RTF ]-->
+		<tr>
+								<td width="20">&nbsp;</td>
+								<td width="350" class="td_admin">
 	<IF COND="[#DROITREDACTEUR]">
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="telecharger.php?id=[#ID]&type=source">
 					<span class="texte_noir_gras">T&eacute;l&eacute;charger le fichier source</span>
 				</a>
-			</div>
-		</div>
-		<!--[<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>]-->
 	<ELSE/>
-		<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source RTF</span><br />
+			<span class="texte_intitule">T&eacute;l&eacute;charger le fichier source</span><br />
 			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
-		</div>
-	</IF>
-	
-	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
-	</div>
-	
+	</IF>					
+								</td>
+								<td width="5">&nbsp;</td>
+
+				</table>
+			</td>	<!--[ fin de gerer les index ]-->
+		</tr>
+		<!--[ Partie basse ]-->
+		<tr>
+			<td width="375" valign="top">
+				<!--[ *************** Configuration *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_modele.png" /></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Ajouts</span></td>
+						<td>&nbsp;</td>
+					</tr>
+										
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+
+					
 	<IF COND="[#DROITEDITEUR]">
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="metaimage.php?iddocument=[#ID]&champ=image">
 					<span class="texte_noir_gras">Associer une image à ce document</span>
 				</a>
-			</div>
-		</div>
 	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<span class="texte_intitule">Associer une image à ce document</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-			</div>
-		</div>
+				<span class="texte_info">(Fonction accessible à partir du niveau &eacute;diteur)</span>
 	</IF>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
 
+
+					
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="450" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">
-		<div class="ligne_form_fa">
-			<div class="intitule_ligne_form_fa">
 				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
-			</div>
-			<div class="champs_ligne_form_fa">
+
 				<form action="docannexe.php" method="POST">
 					<input type="hidden" name="idparent" value="[#ID]">
 					<select name="type">
@@ -150,90 +170,92 @@
 					</select>
 					<input class="form" type="submit" value=" Ajouter ">
 				</form>
-			</div>
-		</div>
 	<ELSE/>
-		<div class="ligne_form_fa">
-			<div class="intitule_ligne_form_fa">
 				<span class="texte_intitule">Ajouter des documents annexes</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-			</div>
-		</div>
 	</IF>
-	
-	<div class="ligne_formulaire">
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="450" class="td_admin">
 		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-	</div>	
+						</td>
+						<td>&nbsp;</td>
+					</tr>
 
-	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Gestion XML</div>
-	</div>
+				</table>
+			</td>
+			<td width="375" valign="top">
+				<!--[ *************** Outils *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">XML</span></td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
 
 	<!--[ Visualisation XML ]-->
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="xml.php?id=[#ID]&view=1">
 					<span class="texte_noir_gras">Visualiser le XML</span>
 				</a>
-			</div>
-		</div>
-		<!--[<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>]-->
-	
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+						<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+
 		<!--[ Téléchargement source XML ]-->
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="xml.php?id=[#ID]">
 					<span class="texte_noir_gras">T&eacute;l&eacute;charger le source XML</span>
 				</a>
-			</div>
-		</div>
-		<!--[<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>]-->
-	
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+						<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+
 		<!--[ Validation XML ]-->
 	<IF COND="[#DROITREDACTEUR]">
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
 				<a href="xml.php?id=[#ID]&valid=1">
 					<span class="texte_noir_gras">Valider le XML</span>
 				</a>
-			</div>
-		</div>
-		<!--[<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>]-->
+
 	<ELSE/>
-		<div class="ligne_info">
 			<span class="texte_intitule">Valider le XML</span><br />
 			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
-		</div>
 	</IF>
 
-	
-	<!--[ Suppression de ce lien le 26/09/03 -> Abandon du XML
-	Edition avancée (XML) 
-	<IF COND="[#ADMINLODEL]">
-		<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-			<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Danger ! (Fonction réservée aux Administrateurs Lodel)</div>
-		</div>
-
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-				<a href="a_editer.php?id=[#ID]"><span class="texte_noir_gras">Edition avancée (XML)</span></a>
-			</div>
-		</div>
-	</IF>]-->
-
-	<div class="pied_de_formulaire">
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+			</td> 
+		</tr>
+		</table>
+</td>
+</tr>
+		<tr>
+		<td colspan="6">
+		<div class="pied_de_formulaire">
 		<form>
 			<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />
 		</form>
 	</div>
+		
+		</td>
+		</tr>
+	</table>
 
 <MACRO NAME="CLOSE_HTML">
