@@ -220,7 +220,7 @@
 	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			Extrait du premier article du numéro: 
-			[(#TEXTE|removefootnotes|couper(1500))]
+			[(#TEXTE|removefootnotes|couper(1500)textebrut|replacequotationmark))]
 		<ELSE/>
 			<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'" ORDER="ordre">
 				<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
