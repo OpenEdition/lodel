@@ -33,6 +33,9 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
+if (!$classe || !preg_match("/[\w-]/",$classe)) die("ERROR: a valid class name is required");
+$context[classe]=$classe;
+
 include ($home."calcul-page.php");
 calcul_page($context,"champs");
 

@@ -186,7 +186,7 @@ if ($tache=="servoo") {
     maj_lodelconfig(array("servoourl"=>"off",
 			  "servoousername"=>"",
 			  "servoopasswd"=>""));
-  } else {
+  } elseif (!$skip) {
     maj_lodelconfig(array("servoourl"=>$newservoourl,
 			  "servoousername"=>$newservoousername,
 			  "servoopasswd"=>$newservoopasswd));
@@ -398,11 +398,11 @@ if ($servoourl!="off") {
     $cmds="VER;";
 
     require ($home."serveurfunc.php");
-    $ret=upload($servoourl,
-		array("username"=>$servoousername,
-		      "passwd"=>$servoopasswd,
-		      "commands"=>$cmds));
-#    print_r(strpos("SAY:",$ret));
+    list($ret,$retvar)=upload($servoourl,
+			      array("username"=>$servoousername,
+				    "passwd"=>$servoopasswd,
+				    "commands"=>$cmds));
+
     if (strpos($ret,"SAY:")===0) {
       if (!$skip && $tache=="servoo") {
 	$message=substr($ret,4); // delete the SAY:

@@ -51,12 +51,12 @@ if ($file1 && $file1!="none") {
 
     $t=time();
     $file1converted=$file1.".converted";
-    $ret=convert($file1,$file1converted);
+    list($ret,$convertretvar)=convert($file1,$file1converted);
     $source=$file1."-source";
     move_uploaded_file($file1,$source);
     $sourceoriginale=$HTTP_POST_FILES['file1']['name'];
 
-
+    // the ServOO should return nothing, if it return, it's an ERROR or a SAY comment.
     if ($ret) {
       $context[erreur_upload]=utf8_encode("Erreur renvoyée par le serveur OO: \"$ret\"");
       break;
@@ -89,21 +89,23 @@ if ($file1 && $file1!="none") {
     }
     if ($idtache) { // document ancien ?
       $row=get_tache($idtache);
-      $row[fichier]=$newname;
-      $row[source]=$source;
-      $row[sourceoriginale]=$sourceoriginale;
     } else {
-      $row=array("fichier"=>$newname,
-		 "source"=>$source,
-		 "sourceoriginale"=>$sourceoriginale);
+      $row=array();
+    }
+      
+    $row[fichier]=$newname;
+    $row[source]=$source;
+    $row[sourceoriginale]=$sourceoriginale;
+    // build the import
+    $row[importversion]=addslashes($convertretvar[version])."; oochargement $version;";
 
+    if (!$idtache) {
       if ($context[iddocument]) {
 	$row[iddocument]=$context[iddocument];
       } else {
 	$row[idparent]=$context[idparent];
       }
       $row[idtype]=$context[idtype];
-
     }
     $idtache=make_tache("Import $file1_name",3,$row,$idtache);
 
@@ -138,13 +140,13 @@ function convert ($uploadedfile,$destfile)
 
   require ($home."serveurfunc.php");
   $ret=upload($servoourl,
-	      array("username"=>$servoousername,
-		    "passwd"=>$servoopasswd,
-		    "commands"=>$cmds),
-	      array($uploadedfile), # fichier a uploaded
-	      0, # cookies
-	      $destfile
-	      );
+			     array("username"=>$servoousername,
+				   "passwd"=>$servoopasswd,
+				   "commands"=>$cmds),
+			     array($uploadedfile), # fichier a uploaded
+			     0, # cookies
+			     $destfile
+			     );
   if ($ret) { # erreur
     return $ret;
   }

@@ -86,7 +86,7 @@
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
 		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
-		<IF COND="[#ADMINLODEL]">    
+		<IF COND="[#DROITADMINLODEL]">    
 		<tr>
 			<td class="texte_intitule">Type de personne protégé:</td>
 			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>

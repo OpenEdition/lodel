@@ -401,6 +401,7 @@ function download($filename,$originalname="")
     header('Pragma: public');
   } else {
     header('Content-Disposition: attachment; filename="' . $originalname . '"');
+    header('Content-Length: '.filesize($filename).'"');
     header('Pragma: no-cache');
   }
   readfile($filename); 

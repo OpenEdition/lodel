@@ -29,18 +29,14 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Champs des tables <b>document et publication</b></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Champs des tables pour les <strong>[#CLASSE]</strong></td>
 	</tr>
 </table>
 
-<div class="intitule_ligne_formulaire"><span style="font-size:18px">Documents</span></div>
-<br /><br />
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="champ.php?classe=documents">Ajouter un champs a la table document</a><br />
-	<MACRO NAME="PNG_PLUS">
-	<a href="groupedechamps.php?classe=documents">Ajouter un regroupement de champs pour la table document</a>
+	<a href="groupedechamps.php?classe=[#CLASSE]">Ajouter un regroupement de champs pour la table [#CLASSE]</a>
 
 </div>
 <br />
@@ -53,8 +49,8 @@
 		<td class="texte_noir_gras">Style</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="groupesdocument" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='documents'">
-		<!--[ Liste tous les groupes de classe documents ]-->
+	<LOOP NAME="groupes" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='[#CLASSE]'">
+		<!--[ Liste tous les groupes de classe ]-->
 		<DO>
 			<MACRO NAME="AFFICHER_GROUPE">
 			<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
@@ -63,38 +59,10 @@
 </table>
 
 <br /><br />
-<div class="intitule_ligne_formulaire"><span style="font-size:18px">Publications</span></div>
-<br /><br />
-
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<a href="champ.php?classe=publications">Ajouter un champs a la table publication</a><br />
-	<MACRO NAME="PNG_PLUS">
-	<a href="groupedechamps.php?classe=publications">Ajouter un regroupement de champs pour la table publication</a>
-
-</div>
-<br />
- 
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">Nom</td>
-		<td class="texte_noir_gras">Titre</td>
-		<td class="texte_noir_gras">Type</td>
-		<td class="texte_noir_gras">Style</td>
-		<td>&nbsp;</td>
-	</tr>
-	<LOOP NAME="groupespublication" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='publications'">
-		<!--[ Liste tous les groupes de classe publications ]-->
-		<DO>
-			<MACRO NAME="AFFICHER_GROUPE">
-			<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
-		</DO>
-	</LOOP>
-</table>
 
 <div class="pied_de_formulaire">
 	<form>
-		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
+		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php';">
 	</form>
 </div>
 

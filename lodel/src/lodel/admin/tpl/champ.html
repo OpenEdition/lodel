@@ -36,6 +36,7 @@
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
 	<input type="hidden" name="classe" value="[#CLASSE]" />
+	<input type="hidden" name="idgroupe" value="[#IDGROUPE]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td class="texte_intitule">Nom du champ<br /> 				<span class="texte_info">(identifiant unique)</span>:</td>
@@ -50,15 +51,6 @@
 		</tr>
 		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
 		<tr>
-			<td class="texte_intitule">Commentaire :<br /><span class="texte_info">(facultatif)</span></td>
-			<td><input size="40" type="text" name="commentaire" value="[#COMMENTAIRE]" /></td>
-		</tr>
-		<tr>
-			<td class="texte_intitule">Groupe du champ <br />
-             <span class="texte_info">(pour le XML et interface)</span>:</td>
-			<td><select name="idgroupe"><?php make_select_groupesdechamps() ?></select></td>
-		</tr>
-		<tr>
 			<td class="texte_intitule">Style :</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
@@ -69,12 +61,12 @@
 			<td><select name="type"><?php make_select_types(); ?></select><IF COND="[#ERREUR_CONFIRMATION_TYPE]"><font color="red">Modifier le type provoque en g&eacute;n&eacute;neral des pertes de donn&eacute;es, veuillez confirmer</font><input class="form" type="submit" name="confirmation" value="   Confirmer    " /></IF></td>
 		</tr>
 		<tr>
-			<td class="texte_intitule">Traitement:</td>
-			<td><select name="traitement"><?php make_select_traitements(); ?></select></td>
+			<td class="texte_intitule">Edition:</td>
+			<td><select name="edition"><?php make_select_edition(); ?></select></td>
 		</tr>
 		<tr>
-			<td class="texte_intitule">Balises XHTML:</td>
-			<td><select name="balisesxhtml"><?php make_select_balises_xhtml(); ?></select></td>
+			<td>Informations additionnelles:</td>
+	                <td></td>
 		</tr>
 		<tr>
 			<td class="texte_intitule">Condition:</td>
@@ -85,14 +77,24 @@
 			<td><input size="40" type="text" name="defaut" value="[#DEFAUT]" /></td>
 		</tr>
 		<tr>
-			<td class="texte_intitule">Edition:</td>
-			<td><select name="edition"><?php make_select_edition(); ?></select></td>
+			<td class="texte_intitule">Traitement à l'import:</td>
+			<td><select name="traitement"><?php make_select_traitements(); ?></select></td>
 		</tr>
+<!--[ unused at the moment		<tr>
+			<td class="texte_intitule">Balises XHTML:</td>
+			<td><select name="balisesxhtml"><?php make_select_balises_xhtml(); ?></select></td>
+		</tr> ]-->
+	        <input type="hidden" name="balisesxhtml" value="xhtml:block">
+
 		<tr>
-			<td class="texte_intitule">Filtrage :</td>
+			<td class="texte_intitule">Filtrage automatique:</td>
 			<td><input size="40" type="text" name="filtrage" value="[#FILTRAGE]" /></td>
 		</tr>
-		<IF COND="[#ADMINLODEL]">    
+		<tr>
+			<td class="texte_intitule">Commentaire :<br /><span class="texte_info">(facultatif)</span></td>
+			<td><input size="40" type="text" name="commentaire" value="[#COMMENTAIRE]" /></td>
+		</tr>
+		<IF COND="[#DROITADMINLODEL]">
 		<tr>
 			<td class="texte_intitule">Champ protégé:</td>
 			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>

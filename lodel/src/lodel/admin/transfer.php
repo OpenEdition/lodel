@@ -553,54 +553,14 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	    if (preg_match_all("/<R2R:$field\s*(?:lang=\"(\w+)\")>(.*?)<\/R2R:$field>/is",$file,$matchs,PREG_SET_ORDER)) {
 	      $resume="";
 	      foreach ($matchs as $match) {
-		$resume.="<r2r:ml lang=\"$match[1]\">$match[2]</r2r:ml>";
+		$resume.="<r2r:ml lang=\"$match[1]\">".convertHTMLtoXHTML($field,$match[2])."</r2r:ml>";
 	      }
 	      array_push($updates," resume='".addslashes($resume)."'");
 	    }       
-	  } else { // other fields
-	    if (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
-	      $contents=str_replace(array("\n","\t","\r")," ",$match[1]);
-	      if ($field=="notebaspage") {
-		// note de R2R
-		#echo htmlentities($contents),"<br>";
-		if (preg_match('/<a\s+name="(FN\d+)"\s*>/',$contents)) { // ok, il y a des definitions de note R2R ici
-		  #echo "r2r document: $row[identite]</br>";
-		  // petit nettoyage
-		  $contents=preg_replace('/((?:<br><\/br>)?<a\s+name="FN\d+"><\/a>)((?:<\/\w+>)+)(<a\s+href="#FM\d+">)/','\\2\\1\\3',$contents);
-		  $arr=preg_split("/<br><\/br>(?=<a\s+name=\"FN\d+\">)/",trim($contents));
-		  for($i=0; $i<count($arr); $i++) {
-		    if ($i==0 && trim(strip_tags($arr[$i]))=="NOTES") { $arr[0]=""; continue;}
-		    if (preg_match('/^<a\s+name="FN(\d+)"><a\s+href="#FM(\d+)">(.*?)<\/a><\/a>/s',$arr[$i],$result2) ||
-			preg_match('/^<a\s+name="FN(\d+)"><\/a><a\s+href="#FM(\d+)">(.*?)<\/a>/s',$arr[$i],$result2)) { // c'est bien le debut d'un note
-		      $arr[$i]='<div class="footnotebody"><a class="footnotedefinition" id="ftn'.$result2[1].'" href="#bodyftn'.$result2[2].'">'.$result2[3].'</a>'.substr($arr[$i],strlen($result2[0])).'</div>';
-		    } else {
-		      #writefile("/tmp/t",$arr[$i]);
-		      die("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]));
-		    }
-		  } // toutes les notes
-		  $contents=join("",$arr);
-		} elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
-		  #echo "Ted document: $row[identite]<br>";
-		$contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
-				       '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
-
-		}
-	      } // fin note R2R
-	      
-
-	      // converti les appels de notes
-	      $contents=preg_replace(
-				     array('/<a\s+name="FM(\d+)">\s*<a\s+href="#FN(\d+)">(.*?)<\/a>\s*<\/a>/s', # R2R footnote call
-					   '/<a\s+name="FM(\d+)">\s*<\/a>\s*<a\s+href="#FN(\d+)">(.*?)<\/a>/s', # R2R footnote call
-					   '/<sup>\s*<small>\s*<\/small>\s*<\/sup>/',
-					   '/<a\s+href="#_ndef_(\d+)" name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'), # Ted footnote call
-				     array('<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
-					   '<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
-					   '',
-					   '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>'
-					   ),$contents);
-	      array_push($updates," $field='".addslashes($contents)."'");
-	    }
+	  } 
+	  // other fields
+	  elseif (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$text,$match)) {
+	    array_push($updates," $field='".addslashes(convertHTMLtoXHTML($field,$match[1]))."'");
 	  }
 	}
 	// copie le fichier original rtf
@@ -836,6 +796,59 @@ function extract_meta($classe)
   }
 
   return TRUE;
+}
+
+
+function convertHTMLtoXHTML ($field,$contents)
+
+{
+  $contents=str_replace(array("\n","\t","\r")," ",$contents);
+  // footnote
+
+  if ($field=="notebaspage") {
+    // note de R2R
+#echo htmlentities($contents),"<br>";
+    if (preg_match('/<a\s+name="(FN\d+)"\s*>/',$contents)) { // ok, il y a des definitions de note R2R ici
+#echo "r2r document: $row[identite]</br>";
+      // petit nettoyage
+      $contents=preg_replace('/((?:<br><\/br>)?<a\s+name="FN\d+"><\/a>)((?:<\/\w+>)+)(<a\s+href="#FM\d+">)/','\\2\\1\\3',$contents);
+      $arr=preg_split("/<br><\/br>(?=<a\s+name=\"FN\d+\">)/",trim($contents));
+      for($i=0; $i<count($arr); $i++) {
+	if ($i==0 && trim(strip_tags($arr[$i]))=="NOTES") { $arr[0]=""; continue;}
+	if (preg_match('/^<a\s+name="FN(\d+)"><a\s+href="#FM(\d+)">(.*?)<\/a><\/a>/s',$arr[$i],$result2) ||
+	    preg_match('/^<a\s+name="FN(\d+)"><\/a><a\s+href="#FM(\d+)">(.*?)<\/a>/s',$arr[$i],$result2)) { // c'est bien le debut d'un note
+	  $arr[$i]='<div class="footnotebody"><a class="footnotedefinition" id="ftn'.$result2[1].'" href="#bodyftn'.$result2[2].'">'.$result2[3].'</a>'.substr($arr[$i],strlen($result2[0])).'</div>';
+	} else {
+#writefile("/tmp/t",$arr[$i]);
+	  die("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]));
+	}
+      } // toutes les notes
+      $contents=join("",$arr);
+    } elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
+#echo "Ted document: $row[identite]<br>";
+      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
+			     '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
+	
+    }
+  } // fin note R2R
+    
+    
+    // converti les appels de notes
+  $srch=array('/<a\s+name="FM(\d+)">\s*<a\s+href="#FN(\d+)">(.*?)<\/a>\s*<\/a>/s', # R2R footnote call
+	      '/<a\s+name="FM(\d+)">\s*<\/a>\s*<a\s+href="#FN(\d+)">(.*?)<\/a>/s', # R2R footnote call
+	      '/<sup>\s*<small>\s*<\/small>\s*<\/sup>/',
+	      '/<a\s+href="#_ndef_(\d+)" name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
+  $rpl=array('<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
+	     '<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
+	     '',
+	     '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>');
+
+  // convert u in span/style
+  array_push($srch,"/<u>/","/<\/u>/");
+  array_push($rpl,"<span style=\"text-decoration: underline\">","</span>");
+
+
+  return preg_replace($srch,$rpl,$contents);
 }
 
 ?>

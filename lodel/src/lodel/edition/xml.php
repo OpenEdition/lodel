@@ -83,17 +83,36 @@ $originalname="entite-$id.xml";
 #header("Content-Disposition: attachment; filename=$originalname");
 #header("Content-type: application/$type");
 
+$originalname="xml.xml";
+
+get_PMA_define();
+header("Content-type: application/force-download");
+header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+// lem9 & loic1: IE need specific headers
+if (PMA_USR_BROWSER_AGENT == 'IE') {
+  header('Content-Disposition: inline; filename="' . $originalname . '"');
+  header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+  header('Pragma: public');
+} else {
+  header('Content-Disposition: attachment; filename="' . $originalname . '"');
+#  header('Content-Length: '.filesize($filename).'"');
+  header('Pragma: no-cache');
+}
 
 echo '<?xml version="1.0" encoding="utf-8" ?>
 ';
 $tab="";
 for($i=1; $i<count($arr); $i+=3) {
-  if ($arr[$i+1]) $tab=substr($tab,2);
-  echo $tab.$arr[$i],"\n";
-  if (!$arr[$i+1]) $tab.="  ";
-  if (trim($arr[$i+2])) { echo $tab.$arr[$i+2]."\n"; }
+  if ($arr[$i+1]) $tab=substr($tab,2); // closing tag
+  if (!$arr[$i+1] && $arr[$i+4]) { // opening follow by a closing tags
+    echo $tab.$arr[$i].$arr[$i+2].$arr[$i+3]."\n";
+    $i+=3;
+  } else {
+    echo $tab.$arr[$i],"\n";
+    if (!$arr[$i+1]) $tab.="  ";
+    if (trim($arr[$i+2])) { echo $tab.$arr[$i+2]."\n"; }
+  }
 }
-
 
 
 
@@ -120,6 +139,48 @@ function loop_valeurs_des_champs($context,$funcname)
 }
 
 function loop_valeurs_des_champs_require() { return array("id"); }
+
+
+
+
+
+/**
+ * Met le namespace xhtml pour toutes balises qui n'ont pas de namespace et supprime le namespace r2r.
+ */
+
+function namespace($text)
+{
+  $ns="xhtml";
+    // place l'espace de nom sur toutes les balises xhtml
+  $text = preg_replace(array("/<(\/?)(\w+(\s+[^>]*)?>)/", // add xhtml
+			     "/(<\/?)r2r:/"),   // remove r2r
+		       array("<\\1$ns:\\2",
+			     "\\1"),$text);
+	// puis place l'espace de nom sur les attributs
+	return preg_replace_callback("/(<($ns):\w+)((\s+\w+\s*=\s*\"[^\"]*\")+)/", "callback_ns_attributes", $text);
+} 
+
+/**
+ * Fonction de callback permettant d'ajouter un espace de nom aux attributs d'une balise xhtml.
+ */
+
+function callback_ns_attributes($matches){
+	$str = $matches[1];
+	$ns = $matches[2];
+	$arr=preg_split("/\"/",$matches[3]);
+	for($i=0; $i<count($arr); $i+=2) { 
+		if($arr[$i]!=""){
+			$attr = trim(str_replace("=","",$arr[$i]));
+			if ($attr!="lang" && $attr!="space" && $attr!="base"
+			    && $attr!="class" && $attr!="style") 
+				$str.=" ".$ns.":".ltrim($attr)."=\"".$arr[$i+1]."\"";
+			else $str.=$arr[$i]."\"".$arr[$i+1]."\"";
+		}
+	}
+	return $str;
+}
+
+
 
 
 ?>

@@ -34,12 +34,11 @@
 	<!--[ les groupes de personnes ]-->
     	<LOOP NAME="typepersonnes" TABLE="typepersonnes" WHERE="statut gt 0" ORDER="ordre">
 		<DO>
-            <xsd:element name="gr[#TYPE]" minOccurs="0" maxOccurs="1">
+            <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
 		      <xsd:complexType>
 		        <xsd:sequence>
-		          <xsd:element name="[#TYPE]" type="typePersonne" minOccurs="1" maxOccurs="unbounded" />
+		          <xsd:element name="[(#TYPE|removespace)]" type="typePersonne" minOccurs="1" maxOccurs="unbounded" />
 		        </xsd:sequence>
-			    <xsd:attribute name="ordre" type="xsd:integer" use="required"/>
 		      </xsd:complexType>
 		    </xsd:element>
 		</DO>
@@ -47,10 +46,10 @@
 	<!--[ les groupes d'entrees ]-->
     	<LOOP NAME="typeentrees" TABLE="typeentrees" WHERE="statut gt 0" ORDER="ordre">
 	      	<DO>
-                <xsd:element name="gr[#TYPE]" minOccurs="0" maxOccurs="1">
+                <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
 		     <xsd:complexType>
 		       <xsd:sequence>
-		           <xsd:element name="[#TYPE]" type="typeEntree" minOccurs="1" maxOccurs="unbounded" />
+		           <xsd:element name="[(#TYPE|removespace)]" type="typeEntree" minOccurs="1" maxOccurs="unbounded" />
 		       </xsd:sequence>
 		     </xsd:complexType>
 		</xsd:element>
@@ -71,50 +70,49 @@
 
 		<LOOP NAME="champs" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
 	    		<DO>
-		        [<xsd:annotation>
+		        <IF COND="[#COMMENTAIRE]"><xsd:annotation>
 					<xsd:documentation xml:lang="fr">
-						(#COMMENTAIRE)
+						[#COMMENTAIRE]
 					</xsd:documentation>
-				</xsd:annotation>]
+				</xsd:annotation>
+			</IF>
+			<!--[ define the minOccurs and maxOccurs and put it in [#OCCURS] variable ]-->
+			<IF COND="[#CONDITION]=='+'">
+			  <LET VAR="occurs">minOccurs="1" maxOccurs="unbounded"</LET>
+			<ELSE/>
+			  <LET VAR="occurs">minOccurs="0" maxOccurs="unbounded"</LET>
+			</IF>
 				<IF COND="[#TYPE] eq 'boolean'">
-				<xsd:element name="[#NOM]" type="xsd:boolean"/>
+				<xsd:element name="[#NOM]" type="xsd:boolean" [#OCCURS] />
 				<ELSE/>
 				<IF COND="[#TYPE] eq 'mltext'">
-				<xsd:element name="[#NOM]" type="TexteMultiLangue"/>
+				<xsd:element name="[#NOM]" type="TexteMultiLangue" [#OCCURS] />
 				<ELSE/>
   	        		<IF COND="[#TYPE] eq 'lang'">
-				<xsd:element name="[#NOM]" type="xsd:language"/>
+				<xsd:element name="[#NOM]" type="xsd:language" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'date'">
-				<xsd:element name="[#NOM]" type="xsd:date"/>
+				<xsd:element name="[#NOM]" type="xsd:date" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'datetime'">
-				<xsd:element name="[#NOM]" type="xsd:dateTime"/>
+				<xsd:element name="[#NOM]" type="xsd:dateTime" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'time'">
-				<xsd:element name="[#NOM]" type="xsd:time"/>
+				<xsd:element name="[#NOM]" type="xsd:time" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'int'">
-				<xsd:element name="[#NOM]" type="xsd:int"/>
+				<xsd:element name="[#NOM]" type="xsd:int" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'numeric'">
-				<xsd:element name="[#NOM]" type="xsd:double"/>
+				<xsd:element name="[#NOM]" type="xsd:double" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'image'">
-				<xsd:element name="[#NOM]" type="xsd:anyUrl"/>
+				<xsd:element name="[#NOM]" type="xsd:anyURI" [#OCCURS] />
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'fichier'">
-				<xsd:element name="[#NOM]" type="xsd:anyURI"/>
+				<xsd:element name="[#NOM]" type="xsd:anyURI" [#OCCURS] />
 				<ELSE/>
-				<IF COND="[#BALISESXHTML] ne ''">
-				<xsd:element name="[#NOM]">
-					<xsd:complexType mixed="true">
-						<xsd:group minOccurs="0" maxOccurs="unbounded" ref="[#BALISESXHTML]"/>
-					</xsd:complexType>
-				</xsd:element>
-				<ELSE/>
-				<xsd:element name="[#NOM]" type="xsd:string"/>
-				</IF>
+				<xsd:element name="[#NOM]" type="LodelTexte" [#OCCURS] />
 				</IF>
 				</IF>
 				</IF>
@@ -162,14 +160,14 @@
     <xsd:complexType name="typePersonne">
             <xsd:sequence>
 	        <xsd:element name="prefix" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-		<xsd:element name="nomfamille" type="xsd:string"/>
 		<xsd:element name="prenom" type="xsd:string"/>
-
+		<xsd:element name="nomfamille" type="xsd:string"/>
 	        <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 		<xsd:element name="fonction" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 	        <xsd:element name="affiliation" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 	        <xsd:element name="courriel" type="xsd:string" minOccurs="0" maxOccurs="1"/>
             </xsd:sequence>
+	    <xsd:attribute name="ordre" type="xsd:integer" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="typeEntree">
@@ -188,7 +186,7 @@
 			<xsd:element name="ml" minOccurs="1" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:simpleContent>
-						<xsd:extension base="xsd:string">
+						<xsd:extension base="LodelTexte">
 							<xsd:attribute name="lang" type="xsd:language" use="required"/>
 						</xsd:extension>
 					</xsd:simpleContent>
@@ -196,5 +194,31 @@
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
+
+
+<!--[ type LodelTexte ]-->
+	<xsd:complexType name="Section" mixed="true">
+		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
+	</xsd:complexType>
+
+	<xsd:complexType name="LodelTexte" mixed="true">
+		<xsd:all minOccurs="0" maxOccurs="unbounded">				    
+			<xsd:element name="section1" type="Section"  />
+			<xsd:element name="section2" type="Section"  />
+			<xsd:element name="section3" type="Section"  />
+			<xsd:element name="section4" type="Section"  />
+			<xsd:element name="section5" type="Section"  />
+			<xsd:element name="section6" type="Section"  />
+			<xsd:element name="section7" type="Section"  />
+			<xsd:element name="section8" type="Section"  />
+			<xsd:element name="section9" type="Section"  />
+			<xsd:element name="section10" type="Section"  />
+			<xsd:group ref="xhtml:block"/>
+			<xsd:group ref="xhtml:phrase"/> <!--[ c'est un peu trop laxiste la suite la ]-->
+			<xsd:group ref="xhtml:fontstyle"/>
+		</xsd:all>
+	</xsd:complexType>
+
+
 
 </xsd:schema>

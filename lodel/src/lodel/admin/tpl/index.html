@@ -192,6 +192,17 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
+							<a href="champs.php?classe=documents"><span class="texte_noir_gras">Gestion des champs pour les documents</span></a>
+							<ELSE/>
+								<span class="texte_noir_gras"><span class="inactif">Gestion des champs pour les documents</span></span></span>
+			                                </IF>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<IF COND="[#DROITREDACTEUR]">
 								<a href="typepublis.php"><span class="texte_noir_gras">Administrer les types de publications</span></a>
 							<ELSE/>
 								<span class="texte_noir_gras"><span class="inactif">Administrer les types de publications</span></span>
@@ -199,6 +210,18 @@
 						</td>			
 						<td>&nbsp;</td>
 					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<IF COND="[#DROITREDACTEUR]">
+							<a href="champs.php?classe=publications"><span class="texte_noir_gras">Gestion des champs pour les publications</span></a>
+							<ELSE/>
+								<span class="texte_noir_gras"><span class="inactif">Gestion des champs pour les publications</span></span></span>
+			                                </IF>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
@@ -210,13 +233,6 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<a href="typepersonnes.php"><span class="texte_noir_gras">Administrer les types d'index par personne</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="champs.php"><span class="texte_noir_gras">Gestion des champs</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>

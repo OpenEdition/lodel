@@ -93,8 +93,18 @@ if ($idtache) {
     $localcontext[statut]=-64; // car le document n'est pas correcte a priori
     // enregistre le nom du fichier original. Enleve le repertoire.
 
-    #echo "sourceoriginale: $tache[sourceoriginale]";
+    if (!$tablefields) require($home."tablefields.php");
+    if ($tablefields && (
+			 !in_array("fichiersource",$tablefields["$GLOBALS[tp]$classe"]) ||
+			 !in_array("importversion",$tablefields["$GLOBALS[tp]$classe"]))) {
+      die("ERROR: pour que l'importation fonctionne correctement, il est vivement conseiller de créer les champs <b>fichiersource</b> et <b>importversion</b> dans le modèle éditorial. Ces champs doivent avoir le type \"texte court\".<br /><a href=\"../admin\">Adminstration</a>");
+    }
+
     $localcontext[entite][fichiersource]="lodel/sources/".basename($tache[sourceoriginale]);
+    $localcontext[entite][importversion]=$tache[importversion];
+
+
+
     // the lodel/sources is fake, only the basename is used.
     
     $text=file_get_contents($filename.".html");

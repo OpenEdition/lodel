@@ -543,36 +543,6 @@ function today() {
 	return date("Y-m-d");
 }
 
-/**
- * Met le namespace xhtml pour toutes balises qui n'ont pas de namespace.
- */
-
-function namespace($ns, $text)
-{
-    // place l'espace de nom sur toutes les balises xhtml
-	$xhtmltags = preg_replace("/<(\/?)(\w+(\s+[^>]*)?>)/", "<\\1$ns:\\2", $text);
-	// puis place l'espace de nom sur les attributs
-	return preg_replace_callback("/(<($ns):\w+)((\s+\w+\s*=\s*\"[^\"]*\")+)/", "callback_ns_attributes", $xhtmltags);
-} 
-
-/**
- * Fonction de callback permettant d'ajouter un espace de nom aux attributs d'une balise xhtml.
- */
-
-function callback_ns_attributes($matches){
-	$str = $matches[1];
-	$ns = $matches[2];
-	$arr=preg_split("/\"/",$matches[3]);
-	for($i=0; $i<count($arr); $i+=2) { 
-		if($arr[$i]!=""){
-			$attr = trim(str_replace("=","",$arr[$i]));
-			if ($attr!="lang" && $attr!="space" && $attr!="base") 
-				$str.=" ".$ns.":".ltrim($attr)."=\"".$arr[$i+1]."\"";
-			else $str.=$arr[$i]."\"".$arr[$i+1]."\"";
-		}
-	}
-	return $str;
-}
 
 /**
  * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
@@ -639,6 +609,16 @@ function wiki($text)
   require_once('wikirenderer/WikiRenderer.lib.php');
   $wkr = new WikiRenderer();
   return $wkr->render($text);
+}
+
+
+/*
+ * Remove space for xml elements
+ *
+*/
+
+function removespace($text) {
+  return str_replace(" ","",$text);
 }
 
 ?>

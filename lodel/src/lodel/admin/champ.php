@@ -39,6 +39,7 @@ require_once($home."champfunc.php");
 
 $id=intval($id);
 $critere=$id ? "$GLOBALS[tp]champs.id='$id'" : "";
+$context[idgroupe]=$idgroupe=intval($idgroupe);
 
 //
 // ordre
@@ -111,7 +112,7 @@ if ($edit) { // modifie ou ajoute
 	$alter="CHANGE $oldnom";
       }
 
-      if ($oldidgroupe!=$context[idgroupe]) $ordre=get_ordre_max("champs","idgroupe='$context[idgroupe]'");
+      if ($oldidgroupe!=$idgroupe) $ordre=get_ordre_max("champs","idgroupe='$idgroupe'");
     } else {
       // check that the field does not exist
       $result=mysql_query("SELECT $GLOBALS[tp]champs.id FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND $GLOBALS[tp]champs.nom='$context[nom]' AND classe='$context[classe]'") or die (mysql_error());
@@ -120,7 +121,7 @@ if ($edit) { // modifie ou ajoute
       // ok, it does not exist
       $statut=1;
       if (!$context[classe]) die ("Erreur interne. Il manque la classe dans le formulaire");
-      $ordre=get_ordre_max("champs"," idgroupe='$context[idgroupe]'");
+      $ordre=get_ordre_max("champs"," idgroupe='$idgroupe'");
       $alter="ADD";
     }
     // adminlodel only are allow to protect/unprotect
@@ -128,8 +129,7 @@ if ($edit) { // modifie ou ajoute
       $newstatut=$protege ? 32 : 1;
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
-
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,condition,defaut,traitement,balisesxhtml,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[balisesxhtml]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,condition,defaut,traitement,balisesxhtml,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$idgroupe','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[balisesxhtml]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
@@ -147,7 +147,7 @@ if ($edit) { // modifie ou ajoute
   require_once ($home."connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]champs.*,classe FROM $GLOBALS[champsgroupesjoin] WHERE  $critere AND $GLOBALS[tp]champs.statut>-32") or die (mysql_error());
   if (!mysql_num_rows($result)) die("ERROR: You are not allowed to delete this field.");
-  $context=array_merge(mysql_fetch_assoc($result),$context);
+  $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   // cherche le classe.
   if ($classe && !preg_match("/[^a-z]/",$classe)) {
