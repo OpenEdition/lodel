@@ -319,8 +319,7 @@
 <column name="weight"
         type="TINYINT"
         label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
-        edittype="select"
-	editcondition="[#CLASSTYPE]=='entities'" />
+        edittype="select" />
 <column name="comment"
         type="LONGVARCHAR"
         description="commentaire sur le champs"

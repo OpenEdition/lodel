@@ -106,7 +106,7 @@ class TableFieldsLogic extends Logic {
 		  "none"=>getlodeltextcontents("no_change","admin"),
 		  "display"=>getlodeltextcontents("display_no_edit","admin"),
 		  "textarea"=>getlodeltextcontents("edit_textarea","admin"),
-		  "fckeditor"=>"FCKEditor",
+		  "fckeditor"=>getlodeltextcontents("edit_wysiwyg","admin")." (FCKEditor)",
 		  "select"=>getlodeltextcontents("edit_select","admin"),
 		  "multipleselect"=>getlodeltextcontents("edit_multiple_select","admin"),
 		  "radio"=>getlodeltextcontents("edit_radio","admin"),

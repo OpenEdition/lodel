@@ -67,9 +67,9 @@
 		  <li>
 		    <p>[@ADMIN.TRANSFER_ZIP_FTP_IN] [#IMPORTDIR] [@ADMIN.OR_DIR] [#SITE]/lodel/admin/CACHE.</p>
 		    <p>[@ADMIN.FILES_LIST] :</p>
-		    <LOOP NAME="fichiers">
+		    <LOOP NAME="files">
    		    <DO>
-		      <div><strong>[#NAME]</strong> &gt;&gt; <a href="import.php?fichier=[(#NOM|urlencode)]">[@ADMIN.IMPORT]</a></div><br />
+		      <div><strong>[#FILENAME]</strong> &gt;&gt; <a href="import.php?file=[(#FULLFILENAME|urlencode)]">[@ADMIN.IMPORT]</a></div><br />
 		    </DO>
 		    </LOOP>
 		</li>

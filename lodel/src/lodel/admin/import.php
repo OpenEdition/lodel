@@ -43,24 +43,24 @@ $context['error_upload']=$_FILES['archive']['error'];
 if (!$context['error_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
   $prefixre="(site|revue)";
   $prefixunix="{site,revue}";
-  $fichier=$archive;
+  $file=$archive;
 
-} elseif ($fichier && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$fichier,$result) && file_exists($fichier)) { // fichier sur le disque
+} elseif ($file && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$file,$result) && file_exists($file)) { // file sur le disque
   $prefixre=$prefixunix=$result[1];
 
 } else { // rien
-  $fichier="";
+  $file="";
 }
 
-if ($fichier) {
+if ($file) {
   do { // control block 
 
     $sqlfile=tempnam(tmpdir(),"lodelimport_");
-    $accepteddirs=array("lodel/txt","lodel/rtf","lodel/sources","docannexe/fichier","docannexe/image");
+    $accepteddirs=array("lodel/txt","lodel/rtf","lodel/sources","docannexe/file","docannexe/image");
 
     require_once("backupfunc.php");
 
-    if (!importFromZip($fichier,$accepteddirs,array(),$sqlfile)) { $err=$context[error_extract]=1; break; }
+    if (!importFromZip($file,$accepteddirs,array(),$sqlfile)) { $err=$context[error_extract]=1; break; }
 
     require_once("connect.php");
 
@@ -106,7 +106,7 @@ $view=&getView();
 $view->render($context,"import");
 
 
-function loop_fichiers(&$context,$funcname)
+function loop_files(&$context,$funcname)
 {
   global $importdirs,$fileregexp;
 
@@ -114,8 +114,10 @@ function loop_fichiers(&$context,$funcname)
     if ( $dh= @opendir($dir)) {
       while (($file=readdir($dh))!==FALSE) {
 	if (!preg_match("/^$fileregexp$/i",$file)) continue;
-	$context[name]="$dir/$file";
-	call_user_func("code_do_$funcname",$context);
+	$localcontext=$context;
+	$localcontext['filename']=$file;
+	$localcontext['fullfilename']="$dir/$file";
+	call_user_func("code_do_$funcname",$localcontext);
       }
       closedir ($dh);
     }
