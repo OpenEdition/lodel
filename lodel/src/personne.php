@@ -37,7 +37,8 @@ $context[id]=$id=intval($id);
 
 include_once($home."connect.php");
 $personnetable="";
-$result=mysql_query ("SELECT * FROM $GLOBALS[tp]personnes WHERE id='$id' AND statut>0") or die (mysql_error());
+$critere=$visiteur ?  "" : "AND statut>0";
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]personnes WHERE id='$id' $critere") or die (mysql_error());
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
