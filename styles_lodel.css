@@ -868,6 +868,7 @@ fieldset{
 
 legend{
 	font-weight: bold;
+	color : #728979;
 }
 
 #lodel-container{
@@ -898,8 +899,43 @@ input.searchbutton
 }
 .searchfieldset
 {
+	font-size : x-small;
 	color : #728979;
 	margin : 5px 5px 0px 5px ;
 	background-color: #eee;
 	padding : 3px;
+}
+/* Jean Lamy Added elements for pagination*/
+.pagination
+{
+	text-align : center;
+	margin : 10px 50px 10px 50px;  
+	padding : 20px ; 
+	border-top : 1px solid #CC9933; 
+}
+a.linkpage
+{
+	
+}
+span.currentpage
+{
+	font-size : 1.2em;
+	font-weight : bold;
+	color : #728979;
+	
+	
+}
+
+
+/* Added elements for translation fields*/
+.editlodeltext
+{
+	font-size : 11px;
+}
+.labellodeltext
+{
+	
+	font-size : 11px;
+	width: 350px;
+	float : left;
 }
