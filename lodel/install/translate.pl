@@ -135,11 +135,15 @@ foreach $filename (@ARGV) {
 # changement de meta_image en icone
    $change+=$file=~s/\[\#META_IMAGE\]/\[\#ICONE\]/g;
 
+# changement de insert_template 
+  $change+=$file=~s/<\?\s+insert_template\s*\("(\w+)"\);\s*\?>/<USE TEMPLATEFILE="$1">/g;
+
+# changement de #COMMENTAIRE en #COMMENTAIREINTERNE
+  $change+=$file=~s/\[\#COMMENTAIRE\]/\[\#COMMENTAIREINTERNE\]/g;
+
   next unless $change;
   print "$filename:",$change,"\n";
 
-# changement de insert_template 
-  $change+=$file=~s/<\?\s+insert_template\s*\("(\w+)"\);\s*\?>/<USE TEMPLATEFILE="$1">/g;
 
 # ecriture du fichier
   open (TXT,">$filename");
