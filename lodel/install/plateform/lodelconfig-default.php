@@ -1,4 +1,11 @@
 <?php
+/* comment
+
+Installation par defaut sans pre-configuration.
+
+comment */
+
+
 # Racine de lodel sur le systeme
 $pathroot="";
 
