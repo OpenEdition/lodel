@@ -47,15 +47,9 @@
 <!-- typepersonne.html                                  -->
 <DEFMACRO NAME="TYPE_ENTITES">
 	<LOOP NAME="typeentites">
-<!--		<BEFORE>
-			<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-		</BEFORE>-->
 		<DO>
 			<input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]> [#TYPE]<br />
 		</DO>
-<!--		<AFTER>
-			</table>
-		</AFTER>-->
 	</LOOP>
 </DEFMACRO>
 <!-- ************************************************** -->
@@ -80,7 +74,15 @@
 	<div>
 		<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
 			|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-			<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
+				<DO>
+					<IF COND="[#NBCHAMPS]">
+						<span class="inactif">Supprimer</span>&nbsp;|
+					<ELSE/>
+						<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>
+					</IF>
+				</DO>
+			</LOOP>
 		<ELSE/>
 			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
 			<span class="inactif">Supprimer</span>&nbsp;|
@@ -112,7 +114,7 @@
 	<tr><td colspan="5"><hr /></td></tr>
 	<tr>
 		<td colspan="4"><h2>Groupe: <span style="color: #CC9933;">[#TITRE]</span> ([#NOM])</h2></td>
-		<td style="color: #CC9933;">
+		<td align="left" style="color: #CC9933;">
 			<MACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
 		</td>
 	</tr>
@@ -128,7 +130,7 @@
 					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin1">[#TYPE]</td>
 					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+					<td class="ligne_admin1" style="color: #CC9933;" align="left">
 						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
 					</td>
 				<ELSE/>
@@ -136,7 +138,7 @@
 					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin2">[#TYPE]</td>
 					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<td class="ligne_admin2" style="color: #CC9933;" align="left">
 						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
 					</td>
 				</IF>
