@@ -64,9 +64,21 @@
 <!-- afin d'éditer un document.                                         -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<a href="lodel/edition/fonctionsavancees.php?id=[#ID]">
-			<span class="pluspetit">[E]</span>
-		</a>
+	<LOOP NAME="" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+			<IF COND="[#TYPE]=='regroupement'"> 
+				<LOOP NAME="boucle2_bouton_editer_document" TABLE="publications"  WHERE="id='[#PARENT]'"> 
+					<a href="lodel/edition/index.php?id=[#ID]">
+							<span class="pluspetit">[E]</span>
+					</a>
+				</LOOP>
+			<ELSE/>
+				<a href="lodel/edition/index.php?id=[#ID]">
+							<span class="pluspetit">[E]</span>
+				</a>
+			</IF>
+		</DO>
+	</LOOP>
+		
 	</IF>
 </DEFMACRO>
 
