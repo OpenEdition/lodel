@@ -75,7 +75,8 @@ class EntriesLogic extends GenericLogic {
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
 
-     if ($context['g_name']) {
+     if (isset($context['g_name'])) {
+       if (!$context['g_name']) return "_error"; // empty entry!
        // search if the entries exists
        $vo=$dao->find("g_name='".$context['g_name']."' AND idtype='".$idtype."' AND status>-64","id");
        if ($vo->id) {

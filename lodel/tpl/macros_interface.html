@@ -209,7 +209,7 @@ cp_[#NAME].writeDiv();
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
     <div ><label class="labelmltext">[(#LANG|humanlang|ucfirst)] :</label> 
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
-	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.ERASE]</a>
+	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
     </div>
   </LOOP>
   <div id="mltext_[#VARNAME]_for_copy" style="display: none;">
@@ -298,8 +298,9 @@ cp_[#NAME].writeDiv();
 	<IF COND="[#EDITION]=='pool'">
 	<FUNC NAME="JS_POOL">
 	<table>
+	<tr>[@COMMON.AVAILABLE_ENTRIES]</td><td>[@COMMON.SELECTED_ENTRIES]</td></tr>
 	<tr><td>
-	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />
+	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
 	<select multiple size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>

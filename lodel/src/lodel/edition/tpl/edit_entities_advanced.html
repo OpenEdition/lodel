@@ -138,33 +138,14 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:5px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">[@EDITION.ANNEX_DOCUMENT]</span></td>
-						<td>&nbsp;</td>
-					</tr>
-				
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="450" class="td_admin">
-		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-						</td>
+						<td width="350" style="padding-bottom:5px;"><span class="nom_publi">[@EDITION.SPECIAL_DOCUMENTS]</span></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
-	<IF COND="[#USER.EDITOR]">
-				<span class="texte_noir_gras">[@EDITION.ADD_ANNEX_DOCUMENT]<a name="docannexe"></a></span>
-				<br />
-			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="rank" DONTSELECT="id"]>
-					<DO>
-						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_orange">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITLE]</span></a><br />						
-					</DO>
-			</LOOP>
-
-	<ELSE/>
-				<span class="texte_intitule">[@EDITION.ADD_ANNEX_DOCUMENTS]</span><br />
-				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_EDITOR]</span>
-	</IF>
+				<FUNC NAME="ADD_AN_ENTITY"  DISPLAYWHERE="display='advanced'">
+				<FUNC NAME="LIST_ENTITIES" ID="[#ID]" DISPLAYWHERE="display='advanced'">
 						</td>
 						<td>&nbsp;</td>
 					</tr>

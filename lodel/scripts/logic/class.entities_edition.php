@@ -101,11 +101,11 @@ class Entities_EditionLogic extends GenericLogic {
 
        $idtype=$context['idtype'];
        if (!is_numeric($idtype)) return;
-
        $dao=&getDAO("entrytypes");
        $votype=$dao->getById($idtype,"id,sort,flat");
        if (!$votype) die("ERROR: internal error in loop_entries_in_entities");
-       foreach ($context['entries'][$idtype] as $entry) $checkarr[]=&$entry['g_name'];
+       if ($context['entries'][$idtype])
+	 foreach ($context['entries'][$idtype] as $entry) $checkarr[]=&$entry['g_name'];
        $context['id']=0; // start by the parents
        loop_entries_in_entities_rec ($context,$funcname,$votype,$checkarr);
      }
@@ -451,8 +451,7 @@ class Entities_EditionLogic extends GenericLogic {
    function _populateContextRelatedTables(&$vo,&$context) 
 
    {
-     global $db,$ADODB_FETCH_MODE;
-     $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+     global $db;
 
      foreach (array("entries"=>array("E","identry","entrytypes"),
 		    "persons"=>array("G","idperson","persontypes")) as $table => $info) {
@@ -501,7 +500,6 @@ class Entities_EditionLogic extends GenericLogic {
        }
 
      } // foreach classtype
-     $ADODB_FETCH_MODE = ADODB_FETCH_DEFAULT;
      #print_r($context['persons']);      
   }
 

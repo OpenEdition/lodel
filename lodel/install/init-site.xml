@@ -1188,6 +1188,11 @@
 <index name="index_textgroup">
 <index-column name="textgroup" />
 </index>
+<unique name="unique_lang">
+<unique-column name="name" />
+<unique-column name="lang" />
+<unique-column name="textgroup" />
+</unique>
 </table>
 
 

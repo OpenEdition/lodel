@@ -592,13 +592,14 @@
 	--></script>
 </DEFMACRO>
 
-<DEFMACRO NAME="ADD_AN_ENTITY">
+<DEFFUNC NAME="ADD_AN_ENTITY" OPTIONAL="displaywhere">
+	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
         <table><tr valign="top">
 
         <IF COND="[#USER.ADMIN] or [#ID]">
 	<LET VAR="idparentsaved">[#ID|intval]</LET>
         <LOOP NAME="classes" TABLE="classes" WHERE="status lt 64" ORDER="rank">
-	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]'" ORDER="rank">
+	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]' AND [#DISPLAYWHERE]" ORDER="rank">
 		<BEFORE>
                         <td>
 			<div>
@@ -639,7 +640,7 @@
 		<span class="inactif">[@EDITION.ADD_DOCUMENT] : </span>
         </IF>
         </tr></table>
-</DEFMACRO>
+</DEFFUNC>
 
 
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
@@ -658,8 +659,9 @@
 		</div>
 </DEFMACRO>
 
-<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder">
-	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype" ORDER="entities.rank">
+<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere">
+	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
+	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div class="unfoldedentities"></IF>
 		</BEFORE>
@@ -682,7 +684,7 @@
 		</AFTER>
 		<ALTERNATIVE>
 			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
-		</ALTERNATIVE>		
+		</ALTERNATIVE>
 	</LOOP>
 </DEFFUNC>
 
@@ -856,75 +858,6 @@
 	<span class="type_document">([#TYPE])</span>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affiche les documents annexes.                                     ]-->
-<!--[ Cette Macro utilise les macros suivantes :                         ]-->
-<!--[ <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         ]-->
-<!--[ ****************************************************************** ]-->
-	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="idparent='[#ID]'" ORDER="rank">
-		<BEFORE>
-			<table width="100%" class="table_docannexes" border="0" cellspacing="0">
-		</BEFORE>
-		<DO>
-			<tr bgcolor="#EEEEEE">
-				<td width="40" align="left" valign="top" bgcolor="#EEEEEE">
-					<IF COND="[#STATUS] GT 0">
-						<MACRO NAME="PNG_ANNEXE">
-					<ELSE/>
-						<MACRO NAME="PNG_ANNEXE_GRIS">
-					</IF>
-				</td>
-				<td width="100%" valign="top" bgcolor="#EEEEEE">
-					<div>
-						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
-							<a name="[#G_TITLE]" href="[#LIEN]" target="[#TITLE]">[#TITLE]</a>
-						<ELSE/>
-							<a name="[#G_TITLE]" href="../../docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]" target="[#G_TITLE]">[#G_TITLE]</a>
-						</IF>
-						</div>
-					<span class="texte_normal">[#COMMENTAIRE]</span>
-				</td>
-			</tr>
-			<tr>
-				<td width="40" align="left" valign="top">&nbsp;
-					
-				</td>
-				<td valign="top"  width="100%">
-					<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">	
-				</td>
-			</tr>
-			<tr>
-				<td width="40" align="left" valign="top" height="3">
-					
-				</td>
-				<td valign="top"  width="100%">
-						
-				</td>
-			</tr>
-		</DO>
-		<AFTER>
-			</table>
-		</AFTER>
-		<ALTERNATIVE>
-			<span class="texte_info" style="padding-left:00px"><MACRO NAME="PNG_ANNEXE_GRIS_NO">[@EDITION.NO_ANNEX_DOCUMENT]</span>
-		</ALTERNATIVE>
-	</LOOP>
-</DEFMACRO>
-
-<--[
-<DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
-	<IF COND="[#USER.EDITOR] AND [#GROUPRIGHT]">
-		<div>
-			<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
-			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">[@COMMON.MODIFY] </a>&nbsp;|
-			<MACRO NAME="STATUS_">&nbsp;|
-			<a href="javascript:confirm_suppression([#ID])">[@COMMON.DELETE]</a>
-		</div>
-	</IF>
-</DEFMACRO>
-]-->
 
 <DEFMACRO NAME="PNG_LOGO_LODEL">
 	<img src="[#SHAREURL]/images/logo_lodel.png" width="318" height="57" border="0" vspace="0" hspace="0" />

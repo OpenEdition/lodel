@@ -110,7 +110,8 @@ class TypesLogic extends Logic {
        break;
      case "display" :
        $arr=array(""=>getlodeltextcontents("folded","admin"),
-	      "unfolded"=>getlodeltextcontents("unfolded","admin")
+		  "unfolded"=>getlodeltextcontents("unfolded","admin"),
+		  "advanced"=>getlodeltextcontents("advanced_functions","admin")
 	      );
        renderOptions($arr,$context['display']);
        break;

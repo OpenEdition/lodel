@@ -524,7 +524,7 @@ UPDATE #_TP_types SET tpledition='edition' WHERE tpledition='edition-hierarchiqu
       $fields=getfields("types");
       if (!$fields['display']) {
 	$err=mysql_query_cmds('
-ALTER TABLE #_TP_types ADD display VARCHAR(10);
+ALTER TABLE #_TP_types ADD display VARCHAR(10) DEFAULT \'\';
 UPDATE #_TP_types SET display=\'unfolded\' WHERE type LIKE \'regroupement%\';
 ALTER TABLE #_TP_types ADD creationstatus TINYINT DEFAULT \'-1\' NOT NULL;
 ');
