@@ -19,7 +19,7 @@ if ($backup) {
   $archive="revue-$revue-".date("dmy").".tar.gz";
 
   chdir ("../..");
-  system("tar czf lodel/admin/upload/$archive lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
+  system("/bin/tar czf lodel/admin/upload/$archive lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
   chdir ("lodel/admin");
 
   $context[archive]=$archive;

@@ -93,17 +93,10 @@ function publi_publication ($id,$status,$confirmation)
 {
   global $usergroupes,$admin,$context;
 
-
-
-#ifndef LODELLIGHT
   lock_write("publications",
 	     "documents",
 	     "auteurs","documents_auteurs",
-	     "indexls","documents_indexls",
-	     "indexhs","documents_indexhs"); 
-#else
-#  lock_write("publications","documents","indexls","documents_indexls");
-#endif
+	     "indexs","documents_indexs"); 
 
   //
   // cherche les publis a publier ou depublier
@@ -162,11 +155,7 @@ function publi_document ($critere,$status)
 
   if (is_numeric($critere)) {
     $where="id=".$critere." AND status>-32";
-#ifndef LODELLIGHT
-    lock_write("documents","auteurs","indexls","indexhs","documents_auteurs","documents_indexls","documents_indexhs"); 
-#else
-#   lock_write("documents","indexls","documents_indexls"); 
-#endif
+    lock_write("documents","auteurs","indexs","documents_auteurs","documents_indexs"); 
     if (!$admin) {
       // verifie que le document est dans le groupe
       $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE $where AND groupe IN ($usergroupes)") or die (mysql_error());
@@ -191,11 +180,9 @@ function publi_document ($critere,$status)
 
   mysql_query("UPDATE $GLOBALS[tableprefix]documents SET status=$status WHERE $where") or die(mysql_error());
 
-  publi_table($critere,$status,"indexl");
-#ifndef LODELLIGHT
+  
   publi_table($critere,$status,"auteur");
-  publi_table($critere,$status,"indexh");
-#endif
+  publi_table($critere,$status,"index");
   return TRUE;
 }
 
@@ -222,8 +209,9 @@ function publi_table($critere,$status,$table)
   $idlist=join(",",$ids);
 
   if ($status>0) {
-    # dans ce cas c'est simple
-    mysql_query ("UPDATE $GLOBALS[tableprefix]$tables SET status=abs(status) WHERE id IN ($idlist)") or die (mysql_error());
+    // dans ce cas c'est simple (rmq: on ne modifie pas les status>32 car entrées protégees
+    mysql_query ("UPDATE $GLOBALS[tableprefix]$tables SET status=abs(status) WHERE id IN ($idlist) AND status<32") or die (mysql_error());
+   
 
   } else { // status<0
     # la c'est plus complique, il faut selectionner les $tables qui n'ont pas de document online... celui qu'on publie
@@ -232,7 +220,8 @@ function publi_table($critere,$status,$table)
     $ids=array();
     while ($row=mysql_fetch_row($result)) { array_push ($ids,$row[0]); }
     if ($ids) $where="AND id NOT IN (".join(",",$ids).")";
-    mysql_query("UPDATE $GLOBALS[tableprefix]$tables SET status=-abs(status) WHERE id IN ($idlist) $where") or die (mysql_error());
+    // on change le status... sauf ceux qui sont protégées.
+    mysql_query("UPDATE $GLOBALS[tableprefix]$tables SET status=-abs(status) WHERE id IN ($idlist) $where  AND status<32") or die (mysql_error());
   }
 }
 

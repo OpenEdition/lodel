@@ -9,6 +9,7 @@ include_once ($home."xmlfunc.php");
 function enregistre ($context,&$text)
 
 {
+  //  die(htmlentities($text));
   global $home,$iduser,$revue,$superadmin;
   if ($superadmin) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs de la revue.
 
@@ -33,7 +34,7 @@ function enregistre ($context,&$text)
 
   myquote($context);  myquote($lcontext);  myquote($lang);
 
-  lock_write("documents","indexls","auteurs","indexhs","documents_auteurs","documents_indexls","documents_indexhs");
+  lock_write("documents","auteurs","indexs","documents_auteurs","documents_indexs","typeindexs");
 
   // recherche l'ordre
   if ($context[ordre]) {
@@ -60,8 +61,7 @@ function enregistre ($context,&$text)
 
   $status=$statusdocument>0 ? 1 : -1;
   enregistre_auteurs($id,$vals,$index,$status);  // ajoute les auteurs
-  enregistre_indexls($id,$vals,$index,$status); // mots cles, etc...
-  enregistre_indexhs($id,$vals,$index,$status); // indexhs, etc...
+  enregistre_indexs($id,$vals,$index,$status); // indexs, etc...
 
   unlock();
 
@@ -151,7 +151,7 @@ function enregistre_auteurs ($iddocument,&$vals,&$index,$status)
   }
 }
 
-
+/*
 function enregistre_indexls ($iddocument,&$vals,&$index,$status)
 
 {
@@ -188,44 +188,51 @@ function enregistre_indexls ($iddocument,&$vals,&$index,$status)
     } // tags
   } // balises
 }
+*/
 
 
-function enregistre_indexhs ($iddocument,&$vals,&$index,$status)
+function enregistre_indexs ($iddocument,&$vals,&$index,$status)
 
 {
-  if (!$GLOBALS[context][option_pasdeperiode]) $balises[TYPE_PERIODE]="periode";
-  if (!$GLOBALS[context][option_pasdegeographie]) $balises[TYPE_GEOGRAPHIE]="geographie";
-
-  if (!$balises) return;
-#  print_r($index); echo "<br><br>";
-#  print_r($vals); echo "<br><br>";
-
   // detruit les liens dans la table documents_indexhs
-  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_indexhs WHERE iddocument='$iddocument'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_indexs WHERE iddocument='$iddocument'") or die (mysql_error());
 
-  foreach ($balises as $type => $balise) {
-    if (!$index[$balise]) continue;
+  // enregistre les indexs
+  $result=mysql_query("SELECT id,balise,newimportable,useabrev FROM $GLOBALS[tableprefix]typeindexs WHERE status>0") or die (mysql_error());
+  while ($typeindex=mysql_fetch_assoc($result)) {    
+    $balise=$typeindex[balise];    $type=$typeindex[id];
+    if (!$index[$balise]) continue; // s'il n'y a pas d'entrees, on reboucle
+
+    // boucle sur les differents entrees
     foreach ($index[$balise] as $itag) {
       $tag=$vals[$itag];
-      $indexh=trim(addslashes(strip_tags($tag[value])));
-      if (!$indexh) continue;
-      if ($tag[attributes] && $tag[attributes][LANG]) $lang=strtolower($tag[attributes][LANG]);
-      if (!$lang) $lang="fr";
-      // cherche l'id de la indexh
-      $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]indexhs WHERE abrev='$indexh' AND lang='$lang'");
-      if (mysql_num_rows($result)) {
-	list($id,$oldstatus)=mysql_fetch_array($result);
-	if ($status>0 && $oldstatus<0) { // faut-il publier ?
-	  mysql_query("UPDATE $GLOBALS[tableprefix]indexhs SET status=1 WHERE id='$id'") or die (mysql_error());	
-	}
-      } else { // il faut ajouter le mot cle
-	# on ne l'ajoute pas... mais il y a une erreur quelque part...
-	$id=0;
-      }
+      $entree=trim(addslashes(strip_tags($tag[value]))); // on recupere et on nettoie l'entree
+      if (!$entree) continue; // etrange elle est vide... tant pis, XML pas propre
+      // cherche la langue dans l'attribut sinon valeur par defaut.
+      $lang=($tag[attributes] && $tag[attributes][LANG]) ? strtolower($tag[attributes][LANG]) : "fr";
+      // cherche l'id de la entree si elle existe
+      $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]indexs WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0");
 
-      // ajoute l'indexh dans la table documents_indexhs
+      if (mysql_num_rows($result2)) { // l'entree exists
+	list($id,$oldstatus)=mysql_fetch_array($result2);
+	if ($status>0 && $oldstatus<0) { // faut-il publier ?
+	  mysql_query("UPDATE $GLOBALS[tableprefix]indexs SET status=1 WHERE id='$id'") or die (mysql_error());	
+	}
+      } elseif ($typeindex[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
+	// oui,il faut ajouter le mot cle
+	$abrev=$typeindex[useabrev] ? strtoupper($entree) : "";
+	mysql_query ("INSERT INTO $GLOBALS[tableprefix]indexs (status,nom,abrev,type,lang) VALUES ('$status','$entree','$abrev','$type','$lang')") or die (mysql_error());
+	$id=mysql_insert_id();
+      } else {
+	// non, on ne l'ajoute pas... mais il y a une erreur quelque part...
+	$id=0;
+	die ("erreur interne dans enregistre_indexs: type: $balise entree: $entree");
+      }
+      // ajoute l'index dans la table documents_indes
+      // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
+      // une chaine et en faisant la requette a la fin !
       if ($id)
-	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_indexhs (idindexh,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_indexs (idindex,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
 
     } // tags
   } // balises

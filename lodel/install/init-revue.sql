@@ -197,27 +197,49 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepublis (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexls (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeindexs (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	mot		VARCHAR(128) NOT NULL,
-	lang		CHAR(2) NOT NULL,
-	type		TINYINT DEFAULT '0' NOT NULL,
-	ordre		INT DEFAULT '0' NOT NULL,
+	nom		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
+	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	balise		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
+	tpl		TINYTEXT NOT NULL,			# nom du fichier template pour ce type de document
 
+	ordre		INT DEFAULT '0' NOT NULL,	# ordre sert pour l'interface.
 	status		TINYINT DEFAULT '1' NOT NULL,
+
+# options
+	lineaire	TINYINT DEFAULT '0' NOT NULL,
+	newimportable	TINYINT DEFAULT '0' NOT NULL,
+	useabrev	TINYINT DEFAULT '0' NOT NULL,
+	tri		VARCHAR(64) NOT NULL DEFAULT 'ordre' NOT NULL, # 
+
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_mot (mot)
+	KEY index_nom (nom)
 );
 
-#ifndef LODELLIGHT
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexhs (
+
+#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexls (
+#	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+#	mot		VARCHAR(128) NOT NULL,
+#	lang		CHAR(2) NOT NULL,
+#	type		TINYINT DEFAULT '0' NOT NULL,
+#	ordre		INT DEFAULT '0' NOT NULL,
+#
+#	status		TINYINT DEFAULT '1' NOT NULL,
+#	maj		TIMESTAMP,
+#
+#	PRIMARY KEY (id),
+#	KEY index_mot (mot)
+#);
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexs (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	parent		INT UNSIGNED DEFAULT '0' NOT NULL,
-	nom		TINYTEXT NOT NULL,
-	abrev		VARCHAR(10) NOT NULL,
+	nom		VARCHAR(255) NOT NULL,
+	abrev		VARCHAR(15) NOT NULL,
 	lang		CHAR(2) NOT NULL,
 	type		TINYINT DEFAULT '0' NOT NULL,
 	ordre		INT DEFAULT '0' NOT NULL,
@@ -226,6 +248,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexhs (
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
+	KEY index_nom (nom),
 	KEY index_abrev (abrev),
 	KEY index_parent (parent)
 );
@@ -245,7 +268,6 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_taches (
 	PRIMARY KEY (id)
 );
 
-#endif
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
@@ -259,8 +281,6 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 	KEY index_nom (nom)
 );
 
-#ifndef LODELLIGHT
-# lien entre les tables
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_auteurs (
 	idauteur		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -275,23 +295,22 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_auteurs (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_indexhs (
-	idindexh		INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_indexs (
+	idindex			INT UNSIGNED DEFAULT '0' NOT NULL,
 	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	KEY index_idindexh (idindexh),
+	KEY index_idindex (idindex),
 	KEY index_iddocument (iddocument)
 );
 
-#endif
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_indexls (
-	idindexl		INT UNSIGNED DEFAULT '0' NOT NULL,
-	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
-
-	KEY index_idindexl (idindexl),
-	KEY index_iddocument (iddocument)
-);
+#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_indexls (
+#	idindexl		INT UNSIGNED DEFAULT '0' NOT NULL,
+#	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
+#
+#	KEY index_idindexl (idindexl),
+#	KEY index_iddocument (iddocument)
+#);
 
 #ifndef LODELLIGHT
 REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('serie_lineaire','sommaire-lineaire','edition-lineaire');
@@ -301,6 +320,10 @@ REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('theme','sommaire-
 REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('regroupement','','');
 REPLACE INTO _PREFIXTABLE_typedocs (nom,tpl,status) VALUES('article','article','1');
 REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous');
+REPLACE INTO _PREFIXTABLE_typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','1','0','0','1','ordre','2');
+REPLACE INTO _PREFIXTABLE_typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','1','0','0','1','ordre','3');
+REPLACE INTO _PREFIXTABLE_typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','1','1','1','0','nom','1');
+
 #else
 #REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('album_photo','sommaire-album','edition-album');
 #REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('theme_photo','sommaire-photo','edition-photo');

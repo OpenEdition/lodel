@@ -82,32 +82,28 @@ function parse_boucle_extra(&$tables,&$where)
       }
 
       // indexhs
-      if (in_array("indexhs",$tables) && strpos($where,"iddocument")!==FALSE) {
+      if (in_array("indexs",$tables) && strpos($where,"iddocument")!==FALSE) {
 	// on a besoin de la table croise documents_indexhs
-	array_push($tables,"documents_indexhs");
-	$where.=" AND idindexh=indexhs.id";
+	array_push($tables,"documents_indexs");
+	$where.=" AND idindex=indexs.id";
       }
 
-      if (in_array("documents",$tables) && strpos($where,"idindexh")!==FALSE) {
-	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_indexhs");
-	$where.=" AND iddocument=documents.id";
-      }
-      if (in_array("indexhs",$tables)) {
+      if (in_array("indexs",$tables)) {
+	// ca va plus marcher ca !!!!	
 	$where=preg_replace(array("/type_periode/i","/type_geographie/i"),
 			    array("type='".TYPE_PERIODE."'","type='".TYPE_GEOGRAPHIE."'"),
 			    $where);
       }
 #endif
 
-      if (in_array("indexls",$tables) && strpos($where,"iddocument")!==FALSE) {
+      if (in_array("indexs",$tables) && strpos($where,"iddocument")!==FALSE) {
 	// on a besoin de la table croise documents_indexls
-	array_push($tables,"documents_indexls");
-	$where.=" AND idindexl=$GLOBALS[tableprefix]indexls.id";
+	array_push($tables,"documents_indexs");
+	$where.=" AND idindex=$GLOBALS[tableprefix]indexs.id";
       }
-      if (in_array("documents",$tables) && strpos($where,"idindexl")!==FALSE) {
+      if (in_array("documents",$tables) && strpos($where,"idindex")!==FALSE) {
 	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_indexls");
+	array_push($tables,"documents_indexs");
 	$where.=" AND iddocument=$GLOBALS[tableprefix]documents.id";
       }
       if (in_array("groupes",$tables) && strpos($where,"iduser")!==FALSE) {
@@ -115,7 +111,8 @@ function parse_boucle_extra(&$tables,&$where)
 	array_push($tables,"users_groupes");
 	$where.=" AND idgroupe=$GLOBALS[tableprefix]groupes.id";
       }
-      if (in_array("indexls",$tables)) {
+      if (in_array("indexs",$tables)) {
+	// ca va plus marcher ca!
 	$where=preg_replace(array("/\btype_motcle_permanent\b/i",
 				  "/\btype_motcle\b/i",
 				  "/\btype_tous_motcles\b/i"),
@@ -148,6 +145,8 @@ function parse_variable_extra ($nomvar)
     return '($context[status]<0)';
   } elseif ($nomvar=="OKGROUPE") {
     return '($GLOBALS[admin] || in_array($context[groupe],split(",",$GLOBALS[usergroupes])))';
+  } elseif ($nomvar=="MOT") { // mot est synonyme de nom... utile pour les index
+    return '$context[nom]';
   }
   return FALSE;
 }

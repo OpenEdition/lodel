@@ -34,13 +34,6 @@ include ($home."calcul-page.php");
 calcul_page($context,"options");
 
 
-function yes ($texte)
-
-{ return $texte ? "checked" : "";}
-
-function no ($texte)
-
-{ return !$texte ? "checked" : "";}
 
 ?>
 

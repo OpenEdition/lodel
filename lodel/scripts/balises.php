@@ -119,8 +119,8 @@ $virgule_tags="auteurs|periodes|geographies|motcles|langues";
 # ajoute les balises definies dans langues.php
 
 include_once ($home."langues.php");
-$balises=array_merge($balises,$balisesmotcle,$balisesresume);
-$multiparagraphe_tags.="|".join("|",array_keys($langresume));
+$balises=array_merge($balises,$balisesmotcle,$GLOBALS[balisesresume]);
+$multiparagraphe_tags.="|".join("|",array_keys($GLOBALS[langresume]));
 
 #########################################################################
 # export les variables dans le scope global

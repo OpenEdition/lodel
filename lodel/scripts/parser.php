@@ -337,7 +337,11 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $where="WHERE ".$where;
     }
 
-    if ($order) $order="ORDER BY ".substr(prefix_tablename($order),0,-3); // enelve le , a la fin (pas propre, faire un tableau)
+    if ($order) {
+      parse_variable($order,FALSE);
+      $order="ORDER BY ".substr(prefix_tablename($order),0,-3); // enelve le , a la fin (pas propre, faire un tableau)
+    }
+
     if ($limit) { parse_variable($limit,FALSE); $limit="LIMIT ".$limit; }
 
 

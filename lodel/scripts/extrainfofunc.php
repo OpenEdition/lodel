@@ -18,9 +18,10 @@ function ei_pretraitement($filename,$row,&$context,&$text)
 
   $text=join("",file ($filename.".html"));
   auteurs2auteur($text);
-  if (!$context[option_pasdeperiode]) tags2tag("periode",$text);
-  if (!$context[option_pasdemotcle]) tags2tag("motcle",$text);
-  if (!$context[option_pasdegeographie]) tags2tag("geographie",$text);
+  $result=mysql_query("SELECT balise FROM $GLOBALS[tableprefix]typeindexs WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result)) {
+    tags2tag($row[balise],$text);
+  }
 
   //////////  // debut de gestion du bloc titre et meta
   // ceci pourrait etre dans une fonction plutot comme tags2tag, 
@@ -85,7 +86,7 @@ $text='<'.'?xml version="1.0" encoding="ISO-8859-1" ?'.'>
 //  ou si on souhaite ajouter un auteur
 //
 
-function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geographies)
+function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
 
 {
   global $home;
@@ -109,16 +110,28 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
     if (!$row[datepubli]) { $context[erreur_datepubli]=$err=1; }
     // fin de la validation
   }
-  // efface les groupes
-  $text=preg_replace ("/<r2r:(grmotcle|grperiode|grgeographie|grtitre|meta|grauteur)\b[^>]*>(.*?)<\/r2r:\\1>/si", // efface les champs auteurs et auteur
-		      "",$text);
+  //
+  // recherche les differents type d'index
+  //
+  include_once($home."connect.php");
+  $result=mysql_query("SELECT id,balise FROM $GLOBALS[tableprefix]typeindexs WHERE status>0") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result)) {
+    //$typeindex[$row[id]]=$row[balise];
+    $effacegroupere.="gr$row[balise]|";
+    $creegroupe.=gr_index($context,$index[$row[id]],$autresentrees[$row[id]],$row[balise]);
+  }
 
+  //
+  // efface les groupes
+  //
+  $text=preg_replace ("/<r2r:($effacegroupere|grtitre|meta|grauteur)\b[^>]*>(.*?)<\/r2r:\\1>/si", // efface les champs auteurs et auteur
+		      "",$text);
+  //
   // ajoute les groupes a la fin
+  //
   $text=preg_replace("/<\/r2r:article>/i",
 		     gr_auteur($context,$context[plusauteurs]).
-		     gr_motcle($context,$motcles).
-		     gr_indexh($context,$periodes,"periode").
-		     gr_indexh($context,$geographies,"geographie").
+		     $creegroupe.
 		     gr_titre($context).
 		     gr_meta($context)."\\0",
 		     $text);
@@ -231,46 +244,31 @@ function gr_auteur(&$context,$plusauteurs)
     return $rpl;
 }
 
-function gr_motcle(&$context,&$motcles)
+#function gr_motcle(&$context,&$motcles)
+#
+#{
+#  // traite les motcles
+#  if (!$context[option_motclefige]) $motcles=array_merge($motcles,preg_split ("/\s*[,;]\s*/",$context[autresmotcles]));
+#  $rpl="<r2r:grmotcle>";
+#  if ($motcles) {
+#    foreach ($motcles as $p) {
+#      $rpl.=writetag("motcle",strip_tags(rmscript(trim($p))));
+#    }
+#  }
+#  $rpl.="</r2r:grmotcle>";
+#  return $rpl;
+#}
 
-{
-  // traite les motcles
-  if (!$context[option_motclefige]) $motcles=array_merge($motcles,preg_split ("/\s*[,;]\s*/",$context[autresmotcles]));
-  $rpl="<r2r:grmotcle>";
-  if ($motcles) {
-    foreach ($motcles as $p) {
-      $rpl.=writetag("motcle",strip_tags(rmscript(trim($p))));
-    }
-  }
-  $rpl.="</r2r:grmotcle>";
-  return $rpl;
-}
-
-
-//function gr_periode(&$periodes)
-//
-//{
-//    // traite les periodes
-//    $rpl="<r2r:grperiode>";
-//
-//    if ($periodes) {
-//	foreach ($periodes as $p) {
-//	  $rpl.=writetag("periode",strip_tags(rmscript(trim($p))));
-//	}
-//    }
-//    $rpl.="</r2r:grperiode>\n";
-//    return $rpl;
-//}
-
-function gr_indexh(&$context,&$indexhs,$bal)
+function gr_index(&$context,$indexs,$autresentrees,$bal)
 
 {
   $bal=strtolower($bal);
-  // traite les indexhs
+  // traite les indexs
   $rpl="<r2r:gr$bal>";
+  $indexs=array_merge($indexs,preg_split ("/\s*[,;]\s*/",$autresentrees));
 
-  if ($indexhs) {
-    foreach ($indexhs as $p) {
+  if ($indexs) {
+    foreach ($indexs as $p) {
       $rpl.=writetag($bal,strip_tags(rmscript(trim($p))));
     }
   }
@@ -320,58 +318,67 @@ function makeselecttypedoc()
   }
 }
 
-function makeselectperiodes()
-{ makeselectindexhs("periode",TYPE_PERIODE); }
-function makeselectgeographies()
-{ makeselectindexhs("geographie",TYPE_GEOGRAPHIE); }
+#function makeselectperiodes()
+#{ makeselectindexhs("periode",TYPE_PERIODE); }
+#function makeselectgeographies()
+#{ makeselectindexhs("geographie",TYPE_GEOGRAPHIE); }
 
 
-function makeselectindexhs ($bal,$type)
+
+function makeselectindex (&$context)
+     // le context doit contenir les informations sur le type a traiter
 {
-  global $context,$text;
-  # extrait les periodes du texte
-  preg_match_all("/<r2r:$bal\b[^>]*>(.*?)<\/r2r:$bal>/is",$text,$indexhs,PREG_PATTERN_ORDER);
-#  print_r($indexhs[1]);
+  global $text;
+  preg_match_all("/<r2r:$context[balise]\b[^>]*>(.*?)<\/r2r:$context[balise]>/is",$text,$indexs,PREG_PATTERN_ORDER);
 
-  makeselectindexhs_rec(0,"",$indexhs,$type);
+  $entreestrouvees=array();
+  makeselectindex_rec(0,"",$indexs,$context,&$entreestrouvees);
+#  echo "la:";
+#  print_r($indexs[1]);
+#  echo "la2:";
+#  print_r($entreestrouvees);
+  $context[autresentrees]=join(", ",array_diff($indexs[1],$entreestrouvees));
+#  echo "autresnetrees  $context[autresentrees]";
 }
 
-function makeselectindexhs_rec($parent,$rep,$indexhs,$type)
+function makeselectindex_rec($parent,$rep,$indexs,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM indexhs WHERE status>=-1 AND parent='$parent' AND type='$type' ORDER BY ordre") or die (mysql_error());
+  $result=mysql_query("SELECT id, abrev, nom FROM indexs WHERE status>=-1 AND parent='$parent' AND type='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
-    $selected=in_array($row[abrev],$indexhs[1]) ? " SELECTED" : "";
-    echo "<OPTION VALUE=\"$row[abrev]\"$selected>$rep$row[nom]</OPTION>\n";
-    makeselectindexhs_rec($row[id],$rep.$row[nom]."/",$indexhs,$type);
+    $selected=(in_array($row[abrev],$indexs[1]) || in_array($row[nom],$indexs[1])) ? " selected" : "";
+   if ($selected) array_push($entreestrouvees,$row[nom],$row[abrev]);
+   $value=$context[useabrev] ? $row[abrev] : $row[nom];
+    echo "<option value=\"$value\"$selected>$rep$row[nom]</option>\n";
+    makeselectindex_rec($row[id],$rep.$row[nom]."/",$indexs,$context,&$entreestrouvees);
   }
 }
 
 
-function makeselectmotcles()
-
-{
-  global $context,$text;
-
-  if (!$context[option_motclefige]) $critere="type=".TYPE_MOTCLE." OR";
-  $result=mysql_query("SELECT mot FROM indexls WHERE status>=-1 AND ($critere type=".TYPE_MOTCLE_PERMANENT.") GROUP BY mot ORDER BY mot") or die (mysql_error());
-
-  # extrait les motcles du texte
-  preg_match_all("/<r2r:motcle\b[^>]*>(.*?)<\/r2r:motcle\s*>/is",$text,$motcles,PREG_PATTERN_ORDER);
-
-  $motclestrouves=array();
-
-  while ($row=mysql_fetch_assoc($result)) {
-    $selected=in_array($row[mot],$motcles[1]) ? " selected" : "";
-    if ($selected) array_push($motclestrouves,$row[mot]);
-    echo "<option value=\"$row[mot]\"$selected>$row[mot]</option>\n";
-  }
-#  print_r($motcles[1]);
-#  print_r($motclestrouves);
-#  print_r(array_diff($motcles[1],$motclestrouves));
-  if (!$context[option_motclefige]) $GLOBALS[context][autresmotcles]=join(", ",array_diff($motcles[1],$motclestrouves));
-}
+#function makeselectmotcles()
+#
+#{
+#  global $context,$text;
+#
+#  if (!$context[option_motclefige]) $critere="type=".TYPE_MOTCLE." OR";
+#  $result=mysql_query("SELECT mot FROM indexls WHERE status>=-1 AND ($critere type=".TYPE_MOTCLE_PERMANENT.") GROUP BY mot ORDER BY mot") or die (mysql_error());
+#
+#  # extrait les motcles du texte
+#  preg_match_all("/<r2r:motcle\b[^>]*>(.*?)<\/r2r:motcle\s*>/is",$text,$motcles,PREG_PATTERN_ORDER);
+#
+#  $motclestrouves=array();
+#
+#  while ($row=mysql_fetch_assoc($result)) {
+#    $selected=in_array($row[mot],$motcles[1]) ? " selected" : "";
+#    if ($selected) array_push($motclestrouves,$row[mot]);
+#    echo "<option value=\"$row[mot]\"$selected>$row[mot]</option>\n";
+#  }
+##  print_r($motcles[1]);
+##  print_r($motclestrouves);
+##  print_r(array_diff($motcles[1],$motclestrouves));
+#  if (!$context[option_motclefige]) $GLOBALS[context][autresmotcles]=join(", ",array_diff($motcles[1],$motclestrouves));
+#}
 
 
 

@@ -19,7 +19,7 @@ require_once($home."extrainfofunc.php");
 
 if ($edit || $plusauteurs) {
 
-  if (ei_edition($filename,$row,$context,$text,$motcles,$periodes,$geographies)) { // ca marcher... on termine
+  if (ei_edition($filename,$row,$context,$text,$index,$autresentrees)) { // ca marcher... on termine
     $iddocument=ei_enregistrement($filename,$row,$context,$text);
     //
     // termine en redirigeant correctement
@@ -49,10 +49,8 @@ foreach ($balises_sstag as $b) {
 
 posttraitement($context);
 
-
 update_tache_etape($id,3); // etape 3
 $context[id]=$id;
-$context[interactive]=$interactive;
 
 include ($home."calcul-page.php");
 calcul_page($context,"extrainfo");

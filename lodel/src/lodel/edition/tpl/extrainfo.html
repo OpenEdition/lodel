@@ -126,65 +126,31 @@
 		</tr>
 	</table>
 
-	<IF COND="![#OPTION_PASDEMOTCLE]">
+	<LOOP NAME="typeindexs" TABLE="typeindexs" WHERE="ok">
 		<br />
 		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 			<tr>
 				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Mots cl&eacute;s</td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
 			</tr>
 		</table>
 		<br />
 	
 		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 			<tr>
-				<td width="200" valign="top">Mots Cles (*) :</td>
+				<td width="200" valign="top">[#TITRE] (*) :</td>
 				<td>
-					<select multiple size="10" name="motcles[]"><? makeselectmotcles(); ?></select><br />
-					<IF COND="![#OPTION_MOTCLEFIGE]">
-						<br /><br />Autres : <input size="60" type="text" name="autresmotcles" value="[#AUTRESMOTCLES]"><br /><br />
-						* mots séparés par des virgules ou point-virgules.
+					<select multiple size="10" name="index[[#ID]][]"><? makeselectindex($context); ?></select><br />
+					<IF COND="[#NEWIMPORTABLE]">
+						<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
+						* noms séparés par des virgules ou point-virgules.
+					<ELSE/>
+						<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
 					</IF>
 				</td>
 			</tr>
 		</table>
-	</IF>
-
-	<IF COND="![#OPTION_PASDEPERIODE]">
-		<br />
-		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-			<tr>
-				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Périodes</td>
-			</tr>
-		</table>
-		<br />
-
-		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-			<tr>
-				<td width="200" valign="top">Periodes (*) :</td>
-				<td align="left"><select multiple size="10" name="periodes[]"><? makeselectperiodes(); ?></select></td>
-			</tr>
-		</table>
-	</IF>
-	
-	<IF COND="![#OPTION_PASDEGEOGRAPHIE]">
-		<br />
-		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-			<tr>
-				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Zone Géographique</td>
-			</tr>
-		</table>
-		<br />
-
-		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-			<tr>
-				<td width="200" valign="top">Geographies (*) :</td>
-				<td><select multiple size="10" name="geographies[]"><? makeselectgeographies(); ?></select></td>
-			</tr>
-		</table>
-	</IF>
+	</LOOP>
 
 	<IF COND="![#IMPORTSOMMAIRE]">
 		<br /><br />

@@ -271,6 +271,31 @@ function lock_write()
 	mysql_query("LOCK TABLES $GLOBALS[tableprefix]".join (" WRITE ,".$GLOBALS[tableprefix],$list)." WRITE") or die (mysql_error());
 }
 
+#function prefix_keys($prefix,$arr)
+#
+#{
+#  if (!$arr) return $arr;
+#  foreach ($arr as $k=>$v) $outarr[$prefix.$k]=$v;
+#  return $outarr;
+#}
+
+function array_merge_withprefix($arr1,$prefix,$arr2)
+
+{
+  if (!$arr2) return $arr1;
+  foreach ($arr2 as $k=>$v) $arr1[$prefix.$k]=$v;
+  return $arr1;
+}
+
+#function extract_options($context,$listoptions)
+#
+#{
+#  $newoptions=array();
+#  foreach ($listoptions as $opt) { if ($context["option_$opt"]) $newoptions["option_$opt"]=1; }
+#  return serialize($newoptions);
+#}
+
+
 
 // valeur de retour, identifiant ce script
 return 568;

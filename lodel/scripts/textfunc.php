@@ -310,4 +310,18 @@ function replacequotationmark(&$text)
 {
         return str_replace("\"","&quot;",$text);
 }
+
+// fonction utiliser pour les options.
+function yes ($texte)
+
+{ return $texte ? "checked" : "";}
+
+function no ($texte)
+
+{ return !$texte ? "checked" : "";}
+
+function eq($str,$texte)
+
+{ return $texte==$str ? "checked" : ""; }
+
 ?>

@@ -62,10 +62,10 @@ if ($edit) { // modifie ou ajoute
 //
 // creation de la DataBase si besoin
 //
-$context[dbname]=$multidatabases ? $database."_".$context[rep] : $database;
+$context[dbname]=$singledatabase ? $database : $database."_".$context[rep];
 if ($tache=="createdb") {
   if (!$context[rep]) die ("probleme interne");
-  if ($multidatabases) {
+  if (!$singledatabase) {
     include_once ($home."connect.php");
     $context[dbname]=$database."_".$context[rep];
     $context[command]="CREATE DATABASE  IF NOT EXISTS $context[dbname]";
@@ -82,7 +82,7 @@ if ($tache=="createdb") {
 
 if ($tache=="grant") {
   if (!$context[rep]) die ("probleme interne");
-  if ($multidatabases) {
+  if (!$singledatabase) {
     $pass=$dbpasswd ? "IDENTIFIED BY '$dbpasswd'" : "";
     $context[command]="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
     if (!@mysql_query($context[command]." $pass")) {
@@ -118,23 +118,24 @@ if ($tache=="createtables") {
     $cmd=trim($cmd);
     if ($cmd && !@mysql_query($cmd)) array_push($erreur,$cmd,mysql_error());
   }
+
   if ($erreur) {
+    $context[erreur_createtables]=$erreur;
+    function boucle_erreurs_createtables(&$context,$funcname)
+    {
+      $erreur=$context[erreur_createtables];
+      do {
+	$localcontext[command]=array_shift($erreur);
+	$localcontext[error]=array_shift($erreur);
+	call_user_func("code_boucle_$funcname",array_merge($context,$localcontext));
+      } while ($erreur);
+    }
     require ($home."calcul-page.php");
     calcul_page($context,"revue-createtables");
     return;
   }
 
   $tache="createrep";
-
-  function boucle_erreurs_createtables(&$context,$funcname)
-    {
-      global $erreur;
-      do {
-	$localcontext[command]=array_shift($erreur);
-	$localcontext[erreur]=array_shift($erreur);
-	call_user_func("code_boucle_$funcname",array_merge($context,$localcontext));
-      } while ($erreur);
-    }
 }
 
 
