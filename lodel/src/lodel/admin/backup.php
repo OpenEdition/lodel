@@ -41,7 +41,7 @@ if ($backup) {
   // lock les tables
   require($home."backupfunc.php");
 
-  lock_write_all($currentdb);
+#  lock_write_all($currentdb);
 
   $outfile="site-$site.sql";
   $uselodelprefix=true;
@@ -55,16 +55,13 @@ if ($backup) {
   $archivetmp=tempnam($tmpdir,"lodeldump_");
   $archivefilename="site-$site-".date("dmy").".tar.gz";
 
-  chdir ("../..");
-
-
   $dirs=$sqlonly ? "" : "--exclude=lodel/sources/.htaccess --exclude=docannexe/fichier/.htaccess --exclude=docannexe/image/index.html lodel/sources docannexe";
+#  echo "/bin/tar czf $archivetmp -C ".SITEROOT." $dirs -C $tmpdir $outfile\n"; flush();
 
-  system("/bin/tar czf $archivetmp $dirs -C $tmpdir $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
+  system("/bin/tar czf $archivetmp -C ".SITEROOT." $dirs -C ".($tmpdir[1]=="/" ? $tmpdir : "lodel/admin/".$tmpdir)." $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
   if (!file_exists($archivetmp)) die ("ERROR: the tar command does not produce any output");
   @unlink($tmpdir."/".$outfile); // delete the sql file
 
-  chdir ("lodel/admin");
   unlock();
   if (operation($operation,$archivetmp,$archivefilename,&$context)) return;
 
