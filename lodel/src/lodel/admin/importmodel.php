@@ -88,7 +88,7 @@ if ($fichier && $delete) {
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
   if (!$err) {
-    if ($frominstall) { header ("location: ../edition"); die(); }
+    if ($frominstall) { header ("location: ../edition/index.php"); die(); }
     back();
   }
 } else {
