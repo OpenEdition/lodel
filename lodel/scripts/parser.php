@@ -10,10 +10,10 @@ function parse ($in,$out)
   if (!file_exists($in)) die ("impossible de lire $in");
   $file = join('',file($in));
 
-  $contents=stripcomment($file);
+  $contents=stripcommentandcr($file);
 
 // cherche les fichiers a inclure
-  preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>/",$contents,$results,PREG_SET_ORDER);
+  preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>\s*\n?/",$contents,$results,PREG_SET_ORDER);
 
   foreach($results as $result) {
     	$contents=str_replace($result[0],"",$contents); // efface le use
@@ -26,7 +26,7 @@ function parse ($in,$out)
 	  die ("le fichier macros $result[1] n'existe pas");
 	}
   }
-  $macros=stripcomment($macros);
+  $macros=stripcommentandcr($macros);
 
   // parse les macros
   parse_macros($contents,$macros);
@@ -699,10 +699,10 @@ function parse_macros(&$text,&$macros)
     if (!preg_match_all($search,$text,$defs,PREG_SET_ORDER)) 
       if (!preg_match_all($search,$macros,$defs,PREG_SET_ORDER)) { die ("erreur: la macro $result[2] n'est pas definie"); }
     $def=array_pop($defs); // recupere la derniere definission
-    $def[1]=preg_replace("/(^\r?\n|\r?\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
+    $def[1]=preg_replace("/(^\n|\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
     $text=str_replace($result[0],$def[1],$text);
   }
-  $text=preg_replace("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>/s","",$text);
+  $text=preg_replace("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>\s*\n?/s","",$text);
 }
 
 
@@ -757,13 +757,15 @@ function stripcomment(&$text)
 #    if (!preg_match("/javascript/i",$comment)) str_replace
 #  }
 
-  return preg_replace (array("/(<SCRIPT\b[^>]*>[\s\n\r]*)<!--+/i",
-			     "/--+>([\s\n\r]*<\/SCRIPT>)/i",
-			     "/<!--.*?-->/s",
+  return preg_replace (array("/\r/",
+			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",
+			     "/--+>([\s\n]*<\/SCRIPT>)/i",
+			     "/<!--.*?-->\s*\n?/s",
 			     "/<SCRIPT\b[^>]*>/i",
 			     "/<\/SCRIPT>/i"
 			     ),
-		       array("\\1",
+		       array("",
+			     "\\1",
 			     "\\1",
 			     "",
 			     "\\0<!--",
