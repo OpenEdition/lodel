@@ -111,8 +111,7 @@
 <!ELEMENT %r2r.grauteur.qname; %r2r.grauteur.content; >
 
 
-<!ENTITY % r2r.auteur.content "( %r2r.nompersonne.qname; , %r2r.affiliation.qname;? , %r2r.courriel.qname;?)" >
-
+<!ENTITY % r2r.auteur.content "( %r2r.nompersonne.qname; , %r2r.description.qname;? )" >
 
 <!ELEMENT %r2r.auteur.qname; %r2r.auteur.content; >
 <!ATTLIST %r2r.auteur.qname; ordre CDATA #REQUIRED >
@@ -131,14 +130,8 @@
 <!ELEMENT %r2r.prenom.qname; %r2r.prenom.content; >
 
 
-<!ENTITY % r2r.affiliation.content "(#PCDATA | %Flow.mix; )* " >
-<!ELEMENT %r2r.affiliation.qname; %r2r.affiliation.content; >
-
-
-<!ENTITY % r2r.courriel.content "( #PCDATA )" >
-<!ELEMENT %r2r.courriel.qname; %r2r.courriel.content; >
-
-
+<!ENTITY % r2r.description.content "( #PCDATA | %Flow.mix; )*" >
+<!ELEMENT %r2r.description.qname; %r2r.description.content; >
 
 
 <!-- Groupe Geographie -->

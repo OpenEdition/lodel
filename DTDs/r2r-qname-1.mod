@@ -81,12 +81,11 @@
 <!-- Groupe Auteur -->
 <!ENTITY % r2r.grauteur.qname "%r2r.pfx;grauteur" >
 <!ENTITY % r2r.auteur.qname "%r2r.pfx;auteur" >
-<!ENTITY % r2r.affiliation.qname "%r2r.pfx;affiliation" >
 <!ENTITY % r2r.nompersonne.qname "%r2r.pfx;nompersonne" >
 <!ENTITY % r2r.prefix.qname "%r2r.pfx;prefix" >
 <!ENTITY % r2r.nomfamille.qname "%r2r.pfx;nomfamille" >
 <!ENTITY % r2r.prenom.qname "%r2r.pfx;prenom" >
-<!ENTITY % r2r.courriel.qname "%r2r.pfx;courriel" >
+<!ENTITY % r2r.description.qname "%r2r.pfx;description" >
 
 
 <!-- Groupe Geographie -->
