@@ -609,7 +609,7 @@ if ($rootlodelconfig_exists && !is_readable(LODELROOT.$file)) {
 if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // are they different ?
   @unlink(LODELROOT.$file);
   if (@copy($lodelconfig,LODELROOT.$file)) { // let copy
-    @chmod(LODELROOT.$file,0666 & $GLOBALS[filemask]);
+    @chmod(LODELROOT.$file,0666 & octdec($GLOBALS['filemask']));
   } else { // error
     include ("tpl/install-lodelconfig.html");
     return;
