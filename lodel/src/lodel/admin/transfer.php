@@ -518,7 +518,7 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	  $row[lien]=$dest;
 	}
 
-	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_documents (identite,titre,commentaire,lien) VALUES ('$id','$row[titre]','$row[commentaire]','$row[lien]')");
+	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_documents (identite,titre,commentaireinterne,lien) VALUES ('$id','$row[titre]','$row[commentaire]','$row[lien]')");
 	if ($err) break;
       }
       if ($err) break;
