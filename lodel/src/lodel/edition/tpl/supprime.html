@@ -16,7 +16,8 @@
   </tr>
   
 <tr>
-    <td align="center"> <div align="center"><IF COND="[#NOM]"> 
+    <td align="center"> <div align="center">
+	<IF COND="[#NOM]"> 
       <!-- Suppression d'un publication -->
       <font color="Red">Confirmer la suppression de la publication suivante ?</font><br />
       <br />
@@ -25,6 +26,8 @@
         <input class="form" type="submit" name="supprime" value="Supprimer">
         <input type="hidden" name="publication" value="[#ID]">
       </form>
+	  <br /><br />
+	  <a href="index.php?id=[#PARENT]"><b><font size="+1">Annuler</font></b></a></div>
       <ELSE/> 
       <!-- Suppression d'un document -->
       Confirmer la suppression du document suivant ?<br />
@@ -34,9 +37,9 @@
         <input class="form" type="submit" name="supprime" value="Supprimer">
         <input type="hidden" name="id" value="[#ID]">
       </form>
-      </IF> <br />
-<br />
-<a href="[#URL_RETOUR]"><b><font size="+1">Annuler</font></b></a></div>
+	  <br /><br />
+	  <a href="index.php?id=[#PUBLICATION]"><b><font size="+1">Annuler</font></b></a></div>
+      </IF> 
 </td>
 </tr>
 </table>
