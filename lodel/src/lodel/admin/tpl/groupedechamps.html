@@ -26,6 +26,12 @@
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
 		</tr>
 		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+		<IF COND="[#ADMINLODEL]">    
+		<tr>
+			<td class="texte_intitule">Type d'entree protégé:</td>
+			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>
+		</tr>
+		</IF>
 	</table>
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
