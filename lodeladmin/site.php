@@ -232,10 +232,10 @@ if ($task=="createtables") {
   $text=join('',file(LODELROOT."$versiondir/install/init-site.sql"));
 
   $text.="\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoousername','s','$servoousername','32','1');\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('signalermail','s','inactif','32','1');\n"; 
+#  $text.="REPLACE INTO #_TP_options (name,type,value,status,rank) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
+#  $text.="REPLACE INTO #_TP_options (name,type,value,status,rank) VALUES ('servoousername','s','$servoousername','32','1');\n";
+#  $text.="REPLACE INTO #_TP_options (name,type,value,status,rank) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
+#  $text.="REPLACE INTO #_TP_options (name,type,value,status,rank) VALUES ('signalermail','s','inactif','32','1');\n"; 
 
   $sqlfile=lq($text);
 
