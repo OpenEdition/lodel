@@ -149,6 +149,30 @@
 </DEFMACRO>
 <!-- ************************************************** -->
 
+<!-- Macro rajoutée le 04/11/03 *********************** -->
+<!-- Macro servant à users.html                         -->
+<DEFMACRO NAME="AFFICHER_PRIVILEGE">
+	<IF COND="[#PRIVILEGE] EQ 128">
+		<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
+	<ELSE/>
+		<IF COND="[#PRIVILEGE] EQ 40">
+			<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur
+		<ELSE/>
+			<IF COND="[#PRIVILEGE] EQ 30">
+				<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />Editeur
+			<ELSE/>
+				<IF COND="[#PRIVILEGE] EQ 20">
+					<MACRO NAME="PNG_UTILISATEUR_VERT"><br />R&eacute;dacteur
+				<ELSE/>
+					<IF COND="[#PRIVILEGE] EQ 10">
+						<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />Visiteur
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+<!-- ************************************************** -->
 
 <!-- ************************************** Rajout intégration maquette ************************************** -->
 <DEFMACRO NAME="JS_ROLLOVER">
