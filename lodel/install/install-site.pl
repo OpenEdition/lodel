@@ -46,7 +46,7 @@ $filemask|=0200 if $droitecriture=~/u/;
 $filemask|=0020 if $droitecriture=~/g/;
 $filemask|=0002 if $droitecriture=~/a/;
 
-printf "%o",$filemask;
+#printf "%o",$filemask;
 
 unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
   print STDERR "Veuillez preciser un numero de version ou devel\n";
@@ -84,7 +84,7 @@ if (-e "siteconfig.php") {
       exit;
     }
     if ($version!=$checkversion) {
-      print "La version dans siteconfig.php $checkversion est differente de $version\n";
+      print STDERR "La version dans siteconfig.php $checkversion est differente de $version\n";
       exit;
     }
   } else {
@@ -124,8 +124,8 @@ foreach (<FILE>) {
     unless (-e $arg1) {
       mkdir ($arg1,oct($arg2) & $filemask);
     } else {
-      print $arg1," ";
-      printf "%o",oct($arg2) & $filemask;
+      #print $arg1," ";
+      #printf "%o",oct($arg2) & $filemask;
       chmod (oct($arg2) & $filemask,$arg1);
     }
   } elsif ($cmd eq "ln") {
