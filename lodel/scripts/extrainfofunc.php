@@ -129,8 +129,15 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
 
   if ($err || $context[plusauteurs]) {
     writefile ($balisefilename,$text);
-    return 0;
+    return FALSE;
   }
+  return TRUE;
+}
+
+function ei_enregistrement($filename,$row,&$context,&$text)
+
+{
+  global $home;
   //
   // enregistre
   //

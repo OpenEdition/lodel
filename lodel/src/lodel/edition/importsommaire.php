@@ -167,8 +167,13 @@ function mkxmldocument($text,$publication)
   $context=array();
   ei_pretraitement($filename,$row,$context,$text);
 
-  if (!$context[lang1]) $context[lang1]="fr"; // langue par defaut
-  // extraction des motcles, des periodes et des geographies du texte
+  if (!$context[lang1]) {
+    $context[lang1]="fr"; // langue par defaut
+    $text=preg_replace(array("/(<r2r:texte\b[^>]+)\blang\s*=\s*\"[^\"]*\"/i","/(<r2r:texte\b[^>]*?)\s*>/i"),
+		       array("\\1","\\1 lang=\"$context[lang1]\">"),$text);
+  }
+
+/* plus utile  // extraction des motcles, des periodes et des geographies du texte
   $balises=array("motcle","periode","geographie");
 
   foreach ($balises as $b) {
@@ -178,8 +183,9 @@ function mkxmldocument($text,$publication)
       $$b=array();
     }
   }
+*/
 
-  if (!ei_edition($filename,$row,$context,$text,$motcle,$periode,$geographie)) die ("erreur dans ei_edition");
+  ei_enregistrement($filename,$row,$context,$text);
 }
 
 ?>
