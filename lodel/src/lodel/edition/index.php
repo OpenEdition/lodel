@@ -53,6 +53,7 @@ if (!$_GET['do'] && !$_POST['do']) {
  } else {
   $base="edition";
  }
+ 
   $view->renderCached($context,$base);
   return;
 } else {
@@ -65,6 +66,8 @@ if (!$_GET['do'] && !$_POST['do']) {
     // well... nothing to do
   } elseif ($do=="move" || $do=="preparemove" || $do=="changestatus" || $do=="download") {
     $lo="entities_advanced";
+  } elseif ($do=="cleanIndex" || $do=="deleteIndex" || $do=="addIndex"){//added by Jean Lamy | 2005-01-28
+  	$lo="entities_index";
   } elseif ($do=="view" || $do=="edit") {
     $lo="entities_edition";
   } elseif ($do=="import") {
@@ -76,6 +79,7 @@ if (!$_GET['do'] && !$_POST['do']) {
 			     "entities_advanced",
 			     "entities_edition",
 			     "entities_import",
+			     "entities_index", //added by Jean Lamy | 2005-01-28
 			     "tasks"),$lo);
 }
 
