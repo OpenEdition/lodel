@@ -616,4 +616,15 @@ function removespace($text) {
   return str_replace(" ","",$text);
 }
 
+/*
+ * Bootstrap pour sprintf 
+ * affiche l'argument selon le format
+ */
+
+function format($text,$format)
+
+{
+  return sprintf($format,$text);
+}
+
 ?>
