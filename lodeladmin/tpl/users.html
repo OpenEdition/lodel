@@ -4,50 +4,50 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
-<div align="center"><br>
-  <br>
-  <A HREF="user.php"><b>Ajouter un utilisateur</b></A> </div>
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
-<TR><TD align="center"><b>Login (identifiant court)</b></TD><TD align="center">
+<div align="center"><br />
+  <br />
+  <a href="user.php"><b>Ajouter un utilisateur</b></a> </div>
+<table width="800" cellpadding="5" cellspacing="1" border="1" align="CENTER">
+<tr><td align="center"><b>Login (identifiant court)</b></td><td align="center">
       <div align="center"><b>Nom</b></div>
-    </TD><TD align="center">
+    </td><td align="center">
       <div align="center"><b>Courriel</b></div>
-    </TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR>
+    </td><td>&nbsp;</td><td>&nbsp;</td></tr>
 <LOOP NAME="auteurs" TABLE="users" ORDER="nom" WHERE="status>0">
-<TR>
-    <TD><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></TD>
-<TD>[(#NOM|nbsp)]</TD>
-<TD><A HREF="mailto:[(#EMAIL|nbsp)]">[(#EMAIL|nbsp)]</A></TD>
-<TD><A HREF="user.php?id=[#ID]">Modifier</A></TD>
-<TD><A HREF="user.php?id=[#ID]&delete=1">Supprimer</A></TD>
-</TR>
+<tr>
+    <td><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></td>
+<td>[(#NOM|nbsp)]</td>
+<td><a href="mailto:[(#EMAIL|nbsp)]">[(#EMAIL|nbsp)]</a></td>
+<td><a href="user.php?id=[#ID]">Modifier</a></td>
+<td><a href="user.php?id=[#ID]&delete=1">Supprimer</a></td>
+</tr>
 </LOOP>
-</TABLE>
+</table>
 
 <LOOP NAME="auteurs_trash" TABLE="users" ORDER="nom" WHERE="trash">
 <BEFORE>
-<div align="center"><BR><b>Dans la poubelle:</b><BR></div><br>
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
-<TR><TD align="center"><b>Nom d'utilisateur</b></TD><TD align="center">
+<div align="center"><br /><b>Dans la poubelle:</b><br /></div><br />
+<table width="800" cellpadding="5" cellspacing="1" border="1" align="CENTER">
+<tr><td align="center"><b>Nom d'utilisateur</b></td><td align="center">
       <div align="center"><b>Nom</b></div>
-    </TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR>
+    </td><td>&nbsp;</td><td>&nbsp;</td></tr>
 </BEFORE>
 
-<TR>
-    <TD><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></TD>
-<TD>[#NOM]</TD>
-<TD><A HREF="user.php?id=[#ID]&restore=1">Récuperer</A></TD>
-<TD><A HREF="user.php?id=[#ID]&delete=2">Supprimer définitivement</A></TD>
-</TR>
-<AFTER></TABLE></AFTER>
+<tr>
+    <td><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></td>
+<td>[#NOM]</td>
+<td><a href="user.php?id=[#ID]&restore=1">Récuperer</a></td>
+<td><a href="user.php?id=[#ID]&delete=2">Supprimer définitivement</a></td>
+</tr>
+<AFTER></table></AFTER>
 </LOOP>
 
 
 </CENTER>
 
-</TD></TR>
+</td></tr>
 
-</TABLE>
+</table>
 
 <MACRO NAME="CLOSE_HTML">
 

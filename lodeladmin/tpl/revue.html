@@ -4,33 +4,33 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR><TD><div align="center">
-<br><br><b>Edition de revue</b></div></td></tr>
-</TABLE>
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
+<tr><td><div align="center">
+<br /><br /><b>Edition de revue</b></div></td></tr>
+</table>
 
-<div align="center"><TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
+<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
 
-<FORM METHOD="POST" ACTION="revue.php">
-<INPUT TYPE="hidden" name="edit" VALUE="1">
-<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
-<TR><TD><b>Nom:</b></TD>
-<TD><INPUT SIZE="30" TYPE="text" NAME="nom" value="[#NOM]"></TD>
-[(#ERREUR_NOM|true)<TD CLASS="erreur"><font color="Red">Il faut preciser un nom !</font></TD>]</TR>
-<TR><TD><b>Nom abrégé (répertoire):</b></TD>
-<TD><INPUT SIZE="30" TYPE="text" NAME="rep" value="[#REP]"></TD>
-[(#ERREUR_REP|true)<TD CLASS="erreur"><font color="Red">Il faut preciser un nom abrégé valide (sans accent, sans espace, sans caracteres speciales)</font></TD>]
-[(#ERREUR_REP_NOT_EXISTS|true)<TD CLASS="erreur"><font color="Red">Le répertoire spécifié n'existe pas, il faut le creer</font></TD>]
-</TR>
-<TR><TD><b>Sous titre:</b></TD>
-<TD><INPUT SIZE="30" TYPE="text" NAME="soustitre" value="[#SOUSTITRE]"></TD>
-</TD></TR>
-</TABLE><br>
+<form method="POST" action="revue.php">
+<input type="hidden" name="edit" value="1">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
+<tr><td><b>Nom:</b></td>
+<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
+[(#ERREUR_NOM|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom !</font></td>]</tr>
+<tr><td><b>Nom abrégé (répertoire):</b></td>
+<td><input size="30" type="text" name="rep" value="[#REP]"></td>
+[(#ERREUR_REP|true)<td CLASS="erreur"><font color="Red">Il faut preciser un nom abrégé valide (sans accent, sans espace, sans caracteres speciales)</font></td>]
+[(#ERREUR_REP_NOT_EXISTS|true)<td class="erreur"><font color="Red">Le répertoire spécifié n'existe pas, il faut le creer</font></td>]
+</tr>
+<tr><td><b>Sous titre:</b></td>
+<td><input size="30" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
+</td></tr>
+</table><br />
 
-<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
-</FORM>
+<input class="form" type="submit" value="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
+</form>
 
-[<A HREF="revue.php?delete=1&id=(#ID)">Supprimer</A>]
+[<a href="revue.php?delete=1&id=(#ID)">Supprimer</a>]
 </div>
 <MACRO NAME="CLOSE_HTML">
