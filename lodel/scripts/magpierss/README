@@ -6,3 +6,4 @@ Modifs:
 dans rss_fetch.inc ajout de la gestion du refresh par variable au lieu de la constante MAGPIE_CACHE_AGE
 dans rss_cache.inc ajout de: @chmod($cache_file,0666 & octdec($GLOBALS['filemask']));
 Suppression du trigger_error dans la fonction error
+Charset detection in <?xml encoding="blabl"?>

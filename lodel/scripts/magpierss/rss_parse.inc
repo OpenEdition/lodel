@@ -157,8 +157,19 @@ class MagpieRSS {
 						  "http://www.php.net/manual/en/ref.xml.php",
 						   E_USER_ERROR );
 		}
-		
-		$parser = @xml_parser_create();
+
+		# Ghislain:
+		# search for the xml encoding (regexp not 100% sure but very likely)
+		if (preg_match("/^<\?xml\s[^>]*encoding=\"([^\"]*)\"/",$source,$result)) {
+		  $charset=$result[1];
+		  #echo "CHARSET: $charset";
+		}
+
+		$parser = @xml_parser_create($charset);
+
+		# Ghislain:
+		# target encoding UTF-8
+		xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
 		
 		if (!is_resource($parser))
 		{
