@@ -90,8 +90,8 @@ Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans c
 <input type="hidden" name="tache" value="database">
 <table cellspacing="0" cellpadding="0">
 <tr>
-<th>
-&nbsp;
+<th>&nbsp;
+
 </th>
 <th>
 Base de données :
@@ -106,17 +106,20 @@ Base de données :
 </tr>
 	                  <?php
 	                     } else {
-	                     while ($row=mysql_fetch_row($resultshowdatabases)) {
-			     $dbname=$row[0];
-			     if ($database==$dbname) {
-			         $checked="checked"; $oneischecked=1;
-			     } else {
-			         $checked="";
-			     }
-                             }
-			  ?>
-			  <tr><td><input type="radio" name="newdatabase" value="<?php echo $dbname; ?>" <?php echo $checked; ?>></td><td><?php echo $dbname; ?></td></tr>
-		          <?php  } ?>
+	                     while ($row=mysql_fetch_array($resultshowdatabases)) {
+			     			$dbname=$row[0];
+			     			if ($database==$dbname) {
+			         			$checked="checked"; $oneischecked=1;
+			     			} else {
+			         			$checked="";
+			     			}
+                          
+			  			?>
+			  				<tr><td><input type="radio" name="newdatabase" value="<?php echo $dbname; ?>" <?php echo $checked; ?>></td><td><?php echo $dbname; ?></td></tr>
+		          <?php  
+							}
+						}
+			 ?>
 			  <tr><td><input type="radio" name="newdatabase" value="-2" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de données: <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
 			</table>
 </td></tr>
