@@ -82,9 +82,9 @@ function resize_image ($taille,$src,$dest)
 
     // cherche le type de l'image
     $result=getimagesize($src);
-    if ($result[2]==1) { $im=ImageCreateFromGIF($src); }
-    elseif ($result[2]==2) { $im=ImageCreateFromJPEG($src); }
-    elseif ($result[2]==3) { $im=ImageCreateFromPNG($src); }
+    if ($result[2]==1 && function_exists("ImageCreateFromGIF")) { $im=ImageCreateFromGIF($src); }
+    elseif ($result[2]==2 && function_exists("ImageCreateFromJPEG")) { $im=ImageCreateFromJPEG($src); }
+    elseif ($result[2]==3 && function_exists("ImageCreateFromPNG")) { $im=ImageCreateFromPNG($src); }
     else { return false; }
     if (!$im) return false; // erreur de chargement
 
@@ -103,13 +103,16 @@ function resize_image ($taille,$src,$dest)
       $height=$result2[2] ? $result2[2] : $result[1];
     }
 
-    $im2=@ImageCreateTrueColor($width,$height); // GD 2.0 ?
-    if ($im2) { // GD 2.0
+    if (function_exists("ImageCreateTrueColor")) { // GD 2.0
+      $im2=ImageCreateTrueColor($width,$height); // GD 2.0 ?
+      if (!$im2) return false;
       ImageCopyResampled($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
-    } else { // GD 1.0
-      $im2=@ImageCreate($width,$height);
+    } elseif (function_exists("ImageCreate")) { // GD 1.0
+      $im2=ImageCreate($width,$height);
       if (!$im2) return false;
       ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
+    } else {
+      return false;
     }
 
     if ($result[2]==1) { ImageGIF($im2,$dest); }
