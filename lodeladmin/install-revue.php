@@ -4,44 +4,58 @@ require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN);
 
-#ifndef LODELLIGHT
-if (!$rep) {
-  echo "Preciser une revue";
-  return;
-}
-#endif
-
-$revue=$rep;
-include ($home."connect.php");
 
 
-#ifndef LODELLIGHT
-$sqlfile=str_replace("_PREFIXTABLE_","",
-		     join('',file("../install/init-revue.sql")));
-#else
-#// met init.sql et init-revue.sql
-#$sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tableprefix]",
-#				   join('',file("init.sql"))
-#				   .join('',file("init-revue.sql")));
-#endif
+if ($create) {
+  extract_post();
 
-if (!$sqlfile) return;
-$sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
-if (!$sql) return;
+  $err=0;
+  do { // bloc de controle
+    if (!$rep) $err=$context[erreur_nomrepertoireabsent]=1; // 
+    if (preg_match("/\W/",$rep)) $err=$context[erreur_nomrepertoire]=1;
+    if (!$revue)  $err=$context[erreur_nomrevue]=1;
+    
+    if (!$err) break;
+    require ($home."calcul-page.php");
+    calcul_page($context,"install-revue");
+    return;
+  } while (0);
+  // ok, on cree la revue dans la base principale
+  include ($home."connect.php");
+  mysql_select_db($GLOBALS[database]);
+  mysql_query("INSERT ");
 
-?>
-<H1>Initialisation SQL</H1>
 
-<?
+    } else {
 
-foreach ($sql as $cmd) {
-  $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
-  if ($cmd) {
-    print "$cmd<BR>\n";
-    mysql_query($cmd) or print ("<font COLOR=red>".mysql_error()."</font><br>");
-    print "<BR>\n";
+    }
+
+
+
+  {
+  $revue=$rep;
+  include ($home."connect.php");
+
+  if (!file_exists("../install/init-revue.sql")) die ("impossible de faire l'installation, le fichier init-revue.sql est absent");
+
+  $sqlfile=str_replace("_PREFIXTABLE_",$tableprefix,
+		       join('',file("../install/init-revue.sql")));
+
+  $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
+  if (!$sqlcmds) die("le fichier init-revue.sql ne contient pas de commande. Probleme!");
+
+  $erreur_sqls=array();
+  foreach ($sqlcmds as $cmd) {
+    $cmd=trim($cmd);
+    if ($cmd && !mysql_query($cmd)) array_push($erreur_sqls,$cmd,mysql_error());
+  }
+  if ($erreur_sqls) {
+    require ($home."calcul-page.php");
+    calcul_page($context,"install-revue-errsql");
+    return;
   }
 }
+
 
 ?>
 
@@ -77,5 +91,9 @@ foreach ($dirs as $dir) {
 }
 
 #endif
+
+//
+// creation de l'administrateur de la revue
+//
 
 ?>

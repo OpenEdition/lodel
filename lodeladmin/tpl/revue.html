@@ -26,9 +26,13 @@
 <tr><td><b>Sous titre:</b></td>
 <td><input size="30" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
 </td></tr>
-</table><br />
+</table><br/>
 
-<input class="form" type="submit" value="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
+<IF COND="[#ID]">
+<input class="form" type="submit" value="Modifier"> <input class="form" type="submit" name="reinstalle" value="Réinstaller">
+<ELSE/>
+<input class="form" type="submit" value="Ajouter">
+</IF>
 </form>
 
 [<a href="revue.php?delete=1&id=(#ID)">Supprimer</a>]

@@ -1,5 +1,4 @@
-<html>
-<body>
+<? include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
 Configuration de la base de donnée.<br>
@@ -39,7 +38,7 @@ Base de données:<br>
 			</table>
 </td></tr>
 <tr><td>
-Multiple base de données<br>
+Bases de données séparées par revue<br>
 <input type="checkbox" name="newmultipledatabases" <? if ($mutlipledatabases) echo "checked"; ?>>
 </td></tr>
 <tr><td>
@@ -50,6 +49,4 @@ Préfix des tables:<br>
 <input type="submit" value="continuer">
 
 </form>
-
-</body>
-</html>
+<? include("tpl/install-closehtml.html"); ?>

@@ -46,7 +46,7 @@ $dbusername="";
 # Mot de passe
 $dbpasswd="";
 # Hote de la BD
-$dbhost="localhost";
+$dbhost="";
 
 # Repertoire contenant le binaire de mysql
 $mysqldir="/usr/bin";
@@ -68,8 +68,11 @@ $sessionname="session$database";
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration
-$includepath="";
-$multidatabases="";
+$includepath=""; # pour les revues qui ont un include automatique (defini par php.ini)
+$multidatabases=""; # les revues ont-elle leur propre DB
+$htaccess="oui";    # 
+$extensionscripts="";      # extension .php ou .html pour les scripts accessibles par les internautes 
+$usesymlink="";
 
 ############################################
 

@@ -48,196 +48,66 @@ if (-e "revueconfig.php") {
 }
 
 
+#############################################################################
+# charge le fichier d'install
 
 
+open (FILE,"$homerevue/../install/install-fichier.dat") or die ("impossible d'ouvrir install-fichier.dat");
 
-# si le groupe de l'utilisateur est www, alors faire: umask 0007
-umask 0007;
+my $dirsource=".";
+my $dirdest=".";
 
-mkdir "CACHE", 0770;
-mkdir "tpl", 0755;
-mkdir "images", 0755;
-mkdir "docannexe", 0770;
 
-####### .htaccess dans tpl et CACHE
+foreach (<FILE>) {
+  s/\#.*$//; # enleve les commentaires
+  chop;
+  next unless $_;
 
-htaccess ("tpl");
-htaccess ("CACHE");
+  my ($cmd,$arg1,$arg2)=split;
+  $arg1=~s/\$homerevue/$homerevue/g;
+  $arg2=~s/\$homerevue/$homerevue/g;
+  $arg1=~s/\$homelodel/../g;
+  $arg2=~s/\$homelodel/../g;
 
-######### repertoire revue
-
-print "Revue\n";
-
-slink ("../styles_lodel.css","styles_lodel.css");
-
-`/bin/cp $homerevue/styles_revue.css styles_revue.css` if (-e "$homerevue/styles_revue.css")&&!(-e "styles_revue.css");
-
-`/bin/cp -r $homerevue/images .` if (-e "$homerevue/images")&&!(-e "images");
-####copier images et style_revues.....
-
-@revuefile=(
-	    "auteur",
-	    "auteurs-complet",
-	    "auteurs",
-	    "chrono",
-	    "chronos-complet",
-	    "chronos",
-	    "document",
-            "geo",
-            "geos-complet",
-            "geos",
-	    "index",
-#	    "macros",
-	    "mot",
-	    "mots-complet",
-	    "mots",
-	    "signaler",
-	    "sommaire");
-
-foreach (@revuefile) {
-  slink ("$homerevue/$_.php","$_.html");
+  # quelle commande ?
+  if ($cmd eq "dirsource") {
+    $dirsource=$arg1;
+  } elsif ($cmd eq "dirdestination") {
+    $dirdest=$arg1;
+  } elsif ($cmd eq "mkdir") {
+    mkdir $arg1,oct($arg2);
+  } elsif ($cmd eq "ln") {
+    $toroot="$dirdest/$arg1"; $toroot=~s/^\.\///g; 
+    $toroot=~s/([^\/]+)\//..\//g;
+    $toroot=~s/[^\/]+$//;
+#    print STDERR "3 $dirdest $dirsource $toroot $arg1\n";
+    slink("$toroot$dirsource/$arg1","$dirdest/$arg1") unless -e "$dirdest/$arg1";
+  } elsif ($cmd eq "cp") {
+    system ("cp -fr $dirsource/$arg1 $dirdest/$arg1") unless filemtime("$dirdest/$arg1")>filemtime(" $dirsource/$arg1");
+  } elsif ($cmd eq "touch") {
+    system ("touch $dirdest/$arg1");
+  } elsif ($cmd eq "htaccess") {
+    htaccess("$dirdest/$arg1") unless -e "$dirdest/$arg1";
+  } else {
+    die ("command inconnue: \"$cmd\"");
+  }
 }
 
-slink ("../lodel/admin/login.php","login.php");
-slink ("../lodel/admin/logout.php","logout.php");
-slink ("../$homerevue/lodel/admin/tpl/login.html","tpl/login.html");
-slink ("../$homerevue/lodel/edition/tpl/desk.html","tpl/desk.html");
+close FILE;
+
+#############################################################################
 
 
-mkdir "lodel", 0755;
-mkdir "lodel/txt", 0770;
-mkdir "lodel/rtf", 0770;
 
-htaccess ("lodel/txt");
-htaccess ("lodel/rtf");
+sub filemtime {
 
-########### edition
-print "Edition\n";
+#  ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,
+#   $atime,$mtime,$ctime,$blksize,$blocks)
+   @res = stat $_[0];
 
-mkdir "lodel/edition", 0755;
-mkdir "lodel/edition/tpl", 0755;
-mkdir "lodel/edition/CACHE", 0770;
-chdir "lodel/edition";
-htaccess ("CACHE");
-htaccess ("tpl");
-
-slink ("../../lodelconfig.php","lodelconfig.php");
-slink ("../../revueconfig.php","revueconfig.php");
-slink ("../../styles_revue.css","styles_revue.css");
-slink ("../../styles_lodel.css","styles_lodel.css");
-slink ("../../$homerevue/lodel/edition/maj.php","maj.php");
-slink ("../../$homerevue/lodel/edition/images","images");
-slink ("../../../lodel/admin/login.php","login.php");
-slink ("../../../lodel/admin/logout.php","logout.php");
-slink ("../../../$homerevue/lodel/admin/tpl/login.html","tpl/login.html");
-slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
-
-@editionfile=("a_editer",
-	      "abandon",
-	      "balisage",
-	      "chargement",
-	      "oochargement",
-	      "chargesommaire",
-	      "chkbalisage",
-          "docannexe",
-   		  "deskedition",
-	      "metaimage",
-	      "editer",
-	      "deplacer",
-	      "publi",
-	      "status",
-	      "extrainfo",
-	      "importsommaire",
-	      "index",
-	      "edition",
-	      "edition-lineaire",
-	      "edition-hierarchique",
-	      "edition-numero",
-	      "edition-regroupement",
-	      "edition-theme",
-	      "publication",
-	      "publications_protegees",
-	      "supprime",
-	      "macros",
-		  "fonctionsavancees",
-		  "fonctionsavancees-document",
-		  "fonctionsavancees-publication"
-);
-
-foreach (@editionfile) {
-  slink ("../../$homerevue/lodel/edition/$_.php","$_.php") if -e "../../$homerevue/lodel/edition/$_.php";
-  slink ("../../../$homerevue/lodel/edition/tpl/$_.html","tpl/$_.html") if -e "../../$homerevue/lodel/edition/tpl/$_.html";
+  return $res[9];
 }
 
-
-chdir "../..";
-
-############# admin
-
-print "Admin\n";
-
-mkdir "lodel/admin", 0755;
-mkdir "lodel/admin/tpl", 0755;
-mkdir "lodel/admin/CACHE", 0770;
-mkdir "lodel/admin/upload", 0770;
-
-chdir "lodel/admin";
-htaccess ("CACHE");
-htaccess ("tpl");
-
-@adminfile=(
-	    "index",
-	    "deskadmin",
-	    "motcle",
-	    "motcles",
-	    "indexl",
-	    "options",
-	    "periode",
-	    "periodes",
-	    "geographie",
-	    "geographies",
-	    "indexh",
-	    "r2rcheck",
-	    "r2renregistre",
-	    "rmdb",
-	    "stats",
-	    "texte",
-	    "textes",
-	    "typedoc",
-	    "typedocs",
-	    "typepubli",
-	    "typepublis",
-	    "backup",
-	    "import",
-	    "users",
-	    "user",
-	    "session",
-	    "macros",
-	    "cleanxml"
-);
-
-slink ("../../lodelconfig.php","lodelconfig.php");
-slink ("../../revueconfig.php","revueconfig.php");
-slink ("../../styles_revue.css","styles_revue.css");
-slink ("../../styles_lodel.css","styles_lodel.css");
-slink ("../../../lodel/admin/login.php","login.php");
-slink ("../../../lodel/admin/logout.php","logout.php");
-slink ("../../$homerevue/lodel/admin/images","images");
-slink ("../../../$homerevue/lodel/admin/tpl/login.html","tpl/login.html");
-slink ("../../../$homerevue/lodel/admin/tpl/macros.html","tpl/macros.html");
-
-foreach (@adminfile) {
-  slink ("../../$homerevue/lodel/admin/$_.php","$_.php") if -e "../../$homerevue/lodel/admin/$_.php";
-  slink ("../../../$homerevue/lodel/admin/tpl/$_.html","tpl/$_.html") if -e "../../$homerevue/lodel/admin/tpl/$_.html";
-}
-chdir "../..";
-
-### index
-@touchfile=("docannexe/index.html","lodel/index.html","lodel/admin/upload/index.html");
-foreach (@touchfile) {
-  open (FILE,">$_") or die "impossible de creer $_\n";
-  close (FILE);
-}
 
 
 sub slink {
