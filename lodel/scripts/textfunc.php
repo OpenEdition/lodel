@@ -345,10 +345,11 @@ function vignette($text,$width)
   //  if (preg_match("/^<img\b[^>]+src=\"([^\">]+)\"/",$text,$result)) $text=$result[1];
   if (!$text) return;
 
-  return $text;
   if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/",$text)) {
     return "invalid path to image";
   }
+  return $text;
+
   if (defined("SITEROOT")) $text=SITEROOT.$text;
   if (!file_exists($text)) return "file does not exist";
 
