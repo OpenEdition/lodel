@@ -61,20 +61,19 @@ if ($edit) { // modifie ou ajoute
 
     // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
-      $result=mysql_query ("SELECT options,statut FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
-      list($options,$statut)=mysql_fetch_row($result);
+      $result=mysql_query ("SELECT options,statut,rep FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
+      list($options,$statut,$oldrep)=mysql_fetch_row($result);
     } else {
       $options=""; $statut=-32; // -32 signifie en creation
     }
     if ($reinstalle) $statut=-32;
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,soustitre,options,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$statut')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,url,soustitre,options,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[url]','$context[soustitre]','$options','$statut')") or die (mysql_error());
 
     if ($statut>-32) back(); // on revient, le site n'est pas en creation
 
     if (!$id) $context[id]=$id=mysql_insert_id();
-    $tache="version"; 
-
+    $tache="version";
   } while (0);
 
 } elseif ($id>0) {
@@ -99,7 +98,7 @@ if ($tache=="version") {
     {
       global $lodelhomere;
       $dir=opendir(LODELROOT);
-      if (!$dir) die ("impossible d'acceder en ecirture le repertoire racine... etrange, n'est-il pas ?");
+      if (!$dir) die ("impossible d'acceder en ecriture le repertoire racine... etrange, n'est-il pas ?");
       $versions=array();
       while ($file=readdir($dir)) {
 	#echo $file," ";
@@ -289,11 +288,12 @@ if ($tache=="fichier") {
   // ok siteconfig est copier.
   install_fichier($root,LODELROOT."/$versionrep/src",LODELROOT);
 
-  // ok on a fini, on change le statut de la site
+  // ok on a fini, on change le statut du site
   mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
   header("location: ".$urlroot.$context[rep]."/lodel/admin");
+  return;
 
 #  header("location: index.php");
 #  back();
@@ -419,5 +419,41 @@ function mycopy($src,$dest)
      @chmod($dest,0644 & octdec($filemask));
    }
 }
+
+/*
+function maj_siteconfig($var,$val=-1,$text="")
+
+{
+  global $siteconfig;
+
+  // lit le fichier
+  if (!$text) $text=join("",file($siteconfig));
+  $search=array(); $rpl=array();
+
+  if (is_array($var)) {
+    foreach ($var as $v =>$val) {
+      if (!preg_match("/^\s*\\\$$v\s*=\s*\".*?\"/m",$text)) {	die ("la variable \$$v est introuvable dans le fichier de config.");      }
+      array_push($search,"/^(\s*\\\$$v\s*=\s*)\".*?\"/m");
+      array_push($rpl,'\\1"'.$val.'"');
+    }
+  } else {
+      if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\"/m",$text)) {	die ("la variable \$$var est introuvable dans le fichier de config.");      }
+      array_push($search,"/^(\s*\\\$$var\s*=\s*)\".*?\"/m");
+      array_push($rpl,'\\1"'.$val.'"');
+  }
+  $newtext=preg_replace($search,$rpl,$text);
+  if ($newtext==$text) return false;
+  // ecrit le fichier
+  if (!(unlink($siteconfig)) ) { return $newtext; }
+  if (($f=fopen($siteconfig,"w")) && 
+      fputs($f,$newtext) && 
+      fclose($f)) {
+    @chmod ($siteconfig,0666 & octdec($GLOBALS[filemask]));
+    return false;
+  } else {
+    return $newtext;
+  }
+}
+*/
 
 ?>

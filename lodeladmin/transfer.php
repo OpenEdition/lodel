@@ -61,7 +61,12 @@ ALTER TABLE _PREFIXTABLE_users CHANGE email courriel VARCHAR(255);
 
 
     if ($tables["$GLOBALS[tp]revues"]) {
-      $err=mysql_query_cmds("RENAME TABLE _PREFIXTABLE_revues TO _PREFIXTABLE_sites;");
+      $err=mysql_query_cmds('
+RENAME TABLE _PREFIXTABLE_revues TO _PREFIXTABLE_sites;
+ALTER TABLE _PREFIXTABLE_sites CHANGE nom nom VARCHAR(255) NOT NULL;
+ALTER TABLE _PREFIXTABLE_sites CHANGE rep rep VARCHAR(64) NOT NULL;
+ALTER TABLE _PREFIXTABLE_sites ADD url TINYTEXT NOT NULL;
+ ');
       if ($err) break;
       $report.="Changement de revues en sites<br>\n";
     }
