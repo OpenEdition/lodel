@@ -94,6 +94,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        return "_back";
      } else {
        header("location: index.php?do=view&id=".$this->id);
+       exit();
      }
    }
 
@@ -124,7 +125,12 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        }
        $text=&$context[$k];
        
-       preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"([^>]*>)/i",$text,$results,PREG_SET_ORDER);
+       preg_match_all('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i',$text,$results,PREG_SET_ORDER);
+#       if ($results) {
+#	 print_R($results);
+#	 print_R($context);
+#	 die();
+#       }
        foreach ($results as $result) {
 	 $imgfile=$result[1];	   $ext=$result[2];
 	 if (substr($imgfile,0,5)=="http:") continue; // external image
@@ -132,7 +138,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 	 // local.
 	 // is it in the cache ?
 	 if ($imglist[$imgfile]) { 
-	   $text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+	   $text=str_replace($result[0],"<img src=\\\"$imglist[$imgfile]\\\"",$text);
 	   
 	 } else {
 	   // not in the cache let's move it
@@ -293,6 +299,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    function processTableFields($obj,$data) 
    {
+     global $db;
      if ($obj->type=="file" || $obj->type=="image") {
        // nothing...
      } elseif ($obj->type=="mltext") {
