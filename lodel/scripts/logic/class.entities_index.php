@@ -63,7 +63,6 @@ class Entities_IndexLogic extends Logic
     $id = $context['id'];
    	if (!$id)
    		die("ERROR: give the id ");
-   	   
    	 	
    	//if this entity is already indexed ==> clean
    	$this->deleteIndexAction($context,$error);
@@ -112,7 +111,7 @@ class Entities_IndexLogic extends Logic
  		$string = preg_replace("/<[^>]*>/","",$string);//HTML tags cleaning
  		$string = $this->_decode_html_entities($string); //HTML Entities decode
  		//include utf8 quotes at the end
- 		$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
+ 		$regs = "'\.],:;*\"�!\r\t\\/)({}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
  	#echo "regs=$regs";
  		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );//non alphanum chars cleaning
  	#echo "string=$string<br />\n";
