@@ -19,7 +19,12 @@ function calcul_page(&$context,$lbase="",$cache_rep="",$base_rep="tpl/") {
   if (($template_time <= myfilemtime($lbase)) ||
       ($template_time <= myfilemtime($macro)) ||
       $GLOBALS[recalcul_templates]) {
-	if ($GLOBALS[admin]) echo "<H3>Le template $lbase vient d'être mis à jour </H3><BR>";
+	if ($GLOBALS[admin])
+        {
+          echo "<SCRIPT LANGUAGE=\"JavaScript\">if(window.defaultStatus==\"\"){window.defaultStatus=\"ATTENTION LES TEMPLATES SUIVANTS ONT ETE MODIFIES : \";}";
+          echo "window.defaultStatus+='$lbase | ';</SCRIPT>";
+        }
+	//if ($GLOBALS[admin]) echo "<H3>Le template $lbase vient d'être mis à jour </H3><BR>";
     include_once ("$home/parser.php");
     parse($lbase, $template_cache);
   }
@@ -35,6 +40,7 @@ function calcul_page(&$context,$lbase="",$cache_rep="",$base_rep="tpl/") {
     echo show_html($content);
     return;
   }
+  include_once("$home/boucles.php");
   include($template_cache);
   return;
 }
