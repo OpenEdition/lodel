@@ -163,6 +163,8 @@ if ($tache=="plateform") {
     }
   }
 
+  if ($installoption==1) $arr['extensionscripts']="php";
+
   $arr['chooseoptions']=$needoptions && $installoption==1 ? "oui" : "non";
   maj_lodelconfig($arr);
 }
