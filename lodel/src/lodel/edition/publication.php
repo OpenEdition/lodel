@@ -51,6 +51,7 @@ if ($id>0 && $dir) {
   include_once ($home."connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]publications.*, $GLOBALS[tp]entites.*, type  FROM  $GLOBALS[publicationstypesjoin] WHERE $GLOBALS[tp]entites.id='$id'  $critere") or die (mysql_error());
   $context[entite]=mysql_fetch_assoc($result);
+  $context[idparent]=$context[entite][idparent];
   $context[type]=$context[entite][type];
   $context[idtype]=$context[entite][idtype];
   $context[nom]=$context[entite][nom];
