@@ -193,41 +193,47 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
-<FONT SIZE="-3">Macro DATE_PUBLICATION_PARENTE_POUR_METAS a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la date de publication parente d'un document, si elle      -->
 <!-- existe sinon affiche "0000-00-00".                                 -->
 <!-- Cette macro est destinée à l'affichage des métadonnées.            -->
 <!-- ****************************************************************** -->
-<!--	<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
+	<LOOP NAME="date_publication_parente_pour_metas" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			<IF COND="[#TYPE]=='regroupement'">
--->			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
-<!--	            <LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
-					<DO>
-						<IF COND="[#DATE]!='0000-00-00'">
-							<meta name="DC.Date" content="[#DATE]" />
-						</IF>
-					</DO>
-				</LOOP>
-			<ELSE/>
-				<IF COND="[#DATE]!='0000-00-00'">
-					<meta name="DC.Date" content="[#DATE]" />
-				</IF>
+			<IF COND="[#DATE]!='0000-00-00'">
+				<meta name="DC.Date" content="[#DATE]" />
 			</IF>
 		</DO>
-	</LOOP> -->
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRIPTION_META_SOMMAIRE">
-<FONT SIZE="-3">Macro DESCRIPTION_META_SOMMAIRE a reecrire, surtout les deux boucles plus bas</FONT>
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Cette macro est destinée à l'affichage des métadonnées.            -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="extrait_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
+		<DO>
+			<IF COND="[#TEXTE]">
+				Extrait du premier article du numéro: 
+				[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
+			<ELSE/>
+				<LOOP NAME="desc_meta_sommaire" TABLE="types" TABLE="entites" TABLE="relations" WHERE="id1='[#IDPARENT]' AND entites.id=id2 AND entites.idtype=types.id AND classe='documents'">
+					<DO>
+						<IF COND="[#TITRE]">[#TITRE],</IF>
+						<IF COND="[#SOUSTITRE]">[#SOUSTITRE]</IF>
+					</DO>
+				</LOOP>
+			</IF>
+		</DO>
+	</LOOP>
 <!--	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			Extrait du premier article du numéro: 
 			[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
 		<ELSE/>
-<			<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'" ORDER="ordre">
+			<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'" ORDER="ordre">
 				<LOOP TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 				<DO>
 					<IF COND="[#TITRE]">
