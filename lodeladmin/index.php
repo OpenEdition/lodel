@@ -33,7 +33,7 @@ require("lodelconfig.php");
 require_once($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
 
-$tables=array("texts","translations","texts","users");
+$tables=array("texts","translations","texts","users","sites");
 
 require($home."controler.php");
 Controler::Controler($tables);

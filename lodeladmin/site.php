@@ -162,8 +162,9 @@ if ($task=="version") {
 	  echo "<option value=\"$dir\"$selected>$dir  ($ver)</option>\n";
 	}
       }
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-version");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-version");
       return;	
     }
   }
@@ -206,8 +207,9 @@ if ($task=="createdb") {
     if ($installoption=="2" && !$lodeldo) {
       $context['dbusername']=$dbusername;
       $context['dbhost']=$dbhost;
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-createdb");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-createdb");
       return;
     }
     if (!@mysql_query($context['command1']) ||
@@ -215,8 +217,9 @@ if ($task=="createdb") {
       $context['error']=mysql_error();
       $context['dbusername']=$dbusername;
       $context['dbhost']=$dbhost;
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-createdb");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-createdb");
       return;
     }
   } while (0);
@@ -262,8 +265,9 @@ if ($task=="createtables") {
 	call_user_func("code_do_$funcname",array_merge($context,$localcontext));
       } while ($error);
     }
-    require ($home."calcul-page.php");
-    calcul_page($context,"site-createtables");
+    require ($home."view.php");
+    $view=&getView();
+    $view->render($context,"site-createtables");
     return;
   }
 
@@ -307,16 +311,18 @@ if ($task=="createdir") {
 	$context['error_nonexists']=!file_exists($dir);
 	$context['error_nonaccess']=!@opendir($dir);
       }
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-createdir");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-createdir");
       return;
     }
     // on essaie
     if (!file_exists($dir) && !@mkdir($dir,0777 & octdec($filemask))) {
       // on y arrive pas... pas les droits surement
       $context[error_mkdir]=1;
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-createdir");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-createdir");
       return;
     }
     @chmod($dir,0777 & octdec($filemask));
@@ -325,8 +331,9 @@ if ($task=="createdir") {
   if ($context['path']=="/") {
     if (!@writefile(LODELROOT."tpl/testecriture","")) {
       $context['error_tplaccess']=1;
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-createdir");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-createdir");
       return;
     } else {
       unlink(LODELROOT."tpl/testecriture");
@@ -361,8 +368,9 @@ if ($task=="file") {
   // cherche si le fichier n'existe pas ou s'il est different de l'original
   if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache)!=file_get_contents($siteconfigdest)) {
     if ($installoption=="2" && !$lodeldo) {
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-file");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-file");
       return;
     }
     @unlink($siteconfigdest); // try to delete before copying.
@@ -371,8 +379,9 @@ if ($task=="file") {
       $context[siteconfigsrc]=$siteconfigcache;
       $context[siteconfigdest]=$siteconfigdest;
       $context[error_writing]=1;
-      require ($home."calcul-page.php");
-      calcul_page($context,"site-file");
+      require ($home."view.php");
+      $view=&getView();
+      $view->render($context,"site-file");
       return;	
     }
     @chmod ($siteconfigdest,0666 & octdec($GLOBALS['filemask']));
@@ -430,8 +439,9 @@ if ($task=="file") {
 // post-traitement
 postprocessing ($context);
 
-require ($home."calcul-page.php");
-calcul_page($context,"site");
+require ($home."view.php");
+$view=&getView();
+$view->render($context,"site");
 
 
 function install_file($root,$homesite,$homelodel)

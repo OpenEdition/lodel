@@ -62,7 +62,7 @@ if ($id) {
     } // switch class
   } while(0);
 } else{
-
+  require_once($home."connect.php");
   $query=preg_replace("/[&?](format|clearcache)=\w+/","",$_SERVER['QUERY_STRING']);
   if($query && !preg_match("/[^a-zA-Z0-9_\/-]/",$query)) {
     // maybe a path to the document

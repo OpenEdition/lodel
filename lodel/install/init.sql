@@ -39,25 +39,25 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 	lang		VARCHAR(64) NOT NULL,
 
 	status		TINYINT DEFAULT '1' NOT NULL,
-	maj		TIMESTAMP,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_name (name)
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS #_TP_users (
+	id		INT UNSIGNED NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
 	name		VARCHAR(64),
 	email		VARCHAR(255),
 	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
-	lang		CHAR(5) NOT NULL,       # text lang
+	lang		CHAR(5) NOT NULL,       # user lang
 
 	status		TINYINT DEFAULT '1' NOT NULL,
 
-	maj		TIMESTAMP,
+	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_username (username)

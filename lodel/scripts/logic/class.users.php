@@ -111,7 +111,6 @@ class UsersLogic extends Logic {
    function _populateContextRelatedTables(&$vo,&$context)
 
    {
-     ##print_R($vo);
      if ($vo->userrights<=LEVEL_EDITOR) {
        $dao=&getDAO("users_usergroups");
        $list=$dao->findMany("iduser='".$vo->id."'","","idgroup");
@@ -142,7 +141,9 @@ class UsersLogic extends Logic {
 
    function _deleteRelatedTables($id) {
      global $db;
-     $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or dberror();
+     if ($GLOBALS['site']) { // only in the site table
+       $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or dberror();
+     }
    }
 
 

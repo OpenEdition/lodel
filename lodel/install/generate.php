@@ -31,7 +31,7 @@
 require_once("generatefunc.php");
 ## to be launch from lodel/scripts
 
-$file = "init-site.xml";
+$files = array("init-site.xml","init.xml");
 
 
 $table="";
@@ -42,12 +42,13 @@ $uniquefields=array();
 
 function startElement($parser, $name, $attrs)
 {
-  global $table,$fp,$varlist,$publicfields,$rights,$uniqueid,$currentunique,$uniquefields;
+  global $table,$tables,$fp,$varlist,$publicfields,$rights,$uniqueid,$currentunique,$uniquefields;
 
    switch($name) {
    case "table" :
    case "vtable" :
      $table=$attrs['name'];
+     if ($tables[$table]) break;
      if (!$table) die("nom de table introuvable");
      $uniqueid=isset($attrs['uniqueid']);
      $rights=array();
@@ -78,16 +79,20 @@ function startElement($parser, $name, $attrs)
 
 function endElement($parser, $name)
 {
-  global $table;
+  global $table,$tables;
 
    switch($name) {
    case "table" :
+     if ($tables[$table]) break;
+     $tables[$table]=true;
      buildDAO();
      buildLogic();
 
      $table="";
      break;
    case "vtable" :
+     if ($tables[$table]) break;
+     $tables[$table]=true;
      //buildDAO(); // don't build DAO for virtual table
      buildLogic();
 
@@ -97,21 +102,23 @@ function endElement($parser, $name)
 }
 
 
-$xml_parser = xml_parser_create();
-xml_set_element_handler($xml_parser, "startElement", "endElement");
-xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 0);
-if (!($fp = fopen($file, "r"))) {
-   die("could not open XML input");
-}
+foreach($files as $file) {
+  $xml_parser = xml_parser_create();
+  xml_set_element_handler($xml_parser, "startElement", "endElement");
+  xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 0);
+  if (!($fp = fopen($file, "r"))) {
+    die("could not open XML input");
+  }
 
-while ($data = fread($fp, 4096)) {
-   if (!xml_parse($xml_parser, $data, feof($fp))) {
-       die(sprintf("XML error: %s at line %d",
-                   xml_error_string(xml_get_error_code($xml_parser)),
-                   xml_get_current_line_number($xml_parser)));
-   }
+  while ($data = fread($fp, 4096)) {
+    if (!xml_parse($xml_parser, $data, feof($fp))) {
+      die(sprintf("XML error: %s at line %d",
+		  xml_error_string(xml_get_error_code($xml_parser)),
+		  xml_get_current_line_number($xml_parser)));
+    }
+  }
+  xml_parser_free($xml_parser);
 }
-xml_parser_free($xml_parser);
 
 
 

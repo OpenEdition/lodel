@@ -27,50 +27,33 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+ //
+ // File generate automatically the 2005-01-21.
+ //
 
-require("lodelconfig.php");
-require_once ($home."auth.php");
 
+/**
+  * VO of table urlstack
+  */
 
-if ($login) {
-  require_once($home."func.php");
-  extract_post();
-  do {
-    require_once ($home."connect.php");
-    require_once ($home."loginfunc.php");
-    if (!check_auth($context['login'],$context['passwd'],$site)) {
-      $context[error_login]=1; break; 
-    }
-    // ouvre une session
-    $err=open_session($context['login']);
-    if ($err) { $context[$err]=1; break; }
+class urlstackVO {
+   var $id;
+   var $idsession;
+   var $currenturl;
 
-    header ("Location: http://".$_SERVER['SERVER_NAME'].$url_retour);
-    die ($url_retour);
-  } while (0);
 }
 
-$context[passwd]=$passwd=0;
+/**
+  * DAO of table urlstack
+  */
 
+class urlstackDAO extends DAO {
 
-// variable: sitebloque
-if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
-  $context['sitebloque']=1;
-} else { // test si la site est bloque dans la DB.
-  require_once ($home."connect.php");
-  usemaindb();
-  $context['sitebloque']=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
-  usecurrentdb();
-  
+   function urlstackDAO() {
+       $this->DAO("urlstack",false);
+       $this->rights=array();
+   }
+
 }
-
-
-$context[url_retour]=$url_retour;
-$context[error_timeout]=$error_timeout;
-$context[error_privilege]=$error_privilege;
-
-require ($home."view.php");
-$view=&getView();
-$view->render($context,"login");
 
 ?>
