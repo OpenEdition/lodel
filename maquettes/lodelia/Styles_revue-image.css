@@ -97,7 +97,14 @@
 	margin: 0;
 }
 
-
+.vide  {
+	/*
+ 	 *	Logo avec Roll Over: définition du style quand le logo est survolé                     
+     */
+	height: 50;
+	width: 165;
+	margon: 0;
+}
 
 
 
