@@ -1,0 +1,52 @@
+<? include("tpl/install-openhtml.html"); ?>
+<!-- ce fichier n'est pas un template -->
+
+Configuration de la base de donnée.<br>
+<p>
+Choississez une base de données ou créez en une nouvelle (si vous avez les droits).
+Cette base de donnée sera utilisée pour toutes les revues si vous cochez la case "base de données unique". Au contraire, si cette case n'est pas cochée, chaque revue aura une base de données propre (à condition d'avoir les droits pour les créer) dont le nom sera dérivé de la base de données principale. Le préfix des tables est surtout utile lorsque vous ne pouvez disposez que d'une base de données pour toutes vos applications (cas fréquent chez les hébérgeurs) dans ce cas le préfix permet de distinguer les tables LODEL de celles des autres applications (préfix a priori le mieux approprié: lodel_).
+
+<p>
+
+
+<? if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer la database "<?= $database ?>". L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+
+<? if ($erreur_usedatabase) { ?> <b>Erreur</b>: L'utilisation de cette base de données ne semble pas possible. L'utilisateur MySQL a-t-il les droits ? L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+
+<? if ($erreur_createtables) { ?> <b>Erreur</b>: La création des tables a échoué. La commande SQL et l'erreur produite sont: <?=$erreur_createtables ?> <?} ?>
+
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="database">
+<table border="1">
+
+<tr><td>
+Base de données:<br>
+			<table>
+			  <? if (!$result) $result=@mysql_query("SHOW DATABASES");
+			     while ($row=mysql_fetch_row($result)) {
+			     $dbname=$row[0];
+			     if ($database==$dbname) {
+			         $checked="checked"; $oneischecked=1;
+			     } else {
+			         $checked="";
+			     }
+			  ?>
+			  <tr><td><input type="radio" name="newdatabase" value="<?=$dbname ?>" <?=$checked?>></td><td><?=$dbname ?></td></tr>
+		          <? } ?>
+			  <tr><td><input type="radio" name="newdatabase" value="" <? if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de donnée: <input type="text" size="20" name="createdatabase" value="<?=$createdatabase ?>"></td></tr>
+			</table>
+</td></tr>
+<tr><td>
+Base de donnée unique:<br>
+<input type="checkbox" name="newsingledatabase" <? if ($singledatabase) echo "checked"; ?>>
+</td></tr>
+<tr><td>
+Préfix des tables:<br>
+<input type="text" size="20" name="newtableprefix" value="<?=$tableprefix ?>">
+</td></tr>
+</table>
+<input type="submit" value="continuer">
+
+</form>
+<? include("tpl/install-closehtml.html"); ?>

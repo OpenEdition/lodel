@@ -1,7 +1,5 @@
 <?
-include ("lodelconfig.php");
-
-$base="geos-complet";
-include ("$home/baseindex.php");
-
+$type="geographie";
+if (@include("entrees.html")) return;
+require("entrees.php");
 ?>

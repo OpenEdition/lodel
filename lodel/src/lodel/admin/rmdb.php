@@ -1,7 +1,7 @@
 <?
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
 mysql_query("DELETE FROM documents");

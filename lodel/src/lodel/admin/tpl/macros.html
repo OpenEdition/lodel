@@ -1,10 +1,10 @@
-<DEFMACRO NAME="Parent">   
-		<A HREF="[(#URL_RETOUR)]">
+<DEFMACRO NAME="PARENT">   
+		<a href="[(#URL_RETOUR)]">
 		<MACRO NAME="GIF_PARENT">
-		</A>
+		</a>
 </DEFMACRO>
 
-<DEFMACRO NAME="TR_Separation_330">		
+<DEFMACRO NAME="TR_SEPARATION_330">		
 		<tr>
 			<td colspan="2">
 				<hr width="330">
@@ -12,7 +12,7 @@
 		</tr>
 </DEFMACRO>
 
-<DEFMACRO NAME="TR_Separation_220">		
+<DEFMACRO NAME="TR_SEPARATION_220">		
 		<tr>
 			<td colspan="2">
 				<hr width="220">
@@ -24,41 +24,32 @@
 <!-- HEADER ET CLOSE HTML          -->
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
-<DEFMACRO NAME="header_logo">
+<DEFMACRO NAME="HEADER_LOGO">
 <BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
 <? insert_template ("deskadmin");?>
 </DEFMACRO>
 
-<DEFMACRO NAME="header_logo_login">
+<DEFMACRO NAME="HEADER_LOGO_LOGIN">
 <BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
 </DEFMACRO>
 
-<DEFMACRO NAME="header_head_open">  
+<DEFMACRO NAME="HEADER_HEAD_OPEN">  
 	<html>
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </DEFMACRO>
 
-<DEFMACRO NAME="header_head_close">  
+<DEFMACRO NAME="HEADER_HEAD_CLOSE">  
 	<link rel="stylesheet" href="styles_lodel.css">
 	</head>
 </DEFMACRO>
 
-<DEFMACRO NAME="close_html">
-		<br><div align="center"> 
-			<a href="http://www.revues.org/lodel/">
-				LODEL
-			</a>
-			est un logiciel
-			<a href="http://www.revues.org/lodel/">
-				Revues.org
-			</a>
-		</div>
+<DEFMACRO NAME="CLOSE_HTML">
 	</body>
 	</html>
 </DEFMACRO>
 
-<DEFMACRO NAME="Associer_icone_publication">
+<DEFMACRO NAME="ASSOCIER_ICONE_PUBLICATION">
 <FORM ACTION="../edition/metaimage.php" METHOD="POST">
 	<INPUT TYPE="hidden" NAME="idrevue" VALUE="[#ID]">
 	<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
@@ -66,14 +57,195 @@
 </FORM>
 </DEFMACRO>
 
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<DEFMACRO NAME="JS_ROLLOVER">
+	<!-- exemple de Javascript pour un Rollover -->
+	<SCRIPT TYPE="text/javascript">
+	<!--
+	/* on pré-charge les image */
+	//img1=new Image(82,18); /* on déclare les images */
+	//img2=new Image(82,18);
+	//img1.src="image1.gif"; /* on les pré-charge */
+	//img2.src="image2.gif";
+	/* on déclare la fonction qui affiche les Rollovers */
+	function rollover(id,nom_image) {
+	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
+	}
+	//-->
+	</SCRIPT>
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_PLUS">
+	<img src="[#SHAREURL]/images/deplie.png" class="picto" width="13" height="14" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MOINS">
+	<img src="[#SHAREURL]/images/plie.png" class="picto" width="13" height="14" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_LOGO_LODEL">
+	<img src="[#SHAREURL]/images/logo_lodel.png" width="318" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_LOGO_LODEL_BAS">
+	<img src="[#SHAREURL]/images/logo_lodel_bas.png" width="173" height="25" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_LOGO_LODEL_DROITE">
+	<img src="[#SHAREURL]/images/logo_lodel_droite.png" width="203" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png accueil -->
+<DEFMACRO NAME="PNG_MENU_ACCUEIL">
+	<img src="[#SHAREURL]/images/menu_accueil.png" id="img_menu_accueil" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ACCUEIL_ACTIF">
+	<img src="[#SHAREURL]/images/menu_accueil_actif.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ACCUEIL_SURVOL">
+	<img src="[#SHAREURL]/images/menu_accueil_survol.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ACCUEIL_GRIS">
+	<img src="[#SHAREURL]/images/menu_accueil_gris.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png voir -->
+<DEFMACRO NAME="PNG_MENU_VOIR">
+	<img src="[#SHAREURL]/images/menu_voir.png" id="img_menu_voir" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_VOIR_ACTIF">
+	<img src="[#SHAREURL]/images/menu_voir_actif.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_VOIR_SURVOL">
+	<img src="[#SHAREURL]/images/menu_voir_survol.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_VOIR_GRIS">
+	<img src="[#SHAREURL]/images/menu_voir_gris.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png admin -->
+<DEFMACRO NAME="PNG_MENU_ADMIN">
+	<img src="[#SHAREURL]/images/menu_admin.png" id="img_menu_admin" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ADMIN_ACTIF">
+	<img src="[#SHAREURL]/images/menu_admin_actif.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ADMIN_SURVOL">
+	<img src="[#SHAREURL]/images/menu_admin_survol.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ADMIN_GRIS">
+	<img src="[#SHAREURL]/images/menu_admin_gris.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png aide -->
+<DEFMACRO NAME="PNG_MENU_AIDE">
+	<img src="[#SHAREURL]/images/menu_aide.png" id="img_menu_aide" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_AIDE_ACTIF">
+	<img src="[#SHAREURL]/images/menu_aide_actif.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_AIDE_SURVOL">
+	<img src="[#SHAREURL]/images/menu_aide_survol.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_AIDE_GRIS">
+	<img src="[#SHAREURL]/images/menu_aide_gris.png" width="57" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png deconnecte -->
+<DEFMACRO NAME="PNG_MENU_DECONNECTE">
+	<img src="[#SHAREURL]/images/menu_deconnecte.png" id="img_menu_deconnecte" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_DECONNECTE_ACTIF">
+	<img src="[#SHAREURL]/images/menu_deconnecte_actif.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_DECONNECTE_SURVOL">
+	<img src="[#SHAREURL]/images/menu_deconnecte_survol.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_DECONNECTE_GRIS">
+	<img src="[#SHAREURL]/images/menu_deconnecte_gris.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png maj -->
+<DEFMACRO NAME="PNG_MENU_MAJ">
+	<img src="[#SHAREURL]/images/menu_maj.png" id="img_menu_maj" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_MAJ_ACTIF">
+	<img src="[#SHAREURL]/images/menu_maj_actif.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_MAJ_SURVOL">
+	<img src="[#SHAREURL]/images/menu_maj_survol.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_MAJ_GRIS">
+	<img src="[#SHAREURL]/images/menu_maj_gris.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png recompiler -->
+<DEFMACRO NAME="PNG_MENU_RECOMPILER">
+	<img src="[#SHAREURL]/images/menu_recompiler.png" id="img_menu_recompiler" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_RECOMPILER_ACTIF">
+	<img src="[#SHAREURL]/images/menu_recompiler_actif.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_RECOMPILER_SURVOL">
+	<img src="[#SHAREURL]/images/menu_recompiler_survol.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_RECOMPILER_GRIS">
+	<img src="[#SHAREURL]/images/menu_recompiler_gris.png" width="64" height="75" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<!-- png utilisateurs -->
+<DEFMACRO NAME="PNG_UTILISATEUR_GRIS">
+	<img src="[#SHAREURL]/images/utilisateur_gris.png" width="8" height="17" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_UTILISATEUR_VERT">
+	<img src="[#SHAREURL]/images/utilisateur_vert.png" width="8" height="17" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_UTILISATEUR_JAUNE">
+	<img src="[#SHAREURL]/images/utilisateur_jaune.png" width="8" height="17" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_UTILISATEUR_ORANGE">
+	<img src="[#SHAREURL]/images/utilisateur_orange.png" width="8" height="17" border="0" vspace="0" hspace="0">
+</DEFMACRO>
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 <!-- ENSEMBLE DES ICONES UTILISEES -->
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
+<DEFMACRO NAME="GIF_STATS_32">
+	<img src="[#SHAREURL]/images/stats.gif" width="32" height="32" border="0" vspace="2" hspace="2">
+</DEFMACRO>
 
 <DEFMACRO NAME="GIF_NUMERO">
 	<img src="[#SHAREURL]/images/book.gif" width="48" height="48" border="0" vspace="2" hspace="2">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_RECOMPILE_32">   
+	<img src="[#SHAREURL]/images/kde_exec.gif" width="32" height="32" border="0" vspace="2" hspace="2" alt="Recompile le template et recalcule la page">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_LODELDOC_48">

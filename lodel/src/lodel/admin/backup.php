@@ -1,8 +1,8 @@
 <?
 
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
 if ($backup) {
@@ -19,7 +19,7 @@ if ($backup) {
   $archive="revue-$revue-".date("dmy").".tar.gz";
 
   chdir ("../..");
-  system("tar czf lodel/admin/upload/$archive lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
+  system("/bin/tar czf lodel/admin/upload/$archive lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
   chdir ("lodel/admin");
 
   $context[archive]=$archive;
@@ -34,7 +34,7 @@ if ($backup) {
 }
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"backup");
 
 

@@ -1,0 +1,61 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Editer une entrée d'index</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'une entrée d'index: [#TYPE_TITRE]</td>
+	</tr>
+</table>
+
+<form method="POST" action="entree.php" />
+	<input type="hidden" name="edit" value="1" />
+	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="typeid" value="[#TYPEID]" />
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_intitule">Nom :</td>
+			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
+		</tr>
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+<IF COND="[#TYPE_USEABREV]">
+		<tr>
+			<td class="texte_intitule">Abréviation :</td>
+			<td><input size="30" type="text" name="abrev" value="[#ABREV]"></td>
+		</tr>
+		[(#ERREUR_ABREV|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser une abr&eacute;viation !</td></tr>]
+</IF>
+<IF COND="![#TYPE_LINEAIRE]">
+		<tr>
+			<td class="texte_intitule">entrée parente :</td>
+			<td><select name="parent"><option value="0">--</option><? make_selection_entree(); ?></select></td>
+		</tr>
+</IF>
+		<tr>
+			<td class="texte_intitule">Langue :</td>
+			<td><select name="lang"><? makeselectlangues_nevernil() ?></select></td>
+		</tr>
+<IF COND="[#STATUS]<32"><!-- ne pas enlever cette condition... car entree n'est pas prevu pour deprotege... c'est un peu plus complique que proteger -->
+		<tr>
+			<td class="texte_intitule">Entrée protégée:</td>
+			<td><input type="checkbox" name="protege"></td>
+		</tr>
+<ELSE/>
+		<tr>
+			<td class="texte_intitule">Entrée Protégée</td>
+			<td>oui</td>
+		</tr>
+</IF>
+	</table>
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]">
+			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='entree.php?delete=1&id=[#ID]'" />
+		</IF>
+	</div>
+	</form>
+<MACRO NAME="CLOSE_HTML">

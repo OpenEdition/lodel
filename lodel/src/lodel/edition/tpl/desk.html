@@ -1,150 +1,92 @@
 <USE MACROFILE="macros.html">
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Ceci est le desk des revues                                          -->
-<!-- Soit la barre de navigation disponible quand l'utilisateur est logué -->
-<!-- et qu'il navigue sur son site                                        -->
-<!-- Auteur : Marin Dacos. août 2002.									  -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<MACRO NAME="JS_ROLLOVER">
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-	<tr background="images/gris.gif">
-		<td>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr bgcolor="#FFFFFF">
+		<td width="318" heigth="75"><MACRO NAME="PNG_LOGO_LODEL"></td>
+
+		<td width="431" align="left" heigth="75" background="[#SHAREURL]/images/logo_lodel_droite.png" style="background-repeat:no-repeat;">
+			<table align="right" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-						<IF [#SUPERADMIN]>
-							<A HREF="../lodel/">
-								<MACRO NAME="GIF_VISAGE_SUPERADMIN">
-							</a>
-							<br>
-							[#USERNAME]	
+					<td width="100%" heigth="75">&nbsp;</td>
+	
+					<td width="57" heigth="75"><a href="lodel/edition/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"></a></td>
+			
+					<td width="57" heigth="75"><IF COND="[#ADMIN]"><a href="lodel/admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
+			
+					<td width="57" heigth="75"><a href="index.html"><MACRO NAME="PNG_MENU_VOIR_ACTIF"></a></td>
+			
+					<td width="57" heigth="75"><a href="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"></a></td>
+				</tr>
+			</table>
+		</td>
+		<td width="*" align="left" heigth="75">
+			<table width="100%" align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="100%" heigth="75">&nbsp;</td>
+			
+					<td width="64" heigth="75"><IF COND="[#EDITEUR]"><a href="lodel/edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>
+			
+					<td width="64" heigth="75"><IF COND="[#ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+						
+					<td width="64" heigth="75"><a href="lodel/edition/logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"></a></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<table bgcolor="#FFFFFF" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="173" heigth="25" valign="top"><MACRO NAME="PNG_LOGO_LODEL_BAS"></td>
+
+		<td>
+			<IF COND="[#TEMPLATESRECOMPILES]">
+				<span class="texte_petit_lodelbarre">Templates modifiés : [#TEMPLATESRECOMPILES]</span>
+			<ELSE/>
+				&nbsp;
+			</IF>
+		</td>
+
+		<td>
+			<table align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td align="right" valign="bottom">
+						<span class="texte_petit_lodelbarre">Publication : </span>
+						<span class="texte_lodelbarre"><strong>[(#REVUE|nbsp)]</strong></span>
+					</td>
+					<td width="20" heigth="25" align="center">
+						<IF COND="[#SUPERADMIN]">
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 						<ELSE/>
-							<IF [#ADMIN]>
-								<a href="index.html">
-									<MACRO NAME="GIF_VISAGE_ADMIN">
-								</a>
-								<br>
-								[#USERNAME]	
+							<IF COND="[#ADMIN]">
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 							<ELSE/>
-								<IF [#EDITEUR]>
-									<a href="index.html">
-										<MACRO NAME="GIF_VISAGE_EDITEUR">
-									</a>
-									<br>
-									[#USERNAME]	
+								<IF COND="[#EDITEUR]">
+									<MACRO NAME="PNG_UTILISATEUR_JAUNE">
 								<ELSE/>
-									<IF [#REDACTEUR]>
-										<a href="index.html">
-											<MACRO NAME="GIF_VISAGE_REDACTEUR">
-										</a>
-										<br>
-										[#USERNAME]	
+									<IF COND="[#REDACTEUR]">
+										<MACRO NAME="PNG_UTILISATEUR_VERT">
 									<ELSE/>
-										<IF [#VISITEUR]>
-											<a href="index.html">
-												<MACRO NAME="GIF_VISAGE_VISITEUR">
-											</a>
-											<br>
-											[#USERNAME]	
-										<ELSE/>
-											<MACRO NAME="GIF_INACTIF">
-											<br>
-											Utilisateur
+										<IF COND="[#VISITEUR]">
+											<MACRO NAME="PNG_UTILISATEUR_GRIS">
 										</IF>
 									</IF>
 								</IF>
 							</IF>
 						</IF>
-						</div>
 					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-							<IF [#VISITEUR]>
-								<A HREF="lodel/edition/">
-									<MACRO NAME="GIF_EDITER_32">
-								</a>
-							<ELSE/>
-								<MACRO NAME="GIF_INACTIF">
-							</IF>
-							<br>
-							Editer
-						</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-						<IF [#ADMIN]>
-							<A HREF="lodel/admin/">
-								<MACRO NAME="GIF_ADMINISTRER_32">
-							</a>
-						<ELSE/>
-						<MACRO NAME="GIF_INACTIF">
-						</IF>
-						<br>
-						Administrer
-						</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-					<div align="center">
-						<IF [#EDITEUR]>
-							<a href="lodel/edition/maj.php">
-								<MACRO NAME="GIF_METTRE_A_JOUR_32">
-							</a>
-							<br>
-								Mettre à jour
-						<ELSE/>
-							<MACRO NAME="GIF_INACTIF">
-						</IF>
-					</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-						<a href="lodel/edition/">
-							<MACRO NAME="GIF_LODEL_SMALL">
-						</a>
-						</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-							<MACRO NAME="Parent">
-							<br>
-							Retour
-						</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-							<a href="index.html">
-								<MACRO NAME="GIF_WWW_32">
-							</a>
-							<br>
-								Site
-						</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-							<!--<A HREF="../lodeldoc/" target="lodeldoc">-->
-							<A HREF="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc">
-								<MACRO NAME="GIF_LODELDOC_32">
-							</A>
-							<br>
-								LodelDoc
-						</div>
-					</td>
-					<td background="[#SHAREURL]/images/gris.gif" valign="middle" class="texte_trespetit_centre">
-						<div align="center">
-							<a href="logout.php">
-								<MACRO NAME="GIF_LOGOFF_32">
-							</a>
-							<br>
-							LogOFF
-						</div>
+					<td valign="bottom">
+						<span class="texte_petit_lodelbarre">Utilisateur : </span>
+						<span class="texte_lodelbarre"><strong>[#USERNAME]</strong></span>&nbsp;
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
-	<tr>
-		<td width="100%" height="3" background="[#SHAREURL]/images/ligne.gif">
-		</td>
-	</tr>
 </table>
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr><td width="100%" height="1" background="[#SHAREURL]/images/separateur.png"></td></tr>
+</table>
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->

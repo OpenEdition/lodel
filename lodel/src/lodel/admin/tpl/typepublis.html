@@ -1,60 +1,96 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Types de publications</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-<br>
-	<A HREF="typepubli.php"><div align="center">
-	<span class="titre">
-		<b>Ajouter un type de publication</b>
-	</span>
-		</div>
-	</A>
-	<br><br>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Types de publications</td>
+	</tr>
+</table>
 
+<div class="ligne_ajouter_serie">
+	<MACRO NAME="PNG_PLUS">
+	<a href="typepubli.php">Ajouter un type de publication</a>
+</div>
+<br /><br />
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td class="texte_noir_gras">Nom du type</td>
+		<td class="texte_noir_gras">Fichier Template</td>
+		<td class="texte_noir_gras">Fichier Template d'Edition</td>
+		<td>&nbsp;</td>
+	</tr>
+	<LOOP NAME="typepubli" TABLE="typepublis" WHERE="ok" ORDER="nom">
+		<DO>
+			<tr>
+				<IF COND="[#COUNT] % 2">
+					<td class="ligne_admin1">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin1">[#TPL]</td>
+					<td class="ligne_admin1">[(#TPLEDIT|nbsp)]</td>
+					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+						<div>
+							|&nbsp;<a href="typepubli.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+							<a href="typepubli.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+						</div>
+					</td>
+				<ELSE/>
+					<td class="ligne_admin2">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin2">[#TPL]</td>
+					<td class="ligne_admin2">[(#TPLEDIT|nbsp)]</td>
+					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+						<div>
+							|&nbsp;<a href="typepubli.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+							<a href="typepubli.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+						</div>
+					</td>
+				</IF>
+			</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="4"><span class="texte_info">Il n'y a pas de types de publications</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+</table>
 
-<table width="75%" border="1" cellspacing="0" cellpadding="5" align="center">
-<TR><td align="center" valign="middle">&nbsp;</TD><td align="center" valign="middle"><b>Nom de la publication</b><br>
-</TD><td align="center" valign="middle"><b>Fichier Template</b><br>
-</TD><td align="center" valign="middle"><b>Fichier Template d'Edition</b><br>
-</td><TD align="center" align="middle"><img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0"></TD><TD align="center" align="middle"><img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0"></TD></TR>
-<BOUCLE NAME="typepubli" TABLE="typepublis" ORDER="nom">
-<TR>
-<td align="center" valign="middle"><img src="images/book32_32.gif"  width="32" height="32"  alt="Types de numéros" border="0"></TD>
-<td valign="middle"><b><font color="Navy">[(#NOM|nbsp)]</font></b></TD>
-<td valign="middle"><b><font color="Navy">[#TPL]</font></b></TD>
-<td valign="middle"><b><font color="Navy">[(#TPLEDIT|nbsp)]</font></b></TD>
-<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]">Modifier</A></TD>
-<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]&delete=1">Supprimer</A></TD>
-</TR>
-</BOUCLE>
-</TABLE>
-
-<BOUCLE NAME="typepubli_trash" TABLE="typepublis" ORDER="nom" WHERE="trash">
-<AVANT>
-<BR><font color="Red">Dans la poubelle:</font><BR><br>
-
-<table width="75%" border="1" cellspacing="0" cellpadding="5" align="center" bordercolor="Black"><TR><td align="center" valign="middle"><b>Nom</b><br>
-</TD><td align="center" valign="middle"><b>Fichier Template</b><br>
-</td><TD align="center" align="middle"><img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0"></TD><TD align="center" align="middle"><img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0"></TD></TR>
-<TR>
-</AVANT>
-
-<TR>
-<td align="center" valign="middle">[#NOM]</TD>
-<td valign="middle">[#TPL]</TD>
-<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]&restore=1"><b>Récupérer</b></A></TD>
-<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]&delete=2"><font color="Red"><b>Supprimer<br>
- définitivement</b></font></A></TD>
-</TR>
-<APRES></TABLE></APRES>
-</BOUCLE>
-
-
-</CENTER>
-
-</TD></TR>
-
-</TABLE>
+<LOOP NAME="typepubli_trash" TABLE="typepublis" ORDER="nom" WHERE="trash">
+	<BEFORE>
+		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
+			<tr>
+				<td colspan="3" class="message_erreur">Types de publications dans la corbeille</td>
+			</tr>
+			<tr>
+				<td class="texte_noir_gras"><b>Nom</b><br></td>
+				<td class="texte_noir_gras"><b>Fichier Template</b><br></td>
+				<td>&nbsp;</td>
+			<tr>
+	</BEFORE>
+	<DO>
+		<tr>
+			<IF COND="[#COUNT] % 2">
+				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1">[#TPL]</td>
+				<td class="ligne_admin1" style="color: #CC9933;" align="right">
+					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
+					<a href="typepubli.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+				</td>
+			<ELSE/>
+				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2">[#TPL]</td>
+				<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
+					<a href="typepubli.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+				</td>
+			</IF>
+		</tr>
+	</DO>
+	<AFTER></table></AFTER>
+</LOOP>
+<div class="pied_de_formulaire">
+	<form>
+		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
+	</form>
+</div>
+<MACRO NAME="CLOSE_HTML">

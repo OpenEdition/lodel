@@ -1,0 +1,572 @@
+<!-- ****************************************************************** -->
+<!-- Librairie Technique                                                -->
+<!-- Auteurs :                                                          -->
+<!-- Marin Dacos. 2002.                                                 -->
+<!-- Nicolas Nutten. 2003.                                              -->
+<!-- Cette librairie contient :                                         -->
+<!-- <MACRO NAME="OUVRIR_HTML">                                         -->
+<!-- <MACRO NAME="FERMER_HTML">                                         -->
+<!-- <MACRO NAME="DEFINIR_CHARSET">                                     -->
+<!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES">                           -->
+<!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">                     -->
+<!-- <MACRO NAME="ACTIVER_INDEXATION">                                  -->
+<!-- <MACRO NAME="DESACTIVER_INDEXATION">                               -->
+<!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
+<!-- <MACRO NAME="IN_EXTENSO">                                          -->
+<!-- <MACRO NAME="MENU_THEMES_PUBLIES">                                 -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
+<!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
+<!-- <MACRO NAME="DROITS_POUR_METAS">                                   -->
+<!-- <MACRO NAME="METADONNEES">                                         -->
+<!-- <MACRO NAME="METADONNEES_POUR_AUTEUR">                             -->
+<!-- <MACRO NAME="METADONNEES_POUR_AUTEURSS">                           -->
+<!-- <MACRO NAME="METADONNEES_POUR_MOT">                                -->
+<!-- <MACRO NAME="METADONNEES_POUR_MOTS">                               -->
+<!-- <MACRO NAME="METADONNEES_POUR_INDEX">                              -->
+<!-- <MACRO NAME="METADONNEES_POUR_GEO">                                -->
+<!-- <MACRO NAME="METADONNEES_POUR_GEOS">                               -->
+<!-- <MACRO NAME="METADONNEES_POUR_CHRONO">                             -->
+<!-- <MACRO NAME="METADONNEES_POUR_CHRONOS">                            -->
+<!-- <MACRO NAME="JS_JUMPMENU">                                         -->
+<!-- <MACRO NAME="JS_CHANGE_IMAGE">                                     -->
+<!-- <MACRO NAME="JS_OUVRE_FENETRE">                                    -->
+<!-- <MACRO NAME="JS_BOUTON_PAGE_PRECEDENTE">                           -->
+<!-- ****************************************************************** -->
+
+<DEFMACRO NAME="OUVRIR_HTML">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Ouvre la page HTML                                                 -->
+<!-- ****************************************************************** -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</DEFMACRO> 
+
+<DEFMACRO NAME="FERMER_HTML">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Ferme la page HTML                                                 -->
+<!-- ****************************************************************** -->
+	</body>
+	</html>
+</DEFMACRO>
+
+<DEFMACRO NAME="DEFINIR_CHARSET">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Permet de déclarer le charset (jeux de caractères, dépendant de la -->
+<!-- langue principale utilisée).                                       -->
+<!-- Macro à appeler dans l'entête du fichier HTML (entre les balises   -->
+<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
+<!-- INSERER_FEUILLE_DE_STYLES).                                        -->
+<!-- ****************************************************************** -->
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</DEFMACRO>
+
+<DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Permet d'appeler la feuille de style CSS de la revue, de fermer    -->
+<!-- l'en-tête de la page HTML puis d'ouvrir le corps de la page et     -->
+<!-- d'afficher le tableau de bord (desk) au sommet de la page pour les -->
+<!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
+<!-- ****************************************************************** -->
+	<link rel="stylesheet" href="styles_revue.css">
+	<link rel="stylesheet" href="styles_revue_image.css">
+	</head>
+	<body> 
+	<IF COND="[#VISITEUR]">
+		<? insert_template("desk");?>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Permet d'appeler la feuille de style CSS pour la version imprimable--> 
+<!-- de la revue, de fermer     										-->
+<!-- l'en-tête de la page HTML puis d'ouvrir le corps de la page et     -->
+<!-- d'afficher le tableau de bord (desk) au sommet de la page pour les -->
+<!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
+<!-- ****************************************************************** -->
+	<link rel="stylesheet" href="styles_revue_print.css"  />
+	
+	</head>
+	<body> 
+	<IF COND="[#VISITEUR]">
+		<? insert_template("desk");?>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="ACTIVER_INDEXATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Autorise l'indexation par les moteurs de recherche.                -->
+<!-- Macro à appeller dans l'en-tête du fichier HTML (entre les balises -->
+<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
+<!-- INSERER_FEUILLE_DE_STYLES).                                        -->
+<!-- ****************************************************************** -->
+	<meta name="ROBOTS" content="follow, index">
+</DEFMACRO>
+
+<DEFMACRO NAME="DESACTIVER_INDEXATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Interdit l'indexation de la page par les moteurs.                  -->
+<!-- Très utile pour éviter les redondances des divers formats de pages.-->
+<!-- Pages à exclure : format d'impression, signalement par courriel,   -->
+<!-- etc...   Evitons de faire du bruit sur les moteurs, et le web en   -->
+<!-- sortira clarifié.                                                  -->
+<!-- Macro à appeller dans l'entête du fichier HTML (entre les balises  -->
+<!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
+<!-- INSERER_FEUILLE_DE_STYLES).                                        -->
+<!-- ****************************************************************** -->
+	<meta name="ROBOTS" content="follow, noindex">
+</DEFMACRO>
+
+<DEFMACRO NAME="FORMULAIRE_RECHERCHE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Formulaire permettant d'effectuer une recherche.                   -->
+<!-- ****************************************************************** -->
+	
+	<form action="/cgi-bin/esearch/esearch.pl" method="get">
+	
+		&nbsp;<b>Chercher</b><br><br>
+		&nbsp;<input type="text" size="17" name="search" value="votre recherche" 
+			onfocus="if(this.value=='votre recherche')this.value='';" />
+		<input type=hidden name="url_back" value="http://[#REVUE].revues.org/">
+		<input type=hidden name="[#REVUE]" value="CHECKED" checked [#REVUE]>
+		<input type=hidden name="addsite" value="Chercher">
+		<input type="image" border="0" name="imageField" src="images/submit.gif">
+	
+	</form>
+	
+</DEFMACRO>
+
+<DEFMACRO NAME="IN_EXTENSO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Appel du moteur de recherche In-extenso                            -->
+<!-- ****************************************************************** -->
+	<div class="formulaire1">
+	<form name="In-extenso" method="get" action="http://www.in-extenso.org/search">
+		<div class="formulaire2>
+							
+					<input type="hidden" name="aspsk" value="true" checked>
+					<input type="hidden" name="qrls" value="true" checked>
+					<input type="hidden" name="all" value="true" checked>
+					<input type="hidden" name="ps" value="7">
+					<input type="text" size="17" name="q" value="votre recherche" onfocus="if(this.value=='votre recherche')this.value='';" />
+					<input type=hidden name="bck" value="http://[#REVUE].revues.org/">
+					<br /><br />
+					<input type="submit" name="Submit" value="Chercher">
+					<input type="hidden" name="rev" value="[#REVUE]" checked>
+					
+					<br />
+		</div>
+				
+	</form>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="MENU_THEMES_PUBLIES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Menu déroulant affichant la liste des publications de type thème,  -->
+<!-- qui sont publiés.                                                  -->
+<!-- ****************************************************************** -->
+	<form name="pub_menu_B">
+		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
+		<option value="index.html">Thèmes</option>
+		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
+			<DO>	
+				<option value="sommaire.html?id=[#ID]">
+					[#NOM]
+				</option>
+			</DO>
+		</LOOP>
+		</select>
+	</form>
+</DEFMACRO>
+
+<DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la date de publication parente d'un document, si elle      -->
+<!-- existe sinon affiche "0000-00-00".                                 -->
+<!-- Cette macro est destinée à l'affichage des métadonnées.            -->
+<!-- ****************************************************************** -->
+	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
+		<DO>
+			<IF COND="[#TYPE]=='regroupement'">
+			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
+	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
+					<DO>
+						<IF COND="[#DATE]!='0000-00-00'">
+							<meta name="DC.Date" content="[#DATE]" />
+						</IF>
+					</DO>
+				</LOOP>
+			<ELSE/>
+				<IF COND="[#DATE]!='0000-00-00'">
+					<meta name="DC.Date" content="[#DATE]" />
+				</IF>
+			</IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="DESCRIPTION_META_SOMMAIRE">
+	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
+		<IF COND="[#TEXTE]">
+			Extrait du premier article du numéro: 
+			[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
+		<ELSE/>
+			<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'" ORDER="ordre">
+				<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+				<DO>
+					<IF COND="[#TITRE]">
+						[#TITRE],
+					</IF>
+					<IF COND="[#SOUSTITRE]">
+						[#SOUSTITRE]
+					</IF>
+				</DO>
+				</LOOP>
+			</LOOP>
+		</IF>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage de la description de la revue pour les métadonnées HTML. -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
+<!-- ****************************************************************** -->
+INSEREZ ICI LA DESCRIPTION DE VOTRE REVUE
+</DEFMACRO>
+
+<DEFMACRO NAME="EDITEUR_REVUE_POUR_METAS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage de l'éditeur de la revue pour les métadonnées du D.C.    -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
+<!-- ****************************************************************** -->
+INSEREZ ICI LE NOM DE VOTRE EDITEUR
+</DEFMACRO>
+
+<DEFMACRO NAME="DROITS_POUR_METAS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage des droits les métadonnées du Dublin Core.               -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
+<!-- ****************************************************************** -->
+IPR
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à index.html.                          -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="[#REVUE]" />
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Page d'accueil" />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_MOT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à Mot.html.                          -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="Index : [#MOT]" />
+<meta NAME="DC.Description" lang="fr" content="Index par mot clé. [#MOT]" />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_MOTS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à Mots.html.                         -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="Index par mots clés" />
+<meta NAME="DC.Description" lang="fr" content="Index par mots clés." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_AUTEUR">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à auteur.html.                       -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="[#PRENOM] [#NOMFAMILLE]" />
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index par auteur." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_AUTEURS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à auteurs.html.                      -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="Index par auteurs." />
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index par auteurs." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_CHRONO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à chrono.html.                       -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="DCtitle" TABLE="entrees" WHERE="type='periode'">
+		<meta name="DC.Title" content="Index chronologique : [#NOM]." />
+	</LOOP>
+<meta NAME="DC.Description" lang="fr" content="Index chronologique." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_CHRONOS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à chronos.html.                      -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="Index chronologique." />
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index chronologique." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_GEO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à geo.html.                          -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="Index : [#NOM]" />
+<meta NAME="DC.Description" lang="fr" content="Index géographique." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_GEOS">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à Geo.html.                          -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="Index géographique" />
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index géographique." />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_SOMMAIRES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à sommaire.html.                     -->
+<!-- ****************************************************************** -->
+<!-- METADONNEES HTML -->
+<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
+<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
+<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+
+<!-- METADONNEES DUBLIN CORE -->
+<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
+<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+<meta name="DC.Type" content="text" />
+<meta name="DC.Format" content="text/html" />
+<meta name="DC.Language" content="fr" />
+<meta name="DC.Relation" content="http://www.revues.org" />
+
+<meta name="DC.Identifier" content="http://[#REVUE].revues.org/sommaire.html?id=[#ID]" />
+<meta name="DC.Title" content="Sommaire du numéro [#NOM], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
+<meta name="DC.Date" content="[#DATE]" />
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_META_SOMMAIRE">" />
+</DEFMACRO>
+
+
+<DEFMACRO NAME="METADONNEES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage des métadonnées HTML et DUBLIN CORE.                     -->
+<!-- Ceci est fondamental pour la sémantisation du WEB et la qualité de -->
+<!-- l'indexation par les moteurs.                                      -->
+<!-- Cette macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
+<!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
+<!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
+<!-- ****************************************************************** -->
+	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
+	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
+	<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+		
+	<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
+	</LOOP>
+	
+	<LOOP NAME="meta_motscles_lineaires" TABLE="entrees" WHERE="iddocument='[#ID]' AND type='motcle'" ORDER="ordre">
+		<meta name="KEYWORDS" content="[#MOT]" />
+	</LOOP>
+	
+	<!-- METADONNEES DUBLIN CORE -->
+	
+	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
+	<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+	<meta name="DC.Type" content="text" />
+	<meta name="DC.Format" content="text/html" />
+	<meta name="DC.Language" content="fr" />
+	<meta name="DC.Relation" content="http://www.revues.org" />
+	
+	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
+
+	<LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
+		<meta name="DC.Subject" content="[#MOT]" />
+	</LOOP>
+	
+	<LOOP NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]" />
+	</LOOP>
+	
+	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
+	
+	<IF COND="[#RESUME:FR]">
+		<meta name="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut|replacequotationmark)]" />
+	<ELSE/>
+		<!-- Ici, j'utilise une astuce : si pas de résumé, je cherche à faire passer-->
+		<!-- comme résumé les 1500 premiers caractères du texte ou du texte d'intro-->
+		<meta name="DC.Description" lang="fr" content="[(#TEXTE|textebrut|replacequotationmark|couper(1500))]" />
+	</IF>
+	<meta name="DC.Description" lang="en" content="[(#RESUME:EN|textebrut|replacequotationmark)]" />
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_INDEX">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage des métadonnées HTML et DUBLIN CORE pour les index.      -->
+<!-- Pensez à personnaliser ces métadonnées.                            -->
+<!-- Cette macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
+<!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
+<!-- <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          -->
+<!-- ****************************************************************** -->
+	<!-- METADONNEES HTML -->
+	<meta name="GENERATOR" content="Lodel 2002" />
+	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
+	<meta URL="http://[#REVUE].revues.org" />
+	<!-- METADONNEES DUBLIN CORE -->
+	<meta name="DC.Type" content="text" />
+	<meta name="DC.Format" content="text/html" />
+	<meta name="DC.Identifier" content="http://[#REVUE].revues.org" />
+	<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+	<meta name="DC.Language" content="fr" />
+	<meta name="DC.Relation" content="http://www.revues.org" />
+	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
+	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+</DEFMACRO>
+
+<DEFMACRO NAME="JS_JUMPMENU">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Fonction javascript destinée à faire des listes déroulantes menant -->
+<!-- à une URL.                                                         -->
+<!-- ****************************************************************** -->
+	<script language="JavaScript">
+	<!--
+	function MM_jumpMenu(targ,selObj,restore){ //v3.0
+	  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+	  if (restore) selObj.selectedIndex=0;
+	}
+	//-->
+	</script>
+</DEFMACRO>
+
+<DEFMACRO NAME="JS_CHANGE_IMAGE">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Fonction javascript permettant de changer une image survolée par   -->
+<!-- la souris.                                                         -->
+<!-- ****************************************************************** -->
+<script language="JavaScript">
+	<!--
+	function MM_swapImgRestore() { //v3.0
+	  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+	}
+	
+	function MM_preloadImages() { //v3.0
+	  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+	    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+	    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+	}
+	
+	function MM_findObj(n, d) { //v4.0
+	  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+	    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+	  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+	  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+	  if(!x && document.getElementById) x=document.getElementById(n); return x;
+	}
+	
+	function MM_swapImage() { //v3.0
+	  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+	   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+	}
+	//-->
+</script>
+</DEFMACRO>
+
+<DEFMACRO NAME="JS_OUVRE_FENETRE"> 
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Fonction javascript d'ouverture de fenêtre volante.                -->
+<!-- ****************************************************************** -->
+<script language="JavaScript"> 
+	<!-- MM_openBrWindow
+		function MM_openBrWindow(theURL,winName,features) { //v2.0 
+		window.open(theURL,winName,features); 
+		} 
+	//--> 
+</script> 
+</DEFMACRO>
+
+<DEFMACRO NAME="JS_ROLLOVER"> 
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Permet de faire un roll over sur une image.                        -->
+<!-- ****************************************************************** -->
+<script language="javascript">
+
+function SwitchImg()
+{ //start
+  var rem, keep=0, store, obj, switcher=new Array, history=document.Data;
+    for (rem=0; rem < (SwitchImg.arguments.length-2); rem+=3) {
+    	store = SwitchImg.arguments[(navigator.appName == 'Netscape')?rem:rem+1];
+    if ((store.indexOf('document.layers[')==0 && document.layers==null) ||
+        (store.indexOf('document.all[')==0 && document.all==null))
+         store = 'document'+store.substring(store.lastIndexOf('.'),store.length);
+         obj = eval(store);
+    if (obj != null) {
+   	   switcher[keep++] = obj;
+      switcher[keep++] = (history==null || history[keep-1]!=obj)?obj.src:history[keep];
+      obj.src = SwitchImg.arguments[rem+2];
+  } }
+  document.Data = switcher;
+} //end
+
+function RestoreImg()
+{ //start
+  if (document.Data != null)
+    for (var rem=0; rem<(document.Data.length-1); rem+=2)
+      document.Data[rem].src=document.Data[rem+1];
+} //end
+</script>
+</DEFMACRO>
+
+<DEFMACRO NAME="JS_BOUTON_PAGE_PRECEDENTE"> 
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Fonction javascript qui affiche un bouton permettant de reculer    -->
+<!-- d'une page. (Equivalent au bouton PRECEDENT ou BACK du navigateur) -->
+<!-- ****************************************************************** -->
+	<a href="javascript:history.back()" OnMouseOver="window.status='Retour-Back';return true;">
+		<img src="/www/revues/images/back.gif" width="60" height="60" border="0" alt="page précédente / back">
+		Page précédente
+	</a>
+</DEFMACRO>

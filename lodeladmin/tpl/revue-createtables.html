@@ -1,0 +1,34 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<TITLE>Edition - Revue</TITLE>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
+<tr><td><div align="center">
+<br /><br /><b>Création de revue</b></div></td></tr>
+</table>
+
+<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
+
+<b>LODEL a échoué dans la création des tables.</b>
+Le problème peut venir du fait que l'utilisateur MySQL n'a pas le droit de créer les tables. Vous pouvez le faire à la main (via un utilisateur qui a les droits).<br>
+Sinon modifier les droits de l'utilsateur MySQL.
+<p>
+Les commandes qui ont produit des erreurs ainsi que les erreurs renvoyées par MySQL:<br>
+<LOOP NAME="erreurs_createtables">
+[#COMMAND]: <font color="red">[#ERROR]</font><br>
+</LOOP>
+
+<p><p>
+
+</td></tr></table><br/>
+
+<form method="post" action="revue.php">
+<input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="tache" value="createtables">
+<input type="submit" value="continuer">
+</form>
+
+
+<MACRO NAME="CLOSE_HTML">

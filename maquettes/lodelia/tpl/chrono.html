@@ -1,69 +1,78 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!--
-	Index chronologique d'un seul niveau (il affiche indistinctement tous les niveaux de l'arbre)
-	(il confond donc dans l'affichage une catégorie avec une sous-catégorie )
-	(on pourra affiner ultérieurement).
-	Auteur : Marin Dacos.
-	Création : septembre 2002.
-	Dernière modification majeure : septembre 2002.
--->
-<MACRO NAME="OUVRIR_HTML">
-<BOUCLE NAME="title" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC" WHERE="id=[#ID]">
-	<TITLE>Index chronologique : [#NOM]</TITLE>
-</BOUCLE>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
 
-<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top"> 
-			<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td width="100%" align="center" valign="middle" class="titre">
-						<span class="couleur_dominante1">
-							Index chronologique
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td width="100%" class="texte_petit_centre">
-						<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-							<a href="chrono.html?id=[#ID]">
-								[#NOM]
-							</a>
-							&nbsp;|
-						</BOUCLE>
-					</td>
-				</tr>
-			</table>
-			<BOUCLE NAME="geographie2" TABLE="indexhs" WHERE="type_periode"  WHERE="id=[#ID]" ORDER="ordre DESC">
-			<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td ALIGN="CENTER" VALIGN="MIDDLE" class="soustitre">
-						<a name="[#ABREV]">
-						<span class="couleur_dominante1">
-							[#NOM]
-						</span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td span class="texte">
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="idindexh='[#ID]'" WHERE="ok">
-						<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
-					</BOUCLE>
-					</td>
-				</tr>
-			</table>
-			</BOUCLE>
-			<div align="center">
-				<a href="chronos-complet.html">
-					Index complet
-				</a>
+
+<!-- ****************************************************************** -->
+<!-- Index chronologique d'un seul niveau. Il affiche indistinctement   -->
+<!-- tous les niveaux de l'arbre, il confond donc dans l'affichage une  -->
+<!-- catégorie avec une sous-catégorie. On pourra affiner               -->
+<!-- ultérieurement.                                                    -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
+
+<MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
+<TITLE>Index chronologique : [#NOM]</TITLE>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_CHRONO">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+<table class="principale"><tr><td><div class="conteneur">
+	
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+	<div class="barrenav">
+		<? insert_template("barre");?> 
+	</div>
+	
+	<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+	de class "separation" et class "contenu" -->
+	<div class="corps">
+
+		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+		de nav et le contenu de la page" -->
+		<div class="separation">
+			&nbsp;
+		</div>
+		
+		<!-- ce div permet d'intégrer le  contenu de la page" -->
+		<div class="contenu">
+		
+			<!-- logo de Lodelia-->
+			<MACRO NAME="IMG_LOGO_LODELIA">
+				
+			<!-- Affichage de l'entrée de l'index par période-->
+			<div class="titre1">
+				[#NOM]
 			</div>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
-<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+			
+			<!-- Liste des articles -->
+			<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'">
+				<DO>
+					<div class="afficherdocument">
+						<!-- Liste des documents liés à cette entrée d'index -->
+						<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+					</div>
+				</DO>
+			</LOOP>
+			
+			<!-- Lien vers l'index complet -->
+			<div class="titre2">
+				<a class="titre2" href="chronos-complet.html">
+					>> Index par période.
+				 </a>
+			</div>
+			
+			<MACRO NAME="REVUES_ORG">
+		</div>
+	</div>
+	
+</div></td></tr></table>
 <MACRO NAME="FERMER_HTML">
