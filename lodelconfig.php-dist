@@ -14,7 +14,7 @@ $urlroot="/";
 # cette variable est ecrasee dans siteconfig.php a partir de la version 0.5
 # elle pourra alors etre supprimee de ce script
 # cette variable doit se terminer par / obligatoirement.
-$home="$pathroot/lodel/script/";
+$home="$pathroot/lodel/scripts/";
 
 
 # URL contenant les fichiers communs partagés
@@ -28,7 +28,7 @@ $shareurl="http://lodel.revues.org/share";
 $sharedir="$pathroot/share";
 
 # Specifie si le nom du site se trouve a gauche dans l'url ou a droite
-# nomsites.domain.org ou domaine.org/nomsite
+# nomsites.domain.org (=1) ou domaine.org/nomsite (=0)
 $siteagauche=0;
 
 # Localisation des fichiers archive pour l'import de donnees
