@@ -529,7 +529,16 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
-</tr>	 
+</tr>
+<tr>
+	<td colspan="8" align="right">
+		<IF COND="[#VERSION]">
+			<span style="font-size:xx-small;">Lodel [#VERSION]</span>
+		<ELSE/>
+			<span style="font-size:xx-small;">Lodeldevel</span>
+		</IF>
+	</td>
+</tr>
 </DEFMACRO>
 
 <DEFMACRO NAME="LIGNE_COMPLEXE_VIERGE">
