@@ -102,7 +102,37 @@
         </AFTER>
     </LOOP>
 </DEFMACRO>
-
+<!--[ Added by Jean Lamy | 2005-01-28 | parameters management macro ]-->
+<DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
+<?
+ 		$parameters = explode(",",$context['editionparams']);
+ 		if( is_array($parameters) )
+ 		{
+ 			//Width (by default will be 600px)
+ 			$context["fck_width"] = (($parameters[0] && is_integer($parameters[0]))  ? $parameters[0] : 600);
+ 			//Height (by default will be 400px)
+ 			$context["fck_height"] = (($parameters[1] && is_integer($parameters[1])) ? $parameters[1] : 400);
+ 			//SkinName (by default will be default :p)
+ 			$context["fck_skin"] = (($parameters[2] && is_dir("../skins/".$parameters[2])) ? $parameters[2] : "default");
+ 			//AutodetectLanguage (by default will be on true)
+ 			$context["fck_autodetectlanguage"] = (($parameters[3] && is_bool($parameters[3])) ? $parameters[3] : "true");
+ 			//Language (by default will be empty)
+ 			$context["fck_language"] = ($parameters[3] ? $parameters[3] : "fr");
+ 			//Advenced mode or not
+ 			$context["fck_mode"] = (($parameters[4] && $parameters[4]=="Advanced") ? "Default" : "Simple" );
+ 				
+ 		}
+ 		else
+ 		{
+ 			$context["fck_width"] = 800;
+ 			$context["fck_height"] = 500;
+ 			$context["fck_skin"] = "default";
+ 			$context["fck_autodetectlanguage"] = "true";
+ 			$context["fck_language"] = "fr";
+ 			$context["fck_mode"] = "Simple";
+ 		}
+?>
+</DEFMACRO>
 
 
 
@@ -132,40 +162,9 @@
 	<!--[ Modified by Jean Lamy | 2005-01-25 ]-->
 	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
 	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
- 	<!--[ Added by Jean Lamy | paramedition management | 2005-01-27 ]-->
- 	<?
- 		$parameters = explode(",",$context['editionparams']);
- 		if( is_array($parameters) )
- 		{
- 			//Width (by default will be 600px)
- 			$context["fck_width"] = (($parameters[0] && is_integer($parameters[0]))  ? $parameters[0] : 600);
- 			//Height (by default will be 400px)
- 			$context["fck_height"] = (($parameters[1] && is_integer($parameters[1])) ? $parameters[1] : 400);
- 			//SkinName (by default will be default :p)
- 			$context["fck_skin"] = (($parameters[2] && is_dir("../skins/".$parameters[2])) ? $parameters[2] : "default");
- 			//AutodetectLanguage (by default will be on true)
- 			$context["fck_autodetectlanguage"] = (($parameters[3] && is_bool($parameters[3])) ? $parameters[3] : "true");
- 			//Language (by default will be empty)
- 			$context["fck_language"] = ($parameters[3] ? $parameters[3] : "fr");
- 			//Advenced mode or not
- 			$context["fck_mode"] = (($parameters[4] && $parameters[4]=="Advanced") ? "Default" : "Simple" );
- 				
- 		}
- 		else
- 		{
- 			$context["fck_width"] = 800;
- 			$context["fck_height"] = 500;
- 			$context["fck_skin"] = "default";
- 			$context["fck_autodetectlanguage"] = "true";
- 			$context["fck_language"] = "fr";
- 			$context["fck_mode"] = "Simple";
- 		}
- 	
- 	
- 	?>
- 	
- 	
- 	
+ 	<!--[ Added by Jean Lamy | 2005-01-27 | paramedition management ]-->
+ 	<!--[ Modified by Jean Lamy | 2005-01-28 | macro add ]-->
+ 	<MACRO NAME="FCK_EDITOR_PARAMETERS">
     <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
     <script>
     	var fck_[#VARNAME]_editor = new FCKeditor('[#VARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
