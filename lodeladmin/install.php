@@ -250,17 +250,18 @@ if (!$tache) {
 
 // les fonctions de tests existent, donc on peut faire des tests sur les droits
 $dirs=array("lodeladmin/CACHE"=>7,
-	     "lodeladmin/tpl"=>5,
-	     "lodel"=>5,
-	     "lodel/install"=>5,
-	     "lodel/install/plateform"=>5,
-	     "lodel/scripts"=>5,
-	     "lodel/src"=>5,
-	     "lodeladmin/images"=>5);
+	    "lodeladmin/tpl"=>5,
+	    "lodel"=>5,
+	    "lodel/install"=>5,
+	    "lodel/install/plateform"=>5,
+	    "lodel/scripts"=>5,
+	    "lodel/src"=>5,
+	    "lodeladmin/images"=>5);
 	       
 $entete=0;
 foreach ($dirs as $dir => $mode) {
   do { // block de control
+    if (!file_exists($dir)) { die("ERROR: the directory $dir does not exists. Check your distribution."); }
     if (testdirmode($dir,$mode)) break;
     // let try to chmod
     if ($have_chmod) {
@@ -520,14 +521,15 @@ function testdirmode($dir,$mode)
 
 {
   if ($mode & 2) { // writeable ?
-    $testfile=LODELROOT.$dir."/tmp_install_test";
+    $testfile=LODELROOT.$dir."/tmp_install_test.tmp";
     if (file_exists($testfile)) @unlink($testfile); // if I have not the write permission in the directory, I won't be able to do that.
     $fh=@fopen($testfile,"w");
-    if (!$fh) return FALSE;
+    if (!$fh) { echo "can't open file in writing mode"; return FALSE; }
     if (!(@fputs($fh,"Lodel is great\n"))) return FALSE;
     fclose($fh);
     if (!(@unlink($testfile))) return FALSE;
-  } else { // readable ?
+  }
+  if ($mode & 4) { // readable ? (et executable)
     $dh=@opendir(LODELROOT.$dir);
     if (!$dh) return FALSE;
     if (!(@readdir($dh))) return FALSE;
@@ -535,6 +537,29 @@ function testdirmode($dir,$mode)
   }    
   return TRUE;
 }
+
+/*
+function testdirmode($dir,$mode)
+
+{
+  if ($mode & 2) { // writeable ?
+    $testfile=LODELROOT.$dir."/tmp_install_test.tmp";
+    if (file_exists($testfile)) @unlink($testfile); // if I have not the write permission in the directory, I won't be able to do that.
+    $fh=@fopen($testfile,"w");
+    if (!$fh) { echo "can't open file in writing mode in $dir<br>\n"; return FALSE; }
+    if (!(@fputs($fh,"Lodel is great\n"))) { echo "can't fputs file in $dir<br>\n"; return FALSE; }
+    fclose($fh);
+    if (!(@unlink($testfile))) { echo "can't unlink file in $dir<br>\n"; return FALSE; }
+  }
+  if ($mode & 4) { // readable ? (et executable)
+    $dh=@opendir(LODELROOT.$dir);
+    if (!$dh) { echo "can't opendir $dir<br>\n"; return FALSE; }
+    if (!(@readdir($dh))) { echo "can't readdir $dir<br>\n"; return FALSE; }
+    closedir($dh);
+  }    
+  return TRUE;
+}
+*/
 
 function probleme_droits_debut()
 
