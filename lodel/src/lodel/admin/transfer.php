@@ -471,6 +471,16 @@ UPDATE #_TP_entrytypes SET class=type;
 	if ($err) break;
 	$report.="Ajout de class a entrytypes<br/>";
       }
+      if (!$fields['g_type']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_entrytypes ADD g_type VARCHAR(255) NOT NULL;
+ALTER TABLE #_TP_entrytypes ADD INDEX index_g_type (g_type);
+UPDATE #_TP_entrytypes SET g_type=\'dc.subject\' WHERE type=\'motcle\';
+');
+	if ($err) break;
+	$report.="Ajout de g_type a entrytypes<br/>";
+      }
+
 //      if (!$fields['edition']) {
 //	$err=mysql_query_cmds('
 //ALTER TABLE #_TP_entrytypes ADD edition TINYTEXT NOT NULL;

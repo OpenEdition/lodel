@@ -111,12 +111,12 @@ class TypesLogic extends Logic {
      require_once($GLOBALS['home']."typetypefunc.php");
 
      if ($context['id']) {
-       typetype_delete("entrytype","identitytype='".$context['id']."'");
-       typetype_delete("persontype","identitytype='".$context['id']."'");
+       //typetype_delete("entrytype","identitytype='".$context['id']."'");
+       //typetype_delete("persontype","identitytype='".$context['id']."'");
        typetype_delete("entitytype","identitytype='".$context['id']."'");
      }
-     typetype_insert($vo->id,$context['entrytype'],"entrytype");
-     typetype_insert($vo->id,$context['persontype'],"persontype");
+     //typetype_insert($vo->id,$context['entrytype'],"entrytype");
+     //typetype_insert($vo->id,$context['persontype'],"persontype");
      typetype_insert($vo->id,$context['entitytype'],"entitytype2");
    }
 
@@ -133,8 +133,8 @@ class TypesLogic extends Logic {
        $criteria="identitytype='$id'";
      }
 
-     typetype_delete("entrytype",$criteria);
-     typetype_delete("persontype",$criteria);
+     //typetype_delete("entrytype",$criteria);
+     //typetype_delete("persontype",$criteria);
      typetype_delete("entitytype",$criteria);
    }
 
@@ -165,13 +165,14 @@ class TypesLogic extends Logic {
 /* loops                             */
 
 
-function loop_persontypes($context,$funcname)
-{ require_once($GLOBALS['home']."typetypefunc.php"); 
-  loop_typetable ("persontype","entitytype",$context,$funcname,$_POST['edit'] ? $context['persontype'] : -1);}
+//function loop_persontypes($context,$funcname)
+//{ require_once($GLOBALS['home']."typetypefunc.php"); 
+//  loop_typetable ("persontype","entitytype",$context,$funcname,$_POST['edit'] ? $context['persontype'] : -1);}
+//
+//function loop_entrytypes($context,$funcname)
+//{ require_once($GLOBALS['home']."typetypefunc.php"); 
+//  loop_typetable ("entrytype","entitytype",$context,$funcname,$_POST['edit'] ? $context['entrytype'] : -1);}
 
-function loop_entrytypes($context,$funcname)
-{ require_once($GLOBALS['home']."typetypefunc.php"); 
-  loop_typetable ("entrytype","entitytype",$context,$funcname,$_POST['edit'] ? $context['entrytype'] : -1);}
 
 function loop_entitytypes($context,$funcname)
 { require_once($GLOBALS['home']."typetypefunc.php"); 

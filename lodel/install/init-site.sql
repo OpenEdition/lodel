@@ -304,6 +304,8 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
+	g_type		VARCHAR(255) NOT NULL,		# equivalent generic du type
+
 	tpl		TINYTEXT NOT NULL,			# name du fichier template pour l'entree
 	tplindex	TINYTEXT NOT NULL,			# name du fichier template pour l'index
 

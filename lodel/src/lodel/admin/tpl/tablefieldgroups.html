@@ -84,7 +84,11 @@
 		</tr>		
 	        <tr>	
         	<td colspan="4">
-	        	<div><MACRO NAME="PNG_PLUS"><a href="index.php?do=view&table=tablefields&idgroup=[#ID]&class=[#CLASS]">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</a></div>
+	        	<div>
+			    <MACRO NAME="PNG_PLUS"><a href="index.php?do=view&table=tablefields&idgroup=[#ID]&class=[#CLASS]">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</a>&nbsp;&nbsp;&nbsp;
+			  <MACRO NAME="PNG_PLUS"><a href="index.php?do=view&table=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=entries">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</a>&nbsp;&nbsp;&nbsp;
+			    <MACRO NAME="PNG_PLUS"><a href="index.php?do=view&table=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=persons">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</a>
+			</div>
                </td>
 		</tr>
 

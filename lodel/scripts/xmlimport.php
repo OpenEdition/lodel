@@ -29,11 +29,208 @@
 
 
 $GLOBALS['prefixregexp']="Pr\.|Dr\.";
-//
-// fonction d'import d'un fichier en XMLLodelBasic dans la base
-//
 
-require_once($home."entitefunc.php");
+
+class XMLImportParser {
+
+
+//
+// import XMLLodelBasic file in the database
+//
+  function XMLImportParser()
+
+  {}
+
+  /**
+   * init.
+   * Gather information from tablefield to know what to do with the various styles.
+   *
+   */
+
+  function init($class) 
+
+  {
+    global $home;
+
+    $this->styles=array();
+    // get all the information from the database for all the fields
+    require_once($home."dao.php");
+    $dao=getDAO("tablefields");
+    $tfs=$dao->findMany("class='".$class."' AND status>0 AND style!=''");
+
+    // create an assoc array style => tf information
+    foreach ($tfs as $tf) {
+      // is it an index ?
+      if ($tf->type=="entries" || $tf->type=="persons") {
+	// yes, it's an index. Get the object
+	$dao=getDAO($tf->type=="entries" ? "entrytypes" : "persontypes");
+	$tf=$dao->find("type='".$tf->name."'");
+      }
+      // analyse the styles
+      foreach (preg_split("/,;/",$tf->style) as $style) {
+	list($style,$tf->lang)=explode(":",$style);      
+	$this->styles[$style]=$tf;
+      }
+    }
+
+    // get internal styles
+    $dao=getDAO("internalstyles");
+    $iss=$dao->findMany("status>0");
+    foreach ($iss as $is) {
+      // analyse the styles
+      foreach (preg_split("/,;/",$is->style) as $style) {
+	$this->styles[$style]=$is;
+      }
+    }
+
+    // get characterstyles
+    $dao=getDAO("characterstyles");
+    $css=$dao->findMany("status>0");
+    foreach ($css as $cs) {
+      // analyse the styles
+      foreach (preg_split("/,;/",$cs->style) as $style) {
+	$this->styles[$style]=$cs;
+      }
+    }
+  }
+
+  /**
+   * parse the $string and send the data to the $handler object
+   *
+   */
+
+  function parse($string,&$handler)
+
+  {
+    $arr=preg_split("/<(\/?)(r2rc?):(\w+)>/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
+    unset($string); // save memory
+
+    $n=count($arr);
+    $parastyle="";
+    for($i=1; $i<$n; $i+=4) {
+      if ($arr[$i]=="") { // opening tag
+	$data="";
+      } else { // closing tag
+	$style=$arr[$i+3];
+	if ($arr[$i+2]=="r2rc") { // character style
+
+	  if ($this->styles[$parastyle.".".$style]) { // full path
+	    $obj=$this->styles[$parastyle.".".$style];
+	  } elseif ($this->styles[".".$style]) { // 
+	    $obj=$this->styles[".".$style];
+	  } else {
+	    $obj=null;
+	    // the style is not recognized... it will disappear
+	  }
+	  if ($obj) {
+	    $call="process".$this->get_class($obj);
+	    $data=$handler->$call($obj,$data); // call the method associated with the object class
+	  } else {
+	    $handler->unknownCharacterStyle($style,$data);
+	  }
+
+	} else { // paragraph style
+	  $parastyle=$style;
+	  if ($this->styles[$style]) { // 
+	    $obj=$this->styles[$style];
+	    $call="process".$this->get_class($obj);
+	    $data=$handler->$call($obj,$data); // call the method associated with the object class
+	  } else {
+	    $this->unknownParagraphStyle($style,$data);
+	  }
+	}
+      }
+      $data.=$arr[$i+3];
+    }
+  }
+} // class XMLImportParser
+
+
+
+
+
+class XMLImportHandler {
+
+  /**
+   * ignore unknown paragraph and character style
+   */
+  function unknownParagraphStyle($style,$data) {}
+  function unknownCharacterStyle($style,$data) {}
+
+  
+  /**
+   * process basic characterstyles
+   */
+  function processCharacterStyles(&$obj,$data)
+
+  {
+    if ($obj->conversion) {
+      return '<span class="'.$obj->style.'>'.$data.'</span>';
+    } else {
+      // basic currently. Should be more evoluated.
+      return $obj->conversion.$data.join("><",array_reverse(explode("><",str_replace("<","</",$obj->conversion))));
+    }
+    return 
+  }
+
+
+  /**
+   * process basic internalstyles
+   */
+  function processInternalStyles(&$obj,$data)
+
+  {}
+
+  /**
+   * processTableFields
+   */
+
+  function processTableFields($obj,$data)
+
+  {
+    //
+    if ($obj->processing) { // processing ?
+      $processings=preg_split("/\|/",$obj->processing);
+      foreach ($processings as $processing) {
+	if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*)\))?$/",$processing,$result3)) { 
+	  if ($result3[2]) $result3[2]=",".$result3[2]; // arguments
+	  $func=create_function('$x','return '.$result3[1].'($x'.$result3[2].');');
+	  $data=$func($data);
+	}
+      }
+    } // processing
+
+    $data=addslashes(trim($data));
+
+  function mv_image($imgfile,$ext,$count,$id) {
+    $dir="docannexe/image/$id";
+    if (!is_dir(SITEROOT.$dir)) {
+      mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+      @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+    }
+    $newfile="$dir/img-$count.$ext";
+    copy($imgfile,SITEROOT.$newfile);
+    @unlink($imgfile);
+    return $newfile;
+  }
+  $row=getrow(lq("SELECT * FROM #_TP_$class WHERE identity='$id'"));
+  if ($row===false) dberror();
+
+  require_once($home."func.php");
+  copy_images($row,"mv_image",$id);
+
+
+
+    // multilingual text
+    if ($obj->type='mltext') {
+      $data=array("lang"=>$obj->lang,"text"=>$data);
+    }
+
+
+  }
+}
+
+
 
 
 function enregistre_entite_from_xml($context,$text,$class)

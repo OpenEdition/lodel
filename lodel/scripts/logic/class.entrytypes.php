@@ -72,6 +72,30 @@ class EntryTypesLogic extends Logic {
 			   "id"=>getlodeltextcontents("order_of_creation","admin"),
 			   ),$context['sort']);
        break;
+     case "g_type" :
+       $g_typefields=array("DC.Subject");
+       $dao=$this->_getMainTableDAO();
+       $types=$dao->findMany("status>0","","g_type,title");     
+       foreach($types as $type) { $arr[$type->g_type]=$type->title; }
+
+       $arr2=array(""=>"--");
+       foreach($g_typefields as $g_type) {
+	 $lg_type=strtolower($g_type);
+	 if ($arr[$lg_type]) {
+	   $arr2[$lg_type]=$g_type." &rarr; ".$arr[$lg_type];
+	 } else {
+	   $arr2[$lg_type]=$g_type;
+	 }
+       }
+       renderOptions($arr2,$context['g_type']);
+     case "edition" :
+       $arr=array(
+		  "pool"=>getlodeltextcontents("edit_pool","admin"),
+		  "multipleselect"=>getlodeltextcontents("edit_multipleselect","admin"),
+		  "select"=>getlodeltextcontents("edit_select","admin"),
+		  );
+       renderOptions($arr,$context['edition']);
+       break;
      }
    }
 
@@ -82,26 +106,44 @@ class EntryTypesLogic extends Logic {
     * @private
     */
 
+
+   function _prepareEdit($dao,&$context)
+
+   {
+     // gather information for the following
+     if ($context['id']) {
+       $this->oldvo=$dao->getById($context['id']);
+       if (!$this->oldvo) die("ERROR: internal error in EntryTypesLogic::_prepareEdit");
+     }
+   }
+
+
    /**
     * Used in editAction to do extra operation after the object has been saved
     */
-
-   function _saveRelatedTables($vo,$context) 
+     function _saveRelatedTables($vo,$context) 
 
    {
-     require_once($GLOBALS['home']."typetypefunc.php");
-
-     if ($context['id']) {
-       typetype_delete("entrytype","identrytype='".$context['id']."'");
+     if ($vo->type!=$this->oldvo->type) {
+       // name has changed
+       $GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='entries'")) or dberror();
      }
-     typetype_insert($context['entitytype'],$vo->id,"entrytype");
+   }
+
+   function _prepareDelete($dao,&$context)
+
+   {     
+     // gather information for the following
+     $this->vo=$dao->getById($context['id']);
+     if (!$this->vo) die("ERROR: internal error in EntryTypesLogic::_prepareDelete");
    }
 
    function _deleteRelatedTables($id) {
      global $home;
 
-     require_once($home."typetypefunc.php"); 
-     typetype_delete("entrytype","identrytype='".$id."'");
+     require_once($home."dao.php"); 
+     $dao->getDAO("tablefields");
+     $dao->deleteObjects("type='entries' AND name='".$this->vo->type."'");
    }
 
 
@@ -111,6 +153,7 @@ class EntryTypesLogic extends Logic {
      return array("type"=>array("type","+"),
                   "title"=>array("text","+"),
                   "style"=>array("mlstyle",""),
+                  "g_type"=>array("select",""),
                   "tpl"=>array("tplfile",""),
                   "tplindex"=>array("tplfile",""),
                   "flat"=>array("boolean","+"),

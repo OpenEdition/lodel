@@ -42,6 +42,7 @@ class entrytypesVO {
    var $class;
    var $title;
    var $style;
+   var $g_type;
    var $tpl;
    var $tplindex;
    var $rank;

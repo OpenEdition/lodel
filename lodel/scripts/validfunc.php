@@ -66,7 +66,7 @@ function validfield(&$text,$type,$default="")
   case "mlstyle" :
     $stylesarr=preg_split("/[\n,;]/",$text);
     foreach($stylesarr as $style) {
-      if (!preg_match("/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?\s*:\s*([a-zA-Z]{2}|--)$/",trim($style))) return $type;
+      if (!preg_match("/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/",trim($style))) return $type;
     }
     break;
   case "style" :

@@ -60,13 +60,7 @@ class TableFieldsLogic extends Logic {
    function editAction(&$context,&$error)
 
    {
-     global $db;
-     // get the class from the idgroup
-     if ($context['idgroup']) {
-	 $class=$db->getOne(lq("SELECT class FROM #_TP_tablefieldgroups,#_TP_classes WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."' AND idclass=#_TP_classes.id")) or dberror();
-	 if ($context['class'] && $context['class']!=$class) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
-	 $context['class']=$class;
-     }
+     $this->_getClass($context);
      // must be done before the validation
      return Logic::editAction($context,$error);
    }
@@ -163,7 +157,7 @@ class TableFieldsLogic extends Logic {
 //"Type"
      $dao=$this->_getMainTableDAO();
      $tablefields=$dao->findMany("class='".$context['class']."'","","g_name,title");     
-     foreach($tablefields as $tablefield) { $arr[$tablefield->dc]=$tablefield->title; }
+     foreach($tablefields as $tablefield) { $arr[$tablefield->g_name]=$tablefield->title; }
 
      $arr2=array(""=>"--");
      foreach($g_namefields as $g_name) {

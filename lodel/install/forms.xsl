@@ -8,7 +8,7 @@
     <!--                        -->
 
     <xsl:template match="/">
-        <xsl:for-each select="//database/table[@name=$table]">
+        <xsl:for-each select="//database/table[@name=$table]|//database/vtable[@name=$table]">
           <input type="hidden" name="do" value="edit" />
           <xsl:element name="input">
             <xsl:attribute name="type">hidden</xsl:attribute>

@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 $tables=array("entrytypes","persontypes","entries",
-	      "tablefieldgroups","tablefields",
+	      "tablefieldgroups","tablefields","indextablefields",
 	      "translations","usergroups","users",
 	      "types","classes",
 	      "options","optiongroups","useroptiongroups",

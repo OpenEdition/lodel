@@ -27,20 +27,23 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+if ($_POST) {
+  $therequest=&$_POST;
+} else {
+  $therequest=&$_GET;
+}
+
+$do=$therequest['do'];
 
 require($home."auth.php");
 authenticate(LEVEL_VISITOR, $do=="view" || $do=="edit" || $do=="copy" || $do=="delete"  || $do=="changerank");
 require($home."langues.php");
 require_once($home."func.php");
 
-if ($_POST) {
-  extract_post();
-  $therequest=&$_POST;
-} else {
-  $therequest=&$_GET;
-}
+if ($_POST) extract_post();
 
-if ($therequest['do']) {
+
+if ($do) {
     $table=$therequest['table'];
   if (!in_array($table,$tables)) die("ERROR: unknown table");
   $context['table']=$table;
@@ -64,7 +67,6 @@ if ($therequest['do']) {
 
 
   // valid the request
-  $do=$therequest['do'];
   if (!preg_match("/^[a-zA-Z]+$/",$do)) die("ERROR: invalid action");
   $do=$do."Action";
 

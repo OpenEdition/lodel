@@ -57,33 +57,84 @@ class PersonTypesLogic extends Logic {
    }
 
 
+   /**
+    * makeSelect
+    */
+
+   function makeSelect(&$context,$var)
+
+   {
+     switch($var) {
+     case "g_type" :
+       $g_typefields=array("DC.Creator","DC.Contributor");
+       $dao=$this->_getMainTableDAO();
+       $types=$dao->findMany("status>0","","g_type,title");     
+       foreach($types as $type) { $arr[$type->g_type]=$type->title; }
+
+       $arr2=array(""=>"--");
+       foreach($g_typefields as $g_type) {
+	 $lg_type=strtolower($g_type);
+	 if ($arr[$lg_type]) {
+	   $arr2[$lg_type]=$g_type." &rarr; ".$arr[$lg_type];
+	 } else {
+	   $arr2[$lg_type]=$g_type;
+	 }
+       }
+       renderOptions($arr2,$context['g_type']);
+     }
+   }
+
+
+
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**
     * @private
     */
 
+
+   function _prepareEdit($dao,&$context)
+
+   {
+     // gather information for the following
+     if ($context['id']) {
+       $this->oldvo=$dao->getById($context['id']);
+       if (!$this->oldvo) die("ERROR: internal error in PersonTypesLogic::_prepareEdit");
+     }
+   }
+
+
    /**
     * Used in editAction to do extra operation after the object has been saved
     */
-
-   function _saveRelatedTables($vo,$context) 
+     function _saveRelatedTables($vo,$context) 
 
    {
-     require_once($GLOBALS['home']."typetypefunc.php");
+     #print_r($vo);
+     #print_r($this->oldvo);
 
-     if ($context['id']) {
-       typetype_delete("persontype","idpersontype='".$context['id']."'");
+     if ($vo->type!=$this->oldvo->type) {
+       // name has changed
+       $GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='persons'")) or dberror();
      }
-     typetype_insert($context['entitytype'],$vo->id,"persontype");
    }
 
+   function _prepareDelete($dao,&$context)
+
+   {     
+     // gather information for the following
+     $this->vo=$dao->getById($context['id']);
+     if (!$this->vo) die("ERROR: internal error in PersonTypesLogic::_prepareDelete");
+   }
 
    function _deleteRelatedTables($id) {
      global $home;
 
-     require_once($home."typetypefunc.php"); 
-     typetype_delete("persontype","idpersontype='".$id."'");
+     //require_once($home."typetypefunc.php"); 
+     //typetype_delete("persontype","idpersontype='".$id."'");
+     require_once($home."dao.php"); 
+     $dao->getDAO("tablefields");
+     $dao->deleteObjects("type='persons' AND name='".$this->vo->type."'");
    }
 
 

@@ -46,6 +46,7 @@ function startElement($parser, $name, $attrs)
 
    switch($name) {
    case "table" :
+   case "vtable" :
      $table=$attrs['name'];
      if (!$table) die("nom de table introuvable");
      $uniqueid=isset($attrs['uniqueid']);
@@ -82,6 +83,12 @@ function endElement($parser, $name)
    switch($name) {
    case "table" :
      buildDAO();
+     buildLogic();
+
+     $table="";
+     break;
+   case "vtable" :
+     //buildDAO(); // don't build DAO for virtual table
      buildLogic();
 
      $table="";

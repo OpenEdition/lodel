@@ -130,6 +130,7 @@ function clean_request_variable(&$var) {
     array_walk($var,"clean_request_variable");
   } else {
     $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
+    if (!get_magic_quotes_gpc()) $var=addslashes($var);
   }
 }
 

@@ -234,6 +234,7 @@ ln tpl/persontypes.html
 ln tpl/edit_tablefieldgroups.html
 ln tpl/tablefieldgroups.html
 ln tpl/edit_tablefields.html
+ln tpl/edit_indextablefields.html
 
 
 ln backup.php

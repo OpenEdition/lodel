@@ -130,11 +130,13 @@ class EntitiesLogic extends Logic {
 
      // create or edit the entity
      if ($id) {
+       $new=false;
        $dao->instantiateObject($vo);
        $vo->id=$id;
        // change the usergroup of the entity ?
        if ($user['admin'] && $context['usergroup']) $vo->usergroup=intval($context['usergroup']);
      } else {
+       $new=true;
        $vo=$dao->createObject("idparent='".$idparent."'");
        $vo->idparent=$idparent;
        $vo->usergroup=$this->_getUserGroup($context,$idparent);
@@ -161,7 +163,7 @@ class EntitiesLogic extends Logic {
      $this->_moveFiles($id,$this->files_to_move,$vodatatable);
 
      $daodatatable->save($vodatatable);  // save the related table
-     $this->_createRelationWithParents($id,$idparent,false);
+     if ($new) $this->_createRelationWithParents($id,$idparent,false);
 
 
      $this->_saveRelatedTables($vo,$context);
@@ -415,14 +417,6 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
 	 }
        }
      } // foreach entries and persons
-   }
-
-
-   function _deleteRelatedTables($id) {
-     global $home;
-
-     require_once($home."typetypefunc.php"); 
-     typetype_delete("entities","identities='".$id."'");
    }
 
 

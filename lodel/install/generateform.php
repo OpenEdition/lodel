@@ -40,6 +40,7 @@ $tables=array("entries",
 	      "entrytypes",
 	      "types","classes",
 	      "tablefields",
+	      "indextablefields", // vtable
 	      "tablefieldgroups",
 	      "users",
 	      "usergroups",
