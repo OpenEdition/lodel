@@ -383,6 +383,9 @@ if ($tache=="fichier") {
 
 
   // ajouter le modele editorial ?
+  if ($GLOBALS[singledatabase]!="on") {
+    mysql_select_db($GLOBALS[database]."_".$context[rep]);
+  }
   $import=true;
   // verifie qu'on peut importer le modele.
   foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
