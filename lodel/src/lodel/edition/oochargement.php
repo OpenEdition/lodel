@@ -106,7 +106,7 @@ function OO ($uploadedfile,&$context)
   echo "fin<br>\n";flush();
 
 
-  $file=str_replace("\n","",join('',file("$uploadedfile.sxw.html")));
+  $file=str_replace("\n"," ",join('',file("$uploadedfile.sxw.html")));
 
   if ($GLOBALS[sortieoo]) { // on veut la sortie brute
     echo htmlentities($file);
