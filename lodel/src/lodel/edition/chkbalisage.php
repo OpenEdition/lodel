@@ -136,7 +136,7 @@ while ($arr) {
     } else { // others balises
       $bal=strtolower(trim($bal));
       $textbal=$balises[$bal];
-      if ($bal=="invalidcharacters") $textbal='<div style="color: red">Le style contient des caractères invalides</div>';
+      if ($bal=="invalidcharacters") $textbal='<div style="color: red">Le style contient des caract&egrave;res invalides</div>';
       if (!$textbal) $textbal='<div style="color: red">Style "'.$bal.'" non reconnu</div>';
       $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise">'.$textbal.'</td><td class="chkbalisagetdparagraphe">';
     }
