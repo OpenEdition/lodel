@@ -41,8 +41,8 @@ class LodelParser extends Parser {
 
 
 function parse_loop_extra(&$tables,
-			    &$tablesinselect,&$extrainselect,
-			    &$select,&$where,&$ordre,&$groupby)
+			  &$tablesinselect,&$extrainselect,
+			  &$select,&$where,&$ordre,&$groupby,&$having)
 
 {
   global $site,$home;
@@ -80,7 +80,7 @@ function parse_loop_extra(&$tables,
   if (in_array("$GLOBALS[tableprefix]entites",$tables)) {
     if (preg_match("/\bclasse\b/",$where)) {
       array_push($tables,"$GLOBALS[tableprefix]types");
-      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]entites","id|statut|ordre|titre");
+      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|statut|ordre|titre");
       $jointypesentitesadded=1;
       $where.=" AND $GLOBALS[tableprefix]entites.idtype=$GLOBALS[tableprefix]types.id";
       ## c'est inutile pour le moment: preg_replace("/\bclasse\b/","$GLOBALS[tableprefix]types.classe",$where).
@@ -88,12 +88,12 @@ function parse_loop_extra(&$tables,
 #  echo "where 1bis:",htmlentities($where),"<br>";
     if (!$jointypesentitesadded && preg_match("/\btype\b/",$where)) {
       array_push($tables,"$GLOBALS[tableprefix]types");
-      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]entites","id|statut|ordre|titre");
+      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|statut|ordre|titre");
       $where.=" AND $GLOBALS[tableprefix]entites.idtype=$GLOBALS[tableprefix]types.id";
     }
     if (preg_match("/\bparent\b/",$where)) {
       array_push($tables,"$GLOBALS[tableprefix]entites as entites_interne2");
-      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]entites","id|idtype|identifiant|groupe|user|ordre|statut|idparent");
+      protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites","id|idtype|identifiant|groupe|user|ordre|statut|idparent");
       $where=preg_replace("/\bparent\b/","entites_interne2.identifiant",$where)." AND entites_interne2.id=$GLOBALS[tableprefix]entites.idparent";
     }
     if (in_array("$GLOBALS[tableprefix]types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
@@ -147,8 +147,8 @@ function parse_loop_extra(&$tables,
 	 $where.=" AND idpersonne=$GLOBALS[tableprefix]personnes.id";
        }
        if (preg_match("/\btype\b/",$where)) {
-	 protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]personnes","id|statut");
-	 protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]entites_personnes","ordre");
+	 protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]personnes","id|statut");
+	 protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entites_personnes","ordre");
 	 array_push($tables,"$GLOBALS[tableprefix]typepersonnes");
 	 // maintenant, il y a deux solutuions
 	 if (!in_array("$GLOBALS[tableprefix]entites_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
@@ -166,7 +166,7 @@ function parse_loop_extra(&$tables,
      // entrees
      if (in_array("$GLOBALS[tableprefix]entrees",$tables)) {
 	if (preg_match("/\btype\b/",$where)) {
-	  protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]entrees","id|statut|ordre");
+	  protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]entrees","id|statut|ordre");
 	  array_push($tables,"$GLOBALS[tableprefix]typeentrees");
 	  $where.=" AND $GLOBALS[tableprefix]entrees.idtype=$GLOBALS[tableprefix]typeentrees.id";
 	}
@@ -192,7 +192,7 @@ function parse_loop_extra(&$tables,
       }
       if (in_array("$GLOBALS[tableprefix]champs",$tables) && preg_match("/\bclasse\b/",$where)) {
 	// on a besoin de la table croise groupesdechamps
-	protect4($select,$where,$ordre,$groupby,"$GLOBALS[tableprefix]champs","id|statut|ordre");
+	protect5($select,$where,$ordre,$groupby,$having,"$GLOBALS[tableprefix]champs","id|statut|ordre");
 	array_push($tables,"$GLOBALS[tableprefix]groupesdechamps");
 	$where.=" AND $GLOBALS[tableprefix]groupesdechamps.id=$GLOBALS[tableprefix]champs.idgroupe";
 	$extrainselect.=", $GLOBALS[tableprefix]groupesdechamps.classe";
@@ -296,13 +296,14 @@ function prefix_tablename ($tablename)
 }
 */
 
-function protect4(&$sql1,&$sql2,&$sql3,&$sql4,$table,$fields)
+function protect5(&$sql1,&$sql2,&$sql3,&$sql4,&$sql5,$table,$fields)
 
 {
   protect($sql1,$table,$fields);
   protect($sql2,$table,$fields);
   protect($sql3,$table,$fields);
   protect($sql4,$table,$fields);
+  protect($sql5,$table,$fields);
 }
 
 

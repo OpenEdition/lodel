@@ -65,7 +65,7 @@ function errmsg ($msg,$ind=0) {
 
 function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
-			  &$select,&$where,&$ordre,&$groupby) {}
+			  &$select,&$where,&$ordre,&$groupby,&$having) {}
 function parse_variable_extra ($nomvar) { return FALSE; }
 function decode_loop_content_extra ($balise,&$content,&$options,$tables) {}
 function prefix_tablename ($tablename) { return $tablename; }
@@ -476,6 +476,10 @@ function parse_loop()
 	if ($groupby) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
 	$groupby=$value;
 	break;
+      case "HAVING" :
+	if ($having) $this->errmsg("Attribut HAVING should occur only once in loop $name",$this->ind);
+	$having=$value;
+	break;
       case "SELECT" :
 	if ($dontselect) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
 	#$select=array_merge($select,preg_split("/\s*,\s*/",$value));
@@ -520,7 +524,7 @@ function parse_loop()
   if (!$where) $where="1";
   $this->parse_loop_extra($tables,
 			  $tablesinselect,$extrainselect,
-			  $select,$where,$order,$groupby);
+			  $select,$where,$order,$groupby,$having);
   //
 
 
@@ -542,7 +546,7 @@ function parse_loop()
       $this->make_loop_code($name.'_'.($this->signature),$tables,
 			    $tablesinselect,$extrainselect,
 			    $select,$dontselect,
-			    $where,$order,$limit,$groupby,
+			    $where,$order,$limit,$groupby,$having,
 			    $contents,$options);
     } else { // boucle redefinie identiquement (enfin on espere)
       // on passe le contenu... on le connait deja
@@ -679,7 +683,7 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
 function make_loop_code ($name,$tables,
 			 $tablesinselect,$extrainselect,
 			 $select,$dontselect,
-			 $where,$order,$limit,$groupby,
+			 $where,$order,$limit,$groupby,$having,
 			 $contents,$options)
 
 {
@@ -687,6 +691,8 @@ function make_loop_code ($name,$tables,
 
   if ($where) $where="WHERE ".$where;
   if ($order) $order="ORDER BY ".$order;
+  if ($having) $having="HAVING ".$having;
+  if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
   // special treatment for limit when only one value is given.
   if ($limit && strpos($limit,",")===false) {
@@ -706,7 +712,6 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."offset_'.$name.'
     $limit='".$currentoffset.",'.($limit+1);
   }
   if ($limit) $limit="LIMIT ".$limit;
-  if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
   // traitement particulier additionnel
 
@@ -761,7 +766,7 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."offset_'.$name.'
 //
   $this->fct_txt.='function loop_'.$name.' ($context)
 {'.$preprocesslimit.'
- $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
+ $query="SELECT '.$select.' FROM '."$table $where $groupby $having $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
  $context[nbresultats]=mysql_num_rows($result);
