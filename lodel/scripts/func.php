@@ -185,11 +185,11 @@ function copy_images (&$text,$callback,$argument="",$count=1)
 
     if (is_array($text)) {
       foreach ($text as $k=>$t) {
-	copy_images_private($t,$callback,$argument,$count,$imlist);
+	copy_images_private($t,$callback,$argument,$count,$imglist);
 	$text[$k]=$t;
       }
     } else {
-      copy_images_private($text,$callback,$argument,$count,$imlist);
+      copy_images_private($text,$callback,$argument,$count,$imglist);
     }
 }
 
