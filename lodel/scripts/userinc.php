@@ -114,7 +114,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   include_once ($home."connect.php");
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE id='$id' ") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
