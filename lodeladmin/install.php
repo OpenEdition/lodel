@@ -650,7 +650,7 @@ function maj_lodelconfig($var,$val=-1)
   if ($newtext==$text) return;
   // ecrit le fichier
   if (!(unlink($lodelconfig)) ) die ("ERROR: $lodelconfig can't be deleted. Internal error, please report this bug.");
-   return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0600);
+  return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0666 & octdec($GLOBALS['filemask']));
 }
 
 
