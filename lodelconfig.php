@@ -5,7 +5,8 @@ $home="/www/revues/lodeldevel/lodel/scripts";
 
 // base du site
 $urlroot="/"; # urlroot doit toujours se terminer par /, il ne peut etre vide
-$shareurl="http://lodeldevel.revues.org/lodel/share";
+#$shareurl="http://lodeldevel.revues.org/lodel/share";
+$shareurl="http://lodeldevel/lodel/share";
 
 // $revueagauche=0;
 
@@ -19,7 +20,8 @@ $dbusername="lodeluser";
 // mot de passe
 $dbpasswd="45mlkj,n";
 // host
-$dbhost="r3.revues.org";
+#$dbhost="r3.revues.org";
+$dbhost="adelie";
 
 // repertoire de mysql
 $mysqldir="/usr/local/mysql/bin";
