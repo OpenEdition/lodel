@@ -221,8 +221,8 @@
 		<IF COND="[#TEXTE]">
 			Extrait du premier article du numéro: 
 			[(#TEXTE|removefootnotes|couper(1500))]
-		</ELSE>
-			<LOOP TABLE="publication" WHERE="id='[#PUBLICATION]'" ORDER="ordre">
+		<ELSE/>
+			<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'" ORDER="ordre">
 				<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
 				<DO>
 					<IF COND="[#TITRE]">
