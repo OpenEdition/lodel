@@ -125,7 +125,7 @@ class Entities_IndexLogic extends Logic
    	 			
    	 			//convertHTMLtoUTF8($token);
    	 	#echo "token=$token<br />\n";
-   	 			$token = removeaccents(($token));
+   	 			$token = makeSortKey(($token));
    	 			if(strlen($token) > 3)
    	 			{
    	 				//simply count word number
@@ -196,9 +196,4 @@ class Entities_IndexLogic extends Logic
    	  			return "_back";	
    	   }
 }
-function removeaccents($string) 
-{
- 	$string = utf8_decode($string);
- 	return utf8_encode(strtr($string, "ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ", "SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy"));
-} 
 ?>
