@@ -92,7 +92,7 @@ $unzipcmd="pclzip";
 
 
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
-$tableprefix="";
+$tableprefix="lodel_";
 
 # LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par site. "on" ou "" (ou "off")
 $singledatabase="on";

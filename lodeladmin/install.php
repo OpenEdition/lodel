@@ -94,8 +94,6 @@ if (doubleval($result[0]<4.1)) {
 //
 $plateformdir=LODELROOT."lodel$versionsuffix/install/plateform";
 
-$have_chmod=function_exists("chmod");
-
 if ($tache=="plateform") {
   $plateform=preg_replace("/[^A-Za-z_-]/","",$plateform);
   if (!$plateform) $plateform="default";
@@ -104,7 +102,13 @@ if ($tache=="plateform") {
   if (file_exists($lodelconfigplatform)) {
     // essai de copier ce fichier dans le CACHE
     if (!@copy($lodelconfigplatform,$lodelconfig)) { die ("problème de droits... étrange on a déjà vérifié"); }
-    if ($have_chmod) @chmod($lodelconfig,0600); // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
+    if (file_exists(LODELROOT."lodelloader.php")) {
+      // the installer has been use, let's chmod safely
+      $chmod=decoct(fileperms(LODELROOT."lodel-$versioninstall"));
+    } else {
+      $chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
+    }
+    @chmod($lodelconfig,$chmod);
     maj_lodelconfig(array("home"=>'$pathroot/lodel'.$versionsuffix.'/scripts/'));    
   } else {
     die("le fichier $lodelconfigplatform n'existe pas. Erreur interne.");
@@ -139,7 +143,14 @@ if ($tache=="mysql") {
 //
 
 if ($tache=="database") {
-  $newsingledatabase=$newsingledatabase ? "on" : "";
+  $set=array();
+
+  if (isset($newsingledatabase)) {
+    $set['singledatabase']=$newsingledatabase ? "on" : "";
+  }
+  if (isset($newtableprefix)) {
+    $set['tableprefix']=$newtableprefix;
+  }
 
   if ($newdatabase==-1) $newdatabase=$existingdatabase;
   if ($newdatabase==-2) { 
@@ -147,10 +158,10 @@ if ($tache=="database") {
   } else {
     $createdatabase="";
   }
+  $set['database']=$newdatabase;
 
-  maj_lodelconfig(array("database"=>$newdatabase,
-			"singledatabase"=>$newsingledatabase,
-			"tableprefix"=>$newtableprefix));
+  maj_lodelconfig($set);
+
   if ($createdatabase) { // il faut creer la database
     @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
     @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
@@ -284,6 +295,8 @@ $dirs=array("CACHE"=>7,
 	    "lodel$versionsuffix/scripts"=>5,
 	    "lodel$versionsuffix/src"=>5,
 	    "lodeladmin/images"=>5);
+
+$have_chmod=function_exists("chmod");
 	       
 $entete=0;
 foreach ($dirs as $dir => $mode) {
@@ -432,12 +445,36 @@ if ($htaccess!="non") {
 //
 // Demander des options generales
 //
+if ($installoption==1) {
+  // try to guess the options.
+  $needoptions=false;
 
-if ($chooseoptions!="oui") {
-  if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
-  return;
+  // file mask ?
+  $newfilemask=decoct(fileperms(LODELROOT."lodel-$versioninstall"));
+  if ($newfilemask) $filemask=$newfilemask;
+
+  // use pclzip ?
+  if (function_exists("gzopen")) {
+    $newunzipcmd=$newzipcmd="pclzip";
+  } else {
+    $needoptions=true;
+  }
+
+  maj_lodelconfig(array("chooseoptions"=>$needoptions ? "non" : "oui",
+			"filemask"=>$filemask,
+			"unzipcmd"=>$newunzipcmd,
+			"zipcmd"=>$newzipcmd));
+
+  if ($needoptions) {
+    if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
+    return;
+  }
+
 } elseif ($importdir && !testdirmode($importdir,5)) {
   $erreur_importdir=1;
+  if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
+  return;
+} elseif ($chooseoptions!="oui") {
   if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
   return;
 }
@@ -499,15 +536,19 @@ if ($rootlodelconfig_exists && !is_readable(LODELROOT.$file)) {
 if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // are they different ?
   @unlink(LODELROOT.$file);
   if (@copy($lodelconfig,LODELROOT.$file)) { // let copy
-    if ($have_chmod) @chmod(LODELROOT.$file,0600);
+    @chmod(LODELROOT.$file,0666 & $GLOBALS[filemask]);
   } else { // error
     include ("tpl/install-lodelconfig.html");
     return;
   }  
 }
 
-
+// finish !
+if ($installoption==1) { // essaie de creer automatiquement le site
+  header("location: site.php?maindefault=1");
+}
 if (!(@include("tpl/install-fin.html"))) problem_include("install-fin.html");
+
 
 /////////////////////////////////////////////////////////////////
 //                           FONCTIONS                         //

@@ -111,6 +111,7 @@ Base de données:<br>
 			  <tr><td><input type="radio" name="newdatabase" value="-2" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de données: <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
 			</table>
 </td></tr>
+<?php if ($installoption>1) { // OPTION superieure a 1 ?>
 <tr><td>
 Base de données unique pour tous les sites:<br>
 <input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>>
@@ -119,6 +120,7 @@ Base de données unique pour tous les sites:<br>
 Préfixe des tables:<br>
 <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
 </td></tr>
+<?php } ?>
 </table>
 <input type="submit" value="continuer">
 
