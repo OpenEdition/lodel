@@ -70,7 +70,7 @@
 </table>
 </div>
 	<div class="pied_de_formulaire">
-		IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 	   <input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='option.php?delete=1&id=[#ID]'" />
 	</div>

@@ -23,19 +23,19 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Administer les minitextes</title>
+<title>[@ADMIN.TITLE_ADMINISTRATE_LITTLETEXT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Administer les minitextes</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_ADMINISTRATE_LITTLETEXT]</td>
 	</tr>
 </table>
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="texte.php">Ajouter un minitexte</a>
+	<a href="texte.php">[@ADMIN.ADD_LITTLETEXT]</a>
 </div>
 <br /><br />
 
@@ -51,8 +51,8 @@
 					<td class="ligne_admin1">[#REP][(#NOM|nbsp)]</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
-							|&nbsp;<a href="texte.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="texte.php?id=[#ID]&delete=2">Supprimer</a>&nbsp;(*)&nbsp;|&nbsp;
+							|&nbsp;<a href="texte.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+							<a href="texte.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;(*)&nbsp;|&nbsp;
 						</div>
 					</td>
 				</tr>
@@ -61,8 +61,8 @@
 					<td class="ligne_admin2">[#REP][(#NOM|nbsp)]</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>
-							|&nbsp;<a href="texte.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="texte.php?id=[#ID]&delete=2">Supprimer</a>&nbsp;(*)&nbsp;|&nbsp;
+							|&nbsp;<a href="texte.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+							<a href="texte.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;(*)&nbsp;|&nbsp;
 						</div>
 					</td>
 				</tr>
@@ -72,8 +72,8 @@
 	<tr>
 		<td colspan="2" align="center">
 			<span class="texte_info">
-				(*) avant de supprimer un minitexte, il faut supprimer la balise <TEXT> dans les templates.<br />
-				La cr&eacute;ation des minitextes se fait au moment de leur introduction dans les templates.
+				(*) [@ADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT] &lt;TEXT&gt; [@ADMIN_IN_TEMPLATES].<br />
+				[@ADMIN.HOWTO_LITTLETEXTS].
 			</span>
 		</td>
 	</tr>

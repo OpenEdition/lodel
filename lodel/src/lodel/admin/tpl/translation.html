@@ -23,14 +23,14 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Traduction</title>
+<title>[@ADMIN.TITLE_A_TRANSLATION_ADMINISTRATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Gestion d'une traduction</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_A_TRANSLATION_ADMINISTRATION]</td>
 	</tr>
 </table>
 
@@ -39,23 +39,27 @@
 	<input type="hidden" name="id" value="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td class="texte_intitule">Code de la langue:</td>
+			<td class="texte_intitule">[@ADMIN.LANG_CODE] :</td>
 			<td><input size="10" type="text" name="lang" value="[#LANG]"></td>
 		</tr>
-		[(#ERROR_LANG|true)<tr><td colspan="2" class="message_erreur">Le code de langue est invalide.</td></tr>]
-		[(#ERROR_LANG_EXISTS|true)<tr><td colspan="2" class="message_erreur">Une traduction existe déjà pour cette langue</td></tr>]
+		<IF COND="#ERROR_LANG">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_LANG_CODE_INVALID].</td></tr>
+		</IF>
+		<IF COND="#ERROR_LANG_EXISTS">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TRANSLATION_ALREADY_EXISTS_FOR_THIS_LANG]</td></tr>
+		</IF>
 		<tr>
 		<tr>
-			<td class="texte_intitule">Langue<br/> (nom de la langue dans sa propre langue):</td>
+			<td class="texte_intitule">[@COMMON.LANG]<br/> ([@ADMIN.NAME_OF_LANG_IN_OWN_LANG]):</td>
 			<td><input size="10" type="text" name="title" value="[#TITLE]"></td>
 		</tr>
 	</table>
 
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='translations.php'" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='translation.php?delete=1&lang=[#LANG]'" />
+			<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='translation.php?delete=1&lang=[#LANG]'" />
 		</IF>
 	</div>
 </form>

@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Types de document</title>
+<title>[@ADMIN.TITLE_EDITION_DOCUMENT_TYPE]</title>
 <MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -31,7 +31,7 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un type de document</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_EDITION_DOCUMENT_TYPE]</td>
 	</tr>
 </table>
 
@@ -40,37 +40,45 @@
 	<input type="hidden" name="id" value="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td class="texte_intitule">Nom du type de document<br /> 				<span class="texte_info">(identifiant unique)</span>:</td>
+			<td class="texte_intitule">[@ADMIN.NAME_DOCUMENT_TYPE]<br /> 				<span class="texte_info">([@ADMIN.ONLY_ID])</span>:</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom contenant des lettres, des chiffres, le caract&egrave;re "_" mais pas d'espaces !</td></tr>]
-		[(#ERREUR_TYPE_EXISTE|true)<tr><td colspan="2" class="message_erreur">Ce type existe déjà! Choisissez un autre nom</td></tr>]
-		<IF COND="[#ERREUR_ENTITES_EXISTENT]"><tr><td colspan="2" class="message_erreur">Ce type est utilisé par [#ERREUR_ENTITES_EXISTENT] documents, il n'est pas possible de la détruire.</td></tr></IF>
+		<IF COND="#ERREUR_TYPE">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TYPE] !</td></tr>
+		</IF>
+		<IF COND="#ERREUR_TYPE_EXISTE">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TYPE_ALREADY_EXISTS_CHOOSE_DIFFERENT]</td></tr>
+		</IF>
+		<IF COND="[#ERREUR_ENTITES_EXISTENT]"><tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_ENTITIES_EXIST_PART1] [#ERREUR_ENTITES_EXISTENT] [@ADMIN.ERROR_ENTITIES_EXIST_PART2].</td></tr></IF>
 		<tr>
-			<td class="texte_intitule">Nom en clair du type de document :</td>
+			<td class="texte_intitule">[@ADMIN.NAME_HUMAN_READABLE_DOCUMENT_TYPE] :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
 		</tr>
-		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
+		<IF COND="[#ERREUR_TITRE]">
+			<tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_TITLE]</td></tr>
+		</IF>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template :</span><br />
-				<span class="texte_info">(sans l'extension .html)</span>
+				<span class="texte_intitule">[@ADMIN.NAME_TEMPLATE_FILE] :</span><br />
+				<span class="texte_info">([@ADMIN.WITHOUT_EXTENSION] .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
-		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<IF COND="#ERREUR_TPL">
+			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPL]</td></tr>
+		</IF>
 		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template de creation :</span><br />
-				<span class="texte_info">(sans l'extension .html)</span><br />
-				<span class="texte_info">(facultatif)</span><br />
+				<span class="texte_intitule">[@ADMIN.NAME_TEMPLATE_CREATION_FILES] :</span><br />
+				<span class="texte_info">([@ADMIN.WITHOUT_EXTENSION] .html)</span><br />
+				<span class="texte_info">([@ADMIN.OPTIONAL])</span><br />
 			</td>
 			<td><input size="40" type="text" name="tplcreation" value="[#TPLCREATION]" /></td>
 		</tr>
-		<tr><td>Import avec OpenOffice</td><td><input type="checkbox" name="import" [(#IMPORT|true)checked] /></td></tr>      
+		<tr><td>[@ADMIN.IMPORT_WITH_SERVOO]</td><td><input type="checkbox" name="import" [(#IMPORT|true)checked] /></td></tr>      
 		<IF COND="[#DROITADMINLODEL]">    
 		<tr>
-			<td class="texte_intitule">Type protégé:</td>
+			<td class="texte_intitule">[@ADMIN.PROTECTED_TYPE] :</td>
 			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>
 		</tr>
 		</IF>
@@ -79,35 +87,36 @@
 		    <td rowspan="2">
 				<MACRO NAME="CHOIX_TYPES_PARENTS">
 				<div>
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentite', true);">Tout cocher</a>&nbsp;/&nbsp;
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentite', false);">Tout décocher</a>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentite', true);">[@ADMIN.CHECK_ALL]</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentite', false);">[@ADMIN.UNCHECK_ALL]</a>
 				</div>
 		    </td>
 		    <td valign="top">
-		    	<u>Index disponible pour ce type de document :</u><br /><br />
+		    	<u>[@ADMIN.AVAILABLE_INDEX_FOR_DOCUMENT_TYPE] :</u><br /><br />
 				<MACRO NAME="TYPE_ENTREES">
 				<div>
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentree', true);">Tout cocher</a>&nbsp;/&nbsp;
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentree', false);">Tout décocher</a>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentree', true);">[@ADMIN.CHECK_ALL]</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentree', false);">[@ADMIN.UNCHECK_ALL]</a>
 				</div>
 		    </td>  
 		  </tr>
 		  <tr>
 		    <td valign="top">
-			<u>Intervenant disponible pour ce type de document :</u><br />
+			<u>[@ADMIN.AVAILABLE_INTERVENANT_FOR_DOCUMENT_TYPE] :</u><br />
 				<MACRO NAME="TYPE_PERSONNES">
 				<div>
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typepersonne', true);">Tout cocher</a>&nbsp;/&nbsp;
-					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typepersonne', false);">Tout décocher</a>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typepersonne', true);">[@ADMIN.CHECK_ALL]</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typepersonne', false);">[@ADMIN.UNCHECK_ALL]</a>
 				</div>
 		    </td>  
 		  </tr>
 	</table>
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='typedoc.php?delete=1&id=[#ID]'" />
+			<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='typedoc.php?delete=1&id=[#ID]'" />
 		</IF>
 	</div>
 
