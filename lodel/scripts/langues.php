@@ -63,10 +63,10 @@ $GLOBALS[balisesmotcle]=$balisesmotcle;
 function makeselectlangues($lang="lang") {
   global $context,$langues;
   
-  echo "<OPTION VALUE=\"\">--</OPTION>\n";
+  echo "<option value=\"\">--</option>\n";
   foreach ($langues as $l=>$langue) {
-    $selected=$context[$lang]==$l ? "SELECTED" : "";
-    echo "<OPTION VALUE=\"$l\"$selected>$langue</OPTION>\n";
+    $selected=$context[$lang]==$l ? " selected" : "";
+    echo "<option value=\"$l\"$selected>$langue</option>\n";
   }
 }
 
@@ -75,8 +75,8 @@ function makeselectlangues_nevernil($lang="lang") {
   global $context,$langues;
 
   foreach ($langues as $l=>$langue) {
-    $selected=$context[$lang]==$l ? "SELECTED" : "";
-    echo "<OPTION VALUE=\"$l\"$selected>$langue</OPTION>\n";
+    $selected=$context[$lang]==$l ? " selected" : "";
+    echo "<option value=\"$l\"$selected>$langue</option>\n";
   }
 }
 

@@ -40,7 +40,6 @@ else {
   ei_pretraitement($filename,$row,$context,$text);
 }
 
-#echo "text:",htmlentities($text);
 
 $balises_sstag=array("typedoc");
 foreach ($balises_sstag as $b) {

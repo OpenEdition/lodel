@@ -101,7 +101,8 @@ function rtf($filename) {
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
 		      "description_auteur"=>"descriptionauteur",
-		      "type_document"=>"typedoc"
+		      "type_document"=>"typedoc",
+		      "langue"=>"langues"
 		      );
   foreach ($translations as $k=>$v) {
     array_push($search,"/<r2r:$k(\b[^>]+)?>/i","/<\/r2r:$k>/i");

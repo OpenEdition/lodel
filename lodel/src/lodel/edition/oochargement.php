@@ -95,7 +95,8 @@ function OO ($uploadedfile)
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
 		      "description_auteur"=>"descriptionauteur",
-		      "type_document"=>"typedoc"
+		      "type_document"=>"typedoc",
+		      "langue"=>"langues"
 		      );
   
   foreach ($translations as $k=>$v) {

@@ -31,11 +31,12 @@ $balises=array ("-" => "-",
 		"section6"=>"<h6>",
 		"titredoc"=>"Titre de document",
 		"legendedoc"=>"Légende de document",
-		"droitsauteur"=>"Droits d'auteurs",
+		"droitsauteurs"=>"Droits d'auteurs",
 		"erratum"=>"Erratum",
 		"ndlr"=>"NDLR",
 		"historique"=>"Historique",
 		"pagination"=>"Pagination",
+		"langues"=>"Langues",
 # champs auteurs
 		"descriptionauteur"=>"Description de l'auteur précédent",
 #		"affiliation"=>"<span class=\"affiliation\">",
@@ -65,7 +66,7 @@ $balisesdocument_lieautexte=array("texte",
 
     # balises qui sont toujours extraites, meme si le texte n'est pas publie.
 $balisesdocument_nonlieautexte=array("resume",
-				     "droitsauteur",
+				     "droitsauteurs",
 				     "pagination"
 				     );
 
@@ -104,7 +105,7 @@ $multiparagraphe_tags="titre|surtitre|soustitre|resume|texte|citation|epigraphe|
 
 
 # tags qui admettent des listes separees par des virgules.
-$virgule_tags="auteurs|periodes|geographies|motcles";
+$virgule_tags="auteurs|periodes|geographies|motcles|langues";
 
 
 
