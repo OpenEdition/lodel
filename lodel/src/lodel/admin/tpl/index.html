@@ -22,7 +22,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[(#SITE|strtoupper)]. Administration</title>
+<title>[(#SITE|strtoupper)]. [@COMMON.ADMINISTRATION]</title>
 	<script type="text/javascript"><!--
 	
 		function change_language(obj) {
@@ -66,7 +66,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="textes.php"><span class="texte_orange">Minitextes</span></a>
+							<a href="textes.php"><span class="texte_orange">[@ADMIN.LITTLE_TEXTS]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -82,7 +82,7 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Gestion des index</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.INDEX_ADMINISTRATION]</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<LOOP NAME="typeentree" TABLE="typeentrees" WHERE="ok" ORDER="ordre">
@@ -99,7 +99,7 @@
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-									Aucun index disponible
+									[@ADMIN.NO_INDEX_AVAILABLE]
 								</td>
 								<td width="5">&nbsp;</td>
 							</tr>
@@ -120,20 +120,20 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Mod&egrave;le &eacute;ditorial</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN_EM]</span></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typeentrees.php"><span class="texte_orange">Types d'index</span></a>
+							<a href="typeentrees.php"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typepersonnes.php"><span class="texte_orange">Types d'index par personne</span></a>
+							<a href="typepersonnes.php"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -141,7 +141,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typedocs.php"><span class="texte_orange">Types de documents</span></a>
+							<a href="typedocs.php"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -149,9 +149,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-								<a href="typepublis.php"><span class="texte_orange">Types de publications</span></a>
+								<a href="typepublis.php"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
 							<ELSE/>
-								<span class="texte_orange"><span class="inactif">Types de publications</span></span>
+								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_TYPE]</span></span>
 							</IF>
 						</td>			
 						<td>&nbsp;</td>
@@ -161,9 +161,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=documents"><span class="texte_orange">Champs pour les documents</span></a>
+							<a href="champs.php?classe=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
 							<ELSE/>
-								<span class="texte_orange"><span class="inactif">Ces champs pour les documents</span></span></span>
+								<span class="texte_orange"><span class="inactif">[@ADMIN.DOCUMENT_DATAFIELDS]</span></span></span>
 			                                </IF>
 						</td>
 						<td>&nbsp;</td>
@@ -172,9 +172,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=publications"><span class="texte_orange">Champs pour les publications</span></a>
+							<a href="champs.php?classe=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
 							<ELSE/>
-								<span class="texte_orange"><span class="inactif">Champs pour les publications</span></span></span>
+								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_DATAFIELDS]</span></span></span>
 			                                </IF>
 						</td>
 						<td>&nbsp;</td>
@@ -182,14 +182,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="importmodel.php"><span class="texte_orange">Importer un mod&egrave;le &eacute;ditorial</span></a>
+							<a href="importmodel.php"><span class="texte_orange">[@ADMIN.IMPORT_EM]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="backupmodel.php"><span class="texte_orange">Sauvegarder le mod&egrave;le &eacute;ditorial</span></a>
+							<a href="backupmodel.php"><span class="texte_orange">[@ADMIN.BACKUP_EM]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -206,41 +206,41 @@
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Outils</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.TOOLS]</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="backup.php"><span class="texte_orange">Sauvegarde des donn&eacute;es</span></a>
+							<a href="backup.php"><span class="texte_orange">[@ADMIN.BACKUP_DATA]</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="import.php"><span class="texte_orange">Importation des donn&eacute;es</span></a>
+							<a href="import.php"><span class="texte_orange">[@ADMIN.IMPORT_DATA]</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="schema.php"><span class="texte_orange">Télécharger le Schéma XML</span></a>
+							<a href="schema.php"><span class="texte_orange">[@ADMIN.DOWNLOAD_XML_SCHEMA]</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="translations.php"><span class="texte_orange">Gérer les traductions</span></a>
+							<a href="translations.php"><span class="texte_orange">[@ADMIN.ADMINISTRATE_TRANSLATIONS]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#USERTRANSLATIONMODE]">Sortir du<ELSE/>Entrer dans le</IF> mode Traduction</span></a>
+							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#USERTRANSLATIONMODE]">[@ADMIN.GET_OUT]<ELSE/>[@ADMIN.ENTER_IN]</IF> [@ADMIN.TRANSLATION_MODE]</span></a>
 
 						</td>
 						<td>&nbsp;</td>
@@ -248,7 +248,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<span class="texte_orange">Langue de l'interface:</span>
+							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
 		                                <select onchange="change_language(this)">
 	                                	<LOOP NAME="translations" TABLE="translations" ORDER="ordre">
 		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>

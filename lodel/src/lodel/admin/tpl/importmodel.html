@@ -23,13 +23,13 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Import</title>
+<title>[@ADMIN.TITLE_IMPORT_EM]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Importation de modèle</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_IMPORT_EM]</td>
 	</tr>
 </table>
 
@@ -39,7 +39,7 @@
 	<tr>
 		<td>
 
-	    <p><strong>Erreur:</strong> La base de donnée n'est pas vide. La table "[#ERREUR_TABLE]" contient encore des informations. Veuillez supprimer tous les documents, publications, mots clés, etc avant de procéder à l'importation d'un nouveau modele editorial</p>
+	    <p><strong>[@COMMON.ERROR] :</strong> L[@ADMIN.ERROR_TABLE_FIRST_PART] "[#ERREUR_TABLE]" [@ADMIN.ERROR_TABLE_SECOND_PART]</p>
 		    </td>
 		</tr>
 </table>
@@ -52,13 +52,11 @@
 <table class="table_normale" width="90%" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
-		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'installation du modèle éditorial. Verifier l'integrité de votre archive zip. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
-		    <IF COND="[#ERREUR_READING]"><strong>Erreur:</strong> Le fichier archive n'a pas pu être lu ou ne contient pas de fichier.<br /><br /></IF>
+		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
+		    <IF COND="[#ERREUR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
 
-		    <h3>Installation du modèle éditorial.</h3>
-                      
-Choisissez le type de site que vous voulez installer en adoptant un
-modèle éditorial parmi ceux qui vous sont proposés.
+		    <h3>[@ADMIN.EM_INSTALL].</h3>
+                      [@ADMIN.CHOOSE_EM].
 
 		    <LOOP NAME="fichiers">
 			<BEFORE><dl></BEFORE>
@@ -68,15 +66,15 @@ modèle éditorial parmi ceux qui vous sont proposés.
                       <div>
 		      <dt><strong>[#TITLE]</strong></dt>
                       <dd>[#DESCRIPTION]</dd>
-                      <dd><strong>Nom du fichier :</strong> [#FILENAME]</dd>
-                      <dd><strong>Version du modèle :</strong> [#MODELVERSION]</dd>
-                      <dd><strong>Auteur :</strong> [#AUTHOR]</dd>
-		      <dd><strong>Date de création :</strong> [(#DATE|humandate)]</dd>
-		      <IF COND="[#WARNING_VERSION]"><div><strong>Version:</strong> Attention, la version de ce modèle editorial ([#LODELVERSION]) n'est pas la même que celle de Lodel ([#VERSION]). Verifier la compatibilité.</div></IF>
+                      <dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
+                      <dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
+                      <dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
+		      <dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
+		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION_FIRST_PART] ([#LODELVERSION]) [@ADMIN.WARNING_VERSION_SECOND_PART] ([#VERSION]). [@ADMIN.VERIFY_COMPATIBILITY].</div></IF>
 
 
 
-                         <div style="text-align: right"><a href="importmodel.php?frominstall=1&fichier=[(#FULLFILENAME|urlencode)]"><strong>Installer ce modèle</strong></a></div>
+                         <div style="text-align: right"><a href="importmodel.php?frominstall=1&fichier=[(#FULLFILENAME|urlencode)]"><strong>[@ADMIN.INSTALL_EM]</strong></a></div>
                        </div>
 
 		    </DO>
@@ -85,11 +83,11 @@ modèle éditorial parmi ceux qui vous sont proposés.
 <hr/ >
 
 		  <p>Ajouter un modèle à la liste ci-dessus:</p>
-      <IF COND="[#ERROR_UPLOAD]"><b>Erreur</b> lors du chargement!</IF>
+      <IF COND="[#ERROR_UPLOAD]"><b>[@COMMON.ERROR]</b> [@ADMIN.UPLOAD_IN] !</IF>
                   <p>
     <form name="formfic" enctype="multipart/form-data" action="importmodel.php" method="post"  />
       <input type="file" name="archive" size="40">
-      <input class="form" type="submit" value="Charger" />	  
+      <input class="form" type="submit" value="[@ADMIN.UPLOAD]" />	  
       </form>
 
 </td></tr>
@@ -97,7 +95,7 @@ modèle éditorial parmi ceux qui vous sont proposés.
 
 <form>
 	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php';" />
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
 	</div>
 </form>
 </IF>  
