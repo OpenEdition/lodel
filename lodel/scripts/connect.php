@@ -127,13 +127,13 @@ function lq ($query)
   if (strpos($query,"#_")!==false) {
     if (!$cmd) $cmd=array(
 			  "#_MTP_"=>DATABASE.".".$GLOBALS['tableprefix'],
-			  "#_publicationsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
+#			  "#_publicationsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
 			
 			  ###			"#_documentsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
 
 			  "#_entitiestypesjoin_"=>"$GLOBALS[tableprefix]types INNER JOIN $GLOBALS[tableprefix]entities ON $GLOBALS[tableprefix]types.id=$GLOBALS[tableprefix]entities.idtype",
 
-			  "#_publicationstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
+#			  "#_publicationstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
 
 			  ####			"#_documentstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
 

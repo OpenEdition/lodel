@@ -30,51 +30,6 @@
 
 if (file_exists($home."loops_local.php")) require_once("loops_local.php");
 
-/*********************************************************************/
-/*  Boucle permettant de trouver depuis une publication toutes les   */
-/*  infos concernant la publication parente la plus haute dans       */
-/*  l'arborescence et qui ne soit pas une au sommet.                 */
-/*                                                                   */
-/*  Appeller cette boucle dans le code lodelscript par :             */
-/*  <BOUCLE NAME="topparentpubli">[#ID]</BOUCLE>                     */
-/*********************************************************************/
-function loop_topparentpubli(&$context,$funcname)
-{
-  global $db;
-  // $context est un tableau qui contient une pile. Si on fait $context[toto] 
-  // alors [#TOTO] sera accessible dans lodelscript !!!
-  $id=$context['id'];       // On récupère le paramètre id
-  $result=$db->selectlimit(lq("SELECT * FROM #_publicationstypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='$id' AND #_TP_entities.status>".($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC"),1,1) or dberror();
-
-
-  while (!$result->EOF) {
-    // On fait un array_merge pour récupérer toutes les infos contenues
-    // dans le tableau $row et les mettre dans le tableau $context.
-    $localcontext=array_merge($context,$result->fields);
-    // Puis on fait appel à la fonction en concaténant avant "code_" 
-    // et en lui passant en paramètre la dernière valeur.
-    // C'est équivalent à un return et ça permet d'avoir les
-    // valeurs accessibles en lodelscript. 
-    call_user_func("code_do_$funcname",$localcontext);
-    $result->MoveNext();
-  }
-  return;
-}
-
-/*********************************************************************/
-/*  Boucle permettant de trouver depuis un document toutes les       */
-/*  infos concernant la publication parente la plus haute dans       */
-/*  l'arborescence et qui ne soit pas une série.                     */
-/*  La condition d'arrêt de la boucle est la chaine de caractères :  */
-/*  "serie_"                                                         */
-/*                                                                   */
-/*  Appeller cette boucle dans le code lodelscript par :             */
-/*  <BOUCLE NAME="topparentdoc">[#ID]</BOUCLE>                       */
-/*********************************************************************/
-function loop_topparentdoc(&$context,$funcname)
-{
-  topparentpubli($context,funcname);
-}
 
 
 function loop_parentsentities(&$context,$funcname,$critere="")
@@ -83,8 +38,7 @@ function loop_parentsentities(&$context,$funcname,$critere="")
   global $db;
   $id=intval($context['id']);
   if (!$id) return;
-
-  $result=$db->execute(lq("SELECT *, type  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND #_TP_entities.status>".($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
+  $result=$db->execute(lq("SELECT *, type  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND nature='P' AND #_TP_entities.status>".($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
 
   while (!$result->EOF) {
     $localcontext=array_merge($context,$result->fields);
