@@ -76,17 +76,17 @@ function boucle_topparentdoc(&$context,$funcname)
 }
 
 function boucle_themesparents (&$context,$funcname) {
-	 $parent=intval($context[parent]);
+	 $id=intval($context[id]);
 #ifndef LODELLIGHT
 	 $type="AND type='theme'";
 #else
 	 $type="";
 #endif
-	 if (!$parent) return;
+	 if (!$id) return;
 
 	 $contexts=array(); $i=0;
 
-	$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $type AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+	$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$id' $type AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
 	  while (mysql_num_rows($result)>0) {
 		$contexts[$i]=mysql_fetch_array($result);
 		$parent=$contexts[$i][parent];
