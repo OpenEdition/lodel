@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
 <MACRO NAME="JS_ROLLOVER">
 <div style=" background-image: url([#SHAREURL]/images/bandeau.jpg); background-repeat:no-repeat; background-color:#FFFFFF;">
 <table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
@@ -38,6 +39,33 @@
 					<td width="57" heigth="75"><a href="[#SITEROOT]lodel/admin/index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"><span class="desk-text">[@COMMON.ADMINISTRATION]</span></a></td>
 			
 					<td width="57" heigth="75"><a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"><span class="desk-text">[@COMMON.VIEW]</span></a></td>
+
+				<ELSE/>
+					<td heigth="75">
+					<MACRO NAME="JS_SELECT_URL">
+					<LOOP NAME="sites" TABLE="sites" WHERE="status gt 0">
+					<BEFORE>
+						[@LODELADMIN.SITE]:<br/>
+						<IF COND="[#NBRESULTS] gt 3">
+						<select onChange="select_url(this)">		
+						<option>--</option>
+						</IF>		
+					</BEFORE>
+					<DO>
+						<IF COND="[#NBRESULTS] gt 3">
+						<option value="../[#PATH]/lodel/edition/">[#TITLE]</option>
+						<ELSE/>
+						<a href="../[#PATH]/lodel/edition/">[#TITLE]</a><br />
+						</IF>
+					</DO>
+					<AFTER>
+						<IF COND="[#NBRESULTS] gt 3">
+						</select>
+						</IF>		
+					</AFTER>
+	
+					</LOOP>
+					</td>
 				</IF>
 					<td width="57" heigth="75"><a href="http://documentation.lodel.org" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"><span class="desk-text">[@COMMON.HELP]</span></a></td>
 				</tr>
