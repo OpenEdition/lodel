@@ -23,7 +23,7 @@ function parse ($in,$out)
 	} elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
 	    $macros.=join('',file($sharedir."/macros/".$macrofile));
 	} else {
-		die ("le fichier macros $result[1] n'existe pas");
+	  die ("le fichier macros $result[1] n'existe pas");
 	}
   }
   $macros=stripcomment($macros);
