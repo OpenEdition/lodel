@@ -213,6 +213,7 @@ class XMLImportParser {
     $datastack=array();
     $classstack=array(array($this->mainclass,"entities"));
     $handler->openClass($classstack[0]);
+    $this->nbdoc=0;
 
 #    print_r($arr);
 #    die();
@@ -238,7 +239,7 @@ class XMLImportParser {
     }
     // close the last tags
     while($classstack) {
-      $handler->closeClass(array_shift($classstack),$this->multipledoc);
+      $handler->closeClass(array_shift($classstack),$this->nbdoc>1);
     }
   } // function parser
 
@@ -329,11 +330,11 @@ class XMLImportParser {
       }
       if ($opening) {
 	if ($obj->g_name=="dc.title" && count($classstack)==1) {
-	  if ($this->multipledoc) {
+	  $this->nbdoc++;
+	  if ($this->nbdoc>1) {
 	    $this->handler->closeClass($classstack[0],true);
 	    $this->handler->openClass($classstack[0],null,true);
 	  }
-	  $this->multipledoc=true;
 	}
 	$datastack[0]="";
       } else {

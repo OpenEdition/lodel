@@ -252,7 +252,7 @@ class Entities_EditionLogic extends GenericLogic {
      if ($idtype) $vo->idtype=$idtype;
      $vo->identifier=$context['identifier'];
      if ($this->g_name['dc.title']) $vo->g_title=$context[$this->g_name['dc.title']];
-     if (!$vo->identifier) $vo->identifier=preg_replace("/\W+/","-",makeSortKey($vo->g_title));
+     if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier($id,$vo->g_title);
      if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
      if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
 
@@ -610,6 +610,25 @@ class Entities_EditionLogic extends GenericLogic {
        $context['entities'][$k]=join(",",$v);
      }
   }
+
+
+   function _calculateIdentifier($id,$title)
+
+   {
+     global $db;
+     $identifier=preg_replace(array("/\W+/","/-+$/"),array("-",""),makeSortKey($title));
+
+     $count=0;
+     do {
+       $result=$db->execute(lq("SELECT 1 FROM #_TP_entities WHERE id!='$id' AND identifier='$identifier' LIMIT 0,1")) or dberror();
+       if (!$result->fields) break;
+       if ($count==0) $identifier.="-";
+       $identifier.=rand(0,10);
+     } while ($count<10);
+     return $identifier;
+   }
+
+
 
    // begin{publicfields} automatic generation  //
    // end{publicfields} automatic generation  //
