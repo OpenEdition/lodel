@@ -748,7 +748,7 @@ function parse_let (&$text,$offset=0) {
   }
 }
 
-function stripcomment(&$text)
+function stripcommentandcr(&$text)
 
 {
 #  return $text;
