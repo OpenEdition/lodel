@@ -58,7 +58,7 @@ function makefilterfunc()
       } // do nothing if $filter is empty
     }
     $filterfunc="return ".$filterfunc.";";
-    $filterstr="'$classe.$nom'=>'".addcslashes($filterfunc,"'")."',";
+    $filterstr.="'$classe.$nom'=>'".addcslashes($filterfunc,"'")."',";
   }
   //if (!$filterstr) die("erreur interne dans filterfunc");
   // pas tres optimal. Il faudrait plutot que la boucle appel mysql_fetch_assoc dans ce cas... mais bon.
