@@ -56,14 +56,13 @@ if ($supprime || $confirmation) {
   return;
 }
 
-if ($publication>0) { # recupere les infos du publication
-  $result=mysql_query("SELECT * FROM $GLOBALS[publicationsjoin] WHERE id='$publication'") or die (mysql_error());
-} else { # recupere les infos du document
-  $result=mysql_query("SELECT * FROM $GLOBALS[documentsjoin] WHERE id='$id'") or die (mysql_error());
-}
+$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE id='$id'") or die (mysql_error());
+if (mysql_num_rows($result)<=0) { header("location: not-found.html"); }
+$context=array_merge($context,mysql_fetch_assoc($result));
 
-if (!($row=mysql_fetch_assoc($result))) { header("location: not-found.html"); }
-$context=array_merge($context,$row);
+$result=mysql_query("SELECT * FROM $GLOBALS[tp]$context[classe] WHERE identite='$id'") or die (mysql_error());
+$context=array_merge($context,mysql_fetch_assoc($result));
+
 
 posttraitement($context);
 
