@@ -127,6 +127,11 @@ class Controler {
 	}
 	break;
       default:
+	if (strpos($ret,"_location:")===0) {
+	  header(substr($ret,1));
+	  exit();
+	}
+
 	$view->render($context,$ret);
       }
     } else {

@@ -102,7 +102,7 @@ function printEntities($id,$identifier,&$context)
 
   global $lodeluser,$home,$db;
 
-  $critere=$lodeluser['visitor'] ? "" : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
+  $critere=$lodeluser['visitor'] ? "AND #_TP_entities.status>-64" : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
 
 
   //

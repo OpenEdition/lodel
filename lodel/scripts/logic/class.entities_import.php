@@ -96,18 +96,18 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      @chmod($sourcefile,0666 & octdec($GLOBALS['filemask']));
      // ok
 
-     #die("la");
      // close the task     
      if ($idtask) {
        $dao=&getDAO("tasks");
        $dao->deleteObject($idtask);
      }
 
-     if ($this->return!="_error" && $context['finish']) {
+     if ($this->ret!="_error" && $context['finish']) {
        return "_back";
+     } elseif ($this->ret!="_error") {
+       return "_location: index.php?do=view&id=".$this->id;
      } else {
-       header("location: index.php?do=view&id=".$this->id);
-       exit();
+       return "_location: index.php?do=view&id=".$this->id."&check=oui";
      }
    }
 
@@ -296,10 +296,10 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        if (!$context['finish']) $localcontext['status']=-64;
 
        $error=array();
-       $this->return=$this->editAction($localcontext,$error,FORCE);#
+       $this->ret=$this->editAction($localcontext,$error,FORCE);
        $this->id=$localcontext['id'];
        
-#     if ($ret=="_error") {}
+#     if ($this->ret=="_error") {}
 #     print
      // move the source file and the files
      }

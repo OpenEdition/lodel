@@ -54,6 +54,8 @@ class Entities_EditionLogic extends GenericLogic {
    function viewAction(&$context,&$error)
 
    {
+     if ($context['check'] && $error) return "_error";
+
      // define some loop functions
      /////
      function loop_persons_in_entities($context,$funcname)
@@ -164,6 +166,11 @@ class Entities_EditionLogic extends GenericLogic {
        }
      }
 
+     if ($context['check'] && !$error) {
+       $context['status']=-1;
+       return $this->editAction($context,$error);
+     }
+
      return $ret ? $ret : "_ok";
    }
 
@@ -179,6 +186,12 @@ class Entities_EditionLogic extends GenericLogic {
      if ($context['cancel']) return "_back";
      global $lodeluser,$home;
      $id=$context['id'];
+     if ($id && (!isset($context['idparent']) || !isset($context['idtype']))) {
+       $dao=$this->_getMainTableDAO();
+       $vo=$dao->getById($id,"idparent,idtype");
+       $context['idparent']=$vo->idparent;
+       $context['idtype']=$vo->idtype;
+     }
      $idparent=$context['idparent'];
      $idtype=$context['idtype'];
      $status=intval($context['status']);
@@ -205,7 +218,6 @@ class Entities_EditionLogic extends GenericLogic {
        if ($opt==FORCE) { $status=-64;  $ret="_error"; }
        if ($status>-64) return "_error";
      }
-    
      //lock_write($class,"objets","entity","relations",
      //"entity_personnes","personnes",
      //"entity_entrees","entrees","entrytypes","types");
@@ -263,9 +275,10 @@ class Entities_EditionLogic extends GenericLogic {
      update();
      //unlock();
 
+     if ($ret=="_error") return "_error";
+
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
-       header("location: ".SITEROOT.makeurlwithid($id));
-       exit();
+       return "_location: ".SITEROOT.makeurlwithid($id);
      }
      return $ret ? $ret : "_back";
    }
