@@ -30,7 +30,7 @@
 // gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-die("desuet");
+//die("desuet");
 
 if (!function_exists("authenticate")) die("ERROR: invalid include of userinc.php");
 if ($userrights<LEVEL_ADMIN) return; // secu
