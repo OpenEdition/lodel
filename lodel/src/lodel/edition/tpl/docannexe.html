@@ -5,82 +5,115 @@
 <MACRO NAME="header_logo"> 
 
 <table width="800" border="0" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
- 
-<tr>
-<td align="center">
-
-[(#ERREUR_LIENINEXISTANT|true)Vous devez charger un fichier !<br>]
-<TABLE WIDTH=500 CELLPADDING=5 CELLSPACING=0 BORDER=0 BGCOLOR="white">
-<FORM ENCTYPE="multipart/form-data" ACTION="docannexe.php" METHOD="POST">
-<INPUT TYPE="hidden" name="MAX_FILE_SIZE" value="1000000">
-<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<INPUT TYPE="hidden" name="iddocument" VALUE="[#IDDOCUMENT]">
-<INPUT TYPE="hidden" name="type" VALUE="[#TYPE]">
-<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
-<IF [#TYPE]> <!-- il y a bien un type, on affiche le formulaire -->
-<INPUT TYPE="hidden" name="edit" VALUE="1">
-<TR><TD>Titre:</TD>
-<TD><INPUT SIZE="80" TYPE="text" NAME="titre" value="[#TITRE]"></TD></TR>
-<TR><TD>Commentaire:</TD>
-<TD><TEXTAREA COLS="80" ROWS="5" NAME="commentaire">[#COMMENTAIRE]</TEXTAREA></TD></TR>
- <!-- fichier hard -->
-<IF [#TYPE]=="lienfichier">
-<TR><TD>Fichier à charger (*):</TD>
-<TD><IF [#LIEN]>fichier actuel: [#LIEN]<BR></IF>
-<INPUT NAME="docfile" TYPE="file" SIZE="30"></TD>
-[(#ERREUR_UPLOAD|true)<TD CLASS="erreur">Une erreur s'est produite pendant le chargement.</TD>]</TR>
-</IF>
-<!-- lien document -->
-<IF [#TYPE]=="liendocument">
-<TR><TD>ID du documents:</TD>
-<TD>
-<INPUT NAME="lien" TYPE="texte" SIZE="5" VALUE="[#LIEN]"></TD>
-[(#ERREUR_DOCUMENTNONEXIST|true)<TD CLASS="erreur">Le document spécifié n'existe pas.</TD>]</TR>
-</IF>
-<!-- lien publication -->
-<IF [#TYPE]=="lienpublication">
-<TR><TD>ID du numéros:</TD>
-<TD>
-<INPUT NAME="lien" TYPE="texte" SIZE="5" VALUE="[#LIEN]"></TD>
-[(#ERREUR_PUBLICATIONNONEXIST|true)<TD CLASS="erreur">Le numéro spécifié n'existe pas.</TD>]</TR>
-</IF>
-<!-- lien externe -->
-<IF [#TYPE]=="lienexterne">
-<TR><TD>URL:</TD>
-<TD>
-<INPUT NAME="lien" TYPE="texte" SIZE="80" VALUE="[#LIEN]"></TD>
-[(#ERREUR_URLINVALIDE|true)<TD CLASS="erreur">L'url est
-invalide.</TD>] [(#ERREUR_URLINACCESSIBLE|true)<TD CLASS="erreur">Impossible d'acceder àce site.</TD>]</TR>
-</IF>
-</TABLE>
-<IF [#ID]>
-<INPUT CLASS="form" TYPE="submit" VALUE="Modifier">
-<ELSE/>
-<INPUT CLASS="form" TYPE="submit" VALUE="Ajouter">
-</IF>
-<ELSE/> <!-- il n'y a pas de type, on demande quels types -->
-<TR><TD>Type de lien:</TD><TD>
-<SELECT NAME="type">
-<OPTION VALUE="lienfichier">Charger un fichier</OPTION>
-<OPTION VALUE="liendocument">Lien vers un document</OPTION>
-<OPTION VALUE="lienpublication">Lien vers un numéro ou thème</OPTION>
-<OPTION VALUE="lienexterne">Lien vers un site internet</OPTION>
-</SELECT>
-</TD></TR>
-</TABLE>
-<INPUT CLASS="form" TYPE="submit" VALUE="Ok">
-</IF>
-</FORM>
-<br>
+	<tr>
+		<td colspan="2" class="titre">
+			<br />Ajout d'un Document Annexe<br /><br />
+			<div class="soustitre">
+				au document
+				<br /><br />
+				<BOUCLE NAME="" TABLE="documents" WHERE="id='[#IDDOCUMENT]'">
+					<CORPS>
+						[#TITRE]
+					</CORPS>
+				</BOUCLE>
+			</div>
+			<br />
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			[(#ERREUR_LIENINEXISTANT|true)Vous devez charger un fichier !<br>]
+			<table width=500 cellpadding=5 cellspacing=0 border=0 bgcolor="white">
+			<form enctype="multipart/form-data" action="docannexe.php" method="POST">
+			<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+			<input type="hidden" name="id" value="[#ID]">
+			<input type="hidden" name="iddocument" value="[#IDDOCUMENT]">
+			<input type="hidden" name="type" value="[#TYPE]">
+			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
+			<IF [#TYPE]> <!-- il y a bien un type, on affiche le formulaire -->
+				<input type="hidden" name="edit" value="1">
+				<tr>
+					<td>Titre:</td>
+					<td><input size="80" type="text" name="titre" value="[#TITRE]"></td>
+				</tr>
+				<tr>
+					<td>Commentaire:</td>
+					<td><textarea cols="80" rows="5" name="commentaire">[#COMMENTAIRE]</textarea></td>
+				</tr>
+				<!-- fichier hard -->
+				<IF [#TYPE]=="lienfichier">
+					<tr>
+						<td>Fichier à charger (*):</td>
+						<td>
+							<IF [#LIEN]>fichier actuel: [#LIEN]<br /></IF>
+							<input name="docfile" type="file" size="30">
+						</td>
+						[(#ERREUR_UPLOAD|true)<td class="erreur">Une erreur s'est produite pendant le chargement.</td>]
+					</tr>
+				</IF>
+				<!-- lien document -->
+				<IF [#TYPE]=="liendocument">
+					<tr>
+						<td>ID du document:</td>
+						<td><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="#">Aide</a></td>
+					</tr>
+					[(#ERREUR_DOCUMENTNONEXIST|true)<tr colspan="2"><td class="erreur">Le document spécifié n'existe pas.</td></tr>]
+				</IF>
+				<!-- lien publication -->
+				<IF [#TYPE]=="lienpublication">
+					<tr>
+						<td>ID du numéro:</td>
+						<td><input name="lien" type="texte" size="5" value="[#LIEN]"></td>
+						[(#ERREUR_PUBLICATIONNONEXIST|true)<td class="erreur">Le numéro spécifié n'existe pas.</td>]
+					</tr>
+				</IF>
+				<!-- lien externe -->
+				<IF [#TYPE]=="lienexterne">
+					<tr>
+						<td>URL:</td>
+						<td><input name="lien" type="texte" size="80" value="[#LIEN]"></td>
+						[(#ERREUR_URLINVALIDE|true)<td class="erreur">L'url est invalide.</td>] 
+						[(#ERREUR_URLINACCESSIBLE|true)<td class="erreur">Impossible d'acceder à ce site.</td>]
+					</tr>
+				</IF>
+			</table>
+			<IF [#ID]>
+				<input class="form" type="submit" value="Modifier">
+			<ELSE/>
+				<input class="form" type="submit" value="Ajouter">
+			</IF>
+		<ELSE/> <!-- il n'y a pas de type, on demande quels types -->
+			<tr>
+				<td>Type de lien:</td>
+				<td>
+					<select name="type">
+					<option value="lienfichier">Charger un fichier</option>
+					<option value="liendocument">Lien vers un document</option>
+					<option value="lienpublication">Lien vers un numéro ou thème</option>
+					<option value="lienexterne">Lien vers un site internet</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<input class="form" type="submit" value="Ok">
+	</IF>
+</form>
+<br />
 (*) facultatif si un fichier a déjà été chargé
-
-<IF [#ID]><BR>
-<A HREF="docannexe.php?id=[#ID]&delete=2&url_retour=[(#URL_RETOUR|urlencode)]">Supprimer</A>
+<IF [#ID]>
+	<br />
+	<a href="docannexe.php?id=[#ID]&delete=2&url_retour=[(#URL_RETOUR|urlencode)]">Supprimer</a>
 </IF>
-<br>
-<br>
+<br />
+<br />
+<div align="center">
+	<BOUCLE NAME="" TABLE="documents" WHERE="id='[#IDDOCUMENT]'">
+		<CORPS>
+			<a href="index.php?parent=[#PUBLICATION]">Annuler</a>
+		</CORPS>
+	</BOUCLE>
+</div>
 </td>
 </tr>
-</TABLE>
-
+</table>
 <MACRO NAME="close_html">
