@@ -44,6 +44,8 @@ function checkstring (&$text,$error=0) {
     if (!$error) {
       echo '<h1>ERROR</h1><p>Le fichier produit n\'est pas XML. Veuillez svp poster un rapport de bug sur <a href="http://sourceforge.net/projects/lodel/">http://sourceforge.net/projects/lodel<a/>. Pensez &agrave; joindre le fichier.<br />En attendant que le problème soit résolu, essayer de changer le stylage de votre fichier.</p><p><hr /></p>';
 
+      require($GLOBALS[home]."xmlfunc.php");
+      $text=indentXML($text);
       checkstring ($text,1);
       return;
     } else {

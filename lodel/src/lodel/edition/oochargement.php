@@ -301,8 +301,8 @@ function OO_XHTML ($convertedfile,&$context)
 #  array_push($rpl,"","<r2r:notefin>\\0</r2r:notefin>");
 
   // remonte les balises r2r
-  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
-  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
+#### array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
+####  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
   // second part of the puces processing
   // remonte les balises r2r au dessus des ul et li
@@ -381,9 +381,12 @@ function OO_XHTML ($convertedfile,&$context)
 	     ""
 	     );
 
+
   $time=time();
   // let's apply all these changes
   $file=preg_replace ($srch,$rpl,$file);
+#  echo htmlentities($file); exit;
+
 
   // function for cleaning the sections and the links
   function cleanPandSPAN($result) {
@@ -416,8 +419,6 @@ function OO_XHTML ($convertedfile,&$context)
   $file=preg_replace ("/<\/?r2r:puces?>/","",$file);
 
   if ($msg) { echo "<li>temps regexp: ".(time()-$time)." s<br>\n"; }
-
-  //echo htmlentities($file); exit;
 
   // desuet
   // enleve les couples de balises r2r.
@@ -558,7 +559,7 @@ function OO_XHTML ($convertedfile,&$context)
     function img_copy($imgfile,$ext,$count,$rand) {
       global $tmpdir;
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
-      rename($tmpdir."/".$imgfile,$newimgfile) or die ("impossible de copier l'image $newimgfile");
+      rename($tmpdir."/".$imgfile,$newimgfile) or die ("impossible de copier l'image $imgfile dans $newimgfile");
       return $newimgfile;
     }
     include_once ($home."func.php");
@@ -792,8 +793,11 @@ function convertCSSstyle ($style) {
 	$styles[$j]=$styles[$j+1]="";
       }
     }
+    if ($styles[$j]) $styles[$j].=";";
   }
-  return array($open,$close,trim(join(";",$styles)));
+#  print_r($styles);
+#    echo "<br/>";
+  return array($open,$close,trim(join(" ",$styles)));
 }
 
 
