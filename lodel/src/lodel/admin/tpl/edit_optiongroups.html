@@ -92,6 +92,21 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
     </p>
   </LOOP>
+  <label for="exportpolicy">[@ADMIN.EXPORT]
+        : 
+      </label>
+  <br class="nobr">
+  <IF COND="[#EXPORTPOLICY]">
+    <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
+    <ELSE/>
+    <input type="checkbox" name="exportpolicy" id="exportpolicy">
+  </IF>
+  <br />
+  <LOOP NAME="fielderror" FIELD="exportpolicy">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="exportpolicy"></FUNC>
+    </p>
+  </LOOP>
   <label for="protected">[@COMMON.PROTECTED]
         : 
       </label>

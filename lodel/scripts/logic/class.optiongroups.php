@@ -97,7 +97,8 @@ class OptiongroupsLogic extends Logic {
      return array("name"=>array("text","+"),
                   "title"=>array("text","+"),
                   "editscript"=>array("text",""),
-                  "comment"=>array("longtext",""));
+                  "comment"=>array("longtext",""),
+                  "exportpolicy"=>array("boolean","+"));
              }
    // end{publicfields} automatic generation  //
 

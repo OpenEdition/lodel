@@ -54,16 +54,16 @@ if ($backup) {
 <lodelversion>'.$version.'</lodelversion>
 <date>'.date("Y-m-d").'</date>
 <title>
-'.myhtmlentities(stripslashes($context[title])).'
+'.myhtmlentities(stripslashes($context['title'])).'
 </title>
 <description>
-'.myhtmlentities(stripslashes($context[description])).'
+'.myhtmlentities(stripslashes($context['description'])).'
 </description>
 <author>
-'.myhtmlentities(stripslashes($context[author])).'
+'.myhtmlentities(stripslashes($context['author'])).'
 </author>
 <modelversion>
-'.myhtmlentities(stripslashes($context[modelversion])).'
+'.myhtmlentities(stripslashes($context['modelversion'])).'
 </modelversion>
 </model>
  ';
@@ -85,8 +85,17 @@ if ($backup) {
   $GLOBALS['showcolumns']=true; // use by PMA to print the fields.
   mysql_dump($currentdb,$tables,"",$fh,false,false,true); // get the content
 
-  $tables=array("#_TP_documents",
-		"#_TP_publications");
+  // add the options
+  mysql_dump($currentdb,"options",$fh,false,false,true,"","exportpolicy>0");
+
+  // get the classe table
+  $dao=&getDAO("classes");
+  $vos=$dao->findMany("status>0","","class,classtype");
+  $tables=array();
+  foreach ($vos as $vo) {
+    $tables[]=lq("#_TP_".$vo->class);
+    if ($vo->classtype=="persons") $tables[]=lq("#_TP_entities_".$vo->class);
+  }
   mysql_dump($currentdb,$tables,"",$fh,true,true,false); // get the table create
   // it may be better to recreate the field at the import rather 
   // than using the created field. It may be more robust. Status quo at the moment.

@@ -1266,12 +1266,6 @@
         description="commentaire sur l'option"
         label="[@ADMIN.COMMENT]"
         edittype="longtext" />
-<column name="exportpolicy"
-        type="TINYINT"
-        default="0"
-        required="true"
-        label="[@ADMIN.EXPORT]"
-        edittype="boolean" />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -1343,6 +1337,12 @@
         type="TINYINT"
         default="1"
         required="true" />
+<column name="exportpolicy"
+        type="TINYINT"
+        default="0"
+        required="true"
+        label="[@ADMIN.EXPORT]"
+        edittype="boolean" />
 <vcolumn name="protected"
 	label="[@COMMON.PROTECTED]"
         edittype="boolean" />

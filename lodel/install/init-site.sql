@@ -409,7 +409,6 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 
 	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
-	exportpolicy	TINYINT DEFAULT '1' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
@@ -428,6 +427,7 @@ CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	title		VARCHAR(255) NOT NULL,		# type du champ
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 	editscript	TINYTEXT NOT NULL,		# url to edit the group
+	exportpolicy	TINYINT DEFAULT '1' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,

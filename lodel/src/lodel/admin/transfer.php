@@ -367,7 +367,6 @@ ALTER TABLE #_TP_options ADD  title  TINYTEXT;
 ALTER TABLE #_TP_options ADD  defaultvalue  TEXT;
 ALTER TABLE #_TP_options ADD  comment  TEXT;
 ALTER TABLE #_TP_options ADD  userrights TINYINT UNSIGNED DEFAULT \'0\' NOT NULL;
-ALTER TABLE #_TP_options ADD  exportpolicy  TINYINT DEFAULT \'1\' NOT NULL;
  ');
 	if ($err) break;
 	foreach (array("s"=>"text",
@@ -394,6 +393,7 @@ UPDATE #_TP_options SET type=\''.$to.'\' WHERE type=\''.$from.'\';
 REPLACE INTO #_TP_optiongroups (id,name,title,status) VALUES (1,\'servoo\',\'ServOO\',1);
 UPDATE #_TP_options SET idgroup=1 WHERE name LIKE \'servoo%\';
 REPLACE INTO #_TP_optiongroups (id,name,title,status) VALUES (2,\'features\',\'Fonctions optionnelles\',1);
+UPDATE #_TP_options SET idgroup=2 WHERE idgroup=0;
 UPDATE #_TP_options SET idgroup=2 WHERE idgroup=0;
  ');
       if ($err) break;

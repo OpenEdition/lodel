@@ -140,8 +140,7 @@ class OptionsLogic extends Logic {
                   "type"=>array("select",""),
                   "userrights"=>array("select","+"),
                   "defaultvalue"=>array("text",""),
-                  "comment"=>array("longtext",""),
-                  "exportpolicy"=>array("boolean","+"));
+                  "comment"=>array("longtext",""));
              }
    // end{publicfields} automatic generation  //
 

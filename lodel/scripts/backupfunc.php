@@ -168,6 +168,8 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
 
 /**
  * Dump the database using phpMyAdmin functions
+ * (should be encaplused into an Object, this have far too much arguments!
+ *  or use an assoc for the options!!)
  *
  * @param   string   database
  * @param   string   output filename
@@ -180,7 +182,11 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
  *
  */
 
-function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=true)
+function mysql_dump($db,$tables,$output,$fh=0,
+		    $create=true,
+		    $drop=true,
+		    $contents=true,
+		    $select="*",$where="")
 
 {
   if ($fh) {
@@ -202,6 +208,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
 #  }
   $num_tables=count($tables);
 
+  if ($where) $where=" WHERE ".$where;
 
 #} elseif ($export_type == 'database') {
     PMA_exportDBHeader($db);
@@ -213,7 +220,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
     while ($i < $num_tables) {
       $table = lq($tables[$i]);
       $table = preg_replace("/.*\./","",$table); // remove the reference to the database. PMA do that itself.
-      $local_query  = 'SELECT * FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table);
+      $local_query  = 'SELECT '.$select.' FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table).$where;
 	
       if ($create) PMA_exportStructure($db, $table, $crlf, $err_url);
       if ($contents) PMA_exportData($db, $table, $crlf, $err_url, $local_query);
