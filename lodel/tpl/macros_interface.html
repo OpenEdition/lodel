@@ -871,7 +871,7 @@ function modifymember(members,textfield){
 
 <IF COND="[#NBRESULTS] GT 0">
 <span style="font-variant :  normal">
-([@EDITION.SEARCH_RESULTS_INFORMATIONS|sprintf([#RESULT_FROM],[#RESULT_TO],[#NBRESULTS])])
+([@EDITION.SEARCH_RESULTS_INFORMATIONS|sprintf([#RESULTFROM],[#RESULTTO],[#NBRESULTS])])
 </span>
 <ELSE/>
 ([#NBRESULTS] [@COMMON.RESULTS])
@@ -881,4 +881,48 @@ function modifymember(members,textfield){
 </div>
 </div>
 </div>
+</DEFMACRO>
+
+<!--[*************************************************]-->
+<!--[ Added 2005-03-07																]-->
+<!--[ Bottom Results pages list (use page_scale loop)	]-->
+<!--[*************************************************]-->
+<DEFMACRO NAME="BOTTOM_RESULTS_PAGES">
+<LOOP NAME="page_scale">
+	<BEFORE>
+		<div class="edition_des_series" style="background-image:url(/share-0.8/images/fond_edition_des_series.png);">
+		
+		<div style="padding-top:10px; text-align : center">
+		
+		<IF COND="[#PREVIOUSURL]">
+			<a href="[#PREVIOUSURL]" title="Page précédente">
+				<img style="border : 0px;" src="[#SHAREURL]/images/triangle2.gif" alt="&lt;&lt;" />
+			</a>
+		</IF>
+	</BEFORE>
+	<DO>
+		<IF COND="[#URLPAGE] NE ''">
+			<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#PAGENUMBER]">
+		<ELSE/>
+			<span class="currentpage">
+		</IF>
+		[#PAGENUMBER]
+		<IF COND="[#URLPAGE] NE ''">
+			</a>
+		<ELSE/>
+			</span>
+		</IF>
+	</DO>
+	<AFTER>
+		<IF COND="[#NEXTURL]">
+			<a class="linkpage" href="[#NEXTURL]" title="Page suivante">
+				<img style="border : 0px;" src="[#SHAREURL]/images/triangle.gif" alt="&gt;&gt;" />
+			</a>
+		</IF>
+	</div>
+	</div>
+	</AFTER>
+	<ALTERNATIVE>
+	</ALTERNATIVE>
+</LOOP>
 </DEFMACRO>
