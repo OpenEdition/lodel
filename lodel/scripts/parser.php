@@ -432,7 +432,10 @@ function parse_main()
     $this->ind=1;
   }
   while ($this->ind<$this->countarr) {
-    if (substr($this->arr[$this->ind],0,1)=="/") return;
+    if (substr($this->arr[$this->ind],0,1)=="/") {
+      if ($this->arr[$this->ind+1]) $this->errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
+      return;
+    }
     switch($this->arr[$this->ind]) {
     case "LOOP" : $this->parse_loop();
       break;
