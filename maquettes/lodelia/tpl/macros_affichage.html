@@ -52,50 +52,34 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste des publications de type numéro, publiées         -->
 <!-- ****************************************************************** -->
-	<span class="titre_centre">
-		<br />
-		<strong>
-			<div align="center">
-			<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
-				Les numéros de <em><MACRO NAME="NOM_REVUE"></em>
-			</div>
-		</strong>
-		<br />
-	</span>
-	<table width="100%" border="0">
+		
+			
+		<div class="titrerevue">
+			Les numéros de <MACRO NAME="NOM_REVUE">
+			<br/ > <MACRO NAME="DESCRIPTION_REVUE">
+		</div>
+			
 		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
 			<DO>
-				<tr>
-					<td>
-						<blockquote>
-							<MACRO NAME="ICONE_PUBLICATION">
-							<a href="sommaire.html?id=[#ID]">
-								<strong>
-									<span class="soustitre_centre, couleur_1">
-										<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
-										Numéro [#NOM]
-									</span>
-								</strong>
-								<br />
-							</a>
-							<em><MACRO NAME="TITRE_PUBLICATION"></em>&nbsp;
-							<em><MACRO NAME="SOUSTITRE_PUBLICATION"></em>&nbsp;
-							<MACRO NAME="DIRECTEUR_PUBLICATION">
-							<br />
-							<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
-						</blockquote>
-					</td>
-				</tr>
+				ccccccccccccccccccccc
+					<div class="afficherdocument">
+					<a href="sommaire.html?id=[#ID]">
+						<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
+						Numéro [#NOM]
+					</a>
+					<MACRO NAME="TITRE_PUBLICATION">&nbsp;
+					<MACRO NAME="SOUSTITRE_PUBLICATION">&nbsp;
+					<MACRO NAME="DIRECTEUR_PUBLICATION">
+					<br />
+					<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
+					</div>
+				
 			</DO>
 			<ALTERNATIVE>
-				<tr>
-					<td>
-						Aucun numéro disponible actuellement
-					</td>
-				</tr>
+					Aucun numéro disponible actuellement
 			</ALTERNATIVE>
 		</LOOP>
-	</table>
+	
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_PUBLICATION">
@@ -806,10 +790,8 @@
 							
 							<IF COND="[#NOM]">
 								| [#NOM]
-								<br />
 							</IF>
-						
-						    <br />
+						   
 				</div>
 				
 				<MACRO NAME="PRESENTER_DOCUMENTS">
@@ -950,7 +932,7 @@
 	</div>
 </IF>
 </LOOP>
-</DEF>
+</DEFMACRO>
 
 
 
@@ -996,7 +978,7 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status>0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<a class="titre2" href="sommaire.html?id=[#ID]">
 					
@@ -1017,7 +999,24 @@
 	</LOOP>
 </DEFMACRO>
 
+<!-- *************************************************** -->
+<!--    Affiche le premier article du dernier numéro     -->
+<!-- (en fonction du champ date de la table publication) -->
+<!-- *************************************************** -->
 
+<!--<DEFMACRO NAME="PREMIERE_ARTICLE_ARTICLE_DERNIER_NUMERO">		
+	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication=[#ID]" LIMIT="0,1">
+		<IF COND="[#TEXTE]">
+			<b>Extrait</b>  
+			[(#TEXTE|supprime_appels_notes|couper(1500))]
+			<a href="document.html?id=[#ID]">
+			Lire la suite
+			</a>
+			</IF>
+		</LOOP>
+	</LOOP>
+</DEFMACRO>-->
 
 
 
@@ -1060,7 +1059,7 @@
 <!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status>0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</DO>

@@ -1,4 +1,3 @@
-<USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_affichage.html">
 <USE MACROFILE="macros_technique.html">
@@ -16,48 +15,57 @@
 <!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <TITLE>[#MOT]</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_MOTS">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+
+<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td valign="top"> 
-		<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER" valign="TOP"> 
-			<tr>
-				<td  align="center" class="titre"> 
-					<!-- Affichage du mot recherché dans l'index -->
-					Mot clé : " 
-					<span class="couleur_1">
-						[#MOT] " 
-					</span>
-				</td> 
-			</tr>
-		</table>
-		<br />
-		<table width="95%" border=0 cellspacing=0 cellpadding=15 align="CENTER" bordercolor="Black"> 
-			<!-- Affichage des articles correspondant aux mots clés -->
-			<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexl='[#ID]'">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+		de nav et le contenu de la page" -->
+		<div class="separation">
+			&nbsp;
+		</div>
+		
+		<!-- ce div permet d'intégrer le  contenu de la page" -->
+		<div class="contenu">
+		
+			<!-- logo de Lodelia-->
+			<MACRO NAME="IMG_LOGO_LODELIA">
+
+			<!-- Titre de la revue -->
+			<div class="titrerevue">
+				Occurences du mot clé "[#MOT]" dans <MACRO NAME="NOM_REVUE">
+			</div>
+			
+					
+			
+			<LOOP NAME="articles" TABLE="documents" WHERE="idindexl='[#ID]'">
 				<DO>
-					<tr>
-						<td class="texte_sommaire">
-							<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-						</td>
-					</tr>
+					<div class="afficherdocument">
+						<!-- Liste des documents où apparait ce mot clé -->
+						<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+					</div>
 				</DO>
 			</LOOP>
-			<tr>
-				<td class="texte_petit_centre">
-					<a href="mots.html">
-						<strong>
-							Index par mots clés
-						</strong>
-					</a>
-				</td>
-			</tr>
-		</table>
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+			
+			<div class="titre2">
+				<a class="titre2" href="mots.html">
+					>> Index des mots clés.
+				 </a>
+			</div>
+			
+			<MACRO NAME="REVUES_ORG">
+		</div>
+	</div>
+	
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

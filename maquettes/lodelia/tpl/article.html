@@ -13,7 +13,6 @@
 <!-- Dernière modification majeure en mai 2003.                         -->
 <!-- ****************************************************************** -->
 
-<MACRO NAME="JS_JUMPMENU">
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
@@ -74,7 +73,7 @@
 				</div>
 			</div>
 			
-			<!-- Affiche les infos sur le document: titre, sous-titre, auteur-->
+						<!-- Affiche les infos sur le document: titre, sous-titre, auteur-->
 			<div class="afficherdocument">
 						<IF COND="[#TYPE]=='note de lecture'">
 							Note de lecture par
@@ -127,8 +126,7 @@
 					</div>
 				</IF>
 				
-			
-				<!-- Affichage du résumé en français   -->
+			<!-- Affichage du résumé en français   -->
 				<IF COND="[#RESUME:FR]">
 					<div class="titre3">
 						Résumé
@@ -137,6 +135,7 @@
 						[#RESUME:FR]
 					</div>		
 				</IF>
+				
 			
 								
 				<!-- Résumé en anglais   -->
@@ -154,7 +153,7 @@
 					<div class="titre3"> 
 						Extracto
 					</div>
-					<div class="resume" colspan="2">
+					<div class="resume" >
 						[#RESUME:ES]
 					</div>
 				</IF>
@@ -164,7 +163,7 @@
 					<div class="titre3"> 
 						Zusammenfassung
 					</div>
-					<div class="resume" colspan="2">
+					<div class="resume" >
 						[#RESUME:DE]
 					</div>
 				</IF>
@@ -174,7 +173,7 @@
 					<div class="titre3"> 
 						Riassunto
 					</div>
-					<div class="resume" colspan="2">
+					<div class="resume" >
 						[#RESUME:IT]
 					</div>
 				</IF>
@@ -268,8 +267,9 @@
 				<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				
 				<MACRO NAME="REVUES_ORG"> 		
-
-								
+				
+			
+							
 		</div>
 	</div>
 	
