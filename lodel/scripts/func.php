@@ -254,13 +254,13 @@ function export_prevnextpublication (&$context)
   $result=mysql_query ("$querybase ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
-    $context[nextpublication]=make_url("sommaire",$nextid);
+    $context[nextpublication]=makeurl("sommaire",$nextid);
   }
   // precedent:
   $result=mysql_query ("$querybase ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
-    $context[prevpublication]=make_url("sommaire",$previd);
+    $context[prevpublication]=makeurl("sommaire",$previd);
   }
 }
 
@@ -311,7 +311,7 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #}
 
 
-function make_url ($base,$id)
+function makeurl ($base,$id)
 
 {
   if ($GLOBALS[idagauche]) {

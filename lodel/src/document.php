@@ -21,7 +21,7 @@ $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,tpl,ty
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,mysql_fetch_assoc($result));
 if (!$context[tpl]) { 
-  header("location: ".make_url("document",$context[idparent]));
+  header("location: ".makeurl("document",$context[idparent]));
   return;
 }
 
@@ -73,7 +73,7 @@ do {// exception
   }
 } while (0);
 
-if ($nextid) $context[nextdocument]=make_url("document",$nextid);
+if ($nextid) $context[nextdocument]=makeurl("document",$nextid);
 
 // precedent:
 
@@ -99,7 +99,7 @@ do {  // exception
   }
 } while (0);
 
-if ($previd) $context[prevdocument]=make_url("document",$previd);
+if ($previd) $context[prevdocument]=makeurl("document",$previd);
 
 // fin suivant et precedent
 
