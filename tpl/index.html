@@ -20,80 +20,86 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_admin.html">
-<USE MACROFILE="macros_affichage.html">
-<USE MACROFILE="macros_technique.html">
-<USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html">
-<USE MACROFILE="macros_presentation.html">
-<USE MACROFILE="macros_site.html">
+<USE MACROFILE="macros_accueil.html">
+<html>
+<head>
+<title>LODEL Page d'accueil</title>
+<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
+<link rel="stylesheet" href="styles_lodel.css">
+<script language="javascript"><!--
 
-<MACRO NAME="OUVRIR_HTML">
-<MACRO NAME="DEFINIR_CHARSET">
-<title><MACRO NAME="NOM_SITE"></title>
-<MACRO NAME="METADONNEES_POUR_INDEX">
-<MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
-<MACRO NAME="JS_ROLLOVER"> 
-<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+  triangle = new Image;
+  triangle.src = "[#SHAREURL]/images/triangle3.gif";
+  triangle2 = new Image;
+  triangle2.src = "[#SHAREURL]/images/triangle2.gif";
 
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre">
-		</td>
-		
-	
-		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" ]-->
-		<td class="corps">
-
-				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" ]-->
-				<!--[<div class="separation">
-					&nbsp;
-				</div>]-->
-		
-					<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-					<div class="contenu">
-		
-						<!--[ logo du site]-->
-						<MACRO NAME="IMG_LOGO_SITE">
-			
-						<!--[ Affiche le titre de la revue avec les style titre1  ]-->
-						<div  class="titre1">
-							<MACRO NAME="NOM_SITE"> 
-						</div>
-				
-						<!--[ Affiche les infos concenrnant le dernier numéro publié avec le style titre2  ]-->
-						<div class="titre2">
-							<MACRO NAME="DERNIER_NUMERO"> 
-						</div>
-					
-						<!--[ Affiche le premier article du dernier numéro (macros-affichage.html) ]-->
-						<MACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">
-				
-				
-						<!--[ Affiche une image liée à la page d'accueil largeur maximum: 561 ]-->
-						<div class="imageindex">
-							&nbsp;
-						</div>	
-				
-						<!--[ Affiche un mini texte]-->
-						<div>
-							<TEXT NAME="nouveaute">
-						</div>
-				
-						<!--[ Affiche lien vers Lodel ]-->
-						<div>
-							<MACRO NAME="LODEL_ORG"> 
-						</div>
-				</div>
-			</td>
-
-	</tr>
+		//
+--></script>
+</head>
+<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
+<br>
+<table width="85%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+  <tr> 
+    <td bgcolor="#FFFFFF" align="center"> 
+	<a href="/lodeldoc">
+      <div align="center">
+          <h1>LODEL</h1>
+      </div>
+	</a>
+    </td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFFFFF" align="center"> 
+      <table width="700" border="0" align="center" cellspacing="4" cellpadding="4">
+        <tr>
+          <td>
+<table width="100%">
+<tr>
+<td colspan="2">
+<br>
+<strong>Sélectionnez un site</strong><br>
+</td>
+</tr>
+<tr>
+<td width="60%">
+		<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="ok" ORDER="nom">
+		<DO>
+		<div id="[#REP]" class="texte_petit">
+		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
+			<a href="[#URL]" onmouseover="[#REP].src=triangle.sr" 
+onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
+<br>	</div>
+		</DO>
+		</LOOP>
+</td>
+<td width="40%">
+		<LOOP NAME="sel_rev" TABLE="sites" WHERE="ok" ORDER="nom">
+		<DO>
+		<div id="[#REP]" class="texte_petit">
+[<a href="[#URL]/lodel/edition/index.php">Editer [#REP]</a>]
+<br>	</div>
+		</DO>
+		</LOOP>
+</td>
+</tr>
 </table>
+<blockquote>
+	<a href="http://www.lodel.org/documentation">
+	<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Documentation"> Documentation
+	</a>
 
-<MACRO NAME="FERMER_HTML">  
+	<br>
+	<a href="lodeladmin">
+	<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Administration"> Administration
+	</a>
+	 (accès réservé)
+	 <br>
+	 <br>
+	<font size="-2"><strong>Avertissement légal.</strong> Lodel est un logiciel libre sous licence GPL. <a href="COPYING">Lire la licence</a>.</font>
+</blockquote>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<MACRO NAME="CLOSE_HTML">

@@ -26,37 +26,19 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-if (!file_exists("lodelconfig.php")) { header("location: lodeladmin/install.php"); exit; } 	 
-  	 
-if (file_exists("siteconfig.php")) {
-  require("siteconfig.php");
-} else { 	 
-  require ("lodelconfig.php"); 	 
-}
 
-require_once($home."auth.php");
+if (!file_exists("lodelconfig.php")) { header("location: lodeladmin/install.php"); exit; }
+
+
+if (file_exists("siteconfig.php")) {
+  require ("siteconfig.php");
+} else {
+  require ("lodelconfig.php");
+}
+require_once ($home."auth.php");
 authenticate();
 
-if ($id) {
-  require_once($home."connect.php");
-  $id=intval($id);
-  $result=mysql_query("SELECT classe FROM $GLOBALS[tp]objets WHERE id='$id'") or die(mysql_error());
-  list($classe)=mysql_fetch_row($result);
-  $script=array("documents"=>"document",
-		"publications"=>"sommaire",
-		"entrees"=>"entree",
-		"typeentrees"=>"entrees",
-		"personnes"=>"personne",
-		"typepersonnes"=>"personnes",
-		);
-  if ($script[$classe]) {
-    require($script[$classe].".".$extensionscripts);
-  } else {
-    header("location: not-found.html");
-  }
-  return;
-}
+require ($home."calcul-page.php");
+calcul_page($context,"index");
 
-$base="index";
-include ($home."cache.php");
 ?>
