@@ -31,6 +31,7 @@ if (!function_exists("authenticate")) {
   require_once($home."auth.php");
   authenticate();
 }
+require_once($home."connect.php");
 
 $context[id]=$id=intval($id);
 
