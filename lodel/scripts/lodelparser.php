@@ -91,7 +91,7 @@ function parse_loop_extra(&$tables,
 #	      array(
 #		    "status<=0",
 #		    "status>0",
-#		    '".($GLOBALS[user][admin] ? "1" : "(usergroup IN ($GLOBALS[user][groups]))")."'
+#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
 #		    ),$where);
   //
   if ($tablefields[lq("#_TP_classes")]) {
@@ -141,11 +141,11 @@ function parse_loop_extra(&$tables,
       if ($realtable=="session") continue;
 
       if ($realtable=="entities") {
-	$lowstatus='"-64".($GLOBALS[user][admin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[user][groups]))")';
+	$lowstatus='"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[lodeluser][groups]))")';
       } else {
 	$lowstatus="-64";
       }
-      $where[count($where)-1].=" AND ($table.status>\".(\$GLOBALS[user][visitor] ? $lowstatus : \"0\").\")";
+      $where[count($where)-1].=" AND ($table.status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
     }
   }
 #  echo "where 2:",htmlentities($where),"<br>";
@@ -230,7 +230,7 @@ function parse_variable_extra ($prefix,$varname)
   //
   if ($prefix=="#") {
     if ($varname=="GROUPRIGHT") {
-      return '($GLOBALS[right][admin] || in_array($context[group],explode(\',\',$GLOBALS[user][groups])))';
+      return '($GLOBALS[right][admin] || in_array($context[group],explode(\',\',$GLOBALS[lodeluser][groups])))';
     }
     if (preg_match("/^OPTION[_.]/",$varname)) { // options
       return "getoption('".strtolower(substr($varname,7))."')";
@@ -330,7 +330,7 @@ function maketext($name,$group,$tag)
   if ($tag=="text") {
     // modify inline
     $modifyif='$context[\'righteditor\']';
-    if ($group=='interface') $modifyif.=' && $context[\'user\'][\'translationmode\']';
+    if ($group=='interface') $modifyif.=' && $context[\'lodeluser\'][\'translationmode\']';
 
     $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/text.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
 
@@ -338,7 +338,7 @@ function maketext($name,$group,$tag)
       ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
   } else {
     // modify at the end of the file
-    ##$modify=' if ($context[\'user\'][\'translationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
+    ##$modify=' if ($context[\'lodeluser\'][\'translationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
     $modify="";
     $fullname=strtoupper($group).'.'.strtoupper($name);
 
@@ -358,7 +358,7 @@ function parse_after(&$text)
     $closepos=strpos($text,"</body>");
     if ($closepos===false) return; // no idea what to do...
 
-    $code='<?php if ($context[\'user\'][\'translationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
+    $code='<?php if ($context[\'lodeluser\'][\'translationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
 <form method="post" action="'.$GLOBALS['home'].'../../lodeladmin/text.php"><input type="hidden" name="edit" value="1">
  <input type="submit" value="[Update]">
 <div id="translationforms">'.join("",$this->translationform).'</div>
@@ -371,7 +371,7 @@ function parse_after(&$text)
 
   // add the code for the desk
   if (!$GLOBALS['nodesk']) {
-    $desk='<'.'?php if ($GLOBALS[\'user\'][\'visitor\'] || $GLOBALS[\'user\'][\'adminlodel\']) { // insert the desk
+    $desk='<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert the desk
     calcul_page($context,"desk","",$GLOBALS[\'home\']."../tpl/");
   } else {
   } ?'.'>';

@@ -90,7 +90,7 @@ function authenticate ($level=0)
     $lodeluser['redactor']=$lodeluser['rights']>=LEVEL_REDACTOR;
     $lodeluser['visitor']=$lodeluser['rights']>=LEVEL_VISITOR;
 
-    $context['user']=$lodeluser;
+    $context['lodeluser']=$lodeluser;
 
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
