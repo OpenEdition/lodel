@@ -166,7 +166,7 @@ function getrevueoptions ()
 
 // securite... initialisation
 $userpriv=0;
-$usergroupe="";
+$usergroupes="";
 $iduser=0;
 $revue="";
 $idsession=0;
