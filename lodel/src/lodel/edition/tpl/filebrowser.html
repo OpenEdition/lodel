@@ -10,7 +10,7 @@ function sendValue(s){
 obj=window.opener.document.getElementById('[#CALLER][localfullfilename]');
 obj.value = 'upload/'+s;
 obj=window.opener.document.getElementById('[#CALLER][localfilename]');
-obj.firstChild.nodeValue=s;
+if (obj) obj.firstChild.nodeValue=s;
 obj=window.opener.document.getElementById('[#CALLER][radioserverfile]');
 obj.click();
 window.close();

@@ -106,10 +106,23 @@ function infoChargement(nomFic){
         <IF COND="[#IDTASK]"><input type="hidden" name="idtask" value="[#IDTASK]" /></IF>
 	<IF COND="[#LODELTAGS]"><input type="hidden" name="lodeltags" value="[#LODELTAGS]" /></IF>	
 	
-	<table width="480" border="0" align="center" valign="top" cellspacing="4" cellpadding="4">
+	<table width="580" border="0" align="center" valign="top" cellspacing="4" cellpadding="4">
 		<tr><td align="center" class="sous_titre_popup">[@EDITION.SELECT_FILE_TO_UPLOAD]<br /><br /></td></tr>
 		<tr><td align="center" class="texte_normal">[@EDITION.ADVICE_UPLOADING]<br /><br /></td></tr>
-		<tr><td align="center"><input type="file" name="file1" size="40"></td></tr>
+<!--[		<tr><td align="center"><input type="file" name="file1" size="40"></td></tr>]-->
+
+
+
+
+		<tr><td>
+		<input type="radio" id="radioupload" name="fileorigin" value="upload"><input size="40" type="file" name="file1" onChange="document.getElementById('radioupload').click();">
+		</td></tr>
+		<tr><td>
+		<input type="radio" id="serverfile[radioserverfile]" name="fileorigin" value="server">
+	           <input size="40" type="text" id="serverfile[localfullfilename]" name="localfile">
+	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=serverfile','Upload','width=400,height=300,top=100,left=100');">Choisir un fichier sur le serveur</a>
+		</td></tr>
+
 		<tr>
 			<td align="center">
 				<br />

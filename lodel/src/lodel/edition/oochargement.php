@@ -42,14 +42,24 @@ $context['idtask']=$idtask=intval($idtask);
 $context['idtype']=intval($idtype);
 $context['lodeltags']=intval($lodeltags);
 
-
 if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name']!="none") {
-  do {
     $file1=$_FILES['file1']['tmp_name'];
-
-    // verifie que la variable file1 n'a pas ete hackee
     if (!is_uploaded_file($file1)) die(utf8_encode("Le fichier n'est pas un fichier chargé"));
+ } else {
+  $file1="";
+ }
 
+//elseif ($_POST['localfile']) {
+//   $file1=$_POST['localfile'];
+//   if (!preg_match("/^upload\/[^\/]+$/",$file1)) die("ERROR: the file is not valid");
+//   $file1="CACHE/".$file1;
+//} else {
+//  $file1="";
+//}
+
+if ($file1) {
+  do {
+    // verifie que la variable file1 n'a pas ete hackee
     $t=time();
     $tmpdir=tmpdir(); // use here and later.
     $source=$tmpdir."/".basename($file1)."-source";

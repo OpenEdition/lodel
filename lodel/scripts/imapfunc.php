@@ -47,7 +47,7 @@ function checkmailforattachments()
 
   $mbox=imap_open($mailserver,$user,$passwd);
 
-  if ($mbox===FALSE) {
+  if ($mbox===false) {
     die(imap_last_error());
     return;
   }
@@ -56,7 +56,7 @@ function checkmailforattachments()
   $nbmsg=imap_num_msg($mbox);
     
   for($msgno=1; $msgno<=$nbmsg; $msgno++) {
-    $nbattachment+=extractattachments($mbox,$msgno,"(je?pg|png|gif|tiff)");
+    $nbattachment+=extractattachments($mbox,$msgno,"(je?pg|png|gif|tiff|sxw|doc|rtf|html?)");
     imap_delete($mbox,$msgno);
   }
   imap_expunge($mbox);
