@@ -237,6 +237,7 @@ $droitadmin=0;
 $user=0;
 $context[shareurl]=$GLOBALS[shareurl];
 $context[extensionscripts]=$GLOBALS[extensionscripts];
+if (!$filemask) $filemask="0700";
 
 // cherche le nom du site
 
