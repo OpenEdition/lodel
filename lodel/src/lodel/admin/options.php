@@ -43,7 +43,7 @@ if ($set) {
   $result=mysql_query("SELECT id,nom,type FROM $GLOBALS[tp]options WHERE $critere") or die (mysql_error());
   while (list($id,$nom,$type)=mysql_fetch_row($result)) {
     if (!isset($context["option_$nom"])
-	|| $type=="pass" && $context["option_$nom"]="") continue;
+	|| ($type=="pass" && $context["option_$nom"]=="")) continue;
     $v=$context["option_$nom"];
     switch ($type) {
     case "int": $v=intval($v);
