@@ -99,10 +99,24 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   $id=intval($context[id]);
   $idparent=intval($context[idparent]);
 
+  //
   // check we have the right to add such an entite
-  $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite1='$context[idtype]'") or die(mysql_error());
-  if (mysql_num_rows($result)<=0) die("ERROR: Entities of type $context[idtype] are not allowed in entity $idparent");
+  //
+  if ($id>0) {
+    $result=mysql_query("SELECT idparent FROM $GLOBALS[tp]entites WHERE id='$id'") or die(mysql_error());
+    list($idparent)=mysql_fetch_row($result);
+  }
+  if ($idparent>0) {
 
+    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite='$context[idtype]'") or die(mysql_error());
+  } else {
+    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites WHERE idtypeentite2=0 AND idtypeentite='$context[idtype]'") or die(mysql_error());
+
+  }
+  if (mysql_num_rows($result)<=0) die("ERROR: Entities of type $context[idtype] are not allowed in entity $idparent");
+  //
+  // ok, we are allowed to modifiy/add this entity.
+  //
 
   if ($champcritere) $champcritere=" AND ".$champcritere;
 
