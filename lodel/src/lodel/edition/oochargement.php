@@ -149,7 +149,7 @@ function OO ($uploadedfile,&$context)
 		      );
   
   foreach ($translations as $k=>$v) {
-    array_push($srch,"/<r2r:$k(\b[^>]+)?>/","/<\/r2r:$k>/");
+    array_push($srch,"/<r2r:$k\b([^>]+)?>/","/<\/r2r:$k>/");
     if ($v) {
 	array_push($rpl,"<r2r:$v\\1>","</r2r:$v>");
     } else {

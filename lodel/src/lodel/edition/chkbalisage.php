@@ -75,7 +75,7 @@ while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
       preg_match_all("/<(\w+)\b[^>]*>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
       $v="";
       while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'ordre inverse, et transforme les en balises fermantes
-      array_push($srch,"/<\/r2r:$b>/si");array_push($rpl,$v); // balises ouvrante
+      array_push($srch,"/<\/r2r:$b>/si");array_push($rpl,$v);
 
       $balises[$b]=""; // supprime cette sousbalises (ca change rien normalement)
     }
