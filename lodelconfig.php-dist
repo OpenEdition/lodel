@@ -91,9 +91,9 @@ $sessionname="session$database";
 
 # TEMPORAIRE
 # configuration du serveur OO
-$serveuroourl="http://lodeldevel/serveuroo/index.php";
-$serveuroousername="ruralia@localhost";
-$serveuroopasswd="ruralia";
+$ooserverurl="http://lodeldevel/serveuroo/index.php";
+$ooserverusername="ruralia@localhost";
+$ooserverpasswd="ruralia";
 
 
 # type d'URL
