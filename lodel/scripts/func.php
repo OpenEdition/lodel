@@ -522,7 +522,7 @@ function save_annex_file($dir,$file,$filename,$uploaded,&$error) {
   if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir)) die("ERROR: unable to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"$dir\"");
     @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]));
   }
   $filename=basename($filename); // take only the name

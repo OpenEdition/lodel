@@ -503,7 +503,7 @@ function mycopyrec($src,$dest)
   if (is_dir($src)) {
 
     if (file_exists($dest) && !is_dir($dest)) unlink($dest);
-    if (!file_exists($dest)) mkdir($dest);
+    if (!file_exists($dest)) mkdir($dest,0777 & octdec($GLOBALS['filemask']));
     @chmod($dest,0777 & octdec($GLOBALS['filemask']));
 
     $dir=opendir($src);

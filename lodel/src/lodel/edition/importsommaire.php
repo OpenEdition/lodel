@@ -44,7 +44,7 @@ $row=get_tache($idtache);
 // creer le repertoire pour y mettre les differents fichiers "xml".
 $dir=$row[fichier].".dir";
 if (!file_exists($dir)) {
-  mkdir($dir,0700) or die ("impossible de creer le repertoire $row[fichier]");
+  mkdir($dir,0777 & octdec($GLOBALS['filemask'])) or die ("impossible de creer le repertoire $row[fichier]");
 }
 
 // lit le fichier

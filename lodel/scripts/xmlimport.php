@@ -116,8 +116,8 @@ function enregistre_entite_from_xml($context,$text,$classe)
   function mv_image($imgfile,$ext,$count,$id) {
     $dir="docannexe/image/$id";
     if (!is_dir(SITEROOT.$dir)) {
-      mkdir(SITEROOT.$dir);
-      @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]));
+      mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+      @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
     }
     $newfile="$dir/img-$count.$ext";
     copy($imgfile,SITEROOT.$newfile);

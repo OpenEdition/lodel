@@ -31,7 +31,7 @@ class RSSCache {
 		
 		// attempt to make the cache directory
 		if ( ! file_exists( $this->BASE_CACHE ) ) {
-			$status = @mkdir( $this->BASE_CACHE, 0755 );
+			$status = @mkdir( $this->BASE_CACHE, 0777 & octdec($GLOBALS['filemask']) );
 			
 			// if make failed 
 			if ( ! $status ) {

@@ -57,7 +57,7 @@ $cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",$_SERVER['REQUEST_
 $rep_cache = substr(md5($cachedfile), 0, 1);
 if ($context[charset]!="utf-8") $rep_cache="il1.".$rep_cache;
 if (!file_exists("CACHE/$rep_cache")) {
-  mkdir("CACHE/$rep_cache", 0777);
+  mkdir("CACHE/$rep_cache", 0777 & octdec($GLOBALS['filemask']));
 }
 $cachedfile = "CACHE/$rep_cache/$cachedfile";
 
