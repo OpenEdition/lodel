@@ -93,7 +93,7 @@ function parse_loop_extra(&$tables,
     }
     if (preg_match("/\bparent\b/",$where)) {
       array_push($tables,"$GLOBALS[tp]entites as entites_interne2");
-      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entites","id|idtype|identifiant|groupe|user|ordre|statut");
+      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entites","id|idtype|identifiant|groupe|user|ordre|statut|idparent");
       $where=preg_replace("/\bparent\b/","entites_interne2.identifiant",$where)." AND entites_interne2.id=$GLOBALS[tp]entites.idparent";
     }
     if (in_array("$GLOBALS[tp]types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
