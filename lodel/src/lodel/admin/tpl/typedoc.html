@@ -1,11 +1,11 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Types de document</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR><TD><div align="center"><b>Edition des types de documents</b></div></td></tr>
+<TR><td><div align="center"><b>Edition des types de documents</b></div></td></tr>
 </TABLE>
 <br>
 
@@ -14,15 +14,15 @@
 <FORM METHOD="POST" ACTION="typedoc.php">
 <INPUT TYPE="hidden" name="edit" VALUE="1">
 <INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<TR><TD>Nom:</TD>
-<TD><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></TD>
-[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</TD>]</TR>
-<TR><TD>Nom du fichier template<br>(sans l'extension .html):</TD>
-<TD><INPUT SIZE="40" TYPE="text" NAME="tpl" value="[#TPL]"></TD>
-[(#ERREUR_TPL|true)<TD CLASS="erreur">Il faut preciser un nom de fichier</TD>]</TR>
+<TR><td>Nom:</td>
+<td><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></td>
+[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</td>]</tr>
+<TR><td>Nom du fichier template<br>(sans l'extension .html):</td>
+<td><INPUT SIZE="40" TYPE="text" NAME="tpl" value="[#TPL]"></td>
+[(#ERREUR_TPL|true)<TD CLASS="erreur">Il faut preciser un nom de fichier</td>]</tr>
 </TABLE>
 <div align="center"><INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" ></div>
 </FORM>
 
-<div align="center">[<A HREF="typedoc.php?delete=1&id=(#ID)">Supprimer</A>]</div>
+<div align="center">[<a href="typedoc.php?delete=1&id=(#ID)">Supprimer</a>]</div>
 

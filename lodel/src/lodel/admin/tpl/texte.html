@@ -1,8 +1,8 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Types de document</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="0" ALIGN="CENTER">
 <TR><td align="center"><div align="center"><b>Edition des minitextes</b></div></div></td></tr>
@@ -15,23 +15,23 @@
 <INPUT TYPE="hidden" name="edit" VALUE="1">
 <INPUT TYPE="hidden" name="id" VALUE="[#ID]">
 <INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
-<TR><TD>Nom:</TD>
-<TD><INPUT SIZE="60" TYPE="text" NAME="nom" value="[#NOM]"></TD>
-[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</TD>]</TR>
+<TR><td>Nom:</td>
+<td><INPUT SIZE="60" TYPE="text" NAME="nom" value="[#NOM]"></td>
+[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</td>]</tr>
 
 
-<TR><TD>Texte:</TD>
-<TD><TEXTAREA NAME="texte" ROWS="20" COLS="60">[#TEXTE]</TEXTAREA></TD>
-[(#ERREUR_ABREV|true)<TD CLASS="erreur">Il faut preciser une abreviation</TD>]</TR>
+<TR><td>Texte:</td>
+<td><TEXTAREA NAME="texte" ROWS="20" COLS="60">[#TEXTE]</TEXTAREA></td>
+[(#ERREUR_ABREV|true)<TD CLASS="erreur">Il faut preciser une abreviation</td>]</tr>
 
-<TR><TD>
+<TR><td>
 <div align="center"><INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]"></div><br>
 
-<div align="center">[<A HREF="texte.php?delete=1&id=(#ID)">Supprimer</A>]</div>
-</TD>
-</TR>
+<div align="center">[<a href="texte.php?delete=1&id=(#ID)">Supprimer</a>]</div>
+</td>
+</tr>
 </TABLE>
 
 </FORM>
 
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">
