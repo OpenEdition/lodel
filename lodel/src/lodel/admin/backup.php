@@ -46,10 +46,10 @@ if ($backup) {
   $outfile="site-$site.sql";
   $uselodelprefix=true;
   $tmpdir=tmpdir();
-  mysql_dump($currentdb,$tmpdir"/".$outfile);
+  mysql_dump($currentdb,$tmpdir."/".$outfile);
 
   # verifie que le fichier n'est pas vide
-  if (filesize($tmpdir"/".$outfile)<=0) die ("ERROR: mysql_dump failed");
+  if (filesize($tmpdir."/".$outfile)<=0) die ("ERROR: mysql_dump failed");
 
   // tar les sites et ajoute la base
   $archivetmp=tempnam($tmpdir,"lodeldump_");
