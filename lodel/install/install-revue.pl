@@ -88,7 +88,7 @@ foreach (<FILE>) {
     $filedest=~s/\.php$/.html/ if $dirdest eq ".";
     system ("cp -fr $dirsource/$arg1 $filedest") unless filemtime($filedest)>filemtime(" $dirsource/$arg1");
   } elsif ($cmd eq "touch") {
-    system ("touch $dirdest/$arg1");
+    system ("touch $filedest") unless -e  $filedest;
   } elsif ($cmd eq "htaccess") {
     htaccess($filedest) unless -e $filedest;
   } else {
