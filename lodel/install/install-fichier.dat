@@ -210,7 +210,6 @@ ln motcle.php
 ln tpl/motcle.html
 ln motcles.php
 ln tpl/motcles.html
-ln indexl.php
 
 ln entree.php
 ln tpl/entree.html
@@ -231,7 +230,6 @@ ln geographie.php
 ln tpl/geographie.html
 ln geographies.php
 ln tpl/geographies.html
-ln indexh.php
 
 
 ln options.php
