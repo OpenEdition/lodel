@@ -157,7 +157,10 @@ function search(&$context,$funcname,$arguments)
 		{
 			$criteria_index .= " AND #_TP_entities.status ='".intval($context['qstatus'])."'";	
 		}
-		
+		if(!$context['lodeluser']['visitor'])
+		{
+			$criteria_index .= $criteria_index .= " AND #_TP_entities.status >= 16";	
+		}
 		
 		
 		
