@@ -107,7 +107,7 @@ class Entities_IndexLogic extends Logic
  		/*require_once("utf8.php");
  		convertHTMLtoUTF8($string);*/
  		
- 		$string = ($this->_decode_html_entities($string);
+ 		$string = $this->_decode_html_entities($string);
  		
  		
  		 
