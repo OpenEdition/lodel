@@ -191,7 +191,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!-- ****************************************************************** -->
 	<form name="pub_menu_B">
 		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
-		<option value="index.html">Thèmes</option>
+		<option value="index.html">rubriques</option>
 		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" ORDER="ordre DESC">
 			<DO>	
 				<option value="sommaire.html?id=[#ID]">
