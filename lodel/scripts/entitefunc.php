@@ -115,34 +115,20 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     if (trim($entite[$nom]) && in_array($type,$GLOBALS[type_autostriptags])) $entite[$nom]=trim(strip_tags($entite[$nom]));
     // special processing depending on the type.
     switch ($type) {
-    case "date" : 
+    case "date" :
+    case "datetime" :
+    case "time" :
       include_once($home."date.php");
       if ($entite[$nom]) {
-	$entite[$nom]=mysqldate($entite[$nom]);
+	$entite[$nom]=mysqldatetime($entite[$nom],$type);
       } elseif ($defaut) {
-	if ($defaut=="aujourd'hui" || $defaut=="today") {
-	  $entite[$nom]=date("Y-m-d");
-	} elseif (preg_match("/^\s*dans\s+(\d+)\s*(an|mois|jour)s?\s*$/i",$defaut,$result2)) {
-	  $val=$result2[1];
-	  switch ($result2[2]) {
-	  case "an" :
-	    $entite[$nom]= date("Y-m-d",mktime (0,0,0,date("m"),  date("d"),  date("Y")+$val));
-	    break;
-	  case "mois" :
-	    $entite[$nom]= date("Y-m-d",mktime (0,0,0,date("m")+$val,  date("d"),  date("Y")));
-	    break;
-	  case "jour" :
-	    $entite[$nom]= date("Y-m-d",mktime (0,0,0,date("m"),  date("d")+$val,  date("Y")));
-	    break;
-	  }
-	} elseif (mysqldate($defaut)) {
-	  $entite[$nom]=mysqldate($defaut);
+	$dt=mysqldatetime($defaut,$type);
+	if ($dt) {
+	  $entite[$nom]=$dt;
 	} else {
 	  die("valeur par defaut non reconnue: \"$defaut\"");
 	}
-      }# else {
-	#$erreur[$nom]="date";
-      #}
+      }
       break;
     case "int" :
       if (!isset($entite[$nom]) && $defaut) $entite[$nom]=intval($defaut);

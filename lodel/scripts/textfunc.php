@@ -199,26 +199,30 @@ function humandate($s)
 
 { # verifie que la date est sous forme mysql
 
-  if (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)$/",$s,$result)) {
+  if (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)/",$s,$result)) {
     if ($result[1]>9000) return "jamais";
     if ($result[1]==0) return "";
 
-   $mois[1]="janvier";
-   $mois[2]="février";
-   $mois[3]="mars";
-   $mois[4]="avril";
-   $mois[5]="mai";
-   $mois[6]="juin";
-   $mois[7]="juillet";
-   $mois[8]="août";
-   $mois[9]="septembre";
-   $mois[10]="octobre";
-   $mois[11]="novembre";
-   $mois[12]="décembre";
-   return intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1]);
- } else {
-   return $s;
- }
+    $mois[1]="janvier";
+    $mois[2]="février";
+    $mois[3]="mars";
+    $mois[4]="avril";
+    $mois[5]="mai";
+    $mois[6]="juin";
+    $mois[7]="juillet";
+    $mois[8]="août";
+    $mois[9]="septembre";
+    $mois[10]="octobre";
+    $mois[11]="novembre";
+    $mois[12]="décembre";
+    $ret=intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1]);
+  }
+  // time
+  if (preg_match("/(\s*\d\d:\d\d:\d\d)$/",$s,$result)) {
+    $ret.=$result[0];
+  }
+
+  return $ret ? $ret : $s;
 }
 
 

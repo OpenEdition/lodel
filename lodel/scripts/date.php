@@ -29,7 +29,7 @@
 function mysqldate($s)
 
 { 
-  // convertie une date humaine en time stamp
+  // convertie une date humaine en date mysql
 
   //what is the delimiting character? (support space, slash, dash, point) 
   $s=trim($s);
@@ -38,10 +38,9 @@ function mysqldate($s)
   elseif (strpos($s,"-")>0)  { $delimiter="-"; }
   elseif (strpos($s,".")>0) { $delimiter="."; }
 
-  if (!$delimiter) return ""; 
+  if (!$delimiter) return "";
 
   list($d,$m,$y)=preg_split("/s*$delimiter+/",$s);
-
   $d=intval(trim($d));
   if ($d<1 || $d>31) return "";
   $m=trim($m);
@@ -54,18 +53,18 @@ function mysqldate($s)
     if ($m<$today[mon]) $y++; // ou l'annee prochaine
   }
   $y=trim($y);
-
+  
   //the last value is always the year, so check it for 2- to 4-digit convertion 
   if (intval($y)<100) { $y+=2000; }
-
+  
   if (!checkdate($m,$d,$y)) return "";
-
+    
   if ($d<10 && strlen($d)==1) { 
     $d="0$d";
   }
   if ($m<10 && strlen($m)==1) {
     $m="0$m";
-  } 
+  }
   return "$y-$m-$d";
 }
 
@@ -80,7 +79,6 @@ function mois($m)
     case "jan": return 1;
     case "fev": return 2;
     case "fév": return 2;
-#    case "fÃ©": return 2;
     case "mar": return 3;
     case "avr": return 4;
     case "mai": return 5;
@@ -91,17 +89,73 @@ function mois($m)
     case "nov": return 11;
     case "dec": return 12;
     case "déc": return 12;
-#    case "dÃ©": return 12;
   }
   switch(substr($m,0,4)) { 
     case "juin": return 6;
     case "juil": return 7;
-#    case "aoÃ»": return 8;
   }
   return 0;
 } 
 
 
 
+function mysqldatetime($s,$type="datetime")
+
+{
+  $s=trim(stripslashes($s));
+  if (!$s) return "";
+
+  if ($s=="aujourd'hui" || $s=="today" || $s=="maintenant") {
+    $timestamp=time();
+
+  } elseif (preg_match("/^\s*dans\s+(\d+)\s*(an|mois|jour|heure|minute)s?\s*$/i",$s,$result)) {
+    $val=$result[1];
+    $arr=localtime();
+    switch ($result[2]) {
+    case "an" :
+      $arr['tm_year']+=$val;
+      break;
+    case "mois" :
+      $arr['tm_mon']+=$val;
+      break;
+    case "jour" :
+      $arr['tm_mday']+=$val;
+      break;
+    case "heure" :
+      $arr['tm_hour']+=$val;
+      break;
+    case "minute" :
+      $arr['tm_min']+=$val;
+      break;
+    }
+
+    $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
+		       $arr['tm_mon']+1,$arr['tm_mday'],1900+$arr['tm_year']);
+  } elseif ( ($date=mysqldate($s)) ) {
+    if (!$date) $date=date("Y-m-d");
+    list($y,$m,$d)=explode("-",$date);
+
+    if (preg_match("/(\d+)[:h](?:(\d+)(?:[:](\d+))?)?\s*$/",$s,$result)) { // time
+      $timestamp=mktime ($result[1],$result[2],$result[3],
+			 $m,$d,$y);
+    } else {
+      $arr=localtime();
+      $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
+			 $m,$d,$y);
+    }
+  }
+
+  if ($type=="date") {
+    return date("Y-m-d",$timestamp);
+  } elseif ($type=="datetime") {
+    return date("Y-m-d H:i:s",$timestamp);
+  } elseif ($type=="time") {
+    return date("H:i:s",$timestamp);
+  } elseif ($type=="timestamp") {
+    return $timestamp;
+  } else {
+      die("type inconnu dans mysqldate");
+  }
+}
 
 ?>

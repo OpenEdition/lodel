@@ -208,7 +208,7 @@
 	    </select>
 	    </td>
 	    <ELSE/>
-	      <IF COND="[#TYPE] eq 'date'">
+	      <IF COND="[#TYPE] eq 'date' || [#TYPE] eq 'datetime' || [#TYPE] eq 'time'">
 		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'image'">
