@@ -243,22 +243,24 @@ if (!$filemask) $filemask="0700";
 
 if ($site) {
   $context[site]=$site;
-} else {
-  $url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
-  if ($siteagauche) {
-    if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodeladmin" && $result[1]!="www") {
-      $context[site]=$site=$result[1];
-    } else {
-      $context[site]=$site="";
-    }
-  } else {
-    if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodeladmin") {
-      $context[site]=$site=$result[1];
-    } else {
-      $context[site]=$site="";
-    }
-  }
-}
+} else die("ERROR: defining \$site in siteconfig.php is required");
+
+# else {
+#  $url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
+#  if ($siteagauche) {
+#    if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodeladmin" && $result[1]!="www") {
+#      $context[site]=$site=$result[1];
+#    } else {
+#      $context[site]=$site="";
+#    }
+#  } else {
+#    if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodeladmin") {
+#      $context[site]=$site=$result[1];
+#    } else {
+#      $context[site]=$site="";
+#    }
+#  }
+#}
 
 $context[charset] = getacceptedcharset($charset);
 header("Content-type: text/html; charset=$context[charset]");
