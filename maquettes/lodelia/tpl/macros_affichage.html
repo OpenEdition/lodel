@@ -482,7 +482,6 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_SERIE_PRESENTATION">
-<FONT SIZE="-3">Macro AFFICHER_SERIE_PRESENTATION a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la série présentation avec les articles qui sont           -->
@@ -490,35 +489,20 @@
 <!-- Il faut mettre en dur l'id de la série                             -->
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
-<!--<LOOP NAME="aff_series_presentation" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status gt 0" ORDER="ordre" WHERE="id='#remplir ici id de la serie presentation#'">
+	<LOOP NAME="aff_series_presentation" TABLE="types" TABLE="entites" TABLE="relations" WHERE="id1='444' AND entites.id=id2 AND entites.idtype=types.id AND classe='documents'">
 		<BEFORE>
 			<div class="menu1">
 				Informations :<br/ >
 			</div>
 		</BEFORE>
-		<DO> -->
-			<!-- On liste tous les numéros de la série linéaire courante 
-<LOOP NAME="" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres">
-
-<LOOP NAME="" TABLE="publications" TABLE="relations" TABLE="documents" WHERE="id2='[#ID]' AND type='presentation' AND id=id1" ORDER="degres">
-
-<LOOP NAME="" TABLE="documents" TABLE="relations" WHERE="idparent='[#ID]'" WHERE="type='presentation'" WHERE="status gt 0" ORDER="ordre">-->
-
-<!--		<LOOP NAME="aff_numero_presentation" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='numero'"  WHERE="status gt 0" ORDER="ordre">
-				<DO>
-					<LOOP NAME="aff_docpresentation" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='presentation'"  WHERE="status gt 0" ORDER="ordre">
-						<DO>
-							<div class="menu2">
-								<a class="menu2" href="document.html?id=[#ID]">
-									[#TITRE]
-								</a>
-							</div>
-						</DO>
-					</LOOP>
-				</DO>
-			</LOOP>
+		<DO>
+			<div class="menu2">
+				<a class="menu2" href="document.html?id=[#ID]">
+					[#NOM]
+				</a>
+			</div>
 		</DO>
-	</LOOP> -->
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="DOCUMENTS_PAR_TYPES">
