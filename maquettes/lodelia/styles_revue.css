@@ -750,10 +750,14 @@ h6
 	padding-right:2em;
 	padding-top:2em;
 	padding-bottom:2em;
-	/*voice-family: "\"}\"";
- 	voice-family: inherit;
-  	width:auto*/		
+	voice-family:"\"}\"";
+ 	voice-family:inherit;
+  	width:561		
 	}						
+
+html>body .texte {
+	 width:auto
+}				
 
 
 
@@ -777,7 +781,7 @@ h6
 	padding-bottom:2em;
 	voice-family:"\"}\"";
  	voice-family:inherit;
-  	width:auto		
+  	width:561		
 	}						
 
 html>body .resume {
@@ -800,7 +804,14 @@ html>body .resume {
 	padding-bottom:2em;
 	padding-right:2em;
 	padding-left:2em;
-	}
+	voice-family:"\"}\"";
+ 	voice-family:inherit;
+  	width:561		
+	}						
+
+html>body .notes {
+	 width:auto
+}
 	
 
 /*****************************************************************************************/
@@ -820,7 +831,7 @@ html>body .resume {
 	padding-bottom:2em;
 	voice-family:"\"}\"";
  	voice-family:inherit;
-  	width:auto		
+  	width:561	
 	}						
 
 html>body .descriptionauteur {
@@ -1144,7 +1155,17 @@ A.bouton_statut_publierOFF
 	text-align:center
 }
 
+.revuesorg
+{
+	/*  
+	 *	Style du lien vers le site de revues.org tout en bas de la page.
+	 */
+	font-size:70%;
+	font-weight:small;
+	text-align :center;
+	margin-top:20px;
 
+}
 
 /***************************************************************************************
  *	Styles de forme                                                                      *

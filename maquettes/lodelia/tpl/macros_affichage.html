@@ -13,7 +13,7 @@
 <!-- <MACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">             -->
 <!-- <MACRO NAME="PARU_DANS">                                           -->
 <!-- <MACRO NAME="PARU_DANS_SIMPLE">                                    -->
-<!-- <MACRO NAME="PARU_DANS_SIGNALER">                                  -->
+<!-- <MACRO NAME="PARU_DANS_SIGNALEMENT">                               -->
 <!-- <MACRO NAME="INFOS_DOCUMENT">		                                -->
 <!-- <MACRO NAME="DATE_PUBLICATION_PARENTE">                            -->
 <!-- <MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">                          -->
@@ -283,7 +283,7 @@
 	</LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="PARU_DANS_SIGNALER">
+<DEFMACRO NAME="PARU_DANS_SIGNALEMENT">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la publication d'où provient un document que l'on a        -->
@@ -291,18 +291,26 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="paru_dans_signalement" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<DO>
 			Paru dans 
-			<a href="http://[#REVUE].revues.org">
-				<span style="color:Black;">
-						<MACRO NAME="NOM_REVUE"> n°[#NOM]
-					<IF COND="[#TITRE]">
-						,
-						[#TITRE]
-					</IF>.
-				</span>
-			</a>
+			<IF COND="[#TYPE]=='regroupement'"> 
+				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#PARENT]'"> 
+					<a class="titre1" href="sommaire.html?id=[#ID]">
+						<MACRO NAME="NOM_REVUE">, n° [#NOM]  
+						<IF COND="[#TITRE]">,
+							[#TITRE]
+						</IF>.
+					</a>
+				</LOOP>
+			<ELSE/>
+					<a class="titre1" href="sommaire.html?id=[#ID]">
+							<MACRO NAME="NOM_REVUE"> n°[#NOM] 
+								<IF COND="[#TITRE]">,
+									[#TITRE]
+								</IF>.
+					</a>
+			</IF>
 		</DO>
 	</LOOP>
 </DEFMACRO>
