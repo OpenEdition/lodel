@@ -306,6 +306,13 @@
 			<MACRO NAME="GIF_INACTIF">
 		</IF>
 	</td>
+	<td width="74" align="center" valign="middle" class="texte_trespetit">
+		<div align="center">
+			<a href="fonctionsavancees.php?publication=[#ID]">
+				<MACRO NAME="GIF_FONCTIONS_AVANCEES">
+			</a>
+		</div>
+	</td>
 	<td width="74" valign="middle" align="center">
 		<IF COND="[#EDITEUR]">
 			<MACRO NAME="STATUS">
@@ -320,13 +327,6 @@
 			<ELSE/>
 				<MACRO NAME="GIF_INACTIF">
 			</IF>
-		</div>
-	</td>
-	<td width="74" align="center" valign="middle" class="texte_trespetit">
-		<div align="center">
-			<a href="index.php?format=publisfa&id=[#ID]">
-				<MACRO NAME="GIF_FONCTIONS_AVANCEES">
-			</a>
 		</div>
 	</td>
 	<td width="74" valign="middle">
@@ -616,6 +616,12 @@
 				</IF>
 			</div>
 		</td>
+		<!-- Permet d'accéder aux fonctions avancées -->
+		<MACRO NAME="TD_POUR_LIGNESALTERNEES_74">
+			<a href="fonctionsavancees.php?id=[#ID]">
+				<MACRO NAME="GIF_FONCTIONS_AVANCEES">
+			</a>
+		</td>
 		<MACRO NAME="TD_POUR_LIGNESALTERNEES_74">
 		<!-- Affiche le statut du document -->
 			<div align="center">
@@ -635,12 +641,6 @@
 					<MACRO NAME="GIF_INACTIF">
 				</IF>
 			</div>
-		</td>
-		<!-- Permet d'accéder aux fonctions avancées -->
-		<MACRO NAME="TD_POUR_LIGNESALTERNEES_74">
-			<a href="editer.php?id=[#ID]">
-				<MACRO NAME="GIF_FONCTIONS_AVANCEES">
-			</a>
 		</td>
 		<MACRO NAME="TD_POUR_LIGNESALTERNEES_74">
 		<!--Supprimer le document-->
@@ -1025,7 +1025,7 @@
 	<tr>
 		<td> 
 			<table id="tachesencours" width="648" align="center" border="0">
-				<LOOP name="tache" table="taches" where="user='[#IDUSER]'" order="maj DESC"> 
+				<LOOP name="tache" TABLE="taches" where="user='[#IDUSER]'" order="maj DESC"> 
 				<tr> 
 					<td>
 						[#NOM]
