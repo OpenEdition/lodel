@@ -168,6 +168,11 @@
 			Voir la<br />page
 		</strong>
 	</td>
+	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre">
+		<strong>
+			Editer<br />métas
+		</strong>
+	</td>
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
 		<div align="center">
 		<b>
@@ -204,6 +209,13 @@
 		<div align="center">
 		<b>
 			Voir la<br />page
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
+		<div align="center">
+		<b>
+			Editer<br />métas
 		</b>
 		</div>
 	</td>
@@ -287,6 +299,11 @@
 			</a>
 		</div>
 	</td>
+	<td width="74" valign="middle" align="center">
+		<a href="publication.php?id=[#ID]">
+			<MACRO NAME="GIF_EDITER_32">
+		</a>
+	</td>
 	<td width="74" valign="middle">
 		<MACRO NAME="STATUS">
 	</td>
@@ -312,28 +329,11 @@
 				<u>Parent</u> 
 			</a>
 			 |
-			<a href="publication.php?id=[#ID]">
-				Editer
-			</a>
-			|
 			<IF [#ID]>
 				<a href="metaimage.php?idpublication=[#ID]">
 					Image
 				</a>
 			</IF>
-		<!--<IF [#STATUS] GT 0>
-			<a href="publi.php?publication=[#ID]&online=0">
-				Dépublier
-			</a>
-		<ELSE/>
-			<a href="publi.php?publication=[#ID]&online=1">
-				Publier
-			</a>
-		</IF>
-		|
-			<a href="supprime.php?publication=[#ID]">
-				Détruire
-			</a>-->
 	</td>
 </DEFMACRO>
 
@@ -428,6 +428,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -443,6 +444,8 @@
 					</strong>
 				</a>
 		</td>
+	  <td width="74" background="images/bleu.gif">&nbsp;</td>
+	  <td width="74" background="images/bleu.gif">&nbsp;</td>
 	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -464,6 +467,7 @@
 		</strong></a>
 	</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+    <td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -485,6 +489,7 @@
 		</strong>
 		</a>
 	</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -518,6 +523,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -529,6 +535,7 @@
 	  <td width="800">
 	&nbsp;
 		  </td>
+	  <td width="74">&nbsp;</td>
 	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
@@ -561,6 +568,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>
 <tr>
 <td>
@@ -578,20 +586,25 @@
 			</td>
 		<MACRO NAME="TD_pour_lignesalternees_800">
 		<MACRO NAME="auteurs">
-				"<A HREF="editer.php?id=[#ID]">
 				<font color="black">
-					[#TITRE]
-				</FONT>
-				</A>" 
+					" [#TITRE] "
+				</font>
 				 <font size="-2">([#TYPE])</font>
 			</TD>
 		<MACRO NAME="TD_pour_lignesalternees_74">
-		<!-- Editer -->
+		<!-- Voir la page -->
 				<div align="center">
-				<!--<a href="editer.php?id=[#ID]">-->
 				<a href="../../document.html?id=[#ID]">
 					<MACRO NAME="GIF_VOIR_PAGE_32">
 				</a>
+				</div>
+			</td>
+		<MACRO NAME="TD_pour_lignesalternees_74">
+		<!-- Editer les métadonnées -->
+				<div align="center">
+					<a href="editer.php?id=[#ID]">
+						<MACRO NAME="GIF_EDITER_32">
+					</a>
 				</div>
 			</td>
 		<MACRO NAME="TD_pour_lignesalternees_74">
