@@ -272,9 +272,12 @@ function decodepersonne($personne)
 function enregistre_entrees_from_xml (&$localcontext,$text)
 
 {
+  global $home;
   // il faudrait ajouter ici un test sur le type... mais bon, c'est pas facile parce qu'on ne connait pas encore le type !!!
 
   $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
+  require_once($home."champfunc.php");
+
   while (list($idtype,$style)=mysql_fetch_row($result)) {
     // decode the multilingue style.
     $styles=decode_mlstyle($style);
