@@ -201,8 +201,13 @@ ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
 UPDATE _PREFIXTABLE_indexls SET statut=32, idtype=2 WHERE idtype=3;
 # change lang en langue
 ALTER TABLE _PREFIXTABLE_indexls CHANGE lang langue CHAR(2) NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents CHANGE lang langue CHAR(2) NOT NULL;
 # positionne la langue correctement
 UPDATE _PREFIXTABLE_indexls SET langue=\'fr\' WHERE langue=\'\';
+UPDATE _PREFIXTABLE_documents SET langue=\'fr\' WHERE langue=\'\';
+# suppression des champs inutiles
+ALTER TABLE _PREFIXTABLE_documents DROP intro;
+ALTER TABLE _PREFIXTABLE_documents DROP langresume;
 # ok c est bon, on peut renomer
 
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
@@ -312,6 +317,10 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
 	if ($err) break;
 	$report.="Transforme meta_image en icone dans documents<br>\n";
       }
+      $err=mysql_query_cmds('ALTER TABLE _PREFIXTABLE_documents DROP meta;');
+      if ($err) break;
+      $report.="Suppression du champ meta de documents<br>\n";
+
     }
     if ($tables["$GLOBALS[tp]publications"]) {
       // cherche les fields de publications 
