@@ -60,6 +60,18 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
     include_once ($home."connect.php");
 
+
+    // verifie qu'on a qu'un site si on est en singledatabase
+    if ($singledatabase) {
+      $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE statut>-64") or die (mysql_error());
+      list($numsite)=mysql_fetch_row($result);
+      if ($numsite>1) {
+	die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données. Il faut utiliser plusieurs bases de donnée ou attendre la prochaine version.<br /> Merci de votre comprehension.");
+      }
+    }
+    //
+
+
     // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
       $result=mysql_query ("SELECT statut,rep,chemin FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
@@ -208,6 +220,7 @@ if ($tache=="createtables") {
   $text=join('',file(LODELROOT."$versionrep/install/init-site.sql"));
 
   if ($servoourl && $servoourl!="off") {
+    $text.="\n";
     $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','$servoourl','32','1');\n";
     $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
     $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
@@ -348,7 +361,7 @@ if ($tache=="fichier") {
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
 
   if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  header("location: ".$urlroot.preg_replace("/^\//","",$context[chemin])."/lodel/edition"));
+  header("location: ".$urlroot.preg_replace("/^\//","",$context[chemin])."/lodel/edition");
   return;
 
 #  header("location: index.php");
@@ -394,7 +407,7 @@ function install_fichier($root,$homesite,$homelodel)
 	mkdir($arg1,0777 & octdec($GLOBALS[filemask]));
       }
       @chmod($arg1,0777 & octdec($GLOBALS[filemask]));
-    } elseif ($cmd=="ln" && $usesymlink!="non") {
+    } elseif ($cmd=="ln" && $usesymlink && $usesymlink!="non") {
       if ($dirdest=="." && 
 	  $extensionscripts=="html" &&
 	  $arg1!="lodelconfig.php") $dest1=preg_replace("/\.php$/",".html",$dest1);
@@ -404,7 +417,7 @@ function install_fichier($root,$homesite,$homelodel)
 #    print "3 dirdest:$dirdest dirsource:$dirsource toroot:$toroot arg1:$arg1<br>\n";
 	slink("$toroot$dirsource/$arg1",$dest1);
       }
-    } elseif ($cmd=="cp" || ($cmd=="ln" && $usesymlink=="non")) {
+    } elseif ($cmd=="cp" || ($cmd=="ln" && (!$usesymlink || $usesymlink=="non"))) {
       if ($dirdest=="." && 
 	  $extensionscripts=="html" &&
 	  $arg1!="lodelconfig.php") $dest1=preg_replace("/\.php$/",".html",$dest1);

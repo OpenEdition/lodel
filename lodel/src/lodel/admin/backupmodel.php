@@ -77,11 +77,11 @@ if ($backup) {
     fputs($fh,"DELETE FROM ".lodelprefix($table).";\n");
   }
   $GLOBALS['showcolumns']=true; // use by PMA to print the fields.
-  mysql_dump($currentdb,"",$fh,false,false,true,$tables); // get the content
+  mysql_dump($currentdb,$tables,"",$fh,false,false,true); // get the content
 
   $tables=array("$GLOBALS[tp]documents",
 		"$GLOBALS[tp]publications");
-  mysql_dump($currentdb,"",$fh,true,true,false,$tables); // get the table create
+  mysql_dump($currentdb,$tables,"",$fh,true,true,false); // get the table create
   // it may be better to recreate the field at the import rather 
   // than using the created field. It may be more robust. Status quo at the moment.
 	    

@@ -176,7 +176,8 @@ if ($tache=="options") {
     (5*($permission[group][read]!="")+2*($permission[group][write]!="")).
     (5*($permission[all][read]!="")+2*($permission[all][write]!=""));
 
-  maj_lodelconfig(array("urlroot"=>$newurlroot,
+  maj_lodelconfig(array("chooseoptions"=>"oui",
+			"urlroot"=>$newurlroot,
 			"importdir"=>$newimportdir,
 			"extensionscripts"=>$newextensionscripts,
 			"usesymlink"=>$newusesymlink,
@@ -384,7 +385,7 @@ if ($htaccess!="non") {
 // Demander des options generales
 //
 
-if (!$extensionscripts || !$usesymlink) {
+if ($chooseoptions!="oui") {
   if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
   return;
 } elseif ($importdir && !testdirmode($importdir,5)) {

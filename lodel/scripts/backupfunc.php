@@ -34,6 +34,33 @@
 
 define("LODELPREFIX","__LODELTP__");
 
+$GLOBALS[lodelsitetables]=array("objets",
+				"entites",
+				"relations",
+				"publications",
+				"documents",
+				"champs",
+				"groupesdechamps",
+				"personnes",
+				"users",
+				"groupes",
+				"users_groupes",
+				"types",
+				"typepersonnes",
+				"typeentrees",
+				"entrees",
+				"taches",
+				"textes",
+				"entites_personnes",
+				"entites_entrees",
+				"typeentites_typeentites",
+				"typeentites_typeentrees",
+				"typeentites_typepersonnes",
+				"options");
+
+$GLOBALS[lodelbasetables]=array("sites","users","pileurl","session");
+
+
 
 $userlink=TRUE;
 $server=TRUE;
@@ -119,7 +146,7 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
  *
  */
 
-function mysql_dump($db,$output,$fh=0,$create=true,$drop=true,$contents=true,$tables=array())
+function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=true)
 
 {
   if ($fh) {
@@ -133,12 +160,12 @@ function mysql_dump($db,$output,$fh=0,$create=true,$drop=true,$contents=true,$ta
   $err_url = $GLOBALS['PHP_SELF']."?erreur=1";
   $crlf = PMA_whichCrlf();
 
-  if (!$tables) {
-    $results = PMA_mysql_list_tables($db);
-    if (!$results) die (mysql_error());
-    $num_tables = @mysql_numrows($results);
-    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($results,$i);
-  }
+  if (!$tables) die("ERROR: tables is not defined in mysql_dump");
+#    $results = PMA_mysql_list_tables($db);
+#    if (!$results) die (mysql_error());
+#    $num_tables = @mysql_numrows($results);
+#    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($results,$i);
+#  }
   $num_tables=count($tables);
 
 

@@ -122,6 +122,7 @@ define("DONTUSELOCKTABLES",false);
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration
+$chooseoptions="";
 $includepath=""; # pour les sites qui ont un include automatique (defini par php.ini)
 $htaccess="on";    # 
 $filemask="0777";

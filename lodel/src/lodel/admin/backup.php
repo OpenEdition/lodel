@@ -32,6 +32,8 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 include ($home."func.php");
 
+if (system("tar --version >/dev/null"))) die("ERROR: tar command is not available on this server");
+
 $context[importdir]=$importdir;
 
 if ($backup) {
@@ -46,7 +48,7 @@ if ($backup) {
   $outfile="site-$site.sql";
   $uselodelprefix=true;
   $tmpdir=tmpdir();
-  mysql_dump($currentdb,$tmpdir."/".$outfile);
+  mysql_dump($currentdb,$GLOBALS[lodelsitetables],$tmpdir."/".$outfile);
 
   # verifie que le fichier n'est pas vide
   if (filesize($tmpdir."/".$outfile)<=0) die ("ERROR: mysql_dump failed");
