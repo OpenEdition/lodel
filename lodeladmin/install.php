@@ -197,7 +197,7 @@ if ($tache=="database") {
     @mysql_select_db($database); // selectionne la database
 
     // erase the table of each site
-    $result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites") or die (mysql_error());
+    $result=mysql_query("SELECT name FROM $GLOBALS[tableprefix]sites") or die (mysql_error());
 
     if ($singledatabase) {
       // currently singledatabase implies single site ! That's shame but...
@@ -261,12 +261,13 @@ if ($tache=="admin") {
     $adminusername=addslashes($adminusername);
     $pass=md5($adminpasswd.$adminusername);
 
-    if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,nom,courriel,privilege) VALUES ('$adminusername','$pass','','',128)")) {
+    if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,name,email,userrights) VALUES ('$adminusername','$pass','','',128)")) {
       $erreur_create=1;
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
       return;
     }
     // log this user in 
+    require_once(LODELROOT.$home."connect.php");
     require(LODELROOT.$home."loginfunc.php");
     $site="";
 #    echo $adminusername," ",$pass;

@@ -36,48 +36,48 @@
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="versionrep" value="[#VERSIONREP]">
-<input type="hidden" name="tache" value="createrep">
+<input type="hidden" name="versiondir" value="[#VERSIONDIR]">
+<input type="hidden" name="task" value="createdir">
 
 
-<IF COND="[#ERREUR_TPLACCESS]">
+<IF COND="[#ERROR_TPLACCESS]">
 <p><strong>[@LODELADMIN.LODEL_CANT_CREATE_IN_TPL_DIRECTORY].</strong></p>
 <p>[@LODELADMIN.HOWTO_WRITING_RIGHTS_IN_TPL_DIRECTORY].</strong></p>
 <input type="submit" value="[@COMMON.CONTINUE]">
 <ELSE/>
 
 <IF COND="[#INSTALLOPTION]=='1'">
-<IF COND="[#ERREUR_MKDIR]">  <!--[ probleme de creation ]-->
-<p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#CHEMIN]".</strong></p>
+<IF COND="[#ERROR_MKDIR]">  <!--[ probleme de creation ]-->
+<p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#PATH]".</strong></p>
 [@LODELADMIN.ACESS_PROBLEM_SO_YOU_CAN] :
 <ul>
 <li>[@LODELADMIN.GIVE_WRITING_RIGHTS_ROOT_DIRECTORY]</li>
-<li>[@LODELADMIN.CREATE_DIRECTORY_AND_GIVE_WRITING_RIGHTS_FOR_THIS_DIRECTORY[sprintf("[#CHEMIN]")]</li>
+<li>[@LODELADMIN.CREATE_DIRECTORY_AND_GIVE_WRITING_RIGHTS_FOR_THIS_DIRECTORY|sprintf([#PATH])]</li>
 </ul>
 <p>[@LODELADMIN.WARNING_SECURITY_PROBLEM].</p>
 <ELSE/> <!--[ probleme d'acces uniquement ]-->
-<p><strong>[@LODELADMIN.LODEL_DONT_ACCESS_TO_DIRECTORY] "[#CHEMIN]".</strong></p>
+<p><strong>[@LODELADMIN.LODEL_DONT_ACCESS_TO_DIRECTORY] "[#PATH]".</strong></p>
 <p>[@LODELADMIN.YOU_MUST_GIVE_WRITING_RIGHTS_TO_SERVER_ON_THIS_DIRECTORY].</p>
 <p>[@LODELADMIN.WARNING_SECURITY_PROBLEM].</p>
 </IF>
-<IF COND="[#ERREUR_TPLACCESS]">
+<IF COND="[#ERROR_TPLACCESS]">
 <p><strong>[@LODELADMIN.LODEL_CANT_WRITE_IN_TPL_DIRECTORY]<strong></p>
 <p>[@LODELADMIN.GIVE_WRITING_RIGHTS_TO_SERVER_ON_THIS_DIRECTORY].</p>
 </IF>
 <input type="submit" value="continuer">
 <ELSE/>
-<IF COND="[#ERREUR_MKDIR]">
-<p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#CHEMIN]".</strong></p>
+<IF COND="[#ERROR_MKDIR]">
+<p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#PATH]".</strong></p>
 </IF>
-<IF COND="[#ERREUR_NONEXISTS]">
-<p><strong>[@LODELADMIN.DIRECTORY_DONT_EXIST|sprintf("[#CHEMIN]")].</strong></p>
+<IF COND="[#ERROR_NONEXISTS]">
+<p><strong>[@LODELADMIN.DIRECTORY_DONT_EXIST|sprintf([#PATH])].</strong></p>
 <ELSE/>
-<IF COND="[#ERREUR_NONACCESS]">
-<p><strong>[@LODELADMIN.DIRECTORY_NOT_AVAILABLE|sprintf("[#CHEMIN]")]].</strong></p>
+<IF COND="[#ERROR_NONACCESS]">
+<p><strong>[@LODELADMIN.DIRECTORY_NOT_AVAILABLE|sprintf([#PATH])]].</strong></p>
 </IF>
 </IF>
 
-<IF COND="[#CHEMIN]=='/'">
+<IF COND="[#PATH]=='/'">
 [@LODELADMIN.ADJUST_RIGHTS_FOR_SERVER_TO_ACCESS_AND_COPY_FILES_IN_WEBSITE].
 <ELSE/>
 
@@ -87,12 +87,12 @@ Il faut créer le repertoire, ajuster les droits pour que le serveur web y accède
 Vous avez plusieurs possibilités:
 <ul>
 <li>
-<IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
+<IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
 <p>lancer le commande suivante dans un shell à partir de la racine de Lodel:</p>
 <p><code>
 lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
 <ELSE/>
-<p>Créer le repertoire "[#CHEMIN]" à la racine de Lodel, donner l'accès en lecture au serveur web, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
+<p>Créer le repertoire "[#PATH]" à la racine de Lodel, donner l'accès en lecture au serveur web, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
 <p><code>
 ../lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
 </IF>
@@ -102,17 +102,17 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 <input type="submit" name="mano" value="[@COMMON.CONTINUE]">
 </li>
 
-<IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
+<IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
 <!--[ rien ]-->
 <ELSE/>
 <li>
-<p>Créer le repertoire "[#CHEMIN]" à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
+<p>Créer le repertoire "[#PATH]" à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
 <input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 </li>
 
 </IF>
 <li><p>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel (méthode peu sûr) et laisser faire Lodel.</p>
-<IF COND="[#CHEMIN]=='/'"> <!--[ a la racine ]-->
+<IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
 <input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 <ELSE/>
 <input type="submit" name="lodeldo" value="[@LODELADMIN.CREATE_DIRECTORY_INSTALL_FILES]">

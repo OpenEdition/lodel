@@ -39,27 +39,27 @@
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 <tr><td><b>[@LODELADMIN.TITLE_WEBSITE] :</b></td>
-<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
-	<IF COND="[#ERREUR_NOM]">
-		<td CLASS="erreur"><font color="Red">[@LODELADMIN.ERROR_NAME] !</font></td>
+<td><input size="30" type="text" name="title" value="[#TITLE]"></td>
+	<IF COND="[#ERROR_TITLE]">
+		<td CLASS="error"><font color="Red">[@LODELADMIN.ERROR_NAME] !</font></td>
 	</IF>
 </tr>
 <IF COND="[#ID]">
-<tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td><td>[#REP]</td></tr>
-<tr><td><b><IF COND="[#CHEMIN]=='/'">[@LODELADMIN.LODELROOT_WEBSITE]<ELSE/>[@LODELADMIN.WEBSITE_IN_DIRECTORY] [#CHEMIN]</IF></b></td>
+<tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td><td>[#DIR]</td></tr>
+<tr><td><b><IF COND="[#PATH]=='/'">[@LODELADMIN.LODELROOT_WEBSITE]<ELSE/>[@LODELADMIN.WEBSITE_IN_DIRECTORY] [#PATH]</IF></b></td>
 
 <ELSE/>
 <tr><td><b>[@LODELADMIN.NAME_WEBSITE] :</b><br />([@LODELADMIN.HOWTO_NAME_WEBSITE])</td>
 <td>
-<input size="30" type="text" name="rep" value="[#REP]"></td>
-	<IF COND="[#ERREUR_REP]">
-		<td CLASS="erreur"><font color="Red">[@LODELADMIN.ERROR_NAME_DIRECTORY]</font></td>
+<input size="30" type="text" name="name" value="[#NAME]"></td>
+	<IF COND="[#ERROR_NAME]">
+		<td CLASS="error"><font color="Red">[@LODELADMIN.ERROR_NAME_DIRECTORY]</font></td>
 	</IF>
 </tr>
-<LOOP NAME="siteatroot" TABLE="sites" WHERE="chemin='/' AND statut gt -64">
+<LOOP NAME="siteatroot" TABLE="sites" WHERE="path='/' AND status gt -64">
 <ALTERNATIVE>
 <tr><td><b>[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</b></td><td>
-<IF COND="[#REP] || [#NOM]"> <!--[ on est passe par la, c'est bon, il y a quelques choses dans ATROOT]-->
+<IF COND="[#NAME] || [#TITLE]"> <!--[ on est passe par la, c'est bon, il y a quelques choses dans ATROOT]-->
 <input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] >
 <ELSE/> <!--[ valeur par defaut ]-->
 <input size="30" type="checkbox" name="atroot" checked >
@@ -75,12 +75,12 @@
 <td><input size="30" type="text" name="url" value="[#URL]"></td>
 </tr>
 <tr><td><b>[@LODELADMIN.SUBTITLE_WEBSITE] :</b></td>
-<td><input size="30" type="text" name="soustitre" value="[#SOUSTITRE]"></td>
+<td><input size="30" type="text" name="subtitle" value="[#SUBTITLE]"></td>
 </td></tr>
 </table><br/>
 
 <IF COND="[#ID]">
-<input class="form" type="submit" value="[@COMMON.MODIFY]"> <input class="form" type="submit" name="reinstalle" value="[@LODELADMIN.REINSTALL]">
+<input class="form" type="submit" value="[@COMMON.MODIFY]"> <input class="form" type="submit" name="reinstall" value="[@LODELADMIN.REINSTALL]">
 <ELSE/>
 <input class="form" type="submit" value="[@COMMON.ADD]">
 </IF>

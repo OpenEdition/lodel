@@ -39,7 +39,7 @@
 <p>
 Voivi la liste des commandes qui ont produit des erreurs ainsi que les erreurs renvoyées par MySQL:</p>
 <ul>
-<LOOP NAME="erreurs_createtables">
+<LOOP NAME="errors_createtables">
 <li>[#COMMAND]: <font color="red">[#ERROR]</font></li>
 </LOOP>
 </ul>
@@ -49,8 +49,8 @@ Voivi la liste des commandes qui ont produit des erreurs ainsi que les erreurs r
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="tache" value="createtables">
-<input type="hidden" name="versionrep" value="[#VERSIONREP]">
+<input type="hidden" name="task" value="createtables">
+<input type="hidden" name="versiondir" value="[#VERSIONDIR]">
 <input type="submit" value="continuer">
 </form>
 

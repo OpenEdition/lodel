@@ -36,12 +36,12 @@
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="tache" value="createdb">
-<input type="hidden" name="versionrep" value="[#VERSIONREP]">
+<input type="hidden" name="task" value="createdb">
+<input type="hidden" name="versiondir" value="[#VERSIONDIR]">
 
 <IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
 <p><b>[@LODELADMIN.LODEL_DONT_SUCCESS_CREATE_DATABASE] [#DBNAME]</b></p>
-<p>[@LODELADMIN.ERROR_MYSQL] : [#ERREUR].</p>
+<p>[@LODELADMIN.ERROR_MYSQL] : [#ERROR].</p>
 
 <ul>
 <li>[@LODELADMIN.HOWTO_PARAMETERS_MYSQL_CREATE_DATABASE|sprintf("[#DBUSERNAME]")].</li>
@@ -61,9 +61,9 @@
 <ELSE/> <!--[ OPTION2 ]-->
 
 
-<IF COND="[#ERREUR]">
+<IF COND="[#ERROR]">
 <p><b>[@LODELADMIN.LODEL_DONT_SUCCESS_CREATE_DATABASE_AND_GIVE_RIGHTS_MYSQL_USER|sprintf("[#DBNAME]")] [#DBUSERNAME]@[#DBHOST]</b></p>
-<p>[@LODELADMIN.ERROR_MYSQL] : [#ERREUR].</p>
+<p>[@LODELADMIN.ERROR_MYSQL] : [#ERROR].</p>
 </IF>
 [@LODELADMIN.TWO_POSSIBILITIES] :
 <ul>

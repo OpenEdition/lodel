@@ -31,17 +31,17 @@
 
 <table width="75%" border="1" align="center" cellspacing="0" cellpadding="6" bordercolor="gray">
 <tr><td><b>Nom</b></td><td> <div align="center"><img src="images/KDE_txt.gif" width="32" height="32"></div></td><td> <div align="center"><img src="images/coplanddetruire.gif" width="32" height="32"></div></td></tr>
-<LOOP NAME="sites" TABLE="sites" ORDER="nom" WHERE="ok">
+<LOOP NAME="sites" TABLE="sites" ORDER="title" WHERE="status gt 0">
   <IF COND="[#COUNT] % 2"><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
-<td align="center"><a href="[#URL]">[(#NOM|nbsp)]</a></td>
+<td align="center"><a href="[#URL]">[(#TITLE|nbsp)]</a></td>
 <td align="center"><a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a></td>
 <td align="center"><a href="site.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a></td>
-<td align="center"><IF COND="[#STATUT] ge 32"><a href="locksite.php?id=[#ID]&unlock=1">[@LODELADMIN.UNLOCKED]</a><ELSE/><a href="locksite.php?id=[#ID]&lock=1">[@LODELADMIN.LOCKED]</a></IF></td>
+<td align="center"><IF COND="[#STATUS] ge 32"><a href="locksite.php?id=[#ID]&unlock=1">[@LODELADMIN.UNLOCKED]</a><ELSE/><a href="locksite.php?id=[#ID]&lock=1">[@LODELADMIN.LOCKED]</a></IF></td>
 </tr>
 </LOOP>
 </table>
 
-<LOOP NAME="sites_ol" TABLE="sites" ORDER="nom" WHERE="trash">
+<LOOP NAME="sites_ol" TABLE="sites" ORDER="title" WHERE="status lt 0">
 <BEFORE>
 <br />
 <table width="75%" border="1" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
@@ -55,7 +55,7 @@
 </BEFORE>
 
 <IF COND="[#COUNT] % 2"><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
-    <td><font color="navy"><b>[#NOM]</b></font></td>
+    <td><font color="navy"><b>[#TITLE]</b></font></td>
 <td><a href="site.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a></td>
 </tr>
 <AFTER></table></AFTER>

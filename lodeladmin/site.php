@@ -37,8 +37,8 @@ require_once ($home."func.php");
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
 $critere="id='$id'";
-$context[installoption]=intval($installoption);
-$context[version]="0.7";
+$context['installoption']=intval($installoption);
+$context['version']="0.8";
 
 //
 // supression et restauration
@@ -55,61 +55,61 @@ if ($id>0 && ($delete || $restore)) {
 if ($edit || $maindefault) { // modifie ou ajoute
   extract_post();
   if ($maindefault) { // site par defaut ?
-    $context['nom']="Site principal";
-    $context['rep']="principal";
+    $context['title']="Site principal";
+    $context['name']="principal";
     $context['atroot']=true;
   }
   // validation
 
   do {
-    if (!$context[nom]) { $context[erreur_nom]=$err=1; }
-    if (!$id && (!$context[rep] || preg_match("/\W/",$context[rep]))) { $context[erreur_rep]=$err=1; }
+    if (!$context['title']) { $context[error_title]=$err=1; }
+    if (!$id && (!$context['name'] || preg_match("/\W/",$context['name']))) { $context['error_name']=$err=1; }
     if ($err) break;
     require_once ($home."connect.php");
 
 
     // verifie qu'on a qu'un site si on est en singledatabase
     if (!$id && $singledatabase=="on") {
-      $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE statut>-64") or die (mysql_error());
+      $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE status>-32") or die (mysql_error());
       list($numsite)=mysql_fetch_row($result);
       if ($numsite>=1) {
 	die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données. Il faut utiliser plusieurs bases de donnée ou attendre la prochaine version.<br /> Merci de votre comprehension.");
       }
     }
-    // lit les informations options, statut, etc... si le site existe deja
+    // lit les informations options, status, etc... si le site existe deja
     if ($id) {
-      $result=mysql_query ("SELECT statut,rep,chemin FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
-      list($statut,$rep,$context[chemin])=mysql_fetch_row($result);
-      $context[rep]=$rep;
+      $result=mysql_query ("SELECT status,name,path FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
+      list($status,$name,$context['path'])=mysql_fetch_row($result);
+      $context['name']=$name;
     } else {
-      $options=""; $statut=-32; // -32 signifie en creation
-      if ($context[atroot]) $context[chemin]="/";
-      if (!$context[chemin]) $context[chemin]="/".$context[rep];
+      $options=""; $status=-32; // -32 signifie en creation
+      if ($context[atroot]) $context['path']="/";
+      if (!$context['path']) $context['path']="/".$context['name'];
     }
     if (!$context[url]) {
-      $context[url]="http://".$_SERVER['SERVER_NAME'].preg_replace("/\blodeladmin\/.*/","",$_SERVER['REQUEST_URI']).substr($context[chemin],1);
+      $context[url]="http://".$_SERVER['SERVER_NAME'].preg_replace("/\blodeladmin\/.*/","",$_SERVER['REQUEST_URI']).substr($context['path'],1);
     }
 
-    if ($reinstalle) $statut=-32;
+    if ($reinstall) $status=-32;
 
     //suppression de l'eventuel / a la fin de l'url
     $context[url]=preg_replace("/\/$/","",$context[url]);
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,chemin,url,soustitre,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[chemin]','$context[url]','$context[soustitre]','$statut')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
-    if ($statut>-32) back(); // on revient, le site n'est pas en creation
+    if ($status>-32) back(); // on revient, le site n'est pas en creation
 
-    #if ($id && $oldrep!=$newrep) {
-    #  $tache="";
+    #if ($id && $oldname!=$newname) {
+    #  $task="";
     #}
     if (!$id) $context[id]=$id=mysql_insert_id();
-    $tache="version";
+    $task="version";
   } while (0);
 }
 
 if ($id>0) {
   require_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (statut>0 || statut=-32)") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
@@ -117,8 +117,8 @@ if ($id>0) {
 // regexp pour reconnaitre un repertoire de version
 $lodelhomere="/^lodel(-[\w.]+)$/";
 
-if ($tache=="version") {
-  // on verifie que versionrep match bien un repertoire local pour eviter un hack.
+if ($task=="version") {
+  // on verifie que versiondir match bien un repertoire local pour eviter un hack.
   // on verifie en meme temps qu'il est bien defini, ce qui correspond quand meme 
   // a la plupart des cas.
 
@@ -144,21 +144,21 @@ if ($tache=="version") {
       }
       return $versions;
     }
-  if  (!$versionrep) {
+  if  (!$versiondir) {
     $versions=cherche_version();	  
     // ok, maintenant on connait les versions
-    $context[countversions]=count($versions);
-    if ($context[countversions]==1) {// ok, une seule version, on la choisit
-      list($versionrep)=array_keys($versions);
-    } elseif ($context[countversions]==0) { // aie, aucune version on crach
+    $context['countversions']=count($versions);
+    if ($context['countversions']==1) {// ok, une seule version, on la choisit
+      list($versiondir)=array_keys($versions);
+    } elseif ($context['countversions']==0) { // aie, aucune version on crach
       die ("Verifiez le package que vous avez, il manque le repertoire lodel/src. L'installation ne peut etre poursuivie !");
     } else { // il y en a plusieurs, faut choisir
-      $context[count]=count($versions);
+      $context['count']=count($versions);
       function makeselectversion()
       {
-	global $versionrep,$versions;
+	global $versiondir,$versions;
 	foreach ($versions as $dir=>$ver) {
-	  $selected=$versionrep==$dir ? " selected" : "";
+	  $selected=$versiondir==$dir ? " selected" : "";
 	  echo "<option value=\"$dir\"$selected>$dir  ($ver)</option>\n";
 	}
       }
@@ -167,21 +167,21 @@ if ($tache=="version") {
       return;	
     }
   }
-  $tache="createdb";
+  $task="createdb";
 }   // on connait le repertoire dans lequel est la "bonne" version de lodel/site
 
-if ($tache) {
-  if (!preg_match($lodelhomere,$versionrep)) die ("ERROR: versionrep");
-  $context[versionrep]=$versionrep;
+if ($task) {
+  if (!preg_match($lodelhomere,$versiondir)) die ("ERROR: versiondir");
+  $context['versiondir']=$versiondir;
 }
 
 
 //
 // creation de la DataBase si besoin
 //
-$context[dbname]=$singledatabase=="on" ? $database : $database."_".$context[rep];
-if ($tache=="createdb") {
-  if (!$context[rep]) die ("probleme interne");
+$context['dbname']=$singledatabase=="on" ? $database : $database."_".$context['name'];
+if ($task=="createdb") {
+  if (!$context['name']) die ("probleme interne");
   do { // bloc de controle
     if ($singledatabase=="on") break;
     // check if the database existe
@@ -190,73 +190,73 @@ if ($tache=="createdb") {
     $i = 0;
     $cnt = mysql_num_rows($db_list);
     while ($i < $cnt) {
-      if ($context[dbname]==mysql_db_name($db_list, $i)) break 2; // la database existe
+      if ($context['dbname']==mysql_db_name($db_list, $i)) break 2; // la database existe
       $i++;
     }
     // well, it does not exist, let's create it.
     //
-    $context[command1]="CREATE DATABASE $context[dbname]";
-    $context[command2]="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
+    $context['command1']="CREATE DATABASE $context[dbname]";
+    $context['command2']="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
     $pass=$dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : "";
 
     if ($installoption=="2" && !$lodeldo) {
-      $context[dbusername]=$dbusername;
-      $context[dbhost]=$dbhost;
+      $context['dbusername']=$dbusername;
+      $context['dbhost']=$dbhost;
       require ($home."calcul-page.php");
       calcul_page($context,"site-createdb");
       return;
     }
-    if (!@mysql_query($context[command1]) ||
-	!@mysql_query($context[command2].$pass)) {
-      $context[erreur]=mysql_error();
-      $context[dbusername]=$dbusername;
-      $context[dbhost]=$dbhost;
+    if (!@mysql_query($context['command1']) ||
+	!@mysql_query($context['command2'].$pass)) {
+      $context['error']=mysql_error();
+      $context['dbusername']=$dbusername;
+      $context['dbhost']=$dbhost;
       require ($home."calcul-page.php");
       calcul_page($context,"site-createdb");
       return;
     }
   } while (0);
-  $tache="createtables";
+  $task="createtables";
 }
 //
 // creation des tables des sites
 //
 
-if ($tache=="createtables") {
-  if (!$context[rep]) die ("probleme interne");
+if ($task=="createtables") {
+  if (!$context['name']) die ("probleme interne");
   require_once ($home."connect.php");
   
   mysql_select_db($context['dbname']);
 
-  if (!file_exists(LODELROOT."$versionrep/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
-  $text=join('',file(LODELROOT."$versionrep/install/init-site.sql"));
+  if (!file_exists(LODELROOT."$versiondir/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
+  $text=join('',file(LODELROOT."$versiondir/install/init-site.sql"));
 
   $text.="\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
-  $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('signalermail','s','inactif','32','1');\n"; 
+  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
+  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoousername','s','$servoousername','32','1');\n";
+  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
+  $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('signalermail','s','inactif','32','1');\n"; 
 
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
   $sqlcmds=preg_split ("/;\s*\n/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sqlcmds) die("le fichier init-site.sql ne contient pas de commande. Probleme!");
 
-  $erreur=array();
+  $error=array();
   foreach ($sqlcmds as $cmd) {
     $cmd=trim($cmd);
-    if ($cmd && !@mysql_query($cmd)) array_push($erreur,$cmd,mysql_error());
+    if ($cmd && !@mysql_query($cmd)) array_push($error,$cmd,mysql_error());
   }
-  if ($erreur) {
-    $context[erreur_createtables]=$erreur;
-    function loop_erreurs_createtables(&$context,$funcname)
+  if ($error) {
+    $context['error_createtables']=$error;
+    function loop_errors_createtables(&$context,$funcname)
     {
-      $erreur=$context[erreur_createtables];
+      $error=$context['error_createtables'];
       do {
-	$localcontext[command]=array_shift($erreur);
-	$localcontext[error]=array_shift($erreur);
+	$localcontext['command']=array_shift($error);
+	$localcontext['error']=array_shift($error);
 	call_user_func("code_do_$funcname",array_merge($context,$localcontext));
-      } while ($erreur);
+      } while ($error);
     }
     require ($home."calcul-page.php");
     calcul_page($context,"site-createtables");
@@ -265,81 +265,81 @@ if ($tache=="createtables") {
 
 #  // ajoute le modele editorial
 #  // on le cherche d'abord.
-#  $fichier=LODELROOT."$versionrep/install/plateform/model-default.sql";
+#  $fichier=LODELROOT."$versiondir/install/plateform/model-default.sql";
 #  #echo $fichier," ",file_exists($fichier);
 #  #die("");
 #  if (file_exists($fichier)) {
 #    $import=true;
 #    // verifie qu'on peut importer le modele.
 #    foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
-#      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+#      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE status>-64 LIMIT 0,1") or die(mysql_error());
 #      if (mysql_num_rows($result)) { $import=false; break; } 
 #    }
 #
 #    if ($import) {
 #      require_once ($home."backupfunc.php");
 #      // execute the editorial model
-#      if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
+#      if (!execute_dump($fichier)) $context[error_execute_dump]=$err=mysql_error();
 #      // change the id in order there are minimal and unique
 #      require_once($home."objetfunc.php");
 #      makeobjetstable();
 #    }
 #  }
 
-  $tache="createrep";
+  $task="createdir";
 }
 
 //
 // Creer le repertoire principale de la site
 //
 
-if ($tache=="createrep") {
-  if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  $dir=LODELROOT.$context[chemin];
+if ($task=="createdir") {
+  if (!$context['path']) $context['path']="/".$context['name'];
+  $dir=LODELROOT.$context['path'];
   if (!file_exists($dir) || !@opendir($dir)) {
     // il faut creer le repertoire rep
     if ($installoption=="2" && !$lodeldo) {
       if ($mano) {
-	$context[erreur_nonexists]=!file_exists($dir);
-	$context[erreur_nonaccess]=!@opendir($dir);
+	$context['error_nonexists']=!file_exists($dir);
+	$context['error_nonaccess']=!@opendir($dir);
       }
       require ($home."calcul-page.php");
-      calcul_page($context,"site-createrep");
+      calcul_page($context,"site-createdir");
       return;
     }
     // on essaie
     if (!file_exists($dir) && !@mkdir($dir,0777 & octdec($filemask))) {
       // on y arrive pas... pas les droits surement
-      $context[erreur_mkdir]=1;
+      $context[error_mkdir]=1;
       require ($home."calcul-page.php");
-      calcul_page($context,"site-createrep");
+      calcul_page($context,"site-createdir");
       return;
     }
     @chmod($dir,0777 & octdec($filemask));
   }
   // on essaie d'ecrire dans tpl si root
-  if ($context[chemin]=="/") {
-    if (!writefile(LODELROOT."tpl/testecriture","")) {
-      $context[erreur_tplaccess]=1;
+  if ($context['path']=="/") {
+    if (!@writefile(LODELROOT."tpl/testecriture","")) {
+      $context['error_tplaccess']=1;
       require ($home."calcul-page.php");
-      calcul_page($context,"site-createrep");
+      calcul_page($context,"site-createdir");
       return;
     } else {
       unlink(LODELROOT."tpl/testecriture");
     }
     //
   }
-  $tache="fichier";
+  $task="file";
 }
 //
 // verifie la presence ou copie les fichiers necessaires
 // 
 // cherche dans le fichier install-file.dat les fichiers a copier
 
-if ($tache=="fichier") {
+if ($task=="file") {
   // on peut installer les fichiers
-  if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  $root=str_replace("//","/",LODELROOT.$context[chemin])."/";
+  if (!$context['path']) $context['path']="/".$context['name'];
+  $root=str_replace("//","/",LODELROOT.$context['path'])."/";
 
   $siteconfigcache="CACHE/siteconfig.php";
 
@@ -349,16 +349,16 @@ if ($tache=="fichier") {
   }
   if (file_exists($siteconfigcache)) unlink($siteconfigcache);
 
-  $atroot=$context[chemin]=="/" ? "root" : "";
-  if (!copy(LODELROOT."$versionrep/src/siteconfig$atroot.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
-  maj_siteconfig($siteconfigcache,array("site"=>$context[rep]));
+  $atroot=$context['path']=="/" ? "root" : "";
+  if (!copy(LODELROOT."$versiondir/src/siteconfig$atroot.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
+  maj_siteconfig($siteconfigcache,array("site"=>$context['name']));
 
   $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
   if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache)!=file_get_contents($siteconfigdest)) {
     if ($installoption=="2" && !$lodeldo) {
       require ($home."calcul-page.php");
-      calcul_page($context,"site-fichier");
+      calcul_page($context,"site-file");
       return;
     }
     @unlink($siteconfigdest); // try to delete before copying.
@@ -366,41 +366,41 @@ if ($tache=="fichier") {
     if (!@copy($siteconfigcache,$siteconfigdest)) {
       $context[siteconfigsrc]=$siteconfigcache;
       $context[siteconfigdest]=$siteconfigdest;
-      $context[erreur_ecriture]=1;
+      $context[error_writing]=1;
       require ($home."calcul-page.php");
-      calcul_page($context,"site-fichier");
+      calcul_page($context,"site-file");
       return;	
     }
     @chmod ($siteconfigdest,0666 & octdec($GLOBALS['filemask']));
   }
   // ok siteconfig est copie.
-  if ($context[chemin]=="/") { // c'est un peu sale ca.
-    install_fichier($root,"$versionrep/src","");
+  if ($context['path']=="/") { // c'est un peu sale ca.
+    install_file($root,"$versiondir/src","");
   } else {
-    install_fichier($root,"../$versionrep/src",LODELROOT);
+    install_file($root,"../$versiondir/src",LODELROOT);
   }
 
   // clear the CACHEs
   require_once($home."cachefunc.php");
   removefilesincache(LODELROOT,$root,$root."lodel/edition",$root."lodel/admin");
 
-  // ok on a fini, on change le statut du site
+  // ok on a fini, on change le status du site
   mysql_select_db($GLOBALS[database]);
-  mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
+  mysql_query ("UPDATE $GLOBALS[tp]sites SET status=1 WHERE id='$id'") or die (mysql_error());
 
 
   // ajouter le modele editorial ?
   if ($GLOBALS[singledatabase]!="on") {
-    mysql_select_db($GLOBALS['database']."_".$context['rep']);
+    mysql_select_db($GLOBALS['database']."_".$context['dir']);
   }
   $import=true;
   // verifie qu'on peut importer le modele.
-  foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+  foreach(array("types","fields","persontypes","entrytypes") as $table) {
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE status>-64 LIMIT 0,1") or die(mysql_error());
     if (mysql_num_rows($result)) { $import=false; break; } 
   }
 
-  if (!$context['chemin']) $context['chemin']="/".$context['rep'];
+  if (!$context['path']) $context['path']="/".$context['rep'];
   if ($import) {
     header("location: ".$context['url']."/lodel/admin/importmodel.php?frominstall=1");
   } else {
@@ -415,13 +415,13 @@ if ($tache=="fichier") {
 }
 
 // post-traitement
-posttraitement ($context);
+postprocessing ($context);
 
 require ($home."calcul-page.php");
 calcul_page($context,"site");
 
 
-function install_fichier($root,$homesite,$homelodel)
+function install_file($root,$homesite,$homelodel)
 
 {
   global $extensionscripts,$usesymlink;

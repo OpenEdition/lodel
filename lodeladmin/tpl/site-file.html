@@ -36,8 +36,8 @@
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="tache" value="fichier">
-<input type="hidden" name="versionrep" value="[#VERSIONREP]">
+<input type="hidden" name="task" value="file">
+<input type="hidden" name="versiondir" value="[#VERSIONDIR]">
 
 <table width="800" cellpadding="5" cellspacing="0" border="1" align="center"><tr><td>
 
@@ -49,10 +49,10 @@
 
 Il faut installer le fichier siteconfig.php. Vous avez le choix entre les deux alternatives:
 <ul>
-<li>soit télécharger le fichier siteconfig.php, le copier dans le repertoire <IF COND="[#CHEMIN]=='/'">racine de Lodel<ELSE/>[(#CHEMIN|substr(1))]</IF> et donnée les droits de lecture au serveur. Poursuivre quand l'opération est réalisée.<br />
+<li>soit télécharger le fichier siteconfig.php, le copier dans le repertoire <IF COND="[#PATH]=='/'">racine de Lodel<ELSE/>[(#PATH|substr(1))]</IF> et donnée les droits de lecture au serveur. Poursuivre quand l'opération est réalisée.<br />
 <input type="submit" name="downloadsiteconfig" value="Télécharger"><input type="submit" value="continuer">
 </li>
-<li>donner les droits d'écriture au serveur web sur le repertoire <IF COND="[#CHEMIN]=='/'">racine de Lodel<ELSE/>[(#CHEMIN|substr(1))]</IF> puis cliquer sur "continuer".<br />
+<li>donner les droits d'écriture au serveur web sur le repertoire <IF COND="[#PATH]=='/'">racine de Lodel<ELSE/>[(#PATH|substr(1))]</IF> puis cliquer sur "continuer".<br />
 <input type="submit" name="lodeldo" value="continuer">
 </li>
 </ul>
