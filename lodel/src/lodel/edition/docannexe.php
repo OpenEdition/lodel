@@ -78,12 +78,12 @@ if ($edit) { // modifie ou ajoute
   if (!mysql_num_rows($result)) die ("type '$type' inconnu (1)");
   list($type)=mysql_fetch_row($result);
 
-
+  $docfile=$_FILES['docfile'];
   if ($type=="documentannexe-lienfichier") {
     // charge le fichier si necessaire
-      if ($docfile && $docfile!="none") {
+      if ($docfile && $docfile['tmp_name']) {
 	if ($id>0) { // we know the document id, we can copy it.
-	  $lien=save_annex_file($id,$docfile,$docfile_name);
+	  $lien=save_annex_file($id,$docfile['tmp_name'],$docfile['name']);
 	} else {
 	  $lien="temporaire";
 	}
@@ -145,8 +145,8 @@ if ($edit) { // modifie ou ajoute
     // New document, now we know the id, let's copy the uploaded file.
     if (!$id && $newid &&
 	$type=="documentannexe-lienfichier" &&
-	$docfile && $docfile!="none") { // we know the document id, we can copie it.
-      $lien=save_annex_file($newid,$docfile,$docfile_name);
+	$docfile['tmp_name']) { // we know the document id, we can copie it.
+      $lien=save_annex_file($newid,$docfile['tmp_name'],$docfile['name']);
       mysql_query("UPDATE $GLOBALS[tp]documents SET lien='$lien' WHERE identite=$newid");
     }
 
@@ -179,7 +179,7 @@ if (!$tplcreation) {
   if (!mysql_num_rows($result)) die ("type '$type' inconnu");
   list($tplcreation,$context[idtype],$context[type])=mysql_fetch_row($result);
 }
-echo $context[type];
+#echo $context[type];
 $context[id]=$id;
 
 
