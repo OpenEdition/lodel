@@ -91,7 +91,7 @@ class Entities_IndexLogic extends Logic
  	
  	//no fields to index --> return
  	if(!$vos_fields) 
- 		return ("_back");
+ 		return ("_ok");
  	
  	//foreach field to index, index the words
  	//first get the vo
@@ -149,7 +149,7 @@ class Entities_IndexLogic extends Logic
  		foreach($vos_index as $vo)
  		  $dao_index->save($vo,true); // force creation of items
  	}//end of foreach fields
- 	return "_back";
+ 	return "_ok";
  	
   }
  
@@ -180,6 +180,18 @@ class Entities_IndexLogic extends Logic
   	return "_back";
   }
   
+  /**
+   * rebuild the index
+   * 
+   */
+  function rebuildIndexAction(&$context,&$error)
+  {
+  	//index cleaning
+  	$dao = &getDAO("search_engine");
+  	$dao->deleteObjects("1");
+  	 
+  }
+  
   /** Private function
    *  Description : decode HTML entities, 
    */
@@ -191,14 +203,7 @@ class Entities_IndexLogic extends Logic
 	$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
     return $text;
   }
-  function _removeaccents($string){
- return strtr(
-  strtr($string,
-   'ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
-   'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
-  array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
-   'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
-}
+ 
 
 }//end of class
 

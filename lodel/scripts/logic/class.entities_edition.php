@@ -183,6 +183,7 @@ class Entities_EditionLogic extends GenericLogic {
    function editAction(&$context,&$error,$opt=false)
 
    {
+      
      if ($context['cancel']) return "_back";
      global $lodeluser,$home;
      $id=$context['id'];
@@ -208,16 +209,19 @@ class Entities_EditionLogic extends GenericLogic {
      // get the class 
      $daotype=&getDAO("types");
      $votype=$daotype->getById($context['idtype'],"class,creationstatus");
+     
      $class=$context['class']=$votype->class;
      if (!$class) die("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
 
      if (!$this->validateFields($context,$error)) {
+      
        // error.
        // if the entity is imported and will be checked
        // that's fine, let's continue, if not return an error
        if ($opt==FORCE) { $status=-64;  $ret="_error"; }
        if ($status>-64) return "_error";
      }
+      
      //lock_write($class,"objets","entity","relations",
      //"entity_personnes","personnes",
      //"entity_entrees","entrees","entrytypes","types");
@@ -277,9 +281,11 @@ class Entities_EditionLogic extends GenericLogic {
 
      if ($ret=="_error") return "_error";
 
-	//TO ADD HERE : INDEX THE ENTITY - Jean Lamy
-	
-	//END TO ADD	
+			//TO ADD HERE : INDEX THE ENTITY - Jean Lamy
+			require_once("class.entities_index.php");
+			$lo_entities_index = new Entities_IndexLogic();
+			$lo_entities_index->addIndexAction($context,$error);
+			//END TO ADD	
 	
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
        return "_location: ".SITEROOT.makeurlwithid($id);
