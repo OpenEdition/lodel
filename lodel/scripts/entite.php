@@ -35,6 +35,8 @@ if ($classe=="publications") {
 } else {
   $visualisationscript="document";
   $modificationscript="document";
+} else {
+  die("oups, pas de classe ?");
 }
 
 
@@ -42,6 +44,11 @@ if ($idtache) {
   // lit la tache en cours
   $tache=get_tache($idtache);
   $idtype=0;
+
+  if ($tache['massimport']) {
+    require($home."entitemass.php");
+    return;
+  }
 
 #  print_r($tache);
   // cherche le fichier a traiter
@@ -248,7 +255,7 @@ require ($home."calcul-page.php");
 calcul_page($context,$context[tplcreation]);
 
 
-function extract_files(&$context,$classe="documents")
+function extract_files(&$context,$classe)
 
 {
   global $home;

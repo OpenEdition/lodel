@@ -128,11 +128,6 @@ function parse_loop_extra(&$tables,
 
     if ($site) {
       ///////// CODE SPECIFIQUE -- gere les tables croisees
-      #if (in_array("$GLOBALS[tableprefix]taches",$tables) && in_array("$GLOBALS[tableprefix]publications",$tables)) $where.=" AND publication=r2r_publications.id";
-
-#      if (in_array("documents",$tables) && in_array("publications",$tables)) {
-#	$where.=" AND publication=$GLOBALS[tableprefix]publications.id";
-#      }
       //
       // les regexp ci-dessous sont insuffisantes, il faudrait tester que ce n'est pas dans une zone quotee de la clause where !!!!
       //
