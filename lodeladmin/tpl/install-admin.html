@@ -7,7 +7,7 @@ include("tpl/install-openhtml.html");
 
 <p align="center">[@INSTALL.CREATE_INITIAL_ADMIN_AND_CHOOSE_LOGIN_PASSWORD].</p>
 <p></p>
-<?php  if ($erreur_create) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CONNECT_SERVER_CHECK_ACCESS_INFORMATION_PARAMETERS|sprintf([#DBHOST])] : <?php  echo mysql_error(); } ?>
+<?php  if ($erreur_create) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CONNECT_SERVER_CHECK_ACCESS_INFORMATION_PARAMETERS|sprintf($dbhost)] : <?php  echo mysql_error(); } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="admin" />
@@ -18,6 +18,11 @@ include("tpl/install-openhtml.html");
 <label for="adminpasswd">[@INSTALL.CONFIRM_PASSWORD]:</label>
 <input type="password" size="20" name="adminpasswd" id="adminpasswd2" value="" />
 <?php  if ($erreur_confirm_passwd) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.THE_TWO_PASSWD_ARE_NOT_IDENTICAL] <?php } ?>
+<label for="lang">[@INSTALL.LANGUAGE]:</label>
+<select name="lang">
+<?php makeSelectLang(); ?>
+</select>
+
 <input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 

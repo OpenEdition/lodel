@@ -386,7 +386,6 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
   }
 
   $critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
-
   $logic=false;
   do {
     $arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");

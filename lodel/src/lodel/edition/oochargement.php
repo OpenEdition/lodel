@@ -71,6 +71,12 @@ if ($_POST['fileorigin']=="upload" && $_FILES['file1'] && $_FILES['file1']['tmp_
   $source="";
 }
 
+
+$client=new ServOO;
+
+if ($client->error_message) {
+  $context['noservoo']=true;
+} else
 if ($file1) {
   do {
     // verifie que la variable file1 n'a pas ete hackee
@@ -78,12 +84,6 @@ if ($file1) {
     @chmod($source,0666 & octdec($GLOBALS['filemask'])); 
 
     require_once("servoofunc.php");
-
-    $client=new ServOO;
-    if ($client->error_message) {
-      $context['error']="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
-      break;
-    }
 
     // get the extension...it's indicative only !
     preg_match("/\.(\w+)$/",$sourceoriginale,$result);
@@ -170,8 +170,8 @@ if ($file1) {
   } while (0); // exceptions
 }
 
-$context['url']="oochargement.php";
 
+$context['url']="oochargement.php";
 
 require("view.php");
 $view=&getView();

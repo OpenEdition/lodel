@@ -160,8 +160,6 @@ class EntitiesLogic extends Logic {
    }
 
 
-
-
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**

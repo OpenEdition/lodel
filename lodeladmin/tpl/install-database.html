@@ -49,7 +49,7 @@ CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { ec
 </code>
 </p>
 <p>
-[@INSTALL.ANYWAY_GIVE_RIGHTS_"ALL"_TO_DATABASE_USER] "<?php echo $dbusername; ?>":
+[@INSTALL.ANYWAY_GIVE_RIGHTS_ALL_TO_DATABASE_USER] "<?php echo $dbusername; ?>":
 <p>
 <p>
 <code>
@@ -69,7 +69,7 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 <?php } // fin OPTION 2 ?>
 
 
-<?php  if ($erreur_createdatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf([#DATABASE])] : <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_createdatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf($database)] : <?php  echo mysql_error(); ?> <?php } ?>
 
 <?php  if ($erreur_usedatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_USE_DATABASE_CHECK_DATABASEUSER_RIGHTS_ERROR_IS] : <?php  echo mysql_error(); ?> <?php } ?>
 

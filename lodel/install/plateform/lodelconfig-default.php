@@ -138,6 +138,7 @@ $htaccess="on";    #
 $filemask="0777";
 $usesymlink="";
 $installoption="";
+$installlang="fr";
 ############################################
 
 setlocale (LC_ALL,"fr_FR.UTF8");

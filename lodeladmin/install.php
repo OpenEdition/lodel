@@ -31,13 +31,13 @@
 // securise l'entree
 
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
-  if (!(@file("../lodelconfig.php"))) problem("reading_lodelconfig");
+  if (!(@file_get_contents("../lodelconfig.php"))) problem("reading_lodelconfig");
   require("lodelconfig.php");
   // le lodelconfig.php doit exister 
   // et permettre un acces a une DB valide... 
   // meme si on reconfigure une nouvelle DB ca doit marcher... 
 
-  if ($tache=="lodelconfig") $GLOBALS[REQUEST_URI].="?tache=lodelconfig";
+  if ($tache=="lodelconfig") $_SERVER['REQUEST_URI'].="?tache=lodelconfig";
 
   require("auth.php");
   // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
@@ -125,7 +125,7 @@ if ($tache=="plateform") {
       $chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
     }
     @chmod($lodelconfig,$chmod);
-    maj_lodelconfig(array("home"=>'$pathroot/lodel'.$versionsuffix.'/scripts/'));    
+    maj_lodelconfig(array("home"=>'$pathroot/lodel'.$versionsuffix.'/scripts/'));
   } else {
     die("ERROR: $lodelconfigplatform does not exist. Internal error, please report this bug.");
   }
@@ -154,6 +154,11 @@ if ($tache=="plateform") {
     $arr['filemask']=$GLOBALS['filemask'];
   } else {
     $arr['filemask']="0".decoct(guessfilemask());
+  }
+
+  if (preg_match("/^\w{2}(-\w{2})?$/",$_REQUEST['lang'])) {
+    // passed via the URL
+    $arr['installlang']=$installlang=$_REQUEST['lang'];
   }
 
   if ($installoption==1) {
@@ -244,7 +249,7 @@ if ($tache=="database") {
       @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
       if (!@mysql_query("CREATE DATABASE $createdatabase")) {
 	$erreur_createdatabase=1;
-	if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+	include_tpl("install-database.html");
 	return;
       }
     } else {
@@ -255,25 +260,27 @@ if ($tache=="database") {
 }
 
 if ($tache=="admin") {
+  @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
+
   if ($adminpasswd2 && $adminpasswd2!=$adminpasswd) {
     $erreur_confirm_passwd=true;
-    if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
+    include_tpl("install-admin.html");
     return;
   }
-  @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
+
   if (!$home) die("ERROR: \$home is not defined");
   @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
   @mysql_select_db($database); // selectionne la database
   $adminusername=addslashes($adminusername);
   $pass=md5($adminpasswd.$adminusername);
+  if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) die("ERROR: invalid lang");
 
-  if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,name,email,userrights) VALUES ('$adminusername','$pass','','',128)")) {
+  if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,name,email,userrights,lang) VALUES ('$adminusername','$pass','','',128,'$lang')")) {
     $erreur_create=1;
-    if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
+    include_tpl("install-admin.html");
     return;
   }
   // log this user in 
-  require_once("./lodel-0.8/scripts/connect.php");
   require_once("connect.php");
   require("loginfunc.php");
   $site="";
@@ -333,18 +340,18 @@ if ($tache=="options") {
 }
 
 
-if ($tache=="servoo") {
-  if ($noservoo) {
-    maj_lodelconfig(array("servoourl"=>"off",
-			  "servoousername"=>"",
-			  "servoopasswd"=>""));
-  } elseif (!$skip) {
-    maj_lodelconfig(array("servoourl"=>$newservoourl,
-			  "servoousername"=>$newservoousername,
-			  "servoopasswd"=>$newservoopasswd
-			  ));
-  }
-}
+//if ($tache=="servoo") {
+//  if ($noservoo) {
+//    maj_lodelconfig(array("servoourl"=>"off",
+//			  "servoousername"=>"",
+//			  "servoopasswd"=>""));
+//  } elseif (!$skip) {
+//    maj_lodelconfig(array("servoourl"=>$newservoourl,
+//			  "servoousername"=>$newservoousername,
+//			  "servoopasswd"=>$newservoopasswd
+//			  ));
+//  }
+//}
 
 
 if ($tache=="downloadlodelconfig") {
@@ -364,14 +371,15 @@ if ($tache=="downloadlodelconfig") {
 
 
 if ($tache=="showlodelconfig") {
-  if (!(@include ("tpl/install-showlodelconfig.html"))) problem_include ("install-showlodelconfig.html");
+  @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
+  include_tpl("install-showlodelconfig.html");
   return;
 }
 
 
 if (!$tache) {
   $installing=file_exists($lodelconfig); // has an install been started
-  if (!(@include ("tpl/install-bienvenue.html"))) problem_include ("install-bienvenue.html");
+  include_tpl("install-bienvenue.html");
   return;
 }
 
@@ -420,7 +428,7 @@ foreach(array("utf8_encode","mysql_connect") as $fct) {
   if (!function_exists($fct)) array_push($erreur[functions],$fct);
 }
 if ($erreur[functions]) {
-  if (!(include ("tpl/install-php.html"))) problem_include ("install-php.html");
+  include_tpl("install-php.html");
   return;
 }
 
@@ -435,7 +443,7 @@ if (file_exists($lodelconfig) && (@include($lodelconfig))) {
   // ok c'est bon...
 } else {
   // demander une plateforme pour l'install
-  if (!(@include ("tpl/install-plateform.html"))) problem_include ("install-plateform.html");
+  include_tpl("install-plateform.html");
   return;
 }
 
@@ -451,7 +459,7 @@ if ((@include("func.php"))!=568) { // on accede au fichier func.php
 #    $pathroot=@realpath(LODELROOT);
 #    if ($pathroot) $erreur_guess=1;
 #  }
-#  if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
+#  include_tpl("install-home.html");
 #  return;
   die ("ERROR: unable to access the ".$home."func.php file. Check the file exists and the rights and/or report the bug.");
 }
@@ -463,11 +471,11 @@ if ((@include("func.php"))!=568) { // on accede au fichier func.php
 
 
 if (!$dbusername && !$dbhost) {
-  if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
+  include_tpl("install-mysql.html");
   return;
 } elseif (!@mysql_connect($dbhost,$dbusername,$dbpasswd)) { // tente une connexion
-  $erreur_connect=1;
-  if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
+ $erreur_connect=1;
+    include_tpl("install-mysql.html");
   return;
 }
 
@@ -482,19 +490,19 @@ if (!$database) {
     // donc faut gerer autrement.
 
     //$erreur_connect=1;
-    //if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
+    //include_tpl("install-mysql.html");
     //return;
   } // ok, on a les databases, on demande la database principale
-  if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+  include_tpl("install-database.html");
   return;
 } 
 
-$sitesexistsrequest="SELECT id,statut FROM $GLOBALS[tableprefix]sites LIMIT 1";
+$sitesexistsrequest="SELECT id,status FROM $GLOBALS[tableprefix]sites LIMIT 1";
 
 if (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
   $erreur_usedatabase=1;
 
-  if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+  include_tpl("install-database.html");
   return;
 } elseif ($erasetables || !@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
   // non, alors on cree les tables
@@ -509,7 +517,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
 	$erreur_createtables.="<br /><br />La commande DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites n'a pas pu être executée. On ne peut vraiment rien faire !";
       }
     }
-    if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+    include_tpl("install-database.html");
     return;
   }
 
@@ -524,7 +532,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
 } elseif ($tache=="database") { // the table site already exists but we just have asked for which database... check what to do.
   // ask for erasing the table content or not.
   $erreur_tablesexist=1;
-    if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+    include_tpl("install-database.html");
     return;
 }
 
@@ -534,7 +542,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
 
 $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]users LIMIT 1") or die (mysql_error());
 if (!mysql_num_rows($result)) { // il faut demander la creation d'un admin
-      if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
+  include_tpl("install-admin.html");
   return;
 }
 
@@ -549,7 +557,7 @@ if ($htaccess!="non") {
     if (file_exists(LODELROOT.$dir) && !file_exists(LODELROOT.$dir."/.htaccess")) array_push($erreur_htaccess,$dir);
   }
   if ($erreur_htaccess) {
-    if (!(include("tpl/install-htaccess.html"))) problem_include("install-htaccess.html");
+    include_tpl("install-htaccess.html");
     return;
   }
 }
@@ -561,10 +569,10 @@ if ($installoption==1) {
 
 } elseif ($importdir && !testdirmode($importdir,5)) {
   $erreur_importdir=1;
-  if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
+    include_tpl("install-options.html");
   return;
 } elseif ($chooseoptions!="oui") {
-  if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
+	  include_tpl("install-options.html");
   return;
 }
 
@@ -572,38 +580,38 @@ if ($installoption==1) {
 // ServOO configuration
 //
 
-if ($servoourl!="off") {
-  // test la configuration
-
-  if ($servoourl && $servoousername && $servoopasswd) {
-    $cmds="VER;";
-
-    require("serveurfunc.php");
-    list($ret,$retvar)=upload($servoourl,
-			      array("username"=>$servoousername,
-				    "passwd"=>$servoopasswd,
-				    "commands"=>$cmds));
-#    print_r($ret);
-#    print_r($retvar);
-    if (strpos($ret,"SAY:")===0) {
-      // ok, it's all right.
-
-      #if (!$skip && $tache=="servoo") {
-      #  $message=substr($ret,4); // delete the SAY:
-      #  if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
-      #  return;
-      #}
-    } else {
-      $erreur_connect=$ret;
-      if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
-      return;
-    }
-  } else {
-    if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
-    return;
-  }
-}
-
+//if ($servoourl!="off") {
+//  // test la configuration
+//
+//  if ($servoourl && $servoousername && $servoopasswd) {
+//    $cmds="VER;";
+//
+//    require("serveurfunc.php");
+//    list($ret,$retvar)=upload($servoourl,
+//			      array("username"=>$servoousername,
+//				    "passwd"=>$servoopasswd,
+//				    "commands"=>$cmds));
+//#    print_r($ret);
+//#    print_r($retvar);
+//    if (strpos($ret,"SAY:")===0) {
+//      // ok, it's all right.
+//
+//      #if (!$skip && $tache=="servoo") {
+//      #  $message=substr($ret,4); // delete the SAY:
+//#  include_tpl("install-servoo.html");
+//      #  return;
+//      #}
+//    } else {
+//      $erreur_connect=$ret;
+//	include_tpl("install-servoo.html");
+//      return;
+//    }
+//  } else {
+//	    include_tpl("install-servoo.html");
+//    return;
+//  }
+//}
+//
 
 //
 // Vérifie maintenant que les lodelconfig sont les meme que celui qu'on vient de produire
@@ -618,7 +626,7 @@ $file="lodelconfig.php";
 $rootlodelconfig_exists=file_exists(LODELROOT.$file);
 if ($rootlodelconfig_exists && !is_readable(LODELROOT.$file)) {
   $erreur_exists_but_not_readable=1;
-  include ("tpl/install-lodelconfig.html");
+  include ("install-lodelconfig.html");
   return;
 }
 
@@ -629,7 +637,7 @@ if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // ar
   if (@copy($lodelconfig,LODELROOT.$file)) { // let copy
     @chmod(LODELROOT.$file,0666 & octdec($GLOBALS['filemask']));
   } else { // error
-    include ("tpl/install-lodelconfig.html");
+    include_tpl("install-lodelconfig.html");
     return;
   }  
 }
@@ -638,7 +646,7 @@ if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // ar
 if ($installoption==1) { // essaie de creer automatiquement le site
   header("location: site.php?maindefault=1");
 }
-if (!(@include("tpl/install-fin.html"))) problem_include("install-fin.html");
+ include_tpl("install-fin.html");
 
 
 /////////////////////////////////////////////////////////////////
@@ -746,6 +754,36 @@ function guessfilemask() {
 }
 
 
+function include_tpl($file)
+
+
+{
+  global $langcache,$installlang;
+  extract($GLOBALS,EXTR_SKIP);
+
+  if (!$installlang) $installlang="fr";
+  if (!$langcache) {
+    if (!(@include ("tpl/install-lang-$installlang.html"))) problem_include("tpl/install-lang-$installlang.html");
+  }
+  $text=@file_get_contents("tpl/".$file);
+  if ($text===false) problem_include("tpl/".$file);
+
+  $openphp='<'.'?php ';
+  $closephp=' ?'.'>';
+
+  // search for tags
+  $text=preg_replace(array("/\[@(\w+\.\w+)\]/",
+			   "/\[@(\w+\.\w+)\|sprintf\(([^\]\)]+)\)\]/"),
+		     
+		     array($openphp.'echo $langcache[$installlang][strtolower(\'\\1\')];'.$closephp,			   
+			   $openphp.'echo sprintf($langcache[$installlang][strtolower(\'\\1\')],\\2);'.$closephp),
+		     $text);
+
+  #echo $text;
+  echo eval($closephp.$text.$openphp);
+  exit();
+}
+
 
 function problem_include($filename)
 
@@ -759,6 +797,8 @@ Please check your directory  tpl and the file tpl/<?php echo $filename; ?> exist
 </body>
 </html>
 <?php
+      trigger_error("--",E_USER_ERROR);
+
   die();
 }
 
@@ -789,26 +829,26 @@ function testdirmode($dir,$mode)
 function problem($msg)
 
 {
-  global $langcache,$lang;
+  global $langcache,$installlang;
   $messages=array(
-		  "version"=>sprintf($langcache[$lang]['install.versionphp'],phpversion()),
+		  "version"=>sprintf($langcache[$installlang]['install.versionphp'],phpversion()),
   //'La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Version recommandée: php 4.3 ou supérieure',
 
-		  "reading_lodelconfig"=>$langcache[$lang]['install.reading_lodelconfig'].'<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
+		  "reading_lodelconfig"=>$langcache[$installlang]['install.reading_lodelconfig'].'<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
 		  //'Le fichier lodelconfig.php n\'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.,
 
-  "lodelconfig_but_no_database"=>$langcache[$lang]['install.lodelconfig_but_no_database'],
+  "lodelconfig_but_no_database"=>$langcache[$installlang]['install.lodelconfig_but_no_database'],
 		  //=>'Un fichier de configuration lodelconfig.php a été trouvé dans le répertoire principale de Lodel mais ce fichier ne permet pas actuellement d\'acceder à une base de donnée valide. Si vous souhaitez poursuivre l\'installation, veuillez effacer manuellement. Ensuite, veuillez cliquer sur le bouton "Recharger" de votre navigateur.</form>'
   );
 
 ?>
 <hmlt>
 <head>
-      <title><?php echo $langcache[$lang]['install.install_lodel']; ?></title>
+      <title><?php echo $langcache[$installlang]['install.install_lodel']; ?></title>
 </head>
 <body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
 
-<h1><?php echo $langcache[$lang]['install.install_lodel']; ?></h1>
+<h1><?php echo $langcache[$installlang]['install.install_lodel']; ?></h1>
 
 
 <p align="center">
@@ -828,11 +868,11 @@ function problem($msg)
 function probleme_droits_debut()
 
 {
-  global $langcache,$lang;
+  global $langcache,$installlang;
 ?>
-<h2><?php echo $langcache[$lang]['install.directories_access']; ?></h2>
+<h2><?php echo $langcache[$installlang]['install.directories_access']; ?></h2>
 <p align="center">
-   <strong><?php echo $langcache[$lang]['install.directories_access_speech']; ?></strong>
+   <strong><?php echo $langcache[$installlang]['install.directories_access_speech']; ?></strong>
 </p>
 <ul>
 <?php }
@@ -840,29 +880,45 @@ function probleme_droits_debut()
 function probleme_droits($file,$mode)
 
 {
-  global $langcache,$lang;
+  global $langcache,$installlang;
 
-  echo "<li>".$langcache[$lang]['install.directory'].": $file<br> ".$langcache[$lang]['install.required_rights'];//."droits requis: lecture, exécution"; 
-  if (($mode & 2) == 2) echo ", <u>".$langcache[$lang]['install.writing']."</u>";  // écriture
+  echo "<li>".$langcache[$installlang]['install.directory'].": $file<br> ".$langcache[$installlang]['install.required_rights'];//."droits requis: lecture, exécution"; 
+  if (($mode & 2) == 2) echo ", <u>".$langcache[$installlang]['install.writing']."</u>";  // écriture
  echo "</li>";
 }
 
 function probleme_droits_fin()
 
 {
-  global $installoption,$langcache,$lang;
+  global $installoption,$langcache,$installlang;
 ?>
 </ul>
 <p align="center">
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="droits">
 <input type="hidden" name="installoption" value="<?php echo $installoption; ?>">
+<input type="hidden" name="installlang" value="<?php echo $installlang; ?>">
 <input type="submit" value="continuer">
 </form>
 </p>
-<p><?php echo $langcache[$lang]['install.notice_security_directory_rights']; ?></p>
+<p><?php echo $langcache[$installlang]['install.notice_security_directory_rights']; ?></p>
 <?php
  }
+
+
+function makeSelectLang()
+
+{
+  global $db;
+  require_once("connect.php");
+  $result=$db->execute(lq("SELECT lang,title FROM #_MTP_translations WHERE status>0 AND textgroups='interface'")) or dberror();
+  $lang=$_REQUEST['lang'] ? $_REQUEST['lang'] : $GLOBALS['installlang'];
+  while(!$result->EOF) {
+    $selected=$lang==$result->fields['lang'] ? "selected=\"selected\"" : "";
+    echo '<option value="'.$result->fields['lang'].'" '.$selected.'>'.$result->fields['title'].'</option>';
+    $result->MoveNext();
+  }
+}
 
 ?>
 

@@ -84,7 +84,7 @@ class TextsLogic extends Logic {
 
    {
      global $db;
-     $result=$db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND name='".$name."' AND textgroup='".$textgroup."' AND #_TP_texts.lang is NULL")) or dberror();
+     $result=$db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND name='".$name."' AND textgroup='".$textgroup."' WHERE #_TP_texts.lang is NULL")) or dberror();
      $dao=$this->_getMainTableDAO();
 
      while (!$result->EOF) {

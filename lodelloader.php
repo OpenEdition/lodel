@@ -29,7 +29,12 @@
 
   /* Load and desarchive Lodel */
 
-$text=array(
+
+$lang="fr";
+
+switch($lang) {
+ case 'fr':
+   $text=array(
 ### open
 	    'open_title'=>"Chargement et installation de Lod<span class=\"or\">e</span>l",
 ### intro
@@ -88,7 +93,13 @@ $text=array(
 	    'error_archivedownload'=>"Le t&eacute;l&eacute;chargement du fichier %s n'a pas fonctionn&eacute;. L'erreur produite est: %s <br/>Si vous ne pouvez r&eacute;soudre cette erreur, veuillez t&eacute;l&eacute;charger l'archive Lodel et la poser sur le serveur dans le m&ecirc;me r&eacute;pertoire que ce script en la renomant \"lodel.zip\". Relancez ensuite ce script d'installation automatique."
 
 	    );
-
+   break;
+ case 'es' :
+   break;
+ case 'en':
+ default:
+   
+}
 
 
 if (file_exists("lodelconfig.php")) { msg_error($text['error_lodelconfig_exists']); }
@@ -214,8 +225,13 @@ function setchmod ($p_event,&$p_header) {
 //
 // lance sur l'installation
 //
-
-header("Location: lodeladmin-$version/install.php?option1=1&tache=plateform&filemask=".decoct($chmod));
+if (!$version) {
+  // hum problem...
+  // une 0.7 peut etre ?
+  header("Location: lodeladmin/install.php?option1=1&tache=plateform&filemask=".decoct($chmod));
+  die();
+}
+header("Location: lodeladmin-$version/install.php?option1=1&tache=plateform&la=$lang&filemask=".decoct($chmod));
 
 
 //

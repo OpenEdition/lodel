@@ -38,7 +38,7 @@ Controler::controler(array("entrytypes","persontypes",
 			   "translations","texts",
 			   "usergroups","users",
 			   "types","classes",
-			   "options","optiongroups","useroptiongroups",
+			   "options","optiongroups","useroptiongroups","servooconf",
 			   "internalstyles","characterstyles"));
 
 
