@@ -88,6 +88,7 @@ class TablefieldgroupsLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
+
     function _uniqueFields() {  return array(array("name","class"),);  }
    // end{uniquefields} automatic generation  //
 

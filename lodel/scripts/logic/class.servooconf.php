@@ -106,7 +106,15 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
     $dao=&getDAO("optiongroups");
     $vo=$dao->find("name='servoo'");
     $context['id']=$vo->id;
-  }
+
+#    if (!$context['id']) {
+#      // little hack... should be in the model anyway
+#      $db->execute(lq("INSERT INTO #_TP_optiongroups (name,title,logic,status,exportpolicy) VALUES ('servoo','Servoo','servooconf',1,1)")) or dberror();
+#      $context['id']=$db->Insert_ID();
+#
+#      $db->execute(lq("INSERT INTO #_TP_options (name,title,type,userrights,idgroup,status,rank) VALUES ('url','url','url',40,".$context['id'].",32,1),('username','username','tinytext',40,".$context['id'].",32,2),(3,1,'passwd','password','passwd',40,".$context['id'].",32,3)")) or dberror();
+#    }
+#  }
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {

@@ -187,6 +187,7 @@ class TypesLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
+
     function _uniqueFields() {  return array(array("type","class"),);  }
    // end{uniquefields} automatic generation  //
 

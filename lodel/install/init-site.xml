@@ -614,7 +614,7 @@
 <column name="passwd"
         type="VARCHAR"
         size="64"
-        label="[@COMMON.PASSWORD]"
+        label="[@COMMON.PASSWD]"
         edittype="passwd" />
 <column name="name"
         type="VARCHAR"

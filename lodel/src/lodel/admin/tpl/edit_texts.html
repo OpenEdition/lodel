@@ -42,7 +42,7 @@
 <input type="hidden" name="lo" value="texts">
 <fieldset>
   <legend>Table des minitextes</legend>
-  <input type="hidden" name="id" value="[#ID]" />
+  <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
@@ -63,14 +63,13 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="contents"></FUNC>
     </p>
   </LOOP>
-  <input type="hidden" name="name" value="[#NAME]" />
-  <input type="hidden" name="lang" value="[#LANG]" />
+  <input type="hidden" name="lang" value="[#LANG]">
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
     </p>
   </LOOP>
-  <input type="hidden" name="textgroup" value="[#TEXTGROUP]" />
+  <input type="hidden" name="textgroup" value="[#TEXTGROUP]">
   <LOOP NAME="fielderror" FIELD="textgroup">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="textgroup"></FUNC>
@@ -81,9 +80,9 @@
       </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked="checked" />
+    <input type="checkbox" name="protected" id="protected" checked>
     <ELSE/>
-    <input type="checkbox" name="protected" id="protected" />
+    <input type="checkbox" name="protected" id="protected">
   </IF>
   <br />
   <LOOP NAME="fielderror" FIELD="protected">

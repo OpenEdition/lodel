@@ -201,6 +201,7 @@ class ClassesLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
+
     function _uniqueFields() {  return array(array("class"),);  }
    // end{uniquefields} automatic generation  //
 
