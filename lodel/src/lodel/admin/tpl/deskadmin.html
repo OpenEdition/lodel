@@ -4,28 +4,39 @@
 	<tr bgcolor="#FFFFFF">
 		<td width="318" heigth="75"><MACRO NAME="PNG_LOGO_LODEL"></td>
 
-		<td width="203" heigth="75"><MACRO NAME="PNG_LOGO_LODEL_DROITE"></td>
+		<td width="431" align="left" heigth="75" background="[#SHAREURL]/images/logo_lodel_droite.png" style="background-repeat:no-repeat;">
+			<table align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="100%" heigth="75">&nbsp;</td>
+	
+					<td width="57" heigth="75"><a href="../edition/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"></a></td>
+			
+					<td width="57" heigth="75"><IF COND="[#ADMIN]"><a href="index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
+			
+					<td width="57" heigth="75"><a href="../../index.html" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"></a></td>
+			
+					<td width="57" heigth="75"><a href="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"></a></td>
+				</tr>
+			</table>
+		</td>
+		<td width="*" align="left" heigth="75">
+			<table width="100%" align="right" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="100%" heigth="75">&nbsp;</td>
 
-		<td width="57" heigth="75"><a href="../edition/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"></a></td>
-
-		<td width="57" heigth="75"><IF COND="[#ADMIN]"><a href="index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
-
-		<td width="57" heigth="75"><a href="../../index.html" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"></a></td>
-
-		<td width="57" heigth="75"><a href="http://lodeldemo.revues.org/lodeldoc/" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"></a></td>
-
-		<td width="*" heigth="75">&nbsp;</td>
-
-		<td width="64" heigth="75"><IF COND="[#EDITEUR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>
-
-		<td width="64" heigth="75"><IF COND="[#ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
-
-		<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"></a></td>
+					<td width="64" heigth="75"><IF COND="[#EDITEUR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>
+			
+					<td width="64" heigth="75"><IF COND="[#ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+			
+					<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"></a></td>
+				</tr>
+			</table>
+		</td>
 	</tr>
 </table>
 <table bgcolor="#FFFFFF" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="173" heigth="25"><MACRO NAME="PNG_LOGO_LODEL_BAS"></td>
+		<td width="173" heigth="25" valign="top"><MACRO NAME="PNG_LOGO_LODEL_BAS"></td>
 		
 		<td>
 			<IF COND="[#TEMPLATESRECOMPILES]">
