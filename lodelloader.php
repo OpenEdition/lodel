@@ -1786,7 +1786,7 @@ Bienvenue dans l'installation de <strong>LODEL</strong>, logiciel d'édition élec
   <li>la configuration de Lodel pour votre serveur.</li>
 </ul>
 
-<p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappelé ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
+<p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappelées ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
 
 
 <h2>Conditions d'utilisation de Lodel</h2>
@@ -1822,24 +1822,33 @@ function msg_chmod($chmod,$reducedchmod)
     $fileperm=($chmod2 & 0004 ? "r" : "-") .$fileperm;
     $dirperm=($chmod2 & 0004 ? "r" : "-") .$dirperm;
 
+    $perm[$i]=($chmod2 & 0004) ? "lecture" : "";
+    if ($chmod2 & 0002) {
+      if ($perm[$i]) $perm[$i].=" et ";
+      $perm[$i].="écriture";
+    }
+
     $chmod2=$chmod2 >> 3;
   }
 
 
-  echo "<p>Ce script a essayé de détecter les permissions à accorder sur les fichiers et les répertoires de Lodel. Les permissions détectées sont: $fileperm pour les fichiers et $dirperm pour les répertoires.</p>";
+  echo "<p>Ce script a détecté les permissions à accorder sur les fichiers et les répertoires de Lodel. Il propose les permissions suivantes:</p>\n<table border=\"1\" style=\"font-size: 90%;\"><tr><td>Utilisateur: $perm[0]</td><td>Groupe: $perm[1]</td><td>Autre: $perm[2]</td><tr></table>\n(en langage UNIX: $fileperm pour les fichiers et $dirperm pour les répertoires).";
 
-  if ($chmod & 0002) { echo "<p><b>Attention</b>: donner les droits d'écriture à \"tous\" peut sur certains serveurs être une serieuse faille de sécurité. Si vous avez des doutes veuillez demander conseil avant de poursuivre.</p>"; }
+  if ($chmod & 0002) { echo "<p><b>Attention</b>: donner les droits d'écriture à \"Autre\" peut, sur certains serveurs, être une serieuse faille de sécurité. Si vous avez des doutes veuillez demander conseil avant de poursuivre.</p>"; }
 
 
-  if ($reducedchmod) echo "<p>Les droits en écriture on été restreint car la configuration du serveur ne permet pas d'éxecuter les scripts PHP avec des droits en écriture souple (ce qui est une bonne chose pour la sécurité). Cependant, il est possible que vous ne puissiez plus écrire ou éffacer les fichiers dans votre repertoire. Il vous faudra utiliser un File Manager en PHP pour le faire.</p>";
+  if ($reducedchmod) echo "<p>Les droits en écriture ont été restreint car la configuration du serveur ne permet pas d'éxecuter les scripts PHP avec des droits en écriture souple (ce qui est une bonne chose pour la sécurité). Cependant, il est possible que vous ne puissiez plus écrire ou éffacer les fichiers dans votre repertoire. Il vous faudra utiliser un File Manager en PHP pour le faire.</p>";
 
 ?>
-<p>Si ces permissions conviennent veuillez cliquer sur continuer. Lodel va être télécharger ce qui peut prendre un certain temps. Merci de patienter</p>
+    <p>Si ces permissions conviennent veuillez cliquer sur continuer. L'archive Lodel va être téléchargée ce qui peut prendre un certain temps. Merci de patienter.</p>
 <form  method="post" action="lodelloader.php">
-<input type="hidden" name="chmod" value="<?php echo $chmod ?>">
+<input type="hidden" name="chmod" value="<?php echo $chmod; ?>">
 <input type="submit" name="install" value="Télécharger Lodel">
-
 </form>
+<p>Sinon, veuillez vous reportez à l'installation pour les experts et ne pas poursuivre cette installation.</p>
+
+
+
 <?php
   close_html();
   exit();
