@@ -178,15 +178,14 @@ return FALSE; }
 
    if ($GLOBALS[sortie]) die (htmlentities($file));
 
-    function img_copy($imgfile,$ext,$count) {
-      global $rand;
+    function img_copy($imgfile,$ext,$count,$rand) {
 
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
       copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
       return $newimgfile;
     }
     include_once ($home."func.php");
-    copy_images($file,"img_copy");
+    copy_images($file,"img_copy",$rand);
 
   // ecrit le fichier
     if (!writefile($newname,$file))      return FALSE;
