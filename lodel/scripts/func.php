@@ -280,30 +280,6 @@ function back()
 
 
 
-
-function export_prevnextpublication (&$context)
-
-{
-//
-// cherche le numero precedent et le suivant
-//
-
-// suivant
-
-  $querybase="SELECT id FROM $GLOBALS[tp]entites WHERE idparent='$context[idparent]' AND";
-  $result=mysql_query ("$querybase ordre>'$context[ordre]' ORDER BY ordre LIMIT 0,1") or die (mysql_error());
-  if (mysql_num_rows($result)) {
-    list($nextid)=mysql_fetch_row($result);
-    $context[nextpublication]=makeurlwithid("sommaire",$nextid);
-  }
-  // precedent:
-  $result=mysql_query ("$querybase ordre<'$context[ordre]' ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
-  if (mysql_num_rows($result)) {
-    list($previd)=mysql_fetch_row($result);
-    $context[prevpublication]=makeurlwithid("sommaire",$previd);
-  }
-}
-
 function translate_xmldata($data) 
 
 {

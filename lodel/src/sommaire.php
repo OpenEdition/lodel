@@ -70,10 +70,7 @@ if ($id) {
     return;
   }
 }
-//
-// cherche le numero precedent et le suivant
-//
-export_prevnextpublication (&$context);
+
 
 include ($home."cache.php");
 

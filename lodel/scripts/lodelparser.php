@@ -241,9 +241,11 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
   //
   // est-ce qu'on veut le prev et next publication ?
   //
-  if ($havepublications && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$content[$balise])) {
-    $content["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
-  }
+
+  // desactive le 10/03/04
+//  if ($havepublications && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$content[$balise])) {
+//    $content["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+//  }
   // les filtrages automatiques
   if ($havedocuments || $havepublications) {
     $options[fetch_assoc_func]='filtered_mysql_fetch_assoc($context,';

@@ -170,9 +170,8 @@ function loop_extrait_images($context,$funcname,$arguments)
 }
 
 
-/*
 
-function loop_previous ($context,$funcname,$arguments)
+function previousnext ($dir,$context,$funcname,$arguments)
 
 {
   if (!isset($arguments[id])) {
@@ -182,26 +181,64 @@ function loop_previous ($context,$funcname,$arguments)
 
   $id=intval($arguments[id]);
 //
-// cherche le document precedent
+// cherche le document precedent ou le suivante
 //
+  if ($dir=="previous") {
+    $sort="DESC";
+    $compare="<";
+  } else {
+    $sort="ASC";
+    $compare=">";
+  }
 
-  $querybase="SELECT $GLOBALS[tp]entites.id FROM $GLOBALS[tp]entites, $GLOBALS[tp]entites as entites2  WHERE entites2.id='$id' AND $GLOBALS[tp]entites.idparent=entites2.idparent AND $GLOBALS[tp]entites.statut>0 AND entites2.statut>0 AND";
-  // precedent:
-  $result=mysql_query ("$querybase $GLOBALS[tp]entites.ordre<entites2.ordre ORDER BY $GLOBALS[tp]entites.ordre DESC LIMIT 0,1") or die (mysql_error());
-  if (mysql_num_rows($result)) {
-    list($previd)=mysql_fetch_row($result);
+  $querybase="SELECT $GLOBALS[tp]entites.*,$GLOBALS[tp]types.type FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]entites as entites2  WHERE entites2.id='$id' AND $GLOBALS[tp]entites.idparent=entites2.idparent AND $GLOBALS[tp]entites.statut>0 AND entites2.statut>0 AND $GLOBALS[tp]entites.ordre".$compare."entites2.ordre ORDER BY $GLOBALS[tp]entites.ordre ".$sort." LIMIT 0,1";
 
-    $localcontext=$context;
-    $localcontext[id]=$previd;
+  do {
+    $result=mysql_query ("$querybase $extraquery") or die (mysql_error());
+    if (mysql_num_rows($result)) { // found
+      $localcontext=array_merge($context,mysql_fetch_assoc($result));
+      break;
+    }
 
+    if (!$arguments[through]) break;
+    $quotedtypes=join("','",explode(",",addslashes($arguments[through])));
+    if (!$quotedtypes) break;
+    // ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
+    // not found, well, we look for the next/previous parent above and it's first/last son.
+    $result=mysql_query ("SELECT e2.*,t2.type FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e0, $GLOBALS[tp]types as t2 WHERE id2='$id' AND e2.idtype=t2.id AND e0.id=$id AND degres=2 AND $GLOBALS[tp]entites.idparent=id1 AND $GLOBALS[tp]entites.statut>0 AND e2.statut>0 AND $GLOBALS[tp]types.type IN ('$quotedtypes') AND $GLOBALS[tp]entites.ordre".$compare."e0.ordre ORDER BY $GLOBALS[tp]entites.ordre ".$sort.", e2.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
+
+
+    echo "SELECT e2.*,t2.type FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e0, $GLOBALS[tp]types as t2 WHERE id2='$id' AND e2.idtype=t2.id AND e0.id=$id AND degres=2 AND $GLOBALS[tp]entites.idparent=id1 AND $GLOBALS[tp]entites.statut>0 AND e2.statut>0 AND $GLOBALS[tp]types.type IN ('$quotedtypes') AND $GLOBALS[tp]entites.ordre".$compare."e0.ordre ORDER BY $GLOBALS[tp]entites.ordre ".$sort.", e2.ordre ".$sort." LIMIT 0,1";
+
+    if (mysql_num_rows($result)) {
+      $localcontext=array_merge($context,mysql_fetch_assoc($result));
+      break;
+    }
+  } while (0);
+
+  if ($localcontext) {
     call_user_func("code_do_$funcname",$localcontext);
-
   } else {
     call_user_func("code_alter_$funcname",$context);
   }
+
+
 }
 
-*/
+
+
+function loop_previous ($context,$funcname,$arguments)
+
+{
+  previousnext("previous",$context,$funcname,$arguments);
+}
+
+function loop_next ($context,$funcname,$arguments)
+
+{
+  previousnext("next",$context,$funcname,$arguments);
+}
+
 
 
 ?>

@@ -57,6 +57,7 @@ if (!$context[tpl]) {
 $base=$context[tpl];
 
 
+/*
 //
 // cherche s'il y a des documents annexe et combien
 //
@@ -115,7 +116,7 @@ do {  // exception
 } while (0);
 
 if ($previd) $context[prevdocument]=makeurlwithid("document",$previd);
-
+*/
 // fin suivant et precedent
 
 
