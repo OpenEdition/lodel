@@ -311,7 +311,9 @@ function loop_rss ($context,$funcname,$arguments)
   }
 
   $localcontext['rssobject']=$rss;
+  if (function_exists("code_before_$funcname")) call_user_func("code_before_$funcname",$context);
   call_user_func("code_do_$funcname",$localcontext);
+  if (function_exists("code_after_$funcname")) call_user_func("code_after_$funcname",$context);
 }
 
 function loop_rssitem($context,$funcname,$arguments)
@@ -326,8 +328,22 @@ function loop_rssitem($context,$funcname,$arguments)
 
   // yes, there are, let's loop over them.
   if (function_exists("code_before_$funcname")) call_user_func("code_before_$funcname",$localcontext);
-  foreach ($context['rssobject']->items as $item) {
+
+  $items=$context['rssobject']->items;
+  $context['nbresultats']=count($items);
+  $count=0;
+  if ($arguments['limit']) {
+    list($start,$length)=preg_split("/\s*,\s*/",$arguments['limit']);
+  } else {
+    $start=0;
+    $length=count($context['rssobject']->items);
+  }
+
+  for($i=$start; $i<$start+$length; $i++) {
+    $item=$items[$i];
     $localcontext=$context;
+    $count++;
+    $localcontext['count']=$count;
     foreach (array("title","link","description","author","category","comments","enclosure","guid","pubDate","source")
 	     as $v) $localcontext[strtolower($v)]=$item[$v];
     call_user_func("code_do_$funcname",$localcontext);
