@@ -1,7 +1,7 @@
 <?
 
 
-include ("lodelconfig.php");
+require("lodelconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_SUPERADMIN);
 

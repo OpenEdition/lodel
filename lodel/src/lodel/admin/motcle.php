@@ -3,7 +3,7 @@
 // gere les mots cle permanent. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des periodes.
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 include_once ("$home/func.php");

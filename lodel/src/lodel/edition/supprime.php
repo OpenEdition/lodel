@@ -2,7 +2,7 @@
 
 // suppression de documents et de publication en assurant la coherence de la base
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 

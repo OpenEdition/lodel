@@ -3,7 +3,7 @@
 // gere les utilisateurs. L'acces est reserve au superadministrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-include_once ("lodelconfig.php");
+require_once("lodelconfig.php");
 include_once("$home/auth.php"); // secu
 if ($userpriv<LEVEL_ADMIN) return; // secu
 include_once ("$home/func.php");

@@ -1,6 +1,6 @@
 <?
 
-include_once ("lodelconfig.php");
+require_once("revueconfig.php");
 include_once ("$home/auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
 include_once ("$home/func.php");

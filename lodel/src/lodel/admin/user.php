@@ -3,7 +3,7 @@
 // gere les utilisateurs. L'acces est reserve au administrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 #include_once ("$home/func.php");

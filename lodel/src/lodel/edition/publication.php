@@ -3,7 +3,7 @@
 // gere les publications. L'acces est reserve aux administrateurs de la revue.
 // assure l'edition, la supression, la restauration des publications.
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include("$home/func.php");

@@ -3,27 +3,26 @@
 $pathroot="/path/to";
 
 
-# Emplacement des scripts
-# par exemple $home="/var/www/lodel/scripts";
-# ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
-$home="$pathroot/lodel/script";
-
-
-# Adresse de base du site
-$urlsite="http://mywebsite.domain.org";
-
 # Base du site
 # ATTENTION : $urlroot doit toujours se terminer par /, il ne peut etre vide
 $urlroot="/";
 
 
+# Emplacement des scripts
+# par exemple $home="/var/www/lodel/scripts";
+# cette variable est ecrasee dans revueconfig.php a partir de la version 0.5
+# elle pourra alors etre supprimee de ce script
+$home="$pathroot/lodel/script";
+
+
 # URL contenant les fichiers communs partagés
 # par exemple $shareurl="http://lodel.revues.org/share";
-# ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
-$shareurl="$urlsite$urlroot/share";
+# la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
+$shareurl="http://lodel.revues.org/share";
 
 # Repertoire contenant les fichiers communs partagés
 # par exemplre $sharedir="/var/www/lodel/share";
+# ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
 $sharedir="$pathroot/share";
 
 # Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite

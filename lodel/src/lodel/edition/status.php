@@ -3,7 +3,7 @@
 // change le status d'un document ou d'une publication
 
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ("$home/func.php");

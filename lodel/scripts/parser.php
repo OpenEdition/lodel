@@ -46,7 +46,7 @@ function parse ($in,$out)
   parse_texte($contents);
 
   $contents='<?
-include ("lodelconfig.php");include_once ("$home/connect.php");
+require("lodelconfig.php");include_once ("$home/connect.php");
 '.$fct.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
@@ -128,7 +128,7 @@ function parse_texte(&$text)
 
 {
   global $home,$editeur,$urlroot,$revue;
-  preg_match_all("/<TEXTE\s*NAME=\"([^\"]+)\"\s*>/i",$text,$results,PREG_SET_ORDER);
+  preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/i",$text,$results,PREG_SET_ORDER);
 #  print_r($results);
   foreach ($results as $result) {
     $nom=$result[1]; myquote($nom);
@@ -173,7 +173,7 @@ function parse_cond (&$text,$offset=0) {
 
 # cherche la condition
 
-    if (!preg_match("/^\s*(.*?)\s*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
+    if (!preg_match("/^[^>]*COND=\"([^\"]+)\"[^>]*>/i",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
 
     parse_variable($cond[1],FALSE);
     $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
@@ -270,10 +270,10 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
   global $revue,$boucles;
 
   // passe les boucles en majuscules !
-  $text=preg_replace("/<(\/?)boucle\b/","<\\1BOUCLE",$text);
+  $text=preg_replace("/<(\/?)loop\b/","<\\1LOOP",$text);
 
-  $tag_debut="<BOUCLE ";
-  $tag_fin="</BOUCLE>";
+  $tag_debut="<LOOP ";
+  $tag_fin="</LOOP>";
   $lendebut=strlen($tag_debut);
   $lenfin=strlen($tag_fin);
 
@@ -534,7 +534,8 @@ function decode_content ($content,$tables=array())
   $ret=array();
 
 # cherche s'il y a un avant
-  $balises=array("avant","apres","premier","dernier","corps");
+#  $balises=array("avant","apres","premier","dernier","corps");
+  $balises=array("before","after","first","last","corps");
   
   foreach ($balises as $balise) {
     if ((strpos($content,"<$balise>")!==FALSE || strpos($content,"<".strtoupper($balise).">")!==FALSE)) {
@@ -546,10 +547,10 @@ function decode_content ($content,$tables=array())
 
   // cherche s'il y a un sinon
   $ret[sinon]="";
-  $sinonpos=strpos($content,"<SINON/>"); // en majuscules
-  if ($sinonpos===FALSE) { $sinonpos=strpos($content,"<sinon/>"); } // ou en minuscules
+  $sinonpos=strpos($content,"<ALTERNATIVE/>"); // en majuscules
+  if ($sinonpos===FALSE) { $sinonpos=strpos($content,"<alternative/>"); } // ou en minuscules
   if (!($sinonpos===FALSE)) {
-    $ret[sinon]='<? else {?>'.substr($content,$sinonpos+strlen("<SINON/>")).'<?}?>'; // recupere le bloc sinon
+    $ret[sinon]='<? else {?>'.substr($content,$sinonpos+strlen("<ALTERNATIVE/>")).'<?}?>'; // recupere le bloc sinon
     $content=substr($content,0,$sinonpos); // recupere le bloc avant sinon
   }
   if ($ret[corps]) {
@@ -649,21 +650,21 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
  $nbrows=mysql_num_rows($result);
  $count=0;
  if ($row=mysql_fetch_assoc($result)) {
-?>'.$contents[avant].'<?
+?>'.$contents[before].'<?
     do {
       $context=array_merge ($generalcontext,$row);
       $context[count]=$count;
       $count++;';
   // gere le cas ou il y a un premier
-  if ($contents[premier]) {
-    $fct_txt.=' if ($count==1) { '.$contents[meta_premier].$contents[extract_premier].' ?>'.$contents[premier].'<? continue; }';
+  if ($contents[first]) {
+    $fct_txt.=' if ($count==1) { '.$contents[meta_first].$contents[extract_first].' ?>'.$contents[first].'<? continue; }';
   }
   // gere le cas ou il y a un dernier
-  if ($contents[dernier]) {
-    $fct_txt.=' if ($count==$nbrows) { '.$contents[meta_dernier].$contents[extract_dernier].'?>'.$contents[dernier].'<? continue; }';
+  if ($contents[last]) {
+    $fct_txt.=' if ($count==$nbrows) { '.$contents[meta_last].$contents[extract_last].'?>'.$contents[last].'<? continue; }';
   }    
     $fct_txt.=$contents[meta_corps].$contents[extract_corps].' ?>'.$contents[corps].'<?    } while ($row=mysql_fetch_assoc($result));
-?>'.$contents[apres].'<?  } ?>'.$contents[sinon].'<?
+?>'.$contents[after].'<?  } ?>'.$contents[alternative].'<?
  mysql_free_result($result);
 }
 ';
@@ -678,12 +679,12 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
 // cree la fonction boucle
   $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents[corps].'<? }';
 
-  if ($contents[avant]) { // genere le code de avant
-  $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[avant].'<? }';
+  if ($contents[before]) { // genere le code de avant
+  $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[before].'<? }';
   }
 
-  if ($contents[apres]) {// genere le code de apres
-  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[apres].'<? }';
+  if ($contents[after]) {// genere le code de apres
+  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[after].'<? }';
  }
 
 //

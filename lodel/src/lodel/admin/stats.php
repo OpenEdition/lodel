@@ -2,7 +2,7 @@
 
 // Affiche des statistiques sur la revue.
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 

@@ -1,6 +1,6 @@
 <?
 
-include_once ("lodelconfig.php");
+require_once("lodelconfig.php");
 include_once ("$home/func.php");
 
 
