@@ -369,15 +369,13 @@ UPDATE #_TP_options SET type=\''.$to.'\' WHERE type=\''.$from.'\';
 	  if ($err) break;
 	}
 	if ($err) break;
-	  if ($err) break;
-	}
-
 	$report.="Mise a jour de la table options<br/>";
       }
     }
+
     ///////////////////////
     // OPTIONGROUPS
-      if (!$tables["$GLOBALS[tp]optiongroups"]) {
+    if (!$tables["$GLOBALS[tp]optiongroups"]) {
       $err=create("optiongroups");
       if ($err) break;
       $err=mysql_query_cmds('
@@ -472,6 +470,14 @@ UPDATE #_TP_entrytypes SET class=type;
 ');
 	if ($err) break;
 	$report.="Ajout de class a entrytypes<br/>";
+      }
+      if (!$fields['edition']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_entrytypes ADD edition TINYTEXT NOT NULL;
+UPDATE #_TP_entrytypes SET edition=\'pool\';
+');
+	if ($err) break;
+	$report.="Ajout de edition a entrytypes<br/>";
       }
       if (!$fields['g_type']) {
 	$err=mysql_query_cmds('
@@ -652,7 +658,7 @@ INSERT INTO #_TP_tablefields ( name, idgroup, title, style, type, condition, def
 
 ');
 	if ($err) break;
-
+	
 	addfield("personnes");
 	$err=mysql_query_cmds('
 INSERT #_TP_personnes (idperson,prenom,nomfamille) SELECT id,g_firstname,g_familyname FROM #_TP_persons;

@@ -220,13 +220,14 @@ class DAO {
 
    /**
     * Function to delete an object value.
-    * @param mixed object or numeric id or an array of ids
+    * @param mixed object or numeric id or an array of ids or criteria
     */
+   function delete($mixed) { return $this->deleteObject($mixed); }
 
    function deleteObject(&$mixed) {
      global $db;
 
-     if ($GLOBALS['user']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+     if ($GLOBALS['user']['rights'] < $this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
 
      $idfield=$this->idfield;
      if (is_object($mixed)) {
@@ -244,19 +245,34 @@ class DAO {
        $id=$mixed;
        $criteria=$idfield." IN ('".join("','",$id)."')";
        $nbid=count($id);
+     } elseif (is_string($mixed) && trim($mixed)) {
+       $criteria=lq($mixed);
+       if ($this->uniqueid) {
+	 // select before deleting
+	 $result=$db->execute("SELECT id FROM ".$this->sqltable."WHERE ($criteria) ".$this->rightscriteria("write")) or dberror();
+	 // collect the ids
+	 $id=array();
+	 foreach ($result as $row) $id[]=$row['id'];
+	 $nbid=count($id);
+	 print_r($id);
+	 #$criteria=$idfield." IN ('".join("','",$id)."')";
+       } else {
+	 $nbid=0; // check we have delete at least one
+       }
+
      } else {
        die("ERROR: DAO::deleteObject does not support the type of mixed");
      }
-
      //execute delete statement
      $db->execute("DELETE FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("write")) or dberror();
-     if ($db->affected_Rows()!=$nbid) die("ERROR: you don't have the right to delete some object in table ".$this->table);
+     if ($db->affected_Rows()<$nbid) die("ERROR: you don't have the right to delete some object in table ".$this->table);
    // in theory, this is bad in the $mixed is an array because 
    // some but not all of the object may have been deleted
    // in practice, it is an error in the interface. The database may be corrupted (object in fact).
 
      //delete the uniqueid entry if required
      if ($this->uniqueid) {
+       if ($nbid!=count($id)) die("ERROR: internal error in DAO::deleteObject. Please report the bug");
        deleteuniqueid($id);
      }
      return true;
@@ -265,7 +281,7 @@ class DAO {
    /**
     * Function to delete many object value given a criteria
     */
-/*
+
    function deleteObjects($criteria) {
      global $db;
 
@@ -289,7 +305,7 @@ class DAO {
      if ($db->affectedRow()<=0) return false; // not the rights
      return true;
    }
-*/
+
 
    /**
     * Return the criteria depending on the write/read access

@@ -88,6 +88,7 @@ class EntryTypesLogic extends Logic {
 	 }
        }
        renderOptions($arr2,$context['g_type']);
+       break;
      case "edition" :
        $arr=array(
 		  "pool"=>getlodeltextcontents("edit_pool","admin"),
@@ -142,8 +143,8 @@ class EntryTypesLogic extends Logic {
      global $home;
 
      require_once($home."dao.php"); 
-     $dao->getDAO("tablefields");
-     $dao->deleteObjects("type='entries' AND name='".$this->vo->type."'");
+     $dao=getDAO("tablefields");
+     $dao->delete("type='entries' AND name='".$this->vo->type."'");
    }
 
 
@@ -151,6 +152,7 @@ class EntryTypesLogic extends Logic {
    // begin{publicfields} automatic generation  //
    function _publicfields() {
      return array("type"=>array("type","+"),
+                  "class"=>array("class","+"),
                   "title"=>array("text","+"),
                   "style"=>array("mlstyle",""),
                   "g_type"=>array("select",""),

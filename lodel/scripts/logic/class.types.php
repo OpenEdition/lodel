@@ -176,7 +176,11 @@ class TypesLogic extends Logic {
 
 function loop_entitytypes($context,$funcname)
 { require_once($GLOBALS['home']."typetypefunc.php"); 
-  loop_typetable ("entitytype2","entitytype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);}
+  #loop_typetable ("entitytype2","entitytype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
+
+loop_typetable ("entitytype2","entitytype",$context,$funcname,$context['entitytype']);
+}
+
 
 
 

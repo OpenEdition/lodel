@@ -278,8 +278,9 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
+	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
+	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
 	g_type		VARCHAR(255) NOT NULL,		# equivalent generic du type
 
 

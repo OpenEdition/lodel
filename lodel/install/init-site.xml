@@ -833,6 +833,12 @@
         description="name/identifiant unique"
         label="[@ADMIN.NAME_PERSON_TYPE]"
         edittype="type" />
+<column name="class"
+        type="VARCHAR"
+        size="64"
+	required="true"
+	visibility="hidden"
+	edittype="class" />
 <column name="title"
         type="VARCHAR"
         size="255"
@@ -843,7 +849,6 @@
 <column name="style"
         type="VARCHAR"
         size="255"
-        required="true"
         description="style qui conduit a ce type"
         label="[@ADMIN.STYLE_PERSON_TYPE]"
         edittype="style" />
@@ -913,7 +918,10 @@
         edittype="type" />
 <column name="class"
         type="VARCHAR"
-        size="64" />
+        size="64"
+	required="true"
+	visibility="hidden"
+	edittype="class" />
 <column name="title"
         type="VARCHAR"
         size="255"

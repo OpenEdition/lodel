@@ -39,6 +39,7 @@
 class persontypesVO {
    var $id;
    var $type;
+   var $class;
    var $title;
    var $style;
    var $g_type;

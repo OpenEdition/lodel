@@ -59,6 +59,12 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <input type="hidden" name="class" value="[#CLASS]">
+  <LOOP NAME="fielderror" FIELD="class">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
   <label for="title">[@ADMIN.TITLE_INDEX_TYPE]<span class="optional">(*)</span>
         : 
       </label>

@@ -133,16 +133,17 @@ class PersonTypesLogic extends Logic {
      //require_once($home."typetypefunc.php"); 
      //typetype_delete("persontype","idpersontype='".$id."'");
      require_once($home."dao.php"); 
-     $dao->getDAO("tablefields");
-     $dao->deleteObjects("type='persons' AND name='".$this->vo->type."'");
+     $dao=getDAO("tablefields");
+     $dao->delete("type='persons' AND name='".$this->vo->type."'");
    }
 
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {
      return array("type"=>array("type","+"),
+                  "class"=>array("class","+"),
                   "title"=>array("text","+"),
-                  "style"=>array("style","+"),
+                  "style"=>array("style",""),
                   "g_type"=>array("select",""),
                   "tpl"=>array("tplfile",""),
                   "tplindex"=>array("tplfile",""));

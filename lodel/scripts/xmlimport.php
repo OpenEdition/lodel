@@ -241,6 +241,12 @@ class XMLImportParser {
 	  $data=array_shift($datastack);	
 	  $datastack[0].=$this->handler->unknownCharacterStyle($obj,$data);
 	} else {
+	  // close up to the base
+	  while (count($classstack)>1) {
+	    $this->handler->closeClass($classstack[0]);
+	    array_shift($classstack);
+	  }
+
 	  $datastack[0]=$this->handler->unknownParagraphStyle($obj,$datastack[0]);
 	}
       }
@@ -284,7 +290,12 @@ class XMLImportParser {
       break;
     case "entrytypesvo" :
     case "persontypesvo" :
-      if ($opening) { // opening. Switch the context
+      if ($opening) { // opening. Switch the lowest context
+	// close up to the base
+	while (count($classstack)>1) {
+	  $this->handler->closeClass($classstack[0]);
+	  array_shift($classstack);
+	}
 	$datastack[0]="";
       } else {
 	// change the context
@@ -356,9 +367,10 @@ class XMLImportParser {
   {
     $style=strtolower(trim($style));
     // style synonyme. take the first one
-    list($obj->style,$lang)=explode(":",$obj->style);
+    list($style,$lang)=explode(":",$style);
     if ($lang) {
       $obj->lang=$lang;
+      $obj->style=$style;
     } else {
       // style synonyme. take the first one
       $obj->style=preg_replace("/[:,;].*$/","",$obj->style);
@@ -408,7 +420,9 @@ class XmlImportHandler {
 
   function processTableFields($obj,$data) 
   {
-    echo "<tr><td>".$obj->name."</td><td>".$data."</td></tr>";
+    $title=$obj->title;
+    if ($obj->lang) $title.="<br />(".$obj->lang.")";
+    echo "<tr><td>".$title."</td><td>".$data."</td></tr>";
   }
 
   function processEntryTypes($obj,$data) 
@@ -455,7 +469,7 @@ class XmlImportHandler {
   }
 
   function unknownCharacterStyle($style,$data) {
-    return "<span style=\"background-color: #ff8080;\">".$data."</span>";
+    return "<span style=\"background-color: #ff8080;\" title=\"".$style."\">".$data."</span>";
   }
 }
 
