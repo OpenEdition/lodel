@@ -107,7 +107,7 @@ function printEntities($id,$identifier,&$context)
     if (!$row) die("ERROR: internal error");
     merge_and_filter_fields($context,$row['class'],$row);
 
-    print_R($context);
+#    print_R($context);
     $view=&getView();
     $view->renderCached($context,$base);
     exit();
