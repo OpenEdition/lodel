@@ -165,7 +165,7 @@ if ($id>0 && $dir) {
     } elseif ($ajouterdocannexe) {
       $redirect="docannexe.php?iddocument=$id";
     } elseif ($visualiserdocument) {
-      $redirect="../../document.html?id=$id";
+      $redirect="../../document.$extensionscripts?id=$id";
     } else {
       $redirect="";
     }
