@@ -91,7 +91,7 @@ function operation($operation,$archivetmp,$archivefilename,&$context) {
     return TRUE;
   } elseif ($operation=="cache" || $operation=="importdir") {
     $context[outfilename]=$operation=="cache" ? 
-      "CACHE/$archivefilename" : "$importdir/$archivefilename";
+      "CACHE/$archivefilename" : $GLOBALS[importdir]."/$archivefilename";
     if (!(@rename($archivetmp,$context[outfilename]))) {
       $context[erreur]=1;
       return FALSE;
