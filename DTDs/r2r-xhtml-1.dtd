@@ -1,0 +1,143 @@
+<!-- ....................................................................... -->
+<!-- R2R DTD  ............................................................. -->
+<!-- file: r2r-xhtml-1.dtd -->
+
+
+<!-- This is the DTD driver for r2r 1.0.
+
+
+     Please use this formal public identifier to identify it:
+
+
+         "-//MY COMPANY//DTD XHTML R2R 1.0//EN"
+
+
+     And this namespace for r2r-unique elements:
+
+
+         xmlns:r2r="http://www.example.com/xmlns/r2r"
+-->
+<!ENTITY % XHTML.version  "-//MY COMPANY//DTD XHTML R2R 1.0//EN" >
+
+
+<!-- reserved for use with document profiles -->
+<!ENTITY % XHTML.profile  "" >
+
+
+<!-- prefix obligatoire -->
+<!ENTITY % r2r.prefixed "INCLUDE" >
+
+
+<!-- Tell the framework to use our qualified names module as an extra qname
+driver -->
+<!ENTITY % xhtml-qname-extra.mod
+     SYSTEM "r2r-qname-1.mod" >
+
+
+<!-- Define the Content Model for the framework to use -->
+<!ENTITY % xhtml-model.mod
+     SYSTEM "r2r-model-1.mod" >
+
+
+<!-- Disable bidirectional text support -->
+<!ENTITY % XHTML.bidi  "IGNORE" >
+
+
+<!-- Bring in the XHTML Framework -->
+<!ENTITY % xhtml-framework.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Modular Framework 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod"  
+"http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod" >
+%xhtml-framework.mod;
+
+
+
+<!-- Text Module (Required)  ............................... -->
+<!ENTITY % xhtml-text.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Text 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-text-1.mod" >
+%xhtml-text.mod;
+
+
+<!-- Hypertext Module (required) ................................. -->
+<!ENTITY % xhtml-hypertext.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Hypertext 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod"  
+"http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod" >
+%xhtml-hypertext.mod;
+
+
+<!-- Lists Module (required)  .................................... -->
+<!ENTITY % xhtml-list.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Lists 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-list-1.mod" >
+%xhtml-list.mod;
+
+
+<!-- My Elements Module   ........................................ -->
+<!ENTITY % r2r-elements.mod
+     SYSTEM "r2r-elements-1.mod" >
+%r2r-elements.mod;
+
+
+<!-- Inline Presentation ........................................ -->
+<!ENTITY % xhtml-inlpres.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlpres-1.mod"  
+"http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlpres-1.mod" >
+%xhtml-inlpres.mod;
+
+
+<!-- XHTML Images module  ........................................ -->
+<!ENTITY % xhtml-image.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Images 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod"  
+"http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod" >
+%xhtml-image.mod;
+
+
+
+<!-- Document Metainformation Module  ............................ -->
+<!ENTITY % xhtml-meta.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Metainformation 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-meta-1.mod" >
+<!-- %xhtml-meta.mod; -->
+
+
+<!-- Document Structure Module (required)  ....................... -->
+<!ENTITY % xhtml-struct.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Document Structure 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod"  
+"http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod" >
+<!-- %xhtml-struct.mod; -->
+
+
+
+
+
+<!-- ajout venant de xhtml-legacy-1 .......................-->
+<!-- il faut decider si on continue a accepter ce genre d'attribut -->
+
+
+
+<!ENTITY % align.attrib
+     "align        ( left | center | right | justify ) #IMPLIED"
+>
+
+
+<!ENTITY % name.attrib
+     "name           ID                       #IMPLIED"
+>
+
+
+
+<!ATTLIST %div.qname;
+      %align.attrib;
+>
+
+
+<!ATTLIST %p.qname;
+      %align.attrib;
+>
+
+<!-- end of r2r-xhtml-1.dtd -->
