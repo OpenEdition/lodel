@@ -272,7 +272,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
     $styles=decode_mlstyle($style);
     echo $idtype," ",$style,"<br/>";
     foreach($styles as $lang => $style) { // foreach multilingue style
-      echo "=>$lang $style";
+#      echo "=>$lang $style";
       preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results2,PREG_SET_ORDER);
       $i=0;
       foreach ($results2 as $result2) {
