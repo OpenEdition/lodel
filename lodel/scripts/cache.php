@@ -10,7 +10,6 @@ if (!function_exists("authenticate")) {
 }
 
 
-
 if ($visiteur) {
   include ("$home/calcul-page.php");
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
