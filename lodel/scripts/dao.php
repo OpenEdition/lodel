@@ -190,7 +190,7 @@ class DAO {
      $morecriteria=$this->rightscriteria("read");
      if ($order) $order="ORDER BY ".$order;
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
-     #echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
+    # echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
      $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) or dberror();
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
@@ -328,10 +328,11 @@ class DAO {
        // delete the uniqueid
        deleteuniqueid($ids);
      }
-
+	//echo "sql="."DELETE FROM ".$this->sqltable.$where;
      //execute delete statement
      $db->execute("DELETE FROM ".$this->sqltable.$where) or dberror();
-     if ($db->affectedRow()<=0) return false; // not the rights
+     //Modified By Jean Lamy -- replaced affectedrow() by Affected_Rows()
+     if ($db->Affected_Rows()<=0) return false; // not the rights
      return true;
    }
 
