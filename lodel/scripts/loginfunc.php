@@ -33,6 +33,7 @@ function open_session ($login) {
   global $userpriv,$usergroupes,$sessionname,$timeout,$cookietimeout;
   global $database,$urlroot,$site,$iduser;
 
+
   // context
   $contextstr=serialize(array("userpriv"=>intval($userpriv),"usergroupes"=>$usergroupes,"username"=>$login));
   $expire=time()+$timeout;
@@ -58,6 +59,9 @@ function open_session ($login) {
   if (function_exists("unlock")) unlock(); 
   if ($i==5) return "erreur_opensession";
 
+  // timeout pour les cookies
+  if (!$cookietimeout) $cookietimeout=4*3600; // to ensure compatibility
+
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 }
 
@@ -80,7 +84,7 @@ function check_auth ($login,&$passwd,&$site)
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
-     } elseif ($GLOBALS[currentdb]!=$GLOBALS[database]) { // le user n'est pas dans la base generale
+     } elseif ($GLOBALS[currentdb] && $GLOBALS[currentdb]!=$GLOBALS[database]) { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
 
       // cherche ensuite dans la base du site

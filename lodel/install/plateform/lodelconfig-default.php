@@ -68,6 +68,11 @@ $importdir="";
 # en seconde
 $timeout=120*60;
 
+# Timeout pour les cookies
+# en seconde
+$cookietimeout=4*3600;
+
+
 # Nom de la base de donnees
 $database="";
 

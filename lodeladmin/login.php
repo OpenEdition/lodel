@@ -30,9 +30,6 @@
 require("lodelconfig.php");
 require_once ($home."auth.php");
 
-// timeout pour les cookies
-$cookietimeout=4*3600;
-
 
 if ($login) {
   require_once($home."func.php");
