@@ -138,7 +138,7 @@ if ($lostpasswdkey) {
     //
 
     // generate the passwd.
-    list($passwd,$encodedpasswd)=generate_passwd($context['username']);
+    list($passwd,$encodedpasswd)=generate_passwd($username);
 
     // ok, add the user.
     mysql_query("INSERT INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$username','$encodedpasswd','$context[url]','$context[realname]','$context[email]','5','$context[commentaire]')") or die(mysql_error());

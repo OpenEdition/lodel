@@ -31,17 +31,16 @@
 // authentification
 //
 
-if (!$passwd || !$username) {
+
+if (!$_REQUEST['passwd'] || !$_REQUEST['username']) {
   require("config.php");
   require_once(TOINCLUDE."calcul-page.php");
   calcul_page($context,"index");
   return;
 }
 
-$passwd=md5($_REQUEST[passwd].".".$_REQUEST[username]);
-$username=addslashes($_REQUEST[username]);
-
-
+$passwd=md5($_REQUEST['passwd'].".".$_REQUEST['username']);
+$username=addslashes($_REQUEST['username']);
 
 
 // connection a la database
@@ -49,9 +48,11 @@ require("config.php");
 mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
 mysql_select_db($database)  or die (mysql_error());
 
+
 // cherche l'utilisateur et verifie son identification
 $result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE username='$username' AND passwd='$passwd' AND status>0")  or die(mysql_error());
 $user=mysql_fetch_assoc($result);
+
 
 if (!$user)  die("ERROR: user not allowed");
 
