@@ -264,7 +264,10 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 
 
 function prefixtablesindatabase(&$table) {
-  if ($table=="sites" || $table=="session") $table=$GLOBALS[database].".".$table;
+  if ($table=="sites" || 
+      $table=="session" ||
+      ($table=="users" && $GLOBALS[database]==$GLOBALS[currentdb]) ## hack pas super propre pour gerer les deux tables users !
+    ) $table=$GLOBALS[database].".".$table;
 }
 
 

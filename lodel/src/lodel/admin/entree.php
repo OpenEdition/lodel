@@ -18,6 +18,7 @@ if ($id>0 && ($delete || $restore)) {
   $delete=2; // destruction en -64;
   include ($home."trash.php");
   treattrash("entrees",$critere);
+#  treattrash("entrees",$critere." AND  abs(statut)<32");
   return;
 }
 

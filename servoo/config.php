@@ -14,7 +14,7 @@ $dbhost="localhost";
 $javapath="/usr/java/j2sdk1.4.1_02";
 
 # repertoire d'installation de OpenOffice
-$openofficepath="/usr/local/OpenOffice.org1.0.3";
+$openofficepath="/usr/local/OpenOffice.org1.1.0";
 
 # chemin pour la commande zip
 $zipcmd="/usr/bin/zip";

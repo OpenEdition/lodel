@@ -245,10 +245,11 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
 
     foreach ($entrees as $entree) {
       // on nettoie le contenu de l'entree
-      $entree=trim(addslashes(strip_tags($entree))); 
+      $entree=trim(strip_tags($entree));
+      myquote($entree);
       if (!$entree) continue; // etrange elle est vide... tant pis
-      // cherche l'id de la entree si elle existe
-      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree')  AND statut>0 AND idtype='$idtype'") or die(mysql_error());
+      // cherche l'id de l'entree si elle existe
+      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree')  AND statut>-64 AND idtype='$idtype'") or die(mysql_error());
 
       #echo $entree,":",mysql_num_rows($result),"<br>";
       if (mysql_num_rows($result)) { // l'entree exists
@@ -268,8 +269,9 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
       // ajoute l'entree dans la table entites_entrees
       // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
       // une chaine et en faisant la requette a la fin !
-      if ($id)
+      if ($id) {
 	mysql_query("INSERT INTO $GLOBALS[tp]entites_entrees (identree,identite) VALUES ('$id','$identite')") or die (mysql_error());
+      }
     } // boucle sur les entrees d'un type
   } // boucle sur les type d'entree
   if ($lock) unlock();

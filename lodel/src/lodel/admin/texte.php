@@ -26,9 +26,14 @@ if ($id>0 && ($delete || $restore)) {
   extract_post();
   // validation
   do {
-    if (!$context[nom]) $err=$context[erreur_nom]=1;
+    if (!$context[nom] || !preg_match("/^[\w\s]+$/",utf8_decode($context[nom]))) $err=$context[erreur_nom]=1;
     if ($err) break;
+
     include_once ($home."connect.php");
+    $result=mysql_query ("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$context[nom]'") or die (mysql_error());
+    if (mysql_num_rows($result)>0) $err=$context[erreur_nom_existe]=1;
+    if ($err) break;
+    
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte) VALUES ('$id','$context[nom]','$context[texte]')") or die (mysql_error());
 
