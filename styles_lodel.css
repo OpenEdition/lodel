@@ -151,7 +151,7 @@ div.edition_des_series {
 .texte_edition_des_series {
 	font-size: 16px;
 	font-weight : bold;
-	font-style:italic;
+	font-variant:small-caps;
 	color: #728979;
 	font-family: Verdana;
 	vertical-align:middle;
@@ -399,6 +399,13 @@ div.intitule_ligne_formulaire {
 .titre_publi, .nom_publi, .type_publi,.nom_document {
 	font-family: verdana;	
 	font-variant: small-caps;
+	font-weight: bold;
+	color: #728979;
+	text-align: left;
+}
+
+.nom_user{
+	font-family: verdana;	
 	font-weight: bold;
 	color: #728979;
 	text-align: left;
