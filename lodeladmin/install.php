@@ -411,6 +411,7 @@ if ($erreur[functions]) {
 //
 
 echo (require ($lodelconfig))," ",$lodelconfig," ",file_exists($lodelconfig);
+
 if ((require ($lodelconfig))) {
   // ok c'est bon...
 } else {
