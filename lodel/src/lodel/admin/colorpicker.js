@@ -510,6 +510,9 @@ function PopupWindow_showPopup(anchorname) {
 	this.getXYPosition(anchorname);
 	this.x += this.offsetX;
 	this.y += this.offsetY;
+	// alert(document.getElementById('desk').style.height); //debug
+	// bcenou : retrait de la hauteur du desk
+	this.y -= document.getElementById('desk').style.height;
 	if (!this.populated && (this.contents != "")) {
 		this.populated = true;
 		this.refresh();
