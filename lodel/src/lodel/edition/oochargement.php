@@ -60,7 +60,11 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
 
     // the ServOO should return nothing, if it return, it's an ERROR or a SAY comment.
     if ($ret) {
-      $context[erreur_upload]=utf8_encode("Erreur renvoyée par le serveur OO: \"$ret\"");
+      if ($ret=="noservoo") {
+	$context['erreur']="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
+      } else {
+	$context['erreur']=utf8_encode("Erreur renvoyée par le ServOO: \"$ret\"");
+      }
       break;
     }
 
@@ -101,7 +105,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
       if ($unzipcmd && $unzipcmd!="pclzip") { // unzip cmd
 	$filestoextract=escapeshellcmd("$fileconverted ".join(" ",$extractfiles));
 	$ret=`$unzipcmd -qjo -d $tmpdir $filestoextract 2>&1`;
-	if ($ret) { $context[erreur_upload]=utf8_encode("Erreur renvoyée par la commande unzip: $ret"); break; }
+	if ($ret) { $context[erreur]=utf8_encode("Erreur renvoyée par la commande unzip: $ret"); break; }
       } else {
 	$archive->extract(PCLZIP_OPT_PATH,$tmpdir,PCLZIP_OPT_REMOVE_ALL_PATH);
       }
@@ -124,7 +128,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     
     $err=OO_XHTML($fileconverted,$context);
     if ($err) {
-      $context[erreur_upload]="Erreur dans la fonction OO";
+      $context[erreur]="Erreur dans la fonction OO";
       break;
     }
     if ($idtache) { // reimportation of an existing document ?

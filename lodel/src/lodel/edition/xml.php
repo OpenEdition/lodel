@@ -82,7 +82,8 @@ if ($valid) {
 
   require ($home."serveurfunc.php");
   list($ret,$retval)=contact_servoo($cmds,array($tmpfile.".zip"));
-
+  if ($ret=="noservoo") $ret="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
+  
   @unlink($tmpfile.".zip");
 
   $context[reponse]=str_replace("\n","<br />",htmlentities($ret));
