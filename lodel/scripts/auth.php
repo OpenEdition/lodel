@@ -38,7 +38,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
 {
   global $context,$iduser,$userpriv,$usergroupes;
-  global $home,$urlroot,$timeout,$database,$sessionname,$site,$back;
+  global $home,$timeout,$database,$sessionname,$site,$back;
 
   $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);
 
