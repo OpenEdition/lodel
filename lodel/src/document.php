@@ -73,7 +73,7 @@ do {// exception
   }
 } while (0);
 
-if ($nextid) $context[nextdocument]=makeurl("document",$nextid);
+if ($nextid) $context[nextdocument]=makeurlwithid("document",$nextid);
 
 // precedent:
 
