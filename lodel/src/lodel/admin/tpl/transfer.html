@@ -30,69 +30,24 @@
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
 		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">
-				Import d'une 0.6
+				Import d'une 0.7 en 0.8
 		</td>
 	</tr>
 </table>
 <br /><br />
 
 
-	  <IF COND="[#ERREUR_HTACCESS]">
-<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td>
-
-	    <p><strong>Erreur:</strong> l'import s'est déroulé correctement, mais Lodel n'a pas pu installer les fichiers .htaccess dans les répertoires suivant: [#ERREUR_HTACCESS].</p>
-	    <p>Veuillez les installer vous-même. Les fichiers .htaccess doivent contenir une ligne de code:<br /><code>deny from all</code><p>
-		    </td>
-		</tr>
-</table>
-	<div class="pied_de_formulaire">
-	    <form><input class="form" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" /></form>
-
-	</div>
-	    <ELSE/>
-	      <IF COND="![#REPORT]">
+	  <IF COND="![#REPORT]">
 
 <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
-			<strong><u>ATTENTION: ce systeme d'import suppose que vous avez une archive de votre site en version 0.6. Il est même plus prudent de toute facon de travailler sur un nouveau site et de garder l'ancien fonctionnel, le temps de faire le transfert</u></strong>
-			<br /><br /><br />
-		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'importation de la base de donnée. Verifier l'integrité de votre archive. La base installée est sûrement corrompue maintenant. Veuillez importer une archive valide. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
-		    <IF COND="[#ERREUR_READING]"><strong>Erreur:</strong> Le fichier archive n'a pas pu être lu ou ne contient pas de fichier.<br /><br /></IF>
-
-			Importer une base de donn&eacute;es 0.6:
-
-
-		      <ol>
-			<li><p>Effacer toutes les tables et créer les tables nécessaires (n'efface pas votre 0.6 !): <a href="transfer.php?droptables=1">click</a></p></li>
-
-			<li><p>Importer un modele éditorial: <a href="importmodel.php">click</a></p></li>
-
-
-		      <li><p>Transferer par ftp l'archive de voter  fichier tar.gz  sur le serveur dans le r&eacute;pertoire de [#IMPORTDIR] ou dans le repertoire CACHE.</p>
-		    <p>Liste des fichiers disponibles actuellement:</p>
-		    <LOOP NAME="fichiers">
-   		    <DO>
-		      <div><strong>[#NOM]</strong> &gt;&gt; <a href="transfer.php?fichier=[(#NOM|urlencode)]">Importer et transferer</a></div><br />
-		    </DO>
-		    </LOOP>
-		      </li>
-		      <li>Effacer ce fichier transfer.php pour eviter une destruction utlerieur de votre base de donnée.
-		      </li>
-		      </ol>
+			<strong><u>ATTENTION: ce systeme d'import suppose que vous avez une archive de votre site en version 0.7. Il est même plus prudent de toute facon de travailler sur un nouveau site et de garder l'ancien fonctionnel, le temps de faire le transfert</u></strong>
 	      </td>
 	    </tr>
 </table>
-<form>
-	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
-	</div>
-</form>
-</IF>  
+         </IF>  
 
-</IF>
 
 <br>
 <IF COND="[#REPORT]">
@@ -106,9 +61,15 @@ Opérations qui ont échoué:<br>
 <p><p>
 </IF>
 
-<form method="POST" action="transfer.php">
+<IF COND="![#CONFIRM] || [#ERREUR]">
+   <form method="POST" action="transfer.php">
 		<input class="form" type="submit" name="confirm" value="Continuer" />
 </form>
+</IF>
+<form>
+		<input class="form" type="button" value="    Finir / Abandonner    " onClick="window.location='index.php';" />
+</form>
+
 
 <MACRO NAME="CLOSE_HTML">
  

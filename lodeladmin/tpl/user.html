@@ -47,6 +47,10 @@
 <tr><td><b>Mot de passe:</b></td>
 <td><input size="30" type="password" name="passwdms" value=""></td>
 [(#ERREUR_PASSWD|true)<td class="erreur"><font color="Red">Le mot de passe</font> doit contenir entre 3 et 8 caractères  (lettres et chiffres uniquement)</td>]</tr>
+<tr>
+	<td><b>Langue :</b></td>
+	<td><select name="lang"><?php  makeselectlangues_nevernil(); ?></select></td>
+<tr>
 </table>
 <input class="form" type="submit" value="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
 </form>

@@ -791,7 +791,7 @@
 				<IF COND="[#NBRESULTATS] ge 6">
 					<option value="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
 				<ELSE/>
-					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE] |</a> 
+					<MACRO NAME="PNG_PLUS">&nbsp;<TEXT NAME="add" GROUP="interface" EXPORT="text_add" /><a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TEXT_ADD] [#TITRE] |</a> 
 				</IF>
 			</DO>
 			<AFTER>
@@ -823,10 +823,11 @@
 				</IF>
 			<ELSE/>
 				<MACRO NAME="PNG_PLUS">&nbsp;
+                                <TEXT NAME="add" GROUP="interface" EXPORT="text_add"/>
 				<IF COND="[#IMPORT]==1">
-					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">Ajouter [#TITRE] |</a>
+					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TEXT_ADD] [#TITRE] |</a>
 				<ELSE/>
-					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">Ajouter [#TITRE] |</a>
+					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TEXT_ADD] [#TITRE] |</a>
 				</IF>
 			</IF>
 		</DO>

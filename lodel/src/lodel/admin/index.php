@@ -29,10 +29,11 @@
 
 
 require("siteconfig.php");
-include ($home."auth.php");
+require($home."auth.php");
 authenticate(LEVEL_VISITEUR);
+require($home."langues.php");
 
-include ($home."calcul-page.php");
+require($home."calcul-page.php");
 calcul_page($context,"index");
 
 ?>

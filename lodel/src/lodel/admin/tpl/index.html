@@ -23,6 +23,15 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[(#SITE|strtoupper)]. Administration</title>
+	<script type="text/javascript"><!--
+	
+		function change_language(obj) {
+			var index = obj.selectedIndex;
+			window.location="usersettings.php?lang="+obj.options[index].value;
+		}
+	//
+	--></script>
+
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
@@ -53,11 +62,6 @@
 						<td width="350" class="td_admin">
 							<a href="options.php"><span class="texte_orange">Editer les options du site</span></a></td>
 						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_orange"><span class="inactif">Associer une image au site (inactif)</span></span> </td>
-						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
@@ -226,11 +230,34 @@
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
-<!--[					<tr>
+					<tr>
 						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_orange"><span class="inactif">Statistiques du site (inactif)</span></span></td>
-						<td width="5">&nbsp;</td>
-					</tr> ]-->
+						<td width="350" class="td_admin">
+							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#USERTRANSLATIONMODE]">Sortir du<ELSE/>Entrer dans le</IF> mode Traduction</span></a>
+
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<span class="texte_orange">Langue de l'interface:</span>
+		                                <select onchange="change_language(this)">
+		                                <?php makeselectlangues_nevernil($context[userlang]); ?>
+		                                </select>
+
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+
+
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="translations.php"><span class="texte_orange">Commencer une  traduction</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
 				</table>
 			</td> <!-- [ fin des outils ]-->
 		</tr>

@@ -68,6 +68,8 @@ function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
 			  &$select,&$where,&$ordre,&$groupby,&$having) {}
 function parse_variable_extra ($nomvar) { return FALSE; }
+function parse_before($contents) {}
+function parse_after($contents) {}
 function decode_loop_content_extra ($balise,&$content,&$options,$tables) {}
 function prefix_tablename ($tablename) { return $tablename; }
 
@@ -131,6 +133,7 @@ function parse ($in,$out)
 			   array('<?php insert_template(\$context,"\\1"); ?>',
 				 ""),
 				 $contents);
+  $this->parse_before($contents); // user defined parse function
 
 
   $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE|ESCAPE";
@@ -154,7 +157,7 @@ function parse ($in,$out)
 
   $contents=join("",$this->arr);
 
-  $this->parse_texte($contents);
+  $this->parse_after($contents); // user defined parse function
 
   if ($this->fct_txt) {
     $contents='<?php 
@@ -219,29 +222,6 @@ function parse ($in,$out)
 
 
 
-//
-// cette fonction contient des specificites a Lodel.
-// il faut voir si on decide que les minitexte font partie de lodelscript ou de lodel.
-//
-
-function parse_texte(&$text)
-
-{
-  global $droitediteur;
-  preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
-#  print_r($results);
-  foreach ($results as $result) {
-    $nom=addslashes(stripslashes($result[1]));
-    if ($droitediteur) {       // cherche si le texte existe
-      require_once(TOINCLUDE."connect.php");
-      $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$nom'") or $this->errmsg (mysql_error());
-      if (!mysql_num_rows($result2)) { // il faut creer le texte
-	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
-      }
-    }
-    $text=str_replace ($result[0],'<?php require_once("'.TOINCLUDE.'connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
-  }
-}
 
 
 function parse_variable (&$text,$escape="php")

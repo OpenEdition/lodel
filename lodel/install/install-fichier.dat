@@ -211,6 +211,7 @@ ln tpl/option.html
 ln stats.php
 ln texte.php
 ln tpl/texte.html
+ln tpl/texte-interface.html
 ln textes.php
 ln tpl/textes.html
 
@@ -250,6 +251,7 @@ ln user.php
 ln tpl/user.html
 ln users.php
 ln tpl/users.html
+ln usersettings.php
 
 ln transfer.php
 ln tpl/transfer.html

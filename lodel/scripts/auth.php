@@ -79,10 +79,11 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     // pass les variables en global
    
-    $context=array_merge($context,unserialize($row[context])); // recupere le contexte
-    $userpriv=$context[userpriv];
-    $usergroupes=$context[usergroupes];
-    $context[iduser]=$iduser=$row[iduser];
+    $context=array_merge($context,unserialize($row['context'])); // recupere le contexte
+    $userpriv=$context['userpriv'];
+    $userlang=$context['userlang'];
+    $usergroupes=$context['usergroupes'];
+    $context['iduser']=$iduser=$row['iduser'];
 
     if ($userpriv<$level) { header("location: login.php?erreur_privilege=1&".$retour); exit(); }
 
@@ -207,6 +208,7 @@ if (!((bool) ini_get("register_globals"))) { //
 // securite... initialisation
 $userpriv=0;
 $usergroupes="";
+$userlang="";
 $iduser=0;
 $idsession=0;
 $session="";

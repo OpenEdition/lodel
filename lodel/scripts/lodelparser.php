@@ -260,6 +260,51 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
 }
 
 
+
+//
+// cette fonction contient des specificites a Lodel.
+// il faut voir si on decide que les minitexte font partie de lodelscript ou de lodel.
+//
+
+function parse_before(&$text)
+
+{
+  preg_match_all("/<TEXT\s+([^>]*)>/",$text,$results,PREG_SET_ORDER);
+  foreach ($results as $result) {
+    $attr=$result[1];
+    // get the name
+    preg_match("/NAME\s*=\s*\"([^\"]+)\"/",$attr,$result2);
+    $name=addslashes(stripslashes(trim($result2[1])));
+    // get the group
+    preg_match("/GROUP\s*=\s*\"([^\"]+)\"/",$attr,$result2);
+    $group=addslashes(stripslashes(trim($result2[1])));
+    if (!$group) $group="site";
+    // get the export variable
+    preg_match("/EXPORT\s*=\s*\"([^\"]+)\"/",$attr,$result2);
+    $export=addslashes(stripslashes(trim($result2[1])));
+
+    if ($GLOBALS['droitediteur']) {       // cherche si le texte existe
+      require_once(TOINCLUDE."connect.php");
+
+      $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group'") or $this->errmsg (mysql_error());
+      if (!mysql_num_rows($result2)) { // il faut creer le texte
+	$lang=$GLOBALS['context']['userlang'] ? $GLOBALS['context']['userlang'] : "fr"; // unlikely useful but...
+	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,textgroup,texte,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg (mysql_error());
+      }
+    }
+    $modifyif='$context[\'droitediteur\']'.( $group=='interface' ? ' && $context[\'usertranslationmode\']' : '' );
+
+    $text=str_replace ($result[0],'<?php require_once("'.TOINCLUDE.'connect.php");
+$result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$name.'\' AND textgroup=\''.$group.'\' AND (lang=\'".$GLOBALS[\'context\'][\'userlang\']."\' OR lang=\'\') AND statut>0 ORDER BY lang DESC");
+list($id,$texte)=mysql_fetch_row($result);
+ if ($id && '.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id; ?>">[M]</a> <?php }
+ '.($export ? '$context[\''.$export.'\']=' : 'echo').' preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
+  }
+}
+
+
+
+
 } // end of the class LodelParser
 
 

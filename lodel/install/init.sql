@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	nom		VARCHAR(64),
 	courriel	VARCHAR(255),
 	privilege	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	lang		CHAR(5) NOT NULL,       # text lang
 
 	statut		TINYINT DEFAULT '1' NOT NULL,
 
@@ -90,6 +91,25 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
 	KEY index_idsession (idsession),
 	KEY index_url (url)
 );
+
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	nom		VARCHAR(255) NOT NULL,  # name
+	texte		TEXT,                   # texte
+
+	lang		CHAR(5) NOT NULL,       # text lang
+	textgroup	VARCHAR(10) NOT NULL,   # text group
+
+	statut		TINYINT DEFAULT '1' NOT NULL,
+	maj		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_nom (nom)
+	KEY index_lang (lang)
+	KEY index_textgroup (textgroup)
+);
+
 
 
 # suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.

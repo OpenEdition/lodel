@@ -31,7 +31,7 @@
 
 function open_session ($login) {
 
-  global $userpriv,$usergroupes,$sessionname,$timeout,$cookietimeout;
+  global $userpriv,$usergroupes,$userlang,$sessionname,$timeout,$cookietimeout;
   global $database,$urlroot,$site,$iduser;
 
   // timeout pour les cookies
@@ -39,7 +39,7 @@ function open_session ($login) {
 
 
   // context
-  $contextstr=serialize(array("userpriv"=>intval($userpriv),"usergroupes"=>$usergroupes,"username"=>$login));
+  $contextstr=addslashes(serialize(array("userpriv"=>intval($userpriv),"usergroupes"=>$usergroupes,"userlang"=>$userlang,"username"=>$login)));
   $expire=time()+$timeout;
   $expire2=time()+$cookietimeout;
 
@@ -81,7 +81,7 @@ function check_auth ($login,&$passwd,&$site)
     // cherche d'abord dans la base generale.
 
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+    $result=mysql_query ("SELECT id,statut,privilege,lang FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
@@ -96,8 +96,9 @@ function check_auth ($login,&$passwd,&$site)
        break; // on s'eject
      }
     // pass les variables en global
-    $userpriv=$row[privilege];
-    $context[iduser]=$iduser=$row[id];
+    $userpriv=$row['privilege'];
+    $userlang=$row['lang'];
+    $context['iduser']=$iduser=$row['id'];
 
     // cherche les groupes pour les non administrateurs
     if (defined("LEVEL_ADMIN") && $userpriv<LEVEL_ADMIN) { // defined is useful only for the install.php
@@ -107,7 +108,7 @@ function check_auth ($login,&$passwd,&$site)
     } else {
       $usergroupes="";
     }
-    $context[usergroupes]=$usergroupes;
+    $context['usergroupes']=$usergroupes;
 
     // efface les donnees de la memoire et protege pour la suite
     $passwd=0;
