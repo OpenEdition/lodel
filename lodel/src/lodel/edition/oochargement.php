@@ -148,10 +148,10 @@ function OO_XHTML ($convertedfile,&$context)
 
 
   array_push($srch,
-	     "/.*?<style\b[^>]*type=\"text/css\"[^>]*>(.*?)<\/style>.*?<body\b[^>]*>/s",
+	     "/.*?<style\b[^>]*type=\"text\/css\"[^>]*>(.*?)<\/style>.*?<body\b[^>]*>/s",
 	     "/.*<body\b[^>]*>/s",
 	     "/<\/body>.*/s");
-  array_push($rpl,"<r2r:stylecss>\\1</r2r:stylecss>","","");
+  array_push($rpl,"<r2r:$GLOBALS[styleforcss]>\\1</r2r:$GLOBALS[styleforcss]>","","");
   
   // styles transparents
   // on efface tout ce qu'il y a entre.

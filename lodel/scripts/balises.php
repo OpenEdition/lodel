@@ -52,7 +52,17 @@ $balises=array ("-" => "-",
 		"typenumero"=>"Type de la publication"
 		);
 
+//
+// transparent style . Useful for the PDF export
+//
+
 $stylestransparents="paragraphetransparent|caracteretransparent";
+
+//
+// style for the CSS
+//
+
+$styleforcss="stylecss";
 
 
 #

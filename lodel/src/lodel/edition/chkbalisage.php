@@ -87,12 +87,12 @@ while (list($style,$titre,$type)=mysql_fetch_row($result)) {
   $textorig=$text=join("",file($tache[fichier].".html"));
 
 // cherche les sousbalises, retirent les de $balises et prepare le changement d'ecriture.
-// une sous balises est definie par la presence d'une balise HTML (le caractere < en pratique)ou parce qu'elle est vide dans $balises
+// une sous balises est definie par la presence d'une balise HTML (le caractere < en pratique) ou parce qu'elle est vide dans $balises
 $srch=array(); $rpl=array();
 foreach ($balises as $b=>$v) {
   if (!$v || strpos($v,"<")!==FALSE) { // sous balises
     array_push($srch,"/<r2r:$b>/si");array_push($rpl,$v); // balises ouvrante
-    // balises fermante:
+    // balises fermantes, il faut inverser leur ordre
     preg_match_all("/<(\w+)\b[^>]*>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
     $v="";
     while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'ordre inverse, et transforme les en balises fermantes
@@ -130,7 +130,7 @@ $part="main";
 $startbalise="<r2r:$arr[2]>";
 $endbalise="</r2r:".$arr[count($arr)-2].">";
 
-$arr=array_slice($arr,3,-3); // enleve les trois premiers et les trois derniers correspondant aux balises r2r:article
+$arr=array_slice($arr,3,-3); // enleve les trois premiers et les trois derniers correspondant aux balises r2r:document
 
 while ($arr) {
   $subtext=array_shift($arr);
@@ -138,9 +138,9 @@ while ($arr) {
     // balise ouvrante
     $level++;
     $bal=array_shift($arr);
-    if ($balisesdocumentassocie[$bal]) {
+    if ($balisesdocumentassocie[$bal] || $bal==$styleforcss) { // change the part
       $part=$bal;
-    } else {
+    } else { // others balises
       $textbal=$balises[strtolower(trim($bal))];
       if (!$textbal) $textbal='<div style="color: red">Style "'.$bal.'" non reconnu</div>';
       $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise">'.$textbal.'</td><td class="chkbalisagetdparagraphe">';
@@ -149,7 +149,7 @@ while ($arr) {
     // balise fermante
     $level--;
     $bal=array_shift($arr);
-    if ($balisesdocumentassocie[$bal]) {
+    if ($balisesdocumentassocie[$bal] || $bal==$styleforcss) { // end of a part
       $part="main";
     } else {
       $tablescontent[$part].="</td></td>\n";
@@ -161,6 +161,10 @@ while ($arr) {
     $tablescontent[$part].=$subtext;
   }
 }
+
+// backup the stylecss in the context
+$context[$styleforcss]=$tablescontent[$styleforcss];
+unset($tablescontent[$styleforcss]);
 
 if (count($tablescontent)>1) { // ok il faut decouper le fichier
 

@@ -361,6 +361,13 @@
 
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
 	<link rel="stylesheet" href="styles_lodel.css">
+        <IF COND="[#STYLECSS]">
+        <style type="text/css">          
+           [#STYLECSS]
+          
+        </style>
+
+        </IF>
 	</head>
 </DEFMACRO>
 
