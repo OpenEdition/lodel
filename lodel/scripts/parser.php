@@ -13,7 +13,7 @@ function parse ($in,$out)
   $contents=stripcomment($file);
 
 // cherche les fichiers a inclure
-  preg_match_all("/<use\s+macrofile\s*=\s*\"([^\"]+)\"\s*>/i",$contents,$results,PREG_SET_ORDER);
+  preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>/",$contents,$results,PREG_SET_ORDER);
 
   foreach($results as $result) {
     	$contents=str_replace($result[0],"",$contents); // efface le use
@@ -128,7 +128,7 @@ function parse_texte(&$text)
 
 {
   global $home,$editeur,$urlroot,$revue;
-  preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/i",$text,$results,PREG_SET_ORDER);
+  preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
 #  print_r($results);
   foreach ($results as $result) {
     $nom=$result[1]; myquote($nom);
@@ -173,7 +173,7 @@ function parse_cond (&$text,$offset=0) {
 
 # cherche la condition
 
-    if (!preg_match("/^[^>]*COND=\"([^\"]+)\"[^>]*>/i",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
+    if (!preg_match("/^[^>]*COND=\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
 
     parse_variable($cond[1],FALSE);
     $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
@@ -269,9 +269,6 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 {
   global $revue,$boucles;
 
-  // passe les boucles en majuscules !
-  $text=preg_replace("/<(\/?)loop\b/","<\\1LOOP",$text);
-
   $tag_debut="<LOOP ";
   $tag_fin="</LOOP>";
   $lendebut=strlen($tag_debut);
@@ -296,24 +293,24 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $attr=substr($attr,$matchlen); // attribut suivant
       $value=trim($result[2]);
           
-      switch (strtolower($result[1])) {
-      case "where" :
+      switch ($result[1]) {
+      case "WHERE" :
 	$cond=$value;
 	if (strtolower($cond)=="trash") $cond="status<=0";
 	if (strtolower($cond)=="ok") $cond="status>0";
 	if (strtolower($cond)=="okgroupe") $cond='".($GLOBALS[admin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."';
 	array_push($wheres,"(".$cond.")");
 	break;
-      case "table" :
+      case "TABLE" :
 	array_push($tables,$value);
 	break;
-      case "order" :
+      case "ORDER" :
 	$order.=$value." , ";
 	break;
-      case "limit" :
+      case "LIMIT" :
 	$limit=$value;
 	break;
-      case "name":
+      case "NAME":
 	$nom=$value;
 	break;
       default:
@@ -535,39 +532,38 @@ function decode_content ($content,$tables=array())
 
 # cherche s'il y a un avant
 #  $balises=array("avant","apres","premier","dernier","corps");
-  $balises=array("before","after","first","last","corps");
+  $balises=array("BEFORE","AFTER","FIRST","LAST","CORPS");
   
   foreach ($balises as $balise) {
     if ((strpos($content,"<$balise>")!==FALSE || strpos($content,"<".strtoupper($balise).">")!==FALSE)) {
-      if (!preg_match ("/<$balise>(.*?)<\/$balise>/is",$content,$result)) { die ("la balise $balise n'est pas fermee dans la boucle $nom"); }
+      if (!preg_match ("/<$balise>(.*?)<\/$balise>/s",$content,$result)) { die ("la balise $balise n'est pas fermee dans la boucle $nom"); }
       $ret[$balise]=$result[1];
       $content=str_replace($result[0],"",$content); // enleve le bloc avant
     }
   }
 
   // cherche s'il y a un sinon
-  $ret[sinon]="";
+  $ret[ALTERNATIVE]="";
   $sinonpos=strpos($content,"<ALTERNATIVE/>"); // en majuscules
-  if ($sinonpos===FALSE) { $sinonpos=strpos($content,"<alternative/>"); } // ou en minuscules
-  if (!($sinonpos===FALSE)) {
-    $ret[sinon]='<? else {?>'.substr($content,$sinonpos+strlen("<ALTERNATIVE/>")).'<?}?>'; // recupere le bloc sinon
+  if ($sinonpos!==FALSE) {
+    $ret[ALTERNATIVE]='<? else {?>'.substr($content,$sinonpos+strlen("<ALTERNATIVE/>")).'<?}?>'; // recupere le bloc sinon
     $content=substr($content,0,$sinonpos); // recupere le bloc avant sinon
   }
-  if ($ret[corps]) {
+  if ($ret[CORPS]) {
     if (trim($content)) die("Une partie du contenu de la boucle $nom n'est pas dans l'une des balises &lt;corps&gt;  &lt;avant&gt;  &lt;apres&gt; &lt;premier&gt; &lt;dernier&gt;<br>");
   } else {
-    $ret[corps]=$content;
+    $ret[CORPS]=$content;
   }
   // OPTIMISATION
   // cherche les META et les extract
-  $balises=array("premier","dernier","corps");
+  $balises=array("FIRST","LAST","CORPS");
 
   foreach ($balises as $balise) {
     //
     // meta
     //
-    if (strpos($ret[$balise],"[#META_")!==FALSE || (strpos($ret[$balise],"[(#META_")!==FALSE))  {
-      $ret["meta_".$balise]='$context=array_merge($context,unserialize($context[meta]));';
+    if (strpos($ret[$balise],"[#META_")!==FALSE || strpos($ret[$balise],"[(#META_")!==FALSE)  {
+      $ret["META_".$balise]='$context=array_merge($context,unserialize($context[meta]));';
     }
     //
     // est-ce qu'on veut le texte ?
@@ -585,17 +581,17 @@ function decode_content ($content,$tables=array())
 
       # as-t-on besoin de balises non liees au texte
       if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_nonlieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
-	$ret["extract_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
+	$ret["EXTRACT_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
 $arr=array("'.join('","',$result[1]).'");';
 	if ($withtextebalises) { // on a aussi besoin des balises liees au texte
-	  $ret["extract_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
+	  $ret["EXTRACT_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
 	}
-	$ret["extract_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
+	$ret["EXTRACT_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
       } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
-	$ret["extract_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
+	$ret["EXTRACT_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
 $filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
@@ -609,7 +605,7 @@ $context=array_merge($context,extract_xml('.$withtextbalises.',$text));
     // est-ce qu'on veut le prev et next publication ?
     //
     if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
-      $ret["extract_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+      $ret["EXTRACT_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
     }
   } // foreach
   return $ret;
@@ -650,21 +646,21 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
  $nbrows=mysql_num_rows($result);
  $count=0;
  if ($row=mysql_fetch_assoc($result)) {
-?>'.$contents[before].'<?
+?>'.$contents[BEFORE].'<?
     do {
       $context=array_merge ($generalcontext,$row);
       $context[count]=$count;
       $count++;';
   // gere le cas ou il y a un premier
-  if ($contents[first]) {
-    $fct_txt.=' if ($count==1) { '.$contents[meta_first].$contents[extract_first].' ?>'.$contents[first].'<? continue; }';
+  if ($contents[FIRST]) {
+    $fct_txt.=' if ($count==1) { '.$contents[META_FIRST].$contents[EXTRACT_FIRST].' ?>'.$contents[FIRST].'<? continue; }';
   }
   // gere le cas ou il y a un dernier
-  if ($contents[last]) {
-    $fct_txt.=' if ($count==$nbrows) { '.$contents[meta_last].$contents[extract_last].'?>'.$contents[last].'<? continue; }';
+  if ($contents[LAST]) {
+    $fct_txt.=' if ($count==$nbrows) { '.$contents[META_LAST].$contents[EXTRACT_LAST].'?>'.$contents[LAST].'<? continue; }';
   }    
-    $fct_txt.=$contents[meta_corps].$contents[extract_corps].' ?>'.$contents[corps].'<?    } while ($row=mysql_fetch_assoc($result));
-?>'.$contents[after].'<?  } ?>'.$contents[alternative].'<?
+    $fct_txt.=$contents[META_CORPS].$contents[EXTRACT_CORPS].' ?>'.$contents[CORPS].'<?    } while ($row=mysql_fetch_assoc($result));
+?>'.$contents[AFTER].'<?  } ?>'.$contents[ALTERNATIVE].'<?
  mysql_free_result($result);
 }
 ';
@@ -677,14 +673,14 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
   $contents=decode_content($content);
 
 // cree la fonction boucle
-  $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents[corps].'<? }';
+  $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents[CORPS].'<? }';
 
-  if ($contents[before]) { // genere le code de avant
-  $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[before].'<? }';
+  if ($contents[BEFORE]) { // genere le code de avant
+  $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[BEFORE].'<? }';
   }
 
-  if ($contents[after]) {// genere le code de apres
-  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[after].'<? }';
+  if ($contents[AFTER]) {// genere le code de apres
+  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[AFTER].'<? }';
  }
 
 //
@@ -697,16 +693,16 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
 function parse_macros(&$text,&$macros)
 
 {
-  while (preg_match("/<macro(\s+name\s*=\s*\"(\w+)\")\s*>/i",$text,$result)) {
+  while (preg_match("/<MACRO(\s+NAME\s*=\s*\"(\w+)\")\s*>/",$text,$result)) {
     if (!$result[2]) { die ("erreur: une balise macro est mal formee"); }
     // cherche la define
-    $search="/<defmacro\s+name\s*=\s*\"$result[2]\"\s*>(.*?)<\/defmacro>/is";
+    $search="/<DEFMACRO\s+NAME\s*=\s*\"$result[2]\"\s*>(.*?)<\/DEFMACRO>/s";
     if (!preg_match($search,$macros,$def)) 
       if (!preg_match($search,$text,$def)) { die ("erreur: la macro $result[2] n'est pas definie"); }
     $def[1]=preg_replace("/(^\r?\n|\r?\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
     $text=str_replace($result[0],$def[1],$text);
   }
-  $text=preg_replace("/<defmacro[^>]*>.*?<\/defmacro>/is","",$text);
+  $text=preg_replace("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>/s","",$text);
 }
 
 
@@ -723,7 +719,7 @@ function parse_let (&$text,$offset=0) {
     $offset=$debut+$lendebut;
 # cherche l'attribut
     $let_txt=substr($text,$offset);
-    if (!preg_match("/^\s*VAR=\"(\w+)\"[^>]*>/i",$let_txt,$result)) die ("erreur la variable n'est pas definie dans le let");
+    if (!preg_match("/^\s*VAR=\"(\w+)\"[^>]*>/",$let_txt,$result)) die ("erreur la variable n'est pas definie dans le let");
     $var=strtolower($result[1]);
     $offset+=strlen($result[0]);
 
