@@ -3,7 +3,7 @@
 // liste des langues lodel
 //
 
-$langues=array("fr"=>"français",
+$langues=array("fr"=>"fran\303\247ais",
 	       "en"=>"anglais",
 	       "es"=>"espagnol",
 	       "de"=>"allemand",
