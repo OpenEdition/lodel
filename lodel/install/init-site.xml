@@ -1421,4 +1421,32 @@
 <unique-column name="textgroups" />
 </unique>
 </table>
+
+<!-- Ajout Jlamy 26 janvier 2005 -->
+<table name="index"
+		description="Table contenant l'index"
+		writeright=""
+		protectright="">
+<column name="identity"
+		type="INTEGER"
+		default="0"
+		required="true" />
+<column name="fieldname"
+		type="INTEGER"
+		default="0"
+		required="true" />
+<column name="word"
+		type="VARCHAR(64)"
+		default=""
+		required="true" />
+<column name="weight"
+		type="DOUBLE"
+		default="0"
+		required="true" />
+<index name="index_index">
+<index-column name="identity" />
+<index-column name="fieldname" />
+<index-column name="word" />
+</index>
+</table>
 </database>
