@@ -193,6 +193,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       break;
     case 'image' :
     case 'fichier' :
+      if (is_array($entite[$nom])) unset($entite[$nom]);
       if (!$entite[$nom] || $entite[$nom]=="none") break;
       // check for a hack or a bug
       $lodelsource='lodel\/sources';
