@@ -112,7 +112,7 @@ if ($tache=="plateform") {
 
   // ok, now, let's guess the urlroot
   do { // control block
-    $me=$_SERVER[PHP_SELF];
+    $me=$_SERVER['PHP_SELF'];
     if (!$me) break;
     // enleve moi
     $urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
@@ -196,7 +196,9 @@ if ($tache=="htaccess") {
 
 
 if ($tache=="options") {
-  if (!preg_match("/\/$/",$newurlroot)) $newurlroot.="/";
+#  if (!preg_match("/\/$/",$newurlroot)) $newurlroot.="/";
+  $newurlroot.="/"; // ensure their is a / at the end
+  $newurlroot=preg_replace("/\/\/+/","/",$newurlroot); // ensure there is no double slashes because it causes problem with the cookies
   $filemask="07".
     (5*($permission[group][read]!="")+2*($permission[group][write]!="")).
     (5*($permission[all][read]!="")+2*($permission[all][write]!=""));
