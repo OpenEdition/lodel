@@ -433,10 +433,10 @@ class GenericLogic extends Logic {
     $class=strtolower(substr(get_class($vo),0,-2)); // remove the VO from the class name
 
     $publicfields=$this->_publicfields();
-    if (!$publicfields[$class]) {
-      print_r($publicfields);
-      trigger_error("ERROR: internal error in GenericLogic::_populateObject. Class=".$class,E_USER_ERROR);
-    }
+    //if (!$publicfields[$class]) {
+    //  print_r($publicfields);
+    //  trigger_error("ERROR: internal error in GenericLogic::_populateObject. Class=".$class,E_USER_ERROR);
+    //}
     foreach($publicfields[$class] as $field => $fielddescr) {
       $vo->$field=$context[$field];
     }
