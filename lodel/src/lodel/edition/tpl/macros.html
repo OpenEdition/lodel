@@ -1327,21 +1327,21 @@
 					<IF COND="[#STATUS]==-32">
 						Brouillon&nbsp;/&nbsp;
 						<a href="status.php?id=[#ID]&status=pret">
-							<span class="texte_trespetit_centre">Prête à publier</span>
+							<span class="texte_trespetit_centre">Prêt à publier</span>
 						</a>
 					</IF>
 					<IF COND="[#STATUS]==-1">
 						<a href="status.php?id=[#ID]&status=brouillon">
 							<span class="texte_trespetit_centre">Brouillon</span>
 						</a>
-						&nbsp;/&nbsp;Prête à publier
+						&nbsp;/&nbsp;Prêt à publier
 					</IF>
 				
 					<IF COND="[#STATUS]==32">
-						Brouillon&nbsp;/&nbsp;Prête à publier
+						Brouillon&nbsp;/&nbsp;Prêt à publier
 					</IF>
 					<IF COND="[#STATUS]==1">
-						Brouillon&nbsp;/&nbsp;Prête à publier
+						Brouillon&nbsp;/&nbsp;Prêt à publier
 					</IF>
 				</DO>
 			</LOOP>			
@@ -1696,10 +1696,14 @@
 	<img src="[#SHAREURL]/images/KDE_Moc_src.gif" width="32" height="32" border="0" alt="Associer image">
 </DEFMACRO>
 
-<DEFMACRO NAME="GIF_TELECHARGER">
+<DEFMACRO NAME="GIF_TELECHARGER_RTF">
 	<img src="images/disk48.gif" width="32" height="32" border="0" alt="Télécharger le source RTF">
 </DEFMACRO>
 	
+<DEFMACRO NAME="GIF_TELECHARGER_XML">
+	<img src="images/disk48.gif" width="32" height="32" border="0" alt="Télécharger le source XML">
+</DEFMACRO>
+
 <DEFMACRO NAME="GIF_INPUT_ASSOCIER_IMAGE">
 	<input type="image" border="0" name="imageField" src="images/KDE_Moc_src.gif" width="32" height="32">
 </DEFMACRO>
