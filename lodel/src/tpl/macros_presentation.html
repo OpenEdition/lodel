@@ -40,13 +40,17 @@
 
 <DEFMACRO NAME="BOUTON_SIGNALER">
 <!--[ ****************************************************************** ]-->
-<!--[ version 2.0                                                        ]-->
+<!--[ version 3.0                                                        ]-->
 <!--[ Affiche un bouton proposant de signaler la page en cours à un ami. ]-->
+<!--[ Pour activer cette fonctionnalité ajouter l'option "signaler_mail" ]-->
+<!--[ dans le site, et lui attribuer la valeur "actif"                   ]-->
 <!--[ ****************************************************************** ]-->
-	
+
+<IF COND="[#OPTION_SIGNALER_MAIL] eq 'actif'">
 				<a href="signaler.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					<MACRO NAME="IMG_BOUTON_SIGNALER2">
 				</a>
+</IF>
 			
 </DEFMACRO>
 
