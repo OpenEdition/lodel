@@ -101,7 +101,6 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
       break;
     case "boolean" :
       $entite[$nom]=$entite[$nom] ? 1 : 0;
-    }
       break;
     }
     $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
