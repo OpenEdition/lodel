@@ -6,6 +6,8 @@
 <!-- Cette librairie contient :                                         -->
 <!-- <MACRO NAME="OUVRIR_HTML">                                         -->
 <!-- <MACRO NAME="FERMER_HTML">                                         -->
+<!-- <MACRO NAME="LIEN_SYNDICATION">                                    -->
+<!-- <MACRO NAME="ENTETE_XML">                                          -->
 <!-- <MACRO NAME="DEFINIR_CHARSET">                                     -->
 <!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES">                           -->
 <!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">                     -->
@@ -13,7 +15,7 @@
 <!-- <MACRO NAME="DESACTIVER_INDEXATION">                               -->
 <!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
 <!-- <MACRO NAME="IN_EXTENSO">                                          -->
-<!-- <MACRO NAME="MENU_RUBRIQUES_PUBLIEES">                                 -->
+<!-- <MACRO NAME="MENU_RUBRIQUES_PUBLIEES">                             -->
 <!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
 <!-- <MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">                        -->
 <!-- <MACRO NAME="EDITEUR_REVUE_POUR_METAS">                            -->
@@ -51,6 +53,18 @@
 <!-- ****************************************************************** -->
 	</body>
 	</html>
+</DEFMACRO>
+
+<DEFMACRO NAME="LIEN_SYNDICATION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Lien vers la page présentant les différents flux RSS               -->
+<!-- ****************************************************************** -->
+	<a href="backend.html">
+		<div class="revuesorg">
+			<MACRO NAME="IMG_RSS">
+		</div>
+	</a>
 </DEFMACRO>
 
 <DEFMACRO NAME="ENTETE_XML">
