@@ -131,9 +131,10 @@ class DAO {
 
 
      //execute select statement
-     if (array_key_exists("status",get_class_vars($this->table."VO"))) $morecriteria=$GLOBALS['rightvisitor'] ? "AND status>-64" : "AND status>0";
+     $morecriteria=$this->_rightscriteria("select");
+     if ($order) $order="ORDER ".$order;
 
-     $result=$db->execute("SELECT ".$select." FROM ".$this->$sqltable." WHERE ($criteria) $morecriteria") or die($db->errormsg());
+     $result=$db->execute("SELECT ".$select." FROM ".$this->$sqltable." WHERE ($criteria) $morecriteria $order") or die($db->errormsg());
 
      $i=0;
      $vos=array();
@@ -160,7 +161,7 @@ class DAO {
 
      if (array_key_exists("rank",$vo)) {
        // initialise the rank
-       if ($rankcriteria) $where=" WHERE ".$rankcriteria;
+       if ($rankcriteria) $where=" WHERE ".$rankcriteria.$this->_rightscriteria("select");
        $rank=$db->getone("SELECT MAX(rank) FROM ".$this->$sqltable.$where);
        if ($db->errorno()) die($db->errormsg());
        $vo->rank=$rank+1;
@@ -178,35 +179,79 @@ class DAO {
 
    /**
     * Function to delete an object value.
+    * @param mixed object or numeric id
     */
 
    function deleteObject(&$vo) {
      global $db;
 
-     #execute delete statement
-     $db->execute("DELETE FROM ".$this->$sqltable." WHERE $id='".$vo->id."'") or die($db->errormsg());
-
-     # delete the uniqueid entry if required
-     if ($this->unique) {
-       deleteuniqueid($vo->id);
+     if (is_object($vo)) {
+       $id=$vo->id;
+       //set id on vo to 0
+       $vo->id=0;
+     } else {
+       $id=$vo;
      }
+     //execute delete statement
+     $db->execute("DELETE FROM ".$this->$sqltable." WHERE id='$id'".$this->_rightscriteria("delete")) or die($db->errormsg());
 
-     #set id on vo to 0
-     $vo->id=0;
+     //delete the uniqueid entry if required
+     if ($this->unique) {
+       deleteuniqueid($id);
+     }
+   }
+
+   /**
+    * Function to delete many object value given a criteria
+    */
+
+   function deleteObjects($criteria) {
+     global $db;
+
+     $where=" WHERE (".$criteria.") ".$this->_rightscriteria("delete");
+
+     // delete the uniqueid entry if required
+     if ($this->unique) {
+       // select before deleting
+       $result=$db->execute("SELECT id FROM ".$this->$sqltable.$where) or die($db->errormsg());
+       // collect the ids
+       $ids=array();
+       foreach ($result as $row) $ids[]=$row['id'];
+       // delete the uniqueid
+       deleteuniqueid($ids);
+     }
+     //execute delete statement
+     $db->execute("DELETE FROM ".$this->$sqltable.$where) or die($db->errormsg());
    }
 
 
 
+
    //! Private from this point
+
+     var $cache_rightscriteria;
+
+
    /**
     * @private
     */
-
    function _getFromResult(&vo, $row) {     
      //fill vo from the database result set
      foreach($row as $k=>$v) {
        $vo->$$k=$v;
      }
+   }
+
+
+   function _rightscriteria ($access) {
+     if (!$this->cache_rightscriteria) {
+       if (array_key_exists("status",get_class_vars($this->table."VO"))) {
+	 $this->cache_rightscriteria=$GLOBALS['rightvisitor'] ? " AND status>-64" : " AND status>0";
+	 if (($access=="modify" || $access=="delete") && 
+	     !$GLOBALS['rightadminlodel']) $this->cache_rightscriteria.=" AND status<32";
+       }
+     }
+     return $this->cache_rightscriteria;
    }
 }
 

@@ -92,6 +92,7 @@ class Logic {
    function deleteAction($id)
 
    {     
+     die("Abstract logic deleteAction");
    }
 
 
