@@ -646,7 +646,7 @@ function format($text,$format)
 function ishtml($text)
 
 {
-  return preg_match("/<p|br|span|ul|li|dl|strong|em\b[^><]*>/",$text);
+  return preg_match("/<(p|br|span|ul|li|dl|strong|em)\b[^><]*>/",$text);
 }
 
 ?>
