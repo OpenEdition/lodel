@@ -407,7 +407,7 @@ function parse_loop()
 	$limit=$value;
 	break;
       case "SELECT" :
-	$select=",".$value;
+	$select=$value;
 	break;
       case "REQUIRE":
 	break;
@@ -438,7 +438,7 @@ function parse_loop()
 
   //
   $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
-  $extrainselect=$select; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
+  $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
   $groupby="";
 
   if (!$where) $where="1";
@@ -470,7 +470,8 @@ function parse_loop()
       $this->loops[$name][attr]=$attrs; // save an id
       $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
 
-      $contents=$this->decode_loop_content($name,$tablesinselect,$select!="*");
+      $contents=$this->decode_loop_content($name,$tablesinselect,$select=="");
+      if ($select) $extrainselect=$select; // SELECT="" desactive les choix automatiques
       $this->make_loop_code($name,$tables,
 			    $tablesinselect,$extrainselect,
 			    $where,$order,$limit,$groupby,$contents);

@@ -67,7 +67,7 @@ if ($tache=="createdb") {
   if (!$singledatabase) {
     include_once ($home."connect.php");
     $context[dbname]=$database."_".$context[rep];
-    $context[command]="CREATE DATABASE  IF NOT EXISTS $context[dbname]";
+    $context[command]="CREATE DATABASE IF NOT EXISTS $context[dbname]";
     if (!@mysql_query($context[command])) {
       $context[erreur]=mysql_error();
       require ($home."calcul-page.php");
