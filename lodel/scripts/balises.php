@@ -31,6 +31,8 @@ $balises=array ("-" => "-",
 		"section6"=>"<h6>",
 		"titredoc"=>"Titre de document",
 		"legendedoc"=>"Légende de document",
+	    "titreillustration"=>"Titre des illustrations",
+	    "legendeillustration"=>"Légende des illustrations",
 		"droitsauteur"=>"Droits d'auteur",
 		"erratum"=>"Erratum",
 		"ndlr"=>"NDLR",
@@ -79,6 +81,9 @@ $multiplelevel=array(
 		     "epigraphe"=>"texte",
 		     "titredoc"=>"texte",
 		     "legendedoc"=>"texte",
+	 	     "titreillustration"=>"texte",
+	    	 "legendeillustration"=>"texte",
+
 
 		     // les styles description auteurs
 # supprimer pour le moment tant que Ted ne lit pas les styles de caracteres
@@ -101,7 +106,7 @@ $multiplelevel=array(
 $division="(section\d+)"; # balises qui ne sont pas des paragraphes
 
 # balises qui peuvent etre constituees de plusieurs paragraphes, donc ou chaque paragraphe sera agrege.
-$multiparagraphe_tags="titre|surtitre|soustitre|resume|texte|citation|epigraphe|notebaspage|bibliographie|annexe|titredoc|legendedoc|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
+$multiparagraphe_tags="titre|surtitre|soustitre|resume|texte|citation|epigraphe|notebaspage|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
 
 
 # tags qui admettent des listes separees par des virgules.
