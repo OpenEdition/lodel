@@ -46,7 +46,7 @@
 			</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TYPE">
+		<IF COND="[#ERREUR_TYPE]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TYPE] !</td></tr>
 		</IF>
 		<IF COND="[#ERREUR_ENTREES_EXISTENT]"><tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_ENTRIES_EXIST_PART1] [#ERREUR_ENTITES_EXISTENT] [@ADMIN.ERROR_ENTRIES_EXIST_PART2].</td></tr></IF>
