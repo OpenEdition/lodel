@@ -233,6 +233,7 @@ $context=array(
 	       "version" => doubleval($version),
 	       "shareurl"=>$GLOBALS[shareurl],
 	       "extensionscripts"=>$GLOBALS[extensionscripts],
+	       "currenturl"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
 	       ); // tres important d'initialiser le context.
 $droitadminlodel=0;
 $droitadmin=0;

@@ -91,11 +91,10 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   }
 }
 
-function insert_template($filename)
+function insert_template($context,$filename)
 
 {
-	# ce n'est pas tres propre parce qu'on depend d'une global
-  calcul_page($GLOBALS[context],$filename,"");
+  calcul_page($context,$filename,"");
 }
 
 
