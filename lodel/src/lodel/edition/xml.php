@@ -8,6 +8,7 @@ include ($home."func.php");
 $context[id]=$id=intval($id);
 
 include_once($home."connect.php");
+require_once($home."entitefunc.php");
 
 $critere=$visiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
 
@@ -74,7 +75,7 @@ for($i=1; $i<count($arr); $i+=3) {
 
 
 
-function loop_champs($context,$funcname)
+function loop_valeurs_des_champs($context,$funcname)
 
 {
   global $erreur;
@@ -93,7 +94,7 @@ function loop_champs($context,$funcname)
     call_user_func("code_after_$funcname",$context);
 }
 
-function loop_champs_require() { return array("id"); }
+function loop_valeurs_des_champs_require() { return array("id"); }
 
 
 ?>
