@@ -407,7 +407,7 @@ function parse_loop()
 	$limit=$value;
 	break;
       case "SELECT" :
-	$select=$value;
+	$select=",".$value;
 	break;
       case "REQUIRE":
 	break;
