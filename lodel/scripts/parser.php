@@ -215,7 +215,7 @@ function parse ($in,$out)
   $fp=fopen ($out,"w") or $this->errmsg("cannot write file $out");
   fputs($fp,$contents);
   fclose($fp); 
-  if ($GLOBALS[filemask]) chmod ($out,0666 & $GLOBALS[filemask]);
+  if ($GLOBALS[filemask]) chmod ($out,0666 & octdec($GLOBALS[filemask]));
 
   return $ret;
 }
