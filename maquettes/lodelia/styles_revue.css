@@ -72,7 +72,7 @@ sup
 	/*  
 	 *
 	 */
-	font-size: small;
+	font-size: xx-small;
 	font-weight: small;
 	text-align : justify;
 	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
@@ -329,12 +329,44 @@ sup
  *  hover: quand le curseur survole le lien
  *  link: lien non-visité
  *  visited: lien visité
- *	On peut associer des styles à des liens. 
+ *  active: lien activé
+ *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit 
+ *	placer un class dans la balise <a href>:
+ *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les 
+ *  états du lien (active, hover...).
  */
 
+ 
+ /*	style des liens par défaut
+  */
+ 
+ A {
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+}
 
+A:hover {
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
 
+A:active {
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	font-family: arial, helvetica, sans-serif;
+}
 
+ /*	style des liens pointant vers les auteurs
+  */ 
+ 
 A.auteur {
 	font-size: 10 pt;
 	text-decoration:none;
@@ -342,6 +374,8 @@ A.auteur {
 	color: #9C3234;
 	font-family: arial, helvetica, sans-serif;
 }
+
+
 A.auteur:hover {
 	font-size: 10 pt;
 	text-decoration:none;
@@ -349,13 +383,17 @@ A.auteur:hover {
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
 }
-A.auteur:activ {
+
+A.auteur:active {
 	font-size: 10 pt;
 	text-decoration:none;
 	font-weight: bold;
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
 }
+
+ /*	style des liens des menus de la barre de navigation
+  */
 
 A.menu1 {
 	font-size: 9 pt;
@@ -364,6 +402,7 @@ A.menu1 {
 	color: #9C3234;
 	font-family: arial, helvetica, sans-serif;
 } 
+
 A.menu1:hover {
  	font-size: 9 pt;
 	text-decoration:none;
@@ -371,7 +410,7 @@ A.menu1:hover {
 	color: #333333;
 	font-family: arial, helvetica, sans-serif;
 } 
-A.menu1:activ {
+A.menu1:active {
 	font-size: 9 pt;
 	text-decoration:none;
 	font-weight: bold;
@@ -386,6 +425,7 @@ A.menu2 {
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
 } 
+
 A.menu2:hover {
  	font-size: 9 pt;
 	text-decoration:none;
@@ -393,13 +433,17 @@ A.menu2:hover {
 	color: #333333;
 	font-family: arial, helvetica, sans-serif;
 } 
-A.menu2:activ {
+
+A.menu2:active {
 	font-size: 9 pt;
 	text-decoration:none;
 	font-weight: bold;
 	color: #333333;
 	font-family: arial, helvetica, sans-serif;
 } 
+
+ /*	style des liens 
+  */
 
 A.petittexte {
 	font-size: xx-small;
@@ -408,6 +452,7 @@ A.petittexte {
 	color: #9C3234;
 	font-family: arial, helvetica, sans-serif;
 }
+
 A.petittexte:hover {
 	font-size: xx-small;
 	font-weight: small;
@@ -415,7 +460,8 @@ A.petittexte:hover {
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
 }
-A.petittexte:activ {
+
+A.petittexte:active {
 	font-size: xx-small;
 	font-weight: small;
 	text-decoration:none;
@@ -423,28 +469,8 @@ A.petittexte:activ {
 	font-family: arial, helvetica, sans-serif;
 }
 
-
-A {
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
-}
-A:hover {
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #666666;
-	font-family: arial, helvetica, sans-serif;
-}
-A:activ {
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #666666;
-	font-family: arial, helvetica, sans-serif;
-}
+ /*	style des liens des titre2
+  */
 
 A.titre2 {
 	font-size: 10 pt;
@@ -453,6 +479,7 @@ A.titre2 {
 	font-family: arial, helvetica, sans-serif;
 	text-indent : 10;
 }
+
 A.titre2:hover {
 	font-size: x-small;
 	font-weight: small;
@@ -460,7 +487,7 @@ A.titre2:hover {
 	color: #ffffff;
 	font-family: arial, helvetica, sans-serif;
 }
-A.titre2:activ {
+A.titre2:active {
 	font-size: x-small;
 	font-weight: small;
 	text-decoration:none;
@@ -623,12 +650,12 @@ body
 	text-indent : 10;
 }
 
-h1
+.section1
 {
 	/*  définit les caractéristiques du titre de de niveau 1 : h1
 	 *
 	 */
-	font-weight : normal;
+	font-weight : large;
 	font-size : medium;
 	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 	text-align: left;
@@ -715,11 +742,17 @@ h7
 	line-height: 150%;
 }
 
+
+	/*Styles des menus dans la barre de navigation
+	 */
+
 .menu1 {
 	font-size: small;
 	font-weight: bold;
 	color: #9C3234;
 	font-family: arial, helvetica, sans-serif;
+	
+	
 	
 } 
 .menu2 {
@@ -729,3 +762,14 @@ h7
 	font-family: arial, helvetica, sans-serif;
 	text-align: right;
 } 
+
+	/* Style du formulaire de recherche
+	 */
+
+.chercher {
+	font-size: 10 pt;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+	margin-left: 2em;
+}
