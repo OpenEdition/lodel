@@ -49,30 +49,30 @@ foreach($erreur_htaccess as $dir) {
 
 
 <?php if ($erreur_htaccesswrite) { ?>
-<font color="red"><b>Erreur</b></font> : Le serveur ne peut pas écrire les fichiers '.htaccess' dans les répertoires suivants. Veuillez ajouter les fichiers vous-même et cliquer ensuite sur "Vérification".
+<font color="red"><b>[@INSTALL.ERROR]</b></font> : [@INSTALL.SERVER_CANT_WRITE_HTACCESS_FILES_IN_FOLLOWING_DIRECTORIES_ADD_FILES_YOURSELF_AND_CLICK_ON_VERIFICATION].
 
 
 
 <?php } ?>
 
-<p>Afin d'assurer un meilleur niveau de sécurité, certains répertoires doivent contenir un fichier '.htaccess' qui empèche l'accès au répertoire par le web. Ces fichiers ne sont pas présents dans le(s) répertoires suivants :</p>
+<p>[@INSTALL.FOR_SECURITY_REASON_SOME_DIRECTORY_MUST_CONTAIN_HTACCESS_FILES]. [@INSTALL.FILES_NOT_PRESENT_IN_FOLLOWING_DIRECTORIES] :</p>
 
-<p>Répertoire(s) (par rapport à la racine de LODEL)<br>
+<p>[@INSTALL.DIRECTORIES_IN_RELATION_TO_LODEL_ROOT]<br>
 <ul><?php $writeable=print_directories();   ?></ul>
 </p>
 
-Plusieurs possibilités s'offrent à vous :
+[@INSTALL.SEVERAL_POSSIBILITIES] :
 <ul>
 <?php  if ($writeable) { ?>
-<li>Laisser Lodel installer les '.htaccess' dans les répertoires où il peut écrire.<br />
-<input type="submit" name="write" value="Installation automatique des .htaccess">
+<li>[@INSTALL.LET_LODEL_INSTALL_HTACESS_FILES_IN_ALLOWED_DIRECTORIES].<br />
+<input type="submit" name="write" value="[@INSTALL.AUTOMATIC_INSTALLATION_HTACCESS_FILES]">
 </li>
 <? } ?>
-<li>Ajouter vous-même les '.htaccess'. A priori, ces fichiers doivent contenir une seule ligne :<br /><code>deny from all</code><br />
-<input type="submit" name="verify" value="Verification">
+<li>[@INSTALL.HOWTO_ADD_YOURSELF_HTACCESS_FILES] :<br /><code>deny from all</code><br />
+<input type="submit" name="verify" value="[@INSTALL.VERIFICATION]">
 </li>
-<li>Ne pas avoir de '.htaccess' (non recommandé à moins que le serveur ne supporte pas le '.htaccess').<br />
-<input type="submit" name="nohtaccess" value="Pas de .htaccess">
+<li>[@INSTALL.NO_HTACCESS_FILE_NOT_RECOMMENDED_UNLESS_SERVER_NOT_SUPPORT_HTACCESS_FILES].<br />
+<input type="submit" name="nohtaccess" value="[@INSTALL.NO_HTACCESS_FILE]">
 </li>
 </ul>
 
