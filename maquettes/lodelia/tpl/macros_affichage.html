@@ -196,13 +196,9 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
-		<DO>
-			<a class="titre1" href="sommaire.html?id=[#ID]">
-				[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]</IF>
-			</a>
-		</DO>
-	</LOOP>
+	<a class="titre1" href="sommaire.html?id=[#IDPARENT]">
+		[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]</IF>
+	</a>
 </DEFMACRO>
 
  
@@ -215,17 +211,13 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans_simple" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
-		<DO>
-  	    	<IF COND="[#NOM]">
-				<a  href="sommaire.html?id=[#IDPARENT]">
-					n&#176; [#NOM] 
-					<IF COND="[#TITRE]"> - [#TITRE]	</IF>.
-				</a>
-				<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
-			</IF>
-		</DO>
-	</LOOP>
+   	<IF COND="[#NOM]">
+		<a  href="sommaire.html?id=[#IDPARENT]">
+			n&#176; [#NOM] 
+			<IF COND="[#TITRE]"> - [#TITRE]	</IF>.
+		</a>
+		<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+	</IF>
 </DEFMACRO>
 
 
@@ -236,11 +228,7 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans_signalement" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
-		<DO>
-			<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE">, n&#176; [#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
-		</DO>
-	</LOOP>
+	<a  href="sommaire.html?id=[#IDPARENT]"><MACRO NAME="NOM_REVUE">, n&#176; [#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
 </DEFMACRO>
 
 
