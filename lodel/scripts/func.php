@@ -329,10 +329,7 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #}
 
 function getoption($nom,$extracritere=" AND type!='pass'")
-
 {
-  return; // a decommenter
-
   static $options_cache;
   if (!$nom) return;
 
