@@ -1,6 +1,6 @@
 <?
 
-// gere les types de indexs. L'acces est reserve au superadministrateur.
+// gere les types de entrees. L'acces est reserve au superadministrateur.
 
 require("revueconfig.php");
 include ($home."auth.php");
@@ -19,7 +19,7 @@ if ($id>0) {
 //
 if ($id>0 && ($delete || $restore)) { 
   include ($home."trash.php");
-  treattrash("typeindexs",$critere);
+  treattrash("typeentrees",$critere);
   return;
 }
 
@@ -27,7 +27,7 @@ $critere.=" AND status>0";
 
 if ($id>0 && $dir) {
   # cherche le parent
-  chordre("typeindexs",$id,"status>0",$dir);
+  chordre("typeentrees",$id,"status>0",$dir);
   back();
 }
 //
@@ -46,21 +46,21 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le status
-      $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tableprefix]typeindexs WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tableprefix]typeentrees WHERE id='$id'") or die (mysql_error());
       list($status,$ordre)=mysql_fetch_array($result);
     } else {
       $status=1;
-      $ordre=get_ordre_max("typeindexs");
+      $ordre=get_ordre_max("typeentrees");
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tableprefix]typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[nom]','$context[titre]','$context[balise]','$context[tpl]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tableprefix]typeentrees (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[nom]','$context[titre]','$context[balise]','$context[tpl]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
     back();
 
   } while (0);
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]typeindexs WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]typeentrees WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
@@ -68,7 +68,7 @@ if ($edit) { // modifie ou ajoute
 posttraitement($context);
 
 include ($home."calcul-page.php");
-calcul_page($context,"typeindex");
+calcul_page($context,"typeentree");
 
 
 ?>
