@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@EDITION.FILE_CONVERSION]</title>
+<title>[@EDITION.TITLE_FILE_CONVERSION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <script><!--
@@ -81,7 +81,7 @@ function infoChargement(nomFic){
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Conversion de fichier</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@EDITION.TITLE_FILE_CONVERSION]</td>
 	</tr>
 </table>
 
@@ -107,8 +107,8 @@ function infoChargement(nomFic){
 		<tr>
 			<td align="center">
 				<br />
-				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
+				<input class="form" type="submit" value="[@COMMON.UPLOAD]" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 <br /><br /><br />
 <span class="texte_info_popup">[@EDITION.CONVERSION_TOOLS] :</span><br />
 <a href="http://www.openoffice.org"><MACRO NAME="PNG_LOGO_OO"></a> <!--[<a href="http://www.hj-gym.dk/~hj/writer2latex/"><MACRO NAME="PNG_LOGO_W2L"></a>]-->

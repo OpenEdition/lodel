@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@EDITION.MOVE_PUBLICATION]</title>
+<title>[@EDITION.TITLE_MOVE_DOCUMENT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -31,7 +31,7 @@
 		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
 		<div style="padding-top:25px;">
 			<span class="texte_ligne_haut_tpl_publication">
-				[@EDITION.MOVE_DOCUMENT]
+				[@EDITION.TITLE_MOVE_DOCUMENT]
 			</span>
 		</div>
 	</div>
@@ -78,7 +78,7 @@
 	</table>
 
 	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='fonctionsavancees.php?id=[#IDDOCUMENT]';" />
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='fonctionsavancees.php?id=[#IDDOCUMENT]';" />
 	</div>
 
 <MACRO NAME="CLOSE_HTML">

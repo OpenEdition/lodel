@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@EDITION.EDIT_PUBLICATION]</title>
+<title>[@EDITION.TITLE_EDIT_PUBLICATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 	
@@ -72,10 +72,11 @@
 	<MACRO NAME="AFFICHER_TYPES_ENTREES">
 
 	<div class="pied_de_formulaire">
-		<input class="form" type="submit" name="edit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]"><input class="form" type="submit" name="edit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" name="edit" value="[@COMMON.ADD]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="Supprimer" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />
+			<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />
 		</IF>
 	</div>
 	

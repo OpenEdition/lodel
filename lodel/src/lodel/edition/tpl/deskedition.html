@@ -85,19 +85,19 @@
 					</td>
 					<td  heigth="25" align="center">
 						<IF COND="[#DROITADMINLODEL]">
-							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp; </span>
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.ADMINLODEL]&nbsp;:&nbsp; </span>
 						<ELSE/>
 							<IF COND="[#DROITADMIN]">
-								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN]&nbsp;:&nbsp; </span>
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.ADMIN]&nbsp;:&nbsp; </span>
 							<ELSE/>
 								<IF COND="[#DROITEDITEUR]">
-									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> [@COMMON.USER_EDITOR]&nbsp;:&nbsp; </span>
+									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> [@COMMON.EDITOR]&nbsp;:&nbsp; </span>
 								<ELSE/>
 									<IF COND="[#DROITREDACTEUR]">
-										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.USER_WRITER]&nbsp;:&nbsp; </span>
+										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.WRITER]&nbsp;:&nbsp; </span>
 									<ELSE/>
 										<IF COND="[#DROITVISITEUR]">
-											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> [@COMMON.USER_VISITOR]&nbsp;:&nbsp; </span>
+											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> [@COMMON.VISITOR]&nbsp;:&nbsp; </span>
 										</IF>
 									</IF>
 								</IF>
