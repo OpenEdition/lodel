@@ -156,6 +156,7 @@
 <LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
 </IF>
 <!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
+
 <IF COND="[#EDITION] eq 'display'">
 	<IF COND="[#TYPE] eq 'mltext'"> <!--[ multi-lingue ]-->
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
@@ -217,6 +218,10 @@
 <!--[ --------------- BOOLEAN -------------- ]-->
 <IF COND="[#TYPE] eq 'boolean'">
     <input type="checkbox" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes]>
+<ELSE/>
+<!--[ --------------- INT, NUMBER -------------- ]-->
+<IF COND="[#TYPE] eq 'int' or [#TYPE] eq 'number'">
+    <input type="text" name="[#VARNAME]" id="[#VARNAME]" value="[#VALUE]">
 <ELSE/>
 <!--[ --------------- MLTEXT -------------- ]-->
 <IF COND="[#TYPE] eq 'mltext'">
@@ -329,7 +334,9 @@ cp_[#NAME].writeDiv();
 		</td></tr></table>
 	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#VARNAME][previousvalue]"  VALUE="[#VALUE]">
 <ELSE/>
+
 ???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
 </IF>
 </IF>
 </IF>
@@ -438,7 +445,9 @@ cp_[#NAME].writeDiv();
         <LET VAR="idtype">[#ID]</LET>
 
 	<!--[ -----------[ SELECT ]---------- ]-->
-	<IF COND="[#EDITION]=='select'">
+	
+	<IF COND="[#EDITION] == 'select'">
+	
 	<select name="[#VARNAME][]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]">[#ROOT][#G_NAME]</option>
