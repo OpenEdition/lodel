@@ -29,16 +29,11 @@
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="center">Configuration de l'acces au serveur MySQL.</p>
+<h2>Accès au serveur MySQL.</h2>
 
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p>[option 1]</p>
-<p align="justify">
-Entrez les informations concernant le serveur MySQL. L'adresse du serveur doit être indiquée dans la documentation technique de votre hébergeur (par exemple : mysql.monhebergeur.com, ou localhost, etc.)
-Le nom d'utilisateur MySQL et le mot de passe sont personnels : ils ont dû vous être communiqués en même temps que les autres informations concernant le compte ftp et les courriels. Attention cependant, le nom d'utilisateur MySQL et le mot de passe sont souvent différents du nom d'utilisateur pour l'accès au site ou aux courriels. 
-<br />En cas de doute : contactez votre service technique pour plus d'informations. 
-</p>
+<p align="justify">Renseignez les informations permettant &agrave; Lodel de se connecter &agrave; votre base de donn&eacute;es.</p>
 <?php } else { // OPTION 2 ?>
 <p>[option 2]</p>
 <p align="justify">
@@ -63,6 +58,7 @@ GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'm
 </p>
 <?php } // fin OPTION 2 ?>
 
+<hr style="width: 100%; height: 2px;">
 
 <?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifiez les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
 
@@ -79,11 +75,22 @@ Utilisateur MySQL<br>
 <input type="text" size="60" name="newdbusername" value="<?php  echo $dbusername; ?>">
 </td></tr>
 <tr><td>
-Mot de passe de l'utilsateur MySQL<br>
+Mot de passe de l'utilisateur MySQL<br>
 <input type="password" size="60" name="newdbpasswd" value="">
 </td></tr>
 </table>
 <input type="submit" value="continuer">
-
 </form>
+
+
+<?php if ($installoption==1) { // OPTION 1 ?>
+    <hr style="width: 100%; height: 2px;">
+    <p align="justify"><strong>Adresse du serveur MySQL :</strong> elle a d&ucirc; vous &ecirc;tre notifi&eacute;e dans la documentation technique de votre h&eacute;bergeur. Exemple : localhost ou mysql.monhebergeur.com
+        </p>
+        <p align="justify"><strong>Nom d'utilisateur MySQL et mot de passe :</strong> ils ont d&ucirc; vous &ecirc;tre communiqu&eacute;s par votre h&eacute;bergeur. </p>
+        <p align="justify"><strong>En cas de doute : </strong>contactez votre service technique. </p>
+
+<?php } // fin OPTION 1 ?>
+
+
 <?php  include("tpl/install-closehtml.html"); ?>

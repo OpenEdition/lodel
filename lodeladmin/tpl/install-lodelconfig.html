@@ -29,7 +29,7 @@
 <!--[ ce fichier n'est pas un template ]-->
 
 
-<p align="center">Installation du fichier de configuration</p>
+<h2>Installation du fichier de configuration</h2>
 
 <?php  if($erreur_exists_but_not_readable) {?>
 <p>
@@ -39,30 +39,30 @@
 <?php } ?>
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p>[Option d'installation 1]</p>
 <p align="justify">
-Une erreur est intervenue lors de la copie du fichier de configuration "lodelconfig.php" dans le répertoire racine de Lodel. Ceci est probablement dû aux droits d'écriture sur ces repertoires. Si vous souhaitez que le serveur fasse l'opération lui même, vous devez lui donner les droits d'écriture sur le répertoire racine de Lodel. Sinon, reportez vous à l'option 2 pour des solutions alternatives.
+Une erreur est survenue lors de la copie du fichier de configuration "lodelconfig.php" dans le répertoire racine de Lodel. Ceci est probablement dû aux droits d'écriture sur ces repertoires. Si vous souhaitez que le serveur fasse l'opération lui même, vous devez lui donner les droits d'écriture sur le répertoire racine de Lodel. Sinon, reportez vous aux solutions alternatives ci-dessous.
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">
 <input type="submit" value="continuer">
 </form>
 </p>
-<p>[Option d'installation 2]</p>
+<hr style="width: 100%; height: 2px;">
+<p>[Alternatives]</p>
 <?php } ?>
 <p align="justify">
 Le fichier de configuration est prêt, il faut l'installer dans le répertoire racine de Lodel. Ce fichier doit être lisible par le serveur web, mais comme il contient des informations confidentielles (mot de passe), il faut restreindre <strong>au maximum</strong> les droits de lecture sur ce fichier.
-<p>
+</p>
 <p align="justify">
-Pour installer le fichier de configuration, il y a trois possibilités :
+Pour installer le fichier de configuration, choisissez une des trois solutions :
 </p>
 <ul>
 <li>
 Télécharger le fichier puis l'enregistrer à la racine de Lodel (par ftp par exemple).
-<table></tr><td>
+<table><tr><td>
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="downloadlodelconfig">
 <input type="submit" value="Télécharger">
-</form></td><td> puis </td><td>
+</form></td><td> Ensuite, cliquer sur "Continuer" </td><td>
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">
 <input type="submit" value="continuer">
@@ -71,14 +71,14 @@ Télécharger le fichier puis l'enregistrer à la racine de Lodel (par ftp par exem
 
 </li>
 <li>
-Visualiser le fichier, faire un copier coller dans un fichier texte nommé lodelconfig.php et l'enregistrer ensuite à la racine de Lodel. (ne laissez aucune ligne apres le ?&gt; final) :
+Visualisez le fichier, faites un copier coller dans un fichier texte nommé lodelconfig.php et enregistrez le ensuite à la racine de Lodel. (ne laissez aucune ligne apres le ?&gt; final) :
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="showlodelconfig">
 <input type="submit" value="Visualiser">
 </form>
 </li>
 <li>
-Copier vous même le fichier lodeladmin/<?=$lodelconfig ?> à la racine de Lodel en le renomant 'lodelconfig.php'.
+Copiez vous même le fichier lodeladmin/<?=$lodelconfig ?> à la racine de Lodel en le renomant 'lodelconfig.php'.
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">
 <input type="submit" value="continuer">
@@ -88,7 +88,6 @@ Copier vous même le fichier lodeladmin/<?=$lodelconfig ?> à la racine de Lodel e
 
 
 
-LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 <p>
 
 <? include("tpl/install-closehtml.html"); ?>

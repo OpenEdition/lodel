@@ -29,25 +29,13 @@
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="center">Configuration de la base de données.</p>
+<h2>Choix de la base de données.</h2>
 
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p>[option 1]</p>
 <p align="justify">
-Choisir une base de données existante ou en créer une nouvelle. En général, votre base de données a déjà été créée par votre herbergeur et il n'est pas possible d'en ajouter une nouvelle. Pour plus de précisions, reportez-vous au support technique de votre hebergeur.<p>
-<p align="justify">
-Le préfixe de table est utile lorsque vous ne disposez que d'une seule base de données (comme c'est souvent le cas chez les hébergeurs) et que d'autres applications partageront la base de données avec Lodel. Dans ce cas, un préfixe est moyen commode de distinguer les tables utilisées par telle ou telle application. En cas de doute, utilisez tout simplement "lodel_" comme préfixe.
-</p>
-<p align="justify">
-Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans ce cas, il faut choisir entre : 
-<ul>
-<li>Une unique base de données pour tous les sites.
-<li>Une base de donnéee pour chaque site, en plus de la base de données principale.
-</ul>
-</p>
+Choisissez une base de données existante ou créez en une nouvelle.<br/>En général, votre base de données a déjà été créée par votre h&eacute;bergeur. Veuillez vous reporter au support technique de votre hebergeur.</p>
 <?php } else { // OPTION 2 ?>
-<p>[option 2]</p>
 <p align="justify">
 Vous pouvez utiliser une base de données existante, mais il est préférable de créer un base de données dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
 </p>
@@ -92,7 +80,7 @@ Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans c
 <br/>
 <?php } ?>
 
-
+<hr style="width: 100%; height: 2px;">
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="database">

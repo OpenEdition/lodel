@@ -29,43 +29,63 @@
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="center">
-Bienvenue dans l'installation de <b>LODEL</b>, <b>LO</b>giciel d'<b>ED</b>ition &eacute;<b>L</b>ectronique</p>
 
-<h2>Options d'installation</h2>
-<p align="justify">
-L'installation de LODEL peut se faire de deux façons, en fonction du système sur lequel le logiciel est installé et des exigences de securité :
+
+<p align="justify">Lodel est un logiciel libre soumis à la licence GNU General Public License (GPL). Il est fourni sans aucune garantie. Veuillez consulter les conditions d'utilisation <a href="#conditions">ci-dessous</a> et la licence <a href="../COPYING">ici<a>.</p>
+
+
+<h2>Choix du type d'installation</h2>
+    <hr style="width: 100%; height: 2px;" />
+    <form method="post" action="install.php">
+      <input type="hidden" name="tache" value="droits">
+      <?php if ($installing) { ?>
+      <p align="justify">Une installation a &eacute;t&eacute; commenc&eacute;e, que souhaitez vous faire:</p>
+      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="continue" value="Poursuivre l'installation commenc&eacute;e."></p>
+      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option1" value="Recommencer une installation simplifi&eacute;e."></p>
+      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option2" value="Recommencer une installation avanc&eacute;e pour les experts."></p>
+<?php } else { ?>
+      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="option1" value="Installation simplifi&eacute;e."></p>
+      <p align="justify">&nbsp;&nbsp;&nbsp; <input type="submit" name="option2" value="Installation avanc&eacute;e pour les experts."></p>
+<?php } ?>
+</form>
+
+    <hr style="width: 100%; height: 2px;" />
+    <ul>
+      <li>
+	<p>L'installation simplifi&eacute;e s'adresse aux
+	  installations chez des h&eacute;bergeurs. </p>
+        </li>
+        <ul>
+          <li>
+            <p><strong>Avantage :</strong> elle est
+simple et rapide. Cette option convient
+pour la plupart des h&eacute;bergeurs associatifs ou commerciaux car ils se chargent de la securit&eacute; li&eacute;e aux droits de fichiers.
+            <strong>Inconv&eacute;nient :</strong><strong> le niveau de s&eacute;curit&eacute; n'est pas &eacute;lev&eacute;.</strong>
 </p>
-<ul>
-<li>La solution la plus simple, l'option 1, consiste à laisser LODEL gérer les droits de fichiers. Cette option convient pour la plupart des hébergeurs commerciaux car ils gèrent eux même la securité liée aux droits de fichiers, par ailleurs la base de données MySQL est en général déjà créée (munissez vous de vos codes d'accès) et de manière générale l'administration est assurée par votre hébergeur. Cependant, cette option peut ne pas offrir une securité suffisante, particulièrement dans le cas d'une utilisation sur un serveur en production, connecté à internet et géré par vous même. Si vous êtes dans ce cas, choisissez plutôt l'option 2.
-<li>L'option 2 permet une gestion fine des droits de fichiers et des droits de la base de donnée, il est necessaire de lire entièrement la documentation d'installation et de suivre les consignes de l'option 2. Elle se destine aux personnes qui administre eux-mêmes leur serveur, elle requiert des compétences (minimales) en administration système. 
-</ul>
-<p><b>En résumé, l'option 1 s'adresse aux installations chez les hébergeurs, et l'option 2 s'adresse aux administrateurs système sur serveur dédié.</b>
-<br /><b>Prérequis : accès à un serveur web supportant : php (version supérieure à 4.3 recommandée) et MySQL.
-</p>
+          </li>
+        </ul>
+        <li>
+          <p>L'installation avanc&eacute;e s'adresse aux administrateurs syst&egrave;me travaillant sur leur serveur.</p>
+        </li>
+        <ul>
+          <li>
+            <p><strong>Avantage :</strong> Elle est s&ucirc;re et configurable. Elle permet une gestion fine des droits de fichiers, des droits de la base de donn&eacute;e et autres options. <strong>Inconv&eacute;nient :</strong> Elle est plus complexe. Elle requiert des comp&eacute;tences minimales en administration syst&egrave;me. Il est necessaire de lire enti&egrave;rement la documentation d'installation.
+	</p>
+      </li>
+    </ul>
+    <ul>
+    </ul>
+  </ul>
 
-
-<h2>Condition d'utilisation</h2>
+<hr style="width: 100%; height: 2px;" />
+<h2 id="conditions">Condition d'utilisation</h2>
 <p align="justify">Ce programme est un logiciel libre&nbsp;; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation&nbsp;; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure. </p>
 <p align="justify">Ce programme est distribu&eacute; dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE&nbsp;; sans m&egrave;me la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de d&eacute;tails, voir la Licence Publique G&eacute;n&eacute;rale GNU. </p>
 <p align="justify">Un exemplaire de la Licence Publique G&eacute;n&eacute;rale GNU doit &ecirc;tre fourni avec ce programme&nbsp;; si ce n'est pas le cas, &eacute;crivez &agrave; la Free Software Foundation Inc., 675 Mass Ave, Cambridge, MA 02139, Etats-Unis. </p>
 
-<p>GNU General Public License&nbsp;: <A HREF="../COPYING">licence</A></p>
+<p>GNU General Public License&nbsp;: <a href="../COPYING">licence</a></p>
 
 
-<p align="center">
-<form method="post" action="install.php">
-<input type="hidden" name="tache" value="droits">
-<?php if ($installing) { ?>
-Une installation a &eacute;t&eacute; commenc&eacute;e, que souhaitez vous faire:</br>
-<input type="submit" name="continue" value="Poursuivre l'installation"><br />
-<input type="submit" name="erase_and_option1" value="Recommencer une nouvelle installation option 1">
-<input type="submit" name="erase_and_option2" value="Recommencer une nouvelle installation option 2">
-<?php } else { ?>
-<input type="submit" name="option1" value="Installation option 1">
-<input type="submit" name="option2" value="Installation option 2">
-<?php } ?>
-</form>
-</p>
+
 
 <?php  include("tpl/install-closehtml.html"); ?>

@@ -56,7 +56,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
   if ($maindefault) { // site par defaut ?
     $context['nom']="Site principal";
     $context['rep']="principal";
-    $context['toroot']=true;
+    $context['atroot']=true;
   }
   // validation
 

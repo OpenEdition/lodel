@@ -1761,11 +1761,11 @@ function msg_intro() {
   open_html();
 ?>
 <p align="center">
-Bienvenue dans le script d'installation de <b>LODEL</b>, logiciel d'édition électronique</p>
-<p>Ce script va:</p>
+Bienvenue dans l'installation de <b>LODEL</b>, logiciel d'édition électronique</p>
+<p>L'installation comprend:</p>
 <ul>
-    <li>télécharger automatiquement sur le site http://www.lodel.org la dernière version de Lodel.</li>
-  <li>configurer Lodel</li>
+    <li>le téléchargement automatiquement sur le site http://www.lodel.org la dernière version de Lodel.</li>
+  <li>la configuration de Lodel pour votre serveur.</li>
 </ul>
 
 <p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappelé ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
