@@ -447,7 +447,7 @@
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
 	<!-- On liste en premier les séries linéaires. -->
-	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" ORDER="ordre">
+	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre">
 		<BEFORE>
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 			<tr><td><h2>Série Linéaires :</td></tr>
@@ -460,7 +460,7 @@
 				</td>
 			</tr>
 			<!-- On liste tous les numéros de la série linéaire courante -->
-			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'" ORDER="ordre">
+			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
 				<CORPS>
 					<tr>
 						<td class="texte_trespetit">
@@ -481,7 +481,7 @@
 		</AFTER>
 	</LOOP>
 	<!-- On liste ensuite les séries hiérarchiques -->
-	<LOOP NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'" ORDER="ordre">
+	<LOOP NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'"  WHERE="status>0" ORDER="ordre">
 		<BEFORE>
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 			<tr><td><h2>Série Hiérarchiques :</td></tr>
@@ -494,7 +494,7 @@
 				</td>
 			</tr>
 			<!-- On liste tous les thèmes de 1er niveau de la série hiérarchique courante -->
-			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'" ORDER="ordre">
+			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
 				<CORPS>
 					<tr>
 						<td class="texte_trespetit">
