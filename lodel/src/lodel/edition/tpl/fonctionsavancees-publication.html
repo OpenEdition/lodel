@@ -80,6 +80,22 @@
 			</IF>
 		</td>
 	</tr>
+	<IF COND="[#TYPE] EQ 'serie_lineaire'">
+		<tr>
+			<td>
+				Charger un sommaire
+			</td>
+			<td align="center">
+				<IF COND="[#EDITEUR]">
+					<a href="chargesommaire.php?id=[#ID]">
+						<span class="texte_trespetit_centre">Charger ...</span>
+					</a>
+				<ELSE/>
+					<MACRO NAME="GIF_INACTIF">
+				</IF>
+			</td>
+		</tr>
+	</IF>
 </table>
 
 <MACRO NAME="CLOSE_HTML">
