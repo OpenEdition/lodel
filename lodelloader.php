@@ -1790,14 +1790,14 @@ Bienvenue dans l'installation de <strong>Lodel</strong>, logiciel d'&eacute;diti
   <li>la configuration de Lodel pour votre serveur.</li>
 </ul>
 
-?>
+<?php
 if (ini_get("safe_mode")) {
-<?
-<p><strong>Attention:</strong> Lodel a d&eacute;tect&eacute; que php fonctionne en <em>safe_mode</em> sur votre serveur. Ceci empèche, en principe, l'installation et l'utilisation de Lodel. Toutefois, vous pouvez quand m&ecirc;me tenter une installation.</p>
 ?>
+<div style="border: 1px solid red; padding: 10px">
+<strong>Attention:</strong> Lodel a d&eacute;tect&eacute; que php fonctionne en <em>safe_mode</em> sur votre serveur. Ceci empèche, en principe, l'installation et l'utilisation de Lodel. Toutefois, vous pouvez quand m&ecirc;me tenter une installation.</div>
+<?php
 } 
-
-<?
+?>
 
 <p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappel&eacute;es ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
 
