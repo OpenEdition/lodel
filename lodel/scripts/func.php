@@ -35,7 +35,7 @@ function writefile ($filename,$text)
    { 
      if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
    }
-   return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0666 & octdec($GLOBALS[filemask]));
+   return ($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f) && chmod ($filename,0666 & octdec($GLOBALS[filemask]));
 }
 
 
