@@ -28,7 +28,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+authenticate(LEVEL_ADMIN,NORECORDURL);
 #authenticate();
 
 
@@ -71,6 +71,8 @@ if ($fichier && $delete) {
   include ($home."func.php");
 
   if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
+  require_once($home."cachefunc.php");
+  removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
   if (!$err) {     back();   }
 } else {

@@ -75,6 +75,9 @@ if ($fichier) {
   if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();
   @unlink($tmpfile);
 
+  require_once($home."cachefunc.php");
+  removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+
 // verifie les .htaccess dans le CACHE
   $dirs=array("CACHE","lodel/admin/CACHE","lodel/edition/CACHE","lodel/txt","lodel/rtf","lodel/sources");
    foreach ($dirs as $dir) {
