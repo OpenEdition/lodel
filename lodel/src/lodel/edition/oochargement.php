@@ -888,7 +888,8 @@ function cleanList($text)
       $inlist++;
     }
     if ($inlist>0) { // in a list
-      $arr[$i+1]=preg_replace("/<\/?(?:p|div|r2r:puces?)\b[^>]*>/"," ",$arr[$i+1]);
+      //      $arr[$i+1]=preg_replace("/<\/?(?:p|div|r2r:puces?)\b[^>]*>/"," ",$arr[$i+1]);
+      $arr[$i+1]=preg_replace("/<\/?r2r:puces?)\b[^>]*>/"," ",$arr[$i+1]);
     } else { // out of any list
       $arr[$i+1]=addList($arr[$i+1]);
     }
