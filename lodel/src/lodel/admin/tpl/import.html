@@ -75,7 +75,7 @@
 		</li>
 		<li>
 		  <p>[@ADMIN.LOAD_FILE_POST_PHP_CONFIGURATION] : <?php echo ini_get('post_max_size'); ?></p>
-      <IF COND="[#ERROR_UPLOAD]"><b>[@COMMON.ERROR] </b> [@ADMIN.IN_LOAD] !</IF>
+      <IF COND="[#ERROR_UPLOAD]">[@ADMIN.ERROR_LOADING_FILE] !</IF>
                   <p>
     Archive: <form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
       <input type="file" name="archive" size="40">
