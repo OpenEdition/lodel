@@ -262,6 +262,13 @@ function tocable($level,$text=-1)
 }
 
 
+function multilingue($lang,$text)
+
+{
+  preg_match("/<r2r:ml lang=\"".strtolower($lang)."\">(.*?)<\/r2r:ml>/s",$text,$result);
+  return $result[1];
+}
+
 
 function makeurl ($rep)
 {
@@ -281,6 +288,7 @@ function vignette($width,$text)
   resize_image($width,$text,$vignettefile,"+");
   return $vignettefile;
 }
+
 
 # renvoie les attributs pour une image
 function sizeattributs($text)

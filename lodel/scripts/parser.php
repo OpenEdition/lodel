@@ -231,7 +231,10 @@ function parse_variable (&$text,$escape=TRUE)
 # traite les sequences [...(#BALISE)...]
 
   while (preg_match("/(\[[^\[\]]*?)\((#$this->variable_regexp(?::$lang_regexp)?(?:\|$filtre_regexp)*)\)([^\[\]]*?\])/s",$text,$result)) {
-    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1_LANG\\2",$result[2]);
+####    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1_LANG\\2",$result[2]);
+
+  // remplace la langue
+    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1|multilingue('\\2')",$result[2]);
 
 # parse les filtres
     if (preg_match("/^#($this->variable_regexp)((?:\|$filtre_regexp)*)$/",$expr,$subresult)) {
@@ -276,7 +279,10 @@ function parse_variable (&$text,$escape=TRUE)
     if ($variable!==FALSE) { // traitement particulier
       $variable=$pre.$variable.$post;
     } else { // non traitement normal
-      if ($result[2]) $result[1].="_LANG".substr($result[2],1);
+      if ($result[2]) { // langue
+	$pre.="multilingue('".substr($result[2],1)."',";
+	$post.=")";
+      }
       $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
       }
     $text=str_replace($result[0],$variable,$text);

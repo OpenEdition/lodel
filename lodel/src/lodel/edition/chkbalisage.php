@@ -20,8 +20,18 @@ $result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typepersonnes WHERE sta
 while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 
 // ajoute les balises "documents"
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.style,$GLOBALS[tp]champs.titre FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  classe='documents' AND $GLOBALS[tp]champs.statut>0") or die (mysql_error());
-while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.style,$GLOBALS[tp]champs.titre,$GLOBALS[tp]champs.type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  classe='documents' AND $GLOBALS[tp]champs.statut>0") or die (mysql_error());
+while (list($style,$titre,$type)=mysql_fetch_row($result)) { 
+  if ($type=="mltext") {
+    require_once($home."champfunc.php");
+    $styles=decode_mlstyle($style);
+    foreach($styles as $lang => $style) {
+      $balises[$style]=$titre." ($lang)";
+    }
+  } else {
+    $balises[$style]=$titre;
+  }
+}
 
 
 //

@@ -54,6 +54,7 @@ if ($edit) { // modifie ou ajoute
   do {
     if (!$context[nom] || !isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
     if (!$context[type]) $err=$context[erreur_type]=1;
+    if ($context[type]=="mltext" && !isvalidmlstyle($context[style])) $err=$context[erreur_mlstyle]=1;
     if ($err) break;
     include_once ($home."connect.php");
 

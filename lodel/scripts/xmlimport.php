@@ -21,27 +21,47 @@ function enregistre_entite_from_xml($context,$text,$classe)
   $sets=array();
   while (list($nom,$style,$type,$traitement)=mysql_fetch_row($result)) {
     require_once($home."traitements.php");
-    // look for that tag
+
+    if ($type=="mltext") { // text multilingue
+      require_once($home."champfunc.php");
+      $stylesarr=decode_mlstyle($style);
+    } else {
+      $stylesarr=array($style);
+    }
+    if ($localcontext[entite][$nom]) die ("Error: Two fields have the same name. Please correct in admin/champs.php");
+    foreach ($stylesarr as $lang=>$style) {
+      // look for that tag
 #    echo "$nom $style $type $traitement<br>";
-    if (preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result2)) {
-      $value=$result2[1];
-      if ($type=="date") {
-	require_once($home."date.php");
-	$value=mysqldate($value);
-      }
-      if ($traitement) { // processing ?
-	$traitements=preg_split("/\|/",$traitement);
-	foreach ($traitements as $traitement) {
-	  #echo "trait: $traitement";
-	  if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/",$traitement,$result3)) { 
-	    if ($result3[2]) $result3[2]=",".$result3[2];
-	    $func=create_function('$x','return '.$result3[1].'($x'.$result3[2].');');
-	    $value=$func($value);
-	  }
+      if (preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result2)) {
+	$value=$result2[1];
+
+	// type speciaux
+	if ($type=="date") { // date
+	  require_once($home."date.php");
+	  $value=mysqldate($value);
 	}
-      } // processing
-      $localcontext[entite][$nom]=addslashes($value);
-    } // if found style found in the text
+
+	if ($traitement) { // processing ?
+	  $traitements=preg_split("/\|/",$traitement);
+	  foreach ($traitements as $traitement) {
+#echo "trait: $traitement";
+	    if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/",$traitement,$result3)) { 
+	      if ($result3[2]) $result3[2]=",".$result3[2];
+	      $func=create_function('$x','return '.$result3[1].'($x'.$result3[2].');');
+	      $value=$func($value);
+	    }
+	  }
+	} // processing
+	
+	if ($type=="mltext") {
+	  $value="<r2r:ml lang=\"$lang\">$value</r2r:ml>";
+	}
+
+	// now record the $value
+	$localcontext[entite][$nom].=addslashes($value);
+
+      } // if found style found in the text
+    } // foreach styles for mltext
   } // foreach fields.
 
   // enleve les <P> s'ils sont aux extremites, et qu'il n'y en a pas dedans
