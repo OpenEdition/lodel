@@ -38,7 +38,7 @@
 			<td class="left"><input size="70" type="text" name="email" id="email" value="[#EMAIL]" /></td>
 		</tr>
 		[(#ERROR_EMAIL|true)<tr><td>&nbsp;</td><td class="message_erreur">Cet email n'est pas valide. Veuillez entrer une adresse email valide.</td></tr>]
-		<IF COND="[#ERROR_EMAIL_EXISTS]"><tr><td>&nbsp;</td><td class="message_erreur">Un compte a cette adresse mail a déjà été enregistré. Si vous avez perdu vos identifiants vous pouvez les obtenir <a href="register.php?lostpasswd&email=[(#EMAIL|urlencode)]">ici</a>.</td></tr></IF>
+		<IF COND="[#ERROR_EMAIL_EXISTS]"><tr><td>&nbsp;</td><td class="message_erreur">Un compte a cette adresse mail a déjà été enregistré.</IF>
 		<IF COND="[#ERROR_SENDING_EMAIL]"><tr><td>&nbsp;</td><td class="message_erreur">Une erreur s'est produite au moment d'envoyer le mail avec vos identifiants. Veuillez vérifier l'adresse que vous avez entrée. Si le problème persiste merci de contacter le webmaster <a href="mailto:[#WEBMASTER]">[#WEBMASTER]</a>.</td></tr></IF>
 		<tr>
 			<td><label for="url">URL de votre site :</label></td>
@@ -48,6 +48,7 @@
 			<td><label for="commentaire">Description de votre site :</label><br/><span class="small">(facultatif)</span></td>
 			<td class="left"><textarea name="commentaire" id="commentaire" rows="10" cols="60" >[#COMMENTAIRE]</textarea></td>
 		</tr>
+		<tr><td>Si vous avez perdu vos identifiants vous pouvez les obtenir <a href="register.php?lostpasswd&email=[(#EMAIL|urlencode)]">ici</a>.</td></tr>
 		<tr><td colspan="2"><br />
 <input class="form" type="submit" value="   Continuer    " /></td></tr>
 	</table>
