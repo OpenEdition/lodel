@@ -8,6 +8,23 @@ require_once($home."connect.php");
 #echo "::";
 $GLOBALS[tablefields]=array();
 
+if (!function_exists("var_export")) {
+function var_export($arr,$t)
+
+{
+  $ret="array(";
+  foreach ($arr as $k=>$v) {
+    $ret.="'$k'=>";
+    if (is_array($v)) {
+      $ret.=var_export2($v,TRUE).",";
+    } else {
+      $ret.=$v.",";
+    }
+  }
+  return $ret.")";
+}
+}
+
 foreach (array($GLOBALS[database],$GLOBALS[currentdb]) as $db) {
   $result=mysql_list_tables($db) or die(mysql_error());
   while (list($table)=mysql_fetch_row($result)) {
@@ -25,23 +42,5 @@ fputs($fp,'<? $GLOBALS[tablefields]='.var_export($GLOBALS[tablefields],TRUE).' ;
 fclose($fp);
 
 
-if (!function_exists("var_export")) {
-
-function var_export($arr,$t)
-
-{
-  $ret="array(";
-  foreach ($arr as $k=>$v) {
-    $ret.="'$k'=>";
-    if (is_array($v)) {
-      $ret.=var_export2($v,TRUE).",";
-    } else {
-      $ret.=$v.",";
-    }
-  }
-  return $ret.")";
-}
-
-}
 
 ?>
