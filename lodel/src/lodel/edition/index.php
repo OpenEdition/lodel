@@ -22,37 +22,11 @@ if ($parent) {
   $base="edition";
 }
 
+include ("$home/boucles.php");
 
 include ("$home/calcul-page.php");
 calcul_page($context,$base);
 
-
-function boucle_themesparents (&$context,$funcname) {
-	 $parent=intval($context[parent]);
-#ifndef LODELLIGHT
-	 $type="AND type='theme'";
-#else
-	 $type="";
-#endif
-	 if (!$parent) return;
-
-	 $contexts=array(); $i=0;
-
-	$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $type") or die (mysql_error());	 
-	  while (mysql_num_rows($result)>0) {
-		$contexts[$i]=mysql_fetch_array($result);
-		$parent=$contexts[$i][parent];
-		$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $type") or die (mysql_error());	 
-		$i++;
-	 }
-
-	$i--;
-	while ($i>=0) {
-		 $localcontext=array_merge($context,$contexts[$i]);
-		 call_user_func("code_boucle_$funcname",$localcontext);
-		 $i--;
-	 }
-}
 ?>
 
 
