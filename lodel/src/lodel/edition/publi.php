@@ -171,8 +171,8 @@ function publi_document ($critere,$status)
       if (!mysql_num_rows($result)) die ("Vous n'avez pas les droits");
     }
   } else {
-    $where=$critere;
-    if (!$admin) $where.=" AND groupe IN ($usergroupes) AND status>-32";
+    $where=$critere."  AND status>-32";
+    if (!$admin) $where.=" AND groupe IN ($usergroupes)";
   }
 
   if ($status<0) { // on veut mettre hors ligne
