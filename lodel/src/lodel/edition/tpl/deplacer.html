@@ -43,15 +43,32 @@
 	<table class="table_form_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td>
-				<LOOP NAME="Deplace_document" TABLE="publications" WHERE="idparent='[#ID]'" ORDER="ordre">
+
+				<LOOP NAME="Deplace_document" TABLE="entites" WHERE="idparent='[#ID]' AND classe='publications'" ORDER="ordre">
 					[#BARRE]
+		                        <LOOP NAME="deplace_droit" TABLE="typeentites_typeentites,entites" WHERE="id='[#IDDOCUMENT]' AND idtypeentite=idtype AND idtypeentite2='[#IDTYPE]'" SELECT="condition">
+		                        <DO>
+		                        <!--[ on a le droit de la deplacer ici ]-->
 					<span style="margin-left: [#MARGIN]px;">
 						<a href="deplacer.php?id=[#IDDOCUMENT]&idparent=[#ID]">
-							<font color="black">[#IDENTIFIANT]&nbsp;[#TITRE]&nbsp;([#TYPE])</font>
+							<span class="texte_orange">[#IDENTIFIANT]&nbsp;</span>
 						</a>
+			                        [#TITREENTITE]&nbsp;([#TYPE])
 						<br />
 						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
 					</span>
+                                        </DO>
+                                        <ALTERNATIVE>
+		                        <!--[ on n'a pas le droit de la deplacer ici ]-->
+					<span style="margin-left: [#MARGIN]px;">
+							[#IDENTIFIANT]&nbsp;
+			                        [#TITREENTITE]&nbsp;([#TYPE])
+						<br />
+						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
+					</span>
+
+                                        </ALTERNATIVE>
+		                        </LOOP>
 					<?php  $context[margin]+=10; ?> <!--[ incrément de la marge ]-->
 					<LET VAR="BARRE">[#BARRE]|</LET>
 					<LOOP NAME="Deplace_document"></LOOP>

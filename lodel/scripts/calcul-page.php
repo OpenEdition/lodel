@@ -107,7 +107,7 @@ function mymysql_error($query,$tablename="")
     die("</body>".$tablename."QUERY: ".htmlentities($query)."<br><br>".mysql_error());
   } else {
     if ($GLOBALS[contactbug]) @mail($contactbug,"[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>".htmlentities($query)."<br><br>".mysql_error());
-    die("Une erreur est survenue dans lors de la génération de cette page. Veuillez nous excusez, nous traitons le probleme le plus rapidement possible");
+    die("Une erreur est survenue lors de la g&eacute;n&eacute;ration de cette page. Veuillez nous excuser, nous traitons le probl&egrave;me le plus rapidement possible");
   }
 }
 

@@ -57,6 +57,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
     if ($msg) {  echo "<li>1ere conversion format initial->SXW <br>\n";flush(); $time1=time(); }
     
     runDocumentConverter($uploadedfile,"sxw");
+
     if ($tounlink) unlink($uploadedfile); // ne detruit pas l'original
     // solution avec unzip, ca serait mieux avec libzip
     // dezip le fichier content
@@ -73,7 +74,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
     echo "<li>unzip le fichier SXW<br>\n";flush();
   }
   $tmpdir=$uploadedfile."_dir";
-  mkdir("$tmpdir",0700);
+  mkdir($tmpdir,0700);
 
   // if the file is outputted by the OO user, it is not necessary writable.
 #  if (!is_writeable($uploadedfile.".sxw")) {
@@ -158,8 +159,6 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   }
 #  die("ERROR: $uploadedfile ".join(" ",$convertedfiles));
 
-
-
   return $convertedfiles;
 }
 
@@ -195,116 +194,6 @@ function OpenOfficeorg($uploadedfile,$extension,$msg=TRUE)
 }
 
 
-/*
-// This fonction convert a file (can be zipped) in a format readable by OO 
-// into the HTML+Lodel information.
-// Use OO to convert original file into SXW and to convert the SXW into the HTML
-
-function HTMLLodel ($uploadedfile,$msg=TRUE)
-
-{
-
-  //
-  // regarde si le fichier est zipper
-  //
-  $fp=fopen($uploadedfile,"r") or die("le fichier $uploadedfile ne peut etre ouvert");
-  $cle=fread($fp,2);
-  fclose($fp);
-
-  if ($cle=="PK") {
-    // verifie ce qu'il y a dedans
-    $f=escapeshellcmd($uploadedfile);
-#    die("ERROR: unzipinfo $uploadedfile <br>::".(substr_count(`$unzipcmd -Z -1 $f`,"\n")));
-    if (substr_count(`$unzipcmd -Z -1 $f`,"\n")==1) { // combien de fichier dans l'archive ?
-      // s'il n'y a q'un fichier alors on le dezippe. S'il y en a plusieurs c'est surement un sxw
-      if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
-      system("$GLOBALS[unzipcmd] -j -p $uploadedfile >$uploadedfile.extracted 2>/dev/null"); 
-      // normalement, il ne doit pas y avoir d'erreur parce qu'on a deja fait un unzip
-      // en fait c'est pas vrai, on peut avoir des problemes de disque (permission ou disk space).
-      $uploadedfile.=".extracted";
-      $tounlink=1;
-    } // sinon, on y touche pas
-  }
-
-  if ($msg) {
-    echo "<h2>Conversions du fichier importe par OO</h2>";
-    echo "<p>En cas d'arret avant la fin de la 2eme conversion veuillez envoyer les informations sur lodel-devel</p>";
-    flush();
-  }
-  $errfile="$uploadedfile.err";
-  chmod($uploadedfile,0644); // temporaire, il faut qu'on gere le probleme des droits
-  # cette partie n'est pas secur du tout. Il va falloir reflechir fort.
-  if ($msg) {  echo "<li>1ere conversion format initial->SXW <br>\n";flush(); $time1=time(); }
-  
-  runDocumentConverter($uploadedfile,"sxw");
-  if ($tounlink) unlink($uploadedfile); // ne detruit pas l'original
-  // solution avec unzip, ca serait mieux avec libzip
-  // dezip le fichier content
-  if ($msg) {
-    echo "temps:",time()-$time1," s<br>";
-    echo "<li>unzip le fichier SXW<br>\n";flush();
-  }
-  $tmpdir=$uploadedfile."_dir";
-  mkdir("$tmpdir",0700);
-
-  if (!file_exists($uploadedfile.".sxw")) die("ERROR: first OO conversion failed");
-  if (!is_writeable($uploadedfile.".sxw")) {
-    // copie pour avoir les droits d'ecriture
-    if (!@copy($uploadedfile.".sxw",$uploadedfile."-second.sxw")) die("ERROR: copy failed of $uploadedfile.sxw failed");
-    @unlink($uploadedfile.".sxw"); // efface si on peut.
-    $uploadedfile.="-second";
-  }
-
-  if (!$GLOBALS[unzipcmd]) die ("ERROR: unzip undefined");
-  system("$GLOBALS[unzipcmd] -q -d $tmpdir $uploadedfile.sxw content.xml 2>$errfile");
-  if (filesize($errfile)>0) {
-    @unlink("$tmpdir/content.xml");
-    die("ERROR: unzip failed<br>".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
-  }
-  $content=join("",file("$tmpdir/content.xml"));
-
-  if ($msg) {
-    echo "<br>";
-    echo "<li>extraction des styles du fichier content.xml contenu dans le SXW<br>\n";flush();
-  }
-  // lit et modifie le fichier content.xml
-  processcontentHTML($content);
-
-  // ecrit le fichier content.xml
-  if (!writefile("$tmpdir/content.xml",$content)) die("ERROR: writing $tmpdir/content.xml file failed");
-
-  if ($msg) {
-    echo "<li>Reinsertion du nouveaux fichier content.xml dans le SXW<br>\n";flush();
-  }
-  if (!$GLOBALS[zipcmd]) die ("ERROR: zip undefined");
-  system("$GLOBALS[zipcmd] -q -j  $uploadedfile.sxw $tmpdir/content.xml 2>$errfile");
-  if (filesize($errfile)>0) die("ERROR: zip failed<br>".@join("",@file($errfile)));
-  unlink("$tmpdir/content.xml");
-  rmdir("$tmpdir");
-
-  // conversion en HTML
-  if ($msg) { echo "<br><li>2nd conversion SXW->HTML<br>\n";flush(); }
-  $time2=time();
-  runDocumentConverter($uploadedfile.".sxw","html");
-  unlink("$uploadedfile.sxw");
-  if ($msg) {
-    echo "temps:",time()-$time2," s<br>";
-    echo "fin<br>\n";flush();
-  }
-
-  $uploadedfile.=".sxw.html";
-  if (!file_exists($uploadedfile)) die("ERROR: second conversion failed");
-
-  //recupere les images associees
-  $htmlfile=join("",file($uploadedfile));
-  $uploadedfilebasename=basename($uploadedfile);
-  preg_match_all("/src=\"($uploadedfilebasename\_[^\"]+)\"/i",$htmlfile,$results,PREG_PATTERN_ORDER);
-  $uploadedfiledirname=dirname($uploadedfile);
-  $files=array($uploadedfile);
-  foreach ($results[1] as $imgfile) array_push($files,$uploadedfiledirname."/".$imgfile);
-  return $files;
-}
-*/
 
 //
 // fonction qui lance le java qui communique avec OO
@@ -336,9 +225,42 @@ function runDocumentConverter($filename,$extension)
     $format="writer_pdf_Export";
   } else die ("probleme interne");
 
-  myexec("$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"$format\" \"$extension\" \"$servoohost\" \"$servooport\"",$errfile,"java script DocumentConverter failed");
-}
+#  myexec("$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"$format\" \"$extension\" \"$servoohost\" \"$servooport\"",$errfile,"java script DocumentConverter failed");
 
+  $cmd="$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"$format\" \"$extension\" \"$servoohost\" \"$servooport\"";
+
+
+  $descriptorspec = array(
+			0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+			1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+			2 => array("file", $errfile, "w") // stderr is a file to write to
+			);
+
+
+  $process = proc_open($cmd, $descriptorspec, $pipes);
+  if (!is_resource($process)) die ("ERROR: java execution fails");
+
+  fclose($pipes[0]);  // we don't need to write
+
+  while (!feof($pipes[1])) {
+    $ret=stream_select($r = array($pipes[1]), $w = NULL , $e = NULL, DOCUMENTCONVERTER_TIMEOUT);
+    if ($ret===FALSE) die("ERROR: cannot stream_select");
+    if ($ret===0) {
+      // timeout !!
+      // stop the java process
+      //proc_terminate($process);
+      if (defined("DOCUMENTCONVERTER_LOGFILE"))
+	error_log("Java/OO timeout on port $servooport\n", 3, DOCUMENTCONVERTER_LOGFILE);
+      die("ERROR: java execution timeout");
+    }
+    fgets($pipes[1], 1024); // fgets but everything is going to the stderr
+  }
+
+  fclose($pipes[1]);
+  $return_value = proc_close($process);
+
+  if ($return_value) die ("ERROR: java execution fails");
+}
 
 //
 // fonction qui lance le writer2latex

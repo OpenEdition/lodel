@@ -33,11 +33,11 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 #authenticate();
 
 
-$context[importdir]=$importdir;
+$context['importdir']=$importdir;
 $fileregexp='(model)-\w+(?:-\d+)?.zip';
 
-$importdirs=array("CACHE",$importdir,$home."../install/plateform");
-
+$importdirs=array("CACHE",$home."../install/plateform");
+if ($importdir) $importdirs[]=$importdir;
 
 $archive=$_FILES['archive']['tmp_name'];
 $context['erreur_upload']=$_FILES['archive']['error'];
@@ -82,13 +82,14 @@ if ($fichier && $delete) {
 
   // change the id in order there are minimal and unique
   require_once($home."objetfunc.php");
-  makeobjetstable();
+  $err=makeobjetstable();
+  if ($err) die($err);
 
   require_once($home."cachefunc.php");
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
   if (!$err) {
-    if ($frominstall) { header ("location: ../edition"); die(); }
+    if ($frominstall) { header ("location: ../edition/index.php"); die(); }
     back();
   }
 } else {

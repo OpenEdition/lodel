@@ -98,7 +98,7 @@ if ($edit) { // modifie ou ajoute
     $newstatut=$protege ? 32 : 1;
     $statut=$statut>0 ? $newstatut : -$newstatut;
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,langue,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$context[idtype]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,langue,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[langue]','$statut','$context[idtype]')") or die (mysql_error());
 
     touch(SITEROOT."CACHE/maj");
     unlock();
