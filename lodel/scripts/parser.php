@@ -123,7 +123,7 @@ function parse ($in,$out)
     } elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
       $macros.=join('',file($sharedir."/macros/".$macrofile));
     } else {
-      $this->errmsg ("the macro file \"$result[1]\" does exist");
+      $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
     }
   }
   $macros=stripcommentandcr($macros);
