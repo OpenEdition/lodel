@@ -106,6 +106,7 @@ if ($edit && !$reject) {
       mysql_query("DELETE FROM $GLOBALS[tp]users WHERE id='$id'") or die(mysql_error());
       break; 
     }
+    if (defined("WEBMASTER")) mail (WEBMASTER,$context[subject],$content,$headers); 
 
     calcul_page($context,"register-final");
 
