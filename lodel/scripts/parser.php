@@ -303,7 +303,7 @@ function parse_main1_rec(&$ind,$loopind)
 function parse_variable (&$text,$escape="php")
 
 {
-  $lang_regexp="[A-Z]{2}";
+  $lang_regexp="[A-Za-z]{2}";
   $filtre_regexp="[A-Za-z][A-Za-z_0-9]*(?:\(.*?\))?";
 
 # traite les sequences [...(#BALISE)...]
