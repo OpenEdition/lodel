@@ -112,33 +112,35 @@ $stylestransparents="paragraphetransparent|caracteretransparent";
 $balisesdocumentassocie=array("objetdelarecension"=>"Objet de la recension",
 			      "traduction"=>"de la traduction");
 
+
+
 //
 // balises a plusieurs niveaux
 // voir les codes ci-dessous
-$multiplelevel=array(
+$multiplelevel[texte]=array(
 #		     "divbiblio"=>"bibliographie",
 		     "citation"=>"texte",
 		     "epigraphe"=>"texte",
 		     "titredoc"=>"texte",
 		     "legendedoc"=>"texte",
 	 	     "titreillustration"=>"texte",
-		     "legendeillustration"=>"texte",
+		     "legendeillustration"=>"texte");
+
+$multiplelevel[speciaux]=array(
+			       "puce"=>"<*",
+			       "puces"=>"<*",
+			       "separateur"=>">*"
+			       );
 
 
-		     // les styles description auteurs
-# supprimer pour le moment tant que Ted ne lit pas les styles de caracteres
-#		     "affiliation"=>"descriptionauteur",
-#		     "courriel"=>"descriptionauteur",
-		     "puce"=>"<*",
-		     "puces"=>"<*",
+$multiplelevel[sections]=array(
 		     // l'ordre est important ci-dessous (marche pas avec section\d+)
 		     "section6"=>">*", // non utilise a priori
 		     "section5"=>">*", // non utilise a priori
 		     "section4"=>">*",
 		     "section3"=>">*",
 		     "section2"=>">*",
-		     "section1"=>">*",
-		     "separateur"=>">*"
+		     "section1"=>">*"
 );
 
 
@@ -173,51 +175,6 @@ $GLOBALS[balisesdocument_lieautexte]=$balisesdocument_lieautexte;
 $GLOBALS[balisesdocument_nonlieautexte]=$balisesdocument_nonlieautexte;
 
 #########################################################################
-
-
-// les balises multiplelevel. Restructure la stylisation plate de Word en une structure a plusieurs niveaux (2 niveaux en general)
-
-// > signifie que cette balise se ratache avec celle d'apres
-// rien signifie que cette balise s'entoure de la balises donner dans le tableau
-
-// * signifie toutes les balises
-// balise: signifie que cette balises
-
-function traite_multiplelevel(&$text)
-
-{
-  global $multiplelevel;
-
-  $search=array(); $rpl=array();
-
-  foreach ($multiplelevel  as $k=>$v) {
-    $balouvrante="<r2r:$k(?:\b[^>]+)?>";
-    $balfermante="<\/r2r:$k>";
-
-    // determine ce qu'il faut faire
-//    if (preg_replace("/^>/","",$v)) { $dir="apres"; } 
-//    elseif (preg_replace("/^</","",$v)) { $dir="avant"; }
-//    else { $dir=""; };
-    if (substr($v,0,1)==">") { $dir="apres"; $v=substr($v,1); } 
-    elseif (substr($v,0,1)=="<") { $dir="avant"; $v=substr($v,1); } 
-    else { $dir=""; };
-
-    if ($v=="*") $v="\w+";
-
-    if ($dir=="apres") { // entoure par la balise qui suit
-      array_push($search,"/((?:$balouvrante.*?$balfermante"."[\s\n\r]*)*)(<r2r:$v\b[^>]*>)/is");
-      array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui suit
-    } elseif ($dir=="avant") {
-      array_push($search,"/(<\/r2r:$v\b[^>]*>)[\s\n\r]*($balouvrante.*?$balfermante)/is");
-      array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui precede
-    } else { // entoure par la balise donne dans $v
-      array_push($search,"/$balouvrante/i","/$balfermante/i");
-      array_push($rpl,"<r2r:$v>\\0","\\0</r2r:$v>");
-    }
-  }
-  //die (join(" ",$search)."<br>".join(" ",$rpl));
-  return preg_replace ($search,$rpl,$text);
-}
 
 
 //
