@@ -33,24 +33,25 @@ include("tpl/install-openhtml.html");
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<h2>Accès au serveur MySQL.</h2>
+<h2>[@INSTALL.ACCESS_TO_DATABASE_SERVER].</h2>
 
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p align="justify">Renseignez les informations permettant &agrave; Lodel de se connecter &agrave; votre base de donn&eacute;es.</p>
+<p align="justify">[@INSTALL.INDICATE_INFORMATIONS_TO_CONNECT_TO_DATABASE].</p>
 <?php } else { // OPTION 2 ?>
-<p>[option 2]</p>
+<p>[[@INSTALL.OPTION_2]]</p>
 <p align="justify">
-Spécifiez les paramètres de connection sur le serveur MySQL. L'utilisateur MySQL doit avoir au minimum le droits d'USAGE sur le serveur. Pour créer un utilisateur, utiliser la commande GRANT dans mysql (ou phpMyAdmin).
+[@INSTALL.GIVE_SPECIFICATION_TO_CONNECT_TO_DATABASE_SERVER_DATABASE_USER_NEEDS_USAGE_RIGHTS]. 
+[@INSTALL.TO_CREATE_USER_USE_GRANT_COMMAND_IN_DATABASE_SERVER].
 <?php if (!$newdbusername) { ?>
-Par exemple:
+[@INSTALL.FOR_INSTANCE] :
 </p>
 <p>
 <code>
 GRANT USAGE ON *.* TO monutilisateur@monserveurweb IDENTIFIED BY 'monmotdepasse';
 </code>
 <?php } else { ?>
-Dans votre cas:
+[@INSTALL.IN_YOUR_CASE] :
 </p>
 <p>
 <code>
@@ -64,26 +65,26 @@ GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'm
 
 <hr style="width: 100%; height: 2px;">
 
-<?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifiez les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.IMPOSSIBLE_TO_CONNECT_TO_DATABASE_SERVER_ERROR_IS]: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="mysql" />
-<label for="newdbhost">serveur MySQL</label>
+<label for="newdbhost">[@INSTALL.DATABASE_SERVER]</label>
 <input type="text" size="60" name="newdbhost" id="newdbhost" value="<?php  echo $dbhost; ?>" />
-<label for="newdbusername">Utilisateur MySQL</label>
+<label for="newdbusername">[@INSTALL.DATABASE_USER]</label>
 <input type="text" size="60" name="newdbusername"  id="newdbusername" value="<?php  echo $dbusername; ?>" />
-<label for="newdbpasswd">Mot de passe de l'utilisateur MySQL</label>
+<label for="newdbpasswd">[@INSTALL.PASSWORD_FOR_DATABASE_USER]</label>
 <input type="password" size="60" name="newdbpasswd" id="newdbpasswd" value="" /><br />&nbsp;<br />
-<input type="submit" value="continuer" />
+<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 
 
 <?php if ($installoption==1) { // OPTION 1 ?>
     <hr style="width: 100%; height: 2px;">
-    <p align="justify"><strong>Adresse du serveur MySQL :</strong> elle a d&ucirc; vous &ecirc;tre notifi&eacute;e dans la documentation technique de votre h&eacute;bergeur. Exemple : localhost ou mysql.monhebergeur.com
+    <p align="justify"><strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :</strong> [@INSTALL.ADDRESS_INDICATED_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_HOSTER]
         </p>
-        <p align="justify"><strong>Nom d'utilisateur MySQL et mot de passe :</strong> ils ont d&ucirc; vous &ecirc;tre communiqu&eacute;s par votre h&eacute;bergeur. </p>
-        <p align="justify"><strong>En cas de doute : </strong>contactez votre service technique. </p>
+        <p align="justify"><strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :</strong> [@INSTALL.INDICATED_BY_YOUR_HOSTER]. </p>
+        <p align="justify"><strong>[@INSTALL.IF_ANY_DOUBT] : </strong>[@INSTALL.CONTACT_YOUR_HOSTER]. </p>
 
 <?php } // fin OPTION 1 ?>
 

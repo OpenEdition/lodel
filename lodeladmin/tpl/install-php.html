@@ -34,10 +34,10 @@ include("tpl/install-openhtml.html");
 <!--[ ce fichier n'est pas un template ]-->
 
 <p align="center">
-Votre installation ou la configuration de PHP ne permettent pas &agrave; Lodel de fonctionner correctement.<br/>
-Veuillez résoudre les probl&egrave;mes suivants avant de poursuivre:</p>
+[@INSTALL.PHP_INSTALLATION_OR_CONFIGURATION_ERROR].<br/>
+[@INSTALL.RESOLVE_PROBLEM_BEFORE_CONTINUE] :</p>
 <?php if ($erreur[functions]) { ?>
-<p>Fonctions non pr&eacute;sentes dans l'installation de PHP:
+<p>[@INSTALL_MISSING_FUNCTIONS] :
 <ul>
 <?php foreach ($erreur[functions] as $func) { ?>
 <li><?php echo $func; ?></li>
@@ -50,7 +50,7 @@ Veuillez résoudre les probl&egrave;mes suivants avant de poursuivre:</p>
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="droits">
 <input type="hidden" name="installoption" value="<?php echo $installoption;?>">
-<input type="submit" name="submit" value="Continuer">
+<input type="submit" name="submit" value="[@INSTALL.CONTINUE]">
 </form>
 </p>
 

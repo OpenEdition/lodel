@@ -59,7 +59,7 @@ include("tpl/install-openhtml.html");
 <h2>[@INSTALL.OPTION_2]</h2>
 <p align="justify">[@INSTALL.COPY_FILES_FROM_DIRECTORY_TO_DIRECTORY_ADJUST_WRITING_RIGHTS_SERVER|sprintf([#INCLUDEPATH])].</p><?php  } ?>
 
-<?php  if ($erreur_includeincorrecte) { ?><b>[@INSTALL.ERROR]</b>: L'inclusion automatique dans le répertoire <?php  echo $includepath; ?> ne fonctionne pas. Vérifiez le répertoire entré ci-dessous ainsi que la configuration de php. Si le problème persiste... il n'y a pas grand chose à faire.<?php  } ?>
+<?php  if ($erreur_includeincorrecte) { ?><b>[@INSTALL.ERROR]</b>: [@INSTALL.AUTOMATIC_INCLUDE_IN_DIRECTORY_IMPOSSIBLE_CHECK_DIRECTORY_AND_PHP_CONFIGURATION_IF_PROBLEM_REMAINS_NOTHING_TO_DO|sprintf([#INCLUDEPATH])].<?php  } ?>
 
 <?php if ($erreur_guess) { ?><b>[@INSTALL.WARNING]</b>: [@INSTALL.WARNING_GUESSED_PATH_BY_LODEL_MAKE_SURE_IS_CORRECT_AND_NOT_TO_BE_MODIFIED_WITHOUT_CONTROL]. <?php } ?>
 

@@ -81,10 +81,10 @@ include("tpl/install-openhtml.html");
 </form>
 </dd>
 <dd>
-<strong>Copiez vous même le fichier</strong> lodeladmin/<?=$lodelconfig ?> à la racine de Lodel en le renomant 'lodelconfig.php'.
+<strong>[@INSTALL.COPY_FILE_YOURSELF]</strong> [@INSTALL.LODELCONFIG_FILE_IN_LODEL_ROOT_NEW_NAME_LODELCONFIGPHP|sprintf([#LODELCONFIG])].
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">
-<input type="submit" value="continuer">
+<input type="submit" value="[@INSTALL.CONTINUE]">
 </form>
 </dd>
 </dl>

@@ -36,42 +36,43 @@ include("tpl/install-openhtml.html");
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="servoo">
 
-<h2>Conversion de documents issus de traitement de texte</h2>
+<h2>[@INSTALL.CONVERT_TEXT_PROCESSOR_FILES]</h2>
 
 <?php if ($message) { ?>
-Le ServOO <?php  echo $servoohost; ?> a répondu positivement:<br/>
+[@INSTALL.QUERY_TO_SERVOO_SUCCESSFUL|sprintf([#SERVOOHOST])] :<br/>
 <table cellpadding="10" border="1" ><tr><td><? echo htmlentities($message); ?></td></td></table>
 <input type="submit" name="skip" value="Poursuivre">
 <br/>
 <hr style="width: 100%; height: 2px;">
 <br/>
-Reconfigurer le ServOO:
+[@INSTALL.RECONFIGURE_SERVOO] :
 <?php } else { ?>
 
-<p align="justify">La conversion de documents aux formats RTF, SXW ou DOC en XHTML est réalisée par un serveur distant basé sur OpenOffice.org et Writer2Latex (ServOO).</p>
-<p align="justify">Pour obtenir un compte sur un ServOO public, veuillez consultez la liste officielle des ServOO sur <a href="http://www.lodel.org" target="_new">http://www.lodel.org</a>. 
-En attendant de recevoir votre identifiant, vous pouvez choisir de ne pas configurer de ServOO.</p>
-<p align="justify">L'utilisation de cette puissante fonctionnalité est optionnelle et peut &ecirc;tre configurée ultérieurement. <input type="submit" name="noservoo" value="Ne pas configurer de ServOO"></p>
+<p align="justify">[@INSTALL.SERVOO_SERVER_BASED_ON_OOO_AND_W2L_GRANT_CONVERSION_RTF_DOC_SXW_TO_XHTML].</p>
+<p align="justify">[@INSTALL.TO_CREATE_ACCOUNT_ON_PUBLIC_SERVOO_CHECK_LIST_ON] <a href="http://www.lodel.org" target="_new">http://www.lodel.org</a>. 
+[@INSTALL.BEFORE_ACCOUNT_CREATION_CONFIGURATION_OF_SERVOO_IS_OPTION].</p>
+<p align="justify">[@INSTALL.CONFIGURATION_OF_SERVOO_IS_OPTION_AND CAN_BE_DELAYED]. <input type="submit" name="noservoo" value="[@INSTALL.DONT_CONFIGURE_SERVOO]"></p>
 
 <?php } ?>
 
-<?php  if ($erreur_connect) { ?> <p><b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $servoohost; ?> impossible. Vérifier les informations entrées. L'erreur produite est:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <p><b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.IMPOSSIBLE_TO_CONNECT_TO_SERVER_CHECK_DATAS_ERROR_IS|sprintf([#SERVOOHOST])]:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
 
 
 <hr style="width: 100%; height: 2px;">
-<label for="newservoourl">URL du serveur ServOO :</label>
+<label for="newservoourl">[@INSTALL.SERVOO_URL] :</label>
 <input type="text" size="60" name="newservoourl" id="newservoourl" value="<?php  echo $servoourl; ?>" />
-<label for="newservoousername">Nom d'utilisateur ServOO :</label>
+<label for="newservoousername">[@INSTALL.SERVOO_USERNAME] :</label>
 <input type="text" size="60" name="newservoousername" id="newservoousername" value="<?php  echo $servoousername; ?>" />
-<label for="newservoopasswd">Mot de passe de l'utilsateur ServOO :</label>
+<label for="newservoopasswd">[@INSTALL.SERVOO_PASSWORD] :</label>
 <input type="password" size="60" name="newservoopasswd" id="newservoopasswd" /><br />&nbsp;<br />
-<input type="submit" value="Continuer" />
+<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 
 <?php if ($installoption==2) { // OPTION 2 ?>
 
 <p align="justify">
-Vous pouvez installez vous propre ServOO: cela nécessite l'installation de OpenOffice.org et Java sur votre serveur. Cette installation requiert un serveur dedié et correctement protégé. ServOO est (sera) distribué dans un paquetage séparé de Lodel sur <a href="http://sourceforge.net/projects/lodel/" target="_new">http://sourceforge.net/projects/lodel/</a>. Lorsque ServOO est installé, entrez les paramètres de connexion ci-dessous. Si vous installez un ServOO, nous vous encourageons à le mettre à disposition du public et à vous faire enregistrer sur <a href="http://www.lodel.org/" target="_new">http://www.lodel.org</a></p>
+[@INSTALL.HOWTO_INSTALL_SERVOO_ON_PRIVATE_SERVER]
+</p>
 
 <?php } // fin OPTION 2 ?>
 
