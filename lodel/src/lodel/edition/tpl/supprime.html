@@ -54,13 +54,7 @@
 				<form action="supprime.php" method="POST">
 					<input type="hidden" name="id" value="[#ID]">
 					<input class="form" type="submit" name="supprime" value="Supprimer">
-					<LOOP NAME="publication" TABLE="publications" WHERE="id='[#IDPARENT]'">
-						<IF COND="[#TYPE] EQ 'regroupement'">
-							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#IDPARENT]';">
-						<ELSE/>
-							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#ID]';">
-						</IF>
-					</LOOP>
+					<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#ID]';">
 				</form>
 				<br /><br />
 			</IF> 
