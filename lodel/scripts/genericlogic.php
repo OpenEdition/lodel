@@ -290,8 +290,8 @@ class GenericLogic extends Logic {
 	   $vo=$dao->find("type='".$name."'","class,id");
 	   $idtype=$vo->id;
 
-	   $logic=&getLogic($type); // the logic is used to validate
 	   $localcontext=&$context[$type][$idtype];
+	   if (!$localcontext) break;
 
 	   if ($type=="entries" && !is_array($localcontext)) {
 	     $keys=explode(",",$localcontext);
@@ -302,6 +302,7 @@ class GenericLogic extends Logic {
 	     #echo "after localcontext:";
 	     #
 	   }
+	   $logic=&getLogic($type); // the logic is used to validate
 	   if (!is_array($localcontext)) die("ERROR: internal error in GenericLogic::validateFields");
 	   $count=count($localcontext);
 	   for($i=0; $i<$count; $i++) {
