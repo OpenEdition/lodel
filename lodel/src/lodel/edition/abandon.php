@@ -33,10 +33,10 @@ if (!function_exists("authenticate")) {
 }
 
 // detruit la tache en cours
-$id=intval($id);
-if ($id) {
+$idtache=intval($idtache);
+if ($idtache) {
   require_once ($home."connect.php");
-  mysql_query("DELETE FROM $GLOBALS[tp]taches WHERE id='$id'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]taches WHERE id='$idtache'") or die (mysql_error());
 }
 
 if ($redirect) {

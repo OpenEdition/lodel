@@ -235,6 +235,8 @@
 	<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date valide</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre entier</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'readerror'"><tr><td colspan="2" class="message_erreur">Le fichier n'existe pas ou n'a pas pu être téléchargé</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'imageformat'"><tr><td colspan="2" class="message_erreur">Le format de l'image n'a pas été reconnu</td></tr></IF>
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
@@ -260,6 +262,7 @@
 				<td width="200">[#TITRE]:</td>
 				<MACRO NAME="AFFICHER_EDITION_CHAMPS">
 			</tr>
+       <br/>
 			<MACRO NAME="AFFICHER_ERREURS_SAISIE">
         </DO>
         <AFTER>

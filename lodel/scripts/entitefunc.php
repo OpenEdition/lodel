@@ -193,6 +193,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       break;
     case 'image' :
     case 'fichier' :
+      if ($context['erreur'][$nom]) {  $erreur[$nom]=$context['erreur'][$nom]; break; } // erreur has been already detected
       if (is_array($entite[$nom])) unset($entite[$nom]);
       if (!$entite[$nom] || $entite[$nom]=="none") break;
       // check for a hack or a bug
@@ -217,7 +218,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   } // end of while over the results
 
   if ($erreur) { 
-    $context[erreur]=$erreur;
+    $context['erreur']=$erreur;
     if ($returnonerror) return FALSE;
   }
 

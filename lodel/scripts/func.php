@@ -501,7 +501,9 @@ function get_PMA_define()
  *
  */
 
-function save_annex_file($dir,$file,$filename,$uploaded=TRUE) {
+function save_annex_file($dir,$file,$filename,$uploaded,&$error) {
+
+  $error=FALSE;
 
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
   if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
@@ -537,7 +539,9 @@ function save_annex_file($dir,$file,$filename,$uploaded=TRUE) {
  *
  */
 
-function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
+function save_annex_image($dir,$file,$filename,$uploaded,&$error) {
+
+  $error=FALSE;
 
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
   if (is_numeric($dir)) $dir="docannexe/image/$dir";
@@ -549,10 +553,13 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
     if (!move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
     $file=$newfile;
   }
+  if (!filesize($file)) { $error="readerror"; return; }
   $info=getimagesize($file);
-  if (!is_array($info)) die("ERROR: the format of the image has not been recognized");
+  if (!is_array($info)) { $error="imageformat"; return; }
   $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
   $ext=$exts[$info[2]-1];
+
+  if (!$ext) { $error="imageformat"; return; }
 
   if (!file_exists(SITEROOT.$dir)) {
     if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");

@@ -274,7 +274,7 @@ function extract_files(&$context,$classe="documents")
 
   require_once($home."func.php");
   
-  // transfert
+  // transfer
   while (list($nom,$type)=mysql_fetch_row($result)) {
     if (!$files['tmp_name'][$nom]) continue;     // should not happend
 
@@ -285,9 +285,13 @@ function extract_files(&$context,$classe="documents")
       } while (file_exists(SITEROOT.$tmpdir[$type]));
     }
     if ($type=="fichier") {
-      $context['entite'][$nom]=save_annex_file($tmpdir[$type],$files['tmp_name'][$nom],$files['name'][$nom]);
+      $context['entite'][$nom]=save_annex_file($tmpdir[$type],$files['tmp_name'][$nom],$files['name'][$nom],TRUE,$erreur);
     } elseif ($type=="image") {
-      $context['entite'][$nom]=save_annex_image($tmpdir[$type],$files['tmp_name'][$nom],$nom);
+      $context['entite'][$nom]=save_annex_image($tmpdir[$type],$files['tmp_name'][$nom],$nom,TRUE,$erreur);
+    }
+    if ($erreur) { // error ?
+      $context['erreur'][$nom]=$erreur;
+      $context['entite'][$nom]="";
     }
   }
 }
