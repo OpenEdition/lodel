@@ -295,7 +295,7 @@ class Entities_EditionLogic extends GenericLogic {
    }
 
 
-   function makeSelect(&$context,$var)
+   function makeSelect(&$context,$var,$edittype)
 
    {
      switch($var) {
@@ -306,6 +306,12 @@ class Entities_EditionLogic extends GenericLogic {
 		  "bb"=>"BB"
 		  );
        renderOptions($arr,$context['creationinfo']);
+       break;
+     }
+     switch($edittype) {
+     case 'lang':
+       require("lang.php");
+       makeselectlangs($context[$var]);
        break;
      }
    }

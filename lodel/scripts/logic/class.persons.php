@@ -151,6 +151,7 @@ class PersonsLogic extends GenericLogic {
      $gdao->save($gvo,$new);  // save the related table
      
      // save the entities_class table
+
      if ($context['identity']) {
        $dao=&getDAO("relations");
 
@@ -169,7 +170,7 @@ class PersonsLogic extends GenericLogic {
 
        $gdao=&getGenericDAO("entities_".$class,"idrelation");
        $gdao->instantiateObject($gvo);
-       $this->_populateObject($gvo,$context);
+       $this->_populateObject($gvo,$context['data']);
        $gvo->idrelation=$idrelation;
        $gdao->save($gvo,true);  // save the related table
      }
