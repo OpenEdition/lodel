@@ -43,7 +43,7 @@ if ($htmlfile && $htmlfile!="none") {
     }
     $idtache=make_tache("Import $htmlfile_name",3,$row,$tache);
 
-    echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="1">Continuer</font></a>';
+    echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
     return;
 
     header("Location: chkbalisage.php?id=$idtache");
@@ -66,7 +66,7 @@ function OO ($uploadedfile,&$context)
 {
   global $home;
 
-  echo "<h2>Conversions du fichier importe par OO<h2>";
+  echo "<h2>Conversions du fichier importe par OO</h2>";
   echo "<p>En cas d'arret avant la fin de la 2eme conversion veuillez envoyer les informations sur ldodel-devel</p>";
   $errfile="$uploadedfile.err";
   chmod($uploadedfile,0644); // temporaire, il faut qu'on gere le probleme des droits
