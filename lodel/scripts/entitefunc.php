@@ -92,7 +92,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 {
   global $home,$droitadmin,$usergroupes;
 
-  $iduser= $GLOBLAS[droitadminlodel] ? 0 : $GLOBALS[iduser];
+  $iduser= $GLOBALS[droitadminlodel] ? 0 : $GLOBALS[iduser];
 
   $entite=& $context[entite];
   $context[idtype]=intval($context[idtype]);
