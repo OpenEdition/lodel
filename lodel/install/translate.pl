@@ -61,7 +61,9 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/du\s*th[e|è]me/de la rubrique/g;
   $change+=$file=~s/le\s*th[e|è]me/la rubrique/g;
   $change+=$file=~s/un\s*th[e|è]me/une rubrique/g;
-  $change+=$file=~s/th[e|è]me/rubrique/g;
+  $change+=$file=~s/th[e|è]me\s*précédent/rubrique précédente/g;
+  $change+=$file=~s/th[e|è]me\s*suivant/rubrique suivante/g;
+  $change+=$file=~s/th[e|è]me/rubrique/ig;
 
 
   next unless $change;
