@@ -21,7 +21,7 @@
 
 
 <USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition - utilisateur</title>
+<title>Edition d'un utilisateur</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -32,6 +32,12 @@
 	</tr>
 </table>
 
+<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
+							<DO>
+								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
+							</DO>
+				        </LOOP>
+						
 <form method="POST" action="user.php">
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
@@ -81,5 +87,11 @@
 		</IF>
 	</div>
 </form>
+
+<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
+							<DO>
+								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
+							</DO>
+    </LOOP>
 
 <MACRO NAME="CLOSE_HTML">
