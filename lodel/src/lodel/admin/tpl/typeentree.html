@@ -67,6 +67,16 @@
 		<tr>
 			<td colspan="2">Ordre alphabétique: <input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] /> Ordre définit dans l'interface: <input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] />Par ordre de création: <input type="radio" name="tri" value="1" [(#TRI|eq("1"))] /></td>
 		</tr>
+		  <tr>
+		    <td>
+		      Type de publi et document qui contiennent ce type d'intervenant:<br>
+<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
+		      <LOOP NAME="typeentites">
+			[#TYPE]: <input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]><br>
+		      </LOOP>
+		    </td>  
+		  </tr>
+
 	</table>
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;

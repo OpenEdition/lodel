@@ -62,7 +62,7 @@
 	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 		<tr>
 			<td width="200">Type de document</td>
-			<td><select name="typedoc"><? makeselecttypedoc(); ?></select></td>
+			<td><select name="typedoc"><? makeselecttypedoc(); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</font></IF></td>
 		</tr>
 		<tr>
 			<td width="200">Langues du texte</td>
@@ -86,7 +86,7 @@
 
 	<br />
 	<!-- boucle sur les types de personne -->
-        <LOOP NAME="typepersonnes" TABLE="typepersonnes" WHERE="status gt 0" ORDER="ordre">		    
+        <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
 			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
@@ -139,11 +139,11 @@
 		</LOOP>
 		<tr>
 			<td width="200">&nbsp;</td>
-			<td><input class="form" type="submit" name="plus[[#ID]]" value="   Ajouter une autre personne   "></td>
+			<td><input class="form" type="submit" name="plus[[#ID]]" value="   Ajouter   "></td>
 		</tr>
 	</table>
 	</LOOP> <!-- fin de la boucle sur les types d'auteurs -->
-	<LOOP NAME="typeentrees" TABLE="typeentrees" WHERE="ok" ORDER="ordre">
+        <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">
 		<br />
 		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 			<tr>

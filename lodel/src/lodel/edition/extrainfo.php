@@ -46,8 +46,8 @@ require_once($home."extrainfofunc.php");
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
 
-if ($edit || $plusauteurs) {
-  if (ei_edition($filename,$tache,$context,$text,$entrees,$autresentrees,$plus)) { // ca marcher... on termine
+if ($edit || $plus || $reload) {
+  if (ei_edition($filename,$tache,$context,$text,$entrees,$autresentrees,$plus)) { // ca marche... on termine
     $iddocument=ei_enregistrement($filename,$tache,$context,$text);
     //
     // termine en redirigeant correctement
@@ -84,6 +84,13 @@ foreach ($balises_sstag as $b) {
 }
 
 posttraitement($context);
+
+
+// cherche le idtype
+$result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$context[typedoc]'") or die(mysql_error());
+list($context[idtype])=mysql_fetch_row($result);
+
+
 
 update_tache_etape($id,3); // etape 3
 $context[id]=$id;

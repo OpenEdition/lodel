@@ -102,6 +102,7 @@ function enregistre_personnes (&$context,$identite,$status)
   // detruit les liens dans la table entites_personnes
  mysql_query("DELETE FROM $GLOBALS[tp]entites_personnes WHERE identite='$identite'") or die (mysql_error());
 
+ if (!$context[nomfamille]) { unlock(); return; }
 
   $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
   foreach (array_keys($context[nomfamille]) as $idtype) { // boucle sur les types

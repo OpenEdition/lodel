@@ -157,7 +157,7 @@ function ei_edition($filename,$tache,&$context,&$text,&$entrees,&$autresentrees,
 		       array("\\1",$lang ? "\\1 lang=\"$lang\">" : "\\1>"),$text);
   }
 
-  if ($err || $context[plus]) {
+  if ($err || $context[plus] || $context[reload]) {
     writefile ($balisefilename,$text);
     return FALSE;
   }
@@ -317,7 +317,7 @@ function makeselecttypedoc()
 
   if ($context[typedocfixe]) $critere="AND type='$context[typedoc]'";
 
-  $result=mysql_query("SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere") or die (mysql_error());
+  $result=mysql_query("SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere AND type NOT LIKE 'documentannexe-%'") or die (mysql_error());
   echo "SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere";
 
   while ($row=mysql_fetch_assoc($result)) {

@@ -23,6 +23,8 @@ if ($id>0 && ($delete || $restore)) {
   return;
 }
 
+require($home."typetypefunc.php");
+
 $critere.=" AND status>0";
 
 if ($id>0 && $dir) {
@@ -55,6 +57,12 @@ if ($edit) { // modifie ou ajoute
     }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
+    if ($id) {
+      typetype_delete("typeentree","idtypeentree='$id'");
+    } else {
+      $id=mysql_insert_id();
+    }
+    typetype_insert($typeentite,$id,"typeentree");
     back();
 
   } while (0);
@@ -70,6 +78,9 @@ posttraitement($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"typeentree");
+
+function boucle_typeentites($context,$funcname)
+{  boucle_typetable ("typeentite","typeentree",$context,$funcname);}
 
 
 ?>

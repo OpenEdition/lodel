@@ -28,9 +28,9 @@ if ($id>0) {
 
 if ($id>0 && $dir) {
   # cherche le parent
-  $result=mysql_query ("SELECT publication,type FROM $GLOBALS[tp]documents WHERE id='$id'") or die (mysql_error());
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
   list($publication,$typedoc)=mysql_fetch_row($result);
-  chordre("documents",$id,"publication='$publication' $critere2",$dir);
+  chordre("documents",$id,"idparent='$publication' $critere2",$dir);
   back();
 //
 // supression et restauration

@@ -19,6 +19,7 @@ if ($id>0 && ($delete || $restore)) {
 
 $critere.=" AND status>0";
 
+require($home."typetypefunc.php");
 
 //
 // ordre
@@ -52,7 +53,6 @@ if ($edit) { // modifie ou ajoute
     }
     mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledit,tplcreation,status,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledit]','$context[tplcreation]','$status','$ordre')") or die (mysql_error());
 
-    require($home."typetypefunc.php");
     if ($id) {
       typetypes_delete("idtypeentite='$id'");
     } else {
@@ -76,21 +76,10 @@ if ($edit) { // modifie ou ajoute
 posttraitement($context);
 
 
-function boucle_typeentrees (&$context,$funcname)
-{ boucle_typetable("typeentree",$context,$funcname); }
+function boucle_typepersonnes($context,$funcname)
+{  boucle_typetable ("typepersonne","typeentite",$context,$funcname);}
 
-function boucle_typepersonnes (&$context,$funcname)
-{ boucle_typetable("typepersonne",$context,$funcname); }
-
-function boucle_typetable ($typetable,&$context,$funcname)
-
-{
-  $result=mysql_query("SELECT * FROM ".$GLOBALS[tp].$typetable."s LEFT JOIN $GLOBALS[tp]typeentites_".$typetable."s ON id$typetable=".$GLOBALS[tp].$typetable."s.id AND idtypeentite='$context[id]' WHERE status>0") or die(mysql_error());
-
-  while ($row=mysql_fetch_assoc($result)) {
-    $localcontext=array_merge($context,$row);
-    call_user_func("code_boucle_$funcname",$localcontext);
-  }
-}
+function boucle_typeentrees($context,$funcname)
+{  boucle_typetable ("typeentree","typeentite",$context,$funcname);}
 
 ?>

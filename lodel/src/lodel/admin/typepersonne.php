@@ -23,6 +23,8 @@ if ($id>0 && ($delete || $restore)) {
   return;
 }
 
+require($home."typetypefunc.php");
+
 $critere.=" AND status>0";
 
 if ($id>0 && $dir) {
@@ -55,6 +57,13 @@ if ($edit) { // modifie ou ajoute
     }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]typepersonnes (id,type,titre,style,tpl,tplindex,status,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$status','$ordre')") or die (mysql_error());
+    if ($id) {
+      typetype_delete("typepersonne","idtypepersonne='$id'");
+    } else {
+      $id=mysql_insert_id();
+    }
+    #print_r($typeentite);
+    typetype_insert($typeentite,$id,"typepersonne");
     back();
 
   } while (0);
@@ -70,6 +79,10 @@ posttraitement($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"typepersonne");
+
+
+function boucle_typeentites($context,$funcname)
+{  boucle_typetable ("typeentite","typepersonne",$context,$funcname);}
 
 
 ?>
