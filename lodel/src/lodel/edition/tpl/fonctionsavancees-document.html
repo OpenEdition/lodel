@@ -175,11 +175,7 @@
 
 	<div class="pied_de_formulaire">
 		<form>
-			<LOOP NAME="publication" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres" LIMIT="0,1"> 
-				<DO>
-					<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#ID]'" />
-				</DO>
-			</LOOP>
+			<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />
 		</form>
 	</div>
 
