@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_relations (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
 	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 
-	soustitre	TEXT,
+	titre		TEXT NOT NULL,
+	soustitre	TEXT NOT NULL,
 	directeur	TINYTEXT,
 	texte		TEXT,
 	textetype	VARCHAR(4),
