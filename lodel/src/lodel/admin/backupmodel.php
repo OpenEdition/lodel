@@ -105,7 +105,7 @@ if ($_POST['backup']) {
     $tables[]=lq("#_TP_".$vo->class);
     if ($vo->classtype=="persons") $tables[]=lq("#_TP_entities_".$vo->class);
   }
-  mysql_dump($currentdb,$tables,"",$fh,true,true,false); // get the table create
+  if ($tables) mysql_dump($currentdb,$tables,"",$fh,true,true,false); // get the table create
   // it may be better to recreate the field at the import rather 
   // than using the created field. It may be more robust. Status quo at the moment.
 	    
