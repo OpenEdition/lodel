@@ -80,7 +80,7 @@ if ($lostpasswdkey) {
 
     $lostpasswdkey=md5($id.":".$username.":".$realname.":".$passwd);
 
-    $context['lostpasswdurl']="http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."?lostpasswdkey=".$lostpasswdkey."&username=".$username;
+    $context['lostpasswdurl']="http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."?lostpasswdkey=".$lostpasswdkey."&username=".$username." \n";
 
     // send an email with the changing passwd code url
     // make the registration email
