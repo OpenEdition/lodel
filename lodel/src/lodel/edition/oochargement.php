@@ -262,7 +262,7 @@ function OO ($convertedfile,&$context)
 
 
   // ecrit le fichier
-  $newname="$uploadedfile-".rand();
+  $newname="$convertedfile-".rand();
   if (!writefile("$newname.html",$file)) return FALSE;
 
   echo "Temps total:",time()-$time1,"<br><br>"; flush();
