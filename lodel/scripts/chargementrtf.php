@@ -108,7 +108,7 @@ function rtf($filename) {
 		      "description_auteur"=>"descriptionauteur",
 		      "droits_auteur"=>"droitsauteur",
 		      "type_document"=>"typedoc",
-		      "langue"=>"langues"
+		      "langue"=>"langues",
 			  "titre_illustration"=>"titreillustration",
 			  "legende_illustration"=>"legendeillustration",
 		      );
