@@ -239,6 +239,7 @@ class View {
      $f = fopen($this->_cachedfile.".".$this->_extcachedfile, "w");
      fputs($f,$content);
      fclose($f);
+     @chmod($dir,0666 & octdec($GLOBALS['filemask']));
      if ($this->_extcachedfile=="php") { 
        $dontcheckrefresh=1;
        include($this->_cachedfile.".php"); 
