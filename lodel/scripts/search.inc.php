@@ -63,7 +63,7 @@ function search($context)
 #echo "string=$string<br />\n";
    	 //particular case : two letter acronym or initials
    	 $query = preg_replace("/\s([A-Z][0-9A-Z]{1,2})\s/", ' \\1___ ', $query);
-	$query = strtolower( $query );
+	//$query = strtolower( $query );
 			
 	//cut query string in token
 	$tokens = preg_split("/\s+/", $query );
@@ -115,8 +115,12 @@ function search($context)
 			$begin_wildcard = "";
 			
 		}
-			
 		
+	
+		$token = preg_replace("/([A-Z][0-9A-Z]{1,2})/", ' \\1___ ', $token);	
+	#	echo "token=$token";
+	
+		$token = strtolower($token);
 		$token = makeSortKey($token);
 		//foreach word search entities that match this word
 		$dao = &getDAO("search_engine");
