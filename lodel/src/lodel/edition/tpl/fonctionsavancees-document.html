@@ -113,17 +113,19 @@
 	</div>
 	
 	<IF COND="[#EDITEUR]">
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-		  Nicolas, modifier l'appel sur metaimage quand vous aurez decider du nom du champ. Changer aussi le terme publication ici, je crois que c'est faux. Faire la meme modif dans publication
+		<div class="ligne_form_fa">
+			<div class="intitule_ligne_form_fa">
 				<a href="metaimage.php?iddocument=[#ID]">
 					<span class="texte_noir_gras">Associer une image à cette publication</span>
 				</a>
 			</div>
+			<div class="champs_ligne_form_fa">
+				<span class="texte_info">Nicolas, modifier l'appel sur metaimage quand vous aurez decider du nom du champ. Changer aussi le terme publication ici, je crois que c'est faux. Faire la meme modif dans publication</span>
+			</div>
 		</div>
 	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
+		<div class="ligne_form_fa">
+			<div class="intitule_ligne_form_fa">
 				<span class="texte_intitule">Associer une image à la publication</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
 			</div>
@@ -131,34 +133,39 @@
 	</IF>
 
 	<IF COND="[#EDITEUR]">
-	        <a name="docannexe"></a>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-			<span class="texte_noir_gras">Ajouter un document annexe</span>
-		<form action="docannexe.php" method="POST">
-		  <input type="hidden" name="idparent" value="[#ID]">
-				<select name="type">
-		                <LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="type"> 
-		                 <DOFIRST>
-		                     	<option value="[#TYPE]" selected>[#TITRE]</option>
-		                 </DOFIRST>
-		                 <DO>
-					<option value="[#TYPE]">[#TITRE]</option>
-		                 </DO>
-		                </LOOP>
-				</select><input class="form" type="submit" value=" Ajouter ">
+		<div class="ligne_form_fa">
+			<div class="intitule_ligne_form_fa">
+				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
+			</div>
+			<div class="champs_ligne_form_fa">
+				<form action="docannexe.php" method="POST">
+					<input type="hidden" name="idparent" value="[#ID]">
+					<select name="type">
+					<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="type"> 
+						<DOFIRST>
+							<option value="[#TYPE]" selected>[#TITRE]</option>
+						</DOFIRST>
+						<DO>
+							<option value="[#TYPE]">[#TITRE]</option>
+						</DO>
+					</LOOP>
+					</select>
+					<input class="form" type="submit" value=" Ajouter ">
+				</form>
 			</div>
 		</div>
 	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
+		<div class="ligne_form_fa">
+			<div class="intitule_ligne_form_fa">
 				<span class="texte_intitule">Ajouter des documents annexes</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
 			</div>
 		</div>
 	</IF>
 	
-	<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+	<div class="ligne_formulaire">
+		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+	</div>	
 
 	<!-- Suppression de ce lien le 26/09/03 -> Abandon du XML
 	Edition avancée (XML) 
