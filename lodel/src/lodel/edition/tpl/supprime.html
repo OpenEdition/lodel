@@ -3,47 +3,6 @@
 <title>Suppression de document</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<!--
-
-<table width="800" border="0" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-	<h3>Suppression</h3>
-	    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF">      <hr width="330" size="0" align="center"></td>
-  </tr>
-  
-<tr>
-    <td align="center"> <div align="center">
-	<IF COND="[#NOM]"> 
-      <!- Suppression d'un publication ->
-      <font color="Red">Confirmer la suppression de la publication suivante ?</font><br />
-      <br />
-      <b>[#NOM]</b><br />
-      <form action="supprime.php" method="POST">
-        <input class="form" type="submit" name="supprime" value="Supprimer">
-        <input type="hidden" name="publication" value="[#ID]">
-      </form>
-	  <br /><br />
-	  <a href="index.php?id=[#PARENT]"><b><font size="+1">Annuler</font></b></a></div>
-      <ELSE/> 
-      <!- Suppression d'un document ->
-      Confirmer la suppression du document suivant ?<br />
-      <br />
-      "<b>[#TITRE]</b>"<br />
-      <form action="supprime.php" method="POST">
-        <input class="form" type="submit" name="supprime" value="Supprimer">
-        <input type="hidden" name="id" value="[#ID]">
-      </form>
-	  <br /><br />
-	  <a href="index.php?id=[#PUBLICATION]"><b><font size="+1">Annuler</font></b></a></div>
-      </IF> 
-</td>
-</tr>
-</table>
--->
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
@@ -73,7 +32,13 @@
 				<form action="supprime.php" method="POST">
 					<input type="hidden" name="id" value="[#ID]">
 					<input class="form" type="submit" name="supprime" value="Supprimer">
-					<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#PUBLICATION]';">
+					<LOOP NAME="" TABLE="publications" WHERE="id='[#PUBLICATION]'">
+						<IF COND="[#TYPE] EQ 'regroupement'">
+							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#PARENT]';">
+						<ELSE/>
+							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#ID]';">
+						</IF>
+					</LOOP>
 				</form>
 				<br /><br />
 			</IF> 
