@@ -440,7 +440,7 @@
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
 	<!-- On liste en premier les séries linéaires -->
-	<LOOP NAME="aff_series_line" TABLE="entites" WHERE="type='numero'">
+	<LOOP NAME="aff_series_line" TABLE="entites" WHERE="type='numero' AND statut gt 0">
 		<BEFORE>
 			<div class="menu1">Numéros :</div>
 		</BEFORE>
@@ -452,7 +452,7 @@
 	</LOOP>
 	
 	<!-- On liste ensuite les séries hiérarchiques -->
-	<LOOP NAME="aff_series_hier" TABLE="entites" WHERE="type='rubrique'">
+	<LOOP NAME="aff_series_hier" TABLE="entites" WHERE="type='rubrique' AND statut gt 0">
 		<BEFORE>
 			<div class="menu1">rubriques :</div>
 		</BEFORE>
