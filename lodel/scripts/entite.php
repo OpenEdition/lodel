@@ -29,12 +29,12 @@
 
 require_once ($home."func.php");
 
-if ($classe=="documents") {
+if ($classe=="publications") {
+  $visualisationscript="sommaire";
+  $modificationscript="publication";
+} else {
   $visualisationscript="document";
   $modificationscript="document";
-} elseif ($classe=="publications") {
-  $visualisationscript="sommaire";
-  $modificationscript="publications";
 }
 
 
@@ -171,14 +171,14 @@ if ($id>0 && $dir) {
 //
 } elseif ($plus || $reload || $reload2) {
   extract_post();
-  extract_files($context);
+  extract_files($context,$classe);
 
 } elseif ($edit) { // modifie ou ajoute
 //
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
   extract_post();
-  extract_files($context);
+  extract_files($context,$classe);
 
   $context[statut]=-1;
   if ($id=enregistre_entite($context,$id,$classe,"edition!=''")) { // ca marche... on termine
