@@ -17,26 +17,6 @@ function enregistre ($context,&$text)
 
   xml_parse_into_struct_ns($text,&$vals,&$index);
 
-#  // cherche la langue du document
-#  $lang=extract_langue("DOCUMENT",$vals,$index);
-#  if ($lang[DOCUMENT]) {
-#    $langue=$lang[DOCUMENT];
-#  } else {
-#    // cherche la langue par defaut de la revue
-#    $result=mysql_db_query($GLOBALS[database],"SELECT lang FROM revues WHERE rep='$revue'") or die (mysql_error());
-#    mysql_select_db($GLOBALS[currentdb]);
-#    list($langue)=mysql_fetch_row($result);
-#  }
-#  if (!$langue) $langue="FR";
-
-
-//  echo "Index array\n";
-//  print_r($index);
-//  echo "\nVals array\n";
-//  print_r($vals);
-//  echo "\ntext";
-//  die (htmlentities($text));	    
-//  
   // recherche les langues des resumes et des textes
   $lang=extract_langue (array("resume","texte"),$vals,$index,$langue);
 
@@ -66,23 +46,22 @@ function enregistre ($context,&$text)
 
 // valeur par defaut
   $id=$context[iddocument] ? $context[iddocument] : 0;
-
-  $status=-1; // ne pas mettre une valuer positive ici. Ca pose probleme avec les tables auteurs, indexls et indexhs
-  //$status=$context[statusdocument] ? $context[statusdocument] : -1;
+  $statusdocument=$context[statusdocument] ? $context[statusdocument] : -1;
 
   // reverifie ici que le document n'a pas un titre vide... pour pister le bug des documents vide.
   if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document vide. Envoyer un mail sur lodel-devel.");
 
   // ecrit dans la base de donnee le document
-  mysql_query ("INSERT INTO documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
+  mysql_query ("INSERT INTO $GLOBALS[tableprefix]documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$statusdocument','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
 
   $id=mysql_insert_id();
 
-  // ajoute les auteurs
+  // ajoutes les auteurs, et index
 
-  enregistre_auteurs($id,$vals,$index);
-  enregistre_indexls($id,$vals,$index); // mots cles, etc...
-  enregistre_indexhs($id,$vals,$index); // indexhs, etc...
+  $status=$statusdocument>0 ? 1 : -1;
+  enregistre_auteurs($id,$vals,$index,$status);  // ajoute les auteurs
+  enregistre_indexls($id,$vals,$index,$status); // mots cles, etc...
+  enregistre_indexhs($id,$vals,$index,$status); // indexhs, etc...
 
   unlock();
 
@@ -119,11 +98,11 @@ function extract_langue ($balises,&$vals,&$index,$defaut="")
 }
 
 
-function enregistre_auteurs ($iddocument,&$vals,&$index)
+function enregistre_auteurs ($iddocument,&$vals,&$index,$status)
 
 {
   // detruit les liens dans la table documents_auteurs
- mysql_query("DELETE FROM documents_auteurs WHERE iddocument='$iddocument'") or die (mysql_error());
+ mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_auteurs WHERE iddocument='$iddocument'") or die (mysql_error());
 
   if (!$index[auteur]) return;
 
@@ -147,12 +126,14 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
     }
 
     // cherche si l'auteur existe deja
-    $result=mysql_query("SELECT id FROM auteurs WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'");
-    if (mysql_num_rows($result)>0) {
-      list($id)=mysql_fetch_array($result);
-    } else { // il faut ajouter l'auteur
-# supprimer le 6/4/3     mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom,affiliation,courriel) VALUES ('-1','$prefix','$nomfamille','$prenom','$affiliation','$courriel')") or die (mysql_error());
-      mysql_query ("INSERT INTO auteurs (status,prefix,nomfamille,prenom) VALUES ('-1','$context[prefix]','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
+    $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]auteurs WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
+    if (mysql_num_rows($result)>0) { // ok, l'auteur existe deja
+      list($id,$oldstatus)=mysql_fetch_array($result); // on recupere sont id et sont status
+      if ($status>0 && $oldstatus<0) { // Faut-il publier l'auteur ?
+	mysql_query("UPDATE $GLOBALS[tableprefix]auteurs SET status=1 WHERE id='$id'") or die (mysql_error());
+      }
+    } else {
+      mysql_query ("INSERT INTO $GLOBALS[tableprefix]auteurs (status,prefix,nomfamille,prenom) VALUES ('$status','$context[prefix]','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
       $id=mysql_insert_id();
     }
   
@@ -166,12 +147,12 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
 
     // ajoute l'auteur dans la table documents_auteurs
     // ainsi que la description
-    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre,description,prefix) VALUES ('$id','$iddocument','$ordre','$context[description]','$context[prefix]')") or die (mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_auteurs (idauteur,iddocument,ordre,description,prefix) VALUES ('$id','$iddocument','$ordre','$context[description]','$context[prefix]')") or die (mysql_error());
   }
 }
 
 
-function enregistre_indexls ($iddocument,&$vals,&$index)
+function enregistre_indexls ($iddocument,&$vals,&$index,$status)
 
 {
   if (!$GLOBALS[context][option_pasdemotcle]) $balises[TYPE_MOTCLE]="motcle";
@@ -179,7 +160,7 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
   if (!$balises) return;
 
   // detruit les liens dans la table documents_indexls
-   mysql_query("DELETE FROM documents_indexls WHERE iddocument='$iddocument'") or die (mysql_error());
+   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_indexls WHERE iddocument='$iddocument'") or die (mysql_error());
 
   foreach ($balises as $type => $balise) {
     if (!$index[$balise]) continue;
@@ -189,29 +170,27 @@ function enregistre_indexls ($iddocument,&$vals,&$index)
       if (!$indexl) continue;
       if ($tag[attributes] && $tag[attributes][lang]) $lang=strtolower($tag[attributes][lang]);
       // cherche si le mot cle existe deja existe deja
-      $result=mysql_query("SELECT id FROM indexls WHERE mot='$indexl' AND lang='$lang'");
-      if (mysql_num_rows($result)) {
-	list($id)=mysql_fetch_array($result);
+      $result=mysql_query("SELECT id,status FROM indexls WHERE mot='$indexl' AND lang='$lang'");
+      if (mysql_num_rows($result)) { // existe-t-il ?
+	list($id,$oldstatus)=mysql_fetch_array($result); // oui, on recupere sont id et sont status
+	if ($status>0 && $oldstatus<0) { // faut-il publier ce mot cle ?
+	  mysql_query("UPDATE $GLOBALS[tableprefix]indexls SET status=1 WHERE id='$id'") or die (mysql_error());	
+	}
       } else { // il faut ajouter le mot cle
-#	if ($type==TYPE_PERIODE) { // type que l'on ajoute pas
-#	  $id=0;
-#	} else {
-#	  echo "INSERT INTO indexls (mot,type,lang) VALUES ('$indexl','$type','$lang')<BR>";
-	  mysql_query ("INSERT INTO indexls (status,mot,type,lang) VALUES ('-1','$indexl','$type','$lang')") or die (mysql_error());
+	  mysql_query ("INSERT INTO $GLOBALS[tableprefix]indexls (status,mot,type,lang) VALUES ('$status','$indexl','$type','$lang')") or die (mysql_error());
 	  $id=mysql_insert_id();
-#	}
       }
 
       // ajoute le mot cle dans la table documents_auteurs
       if ($id)
-	mysql_query("INSERT INTO documents_indexls (idindexl,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_indexls (idindexl,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
 
     } // tags
   } // balises
 }
 
 
-function enregistre_indexhs ($iddocument,&$vals,&$index)
+function enregistre_indexhs ($iddocument,&$vals,&$index,$status)
 
 {
   if (!$GLOBALS[context][option_pasdeperiode]) $balises[TYPE_PERIODE]="periode";
@@ -222,7 +201,7 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
 #  print_r($vals); echo "<br><br>";
 
   // detruit les liens dans la table documents_indexhs
-  mysql_query("DELETE FROM documents_indexhs WHERE iddocument='$iddocument'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_indexhs WHERE iddocument='$iddocument'") or die (mysql_error());
 
   foreach ($balises as $type => $balise) {
     if (!$index[$balise]) continue;
@@ -233,9 +212,12 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
       if ($tag[attributes] && $tag[attributes][LANG]) $lang=strtolower($tag[attributes][LANG]);
       if (!$lang) $lang="fr";
       // cherche l'id de la indexh
-      $result=mysql_query("SELECT id FROM indexhs WHERE abrev='$indexh' AND lang='$lang'");
+      $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]indexhs WHERE abrev='$indexh' AND lang='$lang'");
       if (mysql_num_rows($result)) {
-	list($id)=mysql_fetch_array($result);
+	list($id,$oldstatus)=mysql_fetch_array($result);
+	if ($status>0 && $oldstatus<0) { // faut-il publier ?
+	  mysql_query("UPDATE $GLOBALS[tableprefix]indexhs SET status=1 WHERE id='$id'") or die (mysql_error());	
+	}
       } else { // il faut ajouter le mot cle
 	# on ne l'ajoute pas... mais il y a une erreur quelque part...
 	$id=0;
@@ -243,7 +225,7 @@ function enregistre_indexhs ($iddocument,&$vals,&$index)
 
       // ajoute l'indexh dans la table documents_indexhs
       if ($id)
-	mysql_query("INSERT INTO documents_indexhs (idindexh,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_indexhs (idindexh,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
 
     } // tags
   } // balises

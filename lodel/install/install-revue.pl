@@ -200,7 +200,7 @@ htaccess ("tpl");
 	    "r2rcheck",
 	    "r2renregistre",
 	    "rmdb",
-		"stats",
+	    "stats",
 	    "texte",
 	    "textes",
 	    "typedoc",
@@ -212,7 +212,8 @@ htaccess ("tpl");
 	    "users",
 	    "user",
 	    "session",
-	    "macros"
+	    "macros",
+	    "cleanxml"
 );
 
 slink ("../../lodelconfig.php","lodelconfig.php");

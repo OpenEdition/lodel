@@ -139,7 +139,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
     // recupere les metas et le status
     $result=mysql_query("SELECT meta,status from documents WHERE id='$row[iddocument]'") or die (mysql_error());
     list($row[meta],$status)=mysql_fetch_row($result);
-    if (!$row[status]) $status=$row[status]; // recupere le status si necessaire
+    if (!$row[statusdocument]) $row[statusdocument]=$status; // recupere le status si necessaire
     supprime_document($row[iddocument],TRUE,FALSE);
   } else { # Il n'existe pas, alors on calcule la date
     $context[duree]=intval($context[duree]);

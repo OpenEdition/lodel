@@ -1,10 +1,5 @@
 <?
 
-//function writefile ($filename,&$text)
-//{
-  ////echo "nom de fichier : $filename";
-  //return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
-//}
 
 function writefile ($filename,&$text)
 {
