@@ -56,6 +56,9 @@ if ($supprime || $confirmation) {
   return;
 }
 
+posttraitement($context);
+
+
 $result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entites.id='$id'") or die (mysql_error());
 if (mysql_num_rows($result)<=0) { header("location: not-found.html"); }
 $context=array_merge($context,mysql_fetch_assoc($result));
@@ -64,7 +67,6 @@ $result=mysql_query("SELECT * FROM $GLOBALS[tp]$context[classe] WHERE identite='
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 
-posttraitement($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,"supprime");

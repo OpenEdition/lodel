@@ -170,9 +170,9 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
   $tables=$table."s";
 
   if (is_numeric($ids)) { # on a un seul document
-    $critere.="identite=".$ids;
+    $critere="identite=".$ids;
   } else {
-    $critere.="identite IN (".join(",",$ids).")";
+    $critere="identite IN (".join(",",$ids).")";
   }
   mysql_query("DELETE FROM $GLOBALS[tp]entites_$tables WHERE $critere") or die (mysql_error());
 
@@ -189,9 +189,12 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
     $result=mysql_query("SELECT id FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$ids).") AND (statut>-32 AND statut<32)");
     $idstodelete=array();
     while ($row=mysql_fetch_row($result)) { array_push ($idstodelete,$row[0]); }
-    // efface ceux qui ne sont pas proteges
-    mysql_query("DELETE FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$idstodelete).")") or die (mysql_error());
-    deleteuniqueid($idstodelete);
+
+    if ($idstodelete) {
+      // efface ceux qui ne sont pas proteges
+      mysql_query("DELETE FROM $GLOBALS[tp]$tables WHERE id IN (".join(",",$idstodelete).")") or die (mysql_error());
+      deleteuniqueid($idstodelete);
+    }
 
     // depublie ceux qui sont proteges.
     mysql_query("UPDATE $GLOBALS[tp]$tables SET statut=-abs(statut) WHERE id IN (".join(",",$ids).") AND statut>=32") or die (mysql_error());
