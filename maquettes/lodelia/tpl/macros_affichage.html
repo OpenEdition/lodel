@@ -103,13 +103,13 @@
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
 	<IF COND="[#NOM]">
-		<span class="titrerevue">
-			<a href="index.html">
-				<span class="couleur_1">
+		<span class="titre2">
+			<a class="titre2" href="index.html">
+				
 					[#NOM]
 				</span>
 			</a>
-		</span>
+		
 	<ELSE/>
 		<span class="titre_centre">
 			<a href="index.html">
@@ -127,7 +127,9 @@
 <!-- Affiche, s'il existe, le titre d'une publication.                  -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TITRE]">
+		<a class="titre2" href="index.html">
 		[#TITRE]
+		</a>
 	</IF>
 </DEFMACRO>
 
@@ -165,41 +167,40 @@
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
-	<table width="70%" border="1" cellspacing="0" cellpadding="5" align="center" bordercolor="#000000" bordercolorlight="#000000" bordercolordark="#C0C0C0" bgcolor="#9DD4B7">
-		<tr>
-			<td>
-				<table border="0" cellspacing="0" cellpadding="0" align="center">
-					<tr>
-						<td width="100%" align="center"> 
-							<MACRO NAME="NOM_PUBLICATION">
-							<MACRO NAME="BOUTON_EDITER_PUBLICATION">
-						</td>
-					</tr>
-					<tr>
-						<td width="100%" align="center">
-							<span class="soustitre_centre">
-								<MACRO NAME="TITRE_PUBLICATION">
-							</span>
-							<br />
-							<span class="soustitre_centre">
-								<MACRO NAME="SOUSTITRE_PUBLICATION">
-							</span>
-							<br />
-							<IF COND="[#DIRECTEUR]!=''">
-								<span class="directeur_centre">
-									* * * 
-									<br />
-									<MACRO NAME="DIRECTEUR_PUBLICATION">
-								</span>	
-							</IF>
-							<br />
-							<MACRO NAME="INTRODUCTION_COMPLETE">
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
+<tr>
+	<td  valign="middle"  background-color="#9C3234">
+		<table  width="561" valign="middle" bgcolor="#9C3234">
+			<tr>
+				<td class="titre2">
+		 			 Sommaire du numéro <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> 
+		 		</td>
+			</tr>
+			<tr>
+				<td class="titre2">
+		 <MACRO NAME="SOUSTITRE_PUBLICATION">
+		 		</td>
+			</tr>
+		 	<tr>
+				<td class="titre2">
+		 	<IF COND="[#DIRECTEUR]!=''">
+					<span class="directeur_centre">
+						<MACRO NAME="DIRECTEUR_PUBLICATION">
+					</span>	
+			</IF>
+				</td>
+			</tr>
+		</table>
+	</td>
+	<td>
+	<MACRO NAME="BOUTON_EDITER_PUBLICATION">
+	</td>
+</tr>
+<tr>
+	<td class="introduction" backgroundcolor="#FFFFFF">
+		<MACRO NAME="INTRODUCTION_COMPLETE">
+	</td>
+</tr>					
+
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS">
@@ -1056,9 +1057,9 @@
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TEXTE]">
-		<table width="95%">
+		<table width="95%" class="introduction">
 			<tr>
-				<td class="texte_petit">
+				<td>
 					<MACRO NAME="ICONE_PUBLICATION">
 					[(#TEXTE|avantlettrine)]
 					<span class="lettrine">[(#TEXTE|lettrine)]</span>

@@ -1,3 +1,6 @@
+
+
+
 p
 {
 	/*  
@@ -40,7 +43,7 @@ sup
 	/*  
 	 * Couleur dominante n°3
 	 */
-	color : Navy;
+	color : #ffffff;
 }
 
 .filet_1
@@ -65,6 +68,18 @@ sup
 	 * Largeur du filet <hr> n°3
 	 */
 	width: 100%;
+}
+
+.introduction
+{
+	/*  Style appliqué à l'introduction d'un numéro
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	color: #9C3234;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 }
 
 .texte

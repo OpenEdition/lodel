@@ -18,11 +18,18 @@
 <MACRO NAME="OUVRIR_HTML">
 <title>[(#TITRE|textebrut)] Sommaire [#NOM]</title>
 <MACRO NAME="INSERER_STYLE">
+</head>
+
+<body>
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<!-- Affiche la barre de navigation de la revue -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td width="100%" valign="top">
+	<MACRO NAME="TRACER_SEPARATION_VERTICALE">
+	<td width="561" valign="top"  bgcolor="#ffffff">
+		<MACRO NAME="IMG_LOGO_LODELIA">
+		<table border="0" cellspacing="0" cellpadding="0" width="561"  bgcolor="#ffffff">
+
 	<MACRO NAME="PRESENTER_PUBLICATION">
 	<MACRO NAME="DOCUMENTS_PAR_TYPES">
 	<br />
