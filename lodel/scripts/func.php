@@ -116,7 +116,9 @@ function rmscript($source) {
  *   le tableau $context
  */
 
-function extract_post() {
+function extract_post($arr=-1) {
+  if (!is_array($arr)) $arr=$_POST;
+
   foreach ($_POST as $key=>$val) {
     if (!isset($GLOBALS['context'][$key])) // protege
       $GLOBALS['context'][$key]=$val;

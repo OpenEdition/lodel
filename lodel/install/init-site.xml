@@ -345,6 +345,9 @@
 <index name="index_idgroup">
 <index-column name="idgroup" />
 </index>
+<index name="index_class">
+<index-column name="class" />
+</index>
 <index name="g_name">
 <index-column name="g_name" />
 </index>
@@ -449,12 +452,13 @@
         description="name/identifiant unique"
         label="[@ADMIN.TABLEFIELDGROUP_NAME]"
         edittype="text" />
-<column name="idclass"
-        type="INTEGER"
+<column name="class"
+        type="VARCHAR"
+        size="64"
         required="true"
-        description="id of the class the group belong"
-	edittype="int"
-	visibility="hidden" />
+        description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
+        visibility="hidden"
+        edittype="class"/>
 <column name="title"
         type="VARCHAR"
         size="255"
@@ -488,6 +492,10 @@
 <index name="index_class">
 <index-column name="class" />
 </index>
+<unique name="unique_fieldgroupclass">
+<unique-column name="name" />
+<unique-column name="class" />
+</unique>
 </table>
 
 

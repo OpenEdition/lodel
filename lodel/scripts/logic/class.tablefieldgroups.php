@@ -64,13 +64,7 @@ class TablefieldgroupsLogic extends Logic {
    function changeRankAction(&$context,&$error)
 
    {
-     global $db;
-
-     $id=intval($context['id']);
-     $dao=$this->_getMainTableDAO();
-     $vo=$dao->getById($id,"idclass");
-     $this->_changeRank($id,$context['dir'],"status>0 AND idclass='".$vo->idclass."'");
-     return "back";
+     return Logic::changeRankAction(&$context,&$error,"class");
    }
 
 
@@ -87,7 +81,7 @@ class TablefieldgroupsLogic extends Logic {
    // begin{publicfields} automatic generation  //
    function _publicfields() {
      return array("name"=>array("text","+"),
-                  "idclass"=>array("int","+"),
+                  "class"=>array("class","+"),
                   "title"=>array("text","+"),
                   "comment"=>array("longtext",""));
              }
@@ -95,6 +89,7 @@ class TablefieldgroupsLogic extends Logic {
 
    // begin{uniquefields} automatic generation  //
 
+    function _uniqueFields() {  return array(array("name","class"),);  }
    // end{uniquefields} automatic generation  //
 
 

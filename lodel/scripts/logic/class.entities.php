@@ -58,13 +58,69 @@ class EntitiesLogic extends Logic {
 
      $daotype=getDAO("types");
      $votype=$daotype->getById($vo->idtype);
-     $this->_populateContext($vo,$context['type']);
+     $this->_populateContext($votype,$context['type']);
 
      $daodatatable=getDAO("datatable",$votype->class);
      $vodatatable=$daodatatable->getById($vo->id);
-     $this->_populateContext($vo,$context['entity']);
+     $this->_populateContext($vodatatable,$context['entity']);
 
      $ret=$this->_populateContextRelatedTables($vo,$context);
+
+     /////
+     function loop_edition_fields($context,$funcname) 
+
+     {
+       global $db;
+
+       $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE status>0 AND edition!='' AND edition!='none' ORDER BY rank")) or dberror();
+
+       $haveresult=!empty($result->fields);
+       if ($haveresult) call_user_func("code_before_$funcname",$context);
+
+       while (!$result->EOF) {
+	 $localcontext=array_merge($context,$result->fields);
+	 $name=$result->fields['name'];
+	 $localcontext['value']=$context['entity'][$name];
+	 $localcontext['error']=$context['error'][$name];
+
+	 call_user_func("code_do_$funcname",$localcontext);
+	 $result->MoveNext();
+       }       
+       if ($haveresult) call_user_func("code_after_$funcname",$context);
+     }
+     /////
+
+     /////
+       function loop_mltext($context,$funcname) 
+       {
+	 if (is_array($context[value])) {
+	   foreach($context[value] as $lang=>$value) {
+	     $localcontext=$context;
+	     $localcontext[lang]=$lang;
+	     $localcontext[value]=$value;
+	     call_user_func("code_do_$funcname",$localcontext);
+	   }
+	   // pas super cette regexp... mais l argument a deja ete processe !
+	 } elseif (preg_match_all("/&lt;r2r:ml lang\s*=&quot;(\w+)&quot;&gt;(.*?)&lt;\/r2r:ml&gt;/s",$context[value],$results,PREG_SET_ORDER) ||
+		   preg_match_all("/<r2r:ml lang\s*=\"(\w+)\">(.*?)<\/r2r:ml>/s",$context[value],$results,PREG_SET_ORDER)    ) {
+	   
+	   foreach($results as $result) {
+	     $localcontext=$context;
+	     $localcontext[lang]=$result[1];
+	     $localcontext[value]=$result[2];
+	     call_user_func("code_do_$funcname",$localcontext);
+	   }
+	 }
+	 
+	 $lang=$context[addlanginmltext][$context['name']];
+	 if ($lang) {
+	   $localcontext=$context;
+	   $localcontext[lang]=$lang;
+	   $localcontext[value]="";
+	   call_user_func("code_do_$funcname",$localcontext);
+	 }
+       }
+     /////
 
      return $ret ? $ret : "ok";
    }
@@ -82,7 +138,7 @@ class EntitiesLogic extends Logic {
      $id=intval($context['id']);
      $dao=$this->_getMainTableDAO();
      $vo=$dao->getById($id,"idparent");
-     $this->_changeRank($id,$context['dir'],"status>0 AND status<64 AND idparent='".$vo->idparent."'");
+     $this->_changeRank($id,$context['dir'],"status<64 AND idparent='".$vo->idparent."'");
      return "back";
    }
 

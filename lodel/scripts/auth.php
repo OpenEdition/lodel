@@ -48,13 +48,14 @@ function authenticate ($level=0,$norecordurl=FALSE)
   $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);
   do { // block de control
     $name=addslashes($_COOKIE[$sessionname]);
+
     if (!$name) break;
     require_once($home."connect.php");
-
     usemaindb();
     if (!($row=$db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'"))))  break;
     $GLOBALS['idsession']=$idsession=$row['id'];
     $GLOBALS['session']=$name;
+
 
     // verifie qu'on est dans le bon site
     if ($row['site']!="tous les sites" && $row['site']!=$site) break;
@@ -79,6 +80,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $contextfromsession=unserialize($row['context']);
     $context=array_merge($context,$contextfromsession); // recupere le contexte
     $user=$contextfromsession['user'];
+
     if ($user['rights']<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
 
     // verifie encore une fois au cas ou...
@@ -191,7 +193,6 @@ function getacceptedcharset($charset) {
 if (!((bool) ini_get("register_globals"))) { // 
   extract($_REQUEST,EXTR_SKIP);
 }
-
 
 // securite... initialisation
 $user=array();

@@ -28,7 +28,7 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<LOOP NAME="class_name" TABLE="classes" WHERE="id='[#IDCLASS]'">
+<LOOP NAME="class_name" TABLE="classes" WHERE="class='[#CLASS]'">
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
@@ -40,7 +40,7 @@
 <IF COND="[#CLASSTYPE]=='entities'">
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&table=tablefieldgroups&idclass=[#IDCLASS]">[@ADMIN.ADD_DATAFIELD_GROUP] [#TITLE]</a>
+	<a href="index.php?do=view&table=tablefieldgroups&class=[#CLASS]">[@ADMIN.ADD_DATAFIELD_GROUP] [#TITLE]</a>
 
 </div>
 <ELSE/>
@@ -62,7 +62,7 @@
 	</tr>
 	<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
 
-	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="idclass='[#IDCLASS]'">
+	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
 
 		<DO>
 		<!--[ print the group ]-->

@@ -122,7 +122,7 @@ class TableFieldsLogic extends Logic {
      case "idgroup" :
        $arr=array();
        // get the groups having of the same class as idgroup
-       $result=$GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.idclass=#_TP_classes.id WHERE tfg2.id='".$context['idgroup']."'")) or die($GLOBALS['db']->errormsg());
+       $result=$GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.class=#_TP_classes.name WHERE tfg2.id='".$context['idgroup']."'")) or die($GLOBALS['db']->errormsg());
        while(!$result->EOF) {
 	 $arr[$result->fields['id']]=$result->fields['title'];
 	 $result->MoveNext();
@@ -266,7 +266,7 @@ class TableFieldsLogic extends Logic {
    {
      global $db;
      if ($context['idgroup']) {
-       list($class,$context['classtype'])=$db->getRow(lq("SELECT class,classtype FROM #_TP_tablefieldgroups,#_TP_classes WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."' AND idclass=#_TP_classes.id")) or dberror();
+       list($class,$context['classtype'])=$db->getRow(lq("SELECT class,classtype FROM #_TP_tablefieldgroups,#_TP_classes WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."' AND class=#_TP_classes.name")) or dberror();
        if ($context['class'] && $context['class']!=$class) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
        $context['class']=$class;
 

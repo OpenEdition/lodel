@@ -350,6 +350,8 @@ function parse_main()
 	  $contents=file_get_contents("tpl/".$macrofilename);
 	} elseif ($GLOBALS['sharedir'] && file_exists($GLOBALS['sharedir']."/macros/".$macrofilename)) {
 	  $contents=file_get_contents($GLOBALS['sharedir']."/macros/".$macrofilename);
+	} elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename)) {
+	  $contents=file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
 	} else {
 	  $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
 	}

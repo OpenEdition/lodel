@@ -28,15 +28,14 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-$tables=array("entrytypes","persontypes","entries",
+
+require($home."controler.php");
+Controler::controler(LEVEL_VISITOR,array("entrytypes","persontypes","entries",
 	      "tablefieldgroups","tablefields","indextablefields",
 	      "translations","usergroups","users",
 	      "types","classes",
 	      "options","optiongroups","useroptiongroups",
-	      "internalstyles","characterstyles");
-
-$level=LEVEL_VISITOR;
-require($home."controler.php");
+	      "internalstyles","characterstyles"));
 
 
 /*

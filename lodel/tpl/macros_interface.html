@@ -1,0 +1,192 @@
+<DEFMACRO NAME="HEADER_HEAD_OPEN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
+</DEFMACRO>
+
+<DEFMACRO NAME="HEADER_HEAD_CLOSE">  
+	<link rel="stylesheet" href="styles_lodel.css">
+        <IF COND="[#STYLECSS]">
+        <style type="text/css">          
+           [#STYLECSS]
+          
+        </style>
+
+        </IF>
+	</head>
+</DEFMACRO>
+
+<DEFMACRO NAME="CLOSE_HTML">  
+	</body>
+	</html>
+</DEFMACRO>
+
+
+
+<DEFMACRO NAME="HEADER_LOGO">
+<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
+<USE TEMPLATEFILE="desk">
+</DEFMACRO>
+
+<DEFMACRO NAME="HEADER_LOGO_LOGIN">
+<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
+</DEFMACRO>
+
+
+
+
+
+<!--[ -----------------------------------------------------------
+      Print error message given the error code
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="PRINT_ERROR_MESSAGE">
+	<IF COND="[#ERROR] eq '+'">[@COMMON.ERROR_REQUIRED_FIELD]</IF>
+	<IF COND="[#ERROR] eq '1'">[@COMMON.ERROR_FIELD_MUST_BE_UNIQUE]</IF>
+	<IF COND="[#ERROR] eq 'date'">[@COMMON.ERROR_INVALID_DATE]</IF>
+	<IF COND="[#ERROR] eq 'time'">[@COMMON.ERROR_INVALID_TIME]</IF>
+	<IF COND="[#ERROR] eq 'datetime'">[@COMMON.ERROR_INVALID_DATETIME]</IF>
+	<IF COND="[#ERROR] eq 'int'">[@COMMON.ERROR_INVALID_INTEGER]</IF>
+	<IF COND="[#ERROR] eq 'number'">[@COMMON.ERROR_INVALID_NUMBER]</IF>
+	<IF COND="[#ERROR] eq 'class'">[@COMMON.ERROR_INVALID_CLASS]</IF>
+	<IF COND="[#ERROR] eq 'type'">[@COMMON.ERROR_INVALID_TYPE]</IF>
+	<IF COND="[#ERROR] eq 'username'">[@COMMON.ERROR_INVALID_USERNAME]</IF>
+	<IF COND="[#ERROR] eq 'passwd'">[@COMMON.ERROR_INVALID_PASSWD]</IF>
+	<IF COND="[#ERROR] eq 'tablefield'">[@COMMON.ERROR_INVALID_FIELD]</IF>
+	<IF COND="[#ERROR] eq 'style'">[@COMMON.ERROR_INVALID_STYLE]</IF>
+	<IF COND="[#ERROR] eq 'mlstyle'">[@COMMON.ERROR_INVALID_MULTILINGUAL_STYLE]</IF>
+	<IF COND="[#ERROR] eq 'url'">[@COMMON.ERROR_INVALID_URL]</IF>
+	<IF COND="[#ERROR] eq 'email'">[@COMMON.ERROR_INVALID_EMAIL]</IF>
+	<IF COND="[#ERROR] eq 'tplfile'">[@COMMON.ERROR_INVALID_TPLFILE]</IF>
+	<IF COND="[#ERROR] eq 'textgroups'">[@COMMON.ERROR_INVALID_TEXTGROUPS]</IF>
+	<IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE]</IF>
+	<IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE]</IF>
+	<IF COND="[#ERROR] eq 'reservedsql'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL]</IF>
+</DEFFUNC>
+
+
+
+
+<!--[ -----------------------------------------------------------
+      Widget pour l'edition des differents types de champs
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type" OPTIONAL="edition,eventattr,confirm">
+<!--[ --------------- CONFIRM--------------------------- ]-->
+<IF COND="[#CONFIRM]">
+<LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
+</IF>
+<!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
+<IF COND="[#EDITION] eq 'display'">
+<span class="displayfield">
+	<IF COND="[#TYPE] ne 'passwd'">[#VALUE]<ELSE/>*******</IF>
+<span>
+<ELSE/>
+<!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
+<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
+
+        <IF COND="[#EDITION] eq 'textarea' or (![#EDITION] and [#TYPE] eq 'longtext')">
+		<textarea rows="[#EDITIONPARAM|defaultvalue('10')]" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+        <ELSE/>
+	<IF COND="[#EDITION] eq 'textarea10'">
+		<textarea rows="10" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+	<ELSE/>
+	<IF COND="[#EDITION] eq 'textarea30'">
+		<textarea rows="30" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+	<ELSE/>
+		<input size="50" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
+	</IF>
+	</IF>
+        </IF>
+
+<ELSE/>
+<!--[ --------------- PASSWD -------------- ]-->
+<IF COND="[#TYPE] eq 'passwd'">
+<input size="50" type="password" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] >
+<ELSE/>
+<!--[ --------------- BOOLEAN -------------- ]-->
+<IF COND="[#TYPE] eq 'boolean'">
+    <input type="checkbox" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes]>
+<ELSE/>
+<!--[ --------------- MLTEXT -------------- ]-->
+<IF COND="[#TYPE] eq 'mltext'">
+  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
+    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
+	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
+    </div>
+  </LOOP>
+  <div>
+    <select name="addlanginmltext[[#VARNAME]]"><?php makeSelect($context,"","","lang"); ?></select>
+    <input class="form" type="submit" name="reload2" value="[@COMMON.ADD]">
+  </div>
+	
+<ELSE/>
+<!--[ --------------- LANG,SELECT ------------- ]-->
+<IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
+	      <select name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>
+		<?php  makeSelect($context,"value","",$context['type']); ?>
+	    </select>
+<ELSE/>
+<!--[ --------------- MULTIPLESELECT ------------- ]-->
+<IF COND="[#TYPE] eq 'multipleselect'">
+	      <select name="[#VARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
+		<?php  makeSelect($context,"value","",$context['type']); ?>
+	    </select>
+<ELSE/>
+<!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
+<IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
+	<input size="30" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]">
+
+<ELSE/>
+<!--[ --------------- IMAGE ------------- ]-->	    
+<IF COND="[#TYPE] eq 'image'">
+		
+                   <table><tr>
+		<IF COND="[#VALUE]"><img src="[(#VALUE|vignette(100))]" border="1"></IF>
+                
+	        <IF COND="[#VALUE]">
+			<input type="radio" name="[#VARNAME][radio]" value="">Conserver l'image courante<br />
+			<input type="radio" name="[#VARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
+		</IF>
+		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
+	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=[#VARNAME]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="[#VARNAME][localfilename]">&nbsp;</span><input size="40" type="text" id="[#VARNAME][localfullfilename]"><br />
+		<input type="radio" id="[#VARNAME][radioupload]" name="[#VARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#VARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
+		 
+	        </tr></table>
+	        <input  type="hidden" id="[#VARNAME][previousvalue]" VALUE="[#VALUE]">
+<ELSE/>
+<!--[ --------------- COLOR ------------- ]-->	    
+<IF COND="[#TYPE] eq 'color'">
+<script language="Javascript" src="colorpicker.js"></script>
+<script language="Javascript">
+<!--
+	var cp_[#NAME] = new ColorPicker(); // DIV style
+-->
+</script>
+<input type="text" name="[#NAME]" size="7" value="[#VALUE]">
+<a href="#" onClick="cp_[#NAME].select(document.forms[0].[#NAME],'colorpicker_[#NAME]');return false;" name="colorpicker_[#NAME]" id="colorpicker_[#NAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
+<script language="JavaScript">
+<!--
+document.forms[0].[#NAME].style.backgroundColor='[#VALUE]';
+cp_[#NAME].writeDiv();
+-->
+</script>
+<ELSE/>
+???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+</IF>
+<!--[ error managment ]-->
+<LOOP NAME="fielderror" FIELD="[#VARNAME]">
+<p class="error"> <FUNC NAME="PRINT_ERROR_MESSAGE" />  </p>
+</LOOP>
+</DEFFUNC>
+

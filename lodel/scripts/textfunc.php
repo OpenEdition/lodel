@@ -673,4 +673,14 @@ function lodeltextcolor($status)
   return $colorstatus[$status];
 }
 
+/**
+ * Return the value in parameter if the variable si empty/null
+ */
+
+function defaultvalue($var1,$var2)
+
+{
+  return $var1 ? $var1 : $var2;
+}
+
 ?>

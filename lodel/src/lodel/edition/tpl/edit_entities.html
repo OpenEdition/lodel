@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.TITLE_DOCUMENT_EDITION]</title>
 <MACRO NAME="JS_SIMULE_SUBMIT">
@@ -42,52 +43,26 @@
 	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]"></IF>
 	<input type="hidden" name="edit" value="1">
 	<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]">
-	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+				<tr><td>[@EDITION.DOCUMENT_TYPE]: [#TYPE.TYPE]</td></tr>
+	</table>
+
+	<br />
+	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
+	<br />
+        <MACRO NAME="AFFICHER_IDENTIFIANT">
+
+
+	<br /><br />
+	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 		<tr>
 			<td align="center">
-				<IF COND="[#IMPORTSOMMAIRE]">
-					<input class="form" type="submit" name="submit" value="[@EDITION.IMPORT_DOCUMENT_AND_CONTINUE]"> - <input class="form" type="submit" name="cancel" value="[@EDITION.DONT_IMPORT_DOCUMENT_AND_CONTINUE]"><br />
-				</IF>
+					<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]"> - 
+					<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]"> - 
+					<input class="form" type="submit" name="cancel" value="[@COMMON.ABORT]">
 			</td>
 		</tr>
 	</table>
-
-	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr><td>[@EDITION.DOCUMENT_TYPE]: [#TYPE]</td></tr>
-	</table>
-
-
-
-	<br />
-	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_DOCUMENTS">
-
-<!--[	<br />
-	<MACRO NAME="AFFICHER_INFORMATIONS_DOCUMENT">
-]-->
-
-	<br />
-	<MACRO NAME="AFFICHER_TYPES_PERSONNES">
-
-	<br />
-	<MACRO NAME="AFFICHER_TYPES_ENTREES">
-	<br />
-        <MACRO NAME="AFFICHER_IDENTIFIANT">
-	<IF COND="![#IMPORTSOMMAIRE]">
-		<br /><br />
-		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-			<tr>
-				<td align="center">
-					<IF COND="[#ENCORE]">
-						<input class="form" type="submit" name="soumettre" value="[@EDITION.CONTINUE]"> - 
-						<input class="form" type="submit" name="cancel" value="[@COMMON.ABORT]">
-					<ELSE/>
-						<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]"> - 
-						<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]"> - 
-						<input class="form" type="submit" name="cancel" value="[@COMMON.ABORT]">
-					</IF>
-				</td>
-			</tr>
-		</table>
-	</IF>
 </form>
 <MACRO NAME="CLOSE_HTML">

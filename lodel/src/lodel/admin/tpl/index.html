@@ -22,6 +22,7 @@
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros2.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[(#SITE|strtoupper)]. [@COMMON.ADMINISTRATION]</title>
 	<script type="text/javascript"><!--
@@ -180,7 +181,7 @@
 									<LOOP NAME="classtypes">
 									<option value="" style="color: gray;">[#TITLE] </option>
 									<LOOP NAME="classes_for_tablefields" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
-										<option value="index.php?do=list&table=tablefieldgroups&idclass=[#ID]" style="padding-left:20px;"> [#TITLE]</option>
+										<option value="index.php?do=list&table=tablefieldgroups&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
 									</LOOP>
 									</LOOP>
 									</select>

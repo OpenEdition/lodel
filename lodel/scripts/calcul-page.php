@@ -32,7 +32,7 @@ require_once($GLOBALS[home]."func.php");
 
 # le $ret ne sert a rien, mais s'il n'est pas la, ma version de php n'aime pas: bug eratique.
 
-# fonction d'entree pour le calcul d'une page
+# fonction d entree pour le calcul d'une page
 
 # on sort du UTF-8 par defaut
 # sinon, on applique une regle un peu dictatorialle, c'est l'iso-latin1
@@ -95,7 +95,13 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 function insert_template($context,$filename)
 
 {
-  calcul_page($context,$filename,"");
+  if (file_exists("tpl/".$filename.".html")) {
+    calcul_page($context,$filename);
+  } elseif (file_exists($GLOBALS['home']."../tpl/".$filename.".html")) {
+    calcul_page($context,$filename,"",$GLOBALS['home']."../tpl/");
+  } else {
+    die("ERROR: unable to find the file $filename.html");
+  }
 }
 
 

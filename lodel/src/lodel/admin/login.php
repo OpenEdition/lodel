@@ -27,17 +27,15 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
 require("siteconfig.php");
 require_once ($home."auth.php");
 
-if ($login) {
+if ($_POST['login']) {
   require_once($home."func.php");
   extract_post();
   do {
     require_once ($home."connect.php");
     require_once ($home."loginfunc.php");
-
     if (!check_auth($context['login'],$context['passwd'],$site)) {
       $context[error_login]=1; break; 
     }
@@ -45,7 +43,7 @@ if ($login) {
     $err=open_session($context['login']);
     if ($err) { $context[$err]=1; break; }
     header ("Location: http://".$_SERVER['SERVER_NAME'].$url_retour);
-    die ($url_retour);
+    die ("url_retour: $url_retour");
   } while (0);
 }
 

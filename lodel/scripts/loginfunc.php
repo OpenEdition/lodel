@@ -91,6 +91,7 @@ function check_auth ($login,&$passwd,&$site)
     $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or dberror();
     usecurrentdb();
     if ( ($row=$result->fields) ) {
+
       // le user est dans la base generale
       $site="tous les sites";
      } elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb']!=DATABASE) { // le user n'est pas dans la base generale

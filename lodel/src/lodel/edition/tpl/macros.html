@@ -263,17 +263,7 @@
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_ERREURS_SAISIE">
-	<IF COND="[#ERROR] eq '+'"><tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_REQUIRED_FIELD]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'date'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_DATE]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'time'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_TIME]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'datetime'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_DATE_TIME]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'int'"><tr><td colspan="2" class="message_erreur">[@COMMON.ERROR_NOT_AN_INTEGER]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_NUMBER]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'readerror'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_MISSING_FILE]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'imageformat'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_FORMAT_IMAGE]</td></tr></IF>
-	<IF COND="[#ERROR] eq 'url'"><tr><td colspan="2" class="message_erreur">[@EDITION.ERROR_INVALID_URL]</td></tr></IF>
-</DEFMACRO>
+
 <!--[ ************************************************** ]-->
 
 <!--[ Macros rajoutées le 17/11/03 ********************* ]-->
@@ -282,7 +272,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<LOOP NAME="champs">
+	<LOOP NAME="edition_fields">
 		<BEFORE><!--[ information sur le groupe. Ne s'affichent que s'il y a des champs editable ]-->
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
@@ -298,7 +288,7 @@
 				<td width="200" valign="top">[#TITLE] :</td>
 				<MACRO NAME="AFFICHER_EDITION_CHAMPS">
 			</tr>
-			<MACRO NAME="AFFICHER_ERREURS_SAISIE">
+			<FUNC NAME="PRINT_ERROR_MESSAGE">
         </DO>
         <AFTER>
 			</table>
@@ -352,19 +342,13 @@
 	</LOOP>
 </DEFMACRO>
 
-<!--[
-<DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_DOCUMENTS">
-	<LOOP NAME="groupesdechamps" TABLE="fieldgroups" WHERE="class='documents' AND status gt 0" ORDER="rank">
+
+<DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
+	<LOOP NAME="tablefieldgroups" TABLE="tablefieldgroups" WHERE="class='[#TYPE.CLASS]' AND status gt 0" ORDER="rank">
 		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 	</LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_PUBLICATIONS">
-	<LOOP NAME="groupesdechamps" TABLE="fieldgroups" WHERE="class='publications' AND status gt 0" ORDER="rank">
-		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
-	</LOOP>
-</DEFMACRO>
-]-->
 
 
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
@@ -424,38 +408,6 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="HEADER_LOGO">   
-<BODY bgcolor="#FFFFFF" text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0">
-<USE TEMPLATEFILE="deskedition">
-</DEFMACRO>
-
-<DEFMACRO NAME="HEADER_LOGO_LOGIN">
-<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
-</DEFMACRO>
-
-<DEFMACRO NAME="HEADER_HEAD_OPEN">
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-	<html>
-	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
-</DEFMACRO>
-
-<DEFMACRO NAME="HEADER_HEAD_CLOSE">  
-	<link rel="stylesheet" href="styles_lodel.css">
-        <IF COND="[#STYLECSS]">
-        <style type="text/css">          
-           [#STYLECSS]
-          
-        </style>
-
-        </IF>
-	</head>
-</DEFMACRO>
-
-<DEFMACRO NAME="CLOSE_HTML">  
-	</body>
-	</html>
-</DEFMACRO>
 
 <DEFMACRO NAME="AUTEURS">
 	<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
@@ -865,39 +817,20 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="DESCENDRE_MONTER_PUBLICATION">
+<DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
 	<IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) OR [#USER.ADMIN]">
-		<a href="publication.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-		<a href="publication.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+		<a href="index.php?do=changerank&id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+		<a href="index.php?do=changerank&id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
 		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-	<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
-		<a href="document.php?dir=down&id=[#ID]"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-		<a href="document.php?dir=up&id=[#ID]"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-	<ELSE/>
-		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
-		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
-	</IF>
-</DEFMACRO>
-
-<DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
-	<IF COND="[#USER.EDITOR] AND [#GROUPRIGHT]">
-		<a href="docannexe.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-		<a href="docannexe.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-	<ELSE/>
-		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
-		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
-	</IF>
-</DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">
-		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
+		<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
 		<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
 		|&nbsp;<a href="index.php?do=view&id=[#ID]">[@COMMON.EDIT]</a>&nbsp;

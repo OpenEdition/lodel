@@ -263,14 +263,14 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
       if ($err) break;
     }
     $fields=getfields("tablefieldgroups");
-    if (!$fields['idclass']) {
-      $err=mysql_query_cmds('
-ALTER TABLE #_TP_tablefieldgroups ADD  idclass  INT UNSIGNED DEFAULT \'0\' NOT NULL;
-ALTER TABLE #_TP_tablefieldgroups ADD  INDEX index_idclass (idclass);
- ');
-      if ($err) break;
-      $report.="Creation de la table classe<br>\n";
-    }
+//    if (!$fields['idclass']) {
+//      $err=mysql_query_cmds('
+//ALTER TABLE #_TP_tablefieldgroups ADD  idclass  INT UNSIGNED DEFAULT \'0\' NOT NULL;
+//ALTER TABLE #_TP_tablefieldgroups ADD  INDEX index_idclass (idclass);
+// ');
+//      if ($err) break;
+//      $report.="Creation de la table classe<br>\n";
+//    }
     foreach (array("publications"=>array("Publications","entities","identity"),
 		   "documents"=>array("Documents","entities","identity"),
 		   "documentsannexes"=>array("Documents Annexes","entities","identity"),
@@ -283,20 +283,12 @@ ALTER TABLE #_TP_tablefieldgroups ADD  INDEX index_idclass (idclass);
       $id=uniqueid("classes");
       $err=mysql_query_cmds("INSERT INTO #_TP_classes (id,class,classtype,title,status,rank) VALUES('$id','$class','$classtype','$title','32','1');");
       if ($err) break 2;
-      $err=mysql_query_cmds("UPDATE #_TP_tablefieldgroups SET idclass='$id' WHERE class='$class';");
-      if ($err) break 2;
+      //      $err=mysql_query_cmds("UPDATE #_TP_tablefieldgroups SET idclass='$id' WHERE class='$class';");
+      //      if ($err) break 2;
 
       $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_$class ( $idfield	INTEGER UNSIGNED  UNIQUE, KEY index_$idfield ($idfield))")) or dberror();
 
       $report.="Creation de la classe $classe <br>\n";
-    }
-    $fields=getfields("tablefieldgroups");
-    if ($fields['class']) {
-      $err=mysql_query_cmds('
-ALTER TABLE #_TP_tablefieldgroups DROP class;
- ');
-      if ($err) break;
-      $report.="Suppression de class dans tablefieldgroups <br>\n";
     }
 
     /////////////////////
@@ -326,12 +318,12 @@ UPDATE #_TP_tablefields SET edition=\'textarea\' WHERE edition LIKE \'textarea%\
       }
       if (!$fields['class']) {
 	$err=mysql_query_cmds('
-ALTER TABLE #_TP_tablefields ADD class VARCHAR(64) NOT NULL;
+ALTER TABLE #_TP_tablefields ADD class VARCHAR(64) NOT NULL, ADD INDEX index_class (class);
 ');
 
 	if ($err) break;
 	// get the class of each group
-	$result=mysql_query("SELECT $GLOBALS[tp]tablefieldgroups.id,$GLOBALS[tp]classes.class FROM $GLOBALS[tp]tablefieldgroups,$GLOBALS[tp]classes WHERE idclass=$GLOBALS[tp]classes.id AND $GLOBALS[tp]tablefieldgroups.status>0 AND $GLOBALS[tp]classes.status>0") or trigger_error(mysql_error(),E_USER_ERROR);
+	$result=mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0") or trigger_error(mysql_error(),E_USER_ERROR);
 	while($row=mysql_fetch_assoc($result)) {
 	  $err=mysql_query_cmds('
 UPDATE #_TP_tablefields SET class=\''.$row['class'].'\' WHERE idgroup='.$row['id'].';
@@ -394,37 +386,31 @@ UPDATE #_TP_options SET idgroup=2 WHERE idgroup=0;
 
 	// execute allways if (!$tables["$GLOBALS[tp]documentsannexes"]) {
      $idgroup=array();
-     $idclassdocannexes=$db->getOne(lq("SELECT id FROM #_TP_classes WHERE class='documentsannexes'"));
-     if ($db->errorno)  dberror();
-      $idclassdocuments=$db->getOne(lq("SELECT id FROM #_TP_classes WHERE class='documents'"));
-     if ($db->errorno)  dberror();
-     if (!$idclassdocuments || !$idclassdocannexes) die("hum... pas facile...");
+
       // create the group of fields for documentsannexe from those in documents
      foreach(array("grtitre","grgestion","grtexte") as $grp) {
 
        $query="SELECT * FROM $GLOBALS[tp]tablefieldgroups  WHERE name='$grp' ";
-       $result=mysql_query($query." AND idclass='$idclassdocsannexes'") or trigger_error(mysql_error(),E_USER_ERROR);
+       $result=mysql_query($query." AND class='documentsannexes'") or trigger_error(mysql_error(),E_USER_ERROR);
        if (mysql_num_rows($result)>0) {
-	 list($idgroup[$grp])=mysql_fetch_row($result);
+	 $row=mysql_fetch_assoc($result);
+	 $idgroup[$grp]=$row['id'];
        } else {
-	 #echo $query." AND idclass='$idclassdocuments'";
-	 $result=mysql_query($query." AND idclass='$idclassdocuments'") or trigger_error(mysql_error(),E_USER_ERROR);
+	 $result=mysql_query($query." AND class='documents'") or trigger_error(mysql_error(),E_USER_ERROR);
 	 $row=mysql_fetch_assoc($result);
 	 #echo "row:$row";print_r($row);
 	 if (!$row) { $err="Impossible de trouver le groupe de champ $grp"; break 2; }
-	 $row['idclass']=$idclassdocannexes;
+	 $row['class']="documentsannexes";
 	 $row['id']=0; // create a new one
 	 #print_r($row);
 	 setrecord("tablefieldgroups",0,$row);
 	 $idgroup[$grp]=mysql_insert_id();
        }
       }
-     #echo "!$idclassdocuments || !$idclassdocannexes<br>";
 
-      // create the fields from fields in documentsannexes from documents
+      // create the fields in documentsannexes from documents
       foreach(array("titre","lien","texte") as $field) {
-	#echo lq("SELECT #_TP_tablefields.*,#_TP_tablefieldgroups.name as grp FROM #_TP_tablefieldgroups INNER JOIN #_TP_tablefields ON idgroup=#_TP_tablefieldgroups.id WHERE #_TP_tablefields.name='$field' AND idclass='$idclassdocuments'");
-	$result=mysql_query(lq("SELECT #_TP_tablefields.*,#_TP_tablefieldgroups.name as grp FROM #_TP_tablefieldgroups INNER JOIN #_TP_tablefields ON idgroup=#_TP_tablefieldgroups.id WHERE #_TP_tablefields.name='$field' AND idclass='$idclassdocuments'")) or trigger_error(mysql_error(),E_USER_ERROR);
+	$result=mysql_query(lq("SELECT #_TP_tablefields.*,#_TP_tablefieldgroups.name as grp FROM #_TP_tablefieldgroups INNER JOIN #_TP_tablefields ON idgroup=#_TP_tablefieldgroups.id WHERE #_TP_tablefields.name='$field' AND #_TP_tablefieldgroups.class='documents'")) or trigger_error(mysql_error(),E_USER_ERROR);
 	$row=mysql_fetch_assoc($result);
 	if (!$row) { $err="Impossible de trouver le tablefield $field"; break 2; }
 

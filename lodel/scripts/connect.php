@@ -141,7 +141,7 @@ function lq ($query)
 			  "#_tablefieldsandgroupsjoin_"=>"$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]tablefields ON $GLOBALS[tableprefix]tablefields.idgroup=$GLOBALS[tableprefix]tablefieldgroups.id",
 
 
-			  "#_tablefieldgroupsandclassesjoin_"=>"$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]classes ON $GLOBALS[tableprefix]classes.id=$GLOBALS[tableprefix]tablefieldgroups.idclass",
+			  "#_tablefieldgroupsandclassesjoin_"=>"$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]classes ON $GLOBALS[tableprefix]classes.name=$GLOBALS[tableprefix]tablefieldgroups.class",
 			  );
 
     $query=strtr($query,$cmd);

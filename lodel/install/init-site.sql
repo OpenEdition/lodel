@@ -147,14 +147,15 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	PRIMARY KEY (id),
 	KEY index_name (name),
 	KEY index_g_name (g_name),
-	KEY index_idgroup (idgroup)
+	KEY index_idgroup (idgroup),
+	KEY index_class (class)
 );
 
 
 CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
-	idclass		INT UNSIGNED DEFAULT '0' NOT NULL,   	# name de la table complementaire
+	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
@@ -165,7 +166,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
 
 	PRIMARY KEY (id),
 	KEY index_name (name),
-	KEY index_idclass (idclass)
+	KEY index_class (class)
 );
 
 
