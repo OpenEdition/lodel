@@ -702,14 +702,15 @@ if ($limit && strpos($limit,",")===false) {
     $currentoffset=intval(($_REQUEST[\''.$offsetname.'\'])/'.$limit.')*'.$limit.';';
    $processlimit='
    $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
-   $cleaquery=preg_replace("/&?'.$offsetname.'=\d+/","",$_SERVER[\'QUERY_STRING\']);
+   $cleanquery=preg_replace("/(^|&)'.$offsetname.'=\d+/","",$_SERVER[\'QUERY_STRING\']);
+   if ($cleanquery[0]=="&") $cleanquery=substr($cleanquery,1); 
    if ($cleanquery) $currenturl.=$cleanquery."&";
 if ($context[nbresultats]>'.$limit.') {
 $context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$limit.');
-$context[nbresultats]--;
 } else {
 $context[nexturl]="";
 }
+if ($context[nbresultats]>0) $context[nbresultats]--;
 $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
 ';
    $limit='".$currentoffset.",'.($limit+1);
