@@ -51,8 +51,10 @@ function pluriel($texte)
 function lettrine($texte)
 
 {
-  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/su","\\1<span class=\"lettrine\">\\2</span>",$texte);
+  //return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/su","\\1<span class=\"lettrine\">\\2</span>",$texte);
   // utf-8 ok
+
+  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/s","\\1<span class=\"lettrine\">\\2</span>",$texte);
 
 }
 
@@ -69,8 +71,10 @@ function nbsp($texte)
 function majuscule($texte)
 
 {
-  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/sue",'"\\1".strtoupper("\\2")',$texte);
+  //return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/sue",'"\\1".strtoupper("\\2")',$texte);
   // utf-8 ok
+
+  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/se",'"\\1".strtoupper("\\2")',$texte);
 }
 
 
