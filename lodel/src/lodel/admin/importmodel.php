@@ -33,15 +33,15 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 require ($home."importfunc.php");
 #authenticate();
 
-$fichier=extract_import("model",$context);
+$file=extract_import("model",$context);
 
-if ($fichier && $delete) {
+if ($file && $delete) {
   // extra check. Need more ?
-  if (dirname($fichier)=="CACHE") {
-    unlink($fichier);
+  if (dirname($file)=="CACHE") {
+    unlink($file);
   }
   //
-} elseif ($fichier) {
+} elseif ($file) {
   require_once ($home."connect.php");  
   require_once ($home."backupfunc.php");
   require ($home."func.php");
@@ -50,10 +50,10 @@ if ($fichier && $delete) {
   $accepteddirs=array("tpl","css");
   $acceptedexts=array("html","css");
 
-  if (!importFromZip($fichier,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['error_extract']=1; break; }
+  if (!importFromZip($file,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['error_extract']=1; break; }
 
   // execute the editorial model
-  if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err=->errormsg();
+  if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err->errormsg();
   @unlink($sqlfile);
 
   // change the id in order there are minimal and unique
@@ -97,7 +97,7 @@ if ($frominstall) {
 }
 
 
-function loop_fichiers(&$context,$funcname)
+function loop_files(&$context,$funcname)
 {
   global $fileregexp,$importdirs,$home;
 

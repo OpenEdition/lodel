@@ -391,7 +391,7 @@ if ($task=="file") {
 
   // ajouter le modele editorial ?
   if ($GLOBALS[singledatabase]!="on") {
-    mysql_select_db($GLOBALS['database']."_".$context['dir']);
+    mysql_select_db($GLOBALS['database']."_".$context['name']);
   }
   $import=true;
   // verifie qu'on peut importer le modele.
@@ -402,10 +402,19 @@ if ($task=="file") {
 
   if (!$context['path']) $context['path']="/".$context['rep'];
   if ($import) {
-    header("location: ".$context['url']."/lodel/admin/importmodel.php?frominstall=1");
+    $go=$context['url']."/lodel/admin/importmodel.php?frominstall=1";
   } else {
-    header("location: ".$context['url']."/lodel/edition");
+    $go=$context['url']."/lodel/edition";
   }
+
+  if (!headers_sent()) {
+    header("location: ".$go);
+    exit;
+  } else {
+    echo "<h2>Warnings seem to appear on this page. Since Lodel may be correctly  installed anyway, you may go on by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
+     exit;
+  }
+
 
 
   return;

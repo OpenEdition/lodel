@@ -198,7 +198,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
 function execute_dump($filename)
 
 {
-  require_once($GLOBALS[home]."func.php");
+  require_once($GLOBALS['home']."func.php");
   // constant
   $chunk=16384;
 #  $chunk=2048;
@@ -222,7 +222,7 @@ function execute_dump($filename)
 
       #if (preg_match("/CREATE/",$pieces[$i])) echo $pieces[$i],"<br />";
 
-       PMA_mysql_query($pieces[$i]) or die($db->errormsg());
+       PMA_mysql_query($pieces[$i]) or die(mysql_error());
 #       if ($result == FALSE) {     
 #        //      echo $pieces[$i],"<br>\n"; flush();
 #	return FALSE; }
