@@ -446,21 +446,21 @@ cp_[#NAME].writeDiv();
 
 	<!--[ -----------[ SELECT ]---------- ]-->
 	
-	<IF COND="[#EDITION] == 'select'">
-	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
+	<IF COND="[#EDITION] EQ 'select' or [#EDITION] EQ 'multipleselect' ">
+	<select <IF COND="[#EDITION] EQ 'multipleselect'">multiple="multiple" size="10" </IF> id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
 	<ELSE/>
 	<!--[ -----------[ POOL ]---------- ]-->
-	<IF COND="[#EDITION]=='pool'">
+	<IF COND="[#EDITION] EQ 'pool'">
 	<FUNC NAME="JS_POOL">
 	<table>
 	<tr><td>[@COMMON.AVAILABLE_ENTRIES]</td><td></td><td>[@COMMON.SELECTED_ENTRIES]</td></tr>
 	<tr><td>
 	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
-	<select multiple size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
+	<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
