@@ -227,9 +227,15 @@ if ($id>0 && $dir) {
 }
 
 if (!$context[tplcreation]) {
-  if (!$context[idtype]) die("preciser un type in document.php");
-  $result=mysql_query("SELECT tplcreation,type FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND statut>0") or die (mysql_error());
-  list($context[tplcreation],$context[type])=mysql_fetch_row($result);
+  if (!$context[idtype] && $id) {
+    $result=mysql_query("SELECT tplcreation,idtype,type FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entites.id='$id'") or die (mysql_error());
+    if (!mysql_num_rows($result)) die("ERROR: document without type (???)");
+    list($context[tplcreation],$context[idtype],$context[type])=mysql_fetch_row($result);
+  } else {
+    if (!$context[idtype]) die("preciser un type in document.php");
+    $result=mysql_query("SELECT tplcreation,type FROM $GLOBALS[tp]types WHERE id='$context[idtype]' AND statut>0") or die (mysql_error());
+    list($context[tplcreation],$context[type])=mysql_fetch_row($result);
+  }
 }
 
 $context[idtache]=intval($idtache);
