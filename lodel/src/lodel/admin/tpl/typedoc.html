@@ -33,20 +33,19 @@
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
+		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<tr>
 		    <td>
 		    	Index disponible pour ce type de document :<br />
 				<MACRO NAME="TYPE_ENTREES">
 		    </td>  
 		  </tr>
-
 		  <tr>
 		    <td>
 				Intervenant disponible pour ce type de document :<br />
 				<MACRO NAME="TYPE_PERSONNES">
 		    </td>  
 		  </tr>
-
-		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 	</table>
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
