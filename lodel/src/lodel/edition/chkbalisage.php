@@ -139,7 +139,7 @@ while ($arr) {
       $part=$bal;
     } else {
       $textbal=$balises[strtolower(trim($bal))];
-      if (!$textbal) $textbal='<div style="color: red">Style "'.$bal.'" non reconnue</div>';
+      if (!$textbal) $textbal='<div style="color: red">Style "'.$bal.'" non reconnu</div>';
       $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise">'.$textbal.'</td><td class="chkbalisagetdparagraphe">';
     }
   } elseif ($subtext=="/r2r") {
