@@ -56,7 +56,7 @@
 <!-- ****************************************************************** -->
 		
 			
-		<div class="titrerevue">
+		<div class="titre1">
 			Les numéros de <MACRO NAME="NOM_REVUE">
 			<br/ > 
 			<span class="soustitrerevue">
@@ -157,7 +157,7 @@
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
 
-				<div class="titrerevue">
+				<div class="titre1">
 		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
 					 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
 		 			
@@ -171,7 +171,7 @@
 												
 				</div>
 				<IF COND="[#INTRODUCTION]">
-					<div class="introduction" backgroundcolor="#FFFFFF">
+					<div class="extrait">
 						<MACRO NAME="INTRODUCTION_COMPLETE">
 					</div>
 				</IF>			
@@ -190,7 +190,7 @@
 <!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- ****************************************************************** -->
-				<div class="titrerevue">
+				<div class="titre1">
 		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
 					 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
 		 			
@@ -219,7 +219,7 @@
 			Paru dans 
 			<IF COND="[#TYPE]=='regroupement'"> 
 				<LOOP NAME="affiche_numero2" TABLE="publications"  WHERE="id='[#PARENT]'"> 
-					<a class="titrerevue" href="sommaire.html?id=[#ID]">
+					<a class="titre1" href="sommaire.html?id=[#ID]">
 						<MACRO NAME="NOM_REVUE">, n° [#NOM]  
 						<IF COND="[#TITRE]">,
 							[#TITRE]
@@ -227,7 +227,7 @@
 					</a>
 				</LOOP>
 			<ELSE/>
-					<a class="titrerevue" href="sommaire.html?id=[#ID]">
+					<a class="titre1" href="sommaire.html?id=[#ID]">
 							<MACRO NAME="NOM_REVUE"> n°[#NOM] 
 								<IF COND="[#TITRE]">,
 									[#TITRE]
@@ -256,7 +256,7 @@
 		    	    	<IF COND="[#NOM]">
 							<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
 								
-									 n&#176; [#NOM] - [#TITRE]
+									Paru dans le n&#176; [#NOM] - [#TITRE]
 								
 							</a>
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -267,7 +267,7 @@
     	    	<IF COND="[#NOM]">
 					<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
 						
-							 n&#176; [#NOM] - [#TITRE]
+							Paru dans le  n&#176; [#NOM] - [#TITRE]
 						
 					</a>
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -315,12 +315,8 @@
 <!-- <MACRO NAME="PARU_DANS_SIMPLE">                                    -->
 <!-- ****************************************************************** -->
 	<MACRO NAME="LISTER_AUTEURS">
-	<a href="document.html?id=[#ID]">
-		<span style="color:Black;">
-			[#TITRE],
-		</span>
-	</a>
-	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+	<MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">
+	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT"><br />
 	<MACRO NAME="PARU_DANS_SIMPLE">
 </DEFMACRO>
 
@@ -827,6 +823,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste des auteurs d'un document entre virgules.         -->
 <!-- ****************************************************************** -->
+	<div class="auteur">
 	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>
 			[#PRENOM] 
@@ -849,6 +846,7 @@
 			</IF>
 		</ALTERNATIVE>
 	</LOOP>
+	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_AUTEURS_DOCUMENT">
@@ -858,7 +856,7 @@
 <!-- Les auteurs sont cliquables (lien vers index par auteurs)          -->
 <!-- L'affichage est destiné aux sommaires : il permet une respiration. -->
 <!-- ****************************************************************** -->
-	
+		<div class="auteur">
 		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 			<DOFIRST>
@@ -888,16 +886,15 @@
 				</IF>
 			</AFTER>
 		</LOOP>
-	
+		</div>
 </DEFMACRO>
 
+
+<DEFMACRO NAME="DESCRITION_AUTEUR"> 
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste description des auteurs dans le document          -->
 <!-- ****************************************************************** -->
-<DEFMACRO NAME="DESCRITION_AUTEUR"> 
-
-
 <LOOP TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
  <IF COND="[#DESCRIPTION]">
  	<div class="titre3">
@@ -985,13 +982,15 @@
 		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			<div class="extrait">
-			<span class="bold">Extrait du premier article :</span>  
-			[(#TEXTE|removefootnotes|couper(1500))]
-			<a href="document.html?id=[#ID]">
-				Lire la suite
-			</a>
+				<span class="bold">
+					Extrait du premier article :
+				</span>  
+					[(#TEXTE|removefootnotes|couper(1500))]
+				<a href="document.html?id=[#ID]">
+					Lire la suite
+				</a>
 			</div>
-			</IF>
+		</IF>
 		</LOOP>
 	</LOOP>
 </DEFMACRO>
@@ -1078,32 +1077,27 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
 		<BEFORE>
-			<table>
+			<ul class="puce">
 		</BEFORE>
 		<DO>
-			<tr>
-				<td class="texte_petit">
+			<li>
+				
 					<!-- Titre du doc annexe -->
-					<MACRO NAME="IMG_PUCE">
-					<strong>
+					<span class="bold">
 						<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
-					</strong>
-				</td>
-			</tr>
-			<tr>
-				<td class="texte_petit">
+					</span>
+				<p>
 					<!-- Commentaire du doc annexe -->
 					[#COMMENTAIRE]
-				</td>
-			</tr>
-			<tr>
-				<td class="texte_petit">
+				</p>
+				<p>
 					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
-				</td>
-			</tr>
+				</p>
+			
+			</li>
 		</DO>
 		<AFTER>
-			</table>
+			</ul>
 		</AFTER>
 	</LOOP>
 	<!-- Propose aux rédacteurs d'ajouter un document  --->
@@ -1131,16 +1125,12 @@
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TEXTE]">
-		<table width="561" class="introduction">
-			<tr>
-				<td>
+		
 					<MACRO NAME="ICONE_PUBLICATION">
 					[(#TEXTE|avantlettrine)]
 					<span class="lettrine">[(#TEXTE|lettrine)]</span>
 					[(#TEXTE|apreslettrine)]
-				</td>
-			</tr>
-		</table>
+				
 	</IF>
 </DEFMACRO>
 
@@ -1152,9 +1142,7 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- ****************************************************************** -->
-	<table width="90%">
-		<tr>
-			<td class="texte_petit">
+		
 				<IF COND="[#TEXTE]">
 					<MACRO NAME="ICONE_PUBLICATION">
 					<!-- affiche les 1500 premiers mots du texte -->
@@ -1167,9 +1155,6 @@
 						... lire ...
 					</a>
 				</IF>
-			</td>
-		</tr>
-	</table>
 </DEFMACRO>
 
 <DEFMACRO NAME="INTRODUCTION_COURTE_SIMPLE">
@@ -1192,6 +1177,7 @@
 	</IF>
 </DEFMACRO>
 
+
 <DEFMACRO NAME="TEXTE_INTEGRAL">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
@@ -1210,7 +1196,6 @@
 					<ELSE/>
 						en ligne le [#DATEPUBLI]]
 					</IF>
-				</span>
 			</a>
 		</IF>
 	</IF>
