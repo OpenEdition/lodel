@@ -26,7 +26,14 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require("siteconfig.php");
+if (!file_exists("lodelconfig.php")) { header("location: lodeladmin/install.php"); exit; } 	 
+  	 
+if (file_exists("siteconfig.php")) {
+  require("siteconfig.php");
+} else { 	 
+  require ("lodelconfig.php"); 	 
+}
+
 require_once($home."auth.php");
 authenticate();
 
