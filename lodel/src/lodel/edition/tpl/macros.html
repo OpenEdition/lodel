@@ -316,20 +316,20 @@
 	</td>
 	<td width="74" align="center" valign="middle" class="texte_trespetit">
 		<div align="center">
-			<IF COND="[#EDITEUR]">
-				<a href="publication.php?format=fonctionsavancees&id=[#ID]">
-					<MACRO NAME="GIF_FONCTIONS_AVANCEES">
-				</a>
-			<ELSE/>
-				<MACRO NAME="GIF_INACTIF">
-			</IF>
+			<a href="index.php?format=publisfa&id=[#ID]">
+				<MACRO NAME="GIF_FONCTIONS_AVANCEES">
+			</a>
 		</div>
 	</td>
 	<td width="74" valign="middle">
 		<div align="center">
-		<a href="supprime.php?publication=[#ID]">
-			<MACRO NAME="GIF_DETRUIRE">
-		</a>
+			<IF COND="[#EDITEUR]">
+				<a href="supprime.php?publication=[#ID]">
+					<MACRO NAME="GIF_DETRUIRE">
+				</a>
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
 		</div>
 	</td>
 </DEFMACRO>
@@ -704,12 +704,12 @@
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="2">
 		<tr>
 			<td width="48" height="48" align="center" valign="middle"> 
-				<a href="index.php?parent=[#PARENT]">
+				<a href="index.php?id=[#PARENT]">
 					<MACRO NAME="GIF_NUMERO">
 				</a>
 			</td>
 			<td align="left" width="480" valign="middle">
-				<a href="index.php?parent=[#PARENT]">
+				<a href="index.php?id=[#PARENT]">
 					<font color="black"><b>Parent</b></font>
 				</a>
 			</td>
@@ -724,9 +724,9 @@
 			<table width="100%">
 				<tr>
 					<td width="100%">
-					<a href="index.php?parent=0">Edition des Séries</a>
+					<a href="index.php?id=0">Edition des Séries</a>
 					<LOOP NAME="publisparentes">
-						&nbsp;<strong>>></strong>&nbsp;<a href="index.php?parent=[#ID]">[#NOM]</a>
+						&nbsp;<strong>>></strong>&nbsp;<a href="index.php?id=[#ID]">[#NOM]</a>
 					</LOOP>
 					</td>
 				</tr>
@@ -750,9 +750,9 @@
 			<table width="100%" border="0" align="center">
 				<tr>
 					<td width="100%">
-					<a href="index.php?parent=0">Edition des Séries</a>
+					<a href="index.php?id=0">Edition des Séries</a>
 					<LOOP NAME="themesparents">
-						&nbsp;<strong>>></strong>&nbsp;<a href="index.php?parent=[#ID]">[#NOM]</a>
+						&nbsp;<strong>>></strong>&nbsp;<a href="index.php?id=[#ID]">[#NOM]</a>
 					</LOOP>
 					</td>
 				</tr>
@@ -777,9 +777,9 @@
 			<!-- AFFICHE LE NOM DE LA PUBLICATION-->
 			<tr>
 				<td width="100%">
-				<a href="index.php?parent=0">Edition des Séries</a>
+				<a href="index.php?id=0">Edition des Séries</a>
 				<LOOP NAME="publisparentes">
-					&nbsp;<strong>>></strong>&nbsp;<a href="index.php?parent=[#ID]">[#NOM]</a>
+					&nbsp;<strong>>></strong>&nbsp;<a href="index.php?id=[#ID]">[#NOM]</a>
 				</LOOP>
 				</td>
 			</tr>
@@ -825,7 +825,7 @@
 <DEFMACRO NAME="BOUTONS_PUBLICATION">
 	<td width="100%">
 	<!-- Parent -->
-			<a href="index.php?parent=[#PARENT]">
+			<a href="index.php?id=[#PARENT]">
 				<u>Parent</u> 
 			</a>
 	</td>
@@ -877,7 +877,7 @@
 <DEFMACRO NAME="TD_nom_type_titre">
 <td width="480" valign="middle">
 	<!--<a href="../../sommaire.html?id=[#ID]">-->
-	<a href="index.php?parent=[#ID]">
+	<a href="index.php?id=[#ID]">
 		<b>
 		<font color="black">
 			[#NOM]
@@ -885,7 +885,7 @@
 		</b>
 	</a> 
 	<!--<a href="../../sommaire.html?id=[#ID]">-->
-	<a href="index.php?parent=[#ID]">
+	<a href="index.php?id=[#ID]">
 		<font size="-2" color="black">
 			(
 			[#TYPE]
