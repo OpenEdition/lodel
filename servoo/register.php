@@ -204,7 +204,7 @@ function generate_login($string){
 function generate_passwd($username) {
 
     $passwd="";
-    $chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$&*";
+    $chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$&*";
     for($i=0; $i<8;$i++){ 
       $passwd.= $chars[rand()%strlen($chars)];
     }
