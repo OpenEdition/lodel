@@ -213,12 +213,12 @@ function parse_loop_extra(&$tables,
       if (in_array("#_TP_users",$tables) && in_array("#_TP_session",$tables)) {
 	$where.=" AND iduser=#_TP_users.id";
       }
-      if (in_array("#_TP_fields",$tables) && preg_match("/\bclass\b/",$where)) {
+      if (in_array("#_TP_tablefields",$tables) && preg_match("/\bclass\b/",$where)) {
 	// on a besoin de la table croise groupesdechamps
-	protect5($select,$where,$rank,$groupby,$having,"#_TP_fields","id|status|rank");
-	array_push($tables,"#_TP_fieldgroups");
-	$where.=" AND #_TP_fieldgroups.id=#_TP_fields.idgroup";
-	$extrainselect.=", #_TP_fieldgroups.class";
+	protect5($select,$where,$rank,$groupby,$having,"#_TP_tablefields","id|status|rank");
+	array_push($tables,"#_TP_tablefieldgroups");
+	$where.=" AND #_TP_tablefieldgroups.id=#_TP_tablefields.idgroup";
+	$extrainselect.=", #_TP_tablefieldgroups.class";
      }
      // entrees
 

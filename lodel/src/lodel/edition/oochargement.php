@@ -791,7 +791,7 @@ function traite_couple(&$text)
 
 
   // determine les $multiparagraphe_tags
-  $result=mysql_query("SELECT style,type FROM $GLOBALS[tp]fields WHERE status>0") or die($db->errormsg());
+  $result=mysql_query("SELECT style,type FROM $GLOBALS[tp]tablefields WHERE status>0") or die($db->errormsg());
   $multiparagraphe_tags_arr=array();
   while (list($style,$type)=mysql_fetch_row($result)) {
     if ($type=="mltext") { // text multilingue

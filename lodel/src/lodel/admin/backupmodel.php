@@ -71,8 +71,8 @@ if ($backup) {
   fputs($fh,"# ".str_replace("\n","\n# ",$description)."\n#------------\n\n");
 
 
-  $tables=array("$GLOBALS[tp]fields",
-		"$GLOBALS[tp]fieldgroups",
+  $tables=array("$GLOBALS[tp]tablefields",
+		"$GLOBALS[tp]tablefieldgroups",
 		"$GLOBALS[tp]types",
 		"$GLOBALS[tp]persontypes",
 		"$GLOBALS[tp]entrytypes",

@@ -294,7 +294,7 @@ function extract_files(&$context,$class)
 
   require_once($home."connect.php");
   // look for the field we have to download.
-  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class' AND $GLOBALS[tp]fields.status>0 AND $GLOBALS[tp]fieldgroups.status>0 AND edition!='' AND (type='image' OR type='fichier')") or die($db->errormsg());
+  $result=mysql_query("SELECT $GLOBALS[tp]tablefields.name,type FROM $GLOBALS[tp]tablefields,$GLOBALS[tp]tablefieldgroups WHERE idgroup=$GLOBALS[tp]tablefieldgroups.id AND class='$class' AND $GLOBALS[tp]tablefields.status>0 AND $GLOBALS[tp]tablefieldgroups.status>0 AND edition!='' AND (type='image' OR type='fichier')") or die($db->errormsg());
 
   if (!mysql_num_rows($result)) return;
 

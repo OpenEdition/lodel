@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 # table qui contient les champs supplementaires
 #
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fields (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefields (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fields (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fieldgroups (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefieldgroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire

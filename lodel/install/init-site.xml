@@ -162,7 +162,7 @@
 </table>
 
 
-<table name="fields"
+<table name="tablefields"
         description="table qui contient les champs supplementaires"
 	writeright="admin"
 	protectright="adminlodel">
@@ -177,7 +177,7 @@
         required="true"
         description="name/identifiant unique"
         label="[@ADMIN.NAME]"
-        edittype="field" />
+        edittype="tablefield" />
 <column name="idgroup"
         type="INTEGER"
         default="0"
@@ -276,7 +276,7 @@
 
 
 
-<table name="fieldgroups"
+<table name="tablefieldgroups"
         description="table qui contient les groupes de champs pour le XML"
 	writeright="admin"
 	protectright="adminlodel">
@@ -291,7 +291,7 @@
         size="64"
         required="true"
         description="name/identifiant unique"
-        label="[@ADMIN.FIELDGROUP_NAME]"
+        label="[@ADMIN.TABLEFIELDGROUP_NAME]"
         edittype="text" />
 <column name="class"
         type="VARCHAR"

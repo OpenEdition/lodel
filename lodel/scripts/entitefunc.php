@@ -105,7 +105,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   $files_to_move=array();
   
 
-  $result=$db->execute(lq("SELECT #_TP_fields.name,type,condition,default,allowedtags $champcritere FROM #_TP_fields,#_TP_fieldgroups WHERE idgroup=#_TP_fieldgroups.id AND class='$class' AND #_TP_fields.status>0 AND #_TP_fieldgroups.status>0 $extrawhere")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT #_TP_tablefields.name,type,condition,default,allowedtags $champcritere FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 $extrawhere")) or die($db->errormsg());
   while (!$result->EOF) {
     list($name,$type,$condition,$default,$allowedtags,$critereok)=$result->fields;
     require_once($home."textfunc.php");
@@ -503,7 +503,7 @@ function loop_fields($context,$funcname)
 {
   global $db,$error;
 
-  $result=$db->execute(lq("SELECT * FROM #_TP_fields WHERE idgroup='$context[id]' AND status>0 AND edition!='' ORDER BY rank")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 AND edition!='' ORDER BY rank")) or die($db->errormsg());
 
   $haveresult=$result->recordnumber()>0;
   if ($haveresult) call_user_func("code_before_$funcname",$context);

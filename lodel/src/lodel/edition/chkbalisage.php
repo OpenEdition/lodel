@@ -63,7 +63,7 @@ while ($row=mysql_fetch_row($result)) {
 }
 
 // ajoute les balises "documents"
-  $result=mysql_query("SELECT $GLOBALS[tp]fields.style,$GLOBALS[tp]fields.title,$GLOBALS[tp]fields.type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND  class='documents' AND $GLOBALS[tp]fields.status>0") or die($db->errormsg());
+  $result=mysql_query("SELECT $GLOBALS[tp]tablefields.style,$GLOBALS[tp]tablefields.title,$GLOBALS[tp]tablefields.type FROM $GLOBALS[tp]tablefields,$GLOBALS[tp]tablefieldgroups WHERE idgroup=$GLOBALS[tp]tablefieldgroups.id AND  class='documents' AND $GLOBALS[tp]tablefields.status>0") or die($db->errormsg());
 while (list($style,$title,$type)=mysql_fetch_row($result)) { 
   if ($type=="mltext") {
     require_once($home."champfunc.php");

@@ -46,7 +46,7 @@ function validfield(&$text,$type,$default="")
     require_once($GLOBALS['home']."champfunc.php");
     if (reservedword($name)) return "reservedsql";
     break;
-  case "field" :
+  case "tablefield" :
     if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
     require_once($GLOBALS['home']."champfunc.php");
     if (reservedword($name)) return "reservedsql";

@@ -43,7 +43,7 @@ function enregistre_entite_from_xml($context,$text,$class)
 
   $localcontext=$context;
 
-  $result=$db->execute(lq("SELECT #_TP_fields.name,style,type,traitement FROM #_TP_fields,#_TP_fieldgroups WHERE idgroup=#_TP_fieldgroups.id AND class='$class' AND #_TP_fields.status>0 AND #_TP_fieldgroups.status>0 AND style!=''")) or die($db->errormsg());
+  $result=$db->execute(lq("SELECT #_TP_tablefields.name,style,type,traitement FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 AND style!=''")) or die($db->errormsg());
 
   $sets=array();
   while (!$result->EOF) {

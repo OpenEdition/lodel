@@ -111,7 +111,7 @@ function loop_valeurs_des_champs($context,$funcname)
 {
   global $error;
 
-  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]fields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank") or die($db->errormsg());
+  $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank") or die($db->errormsg());
 
   $haveresult=mysql_num_rows($result)>0;
   if ($haveresult && function_exists("code_before_$funcname")) 
