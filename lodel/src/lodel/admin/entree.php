@@ -58,7 +58,7 @@ if ($edit) { // modifie ou ajoute
     $newstatut=$protege ? 32 : 1;
     $statut=$statut>0 ? $newstatut : -$newstatut;
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,lang,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$context[idtype]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,langue,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$context[idtype]')") or die (mysql_error());
 
     back();
 
@@ -74,7 +74,7 @@ if ($edit) { // modifie ou ajoute
 if ($context[idtype]) {
   $critere="id='".intval($context[idtype])."'";
 } elseif ($type && preg_match("/[\w-]/",$type)) {
-  $critere="nom='$type'";
+  $critere="type='$type'";
 } else die("preciser un type");
 
 include_once($home."connect.php");
