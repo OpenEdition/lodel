@@ -64,20 +64,17 @@ if ($valid) {
   $contents=calculateXMLSchema($context);
   writefile($tmpfile.".xsd",$contents);
 
-#  if (!$zipcmd) die("ERROR: the zip command is required for validating XML using ServOO. Configure lodelconfig.php");
-#  $errfile=$tmpfile.".err";
-#  system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$errfile");
-#  if (filesize($errfile)>0) die("ERROR: $errormsg<br />".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
-#
-#  @unlink("$tmpfile.xml");
-#  @unlink("$tmpfile.xsd");
-#  @unlink("$tmpfile.err");
-
-
-  require($home."pclzip.lib.php");
-  $archive=new PclZip($tmpfile.".zip");
-  $v_list = $archive->create(array($tmpfile.".xsd",$tmpfile.".xml"));
-  if ($v_list == 0) die("ERROR : ".$archive->errorInfo(true));
+  if ($zipcmd && $zipcmd!="pclzip") { // ZIP command
+    $errfile=$tmpfile.".err";
+    system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$errfile");
+    if (filesize($errfile)>0) die("ERROR: $errormsg<br />".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
+    @unlink("$tmpfile.err");
+  } else { // PCLZIP library.
+    require($home."pclzip.lib.php");
+    $archive=new PclZip($tmpfile.".zip");
+    $v_list = $archive->create(array($tmpfile.".xsd",$tmpfile.".xml"));
+    if ($v_list == 0) die("ERROR : ".$archive->errorInfo(true));
+  }
   @unlink("$tmpfile.xml");
   @unlink("$tmpfile.xsd");
 
@@ -86,7 +83,7 @@ if ($valid) {
   require ($home."serveurfunc.php");
   list($ret,$retval)=contact_servoo($cmds,array($tmpfile.".zip"));
 
-  @unlink("$tmpfile.zip");
+  @unlink($tmpfile.".zip");
 
   $context[reponse]=str_replace("\n","<br />",htmlentities($ret));
 

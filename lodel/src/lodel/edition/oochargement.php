@@ -73,18 +73,21 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name']) {
     if ($cle=="PK") {
       if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
 
-#      if ($unzipcmd) {
-#	$filesinarchive=preg_split("/\s*\r?\n\s*/",`$unzipcmd -Z -1 $fileconverted`,-1,PREG_SPLIT_NO_EMPTY);
-#      } else {
+      if ($unzipcmd && $unzipcmd!="pclzip") { // unzip cmd
+	$filesinarchive=preg_split("/\s*\r?\n\s*/",`$unzipcmd -Z -1 $fileconverted`,-1,PREG_SPLIT_NO_EMPTY);
+      } else { // pclzip solution
 	require($home."pclzip.lib.php");
 	$archive=new PclZip($fileconverted);
-	$filesinarchive=$archive->listContent();
-#      }
+	$archivecontent=$archive->listContent();
+	$filesinarchive=array();
+	foreach ($archivecontent as $file) { 
+	  if ($file['status']=="ok") array_push($filesinarchive,$file['filename']); 
+	}
+      }
       $extractfiles=array();
       // look for the files. Check the extension.
       $xhtmlfile="";
       foreach ($filesinarchive as $file) {
-	$file=$file['filename'];
 	if (preg_match("/\.xhtml$/",$file)) { // xhtml
 	  $xhtmlfile=$tmpdir."/".basename($file);
 	  array_push($extractfiles,$file); 
@@ -94,8 +97,14 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name']) {
       }
       if (!$xhtmlfile) die("ERROR: xhtml file not found in the archive");
 
-      $archive->extract(PCLZIP_OPT_PATH,$tmpdir,PCLZIP_OPT_REMOVE_ALL_PATH);
-      #system("$unzipcmd -qjo -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
+      if ($unzipcmd && $unzipcmd!="pclzip") { // unzip cmd
+	$filestoextract=escapeshellcmd("$fileconverted ".join(" ",$extractfiles));
+	$ret=`$unzipcmd -qjo -d $tmpdir $filestoextract 2>&1`;
+	if ($ret) { $context[erreur_upload]=utf8_encode("Erreur renvoyée par la commande unzip: $ret"); break; }
+      } else {
+	$archive->extract(PCLZIP_OPT_PATH,$tmpdir,PCLZIP_OPT_REMOVE_ALL_PATH);
+      }
+
 
       @unlink($fileconverted);
       // setup the rights even if it's temporary
