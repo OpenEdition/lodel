@@ -113,7 +113,7 @@ class Entities_IndexLogic extends Logic
    	 		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );
    	 	#echo "string=$string<br />\n";
    	 		//particular case : two letter acronym or initials
-   	 		$string = preg_replace("/ ([A-Z][0-9A-Z]{1,2}) /", ' \\1___ ', $string);
+   	 		$string = preg_replace("/ ([A-Z][0-9a-zA-Z]{1,2}) /", ' \\1___ ', $string);
 			$string = strtolower( $string );
 			
 			//Separate string in tokens
