@@ -16,7 +16,7 @@
 		Edition de document (id : [#ID])
 	</span>
 	<div align="center">
-			<LOOP NAME="chercheparent" table="documents" WHERE="id=[#ID]">
+			<LOOP NAME="chercheparent" TABLE="documents" WHERE="id=[#ID]">
 					<a href="index.php?parent=[#PUBLICATION]">
 					<u>Parent</u> 
 				</IF>
@@ -69,7 +69,7 @@
 	<ELSE/>
 		<tr>
 			<td>
-				<MACRO NAME="GIF_Inactif">
+				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
 				Contactez l'éditeur pour recharger ce document.
@@ -94,7 +94,7 @@
 	<ELSE/>
 		<tr>
 			<td>
-				<MACRO NAME="GIF_Inactif">
+				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
 				Demandez le source RTF à un rédacteur ou à l'éditeur.
@@ -123,7 +123,7 @@
 	<ELSE/>
 		<tr>
 			<td>
-				<MACRO NAME="GIF_Inactif">
+				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
 				Contactez l'éditeur pour déplacer ce document.
