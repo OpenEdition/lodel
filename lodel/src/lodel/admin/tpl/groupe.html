@@ -1,30 +1,40 @@
 <USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
 <title>Groupe</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR><td><div align="center"><b>Edition d'un groupe</b></div></td></tr>
-</TABLE>
-<br>
-
-[(#ERREUR_PUBLICATIONS_EXIST|true)Impossible de détruire car une ou des publications sont attachés à ce groupe<BR>]
-[(#ERREUR_DOCUMENTS_EXIST|true)Impossible de détruire car un ou des documents sont attachés à ce groupe<BR>]
-
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
-
-<FORM METHOD="POST" ACTION="groupe.php">
-<INPUT TYPE="hidden" name="edit" VALUE="1">
-<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<TR><td>Nom:</td>
-<td><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></td>
-[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</td>]</tr>
-</TABLE>
-<div align="center"><INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" ></div>
-</FORM>
-
-<IF COND="[#DELETE]">
-<div align="center"><a href="groupe.php?delete=2&id=[(#ID)]"><BLINK>Confirmer la suppresion</BLINK></a></div>
-<ELSE/>
-<div align="center">[<a href="groupe.php?delete=1&id=(#ID)">Supprimer</a>]</div>
-</IF>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un groupe</td>
+	</tr>
+</table>
+<br />
+<form method="POST" action="groupe.php">
+	<input type="hidden" name="edit" value="1" />
+	<input type="hidden" name="id" VALUE="[#ID]" />
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+		[(#ERREUR_PUBLICATIONS_EXIST|true)<tr><td colspan="2" class="message_erreur">
+			Impossible de d&eacute;truire car une ou des publications sont attach&eacute;s à ce groupe !</td></tr>]
+		[(#ERREUR_DOCUMENTS_EXIST|true)<tr><td colspan="2" class="message_erreur">
+			Impossible de d&eacute;truire car un ou des documents sont attach&eacute;s à ce groupe !</td></tr>]
+		<tr>
+			<td><span class="texte_intitule">Nom :</span></td>
+			<td><input SIZE="40" type="text" name="nom" value="[#NOM]" /></td>
+		</tr>
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		<tr>
+			<td colspan="2" align="center">
+				<br /><br />
+				<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
+				<IF COND="[#DELETE]">
+					<br /><br /><input class="form" type="button" value="     Confirmer la suppresion  " onClick="javascript:window.location='groupe.php?delete=2&id=[#ID]'" />
+				<ELSE/>
+					[&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='groupe.php?delete=1&id=(#ID)'" />]
+				</IF>
+			</td>
+		</tr>
+	</table>
+</form>
+<MACRO NAME="CLOSE_HTML">
