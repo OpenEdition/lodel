@@ -267,7 +267,7 @@
 								<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 				
 						<!--[ Notes de bas de page. Si elles existent -]-->
-						<IF COND="[#NOTEBASPAGE]">
+						<IF COND="[(#NOTEBASPAGE|notes("nombre"))]">
 							<div class="titre3">
 								Notes bas numériques:
 							</div>
@@ -275,6 +275,8 @@
 								[(#NOTEBASPAGE|notes("nombre"))]
 								<br />
 							</div>
+						</IF>
+						<IF COND="[(#NOTEBASPAGE|notes("lettre"))]">
 							<div class="titre3">
 								Notes bas littérales:
 							</div>
@@ -282,6 +284,8 @@
 								[(#NOTEBASPAGE|notes("lettre"))]
 								<br />
 							</div>
+						</IF>
+						<IF COND="[(#NOTEBASPAGE|notes("asterisque"))]">
 							<div class="titre3">
 								Notes bas astérisques:
 							</div>
