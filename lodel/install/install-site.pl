@@ -171,8 +171,8 @@ sub filemtime {
 
 sub slink {
   return if -e $_[1];
-  symlink "$_[0]","$_[1]" or die "impossible de creer le lien symbolique de $_[0] vers $_[1]\n";
-  echo "Warning: impossible d'acceder au fichier $_[0] via le lien symbolique $_[1]\n" unless (-e $_[1]);
+  symlink "$_[0]","$_[1]" or print "Warning: impossible de creer le lien symbolique de $_[0] vers $_[1]\n";
+  print "Warning: impossible d'acceder au fichier $_[0] via le lien symbolique $_[1]\n" unless (-e $_[1]);
 
 }
 
