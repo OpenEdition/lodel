@@ -47,7 +47,7 @@ $urlroot="/";
 # cette variable est ecrasee dans siteconfig.php a partir de la version 0.5
 # elle pourra alors etre supprimee de ce script
 # cette variable doit se terminer par / obligatoirement.
-$home="$pathroot/lodel/scripts";
+$home="$pathroot/lodel/scripts/";
 
 
 # URL contenant les fichiers communs partagés
