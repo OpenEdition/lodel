@@ -81,7 +81,7 @@
 						</LOOP>
 					</td>
 					<td  heigth="25" align="center">
-						<IF COND="[#ADMINLODEL]">
+						<IF COND="[#DROITADMINLODEL]">
 							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Admin Lodel&nbsp;:&nbsp; </span>
 						<ELSE/>
 							<IF COND="[#DROITADMIN]">
@@ -93,7 +93,7 @@
 									<IF COND="[#DROITREDACTEUR]">
 										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> Rédacteur&nbsp;:&nbsp; </span>
 									<ELSE/>
-										<IF COND="[#VISITEUR]">
+										<IF COND="[#DROITVISITEUR]">
 											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> Visiteur&nbsp;:&nbsp; </span>
 										</IF>
 									</IF>
