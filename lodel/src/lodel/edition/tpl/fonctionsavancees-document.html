@@ -22,14 +22,14 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition de document</title>
+<title>Documents : fonctions avancées</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
 		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
 		<div style="padding-top:25px;">
 			<span class="texte_ligne_haut_tpl_publication">
-				Fonctions avancées de la publication
+				Fonctions avancées
 			</span>
 		</div>
 	</div>
@@ -50,7 +50,7 @@
 	</table>
 
 	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
-		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Edition sur le document</div>
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Edition</div>
 	</div>
 	
 	<!--[ Recharger le fichier ]-->
@@ -58,19 +58,37 @@
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="oochargement.php?iddocument=[#ID]">
-					<span class="texte_noir_gras">Recharger le fichier</span>
+					<span class="texte_noir_gras">Recharger le document</span>
 				</a>
 			</div>
 		</div>
 	<ELSE/>
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
-				<span class="texte_intitule">Recharger le fichier</span><br />
+				<span class="texte_intitule">Recharger le document</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
 			</div>
 		</div>
 	</IF>
 
+		<!--[ Déplacer le document ]-->
+	<IF COND="[#DROITEDITEUR]">	
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="deplacer.php?id=[#ID]">
+					<span class="texte_noir_gras">Déplacer ce document</span>
+				</a>
+			</div>
+		</div>
+	<ELSE/>
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Déplacer le document</span><br />
+				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
+			</div>
+		</div>
+	</IF>
+	
 	<!--[ Téléchargement source RTF ]-->
 	<IF COND="[#DROITREDACTEUR]">
 		<div class="ligne_formulaire">
@@ -90,53 +108,7 @@
 			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
 		</div>
 	</IF>
-
-	<!--[ Téléchargement source XML ]-->
-	<IF COND="[#DROITREDACTEUR]">
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-				<a href="xml.php?id=[#ID]">
-					<span class="texte_noir_gras">T&eacute;l&eacute;charger le source XML</span>
-				</a>
-		|
-				<a href="xml.php?id=[#ID]&valid=1">
-					<span class="texte_noir_gras">Valider le XML</span>
-				</a>
-		|
-				<a href="xml.php?id=[#ID]&view=1">
-					<span class="texte_noir_gras">Visualiser le XML</span>
-				</a>
-			</div>
-		</div>
-		<!--[<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
-			<span class="texte_info">(Fonction indisponible pour le moment)</span>
-		</div>]-->
-	<ELSE/>
-		<div class="ligne_info">
-			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
-			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
-		</div>
-	</IF>
 	
-	<!--[ Déplacer le document ]-->
-	<IF COND="[#DROITEDITEUR]">	
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-				<a href="deplacer.php?id=[#ID]">
-					<span class="texte_noir_gras">Déplacer ce document</span>
-				</a>
-			</div>
-		</div>
-	<ELSE/>
-		<div class="ligne_formulaire">
-			<div class="intitule_ligne_formulaire">
-				<span class="texte_intitule">Déplacer ce document</span><br />
-				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
-			</div>
-		</div>
-	</IF>
-
 	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
 		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
 	</div>
@@ -193,6 +165,57 @@
 		<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 	</div>	
 
+	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Gestion XML</div>
+	</div>
+
+	<!--[ Visualisation XML ]-->
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="xml.php?id=[#ID]&view=1">
+					<span class="texte_noir_gras">Visualiser le XML</span>
+				</a>
+			</div>
+		</div>
+		<!--[<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>]-->
+	
+		<!--[ Téléchargement source XML ]-->
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="xml.php?id=[#ID]">
+					<span class="texte_noir_gras">T&eacute;l&eacute;charger le source XML</span>
+				</a>
+			</div>
+		</div>
+		<!--[<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>]-->
+	
+		<!--[ Validation XML ]-->
+	<IF COND="[#DROITREDACTEUR]">
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="xml.php?id=[#ID]&valid=1">
+					<span class="texte_noir_gras">Valider le XML</span>
+				</a>
+			</div>
+		</div>
+		<!--[<div class="ligne_info">
+			<span class="texte_intitule">T&eacute;l&eacute;charger le source XML</span><br />
+			<span class="texte_info">(Fonction indisponible pour le moment)</span>
+		</div>]-->
+	<ELSE/>
+		<div class="ligne_info">
+			<span class="texte_intitule">Valider le XML</span><br />
+			<span class="texte_info">(Fonction accessible à partir du niveau r&eacute;dacteur)</span>
+		</div>
+	</IF>
+
+	
 	<!--[ Suppression de ce lien le 26/09/03 -> Abandon du XML
 	Edition avancée (XML) 
 	<IF COND="[#ADMINLODEL]">
