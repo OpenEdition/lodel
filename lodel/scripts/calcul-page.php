@@ -39,7 +39,9 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   global $home,$format;
 
-  #echo "home:$home<br/>";
+  echo "home:$home<br/>";
+  print_r($context);
+
 
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   $format=""; // en cas de nouvel appel a calcul_page
