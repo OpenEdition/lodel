@@ -94,7 +94,8 @@ class OptiongroupsLogic extends Logic {
 
    // begin{publicfields} automatic generation  //   
     function _publicfields() {
-     return array("name"=>array("text","+"),
+     return array("idparent"=>array("int","+"),
+                  "name"=>array("text","+"),
                   "title"=>array("text","+"),
                   "logic"=>array("text",""),
                   "comment"=>array("longtext",""),

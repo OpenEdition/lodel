@@ -254,7 +254,7 @@ class Entities_EditionLogic extends GenericLogic {
      // populate the entity
      if ($idtype) $vo->idtype=$idtype;
      $vo->identifier=$context['identifier'];
-     if ($this->g_name['dc.title']) $vo->g_title=$context[$this->g_name['dc.title']];
+     if ($this->g_name['dc.title']) $vo->g_title=strip_tags($context[$this->g_name['dc.title']],"<em><strong><span><sup><sub>");
      if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier($id,$vo->g_title);
      if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
      if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];

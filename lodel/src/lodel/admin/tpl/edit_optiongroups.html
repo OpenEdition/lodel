@@ -48,6 +48,12 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
+  <input type="hidden" name="idparent" value="[#IDPARENT]">
+  <LOOP NAME="fielderror" FIELD="idparent">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idparent"></FUNC>
+    </p>
+  </LOOP>
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
         : 
       </label>
