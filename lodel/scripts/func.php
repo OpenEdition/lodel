@@ -130,18 +130,18 @@ function copy_images (&$text,$callback)
 
 {
     // copy les images en lieu sur et change l'acces
-    preg_match_all("/<IMG\s+SRC=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
+    preg_match_all("/<img\s+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
     $count=1;
     $imglist=array();
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<IMG SRC=\"$imglist[$imgfile]\"",$text);
+	$text=str_replace($result[0],"<Img src=\"$imglist[$imgfile]\"",$text);
       } else {
 	$ext=$result[2];
 	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count);
 #	echo "images: $imgfile $newimgfile <br>";
-      	$text=str_replace($result[0],"<IMG SRC=\"$newimgfile\"",$text);
+      	$text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
       	$count++;
 	}
     }
