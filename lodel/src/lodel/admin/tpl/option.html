@@ -55,8 +55,11 @@
 	    <IF COND="[#DROITADMINLODEL]">
 		<tr>
 			<td class="texte_intitule">Protège:</td>
-
+<IF COND="[#STATUT] lt 32">
 			<td><input type="checkbox" name="protege"></td>
+<ELSE/>
+			<td><input type="checkbox" name="protege" checked></td>
+</IF>
 		</tr>
 	    </IF>
 </table>

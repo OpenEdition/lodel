@@ -38,7 +38,7 @@ if ($set) {
   extract_post();
 
   // statut less than 0 are internal option.
-  $critere=$GLOBALS[droitlodeladmin] ? "statut>0" : "statut>0 AND statut<32";
+  $critere=$GLOBALS[droitadminlodel] ? "statut>0" : "statut>0 AND statut<32";
 
   $result=mysql_query("SELECT id,nom,type FROM $GLOBALS[tp]options WHERE $critere") or die (mysql_error());
   while (list($id,$nom,$type)=mysql_fetch_row($result)) {
