@@ -810,10 +810,19 @@
 					<span class="smallcaps">[#NOMFAMILLE]</span>
 				</a>
 			</div>
-		 	<div class="descriptionauteur"><br />[#DESCRIPTION]</div>
+		 	<div class="descriptionauteur"><br />[#DESCRIPTION]<br /></div>
+				
 		</IF>
+	<IF COND="[#AFFILIATION]">
+	
+	<div class="descriptionauteur"><br />affiliation: [#AFFILIATION] </div>
+	</IF>
+	<IF COND="[#FONCTION]">
+	<div class="descriptionauteur"><br />fontion: [#FONCTION]</div>
+	</IF>
+			
 	</DO>
-</LOOP>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_RUBRIQUES">
@@ -1017,9 +1026,7 @@
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#TEXTE]">
 		<MACRO NAME="ICONE_PUBLICATION">
-		[(#TEXTE|avantlettrine)]
-		<span class="lettrine">[(#TEXTE|lettrine)]</span>
-		[(#TEXTE|apreslettrine)]
+		[(#TEXTE|lettrine)]
 	</IF>
 </DEFMACRO>
 
@@ -1034,7 +1041,7 @@
 	<IF COND="[#TEXTE]">
 		<MACRO NAME="ICONE_PUBLICATION">
 		<!--[ affiche les 1500 premiers mots du texte ]-->
-		[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine|couper(1500))]
+		[(#TEXTE|lettrine|couper(1500))]
 		<a  href="sommaire.html?id=[#ID]">
 			... lire la suite...
 		</a>
@@ -1108,19 +1115,21 @@
 
 <LOOP NAME="parent_compterendu" TABLE="documents" WHERE="id='[#IDPARENT]'">
 	<div class="titre3">
-						Compte-rendu
+						>> Voir le compte-rendu :
 					</div>
-		
-<a href="document.html?id=[#ID]">[#TITRE] </a>
+<div class="afficherdocument">
+<a class="menu2" href="document.html?id=[#ID]">[#TITRE] </a>
 <br><br>
+</div>
 </LOOP>	
 <LOOP NAME="parent_compterendu2" TABLE="documents" WHERE="idparent='[#ID]'">
 
 		<div class="titre3">
-						Article recensé
+						>> Voir l'article recensé :
 					</div>
-
-<a href="document.html?id=[#ID]">[#TITRE] </a>
+<div class="afficherdocument">
+<a class="menu2" href="document.html?id=[#ID]">[#TITRE] </a>
+</div>
 <br><br>
 </LOOP>
 					
