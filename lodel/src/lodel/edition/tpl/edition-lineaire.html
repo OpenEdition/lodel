@@ -36,21 +36,21 @@
 							</tr>
 							<!-- BOUCLE D'AFFICHAGE DES THEMES -->
 							<LOOP NAME="numeros" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre DESC"> 
-							<TR>
-								<td width="48" height="48" valign="middle"> 
-									<div align="center">
-									<!--<a href="index.php?parent=[#ID]">-->
-										<MACRO NAME="AFFICHER_ICONE_STATUT">
-									<!--</a>-->
-									</div>
-								</td>
-								<MACRO NAME="TD_nom_type_titre">
-								<MACRO NAME="boutons_publications">
-							</tr>
-					<ALTERNATIVE/> 
-							<MACRO NAME="TR_aucune_publication_dispo"> 
-					</LOOP> 
-							<MACRO NAME="Creer_numero">	<a href="chargesommaire.php?id=[#ID]">Charge un sommaire</A>
+								<tr>
+									<td width="48" height="48" valign="middle"> 
+										<div align="center">
+										<!--<a href="index.php?parent=[#ID]">-->
+											<MACRO NAME="AFFICHER_ICONE_STATUT">
+										<!--</a>-->
+										</div>
+									</td>
+									<MACRO NAME="TD_nom_type_titre">
+									<MACRO NAME="boutons_publications">
+								</tr>
+								<ALTERNATIVE/> 
+									<MACRO NAME="TR_aucune_publication_dispo"> 
+							</LOOP> 
+							<MACRO NAME="Creer_numero">
 						</table>
 					</td>
 				</tr>
