@@ -467,7 +467,18 @@ Will be reimplemented using a proper XML parser.
 
 
   // remove any wrong caracteres in the r2r
-  $file=preg_replace ("/(<\/?r2rc?:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
+#  $file=preg_replace ("/(<\/?r2rc?:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
+
+  // very heavy...
+  $arr=preg_split("/(<\/?r2rc?:)([^>]+>)/",$file,-1,PREG_SPLIT_DELIM_CAPTURE);
+
+  for($i=2; $i<count($arr); $i+=3) {
+    $arr[$i]=preg_replace(array("/[^a-z1-9>]/","/^[1-9]*/"),"",$arr[$i]);
+  }
+  $file=join("",$arr);
+
+#  $file=preg_replace (array("/(<\/?r2rc?:)[^a-z1-9>]+>/",
+#			    "\\1invalidcharacters>",$file);
 
   //
   // add the "official" beginning and end of the xml file
