@@ -46,7 +46,7 @@
 			</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TYPE">
+		<IF COND="[#ERREUR_TYPE]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TYPE] !</td></tr>
 		</IF>
 		<IF COND="[#ERREUR_PERSONNES_EXISTENT]"><tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_INDIVIDUALS_EXIST_PART1] [#ERREUR_ENTITES_EXISTENT] [@ADMIN.ERROR_INDIVIDUALS_EXIST_PART2].</td></tr></IF>
@@ -61,14 +61,14 @@
 			<td class="texte_intitule">[@ADMIN.STYLE_INIDIVIDUAL_TYPE] (*):</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
-		<IF COND="#ERREUR_STYLE">
+		<IF COND="[#ERREUR_STYLE]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_STYLE] !</td></tr>
 		</IF>
 		<tr>
 			<td class="texte_intitule">[@ADMIN.TITLE_INIDIVIDUAL_DESCRIPTION] (*):</td>
 			<td><input size="40" type="text" name="titredescription" value="[#TITREDESCRIPTION]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TITREDESCRIPTION">
+		<IF COND="[#ERREUR_TITREDESCRIPTION]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_DESCRIPTION_TITLE] !</td></tr>
 		</IF>
 
@@ -77,7 +77,7 @@
 			<td class="texte_intitule">[@ADMIN.STYLE_INDIVIDUAL_DESCRIPTION] (*):</td>
 			<td><input size="40" type="text" name="styledescription" value="[#STYLEDESCRIPTION]" /></td>
 		</tr>
-		<IF COND="#ERREUR_STYLEDESCRIPTION">
+		<IF COND="[#ERREUR_STYLEDESCRIPTION]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_DESCRIPTION_STYLE] !</td></tr>
 		</IF>
 		<tr>
@@ -87,7 +87,7 @@
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TPL">
+		<IF COND="[#ERREUR_TPL]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPL]</td></tr>
 		</IF>
 		<tr>
@@ -97,7 +97,7 @@
 			</td>
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
-		<IF COND="#ERREUR_TPLINDEX">
+		<IF COND="[#ERREUR_TPLINDEX]">
 			<tr><td colspan="2" class="message_erreur">[@ADMIN.ERROR_TPLINDEX]</td></tr>
 		</IF>
 		<IF COND="[#DROITADMINLODEL]">    
