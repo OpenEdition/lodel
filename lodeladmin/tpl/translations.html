@@ -81,7 +81,7 @@
 <h1>[@LODELADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 
-       <LOOP NAME="textgroups" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
+       <LOOP NAME="textgroups">
        <tr><td colspan="3" class="textgroup"><h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
        </td></tr>
 
@@ -92,17 +92,13 @@
 		</LOOP>
 		<td>&nbsp;</td>
 	      </tr>
-	<LOOP NAME="texts" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' " GROUPBY="name" ORDER="name">
+	<LOOP NAME="alltexts">
 		<DO>
 			<MACRO NAME="TR_LIST">
-				<td ><IF COND="[#CONTENTS]">[(#CONTENTS|couper(30))]<ELSE/>[(#NAME|strtoupper)]</IF></td>
-		                <LOOP NAME="translations3" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
+				<td ><IF COND="[#CONTENTS]">[(#CONTENTS|cuttext(30))]<ELSE/>[(#NAME|strtoupper|cuttext(30))]</IF></td>
+		                <LOOP NAME="lang_and_text">
 		                        <td>
-		                        <LOOP NAME="lang_of_text" TABLE="texts" WHERE="name='[#NAME]' AND textgroup='[#TEXTGROUP]' AND lang='[#LANG]'">
-
 		                            <a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">o</a>
-		                            
-		                        </LOOP>
                                         </td>
 		                </LOOP>
 				<td align="right">
@@ -127,7 +123,7 @@
 	<tr>
 		<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
 			<form>
-				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?do=back'">
+				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php'">
 			</form>
 		</td>
 	</tr>
