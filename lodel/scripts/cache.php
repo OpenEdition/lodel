@@ -11,7 +11,7 @@ if (!function_exists("authenticate")) {
 
 
 
-if ( $visiteur) {
+if ($visiteur) {
   include ("$home/calcul-page.php");
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   calcul_page($context,$base);
