@@ -351,8 +351,7 @@ function makeselectdate() {
 }
 
 
-function boucle_auteurs($generalcontext)
-
+function boucle_auteurs(&$generalcontext,$funcname)
 {
   global $text;
 
@@ -360,7 +359,6 @@ function boucle_auteurs($generalcontext)
 
   preg_match_all("/<r2r:auteur\b[^>]*>(.*?)<\/r2r:auteur\s*>/is",$text,$results,PREG_SET_ORDER);
   foreach ($results as $auteur) {
-#        echo "<br>...",htmlentities($auteur[1]),"...<br>";
     preg_match_all("/<r2r:$balises\b[^>]*>(.*?)<\/r2r:\\1\s*>/is",$auteur[1],$result,PREG_SET_ORDER);
 
     $ind++;
@@ -369,7 +367,7 @@ function boucle_auteurs($generalcontext)
       foreach ($result as $champ) { $lcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
     }
     $context=array_merge($generalcontext,$lcontext);
-    code_boucle_auteurs($context);
+	call_user_func("code_boucle_$funcname",$context);
   }
 }
 
