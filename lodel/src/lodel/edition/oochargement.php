@@ -544,6 +544,22 @@ function convertHTMLtoUTF8 (&$text)
 	      "yacute"=>'ý',
 	      "yuml"=>'ÿ',
 
+		  "Aring" =>'\303\205',
+		  "aring" =>'\303\245',
+		  "curren"=>'\302\244',
+		  "micro"=> '\302\265',
+		  "Oslash"=>'\303\230',
+  		  "cent"=>'\302\242',
+		  "pound"=>'\302\243',
+		  "ordf"=>'\302\252',
+  		  "copy"=>'\302\251',
+		  "para"=>'\303\266',
+    	  "plusmm"=>'\302\261',
+		  "THORN"=>'\303\236',
+		  "shy"=>'\302\255',
+ 		  "not"=>'\302\254',
+
+
 # ces trois derniers sont a verifier
 	      "laquo"=>'«',
 	      "raquo"=>'»',
