@@ -438,8 +438,14 @@ function download($filename,$originalname="",$contents="")
     $fp=fopen($filename,"rb");
     if (!$fp) die ("ERROR: The file \"$filename\" is not readable");
   }
-  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
-  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
+  // fix for IE catching or PHP bug issue
+  header("Pragma: public");
+  header("Expires: 0"); // set expiration time
+  header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+
+#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
+#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
+
   header("Content-type: $mime\n");
   header("Content-transfer-encoding: binary\n");
   header("Content-length: ".$size."\n");
