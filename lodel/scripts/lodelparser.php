@@ -321,7 +321,25 @@ function maketext($name,$group,$tag)
 //    while(list($texte,$lang)=mysql_fetch_row($result)) {
 //      echo '<div id="'.$fullname.'"></div>';
 //    }
-    $this->translationform[$fullname]='<div class="translationform"><form method="post" action="'.SITEROOT.'lodel/admin/texte.php"><input type="hidden" name="edit" value="1"><input type="hidden" name="nom" value="'.$name.'"><input type="hidden" name="textgroup" value="'.$group.'"><label for="texte">[@'.$fullname.']<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'"); ?><input type="text" name="texte" size="100" value="<?php echo htmlspecialchars($text);?>"></label><input type="submit" value="[M]"></form></div>';
+    if (!$this->translationform[$fullname]) { // make the modify form
+      $textstatus=array("-1"=>"à traduire","1"=>"à revoir","2"=>"traduit");
+      $colorstatus=array("-1"=>"red","1"=>"orange",2=>"green");
+
+      $optionsstr=""; $colorstr='<?php switch ($status) {
+';
+      foreach ($textstatus as $status=>$text) {
+	$optionsstr.='<option style="background-color: '.$colorstatus[$status].';" value="'.$status.'" <?php if ($status=='.$status.') echo "selected "; ?>>'.$text.'</option>';
+	$colorstr.='case '.$status.' : 
+echo "'.$colorstatus[$status].'"; 
+break;
+';
+      }
+      $colorstr.="} ?>";
+      #die($colorstr);
+	
+      $this->translationform[$fullname]='<div class="translationform"><form method="post" action="'.SITEROOT.'lodel/admin/texte.php"><input type="hidden" name="edit" value="1"><input type="hidden" name="nom" value="'.$name.'"><input type="hidden" name="textgroup" value="'.$group.'"><label for="texte">[@'.$fullname.']<?php list($id,$text,$status)=getlodeltext("'.$name.'","'.$group.'"); ?><input type="text" name="texte" size="100" value="<?php echo htmlspecialchars($text);?>"></label><input type="submit" value="[M]"></form><?php if ($id) { ?><select style="background-color: '.$colorstr.';" onchange="window.location=\''.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id;?>\&status=\'+this.options[this.selectedIndex].value" name="status">'.$optionsstr.'</select><?php } ?></div>
+';
+    }
   }
 
   return '<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'");'.$modify.

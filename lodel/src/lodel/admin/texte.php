@@ -39,13 +39,21 @@ include ($home."func.php");
 $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
-} else $critere="id='$id'";
-if (!$restore) $critere.=" AND statut>0";
+} else 
+  $critere="";
 
-if ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
+if ($id>0 && $delete) { 
+  require($home."trash.php");
+  $delete=2; // delete complet
   treattrash("textes",$critere);
   return;
+//
+// ajoute ou edit
+//
+} elseif ($status && $id) { // modifie ou ajoute
+  $status=intval($status);
+  mysql_query("UPDATE $GLOBALS[tp]textes SET statut='$status' WHERE $critere");
+  back();
 //
 // ajoute ou edit
 //
@@ -63,21 +71,23 @@ if ($id>0 && ($delete || $restore)) {
     if ($err) break;
 
     if ($id) {
-      $result=mysql_query ("SELECT nom,textgroup,lang FROM $GLOBALS[tp]textes WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query ("SELECT nom,textgroup,lang,statut FROM $GLOBALS[tp]textes WHERE id='$id'") or die (mysql_error());
       $context=array_merge($context,mysql_fetch_assoc($result));
 
     } elseif ($context['nom'] && $context['textgroup'] && $context['lang']) {
-      $result=mysql_query ("SELECT id,textgroup,lang FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or die (mysql_error());
+      $result=mysql_query ("SELECT id,textgroup,lang,statut FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or die (mysql_error());
       while($row=mysql_fetch_assoc($result)) {
 	##if ($id && $id!=$row['id']) { $err=$context[erreur_nom_existe]=1; break; }
-	if (!$id) { $id=$row['id']; break; }
+	if (!$id) { $id=$row['id'];  $context=array_merge($context,$row); break; }
       }
       if ($err) break;
-    } else
+    } else {
+      $context['statut']=-1;
+    }
 
     $context['texte']=preg_replace("/(\r\n\s*){2,}/","<br />",$context['texte']);
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte,textgroup,lang) VALUES ('$id','$context[nom]','$context[texte]','$context[textgroup]','$context[lang]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte,textgroup,lang,statut) VALUES ('$id','$context[nom]','$context[texte]','$context[textgroup]','$context[lang]','$context[statut]')") or die (mysql_error());
     touch(SITEROOT."CACHE/maj");
     back();
 

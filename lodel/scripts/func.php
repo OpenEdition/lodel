@@ -380,7 +380,8 @@ function getlodeltext($name,$group,$lang=-1)
 {
   if ($lang==-1) $lang=$GLOBALS['userlang'];
   require_once($GLOBALS[$home]."connect.php");
-  $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') AND statut>0 ORDER BY lang DESC");
+  $critere=$GLOBALS['droitvisiteur'] ? "" : "AND statut>0";
+  $result=mysql_query("SELECT id,texte,statut FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
   return mysql_fetch_row($result);
 }
 
