@@ -89,7 +89,7 @@
 							<a href="champ.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 							<a href="champ.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 
-		<IF COND="[#ADMINLODEL]">
+		<IF COND="[#DROITADMINLODEL]">
 			|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 			<IF COND="[#STATUT] ge 32">
 				<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
@@ -105,7 +105,7 @@
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
 	<div>
-		<IF COND="[#ADMINLODEL]">
+		<IF COND="[#DROITADMINLODEL]">
 			|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
 				<DO>
@@ -126,7 +126,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_ENTREES">
-	<IF COND="[#ADMINLODEL]">
+	<IF COND="[#DROITADMINLODEL]">
 		|&nbsp;<a href="typeentree.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 		<IF COND="[#STATUT] ge 32">
 			<span class="inactif">Supprimer (Protégé)</span>&nbsp;|&nbsp;
@@ -140,7 +140,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
-	<IF COND="[#ADMINLODEL]">
+	<IF COND="[#DROITADMINLODEL]">
 		|&nbsp;<a href="typepersonne.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 		<IF COND="[#STATUT] ge 32">
 			<span class="inactif">Supprimer (Protégé)</span>&nbsp;|&nbsp;
