@@ -71,7 +71,7 @@
 
 	<!--[ Recharger le fichier ]-->
 <LET VAR="iddocument">[#ID]</LET>
-  <LOOP NAME="importOO" TABLE="types" WHERE="id='[#IDTYPE]'"> 
+  <LOOP NAME="importOO" TABLE="types" WHERE="id='[#IDTYPE]'" SELECT="import"> 
 	<DO>
       <IF COND="[#IMPORT] eq '1'"> 		
 							<tr>
