@@ -12,61 +12,19 @@
 	</tr>
 </table>
 <table class="table_normale" border="0" cellspacing="0" cellpadding="0">
-
-<form method="post" action="publi.php">
-<input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="online" value="0"> <!-- on depublie -->
-
-	  <LOOP NAME="publications_protegees">
-		    <BEFORE>
-		      <tr>
-			<td colspan="2">
-			  <div class="ligne_parent_tpl_publication">
-			    Les publications suivantes sont protégées :
-			  </div>
-			</td>
+	<form method="post" action="publi.php">
+		<input type="hidden" name="id" value="[#ID]">
+		<input type="hidden" name="online" value="0"> <!-- on depublie -->
+		<MACRO NAME="PUBLICATIONS_PROTEGEES">
+		<MACRO NAME="DOCUMENTS_PROTEGES">
+			<tr>
+				<td colspan="2" align="center">
+					<br /><br />
+					<input type="submit" name="confirmation" value="Confirmer la d&eacute;publication"> <!-- on confirme la depublication -->
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="submit" name="cancel" value="     Abandonner    "> <!-- on abandonne la depublication-->
+				</td>
 			</tr>
-		      <tr>
-			<td><span style="font-size:120%; font-weight:bold;">NOM</span><br /><br /></td>
-			<td><span style="font-size:120%; font-weight:bold;">TITRE</span><br /><br /></td>
-		      </tr>
-		    </BEFORE>
-		    <DO>
-		      <tr>
-			<td>[#NOM]</td>
-			<td><IF COND="[#TITRE]">[#TITRE]<ELSE/>	...	</IF></td>
-		      </tr>
-		    </DO>
-		  </LOOP>
-		  <LOOP NAME="documents_proteges">
-		    <BEFORE>
-		      <tr>
-			<td colspan="2">
-			  <div class="ligne_parent_tpl_publication">
-			    Les documents suivantes sont protégés :
-			  </div>
-			</td>
-		      </tr>
-		      <tr>
-			<td><span style="font-size:120%; font-weight:bold;">NOM</span><br /><br /></td>
-			<td></td>
-		      </tr>
-		    </BEFORE>
-		    <DO>
-		      <tr>
-			<td colspan="2"><IF COND="[#TITRE]">[#TITRE]<ELSE/>	...	</IF></td>
-		      </tr>
-		    </DO>
-		  </LOOP>
-		  <tr>
-		    <td colspan="2" align="center">
-		      <br /><br />
-			  <input type="submit" name="confirmation" value="Confirmer la d&eacute;publication"> <!-- on confirme la depublication -->
-			    &nbsp;&nbsp;&nbsp;&nbsp;
-			    <input type="submit" name="cancel" value="     Abandonner    "> <!-- on abandonne la depublication-->
-		    </td>
-		  </tr>
-	    </form>
-	  </table>
-
+	</form>
+</table>
 <MACRO NAME="CLOSE_HTML">

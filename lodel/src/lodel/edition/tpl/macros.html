@@ -28,6 +28,55 @@
 	</script>
 </DEFMACRO>
 
+<!-- Macros rajoutées le 11/09/03 ********************* -->
+<DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
+	<LOOP NAME="publications_protegees">
+		<BEFORE>
+			<tr>
+				<td colspan="2">
+					<div class="ligne_parent_tpl_publication">
+						Les publications suivantes sont protégées :
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td><span style="font-size:120%; font-weight:bold;">NOM</span><br /><br /></td>
+				<td><span style="font-size:120%; font-weight:bold;">TITRE</span><br /><br /></td>
+			</tr>
+		</BEFORE>
+		<DO>
+			<tr>
+				<td>[#NOM]</td>
+				<td><IF COND="[#TITRE]">[#TITRE]<ELSE/>	...	</IF></td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="DOCUMENTS_PROTEGES">
+	<LOOP NAME="documents_proteges">
+		<BEFORE>
+			<tr>
+				<td colspan="2">
+					<div class="ligne_parent_tpl_publication">
+						Les documents suivantes sont protégés :
+					</div>
+				</td>
+			</tr>
+		    <tr>
+				<td><span style="font-size:120%; font-weight:bold;">NOM</span><br /><br /></td>
+				<td></td>
+			</tr>
+		</BEFORE>
+		<DO>
+			<tr>
+				<td colspan="2"><IF COND="[#TITRE]">[#TITRE]<ELSE/>	...	</IF></td>
+			</tr>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+<!-- ************************************************** -->
+
 <DEFMACRO NAME="STATUS">
 	<IF COND="[#STATUS] GT 0">
 		<div align="center">
