@@ -82,10 +82,10 @@
 			<MACRO NAME="NOM_SITE">
 	</h1>
 	<h2>Votre recherche : <em>[#QUERY|stripslashes]</em></h2>
-	<p style="text-align : right">
-		(résultats [#RESULTFROM] à [#RESULTTO] de [#NBRESULTS])
+	<p class="searchresults">
+		(résultats <strong>[#RESULTFROM]</strong> à <strong>[#RESULTTO]</strong> de <strong>[#NBRESULTS]</strong>)
 	</p>
-	<div style="padding-top:10px;">
+	<div class="results">
 			<span class="texte_edition_des_series">
 	</BEFORE>
 	<DO>
@@ -110,6 +110,7 @@
 		</div>
 	</DO>
 	<AFTER>
+	</div>
 		<MACRO NAME="PRINT_PAGE_SCALE">
 	</AFTER>	
 	
@@ -131,23 +132,4 @@
 	</div>
 </td></tr>
 </table>
-<div style="margin-top : 50px ; border : 1px solid black;">
-boucle de test :
-<LOOP NAME="test" TABLE="entities" ORDER="id DESC" LIMIT="10">
-<BEFORE>
-[#NBRESULTS] résultats<br />
-</BEFORE>
-
-<DO>
-[#COUNT]:<strong>[#G_TITLE] ([#ID])</strong><br />
-
-
-</DO>
-<AFTER>
-	<MACRO NAME="PRINT_PAGE_SCALE">
-</AFTER>
-</LOOP>
-
-</div>
-
 <MACRO NAME="FERMER_HTML">  
