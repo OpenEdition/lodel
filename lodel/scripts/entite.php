@@ -35,8 +35,6 @@ if ($classe=="publications") {
 } else {
   $visualisationscript="document";
   $modificationscript="document";
-} else {
-  die("oups, pas de classe ?");
 }
 
 
