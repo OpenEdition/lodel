@@ -30,10 +30,11 @@ function extract_xml ($balises,&$text)
   $ret=array();
   if (!is_array($balises)) $balises=array($balises);
   foreach ($balises as $b) {
-    $b=strtolower($b);
+    if ($b!=strtolower($b)) die("Informez Ghislain de ce \"bug\"<BR>balise $b");
     if (preg_match_all ("/<r2r:$b((?:\b[^>]+)?)>(.*?)<\/r2r:$b>/si",$text,$results,PREG_SET_ORDER)) {
 	foreach ($results as $result) {
-      /////temporaire... doit devenir du XSL
+	  /////temporaire... doit devenir du XSL
+	  // avril 03: ca ne deviendra pas du XSL.
       $result[2]=preg_replace(array("/<(\/)?r2r:section(\d+)>/i",
 				    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
 				    "/<\/r2r:[^>]+>/i",

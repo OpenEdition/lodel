@@ -11,7 +11,7 @@ $balises=array ("-" => "-",
 		"texte" => "Texte",
 		"citation" => "Citation",
 		"notebaspage" => "Notes",
-		"typeart" => "Type de doc",
+#		"typeart" => "Type de doc",
 		"typedoc" => "Type de doc",
 		"finbalise" => "fin",
 		"bibliographie"=>"Bibliographie",
@@ -31,6 +31,8 @@ $balises=array ("-" => "-",
 		"droitsauteur"=>"Droits d'auteurs",
 		"erratum"=>"Erratum",
 		"ndlr"=>"NDLR",
+		"historique"=>"Historique",
+		"pagination"=>"Pagination",
 #
 # balises pour l'import de sommaire
 
