@@ -481,12 +481,11 @@ function slink($src,$dest) {
 function mycopyrec($src,$dest) 
 
 {
-  global $filemask;
   if (is_dir($src)) {
 
     if (file_exists($dest) && !is_dir($dest)) unlink($dest);
-    if (!file_exists($dest)) mkdir($dest,0777 & octdec($filemask));
-    @chmod(0777 & octdec($filemask));
+    if (!file_exists($dest)) mkdir($dest,0777 & octdec($GLOBALS[filemask]));
+    @chmod(0777 & octdec($GLOBALS[filemask]));
 
     $dir=opendir($src);
     while ($file=readdir($dir)) {
@@ -505,17 +504,16 @@ function mycopyrec($src,$dest)
 function mycopy($src,$dest) 
   
 {
-  global $filemask;
 #  echo $dest,"<br />";
 
    if (file_exists ($dest) && file_get_contents($dest)==file_get_contents($src)) return;
 
    if (file_exists ($dest)) unlink($dest);
    if (!(@copy($src,$dest))) {
-     @chmod(basename($dest),0777 & octdec($filemask));
+     @chmod(basename($dest),0777 & octdec($GLOBALS[filemask]));
      copy($src,$dest);
    }
-   @chmod($dest,0666 & octdec($filemask));
+   @chmod($dest,0666 & octdec($GLOBALS[filemask]));
 }
 
 
