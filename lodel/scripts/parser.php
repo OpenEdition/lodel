@@ -688,6 +688,24 @@ function make_loop_code ($name,$tables,
 
   if ($where) $where="WHERE ".$where;
   if ($order) $order="ORDER BY ".$order;
+
+  // special treatment for limit when only one value is given.
+  if ($limit && strpos($limit,",")===false) {
+    $preprocesslimit='
+     $currentoffset=intval(($_REQUEST[\'offset_'.$name.'\'])/'.$limit.')*'.$limit.';';
+    $processlimit='
+    $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
+    if ($_REQUEST[\'QUERY_STRING\']) $currenturl.=$_SERVER[\'QUERY_STRING\']."&";
+ if ($context[nbresultats]>'.$limit.') { 
+$context[nexturl]=$currenturl."offset_'.$name.'=".($currentoffset+'.$limit.');
+$context[nbresultats]--;
+} else {
+$context[nexturl]="";
+}
+$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."offset_'.$name.'=".($currentoffset-'.$limit.') : "";
+ ';
+    $limit='".$currentoffset.",'.($limit+1);
+  }
   if ($limit) $limit="LIMIT ".$limit;
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
@@ -743,31 +761,32 @@ function make_loop_code ($name,$tables,
 // genere le code pour parcourir la loop
 //
   $this->fct_txt.='function loop_'.$name.' ($context)
-{
+{'.$preprocesslimit.'
  $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
  $context[nbresultats]=mysql_num_rows($result);
+ '.$processlimit.' 
  $generalcontext=$context;
  $count=0;
  if ($row='.$options[fetch_assoc_func].'$result)) {
-?>'.$contents[BEFORE].'<?php
+?>'.$contents['BEFORE'].'<?php
     do {
       $context=array_merge ($generalcontext,$row);
       $count++;
       $context[count]=$count;';
   // gere le cas ou il y a un premier
-  if ($contents[DOFIRST]) {
-    $this->fct_txt.=' if ($count==1) { '.$contents[PRE_DOFIRST].' ?>'.$contents[DOFIRST].'<?php continue; }';
+  if ($contents['DOFIRST']) {
+    $this->fct_txt.=' if ($count==1) { '.$contents['PRE_DOFIRST'].' ?>'.$contents['DOFIRST'].'<?php continue; }';
   }
   // gere le cas ou il y a un dernier
-  if ($contents[DOLAST]) {
-    $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents[PRE_DOLAST].'?>'.$contents[DOLAST].'<?php continue; }';
+  if ($contents['DOLAST']) {
+    $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
   }    
-    $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row='.$options[fetch_assoc_func].'$result));
-?>'.$contents[AFTER].'<?php  } ';
+    $this->fct_txt.=$contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresultats] && $row='.$options['fetch_assoc_func'].'$result));
+?>'.$contents['AFTER'].'<?php  } ';
 
-  if ($contents[ALTERNATIVE]) $this->fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?php }';
+  if ($contents['ALTERNATIVE']) $this->fct_txt.=' else {?>'.$contents['ALTERNATIVE'].'<?php }';
 
     $this->fct_txt.='
  mysql_free_result($result);
@@ -781,17 +800,17 @@ function make_userdefined_loop_code ($name,$contents)
 {
 
 // cree la fonction loop
-  if ($contents["DO"]) {
-    $this->fct_txt.='function code_do_'.$name.' ($context) { ?>'.$contents["DO"].'<?php }';
+  if ($contents['DO']) {
+    $this->fct_txt.='function code_do_'.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
   }
-  if ($contents[BEFORE]) { // genere le code de avant
-    $this->fct_txt.='function code_before_'.$name.' ($context) { ?>'.$contents[BEFORE].'<?php }';
+  if ($contents['BEFORE']) { // genere le code de avant
+    $this->fct_txt.='function code_before_'.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php }';
   }
-  if ($contents[AFTER]) {// genere le code de apres
-    $this->fct_txt.='function code_after_'.$name.' ($context) { ?>'.$contents[AFTER].'<?php }';
+  if ($contents['AFTER']) {// genere le code de apres
+    $this->fct_txt.='function code_after_'.$name.' ($context) { ?>'.$contents['AFTER'].'<?php }';
   }
-  if ($contents[ALTERNATIVE]) {// genere le code de alternative
-    $this->fct_txt.='function code_alter_'.$name.' ($context) { ?>'.$contents[ALTERNATIVE].'<?php }';
+  if ($contents['ALTERNATIVE']) {// genere le code de alternative
+    $this->fct_txt.='function code_alter_'.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php }';
   }
  // fin ajout
 }
