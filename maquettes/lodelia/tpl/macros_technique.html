@@ -53,6 +53,17 @@
 	</html>
 </DEFMACRO>
 
+<DEFMACRO NAME="ENTETE_XML">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Cette macro est utile aux fichiers rss                             -->
+<!-- ****************************************************************** -->
+<?php 
+header("Content-type: application/xml");
+echo '<?xml version="1.0" encoding="utf-8"?>';
+?>
+</DEFMACRO>
+
 <DEFMACRO NAME="DEFINIR_CHARSET">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
