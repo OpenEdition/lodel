@@ -40,6 +40,7 @@ require_once($home."validfunc.php");
 $id=intval($id);
 $critere=$id>0 ? "id='$id'" : "";
 $textscritere="textgroup!='site'";
+$context['textgroups']="interface";
 
 //
 // delete

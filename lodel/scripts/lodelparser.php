@@ -315,10 +315,10 @@ function maketext($name,$group,$tag)
     $modifyif='$context[\'droitediteur\']';
     if ($group=='interface') $modifyif.=' && $context[\'usertranslationmode\']';
 
-    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id; ?>">[M]</a> <?php } ';
+    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
   } else {
     // modify at the end of the file
-    $modify="";
+    $modify=' if ($context[\'usertranslationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
     $fullname=strtoupper($group).'.'.strtoupper($name);
 
     if (!$this->translationform[$fullname]) { // make the modify form

@@ -28,26 +28,32 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require("siteconfig.php");
-require($home."auth.php");
-authenticate(LEVEL_ADMIN);
-require_once($home."func.php");
+function extract_import($footprint,&$context) {
 
+  $context['importdir']=$importdir;
+  $fileregexp='('.$footprint.')-\w+(?:-\d+)?.zip';
 
-// post-traitement
-$context[id]=$id;
-$context[textgroups]="interface";
+  $importdirs=array("CACHE",$GLOBALS['home']."../install/plateform");
+  if ($importdir) $importdirs[]=$importdir;
 
-posttraitement($context);
+  $archive=$_FILES['archive']['tmp_name'];
+  $context['error_upload']=$_FILES['archive']['error'];
+  if (!$context['error_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
+    $file=$_FILES['archive']['name'];
+    if (!preg_match("/^$fileregexp$/",$file)) $file=$footprint."-import-".date("dmy").".zip";
 
-include ($home."calcul-page.php");
-calcul_page($context,"translations");
+    if (!move_uploaded_file($archive,"CACHE/".$file)) die("ERROR: a problem occurs while moving the uploaded file.");
 
+    $file=""; // on repropose la page
 
+  } elseif ($file && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$file,$result) && file_exists($file)) { // file sur le disque
+  $prefix=$result[1];
+
+  } else { // rien
+    $file="";
+  }
+
+  return $file;
+}
 
 ?>
-
-
-
-
-

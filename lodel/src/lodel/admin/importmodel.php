@@ -30,34 +30,10 @@
 require("siteconfig.php");
 require ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
+require ($home."importfunc.php");
 #authenticate();
 
-
-$context['importdir']=$importdir;
-$fileregexp='(model)-\w+(?:-\d+)?.zip';
-
-$importdirs=array("CACHE",$home."../install/plateform");
-if ($importdir) $importdirs[]=$importdir;
-
-$archive=$_FILES['archive']['tmp_name'];
-$context['erreur_upload']=$_FILES['archive']['error'];
-if (!$context['erreur_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
-  $fichier=$_FILES['archive']['name'];
-  if (!preg_match("/^$fileregexp$/",$fichier)) $fichier="model-import-".date("dmy").".zip";
-
-  if (!move_uploaded_file($archive,"CACHE/".$fichier)) die("ERROR: a problem occurs while moving the uploaded file.");
-
-  $fichier=""; // on repropose la page
-} else
-
-
-
-if ($fichier && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$fichier,$result) && file_exists($fichier)) { // fichier sur le disque
-  $prefix=$result[1];
-
-} else { // rien
-  $fichier="";
-}
+$fichier=extract_import("model",$context);
 
 if ($fichier && $delete) {
   // extra check. Need more ?

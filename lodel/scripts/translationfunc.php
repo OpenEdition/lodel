@@ -27,6 +27,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+require_once($GLOBALS['home']."xmldbfunc.php");
+
 
 function mkeditlodeltext($name,$textgroup,$lang=-1)
 
@@ -42,7 +44,7 @@ function mkeditlodeltext($name,$textgroup,$lang=-1)
   if ($nrows<1) $nrows=1;
   if ($nrows>10) $nrows=10; // limit for very long text, it's not usefull anyway
 
-  echo '<div class="editlodeltext"><label for="texte" style="float: left; width: 10em;">'.strtoupper($name).'</label>
+  echo '<div class="editlodeltext"><label for="texte" style="float: left; width: 10em;">@'.strtoupper($name).'</label>
 <textarea name="texts['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" obj=document.getElementById(\'selectstatus'.$id.'\'); obj.selectedIndex=\'2\'; lodeltextchangecolor(obj,\'2\'); " >'.htmlspecialchars($text).'</textarea>
  <select style="background-color: '.lodeltextcolor($status).';" onchange="lodeltextchangecolor(this,this.options[this.selectedIndex].value);" id="selectstatus'.$id.'" name="status['.$id.']">';
 
@@ -91,5 +93,59 @@ function lodeltextchangecolor(obj,value) {
 <?php
 }
 
+
+
+
+class XMLDB_Translations extends XMLDB {
+
+  var $textgroups;
+  var $lang;
+
+  function XMLDB_Translations($textgroups,$lang="") 
+  {
+    $this->textgroups=$textgroups;
+    $this->lang=$lang;
+
+    $this->XMLDB("lodeltranslations",$GLOBALS[tp]);
+    $this->addTable("translations","textes");
+    $this->addElement("translations","lang","title","textgroups","translators","modificationdate","creationdate");
+    $this->addWhere("translations","lang='$lang'");
+    $this->addElement("textes",array("texte","text"));
+    $this->addAttr("textes","nom","textgroup","statut");
+    if ($lang!="all") $this->addWhere("textes","lang='$lang'");
+    if ($textgroups=="site") {
+      $this->addWhere("textes","textgroup=='site'");
+    } else {
+      $this->addWhere("textes","textgroup!='site'");
+    }
+    $this->addJoin("translations","lang","textes","lang");
+  }
+
+  function insertRow($table,$record) 
+
+  {
+    // protect record
+    clean_request_variable($record);
+
+    switch($table) {
+    case "translations":
+      // look for the translation
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]translations WHERE lang='".$record['lang']."' AND textgroups='".$this->textgroups."'") or die(mysql_error());
+      list($id)=mysql_fetch_row($result);
+      setrecord($table,$id,$record);
+      return $record['lang'];
+      break;
+    case "textes":
+      // look for texte
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='".$record['nom']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'") or die(mysql_error());
+      list($id)=mysql_fetch_row($result);
+#      echo $id," ";
+#      print_r($record);
+      setrecord($table,$id,$record);
+      return;
+      break;
+    }
+  }
+}
 
 ?>

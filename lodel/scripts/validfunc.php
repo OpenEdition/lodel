@@ -59,7 +59,7 @@ function isvalidmlstyle($style)
 function isvalidlang($lang)
 
 {
-  return preg_match("/^\w\w(-\w\w)?$/",$lang);
+  return preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$lang);
 }
 
 

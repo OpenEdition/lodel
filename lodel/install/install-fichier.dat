@@ -220,6 +220,8 @@ ln translation.php
 ln tpl/translation.html
 ln translationgroup.php
 ln tpl/translationgroup.html
+ln translationsexport.php
+ln translationsimport.php
 
 ln champ.php
 ln tpl/champ.html

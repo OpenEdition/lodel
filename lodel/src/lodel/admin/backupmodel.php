@@ -29,14 +29,14 @@
 
 
 require("siteconfig.php");
-include ($home."auth.php");
+require($home."auth.php");
 authenticate(LEVEL_ADMIN);
-include ($home."func.php");
+require_once($home."func.php");
+
 
 $context[importdir]=$importdir;
 
 if ($backup) {
-  require_once($home."func.php");
   extract_post();
 
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
