@@ -761,6 +761,49 @@ UPDATE #_TP_persontypes SET g_type=\'dc.creator\' where name=\'auteur\';
     }
 
 
+    ////////////////
+    // OBJECTS
+
+    if ($tables["$GLOBALS[tp]objects"]) {
+      $err=mysql_query_cmds('
+UPDATE #_TP_objects SET class=\'entities\' WHERE class=\'documents\';
+UPDATE #_TP_objects SET class=\'entities\' WHERE class=\'publications\';
+UPDATE #_TP_objects SET class=\'entries\' WHERE class=\'entrees\';
+UPDATE #_TP_objects SET class=\'persons\' WHERE class=\'personnes\';
+UPDATE #_TP_objects SET class=\'entrytypes\' WHERE class=\'typeentrees\';
+UPDATE #_TP_objects SET class=\'persontypes\' WHERE class=\'typepersonnes\';
+');
+      if (mysql_affected_rows()>0) {
+	// check object validity
+	$result=$db->execute(lq("SELECT id,class FROM #_TP_objects")) or dberror();
+	$ids=array();
+	while(!$result->EOF) {
+	  $ids[$result->fields['class']][]=$result->fields['id'];
+	  $result->MoveNext();
+	}
+	foreach($ids as $class=>$id) {
+	  if (!$class) {
+	    // rebuild
+	    foreach(array("entities","entries","persons","entrytypes","persontypes","types") as $class) {
+	      $result=$db->execute(lq("SELECT id FROM #_TP_".$class." WHERE id ".sql_in_array($id))) or dberror();
+	      while(!$result->EOF) {
+		$db->execute(lq("UPDATE #_TP_objects SET class='".$class."' WHERE id='".$result->fields['id']."'")) or dberror();
+		$result->MoveNext();
+	      }
+	    }
+	  } else {
+	    if ($class=="relations") continue;
+	    $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$class." WHERE id ".sql_in_array($id))) or dberror();
+	    if ($count!=count($id)) { $err="Objects n'est pas a jour. Probleme avec la class $class $count!=".count($id); break; }
+	  }
+	}
+	
+	if ($err) break;
+	$report.="Mise a jour de la table objet et verification<br/>";
+      }
+    }
+
+
     // fini, faire quelque chose
   } while(0);
 }

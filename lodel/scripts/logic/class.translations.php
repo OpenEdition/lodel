@@ -52,7 +52,7 @@ class TranslationsLogic extends Logic {
 
    function listAction(&$context,&$errro) 
    {
-     $context['textgroups']=defined("SITEROOT") ? "site" : "interface";
+     $context['textgroups']=$GLOBALS['site'] ? "site" : "interface";
      return "_ok";
    }
 
@@ -63,7 +63,7 @@ class TranslationsLogic extends Logic {
    function editAction(&$context,&$error,$clean=false)
 
    {
-     $context['textgroups']=defined("SITEROOT") ? "site" : "interface";
+     $context['textgroups']=$GLOBALS['site'] ? "site" : "interface";
      if (!$context['id']) $context['modificationdate']=date("Y-m-d");
 
      return Logic::editAction($context,$error);

@@ -248,7 +248,7 @@
 <!--[ Affiche la date de publication parente d'un document, si elle      ]-->
 <!--[ existe sinon n'affiche rien.                                       ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="date_publication_parente" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
+	<LOOP NAME="date_publication_parente" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degree"> 
 		<DO>
 			<IF COND="[#DATE]!='0000-00-00'">
 				Texte publié le : [(#DATE|humandate)]
@@ -628,7 +628,7 @@
 <!--[ Affiche la liste des auteurs d'un document entre virgules.         ]-->
 <!--[ ****************************************************************** ]-->
 	<div class="auteur">
-	<LOOP NAME="LISTER_AUTEURS_auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
+	<LOOP NAME="LISTER_AUTEURS_auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="degree">
 		<DOFIRST>[#PRENOM] 	[#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM]	[#NOMFAMILLE] </DO>
 		<DOLAST>
@@ -652,7 +652,7 @@
 <!--[ L'affichage est destiné aux sommaires : il permet une respiration. ]-->
 <!--[ ****************************************************************** ]-->
 	<div class="auteur">
-		<LOOP NAME="lister_auteurs_document" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
+		<LOOP NAME="lister_auteurs_document" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="degree">
 			<DOFIRST>[#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DOFIRST>
 			<DO>, [#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DO>
 			<DOLAST> et [#PRENOM] <span class="smallcaps"> [#NOMFAMILLE]</span></DOLAST>
@@ -667,7 +667,7 @@
 <!--[ Affiche la liste des auteurs d'un document entre virgules, pour 	]-->
 <!--[ la notice bibliographique.                                         ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="LISTER_AUTEURS_CITATION_auteurs" TABLE="persons" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="rank">
+	<LOOP NAME="LISTER_AUTEURS_CITATION_auteurs" TABLE="persons" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="degree">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM] [#NOMFAMILLE]</DO>
 		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
@@ -682,7 +682,7 @@
 <!--[ Affiche notice biblio du doc en cours                              ]-->
 <!--[ ****************************************************************** ]-->
 	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITLE]&raquo;. <em><MACRO NAME="NOM_SITE">,</em>
-	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
+	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degree"> 
 		<DO>
 			[#TITLE]
 		</DO>
@@ -695,7 +695,7 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste description des auteurs dans le document          ]-->
 <!--[ ****************************************************************** ]-->
-<LOOP NAME="description_auteur" TABLE="persons" WHERE="iddocument='[#ID]'" ORDER="rank"> 
+<LOOP NAME="description_auteur" TABLE="persons" WHERE="iddocument='[#ID]'" ORDER="degree"> 
 	<DO>
 		<IF COND="[#DESCRIPTION]">
 		 	<h4>

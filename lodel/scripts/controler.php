@@ -105,7 +105,7 @@ class Controler {
 
       // create the view
       require_once($home."view.php");
-      $view=new View;
+      $view=&getView();
 
       switch($ret) {
       case '_back' :
@@ -132,7 +132,7 @@ class Controler {
     } else {
       recordurl();
       require_once($home."view.php");
-      $view=new View;
+      $view=&getView();
       $view->renderCached($context,"index");
       //require($home."calcul-page.php");
       //calcul_page($context,"index");

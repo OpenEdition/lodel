@@ -93,7 +93,7 @@ class View {
        return;
      }
      // si le fichier de mise-a-jour est plus recent
-     if (!isset($this->_iscachevalid)) $this->isCacheValid();
+     if (!isset($this->_iscachevalid)) $this->_iscachevalid();
 
      if (!$this->_iscachevalid) {
        require_once ($home."calcul-page.php");
@@ -101,34 +101,56 @@ class View {
 
        // the cache is valid... do we have a php file ?
      } else {
-       $this->printCache();
+       if ($this->_extcachedfile=="php") {
+	 $ret=include($this->_cachedfile.".php");
+
+	 // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
+
+	 if ($ret=="refresh") { // does php say we must refresh ?
+	   require_once ($home."calcul-page.php");
+	   $this->_calculateCacheAndOutput($context,$tpl);
+	 }
+       } else { // no, we have a proper html, let read it.
+	 // sinon affiche le cache.
+	 readfile($this->_cachedfile.".html");
+       }
      }
    }
 
+
    /**
-    * print directly the cache. isValidCache must be called before
+    * print the result only if the cache is valid. Otherwise return false.
     */
 
-   function printCache()
+   function renderIfCacheIsValid()
 
    {
+     if (!$this->_iscachevalid()) return false;
      if ($this->_extcachedfile=="php") {
        $ret=include($this->_cachedfile.".php");
 
        // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
 
-       if ($ret=="refresh") { // does php say we must refresh ?
-	 require_once ($home."calcul-page.php");
-	 $this->_calculateCacheAndOutput($context,$tpl);
-       }
+       if ($ret=="refresh") return false; // does php say we must refresh ?
+
      } else { // no, we have a proper html, let read it.
        // sinon affiche le cache.
        readfile($this->_cachedfile.".html");
      }
+     return true;
    }
 
 
-   function isCacheValid()
+
+   /**
+    * This function check if the cache is valid at the first level.
+    * if the file is php, we'll know the validity only once the file
+    * has been executed. This function should therefore not be used
+    * (it is private)
+    *
+    */
+
+   function _iscachevalid()
    {
      global $lodeluser;
      //if ($GLOBALS['right']['visitor']) {

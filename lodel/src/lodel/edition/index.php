@@ -36,8 +36,8 @@ if (!$_GET['do'] && !$_POST['do']) {
   recordurl();
   $context['id']=$id=intval($_GET['id']);
   require_once($home."view.php");
-  $view=new View;
-  if ($view->isCacheValid()) { $view->printCache(); return; }
+  $view=&getView();
+  if ($view->renderIfCacheIsValid()) { return; }
   if ($id) {
     do {
       $row=$db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));

@@ -45,7 +45,7 @@
 // pour les documents dans l'url on peut recevoir
 // online
 
-
+die("desuet");
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);

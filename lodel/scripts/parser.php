@@ -285,7 +285,13 @@ function parse ($in,$out)
        if ($fct) {
 	 // get the args if any 
 	 if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result)) {
-	   $args=",".$result[2]; $fct=$result[1]; } else { $args=""; }
+	   $args=",".$result[2]; $fct=$result[1]; 
+	 } elseif (preg_match("/^([A-Za-z][A-Za-z_0-9]*)$/",$fct)) { 
+	   $args=""; 
+	 } else {
+	   // error
+	   $this->errmsg("The name of the pipe function \"$fct\" is invalid");
+	 }
        } else continue;
        $variable=$fct."(".$variable.$args.")";
      }
@@ -358,7 +364,7 @@ function parse_main()
 	$this->_clearposition();
       } elseif ($attrs['TEMPLATEFILE']) {
 	$this->_clearposition();
-	$this->arr[$this->ind]='<?php insert_template(\$context,"'.basename($attrs['TEMPLATEFILE']).'"); ?>';
+	$this->arr[$this->ind]='<?php insert_template($context,"'.basename($attrs['TEMPLATEFILE']).'"); ?>';
       }
       break;
       // returns

@@ -356,7 +356,7 @@ class Entities_EditionLogic extends GenericLogic {
 	     $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('".$id."','".$vo->id."','".$name."','0')")) or dberror();
 	     $idrelations[]=$db->insert_id();
 	   }
-	   print_R($idrelations);
+	   //print_R($idrelations);
 	 }
 	 $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
 	 $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$name);

@@ -40,7 +40,7 @@ function makefilterfunc()
   // cherche les champs a filtrer
   //
   require_once ($home."connect.php");
-  $result=$db->execute("SELECT class,#_TP_fields.name,filtrage FROM #_fieldsgroupsjoin_ WHERE #_TP_fieldgroups.status>0 AND #_TP_fields.status>0 AND filtrage!=''") or dberror();
+  $result=$db->execute(lq("SELECT class,name,filtering FROM #_TP_tablefields WHERE status>0 AND filtering!=''")) or dberror();
   while (!$result->EOF) {
     //list($class,$name,$filter)=$result->fields;
     $row==$result->fields;
@@ -78,7 +78,7 @@ function makefilterfunc()
   // to update with ADODB
 
   $fp=fopen("CACHE/filterfunc.php","w");      
-  fputs($fp,'<? function filtered_mysql_fetch_assoc($context,$result) {
+  fputs($fp,'<'.'?php function filtered_mysql_fetch_assoc($context,$result) {
   $filters=array('.$filterstr.');
   $count=mysql_num_fields($result);
   $row=mysql_fetch_row($result);
@@ -97,7 +97,30 @@ function makefilterfunc()
      }
   }
   return $ret;
-}?>');
+}
+
+
+/**
+ * Function to filter field of a single class.
+ */
+
+function merge_and_filter_fields(&$context,$class,&$assoc)
+
+{
+  $filters=array('.$filterstr.');
+  $localcontext=array_merge($context,$assoc);
+  foreach($assoc as $k=>$v) {
+    if ($filters[$class.".".$k]) {
+      $filter=create_function(\'$x,$context\',$filters[$class.".".$k]);
+      $context[$k]=$filter($v,$localcontext);
+    }
+  }
+}
+
+
+?'.'>');
   fclose($fp);
 }
+
+
 ?>

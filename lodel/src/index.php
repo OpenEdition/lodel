@@ -31,26 +31,85 @@ require("siteconfig.php");
 require_once($home."auth.php");
 authenticate();
 
+require_once($home."view.php");
+//
+// record the url if logged
+//
+if ($lodeluser['rights']>=LEVEL_VISITOR) recordurl();
+//
+// get the view and checked the cache.
+//
+$view=&getView();
+if ($view->renderIfCacheIsValid()) return;
+
+require_once($home."textfunc.php");
+
+$id=intval($_GET['id']);
+$tpl="index"; // template by default.
+
 if ($id) {
   require_once($home."connect.php");
-  $id=intval($id);
-  $result=mysql_query("SELECT class FROM $GLOBALS[tp]objects WHERE id='$id'") or dberror();
-  list($class)=mysql_fetch_row($result);
-  $script=array("documents"=>"document",
-		"publications"=>"sommaire",
-		"entrees"=>"entree",
-		"typeentrees"=>"entrees",
-		"personnes"=>"personne",
-		"typepersonnes"=>"personnes",
-		);
-  if ($script[$class]) {
-    require($script[$class].".".$extensionscripts);
-  } else {
-    header("location: not-found.html");
-  }
-  return;
+  do { // exception block
+    require_once($home."func.php");  
+    $class=$db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='".$id."'"));
+    if ($db->errorno() && $lodeluser['rights']>LEVEL_VISITOR) dberror();
+    if (!$class) break;
+
+    switch($class) {
+    case 'entities':
+      printEntities($id,$_GET['identifier'],$context);
+      break;
+    } // switch class
+  } while(0);
 }
 
-$base="index";
-include ($home."cache.php");
+
+$view->renderCached($context,"index.html");
+
+
+function printEntities($id,$identifier,&$context)
+
+{
+  global $lodeluser,$home,$db;
+
+  $critere=$lodeluser['visitor'] ? "" : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
+
+
+  //
+  // cherche le document, et le template
+  //
+  if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
+  
+  if ($id || $identifier) {
+    do {
+      if ($identifier) {
+	$identifier=addslashes(stripslashes(substr($identifier,0,255)));
+	$identifier=addslashes(stripslashes($identifier));
+	$where="#_TP_entities.identifier='".$identifier."' ".$critere;
+      } else {
+	$where="#_TP_entities.id='".$id."' ".$critere;
+      }
+
+      $row=$db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE $where"));
+      if ($row===false) dberror();
+      if (!$row) { header ("Location: not-found.html"); return; }
+      $base=$row['tpl'];
+      if (!$base) { $id=$row['idparent']; $relocation=TRUE; }
+    } while (!$base && !$identifier);    
+    if ($relocation) { 
+      header("location: ".makeurlwithid("index",$row['id']));
+      exit;
+    }
+    $context=array_merge($context,$row);
+    $row=$db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE identity='".$row['id']."'"));
+    if ($row===false) dberror();
+    if (!$row) die("ERROR: internal error");
+    merge_and_filter_fields($context,$class,$row);
+
+    $view=&getView();
+    $view->renderCached($context,$base);
+    exit();
+  }
+}
+
 ?>

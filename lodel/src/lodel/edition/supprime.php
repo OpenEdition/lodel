@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 // suppression de documents et de publication en assurant la coherence de la base
-
+die("desuet");
 require("siteconfig.php");
 require ($home."auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);

@@ -97,10 +97,12 @@ function loop_parentsentities(&$context,$funcname,$critere="")
 function loop_toc($context,$funcname,$arguments)
 
 {
-  if (!isset($arguments['text'])) {
-    if ($GLOBALS['lodeluser']['visitor']) die("ERROR: the loop \"toc\" requires a TEXT attribut");
-    return;
-  }
+#  print_R($arguments);
+#  echo isset($arguments['text'])===false;
+#  if (! (isset($arguments['text'])) ) {
+#    if ($GLOBALS['lodeluser']['visitor']) die("ERROR: the loop \"toc\" requires a TEXT attribut");
+#    return;
+#  }
 
   if (!preg_match_all("/<(r2r:section(\d+))>(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {
     if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {

@@ -187,17 +187,11 @@ $context=array(
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'],
 	       #"database"=>defined("DATABASE") ? DATABASE : $GLOBALS['database'],
 	       "siteroot"=>defined("SITEROOT") ? SITEROOT : "",
+	       "site"=>$site,
+	       "charset"=>getacceptedcharset($charset)
 	       ); // tres important d'initialiser le context.
 
-if (!$filemask) $filemask="0700";
-
-// cherche le name du site
-
-$context['site']=$site;
-
-
-
-$context['charset'] = getacceptedcharset($charset);
-header("Content-type: text/html; charset=$context[charset]");
+if (!$GLOBALS['filemask']) $GLOBALS['filemask']="0700";
+header("Content-type: text/html; charset=".$context['charset']);
 
 ?>

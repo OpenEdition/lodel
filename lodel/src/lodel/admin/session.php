@@ -61,7 +61,7 @@ if ($ids) {
 usecurrentdb();
 update();
 require_once($home."view.php");
-$view=new View;
+$view=&getView();
 $view->back();
 
 ?>

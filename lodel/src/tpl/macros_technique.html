@@ -114,16 +114,11 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ version 2.0                                                        ]-->
 <!--[ Permet d'appeler la feuille de style CSS du site,     de fermer    ]-->
 <!--[ l'en-tête de la page HTML puis d'ouvrir le corps de la page et     ]-->
-<!--[ d'afficher le tableau de bord (desk) au sommet de la page pour les ]-->
-<!--[ utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... ]-->
 <!--[ ****************************************************************** ]-->
 	<link rel="stylesheet" type="text/css" href="css/styles_site.css" media="screen" title="Défaut" />
 	<link rel="stylesheet" type="text/css" media="print" href="css/styles_site_print.css" />
 </head>
 	<body> 
-	<IF COND="[#DROITVISITEUR]">
-		<USE TEMPLATEFILE="desk">
-	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
@@ -132,16 +127,10 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ Permet d'appeler la feuille de style CSS pour la version imprimable]--> 
 <!--[ du site, de fermer     										]-->
 <!--[ l'en-tête de la page HTML puis d'ouvrir le corps de la page et     ]-->
-<!--[ d'afficher le tableau de bord (desk) au sommet de la page pour les ]-->
-<!--[ utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... ]-->
 <!--[ ****************************************************************** ]-->
-	<link rel="stylesheet" href="css/styles_site_print.css"  />
-	
+	<link rel="stylesheet" href="css/styles_site_print.css"  />	
 	</head>
 	<body> 
-	<IF COND="[#DROITVISITEUR]">
-		<USE TEMPLATEFILE="desk">
-	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="ACTIVER_INDEXATION">
@@ -197,7 +186,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!--[ existe sinon affiche "0000-00-00".                                 ]-->
 <!--[ Cette macro est destinée à l'affichage des métadonnées.            ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="date_publication_parente_pour_metas" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
+	<LOOP NAME="date_publication_parente_pour_metas" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degree"> 
 		<DO>
 			<IF COND="[#DATE]!='0000-00-00'">
 				<meta name="DC.Date" content="[#DATE]" />
@@ -215,7 +204,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 		<DO>
 			<IF COND="[#TEXTE]">
 				Extrait du premier article du numéro: 
-				[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
+				[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark)]
 			<ELSE/>
 				<LOOP NAME="desc_meta_sommaire" TABLE="documents" TABLE="relations" WHERE="id1='[#IDPARENT]' AND id=id2">
 					<DO>
@@ -355,7 +344,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_SITE_POUR_METAS">" />
 	<meta name="URL" content="[#CURRENTURL]" />
 		
-	<LOOP NAME="meta_auteurs" TABLE="persons" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="rank">
+	<LOOP NAME="meta_auteurs" TABLE="persons" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="degree">
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
@@ -381,7 +370,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 		<meta name="DC.Subject" content="[#NAME]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_dc_auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
+	<LOOP NAME="meta_dc_auteurs" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="degree">
 		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
@@ -535,7 +524,7 @@ function RestoreImg()
 <!--[ version 1.0                                                        ]-->
 <!--[ Affiche la liste des auteurs d'un document pour fil atom           ]-->
 <!--[ ****************************************************************** ]-->
-		<LOOP NAME="lister_auteurs_document" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="rank">
+		<LOOP NAME="lister_auteurs_document" TABLE="persons" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="degree">
 			<DO><author>
 			<name>[#PRENOM] [#NOMFAMILLE]</name>
 			</author></DO>

@@ -49,7 +49,7 @@ function gettask (&$id)
   $id=intval($id);
   $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
   if ($row===false) dberror();
-  if (!$row) { require_once($home."view.php"); $view=new View; $view->back(); return; }
+  if (!$row) { require_once($home."view.php"); $view=&getView(); $view->back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
@@ -749,6 +749,7 @@ function &getGenericDAO($table,$idfield)
 
   return $factory[$table]=new genericDAO ($table,$idfield);
 }
+
 
 
 // valeur de retour identifier ce script

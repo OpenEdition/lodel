@@ -32,7 +32,7 @@
 		<td width="431" align="left" heigth="75">
 			<table align="right" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-				<IF COND="[#SITEROOT]">
+				<IF COND="[#SITE]">
 					<td width="100%" heigth="75">&nbsp;</td>
 					<td width="57" heigth="75"><a href="[#SITEROOT]lodel/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"><span class="desk-text">[@COMMON.HOME]</span></a></td>
 			
@@ -42,8 +42,15 @@
 
 				<ELSE/>
 					<td heigth="75">
-					<MACRO NAME="JS_SELECT_URL">
-					<LOOP NAME="sites" TABLE="sites" WHERE="status gt 0">
+					<script type="text/javascript"><!--
+					
+						function select_url(obj) {
+							var index = obj.selectedIndex;
+							if (obj.options[index].value) window.location=obj.options[index].value;
+						}
+					//
+					--></script>
+					<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
 					<BEFORE>
 						[@LODELADMIN.SITE]:<br/>
 						<IF COND="[#NBRESULTS] gt 3">
@@ -103,7 +110,7 @@
 				<tr>
 					<td align="right" valign="bottom">
 						<!--[<span class="texte_petit">Publication : </span>]-->
-						<LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
+						<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]'">
 							<DO><span class="texte_petit"><strong>[#NAME]</strong></span></DO>
 						</LOOP>
 

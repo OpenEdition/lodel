@@ -113,7 +113,7 @@ class DAO {
        }
 
        $insert="";$values="";
-       if ($this->uniqueid && !$vo->$idfield) $vo->$idfield=uniqueid($table);
+       if ($this->uniqueid && !$vo->$idfield) $vo->$idfield=uniqueid($this->table);
 
        foreach($vo as $k=>$v) {
 	 if (!isset($v)) continue;

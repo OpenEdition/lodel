@@ -35,6 +35,7 @@ function removefilesincache()
   // On ajoute le repertoire CACHE dans le code, ce qui empeche de detruire le contenu d'un autre repertoire. On ne se propage pas de facon recurrente.
   // 
   foreach(func_get_args() as $rep) {
+    if (!$rep) $rep=".";
     $rep.="/CACHE";
     $fd=opendir($rep) or die ("Impossible d'ouvrir $rep");
     

@@ -377,7 +377,7 @@ function parse_after(&$text)
   } ?'.'>';
 
     $bodystarttag=strpos($text,"<body");
-    if ($bodystart!==false) {
+    if ($bodystarttag!==false) {
       $bodyendtag=strpos($text,">",$bodystarttag);
       $text=substr_replace($text,$desk.'<div id="lodel-container">',$bodyendtag+1,0);
       unset($desk);
