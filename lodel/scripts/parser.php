@@ -46,7 +46,7 @@ function parse ($in,$out)
   parse_texte($contents);
 
   $contents='<?
-require_once("revueconfig.php");include_once ("$home/connect.php");
+require_once ("$home/connect.php");
 '.$fct.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
