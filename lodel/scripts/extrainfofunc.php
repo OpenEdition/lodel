@@ -24,6 +24,9 @@ function ei_pretraitement($filename,$row,&$context,&$text)
   // extrait les langues
   if (preg_match("/<r2r:texte\b[^>]+\blang\s*=\s*\"([^\"]+)\"/i",$text,$result)) {
     list($context[lang1],$context[lang2],$context[lang3])=explode(" ",$result[1]);
+  } elseif (preg_match("/<r2r:texte\b/i",$text)) { // langue par default, le francais. Il faudra aller chercher la langue par defaut dans la table de la revue...
+    $context[lang1]="fr";
+
   }
   // transforme les balises resume
   include_once("$home/langues.php");
