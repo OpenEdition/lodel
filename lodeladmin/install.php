@@ -320,7 +320,8 @@ if ($tache=="servoo") {
   } elseif (!$skip) {
     maj_lodelconfig(array("servoourl"=>$newservoourl,
 			  "servoousername"=>$newservoousername,
-			  "servoopasswd"=>$newservoopasswd));
+			  "servoopasswd"=>$newservoopasswd
+			  ));
   }
 }
 

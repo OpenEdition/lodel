@@ -212,7 +212,7 @@
 		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'image'">
-		<td><IF COND="[#VALUE]"><img src="[(#VALUE|vignette(80))]" border="1"> [#VALUE]</IF> <input size="40" type="file" name="entite[[#NOM]]"><input size="40" type="hidden" name="entite[[#NOM]][previousvalue]" VALUE="[#VALUE]"></td>
+		<td><IF COND="[#VALUE]"><img src="[(#VALUE|vignette(80))]" border="1"> [#VALUE]<br /></IF> <input size="40" type="file" name="entite[[#NOM]]"><input size="40" type="hidden" name="entite[[#NOM]][previousvalue]" VALUE="[#VALUE]"></td>
 	<ELSE/>
 	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>

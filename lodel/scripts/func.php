@@ -353,7 +353,11 @@ function getoption($nom,$extracritere=" AND type!='pass'")
     $critere="nom='$nom'";
   }
 
-  $result=mysql_query("SELECT nom,valeur FROM $GLOBALS[tp]options WHERE $critere $extracritere") or die(mysql_error());
+  $result=mysql_query("SELECT nom,valeur FROM $GLOBALS[tableprefix]options WHERE $critere $extracritere");
+  if (!$result) {
+    if (mysql_errno()==1146) return; // table does not exists... that can happen during the installation
+    mysql_erro();
+  }
   while (list($n,$val)=mysql_fetch_row($result)) {
     $options_cache[$n]=$val;
     $ret[$n]=$val;
