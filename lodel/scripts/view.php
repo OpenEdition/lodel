@@ -287,4 +287,24 @@ function renderOptions($arr,$selected)
   }
 }
 
+
+function generateLangCache($lang,$file,$tags)
+
+{print_R($tag);
+  foreach($tags as $tag) {
+    $dotpos=strpos($tag,".");
+    $group=substr($tag,0,$dotpos);
+    $name=substr($tag,$dotpos+1);
+    $txt.="'".$tag."'=>'".addslashes(getlodeltextcontents($name,$group,$lang))."',";
+  }
+  $dir=dirname($file);
+  if (!is_dir($dir)) {
+    @mkdir("CACHE/lang",0777 & octdec($GLOBALS['filemask']));
+    @chmod("CACHE/lang",0777 & octdec($GLOBALS['filemask']));
+    @mkdir($dir,0777 & octdec($GLOBALS['filemask']));
+    @chmod($dir,0777 & octdec($GLOBALS['filemask']));
+  }
+  writefile($file,'<'.'?php if (!$GLOBALS[\'langcache\'][\''.$lang.'\']) $GLOBALS[\'langcache\'][\''.$lang.'\']=array(); $GLOBALS[\'langcache\'][\''.$lang.'\']+=array('.$txt.'); ?'.'>');
+}
+
 ?>

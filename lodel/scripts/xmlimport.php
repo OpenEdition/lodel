@@ -182,7 +182,7 @@ class XMLImportParser {
     for($i=1; $i<$n; $i+=3) {
       $this->_parseOneStep($arr,$i,$datastack,$classstack,"block");
 
-      $larr=preg_split("/<(\/)?r2rc:(\w+)>/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
+      $larr=preg_split("/<(\/)?soo:inline(>|\s+class=\"\w+\"\s*>)>/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
       $nj=count($larr);
       $datastack[0].=$larr[0];
 

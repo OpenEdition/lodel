@@ -65,8 +65,7 @@ class UsersLogic extends Logic {
 
    {
      switch($var) {
-     case "usergroups" :
-       
+     case "usergroups" :       
        $dao=&getDAO("usergroups");
        $list=$dao->findMany("status>0","rank,name","id,name");
        $arr=array();
@@ -112,11 +111,14 @@ class UsersLogic extends Logic {
    function _populateContextRelatedTables(&$vo,&$context)
 
    {
-     $dao=&getDAO("users_usergroups");
-     $list=$dao->findMany("iduser='".$vo->id."'","","idgroup");
-     $context['usergroups']=array();
-     foreach($list as $relationobj) {
-       $context['usergroups'][]=$relationobj->idgroup;
+     ##print_R($vo);
+     if ($vo->userrights<=LEVEL_EDITOR) {
+       $dao=&getDAO("users_usergroups");
+       $list=$dao->findMany("iduser='".$vo->id."'","","idgroup");
+       $context['usergroups']=array();
+       foreach($list as $relationobj) {
+	 $context['usergroups'][]=$relationobj->idgroup;
+       }
      }
    }
 
@@ -124,16 +126,18 @@ class UsersLogic extends Logic {
 
    {
      global $db;
-     if (!$context['usergroups']) $context['usergroups']=array(1);
+     if ($vo->userrights<=LEVEL_EDITOR) {
+       if (!$context['usergroups']) $context['usergroups']=array(1);
 
-     // change the usergroups     
-     // first delete the group
-     $this->_deleteRelatedTables($vo->id);
-     // now add the usergroups
-      foreach ($context['usergroups'] as $usergroup) {
-	$usergroup=intval($usergroup);
-	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or dberror();
-      }
+       // change the usergroups     
+       // first delete the group
+       $this->_deleteRelatedTables($vo->id);
+       // now add the usergroups
+       foreach ($context['usergroups'] as $usergroup) {
+	 $usergroup=intval($usergroup);
+	 $db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or dberror();
+       }
+     }
    }
 
    function _deleteRelatedTables($id) {
@@ -187,9 +191,5 @@ class UsersLogic extends Logic {
 
 /*-----------------------------------*/
 /* loops                             */
-
-
-
-
 
 ?>

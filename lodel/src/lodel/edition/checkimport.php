@@ -51,8 +51,9 @@ $context['tablecontents']=$handler->contents();
 ///$context['urlnext']="index.php?do=xmlimport&idtask=$idtask";
 
 
-require ($home."calcul-page.php");
-calcul_page($context,"checkimport");
+require($home."view.php");
+$view=&getView();
+$view->render($context,"checkimport");
 
 //--------------------------------------------------//
 // definition of the handler to proceduce the table

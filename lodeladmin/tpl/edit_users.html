@@ -21,8 +21,9 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
-<USE MACROFILE="macros2.html">
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_USER_EDITION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -39,24 +40,24 @@
 <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
-<input type="hidden" name="table" value="users">
+<input type="hidden" name="lo" value="users">
 <fieldset>
   <legend>Table des utilisateurs de lodel</legend>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
     </p>
   </LOOP>
   <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
-  <input type="text" size="30" name="username" id="username" class="text" value="[#LODELUSER.AME]">
+  <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
   <br />
   <LOOP NAME="fielderror" FIELD="username">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="username"></FUNC>
     </p>
   </LOOP>
   <label for="passwd">[@COMMON.PASSWORD]
@@ -67,7 +68,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="passwd">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="passwd"></FUNC>
     </p>
   </LOOP>
   <label for="name">[@ADMIN.LASTNAME_AND_FIRSTNAME]
@@ -78,9 +79,13 @@
   <br />
   <LOOP NAME="fielderror" FIELD="name">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
     </p>
   </LOOP>
+  <label for="email">[@ADMIN.EMAIL]
+        : 
+      </label>
+  <br class="nobr"><span class="admin_display">[#EMAIL]</span><br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>
@@ -93,7 +98,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="userrights">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="userrights"></FUNC>
     </p>
   </LOOP>
   <label for="lang">[@ADMIN.USER_LANG]
@@ -108,24 +113,26 @@
   <br />
   <LOOP NAME="fielderror" FIELD="lang">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
     </p>
   </LOOP>
-  <label for="usergroups">[@ADMIN.USERGROUPS]
+  <IF COND="[#SITE] and ![#USER.ADMIN]">
+    <label for="usergroups">[@ADMIN.USERGROUPS]
         : 
       </label>
-  <br class="nobr">
-  <select multiple name="usergroups[]" id="usergroups">
-    <?php 
+    <br class="nobr">
+    <select multiple name="usergroups[]" id="usergroups">
+      <?php 
                       makeSelect($context,"usergroups","users","multipleselect");
                   ?>
-  </select>
-  <br />
-  <LOOP NAME="fielderror" FIELD="usergroups">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-    </p>
-  </LOOP>
+    </select>
+    <br />
+    <LOOP NAME="fielderror" FIELD="usergroups">
+      <p class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="usergroups"></FUNC>
+      </p>
+    </LOOP>
+  </IF>
   <label for="protected">[@ADMIN.PROTECTED_USER]
         : 
       </label>
@@ -138,7 +145,7 @@
   <br />
   <LOOP NAME="fielderror" FIELD="protected">
     <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
     </p>
   </LOOP>
 </fieldset>

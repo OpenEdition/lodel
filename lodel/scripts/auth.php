@@ -92,6 +92,7 @@ function authenticate ($level=0)
 
     $context['lodeluser']=$lodeluser;
 
+    if ($lodeluser['lang']) $GLOBALS['la']=$lodeluser['lang'];
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
     //
@@ -188,10 +189,17 @@ $context=array(
 	       #"database"=>defined("DATABASE") ? DATABASE : $GLOBALS['database'],
 	       "siteroot"=>defined("SITEROOT") ? SITEROOT : "",
 	       "site"=>$site,
-	       "charset"=>getacceptedcharset($charset)
+	       "charset"=>getacceptedcharset($charset),
+	       "langcache"=>array()
 	       ); // tres important d'initialiser le context.
 
 if (!$GLOBALS['filemask']) $GLOBALS['filemask']="0700";
 header("Content-type: text/html; charset=".$context['charset']);
+
+
+$GLOBALS['la']=$_GET['la'] ? $_GET['la'] : $_POST['la'];
+if (!preg_match("/^\w{2}(-\w{2})?$/",$GLOBALS['la'])) $GLOBALS['la']="";
+
+
 
 ?>

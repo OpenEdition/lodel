@@ -37,7 +37,7 @@ if ($_POST['login']) {
     require_once ($home."connect.php");
     require_once ($home."loginfunc.php");
     if (!check_auth($context['login'],$context['passwd'],$site)) {
-      $context[error_login]=1; break; 
+      $context['error_login']=1; break; 
     }
     // ouvre une session
     $err=open_session($context['login']);
@@ -47,7 +47,7 @@ if ($_POST['login']) {
   } while (0);
 }
 
-$context[passwd]=$passwd=0;
+$context['passwd']=$passwd=0;
 
 
 // variable: sitebloque
@@ -61,11 +61,12 @@ if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
   
 }
 
-$context[url_retour]=$url_retour;
-$context[error_timeout]=$error_timeout;
-$context[error_privilege]=$error_privilege;
+$context['url_retour']=$url_retour;
+$context['error_timeout']=$error_timeout;
+$context['error_privilege']=$error_privilege;
 
-require ($home."calcul-page.php");
-calcul_page($context,"login");
+require ($home."view.php");
+$view=&getView();
+$view->render($context,"login");
 
 ?>

@@ -21,8 +21,9 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
-<USE MACROFILE="macros2.html">
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_USER_EDITION] [#SITE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -36,7 +37,7 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&table=users">[@ADMIN.ADD_USER]</a>
+	<a href="index.php?do=view&lo=users">[@ADMIN.ADD_USER]</a>
 </div>
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
@@ -48,15 +49,15 @@
 		<td class="texte_noir_gras" align="center">[@ADMIN.SESSIONS]</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="users" TABLE="users" ORDER="username" WHERE="status gt 0 AND userrights ge 128">
+	<LOOP NAME="users" TABLE="users" ORDER="username" WHERE="status gt 0">
 		<DO>
 			<MACRO NAME="TR_LIST">
 			<td><strong>[(#USERNAME|nbsp)]</strong></td>
 			<td>
 				<MACRO NAME="AFFICHER_PRIVILEGE">
 			</td>
-			<td>[(#NOM|nbsp)]</td>
-			<td>[(#COURRIEL|nbsp)]</td>
+			<td>[(#NAME|nbsp)]</td>
+			<td>[(#EMAIL|nbsp)]</td>
 			<td>
 			<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
 				<DOFIRST>
@@ -72,8 +73,8 @@
 				<td style="color: #CC9933;" align="left">
 				<div>
 
-               			 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="[#TABLE]">
-				 <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="[#TABLE]">
+               			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				</div>
 				</td>
 			</tr>

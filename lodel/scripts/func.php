@@ -373,7 +373,8 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
       die("ERROR: unknow group for getlodeltext");
     }
   }
-  if ($lang==-1) $lang=$GLOBALS['lodeluser']['lang'];
+  if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
+
   require_once($GLOBALS['home']."connect.php");
   global $db;
 
@@ -410,8 +411,13 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 function getlodeltextcontents($name,$group="",$lang=-1)
 
 {
-  getlodeltext($name,$group,$id,$contents,$status,$lang);
-  return $contents;
+  if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
+  if ($GLOBALS['langcache'][$lang][$group.".".$name]) {
+    return $GLOBALS['langcache'][$lang][$group.".".$name];
+  } else {
+    getlodeltext($name,$group,$id,$contents,$status,$lang);
+    return $contents;
+  }
 }
 
 

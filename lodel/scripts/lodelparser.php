@@ -327,6 +327,9 @@ function maketext($name,$group,$tag)
     if ($group!="site") usecurrentdb();
   }
 
+  $fullname=$group.'.'.$name;
+  $this->translationtags[]="'".$fullname."'"; // save all the TEXT for the CACHE
+
   if ($tag=="text") {
     // modify inline
     $modifyif='$context[\'righteditor\']';
@@ -340,8 +343,6 @@ function maketext($name,$group,$tag)
     // modify at the end of the file
     ##$modify=' if ($context[\'lodeluser\'][\'translationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
     $modify="";
-    $fullname=strtoupper($group).'.'.strtoupper($name);
-
     if (!$this->translationform[$fullname]) { // make the modify form
       $this->translationform[$fullname]='<?php mkeditlodeltext("'.$name.'","'.$group.'"); ?>';
     }
@@ -353,6 +354,7 @@ function maketext($name,$group,$tag)
 function parse_after(&$text)
 
 {
+  // add the translation system when in translation mode
   if ($this->translationform) {
     // add the translations form before the body    
     $closepos=strpos($text,"</body>");
@@ -367,6 +369,21 @@ function parse_after(&$text)
 
     $text=substr_replace($text,$code,$closepos,0);
   }
+  if ($this->translationtags) {
+    // add the code for the translations
+    $text='<'.'?php
+  $langfile="CACHE/lang/".$GLOBALS[\'la\']."/".basename(__FILE__);
+  $maj="CACHE/langmaj"; if (defined("SITEROOT")) $maj=SITEROOT.$maj;
+  if (myfilemtime($maj)>=myfilemtime($langfile)) {
+    generateLangCache($GLOBALS[\'la\'],$langfile,array('.join(",",$this->translationtags).'));
+  } else {
+    require_once($langfile);
+  }
+?'.'>
+'.$text;
+  }
+
+  //
 
 
   // add the code for the desk

@@ -53,7 +53,7 @@
         : 
       </label>
   <br class="nobr">
-  <input type="text" size="30" name="username" id="username" class="text" value="[#LODELUSER.AME]">
+  <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
   <br />
   <LOOP NAME="fielderror" FIELD="username">
     <p class="error">
@@ -116,21 +116,23 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
     </p>
   </LOOP>
-  <label for="usergroups">[@ADMIN.USERGROUPS]
+  <IF COND="[#SITE] and ![#USER.ADMIN]">
+    <label for="usergroups">[@ADMIN.USERGROUPS]
         : 
       </label>
-  <br class="nobr">
-  <select multiple name="usergroups[]" id="usergroups">
-    <?php 
+    <br class="nobr">
+    <select multiple name="usergroups[]" id="usergroups">
+      <?php 
                       makeSelect($context,"usergroups","users","multipleselect");
                   ?>
-  </select>
-  <br />
-  <LOOP NAME="fielderror" FIELD="usergroups">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="usergroups"></FUNC>
-    </p>
-  </LOOP>
+    </select>
+    <br />
+    <LOOP NAME="fielderror" FIELD="usergroups">
+      <p class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="usergroups"></FUNC>
+      </p>
+    </LOOP>
+  </IF>
   <label for="protected">[@ADMIN.PROTECTED_USER]
         : 
       </label>

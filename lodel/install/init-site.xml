@@ -596,6 +596,7 @@
         required="true" />
 <vcolumn name="usergroups"
 	label="[@ADMIN.USERGROUPS]"
+	editcondition="[#SITE] and ![#USER.ADMIN]"
 	edittype="multipleselect" />
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_USER]"
