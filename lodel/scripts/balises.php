@@ -77,33 +77,33 @@ $GLOBALS['balisesdocumentassocie']=array("objetdelarecension"=>"Objet de la rece
 // voir les codes ci-dessous
 // temporaire en attendant la 0.8
 
-$GLOBALS['multiplelevel']['texte Lodel']=array(
-					       "citation"=>"texte",
-					       "epigraphe"=>"texte",
-					       "titredoc"=>"texte",
-					       "legendedoc"=>"texte",
-					       "titreillustration"=>"texte",
-					       "legendeillustration"=>"texte");
-
-$GLOBALS['multiplelevel']['Sections']=array(
-					    // l'rank est important ci-dessous (marche pas avec section\d+)
-					    "section10"=>">*", // non utilise a priori
-					    "section9"=>">*", // non utilise a priori
-					    "section8"=>">*",
-					    "section7"=>">*",
-					    "section6"=>">*", // non utilise a priori
-					    "section5"=>">*", // non utilise a priori
-					    "section4"=>">*",
-					    "section3"=>">*",
-					    "section2"=>">*",
-					    "section1"=>">*"
-					    );
-
-$GLOBALS['multiplelevel']['']=array( // balises speciales
-				  "puce"=>"<*",
-				  "puces"=>"<*",
-				  "separateur"=>">*"
-				  );
+#$GLOBALS['multiplelevel']['texte Lodel']=array(
+#					       "citation"=>"texte",
+#					       "epigraphe"=>"texte",
+#					       "titredoc"=>"texte",
+#					       "legendedoc"=>"texte",
+#					       "titreillustration"=>"texte",
+#					       "legendeillustration"=>"texte");
+#
+#$GLOBALS['multiplelevel']['Sections']=array(
+#					    // l'rank est important ci-dessous (marche pas avec section\d+)
+#					    "section10"=>">*", // non utilise a priori
+#					    "section9"=>">*", // non utilise a priori
+#					    "section8"=>">*",
+#					    "section7"=>">*",
+#					    "section6"=>">*", // non utilise a priori
+#					    "section5"=>">*", // non utilise a priori
+#					    "section4"=>">*",
+#					    "section3"=>">*",
+#					    "section2"=>">*",
+#					    "section1"=>">*"
+#					    );
+#
+#$GLOBALS['multiplelevel']['']=array( // balises speciales
+#				  "puce"=>"<*",
+#				  "puces"=>"<*",
+#				  "separateur"=>">*"
+#				  );
 
 
 //
@@ -130,23 +130,14 @@ $GLOBALS['xhtmlgroups']['Appel de Note']=array("a"=>"class=\"(foot|end)notecall\
 // traite les separateurs
 //
 
-function traite_separateur($text) {
-  return preg_replace_callback("/<r2r:separateur>(.*?)<\/r2r:separateur>/","convertseparateur",$text);
-}
+#function traite_separateur($text) {
+#  return preg_replace_callback("/<r2r:separateur>(.*?)<\/r2r:separateur>/","convertseparateur",$text);
+#}
 
 //
 // fonction callback de conversion des separateurs en balises HTML
 //
 
-function convertseparateur($result) {
-  $text=trim(strip_tags($result[1]));
-  if ($text=="") return  "<hr width=\"10%\" \ >";
-  if ($text=="*") return "<hr width=\"30%\" \ >";
-  if ($text=="**") return "<hr width=\"50%\" \ >";
-  if ($text=="***") return "<hr width=\"80%\" \ >";
-  if ($text=="****") return "<hr \ >";
-  return "";
-}
 
 
 ?>

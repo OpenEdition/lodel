@@ -137,7 +137,7 @@ class ClassesLogic extends Logic {
 	 $db->execute(lq("RENAME TABLE #_TP_entities_".$this->oldvo->class." TO #_TP_entities_".$vo->class)) or dberror();
        }
        // update tablefields, objects and types
-       foreach(array("objects","types","tablefields","tablefieldgroups") as $table) {
+       foreach(array("objects",$this->typestable($vo->classtype),"tablefields","tablefieldgroups") as $table) {
 	 $db->execute(lq("UPDATE #_TP_".$table." SET class='".$vo->class."' WHERE class='".$this->oldvo->class."'")) or dberror();
        }
        $alter=true;

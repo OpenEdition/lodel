@@ -397,6 +397,15 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      if (strpos($obj->conversion,"<li>")!==false) {
        $conversion=str_replace("<li>","",$obj->conversion);
        $data=preg_replace(array("/(<p\b)/","/(<\/p>)/"),array("<li>\\1","\\1</li>"),$data);
+
+     } elseif (preg_match("/<hr\s*\/?>/",$obj->conversion)) {
+       switch (trim(strip_tags($data))) {
+       case '*' : return "<hr width=\"30%\" \ >";
+       case '**' : return "<hr width=\"50%\" \ >";
+       case '***' : return "<hr width=\"80%\" \ >";
+       case '****' : return "<hr \ >";
+       default: return "<hr width=\"10%\" \ >";
+       }
      } else {
        $conversion=$obj->conversion;
      }

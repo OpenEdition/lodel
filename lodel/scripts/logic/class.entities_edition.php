@@ -276,7 +276,6 @@ class Entities_EditionLogic extends GenericLogic {
 
      $this->_saveRelatedTables($vo,$context);
 
-     update();
      //unlock();
 
      if ($ret=="_error") return "_error";
@@ -286,6 +285,8 @@ class Entities_EditionLogic extends GenericLogic {
        $lo_entities_index = new Entities_IndexLogic();
        $lo_entities_index->addIndexAction($context,$error);
      }
+
+     update();
 	
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
        return "_location: ".SITEROOT.makeurlwithid($id);

@@ -104,7 +104,7 @@ class GenericLogic extends Logic {
        while (!$result->EOF) {
 	 $localcontext=array_merge($context,$result->fields);
 	 $name=$result->fields['name'];
-	 $localcontext['value']=$result->fields['edition']!="display" ? htmlspecialchars($context[$name]) : $context[$name];
+	 $localcontext['value']=$result->fields['edition']!="display" && is_string($context[$name]) ? htmlspecialchars($context[$name]) : $context[$name];
 	 ###$localcontext['error']=$context['error'][$name];
 	 call_user_func("code_do_$funcname",$localcontext);
 	 $result->MoveNext();
@@ -487,9 +487,9 @@ function lodel_strip_tags($text,$allowedtags,$k=-1)
     // feed the accepted string with accepted tags.
     foreach ($groups as $group) {
       // lodel groups
-      if ($multiplelevel[$group]) {
-	foreach($multiplelevel[$group] as $k=>$v) { $accepted[$allowedtags]["r2r:$k"]=true; }
-      }
+      #if ($multiplelevel[$group]) {
+      #foreach($multiplelevel[$group] as $k=>$v) { $accepted[$allowedtags]["r2r:$k"]=true; }
+      #}
 	// xhtml groups
       if ($xhtmlgroups[$group]) {
 	foreach($xhtmlgroups[$group] as $k=>$v) {
@@ -511,7 +511,7 @@ function lodel_strip_tags($text,$allowedtags,$k=-1)
   // the simpliest case.
   if (!$accepted) return strip_tags($text);
 
-  $arr=preg_split("/(<\/?)(\w*:?\w+)\b([^>]*>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $arr=preg_split("/(<\/?)(\w+:?\w*)\b([^>]*>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
 
   $stack=array(); $count=count($arr);
   for($i=1; $i<$count; $i+=4) {
