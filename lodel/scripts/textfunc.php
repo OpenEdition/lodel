@@ -460,9 +460,11 @@ function namespace($ns,$text)
  * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
  */
 
-function hideifearlier($datepubli, $text) {
-        if($datepubli <= date("Y-m-d")) return $text;
-        return "";
+function hideifearlier($field, $text) {
+  if ($field && 
+      $context[$field] && 
+      $context[field] <= date("Y-m-d")) return $text;
+  return "";
 }
 
 ?>

@@ -39,7 +39,7 @@ function makefilterfunc()
   //
 
   $fp=fopen("CACHE/filterfunc.php","w");      
-  fputs($fp,'<? function filtered_mysql_fetch_assoc ($result) {
+  fputs($fp,'<? function filtered_mysql_fetch_assoc($result) {
   $filters=array('.$filterstr.');
   $count=mysql_num_fields($result);
   $row=mysql_fetch_row($result);
