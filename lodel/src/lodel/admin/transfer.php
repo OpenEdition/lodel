@@ -100,7 +100,7 @@ if ($droptables) {
 
   $result=mysql_list_tables($GLOBALS[currentdb]);
   $tables=array();
-  while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
+  while ($row = mysql_fetch_row($result)) if (!in_array($row[0],$dontdrop)) array_push($tables,$row[0]);
 
   $report.=isotoutf8($tables);
 
