@@ -7,27 +7,68 @@
 <!--  publier ou dépublier une publication -->
 
 <DEFMACRO NAME="Status">
-<IF [#STATUS] GT 0>
-	<div align="center">
-	<a href="publi.php?publication=[#ID]">
-		<span class="texte_tres_petit_center">
-			Dépublier
-		</span>
-	</a>
-	</div>
-<ELSE/>
-	<div align="center">
-	<A HREF="publi.php?publication=[#ID]&online=1">
-		<span class="texte_tres_petit_center">
-			Publier
-		</span>
-	</a>
-	</div>
-</IF>
+	<IF [#STATUS] GT 0>
+		<div align="center">
+			<IF [#STATUS]==1>
+				<a href="publi.php?publication=[#ID]">
+					<span class="texte_tres_petit_center">
+						Dépublier
+					</span>
+				</a>
+			<ELSE/>
+				<span class="texte_tres_petit_center">
+					&nbsp;-&nbsp;
+				</span>
+			</IF>
+		</div>
+	<ELSE/>
+		<div align="center">
+			<IF [#STATUS]==-1>
+			<a href="publi.php?publication=[#ID]&online=1">
+				<span class="texte_tres_petit_center">
+					Publier
+				</span>
+			</a>
+			<ELSE/>
+				<span class="texte_tres_petit_center">
+					&nbsp;-&nbsp;
+				</span>
+			</IF>
+		</div>
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="interrupteur_on_off_document">
-
+	<IF [#STATUS] GT 0>
+		<div align="center">
+			<IF [#STATUS]==1>
+				<a href="publi.php?id=[#ID]">
+					<span class="texte_tres_petit_center">
+						Dépublier
+					</span>
+				</a>
+			<ELSE/>
+				<span class="texte_tres_petit_center">
+					&nbsp;-&nbsp;
+				</span>
+			</IF>
+		</div>
+	<ELSE/>
+		<div align="center">
+			<IF [#STATUS]==-1>
+			<a href="publi.php?id=[#ID]&online=1">
+				<span class="texte_tres_petit_center">
+					Publier
+				</span>
+			</a>
+			<ELSE/>
+				<span class="texte_tres_petit_center">
+					&nbsp;-&nbsp;
+				</span>
+			</IF>
+		</div>
+	</IF>
+<!--
 	<IF [#OFFLINE]>
 		<div align="center">
 	<a href="publi.php?id=[#ID]&online=1">
@@ -44,7 +85,7 @@
 	</a>
 		</div>
 	</IF>
-</span>
+</span>-->
 </DEFMACRO>
 		
 <DEFMACRO NAME="offline_document">
@@ -130,6 +171,13 @@
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
 		<div align="center">
 		<b>
+			Changer<br />le verrou
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
+		<div align="center">
+		<b>
 			Changer<br />le Rang
 		</b>
 		</div>
@@ -156,6 +204,13 @@
 		<div align="center">
 		<b>
 			Changer<br />le statut
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
+		<div align="center">
+		<b>
+			Changer<br />le verrou
 		</b>
 		</div>
 	</td>
@@ -228,6 +283,9 @@
 	<td width="74" valign="middle">
 		<MACRO NAME="STATUS">
 	</td>
+	<td width="74" valign="middle" align="center">
+		<MACRO NAME="CHANGER_VERROU_PUBLICATIONS">
+	</td>
 	<td width="74" align="center" valign="middle" class="texte_trespetit">
 		<MACRO NAME="up_down_publication">
 	</td>
@@ -255,9 +313,8 @@
 				<a href="metaimage.php?idpublication=[#ID]">
 					Image
 				</a>
-				|
 			</IF>
-		<IF [#STATUS] GT 0>
+		<!--<IF [#STATUS] GT 0>
 			<a href="publi.php?publication=[#ID]&online=0">
 				Dépublier
 			</a>
@@ -269,19 +326,7 @@
 		|
 			<a href="supprime.php?publication=[#ID]">
 				Détruire
-			</a>
-<!-- ajout sale de ghislain -->
- Status:[#STATUS]
-
-&nbsp;&nbsp;&nbsp;
-<IF [#STATUS]==-32><A HREF="status.php?publication=[#ID]&status=pret">il est pret</A></IF>
-<IF [#STATUS]==-1><A HREF="status.php?publication=[#ID]&status=brouillon">met en brouillon</A></IF>
-
-<IF [#STATUS]==32><A HREF="status.php?publication=[#ID]&status=deprotege">Deprotege</A></IF>
-<IF [#STATUS]==1><A HREF="status.php?publication=[#ID]&status=protege">Protege</A></IF>
-
-<!-- -->
-
+			</a>-->
 	</td>
 </DEFMACRO>
 
@@ -375,6 +420,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -436,6 +482,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -479,6 +526,7 @@
   	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
+  	  <td width="74">&nbsp;</td>
 </tr>	
 </DEFMACRO>	
 
@@ -505,6 +553,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>
 <tr>
 <td>
@@ -517,7 +566,8 @@
 		<!-- AFFICHE LES ARTICLES -->
 		<MACRO NAME="TR_lignesalternees">
 		<MACRO NAME="TD_pour_lignesalternees_48">
-		<MACRO NAME="offline_document">
+		<!--<MACRO NAME="offline_document">-->
+		<MACRO NAME="AFFICHER_ICONE_STATUT">
 			</td>
 		<MACRO NAME="TD_pour_lignesalternees_800">
 		<MACRO NAME="auteurs">
@@ -540,6 +590,9 @@
 		<MACRO NAME="TD_pour_lignesalternees_74">
 		<!-- Affiche le statut du document -->
 			<MACRO NAME="interrupteur_on_off_document">
+		</td>
+		<td align="center" valign="middle">
+			<MACRO NAME="CHANGER_VERROU_DOCUMENTS">
 		</td>
 		<MACRO NAME="TD_pour_lignesalternees_74">
 			<MACRO NAME="up_down_article">
@@ -1000,15 +1053,15 @@
 
 <DEFMACRO NAME="auteurs_with_url">
 	<BOUCLE NAME="auteurs_with_url" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<PREMIER><A HREF="auteur.html?id=[#ID]"><font color="black">
+		<PREMIER><a href="auteur.html?id=[#ID]"><font color="black">
 		 	[#PRENOM] [#NOMFAMILLE]
-			</FONT></A></PREMIER>
-			, <A HREF="auteur.html?id=[#ID]"><font color="black">
+			</FONT></a></PREMIER>
+			, <a href="auteur.html?id=[#ID]"><font color="black">
 			 [#PRENOM] [#NOMFAMILLE]
-			</FONT></A>
+			</FONT></a>
 		<DERNIER>
-			et <A HREF="auteur.html?id=[#ID]"><font color="black">
-			[#PRENOM] [#NOMFAMILLE]</FONT></A>
+			et <a href="auteur.html?id=[#ID]"><font color="black">
+			[#PRENOM] [#NOMFAMILLE]</FONT></a>
 		</DERNIER>
 	</BOUCLE>,
 </DEFMACRO>
@@ -1068,9 +1121,58 @@
 </IF>
 </DEFMACRO>
 
+<DEFMACRO NAME="AFFICHER_ICONE_STATUT">
+	<IF [#STATUS]==-32>
+		<MACRO NAME="GIF_DEPUBLIE_LOCK">
+	<ELSE/>
+		<IF [#STATUS]==-1>
+			<MACRO NAME="GIF_DEPUBLIE">
+		<ELSE/>
+			<IF [#STATUS]==1>
+				<MACRO NAME="GIF_PUBLIE">
+			<ELSE/>
+				<IF [#STATUS]==32>
+					<MACRO NAME="GIF_PUBLIE_LOCK">
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
+	<IF [#STATUS]==-32><a href="status.php?publication=[#ID]&status=pret">Déprotéger</a></IF>
+	<IF [#STATUS]==-1><a href="status.php?publication=[#ID]&status=brouillon">Protéger</a></IF>
+
+	<IF [#STATUS]==32><a href="status.php?publication=[#ID]&status=deprotege">Déprotéger</a></IF>
+	<IF [#STATUS]==1><a href="status.php?publication=[#ID]&status=protege">Protéger</a></IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="CHANGER_VERROU_DOCUMENTS">
+	<IF [#STATUS]==-32><a href="status.php?id=[#ID]&status=pret">Déprotéger</a></IF>
+	<IF [#STATUS]==-1><a href="status.php?id=[#ID]&status=brouillon">Protéger</a></IF>
+
+	<IF [#STATUS]==1>&nbsp;-&nbsp;</IF>
+</DEFMACRO>
+
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 <!-- ENSEMBLE DES ICONES UTILISEES -->
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+<DEFMACRO NAME="GIF_PUBLIE">
+	<img src="[#SHAREURL]/images/publie.gif" width="32" height="32" border="0" vspace="2" hspace="2">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_PUBLIE_LOCK">
+	<img src="[#SHAREURL]/images/publie_lock.gif" width="32" height="32" border="0" vspace="2" hspace="2">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_DEPUBLIE">
+	<img src="[#SHAREURL]/images/depublie.gif" width="32" height="32" border="0" vspace="2" hspace="2">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_DEPUBLIE_LOCK">
+	<img src="[#SHAREURL]/images/depublie_lock.gif" width="32" height="32" border="0" vspace="2" hspace="2">
+</DEFMACRO>
 
 <DEFMACRO NAME="GIF_NUMERO">
 	<img src="[#SHAREURL]/images/numero.gif" width="32" height="32" border="0" vspace="2" hspace="2">
