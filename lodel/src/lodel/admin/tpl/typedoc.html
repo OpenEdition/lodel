@@ -21,7 +21,7 @@
 			<td class="texte_intitule">Nom du type de document<br /> 				<span class="texte_info">(identifiant unique)</span>:</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom contenant des lettres, des chiffres, le caract&egrave;re "_" mais pas d'espaces !</td></tr>]
 		[(#ERREUR_TYPE_EXISTE|true)<tr><td colspan="2" class="message_erreur">Ce type existe déjà! Choisissez un autre nom</td></tr>]
 		<IF COND="[#ERREUR_ENTITES_EXISTENT]"><tr><td colspan="2" class="message_erreur">Ce type est utilisé par [#ERREUR_ENTITES_EXISTENT] documents, il n'est pas possible de la détruire.</td></tr></IF>
 		<tr>
