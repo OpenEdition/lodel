@@ -299,7 +299,7 @@ $err=mysql_query_cmds('
 	UPDATE _PREFIXTABLE_types SET titre="série hiérarchique", tplcreation="creation-serie" WHERE type="serie_hierarchique"; 
 	UPDATE _PREFIXTABLE_types SET titre="regroupement", tplcreation="creation-regroupement", tpl="", tpledition="" WHERE type="regroupement"; 
 	UPDATE _PREFIXTABLE_types SET titre="numéro", tplcreation="creation-numero" WHERE type="numero"; 
-	UPDATE _PREFIXTABLE_types SET titre="thème", tplcreation="creation-theme" WHERE type="theme";
+	UPDATE _PREFIXTABLE_types SET type="rubrique", tpledition="edition-rubrique", tplcreation="creation-rubrique", titre="rubrique" WHERE type="theme";
 '); 
 if($err) break; 
 $report.="
