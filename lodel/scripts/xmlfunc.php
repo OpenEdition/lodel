@@ -71,7 +71,7 @@ function indentXML ($contents,$output=false)
       $out=$tab.$arr[$i].$arr[$i+2]."\n";
     } else 
     if (!$arr[$i+1] && $arr[$i+4]) { // opening follow by a closing tags
-      $out=$tab.$arr[$i].$arr[$i+2].$arr[$i+3]."\n";
+      $out=$tab.$arr[$i].$arr[$i+2].$arr[$i+3].$arr[$i+5]."\n";
       $i+=3;
     } else {
       $out=$tab.$arr[$i]."\n";
