@@ -6,8 +6,12 @@
 	function confirm_suppression(id)
 	{
 		var msg="Etes-vous sûr de vouloir supprimer ce document annexe ?";
-		if(confirm(msg))location.replace("docannexe.php?id="+id+"&delete=2");
+		if(confirm(msg))window.location="docannexe.php?id="+id+"&delete=2";
 	}
+	
+	function popup(url) {
+		 var fenetre = window.open(url,"","scrollbars,width=400,height=300");
+	 }
 //-->
 </script>
 
@@ -149,10 +153,26 @@
 	<input type="hidden" name="type" value="[#TYPE]">
 	<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 
-	<table class="table_normale" width="100%" cellpadding="5" cellspacing="0" border="0">	
+	<table class="table_normale" cellpadding="5" cellspacing="0" border="0">	
 		<IF COND="[#TYPE]"> 
 			<!-- il y a bien un type, on affiche le formulaire -->
 			<input type="hidden" name="edit" value="1">
+			<IF COND="[#TYPE]=='lienfichier'">
+				<tr><td align="center" colspan="2"><span class="titre_publi">Charger un fichier</span><br /><br /></td></tr>
+			<ELSE/>
+				<IF COND="[#TYPE]=='liendocument'">
+					<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un document</span><br /><br /></td></tr>
+				<ELSE/>
+					<IF COND="[#TYPE]=='lienpublication'">
+						<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un numéro ou thème</span><br /><br /></td></tr>
+					<ELSE/>
+						<IF COND="[#TYPE]=='lienexterne'">
+							<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un site internet</span><br /><br /></td></tr>
+						</IF>
+					</IF>
+				</IF>
+			</IF>
+			
 			<tr>
 				<td width="200" class="texte_intitule">Titre :</td>
 				<td><input size="60" type="text" name="titre" value="[#TITRE]"></td>
@@ -185,7 +205,7 @@
 					<td width="200"><span class="texte_intitule">ID du document :</span></td>
 					<td>
 						[(#ERREUR_DOCUMENTNONEXIST|true)<span class="message_erreur">Le document spécifié n'existe pas !</span>]
-						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="#">Aide</a></div>
+						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="javascript:void(0);">Aide</a></div>
 					</td>
 				</tr>
 			</IF>
@@ -195,7 +215,7 @@
 					<td width="200"><span class="texte_intitule">ID du numéro ou du thème :</span></td>
 					<td>
 						[(#ERREUR_PUBLICATIONNONEXIST|true)<span class="message_erreur">Le numéro ou thème spécifié n'existe pas !</span><br />]
-						<input name="lien" type="texte" size="5" value="[#LIEN]">
+						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="javascript:void(0);">Aide</a></div>
 					</td>
 				</tr>
 			</IF>
@@ -211,7 +231,7 @@
 				</tr>
 			</IF>
 			
-			<tr><td colspan="2" align="center" bgcolor="#DDFFFF">
+			<tr><td colspan="2" align="center">
 				<br /><br />
 				<IF COND="[#ID]">
 					<input class="form" type="submit" value="    Modifier    ">
@@ -227,7 +247,7 @@
 			</td></tr>
 		<ELSE/> <!-- il n'y a pas de type, on demande quel type -->
 		<tr>
-			<td>Type de lien:</td>
+			<td width="200">Type de lien:</td>
 			<td>
 				<select name="type">
 					<option value="lienfichier">Charger un fichier</option>
@@ -237,8 +257,12 @@
 				</select>
 			</td>
 		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<br /><br /><input class="form" type="submit" value="      Ok      ">
+			</td>
+		</tr>
 	</table>
-	<input class="form" type="submit" value="Ok">
 </IF>
 </td>
 </tr>
