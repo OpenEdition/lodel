@@ -223,6 +223,7 @@ cp_[#NAME].writeDiv();
 <DEFFUNC NAME="EDIT_PERSONS">
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
+        <LET VAR="idtype">[#ID]</LET>
 	<LOOP NAME="persons_in_entities">
         <DO>
 		<LOOP NAME="edition_fields">

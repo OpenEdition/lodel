@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persons (
 
 	g_familyname	TINYTEXT NOT NULL,
 	g_firstname	TINYTEXT NOT NULL,
-	sortkey		TINYTEXT NOT NULL,
+	sortkey		VARCHAR(255) NOT NULL,
 
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
@@ -383,26 +383,6 @@ CREATE TABLE IF NOT EXISTS #_TP_texts (
 
 
 
-#CREATE TABLE IF NOT EXISTS #_TP_entities_persons (
-#	idperson		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	identity		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	rank			TINYINT UNSIGNED NOT NULL DEFAULT '0',
-#	idrelation		INT UNSIGNED DEFAULT '0' NOT NULL,
-#
-#	KEY index_idperson (idperson),
-#	KEY index_identity (identity)
-#);
-#
-#
-## decrit le liens entre les entites et les entrees
-#CREATE TABLE IF NOT EXISTS #_TP_entities_entries (
-#	identry		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	identity	INT UNSIGNED DEFAULT '0' NOT NULL,
-#
-#	KEY index_identry (identry),
-#	KEY index_identity (identity)
-#);
-
 # table qui decrit la possibilite de presence ou non de l'entite de type 1 dans l'entite de type 2.
 CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entitytypes (
 	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
@@ -412,27 +392,6 @@ CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entitytypes (
 	KEY index_identitytype (identitytype),
 	KEY index_identitytype2 (identitytype2)
 );
-
-
-## table qui decrit la presence ou non d'un type d'entree dans un type d'entite
-#CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entrytypes (
-#	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	identrytype		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	condition		VARCHAR(16),
-#
-#	KEY index_identrytype (identrytype),
-#	KEY index_identitytype (identitytype)
-#);
-#
-#
-#CREATE TABLE IF NOT EXISTS #_TP_entitytypes_persontypes (
-#	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	idpersontype		INT UNSIGNED DEFAULT '0' NOT NULL,
-#	condition		VARCHAR(16),
-#
-#	KEY index_idpersontype (idpersontype),
-#	KEY index_identitytype (identitytype)
-#);
 
 
 CREATE TABLE IF NOT EXISTS #_TP_options (

@@ -59,6 +59,7 @@ class PersonsLogic extends GenericLogic {
    {
      global $user,$home;
 
+
      $id=$context['id'];
      $idtype=$context['idtype'];
      if (!$idtype) die("ERROR: internal error in PersonsLogic::editAction");
@@ -79,7 +80,6 @@ class PersonsLogic extends GenericLogic {
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
 
-
      foreach(array("firstname","familyname") as $g) {
        if ($this->g_name[$g]) $$g=$context[$this->g_name[$g]];
      }
@@ -88,7 +88,10 @@ class PersonsLogic extends GenericLogic {
        // search if the person exists
        $extracriteria=" AND g_firstname='".$firstname."'";
        $vo=$dao->find("g_familyname='".$familyname."' ".$extracriteria." AND idtype='".$idtype."' AND status>-64","id");
-     } elseif ($id) { // create or edit the entity
+       $new=false;
+     }
+
+     if ($id && !$vo) { // create or edit the entity
        $new=false;
        $dao->instantiateObject($vo);
        $vo->id=$id;

@@ -117,8 +117,6 @@ xml_parser_free($xml_parser);
 
 
 function buildDAO() {
-  global $table,$uniqueid,$varlist,$rights;
-
 
 
   $text.='
@@ -159,6 +157,7 @@ class '.$table.'DAO extends DAO {
       return;
     }
   }
+
 // create the file
   $fp=fopen($daofile,"w");
   fwrite($fp,"<"."?php".getnotice().$text.'
@@ -177,27 +176,35 @@ function buildLogic()
 
   $filename="../scripts/logic/class.".$table.".php";
 
+  if (!file_exists($filename)) return;
+  $file=file_get_contents($filename);
+
   // public fields
   $beginre='\/\/\s*begin\{publicfields\}[^\n]+?\/\/';
   $endre='\n\s*\/\/\s*end\{publicfields\}[^\n]+?\/\/';
-  $newpublicfields='   function _publicfields() {
+  if (preg_match("/$beginre/",$file)) {
+    $newpublicfields='   function _publicfields() {
      return array('.join(",\n                  ",$publicfields).");
              }";
-  replaceInFile($filename,$beginre,$endre,$newpublicfields);
+    replaceInFile($filename,$beginre,$endre,$newpublicfields);
+  }
 
   // unique fields
+
   $beginre='\/\/\s*begin\{uniquefields\}[^\n]+?\/\/';
   $endre='\n\s*\/\/\s*end\{uniquefields\}[^\n]+?\/\/';
 
-  if ($uniquefields) {
-    $newunique='
+  if (preg_match("/$beginre/",$file)) {
+    if ($uniquefields) {
+      $newunique='
     function _uniqueFields() {  return array(';
-    foreach ($uniquefields as $unique) {
-      $newunique.='array("'.join('","',$unique).'"),';
+      foreach ($uniquefields as $unique) {
+	$newunique.='array("'.join('","',$unique).'"),';
+      }
+      $newunique.=");  }";
     }
-    $newunique.=");  }";
+    replaceInFile($filename,$beginre,$endre,$newunique);
   }
-  replaceInFile($filename,$beginre,$endre,$newunique);
 }
 
 

@@ -1100,7 +1100,10 @@
 
 
 <table name="tasks"
-        description="">
+        description="task managment"
+	writeright="redactor"
+	protectright="redactor">
+
 <column name="id"
         type="INTEGER"
         default="0"
@@ -1189,141 +1192,7 @@
 
 
 
-<table name="entities_persons"
-        description="">
-<column name="idperson"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="identity"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="idtype"
-        type="INTEGER"
-        default="0"
-        required="true"
-        description="type de lien entre la personne et le entite" />
-<column name="rank"
-        type="TINYINT"
-        required="true"
-        default="0" />
-<column name="prefix"
-        type="VARCHAR"
-        size="255"
-        required="true" />
-<column name="description"
-        type="LONGVARCHAR"
-        required="true" />
-<column name="function"
-        type="VARCHAR"
-        size="255"
-        required="true" />
-<column name="affiliation"
-        type="VARCHAR"
-        size="255"
-        required="true" />
-<column name="email"
-        type="VARCHAR"
-        size="255"
-        required="true" />
-<index name="index_idperson">
-<index-column name="idperson" />
-</index>
-<index name="index_identity">
-<index-column name="identity" />
-</index>
-<index name="index_idtype">
-<index-column name="idtype" />
-</index>
-</table>
 
-
-
-<table name="entities_entries"
-        description="decrit le liens entre les entites et les entrees">
-<column name="identry"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="identity"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<index name="index_identry">
-<index-column name="identry" />
-</index>
-<index name="index_identity">
-<index-column name="identity" />
-</index>
-</table>
-<table name="entitytypes_entitytypes"
-        description="table qui decrit la possibilite de presence ou non de l entite de type 1 dans l entite de type 2.">
-<column name="identitytype"
-        type="INTEGER"
-        default="0"
-        required="true"
-        description="contenu" />
-<column name="identitytype2"
-        type="INTEGER"
-        default="0"
-        required="true"
-        description="contenant" />
-<column name="condition"
-        type="VARCHAR"
-        size="16" />
-<index name="index_identitytype">
-<index-column name="identitytype" />
-</index>
-<index name="index_identitytype2">
-<index-column name="identitytype2" />
-</index>
-</table>
-
-
-<table name="entitytypes_entrytypes"
-        description="table qui decrit la presence ou non d un type d entree dans un type d entite">
-<column name="identitytype"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="identrytype"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="condition"
-        type="VARCHAR"
-        size="16" />
-<index name="index_identrytype">
-<index-column name="identrytype" />
-</index>
-<index name="index_identitytype">
-<index-column name="identitytype" />
-</index>
-</table>
-
-
-
-<table name="entitytypes_persontypes"
-        description="">
-<column name="identitytype"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="idpersontype"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="condition"
-        type="VARCHAR"
-        size="16" />
-<index name="index_idpersontype">
-<index-column name="idpersontype" />
-</index>
-<index name="index_identitytype">
-<index-column name="identitytype" />
-</index>
-</table>
 
 
 <table name="options"

@@ -202,7 +202,6 @@ class Entities_EditionLogic extends GenericLogic {
      $gdao->save($gvo,$new);  // save the related table
      if ($new) $this->_createRelationWithParents($id,$idparent,false);
 
-
      $this->_saveRelatedTables($vo,$context);
 
      if ($status>0) touch(SITEROOT."CACHE/maj");
@@ -219,7 +218,7 @@ class Entities_EditionLogic extends GenericLogic {
    {
      // detruit la tache en cours
      $context['idtask']=intval($context['idtask']);
-     $dao=getDAO("task");
+     $dao=getDAO("tasks");
      $dao->deleteObject($context['idtask']);
    }
     
@@ -243,10 +242,11 @@ class Entities_EditionLogic extends GenericLogic {
 
      if (!$vo->status) {
        $dao=$this->_getMainTableDAO();
-       $vo=$dao->getById($vo->id,"status");
+       $vo=$dao->getById($vo->id,"status,id");
      }
-     if ($vo->status>-64 && $vo->status<-1) $status=-1;
-     if ($vo->status>1) $status=1;
+
+     if ($vo->status>-64 && $vo->status<=-1) $status=-1;
+     if ($vo->status>=1) $status=1;
 
      //
      // Entries and Persons
@@ -260,21 +260,21 @@ class Entities_EditionLogic extends GenericLogic {
        //if ($context[autresentries]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentries])));
        $logic=getLogic($table);
        foreach ($idtypes as $idtype) {
-	 if (!is_numeric($idtype)) continue;
 	 $itemscontext=$context[$table][$idtype];
 	 if (!$itemscontext) continue;
 	 $ids=array();
-	 foreach ($itemscontext as $itemcontext) {
+	 foreach ($itemscontext as $k=>$itemcontext) {
+	   if (!is_numeric($k)) continue;
 	   $itemcontext['idtype']=$idtype;
 	   $itemcontext['status']=$status;
-
-	   $ret=$logic->editAction($itemcontext,$error);
+	   $ret=$logic->editAction($itemcontext,$error);	 
 	   if ($ret!="_error" && $itemcontext['id']) $ids[]=$itemcontext['id'];
 	 }
 	 if ($ids) {
+	   if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
 	   $values=array();
 	   $degree=1;
-	   foreach ($ids as $id) $values[]="('".$id."','".$vo->$id."','".$nature."','".($degree++)."')";
+	   foreach ($ids as $id) $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
 	   $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
 	 }
        }
