@@ -14,7 +14,7 @@ $parent=intval($parent);
 
 
 $critere="parent='$parent' AND status>-64";
-if (!$admin) $critere=." AND groupe IN ($usergroupes)";
+if (!$admin) $critere.=" AND groupe IN ($usergroupes)";
 
 
 lock_write("publications");
