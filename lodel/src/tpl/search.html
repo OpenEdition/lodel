@@ -81,69 +81,39 @@
 	<h1 class="accueil">
 			<MACRO NAME="NOM_SITE">
 	</h1>
-	<h2>Votre recherche : [#QUERY|stripslashes] a donnée [#NBRESULTS] résultats.</h2>
+	<h2>Votre recherche : <em>[#QUERY|stripslashes]</em></h2>
+	<p style="text-align : right">
+		(résultats [#RESULTFROM] à [#RESULTTO] de [#NBRESULTS])
+	</p>
 	<div style="padding-top:10px;">
 			<span class="texte_edition_des_series">
 	</BEFORE>
 	<DO>
 		<div class="article">
-		
-    	<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-    
-	<span class="auteur">
-		<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
-		<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
-		, [#G_FIRSTNAME] [#G_FAMILYNAME]
-		<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
-	</LOOP>
-	</span>
-	<br />
-	<span class="type_document">([#TYPE])</span>
-		
-		
-		
-		<span class="type_document">
-		
-		<LOOP NAME="parentsentities">
-		<DO>
-			&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-		</DO>
-		
-		</LOOP>
-		</span>
-		
+	   	<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+  		<span class="auteur">
+			<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+				<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+					, [#G_FIRSTNAME] [#G_FAMILYNAME]
+				<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+			</LOOP>
+			</span>
+			<br />
+			<span class="type_document">([#TYPE])</span>
+			<span class="type_document">
+			<LOOP NAME="parentsentities">
+			<DO>
+				&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+			</DO>
+			</LOOP>
+			</span>
 		</div>
 	</DO>
 	<AFTER>
-	<LOOP NAME="affiche_pages">
-		<BEFORE>
-			<div class="pagination" style="text-align : center ; margin : 10px 50px 10px 50px ;  padding : 20px ; border-top : 1px solid #CC9933 ">
-			<IF COND="[#PREVIOUSURL]">
-			<a href="[#PREVIOUSURL]" title="Page précédente">&lt;&lt;</a>
-		</IF>
-			
-		</BEFORE>
-		<DO>
-			<IF COND="[#URLPAGE] NE ''">
-				<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#NUMPAGE]">
-			<ELSE/>
-				<span class="currentpage">
-			</IF>
-			[#NUMPAGE]
-			<IF COND="[#URLPAGE] NE ''">
-				</a>
-			<ELSE/>
-				</span>
-			</IF>
-		</DO>
-		<AFTER>
-		<IF COND="[#NEXTURL]">
-			<a href="[#NEXTURL]" title="Page suivante">&gt;&gt;</a>
-		</IF>
-			</div>
-		</AFTER>
-		</LOOP>
-	</AFTER>
+	coucou
+		<MACRO NAME="PRINT_PAGE_SCALE">
+	</AFTER>	
+	
 	<ALTERNATIVE>
 	<h1 class="accueil">
 			<MACRO NAME="NOM_SITE"> 
@@ -155,16 +125,30 @@
 	</ALTERNATIVE>
 	</LOOP>
 	</IF>
-					
+	<!--[ Affiche lien vers Lodel ]-->
+	<div id="footer">
+		<MACRO NAME="LODEL_ORG">
+	</div>
+	</div>
+</td></tr>
+</table>
+<div style="margin-top : 50px ; border : 1px solid black;">
+boucle de test :
+<LOOP NAME="test" TABLE="entities" ORDER="id DESC" LIMIT="10">
+<BEFORE>
+[#NBRESULTS] résultats<br />
+</BEFORE>
 
-				
-					
-						<!--[ Affiche lien vers Lodel ]-->
-			<div id="footer">
-				<MACRO NAME="LODEL_ORG">
-			</div>
-				</div>
-				</td></tr>
-				</table>
+<DO>
+[#COUNT]:<strong>[#G_TITLE] ([#ID])</strong><br />
+
+
+</DO>
+<AFTER>
+	<MACRO NAME="PRINT_PAGE_SCALE">
+</AFTER>
+</LOOP>
+
+</div>
 
 <MACRO NAME="FERMER_HTML">  
