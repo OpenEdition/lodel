@@ -130,6 +130,7 @@ if ($tache=="version") {
       if (!$dir) die ("impossible d'acceder en ecriture le repertoire racine... etrange, n'est-il pas ?");
       $versions=array();
       while ($file=readdir($dir)) {
+	if ($file[0]===".") continue;
 	#echo $file," ";
 	if (is_dir(LODELROOT.$file) && 
 	    preg_match($lodelhomere,$file) &&
@@ -379,6 +380,10 @@ if ($tache=="fichier") {
     install_fichier($root,"../$versionrep/src",LODELROOT);
   }
 
+  // clear the CACHEs
+  require_once($home."cachefunc.php");
+  removefilesincache($root,$root."lodel/edition",$root."lodel/admin");
+
   // ok on a fini, on change le statut du site
   mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
@@ -465,7 +470,7 @@ function install_fichier($root,$homesite,$homelodel)
 	  $arg1!="lodelconfig.php") $dest1=preg_replace("/\.php$/",".html",$dest1);
       mycopyrec("$root$dirsource/$arg1",$dest1);
     } elseif ($cmd=="touch") {
-      if (!file_exists($dest1)) touch($dest1);
+      if (!file_exists($dest1)) writefile($dest1,"");
       @chmod($dest1,0666 & octdec($GLOBALS['filemask']));
     } elseif ($cmd=="htaccess") {
       if (!file_exists("$dest1/.htaccess")) htaccess($dest1);
