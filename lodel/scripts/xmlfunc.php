@@ -31,10 +31,8 @@ function extract_xml ($balises,&$text)
   if (!is_array($balises)) $balises=array($balises);
   foreach ($balises as $b) {
     if ($b!=strtolower($b)) die("Informez Ghislain de ce \"bug\"<BR>balise $b");
-	echo "$b   $result[1]<br>";
 
     if (preg_match_all ("/<r2r:$b\b([^>]*)>(.*?)<\/r2r:$b>/si",$text,$results,PREG_SET_ORDER)) {
-	echo "$b   $result[1]<br>";
 	foreach ($results as $result) {
 	  /////temporaire... doit devenir du XSL
 	  // avril 03: ca ne deviendra pas du XSL.
