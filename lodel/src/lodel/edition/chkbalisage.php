@@ -28,17 +28,34 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_REDACTOR,NORECORDURL);
-include ($home."func.php");
+require ($home."func.php");
 
-if ($cancel) include ("abandon.php");
+if ($cancel) require ("abandon.php");
 
 $tache=gettask($idtache);
 
 require_once ($home."balises.php");
 
 
+
+$textorig=$text=file_get_contents($tache['fichier']);
+
+require_once($home."xmlimport.php");
+
+$handler=new XMLImportHandler;
+
+$parser=new XMLImportParser();
+$parser->init("documents");
+echo "<table border=\"1\">";
+$parser->parse($text,$handler);
+echo "</table>";
+
+return;
+
+
+/*
 // ajoute les balises "entrees"
 require_once ($home."connect.php");
 require_once($home."champfunc.php");
@@ -75,7 +92,7 @@ while (list($style,$title,$type)=mysql_fetch_row($result)) {
     $balises[$style]=$title;
   }
 }
-
+*/
 
 $textorig=$text=join("",file($tache[fichier]));
 
