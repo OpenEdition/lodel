@@ -91,7 +91,10 @@ function convertHTMLtoUTF8 (&$text)
 	      "deg"=>'Â°',
 	      "nbsp"=>"Â\240",
 	      "mdash"=>"\342\200\224",
-	      "ndash"=>"\342\200\223"
+	      "ndash"=>"\342\200\223",
+
+	      "reg"=>"\302\256",
+	      "sect"=>"\302\247"
 	      );
 
   $text=preg_replace("/&(\w+);/e",'$hash[\\1] ? $hash[\\1] : "\\0"',$text);
