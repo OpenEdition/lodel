@@ -36,7 +36,7 @@ if ($id>0) {
 
 require($home."typetypefunc.php");
 
-
+if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]types.statut<32";
 //
 // supression et restauration
 //
@@ -45,6 +45,9 @@ if ($id>0 && ($delete || $restore)) {
   do { // block d'exception
     include_once ($home."connect.php");
     lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes","entites");
+    // check the type can be deleted.
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE statut>-64 AND $critere") or die (mysql_error());
+    if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
     // check the type can be deleted.
     $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]entites WHERE idtype='$id' AND statut>-64") or die (mysql_error());
     list($count)=mysql_fetch_row($result);
@@ -91,13 +94,18 @@ if ($edit) { // modifie ou ajoute
     if (mysql_num_rows($result)) { unlock(); $context[erreur_type_existe]=1; break; }
 
     if ($id>0) { // il faut rechercher le statut
-      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]types WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]types WHERE $critere") or die (mysql_error());
+      if (!mysql_num_rows($result)) die("ERROR: The type does not exist or you are not allowed to modify it.");
       list($statut,$ordre)=mysql_fetch_array($result);
     } else {
       $statut=1;
       $ordre=get_ordre_max("types");
     }
     $context[import]=$context[import] ? 1 : 0;
+    if ($droitadminlodel) {
+      $newstatut=$protege ? 32 : 1;
+      $statut=$statut>0 ? $newstatut : -$newstatut;    
+    }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,import,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$statut','$ordre')") or die (mysql_error());
 
@@ -117,7 +125,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE statut>-64 AND $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   $context[import]=($classe=="documents") && 

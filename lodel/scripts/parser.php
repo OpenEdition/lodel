@@ -545,7 +545,7 @@ function parse_loop()
       case "REQUIRE":
 	break;
       default:
-	$this->errmsg ("unknow attribut \"$result[1]\" in the loop $name",$this->ind);
+	$this->errmsg ("unknown attribut \"$result[1]\" in the loop $name",$this->ind);
       }
     } // loop on the attributs
     // end of definition of a SQL loop

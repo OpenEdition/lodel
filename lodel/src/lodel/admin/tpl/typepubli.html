@@ -73,6 +73,13 @@
 			</td>
 			<td><input size="40" type="text" name="tplcreation" value="[#TPLCREATION]" /></td>
 		</tr>
+		<IF COND="[#DROITADMINLODEL]">    
+		<tr>
+			<td class="texte_intitule">Type protégé:</td>
+			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>
+		</tr>
+		</IF>
+
 		[(#ERREUR_TPLCREATE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		  <tr>
 		    <td rowspan="2">

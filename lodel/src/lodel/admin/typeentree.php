@@ -46,7 +46,7 @@ if ($id>0 && $dir) {
   back();
 }
 
-if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
+if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]typeentrees.statut<32";
 //
 // supression et restauration
 //
