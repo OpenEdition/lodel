@@ -62,7 +62,7 @@ if ($login) {
     if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 
     if (!$url_retour) $url_retour="index.php";
-    header ("Location: ".$url_retour);
+    header ("Location: ".$_SERVER['SERVER_NAME']."/".$url_retour);
     die ("::$url_retour");
 
   } while (0);

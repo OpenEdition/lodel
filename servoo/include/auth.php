@@ -39,7 +39,7 @@ function authenticate ($level=0)
   global $logintimeout,$database,$sessionname;
   global $dbhost,$dbusername,$dbpasswd;
 
-  $urlreturn="url_return=".urlencode($GLOBALS[REQUEST_URI]);
+  $urlreturn="url_return=".urlencode($_SERVER['REQUEST_URI']);
 
   do { // block de control
     $name=addslashes($HTTP_COOKIE_VARS[$sessionname]);
