@@ -39,7 +39,7 @@ function contact_servoo ($cmds,$uploadedfiles,$destfile="")
     $options['servoousername']=$GLOBALS['servoousername'];
     $options['servoopasswd']=$GLOBALS['servoopasswd'];
   }
-  if (!$options['servoourl'] || !$options['servoousername'] || $options['servoopasswd']) return "noservoo";
+  if (!$options['servoourl'] || !$options['servoousername'] || !$options['servoopasswd']) return array("noservoo","");
 
   if (!is_array($uploadedfiles)) $uploadedfiles=array($uploadedfiles);
 
