@@ -130,7 +130,6 @@ ln tpl/documentannexe-lienexterne.html
 
 ln metaimage.php
 ln tpl/metaimage.html
-ln editer.php
 ln a_editer.php
 ln tpl/a_editer.html
 ln deplacer.php
@@ -216,11 +215,6 @@ ln tpl/entrees.html
 
 ln options.php
 ln tpl/options.html
-
-# R2R
-ln r2rcheck.php
-ln r2renregistre.php
-ln rmdb.php
 
 ln stats.php
 ln texte.php
