@@ -172,7 +172,7 @@ $revue="";
 $idsession=0;
 
 $context=array(
-	       "version" => double($version)
+	       "version" => doubleval($version)
 	       ); // tres important d'initialiser le context.
 $superadmin=0;
 $admin=0;
