@@ -229,7 +229,7 @@ if ($tache=="createtables") {
   mysql_select_db($context['dbname']);
 
   if (!file_exists(LODELROOT."$versionrep/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
-  $text=join('',file(LODELROOT."$versionrep/install/init-site.sql"));
+  $text=file_get_contents(LODELROOT."$versionrep/install/init-site.sql");
 
   $text.="\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
@@ -339,7 +339,7 @@ if ($tache=="createrep") {
 if ($tache=="fichier") {
   // on peut installer les fichiers
   if (!$context[chemin]) $context[chemin]="/".$context[rep];
-  $root=str_replace("//","/",LODELROOT.$context[chemin])."/";
+  $root=str_replace("//","/",LODELROOT.$context[chemin]."/");
 
   $siteconfigcache="CACHE/siteconfig.php";
 
@@ -547,7 +547,7 @@ function maj_siteconfig($siteconfig,$var,$val=-1)
 {
 
   // lit le fichier
-  $text=join("",file($siteconfig));
+  $text=file_get_contents($siteconfig);
   $search=array(); $rpl=array();
 
   if (is_array($var)) {

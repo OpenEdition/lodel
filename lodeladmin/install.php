@@ -646,8 +646,10 @@ function maj_lodelconfig($var,$val=-1)
   global $lodelconfig,$have_chmod;
 
   // lit le fichier
-  $text=$oldtext=join("",file($lodelconfig));
-  //  if (!$text) die("ERROR: $lodelconfig can't be read. Internal error, please report this bug");
+  $fp = fopen($lodelconfig, "r");
+  if (!$fp) die("ERROR: can't read file $lodelconfig");
+  $text=$oldtext=fread($fp, filesize($lodelconfig));
+  fclose($fp);
 
   if (is_array($var)) {
     foreach ($var as $v =>$val) {
@@ -857,5 +859,3 @@ LODEL est livré avec SANS AUCUNE GARANTIE.</p>
  }
 
 ?>
-
-
