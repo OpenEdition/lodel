@@ -75,6 +75,24 @@
 						</select>
 						<td>&nbsp;</td>
 					</tr>
+					<!--[ Added by Jean Lamy - Index cleaning- 2005-02-24]-->
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+							<td width="350" class="td_admin">
+							<LOOP NAME="checkindex1" TABLE="search_engine"  LIMIT="1">
+							<DO>
+							<a href="index.php?do=cleanIndex&amp;lo=entities_index">
+								<span class="texte_orange">[@ADMIN.INDEX_CLEANING]</span>
+							</a>
+							<DO>
+							<ALTERNATIVE>
+								<em>[@ADMIN.INDEX_CLEANING]</em>
+							</ALTERNATIVE>
+							</LOOP>
+						</td>
+					</tr>
+				
+					
 <!--[					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
