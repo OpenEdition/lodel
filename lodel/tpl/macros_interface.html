@@ -820,14 +820,14 @@ function modifymember(members,textfield){
 &nbsp;[@EDITION.SEARCH_IN_FIELD]&nbsp;
 <select id="qfield" name="qfield" class="searchfields">
 	<option value=""> -- [@EDITION.ALL_FIELDS] --</option>
-	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>[@TITLE]</option>
-	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>[@DESCRIPTION]</option>
-	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>[@FORMAT]</option>
-	<option value="DC.Source" <IF COND="[#QFIELD] EQ 'DC.Source'">selected="selected"</IF>>[@SOURCE]</option>
-	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>[@LANGUAGE]</option>
-	<option value="DC.Relation" <IF COND="[#QFIELD] EQ 'DC.Relation'">selected="selected"</IF>>[@RELATION]</option>
-	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>[@COVERAGE]</option>
-	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>[@RIGHTS]</option>
+	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>[@COMMON.TITLE]</option>
+	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>[@COMMON.DESCRIPTION]</option>
+	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>[@COMMON.FORMAT]</option>
+	<option value="DC.Source" <IF COND="[#QFIELD] EQ 'DC.Source'">selected="selected"</IF>>[@COMMON.SOURCE]</option>
+	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>[@COMMON.LANGUAGE]</option>
+	<!--<option value="DC.Relation" <IF COND="[#QFIELD] EQ 'DC.Relation'">selected="selected"</IF>>[@COMMON.RELATION]</option>
+	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>[@COMMON.COVERAGE]</option>
+	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>[@COMMON.RIGHTS]</option>-->
 </select>
 
 
