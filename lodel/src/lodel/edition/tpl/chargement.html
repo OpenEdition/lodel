@@ -2,7 +2,7 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Chargement de fichier</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO_LOGIN"> 
+<MACRO NAME="HEADER_LOGO"> 
 <script>
 <!--
 
@@ -125,10 +125,10 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 			<td align="center">
 				<br />
 				<input class="form" type="submit" value="    Charger    " />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.close();" />
+				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#ID]';" />
 				<br />
 				<IF COND="[#SUPERADMIN]">
-					<br /><br />Administrateur Lodel<br /><br /><br />
+					<br /><br /><span class="texte_info_popup">Administrateur Lodel</span><br /><br /><br />
 					<input class="form" type="submit" name="sortieted" value="Sortie Brute de Ted" />&nbsp;&nbsp;&nbsp;&nbsp;
 					<input class="form" type="submit" name="sortie" value="Sortie de chargement" />
 				</IF>
@@ -136,6 +136,8 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 			[(#ERREUR_UPLOAD|true)<td class="message_erreur">Une erreur s'est produite pendant le chargement.</td>]
 		</tr>
 	</table>
+	<div align="center" id="info" style="text-decoration:blink ">
+	</div>
 </form>
 
 <MACRO NAME="CLOSE_HTML">

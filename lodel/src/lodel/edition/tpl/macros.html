@@ -1602,13 +1602,13 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_POPUP">
-	<!-- exemple de Javascript pour un Rollover -->
+	<!-- exemple de Javascript pour une popup -->
 	<script type="text/javascript">
 	<!--
 	 function popup(url,nom) {
 	 	// remove an attribute if you don't want it to show up
 		// options : menubar,toolbar,location,directories,status,scrollbars,resizable,width=640,height=480
-		 var fenetre = window.open(url,"","scrollbars,width=800,height=600");
+		 var fenetre = window.open(url,"","status,scrollbars,width=800,height=600");
 	 }
 	//-->
 	</script>
@@ -1686,8 +1686,8 @@
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
 	<div class="ligne_ajouter">
 		<MACRO NAME="PNG_MOINS">
-		<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (hors regroupement)</a>
-		<!--<a href="chargement.php?id=[#ID]">Ajouter un document (hors regroupement)</a>-->
+		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (hors regroupement)</a>-->
+		<a href="chargement.php?id=[#ID]">Ajouter un document (hors regroupement)</a>
 	</div>
 </DEFMACRO>
 
@@ -1698,8 +1698,8 @@
 		<div class="ligne_ajouter_document_dans_un_regroupement2">
 	</IF>
 		<MACRO NAME="PNG_MOINS">
-		<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (dans le regroupement)</a>
-		<!--<a href="chargement.php?id=[#ID]">Ajouter un document (dans le regroupement)</a>-->
+		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (dans le regroupement)</a>-->
+		<a href="chargement.php?id=[#ID]">Ajouter un document (dans le regroupement)</a>
 		</div>
 </DEFMACRO>
 

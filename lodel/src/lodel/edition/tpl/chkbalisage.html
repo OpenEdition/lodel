@@ -1,19 +1,8 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Verification du balisage</title>
-
-<!-- abandon -->
-<script type="text/javascript">
-<!--
-function abandon(id) {
-	window.location="abandon.php?id="+id;
-	window.close();
-}
-//-->
-</script>
-
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO_LOGIN"> 
+<MACRO NAME="HEADER_LOGO"> 
 
 <!--<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
 <tr>
@@ -46,7 +35,7 @@ function abandon(id) {
 
 <table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
 	<tr><td align="center" class="sous_titre_popup"><br />Verifiez que chaque bloc est correctement balisé<br /><br /><br /></td></tr>
-	<tr><td><div align="center" class="lien_popup"><a href="#" onClick="javascript:abandon([#ID]);">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
+	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
 </table>
 
 <table class="table_popup" width="95%" border="1" cellpadding="4" align="center">
@@ -58,7 +47,7 @@ function abandon(id) {
 </table>
 
 <table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-	<tr><td><div align="center" class="lien_popup"><a href="#" onClick="javascript:abandon([#ID]);">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
+	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
 </table>
 
 <MACRO NAME="CLOSE_HTML">
