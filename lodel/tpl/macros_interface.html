@@ -92,20 +92,36 @@
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
+	<!--[ Modif de Jean le 2005-01-25 ]-->
+	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
+	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
+   
+    <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
+    <script>
+    	var fck_[#VARNAME]_editor = new FCKeditor('[#VARNAME]','600','400');
+    	fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
+    	fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "fr";
+    	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/silver/";
+    	fck_[#VARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+    	fck_[#VARNAME]_editor.value='[#VALUE|htmlentities]';
+    	fck_[#VARNAME]_editor.Create();
+    </script>
+    <ELSE/>   
 
         <IF COND="[#EDITION] eq 'textarea' or (![#EDITION] and [#TYPE] eq 'longtext')">
-		<textarea rows="[#EDITIONPARAMS|defaultvalue('10')]" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
-        <ELSE/>
-	<IF COND="[#EDITION] eq 'textarea10'">
-		<textarea rows="10" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
-	<ELSE/>
-	<IF COND="[#EDITION] eq 'textarea30'">
-		<textarea rows="30" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
-	<ELSE/>
-		<input size="[#EDITIONPARAMS|defaultvalue('50')]" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
-	</IF>
-	</IF>
+				<textarea rows="[#EDITIONPARAMS|defaultvalue('10')]" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+		        <ELSE/>
+			<IF COND="[#EDITION] eq 'textarea10'">
+				<textarea rows="10" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+			<ELSE/>
+			<IF COND="[#EDITION] eq 'textarea30'">
+				<textarea rows="30" cols="50" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+			<ELSE/>
+				<input size="[#EDITIONPARAMS|defaultvalue('50')]" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
+			</IF>
+			</IF>
         </IF>
+      </IF>
 
 <ELSE/>
 <!--[ --------------- PASSWD -------------- ]-->
