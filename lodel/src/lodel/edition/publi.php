@@ -173,8 +173,9 @@ function publi_document ($critere,$status)
     }
   } else {
     $where=$critere;
-    echo "usergroupes: $usergroupes<br>";
     if (!$admin) $where.=" AND groupe IN ($usergroupes) AND status>-32";
+    echo "where: $where<br>";
+
   }
 
   if ($status<0) { // on veut mettre hors ligne
