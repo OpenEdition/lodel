@@ -37,7 +37,7 @@
 	<IF COND="[#EDITEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
-				<a href="metaimage.php?idpublication=[#ID]">
+				<a href="metaimage.php?idpublication=[#ID]&champ=image">
 					<span class="texte_noir_gras">Associer une image à cette publication</span>
 				</a>
 			</div>
@@ -50,6 +50,7 @@
 			</div>
 		</div>
 	</IF>
+	
 	<IF COND="[#TYPE] EQ 'serie_lineaire'">
 		<IF COND="[#EDITEUR]">
 			<div class="ligne_formulaire">

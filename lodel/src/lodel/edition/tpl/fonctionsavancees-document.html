@@ -113,20 +113,17 @@
 	</div>
 	
 	<IF COND="[#EDITEUR]">
-		<div class="ligne_form_fa">
-			<div class="intitule_ligne_form_fa">
-				<a href="metaimage.php?iddocument=[#ID]">
-					<span class="texte_noir_gras">Associer une image à cette publication</span>
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<a href="metaimage.php?iddocument=[#ID]&champ=image">
+					<span class="texte_noir_gras">Associer une image à ce document</span>
 				</a>
-			</div>
-			<div class="champs_ligne_form_fa">
-				<span class="texte_info">Nicolas, modifier l'appel sur metaimage quand vous aurez decider du nom du champ. Changer aussi le terme publication ici, je crois que c'est faux. Faire la meme modif dans publication</span>
 			</div>
 		</div>
 	<ELSE/>
-		<div class="ligne_form_fa">
-			<div class="intitule_ligne_form_fa">
-				<span class="texte_intitule">Associer une image à la publication</span><br />
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Associer une image à ce document</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
 			</div>
 		</div>
