@@ -338,24 +338,32 @@
 
 <!--[ Macro servant à typedoc.html et typepubli.html     ]-->
 <DEFMACRO NAME="CHOIX_TYPES_PARENTS">
-	<u>[@COMMON.PUBLICATIONS_DOCUMENTS_TYPE]<br /> [@ADMIN.CONTAINS_THIS_TYPE] :</u><br />
+<br />
+<fieldset>
+<legend>[@COMMON.PUBLICATIONS_DOCUMENTS_TYPE]&nbsp; [@ADMIN.CONTAINS_THIS_TYPE] :</legend>
 	<LOOP NAME="types_parents" TABLE="entitytypes_entitytypes" WHERE="identitytype='[#ID]' AND identitytype2=0">
 		<DO><input type="checkbox" name="entitytype[0]" checked></DO>
 		<ALTERNATIVE><input type="checkbox" name="entitytype[0]"></ALTERNATIVE>
 	</LOOP>
 	(base)<br />
 	<MACRO NAME="TYPE_ENTITES">
+	<br />
+	<div>
+		<a href="javascript:void(0)" onclick="setCheckboxes('forms_type', 'entitytype', true);">[@ADMIN.CHECK_ALL]</a>&nbsp;/&nbsp;
+		<a href="javascript:void(0)" onclick="setCheckboxes('forms_type', 'entitytype', false);">[@ADMIN.UNCHECK_ALL]</a>
+	</div>
+</fieldset>
 </DEFMACRO>
 <!--[ ************************************************** ]-->
-
 <!--[ Macro rajoutée le 04/12/03 *********************** ]-->
+<!--[ Macro modified on 2005-02-24 by Jean Lamy ******** ]-->
 <DEFMACRO NAME="COCHER_DECOCHER">
 	<script type="text/javascript"><!--
-	
 	function setCheckboxes(form, group, check) 	{
 		for (i=0, n=document.forms[form].elements.length; i<n; i++)
-			if (document.forms[form].elements[i].name.indexOf(group) != -1)
-				document.forms[form].elements[i].checked = check;
+			if(document.forms[form].elements[i].nodeName == 'INPUT')
+				if (document.forms[form].elements[i].name.indexOf(group) != -1)
+					document.forms[form].elements[i].checked = check;
 	    return true;
 	}
 	//
