@@ -168,7 +168,7 @@
 <!--[ ****************************************************************** ]-->
 <DEFFUNC NAME="SEARCH_ENGINE_PUBLIC" OPTIONAL="query,qstatus,qtype,qfield">
 
-<form name="search" action="search.php" method="get">
+<form name="search" action="search.[#EXTENSIONSCRIPTS]" method="get">
 <input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
 <input class="searchbutton" type="submit" name="submit_s" value="<IF COND="[#QUERY]">Affiner la recherche<ELSE/>Rechercher</IF>" />
 <a href="#" onclick="if(document.getElementById('advanced_search').style.display=='none'){document.getElementById('advanced_search').style.display='inline';} else {document.getElementById('advanced_search').style.display='none';} ">
