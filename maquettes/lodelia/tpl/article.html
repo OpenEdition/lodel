@@ -126,7 +126,7 @@
 							Errata
 						</div>
 						<div class="notes"> 
-							[#ERRATUM]
+							[(#ERRATUM|tocss)]
 							<br />
 						</div>
 					</IF>
@@ -137,7 +137,7 @@
 							Notes de la rédaction
 						</div>
 						<div class="notes"> 
-							[#NDLR]
+							[(#NDLR|tocss)]
 							<br />
 						</div>
 					</IF>
@@ -148,7 +148,7 @@
 							Historique
 						</div>
 						<div class="notes"> 
-							[#HISTORIQUE]
+							[(#HISTORIQUE|tocss)]
 							<br />
 						</div>
 					</IF>
@@ -159,7 +159,7 @@
 							Résumé
 						</div>
 						<div class="resume" > 
-							[#RESUME:FR]
+							[(#RESUME:FR|tocss)]
 						</div>		
 					</IF>
 					
@@ -169,7 +169,7 @@
 							Abstract
 						</div>
 						<div class="resume" >
-							[#RESUME:EN]
+							[(#RESUME:EN|tocss)]
 						</div>
 					</IF>
 				
@@ -179,7 +179,7 @@
 							Extracto
 						</div>
 						<div class="resume" >
-							[#RESUME:ES]
+							[(#RESUME:ES|tocss)]
 						</div>
 					</IF>
 				
@@ -189,7 +189,7 @@
 							Zusammenfassung
 						</div>
 						<div class="resume" >
-							[#RESUME:DE]
+							[(#RESUME:DE|tocss)]
 						</div>
 					</IF>
 				
@@ -199,7 +199,7 @@
 							Riassunto
 						</div>
 						<div class="resume" >
-							[#RESUME:IT]
+							[(#RESUME:IT|tocss)]
 						</div>
 					</IF>
 	
@@ -212,6 +212,8 @@
 					<div class="titre3">
 						Table des matières
 					</div>
+
+
 <LOOP NAME="toc" TEXT="[#TEXTE]">
  <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
  <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
@@ -219,9 +221,8 @@
  <IF COND="[#NIVEAU]==4"><div class="toc_section4"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
  <IF COND="[#NIVEAU]==5"><div class="toc_section5"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
  <IF COND="[#NIVEAU]==6"><div class="toc_section6"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
-
 </LOOP>
-				
+		
 						<!--[ Texte. Si il existe -]-->
 						<IF COND="[#TEXTE]">
 
@@ -248,7 +249,7 @@
 								<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
 							</div>
 							<div class="bibliographie">
-								[#BIBLIOGRAPHIE]
+								[(#BIBLIOGRAPHIE|tocss)]
 							</div>
 						</IF>
 				
@@ -258,7 +259,7 @@
 								Annexes
 							</div>
 							<div class="texte">
-								[#ANNEXE]
+								[(#ANNEXE|tocss)]
 							</div>
 						</IF>
 						

@@ -100,7 +100,16 @@
 					<!--[ Affichage d'une barre horizontale (macro-presentation.html) ]-->	
 					<hr class="filet_3" />	
 				</div>
-		
+				
+				<!--[ Notes de la rédaction -]-->
+				<IF COND="[#ERRATUM]">
+					<div class="titre3">
+						errata
+					</div>
+					<div class="notes"> 
+						[(#ERRATUM|tocss)]
+					</div>
+				</IF>
 	
 				<!--[ Notes de la rédaction -]-->
 				<IF COND="[#NDLR]">
@@ -108,7 +117,7 @@
 						Notes de la rédaction
 					</div>
 					<div class="notes"> 
-						[#NDLR]
+						[(#NDLR|tocable|tocss)]
 					</div>
 				</IF>
 				
@@ -118,7 +127,7 @@
 						Historique
 					</div>
 					<div class="notes"> 
-						[#HISTORIQUE]
+						[(#HISTORIQUE|tocss)]
 					</div>
 				</IF>
 				
@@ -128,7 +137,7 @@
 						Résumé
 					</div>
 					<div class="resume" > 
-						[#RESUME:FR]
+						[(#RESUME:FR|tocss)]
 					</div>		
 				</IF>
 				
@@ -138,7 +147,7 @@
 						Abstract
 					</div>
 					<div class="resume" >
-						[#RESUME:EN]
+						[(#RESUME:EN|tocss)]
 					</div>
 				</IF>
 				
@@ -148,7 +157,7 @@
 						Extracto
 					</div>
 					<div class="resume" >
-						[#RESUME:ES]
+						[(#RESUME:ES|tocss)]
 					</div>
 				</IF>
 				
@@ -158,7 +167,7 @@
 						Zusammenfassung
 					</div>
 					<div class="resume" >
-						[#RESUME:DE]
+						[(#RESUME:DE|tocss)]
 					</div>
 				</IF>
 				
@@ -168,7 +177,7 @@
 						Riassunto
 					</div>
 					<div class="resume" >
-						[#RESUME:IT]
+						[(#RESUME:IT|tocss)]
 					</div>
 				</IF>				
 						
@@ -204,7 +213,7 @@
 							<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
 						</div>
 						<div class="texte">
-							[#BIBLIOGRAPHIE]
+							[(#BIBLIOGRAPHIE|tocss)]
 						</div>
 					</IF>
 				
@@ -214,7 +223,7 @@
 							Annexes
 						</div>
 						<div class="texte">
-							[#ANNEXE]
+							[(#ANNEXE|tocss)]
 						</div>
 					</IF>
 						
@@ -235,14 +244,55 @@
 					</IF>
 				
 					<!--[ Notes de bas de page. Si elles existent -]-->
-					<IF COND="[#NOTEBASPAGE]">
-						<div class="titre3">
-							Notes
-						</div>
-						<div class="notes"> 
-							[#NOTEBASPAGE]
-						</div>
-					</IF>
+						<IF COND="[#NOTEBASPAGE]">
+							<div class="titre3">
+								Notes bas numériques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEBASPAGE|notes("nombre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes bas littérales:
+							</div>
+							<div class="notes"> 
+								[(#NOTEBASPAGE|notes("lettre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes bas astérisques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEBASPAGE|notes("asterisque"))]
+								<br />
+							</div>
+
+						</IF>
+						<!--[ Notes de fin. Si elles existent -]-->
+						<IF COND="[#NOTEFIN]">
+							<div class="titre3">
+								Notes fin numériques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEFIN|notes("nombre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes fin littérales:
+							</div>
+							<div class="notes"> 
+								[(#NOTEFIN|notes("lettre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes fin astérisques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEFIN|notes("asterisque"))]
+								<br />
+							</div>
+
+						</IF>
 								
 				<!--[ Si le texte n'est pas encore autorisé à être publié ]-->
 				<ELSE/>
