@@ -90,7 +90,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             <form name="Administrer" method="post" action="">
               Administrer 
               <select name="administrer_revue" onChange="MM_jumpMenu('parent',this,0)">
-		<LOOP NAME="administre_revue" TABLE="revues"  WHERE="ok" ORDER="nom">
+		<LOOP NAME="administre_revue" TABLE="sites"  WHERE="ok" ORDER="nom">
 			  <option value="[(#REP|makeurl)]/lodel/admin/index.php">[#NOM]</option>
 		</LOOP>
                 <option selected>Choisissez</option>
