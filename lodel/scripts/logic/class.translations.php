@@ -51,11 +51,8 @@ class TranslationsLogic extends Logic {
     */
 
    function listAction(&$context,&$errro) {
-     if (defined("SITEROOT")) {
-       $context['textgroups']="site";
-     } else {
-       $context['textgroups']="interface";
-     }    
+
+     $context['textgroups']=defined("SITEROOT") ? "site" : "interface";
      return "_ok";
    }
 
@@ -100,7 +97,7 @@ class TranslationsLogic extends Logic {
      if ($vo->lang==$user['lang']) {
        // get any lang... this should not happen anyway
        $dao=$this->_getMainTableDAO();
-       $vo2=find("status>0","lang");
+       $vo2=$dao->find("status>0","lang");
        $fromlang=$vo2->lang;
      } else {
        // normal case... should be different !
@@ -145,7 +142,7 @@ class TranslationsLogic extends Logic {
 
    // begin{uniquefields} automatic generation  //
 
-    function _uniqueFields() {  return array(array("lang"),);  }
+    function _uniqueFields() {  return array(array("lang","textgroups"),);  }
    // end{uniquefields} automatic generation  //
 
 

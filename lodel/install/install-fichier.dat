@@ -202,12 +202,7 @@ ln stats.php
 ln tpl/edit_texts.html
 ln tpl/texts.html
 ln tpl/translations.html
-ln translation.php
-ln tpl/translation.html
-ln translationgroup.php
-ln tpl/translationgroup.html
-ln translationsexport.php
-ln translationsimport.php
+ln tpl/edit_translations.html
 
 ln tpl/edit_types.html
 ln tpl/types.html

@@ -450,5 +450,6 @@ CREATE TABLE IF NOT EXISTS #_TP_translations (
 	upd			TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_lang (lang)
+	KEY index_lang (lang),
+	UNIQUE unique_lang_groups (lang,textgroups)
 );

@@ -1399,6 +1399,7 @@
 </index>
 <unique name="unique_lang">
 <unique-column name="lang" />
+<unique-column name="textgroups" />
 </unique>
 </table>
 </database>
