@@ -42,6 +42,16 @@
 </DEFMACRO>
 <!-- Fin Rajout du 25/08/03 ************************* -->
 
+<!-- Macro rajoutée le 17/10/03 *********************** -->
+<!-- Macro servant à typeentree.html et                 -->
+<!-- typepersonne.html                                  -->
+<DEFMACRO NAME="TYPE_ENTITES">
+	<LOOP NAME="typeentites">
+		[#TYPE]: <input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]><br>
+	</LOOP>
+</DEFMACRO>
+<!-- ************************************************** -->
+
 <!-- ************************************** Rajout intégration maquette ************************************** -->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!-- exemple de Javascript pour un Rollover -->

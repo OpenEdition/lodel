@@ -59,17 +59,22 @@
 		</tr>
 		</IF>
 
-		  <tr>
-		    <td>
-		      Type de publi et document qui contiennent ce type d'intervenant:<br>
-<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
-		      <LOOP NAME="typeentites">
-			[#TYPE]: <input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]><br>
-		      </LOOP>
-		    </td>  
-		  </tr>
-
+		<tr>
+			<td>
+				Types de publication et de document qui contiennent ce type d'intervenant :<br />
+				<MACRO NAME="TYPE_ENTITES">
+			</td>  
+		</tr>
 	</table>
+	
+	<div style="padding-top:20px; padding-left:70px; padding-right:70px;">
+		<span class="texte_normal">
+			(*) la balise et le style ne doivent contenir que des lettres non accentuées et des chiffres.<br />
+			Le style défini dans lodel.dot peut contenir des lettres accentuées, l'accent est automatiquement supprimé, et des espaces, automatiquement supprimé. <br />
+			Par exemple le style "Mot clé" dans lodel.dot doit etre défini "motcle" ici.
+		</span>
+	</div>
+	
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
@@ -78,5 +83,4 @@
 		</IF>
 	</div>
 </form>
-(*) la balise et le style ne doivent contenir que des lettres non accentuées et des chiffres.<br>Le style défini dans lodel.dot peut contenir des lettres accentuées, l'accent est automatiquement supprimé, et des espaces, automatiquement supprimé. Par exemple le style "Mot clé" dans lodel.dot doit etre défini "motcle" ici.
 <MACRO NAME="CLOSE_HTML">
