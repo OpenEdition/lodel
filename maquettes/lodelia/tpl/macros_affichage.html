@@ -218,10 +218,9 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="paru_dans" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-					<a class="titre1" href="sommaire.html?id=[#ID]">
-							[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]
-								</IF>
-					</a>
+			<a class="titre1" href="sommaire.html?id=[#ID]">
+				[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]</IF>
+			</a>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -237,40 +236,17 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
 <!-- ****************************************************************** -->
-<!--	<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
+	<LOOP NAME="paru_dans_simple" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			<IF COND="[#TYPE]=='regroupement'">
-	            <LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
-					<DO>
-		    	    	<IF COND="[#NOM]">
-							<a  href="sommaire.html?id=[#IDPARENT]">
-								n&#176; [#NOM] 
-								<IF COND="[#TITRE]">
-									- [#TITRE]
-									</IF>.
-							</a>
-							</span>
-							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
-						</IF>
-					</DO>
-            	</LOOP>
-	        <ELSE/>
-    	    	<IF COND="[#NOM]">
-					
-					<a  href="sommaire.html?id=[#IDPARENT]">
-						
-							 n&#176; [#NOM] 
-							 <IF COND="[#TITRE]">
-									- [#TITRE]
-									</IF>.
-						
-					</a>
-					
-					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
-				</IF>
-	        </IF>
+  	    	<IF COND="[#NOM]">
+				<a  href="sommaire.html?id=[#IDPARENT]">
+					n&#176; [#NOM] 
+					<IF COND="[#TITRE]"> - [#TITRE]	</IF>.
+				</a>
+				<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+			</IF>
 		</DO>
-	</LOOP> -->
+	</LOOP>
 </DEFMACRO>
 
 
@@ -282,21 +258,11 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-<!--	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#IDPARENT]'"> 
+	<LOOP NAME="paru_dans_signalement" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			
-			<IF COND="[#TYPE]=='regroupement'"> 
-				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#IDPARENT]'">
-					<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE">, n°[#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.
-					</a>
-				</LOOP>
-			<ELSE/>
-					<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE"> n°[#NOM]<IF COND="[#TITRE]">, [#TITRE]
-								</IF>.
-					</a>
-			</IF>
+			<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE">, n&#176; [#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
 		</DO>
-	</LOOP> -->
+	</LOOP>
 </DEFMACRO>
 
 
@@ -325,6 +291,14 @@
 <!-- Affiche la date de publication parente d'un document, si elle      -->
 <!-- existe sinon n'affiche rien.                                       -->
 <!-- ****************************************************************** -->
+	<LOOP NAME="date_publication_parente" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
+		<DO>
+			<IF COND="[#DATE]!='0000-00-00'">
+				Texte publié le : [(#DATE|humandate)]
+			</IF>
+		</DO>
+	</LOOP>
+
 <!--	<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
@@ -884,8 +858,15 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche notice biblio du doc en cours                              -->
 <!-- ****************************************************************** -->
+<!--	A continuer .....	
+	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i>
+	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
+		<DO>
+		</DO>
+	</LOOP>
+	......................
 	
-<!--	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i> 
+<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i> 
 	<LOOP NAME="citation" TABLE="publications" WHERE="id='[#IDPARENT]'"> 
 		<DO>
 			
