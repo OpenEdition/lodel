@@ -227,10 +227,10 @@ function &getView()
  * Calling the right makeSelect
  */
 
-function makeSelect(&$context,$varname,$table,$edittype)
+function makeSelect(&$context,$varname,$lo,$edittype)
 
 {
-  $logic=getLogic($table);
+  $logic=getLogic($lo);
   $logic->makeSelect($context,$varname);
 }
 

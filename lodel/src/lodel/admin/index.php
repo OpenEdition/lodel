@@ -53,7 +53,4 @@ function loop_classtypes ($context,$funcname)
   }
 }
 
-
-
-
 ?>

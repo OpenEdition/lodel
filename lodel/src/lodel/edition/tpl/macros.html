@@ -171,85 +171,7 @@
 		</tr>
 	</table>
 </DEFMACRO>
-<!--[ ************************************************** ]-->
 
-<!--[ Macros rajoutées le 17/10/03 ********************* ]-->
-<!--[ Macro servant à publication.html et                ]-->
-<!--[ document.html                                      ]-->
-<DEFMACRO NAME="AFFICHER_EDITION_CHAMPS">
-  <IF COND="[#TYPE] eq 'boolean'">
-    <td><input type="checkbox" name="[#NAME]" [(#VALUE|true)checked]></td>
-    <ELSE/>
-      <IF COND="[#TYPE] eq 'mltext'">
-	<td>
-	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-	    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
-	      <IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<input size="70" type="text" name="[#NAME][[#LANG]]" value="[#VALUE]">
-	      </IF>
-	      <IF COND="[#EDITION] eq 'textarea10'">
-		<textarea rows="10" cols="70" name="[#NAME][[#LANG]]">[#VALUE]</textarea>
-	      </IF>
-	      <IF COND="[#EDITION] eq 'textarea30'">
-		<textarea rows="30" cols="70" name="[#NAME][[#LANG]]">[#VALUE]</textarea>
-	      </IF>
-	    </div>
-
-
-	  </LOOP>
-	  <div>
-	    <select name="addlanginmltext[[#NAME]]"><?php makeselectlangs(); ?></select>
-	    <input class="form" type="submit" name="reload2" value="[@COMMON.ADD]">
-	  </div>
-	</td>
-	<ELSE/>
-	  <IF COND="[#TYPE] eq 'lang'">
-	    <td>
-	      <select name="[#NAME]">
-	      <IF COND="[#CONDITION] eq '+'">
-		    <?php  makeselectlangs_nevernil($context[value]); ?>
-		<ELSE/>
-		    <?php  makeselectlangs($context[value]); ?>
-	      </IF>
-	    </select>
-	    </td>
-	    <ELSE/>
-	      <IF COND="[#TYPE] eq 'date' || [#TYPE] eq 'datetime' || [#TYPE] eq 'time'">
-		<td><input size="30" type="text" name="[#NAME]" value="[(#VALUE|humandate)]"></td>
-	<ELSE/>
-	<IF COND="[#TYPE] eq 'image'">
-		<td>
-                   <table><tr>
-		<IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" border="1"></td></IF>
-                <td>
-	            <IF COND="[#VALUE]">
-				<input type="radio" name="[#NAME][radio]" value="">Conserver l'image courante<br />
-				<input type="radio" name="[#NAME][radio]" value="delete">[@COMMON.DELETE] <br /></IF>
-		    <input type="radio" id="[#NAME][radioserverfile]" name="[#NAME][radio]" value="serverfile">
-	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=[#NAME]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="[#NAME][localfilename]">&nbsp;</span><input size="40" type="text" id="[#NAME][localfullfilename]"><br />
-		    <input type="radio" id="[#NAME][radioupload]" name="[#NAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#NAME][upload]" onChange="document.getElementById('[#NAME][radioupload]').click();">
-		 </td>
-	         </tr></table>
-	         <input size="40" type="hidden" id="[#NAME][previousvalue]" VALUE="[#VALUE]">
-
-
-
-	<ELSE/>
-	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<td><input size="70" type="text" name="[#NAME]" value="[#VALUE]"></td>
-	</IF>
-	<IF COND="[#EDITION] eq 'textarea10'">
-		<td><textarea rows="10" cols="70" name="[#NAME]">[#VALUE]</textarea></td>
-	</IF>
-	<IF COND="[#EDITION] eq 'textarea30'">
-		<td><textarea rows="30" cols="70" name="[#NAME]">[#VALUE]</textarea></td>
-	</IF>
-	</IF>
-	</IF>
-	</IF>
-	</IF>
-	</IF>
-</DEFMACRO>
 
 
 <!--[ ************************************************** ]-->
@@ -269,20 +191,20 @@
 				</tr>
 			</table>
 			<br />
-			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0"><tr><td>
 		</BEFORE>
         <DO>
-			<tr>
-				<td width="200" valign="top">[#TITLE] :</td>
-				<MACRO NAME="AFFICHER_EDITION_CHAMPS">
-			</tr>
-			<FUNC NAME="PRINT_ERROR_MESSAGE">
+	  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+	<br />
         </DO>
         <AFTER>
-			</table>
+			</td></tr></table>
         </AFTER>
     </LOOP>
 </DEFMACRO>
+
+
 
 <DEFMACRO NAME="AFFICHER_TYPES_ENTREES">
 	<LOOP NAME="entrytypes" TABLE="entrytypes" TABLE="entitytypes_entrytypes" WHERE="identrytype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
