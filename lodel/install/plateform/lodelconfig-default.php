@@ -84,11 +84,11 @@ $contactbug="";
 # Repertoire contenant le binaire de mysql
 $mysqldir="/usr/bin";
 
-# chemin pour la commande zip
-$zipcmd="/usr/bin/zip";
+# chemin pour la commande zip ou pclzip pour utiliser la librairie pclzip
+$zipcmd="pclzip";
 
-# chemin pour la commande unzip
-$unzipcmd="/usr/bin/unzip";
+# chemin pour la commande unzip ou pclzip pour utiliser la librairie pclzip
+$unzipcmd="pclzip";
 
 
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
