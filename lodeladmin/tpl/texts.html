@@ -21,69 +21,36 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Administer les minitextes</title>
+<title>[@ADMIN.TITLE_TEXTS_EDITION] [(#TEXTGROUP|strtoupper)]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO">
+<MACRO NAME="HEADER_LOGO"> 
+
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Administer les minitextes</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_TEXTS_EDITION] [(#TEXTGROUP|strtoupper)] <LOOP NAME="langue" TABLE="translations" WHERE="lang='[#LANG]'">[#TITLE]</LOOP> </td>
 	</tr>
 </table>
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<a href="texte.php">Ajouter un minitexte</a>
-</div>
-<br /><br />
+<br />
 
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">Nom</td>
-		<td>&nbsp;</td>
-	</tr>
-	<LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]'" ORDER="nom">
-		<DO>
-			<IF COND="[#COUNT]%2">
-				<tr>
-					<td class="ligne_admin1">[#REP][(#NOM|nbsp)]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="texte.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="texte.php?id=[#ID]&delete=2">Supprimer</a>&nbsp;(*)&nbsp;|&nbsp;
-						</div>
-					</td>
-				</tr>
-			<ELSE/>
-				<tr>
-					<td class="ligne_admin2">[#REP][(#NOM|nbsp)]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="texte.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="texte.php?id=[#ID]&delete=2">Supprimer</a>&nbsp;(*)&nbsp;|&nbsp;
-						</div>
-					</td>
-				</tr>
-			</IF>
-		</DO>
-	</LOOP>
-	<tr>
-		<td colspan="2" align="center">
-			<span class="texte_info">
-				(*) avant de supprimer un minitexte, il faut supprimer la balise &lt;TEXT&gt; dans les templates.<br />
-				La cr&eacute;ation des minitextes se fait au moment de leur introduction dans les templates.
-			</span>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
-			<form>
-				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
-			</form>
-		</td>
-	</tr>
-</table>
+<?php mkeditlodeltextJS(); ?>
+<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
+<input type="hidden" name="do" value="edit">
+<input type="hidden" name="lo" value="[#LO]">
+<input type="hidden" name="textgroup" value="[#TEXTGROUP]">
+<input type="hidden" name="lang" value="[#LANG]">
+<div id="translationforms">
+<LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="name" SELECT="name,textgroup">
+<?php mkeditlodeltext($context['name'],$context['textgroup'],$context['lang']);?>
+</LOOP>
+</div>
+<div class="pied_de_formulaire">
+	<input class="form" type="submit" value="   [@COMMON.UPDATE]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    [@COMMON.BACK]    " onClick="javascript:window.location='index.php?do=list&lo=translations'" />
+	</div>
 
 <MACRO NAME="CLOSE_HTML">

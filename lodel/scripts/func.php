@@ -221,7 +221,12 @@ function myfilemtime($filename)
 
 function update()
 
-{ touch(SITEROOT."CACHE/maj"); }
+{ if (defined("SITEROOT")) {
+    touch(SITEROOT."CACHE/maj");
+  } else {
+    touch("CACHE/maj");
+  }
+}
 
 
 function copy_images (&$text,$callback,$argument="",$count=1)
@@ -381,7 +386,7 @@ function getoption($name)
 }
 
 
-function getlodeltext($name,$group="",$lang=-1)
+function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 
 {
   if ($group=="") {
@@ -395,7 +400,7 @@ function getlodeltext($name,$group="",$lang=-1)
     }
   }
   if ($lang==-1) $lang=$GLOBALS['user']['lang'];
-  require_once($GLOBALS[$home]."connect.php");
+  require_once($GLOBALS['home']."connect.php");
   global $db;
 
   if ($group!="site") {
@@ -406,20 +411,32 @@ function getlodeltext($name,$group="",$lang=-1)
   }
 
   $critere=$GLOBALS['user']['visitor'] ? "" : "AND status>0";
-  $arr=$db->getrow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
-  if ($arr===false) dberror();
+
+  $logic=false;
+  do {
+    $arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
+    if ($arr===false) dberror();
+    if (!$arr && $GLOBALS['user']['admin']) {
+      if ($logic) break; // don't try again
+      // create the textfield
+      require_once($GLOBALS['home']."logic.php");
+      $logic=getLogic("texts");
+      $logic->createTexts($name,$group);
+    }
+  } while(!$arr);
 
   if ($group!="site") usecurrentdb();
 
-  if (!$arr[1] && $GLOBALS['user']['visitor']) $arr[1]="@".$name;
-
-  return $arr;
+  $id=$arr['id'];
+  $contents=$arr['contents'];
+  $status=$arr['status'];
+  if (!$contents && $GLOBALS['user']['visitor']) $contents="@".$name;
 }
 
 function getlodeltextcontents($name,$group="",$lang=-1)
 
 {
-  list($id,$contents)=getlodeltext($name,$group,$lang);
+  getlodeltext($name,$group,$id,$contents,$status,$lang);
   return $contents;
 }
 

@@ -120,7 +120,6 @@ function parse ($in,$out)
   } else {
     $file = file_get_contents($in);
   }
-
   $contents=stripcommentandcr($file);
 
   $this->_split_file($contents); // split the contents into commands
@@ -353,7 +352,7 @@ function parse_main()
 	} elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename)) {
 	  $contents=file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
 	} else {
-	  $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
+	  $this->errmsg ("the macro file \"$macrofilename\" doesn't exist");
 	}
 	$this->macros_txt.=stripcommentandcr($contents);
 	$this->_clearposition();

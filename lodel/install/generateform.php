@@ -49,7 +49,7 @@ $tables=array("entries",
 	      "optiongroups",
 	      "characterstyles",
 	      "internalstyles",
-	      "translations");
+	      "translations","texts");
 
 foreach ($tables as $table) {
 

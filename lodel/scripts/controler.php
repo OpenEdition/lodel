@@ -38,7 +38,6 @@ class Controler {
   {
     global $home,$context;
 
-
     if ($_POST) {
       $therequest=&$_POST;
     } else {
@@ -46,6 +45,11 @@ class Controler {
     }
     $do=$therequest['do'];
 
+    if ($do=="back") {
+      require_once($home."view.php");
+      View::back();
+      return;
+    }
 
     require_once($home."func.php");
 
@@ -78,15 +82,16 @@ class Controler {
       if (!preg_match("/^[a-zA-Z]+$/",$do)) die("ERROR: invalid action");
       $do=$do."Action";
 
-      require_once($home."logic.php");
-      $logic=&getLogic($lo);
-
       switch($do) {
       case 'listAction' :
 	recordurl();
-	$ret='_ok';
-	break;
+	if ($lo!="translations") { // translation needs to defined a listLogic
+	  $ret='_ok';
+	  break;
+	}
       default:
+	require_once($home."logic.php");
+	$logic=&getLogic($lo);
 	// create the logic for the table
 	if (!method_exists($logic,$do)) die("ERROR: invalid action");
 	// call the logic action

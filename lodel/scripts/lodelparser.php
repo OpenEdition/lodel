@@ -334,7 +334,7 @@ function maketext($name,$group,$tag)
 
     $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/text.php?id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
 
-    return '<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'");'.$modify.
+    return '<?php getlodeltext("'.$name.'","'.$group.'",$id,$text);'.$modify.
       ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
   } else {
     // modify at the end of the file

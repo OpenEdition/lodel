@@ -136,13 +136,18 @@ class View {
      //}
      require_once($GLOBALS['home']."func.php");
 
-     $maj=myfilemtime(SITEROOT."CACHE/maj");
-
+     if (defined("SITEROOT")) {
+       $maj=myfilemtime(SITEROOT."CACHE/maj");
+     } else {
+       $maj=myfilemtime("CACHE/maj");
+     }
      // Calculate the name of the cached file
 
-     $this->_cachedfile = substr(rawurlencode(str_replace("?id=0","",
-							  preg_replace("/#[^#]*$/","",
-								       $_SERVER['REQUEST_URI']))), 0, 255);
+     $this->_cachedfile = substr(rawurlencode(
+                          str_replace("?id=0","",
+				      preg_replace(array("/#[^#]*$/","/[\?&]clearcache=[^&]*/"),"",
+						   $_SERVER['REQUEST_URI']))), 0, 255);
+     
 
      $cachedir = substr(md5($this->_cachedfile), 0, 1);
      if ($GLOBALS['context']['charset']!="utf-8") $cachedir="il1.".$cachedir;

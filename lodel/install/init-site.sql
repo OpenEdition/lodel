@@ -366,11 +366,11 @@ CREATE TABLE IF NOT EXISTS #_TP_tasks (
 
 CREATE TABLE IF NOT EXISTS #_TP_texts (
 	id		INT UNSIGNED NOT NULL auto_increment,
-	name		VARCHAR(255) NOT NULL,  # name
-	contents		TEXT,                   # texte
+	name		VARCHAR(128) NOT NULL,  # name
+	contents	TEXT,                   # texte
 
 	lang		CHAR(5) NOT NULL,       # text lang
-	textgroup	VARCHAR(255) NOT NULL,   # text group
+	textgroup	VARCHAR(64) NOT NULL,   # text group
 
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
@@ -378,7 +378,8 @@ CREATE TABLE IF NOT EXISTS #_TP_texts (
 	PRIMARY KEY (id),
 	KEY index_name (name),
 	KEY index_lang (lang),
-	KEY index_textgroup (textgroup)
+	KEY index_textgroup (textgroup),
+	UNIQUE unique_text (name,textgroup,lang)
 );
 
 

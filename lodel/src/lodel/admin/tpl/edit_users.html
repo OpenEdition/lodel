@@ -22,7 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
-<USE MACROFILE="macros2.html">
+<USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_USER_EDITION]</title>
@@ -82,6 +82,10 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <label for="email">[@ADMIN.EMAIL]
+        : 
+      </label>
+  <br class="nobr"><span class="admin_display">[#EMAIL]</span><br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>

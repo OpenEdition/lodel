@@ -31,13 +31,14 @@
 		<td width="431" align="left" heigth="75">
 			<table align="right" border="0" cellspacing="0" cellpadding="0">
 				<tr>
+				<IF COND="[#SITEROOT]">
 					<td width="100%" heigth="75">&nbsp;</td>
 					<td width="57" heigth="75"><a href="[#SITEROOT]lodel/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"><span class="desk-text">[@COMMON.HOME]</span></a></td>
 			
 					<td width="57" heigth="75"><a href="[#SITEROOT]lodel/admin/index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"><span class="desk-text">[@COMMON.ADMINISTRATION]</span></a></td>
 			
 					<td width="57" heigth="75"><a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"><span class="desk-text">[@COMMON.VIEW]</span></a></td>
-			
+				</IF>
 					<td width="57" heigth="75"><a href="http://documentation.lodel.org" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"><span class="desk-text">[@COMMON.HELP]</span></a></td>
 				</tr>
 			</table>

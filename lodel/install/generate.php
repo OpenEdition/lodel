@@ -60,8 +60,8 @@ function startElement($parser, $name, $attrs)
      break;
    case "column" :
      $varlist[]=$attrs['name'];
+     if (!$attrs['edittype']) break;
      if ($attrs['label'] || $attrs['visibility']=="hidden") {
-       if (!$attrs['edittype']) die("ERROR: preciser un edittype pour le champ ".$attrs['name']." table $table\n");
        $condition=$attrs['required']=="true" ? "+" : "";
        $publicfields[]='"'.$attrs['name'].'"=>array("'.$attrs['edittype'].'","'.$condition.'")';
      }

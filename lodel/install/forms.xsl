@@ -74,7 +74,12 @@
                   <xsl:call-template name="label" />
                     <xsl:element name="input">
                         <xsl:attribute name="type">text</xsl:attribute>
-                        <xsl:attribute name="size">30</xsl:attribute>
+                        <xsl:attribute name="size">
+                          <xsl:choose>
+                            <xsl:when test="@size &lt; 30"><xsl:value-of select="@size"/></xsl:when>
+                            <xsl:otherwise>30</xsl:otherwise>
+                          </xsl:choose>
+                        </xsl:attribute>
                         <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
                         <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
                         <xsl:attribute name="class">text</xsl:attribute>
@@ -185,6 +190,16 @@
                   </phptag>
                   <br />
             </xsl:when>
+
+            <xsl:otherwise>
+              <xsl:if test="@label">
+                <xsl:call-template name="label" />
+                <span class="admin_display">
+                  <xsl:call-template name="lsvariable" />
+                </span> 
+                <br />               
+              </xsl:if>
+            </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 

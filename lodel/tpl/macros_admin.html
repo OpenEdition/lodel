@@ -57,12 +57,13 @@
 <div class="pied_de_formulaire">
 	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
 	  <IF COND="[#ID]">
-		<IF COND="![#TABLE|isdeletelocked([#ID],[#STATUS])]">
+		<IF COND="![#LO|isdeletelocked([#ID],[#STATUS])]">
 			<MACRO NAME="DELETE_BUTTON">
 		</IF>
 	  </IF>
 </div>
 </DEFMACRO>
+
 
 <!--[ --------------------------------------------------------- 
       Ok bouton to submit andgo from edit to list action
@@ -74,17 +75,18 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DELETE_BUTTON">
-		<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='index.php?do=delete&id=[#ID]&table=[#TABLE]'" />
+		<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='index.php?do=delete&id=[#ID]&=[#TABLE]'" />
 </DEFMACRO>
+
 
 
 <!--[ -----------------------------------------------------------
       Arrow up/down to change order
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="CHANGE_RANK_BUTTON" REQUIRED="TABLE">
-<a href="index.php?do=changerank&id=[#ID]&table=[#TABLE]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-<a href="index.php?do=changerank&id=[#ID]&table=[#TABLE]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+<DEFFUNC NAME="CHANGE_RANK_BUTTON" REQUIRED="LO">
+<a href="index.php?do=changerank&id=[#ID]&lo=[#LO]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+<a href="index.php?do=changerank&id=[#ID]&lo=[#LO]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 </DEFFUNC>
 
 
@@ -93,25 +95,26 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="TABLE">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO">
 
-<IF COND="([#USER.RIGHTS] ge [#TABLE|rights('protect')]) or ([#USER.RIGHTS] ge [#TABLE|rights('write')] and [#STATUS] lt 32)">
-         |&nbsp;<a href="index.php?do=view&id=[#ID]&table=[#TABLE]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+<IF COND="([#USER.RIGHTS] ge [#LO|rights('protect')]) or ([#USER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+         |&nbsp;<a href="index.php?do=view&id=[#ID]&lo=[#LO]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<IF COND="[#STATUS] ge 32">
 	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
        <ELSE/>
-	  <IF COND="[#TABLE|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="inactif">[@COMMON.DELETE] ([#TABLE|isdeletelocked([#ID],[#STATUS])])</span>&nbsp;|&nbsp;
+	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
+	  <span class="inactif">[@COMMON.DELETE] ([#LO|isdeletelocked([#ID],[#STATUS])])</span>&nbsp;|&nbsp;
 	  <ELSE/>
-	  <a href="index.php?do=delete&id=[#ID]&table=[#TABLE]">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	  <a href="index.php?do=delete&id=[#ID]&lo=[#LO]">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
 	  </IF>
 	</IF>
 <ELSE/>
 	 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 	  <span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
 </IF>
-	  <a href="index.php?do=copy&id=[#ID]&table=[#TABLE]">[@COMMON.COPY]</a> |
+	  <a href="index.php?do=copy&id=[#ID]&lo=[#LO]">[@COMMON.COPY]</a> |
 </DEFFUNC>
+
 
 
 <!--[ -----------------------------------------------------------
@@ -305,12 +308,16 @@ cp_[#NAME].writeDiv();
 </DEFFUNC>
 
 
-
-
 <!--[ -----------------------------------------------------------
-      Affichage des types de classes et des classes
+      Export and Import translations button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="select_url_classes" REQUIRED="url">
-
-</DEFFUNC>
+<DEFMACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
+ <IF COND="[#USER.EDITOR] and (([#STATUS] lt 32) or [#USER.ADMINLODEL])">
+ 	<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
+ 	|&nbsp;<a href="translationsimport.php?lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
+<ELSE/>
+ 	<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;
+ 	|&nbsp;<span class="inactif">[@ADMIN.IMPORT]</span>&nbsp;|&nbsp;
+</IF>
+</DEFMACRO>

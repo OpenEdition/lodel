@@ -29,7 +29,7 @@
 
 // gere les periodes. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des periodes.
-
+die("desuet");
 require("lodelconfig.php");
 require($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);

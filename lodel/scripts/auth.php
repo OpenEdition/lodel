@@ -186,7 +186,7 @@ $context=array(
 	       "extensionscripts"=>$GLOBALS['extensionscripts'],
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'],
 	       "database"=>$GLOBALS['database'],
-	       "siteroot"=>SITEROOT,
+	       "siteroot"=>defined("SITEROOT") ? SITEROOT : "",
 	       ); // tres important d'initialiser le context.
 
 if (!$filemask) $filemask="0700";

@@ -22,7 +22,7 @@
 
 
 <BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
-<USE TEMPLATEFILE="deskadmin">
+<USE TEMPLATEFILE="desk">
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_LOGO_LOGIN">
@@ -52,38 +52,6 @@
 
 
 
-<!--[ Nouvelle macro ajouter par Ghislain, elle est bcp plus generique ]-->
-<!--[ Elle devrait convenir dans un grand nombre de cas                ]-->
-
-
-<DEFMACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_IMPORTER_TRANSLATION">
-	<div>
-		<IF COND="[#USER.ADMIN]">
-					<a href="translation.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-					<a href="translation.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-                       <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
-			|&nbsp;<a href="translation.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
-	               <ELSE/>
-			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
-	               </IF>
-	               <IF COND="[#STATUS] lt 32">
-				<a href="translation?delete=1&id=[#ID]">[@COMMON.DELETE]</a>&nbsp;|
-			<ELSE/>
-				<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
-			</IF>
-		<ELSE/>
-			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
-			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
-		</IF>
-		<IF COND="[#USER.EDITOR] and (([#STATUS] lt 32) or [#USER.ADMINLODEL])">
-			<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
-			|&nbsp;<a href="translationsimport.php?lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
-               <ELSE/>
-			<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;
-			|&nbsp;<span class="inactif">[@ADMIN.IMPORT]</span>&nbsp;|&nbsp;
-               </IF>
-	</div>
-</DEFMACRO>
 
 
 

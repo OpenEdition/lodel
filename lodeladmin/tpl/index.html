@@ -1,4 +1,3 @@
-<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
@@ -21,108 +20,61 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@LODELADMIN.TITLE_GENERAL_ADMINISTRATION]</title>
+<MACRO NAME="JS_SELECT_URL">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-  <tr valign="top"> 
-    <td bgcolor="#FFFFFF"> 
-		<table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
-		<tr> 
-			<td width="45">
-				<img src="images/KDE_Log.gif" width="48" height="48">
+	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+		<!--[ Partie haute ]-->
+		<tr>
+			<td  width="375" valign="top">
+				<!--[ *************** Préférences *************** ]-->
+				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_preferences.png" /></td>
+						<td background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.CONFIGURATION]</span></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="index.php?do=list&table=users">[@LODELADMIN.MANAGE_LODELADMIN]</a>
+						</td>
+						<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="sites.php">[@LODELADMIN.MANAGE_SITE]</a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+<!--[					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+						<a href="index.php?do=list&lo=translations">[@LODELADMIN.MANAGE_TRANSLATIONS]</a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+					        <a href="backup.php">[@LODELADMIN.GENERAL_BACKUP]</a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
 			</td>
-			<td>
-				<a href="..">
-					<span class="texte_petit">
-					<font color="#FF0000">
-						[@LODELADMIN.HOME]
-					</font>
-					</span>
-				</a>
-				<br />
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <hr width="330" size="0" align="center">
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
-        <tr> 
-          <td width="45"><a href="index.php?do=list&table=users"><img src="images/KDE_users.gif" width="48" height="48" border="0"></a></td>
-          <td><a href="index.php?do=list&table=users">[@LODELADMIN.MANAGE_LODELADMIN]</a></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <hr width="330" size="0" align="center">
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
-        <tr> 
-          <td width="45"><a href="sites.php"><img src="images/book.gif" width="54" height="54" border="0"></a></td>
-          <td><a href="sites.php">[@LODELADMIN.MANAGE_SITE]</a></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <hr width="330" size="0" align="center">
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
-        <tr> 
-          <td width="45"><a href="translations.php"></a></td>
-          <td><a href="translations.php">[@LODELADMIN.MANAGE_TRANSLATIONS]</a> </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <hr width="330" size="0" align="center">
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
-        <tr> 
-          <td width="45"><a href="backup.php"><img src="images/KDE_disquedur.gif" width="48" height="48" border="0"></a></td>
-          <td><a href="backup.php">[@LODELADMIN.GENERAL_BACKUP]</a> </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <hr width="330" size="0" align="center">
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF"> 
-      <table width="330" border="0" align="center" cellspacing="4" cellpadding="4">
-        <tr> 
-          <td width="45"><a href="logout.php"><img src="images/KDE_cafe.gif" width="48" height="48" border="0"></a></td>
-          <td><a href="logout.php">[@LODELADMIN.LOGOUT_LODEL]</a></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+		</tr>
+	</table>
 <MACRO NAME="CLOSE_HTML">

@@ -33,7 +33,7 @@ require_once($GLOBALS['home']."xmldbfunc.php");
 function mkeditlodeltext($name,$textgroup,$lang=-1)
 
 {
-  list($id,$text,$status)=getlodeltext($name,$textgroup,$lang);
+  list()=getlodeltext($name,$textgroup,$id,$text,$status,$lang);
   if (!$id) { # create it ?? 
     return; # to be decided
   }
@@ -45,7 +45,7 @@ function mkeditlodeltext($name,$textgroup,$lang=-1)
   if ($nrows>10) $nrows=10; // limit for very long text, it's not usefull anyway
 
   echo '<div class="editlodeltext"><label for="texte" style="float: left; width: 10em;">@'.strtoupper($name).'</label>
-<textarea name="texts['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" obj=document.getElementById(\'selectstatus'.$id.'\'); obj.selectedIndex=\'2\'; lodeltextchangecolor(obj,\'2\'); " >'.htmlspecialchars($text).'</textarea>
+<textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" obj=document.getElementById(\'selectstatus'.$id.'\'); obj.selectedIndex=\'2\'; lodeltextchangecolor(obj,\'2\'); " >'.htmlspecialchars($text).'</textarea>
  <select style="background-color: '.lodeltextcolor($status).';" onchange="lodeltextchangecolor(this,this.options[this.selectedIndex].value);" id="selectstatus'.$id.'" name="status['.$id.']">';
 
 

@@ -199,7 +199,7 @@ ln tpl/edit_useroptiongroups.html
 ln colorpicker.js
 
 ln stats.php
-ln tpl/text.html
+ln tpl/edit_texts.html
 ln tpl/texts.html
 ln tpl/translations.html
 ln translation.php

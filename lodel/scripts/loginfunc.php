@@ -105,7 +105,7 @@ function check_auth ($login,&$passwd,&$site)
      }
     // pass les variables en global
     $user['rights']=$row['userrights'];
-    $user['lang']=$row['lang'];
+    $user['lang']=$row['lang'] ? $row['lang'] : "fr";
     $user['id']=$row['id'];
 
     // cherche les groupes pour les non administrateurs

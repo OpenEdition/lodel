@@ -21,34 +21,35 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Administer les traductions</title>
+<title>[@LODELADMIN.TITLE_ADMINISTRATE_TRANSLATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Administer les traductions</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@LODELADMIN.TITLE_ADMINISTRATE_TRANSLATION]</td>
 	</tr>
 </table>
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="translation.php">Commencer une nouvelle traduction</a>
+	<a href="index.php?do=view&lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>
 	<br/>
 	<MACRO NAME="PNG_PLUS">
-	<a href="translationsimport.php">Importer une nouvelle traduction</a>
+	<a href="index.php?do=import&lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a>
 </div>
 <br /><br />
 
 
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
-		<td class="texte_noir_gras">Langue</td>
-		<td class="texte_noir_gras">Code</td>
+		<td class="texte_noir_gras">[@COMMON.LANG]</td>
+		<td class="texte_noir_gras">[@LODELADMIN.CODE]</td>
 		<td>&nbsp;</td>
-		<td class="texte_noir_gras">Traduire les groupes</td>
+		<td class="texte_noir_gras">[@LODELADMIN.TRANSLATE_GROUPS]</td>
 	</tr>
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
@@ -59,10 +60,16 @@
 			</IF>
                         <td>[#TITLE]</td>
                         <td>[#LANG]</td>
-		        <td><MACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_TRANSLATION"></td>
+			<td style="color: #CC9933;" align="left">
+			<div>
+              			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
+			</div>
+			</td>		        
 		        <td>
-		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPSWHERE]" GROUPBY="textgroup" ORDER="textgroup">
-		             <a href="translationgroup.php?textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
+		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
+		             <a href="index.php?do=list&lo=texts&textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
 		        </LOOP>
 		        </td>
                         </tr>
@@ -71,15 +78,15 @@
 </table>
 
 <hr/>
-<h1>Vue synthetique des traductions</h1>
+<h1>[@LODELADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 
-       <LOOP NAME="textgroups" TABLE="texts" WHERE="[#TEXTGROUPSWHERE]" GROUPBY="textgroup" ORDER="textgroup">
+       <LOOP NAME="textgroups" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
        <tr><td colspan="3" class="textgroup"><h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
        </td></tr>
 
 	      <tr>
-		<td class="texte_noir_gras">Nom</td>
+		<td class="texte_noir_gras">[@COMMON.NAME]</td>
                 <LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
                 <td class="texte_noir_gras">[#LANG]</td>
 		</LOOP>
@@ -87,24 +94,20 @@
 	      </tr>
 	<LOOP NAME="texts" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' " GROUPBY="name" ORDER="name">
 		<DO>
-			<IF COND="[#COUNT]%2">
-			<tr class="ligne_admin1">
-			<ELSE/>
-			<tr class="ligne_admin2">
-			</IF>
+			<MACRO NAME="TR_LIST">
 				<td ><IF COND="[#CONTENTS]">[(#CONTENTS|couper(30))]<ELSE/>[(#NAME|strtoupper)]</IF></td>
 		                <LOOP NAME="translations3" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		                        <td>
 		                        <LOOP NAME="lang_of_text" TABLE="texts" WHERE="name='[#NAME]' AND textgroup='[#TEXTGROUP]' AND lang='[#LANG]'">
 
-		                            <a style="background-color: [(#STATUS|lodeltextcolor)]" href="text.php?id=[#ID]">o</a>
+		                            <a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">o</a>
 		                            
 		                        </LOOP>
                                         </td>
 		                </LOOP>
 				<td align="right">
 					<div>
-					<a href="text.php?id=[#ID]&delete=2">Supprimer</a> (*)
+					<a href="index.php?do=delete&lo=texts&id=[#ID]">[@COMMON_DELETE]</a> (*)
 					</div>
 				</td>
                         </tr>
@@ -116,15 +119,15 @@
 	<tr>
 		<td colspan="2" align="center">
 			<span class="texte_info">
-				(*) Avant de supprimer un minitexte, il faut supprimer la balise &lt;TEXT&gt; dans les templates.<br />
-				La cr&eacute;ation des minitextes se fait au moment de leur introduction dans les templates.
+				(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT] &lt;TEXT&gt; [@LODELADMIN_IN_TEMPLATES].<br />
+				[@LODELADMIN.HOWTO_LITTLETEXTS].
 			</span>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
 			<form>
-				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='back.php?back=-2'">
+				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?do=back'">
 			</form>
 		</td>
 	</tr>
