@@ -46,7 +46,7 @@ class Entities_IndexLogic extends Logic
    	 */
    	function Entities_IndexLogic() 
    	{
-		$this->Logic("index");
+		$this->Logic("dictionary");
    	}
    	
    	/**
@@ -123,6 +123,9 @@ class Entities_IndexLogic extends Logic
    	 			if(strlen($token) > 3)
    	 			{
    	 				//simply count word number
+   	 				/*require_once("class.stemmer.inc.php");
+   	 				$stemmer = new Stemmer();
+   	 				$token = $stemmer->stem($token);*/
    	 				$indexs[$token] ++;
    	 	#echo "token=$token<br />"; 	
    	 			}
@@ -132,7 +135,7 @@ class Entities_IndexLogic extends Logic
    	 		$vos_index = array();
    	 		
    	 		//index ponderation and virtual object creation
-   	 		$dao_index = &getDAO("index");
+   	 		$dao_index = &getDAO("dictionary");
    	 		foreach($indexs as  $key => $index)
    	 		{
    	 			$dao_index->instantiateObject($vo_index);
@@ -162,7 +165,7 @@ class Entities_IndexLogic extends Logic
    	  			return "_error";
    	  		$id = $context["identity"];
    	  		//get tue DAO for index
-   	  		$dao = &getDAO("index");
+   	  		$dao = &getDAO("dictionary");
    	  		//delete all lines with identity=id and return
    	  		if($dao->deleteObjects("identity=$id"))
    	  			return "_back";
@@ -178,7 +181,7 @@ class Entities_IndexLogic extends Logic
    	   function cleanIndexAction(&$context,&$error)
    	   {
    	   		//get tue DAO for index
-   	  		$dao = &getDAO("index");
+   	  		$dao = &getDAO("dictionary");
    	  	#print($dao);
    	  		//delete all index lines and return
    	  		if($dao->deleteObjects("1"))
