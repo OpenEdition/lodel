@@ -199,11 +199,11 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       #unset($entite[$nom]); // it must not be update... the old files must be remove later (once everything is checked)
       break;
     default :
-      if ($entite[$nom]) $entite[$nom]=lodel_strip_tags($entite[$nom],$balises);
+      if (isset($entite[$nom])) $entite[$nom]=lodel_strip_tags($entite[$nom],$balises);
       // recheck entite is still not empty
-      if (!$entite[$nom]) $entite[$nom]=lodel_strip_tags($defaut,$balises);
+      if (!isset($entite[$nom])) $entite[$nom]=lodel_strip_tags($defaut,$balises);
     }
-    if ($entite[$nom]) {
+    if (isset($entite[$nom])) {
       $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
     }
   } // end of while over the results
