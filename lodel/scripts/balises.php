@@ -183,7 +183,7 @@ function traite_multiplelevel(&$text)
     if ($v=="*") $v="\w+";
 
     if ($dir=="apres") { // entoure par la balise qui suit
-      array_push($search,"/($balouvrante.*?$balfermante)[\s\n\r]*(<r2r:$v(?:\b[^>]+)?>)/is");
+      array_push($search,"/((?:$balouvrante.*?$balfermante"."[\s\n\r]*)*)(<r2r:$v(?:\b[^>]+)?>)/is");
       array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui suit
     } elseif ($dir=="avant") {
       array_push($search,"/(<r2r:$v(?:\b[^>]+)?>)[\s\n\r]*($balouvrante.*?$balfermante)/is");
