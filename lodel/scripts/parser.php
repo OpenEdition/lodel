@@ -462,8 +462,8 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
 ?>'.$contents[BEFORE].'<?
     do {
       $context=array_merge ($generalcontext,$row);
-      $context[count]=$count;
-      $count++;';
+      $count++;
+      $context[count]=$count;';
   // gere le cas ou il y a un premier
   if ($contents[DOFIRST]) {
     $fct_txt.=' if ($count==1) { '.$contents[META_DOFIRST].$contents[EXTRACT_DOFIRST].' ?>'.$contents[DOFIRST].'<? continue; }';
@@ -475,7 +475,7 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
     $fct_txt.=$contents[META_DO].$contents[EXTRACT_DO].' ?>'.$contents["DO"].'<?    } while ($row=mysql_fetch_assoc($result));
 ?>'.$contents[AFTER].'<?  } ';
 
-  if ($ret[ALTERNATIVE]) $fct_txt.=' else {?>'.$ret[ALTERNATIVE].'<?}';
+  if ($contents[ALTERNATIVE]) $fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?}';
 
     $fct_txt.='
  mysql_free_result($result);
