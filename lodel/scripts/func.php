@@ -420,10 +420,28 @@ function makeurlwithid ($id,$base="index")
 {
   if (is_numeric($base)) { $t=$id; $id=$base; $base=$t; } // exchange
 
-
-  if ($GLOBALS['idagauche']) {
-    return $base.$id.".".$GLOBALS['extensionscripts'];
+  if (defined("URI")) {
+    $uri=URI;
   } else {
+    // compat 0.7
+    if ($GLOBALS['idagauche']) $uri="leftid";
+  }
+
+  switch($uri) {
+  case 'leftid':
+    return $base.$id.".".$GLOBALS['extensionscripts'];
+    //////////
+  case 'path':
+    $result=$GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='".intval($id)."' ORDER BY degree DESC")) or dberror();
+    while(!$result->EOF) {
+      $path.="/".$result->fields['identifier'];
+      $result->MoveNext();
+    }
+    $path.="/". $GLOBALS['db']->getOne(lq("SELECT identifier FROM #_TP_entities WHERE id='".intval($id)."'"));
+    if ($GLOBALS['db']->errorno()) dberror();
+    return $base.".".$GLOBALS['extensionscripts']."?".$path;
+    //////////
+  default:
     return $base.".".$GLOBALS['extensionscripts']."?id=".$id;
   }
 }
@@ -736,6 +754,11 @@ function &getDAO($table) {
   $daoclass=$table."DAO";
   return $factory[$table]=new $daoclass;
 }
+
+/**
+ * generic DAO factory
+ *
+ */
 
 function &getGenericDAO($table,$idfield)
 

@@ -110,7 +110,7 @@ $sessionname="session$database";
 
 # type d'URL
 $extensionscripts="";      # extension .php ou .html pour les scripts accessibles par les internautes 
-$idagauche="";             # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
+define("URI","id");        # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
 
 
 # configuration du ServOO

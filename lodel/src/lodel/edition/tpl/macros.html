@@ -532,7 +532,7 @@
 		<div style="padding-top:10px;">
 			<a href="index.php?id=0"><span class="texte_edition_des_series">[@EDITION.BASE]</span></a>
 			<LOOP NAME="parentsentities">
-				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#G_TITLE]</span></a>
+				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#G_TITLE|nbsp]</span></a>
 			</LOOP>
 		</div>
 	</div>
@@ -840,7 +840,7 @@
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
 		<LOOP NAME="idparent" TABLE="entities,types" WHERE="id='[#ID]' AND types.id=idtype">
 			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid)]">[#IDENTIFIER]</a></span>&nbsp;
-			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid)]"[#G_TITLE]</a></span><br />
+			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid)]"[#G_TITLE|nbsp]</a></span><br />
 			<span class="type_parent">([#TYPE])</span>
 		</LOOP>
 	</div>
@@ -849,9 +849,9 @@
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 	<span class="titre_document">
           <IF COND="[#TPLEDITION]">
-                 " <a href="index.php?id=[#ID]">[#G_TITLE|removefootnotes]</a> "
+                 " <a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a> "
           <ELSE/>
-                 " [#G_TITLE|removefootnotes] "
+                 " [#G_TITLE|nbsp] "
            </IF>
          </span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />

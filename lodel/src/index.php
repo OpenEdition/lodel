@@ -61,6 +61,35 @@ if ($id) {
       break;
     } // switch class
   } while(0);
+} else{
+
+  $query=preg_replace("/[&?](format|clearcache)=\w+/","",$_SERVER['QUERY_STRING']);
+  if($query && !preg_match("/[^a-zA-Z0-9_\/-]/",$query)) {
+    // maybe a path to the document
+    $path=preg_split("#/#",$query,-1,PREG_SPLIT_NO_EMPTY);
+    $id=0;
+    $i=0;
+    while ($path[$i]) {
+      $join="#_TP_entities as e0";
+      $where="AND e0.identifier='".$path[$i]."'";
+      $j=1;
+
+      $i++;
+      while($path[$i] && ($i % 4) ) { // 4 join max
+	$join.=" INNER JOIN #_TP_entities as e$i ON e$i.idparent=e".($i-1).".id";
+	$where.=" AND e$i.identifier='".$path[$i]."'";
+	$i++;$j++;
+      }
+      #echo lq("SELECT e".($j-1).".id FROM ".$join." WHERE e0.idparent='".$id."' ".$where);
+      $id=$db->getOne(lq("SELECT e".($j-1).".id FROM ".$join." WHERE e0.idparent='".$id."' ".$where));
+      if ($db->errorno()) dberror();    
+    }
+    if ($id) {
+      printEntities($id,"",&$context);
+    }
+  } else {
+    // nohting to do...
+  }
 }
 
 
