@@ -64,6 +64,7 @@ function validfield(&$text,$type,$default="")
     if ($text && !preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
     break;
   case "mlstyle" :
+    $text=strtolower($text);
     $stylesarr=preg_split("/[\n,;]/",$text);
     foreach($stylesarr as $style) {
       $style=trim($style);
@@ -72,6 +73,7 @@ function validfield(&$text,$type,$default="")
     break;
   case "style" :
     if ($text) {
+      $text=strtolower($text);
       $stylesarr=preg_split("/[\n,;]/",$text);
       foreach($stylesarr as $style) {
 	if (!preg_match("/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?$/",trim($style))) return $type;
