@@ -77,7 +77,8 @@ class Parser {
 
   function parse_loop_extra(&$tables,
 			    &$tablesinselect,&$extrainselect,
-			    &$select,&$where,&$rank,&$groupby,&$having) {}
+			    &$selectparts) {}
+
   function parse_variable_extra ($prefix,$name) { return FALSE; }
   function parse_before($contents) {}
   function parse_after($contents) {}
@@ -404,9 +405,8 @@ function parse_LOOP()
 
   $name="";
   $orders=array();
-  $limit="";
-  $select="";
-  $groupby="";
+  $selectparts=array();
+
   $dontselect=array();
   $wheres=array();
   $tables=array();
@@ -457,25 +457,25 @@ function parse_LOOP()
 	$orders[]=$value;
 	break;
       case "LIMIT" :
-	if ($limit) $this->errmsg("Attribut LIMIT should occur only once in loop $name",$this->ind);
-	$limit=$value;
+	if ($selectparts['limit']) $this->errmsg("Attribut LIMIT should occur only once in loop $name",$this->ind);
+	$selectparts['limit']=$value;
 	break;
       case "GROUPBY" :
-	if ($groupby) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
-	$groupby=$value;
+	if ($selectparts['groupby']) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
+	$selectparts['groupby']=$value;
 	break;
       case "HAVING" :
-	if ($having) $this->errmsg("Attribut HAVING should occur only once in loop $name",$this->ind);
-	$having=$value;
+	if ($selectparts['having']) $this->errmsg("Attribut HAVING should occur only once in loop $name",$this->ind);
+	$selectparts['having']=$value;
 	break;
       case "SELECT" :
 	if ($dontselect) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
 	#$select=array_merge($select,preg_split("/\s*,\s*/",$value));
-	if ($select) $select.=",";
-	$select.=$value;
+	if ($selectparts['select']) $selectparts['select'].=",";
+	$selectparts['select'].=$value;
 	break;
       case "DONTSELECT" :
-	if ($select) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
+	if ($selectparts['select']) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
 	$dontselect=array_merge($dontselect,preg_split("/\s*,\s*/",$value));
 	break;
       case "REQUIRE":
@@ -503,23 +503,20 @@ function parse_LOOP()
     $this->errmsg("the name of the loop on table(s) \"".join(" ",$tables)."\" is not defined",$this->ind);
   }
 
-  $where=join(" AND ",$wheres);
-  $order=join(",",$orders);
+  $selectparts['where']=join(" AND ",$wheres);
+  $selectparts['order']=join(",",$orders);
 
   //
   $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
   $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
 
-  if (!$where) $where="1";
+  if (!$selectparts['where']) $selectparts['where']="1";
   $this->parse_loop_extra($tables,
 			  $tablesinselect,$extrainselect,
-			  $select,$where,$order,$groupby,$having);
+			  $selectparts);
+
   //
-  $where=$this->prefixTablesInSQL($where);
-  $order=$this->prefixTablesInSQL($order);
-  $groupby=$this->prefixTablesInSQL($groupby);
-  $having=$this->prefixTablesInSQL($having);
-  $select=$this->prefixTablesInSQL($select);
+  foreach($selectparts as $k=>$v) { $selectparts[$k]=$this->prefixTablesInSQL($v); }
   $extrainselect=$this->prefixTablesInSQL($extrainselect);
 
 
@@ -551,9 +548,8 @@ function parse_LOOP()
 
       $this->decode_loop_content($name,$contents,$options,$tablesinselect);
       $this->make_loop_code($name.'_'.($this->signature),$tables,
-			    $tablesinselect,$extrainselect,
-			    $select,$dontselect,
-			    $where,$order,$limit,$groupby,$having,
+			    $tablesinselect,$extrainselect,$dontselect,
+			    $selectparts,
 			    $contents,$options);
     } elseif ($this->loops[$name]['md5contents']==$md5contents) { // boucle redefinie identiquement
       // on passe le contenu... on le connait deja
@@ -686,20 +682,20 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
 
 
 function make_loop_code ($name,$tables,
-			 $tablesinselect,$extrainselect,
-			 $select,$dontselect,
-			 $where,$order,$limit,$groupby,$having,
+			 $tablesinselect,$extrainselect,$dontselect,
+			 $selectparts,
 			 $contents,$options)
 
 {
   static $tablefields; // charge qu'une seule fois
 
-  if ($where) $where="WHERE ".$where;
-  if ($order) $order="ORDER BY ".$order;
-  if ($having) $having="HAVING ".$having;
-  if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
+  if ($selectparts['where']) $selectparts['where']="WHERE ".$selectparts['where'];
+  if ($selectparts['order']) $selectparts['order']="ORDER BY ".$selectparts['order'];
+  if ($selectparts['having']) $selectparts['having']="HAVING ".$selectparts['having'];
+  if ($selectparts['groupby']) $selectparts['groupby']="GROUP BY ".$selectparts['groupby']; // besoin de group by ?
 
   // special treatment for limit when only one value is given.
+  $limit=$selectparts['limit'];
 if ($limit && strpos($limit,",")===false) {
    $offsetname="offset_".substr(md5($name),0,5);
    $preprocesslimit='
@@ -723,12 +719,13 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
 
   // traitement particulier additionnel
 
-  # c'est plus complique que ca ici, car parfois la table est prefixee par la DB.
+  # c est plus complique que ca ici, car parfois la table est prefixee par la DB.
 
   // reverse the order in order the first is select in the last.
   $tablesinselect=array_reverse(array_unique($tablesinselect));
   $table=join (', ',array_reverse(array_unique($tables)));
 
+  $select=$selectparts['select'];
   if ($dontselect) { // DONTSELECT
     // at the moment, the dontselect should not be prefixed by the table name !
     if (!$tablefields) require(TOINCLUDE."tablefields.php");
@@ -748,7 +745,6 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
   if (!$select) $select="1";
   $select.=$extrainselect;
 
-
   foreach(array("sqlfetchassoc","sqlquery","sqlerror","sqlfree","sqlnumrows") as $piece) {
     if (!isset($options[$piece])) $options[$piece]=$this->codepieces[$piece];
   }
@@ -760,7 +756,7 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
 //
   $this->fct_txt.='function loop_'.$name.' ($context)
 {'.$preprocesslimit.'
- $query="SELECT '.$select.' FROM '."$table $where $groupby $having $order $limit".'"; #echo htmlentities($query);
+ $query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; #echo htmlentities($query);
   $result='.sprintf($options['sqlquery'],'$query').sprintf($options['sqlerror'],'$query','$name').';
 '.$postmysqlquery.'
  $context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'],'$result').';
