@@ -1575,6 +1575,28 @@
 	</IF>
 </DEFMACRO>
 
+<DEFMACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
+	<IF COND="![#TEXTEPUBLIE]">
+		<MACRO NAME="PNG_STATUT_HORLOGE">
+	<ELSE/>
+		<IF COND="[#STATUS]==-32">
+			<MACRO NAME="PNG_STATUT_BROUILLON">
+		<ELSE/>
+			<IF COND="[#STATUS]==-1">
+				<MACRO NAME="PNG_STATUT_PRET">
+			<ELSE/>
+				<IF COND="[#STATUS]==1">
+					<MACRO NAME="PNG_STATUT_PUBLIE">
+				<ELSE/>
+					<IF COND="[#STATUS]==32">
+						<MACRO NAME="PNG_STATUT_PROTEGE">
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+
 <DEFMACRO NAME="AJOUTER_UNE_SERIE">
 	<div class="ligne_ajouter_serie">
 		<MACRO NAME="PNG_MOINS">
@@ -1822,7 +1844,7 @@
 		<ELSE/>
 			<div class="ligne_document_isole2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
 			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			</div>
@@ -1836,7 +1858,7 @@
 		<ELSE/>
 			<div class="ligne_document_regroupement2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
 			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			</div>
@@ -2146,6 +2168,10 @@
 
 <DEFMACRO NAME="PNG_STATUT_PROTEGE">
 	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publié protégé" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_HORLOGE">
+	<img src="[#SHAREURL]/images/statut_horloge.png" class="picto_gauche" width="23" height="24" alt="Programmateur" />
 </DEFMACRO>
 
 <!-- png plié/déplié -->

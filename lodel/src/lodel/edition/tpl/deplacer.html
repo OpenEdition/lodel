@@ -3,14 +3,50 @@
 <title>Déplacer une publication</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<h1>Cliquez sur la publication dans laquelle vous souhaitez déplacer votre document.</h1>
+<!--<h1>Cliquez sur la publication dans laquelle vous souhaitez déplacer votre document.</h1>
 <br /><br />
-<!-- CETTE BOUCLE  AFFICHE LES PUBLICATIONS -->
+<!- CETTE BOUCLE  AFFICHE LES PUBLICATIONS ->
 <LOOP NAME="Deplace_document" TABLE="publications" WHERE="parent='[#ID]'">
-<!-- FONCTION "LET" UTILISANT UNE VALEUR RECURSIVE -->
+<!- FONCTION "LET" UTILISANT UNE VALEUR RECURSIVE ->
 <LET VAR="TOTO">..[#TOTO][#TOTO]</LET>
 [#TOTO]<a href="deplacer.php?iddocument=[#IDDOCUMENT]&publication=[#ID]&url_retour=[(#URL_RETOUR|urlencode)]"><FONT COLOR="BLACK">[#NOM]</FONT></a>,<Font size="-2">([#TYPE])</font><br />
-<!-- CETTE BOUCLE IMBRIQUEE AFFICHE LES SOUS-PUBLICATIONS -->
+<!- CETTE BOUCLE IMBRIQUEE AFFICHE LES SOUS-PUBLICATIONS ->
 <LOOP NAME="Deplace_document"></LOOP>
-</LOOP>
+</LOOP>-->
+
+	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
+		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
+		<div style="padding-top:25px;">
+			<span class="texte_ligne_haut_tpl_publication">
+				Déplacer le document
+			</span>
+		</div>
+	</div>
+	
+	<div class="ligne_parent_tpl_publication">
+		<div class="texte_normal">Cliquez sur la publication dans laquelle vous souhaitez déplacer votre document</div>
+	</div>
+
+	<table class="table_form_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+				<LOOP NAME="Deplace_document" TABLE="publications" WHERE="parent='[#ID]'">
+					<!-- Fonction "LET" utilisant une valeur récursive -->
+					<LET VAR="TOTO">..[#TOTO][#TOTO]</LET>
+					[#TOTO]
+					<a href="deplacer.php?iddocument=[#IDDOCUMENT]&publication=[#ID]&url_retour=[(#URL_RETOUR|urlencode)]">
+						<FONT COLOR="BLACK">[#NOM]</FONT>
+					</a>,
+					<Font size="-2">([#TYPE])</font><br />
+					<!-- Cette boucle imbriquée affiche les sous publications -->
+					<LOOP NAME="Deplace_document"></LOOP>
+				</LOOP>
+			</td>
+		</tr>
+	</table>
+
+	<div class="pied_de_formulaire">
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='fonctionsavancees.php?id=[#IDDOCUMENT]';" />
+	</div>
+
 <MACRO NAME="CLOSE_HTML">
