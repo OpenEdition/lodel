@@ -167,12 +167,13 @@
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
+<table border="0" cellspacing="0" cellpadding="0" width="561"  bgcolor="#ffffff">
 <tr>
 	<td  valign="middle"  background-color="#9C3234">
 		<table  width="561" valign="middle" bgcolor="#9C3234">
 			<tr>
 				<td class="titre2">
-		 			 Sommaire du numéro <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> 
+		 			 Sommaire du numéro <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
 		 		</td>
 			</tr>
 			<tr>
@@ -191,15 +192,13 @@
 			</tr>
 		</table>
 	</td>
-	<td>
-	<MACRO NAME="BOUTON_EDITER_PUBLICATION">
-	</td>
 </tr>
 <tr>
 	<td class="introduction" backgroundcolor="#FFFFFF">
 		<MACRO NAME="INTRODUCTION_COMPLETE">
 	</td>
-</tr>					
+</tr>
+</table>					
 
 </DEFMACRO>
 
@@ -716,8 +715,18 @@
 <!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
 <!-- <MACRO NAME="PRESENTER_REGROUPEMENTS">                             -->
 <!-- ****************************************************************** -->
-	<MACRO NAME="PRESENTER_DOCUMENTS">
-	<MACRO NAME="PRESENTER_REGROUPEMENTS">
+	<table width="561" align="left">
+	<tr>
+		<td>
+			<MACRO NAME="PRESENTER_DOCUMENTS">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<MACRO NAME="PRESENTER_REGROUPEMENTS">
+		</td>
+	</tr>
+	</table>
 </DEFMACRO>
 
 <DEFMACRO NAME="PRESENTER_DOCUMENTS">
@@ -729,11 +738,11 @@
 <!-- ****************************************************************** -->
 	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
 	<BEFORE>
-		<table width="95%" border="0" align="center">
+		<table width="95%" border="0" align="left" cellspacing="4">
 	</BEFORE>
 	<CORPS>
 		<tr> 
-			<td class="texte_sommaire" valign="top"> 
+			<td valign="top" bgcolor="#F7F7F7"> 
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 			</td>
 		</tr>
@@ -754,20 +763,31 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<CORPS>
-			<table width="95%" border="0" align="center">
+			<table width="95%" border="0" align="left">
 				<tr>
-					<td valign="top" class="regroupement">
-						<MACRO NAME="FILET_1">
+					<td valign="top" width="561" height="15" bgcolor="#ffffff">
+						<img src="images/spacer.gif" width="561" height="15"  border="0">
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" class="titre2" bgcolor="#9C3234">
+						
 							<IF COND="[#TITRE]">
 								[#TITRE]
-								<br />
+								
 							</IF>
+							
 							<IF COND="[#NOM]">
 								[#NOM]
 								<br />
 							</IF>
-						<MACRO NAME="FILET_1">
+						
 						<br />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="561" height="15" bgcolor="#ffffff">
+						<img src="images/spacer.gif" width="561" height="15"  border="0">
 					</td>
 				</tr>
 				<tr>
@@ -793,14 +813,11 @@
 <!-- dans le sommaire.                                                  -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TYPE]=='article_vide'">
-		<span style="color:Black;">
-			[#TITRE]
-		</span>
+	
+		[#TITRE]
 	<ELSE/>
-		<a href="document.html?id=[#ID]">
-			<span style="color:Black;">
-				[#TITRE]
-			</span>
+		<a class="menu2" href="document.html?id=[#ID]">
+			[#TITRE]
 		</a>
 	</IF>
 </DEFMACRO>
@@ -844,27 +861,24 @@
 		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 			<FIRST>
-				<a href="auteur.html?id=[#ID]">
-					<span style="color:Black;">
+				<a class="auteur" href="auteur.html?id=[#ID]">
+					
 						[#PRENOM]
 						[#NOMFAMILLE]
-					</span>
+					
 				</a>
 			</FIRST>
 			<CORPS>
-				,<a href="auteur.html?id=[#ID]">
-					<span style="color:Black;">[#PRENOM]
+				,<a class="auteur" href="auteur.html?id=[#ID]">
+						[#PRENOM]
 						[#NOMFAMILLE]
-					</span>
 				</a>
 			</CORPS>
 			<LAST>
 				et 
-				<a href="auteur.html?id=[#ID]">
-					<span style="color:Black;">
+				<a class="auteur" href="auteur.html?id=[#ID]">
 						[#PRENOM]
 						[#NOMFAMILLE]
-					</span>
 				</a>
 			</LAST>
 			<AFTER>
@@ -1128,8 +1142,8 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#LANG]!=''">
 		<IF COND="[#TYPE]!='presentation'">
-			<a href="document.html?id=[#ID]">
-				<span style="color:Black;">
+			<a class="texte_integral" href="document.html?id=[#ID]">
+				
 					[Texte intégral
 					<IF COND="[#TEXTEPUBLIE]">
 						]

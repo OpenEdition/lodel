@@ -1,5 +1,22 @@
+A.bouton_statut_publierOFF
+{
+	/*  
+	 * Style des boutons qui servent à modifier le statut d'une publication. 
+	 */
+	color: blue;
+	font-size: xx-small;
+		
+}
 
-
+.bouton_statut_publierON
+{
+	/*  
+	 * Style des boutons qui servent à modifier le statut d'une publication. 
+	 */
+	color: red;
+	font-size: xx-small;
+	
+}
 
 p
 {
@@ -69,6 +86,8 @@ sup
 	 */
 	width: 100%;
 }
+
+
 
 .introduction
 {
@@ -340,22 +359,30 @@ sup
 
 
 
-/*  Les liens Hypertexte
- *  hover: quand le curseur survole le lien
- *  link: lien non-visité
- *  visited: lien visité
- *  active: lien activé
- *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit 
- *	placer un class dans la balise <a href>:
- *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les 
- *  états du lien (active, hover...).
+/*********************************************************************************************
+ *  Les liens Hypertexte                                                                     * 
+ *                                                                                           *
+ *  hover: quand le curseur survole le lien                                                  * 
+ *  link: lien non-visité                                                                    *
+ *  visited: lien visité                                                                     *
+ *  active: lien activé                                                                      *
+ *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit    *
+ *	placer un class dans la balise <a href>:                                                 *
+ *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les        * 
+ *  états du lien (active, hover...).                                                        *
+ *********************************************************************************************
  */
 
  
- /*	style des liens par défaut
+ /********************************************************************************************
+  *	style des liens par défaut                                                               *
+  ********************************************************************************************
   */
- 
- A {
+  
+   A {
+   	/*  
+	 *	Styles des liens non visités et visités
+	 */
 	font-size: x-small;
 	font-weight: small;
 	text-decoration:none;
@@ -364,6 +391,9 @@ sup
 }
 
 A:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
 	font-size: x-small;
 	font-weight: small;
 	text-decoration:none;
@@ -372,6 +402,9 @@ A:hover {
 }
 
 A:active {
+	/*  
+	 *	Style des liens actifs
+	 */
 	font-size: x-small;
 	font-weight: small;
 	text-decoration:none;
@@ -379,11 +412,56 @@ A:active {
 	font-family: arial, helvetica, sans-serif;
 }
 
- /*	style des liens pointant vers les auteurs
-  */ 
+
+/***************************************************************************************
+ *	Les liens de class "Titre2"                                                         *
+ ***************************************************************************************
+ */
+
+A.titre2 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: 10 pt;
+	font-weight: bold;
+	color: #cccccc;
+	font-family: arial, helvetica, sans-serif;
+	text-indent : 10;
+}
+
+A.titre2:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #ffffff;
+	font-family: arial, helvetica, sans-serif;
+}
+A.titre2:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #ffffff;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+
+/*****************************************************************************
+ *	style des liens pointant vers les auteurs                                *
+ *****************************************************************************
+ */ 
  
 A.auteur {
-	font-size: 10 pt;
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #9C3234;
@@ -392,7 +470,10 @@ A.auteur {
 
 
 A.auteur:hover {
-	font-size: 10 pt;
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #666666;
@@ -400,17 +481,28 @@ A.auteur:hover {
 }
 
 A.auteur:active {
-	font-size: 10 pt;
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #666666;
 	font-family: arial, helvetica, sans-serif;
 }
 
- /*	style des liens des menus de la barre de navigation
-  */
+
+
+/*	**************************************************************************
+ *	style des liens de class "menu1"                                         *
+ *	**************************************************************************
+ */
+ 
 
 A.menu1 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
 	font-size: 9 pt;
 	text-decoration:none;
 	font-weight: bold;
@@ -419,6 +511,9 @@ A.menu1 {
 } 
 
 A.menu1:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
  	font-size: 9 pt;
 	text-decoration:none;
 	font-weight: bold;
@@ -426,15 +521,29 @@ A.menu1:hover {
 	font-family: arial, helvetica, sans-serif;
 } 
 A.menu1:active {
-	font-size: 9 pt;
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #333333;
 	font-family: arial, helvetica, sans-serif;
 } 
 
+
+/* ****************************************************************************
+ *	Styles des liens de class "Menu2".									      *
+ *	***************************************************************************
+ */
+
+
+
 A.menu2 {
-	font-size: 9 pt;
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #666666;
@@ -442,7 +551,10 @@ A.menu2 {
 } 
 
 A.menu2:hover {
- 	font-size: 9 pt;
+	/*  
+	 *	Styles des liens survolés
+	 */
+ 	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #333333;
@@ -450,12 +562,63 @@ A.menu2:hover {
 } 
 
 A.menu2:active {
-	font-size: 9 pt;
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
 	text-decoration:none;
 	font-weight: bold;
 	color: #333333;
 	font-family: arial, helvetica, sans-serif;
 } 
+
+
+	
+	
+/*  *****************************************************************************
+ *	Styles des liens qui pointent vers les textes intégraux dans les sommaires.	*
+ *	*****************************************************************************
+ */
+
+
+
+A.texte_integral {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #666666;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+
+A.texte_integral:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+A.texte_integral:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+
+}
+
+
+
 
  /*	style des liens 
   */
@@ -484,31 +647,7 @@ A.petittexte:active {
 	font-family: arial, helvetica, sans-serif;
 }
 
- /*	style des liens des titre2
-  */
 
-A.titre2 {
-	font-size: 10 pt;
-	font-weight: bold;
-	color: #cccccc;
-	font-family: arial, helvetica, sans-serif;
-	text-indent : 10;
-}
-
-A.titre2:hover {
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #ffffff;
-	font-family: arial, helvetica, sans-serif;
-}
-A.titre2:active {
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #ffffff;
-	font-family: arial, helvetica, sans-serif;
-}
 
 
 

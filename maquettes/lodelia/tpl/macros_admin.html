@@ -35,15 +35,11 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#EDITEUR]">
 		<IF COND="[#OFFLINE]">
-			<a href="lodel/edition/publi.php?id=[#ID]&online=1">
-				<font size="-2">
-					<span style="color:Blue;">[OFF]</span>
-				</font>
+			<a class="bouton_statut_publierOFF" href="lodel/edition/publi.php?id=[#ID]&online=1">
+				<span class="bouton_statut_publierOFF">[OFF]</span>
 			</a>
 		<ELSE/>
-			<font size="-2">
-				<span style="color:Red;">[ON]</span>
-			</font>
+				<span class="bouton_statut_publierON">[ON]</span>
 		</IF>
 	</IF>
 </DEFMACRO>
@@ -83,7 +79,7 @@
 <!-- afin d'éditer une publication.                                     -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<a class="admin" href="lodel/edition/index.php?id=[#ID]">
+		<a class="titre2" href="lodel/edition/index.php?id=[#ID]">
 			<span class="texte_trespetit">[E]</span>
 		</a>
 	</IF>
