@@ -124,12 +124,10 @@ Base de données :
 </td></tr>
 <?php if ($installoption>1) { // OPTION superieure a 1 ?>
 <tr><td>
-Base de données unique pour tous les sites:<br>
-<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>>
+<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>> Base de données unique pour tous les sites.
 </td></tr>
 <tr><td>
-Préfixe des tables:<br>
-<input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
+Préfixe des tables: <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
 </td></tr>
 <?php } ?>
 </table><br />
