@@ -43,6 +43,13 @@ $javapath="/usr/java/j2sdk1.4.1_02";
 # directory to the OpenOffice classes.
 $openofficeclassespath="/usr/local/OpenOffice.org1.1.0/program/classes";
 
+# timeout for the OO converter.
+define("DOCUMENTCONVERTER_TIMEOUT",10);
+
+# log file when the documentconverter fail
+define("DOCUMENTCONVERTER_LOGFILE","/tmp/servoo-log");
+
+
 # version d'OpenOffice
 define("OPENOFFICEVERSION","1.1");
 
