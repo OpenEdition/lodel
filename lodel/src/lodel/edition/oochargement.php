@@ -29,7 +29,7 @@ if ($htmlfile && $htmlfile!="none") {
     //
 
     include_once($home."balises.php");
-    if ($sortieoo2 || $sortie2) $oo2=TRUE;
+    if ($sortieoo2 || $sortiexmloo2 || $sortie2) $oo2=TRUE;
     if ($oo2) {
       $newname=OO2($htmlfile,$context);
     } else {
@@ -257,6 +257,7 @@ function OO2 ($uploadedfile,&$context)
   system("/usr/bin/unzip -d $tmpdir $uploadedfile.sxw content.xml 2>$errfile") or die("probleme avec unzip<br>".@join("",@file($errfile)));
   $content=join("",file("$tmpdir/content.xml"));
   echo "<br>";
+  if ($GLOBALS[sortiexmloo2]) { echo htmlentities($content); exit(); }
   // lit et modifie le fichier content.xml
   processcontent($content);
 
