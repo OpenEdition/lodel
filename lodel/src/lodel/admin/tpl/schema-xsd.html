@@ -1,4 +1,3 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 <!--
 
    LODEL - Logiciel d'Edition ELectronique.
@@ -19,22 +18,26 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
 
+<xsd:schema targetNamespace="http://www.lodel.org"
+                xmlns="http://www.lodel.org"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:xhtml="http://www.w3.org/2002/08/xhtml"
+                elementFormDefault="qualified">
 
-                       targetNamespace="http://www.lodel.org"
-                       xmlns="http://www.lodel.org"
-                       elementFormDefault="qualified">
+<xsd:import namespace="http://www.w3.org/2002/08/xhtml"
+                schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
 
 <!-- structure general du document -->
-    <xsd:element name="document">
-	<xsd:complexType>
+    <xsd:element name="document" type="documentType"/>
+	<xsd:complexType name="documentType">
             <xsd:sequence>
 	<!-- les groupes de personnes -->
     	<LOOP NAME="typepersonnes" TABLE="typepersonnes" WHERE="statut gt 0" ORDER="ordre">
 		<DO>
-                <xsd:element ref="gr[#TYPE]" minOccurs="0" maxOccurs="1">
+                <xsd:element name="gr[#TYPE]" minOccurs="0" maxOccurs="1">
 		     <xsd:complexType>
 		       <xsd:sequence>
-		           <xsd:element ref="[#TYPE]" type="typePersonne" minOccurs="1" maxOccurs="unbounded" />
+		           <xsd:element name="[#TYPE]" ref="typePersonne" minOccurs="1" maxOccurs="unbounded" />
 		       </xsd:sequence>
 		     </xsd:complexType>
 		</xsd:element>
@@ -43,10 +46,10 @@
 	<!-- les groupes d'entrees -->
     	<LOOP NAME="typeentrees" TABLE="typeentrees" WHERE="statut gt 0" ORDER="ordre">
 	      	<DO>
-                <xsd:element ref="gr[#TYPE]"  minOccurs="0" maxOccurs="1">
+                <xsd:element name="gr[#TYPE]" minOccurs="0" maxOccurs="1">
 		     <xsd:complexType>
 		       <xsd:sequence>
-		           <xsd:element ref="[#TYPE]" type="typeEntree" minOccurs="1" maxOccurs="unbounded" />
+		           <xsd:element name="[#TYPE]" ref="typeEntree" minOccurs="1" maxOccurs="unbounded" />
 		       </xsd:sequence>
 		     </xsd:complexType>
 		</xsd:element>
@@ -63,36 +66,36 @@
 		<LOOP NAME="champs" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
 	    		<DO>
 				<IF COND="[#TYPE] eq 'boolean'">
-				<xsd:element ref="[#NOM]" type="xsd:boolean"/>
+				<xsd:element name="[#NOM]" type="xsd:boolean"/>
 				<ELSE/>
 				<IF COND="[#TYPE] eq 'mltext'">
-				<xsd:element ref="[#NOM]" type="TexteMultiLangue"/>
+				<xsd:element name="[#NOM]" type="TexteMultiLangue"/>
 				<ELSE/>
   	        		<IF COND="[#TYPE] eq 'lang'">
-				<xsd:element ref="[#NOM]" type="xsd:language"/>
+				<xsd:element name="[#NOM]" type="xsd:language"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'date'">
-				<xsd:element ref="[#NOM]" type="xsd:date"/>
+				<xsd:element name="[#NOM]" type="xsd:date"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'datetime'">
-				<xsd:element ref="[#NOM]" type="xsd:dateTime"/>
+				<xsd:element name="[#NOM]" type="xsd:dateTime"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'time'">
-				<xsd:element ref="[#NOM]" type="xsd:time"/>
+				<xsd:element name="[#NOM]" type="xsd:time"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'int'">
-				<xsd:element ref="[#NOM]" type="xsd:int"/>
+				<xsd:element name="[#NOM]" type="xsd:int"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'numeric'">
-				<xsd:element ref="[#NOM]" type="xsd:double"/>
+				<xsd:element name="[#NOM]" type="xsd:double"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'image'">
-				<xsd:element ref="[#NOM]" type="xsd:anyUrl"/>
+				<xsd:element name="[#NOM]" type="xsd:anyUrl"/>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'fichier'">
-				<xsd:element ref="[#NOM]" type="xsd:anyUrl"/>
+				<xsd:element name="[#NOM]" type="xsd:anyUrl"/>
 				<ELSE/>
-				<xsd:element ref="[#NOM]" type="xsd:string"/>
+				<xsd:element name="[#NOM]" type="xsd:string"/>
 				</IF>
 				</IF>
 				</IF>
@@ -114,9 +117,9 @@
 
 
 
-		<xsd:element ref="meta">
+		<xsd:element name="meta">
 			<xsd:complexType>
-				<xsd:element ref="typedoc">
+				<xsd:element name="typedoc">
 					<xsd:simpleType>
 						<xsd:restriction base="xsd:string">
 						<LOOP NAME="typedoc" TABLE="types" WHERE="classe='documents' AND statut gt 0">
@@ -130,7 +133,7 @@
 
             </xsd:sequence>
         </xsd:complexType>
-    </xsd:element> <!-- element document -->
+    <!-- element document -->
 
 
 
@@ -138,21 +141,21 @@
 
     <xsd:complexType name="typePersonne">
             <xsd:sequence>
-	        <xsd:element ref="prefix" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-		<xsd:element ref="nomfamille" type="xsd:string"/>
-		<xsd:element ref="prenom" type="xsd:string"/>
+	        <xsd:element name="prefix" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="nomfamille" type="xsd:string"/>
+		<xsd:element name="prenom" type="xsd:string"/>
 
-	        <xsd:element ref="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-		<xsd:element ref="fonction" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-	        <xsd:element ref="affiliation" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-	        <xsd:element ref="courriel" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	        <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="fonction" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	        <xsd:element name="affiliation" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	        <xsd:element name="courriel" type="xsd:string" minOccurs="0" maxOccurs="1"/>
             </xsd:sequence>
     </xsd:complexType>
 
     <xsd:complexType name="typeEntree">
             <xsd:sequence>
-		<xsd:element ref="nom" type="xsd:string"/>
-		<xsd:element ref="abrev" type="xsd:string"/>
+		<xsd:element name="nom" type="xsd:string"/>
+		<xsd:element name="abrev" type="xsd:string"/>
             </xsd:sequence>
     </xsd:complexType>
 
@@ -161,11 +164,11 @@
 <!-- type TexteMultiLangue -->
     <xsd:complexType name="TexteMutliLangue">
             <xsd:sequence>
-	        <xsd:element ref="ml" type="xsd:string" minOccurs="1" maxOccurs="unbounded">
+	        <xsd:element name="ml" type="xsd:string" minOccurs="1" maxOccurs="unbounded">
 			<xsd:complexType>
 				<xsd:simpleContent>
             				<xsd:extension base="xsd:string">
-					        <xsd:attribute ref="lang" type="xsd:language" use="required"/>
+					        <xsd:attribute name="lang" type="xsd:language" use="required"/>
             				</xsd:extension>
         			</xsd:simpleContent>
     			</xsd:complexType>
