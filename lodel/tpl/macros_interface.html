@@ -455,7 +455,7 @@ cp_[#NAME].writeDiv();
 	<ELSE/>
 	<!--[ -----------[ MULTIPLE SELECT ]---------- ]-->
 	<IF COND="[#EDITION] EQ 'multipleselect'">
-		<select multiple="multiple" style="width:250px" id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]>
+		<select multiple="multiple" size="10" style="width:250px" id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
