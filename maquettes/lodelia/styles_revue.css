@@ -174,9 +174,10 @@ sup
 	/*  
 	 *
 	 */
-	font-size: x-small;
+	font-size: small;
 	font-weight: small;
 	text-align : center;
+	font-color : #9C3234;
 	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
@@ -235,7 +236,7 @@ sup
 	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
 	font-weight : bold;
 	text-align: left; 
-	text-indent: 10;
+	margin-left: 10;
 	color: #9C3234;
 	line-height: 150%;
 }
@@ -422,11 +423,11 @@ A.titre2 {
 	/*  
 	 *	Styles des liens non visités et visités
 	 */
-	font-size: 10 pt;
+	font-size: small;
 	font-weight: bold;
 	color: #cccccc;
 	font-family: arial, helvetica, sans-serif;
-	text-indent : 10;
+	margin-left : 10;
 }
 
 A.titre2:hover {
@@ -796,12 +797,20 @@ body
 	 margin-right : 0;
 }
 
-.titre2 {
+.titre1 {
+	font-size: medium;
+	font-weight: bold;
+	color: #9C3234;
+	background-color: #E0E0E0;
+	font-family: arial, helvetica, sans-serif;
+}
+
+.regroupement2 {
 	font-size: small;
 	font-weight: bold;
-	color: #ffffff;
+	color: #cccccc;
+	background-color: #9C3234;
 	font-family: arial, helvetica, sans-serif;
-	text-indent : 10;
 }
 
 .section1

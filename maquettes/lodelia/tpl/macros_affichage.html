@@ -10,6 +10,7 @@
 <!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
+<!-- <MACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">             -->
 <!-- <MACRO NAME="PARU_DANS">                                           -->
 <!-- <MACRO NAME="PARU_DANS_SIMPLE">                                    -->
 <!-- <MACRO NAME="PARU_DANS_SIGNALER">                                  -->
@@ -35,6 +36,7 @@
 <!-- <MACRO NAME="LISTER_THEMES">                                       -->
 <!-- <MACRO NAME="DERNIER_NUMERO">                                      -->
 <!-- <MACRO NAME="SOMMAIRE_DERNIER_NUMERO">                             -->
+<!-- <MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">                  -->
 <!-- <MACRO NAME="DERNIER_THEME">                                       -->
 <!-- <MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">                          -->
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
@@ -103,12 +105,10 @@
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
 	<IF COND="[#NOM]">
-		<span class="titre2">
-			<a class="titre2" href="index.html">
+		
 				
 					[#NOM]
-				</span>
-			</a>
+				
 		
 	<ELSE/>
 		<span class="titre_centre">
@@ -127,9 +127,9 @@
 <!-- Affiche, s'il existe, le titre d'une publication.                  -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TITRE]">
-		<a class="titre2" href="index.html">
+		
 		[#TITRE]
-		</a>
+		
 	</IF>
 </DEFMACRO>
 
@@ -167,26 +167,26 @@
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
-<table border="0" cellspacing="0" cellpadding="0" width="561"  bgcolor="#ffffff">
+<table border="0" cellspacing="0" cellpadding="0" width="100%"  background-color="#ffffff">
 <tr>
-	<td  valign="middle"  background-color="#9C3234">
-		<table  width="561" valign="middle" bgcolor="#9C3234">
+	<td  valign="middle">
+		<table  width="100%" valign="middle" cellspacing="0" cellpadding="0">
 			<tr>
-				<td class="titre2">
-		 			 Sommaire du numéro <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
+				<td width="561" class="titre1">
+		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
 		 		</td>
 			</tr>
 			<tr>
-				<td class="titre2">
+				<td width="561" class="titre1">
 		 <MACRO NAME="SOUSTITRE_PUBLICATION">
 		 		</td>
 			</tr>
 		 	<tr>
-				<td class="titre2">
+				<td width="561" class="titre1">
 		 	<IF COND="[#DIRECTEUR]!=''">
-					<span class="directeur_centre">
+					
 						<MACRO NAME="DIRECTEUR_PUBLICATION">
-					</span>	
+					
 			</IF>
 				</td>
 			</tr>
@@ -200,6 +200,48 @@
 </tr>
 </table>					
 
+</DEFMACRO>
+
+<DEFMACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Crée un bloc qui affiche le titre du numéro ou du thème, sauf s'il -->
+<!-- est vide, auquel cas il affiche le nom de la revue. Affiche        --> 
+<!-- également le texte d'introduction, s'il existe, avec une lettrine. -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
+<!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
+<!-- <MACRO NAME="TITRE_PUBLICATION">                                   -->
+<!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
+<!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
+<!-- ****************************************************************** -->
+<table border="0" cellspacing="0" cellpadding="0" width="561"  bgcolor="#ffffff">
+<tr>
+	<td  valign="middle"  background-color="#E0E0E0">
+		<table  width="561" valign="middle" background-color="#E0E0E0">
+			<tr>
+				<td class="titre1">
+		 			 Sommaire du numéro : <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
+		 		</td>
+			</tr>
+			<tr>
+				<td class="titre1">
+		 <MACRO NAME="SOUSTITRE_PUBLICATION">
+		 		</td>
+			</tr>
+		 	<tr>
+				<td class="titre1">
+		 	<IF COND="[#DIRECTEUR]!=''">
+					<span class="directeur_centre">
+						<MACRO NAME="DIRECTEUR_PUBLICATION">
+					</span>	
+			</IF>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>					
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS">
@@ -738,7 +780,7 @@
 <!-- ****************************************************************** -->
 	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
 	<BEFORE>
-		<table width="95%" border="0" align="left" cellspacing="4">
+		<table width="561" border="0" align="left" cellspacing="4">
 	</BEFORE>
 	<CORPS>
 		<tr> 
@@ -763,14 +805,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<CORPS>
-			<table width="95%" border="0" align="left">
+			<table width="561" border="0" align="left">
 				<tr>
 					<td valign="top" width="561" height="15" bgcolor="#ffffff">
 						<img src="images/spacer.gif" width="561" height="15"  border="0">
 					</td>
 				</tr>
 				<tr>
-					<td valign="top" class="titre2" bgcolor="#9C3234">
+					<td valign="top" width="561" height="15" class="regroupement2">
 						
 							<IF COND="[#TITRE]">
 								[#TITRE]
@@ -778,7 +820,8 @@
 							</IF>
 							
 							<IF COND="[#NOM]">
-								[#NOM]
+							
+							| [#NOM]
 								<br />
 							</IF>
 						
@@ -786,7 +829,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td valign="top" width="561" height="15" bgcolor="#ffffff">
+					<td valign="top" width="561" height="15" background-color="#ffffff">
 						<img src="images/spacer.gif" width="561" height="15"  border="0">
 					</td>
 				</tr>
@@ -985,6 +1028,23 @@
 	</LOOP>
 </DEFMACRO>
 
+<DEFMACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le sommaire du dernier numéro en date. (en fonction du     -->
+<!-- champs date).                                                      -->
+<!-- Cette macro fait appel aux macros suivantes :                      -->
+<!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
+<!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
+		<CORPS>
+			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
+		</CORPS>
+	</LOOP>
+</DEFMACRO>
+
+
 <DEFMACRO NAME="DERNIER_THEME">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
@@ -1071,7 +1131,7 @@
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TEXTE]">
-		<table width="95%" class="introduction">
+		<table width="561" class="introduction">
 			<tr>
 				<td>
 					<MACRO NAME="ICONE_PUBLICATION">
