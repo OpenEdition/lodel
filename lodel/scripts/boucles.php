@@ -26,6 +26,9 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+if (file_exists($home."boucles_local.php")) require_once($home."boucles_local.php");
+
 /*********************************************************************/
 /*  Boucle permettant de trouver depuis une publication toutes les   */
 /*  infos concernant la publication parente la plus haute dans       */
