@@ -29,7 +29,7 @@
 
 define("SITEROOT","../../");
 
-chdir(SITEROOT);
+if (!chdir(SITEROOT)) die ("ERROR: chdir fails");
 require("siteconfig.php");
 chdir("lodel/edition");
 

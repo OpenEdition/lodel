@@ -39,10 +39,10 @@ $fileregexp='(model)-\w+-\d+.sql';
 $importdirs=array("CACHE",$importdir,$home."../install/plateform");
 
 
-$archive=$HTTP_POST_FILES['archive']['tmp_name'];
-$context['erreur_upload']=$HTTP_POST_FILES['archive']['error'];
+$archive=$_FILES['archive']['tmp_name'];
+$context['erreur_upload']=$_FILES['archive']['error'];
 if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // Upload
-  $fichier=$HTTP_POST_FILES['archive']['name'];
+  $fichier=$_FILES['archive']['name'];
   if (!preg_match("/^$fileregexp$/",$fichier)) $fichier="model-import-".date("dmy").".sql";
 
   if (!move_uploaded_file($archive,"CACHE/".$fichier)) die("ERROR: a problem occurs while moving the uploaded file.");

@@ -111,8 +111,8 @@ function extract_post() {
   // le tableau $context
   global $home;
 	
-  foreach ($GLOBALS[HTTP_POST_VARS] as $key=>$val) {
-    if (!$GLOBALS[context][$key]) // protege
+  foreach ($_POST as $key=>$val) {
+    if (!isset($GLOBALS[context][$key])) // protege
       $GLOBALS[context][$key]=$val;
   }
   function clean_for_extract_post(&$var) {
@@ -275,7 +275,7 @@ function back()
   mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
 
   //echo "retourne: id=$id url=$currenturl";
-  header("Location: http://$GLOBALS[SERVER_NAME]$currenturl");exit;
+  header("Location: http://".$_SERVER[SERVER_NAME].$currenturl);exit;
 }
 
 
@@ -439,11 +439,13 @@ function get_PMA_define()
     // php 4.1+
     if (!empty($_SERVER['HTTP_USER_AGENT'])) {
         $HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
-    } else if (!empty($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) {
-        $HTTP_USER_AGENT = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
-    } else if (!isset($HTTP_USER_AGENT)) {
-        $HTTP_USER_AGENT = '';
     }
+
+    #} else if (!empty($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) {
+    #    $HTTP_USER_AGENT = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
+    #} else if (!isset($HTTP_USER_AGENT)) {
+    #    $HTTP_USER_AGENT = '';
+    #}
 
     // 1. Platform
     if (strstr($HTTP_USER_AGENT, 'Win')) {

@@ -39,8 +39,8 @@ $fileregexp='(site|revue)-\w+-\d+.tar.gz';
 $importdirs=array($importdir,"CACHE");
 
 
-$archive=$HTTP_POST_FILES['archive']['tmp_name'];
-$context['erreur_upload']=$HTTP_POST_FILES['archive']['error'];
+$archive=$_FILES['archive']['tmp_name'];
+$context['erreur_upload']=$_FILES['archive']['error'];
 if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // Upload
   $prefix="*";
   $fichier=$archive;

@@ -38,6 +38,15 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
 
   require($home."auth.php");
   authenticate(LEVEL_ADMINLODEL);
+
+  if ($_REQUEST[installoption]) $installoption=$_REQUEST[installoption]; // overwrite the lodelconfig
+}
+
+// import Posted variables for the Register Off case.
+// this should be nicely/safely integrated inside the code, but that's
+// a usefull little hack at the moment
+if (!((bool) ini_get("register_globals"))) { // 
+  extract($_REQUEST,EXTR_SKIP);
 }
 
 header("Content-type: text/html; charset=iso-8859-1");
@@ -62,6 +71,20 @@ if ($erase_and_option2) { $option2=true; @unlink($lodelconfig); }
 if ($option1) $installoption="1";
 if ($option2) $installoption="2";
 
+
+//
+// Test the PHP version
+//
+preg_match("/^\d+\.\d+/",phpversion(),$result);
+if (doubleval($result[0]<4.2)) {
+  probleme_version();
+  exit;
+}
+
+
+
+
+
 //
 // choix de la plateforme
 // Copie le fichier lodelconfig choisi dans le CACHE
@@ -73,8 +96,9 @@ $have_chmod=function_exists("chmod");
 
 if ($tache=="plateform") {
   $plateform=preg_replace("/[^A-Za-z_-]/","",$plateform);
+  if (!$plateform) $plateform="default";
+
   $lodelconfigplatform=$plateformdir."/lodelconfig-$plateform.php";
-  echo $lodelconfigplatforme;
   if (file_exists($lodelconfigplatform)) {
     // essai de copier ce fichier dans le CACHE
     if (!@copy($lodelconfigplatform,$lodelconfig)) { die ("problème de droits... étrange on a déjà vérifié"); }
@@ -86,15 +110,14 @@ if ($tache=="plateform") {
 
   // ok, now, let's guess the urlroot
   do { // control block
-    $me=$SERVER_[PHP_SELF];
-    if (!$me) $me=$HTTP_SERVER_VARS[PHP_SELF];
+    $me=$_SERVER[PHP_SELF];
     if (!$me) break;
     // enleve moi
     $urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
     if ($urlroot==$me) die("ERROR: the install.php script is not at the right place");
     if (LODELROOT!="../") die("ERROR: the lodeladmin has been moved, please report error");
 
-    maj_lodelconfig(array("urlroot"=>$urlroot."/","installoption"=>$installoption));
+    maj_lodelconfig(array("urlroot"=>$urlroot."/","installoption"=>intval($installoption)));
   } while (0); // end of control bock
 }
 
@@ -203,7 +226,7 @@ if ($tache=="servoo") {
 if ($tache=="downloadlodelconfig") {
   header("Content-type: application/force-download");
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-  if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) { // from phpMyAdmin
+  if (ereg('MSIE ([0-9].[0-9]{1,2})', $_SERVER['HTTP_USER_AGENT'], $log_version)) { // from phpMyAdmin
     header('Content-Disposition: inline; filename="lodelconfig.php"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');
@@ -634,4 +657,34 @@ LODEL est livré avec SANS AUCUNE GARANTIE.
 </body>
 <?php }
 
+
+function probleme_version()
+
+{
 ?>
+<hmlt>
+<head>
+      <title>Installation de LODEL</title>
+</head>
+<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
+
+<h1>Installation de LODEL</h1>
+
+
+<p align="center">
+<table width="600">
+<tr>
+  <td>
+    La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />
+    Version de php sur votre serveur: <?php echo phpversion(); ?><br />
+    Version recommandée: php 4.3 ou supérieure
+  </td>
+</table>
+</body>
+?>
+<?php }
+
+
+?>
+
+

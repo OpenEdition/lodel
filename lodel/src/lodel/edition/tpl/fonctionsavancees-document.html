@@ -154,7 +154,7 @@
 	<IF COND="[#DROITEDITEUR]">
 				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
 				<br />
-			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="ordre">
+			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="ordre" DONTSELECT="id"]>
 					<DO>
 						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_orange">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITRE]</span></a><br />						
 					</DO>

@@ -244,14 +244,10 @@ calcul_page($context,$context[tplcreation]);
 function extract_files(&$context,$classe="documents")
 
 {
-  global $HTTP_POST_FILES,$home;
+  global $home;
 
-#  echo "la";
-#  print_r($HTTP_POST_FILES);
-#  echo "ici";
-#  print_r($_FILES);
-  if (!$_FILES && !$HTTP_POST_FILES) return;
-  $files=$_FILES[entite] ? $_FILES[entite] : $HTTP_POST_FILES[entite];
+  if (!$_FILES) return;
+  $files=$_FILES[entite];
   if (!$files || !$files['tmp_name']) return;
 
 #  print_r($files);

@@ -27,10 +27,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-#echo "server:";
-#print_r($_SERVER);
-#echo "header:"; print_r(getallheaders());
-#echo "post:"; print_r($HTTP_POST_VARS);
+
 
 require("siteconfig.php");
 include ($home."auth.php");
@@ -44,8 +41,10 @@ $context[idtache]=$idtache=intval($idtache);
 $context[idtype]=intval($idtype);
 $context[lodeltags]=intval($lodeltags);
 
-if ($file1 && $file1!="none") {
+if ($_FILES['file1'] && $_FILES['file1']['tmp_name']) {
   do {
+    $file1=$_FILES['file1']['tmp_name'];
+
     // verifie que la variable file1 n'a pas ete hackee
     if (!is_uploaded_file($file1)) die(utf8_encode("Le fichier n'est pas un fichier chargé"));
 
@@ -55,7 +54,7 @@ if ($file1 && $file1!="none") {
     move_uploaded_file($file1,$source); // move first because some provider does not allow operation in the upload dir
 
     $fileconverted=$source.".converted";
-    $sourceoriginale=$HTTP_POST_FILES['file1']['name'];
+    $sourceoriginale=$_FILES['file1']['name'];
 
     list($ret,$convertretvar)=convert($source,$fileconverted);
 

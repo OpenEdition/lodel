@@ -37,13 +37,13 @@ define("LEVEL_ADMINLODEL",128);
 function authenticate ($level=0,$norecordurl=FALSE)
 
 {
-  global $HTTP_COOKIE_VARS,$context,$iduser,$userpriv,$usergroupes;
+  global $context,$iduser,$userpriv,$usergroupes;
   global $home,$urlroot,$timeout,$database,$sessionname,$site,$back;
 
-  $retour="url_retour=".urlencode($GLOBALS[REQUEST_URI]);
+  $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);
 
   do { // block de control
-    $name=addslashes($HTTP_COOKIE_VARS[$sessionname]);
+    $name=addslashes($_COOKIE[$sessionname]);
     if (!$name) break;
 
     include_once($home."connect.php");
@@ -88,14 +88,14 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if ($userpriv>=LEVEL_REDACTEUR) $context[droitredacteur]=$GLOBALS[droitredacteur]=1;
     if ($userpriv>=LEVEL_VISITEUR) $context[droitvisiteur]=$GLOBALS[droitvisiteur]=1;
     // efface les donnees de la memoire et protege pour la suite
-    $HTTP_COOKIE_VARS[session]=0;
+    $_COOKIE[$sessionname]=0;
 
     //
     // change l'expiration de la session et l'url courrante
     //
 
     // nettoie l'url
-    $url=preg_replace("/[\?&]recalcul\w+=oui/","",$GLOBALS[REQUEST_URI]);
+    $url=preg_replace("/[\?&]recalcul\w+=oui/","",$_SERVER['REQUEST_URI']);
     if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
     if (!$norecordurl) $update=", currenturl='$url'"; // si norecordurl ne change rien
 
@@ -165,29 +165,37 @@ function mkurl ($url,$extraarg)
 
 function getacceptedcharset($charset) {
 	// Détermine le charset a fournir au navigateur
-	global $HTTP_SERVER_VARS;
-	$browserversion = array (	
-						"opera" => 6,
-						"netscape" => 4,
-						"msie" => 4,
-						"ie" => 4,
-						"mozilla" => 3
-					);
+
+  $browserversion = array (	
+			   "opera" => 6,
+			   "netscape" => 4,
+			   "msie" => 4,
+			   "ie" => 4,
+			   "mozilla" => 3
+			   );
 	if (!$charset) {
 		// Si ce n'est pas envoye par l'url ou par cookie, on recupere ce que demande le navigateur.
-		if ($HTTP_SERVER_VARS["HTTP_ACCEPT_CHARSET"]) {
+		if ($_SERVER["HTTP_ACCEPT_CHARSET"]) {
 			// Si le navigateur retourne HTTP_ACCEPT_CHARSET on l'analyse et on en déduit le charset
-			if (preg_match("/\butf-8\b/i", $HTTP_SERVER_VARS["HTTP_ACCEPT_CHARSET"])) return "utf-8";
+			if (preg_match("/\butf-8\b/i", $_SERVER["HTTP_ACCEPT_CHARSET"])) return "utf-8";
 			else return "iso-8859-1";
 		// Sinon on analyse le HTTP_USER_AGENT retourné par le navigateur et si ca matche on vérifie 
 		// que la version du navigateur est supérieure ou égale à la version déclarée unicode
-		} elseif ((preg_match("/\b(\w+)\W(\d+)/i", $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $matches)) && 
+		} elseif ((preg_match("/\b(\w+)\W(\d+)/i", $_SERVER["HTTP_USER_AGENT"], $matches)) && 
 				($matches[2] >= $browserversion[strtolower($matches[1])])) {
 			return "utf-8";
 		} else return "iso-8859-1"; // Si on a rien trouvé on renvoie de l'iso
 	}
 	else return $charset;
 }
+
+// import Posted variables for the Register Off case.
+// this should be nicely/safely integrated inside the code, but that's
+// a usefull little hack at the moment
+if (!((bool) ini_get("register_globals"))) { // 
+  extract($_REQUEST,EXTR_SKIP);
+}
+
 
 // securite... initialisation
 $userpriv=0;
@@ -200,8 +208,10 @@ $context=array(
 	       "version" => doubleval($version),
 	       "shareurl"=>$GLOBALS[shareurl],
 	       "extensionscripts"=>$GLOBALS[extensionscripts],
-	       "currenturl"=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
+	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
 	       ); // tres important d'initialiser le context.
+
+
 $droitadminlodel=0;
 $droitadmin=0;
 $user=0;
