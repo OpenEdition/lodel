@@ -41,5 +41,54 @@ De meme on a call_user_func("code_avant_$funcname",$localcontext); et call_user_
 * lodel/scripts/parser.php modifie pour le probleme des boucles si dessus et pour le repertoire share/macros
 
 
+19/03/03
+
+* (Anne) Les styles (.dot) title et subtitle sont converti automatiquement en francais lors de l'importation de fichier rtf (document ou sommaire). Ceci les rendu compatible avec lodel. Si on veut a l'avenir precise la langue sur le titre, il faudra distinguer title de titre.
+
+* (Anne) Dans lodel_sommaire.dot, je prefere motcles au pluriel. Comme ca c'est compatible avec lodel.dot
+
+* Suppression des balises recension_* dans la mesure ou elles ne servent a rien en ce moment et doivent etre longuement discutee.
+
+* Il faut definir les styles pour les resumes et les motcles dans langues.php uniquement. La gestion de la langues pour les motcles n'est pas encore geree, mais ca va venir.
+
+
+* Dans tpl/chkbalisages.html
+les lignes pour abandonner et continue sont changees:
+ <div align="center"><A HREF="abandon.php?id=[#ID]">&lt; Abandonner</A> | <A HREF="[#URLSUITE]">Continuer &gt;</A>
+
+
+* Lors de l'importation des sommaires, je me sers de balises auteurs pour separer les differents articles (ou documents). Par consequent, preciser un auteur est obligatoire et est obligatoirement au debut. Si vous souhaitez un autre systeme, il est encore temps.
+
+* actuellement l'importation d'image dans les documents d'une importation massive n'est pas geree. C'est en principe possible de le faire dans l'avenir.
+
+* j'ai ajoute une fonction pour supprimer les sauts de ligne dans les formulaires qui font croire qu'on a qu'une partie du champ (en regardant le source on voit qu'il y a une deuxieme ligne). Il faut bien verifie que cette modif ne pose pas de probleme. Elle affecte tous les champs rentres dans des formulaires.
+
+* il y avait un bug dans calcul-pages qui faisait que le tempate etait recompiler a chaque fois !!!!
+
+20/03/03
+
+* Il va s'en  dire qu'avec le systeme choisi, tout style supporte dans l'import de document, fonctionne dans l'import de sommaire (car on utilise extrainfo).
+
+* Correction d'un bug qui empechait l'importation de certains fichiers (ceux qui se termine sur un article et non par un regroupement).
+
+* Le systeme ne peut pas generer les regroupements vides en l'etat (car lodel regroupe les paragraphes de meme style quand ils sont contigues). Il faut donc mettre entre les deux un espace tage differement. Une solution est de mettre un mot cle, genre "vide". L'ensentiel n'est pas le mot, mais le style de ce paragraphe intermediaire. Une autre solution serait de supposer que deux paragraphes de regroupement signifie que c'est deux regroupements. Si vous avez une autre idee...
+
+* le fichier rtf est stocke dans rtf/r2r-publi-xxx.rtf ou xxx est l'idee du numero. Le fichier xml n'est pas stocke, mais le fichier xml correspondant a chaque document est stocke.
+
+* pour adapter l'affichage dans extrainfo.php et publication.php quand on est en importation de sommaire, vous disposez de la variable [#IMPORTSOMMAIRE]. Elle est vrai ou fausse, il suffit de la tester avec un IF. Un exemple d'utilisation est dans extrainfo.html
+Pour que ca marche correctement, il faut ajouter la ligne <INPUT TYPE="hidden" NAME="importsommaire" VALUE="[#IMPORTSOMMAIRE]"> dans les formulaires d'extrainfo.php et de publication.php (je l'ai ajoute sur le CVS, normalement c'est bon)
+
+* c'est evident, mais il faut adapter tpl/chargesommaire.html
+Remarque: pour le moment, chargement.php et chargesommaire sont parfaitement identiques, donc on peut charger des sommaires via "ajouter document". (je sais ca sert a rien).
+
+
+* (Luc) a propos de checkXML.pl
+Je crois que le XML produit est maintenant en conformite, mais il faut le verifier avec checkXML.pl ci-joint. Il faut install les modules. Je te conseille vivement l'utilisation de perl -MCPAN -e shell (il faut installer avant ca le module CPAN.pm) qui est du meme genre que le surpuissant couple urpmf et urmpi (redhat/mandrake private joke). En gros ce systeme te permet d'installer et d'upgrader les modules perl automatiquement, avec les dependances, svp. Donc ca prend trente secondes d'installer les packages necessaires pour faire tourner checkXML.pl (aller 10min). Dans perl -MCPAN -e shell, tu tapes "install XML::Checker::Parser" puis pareil avec XML::Catalog (il y en a un autre aussi, mais tu trouveras facilement en lancant checkXML.pl).
+
+Ensuite, tu vas chercher les dtd xhtml modularized (fichier xhtml-modularization.tgz sur w3c) et tu ajustes dans checkXML.pl le chemin du catalogue. Si tu veux pas utiliser le catalogue, mais directement charger la DTD via le net a chaque checkXML.pl, n'utilise pas les catalogues (c'est les catalogues qui plantent chez moi depuis que je suis en Mandrake 9.0). Voila checkXML.pl est pret a tourner... tu l'executes sur tous les fichiers xml.
+J'ai quand meme un probleme, notre dtd, il faudrait la declarer avec une adresse public (la mettre sur www.lodel.org) et mettre la bonne ligne dans tous les fichiers xml. Pour le moment, c'est la ligne <!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd"> avec chemin d'acces relatif (donc attention quand tu fais le checkXML.pl, la DTD lodel doit etre dans le meme repertoire). Si tu peux fixer ce pb, tu seras le roi.
+On avait pas dit qu'on mettait la DTD dans l'arboressence du CVS ?
+
+
 Ghislain
 

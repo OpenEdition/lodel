@@ -12,6 +12,7 @@ include("$home/func.php");
 
 $context[id]=$id=intval($id);
 $context[parent]=$parent=intval($parent);
+$context[importsommaire]=$importsommaire;
 
 if ($id>0) {
   $critere="id='$id'";

@@ -11,15 +11,7 @@ if ($cancel) include ("abandon.php");
 # lit la tache en cours
 $row=get_tache($id);
 
-# est-ce qu'on est dans un sous-tache
-if ($row["task$row[etape]"]) { // il y a un sous tache
-  $row=$row["document$row[etape]"];
-  $subtask=1;
-} else { // sinon on est dans la tache principale
-  $subtask=0;
-  $filename=$row[fichier];
-}
-$context[subtask]=$subtask;
+$filename=$row[fichier];
 
 if ($edit || $plusauteurs) {
   $balisefile=$filename.".balise";
@@ -158,7 +150,9 @@ else {
     array_push($srch,"/<r2r:$bal>/i","/<\/r2r:$bal>/i");
     array_push($rpl,"<r2r:resume lang=\"$lang\">","</r2r:resume>");
   }
-  $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>'.preg_replace($srch,$rpl,$text);
+  $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>
+<!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
+'.preg_replace($srch,$rpl,$text);
       
   writefile ($filename.".balise",$text);
   if ($row[iddocument]) { # le document existe
@@ -175,6 +169,7 @@ foreach ($balises_sstag as $b) {
 
 update_tache_etape($id,3); // etape 3
 $context[id]=$id;
+$context[importsommaire]=$importsommaire;
 
 posttraitement($context);
 

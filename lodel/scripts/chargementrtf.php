@@ -142,12 +142,10 @@ function rtf($filename) {
 	     '<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'
 	     );
 
-  $xmlentete='<?xml version="1.0" encoding="iso-8859-1"?>';
-
-  $file=$xmlentete.traite_multiplelevel(
+  $file=traite_multiplelevel(
 			     preg_replace ($search,$rpl,
-				join("",file($newname))
-				)
+					   join("",file($newname))
+					   )
 			     );
 #  echo htmlentities($file); exit;
 

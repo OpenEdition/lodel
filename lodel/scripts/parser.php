@@ -203,6 +203,67 @@ function parse_cond (&$text,$offset=0) {
 }
 
 
+
+
+##### traite les conditions avec IF
+####function parse_switch (&$text,$offset=0) {
+####
+####  $tag_debut="<SWITCH ";
+####  $tag_case="<CASE>";
+####  $tag_fin="</SWITCH>";
+####  $lendebut=strlen($tag_debut);
+####  $lenfin=strlen($tag_fin);
+####
+####  $debut = strpos($text,$tag_debut,$offset);
+####  while ($debut!==FALSE) {
+####    $offset=$debut+$lendebut;
+####
+####    do {
+##### cherche le tag de fin
+####      $fin = strpos($text,$tag_fin,$offset);
+####      if ($fin===FALSE) { die ("erreur le IF ne se termine pas"); }
+##### cherche s'il y a un deuxieme IF a l'interieur
+####      $debut2=strpos($text,$tag_debut,$offset);
+####      $sndif=$debut2!==FALSE && $debut2<$fin;
+####      if ($sndif) parse_cond($text,$offset); // oui, on le traite d'abord
+####    } while($sndif);
+####
+####    $switch_txt=substr($text,$offset,$fin-$offset);
+####
+##### ok, maintenant, on traite le switch
+####
+##### cherche la variable
+####
+####    if (!preg_match("/^[^>]*VAR\s*=\s*\"(.*?)\"[^>]*>/",$switch_txt,$var)) die ("erreur. La balise IF ne contient pas de condition");
+####
+####    parse_variable($cond[1],FALSE);
+####    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\band\b/i","/\bor\b/i"),
+####		 array(">","<",">=","<=","==","&&","||"),$cond[1]);
+####
+####    $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
+##### cherche le sinon
+####    $sinon=strpos($if_txt,$tag_sinon);
+####    if (!($sinon==FALSE)) {
+####      $else_txt=substr($if_txt,$sinon+strlen($tag_sinon));
+####      $if_txt=substr($if_txt,0,$sinon);
+####    } else {
+####      $else_txt="";
+####    }
+##### genere la code
+####
+####    $code='<? if ('.$cond[1].') { ?>'.$if_txt.'<? }';
+####    if ($else_txt) $code.=' else { ?>'.$else_txt.'<? }';
+####    $code.='?>';
+####
+##### fait le remplacement
+####
+####    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
+####
+####    $debut = strpos($text,$tag_debut,$offset);
+####  }
+####}
+####
+
 function parse_boucle (&$text,&$fct_txt,$offset=0) 
 
 {

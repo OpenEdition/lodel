@@ -18,10 +18,10 @@ if ($row[etape]==4) {  // on revient ici, donc il faut continuer a executer les 
 
     $task=get_tache($taskid);     // recupere la tache a executer
     if ($task[nom]=="mkpublication") { // est-ce la creation d'une publication ?
-      header("location: publication?id=$task[id]");
+      header("location: publication?id=$task[id]&importsommaire=oui");
       return;
     } elseif ($task[nom]=="mkdocument") { // est-ce la creation d'un document ?
-      header("location: extrainfo.php?id=$taskid");
+      header("location: extrainfo.php?id=$taskid&importsommaire=oui");
       return;
     } else {
       die ("error in importsommaire.php");
@@ -47,7 +47,7 @@ if (!file_exists($dir)) {
 $text=join("",file ($row[fichier].".html"));
 
 // efface les tags articles
-$text=preg_replace("/<\/?r2r:article\b[^>]+>/","",$text);
+$text=preg_replace("/<\/?r2r:article\b[^>]*>/i","",$text);
 
 //
 // decoupe le document
@@ -92,7 +92,17 @@ foreach ($regroupements as $regroupement) {
   }
 }
 
-#print_r($tasks);
+// copie le rtf en lieu sur
+
+$rtfname="$row[fichier].rtf";
+if (file_exists($rtfname)) { 
+  $dest="../rtf/r2r-pub-$parent.rtf";
+  copy ($rtfname,$dest);
+  chmod($dest,0644) or die ("impossible de chmod'er $dest");
+}
+
+
+//
 // recupere la prochaine tache a executer
 $firsttask=get_tache(array_shift($tasks));
 
@@ -147,7 +157,7 @@ function mkxmldocument($text)
 
   // demande de faire cette tache
   $taskid=make_tache("mkdocument",2,array("fichier"=>$filename,
-				     "publication"=>$currentpublication));
+					  "publication"=>$currentpublication));
 
   array_push($tasks,$taskid);
 }
