@@ -485,7 +485,6 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
 
 
 function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
-
 {
   $contents=decode_content($content);
 
@@ -501,6 +500,11 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
   if ($contents[AFTER]) {// genere le code de apres
   $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[AFTER].'<? }';
  }
+ // ajout Julien 18/06/03
+  if ($contents[ALTERNATIVE]) {// genere le code de alternative
+  $fct_txt.='function code_alter_'.$nom.' ($context) { ?>'.$contents[ALTERNATIVE].'<? }';
+ }
+ // fin ajout
 }
 
 
