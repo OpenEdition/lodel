@@ -297,12 +297,13 @@ function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
  if ($statut>-64 && $statut<-1) $statut=-1;
  if ($statut>1) $statut=1;
 
-  $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
+  $vars=array("prefix"=>1,"nomfamille"=>1,"prenom"=>1,"description"=>0,"fonction"=>0,"affiliation"=>0,"courriel"=>1);
   foreach (array_keys($context[nomfamille]) as $idtype) { // boucle sur les types
     foreach (array_keys($context[nomfamille][$idtype]) as $ind) { // boucle sur les ind
       // extrait les valeurs des differentes variables
-      foreach ($vars as $var) {
-	$bal[$var]=trim(addslashes(stripslashes(strip_tags($context[$var][$idtype][$ind]))));
+      foreach ($vars as $var=>$strip) {
+	$t=$strip ? strip_tags($context[$var][$idtype][$ind]) : $context[$var][$idtype][$ind];
+	$bal[$var]=trim(addslashes(stripslashes($t)));
       }
       // cherche si l'personne existe deja
       $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]personnes WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'") or die (mysql_error());
