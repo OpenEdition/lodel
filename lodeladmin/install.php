@@ -200,7 +200,7 @@ if ($tache=="database") {
     $result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites") or die (mysql_error());
 
     if ($singledatabase) {
-      // currently singledatabase implies single site ! That's a shame but...
+      // currently singledatabase implies single site ! That's shame but...
       // Let's destroyed everything in the database with the prefix !
       if (!$tableprefix) {
 	// we can't destroy... too dangerous. Should find another solution.
@@ -506,6 +506,15 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
     if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
     return;
   }
+
+  // let's deal with the problem of lock table.
+  $ret=@mysql_query("LOCK TABLES $GLOBALS[tp]sites WRITE");
+  if (!$ret) { // does not support LOCK table
+    maj_lodelconfig("DONTUSELOCKTABLES",true);
+  } else {
+    mysql_query("UNLOCK TABLES") or die (mysql_error());
+  }
+
 } elseif ($tache=="database") { // the table site already exists but we just have asked for which database... check what to do.
   // ask for erasing the table content or not.
   $erreur_tablesexist=1;
@@ -637,26 +646,36 @@ function maj_lodelconfig($var,$val=-1)
   global $lodelconfig,$have_chmod;
 
   // lit le fichier
-  $text=join("",file($lodelconfig));
+  $text=$oldtext=join("",file($lodelconfig));
   //  if (!$text) die("ERROR: $lodelconfig can't be read. Internal error, please report this bug");
-  $search=array(); $rpl=array();
 
   if (is_array($var)) {
     foreach ($var as $v =>$val) {
-      if (!preg_match("/^\s*\\\$$v\s*=\s*\".*?\"/m",$text)) {	die ("la variable \$$v est introuvable dans le fichier de config.");      }
-      array_push($search,"/^(\s*\\\$$v\s*=\s*)\".*?\"/m");
-      array_push($rpl,'\\1"'.$val.'"');
+      maj_lodelconfig_var($v,$val,$text);
     }
   } else {
-      if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\"/m",$text)) {	die ("la variable \$$var est introuvable dans le fichier de config.");      }
-      array_push($search,"/^(\s*\\\$$var\s*=\s*)\".*?\"/m");
-      array_push($rpl,'\\1"'.$val.'"');
+    maj_lodelconfig_var($var,$val,$text);
   }
-  $newtext=preg_replace($search,$rpl,$text);
-  if ($newtext==$text) return;
+
+  if ($text==$oldtext) return;
   // ecrit le fichier
   if (!(unlink($lodelconfig)) ) die ("ERROR: $lodelconfig can't be deleted. Internal error, please report this bug.");
-  return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0666 & octdec($GLOBALS['filemask']));
+  return ($f=fopen($lodelconfig,"w")) && fputs($f,$text) && fclose($f) && $have_chmod && chmod ($lodelconfig,0666 & octdec($GLOBALS['filemask']));
+}
+
+function maj_lodelconfig_var($var,$val,&$text)
+
+{
+  if (strtoupper($var)==$var) { // it's a constant
+    if (!preg_match("/^\s*define\s*\(\"$var\",.*?\);/m",$text,$result)) {	die ("la constante $var est introuvable dans le fichier de config.");      }
+    if (is_string($val)) $val='"'.$val.'"';
+    if (is_bool($val)) $val=$val ? "true" : "false";
+
+    $text=str_replace($result[0],"define(\"$var\",".$val.");",$text);
+  } else { // no, it's a variable
+    if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\";/m",$text,$result)) {	die ("la variable \$$var est introuvable dans le fichier de config.");      }
+    $text=str_replace($result[0],"\$$var=\"$val\";",$text);
+  }
 }
 
 
