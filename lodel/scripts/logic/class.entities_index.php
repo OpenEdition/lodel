@@ -87,7 +87,7 @@ class Entities_IndexLogic extends Logic
    	 		else
    	 			$vos_fields = array_merge($tab,$vos_fields);
    	 	}
-	 	print_r($vos_fields);
+	 	#print_r($vos_fields);
    	 	//no fields to index
    	 	if(!$vos_fields)
    	 		return ("_back");
