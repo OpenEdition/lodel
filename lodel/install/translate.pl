@@ -29,6 +29,12 @@
 # Usage: versionning.pl liste de fichier
 #
 
+my $offset=shift @ARGV;
+
+unless ($offset=~/^\d+$/) {
+  die ("preciser l'offset fournit par transfer.php\n");
+}
+
 
 
 foreach $filename (@ARGV) {
@@ -65,8 +71,8 @@ foreach $filename (@ARGV) {
 # chgt du a la fusion publications documents
   $change+=$file=~s/\[\#PUBLICATION\]/[\#IDPARENT]/g;
 ####  $change+=$file=~s/\[\#PARENT\]/[\#IDPARENT]/g;
+  $change+=$file=~s/(<LOOP[^>]+TABLE\s*=\s*\"publications\"[^>]+\b(?:parent|id)='?)(\d+)/ $1.($2+$offset); /ge;
   $change+=$file=~s/(<LOOP[^>]+)\bparent\b([^>]+>)/$1idparent$2/g;
-  $change+=$file=~s/(<LOOP[^>]+TABLE\s*=\s*\"documents\"[^>]+)\bpublication\b([^>]+>)/$1idparent$2/g;
 
 
   $change+=$file=~s/\[\#SUPERADMIN\]/[\#ADMINLODEL]/g;
