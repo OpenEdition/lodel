@@ -88,7 +88,7 @@ if ($file1 && $file1!="none") {
 	}
 	if (!$xhtmlfile) die("ERROR: xhtml file not found in the archive");
 
-	system("$unzipcmd -qj -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
+	system("$unzipcmd -j -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
 	@unlink($fileconverted);
 	// setup the rights even if it's temporary
 	$fileconverted=$xhtmlfile;
