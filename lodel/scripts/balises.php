@@ -54,6 +54,7 @@ $balises=array ("-" => "-",
     # balises qui ne sont extraites que lorsque le texte est publie.
 $balisesdocument_lieautexte=array("texte",
 				  "notebaspage",
+				  "bibliographie",
 				  "annexe",
 				  "erratum",
 				  "ndlr",
