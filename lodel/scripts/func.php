@@ -313,17 +313,19 @@ function translate_xmldata($data)
 
 function unlock()
 {
-	// Dévérouille toutes les tables vérouillées précédemment par la 
-	// fonction lock_write()
-	mysql_query("UNLOCK TABLES") or die (mysql_error());
+  // Dévérouille toutes les tables vérouillées précédemment par la 
+  // fonction lock_write()
+  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
+    mysql_query("UNLOCK TABLES") or die (mysql_error());
 }
 
 
 function lock_write()
 {
-	// Vérouille toutes les tables en écriture
-	$list=func_get_args();
-	mysql_query("LOCK TABLES $GLOBALS[tp]".join (" WRITE ,".$GLOBALS[tp],$list)." WRITE") or die (mysql_error());
+  // Vérouille toutes les tables en écriture
+  $list=func_get_args();
+  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
+     mysql_query("LOCK TABLES $GLOBALS[tp]".join (" WRITE ,".$GLOBALS[tp],$list)." WRITE") or die (mysql_error());
 }
 
 #function prefix_keys($prefix,$arr)

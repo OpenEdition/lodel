@@ -124,6 +124,11 @@ $servoousername="";
 $servoopasswd="";
 
 
+# lock les tables.
+# Chez certains hebergeurs n'acceptent pas les LOCK
+
+define(DONTUSELOCKTABLES,false);
+
 
 ############################################
 # config reserve au systeme de config automatique

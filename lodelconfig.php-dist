@@ -89,7 +89,6 @@ $singledatabase="";
 $sessionname="session$database";
 
 
-# TEMPORAIRE
 # configuration du serveur OO
 $ooserverurl="http://lodeldevel/serveuroo/index.php";
 $ooserverusername="ruralia@localhost";
@@ -103,6 +102,11 @@ $extensionscripts="php";
 # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php.
 # "on" ou ""
 $idagauche="";
+
+# lock les tables.
+# Chez certains hebergeurs n'acceptent pas les LOCK
+
+define(DONTUSELOCKTABLES,false);
 
 
 ############################################
