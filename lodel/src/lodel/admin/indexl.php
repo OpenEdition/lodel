@@ -22,7 +22,8 @@ if ($id>0 && ($delete || $restore)) {
 }
 
 if (!$type) die("probleme interne contacter Ghislain");
-if ($id) $critere.=" AND status>0 AND type='$type'";
+$context[type]=$type; // cette variable peut etre reajuste correctement dans la suite du code (dans edite, via l'import, ou dans la clause else. Il faut quand meme positionner cette valeur au cas ou.
+if ($id) $critere.=" AND status>0";
 
 //
 // ajoute ou edit
