@@ -126,6 +126,11 @@ class Entities_EditionLogic extends GenericLogic {
        }
      }
      /////
+       function loop_entity_select($context,$funcname)
+       {
+	 call_user_func("code_alter_$funcname",$context);
+       }
+     /////
 
      $ret = GenericLogic::viewAction($context,$error);
 
