@@ -542,9 +542,10 @@ function decode_content ($content,$tables=array())
 
   // cherche s'il y a un sinon
   $ret[ALTERNATIVE]="";
-  $sinonpos=strpos($content,"<ALTERNATIVE/>"); // en majuscules
+  $alter="<ALTERNATIVE/>";
+  $sinonpos=strpos($content,$alter); // en majuscules
   if ($sinonpos!==FALSE) {
-    $ret[ALTERNATIVE]='<? else {?>'.substr($content,$sinonpos+strlen("<ALTERNATIVE/>")).'<?}?>'; // recupere le bloc sinon
+    $ret[ALTERNATIVE]='<? else {?>'.substr($content,$sinonpos+strlen($alter)).'<?}?>'; // recupere le bloc sinon
     $content=substr($content,0,$sinonpos); // recupere le bloc avant sinon
   }
   if ($ret[CORPS]) {
