@@ -700,7 +700,7 @@ function make_loop_code ($name,$tables,
      $currentoffset=intval(($_REQUEST[\'offset_'.$name.'\'])/'.$limit.')*'.$limit.';';
     $processlimit='
     $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
-    if ($_REQUEST[\'QUERY_STRING\']) $currenturl.=$_SERVER[\'QUERY_STRING\']."&";
+    if ($_REQUEST[\'QUERY_STRING\']) $currenturl.=$_REQUEST[\'QUERY_STRING\']."&";
  if ($context[nbresultats]>'.$limit.') { 
 $context[nexturl]=$currenturl."offset_'.$name.'=".($currentoffset+'.$limit.');
 $context[nbresultats]--;
