@@ -42,7 +42,6 @@
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ <MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">                     ]-->
 <!--[ <MACRO NAME="AFFICHER_TOUT">                                       ]-->
-<!--[ <MACRO NAME="AFFICHER_SERIE_PRESENTATION">                         ]-->
 <!--[ <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 ]-->
 <!--[ <MACRO NAME="TYPE_ARTICLE">                                        ]-->
 <!--[ <MACRO NAME="TYPE_CHRONIQUE">                                      ]-->
@@ -459,31 +458,6 @@
 		<DO>
 			<div class="menu2">
 				<a class="menu2" href="sommaire.html?id=[#ID]">[#NOM]</a>
-			</div>
-		</DO>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="AFFICHER_SERIE_PRESENTATION">
-<!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
-<!--[ Affiche la série présentation avec les articles qui sont           ]-->
-<!--[ contenus dans les numéros de cette série.                          ]-->
-<!--[ Il faut mettre en dur l'id de la série                             ]-->
-<!--[ Macro plutôt destinée à la barre de navigation verticale.          ]-->
-<!--[ Modifiée en octobre 2003 par Nicolas Nutten                        ]-->  
-<!--[ ****************************************************************** ]-->
-	<LOOP NAME="aff_series_presentation" TABLE="documents" TABLE="relations" WHERE="id1='#indiquer ici id de la serie presentation#' AND id2=identite AND classe='documents'">
-		<BEFORE>
-			<div class="menu1">
-				Série présentation :<br/ >
-			</div>
-		</BEFORE>
-		<DO>
-			<div class="menu2">
-				-&nbsp;<a class="menu2" href="document.html?id=[#ID]">
-					[#TITRE]
-				</a>
 			</div>
 		</DO>
 	</LOOP>
