@@ -211,57 +211,21 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							[@ADMIN.CLASSES]
-							<select onChange="select_url(this)"><option>--</option>
-                                        		<LOOP NAME="classtypes">
-								<option value="index.php?do=list&lo=classes&classtype=[#CLASSTYPE]">[#TITLE]</option>
-							</LOOP>
-							</select>
-
+							<a href="index.php?do=list&lo=classes&classtype=entities"><span class="texte_orange">[@ADMIN.CLASSES_FOR_ENTITIES]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							[@ADMIN.DATAFIELDS]
-							<IF COND="[#LODELUSER.REDACTOR]">
-								<select onChange="select_url(this)"><option>--</option>
-									<LOOP NAME="classtypes">
-									<option value="" style="color: gray;">[#TITLE] </option>
-									<LOOP NAME="classes_for_tablefields" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
-										<option value="index.php?do=list&lo=tablefieldgroups&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
-									</LOOP>
-									</LOOP>
-									</select>
-							</IF>
-
+							<a href="index.php?do=list&lo=classes&classtype=entries"><span class="texte_orange">[@ADMIN.CLASSES_FOR_ENTRIES]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							[@ADMIN.TYPE]
-							<IF COND="[#LODELUSER.REDACTOR]">
-							<select onChange="select_url(this)"><option>--</option>
-							<LOOP NAME="classtypes">
-							<option value="" style="color: gray;">[#TITLE] </option>
-							<LOOP NAME="classes_for_types" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
-								<IF COND="[#CLASSTYPE]=='entities'">
-									<option value="index.php?do=list&lo=types&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
-								<ELSE/>
-								<IF COND="[#CLASSTYPE]=='entries'">
-									<option value="index.php?do=list&lo=entrytypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
-								<ELSE/>
-									<option value="index.php?do=list&lo=persontypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
-								</IF>
->								</IF>
-								
-							</LOOP>
-							</LOOP>
-							</select>
-					</IF>
+							<a href="index.php?do=list&lo=classes&classtype=persons"><span class="texte_orange">[@ADMIN.CLASSES_FOR_PERSONS]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>

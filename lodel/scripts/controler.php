@@ -47,7 +47,7 @@ class Controler {
 
     if ($do=="back") {
       require_once("view.php");
-      View::back();
+      View::back(2);
       return;
     }
 

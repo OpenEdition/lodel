@@ -46,16 +46,18 @@ class View {
     * back
     */
 
-   function back()
+   function back($back=1)
 
    {
      global $db,$idsession;
-     $url=preg_replace("/[\?&]clearcache=[^&]*/","",$_SERVER['REQUEST_URI']);
-     $offset=-1-$back;
+     //     $url=preg_replace("/[\?&]clearcache=[^&]*/","",$_SERVER['REQUEST_URI']);
+     //     if (get_magic_quotes_gpc()) $url=stripslashes($url);
+     //     $myurl=$db->qstr($url);
+
+     $offset=$back-1;
 
      usemaindb();
-
-     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC",1,$offset)) or dberror();
+     $result=$db->selectLimit(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"),1,$offset) or dberror();
 
      $row=$result->fetchRow();
      $id=$row['id'];
@@ -190,7 +192,7 @@ class View {
      if ($_REQUEST['clearcache']) return false;
 
      if ($maj < myfilemtime($this->_cachedfile.".".$this->_extcachedfile)) {
-       echo "cached: yes";
+       #echo "cached: yes";
        $this->_iscachevalid=true;
        return true;
      }

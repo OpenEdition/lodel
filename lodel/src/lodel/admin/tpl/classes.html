@@ -54,6 +54,26 @@
 				<td>[(#CLASS|nbsp)]</td>
 				<td style="color: #CC9933;" align="left">
 				<div>
+					<a href="index.php?do=list&lo=tablefieldgroups&class=[#CLASS]">[@COMMON.DATAFIELDS]</a>
+				</div>
+				</td>
+				<td style="color: #CC9933;" align="left">
+				<div>
+				<IF COND="[#CLASSTYPE]=='entities'">
+					<a href="index.php?do=list&lo=types&class=[#CLASS]">[@COMMON.TYPES]</a>
+				<ELSE/>
+				<IF COND="[#CLASSTYPE]=='entries'">
+					<a href="index.php?do=list&lo=entrytypes&class=[#CLASS]">[@COMMON.TYPES]</a>
+				<ELSE/>
+					<a href="index.php?do=list&lo=persontypes&class=[#CLASS]">[@COMMON.TYPES]</a>
+				</IF>
+				</IF>
+
+					
+				</div>
+				</td>
+				<td style="color: #CC9933;" align="left">
+				<div>
                			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
 				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				</div>
