@@ -336,8 +336,8 @@ function reservedword($nom) {
 	  "DROITVISITEUR",
 	  "DROITREDACTEUR",
 	  "DROITEDITEUR"
-,	  "DROITADMIN",
-,	  "DROITADMINLODEL",
+	  "DROITADMIN",
+	  "DROITADMINLODEL"
 	  );
   return (in_array (strtoupper($nom), $reserved_words));
 }
