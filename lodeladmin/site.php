@@ -237,7 +237,7 @@ if ($task=="createtables") {
   $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (name,type,value,status,rank) VALUES ('signalermail','s','inactif','32','1');\n"; 
 
-  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
+  $sqlfile=lq($text);
 
   $sqlcmds=preg_split ("/;\s*\n/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sqlcmds) die("le fichier init-site.sql ne contient pas de commande. Probleme!");
