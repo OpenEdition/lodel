@@ -5,17 +5,17 @@ include("tpl/install-openhtml.html");
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="center">Création d'un administrateur initial. Choisissez un login (identifiant) et un mot de passe.</p>
+<p align="center">[@INSTALL.CREATE_INITIAL_ADMIN_AND_CHOOSE_LOGIN_PASSWORD].</p>
 <p></p>
-<?php  if ($erreur_create) { ?> <b>Erreur</b>: Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifiez les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_create) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.CONNECT_SERVER_IMPOSSIBLE_CHECK_ACCESS_INFORMATION|sprintf([#DBHOST])] : <?php  echo mysql_error(); ?> <?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="admin" />
-<label for="adminusername">Login :</label>
+<label for="adminusername">[@INSTALL.LOGIN] :</label>
 <input type="text" size="20" name="adminusername" id="adminusername" value="<?php  echo $adminusername; ?>" />
-<label for="adminpasswd">Mot de passe :</label>
+<label for="adminpasswd">[@INSTALL.PASSWORD] :</label>
 <input type="password" size="20" name="adminpasswd" id="adminpasswd" value="" />
-<input type="submit" value="continuer" />
+<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 
 <?php  include("tpl/install-closehtml.html"); ?>
