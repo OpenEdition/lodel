@@ -89,16 +89,21 @@ if ($edit || $plusauteurs) {
 	$newimgfile="docannexe/r2r-img-$iddocument-$count.$ext";
 	if ($imgfile!=$newimgfile) {
 	  rename ($imgfile,"../../$newimgfile") or die ("impossible de renomer l'image $imgfile en $newimgfile");
+	  chmod ("../../$newimgfile",0644) or die ("impossible de chmod'er le ../../$newimagefile");
 	}
 	return $newimgfile;
     }
     copy_images($text,"img_rename");
 
     // copie le fichier balise en lieu sur !
-    if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("erreur lors de l' ecriture du fichier. Contactez l'administrateur");
+    if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("Erreur lors de l' ecriture du fichier. Contactez l'administrateur");
     // et le rtf s'il existe
     $rtfname="$row[fichier].rtf";
-    if (file_exists($rtfname)) copy ($rtfname,"../rtf/r2r-$iddocument.rtf");
+    if (file_exists($rtfname)) { 
+      $dest="../rtf/r2r-$iddocument.rtf";
+      copy ($rtfname,$dest);
+      chmod($dest,0644) or die ("impossible de chmod'er $dest");
+    }
     // efface le fichier balise
     if (file_exists($balisefile)) unlink($balisefile);
 

@@ -5,7 +5,7 @@
 function writefile ($filename,&$text)
 
 {
-  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f);
+  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
 }
 
 function get_tache (&$id)
