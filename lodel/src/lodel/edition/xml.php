@@ -33,10 +33,11 @@ require("siteconfig.php");
 require ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
 require_once ($home."func.php");
+require_once ($home."textfunc.php");
 
 $context[identite]=$context[id]=$id=intval($id);
 $context[classe]="documents";
-
+$context[namespace]=makeurl()."/schema";
 
 require_once($home."connect.php");
 require_once($home."entitefunc.php");
@@ -88,6 +89,9 @@ if ($valid) {
 
   require_once ($home."calcul-page.php");
   calcul_page($context,"xml-valid");
+} elseif ($view) {
+  echo $contents;
+  return;
 } else {
   // "telechargement"
   $originalname="entite-$id.xml";
@@ -138,7 +142,8 @@ function namespace($text)
 		       array("<\\1$ns:\\2",
 			     "\\1"),$text);
 	// puis place l'espace de nom sur les attributs
-	return preg_replace_callback("/(<($ns):\w+)((\s+\w+\s*=\s*\"[^\"]*\")+)/", "callback_ns_attributes", $text);
+#	return preg_replace_callback("/(<($ns):\w+)((\s+\w+\s*=\s*\"[^\"]*\")+)/", "callback_ns_attributes", $text);
+	return $text;
 } 
 
 /**
@@ -150,7 +155,7 @@ function callback_ns_attributes($matches){
   $ns = $matches[2];
   $arr=preg_split("/\"/",$matches[3]);
   for($i=0; $i<count($arr); $i+=2) { 
-    if(!$arr[$i]){
+    if($arr[$i]){
       $attr = trim(str_replace("=","",$arr[$i]));
       if ($attr!="lang" && $attr!="space" && $attr!="base"
 	  && $attr!="class" && $attr!="style") 

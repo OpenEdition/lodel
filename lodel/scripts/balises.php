@@ -93,6 +93,10 @@ $GLOBALS['multiplelevel'][]=array( // balises speciales
 
 $GLOBALS['multiplelevel']['Sections']=array(
 					    // l'ordre est important ci-dessous (marche pas avec section\d+)
+					    "section10"=>">*", // non utilise a priori
+					    "section9"=>">*", // non utilise a priori
+					    "section8"=>">*",
+					    "section7"=>">*",
 					    "section6"=>">*", // non utilise a priori
 					    "section5"=>">*", // non utilise a priori
 					    "section4"=>">*",

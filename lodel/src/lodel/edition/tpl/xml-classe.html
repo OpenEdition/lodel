@@ -19,13 +19,15 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<document xmlns="http://www.lodel.org" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
+<document xmlns="[#NAMESPACE]" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
 
   <!--[ affiche les personnes ]-->
   <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
     <DO>
-      <gr[(#TYPE|removespace)]>
 	<LOOP NAME="lespersonnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
+	  <BEFORE>
+            <gr[(#TYPE|removespace)]>
+          </BEFORE>
 	  <DO>
 	    <[(#TYPE|removespace)] ordre="[#ORDRE]">
 	    [<prefix>(#PREFIX)</prefix>]
@@ -37,8 +39,10 @@
 	    [<courriel>(#COURRIEL)</courriel>]
 	    </[(#TYPE|removespace)]>
 	  </DO>
+	  <AFTER>
+            </gr[(#TYPE|removespace)]>
+          </AFTER>
 	</LOOP>
-      </gr[(#TYPE|removespace)]>
     </DO>
   </LOOP>
   <!--[ ]-->
@@ -46,16 +50,20 @@
   <!--[ affiche les entrees ]-->
   <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
     <DO>
-      <gr[(#TYPE|removespace)]>
 	<LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]' AND identite='[#IDENTITE]'" ORDER="ordre">
+	  <BEFORE>
+            <gr[(#TYPE|removespace)]>
+          </BEFORE>
 	  <DO>
 	    <[(#TYPE|removespace)]>
 	    <nom>[#NOM]</nom>
 	    <abrev>[#ABREV]</abrev>
 	    </[(#TYPE|removespace)]>
 	  </DO>
+	  <AFTER>
+            </gr[(#TYPE|removespace)]>
+          </AFTER>
 	</LOOP>
-      </gr[(#TYPE|removespace)]>
     </DO>
   </LOOP>
   <!--[ ]-->

@@ -88,5 +88,30 @@ function indentXML ($contents,$output=false)
 
 
 
+/**
+ * decode le champs balises.
+ */
+
+function loop_xsdtypes(&$context,$funcname)
+
+{
+  $balises=preg_split("/;/",$context[balises],-1,PREG_SPLIT_NO_EMPTY);
+
+  if ($balises) call_user_func("code_before_$funcname",$context);
+
+  foreach($balises as $nom) {
+    if (is_numeric($nom)) continue;
+    $localcontext=$context;
+    $localcontext['count']=$count;
+    $count++;
+    $localcontext['nom']=preg_replace("/\s/","_",$nom);
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+  if ($balises) call_user_func("code_after_$funcname",$context);
+}
+
+
+
+
 
 ?>

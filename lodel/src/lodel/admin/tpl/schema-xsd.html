@@ -79,36 +79,36 @@
 			  <LET VAR="occurs">minOccurs="0" maxOccurs="unbounded"</LET>
 			</IF>
 				<IF COND="[#TYPE] eq 'boolean'">
-				<LET VAR="xsdtype">xsd:boolean</LET>
+				<LET VAR="xsdsimpletype">xsd:boolean</LET>
 				<ELSE/>
 				<IF COND="[#TYPE] eq 'mltext'">
-				<LET VAR="xsdtype">TexteMultiLangue</LET>
+				<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
 				<ELSE/>
   	        		<IF COND="[#TYPE] eq 'lang'">
-				<LET VAR="xsdtype">xsd:language</LET>
+				<LET VAR="xsdsimpletype">xsd:language</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'date'">
-				<LET VAR="xsdtype">xsd:date</LET>
+				<LET VAR="xsdsimpletype">xsd:date</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'datetime'">
-				<LET VAR="xsdtype">xsd:dateTime</LET>
+				<LET VAR="xsdsimpletype">xsd:dateTime</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'time'">
-				<LET VAR="xsdtype">xsd:time</LET>
+				<LET VAR="xsdsimpletype">xsd:time</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'int'">
-				<LET VAR="xsdtype">xsd:int</LET>
+				<LET VAR="xsdsimpletype">xsd:int</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'numeric'">
-				<LET VAR="xsdtype">xsd:double</LET>
+				<LET VAR="xsdsimpletype">xsd:double</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'image'">
-				<LET VAR="xsdtype">xsd:anyURI</LET>
+				<LET VAR="xsdsimpletype">xsd:anyURI</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'fichier'">
-				<LET VAR="xsdtype">xsd:anyURI</LET>
+				<LET VAR="xsdsimpletype">xsd:anyURI</LET>
 				<ELSE/>
-				<LET VAR="xsdtype">LodelTexte</LET>
+				    <LET VAR="xsdsimpletype"></LET> <!--[ not a simple type]-->
 				</IF>
 				</IF>
 				</IF>
@@ -119,19 +119,34 @@
 				</IF>
 				</IF>	
 				</IF>
+                                 <IF COND="[#XSDTYPE]">
+			         <xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS]>
+			         <ELSE/>
+			         <xsd:element name="[#NOM]" [#OCCURS]>
+				      <LOOP NAME="xsdtypes"> <!--[ create the complex type ]-->
+					<BEFORE>
+					  <xsd:complexType mixed="true">
+					    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+					</BEFORE>
+					<DO>
+					  <xsd:group ref="[#NOM]" />
+			                 </DO>
+					<AFTER>
+					    </xsd:choice>
+					  </xsd:complexType>
+					</AFTER>
+			              </LOOP>				  
+				 </IF>
 
 		                 <IF COND="[#COMMENTAIRE]">
-				<xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS]>
-                                <xsd:annotation>
+			            <xsd:annotation>
 					<xsd:documentation xml:lang="fr">
 						[#COMMENTAIRE]
 					</xsd:documentation>
-				</xsd:annotation>
-				</xsd:element>
-				<ELSE/>
-				<xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS] />
-			      </IF>
+				    </xsd:annotation>
+                                </IF>
 
+				</xsd:element>
 	    </DO>
 	  </LOOP>
 		            </xsd:sequence>
@@ -195,7 +210,7 @@
 			<xsd:element name="ml" minOccurs="1" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="LodelTexte">
+						<xsd:extension base="typeTexteLodel">
 							<xsd:attribute name="lang" type="xsd:language" use="required"/>
 						</xsd:extension>
 					</xsd:complexContent>
@@ -206,12 +221,8 @@
 
 
 <!--[ type LodelTexte ]-->
-	<xsd:complexType name="Section" mixed="true">
-		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
-	</xsd:complexType>
-
-	<xsd:complexType name="LodelTexte" mixed="true">
-		<xsd:choice minOccurs="0" maxOccurs="unbounded">				    
+	<xsd:group name="Sections">
+		<xsd:choice>
 			<xsd:element name="section1" type="Section"  />
 			<xsd:element name="section2" type="Section"  />
 			<xsd:element name="section3" type="Section"  />
@@ -222,12 +233,41 @@
 			<xsd:element name="section8" type="Section"  />
 			<xsd:element name="section9" type="Section"  />
 			<xsd:element name="section10" type="Section"  />
-			<xsd:group ref="xhtml:block"/>
-			<xsd:group ref="xhtml:phrase"/> <!--[ c'est un peu trop laxiste la suite la ]-->
-			<xsd:group ref="xhtml:fontstyle"/>
 		</xsd:choice>
+	</xsd:group>
+	<xsd:complexType name="Section" mixed="true">
+		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
+	</xsd:complexType>
+
+	<xsd:group name="texte_Lodel">
+	    <xsd:choice>
+		<xsd:element name="citation" type="typeTexteLodel" />
+		<xsd:element name="epigraphe" type="typeTexteLodel" />
+		<xsd:element name="titredoc" type="typeTexteLodel" />
+		<xsd:element name="legendedoc" type="typeTexteLodel" />
+		<xsd:element name="titreillustration" type="typeTexteLodel" />
+		<xsd:element name="legendeillustration" type="typeTexteLodel" />
+	    </xsd:choice>
+	</xsd:group>
+	<xsd:complexType name="typeTexteLodel" mixed="true"> <!--[ version plutot permissive ]-->
+	     <xsd:choice>
+		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
+		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="Sections" />
+		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="Appel_de_Note" />
+		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="Lien" />
+	     </xsd:choice>
 	</xsd:complexType>
 
 
+	<xsd:group name="Lien">
+            <xsd:sequence>
+                <xsd:element ref="xhtml:a"/>
+            </xsd:sequence>
+	</xsd:group>
 
+	<xsd:group name="Appel_de_Note">
+            <xsd:sequence>
+                <xsd:element ref="xhtml:a"/>
+            </xsd:sequence>
+	</xsd:group>
 </xsd:schema>
