@@ -1,6 +1,7 @@
 <?
 $balises=array ("-" => "-",
 		"titre" => "Titre",
+		"surtitre" => "Surtitre",
 		"soustitre" => "Sous titre",
 		"auteurs" => "Auteurs",
 		"motcles" => "Mots Clé",
@@ -22,6 +23,15 @@ $balises=array ("-" => "-",
 		"section4"=>"Section 4",
 		"titredoc"=>"Titre de document",
 		"legendedoc"=>"Légende de document",
+
+		"recension_titre"=>"Recension Titre",
+		"recension_auteur"=>"Recension Auteur",
+		"recension_annee"=>"Recension année",
+		"recension_type"=>"Recension type"
+
+		"droitsauteur"=>"Droits d'auteurs",
+		"erratum"=>"Erratum",
+		"ndlr"=>"NDLR",
 		);
 
 $multiplelevel=array("section\d+"=>"texte",

@@ -17,11 +17,11 @@ function parse ($in,$out)
 
   foreach($results as $result) {
     	$contents=str_replace($result[0],"",$contents); // efface le use
-	$macrofile="tpl/".$result[1];
-	if (file_exists($macrofile)) {
-	    $macros.=join('',file($macrofile));
-	} elseif ($sharedir && file_exists($sharedir."/".$macrofile)) {
-	    $macros.=join('',file($sharedir."/".$macrofile));
+	$macrofile=$result[1];
+	if (file_exists("tpl/".$macrofile)) {
+	    $macros.=join('',file("tpl/".$macrofile));
+	} elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
+	    $macros.=join('',file($sharedir."/macros/".$macrofile));
 	} else {
 		die ("le fichier macros $result[1] n'existe pas");
 	}
@@ -383,8 +383,8 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $nom="number".rand();
     }
 
-    $isdefined=$boucles[$nom];
-    $boucles[$nom]=1; # marque la boucle comme definie
+    $issql=$boucles[$nom]=="sql";
+    if (!$boucles[$nom]) $boucles[$nom]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
     # ici attr contient la fin du fichier.
     # on cherche s'il y a des boucles interieures
     do {
@@ -400,16 +400,22 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
     $attr=substr($text,$offset,$fin-$offset);
 
     if ($tables) { // boucle SQL
-      if ($isdefined) die ("Impossible de redefinir la boucle $nom");
+      if ($issql) die ("Impossible de redefinir la boucle $nom");
       make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
+      $code='<? boucle_'.$nom.'($context); ?>';
+      $boucles[$nom]="sql"; // marque la boucle comme etant une boucle sql
     } else {
       //      echo "$nom-->$boucles[$nom]<br>";
-      if (!$isdefined) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
-	make_userdefined_boucle_code ($nom,$attr,$fct_txt);
+      if (!$issql) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
+	$boucles[$nom]++; // increment le compteur de nom de boucle
+	$newnom=$nom."_".$boucles[$nom]; // change le nom pour qu'il soit unique
+	make_userdefined_boucle_code ($newnom,$attr,$fct_txt);
+	$code='<? boucle_'.$nom.'($context,"'.$newnom.'"); ?>';
+      } else {
+	// boucle sql recurrente
+	$code='<? boucle_'.$nom.'($context); ?>';
       }
     }
-    $code='<? boucle_'.$nom.'($context); ?>';
-
     $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
     $debut = strpos($text,$tag_debut,$debut);
 

@@ -122,7 +122,7 @@ else {
   if (!$context[option_pasdegeographie]) tags2tag("geographie",$text);
 
   // extrait les balises et met les dans le context
-  $lbalises=array("titre","soustitre","typedoc");
+  $lbalises=array("titre","soustitre","surtitre","typedoc");
 
   foreach ($lbalises as $b) {
     if (preg_match ("/<r2r:$b>\s*(.*?)\s*<\/r2r:$b>/si",$text,$result)) {

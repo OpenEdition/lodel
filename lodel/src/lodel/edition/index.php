@@ -27,7 +27,7 @@ include ("$home/calcul-page.php");
 calcul_page($context,$base);
 
 
-function boucle_themesparents (&$context) {
+function boucle_themesparents (&$context,$funcname) {
 	 $parent=intval($context[parent]);
 #ifndef LODELLIGHT
 	 $type="AND type='theme'";
@@ -49,7 +49,7 @@ function boucle_themesparents (&$context) {
 	$i--;
 	while ($i>=0) {
 		 $localcontext=array_merge($context,$contexts[$i]);
-		 code_boucle_themesparents($localcontext);
+		 call_user_func("code_boucle_$funcname",$localcontext);
 		 $i--;
 	 }
 }

@@ -4,7 +4,7 @@
 
 
 # rep contenant la revue
-LODEL="/www/revues/lodeldevel"
+LODEL="/var/www"
 
 #######
 
@@ -17,7 +17,8 @@ fi
 APACHEWRDIR="lodel/txt lodel/rtf docannexe lodel/admin/upload"
 APACHECACHEWRDIR="CACHE lodel/edition/CACHE lodel/admin/CACHE"
 
-USERWRFILES="tpl images styles_revue.css robots.txt"
+USERWRDIR="tpl images"
+USERWRFILES="styles_revue.css robots.txt"
 
 
 HTACCESSDIR="CACHE tpl lodel/txt lodel/rtf lodel/edition/CACHE lodel/admin/CACHE lodel/admin/tpl lodel/edition/tpl"
@@ -46,11 +47,10 @@ done
 echo "  $LODEL/$1"
 chmod g+w $LODEL/$1
 echo "  Done."
-
-for files in $USERWRFILES
+for files in $LIST
 do
   echo "  $files"
-  chmod -R g+w $LODEL/$1/$files
+  chmod -R g+w $files
   echo "  Done."
 done
 
@@ -78,8 +78,4 @@ do
   else
     echo "  $LODEL/$1/$rep/.htaccess present"
   fi
-  echo "  Changement des permissions sur le fichier $LODEL/$1/$rep/.htaccess"
-  chmod 644 $LODEL/$1/$rep/.htaccess
-  ls -al $LODEL/$1/$rep/.htaccess
-  echo "  Ok."
 done
