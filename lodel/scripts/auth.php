@@ -185,12 +185,11 @@ $context[shareurl]=$shareurl;
 #ifndef LODELLIGHT
 $url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
 if ($revueagauche) {
-	if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="www") {
+	if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodel" && $result[1]!="www") {
 	  $context[revue]=$revue=$result[1];
 	} else {
 	  $context[revue]=$revue="";
 	}
-	die (":$revue:");
 } else {
 	if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodel") {
 	  $context[revue]=$revue=$result[1];
