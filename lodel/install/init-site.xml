@@ -98,7 +98,6 @@
         size="255"
         required="true"
         description="parameters for the creation" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->
 <!--<foreign-key foreignTable="types" onDelete="setnull">
 <reference
 	local="idtype"
@@ -143,7 +142,7 @@
         type="TINYINT"
         default="0"
         required="true" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key -  2005-02-07 -->        
 <!--<foreign-key foreignTable="entities" onDelete="setnull">
 <reference
 	local="id1"
@@ -348,7 +347,7 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key Add by Jean Lamy - 2005-02-07 -->
+<!-- Foreign Key Add - 2005-02-07 -->
 <!--<foreign-key foreignTable="tablefieldgroups" onDelete="setnull">
 	<reference
 		local="idgroup"
@@ -514,7 +513,7 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key -  2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
 	local="class"
@@ -681,7 +680,7 @@
         type="INTEGER"
         default="0"
         required="true" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="users" onDelete="cascade">
 <reference
 	local="iduser"
@@ -791,7 +790,7 @@
 	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
 	local="class"
@@ -978,7 +977,7 @@
 	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
 	local="class"
@@ -1093,7 +1092,7 @@
 	edittype="select" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
 	local="class"
@@ -1165,7 +1164,7 @@
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="entrytypes" onDelete="setnull">
 <reference
 	local="idtype"
@@ -1216,7 +1215,7 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="users" onDelete="setnull">
 <reference
 	local="user"
@@ -1360,7 +1359,7 @@
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
-<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!-- Foreign Key 2005-02-07 -->        
 <!--<foreign-key foreignTable="optiongroups" onDelete="cascade">
 <reference
 	local="idgroup"
@@ -1506,7 +1505,7 @@
 </unique>
 </table>
 
-<!-- added by Jean Lamy | 2005-01-26 -->
+<!-- added 2005-01-26 -->
 <table name="search_engine"
 		description="Table contenant l'index pour le moteur de recherche"
 		writeright=""
