@@ -146,7 +146,7 @@ function OO ($convertedfile,&$context)
 
   // styles transparents
   // on efface tout ce qu'il y a entre.
-  array_push($srch,"/<r2r:($GLOBALS[stylestransparents])\b([^>]*)>.*?<\/r2r:\\1>/");
+  array_push($srch,"/<(r2rc?:$GLOBALS[stylestransparents])\b([^>]*)>.*?<\/\\1>/");
   array_push($rpl,"");
   
 
