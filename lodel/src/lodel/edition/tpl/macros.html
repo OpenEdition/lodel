@@ -192,7 +192,7 @@
 
 	  </LOOP>
 	  <div>
-	    <select name="addlanginmltext[[#NOM]]"><? makeselectlangues(); ?></select>
+	    <select name="addlanginmltext[[#NOM]]"><?php makeselectlangues(); ?></select>
 	    <input class="form" type="submit" name="reload2" value="Ajouter">
 	  </div>
 	</td>
@@ -201,9 +201,11 @@
 	    <td>
 	      <select name="entite[[#NOM]]">
 	      <IF COND="[#CONDITION] eq '+'">
-		    <?  makeselectlangues_nevernil($context[value]); // use [#VALUE] ?>
+		    <?php  makeselectlangues_nevernil($context[value]); // use [#VALUE] 
+                     ?>
 		<ELSE/>
-		    <?  makeselectlangues($context[value]); // use [#VALUE] ?>
+		    <?php  makeselectlangues($context[value]); // use [#VALUE] 
+                     ?>
 	      </IF>
 	    </select>
 	    </td>
@@ -212,7 +214,17 @@
 		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'image'">
-		<td><IF COND="[#VALUE]"><img src="[(#VALUE|vignette(80))]" border="1"> [#VALUE]<br /></IF> <input size="40" type="file" name="entite[[#NOM]]"><input size="40" type="hidden" name="entite[[#NOM]][previousvalue]" VALUE="[#VALUE]"></td>
+		<td><IF COND="[#VALUE]">
+                   <table><tr>
+		<td><img src="[(#VALUE|vignette(80))]" border="1"></td>
+                <td>Nom: [(#VALUE|basename)]<br />
+                    Supprimer: <input type="checkbox" name="entite[[#NOM]][delete]" ><br />
+			      Changer: <input size="40" type="file" name="entite[[#NOM]]">
+</td>
+	           </tr></table>
+                  <ELSE/>
+			  <input size="40" type="file" name="entite[[#NOM]]">
+		  </IF> <input size="40" type="hidden" name="entite[[#NOM]][previousvalue]" VALUE="[#VALUE]"></td>
 	<ELSE/>
 	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
@@ -265,7 +277,6 @@
 				<td width="200">[#TITRE]:</td>
 				<MACRO NAME="AFFICHER_EDITION_CHAMPS">
 			</tr>
-       <br/>
 			<MACRO NAME="AFFICHER_ERREURS_SAISIE">
         </DO>
         <AFTER>

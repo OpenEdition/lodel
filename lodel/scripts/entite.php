@@ -255,7 +255,10 @@ function extract_files(&$context,$classe="documents")
 
   // remove files with error or not uploaded
   foreach ($files['tmp_name'] as $nom=>$f) {
-    if (!$f || $files['error'][$nom]!=0) { // uploaded ?
+    if ($context['entite'][$nom]['delete']) { // delete the image
+      unset($files['tmp_name'][$nom]);
+      $context['entite'][$nom]="";
+    } elseif (!$f || $files['error'][$nom]!=0) { // uploaded ?
       // nothing to do
       unset($files['tmp_name'][$nom]);
       // take the previous value
