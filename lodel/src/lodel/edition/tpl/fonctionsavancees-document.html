@@ -45,7 +45,7 @@
 			</div>
 		</td>
 		<td width="400" class="soustitre" background="images/bleu.gif">
-				<strong>VERROU</strong>
+				<strong>STATUT</strong>
 		</td>
 	</tr>	 
 	<LOOP NAME="status_publication" TABLE="documents" WHERE="id=[#ID]">
@@ -65,11 +65,13 @@
 			<IF COND="[#EDITEUR]">
 				&nbsp;
 			<ELSE/>
-				<MACRO NAME="GIF_INACTIF">
+				<div align="center">
+					<MACRO NAME="GIF_INACTIF">
+				</div>
 			</IF>
 		</td>
 		<td align="center">
-			Changer le verrou de la publication dépubliée : <br />
+			Changer le statut du document<br />
 			<IF COND="[#EDITEUR]">
 				<MACRO NAME="CHANGER_VERROU_DOCUMENTS_DEPUBLIE">
 			<ELSE/>
@@ -112,10 +114,13 @@
 	<ELSE/>
 		<tr>
 			<td>
-				<MACRO NAME="GIF_INACTIF">
+				<div align="center">
+					<MACRO NAME="GIF_INACTIF">
+				</div>
 			</td>
 			<td>
-				Contactez l'éditeur pour recharger ce document.
+				<strong>Recharger le fichier</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
 			</td>
 		</tr>
 	</IF>
@@ -138,11 +143,11 @@
 	</tr>	 
 	<ELSE/>
 		<tr>
-			<td>
+			<td align="center">
 				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
-				<!--Demandez le source RTF à un rédacteur ou à l'éditeur.-->
+				<strong>Télécharger le source RTF</strong><br />
 				<em>(Fonction indisponible pour le moment)</em>
 			</td>
 		</tr>
@@ -165,18 +170,18 @@
 	</tr>	 
 	<ELSE/>
 		<tr>
-			<td>
+			<td align="center">
 				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
-				<!--Demandez le source XML à un rédacteur ou à l'éditeur.-->
+				<strong>Télécharger le source XML</strong><br />
 				<em>(Fonction indisponible pour le moment)</em>
 			</td>
 		</tr>
 	</IF>
 	
 	<!-- Déplacer le document -->
-	<IF COND="[#REDACTEUR]">	
+	<IF COND="[#EDITEUR]">	
 	<FORM ACTION="deplacer.php" METHOD="POST">
 	<tr>
 		<td width="48" height="48" >
@@ -185,9 +190,7 @@
 			</div>
 		</td>
 		<td width="400" >
-				<strong>
-					Déplacer ce document
-				</strong>
+				<strong>Déplacer ce document</strong>
 				<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
 				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
 			</FORM>
@@ -195,11 +198,12 @@
 	</tr>
 	<ELSE/>
 		<tr>
-			<td>
+			<td align="center">
 				<MACRO NAME="GIF_INACTIF">
 			</td>
 			<td>
-				Contactez l'éditeur pour déplacer ce document.
+				<strong>Déplacer ce document</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
 			</td>
 		</tr>
 	</IF>
@@ -218,41 +222,85 @@
 		</td>
 	</tr>	 
 	
-	
-	<!-- Ajouter des docs annexes -->
-	<tr>
-		<td width="48" height="48" >
-			<FORM ACTION="docannexe.php" METHOD="POST">
-				<div align="center">
-				<MACRO NAME="GIF_INPUT_PUBLIER">
-			</div>
-		</td>
-		<td width="400" >
-				<strong>Ajouter des documents annexes</strong>
-				<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
-				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
-			</FORM>
-		</td>
-	</tr>	 
-	
-	
 	<!-- Associer une icône -->
-	<FORM ACTION="metaimage.php" METHOD="POST">	
+	<IF COND="[#EDITEUR]">
+		<FORM ACTION="metaimage.php" METHOD="POST">	
+			<tr>
+				<td width="48" height="48" >
+			  		<div align="center">
+						<a href="metaimage.php?iddocument=[#ID]">
+							<MACRO NAME="GIF_AJOUTER_IMAGE">
+						</a>
+					</div>
+				</td>
+				<td width="400" >
+					<strong>Associer une image à ce document</strong>
+					<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
+					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+				</td>
+			</tr>	 
+		</FORM>	
+	<ELSE/>
+		<tr>
+			<td width="48" height="48">
+		  		<div align="center">
+					<MACRO NAME="GIF_INACTIF">
+				</div>
+			</td>
+			<td width="400">
+				<strong>Associer une image à ce document</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
+			</td>
+		</tr>	 
+	</IF>
+
+	<!-- Ajouter des docs annexes -->
+	<IF COND="[#EDITEUR]">
+		<tr>
+			<td width="48" height="48">
+				<FORM ACTION="docannexe.php" METHOD="POST">
+					<div align="center">
+					<MACRO NAME="GIF_INPUT_PUBLIER">
+				</div>
+			</td>
+			<td width="400" >
+					<strong>Ajouter des documents annexes</strong>
+					<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
+					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+				</FORM>
+			</td>
+		</tr>	 
+	<ELSE/>
+		<tr>
+			<td width="48" height="48">
+		  		<div align="center">
+					<MACRO NAME="GIF_INACTIF">
+				</div>
+			</td>
+			<td width="400">
+				<strong>Ajouter des documents annexes</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
+			</td>
+		</tr>	 
+	</IF>
 	<tr>
-		<td width="48" height="48" >
-		  	<div align="center">
-				<a href="metaimage.php?iddocument=[#ID]">
-					<MACRO NAME="GIF_AJOUTER_IMAGE">
-				</a>
+		<td width="48" height="48" background="images/bleu.gif">
+			<div align="center">
+				&nbsp;
 			</div>
 		</td>
-		<td width="400" >
-				<strong>Associer une image à ce document</strong>
-				<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
-				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+		<td width="400" class="soustitre" background="images/bleu.gif">
+				<strong>Liste des documents annexes</strong>
 		</td>
 	</tr>	 
-	</FORM>	
+	<tr>
+		<td width="48" height="48">
+		</td>
+			&nbsp;
+		<td>
+			<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+		</td>
+	</tr>
 	<!-- ****** -->
 	<!-- DANGER -->
 	<!-- ****** -->

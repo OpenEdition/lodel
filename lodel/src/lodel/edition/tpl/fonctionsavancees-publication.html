@@ -27,10 +27,10 @@
 			<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center">
 				<tr>
 					<td>
-						Statut de la publication :
+						<strong>Statut de la publication :</strong>
 					</td>
 					<td>
-						<strong><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></strong>
+						<MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI">
 					</td>
 					<td>
 						<MACRO NAME="AFFICHER_ICONE_STATUT">
@@ -44,7 +44,12 @@
 <table width="800" cellpadding="5" cellspacing="1" border="1" align="center">
 	<tr>
 		<td rowspan="2">
-			Changer le statut
+			<IF COND="[#EDITEUR]">
+				<strong>Changer le statut</strong>
+			<ELSE/>
+				<strong>Changer le statut</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
+			</IF>
 		</td>
 		<td align="center">
 			<IF COND="[#EDITEUR]">
@@ -65,7 +70,12 @@
 	</tr>
 	<tr>
 		<td>
-			Associer une image à la publication
+			<IF COND="[#EDITEUR]">
+				<strong>Associer une image à la publication</strong>
+			<ELSE/>
+				<strong>Associer une image à la publication</strong><br />
+				<em>(Fonction accessible à partir du niveau editeur)</em>
+			</IF>
 		</td>
 		<td align="center">
 			<IF COND="[#EDITEUR]">
@@ -80,7 +90,12 @@
 	<IF COND="[#TYPE] EQ 'serie_lineaire'">
 		<tr>
 			<td>
-				Charger un sommaire
+				<IF COND="[#EDITEUR]">
+					<strong>Charger un sommaire</strong>
+				<ELSE/>
+					<strong>Charger un sommaire</strong><br />
+					<em>(Fonction accessible à partir du niveau editeur)</em>
+				</IF>
 			</td>
 			<td align="center">
 				<IF COND="[#EDITEUR]">
