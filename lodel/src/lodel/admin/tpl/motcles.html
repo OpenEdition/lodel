@@ -6,12 +6,12 @@
 <br>
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
 <TR>
-	<TD>
+	<td>
 		<div align="center">
 		<span class="titre">
-			<A HREF="motcle.php">
+			<a href="motcle.php">
 				Ajouter des mots clés
-			</A>
+			</a>
 		</span>
 		</div>
 	</td>
@@ -26,20 +26,20 @@
 		<b>
 		Mot clé
 		</b>
-	</TD>
+	</td>
 	<TD align="center" align="middle">
 		<img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0">
-	</TD>
+	</td>
 	<TD align="center" align="middle">
 		<img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0">
-	</TD>
-</TR>
+	</td>
+</tr>
 <LOOP NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type_tous_motcles">
 	<TR> 
 		<TD align="center" align="middle">
 			<img src="images/GNOME_prefs.gif" width="24" height="24" border="0">
-		</TD>
-		<TD>
+		</td>
+		<td>
 		<IF COND="[#TYPE]==3">
 			<strong>
 		</IF>
@@ -49,18 +49,18 @@
 		<IF COND="[#TYPE]==3">
 			</strong>
 		</IF>
-		</TD>
+		</td>
 		<TD align="center">
-			<A HREF="motcle.php?id=[#ID]">
+			<a href="motcle.php?id=[#ID]">
 				Modifier
-			</A>
-		</TD>
+			</a>
+		</td>
 		<TD align="center">
-			<A HREF="motcle.php?id=[#ID]&delete=2">
+			<a href="motcle.php?id=[#ID]&delete=2">
 				Supprimer
-			</A>
-		</TD>
-	</TR>
+			</a>
+		</td>
+	</tr>
 </LOOP>
 </TABLE>
 <br>
@@ -68,11 +68,11 @@
 
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
 <TR>
-	<TD>
+	<td>
 		<strong><font color="Navy">En gras :</font></strong> mots clés ajoutés dans l'interface.
 		<font color="Navy">En maigre :</font> mots clés ajoutés via l'import RTF.<br>
-	</TD>
-</TR>
+	</td>
+</tr>
 </TABLE>
 <br>
 <br>

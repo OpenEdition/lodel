@@ -4,7 +4,7 @@
 <MACRO NAME="HEADER_LOGO"> 
 
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR><TD><div align="center"><b>Edition d'un groupe</b></div></td></tr>
+<TR><td><div align="center"><b>Edition d'un groupe</b></div></td></tr>
 </TABLE>
 <br>
 
@@ -16,15 +16,15 @@
 <FORM METHOD="POST" ACTION="groupe.php">
 <INPUT TYPE="hidden" name="edit" VALUE="1">
 <INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<TR><TD>Nom:</TD>
-<TD><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></TD>
-[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</TD>]</TR>
+<TR><td>Nom:</td>
+<td><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></td>
+[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</td>]</tr>
 </TABLE>
 <div align="center"><INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" ></div>
 </FORM>
 
 <IF COND="[#DELETE]">
-<div align="center"><A HREF="groupe.php?delete=2&id=[(#ID)]"><BLINK>Confirmer la suppresion</BLINK></A></div>
+<div align="center"><a href="groupe.php?delete=2&id=[(#ID)]"><BLINK>Confirmer la suppresion</BLINK></a></div>
 <ELSE/>
-<div align="center">[<A HREF="groupe.php?delete=1&id=(#ID)">Supprimer</A>]</div>
+<div align="center">[<a href="groupe.php?delete=1&id=(#ID)">Supprimer</a>]</div>
 </IF>

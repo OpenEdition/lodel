@@ -8,19 +8,19 @@
 	<td>
 		<br><br><br>
 		Il est recommandé de faire une sauvegarde de la base de données avant d'en importer une nouvelle:
-		<A HREF="backup.php">Sauvegarde</A>
+		<a href="backup.php">Sauvegarde</a>
 		<br><br><br>
 		Pour importer une base de donnée, vous devez charger le fichier tar.gz  sur le serveur dans le repertoire de [#REPERTOIRE].
-	</TD>
-</TR>
+	</td>
+</tr>
 <TR>
-	<TD>
+	<td>
 		Liste des fichiers disponibles:<P>
 		<LOOP NAME="fichiers">
 			>> 	<strong>[#NOM]</strong> >> 
-			<A HREF="import.php?fichier=[(#NOM|urlencode)]">
+			<a href="import.php?fichier=[(#NOM|urlencode)]">
 			Importer
-		</A>
+		</a>
 		<BR>
 </LOOP>
 	</td>

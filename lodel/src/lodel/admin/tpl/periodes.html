@@ -38,7 +38,7 @@
 			<img src="images/down_24.gif" width="24" height="24" alt="Descendre" border="0" align="center">
 		</td>
 	</tr>
-	<LOOP NAME="periodes" table="indexhs" ORDER="ordre" WHERE="type_periode AND parent='[#ID]'" WHERE="ok">
+	<LOOP NAME="periodes" TABLE="indexhs" ORDER="ordre" WHERE="type_periode AND parent='[#ID]'" WHERE="ok">
 	<tr>
 		<td align="center" align="middle"><img src="images/triangle.gif" alt="Périodes" border="0"></td>
 		<td align="center"><b><font color="Navy">[#REP][(#NOM|nbsp)]</font></b></td>
@@ -53,7 +53,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="periodes_trash" table="indexhs" ORDER="ordre" WHERE="trash" WHERE="type_periode">
+<LOOP NAME="periodes_trash" TABLE="indexhs" ORDER="ordre" WHERE="trash" WHERE="type_periode">
 <BEFORE>
 <b><div align="center"><BR>Dans la poubelle:<BR></div></b><br>
 <table WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
@@ -62,8 +62,8 @@
 
 <tr>
 <td align="center"><font color="Navy"><b>[#NOM]</b></font></td>
-<td><a href="periode.php?id=[#ID]&restore=1">Récuperer</A></td>
-<td><a href="periode.php?id=[#ID]&delete=2">Détruire définitivement</A></td>
+<td><a href="periode.php?id=[#ID]&restore=1">Récuperer</a></td>
+<td><a href="periode.php?id=[#ID]&delete=2">Détruire définitivement</a></td>
 </tr>
 <AFTER></table></AFTER>
 </LOOP>

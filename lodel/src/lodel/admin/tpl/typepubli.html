@@ -12,33 +12,33 @@
 <FORM METHOD="POST" ACTION="typepubli.php">
 <INPUT TYPE="hidden" name="edit" VALUE="1">
 <INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<TR><TD><b>Nom du type de publication :</b></TD>
-<TD><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></TD>
-[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</TD>]</TR>
-<TR><TD><br>
+<TR><td><b>Nom du type de publication :</b></td>
+<td><INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]"></td>
+[(#ERREUR_NOM|true)<TD CLASS="erreur">Il faut preciser un nom !</td>]</tr>
+<TR><td><br>
 <b>Nom du fichier template</b><br>
 <font size="-1"> de sommaire (sans l'extension .html):</FONT>
 <br>
-</TD>
-<TD><INPUT SIZE="40" TYPE="text" NAME="tpl" value="[#TPL]"></TD>
-[(#ERREUR_TPL|true)<TD CLASS="erreur">Il faut preciser un nom de fichier</TD>]
-</TR>
+</td>
+<td><INPUT SIZE="40" TYPE="text" NAME="tpl" value="[#TPL]"></td>
+[(#ERREUR_TPL|true)<TD CLASS="erreur">Il faut preciser un nom de fichier</td>]
+</tr>
 <TR><td><br>
 <b>Nom du fichier template d'édition fils</b><br>
  <font size="-1">Ce template est pour les fils du publication. (facultatif)</font>
 <br>
 </td>
-<TD><INPUT SIZE="40" TYPE="text" NAME="tpledit" value="[#TPLEDIT]"></TD>
-[(#ERREUR_TPLEDIT|true)<TD CLASS="erreur">Il faut preciser un nom de fichier</TD>]
-</TR>
-<TR><TD>
+<td><INPUT SIZE="40" TYPE="text" NAME="tpledit" value="[#TPLEDIT]"></td>
+[(#ERREUR_TPLEDIT|true)<TD CLASS="erreur">Il faut preciser un nom de fichier</td>]
+</tr>
+<TR><td>
 <br>
 <br>
 <div align="center"><INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
 </FORM>
 
-[<A HREF="typepubli.php?delete=1&id=(#ID)">Supprimer</A>]</div>
-</TD></TR>
+[<a href="typepubli.php?delete=1&id=(#ID)">Supprimer</a>]</div>
+</td></tr>
 </TABLE>
 
 <MACRO NAME="CLOSE_HTML">

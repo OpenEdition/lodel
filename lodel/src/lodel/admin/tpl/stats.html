@@ -1,8 +1,8 @@
-<use macrofile="macros.html">
-<macro name="header_head_open">
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition - utilisateur</title>
-<macro name="header_head_close">
-<macro name="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 <br /><br />
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="center">
 <tr>
@@ -81,11 +81,11 @@
 				<b>Nombre de fois utilisé :</b>
 			</td>
 		</tr>
-		<LOOP NAME="nom_occ_type_doc">
+		<LOOP NAME="nom_et_occurence_type_doc">
 			<DO>
 				<tr>
 					<td>
-						[#NOMTYPEDOC]
+						[#TYPE]
 					</td>
 					<td>
 						[#NBTYPEDOC]
@@ -170,11 +170,11 @@
 				<b>Nombre de fois utilisé :</b>
 			</td>
 		</tr>
-		<LOOP NAME="nom_occ_type_publi">
+		<LOOP NAME="nom_et_occurence_type_publi">
 			<DO>
 				<tr>
 					<td>
-						[#NOMTYPEPUBLI]
+						[#TYPE]
 					</td>
 					<td>
 						[#NBTYPEPUBLI]
@@ -184,4 +184,4 @@
 		</LOOP>
 	</table>
 </IF>
-<macro name="close_html">
+<MACRO NAME="CLOSE_HTML">
