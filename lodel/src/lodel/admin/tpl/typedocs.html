@@ -46,7 +46,7 @@
 		<td class="texte_noir_gras">Fichier Template</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="typedocs" TABLE="types" ORDER="ordre" WHERE="ok" WHERE="classe='documents' AND type NOT LIKE 'documentannexe-%'">
+	<LOOP NAME="typedocs" TABLE="types" ORDER="ordre" WHERE="ok" WHERE="classe='documents'">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
