@@ -66,7 +66,7 @@ class PersonsLogic extends GenericLogic {
      $status=$context['status'];
 
      // get the class 
-     $daotype=getDAO("persontypes");
+     $daotype=&getDAO("persontypes");
      $votype=$daotype->getById($idtype,"class");
      $class=$context['class']=$votype->class;
 
@@ -114,7 +114,7 @@ class PersonsLogic extends GenericLogic {
      //if ($context['usergrouprec'] && $user['admin']) change_usergroup_rec($id,$usergroup);
 
      // save the class table
-     $gdao=getGenericDAO($class,"idperson");
+     $gdao=&getGenericDAO($class,"idperson");
      $gdao->instantiateObject($gvo);
      $this->_populateObject($gvo,$context);
      $gvo->idperson=$id;
@@ -124,7 +124,7 @@ class PersonsLogic extends GenericLogic {
      
      // save the entities_class table
      if ($context['identity']) {
-       $dao=getDAO("relations");
+       $dao=&getDAO("relations");
 
        $vo=$dao->find("id1='".intval($context['identity'])."' AND id2='".$id."' AND nature='G' AND degree='".intval($context['degree'])."'","idrelation");
 
@@ -140,7 +140,7 @@ class PersonsLogic extends GenericLogic {
        }
 
 
-       $gdao=getGenericDAO("entities_".$class,"idrelation");
+       $gdao=&getGenericDAO("entities_".$class,"idrelation");
        $gdao->instantiateObject($gvo);
        $this->_populateObject($gvo,$context);
        $gvo->idrelation=$idrelation;
@@ -172,7 +172,7 @@ class PersonsLogic extends GenericLogic {
     if ($context['idrelation']) {
       $this->idrelation=$context['idrelation'];
     } else {
-      $dao=getDAO("relations");
+      $dao=&getDAO("relations");
       $this->vos=$dao->getByIds($context['id']);
       $this->idrelation=array();
       foreach ($vos as $vo) {
@@ -194,18 +194,18 @@ class PersonsLogic extends GenericLogic {
     while (!$result->EOF) {
       $class=$result->fields['class'];
 
-      $gdao=getGenericDAO($class,"idperson");
+      $gdao=&getGenericDAO($class,"idperson");
       $gdao->deleteObject($id);
 
       if ($this->idrelation) {
-	$gdao=getGenericDAO("entities_".$class,"idrelation");
+	$gdao=&getGenericDAO("entities_".$class,"idrelation");
 	$gdao->deleteObject($this->idrelation);
       }
 
       $result->MoveNext();
     }
     if ($this->idrelation) {
-      $gdao=getDAO("relations","idrelation");
+      $gdao=&getDAO("relations","idrelation");
       $gdao->delete("id2 IN ('".join("','",$this->idrelation)."')");
     }
 

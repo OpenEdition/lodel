@@ -79,7 +79,7 @@ class Controler {
       $do=$do."Action";
 
       require_once($home."logic.php");
-      $logic=getLogic($lo);
+      $logic=&getLogic($lo);
 
       switch($do) {
       case 'listAction' :

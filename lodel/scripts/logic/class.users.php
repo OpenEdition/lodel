@@ -67,7 +67,7 @@ class UsersLogic extends Logic {
      switch($var) {
      case "usergroups" :
        
-       $dao=getDAO("usergroups");
+       $dao=&getDAO("usergroups");
        $list=$dao->findMany("status>0","rank,name","id,name");
        $arr=array();
        foreach($list as $group) {
@@ -83,7 +83,7 @@ class UsersLogic extends Logic {
      case "lang" :
        // get the language available in the interface
        
-       $dao=getDAO("translations");
+       $dao=&getDAO("translations");
        $list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
        $arr=array();
        foreach($list as $lang) {
@@ -112,7 +112,7 @@ class UsersLogic extends Logic {
    function _populateContextRelatedTables(&$vo,&$context)
 
    {
-     $dao=getDAO("users_usergroups");
+     $dao=&getDAO("users_usergroups");
      $list=$dao->findMany("iduser='".$vo->id."'","","idgroup");
      $context['usergroups']=array();
      foreach($list as $relationobj) {

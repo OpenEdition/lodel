@@ -79,7 +79,7 @@ class RelationsLogic extends Logic {
     if ($context['idrelation']) {
       $this->idrelation=$context['idrelation'];
     } else {
-      $dao=getDAO("relations");
+      $dao=&getDAO("relations");
       $this->vos=$dao->getByIds($context['id']);
       $this->idrelation=array();
       foreach ($vos as $vo) {
@@ -101,18 +101,18 @@ ZXXXXXXXXXXXXXXXXXXXx
     while (!$result->EOF) {
       $class=$result->fields['class'];
 
-      $gdao=getGenericDAO($class,"idperson");
+      $gdao=&getGenericDAO($class,"idperson");
       $gdao->deleteObject($id);
 
       if ($this->idrelation) {
-	$gdao=getGenericDAO("entities_".$class,"idrelation");
+	$gdao=&getGenericDAO("entities_".$class,"idrelation");
 	$gdao->deleteObject($this->idrelation);
       }
 
       $result->MoveNext();
     }
     if ($this->idrelation) {
-      $gdao=getDAO("relations","idrelation");
+      $gdao=&getDAO("relations","idrelation");
       $gdao->delete("id2 IN ('".join("','",$this->idrelation)."')");
     }
 

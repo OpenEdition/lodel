@@ -58,7 +58,7 @@ class UserOptionGroupsLogic extends Logic {
      global $user,$home;
      // get the dao for working with the object
      
-     $dao=getDAO("options");
+     $dao=&getDAO("options");
      $options=$dao->findMany("idgroup='".$context['id']."'","id,type,defaultvalue,userrights");
 
      require_once($home."validfunc.php");

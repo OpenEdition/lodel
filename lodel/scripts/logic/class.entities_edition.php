@@ -71,7 +71,7 @@ class Entities_EditionLogic extends GenericLogic {
 	   return;
 	 }
 	 //search the type
-	 //$dao=getDAO("persontypes");
+	 //$dao=&getDAO("persontypes");
 	 //$vo=$dao->find("type='".$varname."'","class,id");
 	 //$class=$vo->class;
 	 #print_r($context['persons'][$idtype]);
@@ -81,7 +81,14 @@ class Entities_EditionLogic extends GenericLogic {
 	   $localcontext['name']=$name;
 	   $localcontext['classtype']="persons";
 	   $localcontext['degree']=$degree;
+	   if ($degree>$maxdegree) $maxdegree=$degree;
 	   call_user_func("code_do_$funcname",$localcontext);
+	 }
+
+	 if (function_exists("code_after_$funcname")) {
+	   $localcontext=$context;
+	   $localcontext['maxdegree']=$maxdegree;
+	   call_user_func("code_after_$funcname",$localcontext);
 	 }
        }	  
      /////
@@ -130,7 +137,6 @@ class Entities_EditionLogic extends GenericLogic {
 
    {
      global $user,$home;
-
      $id=$context['id'];
      $idparent=$context['idparent'];
      $idtype=$context['idtype'];
@@ -146,7 +152,7 @@ class Entities_EditionLogic extends GenericLogic {
      }
 
      // get the class 
-     $daotype=getDAO("types");
+     $daotype=&getDAO("types");
      $votype=$daotype->getById($context['idtype'],"class,creationstatus");
      $class=$context['class']=$votype->class;
 
@@ -193,7 +199,7 @@ class Entities_EditionLogic extends GenericLogic {
      // change the group recursively
      //if ($context['usergrouprec'] && $user['admin']) change_usergroup_rec($id,$usergroup);
 
-     $gdao=getGenericDAO($class,"identity");
+     $gdao=&getGenericDAO($class,"identity");
      $gdao->instantiateObject($gvo);
      $this->_populateObject($gvo,$context);
      $gvo->identity=$id;
@@ -245,18 +251,20 @@ class Entities_EditionLogic extends GenericLogic {
        if (!$idtypes) continue;
 
        //if ($context[autresentries]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentries])));
-       $logic=getLogic($table);
+       $logic=&getLogic($table);
        $ids=array();
        $idrelations=array();
-
        foreach ($idtypes as $idtype) {
 	 $itemscontext=$context[$table][$idtype];
 	 if (!$itemscontext) continue;
+	 $degree=1;
+
 	 foreach ($itemscontext as $k=>$itemcontext) {
 	   if (!is_numeric($k)) continue;
 	   $itemcontext['identity']=$vo->id;
 	   $itemcontext['idtype']=$idtype;
 	   $itemcontext['status']=$status;
+	   $itemcontext['degree']=$degree++;
 	   $ret=$logic->editAction($itemcontext,$error,CLEAN);
 	   if ($ret!="_error" && $itemcontext['id']) {
 	     $ids[$idtype][]=$itemcontext['id'];
@@ -307,7 +315,7 @@ class Entities_EditionLogic extends GenericLogic {
      if ($checkjointtable) {
        // with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
        // get the joint table first
-       $dao=getDAO("relations");
+       $dao=&getDAO("relations");
        $vos=$dao->findMany($criteria.$naturecriteria,"","idrelation");
        $ids=array();
        foreach ($vos as $vo) { $ids[]=$vo->idrelation; }
@@ -315,7 +323,7 @@ class Entities_EditionLogic extends GenericLogic {
        if ($ids) {
 	 // getting the tables name from persons and persontype would be to long. Let's suppose
 	 // the number of classes are low and it is worse trying to delete in all the tables
-	 $dao=getDAO("classes");
+	 $dao=&getDAO("classes");
 	 $tables=$dao->findMany("classtype='persons'","","class");
 	 $where="idrelation IN ('".join("','",$ids)."')";
 	 foreach($tables as $table) {
@@ -345,7 +353,7 @@ class Entities_EditionLogic extends GenericLogic {
        }
 
        if ($idstodelete) {
-	 $dao=getDAO($table);
+	 $dao=&getDAO($table);
 	 $dao->deleteObject($idstodelete);
        }
 

@@ -52,7 +52,7 @@ class InternalstylesLogic extends Logic {
 		  "*-"=>getlodeltextcontents("next_styles","admin"),
 		  );
        
-       $dao=getDAO("tablefields");
+       $dao=&getDAO("tablefields");
        $vos=$dao->findMany("style!=''","style","style");
        foreach($vos as $vo) {
 	 if (strpos($vo->style,".")!==false || strpos($vo->style,":")!==false) continue;

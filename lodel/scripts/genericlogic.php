@@ -78,12 +78,12 @@ class GenericLogic extends Logic {
        $idtype=$context['idtype'];
      }
 
-     $daotype=getDAO($this->_typetable);
+     $daotype=&getDAO($this->_typetable);
      $votype=$daotype->getById($idtype);
      $this->_populateContext($votype,$context['type']);
      
      if ($id) {
-       $gdao=getGenericDAO($votype->class,$this->_idfield);
+       $gdao=&getGenericDAO($votype->class,$this->_idfield);
        $gvo=$gdao->getById($id);
        if (!$gvo) die("ERROR: can't find object $id in the associated table. Please report this bug");
        $this->_populateContext($gvo,$context);
@@ -179,11 +179,11 @@ class GenericLogic extends Logic {
 
      // get the fields of class
 
-     $daotablefields=getDAO("tablefields");
+     $daotablefields=&getDAO("tablefields");
      $fields=$daotablefields->findMany("(class='".$context['class']."' OR class='entities_".$context['class']."') AND status>0 ","",
 				       "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
 
-     echo "class=".get_class($this);
+     #echo "class=".get_class($this);
 
      // file to move once the document id is know.
      $this->files_to_move=array();
@@ -279,11 +279,11 @@ class GenericLogic extends Logic {
 	   break;
 	 case 'persons':
 	   // get the type
-	   $dao=getDAO("persontypes");
+	   $dao=&getDAO("persontypes");
 	   $vo=$dao->find("type='".$name."'","class,id");
 	   $idtype=$vo->id;
 
-	   $logic=getLogic("persons"); // the logic is used to validate
+	   $logic=&getLogic("persons"); // the logic is used to validate
 	   $localcontext=&$context['persons'][$idtype];
 	   $count=count($localcontext);
 	   for($i=0; $i<$count; $i++) {

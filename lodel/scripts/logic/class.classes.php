@@ -169,13 +169,13 @@ class ClassesLogic extends Logic {
      }
      // delete associated types
      // collect the type to delete
-     $dao=getDAO(ClassesLogic::typestable($this->vo->classtype));
+     $dao=&getDAO(ClassesLogic::typestable($this->vo->classtype));
      $types=$dao->findMany("class='".$this->vo->class."'","id");
      $ids=array();
      foreach($types as $type) $ids[]=$type->id;
 
      $dao->deleteObject($ids);
-     $logic=getLogic(ClassesLogic::typestable($this->vo->classtype));
+     $logic=&getLogic(ClassesLogic::typestable($this->vo->classtype));
      $logic->_deleteRelatedTables($ids);
 
      echo "finir d'implementer la destruction des table associe a une classe: tablefields et tablefieldgroups";

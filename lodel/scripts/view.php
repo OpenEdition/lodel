@@ -238,7 +238,7 @@ function &getView()
 function makeSelect(&$context,$varname,$lo,$edittype)
 
 {
-  $logic=getLogic($lo);
+  $logic=&getLogic($lo);
   $logic->makeSelect($context,$varname);
 }
 

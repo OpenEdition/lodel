@@ -139,7 +139,7 @@ function validfield(&$text,$type,$default="")
   case "entity" :
     $text=intval($text);
     // check it exists
-    $dao=getDAO("entities");
+    $dao=&getDAO("entities");
     $vo=getById($text,"1");
     if (!$vo) return "entity";
     break;

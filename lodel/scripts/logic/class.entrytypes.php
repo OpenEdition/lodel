@@ -143,7 +143,7 @@ class EntryTypesLogic extends Logic {
      global $home;
 
       
-     $dao=getDAO("tablefields");
+     $dao=&getDAO("tablefields");
      $dao->delete("type='entries' AND name='".$this->vo->type."'");
    }
 

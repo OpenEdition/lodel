@@ -133,7 +133,7 @@ class PersonTypesLogic extends Logic {
      //require_once($home."typetypefunc.php"); 
      //typetype_delete("persontype","idpersontype='".$id."'");
       
-     $dao=getDAO("tablefields");
+     $dao=&getDAO("tablefields");
      $dao->delete("type='persons' AND name='".$this->vo->type."'");
    }
 

@@ -64,7 +64,7 @@ class Entities_AdvancedLogic extends Logic {
      if (!$vo) die("ERROR: can't find object $id in the table ".$this->maintable);
      $this->_populateContext($vo,$context);
 
-     $daotype=getDAO("types");
+     $daotype=&getDAO("types");
      $votype=$daotype->getById($vo->idtype);
      $this->_populateContext($votype,$context['type']);
 
@@ -102,7 +102,7 @@ class Entities_AdvancedLogic extends Logic {
 	 $idtype=$idtypes[$context['iddocument']];
 	 if (!$idtype) { // get the type, we don't have it!
 	   
-	   $dao=getDAO("entities");
+	   $dao=&getDAO("entities");
 	   $vo=$dao->getById($context['iddocument'],"idtype");
 	   $idtype=$idtypes[$context['iddocument']]=$vo->idtype;
 	 }

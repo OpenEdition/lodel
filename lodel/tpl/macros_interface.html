@@ -224,10 +224,8 @@ cp_[#NAME].writeDiv();
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
         <LET VAR="idtype">[#ID]</LET>
-	idtype:[#IDTYPE]
 	<LOOP NAME="persons_in_entities">
         <DO>
-	idtype:[#IDTYPE]
 		<LOOP NAME="edition_fields">
 			<BEFORE>
 			<div>
@@ -242,8 +240,10 @@ cp_[#NAME].writeDiv();
 			</div>
         		</AFTER>
 	    	</LOOP>
-            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">	
 	</DO>
+	<AFTER>
+            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#MAXDEGREE]">
+	</AFTER>
 	<ALTERNATIVE>
             <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0">
 	</ALTERNATIVE>
@@ -375,8 +375,8 @@ cp_[#NAME].writeDiv();
 
 			// other fields
 			clone.setAttribute('id','');
-			changeNameAttributes(clone,degreeobj[0].value);
                         degreeobj[0].value++;
+			changeNameAttributes(clone,degreeobj[0].value);
 			
 			document.getElementById('persons_'+name).appendChild(clone);
 			obj.selectedIndex=0;

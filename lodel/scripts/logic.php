@@ -404,7 +404,7 @@ function rights($table,$access)
 {
   static $cache;
   if (!isset($cache[$table][$access])) {
-    $logic=getLogic($table);
+    $logic=&getLogic($table);
     $cache[$table][$access]=$logic->rights($access);
   }
   return $cache[$table][$access];
@@ -420,7 +420,7 @@ function isdeletelocked($table,$id,$status=0)
 {
   static $cache;
   if (!isset($cache[$table][$id])) {
-    $logic=getLogic($table);
+    $logic=&getLogic($table);
     $cache[$table][$id]=$logic->isdeletelocked($id,$status);
   }
   return $cache[$table][$id];

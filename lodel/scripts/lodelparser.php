@@ -96,7 +96,7 @@ function parse_loop_extra(&$tables,
   //
   if ($tablefields[lq("#_TP_classes")]) {
     
-    $dao=getDAO("classes");
+    $dao=&getDAO("classes");
     $classes=$dao->findMany("classtype='entities'");
     foreach ($classes as $class) {
       // gere les tables principales liees a entites
