@@ -25,12 +25,12 @@
 		<td class="texte_noir_gras">Fichier Template</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="typeart" TABLE="types" ORDER="ordre" WHERE="ok" WHERE="classe='documents' AND tplcreation='document'">
+	<LOOP NAME="typedocs" TABLE="types" ORDER="ordre" WHERE="ok" WHERE="classe='documents' AND tplcreation='chargement'">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
 					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
-					<td class="ligne_admin2">[#TYPE]</td>
+					<td class="ligne_admin1">[#TYPE]</td>
 					<td class="ligne_admin1">[#TPL]</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
@@ -52,7 +52,7 @@
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="3"><span class="texte_info">Il n'y a pas de types de documents</span></td></tr>
+			<tr><td colspan="4"><span class="texte_info">Il n'y a pas de types de documents</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 </table>
