@@ -100,7 +100,12 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 <!-- ****************************************************************** -->
 	<link rel="stylesheet" href="styles_revue.css">
 	<link rel="stylesheet" href="styles_revue_image.css">
-	</head>
+	<IF COND="[#STYLECSS]">
+		<style type="text/css">         
+			[#STYLECSS]
+		</style>
+	</IF>
+</head>
 	<body> 
 	<IF COND="[#VISITEUR]">
 		<? insert_template("desk");?>
