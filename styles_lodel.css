@@ -1,3 +1,84 @@
+/***************** Ajout intégration maquette Lodel ****************/
+
+.texte_edition_des_series {
+	font-size: 16px;
+	font-weight : bold;
+	font-style:italic;
+	color: #728979;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.tab_edition_des_series {
+	margin-top: 10px;
+}
+
+/************ Styles de la page de login ******************/
+#logo1 {
+	position: absolute;
+	top: 0px;
+	left: 0px;			
+}
+
+#logo2 {
+	position: absolute;
+	height: 171px;
+	top: 0px;
+	left: 479px;
+}
+
+#formulaire {
+	position: absolute;
+	top: 200px;
+}
+
+#titre_formulaire {
+	position: relative;
+	text-align: right;
+	left: 73px;
+	width: 200px;
+}
+
+#titre_formulaire p {
+	font-family: arial;
+	font-weight: bold;
+	font-size: 14px;
+	color: #669966;
+}
+
+#champ_formulaire {
+	position: relative;
+	left: 120px;
+	width: 300px;
+	text-align: right;
+	margin-bottom: 15px;
+}
+
+#champ_formulaire p {
+	font-family: verdana;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+#champ_formulaire input {
+	width: 142px;
+}
+
+#credit {
+	position: absolute;
+	top: 400px;
+	width: 600px;
+}
+
+#credit p {
+	font-family: verdana;
+	font-size: 12px;
+	color: #666666;
+	margin-left: 15px;
+}
+/*************** Fin des styles de la page de login ****************/
+
+
+/*************** Fin ajout intégration maquette Lodel **************/
 .texte {
 	font-size: small;
 	font-weight: small;
