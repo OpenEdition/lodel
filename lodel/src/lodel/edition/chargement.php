@@ -208,7 +208,7 @@ function rtf($filename) {
 	     "/&nbsp;/",
 	     "/<[^>]+>/e",
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/i", # efface les border
-	     "/(<img\b[^>]+)>/i", # met border="0"
+	     "/(<img\b[^>]+)>/i" # met border="0"
 	     );
 
   array_push($rpl,
