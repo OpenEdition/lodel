@@ -1,4 +1,5 @@
 <?
+
 /*********************************************************************/
 /*  Boucle permettant de trouver depuis une publication toutes les   */
 /*  infos concernant la publication parente la plus haute dans       */
@@ -16,7 +17,7 @@ function boucle_topparentpubli(&$context,$funcname)
         $id=$context[id];       // On récupère le paramètre id
         do
         {
-                $result=mysql_query("SELECT * FROM publications WHERE id='$id' AND type NOT LIKE 'serie_%'") or die (mysql_error());
+                $result=mysql_query("SELECT * $GLOBALS[tableprefix]FROM publications WHERE id='$id' AND type NOT LIKE 'serie_%' AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());
                 // On teste si on a un résultat dans la requête
                 if(mysql_num_rows($result))
                 {
@@ -52,12 +53,12 @@ function boucle_topparentpubli(&$context,$funcname)
 function boucle_topparentdoc(&$context,$funcname)
 {
         $id=$context[id];
-        $result=mysql_query("SELECT publication FROM documents WHERE id='$id'") or die (mysql_error());
+        $result=mysql_query("SELECT $GLOBALS[tableprefix]publication FROM documents WHERE id='$id' AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());
         $row=mysql_fetch_array($result);
         $id = $row[publication];
         do
         {
-                $result=mysql_query("SELECT * FROM publications WHERE id='$id' AND type NOT LIKE 'serie_%'") or die (mysql_error());
+                $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$id' AND type NOT LIKE 'serie_%' AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());
                 if(mysql_num_rows($result))
                 {
                         $row=mysql_fetch_array($result);
@@ -74,5 +75,53 @@ function boucle_topparentdoc(&$context,$funcname)
         while(1);
 }
 
+function boucle_themesparents (&$context,$funcname) {
+	 $parent=intval($context[parent]);
+#ifndef LODELLIGHT
+	 $type="AND type='theme'";
+#else
+	 $type="";
+#endif
+	 if (!$parent) return;
 
+	 $contexts=array(); $i=0;
+
+	$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $type AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+	  while (mysql_num_rows($result)>0) {
+		$contexts[$i]=mysql_fetch_array($result);
+		$parent=$contexts[$i][parent];
+		$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $type AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+		$i++;
+	 }
+
+	$i--;
+	while ($i>=0) {
+		 $localcontext=array_merge($context,$contexts[$i]);
+		 call_user_func("code_boucle_$funcname",$localcontext);
+		 $i--;
+	 }
+}
+
+function boucle_publisparentes(&$context,$funcname,$critere="")
+{
+	 $parent=intval($context[parent]);
+	 if (!$parent) return;
+
+	 $contexts=array(); $i=0;
+
+	$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $critere AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+	  while (mysql_num_rows($result)>0) {
+		$contexts[$i]=mysql_fetch_array($result);
+		$parent=$contexts[$i][parent];
+		$result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$parent' $critere AND status>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+		$i++;
+	 }
+
+	$i--;
+	while ($i>=0) {
+		 $localcontext=array_merge($context,$contexts[$i]);
+		 call_user_func("code_boucle_$funcname",$localcontext);
+		 $i--;
+	 }
+}
 ?>
