@@ -251,9 +251,8 @@ function OO_XHTML ($convertedfile,&$context)
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
 	     "/<a\s+id=\"Image[^\"]+\"[^>]*\/>/i",
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
-	     "/(<img\b[^>\/]+)\/?".">/i" # met border="0"
-#	     "/(<(col)\b[^>]*?)\/?".">/i", # balise seule, il faut les fermer
-#	     "/(<p\b[^>]*>\s*<br\s*\/>\s*<\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
+	     "/(<img\b[^>\/]+)\/?".">/i", # met border="0"
+	     "/(<img\b[^>\/]+style=\"[^\"]*)width:1.0ch;height:1.0ch;([^>\/]+\/?".">)/" # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
 	     );
 
   array_push($rpl,
@@ -261,9 +260,8 @@ function OO_XHTML ($convertedfile,&$context)
 	     "\\1",
 	     "",
 	     "\\1\\2",
-	     "\\1border=\"0\" />"
-#	     "\\1 />",
-#	     "\\2\\1"
+	     "\\1border=\"0\" />",
+	     "\\1\\2"
 	     );
 
   $time=time();
