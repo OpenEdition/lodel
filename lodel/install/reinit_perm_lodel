@@ -2,7 +2,14 @@
 # vide les repertoires de cache de lodel et restaure les droits sur les fichiers/rep
 # a lancer depuis le rep lodel
 
-LODEL="/www/revues/lodeldevel"
+if [ $# -ne 1 ]
+then
+  echo " usage $0 <repertoire racine de lodel> "
+  exit
+fi
+
+
+LODEL="$1"
 
 APACHECACHEWRDIR="lodel/admin/CACHE lodel/CACHE CACHE lodel/admin/upload"
 

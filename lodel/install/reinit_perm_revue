@@ -2,17 +2,13 @@
 # reinitialisation des droits sur les fichiers et repertoires d'un revue
 # Luc Santeramo/300103
 
-
-# rep contenant la revue
-LODEL="/www/revues/lodeldevel"
-
-#######
-
 if [ $# -ne 1 ]
 then
-  echo " usage $0 <revue>"
+  echo " usage $0 <repertoire de la revue> "
   exit
 fi
+
+LODEL="$1"
 
 APACHEWRDIR="lodel/txt lodel/rtf docannexe lodel/admin/upload"
 APACHECACHEWRDIR="CACHE lodel/edition/CACHE lodel/admin/CACHE"
