@@ -220,10 +220,11 @@ function OO_XHTML ($convertedfile,&$context)
 
 
   // transform FAB
-  array_push($srch,"/\[(\/?)FAB:(\w+)\]/");
-  array_push($rpl,"<\\1r2r:\\2>");
+#  array_push($srch,"/\[(\/?)FAB:(\w+)\]/");
+#  array_push($rpl,"<\\1r2r:\\2>");
 
-
+  //
+  // all the regexp in the following should be rewritten in a proper parser !
   //
   
   $translations=array("r2r:notesdebasdepage"=>"r2r:notebaspage",
@@ -252,6 +253,10 @@ function OO_XHTML ($convertedfile,&$context)
     } else {
 	array_push($rpl,"","");
     } 
+    if (substr($k,0,4)=="r2r:") {
+      array_push($srch,"/(<p\b[^>]+class\s*=\s*)\"".substr($k,4)."\"/i");
+      array_push($rpl,"\\1\"".substr($v,4)."\"");
+    }
   }
 
   // conversion des balises de sections
@@ -414,6 +419,10 @@ function OO_XHTML ($convertedfile,&$context)
   $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/"),
 		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>"),
 		      $file);
+
+
+  // remoev any wrong caracteres in the r2r
+  $file=preg_replace ("/(<\/?r2r:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
 
   //
   // add the "official" beginning and end of the xml file

@@ -171,32 +171,44 @@
 <!--[ Macro servant à publication.html et                ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_EDITION_CHAMPS">
-	<IF COND="[#TYPE] eq 'boolean'">
-		<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
+  <IF COND="[#TYPE] eq 'boolean'">
+    <td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
+    <ELSE/>
+      <IF COND="[#TYPE] eq 'mltext'">
+	<td>
+	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
+	    <div>[(#LANG|humanlang)]: 
+	      <IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
+		<input size="70" type="text" entite[[#NOM]][[#LANG]]" value="[#VALUE]">
+	      </IF>
+	      <IF COND="[#EDITION] eq 'textarea10'">
+		<textarea rows="10" cols="70" name="entite[[#NOM]][[#LANG]]">[#VALUE]</textarea>
+	      </IF>
+	      <IF COND="[#EDITION] eq 'textarea30'">
+		<textarea rows="30" cols="70" name="entite[[#NOM]][[#LANG]]">[#VALUE]</textarea>
+	      </IF>
+	    </div>
+
+
+	  </LOOP>
+	  <div>
+	    <select name="addlanginmltext[[#NOM]]"><? makeselectlangues(); ?></select>
+	    <input class="form" type="submit" name="reload2" value="Ajouter">
+	  </div>
+	</td>
 	<ELSE/>
-	<IF COND="[#TYPE] eq 'mltext'">
-		<td>
-			<LOOP NAME="mltext">
-				<div>[(#LANG|humanlang)]: <input size="70" type="text" name="entite[[#NOM]][[#LANG]]" value="[#VALUE]"></div>
-			</LOOP>
-			<div>
-				<select name="addlanginmltext[[#NOM]]"><? makeselectlangues(); ?></select>
-				<input class="form" type="submit" name="reload2" value="Ajouter">
-			</div>
-		</td>
-	<ELSE/>
-	<IF COND="[#TYPE] eq 'lang'">
-		<td>
-		  <select name="entite[[#NOM]]">
-			<IF COND="[#CONDITION] eq '+'">
+	  <IF COND="[#TYPE] eq 'lang'">
+	    <td>
+	      <select name="entite[[#NOM]]">
+	      <IF COND="[#CONDITION] eq '+'">
 		    <?  makeselectlangues_nevernil($context[value]); // use [#VALUE] ?>
-		        <ELSE/>
+		<ELSE/>
 		    <?  makeselectlangues($context[value]); // use [#VALUE] ?>
-		        </IF>
-		  </select>
-		</td>
-	<ELSE/>
-	<IF COND="[#TYPE] eq 'date'">
+	      </IF>
+	    </select>
+	    </td>
+	    <ELSE/>
+	      <IF COND="[#TYPE] eq 'date'">
 		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'image'">

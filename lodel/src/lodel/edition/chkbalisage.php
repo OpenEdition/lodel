@@ -134,7 +134,9 @@ while ($arr) {
     if ($balisesdocumentassocie[$bal]) { // change the part
       $part=$bal;
     } else { // others balises
-      $textbal=$balises[strtolower(trim($bal))];
+      $bal=strtolower(trim($bal));
+      $textbal=$balises[$bal];
+      if ($bal=="invalidcharacters") $textbal='<div style="color: red">Le style contient des caractères invalides</div>';
       if (!$textbal) $textbal='<div style="color: red">Style "'.$bal.'" non reconnu</div>';
       $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise">'.$textbal.'</td><td class="chkbalisagetdparagraphe">';
     }
