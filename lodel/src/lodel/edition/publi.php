@@ -134,8 +134,7 @@ function publi_publication ($id,$status,$confirmation)
     $idlist=join(",",$idparents);
     $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]publications WHERE parent IN ($idlist) AND status>-32 $critere") or die(mysql_error());
   }
-
-  if ($context[publication_protegee]) return FALSE; // on ne peut pas depublier
+  if ($context[publication_protegee] || !$ids) return FALSE; // on ne peut pas depublier
 
   // update toutes les publications
   $idlist=join(",",$ids);
@@ -174,8 +173,6 @@ function publi_document ($critere,$status)
   } else {
     $where=$critere;
     if (!$admin) $where.=" AND groupe IN ($usergroupes) AND status>-32";
-    echo "where: $where<br>";
-
   }
 
   if ($status<0) { // on veut mettre hors ligne
