@@ -1,20 +1,75 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
 <USE MACROFILE="macros_technique.html">
-<MACRO NAME="ENTETE_XML">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
 
-<rss version="0.92">
-	<channel>
-		<title>Lodelia</title>
-		<link>http://lodelia.revues.org/</link>
-		<description>Actualités scientifiques</description>
-		<language>fr</language>
-		<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="status gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="0,10">
-			<DO>
-				<item>
-					<title>[#TITRE]</title>
-					<link>http://[#REVUE].revues.org/document[#IDENTITE].html</link>
-					<description>[#RESUME]</description>
-				</item>
-			</DO>
-		</LOOP>
-	</channel>
-</rss>
+<MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
+<title><MACRO NAME="NOM_REVUE"></title>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+<table class="principale">
+	<tr>
+		
+		<td class="barrenav">
+		<!-- Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
+		les navigateurs -->
+				<? insert_template("barre");?> 
+		</td>
+		
+		<td class="separation">
+			&nbsp;
+		</td>
+	
+		<!-- Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" -->
+		<td class="corps">
+
+				<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" -->
+				<!--<div class="separation">
+					&nbsp;
+				</div>-->
+		
+					<!-- ce div permet d'intégrer le  contenu de la page" -->
+					<div class="contenu">
+		
+						<!-- logo de Lodelia-->
+						<MACRO NAME="IMG_LOGO_LODELIA">
+			
+						<!-- Affiche le titre de la revue avec les style titre1  -->
+						<div  class="titre1">
+							<MACRO NAME="NOM_REVUE"> 
+						</div>
+				
+						<!-- Affiche les infos concenrnant le dernier numéro publié avec le style titre2  -->
+						<div class="titre2">
+							Canaux RSS 
+						</div>
+					
+						<div>
+							<br />
+							Les 10 derniers documents publiés de la revue (hors documents annexes)<br />
+							- <a href="backend.html?format=documentsutf8">au format utf-8 : </a><br />
+							- <a href="backend.html?format=documentsisolatin1">au format iso-8859-1 : </a>
+							<br />
+							<br />
+							Les 10 derniers numéros publiés de la revue<br />
+							- <a href="backend.html?format=numerosutf8">au format utf-8 : </a><br />
+							- <a href="backend.html?format=numerosisolatin1">au format iso-8859-1 : </a>
+						</div>
+						
+				</div>
+			</td>
+
+	</tr>
+</table>
+
+<MACRO NAME="FERMER_HTML">  
