@@ -34,7 +34,17 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // verifie que la session n'est pas expiree
     $time=time();
     //        echo $name,"   ",$row[expire],"  ",$time,"<br>";
-    if ($row[expire]<$time || $row[expire2]<$time) { header("location: login.php?erreur_timeout=1&".$retour); exit; }
+    if ($row[expire]<$time || $row[expire2]<$time) { 
+      $login="";
+      if (file_exists("login.php")) { 
+	$login="login.php"; 
+      } elseif (file_exists("lodel/edition/login.php")) {
+	$login="lodel/edition/login.php"; 
+      } else {
+	break;
+      }
+      header("location: $login?erreur_timeout=1&".$retour); exit();
+    }
 
     // pass les variables en global
    
