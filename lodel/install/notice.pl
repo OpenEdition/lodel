@@ -32,7 +32,8 @@
 foreach $file(@ARGV) {
   $file=~/\.(\w+)$/;
   $type=$1;
-  next unless $type eq "php" || $type eq "html" || $type eq "sql"  || $type eq "pl";
+  next unless $type eq "php" || $type eq "html" || $type eq "sql"  || $type eq "pl" || $type eq "css" || $type eq "" || $type eq "mod" || $type eq "dtd" ;
+
   print STDERR $file,"\n";
   open(FILE, $file) or die ("impossible d'ouvrir $file");
   @lines=<FILE>;
@@ -40,10 +41,19 @@ foreach $file(@ARGV) {
 
   open(FILE, ">$file") or die ("impossible d'ouvrir en ecriture $file");
 
-  if ($type eq "php" || $type eq "pl" || $type eq "html") {
-    # ecrit la premiere ligne car elle contient des infos importantes
-    print FILE (shift @lines);
+  $firstline=$lines[0];
+  if ($type eq "html" && $firstline=~/^<\?/) {
+    $type="php"; 
+  }
 
+  if ($type eq "" && $firstline=~/^#!/) {
+    $type="script"; 
+  }
+  if ($type eq "php" || $type eq "pl" || $type eq "html" || $type eq "script") {
+    unless (($type eq "html" && $firstline=~/<USE MACROFILE/) || ( ($type eq "html" || $type eq "mod" || type eq "dtd") && $firstline=~/<!--/)) {
+      # ecrit la premiere ligne car elle contient des infos importantes
+      print FILE (shift @lines);
+    }
   }
 
   print FILE notice($type)."\n\n";
@@ -57,11 +67,13 @@ sub notice {
   my ($type)=@_;
   my $com;
 
-  if ($type eq "php") {
+  if ($type eq "php" || $type eq "css") {
     $com=" *  ";
   } elsif ($type eq "sql") {
     $com="#  ";
   } elsif ($type eq "pl") {
+    $com="#  ";
+  } elsif ($type eq "script") {
     $com="#  ";
   } else {
     $com="   ";
@@ -98,9 +110,9 @@ E-Mail: lodel@lodel.org
   $notice=~s/^.*/$com$&/mg;
   $notice=~s/\s+$//mg;
 
-  if ($type eq "html") {
+  if ($type eq "html" || $type eq "mod" || $type eq "dtd") {
     $notice="<!--\n".$notice."-->\n";
-  } elsif ($type eq "php") {
+  } elsif ($type eq "php" || $type eq "css") {
     $notice="/*\n".$notice."*/";
   }
 
