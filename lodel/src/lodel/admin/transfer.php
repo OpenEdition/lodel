@@ -653,7 +653,9 @@ function isotoutf8 ()
 	if(($type=="string"||$type=="blob") && $valeurs[$i]!="") array_push($set,$name."='".addslashes(utf8_encode($valeurs[$i]))."'");
 	  
 	// Construction de la clause WHERE
-	if($type=="string"||$type=="blob") {
+        if (is_null($valeurs[$i])) {
+           array_push($where,$name." IS NULL");
+	} else if($type=="string"||$type=="blob") {
 	  array_push($where,$name."='".addslashes($valeurs[$i])."'");
 	} else {
 	  array_push($where,$name."='$valeurs[$i]'");
