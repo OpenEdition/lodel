@@ -30,8 +30,11 @@ ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_abrev (abrev);
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_parent (parent);
 # change le nom de l index dans la table de liaison
 ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE idindexl identree INT UNSIGNED DEFAULT \'0\' NOT NULL;
+# change type en idtype
+ALTER TABLE _PREFIXTABLE_indexls CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
 # change le type des motcles permanents
-UPDATE _PREFIXTABLE_indexls SET status=32, type=2 WHERE type=3;
+UPDATE _PREFIXTABLE_indexls SET status=32, idtype=2 WHERE idtype=3;
 # ok c est bon, on peut renomer
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
 RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_entrees;
@@ -58,7 +61,7 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 	myquote($row);
 	if ($row[status]>-32) $row[status]=32; // periode et geo sont permanents
 	if (!$row[lang]) $row[lang]="fr";
-	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (parent,nom,abrev,lang,type,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
+	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (parent,nom,abrev,lang,idtype,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
 	if ($err) break 2;
 	$newid=mysql_insert_id();
 	$convid[$row[id]]=$newid;
