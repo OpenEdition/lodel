@@ -71,9 +71,11 @@ class XmlImportHandler {
 
   function processTableFields($obj,$data) 
   {
+    if ($obj->style[0]==".") return "<span style=\"background-color: violet;\">".$data."</span>";
     $title=$obj->title;
     if ($obj->lang) $title.="<br />(".$obj->lang.")";
     $this->_contents.="<tr><td>".$title."</td><td>".$data."</td></tr>";
+    return $data;
   }
 
   function processEntryTypes($obj,$data) 

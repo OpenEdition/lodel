@@ -98,7 +98,7 @@ class XMLImportParser {
     unset($string); // save memory
 
     // make object whereever it is possible.
-    $this->_objectize($arr);
+    $this->_objectize($arr,true);
 
     // second pass
     // process the internalstyles
@@ -221,17 +221,18 @@ class XMLImportParser {
 #      echo "-l",$arr[$i]," ",$arr[$i+1]," ",get_class($arr[$i+1])," ",$arr[$i+1]->style,"<br>";
 #    }
 
-    for($i=1; $i<$n; $i+=3) {
+    #print_R($arr);
+    for($i=1; $i< $n; $i+=3) {
       $this->_parseOneStep($arr,$i,$datastack,$classstack,"block");
-
+      #echo $i," ",$classstack[0][0]," ",$arr[$i+1]->style," \n";
+      #print_R($arr[$i+1]);
       $larr=preg_split("/<(\/)?soo:inline(>|\s+class=\"[^\"]*\"\s*>)/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
-      #print_R($larr);
       $nj=count($larr);
       $datastack[0].=$larr[0];
 
       if ($nj>1) {
-	$this->_objectize($larr);
-	for($j=1; $j<$nj; $j+=3) {
+	$this->_objectize($larr,false);
+	for($j=1; $j< $nj; $j+=3) {
 	  $this->_parseOneStep($larr,$j,$datastack,$classstack,"inline");
 	  $datastack[0].=$larr[$j+2];
 	}
@@ -308,12 +309,16 @@ class XMLImportParser {
 	$call="process".substr($class,0,-2);
 	#echo count($datastack);
 	$data=array_shift($datastack);	
-	$datastack[0].=$this->handler->$call($obj,$data); // call the method associated with the object class
+	$datastack[0].=$his->handler->$call($obj,$data); // call the method associated with the object class
       }
       break;
     case "tablefieldsvo" :
+      #echo ": ".$classstack[0][0]." ".$obj->style." ".$classstack[0][0]." :";
       $cstyles=&$this->contextstyles[$classstack[0][0]];
 
+      #print_R($obj);
+      #print_R($this->contextstyles);
+      #die();
       #print_r($cstyles);
       #echo "<tr><td>";
       #echo $obj->style." ".($cstyles[description] ? "yes " :"no ");
@@ -322,7 +327,7 @@ class XMLImportParser {
       if (!$cstyles[$obj->style]) { // context change	 ?
 	$this->handler->closeClass($classstack[0]);
 	$cl=array_shift($classstack);
-	if (!$this->contextstyles[$cl[0]][$style]) {
+	if (!$this->contextstyles[$cl[0]][$obj->style]) {
 	  // must be in the context below
 	  // if not... problem.
 	  }
@@ -336,24 +341,29 @@ class XMLImportParser {
 	    $this->handler->openClass($classstack[0],null,true);
 	  }
 	}
-	$datastack[0]="";
+	array_unshift($datastack,"");
       } else {
-	$this->handler->processTableFields($obj,$datastack[0]); // call the method associated with the object class
+	$data=array_shift($datastack);
+	$datastack[0].=$this->handler->processTableFields($obj,$data); // call the method associated with the object class
 	}
       break;
     case "entrytypesvo" :
     case "persontypesvo" :
+      #echo ":- ".$classstack[0][0]." ".$obj->style." ".$classstack[0][0]." -:";
       if ($opening) { // opening. Switch the lowest context
 	// close up to the base
 	while (count($classstack)>1) {
 	  $this->handler->closeClass($classstack[0]);
 	  array_shift($classstack);
 	}
-	$datastack[0]="";
-      } else {
+	array_unshift($datastack,"");
+
 	// change the context
 	$classtype=$class=="entrytypesvo" ? "entries" : "persons";
 	array_unshift($classstack,array($obj->class, $classtype));
+	$this->handler->openClass($classstack[0],$obj);
+
+      } else {
 	//$cstyles=&$this->contextstyles[$classstack[0]];
 
 	#echo "<tr><td>";
@@ -364,7 +374,7 @@ class XMLImportParser {
 #	echo $cstyles;
 #	print_r($this->contextstyles);
 #	die();
-	$this->handler->openClass($classstack[0],$obj);
+
 	
 	$call="process".substr($class,0,-2);
 	$this->handler->$call($obj,$datastack[0]); // call the method associated with the object class
@@ -435,7 +445,7 @@ class XMLImportParser {
    * replace style by object whenever it is possible
    */
 
-  function _objectize(&$arr) {
+  function _objectize(&$arr,$blockstyle) {
 
     $stylesstack=array();
     $n=count($arr);
@@ -445,7 +455,7 @@ class XMLImportParser {
       if ($opening) { // opening tag
 	if (!preg_match("/class=\"([^\"]*)\"/",$arr[$i+1],$result)) die("ERROR: in _objectize");
 	$name=preg_replace("/\W/","",makeSortKey($result[1]));
-	$obj=&$this->commonstyles[$name];
+	$obj=&$this->commonstyles[$blockstyle ? $name : ".".$name];
 	#print_r($this->obj);
 	#die();
 	if ($obj) {

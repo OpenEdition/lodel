@@ -335,6 +335,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      } else {
        $this->_currentcontext[$obj->name].=addslashes($data);
      }
+     return $data;
    }
    
    function processEntryTypes($obj,$data) 
