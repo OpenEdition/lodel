@@ -29,9 +29,9 @@
 
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include ($home."func.php");
+require_once($home."func.php");
 require_once($home."champfunc.php");
 
 
@@ -840,7 +840,7 @@ function create($table)
     break;
   }
   
-  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br>";
+  if (!preg_match ("/CREATE TABLE[\s\w]+_PREFIXTABLE_$table\s*\(.*?;/s",file_get_contents($file),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br>";
   
   $err=mysql_query_cmds($result[0]);
   if ($err) return $err;
