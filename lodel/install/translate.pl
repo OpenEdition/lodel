@@ -20,7 +20,10 @@ foreach $filename (@ARGV) {
   $change+= $file=~s/(<\/?)dernier\b/$1LAST/gi;
   $change+= $file=~s/(<\/?)sinon\b/$1ALTERNATIVE/gi;
   $change+= $file=~s/(<\/?)texte\b/$1TEXT/gi;
-  $change+= $file=~s/<if\s+([^>]+)\s*>/$a=$1; if ($a=~?COND=?) { $&; } else { $a=~y?\"?'?; "<IF COND=\"$a\">"; }/gei;
+#  $change+= $file=~s/<if\s+([^>]+)\s*>/$a=$1; if ($a=~?COND=?) { $&; } else { $a=~y?\"?'?; "<IF COND=\"$a\">"; }/gei;
+
+
+  $file=~s/<if\s+([^>]+)\s*>/$b=$&; $a=$1; if ($a=~m!COND=!) { $b; } else {  $change++; $a=~y!\"!'!; "<IF COND=\"$a\">"; }/gei;
 
   next unless $change;
   print "$filename:",$change,"\n";
