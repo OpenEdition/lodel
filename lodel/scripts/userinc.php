@@ -29,8 +29,7 @@
 // gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
 
-require_once("lodelconfig.php");
-include_once($home."auth.php"); // secu
+if (!function_exists("authenticate")) die("ERROR: invalid include of userinc.php");
 if ($userpriv<LEVEL_ADMIN) return; // secu
 include_once ($home."func.php");
 
