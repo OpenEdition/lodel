@@ -348,8 +348,8 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_motscles_lineaires" TABLE="entrees" WHERE="identite='[#ID]' AND type='motcle'" ORDER="rank">
-		<meta name="KEYWORDS" content="[#NOM]" />
+	<LOOP NAME="meta_motscles_lineaires" TABLE="entries" WHERE="iddocument='[#ID]' AND type='motcle'" ORDER="rank">
+		<meta name="KEYWORDS" content="[#NAME]" />
 	</LOOP>
 	
 	<!--[ METADONNEES DUBLIN CORE ]-->
