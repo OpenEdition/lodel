@@ -145,8 +145,9 @@ function OO ($convertedfile,&$context)
   array_push($rpl,"removeaccentsandspaces(strtolower('<\\1r2r\\2:\\3>'))");  
 
   $translations=array("notesdebasdepage"=>"notebaspage",
-		      "title"=>"titre","subtitle"=>"soustitre",
-		      "document"=>"article","resume"=>"resume","auteur"=>"auteurs",
+#		      "title"=>"titre","subtitle"=>"soustitre",
+		      "document"=>"article",
+#                     "auteur"=>"auteurs",
 #		      "footnote(?:text)?"=>"notebaspage",
 #		      "endnote"=>"notefin",
 		      "footnote(?:text)?"=>"",
@@ -156,12 +157,8 @@ function OO ($convertedfile,&$context)
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
 		      "puces?"=>"texte",
 		      "bloccitation"=>"citation",
-		      "descriptionauteur"=>"descriptionauteur",
-		      "droitsauteur"=>"droitsauteur",
 		      "typedocument"=>"typedoc",
-		      "langue"=>"langues",
-		      "titreillustration"=>"titreillustration",
-		      "legendeillustration"=>"legendeillustration",
+#		      "langue"=>"langues",
 		      );
   
   foreach ($translations as $k=>$v) {
