@@ -38,26 +38,23 @@
 	<MACRO NAME="DESACTIVER_INDEXATION">
 	<MACRO NAME="METADONNEES">
 	<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-
-						<table class="main" cellpadding="0" cellspacing="0">
-						<tr>
-						<td class="barre">
-						<div id="barrenav">
-						<USE TEMPLATEFILE="barre">
-						</div>
-						</td>
-						<td class="middle">
+<MACRO NAME="AFFICHAGE_COMMUN">
+				<div id="contenu">					
+					<!--[ logo du site]-->
+					<MACRO NAME="AFFICHER_LOGO_SITE">
+					<!--[ Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+					titre et nom du numéro, ]-->		
+					<div id="inside">
 			
 				<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-				<div id="contenu">
 			
 					<!--[ logo du site]-->
 					
 					<!--[ Affichage d'informations dépendant
 					 du type de document ]-->
-					<strong>
-						Signalement du document en ligne :
-					</strong>
+					
+						<h1 class="accueil">Signalement du document en ligne :</h1>
+					
 						
 					<div class="afficherdocument">
 						<MACRO NAME="LISTER_AUTEURS"><br />
@@ -115,14 +112,8 @@
 										</form>
 					
 					<p class="pluspetit"> * Ces champs sont obligatoires</p>
-			<div id="footer">
-			<MACRO NAME="LODEL_ORG">
 			</div>
-			</div>
-				</td>
-
-		</tr>
-	</table>
-
+</div>
 	<MACRO NAME="FERMER_HTML">  
 </IF>
+

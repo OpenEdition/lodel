@@ -45,22 +45,23 @@
 <MACRO NAME="AFFICHAGE_COMMUN">
 				<div id="contenu">					
 					<!--[ logo du site]-->
-			
+					<MACRO NAME="AFFICHER_LOGO_SITE">
 					<!--[ Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
 					titre et nom du numéro, ]-->		
+					<div id="inside">
 						<MACRO NAME="PARU_DANS"> 
 						<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 			
 			
-					<strong>
+					<div id="type">
 						<!--[ Affiche le type du document]-->	
-				                <LOOP NAME="type_du_document" TABLE="types" WHERE="id='[#IDTYPE]'">Type de document : [#TITRE]</LOOP>
-					</strong>			
+				               <strong> <LOOP NAME="type_du_document" TABLE="types" WHERE="id='[#IDTYPE]'">[#TITRE]</LOOP></strong>
+								
 						<!--[ Affiche les boutons pour accéder à la page imprimable et la page de signalement]-->
 						<div class="signalerimprimer">
-							<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
+								<MACRO NAME="BOUTON_IMPRIMER">&nbsp;<MACRO NAME="BOUTON_SIGNALER">&nbsp;
 						</div>
-				
+				</div>
 					
 			
 					<!--[ Affiche les infos sur le document: titre, sous-titre, auteur]-->
@@ -110,7 +111,7 @@
 							<br />
 						</div>
 					</IF>
-				
+				<div id="resume">
 					<!--[ Affichage du résumé en français   ]-->
 					<IF COND="[#RESUME:FR]">
 						<h4>
@@ -160,7 +161,7 @@
 							[(#RESUME:IT|tocss)]
 						</p>
 					</IF>
-	
+	</div>
 					
 		<!--[ ----------------------------------------------------------------------- ]-->
 		<!--[ Cette partie ne s'affiche que si le texte est autorisé à la publication ]-->
@@ -171,7 +172,7 @@
 
                                          <LOOP NAME="toc" TEXT="[#TEXTE]">
 										 <BEFORE>
-											<h4>Table des matières</h4>
+											<h4><strong>Table des matières</strong></h4>
 										</BEFORE>
 										 <DO>
                                           <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" name="tocfrom[#TOCID]">[(#TITRE|strip_tags)] </a></div></IF>
@@ -185,13 +186,14 @@
 					</div>
 						<!--[ Texte. Si il existe -]-->
 						<IF COND="[#TEXTE]">
+					<h4 id="txt"><strong>Texte Intégral</strong></h4>
 							<div class="icone">
 							<IF COND="[#ICONE]">
 							<img src="[#ICONE]" alt="[#IDENTIFIANT]" hspace="4" vspace="4" border="1" align="left">
 							</IF>
                                                         </div>
-							<div class="texte">
-							[(#TEXTE|tocable|tocss|lettrine)]
+							<div id="texte">
+							[(#TEXTE|tocable|tocss('heading')|lettrine)]
 							</div>
 						</IF>
 				
@@ -222,7 +224,7 @@
 						<!--[ Notes de bas de page. Si elles existent -]-->
 						<IF COND="[(#NOTEBASPAGE|notes('nombre'))]">
 							<h4>
-								Notes de base de page numériques:
+								<strong>Notes de base de page numériques :</strong>
 							</h4>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("nombre"))]
@@ -232,7 +234,7 @@
 						
 						<IF COND="[(#NOTEBASPAGE|notes('lettre'))]">
 							<h4>
-								Notes de bas de page littérales:
+								<strong>Notes de bas de page littérales :</strong>
 							</h4>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("lettre"))]
@@ -242,7 +244,7 @@
 						
 						<IF COND="[(#NOTEBASPAGE|notes('asterisque'))]">
 							<h4>
-								Notes de bas de page astérisques:
+								<strong>Notes de bas de page astérisques :</strong>
 							</h4>
 							<div class="notes"> 
 								[(#NOTEBASPAGE|notes("asterisque"))]
@@ -253,7 +255,7 @@
 						<!--[ Notes de fin. Si elles existent -]-->
 						<IF COND="[(#NOTEFIN|notes('nombre'))]">
 							<h4>
-								Notes de fin numériques:
+								<strong>Notes de fin numériques :</strong>
 							</h4>
 							<div class="notes"> 
 								[(#NOTEFIN|notes("nombre"))]
@@ -262,7 +264,7 @@
 						</IF>
 						<IF COND="[(#NOTEFIN|notes('lettre'))]">
 							<h4>
-								Notes de fin littérales:
+								<strong>Notes de fin littérales :</strong>
 							</h4>
 							<div class="notes"> 
 								[(#NOTEFIN|notes("lettre"))]
@@ -271,7 +273,7 @@
 						</IF>
 						<IF COND="[(#NOTEFIN|notes('asterisque'))]">
 							<h4>
-								Notes de fin astérisques:
+								<strong>Notes de fin astérisques :</strong>
 							</h4>
 							<div class="notes"> 
 								[(#NOTEFIN|notes("asterisque"))]
@@ -303,7 +305,8 @@
 					<!--[ Affiche liens de navigation entre les documents  ]-->						
 					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				
-<div id="footer"><MACRO NAME="LODEL_ORG"></div>
+<div class="spacer">&nbsp;</div>
+</div>
 			</div>
 </div>
 <MACRO NAME="FERMER_HTML">  

@@ -46,7 +46,7 @@
 <!--[ dans le site, et lui attribuer la valeur "actif"                   ]-->
 <!--[ ****************************************************************** ]-->
 
-<IF COND="[#OPTION_SIGNALERMAIL] eq 'actif'">
+<IF COND="[#OPTION_SIGNALER_MAIL] eq 'actif'">
 				<a href="signaler.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					<MACRO NAME="IMG_BOUTON_SIGNALER2">
 				</a>
@@ -63,7 +63,6 @@
 	<a href="[(#ID|makeurlwithid('document')|mkurl('format=print'))]">
 		<MACRO NAME="IMG_BOUTON_IMPRIMER2">
 	</a>
-	<br />
 </DEFMACRO>	
 
 <DEFMACRO NAME="OUVRIR_TABLE_PRINCIPALE">

@@ -153,8 +153,11 @@ a.logo-revuesorg:hover    {
 	margin: 0;
 }
 #logo{
-	background-image: url(../images/logo_med.gif);
+	display: block;
+	background-image: url(../images/logo.png);
 	background-repeat: no-repeat;
-	background-position: 30px 30px;
-	height: 105px;
+	background-position: 27px 20px;
+	height: 70px;
+	border-right: 1px solid #BCBCBC;
+	padding-bottom: 18px;
 }

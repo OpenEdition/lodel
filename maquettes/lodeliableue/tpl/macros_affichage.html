@@ -81,7 +81,7 @@
 							<fieldset>
 							<label>La lettre de <strong>Revues.org</strong></label><br />
 							<input type="text" name="" size="25" class="rech" />
-							<input type="image" src="images/search_fl.png" />
+							<input type="image" src="images/search_fl.png" alt="S'abonner à la lettre de Revues.org" title="S'abonner à la lettre de Revues.org"/>
 							</fieldset>
 						</div>
 <div id="sep">&nbsp;</div>
@@ -172,6 +172,9 @@
 <!--[ <MACRO NAME="INTRODUCTION_COMPLETE">                               ]-->
 <!--[ ****************************************************************** ]-->
 	<h1 class="accueil">
+[#IDENTIFIANT]
+	</h1>
+	<h1 class="som">
                 <MACRO NAME="TITRE_PUBLICATION">
 		<span class="soustitresite">
 			<MACRO NAME="SOUSTITRE_PUBLICATION">
@@ -182,6 +185,7 @@
 		<p class="extrait">
 			<MACRO NAME="INTRODUCTION_COMPLETE">
 		</p>
+<div class="spacer">&nbsp;</div>
 	</IF>			
 </DEFMACRO>
 
@@ -214,6 +218,12 @@
         <LOOP NAME="publication_parente" TABLE="publications" WHERE="id='[#IDPARENT]'">
         <DO>
 	<h1 class="accueil">
+	<a href="[(#ID|makeurlwithid('sommaire'))]">
+		[#IDENTIFIANT]
+	</a>
+	</h1>
+
+	<h1>
 	<a href="[(#ID|makeurlwithid('sommaire'))]">
 		[#TITRE]
 	</a>
@@ -364,8 +374,8 @@
 <!--[ <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      ]-->
 <!--[ <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              ]-->
 <!--[ ****************************************************************** ]-->
-		 <h2><a href="[(#ID|makeurlwithid('document'))]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a></h2> ([#TYPE])
-			<br />
+		 <h2><a href="[(#ID|makeurlwithid('document'))]">[#TITRE]<br /><span class="soustitre"><IF COND="[#SOUSTITRE]">
+[#SOUSTITRE]</span><br /></IF></a><span class="soustitre">([#TYPE])</span></h2> 
         <MACRO NAME="PARU_DANS_SIMPLE"> 
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
@@ -383,13 +393,13 @@
 		
 		<DO>
 			<li class="first">
-				:: [(#IDENTIFIANT|strtolower)]
+				:: [(#TITRE|strtolower)]
 			</li>
 			<!--[ On liste tous les numéros de la série linéaire courante ]-->
 			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="idparent eq '[#ID]'"   WHERE="statut gt 0" ORDER="ordre" >
 				<DO>
 					<li>
-						<a href="sommaire.html?id=[#ID]">
+						<a href="[(#ID|makeurlwithid('sommaire'))]">
 							[#IDENTIFIANT]
 						</a>
 					</li>
@@ -858,13 +868,19 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
-			<h2 class="sommaire">
+			<h1 class="accueil">
 				
-				<span style="font-size: smaller">Sommaire du dernier numéro en ligne :</span><br />&nbsp;<br />
+				Dernier numéro en ligne :&nbsp
 <a href="[(#ID|makeurlwithid('sommaire'))]">
  [#TITRE] 
-				</a><br />&nbsp;<br />
+				</a>
 			</h2>
+	<IF COND="[#INTRODUCTION]">
+		<p class="extrait">
+			<MACRO NAME="INTRODUCTION_COMPLETE">
+		</p>
+<div class="spacer">&nbsp;</div>
+	</IF>			
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</DO>
 	</LOOP>
@@ -913,11 +929,11 @@
 	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
 	<h4>
-		Documents annexes
+		<strong>Documents annexes</strong>
 	</h4>
+	<br />
 	<div class="texte" >
 	Il y a [#NBRESULTATS] document[(#NBRESULTATS|pluriel)] annexé[(#NBRESULTATS|pluriel)] à cet article.
-	<br />
 	<br />
 	<ul class="puce">
 		</BEFORE>
