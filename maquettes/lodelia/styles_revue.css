@@ -1,223 +1,1409 @@
-.couleur_dominante1
+/*********************************************************************************************
+ *  Feuille de style                                                                         * 
+ *  Mai 2003                                                                                 *
+ *********************************************************************************************
+ */
+
+
+body
 {
-	color : #316148;
+	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
+	 *
+	 */
+	 background-color: #BFBFBF;
+	 margin-left : 0;
+	 margin-top : 0;
+	 margin-bottom : 0;
+	 margin-right : 0;
+	 font-size: 8px;
+	 font-family: Arial, Times New Roman,  Verdana, Helvetica, sans-serif;
+	 text-decoration: none;
 }
 
-.couleur_dominante2
-{
-	color : #9DD4B7;
+table {
+	/*  
+	 * Elements de styles d'une table par défaut 
+	 */
+	border: 0; 
+	cellspacing: 0; 
+	cellpadding: 0; 
+	
 }
 
-.couleur_dominante3
-{
-	color : Navy;
+p {
+	/*  
+	 * Redéfinit les marges au dessus et en dessous des paragraphes formatés 
+	 * avec la balise <p>
+	 */
+	margin-bottom : 3;
+	margin-top : 3;
 }
-
-.texte {
-	font-size: x-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	line-height: 150%;
-	text-indent : 30;
-}
-
-.fase4_rdf {
-	font-size: x-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_petit {
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_trespetit {
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_centre {
+ 
+sup {
+	/*
+	 * Redéfinit la taille et la position d'un texte placé en exposant avec
+	 * la balise <sup>
+	 */
 	font-size: small;
 	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	vertical-align : 10%;
 }
 
-.texte_petit_centre {
-	font-size: x-small;
-	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+/********************************************************************************************
+  *	Les différents niveaux de titre                                                             *
+  ********************************************************************************************
+  */
 
-.texte_trespetit_centre {
-	font-size: xx-small;
-	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.texte_sommaire {
-	font-size: small;
-	font-weight: small;
-	text-align : left;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.navigation {
-	font-size: x-small;
-	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.barretitre {
-	font-size: x-small;
-	font-weight: small;
-	text-align : left;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
-
-.citation {
-	font-size: xx-small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	padding-left : 60px;
-	padding-right : 60px;
+h1
+{
+	/*  définit les caractéristiques du titre de de niveau 1 : h1
+	 *
+	 */
+	font-weight : large;
+	font-size : 140%;
+	text-align: left;
+	text-indent : 0;
+	line-height: 100%;
 }
 
 
-.notes {
-	font-size: x-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+
+h2
+{
+	/*  
+	 *
+	 */
+	font-weight : normal;
+	font-size: 130%;
+	text-align: left;
+	text-indent : 0;
 }
 
-.appeldenote {
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+h3
+{
+	/*  
+	 *
+	 */
+	font-size: 120%;
+	text-align: left;
+	color: #00000
 }
 
+h4
+{
+	/*  
+	 *
+	 */
+	font-size: 110%;
+	text-align: left;
+	color: #000000;
+}
 
-A:link, A:visited, A:active {
-	text-decoration: none;
-	color: Blue;
+h5
+{
+	/*  
+	 *
+	 */
+	font-size: 100%;
+	text-align: left;
+	color: #000000;
+	line-height: 1;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+	
+h6
+{
+	/*  
+	 *
+	 */
+	font-size: 90%;
+	font-variant : small-caps;
 	font-style : normal;
+	text-align: center;
+	text-indent : 0;
+	color: Black;
+}
+
+/*********************************************************************************************
+ *  Les liens Hypertexte                                                                     * 
+ *                                                                                           *
+ *  hover: quand le curseur survole le lien                                                  * 
+ *  link: lien non-visité                                                                    *
+ *  visited: lien visité                                                                     *
+ *  active: lien activé                                                                      *
+ *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit    *
+ *	placer un class dans la balise <a href>:                                                 *
+ *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les        * 
+ *  états du lien (active, hover...).                                                        *
+ *********************************************************************************************
+ */
+
+ 
+ /********************************************************************************************
+  *	style des liens par défaut                                                               *
+  ********************************************************************************************
+  */
+  
+A {
+   	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	color: #9C3234;
+	text-decoration: none;
 }
 
 A:hover {
-	color: Red;
+	/*  
+	 *	Styles des liens survolés
+	 */
+	
+	color: #666666;
 }
+
+A:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	
+	color: #666666;
+	
+}
+
+
+/*********************************************************************************************
+ *  Les différentes class liées aux éléments de structure des pages.                         * 
+ *   - .barrenav                                                                             *
+ *	 - .corps                                                                                *
+ *	 - .separation                                                                           *
+ *	 - .contenu                                                                              *
+ *********************************************************************************************
+ */
+	
+.principale {
+	width: auto;
+	height: 100%;
+	
+}
+ 
+ 
+.barrenav {
+	/*
+	 * Style de la barre de navigation, elle est placée à gauche de l'élément de class "corps"
+	 * grâce à l'attribut "float"
+	 */
+	width: 167; 
+	height: 100%;
+	background-color: #EFEFEF;
+	float: left;
+	border-left: 1px solid #9C3234;
+	border-right: 1px solid #9C3234;
+	margin-right: 0;
+}
+
+.corps {
+	/*
+	 * Style du bloc placé à droite de la barre de navigation
+	 */
+	width: auto;
+	height: 100%;
+	background-color: #ffffff;
+	border-right: 1px solid #9C3234;
+	margin-left: 0;
+}
+
+.separation {
+	/*
+	 * Style du bloc marquant une sépération entre la barre de nav et le reste de la page.
+	 * Ce bloc est contenu dans le bloc de class "corps", il se situe à gauche du bloc de class
+	 * "contenu"
+	 */
+	height: 100%;
+	background-color: #EFEFEF;
+	width: 36;
+	border-right: 15px solid #ffffff;
+	border-left: 8px solid #ffffff;
+	float: left;
+	margin: 0;
+}
+
+.contenu {
+	/*
+	 * Style du bloc pacé à droite du bloc séparation, il est aussi contenu dans la vloc corps.
+	 */
+	width: auto;
+	height: 100%;
+	margin: 0;
+}
+
+ /********************************************************************************************
+ *  Les  class liées aux titres                                                              * 
+ *********************************************************************************************
+ */
+ 	/* Style .titrerevue  
+	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
+	 * A 
+	 */
+.titrerevue {
+	 width: auto;
+	 background-color: #F4F4F4;
+	 font-size: 140%;
+	 font-weight: 300;
+	 text-align: left; 
+	 color: #9C3234;
+	 line-height: 120%;
+	 margin-bottom: 15px;
+}
+
+A.titrerevue {
+	/*  
+	 *	Styles des liens non visités et visités des liens des éléments de classe "titrerevue"
+	 */
+	font-size: 100%;
+	color: #9C3234;
+	text-decoration: none;
+	
+}
+
+A.titrerevue:hover {
+	/*  
+	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
+	 */
+	font-size: 90%;
+	color: #666666;
+	
+	
+}
+
+A.titrerevue:active {
+	/*  
+	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
+	 */
+	font-size: 90%;
+	color: #666666;
+	
+	
+}
+
+/*************************************************************************/
+
+	/* Style .titre2  
+	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
+	 * A 
+	 */
+.titre2 {
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: small;
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 margin-bottom: 7px;
+	 margin-top: 15px;
+	 vertical-align: middle;
+}
+
+A.titre2 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #cccccc;
+	text-indent: 0;
+	margin: 0;
+	vertical-align: middle;
+
+}
+
+A.titre2:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+	
+}
+A.titre2:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+}
+
+
+.alphabet {
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: small;
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 margin-bottom: 7px;
+	 margin-top: 15px;
+	 vertical-align: middle;
+}
+
+A.alphabet {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #cccccc;
+	text-indent: 0;
+	margin: 0;
+	vertical-align: middle;
+
+}
+
+A.alphabet:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+	
+}
+A.alphabet:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+}
+
+
+/***************************************************************************/
+	
+.titre3 {
+	/*  
+	 * Style .titre3 
+	 */
+	width: auto;
+	height: 20;
+	background-color: #EFEFEF;
+	font-size: small;
+	font-weight: bold;
+	color: #9C3234;
+	text-indent : 10;
+	margin-top: 20px;
+}
+
+/*****************************************************************************
+ *	style des liens pointant vers les auteurs                                *
+ *****************************************************************************
+ */ 
+ 
+A.auteur {
+	/*  
+	 *	Styles des liens non visités 
+	 */
+	text-decoration:none;
+	font-weight: 550;
+	color: #9C3234;
+	
+}
+
+A.auteur:visited {
+	/*  
+	 *	Styles des liens  visités
+	 */
+	color: #9C3234;
+	}
+
+A.auteur:hover , A.auteur:active {
+	/*  
+	 *	Styles des liens survolés et actifs
+	 */
+	color: #666666;
+	
+}
+
+	
+/*  *****************************************************************************
+ *	Styles des liens qui pointent vers les textes intégraux dans les sommaires.	*
+ *	*****************************************************************************
+ */
+
+
+
+A.texte_integral {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #666666;
+	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif;
+}
+
+
+A.texte_integral:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+A.texte_integral:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+
+}
+
+/*********************************************************************************************
+ *  Les  class utlisées dans la page "sommaire.html"                                         * 
+ *********************************************************************************************
+*/
+
+.soustitrerevue
+{
+	/*  
+	 * Style du soustitre de la publication dans les sommaires
+	 */
+	
+	font-size : 90%;
+	font-weight: normal;
+	font-style: italic;
+}
+ 
+ 
+.directeur_publication {
+	/*  
+	 * Style utilisé pour le directeur de la publication
+	 */
+	padding-left: 20px;
+	font-size: 75%;
+}
+
+.docregroupement {
+	/*
+	 * Style pour les blocs affichant le titre et l'auteur du document.
+	 */
+	width: auto;
+	height: auto;
+}
+
+
+/***************************************************************************************
+ *	Styles concernant l'affichage dans article.html                                    *
+ ***************************************************************************************
+ */
+ 
+ /*
+  * Les styles titre21 et signaler imprimer 
+  */
+ 
+ .titre21 {
+	
+	 width: 500;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: medium;
+	  font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 text-indent: 10;
+	 margin-bottom: 15px;
+	 float: left;
+}
+
+.signalerimprimer {
+	 width: 61;
+	 height: 20;
+	 background-color: #9C3234;
+	 margin-right:0;
+}
+ 
+ /******************************************************************************************/
+
+.afficherdocument  {
+	/* 
+	 * Pour afficher les informations sur un document dans article.html.
+	 */
+	width: auto;
+	background-color: #F7F7F7;
+	text-decoration: none;
+	color: #666666;
+	margin-bottom: 10px;
+	padding: 5px;
+	
+}
+
 
 .resume
 {
+	/*  
+	 * Style utilisé pour les résumés
+	 */
+	width: 561;
+	height: auto;
 	font-size: x-small;
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman"font-size : x-small;
-	color : #454545;
+	color : #000000;
 	text-align : justify;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-top: 2em;
+	padding-bottom: 2em;
+		
 }
+
+.texte
+{
+	/*  
+	 * 
+	 */
+	width: auto;
+	height: auto;
+	font-weight: small;
+	text-align : justify;
+	line-height: 120%;
+	text-indent : 20;
+	padding: 20px;
+	margin: 0;
+}
+
+.notes
+{
+	/*  
+	 * Style permettant d'afficher le texte des notes ainsi que des errata, NDLR et historique
+	 */
+	width: 561;
+	height: auto;
+	font-size: 90%;
+	font-weight: small;
+	line-height: 120%;
+	text-align : justify;
+	padding-top: 2em;
+	padding-bottom: 2em;
+	padding-right: 2em;
+	padding-left: 2em;
+}
+
+
+.descriptionauteur {
+   /*  
+    *	Style de la description de l'auteur appelée dans le document 
+	*/
+	width: auto;
+	height: auto; 
+	font-weight: small;
+	text-align : justify;
+	line-height: 120%;
+	text-indent : 20;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-bottom: 2em;
+}
+
+/***************************************************************************************/
+
+.smallcaps {
+	font-variant: small-caps;
+}
+
+.pluspetit {
+	/*  
+	 * Diminue la taille de la police héritée  de 10%
+	 */
+	font-size: 80%;
+}
+
+.plusgrand {
+	/*  
+	 * Diminue la taille de la police héritée  de 10%
+	 */
+	 font-size: 110%;
+	  font-weight: bold;
+}
+
+.bold   {
+	/*
+	 * Met en gras l'élément voulu.
+     */
+	 font-weight: bold;
+}
+
+/**********************************************************************************/
+
+.navigation {
+	width: auto;
+	height: 20;
+	background-color: #E0E0E0;
+}
+
+
+.navigation_precedent {
+	/*  
+	 *	td aligné à gauche, contenant lien vers document précédent 
+	 */
+	
+	width: 400;
+	background-color: #E0E0E0;
+	text-align: left;
+	vertical-align: middle;
+	font-weight: bold;
+	color: #9C3234;
+	float: left;
+}
+
+.navigation_suivant {
+	/*  
+	 *	td aligné à droite, contenant lien vers document suivant 
+	 */
+	 
+	width: 161;
+	background-color: #E0E0E0;
+	vertical-align: middle;
+	text-align: right;
+	font-weight: bold;
+	color: #9C3234;
+	float: right;
+}
+
+/***************************************************************************************
+ *	Styles concernant l'affichage de la barre de navigation                            *
+ ***************************************************************************************
+ */
+ 
+ 
+	
+.titrebarre
+{
+	/*  
+	 *	 style permettant d'afficher le nom et la description de la revue
+	 */
+	font-size: 110%;
+	width: auto;
+	height: auto;
+	background-color: #EFEFEF;
+	font-weight: 500;
+	text-align : center;
+	font-color : #9C3234;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+/*********************************************************************************/
+
+.menu1 {
+	height: auto;
+	width: auto;
+	font-weight: bold;
+	color: #9C3234;
+	padding-left: 5px;
+	margin-top: 15px;
+	margin-bottom: 5px;
+} 
+
+A.menu1 {
+	/*  
+	 *	Styles des liens menus1 non visités et visités
+	 */
+	font-size: 113%;
+	text-decoration:none;
+	font-weight: bold;
+	color: #9C3234;
+} 
+
+A.menu1:hover {
+	/*  
+	 *	Styles  des liens menu1 survolés
+	 */
+ 	color: #333333;
+}
+	 
+A.menu1:active {
+	/*  
+	 *	Style des liens menu1 actifs
+	 */
+	color: #333333;
+	
+} 
+
+/********************************************************************************/
+
+.menu2 {
+	height: auto;
+	width: auto;
+	font-weight: 500;
+	color: #000000;
+	text-align: right;
+	padding-right: 1px;
+} 
+
+A.menu2 {
+	/*  
+	 *	Styles des liens menu2 non visités et visités
+	 */
+	font-size: 100%;
+	text-decoration: none;
+	font-weight: 600;
+	color: #666666;
+	
+} 
+
+A.menu2:hover {
+	/*  
+	 *	Styles des liens menu2 survolés
+	 */
+	font-size: 100%;
+	text-decoration:none;
+	font-weight: 600;
+ 	color: #333333;
+
+} 
+
+A.menu2:active {
+	/*  
+	 *	Style des liens menu2 actifs
+	 */
+	font-size: 100%;
+	text-decoration:none;
+	font-weight: 600;
+	color: #333333;
+	
+}
+
+/*******************************************************************************/
+
+.chercher {
+	/*  
+	 * Style qui s'applique au bloc contenant le moteur de recherche
+	 */
+	font-weight: bold;
+	color: #9C3234;
+	border-bottom: 3px solid #ffffff;
+	border-top: 3px solid #ffffff;
+	padding-top: 5px;
+	background-color: #E7E7E7;
+	padding-left: 3px:
+	
+} 
+
+/**********************************************************************************/
+
+.signaler {
+	/*  
+	 * Style qui s'applique au bloc contenant le formulaire de signalement de document
+	 */
+	 
+	width: 561;
+	height: auto;
+	margin: 0; 
+}
+
+ 
+	
+
+/**********************************************************************************/
+
+.numerolineaire {
+	/*  
+	 * Style qui s'applique aux titres des numéros dans 
+	 * dans le sommaire linéaire
+	 */
+	height: auto;
+	width: 561;
+	background-color: #ffffff;
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+
+.icone {
+	/*  
+	 * Style qui s'applique à l'icone affichée avec les titres des numéros dans 
+	 * dans le sommaire linéaire
+	 */
+	height: auto;
+	width: auto;
+	background-color: #ffffff;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	float: left;		
+}
+
+.numero {
+	/*
+	 *	
+	 */
+	height: auto;
+	width: auto;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	background-color: #F7F7F7;
+	text-decoration: none;
+	color: #666666;
+	
+	
+}
+
+/***************************************************************************************
+ *	Les styles définissant les images                                                  *
+ ***************************************************************************************
+ */
+ 
+ 
+ /*
+  *	les styles concernant le logo Lodelia
+  */
+ 
+.partielogo1 {
+ 		height: 111;
+		width: 532;
+		background-color: #ffffff;
+		background-image: url(images/logo_lodeliarouge.gif);
+		border: 0;
+		margin: 0;
+		padding: 0;
+		float: left;		
+}
+
+.partielogo2 {
+ 		height: 111;
+		width: 29;
+		background-color: #ffffff;
+		background-image: url(images/right_top.gif);
+		padding: 0;
+		border: 0;
+		margin: 0;
+		
+		}
+
+/**************************************************************************************/
+
+	/*
+ 	 *	l'image placée dans index.html
+ 	 */
+
+.imageindex {
+	padding: 0;
+	width: auto;
+	height: 301;
+	background-image: url(images/image.jpg);
+	background-repeat : no-repeat;
+	margin: 0;
+}
+
+	
+	/*
+ 	 *	Les styles définissant les différentes images du logo de Revues.org                        *
+     */
+ 
+ .logo_revuesorg1 {
+	height: 11;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/left_top.gif);
+	border-bottom: 3px solid #ffffff;
+	margin: 0;
+}
+
+.logo_revuesorg3 a {
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues.gif);
+	margin: 0;
+}
+
+
+
+.logo_revuesorg3 a:hover  {
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues_on.gif);
+	margin: 0;
+}
+
+
+.logo_revuesorg4 {
+	vertical-align: top;
+	height: 18;
+	width: 165;
+	background-color: #ffffff;
+	background-image: url(images/left_top2.gif);
+	border-top: 3px solid #ffffff; 
+	border-bottom: 3px solid #ffffff;
+	margin: 0;
+}
+
+
+/**************************************************************************/
+
+	 
+
+
+A.bouton_statut_publierOFF
+{
+	/*  
+	 * Style des boutons qui servent à modifier le statut d'une publication. 
+	 */
+	color: #181B90;
+	font-size: xx-small;
+		
+}
+
+
+.bouton_statut_publierON
+{
+	/*  
+	 * Style des boutons qui servent à modifier le statut d'une publication. 
+	 */
+	color: #B20404;
+	font-size: xx-small;
+	
+}
+
+
+
+.couleur_1
+{
+	/*  
+	 * Couleur dominante n°1
+	 */
+	color : #9C3234;
+}
+
+.couleur_2
+{
+	/*  
+	 * Couleur dominante n°2
+	 */
+	color : #9DD4B7;
+}
+
+.couleur_3
+{
+	/*  
+	 * Couleur dominante n°3
+	 */
+	color : #ffffff;
+}
+
+.filet_1
+{
+	/*  
+	 * Largeur du filet <hr> n°1
+	 */
+	width: 30%;
+}
+
+.filet_2
+{
+	/*  
+	 * Largeur du filet <hr> n°2
+	 */
+	width: 60%;
+}
+
+.filet_3
+{
+	/*  
+	 * Largeur du filet <hr> n°3
+	 */
+	width: 100%;
+}
+
+
+
+.introduction
+{
+	/*  Style appliqué à l'introduction d'un numéro
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	color: #9C3234;
+}
+
+
+
+.texte_petit
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.texte_trespetit
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_trespetit_navigation
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_trespetit_centre_navigation
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_centre
+{
+	/*  
+	 *
+	 */
+	font-size: small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+
+
+.texte_trespetit_centre
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : center;
+	
+}
+
+.texte_sommaire
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: normal;
+	text-align : left;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.texte_sommaire_petit
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+.texte_presentation
+{
+	/*  
+	 *
+	 */
+	font-size: small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	line-height: 120%;
+	text-indent : 0;
+}
+
+
+
+.texte_petit_centre
+{
+	/*  
+	 *
+	 */
+	font-size: small;
+	font-weight: small;
+	text-align : center;
+	font-color : #9C3234;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+
+
+
+
+
+
+.citation
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	text-align : justify;
+	text-indent : 0;
+	margin-left : 20;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+		
+}
+
+.discret, A.discret:link, A.discret:hover, A.discret:visited, A.discret:active
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	color : #AAAAAA;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+
+	/*  Style attribué au texte introduisant le moteur de recherche interne.
+ 	 *
+ 	 */
+
+
+
+.bibliographie
+{
+	/*  
+	 *
+	 */
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	line-height: 100%;
+	text-indent : 0;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+
+
+.appeldenote
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ /*	style des liens 
+  */
+
+A.petittexte {
+	font-size: xx-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #9C3234;
+	
+}
+
+A.petittexte:hover {
+	font-size: xx-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	
+}
+
+A.petittexte:active {
+	font-size: xx-small;
+	font-weight: small;
+	text-decoration:none;
+	color: #666666;
+	
+}
+
+
+
+
+
+
 
 .titre
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : large;
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : medium;
 	color : black;
-	text-align : center;
-	font-weight : bold;
-	font-variant : small-caps;
-	font-style : normal;
-}
-
-.titrerevue
-{
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : large;
-	color : Navy;
-	text-align : center;
-	font-weight : bold;
+	text-align : right;
+	font-weight : medium;
 	font-style : normal;
 }
 
 .soustitre
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : medium;
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : small;
 	color : black;
-	text-align : center;
+	text-align : right;
+	font-style : normal;
 }
 
-.soustitrerevue
+
+.auteur_sommaire
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : medium;
-	color : Navy;
-	text-align : center;
+	/*  
+	 *
+	 */
+	text-align : left;
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : x-small;
+	color : 1;
+	font-variant : small-caps;
 }
 
-.partie
+.auteur_recension
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : medium;
-	color : navy;
-	text-align : center;
+	/*  
+	 *
+	 */
+	text-align : right;
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : x-small;
+	color : 1;
+	text-align : right;
+	font-variant : small-caps;
 }
 
-.auteur
+.auteur_indexarticles
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
-	color : Navy;
-	text-align : center;
-	font-weight : bold;
-}
-
-.directeur
-{
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
-	color : Navy;
-	text-align : center;
-	font-weight : bold;
-}
-
-.tableau {
-	font-size: x-small;
+	/*  
+	 *
+	 */
+	text-align: center;
+	font-variant : small-caps;
 	font-weight: normal;
-	text-align : justify;
+	font-size: x-small;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+	
+.integral
+{
+	/*  
+	 *
+	 */
+	font-size: xx-small;
+	color : Grey;
+	font-weight: light;
+	text-align : right;
 }
 
-	H1 {
+.indexlettrine
+{
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : small;
+	color : black;
+	font-weight : bold;
+	text-align : left;
+}
+
+.indextexte
+{
+	/*  
+	 *
+	 */
+	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-size : x-small;
+	color : black;
+	font-weight : light;
+	text-align : left;
+}
+
+
+
+.titre1 {
 	font-size: medium;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: justify;
+	font-weight: bold;
+	color: #9C3234;
+	background-color: #E0E0E0;
+	
 }
-	H2 {
+
+.regroupement2 {
 	font-size: small;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: left
+	font-weight: bold;
+	color: #cccccc;
+	background-color: #9C3234;
+	
 }
-	H3 {
-	font-size: x-small;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: left;
-	color: #00000
-}
-	H4 {font-size: x-small; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000};
-	H5 {font-size: 10pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
-	H6 {
-	font-size: 10pt;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman;";
-	text-align: left;
-	color: Black;
-}
-	H7 {font-size: 28pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: center; color: #00000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

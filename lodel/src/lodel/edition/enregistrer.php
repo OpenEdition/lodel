@@ -2,7 +2,7 @@
 die ("dessuet");
 // enregistre dans la base de donnée le fichier
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ("$home/func.php");

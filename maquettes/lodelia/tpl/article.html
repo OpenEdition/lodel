@@ -1,342 +1,279 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
-<!-- Cette page affiche les documents de type article.
-Auteur : Marin Dacos. Août 2002.
-Dernière modification majeure en septembre 2002. -->
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Cette page affiche les documents de type article.                  -->
+<!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
+<!-- Dernière modification majeure en mai 2003.                         -->
+<!-- ****************************************************************** -->
+
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)]</title>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu"> 
+<MACRO NAME="METADONNEES">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+</head>
 
+<body>
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affiche la barre verticale de navigation -->
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top">
-			<table width="90%" border="0" cellspacing="0" cellpadding="0" align="center" valign="TOP">
-				<tr>
-					<td class="titrerevue" valign="top">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
 
-						<!-- Affiche un rectangle contenant le titre du document -->
-						<table width="95%" border="1" cellspacing="0" cellpadding="5" align="center" bordercolor="#000000" bordercolorlight="#000000" bordercolordark="#C0C0C0" bgcolor="#9DD4B7">
-							<tr>
-								<td>
-									<table border="0" cellspacing="0" cellpadding="0" align="center">
-										<tr>
-											<td width="100%" align="center">
-											<!-- Affichage d'informations dépendant
-											 du type de document -->
-												<IF [#TYPE]=="compte rendu">
-													<span class="barretitre">
-														Lecture de
-														<br />
-													</span>
-												</IF>
-												<IF [#TYPE]=="chronique">
-													<span class="barretitre">
-														<strong>Chronique</strong>
-													<br />
-													</span>
-												</IF>
-												<IF [#TYPE]=="position de these">
-													<span class="barretitre">
-														<strong>Position de thèse</strong>
-													<br />
-													</span>
-												</IF>
-
-												<IF [#TITRE]>
-													<span class="titre_centre">
-													<br />
-													[#TITRE]
-													</span>
-												</IF>
-												<IF [#SOUSTITRE]>
-													<br /><span class="texte_petit">
-													<br />
-													[#SOUSTITRE]
-													</span>
-												</IF>
-												</font>
-												</a>
-												<MACRO NAME="offline_document">
-												<MACRO NAME="edit">
-												</td>
-											</tr>
-											</td>
-										</tr>
-										<tr>
-											<td width="100%" align="center"> 
-												<table widht="100%">
-													<tr>
-														<td  width="40" align="left">
-														<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
-														</td>
-														<td width="100%" align="center">
-																										<IF [#NOM]>
-													<span class="titrerevue">
-													<a href="index.html">
-														<span class="couleur_dominante1">
-															[#NOM]
-														</span>
-													</a>
-													</span>
-												<ELSE/>
-													<span class="texte_petit_centre">
-													<!-- Affiche le titre de la publication  -->
-													<BOUCLE NAME="chercher_variable_publication" TABLE="documents" WHERE="id='[#ID]'">
-														<BOUCLE NAME="affiche_numero" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
-															<a href="sommaire.html?id=[#ID]">
-																<span class="couleur_dominante1">
-																	<br />
-																	Paru dans 
-																	<em>
-																		<MACRO NAME="NOM_REVUE">
-																	</em>
-																	 numéro [#NOM]
-																</span>
-														</BOUCLE>
-													</BOUCLE>
-													</span>
-												</IF>
-												<MACRO NAME="EDIT_PUBLICATION_INDOC">
-														</td>
-														<td width="40" align="right">
-														
-														<MACRO NAME="BOUTON_DOCUMENT_SUIVANT">
-
-														</td>
-													</tr>
-												</table>
-
-												</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						</table>
-
-					</td>
-				</tr>
-				<tr>
-					<td valign="top">
-					<br />
-						<table width="90%" border="0" align="center">
-							<tr>
-								<td WITH="34" class="navigation">
-									<MACRO NAME="BOUTON_SIGNALER">
-								</td>
-								<td width="100%" align="center" class="auteur">
-									<IF [#TYPE]=="note de lecture">
-										Note de lecture par
-									</IF>
-									<MACRO NAME="LISTER_AUTEURS">
-								</td>
-								<td WITH="34" class="navigation">
-									<MACRO NAME="BOUTON_IMPRIMER">
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				
-				<!-- Résumé en français   -->
-				<IF [#RESUME:FR]>
-					<tr> 
-						<td colspan="3" class="partie" valign="top">
-							<br />
-							<hr ALIGN="CENTER" SIZE="1" width="60%" />
-							<b>
-								Résumé
-							</b>
-							<hr align="CENTER" size="1" width="60%" />
-						</td>
-					</tr>
-					<tr> 
-						<td colspan="3" valign="top"> 
-							<table border="0" align="center">
-								<tr>
-									<td class="resume" valign="top">
-										[#RESUME:FR]
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</IF>
-
-				<!-- Résumé en anglais   -->
-				<IF [#RESUME:EN]>
-					<tr> 
-						<td colspan="3" class="partie" valign="top"> 
-							<hr align="CENTER" size="1" width="60%" />
-							<b>
-								Abstract
-							</b>
-							<hr align="CENTER" size="1" width="60%" />
-						</td>
-					</tr>
-					<tr> 
-						<td colspan="3" valign="top">
-							<table border="0" align="center">
-								<tr>
-									<td class="resume" valign="top">
-										[#RESUME:EN]
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</IF>
-			</table>
-
-<!-- ----------------------------------------------------------------------- -->
-<!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
-<!-- ----------------------------------------------------------------------- -->
-
-			<IF [#TEXTEPUBLIE]>
+		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+		de nav et le contenu de la page" -->
+		<div class="separation">
+			&nbsp;
+		</div>
+		
+		<!-- ce div permet d'intégrer le  contenu de la page" -->
+		<div class="contenu">
+		
+			<!-- logo de Lodelia-->
+			<MACRO NAME="IMG_LOGO_LODELIA">
 			
-			<!-- Texte ------------------------   -->
-			<table width="90%" border="0" cellspacing="0" cellpadding="0" align="CENTER">
-				<tr> 
-					<td class="titre" valign="top"> 
-
-						<!-- Texte. Si il existe --->
-						<IF [#TEXTE]>
-						<tr> 
-						<td colspan="3" class="partie" valign="top">
-							<br /><br />
-						<IF [#TYPE]!="presentation">
-							<hr ALIGN="CENTER" SIZE="1" width="60%" />
-							<b>
-								Texte intégral
-							</b>
-							<hr align="CENTER" size="1" width="60%" />
-							<BOUCLE NAME="topparentdoc">[#ID]</BOUCLE>
-							<br />
-						</IF>
-						</td>
-					</tr>
-							<tr> 
-								<td class="texte" valign="top">
-								<IF [#TYPE]=="compte rendu">
-									<IF [#META_IMAGE]>
-										<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
-									</IF>
-									[#TEXTE]
-								<ELSE/>								
-								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
-								</IF>
-								<br />
-
-								</td>
-							</tr>
-						</IF>
-						
-						<!-- Bibliographie. Si elle existe --->
-						<IF [#BIBLIOGRAPHIE]>
-							<tr> 
-								<td class="partie" valign="top"> 
-									<hr align="CENTER" size="1" width="60%" />
-									<b>
-										Bibliographie
-									</b>
-									<br />
-									<hr align="CENTER" size="1" width="60%" />
-								</td>
-							<tr>
-								<td class="texte" valign="top">
-									[#BIBLIOGRAPHIE]
-									<br />
-								</td>
-							</tr>
-						</IF>
-						
-						<!-- Annexe. Si elle existe --->
-						<IF [#ANNEXE]>
-							<tr> 
-								<td class="partie" valign="top"> 
-									<hr align="CENTER" size="1" width="60%" />
-									<b>
-										Annexes
-									</b>
-									<br />
-									<hr align="CENTER" size="1" width="60%" />
-								</td>
-							<tr>
-								<td class="texte" valign="top">
-									[#ANNEXE]
-									<br />
-								</td>
-							</tr>
-						</IF>
-						
-						<!-- Documents annexes. S'il y en a au moins un --->
-						<IF [#DOCUMENTSANNEXES]>
-							<tr> 
-								<td class="partie" valign="top"> 
-									<hr align="CENTER" size="1" width="60%" />
-									<div align="center">
-										Documents annexes
-									</div>
-									<hr align="CENTER" size="1" width="60%" />
-								</td>
-							<tr>
-								<td class="texte" valign="top">
-									Il y a 
-										[#DOCUMENTSANNEXES]
-										 document[(#DOCUMENTSANNEXES|pluriel)] 
-										 annexé[(#DOCUMENTSANNEXES|pluriel)] 
-										 à cet article.
-									<br />
-									<br />
-									<MACRO NAME="documents_annexe">
-									<br />
-								</td>
-							</tr>
-						</IF>
-
-						<!-- Notes de bas de page. Si elles existent --->
-						<IF [#NOTEBASPAGE]>
-							<tr> 
-								<td class="partie" valign="top">
-									<br />
-									<HR ALIGN="CENTER" SIZE="1" width="60%" />
-									<B>
-										Notes
-									</B>
-									<hr align="CENTER" size="1" width="60%" />
-								</td>
-							</tr>
-							<tr>
-								<td class="notes" valign="top">
-									[#NOTEBASPAGE]
-									<br />
-								</td>
-							</tr>
-						</IF>
-					</td>
-				</tr>
-			</table>
+			<!-- Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+			titre et nom du numéro, -->		
+			<div class="titrerevue">
+				<MACRO NAME="PARU_DANS"> 
+				<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+			</div>				
 			
-			<!-- Si le texte n'est pas encore autorisé à être publié -->
-			<ELSE/>
-				<br />
-				<br />
-				<div align="center">
-					<strong>Ce document sera publié en ligne en texte intégral le [#DATEPUBLI].</strong>
+			
+			<div class="titre2">
+				<!-- Affiche le type du document-->	
+				<div class="titre21">
+						<IF COND="[#TYPE]=='compte rendu'">
+							Compte-rendu
+						</IF>
+						<IF COND="[#TYPE]=='chronique'">
+							Chronique
+						</IF>
+						<IF COND="[#TYPE]=='position de these'">
+							Position de thèse
+						</IF>
+						<IF COND="[#TYPE]=='article'">
+							Article
+						</IF>
+						
 				</div>
-				<br />
-				<br />
-			</IF>
+				<!-- Affiche les boutons pour accéder à la page imprimable et la page de signalement-->
+				<div class="signalerimprimer">
+					<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
+				</div>
+			</div>
 			
-			<MACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">
-			<br />
-			<MACRO NAME="REVUES_ORG">
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+						<!-- Affiche les infos sur le document: titre, sous-titre, auteur-->
+			<div class="afficherdocument">
+						<IF COND="[#TYPE]=='note de lecture'">
+							Note de lecture par
+						</IF>
+						
+						<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
+						
+						<IF COND="[#SURTITRE]">
+						[#SURTITRE]
+						</IF>
+						
+						[#TITRE]
+						
+						<IF COND="[#SOUSTITRE]">
+						[#SOUSTITRE]
+						</IF>
+						<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+			</div>
+			
+				<!-- Erratum --->
+				<IF COND="[#ERRATUM]">
+					<div class="titre3">
+						Errata
+					</div>
+					<div class="notes"> 
+						[#ERRATUM]
+						<br />
+					</div>
+				</IF>
+				
+				<!-- Notes de la rédaction --->
+				<IF COND="[#NDLR]">
+					<div class="titre3">
+						Notes de la rédaction
+					</div>
+					<div class="notes"> 
+						[#NDLR]
+						<br />
+					</div>
+				</IF>
+				
+				<!-- Historique --->
+				<IF COND="[#HISTORIQUE]">
+					<div class="titre3">
+						Historique
+					</div>
+					<div class="notes"> 
+						[#HISTORIQUE]
+						<br />
+					</div>
+				</IF>
+				
+			<!-- Affichage du résumé en français   -->
+				<IF COND="[#RESUME:FR]">
+					<div class="titre3">
+						Résumé
+					</div>
+					<div class="resume" > 
+						[#RESUME:FR]
+					</div>		
+				</IF>
+				
+			
+								
+				<!-- Résumé en anglais   -->
+				<IF COND="[#RESUME:EN]">
+					<div class="titre3"> 
+						Abstract
+					</div>
+					<div class="resume" >
+						[#RESUME:EN]
+					</div>
+				</IF>
+				
+				<!-- Résumé en espagnol   -->
+				<IF COND="[#RESUME:ES]">
+					<div class="titre3"> 
+						Extracto
+					</div>
+					<div class="resume" >
+						[#RESUME:ES]
+					</div>
+				</IF>
+				
+				<!-- Résumé en allemand   -->
+				<IF COND="[#RESUME:DE]">
+					<div class="titre3"> 
+						Zusammenfassung
+					</div>
+					<div class="resume" >
+						[#RESUME:DE]
+					</div>
+				</IF>
+				
+				<!-- Résumé en italien   -->
+				<IF COND="[#RESUME:IT]">
+					<div class="titre3"> 
+						Riassunto
+					</div>
+					<div class="resume" >
+						[#RESUME:IT]
+					</div>
+				</IF>
+	
+					
+		<!-- ----------------------------------------------------------------------- -->
+		<!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
+		<!-- ----------------------------------------------------------------------- -->
+		
+				<IF COND="[#TEXTEPUBLIE]">
+				
+				<!-- Texte. Si il existe --->
+				<IF COND="[#TEXTE]">
+					<div class="titre3">
+							<IF COND="[#TYPE]!='presentation'">
+								Texte intégral
+							</IF>
+					</div>
+					<div class="texte">
+							<IF COND="[#TYPE]=='compte rendu'">
+								<IF COND="[#META_IMAGE]">
+									<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
+								</IF>
+								[#TEXTE]
+							<ELSE/>			
+								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
+							</IF>
+				
+					</div>
+				</IF>
+				
+				<!-- Bibliographie. Si elle existe --->
+				<IF COND="[#BIBLIOGRAPHIE]">
+					<div class="titre3"> 
+						<DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
+					</div>
+					<div class="texte">
+						[#BIBLIOGRAPHIE]
+					</div>
+				</IF>
+				
+				<!-- Annexe. Si elle existe --->
+				<IF COND="[#ANNEXE]">
+					<div class="titre3"> 
+						Annexes
+					</div>
+					<div class="texte">
+						[#ANNEXE]
+					</div>
+				</IF>
+						
+				<!-- Documents annexes. S'il y en a au moins un --->
+				<IF COND="[#DOCUMENTSANNEXES]">
+					<div class="titre3"> 
+						Documents annexes
+					</div>
+					<div class="texte" >
+						Il y a 
+						[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
+						annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
+						<br />
+						<br />
+						<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+						<br />
+					</div>
+				</IF>
+				
+				<!-- Notes de bas de page. Si elles existent --->
+				<IF COND="[#NOTEBASPAGE]">
+					<div class="titre3">
+						Notes
+					</div>
+					<div class="notes"> 
+						[#NOTEBASPAGE]
+						<br />
+					</div>
+				</IF>
+								
+				<!-- Si le texte n'est pas encore autorisé à être publié -->
+				<ELSE/>
+				<p class="texte">
+					Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
+				</p>
+					
+				</IF>
+				
+				<!-- Affiche la description de l'auteur -->		
+				<MACRO NAME="DESCRITION_AUTEUR"> 
+				
+				<!-- Affiche liens de navigation entre les documents  -->						
+				<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
+				
+				<MACRO NAME="REVUES_ORG"> 		
+				
+			
+							
+		</div>
+	</div>
+	
+	
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">  
 

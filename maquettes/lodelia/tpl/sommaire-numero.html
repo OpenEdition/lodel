@@ -1,25 +1,56 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- Ce sommaire affiche la liste des articles 
-Il permet d'afficher les documents d'un numéro de type linéaire, en classant les articles par regroupement.
-Auteur : Marin Dacos. 2002. -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+
+<!-- ****************************************************************** -->
+<!-- Ce sommaire affiche la liste des articles.                         -->
+<!-- Il permet d'afficher les documents d'un numéro de type linéaire,   -->
+<!-- en classant les articles par regroupement.                         -->
+<!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
-<TITLE>[(#TITRE|textebrut)] Sommaire [#NOM]</TITLE>
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<MACRO NAME="DEFINIR_CHARSET">
+<title>[(#TITRE|textebrut)] Sommaire [#NOM]</title>
+<!--<MACRO NAME="METADONNEES_POUR_SOMMAIRES">-->
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affiche la barre de navigation de la revue -->
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td width="100%" valign="top">
-	<MACRO NAME="PRESENTER_PUBLICATION">
-	<MACRO NAME="Articles_par_types">
-	<br />
-	<MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
-	<br />
-	<MACRO NAME="REVUES_ORG">
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+				
+				<!-- Présente les infos concernant la publication : titre revue, nom et titre du numéro-->
+				<MACRO NAME="PRESENTER_PUBLICATION">
+				
+				<!-- Liste les regroupement et les articles contenus dans le numéro-->
+				<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
+				<br/ >
+				<br />
+				<!--Lien vers Lodel et site de Revues.org-->
+				<MACRO NAME="REVUES_ORG"> 
+			</div>
+		</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

@@ -1,64 +1,84 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!--
-	Index chronologique complet (il affiche indistinctement tous les niveaux de l'arbre)
-	(il confond donc dans l'affichage une catégorie avec une sous-catégorie )
-	(on pourra affiner ultérieurement).
-	Auteur : Marin Dacos.
-	Création : septembre 2002.
-	Dernière modification majeure : Janvier 2003.
--->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index chronologique complet. Il affiche indistinctement tous les   -->
+<!-- niveaux de l'arbre, il confond donc dans l'affichage une catégorie -->
+<!-- avec une sous-catégorie. On pourra affiner ultérieurement.         -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : Janvier 2003.                      -->
+<!-- ****************************************************************** -->
+
+<MACRO NAME="JS_JUMPMENU">
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <TITLE>Index chronologique</TITLE>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_CHRONOS">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td valign="top"> 
-		<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-			<tr>
-				<td width="100%" align="center" valign="middle" class="titre">
-					<span class="couleur_dominante1">
-						Index chronologique
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td width="100%" class="texte_petit_centre">
-					<BOUCLE NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-						<a href="chrono.html?id=[#ID]">
-							[#NOM]
-						</a>
-						&nbsp;|
-					</BOUCLE>
-				</td>
-			</tr>
-		</table>
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
 
-		<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-			<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td align="CENTER" width="50%" valign="MIDDLE" class="soustitre">
-						<span class="couleur_dominante1">
-							<a name="[#ABREV]">
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+				
+				<div class="titrerevue">
+					Index chronologique
+				</div>
+				
+				<div class="titre2">
+					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+						<DO>
+							<a href="chrono.html?id=[#ID]">
 								[#NOM]
 							</a>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td span class="texte_petit">
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-						<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
-					</BOUCLE>
-					</td>
-				</tr>
-			</table>
-		</BOUCLE>
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+							&nbsp;|
+						</DO>
+					</LOOP>
+				</div>
+				
+		<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
+			<DO>
+				<div class="titre3">
+					<a name="[#ABREV]">
+						[#NOM]
+					</a>
+				</div>
+				<div class="afficherdocument">
+					<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+							<DO>
+								<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+							</DO>
+					</LOOP>
+				</div>
+
+			</DO>
+		</LOOP>
+	</div>
+</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

@@ -3,10 +3,6 @@
 # fonction largement reprises de SPIP
 
 
-function PtoBR($texte){
-	$texte=eregi_replace("</p>", "\n", $texte);
-	return eregi_replace("<p([[:space:]][^>]*)?".">", "<br>", $texte);
-}
 
 #function cleanurl ($texte)
 #
@@ -45,9 +41,6 @@ function apreslettrine (&$texte)
 
 { return preg_replace("/^\s*(?:<[^>]+>)*\s*[\w\"]/","",$texte); }
 
-function lereste(&$texte)
-
-{ return substr($texte,1); }
 
 function multiline($width,&$texte)
 
@@ -132,7 +125,7 @@ function couperpara($long,$texte) {
 
 	$pos=-1;
 	do {
-		$pos=strpos($texte,"</P>",$pos+1);
+		$pos=strpos($texte,"</p>",$pos+1);
 		$long--;
 	} while ($pos!==FALSE && $long>0);
 
@@ -140,43 +133,6 @@ function couperpara($long,$texte) {
 }
 
 
-// correction typographique francaise
-function typo_fr($letexte) {
-
-  $letexte = str_replace("&nbsp;","~",strtr($letexte,chr(160),"~"));
-  $letexte = str_replace("&raquo;",chr(187),$letexte);
-  $letexte = str_replace("&#187;", chr(187),$letexte);
-  $letexte = str_replace("&laquo;",chr(171),$letexte);
-  $letexte = str_replace("&#171;", chr(171),$letexte);
-  $cherche1 = array(
-		    /* 2 */ 	'/((^|[^\#0-9a-zA-Z\&])[\#0-9a-zA-Z]*)\;/',
-		    /* 3 */		'/([:!?'.chr(187).'])/',
-		    /* 4 */		'/('.chr(171).'|(M(M?\.|mes?|r\.?)|[MnN]'.chr(176).') )/',
-		    /* 6 */		'/ +-,/'
-				);
-  $remplace1 = array(
-		     /* 2 */		'\1~;',
-		     /* 3 */		'~\1',
-		     /* 4 */		'\1~',
-		     /* 6 */		'~-,'
-					);
-  
-  $letexte = preg_replace($cherche1, $remplace1, $letexte);
-  $letexte = ereg_replace(" *~+ *", "~", $letexte);
-  
-  $cherche2 = array(
-		    '/(http|ftp|mailto)~:/',
-		    '/~/'
-		    );
-  $remplace2 = array(
-		     '\1:',
-		     '&nbsp;'
-		     );
-  
-  $letexte = preg_replace($cherche2, $remplace2, $letexte);
-
-  return $letexte;
-}
 
 
 function traite_raccourcis ($letexte)
@@ -337,4 +293,21 @@ function paranumber (&$texte)
     */
 }
 
+// Fonction permettant de supprimer les appels de notes d'un texte.
+function removefootnotes(&$text)
+{
+        return preg_replace("/<a\b[^>]+>\s*<sup>\s*<small>.*?<\/small>\s*<\/sup>\s*<\/a>/is","",$text);
+}
+
+// Fonction qui dit si une date est vide ou non
+function isadate(&$text)
+{
+  return $text!="0000-00-00";
+}
+
+// Fonction qui remplace les guillemets d'un texte par leur nom d'entité (&quot;)
+function replacequotationmark(&$text)
+{
+        return str_replace("\"","&quot;",$text);
+}
 ?>

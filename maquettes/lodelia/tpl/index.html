@@ -1,47 +1,69 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
 <USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
 <MACRO NAME="OUVRIR_HTML">
-<title>Ruralia, revue de l'association des ruralistes français</title>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+<MACRO NAME="DEFINIR_CHARSET">
+<title><MACRO NAME="NOM_REVUE"></title>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td width="100%" valign="top">
-			<table width="100%" border="0" cellspacing="0" align="center"  height="421">
-				<tr>
-					<td valign="top" class="texte_petit_centre">
-						<div align="center">
-							<a href="sommaire.html?id=9">
-								<MACRO NAME="IMG_LOGO_REVUE">
-							</a>
-						</div>
-						<br />
-						<br />
-							<MACRO NAME="DERNIER_NUMERO">
-						<br />
-					</td>
-				</tr>
-				<tr>
-					<td class="texte_petit">
-					<blockquote>
-						<br />
-							<TEXTE NAME="nouveaute">
-					</blockquote>
-					</td>
-				</tr>
-				<tr>
-					<td class="texte_petit">
-					<br />
-					<img src="images/couverture.gif" alt="Ruralia" border="0">
-					
-						<MACRO NAME="REVUES_ORG">
-					</td>
-				</tr>
-			</table>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+		de nav et le contenu de la page" -->
+		<div class="separation">
+			&nbsp;
+		</div>
+		
+		<!-- ce div permet d'intégrer le  contenu de la page" -->
+		<div class="contenu">
+		
+			<!-- logo de Lodelia-->
+			<MACRO NAME="IMG_LOGO_LODELIA">
+			
+				<!-- Affiche le titre de la revue avec les style Titrerevue  -->
+				<div  class="titrerevue">
+					<MACRO NAME="NOM_REVUE"> 
+				</div>
+				
+				<!-- Affiche les infos concenrnant le dernier numéro publié avec le style titre2  -->
+				<div class="titre2">
+					<MACRO NAME="DERNIER_NUMERO"> 
+				</div>
+			
+				<!-- Affiche le sommaire du dernier numéro  -->
+				<MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">
+				
+				<!--<MACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">-->
+				
+				<!-- Affiche une image liée à la page d'accueil largeur maximum: 561 -->
+				<div class="imageindex">
+					&nbsp;
+				</div>	
+				
+				<!-- Affiche un mini texte-->
+				<div>
+					<TEXT NAME="nouveaute">
+				</div>
+				
+				<!-- Affiche lien vers Lodel er Revues.org-->
+				<div>
+					<MACRO NAME="REVUES_ORG"> 
+				</div>
+		</div>
+	</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

@@ -1,11 +1,58 @@
 #!/usr/bin/perl
 
 
-$homerevue="../lodel/revue";
-$homerevuetpl="../../lodel/revue";
+$version=shift @ARGV;
+
+unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
+  print STDERR "Veuillez preciser un numero de version ou devel\n";
+  exit;
+}
+$versionsuffix=$version=="devel" ? "" : "-".$version;
+
+$homerevue="../lodel$versionsuffix/revue";
+$homerevuetpl="../../lodel$versionsuffix/revue";
+
+unless (-e $homerevue) {
+  print STDERR "La version '$version' n'existe pas sur le disque\n";
+  exit;
+}
+
+unless (-e "revueconfig.php") {
+  print STDERR "Installation du fichier revueconfig.php. Verifier le contenu.\n";
+  system ("cp $homerevue/revueconfig.php .");
+  if (!$version || $version>=0.4 ) {
+    unless (-e "revueconfig.php") {
+      print STDERR "Impossible de copier le fichier revueconfig.php\n";
+      exit;
+    }
+  }
+}
+
+slink ("../lodelconfig.php","lodelconfig.php");
+
+if (-e "revueconfig.php") {
+  $php=`php -v`;
+  if ($php) {
+    $checkversion=`php -q -C ../lodel$versionsuffix/install/version.php`;
+    if ($checkversion=~/error/) {
+      print STDERR "Erreur lors du parsage du fichier revueconfig.php:\n\n$checkversion";
+      exit;
+    }
+    if ($version!=$checkversion) {
+      print "La version dans revueconfig.php $checkversion est differente de $version\n";
+      exit;
+    }
+  } else {
+    print STDERR "Attention: impossible de verifier si la version est correcte dans revueconfig.php\n";
+  }
+}
+
+
+
+
 
 # si le groupe de l'utilisateur est www, alors faire: umask 0007
-umask 0000;
+umask 0007;
 
 mkdir "CACHE", 0770;
 mkdir "tpl", 0755;
@@ -21,13 +68,11 @@ htaccess ("CACHE");
 
 print "Revue\n";
 
-slink ("../lodelconfig.php","lodelconfig.php");
-#slink ("../styles_revue.css","styles_revue.css");
 slink ("../styles_lodel.css","styles_lodel.css");
 
-`/bin/cp $homerevue/styles_revue.css styles_revue.css` if -e "$homerevue/styles_revue.css";
+`/bin/cp $homerevue/styles_revue.css styles_revue.css` if (-e "$homerevue/styles_revue.css")&&!(-e "styles_revue.css");
 
-`/bin/cp -r $homerevue/images .` if -e "$homerevue/images";
+`/bin/cp -r $homerevue/images .` if (-e "$homerevue/images")&&!(-e "images");
 ####copier images et style_revues.....
 
 @revuefile=(
@@ -42,7 +87,7 @@ slink ("../styles_lodel.css","styles_lodel.css");
             "geos-complet",
             "geos",
 	    "index",
-	    "macros",
+#	    "macros",
 	    "mot",
 	    "mots-complet",
 	    "mots",
@@ -74,8 +119,10 @@ mkdir "lodel/edition/tpl", 0755;
 mkdir "lodel/edition/CACHE", 0770;
 chdir "lodel/edition";
 htaccess ("CACHE");
+htaccess ("tpl");
 
 slink ("../../lodelconfig.php","lodelconfig.php");
+slink ("../../revueconfig.php","revueconfig.php");
 slink ("../../styles_revue.css","styles_revue.css");
 slink ("../../styles_lodel.css","styles_lodel.css");
 slink ("../../$homerevue/lodel/edition/maj.php","maj.php");
@@ -88,18 +135,18 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 @editionfile=("a_editer",
 	      "abandon",
 	      "balisage",
-	      "balises",
 	      "chargement",
+	      "chargesommaire",
 	      "chkbalisage",
-	      "docannexe",
-              "deskedition",
+          "docannexe",
+   		  "deskedition",
 	      "metaimage",
 	      "editer",
 	      "deplacer",
 	      "publi",
-              "publications_protegees",
-              "documents_proteges",
+	      "status",
 	      "extrainfo",
+	      "importsommaire",
 	      "index",
 	      "edition",
 	      "edition-lineaire",
@@ -108,8 +155,12 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "edition-regroupement",
 	      "edition-theme",
 	      "publication",
+	      "publications_protegees",
 	      "supprime",
-	      "macros"
+	      "macros",
+		  "fonctionsavancees",
+		  "fonctionsavancees-document",
+		  "fonctionsavancees-publication"
 );
 
 foreach (@editionfile) {
@@ -131,6 +182,7 @@ mkdir "lodel/admin/upload", 0770;
 
 chdir "lodel/admin";
 htaccess ("CACHE");
+htaccess ("tpl");
 
 @adminfile=(
 	    "index",
@@ -147,6 +199,7 @@ htaccess ("CACHE");
 	    "r2rcheck",
 	    "r2renregistre",
 	    "rmdb",
+		"stats",
 	    "texte",
 	    "textes",
 	    "typedoc",
@@ -162,6 +215,7 @@ htaccess ("CACHE");
 );
 
 slink ("../../lodelconfig.php","lodelconfig.php");
+slink ("../../revueconfig.php","revueconfig.php");
 slink ("../../styles_revue.css","styles_revue.css");
 slink ("../../styles_lodel.css","styles_lodel.css");
 slink ("../../../lodel/admin/login.php","login.php");
@@ -197,4 +251,5 @@ sub htaccess {
   open(HT,">$dir/.htaccess") or die "Impossible d'ecrire dans $dir";
   print HT "deny from all\n";
   close (HT);
+  chmod (0644, "$dir/.htaccess") or die "Can't chmod $dir/.htaccess";
 }

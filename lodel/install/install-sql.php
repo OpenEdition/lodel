@@ -1,6 +1,6 @@
 <?
 
-include ("lodelconfig.php");
+require("lodelconfig.php");
 $rep="";
 include ("$home/connect.php");
 
