@@ -64,7 +64,7 @@ if ($id) {
 }
 
 
-$view->renderCached($context,"index.html");
+$view->renderCached($context,"index");
 
 
 function printEntities($id,$identifier,&$context)
