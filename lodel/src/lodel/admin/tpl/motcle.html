@@ -1,0 +1,71 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Administration de revue : [(#REVUE|nbsp)]</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+  <tr> 
+    <td bgcolor="#FFFFFF" class="titre">
+		<div align="center">
+		<br>
+		<IF [#ID]>
+			<b>
+				Edition d'un mot-clé
+			</b>
+		<ELSE/>
+			<b>
+				Edition d'une liste
+			</b>
+		</IF>
+		</div>
+    </td>
+  </tr>
+  <tr>
+  	<td> 
+		<br><br>
+		<TABLE WIDTH="450" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
+			<FORM METHOD="POST" ACTION="motcle.php">
+			<INPUT TYPE="hidden" name="edit" VALUE="1">
+			<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
+			<TR>
+				<TD align="center">
+					<IF [#ID]>
+						<b>
+							Mot:
+						</b>
+					<ELSE/>
+						<b>
+							Liste de mots :
+						</b>
+					</IF>
+				</td>
+				<TD>
+					<font color="Navy">
+						<INPUT SIZE="80" TYPE="text" NAME="mot" value="[#MOT]">
+					</FONT>
+				</TD>
+				[(#ERREUR_NOM|true)
+				<TD CLASS="erreur">
+					<b>
+					<font color="Red">
+						Il faut preciser un mot !
+					</font>
+					</b>
+				</TD>
+				]
+			</TR>
+	</TABLE>
+<br><br>
+<BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE>
+<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
+</FORM>
+<br>
+[
+	<A HREF="motcle.php?delete=2&id=(#ID)">
+		Supprimer
+	</A>
+]
+</BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+<MACRO NAME="close_html">
+ 
+ 

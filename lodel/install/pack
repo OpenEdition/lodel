@@ -1,0 +1,16 @@
+#!/bin/sh
+
+find $1 \
+	-path '*/CACHE/*' \
+	-o -path '*/docannexe/*' \
+	-o -path '*/txt/*' \
+	-o -path '*/rtf/*' \
+	-o -path '*/upload/*' \
+	-o -path '*/documentation/*' \
+	-o -name '*~' \
+	-o -name '*tmp' \
+	-o -name '#*#' \
+	-o -name '*.old' \
+	-o -name 'Ted.*' | tar czf lodel.tar.gz --exclude-from - $1
+
+

@@ -1,0 +1,264 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Edition de document</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+
+<table width="400" border="1" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
+	<tr>
+		<td width="48" height="48" >
+			<div align="center">
+				&nbsp;
+			</div>
+		</td>
+	<td align="center">
+	<span class="titre">
+		Edition de document
+	</span>
+	<br>
+	<div align="center">
+			<BOUCLE NAME="chercheparent" table="documents" WHERE="id=[#ID]">
+					<a href="index.php?parent=[#PUBLICATION]">
+					<u>Parent</u> 
+				</IF>
+			</BOUCLE>
+			</a>
+
+	<!-- ******* -->
+	<!-- EDITER  -->
+	<!-- ******* -->
+	
+	<tr>
+		<td width="48" height="48" background="images/bleu.gif">
+			<div align="center">
+				&nbsp;
+			</div>
+		</td>
+		<td width="400" class="soustitre" background="images/bleu.gif">
+				<strong>Edition</strong>
+		</td>
+	</tr>	 
+	<IF [#REDACTEUR]>
+		<!-- Editer -->
+		<FORM ACTION="editer.php" METHOD="POST">
+		<tr>
+			<td width="48" height="48" >
+				<div align="center">
+					<input type="image" border="0" name="imageField" src="images/KDE_txt.gif" width="32" height="32" border="0">
+				</div>
+			</td>
+			<td width="400" >
+				<strong><a href="editer.php?id=[#ID]&edit=1&[#URL_RETOUR]">Editer les métadonnées</a></strong>
+					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
+					<INPUT TYPE="hidden" NAME="edit" VALUE="1">
+					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+			</td>
+		</tr>	 
+		</FORM>
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_Inactif">
+			</td>
+			<td>
+				Contactez l'éditeur pour éditer les métadonnées
+			</td>
+		</tr>
+	</IF>
+
+	<!-- Publier or not publier -->
+	<IF [#EDITEUR]>
+		<FORM ACTION="publi.php" METHOD="POST">
+		<tr>
+			<td width="48" height="48" >
+				<div align="center">
+				<IF [#STATUS] gt 0>
+					<MACRO NAME="GIF_INPUT_DEPUBLIER">
+					<ELSE/>
+					<MACRO NAME="GIF_INPUT_PUBLIER">
+				</IF>
+				</div>
+			</td>
+			<td width="400" >
+					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
+					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+					<IF [#STATUS] gt 0>
+						<strong>Dépublier le document</strong>
+					<ELSE/>
+					<INPUT TYPE="hidden" NAME="online" VALUE="1">
+						<strong>Publier le document</strong>
+					</IF>
+			</td>
+		</tr>
+	</FORM>	
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_Inactif">
+			</td>
+			<td>
+				Contactez l'éditeur pour publier ou dépublier ce document.
+			</td>
+		</tr>
+	</IF>
+	
+	<!-- Recharger -->
+	<IF [#EDITEUR]>	
+	<FORM ACTION="editer.php" METHOD="POST">
+	<tr>
+		<td width="48" height="48" >
+			<div align="center">
+				<MACRO NAME="GIF_INPUT_RECHARGER">
+			</div>
+		</td>
+		<td width="400" >
+				<strong>Recharger le fichier</strong>
+				<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
+				<INPUT TYPE="hidden" NAME="charge" VALUE="1">
+				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+			</FORM>
+		  </td>
+	</tr>	 
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_Inactif">
+			</td>
+			<td>
+				Contactez l'éditeur pour recharger ce document.
+			</td>
+		</tr>
+	</IF>
+	
+	<!-- Déplacer le document -->
+	<IF [#REDACTEUR]>	
+	<FORM ACTION="deplacer.php" METHOD="POST">
+	<tr>
+		<td width="48" height="48" >
+			<div align="center">
+				<MACRO NAME="GIF_INPUT_DEPLACER">
+			</div>
+		</td>
+		<td width="400" >
+				<strong>
+					Déplacer ce document
+				</strong>
+				<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
+				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+			</FORM>
+		  </td>
+	</tr>
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_Inactif">
+			</td>
+			<td>
+				Contactez l'éditeur pour déplacer ce document.
+			</td>
+		</tr>
+	</IF>
+
+	<!-- ******* -->
+	<!-- AJOUTER -->
+	<!-- ******* -->
+	<tr>
+		<td width="48" height="48" background="images/bleu.gif">
+			<div align="center">
+				&nbsp;
+			</div>
+		</td>
+		<td width="400" class="soustitre" background="images/bleu.gif">
+				<strong>Ajouter</strong>
+		</td>
+	</tr>	 
+	
+	
+	<!-- Ajouter des docs annexes -->
+	<tr>
+		<td width="48" height="48" >
+			<FORM ACTION="docannexe.php" METHOD="POST">
+				<div align="center">
+				<MACRO NAME="GIF_INPUT_PUBLIER">
+			</div>
+		</td>
+		<td width="400" >
+				<strong>Ajouter des documents annexes</strong>
+				<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
+				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+			</FORM>
+		</td>
+	</tr>	 
+	
+	
+	<!-- Associer une icône -->
+	<FORM ACTION="metaimage.php" METHOD="POST">	
+	<tr>
+		<td width="48" height="48" >
+		  	<div align="center">
+			<MACRO NAME="GIF_INPUT_ASSOCIER_IMAGE">
+			</div>
+		</td>
+		<td width="400" >
+				<strong>Associer une image à ce document</strong>
+				<INPUT TYPE="hidden" NAME="iddocument" VALUE="[#ID]">
+				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+		</td>
+	</tr>	 
+	</FORM>	
+	<!-- ****** -->
+	<!-- DANGER -->
+	<!-- ****** -->
+	<IF [#EDITEUR]>
+	<tr>
+		<td width="48" height="48" background="images/bleu.gif">
+			<div align="center">
+				&nbsp;
+			</div>
+		</td>
+		<td width="400" class="soustitre" background="images/bleu.gif">
+				<strong>Danger</strong>
+		</td>
+	</tr>	 
+	<!-- Supprimer -->
+	
+	<tr>
+		<td width="48" height="48" >
+		  	<div align="center">
+			&nbsp;
+			</div>
+		</td>
+		<td width="400" >
+		<FORM ACTION="supprime.php" METHOD="POST">
+			<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
+			<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+			<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Supprimer le document">
+		</FORM>
+		</td>
+	</tr>	 
+	
+	
+	<!-- Edition avancée (XML) -->
+	
+	<tr>
+		<td width="48" height="48" >
+		  	<div align="center">
+			&nbsp;
+			</div>
+		</td>
+		<td width="400" >
+			<FORM ACTION="a_editer.php" METHOD="POST">
+				<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Edition avancée (XML)">
+				<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
+				<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
+			</FORM>
+		</td>
+	</tr>	 
+	
+	</div>
+	</TD>
+	</TR>
+	</IF>
+</TABLE>
+
+<MACRO NAME="close_html">

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# tar le contenu du repertoire lodel pour le transfert sur w2
+
+FILE=lodel.tar.gz
+
+echo "Cree le fichier $FILE";
+
+find lodel \
+	-path '*/CACHE/*' \
+	-o -path '*/r2r/*' \
+	-o -path '*/upload/*' \
+	-o -name '*~' \
+	-o -name '*.tmp' \
+	-o -name '#*#' \
+	-o -name '*.old' \
+	-o -name 'OLD*' | tar -czf $FILE --exclude-from - lodel lodelconfig.php styles_lodel.css CACHE images tpl
+
+ls -l  $FILE
+

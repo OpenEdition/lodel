@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# detar le contenu du repertoire lodel
+
+tar zxf $1
+
+chmod 777 lodel/CACHE lodel/*/CACHE
+
+echo "ok";
+

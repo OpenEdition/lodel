@@ -1,0 +1,61 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Ajouter des mots clés : [(#REVUE|nbsp)]</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+<br>
+<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
+<TR>
+	<TD>
+		<div align="center">
+		<span class="titre">
+			<A HREF="motcle.php">
+				Ajouter des mots clés
+			</A>
+		</span>
+		</div>
+	</td>
+</tr>
+</TABLE>
+<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
+<TR>
+	<td>
+		&nbsp;
+	</td>
+	<TD align="center">
+		<b>
+		Mot clé
+		</b>
+	</TD>
+	<TD align="center" align="middle">
+		<img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0">
+	</TD>
+	<TD align="center" align="middle">
+		<img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0">
+	</TD>
+</TR>
+<BOUCLE NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type=2" WHERE="ok">
+	<TR>
+		<TD align="center" align="middle">
+			<img src="images/GNOME_prefs.gif" width="24" height="24" border="0">
+		</TD>
+		<TD>
+			<font color="Navy">
+			<b>
+				[#MOT]
+			</b>
+			</FONT>
+		</TD>
+		<TD align="center">
+			<A HREF="motcle.php?id=[#ID]">
+				Modifier
+			</A>
+		</TD>
+		<TD align="center">
+			<A HREF="motcle.php?id=[#ID]&delete=2">
+				Supprimer
+			</A>
+		</TD>
+	</TR>
+</BOUCLE>
+</TABLE>

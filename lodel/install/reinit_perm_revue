@@ -1,0 +1,85 @@
+#!/bin/bash
+# reinitialisation des droits sur les fichiers et repertoires d'un revue
+# Luc Santeramo/300103
+
+
+# rep contenant la revue
+LODEL="/www/revues/lodeldevel"
+
+#######
+
+if [ $# -ne 1 ]
+then
+  echo " usage $0 <revue>"
+  exit
+fi
+
+APACHEWRDIR="lodel/txt lodel/rtf docannexe lodel/admin/upload"
+APACHECACHEWRDIR="CACHE lodel/edition/CACHE lodel/admin/CACHE"
+
+USERWRFILES="tpl images styles_revue.css robots.txt"
+
+
+HTACCESSDIR="CACHE tpl lodel/txt lodel/rtf lodel/edition/CACHE lodel/admin/CACHE lodel/admin/tpl lodel/edition/tpl"
+
+HTACCESSCONTENT="deny from all"
+
+# mise a jour des droits sur les rep et les fichiers 
+# accessible en ecriture par apache
+
+echo " "
+echo "Changement des droits de la revue $1 :"
+
+for rep in $APACHEWRDIR
+do
+  echo "  $LODEL/$1/$rep"
+  chmod 770 $LODEL/$1/$rep
+  echo "  Done."
+  echo "  fichiers contenus dans $LODEL/$1/$rep"
+  chmod 660 $LODEL/$1/$rep/*
+  echo "  Done."
+done
+
+# mise a jour des droits sur les rep et fichiers
+# accessible en ecriture par l'utilisateur
+
+echo "  $LODEL/$1"
+chmod g+w $LODEL/$1
+echo "  Done."
+
+for files in $USERWRFILES
+do
+  echo "  $files"
+  chmod -R g+w $LODEL/$1/$files
+  echo "  Done."
+done
+
+# mise a jour des droits sur les rep de cache 
+# accessible en ecriture par apache 
+# nettoyage des repertoires de cache
+for rep in $APACHECACHEWRDIR
+do
+  echo "  $LODEL/$1/$rep"
+  chmod 770 $LODEL/$1/$rep
+  rm -rf $LODEL/$1/$rep/*
+  echo "  Done."
+done
+
+# verification de la presence des .htaccess
+echo " "
+echo "Verification de la presence des .htaccess :"
+for rep in $HTACCESSDIR
+do
+  if [ ! -e "$LODEL/$1/$rep/.htaccess" ]
+  then
+    echo "$HTACCESSCONTENT" > "$LODEL/$1/$rep/.htaccess"
+    echo "  $LODEL/$1/$rep/.htaccess absent"
+    echo "  Cree."
+  else
+    echo "  $LODEL/$1/$rep/.htaccess present"
+  fi
+  echo "  Changement des permissions sur le fichier $LODEL/$1/$rep/.htaccess"
+  chmod 644 $LODEL/$1/$rep/.htaccess
+  ls -al $LODEL/$1/$rep/.htaccess
+  echo "  Ok."
+done

@@ -1,0 +1,25 @@
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html"><!-- Ce sommaire affiche la liste des articles 
+Il permet d'afficher les documents d'un numéro de type linéaire, en classant les articles par regroupement.
+Auteur : Marin Dacos. 2002. -->
+
+<MACRO NAME="OUVRIR_HTML">
+<TITLE>[(#TITRE|textebrut)] Sommaire [#NOM]</TITLE>
+<MACRO NAME="INSERER_STYLE">
+<MACRO NAME="js_jumpmenu">
+
+<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	<!-- Affiche la barre de navigation de la revue -->
+	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
+	<td width="100%" valign="top">
+	<MACRO NAME="PRESENTER_PUBLICATION">
+	<MACRO NAME="Articles_par_types">
+	<br />
+	<MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
+	<br />
+	<MACRO NAME="REVUES_ORG">
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+<MACRO NAME="FERMER_HTML">

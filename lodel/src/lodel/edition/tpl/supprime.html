@@ -1,0 +1,44 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Suppression de document</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+
+
+<table width="800" border="0" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
+  <tr> 
+    <td bgcolor="#FFFFFF"> 
+	<h3>Suppression</h3>
+	    </td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFFFFF">      <hr width="330" size="0" align="center"></td>
+  </tr>
+  
+<tr>
+    <td align="center"> <div align="center"><IF [#NOM]> 
+      <!-- Suppression d'un publication -->
+      <font color="Red">Confirmer la suppression de la publication suivante ?</font><br>
+      <br>
+      <b>[#NOM]</b><br>
+      <FORM ACTION="supprime.php" METHOD="POST">
+        <INPUT CLASS="form" TYPE="submit" NAME="supprime" VALUE="Supprimer">
+        <INPUT TYPE="hidden" NAME="publication" VALUE="[#ID]">
+      </FORM>
+      <ELSE/> 
+      <!-- Suppression d'un document -->
+      Confirmer la suppression du document suivant ?<br>
+      <br>
+      "<b>[#TITRE]</b>"<br>
+      <FORM ACTION="supprime.php" METHOD="POST">
+        <INPUT CLASS="form" TYPE="submit" NAME="supprime" VALUE="Supprimer">
+        <INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
+      </FORM>
+      </IF> <br>
+<br>
+<A HREF="[#URL_RETOUR]"><b><font size="+1">Annuler</font></b></a></div>
+</td>
+</TR>
+</TABLE>
+
+<MACRO NAME="close_html">

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+find $1 \
+    -not -name '*~' \
+    -path '*/tpl/*' -not -type l | tar cIf tpllodel.tar.bz2  --files-from -

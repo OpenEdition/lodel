@@ -1,0 +1,223 @@
+.couleur_dominante1
+{
+	color : #316148;
+}
+
+.couleur_dominante2
+{
+	color : #9DD4B7;
+}
+
+.couleur_dominante3
+{
+	color : Navy;
+}
+
+.texte {
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	line-height: 150%;
+	text-indent : 30;
+}
+
+.fase4_rdf {
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_petit {
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_trespetit {
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_centre {
+	font-size: small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_petit_centre {
+	font-size: x-small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_trespetit_centre {
+	font-size: xx-small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.texte_sommaire {
+	font-size: small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.navigation {
+	font-size: x-small;
+	font-weight: small;
+	text-align : center;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.barretitre {
+	font-size: x-small;
+	font-weight: small;
+	text-align : left;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.citation {
+	font-size: xx-small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	padding-left : 60px;
+	padding-right : 60px;
+}
+
+
+.notes {
+	font-size: x-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+.appeldenote {
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+}
+
+
+A:link, A:visited, A:active {
+	text-decoration: none;
+	color: Blue;
+	font-style : normal;
+}
+
+A:hover {
+	color: Red;
+}
+
+.resume
+{
+	font-size: x-small;
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman"font-size : x-small;
+	color : #454545;
+	text-align : justify;
+}
+
+.titre
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : large;
+	color : black;
+	text-align : center;
+	font-weight : bold;
+	font-variant : small-caps;
+	font-style : normal;
+}
+
+.titrerevue
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : large;
+	color : Navy;
+	text-align : center;
+	font-weight : bold;
+	font-style : normal;
+}
+
+.soustitre
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : medium;
+	color : black;
+	text-align : center;
+}
+
+.soustitrerevue
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : medium;
+	color : Navy;
+	text-align : center;
+}
+
+.partie
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : medium;
+	color : navy;
+	text-align : center;
+}
+
+.auteur
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : small;
+	color : Navy;
+	text-align : center;
+	font-weight : bold;
+}
+
+.directeur
+{
+	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+	font-size : small;
+	color : Navy;
+	text-align : center;
+	font-weight : bold;
+}
+
+.tableau {
+	font-size: x-small;
+	font-weight: normal;
+	text-align : justify;
+}
+
+	H1 {
+	font-size: medium;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	text-align: justify;
+}
+	H2 {
+	font-size: small;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	text-align: left
+}
+	H3 {
+	font-size: x-small;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
+	text-align: left;
+	color: #00000
+}
+	H4 {font-size: x-small; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000};
+	H5 {font-size: 10pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
+	H6 {
+	font-size: 10pt;
+	font-family: "Verdana, Helvetica, sans-serif, Times New Roman;";
+	text-align: left;
+	color: Black;
+}
+	H7 {font-size: 28pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: center; color: #00000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}

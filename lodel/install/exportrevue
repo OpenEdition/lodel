@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# tar le contenu du repertoire de la revue en argument pour le transfert sur w2
+
+FILE=/www-bin/revues/import/revue-$1.tar.gz
+
+echo "creer le fichier $FILE";
+
+find $1 \
+	-path '*/CACHE/*' \
+	-o -path '*/upload/*' \
+	-o -path '*/docannexe/*' \
+	-o -path '*/lodel/txt/*' \
+	-o -path '*/lodel/rtf/*' \
+	-o -name '*~' \
+	-o -name '*.tmp' \
+	-o -name '#*#' \
+	-o -name '*.old' \
+	-o -name 'OLD*' | tar --dereference -czf $FILE --exclude-from - $1
+
+ls -l  $FILE
+
+
+
+
+

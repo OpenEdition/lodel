@@ -1,0 +1,60 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Types de publications</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+
+<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+<br>
+	<A HREF="typepubli.php"><div align="center">
+	<span class="titre">
+		<b>Ajouter un type de publication</b>
+	</span>
+		</div>
+	</A>
+	<br><br>
+
+
+<table width="75%" border="1" cellspacing="0" cellpadding="5" align="center">
+<TR><td align="center" valign="middle">&nbsp;</TD><td align="center" valign="middle"><b>Nom de la publication</b><br>
+</TD><td align="center" valign="middle"><b>Fichier Template</b><br>
+</TD><td align="center" valign="middle"><b>Fichier Template d'Edition</b><br>
+</td><TD align="center" align="middle"><img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0"></TD><TD align="center" align="middle"><img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0"></TD></TR>
+<BOUCLE NAME="typepubli" TABLE="typepublis" ORDER="nom">
+<TR>
+<td align="center" valign="middle"><img src="images/book32_32.gif"  width="32" height="32"  alt="Types de numéros" border="0"></TD>
+<td valign="middle"><b><font color="Navy">[(#NOM|nbsp)]</font></b></TD>
+<td valign="middle"><b><font color="Navy">[#TPL]</font></b></TD>
+<td valign="middle"><b><font color="Navy">[(#TPLEDIT|nbsp)]</font></b></TD>
+<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]">Modifier</A></TD>
+<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]&delete=1">Supprimer</A></TD>
+</TR>
+</BOUCLE>
+</TABLE>
+
+<BOUCLE NAME="typepubli_trash" TABLE="typepublis" ORDER="nom" WHERE="trash">
+<AVANT>
+<BR><font color="Red">Dans la poubelle:</font><BR><br>
+
+<table width="75%" border="1" cellspacing="0" cellpadding="5" align="center" bordercolor="Black"><TR><td align="center" valign="middle"><b>Nom</b><br>
+</TD><td align="center" valign="middle"><b>Fichier Template</b><br>
+</td><TD align="center" align="middle"><img src="images/KDE_txt.gif" width="32" height="32" alt="Modifier" border="0"></TD><TD align="center" align="middle"><img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0"></TD></TR>
+<TR>
+</AVANT>
+
+<TR>
+<td align="center" valign="middle">[#NOM]</TD>
+<td valign="middle">[#TPL]</TD>
+<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]&restore=1"><b>Récupérer</b></A></TD>
+<td align="center" valign="middle"><A HREF="typepubli.php?id=[#ID]&delete=2"><font color="Red"><b>Supprimer<br>
+ définitivement</b></font></A></TD>
+</TR>
+<APRES></TABLE></APRES>
+</BOUCLE>
+
+
+</CENTER>
+
+</TD></TR>
+
+</TABLE>

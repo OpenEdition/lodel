@@ -1,0 +1,40 @@
+
+Dans le template SOMMAIRE. Dans toutes les boucles qui affiche les documents ajouter:
+
+<IF [#REDACTEUR]><A HREF="lodel/edition/editer.php?dir=up&id=[#ID]&[#RETOUR]">up</A>
+		<A HREF="lodel/edition/editer.php?dir=down&id=[#ID]&[#RETOUR]">down</A>
+</IF>
+
+##################################################################################
+Changer dans tous les templates de edition
+
+../admin/publi.php en publi.php
+
+##################################################################################
+
+dans tous les templates, ajuster l'affichage en fonction des droits de chaque utilisateur avec des <IF [#REDACTEUR]>...</IF>, <IF [#VISITEUR]>...</IF>, etc...
+
+##################################################################################
+
+Il semble que tu aies decide de ne pas afficher les taches en cours dans edition/tpl/index.html
+Est-ce normal ?
+
+##################################################################################
+
+Faire les templates: admin/tpl/backup.html et adminrevue/tpl/backup.html
+L'utilisateur doit cliquer sur terminer lorsqu'il a finit de charger son fichier pour effacer l'archive de la zone qui est publique !!!!
+
+##################################################################################
+
+Le template adminrevue/tpl/user.html doit etre fait.
+Le template admin/tpl/user.html a ete modifie.
+
+##################################################################################
+
+Le fichier login.html ont ete remplacer par login.php et copier (lier) dans tous les repertoires. C'est obligatoire pour assurer les fonctions de login en fonction de la revue.
+Le fichier template est dans adminrevue/tpl (pour se loguer sur une revue) et dans admin/tpl (pour se loguer en super admin).
+
+
+##################################################################################
+
+Le template edition/supprime.html a ete modifie [#ANNEE] n'existe plus.

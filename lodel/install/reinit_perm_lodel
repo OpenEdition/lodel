@@ -1,0 +1,41 @@
+#!/bin/bash 
+# vide les repertoires de cache de lodel et restaure les droits sur les fichiers/rep
+# a lancer depuis le rep lodel
+
+LODEL="/www/revues/lodeldevel"
+
+APACHECACHEWRDIR="lodel/admin/CACHE lodel/CACHE CACHE lodel/admin/upload"
+
+HTACCESSDIR="lodel/admin/CACHE lodel/admin/tpl lodel/scripts lodel/r2r lodel/CACHE lodel/revue lodel/tpl lodel/install"
+
+HTACCESSCONTENT="deny from all"
+
+###
+
+# mise a jour des droits sur les rep de cache
+# accessible en ecriture par apache
+# nettoyage des repertoires de cache
+echo " "
+echo "Verification des repertoires CACHE"
+for rep in $APACHECACHEWRDIR
+do
+  echo "  $LODEL/$rep"
+  chmod 770 $LODEL/$rep
+  rm -rf $LODEL/$rep/*
+  echo "  Done."
+done
+
+echo " "
+echo "Verification de la presence des .htaccess :"
+for rep in $HTACCESSDIR
+do
+  if [ ! -e "$LODEL/$rep/.htaccess" ]
+  then
+    echo "$HTACCESSCONTENT" > "$LODEL/$rep/.htaccess"
+    echo "  $LODEL/$rep/.htaccess absent"
+    echo "  Cree."
+  else
+    echo "  $LODEL/$rep/.htaccess present"
+  fi
+done
+

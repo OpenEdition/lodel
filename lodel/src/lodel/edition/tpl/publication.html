@@ -1,0 +1,242 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Edition d'une publication</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+<br>
+<br>
+	<span class="titre">
+		<div align="center">Saisie du descriptif 
+		<IF [#TYPE] EQ "serie_lineaire">
+		de la série linéaire
+		</IF>
+		<IF [#TYPE] EQ "serie_hierarchique">
+		de la série hiérarchique
+		</IF>
+		<IF [#TYPE] EQ "numero">
+		du numéro
+		</IF>
+		<IF [#TYPE] EQ "theme">
+		du thème
+		</IF>
+		<IF [#TYPE] EQ "regroupement">
+		du regroupement
+		</IF>
+	  </div>
+	</strong>
+	</span>
+	<br>
+
+<table width="100%" border="1" cellspacing="0" cellpadding="5" align="CENTER" bordercolor="#C0C0C0">
+	[(#ERREUR_PUBLICATION_EXISTE|true)
+	<TR>
+		<TD COLSPAN="3" CLASS="erreur" ALIGN="center">
+			Ce numéro existe déjà
+		</TD>
+	</TR>
+	]
+<FORM METHOD="POST" ACTION="publication.php">
+	<INPUT TYPE="hidden" name="edit" VALUE="1">
+	<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
+	<INPUT TYPE="hidden" name="parent" VALUE="[#PARENT]">
+	<INPUT TYPE="hidden" name="type" VALUE="[#TYPE]">
+	<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
+<TR>
+<TD background="[#SHAREURL]/images/gris.gif">
+		<IF [#TYPE] EQ "serie_lineaire">
+		<strong>Nom de la série</strong>*<br>
+		</IF>
+		<IF [#TYPE] EQ "serie_hierarchique">
+		<strong>Nom de la série</strong>*<br>
+		</IF>
+		<IF [#TYPE] EQ "numero">
+		<strong>Tomaison ou numérotation du numéro</strong>*<br>
+		</IF>
+		<IF [#TYPE] EQ "theme">
+		<strong>Nom abrégé du thème</strong>*<br>
+		</IF>
+		<IF [#TYPE] EQ "regroupement">
+		<strong>Nom abrégé du regroupement</strong>*<br>
+		</IF>
+		<em>L'astérisque indique les champs obligatoires</em>
+
+</TD>
+<TD>
+	<INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]">
+</TD>
+<TD  background="[#SHAREURL]/images/bleu.gif">
+		<IF [#TYPE] EQ "serie_lineaire">
+		<em>Version brève. Exemple : CMR pour "Cahiers du Monde russe"</em>
+		</IF>
+		<IF [#TYPE] EQ "serie_hierarchique">
+		<em>Version brève. Exemple : Les Cahiers pour "Espaces Temps, les Cahiers"</em>
+		</IF>
+		<IF [#TYPE] EQ "numero">
+		<em>Exemple : Tome IV, Vol. 12</em>
+		</IF>
+		<IF [#TYPE] EQ "theme">
+		<em>Exemple : Sociologie des organisations pour "Relecture de la sociologie des organisations"</em>
+		</IF>
+		<IF [#TYPE] EQ "regroupement">
+		<em>Exemple : "I"</em>
+		</IF>
+
+</TD>
+	[(#ERREUR_NOM|true)
+		<TD CLASS="erreur">
+			Il faut preciser un mot ou une publication!
+		</TD>
+	]
+	</TR>
+<tr>
+<TD background="[#SHAREURL]/images/gris.gif">
+	<IF [#TYPE] EQ "serie_lineaire">
+		<strong>Titre de la série</strong><br>
+		</IF>
+		<IF [#TYPE] EQ "serie_hierarchique">
+		<strong>Nom de la série</strong><br>
+		</IF>
+		<IF [#TYPE] EQ "numero">
+		<strong>Titre du numéro </strong><br>
+		</IF>
+		<IF [#TYPE] EQ "theme">
+		<strong>Titre du thème</strong><br>
+		</IF>
+		<IF [#TYPE] EQ "regroupement">
+		<strong>Titre du regroupement</strong><br>
+		</IF>
+		</TD>
+		<TD>
+			<INPUT SIZE="50" TYPE="text" NAME="titre" value="[#TITRE]">
+		</TD>
+<TD  background="[#SHAREURL]/images/bleu.gif">
+	<IF [#TYPE] EQ "serie_lineaire">
+		<em>Version longue. Exemple : "Cahiers du Monde russe"</em>
+		</IF>
+		<IF [#TYPE] EQ "serie_hierarchique">
+		<em>Version longue. Exemple : "Espaces Temps, les Cahiers"</em>
+		</IF>
+		<IF [#TYPE] EQ "numero">
+		<em>Indiquer <u>varia</u> en cas de numéro sans thème dominant</em>
+		</IF>
+		<IF [#TYPE] EQ "theme">
+		<em>Exemple : "Relecture de la sociologie des organisations"</em>
+		</IF>
+		<IF [#TYPE] EQ "regroupement">
+		<em>Exemple : "Première partie"</em>
+		</IF>
+		</TD>
+
+	<TR>
+<TD background="[#SHAREURL]/images/gris.gif">
+			<strong>Sous-titre:</strong>
+		</TD>
+		<TD>
+			<INPUT SIZE="50" TYPE="text" NAME="soustitre" value="[#SOUSTITRE]">
+		</TD>
+		<TD  background="[#SHAREURL]/images/bleu.gif">
+		&nbsp;
+		</TD>
+	</tr>
+	<TR>
+<TD background="[#SHAREURL]/images/gris.gif">
+			<strong>Date officielle de publication :</strong><br>
+		</TD>
+		<TD>
+			<INPUT SIZE="50" TYPE="text" NAME="date" value="[(#DATE|humandate)]">
+		</TD>
+<TD  background="[#SHAREURL]/images/bleu.gif">
+
+			<em>Exemple : "1er janvier 2002"</em>
+		</TD>
+
+	[(#ERREUR_DATE|true)
+		<TD CLASS="erreur">
+			La date est invalide
+		</TD>
+	]
+		</TR>
+	<TR>
+	<TR>
+<TD background="[#SHAREURL]/images/gris.gif">
+			<strong>Directeur:</strong><br>
+		</TD>
+		<TD>
+			<INPUT SIZE="50" TYPE="text" NAME="directeur" value="[#DIRECTEUR]">
+		</TD>
+<TD  background="[#SHAREURL]/images/bleu.gif">
+			<em>Facultatif</em><br>
+		<IF [#TYPE] EQ "regroupement">
+		<em>Très rare dans le cas d'un regroupement</em>
+		</IF>
+		</TD>
+
+	<TR>
+<TD background="[#SHAREURL]/images/gris.gif" valign="top">
+			<strong>Texte d'introduction:</strong><br>
+		</td>
+		<TD>
+			<TEXTAREA NAME="texte" ROWS="20" COLS="60">
+				[#TEXTE]
+			</TEXTAREA>
+		</TD>
+<TD  background="[#SHAREURL]/images/bleu.gif" valign="top">
+
+			<em>Balises HTML autorisées</em><br>
+
+		</td>
+	</TR>
+	<IF [#ID]>
+	<tr>	
+<TD background="[#SHAREURL]/images/gris.gif">
+			<strong>Associer une image</strong>
+		</td>
+		<td align="center" valign="middle"> 
+			<div align="center">
+				<br>
+				<MACRO NAME="Associer_icone_publication">
+			</div>
+		</td>
+<TD  background="[#SHAREURL]/images/bleu.gif">
+		&nbsp;
+		</td>
+	</tr>
+	</IF>
+		<TR>
+<TD background="[#SHAREURL]/images/gris.gif">
+				<strong>Terminer :</strong>
+			</TD>
+			<TD align="center">
+<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)] " >
+</FORM>
+			</TD>
+<td background="[#SHAREURL]/images/bleu.gif">
+			Type : [#TYPE]
+			</td>
+		</TR>
+	<TR>
+<IF [#ID]>
+		<TR>
+<TD background="[#SHAREURL]/images/gris.gif">
+				<strong>Danger :</strong>
+			</TD>
+			<td align="center">
+	<a href="supprime.php?publication=[#ID]">
+		<MACRO NAME="GIF_DETRUIRE"> Supprimer
+	</a>
+			</td>
+<TD  background="[#SHAREURL]/images/bleu.gif">
+			Cette action est irréversible
+			</td>
+		</TR>
+	<TR>
+</IF>
+</TABLE><br>
+
+
+
+
+
+<MACRO NAME="close_html">
+
+

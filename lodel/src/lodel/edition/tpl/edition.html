@@ -1,0 +1,77 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Edition d'une revue</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+
+<MACRO NAME="TABLE_creetableinterface">
+	<table width="648" border="0" align="center" cellspacing="0" cellpadding="0">
+		<MACRO NAME="TR_separateur">
+		<tr>
+			<td>
+				<div align="center">
+					<span class="Texte">
+						Publication : 
+					</span>
+					<span class="Titre">
+						[(#REVUE|nbsp)]
+					</span>
+					<span class="Texte">
+						 - Utilisateur : 
+					</span>
+					<span class="Titre">
+						[#USERNAME]
+					</span>
+					<br>
+				</div>
+			</td>
+		</tr>
+		<MACRO NAME="TR_separateur">
+		<!---------------------------->
+		<!--  AFFICHAGE DES SERIES -->
+		<!---------------------------->
+		<tr> 
+			<td bgcolor="#FFFFFF"> 
+				<br>
+				<table width="648" border="0" align="center" cellspacing="0" cellpadding="0">
+					<tr> 
+						<td> 
+							<table width="648" border="0" cellpadding="0" cellspacing="0">
+								<tr> 
+									<td width="48" height="48" background="images/bleu.gif"> 
+										<div align="center">
+											&nbsp;
+										</div>
+									</td>
+									<td width="400" valign="middle" background="images/bleu.gif" class="titre">
+										<font color="#000000">
+											Edition des séries
+										</font>
+									</td>
+								<MACRO NAME="titres_boutons_publications">
+								</tr>
+								<BOUCLE NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
+								<tr>
+									<td width="48"> 
+										<div align="center">
+										<a href="../../sommaire.html?id=[#ID]">
+											<MACRO NAME="GIF_SERIE">
+										</a>
+										</div>
+									</td>
+									<MACRO NAME="TD_nom_type_titre">
+									<MACRO NAME="boutons_publications">
+								</tr>
+								<SINON/>
+									<MACRO NAME="TR_aucune_publication_dispo"> 
+								</BOUCLE>
+								<MACRO NAME="Creer_serie">
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+<MACRO NAME="CLOSE_TABLE_creetableinterface">
+<MACRO NAME="close_html">

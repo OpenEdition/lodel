@@ -1,0 +1,149 @@
+initialisation des repertoire
+
+Decoupage: decoupage des fichier compte-rendu et notes
+
+****************** 2021-2000 ******************
+
+############### 15-2021-2000.cpte-rendu.html ####################
+tmptxt/2021-2000/15-2021-2000.cpte-rendu.html tmptxt/2021-2000/15-2021-2000.cpte-rendu
+############### 16-2021-2000.notes.html ####################
+tmptxt/2021-2000/16-2021-2000.notes.html tmptxt/2021-2000/16-2021-2000.notes
+############### 17-2021-2000.chroniques.html ####################
+tmptxt/2021-2000/17-2021-2000.chroniques.html tmptxt/2021-2000/17-2021-2000.chroniques
+
+Premiere passe: creation des .html et insertion dans la la base de donnee
+
+****************** 2021-2000 ******************
+
+############### 01-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/01-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * (resume) * (resume_anglais) * texte * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 02-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/02-2021-2000.txt.cl.xml
+auteur * auteur2 * titre * (periode) * (cle) * (type) * (annee) * (publication) * (ordre) * (resume) * (resume_anglais) * texte * (texteapart) * notebaspage * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 03-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/03-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 04-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/04-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 05-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/05-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 06-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/06-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * texteapart * notebaspage * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 07-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/07-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 08-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/08-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 09-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/09-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 10-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/10-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 11-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/11-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 12-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/12-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 13-2021-2000.txt.html ####################
+enleve les balises restantes
+fin
+transforme le fichier en xhtml
+parcourt le fichier tmptxt/2021-2000/13-2021-2000.txt.cl.xml
+auteur * (auteur2) * titre * (periode) * cle * (type) * (annee) * (publication) * (ordre) * resume * resume_anglais * (texte) * (texteapart) * (notebaspage) * 
+insert l'article
+insert les auteurs
+insert les periodes
+insert les mots cles
+############### 14-2021-2000.txt.html ####################
+enleve les balises restantes

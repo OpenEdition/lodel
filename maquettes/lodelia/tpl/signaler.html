@@ -1,0 +1,119 @@
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html"><MACRO NAME="OUVRIR_HTML">
+<title>[(#TITRE|textebrut)]</title>
+<MACRO NAME="DESACTIVER_INDEXATION">
+<MACRO NAME="meta">
+<MACRO NAME="INSERER_STYLE">
+<MACRO NAME="js_jumpmenu"> 
+<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	<!-- Affiche la barre verticale de navigation -->
+	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
+	<td valign="top">
+		<table width="90%" border="0" cellspacing="0" cellpadding="0" align="center" valign="TOP">
+			<tr>
+				<td class="titrerevue" valign="top">
+					<hr align="center" width="100%" />
+					<!-- Affichage d'informations dépendant
+					 du type de document -->
+					<span class="texte_centre">
+						Signalement du document en ligne :
+						<br /><br />
+					</span>
+					<!-- Affichage titre -->
+					<a href="sommaire.html?id=[#PUBLICATION]">
+						<span class="soustitre">
+							[#TITRE]
+						</span>
+					</a>
+					<MACRO NAME="offline_document">
+					<MACRO NAME="edit">
+				</td>
+			</tr>
+			<IF [#SOUSTITRE]>
+				<tr> 
+					<td class="soustitre" valign="top"> 
+						[#SOUSTITRE]
+					</td>
+				</tr>		 
+			</IF> 
+			<tr> 
+				<td valign="top">
+					<table width="90%" border="0" align="center">
+						<tr>
+							<td width="100%" align="center" class="auteur">
+								<MACRO NAME="LISTER_AUTEURS"><br /><br />
+								<span class="texte_petit_centre">
+									<MACRO NAME="PARU_DANS"><br />
+								</span>
+								<span class="texte_trespetit_centre">
+									[#URL]
+								</span>
+								<hr align="center" width="100%" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<table>
+			[(#ERREUR_MAIL|true)<tr><td>Probleme d'envoi du mail</td></tr>]
+			<form method="POST" action="signaler.html">
+			<input type="hidden" name="id" value="[#ID]">
+			<input type="hidden" name="envoi" value="1">
+			<tr>
+				<td>
+					Nom du destinataire :
+				</td>
+				<td>
+					<input SIZE="30" type="text" name="nom_destinataire" value="[#NOM_DESTINATAIRE]">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Courrier électronique* :
+				</td>
+				<td>
+					<input SIZE="30" type="text" name="to" value="[#TO]">
+					[(#ERREUR_TO|true)Il faut préciser un destinataire]
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Votre nom :
+				</td>
+				<td>
+					<input SIZE="30" type="text" name="nom_expediteur" value="[#NOM_EXPEDITEUR]">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Votre courrier électronique* :
+				</td>
+				<td>
+					<input SIZE="30" type="text" name="from" value="[#FROM]">
+					[(#ERREUR_FROM|true)Il faut preciser un expéditeur]
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Votre message :
+				</td>
+				<td>
+					<textarea name="message" rows="20" cols="60">
+					[#MESSAGE]
+					</textarea>
+				</td>
+			</tr>
+		</table>
+		<input class="form" type="submit" value="Envoi">
+		</form>
+		<br />
+		<MACRO NAME="REVUES_ORG">
+	</td>
+	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+<MACRO NAME="FERMER_HTML">  
+
+
+

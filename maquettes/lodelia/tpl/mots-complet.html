@@ -1,0 +1,93 @@
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<!-- Index des mots clés complet            -->
+<!-- Auteur : Marin Dacos et Poupeau gautier -->
+<!-- Date de création : août 2002.           -->
+<!-- Dernière modification majeure : août 2002 -->
+<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+<MACRO NAME="OUVRIR_HTML">
+<TITLE>Index par mots clés</TITLE>
+<MACRO NAME="INSERER_STYLE">
+<MACRO NAME="js_jumpmenu">
+
+<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
+		<td valign="top" class="texte_petit_centre"> 
+
+			<table width="100%" align="center">
+				<tr> 
+					<td class="titre" align="center"> 
+						<br />
+						<a href="mots-complet.html">
+								<span class="couleur_dominante1">
+									Index par mots clés
+								</span>
+						</a>
+						<br />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<MACRO NAME="Table_alpha">
+					</td>
+				</tr>
+			</table>
+
+			<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER"  bordercolor="Black"> 
+
+				<!-- Boucle permettant d'afficher les lettres associées au mots-clefs correspondants -->
+				<BOUCLE NAME="alphabet">
+					<tr>
+						<td align="center" class="titre">
+							<A NAME=[#LETTRE]>
+									[#LETTRE]
+								&nbsp;
+							</A>
+						</td>
+					</tr>
+					<tr>
+						<td class="texte">
+
+							<!-- Boucle permettant d'afficher les mots-clefs -->
+							<BOUCLE NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
+
+								<br />
+								<a href="mot.html?id=[#ID]">
+								<span class="couleur_dominante1">
+									<strong>
+										[#MOT]
+									</strong>
+								</span>
+								</a>
+								<br />
+
+								<!-- Affichage des articles correspondant aux thèmes -->
+									<BOUCLE NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexl='[#ID]'">
+									<AVANT>
+										<table width="100%" border="0" cellspacing="2" cellpadding="2">
+									</AVANT>
+										<tr>
+											<td class"texte">
+												<MACRO NAME="AFFICHER_LIGNE_ARTICLE">
+											</td>
+										</tr>
+									<APRES>
+										</table>
+									</APRES>
+									</BOUCLE>
+							</BOUCLE>
+						</td>
+					</tr>
+				</BOUCLE>
+			</table>
+			<a href="mots.html">
+				<span class="couleur_dominante1">
+					Index court
+				</span>
+			</a>
+		</td>
+		<MACRO NAME="TRACER_LIGNE_VERTICALE">
+<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+<MACRO NAME="FERMER_HTML">

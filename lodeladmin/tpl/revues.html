@@ -1,0 +1,39 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<TITLE>Revues</TITLE>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+
+<div align="center"><br><br><b><A HREF="revue.php">Ajouter une revue</A></b></div><br>
+
+<table width="75%" border="1" align="center" cellspacing="0" cellpadding="6" bordercolor="gray">
+<TR><TD><b>Nom</b></TD><TD> <div align="center"><img src="images/KDE_txt.gif" width="32" height="32"></div></TD><TD> <div align="center"><img src="images/coplanddetruire.gif" width="32" height="32"></div></TD></TR>
+<BOUCLE NAME="revues" TABLE="revues" ORDER="nom" WHERE="ok">
+  <IF [#COUNT] % 2><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
+<TD align="center"><font color="Navy"><b><i>[(#NOM|nbsp)]</i></b></font></TD>
+<TD align="center"><A HREF="revue.php?id=[#ID]">Modifier</A></TD>
+<TD align="center"><A HREF="revue.php?id=[#ID]&delete=1">Supprimer</A></TD>
+</TR>
+</BOUCLE>
+</TABLE>
+
+<BOUCLE NAME="revues_ol" TABLE="revues" ORDER="nom" WHERE="trash">
+<AVANT>
+<br>
+<table width="75%" border="1" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+<tr>
+    <td><B><font color="#FF0000">Revues dans la corbeille :</font></B></td>
+<td>&nbsp;</td>
+</tr>
+<TR>
+    <TD><b>Nom</b></TD>
+    <TD>&nbsp;</TD></TR>
+</AVANT>
+
+<IF [#COUNT] % 2><tr bgcolor="#EEEEEE"><ELSE/><tr bgcolor="white"></IF>
+    <TD><font color="navy"><b>[#NOM]</b></font></TD>
+<TD><A HREF="revue.php?id=[#ID]&restore=1">Récuperer</A></TD>
+</TR>
+<APRES></TABLE></APRES>
+</BOUCLE>
+<MACRO NAME="close_html">

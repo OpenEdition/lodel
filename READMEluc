@@ -1,0 +1,26 @@
+9/11/02
+Ebauche de procedure de verification de l'integrite de la base.
+
+Il faut verifier que:
+
+*  les revues ont leur repertoire.
+*  les publications ont un parent valide.
+*  les publications ont un groupe valide.
+*  les publications ont un typepubli valide.
+*  les documents ont une publication valide.
+*  les documents ont un typedoc valide.
+*  les documents ont un user valide.
+*  les auteurs, indexls, et indexhs (dit xxxx dans la suite) sont attaches a un document (sauf motcle permanent, periode et geographie): verif sur la table croisee
+*  les tables croisees documents_xxxx sont attaches correctement a un document valide et a xxxx valide.
+*  les documentsannexes sont attaches a un document valide.
+*  les documentsannexes ont un fichier sur le disque (si lien_fichier)
+*  les docannexes sur le disque sont repertories dans la base, sinon detruire.
+*  les meta_images ont un fichier sur le disque (si lien_fichier)
+*  les fichiers images dans docannnexe sont repertories dans la base, sinon detruire.
+
+*  publier/non publie de facon recurrente (publi->publi->document->xxxxx) est ok.
+*  detruire les sessions non delogues.
+*  les .txt et les .rtf sont repertories dans la table documents.
+*  les typedocs et typepublis ont les tpl edition, sommaire, article sur le disques.
+*  detuire tous les items (documents, publi, groupes, users, etc...) dont le status est "a detruire" ie (-64 ou -1 selon les items) et detruire si la maj date de plus d'un an (ok ?).
+

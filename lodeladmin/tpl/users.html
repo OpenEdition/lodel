@@ -1,0 +1,53 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Utilisateurs</title>
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo">
+
+<div align="center"><br>
+  <br>
+  <A HREF="user.php"><b>Ajouter un utilisateur</b></A> </div>
+<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
+<TR><TD align="center"><b>Login (identifiant court)</b></TD><TD align="center">
+      <div align="center"><b>Nom</b></div>
+    </TD><TD align="center">
+      <div align="center"><b>Courriel</b></div>
+    </TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR>
+<BOUCLE NAME="auteurs" TABLE="users" ORDER="nom" WHERE="status>0">
+<TR>
+    <TD><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></TD>
+<TD>[(#NOM|nbsp)]</TD>
+<TD><A HREF="mailto:[(#EMAIL|nbsp)]">[(#EMAIL|nbsp)]</A></TD>
+<TD><A HREF="user.php?id=[#ID]">Modifier</A></TD>
+<TD><A HREF="user.php?id=[#ID]&delete=1">Supprimer</A></TD>
+</TR>
+</BOUCLE>
+</TABLE>
+
+<BOUCLE NAME="auteurs_trash" TABLE="users" ORDER="nom" WHERE="trash">
+<AVANT>
+<div align="center"><BR><b>Dans la poubelle:</b><BR></div><br>
+<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
+<TR><TD align="center"><b>Nom d'utilisateur</b></TD><TD align="center">
+      <div align="center"><b>Nom</b></div>
+    </TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR>
+</AVANT>
+
+<TR>
+    <TD><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></TD>
+<TD>[#NOM]</TD>
+<TD><A HREF="user.php?id=[#ID]&restore=1">Récuperer</A></TD>
+<TD><A HREF="user.php?id=[#ID]&delete=2">Supprimer définitivement</A></TD>
+</TR>
+<APRES></TABLE></APRES>
+</BOUCLE>
+
+
+</CENTER>
+
+</TD></TR>
+
+</TABLE>
+
+<MACRO NAME="close_html">
+

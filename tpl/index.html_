@@ -1,0 +1,84 @@
+<USE MACROFILE="macros.html">
+<html>
+<head>
+<title>LODEL Page d'accueil</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="styles_lodel.css">
+<script language="javascript">
+<!--
+  triangle = new Image;
+  triangle.src = "[#SHAREURL]/images/triangle3.gif";
+  triangle2 = new Image;
+  triangle2.src = "[#SHAREURL]/images/triangle2.gif";
+
+		//-->
+</script>
+</head>
+<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
+<br>
+<table width="85%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+  <tr> 
+    <td bgcolor="#FFFFFF" align="center"> 
+	<a href="/lodeldoc">
+      <div align="center">
+          <MACRO NAME="GIF_LODEL_BIG">
+		  </div>
+	</a>
+    </td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFFFFF" align="center">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFFFFF" align="center"> 
+      <table width="700" border="0" align="center" cellspacing="4" cellpadding="4">
+        <tr>
+          <td>
+<table width="100%">
+<tr>
+<td colspan="2">
+<br>
+<strong>Sélectionnez votre publication</strong><br>
+</td>
+</tr>
+<tr>
+<td width="60%">
+		<BOUCLE NAME="selectionne_revue" TABLE="revues" WHERE="ok" ORDER="nom">
+		<div id="[#REP]" class="texte_petit">
+		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
+			<a HREF="[(#REP|makeurl)]" onmouseover="[#REP].src=triangle.sr" 
+onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
+<br>	</div>
+
+		</BOUCLE>
+</td>
+<td width="40%">
+		<BOUCLE NAME="sel_rev" TABLE="revues" WHERE="ok" ORDER="nom">
+		<div id="[#REP]" class="texte_petit">
+[<a href="[(#REP|makeurl)]/lodel/edition/index.php">Editer [#REP]</a>]
+<br>	</div>
+		</BOUCLE>
+</td>
+</tr>
+</table>
+<blockquote>
+	<a href="lodeldoc">
+	<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Documentation"> Documentation
+	</a>
+
+	<br>
+	<a href="lodel">
+	<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Administration"> Administration
+	</a>
+	 (accès réservé)
+	 <br>
+	 <br>
+	<font size="-2"><strong>Avertissement légal.</strong> L'utilisation de Lodel n'est assortie d'aucune garantie d'aucune sorte de la part de Revues.org, de l'Université d'Avignon, ou de ses concepteurs, Ghislain Picard et Marin Dacos.</font>
+</blockquote>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

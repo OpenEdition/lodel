@@ -1,0 +1,136 @@
+#!/usr/bin/perl -w
+###########################################################################
+#
+#      decoupe version 0.1 Fevrier 1999
+#
+#      Copyright (C) 1998, Ghislain Picard
+#
+###########################################################################
+#
+# Ce script peut etre diffuse et modifie librement. Il est distribue
+# dans le but d'etre utile, mais SANS GARANTIE.
+#
+###########################################################################
+# main
+
+use strict;
+
+my $txt_file;
+my $txt_file_ss_ext;
+
+&arguments;
+&parse_txt;
+exit 0;
+
+###########################################################################
+
+sub arguments {
+  
+  if ($ARGV[0] eq "") {
+    print <<endHelp;
+decoupe version 0.1 Fevrier 1999
+Copyright (C) 1999, Ghislain Picard
+
+decoupe text
+decoupe le fichier 'text' en pour chaque balise (!--fichier--)
+
+endHelp
+    exit 0;
+  }
+  
+  $txt_file=$ARGV[0];
+  $txt_file_ss_ext=$txt_file;
+  $txt_file_ss_ext=~ s/\.(\w+?)$//; # execute qu'une fois
+  print "$txt_file $txt_file_ss_ext\n";
+}
+
+
+sub parse_txt {
+  
+  open (TXT,"$txt_file") || die "erreur: impossible d'ouvrir le fichier $txt_file en lecture";
+  my @txt=<TXT>;
+  close (TXT);
+  
+  my @notes=&parse_notes(@txt);
+  
+  
+  my $i=0;
+  my $j=0;
+  my $nbnote=1;
+  my @notes_local=();
+  
+ LOOP: foreach my $l (@txt) {
+    last LOOP if ($l=~/\(!--notebaspage--\)/);
+    
+    if ($l=~/\(!--fichier--\)/) {
+      if ($i ne 0) {
+	#print "-------$j--------\n";
+	#print @notes_local;
+	#print "\n* $#notes_local\n\n";
+	if ($#notes_local ge 0) {
+	  print DEST "\n(!--notebaspage--)\n";
+	  print DEST join ("\n",@notes_local);
+	  print DEST "\n(!--)\n";
+	}
+	@notes_local=();
+	$nbnote=1;
+	close (DEST);
+      } else {
+	$i=1;
+      }
+      $j++;
+      while (-e "$txt_file_ss_ext-$j.txt.html") {
+	$j=$j+1;
+      }
+      open (DEST,">$txt_file_ss_ext-$j.txt.html") || die "erreur: impossible d'ouvrir le fichier $txt_file_ss_ext.$j.html en ecriture";
+    } else {
+      if ($i ne 0) {
+	my $ll=$l;
+	while ($l=~/<A NAME="FM(\d+)"/g) {
+	  #print "$1\n";
+	  my $nonote=$1;
+	  $ll=~s/FM$nonote"/FM$nbnote"/g;
+	  $ll=~s/FN$nonote"/FN$nbnote"/g;
+	  $ll=~s/\[$nonote\]/\[$nbnote\]/g;
+	  
+	  my $n=$notes[int($nonote)-1];
+	  #			    print "--$nonote--$nbnote-------$n\n";
+	  $n=~s/FN$nonote\"/FN$nbnote\"/g;
+	  $n=~s/FM$nonote\"/FM$nbnote\"/g;
+	  $n=~s/\[$nonote\]/\[$nbnote\]/g;
+	  push (@notes_local, $n);
+	  $nbnote++;
+	}
+	$ll=~s/\(!--eof--\)//g;
+	$ll=~s/\(!--fichier--\)//g;
+	print DEST "$ll";
+      }
+    }
+  }
+  if ($i ne 0) {
+    if ($#notes_local gt 0) {
+      print DEST "\n(!--notebaspage--)\n";
+      print DEST join ("\n",@notes_local);
+      print DEST "\n(!--)\n";
+    }
+    close (DEST);
+  }
+  
+}
+
+sub parse_notes {
+  my $txt=join ("\n",@_);
+  my @notes;
+  
+  if ($txt=~/\(!--notebaspage--\)(.*?)\(!--\)/gs) {
+    #    print "--$1";
+    @notes=grep (/<A NAME=/i,split (/\n/,$1));    
+  }
+  #print "notes=\n";
+  
+  #  print join ("\n*\n",@notes);
+  return @notes;
+  
+}
+
+############################## fin #######################################
