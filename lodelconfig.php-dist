@@ -81,6 +81,7 @@ ignore_user_abort();
 
 // securite
 $currentdb="";
+$site="";
 
 define (NORECORDURL,1);
 

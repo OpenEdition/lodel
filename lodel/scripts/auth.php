@@ -27,8 +27,8 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $GLOBALS[session]=$name;
 
 #ifndef LODELLIGHT
-    // verifie qu'on est dans la bonne site
-    if ($row[site]!="toutes les sites" && $row[site]!=$site) break;
+    // verifie qu'on est dans le bon site
+    if ($row[site]!="tous les sites" && $row[site]!=$site) break;
 #endif
 
     // verifie que la session n'est pas expiree
@@ -178,7 +178,6 @@ function getsiteoptions ()
 $userpriv=0;
 $usergroupes="";
 $iduser=0;
-$site="";
 $idsession=0;
 $session="";
 
@@ -192,19 +191,22 @@ $context[shareurl]=$shareurl;
 
 // cherche le nom du site
 
-
-$url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
-if ($siteagauche) {
-	if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodel" && $result[1]!="www") {
-	  $context[site]=$site=$result[1];
-	} else {
-	  $context[site]=$site="";
-	}
+if ($site) {
+     $context[site]=$site;
 } else {
-	if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodel") {
-	  $context[site]=$site=$result[1];
+	$url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
+	if ($siteagauche) {
+		if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodel" && $result[1]!="www") {
+		  $context[site]=$site=$result[1];
+		} else {
+		  $context[site]=$site="";
+		}
 	} else {
-	  $context[site]=$site="";
+		if (preg_match("/^".preg_quote($urlroot,"/")."([^\/\.]*)(\/|$)/",$url[path],$result) && $result[1]!="lodel") {
+		  $context[site]=$site=$result[1];
+		} else {
+		  $context[site]=$site="";
+		}
 	}
 }
 
