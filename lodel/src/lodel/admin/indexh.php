@@ -19,7 +19,6 @@ if ($id>0 && ($delete || $restore)) {
   return;
 }
 
-$critere.=" AND status>0";
 //
 // ordre
 //
@@ -64,7 +63,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM indexhs WHERE $critere") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM indexhs WHERE $critere AND status>0") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 

@@ -23,7 +23,6 @@ if ($id>0 && ($delete || $restore)) {
 
 if (!$type) die("probleme interne contacter Ghislain");
 $context[type]=intval($type); // cette variable peut etre reajuste correctement dans la suite du code (dans edit, via l'import, ou dans la clause. Il faut quand meme positionner cette valeur pour le cas ou on ajoute simplement un motcle
-if ($id) $critere.=" AND status>0";
 
 //
 // ajoute ou edit
@@ -57,7 +56,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM indexls WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM indexls WHERE $critere AND status>0") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
