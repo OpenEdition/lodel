@@ -36,26 +36,36 @@ authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 $context[importdir]=$importdir;
 $fileregexp='(model)-\w+-\d+.sql';
 
-$importdirs=array($importdir,"CACHE",$home."../install/plateform");
-
-
+$importdirs=array("CACHE",$importdir,$home."../install/plateform");
 
 
 $archive=$HTTP_POST_FILES['archive']['tmp_name'];
 $context['erreur_upload']=$HTTP_POST_FILES['archive']['error'];
 if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // Upload
-  $prefix="*";
-  $fichier=$archive;
+  $fichier=$HTTP_POST_FILES['archive']['name'];
+  if (!preg_match("/^$fileregexp$/",$fichier)) $fichier="model-import-".date("dmy").".sql";
 
-} elseif ($fichier && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$fichier,$result) && file_exists($fichier)) { // fichier sur le disque
+  if (!move_uploaded_file($archive,"CACHE/".$fichier)) die("ERROR: a problem occurs while moving the uploaded file.");
+
+  $fichier=""; // on repropose la page
+} else
+
+
+
+if ($fichier && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$fichier,$result) && file_exists($fichier)) { // fichier sur le disque
   $prefix=$result[1];
 
 } else { // rien
   $fichier="";
 }
 
-
-if ($fichier) {
+if ($fichier && $delete) {
+  // extra check. Need more ?
+  if (dirname($fichier)=="CACHE") {
+    unlink($fichier);
+  }
+  //
+} elseif ($fichier) {
   require_once ($home."connect.php");  
   require_once ($home."backupfunc.php");
   include ($home."func.php");
@@ -87,23 +97,36 @@ function loop_fichiers(&$context,$funcname)
     if ( $dh= @opendir($dir)) {
       while (($file=readdir($dh))!==FALSE) {
 	if (!preg_match("/^$fileregexp$/i",$file)) continue;
-	$context[nom]=$file;
-	$context[fullname]="$dir/$file";
+	$localcontext=$context;
+	$localcontext[nom]=$file;
+	$localcontext[fullname]="$dir/$file";
+	if ($dir=="CACHE") $localcontext[maybedeleted]=1;
 
-	$fh=fopen($context[fullname],"r");
+	$fh=fopen($localcontext[fullname],"r");
 	if (!$fh) continue;
-	$result="";
+	$xml="";
 	do {
 	  $buf.=fread($fh,1024);
-	  if (preg_match("/# comment\n(.*?\n)# end of comment\n/s",$buf,$result)) break;
+	  if (preg_match("/<model>(.*?)<\/model>/s",$buf,$result)) {
+	    $lines=preg_split("/\n/",$result[1]);
+	    $xml="";
+	    foreach ($lines as $line) {
+	      $xml.=substr($line,2);
+	    }
+	    break;
+	  }
 	} while(!feof($fh));
-	$lines=preg_split("/\n/",htmlentities($result[1]));
-	$context[comment]="";
-	foreach ($lines as $line) {
-	  $context[comment].=substr($line,2)."<br />";
+	foreach (array("lodelversion","description","author","date") as $tag) {
+	  if (preg_match("/<$tag>(.*?)<\/$tag>/",$xml,$result)) {
+	    $localcontext[$tag]=str_replace(array("\n","\r","<",">"),
+				       array("<br />","","&lt;","&gt;"),
+				       $result[1]);
+	  }
 	}
+	#echo doubleval($localcontext[lodelversion]), ":",$GLOBALS[version],"<br />\n";
 
-	call_user_func("code_do_$funcname",$context);
+	if (doubleval($localcontext[lodelversion])!=doubleval($GLOBALS[version])) $localcontext[warning_version]=1;
+	call_user_func("code_do_$funcname",$localcontext);
       }
       closedir ($dh);
     }

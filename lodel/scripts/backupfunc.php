@@ -32,6 +32,8 @@
 // Thanks to the authors !
 //
 
+define(LODELPREFIX,"__LODELTP__");
+
 
 $userlink=TRUE;
 $server=TRUE;
@@ -43,7 +45,7 @@ require($home."pma/mysql_wrappers.lib.php");
 require($home."pma/defines.lib.php");
 require($home."pma/defines_php.lib.php");
 require($home."pma/common.lib.php");
-require($home."pma/sql.php");
+require($home."pma/sql-modified.php");
 #require($home."pma/read_dump.lib.php");
 
 // parser SQL
@@ -135,7 +137,7 @@ function mysql_dump($db,$output,$fh=0,$create=TRUE,$drop=TRUE,$tables=array())
     $results = PMA_mysql_list_tables($db);
     if (!$results) die (mysql_error());
     $num_tables = @mysql_numrows($results);
-    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($result,$i);
+    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($results,$i);
   }
   $num_tables=count($tables);
 
@@ -180,7 +182,11 @@ function execute_dump($filename)
     $pieces_to_execute=$fullstatment ? $pieces_count : $pieces_count-1;
 
     for ($i = 0; $i < $pieces_to_execute; $i++) {
-      #echo "<li>",$i," ",htmlentities($pieces[$i]),"</li>";
+      // echo "<li>",$i," ",htmlentities($pieces[$i]),"</li>";
+      // add the prefix
+
+
+
       $result = PMA_mysql_query($pieces[$i]);
       if ($result == FALSE) {     
         //      echo $pieces[$i],"<br>\n"; flush();
@@ -202,6 +208,19 @@ function execute_dump($filename)
   //} // end for
 
   return TRUE;
+}
+
+/**
+ * Remove the actual prefix and add the common prefix
+ *
+ *
+ */
+
+function lodelprefix($table)
+
+{
+  $table=substr($table,strlen($GLOBALS[tp]));
+  return $GLOBALS[uselodelprefix] ? LODELPREFIX.$table : $table;
 }
 
 
@@ -299,6 +318,8 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
     $in_string    = FALSE;
     $time0        = time();
 
+    $prefixescape  =LODELPREFIX;
+
     for ($i = 0; $i < $sql_len; ++$i) {
         $char = $sql[$i];
 
@@ -366,7 +387,7 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
         } // end else if (is start of string)
 
         // ... for start of a comment (and remove this comment if found)...
-	// ghislain: ajout du cas ou on a des --
+	// ghislain: ajout du cas ou on a des ---
         else if ($char == '#'
                  || ( ($char == ' ' || $char == '-') && $i > 1 && $sql[$i-2] . $sql[$i-1] == '--')) {
             // starting position of the comment depends on the comment type
@@ -400,7 +421,13 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
         else if ($release < 32270
                  && ($char == '!' && $i > 1  && $sql[$i-2] . $sql[$i-1] == '/*')) {
             $sql[$i] = ' ';
-        } // end else if
+        }// end else if
+	else if ($char == $prefixescape[0] && // look for prefix table
+		 substr($sql,$i,strlen($prefixescape)) == $prefixescape) { 
+	  // replace
+	  $sql = substr($sql,0,$i).$GLOBALS[tp].substr($sql,$i+strlen($prefixescape));
+	  $sql_len    = strlen($sql);
+	}
 
         // loic1: send a fake header each 30 sec. to bypass browser timeout
         $time1     = time();

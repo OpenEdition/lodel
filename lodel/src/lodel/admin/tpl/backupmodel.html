@@ -33,10 +33,15 @@
 	</tr>
 </table>
 
+
 <form method="POST" action="backupmodel.php">
 <input type="hidden" name="backup" value="1">
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-<tr><td>Description:</td><td><textarea cols="50" rows="4" name="comment">[#COMMENT]</textarea></td></tr>
+
+<tr><td></td><td>Les informations suivantes sont surtout utiles si vous souhaitez partager votre modèle éditorial:</td></tr>
+
+<tr><td>Description:</td><td><textarea cols="50" rows="4" name="description">[#DESCRIPTION]</textarea></td></tr>
+<tr><td>Auteur:</td><td><input type="text"  name="author">[#AUTHOR]</author></td></tr>
 <!--[<tr><td>Opération:</td><td>
 <select name="operation">
 <option value="download">Télécharger</option>
@@ -47,7 +52,7 @@
 </table>
 	<div class="pied_de_formulaire">
 		<input class="form" type="submit" value="  Sauvegarder  ">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php'" />
+		<input class="form" type="button" value=" Annuler / Retour " onClick="javascript:window.location='index.php'" />
 	</div>
 </form>
 

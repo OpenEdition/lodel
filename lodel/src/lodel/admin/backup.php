@@ -44,6 +44,7 @@ if ($backup) {
   lock_write_all($currentdb);
 
   $outfile="site-$site.sql";
+  $uselodelprefix=true;
   mysql_dump($currentdb,"/tmp/".$outfile);
 
   #if (!file_exists("/tmp/$outfile")) die ("erreur dans l'execution de mysqldump");

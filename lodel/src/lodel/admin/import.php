@@ -33,10 +33,7 @@ authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 
 $context[importdir]=$importdir;
 $fileregexp='(site|revue)-\w+-\d+.tar.gz';
-
-$importdirs=array($importdir,"CACHE",$home."../install/plateform");
-
-
+$importdirs=array($importdir,"CACHE");
 
 
 $archive=$HTTP_POST_FILES['archive']['tmp_name'];
@@ -106,7 +103,7 @@ calcul_page($context,"import");
 
 function loop_fichiers(&$context,$funcname)
 {
-  global $importdirs;
+  global $importdirs,$fileregexp;
 
   foreach ($importdirs as $dir) {
     if ( $dh= @opendir($dir)) {

@@ -63,17 +63,23 @@
 		    <LOOP NAME="fichiers">
    		    <DO>
 		      <table border="1">
-		      <tr><td><div><strong>[#NOM]</strong> &gt;&gt; <a href="importmodel.php?fichier=[(#FULLNAME|urlencode)]">Importer</a></div></td></tr>
-		      <tr><td>[#COMMENT]</td></tr>
+		      <tr>
+			    <td><div><strong>[#NOM]</strong></div></td>
+			    <td><div><a href="importmodel.php?fichier=[(#FULLNAME|urlencode)]">Importer</a> <IF COND="[#MAYBEDELETED]"><a href="importmodel.php?delete=1&fichier=[(#FULLNAME|urlencode)]">| Effacer</a></IF></div></td>
+			  </tr>
+		      <IF COND="[#DESCRIPTION]"><tr><td>Description:</td><td>[#DESCRIPTION]</td></tr></IF>
+		      <IF COND="[#AUTHOR]"><tr><td>Auteur:</td><td>[#AUTHOR]</td></tr></IF>
+		      <tr><td>Date</td><td>[(#DATE|humandate)]</td></tr>
+		      <IF COND="[#WARNING_VERSION]"><tr><td>Version</td><td>Attention, la version de ce modèle editorial ([#LODELVERSION]) n'est pas la même que celle de Lodel ([#VERSION]). Verifier la compatibilité.</td></tr></IF>
 		      </table>
 		    </DO>
 		    </LOOP>
 		</li>
 		<li>
-		  <p>Charger un modèle (attention à la version !)</p>
+		  <p>Ajouter un modèle:</p>
       <IF COND="[#ERREUR_UPLOAD]"><b>Erreur</b> lors du chargement!</IF>
                   <p>
-    Archive: <form name="formfic" enctype="multipart/form-data" action="importmodel.php" method="post"  />
+    <form name="formfic" enctype="multipart/form-data" action="importmodel.php" method="post"  />
       <input type="file" name="archive" size="40">
       <input class="form" type="submit" value="Charger" />	  
       </form>
@@ -84,7 +90,7 @@
 </table>
 <form>
 	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php';" />
 	</div>
 </form>
 </IF>  

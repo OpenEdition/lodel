@@ -41,12 +41,29 @@ if ($backup) {
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
   // lock les tables
   require($home."backupfunc.php");
+  $uselodelprefix=true;
+
 
   lock_write_all($currentdb);
 
   $tmpfile=tempnam($tmpdir,"lodelbackupmodel");
   $fh=fopen($tmpfile,"w");
-  fputs($fh,"# comment\n# ".str_replace("\n","\n# ",$context[comment])."\n# end of comment\n#\n");
+
+  $description='<model>
+<lodelversion>'.$version.'</lodelversion>
+<date>'.date("Y-m-d").'</date>
+<description>
+'.htmlentities(stripslashes($context[description])).'
+</description>
+<author>
+'.htmlentities(stripslashes($context[author])).'
+</author>
+</model>
+ ';
+
+  fputs($fh,"# ".str_replace("\n","\n# ",$description)."\n#------------\n\n");
+
+
 
   $tables=array("$GLOBALS[tp]champs",
 		"$GLOBALS[tp]groupesdechamps",
@@ -58,7 +75,7 @@ if ($backup) {
 		"$GLOBALS[tp]typeentites_typepersonnes");
 
   foreach ($tables as $table) {
-    fputs($fh,"DELETE FROM $table;\n");
+    fputs($fh,"DELETE FROM ".lodelprefix($table).";\n");
   }
 
   mysql_dump($currentdb,"",$fh,false,false,$tables);

@@ -49,7 +49,7 @@
  */
 function PMA_fieldTypes($db, $table,$use_backquotes) {
     PMA_mysql_select_db($db);
-    $table_def = PMA_mysql_query('SHOW FIELDS FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table));
+    $table_def = PMA_mysql_query('SHOW FIELDS FROM ' . PMA_backquote($db) . '.' . PMA_backquote(lodelprefix($table)));
     while($row = @PMA_mysql_fetch_array($table_def)) {
         $types[PMA_backquote($row['Field'],$use_backquotes)] = ereg_replace('\\(.*', '', $row['Type']);
     }
@@ -203,7 +203,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
     $schema_create .= $new_crlf;
 
     if (!empty($drop)) {
-        $schema_create .= 'DROP TABLE IF EXISTS ' . PMA_backquote($table, $use_backquotes) . ';' . $crlf;
+      $schema_create .= 'DROP TABLE IF EXISTS ' . PMA_backquote(lodelprefix($table), $use_backquotes) . ';' . $crlf;
     }
 
     if ($do_comments && $cfgRelation['commwork']) {
@@ -252,6 +252,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             $pos2          = strpos($tmpres[1], '(');
             // Old mysql did not insert a space after table name
             // in query "show create table ..."!
+
             if ($pos2 != $pos + 1)
             {
                 // This is the real position of the first character after
@@ -262,7 +263,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             }
 
             $tmpres[1]     = substr($tmpres[1], 0, 13)
-                           . (($use_backquotes) ? PMA_backquote($tmpres[0]) : $tmpres[0])
+	      . (($use_backquotes) ? PMA_backquote(lodelpreifx($tmpres[0])) : lodelprefix($tmpres[0]))
                            . substr($tmpres[1], $pos);
             $tmpres[1]     = str_replace("\n", $crlf, $tmpres[1]);
             if (preg_match_all('((,\n[\s]*CONSTRAINT[^\n,]+)+)', $tmpres[1], $regs)) {
@@ -271,8 +272,8 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
                                         . '# ' . $GLOBALS['strConstraintsForDumped'] . $crlf
                                         . '#' . $crlf;
                 }
-                $sql_constraints .= $crlf .'#' . $crlf .'# ' . $GLOBALS['strConstraintsForTable'] . ' ' . PMA_backquote($table) . $crlf . '#' . $crlf;
-                $sql_constraints .= 'ALTER TABLE ' . PMA_backquote($table) . $crlf
+                $sql_constraints .= $crlf .'#' . $crlf .'# ' . $GLOBALS['strConstraintsForTable'] . ' ' . PMA_backquote(lodelprefix($table)) . $crlf . '#' . $crlf;
+                $sql_constraints .= 'ALTER TABLE ' . PMA_backquote(lodelprefix($table)) . $crlf
                                 . str_replace('CONSTRAINT', 'ADD CONSTRAINT', substr($regs[0][0], 2))
                                 . ";\n";
                 $tmpres[1]     = preg_replace('((,\n[\s]*CONSTRAINT[^\n,]+)+)', '', $tmpres[1]);
@@ -319,7 +320,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
     } // end if MySQL >= 3.23.21
 
     // For MySQL < 3.23.20
-    $schema_create .= 'CREATE TABLE ' . PMA_backquote($table, $use_backquotes) . ' (' . $crlf;
+    $schema_create .= 'CREATE TABLE ' . PMA_backquote(lodelprefix($table), $use_backquotes) . ' (' . $crlf;
 
     $local_query   = 'SHOW FIELDS FROM ' . PMA_backquote($table) . ' FROM ' . PMA_backquote($db);
     $result        = PMA_mysql_query($local_query) or PMA_mysqlDie('', $local_query, '', $error_url);
@@ -495,10 +496,10 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
         // Sets the scheme
         if (isset($GLOBALS['showcolumns'])) {
             $fields        = implode(', ', $field_set);
-            $schema_insert = 'INSERT INTO ' . PMA_backquote($table, $use_backquotes)
+            $schema_insert = 'INSERT INTO ' . PMA_backquote(lodelprefix($table), $use_backquotes)
                            . ' (' . $fields . ') VALUES (';
         } else {
-            $schema_insert = 'INSERT INTO ' . PMA_backquote($table, $use_backquotes)
+	  $schema_insert = 'INSERT INTO ' . PMA_backquote(lodelprefix($table), $use_backquotes)
                            . ' VALUES (';
         }
 
@@ -602,10 +603,10 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
             $schema_insert = '(';
         } else {
             if (isset($GLOBALS['showcolumns'])) {
-                $schema_insert = 'INSERT INTO ' . PMA_backquote($table, $use_backquotes)
+	      $schema_insert = 'INSERT INTO ' . PMA_backquote(lodelprefix($table), $use_backquotes)
                                . ' ' . $table_list . ' VALUES (';
             } else {
-                $schema_insert = 'INSERT INTO ' . PMA_backquote($table, $use_backquotes)
+	      $schema_insert = 'INSERT INTO ' . PMA_backquote(lodelprefix($table), $use_backquotes)
                                . ' VALUES (';
             }
             $is_first_row      = FALSE;
@@ -685,8 +686,8 @@ function PMA_exportData($db, $table, $crlf, $error_url, $sql_query)
 {
 
     $formatted_table_name = (isset($GLOBALS['use_backquotes']))
-                          ? PMA_backquote($table)
-                          : '\'' . $table . '\'';
+      ? PMA_backquote($table)
+      : '\'' . $table . '\'';
     $head = $crlf
           . '#' . $crlf
           . '# ' . $GLOBALS['strDumpingData'] . ' ' . $formatted_table_name . $crlf
