@@ -28,8 +28,11 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+function isvalidclass($name) 
+{return preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$name);}
+
 function isvalidtype($name) 
-{return preg_match("/^[a-zA-Z0-9_-][a-zA-Z0-9_ -]*$/",$name);}
+{return preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$name);}
 
 function isvalidfield($name) 
 {return preg_match("/^[a-zA-Z0-9]+$/",$name);}

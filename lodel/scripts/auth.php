@@ -38,24 +38,21 @@ define("LEVEL_ADMINLODEL",128);
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 
-
 function authenticate ($level=0,$norecordurl=FALSE)
 
 {
-  global $context,$iduser,$userrights,$usergroupes,$userlang;
-  global $home,$timeout,$database,$sessionname,$site;
+  global $context,$iduser,$userrights,$usergroups,$userlang;
+  global $home,$timeout,$sessionname,$site;
+  global $db;
 
   $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);
-
   do { // block de control
     $name=addslashes($_COOKIE[$sessionname]);
-
     if (!$name) break;
-
     require_once($home."connect.php");
-    mysql_select_db($database) or die(mysql_error());
-    if (!($result=mysql_query ("SELECT id,iduser,site,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
-    if (!($row=mysql_fetch_assoc($result))) break;
+
+    usemaindb();
+    if (!($row=$db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'"))))  break;
     $GLOBALS['idsession']=$idsession=$row['id'];
     $GLOBALS['session']=$name;
 
@@ -82,7 +79,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $context=array_merge($context,unserialize($row['context'])); // recupere le contexte
     $userrights=$context['userrights'];
     $userlang=$context['userlang'];
-    $usergroupes=$context['usergroupes'];
+    $usergroups=$context['usergroups'];
     $context['iduser']=$iduser=$row['iduser'];
 
     if ($userrights<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
@@ -94,7 +91,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if ($userrights>=LEVEL_ADMIN) $context['rightadmin']=$GLOBALS['rightadmin']=1;
     if ($userrights>=LEVEL_EDITOR) $context['righteditor']=$GLOBALS['righteditor']=1;
     if ($userrights>=LEVEL_REDACTOR) $context['rightredactor']=$GLOBALS['rightredactor']=1;
-    if ($userrights>=LEVEL_VISITOR) $context['rightvisiteur']=$GLOBALS['rightvisiteur']=1;
+    if ($userrights>=LEVEL_VISITOR) $context['rightvisitor']=$GLOBALS['rightvisitor']=1;
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
 
@@ -105,10 +102,10 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // clean the url
     $url=preg_replace("/[\?&]recalcul\w+=\w+/","",$_SERVER['REQUEST_URI']);
     if (get_magic_quotes_gpc()) $url=stripslashes($url);
-    $myurl=mysql_escape_string($url);
-
+    $myurl=$db->qmagic($url);
     $expire=$timeout+$time;
-    mysql_query("UPDATE $GLOBALS[tp]session SET expire='$expire',currenturl='$myurl' WHERE name='$name'") or die (mysql_error());
+    $db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die ($db->errormsg());
+
 
     //
     // gestion de l'url de retour
@@ -116,41 +113,24 @@ function authenticate ($level=0,$norecordurl=FALSE)
     #if ($back) {
     #  // on detruit l'entree dans la pile
     #  $back=intval($back);
-    #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or die (mysql_error());
+    #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or die($db->errormsg());
     #}
 
 
     // enregistre l'url de retour à partir de l'info dans la session
     if ($row['currenturl'] && $row['currenturl']!=$url && !$norecordurl) {
-      #if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
       $urlmd5=md5($url);
-      mysql_query ("INSERT INTO $GLOBALS[tp]urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5','$myurl')") or die (mysql_error());
-      #$context['url_retour']=mkurl($row['currenturl'],"back=".mysql_insert_id());
-      #} else {
-      #// cherche l'url de retour dans la base de donnee
-      #$result=mysql_query ("SELECT urlretour,id FROM $GLOBALS[tp]pileurl WHERE idsession='$idsession' AND url='$urlmd5' ORDER BY id DESC LIMIT 0,1") or die (mysql_error());
-      #if (mysql_num_rows($result)) {
-      #  list($urlretour,$id)=mysql_fetch_row($result);
-      #  $context['url_retour']=mkurl($urlretour,"back=$id");
-      #} else {	
-      #  $context['url_retour']="";
-      #}
+      $db->execute(lq("INSERT INTO $GLOBALS[tp]urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5',$myurl)")) or die($db->errormsg());
     }
     #    echo "retour:$context[url_retour]";
     //
     // fin de gestion de l'url de retour
     //
-
     $context['url_recompile']=mkurl($url,"recalcul_templates=oui");
-
-    //
-    // relselection la DB du site comme DB par defaut.
-    //
-    mysql_select_db($GLOBALS['currentdb']) or die (mysql_error());
+    usecurrentdb();
     return; // ok !!!
   } while (0);
-
-  if ($GLOBALS['currentdb']) mysql_select_db($GLOBALS['currentdb']);
+  if (function_exists("usecurrentdb")) {  usecurrentdb();}
 
   // exception
   if ($level==0) {
@@ -209,7 +189,7 @@ if (!((bool) ini_get("register_globals"))) { //
 
 // securite... initialisation
 $userrights=0;
-$usergroupes="";
+$usergroups="";
 $userlang="";
 $iduser=0;
 $idsession=0;

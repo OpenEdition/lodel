@@ -69,9 +69,9 @@ if ($fichier) {
     // drop les tables existantes
     // recupere la liste des tables
 
-    mysql_query("DROP TABLE IF EXISTS ".join(",",$GLOBALS[lodelsitetables])) or die(mysql_error()); 
+    mysql_query("DROP TABLE IF EXISTS ".join(",",$GLOBALS[lodelsitetables])) or die($db->errormsg()); 
 
-    if (!execute_dump($sqlfile)) $context[error_execute_dump]=$err=mysql_error();
+    if (!execute_dump($sqlfile)) $context[error_execute_dump]=$err=->errormsg();
     @unlink($sqlfile);
 
     require_once($home."cachefunc.php");

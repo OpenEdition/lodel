@@ -27,7 +27,7 @@
 
 <rss version="0.92">
 	<channel>
-	        <LOOP NAME="titre_site" TABLE="sites" WHERE="rep='[#SITE]'">
+	        <LOOP NAME="titre_site" TABLE="sites" WHERE="name='[#SITE]'">
 		<title>[#TITLE]</title>
 	        </LOOP>
 		<link>[(#CURRENTURL|dirname)]</link>

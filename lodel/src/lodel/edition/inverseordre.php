@@ -38,15 +38,15 @@ $parent=intval($parent);
 
 
 $critere="parent='$parent' AND status>-64";
-if (!$rightadmin) $critere.=" AND groupe IN ($usergroupes)";
+if (!$rightadmin) $critere.=" AND groupe IN ($usergroups)";
 
 
 lock_write("publications");
 # cherche tous les enfants
-$result=mysql_query ("SELECT max(rank) FROM $GLOBALS[tp]publications WHERE $critere") or die (mysql_error());
+$result=mysql_query ("SELECT max(rank) FROM $GLOBALS[tp]publications WHERE $critere") or die($db->errormsg());
 if (!mysql_num_rows($result)) { die ("vous n'avez pas les rights"); }
 list($max)=mysql_fetch_row($result);
-mysql_query("UPDATE $GLOBALS[tp]publications SET rank=$max-rank WHERE $critere") or die (mysql_error());
+mysql_query("UPDATE $GLOBALS[tp]publications SET rank=$max-rank WHERE $critere") or die($db->errormsg());
 
 unlock("publications");
 back();

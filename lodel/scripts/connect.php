@@ -28,54 +28,112 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-if (!(INC_LODELCONFIG)) die("inc lodelconfig");
-
-
-
-mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die ("ERROR  connect: ".mysql_error());
-if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {
-  $GLOBALS[currentdb]=$GLOBALS[database]."_".$GLOBALS[site];
-} else {
-  $GLOBALS[currentdb]=$GLOBALS[database];
+if (!(INC_LODELCONFIG)) die("inc lodelconfig please"); // security
+// compatibility 0.7
+if (!defined("DATABASE")) {
+  define("DATABASE",$GLOBALS['database']);
+  define("DBUSERNAME",$GLOBALS['dbusername']);
+  define("DBPASSWD",$GLOBALS['dbpasswd']);
+  define("DBHOST",$GLOBALS['dbhost']);
+  define("DBDRIVER","mysql");
 }
-mysql_select_db($GLOBALS[currentdb])  or die ("ERROR select: ".mysql_error());
-
-//
-//if (!function_exists("table")) {
-//  function table($name)
-//
-//    { 
-//	global $site;
-//	if ($name=="sites"  || $name=="session" || ($name=="users" && !$site)) {
-//	  return "r2r_$name";
-//	} else {
-//	  if (!$site) { die ("repertoire non valide: $site table: $name"); }
-//	  return "r2r_".$site."_".$name;
-//	}
-//    }
-//}
-//
 
 
 //
-// expressions qui facilite la vie
+// connect to the database server
 //
+
+require_once($GLOBALS['home']."adodb/adodb.inc.php");
+
+$GLOBALS['db']=ADONewConnection(DBDRIVER);
+$GLOBALS['db']->debug = false;
+
+
+
+//
+//
+//
+
+if ($GLOBALS['site'] && $GLOBALS['singledatabase']!="on") {
+  $GLOBALS['currentdb']=DATABASE."_".$GLOBALS['site'];
+} else {
+  $GLOBALS['currentdb']=DATABASE;
+}
+
+$GLOBALS['db']->connect(DBHOST,DBUSERNAME,DBPASSWD, $GLOBALS['currentdb']) or die($GLOBALS['db']->errormsg());
 
 $GLOBALS['tp']=$GLOBALS['tableprefix'];
 
+/*------------------------------------------------------------------------------*/
+
+$GLOBALS['maindb']="";
+$GLOBALS['savedb']="";
+
+function usemaindb()
+
+{
+  global $db,$maindb,$savedb;
+
+  if (DATABASE==$GLOBALS['currentdb']) return; // nothing to do
+  if ($db->selectDB(DATABASE)) return; // try to selectdb
+
+  if (!$maindb) { // not connected
+    $maindb=ADONewConnection(DBDRIVER);
+    if (!$maindb->nconnect(DBHOST,DBUSERNAME,DBPASSWD,DATABASE)) die("ERROR: reconnection is not allow with the driver: ".DBDRIVER);
+  }
+
+  // set $db as $maindb
+  $savedb=&$db;
+  $db=&$maindb;
+
+  return;
+}
 
 
-$GLOBALS['publicationsjoin']="$GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]publications ON $GLOBALS[tp]entities.id=$GLOBALS[tp]publications.identity";
+function usecurrentdb()
 
-$GLOBALS['documentsjoin']="$GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entities.id=$GLOBALS[tp]documents.identity";
+{
+  if (DATABASE==$GLOBALS['currentdb']) return; // nothing to do
+  global $db,$savedb;
+  if ($db->selectDB($GLOBALS['currentdb'])) return; // try to selectdb
+  $db=&$savedb;
+}
 
-$GLOBALS['entitestypesjoin']="$GLOBALS[tp]types INNER JOIN $GLOBALS[tp]entities ON $GLOBALS[tp]types.id=$GLOBALS[tp]entities.idtype";
 
-$GLOBALS['publicationstypesjoin']="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]publications ON $GLOBALS[tp]entities.id=$GLOBALS[tp]publications.identity";
 
-$GLOBALS['documentstypesjoin']="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entities.id=$GLOBALS[tp]documents.identity";
 
-$GLOBALS['fieldsandgroupsjoin']="$GLOBALS[tp]fieldgroups INNER JOIN $GLOBALS[tp]fields ON $GLOBALS[tp]fields.idgroup=$GLOBALS[tp]fieldgroups.id";
+// Convenience function
+// Lodel query extension
+//
+
+function lq ($query)
+
+{
+  static $cmd;
+  // the easiest, fats replace
+  $query=str_replace("#_TP_",$GLOBALS['tableprefix'],$query);
+
+  // any other ?
+  if (strpos($query,"#_")!==false) {
+    if (!$cmd) $cmd=array(
+			  "#_MTP_"=>DATABASE.".".$GLOBALS['tableprefix'],
+			  "#_publicationsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
+			
+			  ###			"#_documentsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
+
+			  "#_entitiestypesjoin_"=>"$GLOBALS[tableprefix]types INNER JOIN $GLOBALS[tableprefix]entities ON $GLOBALS[tableprefix]types.id=$GLOBALS[tableprefix]entities.idtype",
+
+			  "#_publicationstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
+
+			  ####			"#_documentstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
+
+			  "#_fieldsandgroupsjoin_"=>"$GLOBALS[tableprefix]fieldgroups INNER JOIN $GLOBALS[tableprefix]fields ON $GLOBALS[tableprefix]fields.idgroup=$GLOBALS[tableprefix]fieldgroups.id",
+			  );
+
+    $query=strtr($query,$cmd);
+  }
+  return $query;
+}
 
 
 //
@@ -90,8 +148,9 @@ $GLOBALS['fieldsandgroupsjoin']="$GLOBALS[tp]fieldgroups INNER JOIN $GLOBALS[tp]
 function uniqueid($table)
 
 {
-  mysql_query("INSERT INTO $GLOBALS[tp]objects (class) VALUES ('$table')") or die (mysql_error());
-  return mysql_insert_id();
+  global $db;
+  $db->execute(lq("INSERT INTO #_TP_objects (class) VALUES ('$table')"));
+  return $db->insert_id;
 }
 
 /**
@@ -102,11 +161,11 @@ function uniqueid($table)
 function deleteuniqueid($id)
 
 {
-
+  global $db;
   if (is_array($id) && $id) {
-    mysql_query("DELETE FROM $GLOBALS[tp]objects WHERE id IN (".join(",",$id).")") or die (mysql_error());
+    $db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id IN (".join(",",$id).")"));
   } else {
-    mysql_query("DELETE FROM $GLOBALS[tp]objects WHERE id='$id'") or die (mysql_error());
+    $db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id='$id'"));
   }
 }
 

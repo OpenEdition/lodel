@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-$GLOBALS[prefixregexp]="Pr\.|Dr\.";
+$GLOBALS['prefixregexp']="Pr\.|Dr\.";
 //
 // fonction d'import d'un fichier en XMLLodelBasic dans la base
 //
@@ -39,14 +39,15 @@ require_once($home."entitefunc.php");
 function enregistre_entite_from_xml($context,$text,$class)
 
 {
-  global $home;
+  global $home,$db;
 
   $localcontext=$context;
 
-  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,style,type,traitement FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class' AND $GLOBALS[tp]fields.status>0 AND $GLOBALS[tp]fieldgroups.status>0 AND style!=''") or die (mysql_error());
+  $result=$db->execute(lq("SELECT #_TP_fields.name,style,type,traitement FROM #_TP_fields,#_TP_fieldgroups WHERE idgroup=#_TP_fieldgroups.id AND class='$class' AND #_TP_fields.status>0 AND #_TP_fieldgroups.status>0 AND style!=''")) or die($db->errormsg());
 
   $sets=array();
-  while (list($name,$style,$type,$traitement)=mysql_fetch_row($result)) {
+  foreach ($result->fields as $row) {
+    list($name,$style,$type,$traitement)=$row;
     require_once($home."textfunc.php");
 
     if ($type=="mltext") { // text multilingue
@@ -87,21 +88,21 @@ function enregistre_entite_from_xml($context,$text,$class)
 
 	// now record the $value
 	if ($type=="mltext") {
-	  $localcontext[entite][$name][$lang]=$value;
+	  $localcontext['entite'][$name][$lang]=$value;
 	} else {
-	  $localcontext[entite][$name]=$value;
+	  $localcontext['entite'][$name]=$value;
 	}
       } // if found style found in the text
     } // foreach styles for mltext
   } // foreach fields.
 
-  if (!$localcontext[idtype]) {
+  if (!$localcontext['idtype']) {
     // check if the document exists, if not we really need the type
-    if (!$localcontext[id]) die("Preciser un type in xmlimport.php");
+    if (!$localcontext['id']) die("Preciser un type in xmlimport.php");
     // get the idtype
-    $result=mysql_query("SELECT idtype FROM $GLOBALS[tp]entities WHERE id='$localcontext[id]'") or die(mysql_error());
-    if (!mysql_num_rows($result)) die("Internal ERROR: The entites $localcontext[id] should exists.");
-    list($localcontext[idtype])=mysql_fetch_row($result);
+    $localcontext['idtype']=$db->getone(lq("SELECT idtype FROM #_TP_entities WHERE id='$localcontext[id]'"));
+    if ($db->errorno()) die($db->errormsg());
+    if (!$localcontext['idtype']) die("ERROR: The entites $localcontext[id] should exists.");
   }
 
   enregistre_personnes_from_xml($localcontext,$text);
@@ -126,13 +127,14 @@ function enregistre_entite_from_xml($context,$text,$class)
     @unlink($imgfile);
     return $newfile;
   }
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$class WHERE identity='$id'") or die (mysql_error());
-  $row=mysql_fetch_assoc($result);
+  $row=getrow(lq("SELECT * FROM #_TP_$class WHERE identity='$id'"));
+  if ($row===false) die($db->errormsg());
+
   require_once($home."func.php");
   copy_images($row,"mv_image",$id);
   myaddslashes($row);
   foreach ($row as $field=>$value) { $row[$field]=$field."='".$value."'"; }
-  mysql_query("UPDATE $GLOBALS[tp]$class SET ".join(",",$row)." WHERE identity='$id'") or die (mysql_error());
+  $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$row)." WHERE identity='$id'")) or die($db->errormsg());
   // fin du deplacement des images
 
 
@@ -146,10 +148,13 @@ function mystrip_tags($x,$y) { return strip_tags($y,$x); }
 function enregistre_personnes_from_xml (&$localcontext,$text)
 
 {
+  global $db;
+
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]persontypes,$GLOBALS[tp]entitytypes_persontypes WHERE status>0 AND idpersontype=id AND identitytype='$localcontext[idtype]'") or die (mysql_error());
-  while (list($idtype,$style,$styledescription)=mysql_fetch_row($result)) {
+  $result=$db->execute(lq("SELECT id,style,styledescription FROM #_TP_persontypes,#_TP_entitytypes_persontypes WHERE status>0 AND idpersontype=id AND identitytype='$localcontext[idtype]'")) or die($db->errormsg());
+  foreach($result->fields as $row) {
+    list($idtype,$style,$styledescription)=$row;
     // accouple les balises personnes et description
     // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
     // cherche toutes les balises de personnes
@@ -270,10 +275,11 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]entrytypes,$GLOBALS[tp]entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'") or die (mysql_error());
+  $result=$db->execute(lq("SELECT id,style FROM #_TP_entrytypes,#_TP_entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'")) or die($db->errormsg());
   require_once($home."champfunc.php");
 
-  while (list($idtype,$style)=mysql_fetch_row($result)) {
+  foreach ($result->fields as $row) {
+    list($idtype,$style)=$row;
     // decode the multilingue style.
     $styles=decode_mlstyle($style);
 #    echo $idtype," ",$style,"<br/>";

@@ -59,7 +59,7 @@ if ($context[erreur_sitebloque]) { // on a deja verifie que la site est bloque.
 } else { // test si la site est bloque dans la DB.
   require_once ($home."connect.php");
   mysql_select_db($database);
-  $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
+  $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE name='$site' AND status>=32") or die(mysql_error());
   $context[sitebloque]=mysql_num_rows($result);
 }
 

@@ -50,6 +50,7 @@ class Parser {
   var $charset;
 
   var $commands=array();
+  var $codepieces=array(); // code piece definition
   var $macros_txt;
   var $fct_txt;
 
@@ -86,7 +87,15 @@ class Parser {
  function Parser() { // constructor
    $this->commands=array("USE","MACRO","FUNC","LOOP","IF","LET","ELSE",
 			 "DO","DOFIRST","DOLAST","BEFORE",
+
 			 "AFTER","ALTERNATIVE","ESCAPE","CONTENT");
+
+   $this->codepieces=array('sqlfetchassoc'=>"mysql_fetch_assoc(%s)",
+			   'sqlquery'=>"mysql_query(%s)",
+			   'sqlerror'=>"or mymysql_error(%s,%s)",
+			   'sqlfree'=>"mysql_free_result(%s)",
+			   'sqlnumrows'=>"mysql_num_rows(%s)"
+			   );
  }
 
 
@@ -129,7 +138,6 @@ function parse ($in,$out)
     $contents='<?php 
 '.$this->fct_txt.'?>'.$contents;
   }
-
   //
   // refresh manager
   //
@@ -432,7 +440,6 @@ function parse_LOOP()
 	$wheres[]="(".replace_conditions($value,"sql").")";
 	break;
       case "TABLE" :
-	if (!$tablefields) require(TOINCLUDE."tablefields.php");
 	if (is_array($value)) { // multiple table attributs ?
 	  $arr=array();
 	  foreach ($value as $val) $arr=array_merge($arr,explode(",",$value));
@@ -440,9 +447,10 @@ function parse_LOOP()
 	  $arr=explode(",",$value);
 	}
 	if ($arr) {
+	  if (!$tablefields) require(TOINCLUDE."tablefields.php");
 	  foreach ($arr as $value) {
 	    $table=$GLOBALS['tableprefix'].trim($value);
-	    if ($tablefields[$table] || $tablefields[$GLOBALS['database'].".".$table]) { // prefix ?
+	    if ($tablefields[$table] || $tablefields[DATABASE.".".$table]) { // prefix ?
 	      array_push($tables,$table);
 	    } else {
 	      array_push($tables,trim($value));
@@ -726,27 +734,13 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
   } elseif (!$select && $tablesinselect) { // AUTOMATIQUE
     $select=join(".*,",$tablesinselect).".*";
   } 
-#elseif ($select) { // SELECT
-#    if (!$tablefields) require(TOINCLUDE."tablefields.php");
-#    if (!$tablefields) die("ERROR: internal error in decode_loop_content: table $table");
-#    // on prefix
-#    $selectarr=array();
-#    foreach ($tablesinselect as $t) {
-#      // take only the fields which are in $select
-#      $selectforthistable=array_intersect($tablefields[$t],$select);
-#      if ($selectforthistable) { // prefix with table name
-#	array_push($selectarr,"$t.".join(",$t.",$selectforthistable));
-#      }
-#    }
-#    $select=join(",",$selectarr);
-#  }
   if (!$select) $select="1";
-#  echo "$select : $extrainselect<br />\n";
   $select.=$extrainselect;
 
 
-  // fetch_assoc_func
-  if (!$options[fetch_assoc_func]) $options[fetch_assoc_func]="mysql_fetch_assoc(";
+  foreach(array("sqlfetchassoc","sqlquery","sqlerror","sqlfree","sqlnumrows") as $piece) {
+    if (!isset($options[$piece])) $options[$piece]=$this->codepieces[$piece];
+  }
 
 #### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 
@@ -756,13 +750,13 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
   $this->fct_txt.='function loop_'.$name.' ($context)
 {'.$preprocesslimit.'
  $query="SELECT '.$select.' FROM '."$table $where $groupby $having $order $limit".'"; #echo htmlentities($query);
- $result=mysql_query($query) or mymysql_error($query,$name);
+  $result='.sprintf($options['sqlquery'],'$query').sprintf($options['sqlerror'],'$query','$name').';
 '.$postmysqlquery.'
- $context[nbresultats]=$context[nbresults]=mysql_num_rows($result);
+ $context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'],'$result').';
  '.$processlimit.' 
  $generalcontext=$context;
  $count=0;
- if ($row='.$options['fetch_assoc_func'].'$result)) {
+ if ($row='.sprintf($options['sqlfetchassoc'],'$result').') {
 ?>'.$contents['BEFORE'].'<?php
     do {
       $context=array_merge ($generalcontext,$row);
@@ -775,14 +769,14 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
   // gere le cas ou il y a un dernier
   if ($contents['DOLAST']) {
     $this->fct_txt.=' if ($count==$context[nbresults]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
-  }    
-    $this->fct_txt.=$contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresults] && $row='.$options['fetch_assoc_func'].'$result));
+  }
+    $this->fct_txt.=$contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresults] && $row='.sprintf($options['sqlfetchassoc'],'$result').');
 ?>'.$contents['AFTER'].'<?php  } ';
 
   if ($contents['ALTERNATIVE']) $this->fct_txt.=' else {?>'.$contents['ALTERNATIVE'].'<?php }';
 
     $this->fct_txt.='
- mysql_free_result($result);
+ '.sprintf($options['sqlfree'],'$result').';
 }
 ';
 }

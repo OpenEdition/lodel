@@ -53,21 +53,21 @@ $context[passwd]=$passwd=0;
 
 
 // variable: sitebloque
-if ($context[error_sitebloque]) { // on a deja verifie que la site est bloque.
-  $context[sitebloque]=1;
+if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
+  $context['sitebloque']=1;
 } else { // test si la site est bloque dans la DB.
   require_once ($home."connect.php");
-  mysql_select_db($database);
-  $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE name='$site' AND status>=32") or die(mysql_error());
-  $context[sitebloque]=mysql_num_rows($result);
+  usemaindb();
+  $context['sitebloque']=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
+  usecurrentdb();
+  
 }
-
 
 $context[url_retour]=$url_retour;
 $context[error_timeout]=$error_timeout;
 $context[error_privilege]=$error_privilege;
 
-
-
 require ($home."calcul-page.php");
 calcul_page($context,"login");
+
+?>

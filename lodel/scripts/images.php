@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-
+/*
 function change_image($filename,$id,$class,$champ)
      // change l'image si $filename existe
      // detruit l'image si $filename contient "delete"
@@ -41,7 +41,7 @@ function change_image($filename,$id,$class,$champ)
     $db=$GLOBALS[currentdb];
   }
   
-  $result=mysql_db_query($db,"SELECT $champ FROM $GLOBALS[tp]$class WHERE $critere") or die (mysql_error());
+  $result=mysql_db_query($db,"SELECT $champ FROM $GLOBALS[tp]$class WHERE $critere") or die($db->errormsg());
   if (!mysql_num_rows($result)) die("Erreur interne. Le $critere ne repond pas dans $class");
   list($oldimagefile)=mysql_fetch_row($result);
 
@@ -69,7 +69,7 @@ function change_image($filename,$id,$class,$champ)
   }
   return $newimagefile;
 }
-
+*/
 
 
 

@@ -39,10 +39,10 @@ $context[id]=$id=intval($id);
 $entreetable="$GLOBALS[tp]entries";
 $typeentreetable="$GLOBALS[tp]entrytypes";
 
-$critere=$rightvisiteur ?  "" : "AND $entreetable.status>0";
+$critere=$rightvisitor ?  "" : "AND $entreetable.status>0";
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT $entreetable.*, tpl, type FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' $critere AND $typeentreetable.status>0") or die (mysql_error());
+$result=mysql_query ("SELECT $entreetable.*, tpl, type FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' $critere AND $typeentreetable.status>0") or die($db->errormsg());
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 

@@ -53,7 +53,7 @@ if ($fichier && $delete) {
   if (!importFromZip($fichier,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['error_extract']=1; break; }
 
   // execute the editorial model
-  if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err=mysql_error();
+  if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err=->errormsg();
   @unlink($sqlfile);
 
   // change the id in order there are minimal and unique
@@ -78,7 +78,7 @@ if ($fichier && $delete) {
   foreach(array_intersect(array("$GLOBALS[tp]entities",
 				"$GLOBALS[tp]entries",
 				"$GLOBALS[tp]persons"),$existingtables) as $table) {
-    $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or die(mysql_error());
+    $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or die($db->errormsg());
     if (mysql_num_rows($result)) {
       $context[error_table]=$table;
       break;

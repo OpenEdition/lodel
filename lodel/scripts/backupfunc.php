@@ -33,37 +33,37 @@
 // Thanks to the authors !
 //
 
-define("LODELPREFIX","__LODELTP__");
+define("OLDLODELPREFIX","__LODELTP__");
 
-$GLOBALS['lodelsitetables']=array("$GLOBALS[tp]objects",
-				  "$GLOBALS[tp]entities",
-				  "$GLOBALS[tp]relations",
-				  "$GLOBALS[tp]publications",
-				  "$GLOBALS[tp]documents",
-				  "$GLOBALS[tp]fields",
-				  "$GLOBALS[tp]fieldgroups",
-				  "$GLOBALS[tp]persons",
-				  "$GLOBALS[tp]users",
-				  "$GLOBALS[tp]usergroups",
-				  "$GLOBALS[tp]users_usergroups",
-				  "$GLOBALS[tp]types",
-				  "$GLOBALS[tp]persontypes",
-				  "$GLOBALS[tp]entrytypes",
-				  "$GLOBALS[tp]entries",
-				  "$GLOBALS[tp]tasks",
-				  "$GLOBALS[tp]texts",
-				  "$GLOBALS[tp]entities_persons",
-				  "$GLOBALS[tp]entities_entries",
-				  "$GLOBALS[tp]entitytypes_entitytypes",
-				  "$GLOBALS[tp]entitytypes_entrytypes",
-				  "$GLOBALS[tp]entitytypes_persontypes",
-				  "$GLOBALS[tp]options",
-				  "$GLOBALS[tp]translations");
+$GLOBALS['lodelsitetables']=array("#_TP_objects",
+				  "#_TP_entities",
+				  "#_TP_relations",
+				  "#_TP_publications",
+				  "#_TP_documents",
+				  "#_TP_fields",
+				  "#_TP_fieldgroups",
+				  "#_TP_persons",
+				  "#_TP_users",
+				  "#_TP_usergroups",
+				  "#_TP_users_usergroups",
+				  "#_TP_types",
+				  "#_TP_persontypes",
+				  "#_TP_entrytypes",
+				  "#_TP_entries",
+				  "#_TP_tasks",
+				  "#_TP_texts",
+				  "#_TP_entities_persons",
+				  "#_TP_entities_entries",
+				  "#_TP_entitytypes_entitytypes",
+				  "#_TP_entitytypes_entrytypes",
+				  "#_TP_entitytypes_persontypes",
+				  "#_TP_options",
+				  "#_TP_translations");
 
-$GLOBALS['lodelbasetables']=array("$GLOBALS[tp]sites",
-				  "$GLOBALS[tp]users",
-				  "$GLOBALS[tp]urltask",
-				  "$GLOBALS[tp]session");
+$GLOBALS['lodelbasetables']=array("#_MTP_sites",
+				  "#_MTP_users",
+				  "#_MTP_urltask",
+				  "#_MTP_session");
 
 
 
@@ -98,14 +98,14 @@ function lock_write_all($db)
 
 {
   // recupere la liste des tables
-  $result=PMA_mysql_list_tables($db) or die(mysql_error());
-  if (!$result) die (mysql_error());
+  $result=PMA_mysql_list_tables($db) or die($db->errormsg());
+  if (!$result) die($db->errormsg());
   $num_tables = mysql_numrows($result);
   for($i = 0; $i<$num_tables; $i++) {
     $tables[] = PMA_mysql_tablename($result, $i);
   }
   if (!$tables) die("WARNING: no table to lock in database \"$db\"");
-  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or die (mysql_error());
+  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or die($db->errormsg());
 }
 
 
@@ -167,7 +167,7 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
 
   if (!$tables) die("ERROR: tables is not defined in mysql_dump");
 #    $results = PMA_mysql_list_tables($db);
-#    if (!$results) die (mysql_error());
+#    if (!$results) die($db->errormsg());
 #    $num_tables = @mysql_numrows($results);
 #    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($results,$i);
 #  }
@@ -222,7 +222,7 @@ function execute_dump($filename)
 
       #if (preg_match("/CREATE/",$pieces[$i])) echo $pieces[$i],"<br />";
 
-       PMA_mysql_query($pieces[$i]) or die(mysql_error());
+       PMA_mysql_query($pieces[$i]) or die($db->errormsg());
 #       if ($result == FALSE) {     
 #        //      echo $pieces[$i],"<br>\n"; flush();
 #	return FALSE; }
@@ -245,18 +245,18 @@ function execute_dump($filename)
   return TRUE;
 }
 
-/**
- * Remove the actual prefix and add the common prefix
- *
- *
- */
-
-function lodelprefix($table)
-
-{
-  $table=substr($table,strlen($GLOBALS[tp]));
-  return $GLOBALS[uselodelprefix] ? LODELPREFIX.$table : $table;
-}
+#/**
+# * Remove the actual prefix and add the common prefix
+# *
+# *
+# */
+#
+#function lodelprefix($table)
+#
+#{
+#  $table=substr($table,strlen($GLOBALS[tp]));
+#  return $GLOBALS[uselodelprefix] ? LODELPREFIX.$table : $table;
+#}
 
 
 
@@ -353,7 +353,7 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
     $in_string    = FALSE;
     $time0        = time();
 
-    $prefixescape  =LODELPREFIX;
+    $prefixescape  =OLDLODELPREFIX;
 
     for ($i = 0; $i < $sql_len; ++$i) {
         $char = $sql[$i];

@@ -34,14 +34,17 @@ require_once("CACHE/filterfunc.php");
 function makefilterfunc()
 
 {
+  global $db;
+
   //
   // cherche les champs a filtrer
   //
   require_once ($home."connect.php");
-  $result=mysql_query("SELECT class,$GLOBALS[tp]fields.name,filtrage FROM $GLOBALS[champsgroupesjoin] WHERE $GLOBALS[tp]fieldgroups.status>0 AND $GLOBALS[tp]fields.status>0 AND filtrage!=''") or die (mysql_error());
-  while (list($class,$name,$filter)=mysql_fetch_row($result)) {
-#echo $class," ",$name," ",$filter,"<br>\n";
-    // converti filtrage en fonction.
+  $result=$db->execute("SELECT class,#_TP_fields.name,filtrage FROM #_fieldsgroupsjoin_ WHERE #_TP_fieldgroups.status>0 AND #_TP_fields.status>0 AND filtrage!=''") or die($db->errormsg());
+  foreach ($result->fields as $row) {
+    list($class,$name,$filter)=$row;
+
+    // convert filter into a function
     $filters=preg_split("/\|/",$filter);
     $filterfunc='$x';
     foreach ($filters as $filter) {
@@ -66,8 +69,10 @@ function makefilterfunc()
 
 
   //
-  // cree la fonction avec filtrage
+  // build the function with filtering
   //
+
+  // to update with ADODB
 
   $fp=fopen("CACHE/filterfunc.php","w");      
   fputs($fp,'<? function filtered_mysql_fetch_assoc($context,$result) {

@@ -39,7 +39,7 @@ $context['textgroups']="interface";
 require($home."translationinc.php");
 
 // post-traitement
-posttraitement($context);
+postprocessing($context);
 
 require($home."calcul-page.php");
 calcul_page($context,"translation");

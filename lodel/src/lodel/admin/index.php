@@ -32,7 +32,6 @@ require("siteconfig.php");
 require($home."auth.php");
 authenticate(LEVEL_VISITOR);
 require($home."langues.php");
-
 require($home."calcul-page.php");
 calcul_page($context,"index");
 

@@ -35,7 +35,7 @@
 					<td width="100%" heigth="75">&nbsp;</td>
 	
 					<td width="57" heigth="75"><a href="index.php"><MACRO NAME="PNG_MENU_ACCUEIL_ACTIF"><span class="desk-text">[@COMMON.HOME]</span></a></td>
-					<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="rep = '[#SITE]'">
+					<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="name='[#SITE]'">
 					<DO>
 					<td width="57" heigth="75"><IF COND="[#RIGHTADMIN]"><a href="[#URL]/lodel/admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"><span class="desk-text">[@COMMON.ADMINISTRATION]</span></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
 					</DO>

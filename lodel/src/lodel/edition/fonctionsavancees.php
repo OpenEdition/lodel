@@ -36,7 +36,7 @@ authenticate(LEVEL_VISITOR);
 // id pour un document
 // publication pour une publication
 
-$critere=$rightadmin ? "" : "groupe IN ($usergroupes) AND ";
+$critere=$rightadmin ? "" : "groupe IN ($usergroups) AND ";
 
 if ($id) { // document
    $class="documents";
@@ -50,7 +50,7 @@ if ($id) { // document
 
 
 include_once ($home."connect.php");
-$result=mysql_query("SELECT *, type  FROM $GLOBALS[tp]types, $GLOBALS[tp]entities, $GLOBALS[tp]$class WHERE $GLOBALS[tp]entities.id='$id' AND identity='$id' AND idtype=$GLOBALS[tp]types.id") or die (mysql_error());
+$result=mysql_query("SELECT *, type  FROM $GLOBALS[tp]types, $GLOBALS[tp]entities, $GLOBALS[tp]$class WHERE $GLOBALS[tp]entities.id='$id' AND identity='$id' AND idtype=$GLOBALS[tp]types.id") or die($db->errormsg());
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 

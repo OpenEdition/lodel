@@ -63,7 +63,7 @@ if ($publication) {
   die("specifier une publication");
 }
  
-mysql_query("UPDATE $GLOBALS[tp]entities SET status=$newstatut WHERE id='$id' AND $critere") or die(mysql_error());
+mysql_query("UPDATE $GLOBALS[tp]entities SET status=$newstatut WHERE id='$id' AND $critere") or die($db->errormsg());
 
 
 back();

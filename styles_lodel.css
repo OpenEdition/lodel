@@ -84,9 +84,9 @@ div.ligne_document_isole2 {background-color: #F3F3F3;}
 div.ligne_document_regroupement1 {background-color: #FFFFFF;}
 div.ligne_document_regroupement2 {background-color: #F3F3F3;}
 
-.ligne_admin1, .ligne_admin2 {padding-right: 10px;}
-.ligne_admin1 {background-color: #FDFAF1;}
-.ligne_admin2 {background-color: #FFFFFF;}
+.ligne_admin1 td, .ligne_admin2 td {padding-right: 10px;}
+tr.ligne_admin1 td {background-color: #FDFAF1;}
+tr.ligne_admin2 td {background-color: #FFFFFF;}
 
 div.ligne_ajouter, 
 div.lignes_ajouter_entite, 

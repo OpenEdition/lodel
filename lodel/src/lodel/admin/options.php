@@ -41,7 +41,7 @@ if ($set) {
   // status less than 0 are internal option.
   $critere=$GLOBALS[rightadminlodel] ? "status>0" : "status>0 AND status<32";
 
-  $result=mysql_query("SELECT id,name,type FROM $GLOBALS[tp]options WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT id,name,type FROM $GLOBALS[tp]options WHERE $critere") or die($db->errormsg());
   while (list($id,$name,$type)=mysql_fetch_row($result)) {
     if (!isset($context["option_$name"])
 	|| ($type=="pass" && $context["option_$name"]=="")) continue;
@@ -50,7 +50,7 @@ if ($set) {
     case "int": $v=intval($v);
       break;
     }
-    mysql_query("UPDATE $GLOBALS[tp]options SET value='$v' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]options SET value='$v' WHERE id='$id'") or die($db->errormsg());
   }
   touch(SITEROOT."CACHE/maj");
   if ($terminer) { header("location: index.php"); return; }

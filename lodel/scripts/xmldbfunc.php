@@ -179,6 +179,7 @@ class XMLDB {
   function exporttable($table,$info,$joinfieldvalue="")
 
   {
+    global $db;
     //
     // select
     $select=join(",".$this->tp.$table.".",array_merge(array_keys($info['element']),array_keys($info['attr'])));
@@ -199,8 +200,9 @@ class XMLDB {
     //
     // Query
 
-    $result=mysql_query("SELECT $select FROM ".$this->tp.$table.$where) or die(mysql_error());
-    if (!mysql_num_rows($result)) return;
+    $result=$db->execute(lq("SELECT $select FROM ".$this->tp.$table.$where)) or die($db->errormsg());
+    
+    if ($result->recordcount()<=0) return;
 
     $this->_write("<$table>\n");
 
@@ -212,7 +214,7 @@ class XMLDB {
       $elementtag=true;
     }
 
-    while($row=mysql_fetch_assoc($result)) {
+    foreach ($result->fields as $row) {
       // information for the table
       $this->_write("<$rowtag");
       foreach ($info['attr'] as $field=>$attr) {

@@ -196,39 +196,31 @@
 	<tr>
 		<td colspan="4"><h2><span style="color: #CC9933;">[#TITLE]</span> ([#NAME])</h2></td>
 		<td align="left" style="color: #CC9933;">
-			<MACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
+			 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="fieldgroups">
+                         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="fieldgroups">
 		</td>
 	</tr>
         <tr>
                <td colspan="4">
-	       <div><MACRO NAME="PNG_PLUS"><a href="champ.php?class=[#CLASS]&idgroup=[#ID]">Ajouter un champs à ce groupe</a></div>
+	       <div><MACRO NAME="PNG_PLUS"><a href="field.php?class=[#CLASS]&idgroup=[#ID]">Ajouter un champs à ce groupe</a></div>
                </td>
         </tr>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 	<!--[ Affiche tous les champs du groupe courant ]-->
-	<LOOP NAME="afficherchamps" TABLE="fields" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
+	<LOOP NAME="fields" TABLE="fields" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
 		<DO>
-			<tr>
-				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1"><strong>[(#TITRE|nbsp)]</strong></td>
-					<td class="ligne_admin1">[#NAME]</td>
-					<td class="ligne_admin1">[#TYPE]</td>
-					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="left">
-						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
-					</td>
-				<ELSE/>
-					<td class="ligne_admin2"><strong>[(#TITRE|nbsp)]</strong></td>
-					<td class="ligne_admin2">[#NAME]</td>
-					<td class="ligne_admin2">[#TYPE]</td>
-					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="left">
-						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
-					</td>
-				</IF>
-			</tr>
+		<MACRO NAME="TR_LIST">
+			<td><strong>[(#TITLE|nbsp)]</strong></td>
+			<td>[(#NAME|nbsp)]</td>
+			<td>[(#TYPE|nbsp)]</td>
+			<td>[(#STYLE|nbsp)]</td>
+			<td align="left" style="color: #CC9933;" align="left">
+				 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="fields">
+                	         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="fields">
+				</td>
+		</tr>
 		</DO>
 		<ALTERNATIVE>
 			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD_GROUP]</span></td></tr>
@@ -364,6 +356,11 @@
 	--></script>
 
 </DEFMACRO>
+
+
+
+
+
 <!--[ ************************************************** ]-->
 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->

@@ -128,7 +128,7 @@ function mkxmlpublication($name,$title,$type,$idparent)
   // cherche le type dans la base
   if ($type) {
     // recherche l'id du type
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$type' AND class='publications'") or die (mysql_error());
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$type' AND class='publications'") or die($db->errormsg());
     list($idtype)=mysql_fetch_row($result);
   } else {
     $idtype=0;

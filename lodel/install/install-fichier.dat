@@ -103,8 +103,6 @@ ln conversion.php
 ln tpl/conversion.html
 ln chargesommaire.php
 ln tpl/chargesommaire.html
-ln balisage.php
-ln tpl/balisage.html
 ln chkbalisage.php
 ln tpl/chkbalisage.html
 #ln extrainfo.php
@@ -121,12 +119,10 @@ ln tpl/documentannexe-liendocument.html
 ln tpl/documentannexe-lienpublication.html
 ln tpl/documentannexe-lienexterne.html
 
-ln metaimage.php
-ln tpl/metaimage.html
 ln deplacer.php
 ln tpl/deplacer.html
 ln publi.php
-ln statut.php
+ln status.php
 
 ln filebrowser.php
 ln tpl/filebrowser.html
@@ -189,6 +185,7 @@ ln logout.php
 #
 
 ln tpl/macros.html
+ln tpl/macros2.html
 ln images
 ln css
 
@@ -196,28 +193,20 @@ ln index.php
 ln tpl/index.html
 ln tpl/deskadmin.html
 
-ln entree.php
-ln tpl/entree.html
-ln entrees.php
-ln tpl/entrees.html
-
-#ln personne.php
-#ln tpl/personne.html
-#ln personnes.php
-#ln tpl/personnes.html
+ln entry.php
+ln tpl/entry.html
 
 ln options.php
 ln tpl/options.html
 ln option.php
 ln tpl/option.html
 
+ln list.php
+
 ln stats.php
-ln texte.php
-ln tpl/texte.html
-ln tpl/texte-interface.html
-ln textes.php
-ln tpl/textes.html
-ln translations.php
+ln text.php
+ln tpl/text.html
+ln tpl/texts.html
 ln tpl/translations.html
 ln translation.php
 ln tpl/translation.html
@@ -226,32 +215,22 @@ ln tpl/translationgroup.html
 ln translationsexport.php
 ln translationsimport.php
 
-ln champ.php
-ln tpl/champ.html
-ln champs.php
-ln tpl/champs.html
-ln groupedechamps.php
-ln tpl/groupedechamps.html
+ln field.php
+ln tpl/field.html
+ln tpl/fields.html
+ln fieldgroup.php
+ln tpl/fieldgroup.html
 
-ln typedoc.php
-ln tpl/typedoc.html
-ln typedocs.php
-ln tpl/typedocs.html
+ln tpl/types.html
 
-ln typepubli.php
-ln tpl/typepubli.html
-ln typepublis.php
-ln tpl/typepublis.html
 
-ln typeentree.php
-ln tpl/typeentree.html
-ln typeentrees.php
-ln tpl/typeentrees.html
+ln entrytype.php
+ln tpl/entrytype.html
+ln tpl/entrytypes.html
 
-ln typepersonne.php
-ln tpl/typepersonne.html
-ln typepersonnes.php
-ln tpl/typepersonnes.html
+ln persontype.php
+ln tpl/persontype.html
+ln tpl/persontypes.html
 
 ln backup.php
 ln tpl/backup.html
@@ -260,7 +239,6 @@ ln tpl/import.html
 
 ln user.php
 ln tpl/user.html
-ln users.php
 ln tpl/users.html
 ln usersettings.php
 

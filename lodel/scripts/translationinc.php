@@ -45,10 +45,10 @@ if ($id>0 && $delete) {
   $delete=2; // destruction en -64;
   require($home."trash.php");
 
-  $result=mysql_query("SELECT lang FROM $GLOBALS[tp]translations WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT lang FROM $GLOBALS[tp]translations WHERE $critere") or die($db->errormsg());
   list($lang)=mysql_fetch_row($result);
   if (!$lang) die("ERROR: invalid id or lang");
-  mysql_query("DELETE FROM $GLOBALS[tp]texts WHERE lang='$lang' AND $textscritere") or die(mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]texts WHERE lang='$lang' AND $textscritere") or die($db->errormsg());
   treattrash("translations",$critere);
   return;
 }
@@ -72,7 +72,7 @@ if ($edit) { // modifie ou ajoute
     if (!isvalidlang($context['lang']))  { $err=$context['error_lang']=1; break; }
 
     if (!$id) { // check the lang does not exists
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]translations WHERE lang='$lang' AND textgroups='$context[textgroups]' AND id!='$id'") or die(mysql_error());
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]translations WHERE lang='$lang' AND textgroups='$context[textgroups]' AND id!='$id'") or die($db->errormsg());
       if (mysql_num_rows($result))  $err=$context['error_lang_exists']=1;
     }
 
@@ -96,12 +96,12 @@ if ($edit) { // modifie ou ajoute
     // can't use insert select... so it not really funny to do
     //
     if (!$context['lang']) { // get the lang if we don't have it
-      $result=mysql_query("SELECT lang FROM $GLOBALS[tp]translations WHERE $critere") or die(mysql_error());
+      $result=mysql_query("SELECT lang FROM $GLOBALS[tp]translations WHERE $critere") or die($db->errormsg());
       list($context['lang'])=mysql_fetch_row($result);
     }
     if ($context['lang']!=$userlang) { // normal case... should be different !
       // get all the text name, group, text in current lang for which the translation does not exists in the new lang
-      $result=mysql_query("SELECT t1.name,t1.textgroup,t1.texte FROM $GLOBALS[tp]texts as t1 LEFT OUTER JOIN $GLOBALS[tp]texts as t2 ON t1.name=t2.name AND t1.textgroup=t2.textgroup AND t2.lang='".$context['lang']."' WHERE t1.status>-64 AND t1.lang='".$userlang."' AND t2.id IS NULL AND t1.$textscritere GROUP BY t1.name,t1.textgroup") or die(mysql_error());
+      $result=mysql_query("SELECT t1.name,t1.textgroup,t1.texte FROM $GLOBALS[tp]texts as t1 LEFT OUTER JOIN $GLOBALS[tp]texts as t2 ON t1.name=t2.name AND t1.textgroup=t2.textgroup AND t2.lang='".$context['lang']."' WHERE t1.status>-64 AND t1.lang='".$userlang."' AND t2.id IS NULL AND t1.$textscritere GROUP BY t1.name,t1.textgroup") or die($db->errormsg());
       do { // use multiple insert but not to much... to minimize the size of the query
 	$inserts=array(); $count=0;
 	while (($row=mysql_fetch_assoc($result)) && $count<20) {
@@ -113,7 +113,7 @@ if ($edit) { // modifie ou ajoute
 	  $count++;
 	}
 	if ($inserts) 
-	  mysql_query("INSERT INTO $GLOBALS[tp]texts (name,textgroup,texte,status,lang) VALUES ".join(",",$inserts)) or die(mysql_error());
+	  mysql_query("INSERT INTO $GLOBALS[tp]texts (name,textgroup,texte,status,lang) VALUES ".join(",",$inserts)) or die($db->errormsg());
       } while ($row);
     }
 
@@ -123,7 +123,7 @@ if ($edit) { // modifie ou ajoute
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]translations WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]translations WHERE $critere") or die($db->errormsg());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 

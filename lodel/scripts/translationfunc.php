@@ -65,7 +65,7 @@ function mkeditlodeltext($name,$textgroup,$lang=-1)
       //
       // Translated texte
       //
-#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or die(mysql_error());
+#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or die($db->errormsg());
 # $divs=""; 
 # while (list($text,$lang)=mysql_fetch_row($result)) { 
 #    echo \'<a href="">[\'.$lang.\']</a> \'; 
@@ -108,20 +108,21 @@ class XMLDB_Translations extends XMLDB {
     $this->lang=$lang;
 
     $this->XMLDB("lodeltranslations",$GLOBALS[tp]);
-    $this->addTable("translations","textes");
+    $this->addTable("translations","texts");
     $this->addElement("translations","lang","title","textgroups","translators","modificationdate","creationdate");
     $this->addWhere("translations","lang='$lang'");
-    $this->addElement("textes",array("texte","text"));
-    $this->addAttr("textes","name","textgroup","status");
-    if ($lang!="all") $this->addWhere("textes","lang='$lang'");
+    $this->addElement("texts","text");
+    $this->addAttr("texts","name","textgroup","status");
+    if ($lang!="all") $this->addWhere("texts","lang='$lang'");
     require_once($GLOBALS['home']."textgroupfunc.php");
-    $this->addWhere("textes",textgroupswhere($textgroups));
-    $this->addJoin("translations","lang","textes","lang");
+    $this->addWhere("texts",textgroupswhere($textgroups));
+    $this->addJoin("translations","lang","texts","lang");
   }
 
   function insertRow($table,$record) 
 
   {
+    global $db;
     #echo "table:$table\n<br>";
     #print_r($record);
 
@@ -137,27 +138,27 @@ class XMLDB_Translations extends XMLDB {
       if ($this->lang!="all" && $this->lang!="" && $this->lang!=$record['lang']) return;
       $this->currentlang=$record['lang'];
       // look for the translation
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]translations WHERE lang='".$record['lang']."' AND textgroups='".$this->textgroups."'") or die(mysql_error());
-      list($id)=mysql_fetch_row($result);
+      $prefix=$this->textgroups=="interface" ? "#_MTP_" : "#_TP_";
+      $id=$db->getone("SELECT id FROM ".lq($prefix)."translations WHERE lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
+      if ($db->errorno()) die($db->errormsg());
 
       $record['textgroups']=$this->textgroups;
       setrecord($table,$id,$record);
       return $record['lang'];
       break;
       //
-      // table textes
+      // table texts
       //
-    case "textes":
+    case "texts":
       // check the lang is ok
       if (!$record['lang'] || $this->currentlang!=$record['lang']) return;
       // check the textgroup is ok
       if (!in_array($record['textgroup'],$GLOBALS['textgroups'][$this->textgroups])) die("ERROR: Invalid textgroup");
 
       // look for text
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]texts WHERE name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'") or die(mysql_error());
-      list($id)=mysql_fetch_row($result);
-#      echo $id," ";
-#      print_r($record);
+      $prefix=$this->textgroups=="interface" ? "#_MTP_" : "#_TP_";
+      $id=$db->getone("SELECT id FROM ".lq($prefix)."texts WHERE name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
+      if ($db->errorno()) die($db->errormsg());
       setrecord($table,$id,$record);
       return;
       break;

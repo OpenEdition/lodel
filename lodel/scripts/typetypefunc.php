@@ -30,12 +30,14 @@
 function typetype_delete($typetable,$critere)
 
 {
-  mysql_query("DELETE FROM $GLOBALS[tp]typeentites_".$typetable."s WHERE $critere") or die (mysql_error());
+  global $db;
+  $db->execute(lq("DELETE FROM #_TP_typeentites_".$typetable."s WHERE $critere")) or die($db->errormsg());
 }
 
 function typetype_insert($identitytype,$idtypetable,$typetable)
 
 {
+  global $db;
   // l'un ou l'autre des idtype doit etre un array, l'autre est un id fixe.
   //
   if (!$identitytype || !$idtypetable) return;
@@ -52,7 +54,7 @@ function typetype_insert($identitytype,$idtypetable,$typetable)
   }
   $table=$typetable!="typeentite2" ? $typetable : "typeentite";
 
-  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$table."s (identitytype,id$typetable,condition) VALUES ".join(",",$values)) or die(mysql_error());
+  $db->execute(lq("INSERT INTO #_TP_typeentites_".$table."s (identitytype,id$typetable,condition) VALUES ".join(",",$values))) or die($db->errormsg());
 }
 
 
@@ -65,6 +67,7 @@ function typetype_insert($identitytype,$idtypetable,$typetable)
 function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
 
 {
+  global $db;
   if ($listtype=="typeentite" || $listtype=="typeentite2") {
     $maintable="types";
     $rank="class,type";
@@ -76,14 +79,15 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
   }
   #if ($relationtable=="typeentite2") $relationtable="typeentite";
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$maintable LEFT JOIN $GLOBALS[tp]typeentites_".$relationtable."s ON id$listtype=$GLOBALS[tp]$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank") or die(mysql_error());
+  $result=$db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_typeentites_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank")) or die($db->errormsg());
 
-  while ($row=mysql_fetch_assoc($result)) {
+
+  foreach ($result->fields as $row) {
     $localcontext=array_merge($context,$row);
     if (is_array($checked)) {
-      $localcontext[value]=$checked[$row['id']] ? "checked" : "";
+      $localcontext['value']=$checked[$row['id']] ? "checked" : "";
     } else {
-      $localcontext[value]=$row[condition] ? "checked" : "";
+      $localcontext['value']=$row['condition'] ? "checked" : "";
     }
     
     call_user_func("code_do_$funcname",$localcontext);

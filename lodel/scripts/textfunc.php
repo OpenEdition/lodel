@@ -252,7 +252,7 @@ function formatedtime($time,$format)
 
 function humandate($s)
 
-{ # verifie que la date est sous forme mysql
+{ # verifie que la date est sous forme sql
 
   if (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)/",$s,$result)) {
     if ($result[1]>9000) return "jamais";
@@ -345,6 +345,21 @@ function sizeattributs($text)
   $result=getImageSize($text);
   return $result[3];
 }
+
+/**
+ * Return the second argument if the first is true
+ */
+function truefunction($text,$text2)
+
+{ return $text ? $text :""; }
+
+/**
+ * Return the second argument if the first is false
+ */
+function falsefunction($text,$text2)
+
+{ return $text ? $text :""; }
+
 
 /** 
  * Supprimer les appels de notes de pied de page d'un texte.

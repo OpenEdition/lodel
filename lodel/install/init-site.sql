@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities (
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	identifier	VARCHAR(255) NOT NULL, # nom utilisé en interne
+	identifier	VARCHAR(255) NOT NULL, # internal name
+	entitytitle	TINYTEXT NOT NULL,     # short title used in the interface
 
 	usergroup	TINYINT UNSIGNED DEFAULT '1' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,

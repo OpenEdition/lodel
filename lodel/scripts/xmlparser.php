@@ -27,7 +27,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-include_once ("$GLOBALS[home]/func.php");
+require_once ($GLOBALS['home']."func.php");
 
 
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
@@ -45,10 +45,10 @@ function xml_parse_into_struct_ns(&$text,&$values,&$index) {
   xml_set_character_data_handler($parser, "xml_parse_into_struct_ns_characterHandler");
 #  xml_set_default_handler($parser, "xml_parse_into_struct_ns_defaultHandler");
 
-  $GLOBALS[into_struct_ns_data]="";
-  $GLOBALS[into_struct_ns_ind]=0;
-  $GLOBALS[into_struct_ns_index]=array();
-  $GLOBALS[into_struct_ns_values]=array();
+  $GLOBALS['into_struct_ns_data']="";
+  $GLOBALS['into_struct_ns_ind']=0;
+  $GLOBALS['into_struct_ns_index']=array();
+  $GLOBALS['into_struct_ns_values']=array();
 
   if (!xml_parse($parser, $text)) {
     echo sprintf("<br>XML error: %s at line %d <br><br>",
@@ -58,8 +58,8 @@ function xml_parse_into_struct_ns(&$text,&$values,&$index) {
 	include ($home."checkxml.php");
 	checkstring($text);
  }
-  $values=$GLOBALS[into_struct_ns_values];
-  $index=$GLOBALS[into_struct_ns_index];
+  $values=$GLOBALS['into_struct_ns_values'];
+  $index=$GLOBALS['into_struct_ns_index'];
 }
 
 function rebuild_opentag($name,$attrs)

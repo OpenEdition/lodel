@@ -69,7 +69,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   // execute le template php
   require_once($home."textfunc.php");		
-  if ($GLOBALS[showhtml] && $GLOBALS[rightvisiteur]) {
+  if ($GLOBALS[showhtml] && $GLOBALS[rightvisitor]) {
     ob_start();
     require($template_cache);
     $content=ob_get_contents();

@@ -49,13 +49,13 @@ if (!defined('PMA_MYSQL_WRAPPERS_LIB_INCLUDED')){
         }
     }
 
-    function PMA_mysql_error($id = FALSE) {
+    function PMA_->errormsg($id = FALSE) {
         if ($id != FALSE) {
             if (mysql_errno($id) != 0) {
-                return PMA_convert_display_charset('#' . mysql_errno($id) . ' - ' . mysql_error($id));
+                return PMA_convert_display_charset('#' . mysql_errno($id) . ' - ' . ->errormsg($id));
             }
         } elseif (mysql_errno() != 0) {
-            return PMA_convert_display_charset('#' . mysql_errno() . ' - ' . mysql_error());
+            return PMA_convert_display_charset('#' . mysql_errno() . ' - ' . ->errormsg());
         }
         
         return FALSE;

@@ -34,6 +34,7 @@
 
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
+
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 		<!--[ Partie haute ]-->
 		<tr>
@@ -113,12 +114,12 @@
 						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.INDEX_ADMINISTRATION]</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
-					<LOOP NAME="entrytype" TABLE="entrytypes" WHERE="ok" ORDER="rank">
+					<LOOP NAME="entrytype" TABLE="entrytypes" WHERE="status gt 0" ORDER="rank">
 						<DO>
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-									<a href="entries.php?type=[#TYPE]"><span class="texte_orange">[(#TITRE|majuscule)]</span></a>
+									<a href="entries.php?type=[#TYPE]"><span class="texte_orange">[(#TITLE|majuscule)]</span></a>
 								</td>
 								<td width="5">&nbsp;</td>
 							</tr>
@@ -154,14 +155,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="entrytypes.php"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
+							<a href="list.php?table=entrytypes"><span class="texte_orange">[@ADMIN.INDEX_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="persontypes.php"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
+							<a href="list.php?table=persontypes"><span class="texte_orange">[@ADMIN.INDEX_INDIVIDUAL_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -169,7 +170,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="doctypes.php"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
+							<a href="list.php?table=types&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_TYPE]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -177,7 +178,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#RIGHTREDACTOR]">
-								<a href="publitypes.php"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
+								<a href="list.php?table=types&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_TYPE]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_TYPE]</span></span>
 							</IF>
@@ -189,7 +190,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#RIGHTREDACTOR]">
-							<a href="fields.php?class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
+							<a href="list.php?table=fields&class=documents"><span class="texte_orange">[@ADMIN.DOCUMENT_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.DOCUMENT_DATAFIELDS]</span></span></span>
 			                                </IF>
@@ -200,7 +201,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#RIGHTREDACTOR]">
-							<a href="fields.php?class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
+							<a href="list.php?table=fields&class=publications"><span class="texte_orange">[@ADMIN.PUBLICATION_DATAFIELDS]</span></a>
 							<ELSE/>
 								<span class="texte_orange"><span class="inactif">[@ADMIN.PUBLICATION_DATAFIELDS]</span></span></span>
 			                                </IF>

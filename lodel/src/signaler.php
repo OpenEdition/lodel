@@ -40,10 +40,10 @@ include_once($home."connect.php");
 //
 // get the  document
 //
-$critere=$rightvisiteur ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
+$critere=$rightvisitor ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
 
-$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or die (mysql_error());
+$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or die($db->errormsg());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 require_once($home."textfunc.php");
 $context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));

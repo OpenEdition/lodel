@@ -42,7 +42,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$rightvisiteur ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
+$critere=$rightvisitor ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
 $critere.=" AND $GLOBALS[tp]types.status>0";
 // cherche la publication
 $relocation=FALSE;
@@ -61,7 +61,7 @@ if ($id || $identifier) {
       $where="$GLOBALS[tp]entities.id='$id' ".$critere;
     }
 
-    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or die (mysql_error());
+    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or die($db->errormsg());
     if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
     $row=filtered_mysql_fetch_assoc($context,$result);
     $base=$row[tpl];

@@ -43,7 +43,7 @@ $id=intval($id);
 //
 if ($id>0 && ($delete | $restore)) { 
   if ($delete>=2) {
-    mysql_query ("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die(mysql_error());
+    mysql_query ("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die($db->errormsg());
   }
 
   require ($home."trash.php");
@@ -86,11 +86,11 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     // cherche si le username existe deja
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die($db->errormsg());  
     if (mysql_num_rows($result)>0) { $context[error_dupusername]=$err=1; }
     if ($GLOBALS[database]!=$GLOBALS[currentdb]) {
       // cherche si le username existe deja
-      $result=mysql_query("SELECT id FROM $GLOBALS[database].$GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
+      $result=mysql_query("SELECT id FROM $GLOBALS[database].$GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die($db->errormsg());  
       if (mysql_num_rows($result)>0) { $context[error_dupusernameadmin]=$err=1; }
     }
 
@@ -99,7 +99,7 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
 
     if ($id>0) { // il faut rechercher le status et (peut etre) le passwd
-      $result=mysql_query("SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die($db->errormsg());
       list($passwd_db,$status)=mysql_fetch_array($result);
     } else {
       $status=1;
@@ -110,15 +110,15 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,name,courriel,userrights,lang,status) VALUES ('$id','$context[username]','$passwd','$context[name]','$context[courriel]','$context[userrights]','$context[lang]','$status')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,name,courriel,userrights,lang,status) VALUES ('$id','$context[username]','$passwd','$context[name]','$context[courriel]','$context[userrights]','$context[lang]','$status')") or die($db->errormsg());
 
     if ($context[userrights]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();
 
       // change les groupes
-      mysql_query("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die (mysql_error());
+      mysql_query("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die($db->errormsg());
       foreach ($groupes as $groupe) {
-	mysql_query("INSERT INTO $GLOBALS[tp]users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tp]users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')") or die($db->errormsg());
       }
     }
 
@@ -128,7 +128,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   include_once ($home."connect.php");
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die($db->errormsg());
   //$context=mysql_fetch_assoc($result);
   $context[username]="";
   $context=array_merge($context,mysql_fetch_assoc($result));
@@ -171,12 +171,12 @@ function makeselectgroupes()
   // cherche les groupes de l'utilisateur
   $groupes=array();
   if ($context[id] && $context[userrights]<LEVEL_ADMIN) {
-    $result=mysql_query("SELECT idgroup FROM $GLOBALS[tp]users_usergroups WHERE iduser='$context[id]'") or die (mysql_error());
+    $result=mysql_query("SELECT idgroup FROM $GLOBALS[tp]users_usergroups WHERE iduser='$context[id]'") or die($db->errormsg());
     while ($row=mysql_fetch_row($result)) array_push($groupes,$row[0]);
   }
 
   // cherche le name des groupes sauf le groupe "tous"
-  $result=mysql_query("SELECT id,name FROM $GLOBALS[tp]usergroups WHERE id>1") or die (mysql_error());
+  $result=mysql_query("SELECT id,name FROM $GLOBALS[tp]usergroups WHERE id>1") or die($db->errormsg());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=in_array($row[id],$groupes) ? " SELECTED" : "";

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require("lodelconfig.php");
+require("siteconfig.php");
 require ($home."auth.php");
 #authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 authenticate();
@@ -78,21 +78,52 @@ ALTER TABLE _PREFIXTABLE_users ADD lang CHAR(5) NOT NULL;
 UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 ');
       if ($err) break;
+      $report.="Ajout des lang dans users (local)<br>";
+    }
+
+    mysql_select_db($GLOBALS['database']);
+    $fields=getfields("users",$GLOBALS['database']);
+    if (!$fields['lang']) {
+      $err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_users ADD lang CHAR(5) NOT NULL;
+UPDATE _PREFIXTABLE_users SET lang=\'fr\'
+');
+      if ($err) break;
       $report.="Ajout des lang dans users (global)<br>";
     }
+    mysql_select_db($GLOBALS['currentdb']);
+
 
     if (!$tables["$GLOBALS[tp]translations"]) {
       if ($err=create("translations")) break; // create the translation table
     }
 
-    if ($tables["$GLOBALS[tp]pileurl"] || !$tables["$GLOBALS[tp]urlstack"]) {
+    if (1 || $tables["$GLOBALS[tp]objets"] || !$tables["$GLOBALS[tp]objects"]) {
       // traductions de la base
 
       $translationconv=array(
-			     "sites (id,title,subtitle,name,path,url,langdef,lang,status,maj)"=>"sites (id,nom,soustitre,rep,chemin,url,langdef,lang,statut,maj)",
-			     "users (id,username,passwd,name,email,userrights,lang,status,maj)"=>"users (id,username,passwd,nom,courriel,privilege,lang,statut,maj)",
-			     "urlstack (id,idsession,urlmd5,url)"=>"pileurl (id,idsession,url,urlretour)",
-			     "texts (id,name,contents,lang,textgroup,status,upd)"=>"textes (id,nom,texte,lang,textgroup,statut,maj)"
+			     "objects (id,class)"=>"objets (id,classe)",
+			     "entities (id,idparent,idtype,identifier,usergroup,iduser,rank,status,upd)"=>"entites (id,idparent,idtype,identifiant,groupe,iduser,ordre,statut,maj)",
+			     "relations (id1,id2,nature,degree)"=>"relations (id1,id2,nature,degres)",
+			     "fields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
+			     "fieldgroups (id,name,class,title,commentaire,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
+			     "persons (id,lastname,firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
+			     "users (id,username,passwd,name,email,userrights,lang,status,upd)"=>"users (id,username,passwd,nom,courriel,privilege,lang,statut,maj)",
+			     "usergroups (id,name,status,upd)"=>"groupes (id,nom,statut,maj)",
+			     "users_usergroups (idgroup,iduser)"=>"users_groupes (idgroupe,iduser)",
+			     "types (id,type,title,class,tpl,tplcreation,tpledition,import,rank,status,upd)"=>"types (id,type,titre,classe,tpl,tplcreation,tpledition,import,ordre,statut,maj)",
+			     "persontypes (id,type,title,style,titledescription,styledescription,tpl,tplindex,rank,status,upd)"=>"typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,ordre,statut,maj)",
+			     "entrytypes (id,type,title,style,tpl,tplindex,rank,status,flat,newbyimportallowed,useabrevation,sort,upd)"=>"typeentrees (id,type,titre,style,tpl,tplindex,ordre,statut,lineaire,nvimportable,utiliseabrev,tri,maj)",
+			     "entries (id,idparent,name,abrev,lang,idtype,rank,status,upd)"=>"entrees (id,idparent,nom,abrev,langue,idtype,ordre,statut,maj)",
+			     "tasks (id,name,step,user,context,status,upd)"=>"taches (id,nom,etape,user,context,statut,maj)",
+			     "texts (id,name,contents,lang,textgroup,status,upd)"=>"textes (id,nom,texte,lang,textgroup,statut,maj)",
+			     "entities_persons (idperson,identity,idtype,rank,prefix,description,function,affiliation,email)"=>"entites_personnes (idpersonne,identite,idtype,ordre,prefix,description,fonction,affiliation,courriel)",
+			     "entities_entries (identry,identity)"=>"entites_entrees (identree,identite)",
+			     "entitytypes_entitytypes (identitytype,identitytype2,condition)"=>"typeentites_typeentites (idtypeentite,idtypeentite2,condition)",
+			     "entitytypes_entrytypes (identitytype,identrytype,condition)"=>"typeentites_typeentrees (idtypeentite,idtypeentree,condition)",
+			     "entitytypes_persontypes (identitytype,idpersontype,condition)"=>"typeentites_typepersonnes (idtypeentite,idtypepersonne,condition)",
+			     "options (id,name,type,value,rank,status,upd)"=>"options (id,nom,type,valeur,ordre,statut,maj)",
+#			     "translations (id,lang,title,textgroups,translators,modificationdate,creationdate,rank,status,upd)"=>"translations (id,lang,titre,textgroups,translators,modificationdate,creationdate,ordre,statut,maj)"
 			     );
 
       $todelete=array();
@@ -116,12 +147,51 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 	array_push($todelete,$oldtable);
 	$report.="traduction de la table $oldtable<br>\n";
       }
+      if ($err) break;
       foreach ($todelete as $table) {
 	$err=mysql_query_cmds("DROP TABLE _PREFIXTABLE_$table;");
 	if ($err) break;
       }
+      if ($err) break;
       $report.="efface les anciennes tables";
     } // fini la translation
+
+    /////////////////////
+    /// publications et documents
+
+     foreach (array("publications","documents") as $classe) {
+      $fields=getfields($classe);
+      if ($fields['identite']) {
+	$err=mysql_query_cmds("ALTER TABLE _PREFIXTABLE_$classe CHANGE identite identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE");
+	if ($err) break 2;
+	$report.="changement de identite en identity pour la table $classe<br>";
+      }
+     }
+
+
+    /////////////////////
+    // ENTITYTITLE
+
+    if ($tables["$GLOBALS[tp]entities"]) {
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entities WHERE entitytitle!='' LIMIT 1") or die(mysql_error());
+      if (!mysql_num_rows($result)) {
+	foreach (array("publications","documents") as $classe) {
+	  $result=mysql_query("SELECT identity,titre FROM $GLOBALS[tp]$classe") or die (mysql_error());
+	  while (list($id,$titre)=mysql_fetch_row($result)) {
+	    $titre=strip_tags($titre);
+	    if (strlen($titre)>255) {
+	      $titre=substr($titre,0,256);
+	      $titre=preg_replace("/\S+$/","",$titre);
+	    }
+	    $titre=addslashes($titre);
+	    mysql_query("UPDATE $GLOBALS[tp]entities set entitytitle='$titre' WHERE id='$id'") or die(mysql_error());
+	  }
+	} // classes
+	$report.="Remplissage de entitytitle a partir de titre<br />\n";
+      }
+    } // table entite
+
+
 
 
 
@@ -130,7 +200,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 }
 
 
-$context[erreur]=$err;
+$context[error]=$err;
 $context[report]=$report;
 
 require($home."calcul-page.php");
@@ -224,7 +294,7 @@ function create($table)
 {
   global $home,$report;
       // charge l'install
-  $file=$home."../install/init.sql";
+  $file=$home."../install/init-site.sql";
   if (!file_exists($file)) {
     return "Le fichier $file n'existe pas !";
   }

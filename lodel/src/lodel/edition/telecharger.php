@@ -45,7 +45,7 @@ if ($id>0 && $type=="xml") {
  $table=$GLOBALS[tp]."documents";
  if ($tablefields[$table] && 
       in_array("fichiersource",$tablefields[$table])) {
-    $result=mysql_query("SELECT fichiersource FROM $GLOBALS[tp]documents WHERE identity='$id'") or die(mysql_error());
+    $result=mysql_query("SELECT fichiersource FROM $GLOBALS[tp]documents WHERE identity='$id'") or die($db->errormsg());
     list($originalname)=mysql_fetch_row($result);
   } else {
     $originalname=$filename;

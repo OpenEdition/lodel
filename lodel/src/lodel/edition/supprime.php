@@ -60,11 +60,11 @@ if ($supprime || $confirmation) {
 postprocessing($context);
 
 
-$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die (mysql_error());
+$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or die($db->errormsg());
 if (mysql_num_rows($result)<=0) { header("location: not-found.html"); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
-$result=mysql_query("SELECT * FROM $GLOBALS[tp]$context[class] WHERE identity='$id'") or die (mysql_error());
+$result=mysql_query("SELECT * FROM $GLOBALS[tp]$context[class] WHERE identity='$id'") or die($db->errormsg());
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 

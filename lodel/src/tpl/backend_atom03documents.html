@@ -29,8 +29,8 @@
    version="0.3"
    xml:lang="fr-FR"
    xmlns="http://purl.org/atom/ns#">
-	    <LOOP NAME="titre_site" TABLE="sites" WHERE="rep='[#SITE]'">
-		<title>[(#NOM|textebrut)] - documents</title>
+	    <LOOP NAME="titre_site" TABLE="sites" WHERE="name='[#SITE]'">
+		<title>[(#TITLE|textebrut)] - documents</title>
 	    </LOOP>
 		<link
 		rel="alternate" 

@@ -30,57 +30,26 @@
 
 
 //
-// fonction qui renvoie les valeures perennes: status, groupe, rank, iduser
-//
-
-function get_variables_perennes($context,$critere) 
-
-{
-    $groupe= ($rightadmin && $context[groupe]) ? intval($context[groupe]) : "groupe";
-
-    $result=mysql_query("SELECT rank,$groupe,status,iduser FROM $GLOBALS[tp]entities WHERE $critere") or die (mysql_error());
-    if (!mysql_num_rows($result)) { die ("vous n'avez pas les rights: get_variables_perennes"); }
-    return mysql_fetch_row($result);
-    // renvoie l'rank, le groupe, le status
-}
-
-
-//
-// fonction qui retourne le status d'une entite
-//
-
-function getstatus($id) 
-
-{
-    $result=mysql_query("SELECT status FROM $GLOBALS[tp]entities WHERE id='$id'") or die (mysql_error());
-    if (!mysql_num_rows($result)) die ("l'entites '$id' n'existe pas");
-    list ($status)=mysql_fetch_row($result);
-    return $status;
-    // renvoie l'rank, le groupe, le status
-}
-
-
-//
 // fonction qui renvoie le groupe d'une entite.
 //
 
 function getusergroup($context,$idparent)
 
 {
-  global $rightadmin,$usergroupes;
+  global $rightadmin,$usergroups;
 
   // cherche le groupe et les rights
   if ($rightadmin) { // on prend celui qu'on nous donne
-    $groupe=intval($context[groupe]); if (!$groupe) $groupe=1;
+    $usergroup=intval($context[usergroup]); if (!$usergroup) $usergroup=1;
 
   } elseif ($idparent) { // on prend celui du idparent
-    $result=mysql_query("SELECT groupe FROM $GLOBALS[tp]entities WHERE id='$idparent' AND groupe IN ($usergroupes)") or die (mysql_error());
-    if (!mysql_num_rows($result)) 	die("vous n'avez pas les rights: sortie 2");
-    list($groupe)=mysql_fetch_row($result);
+    $usergroup=getone("SELECT usergroup FROM #_TP_entities WHERE id='$idparent' AND usergroup IN ($usergroups)");
+    if ($db->errorno()) die($db->errormsg());
+    if (!$usergroup) die("ERROR: You have not the rights: (2)");
   } else {
-    die("vous n'avez pas les rights: sortie 3");
+    die("ERROR: You have not the rights: (3)");
   }
-  return $groupe;
+  return $usergroup;
 }
 
 
@@ -91,36 +60,38 @@ function getusergroup($context,$idparent)
 function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror=TRUE) 
 
 {
-  global $home,$rightadmin,$usergroupes;
+  global $db,$home,$rightadmin,$usergroups;
 
-  $iduser= $GLOBALS[rightadminlodel] ? 0 : $GLOBALS[iduser];
+  $iduser= $GLOBALS['rightadminlodel'] ? 0 : $GLOBALS['iduser'];
 
-  $entite=& $context[entite];
-  $context[idtype]=intval($context[idtype]);
-  $id=intval($context[id]);
-  $idparent=intval($context[idparent]);
+  $entity=& $context['entity'];
+  $context['idtype']=intval($context['idtype']);
+  $id=intval($context['id']);
+  $idparent=intval($context['idparent']);
 
 #  print_r($context);
   //
-  // check we have the right to add such an entite
+  // check we have the right to add such an entity
   //
   if ($id>0) {
-    $result=mysql_query("SELECT idparent,idtype FROM $GLOBALS[tp]entities WHERE id='$id'") or die(mysql_error());
-    list($idparent,$context[idtype])=mysql_fetch_row($result);
+    $row=$db->getrow(lq("SELECT idparent,idtype FROM #_TP_entities WHERE id='$id'"));
+    if ($row===false) die($db->errormsg());
+    list($idparent,$context['idtype'])=$row;
   }
   if ($idparent>0) {
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes,$GLOBALS[tp]entities WHERE id='$idparent' AND idtypeentite2=idtype AND identitytype='$context[idtype]'") or die(mysql_error());
+    $condition=getone(lq("SELECT condition FROM #_TP_entitytypes_entitytypes,#_TP_entities WHERE id='$idparent' AND identitytype2=idtype AND identitytype='$context[idtype]'"));
   } else {
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]entitytypes_entitytypes WHERE idtypeentite2=0 AND identitytype='$context[idtype]'") or die(mysql_error());
+    $condition=$db->getone(lq("SELECT condition FROM #_TP_entitytypes_entitytypes WHERE identitytype2=0 AND identitytype='$context[idtype]'"));
 
   }
-  if (mysql_num_rows($result)<=0) die("ERROR: Entities of type $context[idtype] are not allowed in entity $idparent");
+  if ($db->errorno()) die($db->errormsg());
+  if ($condition===false) die("ERROR: Entities of type '$context[idtype]' are not allowed in entity $idparent");
   //
   // ok, we are allowed to modifiy/add this entity.
   //
 
-  // for new entite, all the field must be set with the defaut value if any.
-  // for the old entite, the criteria must be true to modifie the field.
+  // for new entity, all the field must be set with the defaut value if any.
+  // for the old entity, the criteria must be true to modifie the field.
   if ($champcritere && $id) $extrawhere=" AND ".$champcritere;
   if ($champcritere) $champcritere=",(".$champcritere.")";
 
@@ -133,100 +104,101 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   $files_to_move=array();
   
 
-  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,type,condition,defaut,balises $champcritere FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class' AND $GLOBALS[tp]fields.status>0 AND $GLOBALS[tp]fieldgroups.status>0 $extrawhere") or die (mysql_error());
-  while (list($name,$type,$condition,$defaut,$balises,$critereok)=mysql_fetch_row($result)) {
+  $result=$db->execute(lq("SELECT #_TP_fields.name,type,condition,default,allowedtags $champcritere FROM #_TP_fields,#_TP_fieldgroups WHERE idgroup=#_TP_fieldgroups.id AND class='$class' AND #_TP_fields.status>0 AND #_TP_fieldgroups.status>0 $extrawhere")) or die($db->errormsg());
+  foreach($result->fields as $row) {
+    list($name,$type,$condition,$default,$allowedtags,$critereok)=$row;
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
 
     if ( !$champcritere || $critereok) {
-      if ($condition=="+" && !trim($entite[$name])) $error[$name]="+";
+      if ($condition=="+" && !trim($entity[$name])) $error[$name]="+";
     } else {
-      $entite[$name]="";
+      $entity[$name]="";
     }
 
     // clean automatically the fields when required.
-    if (!is_array($entite[$name]) && trim($entite[$name]) && $GLOBALS[fieldtypes][$type][autostriptags]) $entite[$name]=trim(strip_tags($entite[$name]));
+    if (!is_array($entity[$name]) && trim($entity[$name]) && $GLOBALS['fieldtypes'][$type]['autostriptags']) $entity[$name]=trim(strip_tags($entity[$name]));
     // special processing depending on the type.
     switch ($type) {
     case "date" :
     case "datetime" :
     case "time" :
       include_once($home."date.php");
-      if ($entite[$name]) {
-	$entite[$name]=mysqldatetime($entite[$name],$type);
-	if (!$entite[$name]) $error[$name]=$type;
-      } elseif ($defaut) {
-	$dt=mysqldatetime($defaut,$type);
+      if ($entity[$name]) {
+	$entity[$name]=mysqldatetime($entity[$name],$type);
+	if (!$entity[$name]) $error[$name]=$type;
+      } elseif ($default) {
+	$dt=mysqldatetime($default,$type);
 	if ($dt) {
-	  $entite[$name]=$dt;
+	  $entity[$name]=$dt;
 	} else {
-	  die("valeur par defaut non reconnue: \"$defaut\"");
+	  die("valeur par default non reconnue: \"$default\"");
 	}
       }
       break;
     case "int" :
-      if ((!isset($entite[$name]) || $entite[$name]==="") && $defaut!=="") $entite[$name]=intval($defaut);
-      if (isset($entite[$name]) && 
-	  (!is_numeric($entite[$name]) || intval($entite[$name])!=$entite[$name])) 
+      if ((!isset($entity[$name]) || $entity[$name]==="") && $default!=="") $entity[$name]=intval($default);
+      if (isset($entity[$name]) && 
+	  (!is_numeric($entity[$name]) || intval($entity[$name])!=$entity[$name])) 
 	$error[$name]="int";
       break;
     case "number" : 
-      if ((!isset($entite[$name]) || $entite[$name]==="") && $defaut!=="") $entite[$name]=doubleval($defaut);
-      if (isset($entite[$name]) && 
-			!is_numeric($entite[$name])) $error[$name]="numeric";
+      if ((!isset($entity[$name]) || $entity[$name]==="") && $default!=="") $entity[$name]=doubleval($default);
+      if (isset($entity[$name]) && 
+			!is_numeric($entity[$name])) $error[$name]="numeric";
       break;
     case "email" : 
-      if (!$entite[$name] && $defaut) $entite[$name]=$defaut;
-      if ($entite[$name]) {
+      if (!$entity[$name] && $default) $entity[$name]=$default;
+      if ($entity[$name]) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
-	if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$name])) $error[$name]="url";
+	if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entity[$name])) $error[$name]="url";
       }
       break;
     case "url" : 
-      if (!$entite[$name] && $defaut) $entite[$name]=$defaut;
-      if ($entite[$name]) {
+      if (!$entity[$name] && $default) $entity[$name]=$default;
+      if ($entity[$name]) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
-	if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$entite[$name])) $error[$name]="url";
+	if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$entity[$name])) $error[$name]="url";
       }
       break;
     case "boolean" :
-      $entite[$name]=$entite[$name] ? 1 : 0;
+      $entity[$name]=$entity[$name] ? 1 : 0;
       break;
     case "mltext" :
-      if (is_array($entite[$name])) {
+      if (is_array($entity[$name])) {
 	$str="";
-	foreach($entite[$name] as $lang=>$value) {
-	  $value=lodel_strip_tags(trim($value),$balises);
+	foreach($entity[$name] as $lang=>$value) {
+	  $value=lodel_strip_tags(trim($value),$allowedtags);
 	  if ($value) $str.="<r2r:ml lang=\"$lang\">$value</r2r:ml>";
 	}
-	$entite[$name]=$str;
+	$entity[$name]=$str;
       }
       break;
     case 'image' :
     case 'fichier' :
       if ($context['error'][$name]) {  $error[$name]=$context['error'][$name]; break; } // error has been already detected
-      if (is_array($entite[$name])) unset($entite[$name]);
-      if (!$entite[$name] || $entite[$name]=="none") break;
+      if (is_array($entity[$name])) unset($entity[$name]);
+      if (!$entity[$name] || $entity[$name]=="none") break;
       // check for a hack or a bug
       $lodelsource='lodel\/sources';
       $docannexe='docannexe\/'.$type.'\/([^\.\/]+)';
-      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$entite[$name],$dirresult)) die("ERROR: bad filename in $name \"$entite[$name]\"");
+      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$entity[$name],$dirresult)) die("ERROR: bad filename in $name \"$entity[$name]\"");
 
       // if the filename is not "temporary", there is nothing to do
       if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) break;
       // add this file to the file to move.
-      $files_to_move[$name]=array(filename=>$entite[$name],type=>$type,name=>$name);
-      #unset($entite[$name]); // it must not be update... the old files must be remove later (once everything is checked)
+      $files_to_move[$name]=array('filename'=>$entity[$name],'type'=>$type,'name'=>$name);
+      #unset($entity[$name]); // it must not be update... the old files must be remove later (once everything is checked)
       break;
     default :
-      if (isset($entite[$name])) $entite[$name]=lodel_strip_tags($entite[$name],$balises);
-      // recheck entite is still not empty
-      if (!isset($entite[$name])) $entite[$name]=lodel_strip_tags($defaut,$balises);
+      if (isset($entity[$name])) $entity[$name]=lodel_strip_tags($entity[$name],$allowedtags);
+      // recheck entity is still not empty
+      if (!isset($entity[$name])) $entity[$name]=lodel_strip_tags($default,$allowedtags);
     }
-    if (isset($entite[$name])) {
-      $sets[$name]="'".addslashes(stripslashes($entite[$name]))."'"; // this is for security reason, only the authorized $name are copied into sets. Add also the quote.
+    if (isset($entity[$name])) {
+      $sets[$name]="'".addslashes(stripslashes($entity[$name]))."'"; // this is for security reason, only the authorized $name are copied into sets. Add also the quote.
     }
   } // end of while over the results
 
@@ -235,59 +207,60 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     if ($returnonerror) return FALSE;
   }
 
-  lock_write($class,"objets","entites","relations",
-	     "entites_personnes","personnes",
-	     "entites_entrees","entrees","typeentrees","types");
+  #lock_write($class,"objets","entity","relations",
+#	     "entity_personnes","personnes",
+#	     "entity_entrees","entrees","entrytypes","types");
 
   if ($id>0) { // UPDATE
-    if ($id>0 && !$GLOBALS[rightadmin]) {
+    if ($id>0 && !$GLOBALS['rightadmin']) {
       // verifie que le document est editable par cette personne
-      $result=mysql_query("SELECT id FROM  $GLOBALS[tp]entities WHERE id='$id' AND groupe IN ($usergroupes)") or die(mysql_error());
-      if (!mysql_num_rows($result)) die("vous n'avez pas les rights. Erreur dans l'interface");
+      $hasright=getone(lq("SELECT id FROM  #_TP_entities WHERE id='$id' AND usergroup IN ($usergroups)"));
+      if ($db->errorno()) die($db->errormsg());
+      if (!$hasright) die("ERROR: You are not allowed. This is likely due to an error in the interface");
     }
     // change group ?
-    $groupeset= ($rightadmin && $context[groupe]) ? ", groupe=".intval($context[groupe]) : "";
+    $usergroupset=($rightadmin && $context['usergroup']) ? ", usergroup=".intval($context['usergroup']) : "";
     // change type ?
-    $typeset=$context[idtype] ? ",idtype='$context[idtype]'" : "";
+    $typeset=$context['idtype'] ? ",idtype='$context[idtype]'" : "";
     // change status ?
     $status=getstatus($id);
-    if ($status<=-64 && $context[status]) {
-      $status=intval($context[status]);
+    if ($status<=-64 && $context['status']) {
+      $status=intval($context['status']);
       $statusset=",status='$status' ";
     }
-    mysql_query("UPDATE $GLOBALS[tp]entities SET identifier='$context[identifier]' $typeset $groupeset $statusset WHERE id='$id'") or die(mysql_error());
-    if ($grouperec && $rightadmin) change_groupe_rec($id,$groupe);
+    $db->execute(lq("UPDATE #_TP_entities SET identifier='$context[identifier]' $typeset $usergroupset $statusset WHERE id='$id'")) or die($db->errormsg());
+    if ($usergrouprec && $rightadmin) change_usergroup_rec($id,$usergroup);
 
     move_files($id,$files_to_move,$sets);
 
     foreach ($sets as $name=>$value) { $sets[$name]=$name."=".$value; }
-    if ($sets) mysql_query("UPDATE $GLOBALS[tp]$class SET ".join(",",$sets)." WHERE identity='$id'") or die (mysql_error());
+    if ($sets) $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$sets)." WHERE identity='$id'")) or die($db->errormsg());
 
   } else { // INSERT
     require_once($home."entitefunc.php");
     // cherche le groupe et les rights
-    $groupe=getusergroup($context,$idparent);
+    $usergroup=getusergroup($context,$idparent);
     // cherche l'rank
-    $rank=get_rank_max("entites","idparent='$idparent'");
-    $status=$context[status] ? intval($context[status]) : -1; // non publie par defaut
-    if (!$context[idtype]) { // prend le premier venu
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE class='$class' AND status>0 ORDER BY rank LIMIT 0,1") or die(mysql_error());
-      if (!mysql_num_rows($result)) die("pas de type valide ?");
-      list($context[idtype])=mysql_fetch_row($result);
+    $rank=get_rank_max("entity","idparent='$idparent'");
+    $status=$context['status'] ? intval($context['status']) : -1; // non publie par default
+    if (!$context['idtype']) { // prend le premier venu
+      $context['idtype']=getone(lq("SELECT id FROM #_TP_types WHERE class='$class' AND status>0 ORDER BY rank"));
+      if ($db->errorno()) die($db->errormsg());
+      if ($context['idtype']===false) die("pas de type valide ?");
     }
     $id=uniqueid($class);
-    mysql_query("INSERT INTO $GLOBALS[tp]entities (id,idparent,idtype,identifier,rank,status,groupe,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifier]','$rank','$status','$groupe','$iduser')") or die (mysql_error());
+    $db->execute(lq("INSERT INTO #_TP_entities (id,idparent,idtype,identifier,rank,status,usergroup,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifier]','$rank','$status','$usergroup','$iduser')")) or die($db->errormsg());
 
     require_once($home."managedb.php");
-    creeparente($id,$context[idparent],FALSE);
+    creeparente($id,$context['idparent'],false);
     move_files($id,$files_to_move,$sets);
 
-    $sets[identity]="'$id'";
-    mysql_query("INSERT INTO $GLOBALS[tp]$class (".join(",",array_keys($sets)).") VALUES (".join(",",$sets).")") or die (mysql_error());
+    $sets['identity']="'$id'";
+    $db->execute(lq("INSERT INTO #_TP_$class (".join(",",array_keys($sets)).") VALUES (".join(",",$sets).")")) or die($db->errormsg());
   }  
 
-  enregistre_personnes($context,$id,$status,FALSE);
-  enregistre_entrees($context,$id,$status,FALSE);
+  enregistre_personnes($context,$id,$status,false);
+  enregistre_entrees($context,$id,$status,false);
 
   if ($status>0) touch(SITEROOT."CACHE/maj");
   unlock();
@@ -308,7 +281,7 @@ function move_files($id,$files_to_move,&$sets)
       if (!@mkdir(SITEROOT.$dirdest,0777 & octdec($GLOBALS[filemask]))) die("ERROR: impossible to create the directory \"$dir\"");
     }
     $dest=$dirdest."/".$dest;
-    $sets[$file[name]]="'".addslashes($dest)."'";
+    $sets[$file['name']]="'".addslashes($dest)."'";
     if ($src==SITEROOT.$dest) continue;
     rename($src,SITEROOT.$dest);
     chmod (SITEROOT.$dest,0666 & octdec($GLOBALS[filemask]));
@@ -321,9 +294,10 @@ function move_files($id,$files_to_move,&$sets)
 function enregistre_personnes (&$context,$identity,$status,$lock=TRUE)
 
 {
-  if ($lock) lock_write("objet","entites_personnes","personnes");
+  global $db;
+  if ($lock) lock_write("objet","entities_persons","persons");
   // detruit les liens dans la table entites_personnes
- mysql_query("DELETE FROM $GLOBALS[tp]entities_persons WHERE identity='$identity'") or die (mysql_error());
+  $db->execute(lq("DELETE FROM #_TP_entities_persons WHERE identity='$identity'")) or die($db->errormsg());
 
  if (!$context[nomfamille]) { if ($lock) unlock(); return; }
 
@@ -340,22 +314,23 @@ function enregistre_personnes (&$context,$identity,$status,$lock=TRUE)
       }
       if (!$bal[prenom] && !$bal[nomfamille]) continue;
       // cherche si l'personne existe deja
-      $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]persons WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'") or die (mysql_error());
-      if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
-	list($id,$oldstatus)=mysql_fetch_array($result); // on recupere sont id et sont status
+      $row=getrow("SELECT id,status FROM #_TP_persons WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'");
+      if ($row===false) die($db->errormsg());
+      if ($row) { // ok, the person already exists
+	list($id,$oldstatus)=$row; // on recupere sont id et sont status
 	if (($status>0 && $oldstatus<0) || ($oldstatus<=-64 && $status>$oldstatus)) { // Faut-il publier l'personne ?
-	  mysql_query("UPDATE $GLOBALS[tp]persons SET status='$status' WHERE id='$id'") or die (mysql_error());
+	  $db->execute(lq("UPDATE #_TP_persons SET status='$status' WHERE id='$id'")) or die($db->errormsg());
 	}
       } else {
 	$id=uniqueid("personnes");
-	mysql_query ("INSERT INTO $GLOBALS[tp]persons (id,status,nomfamille,prenom) VALUES ('$id','$status','$bal[nomfamille]','$bal[prenom]')") or die (mysql_error());
+	$db->execute(lq("INSERT INTO #_TP_persons (id,status,nomfamille,prenom) VALUES ('$id','$status','$bal[nomfamille]','$bal[prenom]')")) or die($db->errormsg());
       }
 
       $rank=$ind;
 
       // ajoute l'personne dans la table entites_personnes
       // ainsi que la description
-      mysql_query("INSERT INTO $GLOBALS[tp]entities_persons (idperson,identity,idtype,rank,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$identity','$idtype','$rank','$bal[description]','$bal[prefix]','$bal[affiliation]','$bal[fonction]','$bal[courriel]')") or die (mysql_error());
+      $db->execute(lq("INSERT INTO #_TP_entities_persons (idperson,identity,idtype,rank,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$identity','$idtype','$rank','$bal[description]','$bal[prefix]','$bal[affiliation]','$bal[fonction]','$bal[courriel]')")) or die($db->errormsg());
     } // boucle sur les ind
   } // boucle sur les types
   if ($lock) unlock();
@@ -366,64 +341,64 @@ function enregistre_personnes (&$context,$identity,$status,$lock=TRUE)
 function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
 
 {
-  if ($lock) lock_write("objets","entites_entrees","entrees","typeentrees");
+  if ($lock) lock_write("objets","entity_entries","entries","entrytypes");
   // detruit les liens dans la table entites_indexhs
-  mysql_query("DELETE FROM $GLOBALS[tp]entities_entries WHERE identity='$identity'") or die (mysql_error());
+  $db->execute(lq("DELETE FROM #_TP_entities_entries WHERE identity='$identity'")) or die($db->errormsg());
 
  if ($status>-64 && $status<-1) $status=-1;
  if ($status>1) $status=1;
 
  // put the id's from entrees and autresentrees into idtypes
- $idtypes=$context[entrees] ? array_keys($context[entrees]) : array();
- if ($context[autresentrees]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentrees])));
+ $idtypes=$context[entries] ? array_keys($context[entries]) : array();
+ if ($context[autresentries]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentries])));
 
   if (!$idtypes) { if ($lock) unlock(); return; }
 
   // boucle sur les differents entrees
   foreach ($idtypes as $idtype) {
-    $entrees=$context[entrees][$idtype];
-    if ($context[autresentrees][$idtype]) {
-      if ($entrees) {
-	$entrees=array_merge($entrees,preg_split("/,/",$context[autresentrees][$idtype]));
+    $entries=$context[entries][$idtype];
+    if ($context[autresentries][$idtype]) {
+      if ($entries) {
+	$entries=array_merge($entries,preg_split("/,/",$context[autresentries][$idtype]));
       } else {
-	$entrees=preg_split("/,/",$context[autresentrees][$idtype]);
+	$entries=preg_split("/,/",$context[autresentries][$idtype]);
       }
-    } elseif (!$entrees) continue;
-    $result=mysql_query("SELECT nvimportable,utiliseabrev FROM $GLOBALS[tp]entrytypes WHERE status>0 AND id='$idtype'") or die (mysql_error());
-    if (mysql_num_rows($result)!=1) die ("error interne");
-    $typeentree=mysql_fetch_assoc($result);
+    } elseif (!$entries) continue;
+    $entrytype=getrow(lq("SELECT newbyimportallowed,useabrevation FROM #_TP_entrytypes WHERE status>0 AND id='$idtype'"));
+    if ($entrytype===false) die($db->errormsg());
+    if (!$entrytype) die ("ERROR: internal error in enregistre_entries");
 
-    foreach ($entrees as $entree) {
+
+    foreach ($entries as $entry) {
       // est-ce que $entree est un tableau ou directement l'entree ?
-      if (is_array($entree)) {
-	$lang=$entree[lang]=="--" ? "" : $entree[lang];
-	$entree=$entree[name];
+      if (is_array($entry)) {
+	$lang=$entry[lang]=="--" ? "" : $entry[lang];
+	$entry=$entry['name'];
       } else {
 	$lang="";
       }
       // on nettoie le name de l'entree
-      $entree=trim(strip_tags($entree));
-      myquote($entree); // etrange ? pourquoi ajouter ce bout de code ???
-      if (!$entree) continue; // etrange elle est vide... tant pis
+      $entry=trim(strip_tags($entry));
+      myquote($entry); // etrange ? pourquoi ajouter ce bout de code ???
+      if (!$entry) continue; // etrange elle est vide... tant pis
       // cherche l'id de l'entree si elle existe
       $langcriteria=$lang ? "AND lang='$lang'" : "";
-      $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]entries WHERE (abrev='$entree' OR name='$entree') AND idtype='$idtype' $langcriteria") or die(mysql_error());
+      $row=getrow(lq("SELECT id,status FROM #_TP_entries WHERE (abrev='$entry' OR name='$entry') AND idtype='$idtype' $langcriteria"));
+      if ($row===false) die($db->errormsg());
 
-      #echo $entree,":",mysql_num_rows($result),"<br>";
-      if (mysql_num_rows($result)) { // l'entree exists
-	list($id,$oldstatus)=mysql_fetch_array($result);
-
+      if ($row) { // l'entree exists
+	list($id,$oldstatus)=$row;
 	$statusset="";
 	if ($oldstatus<=-64 && $status>$oldstatus) $statusset=$status;
 	if ($status>0 && $oldstatus<0) $statusset="abs(status)"; // faut-il publier ?
 	if ($statusset) {
-	  mysql_query("UPDATE $GLOBALS[tp]entries SET status=$statusset WHERE id='$id'") or die (mysql_error());	
+	  $db->execute(lq("UPDATE #_TP_entries SET status=$statusset WHERE id='$id'")) or die($db->errormsg());	
 	}
-      } elseif ($typeentree[nvimportable]) { // l'entree n'existe pas. est-ce qu'on a le right de l'ajouter ?
+      } elseif ($entrytype[newbyimportallowed]) { // l'entree n'existe pas. est-ce qu'on a le right de l'ajouter ?
 	// oui,il faut ajouter le mot cle
-	$abrev=$typeentree[utiliseabrev] ? strtoupper($entree) : "";
-	$id=uniqueid("entrees");
-	mysql_query ("INSERT INTO $GLOBALS[tp]entries (id,status,name,abrev,idtype,lang) VALUES ('$id','$status','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
+	$abrev=$entrytype[useabrevation] ? strtoupper($entry) : "";
+	$id=uniqueid("entries");
+	$db->execute(lq("INSERT INTO #_TP_entries (id,status,name,abrev,idtype,lang) VALUES ('$id','$status','$entry','$abrev','$idtype','$lang')")) or die($db->errormsg());
       } else {
 	$id=0;
 	// on ne l'ajoute pas... pas le right!
@@ -432,7 +407,7 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
       // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
       // une chaine et en faisant la requette a la fin !
       if ($id) {
-	mysql_query("INSERT INTO $GLOBALS[tp]entities_entries (identry,identity) VALUES ('$id','$identity')") or die (mysql_error());
+	$db->execute(lq("INSERT INTO #_TP_entities_entries (identry,identity) VALUES ('$id','$identity')")) or die($db->errormsg());
       }
     } // boucle sur les entrees d'un type
   } // boucle sur les type d'entree
@@ -440,7 +415,7 @@ function enregistre_entrees (&$context,$identity,$status,$lock=TRUE)
 }
 
 
-function lodel_strip_tags($text,$balises) 
+function lodel_strip_tags($text,$allowedtags) 
 
 {
   global $home;
@@ -449,28 +424,28 @@ function lodel_strip_tags($text,$balises)
   global $multiplelevel,$xhtmlgroups;
 
   // simple case.
-  if (!$balises) return strip_tags($text);
+  if (!$allowedtags) return strip_tags($text);
 
-  if (!$accepted[$balises]) { // not cached ?
-    $accepted[$balises]=array();
+  if (!$accepted[$allowedtags]) { // not cached ?
+    $accepted[$allowedtags]=array();
 
     // split the groupe of balises
-    $groups=preg_split("/\s*;\s*/",$balises);
+    $groups=preg_split("/\s*;\s*/",$allowedtags);
     array_push($groups,""); // balises speciales
     // feed the accepted string with accepted tags.
     foreach ($groups as $group) {
       // lodel groups
       if ($multiplelevel[$group]) {
-	foreach($multiplelevel[$group] as $k=>$v) { $accepted[$balises]["r2r:$k"]=true; }
+	foreach($multiplelevel[$group] as $k=>$v) { $accepted[$allowedtags]["r2r:$k"]=true; }
       }
 	// xhtml groups
       if ($xhtmlgroups[$group]) {
 	foreach($xhtmlgroups[$group] as $k=>$v) {
 	  if (is_numeric($k)) { 
-	    $accepted[$balises][$v]=true; // accept the tag with any attributs
+	    $accepted[$allowedtags][$v]=true; // accept the tag with any attributs
 	  } else {
 	    // accept the tag with attributs matching unless it is already fully accepted
-	    if (!$accepted[$balises][$k]) $accepted[$balises][$k][]=$v; // add a regexp
+	    if (!$accepted[$allowedtags][$k]) $accepted[$allowedtags][$k][]=$v; // add a regexp
 	  }
 	}
       } // that was a xhtml group
@@ -479,7 +454,7 @@ function lodel_strip_tags($text,$balises)
 
 #  print_r($accepted);
 
-  $acceptedtags=$accepted[$balises];
+  $acceptedtags=$accepted[$allowedtags];
 
   // the simpliest case.
   if (!$accepted) return strip_tags($text);
@@ -522,7 +497,7 @@ function lodel_strip_tags($text,$balises)
 }
 
 
-function change_groupe_rec($id,$groupe)
+function change_usergroup_rec($id,$usergroup)
 
 {
 
@@ -538,19 +513,19 @@ function change_groupe_rec($id,$groupe)
   do {
     $idlist=join(",",$idparents);
     // cherche les fils de idparents
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]entities WHERE idparent IN ($idlist)") or die(mysql_error());
+    $result=$db->execute(lq("SELECT id FROM #_TP_entities WHERE idparent IN ($idlist)")) or die($db->errormsg());
 
     $idparents=array();
-    while ($row=mysql_fetch_assoc($result)) {
-      array_push ($ids,$row[id]);
-      array_push ($idparents,$row[id]);
+    foreach($result->fields as $row) {
+      array_push ($ids,$row['id']);
+      array_push ($idparents,$row['id']);
     }
   } while ($idparents);
 
   // update toutes les publications
   $idlist=join(",",$ids);
 
-  mysql_query("UPDATE $GLOBALS[tp]entities SET groupe='$groupe' WHERE id IN ($idlist)") or die(mysql_error());
+  $db->execute(lq("UPDATE #_TP_entities SET usergroup='$usergroup' WHERE id IN ($idlist)")) or die($db->errormsg());
   # cherche les ids
 }
 
@@ -558,17 +533,17 @@ function change_groupe_rec($id,$groupe)
 function loop_champs($context,$funcname)
 
 {
-  global $error;
+  global $db,$error;
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]fields WHERE idgroup='$context[id]' AND status>0 AND edition!='' ORDER BY rank") or die(mysql_error());
+  $result=$db->execute(lq("SELECT * FROM #_TP_fields WHERE idgroup='$context[id]' AND status>0 AND edition!='' ORDER BY rank")) or die($db->errormsg());
 
-  $haveresult=mysql_num_rows($result)>0;
+  $haveresult=$result->recordnumber()>0;
   if ($haveresult) call_user_func("code_before_$funcname",$context);
 
-  while ($row=mysql_fetch_assoc($result)) {
+  foreach ($result->fields as $row) {
     $localcontext=array_merge($context,$row);
-    $localcontext[value]=$context[entite][$row[name]];
-    $localcontext[error]=$context[error][$row[name]];
+    $localcontext[value]=$context[entity][$row['name']];
+    $localcontext[error]=$context[error][$row['name']];
 
     call_user_func("code_do_$funcname",$localcontext);
   }
@@ -608,10 +583,10 @@ function loop_personnes_require() { return array("id"); }
 function extrait_personnes($identity,&$context)
 
 {
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]persons,$GLOBALS[tp]entities_persons WHERE idperson=id  AND identity='$identity'") or die(mysql_error());
+  $result=$db->execute(lq("SELECT * FROM #_TP_persons,#_TP_entities_persons WHERE idperson=id  AND identity='$identity'")) or die($db->errormsg());
 
   $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
-  while($row=mysql_fetch_assoc($result)) {
+  foreach($result->field as $row) {
     foreach($vars as $var) {
       $context[$var][$row[idtype]][$row[rank]]=$row[$var];
     }
@@ -621,13 +596,15 @@ function extrait_personnes($identity,&$context)
 function extrait_entrees($identity,&$context)
 
 {
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entries,$GLOBALS[tp]entities_entries WHERE identry=id  AND identity='$identity'") or die(mysql_error());
+  global $db;
 
-  while($row=mysql_fetch_assoc($result)) {
-    if ($context[entrees][$row[idtype]]) {
-      array_push($context[entrees][$row[idtype]],$row[name]);
+  $result=$db->execute(lq("SELECT * FROM #_TP_entries,#_TP_entities_entries WHERE identry=id  AND identity='$identity'")) or die($db->errormsg());
+
+  foreach($result->field as $row) {
+    if ($context[entries][$row[idtype]]) {
+      array_push($context[entries][$row[idtype]],$row['name']);
     } else {
-      $context[entrees][$row[idtype]]=array($row[name]);
+      $context[entries][$row[idtype]]=array($row['name']);
     }
   }
 }
@@ -636,41 +613,41 @@ function extrait_entrees($identity,&$context)
 // makeselect
 
 
-function makeselectentrees (&$context)
+function makeselectentries (&$context)
      // le context doit contenir les informations sur le type a traiter
 {
-  $entreestrouvees=array();
-  $entrees=$context[entrees][$context[id]];
-#  echo "type:",$context[id];print_r($context[entrees]);
-  makeselectentrees_rec(0,"",$entrees,$context,$entreestrouvees);
-  $context[autresentrees]=$entrees ? join(", ",array_diff($entrees,$entreestrouvees)) : "";
+  $entriestrouvees=array();
+  $entries=$context[entries][$context[id]];
+#  echo "type:",$context[id];print_r($context[entries]);
+  makeselectentries_rec(0,"",$entries,$context,$entriestrouvees);
+  $context[autresentries]=$entries ? join(", ",array_diff($entries,$entriestrouvees)) : "";
 }
 
-function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouvees)
+function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouvees)
 
 {
-  if (!$context[tri]) die ("ERROR: internal error in makeselectentrees_rec");
-  $result=mysql_query("SELECT id, abrev, name FROM $GLOBALS[tp]entries WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  if (!$context[tri]) die ("ERROR: internal error in makeselectentries_rec");
+  $result=$db->execute(lq("SELECT id, abrev, name FROM #_TP_entries WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[sort]")) or die($db->errormsg());
 
-  while ($row=mysql_fetch_assoc($result)) {
-    $selected=$entrees && (in_array($row[abrev],$entrees) || in_array($row[name],$entrees)) ? " selected" : "";
-   if ($selected) array_push($entreestrouvees,$row[name],$row[abrev]);
-   $value=$context[utiliseabrev] ? $row[abrev] : $row[name];
+  foreach($result->field as $row) {
+    $selected=$entries && (in_array($row['abrev'],$entries) || in_array($row['name'],$entries)) ? " selected" : "";
+   if ($selected) array_push($entriestrouvees,$row['name'],$row['abrev']);
+   $value=$context['useabrevation'] ? $row['abrev'] : $row['name'];
     echo "<option value=\"$value\"$selected>$rep$row[name]</option>\n";
-    makeselectentrees_rec($row[id],$rep.$row[name]."/",$entrees,$context,$entreestrouvees);
+    makeselectentries_rec($row[id],$rep.$row['name']."/",$entries,$context,$entriestrouvees);
   }
 }
 
 
-function makeselectgroupes() 
+function makeselectusergroups() 
 
 {
-  global $context;
+  global $context,$db;
       
-  $result=mysql_query("SELECT id,name FROM $GLOBALS[tp]usergroups") or die (mysql_error());
+  $result=$db->execute(lq("SELECT id,name FROM #_TP_usergroups")) or die($db->errormsg());
 
-  while ($row=mysql_fetch_assoc($result)) {
-    $selected=$context[groupe]==$row[id] ? " SELECTED" : "";
+  foreach($result->field as $row) {
+    $selected=$context['usergroup']==$row['id'] ? " SELECTED" : "";
     echo "<OPTION VALUE=\"$row[id]\"$selected>$row[name]</OPTION>\n";
   }
 }
@@ -678,14 +655,14 @@ function makeselectgroupes()
 function makeselecttype($class)
 
 {
-  global $context;
+  global $db,$context;
 
-  if ($context[typedocfixe]) $critere="AND type='$context[typedoc]'";
+  if ($context['typedocfixe']) $critere="AND type='$context[typedoc]'";
 
-  $result=mysql_query("SELECT id,type,title FROM $GLOBALS[tp]types WHERE status>0 AND class='$class' $critere AND type NOT LIKE 'documentannexe-%'") or die (mysql_error());
-  while ($row=mysql_fetch_assoc($result)) {
-    $selected=$context[idtype]==$row[id] ? " selected" : "";
-    $name=$row[title] ? $row[title] : $row[type];
+  $result=$db->execute(lq("SELECT id,type,title FROM #_TP_types WHERE status>0 AND class='$class' $critere AND type NOT LIKE 'documentannexe-%'")) or die($db->errormsg());
+  foreach($result->field as $row) {
+    $selected=$context['idtype']==$row['id'] ? " selected" : "";
+    $name=$row['title'] ? $row['title'] : $row['type'];
     echo "<option value=\"$row[id]\"$selected>$name</option>\n";
   }
 }
@@ -698,7 +675,7 @@ function makeselectdate() {
 		 "jours",
 		 "mois",
 		 "années") as $date) {
-    $selected=$context[dateselect]==$date ? "selected" : "";
+    $selected=$context['dateselect']==$date ? "selected" : "";
     echo "<option value=\"$date\"$selected>$date</option>\n";
   }
 }
@@ -726,9 +703,7 @@ function loop_mltext($context,$funcname) {
     }
   }
 
-  $lang=$context[addlanginmltext][$context[name]];
-#  echo "lang=$lang  $context[name]";
-#  print_r($context[addlanginmltext]);
+  $lang=$context[addlanginmltext][$context['name']];
   if ($lang) {
     $localcontext=$context;
     $localcontext[lang]=$lang;

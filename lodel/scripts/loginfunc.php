@@ -31,24 +31,24 @@
 
 function open_session ($login) {
 
-  global $userrights,$usergroupes,$userlang,$sessionname,$timeout,$cookietimeout;
-  global $database,$urlroot,$site,$iduser;
+  global $userrights,$usergroups,$userlang,$sessionname,$timeout,$cookietimeout;
+  global $db,$urlroot,$site,$iduser;
 
   // timeout pour les cookies
   if (!$cookietimeout) $cookietimeout=4*3600; // to ensure compatibility
 
 
   // context
-  $contextstr=addslashes(serialize(array("userrights"=>intval($userrights),"usergroupes"=>$usergroupes,"userlang"=>$userlang,"username"=>$login)));
+  $contextstr=addslashes(serialize(array("userrights"=>intval($userrights),"usergroups"=>$usergroups,"userlang"=>$userlang,"username"=>$login)));
   $expire=time()+$timeout;
   $expire2=time()+$cookietimeout;
 
-  mysql_select_db($database);
+  usemaindb();
   if (defined("LEVEL_ADMINLODEL") && $userrights<LEVEL_ADMINLODEL) {
     if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]sites WHERE name='$site' AND status>=32") or die(mysql_error());
-    if (mysql_num_rows($result)) { 
+    $result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
+    if (!$result) { 
       if (function_exists("unlock")) unlock(); 
       return "error_sitebloque"; 
     }
@@ -58,19 +58,22 @@ function open_session ($login) {
     // name de la session
     $name=md5($login.microtime());
     // enregistre la session, si ca marche sort de la boucle
-    if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')")) break;
+    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','$iduser','$site','$contextstr','$expire','$expire2')"));
+    if ($result) break; // ok, it's working fine
   }
   if (function_exists("unlock")) unlock(); 
   if ($i==5) return "error_opensession";
-
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
+
+  usecurrentdb();
+
 }
 
 
 function check_auth ($login,&$passwd,&$site)
 
 {
-  global $context,$iduser,$userrights,$usergroupes,$userlang;
+  global $db,$context,$iduser,$userrights,$usergroups,$userlang;
 
   do { // block de control
     if (!$login || !$passwd) break;
@@ -80,18 +83,18 @@ function check_auth ($login,&$passwd,&$site)
 
     // cherche d'abord dans la base generale.
 
-    mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT * FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
-    if ($row=mysql_fetch_assoc($result)) {
+    usemaindb();
+    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$user' AND passwd='$pass' AND status>0")) or die($db->errormsg());
+    usecurrentdb();
+    if ( ($row=$result->fields) ) {
       // le user est dans la base generale
       $site="tous les sites";
-     } elseif ($GLOBALS[currentdb] && $GLOBALS[currentdb]!=$GLOBALS[database]) { // le user n'est pas dans la base generale
+     } elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb']!=DATABASE) { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
 
       // cherche ensuite dans la base du site
-      mysql_select_db($GLOBALS[currentdb]);
-      $result=mysql_query ("SELECT id,status,userrights FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
-      if (!($row=mysql_fetch_assoc($result))) break;
+      $result=$db->execute(lq("SELECT id,status,userrights FROM #_TP_users WHERE username='$user' AND passwd='$pass' AND status>0")) or die($db->errormsg());
+      if (!($row=$result->fields)) break;
      } else {
        break; // on s'eject
      }
@@ -102,13 +105,13 @@ function check_auth ($login,&$passwd,&$site)
 
     // cherche les groupes pour les non administrateurs
     if (defined("LEVEL_ADMIN") && $userrights<LEVEL_ADMIN) { // defined is useful only for the install.php
-      $result=mysql_query("SELECT idgroup FROM $GLOBALS[tableprefix]users_usergroups WHERE iduser='$iduser'") or die(mysql_error());
-      $usergroupes="1"; // sont tous dans le groupe "tous"
-      while ($row=mysql_fetch_row($result)) $usergroupes.=",".$row[0];
+      $result=$db->execute("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='$iduser'") or die($db->errormsg());
+      $usergroups="1"; // sont tous dans le groupe "tous"
+      while ( ($row=$result->fields) ) $usergroups.=",".$row[0];
     } else {
-      $usergroupes="";
+      $usergroups="";
     }
-    $context['usergroupes']=$usergroupes;
+    $context['usergroups']=$usergroups;
 
     // efface les donnees de la memoire et protege pour la suite
     $passwd=0;

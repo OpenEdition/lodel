@@ -40,7 +40,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$GLOBALS['rightvisiteur'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
+$critere=$GLOBALS['rightvisitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 
 if ($identifier) {
   $identifier=addslashes(stripslashes($identifier));
@@ -54,7 +54,7 @@ if ($identifier) {
 //
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
 
-$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[documentstypesjoin] WHERE  $critere") or die (mysql_error());
+$result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[documentstypesjoin] WHERE  $critere") or die($db->errormsg());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 require_once($home."textfunc.php");
 $context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));
@@ -70,7 +70,7 @@ $base=$context[tpl];
 // cherche s'il y a des documents annexe et combien
 //
 
-$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entities.status>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entities.status>0 AND type LIKE 'documentannexe-%'") or die($db->errormsg());
 list($context[documentsannexes])=mysql_fetch_row($result);
 //
 // cherche l'article precedent et le suivant
@@ -83,14 +83,14 @@ $querybase="SELECT $GLOBALS[tp]entities.id FROM $GLOBALS[entitestypesjoin] WHERE
 
 $nextid=0;
 do {// exception
-  $result=mysql_query ("$querybase $GLOBALS[tp]entities.rank>$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase $GLOBALS[tp]entities.rank>$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank LIMIT 0,1") or die($db->errormsg());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     break;
   }
 
   // ok, on a pas trouve on cherche alors le pere suivant et son premier fils (e2)
-  $result=mysql_query ("SELECT e2.id FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entities as e2 WHERE id2='$context[id]' AND degree=2 AND $GLOBALS[tp]entities.idparent=id1 AND type='regroupement' AND  $GLOBALS[tp]entities.rank>$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank, e2.rank LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("SELECT e2.id FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entities as e2 WHERE id2='$context[id]' AND degree=2 AND $GLOBALS[tp]entities.idparent=id1 AND type='regroupement' AND  $GLOBALS[tp]entities.rank>$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank, e2.rank LIMIT 0,1") or die($db->errormsg());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     break;
@@ -103,20 +103,20 @@ if ($nextid) $context[nextdocument]=makeurlwithid("document",$nextid);
 
 $previd=0;
 do {  // exception
-  $result=mysql_query ("$querybase $GLOBALS[tp]entities.rank<$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase $GLOBALS[tp]entities.rank<$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank DESC LIMIT 0,1") or die($db->errormsg());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
     break;
   }
 
   // ok, on a pas trouve on cherche alors le pere precedent et son dernier fils (e2)
-  $result=mysql_query ("SELECT e2.id FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entities as e2 WHERE id2='$context[id]' AND degree=2 AND $GLOBALS[tp]entities.idparent=id1 AND type='regroupement' AND  $GLOBALS[tp]entities.rank<$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank DESC, e2.rank DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("SELECT e2.id FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entities as e2 WHERE id2='$context[id]' AND degree=2 AND $GLOBALS[tp]entities.idparent=id1 AND type='regroupement' AND  $GLOBALS[tp]entities.rank<$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank DESC, e2.rank DESC LIMIT 0,1") or die($db->errormsg());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     break;
   }
   // ok, c'est surement hors regroupement alors.
-  $result=mysql_query ("SELECT e2.id FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entities as e2 WHERE id2='$context[id]' AND degree=2 AND $GLOBALS[tp]entities.idparent=id1 AND $GLOBALS[tp]types.class='documents' AND  $GLOBALS[tp]entities.rank<$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank DESC, e2.rank DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("SELECT e2.id FROM $GLOBALS[entitestypesjoin], $GLOBALS[tp]relations, $GLOBALS[tp]entities as e2 WHERE id2='$context[id]' AND degree=2 AND $GLOBALS[tp]entities.idparent=id1 AND $GLOBALS[tp]types.class='documents' AND  $GLOBALS[tp]entities.rank<$context[rank] $critere ORDER BY $GLOBALS[tp]entities.rank DESC, e2.rank DESC LIMIT 0,1") or die($db->errormsg());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     break;

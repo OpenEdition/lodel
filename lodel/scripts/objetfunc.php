@@ -33,10 +33,12 @@
 function makeobjetstable()
 
 {
+  global $db;
+
   $err=mysql_query_cmds_forobjetfunc('
-DELETE FROM _PREFIXTABLE_objets;
-INSERT INTO _PREFIXTABLE_objets (id,class) SELECT identity,"documents" FROM _PREFIXTABLE_documents;
-INSERT INTO _PREFIXTABLE_objets (id,class) SELECT identity,"publications" FROM _PREFIXTABLE_publications;
+DELETE FROM #_TP_objets;
+INSERT INTO #_TP_objets (id,class) SELECT identity,"documents" FROM #_TP_documents;
+INSERT INTO #_TP_objets (id,class) SELECT identity,"publications" FROM #_TP_publications;
 ');
   if ($err) return $err;
 
@@ -60,8 +62,8 @@ INSERT INTO _PREFIXTABLE_objets (id,class) SELECT identity,"publications" FROM _
 
   foreach ($tables as $table=>$idsname) {
     foreach ($idsname as $idname) {
-      $err.=mysql_query_cmds_forobjetfunc('
- UPDATE _PREFIXTABLE_'.$table.' SET '.$idname.'='.$idname.'+'.$offset.' WHERE '.$idname.'>0;
+      $err.=query_cmds_forobjetfunc('
+ UPDATE #_TP_'.$table.' SET '.$idname.'='.$idname.'+'.$offset.' WHERE '.$idname.'>0;
 ');
       if ($err) return $err;
     }
@@ -92,21 +94,21 @@ INSERT INTO _PREFIXTABLE_objets (id,class) SELECT identity,"publications" FROM _
 	      );
 
   foreach ($conv as $maintable=>$changes) {
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]$maintable") or die(mysql_error());
+    $result=$db->execute(lq("SELECT id FROM #_TP_$maintable")) or die($db->errormsg());
     #echo "$maintable...\n";
-    while (list($id)=mysql_fetch_row($result)) {
+    while ($id=$result->fields("id")) {
       #echo "$maintable...$id<br />\n";
       $newid=uniqueid($maintable);
-      $err.=mysql_query_cmds_forobjetfunc('
-UPDATE _PREFIXTABLE_'.$maintable.' SET id='.$newid.' WHERE id='.$id.';
+      $err.=query_cmds_forobjetfunc('
+UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id.';
  ');
       if ($err) return $err;
 
       foreach ($changes as $table=>$idsname) {
 	if (!is_array($idsname)) $idsname=array($idsname);
 	foreach ($idsname as $idname) {
-	  $err.=mysql_query_cmds_forobjetfunc('
-UPDATE _PREFIXTABLE_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
+	  $err.=query_cmds_forobjetfunc('
+UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
 ');
 	  if ($err) return $err;
 	}
@@ -121,8 +123,9 @@ UPDATE _PREFIXTABLE_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$i
   $err="";
   foreach ($tables as $table=>$idsname) {
     foreach ($idsname as $idname) {
-      $result=mysql_query("SELECT count(*) FROM $GLOBALS[tp]$table WHERE $idname>$offset") or die (mysql_error());
-      list($count)=mysql_fetch_row($result);
+      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
+      if ($count===false) die($db->errormsg());
+
       if ($count) $err.="<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n";
     }
   }
@@ -134,22 +137,22 @@ UPDATE _PREFIXTABLE_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$i
 
 
 
-function mysql_query_cmds_forobjetfunc($cmds,$table="") 
+function query_cmds_forobjetfunc($cmds,$table="") 
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$cmds);
+  global $db;
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   if ($table) { // select the commands operating on the table  $table
-    $sql=preg_grep("/(REPLACE|INSERT)\s+INTO\s+$GLOBALS[tp]$table\s/i",$sql);
+    $sql=preg_grep("/(REPLACE|INSERT)\s+INTO\s+#_TP_$table\s/i",$sql);
   }
   if (!$sql) return;
 
   foreach ($sql as $cmd) {
     $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
     if ($cmd) {
-      if (!mysql_query($cmd)) { 
-	$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+      if (!$db->execute($cmd)) { 
+	$err.="$cmd <font COLOR=red>".$db->errormsg()."</font><br>";
 	break; // sort, ca sert a rien de continuer
       }
     }

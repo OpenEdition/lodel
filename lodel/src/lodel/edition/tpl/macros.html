@@ -102,8 +102,8 @@
 		</BEFORE>
 		<DO>
 			<tr>
-				<td>[#IDENTIFIANT]</td>
-				<td><IF COND="[#TITLE]">[#TITLE]<ELSE/>	...	</IF></td>
+				<td>[#IDENTIFIER]</td>
+				<td><IF COND="[#ENTITYTITLE]">[#ENTITYTITLE]<ELSE/>	...	</IF></td>
 			</tr>
 		</DO>
 	</LOOP>
@@ -126,7 +126,7 @@
 		</BEFORE>
 		<DO>
 			<tr>
-				<td colspan="2"><IF COND="[#TITLE]">[#TITLE]<ELSE/>	...	</IF></td>
+				<td colspan="2"><IF COND="[#ENTITYTITLE]">[#ENTITYTITLE]<ELSE/>	...	</IF></td>
 			</tr>
 		</DO>
 	</LOOP>
@@ -190,20 +190,20 @@
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_EDITION_CHAMPS">
   <IF COND="[#TYPE] eq 'boolean'">
-    <td><input type="checkbox" name="entite[[#NAME]]" [(#VALUE|true)checked]></td>
+    <td><input type="checkbox" name="entity[[#NAME]]" [(#VALUE|true)checked]></td>
     <ELSE/>
       <IF COND="[#TYPE] eq 'mltext'">
 	<td>
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
 	      <IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<input size="70" type="text" name="entite[[#NAME]][[#LANG]]" value="[#VALUE]">
+		<input size="70" type="text" name="entity[[#NAME]][[#LANG]]" value="[#VALUE]">
 	      </IF>
 	      <IF COND="[#EDITION] eq 'textarea10'">
-		<textarea rows="10" cols="70" name="entite[[#NAME]][[#LANG]]">[#VALUE]</textarea>
+		<textarea rows="10" cols="70" name="entity[[#NAME]][[#LANG]]">[#VALUE]</textarea>
 	      </IF>
 	      <IF COND="[#EDITION] eq 'textarea30'">
-		<textarea rows="30" cols="70" name="entite[[#NAME]][[#LANG]]">[#VALUE]</textarea>
+		<textarea rows="30" cols="70" name="entity[[#NAME]][[#LANG]]">[#VALUE]</textarea>
 	      </IF>
 	    </div>
 
@@ -217,7 +217,7 @@
 	<ELSE/>
 	  <IF COND="[#TYPE] eq 'lang'">
 	    <td>
-	      <select name="entite[[#NAME]]">
+	      <select name="entity[[#NAME]]">
 	      <IF COND="[#CONDITION] eq '+'">
 		    <?php  makeselectlangs_nevernil($context[value]); ?>
 		<ELSE/>
@@ -227,7 +227,7 @@
 	    </td>
 	    <ELSE/>
 	      <IF COND="[#TYPE] eq 'date' || [#TYPE] eq 'datetime' || [#TYPE] eq 'time'">
-		<td><input size="30" type="text" name="entite[[#NAME]]" value="[(#VALUE|humandate)]"></td>
+		<td><input size="30" type="text" name="entity[[#NAME]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'image'">
 		<td>
@@ -235,26 +235,26 @@
 		<IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" border="1"></td></IF>
                 <td>
 	            <IF COND="[#VALUE]">
-				<input type="radio" name="entite[[#NAME]][radio]" value="">Conserver l'image courante<br />
-				<input type="radio" name="entite[[#NAME]][radio]" value="delete">[@COMMON.DELETE] <br /></IF>
-		    <input type="radio" id="entite[[#NAME]][radioserverfile]" name="entite[[#NAME]][radio]" value="serverfile">
-	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=entite[[#NAME]]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="entite[[#NAME]][localfilename]">&nbsp;</span><input size="40" type="text" id="entite[[#NAME]][localfullfilename]"><br />
-		    <input type="radio" id="entite[[#NAME]][radioupload]" name="entite[[#NAME]][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="entite[[#NAME]][upload]" onChange="document.getElementById('entite[[#NAME]][radioupload]').click();">
+				<input type="radio" name="entity[[#NAME]][radio]" value="">Conserver l'image courante<br />
+				<input type="radio" name="entity[[#NAME]][radio]" value="delete">[@COMMON.DELETE] <br /></IF>
+		    <input type="radio" id="entity[[#NAME]][radioserverfile]" name="entity[[#NAME]][radio]" value="serverfile">
+	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=entity[[#NAME]]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="entity[[#NAME]][localfilename]">&nbsp;</span><input size="40" type="text" id="entity[[#NAME]][localfullfilename]"><br />
+		    <input type="radio" id="entity[[#NAME]][radioupload]" name="entity[[#NAME]][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="entity[[#NAME]][upload]" onChange="document.getElementById('entity[[#NAME]][radioupload]').click();">
 		 </td>
 	         </tr></table>
-	         <input size="40" type="hidden" id="entite[[#NAME]][previousvalue]" VALUE="[#VALUE]">
+	         <input size="40" type="hidden" id="entity[[#NAME]][previousvalue]" VALUE="[#VALUE]">
 
 
 
 	<ELSE/>
 	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<td><input size="70" type="text" name="entite[[#NAME]]" value="[#VALUE]"></td>
+		<td><input size="70" type="text" name="entity[[#NAME]]" value="[#VALUE]"></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea10'">
-		<td><textarea rows="10" cols="70" name="entite[[#NAME]]">[#VALUE]</textarea></td>
+		<td><textarea rows="10" cols="70" name="entity[[#NAME]]">[#VALUE]</textarea></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea30'">
-		<td><textarea rows="30" cols="70" name="entite[[#NAME]]">[#VALUE]</textarea></td>
+		<td><textarea rows="30" cols="70" name="entity[[#NAME]]">[#VALUE]</textarea></td>
 	</IF>
 	</IF>
 	</IF>
@@ -322,12 +322,12 @@
 				<tr>
 					<td width="200" valign="top">[#TITLE] (*) :</td>
 					<td>
-						<select multiple size="10" style="width:250px" name="entrees[[#ID]][]"><?php  makeselectentrees($context); ?></select><br />
-						<IF COND="[#NVIMPORTABLE]">
-							<br /><br />[@EDITION.OTHER_ENTRIES]: <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
+						<select multiple size="10" style="width:250px" name="entries[[#ID]][]"><?php  makeselectentries($context); ?></select><br />
+						<IF COND="[#NEWBYIMPORTALLOWED]">
+							<br /><br />[@EDITION.OTHER_ENTRIES]: <input size="60" type="text" name="autresentries[[#ID]]" value="[#AUTRESENTRIES]" /><br /><br />
 						[@EDITION.SEPARATE_NAMES_BY_COMMA_OR_SEMICOLON]
 						<ELSE/>
-							<IF COND="[#AUTRESENTREES]"><br /><br />[@EDITION.FOLLOWING_IMPORTED_ENTRIES_NOT_FOUND] : [#AUTRESENTREES]<br /><br /></IF>
+							<IF COND="[#AUTRESENTRIES]"><br /><br />[@EDITION.FOLLOWING_IMPORTED_ENTRIES_NOT_FOUND] : [#AUTRESENTRIES]<br /><br /></IF>
 						</IF>
 					</td>
 				</tr>
@@ -338,7 +338,7 @@
 
 <DEFMACRO NAME="AFFICHER_TYPES_PERSONNES">
 	<!--[ boucle sur les types de personne ]-->
-	<LOOP NAME="persontypes" TABLE="persontypes" TABLE="typeentites_persontypes" WHERE="idpersontype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
+	<LOOP NAME="persontypes" TABLE="persontypes" TABLE="entitytypes_persontypes" WHERE="idpersontype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
@@ -371,8 +371,8 @@
 		<div class="intitule_ligne_formulaire">
 			<span class="texte_intitule">[@EDITION.IDENTIFY]:</span>
 		</div>
-		<input size="45" type="text" name="identifiant" value="[#IDENTIFIANT]">
-		<IF COND="[#ERROR_IDENTIFIANT]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFY]</span></IF>
+		<input size="45" type="text" name="identifiant" value="[#IDENTIFIER]">
+		<IF COND="[#ERROR_IDENTIFIER]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFY]</span></IF>
 	</div>
 </DEFMACRO>
 
@@ -705,7 +705,7 @@
 		<div style="padding-top:10px;">
 			<a href="index.php?id=0"><span class="texte_edition_des_series">[@EDITION.BASE]</span></a>
 			<LOOP NAME="parentspublis">
-				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#IDENTIFIANT]</span></a>
+				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#IDENTIFIER]</span></a>
 			</LOOP>
 		</div>
 	</div>
@@ -865,7 +865,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_SERIES">
-	<LOOP NAME="series" TABLE="publications" WHERE="idparent='0'" ORDER="rank">
+	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='0' AND types.id=idtype AND class='publications'" ORDER="entities.rank">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_serie1">
 		<ELSE/>
@@ -882,7 +882,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
-	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="rank">
+	<LOOP NAME="articles_hors_regroupement" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND class!='publications'" ORDER="entities.rank">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_isole1">
 		<ELSE/>
@@ -896,7 +896,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="rank">
+	<LOOP NAME="documents_du_regroupement" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND class!='publications'" ORDER="entities.rank">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_regroupement1">
 		<ELSE/>
@@ -910,7 +910,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_NUMEROS_RUBRIQUES">
-	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent='[#ID]'" ORDER="rank">
+	<LOOP NAME="numeros_rubriques" TABLE="entities, types" WHERE="idparent='[#ID]' AND types.id=idtype AND class='publications'" ORDER="entities.rank">
 		<DO>
 			<IF COND="[#COUNT] % 2">
 				<IF COND="[#TPLCREATION] eq 'creation-rubrique'">
@@ -929,9 +929,9 @@
 				<MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION">
 				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 				<a href="index.php?id=[#ID]">
-					<span class="nom_serie">[#IDENTIFIANT]</span>&nbsp;
-					<LOOP NAME="titre_numero_rubrique" TABLE="publications" WHERE="identity=[#ID]">
-						<span class="titre_serie">[#TITLE]</span><br />
+					<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
+					<LOOP NAME="titre_numero_rubrique" TABLE="entities, types" WHERE="identity=[#ID]  AND types.id=idtype AND class='publications'">
+						<span class="titre_serie">[#ENTITYTITLE]</span><br />
 					</LOOP>
 					<span class="type_serie">([#TYPE])</span>
 				</a>
@@ -945,7 +945,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_REGROUPEMENTS">
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="tplcreation='creation-regroupement'" ORDER="rank"> 
+	<LOOP NAME="regroupements" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype" WHERE="tplcreation='creation-regroupement' AND class='publications'" ORDER="entities.rank"> 
 		<DOFIRST>
 			<div class="ligne_regroupement1">
 				<MACRO NAME="AFFICHER_ICONE_STATUS_REGROUPEMENT">
@@ -1247,31 +1247,31 @@
 
 <DEFMACRO NAME="NOM_TITRE_TYPE">
 	<a href="index.php?id=[#ID]">
-		<span class="nom_serie">[#IDENTIFIANT]</span>&nbsp;
-		<span class="titre_serie">[#TITLE]</span><br />
+		<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
+		<span class="titre_serie">[#ENTITYTITLE]</span><br />
 		<span class="type_serie">([#TYPE])</span>
 	</a>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
-	<span class="nom_serie">[#IDENTIFIANT]</span>&nbsp;
-	<span class="titre_serie">[#TITLE]</span><br />
+	<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
+	<span class="titre_serie">[#ENTITYTITLE]</span><br />
 	<span class="type_serie">([#TYPE])</span>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE_PARENT">
 	<div class="ligne_infos_parent">
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
-		<LOOP NAME="idparent" TABLE="publications" WHERE="id='[#ID]'">
-			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#IDENTIFIANT]</a></span>&nbsp;
-			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#TITLE]</a></span><br />
+		<LOOP NAME="idparent" TABLE="entities,types" WHERE="id='[#ID]' AND types.id=idtype">
+			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#IDENTIFIER]</a></span>&nbsp;
+			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#ENTITYTITLE]</a></span><br />
 			<span class="type_parent">([#TYPE])</span>
 		</LOOP>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-	<span class="titre_document">" [(#TITRE|removefootnotes)] "</span>&nbsp;
+	<span class="titre_document">" [(#ENTITYTITLE|removefootnotes)] "</span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 	<span class="type_document">([#TYPE])</span>
 </DEFMACRO>
@@ -1299,9 +1299,9 @@
 				<td width="100%" valign="top" bgcolor="#EEEEEE">
 					<div>
 						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
-							<a name="[#TITLE]" href="[#LIEN]" target="[#TITLE]">[#TITLE]</a>
+							<a name="[#ENTITYTITLE]" href="[#LIEN]" target="[#TITLE]">[#TITLE]</a>
 						<ELSE/>
-							<a name="[#TITLE]" href="../../docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]" target="[#TITLE]">[#TITLE]</a>
+							<a name="[#ENTITYTITLE]" href="../../docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]" target="[#ENTITYTITLE]">[#ENTITYTITLE]</a>
 						</IF>
 						</div>
 					<span class="texte_normal">[#COMMENTAIRE]</span>

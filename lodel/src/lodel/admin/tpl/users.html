@@ -107,42 +107,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="users_trash" TABLE="users" ORDER="nom" WHERE="trash">
-	<BEFORE>
-		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
-			<tr>
-				<td colspan="3" class="message_erreur">[@ADMIN.IN_TRASH]</td>
-			</tr>
-			<tr>
-				<td class="texte_noir_gras">[@ADMIN.USERNAME]</td>
-				<td class="texte_noir_gras">[@COMMON.NAME]</td>
-				<td>&nbsp;</td>
-			<tr>
-	</BEFORE>
-	<DO>
-		<tr>
-			<IF COND="[#COUNT] % 2">
-				<td class="ligne_admin1">[(#USERNAME|nbsp)]</td>
-				<td class="ligne_admin1">[#NAME]</td>
-				<td class="ligne_admin1" style="color: #CC9933;" align="right">
-					<div>|&nbsp;<a href="user.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a>&nbsp;|&nbsp;
-					<a href="user.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;|</div>
-				</td>
-			<ELSE/>
-				<td class="ligne_admin2">[(#USERNAME|nbsp)]</td>
-				<td class="ligne_admin2">[#NAME]</td>
-				<td class="ligne_admin2" style="color: #CC9933;" align="right">
-					<div>|&nbsp;<a href="user.php?id=[#ID]&restore=1">[@COMMON.RECOVER]</a>&nbsp;|&nbsp;
-					<a href="user.php?id=[#ID]&delete=2">[@COMMON.DELETE]</a>&nbsp;|</div>
-				</td>
-			</IF>
-		</tr>
-	</DO>
-	<AFTER></table></AFTER>
-</LOOP>
-<div class="pied_de_formulaire">
-	<form>
-		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
-	</form>
-</div>
+
+<MACRO NAME="OK_TOINDEX">
+
 <MACRO NAME="CLOSE_HTML">

@@ -118,7 +118,7 @@ function mysql_query_cmd($cmd)
 {
   $cmd=str_replace("_PREFIXTABLE_","$GLOBALS[tp]",$cmd);
   if (!mysql_query($cmd)) { 
-    $err="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+    $err="$cmd <font COLOR=red>".->errormsg()."</font><br>";
     return $err;
   }
   return FALSE;
@@ -141,7 +141,7 @@ function mysql_query_cmds($cmds,$table="")
     $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
     if ($cmd) {
       if (!mysql_query($cmd)) { 
-	$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+	$err.="$cmd <font COLOR=red>".->errormsg()."</font><br>";
 	break; // sort, ca sert a rien de continuer
       }
     }
@@ -166,7 +166,7 @@ function getfields($table,$database="")
 
 {
   if (!$database) $database=$GLOBALS['currentdb'];
-  $fields = mysql_list_fields($database,$GLOBALS[tp].$table) or die (mysql_error());
+  $fields = mysql_list_fields($database,$GLOBALS[tp].$table) or die($db->errormsg());
   $columns = mysql_num_fields($fields);
   $arr=array();
   for ($i = 0; $i < $columns; $i++) {
@@ -229,7 +229,7 @@ function isotoutf8 ($tables)
 
      $report.="conversion en utf8 de  la table $table<br />\n";
     // On parcours toutes les enregistrements de chaque table
-    $resultselect = mysql_query("SELECT * FROM $table") or die(mysql_error());
+    $resultselect = mysql_query("SELECT * FROM $table") or die($db->errormsg());
     while($valeurs = mysql_fetch_row($resultselect)) {
       $nbchamps = mysql_num_fields($resultselect);
 
@@ -257,7 +257,7 @@ function isotoutf8 ($tables)
       // S'il y a une modification à faire on lance la requete
       if($set) {
 	$requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
-	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die(mysql_error()); }
+	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die($db->errormsg()); }
       }
     } // parcourt les lignes
   } // parcourt les tables
@@ -288,7 +288,7 @@ function extractnom($personne) {
 function extract_meta($class)
 
 {
-  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$class WHERE meta LIKE '%meta_image%'") or die(mysql_error());
+  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$class WHERE meta LIKE '%meta_image%'") or die($db->errormsg());
 
   while (list($id,$meta)=mysql_fetch_row($result)) {
     $meta=unserialize($meta);
@@ -308,7 +308,7 @@ function extract_meta($class)
     chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
     unlink($file);
 
-    mysql_query("UPDATE $GLOBALS[tp]$class SET icone='$dest' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$class SET icone='$dest' WHERE id='$id'") or die($db->errormsg());
   }
 
   return TRUE;
@@ -372,7 +372,7 @@ function addfield($class)
 {
   $fields=getfields($class);
 
-  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class'") or die(mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]fields.name,type FROM $GLOBALS[tp]fields,$GLOBALS[tp]fieldgroups WHERE idgroup=$GLOBALS[tp]fieldgroups.id AND class='$class'") or die($db->errormsg());
 
   #echo "class:$class<br/>";
   while (list($champ,$type)=mysql_fetch_row($result)) {

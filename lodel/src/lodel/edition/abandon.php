@@ -37,7 +37,7 @@ if (!function_exists("authenticate")) {
 $idtache=intval($idtache);
 if ($idtache) {
   require_once ($home."connect.php");
-  mysql_query("DELETE FROM $GLOBALS[tp]tasks WHERE id='$idtache'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]tasks WHERE id='$idtache'") or die($db->errormsg());
 }
 
 if ($redirect) {
