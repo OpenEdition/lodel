@@ -125,7 +125,6 @@ function parse_variable (&$text,$escape=TRUE)
 
 function parse_texte(&$text)
 
-
 {
   global $home,$editeur,$urlroot,$revue;
   preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
@@ -143,6 +142,7 @@ function parse_texte(&$text)
     $text=str_replace ($result[0],'<? $result=mysql_query("SELECT id,texte FROM textes WHERE nom=\''.$nom.'\' AND status>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><A HREF="'."$urlbase".'lodel/admin/texte.php?id=<?=$id?>">[Modifier]</A><BR><? } echo $texte; ?>',$text);
   }
 }
+
 
 # traite les conditions avec IF
 function parse_cond (&$text,$offset=0) {
@@ -530,32 +530,24 @@ function decode_content ($content,$tables=array())
 
 # cherche s'il y a un avant
 #  $balises=array("avant","apres","premier","dernier","corps");
-  $balises=array("BEFORE","AFTER","FIRST","LAST","CORPS");
+  $balises=array("BEFORE","AFTER","DOFIRST","DOLAST","DO","ALTERNATIVE");
   
   foreach ($balises as $balise) {
-    if ((strpos($content,"<$balise>")!==FALSE || strpos($content,"<".strtoupper($balise).">")!==FALSE)) {
+    if (strpos($content,"<$balise>")!==FALSE) {
       if (!preg_match ("/<$balise>(.*?)<\/$balise>/s",$content,$result)) { die ("la balise $balise n'est pas fermee dans la boucle $nom"); }
       $ret[$balise]=$result[1];
       $content=str_replace($result[0],"",$content); // enleve le bloc avant
     }
   }
 
-  // cherche s'il y a un sinon
-  $ret[ALTERNATIVE]="";
-  $alter="<ALTERNATIVE/>";
-  $sinonpos=strpos($content,$alter); // en majuscules
-  if ($sinonpos!==FALSE) {
-    $ret[ALTERNATIVE]='<? else {?>'.substr($content,$sinonpos+strlen($alter)).'<?}?>'; // recupere le bloc sinon
-    $content=substr($content,0,$sinonpos); // recupere le bloc avant sinon
-  }
-  if ($ret[CORPS]) {
+  if ($ret["DO"]) {
     if (trim($content)) die("Une partie du contenu de la boucle $nom n'est pas dans l'une des balises &lt;corps&gt;  &lt;avant&gt;  &lt;apres&gt; &lt;premier&gt; &lt;dernier&gt;<br>");
   } else {
-    $ret[CORPS]=$content;
+    $ret["DO"]=$content;
   }
   // OPTIMISATION
   // cherche les META et les extract
-  $balises=array("FIRST","LAST","CORPS");
+  $balises=array("DOFIRST","DOLAST","DO");
 
   foreach ($balises as $balise) {
     //
@@ -651,15 +643,19 @@ function make_boucle_code ($nom,$tables,$where,$order,$limit,$content,&$fct_txt)
       $context[count]=$count;
       $count++;';
   // gere le cas ou il y a un premier
-  if ($contents[FIRST]) {
-    $fct_txt.=' if ($count==1) { '.$contents[META_FIRST].$contents[EXTRACT_FIRST].' ?>'.$contents[FIRST].'<? continue; }';
+  if ($contents[DOFIRST]) {
+    $fct_txt.=' if ($count==1) { '.$contents[META_DOFIRST].$contents[EXTRACT_DOFIRST].' ?>'.$contents[DOFIRST].'<? continue; }';
   }
   // gere le cas ou il y a un dernier
-  if ($contents[LAST]) {
-    $fct_txt.=' if ($count==$nbrows) { '.$contents[META_LAST].$contents[EXTRACT_LAST].'?>'.$contents[LAST].'<? continue; }';
+  if ($contents[DOLAST]) {
+    $fct_txt.=' if ($count==$nbrows) { '.$contents[META_DOLAST].$contents[EXTRACT_DOLAST].'?>'.$contents[DOLAST].'<? continue; }';
   }    
-    $fct_txt.=$contents[META_CORPS].$contents[EXTRACT_CORPS].' ?>'.$contents[CORPS].'<?    } while ($row=mysql_fetch_assoc($result));
-?>'.$contents[AFTER].'<?  } ?>'.$contents[ALTERNATIVE].'<?
+    $fct_txt.=$contents[META_DO].$contents[EXTRACT_DO].' ?>'.$contents["DO"].'<?    } while ($row=mysql_fetch_assoc($result));
+?>'.$contents[AFTER].'<?  } ';
+
+  if ($ret[ALTERNATIVE]) $fct_txt.=' else {?>'.$ret[ALTERNATIVE].'<?}';
+
+    $fct_txt.='
  mysql_free_result($result);
 }
 ';
@@ -672,10 +668,12 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
   $contents=decode_content($content);
 
 // cree la fonction boucle
-  $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents[CORPS].'<? }';
+  if ($contents["DO"]) {
+    $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents["DO"].'<? }';
+  }
 
   if ($contents[BEFORE]) { // genere le code de avant
-  $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[BEFORE].'<? }';
+    $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[BEFORE].'<? }';
   }
 
   if ($contents[AFTER]) {// genere le code de apres

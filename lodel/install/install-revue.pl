@@ -87,7 +87,7 @@ slink ("../styles_lodel.css","styles_lodel.css");
             "geos-complet",
             "geos",
 	    "index",
-	    "macros",
+#	    "macros",
 	    "mot",
 	    "mots-complet",
 	    "mots",

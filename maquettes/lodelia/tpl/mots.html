@@ -44,7 +44,7 @@
 		<table width="90%" border="0" cellspacing="0" cellpadding="15" align="CENTER"  bordercolor="Black"> 
 			<!-- Boucle permettant d'afficher les lettres associées au mots-clefs correspondants -->
 			<LOOP NAME="alphabet">
-				<CORPS>
+				<DO>
 					<tr>
 						<td class="titre">
 							<a name=[#LETTRE]>
@@ -57,16 +57,16 @@
 						<td valign="middle" class="texte_petit">
 							<!-- Boucle permettant d'afficher les mots-clefs -->
 							<LOOP NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
-								<CORPS>
+								<DO>
 									<a href="mot.html?id=[#ID]">
 										[#MOT]
 									</a>
 									&nbsp;&nbsp;&nbsp;
-								</CORPS>
+								</DO>
 							</LOOP>
 						</td>
 					</tr>
-				</CORPS>
+				</DO>
 			</LOOP>
 		</table>
 		<a href="mots-complet.html">

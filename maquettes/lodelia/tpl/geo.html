@@ -40,12 +40,12 @@
 			<tr>
 				<td width="100%" class="soustitre">
 					<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-						<CORPS>
+						<DO>
 							<a href="geo.html?id=[#ID]">
 								[#NOM]
 							</a>
 							&nbsp;|
-						</CORPS>
+						</DO>
 					</LOOP>
 					<a href="geos-complet.html">
 						Index complet
@@ -54,7 +54,7 @@
 			</tr>
 		</table>
 		<LOOP NAME="geographie2" TABLE="indexhs" WHERE="type_geographie"  WHERE="id=[#ID]" ORDER="ordre DESC">
-			<CORPS>
+			<DO>
 				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
 					<tr>
 						<td align="center" width="100%" valign="middle" class="soustitre">
@@ -70,14 +70,14 @@
 					<tr>
 						<td span class="texte">
 							<LOOP NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexh='[#ID]'">
-								<CORPS>
+								<DO>
 									<MACRO NAME="INFOS_DOCUMENT"><br /><br />
-								</CORPS>
+								</DO>
 							</LOOP>
 						</td>
 					</tr>
 				</table>
-			</CORPS>
+			</DO>
 		</LOOP>
 	</td>
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">

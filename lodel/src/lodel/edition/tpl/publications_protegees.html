@@ -12,7 +12,7 @@ Certaines publications sont protegees.<BR><BR>
 			<td>TITRE</td>
 		</tr>
 		<LOOP NAME="publications_protegees">
-			<CORPS>
+			<DO>
 				<tr>
 					<td>[#NOM]</td>
 					<td>
@@ -23,7 +23,7 @@ Certaines publications sont protegees.<BR><BR>
 						</IF>
 					</td>
 				</tr>
-			</CORPS>
+			</DO>
 		</LOOP>
 	</table>
 	<input type="submit" name="confirmation" value="confirmation de la depublication"> <!-- on confirme la depublication -->

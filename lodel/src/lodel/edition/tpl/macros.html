@@ -362,7 +362,7 @@
 						<MACRO NAME="TD_NOM_TYPE_TITRE">
 						<MACRO NAME="BOUTONS_PUBLICATIONS">
 				</tr>
-			<ALTERNATIVE/>
+			<ALTERNATIVE>
 				<tr>
 					<td>
 						&nbsp;
@@ -375,7 +375,7 @@
 			<AFTER>
 			</table>
 			</AFTER>
-			</LOOP>
+			</ALTERNATIVE></LOOP>
 
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">	
 				<tr>
@@ -1038,7 +1038,7 @@
 						</a>
 					</td>
 				</tr>
-				<ALTERNATIVE/> 
+				<ALTERNATIVE> 
 				<tr> 
 					<td>
 						<strong>
@@ -1046,7 +1046,7 @@
 						</strong>
 					</td>
 				</tr>
-				</LOOP> 
+				</ALTERNATIVE></LOOP> 
 			</table>
 		</td>
 	</tr>
@@ -1097,25 +1097,25 @@
 <!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
 <strong>
 	<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<FIRST>[#PRENOM] [#NOMFAMILLE]</FIRST>
+		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		, [#PRENOM] [#NOMFAMILLE]
-		<LAST> et [#PRENOM] [#NOMFAMILLE]</LAST>
+		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
 	</LOOP>
 </strong>
 </DEFMACRO>
 
 <DEFMACRO NAME="AUTEURS_WITH_URL">
 	<LOOP NAME="auteurs_with_url" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<FIRST><a href="auteur.html?id=[#ID]"><font color="black">
+		<DOFIRST><a href="auteur.html?id=[#ID]"><font color="black">
 		 	[#PRENOM] [#NOMFAMILLE]
-			</FONT></a></FIRST>
+			</FONT></a></DOFIRST>
 			, <a href="auteur.html?id=[#ID]"><font color="black">
 			 [#PRENOM] [#NOMFAMILLE]
 			</FONT></a>
-		<LAST>
+		<DOLAST>
 			et <a href="auteur.html?id=[#ID]"><font color="black">
 			[#PRENOM] [#NOMFAMILLE]</FONT></a>
-		</LAST>
+		</DOLAST>
 	</LOOP>,
 </DEFMACRO>
 
@@ -1196,7 +1196,7 @@
 	<div align="center">
 		<span class="texte_trespetit_centre">
 			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
-				<CORPS>
+				<DO>
 					<IF COND="[#STATUS] gt 0">
 						<IF COND="[#STATUS] eq 1">
 							<a href="#" onClick="confirm_depublication(1,[#ID]);">
@@ -1217,7 +1217,7 @@
 							Dépublier&nbsp;/&nbsp;Publier
 						</IF>
 					</IF>
-				</CORPS>
+				</DO>
 			</LOOP>
 		</span>
 	</div>
@@ -1227,7 +1227,7 @@
 	<div align="center">
 		<span class="texte_trespetit_centre">
 			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
-				<CORPS>
+				<DO>
 					<IF COND="[#STATUS]==-32">
 						Déprotéger&nbsp;/&nbsp;Protéger
 					</IF>
@@ -1247,7 +1247,7 @@
 						</a>
 						&nbsp;/&nbsp;Protéger
 					</IF>
-				</CORPS>
+				</DO>
 			</LOOP>			
 		</span>
 	</div>
@@ -1257,7 +1257,7 @@
 	<div align="center">
 		<span class="texte_trespetit_centre">
 			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
-				<CORPS>
+				<DO>
 					<IF COND="[#STATUS]==-32">
 						Brouillon&nbsp;/&nbsp;
 						<a href="status.php?publication=[#ID]&status=pret">
@@ -1277,7 +1277,7 @@
 					<IF COND="[#STATUS]==1">
 						Brouillon&nbsp;/&nbsp;Prête à publier
 					</IF>
-				</CORPS>
+				</DO>
 			</LOOP>			
 		</span>
 	</div>

@@ -39,13 +39,13 @@
 		<table width="95%" border=0 cellspacing=0 cellpadding=15 align="CENTER" bordercolor="Black"> 
 			<!-- Affichage des articles correspondant aux mots clés -->
 			<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexl='[#ID]'">
-				<CORPS>
+				<DO>
 					<tr>
 						<td class="texte_sommaire">
 							<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 						</td>
 					</tr>
-				</CORPS>
+				</DO>
 			</LOOP>
 			<tr>
 				<td class="texte_petit_centre">

@@ -12,9 +12,9 @@
 				au document
 				<br /><br />
 				<LOOP NAME="" TABLE="documents" WHERE="id='[#IDDOCUMENT]'">
-					<CORPS>
+					<DO>
 						[#TITRE]
-					</CORPS>
+					</DO>
 				</LOOP>
 			</div>
 			<br />
@@ -108,9 +108,9 @@
 <br />
 <div align="center">
 	<LOOP NAME="" TABLE="documents" WHERE="id='[#IDDOCUMENT]'">
-		<CORPS>
+		<DO>
 			<a href="index.php?id=[#PUBLICATION]">Annuler</a>
-		</CORPS>
+		</DO>
 	</LOOP>
 </div>
 </td>

@@ -88,9 +88,9 @@
 															<span class="texte_petit_centre">
 																<!-- Affiche le titre de la publication  -->
 																<LOOP NAME="chercher_variable_publication" TABLE="documents" WHERE="id='[#ID]'">
-																	<CORPS>
+																	<DO>
 																		<LOOP NAME="affiche_numero" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
-																			<CORPS>
+																			<DO>
 																				<a href="sommaire.html?id=[#ID]">
 																					<span class="couleur_1">
 																						<br />
@@ -101,9 +101,9 @@
 																						 numéro [#NOM]
 																					</span>
 																				</a>
-																			</CORPS>
+																			</DO>
 																		</LOOP>
-																	</CORPS>
+																	</DO>
 																</LOOP>
 															</span>
 														</IF>

@@ -156,11 +156,11 @@
 		<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 		<option value="index.html">Thèmes</option>
 		<LOOP NAME="pub_menu_B" TABLE="publications" WHERE="ok" WHERE="type='theme'" ORDER="ordre DESC">
-			<CORPS>	
+			<DO>	
 				<option value="sommaire.html?id=[#ID]">
 					[#NOM]
 				</option>
-			</CORPS>
+			</DO>
 		</LOOP>
 		</select>
 	</form>
@@ -174,22 +174,22 @@
 <!-- Cette macro est destinée à l'affichage des métadonnées.            -->
 <!-- ****************************************************************** -->
 	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
-		<CORPS>
+		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
 			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
-					<CORPS>
+					<DO>
 						<IF COND="[#DATE]!='0000-00-00'">
 							<meta name="DC.Date" content="[#DATE]">
 						</IF>
-					</CORPS>
+					</DO>
 				</LOOP>
 			<ELSE/>
 				<IF COND="[#DATE]!='0000-00-00'">
 					<meta name="DC.Date" content="[#DATE]">
 				</IF>
 			</IF>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 

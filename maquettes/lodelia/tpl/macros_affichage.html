@@ -63,7 +63,7 @@
 	</span>
 	<table width="100%" border="0">
 		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
-			<CORPS>
+			<DO>
 				<tr>
 					<td>
 						<blockquote>
@@ -85,14 +85,14 @@
 						</blockquote>
 					</td>
 				</tr>
-				<ALTERNATIVE/>
+				<ALTERNATIVE>
 				<tr>
 					<td>
 						Aucun numéro disponible actuellement
 					</td>
 				</tr>
-			</CORPS>
-		</LOOP>
+			</DO>
+		</ALTERNATIVE></LOOP>
 	</table>
 </DEFMACRO>
 
@@ -252,7 +252,7 @@
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
-		<CORPS>
+		<DO>
 			Paru dans 
 			<a href="sommaire.html?id=[#ID]">
 				<span style="color:Black;">
@@ -263,7 +263,7 @@
 					</IF>.
 				</span>
 			</a>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -276,10 +276,10 @@
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
 <!-- ****************************************************************** -->
 	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
-		<CORPS>
+		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
-					<CORPS>
+					<DO>
 		    	    	<IF COND="[#NOM]">
 							<a href="sommaire.html?id=[#PUBLICATION]">
 								<span style="color:Black;">
@@ -288,7 +288,7 @@
 							</a>
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 						</IF>
-					</CORPS>
+					</DO>
             	</LOOP>
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
@@ -300,7 +300,7 @@
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 				</IF>
 	        </IF>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -313,7 +313,7 @@
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
-		<CORPS>
+		<DO>
 			Paru dans 
 			<a href="http://[#REVUE].revues.org">
 				<span style="color:Black;">
@@ -324,7 +324,7 @@
 					</IF>.
 				</span>
 			</a>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -358,22 +358,22 @@
 <!-- existe sinon n'affiche rien.                                       -->
 <!-- ****************************************************************** -->
 	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
-		<CORPS>
+		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
 			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
-					<CORPS>
+					<DO>
 						<IF COND="[#DATE]!='0000-00-00'">
 							Texte publié le : [(#DATE|humandate)]
 						</IF>
-					</CORPS>
+					</DO>
 				</LOOP>
 			<ELSE/>
 				<IF COND="[#DATE]!='0000-00-00'">
 					Texte publié le : [(#DATE|humandate)]
 				</IF>
 			</IF>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -494,7 +494,7 @@
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 			<tr><td class="menu1" valign="top" align="left" height="11" width="165" bgcolor="#EFEFEF">Série Linéaires :<br/ ></td></tr>
 		</BEFORE>
-		<CORPS>
+		<DO>
 			<tr>
 				<td class="menu1">
 				<br>
@@ -503,7 +503,7 @@
 			</tr>
 			<!-- On liste tous les numéros de la série linéaire courante -->
 			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
-				<CORPS>
+				<DO>
 					<tr>
 						<td class="menu2" valign="top" align="right"  width="165" bgcolor="#EFEFEF">
 							<a  class="menu2" href="sommaire.html?id=[#ID]">
@@ -511,12 +511,12 @@
 							</a>
 						</td>
 					</tr>
-				</CORPS>
+				</DO>
 				<AFTER>
 					<tr><td>&nbsp;</td></tr>
 				</AFTER>
 			</LOOP>
-		</CORPS>
+		</DO>
 		<AFTER>
 			</table>
 			<p></p>
@@ -528,7 +528,7 @@
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 			<tr><td class="menu1">Série Hiérarchiques :</td></tr>
 		</BEFORE>
-		<CORPS>
+		<DO>
 			<tr>
 				<td class="menu1">
 					[#NOM]
@@ -536,7 +536,7 @@
 			</tr>
 			<!-- On liste tous les thèmes de 1er niveau de la série hiérarchique courante -->
 			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
-				<CORPS>
+				<DO>
 					<tr>
 						<td class="menu2">
 							<a href="sommaire.html?id=[#ID]">
@@ -544,12 +544,12 @@
 							</a>
 						</td>
 					</tr>
-				</CORPS>
+				</DO>
 				<AFTER>
 					<tr><td>&nbsp;</td></tr>
 				</AFTER>
 			</LOOP>
-		</CORPS>
+		</DO>
 		<AFTER>
 			</table>
 			<p></p>
@@ -599,13 +599,13 @@
 				</td>
 			</tr>
 		</BEFORE> 
-		<CORPS>
+		<DO>
 			<tr> 
 				<td class="texte_sommaire" valign="top">
 					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 		
@@ -627,13 +627,13 @@
 				</td>
 			</tr>
 		</BEFORE>
-		<CORPS>
+		<DO>
 			<tr> 
 				<td class="texte_sommaire">
 					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -655,13 +655,13 @@
 				</td>
 			</tr>
 		</BEFORE> 
-		<CORPS>
+		<DO>
 			<tr> 
 				<td class="texte_sommaire">
 					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -683,13 +683,13 @@
 				</td>
 			</tr>
 		</BEFORE>
-		<CORPS>
+		<DO>
 			<tr> 
 				<td class="texte_sommaire" valign="top">
 					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -711,13 +711,13 @@
 				</td>
 			</tr>
 		</BEFORE> 
-		<CORPS>
+		<DO>
 			<tr> 
 				<td class="texte_sommaire">
 					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -739,13 +739,13 @@
 				</td>
 			</tr>
 		</BEFORE> 
-		<CORPS>
+		<DO>
 			<tr> 
 				<td class="texte_sommaire" valign="top">
 					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -782,13 +782,13 @@
 	<BEFORE>
 		<table width="561" border="0" align="left" cellspacing="4">
 	</BEFORE>
-	<CORPS>
+	<DO>
 		<tr> 
 			<td valign="top" bgcolor="#F7F7F7"> 
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 			</td>
 		</tr>
-	</CORPS>
+	</DO>
 	<AFTER>
 		</table>
 	</AFTER>
@@ -804,7 +804,7 @@
 <!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
-		<CORPS>
+		<DO>
 			<table width="561" border="0" align="left">
 				<tr>
 					<td valign="top" width="561" height="15" bgcolor="#ffffff">
@@ -839,7 +839,7 @@
 					</td>
 				</tr>
 			</table>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -871,26 +871,26 @@
 <!-- Affiche la liste des auteurs d'un document entre virgules.         -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<FIRST>
+		<DOFIRST>
 			[#PRENOM] 
 			[#NOMFAMILLE]
-		</FIRST>
-		<CORPS>
+		</DOFIRST>
+		<DO>
 			,
 			[#PRENOM] 
 			[#NOMFAMILLE]
-		</CORPS>
-		<LAST>
+		</DO>
+		<DOLAST>
 			 et 
 			 [#PRENOM] 
 			 [#NOMFAMILLE] 
-		</LAST>
-		<ALTERNATIVE/>
+		</DOLAST>
+		<ALTERNATIVE>
 		<IF COND="[#NOMFAMILLE]">
 			,
 		</IF>
 		</AFTER>
-	</LOOP>
+	</ALTERNATIVE></LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_AUTEURS_DOCUMENT">
@@ -903,27 +903,27 @@
 	<strong>
 		<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
-			<FIRST>
+			<DOFIRST>
 				<a class="auteur" href="auteur.html?id=[#ID]">
 					
 						[#PRENOM]
 						[#NOMFAMILLE]
 					
 				</a>
-			</FIRST>
-			<CORPS>
+			</DOFIRST>
+			<DO>
 				,<a class="auteur" href="auteur.html?id=[#ID]">
 						[#PRENOM]
 						[#NOMFAMILLE]
 				</a>
-			</CORPS>
-			<LAST>
+			</DO>
+			<DOLAST>
 				et 
 				<a class="auteur" href="auteur.html?id=[#ID]">
 						[#PRENOM]
 						[#NOMFAMILLE]
 				</a>
-			</LAST>
+			</DOLAST>
 			<AFTER>
 				<IF COND="[#NOMFAMILLE]">
 					<br />
@@ -945,7 +945,7 @@
 		<BEFORE>
 			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
 		</BEFORE>
-		<CORPS>
+		<DO>
 			<tr>
 				<td width="100%" class="texte_petit">
 					<a href="sommaire.html?id=[#ID]">
@@ -962,7 +962,7 @@
 					<br />
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 		<AFTER>
 			</table>
 		</AFTER>
@@ -977,7 +977,7 @@
 <!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
-		<CORPS>
+		<DO>
 			<a class="titre2" href="sommaire.html?id=[#ID]">
 				<strong>
 					
@@ -994,7 +994,7 @@
 				</IF>
 			</a>
 			<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -1008,7 +1008,7 @@
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
-		<CORPS>
+		<DO>
 			<strong>
 				<span class="couleur_1">
 					Sommaire du dernier numéro publié : [#NOM] 
@@ -1024,7 +1024,7 @@
 			</IF>
 			<br /><br />
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -1038,9 +1038,9 @@
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
-		<CORPS>
+		<DO>
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -1051,7 +1051,7 @@
 <!-- Affiche le dernier thème en date. (en fonction du champs date)     -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="ok" WHERE="type='theme'" LIMIT="0,1">
-		<CORPS>
+		<DO>
 			<a href="sommaire.html?id=[#ID]">
 				[#NOM]
 			</a>
@@ -1063,7 +1063,7 @@
 				<br />
 				[#DIRECTEUR]
 			</IF>
-		</CORPS>
+		</DO>
 	</LOOP>
 </DEFMACRO>
 
@@ -1080,7 +1080,7 @@
 		<BEFORE>
 			<table>
 		</BEFORE>
-		<CORPS>
+		<DO>
 			<tr>
 				<td class="texte_petit">
 					<!-- Titre du doc annexe -->
@@ -1101,7 +1101,7 @@
 					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
 				</td>
 			</tr>
-		</CORPS>
+		</DO>
 		<AFTER>
 			</table>
 		</AFTER>

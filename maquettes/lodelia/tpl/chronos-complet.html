@@ -38,18 +38,18 @@
 			<tr>
 				<td width="100%" class="texte_petit_centre">
 					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-						<CORPS>
+						<DO>
 							<a href="chrono.html?id=[#ID]">
 								[#NOM]
 							</a>
 							&nbsp;|
-						</CORPS>
+						</DO>
 					</LOOP>
 				</td>
 			</tr>
 		</table>
 		<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-			<CORPS>
+			<DO>
 				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="TOP"  bordercolor="Black">
 					<tr>
 						<td align="center" width="50%" valign="MIDDLE" class="soustitre">
@@ -63,14 +63,14 @@
 					<tr>
 						<td span class="texte_petit">
 							<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-								<CORPS>
+								<DO>
 									<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-								</CORPS>
+								</DO>
 							</LOOP>
 						</td>
 					</tr>
 				</table>
-			</CORPS>
+			</DO>
 		</LOOP>
 	</td>
 	<MACRO NAME="TRACER_LIGNE_VERTICALE">
