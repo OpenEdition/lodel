@@ -696,22 +696,24 @@ function make_loop_code ($name,$tables,
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
   // special treatment for limit when only one value is given.
-  if ($limit && strpos($limit,",")===false) {
-    $preprocesslimit='
-     $currentoffset=intval(($_REQUEST[\'offset_'.$name.'\'])/'.$limit.')*'.$limit.';';
-    $processlimit='
-    $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
-    if ($_SERVER[\'QUERY_STRING\']) $currenturl.=$_SERVER[\'QUERY_STRING\']."&";
- if ($context[nbresultats]>'.$limit.') { 
-$context[nexturl]=$currenturl."offset_'.$name.'=".($currentoffset+'.$limit.');
+if ($limit && strpos($limit,",")===false) {
+   $offsetname="offset_".substr(md5($name),0,5);
+   $preprocesslimit='
+    $currentoffset=intval(($_REQUEST[\''.$offsetname.'\'])/'.$limit.')*'.$limit.';';
+   $processlimit='
+   $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
+   $cleaquery=preg_replace("/&?'.$offsetname.'=\d+/","",$_SERVER[\'QUERY_STRING\']);
+   if ($cleanquery) $currenturl.=$cleanquery."&";
+if ($context[nbresultats]>'.$limit.') {
+$context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$limit.');
 $context[nbresultats]--;
 } else {
 $context[nexturl]="";
 }
-$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."offset_'.$name.'=".($currentoffset-'.$limit.') : "";
- ';
-    $limit='".$currentoffset.",'.($limit+1);
-  }
+$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
+';
+   $limit='".$currentoffset.",'.($limit+1);
+ } 
   if ($limit) $limit="LIMIT ".$limit;
 
   // traitement particulier additionnel
