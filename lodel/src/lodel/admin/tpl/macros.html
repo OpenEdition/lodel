@@ -52,6 +52,104 @@
 </DEFMACRO>
 <!-- ************************************************** -->
 
+<!-- Macros rajoutées le 20/10/03 ********************* -->
+<!-- Macro servant à typeentrees.html, champs.html      -->
+<!-- typepersonne.html                                  -->
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
+	<div>
+		<IF COND="abs([#STATUT]) lt 32 or [#ADMINLODEL]">
+			|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+			<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+		<ELSE/>
+			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+			<span class="inactif">Supprimer</span>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
+	<div>
+		<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
+			|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+			<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+		<ELSE/>
+			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+			<span class="inactif">Supprimer</span>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_ENTREES">
+	<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
+		|&nbsp;<a href="typeentree.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+		<a href="typeentree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+	<ELSE/>
+		|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+		<span class="inactif">Supprimer</span>&nbsp;|&nbsp;
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
+	<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
+		|&nbsp;<a href="typepersonne.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+		<a href="typepersonne.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+	<ELSE/>
+		|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
+		<span class="inactif">Supprimer</span>&nbsp;|&nbsp;
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_GROUPE">
+	<tr><td colspan="5"><hr /></td></tr>
+	<tr>
+		<td colspan="4"><h2>Groupe: <span style="color: #CC9933;">[#TITRE]</span> ([#NOM])</h2></td>
+		<td style="color: #CC9933;">
+			<MACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
+		</td>
+	</tr>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
+	<!-- Affiche tous les champs du groupe courant -->
+	<LOOP NAME="afficherchamps" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
+		<DO>
+			<tr>
+				<IF COND="[#COUNT] % 2">
+					<td class="ligne_admin1">[#NOM]</td>
+					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
+					<td class="ligne_admin1">[#TYPE]</td>
+					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
+					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
+					</td>
+				<ELSE/>
+					<td class="ligne_admin2">[#NOM]</td>
+					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
+					<td class="ligne_admin2">[#TYPE]</td>
+					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
+					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
+					</td>
+				</IF>
+			</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="5"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="CASE_A_COCHER_PROTEGER">
+	<IF COND="abs([#STATUT]) lt 32">
+		<input type="checkbox" name="protege">
+	<ELSE/>
+		<input type="checkbox" name="protege" checked>
+	</IF>
+</DEFMACRO>
+<!-- ************************************************** -->
+
+
 <!-- ************************************** Rajout intégration maquette ************************************** -->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!-- exemple de Javascript pour un Rollover -->

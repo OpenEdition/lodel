@@ -71,12 +71,7 @@
 		<IF COND="[#ADMINLODEL]">    
 		<tr>
 			<td class="texte_intitule">Type d'entree protégé:</td>
-
-<IF COND="abs([#STATUT]) lt 32">
-			<td><input type="checkbox" name="protege"></td>
-<ELSE/>
-			<td><input type="checkbox" name="protege" checked></td>
-</IF>
+			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>
 		</tr>
 		</IF>
 

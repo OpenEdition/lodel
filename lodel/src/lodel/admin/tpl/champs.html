@@ -22,65 +22,23 @@
 	<a href="champ.php?classe=documents">Ajouter un champs a la table document</a>
 </div>
 <br />
- 
+
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td class="texte_noir_gras">Nom</td>
 		<td class="texte_noir_gras">Titre</td>
-		<!--<td class="texte_noir_gras">Groupe</td>-->
 		<td class="texte_noir_gras">Type</td>
 		<td class="texte_noir_gras">Style</td>
 		<td>&nbsp;</td>
 	</tr>
 	<LOOP NAME="groupesdocument" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='documents'">
-	<tr><td colspan="5"><hr /></td></tr>
-	<tr>
-		<td colspan="4"><h2>Groupe: <span style="color: #CC9933;">[#TITRE]</span> ([#NOM])</h2></td>
-		<td style="color: #CC9933;">
-			<div>
-				|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-				<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
-			</div>
-		</td>
-	</tr>
-	
-	<LOOP NAME="champdocument" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
+		<!-- Liste tous les groupes de classe documents -->
 		<DO>
-			<tr>
-				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1">[#NOM]</td>
-					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
-					<!--<td class="ligne_admin1">[(#GROUPE|nbsp)]</td>-->
-					<td class="ligne_admin1">[#TYPE]</td>
-					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
-						</div>
-					</td>
-				<ELSE/>
-					<td class="ligne_admin2">[#NOM]</td>
-					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
-					<!--<td class="ligne_admin2">[(#GROUPE|nbsp)]</td>-->
-					<td class="ligne_admin2">[#TYPE]</td>
-					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
-						</div>
-					</td>
-				</IF>
-			</tr>
+			<MACRO NAME="AFFICHER_GROUPE">
+			<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 		</DO>
-		<ALTERNATIVE>
-			<tr><td colspan="6"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
-		</ALTERNATIVE>
-	</LOOP>
 	</LOOP>
 </table>
-<!-- la suite est tres similaire... faire une macro -->
 
 <br /><br />
 <div class="intitule_ligne_formulaire"><span style="font-size:18px">Publications</span></div>
@@ -98,56 +56,16 @@
 	<tr>
 		<td class="texte_noir_gras">Nom</td>
 		<td class="texte_noir_gras">Titre</td>
-		<!--<td class="texte_noir_gras">Groupe</td>-->
 		<td class="texte_noir_gras">Type</td>
 		<td class="texte_noir_gras">Style</td>
 		<td>&nbsp;</td>
 	</tr>
 	<LOOP NAME="groupespublication" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='publications'">
-	<tr><td colspan="5"><p><hr /></p></td></tr>
-	<tr>
-		<td colspan="4"><h2>Groupe: <span style="color: #CC9933;">[#TITRE]</span> ([#NOM])</h2></td>
-		<td style="color: #CC9933;">
-			<div>
-				|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-				<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
-			</div>
-		</td>
-	</tr>
-	<LOOP NAME="champpublication" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
+		<!-- Liste tous les groupes de classe publications -->
 		<DO>
-			<tr>
-				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1">[#NOM]</td>
-					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
-					<!--<td class="ligne_admin1">[(#GROUPE|nbsp)]</td>-->
-					<td class="ligne_admin1">[#TYPE]</td>
-					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
-						</div>
-					</td>
-				<ELSE/>
-					<td class="ligne_admin2">[#NOM]</td>
-					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
-					<!--<td class="ligne_admin2">[(#GROUPE|nbsp)]</td>-->
-					<td class="ligne_admin2">[#TYPE]</td>
-					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-							<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
-						</div>
-					</td>
-				</IF>
-			</tr>
+			<MACRO NAME="AFFICHER_GROUPE">
+			<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 		</DO>
-		<ALTERNATIVE>
-			<tr><td colspan="6"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
-		</ALTERNATIVE>
-	</LOOP>
 	</LOOP>
 </table>
 
