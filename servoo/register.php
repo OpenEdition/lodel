@@ -82,7 +82,7 @@ if ($edit && !$reject) {
     $encodedpasswd=md5($passwd.".".$username);
 
     // ok, add the user.
-    mysql_query("INSERT INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$username','$encodedpasswd','$context[url]','$context[realname]','$context[email]','5','$context[commentaire]')") or die(mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$username','$encodedpasswd','$context[url]','$context[realname]','$context[email]','100','$context[commentaire]')") or die(mysql_error());
     $id=mysql_insert_id();
 
     // make the registration email
