@@ -41,8 +41,8 @@ if ($file && $delete) {
     unlink($file);
   }
   //
-} elseif ($file || $base) {
-  if ($base) $file=$GLOBALS['home']."../install/plateform/model-base.zip";
+} elseif ($file) {
+  #if ($base) $file=$GLOBALS['home']."../install/plateform/model-base.zip";
   require_once("connect.php");  
   require_once("backupfunc.php");
   require("func.php");
