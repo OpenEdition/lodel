@@ -79,11 +79,8 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	    }
 	  }
 	} // processing
-	
-	// enleve les <P> s'ils sont aux extremites, et qu'il n'y a pas d'autres balises P a l'interieur
-	// ainsi que les styles de caracteres
-	$countp=preg_match_all("/<\/?p\b[^>]*>/",$value);
-	if ($countp>0 && $countp<=2) $value=preg_replace("/<\/?p\b[^>]*>/","".$value);
+
+	// enleve les styles de caracteres
 	$value=addslashes(trim(preg_replace("/<\/?r2rc:[^>]+>/","",$value)));
 
 	// now record the $value
