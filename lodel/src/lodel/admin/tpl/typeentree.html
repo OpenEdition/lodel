@@ -73,29 +73,32 @@
 			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
 		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
-		<tr>
-			<td colspan="2">
-				<br />Entrée linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> &nbsp;&nbsp;
-				Entrée hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] />
+	      </table>
+	    <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="10">
+	      <tr>
+			<td>
+				<input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Entrée linéaire<br />
+	                        <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /> Entrée hiérarchique
+	                </td>
+
+<!--[		</tr>
+		<tr>]-->
+			<td>
+				 <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] /> Import de nouveaux elements possible <br/>
+				<input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] /> Liste figée par l'administrateur
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2">
-				Import de nouveaux elements possible: <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] />&nbsp;&nbsp;
-				Liste figée par l'administrateur: <input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] />
+			<td>
+				<input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] /> Utiliser les abréviations<br />
+				<input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] /> Pas d'abréviation
 			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				Utiliser les abréviations: <input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] />&nbsp;&nbsp;
-				Pas d'abréviation: <input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] />
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				Ordre alphabétique: <input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] />&nbsp;&nbsp;
-				Ordre définit dans l'interface: <input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] />&nbsp;&nbsp;
-				Par ordre de création: <input type="radio" name="tri" value="id" [(#TRI|eq("id"))] /><br />
+<!--[		</tr>
+		<tr>]-->
+			<td>
+				<input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] /> Ordre alphabétique<br />
+				<input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] /> Ordre définit dans l'interface<br />
+				<input type="radio" name="tri" value="id" [(#TRI|eq("id"))] />Par ordre de création
 			</td>
 		</tr>
 		<IF COND="[#ADMINLODEL]">    

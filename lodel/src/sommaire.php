@@ -64,6 +64,10 @@ if ($id) {
   $context=array_merge($context,$row);
 } else {
   $base="sommaire";
+  if (!file_exists("tpl/".$base.".html")) {
+    header("Location: index.$GLOBALS[extensionscripts]");
+    return;
+  }
 }
 //
 // cherche le numero precedent et le suivant
