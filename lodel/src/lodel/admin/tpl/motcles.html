@@ -34,17 +34,21 @@
 		<img src="images/coplanddetruire.gif" width="32" height="32" alt="Supprimer" border="0">
 	</TD>
 </TR>
-<BOUCLE NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type=2" WHERE="ok">
-	<TR>
+<BOUCLE NAME="motcles" TABLE="indexls" ORDER="mot" WHERE="type_tous_motcles">
+	<TR> 
 		<TD align="center" align="middle">
 			<img src="images/GNOME_prefs.gif" width="24" height="24" border="0">
 		</TD>
 		<TD>
+		<IF [#TYPE]==3>
+			<strong>
+		</IF>
 			<font color="Navy">
-			<b>
 				[#MOT]
-			</b>
-			</FONT>
+			</font>
+		<IF [#TYPE]==3>
+			</strong>
+		</IF>
 		</TD>
 		<TD align="center">
 			<A HREF="motcle.php?id=[#ID]">
@@ -59,3 +63,16 @@
 	</TR>
 </BOUCLE>
 </TABLE>
+<br>
+<br>
+
+<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
+<TR>
+	<TD>
+		<strong><font color="Navy">En gras :</font></strong> mots clés ajoutés dans l'interface.
+		<font color="Navy">En maigre :</font> mots clés ajoutés via l'import RTF.<br>
+	</TD>
+</TR>
+</TABLE>
+<br>
+<br>
