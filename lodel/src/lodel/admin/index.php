@@ -80,7 +80,7 @@ if ($therequest['do']) {
     if (!method_exists($logic,$do)) die("ERROR: invalid action");
 
     // call the logic action
-    $ret=$logic->$do(&$context,&$error);
+    $ret=$logic->$do($context,$error);
   }
 
   // create the view
