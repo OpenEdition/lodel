@@ -83,6 +83,8 @@ class Entities_AdvancedLogic extends Logic {
      if (!$vo) die("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ");
      $vo->status=$status;
      $dao->save($vo);
+
+     update();
      return "_back";
    }
 
@@ -198,7 +200,8 @@ class Entities_AdvancedLogic extends Logic {
 	 touch(SITEROOT."CACHE/maj");
        }
        //unlock();
-    
+
+     update();
      return "_back";
    }
 
