@@ -321,11 +321,9 @@ IPR
 <!-- Version 1.0                                                        -->
 <!-- Affichage métadonnées propres à chrono.html.                       -->
 <!-- ****************************************************************** -->
-<LOOP NAME="type_periode" TABLE="typeindexs" WHERE="nom='periode'">
-	<LOOP NAME="DCtitle" TABLE="indexs" WHERE="type=[#ID]">
+	<LOOP NAME="DCtitle" TABLE="entrees" WHERE="type='periode'">
 		<meta name="DC.Title" content="Index chronologique : [#NOM]." />
 	</LOOP>
-</LOOP>
 <meta NAME="DC.Description" lang="fr" content="Index chronologique." />
 </DEFMACRO>
 
@@ -402,7 +400,7 @@ IPR
 		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_motscles_lineaires" TABLE="indexs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_motscles_lineaires" TABLE="entrees" WHERE="iddocument='[#ID]' AND type='motcle'" ORDER="ordre">
 		<meta name="KEYWORDS" content="[#MOT]" />
 	</LOOP>
 	
@@ -419,11 +417,11 @@ IPR
 	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]" />
 	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
-	<LOOP NAME="meta_dc_motscles_l" TABLE="indexs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_motscles_l" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
 		<meta name="DC.Subject" content="[#MOT]" />
 	</LOOP>
 	
-	<LOOP NAME="meta_dc_motscles_h" TABLE="indexs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="meta_dc_motscles_h" TABLE="entrees" WHERE="iddocument='[#ID]'  AND type='motcle'" ORDER="ordre">
 		<meta name="DC.Subject" content="[#MOT]" />
 	</LOOP>
 	
