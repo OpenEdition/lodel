@@ -178,7 +178,7 @@
 	<IF COND="[#TYPE] eq 'date'">
 		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
-	<IF COND="[#EDITION] eq 'text'">
+	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea10'">

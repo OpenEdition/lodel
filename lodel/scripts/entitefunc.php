@@ -75,27 +75,54 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   // check for errors and build the set
   $sets=array();
   require_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
-  while (list($nom,$type,$condition)=mysql_fetch_row($result)) {
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
+  while (list($nom,$type,$condition,$defaut)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
-    if ($condition=="+" && !trim($entite[$nom])) $err=$erreur[$nom]="+";
+    if ($condition=="+" && !isset($defaut) && !trim($entite[$nom])) $err=$erreur[$nom]="+";
     switch ($type) {
     case "date" : 
+      include_once($home."date.php");
       if (isset($entite[$nom])) {
-	include_once($home."date.php");
 	$entite[$nom]=mysqldate($entite[$nom]);
-	if (!$entite[$nom]) $err=$erreur[$nom]="date";
+      } elseif ($defaut) {
+	if ($defaut=="aujourd'hui" || $defaut=="today") {
+	  $entite[$nom]=date("Y-m-d");
+	} elseif (preg_match("/^\s*dans\s+(\d+)\s*(an|mois|jour)s?\s*$/i",$defaut,$result2)) {
+	  $val=$result2[1];
+	  switch ($result2[2]) {
+	  case "an" :
+	    $entite[$nom]= date("Y-m-d",mktime (0,0,0,date("m"),  date("d"),  date("Y")+$val));
+	    break;
+	  case "mois" :
+	    $entite[$nom]= date("Y-m-d",mktime (0,0,0,date("m")+$val,  date("d"),  date("Y")));
+	    break;
+	  case "jour" :
+	    $entite[$nom]= date("Y-m-d",mktime (0,0,0,date("m"),  date("d")+$val,  date("Y")));
+	    break;
+	  }
+	} elseif (mysqldate($defaut)) {
+	  $entite[$nom]=mysqldate($defaut);
+	} else {
+	  die("valeur par defaut non reconnue: \"$defaut\"");
+	}
+      } else {
+	$err=$erreur[$nom]="date";
       }
       break;
     case "int" :
+      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=intval($defaut);
       if (isset($entite[$nom]) && 
 	  (!is_numeric($entite[$nom]) || intval($entite[$nom])!=$entite[$nom])) 
 	$err=$erreur[$nom]="int";
       break;
-    case "number" : if (isset($entite[$nom]) && 
+    case "number" : 
+      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=doubleval($defaut);
+      if (isset($entite[$nom]) && 
 			!is_numeric($entite[$nom])) $err=$erreur[$nom]="numeric";
       break;
-    case "url" : if (isset($entite[$nom])) {
+    case "url" : 
+      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=$defaut;
+      if (isset($entite[$nom])) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
       $validchar='-0-9A-Z_a-z';
       if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$entite[$nom])) $err=$erreur[$nom]="url";
@@ -113,6 +140,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 	}
 	$entite[$nom]=$str;
       }
+    default :
+      if (!isset($entite[$nom])) $entite[$nom]=$defaut;
     }
     $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
   } // end of while over the results

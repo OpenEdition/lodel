@@ -99,7 +99,7 @@ if ($edit) { // modifie ou ajoute
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,traitement,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,defaut,traitement,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
@@ -108,7 +108,6 @@ if ($edit) { // modifie ou ajoute
       require_once($home."cachefunc.php");
       removefilesincache(".","../edition","../..");
     }
-
     unlock();
     back();
   } while (0);
@@ -165,10 +164,11 @@ function make_select_edition()
 {
   make_select("edition",
 		 array(
-		       "text"=>"1 ligne",
-		       "textarea10"=>"10 lignes",
-		       "textarea30"=>"30 lignes",
+		       "editable"=>"editable",
 		       ""=>"non editable dans l'interface",
+		       "text"=>"editable sur 1 ligne",
+		       "textarea10"=>"editable sur 10 lignes",
+		       "textarea30"=>"editable sur 30 lignes",
 		       )
 		 );
 }

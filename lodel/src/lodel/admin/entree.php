@@ -69,6 +69,8 @@ if ($edit) { // modifie ou ajoute
   include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees WHERE $critere AND statut>-32") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
+} else {
+  $context[statut]=32; # valeur par defaut a la creation
 }
 
 // cherche le type. As-t-on l'id ou du texte ?

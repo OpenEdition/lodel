@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
 	condition	TINYTEXT NOT NULL,		# condition
+	defaut		TINYTEXT NOT NULL,		# valeur par defaut
 	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
 	filtrage	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
