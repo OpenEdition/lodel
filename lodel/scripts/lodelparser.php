@@ -58,7 +58,7 @@ function parse_loop_extra(&$tables,
 	      array(
 		    "statut<=0",
 		    "statut>0",
-		    '".($GLOBALS[admin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."'
+		    '".($GLOBALS[droitadmin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."'
 		    ),$where);
   //
 
@@ -115,11 +115,11 @@ function parse_loop_extra(&$tables,
       if ($table=="$GLOBALS[tp]session") continue;
 
       if ($table=="$GLOBALS[tp]entites") {
-	$lowstatut='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
+	$lowstatut='"-64".($GLOBALS[droitadmin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
       } else {
 	$lowstatut="-64";
       }
-      array_push($teststatut,"($table.statut>\".(\$GLOBALS[visiteur] ? $lowstatut : \"0\").\")");
+      array_push($teststatut,"($table.statut>\".(\$GLOBALS[droitvisiteur] ? $lowstatut : \"0\").\")");
     }
     $where=join(" AND ",$teststatut);
   }
@@ -217,7 +217,7 @@ function parse_variable_extra ($nomvar)
   // VARIABLES SPECIALES
   //
   if ($nomvar=="OKGROUPE") {
-    return '($GLOBALS[admin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
+    return '($GLOBALS[droitadmin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
   }
   return FALSE;
 }
@@ -276,11 +276,11 @@ include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
 $arr=array("'.strtolower(join('","',$result[1])).'");';
       if ($withtextebalises) { // on a aussi besoin des balises liees au texte
-	$ret["PRE_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
+	$ret["PRE_".$balise].='if ($context[textepublie] || $GLOBALS[droitvisiteur]) array_push ($arr,'.$withtextebalises.');';
       }
       $ret["PRE_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
     } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
-      $ret["PRE_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
+      $ret["PRE_".$balise]='if ($context[textepublie] || $GLOBALS[droitvisiteur]) {
 $filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");

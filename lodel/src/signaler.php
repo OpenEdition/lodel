@@ -39,7 +39,7 @@ include_once($home."connect.php");
 //
 // get the  document
 //
-$critere=$visiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
+$critere=$droitvisiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
 
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());

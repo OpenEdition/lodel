@@ -48,7 +48,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   $template_time=myfilemtime($template_cache);
 
   if (($template_time <= myfilemtime($base)) || $GLOBALS[recalcul_templates]) {
-	if ($GLOBALS[admin]) $context[templatesrecompiles].="$base | ";
+	if ($GLOBALS[droitadmin]) $context[templatesrecompiles].="$base | ";
 
     require_once ($home."lodelparser.php");
     $parser=new LodelParser;
@@ -56,7 +56,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   }
   // execute le template php
   require_once($home."textfunc.php");		
-  if ($GLOBALS[showhtml] && $GLOBALS[visiteur]) {
+  if ($GLOBALS[showhtml] && $GLOBALS[droitvisiteur]) {
     ob_start();
     require($template_cache);
     $content=ob_get_contents();
@@ -90,7 +90,7 @@ function insert_template($filename)
 function mymysql_error($query,$tablename="")
 
 {
-  if ($GLOBALS[editeur]) {
+  if ($GLOBALS[droitediteur]) {
     if ($tablename) $tablename="LOOP: ".$tablename." ";
     die("</body>".$tablename."QUERY: ".htmlentities($query)."<br><br>".mysql_error());
   } else {

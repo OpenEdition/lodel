@@ -94,7 +94,7 @@ function proteges (&$context,$funcname,$classe)
 function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
 
 {
-  global $usergroupes,$admin,$context;
+  global $usergroupes,$droitadmin,$context;
   if ($mklock) {
     lock_write("entites",
 	       "publications","documents",
@@ -103,7 +103,7 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
 	       "relations");
   }
 
-  $critere.=$admin ? "" : " AND groupe IN ($usergroupes)";
+  $critere.=$droitadmin ? "" : " AND groupe IN ($usergroupes)";
 
   // verifie les tables a joindre pour le critere
   // a completer si necessaire
@@ -115,7 +115,7 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
 
   $context[proteges]=array();
 
-  if (!$admin) {
+  if (!$droitadmin) {
     // cherche l'id de la publication/document courante $id... verifie qu'on a les droits
     $result=mysql_query("SELECT id,statut FROM $tables WHERE $GLOBALS[tp]entites.id='$id' $critere") or die(mysql_error());
     if (!mysql_num_rows($result)) die("vous n'avez pas les droits. Erreur dans l'interface.");
@@ -200,7 +200,7 @@ function supprime_table($ids,$table,$deletetable=TRUE,$deletecritere="")
 function publi ($id,$statut,$confirmation,$mklock=TRUE)
 
 {
-  global $usergroupes,$admin,$context;
+  global $usergroupes,$droitadmin,$context;
 
   if ($mklock) {
     lock_write("entites",
@@ -213,7 +213,7 @@ function publi ($id,$statut,$confirmation,$mklock=TRUE)
   // cherche les entitess a publier ou depublier
   //
 
-  $critere=$admin ? "" : " AND groupe IN ($usergroupes)";
+  $critere=$droitadmin ? "" : " AND groupe IN ($usergroupes)";
 
   $ids=array();
   $context[proteges]=array();

@@ -52,7 +52,7 @@ if ($id>0 && $dir) {
   back();
 }
 
-if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
+if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
 
 //
 // supression et restauration
@@ -87,7 +87,7 @@ if ($edit) { // modifie ou ajoute
       if (!$context[classe]) die ("Erreur interne. Il manque la classe dans le formulaire");
       $ordre=get_ordre_max("groupesdechamps"," classe='$context[classe]'");
     }
-    if ($adminlodel) {
+    if ($droitadminlodel) {
       $newstatut=$protege ? 32 : 1;
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }

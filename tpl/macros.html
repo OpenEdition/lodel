@@ -962,7 +962,7 @@ Attention, cette routine sera changée bientôt
 				</strong>
 			<!--[ S'il s'agit d'un rédacteur, des fonctions sont proposées ]-->
 			<!--[ modifier, ajouter, up/down                               ]-->
-		<IF COND="[#REDACTEUR]">
+		<IF COND="[#DROITREDACTEUR]">
 			<MACRO NAME="EDIT_DOCANNEXE">	
 		</IF>
 			</TD>
@@ -972,7 +972,7 @@ Attention, cette routine sera changée bientôt
 </AFTER>
 </LOOP>
 	<!--[ Propose aux rédacteurs d'ajouter un document  -]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<a href="lodel/edition/docannexe.php?iddocument=[#ID]">
 			<span class="texte_tres_petit">
 				[Ajouter un document annexe]
@@ -1282,7 +1282,7 @@ Attention, cette routine sera changée bientôt
 <!--[ Affiche seulement le statut ]-->
 
 <DEFMACRO NAME="OFFLINE">
-<IF COND="[#REDACTEUR]">
+<IF COND="[#DROITREDACTEUR]">
 	[<FONT COLOR="red" size="-2">(off)(#OFFLINE|true)</FONT>]
 	[<FONT COLOR="red" size="-2">(on)(#OFFLINE|false)</FONT>]
 </IF>
@@ -1292,7 +1292,7 @@ Attention, cette routine sera changée bientôt
 <!--[ Afin d'éviter de générer des 404 par erreur, la dépublication ne se fait pas ici ]-->
 
 <DEFMACRO NAME="OFFLINE_DOCUMENT">
-<IF COND="[#EDITEUR]">
+<IF COND="[#DROITEDITEUR]">
 	<IF COND="[#OFFLINE]">
 		<a href="lodel/edition/publi.php?id=[#ID]&online=1">
 			<font size="-2">
@@ -1311,7 +1311,7 @@ Attention, cette routine sera changée bientôt
 <!--[ d'affichage des documents                           ]-->
 
 <DEFMACRO NAME="UP_DOWN_DOCUMENT">   
-<IF COND="[#REDACTEUR]">
+<IF COND="[#DROITREDACTEUR]">
 	<a href="lodel/edition/editer.php?dir=up&id=[#ID]">
 	<span class="texte_trespetit">
 		[M]
@@ -1351,7 +1351,7 @@ Attention, cette routine sera changée bientôt
 <!--[ Bouton "Edit" ce document  											 ]-->
 
 <DEFMACRO NAME="EDIT">
-<IF COND="[#REDACTEUR]">
+<IF COND="[#DROITREDACTEUR]">
 	<a class="admin" href="lodel/edition/editer.php?id=[#ID]">
 	<span class="texte_trespetit">
 		[E]
@@ -1362,7 +1362,7 @@ Attention, cette routine sera changée bientôt
 
 <!--[ Bouton "Edit" cette publication  											 ]-->
 <DEFMACRO NAME="EDIT_PUBLICATION">
-<IF COND="[#REDACTEUR]">
+<IF COND="[#DROITREDACTEUR]">
 	<a class="admin" href="lodel/edition/index.php?parent=[#IDPUBLICATION]">
 	<span class="texte_trespetit">
 		[E]

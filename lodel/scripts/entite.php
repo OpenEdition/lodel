@@ -129,7 +129,7 @@ $context[idtype]=intval($idtype);
 ####$context[idparent]=$idparent=intval($idparent);
 
 
-if ($id>0 && !$admin) {
+if ($id>0 && !$droitadmin) {
   $critere=" AND groupe IN ($usergroupes)";
 } else $critere="";
 

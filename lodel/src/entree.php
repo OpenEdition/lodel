@@ -31,7 +31,7 @@ include ($home."auth.php");
 authenticate();
 
 $context[id]=$id=intval($id);
-$critere=$visiteur ?  "" : "AND $entreetable.statut>0";
+$critere=$droitvisiteur ?  "" : "AND $entreetable.statut>0";
 
 include_once($home."connect.php");
 $entreetable="$GLOBALS[tp]entrees";

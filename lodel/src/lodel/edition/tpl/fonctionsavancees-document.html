@@ -54,7 +54,7 @@
 	</div>
 	
 	<!--[ Recharger le fichier ]-->
-	<IF COND="[#EDITEUR]">	
+	<IF COND="[#DROITEDITEUR]">	
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="oochargement.php?iddocument=[#ID]">
@@ -72,7 +72,7 @@
 	</IF>
 
 	<!--[ Téléchargement source RTF ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="telecharger.php?id=[#ID]&type=source">
@@ -92,7 +92,7 @@
 	</IF>
 
 	<!--[ Téléchargement source XML ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="xml.php?id=[#ID]">
@@ -112,7 +112,7 @@
 	</IF>
 	
 	<!--[ Déplacer le document ]-->
-	<IF COND="[#EDITEUR]">	
+	<IF COND="[#DROITEDITEUR]">	
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="deplacer.php?id=[#ID]">
@@ -133,7 +133,7 @@
 		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
 	</div>
 	
-	<IF COND="[#EDITEUR]">
+	<IF COND="[#DROITEDITEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="metaimage.php?iddocument=[#ID]&champ=image">
@@ -150,7 +150,7 @@
 		</div>
 	</IF>
 
-	<IF COND="[#EDITEUR]">
+	<IF COND="[#DROITEDITEUR]">
 		<div class="ligne_form_fa">
 			<div class="intitule_ligne_form_fa">
 				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>

@@ -52,7 +52,7 @@ if ($id>0 && $dir) {
   back();
 }
 
-if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
+if ($id && !$droitadminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
 
 
 //
@@ -121,7 +121,7 @@ if ($edit) { // modifie ou ajoute
       $alter="ADD";
     }
     // adminlodel only are allow to protect/unprotect
-    if ($adminlodel) {
+    if ($droitadminlodel) {
       $newstatut=$protege ? 32 : 1;
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }

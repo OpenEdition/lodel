@@ -36,7 +36,7 @@ if (!function_exists("authenticate")) {
 }
 
 
-if ($GLOBALS[visiteur]) {
+if ($GLOBALS[droitvisiteur]) {
   require ($home."calcul-page.php");
   calcul_page($context,$base);
   return;

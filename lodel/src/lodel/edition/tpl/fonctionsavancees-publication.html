@@ -55,7 +55,7 @@
 		<div style="padding-top:10px;"><MACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">Ajouts</div>
 	</div>
 	
-	<IF COND="[#EDITEUR]">
+	<IF COND="[#DROITEDITEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<a href="metaimage.php?idpublication=[#ID]&champ=image">
@@ -73,7 +73,7 @@
 	</IF>
 	
 	<IF COND="[#TYPE] EQ 'serie_lineaire'">
-		<IF COND="[#EDITEUR]">
+		<IF COND="[#DROITEDITEUR]">
 			<div class="ligne_formulaire">
 				<div class="intitule_ligne_formulaire">
 					<a href="chargesommaire.php?id=[#ID]">

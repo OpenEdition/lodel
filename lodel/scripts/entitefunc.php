@@ -35,7 +35,7 @@
 function get_variables_perennes($context,$critere) 
 
 {
-    $groupe= ($admin && $context[groupe]) ? intval($context[groupe]) : "groupe";
+    $groupe= ($droitadmin && $context[groupe]) ? intval($context[groupe]) : "groupe";
 
     $result=mysql_query("SELECT ordre,$groupe,statut,iduser FROM $GLOBALS[tp]entites WHERE $critere") or die (mysql_error());
     if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits: get_variables_perennes"); }
@@ -66,10 +66,10 @@ function get_statut($id)
 function get_groupe($context,$idparent)
 
 {
-  global $admin,$usergroupes;
+  global $droitadmin,$usergroupes;
 
   // cherche le groupe et les droits
-  if ($admin) { // on prend celui qu'on nous donne
+  if ($droitadmin) { // on prend celui qu'on nous donne
     $groupe=intval($context[groupe]); if (!$groupe) $groupe=1;
 
   } elseif ($idparent) { // on prend celui du idparent
@@ -90,9 +90,9 @@ function get_groupe($context,$idparent)
 function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerror=TRUE) 
 
 {
-  global $home,$admin,$usergroupes;
+  global $home,$droitadmin,$usergroupes;
 
-  $iduser= $GLOBLAS[adminlodel] ? 0 : $GLOBALS[iduser];
+  $iduser= $GLOBLAS[droitadminlodel] ? 0 : $GLOBALS[iduser];
 
   $entite=& $context[entite];
   $context[idtype]=intval($context[idtype]);
@@ -210,13 +210,13 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 	     "entites_entrees","entrees","typeentrees","types");
 
   if ($id>0) { // UPDATE
-    if ($id>0 && !$GLOBALS[admin]) {
+    if ($id>0 && !$GLOBALS[droitadmin]) {
       // verifie que le document est editable par cette personne
       $result=mysql_query("SELECT id FROM  $GLOBALS[tp]entites WHERE id='$id' AND groupe IN ($usergroupes)") or die(mysql_error());
       if (!mysql_num_rows($result)) die("vous n'avez pas les droits. Erreur dans l'interface");
     }
     // change group ?
-    $groupeset= ($admin && $context[groupe]) ? ", groupe=".intval($context[groupe]) : "";
+    $groupeset= ($droitadmin && $context[groupe]) ? ", groupe=".intval($context[groupe]) : "";
     // change type ?
     $typeset=$context[idtype] ? ",idtype='$context[idtype]'" : "";
     // change statut ?
@@ -226,7 +226,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       $statutset=",statut='$statut' ";
     }
     mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
-    if ($grouperec && $admin) change_groupe_rec($id,$groupe);
+    if ($grouperec && $droitadmin) change_groupe_rec($id,$groupe);
 
     move_files($id,$files_to_move,&$sets);
 

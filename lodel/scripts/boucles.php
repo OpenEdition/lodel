@@ -40,7 +40,7 @@ function loop_topparentpubli(&$context,$funcname)
   // alors [#TOTO] sera accessible dans lodelscript !!!
   $id=$context[id];       // On récupère le paramètre id
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entites.id=id1 AND id2='$id' AND $GLOBALS[tp]entites.statut>".($GLOBALS[visiteur] ? -64 : 0)." ORDER BY degres DESC LIMIT 1,1") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entites.id=id1 AND id2='$id' AND $GLOBALS[tp]entites.statut>".($GLOBALS[droitvisiteur] ? -64 : 0)." ORDER BY degres DESC LIMIT 1,1") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {       
     // On fait un array_merge pour récupérer toutes les infos contenues
@@ -82,11 +82,11 @@ function loop_rubriquesparentes (&$context,$funcname) {
 
 	 $contexts=array(); $i=0;
 
-	$result=mysql_query("SELECT * FROM $GLOBALS[tp]publications WHERE id='$id' $type AND statut>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+	$result=mysql_query("SELECT * FROM $GLOBALS[tp]publications WHERE id='$id' $type AND statut>".($GLOBALS[droitvisiteur] ? -64 : 0)) or die (mysql_error());	 
 	  while (mysql_num_rows($result)>0) {
 		$contexts[$i]=mysql_fetch_array($result);
 		$parent=$contexts[$i][parent];
-		$result=mysql_query("SELECT * FROM $GLOBALS[tp]publications WHERE id='$parent' $type AND statut>".($GLOBALS[visiteur] ? -64 : 0)) or die (mysql_error());	 
+		$result=mysql_query("SELECT * FROM $GLOBALS[tp]publications WHERE id='$parent' $type AND statut>".($GLOBALS[droitvisiteur] ? -64 : 0)) or die (mysql_error());	 
 		$i++;
 	 }
 
@@ -103,7 +103,7 @@ function loop_publisparentes(&$context,$funcname,$critere="")
   $id=intval($context[id]);
   if (!$id) return;
   
-  $result=mysql_query("SELECT *, type  FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entites.id=id1 AND id2='$id' AND $GLOBALS[tp]entites.statut>".($GLOBALS[visiteur] ? -64 : 0)." ORDER BY degres DESC") or die (mysql_error());
+  $result=mysql_query("SELECT *, type  FROM $GLOBALS[publicationstypesjoin],$GLOBALS[tp]relations WHERE $GLOBALS[tp]entites.id=id1 AND id2='$id' AND $GLOBALS[tp]entites.statut>".($GLOBALS[droitvisiteur] ? -64 : 0)." ORDER BY degres DESC") or die (mysql_error());
     
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);
@@ -116,7 +116,7 @@ function loop_toc($context,$funcname,$arguments)
 
 {
   if (!isset($arguments[text])) {
-    if ($GLOBALS[visiteur]) die("ERROR: the loop \"toc\" requires a TEXT attribut");
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"toc\" requires a TEXT attribut");
     return;
   }
 

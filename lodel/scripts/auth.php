@@ -82,11 +82,11 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     // verifie encore une fois au cas ou...
     if ($userpriv<LEVEL_ADMINLODEL && !$site) break;
-    if ($userpriv>=LEVEL_ADMINLODEL) $context[adminlodel]=$GLOBALS[adminlodel]=1;
-    if ($userpriv>=LEVEL_ADMIN) $context[admin]=$GLOBALS[admin]=1;
-    if ($userpriv>=LEVEL_EDITEUR) $context[editeur]=$GLOBALS[editeur]=1;
-    if ($userpriv>=LEVEL_REDACTEUR) $context[redacteur]=$GLOBALS[redacteur]=1;
-    if ($userpriv>=LEVEL_VISITEUR) $context[visiteur]=$GLOBALS[visiteur]=1;
+    if ($userpriv>=LEVEL_ADMINLODEL) $context[droitadminlodel]=$GLOBALS[droitadminlodel]=1;
+    if ($userpriv>=LEVEL_ADMIN) $context[droitadmin]=$GLOBALS[droitadmin]=1;
+    if ($userpriv>=LEVEL_EDITEUR) $context[droitediteur]=$GLOBALS[droitediteur]=1;
+    if ($userpriv>=LEVEL_REDACTEUR) $context[droitredacteur]=$GLOBALS[droitredacteur]=1;
+    if ($userpriv>=LEVEL_VISITEUR) $context[droitvisiteur]=$GLOBALS[droitvisiteur]=1;
     // efface les donnees de la memoire et protege pour la suite
     $HTTP_COOKIE_VARS[session]=0;
 
@@ -232,8 +232,8 @@ $session="";
 $context=array(
 	       "version" => doubleval($version)
 	       ); // tres important d'initialiser le context.
-$adminlodel=0;
-$admin=0;
+$droitadminlodel=0;
+$droitadmin=0;
 $user=0;
 $context[shareurl]=$GLOBALS[shareurl];
 $context[extensionscripts]=$GLOBALS[extensionscripts];

@@ -41,7 +41,7 @@
 <!--[ Affiche le statut du document, si on a au moins le niveau          ]-->
 <!--[ "rédacteur".                                                       ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<IF COND="[#STATUT] ge 1">
 			<font color="red" size="-2">(ON)</font>
 		<ELSE/><IF COND="[#STATUT] le -1">
@@ -57,7 +57,7 @@
 <!--[ Afin d'éviter de générer des 404 par erreur, la dépublication      ]-->
 <!--[ ne se fait pas dans cette macro.                                   ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#EDITEUR]">
+	<IF COND="[#DROITEDITEUR]">
 		<IF COND="[#OFFLINE]">
 			<a class="bouton_statut_publierOFF" href="lodel/edition/publi.php?id=[#ID]&online=1">
 				<span class="bouton_statut_publierOFF">[OFF]</span>
@@ -74,7 +74,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton         ]-->
 <!--[ [Ajouter un document annexe].                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<a href="lodel/edition/fonctionsavancees.php?id=[#ID]#docannexe">
 			[Ajouter un document annexe]
 		</a>
@@ -87,7 +87,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
 <!--[ afin d'éditer un document.                                         ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<a href="lodel/edition/document.php?id=[#ID]"><span class="pluspetit">[E]</span></a>
 	</IF>
 </DEFMACRO>
@@ -98,7 +98,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
 <!--[ afin d'éditer une publication.                                     ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<IF COND="[#TYPE] EQ 'regroupement'">
 			<a href="lodel/edition/index.php?id=[#IDPARENT]">
 				<span class="pluspetit">[E]</span>
@@ -117,7 +117,7 @@
 <!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
 <!--[ afin d'éditer une publication depuis un document.                  ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<LOOP NAME="est_ce_un_regroupement" TABLE="publications" WHERE="id='[#IDPARENT]'">
 			<DO>
 				<IF COND="[#TYPE] eq 'regroupement'">
@@ -144,7 +144,7 @@
 <!--[ défaut sont les images. Pour passer d'un aspect à l'autre il       ]-->
 <!--[ suffit de commenter les lignes soit des images soit des textes.    ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<a href="lodel/edition/editer.php?dir=up&id=[#ID]">
 			<!--[<span class="texte_trespetit">[haut]</span>]-->
 			<MACRO NAME="IMG_HAUT">
@@ -163,7 +163,7 @@
 <!--[ [modifier] pour modifier le document annexe ou sa description      ]-->
 <!--[ ainsi que des boutons [haut] [bas] pour changer son ordre.         ]-->
 <!--[ ****************************************************************** ]-->
-	<IF COND="[#REDACTEUR]">
+	<IF COND="[#DROITREDACTEUR]">
 		<span class="texte_tres_petit">
 			<!--[ Modifier ]-->
 			<a class="admin" href="lodel/edition/docannexe.php?id=[#ID]&[#RETOUR]">[modifier]</a>

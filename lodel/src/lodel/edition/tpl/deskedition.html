@@ -35,7 +35,7 @@
 	
 					<td width="57" heigth="75"><a href="index.php"><MACRO NAME="PNG_MENU_ACCUEIL_ACTIF"></a></td>
 					
-					<td width="57" heigth="75"><IF COND="[#ADMIN]"><a href="../admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
+					<td width="57" heigth="75"><IF COND="[#DROITADMIN]"><a href="../admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
 		
 					<td width="57" heigth="75"><a href="../../index.html" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"></a></td>
 			
@@ -48,9 +48,9 @@
 				<tr>
 					<td width="100%" heigth="75">&nbsp;</td>
 
-					<td width="64" heigth="75"><IF COND="[#EDITEUR]"><a href="maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>
+					<td width="64" heigth="75"><IF COND="[#DROITEDITEUR]"><a href="maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>
 		
-					<td width="64" heigth="75"><IF COND="[#ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+					<td width="64" heigth="75"><IF COND="[#DROITADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
 
 					<td width="64" heigth="75"><a href="logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"></a></td>
 				</tr>
@@ -85,13 +85,13 @@
 						<IF COND="[#ADMINLODEL]">
 							<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 						<ELSE/>
-							<IF COND="[#ADMIN]">
+							<IF COND="[#DROITADMIN]">
 								<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 							<ELSE/>
-								<IF COND="[#EDITEUR]">
+								<IF COND="[#DROITEDITEUR]">
 									<MACRO NAME="PNG_UTILISATEUR_JAUNE">
 								<ELSE/>
-									<IF COND="[#REDACTEUR]">
+									<IF COND="[#DROITREDACTEUR]">
 										<MACRO NAME="PNG_UTILISATEUR_VERT">
 									<ELSE/>
 										<IF COND="[#VISITEUR]">

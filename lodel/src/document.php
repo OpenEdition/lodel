@@ -37,7 +37,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$visiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
+$critere=$droitvisiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
 
 //
 // cherche le document, et le template
