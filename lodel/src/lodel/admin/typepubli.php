@@ -12,8 +12,7 @@ include_once("$home/func.php");
 $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
-} else $critere="id='$id'";
-if (!$restore) $critere.=" AND status>0";
+} else $critere="";
 
 //
 // supression et restauration
@@ -22,10 +21,13 @@ if ($id>0 && ($delete || $restore)) {
   include ("$home/trash.php");
   treattrash("typepublis",$critere);
   return;
+}
+
+$critere.=" AND status>0";
 //
 // ajoute ou edit
 //
-} elseif ($edit) { // modifie ou ajoute
+if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
