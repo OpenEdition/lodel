@@ -25,26 +25,56 @@
 #     along with this program; if not, write to the Free Software
 #     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+# script de creation de l'archive lodel pour diffusion
 
-# tar le contenu du repertoire lodel pour le transfert sur w2
+if [ $# -lt 1 ]
+then
+  echo " usage $0 <version> [with-0.6]"
+  exit
+fi
 
-FILE=/www-bin/revues/import/lodel.tar.gz
+# nom du fichier genere
+FILE="lodel-$1.tar.gz"
 
-echo "creer le fichier $FILE";
+# repertoire a archiver
+DIRS="lodel-$1 lodeladmin share-$1 tpl CACHE"
 
-find lodel \
-	-path '*/CACHE/*' \
-	-o -path '*/r2r/*' \
-	-o -path '*/upload/*' \
-	-o -name '*~' \
-	-o -name '*.tmp' \
-	-o -name '#*#' \
-	-o -name '*.old' \
-	-o -name 'OLD*' | tar --dereference -czf $FILE --exclude-from - lodel
+# renomme les repertoires du CVS pour contenir le numero de version
+mv lodel lodel-$1
+mv share share-$1
 
+EXTRADIRS=""
+if [ $# -eq 2 ]
+then
+        # bricolage pour precreer le lien vers share 0.6
+        mkdir lodel-0.6
+        touch lodel-0.6/share-0.6
+        ln -s lodel-0.6/share-0.6 .
+        rm lodel-0.6/share-0.6
+        rmdir lodel-0.6
+        EXTRADIRS=share-0.6
+fi
+
+
+# fichier a exclure
+find $DIRS $EXTRADIRS \
+        -path '*/r2r/*' \
+        -o \( -path '*/CACHE/*' -and -not -name '.htaccess' \) \
+        -o -path '*/CVS*' \
+        -o -name '*~' \
+        -o -name '*.tmp' \
+        -o -name '#*#' \
+        -o -name '.#' \
+        -o -name '*.old' \
+        -o -name 'OLD*' | tar -p --gzip --create --file $FILE --exclude-from=- $DIRS $EXTRADIRS lodelconfig-dist.php index.html styles_lodel.css COPYING
+
+# restauration des noms des repertoires
+mv lodel-$1 lodel
+mv share-$1 share
+if [ -e share-0.6]
+then
+        rm share-0.6
+fi
+
+echo "fichier $FILE cree";
 ls -l  $FILE
-
-
-
-
-
