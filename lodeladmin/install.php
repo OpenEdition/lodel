@@ -42,7 +42,8 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   require($home."auth.php");
   // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
   if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
-    $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]users LIMIT 1");
+    @mysql_select_db($database);
+    $result=mysql_query("SELECT username FROM $GLOBALS[tableprefix]users LIMIT 0,1");
     if ($result && mysql_num_rows($result)>0) {
       authenticate(LEVEL_ADMINLODEL);
     } else {
@@ -55,6 +56,8 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   }
 
   if ($_REQUEST[installoption]) $installoption=$_REQUEST[installoption]; // overwrite the lodelconfig
+} else {
+  error_reporting(E_ERROR | E_WARNING | E_PARSE);
 }
 
 // import Posted variables for the Register Off case.
