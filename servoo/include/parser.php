@@ -65,7 +65,7 @@ function errmsg ($msg,$ind=0) {
 
 function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
-			  &$select,&$where,&$ordre,&$groupby) {}
+			  &$select,&$where,&$ordre,&$groupby,&$having) {}
 function parse_variable_extra ($nomvar) { return FALSE; }
 function decode_loop_content_extra ($balise,&$content,&$options,$tables) {}
 function prefix_tablename ($tablename) { return $tablename; }
@@ -211,10 +211,11 @@ function parse ($in,$out)
   }
 
 
-
+  @unlink($out); // detruit avant d'ecrire.
   $fp=fopen ($out,"w") or $this->errmsg("cannot write file $out");
   fputs($fp,$contents);
   fclose($fp); 
+  if ($GLOBALS[filemask]) chmod ($out,0666 & octdec($GLOBALS[filemask]));
 
   return $ret;
 }
@@ -450,8 +451,6 @@ function parse_loop()
   if ($issqldef) { // definition of a SQL loop.
     foreach ($results as $result) {
       $value=lodelparserunquote($result[2]);
-      error_log("REFRESH:".$result[1]."\n",3,"/tmp/tlog");
-
       switch ($result[1]) {
       case "NAME":
 	break;
@@ -476,6 +475,10 @@ function parse_loop()
       case "GROUPBY" :
 	if ($groupby) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
 	$groupby=$value;
+	break;
+      case "HAVING" :
+	if ($having) $this->errmsg("Attribut HAVING should occur only once in loop $name",$this->ind);
+	$having=$value;
 	break;
       case "SELECT" :
 	if ($dontselect) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
@@ -521,7 +524,7 @@ function parse_loop()
   if (!$where) $where="1";
   $this->parse_loop_extra($tables,
 			  $tablesinselect,$extrainselect,
-			  $select,$where,$order,$groupby);
+			  $select,$where,$order,$groupby,$having);
   //
 
 
@@ -543,7 +546,7 @@ function parse_loop()
       $this->make_loop_code($name.'_'.($this->signature),$tables,
 			    $tablesinselect,$extrainselect,
 			    $select,$dontselect,
-			    $where,$order,$limit,$groupby,
+			    $where,$order,$limit,$groupby,$having,
 			    $contents,$options);
     } else { // boucle redefinie identiquement (enfin on espere)
       // on passe le contenu... on le connait deja
@@ -680,7 +683,7 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
 function make_loop_code ($name,$tables,
 			 $tablesinselect,$extrainselect,
 			 $select,$dontselect,
-			 $where,$order,$limit,$groupby,
+			 $where,$order,$limit,$groupby,$having,
 			 $contents,$options)
 
 {
@@ -688,8 +691,27 @@ function make_loop_code ($name,$tables,
 
   if ($where) $where="WHERE ".$where;
   if ($order) $order="ORDER BY ".$order;
-  if ($limit) $limit="LIMIT ".$limit;
+  if ($having) $having="HAVING ".$having;
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
+
+  // special treatment for limit when only one value is given.
+  if ($limit && strpos($limit,",")===false) {
+    $preprocesslimit='
+     $currentoffset=intval(($_REQUEST[\'offset_'.$name.'\'])/'.$limit.')*'.$limit.';';
+    $processlimit='
+    $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
+    if ($_REQUEST[\'QUERY_STRING\']) $currenturl.=$_SERVER[\'QUERY_STRING\']."&";
+ if ($context[nbresultats]>'.$limit.') { 
+$context[nexturl]=$currenturl."offset_'.$name.'=".($currentoffset+'.$limit.');
+$context[nbresultats]--;
+} else {
+$context[nexturl]="";
+}
+$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."offset_'.$name.'=".($currentoffset-'.$limit.') : "";
+ ';
+    $limit='".$currentoffset.",'.($limit+1);
+  }
+  if ($limit) $limit="LIMIT ".$limit;
 
   // traitement particulier additionnel
 
@@ -743,31 +765,32 @@ function make_loop_code ($name,$tables,
 // genere le code pour parcourir la loop
 //
   $this->fct_txt.='function loop_'.$name.' ($context)
-{
- $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
+{'.$preprocesslimit.'
+ $query="SELECT '.$select.' FROM '."$table $where $groupby $having $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
  $context[nbresultats]=mysql_num_rows($result);
+ '.$processlimit.' 
  $generalcontext=$context;
  $count=0;
  if ($row='.$options[fetch_assoc_func].'$result)) {
-?>'.$contents[BEFORE].'<?php
+?>'.$contents['BEFORE'].'<?php
     do {
       $context=array_merge ($generalcontext,$row);
       $count++;
       $context[count]=$count;';
   // gere le cas ou il y a un premier
-  if ($contents[DOFIRST]) {
-    $this->fct_txt.=' if ($count==1) { '.$contents[PRE_DOFIRST].' ?>'.$contents[DOFIRST].'<?php continue; }';
+  if ($contents['DOFIRST']) {
+    $this->fct_txt.=' if ($count==1) { '.$contents['PRE_DOFIRST'].' ?>'.$contents['DOFIRST'].'<?php continue; }';
   }
   // gere le cas ou il y a un dernier
-  if ($contents[DOLAST]) {
-    $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents[PRE_DOLAST].'?>'.$contents[DOLAST].'<?php continue; }';
+  if ($contents['DOLAST']) {
+    $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
   }    
-    $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row='.$options[fetch_assoc_func].'$result));
-?>'.$contents[AFTER].'<?php  } ';
+    $this->fct_txt.=$contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresultats] && $row='.$options['fetch_assoc_func'].'$result));
+?>'.$contents['AFTER'].'<?php  } ';
 
-  if ($contents[ALTERNATIVE]) $this->fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?php }';
+  if ($contents['ALTERNATIVE']) $this->fct_txt.=' else {?>'.$contents['ALTERNATIVE'].'<?php }';
 
     $this->fct_txt.='
  mysql_free_result($result);
@@ -781,17 +804,17 @@ function make_userdefined_loop_code ($name,$contents)
 {
 
 // cree la fonction loop
-  if ($contents["DO"]) {
-    $this->fct_txt.='function code_do_'.$name.' ($context) { ?>'.$contents["DO"].'<?php }';
+  if ($contents['DO']) {
+    $this->fct_txt.='function code_do_'.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
   }
-  if ($contents[BEFORE]) { // genere le code de avant
-    $this->fct_txt.='function code_before_'.$name.' ($context) { ?>'.$contents[BEFORE].'<?php }';
+  if ($contents['BEFORE']) { // genere le code de avant
+    $this->fct_txt.='function code_before_'.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php }';
   }
-  if ($contents[AFTER]) {// genere le code de apres
-    $this->fct_txt.='function code_after_'.$name.' ($context) { ?>'.$contents[AFTER].'<?php }';
+  if ($contents['AFTER']) {// genere le code de apres
+    $this->fct_txt.='function code_after_'.$name.' ($context) { ?>'.$contents['AFTER'].'<?php }';
   }
-  if ($contents[ALTERNATIVE]) {// genere le code de alternative
-    $this->fct_txt.='function code_alter_'.$name.' ($context) { ?>'.$contents[ALTERNATIVE].'<?php }';
+  if ($contents['ALTERNATIVE']) {// genere le code de alternative
+    $this->fct_txt.='function code_alter_'.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php }';
   }
  // fin ajout
 }
