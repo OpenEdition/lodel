@@ -207,25 +207,6 @@ class View {
 
      #echo $this->_cachedfile," ",$this->_extcachedfile,"<br>";
 
-     if ($GLOBALS['user']['visitor'] || $GLOBALS['user']['adminlodel']) { // insert the desk
-       ob_start();
-       calcul_page($context,"desk","",$home."../tpl/");
-       $desk=ob_get_contents();
-       ob_end_clean();
-
-       $bodystarttag=strpos($content,"<body");
-       if ($bodystart!==false) {
-	 $bodyendtag=strpos($content,">",$bodystarttag);
-	 $content=substr_replace($content,$desk.'<div id="lodel-container">',$bodyendtag+1,0);
-	 unset($desk);
-	 $len=strlen($content)-30; // optimise a little bit the search
-	 if ($len<0) $len=0;
-	 $endbody=strpos($content,"</body",$len);
-	 if ($endbody===false) $endbody=strpos($content,"</body",0);
-	 $content=substr_replace($content,'</div>',$endbody,0); 
-       }
-     }
-
      if ($this->_extcachedfile=="html") {
        echo $content; // send right now the html. Do other thing later. 
        flush(); // That may save few milliseconde !
