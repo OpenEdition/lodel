@@ -85,15 +85,19 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
-	classe		VARCHAR(64) NOT NULL,   # nom de la table complementaire
+	groupe		VARCHAR(64) NOT NULL,		# groupe auquel appartient ce champ (rien a voir avec les groupes users)
+	classe		VARCHAR(64) NOT NULL,   	# nom de la table complementaire
 
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
 	condition	TINYTEXT NOT NULL,		# condition
+	traitement	TINYTEXT NOT NULL,		# traitement de nettoyage a faire
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
+	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
+	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_nom (nom),
