@@ -36,6 +36,7 @@
 <MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
+		
 	
 		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
 		de class "separation" et class "contenu" ]-->
@@ -65,9 +66,12 @@
 							<MACRO NAME="NOM_SITE"> 
 						</h1>
 					
-						<!--[ Affiche le premier article du dernier numéro (macros-affichage.html) ]-->
-						<MACRO NAME="SOMMAIRE_DERNIER_NUMERO">
-				
+					<LOOP NAME="dix_derniers_articles" TABLE="documents" WHERE="type = 'article'" LIMIT="10" ORDER="datepubli DESC">
+	  				<DO>
+	    				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+	  				</DO>
+					</LOOP>
+
 				
 						<!--[ Affiche une image liée à la page d'accueil largeur maximum: 561 ]-->
 				
