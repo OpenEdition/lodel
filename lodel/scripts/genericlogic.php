@@ -438,7 +438,7 @@ class GenericLogic extends Logic {
     //  trigger_error("ERROR: internal error in GenericLogic::_populateObject. Class=".$class,E_USER_ERROR);
     //}
     foreach($publicfields[$class] as $field => $fielddescr) {
-      $vo->$field=$context[$field];
+      $vo->$field=isset($context[$field]) ? $context[$field] : "";
     }
   }
 

@@ -69,6 +69,12 @@ class Entities_AdvancedLogic extends Logic {
      $votype=$daotype->getById($vo->idtype);
      $this->_populateContext($votype,$context['type']);
 
+     // look for the source
+     $context['sourcefile']=file_exists(SITEROOT."lodel/sources/entite-".$id.".source");
+
+     // look for a multi-doc source ?
+     $context['multidocsourcefile']=file_exists(SITEROOT."lodel/sources/entite-multidoc".$vo->idparent.".source");
+
      return "_ok";
    }
 
@@ -222,13 +228,15 @@ class Entities_AdvancedLogic extends Logic {
       $originalname=$filename;
       $dir="../txt";
       break;
+    case 'multidocsource' :
+      $multidoc=true;
     case 'source' :
-      $filename="entite-$id.source";
+      $filename=$multidoc ? "entite-multidoc-$id.source" : "entite-$id.source";
       $dir="../sources";
       // get the official name 
       $dao=$this->_getMainTableDAO();
       $vo=$dao->getById($id,"creationmethod,creationinfo");
-      if ($vo->creationmethod!="servoo") die("ERROR: error creationmethod is not compatible with download");
+      if ($vo->creationmethod!=($multidoc ? "servoo;multidoc" : "servoo")) die("ERROR: error creationmethod is not compatible with download");
       $originalname=$vo->creationinfo ? basename($vo->creationinfo) : basename($filename);
       break;
     default:

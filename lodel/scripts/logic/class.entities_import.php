@@ -91,7 +91,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      // save the file
      if (!$this->id) die("ERROR: internal error in Entities_ImportLogic::importAction");
      if ($this->nbdocuments>1) {
-       $sourcefile=SITEROOT."lodel/sources/entite-multipledoc-".$task['idparent'].".source";
+       $sourcefile=SITEROOT."lodel/sources/entite-multidoc-".$task['idparent'].".source";
      } else {
        $sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
      }
@@ -257,7 +257,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    var $_localcontext;
 
-   function openClass($class,$obj=null,$multipledoc=false)
+   function openClass($class,$obj=null,$multidoc=false)
    {
      switch($class[1]) { // classtype
      case 'entries':
@@ -274,7 +274,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    }
 
 
-   function closeClass($class,$multipledoc=false)
+   function closeClass($class,$multidoc=false)
 
    {
      global $db;
@@ -293,7 +293,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
        if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
 
-       if ($multipledoc) { // try to find the id
+       if ($multidoc) { // try to find the id
 
 	 $result=$db->execute(lq("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".intval($this->nbdocuments).",1")) or dberror();	 
 	 if (!$result->EOF) $localcontext['id']=$result->fields['id'];
@@ -301,11 +301,11 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
        } else if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
 
-       $localcontext['creationmethod']=$multipledoc ? "servoo;multidoc" : "servoo";
+       $localcontext['creationmethod']=$multidoc ? "servoo;multidoc" : "servoo";
        $localcontext['creationinfo']=$this->task['sourceoriginale'];
        
 #print_r($localcontext);
-       if ($multipledoc) $this->context['finish']="oui";
+       if ($multidoc) $this->context['finish']="oui";
        if (!$this->context['finish']) $localcontext['status']=-64;
 
        $error=array();
