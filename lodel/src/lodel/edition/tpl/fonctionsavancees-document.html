@@ -22,7 +22,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[#TYPE] : fonctions avancées</title>
+<title>[#TITRE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 	
@@ -34,12 +34,12 @@
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_preferences.png" /></td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/cadenas.png" /></td>
 						<td background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[#TITRE]</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_document">[#TITRE]</span></td>
 						<td>&nbsp;</td>
 					</tr>
 					
@@ -58,12 +58,12 @@
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_index.png" /></td>
+						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/edition.png" /></td>
 						<td width="5" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Edition</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Manipulations du fichier</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 
@@ -122,12 +122,12 @@
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
-						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_modele.png" /></td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/fichier_blc.png" /></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Ajouts</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Ajouts au document</span></td>
 						<td>&nbsp;</td>
 					</tr>
 										
@@ -155,21 +155,13 @@
 						<td width="450" class="td_admin">
 	<IF COND="[#DROITEDITEUR]">
 				<span class="texte_noir_gras">Ajouter un document annexe<a name="docannexe"></a></span>
+				<br />
+			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="type">
+					<DO>
+						<a href="docannexe.php?idparent=[#ID]&type=[#TYPE]"><span class="texte_noir">&nbsp;&nbsp;&nbsp;...&nbsp;[#TITRE]</span></a><br />						
+					</DO>
+			</LOOP>
 
-				<form action="docannexe.php" method="POST">
-					<input type="hidden" name="idparent" value="[#ID]">
-					<select name="type">
-					<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="type"> 
-						<DOFIRST>
-							<option value="[#TYPE]" selected>[#TITRE]</option>
-						</DOFIRST>
-						<DO>
-							<option value="[#TYPE]">[#TITRE]</option>
-						</DO>
-					</LOOP>
-					</select>
-					<input class="form" type="submit" value=" Ajouter ">
-				</form>
 	<ELSE/>
 				<span class="texte_intitule">Ajouter des documents annexes</span><br />
 				<span class="texte_info">(Fonction accessible à partir du niveau editeur)</span>
@@ -193,12 +185,12 @@
 				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
-						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
+						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/xml_blc.png" /></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">XML</span></td>
+						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">Gestion du XML</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
