@@ -562,6 +562,8 @@ function convertHTMLtoUTF8 (&$text)
 # ces trois derniers sont a verifier
 	      "laquo"=>'«',
 	      "raquo"=>'»',
+	      "lsquo"=>'\337\242',
+	      "rsquo"=>'\337\243',
 	      "deg"=>'°',
 	      "nbsp"=>'�'.chr(160)
 	      );
