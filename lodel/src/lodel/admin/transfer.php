@@ -696,7 +696,7 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	    }       
 	  } 
 	  // other fields
-	  elseif (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
+	  elseif (preg_match("/<R2R:$field\s*(?:lang=\"[^\"]+\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
             if ($field=="langue") {
                 $match[1]=strip_tags($match[1]);
             }
@@ -982,8 +982,8 @@ function convertHTMLtoXHTML ($field,$contents)
     } elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
 #echo "Ted document: $row[identite]<br>";
       $contents=preg_replace('/<sup><small><\/small><\/sup>/s','',$contents);
-      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
-			     '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
+      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s','<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
+      $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+id="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s','<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
 	
     }
   } // fin note R2R
@@ -993,10 +993,12 @@ function convertHTMLtoXHTML ($field,$contents)
   $srch=array('/<a\s+name="FM(\d+)">\s*<a\s+href="#FN(\d+)">(.*?)<\/a>\s*<\/a>/s', # R2R footnote call
 	      '/<a\s+name="FM(\d+)">\s*<\/a>\s*<a\s+href="#FN(\d+)">(.*?)<\/a>/s', # R2R footnote call
 	      '/<sup>\s*<small>\s*<\/small>\s*<\/sup>/',
-	      '/<a\s+href="#_ndef_(\d+)"\s+name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
+	      '/<a\s+href="#_ndef_(\d+)"\s+name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/',
+	      '/<a\s+href="#_ndef_(\d+)"\s+id="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
   $rpl=array('<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
 	     '<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
 	     '',
+	     '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>',
 	     '<a class="footnotecall" href="#ftn\\1" id="bodyftn\\2">\\3</a>');
 
   // convert u in span/style
