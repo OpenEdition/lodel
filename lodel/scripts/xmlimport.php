@@ -160,7 +160,7 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
     // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
     // cherche toutes les balises de personnes
     preg_match_all ("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$results2,PREG_SET_ORDER);
-    // cherche toutes les balises de decsription de personnes
+    // cherche toutes les balises de description de personnes
     preg_match_all ("/<r2r:$styledescription>(.*?)<\/r2r:$styledescription>/s",$text,$results2description,PREG_SET_ORDER);
 #    echo "result2: style=$style";
 #    echo htmlentities($text);

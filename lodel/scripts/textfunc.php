@@ -565,7 +565,17 @@ function nicefilesize($lien)
   }
 }
 
+/**
+ * Bootstrap Lodel pour WikiRender
+ * Assure la conversion texte Wiki en xhtml
+ */
 
+function wiki($text) 
 
+{
+  include('wikirenderer/WikiRenderer.lib.php');
+  $wkr = new WikiRenderer();
+  return "processed:".($wkr->render($text));
+}
 
 ?>

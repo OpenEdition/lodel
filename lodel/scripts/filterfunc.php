@@ -76,7 +76,7 @@ function makefilterfunc()
   if (!$row) return array();
   for($i=0; $i<$count; $i++) {
      $fieldname[$i]=mysql_field_name($result,$i);
-     $fullfieldname[$i]=mysql_field_table($result,$i).".".$fieldname;
+     $fullfieldname[$i]=mysql_field_table($result,$i).".".$fieldname[$i];
      $ret[$fieldname[$i]]=$row[$i];
   }
   $localcontext=array_merge($context,$ret);

@@ -253,7 +253,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
     move_files($id,$files_to_move,&$sets);
 
-    if ($sets) mysql_query("INSERT INTO $GLOBALS[tp]$classe (identite,".join(",",array_keys($sets)).") VALUES ('$id',".join(",",$sets).")") or die (mysql_error());
+    $sets[identite]="'$id'";
+    mysql_query("INSERT INTO $GLOBALS[tp]$classe (".join(",",array_keys($sets)).") VALUES (".join(",",$sets).")") or die (mysql_error());
   }  
 
   enregistre_personnes($context,$id,$statut,FALSE);
