@@ -237,9 +237,13 @@ cp_[#NAME].writeDiv();
         	<AFTER>
                         <a href="#" onClick="deletepersons(this); return false;">[@COMMON.DELETE]</a>
 			</div>
-                        <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">
+	               <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#NBRESULTS]">	
         	</AFTER>
+		<ALTERNATIVE>
+	               <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0">	
+		</ALTERNATIVE>
 	    </LOOP>
+
 	</DO>
 	</LOOP>
         <!--[ widget available for adding new persons of this type ]-->
@@ -364,7 +368,7 @@ cp_[#NAME].writeDiv();
 			clone.style.display='block';
 
                         degreeobj=document.getElementsByName('persons['+name+'][maxdegree]');
-window.status=degreeobj;
+
 			// other fields
 			clone.setAttribute('id','');
 			changeNameAttributes(clone,degreeobj[0].value);
