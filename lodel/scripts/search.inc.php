@@ -278,7 +278,8 @@ function loop_search(&$context,$funcname,$arguments)
 	$count = 0;
 	if(!$results || $local_context['nbresults'] == 0)
 	{
-		call_user_func("code_alter_$funcname",$local_context);
+		if(function_exists("code_alter_$funcname"))
+			call_user_func("code_alter_$funcname",$local_context);
 		return;
 	}
 	$offsetname="offset_".substr(md5($funcname),0,5);
