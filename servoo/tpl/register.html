@@ -1,0 +1,66 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
+<title>Enregistrement</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="images/fond_haut_popup_edition.png">Enregistrement</td>
+	</tr>
+</table>
+
+<form method="POST" action="register.php">
+	<input type="hidden" name="edit" value="1" />
+	<table class="table_normale" style="margin-top:30px; margin-right: 50px;" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_intitule">Nom et prénom :</td>
+			<td><input size="70" type="text" name="realname" value="[#REALNAME]" /></td>
+		</tr>
+		[(#ERROR_REALNAME|true)<tr><td colspan="2" class="message_erreur">Veuillez pr&eacute;ciser vos noms et prénoms svp.</td></tr>]
+		<tr>
+			<td class="texte_intitule">Votre Email:<br/><small>Vos identifiants et mots de passe seront envoyés à cette adresse.</small></td>
+			<td><input size="70" type="text" name="email" value="[#EMAIL]" /></td>
+		</tr>
+		[(#ERROR_EMAIL|true)<tr><td colspan="2" class="message_erreur">Cette email n'est pas valide. Veuillez entrer une adresse email valide.</span></td></tr>]
+		<IF COND="[#ERROR_EMAIL_EXISTS]"><tr><td colspan="2" class="message_erreur">Un compte a cette adresse mail a déjà été enregistré. Si vous avez perdu vos identifiants, veuillez contacter le webmaster <a href="mailto:[#WEBMASTER]">[#WEBMASTER]</a>.</span></td></tr></IF>
+		<IF COND="[#ERROR_SENDING_EMAIL]"><tr><td colspan="2" class="message_erreur">Une erreur s'est produite au moment d'envoyer le mail avec vos identifiants. Veuillez vérifier l'adresse que vous avez entrée. Si le problème persiste merci de contacter le webmaster <a href="mailto:[#WEBMASTER]">[#WEBMASTER]</a>.</span></td></tr></IF>
+		<tr>
+			<td class="texte_intitule">URL de votre site :</td>
+			<td><input size="70" type="text" name="url" value="[#URL]" /></td>
+		</tr>
+		<tr>
+			<td class="texte_intitule">Description de votre site:<br/><small>(facultatif)<small></td>
+			<td><textarea name="commentaire" rows="10" cols="60" >[#COMMENTAIRE]</textarea></td>
+		</tr>
+
+	</table>
+
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   Continuer    " />
+	</div>
+</form>
+
+<MACRO NAME="CLOSE_HTML">
