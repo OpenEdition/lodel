@@ -442,7 +442,7 @@ cp_[#NAME].writeDiv();
 	<!--[ -----------[ SELECT ]---------- ]-->
 	
 	<IF COND="[#EDITION] EQ 'select'">
-	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]][data]">
+	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
@@ -453,7 +453,7 @@ cp_[#NAME].writeDiv();
 	<FUNC NAME="JS_MULTIPLESELECT">
 	<table>
 	<tr><td>
-	<input type="hidden" value="" name="entries[[#IDTYPE]][data]" id="entries[[#IDTYPE]]" />	
+	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
 	<select onchange="multipleSelectUpdate('entries[[#IDTYPE]]','pool_member_[#VARNAME]')" multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
 		<option  value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
@@ -473,7 +473,7 @@ cp_[#NAME].writeDiv();
 	<table>
 	<tr><td>[@COMMON.AVAILABLE_ENTRIES]</td><td></td><td>[@COMMON.SELECTED_ENTRIES]</td></tr>
 	<tr><td>
-	<input type="hidden" value="" name="entries[[#IDTYPE]][data]" id="entries[[#IDTYPE]]" />	
+	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
 	<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
 		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
@@ -620,13 +620,6 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 --------------------------------------------------------------- ]-->
 
 <DEFMACRO NAME="EDIT_LIST">
-	<IF COND="[#EDITION] EQ 'select'">
-		<select id="[#VARNAME]" name="[#FULLVARNAME]">
-		<LOOP NAME="field_selection_values">
-			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option> 
-		</LOOP>
-		</select>
-	<ELSE/>
 	<IF COND="[#EDITION] EQ 'multipleselect'">
 		<FUNC NAME="JS_MULTIPLESELECT">
 		<table>
@@ -672,7 +665,12 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 			checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]');
 		-->
 		</script>
-	</IF>
+	<ELSE/>
+		<select id="[#VARNAME]" name="[#FULLVARNAME]">
+		<LOOP NAME="field_selection_values">
+			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option> 
+		</LOOP>
+		</select>		
 	</IF>
 	</IF>
 	</IF>
