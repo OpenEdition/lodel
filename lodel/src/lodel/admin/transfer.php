@@ -261,7 +261,7 @@ DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
       if ($err=create("entites")) break;
       // on ajoute l'idparent pour pouvoir faire le traitement tranquillement ensuite
       $err=mysql_query_cmds('
-INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,user,groupe,ordre,status)
+INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,iduser,groupe,ordre,status)
          SELECT _PREFIXTABLE_documents.id,_PREFIXTABLE_documents.publication+'.$offset.',_PREFIXTABLE_types.id,_PREFIXTABLE_documents.titre,user,1,_PREFIXTABLE_documents.ordre,_PREFIXTABLE_documents.status FROM _PREFIXTABLE_documents,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_documents.type;
 ALTER TABLE _PREFIXTABLE_documents CHANGE id identite	INT UNSIGNED DEFAULT 0 NOT NULL  UNIQUE;
 UPDATE _PREFIXTABLE_publications SET parent=parent+'.$offset.' WHERE parent>0;
