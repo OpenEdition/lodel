@@ -248,7 +248,7 @@ function extract_files(&$context,$classe="documents")
 
   if (!$_FILES) return;
   $files=$_FILES[entite];
-  if (!$files || !$files['tmp_name']) return;
+  if (!$files || !$files['tmp_name'] || $files['tmp_name']=="none") return;
 
 #  print_r($files);
 

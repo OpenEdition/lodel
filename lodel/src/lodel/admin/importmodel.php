@@ -41,7 +41,7 @@ $importdirs=array("CACHE",$importdir,$home."../install/plateform");
 
 $archive=$_FILES['archive']['tmp_name'];
 $context['erreur_upload']=$_FILES['archive']['error'];
-if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // Upload
+if (!$context['erreur_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
   $fichier=$_FILES['archive']['name'];
   if (!preg_match("/^$fileregexp$/",$fichier)) $fichier="model-import-".date("dmy").".sql";
 

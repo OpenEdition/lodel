@@ -41,7 +41,7 @@ $context[idtache]=$idtache=intval($idtache);
 $context[idtype]=intval($idtype);
 $context[lodeltags]=intval($lodeltags);
 
-if ($_FILES['file1'] && $_FILES['file1']['tmp_name']) {
+if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && && $_FILES['file1']['tmp_name']!="none") {
   do {
     $file1=$_FILES['file1']['tmp_name'];
 

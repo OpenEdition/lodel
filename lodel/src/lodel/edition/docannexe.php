@@ -81,7 +81,7 @@ if ($edit) { // modifie ou ajoute
   $docfile=$_FILES['docfile'];
   if ($type=="documentannexe-lienfichier") {
     // charge le fichier si necessaire
-      if ($docfile && $docfile['tmp_name']) {
+      if ($docfile && $docfile['tmp_name'] && $docfile['tmp_name']!="none") {
 	if ($id>0) { // we know the document id, we can copy it.
 	  $lien=save_annex_file($id,$docfile['tmp_name'],$docfile['name']);
 	} else {
