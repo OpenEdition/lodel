@@ -62,9 +62,10 @@ Plusieurs possibilités:
 <ul>
 <li><p>Créer le repertoire [#REP] à la racine de Lodel, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
 <p><code>
-../lodel-[#VERSION]/install/install-site.pl [#VERSION] [uga]
+../lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
+
 </code></p>
-<p>u,g, ou a sont des options pour gerer les droits. "u" si vous êtes l'utilisateur qui fait tourner le serveur web(pratique étrange ?), "g" si vous êtes dans le groupe de l'utilisateur serveur web, "a" dans les autres cas.</p>
+<p>Les droits sont specifiés par une combinaison de u (utilisateur) ,g (groupe), et/ou a (les autres utilisateurs).</p>
 <input type="submit" name="mano" value="continuer">
 </li>
 <li><p>Créer le repertoire [#REP] à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).</p>
