@@ -147,6 +147,8 @@ class UsersLogic extends Logic {
    function _validateFields(&$context,&$error) {
      global $db,$user;
 
+     if (!$this->Logic::_validateFields($context,$error)) return false;
+
      // check the user has the right equal or higher to the new user
      if ($user['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
 

@@ -92,6 +92,23 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 
 
 
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_classes (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	class		VARCHAR(64) NOT NULL UNIQUE,
+	title		TINYTEXT NOT NULL,
+
+	comment		TEXT NOT NULL,			# commentaire sur la class
+
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_class (class)
+);
+
+
+
 
 #
 # table qui contient les champs supplementaires
@@ -101,6 +118,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefields (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
+	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 
@@ -127,7 +145,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefields (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefieldgroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
-	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
+	idclass		INT UNSIGNED DEFAULT '0' NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	commentaire	TEXT NOT NULL,			# commentaire sur le groupe de champs
@@ -138,7 +156,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefieldgroups (
 
 	PRIMARY KEY (id),
 	KEY index_name (name),
-	KEY index_class (class)
+	KEY index_idclass (idclass)
 );
 
 

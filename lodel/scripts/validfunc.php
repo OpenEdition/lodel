@@ -42,14 +42,16 @@ function validfield(&$text,$type,$default="")
     if (!preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$text)) return $type;
     break;
   case "class" :
+    $text=strtolower($text);
     if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$text)) return $type;
     require_once($GLOBALS['home']."champfunc.php");
     if (reservedword($name)) return "reservedsql";
     break;
   case "tablefield" :
-    if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
+    $text=strtolower($text);
+    if (!preg_match("/^[a-z0-9]+$/",$text)) return $type;
     require_once($GLOBALS['home']."champfunc.php");
-    if (reservedword($name)) return "reservedsql";
+    if (reservedword($text)) return "reservedsql";
     break;
   case "style" :
     if (!preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;

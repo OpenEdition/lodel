@@ -105,25 +105,19 @@ class Logic {
 
    {
      // validate the forms data
-     if (!$this->_validatePublicFields($context,$error)) {
-       return "error";
-     }
-     // check for unicity
-     if (!$this->_validateUniqueFields($context,$error)) {
-       return "error";
-     }
-     // extra check
      if (!$this->_validateFields($context,$error)) {
        return "error";
      }
 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
+     $id=$context['id']=intval($context['id']);
 
+     $this->_prepareEdit($dao,$context);
      // create or edit
-     if ($context['id']) {
+     if ($id) {
        $dao->instantiateObject($vo);
-       $vo->id=$context['id'];
+       $vo->id=$id;
      } else {
        $vo=$dao->createObject();
      }
@@ -255,10 +249,10 @@ class Logic {
    }
    
    /**
-    * Validated the public fields
+    * Validated the public fields and the unicity.
     * @return return an array containing the error and warning, null otherwise.
     */
-   function _validatePublicFields(&$context,&$error) {
+   function _validateFields(&$context,&$error) {
 
      require_once($GLOBALS['home']."validfunc.php");
 
@@ -280,24 +274,9 @@ class Logic {
 	 if (is_string($valid)) $error[$field]=$valid;      
        }
      }
-     return !isset($error);
-   }
+     if ($error) return false;
 
-   function _publicfields() {
-     die("call to abstract publicfields");
-     return array();
-   }
-
-
-   /**
-    * Validate fields which need unicity
-    * rmq: this method is limit between the logic and the dao.
-    */
-
-   function _validateUniqueFields(&$context,&$error) {
-     global $db;
-     // check the unique fields
-     
+     $context=array();
      foreach($this->_uniqueFields() as $fields) { // all the unique set of fields
        foreach($fields as $field) { // set of fields which has to be unique.
 	 $conditions[]=$field."='".$context[$field]."'";
@@ -307,8 +286,16 @@ class Logic {
        if ($db->errorno) die($this->errormsg());
        if ($ret) $error[$fields[0]]="1"; // report the error on the first field
      }
-     return !isset($error);
+
+     return !empty($error);
    }
+
+   function _publicfields() {
+     die("call to abstract publicfields");
+     return array();
+   }
+
+
 
    function _uniqueFields() {
      return array();
@@ -336,13 +323,19 @@ class Logic {
 
    /**
     * Populate the context from the object. All fields are outputted.
-    * @private
+    * @protected
     */
    function _populateContext(&$vo,&$context) {
      foreach($vo as $k=>$v) {
        $context[$k]=$v;
      }
    }
+
+   /**
+    * Used in editAction to do extra operation before the object is saved.
+    * Usually it gather information used after in _saveRelatedTables
+    */
+   function _prepareEdit($dao,$context) {}
 
    /**
     * Used in editAction to do extra operation after the object has been saved
@@ -359,6 +352,7 @@ class Logic {
     * Used in viewAction to do extra populate in the context 
     */
    function _populateContextRelatedTables(&$vo,&$context) {}
+
 
 } // class Logic
 

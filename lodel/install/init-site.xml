@@ -162,6 +162,74 @@
 </table>
 
 
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_classes (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	class		VARCHAR(64) NOT NULL UNIQUE,
+	title		TINYTEXT NOT NULL,
+
+	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	status		TINYINT DEFAULT '1' NOT NULL,
+	upd		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_class (class)
+);
+
+
+<table name="classes"
+        description="table qui contient les classes"
+	writeright="admin"
+	protectright="adminlodel">
+<column name="id"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
+<column name="class"
+        type="VARCHAR"
+        size="64"
+        required="true"
+        description="identifiant unique"
+        label="[@ADMIN.NAME]"
+        edittype="tablefield" />
+<column name="title"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="name en clair, utiliser dans l interface"
+        label="[@ADMIN.INTERFACENAME]"
+        edittype="text" />
+<column name="comment"
+        type="LONGVARCHAR"
+        required="true"
+        description="commentaire sur la class"
+        label="[@ADMIN.COMMENT]"
+        edittype="longtext" />
+<column name="status"
+        type="TINYINT"
+        default="1"
+        required="true" />
+<vcolumn name="protected"
+        label="[@ADMIN.PROTECTED_DATAFIELD]"
+        edittype="boolean"/>
+<column name="rank"
+        type="INTEGER"
+        default="0"
+        required="true" />
+<column name="upd"
+        type="TIMESTAMP" />
+<index name="index_class">
+<index-column name="class" />
+</index>
+<unique name="unique_class">
+<unique-column name="class" />
+<unique-column name="class" />
+</unique>
+</table>
+
+
+
 <table name="tablefields"
         description="table qui contient les champs supplementaires"
 	writeright="admin"
@@ -183,6 +251,13 @@
         default="0"
         required="true"
 	edittype="int"
+	visibility="hidden" />
+<column name="class"
+        type="VARCHAR"
+        size="64"
+        required="true"
+        description="nom de la table"
+	edittype="class"
 	visibility="hidden" />
 <column name="title"
         type="VARCHAR"
@@ -272,6 +347,10 @@
 <index name="index_idgroup">
 <index-column name="idgroup" />
 </index>
+<unique name="unique_fieldclass">
+<unique-column name="name" />
+<unique-column name="class" />
+</unique>
 </table>
 
 
@@ -297,7 +376,7 @@
         type="VARCHAR"
         size="64"
         required="true"
-        description="name de la table complementaire"	
+        description="nom de la table"	
 	edittype="class"
 	visibility="hidden" />
 <column name="title"

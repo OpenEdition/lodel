@@ -58,6 +58,7 @@ if ($therequest['do']) {
     }
   }
   $context['id']=intval($therequest['id']);
+  $context['idgroup']=intval($therequest['idgroup']);
   if ($therequest['dir'] && ($therequest['dir']=="up" || 
 			     $therequest['dir']=="down" || 
 			     is_numeric($therequest['dir']))) $context['dir']=$therequest['dir'];
