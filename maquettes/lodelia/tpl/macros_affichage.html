@@ -100,7 +100,7 @@
 	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="statut gt 0" WHERE="tplcreation='creation-numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
 		<DO>
 			<div class="afficherdocument">
-				<a href="sommaire.html?id=[#ID]">
+				<a href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					<!--[ TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION ]-->	
 					Numéro [#IDENTIFIANT]
 				</a>
@@ -129,7 +129,7 @@
 	<IF COND="[#IDENTIFIANT]">
 		[#IDENTIFIANT]
 	<ELSE/>
-		<a href="index.html">
+		<a href="index.[#EXTENSIONSCRIPTS]">
 			<MACRO NAME="NOM_REVUE">
 		</a>
 	</IF>
@@ -230,7 +230,7 @@
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
 <!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
 <!--[ ****************************************************************** ]-->
-	<a class="titre1" href="sommaire.html?id=[#IDPARENT]">
+	<a class="titre1" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#IDPARENT]">
 		[#IDENTIFIANT]<IF COND="[#TITRE]"><br /> [#TITRE]</IF>
 	</a>
 </DEFMACRO>
@@ -246,7 +246,7 @@
 <!--[ <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           ]-->
 <!--[ ****************************************************************** ]-->
    	<IF COND="[#IDENTIFIANT]">
-		<a  href="sommaire.html?id=[#IDPARENT]">
+		<a  href="sommaire.[#EXTENSIONSCRIPTS]?id=[#IDPARENT]">
 			n&#176; [#IDENTIFIANT] 
 			<IF COND="[#TITRE]"> - [#TITRE]	</IF>.
 		</a>
@@ -262,7 +262,7 @@
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
 <!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
 <!--[ ****************************************************************** ]-->
-	<a  href="sommaire.html?id=[#IDPARENT]"><MACRO NAME="NOM_REVUE">, n&#176; [#IDENTIFIANT]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
+	<a  href="sommaire.[#EXTENSIONSCRIPTS]?id=[#IDPARENT]"><MACRO NAME="NOM_REVUE">, n&#176; [#IDENTIFIANT]<IF COND="[#TITRE]">, [#TITRE]</IF>.</a>
 </DEFMACRO>
 
 
@@ -396,31 +396,31 @@
 			
 		</IF>
 		<IF COND="[#TYPE]=='article'">
-		 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Article)
+		 <a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Article)
 			<br/><MACRO NAME="TEXTE_INTEGRAL">
 			<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 		<ELSE/>
 			<IF COND="[#TYPE]=='chronique'">
-			 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Chronique)
+			 <a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Chronique)
 			<br/><MACRO NAME="TEXTE_INTEGRAL">
 			<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 			<ELSE/>
 				<IF COND="[#TYPE]=='compte-rendu'">
-					 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Compte rendu)
+					 <a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Compte rendu)
 					<br/><MACRO NAME="TEXTE_INTEGRAL">
 					<br /><MACRO NAME="PARU_DANS_SIMPLE"> :
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
-						 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Position de thèse)
+						 <a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Position de thèse)
 						<br/><MACRO NAME="TEXTE_INTEGRAL">
 						<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 					<ELSE/>
 						<IF COND="[#TYPE]=='editorial'">
-							 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Editorial)
+							 <a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Editorial)
 							<br/><MACRO NAME="TEXTE_INTEGRAL">
 							<br /><MACRO NAME="PARU_DANS_SIMPLE"> 
 						<ELSE/>
-							<br /><a class="menu2" href="document.html?id=[#ID]">[#TITRE]</a>
+							<br /><a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]</a>
 						</IF>
 					</IF>
 				</IF>
@@ -442,7 +442,7 @@
 	<LOOP NAME="aff_collec" TABLE="entites" WHERE="idparent='0' AND statut gt 0">
 		
 			<div class="menu1">
-			<a class="menu2" href="sommaire.html?id=[#ID]">
+			<a class="menu2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			[#IDENTIFIANT]
 			</a>
 			</div>
@@ -450,7 +450,7 @@
 		
 		<LOOP NAME="aff_publiparente" TABLE="entites" WHERE="idparent='[#ID]' AND statut gt 0">
 			<div class="menu2">
-				<a class="menu2" href="sommaire.html?id=[#ID]">[#IDENTIFIANT]</a>
+				<a class="menu2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">[#IDENTIFIANT]</a>
 			</div>
 		</LOOP>
 	</LOOP>
@@ -680,7 +680,7 @@
 		<br /> [#SOUSTITRE]</IF>
 	<ELSE/>
 		<span class="article">
-		<a class="menu2" href="document.html?id=[#ID]">
+		<a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			[#TITRE]<IF COND="[#SOUSTITRE]"><br /> <div class="soustitre">[#SOUSTITRE]</div></IF>
 		</a>
 		</span>
@@ -761,7 +761,7 @@
 			[#IDENTIFIANT]<IF COND="[#TITRE]">, [#TITRE].</IF>
 		</DO>
 	</LOOP>
-	<br />http://[#REVUE].revues.org/document.html?id=[#ID]
+	<br />http://[#REVUE].revues.org/document.[#EXTENSIONSCRIPTS]?id=[#ID]
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRITION_AUTEUR"> 
@@ -774,7 +774,7 @@
 		<IF COND="[#DESCRIPTION]">
 		 	<div class="titre3">
 				Quelques mots à propos de 
-				<a class="auteur" href="auteur.html?id=[#ID]">
+				<a class="auteur" href="auteur.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					[#PRENOM]
 					<span class="smallcaps">[#NOMFAMILLE]</span>
 				</a>
@@ -804,7 +804,7 @@
 	<LOOP NAME="boucle_lister_publications" TABLE="publications" WHERE="idparent='[#ID]' AND TYPE!='regroupement'" >
 		<DO>
 			<div class="titre2">
-				<a class="titre2" href="sommaire.html?id=[#ID]">
+				<a class="titre2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					[#IDENTIFIANT]
 				
 				<MACRO NAME="TITRE_PUBLICATION">
@@ -824,7 +824,7 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="statut gt 0" LIMIT="0,1">
 		<DO>
-			<a class="titre2" href="sommaire.html?id=[#ID]">
+			<a class="titre2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 				Dernier numéro publié : <br />
 				[#IDENTIFIANT] 
 				<IF COND="[#TITRE]">
@@ -853,7 +853,7 @@
 					Extrait du premier article :
 				</span>  
 					[(#TEXTE|removefootnotes|couper(1500))]
-				<a href="document.html?id=[#ID]">
+				<a href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					Lire la suite
 				</a>
 			</div>
@@ -874,7 +874,7 @@
 	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<div class="titre1">
-				<a class="titre1" href="sommaire.html?id=[#ID]">
+				<a class="titre1" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 				Sommaire du dernier numéro publié : [#IDENTIFIANT] 
 				</a>
 				<IF COND="[#DIRECTEUR]">
@@ -912,7 +912,7 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='rubrique'" LIMIT="0,1">
 		<DO>
-			<a href="sommaire.html?id=[#ID]">
+			<a href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 				[#IDENTIFIANT]
 			</a>
 			<IF COND="[#TITRE]">
@@ -952,7 +952,7 @@
 				<!--[ Titre du doc annexe ]-->
 				<span class="bold">
 	                                <IF COND="[#TYPE]=='documentannexe-lienfichier'">
-					<a name="[#TITRE]" href="docannexe.html?id=[#ID]">[#TITRE]</a> ([(#LIEN|nicefilesize)])
+					<a name="[#TITRE]" href="docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]</a> ([(#LIEN|nicefilesize)])
 	                                <ELSE/>
 					<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 	                                </IF>
@@ -980,7 +980,7 @@
 <!--[ Affiche, s'il elle existe, l'icône de la publication.              ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#ICONE]">
-		<a href="sommaire.html?id=[#ID]">
+		<a href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			<img src="[#ICONE]" align='left' name="[#IDENTIFIANT]" border='0' alt="[#IDENTIFIANT]" hspace="8" vspace="8">
 		</a>
 	</IF>
@@ -1012,11 +1012,11 @@
 		<MACRO NAME="ICONE_PUBLICATION">
 		<!--[ affiche les 1500 premiers mots du texte ]-->
 		[(#TEXTE|lettrine|couper(1500))]
-		<a  href="sommaire.html?id=[#ID]">
+		<a  href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			... lire la suite...
 		</a>
 	<ELSE/>
-		<a  href="sommaire.html?id=[#ID]">
+		<a  href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			... lire ...
 		</a>
 	</IF>
@@ -1032,11 +1032,11 @@
 		<br />
 		<!--[ affiche les 1500 premiers mots du texte ]-->
 		[(#TEXTE|couper(1500))]
-		<a class=" titre2" href="sommaire.html?id=[#ID]">
+		<a class=" titre2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			... lire la suite...
 		</a>
 	<ELSE/>
-		<a class=" titre2" href="sommaire.html?id=[#ID]">
+		<a class=" titre2" href="sommaire.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			... lire ...
 		</a>
 	</IF>
@@ -1052,7 +1052,7 @@
 <!--[ affiche "Texte en ligne le xx/xx/xxxx"                             ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#LANG]!=''">
-		<a class="texte_integral" href="document.html?id=[#ID]">
+		<a class="texte_integral" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			[Texte intégral
 			<IF COND="[#TEXTEPUBLIE]">
 				]
@@ -1062,12 +1062,12 @@
 		</a>
 	<ELSE/>
 		<IF COND="[#TYPE]=='article'">
-			<a class="texte_integral" href="document.html?id=[#ID]">
+			<a class="texte_integral" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">
 				[Résumé]
 			</a>
 		<ELSE/>
 			<IF COND="[#TYPE]=='compte-rendu'">
-				<a class="texte_integral" href="document.html?id=[#ID]">
+				<a class="texte_integral" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					[Résumé]
 				</a>
 			</IF>
@@ -1088,7 +1088,7 @@
 						>> Voir le compte-rendu :
 					</div>
 <div class="afficherdocument">
-<a class="menu2" href="document.html?id=[#ID]">[#TITRE] </a>
+<a class="menu2" href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE] </a>
 <br><br>
 </div>
 </LOOP>	
@@ -1098,7 +1098,7 @@
 						>> Voir l'article recensé :
 					</div>
 <div class="afficherdocument">
-<a href="document.html?id=[#ID]">[#NOTICEBIBLIO] </a>
+<a href="document.[#EXTENSIONSCRIPTS]?id=[#ID]">[#NOTICEBIBLIO] </a>
 </div>
 <br><br>
 </LOOP>
