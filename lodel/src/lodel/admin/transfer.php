@@ -696,6 +696,9 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	  } 
 	  // other fields
 	  elseif (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
+            if ($field=="langue") {
+                $match[1]=strip_tags($match[1]);
+            }
 	    array_push($updates," $field='".addslashes(convertHTMLtoXHTML($field,$match[1]))."'");
 	  }
 	}
