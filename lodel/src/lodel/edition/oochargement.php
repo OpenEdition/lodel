@@ -199,7 +199,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "bloccitation"=>"citation",
 		      "quotations"=>"citation",
 #		      "typedocument"=>"typedoc",
-		      "titleuser"=>"title"
+		      "titleuser"=>"title",
 		      "subtitleuser"=>"subtitle"
 		      );
 
@@ -256,13 +256,13 @@ function OO_XHTML ($convertedfile,&$context)
 	     '<div class="footnotebody"><a class="footnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the footnote
 	     '<a class="footnotecall" \\1>\\2</a>'); # call to the footnote
   // endnotes
-#  array_push($srch,
-#	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the endnote
-#	     '/<span\b[^>]*class="endnotereference"[^>]*>\s*<span class="Endnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call of the endnote
-#  array_push($rpl,
-#	     '<div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the endnote
-#	     '<a class="endnotecall" \\1>\\2</a>'); # call of the endnote
-#
+  array_push($srch,
+	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the endnote
+	     '/<span\b[^>]*class="endnotereference"[^>]*>\s*<span class="Endnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call of the endnote
+  array_push($rpl,
+	     '<div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the endnote
+	     '<a class="endnotecall" \\1>\\2</a>'); # call of the endnote
+
 
   // autre chgt
   array_push($srch,
@@ -331,75 +331,35 @@ function OO_XHTML ($convertedfile,&$context)
 
     //
     // convert graphical styles in XHTML tags
-    // and do other cleaning:
-    // 1/ remove lang attribute
-    // 2/ treat the footnote (that's not easy)
     //
     $arr=preg_split("/(<\/?span\b[^>]*>)/",$file,-1,PREG_SPLIT_DELIM_CAPTURE);
     $count=count($arr);
     $stack=array();
-    $innote="";$nbspan=0;
     for($i=1; $i<$count; $i+=2) {
       #echo htmlentities($arr[$i]),"</br>";
       if ($arr[$i]=="</span>") { // closing span
-	if ($innote) { // in a note ?
-	  $nbspan--; // let decrease the number of span we are in
-	  if ($nbspan==0) $innote=""; // out of the note.
-	}
 	$arr[$i]=array_pop($stack);
-      } else { // opening span
-	$attributs=preg_split('/"/',substr($arr[$i],5,-1)); // there should not be any espaced "
-	print_r($attributs);
-	$close="</span>";
-	$open="";
-	$newattributs="";
-	for($j=0; $j<count($attributs)-1; $j+=2) {
-	  // attribut style
-	  if (preg_match('/^\s*style\s*=\s*$/',$attributs[$j])) {
-	    // there is a style to process.
-	    // there is really a style to processed
-	    list($open,$close,$style)=convertCSSstyle($attributs[$j+1]);
-	    if ($open && $close) { // something has changed
-	      if ($style) { // still some remaining styles ?
-		$newattributs.=' style="'.$style.'"';
-		$close=$close."</span>";
-	      }
-	    }
-	  } // end of attribut style
-	  // attribut lang
-	  elseif (preg_match("/^\s*lang\s*=\s*$/",$attributs[$j])) {
-	    // delete
-	    // nothing to do
-	  } // end of attribut lang
-	  // attribut class
-	  elseif (preg_match("/^\s*class\s*=\s*$/",$attributs[$j])) {
-	    if (preg_match("/^\s*(foot|end)note/",$attributs[$j+1],$result)) { // on a une footnote !
-	      $innote=$result[1];
-	      $arr[$i]="";
-	      $close="";
-	      break; // go out, this span must be removed.
-	    }
-	  } // end of attribut class
-	  else {
-	    $newattributs.=" ".$attributs[$j].'="'.$attributs[$j+1].'"';
+      }
+      elseif ($arr[$i]=="<span style=\"\">") { // the style is empty, remove the span
+	$arr[$i]="";
+	array_push($stack,"");
+      }
+      elseif (preg_match('/style\s*=\s*"([^"]*)"/',$arr[$i],$result)) {
+	// there is a style to process.
+// there is really a style to processed
+	list($open,$close,$style)=convertCSSstyle($result[1]);
+	if ($open && $close) { // something has changed
+	  if ($style) { // still some remaining styles ?
+	    $open="<span style=\"$style\">".$open;
+	    $close.="</span>";
 	  }
-	} // process all the attributs
-	if ($open && $close) $arr[$i+1]=$open.$arr[$i+1];
-	if ($innote) $nbspan++;
-	if ($newattributs) {
-	  $arr[$i]="<span $newattributs>";
+	  $arr[$i]=$open;
 	  array_push($stack,$close);
-	} else {
-	  $arr[$i]="";
-	  array_push($stack,"");
+	} else { // do nothing
+	  array_push($stack,"</span>");
 	}
-      } // opening tag
-      if ($innote) { // are we in a note ?
-	// look for <a> tags
-	if ($arr[$i+1]) {
-	  $arr[$i+1]=preg_replace("/<a\b([^>]+>)/",
-				  '<a class="'.$innote.'call"\\1',$arr[$i+1]);
-	}
+      } else { // do nothing
+	array_push($stack,"</span>");
       }
     }
     $file=join("",$arr);
