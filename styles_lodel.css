@@ -214,7 +214,7 @@ div.action_formulaire {
 	width: 550px;
 }
 
-.table_statut, .table_docannexes {
+.table_statut, .table_docannexes, .table_normale, .table_popup {
 	font-family: verdana;	
 	font-size: 10pt;
 	color: #CC9933;
@@ -222,9 +222,9 @@ div.action_formulaire {
 	margin-left: 70px;
 }
 
-.table_docannexes {
-	margin-left: 90px;
-}
+.table_docannexes {margin-left: 90px;}
+.table_normale {color: #333333;}
+.table_popup {color: #333333; margin-left: 0px;}
 
 .inactif {
 	font-family: verdana;	
@@ -324,6 +324,7 @@ div.intitule_ligne_formulaire {
 }
 
 .texte_normal {
+	font-family: Verdana;
 	font-size: 12px;
 	color: #333333;
 }
