@@ -98,6 +98,10 @@ if ($droptables) {
   $err="";
   $report="";
 
+  $result=mysql_list_tables($GLOBALS[currentdb]);
+  $tables=array();
+  while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
+
   $report.=isotoutf8($tables);
 
   # plus tard
@@ -267,6 +271,17 @@ DROP TABLE _PREFIXTABLE_indexhs;
       if ($err) break;
       $report.="Destruction de la table indexhs et documents_indexhs<br>\n";
     }
+
+    // Conversion des types dans entrees
+    $entreetypes=array("periode"=>1, "motcle"=>2, "theme"=>3, "geographie"=>4 );
+    foreach ($entreetypes as $nom=>$oldidtype) {
+      $result=mysql_query("SELECT id FROM typeentrees WHERE type='$nom'");
+      list($idtype)=mysql_fetch_row($result);
+      $err=mysql_query("UPDATE entrees SET idtype='$idtype' WHERE idtype='$oldidtype';");
+      $report.="Conversion des types dans entrees<br>\n";
+      if (!$err) break;
+    }
+
     $tables=gettables(); // remet a jour la liste des tables;
     if (!$tables["$GLOBALS[tp]typeentrees"]) { // il faut creer cette table, et les autres...
       if ($err=create("typeentrees")) break;
@@ -373,6 +388,17 @@ REPLACE INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,titredescription,st
       if ($err) break;
       $report.="Creation de typepersonnes<br>\n";
     }
+
+    // Conversion des types dans entites_personnes
+    $personnestypes=array("auteur"=>1);
+    foreach ($personnestypes as $nom=>$oldidtype) {
+           $result=mysql_query("SELECT id FROM typepersonnes WHERE type='$nom'");
+           list($idtype)=mysql_fetch_row($result);
+           $err=mysql_query("UPDATE entites_personnes SET idtype='$idtype' WHERE idtype='$oldidtype';");
+           $report.="Conversion des types dans entites_personnes<br>\n";
+           if (!$err) break;
+     }
+
 
 
 ##    if ($tables["$GLOBALS[tp]typepublis"]) {
@@ -828,7 +854,8 @@ function isotoutf8 ($tables)
 	$name  = mysql_field_name($resultselect, $i);
 				
 	// Construction de la clause SET
-	if(($type=="string"||$type=="blob") && $valeurs[$i]!="") array_push($set,$name."='".addslashes(utf8_encode($valeurs[$i]))."'");
+        $newvaleurs = str_replace (chr(146),"'", $valeurs[$i]);
+	if(($type=="string"||$type=="blob") && $valeurs[$i]!="") array_push($set,$name."='".addslashes(utf8_encode($newvaleurs))."'");
 	  
 	// Construction de la clause WHERE
         if (is_null($valeurs[$i])) {
