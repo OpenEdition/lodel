@@ -12,13 +12,15 @@ authenticate(LEVEL_VISITEUR);
 //}
 //
 
-// workaround temporaire. TRES TEMPORAIRE
-if ($id) $parent=$id;
+//// workaround temporaire. TRES TEMPORAIRE
+//if ($id) $parent=$id;
+//
+//$context[id]=$context[parent]=$parent=intval($parent);
 
-$context[id]=$context[parent]=$parent=intval($parent);
+$context[id]=$id=intval($id);
 
-if ($parent) {
-  $result=mysql_query ("SELECT tpledit FROM $GLOBALS[tableprefix]typepublis,$GLOBALS[tableprefix]publications WHERE $GLOBALS[tableprefix]publications.id='$parent' AND type=$GLOBALS[tableprefix]typepublis.nom") or die (mysql_error());
+if ($id) {
+  $result=mysql_query ("SELECT tpledit FROM $GLOBALS[tableprefix]typepublis,$GLOBALS[tableprefix]publications WHERE $GLOBALS[tableprefix]publications.id='$id' AND type=$GLOBALS[tableprefix]typepublis.nom") or die (mysql_error());
   if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
   list($base)=mysql_fetch_row($result);
 } else {
