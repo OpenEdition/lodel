@@ -311,7 +311,10 @@ function replacequotationmark(&$text)
         return str_replace("\"","&quot;",$text);
 }
 
+//
 // fonction utiliser pour les options.
+//
+
 function yes ($texte)
 
 { return $texte ? "checked" : "";}
@@ -323,5 +326,24 @@ function no ($texte)
 function eq($str,$texte)
 
 { return $texte==$str ? "checked" : ""; }
+
+//
+// fonction pour les notes
+//
+
+
+function notes($type,&$texte)
+{
+  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
+  if ($type=="nombre") {
+    $notes=preg_grep('/<a class="sd[^>]+>[0-9]+<\/a>/',$results[0]);
+  } elseif ($type=="lettre") {
+    $notes=preg_grep('/<a class="sd[^>]+>[a-zA-Z]+<\/a>/',$results[0]);
+  } elseif ($type=="asterisque") {
+    $notes=preg_grep('/<a class="sd[^>]+>\*+<\/a>/',$results[0]);
+  } else die ("type \"$type\" inconnues");
+  return join("",$notes);
+}
+
 
 ?>

@@ -126,7 +126,10 @@ function OO ($uploadedfile,&$context)
   $translations=array("notesdebasdepage"=>"notebaspage",
 		      "title"=>"titre","subtitle"=>"soustitre",
 		      "document"=>"article","resume"=>"resume","auteur"=>"auteurs",
-		      "footnotetext"=>"notebaspage",
+#		      "footnote(?:text)?"=>"notebaspage",
+#		      "endnote"=>"notefin",
+		      "footnote(?:text)?"=>"",
+		      "endnote"=>"",
 		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
 		      "introduction"=>"texte","conclusion"=>"texte",
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
@@ -157,9 +160,11 @@ function OO ($uploadedfile,&$context)
 	     "<r2r:section\\1>",
 	     "</r2r:section\\1>");
 
-  // traitement un peu sale des footnote. On efface les paragraphes marques footnote et on remet sur la base du div
+  // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
   array_push($srch,"/<\/?r2r:notebaspage>/","/<div id=\"sdfootnote\d+\">.*?<\/div>/is");
   array_push($rpl,"","<r2r:notebaspage>\\0</r2r:notebaspage>");
+  array_push($srch,"/<\/?r2r:notefin>/","/<div id=\"sdendnote\d+\">.*?<\/div>/is");
+  array_push($rpl,"","<r2r:notefin>\\0</r2r:notefin>");
 
   // remonte les balises r2r
   array_push($srch,"/((?:<\w+[^>]*>\s*)+)\s*<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)*)/s");

@@ -18,7 +18,8 @@ $balises=array ("-" => "-",
 		"texte" => "Texte",
 		"citation" => "<blockquote>",
 		"epigraphe" => "Epigraphe",
-		"notebaspage" => "Notes",
+		"notebaspage" => "Notes de bas de page",
+		"notefin" => "Notes de fin de document",
 		"typedoc" => "Type de doc",
 		"finbalise" => "fin",
 		"bibliographie"=>"Bibliographie",
@@ -59,6 +60,7 @@ $balises=array ("-" => "-",
     # balises qui ne sont extraites que lorsque le texte est publie.
 $balisesdocument_lieautexte=array("texte",
 				  "notebaspage",
+				  "notefin",
 				  "bibliographie",
 				  "annexe",
 				  "erratum",
@@ -106,7 +108,7 @@ $multiplelevel=array(
 $division="(section\d+)"; # balises qui ne sont pas des paragraphes
 
 # balises qui peuvent etre constituees de plusieurs paragraphes, donc ou chaque paragraphe sera agrege.
-$multiparagraphe_tags="titre|surtitre|soustitre|texte|citation|epigraphe|notebaspage|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
+$multiparagraphe_tags="titre|surtitre|soustitre|texte|citation|epigraphe|notebaspage|notefin|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
 
 
 # tags qui admettent des listes separees par des virgules.

@@ -243,12 +243,27 @@
 						<!-- Notes de bas de page. Si elles existent --->
 						<IF COND="[#NOTEBASPAGE]">
 							<div class="titre3">
-								Notes
+								Notes numériques:
 							</div>
 							<div class="notes"> 
-								[#NOTEBASPAGE]
+								[(#NOTEBASPAGE|notes("nombre"))]
 								<br />
 							</div>
+							<div class="titre3">
+								Notes littérales:
+							</div>
+							<div class="notes"> 
+								[(#NOTEBASPAGE|notes("lettre"))]
+								<br />
+							</div>
+							<div class="titre3">
+								Notes astérisques:
+							</div>
+							<div class="notes"> 
+								[(#NOTEBASPAGE|notes("asterisque"))]
+								<br />
+							</div>
+
 						</IF>
 								
 					<!-- Si le texte n'est pas encore autorisé à être publié -->
