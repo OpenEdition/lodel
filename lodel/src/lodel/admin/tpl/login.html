@@ -21,6 +21,11 @@
 		<form action="login.php" method="POST">
 			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 			<div id="champ_formulaire">
+				<IF COND="[#CHARSET] ne 'utf-8'">
+					<span class="message_erreur">
+						Votre navigateur ne renvoie pas de l'UTF-8.<br />Il est fortement conseillé d'utiliser LODEL<br />avec le jeu de caractère Unicode (UTF-8).
+					</span><br /><br />
+				</IF>
 				[(#ERREUR_LOGIN|true)<span class="message_erreur">Nom d'utilisateur ou mot de passe incorrect.</span><br /><br />]
 				[(#ERREUR_OPENSESSION|true)<span class="message_erreur">Impossible d'ouvrir une session. contactez l'administrateur.</span><br /><br />]
 				[(#ERREUR_SITEBLOQUE|true)<span class="message_erreur">Le site est bloque impossible de se loguer (sauf administrateur Lodel). Le site est probablement en maintenance.</span><br /><br />]
