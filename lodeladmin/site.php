@@ -64,24 +64,38 @@ if ($edit) { // modifie ou ajoute
 $context[dbname]=$singledatabase ? $database : $database."_".$context[rep];
 if ($tache=="createdb") {
   if (!$context[rep]) die ("probleme interne");
-  if (!$singledatabase) {
+  do { // bloc de controle
+    if ($singledatabase) break;
+    // check if the database existe
     include_once ($home."connect.php");
-    $context[dbname]=$database."_".$context[rep];
-    $context[command]="CREATE DATABASE IF NOT EXISTS $context[dbname]";
+    $db_list = mysql_list_dbs();
+    $i = 0;
+    $cnt = mysql_num_rows($db_list);
+    while ($i < $cnt) {
+      if ($context[dbname]==mysql_db_name($db_list, $i)) break 2; // la database existe
+      $i++;
+    }
+    // well, it does not exist, let's create it.
+    //
+    $context[command]="CREATE DATABASE $context[dbname]";
     if (!@mysql_query($context[command])) {
       $context[erreur]=mysql_error();
       require ($home."calcul-page.php");
       calcul_page($context,"site-createdb");
       return;
     }
-  }
+  } while (0);
   $tache="grant";
 }
 
 
 if ($tache=="grant") {
   if (!$context[rep]) die ("probleme interne");
-  if (!$singledatabase) {
+  do { // control block 
+    if ($singledatabase) break;
+    // check if the user has the right to access the database... no more check.
+    if (mysql_select_db("$context[dbname]")) break;
+
     $pass=$dbpasswd ? "IDENTIFIED BY '$dbpasswd'" : "";
     $context[command]="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
     if (!@mysql_query($context[command]." $pass")) {
@@ -90,8 +104,8 @@ if ($tache=="grant") {
       require ($home."calcul-page.php");
       calcul_page($context,"site-grant");
       return;
-    } 
-  }
+    }
+  } while (0);
   $tache="createtables";
 }
 
@@ -103,15 +117,14 @@ if ($tache=="createtables") {
   if (!$context[rep]) die ("probleme interne");
   include_once ($home."connect.php");
   
-  mysql_select_db($context[dbname]);
+  mysql_select_db("$context[dbname]");
+
   if (!file_exists("../install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
   $text=join('',file("../install/init-site.sql"));
   if (file_exists("../install/inserts-site.sql")) {
     $text.=utf8_encode(join('',file("../install/inserts-site.sql")));
   }
-
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
-
 
   $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sqlcmds) die("le fichier init-site.sql ne contient pas de commande. Probleme!");
