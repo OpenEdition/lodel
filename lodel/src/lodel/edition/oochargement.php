@@ -53,6 +53,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     $tmpdir=tmpdir(); // use here and later.
     $source=$tmpdir."/".basename($file1)."-source";
     move_uploaded_file($file1,$source); // move first because some provider does not allow operation in the upload dir
+    @chmod($source,0666 & octdec($GLOBALS[filemask])); 
 
     $fileconverted=$source.".converted";
     $sourceoriginale=$_FILES['file1']['name'];

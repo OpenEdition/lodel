@@ -599,7 +599,8 @@ function tmpdir()
   $tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
 
   if (!file_exists($tmpdir)) { 
-    mkdir($tmpdir,0777  & octdec($GLOBALS[filemask])); 
+    mkdir($tmpdir,0777  & octdec($GLOBALS[filemask]));
+    chmod($tmpdir,0777 & octdec($GLOBALS[filemask])); 
   }
   return $tmpdir;
 }
