@@ -34,11 +34,44 @@
 				<tr>
 				<IF COND="[#SITE]">
 					<td width="100%" heigth="75">&nbsp;</td>
-					<td width="57" heigth="75"><a href="[#SITEROOT]lodel/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"><span class="desk-text">[@COMMON.HOME]</span></a></td>
+					<td width="57" heigth="75">
+						<a href="[#SITEROOT]lodel/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');">
+						<IF COND="[#CURRENTURL|strpos('edition')]">
+						<MACRO NAME="PNG_MENU_ACCUEIL_ACTIF">
+						<ELSE/>
+							<MACRO NAME="PNG_MENU_ACCUEIL">
+						</IF>
+							<span class="desk-text">
+								[@COMMON.HOME]
+							</span>
+						</a>
+					</td>
 			
-					<td width="57" heigth="75"><a href="[#SITEROOT]lodel/admin/index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"><span class="desk-text">[@COMMON.ADMINISTRATION]</span></a></td>
+					<td width="57" heigth="75">
+						<a href="[#SITEROOT]lodel/admin/index.php">
+						<IF COND="[#CURRENTURL|strpos('admin')]">	
+							<MACRO NAME="PNG_MENU_ADMIN_ACTIF">
+						<ELSE/>
+							<MACRO NAME="PNG_MENU_ADMIN">
+						</IF>
+							<span class="desk-text">
+								[@COMMON.ADMINISTRATION]
+							</span>
+						</a>
+					</td>
 			
-					<td width="57" heigth="75"><a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"><span class="desk-text">[@COMMON.VIEW]</span></a></td>
+					<td width="57" heigth="75">
+						<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');">
+					<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
+							<MACRO NAME="PNG_MENU_VOIR_ACTIF">
+					<ELSE/>
+						<MACRO NAME="PNG_MENU_VOIR">
+					</IF>
+							<span class="desk-text">
+								[@COMMON.VIEW]
+							</span>
+						</a>
+					</td>
 
 				<ELSE/>
 					<td heigth="75">
