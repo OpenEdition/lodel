@@ -42,6 +42,7 @@ ln docannexe.php
 ln index.php
 ln signaler.php
 ln sommaire.php
+ln search.php
 
 ### desuet. cp tpl
 
@@ -153,6 +154,10 @@ ln tpl/edit_entities_edition.html
 ln xml.php
 ln tpl/xml-classe.html
 ln tpl/xml-valid.html
+
+#search_engine
+ln search.php
+ln tpl/search.html
 
 ###############################################################
 ############# admin
