@@ -47,11 +47,11 @@ $arr=preg_split("/\s*(<(\/?)[^>]+>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
 #print_r($arr);
 
 // "telechargement"
-$originalname="entite-$id.xml";
+$originalname="schema-xml.xsd";
 #temporairement commente
-#header("Content-type: application/force-download");
-#header("Content-Disposition: attachment; filename=$originalname");
-#header("Content-type: application/$type");
+header("Content-type: application/force-download");
+header("Content-Disposition: attachment; filename=$originalname");
+header("Content-type: application/$type");
 
 
 echo '<?xml version="1.0" encoding="utf-8" ?>
