@@ -91,7 +91,7 @@ function infoChargement(nomFic){
 	      </IF>
 	</div>
 </div>
-<form name="formfic" enctype="multipart/form-data" action="[#URL]" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)" />
+<form name="formfic" enctype="multipart/form-data" action="[#URL]" method="post" onsubmit="return infoChargement(document.formfic.file1.value)" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
 	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
 	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
