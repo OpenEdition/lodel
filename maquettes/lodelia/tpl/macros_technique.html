@@ -39,7 +39,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Ouvre la page HTML                                                 -->
 <!-- ****************************************************************** -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" />
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 </DEFMACRO> 
@@ -203,13 +203,13 @@
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<DO>
 						<IF COND="[#DATE]!='0000-00-00'">
-							<meta name="DC.Date" content="[#DATE]">
+							<meta name="DC.Date" content="[#DATE]" />
 						</IF>
 					</DO>
 				</LOOP>
 			<ELSE/>
 				<IF COND="[#DATE]!='0000-00-00'">
-					<meta name="DC.Date" content="[#DATE]">
+					<meta name="DC.Date" content="[#DATE]" />
 				</IF>
 			</IF>
 		</DO>
