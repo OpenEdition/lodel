@@ -34,6 +34,8 @@ require("../lodelconfig.php");
 
 $version="0.7";
 
+$site="";
+
 ##########################################
 
 $versionsuffix=$version ? "-$version" : "";   # versioning

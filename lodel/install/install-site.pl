@@ -28,6 +28,17 @@
 
 
 $version=shift @ARGV;
+$droits=shift @ARGV;
+
+die("install-site.pl [version] [uga]") unless $droits;
+
+$filemask="0";
+
+$filemask.=$droits=~/u/ ? "7" : "0";
+$filemask.=$droits=~/g/ ? "7" : "0";
+$filemask.=$droits=~/a/ ? "7" : "0";
+
+
 
 unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
   print STDERR "Veuillez preciser un numero de version ou devel\n";
@@ -43,16 +54,16 @@ unless (-e $homesite) {
   exit;
 }
 
-unless (-e "siteconfig.php") {
-  print STDERR "Installation du fichier siteconfig.php. Verifier le contenu.\n";
-  system ("cp $homesite/siteconfig.php .");
-  if (!$version || $version>=0.4 ) {
-    unless (-e "siteconfig.php") {
-      print STDERR "Impossible de copier le fichier siteconfig.php\n";
-      exit;
-    }
-  }
-}
+#unless (-e "siteconfig.php") {
+#  print STDERR "Installation du fichier siteconfig.php. Verifier le contenu.\n";
+#  system ("cp $homesite/siteconfig.php .");
+#  if (!$version || $version>=0.4 ) {
+#    unless (-e "siteconfig.php") {
+#      print STDERR "Impossible de copier le fichier siteconfig.php\n";
+#      exit;
+#    }
+#  }
+#}
 
 slink ("../lodelconfig.php","lodelconfig.php");
 
@@ -69,7 +80,7 @@ if (-e "siteconfig.php") {
       exit;
     }
   } else {
-    print STDERR "Attention: La commande php ne semble pas etre disponible ou fonction. Impossible de verifier si la version est correcte dans siteconfig.php\n";
+    #print STDERR "Attention: La commande php ne semble pas etre disponible ou fonction. Impossible de verifier si la version est correcte dans siteconfig.php\n";
   }
 }
 
@@ -102,9 +113,9 @@ foreach (<FILE>) {
   } elsif ($cmd eq "dirdestination") {
     $dirdest=$arg1;
   } elsif ($cmd eq "mkdir") {
-    mkdir $arg1,oct($arg2);
+    mkdir $arg1,oct($arg2) & oct($filemask);
   } elsif ($cmd eq "ln") {
-    $toroot=$filedest; $toroot=~s/^\.\///g; 
+    $toroot=$filedest; $toroot=~s/^\.\///g;
     $toroot=~s/([^\/]+)\//..\//g;
     $toroot=~s/[^\/]+$//;
 #    print STDERR "3 $dirdest $dirsource $toroot $arg1\n";
@@ -113,8 +124,13 @@ foreach (<FILE>) {
   } elsif ($cmd eq "cp") {
     $filedest=~s/\.php$/.html/ if $dirdest eq ".";
     system ("cp -fr $dirsource/$arg1 $filedest") unless filemtime($filedest)>filemtime(" $dirsource/$arg1");
+#    print $filedest," ",$filemask," ","\n";
+#    printf "%o\n",0644 & oct($filemask);
+    
+    chmod (0644 & oct($filemask),$filedest);
   } elsif ($cmd eq "touch") {
     system ("touch $filedest") unless -e  $filedest;
+    chmod (0644 & oct($filemask),$filedest);
   } elsif ($cmd eq "htaccess") {
     htaccess($filedest) if -e $filedest;
   } else {
@@ -152,5 +168,5 @@ sub htaccess {
   open(HT,">$dir/.htaccess") or die "Impossible d'ecrire dans $dir";
   print HT "deny from all\n";
   close (HT);
-  chmod (0644, "$dir/.htaccess") or die "Can't chmod $dir/.htaccess";
+  chmod (0644 & oct($filemask), "$dir/.htaccess") or die "Can't chmod $dir/.htaccess";
 }

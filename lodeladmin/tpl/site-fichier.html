@@ -28,25 +28,37 @@
 
 <table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
 <tr><td><div align="center">
-<br /><br /><b>Création de site</b></div></td></tr>
+<br /><br /><b>Copie du fichier siteconfig.php</b></div></td></tr>
 </table>
 
 <div align="center">
-<IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
-<p><strong>LODEL n'a pas reussi à copier le fichier [#SITECONFIGSRC] dans [#SITECONFIGDEST]
-.</b></p>
-<p>Etrange. Verifier la présence du fichier source et vérifier que le repertoire destiniation est existe et que le serveur web peut y écrire. Enfin c'est etrange quand même que ca ait marché jusque là!</p>
-<ELSE/> <!--[ OPTION2 ]-->
-
-Vous pouvez faire la copie vous même, ou donner les droits d'écriture au serveur web sur le repertoire [#REP] et s'il existe sur le fichier [#REP]/siteconfig.php.
-</IF>
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="tache" value="fichier">
 <input type="hidden" name="versionrep" value="[#VERSIONREP]">
-<input type="submit" value="continuer">
-</form>
 
+<table width="800" cellpadding="5" cellspacing="0" border="1" align="center"><tr><td>
+
+<IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
+<p><strong>LODEL n'a pas reussi à copier le fichier [#SITECONFIGSRC] dans [#SITECONFIGDEST]
+.</strong></p>
+<p>Etrange. Verifier la présence du fichier source et vérifier que le repertoire destination existe et que le serveur web peut y écrire. Enfin c'est etrange quand même que ca ait marché jusque là!</p>
+<ELSE/> <!--[ OPTION2 ]-->
+
+Il faut installer le fichier siteconfig.php. Vous avez le choix entre les deux alternatives:
+<ul>
+<li>soit télécharger le fichier siteconfig.php, le copier dans le repertoire [#REP] et donnée les droits de lecture au serveur. Poursuivre quand l'opération est réalisée.<br />
+<input type="submit" name="downloadsiteconfig" value="Télécharger"><input type="submit" value="continuer">
+</li>
+<li>donner les droits d'écriture au serveur web sur le repertoire [#REP] et poursuivre.<br />
+<input type="submit" value="continuer">
+</li>
+</ul>
+</IF>
+
+</td></tr></table><br/>
+</form>
+</div>
 
 <MACRO NAME="CLOSE_HTML">

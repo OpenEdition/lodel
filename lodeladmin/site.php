@@ -37,6 +37,7 @@ include_once ($home."func.php");
 $id=intval($id);
 $critere="id='$id'";
 $context[installoption]=intval($installoption);
+$context[version]=0.7;
 
 //
 // supression et restauration
@@ -55,14 +56,15 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     if (!$context[nom]) { $context[erreur_nom]=$err=1; }
-    if (!$context[rep] || preg_match("/\W/",$context[rep])) { $context[erreur_rep]=$err=1; }
+    if (!$id && (!$context[rep] || preg_match("/\W/",$context[rep]))) { $context[erreur_rep]=$err=1; }
     if ($err) break;
     include_once ($home."connect.php");
 
     // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
       $result=mysql_query ("SELECT options,statut,rep FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
-      list($options,$statut,$oldrep)=mysql_fetch_row($result);
+      list($options,$statut,$rep)=mysql_fetch_row($result);
+      $context[rep]=$rep;
     } else {
       $options=""; $statut=-32; // -32 signifie en creation
     }
@@ -72,17 +74,19 @@ if ($edit) { // modifie ou ajoute
 
     if ($statut>-32) back(); // on revient, le site n'est pas en creation
 
+    #if ($id && $oldrep!=$newrep) {
+    #  $tache="";
+    #}
     if (!$id) $context[id]=$id=mysql_insert_id();
     $tache="version";
   } while (0);
+}
 
-} elseif ($id>0) {
+if ($id>0) {
   include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (statut>0 || statut=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
-
-
 
 
 // regexp pour reconnaitre un repertoire de version
@@ -254,7 +258,6 @@ if ($tache=="createrep") {
       calcul_page($context,"site-createrep");
       return;
     }
-    if (function_exists("chmod")) @chmod($dir,0777 & octdec($filemask)); // pour etre sur.
   }
   $tache="fichier";
 }
@@ -266,18 +269,29 @@ if ($tache=="createrep") {
 if ($tache=="fichier") {
   // on peut installer les fichiers
   $root=LODELROOT.$context[rep]."/";
-  $siteconfigsrc=LODELROOT."/$versionrep/src/siteconfig.php";
+  $siteconfigcache="CACHE/siteconfig.php";
+
+  if ($downloadsiteconfig) { // download the siteconfig
+    download($siteconfigcache,"siteconfig.php");
+    return;
+  }
+
+  if (file_exists($siteconfigcache)) unlink($siteconfigcache);
+  if (!copy(LODELROOT."/$versionrep/src/siteconfig.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
+  maj_siteconfig($siteconfigcache,array("site"=>$context[rep]));
+
   $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
-  if (!file_exists($siteconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
+  if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache)!=file_get_contents($siteconfigdest)) {
     if ($installoption=="2" && !$lodeldo) {
       require ($home."calcul-page.php");
       calcul_page($context,"site-fichier");
-      return;	
+      return;
     }
-    // on essaie de copier alors
-    if (!@copy($siteconfigsrc,$siteconfigdest)) {
-      $context[siteconfigsrc]=$siteconfigsrc;
+    @unlink($siteconfigdest); // try to delete before copying.
+    // try to copy now.
+    if (!@copy($siteconfigcache,$siteconfigdest)) {
+      $context[siteconfigsrc]=$siteconfigcache;
       $context[siteconfigdest]=$siteconfigdest;
       $context[erreur_ecriture]=1;
       require ($home."calcul-page.php");
@@ -285,7 +299,7 @@ if ($tache=="fichier") {
       return;	
     }
   }
-  // ok siteconfig est copier.
+  // ok siteconfig est copie.
   install_fichier($root,LODELROOT."/$versionrep/src",LODELROOT);
 
   // ok on a fini, on change le statut du site
@@ -363,7 +377,6 @@ function install_fichier($root,$homesite,$homelodel)
       die ("command inconnue: \"$cmd\"");
     }
   }
-
   return TRUE;
 }
 
@@ -372,11 +385,14 @@ function install_fichier($root,$homesite,$homelodel)
 function htaccess ($dir) {
   //if (!@unlink("$dir/.htaccess")) die("Impossible d'effacer le fichier $dir/.htaccess");
   $text="deny from all\n";
+  if (file_exists("$dir/.htaccess") && file_get_contents("$dir/.htaccess")==$text) return;
   writefile ("$dir/.htaccess",$text);
   @chmod ("$dir/.htaccess",0640);
 }
 
 function slink($src,$dest) {
+
+  if (file_exists($dest) && file_get_contents($dest)==file_get_contents($src)) return;
   // le lien n'existe pas ou on n'y accede pas.
   @unlink($dest); // detruit le lien s'il existe
   symlink($src,$dest);
@@ -412,22 +428,20 @@ function mycopy($src,$dest)
   global $filemask;
 #  echo $dest,"<br />";
 
-   if (!file_exists ($dest) || 
-       filemtime($dest)<=filemtime($src)) {
-     if (file_exists ($dest)) unlink($dest);
-     copy($src,$dest);
-     @chmod($dest,0644 & octdec($filemask));
-   }
+   if (file_exists ($dest) && file_get_contents($dest)==file_get_contents($src)) return;
+
+   if (file_exists ($dest)) unlink($dest);
+   copy($src,$dest);
+   @chmod($dest,0666 & octdec($filemask));
 }
 
-/*
-function maj_siteconfig($var,$val=-1,$text="")
+
+function maj_siteconfig($siteconfig,$var,$val=-1)
 
 {
-  global $siteconfig;
 
   // lit le fichier
-  if (!$text) $text=join("",file($siteconfig));
+  $text=join("",file($siteconfig));
   $search=array(); $rpl=array();
 
   if (is_array($var)) {
@@ -454,6 +468,6 @@ function maj_siteconfig($var,$val=-1,$text="")
     return $newtext;
   }
 }
-*/
+
 
 ?>

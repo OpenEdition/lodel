@@ -1,13 +1,15 @@
+# les droits doivent etre tres larges, ils sont ensuite reduits par le filemask
 
-mkdir CACHE 0770
-mkdir tpl 0750
-mkdir images 0750
-mkdir docannexe 0700
-mkdir docannexe/fichier 0770
-mkdir docannexe/image 0770
-mkdir lodel 0750
-mkdir lodel/edition 0750
-mkdir lodel/admin 0750
+
+mkdir CACHE 0777
+mkdir tpl 0755
+mkdir images 0755
+mkdir docannexe 0777
+mkdir docannexe/fichier 0777
+mkdir docannexe/image 0777
+mkdir lodel 0755
+mkdir lodel/edition 0755
+mkdir lodel/admin 0755
 
 htaccess tpl
 htaccess CACHE
@@ -26,7 +28,7 @@ dirsource $homelodel
 ln styles_lodel.css
 
 dirsource $homesite
-cp styles_revue.css
+cp styles_site.css
 cp images
 ln auteur.php
 
@@ -65,10 +67,8 @@ ln clearcache.php
 #
 
 mkdir lodel 0755
-##desuet mkdir lodel/txt 0770
-##htaccess lodel/txt
 
-mkdir lodel/sources 0770
+mkdir lodel/sources 0777
 htaccess lodel/sources
 
 dirsource $homesite/lodel
@@ -81,7 +81,7 @@ ln index.php
 
 mkdir lodel/edition 0755
 mkdir lodel/edition/tpl 0755
-mkdir lodel/edition/CACHE 0770
+mkdir lodel/edition/CACHE 0777
 
 dirdestination lodel/edition
 
@@ -89,7 +89,7 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln styles_revue.css
+ln styles_site.css
 ln styles_lodel.css
 
 # les logins
@@ -179,7 +179,7 @@ ln tpl/xml-valid.html
 
 mkdir lodel/admin 0755
 mkdir lodel/admin/tpl 0755
-mkdir lodel/admin/CACHE 0770
+mkdir lodel/admin/CACHE 0777
 
 dirdestination lodel/admin
 
@@ -187,7 +187,7 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln styles_revue.css
+ln styles_site.css
 ln styles_lodel.css
 
 dirsource $homesite/lodel/edition
