@@ -89,11 +89,11 @@ function check_auth (&$site)
     $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysal_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
-      $site="toutes les sites";
+      $site="tous les sites";
      } else { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
 
-      // cherche ensuite dans la base de la site
+      // cherche ensuite dans la base du site
       mysql_select_db($GLOBALS[currentdb]);
       $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;
