@@ -48,7 +48,7 @@ if (!$maj) $maj=myfilemtime("CACHE/maj");
 
 // Calcul du nom du fichier cache
 
-$cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",$REQUEST_URI)), 0, 255);
+$cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",$_SERVER['REQUEST_URI'])), 0, 255);
 // The variable $cachedfile must exist and be visible in the global scope
 // The compiled file need it to know if it must produce cacheable output or direct output.
 // An object should be created in order to avoid the global scope pollution.

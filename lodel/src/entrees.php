@@ -31,6 +31,7 @@ if (!function_exists("authenticate")) {
   require_once($home."auth.php");
   authenticate();
 }
+
 require_once($home."func.php");
 
 $critere="";
@@ -54,6 +55,7 @@ $context[type_tri]=$GLOBALS[tp]."entrees.".$context[type_tri];  // prefix par la
 
 
 $base=$context[type_tplindex].$suffix;
+
 require ($home."cache.php");
 
 
