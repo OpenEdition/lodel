@@ -799,20 +799,27 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste description des auteurs dans le document          -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="descrition_auteur" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
-		<DO>
-			<IF COND="[#DESCRIPTION]">
-			 	<div class="titre3">
-					Quelques mots à propos de 
-					<a class="auteur" href="auteur.html?id=[#ID]">
-						[#PRENOM]
-						<span class="smallcaps">[#NOMFAMILLE]</span>
-					</a>
-				</div>
-			 	<div class="descriptionauteur"><br />[#DESCRIPTION]</div>
-			</IF>
-		</DO>
-	</LOOP>
+<LOOP TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
+ <IF COND="[#DESCRIPTION]">
+ 	<div class="titre3">
+		About 
+			
+				<a class="auteur" href="auteur[#ID].html">
+						
+					[#PRENOM]
+					<span class="smallcaps">[#NOMFAMILLE]</span>
+					
+				</a>
+			
+	</div>
+ 	<div class="descriptionauteur">
+		
+	[#DESCRIPTION]
+<br />
+				
+	</div>
+</IF>
+</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_THEMES">
