@@ -83,6 +83,11 @@ if ($edit) { // modifie ou ajoute
     // cherche si le username existe deja
     $result=mysql_query("SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
     if (mysql_num_rows($result)>0) { $context[erreur_dupusername]=$err=1; }
+    if ($GLOBALS[database]!=$GLOBALS[currentdb]) {
+      // cherche si le username existe deja
+      $result=mysql_query("SELECT id FROM $GLOBALS[database].$GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
+      if (mysql_num_rows($result)>0) { $context[erreur_dupusernameadmin]=$err=1; }
+    }
 
     if ($context[privilege]>$userpriv) { $err=1; } // securite
 
