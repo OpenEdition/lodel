@@ -364,11 +364,11 @@ function notes($type,&$texte)
 {
   preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
   if ($type=="nombre") {
-    $notes=preg_grep('/<a classe="sd[^>]+>[0-9]+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a class="sd[^>]+>[0-9]+<\/a>/',$results[0]);
   } elseif ($type=="lettre") {
-    $notes=preg_grep('/<a classe="sd[^>]+>[a-zA-Z]+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a class="sd[^>]+>[a-zA-Z]+<\/a>/',$results[0]);
   } elseif ($type=="asterisque") {
-    $notes=preg_grep('/<a classe="sd[^>]+>\*+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a class="sd[^>]+>\*+<\/a>/',$results[0]);
   } else die ("type \"$type\" inconnues");
   return join("",$notes);
 }
