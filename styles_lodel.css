@@ -26,7 +26,10 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 /***************** Ajout intégration maquette Lodel ****************/
-
+body, div, p, td{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
 a:link {text-decoration: none; color: #CC9933;}
 a:visited {text-decoration: none; color: #CC9933;}
 a:hover {text-decoration: none;}
@@ -98,7 +101,7 @@ div.ligne_ajouter_document_dans_un_regroupement2  {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	padding-left: 10px;
-	font-family: verdana;
+	
 	font-size: 10pt;
 	font-weight: bold;
 }
@@ -124,7 +127,7 @@ div.lignes_ajouter_entite {background-color: #F5F5F5;}
 .titre_document, .titre_doc_fa, 
 .auteurs_document, .auteurs_doc_fa, 
 .type_document, .type_doc_fa {
-	font-family: verdana;	
+		
 	text-align: left;
 	font-size: 10pt;
 }
@@ -138,7 +141,6 @@ div.lignes_ajouter_entite {background-color: #F5F5F5;}
 	font-size: 8pt;
 	font-style: italic;
 }
-
 /******************** FIN DOCUMENTS **********************/
 
 
@@ -153,12 +155,12 @@ div.edition_des_series {
 	font-weight : bold;
 	font-variant:small-caps;
 	color: #728979;
-	font-family: Verdana;
+	
 	vertical-align:middle;
 }
 
 .titre_serie, .nom_serie, .type_serie {
-	font-family: verdana;	
+		
 	font-size: 10pt;
 	color: #333333;
 	text-align: left;
@@ -181,7 +183,7 @@ div.ligne_infos_parent {
 }
 
 .titre_parent, .nom_parent, .type_parent {
-	font-family: verdana;	
+		
 	font-size: 10pt;
 	color: #333333;
 	text-align: left;
@@ -197,7 +199,7 @@ div.ligne_infos_parent {
 
 div.pas_de_publication {
 	margin-top: 50px;
-	font-family: verdana;
+	
 	font-size: 12pt;
 	text-align:center;
 	font-weight: bold;
@@ -205,7 +207,7 @@ div.pas_de_publication {
 }
 
 div.action {
-	font-family: verdana;	
+		
 	font-size: 10pt;
 	color: #CC9933;
 	float: right;
@@ -215,7 +217,7 @@ div.action {
 }
 
 div.action_formulaire {
-	font-family: verdana;	
+		
 	font-size: 10pt;
 	color: #CC9933;
 	text-align: left;
@@ -224,7 +226,7 @@ div.action_formulaire {
 }
 
 .table_statut, .table_docannexes, .table_normale {
-	font-family: verdana;	
+		
 	font-size: 10pt;
 	color: #CC9933;
 	text-align: left;
@@ -236,12 +238,12 @@ div.action_formulaire {
 .table_admin {
 	width:790px;
 	color: #333333;
-	font-family: verdana;	
+		
 	font-size: 10pt;
 }
 
 .table_popup {
-	font-family: verdana;	
+		
 	font-size: 10pt;
 	color: #333333;
 	text-align: left;
@@ -251,7 +253,7 @@ div.action_formulaire {
 }
 
 .td_admin {
-	font-family: verdana;	
+		
 	text-align: left;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -260,7 +262,7 @@ div.action_formulaire {
 }
 
 .inactif {
-	font-family: verdana;	
+		
 	color: #999999;
 }
 
@@ -280,7 +282,7 @@ div.ligne_form_fa {
 	padding-left:70px;
 	padding-bottom:5px;
 	margin-bottom:20px;
-	font-family: Verdana;
+	
 }
 
 div.intitule_ligne_form_fa {
@@ -297,7 +299,7 @@ div.champs_ligne_form_fa {
 div.ligne_haut_tpl_publication, 
 div.ligne_parent_tpl_publication,
 .texte_ligne_haut_tpl_publication {
-	font-family: Verdana;
+	
 	color: #728979;
 }
 
@@ -321,7 +323,7 @@ div.ligne_parent_tpl_publication {
 }
 
 .nom_publi_parente {
-	color: #000000;
+	color: #000;
 	font-style:normal;
 }
 
@@ -334,7 +336,7 @@ div.ligne_info, div.intitule_ligne_formulaire {
 	padding-top:5px;
 	padding-left: 70px;
 	padding-bottom:5px;
-	font-family: Verdana;
+	
 }
 
 div.intitule_ligne_formulaire {
@@ -342,7 +344,7 @@ div.intitule_ligne_formulaire {
 }
 
 .texte_info {
-	font-family: Verdana;
+	
 	font-size: 10px;
 }
 
@@ -352,38 +354,38 @@ div.intitule_ligne_formulaire {
 }
 
 .texte_normal {
-	font-family: Verdana;
+	
 	font-size: 12px;
 	color: #333333;
 }
 
 .texte_noir {
-	font-family: Verdana;
+	
 	font-size: 10pt;
 	color:#333333;
 }
 
 .texte_noir_gras {
-	font-family: Verdana;
+	
 	font-weight: bold;
 	font-size: 10pt;
 	color:#333333;
 }
 
 .texte_orange_gras {
-	font-family: Verdana;
+	
 	font-weight: bold;
 	font-size: 10pt;
 	color:#CC9933;
 }
 
 .texte_orange {
-	font-family: Verdana;
+	
 	font-size: 10pt;
 	color:#CC9933;
 }
 .message_erreur {
-	font-family: Verdana;
+	
 	font-size: 10pt;
 	color: red;
 }
@@ -397,7 +399,7 @@ div.intitule_ligne_formulaire {
 }
 
 .titre_publi, .nom_publi, .type_publi,.nom_document {
-	font-family: verdana;	
+		
 	font-variant: small-caps;
 	font-weight: bold;
 	color: #728979;
@@ -405,7 +407,7 @@ div.intitule_ligne_formulaire {
 }
 
 .nom_user{
-	font-family: verdana;	
+		
 	font-weight: bold;
 	color: #728979;
 	text-align: left;
@@ -441,7 +443,6 @@ div.ligne_statut {
 	padding-top:5px;
 	padding-left: 70px;
 	padding-bottom:5px;
-	font-family: Verdana;
 	font-size: 10pt;
 }
 
@@ -450,7 +451,6 @@ div.ligne_statut {
 
 /******** Styles pour les popup **********/
 .texte_ligne_haut_popup {
-	font-family: Verdana;
 	color: #728979;
 	font-variant : small-caps;
 	padding-left:10px;
@@ -459,51 +459,49 @@ div.ligne_statut {
 }
 
 .texte_info_popup {
-	font-family: verdana;
 	color: #333333;
 	font-size: 10px;
 }
 
 .sous_titre_popup {
-	font-family: verdana;	
 	color: #333333;
 	font-size: 12pt;
 }
 
 div.lien_popup a:link {
 	color: #CC9933;
-	font-family: verdana;
+	
 	font-size: 10px;
 }
 
 div.lien_popup a:visited {
 	color: #CC9933;
-	font-family: verdana;
+	
 	font-size: 10px;
 }
 
 div.lien_popup a:hover {
 	color: #FFBB03;
-	font-family: verdana;
+	
 	font-size: 10px;
 }
 
 .table_popup {
-	font-family: Verdana;
+	
 	color: #333333;
 	font-size: 11px;
 }
 
 
 .table_form_popup {
-	font-family: Verdana;
+	
 	color: #333333;
 	font-size: 11px;
 	margin-left: 70px;
 }
 
 .titre_partie_popup {
-	font-family: Verdana;
+	
 	color: #728979;
 	font-size: 11px;
 	font-weight: bold;
@@ -552,7 +550,7 @@ div.lien_popup a:hover {
 	left: 120px;
 	text-align: right;
 	margin-bottom: 15px;
-	font-family: verdana;
+	
 	font-size: 12px;
 	font-weight: bold;
 }
@@ -569,7 +567,7 @@ div.lien_popup a:hover {
 }
 
 #credit p {
-	font-family: verdana;
+	
 	font-size: 12px;
 	color: #666666;
 	margin-left: 15px;
@@ -582,84 +580,64 @@ div.lien_popup a:hover {
 	font-size: small;
 	font-weight: small;
 	text-align : justify;
-	font-family: verdana;	
+		
 }
 
 .fase4_rdf {
 	font-size: x-small;
 	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : justify;}
 
 .texte_petit {
 	font-size: x-small;
 	font-weight: small;
 	text-align : justify;
-	font-family: verdana;	
 }
 
 .texte_trespetit {
 	font-size: xx-small;
 	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : justify;}
 
 .texte_centre {
 	font-size: small;
 	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : center;}
 
 .texte_petit_centre {
 	font-size: x-small;
 	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : center;}
 
 .texte_trespetit_centre {
 	font-size: xx-small;
 	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : center;}
 
 .texte_sommaire {
 	font-size: small;
 	font-weight: small;
-	text-align : left;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : left;}
 
 .texte_petit_lodelbarre{
 	font-size: x-small;
 	font-weight: small;
 	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman"
 }
 
 .navigation {
 	font-size: x-small;
 	font-weight: small;
-	text-align : center;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : center;}
 
 .barretitre {
 	font-size: x-small;
 	font-weight: small;
-	text-align : left;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : left;}
 
 .citation {
 	font-size: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	padding-left : 50px;
+	text-align : justify;padding-left : 50px;
 	padding-right : 50px;
 }
 
@@ -667,16 +645,12 @@ div.lien_popup a:hover {
 .notes {
 	font-size: xx-small;
 	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : justify;}
 
 .appeldenote {
 	font-size: xx-small;
 	font-weight: small;
-	text-align : justify;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-}
+	text-align : justify;}
 
 
 A:link, A:visited, A:active {
@@ -692,14 +666,12 @@ A:hover {
 .resume
 {
 	font-style : italic;
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman"font-size : x-small;
 	color : #454545;
 	text-align : justify;
 }
 
 .titre
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : large;
 	color : #728979;
 	text-align : center;
@@ -710,7 +682,6 @@ A:hover {
 
 .titrerevue
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : large;
 	color : Navy;
 	text-align : center;
@@ -720,7 +691,6 @@ A:hover {
 
 .soustitre
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : medium;
 	color : #728979;
 	text-align : center;
@@ -728,15 +698,13 @@ A:hover {
 
 .soustitrerevue
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : medium;
 	color : Navy;
 	text-align : center;
 }
 
 .partie
-{
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
+{	
 	font-size : medium;
 	color : navy;
 	text-align : center;
@@ -744,22 +712,15 @@ A:hover {
 
 .auteur
 {
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : small;
-	color : Navy;
-	text-align : center;
-	font-weight : bold;
 }
 
 .directeur
-{
-	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
+{font-size : small;
 	color : Navy;
 	text-align : center;
 	font-weight : bold;
 }
-
 .tableau {
 	font-size: x-small;
 	font-weight: normal;
@@ -767,31 +728,29 @@ A:hover {
 }
 
 	H1 {
-	font-size: large;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: justify;
+	font-size: large;text-align: justify;
 }
 	H2 {
 	font-size: medium;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman;
-	";
 	padding-left : 50px;
 	text-align: left
 }
 	H3 {
-	font-size: small;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman";
-	text-align: center;
+	font-size: small;text-align: center;
 	padding-left : 150px;
-	color: #00000
+	color: #000;
 }
-	H4 {font-size: 12pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000; line-height: 0.8; margin-bottom: 0px; margin-top: 10px; padding-top: 0px;padding-bottom: 0px}
-	H5 {font-size: 10pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: left; color: #000000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
+	H4 {font-size: 12pt;  text-align: left; color: #000; line-height: 0.8; margin-bottom: 0px; margin-top: 10px; padding-top: 0px;padding-bottom: 0px}
+	H5 {font-size: 10pt;  text-align: left; color: #000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
 	H6 {
 	font-size: 10pt;
-	font-family: "Verdana, Helvetica, sans-serif, Times New Roman;";
 	text-align: left;
 	color: Black;
 }
-	H7 {font-size: 28pt; font-family: "Verdana, Helvetica, sans-serif, Times New Roman;"; text-align: center; color: #00000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
+H7 {font-size: 28pt; text-align: center; color: #000; line-height: 1; margin-bottom: 0px; margin-top: 0px; padding-top: 0px;padding-bottom: 0px}
 
+/*Styles pour checkbalisage - destinés à faire ressortir styles utilisateur*/
+
+#checkbalisage p.descriptionauteur, #checkbalisage p.texte, #checkbalisage p.ndlr, #checkbalisage p.notebaspage, #checkbalisage p.annexe, #checkbalisage p.auteur{
+	font-family: "Courier New", Courier, mono;
+}
