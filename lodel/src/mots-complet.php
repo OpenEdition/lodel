@@ -1,4 +1,5 @@
-<?php#$time=getmicrotime();
+<?php
+#$time=getmicrotime();
 $type="motcle";
 $suffix="-complet";
 #if (@include("entrees.html")) { echo "time: ",getmicrotime()-$time,"<br>\n";flush(); return; }
