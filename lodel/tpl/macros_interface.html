@@ -732,10 +732,10 @@ function modifymember(members,textfield){
 <fieldset style="background-color : #EDEDED">
 <legend>[@ADVANCED_SEARCH]</legend>
 [@SEARCH_IN]&nbsp;
-<LOOP NAME="listtypes" TABLE="types"   ORDER="rank">
+<LOOP NAME="listtypes" TABLE="types" ORDER="rank">
 <BEFORE>
 	<select  name="q_type" style="font-size : 10px;border : 1px solid gray" onchange="updatefields(this);">
-	<option id="[#CLASS]_[#ID]" value=""> -- [@SELECT_A_TYPE] -- </option>
+	<option id="[#CLASS]_[#ID]" value=""> -- [@ALL_TYPES] -- </option>
 </BEFORE>
 <DO>
 	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#Q_TYPE]">selected="selected"</IF>>[#TITLE]</option>
@@ -747,7 +747,7 @@ function modifymember(members,textfield){
 
 &nbsp;&nbsp;[@STATUS]&nbsp;:&nbsp;
 <select  name="q_status" style="border : 1px solid gray ; font-size : 10px;">
-	<option value=""> -- [@SELECT_A_STATUS] -- </option>
+	<option value=""> -- [@ALL_STATUS] -- </option>
 	<option value="+16" <IF COND="[#Q_STATUS] EQ 16">selected="selected"</IF>>@protected</option>
 	<option value="+1" <IF COND="[#Q_STATUS] EQ 1">selected="selected"</IF>>@published</option>
 	<option value="-1" <IF COND="[#Q_STATUS] EQ -1">selected="selected"</IF>>@ready_to_be_published</option>
@@ -756,7 +756,7 @@ function modifymember(members,textfield){
 &nbsp;
 [@FIELD]
 <select name="q_field" style="font-size : 10px;border : 1px solid gray">
-	<option value=""> -- [@SELECT_A_FIELD] --</option>
+	<option value=""> -- [@ALL_FIELDS] --</option>
 	<option value="DC.Title" <IF COND="[#Q_FIELD] EQ 'DC.Title'">selected="selected"</IF>>@Title</option>
 	<option value="DC.Description" <IF COND="[#Q_FIELD] EQ 'DC.Description'">selected="selected"</IF>>@Description</option>
 	<option value="DC.Format" <IF COND="[#Q_FIELD] EQ 'DC.Format'">selected="selected"</IF>>@Format</option>
