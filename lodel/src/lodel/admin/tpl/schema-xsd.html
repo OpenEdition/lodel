@@ -22,11 +22,11 @@
 
 <LOOP NAME="URL_SITE" TABLE="sites" WHERE="rep='[#SITE]'">
 <xsd:schema targetNamespace="[#URL]/schema"
-                xmlns="[#URL]/schema"
-                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                elementFormDefault="qualified">
-</LOOP
+	  xmlns="[#URL]/schema"
+	  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+	  elementFormDefault="qualified">
+</LOOP>
 
 <xsd:import namespace="http://www.w3.org/1999/xhtml"
                 schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
@@ -63,12 +63,15 @@
 	<!--[ les groupes de champs ]-->
 	    <LOOP NAME="groupesdechamps_xsd" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       	<DO>
-	        [<xsd:annotation>
-				<xsd:documentation xml:lang="fr">
-					(#COMMENTAIRE)
-				</xsd:documentation>
-			</xsd:annotation>]
 			<xsd:element name="[#NOM]">
+		<IF COND="[#COMMENTAIRE]">
+	        <xsd:annotation>
+				<xsd:documentation xml:lang="fr">
+					[#COMMENTAIRE]
+				</xsd:documentation>
+			</xsd:annotation>
+		</IF>
+
 			 <xsd:complexType>
 		            <xsd:sequence>
 

@@ -19,7 +19,11 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<document xmlns="[#NAMESPACE]" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
+<LOOP NAME="URL_SITE_XML" TABLE="sites" WHERE="rep='[#SITE]'">
+<document xmlns="[#URL]/schema" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
+</LOOP>
+
+
 
   <!--[ affiche les personnes ]-->
   <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
