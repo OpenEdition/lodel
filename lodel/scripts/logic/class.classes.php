@@ -61,7 +61,7 @@ class ClassesLogic extends Logic {
        break;
        $msg="cannot_delete_haspersons";
      }
-     $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$vo->classtype." INNER JOIN #_".$types." ON idtype=".$types.".id INNER JOIN #_TP_classes ON ".$types.".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_".$vo->classtype.".status>-64 AND ".$types.".status>-64  AND #_TP_classes.status>-64"));
+     $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$vo->classtype." INNER JOIN ".$types." ON idtype=".$types.".id INNER JOIN #_TP_classes ON ".$types.".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_".$vo->classtype.".status>-64 AND ".$types.".status>-64  AND #_TP_classes.status>-64"));
 
      if ($db->errorno())  dberror();
      if ($count==0) {
@@ -80,14 +80,14 @@ class ClassesLogic extends Logic {
    function typestable($classtype) {
      switch ($classtype) {
      case "entities":
-       return "types";
+       return "#_TP_types";
      case "entries":
-       return "entrytypes";
+       return "#_TP_entrytypes";
      case "persons" :
-       return "persontypes";
+       return "#_TP_persontypes";
      }
    }
-    
+
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
@@ -122,7 +122,7 @@ class ClassesLogic extends Logic {
 	 break;
        case 'persons' :
 	 $create="idperson	INTEGER UNSIGNED  UNIQUE, KEY index_idperson (idperson)";
-	 $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_entities_".$vo->class." ( id INTEGER UNSIGNED UNIQUE, KEY index_id (id) )")) or dberror();
+	 $db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_entities_".$vo->class." ( idrelation INTEGER UNSIGNED UNIQUE, KEY index_idrelation (idrelation) )")) or dberror();
 	 break;
        }
 

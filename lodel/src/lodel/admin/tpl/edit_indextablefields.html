@@ -22,6 +22,7 @@
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros2.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_INDEXDATAFIELD]</title>
 	<script type="text/javascript"><!--
@@ -92,6 +93,21 @@
   </LOOP>
   <input type="hidden" name="type" value="[#TYPE]">
   <LOOP NAME="fielderror" FIELD="type">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
+  <label for="edition">[@ADMIN.INTERFACE_EDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="edition" id="edition">
+    <?php 
+                      makeSelect($context,"edition","indextablefields","select");
+                  ?>
+  </select>
+  <br />
+  <LOOP NAME="fielderror" FIELD="edition">
     <p class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>

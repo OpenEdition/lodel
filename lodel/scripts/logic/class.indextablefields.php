@@ -72,6 +72,15 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
        }
        renderOptions($arr,$context['name']);
        break;
+     case "edition" :
+       $arr=array(
+		  "editable"=>getlodeltextcontents("edit_in_the_interface","admin"),
+		  "importable"=>getlodeltextcontents("no_edit_but_import","admin"),
+		  "none"=>getlodeltextcontents("no_change","admin"),
+		  "display"=>getlodeltextcontents("display_no_edit","admin"),
+		  );
+       renderOptions($arr,$context['edition']);
+       break;
      default:
        TableFieldsLogic::makeSelect($context,$var);
        break;
@@ -113,6 +122,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
                   "type"=>array("class","+"),
+                  "edition"=>array("select",""),
                   "comment"=>array("longtext",""),
                   "idgroup"=>array("select","+"));
              }

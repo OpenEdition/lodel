@@ -398,6 +398,12 @@
         description="type du champ"
         edittype="class"
         visibility="hidden" />
+<column name="edition"
+        type="VARCHAR"
+        size="255"
+        description="input pour l edition"
+        label="[@ADMIN.INTERFACE_EDITION]"
+        edittype="select" />
 <column name="comment"
         type="LONGVARCHAR"
         description="commentaire sur le champs"

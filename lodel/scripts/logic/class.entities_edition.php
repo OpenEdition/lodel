@@ -86,7 +86,12 @@ class Entities_EditionLogic extends Logic {
      {
        global $db;
 
-       $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE idgroup='".$context['id']."' AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
+       if ($context['classtype']=="persons") {
+	 $criteria="class='".$context['class']."' OR class='entities_".$context['class']."'";
+       } else {
+	 $criteria="idgroup='".$context['id']."'";
+       }
+       $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
 
        $haveresult=!empty($result->fields);
        if ($haveresult) call_user_func("code_before_$funcname",$context);
@@ -94,7 +99,7 @@ class Entities_EditionLogic extends Logic {
        while (!$result->EOF) {
 	 $localcontext=array_merge($context,$result->fields);
 	 $name=$result->fields['name'];
-	 $localcontext['value']=$context[$name];
+	 $localcontext['value']=htmlspecialchars($context[$name]);
 	 $localcontext['error']=$context['error'][$name];
 
 	 call_user_func("code_do_$funcname",$localcontext);
@@ -134,6 +139,26 @@ class Entities_EditionLogic extends Logic {
 	   call_user_func("code_do_$funcname",$localcontext);
 	 }
        }
+     /////
+       function loop_persons_in_entities($context,$funcname)
+       {
+	 $varname=$context['varname'];
+	 if (!$varname) return;
+
+	 //search the type
+	 $dao=getDAO("persontypes");
+	 $vo=$dao->find("type='".$varname."'","class,id");
+	 $class=$vo->class;
+
+	 foreach($context['persons'][$vo->id] as $rank=>$arr) {
+	   $localcontext=array_merge($context,$arr);
+	   $localcontext['name']=$name;
+	   $localcontext['class']=$class;
+	   $localcontext['classtype']="persons";
+	   $localcontext['rank']=$rank;
+	   call_user_func("code_do_$funcname",$localcontext);
+	 }
+       }	  
      /////
 
      return $ret ? $ret : "_ok";
@@ -443,8 +468,8 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
 	 // not validated... let's try other type
 	 switch($type) {
 	 case "mltext" :
-	   print_r($value);
-	   echo ":$value:";
+	   #print_r($value);
+	   #echo ":$value:";
 	   if (is_array($value)) {
 	     $str="";
 	     foreach($value as $lang=>$v) {	       
@@ -555,16 +580,51 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
    function _populateContextRelatedTables(&$vo,&$context) 
 
    {
-     global $db;
-     foreach (array("entries"=>"E","persons"=>"G") as $table => $nature) {     
-       $result=$db->execute(lq("SELECT * FROM #_TP_$table,#_TP_relations WHERE id2=#_TP_$table.id  AND id1='".$vo->id."' AND nature='".$nature."'")) or dberror();
+     global $db,$ADODB_FETCH_MODE;
+     $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+
+     foreach (array("entries"=>array("E","identry","entrytypes"),
+		    "persons"=>array("G","idperson","persontypes")) as $table => $info) {
+       list($nature,$idfield,$type)=$info;
+       
+       $result=$db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id."' AND nature='".$nature."'")) or dberror();
        while (!$result->EOF) {
 	 $rank=$result->fields['rank'] ? $result->fields['rank'] : (++$rank);
-	 $context[$table][$result->fields['idtype']][$rank]=$result->fields;
+	 $ref=$result->fields;
+	 $class=$result->fields['class'];
+	 $relatedtable[$class][$result->fields['id']]=&$ref;
+	 if ($table=="persons") $relatedrelationtable[$class][$result->fields['idrelation']]=&$ref;
+
+	 $context[$table][$result->fields['idtype']][$rank]=&$ref;
 	 $result->MoveNext();
        }
-     }
-   }
+       // load related table
+       if ($relatedtable) {
+	 foreach ($relatedtable as $class=>$ids) {
+	   $result=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." IN (".join(",",array_keys($ids)).")")) or dberror();
+	   while (!$result->EOF) {
+	     $id=$result->fields[$idfield];
+	     $ids[$id]=array_merge($ids[$id],$result->fields);
+	     $result->MoveNext();
+	   }
+	 }
+       }
+       // load relation related table
+       if ($relatedrelationtable) {
+	 foreach ($relatedrelationtable as $class=>$ids) {
+	   $result=$db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation IN (".join(",",array_keys($ids)).")")) or dberror();
+	   while (!$result->EOF) {
+	     $id=$result->fields['idrelation'];
+	     $ids[$id]=array_merge($ids[$id],$result->fields);
+	     $result->MoveNext();
+	   }
+	 }
+       }
+     } // foreach classtype
+     $ADODB_FETCH_MODE = ADODB_FETCH_DEFAULT;
+     #print_r($context['persons']);      
+
+  }
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {

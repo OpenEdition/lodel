@@ -164,7 +164,12 @@ cp_[#NAME].writeDiv();
 -->
 </script>
 <ELSE/>
+<!--[ --------------- PERSONS ------------- ]-->	    
+<IF COND="[#TYPE] eq 'persons'">
+<FUNC NAME="edit_persons">
+<ELSE/>
 ???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
 </IF>
 </IF>
 </IF>
@@ -182,9 +187,12 @@ cp_[#NAME].writeDiv();
 </DEFFUNC>
 
 
+<!--[ -----------------------------------------------------------
+      Widget for editing a multilingual text
+--------------------------------------------------------------- ]-->
 
 <DEFFUNC NAME="EDIT_MLTEXT">
-  <div id="mltext_[#VARNAME]">
+  <div id="mltext_[#VARNAME]" class="mltexteditionarea" >
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
     <div ><label class="labelmltext">[(#LANG|humanlang|ucfirst)] :</label> 
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
@@ -193,7 +201,7 @@ cp_[#NAME].writeDiv();
   </LOOP>
   <div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 	<label class="labelmltext">XXX</label>
-	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][empty]" VALUE="" />
+	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
 	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.ERASE]</a>
   </div>
   <div>
@@ -203,6 +211,36 @@ cp_[#NAME].writeDiv();
 </DEFFUNC>
 
 
+<!--[ -----------------------------------------------------------
+      Widget for editing person
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="edit_persons">
+  <div id="persons_[#VARNAME]" class="personseditionarea" >
+	<LOOP NAME="persons_in_entities">
+        <DO>
+		<LOOP NAME="edition_fields">
+			<BEFORE>
+			<div>
+			</BEFORE>
+		        <DO>
+			  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+			<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+			<br />
+		        </DO>
+        	<AFTER>
+			</div>
+        	</AFTER>
+	    </LOOP>
+	</DO>
+	</LOOP>
+  </div>
+</DEFFUNC>
+
+<!--[ -----------------------------------------------------------
+      JS for advanced feature in the edition of entities
+--------------------------------------------------------------- ]-->
+
 <DEFMACRO NAME="JS_MLTEXT">
 	<script type="text/javascript">
 <!--
@@ -210,23 +248,23 @@ cp_[#NAME].writeDiv();
 		function addlanginmltext(obj,name){
 			var index = obj.selectedIndex;
 			var lang = obj.options[index].value;
+			if (lang=='--') return;
 			var langfull = obj.options[index].childNodes[0].nodeValue;
 
 			var block=document.getElementById('mltext_'+name+'_for_copy')
 			var clone=block.cloneNode(true);
 			clone.style.display="block";
+
+			// label
 			var label=clone.getElementsByTagName('label');
 			label[0].childNodes[0].nodeValue=langfull+' :';
 
+			// other fields
 			clone.setAttribute('id','');
-			var edit=clone.getElementsByTagName("input");
-			if (edit.length<1) {
-				edit=clone.getElementsByTagName("textarea");
-			}	
-			edit[0].setAttribute('id',name+'['+lang+']');
-			edit[0].setAttribute('name',name+'['+lang+']');
+			changeNameAttributes(clone,lang);
 
 			document.getElementById('mltext_'+name).appendChild(clone);
+			obj.selectedIndex=0;
 		}
 
 		function deletelanginmltext(obj) 
@@ -242,6 +280,22 @@ cp_[#NAME].writeDiv();
 			}
 			obj.parentNode.removeChild(obj);
 		}
+
+
+		function changeNameAttributes(obj,index)
+		{
+			for(i=0; i<obj.childNodes.length; i++) {
+				var child=obj.childNodes[i];
+				if (child.getAttribute) {
+				var name=child.getAttribute('name');
+				if (name) {
+					newname=name.replace(/__lodel_wildcard/gi,index);
+					child.setAttribute('id',newname);
+					child.setAttribute('name',newname);
+				}
+				}
+			}
+		}	
 	//
 	--></script>
 </DEFMACRO>

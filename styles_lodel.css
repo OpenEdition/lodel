@@ -803,3 +803,13 @@ fieldset br { clear: left;}
   display: block;
   margin: 10px 0 5px 0;
 }
+
+.mltexteditionarea { 
+  border:  2px solid #FDFAF1;
+ }
+
+.personseditionarea { 
+  margin-left: 50px;
+  border:  2px solid #FDFAF1;
+ }
+
