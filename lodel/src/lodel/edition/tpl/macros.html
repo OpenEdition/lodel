@@ -45,23 +45,11 @@
 <DEFMACRO NAME="JS_CONFIRM_DEPUBLICATION">
 	<script type="text/javascript"><!--
 	
-		function confirm_depublication(publi)
-		// Si publi = 1 : publication sinon : document.
+		function confirm_depublication()
+
 		{
-			var msgdoc="[@EDITION.CONFIRMATION_UNPUBLISH_DOCUMENT] ?";
-			var msgpubli="[@EDITION.CONFIRMATION_UNPUBLISH_PUBLICATION] ?";
-			{
-				if(publi)
-				{
-					if(confirm(msgpubli)) return true;
-					else return false; 
-				}
-				else
-				{
-					if(confirm(msgdoc)) return true;
-					else return false;
-				}				
-			}
+			if(confirm("[@EDITION.CONFIRMATION_UNPUBLISH]")) return true;
+			else return false; 
 		}
 	//
 	--></script>
@@ -190,20 +178,20 @@
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_EDITION_CHAMPS">
   <IF COND="[#TYPE] eq 'boolean'">
-    <td><input type="checkbox" name="entity[[#NAME]]" [(#VALUE|true)checked]></td>
+    <td><input type="checkbox" name="[#NAME]" [(#VALUE|true)checked]></td>
     <ELSE/>
       <IF COND="[#TYPE] eq 'mltext'">
 	<td>
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
 	      <IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<input size="70" type="text" name="entity[[#NAME]][[#LANG]]" value="[#VALUE]">
+		<input size="70" type="text" name="[#NAME][[#LANG]]" value="[#VALUE]">
 	      </IF>
 	      <IF COND="[#EDITION] eq 'textarea10'">
-		<textarea rows="10" cols="70" name="entity[[#NAME]][[#LANG]]">[#VALUE]</textarea>
+		<textarea rows="10" cols="70" name="[#NAME][[#LANG]]">[#VALUE]</textarea>
 	      </IF>
 	      <IF COND="[#EDITION] eq 'textarea30'">
-		<textarea rows="30" cols="70" name="entity[[#NAME]][[#LANG]]">[#VALUE]</textarea>
+		<textarea rows="30" cols="70" name="[#NAME][[#LANG]]">[#VALUE]</textarea>
 	      </IF>
 	    </div>
 
@@ -217,7 +205,7 @@
 	<ELSE/>
 	  <IF COND="[#TYPE] eq 'lang'">
 	    <td>
-	      <select name="entity[[#NAME]]">
+	      <select name="[#NAME]">
 	      <IF COND="[#CONDITION] eq '+'">
 		    <?php  makeselectlangs_nevernil($context[value]); ?>
 		<ELSE/>
@@ -227,7 +215,7 @@
 	    </td>
 	    <ELSE/>
 	      <IF COND="[#TYPE] eq 'date' || [#TYPE] eq 'datetime' || [#TYPE] eq 'time'">
-		<td><input size="30" type="text" name="entity[[#NAME]]" value="[(#VALUE|humandate)]"></td>
+		<td><input size="30" type="text" name="[#NAME]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
 	<IF COND="[#TYPE] eq 'image'">
 		<td>
@@ -235,26 +223,26 @@
 		<IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" border="1"></td></IF>
                 <td>
 	            <IF COND="[#VALUE]">
-				<input type="radio" name="entity[[#NAME]][radio]" value="">Conserver l'image courante<br />
-				<input type="radio" name="entity[[#NAME]][radio]" value="delete">[@COMMON.DELETE] <br /></IF>
-		    <input type="radio" id="entity[[#NAME]][radioserverfile]" name="entity[[#NAME]][radio]" value="serverfile">
-	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=entity[[#NAME]]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="entity[[#NAME]][localfilename]">&nbsp;</span><input size="40" type="text" id="entity[[#NAME]][localfullfilename]"><br />
-		    <input type="radio" id="entity[[#NAME]][radioupload]" name="entity[[#NAME]][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="entity[[#NAME]][upload]" onChange="document.getElementById('entity[[#NAME]][radioupload]').click();">
+				<input type="radio" name="[#NAME][radio]" value="">Conserver l'image courante<br />
+				<input type="radio" name="[#NAME][radio]" value="delete">[@COMMON.DELETE] <br /></IF>
+		    <input type="radio" id="[#NAME][radioserverfile]" name="[#NAME][radio]" value="serverfile">
+	           <a href="javascript:;" onClick="window.open('filebrowser.php?caller=[#NAME]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="[#NAME][localfilename]">&nbsp;</span><input size="40" type="text" id="[#NAME][localfullfilename]"><br />
+		    <input type="radio" id="[#NAME][radioupload]" name="[#NAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#NAME][upload]" onChange="document.getElementById('[#NAME][radioupload]').click();">
 		 </td>
 	         </tr></table>
-	         <input size="40" type="hidden" id="entity[[#NAME]][previousvalue]" VALUE="[#VALUE]">
+	         <input size="40" type="hidden" id="[#NAME][previousvalue]" VALUE="[#VALUE]">
 
 
 
 	<ELSE/>
 	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
-		<td><input size="70" type="text" name="entity[[#NAME]]" value="[#VALUE]"></td>
+		<td><input size="70" type="text" name="[#NAME]" value="[#VALUE]"></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea10'">
-		<td><textarea rows="10" cols="70" name="entity[[#NAME]]">[#VALUE]</textarea></td>
+		<td><textarea rows="10" cols="70" name="[#NAME]">[#VALUE]</textarea></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea30'">
-		<td><textarea rows="30" cols="70" name="entity[[#NAME]]">[#VALUE]</textarea></td>
+		<td><textarea rows="30" cols="70" name="[#NAME]">[#VALUE]</textarea></td>
 	</IF>
 	</IF>
 	</IF>
@@ -356,7 +344,7 @@
 		<div class="intitule_ligne_formulaire">
 			<span class="texte_intitule">[@EDITION.IDENTIFY]:</span>
 		</div>
-		<input size="45" type="text" name="identifiant" value="[#IDENTIFIER]">
+		<input size="45" type="text" name="identifier" value="[#IDENTIFIER]">
 		<IF COND="[#ERROR_IDENTIFIER]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFY]</span></IF>
 	</div>
 </DEFMACRO>
@@ -386,27 +374,6 @@
 ]-->
 
 <!--[ ************************************************** ]-->
-
-<DEFMACRO NAME="STATUS_DOCUMENT_ANNEXE">
-	<IF COND="[#STATUS] GT 0">
-			<IF COND="[#STATUS]==1">
-				<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">
-					[@EDITION.UNPUBLISH]
-				</a>
-			<ELSE/>
-					&nbsp;-&nbsp;
-			</IF>
-	<ELSE/>
-			<IF COND="[#STATUS]==-1">
-			<a href="publi.php?publication=[#ID]&online=1">
-				[@EDITION.PUBLISH]
-			</a>
-			<ELSE/>
-					&nbsp;-&nbsp;
-			</IF>
-	</IF>
-</DEFMACRO>
-
 
 
 <DEFMACRO NAME="AUTEURS">
@@ -441,39 +408,29 @@
 	</LOOP>,
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI">
-	<IF COND="[#STATUS]==-16">
-	    [@EDITION.DRAFT]
-	<ELSE/>
-		<IF COND="[#STATUS]==-1">
-			[@EDITION.READY_TO_BE_PUBLISHED]
-		<ELSE/>
-			<IF COND="[#STATUS]==1">
-				[@EDITION.PUBLISHED]
-			<ELSE/>
-				<IF COND="[#STATUS]==16">
-					[@COMMON.PROTECTED]
-				</IF>
-			</IF>
-		</IF>
-	</IF>
-</DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_DOCUMENT">
+<DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
+
+	<IF COND="[#STATUS]<-16">
+		[@COMMON.LOCKED]
+	<ELSE/>
 	<IF COND="[#STATUS]==-16">
 		[@EDITION.DRAFT]
 	<ELSE/>
-		<IF COND="[#STATUS]==-1">
-			[@EDITION.READY_TO_BE_PUBLISHED]
-		<ELSE/>
-			<IF COND="[#STATUS]==1">
-				[@EDITION.PUBLISHED]
-			<ELSE/>
-				<IF COND="[#STATUS]==16">
-				[@COMMON.PROTECTED]
-				</IF>
-			</IF>
-		</IF>
+	<IF COND="[#STATUS]==-1">
+		[@EDITION.READY_TO_BE_PUBLISHED]
+	<ELSE/>
+	<IF COND="[#STATUS]==1">
+		[@EDITION.PUBLISHED]
+	<ELSE/>
+	<IF COND="[#STATUS]==16">
+		[@COMMON.PROTECTED]
+	<ELSE/>
+		[@COMMON.LOCKED]
+	</IF>
+	</IF>
+	</IF>
+	</IF>
 	</IF>
 </DEFMACRO>
 
@@ -665,7 +622,7 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="AFFICHER_ICONE_STATUS">
+<DEFMACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
 	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
 		<MACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
 	<ELSE/>
@@ -706,23 +663,6 @@
         </IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_ICONE_STATUS_REGROUPEMENT">
-	<IF COND="[#STATUS]==-16">
-		<MACRO NAME="PNG_STATUS_BROUILLON_REGROUPEMENT">
-	<ELSE/>
-		<IF COND="[#STATUS]==-1">
-			<MACRO NAME="PNG_STATUS_PRET_REGROUPEMENT">
-		<ELSE/>
-			<IF COND="[#STATUS]==1">
-				<MACRO NAME="PNG_STATUS_PUBLIE_REGROUPEMENT">
-			<ELSE/>
-				<IF COND="[#STATUS]==16">
-					<MACRO NAME="PNG_STATUS_PROTEGE_REGROUPEMENT">
-				</IF>
-			</IF>
-		</IF>
-	</IF>
-</DEFMACRO>
 
 <DEFMACRO NAME="JS_AJOUTER_ENTITE">
 	<script type="text/javascript"><!--
@@ -744,6 +684,7 @@
 	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]'" ORDER="rank">
 		<BEFORE>
                         <td>
+			<div>
 	                <MACRO NAME="PNG_PLUS">&nbsp;
                         [#TITLE]:<br/>
 
@@ -771,6 +712,7 @@
 			<IF COND="[#NBRESULTS] gt 3">
 				</select>
 			</IF>
+			</div>
                         </td>
 		</AFTER>
 	</LOOP>
@@ -799,22 +741,33 @@
 		</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="LIST_ENTITIES">
+<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder">
 	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype" ORDER="entities.rank">
+		<BEFORE>
+			<IF COND="[#FOLDER]"><div class="unfoldedentities"></IF>
+		</BEFORE>
+		<DO>
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_serie1">
 		<ELSE/>
 			<div class="ligne_serie2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS">
+			<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			</div>
+		<IF COND="[#DISPLAY] eq 'unfolded'">
+			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
+		</IF>
+		</DO>
+		<AFTER>
+			<IF COND="[#FOLDER]"></div></IF>			
+		</AFTER>
 		<ALTERNATIVE>
-			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
-		</ALTERNATIVE>
+			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+		</ALTERNATIVE>		
 	</LOOP>
-</DEFMACRO>
+</DEFFUNC>
 
 
 <DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
@@ -838,7 +791,7 @@
 		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
 		<IF COND="([#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
+		|&nbsp;<a href="index.php?do=view&lo=entities_advanced&id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
                 <ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
@@ -853,15 +806,15 @@
 
 
 
-<DEFMACRO NAME="BOUTONS_STATUS_PUBLICATION">
+<DEFMACRO NAME="BOUTONS_STATUS_ENTITIES">
 	<IF COND="[#STATUS]==-16">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=1">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=-1">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</span>&nbsp;|
 					</IF>
@@ -872,11 +825,11 @@
 	<IF COND="[#STATUS]==-1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=-16">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=-16">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.GO_TO_DRAFT]</span>&nbsp;|&nbsp;
 					</IF>
@@ -887,11 +840,11 @@
 	<IF COND="[#STATUS]==1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
-						&nbsp;|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=+16">[@COMMON.PROTECT]</a>&nbsp;|
+						&nbsp;|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=+16">[@COMMON.PROTECT]</a>&nbsp;|
 					<ELSE/>
 						&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
 					</IF>
@@ -902,11 +855,11 @@
 	<IF COND="[#STATUS]==16">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
-				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=1">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=1">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.GO_TO_PUBLISHED]</span>&nbsp;|&nbsp;
 					</IF>
@@ -922,7 +875,7 @@
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="([#STATUS]==1)">
                    <IF COND="([#USER.EDITOR] AND [#GROUPRIGHT] AND [#IDPARENT]) or [#USER.ADMIN]">
-			<a href="index.php?do=publish&id=[#ID]" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
+			<a href="index.php?do=publish&id=[#ID]&status=-1" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
                     <ELSE/>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>
@@ -943,7 +896,7 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE">
+<DEFMACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 	<div class="pas_de_publication">
 
 	</div>
@@ -1022,7 +975,7 @@
 					
 				</td>
 				<td valign="top"  width="100%">
-					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+					<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">	
 				</td>
 			</tr>
 			<tr>
@@ -1043,16 +996,18 @@
 	</LOOP>
 </DEFMACRO>
 
+<--[
 <DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
 	<IF COND="[#USER.EDITOR] AND [#GROUPRIGHT]">
 		<div>
-			<MACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
+			<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
 			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">[@COMMON.MODIFY] </a>&nbsp;|
-			<MACRO NAME="STATUS_DOCUMENT_ANNEXE">&nbsp;|
+			<MACRO NAME="STATUS_">&nbsp;|
 			<a href="javascript:confirm_suppression([#ID])">[@COMMON.DELETE]</a>
 		</div>
 	</IF>
 </DEFMACRO>
+]-->
 
 <DEFMACRO NAME="PNG_LOGO_LODEL">
 	<img src="[#SHAREURL]/images/logo_lodel.png" width="318" height="57" border="0" vspace="0" hspace="0" />

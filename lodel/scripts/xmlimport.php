@@ -51,7 +51,7 @@ class XMLImportParser {
   {
     global $home;
 
-    require_once($home."dao.php");
+    
     if (!$this->commonstyles) {
       // get internal styles
       $dao=getDAO("internalstyles");
@@ -111,7 +111,7 @@ class XMLImportParser {
       #echo "=",$i," ",$arr[$i]," ",$arr[$i+1]," ",get_class($arr[$i+1]),"<br>";
       if ($arr[$i]=="/" || !is_object($arr[$i+1])) continue;
       $obj=&$arr[$i+1];
-      $class=get_class($obj);
+      $class=strtolower(get_class($obj));
       #echo $i," ",$arr[$i]," ",$class,"<br>";
 
       if (!$isave && $class=="internalstylesvo") {
@@ -119,7 +119,7 @@ class XMLImportParser {
 	if ($obj->surrounding=="-*") {
 	  #echo "la ",$arr[$i-3];
 	  // check what is the previous on.
-	  if ($arr[$i-3]=="/" && get_class($arr[$i-2])=="tablefieldsvo") {
+	  if ($arr[$i-3]=="/" && strtolower(get_class($arr[$i-2]))=="tablefieldsvo") {
 	    #echo "ila";
 	    // good, put the closing tag further
 	    $closing=array_splice($arr,$i-3,3);
@@ -155,7 +155,7 @@ class XMLImportParser {
 	} else
 	if ($isave) {
 	  // problem, the group at $isave has to be attached with above.
-	  if ($arr[$isave-3]=="/" && get_class($arr[$isave-2])=="tablefieldsvo") {
+	  if ($arr[$isave-3]=="/" && strtolower(get_class($arr[$isave-2]))=="tablefieldsvo") {
 	    $closing=array_splice($arr,$isave-3,2);
 	    array_splice($arr,$i,0,$closing);    
 	    $isave=false;
@@ -253,7 +253,7 @@ class XMLImportParser {
       return;
     }
 
-    $class=get_class($obj);
+    $class=strtolower(get_class($obj));
     switch($class) {
     case "internalstylesvo" :
     case "characterstylesvo" :

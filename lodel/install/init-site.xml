@@ -479,7 +479,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_GROUP]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -704,6 +704,19 @@
         description="1=import par servOO"
         label="[@ADMIN.IMPORT_WITH_SERVOO]"
         edittype="select" />
+<column name="creationstatus"
+        type="TINYINT"
+        default="0"
+        required="true"
+        description="status for the new document"
+        label="[@ADMIN.STATUS_OF_NEW_DOCUMENTS]"
+        edittype="select" />
+<column name="display"
+        type="VARCHAR"
+        size="10"
+        description="Mode d affichage"
+        label="[@ADMIN.DISPLAY]"
+        edittype="select" />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -715,7 +728,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_type">
@@ -767,7 +780,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_style">
@@ -811,7 +824,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_style">
@@ -890,7 +903,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean"
-	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_type">
@@ -973,7 +986,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#TABLE|rights('protect')]" />
+	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="flat"
         type="TINYINT"
         default="0"

@@ -40,7 +40,7 @@
 <form method="POST" name="formulaire_personne" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
-<input type="hidden" name="table" value="persontypes">
+<input type="hidden" name="lo" value="persontypes">
 <fieldset>
   <legend></legend>
   <input type="hidden" name="id" value="[#ID]">
@@ -125,7 +125,7 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <IF COND="[#USER.RIGHTS] ge [#TABLE|rights('protect')]">
+  <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_TYPE]
         : 
       </label>

@@ -53,7 +53,7 @@ class UsersLogic extends Logic {
      } else {
        return false;
      }
-     //) { $error["error_has_entities"]=$count; return "back"; }
+     //) { $error["error_has_entities"]=$count; return "_back"; }
    }
 
 
@@ -66,7 +66,7 @@ class UsersLogic extends Logic {
    {
      switch($var) {
      case "usergroups" :
-       require_once($GLOBALS['home']."dao.php");
+       
        $dao=getDAO("usergroups");
        $list=$dao->findMany("status>0","rank,name","id,name");
        $arr=array();
@@ -82,7 +82,7 @@ class UsersLogic extends Logic {
        break;
      case "lang" :
        // get the language available in the interface
-       require_once($GLOBALS['home']."dao.php");
+       
        $dao=getDAO("translations");
        $list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
        $arr=array();
@@ -154,7 +154,7 @@ class UsersLogic extends Logic {
      if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
 
      $ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND username='".$context['username']."'");
-     if ($db->errorno) die($this->errormsg());
+     if ($db->errorno()) die($this->errormsg());
      usecurrentdb();
 
      if ($ret) {

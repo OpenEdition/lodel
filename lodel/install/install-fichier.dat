@@ -94,7 +94,6 @@ ln images
 ln css
 ln tpl/macros.html
 ln tpl/macros2.html
-ln tpl/deskedition.html
 
 # chaine d'importation
 ln abandon.php
@@ -114,8 +113,6 @@ ln tpl/document.html
 ln importsommaire.php
 ln telecharger.php
 
-ln tpl/edit_entities.html
-
 # satellite des documents
 ln docannexe.php
 ln tpl/documentannexe-lienfichier.html
@@ -123,8 +120,7 @@ ln tpl/documentannexe-liendocument.html
 ln tpl/documentannexe-lienpublication.html
 ln tpl/documentannexe-lienexterne.html
 
-ln deplacer.php
-ln tpl/deplacer.html
+ln tpl/move.html
 ln publi.php
 ln status.php
 
@@ -150,9 +146,8 @@ ln supprime.php
 ln tpl/supprime.html
 ln tpl/supprime_erreur.html
 
-ln fonctionsavancees.php
-ln tpl/fonctionsavancees-document.html
-ln tpl/fonctionsavancees-publication.html
+ln tpl/edit_entities_advanced.html
+ln tpl/edit_entities_edition.html
 
 # xml
 ln xml.php
@@ -191,7 +186,6 @@ ln css
 
 ln index.php
 ln tpl/index.html
-ln tpl/deskadmin.html
 
 #ln entry.php
 #ln tpl/entry.html

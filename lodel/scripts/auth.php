@@ -38,7 +38,7 @@ define("LEVEL_ADMINLODEL",128);
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
 
 
-function authenticate ($level=0,$norecordurl=FALSE)
+function authenticate ($level=0)
 
 {
   global $context,$user;
@@ -116,20 +116,6 @@ function authenticate ($level=0,$norecordurl=FALSE)
     #  $back=intval($back);
     #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or dberror();
     #}
-
-
-    // enregistre l'url de retour à partir de l'info dans la session
-    if ($row['currenturl']!=$url && !$norecordurl) {
-      $urlmd5=md5($url);
-      $db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,urlmd5,url) VALUES ('$idsession','$urlmd5',$myurl)")) or dberror();
-
-#      echo $idsession," ",$myurl,"  ",$url,"  ",$urlmd5;
-#     $result=$db->execute(lq("SELECT id,url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"));
-#     while(!$result->EOF) {
-#       print_r($result->fields);
-#       $result->MoveNext();
-#     }
-    }
     #    echo "retour:$context[url_retour]";
     //
     // fin de gestion de l'url de retour
@@ -147,6 +133,16 @@ function authenticate ($level=0,$norecordurl=FALSE)
     header("location: login.php?".$retour);
     exit;
   }
+}
+
+
+function recordurl()
+
+{
+  global $idsession,$norecordurl,$db;
+
+  if (!$norecordurl)
+    $db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url) SELECT id,currenturl FROM #_MTP_session WHERE id='".$idsession."' AND currenturl!=''")) or dberror();
 }
 
 

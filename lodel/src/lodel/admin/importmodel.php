@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_ADMIN,NORECORDURL);
+authenticate(LEVEL_ADMIN);
 require ($home."importfunc.php");
 #authenticate();
 

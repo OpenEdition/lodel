@@ -33,7 +33,7 @@ require_once($home."auth.php");
 class Controler {
 
 
-  function Controler($authlevel,$tables,$table="") 
+  function Controler($logics,$lo="") 
 
   {
     global $home,$context;
@@ -46,17 +46,15 @@ class Controler {
     }
     $do=$therequest['do'];
 
-    authenticate($authlevel, $do=="view" || $do=="edit" || $do=="copy" || $do=="delete"  || $do=="changerank");
-    #require($home."langues.php");
+
     require_once($home."func.php");
 
     extract_post($therequest);
 
-
     if ($do) {
-      if (!$table) $table=$therequest['table'];
-      if (!in_array($table,$tables)) die("ERROR: unknown table");
-      $context['table']=$table;
+      if ($therequest['lo']) $lo=$therequest['lo'];
+      if (!in_array($lo,$logics)) die("ERROR: unknown logic");
+      $context['lo']=$lo;
 
       // get the various common parameters
       foreach(array("class","classtype","type","textgroups") as $var) {
@@ -81,11 +79,12 @@ class Controler {
       $do=$do."Action";
 
       require_once($home."logic.php");
-      $logic=getLogic($table);
+      $logic=getLogic($lo);
 
       switch($do) {
       case 'listAction' :
-	$ret='ok';
+	recordurl();
+	$ret='_ok';
 	break;
       default:
 	// create the logic for the table
@@ -93,31 +92,31 @@ class Controler {
 	// call the logic action
 	$ret=$logic->$do($context,$error);
       }
-
+      if (!$ret) die("ERROR: invalid return from the logic.");
 
       // create the view
       require_once($home."view.php");
       $view=new View;
 
       switch($ret) {
-      case 'back' :
+      case '_back' :
 	$view->back();
 	break;
-      case 'error' :
+      case '_error' :
 	$context['error']=$error;
 	print_r($error);
-      case 'ok' :
+      case '_ok' :
 	if ($do=="listAction") {
-	  $view->render($context,$table);
+	  $view->render($context,$lo);
 	} else {
-	  $view->render($context,"edit_".$table);
+	  $view->render($context,"edit_".$lo);
 	}
 	break;
       default:
-	die("ERROR: invalid viewAction: $ret");
+	$view->render($context,$ret);
       }
-
     } else {
+      recordurl();
       require($home."calcul-page.php");
       calcul_page($context,"index");
     }

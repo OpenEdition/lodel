@@ -86,6 +86,12 @@ function infoChargement(nomFic){
 	</tr>
 </table>
 
+<!--[ Propose OOImport ? ]-->
+<IF COND="![#IDDOCUMENT]">
+<div><a href="index.php?do=view&idparent=[#IDPARENT]&idtype=[#IDTYPE]">[@EDITION.IMPORT_IN_FORM]</a></div>
+</IF>
+
+
 <div style="text-align:center;">
 	<div class="message_erreur">
 	      <IF COND="[#ERROR]"><td class="message_erreur">[@EDITION.ERROR_UPLOADLING]<br />[#ERROR]

@@ -53,18 +53,35 @@ class TypesLogic extends Logic {
    }
 
 
+   /**
+    * view an object Action
+    */
+   function viewAction(&$context,&$error)
+
+   {
+     if (!$context['id']) {
+       // creation
+       $context['creationstatus']=-1;
+       $context['tpledition']="edition";
+       $context['tplcreation']="entities";
+       return "_ok";
+     }
+     return Logic::viewAction($context,$error);
+   }
+
+
    function isdeletelocked($id,$status=0) 
 
    {
      global $db;
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE idtype='$id' AND status>-64"));
-     if ($db->errorno)  dberror();
+     if ($db->errorno())  dberror();
      if ($count==0) {
        return false;
      } else {
        return sprintf(getlodeltextcontents("cannot_delete_hasentity","admin"),$count);
      }
-     //) { $error["error_has_entities"]=$count; return "back"; }
+     //) { $error["error_has_entities"]=$count; return "_back"; }
    }
 
 
@@ -90,6 +107,19 @@ class TypesLogic extends Logic {
      case "import" :
        foreach($GLOBALS['importdocument'] as $n=>$v) { $arr[]=getlodeltextcontents($v['title']); }
        renderOptions($arr,$context['import']);
+       break;
+     case "display" :
+       $arr=array(""=>getlodeltextcontents("folded","admin"),
+	      "unfolded"=>getlodeltextcontents("unfolded","admin")
+	      );
+       renderOptions($arr,$context['display']);
+       break;
+     case "creationstatus" :
+       $arr=array("-16"=>getlodeltextcontents("draft","common"),
+		  "-1"=>getlodeltextcontents("ready_for_publication","common"),
+		  "1"=>getlodeltextcontents("published","common"),
+		  "16"=>getlodeltextcontents("protected","common"));
+       renderOptions($arr,$context['creationstatus']);
        break;
      }
    }
@@ -148,7 +178,9 @@ class TypesLogic extends Logic {
                   "tpl"=>array("tplfile",""),
                   "tplcreation"=>array("tplfile",""),
                   "tpledition"=>array("tplfile",""),
-                  "import"=>array("select","+"));
+                  "import"=>array("select","+"),
+                  "creationstatus"=>array("select","+"),
+                  "display"=>array("select",""));
              }
    // end{publicfields} automatic generation  //
 

@@ -80,7 +80,7 @@
 <!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
 <IF COND="[#EDITION] eq 'display'">
 <span class="displayfield">
-	<IF COND="[#TYPE] ne 'passwd'">[#VALUE]<ELSE/>*******</IF>
+	<IF COND="[#TYPE] ne 'passwd'"><div class="editiondisplay">[#VALUE]</div><ELSE/>*******</IF>
 <span>
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->

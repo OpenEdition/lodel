@@ -12,7 +12,7 @@
           <input type="hidden" name="do" value="edit" />
           <xsl:element name="input">
             <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="name">table</xsl:attribute>
+            <xsl:attribute name="name">lo</xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="@name"/></xsl:attribute>
           </xsl:element>
           <fieldset>

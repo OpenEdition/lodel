@@ -30,8 +30,8 @@
 
 require("siteconfig.php");
 require ($home."auth.php");
-#authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-authenticate();
+authenticate(LEVEL_ADMINLODEL);
+#authenticate();
 require_once($home."func.php");
 require_once($home."fieldfunc.php");
 require_once($home."connect.php");
@@ -502,6 +502,16 @@ UPDATE #_TP_types SET tpledition='edition' WHERE tpledition='edition-hierarchiqu
 ");
       if ($err) break;
       if (mysql_affected_rows()>0) $report.="Mise ajour de tpledition de types<br/>";
+      $fields=getfields("types");
+      if (!$fields['display']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_types ADD display VARCHAR(10);
+UPDATE #_TP_types SET display=\'unfolded\' WHERE type LIKE \'regroupement%\';
+ALTER TABLE #_TP_types ADD creationstatus TINYINT DEFAULT \'-1\' NOT NULL;
+');
+	if ($err) break;
+	$report.="Ajout de display et creationstatus<br/>";	
+      }
     }
 
 
@@ -586,6 +596,8 @@ ALTER TABLE #_TP_persons ADD idtype INT UNSIGNED NOT NULL DEFAULT \'0\';
 	$err=mysql_query_cmds('
 ALTER TABLE #_TP_relations ADD idrelation INT UNSIGNED NOT NULL auto_increment, ADD PRIMARY KEY (idrelation);
 UPDATE #_TP_relations SET idrelation=idrelation+'.($minid-1).';
+ALTER TABLE #_TP_relations ADD UNIQUE (id1,id2,degree,nature);
+ALTER TABLE #_TP_relations CHANGE degree degree TINYINT;
 ');
 	if ($err) break;
 	$report.="Ajout de idrelation a relations<br/>";

@@ -168,8 +168,8 @@
 	<tr>
 		<td colspan="4"><h2><span style="color: #CC9933;">[#TITLE]</span> ([#NAME])</h2></td>
 		<td align="left" style="color: #CC9933;">
-			 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="fieldgroups">
-                         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="fieldgroups">
+			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+                         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 		</td>
 	</tr>
         <tr>
@@ -191,11 +191,11 @@
 			<td align="left" style="color: #CC9933;">
 			<div>
 	                <IF COND="[#TYPE] eq 'entries' || [#TYPE] eq 'persons'">
-				 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="indextablefields">
-                	         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="indextablefields">
+				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="indextablefields">
+                	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="indextablefields">
 	                <ELSE/>
-				 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="tablefields">
-                	         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="tablefields">
+				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="tablefields">
+                	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="tablefields">
 		        </IF>
 			</div>
 			</td>

@@ -47,13 +47,13 @@ class TablefieldgroupsLogic extends Logic {
    {
      global $db;
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_tablefields WHERE idgroup='$id' AND status>-64"));
-     if ($db->errorno)  dberror();
+     if ($db->errorno())  dberror();
      if ($count==0) {
        return false;
      } else {
        return sprintf(getlodeltextcontents("cannot_delete_hasfields","admin"),$count);
      }
-     //) { $error["error_has_entities"]=$count; return "back"; }
+     //) { $error["error_has_entities"]=$count; return "_back"; }
    }
 
 

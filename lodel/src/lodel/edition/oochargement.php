@@ -32,7 +32,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_REDACTOR,NORECORDURL);
+authenticate(LEVEL_REDACTOR);
 include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 

@@ -48,13 +48,13 @@ class EntryTypesLogic extends Logic {
    {
      global $db;
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE idtype='$id' AND status>-64"));
-     if ($db->errorno)  dberror();
+     if ($db->errorno())  dberror();
      if ($count==0) {
        return false;
      } else {
        return sprintf(getlodeltextcontents("cannot_delete_hasentry","admin"),$count);
      }
-     //) { $error["error_has_entities"]=$count; return "back"; }
+     //) { $error["error_has_entities"]=$count; return "_back"; }
    }
 
 
@@ -142,7 +142,7 @@ class EntryTypesLogic extends Logic {
    function _deleteRelatedTables($id) {
      global $home;
 
-     require_once($home."dao.php"); 
+      
      $dao=getDAO("tablefields");
      $dao->delete("type='entries' AND name='".$this->vo->type."'");
    }

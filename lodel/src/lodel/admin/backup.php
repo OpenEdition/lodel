@@ -29,12 +29,12 @@
 
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMIN);
-include ($home."func.php");
+require ($home."func.php");
 
 
-$context[importdir]=$importdir;
+$context['importdir']=$importdir;
 
 if ($backup) {
   require_once($home."func.php");
@@ -130,7 +130,7 @@ if ($backup) {
 }
 
 
-include ($home."calcul-page.php");
+require ($home."calcul-page.php");
 calcul_page($context,"backup");
 
 

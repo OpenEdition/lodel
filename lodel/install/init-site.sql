@@ -73,12 +73,12 @@ CREATE TABLE IF NOT EXISTS #_TP_relations (
 	id2		INT UNSIGNED DEFAULT '0' NOT NULL,
 	nature		CHAR(1) DEFAULT 'P' NOT NULL,
 
-	degree		TINYINT DEFAULT '0' NOT NULL,
+	degree		TINYINT, # can be null
 
 	PRIMARY KEY (idrelation),
+	UNIQUE (id1,id2,degree,nature),
 	KEY index_id1 (id1),
 	KEY index_id2 (id2),
-	KEY index_degree (degree),
 	KEY index_nature (nature)
 );
 
@@ -238,6 +238,8 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 	tpledition	TINYTEXT NOT NULL,			# name du fichier template pour l'edition de son contenu
 
 	import		TINYINT DEFAULT '0' NOT NULL,		# 1=import par OO
+	display		VARCHAR(10),				# where/how to display this type
+	creationstatus	TINYINT DEFAULT '-1' NOT NULL,		# status for the new entities created with this type
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,

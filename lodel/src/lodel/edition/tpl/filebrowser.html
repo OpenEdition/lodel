@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+<!-- Begin
+function sendValue(s){
+obj=window.opener.document.getElementById('[#CALLER][localfullfilename]');
+obj.value = 'upload/'+s;
+obj=window.opener.document.getElementById('[#CALLER][localfilename]');
+obj.firstChild.nodeValue=s;
+obj=window.opener.document.getElementById('[#CALLER][radioserverfile]');
+obj.click();
+window.close();
+}
+//  End -->
+</script>
+<body>
+
+<LOOP NAME="filelist">
+<DO>
+<div class="file">
+<div class="filename">[#NAME]</div>
+<div class="filesize">[#SIZE]</div>
+<div class="action"><a href="javascript:sendValue('[(#NAME|addslashes)]');">Sélectionner</a> | <a href="javascript:;" onClick="cf=confirm('Confirmez que vous voulez supprimer ce fichier');if (cf)window.location='filebrowser.php?caller=[#CALLER]&delete=[(#NAME|urlencode)]'; return false;">Supprimer<a/></div>
+</div>
+</DO>
+</LOOP>
+
+<div>
+<a href="javascript:;" onClick="cf=confirm('Confirmez que vous voulez supprimer tous les fichiers');if (cf)window.location='filebrowser.php?caller=[#CALLER]&deleteall'; return false;">Supprimer tous les fichiers<a/></div>
+
+<div>
+<a href="filebrowser.php?caller=[#CALLER]&checkmail">Vérifie le courrier<a/></div>
+<IF COND="[(#NBATTATTACHMENTS|isset)]">[#NBATTATTACHMENTS] fichiers attachés chargés</IF>
+
+<div>
+<a href="javascript:window.close();">Fermer la fenêtre</a>
+</div>
+
+</body>
+</html>

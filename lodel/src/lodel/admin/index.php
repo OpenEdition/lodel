@@ -28,41 +28,16 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
+require($home."auth.php");
+authenticate(LEVEL_VISITOR);
 
 require($home."controler.php");
-Controler::controler(LEVEL_VISITOR,array("entrytypes","persontypes","entries",
+Controler::controler(array("entrytypes","persontypes","entries",
 	      "tablefieldgroups","tablefields","indextablefields",
 	      "translations","usergroups","users",
 	      "types","classes",
 	      "options","optiongroups","useroptiongroups",
 	      "internalstyles","characterstyles"));
-
-
-/*
-
-  // special processing for each tables
-
-
- case 'entries':
-   if (!$therequest['type'] || !isvalidtype($therequest['type'])) die("ERROR: a valid type is required");
-   $result=mysql_query ("SELECT * FROM $GLOBALS[tp]entrytypes WHERE type='$type'") or dberror();
-   $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
-   $context['idtype']=$context['type_id']; // import
-   $context['sorting']=$GLOBALS['tp']."entries.".$context['type_sort'];
-   break;
-  //
-  //
-
- case 'translations':
-   die("site translations. En cours de developpement. Voir interface translation sur la page admin");
-   $context['textgroups']="site";
-   require($home."textgroupfunc.php");
-   $context['textgroupswhere']=textgroupswhere($context['textgroups']);
-   break;
-}
-
-*/
-
 
 
 function loop_classtypes ($context,$funcname)

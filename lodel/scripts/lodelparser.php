@@ -94,20 +94,20 @@ function parse_loop_extra(&$tables,
 #		    '".($GLOBALS[user][admin] ? "1" : "(usergroup IN ($GLOBALS[user][groups]))")."'
 #		    ),$where);
   //
-  if (0 && $tablefields[lq("#_TP_classes")]) {
-    require_once($home."dao.php");
+  if ($tablefields[lq("#_TP_classes")]) {
+    
     $dao=getDAO("classes");
     $classes=$dao->findMany("classtype='entities'");
     foreach ($classes as $class) {
       // gere les tables principales liees a entites
-      $ind=array_search($class->name,$tables);
+      $ind=array_search($class->class,$tables);
       if ($ind!==FALSE && $ind!==NULL) {
 	array_push($tables,"entities");
 	// put entites just after the class table
 	array_splice($tablesinselect,$ind+1,0,"entities");
 	protect($selectparts,$class,"title");
-	$where[count($where)-1].=" AND ".$class->name.".identity=entities.id AND class=";
-	$where[]="'".$class->name."'"; // quoted part
+	$where[count($where)-1].=" AND ".$class->class.".identity=entities.id AND class=";
+	$where[]="'".$class->class."'"; // quoted part
 	$where[]="";
       }
     }

@@ -61,7 +61,7 @@ class Logic {
 
    {
      $id=intval($context['id']);
-     if (!$id) return "ok"; // just add a new Object
+     if (!$id) return "_ok"; // just add a new Object
 
      $dao=$this->_getMainTableDAO();
      $vo=$dao->getById($id);
@@ -70,7 +70,7 @@ class Logic {
 
      $ret=$this->_populateContextRelatedTables($vo,$context);
 
-     return $ret ? $ret : "ok";
+     return $ret ? $ret : "_ok";
    }
 
    /**
@@ -107,7 +107,7 @@ class Logic {
    {
      // validate the forms data
      if (!$this->_validateFields($context,$error)) {
-       return "error";
+       return "_error";
      }
 
      // get the dao for working with the object
@@ -131,7 +131,7 @@ class Logic {
 
      touch(SITEROOT."CACHE/maj");
 
-     return $ret ? $ret : "back";
+     return $ret ? $ret : "_back";
    }
 
    /**
@@ -150,7 +150,7 @@ class Logic {
      }
      $this->_changeRank($id,$context['dir'],"status>0 ".$criteria);
      
-     return "back";
+     return "_back";
    }
 
    /**
@@ -171,7 +171,7 @@ class Logic {
 
      $ret=$this->_deleteRelatedTables($id);
 
-     return $ret ? $ret : "back";
+     return $ret ? $ret : "_back";
    }
 
 
@@ -206,7 +206,7 @@ class Logic {
 
 
    function &_getMainTableDAO() {
-     require_once($GLOBALS['home']."dao.php");
+     
      return getDAO($this->maintable);
    }
    
@@ -263,7 +263,10 @@ class Logic {
     * Validated the public fields and the unicity.
     * @return return an array containing the error and warning, null otherwise.
     */
-   function _validateFields(&$context,&$error) {
+   function _validateFields(&$context,&$error) 
+
+   {
+     global $db;
 
      require_once($GLOBALS['home']."validfunc.php");
 
@@ -293,8 +296,8 @@ class Logic {
 	 $conditions[]=$field."='".$context[$field]."'";
        }
        // check
-       $ret=$GLOBALS['db']->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND ".join(" AND ",$conditions));
-       if ($db->errorno) die($this->errormsg());
+       $ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND ".join(" AND ",$conditions));
+       if ($db->errorno()) dberror();
        if ($ret) $error[$fields[0]]="1"; // report the error on the first field
      }
 

@@ -63,13 +63,13 @@ class ClassesLogic extends Logic {
      }
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$vo->classtype." INNER JOIN #_".$types." ON idtype=".$types.".id INNER JOIN #_TP_classes ON ".$types.".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_".$vo->classtype.".status>-64 AND ".$types.".status>-64  AND #_TP_classes.status>-64"));
 
-     if ($db->errorno)  dberror();
+     if ($db->errorno())  dberror();
      if ($count==0) {
        return false;
      } else {
        return sprintf(getlodeltextcontents($msg,"admin"),$count);
      }
-     //) { $error["error_has_entities"]=$count; return "back"; }
+     //) { $error["error_has_entities"]=$count; return "_back"; }
    }
 
 
@@ -187,7 +187,7 @@ class ClassesLogic extends Logic {
      removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
      //
 
-     return "back";
+     return "_back";
    }
 
 

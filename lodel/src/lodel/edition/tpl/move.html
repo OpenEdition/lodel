@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.TITLE_MOVE_DOCUMENT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -43,17 +44,26 @@
 	<table class="table_form_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td>
+			<div>
+				<LET VAR="iddocument">[#ID]</LET>
+				<LET VAR="id">0</LET>
+	                        <LOOP NAME="move_right">
+				<DO>
+					<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]"><em>[@EDITION.BASE]</em>&nbsp;</a><br />
+				</DO>
+				<ALTERNATIVE>
+					<em>[@EDITION.BASE]</em>&nbsp;<br />
+				</ALTERNATIVE>
+				</LOOP>
 
-				<LOOP NAME="Deplace_document" TABLE="entities" WHERE="idparent='[#ID]' AND class='publications'" ORDER="rank">
+
+				<LOOP NAME="Deplace_document" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
 					[#BARRE]
-		                        <LOOP NAME="deplace_droit" TABLE="typeentites_typeentites,entites" WHERE="id='[#IDDOCUMENT]' AND identitytype=idtype AND identitytype2='[#IDTYPE]'" SELECT="condition">
+		                        <LOOP NAME="move_right">
 		                        <DO>
 		                        <!--[ on a le droit de la deplacer ici ]-->
 					<span style="margin-left: [#MARGIN]px;">
-						<a href="deplacer.php?id=[#IDDOCUMENT]&idparent=[#ID]">
-							<span class="texte_orange">[#IDENTIFIANT]&nbsp;</span>
-						</a>
-			                        [#TITREENTITE]&nbsp;([#TYPE])
+						<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]">[#G_TITLE]&nbsp;</a>([#TYPE])
 						<br />
 						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
 					</span>
@@ -61,8 +71,7 @@
                                         <ALTERNATIVE>
 		                        <!--[ on n'a pas le droit de la deplacer ici ]-->
 					<span style="margin-left: [#MARGIN]px;">
-							[#IDENTIFIANT]&nbsp;
-			                        [#TITREENTITE]&nbsp;([#TYPE])
+			                        [#G_TITLE]&nbsp;([#TYPE])
 						<br />
 						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
 					</span>
@@ -73,12 +82,13 @@
 					<LET VAR="BARRE">[#BARRE]|</LET>
 					<LOOP NAME="Deplace_document"></LOOP>
 				</LOOP>
+			<div>
 			</td>
 		</tr>
 	</table>
 
 	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='fonctionsavancees.php?id=[#IDDOCUMENT]';" />
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?do=view&id=[#IDDOCUMENT]';" />
 	</div>
 
 <MACRO NAME="CLOSE_HTML">

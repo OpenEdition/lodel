@@ -29,9 +29,10 @@
 
 require("siteconfig.php");
 require_once($home."auth.php");
+authenticate(LEVEL_VISITOR);
 
 if (!$_GET['do'] && !$_POST['do']) {
-  authenticate(LEVEL_VISITOR);
+  recordurl();
   $context['id']=$id=intval($_GET['id']);
   if ($id) {
     do {
@@ -48,7 +49,22 @@ if (!$_GET['do'] && !$_POST['do']) {
   calcul_page($context,$base);
 } else {
   require($home."controler.php");
-  Controler::controler(LEVEL_VISITOR,array("entities"),"entities");
+  // automatic logic
+  $do=$_GET['do'] ? $_GET['do'] : $_POST['do'];
+  $lo=$_GET['lo'] ? $_GET['lo'] : $_POST['lo'];
+
+  if ($lo) {
+    // well... nothing to do
+  } elseif ($do=="move" || $do=="preparemove" || $do=="changestatus") {
+    $lo="entities_advanced";
+  } elseif ($do=="view" || $do=="edit") {
+    $lo="entities_edition";
+  } else {
+    $lo="entities";
+  }
+  Controler::controler(array("entities",
+			     "entities_advanced",
+			     "entities_edition"),$lo);
 }
 
 ?>

@@ -38,7 +38,7 @@
 <form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
-<input type="hidden" name="table" value="tablefieldgroups">
+<input type="hidden" name="lo" value="tablefieldgroups">
 <fieldset>
   <legend>table qui contient les groupes de champs pour le XML</legend>
   <input type="hidden" name="id" value="[#ID]">
@@ -86,7 +86,7 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <IF COND="[#USER.RIGHTS] ge [#TABLE|rights('protect')]">
+  <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_GROUP]
         : 
       </label>

@@ -57,7 +57,7 @@ class UserOptionGroupsLogic extends Logic {
    {
      global $user,$home;
      // get the dao for working with the object
-     require_once($home."dao.php");
+     
      $dao=getDAO("options");
      $options=$dao->findMany("idgroup='".$context['id']."'","id,type,defaultvalue,userrights");
 
@@ -71,7 +71,7 @@ class UserOptionGroupsLogic extends Logic {
        print_r($error);
 
 
-     if ($error) return "error";
+     if ($error) return "_error";
 
      foreach ($options as $option) {
        if ($user['rights'] < $option->userrights) continue; // the user has not the right to do that.
@@ -81,7 +81,7 @@ class UserOptionGroupsLogic extends Logic {
        if (!$dao->save($option)) die("You don't have the rights to modify this option");
      }
      touch(SITEROOT."CACHE/maj");
-     return "back";
+     return "_back";
    }
 
 

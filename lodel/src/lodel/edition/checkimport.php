@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_REDACTOR,NORECORDURL);
+authenticate(LEVEL_REDACTOR);
 require ($home."func.php");
 
 if ($cancel) require ("abandon.php");

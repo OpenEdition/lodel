@@ -789,3 +789,11 @@ textarea.text  {
 
 fieldset .nobr {display:none;}  
 fieldset br { clear: left;}  
+
+
+.unfoldedentities { 
+  margin-left: 50px;
+  margin-bottom: 2px;
+  border-left: 1px solid #CC9933;
+  border-bottom: 1px solid #CC9933;
+}

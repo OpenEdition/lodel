@@ -40,7 +40,7 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&table=optiongroups">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</a>
+	<a href="index.php?do=view&lo=optiongroups">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</a>
 
 </div>
 
@@ -66,8 +66,8 @@
 					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
 					<td align="right" style="color: #CC9933;" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" >
 					<div>
-					 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="optiongroups">
-		                         <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="optiongroups">
+					 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+		                         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 					</div>
 					</td>
 				</tr>
@@ -76,7 +76,7 @@
 		</tr>		
 	        <tr>	
         	<td colspan="4">
-	        	<div><MACRO NAME="PNG_PLUS"><a href="index.php?do=view&table=options&idgroup=[#ID]">[@ADMIN.ADD_OPTION_TO_THE_GROUP]</a></div>
+	        	<div><MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=options&idgroup=[#ID]">[@ADMIN.ADD_OPTION_TO_THE_GROUP]</a></div>
                </td>
 		</tr>
 

@@ -70,7 +70,7 @@ class DAO {
     * Main function to add/modify records
     */
 
-   function save(&$vo) // $set,$context=array())
+  function save(&$vo,$forcecreate=false) // $set,$context=array())
 
    {
      global $db,$user;
@@ -83,8 +83,14 @@ class DAO {
 	  && $user['rights'] < $this->rights['protect']) {
        die("ERROR: you don't have the right to protect objects from the table ".$this->table);
      }
+     if (isset($vo->rank) && $vo->rank==0) {
+       // initialise the rank
+       $rank=$db->getOne("SELECT MAX(rank) FROM ".$this->sqltable." WHERE status>-64");
+       if ($db->errorno()) dberror();
+       $vo->rank=$rank+1;
+     }
      //
-     if ($vo->$idfield >0) { // update
+     if ($vo->$idfield >0 && !$forcecreate) { // update
        $update="";
        if (isset($vo->protect)) { // special processing for the protection
 	 $update="status=(2*(status>0)-1)".($vo->protect ? "*32" : "");
@@ -107,7 +113,7 @@ class DAO {
        }
 
        $insert="";$values="";
-       if ($this->uniqueid) $vo->$idfield=uniqueid($table);
+       if ($this->uniqueid && !$vo->$idfield) $vo->$idfield=uniqueid($table);
 
        foreach($vo as $k=>$v) {
 	 if (!isset($v)) continue;
@@ -166,7 +172,8 @@ class DAO {
      $morecriteria=$this->rightscriteria("read");
      if ($order) $order="ORDER BY ".$order;
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
-     $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) $morecriteria $order") or dberror();
+     #echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
+     $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) or dberror();
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
      $i=0;
@@ -188,23 +195,15 @@ class DAO {
    /**
     * Create a new Value Object
     */
-   function &createObject($rankcriteria="")
+   function &createObject()
 
    {
-     global $db;
-
      $this->instantiateObject($vo);
-
-     if (array_key_exists("rank",$vo)) {
-       // initialise the rank
-       if ($rankcriteria) $where=" ".$rankcriteria=" AND ".$rankcriteria;
-       $rank=$db->getone("SELECT MAX(rank) FROM ".$this->sqltable." WHERE status>-64 ".$rankcriteria);
-       if ($db->errorno()) dberror();
-       $vo->rank=$rank+1;
-     }
-
      if (array_key_exists("status",$vo)) {
        $vo->status=1;
+     }
+     if (array_key_exists("rank",$vo)) {
+       $vo->rank=0; // auto
      }
      return $vo;
    }
@@ -317,9 +316,10 @@ class DAO {
        $classvars=get_class_vars($this->table."VO");
        if ($classvars && array_key_exists("status",$classvars)) {
 
-	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND status>-64" : " AND status>0";
+	 $status=$this->sqltable.".status";
+	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND $status>-64" : " AND $status>0";
 	 if ($access=="write" && $GLOBALS['user']['rights'] < $this->rights['protect'])
-	   $this->cache_rightscriteria[$access].=" AND status<32 AND status>-32 ";
+	   $this->cache_rightscriteria[$access].=" AND $status<32 AND $status>-32 ";
        }
      } else {
        $this->cache_rightscriteria[$access]="";
@@ -347,23 +347,5 @@ class DAO {
 }
 
 
-/**
- * DAO factory
- *
- */
-
-function &getDAO($table,$args=null) {
-  static $factory; // cache
-
-  if ($factory[$table]) return $factory[$table]; // cache
-
-  require_once($GLOBALS['home']."dao/class.".$table.".php");
-  $daoclass=$table."DAO";
-  if (isset($args)) {
-    return $factory[$table]=new $daoclass ($args);
-  } else {
-    return $factory[$table]=new $daoclass;
-  }
-}
 
 ?>

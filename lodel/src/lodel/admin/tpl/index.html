@@ -56,7 +56,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=users"><span class="texte_orange">[@ADMIN.ADMIN_USER_AND_RIGHTS]</span></a>
+							<a href="index.php?do=list&lo=users"><span class="texte_orange">[@ADMIN.ADMIN_USER_AND_RIGHTS]</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
@@ -66,7 +66,7 @@
 						[@ADMIN.OPTIONS]
 						<select onChange="select_url(this)"><option>--</option>
                                        		<LOOP NAME="options" TABLE="optiongroups" WHERE="status gt 0" ORDER="rank">
-							<option value="index.php?do=view&table=useroptiongroups&id=[#ID]">[#TITLE]</option>
+							<option value="index.php?do=view&lo=useroptiongroups&id=[#ID]">[#TITLE]</option>
 						</LOOP>
 						</select>
 						<td>&nbsp;</td>
@@ -165,7 +165,7 @@
 							[@ADMIN.CLASSES]
 							<select onChange="select_url(this)"><option>--</option>
                                         		<LOOP NAME="classtypes">
-								<option value="index.php?do=list&table=classes&classtype=[#CLASSTYPE]">[#TITLE]</option>
+								<option value="index.php?do=list&lo=classes&classtype=[#CLASSTYPE]">[#TITLE]</option>
 							</LOOP>
 							</select>
 
@@ -181,7 +181,7 @@
 									<LOOP NAME="classtypes">
 									<option value="" style="color: gray;">[#TITLE] </option>
 									<LOOP NAME="classes_for_tablefields" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
-										<option value="index.php?do=list&table=tablefieldgroups&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+										<option value="index.php?do=list&lo=tablefieldgroups&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
 									</LOOP>
 									</LOOP>
 									</select>
@@ -200,12 +200,12 @@
 							<option value="" style="color: gray;">[#TITLE] </option>
 							<LOOP NAME="classes_for_types" TABLE="classes" WHERE="status gt 0 and classtype='[#CLASSTYPE]'" ORDER="rank">
 								<IF COND="[#CLASSTYPE]=='entities'">
-									<option value="index.php?do=list&table=types&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+									<option value="index.php?do=list&lo=types&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
 								<ELSE/>
 								<IF COND="[#CLASSTYPE]=='entries'">
-									<option value="index.php?do=list&table=entrytypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+									<option value="index.php?do=list&lo=entrytypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
 								<ELSE/>
-									<option value="index.php?do=list&table=persontypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
+									<option value="index.php?do=list&lo=persontypes&class=[#CLASS]" style="padding-left:20px;"> [#TITLE]</option>
 								</IF>
 >								</IF>
 								
@@ -219,21 +219,21 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=optiongroups"><span class="texte_orange">[@ADMIN.MANAGE_OPTIONS]</span></a>
+							<a href="index.php?do=list&lo=optiongroups"><span class="texte_orange">[@ADMIN.MANAGE_OPTIONS]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=internalstyles"><span class="texte_orange">[@ADMIN.INTERNALSTYLES]</span></a>
+							<a href="index.php?do=list&lo=internalstyles"><span class="texte_orange">[@ADMIN.INTERNALSTYLES]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="index.php?do=list&table=characterstyles"><span class="texte_orange">[@ADMIN.CHARACTERSTYLES]</span></a>
+							<a href="index.php?do=list&lo=characterstyles"><span class="texte_orange">[@ADMIN.CHARACTERSTYLES]</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>

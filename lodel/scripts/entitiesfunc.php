@@ -27,40 +27,38 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
- //
- // File generate automatically the 2005-01-09.
- //
 
+   /**
+    * Check that the type of $id can be in the type of $idparant.
+    * if $id=0 (creation of entites), use $idtype .
+    */
 
-/**
-  * VO of table translations
-  */
-
-class translationsVO {
-   var $id;
-   var $lang;
-   var $title;
-   var $textgroups;
-   var $translators;
-   var $modificationdate;
-   var $creationdate;
-   var $rank;
-   var $status;
-   var $upd;
-
-}
-
-/**
-  * DAO of table translations
-  */
-
-class translationsDAO extends DAO {
-
-   function translationsDAO() {
-       $this->DAO("translations",false);
-       $this->rights=array('write'=>LEVEL_ADMIN,'protect'=>LEVEL_ADMINLODEL);
+   function checkTypesCompatibility($id,$idparent,$idtype=0)
+   {
+     global $db;
+     //
+     // check whether we have the right or not to put an entitie $id in the $idparent
+     //
+     if ($id>0) {
+       $table="#_TP_entitytypes_entitytypes INNER JOIN #_TP_entities as son ON identitytype=son.idtype";
+       $criteria="son.id='".$id."'";
+     } elseif ($idtype>0) {
+       $table="#_TP_entitytypes_entitytypes";
+       $criteria="identitytype='".$idtype."'";
+     } else {
+       die("ERROR: id=0 and idtype=0 in EntitiesLogic::_checkTypesCompatibility");
+     }
+     
+     if ($idparent>0) { // there is a parent
+       $query="SELECT condition FROM ".$table." INNER JOIN #_TP_entities as parent ON identitytype2=parent.idtype  WHERE parent.id='".$idparent."' AND ".$criteria;
+     } else { // no parent, the base.
+       $query="SELECT condition FROM ".$table." WHERE identitytype2=0 AND ".$criteria;
+     }
+       
+     #echo $query;
+     $condition=$db->getOne(lq($query));
+     if ($db->errorno()) dberror();
+     return $condition;
    }
-
-}
 
 ?>

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2005-01-07.
+ // File generate automatically the 2005-01-09.
  //
 
 
@@ -45,6 +45,8 @@ class typesVO {
    var $tplcreation;
    var $tpledition;
    var $import;
+   var $creationstatus;
+   var $display;
    var $rank;
    var $status;
    var $upd;

@@ -83,13 +83,10 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_urlstack (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment, # faudrait generer le probleme du overflow
 	idsession	INT UNSIGNED DEFAULT '0' NOT NULL,
-
-	urlmd5		CHAR(32) BINARY NOT NULL, # cle md5 de l'url en cours
 	url		MEDIUMBLOB NOT NULL, # url de retour de l'url en cours
 
 	PRIMARY KEY (id),
-	KEY index_idsession (idsession),
-	KEY index_urlmd5 (urlmd5)
+	KEY index_idsession (idsession)
 );
 
 

@@ -51,7 +51,7 @@ class InternalstylesLogic extends Logic {
 		  "-*"=>getlodeltextcontents("previous_style","admin"),
 		  "*-"=>getlodeltextcontents("next_styles","admin"),
 		  );
-       require_once($GLOBALS['home']."dao.php");
+       
        $dao=getDAO("tablefields");
        $vos=$dao->findMany("style!=''","style","style");
        foreach($vos as $vo) {

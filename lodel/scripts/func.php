@@ -117,9 +117,8 @@ function rmscript($source) {
  */
 
 function extract_post($arr=-1) {
-  if (!is_array($arr)) $arr=$_POST;
-
-  foreach ($_POST as $key=>$val) {
+  if (!is_array($arr)) $arr=&$_POST;
+  foreach ($arr as $key=>$val) {
     if (!isset($GLOBALS['context'][$key])) // protege
       $GLOBALS['context'][$key]=$val;
   }
@@ -765,6 +764,28 @@ function setrecord($table,$id,$set,$context=array())
   }
   return $id;
 }
+
+
+/**
+ * DAO factory
+ *
+ */
+
+function &getDAO($table,$args=null) {
+  static $factory; // cache
+
+  if ($factory[$table]) return $factory[$table]; // cache
+
+  require_once($GLOBALS['home']."dao.php");
+  require_once($GLOBALS['home']."dao/class.".$table.".php");
+  $daoclass=$table."DAO";
+  if (isset($args)) {
+    return $factory[$table]=new $daoclass ($args);
+  } else {
+    return $factory[$table]=new $daoclass;
+  }
+}
+
 
 
 // valeur de retour identifier ce script

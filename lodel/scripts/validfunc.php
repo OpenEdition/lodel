@@ -134,6 +134,13 @@ function validfield(&$text,$type,$default="")
   case "color" :
     if ($text && !preg_match("/^#[A-Fa-f0-9]{3,6}$/",$text)) return "color";
     break;
+  case "entity" :
+    $text=intval($text);
+    // check it exists
+    $dao=getDAO("entities");
+    $vo=getById($text,"1");
+    if (!$vo) return "entity";
+    break;
   case "textgroups" :
     return $text=="site" || $text=="interface";
     break;
