@@ -167,6 +167,7 @@ function loop_fichiers(&$context,$funcname)
 	}
 	#echo doubleval($localcontext[lodelversion]), ":",$GLOBALS[version],"<br />\n";
 
+	// check only the major version, sub-version are not checked
 	if (doubleval($localcontext[lodelversion])!=doubleval($GLOBALS[version])) $localcontext[warning_version]=1;
 	call_user_func("code_do_$funcname",$localcontext);
       }

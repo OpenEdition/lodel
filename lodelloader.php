@@ -135,11 +135,20 @@ unset($client);
 
 pclzip_include();
 $ziparchive=new PclZip($archivefile);
-$ziparchive->extract(PCLZIP_OPT_REMOVE_PATH,"lodel",PCLZIP_CB_POST_EXTRACT,"setchmod");
+$ziparchive->extract(PCLZIP_OPT_REMOVE_PATH,"lodel",
+		     PCLZIP_CB_PRE_EXTRACT,"unlinkifrequired",
+		     PCLZIP_CB_POST_EXTRACT,"setchmod");
 
 function setchmod ($p_event,&$p_header) {
   global $chmod;
   chmod ($p_header['filename'],$chmod & ($p_header['folder'] ? 0777 : 0666));
+  return 1;
+}
+
+function unlinkifrequired($p_event,&$p_header) {
+  if (is_file($p_header['filename'])) {
+    unlink($p_header['filename']);
+  }
   return 1;
 }
 
