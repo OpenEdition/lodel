@@ -155,7 +155,12 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   if (!file_exists($xhtmlfile)) die("ERROR: second conversion failed");
 
 
-  $xhtml=file_get_contents($xhtmlfile);
+  #$xhtml=file_get_contents($xhtmlfile);
+  $xhtmllines=file($xhtmlfile);
+  array_walk($xhtmllines,create_function('&$text',' $text=trim($text);')); // trim each line
+  $xhtml=join("",$xhtmllines);
+  unset($xhtmllines); // save memory
+
   postprocesscontentXHTML(&$xhtml,$styles);
   writefile($xhtmlfile,$xhtml);
 

@@ -349,8 +349,7 @@ function OO_XHTML ($convertedfile,&$context)
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?".">/i", # met border="0"
 	     "/(<img\b[^>\/]+style=\"[^\"]*)width:\s*1.0ch;height:\s*1.0ch;([^>\/]+\/?".">)/", # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
-	     "/<\/?col\b[^>]*>/",
-	     "/\s{2,}/" # suppress double or higher number of space.
+	     "/<\/?col\b[^>]*>/"
 	     );
 
   array_push($rpl,
@@ -361,8 +360,7 @@ function OO_XHTML ($convertedfile,&$context)
 	     "\\1\\2",
 	     "\\1border=\"0\" />",
 	     "\\1\\2",
-	     "",
-	     " "
+	     ""
 	     );
 
   $time=time();
