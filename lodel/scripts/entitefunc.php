@@ -134,7 +134,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     // check if the field is required or not, and rise an error if any problem.
     if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
     // clean automatically the fields when required.
-    if (trim($entite[$nom]) && in_array($type,$GLOBALS[type_autostriptags])) $entite[$nom]=trim(strip_tags($entite[$nom]));
+    if (!is_array($entite[$nom]) && trim($entite[$nom]) && in_array($type,$GLOBALS[type_autostriptags])) $entite[$nom]=trim(strip_tags($entite[$nom]));
     // special processing depending on the type.
     switch ($type) {
     case "date" :
@@ -201,7 +201,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       // check for a hack or a bug
       $lodelsource='lodel\/sources';
       $docannexe='docannexe\/'.$type.'\/([^\.\/]+)';
-      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$entite[$nom],$dirresult)) die("ERROR: bad filename \"$entite[$nom]\"");
+      if (!preg_match("/^(?:$lodelsource|$docannexe)\/[^\/]+$/",$entite[$nom],$dirresult)) die("ERROR: bad filename in $nom \"$entite[$nom]\"");
 
       // if the filename is not "temporary", there is nothing to do
       if (!preg_match("/^tmpdir-\d+$/",$dirresult[1])) break;

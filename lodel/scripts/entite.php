@@ -172,6 +172,7 @@ if ($id>0 && $dir) {
 } elseif ($plus || $reload || $reload2) {
   extract_post();
   extract_files($context);
+
 } elseif ($edit) { // modifie ou ajoute
 //
 // bloc principale d'extrainfo
