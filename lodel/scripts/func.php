@@ -141,6 +141,17 @@ function myquote (&$var)
   }
 }
 
+
+function mystripslashes (&$var)
+
+{
+  if (is_array($var)) {
+    foreach ($var as $k => $v) { $var[$k]=stripslashes($v); }
+  } else {
+    $var=stripslashes($var);
+  }
+}
+
 function myfilemtime($filename)
 
 {
