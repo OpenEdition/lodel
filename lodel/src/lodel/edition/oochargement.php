@@ -197,6 +197,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "bloccitation"=>"citation",
 		      "quotations"=>"citation",
 		      "typedocument"=>"typedoc",
+		      "titleuser"=>"title"
 		      );
 
   
