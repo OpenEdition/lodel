@@ -47,7 +47,7 @@ if ($edit) { // modifie ou ajoute
 
     $idparent=intval($context[idparent]);
     if ($id>0) { // il faut rechercher le status, le type et l'ordre
-      $result=mysql_query("SELECT status,idtype,ordre FROM entrees$GLOBALS[tp] WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT status,idtype,ordre FROM $GLOBALS[tp]entrees WHERE id='$id'") or die (mysql_error());
       list($status,$context[idtype],$ordre)=mysql_fetch_array($result);
     } else {
       $status=1;
