@@ -456,4 +456,13 @@ function namespace($ns,$text)
   return preg_replace("/<(\/?)(\w+(?:\s[^>]*>)?>)/","<\\1$ns:\\2",$text);
 }
 
+/**
+ * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
+ */
+
+function hideifearlier($datepubli, $text) {
+        if($datepubli <= date("Y-m-d")) return $text;
+        return "";
+}
+
 ?>
