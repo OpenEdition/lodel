@@ -717,51 +717,51 @@ function modifymember(members,textfield){
 
 <!--[ Added by Jean Lamy - 2005-02-02]-->
 <!--[ Search engine test]-->
-<DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,q_status,q_type">
+<DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield">
 
 <form name="search" action="search.php" method="get">
-<input style="border : 1px solid gray" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" style="font-size : 10px" />
-<input style="background-color : #EAEAEA ; border : 2px outset #fff" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@REFINE_YOUR_SEARCH]<ELSE/>[@SEARCH]</IF>" style="font-size : 10px"  />
+<input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
+<input class="searchbutton" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@REFINE_YOUR_SEARCH]<ELSE/>[@SEARCH]</IF>" />
 <a href="#" onclick="if(document.getElementById('advanced_search').style.display=='none')document.getElementById('advanced_search').style.display='inline'; else document.getElementById('advanced_search').style.display='none' ">
-	<span style="font-size : 10px">[@SEE_ADVANCED_SEARCH]</span>
+	<span class="texte_petit">[@SEE_ADVANCED_SEARCH]</span>
 </a>
 <span  id="advanced_search" <IF COND="![#Q_STATUS] AND ![#Q_TYPE]">style="display : none"</IF>>
-<span  style="font-size : 10px;">
-<fieldset style="background-color : #EDEDED ; margin : 5px 5px 0px 5px ; padding : 3px">
+<span class="texte_petit">
+<fieldset class="searchfieldset">
 <legend>[@ADVANCED_SEARCH]</legend>
 [@SEARCH_IN]&nbsp;
 <LOOP NAME="listtypes" TABLE="types" ORDER="rank">
 <BEFORE>
-	<select  name="q_type" style="font-size : 10px;border : 1px solid gray" onchange="updatefields(this);">
+	<select  name="qtype" class="searchfields" onchange="updatefields(this);">
 	<option id="[#CLASS]_[#ID]" value=""> -- [@ALL_TYPES] -- </option>
 </BEFORE>
 <DO>
-	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#Q_TYPE]">selected="selected"</IF>>[#TITLE]</option>
+	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#QTYPE]">selected="selected"</IF>>[#TITLE]</option>
 </DO>
 <AFTER>
 	</select>
 </AFTER>
 </LOOP>
 &nbsp;&nbsp;[@STATUS]&nbsp;:&nbsp;
-<select  name="q_status" style="border : 1px solid gray ; font-size : 10px;">
+<select  name="qstatus" class="searchfields">
 	<option value=""> -- [@ALL_STATUS] -- </option>
-	<option value="+16" <IF COND="[#Q_STATUS] EQ 16">selected="selected"</IF>>@protected</option>
-	<option value="+1" <IF COND="[#Q_STATUS] EQ 1">selected="selected"</IF>>@published</option>
-	<option value="-1" <IF COND="[#Q_STATUS] EQ -1">selected="selected"</IF>>@ready_to_be_published</option>
-	<option value="-16" <IF COND="[#Q_STATUS] EQ -16">selected="selected"</IF>>@draft</option>
+	<option value="+16" <IF COND="[#QSTATUS] EQ 16">selected="selected"</IF>>@protected</option>
+	<option value="+1" <IF COND="[#QSTATUS] EQ 1">selected="selected"</IF>>@published</option>
+	<option value="-1" <IF COND="[#QSTATUS] EQ -1">selected="selected"</IF>>@ready_to_be_published</option>
+	<option value="-16" <IF COND="[#QSTATUS] EQ -16">selected="selected"</IF>>@draft</option>
 </select>
 &nbsp;
 [@FIELD]
-<select name="q_field" style="font-size : 10px;border : 1px solid gray">
+<select name="qfield" class="searchfields">
 	<option value=""> -- [@ALL_FIELDS] --</option>
-	<option value="DC.Title" <IF COND="[#Q_FIELD] EQ 'DC.Title'">selected="selected"</IF>>@Title</option>
-	<option value="DC.Description" <IF COND="[#Q_FIELD] EQ 'DC.Description'">selected="selected"</IF>>@Description</option>
-	<option value="DC.Format" <IF COND="[#Q_FIELD] EQ 'DC.Format'">selected="selected"</IF>>@Format</option>
-	<option value="DC.Source" <IF COND="[#Q_FIELD] EQ 'DC.Source'">selected="selected"</IF>>@Source</option>
-	<option value="DC.Language" <IF COND="[#Q_FIELD] EQ 'DC.Language'">selected="selected"</IF>>@Language</option>
-	<option value="DC.Relation" <IF COND="[#Q_FIELD] EQ 'DC.Relation'">selected="selected"</IF>>@Relation</option>
-	<option value="DC.Coverage" <IF COND="[#Q_FIELD] EQ 'DC.Coverage'">selected="selected"</IF>>@Coverage</option>
-	<option value="DC.Rights" <IF COND="[#Q_FIELD] EQ 'DC.Rights'">selected="selected"</IF>>@Rights</option>
+	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>@Title</option>
+	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>@Description</option>
+	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>@Format</option>
+	<option value="DC.Source" <IF COND="[#QFIELD] EQ 'DC.Source'">selected="selected"</IF>>@Source</option>
+	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>@Language</option>
+	<option value="DC.Relation" <IF COND="[#QFIELD] EQ 'DC.Relation'">selected="selected"</IF>>@Relation</option>
+	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>@Coverage</option>
+	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>@Rights</option>
 </select>
 </fieldset>
 </span>
@@ -801,27 +801,27 @@ function modifymember(members,textfield){
 <!--[ Search engine test]-->
 <DEFMACRO NAME="YOUR_SEARCH_BAR">
 [@YOUR_QUERY]&nbsp;<strong>[#QUERY|stripslashes]</strong>&nbsp; ([#NBRESULTS] [@RESULTS])</span></a>
-<div style="text-align : right ; margin-right : 50px">
-<IF COND="[#Q_TYPE]">
-	<LOOP NAME="print_title_type" TABLE="types" WHERE="id=[#Q_TYPE]">
+<div class="searchinfos">
+<IF COND="[#QTYPE]">
+	<LOOP NAME="print_title_type" TABLE="types" WHERE="id='[#QTYPE]'">
 	[@IN] <strong>[#TITLE]</strong>
 	</LOOP>
 </IF>
-<IF COND="[#Q_FIELD]">
+<IF COND="[#QFIELD]">
 	[@IN_FIELD] <strong>[#Q_FIELD]</strong>
 </IF>
-<IF COND="[#Q_STATUS]">
+<IF COND="[#QSTATUS]">
 (only 
-	<IF COND="[#Q_STATUS] EQ -16">
+	<IF COND="[#QSTATUS] EQ -16">
 	[@DRAFT]
 	</IF>
-	<IF COND="[#Q_STATUS] EQ -1">
+	<IF COND="[#QSTATUS] EQ -1">
 	[@READY_TO_BE_PUBLISHED]
 	</IF>
-	<IF COND="[#Q_STATUS] EQ 1">
+	<IF COND="[#QSTATUS] EQ 1">
 	[@PUBLISHED]
 	</IF>
-	<IF COND="[#Q_STATUS] EQ 16">
+	<IF COND="[#QSTATUS] EQ 16">
 	[@PROTECTED]
 	</IF>
 )
