@@ -28,6 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+
 $GLOBALS['translations_textgroups']=array("interface"=>array("common","edition","admin","lodeladmin","install","lodelloader"),
 			     "site"=>array("site"),
 			     );
