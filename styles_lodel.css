@@ -752,6 +752,6 @@ H7 {font-size: 28pt; text-align: center; color: #000; line-height: 1; margin-bot
 
 /*Styles pour checkbalisage - destinés à faire ressortir styles utilisateur*/
 
-#checkbalisage p.descriptionauteur, #checkbalisage p.texte, #checkbalisage p.ndlr, #checkbalisage p.notebaspage, #checkbalisage p.annexe, #checkbalisage p.auteur{
+#checkbalisage  *{
 	font-family: "Courier New", Courier, mono;
 }
