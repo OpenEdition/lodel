@@ -1,8 +1,18 @@
 <?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
-Configuration de l'acces au serveur MySQL.<br>
-<p><p>
+<p align="center"></p>Configuration de l'acces au serveur MySQL.<br>
+
+<h2>Option 1</h2>
+<p align="justify">
+Entrer les informations concernant le serveur MySQL. L'adresse du serveur est souvent disponible dans le support technique de l'hebergeur.
+Le nom d'utilisateur MySQL et le mot de passe sont personnels, et ont dù être fourni avec les autres informations concernant le compte ftp et les emails. Attention, cependant, le nom d'utilisateur MySQL et le mot de passe sont souvent différents du nom d'utilisateur pour l'accès au site ou aux emails.
+</p>
+<h2>Option 2</h2>
+<p align="justify">
+</p>
+
+
 <?php  if ($erreur_connect) { ?> <b>Erreur</b>: Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
 <form method="post" action="install.php">

@@ -1,22 +1,36 @@
 <?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
-Choix de la plateforme
 
+<p align="center">Choix de la configuration.</p>
+
+<h2>Option 1</h2>
+<p align="justify">Choisir une des configurations si elle convient à votre serveur ou à votre herbergeur, l'installation sera alors simplifiée. Sinon choisir la configuration par defaut. <p>
+
+<h2>Option 2</h2>
+<p align="justify">Choisir la configuration par defaut.</p>
+
+
+<br /><br />
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="plateform">
-<table border="1">
+<table border="1" width="75%">
+<tr><td>&nbsp;</td><td>Nom</td><td>Commentaire</td></tr>
 <?php
 	    $dir=opendir($plateformdir);
 	    while ($file=readdir($dir)) {
 	    $file=$plateformdir."/".$file;
 	    if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
 	    $plateform=$result[1];
+	    preg_match("/\/\*\s*comment\s*\n(.*?)\ncomment\s*\*\//is",join("",file($file)),$result);
+	    $commentaire=$result[1];
+	    if (!$commentaire) $commentaire="&nbsp;";
 ?>
-<tr><td><input type="radio" name="plateform" value="<?php  echo $plateform; ?>"></td><td><?php  echo $plateform; ?></td></tr>
+<tr><td><input type="radio" name="plateform" value="<?php  echo $plateform; ?>"></td><td><?php  echo $plateform; ?></td><td><?php  echo $commentaire; ?></td></tr>
 
 <?php  } ?>
 </table>
+<br />
 <input type="submit" value="continuer">
 </form>
 

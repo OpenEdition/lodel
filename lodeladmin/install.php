@@ -76,7 +76,12 @@ if ($tache=="home") {
 	return; }
       if ($have_chmod) @chmod($destfile,0640);
     }
-    $erreur_includeincorrecte=1; // si plus loin ca plante ca peut venir du fait que l'include est incorrecte
+    // normalement c'est ok, mais reverfie quand meme.
+    if (file_exists("$dirname/func.php")) {
+      $erreur_includeincorrecte=1; // si plus loin ca plante ca peut venir du fait que l'include est incorrecte
+    } else {
+      $erreur_copyscripts=1;
+    }
   }
 }
 
@@ -158,6 +163,12 @@ if ($tache=="options") {
 			"usesymlink"=>$usesymlink));
 }
 
+
+if (!$tache) {
+  if (!(@include ("tpl/install-bienvenue.html"))) problem_include ("install-bienvenue.html");
+  return;
+}
+
 /////////////////////////////////////////////////////////////////
 //                              TESTS                          //
 /////////////////////////////////////////////////////////////////
@@ -209,6 +220,11 @@ if (@include ($lodelconfig)) {
 //
 if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
   // il faut determiner si on fonctionne avec un $home ou si on fonctionne avec un include automatique.
+  // essaie de deviner le repertoire absolu
+  if (!$pathroot && function_exists("realpath")) {
+    $pathroot=@realpath("../..");
+    if ($pathroot) $erreur_guess=1;
+  }
   if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
   return;
 }
@@ -389,8 +405,9 @@ function problem_include($filename)
 ?>
 <html>
 <body>
-<b>Impossible d'accéder au fichier <?php echo $filename; ?><b><br>
+<b>Impossible d'accéder au fichier <?php echo $filename; ?></b><br />
 Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?php echo $filename; ?> existent et sont accessibles par le serveur web<br>
+<br />
 Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
 
 LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
@@ -411,9 +428,9 @@ function probleme_droits_debut()
 {
 ?>
 <html><body>
-   <b>Le(s) repertoire(s) suivant(s) pose(nt) un problème d'accès. Vérifié que ce(s) répertoire(s) existenet et que le serveur web puisse y accéder et si préciser y écrire</b>
+   <b>Le(s) repertoire(s) suivant(s) pose(nt) un problème d'accès. Vérifié que ce(s) répertoire(s) existent et que le serveur web puisse y accéder et si préciser y écrire</b>
 <p><p>
-<?php}
+<?php }
 
 function probleme_droits($file,$mode)
 
@@ -430,6 +447,6 @@ function probleme_droits_fin()
 Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
 LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 </body></html>
-<?php}
+<?php }
 
 ?>

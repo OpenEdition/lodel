@@ -1,16 +1,36 @@
 <?php  include("tpl/install-openhtml.html"); ?>
 <!-- ce fichier n'est pas un template -->
 
-En fonction de l'herbergeur:<br>
-Si le chemin d'accès <u>absolu</u> à LODEL est connu et fixe, choississez la première option, et précisez le chemin absolu d'accès à la racine de LODEL.<br>
-Sinon, LODEL a besoin de mettre des scripts dans un des répertoires dont l'inclusion est automatique (variable de configuration "include_path" de php) et auquel vous avez acces. Choississez la deuxième option et preciser le chemin relatif vers ce repertoire (relatif à la racine de LODEL).
-<p><p>
 
-<?php  if ($erreur_homeinaccessible) { ?> <b>Erreur</b>: Impossible d'accéder aux scripts par le repertoire <?php echo "$pathroot/lodel/scripts"; ?>. Verifiez le repertoire que vous avez entré.<?php  } ?>
-<?php  if ($erreur_mkdir) { ?> <b>Erreur</b>: Le repertoire <?php echo $includepath; ?> n'existe pas et il n'est pas possible de le creer. Verifiez le chemin que vous avez entré. Vous pouvez aussi creer ce repertoire manuellement si vous le souhaitez.<?php  } ?>
-<?php  if ($erreur_copyscripts) { ?><b>Erreur</b>: Impossible de copier les scripts dans le repertoire <?php  echo $includepath; ?>. Verifiez le repertoire que vous avez entré. S'il est correcte, vérifiez que le serveur web à les droits d'écriture dans ce repertoire. Si vous ne souhaitez pas ouvrir les droits au serveur web, copier les fichiers contenu dans le repertoire lodel/scripts dans le repertoire $includepath et vérifier que le serveur web peut accéder à ces scripts en lecture.<?php  } ?>
+<p align="center">Choix de la configuration.</p>
 
-<?php  if ($erreur_includeincorrecte) { ?><b>Erreur</b>:  Les scripts ont été correctement copiés dans le repertoire <?php  echo $includepath; ?>, mais l'inclusion automatique ne marche pas. Vérifier le chemin du repertoire et la configuration de php.<?php  } ?>
+LODEL a besoin d'accéder à des scripts dans un répertoire inclus automatiquement ou dont le chemin absolu est connu et fixe.
+
+<h2>Option 1 et 2</h2>
+<p align="justify">
+Si le chemin d'accès <u>absolu</u> à LODEL est connu et fixe préciser ce chemin ci-dessous. <br>
+Sinon, LODEL a besoin d'un répertoire inclus automatiquement (variable de configuration "include_path" de php). Si c'est le cas, choisir la deuxième option et préciser le chemin relatif vers ce répertoire.
+<p>
+
+<?php  if ($erreur_homeinaccessible) { ?> <b>Erreur</b>: Impossible d'accéder aux scripts par le répertoire <?php echo "$pathroot/lodel/scripts"; ?>.<?php  } ?>
+<?php  if ($erreur_mkdir) { ?> <b>Erreur</b>: Le répertoire "<?php echo $includepath; ?>" n'existe pas et il n'est pas possible de le créer. 
+<h2>Option 1</h2>
+<p align="justify">Verifier le chemin entré ci-dessous. Sinon vérifier les droits d'écriture dans le répertoire parent du répertoire "<?php echo $includepath; ?>".</p>
+<h2>Option 2</h2>
+<p align="justify">Créer manuellement le répertoire "<?php echo $includepath; ?>" et y copier les fichiers du répertoire lodel/scripts. Positionner les droits pour que le serveur puisse accéder aux fichiers en lecture.</p>
+<?php  } ?>
+
+
+<?php  if ($erreur_copyscripts) { ?><b>Erreur</b>: Impossible de copier les scripts dans le répertoire <?php  echo $includepath; ?>.
+
+<h2>Option 1</h2>
+<p align="justify">Verifier le chemin entré ci-dessous. Sinon vérifier les droits d'écriture dans le répertoire parent du répertoire "<?php echo $includepath; ?>".</p>
+<h2>Option 2</h2>
+<p align="justify">Copier les fichiers du répertoire lodel/scripts dans le répertoire"<?php echo $includepath; ?>". Positionner les droits pour que le serveur puisse accéder aux fichiers en lecture.</p><?php  } ?>
+
+<?php  if ($erreur_includeincorrecte) { ?><b>Erreur</b>: L'inclusion automatique dans le répertoire <?php  echo $includepath; ?> ne fonctionne pas. Vérifier le répertoire entré ci-dessous ainsi que la configuration de php.  Si le problème persiste... il n'y a pas grand chose à faire.<?php  } ?>
+
+<?php if ($erreur_guess) { ?><b>Attention</b>: Le chemin indiqué ci-dessous a été "deviné" par LODEL. Il n'est pas necessairement correcte et, surtout, il n'est pas nécessairement fixe, c'est à dire qu'il peut être changer sans préavis par l'herbergeur ou par l'administrateur système. Un changement de ce répertoire rendrait l'ensemble du site inaccessible. En cas de doute utiliser une autre option. <?php } ?>
 
 
 <form method="post" action="install.php">
@@ -19,12 +39,13 @@ Sinon, LODEL a besoin de mettre des scripts dans un des répertoires dont l'inclu
 
 <tr><td>
 Chemin absolu de la racine de Lodel ($pathroot)<br>
-<input type="radio" name="withautoinclude" VALUE="non" <?php  if ($pathroot) echo "checked"; ?>>
-<input type="text" size="60" name="newpathroot" value="<?php  echo $pathroot; ?>">
+
+<input type="radio" name="withautoinclude" value="non" <?php  if ($pathroot) echo "checked"; ?>>
+<input type="text" size="60" name="newpathroot" value="<?php echo $pathroot; ?>">
 </td></tr>
 <tr><td>
-Chemin relatif du répertoire inclue automatiquement.<br>
-<input type="radio" name="withautoinclude" VALUE="oui" <?php  if (!$pathroot) echo "checked"; ?>>
+Chemin relatif du répertoire inclue automatiquement (relatif par rapport à la racine de LODEL).<br>
+<input type="radio" name="withautoinclude" value="oui" <?php  if (!$pathroot) echo "checked"; ?>>
 <input type="text" size="60" name="newincludepath" value="<?php  echo $includepath; ?>">
 </td></tr>
 </table>
