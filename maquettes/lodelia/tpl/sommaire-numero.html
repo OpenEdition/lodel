@@ -12,8 +12,11 @@
 <!-- Ce sommaire affiche la liste des articles.                         -->
 <!-- Il permet d'afficher les documents d'un numéro de type linéaire,   -->
 <!-- en classant les articles par regroupement.                         -->
+<!-- Les fichiers de macros d'où sont issues les macros utilisées       -->
+<!-- sont entre parenthèse dans le commentaire         .                -->
 <!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
 <!-- ****************************************************************** -->
+
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
@@ -21,8 +24,10 @@
 <MACRO NAME="METADONNEES_POUR_SOMMAIRES">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
+<!-- Ouvre la table prinicpale et le bloc div prinicpal -->
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div  -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
 	
 		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
@@ -38,7 +43,7 @@
 			<!-- ce div permet d'intégrer le  contenu de la page" -->
 			<div class="contenu">
 		
-				<!-- logo de Lodelia-->
+				<!-- logo de Lodelia -->
 				<MACRO NAME="IMG_LOGO_LODELIA">
 				
 				<!-- Présente les infos concernant la publication : titre revue, nom et titre du numéro-->

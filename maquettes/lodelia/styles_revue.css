@@ -15,7 +15,7 @@ body
 	 margin-top : 0;
 	 margin-bottom : 0;
 	 margin-right : 0;
-	 font-size: 8px;
+	 font-size: small;
 	 font-family: Arial, Helvetica, sans-serif, Times New Roman,  Verdana ;
 	 text-decoration: none;
 }
@@ -26,9 +26,39 @@ table {
 	 */
 	border: 0; 
 	cellspacing: 0; 
-	cellpadding: 0; 
+	cellpadding: 0;
+	border: 0;
+	padding: 0; 
+	margin: 0;
 	
 }
+
+td {
+	/*  
+	 * Elements de styles d'une table par défaut 
+	 */
+	border: 0; 
+	cellspacing: 0; 
+	cellpadding: 0;
+	border: 0;
+	padding: 0; 
+	margin: 0;
+	
+}
+
+tr {
+	/*  
+	 * Elements de styles d'une table par défaut 
+	 */
+	border: 0; 
+	cellspacing: 0; 
+	cellpadding: 0;
+	border: 0;
+	padding: 0; 
+	margin: 0;
+	
+}
+
 
 p {
 	/*  
@@ -54,7 +84,7 @@ sup {
   ********************************************************************************************
   */
 
-h1
+.section1
 {
 	/*  définit les caractéristiques du titre de de niveau 1 : h1
 	 *
@@ -182,12 +212,11 @@ A:active {
  *********************************************************************************************
  */
 	
-.principale {
-	width: auto;
+
+ .principale {
+ 	width: auto;
 	height: 100%;
-	
 }
- 
  
 .barrenav {
 	/*
@@ -200,7 +229,8 @@ A:active {
 	float: left;
 	border-left: 1px solid #9C3234;
 	border-right: 1px solid #9C3234;
-	margin-right: 0;
+	left: 0;
+	margin-left: 0;
 }
 
 .corps {
@@ -238,6 +268,9 @@ A:active {
 	margin: 0;
 }
 
+
+
+
  /********************************************************************************************
  *  Les  class liées aux titres                                                              * 
  *********************************************************************************************
@@ -271,9 +304,8 @@ A.titrerevue:hover {
 	/*  
 	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
 	 */
-	font-size: 90%;
 	color: #666666;
-	
+	font-size: 100%;
 	
 }
 
@@ -281,9 +313,8 @@ A.titrerevue:active {
 	/*  
 	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
 	 */
-	font-size: 90%;
 	color: #666666;
-	
+	font-size: 100%;
 	
 }
 
@@ -304,6 +335,7 @@ A.titrerevue:active {
 	 margin-bottom: 7px;
 	 margin-top: 15px;
 	 vertical-align: middle;
+	 padding-left: 5px;
 }
 
 A.titre2 {
@@ -557,10 +589,18 @@ A.texte_integral:active {
 	background-color: #F7F7F7;
 	text-decoration: none;
 	color: #666666;
-	margin-bottom: 10px;
+	margin-bottom: 6px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	
+}
+
+.article {
+	font-size: x-small;
+	font-weight: small;
+	text-align: justify;
+	line-height: 150%;
+	text-indent: 10;
 }
 
 
@@ -603,6 +643,8 @@ A.texte_integral:active {
 	 */
 	width: auto;
 	height: auto;
+	background-color: #F7F7F7;
+	color: #333333;
 	font-size: 90%;
 	text-align : justify;
 	line-height: 120%;
@@ -672,6 +714,9 @@ A.texte_integral:active {
      */
 	 font-weight: bold;
 }
+
+
+	 
 
 /**********************************************************************************/
 
@@ -786,7 +831,6 @@ A.menu2 {
 	/*  
 	 *	Styles des liens menu2 non visités et visités
 	 */
-	font-size: 100%;
 	text-decoration: none;
 	font-weight: 600;
 	color: #666666;
@@ -797,7 +841,6 @@ A.menu2:hover {
 	/*  
 	 *	Styles des liens menu2 survolés
 	 */
-	font-size: 100%;
 	text-decoration:none;
 	font-weight: 600;
  	color: #333333;
@@ -808,7 +851,6 @@ A.menu2:active {
 	/*  
 	 *	Style des liens menu2 actifs
 	 */
-	font-size: 100%;
 	text-decoration:none;
 	font-weight: 600;
 	color: #333333;

@@ -60,12 +60,14 @@
 	margin: 0;
 }
 
+
 .logo_revuesorg3 a {
 	height: 50;
 	width: 165;
 	background-color: #EFEFEF;
 	background-image: url(images/logo_revues.gif);
 	margin: 0;
+	position: fixed;
 }
 
 

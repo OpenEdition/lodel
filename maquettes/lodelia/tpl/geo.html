@@ -1,4 +1,4 @@
-<USE MACROFILE="macros.html">
+
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_affichage.html">
 <USE MACROFILE="macros_technique.html">
@@ -19,6 +19,7 @@
 <!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <LOOP NAME="title" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
 	<TITLE>Index géographique : [#NOM]</TITLE>
 </LOOP>
@@ -27,59 +28,51 @@
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td valign="top"> 
-		<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-			<tr>
-				<td width="100%" align="center" valign="middle" class="titre">
-					<span class="couleur_1">
-						Index géographique
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td width="100%" class="soustitre">
-					<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-						<DO>
-							<a href="geo.html?id=[#ID]">
-								[#NOM]
-							</a>
-							&nbsp;|
-						</DO>
-					</LOOP>
-					<a href="geos-complet.html">
-						Index complet
-					</a>
-				</td>
-			</tr>
-		</table>
-		<LOOP NAME="geographie2" TABLE="indexhs" WHERE="type_geographie"  WHERE="id=[#ID]" ORDER="ordre DESC">
-			<DO>
-				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-					<tr>
-						<td align="center" width="100%" valign="middle" class="soustitre">
-							<a name="[#ABREV]">
-								<span class="couleur_1">
-									<strong>
-										[#NOM]
-									</strong>
-								</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td span class="texte">
-							<LOOP NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexh='[#ID]'">
-								<DO>
-									<MACRO NAME="INFOS_DOCUMENT"><br /><br />
-								</DO>
-							</LOOP>
-						</td>
-					</tr>
-				</table>
-			</DO>
-		</LOOP>
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+					
+				<!-- Affichage de l'entrée de l'index géo-->
+				<div class="titrerevue">
+					[#NOM]
+				</div>
+					
+				<!-- Liste des articles -->
+				<LOOP NAME="articles" TABLE="documents" WHERE="idindexl='[#ID]'">
+					<DO>
+						<div class="afficherdocument">
+							<!-- Liste des documents liés à cette entrée d'index -->
+							<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+						</div>
+					</DO>
+				</LOOP>
+			
+				<div class="titre2">
+					<a class="titre2" href="geos-complet.html">
+						>> Index géographique.
+					 </a>
+				</div>
+			
+			<MACRO NAME="REVUES_ORG">
+		</div>
+	</div>
+	
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">
+				

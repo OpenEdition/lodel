@@ -65,20 +65,21 @@
 								<DO>
 								<div class="afficherdocument">
 									<span class="bold">
-										<a href="mot.html?id=[#ID]">
+										<a  href="mot.html?id=[#ID]">
 											 [#MOT]
 										</a>
 									</span>
+								</div>
 																
 									<!-- Affichage des articles correspondant aux thèmes -->
 									<LOOP NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexl='[#ID]'">
 										<DO>
-											<div class="articles_motscles">
+											<div class="afficherdocument">
 												<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 											</div>
 										</DO>
 									</LOOP>
-								</div>
+								
 								</DO>
 							</LOOP>
 						

@@ -474,9 +474,7 @@
 	<MACRO NAME="TEXTE_INTEGRAL">
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
-	<br/>
 	
-
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_TOUT">
@@ -805,9 +803,11 @@
 	
 		[#TITRE], [#SOUSTITRE]
 	<ELSE/>
+		<span class="article">
 		<a class="menu2" href="document.html?id=[#ID]">
 			[#TITRE], [#SOUSTITRE]
 		</a>
+		</span>
 	</IF>
 	
 </DEFMACRO>

@@ -39,8 +39,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Ouvre la page HTML                                                 -->
 <!-- ****************************************************************** -->
-<? echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" />
 <html>
 <head>
 </DEFMACRO> 
@@ -63,7 +62,7 @@
 <!-- <HEAD> et </HEAD> ou entre les macros OUVRIR_HTML et               -->
 <!-- INSERER_FEUILLE_DE_STYLES).                                        -->
 <!-- ****************************************************************** -->
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 </DEFMACRO>
 
 <DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES">
@@ -74,8 +73,8 @@
 <!-- d'afficher le tableau de bord (desk) au sommet de la page pour les -->
 <!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
 <!-- ****************************************************************** -->
-	<link rel="stylesheet" type="text/css" href="styles_revue.css" media="screen" title="Normal"  />
-	<link rel="stylesheet" type="text/css"  href="Styles_revue-image.css" media="screen" title="Normal"  />
+	<link rel="stylesheet" href="styles_revue.css"  />
+	<link rel="stylesheet" href="Styles_revue-image.css" />
 	</head>
 	<body> 
 	<IF COND="[#VISITEUR]">
@@ -86,7 +85,8 @@
 <DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Permet d'appeler la feuille de style CSS de la revue, de fermer    -->
+<!-- Permet d'appeler la feuille de style CSS pour la version imprimable--> 
+<!-- de la revue, de fermer     										-->
 <!-- l'en-tête de la page HTML puis d'ouvrir le corps de la page et     -->
 <!-- d'afficher le tableau de bord (desk) au sommet de la page pour les -->
 <!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
@@ -271,7 +271,7 @@ IPR
 <DEFMACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affichage métadonnées propres à Mot.html.                          -->
+<!-- Affichage métadonnées propres à index.html.                          -->
 <!-- ****************************************************************** -->
 <meta name="DC.Title" content="[#REVUE]" />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Page d'accueil" />
@@ -346,7 +346,7 @@ IPR
 <DEFMACRO NAME="METADONNEES_POUR_GEOS">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Affichage métadonnées propres à Mot.html.                          -->
+<!-- Affichage métadonnées propres à Geo.html.                          -->
 <!-- ****************************************************************** -->
 <meta name="DC.Title" content="Index géographique" />
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index géographique." />
@@ -390,53 +390,53 @@ IPR
 <!-- <MACRO NAME="DROITS_POUR_METASDC">                                 -->
 <!-- <MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">                 -->
 <!-- ****************************************************************** -->
-	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003">
-	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">">
-	<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]">
+	<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003" />
+	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
+	<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]" />
 		
 	<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]">
+		<meta name="author" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
 	<LOOP NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<meta name="KEYWORDS" content="[#MOT]">
+		<meta name="KEYWORDS" content="[#MOT]" />
 	</LOOP>
 	
 	<!-- METADONNEES DUBLIN CORE -->
 	
-	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">">
-	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">">
-	<meta name="DC.Source" content="http://[#REVUE].revues.org/">
-	<meta name="DC.Type" content="text">
-	<meta name="DC.Format" content="text/html">
-	<meta name="DC.Language" content="fr">
-	<meta name="DC.Relation" content="http://www.revues.org">
+	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
+	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
+	<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+	<meta name="DC.Type" content="text" />
+	<meta name="DC.Format" content="text/html" />
+	<meta name="DC.Language" content="fr" />
+	<meta name="DC.Relation" content="http://www.revues.org" />
 	
-	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]">
-	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]">
+	<meta name="DC.Identifier" content="http://[#REVUE].revues.org/document.html?id=[#ID]" />
+	<meta name="DC.Title" content="[(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]" />
 
 	<LOOP NAME="meta_dc_motscles_l" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<meta name="DC.Subject" content="[#MOT]">
+		<meta name="DC.Subject" content="[#MOT]" />
 	</LOOP>
 	
 	<LOOP NAME="meta_dc_motscles_h" TABLE="indexhs" WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<meta name="DC.Subject" content="[#MOT]">
+		<meta name="DC.Subject" content="[#MOT]" />
 	</LOOP>
 	
 	<LOOP NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]">
+		<meta name="DC.Creator" content="[#PRENOM] [#NOMFAMILLE]" />
 	</LOOP>
 	
 	<MACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
 	
 	<IF COND="[#RESUME:FR]">
-		<meta name="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut|replacequotationmark)]">
+		<meta name="DC.Description" lang="fr" content="[(#RESUME:FR|textebrut|replacequotationmark)]" />
 	<ELSE/>
 		<!-- Ici, j'utilise une astuce : si pas de résumé, je cherche à faire passer-->
 		<!-- comme résumé les 1500 premiers caractères du texte ou du texte d'intro-->
-		<meta name="DC.Description" lang="fr" content="[(#TEXTE|textebrut|replacequotationmark|couper(1500))]">
+		<meta name="DC.Description" lang="fr" content="[(#TEXTE|textebrut|replacequotationmark|couper(1500))]" />
 	</IF>
-	<meta name="DC.Description" lang="en" content="[(#RESUME:EN|textebrut|replacequotationmark)]">
+	<meta name="DC.Description" lang="en" content="[(#RESUME:EN|textebrut|replacequotationmark)]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_INDEX">
@@ -450,18 +450,18 @@ IPR
 <!-- <MACRO NAME="EDITEUR_REVUE_POUR_METASDC">                          -->
 <!-- ****************************************************************** -->
 	<!-- METADONNEES HTML -->
-	<meta name="GENERATOR" content="Lodel 2002">
-	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">">
-	<meta URL="http://[#REVUE].revues.org">
+	<meta name="GENERATOR" content="Lodel 2002" />
+	<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">" />
+	<meta URL="http://[#REVUE].revues.org" />
 	<!-- METADONNEES DUBLIN CORE -->
-	<meta name="DC.Type" content="text">
-	<meta name="DC.Format" content="text/html">
-	<meta name="DC.Identifier" content="http://[#REVUE].revues.org">
-	<meta name="DC.Source" content="http://[#REVUE].revues.org/">
-	<meta name="DC.Language" content="fr">
-	<meta name="DC.Relation" content="http://www.revues.org">
-	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">">
-	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">">
+	<meta name="DC.Type" content="text" />
+	<meta name="DC.Format" content="text/html" />
+	<meta name="DC.Identifier" content="http://[#REVUE].revues.org" />
+	<meta name="DC.Source" content="http://[#REVUE].revues.org/" />
+	<meta name="DC.Language" content="fr" />
+	<meta name="DC.Relation" content="http://www.revues.org" />
+	<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">" />
+	<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">" />
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_JUMPMENU">
