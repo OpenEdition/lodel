@@ -1017,22 +1017,26 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-	<div class="action">
-		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		|&nbsp;<a href="../../sommaire.html?id=[#ID]">Voir</a>&nbsp;
-		<IF COND="[#EDITEUR]">
-		|&nbsp;<a href="publication.php?id=[#ID]">Métas</a>&nbsp;
-		<ELSE/>
-		|&nbsp;<span class="inactif">Métas</span>&nbsp;
-		</IF>
-		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
-		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
-		<IF COND="[#EDITEUR]">
-		|&nbsp;<a href="supprime.php?publication=[#ID]">Détruire</a>&nbsp;|
-		<ELSE/>
-		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
-		</IF>
-	</div>
+        <div class="action">
+                <MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
+                <IF COND="[#TYPE]='regroupement'">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <ELSE/>
+                |&nbsp;<a href="../../sommaire.html?id=[#ID]">Voir</a>&nbsp;
+                </IF>
+                <IF COND="[#EDITEUR]">
+                |&nbsp;<a href="publication.php?id=[#ID]">Métas</a>&nbsp;
+                <ELSE/>
+                |&nbsp;<span class="inactif">Métas</span>&nbsp;
+                </IF>
+                |&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
+                |&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
+                <IF COND="[#EDITEUR]">
+                |&nbsp;<a href="supprime.php?publication=[#ID]">Détruire</a>&nbsp;|
+                <ELSE/>
+                |&nbsp;<span class="inactif">Détruire</span>&nbsp;|
+                </IF>
+        </div>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
@@ -1197,19 +1201,26 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_REGROUPEMENTS">
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre"> 
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_regroupement1">
-		<ELSE/>
-			<div class="ligne_regroupement2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
-			</div>
-		<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
-		<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	</LOOP> 
+        <LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre">
+                <DOFIRST>
+                        <div class="ligne_regroupement1">
+                                <MACRO NAME="AFFICHER_ICONE_STATUT">
+                                <MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+                                <MACRO NAME="NOM_TITRE_TYPE">
+                        </div>
+                        <MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
+                        <MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
+                </DOFIRST>
+                <DO>
+                        <div class="ligne_regroupement1" style="margin-top:20px">
+                                <MACRO NAME="AFFICHER_ICONE_STATUT">
+                                <MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+                                <MACRO NAME="NOM_TITRE_TYPE">
+                        </div>
+                        <MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
+                        <MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
+                </DO>
+        </LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_THEMES">
