@@ -24,7 +24,7 @@ sup
 	/*  
 	 * Couleur dominante n°1
 	 */
-	color : #000000;
+	color : #9C3234;
 }
 
 .couleur_2
@@ -198,12 +198,15 @@ sup
 	 *
 	 */
 	font-size: large;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif;"; 
+	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
 	font-weight : bold;
-	text-align: center; 
-	color: #ff0000;
+	text-align: left; 
+	text-indent: 10;
+	color: #9C3234;
 	line-height: 150%;
 }
+
+
 
 .soustitrerevue
 {
@@ -273,6 +276,18 @@ sup
 	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
+
+	/*  Style attribué au texte introduisant le moteur de recherche interne.
+ 	 *
+ 	 */
+
+.chercher {
+	font-size: 10 pt;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+	margin: 20px 0px 20px 10px;
+
 .bibliographie
 {
 	/*  
@@ -307,6 +322,14 @@ sup
 	font-weight: small;
 	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 }
+/*  Les liens Hypertexte
+ *  hover: quand le curseur survole le lien
+ *  link: lien non-visité
+ *  visited: lien visité
+ *  
+
+
+
 
 a:link, A:visited, A:active
 {
@@ -324,7 +347,9 @@ a:hover
 	 *
 	 */
 	color: navy;
-}
+} 
+
+
 
 .resume
 {
@@ -461,18 +486,27 @@ a:hover
 
 body
 {
-	/*  
+	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
 	 *
 	 */
+	 background-color: #BFBFBF;
 	 margin-left : 0;
 	 margin-top : 0;
 	 margin-bottom : 0;
 	 margin-right : 0;
 }
 
+.titre2 {
+	font-size: small;
+	font-weight: bold;
+	color: #ffffff;
+	font-family: arial, helvetica, sans-serif;
+	text-indent : 10;
+}
+
 h1
 {
-	/*  
+	/*  définit les caractéristiques du titre de de niveau 1 : h1
 	 *
 	 */
 	font-weight : normal;
@@ -559,3 +593,18 @@ h7
 	color: #ff0000;
 	line-height: 150%;
 }
+
+.menu1 {
+	font-size: small;
+	font-weight: bold;
+	color: #9C3234;
+	font-family: arial, helvetica, sans-serif;
+	
+} 
+.menu2 {
+	font-size: small;
+	font-weight: bold;
+	color: #000000;
+	font-family: arial, helvetica, sans-serif;
+	text-align: right;
+} 
