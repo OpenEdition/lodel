@@ -352,6 +352,7 @@
 	</LOOP>
 </DEFMACRO>
 
+<!--[
 <DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_DOCUMENTS">
 	<LOOP NAME="groupesdechamps" TABLE="fieldgroups" WHERE="class='documents' AND status gt 0" ORDER="rank">
 		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
@@ -363,7 +364,7 @@
 		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
 	</LOOP>
 </DEFMACRO>
-
+]-->
 
 
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
@@ -704,14 +705,20 @@
 		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
 		<div style="padding-top:10px;">
 			<a href="index.php?id=0"><span class="texte_edition_des_series">[@EDITION.BASE]</span></a>
-			<LOOP NAME="parentspublis">
+			<LOOP NAME="parentsentities">
 				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#IDENTIFIER]</span></a>
 			</LOOP>
 		</div>
 	</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION">
+
+<DEFMACRO NAME="AFFICHER_ICONE_STATUS">
+	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
+		<MACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
+	<ELSE/>
+
+        <IF COND="[#CLASS] eq 'publications'">
 	<IF COND="[#STATUS]==-16">
 		<MACRO NAME="PNG_STATUS_BROUILLON_PUBLICATION">
 	<ELSE/>
@@ -727,12 +734,7 @@
 			</IF>
 		</IF>
 	</IF>
-</DEFMACRO>
-
-<DEFMACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT">
-	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
-		<MACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
-	<ELSE/>
+        <ELSE/>
 		<IF COND="[#STATUS]==-16">
 			<MACRO NAME="PNG_STATUS_BROUILLON_DOCUMENT">
 		<ELSE/>
@@ -749,6 +751,7 @@
 			</IF>
 		</IF>
 	</IF>
+        </IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUS_REGROUPEMENT">
@@ -780,71 +783,51 @@
 	--></script>
 </DEFMACRO>
 
-<!--[ macro ajoutee par Ghislain 30/11/03 ]-->
-<DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
-	<div class="lignes_ajouter_entite">
-		<LET VAR="idparentsaved">[#ID]</LET>
-		<LOOP NAME="entites_de_classe_publications" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="type NOT LIKE 'documentannexe-%'" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='publications'" ORDER="rank">
-			<BEFORE>
-				<IF COND="[#NBRESULTATS] ge 6">
-					<MACRO NAME="PNG_PLUS">
-					<span class="texte_orange_gras">[@EDITION.ADD_PUBLICATION]: </span>
-					&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
-				</IF>
-			</BEFORE>
-			<DO>
-				<IF COND="[#NBRESULTATS] ge 6">
-					<option value="index.php?do=view&idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITLE]</option>
-				<ELSE/>
-					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[@EDITION.ADD] [#TITLE] |</a> 
-				</IF>
-			</DO>
-			<AFTER>
-				<IF COND="[#NBRESULTATS] ge 6">
-					</select>
-				</IF>
-			</AFTER>
-		</LOOP>
-	</div>
-</DEFMACRO>
+<DEFMACRO NAME="ADD_AN_ENTITY">
+        <table><tr valign="top">
 
-<DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
         <IF COND="[#USER.ADMIN] or [#ID]">
-	<LET VAR="idparentsaved">[#ID]</LET>
-	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="type NOT LIKE 'documentannexe-%'" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class!='publications'" ORDER="rank">
+	<LET VAR="idparentsaved">[#ID|intval]</LET>
+        <LOOP NAME="classes" TABLE="classes" WHERE="status lt 64" ORDER="rank">
+	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]'" ORDER="rank">
 		<BEFORE>
-			<IF COND="[#NBRESULTATS] ge 6">
-				<MACRO NAME="PNG_PLUS">
-				<span class="texte_orange_gras">[@EDITION.ADD_DOCUMENT] : </span>
-				&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected>--</option>
+                        <td>
+	                <MACRO NAME="PNG_PLUS">&nbsp;
+                        [#TITLE]:<br/>
+
+			<IF COND="[#NBRESULTS] gt 3">
+				<select onchange="ajouter_entite(this)"><option selected>--</option>
 			</IF>
 		</BEFORE>
 		<DO>
-			<IF COND="[#NBRESULTATS] ge 6">
+			<IF COND="[#NBRESULTS] gt 3">
 				<IF COND="[#IMPORT]==1">
 	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITLE]</option>
 				<ELSE/>
-	        		<option value="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITLE]</option>
+	        		<option value="index.php?do=view&idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITLE]</option>
 				</IF>
 			<ELSE/>
-				<MACRO NAME="PNG_PLUS">&nbsp;
 				<IF COND="[#IMPORT]==1">
-					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@COMMON.ADD] [#TITLE] |</a>
+					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]"> [#TITLE] </a>
 				<ELSE/>
-					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@COMMON.ADD] [#TITLE] |</a>
+					<a href="index.php?do=view&idparent=[#IDPARENTSAVED]&idtype=[#ID]"> [#TITLE] </a>
 				</IF>
+                                <br/>
 			</IF>
 		</DO>
 		<AFTER>
-			<IF COND="[#NBRESULTATS] ge 6">
+			<IF COND="[#NBRESULTS] gt 3">
 				</select>
 			</IF>
+                        </td>
 		</AFTER>
 	</LOOP>
+        </LOOP>
         <ELSE/>
 		<MACRO NAME="PNG_PLUS">
 		<span class="inactif">[@EDITION.ADD_DOCUMENT] : </span>
         </IF>
+        </tr></table>
 </DEFMACRO>
 
 
@@ -864,16 +847,16 @@
 		</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="LISTER_LES_SERIES">
-	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='0' AND types.id=idtype AND class='publications'" ORDER="entities.rank">
+<DEFMACRO NAME="LIST_ENTITIES">
+	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype" ORDER="entities.rank">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_serie1">
 		<ELSE/>
 			<div class="ligne_serie2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION">
-			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-			<MACRO NAME="NOM_TITRE_TYPE">
+			<MACRO NAME="AFFICHER_ICONE_STATUS">
+			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			</div>
 		<ALTERNATIVE>
 			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
@@ -881,94 +864,9 @@
 	</LOOP>
 </DEFMACRO>
 
-<DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
-	<LOOP NAME="articles_hors_regroupement" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND class!='publications'" ORDER="entities.rank">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_document_isole1">
-		<ELSE/>
-			<div class="ligne_document_isole2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT">
-			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
-			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			</div>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	<LOOP NAME="documents_du_regroupement" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND class!='publications'" ORDER="entities.rank">
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_document_regroupement1">
-		<ELSE/>
-			<div class="ligne_document_regroupement2">
-		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT">
-			<MACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
-			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			</div>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_NUMEROS_RUBRIQUES">
-	<LOOP NAME="numeros_rubriques" TABLE="entities, types" WHERE="idparent='[#ID]' AND types.id=idtype AND class='publications'" ORDER="entities.rank">
-		<DO>
-			<IF COND="[#COUNT] % 2">
-				<IF COND="[#TPLCREATION] eq 'creation-rubrique'">
-					<div class="ligne_numero1">
-				<ELSE/>
-					<IF COND="[#TPLCREATION] ne 'creation-regroupement'"><div class="ligne_rubrique2"></IF>
-				</IF>
-			<ELSE/>
-				<IF COND="[#TPLCREATION] eq 'creation-rubrique'">
-					<div class="ligne_numero2">
-				<ELSE/>
-					<IF COND="[#TPLCREATION] ne 'creation-regroupement'"><div class="ligne_rubrique1"></IF>
-				</IF>
-			</IF>
-			<IF COND="[#TPLCREATION] ne 'creation-regroupement'">
-				<MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION">
-				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
-				<a href="index.php?id=[#ID]">
-					<span class="nom_serie">[#IDENTIFIER]</span>&nbsp;
-					<LOOP NAME="titre_numero_rubrique" TABLE="entities, types" WHERE="identity=[#ID]  AND types.id=idtype AND class='publications'">
-						<span class="titre_serie">[#G_TITLE]</span><br />
-					</LOOP>
-					<span class="type_serie">([#TYPE])</span>
-				</a>
-				</div>
-			</IF>
-		</DO>
-		<ALTERNATIVE>
-			<MACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE"> 
-		</ALTERNATIVE>
-	</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="LISTER_LES_REGROUPEMENTS">
-	<LOOP NAME="regroupements" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype" WHERE="tplcreation='creation-regroupement' AND class='publications'" ORDER="entities.rank"> 
-		<DOFIRST>
-			<div class="ligne_regroupement1">
-				<MACRO NAME="AFFICHER_ICONE_STATUS_REGROUPEMENT">
-				<MACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
-				<MACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
-			</div>
-			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
-			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-		</DOFIRST>
-		<DO>
-			<div class="ligne_regroupement1" style="margin-top:20px">
-				<MACRO NAME="AFFICHER_ICONE_STATUS_REGROUPEMENT">
-				<MACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
-				<MACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
-			</div>
-			<MACRO NAME="AJOUTER_UN_DOCUMENT_DANS_LE_REGROUPEMENT">
-			<MACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-		</DO>
-	</LOOP> 
-</DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-	<IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) OR [#USER.ADMIN]">
+	<IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) OR [#USER.ADMIN]">
 		<a href="publication.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="publication.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -978,7 +876,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-	<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
+	<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
 		<a href="document.php?dir=down&id=[#ID]"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="document.php?dir=up&id=[#ID]"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -988,7 +886,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
-	<IF COND="[#USER.EDITOR] AND [#DROITGROUPE]">
+	<IF COND="[#USER.EDITOR] AND [#GROUPRIGHT]">
 		<a href="docannexe.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="docannexe.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
@@ -997,74 +895,29 @@
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+<DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
-		<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-		|&nbsp;<a href="publication.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
+		<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
+		|&nbsp;<a href="index.php?do=view&id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
-		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
-                <ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
-                </IF>
-		|&nbsp;<MACRO NAME="CHANGER_STATUS_PUBLICATION">&nbsp;
-		<IF COND="(abs([#STATUS]) lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN])">
-		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
-		<ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
-		</IF>
-	</div>
-</DEFMACRO>
-
-<DEFMACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
-	<div class="action">
-		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<IF COND="([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-		|&nbsp;<a href="publication.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
-		<ELSE/>
-		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
-		</IF>
-		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
-                <ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
-                </IF>
-		|&nbsp;<MACRO NAME="CHANGER_STATUS_PUBLICATION">&nbsp;
-		<IF COND="(([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]) AND abs([#STATUS]) lt 32">
-		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
-		<ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
-		</IF>
-	</div>
-</DEFMACRO>
-
-<DEFMACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
-	<div class="action">
-		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
-		<IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-		|&nbsp;<a href="document.php?id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
-		<ELSE/>
-		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
-		</IF>
-		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
+		<IF COND="([#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
 		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
                 <ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
-		|&nbsp;<MACRO NAME="CHANGER_STATUS_DOCUMENT">&nbsp;
-		<IF COND="(([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]) AND abs([#STATUS]) lt 32">
-		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
+		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
+		<IF COND="(abs([#STATUS]) lt 32) AND (([#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN])">
+		|&nbsp;<a href="index.php?do=delete&id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
+
 
 
 <DEFMACRO NAME="BOUTONS_STATUS_PUBLICATION">
@@ -1074,8 +927,8 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
 				<td style="width:200px">
-		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-						|&nbsp;<a href="status.php?publication=[#ID]&status=pret">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
+						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=1">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</span>&nbsp;|
 					</IF>
@@ -1089,8 +942,8 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
 				<td style="width:200px">
-		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-						|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
+		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
+						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=-16">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.GO_TO_DRAFT]</span>&nbsp;|&nbsp;
 					</IF>
@@ -1104,8 +957,8 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
 				<td style="width:200px">
-		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-						&nbsp;|&nbsp;<a href="status.php?publication=[#ID]&status=protege">[@COMMON.PROTECT]</a>&nbsp;|
+		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
+						&nbsp;|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=+16">[@COMMON.PROTECT]</a>&nbsp;|
 					<ELSE/>
 						&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
 					</IF>
@@ -1119,8 +972,8 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI"></td>
 				<td style="width:200px">
-		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-						|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
+		                        <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN]">
+						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=1">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.GO_TO_PUBLISHED]</span>&nbsp;|&nbsp;
 					</IF>
@@ -1130,72 +983,13 @@
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="BOUTONS_STATUS_DOCUMENT">
-  <IF COND="[#STATUS]==-16">
-      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT"></td>
-              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_DOCUMENT"></td>
-              <td>
-                              <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-                      |&nbsp;<a href="status.php?id=[#ID]&status=pret">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</a>&nbsp;|
-                  <ELSE/>
-                      |&nbsp;<span class="inactif">[@EDITION.GO_TO_READY_TO_BE_PUBLISHED]</span>&nbsp;|
-                  </IF>
-              </td>
-          </tr>
-      </table>
-  </IF>
-  <IF COND="[#STATUS]==-1">
-      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT"></td>
-              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_DOCUMENT"></td>
-              <td>
-                              <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-                      |&nbsp;<a href="status.php?id=[#ID]&status=brouillon">[@EDITION.GO_TO_DRAFT]</a>&nbsp;|&nbsp;
-                  <ELSE/>
-                      |&nbsp;<span class="inactif">[@EDITION.GO_TO_DRAFT]</span>&nbsp;|&nbsp;
-                  </IF>
-              </td>
-          </tr>
-      </table>
-  </IF>      <IF COND="[#STATUS]==1">
-      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT"></td>
-              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_DOCUMENT"></td>
-              <td>
-                              <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-                      |&nbsp;<a href="status.php?id=[#ID]&status=protege">[@COMMON.PROTECT]</a>&nbsp;|
-                  <ELSE/>
-                      |&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
-                  </IF>
-              </td>
-          </tr>
-      </table>
-  </IF>      <IF COND="[#STATUS]==16">
-      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT"></td>
-              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_DOCUMENT"></td>
-              <td>
-                              <IF COND="([#USER.EDITOR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]">
-                      |&nbsp;<a href="status.php?id=[#ID]&status=deprotege">[@EDITION.GO_TO_PUBLISHED]</a>&nbsp;|&nbsp;
-                  <ELSE/>
-                      |&nbsp;<span class="inactif">[@EDITION.GO_TO_PUBLISHED]</span>&nbsp;|&nbsp;
-                  </IF>
-              </td>
-          </tr>
-      </table>
-  </IF>
-</DEFMACRO>
 
-<DEFMACRO NAME="CHANGER_STATUS_PUBLICATION">
+
+<DEFMACRO NAME="CHANGER_STATUS_ENTITIES">
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="([#STATUS]==1)">
-                   <IF COND="([#USER.EDITOR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#USER.ADMIN]">
-			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
+                   <IF COND="([#USER.EDITOR] AND [#GROUPRIGHT] AND [#IDPARENT]) or [#USER.ADMIN]">
+			<a href="index.php?do=publish&id=[#ID]" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
                     <ELSE/>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>
@@ -1204,8 +998,8 @@
 		</IF>
 	<ELSE/>
 		<IF COND="([#STATUS]==-1)">
-                   <IF COND="([#USER.EDITOR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#USER.ADMIN]">
-			<a href="publi.php?publication=[#ID]&online=1">[@EDITION.PUBLISH]</a>
+                   <IF COND="([#USER.EDITOR] AND [#GROUPRIGHT] AND [#IDPARENT]) or [#USER.ADMIN]">
+			<a href="index.php?do=publish&id=[#ID]&status=1">[@EDITION.PUBLISH]</a>
                    <ELSE/>
 			<span class="inactif">[@EDITION.PUBLISH]</span>
                    </IF>
@@ -1215,29 +1009,6 @@
 	</IF>
 </DEFMACRO>
 
-<DEFMACRO NAME="CHANGER_STATUS_DOCUMENT">
-	<IF COND="[#STATUS] GT 0">
-		<IF COND="([#STATUS]==1)">
-                   <IF COND="([#USER.EDITOR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#USER.ADMIN]">
-			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">D&eacute;publier</a>
-                    <ELSE/>
-			<span class="inactif">[@EDITION.UNPUBLISH]</span>
-                    </IF>
-		<ELSE/>
-			<span class="inactif">[@COMMON.PROTECTED]</span>
-		</IF>
-	<ELSE/>
-		<IF COND="([#STATUS]==-1)">
-                   <IF COND="([#USER.EDITOR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#USER.ADMIN]">
-			<a href="publi.php?id=[#ID]&online=1">[@EDITION.PUBLISH]</a>
-                   <ELSE/>
-			<span class="inactif">[@EDITION.PUBLISH]</span>
-                   </IF>
-		<ELSE/>
-			<span class="inactif">[@EDITION.DRAFT]</span>
-		</IF>
-	</IF>
-</DEFMACRO>
 
 <DEFMACRO NAME="AUCUNE_PUBLICATION_DISPONIBLE">
 	<div class="pas_de_publication">
@@ -1263,15 +1034,21 @@
 	<div class="ligne_infos_parent">
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
 		<LOOP NAME="idparent" TABLE="entities,types" WHERE="id='[#ID]' AND types.id=idtype">
-			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#IDENTIFIER]</a></span>&nbsp;
-			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#G_TITLE]</a></span><br />
+			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid)]">[#IDENTIFIER]</a></span>&nbsp;
+			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid)]"[#G_TITLE]</a></span><br />
 			<span class="type_parent">([#TYPE])</span>
 		</LOOP>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-	<span class="titre_document">" [(#G_TITLE|removefootnotes)] "</span>&nbsp;
+	<span class="titre_document">
+          <IF COND="[#TPLEDITION]">
+                 " <a href="index.php?id=[#ID]">[#G_TITLE|removefootnotes]</a> "
+          <ELSE/>
+                 " [#G_TITLE|removefootnotes] "
+           </IF>
+         </span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 	<span class="type_document">([#TYPE])</span>
 </DEFMACRO>
@@ -1334,7 +1111,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
-	<IF COND="[#USER.EDITOR] AND [#DROITGROUPE]">
+	<IF COND="[#USER.EDITOR] AND [#GROUPRIGHT]">
 		<div>
 			<MACRO NAME="DESCENDRE_MONTER_DOCUMENT_ANNEXE">
 			&nbsp;|&nbsp;<a class="admin" href="docannexe.php?id=[#ID]">[@COMMON.MODIFY] </a>&nbsp;|

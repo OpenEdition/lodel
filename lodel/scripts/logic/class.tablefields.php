@@ -147,9 +147,10 @@ class TableFieldsLogic extends Logic {
 			    "DC.Rights");
        break;
      case 'persons':
-       $g_namefields=array("Firstname","Familyname");
+       $g_namefields=array("Firstname","Familyname","Title");
        break;
      case 'entities_persons':
+       $g_namefields=array("Title");
        break;
      case 'entries':
        $g_namefields=array("Index key");

@@ -131,10 +131,6 @@ ln tpl/filebrowser.html
 
 ln index.php
 ln tpl/edition.html
-ln tpl/edition-lineaire.html
-ln tpl/edition-hierarchique.html
-ln tpl/edition-numero.html
-ln tpl/edition-rubrique.html
 
 # creation et modification des publications
 ln publication.php

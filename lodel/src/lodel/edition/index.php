@@ -32,13 +32,15 @@ require("siteconfig.php");
 if (!$_GET['do'] || !$_POST['do']) {
   require($home."auth.php");
   authenticate(LEVEL_VISITOR);
+  $context['id']=$id=intval($_GET['id']);
   if ($id) {
     do {
-      $result=mysql_query ("SELECT tpledition,idparent,idtype FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or dberror();
-      if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-      list($base,$idparent,$context[idtype])=mysql_fetch_row($result);
-      if (!$base) $context[id]=$id=$idparent;
-    } while (!$base);
+      $row=$db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));
+      if ($row==false) dberror();
+      if (!$row) { header ("Location: not-found.html"); return; }
+      list($base,$idparent,$context[idtype])=$row;
+      if (!$base) $context['id']=$row['id']=$row['idparent'];
+    } while (!$base && $idparent);
   } else {
     $base="edition";
   }

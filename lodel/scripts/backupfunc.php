@@ -33,9 +33,10 @@
 // Thanks to the authors !
 //
 
-define("OLDLODELPREFIX","__LODELTP__");
+###define("OLDLODELPREFIX","__LODELTP__");
 
 $GLOBALS['lodelsitetables']=array("#_TP_objects",
+				  "#_TP_classes",
 				  "#_TP_entities",
 				  "#_TP_relations",
 				  "#_TP_publications",
@@ -94,19 +95,19 @@ require($home."pma/sqlparser.lib.php");
  *
  */
 
-function lock_write_all($db)
-
-{
-  // recupere la liste des tables
-  $result=PMA_mysql_list_tables($db) or dberror();
-  if (!$result) dberror();
-  $num_tables = mysql_numrows($result);
-  for($i = 0; $i<$num_tables; $i++) {
-    $tables[] = PMA_mysql_tablename($result, $i);
-  }
-  if (!$tables) die("WARNING: no table to lock in database \"$db\"");
-  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or dberror();
-}
+#function lock_write_all($db)
+#
+#{
+#  // recupere la liste des tables
+#  $result=PMA_mysql_list_tables($db) or dberror();
+#  if (!$result) dberror();
+#  $num_tables = mysql_numrows($result);
+#  for($i = 0; $i<$num_tables; $i++) {
+#    $tables[] = PMA_mysql_tablename($result, $i);
+#  }
+#  if (!$tables) die("WARNING: no table to lock in database \"$db\"");
+#  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or dberror();
+#}
 
 
 /**
@@ -182,12 +183,12 @@ function mysql_dump($db,$tables,$output,$fh=0,$create=true,$drop=true,$contents=
 #    }
     $i = 0;
     while ($i < $num_tables) {
-        $table = $tables[$i];
-        $local_query  = 'SELECT * FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table);
+      $table = lq($tables[$i]);
+      $local_query  = 'SELECT * FROM ' . PMA_backquote($db) . '.' . PMA_backquote($table);
 	
-	if ($create) PMA_exportStructure($db, $table, $crlf, $err_url);
-	if ($contents) PMA_exportData($db, $table, $crlf, $err_url, $local_query);
-        $i++;
+      if ($create) PMA_exportStructure($db, $table, $crlf, $err_url);
+      if ($contents) PMA_exportData($db, $table, $crlf, $err_url, $local_query);
+      $i++;
     }
     PMA_exportDBFooter($db);
 
@@ -251,12 +252,25 @@ function execute_dump($filename)
 # *
 # */
 #
-#function lodelprefix($table)
-#
-#{
-#  $table=substr($table,strlen($GLOBALS[tp]));
-#  return $GLOBALS[uselodelprefix] ? LODELPREFIX.$table : $table;
-#}
+
+function lodelprefix($table)
+
+{
+  static $tablefields;
+  if (!$tablefields) require($home."tablefields.php");
+
+  if (strpos($table,$GLOBALS[tp])!==0) die("ERROR: table $table should be prefixed");
+
+  $table=substr($table,strlen($GLOBALS[tp]));
+
+  if ($tablefields[lq("#_TP_".$table)]) {
+    return "#_TP_".$table;
+  } elseif ($tablefields[DATABASE.".".lq("#_MTP_".$table)]) {
+    return "#_MTP_".$table;
+  } else {
+    die("ERROR: table $table is unknown");
+  }
+}
 
 
 
@@ -353,7 +367,8 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
     $in_string    = FALSE;
     $time0        = time();
 
-    $prefixescape  =OLDLODELPREFIX;
+    $prefixescape  ="#_TP_";
+    $oldprefixescape  ="__LODELTP__";
 
     for ($i = 0; $i < $sql_len; ++$i) {
         $char = $sql[$i];
@@ -399,6 +414,18 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
                 } // end if...elseif...else
             } // end for
         } // end if (in string)
+	else if ($char == $prefixescape[0] && // look for prefix table
+		 substr($sql,$i,strlen($prefixescape)) == $prefixescape) { 
+	  // replace
+	  $sql = substr($sql,0,$i).$GLOBALS[tp].substr($sql,$i+strlen($prefixescape));
+	  $sql_len    = strlen($sql);
+	}
+	else if ($char == $oldprefixescape[0] && // look for prefix table
+		 substr($sql,$i,strlen($oldprefixescape)) == $oldprefixescape) { 
+	  // replace
+	  $sql = substr($sql,0,$i).$GLOBALS[tp].substr($sql,$i+strlen($oldprefixescape));
+	  $sql_len    = strlen($sql);
+	}
 
         // We are not in a string, first check for delimiter...
         else if ($char == ';') {
@@ -457,12 +484,6 @@ function PMA_splitSqlFile(&$ret, $sql, $release)
                  && ($char == '!' && $i > 1  && $sql[$i-2] . $sql[$i-1] == '/*')) {
             $sql[$i] = ' ';
         }// end else if
-	else if ($char == $prefixescape[0] && // look for prefix table
-		 substr($sql,$i,strlen($prefixescape)) == $prefixescape) { 
-	  // replace
-	  $sql = substr($sql,0,$i).$GLOBALS[tp].substr($sql,$i+strlen($prefixescape));
-	  $sql_len    = strlen($sql);
-	}
 
         // loic1: send a fake header each 30 sec. to bypass browser timeout
         $time1     = time();

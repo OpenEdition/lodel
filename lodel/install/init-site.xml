@@ -122,6 +122,11 @@
         type="TINYINT"
         default="0"
         required="true" />
+<column name="location"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="location in the document, complement to id1" />
 <index name="index_id1">
 <index-column name="id1" />
 </index>

@@ -31,7 +31,7 @@
 #
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objects (
+CREATE TABLE IF NOT EXISTS #_TP_objects (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	class		VARCHAR(64),
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objects (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities (
+CREATE TABLE IF NOT EXISTS #_TP_entities (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -67,11 +67,12 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities (
 # table contenant les relations entre les entitess
 #
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_relations (
+CREATE TABLE IF NOT EXISTS #_TP_relations (
 	idrelation	INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	id1		INT UNSIGNED DEFAULT '0' NOT NULL,
 	id2		INT UNSIGNED DEFAULT '0' NOT NULL,
 	nature		CHAR(1) DEFAULT 'P' NOT NULL,
+	location	VARCHAR(255),		# for the internal index
 
 	degree		TINYINT DEFAULT '0' NOT NULL,
 
@@ -84,20 +85,20 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_relations (
 
 
 
-##CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
+##CREATE TABLE IF NOT EXISTS #_TP_publications (
 ##	identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 ##	KEY index_identite (identity)
 ##);
 ##
 ##
-##CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
+##CREATE TABLE IF NOT EXISTS #_TP_documents (
 ##	identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 ##	KEY index_identite (identity)
 ##);
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_classes (
+CREATE TABLE IF NOT EXISTS #_TP_classes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	class		VARCHAR(64) NOT NULL UNIQUE,
 	title		TINYTEXT NOT NULL,
@@ -120,7 +121,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_classes (
 # table qui contient les champs supplementaires
 #
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefields (
+CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -151,7 +152,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefields (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefieldgroups (
+CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) NOT NULL,		# name/identifiant unique
 	idclass		INT UNSIGNED DEFAULT '0' NOT NULL,   	# name de la table complementaire
@@ -171,7 +172,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tablefieldgroups (
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_persons (
+CREATE TABLE IF NOT EXISTS #_TP_persons (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le entite
 
@@ -187,7 +188,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_persons (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
+CREATE TABLE IF NOT EXISTS #_TP_users (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
@@ -204,7 +205,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	KEY index_username (username)
 );
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_usergroups (
+CREATE TABLE IF NOT EXISTS #_TP_usergroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64),
 
@@ -216,7 +217,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_usergroups (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_usergroups (
+CREATE TABLE IF NOT EXISTS #_TP_users_usergroups (
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 
@@ -225,7 +226,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_usergroups (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
+CREATE TABLE IF NOT EXISTS #_TP_types (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL,
 	title		TINYTEXT NOT NULL,
@@ -247,7 +248,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_persontypes (
+CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
@@ -270,7 +271,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_persontypes (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrytypes (
+CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
@@ -297,7 +298,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrytypes (
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entries (
+CREATE TABLE IF NOT EXISTS #_TP_entries (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	g_name	VARCHAR(255) NOT NULL,
@@ -317,7 +318,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entries (
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tasks (
+CREATE TABLE IF NOT EXISTS #_TP_tasks (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		TINYTEXT NOT NULL,
 	step		TINYINT NOT NULL DEFAULT '0',
@@ -331,7 +332,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_tasks (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
+CREATE TABLE IF NOT EXISTS #_TP_texts (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(255) NOT NULL,  # name
 	contents		TEXT,                   # texte
@@ -350,7 +351,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
 
 
 
-#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_persons (
+#CREATE TABLE IF NOT EXISTS #_TP_entities_persons (
 #	idperson		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	identity		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	rank			TINYINT UNSIGNED NOT NULL DEFAULT '0',
@@ -362,7 +363,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
 #
 #
 ## decrit le liens entre les entites et les entrees
-#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_entries (
+#CREATE TABLE IF NOT EXISTS #_TP_entities_entries (
 #	identry		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	identity	INT UNSIGNED DEFAULT '0' NOT NULL,
 #
@@ -371,7 +372,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
 #);
 
 # table qui decrit la possibilite de presence ou non de l'entite de type 1 dans l'entite de type 2.
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entitytypes (
+CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entitytypes (
 	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
 	identitytype2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
 	condition		VARCHAR(16),
@@ -382,7 +383,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entitytypes (
 
 
 ## table qui decrit la presence ou non d'un type d'entree dans un type d'entite
-#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entrytypes (
+#CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entrytypes (
 #	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	identrytype		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	condition		VARCHAR(16),
@@ -392,7 +393,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entitytypes (
 #);
 #
 #
-#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_persontypes (
+#CREATE TABLE IF NOT EXISTS #_TP_entitytypes_persontypes (
 #	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	idpersontype		INT UNSIGNED DEFAULT '0' NOT NULL,
 #	condition		VARCHAR(16),
@@ -402,7 +403,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entitytypes_entitytypes (
 #);
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
+CREATE TABLE IF NOT EXISTS #_TP_options (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
@@ -424,7 +425,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_optiongroups (
+CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		VARCHAR(255) NOT NULL,		# type du champ
@@ -440,7 +441,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_optiongroups (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_translations (
+CREATE TABLE IF NOT EXISTS #_TP_translations (
 	id			INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	lang			CHAR(5) NOT NULL,		# code of the lang
 	title			TINYTEXT,

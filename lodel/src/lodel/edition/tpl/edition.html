@@ -23,7 +23,11 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
+<IF COND="[#ID]">
+<title>[@COMMON.EDITION]<LOOP NAME="nompourtitre" TABLE="entities" WHERE="id='[#ID]'">[#IDENTIFIER] [(#G_TITLE|textebrut)]</LOOP></title>
+<ELSE/>
 <title>[(#SITE|strtoupper)].[@COMMON.EDITION_INTERFACE]</title>
+</IF>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <!--[ Rajout intégration maquette ]-->
 <MACRO NAME="JS_AJOUTER_ENTITE">
@@ -34,10 +38,8 @@
 <MACRO NAME="HEADER_LOGO"> 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 	<MACRO NAME="CHEMIN_PARCOURU">
-	<MACRO NAME="AJOUTER_UNE_PUBLICATION">
-	<MACRO NAME="LISTER_LES_SERIES">
-	<MACRO NAME="LISTER_LES_REGROUPEMENTS">
-	<MACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
-	<MACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
+	<MACRO NAME="ADD_AN_ENTITY">
+	<MACRO NAME="LIST_ENTITIES">
+
 <!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
 <MACRO NAME="CLOSE_HTML">

@@ -45,7 +45,7 @@ if ($backup) {
   $uselodelprefix=true;
 
 
-  lock_write_all($currentdb);
+  #lock_write_all($currentdb);
 
   $tmpfile=tmpdir()."/model.sql";
   $fh=fopen($tmpfile,"w");
@@ -71,23 +71,22 @@ if ($backup) {
   fputs($fh,"# ".str_replace("\n","\n# ",$description)."\n#------------\n\n");
 
 
-  $tables=array("$GLOBALS[tp]tablefields",
-		"$GLOBALS[tp]tablefieldgroups",
-		"$GLOBALS[tp]types",
-		"$GLOBALS[tp]persontypes",
-		"$GLOBALS[tp]entrytypes",
-		"$GLOBALS[tp]entitytypes_entitytypes",
-		"$GLOBALS[tp]entitytypes_entrytypes",
-		"$GLOBALS[tp]entitytypes_persontypes");
+  $tables=array("#_TP_classes",
+		"#_TP_tablefields",
+		"#_TP_tablefieldgroups",
+		"#_TP_types",
+		"#_TP_persontypes",
+		"#_TP_entrytypes",
+		"#_TP_entitytypes_entitytypes");
 
   foreach ($tables as $table) {
-    fputs($fh,"DELETE FROM ".lodelprefix($table).";\n");
+    fputs($fh,"DELETE FROM ".$table.";\n");
   }
   $GLOBALS['showcolumns']=true; // use by PMA to print the fields.
   mysql_dump($currentdb,$tables,"",$fh,false,false,true); // get the content
 
-  $tables=array("$GLOBALS[tp]documents",
-		"$GLOBALS[tp]publications");
+  $tables=array("#_TP_documents",
+		"#_TP_publications");
   mysql_dump($currentdb,$tables,"",$fh,true,true,false); // get the table create
   // it may be better to recreate the field at the import rather 
   // than using the created field. It may be more robust. Status quo at the moment.
@@ -96,7 +95,7 @@ if ($backup) {
 
   if (filesize($tmpfile)<=0) die ("ERROR: mysql_dump failed");
 
-  unlock();
+  #unlock();
 
   $zipfile=backupME($tmpfile,$context['sqlonly']);
 
