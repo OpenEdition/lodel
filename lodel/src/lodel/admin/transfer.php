@@ -243,7 +243,7 @@ ALTER TABLE _PREFIXTABLE_tablefields ADD class VARCHAR(64) NOT NULL;
 
 	if ($err) break;
 	// get the class of each group
-	$result=mysql_query("SELECT $GLOBALS[tp]tablefieldgroups.id,class FROM $GLOBALS[tp]tablefieldgroups,$GLOBALS[tp]classes WHERE idclass=$GLOBALS[tp]classes.id AND $GLOBALS[tp]tablefieldgroups.status>0 AND $GLOBALS[tp]classes.status>0") or die(mysql_error());
+	$result=mysql_query("SELECT $GLOBALS[tp]tablefieldgroups.id,$GLOBALS[tp]classes.class FROM $GLOBALS[tp]tablefieldgroups,$GLOBALS[tp]classes WHERE idclass=$GLOBALS[tp]classes.id AND $GLOBALS[tp]tablefieldgroups.status>0 AND $GLOBALS[tp]classes.status>0") or die(mysql_error());
 	while($row=mysql_fetch_assoc($result)) {
 	  $err=mysql_query_cmds('
 UPDATE _PREFIXTABLE_tablefields SET class=\''.$row['class'].'\' WHERE idgroup='.$row['id'].';
