@@ -848,9 +848,9 @@ Attention, cette routine sera changée bientôt
 <LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
 	<tr>
 		<td>
-			<IF COND="[#META_IMAGE]">
+			<IF COND="[#ICONE]">
 			<a href="sommaire.html?id=[#ID]">
-				<IMG SRC="[#META_IMAGE]" ALIGN='left' NAME="[#NOM]" BORDER='0' alt="[#NOM]" HSPACE="8" VSPACE="8">
+				<IMG SRC="[#ICONE]" ALIGN='left' NAME="[#NOM]" BORDER='0' alt="[#NOM]" HSPACE="8" VSPACE="8">
 				</a>
 			</IF>
 			<a href="sommaire.html?id=[#ID]">
@@ -991,9 +991,9 @@ Attention, cette routine sera changée bientôt
 		<table width="90%">
 				<tr>
 				<td class="texte_petit">
-					<IF COND="[#META_IMAGE]">
+					<IF COND="[#ICONE]">
 					<a href="sommaire.html?id=[#ID]">
-						<IMG SRC="[#META_IMAGE]" ALIGN='left' NAME="[#NOM]" BORDER='0' alt="[#NOM]" HSPACE="8" VSPACE="8">
+						<IMG SRC="[#ICONE]" ALIGN='left' NAME="[#NOM]" BORDER='0' alt="[#NOM]" HSPACE="8" VSPACE="8">
 						</a>
 					</IF>
 
