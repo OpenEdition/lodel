@@ -98,7 +98,13 @@
         size="255"
         required="true"
         description="parameters for the creation" />
-
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->
+<!--<foreign-key foreignTable="types" onDelete="setnull">
+<reference
+	local="idtype"
+	foreign="id" />
+</foreign-key>-->
+<!-- End foreign key -->
 <index name="index_idparent">
 <index-column name="idparent" />
 </index>
@@ -137,6 +143,18 @@
         type="TINYINT"
         default="0"
         required="true" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="entities" onDelete="setnull">
+<reference
+	local="id1"
+	foreign="id" />		
+</foreign-key>-->
+<!--<foreign-key foreignTable="entities" onDelete="setnull">
+<reference
+	local="id2"
+	foreign="id" />		
+</foreign-key>-->
+<!-- End Foreign Key -->
 <index name="index_id1">
 <index-column name="id1" />
 </index>
@@ -359,6 +377,19 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key Add by Jean Lamy - 2005-02-07 -->
+<!--<foreign-key foreignTable="tablefieldgroups" onDelete="setnull">
+	<reference
+		local="idgroup"
+		foreign="id" />
+</foreign-key>-->
+<!-- Not sure for this one -->
+<!--<foreign-key foreignTable="classes" onDelete="cascade">
+	<reference
+		local="class"
+		foreign="class" />
+</foreign-key>-->
+<!-- End Foreign Key -->        
 <index name="index_name">
 <index-column name="name" />
 </index>
@@ -512,6 +543,13 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="classes" onDelete="setnull">
+<reference
+	local="class"
+	foreign="class" />		
+</foreign-key>-->
+<!-- End Foreign Key -->
 <index name="index_name">
 <index-column name="name" />
 </index>
@@ -553,6 +591,7 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
+        
 </table>
 
 
@@ -671,6 +710,18 @@
         type="INTEGER"
         default="0"
         required="true" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="users" onDelete="cascade">
+<reference
+	local="iduser"
+	foreign="id" />		
+</foreign-key>-->
+<!--<foreign-key foreignTable="usergroups" onDelete="cascade">
+<reference
+	local="idgroup"
+	foreign="id" />
+</foreign-key>-->
+<!-- End Foreign Key -->
 <index name="index_idgroup">
 <index-column name="idgroup" />
 </index>
@@ -762,6 +813,13 @@
 	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="classes" onDelete="setnull">
+<reference
+	local="class"
+	foreign="class" />		
+</foreign-key>-->
+<!-- End Foreign Key -->        
 <index name="index_type">
 <index-column name="type" />
 </index>
@@ -942,6 +1000,13 @@
 	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="classes" onDelete="setnull">
+<reference
+	local="class"
+	foreign="class" />		
+</foreign-key>-->
+<!-- End Foreign Key -->  
 <index name="index_type">
 <index-column name="type" />
 </index>
@@ -1050,6 +1115,13 @@
 	edittype="select" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="classes" onDelete="setnull">
+<reference
+	local="class"
+	foreign="class" />		
+</foreign-key>-->
+<!-- End Foreign Key -->  
 <index name="index_type">
 <index-column name="type" />
 </index>
@@ -1116,6 +1188,13 @@
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="entrytypes" onDelete="setnull">
+<reference
+	local="idtype"
+	foreign="id" />		
+</foreign-key>-->
+<!-- End Foreign Key -->  
 <index name="index_g_name">
 <index-column name="g_name" />
 </index>
@@ -1160,6 +1239,13 @@
         required="true" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="users" onDelete="setnull">
+<reference
+	local="user"
+	foreign="id" />		
+</foreign-key>-->
+<!-- End Foreign Key -->  
 </table>
 
 
@@ -1298,6 +1384,13 @@
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
+<!-- Foreign Key - Added by Jean Lamy - 2005-02-07 -->        
+<!--<foreign-key foreignTable="optiongroups" onDelete="cascade">
+<reference
+	local="idgroup"
+	foreign="id" />		
+</foreign-key>-->
+<!-- End Foreign Key --> 
 <index name="index_name">
 <index-column name="name" />
 </index>
@@ -1438,15 +1531,15 @@
 </table>
 
 <!-- added by Jean Lamy | 2005-01-26 -->
-<table name="index"
-		description="Table contenant l'index"
+<table name="search_engine"
+		description="Table contenant l'index pour le moteur de recherche"
 		writeright=""
 		protectright="">
 <column name="identity"
 		type="INTEGER"
 		default="0"
 		required="true" />
-<column name="fieldname"
+<column name="tablefield"
 		type="INTEGER"
 		default="0"
 		required="true" />
