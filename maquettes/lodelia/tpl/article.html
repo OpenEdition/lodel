@@ -235,10 +235,9 @@
 									<IF COND="[#META_IMAGE]">
 										<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
 									</IF>
-								[(#TEXTE|tocss|tocable)]
+								[(#TEXTE|tocable|tocss)]
 								<ELSE/>			
-								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine|tocss|tocable)]
-								</IF>
+								[(#TEXTE|tocable|tocss|lettrine)]																</IF>
 							</div>
 						</IF>
 				
