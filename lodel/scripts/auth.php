@@ -44,14 +44,15 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
   do { // block de control
     $name=addslashes($_COOKIE[$sessionname]);
+
     if (!$name) break;
 
     include_once($home."connect.php");
     mysql_select_db($database) or die(mysql_error());
     if (!($result=mysql_query ("SELECT id,iduser,site,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
-    $GLOBALS[idsession]=$idsession=$row[id];
-    $GLOBALS[session]=$name;
+    $GLOBALS['idsession']=$idsession=$row['id'];
+    $GLOBALS['session']=$name;
 
     // verifie qu'on est dans le bon site
     if ($row[site]!="tous les sites" && $row[site]!=$site) break;
@@ -59,7 +60,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // verifie que la session n'est pas expiree
     $time=time();
     //        echo $name,"   ",$row[expire],"  ",$time,"<br>";
-    if ($row[expire]<$time || $row[expire2]<$time) { 
+    if ($row['expire']<$time || $row['expire2']<$time) { 
       $login="";
       if (file_exists("login.php")) { 
 	$login="login.php"; 
@@ -82,13 +83,14 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     // verifie encore une fois au cas ou...
     if ($userpriv<LEVEL_ADMINLODEL && !$site) break;
+
     if ($userpriv>=LEVEL_ADMINLODEL) $context[droitadminlodel]=$GLOBALS[droitadminlodel]=1;
     if ($userpriv>=LEVEL_ADMIN) $context[droitadmin]=$GLOBALS[droitadmin]=1;
     if ($userpriv>=LEVEL_EDITEUR) $context[droitediteur]=$GLOBALS[droitediteur]=1;
     if ($userpriv>=LEVEL_REDACTEUR) $context[droitredacteur]=$GLOBALS[droitredacteur]=1;
     if ($userpriv>=LEVEL_VISITEUR) $context[droitvisiteur]=$GLOBALS[droitvisiteur]=1;
     // efface les donnees de la memoire et protege pour la suite
-    $_COOKIE[$sessionname]=0;
+    #$_COOKIE[$sessionname]=0;
 
     //
     // change l'expiration de la session et l'url courrante

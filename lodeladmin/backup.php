@@ -92,7 +92,7 @@ if ($backup) {
 
   chdir ("lodeladmin");
 
-  if (operation($operation,$archivetmp,$archivefilename,&$context)) return;
+  if (operation($operation,$archivetmp,$archivefilename,$context)) return;
 }
 
 include ($home."calcul-page.php");

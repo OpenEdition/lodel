@@ -30,7 +30,8 @@ require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
 
-$name=$_COOKIE[$sessionname];
+$name=addslashes($_COOKIE[$sessionname]);
+
 include_once ($home."connect.php");
 $time=time()-1;
 mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET expire2='$time' WHERE name='$name'") or die (mysql_error());

@@ -263,6 +263,13 @@ if ($tache=="admin") {
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
       return;
     }
+    // log this user in 
+    require($home."loginfunc.php");
+    $site="";
+    if (check_auth($adminusername,&$pass,&$site)) {
+      open_session($adminusername);
+    }
+
     $pass=""; // enleve de la memoire
 }
 

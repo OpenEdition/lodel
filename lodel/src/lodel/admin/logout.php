@@ -30,7 +30,8 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
 
-$name=$_COOKIE[$sessionname];
+$name=addslashes($_COOKIE[$sessionname]);
+
 include_once ($home."connect.php");
 $time=time()-1;
 mysql_select_db($database);
