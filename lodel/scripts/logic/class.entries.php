@@ -159,7 +159,7 @@ class EntriesLogic extends GenericLogic {
    function changeRankAction(&$context,&$error)
 
    {
-     return Logic::changeRankAction(&$context,&$error,"idparent");
+     return Logic::changeRankAction(&$context,&$error,"idparent","");
    }
 
 
