@@ -1,0 +1,124 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[@EDITION.FILEBROWSER]</title>
+<link rel="stylesheet" href="styles_lodel.css" type="text/css">
+</head>
+<SCRIPT LANGUAGE="JavaScript">
+<!-- Begin
+function sendValue(id,title)
+{
+	obj=window.opener.document.getElementById('[#CALLER]');
+	if (obj) obj.value=id;
+	obj=window.opener.document.getElementById('[#CALLER][title]');
+	if (obj) obj.value=title;
+	window.close();
+}
+
+function sendValues(){
+	obj=window.opener.document.getElementById('[#CALLER]');
+	objselect=window.opener.document.getElementById('[#CALLER][select]');
+	var pattern=/(\d+):(.*)/;
+	if (obj) {
+		var chkbox = document.getElementsByName('entities');
+		var s='';
+		while(obj.length) {
+			obj.options[0]=null;
+		}		
+		for(i=0; i<chkbox.length; i++){
+			if(chkbox[i].checked) {
+				var result = chkbox[i].value.match(pattern);
+				objselect.options[obj.length] = new Option(result[2],result[1]);
+				obj.value=obj.value+result[1]+',';
+			}
+		}
+	}
+	window.close();
+}
+//  End -->
+</script>
+<body class="entitybrowser">
+
+<form  method="post" action="entitybrowser.php">
+<input type="hidden" name="caller" value="[#CALLER]">
+
+	<table class="table_form_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+			<div>
+				<LET VAR="iddocument">[#ID]</LET>
+				<LET VAR="id">0</LET>
+
+				<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
+					[#BARRE]
+		                        <!--[ on a le droit de la deplacer ici ]-->
+					<span style="margin-left: [#MARGIN]px;">
+						<IF COND="[#SINGLE]">
+						<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE]</a>
+						<ELSE/>
+						<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]">[#G_TITLE]
+						</IF>
+						<br />
+						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
+					</span>
+					<?php  $context[margin]+=10; ?> <!--[ incrément de la marge ]-->
+					<LET VAR="BARRE">[#BARRE]|</LET>
+					<LOOP NAME="entities"></LOOP>
+				</LOOP>
+			<div>
+			</td>
+		</tr>
+	</table>
+
+	<IF COND="![#SINGLE]">
+	<div>
+		<input type="button" value="[@COMMON.SELECT]" onClick="javascript:sendValues();" />
+	</div>
+	</IF>
+</form>
+
+<div>
+<a href="javascript:window.close();">[@EDITION.CLOSE_THE_WINDOW]</a>
+</div>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!-- Begin
+
+obj=window.opener.document.getElementById('[#CALLER]');
+<IF COND="[#SINGLE]">
+o=document.getElementById('entities'+obj.value);
+if (o) o.style.backgroundColor='orange';
+<ELSE/>
+for(i=0; i<obj.length; i++) {
+	o=document.getElementById('entities'+obj.options[i].value);
+	o.checked=true;
+}
+</IF>
+//  End -->
+</script>
+
+
+</body>
+</html>
