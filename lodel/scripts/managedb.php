@@ -94,6 +94,7 @@ function proteges (&$context,$funcname,$classe)
 function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
 
 {
+  if (!($id>=1)) die("ERROR: id is not valid un \"supprime\"");
   global $usergroupes,$droitadmin,$context;
   if ($mklock) {
     lock_write("entites",
@@ -117,13 +118,13 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
 
   if (!$droitadmin) {
     // cherche l'id de la publication/document courante $id... verifie qu'on a les droits
-    $result=mysql_query("SELECT id,statut FROM $tables WHERE $GLOBALS[tp]entites.id='$id' $critere") or die(mysql_error());
+    $result=mysql_query("SELECT statut FROM $tables WHERE $GLOBALS[tp]entites.id='$id' $critere") or die(mysql_error());
     if (!mysql_num_rows($result)) die("vous n'avez pas les droits. Erreur dans l'interface.");
     if (!$confirmation) {
       $row=mysql_fetch_assoc($result);
       if ($row[statut]>=32) {
 	// ajoute au tableau des entitess protegees cet id
-	array_push($context[proteges],$row[id]);
+	array_push($context[proteges],$id);
       }
     }
   }

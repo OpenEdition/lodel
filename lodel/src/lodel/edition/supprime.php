@@ -34,9 +34,9 @@ authenticate(LEVEL_EDITEUR,NORECORDURL);
 require_once ($home."func.php");
 
 
-if ($publication) $id=$publication;
+if ($publication) die("Changer le template... remplacer publication par id");
 $id=intval($id);
-
+if (!$id) die("ERROR: invalid id of the \"entitie\" to delete");
 
 if ($supprime || $confirmation) {
   include_once ($home."connect.php");
