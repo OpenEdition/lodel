@@ -49,7 +49,7 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
-    if (!$context[nom] || isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
+    if (!$context[nom] || !isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
     if (!$context[type]) $err=$context[erreur_type]=1;
     if ($err) break;
     include_once ($home."connect.php");
@@ -60,8 +60,8 @@ if ($edit) { // modifie ou ajoute
 
     $alter="";
     if ($id>0) { // il faut rechercher le status et l'ordre
-      $result=mysql_query("SELECT status,ordre,idgroupe,type,nom FROM $GLOBALS[tp]champs WHERE id='$id'") or die (mysql_error());
-      list($status,$ordre,$oldidgroupe,$oldtype,$oldnom)=mysql_fetch_array($result);
+      $result=mysql_query("SELECT status,ordre,idgroupe,type,nom,filtrage FROM $GLOBALS[tp]champs WHERE id='$id'") or die (mysql_error());
+      list($status,$ordre,$oldidgroupe,$oldtype,$oldnom,$oldfiltrage)=mysql_fetch_array($result);
       if ($sqltype[$oldtype]!=$sqltype[$context[type]]) {
 	$alter="MODIFY";
 	if (!$confirmation) { $context[erreur_confirmation_type]=1; break; }
@@ -82,10 +82,12 @@ if ($edit) { // modifie ou ajoute
     }
     if ($protege) $status=$id && $status>0 ? 32 : -32;    
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,traitement,edition,ordre,status) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[traitement]','$context[edition]','$ordre','$status')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,traitement,filtrage,edition,ordre,status) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$status')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
+    }
+    if ($alter || $context[filtrage]!=$oldfiltrage) {
       require_once($home."cachefunc.php");
       removefilesincache(".","../edition","../..");
     }
@@ -97,7 +99,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.*,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  $critere AND $GLOBALS[tp]champs.status>-32") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.*,classe FROM $GLOBALS[champsgroupesjoin] WHERE  $critere AND $GLOBALS[tp]champs.status>-32") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 } else {
   // cherche le classe.

@@ -639,25 +639,30 @@ function make_loop_code ($name,$tables,
   $table=$GLOBALS[tp].join (', $GLOBALS[tp]',array_reverse(array_unique($tables)));
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
+  // select
   if (!$contents[select]) {
 #    echo "loop: $name $ind=",$this->ind,"<br>\n";
     $this->errmsg("no variable is used in the loop $name. Is this loop really useful ?",$this->ind);
   }
-  #$select=join(".*,",$tablesinselect).".*".$extrainselect;
   $select=$contents[select].$extrainselect; // optimised
+
+  // fetch_assoc_func
+  if (!$contents[fetch_assoc_func]) $contents[fetch_assoc_func]="mysql_fetch_assoc";
 
 #### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 
-# genere le code pour parcourir la loop
+//
+// genere le code pour parcourir la loop
+//
   $this->fct_txt.='function loop_'.$name.' ($context)
 {
  $generalcontext=$context;
-'.$premysqlquery.' $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
+ $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
  $context[nbresultats]=mysql_num_rows($result);
  $count=0;
- if ($row=mysql_fetch_assoc($result)) {
+ if ($row='.$contents[fetch_assoc_func].'($result)) {
 ?>'.$contents[BEFORE].'<?php
     do {
       $context=array_merge ($generalcontext,$row);
@@ -671,7 +676,7 @@ function make_loop_code ($name,$tables,
   if ($contents[DOLAST]) {
     $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents[PRE_DOLAST].'?>'.$contents[DOLAST].'<?php continue; }';
   }    
-    $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row=mysql_fetch_assoc($result));
+    $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row='.$contents[fetch_assoc_func].'($result));
 ?>'.$contents[AFTER].'<?php  } ';
 
   if ($contents[ALTERNATIVE]) $this->fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?php }';

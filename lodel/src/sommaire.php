@@ -19,11 +19,13 @@ $critere.=" AND $GLOBALS[tp]types.status>0";
 $relocation=FALSE;
 $base="";
 
+if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");
+
 if ($id) {
   do {
     $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
     if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-    $row=mysql_fetch_assoc($result);
+    $row=filtered_mysql_fetch_assoc($result);
     $base=$row[tpl];
     if (!$base) { $id=$row[idparent]; $relocation=TRUE; }
   } while (!$base);

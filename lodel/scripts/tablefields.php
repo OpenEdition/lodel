@@ -7,6 +7,10 @@ require_once($home."connect.php");
 #echo "::";
 $GLOBALS[tablefields]=array();
 
+maketablefields();
+
+////////////////////////
+
 if (!function_exists("var_export")) {
 function var_export($arr,$t)
 
@@ -24,23 +28,26 @@ function var_export($arr,$t)
 }
 }
 
-foreach (array($GLOBALS[database] =>$GLOBALS[database].".", $GLOBALS[currentdb]=>"") as $db => $prefix) {
-  $result=mysql_list_tables($db) or die(mysql_error());
-  while (list($table)=mysql_fetch_row($result)) {
-    $result2=mysql_list_fields($db,$table);
-    $nfields=mysql_num_fields($result2);
-    $table=$prefix.$table;
-    $GLOBALS[tablefields][$table]=array();
-    for($j=0; $j<$nfields; $j++) {
-      array_push($GLOBALS[tablefields][$table],mysql_field_name($result2,$j));
+function maketablefields()
+
+{
+
+  foreach (array($GLOBALS[database] =>$GLOBALS[database].".", $GLOBALS[currentdb]=>"") as $db => $prefix) {
+    $result=mysql_list_tables($db) or die(mysql_error());
+    while (list($table)=mysql_fetch_row($result)) {
+      $result2=mysql_list_fields($db,$table);
+      $nfields=mysql_num_fields($result2);
+      $table=$prefix.$table;
+      $GLOBALS[tablefields][$table]=array();
+      for($j=0; $j<$nfields; $j++) {
+	array_push($GLOBALS[tablefields][$table],mysql_field_name($result2,$j));
+      }
     }
   }
+
+  $fp=fopen("CACHE/tablefields.php","w");
+  fputs($fp,'<?php  $GLOBALS[tablefields]='.var_export($GLOBALS[tablefields],TRUE).' ; ?>');
+  fclose($fp);
 }
-
-$fp=fopen("CACHE/tablefields.php","w");
-fputs($fp,'<?php  $GLOBALS[tablefields]='.var_export($GLOBALS[tablefields],TRUE).' ; ?>');
-fclose($fp);
-
-
 
 ?>

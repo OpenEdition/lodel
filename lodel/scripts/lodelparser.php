@@ -10,6 +10,8 @@ require_once($home."parser.php");
 
 
 class LodelParser extends Parser {
+  var $filterfunc_loaded=FALSE;
+
 
 function parse_loop_extra(&$tables,
 			    &$tablesinselect,&$extrainselect,
@@ -200,13 +202,23 @@ function parse_variable_extra ($nomvar)
 function decode_loop_content_extra ($balise,$tables,&$ret)
 
 {
+  global $home;
 
-
-    //
-    // est-ce qu'on veut le prev et next publication ?
-    //
-  if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
+  $havepublications=in_array("publications",$tables);
+  $havedocuments=in_array("documents",$tables);
+  //
+  // est-ce qu'on veut le prev et next publication ?
+  //
+  if ($havepublications && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
     $ret["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+  }
+  // les filtrages automatiques
+  if ($havedocuments || $havepublications) {
+    $ret[fetch_assoc_func]="filtered_mysql_fetch_assoc";
+    if (!$this->filterfunc_loaded) {
+      $this->filterfunc_loaded=TRUE;
+      $this->fct_txt.='if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");';
+    }
   }
 }
 

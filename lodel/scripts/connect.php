@@ -45,6 +45,7 @@ $GLOBALS[publicationstypesjoin]="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBAL
 
 $GLOBALS[documentstypesjoin]="($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]documents ON $GLOBALS[tp]entites.id=$GLOBALS[tp]documents.identite";
 
+$GLOBALS[champsgroupesjoin]="$GLOBALS[tp]groupesdechamps INNER JOIN $GLOBALS[tp]champs ON $GLOBALS[tp]champs.idgroupe=$GLOBALS[tp]groupesdechamps.id";
 
 
 
