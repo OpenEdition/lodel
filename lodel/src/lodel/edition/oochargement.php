@@ -76,7 +76,7 @@ function OO ($uploadedfile,&$context)
   runDocumentConverter($uploadedfile,"sxw");
   // solution avec unzip, ca serait mieux avec libzip
   // dezip le fichier content
-  echo "temps:",time()-$time1,"<br>";
+  echo "temps:",time()-$time1," s<br>";
   echo "<li>unzip le fichier SXW<br>\n";flush();
   $tmpdir=$uploadedfile."_dir";
   mkdir("$tmpdir",0700);
@@ -94,7 +94,6 @@ function OO ($uploadedfile,&$context)
 
   // ecrit le fichier content.xml
   writefile("$tmpdir/content.xml",$content);
-  echo "<br>";
   echo "<li>Reinsertion du nouveaux fichier content.xml dans le SXW<br>\n";flush();
   system("/usr/bin/zip -j $uploadedfile.sxw $tmpdir/content.xml 2>$errfile") or die("probleme avec zip<br>".@join("",@file($errfile)));
 
@@ -103,8 +102,8 @@ function OO ($uploadedfile,&$context)
   echo "<li>2nd conversion SXW->HTML<br>\n";flush();
   $time2=time();
   runDocumentConverter($uploadedfile.".sxw","html");
-  echo "temps:",time()-$time2,"<br>";
-  echo "fin<br><br>\n";flush();
+  echo "temps:",time()-$time2," s<br>";
+  echo "fin<br>\n";flush();
 
 
   $file=str_replace("\n","",join('',file("$uploadedfile.sxw.html")));
@@ -215,7 +214,7 @@ function OO ($uploadedfile,&$context)
   if (!traite_tableau2($file)) {     $context[erreur_stylestableaux]=1;
   return FALSE; }
   $file=traite_multiplelevel($file);
-  echo "<li>temps regexp: ".(time()-$time)."<br>\n";
+  echo "<li>temps regexp: ".(time()-$time)." s<br>\n";
 
   //echo htmlentities($file); exit;
 
