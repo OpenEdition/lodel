@@ -20,7 +20,7 @@ require_once($home."extrainfofunc.php");
 if ($edit || $plusauteurs) {
 
   if (ei_edition($filename,$row,$context,$text,$motcles,$periodes,$geographies)) { // ca marcher... on termine
-    $iddocument=ei_enregistre($filename,$row,$context,$text);
+    $iddocument=ei_enregistrement($filename,$row,$context,$text);
     //
     // termine en redirigeant correctement
     // 
