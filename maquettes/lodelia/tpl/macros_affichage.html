@@ -366,19 +366,19 @@
 <!-- Affiche le titre de la partie Bibliographie (ici "Bibliographie")  -->
 <!-- dans la langue définie pour le texte d'un document.                -->
 <!-- ****************************************************************** -->
-	<IF COND="[#LANG]=='FR'">
+	<IF COND="([#LANG] EQ 'fr') OR ([#LANG] EQ 'FR')">
 		Bibliographie
 	<ELSE/>
-		<IF COND="[#LANG]=='EN'">
+		<IF COND="([#LANG] EQ 'en') OR ([#LANG] EQ 'EN')">
 			Bibliography
 		<ELSE/>
-			<IF COND="[#LANG]=='IT'">
+			<IF COND="([#LANG] EQ 'it') OR ([#LANG] EQ 'IT')">
 				Bibliografia
 			<ELSE/>
-				<IF COND="[#LANG]=='ES'">
+				<IF COND="([#LANG] EQ 'es') OR ([#LANG] EQ 'ES')">
 					Bibliografía
 				<ELSE/>
-					<IF COND="[#LANG]=='DE'">
+					<IF COND="([#LANG] EQ 'de') OR ([#LANG] EQ 'DE')">
 						Bibliographie
 					<ELSE/>
 						Langue de document non définie
