@@ -7,90 +7,50 @@
 <USE MACROFILE="macros_presentation.html">
 <USE MACROFILE="macros_revue.html">
 
-<script type="text/javascript">
-
-function SwitchImg()
-{ //start
-  var rem, keep=0, store, obj, switcher=new Array, history=document.Data;
-    for (rem=0; rem < (SwitchImg.arguments.length-2); rem+=3) {
-    	store = SwitchImg.arguments[(navigator.appName == 'Netscape')?rem:rem+1];
-    if ((store.indexOf('document.layers[')==0 && document.layers==null) ||
-        (store.indexOf('document.all[')==0 && document.all==null))
-         store = 'document'+store.substring(store.lastIndexOf('.'),store.length);
-         obj = eval(store);
-    if (obj != null) {
-   	   switcher[keep++] = obj;
-      switcher[keep++] = (history==null || history[keep-1]!=obj)?obj.src:history[keep];
-      obj.src = SwitchImg.arguments[rem+2];
-  } }
-  document.Data = switcher;
-} //end
-
-function RestoreImg()
-{ //start
-  if (document.Data != null)
-    for (var rem=0; rem<(document.Data.length-1); rem+=2)
-      document.Data[rem].src=document.Data[rem+1];
-} //end
-</script>
+<MACRO NAME="JS_JUMPMENU">
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <title><MACRO NAME="NOM_REVUE"></title>
 <MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<MACRO NAME="TRACER_SEPARATION_VERTICALE">
-	<td width="561" valign="top"  bgcolor="#ffffff">
-		<MACRO NAME="IMG_LOGO_LODELIA">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center"  height="100%">
-			<tr>
-				<td  class="titrerevue">
+		<div class="corps">
+			
+			<div class="separation">
+				&nbsp;
+			</div>
+			
+			
+			<div class="contenu">
+			
+				<MACRO NAME="IMG_LOGO_LODELIA">
+			
+				<div  class="titrerevue">
 					<MACRO NAME="NOM_REVUE"> | Style ".titrerevue"
-				</td>
-			</tr>
-			<tr>
-				<td valign="top" width="561" height="15" bgcolor="#ffffff">
-					<img src="images/spacer.gif" width="561" height="15"  border="0">
-				</td>
-			</tr>
-			<tr>
-				<td class="titre2">
+				</div>
+				
+				<div class="titre2">
 					<MACRO NAME="DERNIER_NUMERO"> | Style ".titre2" 
-				</td>
-			</tr>
-			<tr>
-				<td valign="top" width="561" height="15" bgcolor="#ffffff">
-					<img src="images/spacer.gif" width="561" height="15"  border="0">
-				</td>
-			</tr>
-			<tr>
-				<td valign="middle" width="561">
+				</div>
+			
+				
 				<MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">
-				</td>
-			</tr>
-			<tr>
-				<td valign="top" width="561" height="5" bgcolor="#ffffff">
-					<img src="images/spacer.gif" width="561" height="5"  border="0">
-				</td>
-			</tr>
-			<tr>
-				<td valign="top" width="561"  bgcolor="#ffffff" align="right">
-					<img src="images/image.jpg" width="560"  border="0">
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<TEXT NAME="nouveaute">
-				</td>
-			</tr>
-			<tr>
-				<td class="texte_petit">
-				<MACRO NAME="REVUES_ORG"> 
-				</td>
-			</tr>
-		</table>
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+				
+			
+				<div class="imageindex">
+					&nbsp;
+				</div>	
+			
+				<div>
+					<TEXT NAME="nouveaute">
+				</div>
+			
+				<div>
+					<MACRO NAME="REVUES_ORG"> 
+				</div>
+		</div>
+	</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

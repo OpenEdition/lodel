@@ -57,8 +57,9 @@
 <!-- Pour refermer cette table veuillez utiliser de préférence la       -->
 <!-- Macro : <MACRO NAME="FERMER_TABLE_PRINCIPALE">                     -->
 <!-- ****************************************************************** -->
-	<table width="775" height="100%" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
+	<table width="775" height="100%"  cellspacing="0" cellpadding="0" align="center" valign="top">
 		<tr>
+			<td> 
 </DEFMACRO>
 
 <DEFMACRO NAME="FERMER_TABLE_PRINCIPALE">
@@ -68,6 +69,7 @@
 <!-- ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      -->
 <!-- fermé la cellule principale avec le marqueur </td> !!!             -->
 <!-- ****************************************************************** -->
+			</td>
 		</tr>
 	</table>
 </DEFMACRO>
@@ -102,7 +104,7 @@
 <!--  Pour changer la couleur de la ligne il faut changer le code       -->
 <!--  couleur de bgcolor des <td>                                    -->
 <!-- ****************************************************************** -->
-<td valign="top" height="100%" width="1" bgcolor="#9C3234"><img src="images/spacer.gif" width="1" height="1"  border="0"></td>
+
 <td valign="top" height="100%" width="8" bgcolor="#ffffff"><img src="images/spacer.gif" width="8" height="1"  border="0"></td>
 <td valign="top" height="100%" width="18" bgcolor="#F4F4F4"><img src="images/spacer.gif" width="18" height="1"  border="0"></td>
 <td valign="top" height="100%" width="20" bgcolor="#ffffff"><img src="images/spacer.gif" width="20" height="1"  border="0"></td>
@@ -116,7 +118,6 @@
 <!--  logo est composé de plusieurs éléments                            -->
 <!-- ****************************************************************** -->
 <tr><td class="logo_revuesorg1"> &nbsp; </td> </tr>
-<tr><td class="logo_revuesorg2"> &nbsp; </td></tr>
 <tr>
 	<td class="logo_revuesorg3">
 		<a class="logo_revuesorg3" href="http://www.revues.org" target="_blank" name="logo de Revues.org">
@@ -125,7 +126,6 @@
 	</td>
 </tr>
 <tr><td class="logo_revuesorg4" >&nbsp;</td></tr>
-<tr><td class="logo_revuesorg2"> &nbsp; </td></tr>
 </DEFMACRO> 
 
 <DEFMACRO NAME="TRACER_LIGNE_VERTICALE">
@@ -194,14 +194,7 @@
 <!-- Cette Macro utilise la macro suivante :                            -->
 <!-- <MACRO NAME="FILET_2">                                             -->
 <!-- ****************************************************************** -->
-	<table width="100%">
-		<tr>
-			<td widht="12%">
-				&nbsp;
-			</td>
-			<td width="74%" align="center"> 
-				<!-- Menu permettant d'accéder à la lettre désirée -->
-				<MACRO NAME="FILET_2">
+	
 				<a href="#A">A</a> - 
 				<a href="#B">B</a> - 
 				<a href="#C">C</a> - 
@@ -228,13 +221,7 @@
 				<a href="#X">X</a> - 
 				<a href="#Y">Y</a> - 
 				<a href="#Z">Z</a>
-				<MACRO NAME="FILET_2">
-			</td>
-			<td widht="12%">
-				&nbsp;
-			</td>
-		</tr>
-	</table>
+				
 </DEFMACRO>
 
 <DEFMACRO NAME="FILET_1">

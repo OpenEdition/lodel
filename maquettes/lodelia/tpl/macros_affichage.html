@@ -170,32 +170,23 @@
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
 
-		<table class="titrerevue">
-			<tr>
-				<td>
+				<div class="titrerevue">
 		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
-					 <br /> <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
-		 		</td>
-			</tr>
-			<tr>
-				<td class="soustitrerevue">
-		 			<MACRO NAME="SOUSTITRE_PUBLICATION">
-		 		</td>
-			</tr>
-		 	<tr>
-				<td class="directeur_publication">
-		 					
-						<MACRO NAME="DIRECTEUR_PUBLICATION">
-					
-			
-				</td>
-			</tr>
-			<tr>
-				<td class="introduction" backgroundcolor="#FFFFFF">
+					 <br /> <MACRO NAME="TITRE_PUBLICATION"> <!--<MACRO NAME="BOUTON_EDITER_PUBLICATION">-->
+		 			
+					<p class="soustitrerevue">
+		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
+		 			</p>
+				
+					<p class="directeur_publication">
+		 				<MACRO NAME="DIRECTEUR_PUBLICATION">
+					</p>
+								
+				</div>
+				<div class="introduction" backgroundcolor="#FFFFFF">
 					<MACRO NAME="INTRODUCTION_COMPLETE">
-				</td>
-			</tr>
-		</table>					
+				</div>
+							
 
 </DEFMACRO>
 
@@ -776,18 +767,10 @@
 <!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
 <!-- <MACRO NAME="PRESENTER_REGROUPEMENTS">                             -->
 <!-- ****************************************************************** -->
-	<table width="561" align="left">
-	<tr>
-		<td>
+	<div class="docregroupement">
 			<MACRO NAME="PRESENTER_DOCUMENTS">
-		</td>
-	</tr>
-	<tr>
-		<td>
 			<MACRO NAME="PRESENTER_REGROUPEMENTS">
-		</td>
-	</tr>
-	</table>
+	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="PRESENTER_DOCUMENTS">
@@ -798,19 +781,15 @@
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
 	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
-	<BEFORE>
-		<table width="561" border="0" align="left" cellpadding="4">
-	</BEFORE>
+	
 	<DO>
-		<tr> 
-			<td class="afficherdocument"> 
+			<div class="afficherdocument"> 
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-			</td>
-		</tr>
+			</div>
+		
 	</DO>
-	<AFTER>
-		</table>
-	</AFTER>
+	
+	
 	</LOOP>
 </DEFMACRO>
 
@@ -823,41 +802,24 @@
 <!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+		
 		<DO>
-			<table width="561" border="0" align="left">
-				<tr>
-					<td class="blocblanc">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td class="titre2">
+				<div class="titre2">
 						
 							<IF COND="[#TITRE]">
 								[#TITRE]
-								
 							</IF>
 							
 							<IF COND="[#NOM]">
-							
-							| [#NOM]
+								| [#NOM]
 								<br />
 							</IF>
 						
-						<br />
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<MACRO NAME="PRESENTER_DOCUMENTS">
-					</td>
-				</tr>
-			</table>
+						    <br />
+				</div>
+				
+				<MACRO NAME="PRESENTER_DOCUMENTS">
+					
 		</DO>
 	</LOOP>
 </DEFMACRO>

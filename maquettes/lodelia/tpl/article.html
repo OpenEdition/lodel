@@ -13,31 +13,30 @@
 <!-- Dernière modification majeure en septembre 2002.                   -->
 <!-- ****************************************************************** -->
 
+<MACRO NAME="JS_JUMPMENU">
+
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<!-- Affiche la barre verticale de navigation -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<MACRO NAME="TRACER_SEPARATION_VERTICALE">
-	<td width="561" valign="top"  bgcolor="#ffffff">
-		<MACRO NAME="IMG_LOGO_LODELIA">
-			<table border="0" cellspacing="0" cellpadding="0" width="561" >
-				<tr>
-					<td class="titrerevue" colspan="2" >
+	<div class="corps">
+		<div class="separation">
+			&nbsp;
+		</div>
+		<div class="contenu">
+			<MACRO NAME="IMG_LOGO_LODELIA">
 						
-						 			<MACRO NAME="PARU_DANS"> 
-								
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc" colspan="2" >
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td class="titre2">
+			<div class="titrerevue">
+				<MACRO NAME="PARU_DANS"> 
+			</div>				
+					
+			<div class="titre2">
+				<div class="titre21">
 						<IF COND="[#TYPE]=='compte rendu'">
 							Compte-rendu
 						</IF>
@@ -50,18 +49,13 @@
 						<IF COND="[#TYPE]=='article'">
 							Article
 						</IF>
-					</td>
-					<td class="signalerimprimer" >
-						<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER"> 
-					</td>
-				</tr>	
-				<tr>
-					<td class="blocblanc6">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="afficherdocument">
+				</div>
+				<div class="signalerimprimer">
+					<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
+				</div>
+			</div>
+			
+			<div class="afficherdocument">
 						<IF COND="[#TYPE]=='note de lecture'">
 							Note de lecture par
 						</IF>
@@ -80,19 +74,9 @@
 						
 						<br>
 						
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc6">
-						&nbsp;
-					</td>
-				</tr>	
-				<tr>
-					<td class="blocblanc">
-						&nbsp;
-					</td>
-				</tr>
-				
+			</div>
+			
+			
 				<!-- Affchage du résumé en français   -->
 				<IF COND="[#RESUME:FR]">
 				<tr> 
@@ -292,9 +276,14 @@
 				
 		
 		<br />
-		<MACRO NAME="REVUES_ORG">
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+		<MACRO NAME="REVUES_ORG"> 		
+				
+
+								
+		</div>
+	</div>
+	
+	
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">  
 
