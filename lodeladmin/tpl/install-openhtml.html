@@ -35,40 +35,40 @@
 <?php
 switch($current){
 	case "plateform":
-	$msg = "Choix de la configuration de serveur";
+	$msg=getlodeltextcontents("server_configuration_choice","install");
 	break;
 	case "droits":
-	$msg = "Accès aux répertoires.";
+	$msg=getlodeltextcontents("access_to_directory","install");
 	break;
 	case "mysql":
-	$msg = "Accès au serveur MySql";
+	$msg=getlodeltextcontents("access_to_database_server","install");
 	break;
 	case "database":
-	$msg = "Choix de la base de données";
+	$msg=getlodeltextcontents("database_choice","install");
 	break;
 	case "admin":
-	$msg = "Création d'un administrateur initial";
+	$msg=getlodeltextcontents("initial_administrator_creation","install");
 	break;
 	case "options":
-	$msg = "Options diverses";
+	$msg=getlodeltextcontents("options","install");
 	break;
 	case "servoo":
-	$msg = "Configuration de ServOO";
+	$msg=getlodeltextcontents("servoo_configuration","install");
 	break;
 	case "config":
-	$msg = "Installation du fichier de configuration";
+	$msg=getlodeltextcontents("configuration_file_installation","install");
 	break;
 	case "showconfig":
-	$msg = "Visualisation du fichier de configuration";
+	$msg=getlodeltextcontents("configuration_file_view","install");
 	break;
 	case "start":
-	$msg = "Choix du type d'installation";
+	$msg=getlodeltextcontents("installation_type_choice","install");
 	break;
 	case "fin":
-	$msg = "Fin de l'installation";
+	$msg=getlodeltextcontents("installation_end","install");
 	break;
 	default:
-	$msg = "Installation de Lodel";
+	$msg=getlodeltextcontents("install_lodel","install");
 }
 ?>
 <div id="bandeau"><h3><?php echo $msg; ?></h3></div>
