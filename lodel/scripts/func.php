@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-function writefile ($filename,&$text)
+function writefile ($filename,$text)
 {
  //echo "nom de fichier : $filename";
    if (file_exists($filename)) 
