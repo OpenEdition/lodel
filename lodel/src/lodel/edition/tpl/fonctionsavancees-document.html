@@ -157,7 +157,15 @@
 
 	<div class="pied_de_formulaire">
 		<form>
-			<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#PUBLICATION]'" />
+			<LOOP NAME="" TABLE="publications" WHERE="id=[#PUBLICATION]">
+				<DO>
+					<IF COND="[#TYPE] EQ 'regroupement'">
+						<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#PARENT]'" />						
+					<ELSE/>
+						<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#ID]'" />
+					</IF>
+				</DO>
+			</LOOP>
 		</form>
 	</div>
 
