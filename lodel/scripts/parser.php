@@ -110,6 +110,9 @@ function parse ($in,$out)
   // look for MACROFILE to be included
   preg_match_all("/<USE\s+MACROFILE\s*=\s*\"([^\"]+)\"\s*>\s*\n?/",$contents,$results,PREG_SET_ORDER);
 
+  // delete the </USE>
+  $contents=str_replace("</USE>","",$contents);
+
   foreach($results as $result) {
     $contents=str_replace($result[0],"",$contents); // efface le use
     $macrofile=$result[1];
@@ -918,7 +921,9 @@ function parse_macros(&$text,&$macros)
     $def[1]=preg_replace("/(^\n|\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
     $text=str_replace($result[0],$def[1],$text);
   }
-  $text=preg_replace("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>\s*\n?/s","",$text);
+  // supprime les <DEFMACRO>.*?</DEFMACRO> et les </MACRO>
+  $text=preg_replace(array("/<DEFMACRO\b[^>]*>.*?<\/DEFMACRO>\s*\n?/s","/<\/MACRO>/"),"",$text);
+
 }
 
 
