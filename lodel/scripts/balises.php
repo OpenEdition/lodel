@@ -75,8 +75,9 @@ $multiplelevel=array(
 		     "titredoc"=>"texte",
 		     "legendedoc"=>"texte",
 		     // les styles description auteurs
-		     "affiliation"=>"descriptionauteur",
-		     "courriel"=>"descriptionauteur",
+# supprimer pour le moment tant que Ted ne lit pas les styles de caracteres
+#		     "affiliation"=>"descriptionauteur",
+#		     "courriel"=>"descriptionauteur",
 
 		     // l'ordre est important ci-dessous (marche pas avec section\d+)
 		     "section6"=>">*", // non utilise a priori

@@ -313,7 +313,7 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 	$nom=$value;
 	break;
       default:
-	die ("erreur, attribut inconnu");
+	die ("erreur, attribut inconnu dans la boucle $nom");
       }
     } // boucle sur les attributs
     # cherche le > de fin
@@ -387,7 +387,6 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 	array_push($tables,"documents_indexhs");
 	$where.=" AND idindexh=indexhs.id";
       }
-      
 
       if (in_array("documents",$tables) && strpos($where,"idindexh")!==FALSE) {
 	// on a besoin de la table croise documents_auteurs
@@ -696,8 +695,9 @@ function parse_macros(&$text,&$macros)
     if (!$result[2]) { die ("erreur: une balise macro est mal formee"); }
     // cherche la define
     $search="/<DEFMACRO\s+NAME\s*=\s*\"$result[2]\"\s*>(.*?)<\/DEFMACRO>/s";
-    if (!preg_match($search,$macros,$def)) 
-      if (!preg_match($search,$text,$def)) { die ("erreur: la macro $result[2] n'est pas definie"); }
+    if (!preg_match_all($search,$text,$defs,PREG_SET_ORDER)) 
+      if (!preg_match_all($search,$macros,$defs,PREG_SET_ORDER)) { die ("erreur: la macro $result[2] n'est pas definie"); }
+    $def=array_pop($defs); // recupere la derniere definission
     $def[1]=preg_replace("/(^\r?\n|\r?\n$)/","",$def[1]); // enleve le premier saut de ligne et le dernier
     $text=str_replace($result[0],$def[1],$text);
   }

@@ -131,16 +131,18 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
     $tag=$vals[$ind];
     if ($tag[type]!="open") { continue; }
     $tag=$vals[++$ind]; // on rentre dans le tag auteur
+    $context=array();
     while ($tag[tag]!="auteur") {
       $b=strtolower($tag[tag]);
-      if ($b=="description") {
-	// il faut reconstruire le bloc description... c'est chiant ca !
-	//	$context[description]=rebuildxml($b,$vals,$ind);
-	// temporaire
-	$context[description]=addslashes(stripslashes(strip_tags($tag[value])));
-      } else {
+#      echo $b,"<br>";
+#      if ($b=="description") {
+#	// il faut reconstruire le bloc description... c'est chiant ca !
+#	//	$context[description]=rebuildxml($b,$vals,$ind);
+#	// temporaire
+#	$context[description]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
+#      } else {
 	$context[$b]=trim(addslashes(stripslashes(strip_tags($tag[value]))));
-      }
+#      }
       $tag=$vals[++$ind]; // on rentre dans le tag auteur
     }
 
@@ -164,7 +166,7 @@ function enregistre_auteurs ($iddocument,&$vals,&$index)
 
     // ajoute l'auteur dans la table documents_auteurs
     // ainsi que la description
-    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre,description) VALUES ('$id','$iddocument','$ordre','$context[description]')") or die (mysql_error());
+    mysql_query("INSERT INTO documents_auteurs (idauteur,iddocument,ordre,description,prefix) VALUES ('$id','$iddocument','$ordre','$context[description]','$context[prefix]')") or die (mysql_error());
   }
 }
 

@@ -1,5 +1,13 @@
 <?
 
+
+// regexp de reconnaissance des prefix de nom d'auteur
+
+$prefixregexp="Pr\.|Dr\.";
+
+
+//////////////////////////////////////////////////////////////////////////////
+
 // assure le traitement du fichier lors de l'arrive dans extrainfo
 function ei_pretraitement($filename,$row,&$context,&$text)
 
@@ -174,7 +182,6 @@ function gr_auteur(&$context,$plusauteurs)
     $i=1;
     $rpl="<r2r:grauteur>";
     while ($context["nomfamille$i"] || $context["prenom$i"] || $context["prefix$i"] 
-	   // supprimer le 6/4/3 || $context["affiliation$i"] || $context["courriel$i"]
 	   ) {
       $rpl.="<r2r:auteur ordre=\"$i\">";
       // nompersonne
@@ -183,12 +190,6 @@ function gr_auteur(&$context,$plusauteurs)
 	writetag("nomfamille",$context["nomfamille$i"]).
 	writetag("prenom",$context["prenom$i"]).
 	"</r2r:nompersonne>\n";
-
-//      // affiliation
-//      $rpl.=writetag("affiliation",$context["affiliation$i"]);
-//      // courriel
-//      $rpl.=writetag("courriel",$context["courriel$i"]);
-
       $rpl.=writetag("description",$context["description$i"]);
 
       $rpl.="</r2r:auteur>\n";
@@ -411,6 +412,13 @@ function auteurs2auteur (&$text)
     $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val));
 
     while (($auteur=array_shift($auteurs))) {
+      // on regarde s'il y a un prefix
+      if (preg_match("/^\s*($GLOBALS[prefixregexp])\s/",$auteur,$result)) {
+	$prefix="<r2r:prefix>$result[1]</r2r:prefix>";
+	$auteur=str_replace($result[0],"",$auteur); // a partir de php 4.3.0 il faudra utiliser OFFSET_CAPTURE.
+      } else {
+	$prefix="";
+      }
       // ok, on cherche maintenant a separer le nom et le prenom
       $nom=$auteur;
       while ($nom && strtoupper($nom)!=$nom) { $nom=substr(strstr($nom," "),1);}
@@ -421,7 +429,7 @@ function auteurs2auteur (&$text)
 	$prenom=$result2[1]; $nom=$result2[2];
       }
       // on a maintenant le nom et le prenom, on ecrit le bloc
-      $grauteur.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom></r2r:nompersonne>";
+      $grauteur.="<r2r:auteur ordre=\"$i\"><r2r:nompersonne><r2r:nomfamille>$nom</r2r:nomfamille><r2r:prenom>$prenom</r2r:prenom>$prefix</r2r:nompersonne>";
       if ($descrauteur && !$auteurs)  $grauteur.=$descrauteur; // c'est le dernier auteur de cette liste, s'il y a un bloc description, alors c'est pour lui !
       $grauteur.="</r2r:auteur>";
       $i++;
