@@ -106,6 +106,7 @@ function rtf($filename) {
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
 		      "description_auteur"=>"descriptionauteur",
+		      "droits_auteur"=>"droitsauteur",
 		      "type_document"=>"typedoc",
 		      "langue"=>"langues"
 		      );
