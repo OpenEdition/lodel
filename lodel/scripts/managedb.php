@@ -12,7 +12,7 @@ lock_write("publications",
          "documents",
          "documentsannexes",
          "auteurs","documents_auteurs",
-         "indexs","documents_indexs");
+         "entrees","documents_entrees");
 #else
 #  lock_write("publications","documents","documentsannexes","indexls","documents_indexls"); 
 #endif
@@ -57,7 +57,7 @@ function supprime_document ($ids,$mklock=TRUE,$deletedocannexe=TRUE)
 
 {
 #ifndef LODELLIGHT
-  if ($mklock) lock_write("documents","documentsannexes","auteurs","indexs","documents_auteurs","documents_indexs"); 
+  if ($mklock) lock_write("documents","documentsannexes","auteurs","entrees","documents_auteurs","documents_entrees"); 
 #else
 #  if ($mklock)  lock_write("documents","documentsannexes","indexls","documents_indexls"); 
 #endif
@@ -72,7 +72,7 @@ function supprime_document ($ids,$mklock=TRUE,$deletedocannexe=TRUE)
 
 #ifndef LODELLIGHT
   supprime_table($ids,"auteur",TRUE);
-  supprime_table($ids,"index",FALSE);
+  supprime_table($ids,"entree",FALSE);
 #endif
   unlock();
 }

@@ -18,7 +18,7 @@ function ei_pretraitement($filename,$row,&$context,&$text)
 
   $text=join("",file ($filename.".html"));
   auteurs2auteur($text);
-  $result=mysql_query("SELECT balise FROM $GLOBALS[tableprefix]typeindexs WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  $result=mysql_query("SELECT balise FROM $GLOBALS[tableprefix]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) {
     tags2tag($row[balise],$text);
   }
@@ -75,7 +75,7 @@ $text='<'.'?xml version="1.0" encoding="ISO-8859-1" ?'.'>
   if (!writefile ($filename.".balise",$text)) die ("erreur d'ecriture du fichier $filename.balise");
   if ($row[iddocument]) { # le document existe
 # on recupere la date de publication du texte
-    $result=mysql_query("SELECT datepubli from documents WHERE id='$row[iddocument]'") or die (mysql_error());
+    $result=mysql_query("SELECT datepubli FROM $GLOBALS[tableprefix]documents WHERE id='$row[iddocument]'") or die (mysql_error());
     list($context[datepubli])=mysql_fetch_row($result);
   }
 }
@@ -114,7 +114,7 @@ function ei_edition($filename,$row,&$context,&$text,&$index,&$autresentrees)
   // recherche les differents type d'index
   //
   include_once($home."connect.php");
-  $result=mysql_query("SELECT id,balise FROM $GLOBALS[tableprefix]typeindexs WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,balise FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) {
     //$typeindex[$row[id]]=$row[balise];
     $effacegroupere.="gr$row[balise]|";
@@ -164,7 +164,7 @@ function ei_enregistrement($filename,$row,&$context,&$text)
   if ($row[iddocument]) { # efface d'abord
     include_once($home."managedb.php");
     // recupere les metas et le status
-    $result=mysql_query("SELECT meta,status from documents WHERE id='$row[iddocument]'") or die (mysql_error());
+    $result=mysql_query("SELECT meta,status FROM $GLOBALS[tableprefix]documents WHERE id='$row[iddocument]'") or die (mysql_error());
     list($row[meta],$status)=mysql_fetch_row($result);
     if (!$row[statusdocument]) $row[statusdocument]=$status; // recupere le status si necessaire
     supprime_document($row[iddocument],TRUE,FALSE);
@@ -344,7 +344,7 @@ function makeselectindex (&$context)
 function makeselectindex_rec($parent,$rep,$indexs,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM indexs WHERE status>=-1 AND parent='$parent' AND type='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND type='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=(in_array($row[abrev],$indexs[1]) || in_array($row[nom],$indexs[1])) ? " selected" : "";
