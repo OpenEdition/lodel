@@ -161,7 +161,13 @@ function validfield(&$text,$type,$default="",$name="")
       $text=$str;
     }
     return true;
+    //temp add 
+  case 'list':
+  	return true;
+  	break;
+  
   case 'image' :
+  	
   case 'file' :
     if (!is_array($text)) { unset($text); break; }
     if (!$name) trigger_error("ERROR: \$name is not set in validfunc.php",E_USER_ERROR);
