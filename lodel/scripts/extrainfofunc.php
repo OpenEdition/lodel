@@ -5,6 +5,8 @@
 
 $prefixregexp="Pr\.|Dr\.";
 
+include_once("$home/langues.php");
+
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -37,21 +39,28 @@ function ei_pretraitement($filename,$row,&$context,&$text)
 
   }
   // transforme les balises resume
-  include_once("$home/langues.php");
   $srch=array(); $rpl=array();
   foreach ($langresume as $bal=>$lang) {
     array_push($srch,"/<r2r:$bal>/i","/<\/r2r:$bal>/i");
     array_push($rpl,"<r2r:resume lang=\"$lang\">","</r2r:resume>");
   }
 
+  // supprime le doctype
+  array_push($srch,"/<!DOCTYPE\b[^>]*>/i");
+  array_push($rpl,"");
+  
+  // supprime le < ?xml
+  array_push($srch,"/<\?xml\b.*\?\>/i");
+  array_push($rpl,"");
+
   $text=preg_replace($srch,$rpl,$text);
 
   // ajoute le doctype si necessaire
-  if (!preg_match("/<!DOCTYPE\b/i",$text)) $text="<!DOCTYPE article SYSTEM \"r2r-xhtml-1.dtd\">\n".$text;
-  // ajoute le xml version si necessaire
-  if (!preg_match("/<"."\?xml\b/i",$text)) $text="<"."?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n".$text;
 
-      
+$text='<'.'?xml version="1.0" encoding="ISO-8859-1" ?'.'>
+<!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
+'.$text;
+
   if (!writefile ($filename.".balise",$text)) die ("erreur d'ecriture du fichier $filename.balise");
   if ($row[iddocument]) { # le document existe
 # on recupere la date de publication du texte
