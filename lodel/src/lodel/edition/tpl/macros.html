@@ -117,20 +117,20 @@
 <DEFMACRO NAME="titres_boutons_publications">
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre">
 		<strong>
-			Editer
+			Voir la<br />page
 		</strong>
 	</td>
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
 		<div align="center">
 		<b>
-			Statut
+			Changer<br />le statut
 		</b>
 		</div>
 	</td>
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
 		<div align="center">
 		<b>
-			Rang
+			Changer<br />le Rang
 		</b>
 		</div>
 	</td>
@@ -143,12 +143,85 @@
 	</td>
 </DEFMACRO>
 
+<DEFMACRO NAME="Documents_titre_bleu">		
+	<!-- AFFICHE LE TITRE BLEU DE LA TABLE UNE FOIS -->
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
+		<div align="center">
+		<b>
+			Voir la<br />page
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
+		<div align="center">
+		<b>
+			Changer<br />le statut
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
+		<div align="center">
+		<b>
+			Changer<br />le Rang
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
+		<div align="center">
+		<b>
+			D&eacute;truire
+		</b>
+		</div>
+	</td>
+</DEFMACRO>
+
+<DEFMACRO NAME="Titre_regroupement">
+	<td width="800" background="images/bleu.gif">
+		<b>
+		<font color="navy">
+			[#NOM]
+		</font>
+		</b>
+		<font color="navy"><i>
+			<IF [#TITRE]>
+				[#TITRE]
+			<ELSE/>
+				...
+			</IF>
+		</i></font>
+		<font size="-2" color="navy">
+		([#TYPE])
+		</font>
+		<br>
+			<a href="publication.php?id=[#ID]">
+				Editer
+			</a>
+		|
+		<IF [#STATUS] GT 0>
+			<a href="publi.php?publication=[#ID]&online=0">
+				Dépublier
+			</a>
+		<ELSE/>
+			<a href="publi.php?publication=[#ID]&online=1">
+				Publier
+			</a>
+		</IF>
+		|
+			<a href="supprime.php?publication=[#ID]">
+				Détruire
+			</a>
+		|
+		<MACRO NAME="up_down_regroupement">
+	</td>
+</DEFMACRO>
+
 <DEFMACRO NAME="boutons_publications">
 	<td width="74" valign="middle">
 		<!-- Editer la publication -->
 		<div align="center">
-			<a href="index.php?parent=[#ID]">
-				<MACRO NAME="GIF_Editer_publication_32">
+			<!--<a href="index.php?parent=[#ID]">-->
+			<a href="../../sommaire.html?id=[#ID]">
+				<MACRO NAME="GIF_VOIR_PAGE_32">
 			</a>
 		</div>
 	</td>
@@ -164,6 +237,39 @@
 			<MACRO NAME="GIF_DETRUIRE">
 		</a>
 		</div>
+	</td>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTONS_PUBLICATION">
+	<td width="100%">
+	<!-- Parent -->
+			<a href="index.php?parent=[#PARENT]">
+				<u>Parent</u> 
+			</a>
+			 |
+			<a href="publication.php?id=[#ID]">
+				Editer
+			</a>
+			|
+			<IF [#ID]>
+				<a href="metaimage.php?idpublication=[#ID]">
+					Image
+				</a>
+				|
+			</IF>
+		<IF [#STATUS] GT 0>
+			<a href="publi.php?publication=[#ID]&online=0">
+				Dépublier
+			</a>
+		<ELSE/>
+			<a href="publi.php?publication=[#ID]&online=1">
+				Publier
+			</a>
+		</IF>
+		|
+			<a href="supprime.php?publication=[#ID]">
+				Détruire
+			</a>
 	</td>
 </DEFMACRO>
 
@@ -403,7 +509,7 @@
 			</td>
 		<MACRO NAME="TD_pour_lignesalternees_800">
 		<MACRO NAME="auteurs">
-				"<A HREF="../../document.html?id=[#ID]">
+				"<A HREF="editer.php?id=[#ID]">
 				<font color="black">
 					[#TITRE]
 				</FONT>
@@ -413,8 +519,9 @@
 		<MACRO NAME="TD_pour_lignesalternees_74">
 		<!-- Editer -->
 				<div align="center">
-				<a href="editer.php?id=[#ID]">
-				<MACRO NAME="GIF_EDITER_32">
+				<!--<a href="editer.php?id=[#ID]">-->
+				<a href="../../document.html?id=[#ID]">
+					<MACRO NAME="GIF_VOIR_PAGE_32">
 				</a>
 				</div>
 			</td>
@@ -434,78 +541,6 @@
 				</div>
 			</td>
 		</tr>
-</DEFMACRO>
-
-<DEFMACRO NAME="Documents_titre_bleu">		
-	<!-- AFFICHE LE TITRE BLEU DE LA TABLE UNE FOIS -->
-	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
-		<div align="center">
-		<b>
-			Editer
-		</b>
-		</div>
-	</td>
-	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
-		<div align="center">
-		<b>
-			Statut
-		</b>
-		</div>
-	</td>
-	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
-		<div align="center">
-		<b>
-			Rang
-		</b>
-		</div>
-	</td>
-	<td width="74" background="images/bleu.gif" class="texte_petit_centre"> 
-		<div align="center">
-		<b>
-			D&eacute;truire
-		</b>
-		</div>
-	</td>
-</DEFMACRO>
-
-<DEFMACRO NAME="Titre_regroupement">
-	<td width="800" background="images/bleu.gif">
-		<b>
-		<font color="navy">
-			[#NOM]
-		</font>
-		</b>
-		<font color="navy"><i>
-			<IF [#TITRE]>
-				[#TITRE]
-			<ELSE/>
-				...
-			</IF>
-		</i></font>
-		<font size="-2" color="navy">
-		([#TYPE])
-		</font>
-		<br>
-			<a href="publication.php?id=[#ID]">
-				Editer
-			</a>
-		|
-		<IF [#STATUS] GT 0>
-			<a href="publi.php?publication=[#ID]&online=0">
-				Dépublier
-			</a>
-		<ELSE/>
-			<a href="publi.php?publication=[#ID]&online=1">
-				Publier
-			</a>
-		</IF>
-		|
-			<a href="supprime.php?publication=[#ID]">
-				Détruire
-			</a>
-		|
-		<MACRO NAME="up_down_regroupement">
-	</td>
 </DEFMACRO>
 
 <DEFMACRO NAME="Numeros_publies">
@@ -560,6 +595,24 @@
 	<MACRO NAME="GIF_PARENT">
 </A>
 </DEFMACRO>
+
+<DEFMACRO NAME="DOSSIER_PARENT">
+	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="2">
+		<tr>
+			<td width="48" height="48" align="center" valign="middle"> 
+				<a href="index.php?parent=[#PARENT]">
+					<MACRO NAME="GIF_NUMERO">
+				</a>
+			</td>
+			<td align="left" width="480" valign="middle">
+				<a href="index.php?parent=[#PARENT]">
+					<font color="black"><b>Parent</b></font>
+				</a>
+			</td>
+		</tr>
+	</table>
+</DEFMACRO>
+
 	
 <DEFMACRO NAME="TABLE_nom_publication_numero">  
 <table width="680" border="2" cellspacing="0" cellpadding="0" align="center" bordercolor="#000000" bordercolorlight="#C0C0C0" bordercolordark="#000080" background="images/bleu.gif">
@@ -688,39 +741,6 @@
 		</td>
 </DEFMACRO>
 
-<DEFMACRO NAME="BOUTONS_PUBLICATION">
-	<td width="100%">
-	<!-- Parent -->
-			<a href="index.php?parent=[#PARENT]">
-				<u>Parent</u> 
-			</a>
-			 |
-			<a href="publication.php?id=[#ID]">
-				Editer
-			</a>
-			|
-			<IF [#ID]>
-				<a href="metaimage.php?idpublication=[#ID]">
-					Image
-				</a>
-				|
-			</IF>
-		<IF [#STATUS] GT 0>
-			<a href="publi.php?publication=[#ID]&online=0">
-				Dépublier
-			</a>
-		<ELSE/>
-			<a href="publi.php?publication=[#ID]&online=1">
-				Publier
-			</a>
-		</IF>
-		|
-			<a href="supprime.php?publication=[#ID]">
-				Détruire
-			</a>
-	</td>
-</DEFMACRO>
-
 <DEFMACRO NAME="TR_aucune_publication_dispo">   
 	<tr> 
 		<td>
@@ -738,14 +758,16 @@
 
 <DEFMACRO NAME="TD_nom_type_titre">
 <td width="480" valign="middle">
-	<a href="../../sommaire.html?id=[#ID]">
+	<!--<a href="../../sommaire.html?id=[#ID]">-->
+	<a href="index.php?parent=[#ID]">
 		<b>
 		<font color="black">
 			[#NOM]
 		</font>
 		</b>
 	</a> 
-	<a href="../../sommaire.html?id=[#ID]">
+	<!--<a href="../../sommaire.html?id=[#ID]">-->
+	<a href="index.php?parent=[#ID]">
 		<font size="-2" color="black">
 			(
 			[#TYPE]
@@ -1190,6 +1212,10 @@
 
 <DEFMACRO NAME="GIF_WWW_32">
 	<img src="[#SHAREURL]/images/www32.gif" width="32" height="32" border="0" alt="WWW">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_VOIR_PAGE_32">
+	<img src="[#SHAREURL]/images/www32.gif" width="32" height="32" border="0" alt="Voir la page">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_AJOUTER_DOCUMENT_48">
