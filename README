@@ -1,5 +1,5 @@
 
-LODEL - Logiciel d'Edition ELectronique.
+Lodel - Logiciel d'édition éLectronique.
 
 Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
 Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, 
@@ -9,7 +9,7 @@ Home page: http://www.lodel.org
 
 E-Mail: lodel@lodel.org
 
-Resume:
+Résumé:
 -------
 Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des articles issus d'un traitement de texte. Il allie puissance de configuration (schémas XML dynamiques) et simplicité d'utilisation. Lodel appartient à la famille des CMS (Content managing systems).
 
@@ -27,17 +27,10 @@ Lodel - Logiciel d'édition éLectronique
 
 Lodel est un logiciel d'édition électronique dédié à l'édition de périodiques scientifiques en ligne. Fruit de quatre années d'expérience concrète d'édition électronique, Lodel a été conçu par Ghislain Picard et Marin Dacos et développé par une large équipe.
 
-* Une mise en ligne simple et rapide
-
+Lodel est un logiciel d’édition électronique. Il permet de publier en ligne des articles issus d'un traitement de texte. Il allie puissance de configuration (schémas XML dynamiques) et simplicité d'utilisation.
 Exclusivement disponible "online", ce logiciel permet de publier des sites en important des articles issus d'un traitement de texte ou d'un logiciel de PAO, après un prétraitement rapide. Lodel a été conçu pour permettre une mise en ligne simplifiée qui puisse être assurée par des équipes avec des compétences informatiques minimales. Le logiciel est par ailleurs, adapté aux conditions concrètes et variées de travail des utilisateurs (Macintosh, PC, etc.), ce qui augmente sa simplicité d'adaptation.
-
-Le logiciel est pensé pour permettre une mise en ligne très rapide sans céder sur la qualité et sur les normes, mise en ligne rapide, adaptée à la fois au rythme lent de l'édition papier, mais également aux rythmes spécifiques de l'édition électronique.
-
-Un système élaboré de gabarits graphiques (template) permet aux sites de se doter d'une charte graphique spécifique marquant sa personnalité. Cela permet également de séparer totalement la forme du fond, c'est-à-dire de dissocier les processus liés aux contenus de ceux qui sont liés à la mise en forme, permettant ainsi aux éditeurs de se concentrer sur leur travail éditorial.
-
-* Interopérabilité et évolutibilité
-
-Lodel utilise des technologies favorisant l'interopérabilité et la réutilisation future des données : il produit du XML, du Dublin Core, du RSS.
+Lodel est pensé pour permettre une mise en ligne très rapide sans céder sur la qualité et sur les normes. Il utilise des technologies favorisant l'interopérabilité (Dublin Core, RSS, prochainement OAI) et la réutilisation future des données (il produit du XML).
+Un système élaboré de gabarits graphiques (template) s’appuyant sur le langage Lodelscript permet aux sites de se doter d'une charte graphique spécifique marquant leur personnalité. Cela permet également de séparer totalement la forme du fond, c'est-à-dire de dissocier les processus liés aux contenus de ceux qui sont liés à la mise en forme, permettant ainsi aux éditeurs de se concentrer sur leur travail éditorial.
 
 ----------------------------------------------------------------------------------------
 
@@ -63,5 +56,3 @@ Remerciements
 Merci à tous les contributeurs: Gautier Poupeau, Francois Lermigeaux, Pierre Mounier, Jean-Christophe Peyssard, Anne-Claire Bordel, Laurent Godard.
 
 Merci aux projets OpenSource: OpenOffice.org, Writer2Latex, phpMyAdmin, PhpConcept Library, Ted, SourceForge.net
-
-
