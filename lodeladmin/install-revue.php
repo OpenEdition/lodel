@@ -53,17 +53,18 @@ foreach ($sql as $cmd) {
 #ifndef LODELLIGHT
 
 $dirs=array("CACHE","lodel/admin/CACHE","lodel/edition/CACHE","lodel/txt","lodel/rtf");
-foreach ($dirs as $dir) {
-  $file="../../$rep/$dir/.htaccess";
-  if (file_exists($file)) @unlink($file);
-  $f=@fopen ($file,"w");
-  if (!$f) {
-    print ("<font COLOR=red>Impossible d'ecrire dans le repertoire $dir. Faire: chmod 770 $dir ou chmod 777 $dir</font><br>");
-  } else {
-    fputs($f,"deny from all\n");
-    fclose ($f);
-  }
-}
+
+//foreach ($dirs as $dir) {
+//  $file="../../$rep/$dir/.htaccess";
+//  if (file_exists($file)) @unlink($file);
+//  $f=@fopen ($file,"w");
+//  if (!$f) {
+//    print ("<font COLOR=red>Impossible d'ecrire dans le repertoire $dir. Faire: chmod 770 $dir ou chmod 777 $dir</font><br>");
+//  } else {
+//    fputs($f,"deny from all\n");
+//    fclose ($f);
+//  }
+//}
 
 // verifie les htaccess
 
