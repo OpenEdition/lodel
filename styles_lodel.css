@@ -358,6 +358,11 @@ div.intitule_ligne_formulaire {
 	color: #333333;
 }
 
+.texte_noir {
+	font-family: Verdana;
+	font-size: 10pt;
+	color:#333333;
+}
 .texte_noir_gras {
 	font-family: Verdana;
 	font-weight: bold;
@@ -386,7 +391,7 @@ div.intitule_ligne_formulaire {
 	width:800px;
 }
 
-.titre_publi, .nom_publi, .type_publi {
+.titre_publi, .nom_publi, .type_publi,.nom_document {
 	font-family: verdana;	
 	color: #CC9933;
 	text-align: left;
@@ -394,6 +399,11 @@ div.intitule_ligne_formulaire {
 
 .nom_publi {
 	font-size: 12pt;
+	font-weight: bold;
+}
+
+.nom_document {
+	font-size: 10pt;
 	font-weight: bold;
 }
 
