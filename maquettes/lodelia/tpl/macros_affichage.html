@@ -56,37 +56,33 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste des publications de type numéro, publiées         -->
 <!-- ****************************************************************** -->
+	<div class="titre1">
+		Les numéros de <MACRO NAME="NOM_REVUE">
+		<br/ > 
+		<span class="soustitrerevue">
+			<MACRO NAME="DESCRIPTION_REVUE">
+		</span>
+	</div>
 		
-			
-		<div class="titre1">
-			Les numéros de <MACRO NAME="NOM_REVUE">
-			<br/ > 
-			<span class="soustitrerevue">
-				<MACRO NAME="DESCRIPTION_REVUE">
-			</span>
-		</div>
-			
-		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="status gt 0" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
-			<DO>
-					<div class="afficherdocument">
-					<a href="sommaire.html?id=[#ID]">
-						<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
-						Numéro [#NOM]
-					</a>
-					<MACRO NAME="TITRE_PUBLICATION">&nbsp;
-					<MACRO NAME="SOUSTITRE_PUBLICATION">&nbsp;
-					<br />
-					<MACRO NAME="DIRECTEUR_PUBLICATION">
-					<br />
-					<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
-					</div>
-				
-			</DO>
-			<ALTERNATIVE>
-					Aucun numéro disponible actuellement
-			</ALTERNATIVE>
-		</LOOP>
-	
+	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="status gt 0" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
+		<DO>
+			<div class="afficherdocument">
+				<a href="sommaire.html?id=[#ID]">
+					<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
+					Numéro [#NOM]
+				</a>
+				<MACRO NAME="TITRE_PUBLICATION">&nbsp;
+				<MACRO NAME="SOUSTITRE_PUBLICATION">&nbsp;
+				<br />
+				<MACRO NAME="DIRECTEUR_PUBLICATION">
+				<br />
+				<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
+			</div>
+		</DO>
+		<ALTERNATIVE>
+			Aucun numéro disponible actuellement
+		</ALTERNATIVE>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_PUBLICATION">
@@ -98,9 +94,7 @@
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
 	<IF COND="[#NOM]">
-		
 		[#NOM]
-				
 	<ELSE/>
 		<a href="index.html">
 			<MACRO NAME="NOM_REVUE">
@@ -114,9 +108,7 @@
 <!-- Affiche, s'il existe, le titre d'une publication.                  -->
 <!-- ****************************************************************** -->
 	<IF COND="[#TITRE]">
-		
 		[#TITRE]
-		
 	</IF>
 </DEFMACRO>
 
@@ -126,9 +118,7 @@
 <!-- Affiche, s'il existe, le sous-titre d'une publication.             -->
 <!-- ****************************************************************** -->
 	<IF COND="[#SOUSTITRE]">
-	
 		 . [#SOUSTITRE]
-		
 	</IF>
 </DEFMACRO>
 
@@ -158,26 +148,20 @@
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
-
-				<div class="titre1">
-		 			 <MACRO NAME="NOM_PUBLICATION"> 
-					 <br /> <MACRO NAME="TITRE_PUBLICATION">
-		 			
-					<span class="soustitrerevue">
-		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
-				 	</span>
-							
-					<MACRO NAME="BOUTON_EDITER_PUBLICATION">
-							
-					<MACRO NAME="DIRECTEUR_PUBLICATION">
-												
-				</div>
-				<IF COND="[#INTRODUCTION]">
-					<div class="extrait">
-						<MACRO NAME="INTRODUCTION_COMPLETE">
-					</div>
-				</IF>			
-
+	<div class="titre1">
+		<MACRO NAME="NOM_PUBLICATION"> 
+		<br /> <MACRO NAME="TITRE_PUBLICATION">
+		<span class="soustitrerevue">
+			<MACRO NAME="SOUSTITRE_PUBLICATION">
+	 	</span>
+		<MACRO NAME="BOUTON_EDITER_PUBLICATION">
+		<MACRO NAME="DIRECTEUR_PUBLICATION">
+	</div>
+	<IF COND="[#INTRODUCTION]">
+		<div class="extrait">
+			<MACRO NAME="INTRODUCTION_COMPLETE">
+		</div>
+	</IF>			
 </DEFMACRO>
 
 <DEFMACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">
@@ -192,21 +176,17 @@
 <!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- ****************************************************************** -->
-				<div class="titre1">
-		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
-					 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
-		 			
-					<span class="soustitrerevue">
-		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
-				 	</span>
-							
-					<MACRO NAME="BOUTON_EDITER_PUBLICATION">
-							
-					<p class="directeur_publication">
-		 				<MACRO NAME="DIRECTEUR_PUBLICATION">
-					</p>
-								
-				</div>	
+	<div class="titre1">
+		 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
+		 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
+		<span class="soustitrerevue">
+			<MACRO NAME="SOUSTITRE_PUBLICATION">
+	 	</span>
+		<MACRO NAME="BOUTON_EDITER_PUBLICATION">
+		<p class="directeur_publication">
+			<MACRO NAME="DIRECTEUR_PUBLICATION">
+		</p>
+	</div>	
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS">
@@ -858,8 +838,6 @@
 	</LOOP>
 </DEFMACRO>
 
-
-
 <DEFMACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">	
 <!-- *************************************************** -->
 <!--    Version 1.0                                      -->
@@ -883,8 +861,6 @@
 		</LOOP>
 	</LOOP>
 </DEFMACRO>
-
-
 
 <DEFMACRO NAME="SOMMAIRE_DERNIER_NUMERO">
 <!-- ****************************************************************** -->
