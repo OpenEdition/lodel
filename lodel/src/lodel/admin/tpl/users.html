@@ -47,7 +47,7 @@
 		<td class="texte_noir_gras" align="center">Sessions</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="statut gt 0">
+	<LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="statut gt 0 AND privilege lt 128">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">

@@ -61,8 +61,13 @@ class XMLDB {
   function addTable()
 
   {
-    foreach(func_get_args() as $table) {     
-      $this->tables[$table]=array('element'=>array(),'attr'=>array(),'where'=>array(),'join'=>array());
+    foreach(func_get_args() as $table) {
+#      if (is_array($table)) {
+#	list($table,$tablename)=$table;
+#      } else {
+	$tablename=$table;
+#      }
+	$this->tables[$table]=array('element'=>array(),'attr'=>array(),'where'=>array(),'join'=>array());
       $this->tables[$table]['rowtag']="row";
     }
   }
