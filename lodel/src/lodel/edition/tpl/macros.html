@@ -6,11 +6,35 @@
 <!-- Affiche une icône qui permet de  -->
 <!--  publier ou dépublier une publication -->
 
+<DEFMACRO NAME="JS_CONFIRM_DEPUBLICATION">
+	<script language="JavaScript">
+		function confirm_depublication(publi,id)
+		// Si publi = 1 -> publication sinon -> document.
+		// id -> identifiant du doc ou de la publi à dépublier
+		{
+			var msgdoc="Etes-vous sûr de vouloir dépublier ce document ?";
+			var msgpubli="Etes-vous sûr de vouloir dépublier cette publication ?";
+			var msgserie
+			{
+				if(publi)
+				{
+					if(confirm(msgpubli))location.replace("publi.php?publication="+id);
+				}
+				else
+				{
+					if(confirm(msgdoc))location.replace("publi.php?id="+id);
+				}				
+			}
+		}
+	</script>
+</DEFMACRO>
+
 <DEFMACRO NAME="Status">
 	<IF [#STATUS] GT 0>
 		<div align="center">
 			<IF [#STATUS]==1>
-				<a href="publi.php?publication=[#ID]">
+				<!--<a href="publi.php?publication=[#ID]">-->
+				<a href="#" onClick="confirm_depublication(1,[#ID]);">
 					<span class="texte_tres_petit_center">
 						Dépublier
 					</span>
@@ -42,7 +66,8 @@
 	<IF [#STATUS] GT 0>
 		<div align="center">
 			<IF [#STATUS]==1>
-				<a href="publi.php?id=[#ID]">
+				<!--<a href="publi.php?id=[#ID]">-->
+				<a href="#" onClick="confirm_depublication(0,[#ID]);">
 					<span class="texte_tres_petit_center">
 						Dépublier
 					</span>
@@ -68,24 +93,6 @@
 			</IF>
 		</div>
 	</IF>
-<!--
-	<IF [#OFFLINE]>
-		<div align="center">
-	<a href="publi.php?id=[#ID]&online=1">
-		<span class="texte_tres_petit_center">
-			Publier
-		</span>
-	</a>
-	<ELSE/>
-		<br>
-	<a href="publi.php?id=[#ID]">
-		<span class="texte_tres_petit_center">
-			Dépublier
-		</span>
-	</a>
-		</div>
-	</IF>
-</span>-->
 </DEFMACRO>
 		
 <DEFMACRO NAME="offline_document">
