@@ -140,8 +140,7 @@ $usesymlink="";
 $installoption="";
 ############################################
 
-setlocale (LC_ALL,"FR");
-setlocale(LC_TIME, "FR");
+setlocale (LC_ALL,"fr_FR.UTF8");
 
 set_magic_quotes_runtime(0);
 ignore_user_abort();
