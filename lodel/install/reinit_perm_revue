@@ -1,6 +1,6 @@
 #!/bin/bash
 # reinitialisation des droits sur les fichiers et repertoires d'un revue
-# Luc Santeramo/300103
+# Luc Santeramo/241003
 
 if [ $# -ne 1 ]
 then
@@ -13,7 +13,7 @@ LODEL="$1"
 APACHEWRDIR="lodel/txt lodel/rtf docannexe lodel/admin/upload"
 APACHECACHEWRDIR="CACHE lodel/edition/CACHE lodel/admin/CACHE"
 
-USERWRFILES="tpl images styles_revue.css robots.txt"
+USERWRFILES="tpl images styles_*.css robots.txt"
 
 HTACCESSDIR="CACHE tpl lodel/txt lodel/rtf lodel/edition/CACHE lodel/admin/CACHE lodel/admin/tpl lodel/edition/tpl"
 
@@ -31,7 +31,7 @@ do
   chmod 770 $LODEL/$rep
   echo "  Done."
   echo "  fichiers contenus dans $LODEL/$rep"
-  chmod 660 $LODEL/$rep/*
+  find $LODEL/$rep -not -name ".htaccess" -not -path "*/CVS*" -type f -user $USER -o -user root -exec chmod 660 {} \; 
   echo "  Done."
 done
 
@@ -39,13 +39,16 @@ done
 # accessible en ecriture par l'utilisateur
 
 echo "  $LODEL"
-chmod g+w $LODEL
+chmod g+w $LODEL/
 echo "  Done."
 
 for files in $USERWRFILES
 do
   echo "  $files"
-  chmod -R g+w $LODEL/$files
+  if [ -e $LODEL/$files ]
+  then
+    chmod -R g+w $LODEL/$files
+  fi
   echo "  Done."
 done
 
@@ -56,7 +59,7 @@ for rep in $APACHECACHEWRDIR
 do
   echo "  $LODEL/$rep"
   chmod 770 $LODEL/$rep
-  rm -rf $LODEL/$rep/*
+  find $LODEL/$rep -not -name ".htaccess" -not -path "*/CVS*" -type f -exec rm -rf {} \;
   echo "  Done."
 done
 
@@ -74,7 +77,10 @@ do
     echo "  $LODEL/$rep/.htaccess present"
   fi
   echo "  Changement des permissions sur le fichier $LODEL/$rep/.htaccess"
-  chmod 644 $LODEL/$rep/.htaccess
+  if [ -O $LODEL/$rep/.htaccess ]
+  then
+    chmod 644 $LODEL/$rep/.htaccess
+  fi
   ls -al $LODEL/$rep/.htaccess
   echo "  Ok."
 done
