@@ -1,0 +1,66 @@
+<?
+
+# Emplacement des scripts
+# par exemple $home="/var/www/lodel/scripts";
+$home="/path/to/script";
+
+# Base du site
+# ATTENTION : $urlroot doit toujours se terminer par /, il ne peut etre vide
+$urlroot="/";
+
+# URL contenant les fichiers communs partagés
+# par exemple $shareurl="http://lodel.revues.org/share";
+$shareurl="http://mywebsite.domain.org/lodel/share";
+
+# Repertoire contenant les fichiers communs partagés
+# par exemplre $sharedir="/var/www/lodel/share";
+$sharedir="/path/to/share";
+
+# Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite
+# nomrevues.domain.org ou domaine.org/nomrevue
+$revueagauche=0;
+
+# Timeout pour les sessions
+# en seconde
+$timeout=120*60;
+
+# Nom de la base de donnees
+$database="lodel";
+
+# Nom d'utilisateur
+$dbusername="lodeluser";
+# Mot de passe
+$dbpasswd="lodelpasswd";
+# Hote de la BD
+$dbhost="dbhost.domain.org";
+
+# Repertoire contenant le binaire de mysql
+$mysqldir="/usr/bin";
+
+# type lineaire (table indexls)
+define (TYPE_MOTCLE,2);
+define (TYPE_MOTCLE_PERMANENT,3);
+
+# type hierarchique (table indexhs)
+define (TYPE_PERIODE,1);
+define (TYPE_GEOGRAPHIE,4);
+
+# Utilise pour lodellight essentiellement
+$tableprefix="";
+
+# Nom de la session (cookie)
+$sessionname="session$database";
+
+
+############################################
+
+setlocale ("LC_ALL","FR");
+set_magic_quotes_runtime(0);
+ignore_user_abort();
+
+// securite
+$currentdb="";
+
+define (NORECORDURL,1);
+
+?>

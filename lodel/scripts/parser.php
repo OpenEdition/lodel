@@ -17,13 +17,13 @@ function parse ($in,$out)
 
   foreach($results as $result) {
     	$contents=str_replace($result[0],"",$contents); // efface le use
-	$macrofile="tpl/".$result[1];
-	if (file_exists($macrofile)) {
-	    $macros.=join('',file($macrofile));
-	} elseif ($sharedir && file_exists($sharedir."/".$macrofile)) {
-	    $macros.=join('',file($sharedir."/".$macrofile));
+	$macrofile=$result[1];
+	if (file_exists("tpl/".$macrofile)) {
+	    $macros.=join('',file("tpl/".$macrofile));
+	} elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
+	    $macros.=join('',file($sharedir."/macros/".$macrofile));
 	} else {
-		die ("le fichier macros $result[1] n'existe pas");
+	  die ("le fichier macros $result[1] n'existe pas");
 	}
   }
   $macros=stripcomment($macros);
@@ -203,6 +203,67 @@ function parse_cond (&$text,$offset=0) {
 }
 
 
+
+
+##### traite les conditions avec IF
+####function parse_switch (&$text,$offset=0) {
+####
+####  $tag_debut="<SWITCH ";
+####  $tag_case="<CASE>";
+####  $tag_fin="</SWITCH>";
+####  $lendebut=strlen($tag_debut);
+####  $lenfin=strlen($tag_fin);
+####
+####  $debut = strpos($text,$tag_debut,$offset);
+####  while ($debut!==FALSE) {
+####    $offset=$debut+$lendebut;
+####
+####    do {
+##### cherche le tag de fin
+####      $fin = strpos($text,$tag_fin,$offset);
+####      if ($fin===FALSE) { die ("erreur le IF ne se termine pas"); }
+##### cherche s'il y a un deuxieme IF a l'interieur
+####      $debut2=strpos($text,$tag_debut,$offset);
+####      $sndif=$debut2!==FALSE && $debut2<$fin;
+####      if ($sndif) parse_cond($text,$offset); // oui, on le traite d'abord
+####    } while($sndif);
+####
+####    $switch_txt=substr($text,$offset,$fin-$offset);
+####
+##### ok, maintenant, on traite le switch
+####
+##### cherche la variable
+####
+####    if (!preg_match("/^[^>]*VAR\s*=\s*\"(.*?)\"[^>]*>/",$switch_txt,$var)) die ("erreur. La balise IF ne contient pas de condition");
+####
+####    parse_variable($cond[1],FALSE);
+####    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\band\b/i","/\bor\b/i"),
+####		 array(">","<",">=","<=","==","&&","||"),$cond[1]);
+####
+####    $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
+##### cherche le sinon
+####    $sinon=strpos($if_txt,$tag_sinon);
+####    if (!($sinon==FALSE)) {
+####      $else_txt=substr($if_txt,$sinon+strlen($tag_sinon));
+####      $if_txt=substr($if_txt,0,$sinon);
+####    } else {
+####      $else_txt="";
+####    }
+##### genere la code
+####
+####    $code='<'.'? if ('.$cond[1].') { ?'.'>'.$if_txt.'<'.'? }';
+####    if ($else_txt) $code.=' else { ?'.'>'.$else_txt.'<'.'? }';
+####    $code.='?'.'>';
+####
+##### fait le remplacement
+####
+####    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
+####
+####    $debut = strpos($text,$tag_debut,$offset);
+####  }
+####}
+####
+
 function parse_boucle (&$text,&$fct_txt,$offset=0) 
 
 {
@@ -217,12 +278,15 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
   $lenfin=strlen($tag_fin);
 
   $debut = strpos($text,$tag_debut,$offset);
-  while (!($debut===FALSE)) {
+  $fin = strpos($text,$tag_fin,$offset);
+  // la comparaison $debut<$fin permet de finir quand on depasse le scope de l'appelant
+  while ($debut!==FALSE && $debut<$fin) {
 
     $offset=$debut+$lendebut;
 
 # cherche les attributs de la boucle
     $attr=substr($text,$offset);
+
     $nom=$order=$limit="";
     $wheres=array();
     $tables=array();
@@ -383,36 +447,64 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
       $nom="number".rand();
     }
 
-    $isdefined=$boucles[$nom];
-    $boucles[$nom]=1; # marque la boucle comme definie
+    if (!$boucles[$nom][type]) $boucles[$nom][type]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
+    $issql=$boucles[$nom][type]=="sql";
+
+    ////// c'est inutile de faire une boucle, il faut juste faire un passage, la boucle est dans parse_boucle.
     # ici attr contient la fin du fichier.
     # on cherche s'il y a des boucles interieures
-    do {
+#    do {
+## cherche le tag de fin
+#      $fin = strpos($text,$tag_fin,$offset);
+#      if ($fin===FALSE) { die ("erreur: la boucle ne se termine pas"); }
+## cherche s'il y a une deuxieme boucle a l'interieur
+#      $debut2=strpos($text,$tag_debut,$offset);
+#      $sndbcl=!($debut2===FALSE) && $debut2<$fin;
+#      if ($sndbcl)	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
+#    } while($sndbcl);
+#
+#
+
+
 # cherche le tag de fin
       $fin = strpos($text,$tag_fin,$offset);
       if ($fin===FALSE) { die ("erreur: la boucle ne se termine pas"); }
 # cherche s'il y a une deuxieme boucle a l'interieur
       $debut2=strpos($text,$tag_debut,$offset);
       $sndbcl=!($debut2===FALSE) && $debut2<$fin;
-      if ($sndbcl) parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
-    } while($sndbcl);
+      if ($sndbcl) {
+	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
+	$fin = strpos($text,$tag_fin,$offset);
+      }
     # content
     $attr=substr($text,$offset,$fin-$offset);
 
     if ($tables) { // boucle SQL
-      if ($isdefined) die ("Impossible de redefinir la boucle $nom");
-      make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
+      // cree un identifiant "presque" unique pour cette boucle
+      $md5boucle=md5($tables.$where.$order.$limit.$attr);
+      // verifie que la boucle n'a pas ete defini sous le meme nom avec un contenu different
+      if ($issql && $md5boucle!=$boucles[$nom][id]) die ("Impossible de redefinir la boucle $nom avec un code ou des arguments differents");
+      if (!$issql) { // on la definit
+	make_boucle_code($nom,$tables,$where,$order,$limit,$attr,$fct_txt);
+	$boucles[$nom][id]=$md5boucle; // enregistre l'identifiant qui caracterise la boucle
+	$boucles[$nom][type]="sql"; // marque la boucle comme etant une boucle sql
+      }
+      $code='<? boucle_'.$nom.'($context); ?>';
     } else {
-      //      echo "$nom-->$boucles[$nom]<br>";
-      if (!$isdefined) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
-	make_userdefined_boucle_code ($nom,$attr,$fct_txt);
+      if (!$issql) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
+	$boucles[$nom][id]++; // increment le compteur de nom de boucle
+	$newnom=$nom."_".$boucles[$nom][id]; // change le nom pour qu'il soit unique
+	make_userdefined_boucle_code ($newnom,$attr,$fct_txt);
+	$code='<? boucle_'.$nom.'($context,"'.$newnom.'"); ?>';
+      } else {
+	// boucle sql recurrente
+	$code='<? boucle_'.$nom.'($context); ?>';
       }
     }
-    $code='<? boucle_'.$nom.'($context); ?>';
-
     $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
-    $debut = strpos($text,$tag_debut,$debut);
 
+    $fin = strpos($text,$tag_fin,$debut);
+    $debut = strpos($text,$tag_debut,$debut);
   } // while
 }
 

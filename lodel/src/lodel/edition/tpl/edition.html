@@ -48,13 +48,13 @@
 											Edition des séries
 										</font>
 									</td>
-								<MACRO NAME="titres_boutons_publications">
+									<MACRO NAME="titres_boutons_publications">
 								</tr>
 								<BOUCLE NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre DESC">
 								<tr>
 									<td width="48"> 
 										<div align="center">
-										<a href="../../sommaire.html?id=[#ID]">
+										<a href="index.php?parent=[#ID]">
 											<MACRO NAME="GIF_SERIE">
 										</a>
 										</div>

@@ -28,7 +28,7 @@ if (!file_exists("lodel/txt/r2r-$id.xml")) { header ("Location: not-found.html")
 $text=join("",file("lodel/txt/r2r-$id.xml"));
 
 include ("$home/xmlfunc.php");
-$balises=array("TITRE","RESUME","SURTITRE","SOUSTITRE","NOTEBASPAGE","ANNEXE","BIBLIOGRAPHIE");
+$balises=array("TITRE","RESUME","SURTITRE","SOUSTITRE","NOTEBASPAGE","ANNEXE","BIBLIOGRAPHIE","RENCENSION_AUTEUR","RENCENSION_TITRE","RENCENSION_ANNEE","RENCENSION_TYPE","SURTITRE","ERRATUM","NDLR","DROITSAUTEUR");
 if ($context[textepublie] || $visiteur) array_push($balises,"TEXTE");
 $context=array_merge($context,extract_xml($balises,$text,TRUE));
 

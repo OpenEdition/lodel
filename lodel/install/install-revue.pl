@@ -5,7 +5,7 @@ $homerevue="../lodel/revue";
 $homerevuetpl="../../lodel/revue";
 
 # si le groupe de l'utilisateur est www, alors faire: umask 0007
-umask 0000;
+umask 0007;
 
 mkdir "CACHE", 0770;
 mkdir "tpl", 0755;
@@ -74,6 +74,7 @@ mkdir "lodel/edition/tpl", 0755;
 mkdir "lodel/edition/CACHE", 0770;
 chdir "lodel/edition";
 htaccess ("CACHE");
+htaccess ("tpl");
 
 slink ("../../lodelconfig.php","lodelconfig.php");
 slink ("../../styles_revue.css","styles_revue.css");
@@ -90,6 +91,7 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "balisage",
 	      "balises",
 	      "chargement",
+	      "chargesommaire",
 	      "chkbalisage",
 	      "docannexe",
               "deskedition",
@@ -97,9 +99,8 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "editer",
 	      "deplacer",
 	      "publi",
-              "publications_protegees",
-              "documents_proteges",
 	      "extrainfo",
+	      "importsommaire",
 	      "index",
 	      "edition",
 	      "edition-lineaire",
@@ -131,6 +132,7 @@ mkdir "lodel/admin/upload", 0770;
 
 chdir "lodel/admin";
 htaccess ("CACHE");
+htaccess ("tpl");
 
 @adminfile=(
 	    "index",
@@ -197,4 +199,5 @@ sub htaccess {
   open(HT,">$dir/.htaccess") or die "Impossible d'ecrire dans $dir";
   print HT "deny from all\n";
   close (HT);
+  chmod (0644, "$dir/.htaccess") or die "Can't chmod $dir/.htaccess";
 }

@@ -13,9 +13,8 @@
 		</td>
 	<td align="center">
 	<span class="titre">
-		Edition de document
+		Edition de document (id : [#ID])
 	</span>
-	<br>
 	<div align="center">
 			<BOUCLE NAME="chercheparent" table="documents" WHERE="id=[#ID]">
 					<a href="index.php?parent=[#PUBLICATION]">
@@ -23,6 +22,18 @@
 				</IF>
 			</BOUCLE>
 			</a>
+	<br><br>
+	<br>
+	
+	<BOUCLE NAME="Affiche_articles" TABLE="documents" WHERE="id=[#ID]">
+		<MACRO NAME="auteurs"><br>
+			<em>
+				"[#TITRE]"
+			</em>
+			([#TYPE])
+			<br>
+	</BOUCLE>
+	<br>
 
 	<!-- ******* -->
 	<!-- EDITER  -->
@@ -48,7 +59,7 @@
 				</div>
 			</td>
 			<td width="400" >
-				<strong><a href="editer.php?id=[#ID]&edit=1&[#URL_RETOUR]">Editer les métadonnées</a></strong>
+				<strong><a href="editer.php?id=[#ID]&edit=1">Editer les métadonnées</a></strong>
 					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
 					<INPUT TYPE="hidden" NAME="edit" VALUE="1">
 					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
@@ -83,7 +94,7 @@
 					<INPUT TYPE="hidden" NAME="id" VALUE="[#ID]">
 					<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">
 					<IF [#STATUS] gt 0>
-						<strong>Dépublier le document</strong>
+						<strong>Dépublier le document</strong> (danger)
 					<ELSE/>
 					<INPUT TYPE="hidden" NAME="online" VALUE="1">
 						<strong>Publier le document</strong>
@@ -126,6 +137,31 @@
 			</td>
 			<td>
 				Contactez l'éditeur pour recharger ce document.
+			</td>
+		</tr>
+	</IF>
+
+	<!-- Télécharger -->
+	<IF [#REDACTEUR]>	
+	<tr>
+		<td width="48" height="48" >
+			<div align="center">
+			<a href="../../lodel/rtf/r2r-[#ID].rtf" target="_blank">
+				<MACRO NAME="GIF_TELECHARGER">
+			</a>
+			</div>
+		</td>
+		<td width="400">
+			<strong>Télécharger le source RTF</strong>
+		  </td>
+	</tr>	 
+	<ELSE/>
+		<tr>
+			<td>
+				<MACRO NAME="GIF_Inactif">
+			</td>
+			<td>
+				Demandez le source RTF à un rédacteur ou à l'éditeur.
 			</td>
 		</tr>
 	</IF>

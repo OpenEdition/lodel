@@ -5,7 +5,7 @@
 function writefile ($filename,&$text)
 
 {
-  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f);
+  return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
 }
 
 function get_tache (&$id)
@@ -32,29 +32,48 @@ function posttraitement(&$context)
       if (is_array($val)) {
 	posttraitement($context[$key]);
       } else {
-	if ($key!="meta") $context[$key]=htmlspecialchars(stripslashes($val));
+	if ($key!="meta") $context[$key]=str_replace("\n"," ",htmlspecialchars(stripslashes($val)));
       }
     }
   }
 }
 
-
+//
+// $context est soit un tableau qui sera serialise soit une chaine deja serialise
+//
 
 function make_tache($nom,$etape,$context,$id=0)
 
 {
   global $iduser;
-  $contextstr=serialize($context);
-  mysql_query("REPLACE INTO $GLOBALS[tableprefix]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$contextstr')") or die (mysql_error());
+  if (is_array($context)) $context=serialize($context);
+  mysql_query("REPLACE INTO $GLOBALS[tableprefix]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$context')") or die (mysql_error());
   return mysql_insert_id();
 }
 
-function update_taches($id,$etape)
+function update_tache_etape($id,$etape)
 
 {
   mysql_query("UPDATE $GLOBALS[tableprefix]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
  # ne pas faire ca, car si la tache n'est pas modifiee, il renvoie 0
 # if (mysql_affected_rows()!=1) die ("Erreur d'update de id=$id");
+}
+
+//
+// previouscontext est la chaine serialisee
+// newcontext est un array
+
+function update_tache_context($id,$newcontext,$previouscontext="")
+
+{
+  if ($previouscontext) { // on merge les deux contextes
+    $contextstr=serialize(array_merge(unserialize($previouscontext),$newcontext));
+  } else {
+    $contextstr=serialize($newcontext);
+  }
+
+  mysql_query("UPDATE $GLOBALS[tableprefix]taches SET context='$contextstr' WHERE id='$id'") or die (mysql_error());
+
 }
 
 function rmscript($source) {
@@ -130,13 +149,13 @@ function copy_images (&$text,$callback)
 
 {
     // copy les images en lieu sur et change l'acces
-    preg_match_all("/<IMG\s+SRC=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
+    preg_match_all("/<img\s+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
     $count=1;
     $imglist=array();
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+	$text=str_replace($result[0],"<Img src=\"$imglist[$imgfile]\"",$text);
       } else {
 	$ext=$result[2];
 	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count);

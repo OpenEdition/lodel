@@ -1,60 +1,94 @@
-* edition/index.php
+*
+* modif pour ajouter les styles recensions, erratum, ndlr, droitsauteur, surtitre: lodel/revue/lodel/edition/balises.php
+Pour le moment, tous ces styles sont accessibles dans documents.php uniquement. Il faut me dire ce qu'il faut en faire exactement (surtout les recensions... a mettre dans la base ?).
+Il faut aussi me dire lesquels on affiche (ou on affiche pas) quand le texte n'est pas publie ! c'est important de securiser dans le php, sauf si vous souhaitez que chaque revue decide... dans ce cas, toutes les revues assumes le choix d'afficher ou pas un erratum, un ndlr, etc quand le texte n'est pas publie.
 
-on peut appler index.php?parent=xx ou index.php?id=xx. Dans le second cas, il permet d'editer la publi qui contient xx et non les fils de xx.
+* Mettre a jour en consequence la DTD de lodel.
 
-* retailler les images
+* Modif de extrainfo.php pour gerer aussi le surtitre
 
-Dans metaimage.html il est possible d'ajouter un champ taille: 
-<INPUT NAME="taille" TYPE="text" SIZE="10" VALUE="[#TAILLE]">
-
-Si ce champ est vide, l'image ne subit aucune transformation.
-Sinon, l'image prend la taille indique. Exemple 30x100 ou 30 100 redimensionnera l'image a une largeur de 30 et hauteur de 100. Ceci ne marche qu'avec les JPEG et PNG car la librairie gd ne supporte pas les GIF (ca depend des versions).
-Il faut install php-gd pour que ca marche. Si on donne une valeur unique, genre 30, il retaille l'image pour que sa plus grande longueur (largeur ou hauteur) fasse 30.
-
-* il y avait un trou de securite (mais avec peu de consequence possible) dans logout.php
-
-* il y a un probleme potentiel dans le parser sur le test du status. Le probleme peut se poser pour les boucles ou il y a deux tables par exemple TABLE="documents" TABLE="auteurs". Dans ce cas, seulement le status de documents (la premiere) est verifiee. Ce n'est pas a priori un gros pb vu qu'un auteur non publie, signifie qu'aucun document qui a cet auteur n'est publie. J'ai fait la modif pour tester le status de toutes les tables. Je pense que ca ne va pas poser de pb de compat, et que ca evitera des soucis a l'avenir. Par contre comme avant, si il y a un test sur le status dans la close WHERE alors le parser n'ajoute aucun test automatique sur le status. Ca n'arrive normalement pas.
-
-* la clause WHERE="okgroupe" ne marche pas si la boucle contient les deux tables: documents et publication (je le mets pour me souvenir ici, mais faut que je documente plus les groupe)
-
-* L'affichage le template vient d'etre mis a jour s'affiche desormais que pour les admin et superadmin, pas pour les editeurs et redacteurs comme avant. Ca evite apres une mise a jour de macros.html d'avoir cette ecriture horrible pour les gens qui n'ecrivent pas de template.
-
-* Pour les groupes, il faut que je vous donne le nv tpl user.html (faut qu'j'y pense)
-
-* Les groupes sans douleur pour ceux qui n'aime pas ca: quand vous aller alterer les tables publications et documents pour ajouter la colonne groupe, il faut la mettre a 1 (ca se fait automatique vu la definition de la valeur par defaut). Par defaut aussi tout utilisateur est dans le groupe 1 (le groupe tous) qui est cree a demeure. Donc ca ne possera aucun pb.
-
-* La suppression d'une publication est boguee, elle ne detruit pas les sous-publications(elles n'ont plus de parent, donc ne sont plus accessible via l'interface d'edition ou les sommaires, mais les documents sont accessibles par l'auteur, les motcles, etc...) et puis ca laisse des detritus dans la base.
-
-
-* option showhtml pour debugger le code html produit. Il suffit d'ajouter sur l'url &showhtml=1 (quand on vient d'un lien <a href>). Quand on vient d'un formulaire (via submit) c'est moins pratique, il faut ajouter <INPUT HIDDEN NAME="showhtm" VALUE="1"> dans le code du formulaire. A utiliser sans moderation!!!!!!!
-Le diagnostique est a la fin. En plus, il y a une numerotation des tr, et un affichage de la table qui semble posee probleme.
-
-* nouvelle fonction sizeattribut pour generer les attributs d'une image. L'argument est le chemin d'acces à l'image. Usage typique: [(#META_IMAGE|sizeattributs)] produit width="20" height="40" par exemple.
-
-* la fonction vignette permet de creer des vignettes (pas dans les documents). [(#META_IMAGE|vignette(30))] creer une vignette dont la plus grande longueur (largeur ou hauteur) est 30 pix. Je peux ajouter des fonctions pour dire que c'est la largeur qui fait 30 ou la hauteur 30 ou pour specifie des taille genre 30x40 sans respecter le ratio. A vous de me dire.
+* ajouter dans tpl/extrainfo.html le bloc suivant pour les surtitres
+<TR>
+	<TD>Sur Titre:</TD>
+	<TD><INPUT SIZE="80" TYPE="text" NAME="surtitre" value="[#SURTITRE]"></TD>
+</TR>
 
 
 
-* proposition de status:
-
-° brouillon, non publiable a moins de changer son status.
-° non publier (l'actuel non publié).
-
-° publié (l'actuel publié).
-° publié protégé (non depubliable a moins de changer son status).
-
-Pour tout ce qui est documents de travail, documents avec soumission je prefere qu'on travaille completement differement avec des series adaptées. Par exemple, une serie soumission qui contient tous les documents soumis. Charge a l'editeur ensuite de le deplacer la ou il l'entend, en l'occurence dans le numero qu'il entend (ce qui est le processus normal de soumission).
-
-S'applique aux documents et publications uniquement. Les autres (auteurs, indexls et indexhs conserve le systeme +1 et -1).
-
-La tentative de publication d'une publication -> publi toutes les sous-publication et documents sauf s'ils ont le status brouillon
-La tentative de depublication d'une publication qui a le status publié protégé ou contient une publication ou document qui a ce statut conduit a une liste des documents ou publication qui ont ce statut. Charge a l'editeur de changer les status.
+* Il faut qu'on discute longuement des affiliations. Ca pose un gros probleme, il va falloir changer la base. En effet on ne peut pas mettre les affiliations dans la table auteurs parce qu'un auteur peut avoir plusieurs affiliaitons, et on ne peut pas la mettre dans la table documents, parce qu'un document a plusieurs affiliation (car plusieurs auteurs). Une solution est de ne pas mettre l'affiliation dans la base... elle n'est alors accessible que du document ou elle a ete definie. Une autre solution est de la mettre dans  documents_auteurs.
+A decider: d'ou veut-on acceder aux affiliations ?
 
 
-**********************************************************************
-23/11
+* dans les index (mots.php, periodes.php,etc...), la boucle "alphabet" permet de parcourir l'alphabet, [#LETTRE] permet contient la lettre en majuscule. C'est plus propre d'utiliser ca que de coder en dur les listes de lettres. Parfois, c'est meme obliogatoire (comme dans l'ancienne maquette de CH).
+
+* lodel/script/baseindex.php a ete changer pour le code de boucle_alphabet
 
 
-* tous les tags sont passes en minuscule. Il faut changer tous les fichiers en xml archive (pour etre XML correcte et parce que le code n'est plus case-insensitive)
+* (important pour les developpeurs) j'ai change le systeme pour les boucles utilisateur (celle ecrite en php mais accessible en lodelscript) afin de supprimer le probleme qu'on a sur topparent. Maintenant, la fonction qui definie la boucle prend deux arguments (exemple dans lodel/revue/lodel/edition/index.php) :
 
-* [#ERREUR_FICHIERNONRTF] est a tester dans chargement.html pour afficher un message comme quoi le fichier n'est pas du rtf. A la place de "desuet" !
+function boucle_themesparents (&$context,$funcname) {
+
+et l'appel a la fonction "code" se fait par:
+
+call_user_func("code_boucle_$funcname",$localcontext);
+
+au lieu de code_boucle_themes_parents.
+
+De meme on a call_user_func("code_avant_$funcname",$localcontext); et call_user_func("code_apres_$funcname",$localcontext); (meme signification que dans les boucles SQL normales).
+
+* lodel/revue/lodel/edition/index.php a ete modifie pour changer le code de boucle_themesparents.
+
+* lodel/scripts/parser.php modifie pour le probleme des boucles si dessus et pour le repertoire share/macros
+
+
+19/03/03
+
+* (Anne) Les styles (.dot) title et subtitle sont converti automatiquement en francais lors de l'importation de fichier rtf (document ou sommaire). Ceci les rendu compatible avec lodel. Si on veut a l'avenir precise la langue sur le titre, il faudra distinguer title de titre.
+
+* (Anne) Dans lodel_sommaire.dot, je prefere motcles au pluriel. Comme ca c'est compatible avec lodel.dot
+
+* Suppression des balises recension_* dans la mesure ou elles ne servent a rien en ce moment et doivent etre longuement discutee.
+
+* Il faut definir les styles pour les resumes et les motcles dans langues.php uniquement. La gestion de la langues pour les motcles n'est pas encore geree, mais ca va venir.
+
+
+* Dans tpl/chkbalisages.html
+les lignes pour abandonner et continue sont changees:
+ <div align="center"><A HREF="abandon.php?id=[#ID]">&lt; Abandonner</A> | <A HREF="[#URLSUITE]">Continuer &gt;</A>
+
+
+* Lors de l'importation des sommaires, je me sers de balises auteurs pour separer les differents articles (ou documents). Par consequent, preciser un auteur est obligatoire et est obligatoirement au debut. Si vous souhaitez un autre systeme, il est encore temps.
+
+* actuellement l'importation d'image dans les documents d'une importation massive n'est pas geree. C'est en principe possible de le faire dans l'avenir.
+
+* j'ai ajoute une fonction pour supprimer les sauts de ligne dans les formulaires qui font croire qu'on a qu'une partie du champ (en regardant le source on voit qu'il y a une deuxieme ligne). Il faut bien verifie que cette modif ne pose pas de probleme. Elle affecte tous les champs rentres dans des formulaires.
+
+* il y avait un bug dans calcul-pages qui faisait que le tempate etait recompiler a chaque fois !!!!
+
+20/03/03
+
+* Il va s'en  dire qu'avec le systeme choisi, tout style supporte dans l'import de document, fonctionne dans l'import de sommaire (car on utilise extrainfo).
+
+* Correction d'un bug qui empechait l'importation de certains fichiers (ceux qui se termine sur un article et non par un regroupement).
+
+* Le systeme ne peut pas generer les regroupements vides en l'etat (car lodel regroupe les paragraphes de meme style quand ils sont contigues). Il faut donc mettre entre les deux un espace tage differement. Une solution est de mettre un mot cle, genre "vide". L'ensentiel n'est pas le mot, mais le style de ce paragraphe intermediaire. Une autre solution serait de supposer que deux paragraphes de regroupement signifie que c'est deux regroupements. Si vous avez une autre idee...
+
+* le fichier rtf est stocke dans rtf/r2r-publi-xxx.rtf ou xxx est l'idee du numero. Le fichier xml n'est pas stocke, mais le fichier xml correspondant a chaque document est stocke.
+
+* pour adapter l'affichage dans extrainfo.php et publication.php quand on est en importation de sommaire, vous disposez de la variable [#IMPORTSOMMAIRE]. Elle est vrai ou fausse, il suffit de la tester avec un IF. Un exemple d'utilisation est dans extrainfo.html
+Pour que ca marche correctement, il faut ajouter la ligne <INPUT TYPE="hidden" NAME="importsommaire" VALUE="[#IMPORTSOMMAIRE]"> dans les formulaires d'extrainfo.php et de publication.php (je l'ai ajoute sur le CVS, normalement c'est bon)
+
+* c'est evident, mais il faut adapter tpl/chargesommaire.html
+Remarque: pour le moment, chargement.php et chargesommaire sont parfaitement identiques, donc on peut charger des sommaires via "ajouter document". (je sais ca sert a rien).
+
+
+* (Luc) a propos de checkXML.pl
+Je crois que le XML produit est maintenant en conformite, mais il faut le verifier avec checkXML.pl ci-joint. Il faut install les modules. Je te conseille vivement l'utilisation de perl -MCPAN -e shell (il faut installer avant ca le module CPAN.pm) qui est du meme genre que le surpuissant couple urpmf et urmpi (redhat/mandrake private joke). En gros ce systeme te permet d'installer et d'upgrader les modules perl automatiquement, avec les dependances, svp. Donc ca prend trente secondes d'installer les packages necessaires pour faire tourner checkXML.pl (aller 10min). Dans perl -MCPAN -e shell, tu tapes "install XML::Checker::Parser" puis pareil avec XML::Catalog (il y en a un autre aussi, mais tu trouveras facilement en lancant checkXML.pl).
+
+Ensuite, tu vas chercher les dtd xhtml modularized (fichier xhtml-modularization.tgz sur w3c) et tu ajustes dans checkXML.pl le chemin du catalogue. Si tu veux pas utiliser le catalogue, mais directement charger la DTD via le net a chaque checkXML.pl, n'utilise pas les catalogues (c'est les catalogues qui plantent chez moi depuis que je suis en Mandrake 9.0). Voila checkXML.pl est pret a tourner... tu l'executes sur tous les fichiers xml.
+J'ai quand meme un probleme, notre dtd, il faudrait la declarer avec une adresse public (la mettre sur www.lodel.org) et mettre la bonne ligne dans tous les fichiers xml. Pour le moment, c'est la ligne <!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd"> avec chemin d'acces relatif (donc attention quand tu fais le checkXML.pl, la DTD lodel doit etre dans le meme repertoire). Si tu peux fixer ce pb, tu seras le roi.
+On avait pas dit qu'on mettait la DTD dans l'arboressence du CVS ?
+
+
+Ghislain
+

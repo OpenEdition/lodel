@@ -8,15 +8,17 @@ include ("$home/langues.php");
 
 if ($cancel) include ("abandon.php");
 
-# recupere les infos dans le fichier xml
+# lit la tache en cours
 $row=get_tache($id);
 
+$filename=$row[fichier];
+
 if ($edit || $plusauteurs) {
-  $balisefile=$row[fichier].".balise";
-  if (file_exists($balisefile) && filemtime($balisefile)>filemtime($row[fichier].".html")) {
+  $balisefile=$filename.".balise";
+  if (file_exists($balisefile) && filemtime($balisefile)>filemtime($filename.".html")) {
     $text=join("",file ($balisefile));
   } else {
-    $text=join("",file ($row[fichier].".html"));
+    $text=join("",file ($filename.".html"));
   }
 #die ("$text");
   do {
@@ -89,19 +91,27 @@ if ($edit || $plusauteurs) {
 	$newimgfile="docannexe/r2r-img-$iddocument-$count.$ext";
 	if ($imgfile!=$newimgfile) {
 	  rename ($imgfile,"../../$newimgfile") or die ("impossible de renomer l'image $imgfile en $newimgfile");
+	  chmod ("../../$newimgfile",0644) or die ("impossible de chmod'er le ../../$newimagefile");
 	}
 	return $newimgfile;
     }
     copy_images($text,"img_rename");
 
     // copie le fichier balise en lieu sur !
-    if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("erreur lors de l' ecriture du fichier. Contactez l'administrateur");
+    if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("Erreur lors de l' ecriture du fichier. Contactez l'administrateur");
     // et le rtf s'il existe
-    $rtfname="$row[fichier].rtf";
-    if (file_exists($rtfname)) copy ($rtfname,"../rtf/r2r-$iddocument.rtf");
+    $rtfname="$filename.rtf";
+    if (file_exists($rtfname)) { 
+      $dest="../rtf/r2r-$iddocument.rtf";
+      copy ($rtfname,$dest);
+      chmod($dest,0644) or die ("impossible de chmod'er $dest");
+    }
     // efface le fichier balise
     if (file_exists($balisefile)) unlink($balisefile);
 
+    //
+    // termine en redirigeant correctement
+    // 
     if ($ajouterdocannexe) {
       $redirect="docannexe.php?iddocument=$iddocument";
     } elseif ($visualiserdocument) {
@@ -109,20 +119,20 @@ if ($edit || $plusauteurs) {
     } else {
       $redirect="";
     }
-    // clot la tache et renvoie sur index.php
+    // clot la tache et renvoie sur au bon endroit
     include ("abandon.php");
     return;
   } while (0); // exception
 } // edit
 else {
-  $text=join("",file ($row[fichier].".html"));
+  $text=join("",file ($filename.".html"));
   auteurs2auteur($text);
   if (!$context[option_pasdeperiode]) tags2tag("periode",$text);
   if (!$context[option_pasdemotcle]) tags2tag("motcle",$text);
   if (!$context[option_pasdegeographie]) tags2tag("geographie",$text);
 
   // extrait les balises et met les dans le context
-  $lbalises=array("titre","soustitre","typedoc");
+  $lbalises=array("titre","soustitre","surtitre","typedoc");
 
   foreach ($lbalises as $b) {
     if (preg_match ("/<r2r:$b>\s*(.*?)\s*<\/r2r:$b>/si",$text,$result)) {
@@ -140,9 +150,11 @@ else {
     array_push($srch,"/<r2r:$bal>/i","/<\/r2r:$bal>/i");
     array_push($rpl,"<r2r:resume lang=\"$lang\">","</r2r:resume>");
   }
-  $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>'.preg_replace($srch,$rpl,$text);
+  $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>
+<!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
+'.preg_replace($srch,$rpl,$text);
       
-  writefile ($row[fichier].".balise",$text);
+  writefile ($filename.".balise",$text);
   if ($row[iddocument]) { # le document existe
 # on recupere la date de publication du texte
     $result=mysql_query("SELECT datepubli from documents WHERE id='$row[iddocument]'") or die (mysql_error());
@@ -155,8 +167,9 @@ foreach ($balises_sstag as $b) {
   $context[$b]=strip_tags($context[$b]);
 }
 
-update_taches($id,3); // etape 3
+update_tache_etape($id,3); // etape 3
 $context[id]=$id;
+$context[importsommaire]=$importsommaire;
 
 posttraitement($context);
 
@@ -351,8 +364,7 @@ function makeselectdate() {
 }
 
 
-function boucle_auteurs($generalcontext)
-
+function boucle_auteurs(&$generalcontext,$funcname)
 {
   global $text;
 
@@ -360,7 +372,6 @@ function boucle_auteurs($generalcontext)
 
   preg_match_all("/<r2r:auteur\b[^>]*>(.*?)<\/r2r:auteur\s*>/is",$text,$results,PREG_SET_ORDER);
   foreach ($results as $auteur) {
-#        echo "<br>...",htmlentities($auteur[1]),"...<br>";
     preg_match_all("/<r2r:$balises\b[^>]*>(.*?)<\/r2r:\\1\s*>/is",$auteur[1],$result,PREG_SET_ORDER);
 
     $ind++;
@@ -369,7 +380,7 @@ function boucle_auteurs($generalcontext)
       foreach ($result as $champ) { $lcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
     }
     $context=array_merge($generalcontext,$lcontext);
-    code_boucle_auteurs($context);
+	call_user_func("code_boucle_$funcname",$context);
   }
 }
 
