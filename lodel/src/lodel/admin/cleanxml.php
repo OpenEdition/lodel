@@ -11,7 +11,7 @@ include_once($home."func.php");
 $search=array();
 $rpl=array();
 
-array_push($search,"/<sup><small><\/small><\/sup>/i");
+array_push($search,"/<sup><small>(<[^>]+>)*?<\/small><\/sup>/i");
 array_push($rpl,"");
 
 $dirname="../txt";

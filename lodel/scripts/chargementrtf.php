@@ -90,7 +90,7 @@ function rtf($filename) {
 
 
 # resoud le probleme des balises intempestives inutiles dans les notes de bas de page
- array_push($search,"/<sup><small><\/small><\/sup>/i");
+ array_push($search,"/<sup><small>(<[^>]+>)*?<\/small><\/sup>/i");
  array_push($rpl,"");
 
   # conversion de balises
