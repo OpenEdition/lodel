@@ -1,4 +1,8 @@
-<?php  include("tpl/install-openhtml.html"); ?>
+<?php
+include("tpl/install-openhtml.html");
+$current = "start";
+include("tpl/install-bandeau.html");
+?>
 <!--[
  
    LODEL - Logiciel d'Edition ELectronique.
@@ -30,12 +34,11 @@
 <!--[ ce fichier n'est pas un template ]-->
 
 
-
-<p align="justify">Lodel est un logiciel libre soumis à la licence GNU General Public License (GPL). Il est fourni sans aucune garantie. Veuillez consulter les conditions d'utilisation <a href="#conditions">ci-dessous</a> et la licence <a href="../COPYING">ici<a>.</p>
+<p align="justify">Lodel est un logiciel libre soumis à la licence GNU General Public License (GPL). Il est fourni sans aucune garantie. Veuillez consulter les conditions d'utilisation <a href="#conditions">ci-dessous</a> et la licence <a href="../COPYING">ici</a>.</p>
 
 
 <h2>Choix du type d'installation</h2>
-    <hr style="width: 100%; height: 2px;" />
+    <hr />
     <form method="post" action="install.php">
       <input type="hidden" name="tache" value="droits">
       <?php if ($installing) { ?>
@@ -49,7 +52,7 @@
 <?php } ?>
 </form>
 
-    <hr style="width: 100%; height: 2px;" />
+    <hr />
     <ul>
       <li>
 	<p>L'installation simplifi&eacute;e s'adresse aux
@@ -77,11 +80,11 @@ pour la plupart des h&eacute;bergeurs associatifs ou commerciaux car ils se char
     </ul>
   </ul>
 
-<hr style="width: 100%; height: 2px;" />
-<h2 id="conditions">Condition d'utilisation</h2>
-<p align="justify">Ce programme est un logiciel libre&nbsp;; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation&nbsp;; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure. </p>
-<p align="justify">Ce programme est distribu&eacute; dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE&nbsp;; sans m&egrave;me la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de d&eacute;tails, voir la Licence Publique G&eacute;n&eacute;rale GNU. </p>
-<p align="justify">Un exemplaire de la Licence Publique G&eacute;n&eacute;rale GNU doit &ecirc;tre fourni avec ce programme&nbsp;; si ce n'est pas le cas, &eacute;crivez &agrave; la Free Software Foundation Inc., 675 Mass Ave, Cambridge, MA 02139, Etats-Unis. </p>
+<hr />
+<h2 id="conditions">Conditions d'utilisation</h2>
+<p>Ce programme est un logiciel libre&nbsp;; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation&nbsp;; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure. </p>
+<p>Ce programme est distribu&eacute; dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE&nbsp;; sans m&egrave;me la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de d&eacute;tails, voir la Licence Publique G&eacute;n&eacute;rale GNU. </p>
+<p>Un exemplaire de la Licence Publique G&eacute;n&eacute;rale GNU doit &ecirc;tre fourni avec ce programme&nbsp;; si ce n'est pas le cas, &eacute;crivez &agrave; la Free Software Foundation Inc., 675 Mass Ave, Cambridge, MA 02139, Etats-Unis. </p>
 
 <p>GNU General Public License&nbsp;: <a href="../COPYING">licence</a></p>
 
