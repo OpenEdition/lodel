@@ -4,6 +4,10 @@ a:link {text-decoration: none; color: #CC9933;}
 a:visited {text-decoration: none; color: #CC9933;}
 a:hover {text-decoration: none;}
 
+div a:link {color: #CC9933;}
+div a:visited {color: #CC9933;}
+div a:hover {color: #FFBB03;}
+
 img.picto, img.picto_statut, img.picto_fleche {
 	border: none;
 	vertical-align: bottom;
@@ -14,11 +18,9 @@ img.picto_gauche {
 	margin-right:10px;
 }
 
-img.picto_fleche {
-	vertical-align:bottom;
-}
+img.picto_fleche {vertical-align:bottom;}
 
-div.ligne_groupe1, div.ligne_groupe2 {
+/*div.ligne_groupe1, div.ligne_groupe2 {
 	padding-left: 20px;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -34,77 +36,84 @@ div.ligne_art1, div.ligne_art2, div.ligne_serie1, div.ligne_serie2 {
 	padding-bottom: 5px;
 }
 div.groupe div.ligne_art1 {background-color: #F3F3F3;}
-div.groupe div.ligne_art2 {background-color: #FFFFFF;}
+div.groupe div.ligne_art2 {background-color: #FFFFFF;}*/
 
-div.ligne_numero1, div.ligne_numero2 {
-	padding-left: 10px;
-	margin-left: 30px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-div.ligne_numero1 {background-color: #EDFDF3;}
-div.ligne_numero2 {background-color: #FFFFFF;}
-
-div.ligne_theme1, div.ligne_theme2 {
-	padding-left: 10px;
-	margin-left: 30px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-div.ligne_theme1 {background-color: #FFFEE8;}
-div.ligne_theme2 {background-color: #FFFFFF;}
-
-
-div.ligne_regroupement1, div.ligne_regroupement2 {
-	padding-left: 10px;
-	margin-left: 30px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-div.ligne_regroupement1 {background-color: #DFEDE4;}
-div.ligne_regroupement2 {background-color: #EFFFEF;}
-
+div.ligne_serie1, div.ligne_serie2,
+div.ligne_numero1, div.ligne_numero2, 
+div.ligne_theme1, div.ligne_theme2, 
+div.ligne_regroupement1, div.ligne_regroupement2, 
+div.ligne_document_isole1, div.ligne_document_isole2, 
 div.ligne_document_regroupement1, div.ligne_document_regroupement2 {
 	padding-left: 10px;
-	margin-left: 70px;
+	margin-left: 30px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
+
+div.ligne_document_regroupement1, div.ligne_document_regroupement2 {margin-left: 70px;}
+
+div.ligne_serie1 {background-color: #FDFAF1;}
+div.ligne_serie2 {background-color: #FFFFFF;}
+div.ligne_numero1 {background-color: #EDFDF3;}
+div.ligne_numero2 {background-color: #FFFFFF;}
+div.ligne_theme1 {background-color: #FFFEE8;}
+div.ligne_theme2 {background-color: #FFFFFF;}
+div.ligne_regroupement1 {background-color: #DFEDE4;}
+div.ligne_regroupement2 {background-color: #EFFFEF;}
+div.ligne_document_isole1 {background-color: #F3F3F3;}
+div.ligne_document_isole2 {background-color: #FFFFFF;}
 div.ligne_document_regroupement1 {background-color: #F3F3F3;}
 div.ligne_document_regroupement2 {background-color: #FFFFFF;}
 
-/******************** DOCUMENTS **********************/
-div.ligne_document_isole1, div.ligne_document_isole2 {
-	padding-left: 10px;
-	margin-left: 30px;
+div.ligne_ajouter, 
+div.ligne_ajouter_serie, 
+div.ligne_ajouter_numero, 
+div.ligne_ajouter_regroupement, 
+div.ligne_ajouter_theme,
+div.ligne_ajouter_document_dans_un_regroupement1, 
+div.ligne_ajouter_document_dans_un_regroupement2  {
+	margin-top: 10px;
 	padding-top: 5px;
 	padding-bottom: 5px;
-}
-
-div.ligne_document_isole1 {background-color: #F3F3F3;}
-div.ligne_document_isole2 {background-color: #FFFFFF;}
-
-.titre_document, .auteurs_document, .type_document {
-	font-family: verdana;	
-	color: #333333;
-	text-align: left;
-}
-
-.titre_document {
+	padding-left: 10px;
+	font-family: verdana;
 	font-size: 10pt;
 	font-weight: bold;
 }
 
-.auteurs_document {
-	font-size: 10pt;
-	font-weight: normal;
+div.ligne_ajouter_document_dans_un_regroupement1, 
+div.ligne_ajouter_document_dans_un_regroupement2 {
+	margin-top: 0px;
+	margin-left: 30px;
 }
 
-.type_document {
+div.ligne_ajouter_serie {background-color: #FDFAF1;}
+div.ligne_ajouter {background-color: #E5E5E5;}
+div.ligne_ajouter_theme {background-color: #FFFEE8;}
+div.ligne_ajouter_numero {background-color: #EDFDF3;}
+div.ligne_ajouter_regroupement {background-color: #D5E4DA;}
+div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #DFEDE4;}
+div.ligne_ajouter_document_dans_un_regroupement2 {background-color: #EFFFEF;}
+
+/******************** DOCUMENTS **********************/
+.titre_document, .titre_doc_fa, 
+.auteurs_document, .auteurs_doc_fa, 
+.type_document, .type_doc_fa {
+	font-family: verdana;	
+	text-align: left;
+	font-size: 10pt;
+}
+
+.titre_document, .auteurs_document, .type_document {color: #333333;}
+.titre_doc_fa, .auteurs_doc_fa, .type_doc_fa {color: #CC9933;}
+
+.titre_document, .titre_doc_fa {font-weight: bold;}
+
+.type_document, .type_doc_fa {
 	font-size: 8pt;
-	font-weight: normal;
 	font-style: italic;
 }
+
 /******************** FIN DOCUMENTS **********************/
 
 
@@ -123,29 +132,17 @@ div.edition_des_series {
 	vertical-align:middle;
 }
 
-div.ligne_serie1 {background-color: #FDFAF1;}
-div.ligne_serie2 {background-color: #FFFFFF;}
-div.ligne_ajouter_serie {background-color: #FDFAF1;}
-
 .titre_serie, .nom_serie, .type_serie {
 	font-family: verdana;	
+	font-size: 10pt;
 	color: #333333;
 	text-align: left;
 }
 
-.nom_serie {
-	font-size: 10pt;
-	font-weight: bold;
-}
-
-.titre_serie {
-	font-size: 10pt;
-	font-weight: normal;
-}
+.nom_serie {font-weight: bold;}
 
 .type_serie {
 	font-size: 8pt;
-	font-weight: normal;
 	font-style: italic;
 }
 /******************** FIN SERIES **********************/
@@ -160,28 +157,18 @@ div.ligne_infos_parent {
 
 .titre_parent, .nom_parent, .type_parent {
 	font-family: verdana;	
+	font-size: 10pt;
 	color: #333333;
 	text-align: left;
 }
 
-.nom_parent {
-	font-size: 10pt;
-	font-weight: bold;
-}
-
-.titre_parent {
-	font-size: 10pt;
-	font-weight: normal;
-}
+.nom_parent {font-weight: bold;}
 
 .type_parent {
 	font-size: 8pt;
-	font-weight: normal;
 	font-style: italic;
 }
 /******************** Fin Infos publi parente **********************/
-
-
 
 div.pas_de_publication {
 	margin-top: 50px;
@@ -192,40 +179,8 @@ div.pas_de_publication {
 	font-style: italic;
 }
 
-div.ligne_ajouter, 
-div.ligne_ajouter_serie, 
-div.ligne_ajouter_numero, 
-div.ligne_ajouter_regroupement, 
-div.ligne_ajouter_theme {
-	margin-top: 10px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 10px;
-	font-family: verdana;
-	font-size: 10pt;
-	font-weight: bold;
-}
-
-div.ligne_ajouter {background-color: #E5E5E5;}
-div.ligne_ajouter_theme {background-color: #FFFEE8;}
-div.ligne_ajouter_numero {background-color: #EDFDF3;}
-div.ligne_ajouter_regroupement {background-color: #D5E4DA;}
-div.ligne_ajouter a:visited {color: #CC9933;}
+/*div.ligne_ajouter a:visited {color: #CC9933;}
 div.ligne_ajouter a:hover {color: #FFBB03;}
-
-div.ligne_ajouter_document_dans_un_regroupement1, 
-div.ligne_ajouter_document_dans_un_regroupement2 {
-	margin-left: 30px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 10px;
-	font-family: verdana;
-	font-size: 10pt;
-	font-weight: bold;
-}
-
-div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #DFEDE4;}
-div.ligne_ajouter_document_dans_un_regroupement2 {background-color: #EFFFEF;}
 
 div.ligne_ajouter_art {
 	padding-left: 20px;
@@ -238,7 +193,7 @@ div.ligne_ajouter_art {
 
 div.ligne_ajouter_art a:link {color: #CC9933;}
 div.ligne_ajouter_art a:visited {color: #CC9933;}
-div.ligne_ajouter_art a:hover {color: #FFBB03;}
+div.ligne_ajouter_art a:hover {color: #FFBB03;}*/
 
 div.action {
 	font-family: verdana;	
@@ -246,18 +201,29 @@ div.action {
 	color: #CC9933;
 	float: right;
 	text-align: left;
-	width: 400px;
 	margin-right: 20px;
+	width: 400px;
 }
 
 div.action_formulaire {
 	font-family: verdana;	
 	font-size: 10pt;
 	color: #CC9933;
-	float: right;
 	text-align: left;
-	width: 550px;
 	margin-right: 20px;
+	width: 550px;
+}
+
+.table_statut, .table_docannexes {
+	font-family: verdana;	
+	font-size: 10pt;
+	color: #CC9933;
+	text-align: left;
+	margin-left: 70px;
+}
+
+.table_docannexes {
+	margin-left: 90px;
 }
 
 .inactif {
@@ -265,24 +231,17 @@ div.action_formulaire {
 	color: #999999;
 }
 
-div a:link {color: #CC9933;}
-div a:visited {color: #CC9933;}
-div a:hover {color: #FFBB03;}
 
 img.icone {
 	float: left;
 	margin-right: 10px;
 }
 
-img.illus {
-	float: right;
-}
+img.illus {float: right;}
 
-div.article {
-	margin-left: 32px;
-}
+div.article {margin-left: 32px;}
 
-div.ligne_ajouter_nongrp {
+/*div.ligne_ajouter_nongrp {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	background-color: #E0E7E1;
@@ -303,7 +262,7 @@ div.theme div.ligne_art1 {
 
 div.theme div.ligne_art2 {
 	background-color: #FAFFFB;
-}
+}*/
 
 /************ Styles pour le tpl publication **************/
 div.ligne_haut_tpl_publication, 
@@ -362,6 +321,17 @@ div.intitule_ligne_formulaire {
 .texte_intitule {
 	font-size: 12px;
 	font-weight: bold;
+}
+
+.texte_normal {
+	font-size: 12px;
+	color: #333333;
+}
+
+.texte_noir_gras {
+	font-weight: bold;
+	font-size: 10pt;
+	color:#333333;
 }
 
 .message_erreur {
