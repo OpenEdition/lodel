@@ -132,6 +132,9 @@ foreach $filename (@ARGV) {
    $change+=$file=~s/\[\#REDACTEUR\]/\[\#DROITREDACTEUR\]/g;
    $change+=$file=~s/\[\#VISITEUR\]/\[\#DROITVISITEUR\]/g;
 
+# changement de meta_image en icone
+   $change+=$file=~s/\[\#META_IMAGE\]/\[\#ICONE\]/g;
+
   next unless $change;
   print "$filename:",$change,"\n";
 
