@@ -29,8 +29,9 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 #window.defaultStatus+=\'$base | \';</SCRIPT>';
         }
 
-    include_once ($home."parser.php");
-    parse($base, $template_cache);
+    include_once ($home."lodelparser.php");
+    $parser=new LodelParser;
+    $parser->parse($base, $template_cache);
   }
   // execute le template php
 		

@@ -698,7 +698,7 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="presenter_documents" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 		<DO>
-			<div class="afficherdocument"> 
+			<div class="afficherdocument">
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 			</div>
 		</DO>
@@ -804,7 +804,6 @@
 <!-- Affiche la liste des auteurs d'un document entre virgules, pour 	-->
 <!-- la notice bibliographique.                                         -->
 <!-- ****************************************************************** -->
-	
 	<LOOP NAME="auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		<DO>, [#PRENOM] [#NOMFAMILLE]</DO>

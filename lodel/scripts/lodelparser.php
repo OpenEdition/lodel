@@ -5,6 +5,12 @@
 // en general etre ajouter ici
 //
 
+require_once($home."func.php");
+require_once($home."balises.php");
+require_once($home."parser.php");
+
+
+class LodelParser extends Parser {
 
 function parse_loop_extra(&$tables,
 			    &$tablesinselect,&$extrainselect,
@@ -157,11 +163,6 @@ function parse_loop_extra(&$tables,
     array_walk($tablesinselect,"prefixtablesindatabase");
 }
 
-function prefixtablesindatabase($table) {
-  if ($table=="revue" || $table=="session") return $GLOBALS[database].".".$table;
-}
-
-
 
 //
 // Traitement special des variables
@@ -187,10 +188,8 @@ function parse_variable_extra ($nomvar)
 // fonction speciale pour lodel 
 //
 
-include_once($home."balises.php");
 
-
-function decode_content_extra ($balise,&$ret,$tables)
+function decode_loop_content_extra ($balise,$tables,&$ret)
 
 {
   global $home,$balisesdocument_lieautexte,$balisesdocument_nonlieautexte;
@@ -208,17 +207,17 @@ function decode_content_extra ($balise,&$ret,$tables)
 
 # as-t-on besoin de balises non liees au texte
     if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_nonlieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
-      $ret["EXTRACT_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
+      $ret["PRE_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
 $arr=array("'.strtolower(join('","',$result[1])).'");';
       if ($withtextebalises) { // on a aussi besoin des balises liees au texte
-	$ret["EXTRACT_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
+	$ret["PRE_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
       }
-      $ret["EXTRACT_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
+      $ret["PRE_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
     } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
-      $ret["EXTRACT_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
+      $ret["PRE_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
 $filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
@@ -233,46 +232,17 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
     // est-ce qu'on veut le prev et next publication ?
     //
   if (in_array("publications",$tables) && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
-    $ret["EXTRACT_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+    $ret["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
   }
 }
 // fin fonction decode_content_extra
 
-
-
-//
-// traitement particulier avant la creation du code de la loop
-// il est possible d'ajouter des instructions avant la requete 
-// mysql $premysqlquery et apres $postmysqlquery
-// il est aussi possible d'ajouter des champs dans le select $extrafield
-//
-
-/*
-function make_loop_code_extra($tables)
-
-{
-
-  // gestion du changement de database
-  if (in_array("revue",$tables) || in_array("session",$tables)) {
-    $premysqlquery='mysql_select_db($GLOBALS[database]);';
-    $postmysqlquery='mysql_select_db($GLOBALS[currentdb]);';
-  } else {
-    $premysqlquery="";
-    $postmysqlquery="";
-  }
-
-  // traitement particulier pour les documents
-  // champ supplementaire datepubli
-
-  if (in_array("documents",$tables)) {
-    $extrafield=",(datepubli<=NOW()) as textepublie";
-  }
-
-
-  return array($premysqlquery,$postmysqlquery,$extrafield);
 }
-*/
 
+
+function prefixtablesindatabase($table) {
+  if ($table=="revue" || $table=="session") return $GLOBALS[database].".".$table;
+}
 
 
 // prefix les tables si necessaire
