@@ -48,12 +48,12 @@ function enregistre ($context,&$text)
   $lcontext[typedoc]=strip_tags($lcontext[typedoc]);
 
   // enleve les <P> s'ils sont aux extremites, et qu'il n'y en a pas dedans
-  /*  $lcontext=preg_replace("/^<P[^>]*>(((?>[^<]+)(?!<P[^>]*>)<?)*)<\/P>$/i",
-  			"\\1",$lcontext); */
   $lcontext=preg_replace(array("/<\/?(P|BR)>/i","/^\s+/","/\s+$/"),
 			 array("","",""),$lcontext);
 
   myquote($context);  myquote($lcontext);  myquote($lang);
+
+  lock_write("documents","indexls","auteurs","indexhs","documents_auteurs","documents_indexls","documents_indexhs");
 
   // recherche l'ordre
   if ($context[ordre]) {
@@ -62,13 +62,16 @@ function enregistre ($context,&$text)
     $ordre=get_ordre_max("documents","publication='$context[publication]'");
   }
 
-####  pour modifier un document, il faut le supprimer proprement puis l'inserer. Le syste;e doit produire une erreur si le document existe
+####  pour modifier un document, il faut le supprimer proprement puis l'inserer. Le systeme doit produire une erreur si le document existe
 
 // valeur par defaut
   $id=$context[iddocument] ? $context[iddocument] : 0;
 
   $status=-1; // ne pas mettre une valuer positive ici. Ca pose probleme avec les tables auteurs, indexls et indexhs
   //$status=$context[statusdocument] ? $context[statusdocument] : -1;
+
+  // reverifie ici que le document n'a pas un titre vide... pour pister le bug des documents vide.
+  if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document vide. Envoyer un mail sur lodel-devel.");
 
   // ecrit dans la base de donnee le document
   mysql_query ("INSERT INTO documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
@@ -80,6 +83,8 @@ function enregistre ($context,&$text)
   enregistre_auteurs($id,$vals,$index);
   enregistre_indexls($id,$vals,$index); // mots cles, etc...
   enregistre_indexhs($id,$vals,$index); // indexhs, etc...
+
+  unlock();
 
   return $id;
 }
