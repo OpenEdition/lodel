@@ -67,7 +67,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
   global $home;
 
   $balisefilename=$filename.".balise";
-  if (file_exists($balisefilename) && filemtime($balisefilename)>filemtime($filename.".html")) {
+  if (file_exists($balisefilename) && filemtime($balisefilename)>=filemtime($filename.".html")) {
     $text=join("",file($balisefilename));
   } else {
     $text=join("",file($filename.".html"));
@@ -75,9 +75,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
 
   extract_post();
   // suppression des slashes
-  foreach($context as $key=>$val) {
-    $context[$key]=stripslashes($val);
-  }
+  mystripslashes($context);  mystripslashes($motcles);  mystripslashes($periodes);   mystripslashes($geographies);
 
   // verifie que le titre est present
   if (!$context[titre]) $err=$context[erreur_titre]=1;
