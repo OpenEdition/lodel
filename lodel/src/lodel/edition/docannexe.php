@@ -40,8 +40,14 @@ $tplcreation="";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
-  treattrash("entites");
+  include_once ($home."connect.php");
+  include ($home."managedb.php");
+
+  supprime($id,true);
+
+  touch(SITEROOT."CACHE/maj");
+  back();
+
   return;
 }
 

@@ -91,7 +91,7 @@ function proteges (&$context,$funcname,$classe)
 
 
 
-function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
+function supprime ($id, $confirmation=false, $mklock=true, $critere="")
 
 {
   if (!($id>=1)) die("ERROR: id is not valid un \"supprime\"");
