@@ -91,6 +91,19 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/th[e|è]me\s*suivant/rubrique suivante/g;
   $change+=$file=~s/th[e|è]me/rubrique/ig;
 
+# convert the comment
+
+  # protect the script tags
+  $change+=$file=~s/\r//g;
+  $change+=$file=~s/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/$1/igs;
+  $change+=$file=~s/--+>([\s\n]*<\/SCRIPT>)/$1/igs;
+  # convert the HTML comment into Lodel comment
+  $change+=$file=~s/<!--/<!--[/g;
+  $change+=$file=~s/-->/]-->/g;
+  # convert SCRIPT comment
+  $change+=$file=~s/(<SCRIPT\b[^>]*>)/$1<!--/gi;
+  $change+=$file=~s/(<\/SCRIPT>)/-->$1/gi;
+
 
   next unless $change;
   print "$filename:",$change,"\n";

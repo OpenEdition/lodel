@@ -1004,20 +1004,23 @@ function lodelparserunquote($text) {
 function stripcommentandcr(&$text)
 
 {
-  return preg_replace (array("/\r/",
-			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",
-			     "/--+>([\s\n]*<\/SCRIPT>)/i",
-			     "/<!--.*?-->\s*\n?/s",
-			     "/<SCRIPT\b[^>]*>/i",
-			     "/<\/SCRIPT>/i"
-			     ),
-		       array("",
-			     "\\1",
-			     "\\1",
-			     "",
-			     "\\0<!--",
-			     "-->\\0")
+  return preg_replace (array("/\r/","/<!--\[.*?\]-->\s*\n?/s"),
+		       array("",""),
 		       ,$text);
+#  return preg_replace (array("/\r/",
+#			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",
+#			     "/--+>([\s\n]*<\/SCRIPT>)/i",
+#			     "/<!--.*?-->\s*\n?/s",
+#			     "/<SCRIPT\b[^>]*>/i",
+#			     "/<\/SCRIPT>/i"
+#			     ),
+#		       array("",
+#			     "\\1",
+#			     "\\1",
+#			     "",
+#			     "\\0<!--",
+#			     "-->\\0")
+#		       ,$text);
 }
 
 
