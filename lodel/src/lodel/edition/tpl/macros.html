@@ -175,6 +175,9 @@
 		  </select>
 		</td>
 	<ELSE/>
+	<IF COND="[#TYPE] eq 'date'">
+		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
+	<ELSE/>
 	<IF COND="[#EDITION] eq 'text'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 	</IF>
@@ -183,6 +186,7 @@
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea30'">
 		<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+	</IF>
 	</IF>
 	</IF>
 	</IF>
