@@ -160,9 +160,9 @@ DROP TABLE _PREFIXTABLE_indexhs;
     if (!$tables["$GLOBALS[tp]typeentrees"]) { // il faut creer cette table, et les autres...
       if ($err=create("typeentrees")) break;
       $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','chronos','1','0','0','1','ordre','2');
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','mots','1','1','1','0','nom','1');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('1','periode','pÃ©riode','periode','chrono','chronos','1','0','0','1','ordre','2');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('4','geographie','gÃ©ographie','geographie','geo','geos','1','0','0','1','ordre','3');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,nvimportable,utiliseabrev,tri,ordre) VALUES('2','motcle','mot clÃ©','motcle','mot','mots','1','1','1','0','nom','1');
 ");
 	$report.="Creation de typeentrees<br>\n";
 	if ($err) break;
@@ -296,10 +296,10 @@ DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
       }
 $err=mysql_query_cmds(' 
 	INSERT INTO _PREFIXTABLE_types (type, titre, tpl, tpledition, tplcreation, ordre, classe) VALUES ("regroupement-documentsannexes","regroupement de documents annexes", "", "", "creation-regroupement", 0, "publications"); 
-	UPDATE _PREFIXTABLE_types SET titre="série linéaire", tplcreation="creation-serie" WHERE type="serie_lineaire"; 
-	UPDATE _PREFIXTABLE_types SET titre="série hiérarchique", tplcreation="creation-serie" WHERE type="serie_hierarchique"; 
+	UPDATE _PREFIXTABLE_types SET titre="sÃ©rie linÃ©aire", tplcreation="creation-serie" WHERE type="serie_lineaire"; 
+	UPDATE _PREFIXTABLE_types SET titre="sÃ©rie hiÃ©rarchique", tplcreation="creation-serie" WHERE type="serie_hierarchique"; 
 	UPDATE _PREFIXTABLE_types SET titre="regroupement", tplcreation="creation-regroupement", tpl="", tpledition="" WHERE type="regroupement"; 
-	UPDATE _PREFIXTABLE_types SET titre="numéro", tplcreation="creation-numero" WHERE type="numero"; 
+	UPDATE _PREFIXTABLE_types SET titre="numÃ©ro", tplcreation="creation-numero" WHERE type="numero"; 
 	UPDATE _PREFIXTABLE_types SET type="rubrique", tpledition="edition-rubrique", tplcreation="creation-rubrique", titre="rubrique" WHERE type="theme";
 '); 
 if($err) break; 
