@@ -69,8 +69,10 @@
 		<span class="type_document">
 		
 		<LOOP NAME="parentsentities">
+		<BEFORE>
+		([@IN]
+		</BEFORE>
 		<DOFIRST>
-		([@IN]	
 			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
 		</DOFIRST>
 		<DO>
@@ -82,8 +84,11 @@
 		<DOLAST>
 			<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
 		</DOLAST>
+		<AFTER>
+		)
+		</AFTER>
 		</LOOP>
-		)</span>
+		</span>
 		
 		</div>
 	</DO>
