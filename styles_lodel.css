@@ -12,6 +12,154 @@
 	margin-top: 10px;
 }
 
+a:link {text-decoration: none; color: #CC9933;}
+a:visited {text-decoration: none; color: #CC9933;}
+a:hover {text-decoration: underline;}
+
+img.picto, img.picto_statut {
+	border: none;
+	vertical-align: bottom;
+}
+
+img.picto_statut {
+	float:left;
+	margin-right:10px;
+}
+
+div.ligne_groupe1 {
+	padding-left: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: #F3F3F3;
+}
+
+div.ligne_groupe2 {
+	padding-left: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: #FFFFFF;
+}
+
+div.ligne_art1, div.ligne_art2, div.ligne_serie1, div.ligne_serie2 {
+	padding-left: 40px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	min-height: 60px;
+}
+
+div.groupe div.ligne_art1 {background-color: #F3F3F3;}
+div.groupe div.ligne_art2 {background-color: #FFFFFF;}
+
+div.serie div.ligne_serie1 {background-color: #FDFAF1;}
+div.serie div.ligne_serie2 {background-color: #FFFFFF;}
+
+.titre_serie, .nom_serie, .type_serie {
+	font-family: verdana;	
+	color: #333333;
+	text-align: left;
+}
+
+.nom_serie {
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+.titre_serie {
+	font-size: 10pt;
+	font-weight: normal;
+}
+
+
+.type_serie {
+	font-size: 8pt;
+	font-weight: normal;
+	font-style: italic;
+}
+
+div.ligne_ajouter, div.ligne_ajouter_serie {
+	margin-top: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	font-family: verdana;
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+div.ligne_ajouter {background-color: #E5E5E5;}
+div.ligne_ajouter_serie {background-color: #FDFAF1;}
+
+div.ligne_ajouter a:visited {color: #CC9933;}
+div.ligne_ajouter a:hover {color: #FFBB03;}
+
+div.ligne_ajouter_art {
+	padding-left: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: #E5E5E5;
+	color: #CC9933;
+	font-weight: bold;
+}
+
+div.ligne_ajouter_art a:link {color: #CC9933;}
+div.ligne_ajouter_art a:visited {color: #CC9933;}
+div.ligne_ajouter_art a:hover {color: #FFBB03;}
+
+div.action {
+	font-family: verdana;	
+	font-size: 10pt;
+	color: #CC9933;
+	float: right;
+	text-align: left;
+	width: 400px;
+	margin-right: 20px;
+}
+
+.inactif {
+	font-family: verdana;	
+	color: #999999;
+}
+
+div a:link {color: #CC9933;}
+div a:visited {color: #CC9933;}
+div a:hover {color: #FFBB03;}
+
+img.icone {
+	float: left;
+	margin-right: 10px;
+}
+
+img.illus {
+	float: right;
+}
+
+div.article {
+	margin-left: 32px;
+}
+
+div.ligne_ajouter_nongrp {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: #E0E7E1;
+	font-weight: bold;
+}
+
+div.nongroupe div.ligne_art1 {
+	background-color: #F0F6F1;
+}
+
+div.nongroupe div.ligne_art2 {
+	background-color: #FAFFFB;
+}
+
+div.theme div.ligne_art1 {
+	background-color: #F0F6F1;
+}
+
+div.theme div.ligne_art2 {
+	background-color: #FAFFFB;
+}
+
 /************ Styles de la page de login ******************/
 #logo1 {
 	position: absolute;
