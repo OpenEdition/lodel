@@ -47,6 +47,7 @@ ln sommaire.php
 
 dirsource $homesite/lodel/admin
 ln tpl/login.html
+ln colorpicker.js
 ln login.php
 ln logout.php
 
