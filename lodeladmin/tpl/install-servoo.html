@@ -60,15 +60,16 @@ URL du serveur ServOO<br />
 <input type="text" size="60" name="newservoourl" value="<?php  echo $servoourl; ?>">
 </td></tr>
 <tr><td>
-Nom d'utilisateur ServOO:<br>
+Nom d'utilisateur ServOO:<br />
 <input type="text" size="60" name="newservoousername" value="<?php  echo $servoousername; ?>">
 </td></tr>
 <tr><td>
-Mot de passe de l'utilsateur ServOO<br>
-<input type="password" size="60" name="newservoopasswd" value="">
+Mot de passe de l'utilsateur ServOO:<br />
+<input type="password" size="60" name="newservoopasswd">
 </td></tr>
 </table>
-<input type="submit" value="continuer">
+<input type="submit" value="Continuer">
+<input type="submit" name="noservoo" value="Ne pas configurer de ServOO">
 
 </form>
 <?php  include("tpl/install-closehtml.html"); ?>

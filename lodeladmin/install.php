@@ -225,9 +225,15 @@ if ($tache=="options") {
 
 
 if ($tache=="servoo") {
-  maj_lodelconfig(array("servoourl"=>$newservoourl,
-			"servoousername"=>$newservoousername,
-			"servoopasswd"=>$newservoopasswd));
+  if ($noservoo) {
+    maj_lodelconfig(array("servoourl"=>"off",
+			  "servoousername"=>"",
+			  "servoopasswd"=>""));
+  } else {
+    maj_lodelconfig(array("servoourl"=>$newservoourl,
+			  "servoousername"=>$newservoousername,
+			  "servoopasswd"=>$newservoopasswd));
+  }
 }
 
 
