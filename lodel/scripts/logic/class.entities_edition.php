@@ -78,6 +78,7 @@ class Entities_EditionLogic extends GenericLogic {
 	 //print_r($context['persons'][$idtype]);
 
 	 foreach($context['persons'][$idtype] as $degree=>$arr) {
+	   if (!is_numeric($degree)) return;
 	   $localcontext=array_merge($context,$arr);
 	   $localcontext['name']=$name;
 	   $localcontext['classtype']="persons";

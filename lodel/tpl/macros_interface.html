@@ -81,9 +81,15 @@
 </IF>
 <!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
 <IF COND="[#EDITION] eq 'display'">
-<span class="displayfield">
+	<IF COND="[#TYPE] eq 'mltext'"> <!--[ multi-lingue ]-->
+	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
+	    <div>[(#LANG|humanlang|ucfirst)] : <span class="displayfield">[#VALUE]</span></div>
+	  </LOOP>
+	<ELSE/> <!--[ other cases ]-->
+	<span class="displayfield">
 	<IF COND="[#TYPE] ne 'passwd'"><div class="editiondisplay">[#VALUE]</div><ELSE/>*******</IF>
-<span>
+	<span>
+	</IF>
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">

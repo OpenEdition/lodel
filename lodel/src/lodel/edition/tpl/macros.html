@@ -42,33 +42,28 @@
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<DEFMACRO NAME="JS_CONFIRM_DEPUBLICATION">
-	<script type="text/javascript"><!--
-	
-		function confirm_depublication()
+<DEFMACRO NAME="JS_CONFIRM">
+<script type="text/javascript">
+<!--
 
-		{
-			if(confirm("[@EDITION.CONFIRMATION_UNPUBLISH]")) return true;
-			else return false; 
-		}
-	//
-	--></script>
-</DEFMACRO>
-
-<DEFMACRO NAME="JS_CONFIRM_SUPPRESSION">
-<script type="text/javascript"><!--
-
-	function confirm_suppression(id)
+	function confirm_delete(id)
 	{
-		var msg="[@EDITION.CONFIRMATION_DELETE_ANNEX_DOCUMENT] ?";
-		if(confirm(msg))window.location="docannexe.php?id="+id+"&delete=2";
+	window.status='go';
+		var msg='[@EDITION.CONFIRMATION_DELETE] ?';
+		if(confirm(msg)) window.location='index.php?do=delete&id='+id;
 	}
 	
 	function popup(url) {
 		 var fenetre = window.open(url,"","scrollbars,width=400,height=300");
 	 }
-//
---></script>
+
+	function confirm_depublication()
+	{
+		if(confirm("[@EDITION.CONFIRMATION_UNPUBLISH]")) return true;
+		else return false; 
+	}
+	//
+	--></script>
 </DEFMACRO>
 
 
@@ -719,7 +714,7 @@
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
 		<IF COND="(abs([#STATUS]) lt 16) AND (([#IDPARENT] AND [#GROUPRIGHT]) or [#USER.ADMIN])">
-		|&nbsp;<a href="index.php?do=delete&id=[#ID]">[@EDITION.DELETE]</a>&nbsp;|
+		|&nbsp;<a href="#" onClick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
 		</IF>

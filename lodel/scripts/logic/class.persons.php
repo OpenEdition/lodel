@@ -83,14 +83,13 @@ class PersonsLogic extends GenericLogic {
      $dao=$this->_getMainTableDAO();
 
      foreach(array("firstname","familyname") as $g) {
-       if (!$this->g_name[$g]) die("ERROR: The generic field $g is required. Please edit your editorial model.");
+       if (!$this->g_name[$g]) trigger_error("ERROR: The generic field $g is required. Please edit your editorial model.",E_USER_ERROR);
        $$g=$context[$this->g_name[$g]];
      }
 
-     if (!$id && $familyname) {
+     if (!$id && ($familyname || $firstname)) {
        // search if the person exists
-       $extracriteria=" AND g_firstname='".$firstname."'";
-       $vo=$dao->find("g_familyname='".$familyname."' ".$extracriteria." AND idtype='".$idtype."' AND status>-64","id");
+       $vo=$dao->find("g_familyname='".$familyname."' AND g_firstname='".$firstname."'  AND idtype='".$idtype."' AND status>-64","id");
        $new=false;
      }
 
