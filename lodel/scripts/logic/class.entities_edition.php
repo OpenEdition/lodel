@@ -263,19 +263,30 @@ class Entities_EditionLogic extends GenericLogic {
 	 $itemscontext=$context[$table][$idtype];
 	 if (!$itemscontext) continue;
 	 $ids=array();
+	 $idrelations=array();
 	 foreach ($itemscontext as $k=>$itemcontext) {
 	   if (!is_numeric($k)) continue;
 	   $itemcontext['idtype']=$idtype;
 	   $itemcontext['status']=$status;
 	   $ret=$logic->editAction($itemcontext,$error);	 
-	   if ($ret!="_error" && $itemcontext['id']) $ids[]=$itemcontext['id'];
+	   if ($ret!="_error" && $itemcontext['id']) {
+	     $ids[]=$itemcontext['id'];
+	     $idrelations[$itemcontext['id']]=$itemcontext['idrelation'];
+	   }
 	 }
-	 if ($ids) {
+	 if ($ids && !$idrelations) { // new item but relation has not been created
 	   if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
+	   $db->execute(lq("DELETE FROM #_TP_relations WHERE id1='".$vo->id."' AND nature='".$nature."'")) or dberror();
+
 	   $values=array();
 	   $degree=1;
 	   foreach ($ids as $id) $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
-	   $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
+	   $db->execute(lq("INSERT INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
+	 } elseif ($ids && $idrelations) { // new item but relation has been created
+	   // let's delete selectively
+	   foreach($ids as $id) {
+	     $db->execute(lq("DELETE FROM #_TP_relations WHERE id1='".$vo->id."' AND nature='".$nature."' AND idrelation XXXXXXXXXXXXXXXXXXXXXXXXXX")) or dberror();
+	   }
 	 }
        }
      } // foreach entries and persons
