@@ -193,10 +193,10 @@ function copy_images (&$text,$callback,$argument="",$count=1)
     }
 }
 
-function copy_images_private (&$text,$callback,$argument="",&$count,&$imglist)
+function copy_images_private (&$text,$callback,$argument,&$count,&$imglist)
 
 {
-    preg_match_all("/<img\s[^>]*src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
+    preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {
