@@ -85,7 +85,7 @@ if ($id) {
       if ($db->errorno()) dberror();    
     }
     if ($id) {
-      printEntities($id,"",&$context);
+      printEntities($id,"",$context);
     }
   } else {
     // nohting to do...
