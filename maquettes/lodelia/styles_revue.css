@@ -106,13 +106,15 @@ sup
 	/*  
 	 *
 	 */
-	font-size: xx-small;
+	width: 561;
+	font-size: small;
 	font-weight: small;
 	text-align : justify;
 	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
-	line-height: 100%;
+	line-height: 120%;
 	text-indent : 20;
-	padding: 2em
+	padding: 20px;
+	
 	
 }
 
@@ -238,10 +240,9 @@ sup
 	/*  
 	 *
 	 */
-	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
-	color : black;
-	text-align : center;
+	
+	font-size : medium;
+	
 }
 
 .directeur
@@ -333,7 +334,7 @@ sup
 	 */
 	font-size: x-small;
 	font-weight: small;
-	line-height: 90%;
+	line-height: 120%;
 	text-align : justify;
 	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 	padding-top: 2em;
@@ -912,6 +913,7 @@ td {
 	 * des td des tables
 	 */
 	vertical-align: top;
+	colspan: 2;
 	
 }
 
@@ -922,10 +924,9 @@ td {
 	 */
 
 
-td.titrerevue {
+table.titrerevue , td.titrerevue {
 	
-	 width: 561;
-	 height: 30;
+	 width: 100%;
 	 vertical-align: middle;
 	 background-color: #F4F4F4;
 	 font-size: large;
@@ -936,6 +937,9 @@ td.titrerevue {
 	 color: #9C3234;
 	 line-height: 150%;
 }
+
+
+
 	
 A.titrerevue {
 
@@ -974,6 +978,7 @@ td.blocblanc {
 	 height: 15;
 	 vertical-align: top;
 	 background-color: #ffffff;
+	 background-image: url(images/spacer.gif);
 		 
 }
 
@@ -983,8 +988,11 @@ td.blocblanc6 {
 	 height: 6;
 	 vertical-align: top;
 	 background-color: #ffffff;
+	 background-image: url(images/spacer.gif);
 		 
 }
+
+
 
 td.titre2 {
 	
@@ -992,7 +1000,7 @@ td.titre2 {
 	 height: 20;
 	 vertical-align: middle;
 	 background-color: #9C3234;
-	 font-size: small;
+	 font-size: medium;
 	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
 	 font-weight : bold;
 	 text-align: left; 
@@ -1041,17 +1049,20 @@ A.titre2:active {
 
 td.signalerimprimer {
 	
-	 width: 60;
+	 width: 561;
 	 height: 20;
 	 vertical-align: middle;
 	 background-color: #9C3234;
 	 align: right; 
-	 padding-right: 0;
 	 text-align: right;
+	 padding-left: 10;
 		 
 }
 
-td.afficherdocument  {
+table.afficherdocument , td.afficherdocument  {
+	/* 
+	 * Pour afficher les informations sur un document dans article.html
+	 */
 	vertical-align: middle;
 	width: 561;
 	background-color: #F7F7F7;
@@ -1115,4 +1126,84 @@ td.titre3 {
 	padding-right: 1em;
 }
 
+/***************************************************************************************
+ *	Les styles définissant les différentes images du logo de Revues.org                           *
+ ***************************************************************************************
+ */
+ 
+ td.logo_revuesorg1 {
+	vertical-align: top;
+	height: 11;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/left_top.gif);
+	border: 0; 
+}
 
+
+td.logo_revuesorg2 {
+	vertical-align: top;
+	height: 3;
+	width: 165;
+	background-color: #ffffff;
+	background-image: url(images/spacer.gif);
+	border: 0; 
+}
+
+A.logo_revuesorg3 {
+	vertical-align: top;
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues.gif);
+	border: 0; 
+}
+
+A.logo_revuesorg3 {
+	vertical-align: top;
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues.gif);
+	border: 0; 
+}
+
+A.logo_revuesorg3:hover {
+	vertical-align: top;
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues_on.gif);
+	border: 0; 
+}
+
+
+td.logo_revuesorg4 {
+	vertical-align: top;
+	height: 18;
+	width: 165;
+	background-color: #ffffff;
+	background-image: url(images/left_top2.gif);
+	border: 0; 
+}
+
+.directeur_publication {
+	padding-left: 20px;
+	font-size: medium;
+}
+
+
+
+.descriptionauteur {
+   /*  
+    *	Style de la description de l'auteur appelée dans le document 
+	*/
+	 
+	font-size: small;
+	font-weight: small;
+	text-align : justify;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	line-height: 120%;
+	text-indent : 20;
+	margin-left: 20px;
+}

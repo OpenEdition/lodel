@@ -33,6 +33,7 @@
 <!-- <MACRO NAME="TITRE_DOCUMENT_CLIQUABLE">                            -->
 <!-- <MACRO NAME="LISTER_AUTEURS">                                      -->
 <!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
+<!-- <MACRO NAME="DESCRITION_AUTEUR">                                   -->
 <!-- <MACRO NAME="LISTER_THEMES">                                       -->
 <!-- <MACRO NAME="DERNIER_NUMERO">                                      -->
 <!-- <MACRO NAME="SOMMAIRE_DERNIER_NUMERO">                             -->
@@ -168,38 +169,33 @@
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
 <!-- ****************************************************************** -->
-<table border="0" cellspacing="0" cellpadding="0" width="100%"  background-color="#ffffff">
-<tr>
-	<td  valign="middle">
-		<table  width="100%" valign="middle" cellspacing="0" cellpadding="0">
+
+		<table class="titrerevue">
 			<tr>
-				<td width="561" class="titre1">
-		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
+				<td>
+		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
+					 <br /> <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
 		 		</td>
 			</tr>
 			<tr>
-				<td width="561" class="titre1">
-		 <MACRO NAME="SOUSTITRE_PUBLICATION">
+				<td class="soustitrerevue">
+		 			<MACRO NAME="SOUSTITRE_PUBLICATION">
 		 		</td>
 			</tr>
 		 	<tr>
-				<td width="561" class="titre1">
-		 	<IF COND="[#DIRECTEUR]!=''">
-					
+				<td class="directeur_publication">
+		 					
 						<MACRO NAME="DIRECTEUR_PUBLICATION">
 					
-			</IF>
+			
 				</td>
 			</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td class="introduction" backgroundcolor="#FFFFFF">
-		<MACRO NAME="INTRODUCTION_COMPLETE">
-	</td>
-</tr>
-</table>					
+			<tr>
+				<td class="introduction" backgroundcolor="#FFFFFF">
+					<MACRO NAME="INTRODUCTION_COMPLETE">
+				</td>
+			</tr>
+		</table>					
 
 </DEFMACRO>
 
@@ -467,32 +463,32 @@
 <!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
 <!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
 <!-- ****************************************************************** -->
-	<span class="texte_petit">
+	
 		<IF COND="[#TYPE]=='article_vide'">
 			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong> [#TITRE]
 			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
 		</IF>
 		<IF COND="[#TYPE]=='article'">
 			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-			<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+			<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 		<ELSE/>
 			<IF COND="[#TYPE]=='chronique'">
 				<strong>Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-				<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+				<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 			<ELSE/>
 				<IF COND="[#TYPE]=='compte rendu'">
 					<strong>Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-					<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+					<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
 						<strong>Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-						<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+						<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 					<ELSE/>
 						<IF COND="[#TYPE]=='editorial'">
 							<strong>Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+							<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
 						<ELSE/>
-							<a href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]</span></a>
+							<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]</span></a>
 						</IF>
 					</IF>
 				</IF>
@@ -803,11 +799,11 @@
 <!-- ****************************************************************** -->
 	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
 	<BEFORE>
-		<table width="561" border="0" align="left" cellspacing="4">
+		<table width="561" border="0" align="left" cellpadding="4">
 	</BEFORE>
 	<DO>
 		<tr> 
-			<td valign="top" bgcolor="#F7F7F7"> 
+			<td class="afficherdocument"> 
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 			</td>
 		</tr>
@@ -830,12 +826,12 @@
 		<DO>
 			<table width="561" border="0" align="left">
 				<tr>
-					<td valign="top" width="561" height="15" bgcolor="#ffffff">
-						<img src="images/spacer.gif" width="561" height="15"  border="0">
+					<td class="blocblanc">
+						&nbsp;
 					</td>
 				</tr>
 				<tr>
-					<td valign="top" width="561" height="15" class="regroupement2">
+					<td class="titre2">
 						
 							<IF COND="[#TITRE]">
 								[#TITRE]
@@ -852,8 +848,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td valign="top" width="561" height="15" background-color="#ffffff">
-						<img src="images/spacer.gif" width="561" height="15"  border="0">
+					<td class="blocblanc">
+						&nbsp;
 					</td>
 				</tr>
 				<tr>
@@ -971,6 +967,31 @@
 		</LOOP>
 	</strong>
 </DEFMACRO>
+
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la liste description des auteurs dans le document          -->
+<!-- ****************************************************************** -->
+<DEFMACRO NAME="DESCRITION_AUTEUR"> 
+
+
+<LOOP TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
+ <IF COND="[#DESCRIPTION]">
+	<LOOP TABLE="auteurs"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
+		<a class="auteur" href="auteur.html?id=[#ID]">
+					
+			[#PRENOM]
+			[#NOMFAMILLE]
+					
+		</a>
+	</LOOP>
+<br />
+	[#DESCRIPTION]
+</IF>
+</LOOP>
+</DEF>
+
+
 
 <DEFMACRO NAME="LISTER_THEMES">
 <!-- ****************************************************************** -->

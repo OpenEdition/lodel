@@ -23,41 +23,47 @@
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 	<!-- Affichage de la barre verticale de navigation -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td align="center" valign="top"> 
-		<!-- Affichage du titre et de l'auteur  -->
-		<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER"  bordercolor="Black">
-			<tr>
-				<td width="100%" class="soustitre">
-					Articles publiés dans <em><MACRO NAME="NOM_REVUE"></em> par 
-				</td> 
-			</tr> 
-			<tr>
-				<td width="100%" class="titre">
-					<MACRO NAME="FILET_1">
-					<span class="couleur_1">
-						[#PRENOM] [#NOMFAMILLE]	
-					</span>
-					<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
-					<MACRO NAME="FILET_1">
-				</td> 
-			</tr> 
-		</table>
-		<!-- Affichage de l'ensemble des documents publiés par l'auteur -->
-		<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
-			<BEFORE>
-				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER"  bordercolor="Black">
-			</BEFORE>
-			<DO>
+	<MACRO NAME="TRACER_SEPARATION_VERTICALE">
+	<td width="561" valign="top"  bgcolor="#ffffff">
+		<MACRO NAME="IMG_LOGO_LODELIA">
+			<table border="0" cellspacing="0" cellpadding="0" width="561" height="100%" >
 				<tr>
-					<td class="texte_sommaire">
-						<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
+				<!-- Titre de la revue -->
+					<td class="titrerevue"  >
+						Articles parus dans <MACRO NAME="NOM_REVUE">
 					</td>
 				</tr>
-			</DO>
-			<AFTER>
-				</table>
-			</AFTER>
-		</LOOP>
+				<tr>
+					<td class="blocblanc"  >
+						&nbsp;
+					</td>
+				</tr>
+				<tr>
+				<!-- Nom et prénom de l'auteur -->
+					<td class="titre2">
+						[#PRENOM] [#NOMFAMILLE]&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
+					</td>
+				</tr>
+				<tr>
+					<td class="blocblanc6"   >
+						&nbsp;
+					</td>
+				</tr>
+				<tr>
+					<td>
+						tr
+					</td>
+				</tr>
+				<tr>
+					<td class="blocblanc6"  >
+						&nbsp;
+					</td>
+				</tr>
+			</table>
+						
+				
+		<!-- Affichage de l'ensemble des documents publiés par l'auteur -->
+		
 		<div align="center">
 			<a href="auteurs-complet.html">
 				Index des auteurs

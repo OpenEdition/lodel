@@ -26,7 +26,9 @@
 			<table border="0" cellspacing="0" cellpadding="0" width="561" >
 				<tr>
 					<td class="titrerevue" colspan="2" >
-						 <MACRO NAME="PARU_DANS"> 
+						
+						 			<MACRO NAME="PARU_DANS"> 
+								
 					</td>
 				</tr>
 				<tr>
@@ -50,7 +52,7 @@
 						</IF>
 					</td>
 					<td class="signalerimprimer" >
-						<MACRO NAME="BOUTON_SIGNALER">	&nbsp; <MACRO NAME="BOUTON_IMPRIMER"> 
+						<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER"> 
 					</td>
 				</tr>	
 				<tr>
@@ -63,12 +65,19 @@
 						<IF COND="[#TYPE]=='note de lecture'">
 							Note de lecture par
 						</IF>
+						
 						<MACRO NAME="LISTER_AUTEURS_DOCUMENT">
 						
+						<IF COND="[#SURTITRE]">
+						[#SURTITRE]
+						</IF>
+						
 						[#TITRE]
+						
 						<IF COND="[#SOUSTITRE]">
 						[#SOUSTITRE]
 						</IF>
+						
 						<br>
 						
 					</td>
@@ -173,7 +182,7 @@
 					</td>
 				</tr>
 				<tr> 
-					<td class="texte">
+					<td class="texte" colspan="2">
 							<IF COND="[#TYPE]=='compte rendu'">
 								<IF COND="[#META_IMAGE]">
 									<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
@@ -243,7 +252,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="notes">
+					<td class="notes" colspan="2"> 
 						[#NOTEBASPAGE]
 						<br />
 					</td>
@@ -266,7 +275,17 @@
 						&nbsp;
 					</td>
 				</tr>
-				
+				<tr>
+					<td class="descritionauteur">
+						
+						<MACRO NAME="DESCRITION_AUTEUR"> 
+					</td>
+				</tr>
+				<tr>
+					<td class="blocblanc">
+						&nbsp;
+					</td>
+				</tr>
 				<tr>
 					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				</tr>
