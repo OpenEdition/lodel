@@ -143,7 +143,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
     // cherche le groupe et les droits
     $groupe=get_groupe($context,$idparent);
     // cherche l'ordre
-    $ordre=get_ordre_max("entites");
+    $ordre=get_ordre_max("entites","idparent='$idparent'");
     $status=$context[status] ? intval($context[status]) : -1; // non publie par defaut
     if (!$context[idtype]) { // prend le premier venu
       $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE classe='$classe' AND status>0 ORDER BY ordre LIMIT 0,1") or die(mysql_error());
