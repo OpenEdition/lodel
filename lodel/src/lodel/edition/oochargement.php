@@ -200,7 +200,6 @@ function OO_XHTML ($convertedfile,&$context)
 		      "r2r:normal"=>"r2r:texte",
 		      "r2r:normal\s*(web)"=>"r2r:texte",
 		      "r2r:standard"=>"r2r:texte", 
-		      "r2r:puces?"=>"r2r:texte",
 		      "r2r:bloccitation"=>"r2r:citation",
 		      "r2r:quotations"=>"r2r:citation",
 		      "r2r:titleuser"=>"r2r:title",
@@ -231,8 +230,19 @@ function OO_XHTML ($convertedfile,&$context)
 	     "</r2r:section\\1>");
 #	     "<r2r:section\\1>\\0",
 #	     "\\0</r2r:section\\1>");
-
   // clean the section
+
+
+  // first part of the puces processing
+  array_push($srch,
+	     "/<li>\s+(<r2r:puces?".">)/", # remove space between li and puces (need for the looking before)
+	     "/(?<!<li>)(<r2r:puces?".">)/", # look for puce not preceded by a <li>
+	     "/(<\/r2r:puces?".">)(?!\s*<\/li>)/"); # look for puce not preceded by a <li>
+  array_push($rpl,
+	     "<li>\\1",
+	     "<li>\\1",
+	     "\\1</li>");
+ 
 
 
 #  // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
@@ -245,9 +255,26 @@ function OO_XHTML ($convertedfile,&$context)
 #  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
 #  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
+  // second part of the puces processing
   // remonte les balises r2r au dessus des ul et li
   array_push($srch,"/((?:<(?:ul|li)\b[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/(?:ul|li)>\s*)+)/");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
+
+  // third part of the puces processing
+  array_push($srch,
+	     "/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
+	     "/(<r2r:puces?>)(?!<ul\b[^>]*>)/", // puces not followed by ul
+	     "/<\/ul>\s+(<\/r2r:puces?>)/", // remove space between puce and closing ul (for the next regexp)
+	     "/(?<!<\/ul>)(<\/r2r:puces?>)/" // puces not precessed by a ul
+	     );
+  array_push($rpl,
+	     "",
+	     "\\1<ul>",
+	     "</ul>\\1",
+	     "</ul>\\1");
+
+
+
 
   // modifie les styles avec (user)
   array_push($srch,"/(<\/?r2r:\w+)\(user\)/");
@@ -330,13 +357,14 @@ function OO_XHTML ($convertedfile,&$context)
 			      "cleanPandSPAN",$file);
 
 
-
-
 #  die(htmlentities($file));
 
   if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1;
   return FALSE; }
   $file=traite_multiplelevel($file);
+
+  // supprime les puces?
+  $file=preg_replace ("/<\/?r2r:puces?>/","",$file);
 
   if ($msg) { echo "<li>temps regexp: ".(time()-$time)." s<br>\n"; }
 
