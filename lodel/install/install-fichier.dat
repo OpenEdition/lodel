@@ -186,7 +186,6 @@ ln logout.php
 #
 
 ln tpl/macros.html
-ln images
 ln css
 
 ln index.php
@@ -201,7 +200,6 @@ ln tpl/edit_optiongroups.html
 ln tpl/edit_useroptiongroups.html
 ln tpl/edit_servooconf.html
 
-ln stats.php
 ln tpl/edit_texts.html
 ln tpl/texts.html
 ln tpl/translations.html
