@@ -68,6 +68,7 @@ td, th, table{
 table{
 	width: 75%;
 	padding: 0;
+	margin: auto;
 }
 form{
 	margin: 0;
@@ -79,6 +80,16 @@ label{
 	margin-bottom: 5px;
 	margin-top: 10px;
 	font-size: 95%;
+}
+dt{
+	margin-bottom: 10px;
+}
+dd{
+	margin-bottom: 10px;
+	text-align: justify;
+}
+form.install{
+	margin-top: 10px;
 }
 #logo{
 	margin: 0;

@@ -53,42 +53,39 @@ Une erreur est survenue lors de la copie du fichier de configuration "lodelconfi
 <hr style="width: 100%; height: 2px;">
 <p>[Alternatives]</p>
 <?php } ?>
-<p align="justify">
+<p>
 Le fichier de configuration est prêt, il faut l'installer dans le répertoire racine de Lodel. Ce fichier doit être lisible par le serveur web, mais comme il contient des informations confidentielles (mot de passe), il faut restreindre <strong>au maximum</strong> les droits de lecture sur ce fichier.
 </p>
-<p align="justify">
-Pour installer le fichier de configuration, choisissez une des trois solutions :
-</p>
-<ul>
-<li>
-Télécharger le fichier puis l'enregistrer à la racine de Lodel (par ftp par exemple).
-<table cellpadding="0" cellspacing="0"><tr valign="middle"><td>
-<form method="post" action="install.php" />
+<dl>
+<dt>
+<strong>Pour installer le fichier de configuration, choisissez une des trois solutions :</strong>
+</dt>
+
+<dd>
+<strong>Télécharger le fichier</strong> puis l'enregistrer à la racine de Lodel (par ftp par exemple).
+<form method="post" action="install.php" class="install">
 <input type="hidden" name="tache" value="downloadlodelconfig" />
 <input type="submit" value="Télécharger" />
-</form></td><td> Ensuite, cliquer sur "Continuer" </td><td>
-<form method="post" action="install.php">
+&nbsp;&nbsp;Ensuite, cliquer sur "Continuer"&nbsp;&nbsp;
 <input type="hidden" name="tache" value="lodelconfig" />
 <input type="submit" value="continuer" />
 </form>
-</td></tr></table>
-
-</li>
-<li>
-Visualisez le fichier, faites un copier coller dans un fichier texte nommé lodelconfig.php et enregistrez le ensuite à la racine de Lodel. (ne laissez aucune ligne apres le ?&gt; final) :
+</dd>
+<dd>
+<strong>Visualisez le fichier</strong>, faites un copier coller dans un fichier texte nommé lodelconfig.php et enregistrez le ensuite à la racine de Lodel. (ne laissez aucune ligne apres le ?&gt; final) :
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="showlodelconfig">
 <input type="submit" value="Visualiser">
 </form>
-</li>
-<li>
-Copiez vous même le fichier lodeladmin/<?=$lodelconfig ?> à la racine de Lodel en le renomant 'lodelconfig.php'.
+</dd>
+<dd>
+<strong>Copiez vous même le fichier</strong> lodeladmin/<?=$lodelconfig ?> à la racine de Lodel en le renomant 'lodelconfig.php'.
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">
 <input type="submit" value="continuer">
 </form>
-</li>
-</ul>
+</dd>
+</dl>
 
 
 

@@ -45,18 +45,18 @@ include("tpl/install-bandeau.html");
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="options">
-<table border="1">
+<table cellspacing="0" cellpadding="0">
 
 <tr><td>
-<p>Vérifier que le chemin de l'url vers la racine de Lodel a été deviné correctement.</p>
+<p><strong>Vérifiez que le chemin de l'url vers la racine de Lodel a été deviné correctement :</strong></p>
 <input type="text" size="60" name="newurlroot" value="<?php echo $urlroot; ?>">
+<br />&nbsp;<br />
 </td></tr>
 <tr><td>
-<p>Droits sur les fichiers:</p>
+<p><strong>Droits sur les fichiers :</strong></p>
 <p>Lorsque le serveur créé des fichiers au cours de l'installation d'un site ou lors du fonctionnement normal de Lodel, il est propriétaire des fichiers, mais il peut aussi ouvrir les droits de lecture et/ou d'ecriture pour le groupe et/ou pour tous les utilisateurs. Ceci permet d'acceder aux fichiers avec un autre utilisateur (par ftp par exemple) : cette option est recommandée si vous êtes chez un hebergeur qui protège les comptes utilisateurs les uns des autres ou si vous êtes l'unique utilisateur sur le serveur. Dans le cas contraire, il est conseillé de fermer les droits autant que possible sous peine par exemple de rendre accessible certains mot de passe.
 </p>
-<div align="center">
-<table border="1" width="50%">
+<table cellspacing="0" cellpadding="0">
 <tr><td>groupe</td><td>les autres (all)</td></tr>
 <tr><td>
 <input type="checkbox" name="permission[group][read]" <?php if (octdec($filemask) & 0040) echo "checked";?>  > Lecture<br />
@@ -65,68 +65,72 @@ include("tpl/install-bandeau.html");
 <input type="checkbox" name="permission[all][read]"  <?php if (octdec($filemask) & 0004) echo "checked";?> > Lecture<br />
 <input type="checkbox" name="permission[all][write]" <?php if (octdec($filemask) & 0002) echo "checked";?> > Ecriture
 </td></tr>
-</table>
-</div>
+</table><br />&nbsp;<br />
 </td></tr>
 
 <tr><td>
-<p>Fonction d'archivage ZIP:</p>
-
-<p>Si vous souhaitez utiliser ces fonctionalités l'import par ServOO ou le systeme de sauvegarde de Lodel, veuillez choisir une des deux options:</p>
-<ul style="list-style-type:none;">
-<li>
-<p>
+<p><strong>Fonction d'archivage ZIP :</strong></p>
+<dl>
+<dt>
+Si vous souhaitez utiliser ces fonctionalités l'import par ServOO ou le systeme de sauvegarde de Lodel, veuillez choisir une des deux options :
+</dt>
+<dd>
 <input type="radio" name="pclzip" value="pclzip" <?php if ($unzipcmd=='pclzip' && $zipcmd=='pclzip') { echo "checked";}?> >Utiliser PclZip. Pour cela, assurez vous que l'extension zlib est installée <?php if (function_exists('gzopen')) { ?>(ce qui semble être le cas) <?php } else { ?>(<strong>ce qui ne semble pas être le cas</strong>)<?php } ?>
-</p>
-</li>
-<li><p><input type="radio" name="pclzip" value="cmd" <?php if ($unzipcmd!='pclzip' || $zipcmd!='pclzip') { echo "checked";}?> > Utiliser les commandes unix zip et unzip. Pour cela, veuillez préciser les chemins d'accès vers ces commandes. Attention! cette solution ne fonctionne pas quand php est en safe-mode ou quand la commande php <code>system</code> est désactivé, ce qui est le cas chez la plupart des hébergeurs.
-</p>
-<table>
-<tr><td>unzip:</td><td><input type="text" size="60" name="newunzipcmd" value="<?php if ($unzipcmd!='pclzip') echo $unzipcmd; ?>"></td></tr>
-<tr><td>zip:</td><td><input type="text" size="60" name="newzipcmd" value="<?php if ($zipcmd!='pclzip') echo $zipcmd; ?>"></td></tr>
+</dd>
+<dd>
+<input type="radio" name="pclzip" value="cmd" <?php if ($unzipcmd!='pclzip' || $zipcmd!='pclzip') { echo "checked";}?> > Utiliser les commandes unix zip et unzip. Pour cela, veuillez préciser les chemins d'accès vers ces commandes. Attention! cette solution ne fonctionne pas quand php est en safe-mode ou quand la commande php <code>system</code> est désactivée, ce qui est le cas chez la plupart des hébergeurs.
+<br />&nbsp;<br />
+</dd>
+</dl>
+<table cellspacing="0" cellpadding="0">
+<tr><td>unzip :</td><td><input type="text" size="60" name="newunzipcmd" value="<?php if ($unzipcmd!='pclzip') echo $unzipcmd; ?>"></td></tr>
+<tr><td>zip :</td><td><input type="text" size="60" name="newzipcmd" value="<?php if ($zipcmd!='pclzip') echo $zipcmd; ?>"></td></tr>
 </table>
-</li>
-
-
+<br />&nbsp;<br />
 </td></tr>
 
 
 
 <tr><td>
-<p>Extension des scripts:</p>
+<p><strong>Extension des scripts :</strong></p>
 <p>Les scripts Lodel sont des scripts PHP, et il est recommandé d'utiliser l'extension ".php". Cependant si vous le souhaitez, il est possible de choisir l'extension ".html". Cette option n'est pas recommandée : elle nécessite en particulier une configuration particulière sur le serveur (c'est à dire que les fichiers html soient analysés par php).</p>
-<table>
+<table cellspacing="0" cellpadding="0">
 <tr>
-<td>.php:</td><td><input type="radio" name="newextensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
+<td>.php :</td><td><input type="radio" name="newextensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
 </tr><tr>
-<td>.html:</td><td><input type="radio" name="newextensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
+<td>.html :</td><td><input type="radio" name="newextensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
 </tr>
-</table>
+</table><br />&nbsp;<br />
 </td></tr>
 <tr><td>
-<p>Mail de contact en cas de bug dans les maquettes (templates) :</p>
+<p><strong>Mail de contact en cas de bug dans les maquettes (templates) :</strong></p>
 <p>Lodel peut envoyer un mail quand il rencontre certains bugs et qu'il ne peut pas afficher l'erreur à l'écran (c'est le cas lorsque c'est un internaute non identifié qui a provoqué l'erreur sur le site). Laisser vide si vous ne souhaitez pas d'envoi de mail.</p>
 <input type="text" size="60" name="newcontactbug" value="<?php echo $contactbug; ?>">
+<br />&nbsp;<br />
 </td></tr>
 <tr><td>
-<p>Utiliser des liens symboliques:</p>
+<p><strong>Utiliser des liens symboliques :</strong></p>
 
 <p>Si votre serveur web supporte les liens symboliques : certains fichiers peuvent être liés plutôt que copiés. La liaison permet une gestion plus souple des mises à jour, des droits d'accès, etc. Ceci ne se justifie <strong>que si Lodel gère plusieurs sites</strong>. Il faut, si cela n'est pas fait, configurer le serveur web pour "suivre les liens symboliques" ce qui est généralement considéré comme peu sûr. Reportez-vous à la documentation du logiciel de votre serveur web (apache par exemple).</p>
 
-oui: <input type="radio" name="newusesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br />
-non: <input type="radio" name="newusesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br />
+oui : &nbsp;<input type="radio" name="newusesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br />
+non : <input type="radio" name="newusesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br />&nbsp;<br />
 </td></tr>
 <tr><td>
-<p>Repertoire d'import:</p>
+<p><strong>Repertoire d'import :</strong></p>
 <p>Lorsque la base de données et les fichiers associés atteignent une taille importante, il n'est pas possible d'importer les fichiers par un simple formulaire web. Dans ce cas, les fichiers de sauvegarde doivent etre déposés dans le répertoire d'import (par ftp par exemple). Si par ailleurs, le serveur web peut écrire dans ce répertoire, Lodel proposera d'y stocker les sauvegardes (backup.php). Ce répertoire est donc très utile pour les gros sites !
 
 <p>Précisez un chemin absolu <u>en dehors l'arborescence de Lodel</u> (ce répertoire doit être lisible par le serveur, mais doit être hors de la zone web pour assurer la securité de vos données):</p>
 
-<input type="text" size="60" name="newimportdir" value="<?php echo $importdir; ?>">
+<input type="text" size="60" name="newimportdir" value="<?php echo $importdir; ?>" />
+<br />&nbsp;<br />
 </td></tr>
 
 </table>
-<input type="submit" value="continuer">
+<br />
+<div style="text-align: right; margin-right: 13%;">
+<input type="submit" value="continuer" /><br />&nbsp;<br />
+</div>
 </form>
 
 <? include("tpl/install-closehtml.html"); ?>
