@@ -4,7 +4,7 @@
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *
  *  Home page: http://www.lodel.org
  *
@@ -148,8 +148,8 @@ function parse ($in,$out)
   // parse les variables
   $this->parse_variable($this->arr[0]);
   for($i=1; $i<$this->countarr; $i+=3) {
-    $this->parse_variable(&$this->arr[$i+1],FALSE); // parse the attributs
-    $this->parse_variable(&$this->arr[$i+2]); // parse the content
+    $this->parse_variable($this->arr[$i+1],FALSE); // parse the attributs
+    $this->parse_variable($this->arr[$i+2]); // parse the content
   }
   // fin
 
@@ -206,7 +206,7 @@ function parse ($in,$out)
     #$t=microtime();
     require_once(TOINCLUDE."utf8.php"); // conversion des caracteres
     $contents=utf8_encode($contents);
-    convertHTMLtoUTF8(&$contents);
+    convertHTMLtoUTF8($contents);
   }
 
 
@@ -245,65 +245,6 @@ function parse_texte(&$text)
   }
 }
 
-///////////// PARSE 1 /////////////////
-//
-// parse les variables
-
-/*
-function parse_main1()
-
-{
-  $this->countlines(0);
-  $this->parse_variable($this->arr[0]);
-  $ind=1;
-  $this->parse_main1_rec(&$ind,0);
-}
-
-// parse to do a array containg the wanted variables by each loop, either internal (level=1) either extrenal (level=0)
-function parse_main1_rec(&$ind,$loopind)
-
-{
-  $level=1;
-  while ($ind<$this->countarr) {
-    switch($this->arr[$ind]) {
-    case "LOOP" : 
-      $this->countlines($ind);
-      $this->wantedvars[$ind][0]=$this->parse_variable($this->arr[$ind+1],"quote");
-      if (preg_match('/\bNAME\s*=\s*"([^"]+)"/i',$this->arr[$ind+1],$result)) {
-	$funcname="loop_".$result[1]."_require";
-	if (function_exists($funcname)) $this->wantedvars[$ind][0]=array_merge($this->wantedvars[$ind][0],call_user_func($funcname));
-      }
-      $this->wantedvars[$ind][1]=$this->parse_variable($this->arr[$ind+2]);
-      $ind+=3;
-      $this->parse_main1_rec($ind,$ind-3);
-      break;
-    case "/LOOP" : return;
-    case "DO" :
-    case "/DO" :
-    case "DOFIRST" :
-    case "/DOFIRST" :
-    case "DOLAST" :
-    case "/DOLAST" :
-    case "/AFTER" :
-    case "/BEFORE" :
-    case "/ALTERNATIVE" :
-      $level=1;
-      break;
-    case "AFTER" :
-    case "BEFORE" :
-    case "ALTERNATIVE" :
-      $level=0;
-      break;
-    }
-    $this->countlines($ind);
-    $this->wantedvars[$loopind][$level]=
-      array_merge($this->wantedvars[$loopind][$level],
-		  $this->parse_variable($this->arr[$ind+1],FALSE), // parse the attributs
-		  $this->parse_variable($this->arr[$ind+2])); // parse the content
-    $ind+=3;
-  }
-}
-*/
 
 function parse_variable (&$text,$escape="php")
 
@@ -573,9 +514,9 @@ function parse_loop()
   $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
 
   if (!$where) $where="1";
-  $this->parse_loop_extra(&$tables,
-			  &$tablesinselect,&$extrainselect,
-			  &$select,&$where,&$order,&$groupby);
+  $this->parse_loop_extra($tables,
+			  $tablesinselect,$extrainselect,
+			  $select,$where,$order,$groupby);
   //
 
 
@@ -593,7 +534,7 @@ function parse_loop()
       $this->loops[$name][attr]=$attrs; // save an id
       $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
 
-      $this->decode_loop_content($name,&$contents,&$options,$tablesinselect);
+      $this->decode_loop_content($name,$contents,$options,$tablesinselect);
       $this->make_loop_code($name.'_'.($this->signature),$tables,
 			    $tablesinselect,$extrainselect,
 			    $select,$dontselect,
@@ -692,7 +633,7 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
 	  }*/
 	}
 
-      $this->decode_loop_content_extra($state, &$content,&$options,$tables);
+      $this->decode_loop_content_extra($state, $content,$options,$tables);
       $state="";
       $this->arr[$this->ind]="";
       $this->arr[$this->ind+1]="";
@@ -726,7 +667,7 @@ function decode_loop_content ($name,&$content,&$options,$tables=array())
 #	unset($this->wantedvars[$j]);
 #      }
     }
-    $this->decode_loop_content_extra ("DO", &$content,&$options,$tables);
+    $this->decode_loop_content_extra ("DO", $content,$options,$tables);
   }
 }
 

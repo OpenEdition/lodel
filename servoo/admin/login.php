@@ -4,7 +4,7 @@
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *
  *  Home page: http://www.lodel.org
  *
@@ -61,7 +61,8 @@ if ($login) {
 
     if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 
-    header ("Location: http://$SERVER_NAME$url_retour");
+    if (!$url_retour) $url_retour="index.php";
+    header ("Location: ".$url_retour);
     die ("::$url_retour");
 
   } while (0);

@@ -4,7 +4,7 @@
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *
  *  Home page: http://www.lodel.org
  *
@@ -53,7 +53,6 @@ $critere="id='$id' AND status>0";
 //
 // ajoute ou edit
 //
-
 if ($edit) { // modifie ou ajoute
 
   extract_post();
@@ -75,7 +74,7 @@ if ($edit) { // modifie ou ajoute
 
     // verifie le email
     if ($context[email] && !ereg(".*\@[^\.]*\..*",$context[email])) { $context[erreur_email]=$err=1; }// repris de SPIP
-      
+
     if ($err) break;
 
     mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());

@@ -4,7 +4,7 @@
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ *  Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *
  *  Home page: http://www.lodel.org
  *
@@ -141,6 +141,14 @@ function getacceptedcharset($charset) {
 		} else return "iso-8859-1"; // Si on a rien trouvé on renvoie de l'iso
 	}
 	else return $charset;
+}
+
+
+// import Posted variables for the Register Off case.
+// this should be nicely/safely integrated inside the code, but that's
+// a usefull little hack at the moment
+if (!((bool) ini_get("register_globals"))) { // 
+  extract($_REQUEST,EXTR_SKIP);
 }
 
 // securite... initialisation
