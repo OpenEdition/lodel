@@ -1,6 +1,6 @@
 <?php
 
-require("lodelconfig.php");
+require("siteconfig.php");
 include ($home."auth.php");
 
 // timeout pour les cookies

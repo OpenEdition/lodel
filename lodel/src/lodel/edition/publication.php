@@ -58,17 +58,18 @@ if ($id>0 && $dir) {
   extrait_personnes($id,&$context);
   extrait_entrees($id,&$context);
 } else {
-  include_once ($home."textfunc.php");
-  $context[type]=trim(rmscript(strip_tags($type)));
-  if ($context[type]) {
-    $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
-    if (!mysql_num_rows($result)) die("type inconnu $context[type]");
-    list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
-  }
+  require_once ($home."validfunc.php");
+  $context[type]=trim(($type));
+  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
+
+  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("type inconnu $context[type]");
+  list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
   $context[entite]=array();
 }
 
 if (!$context[tplcreation]) {
+  if (!$context[idtype]) die("preciser un type");
   $result=mysql_query("SELECT tplcreation FROM $GLOBALS[tp]types WHERE id='$context[idtype]'") or die (mysql_error());
   list($context[tplcreation])=mysql_fetch_row($result);
 }
@@ -79,6 +80,5 @@ posttraitement($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,$context[tplcreation]);
-#calcul_page($context,"publication");
 
 ?>

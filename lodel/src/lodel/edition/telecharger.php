@@ -13,9 +13,10 @@ if ($id>0 && $type=="xml") {
  $rep="../sources";
  // cherche le nom original du fichier
 
- if (!(@include_once("CACHE/tablefields.php")) || !$GLOBALS[tablefields]) require_once($home."tablefields.php");
-  if ($GLOBALS[tablefields][documents] && 
-      in_array("fichiersource",$GLOBALS[tablefields][documents])) {
+ require($home."tablefields.php");
+ $table=$GLOBALS[tp]."documents";
+ if ($tablefields[$table] && 
+      in_array("fichiersource",$tablefields[$table])) {
     $result=mysql_query("SELECT fichiersource FROM $GLOBALS[tp]documents WHERE identite='$id'") or die(mysql_error());
     list($originalname)=mysql_fetch_row($result);
   } else {
@@ -25,15 +26,7 @@ if ($id>0 && $type=="xml") {
 
 if (!file_exists($rep."/".$filename)) die ("le fichier $filename n'existe pas");
 
-telecharger ($rep,$filename,$originalname);
+require_once($home."func.php");
+download ($rep."/".$filename,$originalname);
 
-function telecharger($rep,$filename,$originalname="")
-{
-  $path=$rep."/".$filename;
-  if (!$originalname) $originalname=$filename;
-  header("Content-type: application/force-download");
-  header("Content-Disposition: attachment; filename=$originalname");
-  header("Content-type: application/$type");
-  readfile("$path"); 
-}
 ?>

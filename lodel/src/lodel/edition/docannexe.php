@@ -54,14 +54,12 @@ if ($edit) { // modifie ou ajoute
   if ($type=="documentannexe-lienfichier") {
     // charge le fichier si necessaire
       if ($docfile && $docfile!="none") {
-	// place le fichier en place
-	// verifie que le repertoire du document existe
-	$dir="docannexe/$idparent";
-	if (!file_exists("../../".$dir)) {
-	  if (!@mkdir("../../".$dir,0755)) die("impossible de creer le repertoire $dir");
+	if ($id>0) { // we know the document id, we can copy it.
+	  $lien=save_annex_file($id,$docfile,$docfile_name);
+	} else {
+	  $lien="temporaire";
 	}
-	$lien=$dir."/".basename($docfile_name);
-	copy($docfile,"../../$lien");
+	// else, process once we know the id of the document
       } else {
 	// recherche le lien
 	include_once ($home."connect.php");
@@ -73,18 +71,18 @@ if ($edit) { // modifie ou ajoute
       // cherche si le documents existe
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents WHERE identite='$lien'") or die (mysql_query());
       if (mysql_num_rows($result)<1) {
-	$err=$context[erreur_documentnonexist]=1;
+	$err=$context[erreur_documentdontexist]=1;
       } else {
-	$lien="document.html?id=".$lien;
+	$lien=makeurlwithid ("document",$lien);
       }
     } elseif ($type=="documentannexe-lienpublication") {
       $lien=intval($context[lien]);
       // cherche si le documents existe
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]publications WHERE identite='$lien'") or die (mysql_query());
       if (mysql_num_rows($result)<1) {
-	$err=$context[erreur_publicationnonexist]=1;
+	$err=$context[erreur_publicationdontexist]=1;
       } else {
-	$lien="sommaire.html?id=".$lien;
+	$lien=makeurlwithid ("sommaire",$lien);
       }
     } elseif ($type=="documentannexe-lienexterne") {
       // verifie l'adresse
@@ -99,18 +97,33 @@ if ($edit) { // modifie ou ajoute
     // fin de chargement
 
     if ($err) break;
-    include_once ($home."connect.php");
-
+    require_once ($home."connect.php");
     require_once($home."entitefunc.php");
+    $context[entite][nom]=$context[titre];
     $context[entite][titre]=$context[titre];
     $context[entite][commentaire]=$context[commentaire];
     $context[entite][lien]=$lien;
     $context[idparent]=$idparent;
 
-    enregistre_entite(&$context,$id,"documents","",TRUE);
+    $newid=enregistre_entite(&$context,$id,"documents","",TRUE);
+    $newid=enregistre_entite(&$context,$id,"documents","",FALSE); // ne retourne pas quand il y a une erreur !
+
+#    if ($newid===FALSE) {
+#      print_r($context[erreur]);
+#      foreach ($context[erreur] as $champ=>$msg) { $context["erreur_".$champ]=$msg; }
+#      break;
+#    }
+#    echo "newid:$newid<br/>";
+
+    // New document, now we know the id, let's copy the uploaded file.
+    if (!$id && $newid &&
+	$type=="documentannexe-lienfichier" &&
+	$docfile && $docfile!="none") { // we know the document id, we can copie it.
+      $lien=save_annex_file($newid,$docfile,$docfile_name);
+      mysql_query("UPDATE $GLOBALS[tp]documents SET lien='$lien' WHERE identite=$newid");
+    }
 
     back();
-
   } while (0);
   // entre en edition
 } elseif ($id>0) {
@@ -148,6 +161,5 @@ posttraitement($context);
 
 include ($home."calcul-page.php");
 calcul_page($context,$tplcreation);
-
 
 ?>

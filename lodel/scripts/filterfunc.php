@@ -21,6 +21,9 @@ function makefilterfunc()
 	$funcname=$result2[1]; // name of the pipe function
 	$arg=$result2[2]; // argument if any
 
+	// process the variable. The processing is simple here. Need more ? Sould be associated with parser variable processing.
+	$arg=preg_replace("/\[\#([A-Z][A-Z_0-9]*)\]/e",' "$"."context[".strtolower("\\1")."]" ',$arg);
+
 	if ($arg) $arg.=",";
 	$filterfunc=$funcname.'('.$arg.$filterfunc.')';
       } elseif ($filter) {
@@ -28,7 +31,7 @@ function makefilterfunc()
       } // do nothing if $filter is empty
     }
     $filterfunc="return ".$filterfunc.";";
-    $filterstr="'$classe.$nom'=>'".addslashes($filterfunc)."',";
+    $filterstr="'$classe.$nom'=>'".addcslashes($filterfunc,"'")."',";
   }
   //if (!$filterstr) die("erreur interne dans filterfunc");
   // pas tres optimal. Il faudrait plutot que la boucle appel mysql_fetch_assoc dans ce cas... mais bon.
@@ -39,21 +42,22 @@ function makefilterfunc()
   //
 
   $fp=fopen("CACHE/filterfunc.php","w");      
-  fputs($fp,'<? function filtered_mysql_fetch_assoc($result) {
+  fputs($fp,'<? function filtered_mysql_fetch_assoc($context,$result) {
   $filters=array('.$filterstr.');
   $count=mysql_num_fields($result);
   $row=mysql_fetch_row($result);
   if (!$row) return array();
   for($i=0; $i<$count; $i++) {
-     $fieldname=mysql_field_name($result,$i);
-     $fullfieldname=mysql_field_table($result,$i).".".$fieldname;
-     if ($filters[$fullfieldname]) {
-        $filter=create_function(\'$x\',$filters[$fullfieldname]);
-        $ret[$fieldname]=$filter($row[$i]);
-# echo $filters[$fullfieldname]," ",$fieldname," ",$ret[$fieldname]," ",$filter,"<br>";
-
-     } else {
-        $ret[$fieldname]=$row[$i];
+     $fieldname[$i]=mysql_field_name($result,$i);
+     $fullfieldname[$i]=mysql_field_table($result,$i).".".$fieldname;
+     $ret[$fieldname[$i]]=$row[$i];
+  }
+  $localcontext=array_merge($context,$ret);
+  for($i=0; $i<$count; $i++) {
+     if ($filters[$fullfieldname[$i]]) {
+        $filter=create_function(\'$x,$context\',$filters[$fullfieldname[$i]]);
+        $ret[$fieldname[$i]]=$filter($ret[$fieldname[$i]],$localcontext);
+# echo $filters[$fullfieldname[$i]]," ",$fieldname[$i]," ",$ret[$fieldname[$i]]," ",$filter,"<br>";
      }
   }
   return $ret;

@@ -220,9 +220,11 @@ function publi ($id,$statut,$confirmation,$mklock=TRUE)
   // determine le critere pour l'update
 
   $critere=" id IN (".join(",",$ids).")";
-  if ($statut>0) $critere.=" AND statut<$statut"; // pour ne pas reduire le statut quand on publie
 
-  mysql_query("UPDATE $GLOBALS[tp]entites SET statut=$statut WHERE $critere") or die(mysql_error());
+  // mais attention, il ne faut pas reduire le statut quand on publie
+  $extracritere=$statut>0 ? " AND statut<$statut" : ""; 
+
+  mysql_query("UPDATE $GLOBALS[tp]entites SET statut=$statut WHERE $critere $extracritere") or die(mysql_error());
 
   publi_table($critere,$statut,"personne");
   publi_table($critere,$statut,"entree");
@@ -244,6 +246,7 @@ function publi_table($critere,$statut,$table)
   $tables=$table."s";
 # cherches les id$tables a changer
   # identite ?
+
   if (is_numeric($critere)) { # on a un seul document
     $identite=intval($critere);
     $result=mysql_query("SELECT id$table FROM $GLOBALS[tp]entites_$tables WHERE identite=$identite") or die (mysql_error());

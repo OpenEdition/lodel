@@ -41,6 +41,7 @@ if ($tache=="plateform") {
 // gestion du home
 //
 
+/*
 if ($tache=="home") {
   if ($withautoinclude=="non") {
     // changer le $pathroot et le $home
@@ -84,6 +85,7 @@ if ($tache=="home") {
     }
   }
 }
+*/
 
 //
 // gestion de mysql. Connexion mysql uniquement.
@@ -187,7 +189,7 @@ if (function_exists("is_readable") && function_exists("is_writable") && function
 	       "lodel/install/plateform"=>5,
 	       "lodel/scripts"=>5,
 	       "lodel/revue"=>5,
-	       "lodel/admin/upload"=>7,
+### systeme de telechargement classique	       "lodel/admin/upload"=>7,
 	       "lodel/admin/images"=>5);
 	       
   foreach ($files as $file => $mode) {
@@ -440,26 +442,44 @@ function probleme_droits_debut()
 
 {
 ?>
-<html><body>
-   <b>Le(s) repertoire(s) suivant(s) pose(nt) un problème d'accès. Vérifié que ce(s) répertoire(s) existent et que le serveur web puisse y accéder et si préciser y écrire</b>
-<p><p>
+<hmlt>
+<head>
+      <title>Installation de LODEL</title>
+</head>
+<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
+
+<h1>Installation de LODEL</h1>
+
+
+<p align="center">
+<table width="600">
+<tr>
+  <td>
+   <p align="center">Accès aux répertoires.</p>
+
+   <b>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache) puisse y accéder en lecture et si mentioner ci-dessosu y écrire</b>
+<p></p>
+<ul>
 <?php }
 
 function probleme_droits($file,$mode)
 
 {
- echo "répertoire: $file<br> droits requis: lecture, exécution"; if ($mode & 4 == 4) echo ", <u>écriture</u>";
- echo "<p><p>";
+ echo "<li>Répertoire: $file<br> droits requis: lecture, exécution"; if ($mode & 4 == 4) echo ", <u>écriture</u>";
+ echo "<p></p>\n";
 }
 
 function probleme_droits_fin()
 
 {
 ?>
-<p><p>
-Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
-LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
-</body></html>
+</ul>
+<p></p>
+Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br />
+LODEL est distribué SANS AUCUNE GARANTIE.
+  </td>
+</table>
+</body>
 <?php }
 
 ?>

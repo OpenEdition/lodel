@@ -15,17 +15,18 @@ class LodelParser extends Parser {
 
 function parse_loop_extra(&$tables,
 			    &$tablesinselect,&$extrainselect,
-			    &$where,&$ordre,&$groupby)
+			    &$select,&$where,&$ordre,&$groupby)
 
 {
   global $site;
+  static $tablefields; // charge qu'une seule fois
 
   // convertion des codes specifiques dans le where
   // ce bout de code depend du parenthesage et du trim fait dans parse_loop.
   $where=preg_replace (array(
 		    "/\(trash\)/i",
 		    "/\(ok\)/i",
-		    "/\(okgroup\)/i"
+		    "/\(okgroupe\)/i"
 		    ),
 	      array(
 		    "statut<=0",
@@ -34,22 +35,25 @@ function parse_loop_extra(&$tables,
 		    ),$where);
   //
 
-  // gere les tables principales liees a entites
-  if (in_array("$GLOBALS[tp]documents",$tables)) {
-    array_push($tables,"$GLOBALS[tp]entites");
-    array_push($tablesinselect,"$GLOBALS[tp]entites");
-    $where.=" AND $GLOBALS[tp]documents.identite=$GLOBALS[tp]entites.id AND classe='documents'";
-  }
-  if (in_array("$GLOBALS[tp]publications",$tables)) {
-    array_push($tables,"$GLOBALS[tp]entites");
-    array_push($tablesinselect,"$GLOBALS[tp]entites");
-    $where.=" AND $GLOBALS[tp]publications.identite=$GLOBALS[tp]entites.id AND classe='publications'";
+  $classes=array("documents","publications");
+  foreach ($classes as $classe) {
+    // gere les tables principales liees a entites
+    $ind=array_search("$GLOBALS[tp]$classe",$tables);
+    if ($ind!==FALSE && $ind!==NULL) {
+      array_push($tables,"$GLOBALS[tp]entites");
+      // put entites just after the classe table
+      #print_r($tablesinselect);
+      array_splice($tablesinselect,$ind+1,0,"$GLOBALS[tp]entites");
+      #print_r($tablesinselect);
+
+      $where.=" AND $GLOBALS[tp]$classe.identite=$GLOBALS[tp]entites.id AND classe='$classe'";
+    }
   }
 #  echo "where 1:",htmlentities($where),"<br>";
   if (in_array("$GLOBALS[tp]entites",$tables)) {
     if (preg_match("/\bclasse\b/",$where)) {
       array_push($tables,"$GLOBALS[tp]types");
-      protect2($where,$ordre,"$GLOBALS[tp]entites","id|statut|ordre");
+      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entites","id|statut|ordre|titre");
       $jointypesentitesadded=1;
       $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
       ## c'est inutile pour le moment: preg_replace("/\bclasse\b/","$GLOBALS[tp]types.classe",$where).
@@ -57,12 +61,12 @@ function parse_loop_extra(&$tables,
 #  echo "where 1bis:",htmlentities($where),"<br>";
     if (!$jointypesentitesadded && preg_match("/\btype\b/",$where)) {
       array_push($tables,"$GLOBALS[tp]types");
-      protect2($where,$ordre,"$GLOBALS[tp]entites","id|statut|ordre");
+      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entites","id|statut|ordre|titre");
       $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
     }
     if (preg_match("/\bparent\b/",$where)) {
       array_push($tables,"$GLOBALS[tp]entites as entites_interne2");
-      protect2($where,$ordre,"$GLOBALS[tp]entites","id|idtype|nom|groupe|user|ordre|statut");
+      protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entites","id|idtype|nom|groupe|user|ordre|statut");
       $where=preg_replace("/\bparent\b/","entites_interne2.nom",$where)." AND entites_interne2.id=$GLOBALS[tp]entites.idparent";
     }
     if (in_array("$GLOBALS[tp]types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
@@ -72,14 +76,15 @@ function parse_loop_extra(&$tables,
 
   // verifie le statut
   if (!preg_match("/\bstatut\b/i",$where)) { // test que l'element n'est pas a la poubelle
-    if (!(@include_once("CACHE/tablefields.php")) || !$GLOBALS[tablefields]) require_once($home."tablefields.php");
-
+    if (!$tablefields) require($home."tablefields.php");
     $teststatut=array();
     if ($where) array_push($teststatut,$where);
     foreach ($tables as $table) {
       if (preg_match("/\sas\s+(\w+)/",$table,$result)) $table=$result[1];
-      if ($GLOBALS[tablefields][$table] &&
-	  !in_array("statut",$GLOBALS[tablefields][$table])) continue;
+#      echo "* ",$table,"    ",join(" ",array_keys($tablefields)),"<br/>";
+#      print_r($tablefields[$table]);
+      if ($tablefields[$table] &&
+	  !in_array("statut",$tablefields[$table])) continue;
       if ($table=="$GLOBALS[tp]session") continue;
 
       if ($table=="$GLOBALS[tp]entites") {
@@ -87,7 +92,7 @@ function parse_loop_extra(&$tables,
       } else {
 	$lowstatut="-64";
       }
-      array_push($teststatut,"($GLOBALS[tp]$table.statut>\".(\$GLOBALS[visiteur] ? $lowstatut : \"0\").\")");
+      array_push($teststatut,"($table.statut>\".(\$GLOBALS[visiteur] ? $lowstatut : \"0\").\")");
     }
     $where=join(" AND ",$teststatut);
   }
@@ -115,8 +120,8 @@ function parse_loop_extra(&$tables,
 	 $where.=" AND idpersonne=$GLOBALS[tp]personnes.id";
        }
        if (preg_match("/\btype\b/",$where)) {
-	 protect2($where,$ordre,"$GLOBALS[tp]personnes","id|statut");
-	 protect2($where,$ordre,"$GLOBALS[tp]entites_personnes","ordre");
+	 protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]personnes","id|statut");
+	 protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entites_personnes","ordre");
 	 array_push($tables,"$GLOBALS[tp]typepersonnes");
 	 // maintenant, il y a deux solutuions
 	 if (!in_array("$GLOBALS[tp]entites_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
@@ -134,8 +139,7 @@ function parse_loop_extra(&$tables,
      // entrees
      if (in_array("$GLOBALS[tp]entrees",$tables)) {
 	if (preg_match("/\btype\b/",$where)) {
-	  protect ($where,"$GLOBALS[tp]entrees","id|statut|ordre");
-	  protect ($ordre,"$GLOBALS[tp]entrees","id|statut|ordre");
+	  protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]entrees","id|statut|ordre");
 	  array_push($tables,"$GLOBALS[tp]typeentrees");
 	  $where.=" AND $GLOBALS[tp]entrees.idtype=$GLOBALS[tp]typeentrees.id";
 	}
@@ -161,7 +165,7 @@ function parse_loop_extra(&$tables,
       }
       if (in_array("$GLOBALS[tp]champs",$tables) && preg_match("/\bclasse\b/",$where)) {
 	// on a besoin de la table croise groupesdechamps
-	protect2($where,$ordre,"$GLOBALS[tp]champs","id|statut|ordre");
+	protect4($select,$where,$ordre,$groupby,"$GLOBALS[tp]champs","id|statut|ordre");
 	array_push($tables,"$GLOBALS[tp]groupesdechamps");
 	$where.=" AND $GLOBALS[tp]groupesdechamps.id=$GLOBALS[tp]champs.idgroupe";
 	$extrainselect.=", $GLOBALS[tp]groupesdechamps.classe";
@@ -186,7 +190,7 @@ function parse_variable_extra ($nomvar)
   // VARIABLES SPECIALES
   //
   if ($nomvar=="OKGROUPE") {
-    return '($GLOBALS[admin] || in_array($context[groupe],split(",",$GLOBALS[usergroupes])))';
+    return '($GLOBALS[admin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
   }
   return FALSE;
 }
@@ -200,7 +204,7 @@ function parse_variable_extra ($nomvar)
 //
 
 
-function decode_loop_content_extra ($balise,$tables,&$ret)
+function decode_loop_content_extra ($balise,&$content,&$options,$tables)
 
 {
   global $home;
@@ -210,12 +214,12 @@ function decode_loop_content_extra ($balise,$tables,&$ret)
   //
   // est-ce qu'on veut le prev et next publication ?
   //
-  if ($havepublications && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$ret[$balise])) {
-    $ret["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
+  if ($havepublications && preg_match("/\[\(?#(PREV|NEXT)PUBLICATION\b/",$content[$balise])) {
+    $content["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication(&$context);';
   }
   // les filtrages automatiques
   if ($havedocuments || $havepublications) {
-    $ret[fetch_assoc_func]="filtered_mysql_fetch_assoc";
+    $options[fetch_assoc_func]='filtered_mysql_fetch_assoc($context,';
     if (!$this->filterfunc_loaded) {
       $this->filterfunc_loaded=TRUE;
       $this->fct_txt.='if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");';
@@ -265,15 +269,17 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 
 
 function prefixtablesindatabase(&$table) {
-  if ($table=="$GLOBALS[tp]sites" || 
-      $table=="$GLOBALS[tp]session" ||
-      ($table=="$GLOBALS[tp]users" && $GLOBALS[database]==$GLOBALS[currentdb]) ## hack pas super propre pour gerer les deux tables users !
-    ) $table=$GLOBALS[database].".".$table;
+  if (($GLOBALS[database]!=$GLOBALS[currentdb]) &&
+      ($table=="$GLOBALS[tp]sites" || 
+       $table=="$GLOBALS[tp]session" ||
+       $table=="$GLOBALS[tp]users")) {
+    $table=$GLOBALS[database].".".$table;
+  }
 }
 
 
 // prefix les tables si necessaire
-
+/*
 function prefix_tablename ($tablename)
 
 {
@@ -288,13 +294,23 @@ function prefix_tablename ($tablename)
 #  return $tablename;
 #endif
 }
+*/
 
-function protect2(&$sql1,&$sql2,$table,$fields)
+function protect4(&$sql1,&$sql2,&$sql3,&$sql4,$table,$fields)
 
 {
   protect(&$sql1,$table,$fields);
   protect(&$sql2,$table,$fields);
+  protect(&$sql3,$table,$fields);
+  protect(&$sql4,$table,$fields);
 }
+
+#function protect2(&$sql1,&$sql2,$table,$fields)
+#
+#{
+#  protect(&$sql1,$table,$fields);
+#  protect(&$sql2,$table,$fields);
+#}
 
 function protect (&$sql,$table,$fields)
 
@@ -306,7 +322,7 @@ function protect (&$sql,$table,$fields)
   // ajoute un espace au debut pour des raisons de facilite
   $arr=preg_split("/(?<!\\\)'/",$sql);
   for($i=0;$i<count($arr);$i+=2)
-    $arr[$i]=preg_replace("/\b(?<![\\.[])($fields)\b/","$GLOBALS[tp]$table.\\1",$arr[$i]);
+    $arr[$i]=preg_replace("/\b(?<![\\.[])($fields)\b/","$table.\\1",$arr[$i]);
   $sql=join("'",$arr);
 }
     

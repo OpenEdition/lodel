@@ -15,7 +15,7 @@ if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
 
-$result=mysql_query ("SELECT tpl FROM $GLOBALS[tp]typepersonnes WHERE nom='$type' AND statut>0") or die (mysql_error());
+$result=mysql_query ("SELECT tpl FROM $GLOBALS[tp]typepersonnes WHERE type='$type' AND statut>0") or die (mysql_error());
 list($base)=mysql_fetch_row($result);
 
 include ($home."cache.php");

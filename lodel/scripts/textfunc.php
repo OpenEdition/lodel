@@ -280,6 +280,9 @@ return "/$rep";
 function vignette($width,$text)
 
 {
+  if (defined("SITEROOT")) $text=SITEROOT.$text;
+  if (!file_exists($text)) return;
+
   if (!preg_match("/^(.*)\.([^\.]+)$/",$text,$result)) return;
   $vignettefile=$result[1]."-small$width.".$result[2];
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
@@ -461,11 +464,37 @@ function namespace($ns,$text)
  * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
  */
 
-function hideifearlier($field, $text) {
-  if ($field && 
-      $context[$field] && 
-      $context[field] <= date("Y-m-d")) return $text;
+function hideifearlier($date, $text) {
+
+  echo "date:$date<br />";
+  if ($date && ($date <= date("Y-m-d"))) return $text;
   return "";
 }
+
+/**
+ * Retourne la largeur de l'image.
+ */
+
+function imagewidth($image)
+{
+  if ($image) {
+    $result=getImageSize($image);
+    return $result[0];
+  } else return 0;
+}
+
+/**
+ * Retourne la hauteur de l'image.
+ */
+
+function imageheight($image)
+{
+  if ($image) {
+    $result=getImageSize($image);
+    return $result[1];
+  } else return 0;
+}
+
+
 
 ?>

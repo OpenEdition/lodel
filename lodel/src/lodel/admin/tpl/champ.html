@@ -41,7 +41,7 @@
 		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Les styles ne peuvent contenir que les caracteres de a à z et de 0 a 9. Pas d'accent, pas d'espace.</td></tr>]
 		<tr>
 			<td class="texte_intitule">Type:</td>
-			<td><select name="type"><?php make_select_types(); ?></select><IF COND="[#ERREUR_CONFIRMATION]"><font color="red">Modifier le type provoque en g&eacute;n&eacute;neral des pertes de donn&eacute;es, veuillez confirmer</font><input class="form" type="submit" name="confirmation" value="   Confirmer    " /></IF></td>
+			<td><select name="type"><?php make_select_types(); ?></select><IF COND="[#ERREUR_CONFIRMATION_TYPE]"><font color="red">Modifier le type provoque en g&eacute;n&eacute;neral des pertes de donn&eacute;es, veuillez confirmer</font><input class="form" type="submit" name="confirmation" value="   Confirmer    " /></IF></td>
 		</tr>
 		<tr>
 			<td class="texte_intitule">Traitement:</td>

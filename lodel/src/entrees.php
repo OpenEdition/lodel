@@ -12,6 +12,7 @@ $result=mysql_query ("SELECT * FROM $GLOBALS[tp]typeentrees WHERE type='$type' A
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 $context[idtype]=$context[type_id]; // import
 $context[type_tri]=$GLOBALS[tp]."entrees.".$context[type_tri];  // prefix par la table... ca aide
+$context[type]=$type;
 
 $base=$context[type_tplindex].$suffix;
 require ($home."cache.php");

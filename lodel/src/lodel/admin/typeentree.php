@@ -44,6 +44,7 @@ if ($id>0 && ($delete || $restore)) {
 }
 
 require($home."typetypefunc.php");
+require_once($home."validfunc.php");
 
 $critere.=" AND statut>0";
 
@@ -58,7 +59,10 @@ if ($edit) {
     if (!$context[tpl]) $err=$context[erreur_tpl]=1;
     if (!$context[tplindex]) $err=$context[erreur_tplindex]=1;
     if (!$context[titre]) $err=$context[erreur_titre]=1;
-    if ($context[style] && !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
+    if (!$context[tri]) $context[tri]="nom";
+    if ($context[style] &&
+	!isvalidstyle($context[style]) && 
+	!isvalidmlstyle($context[style])) $err=$context[erreur_style]=1;
     if ($err) break;
 
     include_once ($home."connect.php");

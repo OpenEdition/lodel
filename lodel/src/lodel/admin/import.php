@@ -2,6 +2,8 @@
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+#authenticate();
+
 
 $repertoire=$context[repertoire]=$importdir;
 // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
@@ -13,6 +15,7 @@ if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) &&
   // detar dans le repertoire du site
   system("tar zxf $fichier -C ../../ lodel/txt lodel/rtf docannexe 2>&1")!==FALSE or die ("impossible d'executer tar");
 
+  require_once ($home."connect.php");
   // drop les tables existantes
   // recupere la liste des tables
   $result=mysql_list_tables($GLOBALS[currentdb]);
@@ -20,7 +23,9 @@ if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) &&
   while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
   //
-   system("tar zxf $fichier -O '$prefix-*.sql' | $mysqldir/mysql $currentdb -h $dbhost -u $dbusername -p$dbpasswd 2>/tmp/import.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
+  $tmpfile=tempnam("/tmp","lodelimport_");
+   system("tar zxf $fichier -O '$prefix-*.sql' | $mysqldir/mysql $currentdb -h $dbhost -u $dbusername -p$dbpasswd 2>$tmpfile")!==FALSE or die ("impossible d'executer tar et mysql");
+   @unlink($tmpfile);
 #   system("tar zxf $fichier -O 'site-*.sql' 2>/tmp/import.tmp | /usr/local/mysql/bin/mysql $currentdb -u $dbusername -p$dbpasswd 2>>/tmp/impot.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
 
 #die (join("<br>",file("/tmp/import.tmp")));

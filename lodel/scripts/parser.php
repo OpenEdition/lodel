@@ -13,7 +13,7 @@ class Parser {
   var $loops=array();
   var $fct_txt;
 
-  var $wantedvars;
+#  var $wantedvars;
   var $looplevel=0;
 
   var $arr;
@@ -21,6 +21,8 @@ class Parser {
   var $linearr;
   var $currentline;
   var $ind;
+
+  var $isphp; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
   var $id="";
 
@@ -32,10 +34,11 @@ function errmsg ($msg,$ind=0) {
 
 function parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
-			  &$where,&$ordre,&$groupby) {}
+			  &$select,&$where,&$ordre,&$groupby) {}
 function parse_variable_extra ($nomvar) { return FALSE; }
-function decode_loop_content_extra ($balise,&$ret,$tables) {}
+function decode_loop_content_extra ($balise,&$content,&$options,$tables) {}
 function prefix_tablename ($tablename) { return $tablename; }
+
 
 
 function parse ($in,$out)
@@ -60,10 +63,17 @@ function parse ($in,$out)
 
   // search the CONTENT tag
   if (preg_match("/<CONTENT\b([^>]*)>/",$contents,$result)) {
-    if (preg_match("/CHARSET\s*=\s*\"[^\"]+\"/",$result[1],$result2)) {
-      $charset=$result[1];
+    // attribut charset
+    if (preg_match("/\bCHARSET\s*=\s*\"([^\"]+)\"/",$result[1],$result2)) {
+      $charset=$result2[1];
     } else {
       $charset="iso-8859-1";
+    }
+    // attribut refresh
+    if (preg_match("/\bREFRESH\s*=\s*\"([^\"]+)\"/",$result[1],$result2)) {
+      $refresh=trim($result2[1]);
+      $timere="(?:\d+(:\d\d){0,2})"; // time regexp
+      if (!is_numeric($refresh) && !preg_match("/^$timere(?:,$timere)*$/",$refresh)) $this->errmsg("Invalid refresh time \"$refresh\"");
     }
     $contents=str_replace($result[0],"",$contents); // efface la balise
   } else {
@@ -89,7 +99,7 @@ function parse ($in,$out)
   // parse  macros
   $this->parse_macros($contents,$macros);
 
-  $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE";
+  $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE|ESCAPE";
   $this->arr=preg_split("/<(\/?(?:$commands))\b([^>]*)>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
   $this->ind=0;
   $this->currentline=0;
@@ -97,16 +107,20 @@ function parse ($in,$out)
   $this->fct_txt="";
 
 
-  $this->parse_main1();
-#  echo "----\n";
-#  print_r($this->arr);
-#  print_r($this->wantedvars);
-#  echo "____\n";
-#  $res=array_count_values($this->arr);
-#  echo ":",$res["LOOP"]," ",$res["/LOOP"],"   ",$res["DO"]," ",$res["/DO"],"\n<br>";
+  /*  $this->parse_main1();
+      $this->parse_main2(); */
 
 
-  $this->parse_main2();
+  // parse les variables
+  $this->parse_variable($this->arr[0]);
+  for($i=1; $i<$this->countarr; $i+=3) {
+    $this->parse_variable(&$this->arr[$i+1],FALSE); // parse the attributs
+    $this->parse_variable(&$this->arr[$i+2]); // parse the content
+  }
+  // fin
+
+  $this->parse_main();
+
   if ($this->ind!=$this->countarr) $this->errmsg("too many closing tags at the end of the file");
 
   $contents=join("",$this->arr);
@@ -115,10 +129,43 @@ function parse ($in,$out)
 
   if ($this->fct_txt) {
     $contents='<?php 
-require_once ($home."connect.php");
+require_once ($GLOBALS[home]."connect.php");
 '.$this->fct_txt.'?>'.$contents;
   }
 
+  //
+  // refresh manager
+  //
+  if ($refresh) {
+    $code='<'.'?php if ($GLOBALS[cachedfile] && !$dontcheckrefresh) { $cachetime=filemtime($GLOBALS[cachedfile].".php"); ';
+
+    // refresh period in second
+    if (preg_match("/^\d+$/",$refresh)) {
+      $code.=' if($cachetime+'.$refresh.'<time()) return "refresh"; ';
+
+    // refresh time
+    } else {
+      $code.='$now=time(); $date=getdate($now);';
+
+      $refreshtimes=preg_split("/,/",$refresh);
+      foreach ($refreshtimes as $refreshtime) {
+	$refreshtime=preg_split("/:/",$refreshtime);
+	$code.='$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
+	$code.='if ($cachetime<$refreshtime && $now>$refreshtime) return "refresh"; ';
+      }
+    }
+    $code.='} ?'.'>';
+    $contents='<'.'?php echo \''.quote_code($code).'\'; ?>
+'.$contents;
+    $this->isphp=FALSE;
+  }
+  
+  if ($this->isphp) {
+    $contents='<?php if ($GLOBALS[cachedfile]) echo \'<?php ?>\'; ?>'.$contents; // this is use to check if the output is a must be evaluated as a php or a raw file.
+  }
+
+
+  // clean the open/close php tags
   $contents=preg_replace(array('/\?><\?(php\b)?/',
 			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
 
@@ -128,11 +175,14 @@ require_once ($home."connect.php");
     $contents=utf8_encode($contents);
     convertHTMLtoUTF8(&$contents);
   }
-#  echo "out&:$out";
+
+
 
   $fp=fopen ($out,"w") or $this->errmsg("cannot write file $out");
   fputs($fp,$contents);
   fclose($fp); 
+
+  return $ret;
 }
 
 
@@ -167,6 +217,7 @@ function parse_texte(&$text)
 //
 // parse les variables
 
+/*
 function parse_main1()
 
 {
@@ -220,7 +271,7 @@ function parse_main1_rec(&$ind,$loopind)
     $ind+=3;
   }
 }
-
+*/
 
 function parse_variable (&$text,$escape="php")
 
@@ -288,17 +339,16 @@ function parse_variable (&$text,$escape="php")
 	$post=")".$post;
       }
       $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
-      }
+    }
     $text=str_replace($result[0],$variable,$text);
   }
 
+
   // search for wanted variables
   
-  if (preg_match_all('/\$context\[('.strtolower($this->variable_regexp).')\]/',$text,$result,PREG_PATTERN_ORDER)) {
-    return $result[1];
-  }
-
-  return array();
+#  if (preg_match_all('/\$context\[('.strtolower($this->variable_regexp).')\]/',$text,$result,PREG_PATTERN_ORDER)) {
+#    return $result[1];
+#  }
 }
 
 
@@ -320,25 +370,58 @@ function countlines($ind)
 //
 // parse les instructions
 
-
+/*
 function parse_main2()
 
 {
   if ($this->ind==0) {
     $this->ind=1;
   }
-#  print_r($this->arr);
-#  exit();
-#  if ($this->countarr==119) { print_r($this->arr); exit(); }
   while ($this->ind<$this->countarr) {
-#    echo "$i $this->arr[$this->ind]<br>";
     if (substr($this->arr[$this->ind],0,1)=="/") return;
+
     switch($this->arr[$this->ind]) {
     case "LOOP" : $this->parse_loop($this->arr,$this->ind);
       break;
     case "IF" : $this->parse_condition($this->arr,$this->ind);
       break;
     case "LET" : $this->parse_let($this->arr,$this->ind);
+      break;
+      // returns
+    case "ELSE" : return;
+    case "DO" : return;
+    case "DOFIRST" : return;
+    case "DOLAST" : return;
+    case "AFTER" : return;
+    case "BEFORE" : return;
+    case "ALTERNATIVE" : return;
+      break;
+    default:
+      echo "$this->ind ".$this->arr[$this->ind];
+      $this->errmsg("internal error in parse_main. Report the bug");
+    }
+    $this->ind+=3;
+  }
+}
+*/
+
+
+function parse_main()
+
+{
+  if ($this->ind==0) {
+    $this->ind=1;
+  }
+  while ($this->ind<$this->countarr) {
+    if (substr($this->arr[$this->ind],0,1)=="/") return;
+    switch($this->arr[$this->ind]) {
+    case "LOOP" : $this->parse_loop();
+      break;
+    case "IF" : $this->parse_condition();
+      break;
+    case "LET" : $this->parse_let();
+      break;
+    case "ESCAPE" : $this->parse_escape_code();
       break;
       // returns
     case "ELSE" : return;
@@ -370,6 +453,8 @@ function parse_loop()
   $orders=array();
   $limit="";
   $select="";
+  $groupby="";
+  $dontselect=array();
   $wheres=array();
   $tables=array();
   $arguments=array();
@@ -408,11 +493,22 @@ function parse_loop()
 	array_push($orders,$value);
 	break;
       case "LIMIT" :
-	if ($limit) $this->errmsg("limit already defined in loop $name",$this->ind);
+	if ($limit) $this->errmsg("Attribut LIMIT should occur only once in loop $name",$this->ind);
 	$limit=$value;
 	break;
+      case "GROUPBY" :
+	if ($groupby) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
+	$groupby=$value;
+	break;
       case "SELECT" :
-	$select=",".$value;
+	if ($dontselect) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
+	#$select=array_merge($select,preg_split("/\s*,\s*/",$value));
+	if ($select) $select.=",";
+	$select.=$value;
+	break;
+      case "DONTSELECT" :
+	if ($select) $this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name",$this->ind);
+	$dontselect=array_merge($dontselect,preg_split("/\s*,\s*/",$value));
 	break;
       case "REQUIRE":
 	break;
@@ -422,7 +518,7 @@ function parse_loop()
     } // loop on the attributs
     // end of definition of a SQL loop
   } else {
-    // ok, this a SQL loop call or a user lopp
+    // ok, this is a SQL loop call or a user lopp
     // the attributs are put into $arguments.
     foreach ($results as $result) {
       if ($result[1]=="NAME") continue;
@@ -444,42 +540,34 @@ function parse_loop()
   //
   $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
   $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
-  $groupby="";
 
   if (!$where) $where="1";
   $this->parse_loop_extra(&$tables,
 			  &$tablesinselect,&$extrainselect,
-			  &$where,&$order,&$groupby);
-    //
-
-  if ($where) {
-    $where="WHERE ".$where;
-  }
-  if ($order) {
-    $order="ORDER BY ".$order;
-  }
-  if ($limit) {
-    $limit="LIMIT ".$limit;
-  }
+			  &$select,&$where,&$order,&$groupby);
+  //
 
 
-  if (!$this->loops[$name][type]) $this->loops[$name][type]="def"; # marque la loop comme definie, s'il elle ne l'ai pas deja
-  $issql=$this->loops[$name][type]=="sql";
+  if (!$this->loops[$name][type]) $this->loops[$name][type]="def"; // toggle the loop as defined, if it is not already
+  $issql=$this->loops[$name][type]=="sql"; // boolean for the SQL loops
 
 
   if ($tables) { // loop SQL
-    // verifie que la loop n'a pas ete defini sous le meme name avec un contenu different
+    // check if the loop is not already defined with a different contents.
     if ($issql && $attrs!=$this->loops[$name][attr]) $this->errmsg ("loop $name cannot be defined more than once",$this->ind);
+
+    // the loop is not defined yet, let's define.
     if (!$issql) { // the loop has to be defined
       $this->loops[$name][ind]=$this->ind; // save the index position
       $this->loops[$name][attr]=$attrs; // save an id
       $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
 
-      $contents=$this->decode_loop_content($name,$tablesinselect,$select=="");
-      if ($select) $extrainselect=$select; // SELECT="" desactive les choix automatiques
+      $this->decode_loop_content($name,&$contents,&$options,$tablesinselect);
       $this->make_loop_code($name,$tables,
 			    $tablesinselect,$extrainselect,
-			    $where,$order,$limit,$groupby,$contents);
+			    $select,$dontselect,
+			    $where,$order,$limit,$groupby,
+			    $contents,$options);
     } else { // boucle redefinie identiquement (enfin on espere)
       // on passe le contenu... on le connait deja
       $looplevel=1;
@@ -494,11 +582,12 @@ function parse_loop()
     }
     $code='<?php loop_'.$name.'($context); ?>';
   } else {
-    #echo "ici issql",$issql;
-    if (!$issql) {// la loop n'est pas deja definie...alors c'est une loop utilisateur
-      $this->loops[$name][id]++; // increment le compteur de name de loop
-      $newname=$name."_".$this->loops[$name][id]; // change le name pour qu'il soit unique
-      $contents=$this->decode_loop_content($name);
+    //
+    if (!$issql) {// the loop is not defined yet, thus it is a user loop
+      //
+      $this->loops[$name][id]++; // increment the name count
+      $newname=$name."_".$this->loops[$name][id]; // change the name in order to be unique
+      $this->decode_loop_content($name,$contents,$options);
       $this->make_userdefined_loop_code ($newname,$contents,$arguments);
       // build the array for the arguments:
       $argumentsstr="";
@@ -507,16 +596,17 @@ function parse_loop()
       $argumentsstr=preg_replace(array('/""\./','/\.""/'),array('',''),$argumentsstr);
       // make the loop call
       $code='<?php loop_'.$name.'($context,"'.$newname.'",array('.$argumentsstr.')); ?>';
-    } else {
-      // loop sql recurrente
+      //
+    } else { // the loop is an sql recurrent loop
+      //
       $code='<?php loop_'.$name.'($context); ?>';
       $this->ind+=3;
       if ($this->arr[$this->ind]!="/LOOP") $this->errmsg ("loop $name cannot be defined more than once");
-      // copy the wanted variables from the original definition
       $this->loops[$name][recursive]=TRUE;
+#      // copy the wanted variables from the original definition
 #      print_r($this->wantedvars);
 #      exit();
-      // we should remove from the wanted level 1, the provided variables
+#      // we should remove from the wanted level 1, the provided variables
     }
   }
   if ($this->arr[$this->ind]!="/LOOP") {
@@ -524,13 +614,12 @@ function parse_loop()
     print_r($this->arr);
     $this->errmsg ("internal error in parse_loop. Report the bug");
   }
-#  echo "end loop $name: $this->ind\n<br>";
   $this->arr[$this->ind]="";
   $this->arr[$this->ind+1]=$code;
 }
 
 
-function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
+function decode_loop_content ($name,&$content,&$options,$tables=array())
 
 {
   global $home;
@@ -546,41 +635,43 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
   $loopind=$this->ind;
   do {
     $this->ind+=3;
-    $this->parse_main2();
+    #$this->parse_main2();
+    $this->parse_main();
 
     #echo "decode loop content $this->ind ",$this->arr[$this->ind]," $state<br>\n";
-    if (isset($balises[$this->arr[$this->ind]])) { // ouverture
+    if (isset($balises[$this->arr[$this->ind]])) { // opening
       $state=$this->arr[$this->ind];
-      if ($ret[$state]) $this->errmsg ("In loop $name, the block $state is defined more than once",$this->ind);
+      if ($content[$state]) $this->errmsg ("In loop $name, the block $state is defined more than once",$this->ind);
       $istart=$this->ind;
       $this->arr[$this->ind]="";
       $this->arr[$this->ind+1]="";
 
-    } elseif ($this->arr[$this->ind]=="/".$state) {
+    } elseif ($this->arr[$this->ind]=="/".$state) { // closing
       for($j=$istart; $j<$this->ind; $j+=3) {
 	for ($k=$j; $k<$j+3; $k++) {
-	  $ret[$state].=$this->arr[$k];
+	  $content[$state].=$this->arr[$k];
 	  $this->arr[$k]="";
 	}
 #	  echo ":$loopind $j nwantedvars=",count($wantedvars[$j]),"\n";
 
-	if ($this->wantedvars[$j]) { // transfer variables to the upper loop
+/*	if ($this->wantedvars[$j]) { // transfer variables to the upper loop
 	  $this->wantedvars[$loopind][$balises[$state]]=
 	    array_merge($this->wantedvars[$loopind][$balises[$state]],
 			$this->wantedvars[$j][0],
 			$this->wantedvars[$j][1]);
 	  unset($this->wantedvars[$j]);
+	  }*/
 	}
-      }
-      $this->decode_loop_content_extra ($balise, $tables, &$ret);
+
+      $this->decode_loop_content_extra($state, &$content,&$options,$tables);
       $state="";
       $this->arr[$this->ind]="";
       $this->arr[$this->ind+1]="";
-    } elseif ($state=="" && $this->arr[$this->ind]=="/LOOP") {
+    } elseif ($state=="" && $this->arr[$this->ind]=="/LOOP") { // closing the loop
       $isendloop=1; break;
-    }  elseif ($state) {
+    }  elseif ($state) { // error
       $this->errmsg("&lt;$state&gt; not closed in the loop $name",$this->ind);
-    } else {
+    } else { // another error
       $this->errmsg("unexpected &lt;".$this->arr[$this->ind]."&gt; in the loop $name",$this->ind);
     }
   } while ($this->ind<$this->countarr);
@@ -589,24 +680,24 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
 
   if (!$isendloop) $this->errmsg ("end of loop $name not found",$this->ind);
 
-  if ($ret["DO"]) {
+  if ($content["DO"]) {
     // check that the remaining content is empty
     for($j=$loopind; $j<$this->ind; $j++) if (trim($this->arr[$j])) { $this->errmsg("In the loop $name, a part of the content is outside the tag DO",$j); }
   } else {
     for($j=$loopind; $j<$this->ind; $j+=3) {
       for ($k=$j; $k<$j+3; $k++) {
-	$ret["DO"].=$this->arr[$k];
+	$content["DO"].=$this->arr[$k];
 	$this->arr[$k]="";
       }
-      if ($j>$loopind && $this->wantedvars[$j]) { // transfer variables to the upper loop
-	$this->wantedvars[$loopind][$balises["DO"]]=
-	  array_merge($this->wantedvars[$loopind][$balises["DO"]],
-		      $this->wantedvars[$j][0],
-		      $this->wantedvars[$j][1]);
-	unset($this->wantedvars[$j]);
-      }
+#      if ($j>$loopind && $this->wantedvars[$j]) { // transfer variables to the upper loop
+#	$this->wantedvars[$loopind][$balises["DO"]]=
+#	  array_merge($this->wantedvars[$loopind][$balises["DO"]],
+#		      $this->wantedvars[$j][0],
+#		      $this->wantedvars[$j][1]);
+#	unset($this->wantedvars[$j]);
+#      }
     }
-    $this->decode_loop_content_extra ($balise, $tables, &$ret);
+    $this->decode_loop_content_extra ("DO", &$content,&$options,$tables);
   }
   
   // partie privee et specifique pour le decodage du contenu.
@@ -615,6 +706,7 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
 
   }
 
+  /*
   if (!$tables) return $ret;
   // OPTIMISATION
 #  echo "OPT:";
@@ -661,32 +753,69 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
 #  echo "select:$name $ret[select]<br>";
 
   return $ret;
+  */
 }
 
 
 function make_loop_code ($name,$tables,
-			   $tablesinselect,$extrainselect,
-			   $where,$order,$limit,$groupby,$contents)
+			 $tablesinselect,$extrainselect,
+			 $select,$dontselect,
+			 $where,$order,$limit,$groupby,
+			 $contents,$options)
 
 {
+  static $tablefields; // charge qu'une seule fois
+
+  if ($where) $where="WHERE ".$where;
+  if ($order) $order="ORDER BY ".$order;
+  if ($limit) $limit="LIMIT ".$limit;
+  if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
+
   // traitement particulier additionnel
 
   # c'est plus complique que ca ici, car parfois la table est prefixee par la DB.
-  $table=join (', ',array_reverse(array_unique($tables)));
-  if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
-  // select
-  if (!$contents[select]) {
-#    echo "loop: $name $ind=",$this->ind,"<br>\n";
-#    $this->errmsg("no variable is used in the loop $name. Is this loop really useful ?",$this->ind);
-  }
-  #echo "$contents[select] : $extrainselect<br />";
-  $select=$contents[select];
+  // reverse the order in order the first is select in the last.
+  $tablesinselect=array_reverse(array_unique($tablesinselect));
+  $table=join (', ',array_reverse(array_unique($tables)));
+
+  if ($dontselect) { // DONTSELECT
+    // at the moment, the dontselect should not be prefixed by the table name !
+    if (!$tablefields) require($home."tablefields.php");
+    if (!$tablefields) die("ERROR: internal error in decode_loop_content: table $table");
+
+    $selectarr=array();
+    foreach ($tablesinselect as $t) {
+      $selectforthistable=array_diff($tablefields[$t],$dontselect); // remove dontselect from $tablefields
+      if ($selectforthistable) { // prefix with table name
+	array_push($selectarr,"$t.".join(",$t.",$selectforthistable));
+      }
+    }
+    $select=join(",",$selectarr);
+  } elseif (!$select && $tablesinselect) { // AUTOMATIQUE
+    $select=join(".*,",$tablesinselect).".*";
+  } 
+#elseif ($select) { // SELECT
+#    if (!$tablefields) require($home."tablefields.php");
+#    if (!$tablefields) die("ERROR: internal error in decode_loop_content: table $table");
+#    // on prefix
+#    $selectarr=array();
+#    foreach ($tablesinselect as $t) {
+#      // take only the fields which are in $select
+#      $selectforthistable=array_intersect($tablefields[$t],$select);
+#      if ($selectforthistable) { // prefix with table name
+#	array_push($selectarr,"$t.".join(",$t.",$selectforthistable));
+#      }
+#    }
+#    $select=join(",",$selectarr);
+#  }
   if (!$select) $select="1";
+#  echo "$select : $extrainselect<br />\n";
   $select.=$extrainselect;
 
+
   // fetch_assoc_func
-  if (!$contents[fetch_assoc_func]) $contents[fetch_assoc_func]="mysql_fetch_assoc";
+  if (!$options[fetch_assoc_func]) $options[fetch_assoc_func]="mysql_fetch_assoc(";
 
 #### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 
@@ -695,13 +824,13 @@ function make_loop_code ($name,$tables,
 //
   $this->fct_txt.='function loop_'.$name.' ($context)
 {
- $generalcontext=$context;
  $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
  $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
  $context[nbresultats]=mysql_num_rows($result);
+ $generalcontext=$context;
  $count=0;
- if ($row='.$contents[fetch_assoc_func].'($result)) {
+ if ($row='.$options[fetch_assoc_func].'$result)) {
 ?>'.$contents[BEFORE].'<?php
     do {
       $context=array_merge ($generalcontext,$row);
@@ -715,7 +844,7 @@ function make_loop_code ($name,$tables,
   if ($contents[DOLAST]) {
     $this->fct_txt.=' if ($count==$context[nbresultats]) { '.$contents[PRE_DOLAST].'?>'.$contents[DOLAST].'<?php continue; }';
   }    
-    $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row='.$contents[fetch_assoc_func].'($result));
+    $this->fct_txt.=$contents[PRE_DO].' ?>'.$contents["DO"].'<?php    } while ($row='.$options[fetch_assoc_func].'$result));
 ?>'.$contents[AFTER].'<?php  } ';
 
   if ($contents[ALTERNATIVE]) $this->fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?php }';
@@ -777,7 +906,8 @@ function parse_condition ()
 
   do {
     $this->ind+=3;
-    $this->parse_main2();
+    #$this->parse_main2();
+    $this->parse_main();
     if ($this->arr[$this->ind]=="ELSE") {
       if ($elsefound) $this->errmsg ("ELSE found twice in IF condition",$this->ind);
       $elsefound=1;
@@ -798,7 +928,6 @@ function parse_condition ()
 
 function parse_let () {
 
-#  echo ":",$this->arr[$this->ind+1],"<br>\n";
   if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"/",$this->arr[$this->ind+1],$result)) $this->errmsg ("LET have no VAR attribut");
   if (!preg_match("/^$this->variable_regexp$/i",$result[1])) $this->errmsg ("Variable \"$result[1]\"in LET is not a valide variable",$this->ind);
   $var=strtolower($result[1]);
@@ -807,16 +936,29 @@ function parse_let () {
   $this->arr[$this->ind+1]='<?php ob_start(); ?>';
 
   $this->ind+=3;
-  $this->parse_main2();
-  if ($this->arr[$this->ind]!="/LET") $this->errmsg("&lt;LET&gt; expected; $this->arr[$this->ind] found",$this->ind);
+  #$this->parse_main2();
+  $this->parse_main();
+  if ($this->arr[$this->ind]!="/LET") $this->errmsg("&lt;/LET&gt; expected, $this->arr[$this->ind] found",$this->ind);
 
   $this->arr[$this->ind]="";
   $this->arr[$this->ind+1]='<?php $context['.$var.']=ob_get_contents();  ob_end_clean(); ?>';
 }
 
+
+function parse_escape_code()
+
+{
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]="";
+  $this->arr[$this->ind+2]='<? if ($GLOBALS[cachedfile]) { echo \''.quote_code($this->arr[$this->ind+2]).'\'; } else {?>'.$this->arr[$this->ind+2].'<?php } ?>';
+  $this->ind+=3;
+  if ($this->arr[$this->ind]!="/ESCAPE") $this->errmsg("&lt;/ESCAPE&gt; expected, $this->arr[$this->ind] found",$this->ind);
+  $this->arr[$this->ind]="";
+
+  $this->isphp=TRUE;
 }
 
-
+} // clase Parser
 
 function replace_conditions($text)
 
@@ -848,6 +990,11 @@ function stripcommentandcr(&$text)
 			     "\\0<!--",
 			     "-->\\0")
 		       ,$text);
+}
+
+
+function quote_code($text) {
+  return addcslashes($text,"'");
 }
 
 

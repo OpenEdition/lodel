@@ -286,12 +286,20 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
     $typeentree=mysql_fetch_assoc($result);
 
     foreach ($entrees as $entree) {
-      // on nettoie le contenu de l'entree
+      // est-ce que $entree est un tableau ou directement l'entree ?
+      if (is_array($entree)) {
+	$lang=$entree[lang]=="--" ? "" : $entree[lang];
+	$entree=$entree[nom];
+      } else {
+	$lang="";
+      }
+      // on nettoie le nom de l'entree
       $entree=trim(strip_tags($entree));
       myquote($entree);
       if (!$entree) continue; // etrange elle est vide... tant pis
       // cherche l'id de l'entree si elle existe
-      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree') AND idtype='$idtype'") or die(mysql_error());
+      $langcriteria=$lang ? "AND langue='$lang'" : "";
+      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree') AND idtype='$idtype' $langcriteria") or die(mysql_error());
 
       #echo $entree,":",mysql_num_rows($result),"<br>";
       if (mysql_num_rows($result)) { // l'entree exists

@@ -16,25 +16,17 @@
 <table class="table_admin" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>&nbsp;
-			<IF COND="[#ARCHIVE]">
 				<div style="text-align:center">
-					<a href="upload/[#ARCHIVE]"><strong>Cliquez ici pour télécharger</strong></a><br />
-					l'archive sur votre disque dur (taille [#SIZE]ko).
-					<br /><br />
-					<a href="backup.php?terminer=[(#ARCHIVE|urlencode)]"><strong>Cliquez ensuite ici pour terminer</strong></a><br />
-					<br />
-					Attention : pour des raisons de sécurité, vous <u>devez</u> attendre que le téléchargmenet soit achevé pour cliquer sur terminer.
+					<a href="backup.php?backup=1"><strong>Cliquez ici pour lancer la sauvegarde et patientez SVP</strong></a>
+		                        <p>Lorsque vous aurez sauvegardé le fichier est sur votre disque dur, veuillez cliquer sur "Retour".</p>
+		    
 				</div>
-			<ELSE/>
-				<div style="text-align:center">
-					<a href="backup.php?backup=1"><strong>Cliquez ici pour lancer la sauvegarde</strong></a>
-				</div>
-			</IF>
 		</td>
 	</tr>
 </table>
 <form>
 	<div class="pied_de_formulaire">
+		<input class="form" type="button" value="    Retour    " onClick="javascript:window.location='index.php'" />
 		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php'" />
 	</div>
 </form>

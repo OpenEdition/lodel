@@ -3,10 +3,10 @@
 // assure l'edition, la supression, la restauration des champs.
 
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once($home."func.php");
-include_once($home."champfunc.php");
+require_once($home."func.php");
+require_once($home."champfunc.php");
 
 
 
@@ -17,7 +17,7 @@ $critere=$id ? "$GLOBALS[tp]champs.id='$id'" : "";
 // ordre
 //
 if ($id>0 && $dir) {
-  include_once($home."connect.php");
+  require_once($home."connect.php");
   # cherche le groupe
   $result=mysql_query ("SELECT idgroupe FROM $GLOBALS[tp]champs WHERE $critere") or die (mysql_error());
   list($idgroupe)=mysql_fetch_row($result);
@@ -37,7 +37,7 @@ if ($id>0 && ($delete || $restore)) {
   if (!mysql_num_rows($result)) die("ERROR: The field does not exist or you are not allowed to delete it.");
   list($nom,$classe)=mysql_fetch_row($result);
   mysql_query("ALTER TABLE $GLOBALS[tp]$classe DROP COLUMN $nom") or die (mysql_error());
-  include ($home."trash.php");
+  require ($home."trash.php");
   treattrash("champs",$critere);
   require_once($home."cachefunc.php");
   removefilesincache(".","../edition","../..");
@@ -62,9 +62,8 @@ if ($edit) { // modifie ou ajoute
     } else {
       if ($context[style] && !isvalidstyle($context[style])) $err=$context[erreur_style]=1;
     }
-
     if ($err) break;
-    include_once ($home."connect.php");
+    require_once ($home."connect.php");
 
     // lock the tables
     if ($context[classe]!="documents" && $context[classe]!="publications") die("Preciser une classe. Classe incorrecte");
@@ -114,7 +113,7 @@ if ($edit) { // modifie ou ajoute
   unlock();
   // entre en edition
 } elseif ($id>0) {
-  include_once ($home."connect.php");
+  require_once ($home."connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]champs.*,classe FROM $GLOBALS[champsgroupesjoin] WHERE  $critere AND $GLOBALS[tp]champs.statut>-32") or die (mysql_error());
   if (!mysql_num_rows($result)) die("ERROR: You are not allowed to delete this field.");
   $context=array_merge(mysql_fetch_assoc($result),$context);
@@ -129,7 +128,7 @@ if ($edit) { // modifie ou ajoute
 // post-traitement
 posttraitement($context);
 
-include ($home."calcul-page.php");
+require ($home."calcul-page.php");
 calcul_page($context,"champ");
 
 

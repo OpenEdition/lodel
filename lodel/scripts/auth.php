@@ -20,16 +20,14 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if (!$name) break;
 
     include_once($home."connect.php");
-    mysql_select_db($database);
+    mysql_select_db($database) or die(mysql_error());
     if (!($result=mysql_query ("SELECT id,iduser,site,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
     $GLOBALS[idsession]=$idsession=$row[id];
     $GLOBALS[session]=$name;
 
-#ifndef LODELLIGHT
     // verifie qu'on est dans le bon site
     if ($row[site]!="tous les sites" && $row[site]!=$site) break;
-#endif
 
     // verifie que la session n'est pas expiree
     $time=time();

@@ -1,4 +1,5 @@
 <?php
+
 require_once("siteconfig.php");
 include_once ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
@@ -81,6 +82,8 @@ if ($idtache) {
 require_once($home."entitefunc.php");
 
 $context[id]=$id=intval($id);
+$context[idparent]=$idparent=intval($idparent);
+
 ####if ($parent) $idparent=$parent;
 ####$context[idparent]=$idparent=intval($idparent);
 
@@ -116,6 +119,7 @@ if ($id>0 && $dir) {
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
   extract_post();
+
   $context[entite][nom]=$context[entite][titre];
   $context[statut]=-1;
   if ($id=enregistre_entite($context,$id,"documents","edition!=''")) { // ca marche... on termine
@@ -144,7 +148,7 @@ if ($id>0 && $dir) {
   }
 // sinon recommence
  // edit
-} else {
+} elseif ($id>0) {
   include_once ($home."connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]documents.*, $GLOBALS[tp]entites.*  FROM $GLOBALS[documentsjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
   if (!mysql_num_rows($result)) { header("location: not-found.html"); return; }
@@ -153,6 +157,20 @@ if ($id>0 && $dir) {
   $context[nom]=$context[entite][nom];
   extrait_personnes($id,&$context);
   extrait_entrees($id,&$context);
+} else {
+  require_once ($home."validfunc.php");
+  $context[type]=trim(($type));
+  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
+  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("type inconnu $context[type]");
+  list($context[idtype],$context[tplcreation])=mysql_fetch_row($result);
+  $context[entite]=array();
+}
+
+if (!$context[tplcreation]) {
+  if (!$context[idtype]) die("preciser un type");
+  $result=mysql_query("SELECT tplcreation FROM $GLOBALS[tp]types WHERE id='$context[idtype]'") or die (mysql_error());
+  list($context[tplcreation])=mysql_fetch_row($result);
 }
 
 $context[idtache]=$idtache;
@@ -162,6 +180,6 @@ posttraitement($context);
 require_once($home."langues.php");
 
 require ($home."calcul-page.php");
-calcul_page($context,"document");
+calcul_page($context,$context[tplcreation]);
 
 ?>

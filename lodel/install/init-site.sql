@@ -167,6 +167,8 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 	tplcreation	TINYTEXT NOT NULL,			# nom du fichier template pour la creation, ou information decrivant la creation
 	tpledition	TINYTEXT NOT NULL,			# nom du fichier template pour l'edition de son contenu
 
+	import		TINYINT DEFAULT '0' NOT NULL,		# 1=import par OO
+
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,

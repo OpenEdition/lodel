@@ -1,12 +1,5 @@
 <?php
 
-function isvalidfield($nom) 
-{return preg_match("/^[a-zA-Z0-9]+$/",$nom);}
-
-
-function isvalidstyle($nom)
-{ return preg_match("/^[a-zA-Z0-9]+$/",$nom); }
-
 
 // apres l'ajout d'un type, il faut mettre a jour le Schema XML
 
@@ -45,50 +38,35 @@ $GLOBALS[sqltype]=array("tinytext"=>"tinytext",
 # fields for whom the strip_tags is applied automatically.
 
 $GLOBALS[type_autostriptags]=array("image",
-			      "fichier",
-			      "url",
-			      "date",
-			      "datetime",
-			      "time",
-			      "int",
-			      "boolean",
-			      "number",
-			      "lang",
-			      );
+				   "fichier",
+				   "url",
+				   "date",
+				   "datetime",
+				   "time",
+				   "int",
+				   "boolean",
+				   "number",
+				   "lang",
+				   );
 
 
 // le style doit etre parfaitement valide
 function decode_mlstyle($style)
 
 {
-  $stylesarr=preg_split("/[\n,:]/",$style);
-  if (!$stylesarr) return array();
-  $count=count($stylesarr);
-  for($i=0; $i<$count; $i+=2) {
-    $k=trim($stylesarr[$i+1]);
-    $stylesassoc[$k]=trim($stylesarr[$i]);
+  $styles=preg_split("/[\n,]/",$style);
+  if (!$styles) return array();
+
+  foreach ($styles as $style) {
+    $ind=strpos($style,":");
+    if ($ind===FALSE) {
+      $stylesassoc["--"]=trim($style);
+    } else {
+      $lang=trim(substr($style,$ind+1));
+      $stylesassoc[$lang]=trim(substr($style,0,$ind));
+    }
   }
   return $stylesassoc;
-}
-
-
-// le style doit etre parfaitement valide
-function isvalidmlstyle($style)
-
-{
-  $stylesarr=preg_split("/([\n,:])/",$style,-1,PREG_SPLIT_DELIM_CAPTURE);
-  if (!$stylesarr) return TRUE;
-  $count=count($stylesarr);
-  for($i=0; $i<$count; $i+=4) {
-    if (!isvalidstyle(trim($stylesarr[$i]))) return FALSE; // le style 
-    if ($stylesarr[$i+1]!=":") return FALSE; // le separateur
-    if (!preg_match("/^\s*[a-z]{2}\s*$/",$stylesarr[$i+2])) return FALSE; // la langue
-    if ($stylesarr[$i+3]==":") return FALSE; // les autres separateurs
-
-    $k=trim($stylesarr[$i+1]);
-    $stylesassoc[$k]=trim($stylesarr[$i+1]);
-  }
-  return TRUE;
 }
 
 

@@ -1,6 +1,8 @@
 <?php
 
-include_once($home."func.php");
+include_once($GLOBALS[home]."func.php");
+# le $ret ne sert a rien, mais s'il n'est pas la, ma version de php n'aime pas: bug eratique.
+
 # fonction d'entree pour le calcul d'une page
 
 # on sort du UTF-8 par defaut
@@ -10,47 +12,46 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   global $home,$format;
 
+  #echo "home:$home<br/>";
+
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
   $format=""; // en cas de nouvel appel a calcul_page
 
   $template_cache = $cache_rep."CACHE/tpl_$base.php";
   $base=$base_rep.$base.".html";
+  if (!file_exists($base)) die("le template $base n'existe pas.");
   $template_time=myfilemtime($template_cache);
 
-  if (($template_time <= myfilemtime($base)) ||
-      //      ($template_time <= myfilemtime($macro)) ||
-      $GLOBALS[recalcul_templates]) {
+  if (($template_time <= myfilemtime($base)) || $GLOBALS[recalcul_templates]) {
 	if ($GLOBALS[admin]) $context[templatesrecompiles].="$base | ";
 
-    include_once ($home."lodelparser.php");
+    require_once ($home."lodelparser.php");
     $parser=new LodelParser;
     $parser->parse($base, $template_cache);
   }
   // execute le template php
-		
-  include_once($home."textfunc.php");
+  require_once($home."textfunc.php");		
   if ($GLOBALS[showhtml] && $GLOBALS[visiteur]) {
     ob_start();
-    include($template_cache);
+    require($template_cache);
     $content=ob_get_contents();
     ob_end_clean();
-    include_once ($home."showhtml.php");
+    require_once ($home."showhtml.php");
     echo show_html($content);
     return;
   }
-  include_once($home."boucles.php");
+  require_once($home."boucles.php");
 
   if ($context[charset]=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
-    include($template_cache);
+    require($template_cache);
   } else {
     // isolatin est l'autre charset par defaut
     ob_start();
-    include($template_cache);
+    require($template_cache);
     $contents=ob_get_contents();
     ob_end_clean();
     echo utf8_decode($contents);
   }
-  return;
 }
 
 function insert_template($filename)
@@ -72,4 +73,5 @@ function mymysql_error($query,$tablename="")
     die("Une erreur est survenue dans lors de la génération de cette page. Veuillez nous excusez, nous traitons le probleme le plus rapidement possible");
   }
 }
+
 ?>

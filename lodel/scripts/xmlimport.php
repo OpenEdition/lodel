@@ -250,14 +250,24 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 
   $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
   while (list($idtype,$style)=mysql_fetch_row($result)) {
-    preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results2,PREG_SET_ORDER);
-    $i=0;
-    foreach ($results2 as $result2) {
-      $val=strip_tags($result2[1]);
-      $tags=preg_split ("/[,;]/",strip_tags($val));
-      foreach($tags as $tag) {
-	$localcontext[entrees][$idtype][$i]=trim($tag);
-	$i++;
+    // decode the multilingue style.
+    $styles=decode_mlstyle($style);
+    foreach($styles as $lang => $style) { // foreach multilingue style
+
+      preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results2,PREG_SET_ORDER);
+      $i=0;
+      foreach ($results2 as $result2) {
+	$val=strip_tags($result2[1]);
+	$tags=preg_split ("/[,;]/",strip_tags($val));
+	foreach($tags as $tag) {
+	  if ($lang && $lang!="--") { // is the language really defined ?
+	    $localcontext[entrees][$idtype][$i][lang]=$lang;
+	    $localcontext[entrees][$idtype][$i][nom]=trim($tag);
+	  } else {
+	    $localcontext[entrees][$idtype][$i]=trim($tag);
+	  }
+	  $i++;
+	}
       }
     }
   }

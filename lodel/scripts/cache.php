@@ -1,17 +1,16 @@
 <?php
-require_once("lodelconfig.php");
-include_once ($home."func.php");
 
+if (!(INC_LODELCONFIG)) die("inc lodelconfig");
+require_once ($home."func.php");
 
 if (!function_exists("authenticate")) {
-  include ($home."auth.php");
+  require ($home."auth.php");
   authenticate();
 }
 
 
-
-if ($visiteur) {
-  include ($home."calcul-page.php");
+if ($GLOBALS[visiteur]) {
+  require ($home."calcul-page.php");
   calcul_page($context,$base);
   return;
 }
@@ -22,36 +21,73 @@ if (!$maj) $maj=myfilemtime("CACHE/maj");
 
 // Calcul du nom du fichier cache
 
-$cache = substr(rawurlencode(preg_replace("/#[^#]*$/","",$REQUEST_URI)), 0, 255);
-$rep_cache = substr(md5($cache), 0, 1);
+$cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",$REQUEST_URI)), 0, 255);
+// The variable $cachedfile must exist and be visible in the global scope
+// The compiled file need it to know if it must produce cacheable output or direct output.
+// An object should be created in order to avoid the global scope pollution.
+
+$rep_cache = substr(md5($cachedfile), 0, 1);
 if ($context[charset]!="utf-8") $rep_cache="il1.".$rep_cache;
 if (!file_exists("CACHE/$rep_cache")) {
   mkdir("CACHE/$rep_cache", 0777);
 }
-$cache = "CACHE/$rep_cache/$cache";
+$cachedfile = "CACHE/$rep_cache/$cachedfile";
 
 ///////////$recalcul_templates=1;
 
-////// Decommenter la ligne suivante pour desactive le cache
-///$maj=myfilemtime($cache)+10;
+$extension=file_exists($cachedfile.".php") ? "php" : "html";
+
+if ($maj>=myfilemtime($cachedfile.".".$extension)) $recalcul_templates=1;
 
 // si le fichier de mise-a-jour est plus recent
-if ($maj>=myfilemtime($cache) || $recalcul_templates) {
-  include ($home."calcul-page.php");
+if ($recalcul_templates) {
+  require_once ($home."calcul-page.php");
+  calculate_cache_and_output($context,$base,$cachedfile);
+} elseif ($extension=="php") {
+  // execute le cache.
+#  echo "cache:$cachedfile";
+  $ret=include($cachedfile.".php");
+  // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
+#  echo "required: ",join(",",get_required_files()),"<br>";
+#  echo "return:$ret fichier$cachedfile.php<br/>";
+  if ($ret=="refresh") {
+    #echo "refresh";
+    require_once ($home."calcul-page.php");
+#    echo "planter?<br/>\n";
+    calculate_cache_and_output($context,$base,$cachedfile);
+  }
+} else {
+  // sinon affiche le cache.
+  readfile($cachedfile.".html");
+}
+
+
+
+function calculate_cache_and_output ($context,$base,$cachedfile) {
+  global $home;
+
   ob_start();
-  calcul_page($context,$base);
+  $extension=calcul_page($context,$base);
   $content=ob_get_contents();
   ob_end_clean();
-  if ($visiteur) echo "MAJ";
-  echo $content;
 
-  // ecrit la premiere ligne et le reste
-  $f = fopen($cache, "w");
+  $extension= substr($content,0,5)=='<'.'?php' ? "php" : "html";
+  
+  if ($extension=="html") {
+    echo $content; // send right now the html. Do other thing later. That may save few milliseconde !
+    @unlink($cache.".php"); // remove if the php file exists because it has the precedence above.
+  }
+
+  // ecrit le fichier dans le cache
+  $f = fopen($cachedfile.".".$extension, "w");
   fputs($f,$content);
   fclose($f);
-} else {
-  // sinon affiche la cache.
-  readfile($cache);
+#  echo "ext:$extension";
+
+  if ($extension=="php") { 
+    $dontcheckrefresh=1;
+    include($cachedfile.".php"); 
+  }
 }
 
 ?>

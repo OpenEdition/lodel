@@ -8,12 +8,24 @@ if ($cancel) include ("abandon.php");
 
 $tache=get_tache($idtache);
 
-include ($home."balises.php");
+require_once ($home."balises.php");
+
 
 // ajoute les balises "entrees"
 include ($home."connect.php");
+require_once($home."champfunc.php");
 $result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typeentrees WHERE statut>0");
-while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
+while (list($style,$titre)=mysql_fetch_row($result)) { 
+  $styles=decode_mlstyle($style);
+  foreach($styles as $lang => $style) {
+    if ($lang && $lang!="--") { // multi-language
+      $balises[$style]=$titre." ($lang)";
+    } else { // single-language
+      $balises[$style]=$titre;
+    }
+  }
+}
+
 
 // ajoute les balises "personnes"
 $result=mysql_query("SELECT style,titre,styledescription,titredescription FROM $GLOBALS[tp]typepersonnes WHERE statut>0");

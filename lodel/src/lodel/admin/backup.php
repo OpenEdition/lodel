@@ -3,33 +3,51 @@
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
+include ($home."func.php");
 
 if ($backup) {
+  require_once($home."func.php");
+
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
+  // lock les tables
+  require($home."backupfunc.php");
+
+  lock_write_all($currentdb);
 
   $outfile="site-$site.sql";
-  system("$mysqldir/mysqldump --quick --add-locks --extended-insert --add-drop-table -h $dbhost -u $dbusername -p$dbpasswd $currentdb >/tmp/$outfile")!==FALSE or die ("impossible d'executer mysqldump");
-  if (!file_exists("/tmp/$outfile")) die ("erreur dans l'execution de mysqldump");
+  mysql_dump($currentdb,"/tmp/".$outfile);
+
+  #if (!file_exists("/tmp/$outfile")) die ("erreur dans l'execution de mysqldump");
   # verifie que le fichier n'est pas vide
-  $result=stat("/tmp/$outfile");
-  if ($result[7]<=0) die ("erreur 2 dans l'execution de mysqldump");
+  if (filesize("/tmp/$outfile")<=0) die ("ERROR: mysql_dump failed");
 
   // tar les sites et ajoute la base
-  $archive="site-$site-".date("dmy").".tar.gz";
+  $archivetmp=tempnam("/tmp","lodeldump_");
+  $archivefilename="site-$site-".date("dmy").".tar.gz";
 
   chdir ("../..");
-  system("/bin/tar czf lodel/admin/upload/$archive lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
+  system("/bin/tar czf $archivetmp lodel/txt lodel/rtf docannexe  -C /tmp $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
+
+  if (!file_exists($archivetmp)) die ("ERROR: the tar command does not produce any output");
   chdir ("lodel/admin");
 
-  $context[archive]=$archive;
-  $context[size]=intval(filesize("upload/$archive")/1024);
-} elseif ($terminer) {
-  // verifie que $terminer n'est pas hacke
-  if (preg_match("/^site-$site-\d+.tar.gz$/",$terminer)) {
-    unlink ("upload/$terminer");
-  }
-  header ("location: index.php");
+  unlock();
+
+  download($archivetmp,$archivefilename);
+  @unlink($archivetmp);
+
   return;
+
+#  $context[archive]=$archive;
+#  $context[size]=intval(filesize("upload/$archive")/1024);
+
+#} elseif ($terminer) {
+#  // verifie que $terminer n'est pas hacke
+#  if (preg_match("/^site-$site-\d+.tar.gz$/",$terminer)) {
+#    unlink ("upload/$terminer");
+#  }
+#  header ("location: index.php");
+#  return;
 }
 
 

@@ -1,56 +1,60 @@
 <?php
 // build the arrays containing tables and fields
 
-require_once("lodelconfig.php");
 require_once($home."connect.php");
 
-if (!function_exists("var_export")) {
-function var_export($arr,$t)
+// try first to get the cached array
+if (!(@include("CACHE/tablefields.php"))) {
 
-{
-  $ret="array(";
-  foreach ($arr as $k=>$v) {
-    $ret.="'$k'=>";
-    if (is_array($v)) {
-      $ret.=var_export($v,TRUE).",\n";
-    } else {
-      $ret.="'$v',\n";
-    }
-  }
-  return $ret.")";
-}
-}
+  // no, we have to build the tablefields array
 
-#echo "::";
-$GLOBALS[tablefields]=array();
+  if (!function_exists("var_export")) {
+    function var_export($arr,$t)
 
-maketablefields();
-
-////////////////////////
-
-
-function maketablefields()
-
-{
-  $dbs[$GLOBALS[database]]=$GLOBALS[database].".";
-  if ($GLOBALS[database]!=$GLOBALS[currentdb]) $dbs[$GLOBALS[currentdb]]="";
-
-  foreach ($dbs as $db => $prefix) {
-    $result=mysql_list_tables($db) or die(mysql_error());
-    while (list($table)=mysql_fetch_row($result)) {
-      $result2=mysql_list_fields($db,$table);
-      $nfields=mysql_num_fields($result2);
-      $table=$prefix.$table;
-      $GLOBALS[tablefields][$table]=array();
-      for($j=0; $j<$nfields; $j++) {
-	array_push($GLOBALS[tablefields][$table],mysql_field_name($result2,$j));
+      {
+	$ret="array(";
+	foreach ($arr as $k=>$v) {
+	  $ret.="'$k'=>";
+	  if (is_array($v)) {
+	    $ret.=var_export($v,TRUE).",\n";
+	  } else {
+	    $ret.="'$v',\n";
+	  }
+	}
+	return $ret.")";
       }
-    }
   }
 
-  $fp=fopen("CACHE/tablefields.php","w");
-  fputs($fp,'<?php  $GLOBALS[tablefields]='.var_export($GLOBALS[tablefields],TRUE).' ; ?>');
-  fclose($fp);
-}
+  $tablefields=array();
 
+  ////////////////////////
+
+
+  function maketablefields(&$tablefields)
+
+    {
+      $dbs[$GLOBALS[currentdb]]="";
+      if ($GLOBALS[database]!=$GLOBALS[currentdb]) $dbs[$GLOBALS[database]]=$GLOBALS[database].".";
+
+      foreach ($dbs as $db => $prefix) {
+	$result=mysql_list_tables($db) or die(mysql_error());
+	while (list($table)=mysql_fetch_row($result)) {
+	  $result2=mysql_list_fields($db,$table);
+	  $nfields=mysql_num_fields($result2);
+	  $table=$prefix.$table;
+	  $tablefields[$table]=array();
+	  for($j=0; $j<$nfields; $j++) {
+	    array_push($tablefields[$table],mysql_field_name($result2,$j));
+	  }
+	}
+      }
+      $fp=fopen("CACHE/tablefields.php","w");
+      fputs($fp,'<?php  $tablefields='.var_export($tablefields,TRUE).' ; ?>');
+      fclose($fp);
+    }
+
+  maketablefields(&$tablefields);
+
+
+}
 ?>

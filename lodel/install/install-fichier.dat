@@ -2,18 +2,22 @@
 mkdir CACHE 0770
 mkdir tpl 0750
 mkdir images 0750
-mkdir docannexe 0770
+mkdir docannexe 0700
+mkdir docannexe/fichier 0770
+mkdir docannexe/image 0770
+mkdir docannexe/tmp 0770
 mkdir lodel 0750
 mkdir lodel/edition 0750
 mkdir lodel/admin 0750
-mkdir lodel/admin/upload 0770
 
 htaccess tpl
 htaccess CACHE
 
 # evite que l'internaute puisse lister ces repertoires
 touch docannexe/index.html
-touch lodel/admin/upload/index.html
+touch docannexe/image/index.html
+htaccess docannexe/fichier
+touch docannexe/tmp/index.html
 
 ###############################################################
 ######### repertoire site
@@ -21,7 +25,6 @@ touch lodel/admin/upload/index.html
 dirdestination .
 dirsource $homelodel
 
-ln lodelconfig.php
 ln styles_lodel.css
 
 dirsource $homesite
@@ -51,12 +54,11 @@ ln sommaire.php
 
 # les templates du site doivent etre installe à la main... pour le moment.
 
-dirsource $homelodel/lodel/admin
+dirsource $homesite/lodel/admin
+ln tpl/login.html
 ln login.php
 ln logout.php
 
-dirsource $homesite/lodel/admin
-ln tpl/login.html
 dirsource $homesite/lodel/edition
 ln tpl/desk.html
 
@@ -87,20 +89,18 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln lodelconfig.php
-ln siteconfig.php
 ln styles_revue.css
 ln styles_lodel.css
 
 # les logins
 dirsource $homesite/lodel/admin
 ln tpl/login.html
-dirsource $homelodel/lodel/admin
 ln login.php
 ln logout.php
 
 # tous les fichier de revue/lodel/edition
 dirsource $homesite/lodel/edition
+
 ln maj.php
 ln images
 ln tpl/macros.html
@@ -181,7 +181,6 @@ ln tpl/xml-classe.html
 mkdir lodel/admin 0755
 mkdir lodel/admin/tpl 0755
 mkdir lodel/admin/CACHE 0770
-mkdir lodel/admin/upload 0770
 
 dirdestination lodel/admin
 
@@ -189,15 +188,12 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln lodelconfig.php
-ln siteconfig.php
 ln styles_revue.css
 ln styles_lodel.css
 
 # les logins
 dirsource $homesite/lodel/admin
 ln tpl/login.html
-dirsource $homelodel/lodel/admin
 ln login.php
 ln logout.php
 

@@ -178,14 +178,18 @@
 	<IF COND="[#TYPE] eq 'date'">
 		<td><input size="30" type="text" name="entite[[#NOM]]" value="[(#VALUE|humandate)]"></td>
 	<ELSE/>
+	<IF COND="[#TYPE] eq 'image'">
+		<td><IF COND="[#VALUE]"><img src="[(#VALUE|vignette(80))]" border="1"> [#VALUE]</IF> <input size="40" type="file" name="entite[[#NOM]]"></td>
+	<ELSE/>
 	<IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
 		<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea10'">
-		<td><textarea rows="10" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+		<td><textarea rows="10" cols="70" name="entite[[#NOM]]">[#VALUE]</textarea></td>
 	</IF>
 	<IF COND="[#EDITION] eq 'textarea30'">
-		<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+		<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[#VALUE]</textarea></td>
+	</IF>
 	</IF>
 	</IF>
 	</IF>
@@ -679,71 +683,70 @@
 <DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
 	<div class="lignes_ajouter_entite">
 		<LET VAR="idparentsaved">[#ID]</LET>
-		<LOOP NAME="nb_entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" SELECT="count(*) as nbentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'">
-			<DO>
 				<LOOP NAME="entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="titre">
 					<BEFORE>
-						<IF COND="[#NBENTITES] ge 4">
+						<IF COND="[#NBRESULTATS] ge 4">
 							<MACRO NAME="PNG_PLUS">
 							<span class="texte_orange_gras">Ajouter une publicaton : </span>
 							&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
 						</IF>
 					</BEFORE>
 					<DO>
-						<IF COND="[#NBENTITES] ge 4">
+						<IF COND="[#NBRESULTATS] ge 4">
 							<option value="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
 						<ELSE/>
 							<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?type=[#TYPE][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
 						</IF>
 					</DO>
 					<AFTER>
-						<IF COND="[#NBENTITES] ge 4">
+						<IF COND="[#NBRESULTATS] ge 4">
 							</select>
 						</IF>
 					</AFTER>
 				</LOOP>
-			</DO>
-		</LOOP>
 	</div>
 </DEFMACRO>
 
 <!-- macro ajoutee par Ghislain 30/11/03 -->
 <!-- cette macro n'est pas directement utile pour Revues.org -->
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
-	<div class="lignes_ajouter_entite">
 		<LET VAR="idparentsaved">[#ID]</LET>
-		<LOOP NAME="nb_entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" SELECT="count(*) as nbentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'">
-			<DO>
 				<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="titre">
 					<BEFORE>
-						<IF COND="[#NBENTITES] ge 4">
+						<IF COND="[#NBRESULTATS] ge 4">
 							<MACRO NAME="PNG_PLUS">
 							<span class="texte_orange_gras">Ajouter un document : </span>
-							&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
+							&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected>--</option>
 						</IF>
 					</BEFORE>
 					<DO>
-						<IF COND="[#NBENTITES] ge 4">
-							<option value="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">[#TITRE]</option>
+						<IF COND="[#NBRESULTATS] ge 4">
+							<IF COND="[#IMPORT]==1">
+					        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">[#TITRE]</option>
+							<ELSE/>
+					        		<option value="document.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">[#TITRE]</option>
+							</IF>
 						<ELSE/>
-							<MACRO NAME="PNG_PLUS">&nbsp;<a href="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">Ajouter [#TITRE]</a><br />
+							<MACRO NAME="PNG_PLUS">&nbsp;
+							<IF COND="[#IMPORT]==1">
+                                                               <a href="oochargement.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">Ajouter [#TITRE]</a><br />
+							<ELSE/>
+                                                               <a href="document.php?idparent=[#IDPARENTSAVED]&type=[#TYPE]">Ajouter [#TITRE]</a><br />
+							</IF>
 						</IF>
 					</DO>
 					<AFTER>
-						<IF COND="[#NBENTITES] ge 4">
+						<IF COND="[#NBRESULTATS] ge 4">
 							</select>
 						</IF>
 					</AFTER>
 				</LOOP>
-			</DO>
-		</LOOP>
-	</div>
 </DEFMACRO>
 
+
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
-	<div class="lignes_ajouter_documents">
-		<MACRO NAME="PNG_PLUS">
-		<a href="oochargement.php?idparent=[#ID]">Ajouter un document</a>
+	<div class="lignes_ajouter_entite">
+		<MACRO NAME="AJOUTER_UN_DOCUMENT">
 	</div>
 </DEFMACRO>
 
@@ -753,9 +756,7 @@
 	<ELSE/>
 		<div class="ligne_ajouter_document_dans_un_regroupement2">
 	</IF>
-		<MACRO NAME="PNG_PLUS">
-		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (dans le regroupement)</a>-->
-		<a href="oochargement.php?idparent=[#ID]">Ajouter un document</a>
+		<MACRO NAME="AJOUTER_UN_DOCUMENT">
 		</div>
 </DEFMACRO>
 
@@ -805,19 +806,19 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_NUMEROS_RUBRIQUES">
-	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent=[#ID]" ORDER="ordre">
+	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent='[#ID]'" ORDER="ordre">
 		<DO>
 			<IF COND="[#COUNT] % 2">
 				<IF COND="[#TPLCREATION] eq 'creation-numero'">
 					<div class="ligne_numero1">
 				<ELSE/>
-					<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique1"></IF>
+					<div class="ligne_rubrique1">
 				</IF>
 			<ELSE/>
 				<IF COND="[#TPLCREATION] eq 'creation-numero'">
 					<div class="ligne_numero2">
 				<ELSE/>
-					<IF COND="[#TPLCREATION] eq 'creation-rubrique'"><div class="ligne_rubrique2"></IF>
+					<div class="ligne_rubrique2">
 				</IF>
 			</IF>
 			<IF COND="[#TPLCREATION] ne 'creation-regroupement'">

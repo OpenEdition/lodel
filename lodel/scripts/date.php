@@ -45,12 +45,15 @@ function mysqldate($s)
 
 function mois($m) 
 { 
-  $m=strtolower($m);
+#  $m=strtolower($m); // cette fonction n'est pas multibyte, elle pose probleme
+
+  $m=strtolower(utf8_decode($m));
+
   switch(substr($m,0,3)) { 
     case "jan": return 1;
     case "fev": return 2;
     case "f�v": return 2;
-    case "fé": return 2;
+#    case "fé": return 2;
     case "mar": return 3;
     case "avr": return 4;
     case "mai": return 5;
@@ -61,12 +64,12 @@ function mois($m)
     case "nov": return 11;
     case "dec": return 12;
     case "d�c": return 12;
-    case "dé": return 12;
+#    case "dé": return 12;
   }
   switch(substr($m,0,4)) { 
     case "juin": return 6;
     case "juil": return 7;
-	case "aoû": return 8;
+#    case "aoû": return 8;
   }
   return 0;
 } 

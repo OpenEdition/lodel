@@ -76,23 +76,13 @@ function resize_image ($taille,$src,$dest)
       if (!($height=$result2[2])) break;
     }
 
-#ifndef LODELLIGHT
-# GD 2.0
-    $im2=@ImageCreateTrueColor($width,$height);
-    ImageCopyResampled($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
-## GD 1.0	
-#    $im2=ImageCreate($width,$height);
-#    ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
-#else
-#    if ($GLOBALS[dbhost]=="localhost") {
-#    $im2=ImageCreate($width,$height);
-#    ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
-#    } else {
-#      $im2=@ImageCreateTrueColor($width,$height);
-#      ImageCopyResampled($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
-#    }
-#endif
-
+    $im2=@ImageCreateTrueColor($width,$height); // GD 2.0 ?
+    if ($im2) { // GD 2.0
+      ImageCopyResampled($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
+    } else { // GD 1.0
+      $im2=ImageCreate($width,$height);
+      ImageCopyResized($im2,$im,0,0, 0,0, $width,$height,$result[0],$result[1]);
+    }
 
     if ($result[2]==1) { ImageGIF($im2,$dest); }
     elseif ($result[2]==2) { ImageJPEG($im2,$dest); }

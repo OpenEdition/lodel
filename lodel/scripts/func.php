@@ -104,10 +104,9 @@ function extract_post() {
 function get_ordre_max ($table,$where="") 
 
 {
-  global $home;
   if ($where) $where="WHERE ".$where;
 
-  include_once ($home."connect.php");
+  require_once ($GLOBALS[home]."connect.php");
   $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tp]$table $where") or die (mysql_error());
   if (mysql_num_rows($result)) list($ordre)=mysql_fetch_row($result);
   if (!$ordre) $ordre=0;
@@ -266,13 +265,13 @@ function export_prevnextpublication (&$context)
 // suivant
 
   $querybase="SELECT id FROM $GLOBALS[tp]entites WHERE idparent='$context[idparent]' AND";
-  $result=mysql_query ("$querybase ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase ordre>'$context[ordre]' ORDER BY ordre LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     $context[nextpublication]=makeurlwithid("sommaire",$nextid);
   }
   // precedent:
-  $result=mysql_query ("$querybase ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase ordre<'$context[ordre]' ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
     $context[prevpublication]=makeurlwithid("sommaire",$previd);
@@ -347,9 +346,144 @@ if (!function_exists("file_get_contents")) {
   }
 }
 
+/**
+ * sent the header and the file for downloading
+ * 
+ * @param     string   name of the real file.
+ * @param     string   name to send to the browser.
+ * 
+ */
+
+function download($filename,$originalname="")
+
+{
+  // taken from phpMyAdmin
+  // Download
+  if (!$originalname) $originalname=$filename;
+  if (!is_readable($filename)) die ("ERROR: The file \"$filename\" is not readable");
 
 
-// valeur de retour, identifiant ce script
+  get_PMA_define();
+  header("Content-type: application/force-download");
+  header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+  // lem9 & loic1: IE need specific headers
+  if (PMA_USR_BROWSER_AGENT == 'IE') {
+    header('Content-Disposition: inline; filename="' . $originalname . '"');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+  } else {
+    header('Content-Disposition: attachment; filename="' . $originalname . '"');
+    header('Pragma: no-cache');
+  }
+  readfile($filename); 
+}
+
+
+// taken from phpMyAdmin 2.5.4
+
+function get_PMA_define()
+
+{
+
+// Determines platform (OS), browser and version of the user
+// Based on a phpBuilder article:
+//   see http://www.phpbuilder.net/columns/tim20000821.php
+
+    // loic1 - 2001/25/11: use the new globals arrays defined with
+    // php 4.1+
+    if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+        $HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
+    } else if (!empty($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) {
+        $HTTP_USER_AGENT = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
+    } else if (!isset($HTTP_USER_AGENT)) {
+        $HTTP_USER_AGENT = '';
+    }
+
+    // 1. Platform
+    if (strstr($HTTP_USER_AGENT, 'Win')) {
+        define('PMA_USR_OS', 'Win');
+    } else if (strstr($HTTP_USER_AGENT, 'Mac')) {
+        define('PMA_USR_OS', 'Mac');
+    } else if (strstr($HTTP_USER_AGENT, 'Linux')) {
+        define('PMA_USR_OS', 'Linux');
+    } else if (strstr($HTTP_USER_AGENT, 'Unix')) {
+        define('PMA_USR_OS', 'Unix');
+    } else if (strstr($HTTP_USER_AGENT, 'OS/2')) {
+        define('PMA_USR_OS', 'OS/2');
+    } else {
+        define('PMA_USR_OS', 'Other');
+    }
+
+    // 2. browser and version
+    // (must check everything else before Mozilla)
+
+    if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        define('PMA_USR_BROWSER_VER', $log_version[2]);
+        define('PMA_USR_BROWSER_AGENT', 'OPERA');
+    } else if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        define('PMA_USR_BROWSER_VER', $log_version[1]);
+        define('PMA_USR_BROWSER_AGENT', 'IE');
+    } else if (ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        define('PMA_USR_BROWSER_VER', $log_version[1]);
+        define('PMA_USR_BROWSER_AGENT', 'OMNIWEB');
+    //} else if (ereg('Konqueror/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+    // Konqueror 2.2.2 says Konqueror/2.2.2
+    // Konqueror 3.0.3 says Konqueror/3
+    } else if (ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
+        define('PMA_USR_BROWSER_VER', $log_version[2]);
+        define('PMA_USR_BROWSER_AGENT', 'KONQUEROR');
+    } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)
+               && ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)) {
+        define('PMA_USR_BROWSER_VER', $log_version[1] . '.' . $log_version2[1]);
+        define('PMA_USR_BROWSER_AGENT', 'SAFARI');
+    } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        define('PMA_USR_BROWSER_VER', $log_version[1]);
+        define('PMA_USR_BROWSER_AGENT', 'MOZILLA');
+    } else {
+        define('PMA_USR_BROWSER_VER', 0);
+        define('PMA_USR_BROWSER_AGENT', 'OTHER');
+    }
+}
+
+
+function save_annex_file($id,$file,$filename) {
+  if (!$id) die("Internal error in saveuploadedfile id=$id");
+
+  $dir="docannexe/fichier/$id";
+  if (!file_exists(SITEROOT.$dir)) {
+    if (!@mkdir(SITEROOT.$dir,0755)) die("ERROR: impossible to create the directory \"$dir\"");
+  }
+  $dest=$dir."/".$filename;
+  if (!move_uploaded_file($file,SITEROOT.$dest)) exit();
+
+  @chmod(SITEROOT.$dest, 0600);
+  
+  return $dest;
+}
+
+
+function save_annex_image($id,$file,$filename) {
+  if (!$id) die("Internal error in saveuploadedfile id=$id");
+
+  $dir="docannexe/image/$id";
+  if (!file_exists(SITEROOT.$dir)) {
+    if (!@mkdir(SITEROOT.$dir,0700)) die("ERROR: impossible to create the directory \"$dir\"");
+  }
+  $info=getimagesize($file);
+  if (!is_array($info)) die("ERROR: the image format has not been recognized");
+  $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
+  $ext=$exts[$info[2]-1];
+
+  $dest=$dir."/".$filename.".".$ext;
+  if (!move_uploaded_file($file,SITEROOT.$dest)) exit();
+
+  @chmod(SITEROOT.$dest, 0600);
+  
+  return $dest;
+}
+
+
+// valeur de retour identifiant ce script
 return 568;
 
 ?>

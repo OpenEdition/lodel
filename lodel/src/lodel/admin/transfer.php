@@ -170,17 +170,46 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
     if ($tables["$GLOBALS[tp]documents"]) {
       // cherche les fields de documents 
       $fields=getfields("documents");
-      $champs=array("surtitre","commentaire","lien");
+      $champs=array("surtitre","commentaire","lien","image");
       foreach ($champs as $champ) {
 	if ($fields[$champ]) continue;
 	$err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_documents ADD     '.$champ.'        TINYTEXT NOT NULL;
 ');
 	if ($err) break;
-	$report.="Ajout de champs dans documents<br>\n";
       }
-  }
-   if ($tables["$GLOBALS[tp]documents_auteurs"]) {
+      $report.="Ajout de champs dans documents<br>\n";
+
+      if ($fields["meta"]) {
+	if (!extract_meta("documents")) break;
+	$err=mysql_query_cmds('ALTER TABLE _PREFIXTABLE_documents DROP meta;');
+	if ($err) break;
+	$report.="Transforme meta_image en image dans documents<br>\n";
+      }
+    }
+    if ($tables["$GLOBALS[tp]publications"]) {
+      // cherche les fields de publications 
+      $fields=getfields("publications");
+      $champs=array("surtitre","image");
+      foreach ($champs as $champ) {
+	if ($fields[$champ]) continue;
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_publications ADD     '.$champ.'        TINYTEXT NOT NULL;
+');
+	if ($err) break;
+      }
+      $report.="Ajout de champs dans publications<br>\n";
+
+      if ($fields["meta"]) {
+	if (!extract_meta("publications")) break;
+	$err=mysql_query_cmds('ALTER TABLE _PREFIXTABLE_publications DROP meta;');
+	if ($err) break;
+	$report.="Transforme meta_image en image dans publications<br>\n";
+      }
+    }
+
+
+    if ($tables["$GLOBALS[tp]documents_auteurs"]) {
       // cherche les fields de documents 
       $fields=getfields("documents_auteurs");
       if (!$fields[description]) {
@@ -259,6 +288,7 @@ ALTER TABLE _PREFIXTABLE_typepublis ADD	titre	        VARCHAR(255) NOT NULL;
 UPDATE _PREFIXTABLE_typepublis SET classe=\'publications\', titre=type, tplcreation=\'publication\';
 ALTER TABLE _PREFIXTABLE_typepublis CHANGE titre	titre	        VARCHAR(255) NOT NULL;
 ALTER TABLE _PREFIXTABLE_typepublis CHANGE tpledit 	tpledition	TINYTEXT NOT NULL;
+ALTER TABLE _PREFIXTABLE_typepublis ADD	import		TINYINT DEFAULT \'0\' NOT NULL;
 DROP TABLE IF EXISTS _PREFIXTABLE_types;
 RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
 ');
@@ -303,12 +333,12 @@ $err=mysql_query_cmds('
 	UPDATE _PREFIXTABLE_types SET type="rubrique", tpledition="edition-rubrique", tplcreation="creation-rubrique", titre="rubrique" WHERE type="theme";
 '); 
 if($err) break; 
-$report.="
+$report.='
         Ajout du type regroupement-documentsannexes<br />
         Transformation des titres des types<br />
         Suppression des éventuelles valeurs de tpl et tpledition pour un regroupement<br />
         Nouveau tpl de creation pour chacun des types<br />
-";
+';
 
       // recupere l'id max des documents
       $result=mysql_query("SELECT max(id) FROM $GLOBALS[tp]documents") or die(mysql_error());
@@ -348,6 +378,10 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	#echo $type," ",$id,"<br>";
 	$idtypes[$type]=$row[id];
       }
+      if (!file_exists(SITEROOT."docannexe/fichier")) {
+	mkdir(SITEROOT."docannexe/fichier"); 
+	chmod(SITEROOT."docannexe/fichier",0700);
+      }
       // ok, on s'occupe maintenant de l'importation des documentsannexes
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documentsannexes") or die(mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
@@ -357,6 +391,16 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
 	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_entites (idparent,idtype,nom,ordre,statut) VALUES ('$row[iddocument]','$idtype','$row[titre]','$row[ordre]','$row[statut]')");
 	if ($err) break;
 	$id=mysql_insert_id();
+
+	if ($type=="lienfichier") { // deplace le fichier si necessaire.
+	  $dest="docannexe/fichier/$id/lien";
+	  if(!mkdir(SITEROOT."docannexe/fichier/$id",0700)) break;
+	  if (!copy(SITEROOT.$row[lien],SITEROOT.$dest)) break;
+	  chmod (SITEROOT.$dest,0600);
+	  unlink(SITEROOT.$row[lien]);
+	  $row[lien]=$dest;
+	}
+
 	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_documents (identite,titre,commentaire,lien) VALUES ('$id','$row[titre]','$row[commentaire]','$row[lien]')");
 	if ($err) break;
       }
@@ -421,7 +465,6 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       $err=mysql_query_cmds("ALTER TABLE _PREFIXTABLE_publications DROP directeur;");
       $report.="Importation des directeurs<br>";
     }
-
 
     if (!$tables["$GLOBALS[tp]groupes"]) {
 	if ($err=create("groupes")) break;
@@ -692,5 +735,33 @@ function extractnom($personne) {
   return array($prefix,$prenom,$nom);
 }
 
+function extract_meta($classe)
+
+{
+  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or die(mysql_error());
+
+  while (list($id,$meta)=mysql_fetch_row($result)) {
+    $meta=unserialize($meta);
+    if (!$meta[meta_image]) continue;
+    $file=SITEROOT.$meta[meta_image];
+    $info=getimagesize($file);
+    if (!is_array($info)) die("ERROR: the image format has not been recognized");
+    $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
+    $ext=$exts[$info[2]-1];
+    
+    $dirdest="docannexe/image/$id";
+    $dest=$dirdest."/image.".$ext;
+
+    // copy the file
+    if(!file_exists(SITEROOT.$dirdest) && !mkdir(SITEROOT.$dirdest,0700)) return FALSE;
+    if (!copy($file,SITEROOT.$dest)) return FALSE;
+    chmod(SITEROOT.$dest, 0600);
+    unlink($file);
+
+    mysql_query("UPDATE $GLOBALS[tp]$classe SET image='$dest' WHERE id='$id'") or die(mysql_error());
+  }
+
+  return TRUE;
+}
 
 ?>

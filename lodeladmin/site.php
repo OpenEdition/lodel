@@ -94,7 +94,7 @@ if ($tache=="grant") {
   do { // control block 
     if ($singledatabase) break;
     // check if the user has the right to access the database... no more check.
-    if (mysql_select_db("$context[dbname]")) break;
+    if (mysql_select_db($context[dbname])) break;
 
     $pass=$dbpasswd ? "IDENTIFIED BY '$dbpasswd'" : "";
     $context[command]="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
@@ -108,7 +108,6 @@ if ($tache=="grant") {
   } while (0);
   $tache="createtables";
 }
-
 //
 // creation des tables des sites
 //
@@ -117,7 +116,7 @@ if ($tache=="createtables") {
   if (!$context[rep]) die ("probleme interne");
   include_once ($home."connect.php");
   
-  mysql_select_db("$context[dbname]");
+  mysql_select_db($context[dbname]);
 
   if (!file_exists("../install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
   $text=join('',file("../install/init-site.sql"));
@@ -134,7 +133,6 @@ if ($tache=="createtables") {
     $cmd=trim($cmd);
     if ($cmd && !@mysql_query($cmd)) array_push($erreur,$cmd,mysql_error());
   }
-
   if ($erreur) {
     $context[erreur_createtables]=$erreur;
     function loop_erreurs_createtables(&$context,$funcname)
@@ -153,7 +151,6 @@ if ($tache=="createtables") {
 
   $tache="createrep";
 }
-
 
 //
 // Creer le repertoire principale de la site
@@ -193,20 +190,23 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   function cherche_version () // on encapsule a cause du include de sites config
     {
       global $lodelhomere;
-      $dir=opendir("../..");      
+      chdir("..");
+      $dir=opendir("..");
       if (!$dir) die ("impossible d'acceder en ecirture le repertoire racine... etrange, n'est-il pas ?");
       $versions=array();
       while ($file=readdir($dir)) {
-	if (is_dir("../../".$file) && 
+	#echo $file," ";
+	if (is_dir("../".$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir("../../".$file."/revue")) {
-	  if (!(@include("../../$file/revue/siteconfig.php"))) {
+	    is_dir("../".$file."/revue")) {
+	  if (!(@include("../$file/revue/siteconfig.php"))) {
 	    echo "Warning: Impossible d'ouvrir le fichier $file/revue/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";
 	  }
 	}
       }
+      chdir("admin");
       return $versions;
     }
   $versions=cherche_version();	  
@@ -254,6 +254,7 @@ if ($tache=="fichier") {
   install_fichier($root,"../$versionrep/revue","..");
 
   // ok on a fini, on change le statut de la site
+  mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
   back();
 }

@@ -35,7 +35,7 @@
 			<td class="texte_intitule">Style du type d'index (*):</td>
 			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
 		</tr>
-		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style !</td></tr>]
+		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Pour avoir des styles "multilingues", il faut indiquer la langue pour chaque style. Exemple: motcle:fr, keywords:en</td></tr>]
 		<tr>
 			<td>
 				<span class="texte_intitule">Nom du fichier template pour les entrées :</span><br />
@@ -99,6 +99,7 @@
 			(*) la balise et le style ne doivent contenir que des lettres non accentuées et des chiffres. <br />
 			Le style défini dans lodel.dot peut contenir des lettres accentuées, l'accent est automatiquement supprimé, et des espaces, automatiquement supprimé. <br />
 			Par exemple le style "Mot clé" dans lodel.dot doit etre défini "motcle" ici.
+                        Style peut aussi indiquer la langue. Dans ce cas, il chaque style doit etre suivi de : et la langue et chaque style est separé par une virgule. Exemple: motcle:fr, keywords:en
 		</span>
 	</div>
 	

@@ -1,5 +1,8 @@
 <?php
-require_once("lodelconfig.php"); // en general il est deja inclue
+
+if (!(INC_LODELCONFIG)) die("inc lodelconfig");
+
+
 
 mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die (mysql_error());
 if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {

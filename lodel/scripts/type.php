@@ -50,8 +50,9 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
+    require($home."validfunc.php");
     $context[type]=trim($context[type]);
-    if (!$context[type]) $err=$context[erreur_type]=1;
+    if (!$context[type] || !isvalidtype($context[type])) $err=$context[erreur_type]=1;
     //    if (!$context[tpl]) $err=$context[erreur_tpl]=1;
     if ($err) break;
 
@@ -59,7 +60,7 @@ if ($edit) { // modifie ou ajoute
     lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
 
     // verifie que ce type n'existe pas.
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND classe='$classe' AND id!='$id'") or die (mysql_error());
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE type='$context[type]' AND classe='$context[classe]' AND id!='$id'") or die (mysql_error());
     if (mysql_num_rows($result)) { unlock(); $context[erreur_type_existe]=1; break; }
 
     if ($id>0) { // il faut rechercher le statut
@@ -69,7 +70,9 @@ if ($edit) { // modifie ou ajoute
       $statut=1;
       $ordre=get_ordre_max("types");
     }
-    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$statut','$ordre')") or die (mysql_error());
+    $context[import]=$context[import] ? 1 : 0;
+
+    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledition,tplcreation,import,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledition]','$context[tplcreation]','$context[import]','$statut','$ordre')") or die (mysql_error());
 
     if ($id) {
       typetypes_delete("idtypeentite='$id'");
@@ -89,6 +92,11 @@ if ($edit) { // modifie ou ajoute
   include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
+} else {
+  $context[import]=($classe=="documents") && 
+    $serveuroourl &&  
+    $serveuroousername && 
+    $serveuroopasswd ? 1 : 0;
 }
 
 // post-traitement

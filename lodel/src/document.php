@@ -19,23 +19,25 @@ if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php
 
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-$context=array_merge($context,filtered_mysql_fetch_assoc($result));
+require_once($home."textfunc.php");
+$context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));
 if (!$context[tpl]) { 
   header("location: ".makeurl("document",$context[idparent]));
   return;
 }
-
 $base=$context[tpl];
 
 
 //
 // cherche s'il y a des documents annexe et combien
 //
-$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBAL[tp]entites.statut>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
+
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBALS[tp]entites.statut>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
 list($context[documentsannexes])=mysql_fetch_row($result);
 //
 // cherche l'article precedent et le suivant
 //
+
 
 // suivant:
 
@@ -43,7 +45,7 @@ $querybase="SELECT $GLOBALS[tp]entites.id FROM $GLOBALS[entitestypesjoin] WHERE 
 
 $nextid=0;
 do {// exception
-  $result=mysql_query ("$querybase $GLOBALS[pt]entites.ordre>$context[ordre] $critere ORDER BY $GLOBALS[pt]entites.ordre LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase $GLOBALS[tp]entites.ordre>$context[ordre] $critere ORDER BY $GLOBALS[tp]entites.ordre LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     break;
@@ -63,7 +65,7 @@ if ($nextid) $context[nextdocument]=makeurlwithid("document",$nextid);
 
 $previd=0;
 do {  // exception
-  $result=mysql_query ("$querybase $GLOBALS[pt]entites.ordre<$context[ordre] $critere ORDER BY $GLOBALS[pt]entites.ordre DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase $GLOBALS[tp]entites.ordre<$context[ordre] $critere ORDER BY $GLOBALS[tp]entites.ordre DESC LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
     break;
