@@ -117,7 +117,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     switch ($type) {
     case "date" : 
       include_once($home."date.php");
-      if (isset($entite[$nom])) {
+      if ($entite[$nom]) {
 	$entite[$nom]=mysqldate($entite[$nom]);
       } elseif ($defaut) {
 	if ($defaut=="aujourd'hui" || $defaut=="today") {
