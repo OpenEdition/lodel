@@ -140,9 +140,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 	} else {
 	  die("valeur par defaut non reconnue: \"$defaut\"");
 	}
-      } else {
-	$erreur[$nom]="date";
-      }
+      }# else {
+	#$erreur[$nom]="date";
+      #}
       break;
     case "int" :
       if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=intval($defaut);
