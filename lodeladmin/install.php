@@ -444,8 +444,8 @@ if ($servoourl!="off") {
 			      array("username"=>$servoousername,
 				    "passwd"=>$servoopasswd,
 				    "commands"=>$cmds));
-    print_r($ret);
-    print_r($retvar);
+#    print_r($ret);
+#    print_r($retvar);
     if (strpos($ret,"SAY:")===0) {
       if (!$skip && $tache=="servoo") {
 	$message=substr($ret,4); // delete the SAY:
