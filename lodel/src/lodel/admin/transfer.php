@@ -102,6 +102,7 @@ UPDATE _PREFIXTABLE_indexs SET lang=\'fr\' WHERE lang=\'\';
 DROP TABLE _PREFIXTABLE_documents_indexhs;
 DROP TABLE _PREFIXTABLE_indexhs;
 ');
+      unlock();
       if ($err) break;
       $report.="Destruction de la table indexhs et documents_indexhs\n";
     }
