@@ -303,6 +303,7 @@ class XMLImportParser {
     switch($class) {
     case "internalstylesvo" :
     case "characterstylesvo" :
+      if (preg_match("/^[\.;]+/",$obj->style)) break;
       if ($opening) {
 	array_unshift($datastack,"");
       } else {

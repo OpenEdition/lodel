@@ -333,7 +333,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      } elseif ($obj->type=="mltext") {
        $lang=$obj->lang ? $obj->lang : $GLOBALS['lodeluser']['lang'];
        $this->_currentcontext['data'][$obj->name][$lang].=addslashes($data);
-     } else {
+     } elseif ($obj->style[0]!=".") {
        $this->_currentcontext['data'][$obj->name].=addslashes($data);
      }
      return $data;
