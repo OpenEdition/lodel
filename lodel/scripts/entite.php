@@ -151,7 +151,7 @@ if ($cancel) { // pas de idtache, on s'en va tout simplement
 }
 
 if ($id>0 && !$user['admin']) {
-  $critere=" AND usergroup IN (".$user['groups'].";
+  $critere=" AND usergroup IN (".$user['groups'].")";
 } else $critere="";
 
 if ($id>0 && $dir) {

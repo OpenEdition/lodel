@@ -489,7 +489,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_PUBLI">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 	    [@EDITION.DRAFT]
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
@@ -498,7 +498,7 @@
 			<IF COND="[#STATUS]==1">
 				[@EDITION.PUBLISHED]
 			<ELSE/>
-				<IF COND="[#STATUS]==32">
+				<IF COND="[#STATUS]==16">
 					[@COMMON.PROTECTED]
 				</IF>
 			</IF>
@@ -507,7 +507,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_DOCUMENT">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 		[@EDITION.DRAFT]
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
@@ -516,7 +516,7 @@
 			<IF COND="[#STATUS]==1">
 				[@EDITION.PUBLISHED]
 			<ELSE/>
-				<IF COND="[#STATUS]==32">
+				<IF COND="[#STATUS]==16">
 				[@COMMON.PROTECTED]
 				</IF>
 			</IF>
@@ -527,7 +527,7 @@
 
 <!--[ desuet
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 		<a href="status.php?publication=[#ID]&status=pret">
 			<span class="texte_trespetit_centre">Prêt à publier</span>
 		</a>
@@ -538,7 +538,7 @@
 		</a>
 	</IF>
 
-	<IF COND="[#STATUS]==32">
+	<IF COND="[#STATUS]==16">
 		<a href="status.php?publication=[#ID]&status=deprotege">
 			<span class="texte_trespetit_centre">Déprotéger</span>
 		</a>
@@ -551,7 +551,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_DOCUMENTS">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 		<a href="status.php?id=[#ID]&status=pret">
 			<span class="texte_trespetit_centre">Déprotéger</span>
 		</a>
@@ -712,7 +712,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 		<MACRO NAME="PNG_STATUS_BROUILLON_PUBLICATION">
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
@@ -721,7 +721,7 @@
 			<IF COND="[#STATUS]==1">
 				<MACRO NAME="PNG_STATUS_PUBLIE_PUBLICATION">
 			<ELSE/>
-				<IF COND="[#STATUS]==32">
+				<IF COND="[#STATUS]==16">
 					<MACRO NAME="PNG_STATUS_PROTEGE_PUBLICATION">
 				</IF>
 			</IF>
@@ -733,7 +733,7 @@
 	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
 		<MACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
 	<ELSE/>
-		<IF COND="[#STATUS]==-32">
+		<IF COND="[#STATUS]==-16">
 			<MACRO NAME="PNG_STATUS_BROUILLON_DOCUMENT">
 		<ELSE/>
 			<IF COND="[#STATUS]==-1">
@@ -742,7 +742,7 @@
 				<IF COND="[#STATUS]==1">
 					<MACRO NAME="PNG_STATUS_PUBLIE_DOCUMENT">
 				<ELSE/>
-					<IF COND="[#STATUS]==32">
+					<IF COND="[#STATUS]==16">
 						<MACRO NAME="PNG_STATUS_PROTEGE_DOCUMENT">
 					</IF>
 				</IF>
@@ -752,7 +752,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUS_REGROUPEMENT">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 		<MACRO NAME="PNG_STATUS_BROUILLON_REGROUPEMENT">
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
@@ -761,7 +761,7 @@
 			<IF COND="[#STATUS]==1">
 				<MACRO NAME="PNG_STATUS_PUBLIE_REGROUPEMENT">
 			<ELSE/>
-				<IF COND="[#STATUS]==32">
+				<IF COND="[#STATUS]==16">
 					<MACRO NAME="PNG_STATUS_PROTEGE_REGROUPEMENT">
 				</IF>
 			</IF>
@@ -1012,7 +1012,7 @@
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_PUBLICATION">&nbsp;
-		<IF COND="([#STATUS] lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN])">
+		<IF COND="(abs([#STATUS]) lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN])">
 		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
@@ -1035,7 +1035,7 @@
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_PUBLICATION">&nbsp;
-		<IF COND="(([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]) AND [#STATUS] lt 32">
+		<IF COND="(([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]) AND abs([#STATUS]) lt 32">
 		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
@@ -1058,7 +1058,7 @@
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_DOCUMENT">&nbsp;
-		<IF COND="(([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]) AND [#STATUS] lt 32">
+		<IF COND="(([#USER.EDITOR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#USER.ADMIN]) AND abs([#STATUS]) lt 32">
 		|&nbsp;<a href="supprime.php?id=[#ID]">[@EDITION.DESTROY]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DESTROY]</span>&nbsp;|
@@ -1068,7 +1068,7 @@
 
 
 <DEFMACRO NAME="BOUTONS_STATUS_PUBLICATION">
-	<IF COND="[#STATUS]==-32">
+	<IF COND="[#STATUS]==-16">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
@@ -1113,7 +1113,7 @@
 			</tr>
 		</table>
 	</IF>
-	<IF COND="[#STATUS]==32">
+	<IF COND="[#STATUS]==16">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_PUBLICATION"></td>
@@ -1131,7 +1131,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_STATUS_DOCUMENT">
-  <IF COND="[#STATUS]==-32">
+  <IF COND="[#STATUS]==-16">
       <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
           <tr>
               <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT"></td>
@@ -1174,7 +1174,7 @@
               </td>
           </tr>
       </table>
-  </IF>      <IF COND="[#STATUS]==32">
+  </IF>      <IF COND="[#STATUS]==16">
       <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
           <tr>
               <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_DOCUMENT"></td>

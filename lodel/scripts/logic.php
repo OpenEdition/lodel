@@ -187,12 +187,8 @@ class Logic {
      global $user;
      // basic
      $dao=$this->_getMainTableDAO();
-     if (!$status) { // heavy... caching would be better but...
-       $vo=$dao->getById(intval($id),"status");
-       $status=$vo->status;
-     }
-     return ($user['rights'] < $dao->rights['write']) ||
-       (abs($status)>=32 && $user['rights']< $dao->rights['protect']);
+     $vo=$dao->find("id='".intval($id)."' ".$dao->rightsCriteria("write"),"status");
+     return $vo ? false : true;
    }
 
    /*---------------------------------------------------------------*/

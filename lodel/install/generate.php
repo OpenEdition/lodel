@@ -112,21 +112,20 @@ xml_parser_free($xml_parser);
 function buildDAO() {
   global $table,$uniqueid,$varlist,$rights;
 
-     $fp=fopen("../scripts/dao/class.".$table.".php","w");
 
 
-     fwrite($fp,"<"."?php".getnotice().'
+  $text.='
 
 /**
   * VO of table '.$table.'
   */
 
 class '.$table.'VO {
-');
+';
       foreach ($varlist as $var) {
-	fwrite($fp,"   var $".$var.";\n");
+	$text.="   var $".$var.";\n";
       }
-      fwrite($fp,'
+      $text.='
 }
 
 /**
@@ -139,6 +138,23 @@ class '.$table.'DAO extends DAO {
        $this->DAO("'.$table.'",'.($uniqueid ? "true" : "false").');
        $this->rights=array('.join(",",$rights).');
    }
+';
+
+
+  $daofile="../scripts/dao/class.".$table.".php";
+  if (file_exists($daofile)) {
+    // unique fields
+    $beginre='\/\/\s*begin\{definitions\}[^\n]+?\/\/';
+    $endre='\n\s*\/\/\s*end\{definitions\}[^\n]+?\/\/';
+    $file=file_get_contents($daofile);
+    if (preg_match("/$beginre/",$file)) {
+      replaceInFile($daofile,$beginre,$endre,$text);
+      return;
+    }
+  }
+// create the file
+  $fp=fopen($daofile,"w");
+  fwrite($fp,"<"."?php".getnotice().$text.'
 }
 
 ?'.'>');

@@ -191,6 +191,14 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 	} // classes
 	$report.="Remplissage de entitytitle a partir de title<br />\n";
       }
+
+      // decrease the protected status!
+      	$err=mysql_query_cmds('
+UPDATE _PREFIXTABLE_entities SET status=16 where status=32;
+UPDATE _PREFIXTABLE_entities SET status=-16 where status=-32;
+');
+	if ($err) break;
+	$report.="Reduction du statut des publications et documents proteges<br/>";
     } // table entite
 
 

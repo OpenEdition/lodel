@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-25.
+ // File generate automatically the 2004-12-28.
  //
 
 
@@ -59,6 +59,7 @@ class entriesDAO extends DAO {
        $this->DAO("entries",true);
        $this->rights=array('write'=>LEVEL_REDACTOR,'protect'=>LEVEL_REDACTOR);
    }
+
 }
 
 ?>

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-25.
+ // File generate automatically the 2004-12-28.
  //
 
 
@@ -61,6 +61,7 @@ class persontypesDAO extends DAO {
        $this->DAO("persontypes",true);
        $this->rights=array('write'=>LEVEL_ADMIN,'protect'=>LEVEL_ADMINLODEL);
    }
+
 }
 
 ?>

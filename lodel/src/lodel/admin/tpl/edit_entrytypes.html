@@ -103,7 +103,7 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <IF COND="[#USERRIGHTS] ge [#TABLE|rights('protect')]">
+  <IF COND="[#USER.RIGHTS] ge [#TABLE|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_TYPE]
         : 
       </label>

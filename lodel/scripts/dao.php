@@ -92,7 +92,7 @@ class DAO {
 	 $update.="$k='".$v."'";
        }
        if ($update) {
-	 $db->execute("UPDATE ".$this->sqltable." SET  $update WHERE id='".$vo->id."' ".$this->_rightscriteria("write")) or die($db->errormsg());
+	 $db->execute("UPDATE ".$this->sqltable." SET  $update WHERE id='".$vo->id."' ".$this->rightscriteria("write")) or die($db->errormsg());
        }
 
      } else { // new !
@@ -137,8 +137,8 @@ class DAO {
 
      //execute select statement
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
-     $row=$db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->_rightscriteria("read"));
-     #echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->_rightscriteria("read");
+     $row=$db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read"));
+     #echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read");
      #print_r($row);
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
      if ($row===false) die($db->errormsg());
@@ -160,7 +160,7 @@ class DAO {
 
 
      //execute select statement
-     $morecriteria=$this->_rightscriteria("read");
+     $morecriteria=$this->rightscriteria("read");
      if ($order) $order="ORDER BY ".$order;
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
      $result=$db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) $morecriteria $order") or die($db->errormsg());
@@ -245,7 +245,7 @@ class DAO {
      }
 
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->sqltable." WHERE $criteria ".$this->_rightscriteria("write")) or die($db->errormsg());
+     $db->execute("DELETE FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("write")) or die($db->errormsg());
      if ($db->affected_Rows()!=$nbid) die("ERROR: you don't have the right to delete some object in table ".$this->table);
    // in theory, this is bad in the $mixed is an array because 
    // some but not all of the object may have been deleted
@@ -261,13 +261,13 @@ class DAO {
    /**
     * Function to delete many object value given a criteria
     */
-
+/*
    function deleteObjects($criteria) {
      global $db;
 
      // check the rights
      if ($GLOBALS['user']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
-     $where=" WHERE (".$criteria.") ".$this->_rightscriteria("write");
+     $where=" WHERE (".$criteria.") ".$this->rightscriteria("write");
 
      // delete the uniqueid entry if required
      if ($this->uniqueid) {
@@ -284,6 +284,26 @@ class DAO {
      $db->execute("DELETE FROM ".$this->sqltable.$where) or die($db->errormsg());
      if ($db->affectedRow()<=0) return false; // not the rights
      return true;
+   }
+*/
+
+   /**
+    * Return the criteria depending on the write/read access
+    *
+    */
+   function rightsCriteria($access) {
+     if (!isset($this->cache_rightscriteria[$access])) {
+
+       if (array_key_exists("status",get_class_vars($this->table."VO"))) {
+
+	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND status>-64" : " AND status>0";
+	 if ($access=="write" && $GLOBALS['user']['rights'] < $this->rights['protect'])
+	   $this->cache_rightscriteria[$access].=" AND status<32 AND status>-32 ";
+       }
+     } else {
+       $this->cache_rightscriteria[$access]="";
+     }
+     return $this->cache_rightscriteria[$access];
    }
 
 
@@ -302,23 +322,6 @@ class DAO {
      foreach($row as $k=>$v) {
        $vo->$k=$v;
      }
-   }
-
-
-   function _rightscriteria ($access) {
-     if (!isset($this->cache_rightscriteria[$access])) {
-
-       if (array_key_exists("status",get_class_vars($this->table."VO"))) {
-
-	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND status>-64" : " AND status>0";
-	 if ($access=="write" && $GLOBALS['user']['rights']<$this->rights['protect'])
-	   $this->cache_rightscriteria[$access].=" AND status<32 AND status>-32 ";
-       }
-
-     } else {
-       $this->cache_rightscriteria[$access]="";
-     }
-     return $this->cache_rightscriteria[$access];
    }
 }
 

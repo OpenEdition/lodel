@@ -28,8 +28,9 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
  //
- // File generate automatically the 2004-12-25.
+ // File generate automatically the 2004-12-26.
  //
+ // begin{definitions} automatic generation  //
 
 
 /**
@@ -59,6 +60,20 @@ class entitiesDAO extends DAO {
    function entitiesDAO() {
        $this->DAO("entities",true);
        $this->rights=array('write'=>LEVEL_REDACTOR,'protect'=>LEVEL_REDACTOR);
+   }
+
+
+
+ // end{definitions} automatic generation  //
+
+   function _rightscriteria($access) {
+     if (!isset($this->cache_rightscriteria[$access])) {
+       DAO::_rightscriteria ($access);
+       if (!$GLOBALS['user']['admin']) {
+	 $this->cache_rightscriteria[$access].=" AND usergroup IN (".$GLOBALS['user']['groups'].")";
+       }
+     }
+     return $this->cache_rightscriteria[$access];
    }
 }
 
