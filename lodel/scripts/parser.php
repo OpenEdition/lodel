@@ -176,8 +176,8 @@ function parse_cond (&$text,$offset=0) {
     if (!preg_match("/^\s*(.*?)\s*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
 
     parse_variable($cond[1],FALSE);
-    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\band\b/i","/\bor\b/i"),
-		 array(">","<",">=","<=","==","&&","||"),$cond[1]);
+    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
+		 array(">","<",">=","<=","==","!=","&&","||"),$cond[1]);
 
     $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
 # cherche le sinon
