@@ -567,11 +567,13 @@ if ($servoourl!="off") {
 #    print_r($ret);
 #    print_r($retvar);
     if (strpos($ret,"SAY:")===0) {
-      if (!$skip && $tache=="servoo") {
-	$message=substr($ret,4); // delete the SAY:
-	if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
-	return;
-      }
+      // ok, it's all right.
+
+      #if (!$skip && $tache=="servoo") {
+      #  $message=substr($ret,4); // delete the SAY:
+      #  if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
+      #  return;
+      #}
     } else {
       $erreur_connect=$ret;
       if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
