@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_personnes (
 	idtype			INT UNSIGNED DEFAULT '0' NOT NULL, # type de lien entre la personne et le entite
 
 	ordre			TINYINT UNSIGNED NOT NULL DEFAULT '0',
-	prefixe             	TINYTEXT NOT NULL,
+	prefix             	TINYTEXT NOT NULL,
 	description             TEXT NOT NULL,
 	fonction		TINYTEXT NOT NULL,
 	affiliation		TINYTEXT NOT NULL,
