@@ -52,7 +52,7 @@ if ($idtache) {
     $localcontext[statut]=-64; // car le document n'est pas correcte a priori
     // enregistre le nom du fichier original. Enleve le repertoire.
 
-    echo "sourceoriginale: $tache[sourceoriginale]";
+    #echo "sourceoriginale: $tache[sourceoriginale]";
     $localcontext[entite][fichiersource]=$tache[sourceoriginale];
     //    if ($tache[sourceoriginale]) $localcontext[fichiersource]=preg_replace("/.*\//","",$tache[sourceoriginale]);
     

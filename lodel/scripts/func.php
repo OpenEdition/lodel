@@ -139,13 +139,22 @@ function chordre($table,$id,$critere,$dir,$inverse="")
 } 
 
 function myquote (&$var)
-
 {
   if (is_array($var)) {
     array_walk($var,"myquote");
     return $var;
   } else {
     return $var=addslashes(stripslashes($var));
+  }
+}
+
+function myaddslashes (&$var)
+{
+  if (is_array($var)) {
+    array_walk($var,"myaddslashes");
+    return $var;
+  } else {
+    return $var=addslashes($var);
   }
 }
 
@@ -168,13 +177,26 @@ function myfilemtime($filename)
 }
 
 
-function copy_images (&$text,$callback,$argument="")
+function copy_images (&$text,$callback,$argument="",$count=1)
 
 {
     // copy les images en lieu sur et change l'acces
-    preg_match_all("/<img\s+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
-    $count=1;
     $imglist=array();
+
+    if (is_array($text)) {
+      foreach ($text as $k=>$t) {
+	copy_images_private($t,$callback,$argument,$count,$imlist);
+	$text[$k]=$t;
+      }
+    } else {
+      copy_images_private($text,$callback,$argument,$count,$imlist);
+    }
+}
+
+function copy_images_private (&$text,$callback,$argument="",&$count,&$imglist)
+
+{
+    preg_match_all("/<img\s[^>]*src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {

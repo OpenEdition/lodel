@@ -96,7 +96,29 @@ function enregistre_entite_from_xml($context,$text,$classe)
 
 #  print_r($localcontext);
 
-  return enregistre_entite (&$localcontext,0,$classe,"",FALSE); // on ne genere pas d'erreur... Tant pis !
+  $id=enregistre_entite (&$localcontext,0,$classe,"",FALSE); // on ne genere pas d'erreur... Tant pis !
+
+  // ok, maintenant, il faut rechercher les images et corriger leur location.
+
+  function mv_image($imgfile,$ext,$count,$id) {
+    $dir="docannexe/$id";
+    if (!is_dir("../../".$dir)) mkdir("../../".$dir,0700);
+    $newfile="$dir/img-$count.$ext";
+    copy($imgfile,"../../".$newfile);
+    @unlink($imgfile);
+    return $newfile;
+  }
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$classe WHERE identite='$id'") or die (mysql_error());
+  $row=mysql_fetch_assoc($result);
+  require_once($home."func.php");
+  copy_images($row,"mv_image",$id);
+  myaddslashes($row);
+  foreach ($row as $field=>$value) { $row[$field]=$field."='".$value."'"; }
+  mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$row)." WHERE identite='$id'") or die (mysql_error());
+  // fin du deplacement des images
+
+
+  return $id;
 }
 
 

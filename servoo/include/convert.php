@@ -74,18 +74,20 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   mkdir("$tmpdir",0700);
 
   // if the file is outputted by the OO user, it is not necessary writable.
-  if (!is_writeable($uploadedfile.".sxw")) {
+#  if (!is_writeable($uploadedfile.".sxw")) {
     // copie pour avoir les droits d'ecriture
     if (!@copy($uploadedfile.".sxw",$uploadedfile."-second.sxw")) die("ERROR: copy failed of $uploadedfile.sxw failed");
     @unlink($uploadedfile.".sxw"); // efface si on peut.
     $uploadedfile.="-second";
-  }
+#  }
 
   // uncompress content.xml and styles.xml
   exec_unzip("-q -d $tmpdir $uploadedfile.sxw content.xml styles.xml",$errfile);
   $content=file_get_contents("$tmpdir/content.xml");
   $styles=file_get_contents("$tmpdir/styles.xml");
 #  die("$tmpdir    ".htmlentities($content));
+
+
 
   if ($msg) {
     echo "<br>";
