@@ -293,6 +293,21 @@ DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
 	}
 	break;
       }
+$err=mysql_query_cmds(' 
+	INSERT INTO _PREFIXTABLE_types (type, titre, tpl, tpledition, tplcreation, ordre, classe) VALUES ("regroupement-documentsannexes","regroupement de documents annexes", "", "", "creation-regroupement", 0, "publications"); 
+	UPDATE _PREFIXTABLE_types SET titre="série linéaire", tplcreation="creation-serie" WHERE type="serie_lineaire"; 
+	UPDATE _PREFIXTABLE_types SET titre="série hiérarchique", tplcreation="creation-serie" WHERE type="serie_hierarchique"; 
+	UPDATE _PREFIXTABLE_types SET titre="regroupement", tplcreation="creation-regroupement", tpl="", tpledition="" WHERE type="regroupement"; 
+	UPDATE _PREFIXTABLE_types SET titre="numéro", tplcreation="creation-numero" WHERE type="numero"; 
+	UPDATE _PREFIXTABLE_types SET titre="thème", tplcreation="creation-theme" WHERE type="theme";
+'); 
+if($err) break; 
+$report.="
+        Ajout du type regroupement-documentsannexes<br />
+        Transformation des titres des types<br />
+        Suppression des éventuelles valeurs de tpl et tpledition pour un regroupement<br />
+        Nouveau tpl de creation pour chacun des types<br />
+";
 
       // recupere l'id max des documents
       $result=mysql_query("SELECT max(id) FROM $GLOBALS[tp]documents") or die(mysql_error());
