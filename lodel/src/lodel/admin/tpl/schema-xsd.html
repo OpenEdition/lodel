@@ -105,7 +105,27 @@
 		 		<IF COND="[#TYPE] eq 'fichier'">
 				<xsd:element name="[#NOM]" type="xsd:anyUrl"/>
 				<ELSE/>
+				<IF COND="[#BALISESXHTML] eq 'xhtml:fontstyle'">
+					<xsd:complexType name="[#NOM]">
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:string">
+								<xsd:element ref="xhtml:fontstyle" minOccurs="0"/>
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				<ELSE/>
+				<IF COND="[#BALISESXHTML] eq 'xhtml:phrase'">
+					<xsd:complexType name="[#NOM]">
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:string">
+								<xsd:element ref="xhtml:phrase" minOccurs="0"/>
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				<ELSE/>
 				<xsd:element name="[#NOM]" type="xsd:string"/>
+				</IF>
+				</IF>
 				</IF>
 				</IF>
 				</IF>
