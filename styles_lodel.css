@@ -58,6 +58,7 @@ div.ligne_document_regroupement2 {background-color: #F3F3F3;}
 .ligne_admin2 {background-color: #FFFFFF;}
 
 div.ligne_ajouter, 
+div.lignes_ajouter_entite, 
 div.ligne_ajouter_serie, 
 div.ligne_ajouter_numero, 
 div.ligne_ajouter_regroupement, 
@@ -82,7 +83,7 @@ div.ligne_ajouter_document_dans_un_regroupement2 {
 }
 
 div.ligne_ajouter_serie {background-color: #FDFAF1;}
-div.ligne_ajouter {background-color: #E5E5E5;}
+/*div.ligne_ajouter {background-color: #E5E5E5;}*/
 /* div.ligne_ajouter_theme reste pour la compatibilité avec lodel < 0.7 */
 div.ligne_ajouter_theme {background-color: #FFFEE8;}
 div.ligne_ajouter_rubrique {background-color: #FFFEE8;}
@@ -91,7 +92,7 @@ div.ligne_ajouter_regroupement {background-color: #D5E4DA;}
 /*div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #DFEDE4;}*/
 div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #EFFFEF;}
 div.ligne_ajouter_document_dans_un_regroupement2 {background-color: #EFFFEF;}
-
+div.lignes_ajouter_entite {background-color: #F5F5F5;}
 /******************** DOCUMENTS **********************/
 .titre_document, .titre_doc_fa, 
 .auteurs_document, .auteurs_doc_fa, 
@@ -335,6 +336,13 @@ div.intitule_ligne_formulaire {
 	font-weight: bold;
 	font-size: 10pt;
 	color:#333333;
+}
+
+.texte_orange_gras {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 10pt;
+	color:#CC9933;
 }
 
 .message_erreur {
