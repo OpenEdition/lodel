@@ -254,13 +254,13 @@ function export_prevnextpublication (&$context)
   $result=mysql_query ("$querybase ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
-    $context[nextpublication]="sommaire.html?id=$nextid";
+    $context[nextpublication]=make_url("sommaire",$nextid);
   }
   // precedent:
   $result=mysql_query ("$querybase ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
-    $context[prevpublication]="sommaire.html?id=$previd";
+    $context[prevpublication]=make_url("sommaire",$previd);
   }
 }
 

@@ -73,7 +73,7 @@ do {// exception
   }
 } while (0);
 
-if ($nextid) $context[nextdocument]="document.html?id=$nextid";
+if ($nextid) $context[nextdocument]=make_url("document",$nextid);
 
 // precedent:
 
@@ -99,7 +99,7 @@ do {  // exception
   }
 } while (0);
 
-if ($previd) $context[prevdocument]="document.html?id=$previd";
+if ($previd) $context[prevdocument]=make_url("document",$previd);
 
 // fin suivant et precedent
 
