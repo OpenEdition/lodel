@@ -21,14 +21,14 @@ ALTER TABLE _PREFIXTABLE_indexls CHANGE mot nom VARCHAR(255) NOT NULL;
 # ajoute abrev
 ALTER TABLE _PREFIXTABLE_indexls ADD abrev VARCHAR(15) NOT NULL;
 # ajoute parent
-ALTER TABLE _PREFIXTABLE_indexls ADD parent INT UNSIGNED DEFAULT \'0\' NOT NULL;
+ALTER TABLE _PREFIXTABLE_indexls ADD idparent INT UNSIGNED DEFAULT \'0\' NOT NULL;
 # ajoute l index sur nom
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_nom (nom);
 ALTER TABLE _PREFIXTABLE_indexls DROP INDEX index_mot;
 # ajoute l index sur abrev
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_abrev (abrev);
 # ajoute l index sur parent
-ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_parent (parent);
+ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idparent (idparent);
 # change le nom de l index dans la table de liaison
 ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE idindexl identree INT UNSIGNED DEFAULT \'0\' NOT NULL;
 ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE iddocument identite INT UNSIGNED DEFAULT \'0\' NOT NULL;
@@ -63,7 +63,7 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
 	myquote($row);
 	if ($row[status]>-32) $row[status]=32; // periode et geo sont permanents
 	if (!$row[lang]) $row[lang]="fr";
-	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (parent,nom,abrev,lang,idtype,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
+	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (idparent,nom,abrev,lang,idtype,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
 	if ($err) break 2;
 	$newid=mysql_insert_id();
 	$convid[$row[id]]=$newid;
@@ -77,7 +77,7 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
       $cmds="";
       foreach($convid as $oldid=>$newid) { // parcourt les nvx champs
 	if ($oldparent[$newid])
-	  $cmds.="UPDATE _PREFIXTABLE_entrees SET parent=".$convid[$oldparent[$newid]]." WHERE id=$newid;";
+	  $cmds.="UPDATE _PREFIXTABLE_entrees SET idparent=".$convid[$oldparent[$newid]]." WHERE id=$newid;";
       }
       $err=mysql_query_cmds($cmds);
       if ($err) break;

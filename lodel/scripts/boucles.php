@@ -8,7 +8,7 @@
 /*  Appeller cette boucle dans le code lodelscript par :             */
 /*  <BOUCLE NAME="topparentpubli">[#ID]</BOUCLE>                     */
 /*********************************************************************/
-function boucle_topparentpubli(&$context,$funcname)
+function loop_topparentpubli(&$context,$funcname)
 {
   // $context est un tableau qui contient une pile. Si on fait $context[toto] 
   // alors [#TOTO] sera accessible dans lodelscript !!!
@@ -24,7 +24,7 @@ function boucle_topparentpubli(&$context,$funcname)
     // et en lui passant en paramètre la dernière valeur.
     // C'est équivalent à un return et ça permet d'avoir les
     // valeurs accessibles en lodelscript. 
-    call_user_func("code_boucle_$funcname",$localcontext);
+    call_user_func("code_do_$funcname",$localcontext);
     return;
   }
 }
@@ -39,12 +39,12 @@ function boucle_topparentpubli(&$context,$funcname)
 /*  Appeller cette boucle dans le code lodelscript par :             */
 /*  <BOUCLE NAME="topparentdoc">[#ID]</BOUCLE>                       */
 /*********************************************************************/
-function boucle_topparentdoc(&$context,$funcname)
+function loop_topparentdoc(&$context,$funcname)
 {
   topparentpubli($context,funcname);
 }
 
-function boucle_themesparents (&$context,$funcname) {
+function loop_themesparents (&$context,$funcname) {
 	 $id=intval($context[id]);
 	 die ("a reecrire. Ghislain le 01/08/03");
 #ifndef LODELLIGHT
@@ -67,12 +67,12 @@ function boucle_themesparents (&$context,$funcname) {
 	$i--;
 	while ($i>=0) {
 		 $localcontext=array_merge($context,$contexts[$i]);
-		 call_user_func("code_boucle_$funcname",$localcontext);
+		 call_user_func("code_do_$funcname",$localcontext);
 		 $i--;
 	 }
 }
 
-function boucle_publisparentes(&$context,$funcname,$critere="")
+function loop_publisparentes(&$context,$funcname,$critere="")
 {
   $id=intval($context[id]);
   if (!$id) return;
@@ -81,7 +81,7 @@ function boucle_publisparentes(&$context,$funcname,$critere="")
     
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);
-    call_user_func("code_boucle_$funcname",$localcontext);
+    call_user_func("code_do_$funcname",$localcontext);
   }
 }
 

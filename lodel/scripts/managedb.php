@@ -31,12 +31,12 @@ function creeparente($id,$idparent,$lock=TRUE)
 // Boucles pour afficher les docu et publi protegees
 // 
 
-function boucle_publications_protegees(&$context,$funcname) 
+function loop_publications_protegees(&$context,$funcname) 
 
 {
   proteges($context,$funcname,"publications");
 }
-function boucle_documents_proteges(&$context,$funcname) 
+function loop_documents_proteges(&$context,$funcname) 
 
 {
   proteges($context,$funcname,"documents");
@@ -50,12 +50,12 @@ function proteges (&$context,$funcname,$classe)
   $ids=join(",",$context[proteges]);
   $result=mysql_query("SELECT *,type  FROM ($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tp]$classe ON identite=$GLOBALS[tp]entites.id WHERE $GLOBALS[tp]entites.id IN ($ids) AND $GLOBALS[tp]types.classe='$classe'") or die (mysql_error());
   $haveresults=mysql_num_rows($result);
-  if ($haveresults && function_exists("code_avant_$funcname"))  call_user_func("code_avant_$funcname",$localcontext);
+  if ($haveresults && function_exists("code_before_$funcname"))  call_user_func("code_before_$funcname",$localcontext);
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);
-    call_user_func("code_boucle_$funcname",$localcontext);
+    call_user_func("code_do_$funcname",$localcontext);
   }
-  if ($haveresults && function_exists("code_apres_$funcname"))  call_user_func("code_apres_$funcname",$localcontext);
+  if ($haveresults && function_exists("code_after_$funcname"))  call_user_func("code_after_$funcname",$localcontext);
 }
 
 

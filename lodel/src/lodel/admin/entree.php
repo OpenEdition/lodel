@@ -28,9 +28,9 @@ if ($id>0 && ($delete || $restore)) {
 if ($id>0 && $dir) {
   include_once($home."connect.php");
   # cherche le parent
-  $result=mysql_query ("SELECT parent FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
-  list($parent)=mysql_fetch_row($result);
-  chordre("entrees",$id,"parent='$parent' AND status>-64",$dir);
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
+  list($idparent)=mysql_fetch_row($result);
+  chordre("entrees",$id,"idparent='$idparent' AND status>-64",$dir);
   back();
 }
 
@@ -46,7 +46,7 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
     include_once ($home."connect.php");
 
-    $parent=intval($context[parent]);
+    $idparent=intval($context[idparent]);
     if ($id>0) { // il faut rechercher le status, le type et l'ordre
       $result=mysql_query("SELECT status,idtype,ordre FROM entrees$GLOBALS[tp] WHERE id='$id'") or die (mysql_error());
       list($status,$context[idtype],$ordre)=mysql_fetch_array($result);
@@ -54,11 +54,11 @@ if ($edit) { // modifie ou ajoute
       $status=1;
       if (!$context[idtype]) die ("Erreur interne. Il manque le type dans le formulaire");
       $context[idtype]=intval($context[idtype]);
-      $ordre=get_ordre_max("entrees"," parent='$parent' AND idtype='$context[idtype]'");
+      $ordre=get_ordre_max("entrees"," idparent='$idparent' AND idtype='$context[idtype]'");
     }
     if ($protege) $status=$id && $status>0 ? 32 : -32;    
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,parent,nom,abrev,ordre,lang,status,idtype) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[idtype]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,lang,status,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[idtype]')") or die (mysql_error());
 
     back();
 
@@ -95,14 +95,14 @@ include ($home."calcul-page.php");
 calcul_page($context,"entree");
 
 
-function make_selection_entree($parent=0,$rep="")
+function make_selection_entree($idparent=0,$rep="")
 
 {
   global $context;
 
-  $result=mysql_query("SELECT nom,id FROM $GLOBALS[tp]entrees WHERE idtype='$context[idtype]' AND parent='".intval($parent)."' ORDER BY $context[type_tri]") or die (mysql_error());
+  $result=mysql_query("SELECT nom,id FROM $GLOBALS[tp]entrees WHERE idtype='$context[idtype]' AND idparent='".intval($idparent)."' ORDER BY $context[type_tri]") or die (mysql_error());
   while ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
-    $selected=$row[id]==$context[parent] ? " SELECTED" : "";
+    $selected=$row[id]==$context[idparent] ? " SELECTED" : "";
     echo "<OPTION VALUE=\"$row[id]\"$selected>$rep$row[nom]</OPTION>\n";
     make_selection_entree($row[id],"$rep$row[nom]/");
   }

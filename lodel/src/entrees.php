@@ -17,12 +17,12 @@ $base=$context[type_tplindex].$suffix;
 require ($home."cache.php");
 
 
-function boucle_alphabet(&$context,$funcname)
+function loop_alphabet(&$context,$funcname)
 
 {
   for($l="A"; $l!="AA"; $l++) {
     $context[lettre]=$l;
-    call_user_func("code_boucle_$funcname",$context);
+    call_user_func("code_do_$funcname",$context);
   }
 }
 

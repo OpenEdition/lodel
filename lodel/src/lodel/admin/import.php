@@ -63,15 +63,14 @@ include ($home."calcul-page.php");
 calcul_page($context,"import");
 
 
-function boucle_fichiers(&$context,$funcname)
+function loop_fichiers(&$context,$funcname)
 {
   global $repertoire;
   if ( $dir= @opendir($repertoire)) {
     while (($file=readdir($dir))!==FALSE) {
       if (!preg_match("/^revue-.*-\d+.tar.gz/i",$file)) continue;
       $context[nom]=$file;
-      //code_boucle_fichiers($context);
-  	call_user_func("code_boucle_$funcname",$context);
+      call_user_func("code_do_$funcname",$context);
     }
     closedir ($dir);
   }

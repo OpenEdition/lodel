@@ -47,7 +47,6 @@ function pub_edition (&$context,$critere)
   mysql_query ("REPLACE INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe) VALUES ('$id','$idparent','$context[idtype]','$context[nom]','$ordre','$status','$groupe')") or die (mysql_error());
 
   require_once($home."managedb.php");
-
   if (!$id) {
     $id=mysql_insert_id();
     creeparente($id,$context[idparent],FALSE);
@@ -71,6 +70,9 @@ function change_groupe_rec($id,$groupe)
 {
 
 ##### a reecrire avec la table relation
+##### a reecrire avec la table relation
+##### a reecrire avec la table relation
+##### a reecrire avec la table relation
 
   // cherche les publis a changer
   $ids=array($id);
@@ -79,7 +81,7 @@ function change_groupe_rec($id,$groupe)
   do {
     $idlist=join(",",$idparents);
     // cherche les fils de idparents
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]entites WHERE parent IN ($idlist)") or die(mysql_error());
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]entites WHERE idparent IN ($idlist)") or die(mysql_error());
 
     $idparents=array();
     while ($row=mysql_fetch_assoc($result)) {

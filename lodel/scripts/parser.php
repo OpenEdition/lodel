@@ -3,6 +3,26 @@
 require_once($home."func.php");
 require_once($home."parserextra.php");
 
+function parse($in,$out)
+
+{
+  $parser=new LodelParser;
+  $parser->parse($in,$out);
+}
+
+
+class LodelParser {
+
+  var $variable_regexp="[A-Z][A-Z_0-9]*";
+  var $loops=array();
+  var $fct_txt;
+
+  var $wantedvars;
+  var $looplevel=0;
+
+  var $arr;
+  var $countarr;
+  var $ind;
 
 function parse ($in,$out)
 
@@ -42,31 +62,34 @@ function parse ($in,$out)
   $macros=stripcommentandcr($macros);
 
   // parse les macros
-  parse_macros($contents,$macros);
-  // parse les let
-  parse_let($contents);
-  // parse les if
-  parse_cond($contents);
-  // parse les boucles
-  parse_boucle($contents,$fct);
-  // parse les variables
-  if (strpos($contents,"[#META_")!==FALSE || (strpos($contents,"[(#META_")!==FALSE))  {
-      $contents='<? $context=array_merge($context,unserialize($context[meta])); ?>'.$contents;
-  }
-  parse_variable($contents);
-  parse_variable($fct);
+  $this->parse_macros($contents,$macros);
 
-  parse_texte($contents);
+  $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE";
+  $this->arr=preg_split("/<(\/?(?:$commands))\b([^>]*)>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $this->ind=0;
+  $this->countarr=count($this->arr);
+  $this->fct_txt="";
+  $this->parse_main1();
+#  echo "----\n";
+#  print_r($this->arr);
+#  print_r($this->wantedvars);
+#  echo "____\n";
+  $this->parse_main2();
+  if ($this->ind!=$this->countarr) echo ("<font color=red>ERROR: too many closing tags at the end of the file</font>");
+
+  $contents=join("",$this->arr);
+
+  $this->parse_texte($contents);
 
   $contents='<?
 require_once ($home."connect.php");
-'.$fct.'?>'.$contents;
+'.$this->fct_txt.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
 			       '/<\?[\s\n]*\?>/'),array("",""),$contents);
 
   if ($charset!="utf-8") {
-    $t=microtime();
+    #$t=microtime();
     require_once($home."utf8.php"); // conversion des caracteres
     $contents=utf8_encode($contents);
     convertHTMLtoUTF8(&$contents);
@@ -76,67 +99,6 @@ require_once ($home."connect.php");
   fclose($f); 
 }
 
-
-
-function parse_variable (&$text,$escape=TRUE)
-
-{
-  $balise_regexp="[A-Z][A-Z_0-9]*";
-  $lang_regexp="[A-Z]{2}";
-  $filtre_regexp="[A-Za-z][A-Za-z_0-9]*(?:\(.*?\))?";
-
-# traite les sequences [...(#BALISE)...]
-
-  while (preg_match("/(\[[^\[\]]*?)\((#$balise_regexp(?::$lang_regexp)?(?:\|$filtre_regexp)*)\)([^\[\]]*?\])/s",$text,$result)) {
-    $expr=preg_replace("/^#($balise_regexp):($lang_regexp)/","#\\1_LANG\\2",$result[2]);
-
-# parse les filtres
-    if (preg_match("/^#($balise_regexp)((?:\|$filtre_regexp)*)$/",$expr,$subresult)) {
-      $block=$subresult[0];
-
-      $variable=parse_variable_extra($subresult[1]); // traitement particulier ?
-      if ($variable===FALSE) { // non, traitement normal
-	$variable="\$context[".strtolower($subresult[1])."]";
-      }
-      foreach(explode("|",$subresult[2]) as $fct) {
-	if ($fct=="false" || $fct=="true") {
-	  break;
-	} elseif ($fct) {
-	  // recupere les arguments de la fonction
-	  if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result2)) { $args=$result2[2].","; $fct=$result2[1]; } else { $args=""; }
-	  $variable=$fct."($args$variable)";
-	}
-      }
-    }
-    $pre=substr($result[1],1);
-    $post=substr($result[3],0,-1);
-    if ($fct=="false") {
-      $code='<? if (!('.$variable.')) { ?>'.$pre.$post.'<? } ?>';
-    } elseif ($fct=="true") {
-      $code='<? if ('.$variable.') { ?>'.$pre.$post.'<? } ?>';
-    } else {
-      $code='<? $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<? echo "$tmpvar"; ?>'.$post.'<? } ?>';
-    }
-    $text=str_replace($result[0],$code,$text);
-  }
-
-  if ($escape) {
-    $pre='<? echo "'; $post='"; ?>';
-  } else {
-    $pre=""; $post="";
-  }
-# remplace les variables restantes
-  while (preg_match("/\[\#($balise_regexp)(:$lang_regexp)?\]/",$text,$result)) {
-    $variable=parse_variable_extra($result[1]); // traitement particulier ?
-    if ($variable!==FALSE) { // traitement particulier
-      $variable=$pre.$variable.$post;
-    } else { // non traitement normal
-      if ($result[2]) $result[1].="_LANG".substr($result[2],1);
-      $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
-      }
-    $text=str_replace($result[0],$variable,$text);
-  }
-}
 
 
 
@@ -165,333 +127,458 @@ function parse_texte(&$text)
   }
 }
 
+///////////// PARSE 1 /////////////////
+//
+// parse les variables
 
-# traite les conditions avec IF
-function parse_cond (&$text,$offset=0) {
+function parse_main1()
 
-  $tag_debut="<IF ";
-  $tag_sinon="<ELSE/>";
-  $tag_fin="</IF>";
-  $lendebut=strlen($tag_debut);
-  $lenfin=strlen($tag_fin);
+{
+  $this->parse_variable($this->arr[0]);
+  $ind=1;
+  $this->parse_main1_rec(&$ind,0);
+}
 
-  $debut = strpos($text,$tag_debut,$offset);
-  while ($debut!==FALSE) {
-    $offset=$debut+$lendebut;
+// parse to do a array containg the wanted variables by each loop, either internal (level=1) either extrenal (level=0)
+function parse_main1_rec(&$ind,$loopind)
 
-    do {
-# cherche le tag de fin
-      $fin = strpos($text,$tag_fin,$offset);
-      if ($fin===FALSE) { die ("erreur le IF ne se termine pas"); }
-# cherche s'il y a un deuxieme IF a l'interieur
-      $debut2=strpos($text,$tag_debut,$offset);
-      $sndif=$debut2!==FALSE && $debut2<$fin;
-      if ($sndif) parse_cond($text,$offset); // oui, on le traite d'abord
-    } while($sndif);
-
-    $if_txt=substr($text,$offset,$fin-$offset);
-
-# ok, maintenant, on traite le if
-
-# cherche la condition
-
-    if (!preg_match("/^[^>]*COND\s*=\s*\"([^\"]+)\"[^>]*>/",$if_txt,$cond)) die ("erreur. La balise IF ne contient pas de condition");
-    parse_variable($cond[1],FALSE);
-    $cond[1]=replace_conditions($cond[1]);
-
-    $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
-# cherche le sinon
-    $sinon=strpos($if_txt,$tag_sinon);
-    if (!($sinon==FALSE)) {
-      $else_txt=substr($if_txt,$sinon+strlen($tag_sinon));
-      $if_txt=substr($if_txt,0,$sinon);
-    } else {
-      $else_txt="";
+{
+  $level=1;
+  while ($ind<$this->countarr) {
+    switch($this->arr[$ind]) {
+    case "LOOP" : 
+      $this->wantedvars[$ind][0]=$this->parse_variable($this->arr[$ind+1],FALSE);
+      $this->wantedvars[$ind][1]=$this->parse_variable($this->arr[$ind+2]);
+      $ind+=3;
+      $this->parse_main1_rec($ind,$ind-3);
+      break;
+    case "/LOOP" : return;
+    case "DO" :
+    case "/DO" :
+    case "DOFIRST" :
+    case "/DOFIRST" :
+    case "DOLAST" :
+    case "/DOLAST" :
+    case "/AFTER" :
+    case "/BEFORE" :
+    case "/ALTERNATIVE" :
+      $level=1;
+      break;
+    case "AFTER" :
+    case "BEFORE" :
+    case "ALTERNATIVE" :
+      $level=0;
+      break;
     }
-# genere la code
-
-    $code='<? if ('.$cond[1].') { ?>'.$if_txt.'<? }';
-    if ($else_txt) $code.=' else { ?>'.$else_txt.'<? }';
-    $code.='?>';
-
-# fait le remplacement
-
-    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
-
-    $debut = strpos($text,$tag_debut,$offset);
+    
+    $this->wantedvars[$loopind][$level]=
+      array_merge($this->wantedvars[$loopind][$level],
+		  $this->parse_variable($this->arr[$ind+1],FALSE), // parse the attributs
+		  $this->parse_variable($this->arr[$ind+2])); // parse the content
+    $ind+=3;
   }
 }
 
 
-
-
-##### traite les conditions avec SWITCH
-####function parse_switch (&$text,$offset=0) {
-####
-####  $tag_debut="<SWITCH ";
-####  $tag_case="<CASE>";
-####  $tag_fin="</SWITCH>";
-####  $lendebut=strlen($tag_debut);
-####  $lenfin=strlen($tag_fin);
-####
-####  $debut = strpos($text,$tag_debut,$offset);
-####  while ($debut!==FALSE) {
-####    $offset=$debut+$lendebut;
-####
-####    do {
-##### cherche le tag de fin
-####      $fin = strpos($text,$tag_fin,$offset);
-####      if ($fin===FALSE) { die ("erreur le IF ne se termine pas"); }
-##### cherche s'il y a un deuxieme IF a l'interieur
-####      $debut2=strpos($text,$tag_debut,$offset);
-####      $sndif=$debut2!==FALSE && $debut2<$fin;
-####      if ($sndif) parse_cond($text,$offset); // oui, on le traite d'abord
-####    } while($sndif);
-####
-####    $switch_txt=substr($text,$offset,$fin-$offset);
-####
-##### ok, maintenant, on traite le switch
-####
-##### cherche la variable
-####
-####    if (!preg_match("/^[^>]*VAR\s*=\s*\"(.*?)\"[^>]*>/",$switch_txt,$var)) die ("erreur. La balise IF ne contient pas de condition");
-####
-####    parse_variable($cond[1],FALSE);
-####    $cond[1]=preg_replace(array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\band\b/i","/\bor\b/i"),
-####		 array(">","<",">=","<=","==","&&","||"),$cond[1]);
-####
-####    $if_txt=substr($if_txt,strlen($cond[0])); // se place au debut du texte
-##### cherche le sinon
-####    $sinon=strpos($if_txt,$tag_sinon);
-####    if (!($sinon==FALSE)) {
-####      $else_txt=substr($if_txt,$sinon+strlen($tag_sinon));
-####      $if_txt=substr($if_txt,0,$sinon);
-####    } else {
-####      $else_txt="";
-####    }
-##### genere la code
-####
-####    $code='<'.'? if ('.$cond[1].') { ?'.'>'.$if_txt.'<'.'? }';
-####    if ($else_txt) $code.=' else { ?'.'>'.$else_txt.'<'.'? }';
-####    $code.='?'.'>';
-####
-##### fait le remplacement
-####
-####    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
-####
-####    $debut = strpos($text,$tag_debut,$offset);
-####  }
-####}
-####
-
-function parse_boucle (&$text,&$fct_txt,$offset=0) 
+function parse_variable (&$text,$escape=TRUE)
 
 {
-  static $boucles;
+  $lang_regexp="[A-Z]{2}";
+  $filtre_regexp="[A-Za-z][A-Za-z_0-9]*(?:\(.*?\))?";
 
-  $tag_debut="<LOOP ";
-  $tag_fin="</LOOP>";
-  $lendebut=strlen($tag_debut);
-  $lenfin=strlen($tag_fin);
+# traite les sequences [...(#BALISE)...]
 
-  $debut = strpos($text,$tag_debut,$offset);
-  $fin = strpos($text,$tag_fin,$offset);
-  // la comparaison $debut<$fin permet de finir quand on depasse le scope de l'appelant
-  while ($debut!==FALSE && $debut<$fin) {
+  while (preg_match("/(\[[^\[\]]*?)\((#$this->variable_regexp(?::$lang_regexp)?(?:\|$filtre_regexp)*)\)([^\[\]]*?\])/s",$text,$result)) {
+    $expr=preg_replace("/^#($this->variable_regexp):($lang_regexp)/","#\\1_LANG\\2",$result[2]);
 
-    $offset=$debut+$lendebut;
+# parse les filtres
+    if (preg_match("/^#($this->variable_regexp)((?:\|$filtre_regexp)*)$/",$expr,$subresult)) {
+      $block=$subresult[0];
 
-# cherche les attributs de la boucle
-    $attr=substr($text,$offset);
-
-    $nom=$order=$limit="";
-    $wheres=array();
-    $tables=array();
-    while (preg_match("/^\s*(\w+)=\"(.*?)\"/",$attr,$result)) {
-      $matchlen=strlen($result[0]);
-      $offset+=$matchlen;
-      $attr=substr($attr,$matchlen); // attribut suivant
-      $value=trim($result[2]);
-          
-      switch ($result[1]) {
-      case "WHERE" :
-	array_push($wheres,"(".trim(replace_conditions($value)).")");
-	break;
-      case "TABLE" :
-	array_push($tables,$value);
-	break;
-      case "ORDER" :
-	$order.=$value." , ";
-	break;
-      case "LIMIT" :
-	$limit=$value;
-	break;
-      case "NAME":
-	$nom=$value;
-	break;
-      default:
-	die ("erreur, attribut inconnu dans la boucle $nom");
+      $variable=parse_variable_extra($subresult[1]); // traitement particulier ?
+      if ($variable===FALSE) { // non, traitement normal
+	$variable="\$context[".strtolower($subresult[1])."]";
       }
-    } // boucle sur les attributs
-    # cherche le > de fin
-    if (preg_match("/^\s*\>/",$attr,$result)) {
-      $matchlen=strlen($result[0]);
-      $offset+=$matchlen;
-      $attr=substr($attr,$matchlen); // attribut suivant
+      foreach(explode("|",$subresult[2]) as $fct) {
+	if ($fct=="false" || $fct=="true") {
+	  break;
+	} elseif ($fct) {
+	  // recupere les arguments de la fonction
+	  if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result2)) { $args=$result2[2].","; $fct=$result2[1]; } else { $args=""; }
+	  $variable=$fct."($args$variable)";
+	}
+      }
+    }
+    $pre=substr($result[1],1);
+    $post=substr($result[3],0,-1);
+    if ($fct=="false") {
+      $code='<? if (!('.$variable.')) { ?>'.$pre.$post.'<? } ?>';
+    } elseif ($fct=="true") {
+      $code='<? if ('.$variable.') { ?>'.$pre.$post.'<? } ?>';
+    } elseif ($escape) {
+      $code='<? $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<? echo "$tmpvar"; ?>'.$post.'<? } ?>';
     } else {
-      die ("erreur: le tag de la boucle $nom ne se ferme pas normalement");
+      $code=$variable;
     }
+    $text=str_replace($result[0],$code,$text);
+  } // while variables with pipe function
 
-    $where=prefix_tablename(join(" AND ",$wheres));
-
-    //
-    // traitement specifique
-    $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
-    $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
-    $groupby="";
-    parse_boucle_extra(&$tables,
-		       &$tablesinselect,&$extrainselect,
-		       &$where,&$order,&$groupby);
-    //
-
-    if ($where) {
-      parse_variable($where,FALSE);
-      $where="WHERE ".$where;
-    }
-
-    if ($order) {
-      parse_variable($order,FALSE);
-      $order="ORDER BY ".substr(prefix_tablename($order),0,-3); // enelve le , a la fin (pas propre, faire un tableau)
-    }
-
-    if ($limit) { parse_variable($limit,FALSE); $limit="LIMIT ".$limit; }
-
-
-    if (!$nom) {
-      die("une boucle n'a pas de nom. Cet attribut est desormais obligatoire.");
-    }
-
-    if (!$boucles[$nom][type]) $boucles[$nom][type]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
-    $issql=$boucles[$nom][type]=="sql";
-
-# cherche le tag de fin
-      $fin = strpos($text,$tag_fin,$offset);
-      if ($fin===FALSE) die ("erreur: la boucle ne se termine pas");
-# cherche s'il y a une deuxieme boucle a l'interieur
-      $debut2=strpos($text,$tag_debut,$offset);
-      $sndbcl=!($debut2===FALSE) && $debut2<$fin;
-      if ($sndbcl) {
-	parse_boucle($text,$fct_txt,$offset); // oui, on le traite d'abord
-	$fin = strpos($text,$tag_fin,$offset);
-	if ($fin===FALSE) die ("erreur: la boucle ne se termine pas (2)");
+  if ($escape) {
+    $pre='<? echo "'; $post='"; ?>';
+  } else {
+    $pre=""; $post="";
+  }
+# search for variables without pipe function
+  while (preg_match("/\[\#($this->variable_regexp)(:$lang_regexp)?\]/",$text,$result)) {
+    $variable=parse_variable_extra($result[1]); // traitement particulier ?
+    if ($variable!==FALSE) { // traitement particulier
+      $variable=$pre.$variable.$post;
+    } else { // non traitement normal
+      if ($result[2]) $result[1].="_LANG".substr($result[2],1);
+      $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
       }
-    # content
-    $attr=substr($text,$offset,$fin-$offset);
+    $text=str_replace($result[0],$variable,$text);
+  }
 
-    if ($tables) { // boucle SQL
-      // cree un identifiant "presque" unique pour cette boucle
-      $md5boucle=md5(join(" ",$tables).$where.$order.$limit.$attr);
-      // verifie que la boucle n'a pas ete defini sous le meme nom avec un contenu different
-      if ($issql && $md5boucle!=$boucles[$nom][id]) die ("Impossible de redefinir la boucle $nom avec un code ou des arguments differents");
-      if (!$issql) { // on la definit
-	make_boucle_code($nom,$tables,
-			 $tablesinselect,$extrainselect,
-			 $where,$order,$limit,$groupby,$attr,$fct_txt);
-	$boucles[$nom][id]=$md5boucle; // enregistre l'identifiant qui caracterise la boucle
-	$boucles[$nom][type]="sql"; // marque la boucle comme etant une boucle sql
-      }
-      $code='<? boucle_'.$nom.'($context); ?>';
-    } else {
-      if (!$issql) {// la boucle n'est pas deja definie... alors c'est une boucle utilisateur
-	$boucles[$nom][id]++; // increment le compteur de nom de boucle
-	$newnom=$nom."_".$boucles[$nom][id]; // change le nom pour qu'il soit unique
-	make_userdefined_boucle_code ($newnom,$attr,$fct_txt);
-	$code='<? boucle_'.$nom.'($context,"'.$newnom.'"); ?>';
-      } else {
-	// boucle sql recurrente
-	$code='<? boucle_'.$nom.'($context); ?>';
-      }
-    }
-    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
-
-    $fin = strpos($text,$tag_fin,$debut);
-    $debut = strpos($text,$tag_debut,$debut);
-  } // while
-}
-
-
-
-function decode_content ($content,$tables=array())
-
-{
-  global $home,$balisesdocument_lieautexte,$balisesdocument_nonlieautexte;
-  $ret=array();
-
-# cherche s'il y a un avant
-#  $balises=array("avant","apres","premier","dernier","corps");
-  $balises=array("BEFORE","AFTER","DOFIRST","DOLAST","DO","ALTERNATIVE");
+  // search for wanted variables
   
-  foreach ($balises as $balise) {
-    if (strpos($content,"<$balise>")!==FALSE) {
-      if (!preg_match ("/<$balise>(.*?)<\/$balise>/s",$content,$result)) { die ("la balise $balise n'est pas fermee dans la boucle $nom"); }
-      $ret[$balise]=$result[1];
-      $content=str_replace($result[0],"",$content); // enleve le bloc avant
+  if (preg_match_all('/\$context\[('.strtolower($this->variable_regexp).')\]/',$text,$result,PREG_PATTERN_ORDER)) {
+    return $result[1];
+  }
+
+  return array();
+}
+
+
+
+
+///////////// PARSE 2 /////////////////
+//
+// parse les instructions
+
+
+function parse_main2()
+
+{
+  if ($this->ind==0) {
+    $this->ind=1;
+  }
+#  print_r($this->arr);
+#  exit();
+#  if ($this->countarr==119) { print_r($this->arr); exit(); }
+  while ($this->ind<$this->countarr) {
+#    echo "$i $this->arr[$this->ind]<br>";
+    if (substr($this->arr[$this->ind],0,1)=="/") return;
+    switch($this->arr[$this->ind]) {
+    case "LOOP" : $this->parse_loop($this->arr,$this->ind);
+      break;
+    case "IF" : $this->parse_condition($this->arr,$this->ind);
+      break;
+    case "LET" : $this->parse_let($this->arr,$this->ind);
+      break;
+      // returns
+    case "ELSE" : return;
+    case "DO" : return;
+    case "DOFIRST" : return;
+    case "DOLAST" : return;
+    case "AFTER" : return;
+    case "BEFORE" : return;
+    case "ALTERNATIVE" : return;
+      break;
+    default:
+      echo "$this->ind ".$this->arr[$this->ind];
+      die("internal error in parse_main. Report the bug");
+    }
+    $this->ind+=3;
+  }
+}
+
+
+function parse_loop()
+
+{
+  #echo "enter loop ",$this->ind,"<br>\n";
+  $attrs=$this->arr[$this->ind+1];
+
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]="";
+
+  $name="";
+  $orders=array();
+  $limit="";
+  $wheres=array();
+  $tables=array();
+  preg_match_all("/\s*(\w+)=\"(.*?)\"/",$attrs,$results,PREG_SET_ORDER);
+
+  foreach ($results as $result) {
+    $value=$result[2];
+    switch ($result[1]) {
+    case "WHERE" :
+      array_push($wheres,"(".trim(replace_conditions($value)).")");
+      break;
+    case "TABLE" :
+      array_push($tables,$value);
+      break;
+    case "ORDER" :
+      array_push($orders,$value);
+      break;
+    case "LIMIT" :
+      if ($limit) die("ERROR: limit already defined in loop $name");
+      $limit=$value;
+      break;
+    case "NAME":
+      if ($name) die("ERROR: name already defined in loop $name");
+      $name=$value;
+      break;
+    default:
+      die ("ERROR: unknow attribut \"$result[1]\" in the loop $name");
+    }
+  } // loop sur les attributs
+
+  if (!$name) {
+    die("ERROR: the name of the loop on table(s) \"".join(" ",$tables)."\" is not defined");
+  }
+
+  $where=prefix_tablename(join(" AND ",$wheres));
+  $order=prefix_tablename(join(",",$orders));
+
+  //
+  $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
+  $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
+  $groupby="";
+
+  parse_loop_extra(&$tables,
+		   &$tablesinselect,&$extrainselect,
+		   &$where,&$order,&$groupby);
+    //
+
+  if ($where) {
+    $where="WHERE ".$where;
+  }
+  if ($order) {
+    $order="ORDER BY ".$order;
+  }
+  if ($limit) {
+    $limit="LIMIT ".$limit;
+  }
+
+
+  if (!$this->loops[$name][type]) $this->loops[$name][type]="def"; # marque la loop comme definie, s'il elle ne l'ai pas deja
+  $issql=$this->loops[$name][type]=="sql";
+
+
+  if ($tables) { // loop SQL
+    // verifie que la loop n'a pas ete defini sous le meme name avec un contenu different
+    if ($issql && $attrs!=$this->loops[$name][attr]) die ("ERROR: loop $name cannot be defined more than once");
+    if (!$issql) { // the loop has to be defined
+      $this->loops[$name][ind]=$this->ind; // save the index position
+      $this->loops[$name][attr]=$attrs; // save an id
+      $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
+
+      $contents=$this->decode_loop_content($name,$tablesinselect);
+      $this->make_loop_code($name,$tables,
+			    $tablesinselect,$extrainselect,
+			    $where,$order,$limit,$groupby,$contents);
+    } else { // boucle redefinie identiquement (enfin on espere)
+      // on passe le contenu... on le connait deja
+      while ($this->arr[$this->ind]!="/LOOP" && $this->ind<$this->countarr) {
+        for($i=0; $i<3; $i++) {
+          $this->arr[$this->ind]="";
+          $this->ind++;
+        }
+      }
+    }
+    $code='<? loop_'.$name.'($context); ?>';
+  } else {
+    #echo "ici issql",$issql;
+    if (!$issql) {// la loop n'est pas deja definie...alors c'est une loop utilisateur
+      $this->loops[$name][id]++; // increment le compteur de name de loop
+      $newname=$name."_".$this->loops[$name][id]; // change le name pour qu'il soit unique
+      $contents=$this->decode_loop_content($name);
+      $this->make_userdefined_loop_code ($newname,$contents);
+      $code='<? loop_'.$name.'($context,"'.$newname.'"); ?>';
+    } else {
+      // loop sql recurrente
+      $code='<? loop_'.$name.'($context); ?>';
+      $this->ind+=3;
+      if ($this->arr[$this->ind]!="/LOOP") die ("ERROR: loop $name cannot be defined more than once");
+      // copy the wanted variables from the original definition
+      $this->loops[$name][recursive]=TRUE;
+#      print_r($this->wantedvars);
+#      exit();
+      // we should remove from the wanted level 1, the provided variables
     }
   }
+  if ($this->arr[$this->ind]!="/LOOP") {
+    echo ": $this->ind ".$this->arr[$this->ind]."<br>\n";
+    print_r($this->arr);
+    die ("internal error in parse_loop. Report the bug");
+  }
+#  echo "end:$this->ind\n<br>";
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]=$code;
+}
+
+
+function decode_loop_content ($name,$tables=array())
+
+{
+  global $home;
+
+  $balises=array("DOFIRST"=>1,"DOLAST"=>1,"DO"=>1,"AFTER"=>0,"BEFORE"=>0,"ALTERNATIVE"=>0);
+#  if ($this->ind==349) {
+#    echo "loop $name ind=$loopind\n";
+#    print_r($this->wantedvars);
+#    echo "--\n";
+#    print_r($this->arr);
+#  }
+
+  $loopind=$this->ind;
+  do {
+    $this->ind+=3;
+    $this->parse_main2();
+
+    #echo "decode loop content $this->ind ",$this->arr[$this->ind]," $state<br>\n";
+    if (isset($balises[$this->arr[$this->ind]])) { // ouverture
+      $state=$this->arr[$this->ind];
+      if ($ret[$state]) die ("ERROR: In loop $name, the block $state is defined more than once");
+      $istart=$this->ind;
+      $this->arr[$this->ind]="";
+      $this->arr[$this->ind+1]="";
+
+    } elseif ($this->arr[$this->ind]=="/".$state) {
+      for($j=$istart; $j<$this->ind; $j+=3) {
+	for ($k=$j; $k<$j+3; $k++) {
+	  $ret[$state].=$this->arr[$k];
+	  $this->arr[$k]="";
+	}
+#	  echo ":$loopind $j nwantedvars=",count($wantedvars[$j]),"\n";
+
+	if ($this->wantedvars[$j]) { // transfer variables to the upper loop
+	  $this->wantedvars[$loopind][$balises[$state]]=
+	    array_merge($this->wantedvars[$loopind][$balises[$state]],
+			$this->wantedvars[$j][0],
+			$this->wantedvars[$j][1]);
+	  unset($this->wantedvars[$j]);
+	}
+      }
+      $state="";
+      $this->arr[$this->ind]="";
+      $this->arr[$this->ind+1]="";
+    } elseif ($this->arr[$this->ind]=="/LOOP") {
+      #echo "break ici ",$this->ind," ",$this->countarr,"<br>";
+      $isendloop=1; break;
+    }  else die("ERROR: &lt;$state&gt; not closed in the loop $name");
+  } while ($this->ind<$this->countarr);
+
+
+#  if ($loopind==133) {   echo "ret="; print_r($ret); echo "ind=",$this->ind,"arr="; print_r($this->arr);  }
+#  echo "loop: $name $loopind ",count($tables),"\n"; print_r($this->wantedvars); echo "-----\n\n";
+
+  if (!$isendloop) die ("ERROR: end of loop $name not found");
 
   if ($ret["DO"]) {
-    if (trim($content)) die("Une partie du contenu de la boucle $nom n'est pas dans l'une des balises &lt;do&gt;  &lt;before&gt;  &lt;after&gt; &lt;dofirst&gt; &lt;dolast&gt;<br>");
+    // check that the remaining content is empty
+#    echo "DO: $this->ind";
+#    print_r($this->arr);
+    for($j=$loopind; $j<$this->ind; $j++) if (trim($this->arr[$j])) { die("ERROR: In the loop $name, a part of the content is outside any tag"); }
   } else {
-    $ret["DO"]=$content;
-  }
-  // OPTIMISATION
-  // cherche les META et les extract
-  $balises=array("DOFIRST","DOLAST","DO");
-
-  foreach ($balises as $balise) {
-    //
-    // meta
-    //
-    if (strpos($ret[$balise],"[#META_")!==FALSE || strpos($ret[$balise],"[(#META_")!==FALSE)  {
-      $ret["META_".$balise]='$context=array_merge($context,unserialize($context[meta]));';
+    for($j=$loopind; $j<$this->ind; $j+=3) {
+      for ($k=$j; $k<$j+3; $k++) {
+	$ret["DO"].=$this->arr[$k];
+	$this->arr[$k]="";
+      }
+      if ($j>$loopind && $this->wantedvars[$j]) { // transfer variables to the upper loop
+	$this->wantedvars[$loopind][$balises["DO"]]=
+	  array_merge($this->wantedvars[$loopind][$balises["DO"]],
+		      $this->wantedvars[$j][0],
+		      $this->wantedvars[$j][1]);
+	unset($this->wantedvars[$j]);
+      }
     }
+  }
 
-#ifndef LODELLIGHT
-    // partie privee et specifique pour le decodage du contenu.
+#  echo "debut: $loopind end:$this->ind\n<br>";
+#  if ($loopind==133) {   echo "ret="; print_r($ret); echo "ind=",$this->ind,"arr="; print_r($this->arr);  }
+#  echo "loop $name ind=$loopind\n";
+#  print_r($this->wantedvars);
+
+  
+  // partie privee et specifique pour le decodage du contenu.
+
+  foreach ($balises as $balise => $level) {
     decode_content_extra ($balise, &$ret, $tables);
-#endif
+  }
 
-  } // foreach
+  if (!$tables) return $ret;
+  // OPTIMISATION
+#  echo "OPT:";
+
+  // cherche les variables a extraire. Ceci permet d'optimiser le select dans le cas ou la base de donnee contient des gros champs. Ajoute ces variables dans les wantedvars au niveau present ou au dessus en fonction de la balise dans laquelle sont les variables.
+
+  $vars=$this->wantedvars[$loopind][1];
+#  echo "opt:$name"; print_r($this->loops[$name]);
+  if ($this->loops[$name][recursive]) {
+    $vars=array_merge($vars,$this->wantedvars[$loopind][0]);
+  }
+#  echo "OPT: $name ind=",$loopind," nvars=",count($vars),"\n";
+  // is there variables to treat a our level ?
+  if (!$vars) return $ret;
+
+  if (!(@include_once("CACHE/tablefields.php"))) require_once($home."tablefields.php");
+
+  $selects=array();
+  $knowvars=array();
+
+#  print_r($vars);
+#  print_r($GLOBALS[tablefields][$table]);
+  foreach($tables as $table) {
+    $varstoselect=array_intersect($GLOBALS[tablefields][$table],$vars);
+    $knownvars=array_merge($knownvars,$vartoselect);
+    foreach($varstoselect as $vartoselect) array_push($selects,"$table.$vartoselect");
+  }
+
+  // compute the vars we don't know at level 1
+  $diff=array_diff($this->wantedvars[$loopind][1],$knownvars);
+  // if any, transfer these variables at level 0
+  if ($diff) {
+    $this->wantedvars[$loopind][0]=array_merge($this->wantedvars[$loopind][0],$diff);
+  }
+  // no more a that level anyway.
+  $this->wantedvars[$loopind][1]=array();
+
+  $ret[select]=join(",",$selects);
+#  echo "select:$name $ret[select]<br>";
+
   return $ret;
 }
 
 
-
-function make_boucle_code ($nom,$tables,
+function make_loop_code ($name,$tables,
 			   $tablesinselect,$extrainselect,
-			   $where,$order,$limit,$groupby,$content,&$fct_txt)
+			   $where,$order,$limit,$groupby,$contents)
 
 {
   // traitement particulier additionnel
-  #### a supprimer list ($premysqlquery,$postmysqlquery,$select)=make_boucle_code_extra($tables);
-  #### et supprimer les variables premysqlqueyr et postmysql query dessous
 
   $table=$GLOBALS[tp].join (', $GLOBALS[tp]',array_reverse(array_unique($tables)));
-
-  $contents=decode_content($content,$tablesinselect);
-
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
-  $select=join(".*,",$tablesinselect).".*".$extrainselect;
+  if (!$contents[select]) {
+    echo "loop: $name $ind=",$this->ind,"<br>\n";
+    die("ERROR: internal error in make_loop_code. LOOP: $name. Please report the bug");
+  }
+  #$select=join(".*,",$tablesinselect).".*".$extrainselect;
+  $select=$contents[select].$extrainselect; // optimised
 
 #### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 
-# genere le code pour parcourir la boucle
-  $fct_txt.='function boucle_'.$nom.' ($context)
+# genere le code pour parcourir la loop
+  $this->fct_txt.='function loop_'.$name.' ($context)
 {
  $generalcontext=$context;
 '.$premysqlquery.' $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
- $result=mysql_query($query) or mymysql_error($query);
+ $result=mysql_query($query) or mymysql_error($query,$name);
 '.$postmysqlquery.'
  $nbrows=mysql_num_rows($result);
  $count=0;
@@ -503,43 +590,41 @@ function make_boucle_code ($nom,$tables,
       $context[count]=$count;';
   // gere le cas ou il y a un premier
   if ($contents[DOFIRST]) {
-    $fct_txt.=' if ($count==1) { '.$contents[META_DOFIRST].$contents[EXTRACT_DOFIRST].' ?>'.$contents[DOFIRST].'<? continue; }';
+    $this->fct_txt.=' if ($count==1) { '.$contents[EXTRACT_DOFIRST].' ?>'.$contents[DOFIRST].'<? continue; }';
   }
   // gere le cas ou il y a un dernier
   if ($contents[DOLAST]) {
-    $fct_txt.=' if ($count==$nbrows) { '.$contents[META_DOLAST].$contents[EXTRACT_DOLAST].'?>'.$contents[DOLAST].'<? continue; }';
+    $this->fct_txt.=' if ($count==$nbrows) { '.$contents[EXTRACT_DOLAST].'?>'.$contents[DOLAST].'<? continue; }';
   }    
-    $fct_txt.=$contents[META_DO].$contents[EXTRACT_DO].' ?>'.$contents["DO"].'<?    } while ($row=mysql_fetch_assoc($result));
+    $this->fct_txt.=$contents[EXTRACT_DO].' ?>'.$contents["DO"].'<?    } while ($row=mysql_fetch_assoc($result));
 ?>'.$contents[AFTER].'<?  } ';
 
-  if ($contents[ALTERNATIVE]) $fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?}';
+  if ($contents[ALTERNATIVE]) $this->fct_txt.=' else {?>'.$contents[ALTERNATIVE].'<?}';
 
-    $fct_txt.='
+    $this->fct_txt.='
  mysql_free_result($result);
 }
 ';
 }
 
 
-function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
+function make_userdefined_loop_code ($name,$contents)
+
 {
-  $contents=decode_content($content);
 
-// cree la fonction boucle
+// cree la fonction loop
   if ($contents["DO"]) {
-    $fct_txt.='function code_boucle_'.$nom.' ($context) { ?>'.$contents["DO"].'<? }';
+    $this->fct_txt.='function code_do_'.$name.' ($context) { ?>'.$contents["DO"].'<? }';
   }
-
   if ($contents[BEFORE]) { // genere le code de avant
-    $fct_txt.='function code_avant_'.$nom.' ($context) { ?>'.$contents[BEFORE].'<? }';
+    $this->fct_txt.='function code_before_'.$name.' ($context) { ?>'.$contents[BEFORE].'<? }';
   }
-
   if ($contents[AFTER]) {// genere le code de apres
-  $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[AFTER].'<? }';
- }
+    $this->fct_txt.='function code_after_'.$name.' ($context) { ?>'.$contents[AFTER].'<? }';
+  }
   if ($contents[ALTERNATIVE]) {// genere le code de alternative
-  $fct_txt.='function code_alter_'.$nom.' ($context) { ?>'.$contents[ALTERNATIVE].'<? }';
- }
+    $this->fct_txt.='function code_alter_'.$name.' ($context) { ?>'.$contents[ALTERNATIVE].'<? }';
+  }
  // fin ajout
 }
 
@@ -561,58 +646,70 @@ function parse_macros(&$text,&$macros)
 }
 
 
+# traite les conditions avec IF
+function parse_condition () 
 
-function parse_let (&$text,$offset=0) {
+{
+  if (!preg_match("/\bCOND\s*=\s*\"([^\"]+)\"/",$this->arr[$this->ind+1],$cond)) die ("ERROR: IF have no COND attribut");
+  $cond[1]=replace_conditions($cond[1]);
 
-  $tag_debut="<LET ";
-  $tag_fin="</LET>";
-  $lendebut=strlen($tag_debut);
-  $lenfin=strlen($tag_fin);
-
-  $debut = strpos($text,$tag_debut,$offset);
-  while (!($debut===FALSE)) {
-    $offset=$debut+$lendebut;
-# cherche l'attribut
-    $let_txt=substr($text,$offset);
-    if (!preg_match("/^\s*VAR=\"(\w+)\"[^>]*>/",$let_txt,$result)) die ("erreur la variable n'est pas definie dans le let");
-    $var=strtolower($result[1]);
-    $offset+=strlen($result[0]);
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]='<? if ('.$cond[1].') { ?>';
 
   do {
-# cherche le tag de fin
-    $fin = strpos($text,$tag_fin,$offset);
-    if ($fin===FALSE) { die ("erreur le LET ne se termine pas"); }
-# cherche s'il y a un deuxieme IF a l'interieur
-      $debut2=strpos($text,$tag_debut,$offset);
-      $sndlet=!($debut2===FALSE) && $debut2<$fin;
-      if ($sndlet) parse_let($text,$offset); // oui, on le traite d'abord
-    } while($sndlet);
-    $let_txt=substr($text,$offset,$fin-$offset);
+    $this->ind+=3;
+    $this->parse_main2();
+    if ($this->arr[$this->ind]=="ELSE") {
+      if ($elsefound) die ("ERROR: ELSE found twice in IF condition");
+      $elsefound=1;
+      $this->arr[$this->ind]="";
+      $this->arr[$this->ind+1]='<? } else { ?>';
+    } elseif ($this->arr[$this->ind]=="/IF") {
+      $isendif=1;
+    } else die("ERROR: incorrect tags \"$this->arr[$this->ind]\" in IF condition");
+  } while (!$isendif && $this->ind<$this->countarr);
 
-# ok, maintenant, on traite le let
+  if (!$isendif) die("ERROR: IF not closed");
 
-# genere la code
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]='<? } ?>';  
+}
 
-    $code='<? ob_start(); ?>'.$let_txt.'<? $context['.$var.']=ob_get_contents();  ob_end_clean(); ?>';
 
-# fait le remplacement
 
-    $text=substr($text,0,$debut).$code.substr($text,$fin+$lenfin);
+function parse_let () {
 
-    $debut = strpos($text,$tag_debut,$debut);
-  }
+#  echo ":",$this->arr[$this->ind+1],"<br>\n";
+  if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"/",$this->arr[$this->ind+1],$result)) die ("ERROR: LET have no VAR attribut");
+  if (!preg_match("/^$this->variable_regexp$/",$result[1])) die ("ERROR: Variable \"$result[1]\"in LET is not a valide variable");
+  $var=strtolower($result[1]);
+
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]='<? ob_start(); ?>';
+
+  $this->ind+=3;
+  $this->parse_main2();
+  if ($this->arr[$this->ind]!="/LET") die("ERROR: &lt;LET&gt; expected; $this->arr[$this->ind] found");
+
+  $this->arr[$this->ind]="";
+  $this->arr[$this->ind+1]='<? $context['.$var.']=ob_get_contents();  ob_end_clean(); ?>';
+}
+
+}
+
+
+
+function replace_conditions($text)
+
+{
+  return preg_replace(
+	       array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
+	       array(">","<",">=","<=","==","!=","&&","||"),$text);
 }
 
 function stripcommentandcr(&$text)
 
 {
-#  return $text;
-#  preg_replace_all("/<!--.*?-->/s","",$text,$results,PREG_PATTERN_ORDER);
-#  foreach ($results[0] as $comment) {
-#    if (!preg_match("/javascript/i",$comment)) str_replace
-#  }
-
-
   return preg_replace (array("/\r/",
 			     "/(<SCRIPT\b[^>]*>[\s\n]*)<!--+/i",
 			     "/--+>([\s\n]*<\/SCRIPT>)/i",
@@ -627,17 +724,7 @@ function stripcommentandcr(&$text)
 			     "\\0<!--",
 			     "-->\\0")
 		       ,$text);
-
-
-#### MARCHE PAS  return preg_replace ("/(<!--.*?-->)/se","preg_match('/language=\"javascript\"/i','\\1') ?  '\\1' : ''; ",$text);
 }
 
-function replace_conditions($text)
-
-{
-  return preg_replace(
-	       array("/\bgt\b/i","/\blt\b/i","/\bge\b/i","/\ble\b/i","/\beq\b/i","/\bne\b/i","/\band\b/i","/\bor\b/i"),
-	       array(">","<",">=","<=","==","!=","&&","||"),$text);
-}
 
 ?>

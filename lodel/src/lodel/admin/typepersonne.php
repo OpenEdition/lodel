@@ -81,8 +81,8 @@ include ($home."calcul-page.php");
 calcul_page($context,"typepersonne");
 
 
-function boucle_typeentites($context,$funcname)
-{  boucle_typetable ("typeentite","typepersonne",$context,$funcname);}
+function loop_typeentites($context,$funcname)
+{  loop_typetable ("typeentite","typepersonne",$context,$funcname);}
 
 
 ?>

@@ -94,7 +94,7 @@ list($context[nbtypedocs])=mysql_fetch_row($result);
 
 
 # ghi ######### ATTENTION,  tu ecris dans le context a l'interieur de la fonction... c'est pas bon du tout. Voir ci-dessous
-function boucle_nom_occ_type_doc(&$context,$funcname)
+function loop_nom_occ_type_doc(&$context,$funcname)
 {
 	$result=mysql_query("SELECT type AS nomtypedoc, COUNT(type) AS nbtypedoc FROM $GLOBALS[tp]documents GROUP BY type") or die (mysql_error());
 	while($row=mysql_fetch_array($result,MYSQL_ASSOC))
@@ -103,7 +103,7 @@ function boucle_nom_occ_type_doc(&$context,$funcname)
 # ghi #### $lcontext=array_merge($context,$row);   (lcontext ou localcontext)
 # ghi #### ce que tu as fait pose aussi un autre probleme (qui te posera pb dans d'autre cas si tu fais pas gaffe). Si row contient une entree ("toto" par exemple) au premier passage de la boucle, mais pas au second... ben dans context tu auras quand meme toto au deuxieme passage, c'est evidement pas ce que tu veux.
 		$context=array_merge($context,$row);
-		call_user_func("code_boucle_$funcname",$context); # ici il faut lcontext
+		call_user_func("code_do_$funcname",$context); # ici il faut lcontext
 	}
 }
 
@@ -112,7 +112,7 @@ function boucle_nom_occ_type_doc(&$context,$funcname)
 $result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]typepublis") or die (mysql_error());
 list($context[nbtypepublis])=mysql_fetch_row($result);
 
-function boucle_nom_occ_type_publi(&$context,$funcname)
+function loop_nom_occ_type_publi(&$context,$funcname)
 {
 # ghi #### a quoi sert le type AS nomtypepubli, type suffit pas ?
 # ghi #### je presume que tu as fait ca pour avoir un nom plus explicite que type.
@@ -123,7 +123,7 @@ function boucle_nom_occ_type_publi(&$context,$funcname)
 	{
 # ghi ##### meme remarque ici.
 		$context=array_merge($context,$row);
-    	call_user_func("code_boucle_$funcname",$context);
+    	call_user_func("code_do_$funcname",$context);
 	}
 }
 

@@ -125,13 +125,13 @@ if ($tache=="createtables") {
 
   if ($erreur) {
     $context[erreur_createtables]=$erreur;
-    function boucle_erreurs_createtables(&$context,$funcname)
+    function loop_erreurs_createtables(&$context,$funcname)
     {
       $erreur=$context[erreur_createtables];
       do {
 	$localcontext[command]=array_shift($erreur);
 	$localcontext[error]=array_shift($erreur);
-	call_user_func("code_boucle_$funcname",array_merge($context,$localcontext));
+	call_user_func("code_do_$funcname",array_merge($context,$localcontext));
       } while ($erreur);
     }
     require ($home."calcul-page.php");

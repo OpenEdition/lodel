@@ -98,7 +98,7 @@ function makeselectgroupes()
 }
 
 
-function boucle_personnes(&$context,$funcname)
+function loop_personnes(&$context,$funcname)
 
 {
   global $id; // id de la publication
@@ -115,7 +115,7 @@ function boucle_personnes(&$context,$funcname)
       if ($vide && $localcontext[$v]) $vide=FALSE;
     }
     if ($vide && !$GLOBALS[plus][$idtype]) break;
-    call_user_func("code_boucle_$funcname",$localcontext);
+    call_user_func("code_do_$funcname",$localcontext);
     if ($vide) break;
   } while (1);
 }
@@ -153,15 +153,16 @@ function makeselectentrees (&$context)
 {
   $entreestrouvees=array();
   $entrees=$context[entrees][$context[id]];
-  echo "type:",$context[id];print_r($context[entrees]);
+#  echo "type:",$context[id];print_r($context[entrees]);
   makeselectentrees_rec(0,"",$entrees,$context,&$entreestrouvees);
   $context[autresentrees]=join(", ",array_diff($entrees,$entreestrouvees));
 }
 
-function makeselectentrees_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
+function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tp]entrees WHERE parent='$parent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  if (!$context[tri]) die ("ERROR: internal error in makeselectentrees_rec");
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tp]entrees WHERE idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$entrees && (in_array($row[abrev],$entrees) || in_array($row[nom],$entrees)) ? " selected" : "";

@@ -1,12 +1,12 @@
 <?
 //
-// traitement particulier des attributs d'une boucle
+// traitement particulier des attributs d'une loop
 // l'essentiel des optimisations et aide a l'uitilisateur doivent
 // en general etre ajouter ici
 //
 
 
-function parse_boucle_extra(&$tables,
+function parse_loop_extra(&$tables,
 			    &$tablesinselect,&$extrainselect,
 			    &$where,&$ordre,&$groupby)
 
@@ -14,7 +14,7 @@ function parse_boucle_extra(&$tables,
   global $revue;
 
   // convertion des code specifique dans le where
-  // ce bout de code depend du parenthesage et du trim fait dans parse_boucle.
+  // ce bout de code depend du parenthesage et du trim fait dans parse_loop.
   $where=preg_replace (array(
 		    "/\(trash\)/i",
 		    "/\(ok\)/i",
@@ -121,7 +121,7 @@ function parse_boucle_extra(&$tables,
      if (in_array("entites",$tables) && preg_match("/\bidpersonne\b/",$where)) {
 	// on a besoin de la table croise entites_personnes
 	array_push($tables,"entites_personnes");
-	$where.=" AND $GLOBALS[tp]entites_personnes.identites=$GLOBALS[tp]entites.id";
+	$where.=" AND $GLOBALS[tp]entites_personnes.identite=$GLOBALS[tp]entites.id";
      }
      // entrees
      if (in_array("entrees",$tables)) {
@@ -173,9 +173,7 @@ function parse_variable_extra ($nomvar)
 {
   // VARIABLES SPECIALES
   //
-  if ($nomvar=="OFFLINE") {
-    return '($context[status]<0)';
-  } elseif ($nomvar=="OKGROUPE") {
+  if ($nomvar=="OKGROUPE") {
     return '($GLOBALS[admin] || in_array($context[groupe],split(",",$GLOBALS[usergroupes])))';
   }
   return FALSE;
@@ -185,7 +183,7 @@ function parse_variable_extra ($nomvar)
 
 //
 // fonction qui gere les decodage du contenu des differentes parties
-// d'une boucle (DO*)
+// d'une loop (DO*)
 // fonction speciale pour lodel 
 //
 
@@ -243,14 +241,14 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 
 
 //
-// traitement particulier avant la creation du code de la boucle
+// traitement particulier avant la creation du code de la loop
 // il est possible d'ajouter des instructions avant la requete 
 // mysql $premysqlquery et apres $postmysqlquery
 // il est aussi possible d'ajouter des champs dans le select $extrafield
 //
 
 /*
-function make_boucle_code_extra($tables)
+function make_loop_code_extra($tables)
 
 {
 
@@ -311,7 +309,7 @@ function protect (&$sql,$table,$fields)
   // ajoute un espace au debut pour des raisons de facilite
   $arr=preg_split("/(?<!\\\)'/",$sql);
   for($i=0;$i<count($arr);$i+=2)
-    $arr[$i]=preg_replace("/\b(?<!\\.)($fields)\b/","$GLOBALS[tp]$table.\\1",$arr[$i]);
+    $arr[$i]=preg_replace("/\b(?<![\\.[])($fields)\b/","$GLOBALS[tp]$table.\\1",$arr[$i]);
   $sql=join("'",$arr);
 }
     

@@ -177,7 +177,7 @@ if (preg_match("/<r2r:(titrenumero|nomnumero|typenumero)>/i",$text)) {
 }
 
 
-function boucle_partie_fichier($context,$funcname)
+function loop_partie_fichier($context,$funcname)
 
 {
   global $tablescontent,$balisesdocumentassocie;
@@ -185,13 +185,13 @@ function boucle_partie_fichier($context,$funcname)
   foreach ($tablescontent as $part => $context[tablecontent]) {
     if ($part=="main") continue;
     $context[part]=$balisesdocumentassocie[$part];
-    call_user_func("code_boucle_$funcname",$context);
+    call_user_func("code_do_$funcname",$context);
   }
   // partie principale maintenant
 
   $context[part]=count($texts)==1 ? "" : "main";
   $context[tablecontent]=$tablescontent[main];
-  call_user_func("code_boucle_$funcname",$context);
+  call_user_func("code_do_$funcname",$context);
 }
 
 $context[id]=$id;

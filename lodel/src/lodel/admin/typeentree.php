@@ -79,8 +79,8 @@ posttraitement($context);
 include ($home."calcul-page.php");
 calcul_page($context,"typeentree");
 
-function boucle_typeentites($context,$funcname)
-{  boucle_typetable ("typeentite","typeentree",$context,$funcname);}
+function loop_typeentites($context,$funcname)
+{  loop_typetable ("typeentite","typeentree",$context,$funcname);}
 
 
 ?>

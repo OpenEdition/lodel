@@ -76,10 +76,10 @@ if ($edit) { // modifie ou ajoute
 posttraitement($context);
 
 
-function boucle_typepersonnes($context,$funcname)
-{  boucle_typetable ("typepersonne","typeentite",$context,$funcname);}
+function loop_typepersonnes($context,$funcname)
+{  loop_typetable ("typepersonne","typeentite",$context,$funcname);}
 
-function boucle_typeentrees($context,$funcname)
-{  boucle_typetable ("typeentree","typeentite",$context,$funcname);}
+function loop_typeentrees($context,$funcname)
+{  loop_typetable ("typeentree","typeentite",$context,$funcname);}
 
 ?>

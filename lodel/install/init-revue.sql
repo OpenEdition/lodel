@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-	parent		INT UNSIGNED DEFAULT '0' NOT NULL,
+	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	nom		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
 	lang		CHAR(2) NOT NULL,
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	PRIMARY KEY (id),
 	KEY index_nom (nom),
 	KEY index_abrev (abrev),
-	KEY index_parent (parent),
+	KEY index_idparent (idparent),
 	KEY index_idtype (idtype)
 );
 

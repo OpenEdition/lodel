@@ -57,11 +57,12 @@ function insert_template($filename)
 }
 
 
-function mymysql_error($query)
+function mymysql_error($query,$tablename="")
 
 {
   if ($GLOBALS[editeur]) {
-    die("</body>".htmlentities($query)."<br><br>".mysql_error());
+    if ($tablename) $tablename="LOOP: ".$tablename." ";
+    die("</body>".$tablename."QUERY: ".htmlentities($query)."<br><br>".mysql_error());
   } else {
     if ($GLOBALS[contactbug]) @mail($contactbug,"[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de requete sur la page $GLOBALS[REQUEST_URI]<br>".htmlentities($query)."<br><br>".mysql_error());
     die("Une erreur est survenue dans lors de la génération de cette page. Veuillez nous excusez, nous traitons le probleme le plus rapidement possible");

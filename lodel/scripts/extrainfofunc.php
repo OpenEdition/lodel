@@ -348,10 +348,10 @@ function makeselectentrees (&$context)
 #  echo "autresnetrees  $context[autresentrees]";
 }
 
-function makeselectentrees_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
+function makeselectentrees_rec($idparent,$rep,$entrees,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tp]entrees WHERE  parent='$parent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tp]entrees WHERE  idparent='$idparent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=(in_array($row[abrev],$entrees[1]) || in_array($row[nom],$entrees[1])) ? " selected" : "";
@@ -380,7 +380,7 @@ function makeselectdate() {
 $balisespersonnes=array("prefix","nomfamille","prenom","description","courriel","affiliation","fonction");
 
 
-function boucle_personnes(&$context,$funcname)
+function loop_personnes(&$context,$funcname)
 
 {
   global $balisespersonnes;
@@ -406,7 +406,7 @@ function boucle_personnes(&$context,$funcname)
 	  trim(htmlspecialchars(stripslashes($result2[2]))); 
       }
     }
-    call_user_func("code_boucle_$funcname",$localcontext2);
+    call_user_func("code_do_$funcname",$localcontext2);
   }
 }
 
