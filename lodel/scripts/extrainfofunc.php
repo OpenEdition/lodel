@@ -400,7 +400,7 @@ function auteurs2auteur (&$text)
       $val=$result[1];
       $descrauteur="";
     }
-    echo htmlentities($descrauteur)."<br><br>\n\n";
+#    echo htmlentities($descrauteur)."<br><br>\n\n";
     $auteurs=preg_split ("/\s*[,;]\s*/",strip_tags($val));
 
     while (($auteur=array_shift($auteurs))) {
