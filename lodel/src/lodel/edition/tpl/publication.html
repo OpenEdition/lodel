@@ -25,15 +25,23 @@
 	  </div>
 	</strong>
 	</span>
-	<br>
+	<p>
+		<BOUCLE NAME="Affiche_Parent" TABLE="publications" WHERE="id='[#PARENT]'">
+			<span class="soustitre">
+				<div align="center">
+					Thème Parent : <strong>[#NOM]</strong>
+				</div>
+			</span>
+		</BOUCLE>
+	</p>
 
 <table width="100%" border="1" cellspacing="0" cellpadding="5" align="CENTER" bordercolor="#C0C0C0">
 	[(#ERREUR_PUBLICATION_EXISTE|true)
-	<TR>
-		<TD COLSPAN="3" CLASS="erreur" ALIGN="center">
+	<tr>
+		<td colspan="3" class="erreur" align="center">
 			Ce numéro existe déjà
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	]
 <FORM METHOD="POST" ACTION="publication.php">
 	<INPUT TYPE="hidden" name="edit" VALUE="1">
