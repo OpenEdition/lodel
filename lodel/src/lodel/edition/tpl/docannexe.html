@@ -64,16 +64,16 @@
 	<table class="table_normale" cellpadding="5" cellspacing="0" border="0">
 			<!--[ il y a bien un type, on affiche le formulaire ]-->
 			<input type="hidden" name="edit" value="1">
-			<IF COND="[#TYPE]=='lienfichier'">
+			<IF COND="[#TYPE]=='documentannexe-lienfichier'">
 				<tr><td align="center" colspan="2"><span class="titre_publi">Charger un fichier</span><br /><br /></td></tr>
 			<ELSE/>
-				<IF COND="[#TYPE]=='liendocument'">
+				<IF COND="[#TYPE]=='documentannexe-liendocument'">
 					<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un document</span><br /><br /></td></tr>
 				<ELSE/>
-					<IF COND="[#TYPE]=='lienpublication'">
+					<IF COND="[#TYPE]=='documentannexe-lienpublication'">
 						<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un numéro ou rubrique</span><br /><br /></td></tr>
 					<ELSE/>
-						<IF COND="[#TYPE]=='lienexterne'">
+						<IF COND="[#TYPE]=='documentannexe-lienexterne'">
 							<tr><td align="center" colspan="2"><span class="titre_publi">Lien vers un site internet</span><br /><br /></td></tr>
 						</IF>
 					</IF>
@@ -107,27 +107,27 @@
 				[(#ERREUR_UPLOAD|true)<tr><td colspan="2" align="center"><span class="message_erreur">Une erreur s'est produite pendant le chargement.</span></td></tr>]
 			</IF>
 			<!--[ lien document ]-->
-			<IF COND="[#TYPE]=='liendocument'">
+			<IF COND="[#TYPE]=='documentannexe-liendocument'">
 				<tr>
 					<td width="200"><span class="texte_intitule">ID du document :</span></td>
 					<td>
-						[(#ERREUR_DOCUMENTDONTEXIST|true)<span class="message_erreur">Le document spécifié n'existe pas !</span>]
-						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="javascript:void(0);">Aide</a></div>
+						<IF COND="[#ERREUR_DOCUMENTINEXISTANT]"><span class="message_erreur">Le document spécifié n'existe pas !</span></IF>
+						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<!--[<a href="javascript:void(0);">Aide</a>]--></div>
 					</td>
 				</tr>
 			</IF>
 			<!--[ lien publication ]-->
-			<IF COND="[#TYPE]=='lienpublication'">
+			<IF COND="[#TYPE]=='documentannexe-lienpublication'">
 				<tr>
 					<td width="200"><span class="texte_intitule">ID du numéro ou de la rubrique :</span></td>
-					<td>
-						[(#ERREUR_PUBLICATIONDONTEXIST|true)<span class="message_erreur">Le numéro ou rubrique spécifié n'existe pas !</span><br />]
-						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="javascript:void(0);">Aide</a></div>
+					<td>LA
+						<IF COND="[#ERREUR_PUBLICATIONINEXISTANT]"><span class="message_erreur">Le numéro ou rubrique spécifié n'existe pas !</span><br /></IF>
+						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<!--[<a href="javascript:void(0);">Aide</a>]--></div>
 					</td>
 				</tr>
 			</IF>
 			<!--[ lien externe ]-->
-			<IF COND="[#TYPE]=='lienexterne'">
+			<IF COND="[#TYPE]=='documentannexe-lienexterne'">
 				<tr>
 					<td width="200"><span class="texte_intitule">URL :</span></td>
 					<td>
