@@ -59,6 +59,14 @@ if ($id) {
     case 'entities':
       printEntities($id,$_GET['identifier'],$context);
       break;
+    case 'entrytypes':
+    case 'persontypes':
+      $result=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE id='".$id."' AND status>0")) or dberror();
+      $context['type']=$result->fields;
+      $view=&getView();
+      $view->renderCached($context,$result->fields['tpl']);
+      exit();
+
     } // switch class
   } while(0);
 } else{
@@ -142,5 +150,15 @@ function printEntities($id,$identifier,&$context)
     exit();
   }
 }
+
+function loop_alphabet($context,$funcname)
+
+{
+  for($l="A"; $l!="AA"; $l++) {
+    $context['lettre']=$l;
+    call_user_func("code_do_$funcname",$context);
+  }
+}
+
 
 ?>

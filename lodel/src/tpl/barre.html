@@ -55,18 +55,16 @@
  	<dt>Index</dt>
 		<dd>
 		<ul class="typepersonne">
-		<li>
-		<a href="personnes.[#EXTENSIONSCRIPTS]?type=auteur">
-			Par auteurs
-		</a>
-		</li>
+		<LOOP NAME="persontypes" TABLE="persontypes" ORDER="rank">
+			<li>
+			<a href="[#ID|makeurlwithid]"personnes.[#EXTENSIONSCRIPTS]?type=auteur">[#TITLE]</a>
+			</li>	
+		</LOOP>
 		</ul>
 		<ul class="typeentree">
-		<LOOP NAME="entrees" TABLE="entrytypes" ORDER="rank">
+		<LOOP NAME="entrytypes" TABLE="entrytypes" ORDER="rank">
 			<li>
-			<a href="entrees.[#EXTENSIONSCRIPTS]?id=[#ID]">
-			  [#TITLE]
-			</a>
+			<a href="[#ID|makeurlwithid]">[#TITLE]</a>
 			</li>
 		 </LOOP>
 		 </ul>

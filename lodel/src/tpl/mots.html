@@ -76,10 +76,10 @@
 						</dt>
 			
 			<!--[ Boucle permettant d'afficher les mots-clefs ]-->
-						<LOOP NAME="motcles" TABLE="entries" WHERE="substring(nom,1,1)='[#LETTRE]' AND type='motcle' AND status gt 0" ORDER="[#TYPE_TRI]">
+						<LOOP NAME="motcles" TABLE="entries" WHERE="substring(g_name,1,1)='[#LETTRE]' AND type='motcle' AND status gt 0" ORDER="[#TYPE.TRI]">
 							<DO>
 								<dd>
-									<a href="entree.[#EXTENSIONSCRIPTS]?id=[#ID]">
+									<a href="[#ID|makeurlwithid]">
 										[#NAME]
 									</a>
 								</dd>
