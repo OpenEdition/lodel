@@ -413,10 +413,15 @@ function download($filename,$originalname="",$contents="")
   $originalname=preg_replace("/.*\//","",$originalname);
 
   get_PMA_define();
-  header("Content-type: application/force-download");
-  header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+// bcenou: DOES NOT WORK WHITH IE MAC
+  $isaMAC = preg_match("/Mac_PowerPC/i", $_SERVER['HTTP_USER_AGENT']);
+  if(!$isaMAC){
+  	header("Content-type: application/force-download");
+  	header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+  }
   // lem9 & loic1: IE need specific headers
-  if (PMA_USR_BROWSER_AGENT == 'IE') {
+// bcenou: ONLY FOR IE MAC, DOES NOT WORK WHITH IE WIN
+  if (PMA_USR_BROWSER_AGENT == 'IE' && $isaMAC) {
     header('Content-Disposition: inline; filename="' . $originalname . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');
@@ -428,7 +433,6 @@ function download($filename,$originalname="",$contents="")
   }
   if ($filename) { readfile($filename); } else { echo $contents; }
 }
-
 
 // taken from phpMyAdmin 2.5.4
 
