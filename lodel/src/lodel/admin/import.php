@@ -96,6 +96,7 @@ if ($fichier) {
    }
    if (!$err) { 
      include_once ($home."func.php"); 
+     touch(SITEROOT."CACHE/maj");
      back();
    }
 }

@@ -51,8 +51,8 @@ function makefilterfunc()
 	// process the variable. The processing is simple here. Need more ? Sould be associated with parser variable processing.
 	$arg=preg_replace("/\[\#([A-Z][A-Z_0-9]*)\]/e",' "$"."context[".strtolower("\\1")."]" ',$arg);
 
-	if ($arg) $arg.=",";
-	$filterfunc=$funcname.'('.$arg.$filterfunc.')';
+	if ($arg) $arg=",".$arg;
+	$filterfunc=$funcname.'('.$filterfunc.$arg.')';
       } elseif ($filter) {
 	die("invalid filter function: $filter");
       } // do nothing if $filter is empty

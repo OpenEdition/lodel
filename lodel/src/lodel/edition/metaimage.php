@@ -53,7 +53,9 @@ do {
     $newimagefile=change_image($imagefile,$id,$classe,$champ);
     if ($newimagefile===FALSE) { $context[erreur_chargement]=1; break; }
   } else break;
+
   mysql_db_query($db,"UPDATE $GLOBALS[tp]$classe SET $champ='$newimagefile' WHERE $critere") or die(mysql_error());
+  if (mysql_affected_rows()) touch(SITEROOT."CACHE/maj");
   back();
 } while (0);
 

@@ -67,6 +67,7 @@ if ($idparent) {
     // detruit les liens vers le parent de id
     mysql_query ("DELETE FROM $GLOBALS[tp]relations WHERE ($delete) AND nature='P'") or die (mysql_error());
     mysql_query("INSERT INTO $GLOBALS[tp]relations (id1,id2,nature,degres) VALUES $values") or die(mysql_error());
+    touch(SITEROOT."CACHE/maj");
   }
   unlock();
   back();

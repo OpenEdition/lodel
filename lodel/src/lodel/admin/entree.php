@@ -89,6 +89,7 @@ if ($edit) { // modifie ou ajoute
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,langue,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$context[idtype]')") or die (mysql_error());
 
+    touch(SITEROOT."CACHE/maj");
     back();
 
   } while (0);

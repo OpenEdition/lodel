@@ -55,30 +55,6 @@ function lettrine($texte)
 
 }
 
-## systeme non satisfaisant de lettrine
-## function lettrine(&$texte)
-## 
-## { 
-##   if (preg_match("/^\s*(?:<[^>]+>)*\s*([\w\"])/",$texte,$result)) return $result[1];
-##  return "";
-## } 
-## 
-## function avantlettrine(&$texte)
-## 
-## { 
-##   if (preg_match("/^(\s*(?:<[^>]+>)*\s*)[\w\"]/",$texte,$result)) return $result[1];
-##  return "";
-## } 
-## 
-## 
-## function apreslettrine (&$texte)
-## 
-## { return preg_replace("/^\s*(?:<[^>]+>)*\s*[\w\"]/","",$texte); }
-
-
-function multiline($width,&$texte)
-
-{ return wordwrap($texte,$width); }
 
 function nbsp($texte) 
 
@@ -96,85 +72,36 @@ function majuscule($texte)
   // utf-8 ok
 }
 
-#function majuscules($texte) {
-#	$suite = htmlentities($texte);
-#	$suite = ereg_replace('&amp;', '&', $suite);
-#	$suite = ereg_replace('&lt;', '<', $suite); 
-#	$suite = ereg_replace('&gt;', '>', $suite); 
-#	$texte = '';
-#	if (ereg('^(.*)&([A-Za-z])([a-zA-Z]*);(.*)$', $suite, $regs)) {     
-#		$texte .= majuscules($regs[1]);
-#		$suite = $regs[4];
-#		$carspe = $regs[2];
-#		$accent = $regs[3];
-#		if (ereg('^(acute|grave|circ|uml|cedil|slash|caron|ring|tilde|elig)$', $accent))
-#			$carspe = strtoupper($carspe); 
-#		if ($accent == 'elig') $accent = 'Elig';
-#		$texte .= '&'.$carspe.$accent.';';
-#	}
-#	$texte .= strtoupper($suite);
-#	return $texte;
-#}
-
-function justifier($letexte) {
-	$letexte = eregi_replace("^<p([[:space:]][^>]*)?".">", "", trim($letexte));
-	if ($letexte)
-		$letexte = "<p align='justify'>".eregi_replace("<p([[:space:]][^>]*)?".">", "<p\\1 align='justify'>", $letexte);
-	return $letexte;
-}
-
-function aligner_droite($letexte) {
-	$letexte = eregi_replace("^<p([[:space:]][^>]*)?".">", "", trim($letexte));
-	if ($letexte)
-		$letexte = "<p align='right'>".eregi_replace("<p([[:space:]][^>]*)?".">", "<p\\1 align='right'>",$letexte)."</p>";
-	return $letexte;
-}
-
-function aligner_gauche($letexte) {
-	$letexte = eregi_replace("^<p([[:space:]][^>]*)?".">", "", trim($letexte));
-	if ($letexte)
-		$letexte = "<p align='left'>".eregi_replace("<p([[:space:]][^>]*)?".">", "<p\\1 align='left'>",$letexte);
-	return $letexte;
-}
-
-function centrer($letexte) {
-	$letexte = eregi_replace("^<p([[:space:]][^>]*)?".">", "", trim($letexte));
-	if ($letexte)
-		$letexte = "<p align='center'>".eregi_replace("<p([[:space:]][^>]*)?".">", "<p\\1 align='center'>",$letexte);
-	return $letexte;
-}
 
 function textebrut($letexte) {
-#	$letexte = ereg_replace("[\n\r]+", " ", $letexte);
-#	$letexte = ereg_replace("(<[^>]+>|&nbsp;| )+", " ", $letexte);
-	$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", " ", $letexte);
-	return $letexte;
+  $letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", " ", $letexte);
+  return $letexte;
 }
 
-function couper($long,$texte) {
-	$texte2 = substr($texte, 0, $long * 2); /* heuristique pour prendre seulement le necessaire */
-	if (strlen($texte2) < strlen($texte)) $plus_petit = true;
-	$texte = ereg_replace("\[([^\[]*)->([^]]*)\]","\\1", $texte2);
-
-	// supprimer les notes
-	$texte = ereg_replace("\[\[([^]]|\][^]])*\]\]", "", $texte);
-
-	$texte2 = substr($texte." ", 0, $long);
-	$texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
-	if ((strlen($texte2) + 3) < strlen($texte)) $plus_petit = true;
-	if ($plus_petit) $texte2 .= ' (...)';
-	return $texte2;
+function couper($texte,$long) {
+  $texte2 = substr($texte, 0, $long * 2); /* heuristique pour prendre seulement le necessaire */
+  if (strlen($texte2) < strlen($texte)) $plus_petit = true;
+  $texte = ereg_replace("\[([^\[]*)->([^]]*)\]","\\1", $texte2);
+  
+  // supprimer les notes
+  $texte = ereg_replace("\[\[([^]]|\][^]])*\]\]", "", $texte);
+  
+  $texte2 = substr($texte." ", 0, $long);
+  $texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
+  if ((strlen($texte2) + 3) < strlen($texte)) $plus_petit = true;
+  if ($plus_petit) $texte2 .= ' (...)';
+  return $texte2;
 }
 
-function couperpara($long,$texte) {
+function couperpara($texte,$long) {
 
-	$pos=-1;
-	do {
-		$pos=strpos($texte,"</p>",$pos+1);
-		$long--;
-	} while ($pos!==FALSE && $long>0);
-
-	return $pos>0 ? substr($texte,0,$pos+4) : $texte;
+  $pos=-1;
+  do {
+    $pos=strpos($texte,"</p>",$pos+1);
+    $long--;
+  } while ($pos!==FALSE && $long>0);
+  
+  return $pos>0 ? substr($texte,0,$pos+4) : $texte;
 }
 
 
@@ -290,12 +217,11 @@ function humandate($s)
 #	return $toc;
 #}
 
-function tocable($level,$text=-1)
+function tocable($text,$level=10)
 
 {
   static $tocind=0;
 
-  if ($text==-1) { $text=$level; $level=10; }// gestion etrange du level par defaut.
   $sect="1";
   for($i=2;$i<=$level;$i++) $sect.="|$i";
 
@@ -341,7 +267,7 @@ function tocable($level,$text=-1)
 ## }
 
 
-function multilingue($lang,$text)
+function multilingue($text,$lang)
 
 {
   preg_match("/<r2r:ml lang=\"".strtolower($lang)."\">(.*?)<\/r2r:ml>/s",$text,$result);
@@ -350,7 +276,7 @@ function multilingue($lang,$text)
 
 
 
-function vignette($width,$text)
+function vignette($text,$width)
 
 {
   if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/",$text)) return;
@@ -457,7 +383,7 @@ function eq($str,$texte)
  */
 
 
-function notes($type,&$texte)
+function notes(&$texte,$type)
 {
 #  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
 #  return $texte;
@@ -516,11 +442,9 @@ function isabsolute($lien)
  * Enleve les tags HTML qui garde les footnotes et les endnotes de OpenOffice
  */
 
-function strip_tags_keepnotes($keeptags,$text=-1)
+function strip_tags_keepnotes($text,$keeptags="")
 
 {
-  if (is_numeric($text)) { $text=$keeptags; $keeptags=""; }
-
   $arr=preg_split('/(<a class="(foot|end)notecall"[^>]*>.*?<\/a>)/s',$text,-1,PREG_SPLIT_DELIM_CAPTURE);
   $count=count($arr);
   for($i=0; $i<$count; $i+=2) $arr[$i]=strip_tags($arr[$i],$keeptags);
@@ -553,7 +477,7 @@ function today() {
  * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
  */
 
-function hideifearlier($date, $text) {
+function hideifearlier($text,$date) {
 
 #  echo "date:$date<br />";
   if ($date && ($date <= date("Y-m-d"))) return $text;

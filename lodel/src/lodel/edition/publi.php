@@ -77,7 +77,7 @@ if (!publi($id,$statut,$confirmation)) { // publications protegees ?
   return;
 }
 
- 
+touch(SITEROOT."CACHE/maj");
 unlock();
 
 back();

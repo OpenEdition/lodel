@@ -243,7 +243,7 @@ if (!$filemask) $filemask="0700";
 
 if ($site) {
   $context[site]=$site;
-} else die("ERROR: defining \$site in siteconfig.php is required");
+}
 
 # else {
 #  $url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);

@@ -150,6 +150,7 @@ if ($id>0 && $dir) {
   if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
   list($idparent)=mysql_fetch_row($result);
   chordre("entites",$id,"idparent='$idparent'",$dir);
+  touch(SITEROOT."CACHE/maj");
   unlock("entites");
   back();
 

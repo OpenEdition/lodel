@@ -332,8 +332,8 @@ function parse_variable (&$text,$escape="php")
 	  break;
 	} elseif ($fct) {
 	  // recupere les arguments de la fonction
-	  if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result2)) { $args=$result2[2].","; $fct=$result2[1]; } else { $args=""; }
-	  $variable=$fct."($args$variable)";
+	  if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/",$fct,$result2)) { $args=",".$result2[2]; $fct=$result2[1]; } else { $args=""; }
+	  $variable=$fct."(".$variable.$args.")";
 	}
       }
     }
@@ -367,20 +367,13 @@ function parse_variable (&$text,$escape="php")
       $variable=$pre.$variable.$post;
     } else { // non traitement normal
       if ($result[2]) { // langue
-	$pre.="multilingue('".substr($result[2],1)."',";
-	$post=")".$post;
+	$pre.="multilingue(";
+	$post=",'".substr($result[2],1)."')".$post;
       }
       $variable=$pre.'$context['.strtolower($result[1]).']'.$post;
     }
     $text=str_replace($result[0],$variable,$text);
   }
-
-
-  // search for wanted variables
-  
-#  if (preg_match_all('/\$context\[('.strtolower($this->variable_regexp).')\]/',$text,$result,PREG_PATTERN_ORDER)) {
-#    return $result[1];
-#  }
 }
 
 

@@ -66,7 +66,7 @@ if ($id>0 && ($delete || $restore)) {
 #    }
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte) VALUES ('$id','$context[nom]','$context[texte]')") or die (mysql_error());
-
+    touch(SITEROOT."CACHE/maj");
     back();
 
   } while (0);

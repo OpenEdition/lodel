@@ -270,6 +270,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 
   enregistre_personnes($context,$id,$statut,FALSE);
   enregistre_entrees($context,$id,$statut,FALSE);
+
+  if ($statut>0) touch(SITEROOT."CACHE/maj");
   unlock();
 
   return $id;

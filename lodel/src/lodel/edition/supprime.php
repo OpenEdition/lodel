@@ -51,6 +51,7 @@ if ($supprime || $confirmation) {
     calcul_page($context,"supprime_erreur");
     return;
   }
+  touch(SITEROOT."CACHE/maj");
   back();
   return;
 }

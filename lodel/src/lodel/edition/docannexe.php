@@ -59,6 +59,7 @@ if ($id>0 && $dir) {
   $idtypes=array();
   while ($row=mysql_fetch_assoc($result)) { array_push($idtypes,$row[id]); }
   chordre("entites",$id,"idparent='$idparent' AND idtype IN (".join(",",$idtypes).")",$dir);
+  touch(SITEROOT."CACHE/maj");
   back();
 }
 
