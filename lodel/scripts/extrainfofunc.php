@@ -22,6 +22,10 @@ function ei_pretraitement($filename,$row,&$context,&$text)
   if (!$context[option_pasdemotcle]) tags2tag("motcle",$text);
   if (!$context[option_pasdegeographie]) tags2tag("geographie",$text);
 
+  //////////  // debut de gestion du bloc titre et meta
+  // ceci pourrait etre dans une fonction plutot comme tags2tag, 
+  // meme si ca ne permet pas plus de genericite.
+
   // extrait les balises et met les dans le context
   $lbalises=array("titre","soustitre","surtitre","typedoc");
 
@@ -31,6 +35,9 @@ function ei_pretraitement($filename,$row,&$context,&$text)
       $text=str_replace($result[0],"",$text);
     }
   }
+  $text=preg_replace("/<\/r2r:article>/i",gr_titre($context).gr_meta($context)."\\0",$text);
+  ////////// /// fin de gestion des bloc titre et meta
+
   // extrait les langues
   if (preg_match("/<r2r:texte\b[^>]+\blang\s*=\s*\"([^\"]+)\"/i",$text,$result)) {
     list($context[lang1],$context[lang2],$context[lang3])=explode(" ",$result[1]);
