@@ -386,3 +386,27 @@ margin-bottom: 15px;
 	font-weight: bold;
 	font-size: larger;
 }
+/*added bu Jean*/
+.searchfieldset
+{
+	font-size : 11px;
+	margin : 2px;
+	color : #fff;
+	border : 1px solid white;
+}
+
+.searchfields
+{
+	max-width : 150px;
+	font-size : 11px;
+	width : 150px;
+}
+.searchbutton
+{
+	font-size : 11px;
+}
+.texte_petit
+{
+	font-size : 11px;
+}
+
