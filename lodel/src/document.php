@@ -34,6 +34,8 @@ $balises=$balisesdocument_nonlieautexte;
 array_push($balises,"surtitre","titre","soustitre");
 
 if ($context[textepublie] || $visiteur) $balises=array_merge($balises,$balisesdocument_lieautexte);
+
+echo "styles reconnus dans document: ",join(" ",$balises),"<br>";
 $context=array_merge($context,extract_xml($balises,$text));
 
 //
