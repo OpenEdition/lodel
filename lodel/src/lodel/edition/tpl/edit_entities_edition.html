@@ -53,10 +53,19 @@
 	<input type="hidden" name="edit" value="1">
 
 	<div class="intitule_ligne_formulaire">
-		<span class="texte_intitule">[@EDITION.DOCUMENT_TYPE]:</span>
+		<span class="texte_intitule">[@EDITION.DOCUMENT_TYPE] :</span>
 	</div>
-	[#TYPE.TYPE] <br /><br />
-
+	[#TYPE.TYPE]
+	<br /><br />
+	<div class="intitule_ligne_formulaire">
+		<span class="texte_intitule">[@EDITION.DOCUMENT_CREATION_DATE] :</span>
+	</div>
+	[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]	<br /><br />
+	<div class="intitule_ligne_formulaire">
+		<span class="texte_intitule">[@EDITION.DOCUMENT_LAST_UPDATE] :</span>
+	</div>
+	[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])] 	<br /><br />
+	
 
 	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
 	<div class="intitule_ligne_formulaire">
