@@ -97,19 +97,19 @@
 <DEFMACRO NAME="AUTEURS_WITH_URL">
 	<LOOP NAME="auteurs_with_url" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>
-			<a href="[(#ID|makeurl('auteur'))]">
+			<a href="[(#ID|makeurlwithid('auteur'))]">
 				<font color="black">
 				 	[#PRENOM] [#NOMFAMILLE]
 				</font>
 			</a>
 		</DOFIRST>
-			, <a href="[(#ID|makeurl('auteur'))]">
+			, <a href="[(#ID|makeurlwithid('auteur'))]">
 				<font color="black">
 					 [#PRENOM] [#NOMFAMILLE]
 				</font>
 			</a>
 		<DOLAST>
-			et <a href="[(#ID|makeurl('auteur'))]">
+			et <a href="[(#ID|makeurlwithid('auteur'))]">
 				<font color="black">
 					[#PRENOM] [#NOMFAMILLE]
 				</font>
@@ -468,7 +468,7 @@
 		<IF COND="[#TYPE] EQ 'regroupement'">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<ELSE/>
-		|&nbsp;<a href="../../[(#ID|makeurl('sommaire'))]">Voir</a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]">Voir</a>&nbsp;
 		</IF>
 		<IF COND="[#EDITEUR]">
 		|&nbsp;<a href="publication.php?id=[#ID]">Métas</a>&nbsp;
@@ -488,7 +488,7 @@
 <DEFMACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-		|&nbsp;<a href="../../[(#ID|makeurl('document'))]">Voir</a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]">Voir</a>&nbsp;
 		<IF COND="[#EDITEUR]">
 		|&nbsp;<a href="editer.php?id=[#ID]&edit=1">Métas</a>&nbsp;
 		<ELSE/>
