@@ -53,8 +53,8 @@ function mysqldate($s)
     $y=$today[year]; // cette annee
     if ($m<$today[mon]) $y++; // ou l'annee prochaine
   }
-  $y=trim($y);
-  
+  $y=intval(trim($y));
+
   //the last value is always the year, so check it for 2- to 4-digit convertion 
   if (intval($y)<100) { $y+=2000; }
   
@@ -140,20 +140,34 @@ function mysqldatetime($s,$type="datetime")
 
     $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
 		       $arr['tm_mon']+1,$arr['tm_mday'],1900+$arr['tm_year']);
+
   } elseif ( ($date=mysqldate($s)) ) {
     if (!$date) $date=date("Y-m-d");
     list($y,$m,$d)=explode("-",$date);
 
+    if ($type=="date") return $date;
+
     if (preg_match("/(\d+)[:h](?:(\d+)(?:[:](\d+))?)?\s*$/",$s,$result)) { // time
       $timestamp=mktime ($result[1],$result[2],$result[3],
 			 $m,$d,$y);
+      if ($timestamp<=0) { // no algebra	
+	$time=sprintf("%02d:%02d:%02d",$result[1],$result[2],$result[3]);
+      }
     } else {
       $arr=localtime();
       $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
 			 $m,$d,$y);
+      if ($timestamp<=0) { // no algebra
+	$time=sprintf("%02d:%02d:%02d",$arr['tm_hour'],$arr['tm_min'],$arr['tm_sec']);	
+      }
     }
   }
-  if ($timestamp<=0) return;
+  if ($timestamp<=0 && $time) {
+    if ($type=="datetime" && $date) return trim($date." ".$time);
+    if ($type=="time") return $time;
+    return "";
+  }
+
 
   if ($type=="date") {
     return date("Y-m-d",$timestamp);
