@@ -93,7 +93,7 @@
 				<IF COND="[#IMAGE]">
 					<input class="form" type="submit" name="edit" value="   Modifier   ">&nbsp;&nbsp;&nbsp;&nbsp;
 					<input class="form" type="submit" name="delete" value=" Supprimer ">&nbsp;&nbsp;&nbsp;&nbsp;
-					<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+					<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
 				<ELSE/>
 					<input class="form" type="submit" name="edit" value="    Ajouter    ">&nbsp;&nbsp;&nbsp;&nbsp;
 					<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
