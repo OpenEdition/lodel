@@ -1,0 +1,77 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_site.html">
+
+
+<!--[ ****************************************************************** ]-->
+<!--[ Barre de navigation verticale de la revue.                         ]-->
+<!--[ Auteur : Marin Dacos.                                              ]-->
+<!--[ Date de création : juin 2002.                                      ]-->
+<!--[ ****************************************************************** ]-->
+
+<div class="menu">	
+	<div class="titrebarre">
+		<a href="index.html">
+			<span class="bold"><MACRO NAME="NOM_SITE"></span>
+				<br/>
+			<MACRO NAME="DESCRIPTION_SITE">
+		</a>
+	</div>
+
+	<MACRO NAME="AFFICHER_TOUTES_LES_PUBLICATIONS">
+	
+	
+	<div class="index">
+		    <div id="titre">
+		      Index
+		    </div>
+
+		<div class="typepersonne">
+		<a href="personnes.[#EXTENSIONSCRIPTS]?type=auteur">
+			Par auteurs
+		</a>
+		</div>
+		<LOOP NAME="entrees" TABLE="typeentrees" ORDER="ordre">
+			<div class="typeentree">
+			<a href="entrees.[#EXTENSIONSCRIPTS]?id=[#ID]">
+			  [#TITRE]
+			</a>
+			</div>
+		 </LOOP>
+	</div>
+	
+	<MACRO NAME="LIEN_SYNDICATION">
+
+	<div class="admin">
+	<a href="lodel/edition">
+		Lodel (accès réservé)
+	</a>
+	</div>
+		
+</div>

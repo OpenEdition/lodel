@@ -40,7 +40,7 @@ $typeentreetable="$GLOBALS[tp]typeentrees";
 $critere=$droitvisiteur ?  "" : "AND $entreetable.statut>0";
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT $entreetable.*, tpl FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' $critere AND $typeentreetable.statut>0") or die (mysql_error());
+$result=mysql_query ("SELECT $entreetable.*, tpl, type FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' $critere AND $typeentreetable.statut>0") or die (mysql_error());
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 

@@ -1,0 +1,164 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_site.html">
+
+
+<MACRO NAME="OUVRIR_HTML">
+<title>[(#TITRE|textebrut)]</title>
+<MACRO NAME="DEFINIR_CHARSET">
+<MACRO NAME="DESACTIVER_INDEXATION">
+<MACRO NAME="METADONNEES">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+<table class="principale">
+	<tr>
+		
+		<td class="barrenav">
+		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
+		les navigateurs ]-->
+				<USE TEMPLATEFILE="barre"> 
+		</td>
+	
+		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" ]-->
+		<td class="corps">
+
+				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" ]-->
+				<!--[<div class="separation">
+					&nbsp;
+				</div>]-->
+		
+			<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
+			<div class="contenu">
+		
+				<!--[ logo du site]-->
+				<MACRO NAME="IMG_LOGO_SITE">
+				
+				
+				<!--[ Affichage d'informations dépendant
+				 du type de document ]-->
+				<div class="titre1">
+					Signalement du document en ligne:
+				</div>
+					
+				<div class="afficherdocument">
+					<span class="plusgrand">
+					<MACRO NAME="LISTER_AUTEURS"><br />
+					
+					<a  href="[(#ID|makeurlwithid('document'))]">
+						<IF COND="[#SURTITRE]">
+							[#SURTITRE] <br />
+						</IF>
+							
+							[#TITRE] <br />
+						
+						<IF COND="[#SOUSTITRE]">
+							<span class="soustitrerevue">
+								[#SOUSTITRE]<br />
+							</span>
+						</IF>
+					</a>
+						<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+						<br />
+						<MACRO NAME="PARU_DANS">
+					</span>
+						
+				</div>
+					
+							
+				<div class="signaler">
+				
+					<table width="561" align="center">
+						[(#ERREUR_MAIL|true)<tr><td>Probleme d'envoi du mail</td></tr>]
+						<form method="POST" action="signaler.[#EXTENSIONSCRIPTS]">
+						<input type="hidden" name="id" value="[#ID]">
+						<input type="hidden" name="envoi" value="1">
+							<tr>
+								<td>
+									Nom du destinataire :
+								</td>
+								<td>
+									<input SIZE="30" type="text" name="nom_destinataire" value="[#NOM_DESTINATAIRE]">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Courrier électronique* :
+								</td>
+								<td>
+									<input SIZE="30" type="text" name="to" value="[#TO]">
+									[(#ERREUR_TO|true)Il faut préciser un destinataire]
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Votre nom :
+								</td>
+								<td>
+									<input SIZE="30" type="text" name="nom_expediteur" value="[#NOM_EXPEDITEUR]">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Votre courrier électronique* :
+								</td>
+								<td>
+									<input SIZE="30" type="text" name="from" value="[#FROM]">
+									[(#ERREUR_FROM|true)Il faut preciser un expéditeur]
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Votre message :
+								</td>
+								<td>
+									<textarea name="message" rows="10" cols="30">[#MESSAGE]</textarea>
+								</td>
+							</tr>
+							
+				
+				</table>
+				<input class="form" type="submit" value="Envoi">
+									</form>
+				
+				<p class="pluspetit"> * Ces champs sont obligatoires</p>
+			</div>
+			<MACRO NAME="LODEL_ORG">
+		</div>
+			</td>
+
+	</tr>
+</table>
+
+<MACRO NAME="FERMER_HTML">  
+
+
+

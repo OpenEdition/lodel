@@ -37,6 +37,7 @@ function parse($in,$out)
 class Parser {
 
   var $infilename;
+  var $signature;
   var $variable_regexp="[A-Z][A-Z_0-9]*";
   var $loops=array();
   var $fct_txt;
@@ -76,6 +77,7 @@ function parse ($in,$out)
 
   $this->infilename=$in;
   if (!file_exists($in)) $this->errmsg ("Unable to read file $in");
+  $this->signature=preg_replace("/\W+/","_",$out);
 
   // read the file
   if (!function_exists("file_get_contents")) {
@@ -586,7 +588,7 @@ function parse_loop()
       $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
 
       $this->decode_loop_content($name,&$contents,&$options,$tablesinselect);
-      $this->make_loop_code($name,$tables,
+      $this->make_loop_code($name.'_'.($this->signature),$tables,
 			    $tablesinselect,$extrainselect,
 			    $select,$dontselect,
 			    $where,$order,$limit,$groupby,
@@ -603,7 +605,7 @@ function parse_loop()
 	if ($this->arr[$this->ind]=="LOOP") $looplevel++;
       } while ($this->ind<$this->countarr && $looplevel);
     }
-    $code='<?php loop_'.$name.'($context); ?>';
+    $code='<?php loop_'.$name.'_'.($this->signature).'($context); ?>';
   } else {
     //
     if (!$issql) {// the loop is not defined yet, thus it is a user loop
@@ -622,7 +624,7 @@ function parse_loop()
       //
     } else { // the loop is an sql recurrent loop
       //
-      $code='<?php loop_'.$name.'($context); ?>';
+      $code='<?php loop_'.$name.'_'.($this->signature).'($context); ?>';
       $this->ind+=3;
       if ($this->arr[$this->ind]!="/LOOP") $this->errmsg ("loop $name cannot be defined more than once");
       $this->loops[$name][recursive]=TRUE;

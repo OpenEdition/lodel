@@ -64,9 +64,9 @@ if ($id>0 && $delete) {
 if ($id>0 && $dir) {
   include_once($home."connect.php");
   # cherche le parent
-  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
-  list($idparent)=mysql_fetch_row($result);
-  chordre("entrees",$id,"idparent='$idparent' AND statut>-64",$dir);
+  $result=mysql_query ("SELECT idparent,idtype FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
+  list($idparent,$idtype)=mysql_fetch_row($result);
+  chordre("entrees",$id,"idparent='$idparent' AND idtype='$idtype' AND statut>-64",$dir);
   back();
 }
 

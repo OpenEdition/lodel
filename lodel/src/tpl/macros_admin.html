@@ -1,0 +1,162 @@
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<!--[ ****************************************************************** ]-->
+<!--[ Librairie Admin                                                    ]-->
+<!--[ Auteurs :                                                          ]-->
+<!--[ Marin Dacos. 2002.                                                 ]-->
+<!--[ Nicolas Nutten. 2003.                                              ]-->
+<!--[ Cette librairie contient :                                         ]-->
+<!--[ <MACRO NAME="AFFICHER_STATUT_DOCUMENT">                            ]-->
+<!--[ <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      ]-->
+<!--[ <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      ]-->
+<!--[ <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              ]-->
+<!--[ <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           ]-->
+<!--[ <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           ]-->
+<!--[ <MACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">                         ]-->
+<!--[ <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	                        ]-->
+<!--[ ****************************************************************** ]-->
+
+<DEFMACRO NAME="AFFICHER_STATUT_DOCUMENT">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche le statut du document, si on a au moins le niveau          ]-->
+<!--[ "rédacteur".                                                       ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+		<IF COND="[#STATUT] ge 1">
+			<font color="red" size="-2">(Online)</font>
+		<ELSE/><IF COND="[#STATUT] le -1">
+			<font color="red" size="-2">(Offline)</font>
+		</IF></IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche le statut du document et permet aux éditeurs de le publier ]-->
+<!--[ Afin d'éviter de générer des 404 par erreur, la dépublication      ]-->
+<!--[ ne se fait pas dans cette macro.                                   ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITEDITEUR]">
+		<IF COND="[#OFFLINE]">
+			<a class="bouton_statut_publierOFF" href="lodel/edition/publi.php?id=[#ID]&online=1">
+				<span class="bouton_statut_publierOFF">(Offline)</span>
+			</a>
+		<ELSE/>
+				<span class="bouton_statut_publierON">(Online)</span>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton         ]-->
+<!--[ [Ajouter un document annexe].                                      ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+		<a href="lodel/edition/fonctionsavancees.php?id=[#ID]#docannexe">
+			[Ajouter un document annexe]
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_EDITER_DOCUMENT">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
+<!--[ afin d'éditer un document.                                         ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+		<a href="lodel/edition/document.php?id=[#ID]"><span class="pluspetit">[E]</span></a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_EDITER_PUBLICATION">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
+<!--[ afin d'éditer une publication.                                     ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+			<a href="lodel/edition/index.php?id=[#ID]">
+				<span class="pluspetit">[E]</span>
+			</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     ]-->
+<!--[ afin d'éditer une publication depuis un document.                  ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+				<a href="lodel/edition/index.php?id=[#IDPARENT]">
+					<span class="pluspetit">[E]</span>
+				</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BLOC_CHANGER_ORDRE_DOCUMENT">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche si on a au moins le niveau "rédacteur" des boutons pour    ]-->
+<!--[ changer l'ordre d'affichage des documents.                         ]-->
+<!--[ Les boutons sont disponibles de deux aspects différents :          ]-->
+<!--[ Soit sous forme de textes, soit sous forme d'images, l'aspect par  ]-->
+<!--[ défaut sont les images. Pour passer d'un aspect à l'autre il       ]-->
+<!--[ suffit de commenter les lignes soit des images soit des textes.    ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+		<a href="lodel/edition/document.php?dir=up&id=[#ID]">
+			<!--[<span class="texte_trespetit">[haut]</span>]-->
+			<MACRO NAME="IMG_HAUT">
+		</a>
+		<a href="lodel/edition/document.php?dir=down&id=[#ID]">
+		<!--[<span class="texte_trespetit">[bas]</span>]-->
+			<MACRO NAME="IMG_BAS">
+		</a>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche, si on a au moins le niveau "rédacteur", un bouton         ]-->
+<!--[ [modifier] pour modifier le document annexe ou sa description      ]-->
+<!--[ ainsi que des boutons [haut] [bas] pour changer son ordre.         ]-->
+<!--[ ****************************************************************** ]-->
+	<IF COND="[#DROITREDACTEUR]">
+		<span class="texte_tres_petit">
+			<!--[ Modifier ]-->
+			<a class="admin" href="lodel/edition/docannexe.php?id=[#ID]&[#RETOUR]">[modifier]</a>
+			 |
+			<!--[ Monter ]-->
+				<a href="lodel/edition/docannexe.php?id=[#ID]&dir=up">[haut]</a>
+			 |
+			<!--[ Descendre ]-->
+				<a href="lodel/edition/docannexe.php?id=[#ID]&dir=down">[bas]</a>
+		</span>
+	</IF>
+</DEFMACRO>

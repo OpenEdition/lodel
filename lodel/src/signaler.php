@@ -26,6 +26,10 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+# commenter la ligne suivante si vous souhaitez utiliser signaler.php
+die("Ce script est desactiv&eacute; par defaut pour &eacute;viter une utilisation d&eacute;troun&eacute;e. Si vous souhaitez l'utiliser, veuillez supprimer le 'die' dans le fichier signaler.php");
+#
+
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate();
@@ -81,7 +85,7 @@ if ($envoi) {
     //
     if (!mail ($context[to],$context[subject],$content,"From: $context[from]")) { $context[erreur_mail]=1; break; }
 
-    header ("location: document.html?id=$id");
+    header ("location: ".makeurlwithid($id,"document"));
     return;
   } while (0);
 }
