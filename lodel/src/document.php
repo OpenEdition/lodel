@@ -28,9 +28,13 @@ if (!file_exists("lodel/txt/r2r-$id.xml")) { header ("Location: not-found.html")
 $text=join("",file("lodel/txt/r2r-$id.xml"));
 
 include ("$home/xmlfunc.php");
-$balises=array("titre","resume","surtitre","soustitre","notebaspage","annexe","bibliographie","surtitre","erratum","ndlr","droitsauteur","historique");
-if ($context[textepublie] || $visiteur) array_push($balises,"texte");
-$context=array_merge($context,extract_xml($balises,$text,TRUE));
+include ("$home/balises.php");
+
+$balises=$balisesdocument_nonlieautexte;
+array_push($balises,"surtitre","titre","soustitre");
+
+if ($context[textepublie] || $visiteur) $balises=array_merge($balises,$balisesdocument_lieautexte);
+$context=array_merge($context,extract_xml($balises,$text));
 
 //
 // cherche s'il y a des documents annexe et combien

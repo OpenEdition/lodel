@@ -1,9 +1,9 @@
 <?
 // fonctions pour enregistrer un document dans la base de donnée
 
-include_once ("$home/func.php");
-include ("$home/xmlparser.php");
-include ("$home/xmlfunc.php");
+require_once ("$home/func.php");
+include_once ("$home/xmlparser.php");
+include_once ("$home/xmlfunc.php");
 
 
 function enregistre ($context,&$text)
@@ -41,9 +41,10 @@ function enregistre ($context,&$text)
   $lang=extract_langue (array("resume","texte"),$vals,$index,$langue);
 
   // recupere les informations dans le fichier et nettoie
-  $lcontext=extract_xml(array("titre","soustitre","typedoc"),$text);
+  $lcontext=extract_xml(array("titre","soustitre","surtitre","typedoc"),$text);
   $lcontext[titre]=strip_tags($lcontext[titre],"<I><U>");
   $lcontext[soustitre]=strip_tags($lcontext[soustitre],"<I><U>");
+  $lcontext[surtitre]=strip_tags($lcontext[surtitre],"<I><U>");
   $lcontext[typedoc]=strip_tags($lcontext[typedoc]);
 
   // enleve les <P> s'ils sont aux extremites, et qu'il n'y en a pas dedans
@@ -70,7 +71,7 @@ function enregistre ($context,&$text)
   //$status=$context[statusdocument] ? $context[statusdocument] : -1;
 
   // ecrit dans la base de donnee le document
-  mysql_query ("INSERT INTO documents (id,status,titre,soustitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
+  mysql_query ("INSERT INTO documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$status','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
 
   $id=mysql_insert_id();
 

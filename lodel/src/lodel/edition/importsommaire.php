@@ -12,7 +12,7 @@ if ($cancel) include ("abandon.php");
 $row=get_tache($id);
 
 if ($row[etape]==4) {  // on revient ici, donc il faut continuer a executer les sous-taches
-  if ($taskid=array_shift($row[tasks])) { // recupere l'id de la tache a executer
+  while ($taskid=array_shift($row[tasks])) { // recupere l'id de la tache a executer
     // enregistre le tableau des taches a executer apres le pop
     update_tache_context($id,array("tasks"=>$row[tasks]),$row[context]);
 
@@ -26,12 +26,13 @@ if ($row[etape]==4) {  // on revient ici, donc il faut continuer a executer les 
     } else {
       die ("error in importsommaire.php");
     }
-  } else { // il n'y a plus de sous tache a executer
+  }
+  // il n'y a plus de sous tache a executer
     // on a fini alors
 #    echo "on a fini";
     include ("abandon.php");
     return;
-  }
+ 
 }
 
 
@@ -143,7 +144,7 @@ function mkxmlpublication($nom,$titre,$type,$parent)
 function mkxmldocument($text)
 
 {
-  global $dir,$tasks,$currentpublication;
+  global $home,$dir,$tasks,$currentpublication;
 
   // ajoute les debuts et fins corrects
   $text='<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$text.'</r2r:article>';
@@ -158,9 +159,11 @@ function mkxmldocument($text)
   // extrainfo s'appelle en deux temps
   $row[publication]=$currentpublication;
 
-  include("$home/extrainfomain.php");
-  $edit=1;
-  include("$home/extrainfomain.php");
+  include_once("$home/extrainfofunc.php");
+  $context=array();
+  ei_pretraitement($filename,$row,$context,$text);
+  $motcles=array();  $periodes=array();  $geographies=array();
+  ei_edition($filename,$row,$context,$text,$motcles,$periodes,$geographies);
 }
 
 ?>

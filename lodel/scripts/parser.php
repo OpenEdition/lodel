@@ -530,7 +530,9 @@ function prefix_tablename ($tablename)
 function decode_content ($content,$tables=array())
 
 {
+  global $home,$balisesdocument_lieautexte,$balisesdocument_nonlieautexte;
   $ret=array();
+
 # cherche s'il y a un avant
   $balises=array("avant","apres","premier","dernier","corps");
   
@@ -571,25 +573,33 @@ function decode_content ($content,$tables=array())
     //
 #ifndef LODELLIGHT
     if (in_array("documents",$tables)) {
-      $withtexte=preg_match("/\[\(?#TEXTE\b/",$ret[$balise]);
+      include_once("$home/balises.php");
 
-      if (preg_match_all("/\[\(?#(RESUME|SURTITRE|SOUSTITRE|NOTEBASPAGE|ANNEXE|BIBLIOGRAPHIE)\b/",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
+      # as-t-on besoin des balises liees au texte ?
+      if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_lieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER)) {
+	$withtextebalises='"'.join('","',$result[1]).'"';
+      } else {
+	$withtextebalises="";
+      }
+
+      # as-t-on besoin de balises non liees au texte
+      if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_nonlieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
 	$ret["extract_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
 $arr=array("'.join('","',$result[1]).'");';
-	if ($withtexte) { // on a aussi besoin du texte
-	  $ret["extract_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,"TEXTE");';
+	if ($withtextebalises) { // on a aussi besoin des balises liees au texte
+	  $ret["extract_".$balise].='if ($context[textepublie] || $GLOBALS[visiteur]) array_push ($arr,'.$withtextebalises.');';
 	}
 	$ret["extract_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
-      } elseif ($withtexte) { // le texte seulement
+      } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
 	$ret["extract_".$balise]='if ($context[textepublie] || $GLOBALS[visiteur]) {
 $filename="lodel/txt/r2r-$context[id].xml";
 if (file_exists($filename)) {
 include_once ("$GLOBALS[home]/xmlfunc.php");
 $text=join("",file($filename));
-$context=array_merge($context,extract_xml(array("TEXTE"),$text));
+$context=array_merge($context,extract_xml('.$withtextbalises.',$text));
 }}';
       }
     } // table documents ?

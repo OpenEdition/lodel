@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 
+	surtitre	TEXT NOT NULL,
 	titre		TEXT NOT NULL,
 	soustitre	TEXT NOT NULL,
 	intro		TEXT NOT NULL,

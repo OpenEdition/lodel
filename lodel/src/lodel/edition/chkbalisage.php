@@ -8,7 +8,7 @@ if ($cancel) include ("abandon.php");
 
 $row=get_tache($id);
 
-include ("balises.php");
+include ("$home/balises.php");
 if ($line) { // on vient de balise, il faut modifier les balises
   // lit le fichier lined
   $lines=explode("<!--r2rline=",join("",file($row[fichier].".lined")));
@@ -53,16 +53,16 @@ if ($line) { // on vient de balise, il faut modifier les balises
 } else { // lines est non defini, on doit donc lire le fichier xml et l'afficher
   $text=join("",file($row[fichier].".html"));
   $context[fichier]=preg_replace(array("/<\/?r2r:article>/si",
-				       "/<(\/?)r2r:section(\d+)>/si",
-				       "/<(\/?)r2r:divbiblio>/si",
-				       "/<(\/?)r2r:citation>/si",
+#				       "/<(\/?)r2r:section(\d+)>/si",
+#				       "/<(\/?)r2r:divbiblio>/si",
+#				       "/<(\/?)r2r:citation>/si",
 				       "/<r2r:([^>]+)>/sie",
 				       "/<\/r2r:([^>]+)>/si"),
 				   array("",
-					 "<\\1h\\2>",
-					 "<\\1h2>",
-					"<\\1blockquote>",
-					 "'<tr valign=\"top\"><td>'.\$balises[strtolower('\\1')].'</td><td>'",
+#					 "<\\1h\\2>",
+#					 "<\\1h2>",
+#					"<\\1blockquote>",
+					 "'<tr valign=\"top\"><td class=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td class=\"chkbalisagetrparagraphe\">'",
 					 "</td></tr>"),
 				 $text);
 }

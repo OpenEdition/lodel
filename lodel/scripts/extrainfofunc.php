@@ -1,4 +1,161 @@
 <?
+
+// assure le traitement du fichier lors de l'arrive dans extrainfo
+function ei_pretraitement($filename,$row,&$context,&$text)
+
+{
+  global $langresume,$home;
+
+  $text=join("",file ($filename.".html"));
+  auteurs2auteur($text);
+  if (!$context[option_pasdeperiode]) tags2tag("periode",$text);
+  if (!$context[option_pasdemotcle]) tags2tag("motcle",$text);
+  if (!$context[option_pasdegeographie]) tags2tag("geographie",$text);
+
+  // extrait les balises et met les dans le context
+  $lbalises=array("titre","soustitre","surtitre","typedoc");
+
+  foreach ($lbalises as $b) {
+    if (preg_match ("/<r2r:$b>\s*(.*?)\s*<\/r2r:$b>/si",$text,$result)) {
+      $context[$b]=strip_tags($result[1],"<I><B><U>");
+      $text=str_replace($result[0],"",$text);
+    }
+  }
+  // extrait les langues
+  if (preg_match("/<r2r:texte\b[^>]+\blang\s*=\s*\"([^\"]+)\"/i",$text,$result)) {
+    list($context[lang1],$context[lang2],$context[lang3])=explode(" ",$result[1]);
+  }
+  // transforme les balises resume
+  include_once("$home/langues.php");
+  $srch=array(); $rpl=array();
+  foreach ($langresume as $bal=>$lang) {
+    array_push($srch,"/<r2r:$bal>/i","/<\/r2r:$bal>/i");
+    array_push($rpl,"<r2r:resume lang=\"$lang\">","</r2r:resume>");
+  }
+  $text='<'.'?xml version="1.0" encoding="ISO-8859-1"?'.'>
+<!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
+'.preg_replace($srch,$rpl,$text);
+      
+  if (!writefile ($filename.".balise",$text)) die ("erreur d'ecriture du fichier $filename.balise");
+  if ($row[iddocument]) { # le document existe
+# on recupere la date de publication du texte
+    $result=mysql_query("SELECT datepubli from documents WHERE id='$row[iddocument]'") or die (mysql_error());
+    list($context[datepubli])=mysql_fetch_row($result);
+  }
+}
+
+
+//
+// verifie les entrees et enregistre dans la base sauf s'il y a erreur
+//  ou si on souhaite ajouter un auteur
+//
+
+function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geographies)
+
+{
+  global $home;
+
+  $balisefilename=$filename.".balise";
+  if (file_exists($balisefilename) && filemtime($balisefilename)>filemtime($filename.".html")) {
+    $text=join("",file($balisefilename));
+  } else {
+    $text=join("",file($filename.".html"));
+  }
+
+  extract_post();
+  // suppression des slashes
+  foreach($context as $key=>$val) {
+    $context[$key]=stripslashes($val);
+  }
+
+  // verifie que le titre est present
+  if (!$context[titre]) $err=$context[erreur_titre]=1;
+  if ($context[datepubli]) {
+    include ("$home/date.php");
+    $row[datepubli]=mysqldate($context[datepubli]);
+    if (!$row[datepubli]) { $context[erreur_datepubli]=$err=1; }
+    // fin de la validation
+  }
+  // efface les groupes
+  $text=preg_replace ("/<r2r:(grmotcle|grperiode|grgeographie|grtitre|meta|grauteur)\b[^>]*>(.*?)<\/r2r:\\1>/si", // efface les champs auteurs et auteur
+		      "",$text);
+
+  // ajoute les groupes a la fin
+  $text=preg_replace("/<\/r2r:article>/i",
+		     gr_auteur($context,$context[plusauteurs]).
+		     gr_motcle($context,$motcles).
+		     gr_indexh($context,$periodes,"periode").
+		     gr_indexh($context,$geographies,"geographie").
+		     gr_titre($context).
+		     gr_meta($context)."\\0",
+		     $text);
+  // change la langue du texte
+  $lang=$context[lang1];
+  if ($context[lang2]) $lang.=" ".$context[lang2];
+  if ($context[lang3]) $lang.=" ".$context[lang3];
+
+  $text=preg_replace(array("/(<r2r:texte\b[^>]+)\blang\s*=\s*\"[^\"]*\"/i","/(<r2r:texte\b[^>]*?)\s*>/i"),
+		     array("\\1",$lang ? "\\1 lang=\"$lang\">" : "\\1>"),$text);
+
+  if ($err || $context[plusauteurs]) {
+    writefile ($balisefilename,$text);
+    return 0;
+  }
+  //
+  // enregistre
+  //
+  if ($row[iddocument]) { # efface d'abord
+    include_once("$home/managedb.php");
+    // recupere les metas et le status
+    $result=mysql_query("SELECT meta,status from documents WHERE id='$row[iddocument]'") or die (mysql_error());
+    list($row[meta],$status)=mysql_fetch_row($result);
+    if (!$row[status]) $status=$row[status]; // recupere le status si necessaire
+    supprime_document($row[iddocument]);
+  } else { # Il n'existe pas, alors on calcule la date
+    $context[duree]=intval($context[duree]);
+    $time=localtime();
+    if ($context[dateselect]=="jours") $time[3]+=$context[duree];
+    if ($context[dateselect]=="mois") $time[4]+=$context[duree];
+    if ($context[dateselect]=="année") $time[5]+=$context[duree];
+    $row[datepubli]=date("Y-m-d",mktime(0,0,0,$time[4]+1,$time[3],$time[5]));
+  }
+  // enregistre dans la base
+  //    echo htmlentities($text); return;
+  include_once ("$home/dbxml.php");
+  $iddocument=enregistre($row,$text);
+
+  // change le nom des images
+  if (!function_exists("img_rename")) {
+    function img_rename($imgfile,$ext,$count) {
+      global $iddocument;
+      
+      $newimgfile="docannexe/r2r-img-$iddocument-$count.$ext";
+      if ($imgfile!=$newimgfile) {
+	rename ($imgfile,"../../$newimgfile") or die ("impossible de renomer l'image $imgfile en $newimgfile");
+	chmod ("../../$newimgfile",0644) or die ("impossible de chmod'er le ../../$newimagefile");
+      }
+      return $newimgfile;
+    }
+  }
+  copy_images($text,"img_rename");
+
+  // copie le fichier balise en lieu sur !
+  if (!writefile("../txt/r2r-$iddocument.xml",$text)) die ("Erreur lors de l' ecriture du fichier. Contactez l'administrateur: ../txt/r2r-$iddocument.xml");
+  // et le rtf s'il existe
+  $rtfname="$filename.rtf";
+  if (file_exists($rtfname)) { 
+    $dest="../rtf/r2r-$iddocument.rtf";
+    copy ($rtfname,$dest);
+    chmod($dest,0644) or die ("impossible de chmod'er $dest");
+  }
+  // efface le fichier balise
+  if (file_exists($balisefilename)) unlink($balisefilename);
+
+  return 1; // ok on a finit correctement
+}
+
+
+  ///////////////////////////////////////////////////////////
 //
 // fonctions de traitement
 // specifiques a extrainfo
@@ -130,7 +287,7 @@ function makeselectgeographies()
 
 function makeselectindexhs ($bal,$type)
 {
-  global $text;
+  global $context,$text;
   # extrait les periodes du texte
   preg_match_all("/<r2r:$bal\b[^>]*>(.*?)<\/r2r:$bal>/is",$text,$indexhs,PREG_PATTERN_ORDER);
 #  print_r($indexhs[1]);
@@ -154,7 +311,7 @@ function makeselectindexhs_rec($parent,$rep,$indexhs,$type)
 function makeselectmotcles()
 
 {
-  global $text,$context;
+  global $context,$text;
 
   if (!$context[option_motclefige]) $critere="type=".TYPE_MOTCLE." OR";
   $result=mysql_query("SELECT mot FROM indexls WHERE status>=-1 AND ($critere type=".TYPE_MOTCLE_PERMANENT.") GROUP BY mot ORDER BY mot") or die (mysql_error());
@@ -190,10 +347,10 @@ function makeselectdate() {
 }
 
 
-function boucle_auteurs(&$generalcontext,$funcname)
+function boucle_auteurs(&$context,$funcname)
+
 {
   global $text;
-
   $balises="(prefix|nomfamille|prenom|courriel|affiliation)";
 
   preg_match_all("/<r2r:auteur\b[^>]*>(.*?)<\/r2r:auteur\s*>/is",$text,$results,PREG_SET_ORDER);
@@ -201,12 +358,12 @@ function boucle_auteurs(&$generalcontext,$funcname)
     preg_match_all("/<r2r:$balises\b[^>]*>(.*?)<\/r2r:\\1\s*>/is",$auteur[1],$result,PREG_SET_ORDER);
 
     $ind++;
-    $lcontext=array( ind => $ind);
+    $localcontext=$context;
+    $localcontext[ind]=$ind;
     if ($result) {
-      foreach ($result as $champ) { $lcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
+      foreach ($result as $champ) { $localcontext[strtolower($champ[1])]=htmlspecialchars(stripslashes(strip_tags($champ[2]))); }
     }
-    $context=array_merge($generalcontext,$lcontext);
-	call_user_func("code_boucle_$funcname",$context);
+	call_user_func("code_boucle_$funcname",$localcontext);
   }
 }
 

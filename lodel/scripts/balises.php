@@ -12,7 +12,6 @@ $balises=array ("-" => "-",
 		"citation" => "Citation",
 		"epigraphe" => "Epigraphe",
 		"notebaspage" => "Notes",
-#		"typeart" => "Type de doc",
 		"typedoc" => "Type de doc",
 		"finbalise" => "fin",
 		"bibliographie"=>"Bibliographie",
@@ -23,12 +22,6 @@ $balises=array ("-" => "-",
 		"section4"=>"Section 4",
 		"titredoc"=>"Titre de document",
 		"legendedoc"=>"Légende de document",
-
-#		"recension_titre"=>"Recension Titre",
-#		"recension_auteur"=>"Recension Auteur",
-#		"recension_annee"=>"Recension année",
-#		"recension_type"=>"Recension type",
-
 		"droitsauteur"=>"Droits d'auteurs",
 		"erratum"=>"Erratum",
 		"ndlr"=>"NDLR",
@@ -42,6 +35,27 @@ $balises=array ("-" => "-",
 		"nomnumero"=>"Nom du numéro"
 		);
 
+#
+# dans les deux tableaux ci-dessous on a la liste des balises qui apparaissent dans les documents, mais qui ne sont pas dans la base de donnee.
+#
+    # balises qui ne sont extraites que lorsque le texte est publie.
+$balisesdocument_lieautexte=array("texte",
+				  "notebaspage",
+				  "annexe",
+				  "erratum",
+				  "ndlr",
+				  "historique",
+				  );
+
+    # balises qui sont toujours extraites, meme si le texte n'est pas publie.
+$balisesdocument_nonlieautexte=array("resume",
+				     "droitsauteur",
+				     "pagination",
+				     );
+
+
+# balises a plusieurs niveaux
+
 $multiplelevel=array("section\d+"=>"texte",
 		     "divbiblio"=>"bibliographie",
 		     "citation"=>"texte",
@@ -49,9 +63,13 @@ $multiplelevel=array("section\d+"=>"texte",
 		     "titredoc"=>"texte",
 		     "legendedoc"=>"texte");
 
+
+# utilise par chkbalises apres un balisage.php A supprimer si on supprime balisage.php
 $division="(section\d+|divbiblio)"; # balises qui ne sont pas des paragraphes
 
+# tags qui admettent des listes separees par des virgules.
 $virgule_tags="(auteurs|periodes|geographies|motcles)";
+
 
 
 #########################################################################
@@ -60,6 +78,13 @@ $virgule_tags="(auteurs|periodes|geographies|motcles)";
 
 include ("$home/langues.php");
 $balises=array_merge($balises,$balisesmotcle,$balisesresume);
+
+#########################################################################
+# export les variables dans le scope global
+
+$GLOBALS[balises]=$balises;
+$GLOBALS[balisesdocument_lieautexte]=$balisesdocument_lieautexte;
+$GLOBALS[balisesdocument_nonlieautexte]=$balisesdocument_nonlieautexte;
 
 #########################################################################
 

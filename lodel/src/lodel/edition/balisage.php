@@ -11,7 +11,7 @@ if ($cancel) include ("abandon.php");
 
 $row=get_tache($id);
 
-include ("balises.php");
+include ("$home/balises.php");
 
 function getselect ($balise)
 

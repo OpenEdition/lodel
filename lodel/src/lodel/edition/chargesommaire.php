@@ -4,9 +4,6 @@ include ("lodelconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
 
-include("balises.php");
-
-
 
 $context[id]=intval($id);
 $context[tache]=$tache=intval($tache);

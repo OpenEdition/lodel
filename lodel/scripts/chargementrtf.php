@@ -1,5 +1,7 @@
 <?
 
+include_once("$home/balises.php");
+
 
 if ($htmlfile && $htmlfile!="none") {
   do {

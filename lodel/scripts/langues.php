@@ -49,6 +49,13 @@ $balisesmotcle=array("motcles"=>"Mot Clés",
 
 
 ############################################################################
+# exportation des variables
+
+$GLOBALS[langues]=$langues;
+$GLOBALS[balisesresume]=$balisesresume;
+$GLOBALS[balisesmotcle]=$balisesmotcle;
+
+############################################################################
 //
 // ne rien modifier ici
 //
