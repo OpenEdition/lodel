@@ -61,7 +61,7 @@ class ClassesLogic extends Logic {
        break;
        $msg="cannot_delete_haspersons";
      }
-     $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$vo->classtype." INNER JOIN ".$types." ON idtype=".$types.".id INNER JOIN #_TP_classes ON ".$types.".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_".$vo->classtype.".status>-64 AND ".$types.".status>-64  AND #_TP_classes.status>-64"));
+     $count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$vo->classtype." INNER JOIN #_TP_".$types." ON idtype=#_TP_".$types.".id INNER JOIN #_TP_classes ON #_TP_".$types.".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_".$vo->classtype.".status>-64 AND #_TP_".$types.".status>-64  AND #_TP_classes.status>-64"));
 
      if ($db->errorno())  dberror();
      if ($count==0) {
@@ -80,11 +80,11 @@ class ClassesLogic extends Logic {
    function typestable($classtype) {
      switch ($classtype) {
      case "entities":
-       return "#_TP_types";
+       return "types";
      case "entries":
-       return "#_TP_entrytypes";
+       return "entrytypes";
      case "persons" :
-       return "#_TP_persontypes";
+       return "persontypes";
      }
    }
 
