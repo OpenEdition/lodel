@@ -27,7 +27,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-include_once ($home."func.php");
+require_once ($home."func.php");
 
 if ($classe=="documents") {
   $visualisationscript="document";
@@ -83,7 +83,8 @@ if ($idtache) {
       include_once($home."managedb");
       supprime($tache[idparent]);
     }
-    include ("abandon.php");
+    require("abandon.php");
+    return;
   }
 
   if ($filename!="processing") {
@@ -139,6 +140,9 @@ $context[idtype]=intval($idtype);
 ####if ($parent) $idparent=$parent;
 ####$context[idparent]=$idparent=intval($idparent);
 
+if ($cancel) { // pas de idtache, on s'en va tout simplement
+  back();
+}
 
 if ($id>0 && !$droitadmin) {
   $critere=" AND groupe IN ($usergroupes)";
