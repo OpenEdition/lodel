@@ -194,7 +194,7 @@
       <IF COND="[#TYPE] eq 'mltext'">
 	<td>
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-	    <div>[(#LANG|humanlang)]: 
+	    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
 	      <IF COND="[#EDITION] eq 'text' or [#EDITION] eq 'editable'">
 		<input size="70" type="text" entite[[#NOM]][[#LANG]]" value="[#VALUE]">
 	      </IF>
@@ -291,7 +291,7 @@
 		</BEFORE>
         <DO>
 			<tr>
-				<td width="200">[#TITRE]:</td>
+				<td width="200" valign="top">[#TITRE] :</td>
 				<MACRO NAME="AFFICHER_EDITION_CHAMPS">
 			</tr>
 			<MACRO NAME="AFFICHER_ERREURS_SAISIE">
@@ -1247,8 +1247,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="40" align="left" valign="top">
-					&nbsp;
+				<td width="40" align="left" valign="top">&nbsp;
+					
 				</td>
 				<td valign="top"  width="100%">
 					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
