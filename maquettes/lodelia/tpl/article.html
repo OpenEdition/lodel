@@ -211,7 +211,7 @@
 							<div class="titre3"> 
 								<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
 							</div>
-							<div class="texte">
+							<div class="bibliographie">
 								[#BIBLIOGRAPHIE]
 							</div>
 						</IF>
@@ -259,7 +259,14 @@
 							Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
 						</p>
 					</IF>
-				
+					
+					<!-- Affiche la notice bibliographique du document en cours -->		
+					<div class="titre3">
+						Pour citer cet article
+					</div>
+					<div class="pourciter">
+						<MACRO NAME="CITATION"> 
+					</div>
 				
 					<!-- Affiche la description de l'auteur -->		
 					<MACRO NAME="DESCRITION_AUTEUR"> 
