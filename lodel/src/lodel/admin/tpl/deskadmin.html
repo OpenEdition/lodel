@@ -62,10 +62,10 @@
 		<td width="173" heigth="25" valign="top"></td>
 		
 		<td class="texte_petit_lodelbarre">
-	    Lodel version [#VERSION]. Jeu de caractères : [#CHARSET].
+	    Lodel [@COMMON.VERSION] [#VERSION]. [@COMMON.CHARSET] : [#CHARSET].
 
 			<IF COND="[#TEMPLATESRECOMPILES]">
-				<span class="texte_petit_lodelbarre"> Templates modifiés : [#TEMPLATESRECOMPILES]</span>
+				<span class="texte_petit_lodelbarre"> [@COMMON.MOD_TEMPLATES] : [#TEMPLATESRECOMPILES]</span>
 			</IF>
 		</td>
 
@@ -82,19 +82,19 @@
 					</td>
 					<td heigth="25" align="center">
 						<IF COND="[#DROITADMINLODEL]">
-							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Admin Lodel&nbsp;:&nbsp; </span>
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp; </span>
 						<ELSE/>
 							<IF COND="[#DROITADMIN]">
-								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> Administrateur&nbsp;:&nbsp; </span>
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN]&nbsp;:&nbsp; </span>
 							<ELSE/>
 								<IF COND="[#DROITEDITEUR]">
-									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> Editeur&nbsp;:&nbsp; </span>
+									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> [@COMMON.USER_EDITOR]&nbsp;:&nbsp; </span>
 								<ELSE/>
 									<IF COND="[#DROITREDACTEUR]">
-										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> Rédacteur&nbsp;:&nbsp; </span>
+										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.USER_WRITER]&nbsp;:&nbsp; </span>
 									<ELSE/>
 										<IF COND="[#DROITVISITEUR]">
-											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> Visiteur&nbsp;:&nbsp; </span>
+											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> [@COMMON.USER_VISITOR]&nbsp;:&nbsp; </span>
 										</IF>
 									</IF>
 								</IF>
