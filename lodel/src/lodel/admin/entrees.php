@@ -1,4 +1,5 @@
-<?php// gere un index. L'acces est reserve au administrateur.
+<?php
+// gere un index. L'acces est reserve au administrateur.
 
 require("siteconfig.php");
 include ($home."auth.php");

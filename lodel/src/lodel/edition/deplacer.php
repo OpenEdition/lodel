@@ -1,4 +1,4 @@
-<?php// 
+<?php 
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);

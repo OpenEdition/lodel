@@ -1,4 +1,5 @@
-<?php// script de nettoyage des fichiers XML.
+<?php
+// script de nettoyage des fichiers XML.
 // utile lorsque les versions se succede.
 
 require("siteconfig.php");
