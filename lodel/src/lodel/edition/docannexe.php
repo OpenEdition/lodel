@@ -51,7 +51,7 @@ if ($edit) { // modifie ou ajoute
 	if (!file_exists("../../".$dir)) {
 	  if (!@mkdir("../../".$dir,0755)) die("impossible de creer le repertoire $dir");
 	}
-	$lien=$dir.basename($docfile_name);
+	$lien=$dir."/".basename($docfile_name);
 	copy($docfile,"../../$lien");
       } else {
 	// recherche le lien
