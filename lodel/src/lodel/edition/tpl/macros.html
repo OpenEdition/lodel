@@ -353,7 +353,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
-	<IF COND="![#TEXTEPUBLIE]">
+	<IF COND="[#DATEPUBLIE]">
 		<MACRO NAME="PNG_STATUT_HORLOGE">
 	<ELSE/>
 		<IF COND="[#STATUS]==-32">
@@ -773,18 +773,13 @@
 					</IF>
 				</td>
 				<td width="300">
-					<!--
+					<div>
 						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
 							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 						<ELSE/>
 							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 						</IF>
-						-->
-						<IF COND="[(#LIEN|isabsolute)]">
-							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
-						<ELSE/>
-							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
-						</IF>
+					</div>
 					<span class="texte_normal">[#COMMENTAIRE]</span>
 				</td>
 				<td valign="top">
@@ -796,7 +791,7 @@
 			</table>
 		</AFTER>
 		<ALTERNATIVE>
-			Il n'y a aucun document annexe associ&eacute; à ce document.
+			<span class="texte_info" style="padding-left:80px">Il n'y a aucun document annexe associ&eacute; à ce document.</span>
 		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
