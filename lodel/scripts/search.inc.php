@@ -43,7 +43,7 @@
  * 	- status (optional) : specific status
  * 
  */  
-function search($context)
+function search(&$context,$funcname,$arguments)
 {
 	//TODO
 	//if decided change the system in order to manage strict queries (with quotes)
@@ -165,10 +165,25 @@ function search($context)
 		
 		
 		
-		$limit = " LIMIT 0,".$context["qnbresults"];
+		
+		$offsetname="offset_".substr(md5($funcname),0,5);
+		#echo $offsetname;
+		$offset = ($context[$offsetname] ? intval($context[$offsetname]) : 0);
+		#echo "offset:".$offset;
+		
+		$limit = " LIMIT $offset,".$arguments['limit'];
+		#echo "limit :".$limit;
 		$groupby = " GROUP BY identity ";
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
 	#echo "hey :".$sql;
+	
+		$sqlc = lq("SELECT identity FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);	
+	#echo "hey2 :".$sqlc;
+		//print_r($db->GetAll($sqlc));
+		
+		$context['nbresults'] = count($db->GetAll($sqlc));
+		//print_r($row);
+	#echo "Nombre de résultats absolu :".$nbresabs."<br />";
 		$result=$db->execute($sql) or dberror();
 		$we_temp = array();
 		//$we_temp = $db->getarray($sql) or dberror();
@@ -243,18 +258,27 @@ function search($context)
 
 function loop_search(&$context,$funcname,$arguments)
 {
+	#print_r($arguments);
+	
 	$local_context = $context;
-	$results = search($local_context);
+	$results = search($local_context,$funcname,$arguments);
+	#echo "nb res :".$local_context['nbresults'];
+	
 	$count = 0;
-	if(!$results || count($results)==0)
+	if(!$results || count($local_context['nbresults'])==0)
 	{
 		//echo "coucou";
-		$local_context['nbresults'] = 0;
+		//$local_context['nbresults'] = 0;
 		call_user_func("code_alter_$funcname",$local_context);
 		return;
 	}
 	
-	$local_context['nbresults'] = count($results);
+	//$local_context['nbresults'] = count($results);
+	$limit = $local_context['qnbresults'];
+	$offsetname="offset_".substr(md5($funcname),0,5);
+
+	#echo $offsetname;
+	
 	if(function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname",$local_context);
 	
@@ -289,9 +313,105 @@ function loop_search(&$context,$funcname,$arguments)
 		$count++;
 	}
 	if(function_exists("code_after_$funcname"))
+	{
+		$offsetname="offset_".substr(md5($funcname),0,5);
+		$currentoffset = ($_REQUEST[$offsetname]? $_REQUEST[$offsetname] : 0);
+				
+		
+		$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
+		$cleanquery=preg_replace("/(^|&)".$offsetname."=\d+/","",$_SERVER['QUERY_STRING']);
+		#echo "cleanquery :".$cleanquery;
+   	if ($cleanquery[0]=="&")
+   		$cleanquery=substr($cleanquery,1); 
+   	if ($cleanquery) 
+   		$currenturl.=$cleanquery."&";
+   #echo $local_context['nbresults'];
+   #echo $arguments['limit'];
+   
+   	/*if($local_context['nbresults'] > ($currentoffset+$arguments['limit']))
+   		$local_context[nexturl]=$currenturl.$offsetname."=".($currentoffset + $arguments['limit']);
+   	else
+   		$local_context[nexturl] = "";
+   	#echo $local_context[nexturl];
+   	
+   	if($currentoffset > 0)
+   	{
+   		$local_context[previousurl] = $currenturl.$offsetname."=".($currentoffset - $arguments['limit']);
+   	}
+   	else
+   		$local_context[previousurl] ="";
+   	*/
+   	//test
+   		$i = 0;
+   	//pages precedentes
+   	$pages = array();
+   	while($i + $arguments['limit'] <= $currentoffset)
+   	{
+   			$urlpage = $currenturl.$offsetname."=".$i;
+   			#echo "<a href=\"".$urlpage."\">page ". ($i/$arguments['limit']+ 1)."</a>";
+   			$pages[($i/$arguments['limit']+ 1)] = $urlpage;
+   			$i += $arguments['limit'];
+   	}
+   	#print_r($pages);
+   	$pages[($currentoffset/$arguments['limit']+ 1)] = "";
+   	 #print_r($pages);
+   	//pages suivantes
+   	$i = $currentoffset;
+   
+   	while($i + $arguments['limit'] < $local_context['nbresults'])
+   	{
+   			$i += $arguments['limit'];
+   			$urlpage = $currenturl.$offsetname."=".$i;
+   			#echo "<a href=\"".$urlpage."\">page ". ($i/$arguments['limit']+ 1)."</a>";
+   			$pages[($i/$arguments['limit']+ 1)] = $urlpage;
+   			
+   	}
+   	#print_r($pages);
+   	if(count($pages))
+   		$local_context["pages"] = $pages;
+   
+   	
+   	
+   	#echo "currentoffset=$currentoffset";
+   	
+   	
+   	
 		call_user_func("code_after_$funcname",$local_context);
 		
+		
+		
+	}
+		
 }
+
+function loop_affiche_pages(&$context,$funcname,$arguments)
+{
+	$local_context = $context;
+	//affichages des pages precedentes
+	
+	if(function_exists("code_before_$funcname"))
+	{
+		call_user_func("code_before_$funcname",$local_context);
+	}
+	
+	if($local_context["pages"])
+	{
+		foreach($local_context["pages"] as $key => $value)
+		{
+			$local_context["numpage"] = $key;
+			$local_context["urlpage"] = $value;
+			call_user_func("code_do_$funcname",$local_context);
+		}
+	}
+	if(function_exists("code_after_$funcname"))
+	{
+		call_user_func("code_after_$funcname",$local_context);
+	}
+	
+	
+		
+}
+
 
 /**
  * Results page script - Lodel part
