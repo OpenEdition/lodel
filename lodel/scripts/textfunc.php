@@ -403,18 +403,28 @@ function notes(&$texte,$type)
  * fonctions pour le nettoyage de base des champs importes
  */
 
-function tocss($text)
+function tocss($text,$options="")
 
 {
   global $home;
   include_once($home."balises.php");
-  return preg_replace(array(
-			    "/<r2r:(\w+)\b[^>]*>/", // replace les autres balises r2r par des DIV
-			    "/<\/r2r:[^>]+>/"				    				    ),
-		      array(
-			    '<div class="\\1">',
-			    "</div>"
-			    ),traite_separateur($text));
+  $srch=array();   $rpl=array();
+  if ($options=="heading") {
+    array_push($srch,
+	       "/<r2r:section(\d+)\b[^>]*>/",
+	       "/<\/r2r:section(\d+)>/");
+    array_push($rpl,
+	       '<h\\1>',
+	       '</h\\1>');
+  }
+  array_push($srch,
+	     "/<r2r:(\w+)\b[^>]*>/", // replace les autres balises r2r par des DIV
+	     "/<\/r2r:[^>]+>/");
+  array_push($rpl,
+	     '<div class="\\1">',
+	     "</div>");
+
+  return preg_replace($srch,$rpl,traite_separateur($text));
 }
 
 /**
