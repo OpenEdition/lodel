@@ -107,16 +107,16 @@ class EntitiesLogic extends Logic {
      $dao->deleteObject($ids);
      // delete in the joint table
      foreach(array_keys($classes) as $class) {
-       $db->execute(lq("DELETE FROM #_TP_$class WHERE identity IN (".join(",",$ids).")")) or dberror();
+       $db->execute(lq("DELETE FROM #_TP_$class WHERE identity ".sql_in_array($ids))) or dberror();
      }
-     // delete hierarchy
-     $db->execute(lq("DELETE FROM #_TP_relations WHERE nature='P' AND ( id1 IN (".join(",",$ids).") OR id2 IN (".join(",",$ids)."))")) or dberror();
-
      // delete the relations
      $this->_deleteSoftRelation($ids);
-			
+
+     // delete other relations
+     $db->execute(lq("DELETE FROM #_TP_relations WHERE id1 ".sql_in_array($ids)." OR id2 ".sql_in_array($ids))) or dberror();
+
      // delete the entity from the search_engine table
-     $db->execute(lq("DELETE FROM #_TP_search_engine WHERE identity IN (".join(",",$ids).")"));
+     $db->execute(lq("DELETE FROM #_TP_search_engine WHERE identity ".sql_in_array($ids))) or dberror();
 
      update();
 
@@ -175,7 +175,7 @@ class EntitiesLogic extends Logic {
    function _deleteSoftRelation($ids) {
      global $db;
 
-     $criteria="id1 IN (".join(",",$ids).")";
+     $criteria="id1 ".sql_in_array($ids);
      $result=$db->execute(lq("SELECT idrelation,nature FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or dberror();
      $idrelation=array();
      while(!$result->EOF) {

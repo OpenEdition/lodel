@@ -405,7 +405,7 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
-	title		TINYTEXT,			# title
+	title		TINYTEXT NOT NULL,		# title
 	type		VARCHAR(255) NOT NULL,		# type du champ
 	value		TEXT NOT NULL,	# value
 	defaultvalue	TEXT NOT NULL,	# value

@@ -107,6 +107,7 @@ function parse_loop_extra(&$tables,
       $alias="alias_".$class->classtype."_".$class->class;
       $aliastype="aliastype_".$class->classtype."_".$class->class;
       $aliasbyclasstype[$class->classtype]=$alias;
+      $classbyclasstype[$class->classtype]=$class->class;
 
       switch ($class->classtype) {
       case "entities":
@@ -208,7 +209,12 @@ function parse_loop_extra(&$tables,
 	}
 	
 	if (in_array($table,$tables) || $aliasbyclasstype[$table]) {
-	  if ($aliasbyclasstype[$table]) $table=$aliasbyclasstype[$table];
+	  if ($aliasbyclasstype[$table]) {
+	    $class=$classbyclasstype[$table];
+	    $table=$aliasbyclasstype[$table];
+	  } else {
+	    $class="";
+	  }
 	  // fait ca en premier
 	  if (preg_match_sql("/\b(iddocument|identity)\b/",$where)) {
 	    // on a besoin de la table croisee entities_persons
@@ -218,18 +224,38 @@ function parse_loop_extra(&$tables,
 	    preg_replace_sql("/\b(iddocument|identity)\b/",$alias.".id1",$where);
 	    #print_R($where);
 	    $where[count($where)-1].=" AND $alias.id2=$table.id";
+
+	    if ($class && $typetable=="persontypes") {  // related table for persons only
+	      $relatedtable="entities_".$class;
+	      if (!in_array($relatedtable,$tables)) {
+		array_push($tables,$relatedtable);
+		$where[count($where)-1].=" AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+	      }
+	    }
+
 	  }
 	}
       }
 
-      foreach(array("persons"=>"idperson",
-		    "entries"=>"identry") as $table=>$regexp) {
-	if (($aliasbyclasstype['entities'] || in_array("entities",$tables)) && preg_match_sql("/\b($regexp)\b/",$where)) {
-	// on a besoin de la table croise relation
+      if ($aliasbyclasstype['entities'] || in_array("entities",$tables)) {
+	foreach(array("persons"=>"idperson",
+		      "entries"=>"identry") as $table=>$regexp) {
+
+	  if (!preg_match_sql("/\b($regexp)\b/",$where)) continue;
+
+	  // on a besoin de la table croise relation
 	  $alias="relation2_".$table; // use alias for security
 	  array_push($tables,"relations as ".$alias);
 	  preg_replace_sql("/\b($regexp)\b/",$alias.".id2",$where);
 	  $where[count($where)-1].=" AND ".$alias.".id1=".($aliasbyclasstype['entities'] ? $aliasbyclasstype['entities'] : "entities").".id";
+
+	  if ($table=="persons" && $classbyclasstype['persons']) { // related table for persons only
+	    $relatedtable="entities_".$classbyclasstype['persons'];
+	    if (!in_array($relatedtable,$tables)) {
+	      array_push($tables,$relatedtable);
+	      $where[count($where)-1].=" AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+	    }
+	  }
 	}
       }
 
@@ -365,8 +391,9 @@ function maketext($name,$group,$tag)
     $textexists=$db->getOne("SELECT 1 FROM ".$prefix."texts WHERE name='$name' AND textgroup='$group'");
     if ($db->errorno()) dberror();
     if (!$textexists) { // text does not exists. Have to create it.
-      $lang=$GLOBALS['lodeluser']['lang'] ? $GLOBALS['lodeluser']['lang'] : ""; // unlikely useful but...
-      $db->execute("INSERT INTO ".$prefix."texts (name,textgroup,contents,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg ($db->errormsg());
+      require_once("logic.php");
+      $textslogic=getLogic("texts");
+      $textslogic->createTexts($name,$group);
     }
     if ($group!="site") usecurrentdb();
   }

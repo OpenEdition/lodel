@@ -1117,7 +1117,6 @@
         uniqueid="yes"
 	writeright="redactor"
 	protectright="redactor">
-
 <column name="id"
         type="INTEGER"
         default="0"
@@ -1268,7 +1267,7 @@
         default="1"
         required="true" />
 <vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_OPTION]"
+        label="[@ADMIN.PROTECTED]"
         edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />

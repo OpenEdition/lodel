@@ -59,12 +59,10 @@ if ($file && $delete) {
 
   // change the id in order there are minimal and unique
   #require_once("objectfunc.php");
-  echo "... a finir... mais vous pouvez poursuivre en cliquant sur le lien <a href=\"index.php\">ici</a>...<br>\n";
-  #$err=makeobjetstable();
-  #if ($err) die($err);
+  reinitobjetstable();
 
   require_once("cachefunc.php");
-  removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+  clearcache();
 
   if (!$err) {
     if ($frominstall) { header ("location: ../edition/index.php"); die(); }
@@ -77,14 +75,16 @@ if ($file && $delete) {
   while ($row = mysql_fetch_row($result)) array_push($existingtables,$row[0]);
   
   // verifie qu'on peut importer le modele.
-  foreach(array_intersect(array("$GLOBALS[tp]entities",
-				"$GLOBALS[tp]entries",
-				"$GLOBALS[tp]persons"),$existingtables) as $table) {
-    $result=mysql_query("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1") or dberror();
-    if (mysql_num_rows($result)) {
+  foreach(array_intersect(array("#_TP_entities",
+				"#_TP_entries",
+				"#_TP_persons"),$existingtables) as $table) {
+    $haveelements=$db->getOne(lq("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1"));
+    if ($db->errorno) dberror();
+    if ($haveelements) {
       $context['error_table']=$table;
       break;
-    } 
+    }
+    $db->execute(lq("DELETE FROM $table WHERE status<=-64")) or dberror(); // in case...
   }
 }
 
@@ -155,6 +155,78 @@ function loop_files(&$context,$funcname)
       closedir ($dh);
     }
   }
+}
+
+
+
+
+function reinitobjetstable()
+
+{
+  global $db;
+
+  $db->execute(lq("DELETE FROM #_TP_objects")) or dberror();
+
+  // ajoute un grand nombre a tous les id.
+
+  $offset=2000000000;
+
+  $tables=array(
+		"classes"=>array("id"),
+		"types"=>array("id"),
+		"persontypes"=>array("id"),
+		"entrytypes"=>array("id"),
+		"entitytypes_entitytypes"=>array("identitytype","identitytype2"),
+		);
+
+  foreach ($tables as $table=>$idsname) {
+    foreach ($idsname as $idname) {
+      $db->execute(lq('UPDATE #_TP_'.$table.' SET '.$idname.'='.$idname.'+'.$offset.' WHERE '.$idname.'>0')) or dberror();
+    }
+  }
+
+  $conv=array(
+	      "types"=>array(
+			     "entitytypes_entitytypes"=>array("identitytype","identitytype2"),
+			     ),
+	      "persontypes"=>array(),
+	      "entrytypes"=>array(),
+	      "classes"=>array(),
+	      );
+
+
+  foreach ($conv as $maintable=>$changes) {
+    $result=$db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
+    echo "$maintable...\n";
+    while ( ($id=$result->fields['id']) ) {
+      #echo "$maintable...$id<br />\n";
+      $newid=uniqueid($maintable);
+      $db->execute(lq('UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id)) or dberror();
+
+      foreach ($changes as $table=>$idsname) {
+	if (!is_array($idsname)) $idsname=array($idsname);
+	foreach ($idsname as $idname) {
+	  $db->execute(lq('UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id)) or dberror();
+	}
+      }
+      $result->MoveNext();
+    }
+  }
+
+  // check all the id have been converted
+
+  $err="";
+  foreach ($tables as $table=>$idsname) {
+    foreach ($idsname as $idname) {
+      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
+      if ($count===false) dberror();
+
+      if ($count) die("<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n");
+    }
+  }
+  if ($err) return $err;
+
+  return FALSE;
 }
 
 

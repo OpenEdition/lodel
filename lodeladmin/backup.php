@@ -74,7 +74,7 @@ if ($backup) {
   unlink($dirlocked."/".$outfile);
   rmdir($dirlocked);
 
-  chdir ("lodeladmin");
+  chdir ("lodeladmin".($version ? "-".$version : ""));
 
   if (operation($operation,$archivetmp,$archivefilename,$context)) return;
 }

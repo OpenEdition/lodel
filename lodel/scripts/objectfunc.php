@@ -38,8 +38,7 @@ function makeobjetstable()
 
   $err=query_cmds_forobjectfunc('
 DELETE FROM #_TP_objets;
-INSERT INTO #_TP_objets (id,class) SELECT identity,"documents" FROM #_TP_documents;
-INSERT INTO #_TP_objets (id,class) SELECT identity,"publications" FROM #_TP_publications;
+INSERT INTO #_TP_objets (id,class) SELECT identity,"entities" FROM #_TP_entities;
 ');
   if ($err) return $err;
 
@@ -48,12 +47,12 @@ INSERT INTO #_TP_objets (id,class) SELECT identity,"publications" FROM #_TP_publ
   $offset=2000000000;
 
   $tables=array(
-		"entites"=>array("idtype"),
+		"entities"=>array("idtype"),
 		"types"=>array("id"),
-		"typepersonnes"=>array("id"),
-		"typeentrees"=>array("id"),
-		"entrees"=>array("id","idparent","idtype"),
-		"personnes"=>array("id"),
+		"persontypes"=>array("id"),
+		"entrytypes"=>array("id"),
+		"entries"=>array("id","idparent","idtype"),
+		"persons"=>array("id"),
 		"entites_personnes"=>array("idperson","idtype"),
 		"entites_entrees"=>array("identry"),
 		"typeentites_typeentrees"=>array("identrytype","identitytype"),

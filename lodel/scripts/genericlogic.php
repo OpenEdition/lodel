@@ -214,6 +214,7 @@ class GenericLogic extends Logic {
      
      foreach ($fields as $field) {
        if ($field->g_name) $this->g_name[$field->g_name]=$field->name; // save the generic field
+       $type=$field->type;
 
        // check if the field is required or not, and rise an error if any problem.
 
@@ -248,7 +249,7 @@ class GenericLogic extends Logic {
 	 continue;
        }
 
-       if ($field->type!="persons" && $field->type!="entries" && $field->type!="entities")
+       if ($type!="persons" && $type!="entries" && $type!="entities")
 	 $this->_publicfields[$field->class][$field->name]=true; // this field is public
 
        if ($field->edition=="none") unset($value);
@@ -263,13 +264,12 @@ class GenericLogic extends Logic {
 
        // special processing depending on the type.
 
-       $valid=validfield($value,$field->type,$field->default);
+       $valid=validfield($value,$type,$field->default);
        if ($valid===true) {
 	 // good, nothing to do.
        } elseif (is_string($valid)) {
 	 $error[$field->name]=$valid; 	 // error
        } else {
-	 $type=$field->type;
 	 $name=$field->name;
 	 // not validated... let's try other type
 	 switch($type) {
@@ -390,7 +390,7 @@ class GenericLogic extends Logic {
 	   // don't check they exists, the interface ensure it ! (... hum)
 	   break;
 	 default:
-	   die("ERROR: unable to check the validity of the field ".$field->name." of type ".$field->type);
+	   die("ERROR: unable to check the validity of the field ".$field->name." of type ".$type);
 	 } // switch
        } // if valid
        } // foreach files
