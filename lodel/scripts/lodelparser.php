@@ -115,7 +115,7 @@ function parse_loop_extra(&$tables,
       if ($table=="$GLOBALS[tableprefix]session") continue;
 
       if ($table=="$GLOBALS[tableprefix]entites") {
-	$lowstatut='"-64".($GLOBALS[droitadmin] ? "" : "*('.$GLOBALS[tableprefix].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
+	$lowstatut='"-64".($GLOBALS[droitadmin] ? "" : "*('.$table.'.groupe IN ($GLOBALS[usergroupes]))")';
       } else {
 	$lowstatut="-64";
       }
