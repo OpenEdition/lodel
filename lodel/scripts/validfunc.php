@@ -279,7 +279,7 @@ function _validUrl($url)
 {
 	$parsedurl = parse_url($url);
 	#print_r($parsedurl);
-	if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp)$/i",@$parsedurl['scheme'])  || empty($parsedurl['host']))
+	if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",@$parsedurl['scheme'])  || empty($parsedurl['host']))
 		return false;
 	else
 	{
