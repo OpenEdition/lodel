@@ -7,6 +7,9 @@ function isvalidfield($nom)
 function isvalidstyle($nom)
 { return preg_match("/^[a-zA-Z0-9]+$/",$nom); }
 
+
+// apres l'ajout d'un type, il faut mettre a jour le Schema XML
+
 $GLOBALS[typechamps]=array("tinytext"=>"Texte court",
 			   "text"=>"Texte",
 			   "mltext"=>"Texte multilingue",
@@ -35,7 +38,7 @@ $GLOBALS[sqltype]=array("tinytext"=>"tinytext",
 			"int"=>"int",
 			"boolean"=>"tinyint",
 			"number"=>"double precision",
-			"lang"=>"tinytext",
+			"lang"=>"char(2)",
 			"longtext"=>"longtext",
 			);
 

@@ -2,7 +2,7 @@
 // charge le fichier xml et
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate();
+authenticate(LEVEL_VISITEUR);
 include ($home."func.php");
 
 $context[id]=$id=intval($id);
@@ -46,17 +46,20 @@ calcul_page($context,"xml-classe");
 $contents=ob_get_contents();
 ob_end_clean();
 
-$arr=preg_split("/\s*(<(\/?)r2r:[^>]+>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
+$arr=preg_split("/\s*(<(\/?)\w+(?:\s[^>]*)?>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
 #print_r($arr);
 
 // "telechargement"
 $originalname="entite-$id.xml";
-header("Content-type: application/force-download");
-header("Content-Disposition: attachment; filename=$originalname");
+
+# temporairement commente
+#header("Content-type: application/force-download");
+#header("Content-Disposition: attachment; filename=$originalname");
 #header("Content-type: application/$type");
 
 
-echo '<?xml version="1.0" encoding="utf-8" ?>';
+echo '<?xml version="1.0" encoding="utf-8" ?>
+';
 $tab="";
 for($i=1; $i<count($arr); $i+=3) {
   if ($arr[$i+1]) $tab=substr($tab,2);

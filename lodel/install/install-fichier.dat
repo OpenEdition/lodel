@@ -297,3 +297,6 @@ ln tpl/transfer.html
 ln session.php
 ln cleanxml.php
 
+# xml schema
+ln schema.php
+ln tpl/schema-xsd.html

@@ -446,4 +446,14 @@ function today() {
 	return date("Y-m-d");
 }
 
+/**
+ * Met le namespace xhtml pour toutes balises qui n'ont pas de namespace.
+ */
+
+function namespace($ns,$text)
+
+{
+  return preg_replace("/<(\/?)(\w+(?:\s[^>]*>)?>)/","<\\1$ns:\\2",$text);
+}
+
 ?>

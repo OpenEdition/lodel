@@ -1,24 +1,24 @@
 <!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
-<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">  
+<article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">  
 
 <!-- affiche les personnes -->
     <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
-	<r2r:gr[#TYPE]>
+	<gr[#TYPE]>
 	  <LOOP NAME="personnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
 	    <DO>
-	      <r2r:[#TYPE] ordre="[#ORDRE]">
-		[<r2r:prefix>(#PREFIX)</r2r:prefix>]
-		[<r2r:prenom>(#PRENOM)</r2r:prenom>]
-		[<r2r:nomfamille>(#NOMFAMILLE)</r2r:nomfamille>]
-		[<r2r:description>(#DESCRIPTION)</r2r:description>]
-		[<r2r:fonction>(#FONCTION)</r2r:fonction>]
-		[<r2r:affiliation>(#AFFILIATION)</r2r:affiliation>]
-		[<r2r:courriel>(#COURRIEL)</r2r:courriel>]
-	      </r2r:[#TYPE]>
+	      <[#TYPE] ordre="[#ORDRE]">
+		[<prefix>(#PREFIX)</prefix>]
+		<prenom>[(#PRENOM)]</prenom>
+		<nomfamille>[(#NOMFAMILLE)]</nomfamille>
+		[<description>(#DESCRIPTION|namespace("xhtml"))</description>]
+		[<fonction>(#FONCTION|namespace("xhtml"))</fonction>]
+		[<affiliation>(#AFFILIATION|namespace("xhtml"))</affiliation>]
+		[<courriel>(#COURRIEL)</courriel>]
+	      </[#TYPE]>
 	    </DO>
 	  </LOOP>
-	</r2r:gr[#TYPE]>
+	</gr[#TYPE]>
       </DO>
     </LOOP>
 <!-- -->
@@ -26,16 +26,16 @@
 <!-- affiche les entrees -->
     <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
-	<r2r:gr[#TYPE]>
+	<gr[#TYPE]>
 	  <LOOP NAME="entrees" TABLE="entrees" WHERE="idtype='[#ID]'" ORDER="ordre">
 	    <DO>
-	      <r2r:[#TYPE]>
-		<r2r:nom>[#NOM]</r2r:nom>
-		<r2r:abrev>[#ABREV]</r2r:abrev>
-	      </r2r:[#TYPE]>
+	      <[#TYPE]>
+		<nom>[#NOM]</nom>
+		<abrev>[#ABREV]</abrev>
+	      </[#TYPE]>
 	    </DO>
 	  </LOOP>
-	</r2r:gr[#TYPE]>
+	</gr[#TYPE]>
       </DO>
     </LOOP>
 <!-- -->
@@ -43,38 +43,36 @@
 <!-- affiche les champs -->
     <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       <DO>
-	<r2r:[#NOM]>
+	<[#NOM]>
 	  <LOOP NAME="champs">
 	    <DO>
-	      <IF COND="[#VALUE]">
 		<IF COND="[#TYPE] eq 'boolean'">
-		  <r2r:[#NOM]>[#VALUE]</r2r:[#NOM]>
+		  <[#NOM]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NOM]>
 		<ELSE/>
 		<IF COND="[#TYPE] eq 'mltext'">
   		  <LOOP NAME="mltext">
   		     <DO>
-  		       <r2r:[#NOM] lang="[#LANG]">[#VALUE]</r2r:[#NOM]>
+  		       <[#NOM] lang="[#LANG]">[(#VALUE|namespace("xhtml"))]</[#NOM]>
   		    </DO>
   		  </LOOP>
   	        <ELSE/>
   	        <IF COND="[#TYPE] eq 'lang'">
-  		   <r2r:[#NOM]>[#VALUE]</r2r:[#NOM]>
+  		   <[#NOM]>[#VALUE]</[#NOM]>
   	        <ELSE/>
   	         <IF COND="[#TYPE] eq 'date'">
-  		  <r2r:[#NOM]>[(#VALUE|humandate)]</r2r:[#NOM]>
+  		  <[#NOM]>[(#VALUE|humandate)]</[#NOM]>
   	        <ELSE/>
-  		  <r2r:[#NOM]>[#VALUE]</r2r:[#NOM]>
+  		  <[#NOM]>[(#VALUE|namespace("xhtml"))]</[#NOM]>
 		</IF>
 		</IF>
 		</IF>
 		</IF>
-  	      </IF>
 	    </DO>
 	  </LOOP>
-	</r2r:[#NOM]>
+	</[#NOM]>
       </DO>
     </LOOP>
 
 <!-- -->
-<r2r:meta><r2r:infoarticle><r2r:typedoc>[#TYPE]</r2r:typedoc></r2r:infoarticle></r2r:meta>
-  </r2r:article>
+  <meta><infoarticle><typedoc>[#TYPE]</typedoc></infoarticle></meta>
+/article>
