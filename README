@@ -1,3 +1,4 @@
+*
 * modif pour ajouter les styles recensions, erratum, ndlr, droitsauteur, surtitre: lodel/revue/lodel/edition/balises.php
 Pour le moment, tous ces styles sont accessibles dans documents.php uniquement. Il faut me dire ce qu'il faut en faire exactement (surtout les recensions... a mettre dans la base ?).
 Il faut aussi me dire lesquels on affiche (ou on affiche pas) quand le texte n'est pas publie ! c'est important de securiser dans le php, sauf si vous souhaitez que chaque revue decide... dans ce cas, toutes les revues assumes le choix d'afficher ou pas un erratum, un ndlr, etc quand le texte n'est pas publie.
