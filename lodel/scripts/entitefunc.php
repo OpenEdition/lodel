@@ -189,6 +189,9 @@ function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
 
  if (!$context[nomfamille]) { if ($lock) unlock(); return; }
 
+ if ($statut>-64 && $statut<-1) $statut=-1;
+ if ($statut>1) $statut=1;
+
   $vars=array("prefix","nomfamille","prenom","description","fonction","affiliation","courriel");
   foreach (array_keys($context[nomfamille]) as $idtype) { // boucle sur les types
     foreach (array_keys($context[nomfamille][$idtype]) as $ind) { // boucle sur les ind
@@ -200,8 +203,8 @@ function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
       $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]personnes WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'") or die (mysql_error());
       if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
 	list($id,$oldstatut)=mysql_fetch_array($result); // on recupere sont id et sont statut
-	if ($statut>0 && $oldstatut<0) { // Faut-il publier l'personne ?
-	  mysql_query("UPDATE $GLOBALS[tp]personnes SET statut=1 WHERE id='$id'") or die (mysql_error());
+	if (($statut>0 && $oldstatut<0) || ($oldstatut<=-64 && $statut>$oldstatut)) { // Faut-il publier l'personne ?
+	  mysql_query("UPDATE $GLOBALS[tp]personnes SET statut='$statut' WHERE id='$id'") or die (mysql_error());
 	}
       } else {
 	mysql_query ("INSERT INTO $GLOBALS[tp]personnes (statut,nomfamille,prenom) VALUES ('$statut','$bal[nomfamille]','$bal[prenom]')") or die (mysql_error());
@@ -226,6 +229,9 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
   if ($lock) lock_write("entites_entrees","entrees","typeentrees");
   // detruit les liens dans la table entites_indexhs
   mysql_query("DELETE FROM $GLOBALS[tp]entites_entrees WHERE identite='$identite'") or die (mysql_error());
+
+ if ($statut>-64 && $statut<-1) $statut=-1;
+ if ($statut>1) $statut=1;
 
 #  print_r($context[entrees]);
   if (!$context[entrees]) { if ($lock) unlock(); return; }
@@ -254,8 +260,12 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
       #echo $entree,":",mysql_num_rows($result),"<br>";
       if (mysql_num_rows($result)) { // l'entree exists
 	list($id,$oldstatut)=mysql_fetch_array($result);
-	if ($statut>0 && $oldstatut<0) { // faut-il publier ?
-	  mysql_query("UPDATE $GLOBALS[tp]entrees SET statut=abs(statut) WHERE id='$id'") or die (mysql_error());	
+
+	$statutset="";
+	if ($oldstatut<=-64 && $statut>$oldstatut) $statutset=$statut;
+	if ($statut>0 && $oldstatut<0) $statutset="abs(statut)"; // faut-il publier ?
+	if ($statutset) {
+	  mysql_query("UPDATE $GLOBALS[tp]entrees SET statut=$statutset WHERE id='$id'") or die (mysql_error());	
 	}
       } elseif ($typeentree[nvimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
 	// oui,il faut ajouter le mot cle
