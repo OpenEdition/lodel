@@ -203,7 +203,7 @@ if (!$tache) {
 // Vérifie les droits sur les fichiers, (verifie juste les droits d'apache, pas les droits des autres users, et verifie les droits minimum, pas de verification de la securite) dans la zone admin
 //
 
-if (function_exists("is_readable") && function_exists("is_writable") && function_exists("is_executable")) {
+if (function_exists("mode")) {
   // les fonctions de tests existent, donc on peut faire des tests sur les droits
   $files=array("lodeladmin/CACHE"=>7,
 	       "lodeladmin/tpl"=>5,
@@ -214,11 +214,12 @@ if (function_exists("is_readable") && function_exists("is_writable") && function
 	       "lodel/src"=>5,
 	       "lodeladmin/images"=>5);
 	       
+  $entete=0;
   foreach ($files as $file => $mode) {
     do { // block de control
       if ((mode(LODELROOT."/".$file) & $mode)==$mode) break;
       // essaie de chmoder
-      if ($have_chmod && @chmod ($file) && (mode($file) & $mode)==$mode) break;
+      if ($have_chmod && (@chmod (LODELROOT."/".$file)) && (mode(LODELROOT."/".$file) & $mode)==$mode) break;
       if (!$entete) { probleme_droits_debut(); $entete=1; }
       probleme_droits($file,$mode);
     } while (0);
@@ -239,18 +240,23 @@ if (@include ($lodelconfig)) {
   return;
 }
 
+// does what ./lodelconfig.php does.
+$home=LODELROOT."/".$home;
+
+
 //
 // essaie d'etablir si on accede au script func.php
 //
 if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
-  // il faut determiner si on fonctionne avec un $home ou si on fonctionne avec un include automatique.
-  // essaie de deviner le repertoire absolu
-  if (!$pathroot && function_exists("realpath")) {
-    $pathroot=@realpath(LODELROOT);
-    if ($pathroot) $erreur_guess=1;
-  }
-  if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
-  return;
+#  // il faut determiner si on fonctionne avec un $home ou si on fonctionne avec un include automatique.
+#  // essaie de deviner le repertoire absolu
+#  if (!$pathroot && function_exists("realpath")) {
+#    $pathroot=@realpath(LODELROOT);
+#    if ($pathroot) $erreur_guess=1;
+#  }
+#  if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
+#  return;
+  die ("ERROR: impossible d'acceder au fichier ".$home."func.php from lodeladmin. Check the file exissts and the rights. Press Reload.");
 }
 
 //
@@ -492,6 +498,13 @@ function probleme_droits_fin()
 {
 ?>
 </ul>
+<p></p>
+<p align="center">
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="droits">
+<input type="submit" value="continuer">
+</form>
+</p>
 <p></p>
 Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br />
 LODEL est distribué SANS AUCUNE GARANTIE.
