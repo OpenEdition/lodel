@@ -121,6 +121,7 @@ ln tpl/chkbalisage.html
 ln extrainfo.php
 ln tpl/extrainfo.html
 ln importsommaire.php
+ln telecharger.php
 
 # satellite des documents
 ln docannexe.php
