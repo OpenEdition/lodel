@@ -131,8 +131,11 @@ function parse ($in,$out)
   // parse  macros
   $this->parse_macros($contents,$macros);
 
-  $contents = preg_replace("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
-			   '<?php insert_template(\$context,"\\1"); ?>',$contents);
+  $contents = preg_replace(array("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
+				 "/^\s+/m"),
+			   array('<?php insert_template(\$context,"\\1"); ?>',
+				 ""),
+				 $contents);
 
 
   $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE|ESCAPE";
