@@ -108,7 +108,7 @@ class Entities_IndexLogic extends Logic
    	 	# echo "stringnonHTML=$string";
    	 		//non alphanum chars cleaning
    	 		//include utf8 quotes at the end
-   	 		$regs = "'\.],:*\"!\r\t\\/){}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
+   	 		$regs = "'\.],:*\"!\r\t\\/)({}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
    	 	#echo "regs=$regs";
    	 		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );
    	 	#echo "string=$string<br />\n";
