@@ -343,4 +343,11 @@ function supprime_appels_notes(&$text)
         return preg_replace("/<a\b[^>]+>\s*<sup>\s*<small>.*?<\/small>\s*<\/sup>\s*<\/a>/is","",$text);
 }
 
+// Fonction qui dit si une date est vide ou non
+function isadate(&$text)
+
+{
+  return $text!="0000-00-00";
+}
+
 ?>
