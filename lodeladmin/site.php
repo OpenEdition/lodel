@@ -234,6 +234,7 @@ if ($tache=="createtables") {
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','".($servoourl=="off" ? "" : $servoourl)."','32','1');\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
+  $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('signalermail','s','inactif','32','1');\n"; 
 
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
