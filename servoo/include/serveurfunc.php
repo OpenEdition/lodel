@@ -4,11 +4,25 @@ if (!function_exists("file_get_contents")) {
   function file_get_contents($file) 
   {
     $fp=fopen($file,"r") or die("Impossible de lire le fichier $file");
-    while(!feof($fp)) $res.=fread($fp,2048);
+    while(!feof($fp)) {
+      $res.=fread($fp,2048);
+    }
     fclose($fp);
     return $res;
   }
 }
+
+
+function removeaccentsandspaces($string){
+return strtr(
+ strtr(utf8_decode(preg_replace("/[\s_\r]/","",$string)),
+  '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
+  'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
+array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
+  '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
+}
+
+
 
 
 function upload($url,$vars,$files=0,$cookies=0,$outfile="")

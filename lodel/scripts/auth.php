@@ -164,7 +164,7 @@ function getsiteoptions ()
   include_once ($home."connect.php");
 
   mysql_select_db($GLOBALS[database]);
-  $result=mysql_query("SELECT $GLOBALS[tp]options FROM sites WHERE rep='$site'") or die (mysql_error());
+  $result=mysql_query("SELECT options FROM $GLOBALS[tp]sites WHERE rep='$site'") or die (mysql_error());
   if (!mysql_num_rows($result)) { die ("erreur site"); }
 
   list($options)=mysql_fetch_array($result);

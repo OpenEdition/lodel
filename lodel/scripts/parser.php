@@ -397,7 +397,12 @@ function parse_loop()
 	array_push($wheres,"(".trim(replace_conditions($value)).")");
 	break;
       case "TABLE" :
-	array_push($tables,$value);
+	$arr=preg_split("/,/",$value);
+	if ($arr) {
+	  foreach ($arr as $value) {
+	    array_push($tables,$GLOBALS[tp].trim($value));
+	  }
+	}
 	break;
       case "ORDER" :
 	array_push($orders,$value);
@@ -666,7 +671,8 @@ function make_loop_code ($name,$tables,
 {
   // traitement particulier additionnel
 
-  $table=$GLOBALS[tp].join (', $GLOBALS[tp]',array_reverse(array_unique($tables)));
+  # c'est plus complique que ca ici, car parfois la table est prefixee par la DB.
+  $table=join (', ',array_reverse(array_unique($tables)));
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
   // select

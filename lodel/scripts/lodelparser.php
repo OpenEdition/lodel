@@ -35,37 +35,37 @@ function parse_loop_extra(&$tables,
   //
 
   // gere les tables principales liees a entites
-  if (in_array("documents",$tables)) {
-    array_push($tables,"entites");
-    array_push($tablesinselect,"entites");
+  if (in_array("$GLOBALS[tp]documents",$tables)) {
+    array_push($tables,"$GLOBALS[tp]entites");
+    array_push($tablesinselect,"$GLOBALS[tp]entites");
     $where.=" AND $GLOBALS[tp]documents.identite=$GLOBALS[tp]entites.id AND classe='documents'";
   }
-  if (in_array("publications",$tables)) {
-    array_push($tables,"entites");
-    array_push($tablesinselect,"entites");
+  if (in_array("$GLOBALS[tp]publications",$tables)) {
+    array_push($tables,"$GLOBALS[tp]entites");
+    array_push($tablesinselect,"$GLOBALS[tp]entites");
     $where.=" AND $GLOBALS[tp]publications.identite=$GLOBALS[tp]entites.id AND classe='publications'";
   }
 #  echo "where 1:",htmlentities($where),"<br>";
-  if (in_array("entites",$tables)) {
+  if (in_array("$GLOBALS[tp]entites",$tables)) {
     if (preg_match("/\bclasse\b/",$where)) {
-      array_push($tables,"types");
-      protect2($where,$ordre,"entites","id|statut|ordre");
+      array_push($tables,"$GLOBALS[tp]types");
+      protect2($where,$ordre,"$GLOBALS[tp]entites","id|statut|ordre");
       $jointypesentitesadded=1;
       $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
       ## c'est inutile pour le moment: preg_replace("/\bclasse\b/","$GLOBALS[tp]types.classe",$where).
     }
 #  echo "where 1bis:",htmlentities($where),"<br>";
     if (!$jointypesentitesadded && preg_match("/\btype\b/",$where)) {
-      array_push($tables,"types");
-      protect2($where,$ordre,"entites","id|statut|ordre");
+      array_push($tables,"$GLOBALS[tp]types");
+      protect2($where,$ordre,"$GLOBALS[tp]entites","id|statut|ordre");
       $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
     }
     if (preg_match("/\bparent\b/",$where)) {
-      array_push($tables,"entites as entites_interne2");
-      protect2($where,$ordre,"entites","id|idtype|nom|groupe|user|ordre|statut");
+      array_push($tables,"$GLOBALS[tp]entites as entites_interne2");
+      protect2($where,$ordre,"$GLOBALS[tp]entites","id|idtype|nom|groupe|user|ordre|statut");
       $where=preg_replace("/\bparent\b/","entites_interne2.nom",$where)." AND entites_interne2.id=$GLOBALS[tp]entites.idparent";
     }
-    if (in_array("types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
+    if (in_array("$GLOBALS[tp]types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
       $extrainselect.=", $GLOBALS[tp]types.type , $GLOBALS[tp]types.classe";
     }
   }// fin de entites
@@ -80,9 +80,9 @@ function parse_loop_extra(&$tables,
       if (preg_match("/\sas\s+(\w+)/",$table,$result)) $table=$result[1];
       if ($GLOBALS[tablefields][$table] &&
 	  !in_array("statut",$GLOBALS[tablefields][$table])) continue;
-      if ($table=="session") continue;
+      if ($table=="$GLOBALS[tp]session") continue;
 
-      if ($table=="entites") {
+      if ($table=="$GLOBALS[tp]entites") {
 	$lowstatut='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
       } else {
 	$lowstatut="-64";
@@ -95,7 +95,7 @@ function parse_loop_extra(&$tables,
 
     if ($site) {
       ///////// CODE SPECIFIQUE -- gere les tables croisees
-      if (in_array("taches",$tables) && in_array("publications",$tables)) $where.=" AND publication=r2r_publications.id";
+      #if (in_array("$GLOBALS[tp]taches",$tables) && in_array("$GLOBALS[tp]publications",$tables)) $where.=" AND publication=r2r_publications.id";
 
 #      if (in_array("documents",$tables) && in_array("publications",$tables)) {
 #	$where.=" AND publication=$GLOBALS[tp]publications.id";
@@ -105,64 +105,64 @@ function parse_loop_extra(&$tables,
       //
 
       // auteurs
-     if (in_array("personnes",$tables)) {
+     if (in_array("$GLOBALS[tp]personnes",$tables)) {
        // fait ca en premier
        if (preg_match("/\b(iddocument|identite)\b/",$where)) {
 	 // on a besoin de la table croisee entites_personnes
-	 array_push($tables,"entites_personnes");
-	 array_push($tablesinselect,"entites_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
+	 array_push($tables,"$GLOBALS[tp]entites_personnes");
+	 array_push($tablesinselect,"$GLOBALS[tp]entites_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
 	 $where=preg_replace("/\biddocument\b/","identite",$where);
 	 $where.=" AND idpersonne=$GLOBALS[tp]personnes.id";
        }
        if (preg_match("/\btype\b/",$where)) {
-	 protect2($where,$ordre,"personnes","id|statut");
-	 protect2($where,$ordre,"entites_personnes","ordre");
-	 array_push($tables,"typepersonnes");
+	 protect2($where,$ordre,"$GLOBALS[tp]personnes","id|statut");
+	 protect2($where,$ordre,"$GLOBALS[tp]entites_personnes","ordre");
+	 array_push($tables,"$GLOBALS[tp]typepersonnes");
 	 // maintenant, il y a deux solutuions
-	 if (!in_array("entites_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
-	   array_push($tables,"entites_personnes");
+	 if (!in_array("$GLOBALS[tp]entites_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
+	   array_push($tables,"$GLOBALS[tp]entites_personnes");
 	   $groupby.=" $GLOBALS[tp]entites_personnes.idpersonne";
 	 }
 	 $where.=" AND $GLOBALS[tp]entites_personnes.idtype=$GLOBALS[tp]typepersonnes.id AND $GLOBALS[tp]entites_personnes.idpersonne=$GLOBALS[tp]personnes.id";
        }
      }
-     if (in_array("entites",$tables) && preg_match("/\bidpersonne\b/",$where)) {
+     if (in_array("$GLOBALS[tp]entites",$tables) && preg_match("/\bidpersonne\b/",$where)) {
 	// on a besoin de la table croise entites_personnes
-	array_push($tables,"entites_personnes");
+	array_push($tables,"$GLOBALS[tp]entites_personnes");
 	$where.=" AND $GLOBALS[tp]entites_personnes.identite=$GLOBALS[tp]entites.id";
      }
      // entrees
-     if (in_array("entrees",$tables)) {
+     if (in_array("$GLOBALS[tp]entrees",$tables)) {
 	if (preg_match("/\btype\b/",$where)) {
-	  protect ($where,"entrees","id|statut|ordre");
-	  protect ($ordre,"entrees","id|statut|ordre");
-	  array_push($tables,"typeentrees");
+	  protect ($where,"$GLOBALS[tp]entrees","id|statut|ordre");
+	  protect ($ordre,"$GLOBALS[tp]entrees","id|statut|ordre");
+	  array_push($tables,"$GLOBALS[tp]typeentrees");
 	  $where.=" AND $GLOBALS[tp]entrees.idtype=$GLOBALS[tp]typeentrees.id";
 	}
        if (preg_match("/\b(iddocument|identite)\b/",$where)) {
 	  // on a besoin de la table croise entites_entrees
-	  array_push($tables,"entites_entrees");
+	  array_push($tables,"$GLOBALS[tp]entites_entrees");
 	  $where=preg_replace("/\biddocument\b/","identite",$where);
 	  $where.=" AND identree=$GLOBALS[tp]entrees.id";
 	}
       }
-      if (in_array("entites",$tables) && preg_match("/\bidentree\b/",$where)) {
+      if (in_array("$GLOBALS[tp]entites",$tables) && preg_match("/\bidentree\b/",$where)) {
 	// on a besoin de la table croise entites_entrees
-	array_push($tables,"entites_entrees");
+	array_push($tables,"$GLOBALS[tp]entites_entrees");
 	$where.=" AND $GLOBALS[tp]entites_entrees.identite=$GLOBALS[tp]entites.id";
       }
-      if (in_array("groupes",$tables) && preg_match("/\biduser\b/",$where)) {
+      if (in_array("$GLOBALS[tp]groupes",$tables) && preg_match("/\biduser\b/",$where)) {
 	// on a besoin de la table croise users_groupes
-	array_push($tables,"users_groupes");
+	array_push($tables,"$GLOBALS[tp]users_groupes");
 	$where.=" AND idgroupe=$GLOBALS[tp]groupes.id";
       }
-      if (in_array("users",$tables) && in_array("session",$tables)) {
+      if (in_array("$GLOBALS[tp]users",$tables) && in_array("$GLOBALS[tp]session",$tables)) {
 	$where.=" AND iduser=$GLOBALS[tp]users.id";
       }
-      if (in_array("champs",$tables) && preg_match("/\bclasse\b/",$where)) {
+      if (in_array("$GLOBALS[tp]champs",$tables) && preg_match("/\bclasse\b/",$where)) {
 	// on a besoin de la table croise groupesdechamps
-	protect2($where,$ordre,"champs","id|statut|ordre");
-	array_push($tables,"groupesdechamps");
+	protect2($where,$ordre,"$GLOBALS[tp]champs","id|statut|ordre");
+	array_push($tables,"$GLOBALS[tp]groupesdechamps");
 	$where.=" AND $GLOBALS[tp]groupesdechamps.id=$GLOBALS[tp]champs.idgroupe";
 	$extrainselect.=", $GLOBALS[tp]groupesdechamps.classe";
      }
@@ -265,9 +265,9 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 
 
 function prefixtablesindatabase(&$table) {
-  if ($table=="sites" || 
-      $table=="session" ||
-      ($table=="users" && $GLOBALS[database]==$GLOBALS[currentdb]) ## hack pas super propre pour gerer les deux tables users !
+  if ($table=="$GLOBALS[tp]sites" || 
+      $table=="$GLOBALS[tp]session" ||
+      ($table=="$GLOBALS[tp]users" && $GLOBALS[database]==$GLOBALS[currentdb]) ## hack pas super propre pour gerer les deux tables users !
     ) $table=$GLOBALS[database].".".$table;
 }
 

@@ -33,6 +33,9 @@ mysql_query("INSERT INTO $GLOBALS[tp]log (iduser,commands) VALUES ('$user[id]','
 
 //-------------------------------------------------------------------------------//
 
+require ($home."serveurfunc.php");
+
+
 //
 // on traite les commandes maintenant
 //
@@ -60,7 +63,6 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
       $auploader=$convertedfiles;
     }
     // on upload maintenant
-    require ($home."serveurfunc.php");
     echo upload($user[url],array("tache"=>$tache),$auploader,array($sessionname=>$session));
 
     // command CVT ----------------
@@ -70,6 +72,9 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     if ($type=="HTMLLodel-1.0") {      
       require_once($home."convert.php");
       $convertedfiles=HTMLLodel($sourcefile,$msg);
+    } elseif ($type=="XHTMLLodel-1.0") {
+      require_once($home."convert.php");
+      $convertedfiles=XHTMLLodel($sourcefile,$msg);
     } else die("ERROR: unknow conversion type");
 #    error_log("CVT ".(time()-$t)."\n",3,"/tmp/error_log");
     // command ZIP ----------------

@@ -1,7 +1,8 @@
 <?php
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_ADMINLODEL);
+#authenticate(LEVEL_ADMINLODEL);
+authenticate();
 include ($home."func.php");
 
 $err="";
@@ -38,7 +39,7 @@ UPDATE _PREFIXTABLE_users SET privilege=40 where privilege=32;
     if ($err) break;
 
     if ($tables["$GLOBALS[tp]users"]) {
-      $fields=getfields("$GLOBALS[tp]users");
+      $fields=getfields("users");
       if ($fields[email]) {
 	$err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_users CHANGE email courriel VARCHAR(255);
@@ -168,7 +169,7 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
     }
     if ($tables["$GLOBALS[tp]documents"]) {
       // cherche les fields de documents 
-      $fields=getfields("$GLOBALS[tp]documents");
+      $fields=getfields("documents");
       $champs=array("surtitre","commentaire","lien");
       foreach ($champs as $champ) {
 	if ($fields[$champ]) continue;
@@ -181,7 +182,7 @@ ALTER TABLE _PREFIXTABLE_documents ADD     '.$champ.'        TINYTEXT NOT NULL;
   }
    if ($tables["$GLOBALS[tp]documents_auteurs"]) {
       // cherche les fields de documents 
-      $fields=getfields("$GLOBALS[tp]documents_auteurs");
+      $fields=getfields("documents_auteurs");
       if (!$fields[description]) {
 	$err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     description             TEXT NOT NULL;
@@ -201,7 +202,7 @@ ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     '.$champ.'        TINYTEXT NO
     }
     if ($tables["$GLOBALS[tp]auteurs"]) {
       // cherche les fields de documents 
-      $fields=getfields("$GLOBALS[tp]auteurs");
+      $fields=getfields("auteurs");
       $champs=array("prefix","fonction","affiliation","courriel");
       foreach ($champs as $champ) {
 	if (!$fields[$champ]) continue;
@@ -397,7 +398,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       $report.="Transfert des documents dans entites offset=$offset<br>";
     }
 
-    $fields=getfields("$GLOBALS[tp]publications");
+    $fields=getfields("publications");
     if ($fields[directeur]) { // import les directeurs
       include_once($home."entitefunc.php");
 
@@ -460,7 +461,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALU
       }
 
       // importe dans les documents
-      $fields=getfields("$GLOBALS[tp]documents");
+      $fields=getfields("documents");
       unset($fields[identite]); // enleve identite
       unset($fields[meta]); // enleve meta
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents") or die (mysql_error());
@@ -536,7 +537,7 @@ function mysql_query_cmd($cmd)
 function mysql_query_cmds($cmds,$table="") 
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tp]",$cmds);
+  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$cmds);
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   if ($table) { // select the commands operating on the table  $table
@@ -572,7 +573,7 @@ function gettables()
 function getfields($table)
 
 {
-  $fields = mysql_list_fields($GLOBALS[currentdb],$table) or die (mysql_error());
+  $fields = mysql_list_fields($GLOBALS[currentdb],$GLOBALS[tp].$table) or die (mysql_error());
   $columns = mysql_num_fields($fields);
   $arr=array();
   for ($i = 0; $i < $columns; $i++) {

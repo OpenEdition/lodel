@@ -31,7 +31,7 @@ mysql_select_db($GLOBALS[currentdb])  or die (mysql_error());
 // expressions qui facilite la vie
 //
 
-$GLOBALS[tp]=$GLOBALS[tp];
+$GLOBALS[tp]=$GLOBALS[tableprefix];
 
 
 

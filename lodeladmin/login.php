@@ -40,7 +40,7 @@ if ($login) {
     unlock();
     if ($i==5) { $context[erreur_opensession]=1; break; }
 
-    if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) { $context[erreur_setcookie]=1; break;}
+    if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 
     header ("Location: http://$SERVER_NAME$url_retour");
     die ("$url_retour");
@@ -56,7 +56,7 @@ if ($context[erreur_sitebloque]) { // on a deja verifie que la site est bloque.
 } else { // test si la site est bloque dans la DB.
   include_once ($home."connect.php");
   mysql_select_db($database);
-  $result=mysql_query("SELECT 1 FROM sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
+  $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
   $context[sitebloque]=mysql_num_rows($result);
 }
 
@@ -84,24 +84,22 @@ function check_auth (&$site)
     $pass=md5($context[passwd].$context[login]);
 
     // cherche d'abord dans la base generale.
-#ifndef LODELLIGHT
+
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT id,statut,privilege FROM users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+    $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
-     } else { // le user n'est pas dans la base generale
+     } elseif ($GLOBALS[currentdb]!=$GLOBALS[database]) { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
 
       // cherche ensuite dans la base du site
       mysql_select_db($GLOBALS[currentdb]);
-      $result=mysql_query ("SELECT id,statut,privilege FROM users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
+      $result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;
-    }
-#else
-#      if (!($result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND statut>0")))  break;
-#      if (!($row=mysql_fetch_assoc($result))) break;
-#endif
+     } else {
+       break; // on s'eject
+     }
     // pass les variables en global
     $userpriv=$row[privilege];
     $context[iduser]=$iduser=$row[id];

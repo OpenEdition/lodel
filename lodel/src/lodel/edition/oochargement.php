@@ -54,7 +54,7 @@ if ($file1 && $file1!="none") {
     require_once($home."balises.php");
     if ($sortieoo || $sortiexmloo || $sortie) $oo=TRUE;
     
-    $newname=OO($file1converted,$context);
+    $newname=OO_XHTML($file1converted,$context);
     if (!$newname) {
       $context[erreur_upload]="Erreur dans la fonction OO";
       break;
@@ -109,7 +109,7 @@ function convert ($uploadedfile,$destfile)
 {
   global $home,$serveuroourl,$serveuroousername,$serveuroopasswd,$unzipcmd;
 
-  $cmds.="DWL file1; CVT HTMLLodel-1.0; ZIP all; RTN convertedfile;";
+  $cmds.="DWL file1; CVT XHTMLLodel-1.0; ZIP all; RTN convertedfile;";
 
   require ($home."serveurfunc.php");
   $ret=upload($serveuroourl,
@@ -127,8 +127,171 @@ function convert ($uploadedfile,$destfile)
   return FALSE;
 }
 
+function OO_XHTML ($convertedfile,&$context)
 
-function OO ($convertedfile,&$context)
+{
+  global $home,$msg;
+
+  $time1=time();
+
+  $file=strtr(join('',file($convertedfile)),"\n\r","  ");
+
+  if ($GLOBALS[sortieoo]) { // on veut la sortie brute
+    echo htmlentities($file);
+    return;
+  }
+
+  convertHTMLtoUTF8($file);
+
+  // tableau search et replace
+  $srch=array(); $rpl=array();
+
+
+  array_push($srch,
+	     "/.*?<style\b[^>]*type=\"text/css\"[^>]*>(.*?)<\/style>.*?<body\b[^>]*>/s",
+	     "/.*<body\b[^>]*>/s",
+	     "/<\/body>.*/s");
+  array_push($rpl,"<r2r:stylecss>\\1</r2r:stylecss>","","");
+  
+  // styles transparents
+  // on efface tout ce qu'il y a entre.
+  array_push($srch,"/<(r2rc?:$GLOBALS[stylestransparents])\b([^>]*)>.*?<\/\\1>/");
+  array_push($rpl,"");
+
+  //
+  
+  $translations=array("notesdebasdepage"=>"notebaspage",
+		      "footnote(?:text)?"=>"notebaspage",
+		      "endnote(?:text)?"=>"notefin",
+		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
+		      "introduction"=>"texte","conclusion"=>"texte",
+		      "normal"=>"texte", "normal\s*(web)"=>"texte",
+		      "puces?"=>"texte",
+		      "bloccitation"=>"citation",
+		      "typedocument"=>"typedoc",
+		      );
+
+  
+  foreach ($translations as $k=>$v) {
+    array_push($srch,"/<r2r:$k\b([^>]*)>/","/<\/r2r:$k\b([^>]*)>/");
+    if ($v) {
+	array_push($rpl,"<r2r:$v\\1>","</r2r:$v\\1>");
+    } else {
+	array_push($rpl,"","");
+    } 
+  }
+
+  // conversion des balises de sections
+  array_push($srch,
+	     "/<r2r:(?:heading|titre)(\d+\b([^>]*))>/",
+	     "/<\/r2r:(?:heading|titre)(\d+)>/",
+	     "/<h(\d+)>/",
+	     "/<\/h(\d+)>/");
+
+  array_push($rpl,
+	     "<r2r:section\\1>",
+	     "</r2r:section\\1>",
+	     "<r2r:section\\1>\\0",
+	     "\\0</r2r:section\\1>");
+
+
+#  // traitement un peu sale des footnote et les endnote. On efface les paragraphes marques footnote et on remet sur la base du div
+#  array_push($srch,"/<\/?r2r:notebaspage>/","/<div id=\"sdfootnote\d+\">.*?<\/div>/i");
+#  array_push($rpl,"","<r2r:notebaspage>\\0</r2r:notebaspage>");
+#  array_push($srch,"/<\/?r2r:notefin>/","/<div id=\"sdendnote\d+\">.*?<\/div>/i");
+#  array_push($rpl,"","<r2r:notefin>\\0</r2r:notefin>");
+
+  // remonte les balises r2r
+#  array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
+#  array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
+
+  // autre chgt
+
+  array_push($srch,
+	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
+#	     "/(<a\b[^>]*)sdfixed>/i",
+#	     "/<div type=(?:header|footer)>.*?<\/div>/is",
+#	     "/<\w[^>]*>/e", // balises ouvrantes
+#	     "/<\/[^>]+>/e", // balises fermantes
+#	     "/<p\salign=\"(left|justify)\"(\s+[^>]*)>/", # enleve les alignements gauche et justify ....... surement inutile maintenant avec OO
+#	     "/<br\b([^>]*)>/",   # XML is
+#	     "/<\/br>/",	#efface
+#	     "/<li>/",
+	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
+	     "/(<img\b[^>\/]+)\/?".">/i" # met border="0"
+#	     "/(<(col)\b[^>]*?)\/?".">/i", # balise seule, il faut les fermer
+#	     "/(<p\b[^>]*>\s*<br\s*\/>\s*<\/p>\s*)(<r2r:[^>]+>)/" // gere les sauts de ligne
+	     );
+
+  array_push($rpl,
+	     "\\1",
+#	     "\\1>",
+#	     "",
+#	     'quote_attribut_strtolower("\\0")', // ouvrantes
+#	     'strtolower("\\0")',                // fermentes
+#	     "<p\\2>",
+#	     "<br\\1 />",
+#	     " ",
+#	     "<li />",
+	     "\\1\\2",
+	     "\\1border=\"0\"/>"
+#	     "\\1 />",
+#	     "\\2\\1"
+	     );
+
+  $time=time();
+
+  $file=preg_replace ($srch,$rpl,$file);
+
+#  die(htmlentities($file));
+
+  if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1;
+  return FALSE; }
+  $file=traite_multiplelevel($file);
+
+  if ($msg) { echo "<li>temps regexp: ".(time()-$time)." s<br>\n"; }
+
+  //echo htmlentities($file); exit;
+
+  // desuet
+  // enleve les couples de balises r2r.
+  $file=traite_couple($file);
+
+  // recupere les styles conteneurs (ceux qui ont des parentheses)
+  $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/"),
+		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>"),
+		      $file);
+  
+
+# ajoute le debut et la fin
+    $file='<r2r:document xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$file.'</r2r:document>';
+
+# verifie que le document est bien forme
+    include ($home."checkxml.php");
+    if (!checkstring($file)) { echo "fichier: $newname"; return FALSE; }
+
+   if ($GLOBALS[sortie]) die (htmlentities($file));
+
+    function img_copy($imgfile,$ext,$count,$rand) {
+      $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
+      copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
+      return $newimgfile;
+    }
+    include_once ($home."func.php");
+    copy_images($file,"img_copy",rand());
+
+
+  // ecrit le fichier
+  $newname="$convertedfile-".rand();
+  if (!writefile("$newname.html",$file)) return FALSE;
+
+  if ($msg) { echo "Temps total:",time()-$time1,"<br><br>"; flush(); }
+
+  return $newname;
+}
+
+
+function OO_HTML ($convertedfile,&$context)
 
 {
   global $home,$msg;
@@ -193,6 +356,7 @@ function OO ($convertedfile,&$context)
   array_push($srch,
 	     "/<r2r:(?:heading|titre)(\d+\b([^>]*))>/",
 	     "/<\/r2r:(?:heading|titre)(\d+)>/");
+  
   array_push($rpl,
 	     "<r2r:section\\1>",
 	     "</r2r:section\\1>");
@@ -343,7 +507,7 @@ function quote_attribut_strtolower($text)
 ////////////////////////////////////////////////////////
 
 
-
+/* plus utiliser ici => serveuroo
 function removeaccentsandspaces($string){
 return strtr(
  strtr(utf8_decode(preg_replace("/[\s_\r]/","",$string)),
@@ -352,7 +516,47 @@ return strtr(
 array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
   '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
 }
+*/
 
+
+function traite_tableau2_xhtml(&$text)
+
+{
+  // nouveaux traitement des tableaux.
+  // decoupe les tableaux
+  $arr=preg_split("/(<table\b|<\/table>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $count=count($arr); $level=0; $err=0; $istart=0;
+  #echo "count=$count<br>";
+  if ($count==1) return TRUE;
+  for($i=1; $i<$count; $i+=2) {
+    if ($arr[$i]=="</table>") { // ferme
+      $level--;
+      if ($level==0) {
+	$arr[$i].="</r2r:$laststyle>";
+	$arr[$istart]="<r2r:$laststyle>".$arr[$istart];
+      }
+      $laststyle=""; // on vient de sortir du tableau
+    } else { // on ouvre
+      if ($level==0) $istart=$i;
+      $level++;
+    }
+    if ($level && preg_match_all("/<\/r2r:(\w+)>/",$arr[$i+1],$results,PREG_SET_ORDER)) {
+      foreach($results as $result) { // cherche si c'est partout le meme style
+	if ($laststyle && $laststyle!=$result[1]) { 
+	  $err=1;
+	  #die($laststyle." ".$result[1]);
+	  break 2;
+	}
+	$laststyle=$result[1];
+      }
+      $arr[$i+1]=preg_replace("/<\/?r2r:$laststyle>/","",$arr[$i+1]); // ok, on efface alors
+    }
+  }
+  if ($err) {    return FALSE;  }
+
+  $text=join("",$arr);
+  return TRUE;
+}
 
 
 function traite_tableau2(&$text)
