@@ -309,7 +309,7 @@ class XMLImportParser {
 	$call="process".substr($class,0,-2);
 	#echo count($datastack);
 	$data=array_shift($datastack);	
-	$datastack[0].=$his->handler->$call($obj,$data); // call the method associated with the object class
+	$datastack[0].=$this->handler->$call($obj,$data); // call the method associated with the object class
       }
       break;
     case "tablefieldsvo" :
