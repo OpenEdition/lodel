@@ -39,7 +39,7 @@ Controler::controler(array("entrytypes","persontypes",
 			   "usergroups","users",
 			   "types","classes",
 			   "options","optiongroups","useroptiongroups","servooconf",
-			   "internalstyles","characterstyles"));
+			   "internalstyles","characterstyles","entities_index"));
 
 
 function loop_classtypes ($context,$funcname)
