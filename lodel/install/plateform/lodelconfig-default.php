@@ -131,10 +131,10 @@ $serveuroopasswd="ruralia";
 $includepath=""; # pour les sites qui ont un include automatique (defini par php.ini)
 $htaccess="on";    # 
 $usesymlink="";
-
+$installoption="";
 ############################################
 
-setlocale ("LC_ALL","FR");
+setlocale (LC_ALL,"FR");
 set_magic_quotes_runtime(0);
 ignore_user_abort();
 
