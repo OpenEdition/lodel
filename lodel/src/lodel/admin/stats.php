@@ -6,9 +6,7 @@ include ("$home/auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 # ghi ####### ne pas mettre de NORECORDURL ici
 
-echo "ghislain: lis le code, j'ai mis des remarques<br>";
-
-
+/*
 include_once ("$home/connect.php");
 
 //////////////////////////////////  Documents
@@ -131,6 +129,6 @@ function boucle_nom_occ_type_publi(&$context,$funcname)
 
 include ("$home/calcul-page.php");
 calcul_page($context,"stats");
+*/
 
 ?>
-#ghi ###### ne laisse pas de saut de ligne ici. Ca peut poser un pb quand on envoie un header. C'est uniquement vrai pour les scripts qui sont "inclus" donc ceux qui sont dans lodel/scripts. C'est quand meme une bonne habitude.
