@@ -57,22 +57,35 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    function importAction(&$context,&$error)
 
    {
+     global $db;
      $this->context=&$context;
 
      $idtask=intval($context['idtask']);
      $this->task=$task=gettask($idtask);
      require_once($GLOBALS['home']."xmlimport.php");
 
-     $idtype=$task['idtype'];
-     if (!$idtype) die("ERROR: idtype must be given by task in importAction");
-     // get the type 
-     $dao=&getDAO("types");
-     $votype=$dao->getById($idtype,"class");
+     if ($task['identity']) {
+       $context['id']=$task['identity'];
+       $row=$db->getRow(lq("SELECT class,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$context['id']."'"));        
+       if ($db->errorno()) dberror();
+       $class=$row['class'];
+       $context['idtype']=$row['idtype'];
+
+       if (!$class) die("ERROR: can't find entity ".$task['identity']." in Entities_ImportLogic::importAction");
+
+     } else {
+       $idtype=$task['idtype'];
+       if (!$idtype) die("ERROR: idtype must be given by task in importAction");
+       // get the type 
+       $dao=&getDAO("types");
+       $votype=$dao->getById($idtype,"class");
+       $class=$votype->class;
+     }
 
      //$this->_init($votype->class);
 
      $parser=new XMLImportParser();
-     $parser->init($votype->class);
+     $parser->init($class);
      $parser->parse(file_get_contents($task['fichier']),$this);
 
      // save the file

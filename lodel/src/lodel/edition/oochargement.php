@@ -36,11 +36,16 @@ authenticate(LEVEL_REDACTOR);
 include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 
-$context['idparent']=intval($idparent);
-$context['identity']=intval($identity) || intval($iddocument);
-$context['idtask']=$idtask=intval($idtask);
-$context['idtype']=intval($idtype);
-$context['lodeltags']=intval($lodeltags);
+if ($_POST) {
+  $therequest=&$_POST;
+} else {
+  $therequest=&$_GET;
+}
+$context['idparent']=intval($therequest['idparent']);
+$context['identity']=$therequest['identity'] ? intval($therequest['identity']) : intval($therequest['iddocument']);
+$context['idtask']=$idtask=intval($therequest['idtask']);
+$context['idtype']=intval($therequest['idtype']);
+$context['lodeltags']=intval($therequest['lodeltags']);
 
 if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
   header("location: index.php?id=".$context['idparent']);

@@ -175,6 +175,7 @@ class Entities_EditionLogic extends GenericLogic {
      $daotype=&getDAO("types");
      $votype=$daotype->getById($context['idtype'],"class,creationstatus");
      $class=$context['class']=$votype->class;
+     if (!$class) die("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
 
      if (!$this->validateFields($context,$error)) {
        // error.
