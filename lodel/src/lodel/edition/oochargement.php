@@ -566,7 +566,7 @@ function convertHTMLtoUTF8 (&$text)
 	      "ldquo"=>"\342\200\234",
 	      "rdquo"=>"\342\200\235",
 	      "deg"=>'Â°',
-	      "nbsp"=>'Â\240'
+	      "nbsp"=>"Â\240"
 	      );
 
   $text=preg_replace("/&(\w+);/e",'$hash[\\1] ? $hash[\\1] : "\\0"',$text);
