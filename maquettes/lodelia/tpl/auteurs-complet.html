@@ -1,64 +1,99 @@
-<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-<!-- Auteur : Marin Dacos					   -->
-<!-- Date de création : août 2002.              -->
-<!-- Dernière modification majeure : janv. 2003 -->
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Date de création : août 2002.                                      -->
+<!-- Dernière modification majeure : janvier 2003.                      -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
 <TITLE>Index par auteurs</TITLE>
-<MACRO NAME="INSERER_STYLE">
+<MACRO NAME="DEFINIR_CHARSET">
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_AUTEURS">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td valign="top"> 
-		<table width="95%" border="0" cellspacing="0" cellpadding="5" align="CENTER" valign="TOP"> 
-			<tr>
-				<td class="titre">
-					Index des auteurs
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<MACRO NAME="table_alpha">
-				</td>
-			</tr>
-			<BOUCLE NAME="alphabet">
-				<tr>
-					<td class="titre">
-						<a name="[#LETTRE]">
-							[#LETTRE]
-							&nbsp;
-						</a>
-					</td>
-				</tr>
-				<BOUCLE NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
-					<tr>
-						<td class="soustitre">
-							<a href="auteur.html?id=[#ID]">
-								<span class="couleur_dominante1">
-									[#PRENOM] 
-									[#NOMFAMILLE]
-								</span>
-							</a>
-							<MACRO NAME="offline">
-						</td>
-						<td>
-							&nbsp;
-						</td>
-					</tr>
-					<BOUCLE NAME="articles" TABLE="documents" WHERE="ok" WHERE="idauteur='[#ID]'">
-						<tr>
-							<td>
-								<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
-							</td>
-						</tr>
-					</BOUCLE>
-				</BOUCLE>
-			</BOUCLE>
-		</table>
-	</td> 
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
-<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+
+<table class="principale">
+	<tr>
+		<td>
+
+		<div class="conteneur">
+	
+				<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div  -->
+				<div class="barrenav">
+					<? insert_template("barre");?> 
+				</div>
+	
+				<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+				de class "separation" et class "contenu" -->
+				<div class="corps">
+
+					<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+					de nav et le contenu de la page" -->
+					<div class="separation">
+						&nbsp;
+					</div>
+		
+					<!-- ce div permet d'intégrer le  contenu de la page" -->
+					<div class="contenu">
+		
+						<!-- logo de Lodelia-->
+						<MACRO NAME="IMG_LOGO_LODELIA">
+		
+						<!-- Titre de la page style "titre1" -->
+						<div class="titre1">
+							Index des auteurs
+						</div>
+		
+						<div class="titre2">
+							
+								<MACRO NAME="TABLE_ALPHABETIQUE">
+							
+						</div>
+		
+						<LOOP NAME="alphabet">
+							<div class="titre3">
+								<a name="[#LETTRE]">
+									[#LETTRE]
+									&nbsp;
+								</a>
+							</div>
+							<LOOP NAME="auteurs1" TABLE="auteurs" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
+								<div class="afficherdocument">
+									<a class="auteur" href="auteur.html?id=[#ID]">
+										[#PRENOM] 
+										<span class="smallcaps">[#NOMFAMILLE]</span>
+									</a>
+							
+									<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
+									<br />
+								</div>
+								
+								<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idauteur='[#ID]'">
+									<div class="afficherdocument">
+										<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
+									</div>	
+								</LOOP>
+							</LOOP>
+						</LOOP>
+						
+						<MACRO NAME="REVUES_ORG"> 		
+	   				 </div>
+				</div>
+				
+			</div>
+		
+		</td>
+	</tr>
+</table>
+
 <MACRO NAME="FERMER_HTML">

@@ -2,7 +2,7 @@
 
 // suppression de documents et de publication en assurant la coherence de la base
 
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 
@@ -14,9 +14,9 @@ if ($supprime) {
   include ("$home/managedb.php");
   do {
     if ($publication>0) {
-      if (!supprime_publication(intval($publication))) break;
+      if (!supprime_publication($publication)) break;
     } else {
-      supprime_document(intval($id));
+      supprime_document($id);
     }
     include_once("$home/func.php");
     back();
@@ -25,13 +25,13 @@ if ($supprime) {
 }
 
 if ($publication>0) { # recupere les infos du publication
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id=$publication") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id='$publication'") or die (mysql_error());
 } else { # recupere les infos du document
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]documents WHERE id=$id") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]documents WHERE id='$id'") or die (mysql_error());
 }
 
 if (!($row=mysql_fetch_array($result,MYSQL_ASSOC))) { header("location: not-found.html"); }
-$context=array_merge($context,array_merge($context,$row));
+$context=array_merge($context,$row);
 
 include ("$home/func.php");
 posttraitement($context);

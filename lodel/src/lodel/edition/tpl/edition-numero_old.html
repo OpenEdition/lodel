@@ -1,42 +1,42 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'un numéro : articles et regroupements </title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<MACRO NAME="TABLE_creetableinterface_large">
-<br>
-	<MACRO NAME="TABLE_nom_publication_numero"> 
+<MACRO NAME="TABLE_CREETABLEINTERFACE_LARGE">
+<br />
+	<MACRO NAME="TABLE_NOM_PUBLICATION_NUMERO"> 
 
 	<!--  AFFICHE LES ARTICLES HORS REGROUPEMENT S'IL Y EN A  -->
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-		<BOUCLE NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
+		<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#PARENT]'" ORDER="ordre">
 
 		<!-- Affiche barre bleue de titre -->
-		<AVANT>
+		<BEFORE>
 		<tr>
 			<td width="48" valign="middle" background="images/bleu.gif">
-				<MACRO NAME="GIF_document">
+				<MACRO NAME="GIF_DOCUMENT">
 			</td>
 			<td width="800" valign="middle" background="images/bleu.gif">
 				<strong>
 					Documents
 				</strong>
 			</td>
-			<MACRO NAME="Documents_titre_bleu">
+			<MACRO NAME="DOCUMENTS_TITRE_BLEU">
 			</tr>
-		</AVANT>
-			<MACRO NAME="Affiche_articles">
-		</BOUCLE>
+		</BEFORE>
+			<MACRO NAME="AFFICHE_ARTICLES">
+		</LOOP>
 		<!-- LIEN POUR CREER UN DOCUMENT.
 		IL DOIT ETRE HORS DE LA BOUCLE AU CAS OU IL N'Y AURAIT AUCUN DOC
 		-->
-		<MACRO NAME="Ajouter_document_isole">
-	</TABLE>
-	<br>
+		<MACRO NAME="AJOUTER_DOCUMENT_ISOLE">
+	</table>
+	<br />
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<!--  AFFICHE LES REGROUPEMENTS S'IL Y EN A  -->
-	<BOUCLE NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" ORDER="ordre DESC"> 
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#PARENT]'" ORDER="ordre DESC"> 
 		<tr>
 		<td width="48" background="images/bleu.gif">
 			<MACRO NAME="GIF_REGROUPEMENT">
@@ -46,7 +46,7 @@
 			[#NOM]
 			</font></b>
 			<font color="navy"><i>
-				<IF [#TITRE]>
+				<IF COND="[#TITRE]">
 					[#TITRE]
 				<ELSE/>
 					...
@@ -54,12 +54,12 @@
 			</i></font>
 			<font size="-2" color="navy">
 			([#TYPE])
-			</font><br>
+			</font><br />
 			<a href="publication.php?id=[#ID]">
 				Editer
 			</a>
 			|
-			<A HREF="publi.php?publication=[#ID]&online=1">
+			<a href="publi.php?publication=[#ID]&online=1">
 				Publier
 			</a>
 			|
@@ -67,25 +67,25 @@
 				Détruire
 			</a>
 			|
-			<MACRO NAME="up_down_regroupement">			
+			<MACRO NAME="UP_DOWN_REGROUPEMENT">			
 		</td>
-			<MACRO NAME="Documents_titre_bleu">
+			<MACRO NAME="DOCUMENTS_TITRE_BLEU">
 		</tr>
 
 	<!-- AFFICHE LES ARTICLES DU REGROUPEMENT EN COURS -->
 
-	<BOUCLE NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'"  ORDER="ordre">
-	<MACRO NAME="Affiche_articles">
+	<LOOP NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'"  ORDER="ordre">
+	<MACRO NAME="AFFICHE_ARTICLES">
 	<!-- FIN D'AFFICHAGE DES ARTICLES -->
-	</BOUCLE>
-	<MACRO NAME="Ajouter_document_regroupement">
+	</LOOP>
+	<MACRO NAME="AJOUTER_DOCUMENT_REGROUPEMENT">
 	</tr>
-</BOUCLE> 
-	<MACRO NAME="Creer_regroupement">
+</LOOP> 
+	<MACRO NAME="CREER_REGROUPEMENT">
 	</table>
-<MACRO NAME="TR_tachesencours">
+<MACRO NAME="TR_TACHESENCOURS">
 </td>
 </tr>
 </table>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">
 

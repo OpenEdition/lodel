@@ -1,5 +1,5 @@
 <?
-include ("lodelconfig.php");
+require("revueconfig.php");
 include ("$home/auth.php");
 include_once ("$home/connect.php");
 authenticate();
