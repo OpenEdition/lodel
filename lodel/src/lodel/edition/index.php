@@ -1,7 +1,7 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
 
 //if ($id) { // c'est l'id et non le parent qu'on veut... il faut chercher le parent
@@ -27,9 +27,9 @@ if ($id) {
   $base="edition";
 }
 
-include ("$home/boucles.php");
+include ($home."boucles.php");
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,$base);
 
 ?>

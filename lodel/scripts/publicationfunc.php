@@ -10,14 +10,14 @@ function pub_edition (&$context,$critere)
   global $home,$admin,$usergroupes;
 
   if (!$context[nom]) { $context[erreur_nom]=$err=1; }
-  include_once("$home/date.php");
+  include_once($home."date.php");
   if ($context[date]) {
     $date=mysqldate($context[date]);
     if (!$date) { $context[erreur_date]=$err=1; }
   } else { $date=""; }
 
   if ($err) return FALSE;
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   
   $id=intval($context[id]);
   $parent=intval($context[parent]);

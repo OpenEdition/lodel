@@ -2,16 +2,16 @@
 
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate();
-include ("$home/func.php");
+include ($home."func.php");
 
 
 $context[id]=$id=intval($id);
 
 
 // cherche le sommaire precedent et le suivant
-include_once("$home/connect.php");
+include_once($home."connect.php");
 
 
 $critere=$visiteur ? "WHERE $GLOBALS[tableprefix]publications.status>-2" : "WHERE $GLOBALS[tableprefix]publications.status>0";
@@ -44,7 +44,7 @@ export_prevnextpublication (&$context);
 
 
 
-include ("$home/cache.php");
+include ($home."cache.php");
 
 
 ?>

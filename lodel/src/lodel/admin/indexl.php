@@ -24,7 +24,7 @@ if ($id>0) {
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("indexls",$critere);
   return;
 }
@@ -40,7 +40,7 @@ if ($edit) { // modifie ou ajoute
   do {
     if (!$context[mot]) $err=$context[erreur_mot]=1;
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le status
       $result=mysql_query("SELECT status FROM indexls WHERE id='$id'") or die (mysql_error());
@@ -55,12 +55,12 @@ if ($edit) { // modifie ou ajoute
       }
     }
 
-    include_once("$home/func.php");back();
+    include_once($home."func.php");back();
 
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM indexls WHERE $critere") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
@@ -68,6 +68,6 @@ if ($edit) { // modifie ou ajoute
 // post-traitement
 posttraitement($context);
 
-include("$home/langues.php");
+include($home."langues.php");
 
 ?>

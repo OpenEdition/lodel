@@ -1,17 +1,17 @@
 <?
 
 require("lodelconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 
 // timeout pour les cookies
 $cookietimeout=2*3600;
 
 
 if ($login) {
-  include_once("$home/func.php");
+  include_once($home."func.php");
   extract_post();
   do {
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
     if (!check_auth(&$revue)) {
       $context[erreur_login]=1; break; 
     }
@@ -53,7 +53,7 @@ $context[passwd]=$passwd=0;
 if ($context[erreur_revue_bloquee]) { // on a deja verifie que la revue est bloquee.
   $context[revuebloquee]=1;
 } else { // test si la revue est bloquee dans la DB.
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   mysql_select_db($database);
   $result=mysql_query("SELECT 1 FROM revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
   $context[revuebloquee]=mysql_num_rows($result);
@@ -66,7 +66,7 @@ $context[erreur_privilege]=$erreur_privilege;
 
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"login");
 
 

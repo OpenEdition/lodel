@@ -1,7 +1,7 @@
 <?
 
-require_once("$home/func.php");
-require_once("$home/parserextra.php");
+require_once($home."func.php");
+require_once($home."parserextra.php");
 
 
 function parse ($in,$out)
@@ -47,7 +47,7 @@ function parse ($in,$out)
   parse_texte($contents);
 
   $contents='<?
-require_once ("$home/connect.php");
+require_once ($home."connect.php");
 '.$fct.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
@@ -136,7 +136,7 @@ function parse_texte(&$text)
   foreach ($results as $result) {
     $nom=$result[1]; myquote($nom);
     if ($editeur) {       // cherche si le texte existe
-      include_once("$home/connect.php");
+      include_once($home."connect.php");
       $result2=mysql_query("SELECT id FROM $GLOBALS[tableprefix]textes WHERE nom='$nom'") or die (mysql_error());
       if (!mysql_num_rows($result2)) { // il faut creer le texte
 	mysql_query("INSERT INTO textes (nom,texte) VALUES ('$nom','')") or die (mysql_error());

@@ -1,6 +1,6 @@
 <?
 
-include_once("$home/func.php");
+include_once($home."func.php");
 # fonction d'entree pour le calcul d'une page
 
 function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
@@ -24,22 +24,22 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 #window.defaultStatus+=\'$base | \';</SCRIPT>';
         }
 
-    include_once ("$home/parser.php");
+    include_once ($home."parser.php");
     parse($base, $template_cache);
   }
   // execute le template php
 		
-  include_once("$home/textfunc.php");
+  include_once($home."textfunc.php");
   if ($GLOBALS[showhtml] && $GLOBALS[visiteur]) {
     ob_start();
     include($template_cache);
     $content=ob_get_contents();
     ob_end_clean();
-    include_once ("$home/showhtml.php");
+    include_once ($home."showhtml.php");
     echo show_html($content);
     return;
   }
-  include_once("$home/boucles.php");
+  include_once($home."boucles.php");
   include($template_cache);
   return;
 }

@@ -1,0 +1,31 @@
+<html>
+<body>
+<!-- ce fichier n'est pas un template -->
+
+Configuration de l'acces au serveur MySQL.<br>
+<p><p>
+<? if ($erreur_connect) { ?> <b>Erreur</b>: Connection au serveur <?=$dbhost ?> impossible. Vérifier les informations entrées. L'erreur produite est: <? echo mysql_error(); ?> <?} ?>
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="mysql">
+<table border="1">
+
+<tr><td>
+serveur MySQL<br>
+<input type="text" size="60" name="newdbhost" value="<?=$dbhost?>">
+</td></tr>
+<tr><td>
+Utilisateur MySQL<br>
+<input type="text" size="60" name="newdbusername" value="<?=$dbusername?>">
+</td></tr>
+<tr><td>
+Mot de passe de l'utilsateur MySQL<br>
+<input type="password" size="60" name="newdbpasswd" value="">
+</td></tr>
+</table>
+<input type="submit" value="continuer">
+
+</form>
+
+</body>
+</html>

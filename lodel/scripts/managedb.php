@@ -2,7 +2,7 @@
 
 ##########  Fonction de suppression ##############
 
-include_once ("$home/func.php");
+include_once ($home."func.php");
 
 function supprime_publication ($id)
 

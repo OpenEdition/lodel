@@ -1,7 +1,7 @@
 <?
 
 require("lodelconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN);
 
 #ifndef LODELLIGHT
@@ -12,7 +12,7 @@ if (!$rep) {
 #endif
 
 $revue=$rep;
-include ("$home/connect.php");
+include ($home."connect.php");
 
 
 #ifndef LODELLIGHT

@@ -9,9 +9,9 @@ die("erreur");
 // assure l'edition, la supression, la restauration des articles.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include("$home/func.php");
+include($home."func.php");
 
 $context[id]=$id=intval($id);
 $context[publication]=$publication=intval($publication);
@@ -36,7 +36,7 @@ if ($id>0 && $dir) {
 // supression et restauration
 //
 } elseif ($id>0 && $delete) {
-  include ("$home/trash.php");
+  include ($home."trash.php");
   $delete=2; // detruit vraiment... attention quand il y aura des motcles, il faut detruit les mots cles avec !!!!!!!!!!!
   treattrash("documents",$critere);
   return;
@@ -51,7 +51,7 @@ if ($id>0 && $dir) {
     if (!$context[type]) die ("pas de type");
 
 #    if (!$context[nom]) { $context[erreur_nom]=$err=1; }
-#    include("$home/date.php");
+#    include($home."date.php");
 #    if ($context[date]) {
 #      $date=mysqldate($context[date]);
 #      if (!$date) { $context[erreur_date]=$err=1; }
@@ -68,7 +68,7 @@ if ($id>0 && $dir) {
     }
 
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     $image="";
     if ($id>0) { // il faut rechercher le status et l'ordre
@@ -114,7 +114,7 @@ if ($id>0 && $dir) {
     // copie du fichier images
     if ($imgfile && $image) {
       if ($context[taille]) {
-	include_once("$home/images.php");
+	include_once($home."images.php");
 	resize_image($context[taille],$imgfile,"../../".$image);
       } else {
 	copy($imgfile,"../../".$image);
@@ -125,11 +125,11 @@ if ($id>0 && $dir) {
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]documents WHERE $critere") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
-  include_once("$home/textfunc.php");
+  include_once($home."textfunc.php");
   $context[type]=rmscript(strip_tags($type));
 }
 
@@ -139,7 +139,7 @@ if (!file_exists("tpl/$base.html")) $base="article";
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,$base);
 
 

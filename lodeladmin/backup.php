@@ -2,7 +2,7 @@
 
 
 require("lodelconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN);
 
 
@@ -12,7 +12,7 @@ if ($backup) {
   // sauve la base generale
   $outfiles=dumpdb ($database);
 
-  include ("$home/connect.php");
+  include ($home."connect.php");
   // cherche les revues
   $result=mysql_db_query($database,"SELECT rep FROM revues") or die (mysql_error());
   while ($row=mysql_fetch_row($result)) {
@@ -38,7 +38,7 @@ if ($backup) {
 }
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"backup");
 
 function dumpdb ($dbname) 

@@ -1,12 +1,12 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
-include ("$home/checkxml.php");
+include ($home."checkxml.php");
 
-$rep="$home/../r2r/tmptxt";
+$rep=$home."../r2r/tmptxt";
 $d=dir($rep) or die ("impossible d'ouvrir $rep");
 while ($entry=$d->read()) {
   if (!preg_match("/^\d+-\d+$/",$entry)) continue;

@@ -1,6 +1,6 @@
 <?
 require("lodelconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate();
 
 
@@ -13,6 +13,6 @@ function boucle_alphabet(&$context,$funcname)
   }
 }
 
-include ("$home/cache.php");
+include ($home."cache.php");
 
 ?>

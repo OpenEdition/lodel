@@ -160,7 +160,7 @@ function parse_variable_extra ($nomvar)
 // fonction speciale pour lodel 
 //
 
-include_once("$home/balises.php");
+include_once($home."balises.php");
 
 
 function decode_content_extra ($balise,&$ret,$tables)

@@ -4,9 +4,9 @@
 // assure l'edition, la supression, la restauration des utilisateurs.
 
 require("lodelconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN,NORECORDURL);
-include_once ("$home/func.php");
+include_once ($home."func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);

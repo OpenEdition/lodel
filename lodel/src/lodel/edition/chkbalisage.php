@@ -1,14 +1,14 @@
 <?
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
 $row=get_tache($id);
 
-include ("$home/balises.php");
+include ($home."balises.php");
 if ($line) { // on vient de balise, il faut modifier les balises
   // lit le fichier lined
   $lines=explode("<!--r2rline=",join("",file($row[fichier].".lined")));
@@ -90,7 +90,7 @@ if (preg_match("/<r2r:(titrenumero|nomnumero|typenumero)>/i",$text)) {
 
 
 $context[id]=$id;
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"chkbalisage");
 
 ?>

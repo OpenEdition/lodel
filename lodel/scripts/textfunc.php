@@ -265,7 +265,7 @@ function vignette($width,$text)
   $vignettefile=$result[1]."-small$width.".$result[2];
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
   // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
-  include_once("$home/images.php");
+  include_once($home."images.php");
   resize_image($width,$text,$vignettefile,"+");
   return $vignettefile;
 }

@@ -2,7 +2,7 @@
 
 require("lodelconfig.php");
 $rep="";
-include ("$home/connect.php");
+include ($home."connect.php");
 
 $sql=preg_split ("/;/",join('',file("init.sql")));
 

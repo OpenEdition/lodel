@@ -1,18 +1,18 @@
 <?
 
 require_once("lodelconfig.php");
-include_once ("$home/func.php");
+include_once ($home."func.php");
 
 
 if (!function_exists("authenticate")) {
-  include ("$home/auth.php");
+  include ($home."auth.php");
   authenticate();
 }
 
 
 
 if ($visiteur) {
-  include ("$home/calcul-page.php");
+  include ($home."calcul-page.php");
   calcul_page($context,$base);
   return;
 }
@@ -39,7 +39,7 @@ $cache = "CACHE/$rep_cache/$cache";
 
 // si le fichier de mise-a-jour est plus recent
 if ($maj>=myfilemtime($cache) || $recalcul_templates) {
-  include ("$home/calcul-page.php");
+  include ($home."calcul-page.php");
   ob_start();
   calcul_page($context,$base);
   $content=ob_get_contents();

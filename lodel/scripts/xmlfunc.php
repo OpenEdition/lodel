@@ -16,7 +16,7 @@ function myxmlparse(&$text,$startHandler,$endHandler="defaultEndHandler",$charHa
 		 xml_error_string(xml_get_error_code($parser)),
 		 xml_get_current_line_number($parser));
 	global $home;
-	include_once ("$home/checkxml.php");
+	include_once ($home."checkxml.php");
 	checkstring($text);
  }
 }

@@ -1,9 +1,9 @@
 <?
 
 require_once("revueconfig.php");
-include_once ("$home/auth.php");
+include_once ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
-include_once ("$home/func.php");
+include_once ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
@@ -12,7 +12,7 @@ $row=get_tache($id);
 
 $filename=$row[fichier];
 
-require_once("$home/extrainfofunc.php");
+require_once($home."extrainfofunc.php");
 //
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
@@ -53,7 +53,7 @@ update_tache_etape($id,3); // etape 3
 $context[id]=$id;
 $context[interactive]=$interactive;
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"extrainfo");
 
 

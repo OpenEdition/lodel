@@ -1,0 +1,37 @@
+<html>
+<body>
+<!-- ce fichier n'est pas un template -->
+
+En fonction de l'herbergeur:<br>
+Si le chemin d'accès <u>absolu</u> à LODEL est connu et fixe, choississez la première option, et précisez le chemin absolu d'accès à la racine de LODEL.<br>
+Sinon, LODEL a besoin de mettre des scripts dans un des répertoires dont l'inclusion est automatique (variable de configuration "include_path" de php) et auquel vous avez acces. Choississez la deuxième option et preciser le chemin relatif vers ce repertoire (relatif à la racine de LODEL).
+<p><p>
+
+<? if ($erreur_homeinaccessible) { ?> <b>Erreur</b>: Impossible d'accéder aux scripts par le repertoire <?="$pathroot/lodel/scripts" ?>. Verifiez le repertoire que vous avez entré.<? } ?>
+<? if ($erreur_mkdir) { ?> <b>Erreur</b>: Le repertoire <?=$includepath ?> n'existe pas et il n'est pas possible de le creer. Verifiez le chemin que vous avez entré. Vous pouvez aussi creer ce repertoire manuellement si vous le souhaitez.<? } ?>
+<? if ($erreur_copyscripts) { ?><b>Erreur</b>: Impossible de copier les scripts dans le repertoire <?=$includepath ?>. Verifiez le repertoire que vous avez entré. S'il est correcte, vérifiez que le serveur web à les droits d'écriture dans ce repertoire. Si vous ne souhaitez pas ouvrir les droits au serveur web, copier les fichiers contenu dans le repertoire lodel/scripts dans le repertoire $includepath et vérifier que le serveur web peut accéder à ces scripts en lecture.<? } ?>
+
+<? if ($erreur_includeincorrecte) { ?><b>Erreur</b>:  Les scripts ont été correctement copiés dans le repertoire <?=$includepath ?>, mais l'inclusion automatique ne marche pas. Vérifier le chemin du repertoire et la configuration de php.<? } ?>
+
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="home">
+<table border="1">
+
+<tr><td>
+Chemin absolu de la racine de Lodel ($pathroot)<br>
+<input type="radio" name="withautoinclude" VALUE="non" <? if ($pathroot) echo "checked"; ?>>
+<input type="text" size="60" name="newpathroot" value="<?=$pathroot?>">
+</td></tr>
+<tr><td>
+Chemin relatif du répertoire inclue automatiquement.<br>
+<input type="radio" name="withautoinclude" VALUE="oui" <? if (!$pathroot) echo "checked"; ?>>
+<input type="text" size="60" name="newincludepath" value="<?=$includepath?>">
+</td></tr>
+</table>
+<input type="submit" value="continuer">
+
+</form>
+
+</body>
+</html>

@@ -5,7 +5,7 @@
 
 $prefixregexp="Pr\.|Dr\.";
 
-include_once("$home/langues.php");
+include_once($home."langues.php");
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
   // verifie que le titre est present
   if (!$context[titre]) $err=$context[erreur_titre]=1;
   if ($context[datepubli]) {
-    include ("$home/date.php");
+    include ($home."date.php");
     $row[datepubli]=mysqldate($context[datepubli]);
     if (!$row[datepubli]) { $context[erreur_datepubli]=$err=1; }
     // fin de la validation
@@ -135,7 +135,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
   // enregistre
   //
   if ($row[iddocument]) { # efface d'abord
-    include_once("$home/managedb.php");
+    include_once($home."managedb.php");
     // recupere les metas et le status
     $result=mysql_query("SELECT meta,status from documents WHERE id='$row[iddocument]'") or die (mysql_error());
     list($row[meta],$status)=mysql_fetch_row($result);
@@ -150,7 +150,7 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
     $row[datepubli]=date("Y-m-d",mktime(0,0,0,$time[4]+1,$time[3],$time[5]));
   }
   // enregistre dans la base
-  include_once ("$home/dbxml.php");
+  include_once ($home."dbxml.php");
   $iddocument=enregistre($row,$text);
 
   // change le nom des images

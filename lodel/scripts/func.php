@@ -103,7 +103,7 @@ function get_ordre_max ($table,$where="")
   global $home;
   if ($where) $where="WHERE ".$where;
 
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tableprefix]$table $where") or die (mysql_error());
   if (mysql_num_rows($result)) list($ordre)=mysql_fetch_array($result);
   if (!$ordre) $ordre=0;
@@ -270,5 +270,9 @@ function lock_write()
 	$list=func_get_args();
 	mysql_query("LOCK TABLES $GLOBALS[tableprefix]".join (" WRITE ,".$GLOBALS[tableprefix],$list)." WRITE") or die (mysql_error());
 }
+
+
+// valeur de retour, identifiant ce script
+return 568;
 
 ?>

@@ -1,12 +1,12 @@
 <?
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate();
-include ("$home/func.php");
+include ($home."func.php");
 
 $context[id]=$id=intval($id);
 
-include_once("$home/connect.php");
+include_once($home."connect.php");
 //
 // cherche le document
 //
@@ -20,8 +20,8 @@ $context=array_merge($context,mysql_fetch_assoc($result));
 if (!file_exists("lodel/txt/r2r-$id.xml")) { header ("Location: not-found.html"); return; }
 $text=join("",file("lodel/txt/r2r-$id.xml"));
 
-include ("$home/xmlfunc.php");
-include ("$home/balises.php");
+include ($home."xmlfunc.php");
+include ($home."balises.php");
 
 $balises=$balisesdocument_nonlieautexte;
 array_push($balises,"surtitre","titre","soustitre");
@@ -53,7 +53,7 @@ if ($envoi) {
       $context[$bal]=htmlspecialchars(stripslashes($context[$bal]));
     }
     $context[subject]=""; // securite
-    include ("$home/calcul-page.php");
+    include ($home."calcul-page.php");
     ob_start();
     calcul_page($context,"signaler-mail");
     $content=ob_get_contents();
@@ -76,7 +76,7 @@ foreach (array("to","from","message") as $bal) {
 }
 
 
-include_once ("$home/calcul-page.php");
+include_once ($home."calcul-page.php");
 calcul_page($context,"signaler");
 
 ?>

@@ -3,9 +3,9 @@
 // gere les types de documents. L'acces est reserve aux administrateurs.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once("$home/func.php");
+include_once($home."func.php");
 
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...
@@ -19,7 +19,7 @@ if ($id>0) {
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("typedocs",$critere);
   return;
 }
@@ -34,7 +34,7 @@ if ($edit) { // modifie ou ajoute
   do {
     if (!$context[nom]) $err=$context[erreur_nom]=1;
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le status et (peut etre) le passwd
       $result=mysql_query("SELECT status FROM $GLOBALS[tableprefix]typedocs WHERE id='$id'") or die (mysql_error());
@@ -51,7 +51,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]typedocs WHERE $critere") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
@@ -59,7 +59,7 @@ if ($edit) { // modifie ou ajoute
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"typedoc");
 
 

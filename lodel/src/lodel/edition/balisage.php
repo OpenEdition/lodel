@@ -3,15 +3,15 @@
 # listes des balises et du texte affiche dans les select
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
 $row=get_tache($id);
 
-include ("$home/balises.php");
+include ($home."balises.php");
 
 function getselect ($balise)
 
@@ -113,7 +113,7 @@ $context[fichier]=$html;
 
 $context[id]=$id;
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"balisage");
 
 

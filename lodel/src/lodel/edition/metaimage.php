@@ -1,8 +1,8 @@
 <?
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 if ($idrevue) { $id=intval($idrevue); $type="revue"; $db=$database; }
 elseif ($iddocument) { $id=intval($iddocument); $type="document"; $db=$currentdb; }
@@ -36,7 +36,7 @@ do {
     if ($meta[meta_image]) { unlink("../../$meta[meta_image]"); }
     $meta[meta_image]="docannexe/img-$table-$id.$ext";
     if ($context[taille]) {
-      include_once("$home/images.php");
+      include_once($home."images.php");
       resize_image($context[taille],$imgfile,"../../$meta[meta_image]");
     } else {
       copy($imgfile,"../../$meta[meta_image]");
@@ -57,7 +57,7 @@ $context[image]=$meta[meta_image];
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"metaimage");
 
 

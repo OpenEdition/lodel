@@ -3,9 +3,9 @@
 // gere les groupe. L'acces est reserve au administrateur.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once("$home/func.php");
+include_once($home."func.php");
 
 
 $id=intval($id);
@@ -42,7 +42,7 @@ if ($edit && !$delete) { // modifie ou ajoute
   do {
     if (!$context[nom]) $err=$context[erreur_nom]=1;
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     mysql_query ("REPLACE INTO $GLOBALS[tableprefix]groupes (id,nom) VALUES ('$id','$context[nom]')") or die (mysql_error());
 
@@ -52,7 +52,7 @@ if ($edit && !$delete) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]groupes WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
@@ -61,7 +61,7 @@ $context[delete]=$delete;
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"groupe");
 
 

@@ -1,7 +1,7 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
 
 
@@ -12,7 +12,7 @@ if ($htmlfile && $htmlfile!="none") {
   do {
     // verifie que la variable htmlfile n'a pas ete hackee
     if (strpos(realpath($htmlfile),getenv("TMPDIR"))!=0) die("Erreur interne");
-    include_once("$home/balises.php");
+    include_once($home."balises.php");
     $newname=OO($htmlfile);
     if (!$newname) {
       $context[erreur_upload]=1;
@@ -32,7 +32,7 @@ if ($htmlfile && $htmlfile!="none") {
 
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"oochargement");
 
 
@@ -158,12 +158,12 @@ function OO ($uploadedfile)
   //echo htmlentities($file); exit;
 
 # verifie que le document est bien forme
-    include ("$home/checkxml.php");
+    include ($home."checkxml.php");
     if (!checkstring($file)) { echo "fichier: $newname"; echo htmlentities($file);
 return FALSE; }
 
 # traite les tableaux pour sortir les styles
-    include ("$home/tableau.php");
+    include ($home."tableau.php");
     $file=traite_tableau($file);
 
 # enleve les couples de balises r2r.
@@ -178,7 +178,7 @@ return FALSE; }
       copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
       return $newimgfile;
     }
-    include_once ("$home/func.php");
+    include_once ($home."func.php");
     copy_images($file,"img_copy");
 
 

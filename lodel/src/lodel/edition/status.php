@@ -4,11 +4,11 @@
 
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
-include_once ("$home/connect.php");
+include_once ($home."connect.php");
 
 if ($status=="protege") {
   $newstatus=+32;

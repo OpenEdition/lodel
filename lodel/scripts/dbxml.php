@@ -1,9 +1,9 @@
 <?
 // fonctions pour enregistrer un document dans la base de donnée
 
-require_once ("$home/func.php");
-include_once ("$home/xmlparser.php");
-include_once ("$home/xmlfunc.php");
+require_once ($home."func.php");
+include_once ($home."xmlparser.php");
+include_once ($home."xmlfunc.php");
 
 
 function enregistre ($context,&$text)
@@ -13,7 +13,7 @@ function enregistre ($context,&$text)
   if ($superadmin) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs de la revue.
 
   // enregistre le document
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
 
   xml_parse_into_struct_ns($text,&$vals,&$index);
 

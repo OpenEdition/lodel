@@ -1,6 +1,6 @@
 <?
 
-include_once("$home/balises.php");
+include_once($home."balises.php");
 
 
 if ($htmlfile && $htmlfile!="none") {
@@ -65,7 +65,7 @@ function rtf($filename) {
   } while (file_exists($newname));
   // converti en XML
 
-  system("$home/Ted/Ted --saveTo $filename $newname 2>/dev/null >/dev/null");
+  system($home."Ted/Ted --saveTo $filename $newname 2>/dev/null >/dev/null");
   if (!file_exists($newname)) die ("Erreur dans Ted");
 
   rename ($filename,$basename.".rtf");
@@ -162,12 +162,12 @@ function rtf($filename) {
 #  echo htmlentities($file); exit;
 
 # verifie que le document est bien forme
-    include ("$home/checkxml.php");
+    include ($home."checkxml.php");
     if (!checkstring($file)) { echo "fichier: $newname"; echo htmlentities($file);
 return FALSE; }
 
 # traite les tableaux pour sortir les styles
-    include ("$home/tableau.php");
+    include ($home."tableau.php");
     $file=traite_tableau($file);
 
 # enleve les couples de balises r2r.
@@ -182,7 +182,7 @@ return FALSE; }
       copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
       return $newimgfile;
     }
-    include_once ("$home/func.php");
+    include_once ($home."func.php");
     copy_images($file,"img_copy");
 
   // ecrit le fichier

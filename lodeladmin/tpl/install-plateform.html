@@ -1,0 +1,26 @@
+<html>
+<body>
+<!-- ce fichier n'est pas un template -->
+
+Choix de la plateforme
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="plateform">
+<table border="1">
+<?php
+	    $dir=opendir($plateformdir);
+	    while ($file=readdir($dir)) {
+	    $file=$plateformdir."/".$file;
+	    if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
+	    $plateform=$result[1];
+?>
+<tr><td><input type="radio" name="plateform" value="<?= $plateform ?>"></td><td><?= $plateform ?></td></tr>
+
+<? } ?>
+</table>
+<input type="submit" value="continuer">
+</form>
+
+
+</body>
+</html>

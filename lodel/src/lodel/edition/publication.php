@@ -4,9 +4,9 @@
 // assure l'edition, la supression, la restauration des publications.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include("$home/func.php");
+include($home."func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 
@@ -32,7 +32,7 @@ if ($id>0 && $dir) {
 // supression et restauration
 //
 } elseif ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   die ("il faut utiliser supprime.php a la place");
   treattrash("publications",$critere);
   return;
@@ -40,25 +40,25 @@ if ($id>0 && $dir) {
 // ajoute ou edit
 //
 } elseif ($edit) { // modifie ou ajoute
-  include ("$home/publicationfunc.php");
+  include ($home."publicationfunc.php");
 
   extract_post();
   // edition et sort si ca marche
   if (pub_edition($context,$critere)) back();
 
 } elseif ($id>0) {
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
-  include_once ("$home/textfunc.php");
+  include_once ($home."textfunc.php");
   $context[type]=rmscript(strip_tags($type));
 }
 
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"publication");
 
 

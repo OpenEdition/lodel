@@ -3,16 +3,16 @@ die ("dessuet");
 // enregistre dans la base de donnée le fichier
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
 $row=get_tache($id);
 
 if ($row[iddocument]) { # efface d'abord
-  include_once("$home/managedb.php");
+  include_once($home."managedb.php");
   // recupere les metas et le status
   $result=mysql_query("SELECT meta,status from documents WHERE id='$row[iddocument]'") or die (mysql_error());
   list($row[meta],$status)=mysql_fetch_row($result);
@@ -21,7 +21,7 @@ if ($row[iddocument]) { # efface d'abord
 }
 
 $text=join("",file($row[fichier].".balise"));
-include ("$home/dbxml.php");
+include ($home."dbxml.php");
 $iddocument=enregistre($row,$text);
 
 

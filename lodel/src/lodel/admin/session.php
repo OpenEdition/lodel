@@ -1,9 +1,9 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 $delete=intval($delete);
 

@@ -2,6 +2,6 @@
 require("revueconfig.php");
 
 $base="geos";
-include ("$home/baseindex.php");
+include ($home."baseindex.php");
 
 ?>

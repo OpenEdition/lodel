@@ -113,7 +113,7 @@ $virgule_tags="auteurs|periodes|geographies|motcles|langues";
 
 # ajoute les balises definies dans langues.php
 
-include_once ("$home/langues.php");
+include_once ($home."langues.php");
 $balises=array_merge($balises,$balisesmotcle,$balisesresume);
 
 #########################################################################

@@ -1,10 +1,10 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);
-include ("$home/func.php");
-include ("$home/langues.php");
+include ($home."func.php");
+include ($home."langues.php");
 
 if ($cancel) include ("abandon.php");
 
@@ -138,7 +138,7 @@ function mkxmlpublication($nom,$titre,$type,$parent)
 
   $context=array("nom"=>$nom,"titre"=>$titre,"type"=>$type,"parent"=>$parent);
 
-  include_once("$home/publicationfunc.php");
+  include_once($home."publicationfunc.php");
   $id=pub_edition($context,"");
   if (!$id) die ("erreur dans pub_edition");
   return $id;
@@ -163,7 +163,7 @@ function mkxmldocument($text,$publication)
   // extrainfo s'appelle en deux temps
   $row[publication]=$publication;
 
-  include_once("$home/extrainfofunc.php");
+  include_once($home."extrainfofunc.php");
   $context=array();
   ei_pretraitement($filename,$row,$context,$text);
 

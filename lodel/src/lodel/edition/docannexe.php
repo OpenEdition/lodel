@@ -1,9 +1,9 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 $iddocument=intval($iddocument);
 $context[id]=$id=intval($id);
@@ -13,7 +13,7 @@ $context[type]=$type;
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("documentsannexes");
   return;
 }
@@ -55,7 +55,7 @@ if ($edit) { // modifie ou ajoute
 	copy($docfile,"../../$lien");
       } else {
 	// recherche le lien
-	include_once ("$home/connect.php");
+	include_once ($home."connect.php");
 	$result=mysql_query("SELECT lien FROM documentsannexes WHERE $critere") or die (mysql_error());
 	list($lien)=mysql_fetch_row($result);
       }
@@ -91,7 +91,7 @@ if ($edit) { // modifie ou ajoute
     // fin de chargement
 
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     myquote($context);
     mysql_query ("REPLACE INTO documentsannexes (id,iddocument,titre,commentaire,lien,type) VALUES ('$id','$iddocument','$context[titre]','$context[commentaire]','$lien','$type')") or die ("invalid query replace");
@@ -102,7 +102,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM documentsannexes WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
   if ($context[type]=="liendocument" || $context[type]=="lienpublication") {
@@ -120,7 +120,7 @@ if ($edit) { // modifie ou ajoute
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"docannexe");
 
 

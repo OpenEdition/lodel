@@ -1,7 +1,7 @@
 <?
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_SUPERADMIN,NORECORDURL);
 
 $repertoire=$context[repertoire]=$importdir;
@@ -48,11 +48,11 @@ if ($fichier && preg_match("/^revue-.*-\d+.tar.gz/i",$fichier) && file_exists("$
    }
    
 
-   if (!$err) { include_once ("$home/func.php"); back();}
+   if (!$err) { include_once ($home."func.php"); back();}
 }
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"import");
 
 

@@ -2,12 +2,12 @@
 // Affiche des statistiques sur la revue.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
 # ghi ####### ne pas mettre de NORECORDURL ici
 
 /*
-include_once ("$home/connect.php");
+include_once ($home."connect.php");
 
 //////////////////////////////////  Documents
 // Nombre total de documents
@@ -127,7 +127,7 @@ function boucle_nom_occ_type_publi(&$context,$funcname)
 	}
 }
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"stats");
 */
 

@@ -4,9 +4,9 @@
 // assure l'edition, la supression, la restauration des geographies.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once("$home/func.php");
+include_once($home."func.php");
 
 $type=TYPE_GEOGRAPHIE;
 
@@ -29,7 +29,7 @@ function make_selection_geographie($parent=0,$rep="")
 }
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"geographie");
 
 ?>

@@ -3,9 +3,9 @@
 // utile lorsque les versions se succede.
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once("$home/func.php");
+include_once($home."func.php");
 
 
 $search=array();

@@ -1,7 +1,7 @@
 <?
 
 # Racine de lodel sur le systeme
-$pathroot="/path/to";
+$pathroot="";
 
 
 # Base du site
@@ -14,13 +14,13 @@ $urlroot="/";
 # cette variable est ecrasee dans revueconfig.php a partir de la version 0.5
 # elle pourra alors etre supprimee de ce script
 # cette variable doit se terminer par / obligatoirement.
-$home="$pathroot/lodel/script/";
+$home="$pathroot/lodel/scripts";
 
 
 # URL contenant les fichiers communs partagés
 # par exemple $shareurl="http://lodel.revues.org/share";
 # la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
-$shareurl="http://lodel.revues.org/share";
+$shareurl="";
 
 # Repertoire contenant les fichiers communs partagés
 # par exemple $sharedir="/var/www/lodel/share";
@@ -42,11 +42,11 @@ $timeout=120*60;
 $database="lodel";
 
 # Nom d'utilisateur
-$dbusername="lodeluser";
+$dbusername="";
 # Mot de passe
-$dbpasswd="lodelpasswd";
+$dbpasswd="";
 # Hote de la BD
-$dbhost="dbhost.domain.org";
+$dbhost="localhost";
 
 # Repertoire contenant le binaire de mysql
 $mysqldir="/usr/bin";
@@ -65,6 +65,11 @@ $tableprefix="";
 # Nom de la session (cookie)
 $sessionname="session$database";
 
+############################################
+# config reserve au systeme de config automatique
+# la presence de ces variables est obligatoire pour la configuration
+$includepath="";
+$multidatabases="";
 
 ############################################
 

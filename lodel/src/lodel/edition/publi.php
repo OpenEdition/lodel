@@ -20,11 +20,11 @@
 
 
 require("revueconfig.php");
-include ("$home/auth.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
-include_once ("$home/connect.php");
+include_once ($home."connect.php");
 
 if ($cancel) back();
 
@@ -49,7 +49,7 @@ if ($publication) {
       }
 
     }
-    include ("$home/calcul-page.php");
+    include ($home."calcul-page.php");
     calcul_page($context,"publications_protegees");
     return;
   }
@@ -70,8 +70,8 @@ if ($publication) {
       }
     }
 
-    include ("$home/status.php");
-    include ("$home/calcul-page.php");
+    include ($home."status.php");
+    include ($home."calcul-page.php");
     calcul_page($context,"documents_protegees");
     return;
   }

@@ -20,7 +20,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     if (!$name) break;
 
-    include_once("$home/connect.php");
+    include_once($home."connect.php");
     mysql_select_db($database);
     if (!($result=mysql_query ("SELECT id,iduser,revue,context,expire,expire2,currenturl FROM $GLOBALS[tableprefix]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
@@ -151,7 +151,7 @@ function getrevueoptions ()
 {
   global $home,$context,$revue;
 
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
 
   mysql_select_db($GLOBALS[database]);
   $result=mysql_query("SELECT $GLOBALS[tableprefix]options FROM revues WHERE rep='$revue'") or die (mysql_error());
