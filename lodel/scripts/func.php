@@ -136,12 +136,12 @@ function copy_images (&$text,$callback)
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+	$text=str_replace($result[0],"<IMG SRC=\"$imglist[$imgfile]\"",$text);
       } else {
 	$ext=$result[2];
 	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count);
 #	echo "images: $imgfile $newimgfile <br>";
-      	$text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
+      	$text=str_replace($result[0],"<IMG SRC=\"$newimgfile\"",$text);
       	$count++;
 	}
     }
