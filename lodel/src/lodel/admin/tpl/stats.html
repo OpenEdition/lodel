@@ -1,0 +1,52 @@
+<use macrofile="macros.html">
+<macro name="header_head_open">
+<title>Edition - utilisateur</title>
+<macro name="header_head_close">
+<macro name="header_logo"> 
+<br /><br />
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="center">
+<tr>
+	<td class="titre">
+		Statistiques de la Revue<br />
+		<em>
+			[(#REVUE|nbsp)]
+		</em>
+	</td>
+</tr>
+</table>
+<br /><br />
+<table width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+	<tr>
+		<td>
+			Nombre total de documents dans la revue
+		</td>
+		<td>
+			<b>[#NBDOCS]</b>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de documents à l'état de brouillon
+		</td>
+		<td>
+			<b>[#NBDOCSBROUILLONS]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCDOCSBROUILLONS]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de documents prêts à être publiés
+		</td>
+		<td>
+			<b>[#NBDOCSPRETS]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCDOCSPRETS]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Nombre de documents publiés
+		</td>
+		<td>
+			<b>[#NBDOCSPUBLIES]</b>&nbsp;&nbsp;&nbsp;(&nbsp;[#PERCDOCSPUBLIES]&nbsp;%&nbsp;)
+		</td>
+	</tr>
+</table>
+<macro name="close_html">
