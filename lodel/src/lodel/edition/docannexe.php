@@ -160,7 +160,7 @@ if ($edit) { // modifie ou ajoute
   $context=array_merge($context,mysql_fetch_assoc($result));
   if ($context[type]=="documentannexe-liendocument" || $context[type]=="documentannexe-lienpublication") {
     // recupere le numero
-    preg_match("/id=(\d+)\b/",$context[lien],$result);
+    preg_match("/(\d+)/",$context[lien],$result); # c'est sale !!!!
     $context[lien]=$result[1];
   }
   $tplcreation=$context[tplcreation];
