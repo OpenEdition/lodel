@@ -384,9 +384,9 @@ function tocss($text)
 			    ),traite_separateur($text));
 }
 
-//
-// Permet de savoir si un lien est relatif
-//
+/**
+ * Permet de savoir si un lien est relatif 
+ */ 
 
 function isrelative($lien)
 {
@@ -395,9 +395,9 @@ function isrelative($lien)
 	return !preg_match("/^\//",$test["path"]);
 }
 
-//
-// Permet de savoir si un lien est absolu
-//
+/*
+ * Permet de savoir si un lien est absolu 
+ */
 
 function isabsolute($lien)
 { 
@@ -430,5 +430,13 @@ function humanlang($text)
   return $GLOBALS[langues][$text];
 }
 
+
+/**
+ * Retourne la date courante sous la forme YYYY-MM-JJ
+ */
+
+function today() {
+	return date("Y-m-d");
+}
 
 ?>
