@@ -33,7 +33,7 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     $len=strlen($context[username]);
-    if ($len<3 || $len>10 || preg_match("/\W/",$context[username])) { $err=$context[erreur_username]=1; }
+    if ($len<3 || $len>10 || !preg_match("/^[0-9A-Za-z]+$/",$context[username])) { $err=$context[erreur_username]=1; }
 
     if (!$context[nom]) { $context[erreur_nom]=$err=1; }
     $passwd=$context[passwd];
