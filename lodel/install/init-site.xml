@@ -115,6 +115,11 @@
 
 <table name="relations"
         description="table contenant les relations entre les entites">
+<column name="idrelation"
+        type="INTEGER"
+        required="true"
+        primaryKey="true"
+        autoIncrement="true" />
 <column name="id1"
         type="INTEGER"
         default="0"

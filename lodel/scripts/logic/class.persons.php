@@ -207,10 +207,10 @@ class PersonsLogic extends GenericLogic {
       $this->idrelation=$context['idrelation'];
     } else {
       $dao=&getDAO("relations");
-      $vos=$dao->getByIds($context['id']);
+      $vos=$dao->findMany("id2 ".sql_in_array($context['id']));
       $this->idrelation=array();
       foreach ($vos as $vo) {
-	$this->idrelation[]=$vo->id;
+	$this->idrelation[]=$vo->idrelation;
       }
     }
   }
@@ -234,8 +234,8 @@ class PersonsLogic extends GenericLogic {
       }
     }
     if ($this->idrelation) {
-      $gdao=&getDAO("relations","idrelation");
-      $gdao->delete("id2 IN ('".join("','",$this->idrelation)."')");
+      $dao=&getDAO("relations");
+      $dao->delete("idrelation ".sql_in_array($this->idrelation));
     }
 
     // delete 
