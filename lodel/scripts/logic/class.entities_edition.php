@@ -104,7 +104,7 @@ class Entities_EditionLogic extends GenericLogic {
        $dao=&getDAO("entrytypes");
        $votype=$dao->getById($idtype,"id,sort,flat");
        if (!$votype) die("ERROR: internal error in loop_entries_in_entities");
-       $checkarr=&$context['entries'][$idtype];
+       foreach ($context['entries'][$idtype] as $entry) $checkarr[]=&$entry['g_name'];
        $context['id']=0; // start by the parents
        loop_entries_in_entities_rec ($context,$funcname,$votype,$checkarr);
      }
@@ -117,7 +117,7 @@ class Entities_EditionLogic extends GenericLogic {
        $result=$db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='".$votype->id."' AND idparent='".$context['id']."' AND status>-64 ORDER BY ".$votype->sort)) or dberror();
        while (!$result->EOF) {
 	 $localcontext=array_merge($context,$result->fields);
-	 $localcontext['checked']=$checkarr && in_array($result->fields['g_name'],$checkarr) ? "checked" : "";
+	 $localcontext['selected']=$checkarr && in_array($result->fields['g_name'],$checkarr) ? "selected=\"selected\"" : "";
 	 call_user_func("code_do_$funcname",$localcontext);
 	 if (!$votype->flat) 
 	   $localcontext['root'].=$localcontext['g_name']."/";
@@ -291,17 +291,24 @@ class Entities_EditionLogic extends GenericLogic {
 	 }
        }
        // delete relation not used
-       $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
-       $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$nature);
        if ($ids && !$idrelations) { // new item but relation has not been created
 	 if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
 	 $values=array();
+	 $idrelations=array();
 	 foreach ($ids as $ids2) {
 	   $degree=1;
-	   foreach ($ids2 as $id) $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
+	   foreach ($ids2 as $id) {
+	     $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('".$id."','".$vo->id."','".$nature."','".($degree++)."')")) or dberror();
+	     $idrelations[]=$db->insert_id();
+	   }
+	   // $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
 	 }
-	 $db->execute(lq("INSERT INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
+	 //$db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
+	 //$criteria="idrelation < ".$db->insert_id(); // we use the facts that 1/ multiple insert return the first id 2/ idrelation increase necessarly 
        }
+       $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
+       $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$nature);
+
      } // foreach entries and persons
    }
 

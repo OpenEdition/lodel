@@ -296,7 +296,7 @@ cp_[#NAME].writeDiv();
 	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />
 	<select multiple size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]">[#ROOT][#G_NAME]</option>
+		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
 	</td><td>
@@ -314,6 +314,9 @@ cp_[#NAME].writeDiv();
 	</IF>
 	</tr>
 	</table>
+	<script type="text/javascript"><!-- 
+addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]'); 
+--></script>
 
 
 

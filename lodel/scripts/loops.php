@@ -97,13 +97,13 @@ function loop_parentsentities(&$context,$funcname,$critere="")
 function loop_toc($context,$funcname,$arguments)
 
 {
-  if (!isset($arguments[text])) {
+  if (!isset($arguments['text'])) {
     if ($GLOBALS['user']['visitor']) die("ERROR: the loop \"toc\" requires a TEXT attribut");
     return;
   }
 
-  if (!preg_match_all("/<(r2r:section(\d+))>(.*?)<\/\\1>/is",$arguments[text],$results,PREG_SET_ORDER)) {
-    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) {
+  if (!preg_match_all("/<(r2r:section(\d+))>(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {
+    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$arguments['text'],$results,PREG_SET_ORDER)) {
       if (function_exists("code_alter_$funcname")) 
 	call_user_func("code_alter_$funcname",$context);
       return;
@@ -116,9 +116,9 @@ function loop_toc($context,$funcname,$arguments)
 
   foreach($results as $result) {
     $localcontext=$context;
-    $localcontext[tocid]=(++$tocid);
-    $localcontext[title]=$result[3];
-    $localcontext[niveau]=intval($result[2]);
+    $localcontext['tocid']=(++$tocid);
+    $localcontext['title']=$result[3];
+    $localcontext['level']=intval($result[2]);
     if ($tocid==1 && function_exists("code_dofirst_$funcname")) {
       call_user_func("code_dofirst_$funcname",$localcontext);
     } elseif ($tocid==count($results) && function_exists("code_dolast_$funcname")) {
@@ -139,18 +139,18 @@ function loop_toc($context,$funcname,$arguments)
 function loop_paragraphs($context,$funcname,$arguments)
 
 {
-  if (!isset($arguments[text])) {
+  if (!isset($arguments['text'])) {
     if ($GLOBALS['user']['visitor']) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
     return;
   }
 
-  preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is",$arguments[text],$results,PREG_SET_ORDER);
+  preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is",$arguments['text'],$results,PREG_SET_ORDER);
 
   $count=0;
   foreach($results as $result) {
     $localcontext=$context;
-    $localcontext[compteur]=(++$count);
-    $localcontext[paragraphe]=$result[0];
+    $localcontext['count']=(++$count);
+    $localcontext['paragraph']=$result[0];
     call_user_func("code_do_$funcname",$localcontext);
   }
 }
@@ -160,12 +160,12 @@ function loop_paragraphs($context,$funcname,$arguments)
 function loop_extract_images($context,$funcname,$arguments)
 
 {
-  if (!isset($arguments[text])) {
+  if (!isset($arguments['text'])) {
     if ($GLOBALS['user']['visitor']) die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
     return;
   }
-  if ($arguments[limit]) {
-    list($start,$length)=explode(",",$arguments[limit]);
+  if ($arguments['limit']) {
+    list($start,$length)=explode(",",$arguments['limit']);
     $end=$start+$length;
   } else {
     $start=0;
@@ -173,7 +173,7 @@ function loop_extract_images($context,$funcname,$arguments)
 
   $validattrs=array("src","alt","border","style","class","name");
 
-  preg_match_all("/<img\b([^>]*)>/",$arguments[text],$results,PREG_SET_ORDER);
+  preg_match_all("/<img\b([^>]*)>/",$arguments['text'],$results,PREG_SET_ORDER);
 
   if (!$end) $end=count($results);
 
@@ -191,8 +191,8 @@ function loop_extract_images($context,$funcname,$arguments)
       if (in_array($attr,$validattrs)) $localcontext[$attr]=$attrs[$i+1];
     }
 
-    $localcontext[compteur]=(++$count);
-    $localcontext[image]=$result[0];
+    $localcontext['count']=(++$count);
+    $localcontext['image']=$result[0];
     call_user_func("code_do_$funcname",$localcontext);
   }
 }
@@ -204,12 +204,12 @@ function previousnext ($dir,$context,$funcname,$arguments)
 {
   global $db;
 
-  if (!isset($arguments[id])) {
+  if (!isset($arguments['id'])) {
     if ($GLOBALS['user']['visitor']) die("ERROR: the loop \"previous\" requires a ID attribut");
     return;
   }
 
-  $id=intval($arguments[id]);
+  $id=intval($arguments['id']);
 //
 // cherche le document precedent ou le suivante
 //
@@ -369,7 +369,7 @@ function loop_rssitem($context,$funcname,$arguments)
   if (function_exists("code_before_$funcname")) call_user_func("code_before_$funcname",$localcontext);
 
   $items=$context['rssobject']->items;
-  $context['nbresultats']=count($items);
+  $context['nbresults']=$context['nbresultats']=count($items);
   $count=0;
   if ($arguments['limit']) {
     list($start,$length)=preg_split("/\s*,\s*/",$arguments['limit']);
