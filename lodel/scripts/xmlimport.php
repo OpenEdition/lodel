@@ -143,7 +143,6 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
   $result=mysql_query("SELECT id,style,styledescription FROM $GLOBALS[tp]typepersonnes,$GLOBALS[tp]typeentites_typepersonnes WHERE statut>0 AND idtypepersonne=id AND idtypeentite='$localcontext[idtype]'") or die (mysql_error());
-  echo "here: ",mysql_num_rows($result),"</br>";
   while (list($idtype,$style,$styledescription)=mysql_fetch_row($result)) {
     // accouple les balises personnes et description
     // non, on ne fait plus comme ca. $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
