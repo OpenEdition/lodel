@@ -40,7 +40,7 @@ $balises=array ("-" => "-",
 #		"pagination"=>"Pagination",
 		"langues"=>"Langues",
 # champs auteurs
-		"descriptionauteur"=>"Description de l'auteur précédent",
+		"description"=>"Description de l'auteur précédent",
 #		"affiliation"=>"<span classe=\"affiliation\">",
 #		"courriel"=>"<span classe=\"courriel\">",
 #
