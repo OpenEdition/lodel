@@ -208,11 +208,6 @@ ln index.php
 ln tpl/index.html
 ln tpl/deskadmin.html
 
-ln motcle.php
-ln tpl/motcle.html
-ln motcles.php
-ln tpl/motcles.html
-
 ln entree.php
 ln tpl/entree.html
 ln entrees.php
@@ -222,17 +217,6 @@ ln tpl/entrees.html
 #ln tpl/personne.html
 #ln personnes.php
 #ln tpl/personnes.html
-
-
-ln periode.php
-ln tpl/periode.html
-ln periodes.php
-ln tpl/periodes.html
-ln geographie.php
-ln tpl/geographie.html
-ln geographies.php
-ln tpl/geographies.html
-
 
 ln options.php
 ln tpl/options.html
