@@ -1174,7 +1174,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-	<span class="titre_document">" [#TITRE] "</span>&nbsp;
+	<span class="titre_document">" [(#TITRE|removefootnotes)] "</span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 	<span class="type_document">([#TYPE])</span>
 </DEFMACRO>
