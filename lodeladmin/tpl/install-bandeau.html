@@ -1,0 +1,35 @@
+<?php
+switch($current){
+	case "plateform":
+	$msg = "Choix de la configuration de serveur";
+	break;
+	case "mysql":
+	$msg = "Accès au serveur MySql";
+	break;
+	case "database":
+	$msg = "Choix de la base de données";
+	break;
+	case "admin":
+	$msg = "Création d'un administrateur initial";
+	break;
+	case "options":
+	$msg = "Options diverses";
+	break;
+	case "servoo":
+	$msg = "Configuration de ServOO";
+	break;
+	case "config":
+	$msg = "Installation du fichier de configuration";
+	break;
+	case "showconfig":
+	$msg = "Visualisation du fichier de configuration";
+	break;
+	case "start":
+	$msg = "Choix du type d'installation";
+	break;
+	default:
+	$msg = "Installation de Lodel";
+}
+?>
+<div id="bandeau"><h3><?=$msg?></h3></div>
+<div id="main">
