@@ -368,7 +368,7 @@ if ($tache=="fichier") {
       calcul_page($context,"site-fichier");
       return;	
     }
-    @chmod ($siteconfigdest,0666 & octdec($GLOBALS[filemask]));
+    @chmod ($siteconfigdest,0666 & octdec($GLOBALS['filemask']));
   }
   // ok siteconfig est copie.
   if ($context[chemin]=="/") { // c'est un peu sale ca.
@@ -440,9 +440,9 @@ function install_fichier($root,$homesite,$homelodel)
     } elseif ($cmd=="mkdir") {
       $arg1=$root.$arg1;
       if (!file_exists($arg1)) {
-	mkdir($arg1,0777 & octdec($GLOBALS[filemask]));
+	mkdir($arg1,0777 & octdec($GLOBALS['filemask']));
       }
-      @chmod($arg1,0777 & octdec($GLOBALS[filemask]));
+      @chmod($arg1,0777 & octdec($GLOBALS['filemask']));
     } elseif ($cmd=="ln" && $usesymlink && $usesymlink!="non") {
       if ($dirdest=="." && 
 	  $extensionscripts=="html" &&
@@ -461,6 +461,7 @@ function install_fichier($root,$homesite,$homelodel)
       mycopyrec("$root$dirsource/$arg1",$dest1);
     } elseif ($cmd=="touch") {
       if (!file_exists($dest1)) touch($dest1);
+      @chmod($dest1,0666 & octdec($GLOBALS['filemask']));
     } elseif ($cmd=="htaccess") {
       if (!file_exists("$dest1/.htaccess")) htaccess($dest1);
     } else {
@@ -477,7 +478,7 @@ function htaccess ($dir) {
   $text="deny from all\n";
   if (file_exists("$dir/.htaccess") && file_get_contents("$dir/.htaccess")==$text) return;
   writefile ("$dir/.htaccess",$text);
-  @chmod ("$dir/.htaccess",0666 & octdec($GLOBALS[filemask]));
+  @chmod ("$dir/.htaccess",0666 & octdec($GLOBALS['filemask']));
 }
 
 function slink($src,$dest) {
@@ -486,7 +487,7 @@ function slink($src,$dest) {
   // le lien n'existe pas ou on n'y accede pas.
   @unlink($dest); // detruit le lien s'il existe
   if (!(@symlink($src,$dest))) {
-    @chmod(basename($dest),0777 & octdec($GLOBALS[filemask]));
+    @chmod(basename($dest),0777 & octdec($GLOBALS['filemask']));
     symlink($src,$dest);
   }
   if (!file_exists($dest)) die ("impossible d'acceder au fichier $src via le lien symbolique $dest");
@@ -498,8 +499,8 @@ function mycopyrec($src,$dest)
   if (is_dir($src)) {
 
     if (file_exists($dest) && !is_dir($dest)) unlink($dest);
-    if (!file_exists($dest)) mkdir($dest,0777 & octdec($GLOBALS[filemask]));
-    @chmod(0777 & octdec($GLOBALS[filemask]));
+    if (!file_exists($dest)) mkdir($dest);
+    @chmod($dest,0777 & octdec($GLOBALS['filemask']));
 
     $dir=opendir($src);
     while ($file=readdir($dir)) {
@@ -524,10 +525,10 @@ function mycopy($src,$dest)
 
    if (file_exists ($dest)) unlink($dest);
    if (!(@copy($src,$dest))) {
-     @chmod(basename($dest),0777 & octdec($GLOBALS[filemask]));
+     @chmod(basename($dest),0777 & octdec($GLOBALS['filemask']));
      copy($src,$dest);
    }
-   @chmod($dest,0666 & octdec($GLOBALS[filemask]));
+   @chmod($dest,0666 & octdec($GLOBALS['filemask']));
 }
 
 
@@ -557,7 +558,7 @@ function maj_siteconfig($siteconfig,$var,$val=-1)
   if (($f=fopen($siteconfig,"w")) && 
       fputs($f,$newtext) && 
       fclose($f)) {
-    @chmod ($siteconfig,0666 & octdec($GLOBALS[filemask]));
+    @chmod ($siteconfig,0666 & octdec($GLOBALS['filemask']));
     return false;
   } else {
     return $newtext;
