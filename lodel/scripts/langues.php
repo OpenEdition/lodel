@@ -55,7 +55,18 @@ $balisesmotcle=array("motcles"=>"Mot Clés",
 
 function makeselectlangues($lang="lang") {
   global $context,$langues;
-    echo "<OPTION VALUE=\"\">--</OPTION>\n";
+  
+  echo "<OPTION VALUE=\"\">--</OPTION>\n";
+  foreach ($langues as $l=>$langue) {
+    $selected=$context[$lang]==$l ? "SELECTED" : "";
+    echo "<OPTION VALUE=\"$l\"$selected>$langue</OPTION>\n";
+  }
+}
+
+
+function makeselectlangues_nevernil($lang="lang") {
+  global $context,$langues;
+
   foreach ($langues as $l=>$langue) {
     $selected=$context[$lang]==$l ? "SELECTED" : "";
     echo "<OPTION VALUE=\"$l\"$selected>$langue</OPTION>\n";
