@@ -244,18 +244,28 @@
 	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
 		<DO>
 			Paru dans 
-			<a class="titrerevue" href="sommaire.html?id=[#ID]">
-				
-						<MACRO NAME="NOM_REVUE"> n°[#NOM]
-					<IF COND="[#TITRE]">,
-						
-						[#TITRE]
-					</IF>.
-				
-			</a>
+			<IF COND="[#TYPE]=='regroupement'"> 
+				<LOOP NAME="affiche_numero2" TABLE="publications"  WHERE="id='[#PARENT]'"> 
+					<a class="titrerevue" href="sommaire.html?id=[#ID]">
+						<MACRO NAME="NOM_REVUE">, n° [#NOM]  
+						<IF COND="[#TITRE]">,
+							[#TITRE]
+						</IF>.
+					</a>
+				</LOOP>
+			<ELSE/>
+					<a class="titrerevue" href="sommaire.html?id=[#ID]">
+							<MACRO NAME="NOM_REVUE"> n°[#NOM] 
+								<IF COND="[#TITRE]">,
+									[#TITRE]
+								</IF>.
+					</a>
+			</IF>
 		</DO>
 	</LOOP>
 </DEFMACRO>
+
+ 
 
 <DEFMACRO NAME="PARU_DANS_SIMPLE">
 <!-- ****************************************************************** -->
@@ -850,20 +860,18 @@
 	<LOOP NAME="auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>
 			[#PRENOM] 
-			[#NOMFAMILLE]
-			<LOOP NAME="DescriptionAuteur" TABLE="documents_auteurs" WHERE="id='[#ID]'">
-				[#DESCRIPTION]
-			</LOOP>
+			<span class="smallcaps">[#NOMFAMILLE]</span>
+			
 		</DOFIRST>
 		<DO>
 			,
 			[#PRENOM] 
-			[#NOMFAMILLE]
+			<span class="smallcaps">[#NOMFAMILLE]</span>
 		</DO>
 		<DOLAST>
 			 et 
 			 [#PRENOM] 
-			 [#NOMFAMILLE] 
+			<span class="smallcaps">[#NOMFAMILLE]</span>
 		</DOLAST>
 		<ALTERNATIVE>
 			<IF COND="[#NOMFAMILLE]">
@@ -887,21 +895,21 @@
 				<a class="auteur" href="auteur.html?id=[#ID]">
 					
 						[#PRENOM]
-						[#NOMFAMILLE]
+						<span class="smallcaps">[#NOMFAMILLE]</span>
 					
 				</a>
 			</DOFIRST>
 			<DO>
 				,<a class="auteur" href="auteur.html?id=[#ID]">
 						[#PRENOM]
-						[#NOMFAMILLE]
+						<span class="smallcaps">[#NOMFAMILLE]</span>
 				</a>
 			</DO>
 			<DOLAST>
 				et 
 				<a class="auteur" href="auteur.html?id=[#ID]">
 						[#PRENOM]
-						[#NOMFAMILLE]
+						<span class="smallcaps">[#NOMFAMILLE]</span>
 				</a>
 			</DOLAST>
 			<AFTER>
@@ -929,7 +937,7 @@
 				<a class="auteur" href="auteur.html?id=[#ID]">
 						
 					[#PRENOM]
-					[#NOMFAMILLE]
+					<span class="smallcaps">[#NOMFAMILLE]</span>
 					
 				</a>
 			</LOOP>
@@ -991,11 +999,10 @@
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<a class="titre2" href="sommaire.html?id=[#ID]">
-				<strong>
 					
 						Dernier numéro publié : [#NOM] 
 					
-				</strong>
+				
 				<IF COND="[#TITRE]">
 					<em>
 						- [#TITRE]
@@ -1009,6 +1016,10 @@
 		</DO>
 	</LOOP>
 </DEFMACRO>
+
+
+
+
 
 <DEFMACRO NAME="SOMMAIRE_DERNIER_NUMERO">
 <!-- ****************************************************************** -->

@@ -57,9 +57,10 @@
 <!-- Pour refermer cette table veuillez utiliser de préférence la       -->
 <!-- Macro : <MACRO NAME="FERMER_TABLE_PRINCIPALE">                     -->
 <!-- ****************************************************************** -->
-	<table width="775" height="100%"  cellspacing="0" cellpadding="0" align="center" valign="top">
+	<table width="775" height="100%"  cellspacing="0" cellpadding="0" align="center" valign="top" background-color="#ffffff"> 
 		<tr>
 			<td> 
+				<div class="principale">
 </DEFMACRO>
 
 <DEFMACRO NAME="FERMER_TABLE_PRINCIPALE">
@@ -69,6 +70,7 @@
 <!-- ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      -->
 <!-- fermé la cellule principale avec le marqueur </td> !!!             -->
 <!-- ****************************************************************** -->
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -96,20 +98,7 @@
 
 
 
-<DEFMACRO NAME="TRACER_SEPARATION_VERTICALE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!--  Permet de tracer une séparation verticale graphique entre la      -->
-<!--  barre de navigation et la page par exemple.                       -->
-<!--  Pour changer la couleur de la ligne il faut changer le code       -->
-<!--  couleur de bgcolor des <td>                                    -->
-<!-- ****************************************************************** -->
 
-<td valign="top" height="100%" width="8" bgcolor="#ffffff"><img src="images/spacer.gif" width="8" height="1"  border="0"></td>
-<td valign="top" height="100%" width="18" bgcolor="#F4F4F4"><img src="images/spacer.gif" width="18" height="1"  border="0"></td>
-<td valign="top" height="100%" width="20" bgcolor="#ffffff"><img src="images/spacer.gif" width="20" height="1"  border="0"></td>
-
-</DEFMACRO> 
 
 <DEFMACRO NAME="AFFICHER_LOGO_REVUE_ORG">
 <!-- ****************************************************************** -->
@@ -121,7 +110,7 @@
 	&nbsp; 
 </div>
 <div class="logo_revuesorg3">
-	<a class="logo_revuesorg3" href="http://www.revues.org" target="_blank" name="logo de Revues.org">
+	<a  href="http://www.revues.org" target="_blank" name="logo de Revues.org">
 		&nbsp;
 	</a>
 </div>
@@ -160,7 +149,7 @@
 <!-- Affiche une Brève description de la revue.                         -->
 <!-- Remplacer le texte entre les '#' par le texte adéquat.             -->
 <!-- ****************************************************************** -->
-	#Brève description de la Revue#
+	Une jolie petite revue
 </DEFMACRO>
 
 
@@ -170,21 +159,17 @@
 <!-- Version 1.0                                                        -->
 <!-- Mention de l'adhésion du site à Revues.org                         -->
 <!-- ****************************************************************** -->
-	<table width="561" border="0" cellspacing="2" cellpadding="2" align="center">
-		<tr>
-			<td  class="texte_trespetit_centre">
-				Page générée par
-				<a href="http://www.lodel.org">
-					 Lodel
-				</a>
-				-
-				Nous adhérons à
-				<a href="http://www.revues.org/" name="Fédération de revues en sciences humaines et sociales">
-					www.revues.org
-				</a>
-			</td>
-		</tr>
-	</table>
+<div class="texte_trespetit_centre">
+	Page générée par
+		<a href="http://www.lodel.org">
+			 Lodel
+		</a>
+	-
+	Nous adhérons à
+		<a href="http://www.revues.org/" name="Fédération de revues en sciences humaines et sociales">
+			www.revues.org
+		</a>
+</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="TABLE_ALPHABETIQUE">

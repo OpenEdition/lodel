@@ -66,8 +66,8 @@
 <!-- afin d'éditer un document.                                         -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<a class="admin" href="lodel/edition/editer.php?id=[#ID]">
-			<span class="texte_trespetit">[E]</span>
+		<a href="lodel/edition/editer.php?id=[#ID]">
+			<span class="pluspetit">[E]</span>
 		</a>
 	</IF>
 </DEFMACRO>
@@ -79,8 +79,8 @@
 <!-- afin d'éditer une publication.                                     -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<a  href="lodel/edition/index.php?id=[#ID]">
-			<span class="texte_trespetit">[E]</span>
+		<a href="lodel/edition/index.php?id=[#ID]">
+			<span class="pluspetit">[E]</span>
 		</a>
 	</IF>
 </DEFMACRO>
@@ -93,12 +93,12 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
 		<IF COND="[#TYPE] eq 'regroupement'">
-			<a class="admin" href="lodel/edition/index.php?id=[#PARENT]">
-				<span class="texte_trespetit">[E]</span>
+			<a href="lodel/edition/index.php?id=[#PARENT]">
+				<span class="pluspetit">[E]</span>
 			</a>
 		<ELSE/>
-			<a class="admin" href="lodel/edition/index.php?id=[#PUBLICATION]">
-				<span class="texte_trespetit">[E]</span>
+			<a href="lodel/edition/index.php?id=[#PUBLICATION]">
+				<span class="pluspetit">[E]</span>
 			</a>
 		</IF>
 	</IF>

@@ -38,8 +38,10 @@
 <!-- Version 1.0                                                        -->
 <!-- Ouvre la page HTML                                                 -->
 <!-- ****************************************************************** -->
-	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-	<html>
+<? echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";?>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	
 	<head>
 </DEFMACRO> 
 
@@ -112,8 +114,8 @@
 <!-- Formulaire permettant d'effectuer une recherche.                   -->
 <!-- ****************************************************************** -->
 	<form action="/cgi-bin/esearch/esearch.pl" method="get">
-		<b>Chercher</b><br><br>
-		<input type="text" size="17" name="search" value="votre recherche" 
+		&nbsp;<b>Chercher</b><br><br>
+		&nbsp;<input type="text" size="17" name="search" value="votre recherche" 
 			onfocus="if(this.value=='votre recherche')this.value='';" />
 		<input type=hidden name="url_back" value="http://[#REVUE].revues.org/">
 		<input type=hidden name="[#REVUE]" value="CHECKED" checked [#REVUE]>

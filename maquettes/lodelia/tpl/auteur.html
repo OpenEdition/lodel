@@ -50,7 +50,7 @@
 				
 			<!-- Nom et prénom de l'auteur -->
 			<div class="titre2">
-				[#PRENOM] [#NOMFAMILLE]&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
+				[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
 			</div>
 				
 			<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
