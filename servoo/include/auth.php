@@ -39,10 +39,10 @@ function authenticate ($level=0)
   global $logintimeout,$database,$sessionname;
   global $dbhost,$dbusername,$dbpasswd;
 
-  $urlreturn="url_return=".urlencode($_SERVER['REQUEST_URI']);
+  $urlreturn="url_retour=".urlencode($_SERVER['REQUEST_URI']);
 
   do { // block de control
-    $name=addslashes($HTTP_COOKIE_VARS[$sessionname]);
+    $name=addslashes($_COOKIE[$sessionname]);
     if (!$name) break;
 
     mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
@@ -79,7 +79,7 @@ function authenticate ($level=0)
     if ($adminrights>=LEVEL_ADMIN) $context[droitadmin]=$GLOBALS[droitadmin]=1;
     if ($adminrights>=LEVEL_VISITEUR) $context[droitvisiteur]=$GLOBALS[droitvisiteur]=1;
     // efface les donnees de la memoire et protege pour la suite
-    $HTTP_COOKIE_VARS[session]=0;
+    $_COOKIE[session]=0;
 
     //
     // change l'expiration de la session et l'url courrante
