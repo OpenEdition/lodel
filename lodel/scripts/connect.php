@@ -60,7 +60,7 @@ mysql_select_db($GLOBALS[currentdb])  or die ("ERROR select: ".mysql_error());
 // expressions qui facilite la vie
 //
 
-$GLOBALS[tp]=$GLOBALS[tableprefix];
+$GLOBALS['tp']=$GLOBALS['tableprefix'];
 
 
 

@@ -78,7 +78,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $usergroupes=$context[usergroupes];
     $context[iduser]=$iduser=$row[iduser];
 
-    if ($userpriv<$level) { header("location: login.php?erreur_privilege=1&".$retour); exit; }
+    if ($userpriv<$level) { header("location: login.php?erreur_privilege=1&".$retour); exit(); }
 
     // verifie encore une fois au cas ou...
     if ($userpriv<LEVEL_ADMINLODEL && !$site) break;

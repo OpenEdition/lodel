@@ -51,9 +51,15 @@ if ($id>0 && ($delete || $restore)) {
 // ajoute ou edit
 //
 
-if ($edit) { // modifie ou ajoute
+if ($edit || $maindefault) { // modifie ou ajoute
   extract_post();
+  if ($maindefault) { // site par defaut ?
+    $context['nom']="Site principal";
+    $context['rep']="principal";
+    $context['toroot']=true;
+  }
   // validation
+
   do {
     if (!$context[nom]) { $context[erreur_nom]=$err=1; }
     if (!$id && (!$context[rep] || preg_match("/\W/",$context[rep]))) { $context[erreur_rep]=$err=1; }
@@ -218,7 +224,7 @@ if ($tache=="createtables") {
   if (!$context[rep]) die ("probleme interne");
   include_once ($home."connect.php");
   
-  mysql_select_db($context[dbname]);
+  mysql_select_db($context['dbname']);
 
   if (!file_exists(LODELROOT."$versionrep/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
   $text=join('',file(LODELROOT."$versionrep/install/init-site.sql"));

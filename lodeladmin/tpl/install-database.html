@@ -83,6 +83,16 @@ Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans c
 
 <?php  if ($erreur_createtables) { ?> <b>Erreur</b>: La création des tables a échoué. La commande SQL et l'erreur produite sont: <?php echo $erreur_createtables; ?> <?php } ?>
 
+<?php  if ($erreur_tablesexist) { ?> <b>Attention</b>: La base que vous avez sélectionnée contient déjà des données pour Lodel. Vous pouvez conserver ces données pour l'installation actuelle ou les effacer. Vous pouvez aussi selectionner une autre base de donnée ci-dessous.
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="database">
+<input type="submit" name="continue" value="Continuer">
+<input type="submit" name="erasetables" value="Effacer les données">
+</form>
+<br/>
+<?php } ?>
+
+
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="database">

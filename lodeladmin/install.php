@@ -27,10 +27,10 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-// securise l'entree si le fichier unlockedinstall n'existe pas.
+// securise l'entree
 
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
-  if (!(@file("../lodelconfig.php"))) { problem_reading_lodelconfig(); die();}
+  if (!(@file("../lodelconfig.php"))) problem("reading_lodelconfig");
   require("lodelconfig.php");
   // le lodelconfig.php doit exister 
   // et permettre un acces a une DB valide... 
@@ -39,7 +39,19 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   if ($tache=="lodelconfig") $GLOBALS[REQUEST_URI].="?tache=lodelconfig";
 
   require($home."auth.php");
-  authenticate(LEVEL_ADMINLODEL);
+  // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
+  if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
+    $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]users LIMIT 1");
+    if ($result && mysql_num_rows($result)>0) {
+      authenticate(LEVEL_ADMINLODEL);
+    } else {
+      // no authentification required. The table users does not exists or is empty!
+    }
+  } else {
+    // well, no access to the DB but a lodelconfig ?
+    // ask for erasing the lodelconfig.php ?
+    problem("lodelconfig_but_no_database");
+  }
 
   if ($_REQUEST[installoption]) $installoption=$_REQUEST[installoption]; // overwrite the lodelconfig
 }
@@ -111,20 +123,48 @@ if ($tache=="plateform") {
     @chmod($lodelconfig,$chmod);
     maj_lodelconfig(array("home"=>'$pathroot/lodel'.$versionsuffix.'/scripts/'));    
   } else {
-    die("le fichier $lodelconfigplatform n'existe pas. Erreur interne.");
+    die("ERROR: $lodelconfigplatform does not exist. Internal error, please report this bug.");
   }
+  $arr=array();
+  $needoptions=false;
+  $arr['installoption']=intval($installoption);
 
-  // ok, now, let's guess the urlroot
-  do { // control block
-    $me=$_SERVER['PHP_SELF'];
-    if (!$me) break;
+  // guess the urlroot
+  $me=$_SERVER['PHP_SELF'];
+  if ($me) {
     // enleve moi
     $urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
-    if ($urlroot==$me) die("ERROR: the install.php script is not at the right place");
-    if (LODELROOT!="../") die("ERROR: the lodeladmin has been moved, please report error");
+    if ($urlroot==$me) die("ERROR: the install.php script is not at the right place, please report this bug.");
+    if (LODELROOT!="../") die("ERROR: the lodeladmin directory has been moved, please report this bug.");
 
-    maj_lodelconfig(array("urlroot"=>$urlroot."/","installoption"=>intval($installoption)));
-  } while (0); // end of control bock
+    $arr['urlroot']=$urlroot."/";
+  }
+
+  // is there a filemask ?
+
+  if ($_REQUEST['filemask']) {
+    // passed via the URL
+    $arr['filemask']="0".$_REQUEST['filemask'];
+  } elseif ($GLOBALS['filemask']) {
+    // was in the previous lodelconfig.php
+    $arr['filemask']=$GLOBALS['filemask'];
+  } else {
+    $arr['filemask']="0".decoct(guessfilemask());
+  }
+
+  if ($installoption==1) {
+    // try to guess the options.
+    // use pclzip ?
+    if (function_exists("gzopen")) {
+      $arr['unzipcmd']=$arr['zipcmd']="pclzip";
+    } else {
+      $arr['unzipcmd']=$arr['zipcmd']="";
+      $needoptions=true;
+    }
+  }
+
+  $arr['chooseoptions']=$needoptions && $installoption==1 ? "oui" : "non";
+  maj_lodelconfig($arr);
 }
 
 
@@ -143,32 +183,69 @@ if ($tache=="mysql") {
 //
 
 if ($tache=="database") {
-  $set=array();
-
-  if (isset($newsingledatabase)) {
-    $set['singledatabase']=$newsingledatabase ? "on" : "";
-  }
-  if (isset($newtableprefix)) {
-    $set['tableprefix']=$newtableprefix;
-  }
-
-  if ($newdatabase==-1) $newdatabase=$existingdatabase;
-  if ($newdatabase==-2) { 
-    $newdatabase=$createdatabase;
-  } else {
-    $createdatabase="";
-  }
-  $set['database']=$newdatabase;
-
-  maj_lodelconfig($set);
-
-  if ($createdatabase) { // il faut creer la database
-    @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
-    @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-    if (!@mysql_query("CREATE DATABASE $createdatabase")) {
-      $erreur_createdatabase=1;
+  if ($continue) {
+    $tache="continue";
+    // nothing to do
+  } elseif ($erasetables) {
+    // erase the table of each site
+    $result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites");
+    if (!$result) {
+      $erreur_droptables=1;
       if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
       return;
+    }
+    @include($lodelconfig);    // insert the lodelconfig. Should not be a problem.
+    if ($singledatabase) {
+      // currently singledatabase implies single site ! That's a shame but...
+      // Let's destroyed everything in the database with the prefix !
+      if (!$tableprefix) {
+	// we can't destroy... too dangerous. Should find another solution.
+	die("Sans tableprefix les tables ne peuvent pas etre efface en toute securite. Veuillez effacer vous-même les tables de Lodel. Merci.");
+      } else {
+	// get all table names.
+	$result=mysql_list_tables($database);
+	while ($row = mysql_fetch_row($result)) {
+	  if (preg_match("/^$tableprefix/",$row[0]) && $row[0]!=$tableprefix."users") {
+	    // let's drop it
+	    mysql_query("DROP TABLE $row[0]");
+	  }
+	}
+      }
+    } else {
+      die("L'effacement des tables avec plusieurs bases de donnée n'est pas implementé. Veuillez effacer les bases de données vous même. Merci.");
+    }
+    // erase the main tables below.
+  } else { // normal case
+    $set=array();
+
+    if (isset($newsingledatabase)) {
+      $set['singledatabase']=$newsingledatabase ? "on" : "";
+    }
+    if (isset($newtableprefix)) {
+      $set['tableprefix']=$newtableprefix;
+    }
+
+    if ($newdatabase==-1) $newdatabase=$existingdatabase;
+    if ($newdatabase==-2) { 
+      $newdatabase=$createdatabase;
+    } else {
+      $createdatabase="";
+    }
+    $set['database']=$newdatabase;
+
+    maj_lodelconfig($set);
+
+    if ($createdatabase) { // il faut creer la database
+      @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
+      @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+      if (!@mysql_query("CREATE DATABASE $createdatabase")) {
+	$erreur_createdatabase=1;
+	if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+	return;
+      }
+    } else {
+      // check whether the database contains already Lodel.
+
     }
   }
 }
@@ -301,7 +378,7 @@ $have_chmod=function_exists("chmod");
 $entete=0;
 foreach ($dirs as $dir => $mode) {
   do { // block de control
-    if (!file_exists(LODELROOT.$dir)) { die("ERROR: the directory $dir does not exists. Check your distribution."); }
+    if (!file_exists(LODELROOT.$dir)) { die("ERROR: the directory $dir does not exists. Check your distribution and/or report the bug."); }
     if (testdirmode($dir,$mode)) break;
     // let try to chmod
     if ($have_chmod) {
@@ -332,7 +409,9 @@ if ($erreur[functions]) {
 //
 // essai de trouver une configuration
 //
-if (@include ($lodelconfig)) {
+
+echo (require ($lodelconfig))," ",$lodelconfig," ",file_exists($lodelconfig);
+if ((require ($lodelconfig))) {
   // ok c'est bon...
 } else {
   // demander une plateforme pour l'install
@@ -356,7 +435,7 @@ if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
 #  }
 #  if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
 #  return;
-  die ("ERROR: unable to access the ".$home."func.php file from lodeladmin. Check the file exissts and the rights. Press Reload.");
+  die ("ERROR: unable to access the ".$home."func.php file from lodeladmin. Check the file exists and the rights and/or report the bug.");
 }
 
 //
@@ -379,7 +458,7 @@ if (!$dbusername && !$dbhost) {
 if (!$database) {
   // cherche les databases
   if (!($resultshowdatabases=@mysql_query("SHOW DATABASES"))) { // probleme ?
-    // non, c'est pas surement pas une erreur de connection. Ca peut etre 
+    // non, c'est surement pas une erreur de connection. Ca peut etre 
     // qu'on n'a pas les droits.
     // donc faut gerer autrement.
 
@@ -391,20 +470,20 @@ if (!$database) {
   return;
 } 
 
-$sitesexistsrequest="SELECT id,statut,nom FROM $GLOBALS[tableprefix]sites LIMIT 1";
+$sitesexistsrequest="SELECT id,statut FROM $GLOBALS[tableprefix]sites LIMIT 1";
 
 if (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
   $erreur_usedatabase=1;
 
   if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
   return;
-} elseif (!@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
+} elseif ($erasetables || !@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
   // non, alors on cree les tables
 
   // il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
   // les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
 
-  if ($erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql")) {
+  if ($erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql",$erasetables)) {
     // mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
     if (@mysql_query($sitesexistsrequest)) {
       if (!@mysql_query("DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites")) { // ok, on n'arrive vraiment a rien faire
@@ -414,6 +493,11 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
     if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
     return;
   }
+} elseif ($tache=="database") { // the table site already exists but we just have asked for which database... check what to do.
+  // ask for erasing the table content or not.
+  $erreur_tablesexist=1;
+    if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+    return;
 }
 
 //
@@ -446,29 +530,6 @@ if ($htaccess!="non") {
 // Demander des options generales
 //
 if ($installoption==1) {
-  // try to guess the options.
-  $needoptions=false;
-
-  // file mask ?
-  $newfilemask=decoct(fileperms(LODELROOT."lodel-$versioninstall"));
-  if ($newfilemask) $filemask=$newfilemask;
-
-  // use pclzip ?
-  if (function_exists("gzopen")) {
-    $newunzipcmd=$newzipcmd="pclzip";
-  } else {
-    $needoptions=true;
-  }
-
-  maj_lodelconfig(array("chooseoptions"=>$needoptions ? "non" : "oui",
-			"filemask"=>$filemask,
-			"unzipcmd"=>$newunzipcmd,
-			"zipcmd"=>$newzipcmd));
-
-  if ($needoptions) {
-    if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
-    return;
-  }
 
 } elseif ($importdir && !testdirmode($importdir,5)) {
   $erreur_importdir=1;
@@ -559,8 +620,10 @@ function maj_lodelconfig($var,$val=-1)
 
 {
   global $lodelconfig,$have_chmod;
+
   // lit le fichier
   $text=join("",file($lodelconfig));
+  //  if (!$text) die("ERROR: $lodelconfig can't be read. Internal error, please report this bug");
   $search=array(); $rpl=array();
 
   if (is_array($var)) {
@@ -577,15 +640,15 @@ function maj_lodelconfig($var,$val=-1)
   $newtext=preg_replace($search,$rpl,$text);
   if ($newtext==$text) return;
   // ecrit le fichier
-  if (!(unlink($lodelconfig)) ) die ("Ne peut pas supprimer $lodelconfig. Erreur interne.");
+  if (!(unlink($lodelconfig)) ) die ("ERROR: $lodelconfig can't be deleted. Internal error, please report this bug.");
    return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0600);
 }
 
 
-function mysql_query_file($filename) 
+function mysql_query_file($filename,$droptables=false)
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tableprefix]",
+  $sqlfile=str_replace("_PREFIXTABLE_", $GLOBALS['tableprefix'] ,
 		       join('',file($filename)));
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
@@ -594,6 +657,14 @@ function mysql_query_file($filename)
   foreach ($sql as $cmd) {
     $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
     if ($cmd) {
+
+      // should we drop tables before create them ?
+      if ($droptables && preg_match("/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?".$GLOBALS['tableprefix']."(\w+)",$cmd,$result)) {
+	if (!mysql_query("DROP TABLE IF EXISTS ".$result[1])) {
+	  $err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+	}
+      }
+      // execute the command
       if (!mysql_query($cmd)) { 
 	$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
       }
@@ -601,6 +672,40 @@ function mysql_query_file($filename)
   }
   return $err;
 }
+
+function guessfilemask() {
+  //
+  // Guess the correct filemask setting
+  // (code from SPIP)
+
+  $self = basename($_SERVER['PHP_SELF']);
+  $uid_dir = @fileowner('.');
+  $uid_self = @fileowner($self);
+  $gid_dir = @filegroup('.');
+  $gid_self = @filegroup($self);
+  $perms_self = @fileperms($self);
+
+  // Compare the ownership and groupship of the directory, the installer script and 
+  // the file created by php.
+
+  if ($uid_dir > 0 && $uid_dir == $uid_self && @fileowner($testfile) == $uid_dir)
+    $chmod = 0700;
+  else if ($gid_dir > 0 && $gid_dir == $gid2_self && @filegroup($testfile) == $gid_dir)
+    $chmod = 0770;
+  else
+    $chmod = 0777;
+
+  // Add the same read and executation rights as the installer script has.
+  if ($perms_self > 0) {
+    // add the execution right where there is read right
+    $perms_self = ($perms_self & 0777) | (($perms_self & 0444) >> 2); 
+    $chmod |= $perms_self;
+  }
+
+  return $chmod;
+}
+
+
 
 function problem_include($filename)
 
@@ -665,6 +770,42 @@ function testdirmode($dir,$mode)
 }
 */
 
+function problem($msg)
+
+{
+  $messages=array(
+  "version"=>'La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Version recommandée: php 4.3 ou supérieure',
+
+  "reading_lodelconfig"=>'Le fichier lodelconfig.php n\'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
+
+  "lodelconfig_but_no_database"=>'Un fichier de configuration lodelconfig.php a été trouvé dans le répertoire principale de Lodel mais ce fichier ne permet pas actuellement d\'acceder à une base de donnée valide. Si vous souhaitez poursuivre l\'installation, veuillez effacer manuellement. Ensuite, veuillez cliquer sur le bouton "Recharger" de votre navigateur.</form>'
+  );
+
+?>
+<hmlt>
+<head>
+      <title>Installation de LODEL</title>
+</head>
+<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
+
+<h1>Installation de LODEL</h1>
+
+
+<p align="center">
+<table width="600">
+<tr>
+  <td>
+  <?php echo $messages[$msg]; ?>
+  </td>
+</table>
+</body>
+?>
+<?php 
+
+  die();
+}
+
+
 function probleme_droits_debut()
 
 {
@@ -717,61 +858,6 @@ LODEL est livré avec SANS AUCUNE GARANTIE.
 </table>
 </body>
 <?php }
-
-
-function probleme_version()
-
-{
-?>
-<hmlt>
-<head>
-      <title>Installation de LODEL</title>
-</head>
-<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
-
-<h1>Installation de LODEL</h1>
-
-
-<p align="center">
-<table width="600">
-<tr>
-  <td>
-    La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />
-    Version de php sur votre serveur: <?php echo phpversion(); ?><br />
-    Version recommandée: php 4.3 ou supérieure
-  </td>
-</table>
-</body>
-?>
-<?php }
-
-function problem_reading_lodelconfig()
-
-{
-?>
-<hmlt>
-<head>
-      <title>Installation de LODEL</title>
-</head>
-<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
-
-<h1>Installation de LODEL</h1>
-
-
-<p align="center">
-<table width="600">
-<tr>
-  <td>
-    Le fichier lodelconfig.php n'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.
-<form method="post" action="install.php">
-<input type="hidden" name="tache" value="lodelconfig">
-<input type="submit" value="continuer">
-</form>
-  </td>
-</table>
-</body>
-<?php }
-
 
 ?>
 
