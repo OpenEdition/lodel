@@ -1313,7 +1313,7 @@
 					<IF COND="[#STATUS]==1">
 						Brouillon&nbsp;/&nbsp;Prête à publier
 					</IF>
-				</CORPS>
+				</DO>
 			</LOOP>			
 		</span>
 	</div>
@@ -1323,7 +1323,7 @@
 	<div align="center">
 		<span class="texte_trespetit_centre">
 			<LOOP NAME="" TABLE="documents" WHERE="id='[#ID]'">
-				<CORPS>
+				<DO>
 					<IF COND="[#STATUS]==-32">
 						Brouillon&nbsp;/&nbsp;
 						<a href="status.php?id=[#ID]&status=pret">
