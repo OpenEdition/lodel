@@ -32,5 +32,5 @@ require_once("auth.php");
 authenticate(LEVEL_VISITOR);
 
 $class="search";
-require_once("search.php");
+require_once("search.inc.php");
 ?>
