@@ -1743,11 +1743,11 @@ li{
 }
 -->
 </style>
-	<title>Chargement et installation de LODEL</title>
+	<title>Chargement et installation de Lodel</title>
 	</head>
 	<body> 
 
-	<h1>Chargement et installation de LOD<span class="or">E</span>L</h1>
+	<h1>Chargement et installation de Lod<span class="or">e</span>l</h1>
 
 
 	<div id="main">
@@ -1779,7 +1779,7 @@ function msg_intro() {
   open_html();
 ?>
 <p>
-Bienvenue dans l'installation de <strong>LODEL</strong>, logiciel d'édition électronique</p>
+Bienvenue dans l'installation de <strong>Lodel</strong>, logiciel d'édition électronique</p>
 <p>L'installation comprend :</p>
 <ul>
    <li>le téléchargement automatique sur le site <a href="http://www.lodel.org">http://www.lodel.org</a> de la dernière version de Lodel.</li>
