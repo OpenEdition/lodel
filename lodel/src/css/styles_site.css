@@ -443,3 +443,10 @@ div.results
 	margin-left : 5px;
 	font-size : 95%;
 }
+p.infosearch
+{
+	font-size : 80%;
+	border-bottom : 1px solid #9CBD9C;
+	margin : 15px 0px 0px 15px;
+	
+}	
