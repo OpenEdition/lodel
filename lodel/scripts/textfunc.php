@@ -47,25 +47,33 @@ function pluriel($texte)
 
 { return intval($texte)>1 ? "s" : ""; }
 
+function lettrine($texte)
 
-function lettrine(&$texte)
+{
+  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/su","\\1<span class=\"lettrine\">\\2</span>",$texte);
+  // utf-8 ok
 
-{ 
-  if (preg_match("/^\s*(?:<[^>]+>)*\s*([\w\"])/",$texte,$result)) return $result[1];
- return "";
-} 
+}
 
-function avantlettrine(&$texte)
-
-{ 
-  if (preg_match("/^(\s*(?:<[^>]+>)*\s*)[\w\"]/",$texte,$result)) return $result[1];
- return "";
-} 
-
-
-function apreslettrine (&$texte)
-
-{ return preg_replace("/^\s*(?:<[^>]+>)*\s*[\w\"]/","",$texte); }
+## systeme non satisfaisant de lettrine
+## function lettrine(&$texte)
+## 
+## { 
+##   if (preg_match("/^\s*(?:<[^>]+>)*\s*([\w\"])/",$texte,$result)) return $result[1];
+##  return "";
+## } 
+## 
+## function avantlettrine(&$texte)
+## 
+## { 
+##   if (preg_match("/^(\s*(?:<[^>]+>)*\s*)[\w\"]/",$texte,$result)) return $result[1];
+##  return "";
+## } 
+## 
+## 
+## function apreslettrine (&$texte)
+## 
+## { return preg_replace("/^\s*(?:<[^>]+>)*\s*[\w\"]/","",$texte); }
 
 
 function multiline($width,&$texte)
@@ -274,8 +282,10 @@ function humandate($s)
 function tocable($level,$text=-1)
 
 {
+  static $tocind=0;
+
   if ($text==-1) { $text=$level; $level=10; }// gestion etrange du level par defaut.
-  $sect="?:1";
+  $sect="1";
   for($i=2;$i<=$level;$i++) $sect.="|$i";
 
   function tocable_callback($result) {
@@ -283,10 +293,41 @@ function tocable($level,$text=-1)
       $tocind++;
       return '<a href="#tocfrom'.$tocind.'" NAME="tocto'.$tocind.'">'.$result[0].'</a>';
   }
-  return preg_replace_callback("/<(r2r:section($sect)|div)(?:\s+class=\"section($sect)\")?>.*?<\/\\1>/is","tocable_callback",$text);
-
-
+  return preg_replace_callback("/<(r2r:section(?:$sect)).*?<\/\\1>/s","tocable_callback",$text);
 }
+
+## version souple qui travaille sur les div... mais c'est une mauvaise habitude.
+## function tocable($level,$text=-1)
+## 
+## {
+##   static $tocind=0;
+## 
+##   if ($text==-1) { $text=$level; $level=10; }// gestion etrange du level par defaut.
+##   $sect="1";
+##   for($i=2;$i<=$level;$i++) $sect.="|$i";
+## 
+##   $arr=preg_split("/(<\/?)(r2r:section(?:$sect)>|div\b[^>]*>)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+##   $count=count($arr);
+##   $stack=array();
+##   for($i=1; $i<$count; $i+=3) {
+##     if ($arr[$i]=="</") { // fermante
+##       $arr[$i+1].=array_pop($stack);
+##     } else { // ouvrante
+##       if (strpos("r2r:section",$arr[$i+1])===0 ||
+## 	  preg_match("/^div\b[^>]+class\s*=\s*\"section($sect)\"/",$arr[$i+1]) ) { // toc it
+## 
+## 	$tocind++;
+## 	array_push($stack,"</a>");
+## 	$arr[$i]='<a href="#tocfrom'.$tocind.'" NAME="tocto'.$tocind.'">'.$arr[$i];
+##       } else { // don't toc it
+## 	array_push($stack,"");
+##       }
+##     }
+##   } // for
+##   return join("",$arr);
+## 
+## 
+## }
 
 
 function multilingue($lang,$text)
@@ -348,16 +389,31 @@ function paranumber (&$texte)
 */
 
 /** 
- * Fonction permettant de supprimer les appels de notes d'un texte.
+ * Supprimer les appels de notes de pied de page d'un texte.
  */
 
 function removefootnotes(&$text)
 {
-  return preg_replace(array('/<a\b[^>]+\bid=\"bodyftn\d+\"[^>]*>.*?<\/a>/s',
-			    '/<span\b[^>]+class="footnoteanchor"[^>]*>[\s\n]*<\/span>/i',
-			    '/<span\b[^>]+class="footnotereference"[^>]*>[\s\n]*<\/span>/i')
-		      ,"",$text);
+  return preg_replace('/<a class="footnotecall"[^>]*>.*?<\/a>/s',"",$text);
 }
+/** 
+ * Supprimer les appels de notes de fin de document.
+ */
+
+function removeendnotes(&$text)
+{
+  return preg_replace('/<a class="endnotecall"[^>]*>.*?<\/a>/s',"",$text);
+}
+
+/** 
+ * Fonction permettant de supprimer les appels de notes d'un texte.
+ */
+
+function removenotes(&$text)
+{
+  return preg_replace('/<a class="(foot|end)notecall"[^>]*>.*?<\/a>/s',"",$text);
+}
+
 
 /**
  * Fonction qui dit si une date est vide ou non
@@ -399,13 +455,15 @@ function eq($str,$texte)
 function notes($type,&$texte)
 {
 #  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
-  preg_match_all('/<p\b[^>]*>.*?<\/p>/',$texte,$results,PREG_PATTERN_ORDER);
+#  return $texte;
+  preg_match_all('/<div class="(?:foot|end)notebody"[^>]*>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
+#  print_r($results);
   if ($type=="nombre") {
-    $notes=preg_grep('/<a [^>]*\bid="ftn\d+"[^>]+>[0-9]+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?[0-9]+\]?<\/a>/',$results[0]);
   } elseif ($type=="lettre") {
-    $notes=preg_grep('/<a [^>]*\bid="ftn\d+"[^>]+>[a-zA-Z]+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?[a-zA-Z]+\]?<\/a>/',$results[0]);
   } elseif ($type=="asterisque") {
-    $notes=preg_grep('/<a [^>]*\bid="ftn\d+"[^>]+>\*+<\/a>/',$results[0]);
+    $notes=preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?\*+\]?<\/a>/',$results[0]);
   } else die ("type \"$type\" inconnues");
   return join("",$notes);
 }
@@ -420,8 +478,8 @@ function tocss($text)
   global $home;
   include_once($home."balises.php");
   return preg_replace(array(
-			    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
-			    "/<\/r2r:[^>]+>/i"				    				    ),
+			    "/<r2r:(\w+)\b[^>]*>/", // replace les autres balises r2r par des DIV
+			    "/<\/r2r:[^>]+>/"				    				    ),
 		      array(
 			    '<div class="\\1">',
 			    "</div>"
@@ -458,7 +516,7 @@ function strip_tags_keepnotes($keeptags,$text=-1)
 {
   if (is_numeric($text)) { $text=$keeptags; $keeptags=""; }
 
-  $arr=preg_split('/(<span\b[^>]+class="footnotereference"[^>]*>\s*<span\b[^>]+class="footnoteanchor"[^>]*>\s*<a\b[^>]+\bid=\"bodyftn\d+\"[^>]*>.*?<\/a>\s*<\/span>\s*<\/span>)/is',$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+  $arr=preg_split('/(<a class="(foot|end)notecall"[^>]*>.*?<\/a>)/s',$text,-1,PREG_SPLIT_DELIM_CAPTURE);
   $count=count($arr);
   for($i=0; $i<$count; $i+=2) $arr[$i]=strip_tags($arr[$i],$keeptags);
   return join("",$arr);

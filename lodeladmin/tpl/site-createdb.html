@@ -31,34 +31,67 @@
 <br /><br /><b>Création de site</b></div></td></tr>
 </table>
 
-<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
-<h2>Option 1</h2>
-<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
-<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
-
-<h2>Option 2</h2>
-<p>Veuillez créer la base de données [#DBNAME] en utilisant la commande SQL:</p>
-<p>
-<code>
-[#COMMAND];
-</code>
-<p>et donner les droits "ALL" à l'utilisateur [#DBUSERNAME]@[#DBHOST]";</p>
-<code>
-GRANT ALL ON [#DBNAME].* TO [#DBUSERNAME]@[#DBHOST];
-</code>
-</p>
-
-<IF COND="[#TACHE]">
-<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
-<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
-</IF>
-</td></tr></table><br/>
+<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="center"><tr><td>
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="tache" value="createdb">
+<input type="hidden" name="versionrep" value="[#VERSIONREP]">
+
+<IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
+<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
+<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
+
+<ul>
+<li>Vérifiez que les paramètres d'accès à la base de donnée sont correctes, que l'utilisateur MySQL [#DBUSERNAME] a le droit de créer une nouvelle base de donnée (la plupart des hebergeurs ne l'acceptent pas) ou recommencer l'installation.</li>
+<li>Créer la base de donnée vous même (commande mysql ou phpMyAdmin):
+<p>
+<code>
+[#COMMAND1];
+</code>
+<p>et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":</p>
+<code>
+[#COMMAND2];
+</code>
+</p>
+</li>
+</ul>
+
+
+
+<ELSE/> <!--[ OPTION2 ]-->
+
+
+<IF COND="[#ERREUR]">
+<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME] et a donner les droits à l'utilisateur MySQL [#DBUSERNAME]@[#DBHOST]</b></p>
+<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
+</IF>
+Deux possibilités:
+<ul>
+<li>
+<p>Créer la base de données [#DBNAME] en utilisant la commande SQL:</p>
+<p>
+<code>
+[#COMMAND1];
+</code>
+<p>et donner les droits "ALL" à l'utilisateur "[#DBUSERNAME]@[#DBHOST]":</p>
+<code>
+[#COMMAND2];
+</code>
+</p>
+</li>
+<li>
+Laisser Lodel essayer de créer la base si l'utilisateur MySQL a les droits.
+<input type="submit" name="lodeldo" value="Essayer de créer la base de donnée">
+</li>
+</ul>
+</IF>
+
+</td></tr></table><br/>
 <input type="submit" value="continuer">
+
 </form>
+</div>
 
 
 <MACRO NAME="CLOSE_HTML">

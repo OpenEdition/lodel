@@ -78,7 +78,7 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
   // command VER ----------------
   if ($cmd[0]=="VER") {
     // send the version
-    die("SAY: ServOO; version ".VERSION."; visit http://www.lodel.org/servoo");
+    die("SAY: ServOO; version ".VERSION."; OpenOffice.org ".OPENOFFICEVERSION."; ".MESSAGEVERSION);
     // command DWL ----------------
   } elseif ($cmd[0]=="DWL") {
     // download de fichier

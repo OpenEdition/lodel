@@ -33,6 +33,7 @@ authenticate(LEVEL_ADMINLODEL);
 require($home."func.php");
 require($home."backupfunc.php");
 
+$context[importdir]=$importdir;
 
 if ($backup) {
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
@@ -87,11 +88,7 @@ if ($backup) {
 
   chdir ("lodeladmin");
 
-  download($archivetmp,$archivefilename);
-
-  @unlink($archivetmp);
-  return;
-
+  if (operation($operation,$archivetmp,$archivefilename,&$context)) return;
 }
 
 include ($home."calcul-page.php");

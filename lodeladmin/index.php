@@ -26,13 +26,11 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+if (!file_exists("../lodelconfig.php")) { header("location: install.php"); exit; }
+
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
-
-if (file_exists("CACHE/unlockedinstall")) die("L'installation de LODEL n'est pas terminé. Veuillez la terminer ou éffacer le fichier lodel/admin/CACHE/unlockedinstall.<br><a href=\"install.php\">install.php");
-
-
 
 include ($home."calcul-page.php");
 calcul_page($context,"index");

@@ -32,11 +32,11 @@ require("../lodelconfig.php");
 # la version est vide pour lodeldevel
 # sinon mettre la version sous forme numerique entre guillement. exemple: $version="0.4";
 
-$version="";
+$version="0.7";
 
 ##########################################
 
-$versionsuffix=$version ? "-$version" : "";
+$versionsuffix=$version ? "-$version" : "";   # versioning
 
 $home="../lodel$versionsuffix/scripts/";
 $sharedir="../".$sharedir.$versionsuffix;

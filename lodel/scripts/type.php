@@ -121,9 +121,9 @@ if ($edit) { // modifie ou ajoute
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   $context[import]=($classe=="documents") && 
-    $serveuroourl &&  
-    $serveuroousername && 
-    $serveuroopasswd ? 1 : 0;
+    $servoourl &&  
+    $servoousername && 
+    $servoopasswd ? 1 : 0;
 }
 
 // post-traitement

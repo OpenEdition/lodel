@@ -33,23 +33,60 @@
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
 
-
-
-<b>LODEL a échoué lors de la création le repertoire de la site "[#REP]" à la racine de LODEL.</b><p>
-Si vous souhaitez gérer vous même les droits d'accès (solution la plus sûre), créer ce repertoire et lancer le script Perl lodel/install/install-site.pl<br>
-Si vous souhaitez laisser LODEL copier les fichiers vous devez créer le répertoire et donner au serveur web les droits d'écriture sur ce répertoire. En général, cette méthode n'est pas sûre, sauf chez certains herbergeurs comme free.fr (information sans garantie)<br>
-Enfin, vous pouvez laisser LODEL tout gérer en donnant au serveur web les droits d'écriture au répertoire racine de LODEL. Cette méthode n'est pas sûre.
-
-<p><p>
-LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
-
-</td></tr></table><br/>
-
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
+<input type="hidden" name="versionrep" value="[#VERSIONREP]">
 <input type="hidden" name="tache" value="createrep">
+
+
+<IF COND="[#INSTALLOPTION]=='1'">
+<p><strong>Lodel a échoué lors de la création du repertoire du site "[#REP]".</strong></p>
+C'est sûrement un probleme d'accès. Vous pouvez soit:
+<ul>
+<li>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel</li>
+<li>Créer le repertoire [#REP] et donner les droits d'écriture au serveur web sur ce repertoire</li>
+</ul>
+<p>Attention cependant, ces approches n'offrent pas une bonne sécurité sauf si l'hébérgeur gère la séparation des utilisateurs correctement (ce qui est souvent le cas).</p>
+
 <input type="submit" value="continuer">
 </form>
+<ELSE/>
+<IF COND="[#ERREUR_MKDIR]">
+<p><strong>Lodel a échoué lors de la création du repertoire du site "[#REP]".</strong></p>
+</IF>
+<IF COND="[#ERREUR_NONEXISTS]">
+<p><strong>Le repertoire du site "[#REP]" n'existe pas ou n'est pas accessible.</strong></p>
+</IF>
+Il faut créer le repertoire et les fichiers necessaires pour le site.
+Plusieurs possibilités:
+<ul>
+<li><p>Créer le repertoire [#REP] à la racine de Lodel, puis à partir ce repertoire lancer le commande suivante dans un shell:</p>
+<p><code>
+../install/install-site.pl [#VERSION] [uga]
+</code></p>
+<p>u,g, ou a sont des options pour gerer les droits. "u" si vous êtes l'utilisateur qui fait tourner le serveur web(pratique étrange ?), "g" si vous êtes dans le groupe de l'utilisateur serveur web, "a" dans les autres cas.</p>
+
+<input type="submit" name="mano" value="continuer">
+</li>
+<li>Créer le repertoire [#REP] à la racine de Lodel et donner les droits d'écriture au serveur web sur ce repertoire et laisser faire Lodel (méthode peu sûr).
+
+<input type="submit" name="lodeldo" value="Installer les fichiers dans le répertoire créé">
+</form>
+</li>
+<li>Donner les droits d'écriture au serveur web sur le repertoire racine de Lodel (méthode peu sûr) et laisser faire Lodel.</li>
+<input type="submit" name="lodeldo" value="Créer le répertoire et installer les fichiers">
+<ul>
+<il>
+
+</IF>
+
+</form>
+
+</td></tr></table><br/>
+<p>LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
+</p>
+
+
 
 
 <MACRO NAME="CLOSE_HTML">

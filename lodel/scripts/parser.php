@@ -36,6 +36,7 @@ function parse($in,$out)
 
 class Parser {
 
+  var $infilename;
   var $variable_regexp="[A-Z][A-Z_0-9]*";
   var $loops=array();
   var $fct_txt;
@@ -56,7 +57,7 @@ class Parser {
 
 function errmsg ($msg,$ind=0) { 
   if ($ind) $line="line ".$this->$linearr[$ind];
-  die("ERROR $line: $msg");
+  die("ERROR $line (".$this->infilename."): $msg");
 }
 
 function parse_loop_extra(&$tables,
@@ -72,6 +73,8 @@ function parse ($in,$out)
 
 {
   global $sharedir;
+
+  $this->infilename=$in;
   if (!file_exists($in)) $this->errmsg ("Unable to read file $in");
 
   // read the file

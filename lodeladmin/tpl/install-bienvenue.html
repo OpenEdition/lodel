@@ -54,8 +54,15 @@ L'installation de LODEL peut se faire de deux façons, en fonction du systeme sur
 <p align="center">
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="droits">
+<?php if ($installing) { ?>
+Une installation a &eacute;t&eacute; commenc&eacute;e, que souhaitez vous faire:</br>
+<input type="submit" name="continue" value="Poursuivre l'installation"><br />
+<input type="submit" name="erase_and_option1" value="Recommencer une nouvelle installation option 1">
+<input type="submit" name="erase_and_option2" value="Recommencer une nouvelle installation option 2">
+<?php } else { ?>
 <input type="submit" name="option1" value="Installation option 1">
 <input type="submit" name="option2" value="Installation option 2">
+<?php } ?>
 </form>
 </p>
 

@@ -32,6 +32,23 @@
 	</tr>
 </table>
 
+
+	  <IF COND="[#ERREUR_HTACCESS]">
+<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td>
+
+	    <p><strong>Erreur:</strong> l'import s'est déroulé correctement, mais Lodel n'a pas pu installer les fichiers .htaccess dans les répertoires suivant: [#ERREUR_HTACCESS].</p>
+	    <p>Veuillez les installer vous-même. Les fichiers .htaccess doivent contenir une ligne de code:<br /><code>deny from all</code><p>
+		    </td>
+		</tr>
+</table>
+	<div class="pied_de_formulaire">
+	    <form><input class="form" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" /></form>
+
+	</div>
+	    <ELSE/>
+
 <table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>
@@ -39,24 +56,39 @@
 			<span class="texte_intitule">Il est recommand&eacute; de faire une sauvegarde de la base de donn&eacute;es avant d'en importer une nouvelle :</span>
 			<div><a href="backup.php">SAUVEGARDE DE LA BASE DE DONNEES</a></div>
 			<br /><br /><br />
-			Pour importer une base de donn&eacute;es, vous devez charger le fichier tar.gz  sur le serveur dans le r&eacute;pertoire de [#REPERTOIRE].
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p>Liste des fichiers disponibles:</p>
-			<LOOP NAME="fichiers">
-				<DO>
-					<div>&gt;&gt; <strong>[#NOM]</strong> &gt;&gt; <a href="import.php?fichier=[(#NOM|urlencode)]">Importer</a></div><br />
-				</DO>
-			</LOOP>
-		</td>
-	</tr>
+		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'importation de la base de donnée. Verifier l'integrité de votre archive. La base installée est sûrement corrompue maintenant. Veuillez importer une archive valide. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
+
+			Pour importer une base de donn&eacute;es, deux possibilités:
+		<ul>
+		  <li>
+		    <p>Transferer par ftp le fichier tar.gz  sur le serveur dans le r&eacute;pertoire de [#IMPORTDIR] ou dans le repertoire CACHE.</p>
+		    <p>Liste des fichiers disponibles actuellement:</p>
+		    <LOOP NAME="fichiers">
+   		    <DO>
+		      <div><strong>[#NOM]</strong> &gt;&gt; <a href="import.php?fichier=[(#NOM|urlencode)]">Importer</a></div><br />
+		    </DO>
+		    </LOOP>
+		</li>
+		<li>
+		  <p>Charger un  fichier par HTTP/POST (ci-dessous). Attention, la taille maximale du fichier autorisée sur les serveurs est souvent restreinte. Votre configuration indique: <?php echo ini_get('post_max_size'); ?></p>
+      <IF COND="[#ERREUR_UPLOAD]"><b>Erreur</b> lors du chargement!</IF>
+                  <p>
+    Archive: <form name="formfic" enctype="multipart/form-data" action="import.php" method="post"  />
+      <input type="file" name="archive" size="40">
+      <input class="form" type="submit" value="Charger" />	  
+      </form>
+		</li>
+	      </ul>
+	      </td>
+	    </tr>
 </table>
 <form>
 	<div class="pied_de_formulaire">
 		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
 	</div>
 </form>
+</IF>  
+
+
 
 <MACRO NAME="CLOSE_HTML">  

@@ -31,13 +31,13 @@ if (!(INC_LODELCONFIG)) die("inc lodelconfig");
 
 
 
-mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die (mysql_error());
+mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die ("ERROR  connect: ".mysql_error());
 if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {
   $GLOBALS[currentdb]=$GLOBALS[database]."_".$GLOBALS[site];
 } else {
   $GLOBALS[currentdb]=$GLOBALS[database];
 }
-mysql_select_db($GLOBALS[currentdb])  or die (mysql_error());
+mysql_select_db($GLOBALS[currentdb])  or die ("ERROR select: ".mysql_error());
 
 //
 //if (!function_exists("table")) {

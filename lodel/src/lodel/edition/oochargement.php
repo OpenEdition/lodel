@@ -132,14 +132,14 @@ calcul_page($context,"oochargement");
 function convert ($uploadedfile,$destfile)
 
 {
-  global $home,$serveuroourl,$serveuroousername,$serveuroopasswd,$unzipcmd;
+  global $home,$servoourl,$servoousername,$servoopasswd,$unzipcmd;
 
-  $cmds.="DWL file1; CVT XHTMLLodel-1.0; ZIP all; RTN convertedfile;";
+  $cmds="DWL file1; CVT XHTMLLodel-1.0; ZIP all; RTN convertedfile;";
 
   require ($home."serveurfunc.php");
-  $ret=upload($serveuroourl,
-	      array("username"=>$serveuroousername,
-		    "passwd"=>$serveuroopasswd,
+  $ret=upload($servoourl,
+	      array("username"=>$servoousername,
+		    "passwd"=>$servoopasswd,
 		    "commands"=>$cmds),
 	      array($uploadedfile), # fichier a uploaded
 	      0, # cookies
@@ -243,6 +243,24 @@ function OO_XHTML ($convertedfile,&$context)
   // modifie les styles avec (user)
   array_push($srch,"/(<\/?r2r:\w+)\(user\)/");
   array_push($rpl,"\\1");
+
+  //
+  // standardize the foot and end notes.
+  //
+  // footnotes
+  array_push($srch,
+	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="FootnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the footnote
+	     '/<span\b[^>]*class="footnotereference"[^>]*>\s*<span class="Footnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call to the footnote
+  array_push($rpl,
+	     '<div class="footnotebody"><a class="footnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the footnote
+	     '<a class="footnotecall" \\1>\\2</a>'); # call to the footnote
+  // endnotes
+  array_push($srch,
+	     '/<p\b[^>]*>\s*<span\b[^>]*>\s*<a\s+(href="[^"]*"\s+id="[^"]*")\s+class="EndnoteSymbol">(.*?)<\/a>\s*<\/span>(.*?)<\/p>/s', # declaration of the endnote
+	     '/<span\b[^>]*class="endnotereference"[^>]*>\s*<span class="Endnoteanchor">\s*<a\s*(href="[^"]*"\s+id="[^"]*")>(.*?)<\/a>\s*<\/span>\s*<\/span>/' ); # call of the endnote
+  array_push($rpl,
+	     '<div class="endnotebody"><a class="endnotedefinition" \\1>\\2</a>\\3</div>', # declaration of the endnote
+	     '<a class="endnotecall" \\1>\\2</a>'); # call of the endnote
 
 
   // autre chgt
@@ -588,7 +606,7 @@ function quote_attribut_strtolower($text)
 ////////////////////////////////////////////////////////
 
 
-/* plus utiliser ici => serveuroo
+/* plus utiliser ici => servoo
 function removeaccentsandspaces($string){
 return strtr(
  strtr(utf8_decode(preg_replace("/[\s_\r]/","",$string)),

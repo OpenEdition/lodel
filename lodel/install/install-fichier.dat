@@ -99,7 +99,7 @@ ln logout.php
 
 # tous les fichier de src/lodel/edition
 dirsource $homesite/lodel/edition
-
+ln siteconfig.php
 ln maj.php
 ln images
 ln tpl/macros.html
@@ -107,8 +107,6 @@ ln tpl/deskedition.html
 
 # chaine d'importation
 ln abandon.php
-ln chargement.php
-ln tpl/chargement.html
 ln oochargement.php
 ln tpl/oochargement.html
 ln chargesommaire.php
@@ -191,11 +189,11 @@ ln styles_lodel.css
 
 # les logins
 dirsource $homesite/lodel/admin
+ln siteconfig.php
 ln tpl/login.html
 ln login.php
 ln logout.php
 
-dirsource $homesite/lodel/admin
 
 #
 

@@ -37,6 +37,7 @@ require_once($home."champfunc.php");
 
 
 
+
 $id=intval($id);
 $critere=$id ? "$GLOBALS[tp]champs.id='$id'" : "";
 
@@ -92,7 +93,6 @@ if ($edit) { // modifie ou ajoute
     }
     if ($err) break;
     require_once ($home."connect.php");
-
     // lock the tables
     if ($context[classe]!="documents" && $context[classe]!="publications") die("Preciser une classe. Classe incorrecte");
     lock_write("champs",$context[classe],"groupesdechamps");

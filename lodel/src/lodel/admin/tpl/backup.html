@@ -33,21 +33,20 @@
 	</tr>
 </table>
 
-
-<table class="table_admin" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td>&nbsp;
-				<div style="text-align:center">
-					<a href="backup.php?backup=1"><strong>Cliquez ici pour lancer la sauvegarde et patientez SVP</strong></a>
-		                        <p>Lorsque vous aurez sauvegardé le fichier est sur votre disque dur, veuillez cliquer sur "Retour".</p>
-		    
-				</div>
-		</td>
-	</tr>
+<form method="POST" action="backup.php">
+<input type="hidden" name="backup" value="1">
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+<tr><td>Ne sauvegarder que la base de donnée,<br />pas les fichiers associés (source, image, docannexe)</td><td><input type="checkbox" name="sqlonly" /></td></tr>
+<tr><td>Opération:</td><td>
+<select name="operation">
+<option value="download">Télécharger</option>
+<IF COND="[#IMPORTDIR]"><option value="importdir">Enregistrer dans [#IMPORTDIR]</option></IF>
+<option value="cache">Enregistrer dans ./CACHE</option>
+</select>
+</td></tr>
 </table>
-<form>
 	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="    Retour    " onClick="javascript:window.location='index.php'" />
+		<input class="form" type="submit" value="  Sauvegarder  ">
 		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php'" />
 	</div>
 </form>

@@ -31,6 +31,12 @@
 
 <h2>Options divers</h2>
 
+<?php if ($erreur_importdir) { ?>
+<p><strong>Erreur:</strong> le répértoire <?php echo $importdir; ?> n'est pas lisible par le serveur.</p>
+<?php } ?>
+
+
+
 <p>Ces options permettent de controler finement le fonctionnement de Lodel. Les valeurs par defaut convinnent pour la plupart des sites:</p>
 
 <form method="post" action="install.php">
@@ -39,25 +45,34 @@
 
 <tr><td>
 <p>Vérifier que le chemin de l'url vers la racine de Lodel a été deviné correctement.</p>
-<input type="text" size="60" name="urlroot" value="<?php echo $urlroot; ?>">
+<input type="text" size="60" name="newurlroot" value="<?php echo $urlroot; ?>">
 </td></tr>
 <tr><td>
 <p>Extension des scripts:</p>
 <p>Les scripts Lodel sont des scripts PHP, et il est recommandé d'utiliser l'extension ".php". Cependant pour des raisons esthétiques, il est possible de choisir l'extension ".html". Ceci nécessite une configuration particulière sur le serveur.</p>
 <table>
 <tr>
-<td>.php:</td><td><input type="radio" name="extensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
+<td>.php:</td><td><input type="radio" name="newextensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
 </tr><tr>
-<td>.html:</td><td><input type="radio" name="extensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
+<td>.html:</td><td><input type="radio" name="newextensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
 </tr>
 </table>
+</td></tr>
 <tr><td>
 <p>Utiliser des liens symboliques:</p>
 
 <p>Si supporté par le serveur web, certains fichiers peuvent être liés plutôt que copiés. La liaison permet une gestion plus souple des mises à jour, des droits d'accès, etc. Ceci se justifie uniquement si Lodel gère plusieures sites. Il faut configurer le serveur web pour "suivre les liens symboliques" ce qui est généralement considéré comme peu sûr.</p>
 
-oui: <input type="radio" name="usesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br />
-non: <input type="radio" name="usesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br />
+oui: <input type="radio" name="newusesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br />
+non: <input type="radio" name="newusesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br />
+</td></tr>
+<tr><td>
+<p>Repertoire d'import:</p>
+<p>Lors que la base de donnée et les fichiers associés atteigne un taille important, il n'est pas possible d'importer les fichiers par formulaire web. Dans ce cas, les fichiers de sauvegardes doivent etre déposé dans le repertoire d'import (par ftp par exemple). Si par ailleurs, le serveur web peut écrire dans ce repertoire, Lodel proposera d'y stocker les sauvegardes (backup.php). Ce repertoire est utile pour les gros sites !
+
+<p>Préciser un chemin absolu <u>hors l'arborescence de Lodel</u> (ce repertoire doit être lisible par le serveur, mais doit etre hors de la zone web pour assurer la securité de vos données):</p>
+
+<input type="text" size="60" name="newimportdir" value="<?php echo $importdir; ?>">
 </td></tr>
 
 

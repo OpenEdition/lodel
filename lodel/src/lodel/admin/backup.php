@@ -32,6 +32,8 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 include ($home."func.php");
 
+$context[importdir]=$importdir;
+
 if ($backup) {
   require_once($home."func.php");
 
@@ -53,17 +55,17 @@ if ($backup) {
   $archivefilename="site-$site-".date("dmy").".tar.gz";
 
   chdir ("../..");
-  system("/bin/tar czf $archivetmp --exclude=lodel/sources/.htaccess --exclude=docannexe/fichier/.htaccess --exclude=docannexe/image/index.html lodel/sources docannexe -C /tmp $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
 
+
+  $dirs=$sqlonly ? "" : "--exclude=lodel/sources/.htaccess --exclude=docannexe/fichier/.htaccess --exclude=docannexe/image/index.html lodel/sources docannexe";
+
+  system("/bin/tar czf $archivetmp $dirs -C /tmp $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
   if (!file_exists($archivetmp)) die ("ERROR: the tar command does not produce any output");
+  @unlink("/tmp/$outfile"); // delete the sql file
+
   chdir ("lodel/admin");
-
   unlock();
-
-  download($archivetmp,$archivefilename);
-  @unlink($archivetmp);
-
-  return;
+  if (operation($operation,$archivetmp,$archivefilename,&$context)) return;
 
 #  $context[archive]=$archive;
 #  $context[size]=intval(filesize("upload/$archive")/1024);
@@ -73,8 +75,9 @@ if ($backup) {
 #  if (preg_match("/^site-$site-\d+.tar.gz$/",$terminer)) {
 #    unlink ("upload/$terminer");
 #  }
-#  header ("location: index.php");
-#  return;
+
+  header ("location: index.php");
+  return;
 }
 
 

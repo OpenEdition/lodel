@@ -47,7 +47,7 @@ $urlroot="/";
 # cette variable est ecrasee dans siteconfig.php a partir de la version 0.5
 # elle pourra alors etre supprimee de ce script
 # cette variable doit se terminer par / obligatoirement.
-$home="$pathroot/lodel/scripts/";
+$home="";
 
 
 # URL contenant les fichiers communs partagés
@@ -65,7 +65,7 @@ $sharedir="$pathroot/share";
 $siteagauche=0;
 
 # Localisation des fichiers archive pour l'import de donnees
-$importdir="/www-bin/revues/import";
+$importdir="";
 
 # Timeout pour les sessions
 # en seconde
@@ -117,11 +117,11 @@ $sessionname="session$database";
 $extensionscripts="";      # extension .php ou .html pour les scripts accessibles par les internautes 
 $idagauche="";             # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
 
-# TEMPORAIRE
+
 # configuration du serveur OO
-$serveuroourl="http://lodeldevel/serveuroo/index.php";
-$serveuroousername="ruralia@localhost";
-$serveuroopasswd="ruralia";
+$servoourl="";
+$servoousername="";
+$servoopasswd="";
 
 
 
@@ -130,6 +130,7 @@ $serveuroopasswd="ruralia";
 # la presence de ces variables est obligatoire pour la configuration
 $includepath=""; # pour les sites qui ont un include automatique (defini par php.ini)
 $htaccess="on";    # 
+$filemask="0777";
 $usesymlink="";
 $installoption="";
 ############################################

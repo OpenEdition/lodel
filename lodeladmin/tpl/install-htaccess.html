@@ -1,0 +1,81 @@
+<?php include("tpl/install-openhtml.html"); ?>
+<!--[
+
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+]-->
+
+<!--[ ce fichier n'est pas un template] -->
+
+<?php function print_directories() { global $erreur_htaccess;
+foreach($erreur_htaccess as $dir) {
+     $writeable=0;
+	    echo "<li>$dir</li>";
+      if (testdirmode($dir,7)) $writeable++;
+}
+      return $writeable;
+}
+ ?>
+
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="htaccess">
+
+
+<?php if ($erreur_htaccesswrite) { ?>
+<font color="red"><b>Erreur</b></font>:  Le serveur ne peut pas écrire les fichiers .htaccess dans les répertoires suivants. Veuillez ajouter les fichiers vous même et cliquer sur "Vérification".
+
+
+
+<?php } ?>
+
+<p>Afin d'assurer un meilleur niveau de sécurité, certains répertoires doivent contenir un fichier .htaccess qui empèche l'acces au répertoire par le web. Ces fichiers ne sont pas présents dans les répertoires suivant:</p>
+
+<p>Répertroire (par rapport à la racine de LODEL)<br>
+<ul><?php $writeable=print_directories();   ?></ul>
+</p>
+
+Plusieurs possibilités:
+<ul>
+<?php  if ($writeable) { ?>
+<li>Laisser Lodel installer les .htaccess dans les repertoires où il peut écrire.<br />
+<input type="submit" name="write" value="Installation automatique des .htaccess">
+</li>
+<? } ?>
+<li>Ajouter vous-même les .htaccess. Ces fichiers doivent contenir une seule ligne:<br /><code>deny from all</code><br />
+<input type="submit" name="verify" value="Verification">
+</li>
+<li>Ne pas avoir de .htaccess (non recommandé à moins que le serveur ne supporte pas le .htaccess).<br />
+<input type="submit" name="nohtaccess" value="Pas de .htaccess">
+</li>
+</ul>
+
+
+
+
+
+</form>
+
+<?php include("tpl/install-closehtml.html"); ?>

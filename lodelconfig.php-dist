@@ -58,7 +58,7 @@ $sharedir="$pathroot/share";
 # nomsites.domain.org (=1) ou domaine.org/nomsite (=0)
 $siteagauche=0;
 
-# Localisation des fichiers archive pour l'import de donnees
+# Repertoire pour les fichiers archive pour l'import de donnees.
 $importdir="/www-bin/revues/import";
 
 # Timeout pour les sessions

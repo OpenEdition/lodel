@@ -29,32 +29,43 @@
 
 // securise l'entree si le fichier unlockedinstall n'existe pas.
 
-if (is_executable("CACHE") && !file_exists("CACHE/unlockedinstall")) {
+if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   require("lodelconfig.php"); // le lodelconfig.php doit exister 
   // et permettre un acces a une DB valide... 
   // meme si on reconfigure une nouvelle DB ca doit marcher... 
-  // on pourrait aussi remettre un fichier unlockedinstall, mais le risque est
-  // de ne pas terminer l'install
-  include ($home."auth.php");
+  require($home."auth.php");
   authenticate(LEVEL_ADMINLODEL);
 }
+
+
+//
+// Version of lodel to be installed.
+//
+
+$versioninstall=0.7;
+$versionsuffix="-$versioninstall";   # versioning
+
+if (!defined(LODELROOT)) define(LODELROOT,"../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
+$lodelconfig="CACHE/lodelconfig-cfg.php";
+
 
 //
 // option
 //
+if ($erase_and_option1) { $option1=true; @unlink($lodelconfig); }
+if ($erase_and_option2) { $option2=true; @unlink($lodelconfig); }
+
 if ($option1) $installoption="1";
 if ($option2) $installoption="2";
 
 
-if (!defined(LODELROOT)) define(LODELROOT,"../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
-$lodelconfig="CACHE/lodelconfig-cfg.php";
 
 //
 // choix de la plateforme
 // Copie le fichier lodelconfig choisi dans le CACHE
 // Verifie qu'on peut ecrire dans le cache
 //
-$plateformdir=LODELROOT."lodel/install/plateform";
+$plateformdir=LODELROOT."lodel$versionsuffix/install/plateform";
 
 $have_chmod=function_exists("chmod");
 
@@ -66,6 +77,7 @@ if ($tache=="plateform") {
     // essai de copier ce fichier dans le CACHE
     if (!@copy($lodelconfigplatform,$lodelconfig)) { die ("problème de droits... étrange on a déjà vérifié"); }
     if ($have_chmod) @chmod($lodelconfig,0600); // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
+    maj_lodelconfig(array("home"=>'$pathroot/lodel'.$versionsuffix.'/scripts/'));    
   } else {
     die("le fichier $lodelconfigplatform n'existe pas. Erreur interne.");
   }
@@ -180,7 +192,7 @@ if ($tache=="admin") {
     $pass=""; // enleve de la memoire
 }
 
-$protecteddir=array("lodel",
+$protecteddir=array("lodel$versionsuffix",
 		    "lodeladmin/CACHE",
 		    "lodeladmin/tpl");
 
@@ -204,12 +216,19 @@ if ($tache=="htaccess") {
 
 
 if ($tache=="options") {
-  if (!preg_match("/\/$/",$urlroot)) $urlroot.="/";
-  maj_lodelconfig(array("urlroot"=>$urlroot,
-			"extensionscripts"=>$extensionscripts,
-			"usesymlink"=>$usesymlink));
+  if (!preg_match("/\/$/",$newurlroot)) $newurlroot.="/";
+  maj_lodelconfig(array("urlroot"=>$newurlroot,
+			"importdir"=>$newimportdir,
+			"extensionscripts"=>$newextensionscripts,
+			"usesymlink"=>$newusesymlink));
 }
 
+
+if ($tache=="servoo") {
+  maj_lodelconfig(array("servoourl"=>$newservoourl,
+			"servoousername"=>$newservoousername,
+			"servoopasswd"=>$newservoopasswd));
+}
 
 
 if ($tache=="downloadlodelconfig") {
@@ -235,6 +254,7 @@ if ($tache=="showlodelconfig") {
 
 
 if (!$tache) {
+  $installing=file_exists($lodelconfig); // has an install been started
   if (!(@include ("tpl/install-bienvenue.html"))) problem_include ("install-bienvenue.html");
   return;
 }
@@ -243,7 +263,6 @@ if (!$tache) {
 //                              TESTS                          //
 /////////////////////////////////////////////////////////////////
 
-
 //
 // Vérifie les droits sur les fichiers, (verifie juste les droits d'apache, pas les droits des autres users, et verifie les droits minimum, pas de verification de la securite) dans la zone admin
 //
@@ -251,17 +270,17 @@ if (!$tache) {
 // les fonctions de tests existent, donc on peut faire des tests sur les droits
 $dirs=array("lodeladmin/CACHE"=>7,
 	    "lodeladmin/tpl"=>5,
-	    "lodel"=>5,
-	    "lodel/install"=>5,
-	    "lodel/install/plateform"=>5,
-	    "lodel/scripts"=>5,
-	    "lodel/src"=>5,
+	    "lodel$versionsuffix"=>5,
+	    "lodel$versionsuffix/install"=>5,
+	    "lodel$versionsuffix/install/plateform"=>5,
+	    "lodel$versionsuffix/scripts"=>5,
+	    "lodel$versionsuffix/src"=>5,
 	    "lodeladmin/images"=>5);
 	       
 $entete=0;
 foreach ($dirs as $dir => $mode) {
   do { // block de control
-    if (!file_exists($dir)) { die("ERROR: the directory $dir does not exists. Check your distribution."); }
+    if (!file_exists(LODELROOT.$dir)) { die("ERROR: the directory $dir does not exists. Check your distribution."); }
     if (testdirmode($dir,$mode)) break;
     // let try to chmod
     if ($have_chmod) {
@@ -273,6 +292,16 @@ foreach ($dirs as $dir => $mode) {
   } while(0);
   if ($entete) { probleme_droits_fin(); return; }
 }
+
+//
+// Check PHP has the needed function 
+//
+if (!function_exists("utf8_encode")) {
+  $erreur[functions]=array("utf8_encode");
+  if (!(include ("tpl/install-php.html"))) problem_include ("install-php.html");
+  return;
+}
+
 
 
 // include: lodelconfig
@@ -345,7 +374,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
   // il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
   // les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
 
-  if ($erreur_createtables=mysql_query_file(LODELROOT."lodel/install/init.sql")) {
+  if ($erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql")) {
     // mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
     if (@mysql_query($sitesexistsrequest)) {
       if (!@mysql_query("DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites")) { // ok, on n'arrive vraiment a rien faire
@@ -375,10 +404,10 @@ if (!mysql_num_rows($result)) { // il faut demander la creation d'un admin
 if ($htaccess!="non") {
   $erreur_htaccess=array();
   foreach ($protecteddir as $dir) {
-    if (file_exists($dir) && !file_exists($dir."/.htaccess")) array_push($erreur_htaccess,$dir);
+    if (file_exists(LODELROOT.$dir) && !file_exists(LODELROOT.$dir."/.htaccess")) array_push($erreur_htaccess,$dir);
   }
   if ($erreur_htaccess) {
-    if (!(@include("tpl/install-htaccess.html"))) problem_include("install-htaccess.html");
+    if (!(include("tpl/install-htaccess.html"))) problem_include("install-htaccess.html");
     return;
   }
 }
@@ -390,6 +419,42 @@ if ($htaccess!="non") {
 if (!$extensionscripts || !$usesymlink) {
   if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
   return;
+} elseif ($importdir && !testdirmode($importdir,5)) {
+  $erreur_importdir=1;
+  if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
+  return;
+}
+
+//
+// ServOO configuration
+//
+
+if ($servoourl!="off") {
+  // test la configuration
+  if ($servoourl && $servoousername && $servoopasswd) {
+    $cmds="VER;";
+
+    require ($home."serveurfunc.php");
+    $ret=upload($servoourl,
+		array("username"=>$servoousername,
+		      "passwd"=>$servoopasswd,
+		      "commands"=>$cmds));
+#    print_r(strpos("SAY:",$ret));
+    if (strpos($ret,"SAY:")===0) {
+      if (!$skip && $tache=="servoo") {
+	$message=substr($ret,4); // delete the SAY:
+	if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
+	return;
+      }
+    } else {
+      $erreur_connect=$ret;
+      if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
+      return;
+    }
+  } else {
+    if (!(@include("tpl/install-servoo.html"))) problem_include("install-servoo.html");
+    return;
+  }
 }
 
 
@@ -427,7 +492,7 @@ if ($rootlodelconfig_exists && !is_readable(LODELROOT.$file)) {
 // compare the two config files
 
 if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // are they different ?
-
+  @unlink(LODELROOT.$file);
   if (@copy($lodelconfig,LODELROOT.$file)) { // let copy
     if ($have_chmod) @chmod(LODELROOT.$file,0600);
   } else { // error
@@ -436,14 +501,6 @@ if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT.$file))) { // ar
   }  
 }
 
-
-//
-// ok, c'est fini, on a plus qu'a bloquer l'install
-//
-
-if (file_exists("CACHE/unlockedinstall") && !@unlink("CACHE/unlockedinstall")) {
-  die("Etrange, on peut pas effacer ce fichier, alors qu'on a les droits d'écriture sur le repertoire lodel/admin/CACHE. N'est-ce pas ?");
-}
 
 if (!(@include("tpl/install-fin.html"))) problem_include("install-fin.html");
 
@@ -524,13 +581,14 @@ function testdirmode($dir,$mode)
     $testfile=LODELROOT.$dir."/tmp_install_test.tmp";
     if (file_exists($testfile)) @unlink($testfile); // if I have not the write permission in the directory, I won't be able to do that.
     $fh=@fopen($testfile,"w");
-    if (!$fh) { echo "can't open file in writing mode"; return FALSE; }
+    if (!$fh) return FALSE;
     if (!(@fputs($fh,"Lodel is great\n"))) return FALSE;
     fclose($fh);
     if (!(@unlink($testfile))) return FALSE;
   }
   if ($mode & 4) { // readable ? (et executable)
-    $dh=@opendir(LODELROOT.$dir);
+    if (substr($dir,0,1)!="/") $dir=LODELROOT.$dir;
+    $dh=@opendir($dir);
     if (!$dh) return FALSE;
     if (!(@readdir($dh))) return FALSE;
     closedir($dh);

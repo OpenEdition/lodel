@@ -1,37 +1,53 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859">
+<?php  include("tpl/install-openhtml.html"); ?>
 <!--[
-
+ 
    LODEL - Logiciel d'Edition ELectronique.
+ 
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ 
    Home page: http://www.lodel.org
+ 
    E-Mail: lodel@lodel.org
+ 
                              All Rights Reserved
+ 
       This program is free software; you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
       the Free Software Foundation; either version 2 of the License, or
       (at your option) any later version.
+ 
       This program is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
+ 
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+]-->
 
-
-<head>
-      <title>Installation de LODEL</title>
-</head>
-<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
-
-<h1>Installation de LODEL</h1>
-
+<!--[ ce fichier n'est pas un template ]-->
 
 <p align="center">
-<table width="600">
-<tr>
-  <td>
+Votre installation ou la configuration de PHP ne permet pas &agrave; Lodel de fonctionner correctement.<br/>
+Veuillez resoudre les probl&egrave;mes suivants avant de poursuivre:</p>
+<?php if ($erreur[functions]) { ?>
+<p>Fonctions non pr&eacute;sentes dans l'installation de PHP:
+<ul>
+<?php foreach ($erreur[functions] as $func) { ?>
+<li><?php echo $func; ?></li>
+<?php } ?>
+</ul>
+</p>
+<?php } ?>
+
+<p align="center">
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="droits">
+<input type="hidden" name="installoption" value="<?php echo $installoption;?>">
+<input type="submit" name="submit" value="Continuer">
+</form>
+</p>
+
+<?php  include("tpl/install-closehtml.html"); ?>

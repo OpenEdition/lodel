@@ -1,0 +1,74 @@
+<?php  include("tpl/install-openhtml.html"); ?>
+<!--[
+
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+]-->
+
+<!--[ ce fichier n'est pas un template ]-->
+
+<form method="post" action="install.php">
+<input type="hidden" name="tache" value="servoo">
+
+<p align="center">Configuration du serveur OpenOffice.</p>
+
+<?php if ($message) { ?>
+Le ServOO <?php  echo $servoohost; ?> a répondu:<br/>
+<table cellpadding="10" border="1" ><tr><td><? echo htmlentities($message); ?></td></td></table>
+<input type="submit" name="skip" value="Poursuivre">
+<br/>
+<br/>
+
+<?php } else { ?>
+
+La conversion de documents aux formats RTF, SXW ou DOC en xhtml est réalisé avec ServOO, un serveur basé sur OpenOffice.org et Writer2Latex<br />
+Deux possibilités:
+<ul>
+<li>Installer ServOO ce qui nécessite l'installation de Open Office et Java sur votre serveur! Cette installation requiert un serveur dedié et correctement protégé. <u>Ce n'est pas possible chez les hebergeurs commerciaux</u>. ServOO est distribué dans un pactage séparé de Lodel sur <a href="http://sourceforge.net/projects/lodel">http://sourceforge.net/projects/lodel</a>. Lors que ServOO est installé, entrez les paramètres de connexion ci-dessous. Si vous installez un ServOO, nous vous encourageons à la mettre a disposition du public et à vous faire enregistrer sur http://www.lodel.org/servoo</li>
+<li>Demander un compte sur un serveur ServOO publiquement accessible. La liste officielle des serveurs est disponible sur <a href="http://www.lodel.org/servoo">http://www.lodel.org/servoo</a>. Entrez les paramètres de connexion ci-dessous.
+</li>
+<?php } ?>
+
+<?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $servoohost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo $erreur; ?> </span><p></p><?php } ?>
+
+<table border="1">
+
+<tr><td>
+URL du serveur ServOO<br />
+<input type="text" size="60" name="newservoourl" value="<?php  echo $servoourl; ?>">
+</td></tr>
+<tr><td>
+Nom d'utilisateur ServOO:<br>
+<input type="text" size="60" name="newservoousername" value="<?php  echo $servoousername; ?>">
+</td></tr>
+<tr><td>
+Mot de passe de l'utilsateur ServOO<br>
+<input type="password" size="60" name="newservoopasswd" value="">
+</td></tr>
+</table>
+<input type="submit" value="continuer">
+
+</form>
+<?php  include("tpl/install-closehtml.html"); ?>

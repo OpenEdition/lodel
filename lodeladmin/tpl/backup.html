@@ -26,17 +26,40 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
-<tr>
-<td>&nbsp;
-
-
-<div align="center"><a href="backup.php?backup=oui"><strong>Cliquez ici pour lancer la sauvegarde compl&egrave;te</strong></a></div>
-
-<br/>
-<div align="center"><a href="backup.php?backup=oui&sqlonly=oui"><strong>Cliquez ici pour lancer la sauvegarde de la DB seulement</strong></a></div>
-
-</td>
-</tr>
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
+<tr><td><div align="center">
+<br /><br /><b>Sauvegarde de la base de donnée et des fichiers</b></div></td></tr>
 </table>
+
+
+<div align="center"><table width="600" cellpadding="5" cellspacing="0" border="1" align="CENTER">
+<IF COND="[#OUTFILENAME] and ![#ERREUR]">
+		    La sauvegarde s'est bien déroulée, l'archive est disponible ici: [#OUTFILENAME]<br />
+<form method="POST">
+<input class="form" type="button" value="  OK  " onClick="javascript:window.location='index.php'" />
+</form>
+<ELSE/>
+		<IF COND="[#ERREUR]">
+		  <p>Une erreur est survenue lors de la copie du fichier à l'emplacement suivant: [#OUTFILENAME]<br />
+		  Veuillez vérifier que le serveur peut écrire dans ce répertoire et qu'il y a assez d'espace sur le disque.</p>
+		</IF>
+
+<form method="POST" action="backup.php">
+<input type="hidden" name="backup" value="1">
+<tr><td>Ne sauvegarder que la base de donnée, pas les fichiers associés (source, image, docannexe)</td><td><input type="checkbox" name="sqlonly" /></td></tr>
+<tr><td>Opération:</td><td>
+<select name="operation">
+<option value="download">Télécharger</option>
+<IF COND="[#IMPORTDIR]"><option value="importdir">Enregistrer dans [#IMPORTDIR]</option></IF>
+<option value="cache">Enregistrer dans ./CACHE</option>
+</select>
+</td></tr>
+</table>
+
+<input class="form" type="submit" value="  Sauvegarder  ">
+<input class="form" type="button" value="  Annuler  " onClick="javascript:window.location='index.php'" />
+</form>
+</IF>
+</div>
+
 <MACRO NAME="CLOSE_HTML">

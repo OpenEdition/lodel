@@ -32,15 +32,33 @@ authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 #authenticate();
 
 
-$repertoire=$context[repertoire]=$importdir;
+$context[importdir]=$importdir;
 // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 
-if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) && file_exists("$repertoire/$fichier")) {
-  $fichier="$repertoire/".$fichier;
+$archive=$HTTP_POST_FILES['archive']['tmp_name'];
+$context['erreur_upload']=$HTTP_POST_FILES['archive']['error'];
+if (!$context['erreur_upload'] && $archive && is_uploaded_file($archive)) { // Upload
+  $prefix="*";
+  $fichier=$archive;
+
+} elseif ($fichier && preg_match("/^(?:".str_replace("/",'\/',$importdir)."|CACHE)\/(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) && file_exists($fichier)) { // fichier sur le disque
   $prefix=$result[1];
 
+} else { // rien
+  $fichier="";
+}
+
+if ($fichier) {
   // detar dans le repertoire du site
-  system("tar zxf $fichier -C ../../ lodel/sources docannexe 2>&1")!==FALSE or die ("impossible d'executer tar");
+  $listfiles=`tar ztf $fichier 2>/dev/null`;
+  $dirs="";
+  foreach (array("lodel/txt","lodel/rtf","lodel/sources","docannexe") as $dir) {
+    if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\b/m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir." ";
+  }
+  if ($dirs) {
+    #echo "tar zxf $fichier -C ".SITEROOT." $dirs 2>&1";
+    system("tar zxf $fichier -C ".SITEROOT." $dirs 2>&1")!==FALSE or die ("impossible d'executer tar");
+  }
 
   require_once ($home."connect.php");
   // drop les tables existantes
@@ -49,10 +67,11 @@ if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) &&
   $tables=array();
   while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
-  //
   $tmpfile=tempnam("/tmp","lodelimport_");
-   system("tar zxf $fichier -O '$prefix-*.sql' | $mysqldir/mysql $currentdb -h $dbhost -u $dbusername -p$dbpasswd 2>$tmpfile")!==FALSE or die ("impossible d'executer tar et mysql");
-   @unlink($tmpfile);
+  system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
+  require_once ($home."backupfunc.php");
+  if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();
+  @unlink($tmpfile);
 #   system("tar zxf $fichier -O 'site-*.sql' 2>/tmp/import.tmp | /usr/local/mysql/bin/mysql $currentdb -u $dbusername -p$dbpasswd 2>>/tmp/impot.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
 
 #die (join("<br>",file("/tmp/import.tmp")));
@@ -72,22 +91,24 @@ if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) &&
 //
 
 // verifie les .htaccess dans le CACHE
-   $dirs=array("CACHE","lodel/admin/CACHE","lodel/edition/CACHE","lodel/txt","lodel/rtf");
+  $dirs=array("CACHE","lodel/admin/CACHE","lodel/edition/CACHE","lodel/txt","lodel/rtf","lodel/sources");
    foreach ($dirs as $dir) {
-     $file="../../$dir/.htaccess";
+     if (!file_exists(SITEROOT.$dir)) continue;
+     $file=SITEROOT.$dir."/.htaccess";
      if (file_exists($file)) @unlink($file);
      $f=@fopen ($file,"w");
      if (!$f) {
-       print ("<font COLOR=red>Impossible d'ecrire dans le repertoire $dir. Faire: chmod 770 $dir ou chmod 777 $dir</font><br>");
+       $context[erreur_htaccess].=$dir." ";
        $err=1;
      } else {
        fputs($f,"deny from all\n");
        fclose ($f);
      }
    }
-   
-
-   if (!$err) { include_once ($home."func.php"); back();}
+   if (!$err) { 
+     include_once ($home."func.php"); 
+     back();
+   }
 }
 
 
@@ -97,17 +118,17 @@ calcul_page($context,"import");
 
 function loop_fichiers(&$context,$funcname)
 {
-  global $repertoire;
-  if ( $dir= @opendir($repertoire)) {
-    while (($file=readdir($dir))!==FALSE) {
-      if (!preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$file)) continue;
-      $context[nom]=$file;
-      call_user_func("code_do_$funcname",$context);
+  global $importdir;
+
+  foreach (array($importdir,"CACHE") as $dir) {
+    if ( $dh= @opendir($dir)) {
+      while (($file=readdir($dh))!==FALSE) {
+	if (!preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$file)) continue;
+	$context[nom]="$dir/$file";
+	call_user_func("code_do_$funcname",$context);
+      }
+      closedir ($dh);
     }
-    closedir ($dir);
-  }
-  else {
-    die ("Le repertoire $repertoire n'existe pas !");
   }
 }
 

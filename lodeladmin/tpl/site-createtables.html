@@ -34,21 +34,22 @@
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
 
 <b>LODEL a échoué dans la création des tables.</b>
-Le problème peut venir du fait que l'utilisateur MySQL n'a pas le droit de créer les tables. Vous pouvez le faire à la main (via un utilisateur qui a les droits).<br>
-Sinon modifier les droits de l'utilsateur MySQL.
+<p>Vérifier les droits de l'utilisateur MySQL. Il doit pouvoir créer les tables. </p>
 <p>
-Les commandes qui ont produit des erreurs ainsi que les erreurs renvoyées par MySQL:<br>
+Voivi la liste des commandes qui ont produit des erreurs ainsi que les erreurs renvoyées par MySQL:</p>
+<ul>
 <LOOP NAME="erreurs_createtables">
-[#COMMAND]: <font color="red">[#ERROR]</font><br>
+<li>[#COMMAND]: <font color="red">[#ERROR]</font></li>
 </LOOP>
+</ul>
 
-<p><p>
 
 </td></tr></table><br/>
 
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="tache" value="createtables">
+<input type="hidden" name="versionrep" value="[#VERSIONREP]">
 <input type="submit" value="continuer">
 </form>
 

@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	condition	TINYTEXT NOT NULL,		# condition
 	defaut		TINYTEXT NOT NULL,		# valeur par defaut
 	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
+	balisesxhtml    TINYTEXT NOT NULL,		# balises acceptees
 	filtrage	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	commentaire	TEXT NOT NULL,			# commentaire sur le champs

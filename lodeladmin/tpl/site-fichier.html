@@ -32,9 +32,12 @@
 </table>
 
 <div align="center">
-<IF COND="ERREUR_ECRITURE">
-<b>LODEL n'a pas reussi à copier le fichier [#SITECONFIGSRC] dans [#SITECONFIGDEST]
-.</b> <br>
+<IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
+<p><strong>LODEL n'a pas reussi à copier le fichier [#SITECONFIGSRC] dans [#SITECONFIGDEST]
+.</b></p>
+<p>Etrange. Verifier la présence du fichier source et vérifier que le repertoire destiniation est existe et que le serveur web peut y écrire. Enfin c'est etrange quand même que ca ait marché jusque là!</p>
+<ELSE/> <!--[ OPTION2 ]-->
+
 Vous pouvez faire la copie vous même, ou donner les droits d'écriture au serveur web sur le repertoire [#REP] et s'il existe sur le fichier [#REP]/siteconfig.php.
 </IF>
 
