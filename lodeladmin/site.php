@@ -62,7 +62,7 @@ if ($edit) { // modifie ou ajoute
 
 
     // verifie qu'on a qu'un site si on est en singledatabase
-    if (!$id && $singledatabase) {
+    if (!$id && $singledatabase=="on") {
       $result=mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE statut>-64") or die (mysql_error());
       list($numsite)=mysql_fetch_row($result);
       if ($numsite>=1) {
@@ -171,11 +171,11 @@ if ($tache) {
 //
 // creation de la DataBase si besoin
 //
-$context[dbname]=$singledatabase ? $database : $database."_".$context[rep];
+$context[dbname]=$singledatabase=="on" ? $database : $database."_".$context[rep];
 if ($tache=="createdb") {
   if (!$context[rep]) die ("probleme interne");
   do { // bloc de controle
-    if ($singledatabase) break;
+    if ($singledatabase=="on") break;
     // check if the database existe
     include_once ($home."connect.php");
     $db_list = mysql_list_dbs();
