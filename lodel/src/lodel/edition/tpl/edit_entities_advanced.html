@@ -74,11 +74,11 @@
 					<LOOP NAME="checkindex1" TABLE="search_engine"  LIMIT="1">
 					<DO>
 					<a href="index.php?do=cleanIndex">
-						<span class="texte_orange">Purger l'index</span>
+						<span class="texte_orange">[@EDITION.INDEX_CLEANING]</span>
 					</a>
 					<DO>
 					<ALTERNATIVE>
-						<em>Purger l'index</em>
+						<em>[@EDITION.INDEX_CLEANING]</em>
 					</ALTERNATIVE>
 					</LOOP>
 					</td>
@@ -89,11 +89,11 @@
 					<LOOP NAME="checkindex2" TABLE="search_engine" WHERE="identity=[#ID]" LIMIT="1">
 					<DO>
 					<a href="index.php?do=deleteIndex&amp;identity=[#ID]">
-						<span class="texte_orange">Supprimer cette entité de l'index</span>
+						<span class="texte_orange">[@EDITION.ENTITIES_INDEX_CLEANING]</span>
 					</a>
 					</DO>
 					<ALTERNATIVE>
-						<em>Supprimer cette entité de l'index</em>
+						<em>[@EDITION.ENTITIES_INDEX_CLEANING]</em>
 					</ALTERNATIVE>
 					</LOOP>
 					
@@ -105,12 +105,12 @@
 					<LOOP NAME="checkindex3" TABLE="search_engine" WHERE="identity=[#ID]" LIMIT="1">
 					<DO>
 					<a href="index.php?do=addIndex&amp;identity=[#ID]">
-						<span class="texte_orange">Mettre à jour cette entité dans l'index</span>
+						<span class="texte_orange">[@EDITION.ENTITIES_INDEX_UPDATE]</span>
 					</a>
 					</DO>
 					<ALTERNATIVE>
 					<a href="index.php?do=addIndex&amp;identity=[#ID]">
-						<span class="texte_orange">Ajouter cette entité à l'index</span>
+						<span class="texte_orange">[@EDITION.ENTITIES_INDEX_ADD]</span>
 					</a>
 					</ALTERNATIVE>
 					</LOOP>
