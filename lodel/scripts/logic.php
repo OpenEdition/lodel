@@ -27,6 +27,19 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+/**
+ * Define public field description constant
+ */
+define("F_TEXT",0x10);
+define("F_PASSWORD",0x11);
+
+define("F_REQUIRED",0x100);
+
+
+
+/**
+ * base class Logic
+ */
 
 class Logic {
 
@@ -36,7 +49,6 @@ class Logic {
   var $maintable;
 
   //var $jointable;
-
 
 
 
@@ -97,7 +109,7 @@ class Logic {
 
 
    /*---------------------------------------------------------------*/
-   //! Private from this point
+   //! Private or protected from this point
    /**
     * @private
     */
@@ -147,6 +159,29 @@ class Logic {
        }
        $newrank+=$dir;
      }
+   }
+
+   /**
+    * Validated the public fields
+    *
+    */
+   function _validatePublicFields($context) {
+     $publicfields=$this->_publicfields();
+     foreach($publicfields as $field => $fielddescr) {
+       list($type,$condition,$validfunc)=$fielddescr;
+       if ($condition==F_REQUIRED && !$context[$field]) {
+	 XXXXX a faire
+       } elseif ((!$$validfunc($context['']))) {
+	 XXXXX a faire
+       }
+     }
+     return;
+   }
+
+
+   function _publicfields() {
+     die("call to abstract publicfields");
+     return array();
    }
 }
 

@@ -166,6 +166,9 @@ class DAO {
        if ($db->errorno()) die($db->errormsg());
        $vo->rank=$rank+1;
      }
+     if (array_key_exists("status",$vo)) {
+       $vo->status=1;
+     }
      return $vo;
    }
 
@@ -244,14 +247,14 @@ class DAO {
 
 
    function _rightscriteria ($access) {
-     if (!$this->cache_rightscriteria) {
+     if (!$this->cache_rightscriteria[$access]) {
        if (array_key_exists("status",get_class_vars($this->table."VO"))) {
-	 $this->cache_rightscriteria=$GLOBALS['rightvisitor'] ? " AND status>-64" : " AND status>0";
+	 $this->cache_rightscriteria[$access]=$GLOBALS['rightvisitor'] ? " AND status>-64" : " AND status>0";
 	 if (($access=="modify" || $access=="delete") && 
-	     !$GLOBALS['rightadminlodel']) $this->cache_rightscriteria.=" AND status<32";
+	     !$GLOBALS['rightadminlodel']) $this->cache_rightscriteria[$access].=" AND status<32";
        }
      }
-     return $this->cache_rightscriteria;
+     return $this->cache_rightscriteria[$access];
    }
 }
 
