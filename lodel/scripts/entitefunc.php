@@ -259,7 +259,7 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
       } elseif ($typeentree[nvimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
 	// oui,il faut ajouter le mot cle
 	$abrev=$typeentree[utiliseabrev] ? strtoupper($entree) : "";
-	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,lang) VALUES ('$statut','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
+	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,langue) VALUES ('$statut','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
 	$id=mysql_insert_id();
       } else {
 	$id=0;
