@@ -108,10 +108,10 @@ array_push($rpl,
 	     "<span style=\"background-color: #F3F3F3;\">",
 	     "</span>");
 
-$text=preg_replace($srch,$rpl,traite_separateur($text));
+$text=preg_replace($srch,$rpl,$text);
 
 // detecte les zones balises
-$arr=preg_split("/<(\/?r2r):([^>]+)>/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+$arr=preg_split("/<(\/?r2r):([^>]+)>/",traite_separateur($text),-1,PREG_SPLIT_DELIM_CAPTURE);
 $level=0;
 
 $tablescontent=array(); // contient les contenus des tables

@@ -98,7 +98,7 @@ $GLOBALS['multiplelevel']['Sections']=array(
 					    "section1"=>">*"
 					    );
 
-$GLOBALS['multiplelevel'][]=array( // balises speciales
+$GLOBALS['multiplelevel']['']=array( // balises speciales
 				  "puce"=>"<*",
 				  "puces"=>"<*",
 				  "separateur"=>">*"

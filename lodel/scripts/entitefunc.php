@@ -423,6 +423,7 @@ function lodel_strip_tags($text,$balises)
 
     // split the groupe of balises
     $groups=preg_split("/\s*;\s*/",$balises);
+    array_push($groups,""); // balises speciales
     // feed the accepted string with accepted tags.
     foreach ($groups as $group) {
       // lodel groups
@@ -443,6 +444,7 @@ function lodel_strip_tags($text,$balises)
     } // foreach group
   } // not cached.
 
+#  print_r($accepted);
 
   $acceptedtags=$accepted[$balises];
 
