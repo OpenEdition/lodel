@@ -211,7 +211,7 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,
 	     "/<object>.*?<\/object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
-	     "/<a\s+id=\"Image[\"]+\"[^>]*\/>/i"
+	     "/<a\s+id=\"Image[\"]+\"[^>]*\/>/i",
 	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 	     "/(<img\b[^>\/]+)\/?".">/i" # met border="0"
 #	     "/(<(col)\b[^>]*?)\/?".">/i", # balise seule, il faut les fermer
