@@ -163,8 +163,6 @@ if ($tache=="plateform") {
     }
   }
 
-  if ($installoption==1) $arr['extensionscripts']="php";
-
   $arr['chooseoptions']=$needoptions && $installoption==1 ? "oui" : "non";
   maj_lodelconfig($arr);
 }
@@ -789,24 +787,14 @@ function problem($msg)
 function probleme_droits_debut()
 
 {
+include('tpl/install-openhtml.html');
+$current = "droits";
+include('tpl/install-bandeau.html');
 ?>
-<hmlt>
-<head>
-      <title>Installation de LODEL</title>
-</head>
-<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
-
-<h1>Installation de LODEL</h1>
-
-
+<h2>Accès aux répertoires.</h2>
 <p align="center">
-<table width="600">
-<tr>
-  <td>
-   <p align="center">Accès aux répertoires.</p>
-
-   <b>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache ou encore www-data) puisse y accèder en lecture et, si mentioné, ci-dessous y écrire</b>
-<p></p>
+   <strong>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache ou encore www-data) puisse y accèder en lecture et, si mentioné, ci-dessous y écrire</strong>
+</p>
 <ul>
 <?php }
 
@@ -814,7 +802,7 @@ function probleme_droits($file,$mode)
 
 {
  echo "<li>Répertoire: $file<br> droits requis: lecture, exécution"; if (($mode & 2) == 2) echo ", <u>écriture</u>";
- echo "<p></p>\n";
+ echo "</li>";
 }
 
 function probleme_droits_fin()
@@ -823,7 +811,6 @@ function probleme_droits_fin()
   global $installoption;
 ?>
 </ul>
-<p></p>
 <p align="center">
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="droits">
@@ -831,13 +818,12 @@ function probleme_droits_fin()
 <input type="submit" value="continuer">
 </form>
 </p>
-<p></p>
+<p>
 Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'accès de tous les fichiers par vous-même.<br />
-LODEL est livré avec SANS AUCUNE GARANTIE.
-  </td>
-</table>
-</body>
-<?php }
+LODEL est livré avec SANS AUCUNE GARANTIE.</p>
+<?php
+include('tpl/install-closehtml.html');
+ }
 
 ?>
 
