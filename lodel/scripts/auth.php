@@ -212,9 +212,9 @@ $idsession=0;
 $session="";
 
 $context=array(
-	       "version" => doubleval($version),
-	       "shareurl"=>$GLOBALS[shareurl],
-	       "extensionscripts"=>$GLOBALS[extensionscripts],
+	       "version" => $GLOBALS['version'],
+	       "shareurl"=>$GLOBALS['shareurl'],
+	       "extensionscripts"=>$GLOBALS['extensionscripts'],
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
 	       ); // tres important d'initialiser le context.
 
