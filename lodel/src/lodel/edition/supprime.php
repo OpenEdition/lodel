@@ -56,7 +56,7 @@ if ($supprime || $confirmation) {
   return;
 }
 
-$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE id='$id'") or die (mysql_error());
+$result=mysql_query("SELECT * FROM $GLOBALS[entitestypesjoin] WHERE $GLOBALS[tp]entites.id='$id'") or die (mysql_error());
 if (mysql_num_rows($result)<=0) { header("location: not-found.html"); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 
