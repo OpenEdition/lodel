@@ -66,7 +66,7 @@
 		<DO>
 		<div id="[#REP]" class="texte_petit">
 		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
-			<a href="[(#REP|makeurl)]" onmouseover="[#REP].src=triangle.sr" 
+			<a href="[#URL]" onmouseover="[#REP].src=triangle.sr" 
 onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
 <br>	</div>
 		</DO>
@@ -76,7 +76,7 @@ onmouseout="[#REP].src=triangle2.src"><font color="#000000">[#NOM]</font></a>
 		<LOOP NAME="sel_rev" TABLE="sites" WHERE="ok" ORDER="nom">
 		<DO>
 		<div id="[#REP]" class="texte_petit">
-[<a href="[(#REP|makeurl)]/lodel/edition/index.php">Editer [#REP]</a>]
+[<a href="[#URL]/lodel/edition/index.php">Editer [#REP]</a>]
 <br>	</div>
 		</DO>
 		</LOOP>
