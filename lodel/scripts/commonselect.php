@@ -46,7 +46,7 @@ function makeSelectUserRights($value,$adminlodel)
 	     LEVEL_EDITOR=>getlodeltextcontents("user_editor","common"),
 	     LEVEL_ADMIN=>getlodeltextcontents("user_admin","common"),
 	     ); 
-  if (!$GLOBALS['site'] && SINGLESITE) $arr=array();
+  if (!$GLOBALS['site'] && !SINGLESITE) $arr=array();
   if ($adminlodel) 
     $arr[LEVEL_ADMINLODEL]=getlodeltextcontents("user_adminlodel","common");
 

@@ -77,7 +77,7 @@ class UsersLogic extends Logic {
        break;
      case "userrights":
        require_once("commonselect.php");
-       makeSelectUserRights($context['userrights'],SINGLESITE);
+       makeSelectUserRights($context['userrights'],!$GLOBALS['site'] || SINGLESITE);
        break;
      case "lang" :
        // get the language available in the interface
