@@ -65,9 +65,10 @@ if ($therequest['do']) {
 
   // valid the request
   $do=$therequest['do'];
-
   if (!preg_match("/^[a-zA-Z]+$/",$do)) die("ERROR: invalid action");
   $do=$do."Action";
+
+  require_once($home."logic.php");
 
   switch($do) {
   case 'listAction' :
@@ -75,7 +76,6 @@ if ($therequest['do']) {
     break;
   default:
     // create the logic for the table
-    require_once($home."logic.php");
     $logic=getLogic($table);
     if (!method_exists($logic,$do)) die("ERROR: invalid action");
 

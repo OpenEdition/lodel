@@ -19,7 +19,7 @@
             <legend>
               <xsl:value-of select="@description"/>
             </legend>
-            <xsl:apply-templates select="column"/>
+            <xsl:apply-templates select="column|vcolumn"/>
           </fieldset>
         </xsl:for-each>
       </xsl:template>
@@ -67,7 +67,7 @@
             </xsl:when>
 
             <!-- input type="text"                 -->
-            <xsl:when test="@edittype='text' or @edittype='style' 
+            <xsl:when test="@edittype='text' or @edittype='style'  or @edittype='mlstyle' 
                             or @edittype='type' or @edittype='tplfile'">
                 <p>
                   <xsl:call-template name="label" />
@@ -88,13 +88,43 @@
             <xsl:when test="@edittype='password'">
                 <p>
                   <xsl:call-template name="label" />
-                    <xsl:element name="input">
+                  <xsl:element name="input">
                         <xsl:attribute name="type">password</xsl:attribute>
                         <xsl:attribute name="size">30</xsl:attribute>
                         <xsl:attribute name="name">
                             <xsl:value-of select="@name"/>
                         </xsl:attribute>
                     </xsl:element>
+                </p>
+                <xsl:call-template name="error" />
+            </xsl:when>
+
+            <!-- input type="checkbox"             -->
+            <xsl:when test="@edittype='boolean'">
+                <p>
+                  <xsl:call-template name="label" />
+                  <xsl:element name="IF">
+                    <xsl:choose>
+                      <xsl:when test="@name='protected'">
+
+                        <xsl:attribute name="COND">abs([#STATUS]) ge 32</xsl:attribute>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:attribute name="COND"><xsl:call-template name="lsvariable" /></xsl:attribute>
+                      </xsl:otherwise>
+                    </xsl:choose>
+
+                    <xsl:element name="input">
+                      <xsl:attribute name="type">checkbox</xsl:attribute>
+                      <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                      <xsl:attribute name="checked"></xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="ELSE"></xsl:element>
+                    <xsl:element name="input">
+                      <xsl:attribute name="type">checkbox</xsl:attribute>
+                      <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+                    </xsl:element>
+                  </xsl:element>
                 </p>
                 <xsl:call-template name="error" />
             </xsl:when>
@@ -153,7 +183,7 @@
           <xsl:value-of select="@name"/>
         </xsl:attribute>
         <xsl:value-of select="@label"/>
-        <xsl:if test="@required='true' and not(@edittype='select' or @editype='lang')">
+        <xsl:if test="@required='true' and not(@edittype='select' or @editype='lang' or @editype='boolean')">
           <span class="optional">(*)</span>
         </xsl:if>
         : 

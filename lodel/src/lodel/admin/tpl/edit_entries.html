@@ -106,6 +106,21 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
+  <p>
+    <label for="protected">[@ADMIN.PERMANENT_ENTRY]
+        : 
+      </label>
+    <IF COND="abs([#STATUS]) ge 32">
+      <input type="checkbox" name="protected" checked>
+      <ELSE/>
+      <input type="checkbox" name="protected">
+    </IF>
+  </p>
+  <LOOP NAME="fielderror" FIELD="protected">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->

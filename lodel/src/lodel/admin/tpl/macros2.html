@@ -53,12 +53,14 @@
       Submit / Cancel / Delete bar.
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="EDIT_SUBMIT_BAR" OPTIONAL="DELETEDISABLE">
+<DEFFUNC NAME="EDIT_SUBMIT_BAR">
 <div class="pied_de_formulaire">
 	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
-	<IF COND="![#DELETEDISABLE] && [#ID]">
-		<MACRO NAME="DELETE_BUTTON">
-	</IF>
+	  <IF COND="[#ID]">
+		<IF COND="![#TABLE|isdeletelocked([#ID],[#STATUS])]">
+			<MACRO NAME="DELETE_BUTTON">
+		</IF>
+	  </IF>
 </div>
 </DEFFUNC>
 
@@ -91,21 +93,21 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="TABLE" OPTIONAL="DELETEDISABLE">
-<IF COND="([#RIGHTADMIN] and [#STATUS] lt 32) or [#RIGHTADMINLODEL]">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="TABLE">
+<IF COND="([#USERRIGHTS] gt [#TABLE|rights('write')] and [#STATUS] lt 32) or ([#USERRIGHTS] gt [#TABLE|rights('protect')])">
          |&nbsp;<a href="index.php?do=view&id=[#ID]&table=[#TABLE]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
-<ELSE/>
-	 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
-       </IF>
-
-<IF COND="[#DELETEDISABLE]">
-	  <span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
-<ELSE/>
-<IF COND="([#STATUS] ge 32)">
+	<IF COND="[#STATUS] ge 32">
 	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
        <ELSE/>
-	<a href="index.php?do=delete&id=[#ID]&table=[#TABLE]">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
-</IF>
+	  <IF COND="[#TABLE|isdeletelocked([#ID],[#STATUS])]">
+	  <span class="inactif">[@COMMON.DELETE] ([#TABLE|isdeletelocked([#ID],[#STATUS])])</span>&nbsp;|&nbsp;
+	  <ELSE/>
+	  <a href="index.php?do=delete&id=[#ID]&table=[#TABLE]">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	  </IF>
+	</IF>
+<ELSE/>
+	 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+	  <span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;
 </IF>
 </DEFFUNC>
 

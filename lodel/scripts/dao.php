@@ -70,9 +70,9 @@ class DAO {
      global $db;
 
      // check the user has the basic right for modifying/creating an object
-     if ($GLOBALS['userrights']<$this->_rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
+     if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
      // check the user has the right to protect the object
-     if ( ($vo->status>=32 || $vo->status<=-32) && $GLOBALS['userrights']<$this->_rights['protect']) {
+     if ( ($vo->status>=32 || $vo->status<=-32) && $GLOBALS['userrights']<$this->rights['protect']) {
        die("ERROR: you don't have the right to protect objects from the table ".$this->table);
      }
 
@@ -114,7 +114,6 @@ class DAO {
     * Function to get a value object
     */
    function getById($id,$select="*") {
-     global $db;
      return $this->find("id='$id'",$select);
    }
 
@@ -127,6 +126,8 @@ class DAO {
      //execute select statement
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
      $row=$db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->_rightscriteria("read"));
+     #echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->_rightscriteria("read");
+     #print_r($row);
      $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
      if ($row===false) die($db->errormsg());
      if (!$row) return null;
@@ -210,7 +211,7 @@ class DAO {
    function deleteObject(&$mixed) {
      global $db;
 
-     if ($GLOBALS['userrights']<$this->_rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+     if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
 
      if (is_object($mixed)) {
        $vo=&$mixed;
@@ -221,7 +222,7 @@ class DAO {
        $id=$mixed;
      }
      //execute delete statement
-     $db->execute("DELETE FROM ".$this->sqltable." WHERE id='$id'".$this->_rightscriteria("delete")) or die($db->errormsg());
+     $db->execute("DELETE FROM ".$this->sqltable." WHERE id='$id'".$this->_rightscriteria("write")) or die($db->errormsg());
      if ($db->affected_Rows()<=0) return false; // not the rights
      //delete the uniqueid entry if required
      if ($this->uniqueid) {
@@ -239,7 +240,7 @@ class DAO {
 
      // check the rights
      if ($GLOBALS['userrights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
-     $where=" WHERE (".$criteria.") ".$this->_rightscriteria("delete");
+     $where=" WHERE (".$criteria.") ".$this->_rightscriteria("write");
 
      // delete the uniqueid entry if required
      if ($this->uniqueid) {
@@ -283,9 +284,8 @@ class DAO {
        if (array_key_exists("status",get_class_vars($this->table."VO"))) {
 
 	 $this->cache_rightscriteria[$access]=$GLOBALS['rightvisitor'] ? " AND status>-64" : " AND status>0";
-	 if ($access=="write" && $GLOBALS['userrights']<$this->_right['protect'])
+	 if ($access=="write" && $GLOBALS['userrights']<$this->rights['protect'])
 	   $this->cache_rightscriteria[$access].=" AND status<32 AND status>-32 ";
-
        }
 
      } else {

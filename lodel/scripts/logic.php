@@ -134,6 +134,32 @@ class Logic {
    }
 
 
+   /**
+    * Return the right for a given kind of access
+    */
+   function rights($access) 
+
+   {
+     $dao=$this->_getMainTableDAO();
+     return $dao->rights[$access];
+   }
+
+   /**
+    * Say whether an object (given by its id and status if possible) is deletable by the current user or not
+    */
+   function isdeletelocked($id,$status=0)
+
+   {
+     // basic
+     $dao=$this->_getMainTableDAO();
+     if (!$status) { // heavy... caching would be better but...
+       $vo=$dao->getById(intval($id),"status");
+       $status=$vo->status;
+     }
+     return ($GLOBALS['userrights'] < $dao->rights['write']) ||
+       (abs($status)>=32 && $GLOBALS['userrights']< $dao->rights['protect']);
+   }
+
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**
@@ -278,6 +304,8 @@ class Logic {
    } // class Logic
 
 
+/*------------------------------------------------*/
+
 /**
  * Logic factory
  *
@@ -291,6 +319,38 @@ function &getLogic($table) {
   require_once($GLOBALS['home']."logic/class.$table.php");
   $logicclass=$table."Logic";
   return $factory[$table]=new $logicclass;
+}
+
+
+/**
+ * function returning the right for $access in the table $table
+ */
+
+function rights($table,$access) 
+
+{
+  static $cache;
+  if (!isset($cache[$table][$access])) {
+    $logic=getLogic($table);
+    $cache[$table][$access]=$logic->rights($access);
+  }
+  return $cache[$table][$access];
+}
+
+/**
+ * Pipe function to test if an object can be deleted or not
+ * (with cache)
+ */
+
+function isdeletelocked($table,$id,$status=0)
+
+{
+  static $cache;
+  if (!isset($cache[$table][$id])) {
+    $logic=getLogic($table);
+    $cache[$table][$id]=$logic->isdeletelocked($id,$status);
+  }
+  return $cache[$table][$id];
 }
 
 ?>

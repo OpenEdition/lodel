@@ -55,8 +55,10 @@ foreach ($tables as $table) {
     xslt_process($xsltproc, "$xmlpath/init-site.xml", "$xmlpath/forms.xsl", NULL, NULL,$parameters);
 
 
-  $html=str_replace(array("<phptag>","</phptag>","[#POSTACTION]"),
-		    array("<"."?php ","?".">",'<'.'?php echo basename($_SERVER[\'PHP_SELF\']); ?'.'>'),$html);
+  $html=str_replace(array("<phptag>","</phptag>",
+			  "[#POSTACTION]","<ELSE></ELSE>"),
+		    array("<"."?php ","?".">",
+			  '<'.'?php echo basename($_SERVER[\'PHP_SELF\']); ?'.'>',"<ELSE/>"),$html);
 
   if (empty($html)) {
     die('XSLT processing error: '. xslt_error($xsltproc));

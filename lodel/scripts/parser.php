@@ -245,7 +245,8 @@ function parse ($in,$out)
 	  $i--;
 	}
 	if ($mustparse) {
-	  $this->parse_variable($pipefunction,"quote");
+	  #$this->parse_variable($pipefunction,"quote");
+	  $this->parse_variable($pipefunction,false);
 	}
       }
       // look for a proper end of the variable

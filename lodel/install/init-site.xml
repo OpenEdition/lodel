@@ -259,7 +259,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_DATAFIELD]"
         edittype="boolean"
-	editcondition="[#RIGHTADMINLODEL]" />
+	 />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -321,7 +321,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_GROUP]"
         edittype="boolean" 
-	editcondition="[#RIGHTADMINLODEL]" />
+	editcondition="[#USERRIGHTS] ge [#TABLE|rights('protect')]" />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -545,7 +545,8 @@
         required="true" />
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
-        edittype="boolean" />
+        edittype="boolean" 
+	editcondition="[#USERRIGHTS] ge [#TABLE|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_type">
@@ -628,7 +629,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean"
-	editcondition="[#RIGHTADMINLODEL]" />
+	editcondition="[#USERRIGHTS] ge [#TABLE|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_type">
@@ -672,7 +673,7 @@
         required="true"
         description="style qui conduit a cette balises"
         label="[@ADMIN.STYLE_INDEX_TYPE]"
-        edittype="style" />
+        edittype="mlstyle" />
 <column name="tpl"
         type="VARCHAR"
         size="255"
@@ -699,7 +700,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#RIGHTADMINLODEL]" />
+	editcondition="[#USERRIGHTS] ge [#TABLE|rights('protect')]" />
 <column name="flat"
         type="TINYINT"
         default="0"
