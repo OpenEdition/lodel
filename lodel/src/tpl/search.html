@@ -2,9 +2,10 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -20,100 +21,120 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-
 <USE MACROFILE="macros.html">
-<USE MACROFILE="macros_interface.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
+<USE MACROFILE="macros_images.html">
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_site.html">
+
+<MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
+<title><MACRO NAME="NOM_SITE"> - Votre recherche </title>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+
+		
+	
+		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" ]-->
 
 
+				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" ]-->
+				<!--[<div class="separation">
+					&nbsp;
+				</div>]-->
+					<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
+					<div id="contenu">
+				
 
-<MACRO NAME="HEADER_HEAD_OPEN">
-
-<title>[(#SITE|strtoupper)].[@COMMON.SEARCH_PAGE]</title>
-
-<MACRO NAME="JS_CONFIRM">
-<MACRO NAME="JS_SEARCH_ENGINE">
-<!--[ Rajout intégration maquette ]-->
-<MACRO NAME="JS_AJOUTER_ENTITE">
-<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
-<MACRO NAME="JS_AFFICHE_IMAGE">
-<!--[ Fin rajout intégration maquette ]-->
-<MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
-<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
-	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" TYPE="[#Q_TYPE]" STATUS="[#Q_STATUS]">
-	<div class="edition_des_series" style="background-image:url(/share-0.8/images/fond_edition_des_series.png);">
-		<img src="/share-0.8/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43" />
-		<div style="padding-top:10px;">
-			<span class="texte_edition_des_series">
+						<!--[ logo du site]-->
+			
+						<!--[ Affiche le titre de la revue avec les style titre1  ]-->
+						
+						
 	<IF COND="![#QUERY]">
-	@Nothing to search</span></a>
+	<h1 class="accueil">
+			Attention, votre requête est vide
+	</h1>
+	<div style="padding-top:10px;">
+			<span class="texte_edition_des_series">
+			</span>
+			</a>
 		</div>
 	</div>
 	<ELSE/>
 	<LOOP NAME="search">
 	<BEFORE>
-	<MACRO NAME="YOUR_SEARCH_BAR">
+	<h1 class="accueil">
+			<MACRO NAME="NOM_SITE">
+	</h1>
+	<h2>Votre recherche : [#QUERY|stripslashes] a donnée [#NBRESULTS] résultats.</h2>
+	<div style="padding-top:10px;">
+			<span class="texte_edition_des_series">
 	</BEFORE>
 	<DO>
-		<IF COND="[#COUNT] % 2">
-			<div class="ligne_serie1">
-		<ELSE/>
-			<div class="ligne_serie2">
-		</IF>
-		[#WEIGHT]<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
-		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+		<div class="article">
+		
+    	<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+    
+	<span class="auteur">
+		<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+		<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+		, [#G_FIRSTNAME] [#G_FAMILYNAME]
+		<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+	</LOOP>
+	</span>
+	<br />
+	<span class="type_document">([#TYPE])</span>
+		
+		
 		
 		<span class="type_document">
-		(in
-		<a href="index.php">@base</a>
+		
 		<LOOP NAME="parentsentities">
 		<DO>
-			:: <a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
+			&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
 		</DO>
 		
 		</LOOP>
-		)</span>
+		</span>
 		
 		</div>
 	</DO>
 	<ALTERNATIVE>
-	<MACRO NAME="YOUR_SEARCH_BAR">
-	<!--[	@your_search 
-		<IF COND="[#Q_TYPE]">
-			<LOOP NAME="print_title_type_2" TABLE="types" WHERE="id=[#Q_TYPE]">
-			@in <strong>[#TITLE]</strong>
-			</LOOP>
-		</IF>
-		<IF COND="[#Q_FIELD]">
-		@in_field <strong>[#Q_FIELD]</strong>
-		</IF>
-		<IF COND="[#Q_STATUS]">
-		(only 
-			<IF COND="[#Q_STATUS] EQ -16">
-				@draft
-			</IF>
-			<IF COND="[#Q_STATUS] EQ -1">
-			@ready_to_be_published
-			</IF>
-			<IF COND="[#Q_STATUS] EQ 1">
-			@published
-			</IF>
-			<IF COND="[#Q_STATUS] EQ 16">
-			@protected
-			</IF>
-			)
-		</IF> 
-		@for &quot;[#QUERY]&quot; ([#NBRESULTS] @results)</span></a>
-	</div>
-	</div>]-->
-		<p style="margin-left : 25px ; margin-top : 50px;">
-		@MESSAGE_NO_RESULTS
-		(Exemple : Aucun document ne correspond aux termes de recherche spécifiés <strong>[#QUERY|stripslashes]</strong>)
+	<h1 class="accueil">
+			<MACRO NAME="NOM_SITE"> 
+	</h1>
+	<h2>Votre recherche : [#QUERY|stripslashes] a donnée [#NBRESULTS] résultats.</h2>
+		<p class="searchnoresults">
+			Aucun résultat pour la recherche <strong>[#QUERY|stripslashes]</strong>
 		</p>
 	</ALTERNATIVE>
 	</LOOP>
 	</IF>
+					
 
-<!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
-<MACRO NAME="CLOSE_HTML">
+				
+					
+						<!--[ Affiche lien vers Lodel ]-->
+			<div id="footer">
+				<MACRO NAME="LODEL_ORG">
+			</div>
+				</div>
+				</td></tr>
+				</table>
+
+<MACRO NAME="FERMER_HTML">  
