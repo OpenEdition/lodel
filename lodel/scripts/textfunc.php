@@ -358,7 +358,7 @@ function makeurl ($site="")
   if (!$server) $server=$GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'];
   $domain=preg_replace("/^[^\.]+\./s","",$server);
   if ($GLOBALS[siteagauche]) return "http://".$site.$domain;
-  return $server."/".$site;
+  return "http://".$server."/".$site;
 }
 
 
