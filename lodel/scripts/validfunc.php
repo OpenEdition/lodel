@@ -82,8 +82,10 @@ function validfield(&$text,$type,$default="")
     break;
   case "passwd" :
   case "username" :
-    $len=strlen($text);
-    if ($len<3 || $len>12 || !preg_match("/^[0-9A-Za-z_;.?!@:,]+$/",$text)) return $type;
+    if ($text) {
+      $len=strlen($text);
+      if ($len<3 || $len>12 || !preg_match("/^[0-9A-Za-z_;.?!@:,]+$/",$text)) return $type;
+    }
     break;
   case "lang" :
     if ($text && !preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/",$text)) return $type;
