@@ -141,11 +141,11 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     $idtache=makeTask("Import $file1_name",3,$row,$idtache);
 
     if ($msg) {
-      echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
+      echo '<br><a href="checkimport.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
       return;
     }
 
-    header("Location: chkbalisage.php?idtache=$idtache");
+    header("Location: checkimport.php?idtache=$idtache");
     return;
   } while (0); // exceptions
 }

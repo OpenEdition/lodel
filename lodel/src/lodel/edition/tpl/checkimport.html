@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros2.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.TITLE_CHECK_STYLING]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -36,31 +37,18 @@
 </table>
 
 
+<MACRO NAME="NAVBAR_FOR_CHECKIMPORT">
 
-<table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-	<tr><td align="center" class="sous_titre_popup"><br />[@EDITION.ADVICE_CHECK_TAGGING]<br /><br /><br /></td></tr>
-	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">[@COMMON.CANCEL_OOIMPORT]</span></a> | <a href="[#URLSUITE]">[@COMMON.CONTINUE_OOIMPORT]</a></div></td></tr>
-</table>
-
-<LOOP NAME="partie_fichier">
-<IF COND="[#PART]=='main'">
-<h1>[@EDITION.MAIN_PART]</h1>
-<ELSE/>
-<h1>[#PART]</h1>
-</IF>
 <div id="checkbalisage">
 <table class="table_popup" width="95%" border="1" cellpadding="4" align="center">
 	<tr>
 		<td><strong>[@EDITION.STYLES]</strong></td>
 		<td><strong>[@EDITION.CONTENTS]</strong></td>
 	</tr>
-[#TABLECONTENT]
+[#TABLECONTENTS]
 </table>
 </div>
-</LOOP>
 
-<table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">[@COMMON.CANCEL_OOIMPORT]</span></a> | <a href="[#URLSUITE]">[@COMMON.CONTINUE_OOIMPORT]</a></div></td></tr>
-</table>
+<MACRO NAME="NAVBAR_FOR_CHECKIMPORT">
 
 <MACRO NAME="CLOSE_HTML">

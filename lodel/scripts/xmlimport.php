@@ -90,7 +90,7 @@ class XMLImportParser {
   function parse($string,&$handler)
 
   {
-    $this->handler=$handler; // non-reentrant
+    $this->handler=&$handler; // non-reentrant
 
     $arr=preg_split("/<(\/?)r2r:(\w+)>/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
     $n=count($arr);
@@ -410,68 +410,6 @@ class XMLImportParser {
   }
 } // class XMLImportParser
 
-
-class XmlImportHandler {
-
-
-  function processData($data) {
-    return $data; #echo $data;
-  }
-
-  function processTableFields($obj,$data) 
-  {
-    $title=$obj->title;
-    if ($obj->lang) $title.="<br />(".$obj->lang.")";
-    echo "<tr><td>".$title."</td><td>".$data."</td></tr>";
-  }
-
-  function processEntryTypes($obj,$data) 
-  {
-    echo "<tr><td style=\"background-color: red;\">".$obj->name."</td><td>".$data."</td></tr>";
-  }
-
-  function openClass($class,$obj=null) 
-  {
-    echo "<tr><td colspan=\"2\" style=\"background-color: green;\">".$class."    ".$obj."  ".($obj ? $obj->type : "")."</td></tr>";
-  }
-  function closeClass($class) 
-  {
-    echo "<tr><td colspan=\"2\" style=\"background-color: green;\">-- fin $class --</td></tr>";
-  }
-
-  function processPersonTypes($obj,$data) 
-  {
-    echo "<tr><td style=\"background-color: blue;\">".$obj->style."</td><td>".$data."</td></tr>";
-  }
-  function openPersonTypes($obj) 
-  {
-    echo "<tr><td colspan=\"2\" style=\"background-color: blue;\">".$obj->type."</td></tr>";
-  }
-  function closePersonTypes() 
-  {
-    echo "<tr><td colspan=\"2\" style=\"background-color: blue;\">-- fin --</td></tr>";
-  }
-
-  function processCharacterStyles($obj,$data) 
-
-  {
-    return "<span style=\"background-color: gray;\">".$data."</span>";
-  }
-
-  function processInternalStyles($obj,$data) 
-
-  {
-    return "--internalstyle--".$obj->style."--".$data."-- fin internal style--";
-  }
-
-  function unknownParagraphStyle($style,$data) {
-    echo "<tr><td>Style inconnu: ".$style."</td><td>".$data."</td></tr>";
-  }
-
-  function unknownCharacterStyle($style,$data) {
-    return "<span style=\"background-color: #ff8080;\" title=\"".$style."\">".$data."</span>";
-  }
-}
 
 
 

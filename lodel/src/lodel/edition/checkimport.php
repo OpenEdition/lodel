@@ -48,11 +48,89 @@ $handler=new XMLImportHandler;
 
 $parser=new XMLImportParser();
 $parser->init("documents");
-echo "<table border=\"1\">";
 $parser->parse($text,$handler);
-echo "</table>";
 
-return;
+$context['tablecontents']=$handler->contents();
+
+
+$context['urlnext']="document.php?idtache=$idtache";
+
+$context[idtache]=$idtache;
+require ($home."calcul-page.php");
+calcul_page($context,"checkimport");
+
+//--------------------------------------------------//
+// definition of the handler to proceduce the table
+
+class XmlImportHandler {
+
+  var $_contents;
+
+  function contents() { return $this->_contents; }
+
+  function processData($data) {
+    return $data; #echo $data;
+  }
+
+  function processTableFields($obj,$data) 
+  {
+    $title=$obj->title;
+    if ($obj->lang) $title.="<br />(".$obj->lang.")";
+    $this->_contents.="<tr><td>".$title."</td><td>".$data."</td></tr>";
+  }
+
+  function processEntryTypes($obj,$data) 
+  {
+    $this->_contents.="<tr><td style=\"background-color: red;\">".$obj->name."</td><td>".$data."</td></tr>";
+  }
+
+  function openClass($class,$obj=null) 
+  {
+    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">".$class."    ".$obj."  ".($obj ? $obj->type : "")."</td></tr>";
+  }
+  function closeClass($class) 
+  {
+    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">-- fin $class --</td></tr>";
+  }
+
+  function processPersonTypes($obj,$data) 
+  {
+    $this->_contents.="<tr><td style=\"background-color: blue;\">".$obj->style."</td><td>".$data."</td></tr>";
+  }
+  function openPersonTypes($obj) 
+  {
+    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: blue;\">".$obj->type."</td></tr>";
+  }
+  function closePersonTypes() 
+  {
+    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: blue;\">-- fin --</td></tr>";
+  }
+
+  function processCharacterStyles($obj,$data) 
+
+  {
+    return "<span style=\"background-color: gray;\">".$data."</span>";
+  }
+
+  function processInternalStyles($obj,$data) 
+
+  {
+    return "--internalstyle--".$obj->style."--".$data."-- fin internal style--";
+  }
+
+  function unknownParagraphStyle($style,$data) {
+    $this->_contents.="<tr><td>Style inconnu: ".$style."</td><td>".$data."</td></tr>";
+  }
+
+  function unknownCharacterStyle($style,$data) {
+    return "<span style=\"background-color: #ff8080;\" title=\"".$style."\">".$data."</span>";
+  }
+}
+
+
+
+
+exit;
 
 
 /*
