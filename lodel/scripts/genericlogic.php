@@ -272,7 +272,6 @@ class GenericLogic extends Logic {
 	   if (preg_match("/\/tmpdir-\d+\/[^\/]+$/",$value)) {
 	     // add this file to the file to move.
 	     $this->files_to_move[$name]=array('filename'=>$value,'type'=>$type,'name'=>$name);           	   }
-	   break;
 	 }
        } elseif (is_string($valid)) {
 	 $error[$name]=$valid; 	 // error

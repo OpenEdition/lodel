@@ -105,13 +105,12 @@ class TableFieldsLogic extends Logic {
 		  "importable"=>getlodeltextcontents("no_edit_but_import","admin"),
 		  "none"=>getlodeltextcontents("no_change","admin"),
 		  "display"=>getlodeltextcontents("display_no_edit","admin"),
-		  "text"=>getlodeltextcontents("edit_text_1line","admin"),
 		  "textarea"=>getlodeltextcontents("edit_textarea","admin"),
 		  "fckeditor"=>"FCKEditor",
 		  "select"=>getlodeltextcontents("edit_select","admin"),
 		  "multipleselect"=>getlodeltextcontents("edit_multiple_select","admin"),
-		  "select_radios"=>getlodeltextcontents("edit_select_radio","admin"),
-		  "select_checkboxes"=>getlodeltextcontents("edit_select_checkboxes","admin")
+		  "radio"=>getlodeltextcontents("edit_radio","admin"),
+		  "checkbox"=>getlodeltextcontents("edit_checkbox","admin")
 		  );
        renderOptions($arr,$context['edition']);
        break;

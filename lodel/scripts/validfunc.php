@@ -161,15 +161,11 @@ function validfield(&$text,$type,$default="",$name="")
       $text=$str;
     }
     return true;
-    //temp add 
   case 'list':
-  	return true;
-  	break;
-  
-  case 'image' :
-  	
+    return true;
+  case 'image' :  	
   case 'file' :
-    if (!is_array($text)) { unset($text); break; }
+    if (!is_array($text)) { unset($text); return true; }
     if (!$name) trigger_error("ERROR: \$name is not set in validfunc.php",E_USER_ERROR);
     switch($text['radio']) {
     case 'upload':
@@ -180,7 +176,6 @@ function validfield(&$text,$type,$default="",$name="")
 	  !$files['tmp_name']['upload'] || $files['tmp_name']['upload']=="none") { 
 	unset($text); 
 	return "upload";
-	break; 
       }
       // check if the tmpdir is defined
       if (!$tmpdir[$type]) { 
@@ -210,7 +205,7 @@ function validfield(&$text,$type,$default="",$name="")
     case '' :
       // validate	     
       $text=$text['previousvalue'];
-      if (!$text) break;
+      if (!$text) return true;
       if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/",$text)) {
 	die("ERROR: invalid filename of type $type");
       }

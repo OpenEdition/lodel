@@ -389,7 +389,8 @@ function parse_main()
       } else {
 	$methodname="parse_".$this->arr[$this->ind];
 	if (method_exists($this,$methodname)) {
-	  call_user_func(array(&$this,$methodname));
+	  $this->$methodname();
+	  #call_user_func(array(&$this,$methodname));
 	} else {
 	  $this->errmsg("Unexpected tags ".$this->arr[$this->ind].". No method to call");
 	}

@@ -146,6 +146,9 @@ class Controler {
 
 } // class Controler
 
+
+
+
 function loop_fielderror(&$context,$funcname,$arguments)
 
 {
@@ -157,45 +160,27 @@ function loop_fielderror(&$context,$funcname,$arguments)
     call_user_func("code_do_$funcname",$localcontext);
   }
 }
-function loop_field_selection_values(&$context,$funcname,$arguments)
-{
-	$localcontext=$context;
-	#print_r($context); 
-	//Get values of the list in the editionparams field for the current field
-	// and if no editionparams call alter
-	if(!$localcontext['editionparams'] || $localcontext['editionparams']=="")
-	{
-		call_user_func("code_alter_$funcname",$localcontext); 
-		return;
-	}
-	$array = explode(",",$localcontext['editionparams']);
 
-	foreach($array as $value)
-	{
-			$value = trim($value);
-			$localcontext['fieldvalue'] = $value;
-		#echo "value=$value;old=".$localcontext['value']."<br />";
-			$arrChoosenValues = explode(",",$localcontext['value']); //if field contains more than one value (comma separated)
-			if(is_array($arrChoosenValues) && in_array($value,$arrChoosenValues))
-			{
-		
-				$localcontext['checked'] = 'checked="checked"';
-				$localcontext['selected'] = 'selected="selected"';
-			}
-			elseif($value==$localcontext['value'])
-			{
-		
-				$localcontext['checked'] = 'checked="checked"';
-				$localcontext['selected'] = 'selected="selected"';
-			}
-			else
-			{
-				unset($localcontext['selected']);
-				unset($localcontext['checked']);
-			}
-			call_user_func("code_do_$funcname",$localcontext);
-	}
-	
+
+function loop_field_selection_values(&$context,$funcname,$arguments)
+
+{
+  //Get values of the list in the editionparams field for the current field
+  // and if no editionparams call alter
+  if (!isset($context['editionparams'])) die("ERROR: internal error in loop_field_selection_values");
+
+  $arr = explode(",",$context['editionparams']);
+  $choosenvalues = explode(",",$context['value']); //if field contains more than one value (comma separated)
+  foreach($arr as $value) {
+    $value = trim($value);
+    $localcontext=$context;
+    $localcontext['value'] = $value;
+    if(in_array($value,$choosenvalues)) {		
+      $localcontext['checked'] = 'checked="checked"';
+      $localcontext['selected'] = 'selected="selected"';
+    }
+    call_user_func("code_do_$funcname",$localcontext);
+  }
 }
 
 

@@ -168,71 +168,6 @@
 	<span>
 	</IF>
 <ELSE/>
-<!-- [ Added 2005-03-15 - Management of the type list]-->
-<IF COND="[#TYPE] EQ 'list'">
-	<IF COND="[#EDITION] EQ 'select'">
-		<select id="[#VARNAME]" name="[#VARNAME]">
-		<LOOP NAME="field_selection_values">
-			<option value="[#FIELDVALUE]" [#SELECTED]>[#FIELDVALUE]</option> 
-		</LOOP>
-		</select>
-	</IF>
-	<IF COND="[#EDITION] EQ 'multipleselect'">
-		<FUNC NAME="JS_MULTIPLESELECT">
-		<table>
-		<tr><td>
-		<input type="hidden" value="" name="[#VARNAME]" id="[#VARNAME]" />	
-		<select onchange="multipleSelectUpdate('[#VARNAME]','pool_member_[#VARNAME]')" multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
-			<LOOP NAME="field_selection_values">
-			<option value="[#FIELDVALUE]" [#SELECTED]>[#FIELDVALUE]</option> 
-		</LOOP>
-		</select>
-		<script type="text/javascript">
-		<!-- 
-			multipleSelectUpdate('[#VARNAME]','pool_member_[#VARNAME]');
-		-->
-		</script>
-		</td></tr>	
-		</table>
-	</IF>
-	<IF COND="[#EDITION] EQ 'select_radios'">
-	<FUNC NAME="JS_RADIOS">
-	<input type="hidden" value="" name="[#VARNAME]" id="[#VARNAME]" />	
-	<LOOP NAME="field_selection_values">
-			<input onchange="radiosSelectUpdate('[#VARNAME]','pool_member_[#VARNAME]')" type="radio" 
-							id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]" 
-							value="[#FIELDVALUE]" [#CHECKED] />&nbsp;[#FIELDVALUE]
-	</LOOP>
-	<script type="text/javascript">
-		<!-- 
-			radiosSelectUpdate('[#VARNAME]','pool_member_[#VARNAME]');
-		-->
-		</script>
-	</IF>
-	<IF COND="[#EDITION] EQ 'select_checkboxes'">
-	<FUNC NAME="JS_CHECKBOXES">
-		<input type="hidden" value="" name="[#VARNAME]" id="[#VARNAME]" />	
-		<LOOP NAME="field_selection_values">
-			<input onchange="checkboxesSelectUpdate('[#VARNAME]','pool_member_[#VARNAME]')" type="checkbox" 
-							id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]" 
-							value="[#FIELDVALUE]" [#CHECKED] />&nbsp;[#FIELDVALUE]
-		</LOOP>
-	<script type="text/javascript">
-		<!-- 
-			checkboxesSelectUpdate('[#VARNAME]','pool_member_[#VARNAME]');
-		-->
-		</script>
-	</IF>
-<ELSE/>
-<!--[
-<IF COND="[#EDITION] EQ 'select'">
-
-<select id="[#VARNAME]" name="[#VARNAME]">
-<LOOP NAME="field_selection_values">
-	<option value="[#FIELDVALUE]" [#SELECTED]>[#FIELDVALUE]</option>
-</LOOP>
-</select>
-<ELSE/>]-->
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
 	<!--[ Modified 2005-01-25 ]-->
@@ -398,6 +333,10 @@ cp_[#NAME].writeDiv();
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#VARNAME][radio]" value="upload">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#VARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
 		</td></tr></table>
 	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#VARNAME][previousvalue]"  VALUE="[#VALUE]">
+<ELSE/>
+<!--[ --------------- LIST ------------ -------------- ]-->
+<IF COND="[#TYPE] EQ 'list'">
+	<MACRO NAME="EDIT_LIST">
 <ELSE/>
 
 ???? Don't know how to edit this field. Type: [#TYPE] !
@@ -684,9 +623,76 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 	--></script>
 </DEFMACRO>
 
+
+
+<!--[ -----------------------------------------------------------
+	"List" edition. Various kind of widget are implemented depending
+	on the EDITION field.
+--------------------------------------------------------------- ]-->
+
+<DEFMACRO NAME="EDIT_LIST">
+	<IF COND="[#EDITION] EQ 'select'">
+		<select id="[#VARNAME]" name="[#VARNAME]">
+		<LOOP NAME="field_selection_values">
+			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option> 
+		</LOOP>
+		</select>
+	<ELSE/>
+	<IF COND="[#EDITION] EQ 'multipleselect'">
+		<FUNC NAME="JS_MULTIPLESELECT">
+		<table>
+		<tr><td>
+		<input type="hidden" value="" name="[#VARNAME]" id="[#VARNAME]" />	
+		<select onchange="multipleSelectUpdate('[#VARNAME]','select_[#VARNAME]')" multiple="multiple" size="4" style="width:100px" id="select_[#VARNAME]" name="select_[#VARNAME]">
+			<LOOP NAME="field_selection_values">
+			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option>
+			</LOOP>
+		</select>
+		<script type="text/javascript">
+		<!-- 
+			multipleSelectUpdate('[#VARNAME]','select_[#VARNAME]');
+		-->
+		</script>
+		</td></tr>	
+		</table>
+	<ELSE/>
+	<IF COND="[#EDITION] EQ 'radio'">
+		<FUNC NAME="JS_RADIOS">
+		<input type="hidden" value="" name="[#VARNAME]" id="[#VARNAME]" />	
+		<LOOP NAME="field_selection_values">
+			<input onchange="radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]')" type="radio" 
+							id="radio_[#VARNAME]" name="radio_[#VARNAME]" 
+							value="[#VALUE]" [#CHECKED] />&nbsp;[#VALUE]
+		</LOOP>
+		<script type="text/javascript">
+		<!-- 
+			radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]');
+		-->
+		</script>
+	<ELSE/>
+	<IF COND="[#EDITION] EQ 'checkbox'">
+	<FUNC NAME="JS_CHECKBOXES">
+		<input type="hidden" value="" name="[#VARNAME]" id="[#VARNAME]" />	
+		<LOOP NAME="field_selection_values">
+			<input onchange="checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]')" type="checkbox" 
+							id="checkbox_[#VARNAME]" name="checkbox_[#VARNAME]" 
+							value="[#VALUE]" [#CHECKED] />&nbsp;[#VALUE]
+		</LOOP>
+	<script type="text/javascript">
+		<!-- 
+			checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]');
+		-->
+		</script>
+	</IF>
+	</IF>
+	</IF>
+	</IF>
+</DEFMACRO>
+
+
 <!--[*************************************]-->
 <!--[ Javascript function to update list  ]-->
-<!--[ of type multipleselect							]-->
+<!--[ of type multipleselect              ]-->
 <!--[*************************************]-->
 <DEFFUNC NAME="JS_MULTIPLESELECT">
 <script type="text/javascript">
@@ -735,11 +741,10 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 			}
 		}
 		txt.value = str;
-		//alert('value='+txt.value);
 	}
 	-->
 	</script>
-	</DEFFUNC>
+</DEFFUNC>
 
 <!--[*************************************]-->
 <!--[ Javascript function to update list  ]-->
@@ -764,11 +769,10 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 			}
 		}
 		txt.value = str.substring(0, str.length - 1);
-		//alert('value='+txt.value);
 	}
 	-->
 	</script>
-	</DEFFUNC>
+</DEFFUNC>
 
 
 <!--[ -----------------------------------------------------------
@@ -908,7 +912,6 @@ function modifymember(members,textfield){
 </DEFFUNC>
 
 <!--[*************************************************]-->
-<!--[ Added 2005-02-02																]-->
 <!--[ Search Engine function													]-->
 <!--[ Show the search form														]-->
 <!--[*************************************************]-->

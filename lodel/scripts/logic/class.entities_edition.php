@@ -170,7 +170,6 @@ class Entities_EditionLogic extends GenericLogic {
        $context['status']=-1;
        return $this->editAction($context,$error);
      }
-
      return $ret ? $ret : "_ok";
    }
 
