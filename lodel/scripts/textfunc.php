@@ -550,7 +550,7 @@ function humanlang($text)
  */
 
 function today() {
-	return date("Y-m-d");
+	return date("Y-m-d H:i:s");
 }
 
 
