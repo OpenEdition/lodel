@@ -46,7 +46,7 @@ function change_image($filename,$id,$classe,$champ)
 
   $newimagefile="";
   if ($filename=="delete") {
-    if ($oldimagefile && file_exists("../../$oldimagefile")) unlink("../../$oldimagefile");
+    if ($oldimagefile && file_exists(SITEROOT.$oldimagefile)) unlink(SITEROOT.$oldimagefile);
     $newimagefile=""; // plus aucun fichier
   } else {
     // charge le fichier si necessaire
@@ -57,13 +57,13 @@ function change_image($filename,$id,$classe,$champ)
     elseif ($result[2]==3) { $ext="png"; }
     else return FALSE;
 
-    if ($oldimagefile) { unlink("../../$oldimagefile"); }
+    if ($oldimagefile && file_exists(SITEROOT.$oldimagefile)) unlink(SITEROOT.$oldimagefile);
     $newimagefile="docannexe/img-$classe-$champ-$id.$ext";
     //    if ($context[taille]) {
     //      include_once($home."images.php");
     //      resize_image($context[taille],$filename,"../../$newimagefile");
     //    } else {
-    copy($filename,"../../$newimagefile");
+    copy($filename,SITEROOT.$newimagefile);
     // }
   }
   return $newimagefile;
