@@ -225,31 +225,28 @@ function copy_images (&$text,$callback,$argument="",$count=1)
 function copy_images_private (&$text,$callback,$argument,&$count,&$imglist)
 
 {
-    preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
-    foreach ($results as $result) {
-      $imgfile=$result[1];
-      if (substr($imgfile,0,5)=="http:") continue;
-      if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
-      } else {
-	$ext=$result[2];
-	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
+  preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"([^>]*>)/i",$text,$results,PREG_SET_ORDER);
+  foreach ($results as $result) {
+    $imgfile=$result[1];
+    if (substr($imgfile,0,5)=="http:") continue;
+    if ($imglist[$imgfile]) {
+      $text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+    } else {
+      $ext=$result[2];
+      $imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
+      if ($newimgfile) { // ok, the image has been correctly copied
 #	echo "images: $imgfile $newimgfile <br>";
-      	$text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
+	$text=str_replace($result[0],"<img src=\"$newimgfile\"".$result[3],$text);
 	@chmod(SITEROOT.$newimgfile, 0666  & octdec($GLOBALS['filemask']));
-      	$count++;
-	}
+	$count++;
+      } else { // no, problem copying the image
+	$text=str_replace($result[0],"<span class=\"image_error\">[Image non convertie]</span>",$text);
+      }
     }
+  }
 }
 
 
-//function addmeta(&$meta) # liste variable de valeurs
-//
-//{
-//  $arg=array_shift(func_get_args());
-//  $meta=serialize(array_merge($arg,unserialize($meta)));
-//}
-//
 
 function addmeta(&$arr,$meta="")
 

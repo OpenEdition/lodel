@@ -31,6 +31,8 @@
 
 if (file_exists("lodelconfig.php")) { msg_error("Lodel est d&eacute;j&agrave; install&eacute; dans ce r&eacute;pertoire. Si vous souhaitez refaire une installation, effacez tous les fichiers de ce r&eacute;pertoire mise a part le fichier lodelloader.php et lancer &agrave; nouveau l'execution de ce script dans votre navigateur."); }
 
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 //
 // Test if gzopen exists.
 // Currently gzopen is require since we use pclzip to decompress the archive
@@ -1787,6 +1789,15 @@ Bienvenue dans l'installation de <strong>Lodel</strong>, logiciel d'&eacute;diti
    <li>le t&eacute;l&eacute;chargement automatique sur le site <a href="http://www.lodel.org">http://www.lodel.org</a> de la derni&egrave;re version de Lodel.</li>
   <li>la configuration de Lodel pour votre serveur.</li>
 </ul>
+
+?>
+if (ini_get("safe_mode")) {
+<?
+<p><strong>Attention:</strong> Lodel a d&eacute;tect&eacute; que php fonctionne en <em>safe_mode</em> sur votre serveur. Ceci empèche, en principe, l'installation et l'utilisation de Lodel. Toutefois, vous pouvez quand m&ecirc;me tenter une installation.</p>
+?>
+} 
+
+<?
 
 <p>Si vous souhaitez poursuivre et si vous acceptez les conditions d'utilisation de Lodel rappel&eacute;es ci-dessous, veuillez cliquer sur "Installer Lodel".</p>
 

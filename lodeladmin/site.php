@@ -131,10 +131,10 @@ if ($tache=="version") {
       $versions=array();
       while ($file=readdir($dir)) {
 	#echo $file," ";
-	if (is_dir(LODELROOT."/".$file) && 
+	if (is_dir(LODELROOT.$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir(LODELROOT."/".$file."/src")) {
-	  if (!(@include(LODELROOT."/$file/src/siteconfig.php"))) {
+	    is_dir(LODELROOT.$file."/src")) {
+	  if (!(@include(LODELROOT."$file/src/siteconfig.php"))) {
 	    echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";

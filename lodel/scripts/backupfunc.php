@@ -588,19 +588,19 @@ function importFromZip ($archive,$accepteddirs,$acceptedexts=array(),$sqlfile=""
       if (filesize($sqlfile)<=0)  return false;
     }
   } else { // use PCLZIP library
-    require($home."pclzip.lib.php");
-    $archive=new PclZip($archive);
+      require($home."pclzip.lib.php");
+      $archive=new PclZip($archive);
 
-    // functions callback
-    function preextract($p_event, &$p_header, $user_vars) { // choose the files to extract
-      //echo $p_header['filename'],"<br>";
-      if (preg_match("/^(\.\/)*.*\.sql$/",$p_header['filename'])) { // extract the sql file
-	unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
-	//                   may cause problem meanwhile if the file is recreated but it's so uncertain !
-	$p_header['filename']=$user_vars['sqlfile'];
-	return 1;
-      }
-      $exts=$user_vars['acceptedexts'] ? ".*\.(".join("|",$user_vars['acceptedexts']).")$" : "";
+      // functions callback
+      function preextract($p_event, &$p_header, $user_vars) { // choose the files to extract
+	//echo $p_header['filename'],"<br>";
+	if (preg_match("/^(\.\/)*.*\.sql$/",$p_header['filename'])) { // extract the sql file
+	  unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
+	  //                   may cause problem if the file is recreated but it's so uncertain !
+	  $p_header['filename']=$user_vars['sqlfile'];
+	  return 1;
+	}
+	$exts=$user_vars['acceptedexts'] ? ".*\.(".join("|",$user_vars['acceptedexts']).")$" : "";
 
       if (preg_match("/^(\.\/)*".str_replace("/","\/",join("|",$user_vars['accepteddirs'])).
 		     "\/$exts/",$p_header['filename'])) {

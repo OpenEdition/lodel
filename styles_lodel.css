@@ -391,6 +391,11 @@ div.intitule_ligne_formulaire {
 	color: red;
 }
 
+.image_error {
+	font-weight: bold;
+	color: red;
+} 
+
 .pied_de_formulaire {
 	text-align:center;
 	margin-bottom:40px;

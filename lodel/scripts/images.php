@@ -76,7 +76,7 @@ function change_image($filename,$id,$classe,$champ)
 // traitement des images
 
 
-function resize_image ($taille,$src,$dest)
+function resize_image ($taille,$src,&$dest)
 
 {
   do { // exception
@@ -116,20 +116,31 @@ function resize_image ($taille,$src,$dest)
       return false;
     }
 
-    if ($result[2]==1) { ImageGIF($im2,$dest); }
-    elseif ($result[2]==2) { ImageJPEG($im2,$dest); }
-    elseif ($result[2]==3) { ImagePNG($im2,$dest); }
+    if ($result[2]==1) {
+
+      if (function_exists("ImageGIF")) {
+	ImageGIF($im2,$dest); 
+      } else {      // sometimes writing GIF is not allowed... make a PNG it's anyway better.
+	// make a PNG rather
+	$dest=preg_replace("/\.gif$/i",".png",$dest);
+	$result[2]=2;
+      }
+    }
+    if ($result[2]==2) {
+      if (function_exists("ImageJPEG")) {
+	ImageJPEG($im2,$dest); 
+      } else {
+	// make a PNG rather
+	$dest=preg_replace("/\.jpe?g$/i",".png",$dest);
+	$result[2]=2;
+      }
+    }
+    if ($result[2]==3) { ImagePNG($im2,$dest); }
 
     return true;
   } while (0); // exception
   copy($src,$dest);
   return true;
 }
-
-
-
-
-
-
 
 ?>
