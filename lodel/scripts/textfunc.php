@@ -160,7 +160,7 @@ function couperpara($texte,$long) {
 
 
 
-function traite_raccourcis ($letexte)
+function spip ($letexte)
 
 {
   $puce="<IMG SRC=\"Images/smallpuce.gif\">";
