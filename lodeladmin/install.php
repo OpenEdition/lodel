@@ -187,14 +187,13 @@ if ($tache=="database") {
     $tache="continue";
     // nothing to do
   } elseif ($erasetables) {
-    // erase the table of each site
-    $result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites");
-    if (!$result) {
-      $erreur_droptables=1;
-      if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
-      return;
-    }
     @include($lodelconfig);    // insert the lodelconfig. Should not be a problem.
+    @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+    @mysql_select_db($database); // selectionne la database
+
+    // erase the table of each site
+    $result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites") or die (mysql_error());
+
     if ($singledatabase) {
       // currently singledatabase implies single site ! That's a shame but...
       // Let's destroyed everything in the database with the prefix !
@@ -409,10 +408,8 @@ if ($erreur[functions]) {
 //
 // essai de trouver une configuration
 //
-
-echo (require ($lodelconfig))," ",$lodelconfig," ",file_exists($lodelconfig);
-
-if ((require ($lodelconfig))) {
+#echo file_exists($lodelconfig),":",(require($lodelconfig)),":",$lodelconfig;
+if (file_exists($lodelconfig) && (@include($lodelconfig))) {
   // ok c'est bon...
 } else {
   // demander une plateforme pour l'install
@@ -551,7 +548,7 @@ if ($servoourl!="off") {
   if ($servoourl && $servoousername && $servoopasswd) {
     $cmds="VER;";
 
-    require ($home."serveurfunc.php");
+    require($home."serveurfunc.php");
     list($ret,$retvar)=upload($servoourl,
 			      array("username"=>$servoousername,
 				    "passwd"=>$servoopasswd,
@@ -660,7 +657,7 @@ function mysql_query_file($filename,$droptables=false)
     if ($cmd) {
 
       // should we drop tables before create them ?
-      if ($droptables && preg_match("/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?".$GLOBALS['tableprefix']."(\w+)",$cmd,$result)) {
+      if ($droptables && preg_match("/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?".$GLOBALS['tableprefix']."(\w+)/",$cmd,$result)) {
 	if (!mysql_query("DROP TABLE IF EXISTS ".$result[1])) {
 	  $err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
 	}
@@ -748,28 +745,7 @@ function testdirmode($dir,$mode)
   return TRUE;
 }
 
-/*
-function testdirmode($dir,$mode)
 
-{
-  if ($mode & 2) { // writeable ?
-    $testfile=LODELROOT.$dir."/tmp_install_test.tmp";
-    if (file_exists($testfile)) @unlink($testfile); // if I have not the write permission in the directory, I won't be able to do that.
-    $fh=@fopen($testfile,"w");
-    if (!$fh) { echo "can't open file in writing mode in $dir<br>\n"; return FALSE; }
-    if (!(@fputs($fh,"Lodel is great\n"))) { echo "can't fputs file in $dir<br>\n"; return FALSE; }
-    fclose($fh);
-    if (!(@unlink($testfile))) { echo "can't unlink file in $dir<br>\n"; return FALSE; }
-  }
-  if ($mode & 4) { // readable ? (et executable)
-    $dh=@opendir(LODELROOT.$dir);
-    if (!$dh) { echo "can't opendir $dir<br>\n"; return FALSE; }
-    if (!(@readdir($dh))) { echo "can't readdir $dir<br>\n"; return FALSE; }
-    closedir($dh);
-  }    
-  return TRUE;
-}
-*/
 
 function problem($msg)
 
