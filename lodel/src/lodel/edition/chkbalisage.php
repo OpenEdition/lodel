@@ -62,7 +62,7 @@ if ($line) { // on vient de balise, il faut modifier les balises
 #					 "<\\1h\\2>",
 #					 "<\\1h2>",
 #					"<\\1blockquote>",
-					 "'<tr valign=\"top\"><td class=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td class=\"chkbalisagetrparagraphe\">'",
+					 "'<tr valign=\"top\"><td class=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td class=\"chkbalisagetdparagraphe\">'",
 					 "</td></tr>"),
 				 $text);
 }
