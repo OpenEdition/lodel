@@ -742,7 +742,7 @@ function convertCSSstyle ($style) {
 	$open.="<sub>";
 	$close.="</sub>".$close;
 	$styles[$j]=$styles[$j+1]="";
-      } elseif ($styles[$j+1]=="vertical-align:super") {
+      } elseif (preg_match("/vertical-align:(super|\d\d?%)/",$styles[$j+1])) {
 	$open.="<sup>";
 	$close="</sup>".$close;
 	$styles[$j]=$styles[$j+1]="";
