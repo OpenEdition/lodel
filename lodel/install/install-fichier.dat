@@ -99,6 +99,8 @@ ln tpl/deskedition.html
 ln abandon.php
 ln oochargement.php
 ln tpl/oochargement.html
+ln conversion.php
+ln tpl/conversion.html
 ln chargesommaire.php
 ln tpl/chargesommaire.html
 ln balisage.php
