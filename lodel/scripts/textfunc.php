@@ -78,32 +78,70 @@ function textebrut($letexte) {
   return $letexte;
 }
 
+function couper($texte,$long) {
+#  $texte = substr($texte, 0, ($long +50) * 3); /* heuristique pour prendre seulement le necessaire */
+
+
+
+  $open=strpos($texte,"<");
+  if ($open===FALSE || $open>$long) return couper_sans_tags($texte,$long);
+  $long-=$open;
+  $stack=array();
+
+  while ($open!==FALSE) {
+    $close=strpos($texte,">",$open);
+    if ($texte[$open+1]=="/") {
+      array_pop($stack); // fermante
+    } elseif ($tags[$close-1]!="/") {
+      array_push($stack,
+					   "</".preg_replace("/\s.*/","",
+							     substr($texte,$open+1,$close-1-$open))
+					   .">"); // ouvrante
+    }
+    $open=strpos($texte,"<",$close);
+    $piecelen=$open-1-$close;
+
+    if ($open===FALSE || $piecelen>$long) 
+      return substr($texte,0,$close+1).
+	couper_sans_tags(substr($texte,$close+1,$long),$long).
+	join("",array_reverse($stack));	
+
+    $long-=$piecelen;
+    #echo $long,"<br>";
+  }
+  return $texte;
+}
+
+function couper_sans_tags($texte,$long) {
+  #$texte2 = substr($texte, 0, ($long+10)* 1.1); /* heuristique pour prendre seulement le necessaire */
+#  if (strlen($texte2) < strlen($texte)) $plus_petit = true;
+  
+  $texte2 = substr($texte." ", 0, $long);
+#  echo ":",$texte2;
+  $texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
+#  if ((strlen($texte2) + 3) < strlen($texte)) $plus_petit = true;
+  return trim($texte2);
+}
 
 #function couper($texte,$long) {
 #  $texte = substr($texte, 0, ($long +20) * 2); /* heuristique pour prendre seulement le necessaire */
 #
-#  $arr=preg_split("/<(\/?)([^>]+)>/",$texte,-1,PREG_SPLIT_DELIM_CAPTURE);
+#  $arr=preg_split("/(<\/?)([^>]+?)(\/?".">)/",$texte,-1,PREG_SPLIT_DELIM_CAPTURE);
 #  $count=count($arr);
-#  $long-=strlen($arr[0]);
-#   if ($long<0) ...
-#  for($i=1; $i<$count; $i+=3) {
-#    
+#  $piecelen=strlen($arr[0]);
+#  if ($long<$piecelen) return couper_sans_tags($arr[0],$long);
+#  $long-=$piecelen;
+#  $stack=array();
+#  for($i=1; $i<$count; $i+=4) {
+#    if ($arr[$i]!="</" && !$arr[$i+2]!="/>") array_push($stack,"</".$arr[$i+1].">"); // ouvrante
+#    if ($arr[$i]=="</") array_pop($stack); // fermante
+#
+#    $piecelen=strlen($arr[$i+3]);
+#    if ($long<$piecelen) return join("",array_slice($arr,0,$i)).couper_sans_tags($arr[$i+3],$long).join("",array_reverse($stack));
+#   
+#    $long-=$piecelen;
 #  }
 #}
-
-function couper($texte,$long) {
-  $texte2 = substr($texte, 0, $long * 2); /* heuristique pour prendre seulement le necessaire */
-  if (strlen($texte2) < strlen($texte)) $plus_petit = true;
-#  $texte = ereg_replace("\[([^\[]*)->([^]]*)\]","\\1", $texte2); 
-#  // supprimer les notes
-#  $texte = ereg_replace("\[\[([^]]|\][^]])*\]\]", "", $texte);
-  
-  $texte2 = substr($texte." ", 0, $long);
-  $texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
-  if ((strlen($texte2) + 3) < strlen($texte)) $plus_petit = true;
-##  if ($plus_petit) $texte2 .= ' (...)';
-  return trim($texte2);
-}
 
 
 
