@@ -30,25 +30,7 @@
 			<tr>
 				<IF COND="[#COUNT] % 2">
 					<td class="ligne_admin1" align="center">
-						<IF COND="[#PRIVILEGE] EQ 64">
-							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
-						<ELSE/>
-							<IF COND="[#PRIVILEGE] EQ 32">
-								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur
-							<ELSE/>
-								<IF COND="[#PRIVILEGE] EQ 4">
-									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />Editeur
-								<ELSE/>
-									<IF COND="[#PRIVILEGE] EQ 2">
-										<MACRO NAME="PNG_UTILISATEUR_VERT"><br />R&eacute;dacteur
-									<ELSE/>
-										<IF COND="[#PRIVILEGE] EQ 1">
-											<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />Visiteur
-										</IF>
-									</IF>
-								</IF>
-							</IF>
-						</IF>
+						<MACRO NAME="AFFICHER_PRIVILEGE">
 					</td>
 					<td class="ligne_admin1" align="center">[(#USERNAME|nbsp)]</td>
 					<td class="ligne_admin1" align="center">[(#NOM|nbsp)]</td>
@@ -68,25 +50,7 @@
 					</td>
 				<ELSE/>
 					<td class="ligne_admin2" align="center">
-						<IF COND="[#PRIVILEGE] EQ 64">
-							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
-						<ELSE/>
-							<IF COND="[#PRIVILEGE] EQ 32">
-								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur
-							<ELSE/>
-								<IF COND="[#PRIVILEGE] EQ 4">
-									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />Editeur
-								<ELSE/>
-									<IF COND="[#PRIVILEGE] EQ 2">
-										<MACRO NAME="PNG_UTILISATEUR_VERT"><br />R&eacute;dacteur
-									<ELSE/>
-										<IF COND="[#PRIVILEGE] EQ 1">
-											<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />Visiteur
-										</IF>
-									</IF>
-								</IF>
-							</IF>
-						</IF>
+						<MACRO NAME="AFFICHER_PRIVILEGE">
 					</td>
 					<td class="ligne_admin2" align="center">[(#USERNAME|nbsp)]</td>
 					<td class="ligne_admin2" align="center">[(#NOM|nbsp)]</td>
