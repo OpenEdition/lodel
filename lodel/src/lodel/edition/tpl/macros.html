@@ -35,12 +35,12 @@
 			<IF [#STATUS]==1>
 				<!--<a href="publi.php?publication=[#ID]">-->
 				<a href="#" onClick="confirm_depublication(1,[#ID]);">
-					<span class="texte_tres_petit_center">
+					<span class="texte_trespetit_centre">
 						Dépublier
 					</span>
 				</a>
 			<ELSE/>
-				<span class="texte_tres_petit_center">
+				<span class="texte_trespetit_centre">
 					&nbsp;-&nbsp;
 				</span>
 			</IF>
@@ -49,12 +49,12 @@
 		<div align="center">
 			<IF [#STATUS]==-1>
 			<a href="publi.php?publication=[#ID]&online=1">
-				<span class="texte_tres_petit_center">
+				<span class="texte_trespetit_centre">
 					Publier
 				</span>
 			</a>
 			<ELSE/>
-				<span class="texte_tres_petit_center">
+				<span class="texte_trespetit_centre">
 					&nbsp;-&nbsp;
 				</span>
 			</IF>
@@ -68,12 +68,12 @@
 			<IF [#STATUS]==1>
 				<!--<a href="publi.php?id=[#ID]">-->
 				<a href="#" onClick="confirm_depublication(0,[#ID]);">
-					<span class="texte_tres_petit_center">
+					<span class="texte_trespetit_centre">
 						Dépublier
 					</span>
 				</a>
 			<ELSE/>
-				<span class="texte_tres_petit_center">
+				<span class="texte_trespetit_centre">
 					&nbsp;-&nbsp;
 				</span>
 			</IF>
@@ -82,12 +82,12 @@
 		<div align="center">
 			<IF [#STATUS]==-1>
 			<a href="publi.php?id=[#ID]&online=1">
-				<span class="texte_tres_petit_center">
+				<span class="texte_trespetit_centre">
 					Publier
 				</span>
 			</a>
 			<ELSE/>
-				<span class="texte_tres_petit_center">
+				<span class="texte_trespetit_centre">
 					&nbsp;-&nbsp;
 				</span>
 			</IF>
@@ -173,6 +173,11 @@
 			Editer<br />métas
 		</strong>
 	</td>
+	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre">
+		<strong>
+			Ajouter<br />image
+		</strong>
+	</td>
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
 		<div align="center">
 		<b>
@@ -216,6 +221,13 @@
 		<div align="center">
 		<b>
 			Editer<br />métas
+		</b>
+		</div>
+	</td>
+	<td width="74" background="images/bleu.gif" class="texte_petit_centre">
+		<div align="center">
+		<b>
+			Ajouter<br />image
 		</b>
 		</div>
 	</td>
@@ -304,6 +316,11 @@
 			<MACRO NAME="GIF_EDITER_32">
 		</a>
 	</td>
+	<td width="74" valign="middle" align="center">
+		<a href="metaimage.php?idpublication=[#ID]">
+			<MACRO NAME="GIF_AJOUTER_IMAGE">
+		</a>
+	</td>
 	<td width="74" valign="middle">
 		<MACRO NAME="STATUS">
 	</td>
@@ -328,12 +345,6 @@
 			<a href="index.php?parent=[#PARENT]">
 				<u>Parent</u> 
 			</a>
-			 |
-			<IF [#ID]>
-				<a href="metaimage.php?idpublication=[#ID]">
-					Image
-				</a>
-			</IF>
 	</td>
 </DEFMACRO>
 
@@ -429,6 +440,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -444,6 +456,7 @@
 					</strong>
 				</a>
 		</td>
+	  <td width="74" background="images/bleu.gif">&nbsp;</td>
 	  <td width="74" background="images/bleu.gif">&nbsp;</td>
 	  <td width="74" background="images/bleu.gif">&nbsp;</td>
 	  <td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -467,6 +480,7 @@
 		</strong></a>
 	</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
     <td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -489,6 +503,7 @@
 		</strong>
 		</a>
 	</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -524,6 +539,7 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
 </DEFMACRO>
 
@@ -535,6 +551,7 @@
 	  <td width="800">
 	&nbsp;
 		  </td>
+	  <td width="74">&nbsp;</td>
 	  <td width="74">&nbsp;</td>
 	  <td width="74">&nbsp;</td>
   	  <td width="74">&nbsp;</td>
@@ -563,6 +580,7 @@
 			</font>
 		</a>
 	</td>
+	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -604,6 +622,15 @@
 				<div align="center">
 					<a href="editer.php?id=[#ID]">
 						<MACRO NAME="GIF_EDITER_32">
+					</a>
+				</div>
+			</td>
+		<MACRO NAME="TD_pour_lignesalternees_74">
+		<!-- Ajouter une image -->
+				<div align="center">
+					<!--<a href="metaimage.php?idpublication=[#ID]">-->
+					<a href="metaimage.php?iddocument=[#ID]">
+						<MACRO NAME="GIF_AJOUTER_IMAGE">
 					</a>
 				</div>
 			</td>
@@ -1160,11 +1187,27 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
-	<IF [#STATUS]==-32><a href="status.php?publication=[#ID]&status=pret">Déprotéger</a></IF>
-	<IF [#STATUS]==-1><a href="status.php?publication=[#ID]&status=brouillon">Protéger</a></IF>
+	<IF [#STATUS]==-32>
+		<a href="status.php?publication=[#ID]&status=pret">
+			<span class="texte_trespetit_centre">Déprotéger</span>
+		</a>
+	</IF>
+	<IF [#STATUS]==-1>
+		<a href="status.php?publication=[#ID]&status=brouillon">
+			<span class="texte_trespetit_centre">Protéger</span>
+		</a>
+	</IF>
 
-	<IF [#STATUS]==32><a href="status.php?publication=[#ID]&status=deprotege">Déprotéger</a></IF>
-	<IF [#STATUS]==1><a href="status.php?publication=[#ID]&status=protege">Protéger</a></IF>
+	<IF [#STATUS]==32>
+		<a href="status.php?publication=[#ID]&status=deprotege">
+			<span class="texte_trespetit_centre">Déprotéger</span>
+		</a>
+	</IF>
+	<IF [#STATUS]==1>
+		<a href="status.php?publication=[#ID]&status=protege">
+			<span class="texte_trespetit_centre">Protéger</span>
+		</a>
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_DOCUMENTS">
@@ -1192,6 +1235,10 @@
 
 <DEFMACRO NAME="GIF_DEPUBLIE_LOCK">
 	<img src="[#SHAREURL]/images/depublie_lock.gif" width="32" height="32" border="0" vspace="2" hspace="2">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_AJOUTER_IMAGE">
+	<img src="[#SHAREURL]/images/image.gif" width="32" height="32" border="0" vspace="2" hspace="2">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_NUMERO">
