@@ -144,6 +144,10 @@ setlocale (LC_ALL,"FR");
 set_magic_quotes_runtime(0);
 ignore_user_abort();
 
+# repertoire temporaire
+$tmpdir= isset($_ENV['TMPDIR']) ? $_ENV['TMPDIR'] : getenv('TMPDIR');
+
+
 // securite
 $currentdb="";
 

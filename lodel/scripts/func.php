@@ -507,6 +507,8 @@ function save_annex_file($dir,$file,$filename) {
 
 function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
 
+  global $tmpdir;
+
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
   if (is_numeric($dir)) $dir="docannexe/image/$dir";
 
@@ -514,6 +516,11 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
     if (!@mkdir(SITEROOT.$dir,0700)) die("ERROR: unable to create the directory \"$dir\"");
   }
   if (!$file) die("ERROR: save_annex_file file is not set");
+  if ($uploaded && $tmpdir && dirname($file)!=$tmpdir) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
+    $newfile=$tmpdir."/".basename($file);
+    if (!move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
+    $file=$newfile;
+  }
   $info=getimagesize($file);
   if (!is_array($info)) die("ERROR: the format of the image has not been recognized");
   $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");

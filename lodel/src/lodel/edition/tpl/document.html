@@ -34,7 +34,7 @@
 	</tr>
 </table>
 
-<form action="document.php" method="post" target="_top">
+<form enctype="multipart/form-data" action="document.php" method="post" target="_top">
 	<input type="hidden" name="id" value="[#ID]">
 	<IF COND="[#IDTACHE]"><input type="hidden" name="idtache" value="[#IDTACHE]"></IF>
 	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]"></IF>

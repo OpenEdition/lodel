@@ -155,11 +155,13 @@ if ($id>0 && $dir) {
 //
 } elseif ($plus || $reload || $reload2) {
   extract_post();
+  extract_files(&$context);
 } elseif ($edit) { // modifie ou ajoute
 //
 // bloc principale d'extrainfo
 // ce bloc peut etre appele par plusieurs scripts.
   extract_post();
+  extract_files(&$context);
 
   $context[entite][nom]=$context[entite][titre];
   $context[statut]=-1;
@@ -222,5 +224,62 @@ require_once($home."langues.php");
 
 require ($home."calcul-page.php");
 calcul_page($context,$context[tplcreation]);
+
+
+function extract_files(&$context,$classe="documents")
+
+{
+  global $HTTP_POST_FILES,$home;
+
+#  echo "la";
+#  print_r($HTTP_POST_FILES);
+#  echo "ici";
+#  print_r($_FILES);
+  if (!$_FILES && !$HTTP_POST_FILES) return;
+  $files=$_FILES[entite] ? $_FILES[entite] : $HTTP_POST_FILES[entite];
+  if (!$files || !$files['tmp_name']) return;
+
+#  print_r($files);
+
+  // remove files with error or not uploaded
+  foreach ($files['tmp_name'] as $nom=>$f) {
+    if (!$f || $files['error'][$nom]!=0) { // uploaded ?
+      // nothing to do
+      unset($files['tmp_name'][$nom]);
+      // take the previous value
+      $context['entite'][$nom]=$context['entite'][$nom][previousvalue];
+      // check for hack or bug
+      if (!preg_match("/^docannexe\/(image|fichier)\/[^\.\/]+\/[^\/]+$/",$context['entite'][$nom])) die("ERROR: invalid filename");
+    }
+  }
+  // if no files to upload, return.
+  if (!$files['tmp_name']) return;
+
+  require_once($home."connect.php");
+  // look for the field we have to download.
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 AND edition!='' AND (type='image' OR type='fichier')") or die (mysql_error());
+
+  if (!mysql_num_rows($result)) return;
+
+  require_once($home."func.php");
+  
+  // transfert
+  while (list($nom,$type)=mysql_fetch_row($result)) {
+    if (!$files['tmp_name'][$nom]) continue;     // should not happend
+
+    if (!$tmpdir[$type]) { // check if the tmpdir is defined
+      // look for a unique dirname.
+      do {
+	$tmpdir[$type]="docannexe/$type/tmpdir-".rand();
+      } while (file_exists(SITEROOT.$tmpdir[$type]));
+    }
+    if ($type=="fichier") {
+      $context['entite'][$nom]=save_annex_file($tmpdir[$type],$files['tmp_name'][$nom],$files['name'][$nom]);
+    } elseif ($type=="image") {
+      $context['entite'][$nom]=save_annex_image($tmpdir[$type],$files['tmp_name'][$nom],$nom);
+    }
+  }
+}
+
 
 ?>

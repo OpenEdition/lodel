@@ -37,7 +37,6 @@ require_once($home."champfunc.php");
 
 
 
-
 $id=intval($id);
 $critere=$id ? "$GLOBALS[tp]champs.id='$id'" : "";
 
@@ -92,9 +91,12 @@ if ($edit) { // modifie ou ajoute
       if ($context[style] && !isvalidstyle($context[style])) $err=$context[erreur_style]=1;
     }
     if ($err) break;
+
     require_once ($home."connect.php");
+
     // lock the tables
     if ($context[classe]!="documents" && $context[classe]!="publications") die("Preciser une classe. Classe incorrecte");
+
     lock_write("champs",$context[classe],"groupesdechamps");
 
     $alter="";
@@ -113,6 +115,7 @@ if ($edit) { // modifie ou ajoute
     } else {
       // check that the field does not exist
       $result=mysql_query("SELECT $GLOBALS[tp]champs.id FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND $GLOBALS[tp]champs.nom='$context[nom]' AND classe='$context[classe]'") or die (mysql_error());
+
       if (mysql_num_rows($result)) { $context[erreur_nom_existe]=1; break; }
       // ok, it does not exist
       $statut=1;

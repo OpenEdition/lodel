@@ -638,7 +638,7 @@ function wiki($text)
 {
   require_once('wikirenderer/WikiRenderer.lib.php');
   $wkr = new WikiRenderer();
-  return "processed:".($wkr->render($text));
+  return $wkr->render($text);
 }
 
 ?>

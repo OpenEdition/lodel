@@ -42,7 +42,7 @@
 	<span class="texte_info">L'astérisque (*) indique les champs obligatoires.</span>
 </div>
 
-<form method="post" action="publication.php">
+<form enctype="multipart/form-data" method="post" action="publication.php">
 	[(#ERREUR_PUBLICATION_EXISTE|true)Ce numéro existe déjà]
 	<input type="hidden" name="id" value="[#ID]" />
 	<input type="hidden" name="idparent" value="[#IDPARENT]" />
