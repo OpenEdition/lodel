@@ -67,7 +67,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	  require_once($home."date.php");
 	  $value=mysqldate(strip_tags($value));
 	}
-	echo "traitement:$traitement";
+	#echo "traitement:$traitement";
 	if ($traitement) { // processing ?
 	  $traitements=preg_split("/\|/",$traitement);
 	  foreach ($traitements as $traitement) {
@@ -75,10 +75,9 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	    if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*)\))?$/",$traitement,$result3)) { 
 	      // hack un peu sale:
 	      $result3[1]=preg_replace("/\bstrip_tags\b/","mystrip_tags",$result3[1]);
-	      function mystrip_tags($x,$y) { return strip_tags($y,$x); }
 	      // this MUST be changed
 	      if ($result3[2]) $result3[2]=$result3[2].",";
-	      echo 'return '.$result3[1].'('.$result3[2].'$x);';
+	      #echo 'return '.$result3[1].'('.$result3[2].'$x);';
 	      $func=create_function('$x','return '.$result3[1].'('.$result3[2].'$x);');
 	      $value=$func($value);
 	    }
@@ -139,6 +138,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
   return $id;
 }
 
+function mystrip_tags($x,$y) { return strip_tags($y,$x); }
 
 
 

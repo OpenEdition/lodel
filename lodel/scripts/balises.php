@@ -107,9 +107,14 @@ $GLOBALS['multiplelevel']['Sections']=array(
 // temporaire en attendant la 0.8
 
 $GLOBALS['xhtmlgroups']['xhtml:fontstyle']=array("tt", "i", "b", "big", "small");
-$GLOBALS['xhtmlgroups']['xhtml:phrase']=array("em", "strong", "dfn", "code", "q", "samp", "span","kbd", "var", "cite", "abbr", "acronym", "sub", "sup");
-$GLOBALS['xhtmlgroups']['xhtml:block']=array("p", "h1", "h2", "h3", "h4", "h5", "h6", "div", "lists", "pre", "hr", "blockquote", "address", "table");
-
+$GLOBALS['xhtmlgroups']['xhtml:phrase']=array("em", "strong", "dfn", "code", "q", "samp","kbd", "var", "cite", "abbr", "acronym", "sub", "sup");
+$GLOBALS['xhtmlgroups']['xhtml:special']=array("span", "img", "object", "br", "bdo","map");
+$GLOBALS['xhtmlgroups']['xhtml:block']=array("p", 
+					     "h1", "h2", "h3", "h4", "h5", "h6",  # heading
+					     "div",
+					     "ul","ol","dl","li","dt","dd", # list
+					     "pre", "hr", "blockquote", "address", # blocktext
+					     "fieldset","table");
 $GLOBALS['xhtmlgroups']['Lien']=array("a");
 $GLOBALS['xhtmlgroups']['Appel de Note']=array("a"=>"class=\"(foot|end)notecall\"");
 

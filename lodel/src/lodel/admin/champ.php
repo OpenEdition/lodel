@@ -189,6 +189,23 @@ function loop_balises(&$context,$funcname)
   }
 }
 
+function loop_balises_documentation(&$context,$funcname)
+
+{
+  $groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
+  foreach($GLOBALS['xhtmlgroups'] as $groupname => $tags) {
+    $localcontext=$context;
+    $localcontext['count']=$count;
+    $count++;
+    $localcontext['nomdugroupe']=$groupname;
+    $localcontext['balises']="";
+    foreach ($tags as $k=>$v) { if (!is_numeric($k)) unset($tags[$k]); }
+    if (!$tags) continue;
+    $localcontext['balises']=join(", ",$tags);
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+}
+
 
 
 

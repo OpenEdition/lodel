@@ -447,7 +447,7 @@ function lodel_strip_tags($text,$balises)
 	    $accepted[$balises][$v]=true; // accept the tag with any attributs
 	  } else {
 	    // accept the tag with attributs matching unless it is already fully accepted
-	    if (!$accepted[$balises][$v]) $accepted[$balises][$k][]=$v; // add a regexp
+	    if (!$accepted[$balises][$k]) $accepted[$balises][$k][]=$v; // add a regexp
 	  }
 	}
       } // that was a xhtml group
