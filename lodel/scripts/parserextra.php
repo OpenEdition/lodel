@@ -22,7 +22,7 @@ function parse_boucle_extra(&$tables,&$where)
 		    ),
 	      array(
 		    "status<=0",
-		    "status<=0",
+		    "status>0",
 		    '".($GLOBALS[admin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."'
 		    ),$where);
   //
