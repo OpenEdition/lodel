@@ -97,46 +97,52 @@
 <!-- Macro rajoutée le 17/09/03 *********************** -->
 <!-- Macro servant à publication.html et                -->
 <!-- extrainfo.html                                     -->
-<DEFMACRO NAME="AFFICHE_PERSONNES">
-	<LOOP NAME="personnes">
+<DEFMACRO NAME="AFFICHER_PERSONNES">
+	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
+		<LOOP NAME="personnes">
+			<tr>
+				<td width="200">[#TITRE] [#IND] :</td>
+				<td>
+					<table class="table_form_popup">
+						<tr>
+							<td>Pr&eacute;fixe</td>
+							<td>Pr&eacute;nom</td>
+							<td>Nom</td>
+						</tr>
+						<tr>
+							<td><input size="5" type="text" name="prefix[[#ID]][[#IND]]" value="[#PREFIX]"></td>
+							<td><input size="30" type="text" name="prenom[[#ID]][[#IND]]" value="[#PRENOM]"></td>
+							<td><input size="30" type="text" name="nomfamille[[#ID]][[#IND]]" value="[#NOMFAMILLE]"></td>
+						</tr>
+					</table>
+				</td>
+				<td rowspan="2">Description:<br />
+					<textarea name="description[[#ID]][[#IND]]" COLS="20" ROWS="4" readonly>[#DESCRIPTION]</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>
+					<table class="table_form_popup" >
+						<tr>
+							<td>Fonction</td>
+							<td>Affiliation</td>
+							<td>Courriel</td>
+						</tr>
+						<tr>
+							<td><input size="20" type="text" name="fonction[[#ID]][[#IND]]" value="[#FONCTION]"></td>
+							<td><input size="20" type="text" name="affiliation[[#ID]][[#IND]]" value="[#AFFILIATION]"></td>
+							<td><input size="20" type="text" name="courriel[[#ID]][[#IND]]" value="[#COURRIEL]"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</LOOP>
 		<tr>
-			<td width="200">[#TITRE] [#IND] :</td>
-			<td>
-				<table class="table_form_popup">
-					<tr>
-						<td>Pr&eacute;fixe</td>
-						<td>Pr&eacute;nom</td>
-						<td>Nom</td>
-					</tr>
-					<tr>
-						<td><input size="5" type="text" name="prefix[[#ID]][[#IND]]" value="[#PREFIX]"></td>
-						<td><input size="30" type="text" name="prenom[[#ID]][[#IND]]" value="[#PRENOM]"></td>
-						<td><input size="30" type="text" name="nomfamille[[#ID]][[#IND]]" value="[#NOMFAMILLE]"></td>
-					</tr>
-				</table>
-			</td>
-			<td rowspan="2">Description:<br />
-				<textarea name="description[[#ID]][[#IND]]" COLS="20" ROWS="4" readonly>[#DESCRIPTION]</textarea>
-			</td>
+			<td width="200">&nbsp;</td>
+			<td><input class="form" type="submit" name="plus[[#ID]]" value="   Ajouter   "></td>
 		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<table class="table_form_popup" >
-					<tr>
-						<td>Fonction</td>
-						<td>Affiliation</td>
-						<td>Courriel</td>
-					</tr>
-					<tr>
-						<td><input size="20" type="text" name="fonction[[#ID]][[#IND]]" value="[#FONCTION]"></td>
-						<td><input size="20" type="text" name="affiliation[[#ID]][[#IND]]" value="[#AFFILIATION]"></td>
-						<td><input size="20" type="text" name="courriel[[#ID]][[#IND]]" value="[#COURRIEL]"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</LOOP>
+	</table>
 </DEFMACRO>
 <!-- ************************************************** -->
 
@@ -191,12 +197,13 @@
 </DEFMACRO>
 <!-- ************************************************** -->
 
-<!-- Macro rajoutée le 17/11/03 *********************** -->
-<!-- Macro servant à publication.html et                -->
+<!-- Macros rajoutées le 17/11/03 ********************* -->
+<!-- Macros servant à publication.html et               -->
 <!-- document.html                                      -->
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
+<!-- Permet de lister tous les champs d'un groupe de    -->
+<!-- champs                                             -->
 	<LOOP NAME="champs">
-		<!-- Permet de lister tous les champs d'un groupe de champs -->
 		<BEFORE><!-- information sur le groupe. Ne s'affichent que s'il y a des champs editable -->
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
@@ -219,6 +226,85 @@
         </AFTER>
     </LOOP>
 </DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_TYPES_ENTREES">
+	<LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+		<DO>
+			<br />
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+				<tr>
+					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+				</tr>
+			</table>
+			<br />
+		
+			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+				<tr>
+					<td width="200" valign="top">[#TITRE] (*) :</td>
+					<td>
+						<select multiple size="10" name="entrees[[#ID]][]"><?php  makeselectentrees($context); // use [#ID] [#TRI] ?></select><br />
+						<IF COND="[#NEWIMPORTABLE]">
+							<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
+							* noms séparés par des virgules ou point-virgules.
+						<ELSE/>
+							<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
+						</IF>
+					</td>
+				</tr>
+			</table>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_TYPES_PERSONNES">
+	<!-- boucle sur les types de personne -->
+	<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+		<DO>
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+				<tr>
+					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+				</tr>
+			</table>
+			<br />
+			<MACRO NAME="AFFICHER_PERSONNES">
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_DOCUMENTS">
+	<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='documents' AND statut gt 0" ORDER="ordre">
+		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_PUBLICATIONS">
+	<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='publications' AND statut gt 0" ORDER="ordre">
+		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_INFORMATIONS_DOCUMENT">
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Informations sur le document</td>
+		</tr>
+	</table>
+	<br />
+	
+	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+		<tr>
+			<td width="200">Type de document</td>
+			<td>
+				<select name="idtype" onChange="reloadForm();"><?php makeselecttype("documents"); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</IF>
+				<input type="hidden" name="reload" value="">
+			</td>
+		</tr>
+	</table>
+</DEFMACRO>
+
 <!-- ************************************************** -->
 
 <DEFMACRO NAME="STATUT">
@@ -584,7 +670,7 @@
 		<BEFORE><div class="ligne_ajouter_numero"></BEFORE>
 		<DO>
 			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
 		</DO>
 		<AFTER></div></AFTER>
 	</LOOP>
@@ -596,7 +682,7 @@
 		<BEFORE><div class="ligne_ajouter_rubrique"></BEFORE>
 		<DO>
 			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
 		</DO>
 		<AFTER></div></AFTER>
 	</LOOP>
@@ -608,7 +694,7 @@
 		<BEFORE><div class="ligne_ajouter_rubrique"></BEFORE>
 		<DO>
 			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
 		</DO>
 		<AFTER></div></AFTER>
 	</LOOP>
@@ -620,7 +706,7 @@
 		<BEFORE><div class="ligne_ajouter_regroupement"></BEFORE>
 		<DO>
 			<MACRO NAME="PNG_PLUS">
-			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a><br />
 		</DO>
 		<AFTER></div></AFTER>
 	</LOOP>

@@ -29,82 +29,17 @@
 	</table>
 
 	<br />
-<!-- boucle sur les groupes de champs -->
-<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='documents' AND statut gt 0" ORDER="ordre">
-	<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
-</LOOP>
+	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_DOCUMENTS">
 
 	<br />
-	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-		<tr>
-			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Information sur le document</td>
-		</tr>
-	</table>
-	<br />
-	
-	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-		<tr>
-			<td width="200">Type de document</td>
-			<td>
-				<select name="idtype" onChange="reloadForm();"><?php makeselecttype("documents"); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</IF>
-				<input type="hidden" name="reload" value="">
-			</td>
-		</tr>
-	</table>
+	<MACRO NAME="AFFICHER_INFORMATIONS_DOCUMENT">
 
 	<br />
-	<!-- boucle sur les types de personne -->
-	<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
-	<!--<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">-->
-		<DO>
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr>
-					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
-				</tr>
-			</table>
-			<br />
-		
-			<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
-				<MACRO NAME="AFFICHE_PERSONNES">
-				<tr>
-					<td width="200">&nbsp;</td>
-					<td><input class="form" type="submit" name="plus[[#ID]]" value="   Ajouter   "></td>
-				</tr>
-			</table>
-		</DO>
-	</LOOP>
-	<!-- fin de la boucle sur les types d'auteurs -->
-	
-	<LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
-		<DO>
-			<br />
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr>
-					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
-				</tr>
-			</table>
-			<br />
-	
-			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-				<tr>
-					<td width="200" valign="top">[#TITRE] (*) :</td>
-					<td>
-					<select multiple size="10" name="entrees[[#ID]][]"><?php  makeselectentrees($context); // use [#ID] [#TRI] ?></select><br />
-						<IF COND="[#NEWIMPORTABLE]">
-							<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
-							* noms séparés par des virgules ou point-virgules.
-						<ELSE/>
-							<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
-						</IF>
-					</td>
-				</tr>
-			</table>
-		</DO>
-	</LOOP>
+	<MACRO NAME="AFFICHER_TYPES_PERSONNES">
 
+	<br />
+	<MACRO NAME="AFFICHER_TYPES_ENTREES">
+	
 	<IF COND="![#IMPORTSOMMAIRE]">
 		<br /><br />
 		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
