@@ -1,0 +1,101 @@
+<USE MACROFILE="macros.html">
+<MACRO NAME="header_head_open">
+<title>Edition de document</title>
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<MACRO NAME="header_head_close">
+<MACRO NAME="header_logo"> 
+
+<table width="800" cellpadding="5" cellspacing="1" border="0" align="center">
+	<tr>
+		<td align="center">
+			<span class="titre">Fonctions Avancées</span><br />
+			<span class="soustitre">de la publication</span>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<LOOP NAME="nom_publication" TABLE="publications" WHERE="id=[#ID]">
+				<span class="titre">[#NOM]</span>
+			</LOOP>
+		</td>
+	</tr>
+</table>
+<br />
+<LOOP NAME="status_publication" TABLE="publications" WHERE="id=[#ID]">
+	<div align="center"><a href="index.php?id=[#PARENT]">Retour</a></div>
+	<br />
+	<table width="400" cellpadding="0" cellspacing="1" border="1" align="center">
+		<tr>
+			<td>
+				<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center">
+					<tr>
+						<td>
+							Status de la publication :
+						</td>
+						<td>
+							<strong><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></strong>
+						</td>
+						<td>
+							<MACRO NAME="AFFICHER_ICONE_STATUT">
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</LOOP>
+<br /><br />
+<table width="800" cellpadding="5" cellspacing="1" border="1" align="center">
+	<tr>
+		<td>
+			Changer le statut de la publication
+		</td>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_STATUS_SWITCH">
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Changer le verrou de la publication dépubliée
+		</td>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_VERROU_PUBLICATIONS_DEPUBLIE">
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Changer le verrou de la publication publiée
+		</td>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<MACRO NAME="CHANGER_VERROU_PUBLICATIONS_PUBLIE">
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Associer une image à la publication
+		</td>
+		<td align="center">
+			<IF COND="[#EDITEUR]">
+				<a href="metaimage.php?idpublication=[#ID]">
+					<span class="texte_trespetit_centre">Image ...</span>
+				</a>
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</td>
+	</tr>
+</table>
+
+<MACRO NAME="close_html">
