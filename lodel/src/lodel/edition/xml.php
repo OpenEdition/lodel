@@ -97,7 +97,7 @@ if ($valid) {
   // "telechargement"
   $originalname="entite-$id.xml";
 
-  download("",$originalname,$contents);
+  download("",$originalname,co$ntents);
 }
 
 
@@ -150,7 +150,7 @@ function namespace($text)
 /**
  * Fonction de callback permettant d'ajouter un espace de nom aux attributs d'une balise xhtml.
  */
-
+/*
 function callback_ns_attributes($matches){
   $str = $matches[1];
   $ns = $matches[2];
@@ -166,7 +166,7 @@ function callback_ns_attributes($matches){
   }
   return $str;
 }
-
+*/
 
 
 
