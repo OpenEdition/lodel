@@ -2,9 +2,13 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'une revue</title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<!-- Rajout intégration maquette -->
+<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+<MACRO NAME="JS_AFFICHE_IMAGE">
+<!-- Fin rajout intégration maquette -->
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-
+<!--
 <MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="648" border="0" align="center" cellspacing="0" cellpadding="0">
 		<MACRO NAME="TR_SEPARATEUR">
@@ -28,9 +32,6 @@
 			</td>
 		</tr>
 		<MACRO NAME="TR_SEPARATEUR">
-		<!---------------------------->
-		<!--  AFFICHAGE DES SERIES -->
-		<!---------------------------->
 		<tr> 
 			<td bgcolor="#FFFFFF"> 
 				<br />
@@ -55,9 +56,9 @@
 								<tr>
 									<td width="48"> 
 										<div align="center">
-										<!--<a href="index.php?id=[#ID]">-->
+										<!-<a href="index.php?id=[#ID]">->
 											<MACRO NAME="AFFICHER_ICONE_STATUT">
-										<!--</a>-->
+										<!-</a>->
 										</div>
 									</td>
 									<MACRO NAME="TD_NOM_TYPE_TITRE">
@@ -75,4 +76,26 @@
 		</tr>
 	</table>
 <MACRO NAME="CLOSE_TABLE_CREETABLEINTERFACE">
+-->
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<MACRO NAME="CHEMIN_PARCOURU">
+<MACRO NAME="AJOUTER_SERIE">
+<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre">
+	<div class="serie">
+		<IF COND="[#COUNT] % 2">
+			<div class="ligne_serie1">
+		<ELSE/>
+			<div class="ligne_serie2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
+			<MACRO NAME="NOM_TITRE_TYPE">
+			<!--<ALTERNATIVE>
+				<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
+			</ALTERNATIVE>-->
+		</div>
+	</div>		
+</LOOP>
+
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 <MACRO NAME="CLOSE_HTML">
