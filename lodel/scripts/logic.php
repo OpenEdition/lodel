@@ -30,8 +30,6 @@
 /**
  * Define public field description constant
  */
-define("F_TEXT",0x10);
-define("F_PASSWORD",0x11);
 
 define("F_REQUIRED",0x100);
 
@@ -78,12 +76,31 @@ class Logic {
    function editAction($context)
 
    {
-     $dao=getMainTableDAO();
-     $dao->instantiateObject($vo);
+     // validate the forms data
+     $valid=$this->_validatePublicFields($context);
+     if (is_string($valid)) return $valid;
 
+     // get the dao for working with the object
+     $dao=getMainTableDAO();
+
+     // create or edit
+     if ($context['id']) {
+       $vo=$dao->getById(intval($context['id']),"id,status");
+       if ($vo) die("ERROR: try to modify an object which does not exists");
+     } else {
+       $dao->createObject($vo);
+     }
+
+    if ($GLOBALS['rightadminlodel']) {
+      $newstatus=$context['protected'] ? 32 : 1;
+      $vo->status=$vo->status>0 ? $newstatus : -$newstatus;
+    }
+
+     // put the context into 
      $this->_populateObject($vo,$context);
-     if (!$this->_validateObject($vo)) return;
-     $this->save($vo); // a revoir
+     $dao->save($vo);
+
+     return BACK;
    }
 
    /**
@@ -163,25 +180,41 @@ class Logic {
 
    /**
     * Validated the public fields
-    *
+    * @return return an array containing the error and warning, null otherwise.
     */
    function _validatePublicFields($context) {
+
+     require_once($GLOBALS['home']."validfunc.php");
+
      $publicfields=$this->_publicfields();
      foreach($publicfields as $field => $fielddescr) {
        list($type,$condition,$validfunc)=$fielddescr;
-       if ($condition==F_REQUIRED && !$context[$field]) {
-	 XXXXX a faire
-       } elseif ((!$$validfunc($context['']))) {
-	 XXXXX a faire
+       if ($condition=="+" && !$context[$field]) {
+	 $error[$field]="required";
+       } else {
+	 $valid=validfunc($context[$field],$type,"");
+	 if ($valid===false) die("ERROR: $type can not be validated in logic.php");
+	 if (is_string($valid)) $error[$field]=$valid;
        }
      }
-     return;
+     return $error;
    }
 
 
    function _publicfields() {
      die("call to abstract publicfields");
      return array();
+   }
+
+   /**
+    * Populate the object from the context. Only the public fields are inputted
+    */
+
+   function _populateObject($context) {
+     $publicfields=$this->_publicfields();
+     foreach($publicfields as $field => $fielddescr) {
+       $vo->$field=$context[$field];
+     }
    }
 }
 
