@@ -409,4 +409,25 @@ margin-bottom: 15px;
 {
 	font-size : 11px;
 }
+div.pagination
+{
+	text-align : right;
+	color : #fff;
+	background-color : #9CBD9C;
+	margin : 5px 10px 5px 75px;
+	font-family : courier,"Trebuchet MS",arial;
+	padding : 2px;
 
+}
+div.pagination a.linkpage
+{
+	color : #fff;
+	
+}
+span.currentpage
+{
+	font-size : 120%;
+	font-weight : bold;
+	font-family : courier,"Trebuchet MS",arial;
+	color : #000;
+}
