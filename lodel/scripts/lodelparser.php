@@ -286,11 +286,11 @@ function parse_before(&$text)
     if (!$group) $group="site";
     $text=str_replace($result[0],$this->maketext($name,$group,"text"),$text);
   }
-  preg_match_all("/\[@(".$this->variable_regexp.")(.".$this->variable_regexp.")?\]/",$text,$results,PREG_SET_ORDER);
+  preg_match_all("/\[@((?:".$this->variable_regexp."\.)*)(".$this->variable_regexp.")\]/",$text,$results,PREG_SET_ORDER);
   foreach ($results as $result) {
-    $group=addslashes(stripslashes(strtolower(trim($result[1]))));
-    $name=addslashes(stripslashes(strtolower(trim(substr($result[2],1)))));
-    if (!$name) { $name=$group; $group="site"; }
+    $group=addslashes(stripslashes(strtolower(trim(substr($result[1],0,-1)))));
+    $name=addslashes(stripslashes(strtolower(trim($result[2]))));
+    if (!$group) $group="site";
     $text=str_replace($result[0],$this->maketext($name,$group,"@"),$text);
   }
 
@@ -302,11 +302,12 @@ function maketext($name,$group,$tag)
 {
   if ($GLOBALS['droitediteur']) {       // cherche si le texte existe
     require_once(TOINCLUDE."connect.php");
+    $db= ($group=="site") ? "" : $GLOBALS['database'].".";
 
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group'") or $this->errmsg (mysql_error());
+    $result=mysql_query("SELECT id FROM $db$GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group'") or $this->errmsg (mysql_error());
     if (!mysql_num_rows($result)) { // il faut creer le texte
       $lang=$GLOBALS['userlang'] ? $GLOBALS['userlang'] : ""; // unlikely useful but...
-      mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,textgroup,texte,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg (mysql_error());
+      mysql_query("INSERT INTO $db$GLOBALS[tp]textes (nom,textgroup,texte,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg (mysql_error());
     }
   }
 
@@ -341,7 +342,7 @@ function parse_after(&$text)
     $closepos-=strlen("</body>")+1;
 
     $text=substr($text,0,$closepos).'<?php if ($context[\'usertranslationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
-<form method="post" action="'.SITEROOT.'lodel/admin/texte.php"><input type="hidden" name="edit" value="1">
+<form method="post" action="'.$GLOBALS['home'].'../../lodeladmin/text.php"><input type="hidden" name="edit" value="1">
  <input type="submit" value="[Update]">
 <div id="translationforms">'.join("",$this->translationform).'</div>
 <input type="submit" value="[Update]"></form>

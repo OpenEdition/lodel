@@ -43,7 +43,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
 {
   global $context,$iduser,$userpriv,$usergroupes,$userlang;
-  global $home,$timeout,$database,$sessionname,$site,$back;
+  global $home,$timeout,$database,$sessionname,$site;
 
   $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);
 
@@ -52,7 +52,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
 
     if (!$name) break;
 
-    include_once($home."connect.php");
+    require_once($home."connect.php");
     mysql_select_db($database) or die(mysql_error());
     if (!($result=mysql_query ("SELECT id,iduser,site,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
@@ -60,7 +60,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $GLOBALS['session']=$name;
 
     // verifie qu'on est dans le bon site
-    if ($row[site]!="tous les sites" && $row[site]!=$site) break;
+    if ($row['site']!="tous les sites" && $row['site']!=$site) break;
 
     // verifie que la session n'est pas expiree
     $time=time();
@@ -90,11 +90,11 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // verifie encore une fois au cas ou...
     if ($userpriv<LEVEL_ADMINLODEL && !$site) break;
 
-    if ($userpriv>=LEVEL_ADMINLODEL) $context[droitadminlodel]=$GLOBALS[droitadminlodel]=1;
-    if ($userpriv>=LEVEL_ADMIN) $context[droitadmin]=$GLOBALS[droitadmin]=1;
-    if ($userpriv>=LEVEL_EDITEUR) $context[droitediteur]=$GLOBALS[droitediteur]=1;
-    if ($userpriv>=LEVEL_REDACTEUR) $context[droitredacteur]=$GLOBALS[droitredacteur]=1;
-    if ($userpriv>=LEVEL_VISITEUR) $context[droitvisiteur]=$GLOBALS[droitvisiteur]=1;
+    if ($userpriv>=LEVEL_ADMINLODEL) $context['droitadminlodel']=$GLOBALS['droitadminlodel']=1;
+    if ($userpriv>=LEVEL_ADMIN) $context['droitadmin']=$GLOBALS['droitadmin']=1;
+    if ($userpriv>=LEVEL_EDITEUR) $context['droitediteur']=$GLOBALS['droitediteur']=1;
+    if ($userpriv>=LEVEL_REDACTEUR) $context['droitredacteur']=$GLOBALS['droitredacteur']=1;
+    if ($userpriv>=LEVEL_VISITEUR) $context['droitvisiteur']=$GLOBALS['droitvisiteur']=1;
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
 
@@ -102,53 +102,55 @@ function authenticate ($level=0,$norecordurl=FALSE)
     // change l'expiration de la session et l'url courrante
     //
 
-    // nettoie l'url
-    $url=preg_replace("/[\?&]recalcul\w+=oui/","",$_SERVER['REQUEST_URI']);
-    if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
-    if (!$norecordurl) $update=", currenturl='$url'"; // si norecordurl ne change rien
+    // clean the url
+    $url=preg_replace("/[\?&]recalcul\w+=\w+/","",$_SERVER['REQUEST_URI']);
+    if (get_magic_quotes_gpc()) $url=stripslashes($url);
+    $myurl=mysql_escape_string($url);
 
     $expire=$timeout+$time;
-    mysql_query("UPDATE $GLOBALS[tp]session SET expire='$expire'$update WHERE name='$name'") or die (mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]session SET expire='$expire',currenturl='$myurl' WHERE name='$name'") or die (mysql_error());
 
     //
     // gestion de l'url de retour
     //
-    if ($back) {
-      // on detruit l'entree dans la pile
-      $back=intval($back);
-      mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or die (mysql_error());
-    }
-    $urlmd5=md5($url);
+    #if ($back) {
+    #  // on detruit l'entree dans la pile
+    #  $back=intval($back);
+    #  mysql_query ("DELETE FROM $GLOBALS[tp]pileurl WHERE id='$back' AND idsession='$idsession'") or die (mysql_error());
+    #}
+
 
     // enregistre l'url de retour à partir de l'info dans la session
-    if ($row[currenturl] && $row[currenturl]!=$url && !$norecordurl && !$back) {
-      mysql_query ("INSERT INTO $GLOBALS[tp]pileurl (idsession,url,urlretour) VALUES ('$idsession','$urlmd5','$row[currenturl]')") or die (mysql_error());
-      $context[url_retour]=mkurl($row[currenturl],"back=".mysql_insert_id());
-    } else {
-      // cherche l'url de retour dans la base de donnee
-      $result=mysql_query ("SELECT urlretour,id FROM $GLOBALS[tp]pileurl WHERE idsession='$idsession' AND url='$urlmd5' ORDER BY id DESC LIMIT 0,1") or die (mysql_error());
-      if (mysql_num_rows($result)) {
-	list($urlretour,$id)=mysql_fetch_row($result);
-	$context[url_retour]=mkurl($urlretour,"back=$id");
-      } else {	
-	$context[url_retour]="";
-      }
+    if ($row['currenturl'] && $row['currenturl']!=$url && !$norecordurl) {
+      #if ($back) $url=preg_replace("/[\?&]back=\d+/","",$url);
+      $urlmd5=md5($url);
+      mysql_query ("INSERT INTO $GLOBALS[tp]pileurl (idsession,url,urlretour) VALUES ('$idsession','$urlmd5','$myurl')") or die (mysql_error());
+      #$context['url_retour']=mkurl($row['currenturl'],"back=".mysql_insert_id());
+      #} else {
+      #// cherche l'url de retour dans la base de donnee
+      #$result=mysql_query ("SELECT urlretour,id FROM $GLOBALS[tp]pileurl WHERE idsession='$idsession' AND url='$urlmd5' ORDER BY id DESC LIMIT 0,1") or die (mysql_error());
+      #if (mysql_num_rows($result)) {
+      #  list($urlretour,$id)=mysql_fetch_row($result);
+      #  $context['url_retour']=mkurl($urlretour,"back=$id");
+      #} else {	
+      #  $context['url_retour']="";
+      #}
     }
     #    echo "retour:$context[url_retour]";
     //
     // fin de gestion de l'url de retour
     //
 
-    $context[url_recompile]=mkurl($url,"recalcul_templates=oui");
+    $context['url_recompile']=mkurl($url,"recalcul_templates=oui");
 
     //
     // relselection la DB du site comme DB par defaut.
     //
-    mysql_select_db($GLOBALS[currentdb]) or die (mysql_error());
+    mysql_select_db($GLOBALS['currentdb']) or die (mysql_error());
     return; // ok !!!
   } while (0);
 
-  if ($GLOBALS[currentdb]) mysql_select_db($GLOBALS[currentdb]);
+  if ($GLOBALS['currentdb']) mysql_select_db($GLOBALS['currentdb']);
 
   // exception
   if ($level==0) {
@@ -217,7 +219,8 @@ $context=array(
 	       "version" => $GLOBALS['version'],
 	       "shareurl"=>$GLOBALS['shareurl'],
 	       "extensionscripts"=>$GLOBALS['extensionscripts'],
-	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
+	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'],
+	       "database"=>$GLOBALS['database']
 	       ); // tres important d'initialiser le context.
 
 
@@ -228,11 +231,11 @@ if (!$filemask) $filemask="0700";
 
 // cherche le nom du site
 
-$context[site]=$site;
+$context['site']=$site;
 
 
 
-$context[charset] = getacceptedcharset($charset);
+$context['charset'] = getacceptedcharset($charset);
 header("Content-type: text/html; charset=$context[charset]");
 
 ?>

@@ -58,8 +58,7 @@ $GLOBALS['lodelsitetables']=array("$GLOBALS[tp]objets",
 				  "$GLOBALS[tp]typeentites_typeentrees",
 				  "$GLOBALS[tp]typeentites_typepersonnes",
 				  "$GLOBALS[tp]options",
-				  "$GLOBALS[tp]translations"
-);
+				  "$GLOBALS[tp]translations");
 
 $GLOBALS['lodelbasetables']=array("$GLOBALS[tp]sites",
 				  "$GLOBALS[tp]users",

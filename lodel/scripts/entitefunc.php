@@ -403,7 +403,7 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
       }
       // on nettoie le nom de l'entree
       $entree=trim(strip_tags($entree));
-      myquote($entree);
+      myquote($entree); // etrange ? pourquoi ajouter ce bout de code ???
       if (!$entree) continue; // etrange elle est vide... tant pis
       // cherche l'id de l'entree si elle existe
       $langcriteria=$lang ? "AND langue='$lang'" : "";

@@ -36,6 +36,9 @@
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
 	<a href="translation.php">Commencer une nouvelle traduction</a>
+	<br/>
+	<MACRO NAME="PNG_PLUS">
+	<a href="translationsimport.php">Importer une nouvelle traduction</a>
 </div>
 <br /><br />
 
@@ -56,9 +59,9 @@
 			</IF>
                         <td>[#TITLE]</td>
                         <td>[#LANG]</td>
-		        <td><MACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_IMPORTER_TRANSLATION"></td>
+		        <td><MACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_TRANSLATION"></td>
 		        <td>
-		       <LOOP NAME="textgroups1" TABLE="textes" WHERE="textgroup LIKE '[#TEXTGROUPS].%'" GROUPBY="textgroup" ORDER="textgroup">
+		       <LOOP NAME="textgroups1" TABLE="textes" WHERE="[#TEXTGROUPSWHERE]" GROUPBY="textgroup" ORDER="textgroup">
 		             <a href="translationgroup.php?textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
 		        </LOOP>
 		        </td>
@@ -71,19 +74,18 @@
 <h1>Vue synthetique des traductions</h1>
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 
-       <LOOP NAME="textgroups" TABLE="textes" WHERE="textgroup LIKE '[#TEXTGROUPS].%'" GROUPBY="textgroup" ORDER="textgroup">
+       <LOOP NAME="textgroups" TABLE="textes" WHERE="[#TEXTGROUPSWHERE]" GROUPBY="textgroup" ORDER="textgroup">
        <tr><td colspan="3" class="textgroup"><h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
        </td></tr>
 
 	      <tr>
 		<td class="texte_noir_gras">Nom</td>
-                <LOOP NAME="translations2" TABLE="translations" ORDER="ordre">
+                <LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="ordre">
                 <td class="texte_noir_gras">[#LANG]</td>
 		</LOOP>
 		<td>&nbsp;</td>
 	      </tr>
-
-	<LOOP NAME="textes" TABLE="textes" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#USERLANG]'" ORDER="nom">
+	<LOOP NAME="textes" TABLE="textes" WHERE="textgroup='[#TEXTGROUP]' " GROUPBY="nom" ORDER="nom">
 		<DO>
 			<IF COND="[#COUNT]%2">
 			<tr class="ligne_admin1">
@@ -91,18 +93,18 @@
 			<tr class="ligne_admin2">
 			</IF>
 				<td ><IF COND="[#TEXTE]">[(#TEXTE|couper(30))]<ELSE/>[(#NOM|strtoupper)]</IF></td>
-		                <LOOP NAME="translations3" TABLE="translations" ORDER="ordre">
+		                <LOOP NAME="translations3" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="ordre">
 		                        <td>
 		                        <LOOP NAME="lang_of_text" TABLE="textes" WHERE="nom='[#NOM]' AND textgroup='[#TEXTGROUP]' AND lang='[#LANG]'">
 
-		                            <a style="background-color: [(#STATUT|lodeltextcolor)]" href="texte.php?id=[#ID]">o</a>
+		                            <a style="background-color: [(#STATUT|lodeltextcolor)]" href="text.php?id=[#ID]">o</a>
 		                            
 		                        </LOOP>
                                         </td>
 		                </LOOP>
 				<td align="right">
 					<div>
-					<a href="texte.php?id=[#ID]&delete=2">Supprimer</a> (*)
+					<a href="text.php?id=[#ID]&delete=2">Supprimer</a> (*)
 					</div>
 				</td>
                         </tr>
@@ -122,7 +124,7 @@
 	<tr>
 		<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
 			<form>
-				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php'">
+				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='back.php?back=-2'">
 			</form>
 		</td>
 	</tr>

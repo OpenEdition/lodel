@@ -27,24 +27,19 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-// gere les periodes. L'acces est reserve au adminlodelistrateur.
-// assure l'edition, la supression, la restauration des periodes.
 
-require("siteconfig.php");
+require("lodelconfig.php");
 require($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+require($home."func.php");
 
-$context['textgroups']="site";
+if ($_REQUEST['back']) {
+  $back=intval($back); 
+} else {
+  $back=-1;
+}
+back("",$back);
 
-require ($home."textinc.php");
-posttraitement($context);
-
-require ($home."calcul-page.php");
-calcul_page($context,"text");
+return;
 
 ?>
-
-
-
-
-

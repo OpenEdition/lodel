@@ -32,7 +32,7 @@
 
 if (!function_exists("authenticate")) die("ERROR: invalid include of userinc.php");
 if ($userpriv<LEVEL_ADMIN) return; // secu
-include_once ($home."func.php");
+require_once ($home."func.php");
 
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...

@@ -63,10 +63,38 @@
 							<a href="options.php"><span class="texte_orange">[@ADMIN.EDIT_SITE_OPTIONS]</span></a></td>
 						<td>&nbsp;</td>
 					</tr>
-					<tr>
+<!--[					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<a href="textes.php"><span class="texte_orange">[@ADMIN.LITTLE_TEXTS]</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr> ]-->
+<!--[					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<span class="texte_orange">[@COMMON.LANG_SITE] :</span>
+		                                <select onchange="change_language(this)">
+	                                	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='site'" ORDER="ordre">
+		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		                                </LOOP>
+		                                </select>
+
+						</td>
+						<td>&nbsp;</td>
+					</tr>]-->
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="translations.php"><span class="texte_orange">[@ADMIN.ADMINISTRATE_TRANSLATIONS]</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#USERTRANSLATIONMODE]">[@ADMIN.GET_OUT]<ELSE/>[@ADMIN.ENTER_IN]</IF> [@ADMIN.TRANSLATION_MODE]</span></a>
+
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -233,24 +261,9 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="translations.php"><span class="texte_orange">[@ADMIN.ADMINISTRATE_TRANSLATIONS]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#USERTRANSLATIONMODE]">[@ADMIN.GET_OUT]<ELSE/>[@ADMIN.ENTER_IN]</IF> [@ADMIN.TRANSLATION_MODE]</span></a>
-
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
 							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
 		                                <select onchange="change_language(this)">
-	                                	<LOOP NAME="translations" TABLE="translations" ORDER="ordre">
+	                                	<LOOP NAME="translations_interface" DATABASE="[#DATABASE]" TABLE="translations" WHERE="textgroups='interface'" ORDER="ordre">
 		                                <IF COND="[#USERLANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
@@ -258,7 +271,15 @@
 						</td>
 						<td>&nbsp;</td>
 					</tr>
-
+                                        <IF COND="[#DROITADMINLODEL]">
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+							<a href="../../../lodeladmin/translations.php"><span class="texte_orange">[@ADMIN.ADMINISTRATE_INTERFACE_TRANSLATIONS]</span></a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+                                        </IF>
 				</table>
 			</td> <!-- [ fin des outils ]-->
 		</tr>

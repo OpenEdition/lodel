@@ -429,6 +429,9 @@ function parse_loop()
       switch ($result[1]) {
       case "NAME":
 	break;
+      case "DATABASE":
+	$db=trim($value);
+	break;
       case "WHERE" :
 	array_push($wheres,"(".trim(replace_conditions($value,"sql")).")");
 	break;
@@ -436,7 +439,16 @@ function parse_loop()
 	$arr=preg_split("/,/",$value);
 	if ($arr) {
 	  foreach ($arr as $value) {
-	    array_push($tables,$GLOBALS['tableprefix'].trim($value));
+	    $value=trim($value);
+	    #$dotpos=strpos($value,".");
+	    #if ($dotpos===FALSE) {
+	      $value=$GLOBALS['tableprefix'].$value;
+	    #} else {
+	    #  $value=substr($value,0,$dotpos+1).$GLOBALS['tableprefix'].substr($value,$dotpos+1);
+	    #}
+	      if ($db) $value=$db.".".$value;
+
+	    array_push($tables,$value);
 	  }
 	}
 	break;

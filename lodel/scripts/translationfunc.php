@@ -100,6 +100,7 @@ class XMLDB_Translations extends XMLDB {
 
   var $textgroups;
   var $lang;
+  var $currentlang;
 
   function XMLDB_Translations($textgroups,$lang="") 
   {
@@ -113,30 +114,46 @@ class XMLDB_Translations extends XMLDB {
     $this->addElement("textes",array("texte","text"));
     $this->addAttr("textes","nom","textgroup","statut");
     if ($lang!="all") $this->addWhere("textes","lang='$lang'");
-    if ($textgroups=="site") {
-      $this->addWhere("textes","textgroup=='site'");
-    } else {
-      $this->addWhere("textes","textgroup!='site'");
-    }
+    require_once($GLOBALS['home']."textgroupfunc.php");
+    $this->addWhere("textes",textgroupswhere($textgroups));
     $this->addJoin("translations","lang","textes","lang");
   }
 
   function insertRow($table,$record) 
 
   {
+    #echo "table:$table\n<br>";
+    #print_r($record);
+
     // protect record
     clean_request_variable($record);
 
     switch($table) {
+      //
+      // table translations
+      //
     case "translations":
+      // check the lang is ok
+      if ($this->lang!="all" && $this->lang!="" && $this->lang!=$record['lang']) return;
+      $this->currentlang=$record['lang'];
       // look for the translation
       $result=mysql_query("SELECT id FROM $GLOBALS[tp]translations WHERE lang='".$record['lang']."' AND textgroups='".$this->textgroups."'") or die(mysql_error());
       list($id)=mysql_fetch_row($result);
+
+      $record['textgroups']=$this->textgroups;
       setrecord($table,$id,$record);
       return $record['lang'];
       break;
+      //
+      // table textes
+      //
     case "textes":
-      // look for texte
+      // check the lang is ok
+      if (!$record['lang'] || $this->currentlang!=$record['lang']) return;
+      // check the textgroup is ok
+      if (!in_array($record['textgroup'],$GLOBALS['textgroups'][$this->textgroups])) die("ERROR: Invalid textgroup");
+
+      // look for text
       $result=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='".$record['nom']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'") or die(mysql_error());
       list($id)=mysql_fetch_row($result);
 #      echo $id," ";

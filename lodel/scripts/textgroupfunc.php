@@ -27,24 +27,23 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-// gere les periodes. L'acces est reserve au adminlodelistrateur.
-// assure l'edition, la supression, la restauration des periodes.
 
-require("siteconfig.php");
-require($home."auth.php");
-authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+$GLOBALS['textgroups']=array("interface"=>array("common","edition","admin","lodeladmin","install","lodelloader"),
+			     "site"=>array("site"),
+			     );
 
-$context['textgroups']="site";
 
-require ($home."textinc.php");
-posttraitement($context);
+//-------------------------------------------
 
-require ($home."calcul-page.php");
-calcul_page($context,"text");
+function textgroupswhere($textgroups)
+
+{
+  if (!$textgroups) die("ERROR: which textgroups ?");
+  if ($GLOBALS['textgroups'][$textgroups]) {
+    return "textgroup IN ('".join("','",$GLOBALS['textgroups'][$textgroups])."')";
+  } else {
+    die("ERROR: unkown textgroup");
+  }
+}
 
 ?>
-
-
-
-
-

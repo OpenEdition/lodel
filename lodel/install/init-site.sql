@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 	texte		TEXT,                   # texte
 
 	lang		CHAR(5) NOT NULL,       # text lang
-	textgroup	VARCHAR(10) NOT NULL,   # text group
+	textgroup	VARCHAR(255) NOT NULL,   # text group
 
 	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,

@@ -28,10 +28,10 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("lodelconfig.php");
-include ($home."auth.php");
+require($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
 
-include ($home."calcul-page.php");
+require($home."calcul-page.php");
 calcul_page($context,"sites");
 
 ?>

@@ -148,7 +148,7 @@ class XMLDB {
   /*
    * Write the XML into a file
    */
-  function saveToFile($filename)
+  function saveToFile($filename) 
 
   {
     $this->fp=fopen($filename,"w");
@@ -160,7 +160,7 @@ class XMLDB {
    *
    */
 
-  function saveToString($documentroot="") 
+  function saveToString()
   {
     $this->string="";
     $this->_write("<".$this->documentroot.">\n");
@@ -246,8 +246,8 @@ class XMLDB {
   function _write($string)
 
   {
-    if ($fp) {
-      fwrite($fp,$string);
+    if ($this->fp) {
+      fwrite($this->fp,$string);
     } else {
       $this->string.=$string;
     }
@@ -261,28 +261,23 @@ class XMLDB {
   function readFromString($xml)
 
   {
-    global $xmldb_xmlparser;
 
-    $xml_parser = xml_parser_create();
-    $this->state="";
-    $this->tablestack=array();
-    $this->joinfieldvaluestack=array();
-
-    xml_set_object($xml_parser,$this);
-    xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,false);
-    xml_set_element_handler($xml_parser, "startElement", "endElement");
-    xml_set_character_data_handler($xml_parser, "characterData");
+    $xml_parser=$this->_initparser();
 
     if (!xml_parse($xml_parser, $xml, true)) {
       die(sprintf("XML error: %s at line %d",
 		  xml_error_string(xml_get_error_code($xml_parser)),
 		  xml_get_current_line_number($xml_parser)));
     }
+  }
 
 
-/*
-    if (!($fp = fopen($file, "r"))) {
-      die("could not open XML input");
+  function readFromFile($filename) {
+
+    $xml_parser=$this->_initparser();
+
+    if (!($fp = fopen($filename, "r"))) {
+      die("ERROR: could not open XML input");
     }
 
     while ($data = fread($fp, 4096)) {
@@ -293,8 +288,23 @@ class XMLDB {
       }
     }
     xml_parser_free($xml_parser); 
-*/
   }
+
+
+  function _initparser() {
+    $xml_parser = xml_parser_create();
+    $this->state="";
+    $this->tablestack=array();
+    $this->joinfieldvaluestack=array();
+
+    xml_set_object($xml_parser,$this);
+    xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,false);
+    xml_set_element_handler($xml_parser, "startElement", "endElement");
+    xml_set_character_data_handler($xml_parser, "characterData");
+
+    return $xml_parser;
+  }
+
 
   function insertRow($currentable,$rows)
 
@@ -352,6 +362,8 @@ class XMLDB {
       // add the parent join field if we are a child
       //
       if ($this->tables[$currenttable]['child']) {
+	#echo "---> $currenttable   ".$this->tables[$currenttable]['joinfield']."\n<br>";
+	#print_r($this->joinfieldvaluestack);
 	$this->records[$this->tables[$currenttable]['joinfield']]=$this->joinfieldvaluestack[1];
       }
 
@@ -428,7 +440,7 @@ function endElement($parser, $name) {
     if ($name==$this->tables[$currenttable]['rowtag']) {
       // finish recording
       if (!$this->tables[$currenttable]['join']) { // if join, the insertion has already been done
-	$this->joinfieldvaluestack[0]=$this->insertRow($currenttable,$records);
+	$this->joinfieldvaluestack[0]=$this->insertRow($currenttable,$this->records);
       }
       $this->state="row";
     } else {
@@ -474,17 +486,18 @@ function endElement($parser, $name) {
   }
 
   function _endrow() {
-    $this->joinfieldvaluestack[0]=$this->insertRow($currenttable,$this->records);
+    $this->joinfieldvaluestack[0]=$this->insertRow($this->tablestack[0],$this->records);
+    #echo "lala:",$this->tablestack[0],"   ",$this->joinfieldvaluestack[0],"   ";
   }
 
   function _newtable($table) {
     array_unshift($this->tablestack,$table);
     array_unshift($this->joinfieldvaluestack,null);
-
     // make easies to work with
     $this->tables[$table]['norowelement']=count($this->tables[$table]['element'])<=1 && !$this->tables[$table]['join'];
 
   }
+
   function _endtable() {
     array_shift($this->tablestack);
     array_shift($this->joinfieldvaluestack);  

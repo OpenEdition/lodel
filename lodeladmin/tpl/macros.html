@@ -1,4 +1,3 @@
-<DEFMACRO NAME="TR_SEPARATION_330">		
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
@@ -21,6 +20,7 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
+<DEFMACRO NAME="TR_SEPARATION_330">		
 		<tr>
 			<td colspan="2">
 				<hr width="330">
@@ -135,5 +135,519 @@
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
 
 
+<DEFMACRO NAME="HEADER_LOGO_LOGIN">
+<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
+</DEFMACRO>
+
+<DEFMACRO NAME="HEADER_HEAD_OPEN">  
+	<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
+</DEFMACRO>
+
+<DEFMACRO NAME="HEADER_HEAD_CLOSE">  
+	<link rel="stylesheet" href="styles_lodel.css">
+	<IF COND="[#STYLECSS]">
+		<style type="text/css">         
+			[#STYLECSS]
+		</style>
+	</IF>
+	</head>
+</DEFMACRO>
+
+<DEFMACRO NAME="CLOSE_HTML">
+	</body>
+	</html>
+</DEFMACRO>
+
+<!--[ Rajout du 25/08/03 Macros pour Ghislain          ]-->
+<!--[ Pour les fichiers typepubli.html et typedoc.html ]-->
+<DEFMACRO NAME="TYPE_PERSONNES">
+	<LOOP NAME="typepersonnes">
+		<DO>
+			<input type="checkbox" name="typepersonne[[#ID]]" [#VALUE] /> [#TYPE]<br />
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="TYPE_ENTREES">
+	<LOOP NAME="typeentrees">
+		<DO>
+			<input type="checkbox" name="typeentree[[#ID]]" [#VALUE] /> [#TYPE]<br />
+		</DO>
+	</LOOP>
+</DEFMACRO>
+<!--[ Fin Rajout du 25/08/03 ************************* ]-->
+
+<!--[ Macro rajoutée le 17/10/03 *********************** ]-->
+<!--[ Macro servant à typeentree.html et                 ]-->
+<!--[ typepersonne.html                                  ]-->
+<DEFMACRO NAME="TYPE_ENTITES">
+	<LOOP NAME="typeentites">
+		<DO>
+			<input type="checkbox" name="typeentite[[#ID]]" [#VALUE]> [#TYPE]<br />
+		</DO>
+	</LOOP>
+</DEFMACRO>
+<!--[ ************************************************** ]-->
+
+<!--[ Macros rajoutées le 20/10/03 ********************* ]-->
+<!--[ Macro servant à typeentrees.html, champs.html      ]-->
+<!--[ typepersonne.html                                  ]-->
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
+	<div>
+							<a href="champ.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+							<a href="champ.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+
+		<IF COND="([#DROITADMIN] and [#STATUT] lt 32) or [#DROITADMINLODEL]">
+                         |&nbsp;<a href="champ.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+                <ELSE/>
+   	                 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+	        </IF>
+		<IF COND="[#STATUT] ge 32">
+			<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
+		<ELSE/> <!--[ non protégé ]-->
+			<a href="champ.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
+	<div>
+		<IF COND="[#DROITADMIN]">
+					<a href="groupedechamps.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+					<a href="groupedechamps.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+                       <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
+			|&nbsp;<a href="groupedechamps.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+	               <ELSE/>
+			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+	               </IF>
+			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
+				<DO>
+					<IF COND="[#NBCHAMPS]">
+						<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
+					<ELSE/><IF COND="[#STATUT] lt 32">
+						<a href="groupedechamps.php?delete=1&id=[#ID]">[@COMMON.DELETE]</a>&nbsp;|
+					<ELSE/>
+						<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
+					</IF></IF>
+				</DO>
+			</LOOP>
+		<ELSE/>
+			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_ENTREES">
+	<IF COND="([#DROITADMIN] and [#STATUT] lt 32) or [#DROITADMINLODEL]">
+	         |&nbsp;<a href="typeentree.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+	<ELSE/>
+		 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+        </IF>
+        <IF COND="[#STATUT] ge 32">
+		  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
+        <ELSE/>
+		<a href="typeentree.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
+	<IF COND="([#DROITADMIN] and [#STATUT] lt 32) or [#DROITADMINLODEL]">
+	         |&nbsp;<a href="typepersonne.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+	<ELSE/>
+		 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+        </IF>
+        <IF COND="[#STATUT] ge 32">
+		  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
+        <ELSE/>
+		<a href="typepersonne.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	</IF>
+</DEFMACRO>
+
+<!--[ Nouvelle macro ajouter par Ghislain, elle est bcp plus generique ]-->
+<!--[ Elle devrait convenir dans un grand nombre de cas                ]-->
+
+
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_TRANSLATION">
+	<div>
+		<IF COND="[#DROITADMIN]">
+					<a href="translation.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+					<a href="translation.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+                       <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
+			|&nbsp;<a href="translation.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+	               <ELSE/>
+			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+	               </IF>
+	               <IF COND="[#STATUT] lt 32">
+				<a href="translation?delete=1&id=[#ID]">[@COMMON.DELETE]</a>&nbsp;|
+			<ELSE/>
+				<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
+			</IF>
+		<ELSE/>
+			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
+		</IF>
+		<IF COND="[#DROITEDITEUR] and (([#STATUT] lt 32) or [#DROITADMINLODEL])">
+			<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;|&nbsp;
+               <ELSE/>
+			<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;|&nbsp;
+               </IF>
+	</div>
+</DEFMACRO>
+
+
+
+<DEFMACRO NAME="AFFICHER_GROUPE">
+	<tr><td colspan="5"><hr /></td></tr>
+	<tr>
+		<td colspan="4"><h2><span style="color: #CC9933;">[#TITRE]</span> ([#NOM])</h2></td>
+		<td align="left" style="color: #CC9933;">
+			<MACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
+		</td>
+	</tr>
+        <tr>
+               <td colspan="4">
+	       <div><MACRO NAME="PNG_PLUS"><a href="champ.php?classe=[#CLASSE]&idgroupe=[#ID]">Ajouter un champs à ce groupe</a></div>
+               </td>
+        </tr>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
+	<!--[ Affiche tous les champs du groupe courant ]-->
+	<LOOP NAME="afficherchamps" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
+		<DO>
+			<tr>
+				<IF COND="[#COUNT] % 2">
+					<td class="ligne_admin1"><strong>[(#TITRE|nbsp)]</strong></td>
+					<td class="ligne_admin1">[#NOM]</td>
+					<td class="ligne_admin1">[#TYPE]</td>
+					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
+					<td class="ligne_admin1" style="color: #CC9933;" align="left">
+						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
+					</td>
+				<ELSE/>
+					<td class="ligne_admin2"><strong>[(#TITRE|nbsp)]</strong></td>
+					<td class="ligne_admin2">[#NOM]</td>
+					<td class="ligne_admin2">[#TYPE]</td>
+					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
+					<td class="ligne_admin2" style="color: #CC9933;" align="left">
+						<MACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
+					</td>
+				</IF>
+			</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD_GROUP]</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="CASE_A_COCHER_PROTEGER">
+	<IF COND="abs([#STATUT]) lt 32">
+		<input type="checkbox" name="protege">
+	<ELSE/>
+		<input type="checkbox" name="protege" checked>
+	</IF>
+</DEFMACRO>
+<!--[ ************************************************** ]-->
+
+<!--[ Macro rajoutée le 04/11/03 *********************** ]-->
+<!--[ Macro servant à users.html                         ]-->
+<DEFMACRO NAME="AFFICHER_PRIVILEGE">
+	<IF COND="[#PRIVILEGE] EQ 128">
+		<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />[@COMMON.ADMINLODEL]
+	<ELSE/>
+		<IF COND="[#PRIVILEGE] EQ 40">
+			<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />[@COMMON.ADMIN]
+		<ELSE/>
+			<IF COND="[#PRIVILEGE] EQ 30">
+				<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />[@COMMON.EDITOR]
+			<ELSE/>
+				<IF COND="[#PRIVILEGE] EQ 20">
+					<MACRO NAME="PNG_UTILISATEUR_VERT"><br />[@COMMON.WRITER]
+				<ELSE/>
+					<IF COND="[#PRIVILEGE] EQ 10">
+						<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />[@COMMON.VISITOR]
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+<!--[ ************************************************** ]-->
+
+<!--[ Macro rajoutée le 25/11/03 *********************** ]-->
+<!--[ Macro servant à entrees.html                       ]-->
+<DEFMACRO NAME="AUCUNE_ENTREE_DISPONIBLE">
+	<div class="pas_de_publication">
+		[@ADMIN.NO_ENTRY_AVAILABLE]
+	</div>
+</DEFMACRO>
+<!--[ ************************************************** ]-->
+
+<!--[ Macro rajoutée le 03/12/03 *********************** ]-->
+<!--[ Renommée et modifiée par Ghislain 24/02/04 ******* ]-->
+<!--[ Macro servant à typedocs.html                      ]-->
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_DOCUMENT">
+        <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
+            |&nbsp;<a href="typedoc.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+        <ELSE/>
+            |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+        </IF>
+	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
+		<DO>
+			<IF COND="[#NBDOCUMENTS]">
+				<span class="inactif">
+					<IF COND="[#NBDOCUMENTS] gt 1">
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
+					<ELSE/>
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
+					</IF>
+				</span>
+			<ELSE/>
+	                <IF COND="[#STATUT] ge 32">
+		              <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
+                        <ELSE/>
+				<a href="typedoc.php?id=[#ID]&delete=1">[@COMMON.DELETE]&nbsp;|</a>
+			</IF>
+	                </IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<!--[ Ajoutée par Ghislain 24/02/04 ******* ]-->
+<!--[ Macro servant à typepublis.html                      ]-->
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PUBLICATION">
+        <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
+            |&nbsp;<a href="typepubli.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+        <ELSE/>
+            |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+        </IF>
+	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
+		<DO>
+			<IF COND="[#NBDOCUMENTS]">
+				<span class="inactif">
+					<IF COND="[#NBDOCUMENTS] gt 1">
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
+					<ELSE/>
+						[@COMMON.DELETE] ([@ADMIN.ASSOCIATED_WITH] [#NBDOCUMENTS] [@ADMIN.DOCUMENTS])&nbsp;|
+					</IF>
+				</span>
+			<ELSE/>
+	                <IF COND="[#STATUT] ge 32">
+		              <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
+                        <ELSE/>
+				<a href="typepubli.php?id=[#ID]&delete=1">[@COMMON.DELETE]&nbsp;|</a>
+			</IF>
+	                </IF>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+
+<!--[ Macro servant à typedoc.html et typepubli.html     ]-->
+<DEFMACRO NAME="CHOIX_TYPES_PARENTS">
+	<u>[@COMMON.PUBLICATIONS_DOCUMENTS_TYPE]<br /> [@ADMIN.CONTAINS_THIS_TYPE] :</u><br />
+	<LOOP NAME="types_parents" TABLE="typeentites_typeentites" WHERE="idtypeentite='[#ID]' AND idtypeentite2=0">
+		<DO><input type="checkbox" name="typeentite[0]" checked></DO>
+		<ALTERNATIVE><input type="checkbox" name="typeentite[0]"></ALTERNATIVE>
+	</LOOP>
+	(base)<br />
+	<MACRO NAME="TYPE_ENTITES">
+</DEFMACRO>
+<!--[ ************************************************** ]-->
+
+<!--[ Macro rajoutée le 04/12/03 *********************** ]-->
+<DEFMACRO NAME="COCHER_DECOCHER">
+	<script type="text/javascript"><!--
+	
+	function setCheckboxes(form, group, check) 	{
+		for (i=0, n=document.forms[form].elements.length; i<n; i++)
+			if (document.forms[form].elements[i].name.indexOf(group) != -1)
+				document.forms[form].elements[i].checked = check;
+	    return true;
+	}
+	//
+	--></script>
+
+</DEFMACRO>
+<!--[ ************************************************** ]-->
+
+<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+<DEFMACRO NAME="JS_ROLLOVER">
+	<!--[ exemple de Javascript pour un Rollover ]-->
+	<SCRIPT TYPE="text/javascript"><!--
+	
+	/* on pré-charge les image */
+	//img1=new Image(82,18); /* on déclare les images */
+	//img2=new Image(82,18);
+	//img1.src="image1.gif"; /* on les pré-charge */
+	//img2.src="image2.gif";
+	/* on déclare la fonction qui affiche les Rollovers */
+	function rollover(id,nom_image) {
+	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
+	}
+	//
+	--></SCRIPT>
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_PLUS">
+	<img src="[#SHAREURL]/images/deplie.png" class="picto" width="13" height="14" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MOINS">
+	<img src="[#SHAREURL]/images/plie.png" class="picto" width="13" height="14" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_LOGO_LODEL">
+	<img src="[#SHAREURL]/images/logo_lodel.png" width="318" height="75" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_LOGO_LODEL_BAS">
+	<img src="[#SHAREURL]/images/logo_lodel_bas.png" width="173" height="25" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_LOGO_LODEL_DROITE">
+	<img src="[#SHAREURL]/images/logo_lodel_droite.png" width="203" height="75" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+
+<!--[ png accueil ]-->
+<DEFMACRO NAME="PNG_MENU_ACCUEIL">
+	<img src="[#SHAREURL]/images/menu_accueil.png" id="img_menu_accueil" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ACCUEIL_ACTIF">
+	<img src="[#SHAREURL]/images/menu_accueil_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ACCUEIL_SURVOL">
+	<img src="[#SHAREURL]/images/menu_accueil_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ACCUEIL_GRIS">
+	<img src="[#SHAREURL]/images/menu_accueil_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
+</DEFMACRO>
+
+<!--[ png voir ]-->
+<DEFMACRO NAME="PNG_MENU_VOIR">
+	<img src="[#SHAREURL]/images/menu_voir.png" id="img_menu_voir" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_VOIR_ACTIF">
+	<img src="[#SHAREURL]/images/menu_voir_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_VOIR_SURVOL">
+	<img src="[#SHAREURL]/images/menu_voir_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_VOIR_GRIS">
+	<img src="[#SHAREURL]/images/menu_voir_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
+</DEFMACRO>
+
+<!--[ png admin ]-->
+<DEFMACRO NAME="PNG_MENU_ADMIN">
+	<img src="[#SHAREURL]/images/menu_admin.png" id="img_menu_admin" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ADMIN_ACTIF">
+	<img src="[#SHAREURL]/images/menu_admin_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ADMIN_SURVOL">
+	<img src="[#SHAREURL]/images/menu_admin_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_ADMIN_GRIS">
+	<img src="[#SHAREURL]/images/menu_admin_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
+</DEFMACRO>
+
+<!--[ png aide ]-->
+<DEFMACRO NAME="PNG_MENU_AIDE">
+	<img src="[#SHAREURL]/images/menu_aide.png" id="img_menu_aide" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_AIDE_ACTIF">
+	<img src="[#SHAREURL]/images/menu_aide_actif.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_AIDE_SURVOL">
+	<img src="[#SHAREURL]/images/menu_aide_survol.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_AIDE_GRIS">
+	<img src="[#SHAREURL]/images/menu_aide_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
+</DEFMACRO>
+
+<!--[ png deconnecte ]-->
+<DEFMACRO NAME="PNG_MENU_DECONNECTE">
+	<img src="[#SHAREURL]/images/menu_deconnecte.png" id="img_menu_deconnecte" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_DECONNECTE_ACTIF">
+	<img src="[#SHAREURL]/images/menu_deconnecte_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_DECONNECTE_SURVOL">
+	<img src="[#SHAREURL]/images/menu_deconnecte_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_DECONNECTE_GRIS">
+	<img src="[#SHAREURL]/images/menu_deconnecte_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
+</DEFMACRO>
+
+<!--[ png maj ]-->
+<DEFMACRO NAME="PNG_MENU_MAJ">
+	<img src="[#SHAREURL]/images/menu_maj.png" id="img_menu_maj" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_MAJ_ACTIF">
+	<img src="[#SHAREURL]/images/menu_maj_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_MAJ_SURVOL">
+	<img src="[#SHAREURL]/images/menu_maj_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_MAJ_GRIS">
+	<img src="[#SHAREURL]/images/menu_maj_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
+</DEFMACRO>
+
+<!--[ png recompiler ]-->
+<DEFMACRO NAME="PNG_MENU_RECOMPILER">
+	<img src="[#SHAREURL]/images/menu_recompiler.png" id="img_menu_recompiler" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_RECOMPILER_ACTIF">
+	<img src="[#SHAREURL]/images/menu_recompiler_actif.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_RECOMPILER_SURVOL">
+	<img src="[#SHAREURL]/images/menu_recompiler_survol.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_MENU_RECOMPILER_GRIS">
+	<img src="[#SHAREURL]/images/menu_recompiler_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
+</DEFMACRO>
+
+<!--[ png utilisateurs ]-->
+<DEFMACRO NAME="PNG_UTILISATEUR_GRIS">
+	<img src="[#SHAREURL]/images/utilisateur_gris.png" width="8" height="17" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_UTILISATEUR_VERT">
+	<img src="[#SHAREURL]/images/utilisateur_vert.png" width="8" height="17" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_UTILISATEUR_JAUNE">
+	<img src="[#SHAREURL]/images/utilisateur_jaune.png" width="8" height="17" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_UTILISATEUR_ORANGE">
+	<img src="[#SHAREURL]/images/utilisateur_orange.png" width="8" height="17" border="0" vspace="0" hspace="0" />
+</DEFMACRO>
+<!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
 
 

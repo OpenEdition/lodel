@@ -28,26 +28,27 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+die("site translations. En cours de developpement. Voir interface translation sur la page admin");
+
 require("siteconfig.php");
 require($home."auth.php");
-authenticate(LEVEL_ADMIN);
-require_once($home."func.php");
+authenticate(LEVEL_ADMINLODEL);
+require($home."func.php");
 
+$context['textgroups']="site";
+
+require($home."textgroupfunc.php");
+$context['textgroupswhere']=textgroupswhere($context['textgroups']);
 
 // post-traitement
-$context[id]=$id;
-$context[textgroups]="interface";
+
+
 
 posttraitement($context);
 
-include ($home."calcul-page.php");
+require($home."calcul-page.php");
 calcul_page($context,"translations");
 
 
 
 ?>
-
-
-
-
-

@@ -28,25 +28,26 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-function extract_import($footprint,&$context) {
+function extract_import($footprint,&$context,$ext="zip") {
 
   $context['importdir']=$importdir;
-  $fileregexp='('.$footprint.')-\w+(?:-\d+)?.zip';
+  $GLOBALS['fileregexp']='('.$footprint.')-\w+(?:-\d+)?.'.$ext;
 
-  $importdirs=array("CACHE",$GLOBALS['home']."../install/plateform");
-  if ($importdir) $importdirs[]=$importdir;
+  $GLOBALS['importdirs']=array("CACHE",$GLOBALS['home']."../install/plateform");
+  if ($importdir) $GLOBALS['importdirs'][]=$importdir;
 
   $archive=$_FILES['archive']['tmp_name'];
   $context['error_upload']=$_FILES['archive']['error'];
   if (!$context['error_upload'] && $archive && $archive!="none" && is_uploaded_file($archive)) { // Upload
     $file=$_FILES['archive']['name'];
-    if (!preg_match("/^$fileregexp$/",$file)) $file=$footprint."-import-".date("dmy").".zip";
+    if (!preg_match("/^".$GLOBALS['fileregexp']."$/",$file)) $file=$footprint."-import-".date("dmy").".".$ext;
 
     if (!move_uploaded_file($archive,"CACHE/".$file)) die("ERROR: a problem occurs while moving the uploaded file.");
 
     $file=""; // on repropose la page
 
-  } elseif ($file && preg_match("/^(?:".str_replace("/",'\/',join("|",$importdirs)).")\/$fileregexp$/",$file,$result) && file_exists($file)) { // file sur le disque
+  } elseif ($_GET['file'] && preg_match("/^(?:".str_replace("/",'\/',join("|",$GLOBALS['importdirs'])).")\/".$GLOBALS['fileregexp']."$/",$_GET['file'],$result) && file_exists($_GET['file'])) { // file sur le disque
+    $file=$_GET['file'];
   $prefix=$result[1];
 
   } else { // rien

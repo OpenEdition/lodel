@@ -36,7 +36,7 @@ function writefile ($filename,$text)
      if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
    }
    $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
-   @chmod ($filename,0666 & octdec($GLOBALS[filemask]));
+   @chmod ($filename,0666 & octdec($GLOBALS['filemask']));
    return  $ret;
 }
 
@@ -47,7 +47,7 @@ function get_tache (&$id)
   $id=intval($id);
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id' AND statut>0") or die (mysql_error());
   if (!($row=mysql_fetch_assoc($result))) { back(); return; }
-  $row=array_merge($row,unserialize($row[context]));
+  $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
 
@@ -147,24 +147,24 @@ function get_ordre_max ($table,$where="")
 function chordre($table,$id,$critere,$dir,$inverse="",$jointables="")
 
 {
-  $table=$GLOBALS[tp].$table;
+  $table=$GLOBALS['tp'].$table;
   $dir=$dir=="up" ? -1 : 1;  if ($inverse) $dir=-$dir;
   $desc=$dir>0 ? "" : "DESC";
   if ($jointables) {
-    $jointables=",".$GLOBALS[tp].
-      trim(join(",".$GLOBALS[tp],preg_split("/,\s*/",$jointables)));
+    $jointables=",".$GLOBALS['tp'].
+      trim(join(",".$GLOBALS['tp'],preg_split("/,\s*/",$jointables)));
   }
   $result=mysql_query("SELECT $table.id,$table.ordre FROM $table $jointables WHERE $critere ORDER BY $table.ordre $desc") or die (mysql_error());
 
   $ordre=$dir>0 ? 1 : mysql_num_rows($result);
   while ($row=mysql_fetch_assoc($result)) {
-    if ($row[id]==$id) {
+    if ($row['id']==$id) {
       # intervertit avec le suivant s'il existe
       if (!($row2=mysql_fetch_assoc($result))) break;
       mysql_query("UPDATE $table SET ordre='$ordre' WHERE id='$row2[id]'") or die (mysql_error());
       $ordre+=$dir;
     }
-    if ($row[ordre]!=$ordre) {
+    if ($row['ordre']!=$ordre) {
       mysql_query("UPDATE $table SET ordre='$ordre' WHERE id='$row[id]'") or die (mysql_error());
     }
     $ordre+=$dir;
@@ -271,18 +271,28 @@ function addmeta(&$arr,$meta="")
 }
 
 
-function back($arg="")
+
+function back($arg="",$back=-1)
 
 {
+  //
+  // this function use the fact that mysql generate id in increasing order
+  //
   global $database,$idsession;
-  //echo "idsession = $idsession<br>\n";
-  $result=mysql_db_query($database,"SELECT id,currenturl FROM $GLOBALS[tp]session WHERE id='$idsession'") or die (mysql_error());
-  list ($id,$currenturl)=mysql_fetch_row($result);
 
-  mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
+  $url=preg_replace("/[\?&]recalcul\w+=oui/","",$_SERVER['REQUEST_URI']);
 
-  //echo "retourne: id=$id url=$currenturl";
-  header("Location: http://".$_SERVER[SERVER_NAME].$currenturl.$arg);exit;
+  $offset=-1-$back;
+
+  $result=mysql_db_query($database,"SELECT id,urlretour FROM $GLOBALS[tp]pileurl WHERE urlretour!='' AND urlretour!='".mysql_escape_string($url)."' AND idsession='$idsession' ORDER BY id DESC LIMIT $offset,1") or die (mysql_error());
+  list ($id,$newurl)=mysql_fetch_row($result);
+
+  if ($id) {
+    mysql_db_query($database,"DELETE FROM $GLOBALS[tp]pileurl WHERE id>='$id' AND idsession='$idsession'") or die (mysql_error());
+    header("Location: http://".$_SERVER['SERVER_NAME'].$newurl.$arg);exit;
+  } else {
+    header("Location: index.php");exit;
+  }
 }
 
 
@@ -308,7 +318,7 @@ function lock_write()
   // Vérouille toutes les tables en écriture
   $list=func_get_args();
   if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-     mysql_query("LOCK TABLES $GLOBALS[tp]".join (" WRITE ,".$GLOBALS[tp],$list)." WRITE") or die (mysql_error());
+     mysql_query("LOCK TABLES $GLOBALS[tp]".join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE") or die (mysql_error());
 }
 
 #function prefix_keys($prefix,$arr)
@@ -382,9 +392,13 @@ function getlodeltext($name,$group,$lang=-1)
 {
   if ($lang==-1) $lang=$GLOBALS['userlang'];
   require_once($GLOBALS[$home]."connect.php");
+
+  $db= ($group=="site") ? "" : $GLOBALS['database'].".";
   $critere=$GLOBALS['droitvisiteur'] ? "" : "AND statut>0";
-  $result=mysql_query("SELECT id,texte,statut FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
-  return mysql_fetch_row($result);
+  $result=mysql_query("SELECT id,texte,statut FROM $db$GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC") or die(mysql_error());
+  $arr=mysql_fetch_row($result);
+  if (!$arr[1] && $GLOBALS['droitvisiteur']) $arr[1]="@".$name;
+  return $arr;
 }
 
 
@@ -394,10 +408,10 @@ function makeurlwithid ($base,$id)
   if (is_numeric($base)) { $t=$id; $id=$base; $base=$t; } // exchange
 
 
-  if ($GLOBALS[idagauche]) {
-    return $base.$id.".".$GLOBALS[extensionscripts];
+  if ($GLOBALS['idagauche']) {
+    return $base.$id.".".$GLOBALS['extensionscripts'];
   } else {
-    return $base.".".$GLOBALS[extensionscripts]."?id=".$id;
+    return $base.".".$GLOBALS['extensionscripts']."?id=".$id;
   }
 }
 
@@ -556,7 +570,7 @@ function save_annex_file($dir,$file,$filename,$uploaded,&$error) {
 
   if (!file_exists(SITEROOT.$dir)) {
     if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"$dir\"");
-    @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]));
+    @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
   }
   $filename=basename($filename); // take only the name
   if (!$file) die("ERROR: save_annex_file file is not set");
@@ -573,7 +587,7 @@ function save_annex_file($dir,$file,$filename,$uploaded,&$error) {
     }
   }
 
-  @chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
+  @chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS['filemask']));
   
   return $dest;
 }
@@ -608,7 +622,7 @@ function save_annex_image($dir,$file,$filename,$uploaded,&$error) {
   if (!$ext) { $error="imageformat"; return; }
 
   if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");
+    if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"$dir\"");
   }
 
   $filename=preg_replace("/\.\w+$/","",basename($filename)); // take only the name, remove the extensio
@@ -621,7 +635,7 @@ function save_annex_image($dir,$file,$filename,$uploaded,&$error) {
     @unlink($file);
   }
 
-  @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS[filemask]));
+  @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
   
   return $dest;
 }
@@ -633,8 +647,8 @@ function tmpdir()
   $tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
 
   if (!file_exists($tmpdir)) { 
-    mkdir($tmpdir,0777  & octdec($GLOBALS[filemask]));
-    chmod($tmpdir,0777 & octdec($GLOBALS[filemask])); 
+    mkdir($tmpdir,0777  & octdec($GLOBALS['filemask']));
+    chmod($tmpdir,0777 & octdec($GLOBALS['filemask'])); 
   }
   return $tmpdir;
 }
@@ -660,7 +674,7 @@ function setrecord($table,$id,$set,$context=array())
 	$v=$context[$k];
       }
       if ($update) $update.=",";
-      $update.="$k='$v'";
+      $update.="$k='".mysql_escape_string($v)."'";
     }
     if ($update)
       mysql_query("UPDATE $GLOBALS[tp]$table SET  $update WHERE id='$id'") or die(mysql_error());
@@ -677,7 +691,7 @@ function setrecord($table,$id,$set,$context=array())
       }
       if ($insert) { $insert.=","; $values.=","; }
       $insert.=$k;
-      $values.="'".$v."'";
+      $values.="'".mysql_escape_string($v)."'";
     }
 
     if ($insert) {

@@ -31,10 +31,10 @@
 // assure l'edition, la supression, la restauration des periodes.
 
 require("siteconfig.php");
-include ($home."auth.php");
+require($home."auth.php");
 authenticate(LEVEL_EDITEUR);
 
-$context['textgroup']=$textgroup=="site" ? "site" : "interface";
+$context['textgroups']="site";
 
 include ($home."calcul-page.php");
 calcul_page($context,"textes");
