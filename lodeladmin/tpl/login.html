@@ -1,9 +1,10 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<meta name="ROBOTS" content="nofollow, noindex">
 <TITLE>Login super-administrateur</TITLE>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
-<br>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<br />
 <table width="800" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
     <tr> 
       <td valign="middle" align="center"> 
@@ -12,43 +13,43 @@
               <td> 
                 <div align="right">
 				<MACRO NAME="GIF_VISAGE_SUPERADMIN">	
-				<br>
-                  <br>
+				<br />
+                  <br />
                 </div>
               </td>
               <td width="80%"> <b><font color="#FF0000" size="+1">Super-Administrateur</font></b> 
-                <br>
-                <br>
-                [(#ERREUR_LOGIN|true)<br>
-                <br>
-                <b> Nom d'utilisateur ou mot de passe incorrect</b><br>
-                <br>
-                ] <b>Merci de vous identifier</b><br>
-                [(#ERREUR_OPENSESSION|true)<b><br>
-                Impossible d'ouvrir une session. contactez l'administrateur<br>
-                <br>
-                </b>] [(#ERREUR_SETCOOKIE|true)<b><br>
-                <br>
-                Impossible de poser un cookie</b><br>
-                <br>
-                ] [(#ERREUR_TIMEOUT|true)<br>
-                <br>
-                <b>La session a expiré</b><br>
-                <br>
-                ] [(#ERREUR_PRIVILEGE|true)<b><br>
-                <br>
+                <br />
+                <br />
+                [(#ERREUR_LOGIN|true)<br />
+                <br />
+                <b> Nom d'utilisateur ou mot de passe incorrect</b><br />
+                <br />
+                ] <b>Merci de vous identifier</b><br />
+                [(#ERREUR_OPENSESSION|true)<b><br />
+                Impossible d'ouvrir une session. contactez l'administrateur<br />
+                <br />
+                </b>] [(#ERREUR_SETCOOKIE|true)<b><br />
+                <br />
+                Impossible de poser un cookie</b><br />
+                <br />
+                ] [(#ERREUR_TIMEOUT|true)<br />
+                <br />
+                <b>La session a expiré</b><br />
+                <br />
+                ] [(#ERREUR_PRIVILEGE|true)<b><br />
+                <br />
                 Vous n'avez pas les droits pour acc&eacute;der &agrave; cette 
-                page</b><br>
-                <br>
+                page</b><br />
+                <br />
                 ] </td>
             </tr>
- <FORM ACTION="login.php" METHOD="POST">
-<INPUT TYPE="hidden" NAME="url_retour" VALUE="[#URL_RETOUR]">           <tr> 
+ <form action="login.php" method="POST">
+<input type="hidden" name="url_retour" value="[#URL_RETOUR]">           <tr> 
                 <td> 
                   <div align="right"><b>Nom d'utilisateur:</b></div>
                 </td>
                 <td width="80%"> 
-           <INPUT TYPE="text" NAME="login" VALUE="[#LOGIN]">
+           <input type="text" name="login" value="[#LOGIN]">
                 </td>
               </tr>
               <tr> 
@@ -56,21 +57,21 @@
                   <div align="right"><b>Mot de passe:</b></div>
                 </td>
                 <td width="80%"> 
-   <INPUT TYPE="password" NAME="passwd">
+   <input type="password" name="passwd">
 
 
 
 
-<INPUT CLASS="form" TYPE="submit" NAME="submit" VALUE="Loger">
+<input class="form" type="submit" name="submit" value="Loger">
 
             </form>
           </table>
-          <br>
+          <br />
           <a href="http://www.revues.org">Je suis un utilisateur, non un super-administrateur</a> 
         </center>
       </td>
     </tr>
   </table>
-<br>
+<br />
 
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

@@ -1,7 +1,7 @@
-<USE MACROFILE="macros.html"><MACRO NAME="header_head_open">
+<USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition - utilisateur</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
 <TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
 <TR>
@@ -22,50 +22,50 @@
 	<INPUT TYPE="hidden" name="edit" VALUE="1">
 	<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
 <TR>
-	<TD>
+	<td>
 		<b>
 		Nom et prénom :
 		</b>
-	</TD>
-<TD>
+	</td>
+<td>
 	<INPUT SIZE="30" TYPE="text" NAME="nom" value="[#NOM]">
-</TD>
+</td>
 	[
 		(#ERREUR_NOM|true)
 		<TD CLASS="erreur">
 			<font color="Red">
 				Il faut preciser un nom !
 			</font>
-		</TD>
+		</td>
 	]
-</TR>
+</tr>
 <TR>
-	<TD>
+	<td>
 		<b>
 			Courriel
 		</b>
-	</TD>
-<TD>
+	</td>
+<td>
 	<INPUT SIZE="30" TYPE="text" NAME="email" value="[#EMAIL]">
-</TD>
+</td>
 	[
 		(#ERREUR_EMAIL|true)
 	<TD CLASS="erreur">
 		<font color="Red">
 			Le courriel n'est pas valide
 		</font>
-	</TD>
+	</td>
 	]
-</TR>
+</tr>
 <TR>
-	<TD>
+	<td>
 		<b>
 		Nom de login:
 		</b>
-	</TD>
-<TD>
+	</td>
+<td>
 	<INPUT SIZE="30" TYPE="text" NAME="username" value="[#USERNAME]">
-</TD>
+</td>
 	[
 		(#ERREUR_USERNAME|true)
 	<TD CLASS="erreur">
@@ -73,7 +73,7 @@
 			Le nom de login
 		</font>
 		 doit contenir entre <strong>3 et 8</strong> caractères  (lettres et chiffres uniquement)
-		</TD>
+		</td>
 	]
 	[
 		(#ERREUR_DUPUSERNAME|true)
@@ -82,48 +82,50 @@
 			Le <em>login</em>
 			</font>
 			doit etre unique. Le nom que vous avez entrez existe deja.
-		</TD>
+		</td>
 	]
-</TR>
+</tr>
 <TR>
-	<TD>
+	<td>
 		<b>
 			Mot de passe:
 		</b>
-		</TD>
-	<TD>
+		</td>
+	<td>
 		<INPUT SIZE="30" TYPE="password" NAME="passwd" value="[#PASSWD]">
-	</TD>
+	</td>
 	[
 		(#ERREUR_PASSWD|true)
 		<TD CLASS="erreur">
 			<font color="Red">Le mot de passe</font> doit contenir entre 3 et 8 caractères  (lettres et chiffres uniquement)
-		</TD>
+		</td>
 	]
-</TR>
+</tr>
 <TR>
-	<TD>
+	<td>
 		<b>
 			Privilège:
 		</b>
-	</TD>
-	<TD>
+	</td>
+	<td>
 		<SELECT name="privilege">
 			<? makeselectprivilege(); ?>
 		</SELECT>
-	</TD>
+	</td>
 <tr>
+<!--
 <TR>
-	<TD>
+	<td>
 		<b>
 			Groupes (inutile pour les admin):
 		</b>
-	</TD>
-	<TD>
+	</td>
+	<td>
 		<SELECT MULTIPLE SIZE="10" NAME="groupes[]"><? makeselectgroupes(); ?></SELECT>
-	</TD>
+	</td>
 <tr>
-
+-->
+<input type="hidden" name="groupes[0]" value="1">
 
 	<td>
 	&nbsp;<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
@@ -131,12 +133,12 @@
 	</td>
 	<td>
 	[
-		<A HREF="user.php?delete=1&id=(#ID)">
+		<a href="user.php?delete=1&id=(#ID)">
 			<MACRO NAME="GIF_DETRUIRE">
 			Supprimer
-		</A>
+		</a>
 	]
 	</td>
-</TR>
+</tr>
 </TABLE>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

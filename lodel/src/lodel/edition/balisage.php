@@ -2,16 +2,16 @@
 
 # listes des balises et du texte affiche dans les select
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
 $row=get_tache($id);
 
-include ("balises.php");
+include ($home."balises.php");
 
 function getselect ($balise)
 
@@ -81,7 +81,7 @@ function characterHandler($parser,$data)
 
 
 $xml_parser = xml_parser_create();
-xml_set_parser_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
+xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
 xml_set_element_handler($xml_parser, "startElement", "endElement");
 xml_set_character_data_handler($xml_parser, "characterHandler");
 if (!($fp = fopen($row[fichier].".html", "r"))) {
@@ -106,14 +106,14 @@ xml_parser_free($xml_parser);
 
 if (!writefile($row[fichier].".lined",$txt)) {}
 // update la base de donnee
-update_taches($id,2); // etape 2
+update_tache_etape($id,2); // etape 2
 
 $context[fichier]=$html;
 
 
 $context[id]=$id;
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"balisage");
 
 

@@ -1,26 +1,26 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Backup</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
-<TR>
+<table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER">
+<tr>
 <td>&nbsp;
 
-<IF [#ARCHIVE]>
-<div align="center"><A HREF="upload/[#ARCHIVE]"><b>Cliquez ici pour télécharger</b></A><br>
+<IF COND="[#ARCHIVE]">
+<div align="center"><a href="upload/[#ARCHIVE]"><strong>Cliquez ici pour télécharger</strong></a><br />
 
 l'archive sur votre disque dur (taille [#SIZE]ko).
-<BR><br>
+<br /><br />
 
-<A HREF="backup.php?terminer=[(#ARCHIVE|urlencode)]"><b>Cliquez ensuite ici pour terminer</b></A><br>
-<br>
+<a href="backup.php?terminer=[(#ARCHIVE|urlencode)]"><strong>Cliquez ensuite ici pour terminer</strong></a><br />
+<br />
 Attention : pour des raisons de sécurité, vous <u>devez</u> attendre que le téléchargmenet soit achevé pour cliquer sur terminer.</div>
 
-<ELSE/><div align="center"><A HREF="backup.php?backup=1"><b>Cliquez ici pour lancer la sauvegarde</b></A></div><br>
+<ELSE/><div align="center"><a href="backup.php?backup=1"><strong>Cliquez ici pour lancer la sauvegarde</strong></a></div><br />
 </IF>
 </td>
 </tr>
-</TABLE>
-<MACRO NAME="close_html">
+</table>
+<MACRO NAME="CLOSE_HTML">

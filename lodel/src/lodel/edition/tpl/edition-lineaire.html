@@ -1,21 +1,21 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'une série linéaire</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="JS_CONFIRM_DEPUBLICATION">
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<MACRO NAME="TABLE_creetableinterface">
+<MACRO NAME="TABLE_CREETABLEINTERFACE">
 	<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
 		<tr> 
 			<td> 
 				<table width="480" border="0" align="center" cellspacing="0" cellpadding="2">
-				<br>
-					<MACRO NAME="TABLE_nom_publication_serie">
-				<br>
+				<br />
+					<MACRO NAME="TABLE_NOM_PUBLICATION_SERIE">
+				<br />
 				</table>
 			</td>
 		</tr>
-
 	<!-- AFFICHE LES THEMES -->
 	<tr>
 		<td>
@@ -32,26 +32,25 @@
 										Edition des numéros 
 									</font>
 								</td>
-								<MACRO NAME="titres_boutons_publications">
+								<MACRO NAME="TITRES_BOUTONS_PUBLICATIONS">
 							</tr>
-
 							<!-- BOUCLE D'AFFICHAGE DES THEMES -->
-							<BOUCLE NAME="numeros" TABLE="publications" WHERE="parent=[#PARENT]" ORDER="ordre DESC"> 
-							<TR>
-								<td width="48" height="48" valign="middle"> 
-									<div align="center">
-									<a href="../../sommaire.html?id=[#ID]">
-										<MACRO NAME="GIF_NUMERO">
-									</a>
-									</div>
-								</td>
-								<MACRO NAME="TD_nom_type_titre">
-								<MACRO NAME="boutons_publications">
-							</tr>
-					<SINON/> 
-							<MACRO NAME="TR_aucune_publication_dispo"> 
-					</BOUCLE> 
-							<MACRO NAME="Creer_numero">	
+							<LOOP NAME="numeros" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre DESC"> 
+								<tr>
+									<td width="48" height="48" valign="middle"> 
+										<div align="center">
+										<!--<a href="index.php?parent=[#ID]">-->
+											<MACRO NAME="AFFICHER_ICONE_STATUT">
+										<!--</a>-->
+										</div>
+									</td>
+									<MACRO NAME="TD_NOM_TYPE_TITRE">
+									<MACRO NAME="BOUTONS_PUBLICATIONS">
+								</tr>
+								<ALTERNATIVE> 
+									<MACRO NAME="TR_AUCUNE_PUBLICATION_DISPO"> 
+							</ALTERNATIVE></LOOP> 
+							<MACRO NAME="CREER_NUMERO">
 						</table>
 					</td>
 				</tr>
@@ -59,4 +58,4 @@
 		</td>
 	</tr>
 </table>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">

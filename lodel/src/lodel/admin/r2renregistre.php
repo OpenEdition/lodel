@@ -1,11 +1,11 @@
 <?
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
-include_once ("$home/dbxml.php");
-include_once ("$home/connect.php");
+include_once ($home."dbxml.php");
+include_once ($home."connect.php");
 
 // inscrit les types de publication
 #if (!mysql_query("INSERT INTO typepublis (nom,tpl) VALUES ('chronologique','sommaire')")) echo "typepubli chronologique existe deja<br>";
@@ -45,7 +45,7 @@ echo "<br>";
 
 
 
-$rep="$home/../r2r/tmptxt";
+$rep=$home."../r2r/tmptxt";
 
 if ($cont>0) {
   $dbconv=fopen("../txt/dbconv","a");
