@@ -256,7 +256,7 @@ if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
 #  }
 #  if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
 #  return;
-  die ("ERROR: impossible d'acceder au fichier ".$home."func.php from lodeladmin. Check the file exissts and the rights. Press Reload.");
+  die ("ERROR: unable to access the ".$home."func.php file from lodeladmin. Check the file exissts and the rights. Press Reload.");
 }
 
 //
