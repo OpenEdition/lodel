@@ -2,6 +2,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Informations complémentaires : métadonnées</title>
+<MACRO NAME="JS_SIMULE_SUBMIT">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -65,7 +66,10 @@
 	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 		<tr>
 			<td width="200">Type de document</td>
-			<td><select name="idtype"><?php  makeselecttype("documents"); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</IF><input type="submit" name="reload" value="Reload">(Nicolas, il faudrait enlever ce bouton et generer le submit lorsqu'on selectionne un autre type</font></td>
+			<td>
+				<select name="idtype" onChange="reloadForm();"><?php makeselecttype("documents"); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</IF>
+				<input type="hidden" name="reload" value="">
+			</td>
 		</tr>
 		<tr>
 			<td width="200">Langues du texte</td>
@@ -90,7 +94,9 @@
 	<br />
 	<!-- boucle sur les types de personne -->
 	<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">
+	<!--<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">-->
 		<DO>
+			sdf
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
@@ -144,10 +150,10 @@
 			<tr>
 				<td align="center">
 					<IF COND="[#ENCORE]">
-						<input class="form" type="submit" name="submit" value="     Continuer    "> - 
+						<input class="form" type="submit" name="soumettre" value="     Continuer    "> - 
 						<input class="form" type="submit" name="cancel" value=" Abandonner ">
 					<ELSE/>
-						<input class="form" type="submit" name="submit" value="     Terminer    "> - 
+						<input class="form" type="submit" name="soumettre" value="     Terminer    "> - 
 						<input class="form" type="submit" name="visualiserdocument" value="Terminer et visualiser"> - 
 						<input class="form" type="submit" name="cancel" value=" Abandonner ">
 					</IF>
