@@ -232,7 +232,7 @@ ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     '.$champ.'        TINYTEXT NO
     if ($tables["$GLOBALS[tp]auteurs"]) {
       // cherche les fields de documents 
       $fields=getfields("auteurs");
-      $champs=array("prefix","fonction","affiliation","courriel");
+      $champs=array("prefix","fonction","affiliation","courriel","site","bio");
       foreach ($champs as $champ) {
 	if (!$fields[$champ]) continue;
 	$err=mysql_query_cmds('

@@ -52,6 +52,7 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
+    require_once($home."validfunc.php");
     $context[nom]=trim($context[nom]);
     if (!$context[nom] || !isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
 	if (reservedword($context[nom])) $err=$context[erreur_nom_reserve]=1;
