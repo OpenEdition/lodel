@@ -126,7 +126,7 @@ if ($edit) { // modifie ou ajoute
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,condition,defaut,traitement,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,condition,defaut,traitement,balisesxhtml,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[balisesxhtml]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
@@ -158,8 +158,6 @@ posttraitement($context);
 
 require ($home."calcul-page.php");
 calcul_page($context,"champ");
-
-
 
 
 
@@ -207,6 +205,19 @@ function make_select_types()
   make_select("type",$GLOBALS[typechamps]);
 }
 
+
+# Rajout fait par Nicolas Nutten le 27/01/04
+function make_select_balises_xhtml()
+{
+	make_select("balisesxhtml",
+				array(
+					"" => "Aucune balise",
+					"xhtml:fontstyle" => "tt, i, b, big, small",
+					"xhtml:phrase" => "em, strong, dfn, code, q, samp, kbd, var, cite, abbr, acronym, sub, sup"
+					)
+				);
+}
+##### Fin du rajout
 
 function make_select($champ, $arr)
 
