@@ -392,7 +392,7 @@ if ($tache=="fichier") {
 
   if (!$context['chemin']) $context['chemin']="/".$context['rep'];
   if ($import) {
-    header("location: ".$context['url']."/lodel/edition/importmodel.php");
+    header("location: ".$context['url']."/lodel/admin/importmodel.php");
   } else {
     header("location: ".$context['url']."/lodel/edition");
   }
