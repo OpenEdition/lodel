@@ -75,12 +75,12 @@ header("Content-type: text/html; charset=iso-8859-1");
 
 $versioninstall="0.8";
 $versionsuffix="-$versioninstall";   # versioning
-// does what ./lodelconfig.php does.
-ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
-
 
 if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
 $lodelconfig="CACHE/lodelconfig-cfg.php";
+
+// does what ./lodelconfig.php does.
+ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
 
 
 //
