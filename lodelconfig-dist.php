@@ -91,9 +91,9 @@ $sessionname="session$database";
 
 
 # configuration du serveur OO
-$ooserverurl="http://lodeldevel/serveuroo/index.php";
-$ooserverusername="ruralia@localhost";
-$ooserverpasswd="ruralia";
+$servoourl="http://servoo.revues.org";
+$servoousername="user";
+$servoopasswd="pass";
 
 
 # type d'URL
@@ -103,6 +103,24 @@ $extensionscripts="php";
 # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php.
 # "on" ou ""
 $idagauche="";
+
+# chemin pour la commande zip
+#$zipcmd="/usr/bin/zip";
+$zipcmd="pclzip";
+
+# chemin pour la commande unzip
+#$unzipcmd="/usr/bin/unzip";
+$unzipcmd="pclzip";
+
+############################################
+# config reserve au systeme de config automatique
+# la presence de ces variables est obligatoire pour la configuration
+$includepath=""; # pour les sites qui ont un include automatique (defini par php.ini)
+$htaccess="on";    #
+$filemask="0770";
+$usesymlink="on";
+$installoption="";
+############################################
 
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK
@@ -123,5 +141,7 @@ $currentdb="";
 $site="";
 
 define ("NORECORDURL",1);
+define (INC_LODELCONFIG,1);
+define (TMPDIR,"/tmp");
 
 ?>
