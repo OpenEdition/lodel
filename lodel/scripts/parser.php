@@ -208,8 +208,6 @@ function parse ($in,$out)
     $contents=utf8_encode($contents);
     convertHTMLtoUTF8($contents);
   }
-
-
   @unlink($out); // detruit avant d'ecrire.
   $fp=fopen ($out,"w") or $this->errmsg("cannot write file $out");
   fputs($fp,$contents);

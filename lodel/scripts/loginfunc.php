@@ -70,7 +70,7 @@ function open_session ($login) {
 function check_auth ($login,&$passwd,&$site)
 
 {
-  global $context,$iduser,$userpriv,$usergroupes;
+  global $context,$iduser,$userpriv,$usergroupes,$userlang;
 
   do { // block de control
     if (!$login || !$passwd) break;

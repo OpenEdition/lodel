@@ -42,7 +42,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 function authenticate ($level=0,$norecordurl=FALSE)
 
 {
-  global $context,$iduser,$userpriv,$usergroupes;
+  global $context,$iduser,$userpriv,$usergroupes,$userlang;
   global $home,$timeout,$database,$sessionname,$site,$back;
 
   $retour="url_retour=".urlencode($_SERVER['REQUEST_URI']);

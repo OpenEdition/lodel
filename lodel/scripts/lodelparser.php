@@ -279,30 +279,70 @@ function parse_before(&$text)
     preg_match("/GROUP\s*=\s*\"([^\"]+)\"/",$attr,$result2);
     $group=addslashes(stripslashes(trim($result2[1])));
     if (!$group) $group="site";
-    // get the export variable
-    preg_match("/EXPORT\s*=\s*\"([^\"]+)\"/",$attr,$result2);
-    $export=addslashes(stripslashes(trim($result2[1])));
-
-    if ($GLOBALS['droitediteur']) {       // cherche si le texte existe
-      require_once(TOINCLUDE."connect.php");
-
-      $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group'") or $this->errmsg (mysql_error());
-      if (!mysql_num_rows($result2)) { // il faut creer le texte
-	$lang=$GLOBALS['context']['userlang'] ? $GLOBALS['context']['userlang'] : "fr"; // unlikely useful but...
-	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,textgroup,texte,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg (mysql_error());
-      }
-    }
-    $modifyif='$context[\'droitediteur\']'.( $group=='interface' ? ' && $context[\'usertranslationmode\']' : '' );
-
-    $text=str_replace ($result[0],'<?php require_once("'.TOINCLUDE.'connect.php");
-$result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$name.'\' AND textgroup=\''.$group.'\' AND (lang=\'".$GLOBALS[\'context\'][\'userlang\']."\' OR lang=\'\') AND statut>0 ORDER BY lang DESC");
-list($id,$texte)=mysql_fetch_row($result);
- if ($id && '.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id; ?>">[M]</a> <?php }
- '.($export ? '$context[\''.$export.'\']=' : 'echo').' preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
+    $text=str_replace($result[0],$this->maketext($name,$group,"text"),$text);
   }
+  preg_match_all("/\[@(".$this->variable_regexp.")(.".$this->variable_regexp.")?\]/",$text,$results,PREG_SET_ORDER);
+  foreach ($results as $result) {
+    $group=addslashes(stripslashes(strtolower(trim($result[1]))));
+    $name=addslashes(stripslashes(strtolower(trim(substr($result[2],1)))));
+    if (!$name) { $name=$group; $group="site"; }
+    $text=str_replace($result[0],$this->maketext($name,$group,"@"),$text);
+  }
+
 }
 
 
+function maketext($name,$group,$tag)
+
+{
+  if ($GLOBALS['droitediteur']) {       // cherche si le texte existe
+    require_once(TOINCLUDE."connect.php");
+
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group'") or $this->errmsg (mysql_error());
+    if (!mysql_num_rows($result)) { // il faut creer le texte
+      $lang=$GLOBALS['userlang'] ? $GLOBALS['userlang'] : ""; // unlikely useful but...
+      mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,textgroup,texte,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg (mysql_error());
+    }
+  }
+
+  if ($tag=="text") {
+    // modify inline
+    $modifyif='$context[\'droitediteur\']';
+    if ($group=='interface') $modifyif.=' && $context[\'usertranslationmode\']';
+
+    $modify=' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/texte.php?id=<?php echo $id; ?>">[M]</a> <?php } ';
+  } else {
+    // modify at the end of the file
+    $modify="";
+    $fullname=strtoupper($group).'.'.strtoupper($name);
+
+//    $translationlanglist="'fr','en','es','de'";
+//    $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]textes WHERE nom='$name' AND textgroup='$group' AND lang IN (".$translationlanglist.")");
+//    while(list($texte,$lang)=mysql_fetch_row($result)) {
+//      echo '<div id="'.$fullname.'"></div>';
+//    }
+    $this->translationform[$fullname]='<div class="translationform"><form method="post" action="'.SITEROOT.'lodel/admin/texte.php"><input type="hidden" name="edit" value="1"><input type="hidden" name="nom" value="'.$name.'"><input type="hidden" name="textgroup" value="'.$group.'"><label for="texte">[@'.$fullname.']<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'"); ?><input type="text" name="texte" size="100" value="<?php echo htmlspecialchars($text);?>"></label><input type="submit" value="[M]"></form></div>';
+  }
+
+  return '<?php list($id,$text)=getlodeltext("'.$name.'","'.$group.'");'.$modify.
+    ' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
+}
+
+
+function parse_after(&$text)
+
+{
+  if ($this->translationform) {
+    // add the translations form before the body
+    $closepos=strrpos($text,"</body>");
+    if (!$closepos) return; // no idea what to do...
+    $closepos-=strlen("</body>")+1;
+
+    $text=substr($text,0,$closepos).'<?php if ($context[\'usertranslationmode\']) { ?>'.
+      '<div id="translationforms">'.join("",$this->translationform).'</div>'.'<?php } ?>';
+      substr($text,$closepos);
+  }
+}
 
 
 } // end of the class LodelParser

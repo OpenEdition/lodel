@@ -50,30 +50,32 @@ if ($id>0 && ($delete || $restore)) {
 // ajoute ou edit
 //
 } elseif ($edit) { // modifie ou ajoute
-  include_once ($home."func.php");
+  require_once ($home."func.php");
   extract_post();
   // validation
   do {
+    if (!$context['textgroup']) $context['textgroup']="site";
     if ( (!$context['nom'] && !$id) || ($context['nom'] && !preg_match("/^[\w\s]+$/",utf8_decode($context[nom])) )) $err=$context[erreur_nom]=1;
     if ($err) break;
 
-    require_once ($home."connect.php");
-    if ($context['nom']) {
-      $result=mysql_query ("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND id!='$id'") or die (mysql_error());
-      if (mysql_num_rows($result)>0) $err=$context[erreur_nom_existe]=1;
-    }
+    if (!$context['lang']) $context['lang']=$GLOBALS['userlang'] ? $GLOBALS['userlang'] : "";
+
     if ($err) break;
 
     if ($id) {
-      $result=mysql_query ("SELECT ".($context['nom'] ? "" : "nom,")."textgroup,lang FROM $GLOBALS[tp]textes WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query ("SELECT nom,textgroup,lang FROM $GLOBALS[tp]textes WHERE id='$id'") or die (mysql_error());
       $context=array_merge($context,mysql_fetch_assoc($result));
-    }
 
-    $context[texte]=preg_replace("/(\r\n\s*){2,}/","<br />",$context[texte]);#    for($i=0; $i<strlen($context[texte]); $i++) {
-#      echo ord($context[texte][$i])," ",$context[texte][$i],"<br>";
-#    }
+    } elseif ($context['nom'] && $context['textgroup'] && $context['lang']) {
+      $result=mysql_query ("SELECT id,textgroup,lang FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND textgroup='$context[textgroup]' AND lang='$context[lang]'") or die (mysql_error());
+      while($row=mysql_fetch_assoc($result)) {
+	##if ($id && $id!=$row['id']) { $err=$context[erreur_nom_existe]=1; break; }
+	if (!$id) { $id=$row['id']; break; }
+      }
+      if ($err) break;
+    } else
 
-    /////$lang= $context[textgroup]=="interface" ? $GLOBALS[userlang] : ""; // temporary. too simple !
+    $context['texte']=preg_replace("/(\r\n\s*){2,}/","<br />",$context['texte']);
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte,textgroup,lang) VALUES ('$id','$context[nom]','$context[texte]','$context[textgroup]','$context[lang]')") or die (mysql_error());
     touch(SITEROOT."CACHE/maj");
