@@ -28,24 +28,14 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-
 /**
-  * VO of table datatable
+  * generic DAO
   */
 
-class datatableVO {
-   var $identity;
-}
+class genericDAO extends DAO {
 
-/**
-  * DAO of table datatable
-  */
-
-class datatableDAO extends DAO {
-
-  function datatableDAO($table,$idfield) {
+  function genericDAO($table,$idfield) {
      $this->DAO($table,false,$idfield);
-
      // create the class
    }
 
@@ -53,12 +43,17 @@ class datatableDAO extends DAO {
     * Instantiate a new object
     */
    function instantiateObject(&$vo) {
-     $classname="datatableVO";
+     static $def;
+
+     $classname=$this->table."VO";
+
+     if (!$def[$classname]) {
+       eval("class ".$classname." { var $".$this->idfield."; } ");
+       $def[$classname]=true;
+     }
+     
      $vo=new $classname; // the same name as the table. We don't use factory...
    }
-
-
-   // end{definitions} automatic generation  //
 
    function _rightscriteria($access) {
      return "";

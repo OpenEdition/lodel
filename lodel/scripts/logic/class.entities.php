@@ -165,13 +165,23 @@ class EntitiesLogic extends Logic {
      global $db;
 
      $criteria="id1 IN (".join(",",$ids).")";
-     $db->execute(lq("DELETE FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or dberror();
+     $result=$db->execute(lq("SELECT idrelation,nature FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or dberror();
+     $idrelation=array();
+     while(!$result->EOF) {
+       $nature=$result->fields['nature'];
+       $idrelation[$nature]=$result->fields['idrelation'];
+       $result->MoveNext();
+     }
 
      // select all the items not in entities_$table
      // those with status<=1 must be deleted
      // thise with status> must be depublished
 
-     foreach(array("entries","persons") as $table) {
+     foreach(array_keys($idrelation) as $nature) {
+       $idlist=join(",",$idrelation[$nature]);
+       $table=$nature=='G' ? "persons" : "entries";
+       $db->execute(lq("DELETE FROM #_TP_relations WHERE idrelation IN (".$idlist.")")) or dberror();
+
        $result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or dberror();
   
        $idstodelete=array();
@@ -186,11 +196,14 @@ class EntitiesLogic extends Logic {
        }
 
        if ($idstodelete) {
-	 $dao=getDAO($table);
-	 $dao->deleteObject($idstodelete);
+	 $logic=getLogic($table);
+	 $localcontext=array("ids"=>$idstodelete,"idrelation"=>$idrelation[$nature]);
+	 $localerror=array();
+	 $logic->deleteAction($localcontext,$localerror);
        }
 
        if ($idstounpublish) {
+	 // should be in $table dao or logic
 	 $db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (".join(",",$idstounpublish).") AND status>=32")) or dberror();       
        }
      } // tables

@@ -138,10 +138,18 @@ class DAO {
      return $this->find($this->idfield."='$id'",$select);
    }
 
-   /**
-    * Function to get a value object
-    */
-   function find($criteria,$select="*") {
+  /**
+   * Function to get many value object
+   */
+  function getByIds($ids,$select="*") {
+    return $this->findMany($this->idfield.(is_array($ids) ? " IN ('".join("','",$ids)."')" : "='".$ids."'"),$select);
+  }
+
+
+  /**
+   * Function to get a value object
+   */
+  function find($criteria,$select="*") {
      global $db;
 
      //execute select statement
@@ -190,6 +198,18 @@ class DAO {
      // return vo's
      return $vos;
    }
+
+  /**
+   * Return the number of element matching a criteria
+   */
+  function count($criteria)
+
+  {
+    global $db;
+    $ret = $db->getOne("SELECT count(*) FROM ".$this->sqltable." WHERE ".$criteria);
+    if ($db->errorno()) dberror();
+    return $ret;
+  }
 
 
    /**

@@ -765,13 +765,30 @@ function setrecord($table,$id,$set,$context=array())
   return $id;
 }
 
+/**
+ *
+ * Function to solve the UTF8 poor support in MySQL
+ * This function should be i18n in the futur to support more language
+ */
+
+function makeSortKey($text)
+
+{
+  return strtolower(strtr(
+			  strtr(utf8_decode($text),
+				'¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
+				'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
+			  array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
+				'¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u')));
+}
+
 
 /**
  * DAO factory
  *
  */
 
-function &getDAO($table,$arg1=null,$agr2=null) {
+function &getDAO($table) {
   static $factory; // cache
 
   if ($factory[$table]) return $factory[$table]; // cache
@@ -779,13 +796,21 @@ function &getDAO($table,$arg1=null,$agr2=null) {
   require_once($GLOBALS['home']."dao.php");
   require_once($GLOBALS['home']."dao/class.".$table.".php");
   $daoclass=$table."DAO";
-  if (isset($arg2)) {
-    return $factory[$table]=new $daoclass ($args,$agrs2);
-  } else {
-    return $factory[$table]=new $daoclass;
-  }
+  return $factory[$table]=new $daoclass;
 }
 
+function &getGenericDAO($table,$idfield)
+
+{
+  static $factory; // cache
+
+  if ($factory[$table]) return $factory[$table]; // cache
+
+  require_once($GLOBALS['home']."dao.php");
+  require_once($GLOBALS['home']."genericdao.php");
+
+  return $factory[$table]=new genericDAO ($table,$idfield);
+}
 
 
 // valeur de retour identifier ce script

@@ -163,7 +163,7 @@ class Logic {
    {     
      global $db,$home;
 
-     $id=intval($context['id']);
+     $id=$context['id'];
      if ($this->isdeletelocked($id)) die("This object is locked for deletion. Please report the bug");
      $dao=$this->_getMainTableDAO();
      $this->_prepareDelete($dao,$context);
@@ -194,8 +194,17 @@ class Logic {
      global $user;
      // basic
      $dao=$this->_getMainTableDAO();
-     $vo=$dao->find("id='".intval($id)."' ".$dao->rightsCriteria("write"),"status");
-     return $vo ? false : true;
+     
+     if (is_numeric($id)) {
+       $criteria="id='".$id."'";
+       $nbexpected=1;
+     } else {
+       $criteria="id IN ('".join("','",$id)."')";
+       $nbexpected=count($id);
+     }
+     $nbreal=$dao->count($criteria." ".$dao->rightsCriteria("write"));
+
+     return $nbexpected!=$nbreal;
    }
 
    /*---------------------------------------------------------------*/
