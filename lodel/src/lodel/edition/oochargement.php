@@ -94,7 +94,8 @@ function OO ($uploadedfile)
 		      "bloc_citation"=>"citation",
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
-		      "description_auteur"=>"descriptionauteur"
+		      "description_auteur"=>"descriptionauteur",
+		      "type_document"=>"typedoc"
 		      );
   
   foreach ($translations as $k=>$v) {

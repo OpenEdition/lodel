@@ -100,7 +100,8 @@ function rtf($filename) {
 		      "bloc_citation"=>"citation",
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
-		      "description_auteur"=>"descriptionauteur"
+		      "description_auteur"=>"descriptionauteur",
+		      "type_document"=>"typedoc"
 		      );
   foreach ($translations as $k=>$v) {
     array_push($search,"/<r2r:$k(\b[^>]+)?>/i","/<\/r2r:$k>/i");
@@ -183,7 +184,7 @@ return FALSE; }
 
     // cherche si le document est tage...
 
-    return array($basename,preg_match("/<r2r:(resume|auteurs|motcles|geographies|periodes|bibliographie|typeart)\b[^>]*>/i",$file));
+    return array($basename,preg_match("/<r2r:(resume|auteurs|motcles|geographies|periodes|bibliographie|typedoc)\b[^>]*>/i",$file));
 }
 
 
