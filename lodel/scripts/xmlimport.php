@@ -264,14 +264,15 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 
   if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees,$GLOBALS[tp]typeentites_typeentrees WHERE statut>0 AND idtypeentree=id AND idtypeentree='$lodelcontext[idtype]'") or die (mysql_error());
+  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees,$GLOBALS[tp]typeentites_typeentrees WHERE statut>0 AND idtypeentree=id AND idtypeentite='$localcontext[idtype]'") or die (mysql_error());
   require_once($home."champfunc.php");
 
   while (list($idtype,$style)=mysql_fetch_row($result)) {
     // decode the multilingue style.
     $styles=decode_mlstyle($style);
+    echo $idtype," ",$style,"<br/>";
     foreach($styles as $lang => $style) { // foreach multilingue style
-
+      echo "=>$lang $style";
       preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results2,PREG_SET_ORDER);
       $i=0;
       foreach ($results2 as $result2) {
@@ -289,6 +290,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
       }
     }
   }
+#  print_r($localcontext);
 }
 
 
