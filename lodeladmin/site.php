@@ -29,9 +29,9 @@
 // gere un site. L'acces est reserve au adminlodelistrateur.
 
 require("lodelconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include_once ($home."func.php");
+require_once ($home."func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
@@ -202,8 +202,8 @@ if ($tache=="createtables") {
   
   mysql_select_db($context[dbname]);
 
-  if (!file_exists(LODELROOT."/$versionrep/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
-  $text=join('',file(LODELROOT."/$versionrep/install/init-site.sql"));
+  if (!file_exists(LODELROOT."$versionrep/install/init-site.sql")) die ("impossible de faire l'installation, le fichier init-site.sql est absent");
+  $text=join('',file(LODELROOT."$versionrep/install/init-site.sql"));
 #  if (file_exists(LODELROOT."lodel/install/inserts-site.sql")) {
 #    $text.=utf8_encode(join('',file(LODELROOT."lodel/install/inserts-site.sql")));
 #  }
@@ -231,6 +231,29 @@ if ($tache=="createtables") {
     require ($home."calcul-page.php");
     calcul_page($context,"site-createtables");
     return;
+  }
+
+  // ajoute le modele editorial
+  // on le cherche d'abord.
+  $fichier=LODELROOT."$versionrep/install/plateform/model-default.sql";
+  #echo $fichier," ",file_exists($fichier);
+  #die("");
+  if (file_exists($fichier)) {
+    $import=true;
+    // verifie qu'on peut importer le modele.
+    foreach(array("types","champs","typepersonnes","typeentrees") as $table) {
+      $result=mysql_query("SELECT 1 FROM $GLOBLAS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+      if (mysql_num_rows($result)) { $import=false; break; } 
+    }
+
+    if ($import) {
+      require_once ($home."backupfunc.php");
+      // execute the editorial model
+      if (!execute_dump($fichier)) $context[erreur_execute_dump]=$err=mysql_error();
+      // change the id in order there are minimal and unique
+      require_once($home."objetfunc.php");
+      makeobjetstable();
+    }
   }
 
   $tache="createrep";
@@ -277,7 +300,7 @@ if ($tache=="fichier") {
   }
 
   if (file_exists($siteconfigcache)) unlink($siteconfigcache);
-  if (!copy(LODELROOT."/$versionrep/src/siteconfig.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
+  if (!copy(LODELROOT."$versionrep/src/siteconfig.php",$siteconfigcache)) die("ERROR: unable to write in CACHE. Strange !");
   maj_siteconfig($siteconfigcache,array("site"=>$context[rep]));
 
   $siteconfigdest=$root."siteconfig.php";
@@ -301,7 +324,7 @@ if ($tache=="fichier") {
     @chmod ($siteconfigdest,0666 & octdec($GLOBALS[filemask]));
   }
   // ok siteconfig est copie.
-  install_fichier($root,LODELROOT."/$versionrep/src",LODELROOT);
+  install_fichier($root,LODELROOT."$versionrep/src",LODELROOT);
 
   // ok on a fini, on change le statut du site
   mysql_select_db($GLOBALS[database]);
@@ -404,8 +427,9 @@ function mycopyrec($src,$dest)
   global $filemask;
   if (is_dir($src)) {
 
-    if (!is_dir($dest)) unlink($dest);
+    if (file_exists($dest) && !is_dir($dest)) unlink($dest);
     if (!file_exists($dest)) mkdir($dest,0777 & octdec($filemask));
+    @chmod(0777 & octdec($filemask));
 
     $dir=opendir($src);
     while ($file=readdir($dir)) {

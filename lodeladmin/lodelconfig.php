@@ -26,11 +26,19 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+$version="0.7";
+
+##########################
+
+
+$versionsuffix=$version ? "-$version" : "";   # versioning
 
 define("LODELROOT","../");
 
 require(LODELROOT."lodelconfig.php");
 $home=LODELROOT.$home;
-$sharedir=LODELROOT.$sharedir;
+$sharedir=LODELROOT.$sharedir.$versionsuffix;
+$shareurl.=$versionsuffix;
 
+$site="";
 ?>
