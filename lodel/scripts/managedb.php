@@ -8,12 +8,11 @@ function supprime_publication ($id)
 
 {
 #ifndef LODELLIGHT
-  lock_write("publications",
-	     "documents",
-	     "documentsannexes",
-	     "auteurs","documents_auteurs",
-	     "indexls","documents_indexls",
-	     "indexhs","documents_indexhs"); 
+lock_write("publications",
+         "documents",
+         "documentsannexes",
+         "auteurs","documents_auteurs",
+         "indexs","documents_indexs");
 #else
 #  lock_write("publications","documents","documentsannexes","indexls","documents_indexls"); 
 #endif
@@ -58,7 +57,7 @@ function supprime_document ($ids,$mklock=TRUE,$deletedocannexe=TRUE)
 
 {
 #ifndef LODELLIGHT
-  if ($mklock)  lock_write("documents","documentsannexes","auteurs","indexls","indexhs","documents_auteurs","documents_indexls","documents_indexhs"); 
+  if ($mklock) lock_write("documents","documentsannexes","auteurs","indexs","documents_auteurs","documents_indexs"); 
 #else
 #  if ($mklock)  lock_write("documents","documentsannexes","indexls","documents_indexls"); 
 #endif
@@ -71,10 +70,9 @@ function supprime_document ($ids,$mklock=TRUE,$deletedocannexe=TRUE)
   mysql_query("DELETE FROM $GLOBALS[tableprefix]documents WHERE id$where") or die(mysql_error());
   if ($deletedocannexe) mysql_query("DELETE FROM $GLOBALS[tableprefix]documentsannexes WHERE iddocument$where") or die (mysql_error());
 
-  supprime_table($ids,"indexl",TRUE,"type='".TYPE_MOTCLE."'");
 #ifndef LODELLIGHT
   supprime_table($ids,"auteur",TRUE);
-  supprime_table($ids,"indexh",FALSE);
+  supprime_table($ids,"index",FALSE);
 #endif
   unlock();
 }
