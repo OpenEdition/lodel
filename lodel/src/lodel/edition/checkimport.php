@@ -104,6 +104,11 @@ class XmlImportHandler {
   function processInternalStyles($obj,$data) 
 
   {
+    if (strpos($obj->conversion,"<li>")!==false) {
+      $conversion=str_replace("<li>","",$obj->conversion);
+      $data=$conversion.preg_replace(array("/(<p\b)/","/(<\/p>)/"),array("<li>\\1","\\1</li>"),$data).closetags($conversion);
+    }
+
     return '<div class="internalstyleblock"><span class="internalstyle">'.$obj->style.'</span>'.$data."</div>";
   }
 
