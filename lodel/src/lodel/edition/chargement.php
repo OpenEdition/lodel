@@ -206,7 +206,9 @@ function rtf($filename) {
 	     "/<br>/i",   # XML is
 	     "/<\/br>/i",	#efface
 	     "/&nbsp;/",
-	     "/<[^>]+>/e"
+	     "/<[^>]+>/e",
+	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/i", # efface les border
+	     "/(<img\b[^>]+)>/i", # met border="0"
 	     );
 
   array_push($rpl,
@@ -216,7 +218,9 @@ function rtf($filename) {
 	     "<br/>",
 	     " ",
              chr(160),
-	     'strtolower("\\0")'
+	     'strtolower("\\0")',
+	     "\\1\\2",
+	     "\\1border=\"0\">"
 	     );
 
   $file=traite_multiplelevel(
