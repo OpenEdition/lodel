@@ -3,21 +3,32 @@
 
 Certaines publications sont protegees.<BR><BR>
 
-<FORM METHOD="POST" ACTION="publi.php">
-	<INPUT TYPE="hidden" name="publication" VALUE="[#PUBLICATION]">
-	<INPUT TYPE="hidden" name="online" VALUE="0"> <!-- on depublie -->
-<TABLE border=1 WIDTH="50%">
-<TR><TD>NOM</TD><TD>TITRE</TD></TR>
-<BOUCLE NAME="publications_protegees">
-<TR><TD>[#NOM]</TD><TD>[#TITRE]</TD></TR>
-</BOUCLE>
-</TABLE>
-
-<INPUT TYPE="submit" NAME="confirmation" VALUE="confirmation de la depublication"> <!-- on confirme la depublication -->
-<INPUT TYPE="submit" NAME="cancel" VALUE="abandonner"> <!-- on abandonne la depublication-->
-</FORM>
-
-
+<form method="post" action="publi.php">
+	<input type="hidden" name="publication" value="[#PUBLICATION]">
+	<input type="hidden" name="online" value="0"> <!-- on depublie -->
+	<table border=1 width="50%">
+		<tr>
+			<td>NOM</td>
+			<td>TITRE</td>
+		</tr>
+		<BOUCLE NAME="publications_protegees">
+			<CORPS>
+				<tr>
+					<td>[#NOM]</td>
+					<td>
+						<IF [#TITRE]>
+							[#TITRE]
+						<ELSE/>
+							...
+						</IF>
+					</td>
+				</tr>
+			</CORPS>
+		</BOUCLE>
+	</table>
+	<input type="submit" name="confirmation" value="confirmation de la depublication"> <!-- on confirme la depublication -->
+	<input type="submit" name="cancel" value="abandonner"> <!-- on abandonne la depublication-->
+</form>
 
 </body>
 </html>
