@@ -16,41 +16,45 @@
 	<a href="entree.php?type=[#TYPE_TYPE]">Ajouter une entrée dans l'index par [#TYPE_TITRE]</a>
 </div>
 <br /><br />
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">Nom</td>
-		<IF COND="[#TYPE_USEABREV]"><td class="texte_noir_gras">Abr&eacute;viation</td></IF>
-		<td class="texte_noir_gras">Langue</td>
-		<td>&nbsp;</td>
-	</tr>
-	<?php  $context[margin]=0; # initialise la marge ?>
-	<LOOP NAME="listentrees" TABLE="entrees" ORDER="[#TYPE_TRI]" WHERE="idtype='[#IDTYPE]' AND idparent='[#ID]'" WHERE="statut gt -64">
-		<DO>
-			<tr>
-				<td class="ligne_admin2">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#NOM|nbsp)]</span></td>
-				<IF COND="[#TYPE_USEABREV]"><td class="ligne_admin2" align="center">[(#ABREV|nbsp)]</td></IF>
-				<td class="ligne_admin2" align="center">[(#LANG|nbsp)]</td>
-				<td class="ligne_admin2" style="color: #CC9933;" align="right">
-					<div>
-						|&nbsp;<a href="entree.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-						<a href="entree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
-<IF COND="abs([#STATUT]) ge 32">
-[Protégée]
-<ELSE/>
-[ Normal ]
-</IF>&nbsp;|&nbsp;
-<IF COND="[#TYPE_TRI] eq 'ordre'">						<a href="entree.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+<?php  $context[margin]=0; # initialise la marge ?>
+<LOOP NAME="listentrees" TABLE="entrees" ORDER="[#TYPE_TRI]" WHERE="idtype='[#IDTYPE]' AND idparent='[#ID]'" WHERE="statut gt -64">
+	<BEFORE>
+		<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_noir_gras">Nom</td>
+			<IF COND="[#TYPE_UTILISEABREV]"><td class="texte_noir_gras">Abr&eacute;viation</td></IF>
+			<td class="texte_noir_gras">Langue</td>
+			<td>&nbsp;</td>
+		</tr>
+	</BEFORE>
+	<DO>
+		<tr>
+			<td class="ligne_admin2">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#NOM|nbsp)]</span></td>
+			<IF COND="[#TYPE_UTILISEABREV]"><td class="ligne_admin2" align="center">[(#ABREV|nbsp)]</td></IF>
+			<td class="ligne_admin2" align="center">[(#LANGUE|nbsp)]</td>
+			<td class="ligne_admin2" style="color: #CC9933;" align="right">
+				<div>
+					|&nbsp;<a href="entree.php?id=[#ID]">Modifier</a>&nbsp;
+					|&nbsp;<a href="entree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+					<IF COND="abs([#STATUT]) ge 32">[Protégée]<ELSE/>[ Normal ]</IF>&nbsp;|&nbsp;
+					<IF COND="[#TYPE_TRI] eq 'ordre'">
+						<a href="entree.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 						<a href="entree.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-</IF>
-					</div>
-				</td>
-			</tr>
-		        <?php  $context[margin]+=10; ?> <!-- incrément de la marge -->
-		        <LET VAR="BARRE">[#BARRE]|</LET>
-			<LOOP NAME="listentrees"></LOOP>
-		</DO>
-	</LOOP>
-</table>
+					</IF>
+				</div>
+			</td>
+		</tr>
+        <?php $context[margin]+=10; ?> <!-- incrément de la marge -->
+        <LET VAR="BARRE">[#BARRE]|</LET>
+		<LOOP NAME="listentrees"></LOOP>
+	</DO>
+	<AFTER>
+		</table>
+	</AFTER>
+	<ALTERNATIVE>
+		<MACRO NAME="AUCUNE_ENTREE_DISPONIBLE">
+	</ALTERNATIVE>
+</LOOP>
 
 <LOOP NAME="listentree_trash" TABLE="entrees" ORDER="ordre" WHERE="statut le -64" WHERE="idtype='[#IDTYPE]'">
 	<BEFORE>

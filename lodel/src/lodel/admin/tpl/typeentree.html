@@ -48,30 +48,38 @@
 		</tr>
 		[(#ERREUR_TPLINDEX|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		<tr>
-			<td colspan="2">Entrée linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Entrée hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /></td>
+			<td colspan="2">
+				<br />Entrée linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> &nbsp;&nbsp;
+				Entrée hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] />
+			</td>
 		</tr>
 		<tr>
-			<td colspan="2">Import de nouveaux elements possible: <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] /> Liste figée par l'administrateur: <input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] /></td>
+			<td colspan="2">
+				Import de nouveaux elements possible: <input type="radio" name="nvimportable" value="1" [(#NVIMPORTABLE|yes)] />&nbsp;&nbsp;
+				Liste figée par l'administrateur: <input type="radio" name="nvimportable" value="0" [(#NVIMPORTABLE|no)] />
+			</td>
 		</tr>
 		<tr>
-			<td colspan="2">Utiliser les abréviations: <input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] /> Pas d'abréviation: <input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] /></td>
+			<td colspan="2">
+				Utiliser les abréviations: <input type="radio" name="utiliseabrev" value="1" [(#UTILISEABREV|yes)] />&nbsp;&nbsp;
+				Pas d'abréviation: <input type="radio" name="utiliseabrev" value="0" [(#UTILISEABREV|no)] />
+			</td>
 		</tr>
 		<tr>
-			<td colspan="2">Ordre alphabétique: <input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] /> Ordre définit dans l'interface: <input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] />Par ordre de création: <input type="radio" name="tri" value="1" [(#TRI|eq("1"))] /></td>
+			<td colspan="2">
+				Ordre alphabétique: <input type="radio" name="tri" value="nom" [(#TRI|eq("nom"))] />&nbsp;&nbsp;
+				Ordre définit dans l'interface: <input type="radio" name="tri" value="ordre" [(#TRI|eq("ordre"))] />&nbsp;&nbsp;
+				Par ordre de création: <input type="radio" name="tri" value="1" [(#TRI|eq("1"))] /><br />
+			</td>
 		</tr>
 		<IF COND="[#ADMINLODEL]">    
-		<tr>
-			<td class="texte_intitule">Type d'entree protégé:</td>
-			<td><MACRO NAME="CASE_A_COCHER_PROTEGER"></td>
-		</tr>
+			<tr><td colspan="2" class="texte_intitule">
+				<br />Type d'entrée protégée: <MACRO NAME="CASE_A_COCHER_PROTEGER"><br />
+			</td></tr>
 		</IF>
 
-		<tr>
-			<td>
-				Types de publication et de document qui contiennent ce type d'entrée :<br />
-				<MACRO NAME="TYPE_ENTITES">
-			</td>  
-		</tr>
+		<tr><td colspan="2"><br /><span  class="texte_intitule">Types de publication et de document qui contiennent ce type d'entrée :</span></td></tr>
+		<tr><td colspan="2"><MACRO NAME="TYPE_ENTITES"><br /></td></tr>
 	</table>
 	
 	<div style="padding-top:20px; padding-left:70px; padding-right:70px;">

@@ -47,7 +47,15 @@
 <!-- typepersonne.html                                  -->
 <DEFMACRO NAME="TYPE_ENTITES">
 	<LOOP NAME="typeentites">
-		[#TYPE]: <input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]><br>
+		<BEFORE>
+			<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+		</BEFORE>
+		<DO>
+			<tr><td>[#TYPE]:</td><td><input type="checkbox" name="typeentite[[#ID]]" [(#CONDITION|true)checked]></td></tr>
+		</DO>
+		<AFTER>
+			</table>
+		</AFTER>
 	</LOOP>
 </DEFMACRO>
 <!-- ************************************************** -->
@@ -171,6 +179,15 @@
 			</IF>
 		</IF>
 	</IF>
+</DEFMACRO>
+<!-- ************************************************** -->
+
+<!-- Macro rajoutée le 25/11/03 *********************** -->
+<!-- Macro servant à entrees.html                       -->
+<DEFMACRO NAME="AUCUNE_ENTREE_DISPONIBLE">
+	<div class="pas_de_publication">
+		Aucune entrée disponible
+	</div>
 </DEFMACRO>
 <!-- ************************************************** -->
 
