@@ -38,10 +38,10 @@ include("tpl/install-openhtml.html");
 
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p align="justify">
-Choisissez une base de données existante ou créez en une nouvelle.<br/>En général, votre base de données a déjà été créée par votre h&eacute;bergeur. Veuillez vous reporter au support technique de votre hebergeur.</p>
+[@INSTALL.CHOOSE_PREEXISTING_DATABASE_OR_CREATE_NEW].<br/>[@INSTALL.USUALLY_HOSTER_CREATE_DATABASE_SEE_TECHNICAL_SUPPORT].</p>
 <?php } else { // OPTION 2 ?>
 <p align="justify">
-Vous pouvez utiliser une base de données existante, mais il est préférable de créer un base de données dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
+[@INSTALL.CAN_USE_PREEXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
 </p>
 <p>
 <code>
@@ -49,7 +49,7 @@ CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { ec
 </code>
 </p>
 <p>
-Dans tous les cas, il faut donner les droits "ALL" sur la base à l'utilisateur "<?php echo $dbusername; ?>":
+[@INSTALL.ANYWAY_GIVE_RIGHTS_"ALL"_TO_DATABASE_USER] "<?php echo $dbusername; ?>":
 <p>
 <p>
 <code>
@@ -57,29 +57,29 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 </code>
 </p>
 <p align="justify">
-Le préfixe de table est utile lorsque vous ne disposez que d'une seule base de données (comme c'est souvent le cas chez les hébergeurs) et que d'autres applications partageront la base de données avec Lodel. Cette situation rend plus difficiles les migrations et les restaurations : si vous utilisez plusieurs bases, vous pourrez gérer plus facilement les sauvegardes.
+[@INSTALL.WHY_PREFIX_TABLE].
 </p>
 <p align="justify">
-Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans ce cas, il faut choisir entre : 
+[@INSTALL.ONE_LODEL_INSTALLATION_CAN_ADMINISTRATE_SEVERAL_WEBSITES_SO_CHOOSE] : 
 <ul>
-<li>Une unique base de données pour tous les sites. Cette option simplifie la création de nouveaux sites, mais elle interdit ou rend plus délicate la restauration en cas de problèmes ou le multi-versioning (coexistence de plusieurs sites utilisant différentes versions de Lodel). Autrement dit, cette option impose la restauration et la migration de tous les sites simultanéments.
-<li>Une base de données par site, en plus de la base principale. Cette solution est recommandée, mais vous devrez alors créer une base de données pour chaque site!
+<li>[@INSTALL.ONE_DATABASE_FOR_ALL_WEBSITES_ADVANTAGES_INCONVENIENCES].
+<li>[@INSTALL.ONE_DATABASE_FOR_ONE_WEBSITE_PLUS_MAIN_DATABASE_RECOMMENDED_SOLUTION] !
 </ul>
 </p>
 <?php } // fin OPTION 2 ?>
 
 
-<?php  if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer ou d'accéder à la base de données "<?php echo $database; ?>". L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_createdatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf([#DATABASE])] : <?php  echo mysql_error(); ?> <?php } ?>
 
-<?php  if ($erreur_usedatabase) { ?> <b>Erreur</b>: L'utilisation de cette base de données ne semble pas possible. L'utilisateur MySQL a-t-il les droits ? L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_usedatabase) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.DATABASE_USE_IMPOSSIBLE_CHECK_DATABASEUSER_RIGHTS_ERROR_IS] : <?php  echo mysql_error(); ?> <?php } ?>
 
-<?php  if ($erreur_createtables) { ?> <b>Erreur</b>: La création des tables a échoué. La commande SQL et l'erreur produite sont: <?php echo $erreur_createtables; ?> <?php } ?>
+<?php  if ($erreur_createtables) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.TABLE_CREATION_FAILED_SQL_INSTRUCTION_AND_ERROR_ARE] : <?php echo $erreur_createtables; ?> <?php } ?>
 
-<?php  if ($erreur_tablesexist) { ?> <b>Attention</b>: La base que vous avez sélectionnée contient déjà des données pour Lodel. Vous pouvez conserver ces données pour l'installation actuelle ou les effacer. Vous pouvez aussi selectionner une autre base de donnée ci-dessous.
+<?php  if ($erreur_tablesexist) { ?> <b>[@INSTALL.WARNING]</b>: [@INSTALL.SELECTED_DATABASE_CONTENT_DATAS_FOR_LODEL_YOU_CAN_SAVE_DATAS_OR_ERASE_OR_SELECT_OTHER_DATABASES].
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="database">
-<input type="submit" name="continue" value="Continuer">
-<input type="submit" name="erasetables" value="Effacer les données">
+<input type="submit" name="continue" value="[@INSTALL.CONTINUE]">
+<input type="submit" name="erasetables" value="[@INSTALL.ERASE_DATAS]">
 </form>
 <br/>
 <?php } ?>
@@ -94,7 +94,7 @@ Une seule installation de Lodel peut gérer plusieurs sites en même temps, dans c
 
 </th>
 <th>
-Base de données :
+[@INSTALL.DATABASE] :
 </th>
 			  <?php  if (!$resultshowdatabases) $resultshowdatabases=@mysql_query("SHOW DATABASES");
 	                     if (!$resultshowdatabases && mysql_error()) { // can't do show databases
@@ -102,7 +102,7 @@ Base de données :
 <tr>
 <td>
 <input type="radio" name="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> ></td>
-<td>Utiliser une nouvelle base de données qui existe: <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td>
+<td>[@INSTALL.USE_PREEXISTING_EMPTY_DATABASE] : <input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>"></td>
 </tr>
 	                  <?php
 	                     } else {
@@ -120,19 +120,19 @@ Base de données :
 							}
 						}
 			 ?>
-			  <tr><td><input type="radio" name="newdatabase" value="-2" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>Créer une nouvelle base de données: <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
+			  <tr><td><input type="radio" name="newdatabase" value="-2" <?php  if (!$oneischecked) echo "checked"; ?> ></td><td>[@INSTALL.CREATE_NEW_DATABASE] : <input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>"></td></tr>
 			</table>
 </td></tr>
 <?php if ($installoption>1) { // OPTION superieure a 1 ?>
 <tr><td>
-<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>> Base de données unique pour tous les sites.
+<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>[@INSTALL.ONE_DATABASE_FOR_ALL_WEBSITES].
 </td></tr>
 <tr><td>
-Préfixe des tables: <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
+[@INSTALL.TABLE_PREFIX] : <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
 </td></tr>
 <?php } ?>
 </table><br />
-<input type="submit" value="continuer" />
+<input type="submit" value="[@INSTALL.CONTINUE]" />
 
 </form>
 <?php  include("tpl/install-closehtml.html"); ?>
