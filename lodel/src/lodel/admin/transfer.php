@@ -368,8 +368,10 @@ UPDATE #_TP_options SET type=\''.$to.'\' WHERE type=\''.$from.'\';
  ');
 	  if ($err) break;
 	}
-
 	if ($err) break;
+	  if ($err) break;
+	}
+
 	$report.="Mise a jour de la table options<br/>";
       }
     }

@@ -101,24 +101,7 @@ class XMLImportParser {
     unset($string); // save memory
 
     // make object whereever it is possible.
-    $stylesstack=array();
-    for($i=1; $i<$n; $i+=3) {
-      $opening=$arr[$i]=="/";
-
-      if ($opening) { // opening tag
-	$obj=$this->commonstyles[$arr[$i+1]];
-	if (!$obj) {
-	  array_push($stylesstack,$arr[$i+1]);
-	  continue;
-	}
-	$arr[$i+1]=&$obj;
-	array_push($stylesstack,$arr[$i+1]);
-      } else { // closingtag
-	$arr[$i+1]=array_pop($stylesstack);
-	continue; // nothing to do
-      }
-    }
-
+    $this->_objectize($arr);
 
     // second pass
     // process the internalstyles
@@ -179,19 +162,25 @@ class XMLImportParser {
     $classstack=array($this->mainclass);
     $cstyles=&$this->contextstyles[$classstack[0]];
     $handler->openClass($classstack[0]);
+
+ 
     
     $i=0;
     do {
-      if ($i % 3 == 0) { // data
+      if ( ($i % 3) == 0) { // data
 	$larr=preg_split("/<(\/?r2rc:\w+)>/",$arr[$i],-1,PREG_SPLIT_DELIM_CAPTURE);
+	$nj=count($larr);
 	$datastack[0].=$larr[0];
 
-	$nj=count($larr);
-	for($j=1; $j< $nj; $j+=3) {
-	  $this->_parseOneStep($larr,$j,$datastack,$classstack,$cstyles);
+	if ($nj>1) {
+	  $this->_objectize($larr);
+	  for($j=1; $j< $nj; $j+=3) {
+	    $this->_parseOneStep($larr,$j,$datastack,$classstack,$cstyles);
+	  }
 	}
-      } elseif ($i % 3 ==1)  { // style
+      } elseif ( ($i % 3) ==1 )  { // style
 	$this->_parseOneStep($arr,$i,$datastack,$classstack,$cstyles);
+	  $i++;
       }
       $i++;
     } while ($i<$n);
@@ -213,20 +202,28 @@ class XMLImportParser {
   function _parseOneStep (&$arr,$i,&$datastack,&$classstack,&$cstyles)
 
   {
-    $opening=$arr[$i]=="/";
+    $opening=$arr[$i]!="/";
     $obj=$arr[$i+1];
 
     #echo $style,"--<br>";
 
-    if (!$opening && $obj==$arr[$i+4] || $openning && $obj==$arr[$i-2]) {
+    if ( (!$opening && $obj==$arr[$i+4]) || ($opening && $obj==$arr[$i-2]) ) {
+
+      ##echo $opening," : ",$obj," : ",$arr[$i+4]," : ",$arr[$i-2],"<br>";
       // current closing equals next opening
       // or current opening equals last closing
       return;
-    }
+    }# else {
+    #  echo $obj,"<br>";
+    #}
 
     if (!is_object($obj)) {
       // unknow style
-      $this->handler->unknownParagraphStyle($obj,$data);
+      if ($opening) {
+	$datastack[0]="";
+      } else {
+	$this->handler->unknownParagraphStyle($obj,$datastack[0]);
+      }
       return;
     }
 
@@ -322,13 +319,42 @@ class XMLImportParser {
   {
     $style=strtolower(trim($style));
     // style synonyme. take the first one
-    list($style,$lang)=explode(":",$obj->style);
+    list($obj->style,$lang)=explode(":",$obj->style);
     if ($lang) {
       $obj->lang=$lang;
     } else {
       // style synonyme. take the first one
-      $style=preg_replace("/[:,;].*$/","",$style);
+      $obj->style=preg_replace("/[:,;].*$/","",$obj->style);
     }
+  }
+
+  /**
+   * replace style by object whenever it is possible
+   */
+
+  function _objectize(&$arr) {
+
+    $stylesstack=array();
+    $n=count($arr);
+    for($i=1; $i<$n; $i+=3) {
+      $opening=$arr[$i]!="/";
+
+      if ($opening) { // opening tag
+	$obj=$this->commonstyles[$arr[$i+1]];
+	#print_r($this->commonstyles);
+	#die();
+	if (!$obj) {
+	  array_push($stylesstack,$arr[$i+1]);
+	  continue;
+	}
+	$arr[$i+1]=&$obj;
+	array_push($stylesstack,$arr[$i+1]);
+      } else { // closingtag
+	$arr[$i+1]=array_pop($stylesstack);
+	continue; // nothing to do
+      }
+    }
+    if ($stylesstack) die("ERROR: XML is likely invalid in XMLImportParser::_objectize");
   }
 
 } // class XMLImportParser

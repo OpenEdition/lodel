@@ -100,6 +100,15 @@ class UsersLogic extends Logic {
     * @private
     */
 
+  function _prepareEdit($dao,&$context) 
+
+  {
+    // encode the password
+    if ($context['passwd']) $context['passwd']=md5($context['passwd'].$context['username']);
+  }
+
+
+
    function _populateContextRelatedTables(&$vo,&$context)
 
    {
@@ -142,7 +151,7 @@ class UsersLogic extends Logic {
      if ($user['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
 
      // Check the user is not duplicated in the main table...
-     if (!usemaindb()) return; // use the main db, return if it is the same as the current one.
+     if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
 
      $ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND username='".$context['username']."'");
      if ($db->errorno) die($this->errormsg());
