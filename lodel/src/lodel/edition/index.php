@@ -79,7 +79,7 @@ if (!$_GET['do'] && !$_POST['do']) {
 			     "entities_advanced",
 			     "entities_edition",
 			     "entities_import",
-			     "entities_index", //added by Jean Lamy | 2005-01-28
+			     "entities_index", //added 2005-01-28
 			     "tasks"),$lo);
 }
 
