@@ -773,13 +773,18 @@
 					</IF>
 				</td>
 				<td width="300">
-					<div>
+					<!--
 						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
 							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 						<ELSE/>
 							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 						</IF>
-					</div>
+						-->
+						<IF COND="[(#LIEN|isabsolute)]">
+							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						<ELSE/>
+							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+						</IF>
 					<span class="texte_normal">[#COMMENTAIRE]</span>
 				</td>
 				<td valign="top">
@@ -791,7 +796,7 @@
 			</table>
 		</AFTER>
 		<ALTERNATIVE>
-			<span class="texte_info" style="padding-left:80px">Il n'y a aucun document annexe associ&eacute; à ce document.</span>
+			Il n'y a aucun document annexe associ&eacute; à ce document.
 		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
