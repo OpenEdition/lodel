@@ -11,7 +11,13 @@
 		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
 	</div>
 	<div id="formulaire">
-		<div id="titre_formulaire">Bienvenue !<br />Merci de vous identifier :</div>
+		<div id="titre_formulaire">
+			Bienvenue sur 
+			<LOOP NAME="nom_site" TABLE="sites" WHERE="rep='[#SITE]'">
+				<DO><span class="texte"><strong>[#NOM]</strong></span></DO>
+			</LOOP>
+			<br />Merci de vous identifier :
+		</div>
 		<form action="login.php" method="POST">
 			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 			<div id="champ_formulaire">
