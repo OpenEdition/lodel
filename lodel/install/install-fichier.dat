@@ -29,26 +29,14 @@ ln styles_lodel.css
 
 dirsource $homesite
 cp styles_site.css
-ln auteur.php
 
 # lie tous les fichiers du repertoire
-ln auteurs-complet.php
-ln auteurs.php
 ln backend.php
 ln entree.php
 ln entrees.php
-ln chrono.php
-ln chronos-complet.php
-ln chronos.php
 ln document.php
 ln docannexe.php
-ln geo.php
-ln geos-complet.php
-ln geos.php
 ln index.php
-ln mot.php
-ln mots-complet.php
-ln mots.php
 ln signaler.php
 ln sommaire.php
 
@@ -148,7 +136,6 @@ ln tpl/edition-rubrique.html
 
 # creation et modification des publications
 ln publication.php
-ln tpl/publication.html
 ln tpl/publi_erreur.html
 ln tpl/creation-serie.html
 ln tpl/creation-rubrique.html
