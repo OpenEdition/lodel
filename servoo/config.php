@@ -13,8 +13,14 @@ $dbhost="localhost";
 # repertoire d'installation de java
 $javapath="/usr/java/j2sdk1.4.1_02";
 
-# repertoire d'installation de OpenOffice
-$openofficepath="/usr/local/OpenOffice.org1.1.0";
+# directory to the OpenOffice classes.
+$openofficeclassespath="/usr/local/OpenOffice.org1.1.0/program/classes";
+
+# host surlequel est le serveur OpenOffice
+$servoohost="localhost";
+
+# port du serveur OpenOffice sur le host
+$servooport="9303";
 
 # chemin pour la commande zip
 $zipcmd="/usr/bin/zip";

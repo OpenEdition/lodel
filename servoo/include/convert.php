@@ -262,7 +262,11 @@ function HTMLLodel ($uploadedfile,$msg=TRUE)
 function runDocumentConverter($filename,$extension)
 
 {
-  global $home,$openofficepath,$javapath;
+  global $home,
+    $servoohost,
+    $servooport,
+    $openofficeclassespath,
+    $javapath;
 
   $errfile="$filename.err";
 
@@ -272,7 +276,7 @@ function runDocumentConverter($filename,$extension)
     $format="HTML (StarWriter)";
   } else die ("probleme interne");
 
-  myexec("$javapath/bin/java -classpath \"$openofficepath/program/classes/jurt.jar:$openofficepath/program/classes/unoil.jar:$openofficepath/program/classes/ridl.jar:$openofficepath/program/classes/sandbox.jar:$openofficepath/program/classes/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"swriter: $format\" \"$extension\" \"$openofficepath/program/soffice \"",$errfile,"java script DocumentConverter failed");
+  myexec("$javapath/bin/java -classpath \"$openofficeclassespath/jurt.jar:$openofficeclassespath/unoil.jar:$openofficeclassespath/ridl.jar:$openofficeclassespath/sandbox.jar:$openofficeclassespath/juh.jar:".$home."oo/classes\" DocumentConverterSimple \"$filename\" \"swriter: $format\" \"$extension\" \"$servoohost\" \"$servooport\"",$errfile,"java script DocumentConverter failed");
 }
 
 
