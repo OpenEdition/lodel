@@ -143,9 +143,9 @@ function make_select_traitements()
   make_select("traitement",
 	      array(""=>"aucun",
 		    '|strip_tags'=>"Enlever toutes les balises HTML",
-		    '|strip_tags_keepfootnotes'=>"Enlever toutes les balises HTML sauf les appels de note",
-		    '|strip_tags_keepfootnotes("<i>")'=>"Enlever toutes les balises HTML sauf les appels de note et l'italique",
-		    '|strip_tags_keepfootnotes("<u><i>")'=>"Enlever toutes les balises HTML sauf les appels de note, l'italique et le sousligner",
+		    '|strip_tags_keepnotes'=>"Enlever toutes les balises HTML sauf les appels de note",
+		    '|strip_tags_keepnotes("<i>")'=>"Enlever toutes les balises HTML sauf les appels de note et l'italique",
+		    '|strip_tags_keepnotes("<u><i>")'=>"Enlever toutes les balises HTML sauf les appels de note, l'italique et le sousligner",
 		    ));
 }
 
