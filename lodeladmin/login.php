@@ -22,12 +22,21 @@ if ($login) {
     $expire=time()+$timeout;
     $expire2=time()+$cookietimeout;
 
+    mysql_select_db($database);
+    if ($userpriv<LEVEL_SUPERADMIN) {
+      lock_write("revues","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur revue.
+      // verifie que c'est ok
+      $result=mysql_query("SELECT 1 FROM revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
+      if (mysql_num_rows($result)) { $context[erreur_revuebloquee]=1; unlock(); break; }
+    }
+
     for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme nom de session
       // nom de la session
       $name=md5($context[login].microtime());
       // enregistre la session
-      if (mysql_db_query($GLOBALS[database],"INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
+      if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
     }
+    if ($userpriv<LEVEL_SUPERADMIN) unlock();
     if ($i==5) { $context[erreur_opensession]=1; break; }
 
     if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) { $context[erreur_setcookie]=1; break;}
@@ -38,6 +47,17 @@ if ($login) {
 }
 
 $context[passwd]=$passwd=0;
+
+
+// variable: revuebloquee
+if ($context[erreur_revue_bloquee]) { // on a deja verifie que la revue est bloquee.
+  $context[revuebloquee]=1;
+} else { // test si la revue est bloquee dans la DB.
+  include_once ("$home/connect.php");
+  mysql_select_db($database);
+  $result=mysql_query("SELECT 1 FROM revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
+  $context[revuebloquee]=mysql_num_rows($result);
+}
 
 
 function check_auth (&$revue)
@@ -51,11 +71,10 @@ function check_auth (&$revue)
     $user=addslashes($context[login]);
     $pass=md5($context[passwd].$context[login]);
 
-    //    die ("pass:$pass");
-
     // cherche d'abord dans la base generale.
 #ifndef LODELLIGHT
-    if (!($result=mysql_db_query ($GLOBALS[database],"SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
+    mysql_select_db($GLOBALS[database]);
+    if (!($result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $revue="toutes les revues";
@@ -105,7 +124,3 @@ calcul_page($context,"login");
 
 
 ?>
-
-
-
-

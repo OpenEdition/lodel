@@ -13,6 +13,7 @@
 <TD align="center"><font color="Navy"><b><i>[(#NOM|nbsp)]</i></b></font></TD>
 <TD align="center"><A HREF="revue.php?id=[#ID]">Modifier</A></TD>
 <TD align="center"><A HREF="revue.php?id=[#ID]&delete=1">Supprimer</A></TD>
+<TD align="center"><IF COND="[#STATUS] ge 32"><A HREF="lockrevue.php?id=[#ID]&unlock=1">Debloque</A><ELSE/><A HREF="lockrevue.php?id=[#ID]&lock=1">Bloque</A></IF></TD>
 </TR>
 </LOOP>
 </TABLE>
