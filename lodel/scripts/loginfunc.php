@@ -49,13 +49,13 @@ function open_session ($login) {
 
   usemaindb();
   if (defined("LEVEL_ADMINLODEL") && $user['rights']<LEVEL_ADMINLODEL) {
-    if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
+    //if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
-    $result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
-    if (!$result) { 
-      if (function_exists("unlock")) unlock(); 
-      return "error_sitebloque"; 
-    }
+    //$result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
+    //if (!$result) { 
+    //  //if (function_exists("unlock")) unlock(); 
+    //  return "error_sitebloque"; 
+    //}
   }
 
   for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme name de session
@@ -65,7 +65,7 @@ function open_session ($login) {
     $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$user['id']."','$site','$contextstr','$expire','$expire2')"));
     if ($result) break; // ok, it's working fine
   }
-  if (function_exists("unlock")) unlock(); 
+  //if (function_exists("unlock")) unlock(); 
   if ($i==5) return "error_opensession";
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 
@@ -84,7 +84,6 @@ function check_auth ($login,&$passwd,&$site)
 
     $username=addslashes($login);
     $pass=md5($passwd.$login);
-
     // cherche d'abord dans la base generale.
 
     usemaindb();
@@ -96,7 +95,6 @@ function check_auth ($login,&$passwd,&$site)
       $site="tous les sites";
      } elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb']!=DATABASE) { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
-
       // cherche ensuite dans la base du site
       $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or dberror();
       if (!($row=$result->fields)) break;

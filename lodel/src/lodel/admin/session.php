@@ -27,21 +27,25 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
 require("siteconfig.php");
-include ($home."auth.php");
-authenticate(LEVEL_ADMIN,NORECORDURL);
-include ($home."func.php");
+require ($home."auth.php");
+authenticate(LEVEL_ADMIN);
+require ($home."func.php");
 
-$delete=intval($delete);
-$deleteuser=intval($deleteuser);
+$delete=intval($_GET['delete']);
+$deleteuser=intval($_GET['deleteuser']);
 
-mysql_select_db($database);
+usemaindb();
 $ids=array();
 if ($deleteuser) {
-  $result=mysql_query("SELECT id FROM $GLOBALS[tp]session WHERE iduser='$deleteuser'") or dberror();
-  while(list($id)=mysql_fetch_row($result)) { array_push($ids,$id); }
+  $result=$db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$deleteuser."'")) or dberror();
+  while(!$result->EOF) {
+    $ids[]=$result->fields['id'];
+    $result->MoveNext();
+  }
 } elseif ($delete) {
-  array_push($ids,$delete);
+  $ids[]=$delete;
 } else {
   die ("ERROR: unknow operation");
 }
@@ -49,12 +53,15 @@ if ($deleteuser) {
 if ($ids) {
   $idstr=join(",",$ids);
   // remove the session
-  mysql_query("DELETE FROM $GLOBALS[tp]session WHERE id IN ($idstr)") or dberror();
+  $db->execute(lq("DELETE FROM #_MTP_session WHERE id IN ($idstr)")) or dberror();
   // remove the url related to the session
-  mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession IN ($idstr)") or dberror();
+  $db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession IN ($idstr)")) or dberror();
 }
 
-mysql_select_db($currentdb);
-back();
+usecurrentdb();
+update();
+require_once($home."view.php");
+$view=new View;
+$view->back();
 
 ?>
