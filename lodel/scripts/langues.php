@@ -53,7 +53,9 @@ $balisesmotcle=array("motcles"=>"Mot Clés",
 
 $GLOBALS[langues]=$langues;
 $GLOBALS[balisesresume]=$balisesresume;
+$GLOBALS[langresume]=$langresume;
 $GLOBALS[balisesmotcle]=$balisesmotcle;
+
 
 ############################################################################
 //
