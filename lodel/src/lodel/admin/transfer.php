@@ -254,12 +254,13 @@ RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_entites_entrees;
       $result=mysql_query("SELECT * FROM $GLOBALS[tp]documents_indexhs") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
 	// ajoute dans la table le lien
-	if (!$convid[$row[idindexhs]]) {
-	  $err="La conversion de l'indexhs $row[idindexhs] est introuvable";
+	if (!$convid[$row[idindexh]]) {
+	  $err="La conversion de l'indexh $row[idindexh] est introuvable";
 	  break;
 	}
-	$cmds.="INSERT INTO _PREFIXTABLE_entites_entrees (identree,identite) VALUES ('".$convid[$row[idindexhs]]."','$row[iddocument]');";
+	$cmds.="INSERT INTO _PREFIXTABLE_entites_entrees (identree,identite) VALUES ('".$convid[$row[idindexh]]."','".$row[iddocument]."');";
       }
+      if ($err) break; 
 
 #      die( preg_replace("/;/","<br>",$cmds));
       $err=mysql_query_cmds($cmds);
@@ -718,7 +719,8 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 	  mysql_query("UPDATE $GLOBALS[tp]documents SET ".join(",",$updates)." WHERE identite=$row[identite]") or die (mysql_error());
 	}
       }
-      if ($err) break;
+      if ($err) $report.= $err."<br>Warning : l'erreur \"Le fichier ../../lodel/txt/r2r-xxx.xml n'existe pas\" indique une erreur grave seulement si le document xxx n'est pas un documentannexe-* (voir table entite et types)<br>";
+
     }
     require_once($home."objetfunc.php");
     $ret=makeobjetstable();
@@ -979,6 +981,7 @@ function convertHTMLtoXHTML ($field,$contents)
       $contents=join("",$arr);
     } elseif (preg_match('/<p>\s*<a\s+href="#_nref_\d+"/',$contents)) { // Ted style ?
 #echo "Ted document: $row[identite]<br>";
+      $contents=preg_replace('/<sup><small><\/small><\/sup>/s','',$contents);
       $contents=preg_replace('/<p>\s*<a\s+href="#_nref_(\d+)"\s+name="_ndef_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>(.*?)<\/p>/s',
 			     '<div class="footnotebody"><a class="footnotedefinition" href="#bodyftn\\1" id="ftn\\2">\\3</a>\\4</div>',$contents);
 	
@@ -990,7 +993,7 @@ function convertHTMLtoXHTML ($field,$contents)
   $srch=array('/<a\s+name="FM(\d+)">\s*<a\s+href="#FN(\d+)">(.*?)<\/a>\s*<\/a>/s', # R2R footnote call
 	      '/<a\s+name="FM(\d+)">\s*<\/a>\s*<a\s+href="#FN(\d+)">(.*?)<\/a>/s', # R2R footnote call
 	      '/<sup>\s*<small>\s*<\/small>\s*<\/sup>/',
-	      '/<a\s+href="#_ndef_(\d+)" name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
+	      '/<a\s+href="#_ndef_(\d+)"\s+name="_nref_(\d+)"><sup><small>(.*?)<\/small><\/sup><\/a>/'); # Ted footnote call
   $rpl=array('<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
 	     '<a class="footnotecall" href="#ftn\\2" id="bodyftn\\1">\\3</a>',
 	     '',
