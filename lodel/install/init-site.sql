@@ -53,6 +53,9 @@ CREATE TABLE IF NOT EXISTS #_TP_entities (
 	creationdate		DATETIME,
 	modificationdate	DATETIME,
 
+	creationmethod	VARCHAR(16),
+	creationinfo	TINYTEXT,
+
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '-1' NOT NULL,
 	upd		TIMESTAMP,

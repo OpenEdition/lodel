@@ -63,7 +63,7 @@ if (!$_GET['do'] && !$_POST['do']) {
 
   if ($lo) {
     // well... nothing to do
-  } elseif ($do=="move" || $do=="preparemove" || $do=="changestatus") {
+  } elseif ($do=="move" || $do=="preparemove" || $do=="changestatus" || $do=="download") {
     $lo="entities_advanced";
   } elseif ($do=="view" || $do=="edit") {
     $lo="entities_edition";

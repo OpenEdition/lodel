@@ -89,6 +89,16 @@
         type="DATETIME" />
 <column name="modificationdate"
         type="DATETIME" />
+<column name="creationmethod"
+        type="VARCHAR"
+        size="16"
+        required="true" />
+<column name="creationinfo"
+        type="VARCHAR"
+        size="255"
+        required="true"
+        description="parameters for the creation" />
+
 <index name="index_idparent">
 <index-column name="idparent" />
 </index>

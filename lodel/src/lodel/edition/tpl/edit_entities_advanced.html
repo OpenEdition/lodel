@@ -112,9 +112,8 @@
 		<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	RESOUDRE LE PROBLEME DU SOURCEFILE SOURCEINFO....
-	<IF COND="[#USER.REDACTOR]">
-				<a href="telecharger.php?id=[#ID]&type=source">
+	<IF COND="[#USER.REDACTOR] AND [#CREATIONMETHOD]=='servoo' AND [#CREATIONINFO]">
+				<a href="index.php?do=download&type=source&id=[#ID]">
 					<span class="texte_orange">[@EDITION.GET_SOURCE_FILE]</span>
 				</a>
 	<ELSE/>

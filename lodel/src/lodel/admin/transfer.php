@@ -196,7 +196,7 @@ ALTER TABLE #_TP_entities ADD creationmethod VARCHAR(16);
 ALTER TABLE #_TP_entities ADD creationinfo TINYTEXT;
 ');
 	   if ($err) break;
-	   $report.="ajout de creationdate et modificationdate REFUSIONNER AVEC LE TRANSFER DU BUREAU !!!!<br>";
+	   $report.="ajout de creationdate, modificationdate, creationmethod et creationinfo <br>";
 	   $justcreatedate=1;
 	 }
 	 if (!$fields['g_title']) {
@@ -208,24 +208,38 @@ ALTER TABLE #_TP_entities ADD g_title TINYTEXT NOT NULL;
 	   $justcreatedate=1;
 	 }
 
+
       $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]entities WHERE g_title!='' LIMIT 1") or trigger_error(mysql_error(),E_USER_ERROR);
       if ($justcreatedate || !mysql_num_rows($result)) {
 	foreach (array("publications","documents") as $classe) {
 	  $fields=getfields($classe);
 	  if (!$fields['titre']) continue;
-	  $result=mysql_query("SELECT identity,titre,datepubli FROM $GLOBALS[tp]$classe") or die (mysql_error());
-	  while (list($id,$title,$datepubli,$importversion)=mysql_fetch_row($result)) {
+	  $morefields="";
+	  if ($fields['fichiersource']) {
+	    $morefields.=",fichiersource,importversion";
+	  }
+
+	  $result=mysql_query("SELECT identity,titre,datepubli".$morefields." FROM $GLOBALS[tp]$classe") or die (mysql_error());
+	  while (list($id,$title,$datepubli,$fichiersource,$importversion)=mysql_fetch_row($result)) {
 	    $title=strip_tags($title);
 	    if (strlen($title)>255) {
 	      $title=substr($title,0,256);
 	      $title=preg_replace("/\S+$/","",$title);
 	    }
 	    $title=addslashes($title);
-	    mysql_query("UPDATE $GLOBALS[tp]entities set g_title='$title', creationdate='$datepubli', modificationdate='$datepubli' WHERE id='$id'") or trigger_error(mysql_error(),E_USER_ERROR);
+	    if (preg_match("/oocharge/i",$importversion)) {
+	      $creationmethod="servoo";
+	      $creationinfo=$fichiersource;
+	    } else {
+	      $creationmethod="form";
+	      $creationinfo="html";
+	    }
+
+	    mysql_query("UPDATE $GLOBALS[tp]entities set g_title='$title', creationdate='$datepubli', modificationdate='$datepubli',creationmethod='$creationmethod',creationinfo='$creationinfo' WHERE id='$id'") or trigger_error(mysql_error(),E_USER_ERROR);
 	  }
 	} // classes
+	mysql_query("UPDATE $GLOBALS[tp]entities set creationmethod='form',creationinfo='html' WHERE creationmethod is NULL or creationmethod=''") or trigger_error(mysql_error(),E_USER_ERROR);
 	$report.="Remplissage de g_title, creationdate et modificationdate<br />\n";
-
       }
 
       // decrease the protected status!

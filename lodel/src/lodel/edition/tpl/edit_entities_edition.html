@@ -50,12 +50,21 @@
 	<IF COND="[#IDTACHE]"><input type="hidden" name="idtache" value="[#IDTACHE]"></IF>
 	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]"></IF>
 	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]"></IF>
+	<IF COND="![#ID]"><input type="hidden" name="creationmethod" value="form"></IF><!--[ new entities ]-->
 	<input type="hidden" name="edit" value="1">
 
-	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr><td>[@EDITION.DOCUMENT_TYPE]: [#TYPE.TYPE]</td></tr>
-	</table>
+	<div class="intitule_ligne_formulaire">
+		<span class="texte_intitule">[@EDITION.DOCUMENT_TYPE]:</span>
+	</div>
+	[#TYPE.TYPE] <br /><br />
 
+
+	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
+	<div class="intitule_ligne_formulaire">
+		<span class="texte_intitule">[@EDITION.SYNTAX]:</span>
+	</div>
+		 <select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select>
+	</IF>
 	<br />
 	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
 	<br />
