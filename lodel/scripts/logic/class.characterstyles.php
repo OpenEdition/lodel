@@ -51,15 +51,14 @@ class CharacterstylesLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("style"=>array("type","+"),
                   "conversion"=>array("text",""));
              }
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("style"),);  }
    // end{uniquefields} automatic generation  //
 

@@ -78,8 +78,8 @@ class TablefieldgroupsLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("name"=>array("text","+"),
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
@@ -88,7 +88,6 @@ class TablefieldgroupsLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("name","class"),);  }
    // end{uniquefields} automatic generation  //
 

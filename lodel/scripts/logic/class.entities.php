@@ -312,8 +312,8 @@ class EntitiesLogic extends Logic {
        } // loop
   }
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array();
              }
    // end{publicfields} automatic generation  //

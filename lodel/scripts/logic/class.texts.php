@@ -119,8 +119,8 @@ class TextsLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("contents"=>array("longtext",""),
                   "lang"=>array("lang","+"),
                   "textgroup"=>array("text","+"));
@@ -128,7 +128,6 @@ class TextsLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("name","lang","textgroup"),);  }
    // end{uniquefields} automatic generation  //
 

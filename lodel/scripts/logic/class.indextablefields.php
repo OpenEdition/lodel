@@ -115,8 +115,8 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
    }
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("name"=>array("select","+"),
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
@@ -128,7 +128,6 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("name","class"),);  }
    // end{uniquefields} automatic generation  //
 

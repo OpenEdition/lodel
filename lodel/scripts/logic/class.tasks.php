@@ -94,8 +94,8 @@ class TasksLogic extends Logic {
    }
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array();
              }
    // end{publicfields} automatic generation  //

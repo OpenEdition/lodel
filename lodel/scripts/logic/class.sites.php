@@ -132,8 +132,8 @@ class SitesLogic extends Logic {
 */
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("title"=>array("text","+"),
                   "subtitle"=>array("text","+"),
                   "path"=>array("text","+"),

@@ -149,8 +149,8 @@ class EntryTypesLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("type"=>array("type","+"),
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
@@ -166,7 +166,6 @@ class EntryTypesLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("type"),);  }
    // end{uniquefields} automatic generation  //
 

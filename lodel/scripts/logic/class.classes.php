@@ -191,8 +191,8 @@ class ClassesLogic extends Logic {
    }
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("class"=>array("class","+"),
                   "classtype"=>array("class","+"),
                   "title"=>array("text","+"),
@@ -201,7 +201,6 @@ class ClassesLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("class"),);  }
    // end{uniquefields} automatic generation  //
 

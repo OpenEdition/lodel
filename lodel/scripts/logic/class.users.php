@@ -171,8 +171,8 @@ class UsersLogic extends Logic {
    }
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("username"=>array("username","+"),
                   "passwd"=>array("passwd",""),
                   "name"=>array("text",""),
@@ -183,7 +183,6 @@ class UsersLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("username"),);  }
    // end{uniquefields} automatic generation  //
 

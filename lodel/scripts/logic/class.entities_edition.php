@@ -277,6 +277,10 @@ class Entities_EditionLogic extends GenericLogic {
 
      if ($ret=="_error") return "_error";
 
+	//TO ADD HERE : INDEX THE ENTITY - Jean Lamy
+	
+	//END TO ADD	
+	
      if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
        return "_location: ".SITEROOT.makeurlwithid($id);
      }

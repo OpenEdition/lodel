@@ -307,8 +307,8 @@ class TableFieldsLogic extends Logic {
    }
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("name"=>array("tablefield","+"),
                   "class"=>array("class","+"),
                   "title"=>array("text","+"),
@@ -322,14 +322,13 @@ class TableFieldsLogic extends Logic {
                   "filtering"=>array("text",""),
                   "edition"=>array("select",""),
                   "editionparams"=>array("text",""),
-                  "weight"=>array("select","+"),
+                  "weight"=>array("select",""),
                   "comment"=>array("longtext",""),
                   "idgroup"=>array("select","+"));
              }
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("name","class"),);  }
    // end{uniquefields} automatic generation  //
 

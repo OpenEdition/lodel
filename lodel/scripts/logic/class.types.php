@@ -172,8 +172,8 @@ class TypesLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("type"=>array("type","+"),
                   "title"=>array("text","+"),
                   "class"=>array("class","+"),
@@ -187,7 +187,6 @@ class TypesLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("type","class"),);  }
    // end{uniquefields} automatic generation  //
 

@@ -74,8 +74,8 @@ class InternalstylesLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("style"=>array("style","+"),
                   "surrounding"=>array("select","+"),
                   "conversion"=>array("text",""),
@@ -84,7 +84,6 @@ class InternalstylesLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("style"),);  }
    // end{uniquefields} automatic generation  //
 

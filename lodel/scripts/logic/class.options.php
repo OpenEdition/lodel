@@ -133,8 +133,8 @@ class OptionsLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("name"=>array("text","+"),
                   "title"=>array("text","+"),
                   "idgroup"=>array("int","+"),
@@ -146,7 +146,6 @@ class OptionsLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("name","idgroup"),);  }
    // end{uniquefields} automatic generation  //
 

@@ -291,8 +291,8 @@ class TranslationsLogic extends Logic {
 
 
 
-   // begin{publicfields} automatic generation  //
-   function _publicfields() {
+   // begin{publicfields} automatic generation  //   
+    function _publicfields() {
      return array("lang"=>array("text","+"),
                   "title"=>array("text",""),
                   "textgroups"=>array("text",""),
@@ -302,7 +302,6 @@ class TranslationsLogic extends Logic {
    // end{publicfields} automatic generation  //
 
    // begin{uniquefields} automatic generation  //
-
     function _uniqueFields() {  return array(array("lang","textgroups"),);  }
    // end{uniquefields} automatic generation  //
 
