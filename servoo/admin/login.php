@@ -36,10 +36,10 @@ $cookietimeout=4*3600;
 
 if ($login) {
   include_once(TOINCLUDE."func.php");
-  mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
-  mysql_select_db($database)  or die (mysql_error());
   extract_post();
   do {
+    mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
+    mysql_select_db($database)  or die (mysql_error());
     if (!check_auth()) {
       $context[erreur_login]=1; break; 
     }

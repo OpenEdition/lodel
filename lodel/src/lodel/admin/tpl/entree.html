@@ -40,7 +40,7 @@
 	<input type="hidden" name="idtype" value="[#IDTYPE]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td class="texte_intitule">Nom :</td>
+			<td class="texte_intitule">Entrée :</td>
 			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
 		</tr>
 		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Merci de pr&eacute;ciser un nom.</td></tr>]
@@ -59,7 +59,7 @@
 </IF>
 		<tr>
 			<td class="texte_intitule">Langue :</td>
-			<td><select name="lang"><?php  makeselectlangues_nevernil($context[lang]); ?></select></td>
+			<td><select name="langue"><?php  makeselectlangues_nevernil($context[langue]); ?></select></td>
 		</tr>
 		<tr>
 			<td class="texte_intitule">Entrée permanente:</td>

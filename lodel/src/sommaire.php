@@ -48,20 +48,20 @@ $critere.=" AND $GLOBALS[tp]types.statut>0";
 $relocation=FALSE;
 $base="";
 
-if ($identifiant) {
-  $identifiant=addslashes(stripslashes($identifiant));
-  $critere="$GLOBALS[tp]entites.identifiant='$identifiant' ".$critere;
-} else {
-  $critere="$GLOBALS[tp]entites.id='$id' ".$critere;
-}
-
 
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");
 
 if ($id || $identifiant) {
   require_once($home."textfunc.php");
   do {
-    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $critere") or die (mysql_error());
+    if ($identifiant) {
+      $identifiant=addslashes(stripslashes($identifiant));
+      $where="$GLOBALS[tp]entites.identifiant='$identifiant' ".$critere;
+    } else {
+      $where="$GLOBALS[tp]entites.id='$id' ".$critere;
+    }
+
+    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or die (mysql_error());
     if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
     $row=filtered_mysql_fetch_assoc($context,$result);
     $base=$row[tpl];

@@ -43,10 +43,11 @@
 <!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton proposant de signaler la page en cours à un ami. ]-->
 <!--[ ****************************************************************** ]-->
-	
+<IF COND="[#OPTION_SIGNALERMAIL] eq 'actif'">	
 				<a href="signaler.[#EXTENSIONSCRIPTS]?id=[#ID]">
 					<MACRO NAME="IMG_BOUTON_SIGNALER2">
 				</a>
+</IF>
 			
 </DEFMACRO>
 

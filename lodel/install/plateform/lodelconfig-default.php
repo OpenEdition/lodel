@@ -144,7 +144,7 @@ setlocale (LC_ALL,"fr_FR.UTF8");
 
 set_magic_quotes_runtime(0);
 ignore_user_abort();
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 
 // securite
 $currentdb="";

@@ -79,10 +79,10 @@ if ($edit && !$reject) {
       $passwd.= $chars[rand()%strlen($chars)];
     }
 
-    $encodedpasswd=md5($passwd.".".$username);
+    $encodedpasswd=md5($passwd.".".$context[username]);
 
     // ok, add the user.
-    mysql_query("INSERT INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$username','$encodedpasswd','$context[url]','$context[realname]','$context[email]','100','$context[commentaire]')") or die(mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]users (id,username,passwd,url,realname,email,priority,commentaire) VALUES ('$id','$username','$encodedpasswd','$context[url]','$context[realname]','$context[email]','5','$context[commentaire]')") or die(mysql_error());
     $id=mysql_insert_id();
 
     // make the registration email
@@ -106,7 +106,6 @@ if ($edit && !$reject) {
       mysql_query("DELETE FROM $GLOBALS[tp]users WHERE id='$id'") or die(mysql_error());
       break; 
     }
-    if (defined("WEBMASTER")) mail (WEBMASTER,$context[subject],$content,$headers); 
 
     calcul_page($context,"register-final");
 
@@ -137,10 +136,10 @@ return;
 
 
 function generate_login($string){
-  return strtolower ( preg_replace("/\W/","",strtr(
+  return preg_replace("/\W/","",strtr(
 	       strtr(utf8_decode($string),
 		     '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
 		     'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 	       array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
-		     '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'))) );
+		     '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u')));
 }

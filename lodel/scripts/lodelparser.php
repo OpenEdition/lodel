@@ -109,14 +109,17 @@ function parse_loop_extra(&$tables,
     $teststatut=array();
     if ($where) array_push($teststatut,$where);
     foreach ($tables as $table) {
-      if (preg_match("/\sas\s+(\w+)/",$table,$result)) $table=$result[1];
-#      echo "* ",$table,"    ",join(" ",array_keys($tablefields)),"<br/>";
-#      print_r($tablefields[$table]);
-      if ($tablefields[$table] &&
-	  !in_array("statut",$tablefields[$table])) continue;
-      if ($table=="$GLOBALS[tableprefix]session") continue;
+      if (preg_match("/\b(\w+)\s+as\s+(\w+)\b/i",$table,$result)) {
+	$realtable=$result[2];
+	$table=$result[1];
+      } else {
+	$realtable=$table;
+      }
+      if ($tablefields[$realtable] &&
+	  !in_array("statut",$tablefields[$realtable])) continue;
+      if ($realtable=="$GLOBALS[tableprefix]session") continue;
 
-      if ($table=="$GLOBALS[tableprefix]entites") {
+      if ($realtable=="$GLOBALS[tableprefix]entites") {
 	$lowstatut='"-64".($GLOBALS[droitadmin] ? "" : "*('.$table.'.groupe IN ($GLOBALS[usergroupes]))")';
       } else {
 	$lowstatut="-64";
