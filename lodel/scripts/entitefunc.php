@@ -60,7 +60,7 @@ function get_groupe($context,$idparent)
 // gere la creation et la modification d'une entite
 //
 
-function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=TRUE) 
+function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerror=TRUE) 
 
 {
   global $home,$admin,$usergroupes;
