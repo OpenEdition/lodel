@@ -56,8 +56,8 @@
 			<td>
 				<MACRO NAME="AFFICHER_PRIVILEGE">
 			</td>
-			<td>[(#NOM|nbsp)]</td>
-			<td>[(#COURRIEL|nbsp)]</td>
+			<td>[(#NAME|nbsp)]</td>
+			<td>[(#EMAIL|nbsp)]</td>
 			<td>
 			<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
 				<DOFIRST>
