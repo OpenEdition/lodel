@@ -235,11 +235,19 @@ div.action_formulaire {
 	margin-right:auto;
 }
 
+.td_admin {
+	font-family: verdana;	
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-bottom-style: dashed;
+	border-bottom-width: thin;
+}
+
 .inactif {
 	font-family: verdana;	
 	color: #999999;
 }
-
 
 img.icone {
 	float: left;
