@@ -1084,8 +1084,7 @@
 						Compte-rendu
 					</div>
 		
-		<br>[#TITRE] <br>
-<a href="http://lodelia.revues.org/document[#ID].html">http://lodelia.revues.org/document[#ID].html</a>
+<a href="document.html?id=[#ID]">[#TITRE] </a>
 <br><br>
 </LOOP>	
 <LOOP NAME="parent_compterendu2" TABLE="documents" WHERE="idparent='[#ID]'">
@@ -1093,9 +1092,8 @@
 		<div class="titre3">
 						Article recensé
 					</div>
-<br>		[#TITRE] 
-	<br>
-<a href="http://lodelia.revues.org/document[#ID].html">http://lodelia.revues.org/document[#ID].html</a>
+
+<a href="document.html?id=[#ID]">[#TITRE] </a>
 <br><br>
 </LOOP>
 					
