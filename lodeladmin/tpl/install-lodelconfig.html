@@ -33,44 +33,44 @@ include("tpl/install-openhtml.html");
 <!--[ ce fichier n'est pas un template ]-->
 
 
-<h2>Installation du fichier de configuration</h2>
+<h2>[@INSTALL.INSTALL_CONFIGURATION_FILE]</h2>
 
 <?php  if($erreur_exists_but_not_readable) {?>
 <p>
-<b>Erreur</b>: Le fichier lodelconfig.php à la racine de Lodel n'est pas lisible par le serveur web. Veuillez ajuster les droits.
+<b>[@INSTALL.ERROR]</b>: [@INSTALL.LODELCONFIG_FILE_ON_LODEL_ROOT_CANT_BE_READ_BY_WEBSERVER_ADJUST_RIGHTS].
 </p>
 <p></p>
 <?php } ?>
 
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p align="justify">
-Une erreur est survenue lors de la copie du fichier de configuration "lodelconfig.php" dans le répertoire racine de Lodel. Ceci est probablement dû aux droits d'écriture sur ces repertoires. Si vous souhaitez que le serveur fasse l'opération lui même, vous devez lui donner les droits d'écriture sur le répertoire racine de Lodel. Sinon, reportez vous aux solutions alternatives ci-dessous.
+[@INSTALL.ERROR_HAPPENED_WHILE_COPYING_LODELCONFIG_FILE_IN_LODEL_ROOT_DIRECTORY_CAUSE_MAY_BE_WRITING_RIGHTS_GIVE_WRITING_RIGHTS_TO_LODEL_ROOT_DIRECTORY_OR_SEE_OTHER_SOLUTIONS].
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">
-<input type="submit" value="continuer">
+<input type="submit" value="[@INSTALL.CONTINUE]">
 </form>
 </p>
 <hr style="width: 100%; height: 2px;">
-<p>[Alternatives]</p>
+<p>[[@INSTALL.OTHER_SOLUTIONS]]</p>
 <?php } ?>
 <p>
-Le fichier de configuration est prêt, il faut l'installer dans le répertoire racine de Lodel. Ce fichier doit être lisible par le serveur web, mais comme il contient des informations confidentielles (mot de passe), il faut restreindre <strong>au maximum</strong> les droits de lecture sur ce fichier.
+[@INSTALL.CONFIGURATION_FILE_READY_INSTALL_ON_LODEL_ROOT_DIRECTORY_AND_MAKE_IT_READABLE_BY_WEBSERVER]. [@INSTALL.FILE_CONTENT_CONFIDENTIAL_PASSWORD_NEED_READING_RIGHTS_RESTRICTION].
 </p>
 <dl>
 <dt>
-<strong>Pour installer le fichier de configuration, choisissez une des trois solutions :</strong>
+<strong>[@INSTALL.TO_INSTALL_CONFIGURATION_FILE_CHOOSE_ONE_SOLUTION] :</strong>
 </dt>
 
 <dd>
-<strong>Télécharger le fichier</strong> puis l'enregistrer à la racine de Lodel (par ftp par exemple).
+[@INSTALL.DOWNLOAD_FILE_AND_SAVE_TO_LODEL_ROOT].
 <form method="post" action="install.php" class="install">
 <input type="hidden" name="tache" value="downloadlodelconfig" />
-<input type="submit" value="Télécharger" />
+<input type="submit" value="[@INSTALL.DOWNLOAD]" />
 </form>
-&nbsp;&nbsp;Ensuite, cliquer sur "Continuer"&nbsp;&nbsp;
+&nbsp;&nbsp;[@INSTALL.CLICK_ON_CONTINUE]&nbsp;&nbsp;
 <form method="post" action="install.php" class="install">
 <input type="hidden" name="tache" value="lodelconfig" />
-<input type="submit" value="continuer" />
+<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 </dd>
 <dd>
