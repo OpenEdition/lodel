@@ -90,7 +90,7 @@ foreach (<FILE>) {
   } elsif ($cmd eq "touch") {
     system ("touch $filedest") unless -e  $filedest;
   } elsif ($cmd eq "htaccess") {
-    htaccess($filedest) unless -e $filedest;
+    htaccess($filedest) if -e $filedest;
   } else {
     die ("command inconnue: \"$cmd\"");
   }
