@@ -314,8 +314,8 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
-	KEY index_nom (nom)
-	KEY index_lang (lang)
+	KEY index_nom (nom),
+	KEY index_lang (lang),
 	KEY index_textgroup (textgroup)
 );
 
