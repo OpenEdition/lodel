@@ -45,9 +45,10 @@ if ($view->renderIfCacheIsValid()) return;
 require_once("textfunc.php");
 
 $id=intval($_GET['id']);
+$identifier=$_GET['identifier'];
 $tpl="index"; // template by default.
 
-if ($id) {
+if ($id || $identifier) {
   require_once("connect.php");
   do { // exception block
     require_once("func.php");  
@@ -57,7 +58,7 @@ if ($id) {
 
     switch($class) {
     case 'entities':
-      printEntities($id,$_GET['identifier'],$context);
+      printEntities($id,$identifier,$context);
       break;
     case 'entrytypes':
     case 'persontypes':
