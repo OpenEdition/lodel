@@ -22,78 +22,81 @@
 
 <article xmlns="http://www.lodel.org" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
 
-<!--[ affiche les personnes ]-->
-    <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
-      <DO>
-	<gr[#TYPE]>
-	  <LOOP NAME="lespersonnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
-	    <DO>
-	      <[#TYPE]>
-		[<prefix>(#PREFIX)</prefix>]
-		<prenom>[(#PRENOM)]</prenom>
-		<nomfamille>[(#NOMFAMILLE)]</nomfamille>
-		[<description>(#DESCRIPTION|namespace("xhtml"))</description>]
-		[<fonction>(#FONCTION|namespace("xhtml"))</fonction>]
-		[<affiliation>(#AFFILIATION|namespace("xhtml"))</affiliation>]
-		[<courriel>(#COURRIEL)</courriel>]
-	      </[#TYPE]>
-	    </DO>
-	  </LOOP>
-	</gr[#TYPE]>
+  <!--[ affiche les personnes ]-->
+  <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+    <DO>
+      <gr[#TYPE]>
+	<LOOP NAME="lespersonnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
+	  <DO>
+	    <[#TYPE]>
+	    [<prefix>(#PREFIX)</prefix>]
+	    <prenom>[(#PRENOM)]</prenom>
+	    <nomfamille>[(#NOMFAMILLE)]</nomfamille>
+	    [<description>(#DESCRIPTION|namespace("xhtml"))</description>]
+	    [<fonction>(#FONCTION|namespace("xhtml"))</fonction>]
+	    [<affiliation>(#AFFILIATION|namespace("xhtml"))</affiliation>]
+	    [<courriel>(#COURRIEL)</courriel>]
+	    </[#TYPE]>
+	  </DO>
+	</LOOP>
+      </gr[#TYPE]>
+    </DO>
+  </LOOP>
+  <!--[ ]-->
+
+  <!--[ affiche les entrees ]-->
+  <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
+    <DO>
+      <gr[#TYPE]>
+	<LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]' AND identite='[#IDENTITE]'" ORDER="ordre">
+	  <DO>
+	    <[#TYPE]>
+	    <nom>[#NOM]</nom>
+	    <abrev>[#ABREV]</abrev>
+	    </[#TYPE]>
+	  </DO>
+	</LOOP>
+      </gr[#TYPE]>
+    </DO>
+  </LOOP>
+  <!--[ ]-->
+
+  <!--[ affiche les champs ]-->
+  <LOOP NAME="groupesdechamps" SELECT="nom,id" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
+    <DO>
+      <[#NOM]>
+      <LOOP NAME="valeurs_des_champs">
+	<DO>
+	  <IF COND="[#VALUE]">
+	    <IF COND="[#TYPE] eq 'boolean'">
+	      <[#NOM]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NOM]>
+	    <ELSE/>
+	    <IF COND="[#TYPE] eq 'mltext'">
+		  <LOOP NAME="mltext">
+		    <DO>
+		      <[#NOM] lang="[#LANG]">[(#VALUE|namespace("xhtml"))]</[#NOM]>
+	            </DO>
+                  </LOOP>
+             <ELSE/>
+             <IF COND="[#TYPE] eq 'lang'">
+	        <[#NOM]>[#VALUE]</[#NOM]>
+            <ELSE/>
+        	<IF COND="[#TYPE] eq 'date'">
+        	  <[#NOM]>[#VALUE]</[#NOM]>
+            <ELSE/>
+	        <[#NOM]>[(#VALUE|namespace("xhtml"))]</[#NOM]>
+            </IF>
+            </IF>
+            </IF>
+            </IF>
+           </IF> <!--[ value n'est pas vide ]-->
+
+        </DO>
+      </LOOP>
+       </[#NOM]>
       </DO>
     </LOOP>
-<!--[ ]-->
 
-<!--[ affiche les entrees ]-->
-    <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
-      <DO>
-	<gr[#TYPE]>
-	  <LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]' AND identite='[#IDENTITE]'" ORDER="ordre">
-	    <DO>
-	      <[#TYPE]>
-		<nom>[#NOM]</nom>
-		<abrev>[#ABREV]</abrev>
-	      </[#TYPE]>
-	    </DO>
-	  </LOOP>
-	</gr[#TYPE]>
-      </DO>
-    </LOOP>
-<!--[ ]-->
-
-<!--[ affiche les champs ]-->
-    <LOOP NAME="groupesdechamps" SELECT="nom,id" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
-      <DO>
-	<[#NOM]>
-	  <LOOP NAME="valeurs_des_champs">
-	    <DO>
-		<IF COND="[#TYPE] eq 'boolean'">
-		  <[#NOM]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NOM]>
-		<ELSE/>
-		<IF COND="[#TYPE] eq 'mltext'">
-  		  <LOOP NAME="mltext">
-  		     <DO>
-  		       <[#NOM] lang="[#LANG]">[(#VALUE|namespace("xhtml"))]</[#NOM]>
-  		    </DO>
-  		  </LOOP>
-  	        <ELSE/>
-  	        <IF COND="[#TYPE] eq 'lang'">
-  		   <[#NOM]>[#VALUE]</[#NOM]>
-  	        <ELSE/>
-  	         <IF COND="[#TYPE] eq 'date'">
-  		  <[#NOM]>[(#VALUE|humandate)]</[#NOM]>
-  	        <ELSE/>
-  		  <[#NOM]>[(#VALUE|namespace("xhtml"))]</[#NOM]>
-		</IF>
-		</IF>
-		</IF>
-		</IF>
-	    </DO>
-	  </LOOP>
-	</[#NOM]>
-      </DO>
-    </LOOP>
-
-<!--[ ]-->
+  <!--[ ]-->
   <meta><infoarticle><typedoc>[#TYPE]</typedoc></infoarticle></meta>
 </article>
