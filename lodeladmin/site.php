@@ -43,7 +43,7 @@ $context[version]="0.7";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
+  require ($home."trash.php");
   treattrash("sites",$critere);
   return;
 }
@@ -64,7 +64,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
     if (!$context[nom]) { $context[erreur_nom]=$err=1; }
     if (!$id && (!$context[rep] || preg_match("/\W/",$context[rep]))) { $context[erreur_rep]=$err=1; }
     if ($err) break;
-    include_once ($home."connect.php");
+    require_once ($home."connect.php");
 
 
     // verifie qu'on a qu'un site si on est en singledatabase
@@ -107,7 +107,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 }
 
 if ($id>0) {
-  include_once ($home."connect.php");
+  require_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (statut>0 || statut=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
@@ -183,7 +183,7 @@ if ($tache=="createdb") {
   do { // bloc de controle
     if ($singledatabase=="on") break;
     // check if the database existe
-    include_once ($home."connect.php");
+    require_once ($home."connect.php");
     $db_list = mysql_list_dbs();
     $i = 0;
     $cnt = mysql_num_rows($db_list);
@@ -222,7 +222,7 @@ if ($tache=="createdb") {
 
 if ($tache=="createtables") {
   if (!$context[rep]) die ("probleme interne");
-  include_once ($home."connect.php");
+  require_once ($home."connect.php");
   
   mysql_select_db($context['dbname']);
 
@@ -384,7 +384,7 @@ if ($tache=="fichier") {
 
   // ajouter le modele editorial ?
   if ($GLOBALS[singledatabase]!="on") {
-    mysql_select_db($GLOBALS[database]."_".$context[rep]);
+    mysql_select_db($GLOBALS['database']."_".$context['rep']);
   }
   $import=true;
   // verifie qu'on peut importer le modele.
@@ -410,7 +410,7 @@ if ($tache=="fichier") {
 // post-traitement
 posttraitement ($context);
 
-include ($home."calcul-page.php");
+require ($home."calcul-page.php");
 calcul_page($context,"site");
 
 
