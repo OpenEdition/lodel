@@ -84,12 +84,12 @@ class TasksLogic extends Logic {
    function isdeletelocked($id,$status=0)
 
    {
-     global $user;
+     global $lodeluser;
 
      // basic check. Should be more advanced because of the potential conflict between 
      // adminlodel adn othe rusers
      $dao=$this->_getMainTableDAO();
-     $vo=$dao->find("id='".$id."' AND user='".$user['id']."'","id");
+     $vo=$dao->find("id='".$id."' AND user='".$lodeluser['id']."'","id");
      return $vo->id ? false : true ;
    }
 

@@ -85,7 +85,7 @@ if ($edit) {
       $valeur="";
     }
 
-    $status=$GLOBALS['user']['adminlodel'] && $protege ? "32" : "1";
+    $status=$GLOBALS['lodeluser']['adminlodel'] && $protege ? "32" : "1";
 
     mysql_query("REPLACE INTO $GLOBALS[tp]options (id,name,type,status,rank,valeur) VALUES ('$id','$context[name]','$context[type]','$status','$rank','$valeur')") or dberror();
 

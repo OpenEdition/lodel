@@ -31,7 +31,7 @@
 
 function open_session ($login) {
 
-  global $user,$sessionname,$timeout,$cookietimeout;
+  global $lodeluser,$sessionname,$timeout,$cookietimeout;
   global $db,$urlroot,$site;
 
   // timeout pour les cookies
@@ -39,16 +39,16 @@ function open_session ($login) {
 
 
   // context
-  // "userrights"=>intval($userrights),"usergroups"=>$usergroups,"userlang"=>$userlang,"username"=>$login)
+  // "userrights"=>intval($lodeluserrights),"usergroups"=>$lodelusergroups,"userlang"=>$lodeluserlang,"username"=>$login)
 
-  $user['name']=$login;
+  $lodeluser['name']=$login;
 
-  $contextstr=addslashes(serialize($user));
+  $contextstr=addslashes(serialize($lodeluser));
   $expire=time()+$timeout;
   $expire2=time()+$cookietimeout;
 
   usemaindb();
-  if (defined("LEVEL_ADMINLODEL") && $user['rights']<LEVEL_ADMINLODEL) {
+  if (defined("LEVEL_ADMINLODEL") && $lodeluser['rights']<LEVEL_ADMINLODEL) {
     //if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
     //$result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
@@ -62,7 +62,7 @@ function open_session ($login) {
     // name de la session
     $name=md5($login.microtime());
     // enregistre la session, si ca marche sort de la boucle
-    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$user['id']."','$site','$contextstr','$expire','$expire2')"));
+    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2')"));
     if ($result) break; // ok, it's working fine
   }
   //if (function_exists("unlock")) unlock(); 
@@ -77,17 +77,17 @@ function open_session ($login) {
 function check_auth ($login,&$passwd,&$site)
 
 {
-  global $db,$context,$user,$home;
+  global $db,$context,$lodeluser,$home;
 
   do { // block de control
     if (!$login || !$passwd) break;
 
-    $username=addslashes($login);
+    $lodelusername=addslashes($login);
     $pass=md5($passwd.$login);
     // cherche d'abord dans la base generale.
 
     usemaindb();
-    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or dberror();
+    $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
     usecurrentdb();
     if ( ($row=$result->fields) ) {
 
@@ -96,26 +96,26 @@ function check_auth ($login,&$passwd,&$site)
      } elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb']!=DATABASE) { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
       // cherche ensuite dans la base du site
-      $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$username' AND passwd='$pass' AND status>0")) or dberror();
+      $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
       if (!($row=$result->fields)) break;
      } else {
        break; // on s'eject
      }
     // pass les variables en global
-    $user['rights']=$row['userrights'];
-    $user['lang']=$row['lang'] ? $row['lang'] : "fr";
-    $user['id']=$row['id'];
+    $lodeluser['rights']=$row['userrights'];
+    $lodeluser['lang']=$row['lang'] ? $row['lang'] : "fr";
+    $lodeluser['id']=$row['id'];
 
     // cherche les groupes pour les non administrateurs
-    if (defined("LEVEL_ADMIN") && $user['rights']<LEVEL_ADMIN) { // defined is useful only for the install.php
-      $result=$db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$user['id']."'")) or dberror();
-      $user['groups']="1"; // sont tous dans le groupe "tous"
-      while ( ($row=$result->fields) ) $user['groups'].=",".$row[0];
+    if (defined("LEVEL_ADMIN") && $lodeluser['rights']<LEVEL_ADMIN) { // defined is useful only for the install.php
+      $result=$db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$lodeluser['id']."'")) or dberror();
+      $lodeluser['groups']="1"; // sont tous dans le groupe "tous"
+      while ( ($row=$result->fields) ) $lodeluser['groups'].=",".$row[0];
     } else {
-      $user['groups']="";
+      $lodeluser['groups']="";
     }
 
-    $context['user']=$user; // export info into the context
+    $context['lodeluser']=$lodeluser; // export info into the context
 
     // efface les donnees de la memoire et protege pour la suite
     $passwd=0;

@@ -200,7 +200,7 @@
 							<a href="champ.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 							<a href="champ.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 
-		<IF COND="([#USER.ADMIN] and [#STATUS] lt 32) or [#USER.ADMINLODEL]">
+		<IF COND="([#LODELUSER.ADMIN] and [#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
                          |&nbsp;<a href="champ.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
                 <ELSE/>
    	                 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -215,10 +215,10 @@
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
 	<div>
-		<IF COND="[#USER.ADMIN]">
+		<IF COND="[#LODELUSER.ADMIN]">
 					<a href="groupedechamps.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 					<a href="groupedechamps.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-                       <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
+                       <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
 			|&nbsp;<a href="groupedechamps.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	               <ELSE/>
 			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -242,7 +242,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_ENTREES">
-	<IF COND="([#USER.ADMIN] and [#STATUS] lt 32) or [#USER.ADMINLODEL]">
+	<IF COND="([#LODELUSER.ADMIN] and [#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
 	         |&nbsp;<a href="typeentree.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<ELSE/>
 		 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -255,7 +255,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
-	<IF COND="([#USER.ADMIN] and [#STATUS] lt 32) or [#USER.ADMINLODEL]">
+	<IF COND="([#LODELUSER.ADMIN] and [#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
 	         |&nbsp;<a href="typepersonne.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<ELSE/>
 		 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -273,10 +273,10 @@
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_TRANSLATION">
 	<div>
-		<IF COND="[#USER.ADMIN]">
+		<IF COND="[#LODELUSER.ADMIN]">
 					<a href="translation.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 					<a href="translation.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-                       <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
+                       <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
 			|&nbsp;<a href="translation.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	               <ELSE/>
 			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -290,7 +290,7 @@
 			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 			<span class="inactif">[@COMMON.DELETE]</span>&nbsp;|
 		</IF>
-		<IF COND="[#USER.EDITOR] and (([#STATUS] lt 32) or [#USER.ADMINLODEL])">
+		<IF COND="[#LODELUSER.EDITOR] and (([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL])">
 			<a href="translationsexport.php?lang=[#LANG]">[@LODELADMIN.EXPORT]</a>&nbsp;|&nbsp;
                <ELSE/>
 			<span class="inactif">[@LODELADMIN.EXPORT]</span>&nbsp;|&nbsp;
@@ -392,7 +392,7 @@
 <!--[ Renommée et modifiée par Ghislain 24/02/04 ******* ]-->
 <!--[ Macro servant à typedocs.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_DOCUMENT">
-        <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
+        <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
             |&nbsp;<a href="typedoc.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
         <ELSE/>
             |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -421,7 +421,7 @@
 <!--[ Ajoutée par Ghislain 24/02/04 ******* ]-->
 <!--[ Macro servant à typepublis.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PUBLICATION">
-        <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
+        <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
             |&nbsp;<a href="typepubli.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
         <ELSE/>
             |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;

@@ -56,7 +56,7 @@
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
 						<td width="350" class="td_admin">
-	<IF COND="[#USER.EDITOR]">	
+	<IF COND="[#LODELUSER.EDITOR]">	
 				<a href="index.php?do=preparemove&id=[#ID]">
 					<span class="texte_orange">[@EDITION.MOVE_DOCUMENT]</span>
 				</a>
@@ -94,7 +94,7 @@
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#USER.EDITOR]">	
+	<IF COND="[#LODELUSER.EDITOR]">	
 				<a href="oochargement.php?iddocument=[#ID]">
 					<span class="texte_orange">[@EDITION.RELOAD_FILE]</span>
 				</a>
@@ -112,7 +112,7 @@
 		<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#USER.REDACTOR] AND [#CREATIONMETHOD]=='servoo' AND [#CREATIONINFO]">
+	<IF COND="[#LODELUSER.REDACTOR] AND [#CREATIONMETHOD]=='servoo' AND [#CREATIONINFO]">
 				<a href="index.php?do=download&type=source&id=[#ID]">
 					<span class="texte_orange">[@EDITION.GET_SOURCE_FILE]</span>
 				</a>
@@ -191,7 +191,7 @@
 						<td width="350" class="td_admin">
 
 		<!--[ Validation XML ]-->
-	<IF COND="[#USER.REDACTOR]">
+	<IF COND="[#LODELUSER.REDACTOR]">
 				<a href="xml.php?id=[#ID]&valid=1">
 					<span class="texte_orange">[@EDITION.CHECK_XML]</span>
 				</a>

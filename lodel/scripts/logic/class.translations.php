@@ -82,7 +82,7 @@ class TranslationsLogic extends Logic {
    function _saveRelatedTables($vo,$context) 
 
    {
-     global $db,$user;
+     global $db,$lodeluser;
      //
      // create all the texts if needed
      // 
@@ -94,14 +94,14 @@ class TranslationsLogic extends Logic {
        $dao=$this->_getMainTableDAO();
        $vo=$dao->getById($vo->id);
      }
-     if ($vo->lang==$user['lang']) {
+     if ($vo->lang==$lodeluser['lang']) {
        // get any lang... this should not happen anyway
        $dao=$this->_getMainTableDAO();
        $vo2=$dao->find("status>0","lang");
        $fromlang=$vo2->lang;
      } else {
        // normal case... should be different !
-       $fromlang=$user['lang'];
+       $fromlang=$lodeluser['lang'];
      }
      $textscriteria=textgroupswhere( defined("SITEROOT") ? "site" : "interface" );
 

@@ -77,7 +77,7 @@
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#USER.EDITOR]">	
+	<IF COND="[#LODELUSER.EDITOR]">	
 				<a href="oochargement.php?iddocument=[#ID]">
 					<span class="texte_orange">[@EDITION.RELOAD_FILE]</span>
 				</a>
@@ -95,7 +95,7 @@
 			<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#USER.EDITOR]">	
+	<IF COND="[#LODELUSER.EDITOR]">	
 				<a href="deplacer.php?id=[#ID]">
 					<span class="texte_orange">[@EDITION.MOVE_DOCUMENT]</span>
 				</a>
@@ -110,7 +110,7 @@
 		<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-	<IF COND="[#USER.REDACTOR]">
+	<IF COND="[#LODELUSER.REDACTOR]">
 				<a href="telecharger.php?id=[#ID]&type=source">
 					<span class="texte_orange">[@EDITION.GET_SOURCE_FILE]</span>
 				</a>
@@ -150,7 +150,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
-	<IF COND="[#USER.EDITOR]">
+	<IF COND="[#LODELUSER.EDITOR]">
 				<span class="texte_noir_gras">[@EDITION.ADD_ANNEX_DOCUMENT]<a name="docannexe"></a></span>
 				<br />
 			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="rank" DONTSELECT="id"]>
@@ -209,7 +209,7 @@
 						<td width="350" class="td_admin">
 
 		<!--[ Validation XML ]-->
-	<IF COND="[#USER.REDACTOR]">
+	<IF COND="[#LODELUSER.REDACTOR]">
 				<a href="xml.php?id=[#ID]&valid=1">
 					<span class="texte_orange">[@EDITION.CHECK_XML]</span>
 				</a>

@@ -52,6 +52,6 @@ function makeSelectUserRights($value,$adminlodel)
   // take only the rights below the current user rights
   // in pratice only the ADMIN and ADMINLODEL should be authorized to add/remove users...
   $arr2=array();
-  foreach($arr as $k=>$v) if ($GLOBALS['user']['rights']>=$k) $arr2[$k]=$v;
+  foreach($arr as $k=>$v) if ($GLOBALS['lodeluser']['rights']>=$k) $arr2[$k]=$v;
   renderOptions($arr2,$value);
 }

@@ -90,7 +90,7 @@ class EntitiesLogic extends Logic {
    function deleteAction(&$context,&$error)
 
    {     
-     global $db,$user;
+     global $db;
 
      // get the entities to modify and ancillary information
      $this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids);

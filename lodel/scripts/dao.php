@@ -73,14 +73,14 @@ class DAO {
   function save(&$vo,$forcecreate=false) // $set,$context=array())
 
    {
-     global $db,$user;
+     global $db,$lodeluser;
      $idfield=$this->idfield;
 
      // check the user has the basic right for modifying/creating an object
-     if ($user['rights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
+     if ($lodeluser['rights']<$this->rights['write']) die("ERROR: you don't have the right to modify objects from the table ".$this->table);
      // check the user has the right to protect the object
      if ( ( (isset($vo->status) && ($vo->status>=32 || $vo->status<=-32)) || $vo->protect) 
-	  && $user['rights'] < $this->rights['protect']) {
+	  && $lodeluser['rights'] < $this->rights['protect']) {
        die("ERROR: you don't have the right to protect objects from the table ".$this->table);
      }
      if (isset($vo->rank) && $vo->rank==0) {
@@ -256,7 +256,7 @@ class DAO {
    function deleteObject(&$mixed) {
      global $db;
 
-     if ($GLOBALS['user']['rights'] < $this->rights['write']) trigger_error("ERROR: you don't have the right to delete object from the table ".$this->table,E_USER_ERROR);
+     if ($GLOBALS['lodeluser']['rights'] < $this->rights['write']) trigger_error("ERROR: you don't have the right to delete object from the table ".$this->table,E_USER_ERROR);
 
      $idfield=$this->idfield;
      if (is_object($mixed)) {
@@ -315,7 +315,7 @@ class DAO {
      global $db;
 
      // check the rights
-     if ($GLOBALS['user']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
+     if ($GLOBALS['lodeluser']['rights']<$this->rights['write']) die("ERROR: you don't have the right to delete object from the table ".$this->table);
      $where=" WHERE (".$criteria.") ".$this->rightscriteria("write");
 
      // delete the uniqueid entry if required
@@ -347,10 +347,10 @@ class DAO {
        if ($classvars && array_key_exists("status",$classvars)) {
 
 	 $status=$this->sqltable.".status";
-###	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND $status>-64" : " AND $status>0";
-	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? "" : " AND $status>0";
+###	 $this->cache_rightscriteria[$access]=$GLOBALS['lodeluser']['visitor'] ? " AND $status>-64" : " AND $status>0";
+	 $this->cache_rightscriteria[$access]=$GLOBALS['lodeluser']['visitor'] ? "" : " AND $status>0";
 
-	 if ($access=="write" && $GLOBALS['user']['rights'] < $this->rights['protect'])
+	 if ($access=="write" && $GLOBALS['lodeluser']['rights'] < $this->rights['protect'])
 	   $this->cache_rightscriteria[$access].=" AND $status<32 AND $status>-32 ";
        }
      } else {

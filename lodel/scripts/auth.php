@@ -41,7 +41,7 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
 function authenticate ($level=0)
 
 {
-  global $context,$user;
+  global $context,$lodeluser;
   global $home,$timeout,$sessionname,$site;
   global $db;
 
@@ -77,20 +77,20 @@ function authenticate ($level=0)
 
     // pass les variables en global
    
-    $user=unserialize($row['context']);
+    $lodeluser=unserialize($row['context']);
 
-    if ($user['rights']<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
+    if ($lodeluser['rights']<$level) { header("location: login.php?error_privilege=1&".$retour); exit(); }
 
     // verifie encore une fois au cas ou...
-    if ($user['rights']<LEVEL_ADMINLODEL && !$site) break;
+    if ($lodeluser['rights']<LEVEL_ADMINLODEL && !$site) break;
 
-    $user['adminlodel']=$user['rights']>=LEVEL_ADMINLODEL;
-    $user['admin']=$user['rights']>=LEVEL_ADMIN;
-    $user['editor']=$user['rights']>=LEVEL_EDITOR;
-    $user['redactor']=$user['rights']>=LEVEL_REDACTOR;
-    $user['visitor']=$user['rights']>=LEVEL_VISITOR;
+    $lodeluser['adminlodel']=$lodeluser['rights']>=LEVEL_ADMINLODEL;
+    $lodeluser['admin']=$lodeluser['rights']>=LEVEL_ADMIN;
+    $lodeluser['editor']=$lodeluser['rights']>=LEVEL_EDITOR;
+    $lodeluser['redactor']=$lodeluser['rights']>=LEVEL_REDACTOR;
+    $lodeluser['visitor']=$lodeluser['rights']>=LEVEL_VISITOR;
 
-    $context['user']=$user;
+    $context['user']=$lodeluser;
 
     // efface les donnees de la memoire et protege pour la suite
     #$_COOKIE[$sessionname]=0;
@@ -176,7 +176,7 @@ if (!((bool) ini_get("register_globals"))) { //
 }
 
 // securite... initialisation
-$user=array();
+$lodeluser=array();
 $idsession=0;
 $session="";
 

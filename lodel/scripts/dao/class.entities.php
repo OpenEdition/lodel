@@ -111,8 +111,8 @@ class entitiesDAO extends DAO {
    function _rightscriteria($access) {
      if (!isset($this->cache_rightscriteria[$access])) {
        DAO::_rightscriteria ($access);
-       if (!$GLOBALS['user']['admin']) {
-	 $this->cache_rightscriteria[$access].=" AND usergroup IN (".$GLOBALS['user']['groups'].")";
+       if (!$GLOBALS['lodeluser']['admin']) {
+	 $this->cache_rightscriteria[$access].=" AND usergroup IN (".$GLOBALS['lodeluser']['groups'].")";
        }
      }
      return $this->cache_rightscriteria[$access];

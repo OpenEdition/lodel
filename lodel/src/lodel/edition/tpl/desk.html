@@ -36,7 +36,7 @@
 	
 					<td width="57" heigth="75"><a href="lodel/edition/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');"><MACRO NAME="PNG_MENU_ACCUEIL"><span class="desk-text">[@COMMON.HOME]</span></a></td>
 			
-					<td width="57" heigth="75"><IF COND="[#USER.ADMIN]"><a href="lodel/admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"><span class="desk-text">[@COMMON.ADMINISTRATION]</span></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
+					<td width="57" heigth="75"><IF COND="[#LODELUSER.ADMIN]"><a href="lodel/admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"><span class="desk-text">[@COMMON.ADMINISTRATION]</span></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
 			
 					<td width="57" heigth="75"><a href="index.[#EXTENSIONSCRIPTS]"><MACRO NAME="PNG_MENU_VOIR_ACTIF"><span class="desk-text">[@COMMON.VIEW]</span></a></td>
 			
@@ -49,9 +49,9 @@
 				<tr>
 					<td width="100%" heigth="75">&nbsp;</td>
 			
-<!--[					<td width="64" heigth="75"><IF COND="[#USER.EDITOR]"><a href="lodel/edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
+<!--[					<td width="64" heigth="75"><IF COND="[#LODELUSER.EDITOR]"><a href="lodel/edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
 			
-					<td width="64" heigth="75"><IF COND="[#USER.ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
+					<td width="64" heigth="75"><IF COND="[#LODELUSER.ADMIN]"><a href="[#URL_RECOMPILE]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"></IF></td>
 						
 					<td width="64" heigth="75"><a href="lodel/edition/logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"><span class="desk-text">[@COMMON.LOGOUT]</span></a></td>
 				</tr>
@@ -88,13 +88,13 @@
 						<IF COND="[#ADMINLODEL]">
 							<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 						<ELSE/>
-							<IF COND="[#USER.ADMIN]">
+							<IF COND="[#LODELUSER.ADMIN]">
 								<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 							<ELSE/>
-								<IF COND="[#USER.EDITOR]">
+								<IF COND="[#LODELUSER.EDITOR]">
 									<MACRO NAME="PNG_UTILISATEUR_JAUNE">
 								<ELSE/>
-									<IF COND="[#USER.REDACTOR]">
+									<IF COND="[#LODELUSER.REDACTOR]">
 										<MACRO NAME="PNG_UTILISATEUR_VERT">
 									<ELSE/>
 										<IF COND="[#VISITEUR]">
@@ -107,7 +107,7 @@
 					</td>
 					<td valign="bottom">
 						<span class="texte_petit_lodelbarre">[@COMMON.USER] : </span>
-						<span class="texte_lodelbarre"><strong>[#USER.NAME]</strong></span>&nbsp;
+						<span class="texte_lodelbarre"><strong>[#LODELUSER.NAME]</strong></span>&nbsp;
 					</td>
 				</tr>
 			</table>

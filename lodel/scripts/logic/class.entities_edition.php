@@ -156,14 +156,14 @@ class Entities_EditionLogic extends GenericLogic {
 
    {
      if ($context['cancel']) return "_back";
-     global $user,$home;
+     global $lodeluser,$home;
      $id=$context['id'];
      $idparent=$context['idparent'];
      $idtype=$context['idtype'];
      $status=intval($context['status']);
 
      // iduser
-     $context['iduser']=!SINGLESITE && $user['adminlodel'] ? 0 : $user['id'];
+     $context['iduser']=!SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
 
      require_once($home."entitiesfunc.php");
      if (!checkTypesCompatibility($id,$idparent,$idtype)) {
@@ -198,7 +198,7 @@ class Entities_EditionLogic extends GenericLogic {
        $new=false;
        $vo=$dao->getById($id,"id,status");
        // change the usergroup of the entity ?
-       if ($user['admin'] && $context['usergroup']) $vo->usergroup=intval($context['usergroup']);
+       if ($lodeluser['admin'] && $context['usergroup']) $vo->usergroup=intval($context['usergroup']);
 
        if ($vo->status<=-64) {  // like a creation
 	 $vo->status=$votype->creationstatus;
@@ -225,7 +225,7 @@ class Entities_EditionLogic extends GenericLogic {
      $id=$context['id']=$dao->save($vo);
 
      // change the group recursively
-     //if ($context['usergrouprec'] && $user['admin']) change_usergroup_rec($id,$usergroup);
+     //if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$lodelusergroup);
 
      $gdao=&getGenericDAO($class,"identity");
      $gdao->instantiateObject($gvo);
@@ -454,9 +454,9 @@ class Entities_EditionLogic extends GenericLogic {
     function _getUserGroup($context,$idparent)
 
     {
-      global $user,$db;
+      global $lodeluser,$db;
 
-      if ($user['admin']) { // take it from the context. 
+      if ($lodeluser['admin']) { // take it from the context. 
 	$usergroup=intval($context['usergroup']);
 	if ($usergroup>0) return $usergroup;
       }

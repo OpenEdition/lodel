@@ -84,7 +84,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="450" class="td_admin">
-	<IF COND="[#USER.EDITOR]">
+	<IF COND="[#LODELUSER.EDITOR]">
 				<span class="texte_noir_gras">[@EDITION.ADD_ANNEX_DOCUMENT]<a name="docannexe"></a></span>
 				<br />
 			<LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="rank" DONTSELECT="id"]>

@@ -52,7 +52,7 @@ function setcontext($var,$operation,$value="")
 {
   global $db;
   usemaindb();
-  $where="name='".addslashes($_COOKIE[$GLOBALS['sessionname']])."' AND iduser='".$GLOBALS['user']['id']."'";
+  $where="name='".addslashes($_COOKIE[$GLOBALS['sessionname']])."' AND iduser='".$GLOBALS['lodeluser']['id']."'";
   $context=$db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
   if ($db->errorno()) dberror();
 

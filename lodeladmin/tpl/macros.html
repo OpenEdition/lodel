@@ -147,7 +147,7 @@
 <!--[ Renommée et modifiée par Ghislain 24/02/04 ******* ]-->
 <!--[ Macro servant à typedocs.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_DOCUMENT">
-        <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
+        <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
             |&nbsp;<a href="typedoc.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
         <ELSE/>
             |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
@@ -176,7 +176,7 @@
 <!--[ Ajoutée par Ghislain 24/02/04 ******* ]-->
 <!--[ Macro servant à typepublis.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PUBLICATION">
-        <IF COND="([#STATUS] lt 32) or [#USER.ADMINLODEL]">
+        <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
             |&nbsp;<a href="typepubli.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
         <ELSE/>
             |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;

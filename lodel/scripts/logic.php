@@ -196,7 +196,7 @@ class Logic {
    function isdeletelocked($id,$status=0)
 
    {
-     global $user;
+     global $lodeluser;
      // basic
      $dao=$this->_getMainTableDAO();
      

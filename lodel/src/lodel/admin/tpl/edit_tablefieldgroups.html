@@ -86,7 +86,7 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
     </p>
   </LOOP>
-  <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
+  <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_GROUP]
         : 
       </label>

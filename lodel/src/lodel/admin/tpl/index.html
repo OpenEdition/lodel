@@ -84,7 +84,7 @@
 							<span class="texte_orange">[@COMMON.LANG_SITE] :</span>
 		                                <select onchange="change_language(this)">
 	                                	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='site'" ORDER="rank">
-		                                <IF COND="[#USER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		                                <IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
 
@@ -101,7 +101,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#USER.TRANSLATIONMODE]">[@ADMIN.GET_OUT]<ELSE/>[@ADMIN.ENTER_IN]</IF> [@ADMIN.TRANSLATION_MODE]</span></a>
+							<a href="usersettings.php?translationmode=toggle"><span class="texte_orange"><IF COND="[#LODELUSER.TRANSLATIONMODE]">[@ADMIN.GET_OUT]<ELSE/>[@ADMIN.ENTER_IN]</IF> [@ADMIN.TRANSLATION_MODE]</span></a>
 
 						</td>
 						<td>&nbsp;</td>
@@ -176,7 +176,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							[@ADMIN.DATAFIELDS]
-							<IF COND="[#USER.REDACTOR]">
+							<IF COND="[#LODELUSER.REDACTOR]">
 								<select onChange="select_url(this)"><option>--</option>
 									<LOOP NAME="classtypes">
 									<option value="" style="color: gray;">[#TITLE] </option>
@@ -194,7 +194,7 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							[@ADMIN.TYPE]
-							<IF COND="[#USER.REDACTOR]">
+							<IF COND="[#LODELUSER.REDACTOR]">
 							<select onChange="select_url(this)"><option>--</option>
 							<LOOP NAME="classtypes">
 							<option value="" style="color: gray;">[#TITLE] </option>
@@ -294,14 +294,14 @@
 							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
 		                                <select onchange="change_language(this)">
 	                                	<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
-		                                <IF COND="[#USER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		                                <IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		                                </LOOP>
 		                                </select>
 
 						</td>
 						<td>&nbsp;</td>
 					</tr>
-                                        <IF COND="[#USER.ADMINLODEL]">
+                                        <IF COND="[#LODELUSER.ADMINLODEL]">
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">

@@ -45,10 +45,10 @@ class UsersLogic extends Logic {
    function isdeletelocked($id,$status=0) 
 
    {
-     global $user;
-     if ($user['id']==$id && 
-	 ( ($GLOBALS['site'] && $user['rights']<LEVEL_ADMINLODEL) ||
-	   (!$GLOBALS['site'] && $user['rights']==LEVEL_ADMINLODEL))) {
+     global $lodeluser;
+     if ($lodeluser['id']==$id && 
+	 ( ($GLOBALS['site'] && $lodeluser['rights']<LEVEL_ADMINLODEL) ||
+	   (!$GLOBALS['site'] && $lodeluser['rights']==LEVEL_ADMINLODEL))) {
        return getlodeltextcontents("cannot_delete_current_user","common");
      } else {
        return false;
@@ -143,12 +143,12 @@ class UsersLogic extends Logic {
 
 
    function validateFields(&$context,&$error) {
-     global $db,$user;
+     global $db,$lodeluser;
 
      if (!Logic::validateFields($context,$error)) return false;
 
      // check the user has the right equal or higher to the new user
-     if ($user['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
+     if ($lodeluser['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
 
      // Check the user is not duplicated in the main table...
      if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.

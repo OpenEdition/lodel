@@ -296,7 +296,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      if ($obj->type=="file" || $obj->type=="image") {
        // nothing...
      } elseif ($obj->type=="mltext") {
-       $lang=$obj->lang ? $obj->lang : $GLOBALS['user']['lang'];
+       $lang=$obj->lang ? $obj->lang : $GLOBALS['lodeluser']['lang'];
        $this->_currentcontext[$obj->name][$lang].=addslashes($data);
      } else {
        $this->_currentcontext[$obj->name].=addslashes($data);

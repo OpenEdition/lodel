@@ -321,7 +321,7 @@ function maketext($name,$group,$tag)
     $textexists=$db->getOne("SELECT 1 FROM ".$prefix."texts WHERE name='$name' AND textgroup='$group'");
     if ($db->errorno()) dberror();
     if (!$textexists) { // text does not exists. Have to create it.
-      $lang=$GLOBALS['user']['lang'] ? $GLOBALS['user']['lang'] : ""; // unlikely useful but...
+      $lang=$GLOBALS['lodeluser']['lang'] ? $GLOBALS['lodeluser']['lang'] : ""; // unlikely useful but...
       $db->execute("INSERT INTO ".$prefix."texts (name,textgroup,contents,lang) VALUES ('$name','$group','','$lang')") or $this->errmsg ($db->errormsg());
     }
     if ($group!="site") usecurrentdb();

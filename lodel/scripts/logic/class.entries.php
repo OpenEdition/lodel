@@ -49,7 +49,7 @@ class EntriesLogic extends GenericLogic {
    function editAction(&$context,&$error,$clean=false)
 
    {
-     global $user,$home;
+     global $home;
 
 
      $id=$context['id'];

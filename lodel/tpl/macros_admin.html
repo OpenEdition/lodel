@@ -97,7 +97,7 @@
 
 <DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO">
 
-<IF COND="([#USER.RIGHTS] ge [#LO|rights('protect')]) or ([#USER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
          |&nbsp;<a href="index.php?do=view&id=[#ID]&lo=[#LO]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	<IF COND="[#STATUS] ge 32">
 	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
@@ -287,7 +287,7 @@ cp_[#NAME].writeDiv();
 --------------------------------------------------------------- ]-->
 
 <DEFMACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
- <IF COND="[#USER.EDITOR] and (([#STATUS] lt 32) or [#USER.ADMINLODEL])">
+ <IF COND="[#LODELUSER.EDITOR] and (([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL])">
  	<a href="translationsexport.php?lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
  	|&nbsp;<a href="translationsimport.php?lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
 <ELSE/>

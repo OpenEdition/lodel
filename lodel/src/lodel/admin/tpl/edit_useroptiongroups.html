@@ -50,6 +50,7 @@
 	<LOOP NAME="optiongroups" TABLE="options" ORDER="rank,name" WHERE="status gt 0 AND idgroup='[#ID]'">
 
 		<DO>
+		<IF COND="[#TYPE]=='passwd'"><LET VAR="value"></LET></IF>
 		<!--[ print the group ]-->
 		<label for="[#NAME]">[#NAME] :</label>
 		<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" />

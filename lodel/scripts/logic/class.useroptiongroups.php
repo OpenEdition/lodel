@@ -55,7 +55,7 @@ class UserOptionGroupsLogic extends Logic {
    function editAction(&$context,&$error)
 
    {
-     global $user,$home;
+     global $lodeluser,$home;
      // get the dao for working with the object
      
      $dao=&getDAO("options");
@@ -74,7 +74,7 @@ class UserOptionGroupsLogic extends Logic {
      if ($error) return "_error";
 
      foreach ($options as $option) {
-       if ($user['rights'] < $option->userrights) continue; // the user has not the right to do that.
+       if ($lodeluser['rights'] < $option->userrights) continue; // the user has not the right to do that.
        if ($option->type=="passwd" && !trim($context[$option->name])) continue; // empty password means we keep the previous one.
        if ($option->type!="boolean" && trim($context[$option->name])==="") $context[$option->name]=$option->defaultvalue; // default value
        $option->value=$context[$option->name];

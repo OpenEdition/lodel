@@ -57,7 +57,7 @@ class PersonsLogic extends GenericLogic {
    function editAction(&$context,&$error,$clean=false)
 
    {
-     global $user,$home;
+     global $lodeluser,$home;
 
 
      $id=$context['id'];
@@ -113,7 +113,7 @@ class PersonsLogic extends GenericLogic {
      $vo->sortkey=makeSortKey($familyname." ".$firstname);
      $id=$context['id']=$dao->save($vo);
      // change the group recursively
-     //if ($context['usergrouprec'] && $user['admin']) change_usergroup_rec($id,$usergroup);
+     //if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$usergroup);
 
      // save the class table
      $gdao=&getGenericDAO($class,"idperson");

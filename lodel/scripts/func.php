@@ -76,9 +76,9 @@ function postprocessing(&$context)
 function maketask($name,$etape,$context,$id=0)
 
 {
-  global $user,$db;
+  global $lodeluser,$db;
   if (is_array($context)) $context=serialize($context);
-  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$user['id']."','$context')")) or dberror();
+  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$lodeluser['id']."','$context')")) or dberror();
   return $db->insert_ID();
 }
 
@@ -373,7 +373,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
       die("ERROR: unknow group for getlodeltext");
     }
   }
-  if ($lang==-1) $lang=$GLOBALS['user']['lang'];
+  if ($lang==-1) $lang=$GLOBALS['lodeluser']['lang'];
   require_once($GLOBALS['home']."connect.php");
   global $db;
 
@@ -384,13 +384,13 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
     $prefix="#_TP_";
   }
 
-  $critere=$GLOBALS['user']['visitor'] ? "" : "AND status>0";
+  $critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
 
   $logic=false;
   do {
     $arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
     if ($arr===false) dberror();
-    if (!$GLOBALS['user']['admin'] || $logic) break;
+    if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
     if (!$arr) {
       // create the textfield
       require_once($GLOBALS['home']."logic.php");
@@ -404,7 +404,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
   $id=$arr['id'];
   $contents=$arr['contents'];
   $status=$arr['status'];
-  if (!$contents && $GLOBALS['user']['visitor']) $contents="@".$name;
+  if (!$contents && $GLOBALS['lodeluser']['visitor']) $contents="@".$name;
 }
 
 function getlodeltextcontents($name,$group="",$lang=-1)
