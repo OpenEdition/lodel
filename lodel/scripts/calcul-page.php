@@ -3,28 +3,27 @@
 include_once("$home/func.php");
 # fonction d'entree pour le calcul d'une page
 
-function calcul_page(&$context,$lbase="",$cache_rep="",$base_rep="tpl/") {
+function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
-  global $base,$home,$format;
+  global $home,$format;
 
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
-  if (!$lbase) $lbase=$base;
 
-  $template_cache = $cache_rep."CACHE/tpl_$lbase.php";
-  $lbase=$base_rep.$lbase.".html";
+  $template_cache = $cache_rep."CACHE/tpl_$base.php";
+  $base=$base_rep.$base.".html";
   //  $macro=$base_rep."macros.html";
   $template_time=myfilemtime($template_cache);
 
-  if (($template_time <= myfilemtime($lbase)) ||
+  if (($template_time <= myfilemtime($base)) ||
       //      ($template_time <= myfilemtime($macro)) ||
       $GLOBALS[recalcul_templates]) {
 	if ($GLOBALS[admin]) {
           echo "<SCRIPT LANGUAGE=\"JavaScript\">if(window.defaultStatus==\"\"){window.defaultStatus=\"ATTENTION LES TEMPLATES SUIVANTS ONT ETE MODIFIES : \";}";
-          echo "window.defaultStatus+='$lbase | ';</SCRIPT>";
+          echo "window.defaultStatus+='$base | ';</SCRIPT>";
         }
 
     include_once ("$home/parser.php");
-    parse($lbase, $template_cache);
+    parse($base, $template_cache);
   }
   // execute le template php
 		
