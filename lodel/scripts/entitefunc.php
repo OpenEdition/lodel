@@ -425,12 +425,9 @@ function extrait_entrees($identite,&$context)
 {
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees,$GLOBALS[tp]entites_entrees WHERE identree=id  AND identite='$identite'") or die(mysql_error());
 
+  $context[entrees][$row[idtype]]=array();
   while($row=mysql_fetch_assoc($result)) {
-    if ($context[entrees][$row[idtype]]) {
-      array_push($context[entrees][$row[idtype]],$row[nom]);
-    } else {
-      $context[entrees][$row[idtype]]=array($row[nom]);
-    }
+    array_push($context[entrees][$row[idtype]],$row[nom]);
   }
 }
 
