@@ -201,6 +201,8 @@ if ($tache=="options") {
     (5*($permission[group][read]!="")+2*($permission[group][write]!="")).
     (5*($permission[all][read]!="")+2*($permission[all][write]!=""));
 
+  if ($pclzip=="pclzip") { $newunzipcmd=$newzipcmd="pclzip"; }
+
   maj_lodelconfig(array("chooseoptions"=>"oui",
 			"urlroot"=>$newurlroot,
 			"importdir"=>$newimportdir,
@@ -208,7 +210,8 @@ if ($tache=="options") {
 			"usesymlink"=>$newusesymlink,
 			"filemask"=>$filemask,
 			"contactbug"=>$newcontactbug,
-			"unzipcmd"=>$newunzipcmd));
+			"unzipcmd"=>$newunzipcmd,
+			"zipcmd"=>$newzipcmd));
 }
 
 

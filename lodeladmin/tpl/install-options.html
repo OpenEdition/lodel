@@ -64,6 +64,30 @@
 </table>
 </div>
 </td></tr>
+
+<tr><td>
+<p>Fonction d'archivage ZIP:</p>
+
+<p>Si vous souhaitez utiliser ces fonctionalités l'import par ServOO ou le systeme de sauvegarde de Lodel, veuillez choisir une des deux options:</p>
+<ul>
+<li>
+<p>
+<input type="radio" name="pclzip" value="pclzip" <?php if ($unzipcmd=='pclzip' && $zipcmd=='pclzip') { echo "checked";}?> >Utiliser PclZip. Pour cela, assurez vous que l'extension zlib est installée <?php if (function_exists('gzopen')) { ?>(ce qui semble être le cas) <?php } else { ?>(<strong>ce qui ne semble pas être le cas</strong>)<?php } ?>
+</p>
+</li>
+<li><p><input type="radio" name="pclzip" value="cmd" <?php if ($unzipcmd!='pclzip' || $zipcmd!='pclzip') { echo "checked";}?> > Utiliser les commandes unix zip et unzip. Pour cela, veuillez préciser les chemins d'accès vers ces commandes. Attention! cette solution ne fonctionne pas quand php est en safe-mode ou quand la commande php <code>system</code> est désactivé, ce qui est le cas chez la plupart des hébergeurs.
+</p>
+<table>
+<tr><td>unzip:</td><td><input type="text" size="60" name="newunzipcmd" value="<?php if ($unzipcmd!='pclzip') echo $unzipcmd; ?>"></td></tr>
+<tr><td>zip:</td><td><input type="text" size="60" name="newzipcmd" value="<?php if ($zipcmd!='pclzip') echo $zipcmd; ?>"></td></tr>
+</table>
+</li>
+
+
+</td></tr>
+
+
+
 <tr><td>
 <p>Extension des scripts:</p>
 <p>Les scripts Lodel sont des scripts PHP, et il est recommandé d'utiliser l'extension ".php". Cependant si vous le souhaitez, il est possible de choisir l'extension ".html". Cette option n'est pas recommandée : elle nécessite en particulier une configuration particulière sur le serveur (c'est à dire que les fichiers html soient analysés par php).</p>
@@ -96,15 +120,6 @@ non: <input type="radio" name="newusesymlink" value="non"  <? if($usesymlink!="o
 
 <input type="text" size="60" name="newimportdir" value="<?php echo $importdir; ?>">
 </td></tr>
-<tr><td>
-<p>Chemin vers la commande unzip:</p>
-
-<p>Lodel a besoin de la commande unzip pour dezipper les fichiers envoyés avec le ServOO. Vous pouvez ne pas changer cette valeur si vous ne souhaitez pas utiliser l'import par le ServOO.</p>
-
-<input type="text" size="60" name="newunzipcmd" value="<?php echo $unzipcmd; ?>">
-
-</td></tr>
-
 
 </table>
 <input type="submit" value="continuer">
