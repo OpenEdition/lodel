@@ -514,7 +514,7 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
   $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql",$erasetables);
 
   // no error, let's add the translations of the interface.
-  if (!$erreur_createtables)
+  if (!$erreur_createtables) 
     $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init-translations.sql",$erasetables);
  
   if ($erreur_createtables) {
