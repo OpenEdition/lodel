@@ -27,13 +27,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
  
- /**
-  * Search script
-  * @author Jean Lamy
-  * @since 2005-02-02
-  * 
-  * 
-  */
+
   
 /**
  * search
@@ -136,7 +130,7 @@ function search(&$context,$funcname,$arguments)
 		$from = "#_TP_search_engine";
 		if($context['qfield'] && $context['qfield']!="")
 		{
-			//added by Jean Lamy - get all tablefields for q_field specified
+			//get all tablefields for q_field specified
 			$dao_dc_fields = &getDAO("tablefields");
 			$vos_dc_fields = $dao_dc_fields->findMany("g_name='".addslashes($context['qfield'])."'");
 			$field_in = array();
