@@ -1,92 +1,23 @@
 /*********************************************************************************************
- *  Feuille de style                                                                         * 
+ *  Feuille de style des versions imprimable                                                                      * 
  *  Mai 2003                                                                                 *
  *********************************************************************************************
  */
 
- 
- /*********************************************************************************************
- *  Structure commune:
- *		body 		
- *			.conteneur
- *				.principale		
- *					.barrenav
- *					.corps
- *						.separation
- *						.contenu
- *					.spacer
- *							
- *
- *	******************************************************************************************
- * Index.html
- *						.contenu
- *		 					.titre1
- *								A.titre1
- *								.soustitrerevue
- *							.titre2
- *								A.titre2
- *							.extrait
- *							.texte_trespetit_centre
-  *********************************************************************************************
- * barre.html
- *					.barrenav
- * 						.titrebarre
- *						.chercher	
- *						.menu1
- *							A.menu1
- *						.menu2
- *							A.menu2
- *						.texte_trespetit_centre
- *						
- * *******************************************************************************************
- * Sommaire.html
- *						.contenu
- *                      	.titre1
- *								.soustitrerevue
- *								.directeurpublication
- *							.docregroupement
- *								.afficherdocument
- *									.A.auteur
- *									.article
- *										.menu2
- *									.bouton_statut_publierON
- *									.A.texte_integral
- *								.titre2
- *							..texte_trespetit_centre
- *
- *********************************************************************************************
- * article.html
- *						.contenu
- *							.titre1
- .
- 
- 
- 
- /*********************************************************************************************
- *  Les éléments principaux                                                                   * 
-  *********************************************************************************************
- */
- 
-html, body {
-	height: 100%;
-	}
-	
- 
+
 body
 {
 	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
 	 *
 	 */
-	 background-color: #BFBFBF;
+	 background-color: #ffffff;
 	 margin-left : 0;
 	 margin-top : 0;
 	 margin-bottom : 0;
 	 margin-right : 0;
-	 font-size: small;
-	 font-family: Arial, Helvetica, sans-serif, Times New Roman,  Verdana ;
+	 font-size: 8px;
+	 font-family: Arial, Times New Roman,  Verdana, Helvetica, sans-serif;
 	 text-decoration: none;
-	 font-weight: normal;
-	 text-indent: 0
 }
 
 table {
@@ -95,47 +26,17 @@ table {
 	 */
 	border: 0; 
 	cellspacing: 0; 
-	cellpadding: 0;
-	border: 0;
-	padding: 0; 
-	margin: 0;
+	cellpadding: 0; 
 	
 }
-
-td {
-	/*  
-	 * Elements de styles d'une table par défaut 
-	 */
-	border: 0; 
-	cellspacing: 0; 
-	cellpadding: 0;
-	border: 0;
-	padding: 0; 
-	margin: 0;
-	
-}
-
-tr {
-	/*  
-	 * Elements de styles d'une table par défaut 
-	 */
-	border: 0; 
-	cellspacing: 0; 
-	cellpadding: 0;
-	border: 0;
-	padding: 0; 
-	margin: 0;
-	
-}
-
 
 p {
 	/*  
 	 * Redéfinit les marges au dessus et en dessous des paragraphes formatés 
 	 * avec la balise <p>
 	 */
-	margin-bottom : 2;
-	margin-top : 2;
+	margin-bottom : 3;
+	margin-top : 3;
 }
  
 sup {
@@ -149,28 +50,30 @@ sup {
 }
 
 /********************************************************************************************
-  *	Les différents niveaux de titre contenus à l'intérieur des textes                                                            *
+  *	Les différents niveaux de titre                                                             *
   ********************************************************************************************
   */
 
 h1
 {
-	/*  définit les caractéristiques du titre de niveau 1 : h1	
+	/*  définit les caractéristiques du titre de de niveau 1 : h1
+	 *
 	 */
-	font-weight : bold;
+	font-weight : large;
 	font-size : 140%;
+	text-align: left;
 	text-indent : 0;
 	line-height: 100%;
-	
 }
+
 
 
 h2
 {
 	/*  
-	 *définit les caractéristiques du titre de niveau 2 : h2	
+	 *
 	 */
-	font-weight : bold;
+	font-weight : normal;
 	font-size: 130%;
 	text-align: left;
 	text-indent : 0;
@@ -179,7 +82,7 @@ h2
 h3
 {
 	/*  
-	 *	définit les caractéristiques du titre de niveau 3 : h3	
+	 *
 	 */
 	font-size: 120%;
 	text-align: left;
@@ -189,7 +92,7 @@ h3
 h4
 {
 	/*  
-	 *	définit les caractéristiques du titre de niveau 4 : h4
+	 *
 	 */
 	font-size: 110%;
 	text-align: left;
@@ -199,7 +102,7 @@ h4
 h5
 {
 	/*  
-	 * définit les caractéristiques du titre de niveau 5 : h5	
+	 *
 	 */
 	font-size: 100%;
 	text-align: left;
@@ -214,7 +117,7 @@ h5
 h6
 {
 	/*  
-	 *	définit les caractéristiques du titre de niveau 6 : h6	
+	 *
 	 */
 	font-size: 90%;
 	font-variant : small-caps;
@@ -223,99 +126,6 @@ h6
 	text-indent : 0;
 	color: Black;
 }
-
-
-.section1
-{
-	/*  définit les caractéristiques du titre de niveau 1 : section1	
-	 */
-	width: auto;
-	height: auto;
-	font-weight : bold;
-	font-size : 140%;
-	margin-left: 5px;
-	margin-bottom: 25px;
-	margin-top: 25px;
-	
-}
-
-
-.section2
-{
-	/*  
-	 *	définit les caractéristiques du titre de niveau 2 : section2	
-	 */
-	width: auto;
-	height: auto;
-	font-weight : bold;
-	font-size: 130%;
-	margin-left: 10px;
-	margin-bottom: 20px;
-	margin-top: 20px;
-	
-}
-
-.section3
-{
-	/*  
-	 *	définit les caractéristiques du titre de niveau 3 : section3	
-	 */
-	width: auto;
-	height: auto;
-	font-size: 120%;
-	font-weight : bold;
-	color: #00000;
-	margin-left: 15px;
-	margin-bottom: 15px;
-	margin-top: 15px;
-	
-}
-
-.section4
-{
-	/*  
-	 *	définit les caractéristiques du titre de niveau 4 : section4	
-	 */
-	width: auto;
-	height: auto;
-	font-size: 110%;
-	font-weight: bold;
-	margin-left: 20px;
-	margin-bottom: 10px;
-	margin-top: 10px;
-	color: #000000;
-}
-
-.section5
-{
-	/*  
-	 *	définit les caractéristiques du titre de niveau 5 : section5	
-	 */
-	width: auto;
-	height: auto;
-	font-size: 100%;
-	font-weight: bold;
-	color: #000000;
-	margin-left: 25px;
-	margin-bottom: 5px;
-	margin-top: 5px;
-}
-	
-.section6
-{
-	/*  
-	 *	définit les caractéristiques du titre de niveau 6 : section6	
-	 */
-	width: auto;
-	height: auto;
-	font-size: 90%;
-	font-weight: bold;
-	color: #000000;
-	margin-left: 30px;
-	
-
-}
-
 
 /*********************************************************************************************
  *  Les liens Hypertexte                                                                     * 
@@ -362,10 +172,9 @@ A:active {
 	
 }
 
+
 /*********************************************************************************************
  *  Les différentes class liées aux éléments de structure des pages.                         * 
- *	 - .conteneur																			 *
- *   - .principale
  *   - .barrenav                                                                             *
  *	 - .corps                                                                                *
  *	 - .separation                                                                           *
@@ -373,143 +182,109 @@ A:active {
  *********************************************************************************************
  */
 	
- .conteneur {
- 	/*
-	 * Bloc purememnt structurel. Pas de propriété particulière, l'attribut text-align: center
-	 * permet de centrer le bloc imbriqué
-	 */
-	text-align:center;
-	width:100%;
-	height:100%;
+.principale {
+	width: auto;
+	height: 100%;
 	
 }
-
- .principale {
- 	/*
-	 * Bloc principal contenant l'ensmble de la page. définit la largeur de la page. 
-	 */
- 	width:775;
-	height:100%;
-	margin-right:auto;
-	margin-left:auto;
-	text-align:left;
-	border-left:1px solid #9C3234;
-	border-right:1px solid #9C3234;
-
-	
-	}
+ 
  
 .barrenav {
 	/*
 	 * Style de la barre de navigation, elle est placée à gauche de l'élément de class "corps"
 	 * grâce à l'attribut "float"
 	 */
-	width:167;
-	height:100%; 
-	background-color:#EFEFEF;
-	border-right:1px solid #9C3234;
-	left:0;
-	padding:0;
+	width: 167; 
+	height: 100%;
+	background-color: #EFEFEF;
 	float: left;
-	
-	
-		
+	border-left: 1px solid #9C3234;
+	border-right: 1px solid #9C3234;
+	margin-right: 0;
 }
 
 .corps {
 	/*
 	 * Style du bloc placé à droite de la barre de navigation
 	 */
-	
-	width:auto;
-	height:100%; 
-	background-color:#ffffff;
-	margin-left:0;
-	right:0;
-	
-
-		
+	width: auto;
+	height: 100%;
+	background-color: #ffffff;
+	border-right: 1px solid #9C3234;
+	margin-left: 0;
 }
-
-
 
 .separation {
 	/*
-	 * Style du bloc marquant une séparation entre la barre de nav et le reste de la page.
+	 * Style du bloc marquant une sépération entre la barre de nav et le reste de la page.
 	 * Ce bloc est contenu dans le bloc de class "corps", il se situe à gauche du bloc de class
 	 * "contenu"
 	 */
-	background-color:#EFEFEF;
-	width:36;
-	height:100%;
-	border-right:20px solid #ffffff;
-	border-left:8px solid #ffffff;
-	float:left;
-	margin:0;
+	height: 100%;
+	background-color: #EFEFEF;
+	width: 36;
+	border-right: 15px solid #ffffff;
+	border-left: 8px solid #ffffff;
+	float: left;
+	margin: 0;
 }
 
 .contenu {
 	/*
 	 * Style du bloc pacé à droite du bloc séparation, il est aussi contenu dans la vloc corps.
 	 */
-	width:auto;
-	height:100%;
-	margin:0;
-	right:0;
-		
-}
-
-.spacer {
-	clear:both;
-}
-	
-.hr {
-  clear: both;
-  visibility: hidden;
+	width: auto;
+	height: 100%;
+	margin: 0;
 }
 
  /********************************************************************************************
- *  Les  class communes à toutes les pages                                                   * 
+ *  Les  class liées aux titres                                                              * 
  *********************************************************************************************
  */
- 	/* Style .titre1
+ 	/* Style .titre1  
 	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
 	 * A 
 	 */
-	 
-.titre1  {
+.titre1 {
 	 width: auto;
-	 height: auto;
-	 background-color: #F4F4F4;
+	 background-color: #ffffff;
 	 font-size: 140%;
 	 font-weight: 300;
 	 text-align: left; 
 	 color: #9C3234;
 	 line-height: 120%;
 	 margin-bottom: 15px;
-	 text-decoration: none;
 }
 
-A.titre1  {
+A.titre1 {
 	/*  
-	 *	Styles des liens non visités et visités de class .titre1
+	 *	Styles des liens non visités et visités des liens des éléments de classe "titre1"
 	 */
-	 font-size: 100%;
-	 text-decoration: none;
+	font-size: 100%;
+	color: #9C3234;
+	text-decoration: none;
+	border: 0;
 }
 
 A.titre1:hover {
 	/*  
 	 *	Styles des liens survolés des liens des éléments de classe "titre1"
 	 */
-	color: #666666;	
+	font-size: 90%;
+	color: #666666;
+	border: 0;
+	
 }
 
 A.titre1:active {
 	/*  
 	 *	Style des liens actifs des liens des éléments de classe "titre1"
 	 */
+	font-size: 90%;
 	color: #666666;
+	border: 0;
+	
 }
 
 /*************************************************************************/
@@ -520,21 +295,23 @@ A.titre1:active {
 	 */
 .titre2 {
 	 width: auto;
-	 height: auto;
+	 height: 20;
 	 background-color: #9C3234;
+	 font-size: small;
 	 font-weight : bold;
 	 text-align: left; 
 	 color: #ffffff;
 	 margin-bottom: 7px;
 	 margin-top: 15px;
 	 vertical-align: middle;
-	 padding-left: 5px;
 }
 
 A.titre2 {
 	/*  
 	 *	Styles des liens non visités et visités
 	 */
+	font-size: small;
+	font-weight: bold;
 	color: #cccccc;
 	text-indent: 0;
 	margin: 0;
@@ -546,6 +323,7 @@ A.titre2:hover {
 	/*  
 	 *	Styles des liens survolés
 	 */
+	font-size: small;
 	font-weight: small;
 	color: #ffffff;
 	text-indent: 0;
@@ -556,11 +334,62 @@ A.titre2:active {
 	/*  
 	 *	Style des liens actifs
 	 */
+	font-size: small;
 	font-weight: small;
 	color: #ffffff;
 	text-indent: 0;
 	margin: 0;
 }
+
+
+.alphabet {
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: small;
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 margin-bottom: 7px;
+	 margin-top: 15px;
+	 vertical-align: middle;
+}
+
+A.alphabet {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #cccccc;
+	text-indent: 0;
+	margin: 0;
+	vertical-align: middle;
+
+}
+
+A.alphabet:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+	
+}
+A.alphabet:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+}
+
 
 /***************************************************************************/
 	
@@ -568,17 +397,95 @@ A.titre2:active {
 	/*  
 	 * Style .titre3 
 	 */
-	 
 	width: auto;
 	height: 20;
-	background-color: #EFEFEF;
+	background-color: #ffffff;
+	font-size: small;
 	font-weight: bold;
 	color: #9C3234;
 	text-indent : 10;
+	padding: 10px;
 	margin-top: 20px;
+	border-bottom: 1px solid
 }
 
-/***************************************************************************/
+/*****************************************************************************
+ *	style des liens pointant vers les auteurs                                *
+ *****************************************************************************
+ */ 
+ 
+A.auteur {
+	/*  
+	 *	Styles des liens non visités 
+	 */
+	text-decoration:none;
+	font-weight: 550;
+	color: #9C3234;
+	
+}
+
+A.auteur:visited {
+	/*  
+	 *	Styles des liens  visités
+	 */
+	color: #9C3234;
+	}
+
+A.auteur:hover , A.auteur:active {
+	/*  
+	 *	Styles des liens survolés et actifs
+	 */
+	color: #666666;
+	
+}
+
+	
+/*  *****************************************************************************
+ *	Styles des liens qui pointent vers les textes intégraux dans les sommaires.	*
+ *	*****************************************************************************
+ */
+
+
+
+A.texte_integral {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #666666;
+	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif;
+}
+
+
+A.texte_integral:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+}
+
+A.texte_integral:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: xx-small;
+	font-weight: small;
+	text-align : justify;
+	color: #333333;
+	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+
+}
+
+/*********************************************************************************************
+ *  Les  class utlisées dans la page "sommaire.html"                                         * 
+ *********************************************************************************************
+*/
 
 .soustitrerevue
 {
@@ -590,84 +497,8 @@ A.titre2:active {
 	font-weight: normal;
 	font-style: italic;
 }
-
-
-
-/*****************************************************************************
- *	style des liens pointant vers les auteurs                                *
- *****************************************************************************
- */ 
-
-.auteur {
-	/*
-	 *	style des auteurs
-	 */
-	 color: #9C3234;
-}
  
  
-A.auteur {
-	/*  
-	 *	Styles des liens non visités 
-	 */
-	text-decoration:none;
-	color: #9C3234;
-}
-
-A.auteur:visited {
-	/*  
-	 *	Styles des liens  visités
-	 */
-	color: #9C3234;
-}
-
-A.auteur:hover , A.auteur:active {
-	/*  
-	 *	Styles des liens survolés et actifs
-	 */
-	color: #666666;
-}
-
-/*  *****************************************************************************
- *	Styles des liens qui pointent vers les textes intégraux                 	*
- *	*****************************************************************************
- */
-
-A.texte_integral {
-	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	color: #666666;
-}
-
-A.texte_integral:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	color: #333333;
-}
-
-A.texte_integral:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-size: xx-small;
-	font-weight: small;
-	text-align : justify;
-	color: #333333;
-}
-
-/*********************************************************************************************
- *  Les  class spécifiques utilisées dans la page "sommaire.html"                                         * 
- *********************************************************************************************
-*/
-
 .directeur_publication {
 	/*  
 	 * Style utilisé pour le directeur de la publication
@@ -676,18 +507,46 @@ A.texte_integral:active {
 	font-size: 75%;
 }
 
-/****************************************************************************/
-
 .docregroupement {
 	/*
 	 * Style pour les blocs affichant le titre et l'auteur du document.
 	 */
 	width: auto;
 	height: auto;
-	margin-top: 10px;
 }
 
-/****************************************************************************/
+
+/***************************************************************************************
+ *	Styles concernant l'affichage dans article.html                                    *
+ ***************************************************************************************
+ */
+ 
+ /*
+  * Les styles titre21 et signaler imprimer 
+  */
+ 
+ .titre21 {
+	
+	 width: 500;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: medium;
+	  font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 text-indent: 10;
+	 margin-bottom: 15px;
+	 float: left;
+}
+
+.signalerimprimer {
+	 width: 61;
+	 height: 20;
+	 background-color: #9C3234;
+	 margin-right:0;
+}
+ 
+ /******************************************************************************************/
 
 .afficherdocument  {
 	/* 
@@ -695,21 +554,10 @@ A.texte_integral:active {
 	 */
 	width: auto;
 	background-color: #F7F7F7;
+	text-decoration: none;
 	color: #666666;
-	margin-bottom: 6px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	
-}
-
-/*****************************************************************************/
-
-.article {
-	font-size: x-small;
-	font-weight: small;
-	text-align: justify;
-	line-height: 150%;
-	text-indent: 10;
+	margin-bottom: 10px;
+	padding: 5px;
 	
 }
 
@@ -743,23 +591,6 @@ A.texte_integral:active {
 	line-height: 120%;
 	text-indent : 20;
 	padding: 20px;
-	
-}
-
-.extrait
-{
-	/*  
-	 * 
-	 */
-	width: auto;
-	height: auto;
-	background-color: #F7F7F7;
-	color: #333333;
-	font-size: 90%;
-	text-align : justify;
-	line-height: 120%;
-	text-indent : 10;
-	padding: 10px;
 	margin: 0;
 }
 
@@ -796,20 +627,10 @@ A.texte_integral:active {
 	padding-bottom: 2em;
 }
 
-ul {
-	font-size: small;
-}	
-
-ul.puce {
-	list-style-image: url(images/trianglebordeau.gif);
-}
-
-
 /***************************************************************************************/
 
 .smallcaps {
 	font-variant: small-caps;
-	
 }
 
 .pluspetit {
@@ -834,18 +655,12 @@ ul.puce {
 	 font-weight: bold;
 }
 
-
-	 
-
 /**********************************************************************************/
 
 .navigation {
 	width: auto;
 	height: 20;
 	background-color: #E0E0E0;
-	vertical-align: middle;
-	font-weight: bold;
-	color: #9C3234;
 }
 
 
@@ -856,8 +671,11 @@ ul.puce {
 	
 	width: 400;
 	background-color: #E0E0E0;
-	float: left;
 	text-align: left;
+	vertical-align: middle;
+	font-weight: bold;
+	color: #9C3234;
+	float: left;
 }
 
 .navigation_suivant {
@@ -865,8 +683,13 @@ ul.puce {
 	 *	td aligné à droite, contenant lien vers document suivant 
 	 */
 	 
-	width: auto;
+	width: 161;
+	background-color: #E0E0E0;
+	vertical-align: middle;
 	text-align: right;
+	font-weight: bold;
+	color: #9C3234;
+	float: right;
 }
 
 /***************************************************************************************
@@ -999,27 +822,7 @@ A.menu2:active {
 	margin: 0; 
 }
 
- /***************************************************************************************
- *	Styles titre21 et signalerimprimer                                                 *
- ***************************************************************************************
- */
  
- /*
-  * Les styles titre21 et signaler imprimer, ils s'insèrent dans le style .titre2
-  */
- 
- .titre21 {
-	height: 20;
-	width: 500;
-	float: left;
-}
-
-.signalerimprimer {
-	width: auto;
-	height: 20;
-	 
-}
-
 	
 
 /**********************************************************************************/
@@ -1068,63 +871,101 @@ A.menu2:active {
 	
 }
 
-
-
-
-.alphabet {
-	 width: auto;
-	 height: 20;
-	 background-color: #9C3234;
-	 font-weight : bold;
-	 text-align: left; 
-	 color: #ffffff;
-	 margin-bottom: 7px;
-	 margin-top: 15px;
-	 vertical-align: middle;
+/***************************************************************************************
+ *	Les styles définissant les images                                                  *
+ ***************************************************************************************
+ */
+ 
+ 
+ /*
+  *	les styles concernant le logo Lodelia
+  */
+ 
+.partielogo1 {
+ 		height: 111;
+		width: 532;
+		background-color: #ffffff;
+		background-image: url(images/logo_lodeliarouge.gif);
+		border: 0;
+		margin: 0;
+		padding: 0;
+		float: left;		
 }
 
-A.alphabet {
-	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	font-weight: bold;
-	color: #cccccc;
-	text-indent: 0;
+.partielogo2 {
+ 		height: 111;
+		width: 29;
+		background-color: #ffffff;
+		background-image: url(images/right_top.gif);
+		padding: 0;
+		border: 0;
+		margin: 0;
+		
+		}
+
+/**************************************************************************************/
+
+	/*
+ 	 *	l'image placée dans index.html
+ 	 */
+
+.imageindex {
+	padding: 0;
+	width: auto;
+	height: 301;
+	background-image: url(images/image.jpg);
+	background-repeat : no-repeat;
 	margin: 0;
-	vertical-align: middle;
-
 }
 
-A.alphabet:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	font-weight: small;
-	color: #ffffff;
-	text-indent: 0;
+	
+	/*
+ 	 *	Les styles définissant les différentes images du logo de Revues.org                        *
+     */
+ 
+ .logo_revuesorg1 {
+	height: 11;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/left_top.gif);
+	border-bottom: 3px solid #ffffff;
 	margin: 0;
 	
+	
 }
-A.alphabet:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-weight: small;
-	color: #ffffff;
-	text-indent: 0;
+
+.logo_revuesorg3 a {
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues.gif);
 	margin: 0;
 }
 
 
-.articles_motscles {
-	/*  
-	 *	Style des liens actifs
-	 */
-	 padding: 10px;
-	 font-size: 90%;
+
+.logo_revuesorg3 a:hover  {
+	height: 50;
+	width: 165;
+	background-color: #EFEFEF;
+	background-image: url(images/logo_revues_on.gif);
+	margin: 0;
 }
 
 
+.logo_revuesorg4 {
+	vertical-align: top;
+	height: 18;
+	width: 165;
+	background-color: #ffffff;
+	background-image: url(images/left_top2.gif);
+	border-top: 3px solid #ffffff; 
+	border-bottom: 3px solid #ffffff;
+	margin: 0;
+}
+
+
+/**************************************************************************/
 
 	 
 
@@ -1198,6 +1039,7 @@ A.bouton_statut_publierOFF
 	 * Largeur du filet <hr> n°3
 	 */
 	width: 100%;
+	color: #9C3234;
 }
 
 
@@ -1207,7 +1049,8 @@ A.bouton_statut_publierOFF
 	/*  Style appliqué à l'introduction d'un numéro
 	 *
 	 */
-	font-size: 80%;
+	font-size: x-small;
+	font-weight: small;
 	text-align : justify;
 	color: #9C3234;
 }
@@ -1533,9 +1376,6 @@ A.petittexte:active {
 	font-weight : light;
 	text-align : left;
 }
-
-
-
 
 
 .regroupement2 {
