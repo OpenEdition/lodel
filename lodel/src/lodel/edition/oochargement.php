@@ -133,7 +133,7 @@ function OO ($uploadedfile,&$context)
 #		      "footnote(?:text)?"=>"notebaspage",
 #		      "endnote"=>"notefin",
 		      "footnote(?:text)?"=>"",
-		      "endnote"=>"",
+		      "endnote(?:text)?"=>"",
 		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
 		      "introduction"=>"texte","conclusion"=>"texte",
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
