@@ -471,20 +471,20 @@ Will be reimplemented using a proper XML parser.
       $cssarr=preg_split("/\{([^\}]*)\}/",$css,-1,PREG_SPLIT_DELIM_CAPTURE);
       for($i=0; $i<count($cssarr); $i+=2) {	
 	$style=trim($cssarr[$i]);
-	if (preg_match("/^\w+\.[PTpt]\d+$/",$style)) $styles[strtolower($style)]=$cssarr[$i+1]." "; // add a space to be sure it is TRUE.
+	if (preg_match("/^\w+\.[PT]\d+$/",$style)) $styles[strtolower($style)]=$cssarr[$i+1]." "; // add a space to be sure it is TRUE.
       }
-
+      #print_r($styles);
       if ($styles) {
 	// look for the style in the file, and replace by the style
-	$file=preg_replace('/((<(\w+)\b[^>]+)class="([PTpt]\d+)")/e','($styles["\\3.\\4"]) ? "\\2style=\"".trim($styles[strtolower("\\3.\\4")])."\"" : "\\1" ',$file);
+	$file=preg_replace('/((<(\w+)\b[^>]+)class="([PT]\d+)")/e','($styles[strtolower("\\3.\\4")]) ? "\\2style=\"".trim($styles[strtolower("\\3.\\4")])."\"" : "\\1" ',$file);
       }
     }
 
     //
-    $file=preg_replace(array('/(<(?:p|span)\s+lang="ar-\w\w"\s+style=")/',
-			     '/(<(?:p|span)\s+lang="ar-\w\w")(?!\s+style=")/'),
-		       array('\\1direction: rtl;align: right;',
-			     '\\1 style="direction: rtl;align: right;"'),$file);
+#    $file=preg_replace(array('/(<(?:p|span)\s+lang="ar-\w\w"\s+style=")/',
+#			     '/(<(?:p|span)\s+lang="ar-\w\w")(?!\s+style=")/'),
+#		       array('\\1direction: rtl;align: right;',
+#			     '\\1 style="direction: rtl;align: right;"'),$file);
 		 
 
 
