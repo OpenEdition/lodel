@@ -1,30 +1,31 @@
 <?php  include("tpl/install-openhtml.html"); ?>
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+<!--
+
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+-->
 
 <!-- ce fichier n'est pas un template -->
 
@@ -42,10 +43,23 @@ Au contraire, si cette case n'est pas cochée, chaque site aura une base de donné
 </p>
 <h2>Option 2</h2>
 <p>
-
+Vous pouvez utiliser une base de donnée existante. Cependant, il est préférable de créer un base de donnée dédiée à Lodel<?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
+</p>
+<p>
+<code>
+CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>;
+</code>
+</p>
+<p>
+Dans tous les cas, il faut donner les droits "ALL" sur cette base à l'utilisateur "<?php echo $dbusername; ?>":
+<p>
+<p>
+<code>
+GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>.* TO <?php echo "$dbusername@$dbhost";?>;
+</code>
 </p>
 
-<?php  if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer la database "<?php echo $database; ?>". L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
+<?php  if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer ou d'accéder à la base de données "<?php echo $database; ?>". L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
 <?php  if ($erreur_usedatabase) { ?> <b>Erreur</b>: L'utilisation de cette base de données ne semble pas possible. L'utilisateur MySQL a-t-il les droits ? L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 

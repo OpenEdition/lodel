@@ -2,8 +2,8 @@
 
 <!-- ce fichier n'est pas un template -->
 
-Création d'un administrateur initial. Choisissez un login et un mot de passe.<br>
-<p><p>
+<p align="center">Création d'un administrateur initial. Choisissez un login et un mot de passe.</p>
+<p></p>
 <?php  if ($erreur_create) { ?> <b>Erreur</b>: Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
 <form method="post" action="install.php">

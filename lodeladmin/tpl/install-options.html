@@ -1,30 +1,31 @@
 <? include("tpl/install-openhtml.html"); ?>
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+<!--
+
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+-->
 
 <!-- ce fichier n'est pas un template -->
 
@@ -35,15 +36,19 @@ Options
 <table border="1">
 
 <tr><td>
-Extension des scripts accessibles par les internautes:<br>
-.php: <input type="radio" name="extensionscripts" value="php" <? if($extensionscripts=="php") echo "checked";?> ><br>
-.html: <input type="radio" name="extensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ><br>
+Le chemin de l'url d'acces à la racine de Lodel a été deviné. Veuillez vérifier svp.<br />
+<input type="text" size="60" name="urlroot" value="<?php echo $urlroot; ?>">
+</td></tr>
+<tr><td>
+Extension des scripts accessibles par les internautes:<br />
+.php: <input type="radio" name="extensionscripts" value="php" <? if($extensionscripts=="php") echo "checked";?> ><br />
+.html: <input type="radio" name="extensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ><br />
 </td>Choisir l'extension .html permet de cacher l'aspect technique, et d'avoir des URL assez classique. Ceci n'est cependant pas toujours possible car la plupart des serveurs web, se base sur l'extension des fichiers pour savoir les traitements à opérer sur le fichier. Les scripts LODEL sont des scripts PHP, et doivent avoir l'extension .php, sauf si le serveur a été configuré autrement.<td>
 </td></tr>
 <tr><td>
-Utiliser des liens symboliques:<br>
-oui: <input type="radio" name="usesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br>
-non: <input type="radio" name="usesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br>
+Utiliser des liens symboliques:<br />
+oui: <input type="radio" name="usesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br />
+non: <input type="radio" name="usesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br />
 </td>Si supporter par le serveur web, certains fichiers peuvent être liés plutôt que copiés. La liaison permet une gestion plus souple des mises à jour, des droits d'accès, etc. Ceci se justifie uniquement pour les sites avec plusieurs revues qui sont gérés au niveau UNIX.<td>
 </td></tr>
 

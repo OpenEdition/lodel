@@ -53,7 +53,7 @@ $home="$pathroot/lodel/scripts/";
 # URL contenant les fichiers communs partagés
 # par exemple $shareurl="http://lodel.revues.org/share";
 # la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
-$shareurl="";
+$shareurl=$urlroot."share";
 
 # Repertoire contenant les fichiers communs partagés
 # par exemple $sharedir="/var/www/lodel/share";
@@ -142,5 +142,7 @@ ignore_user_abort();
 $currentdb="";
 
 define (NORECORDURL,1);
+
+define (INC_LODELCONFIG,1);
 
 ?>

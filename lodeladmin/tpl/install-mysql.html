@@ -1,34 +1,35 @@
 <?php  include("tpl/install-openhtml.html"); ?>
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+<!--
+
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+-->
 
 <!-- ce fichier n'est pas un template -->
 
-<p align="center"></p>Configuration de l'acces au serveur MySQL.<br>
+<p align="center">Configuration de l'acces au serveur MySQL.</p>
 
 <h2>Option 1</h2>
 <p align="justify">
@@ -37,10 +38,28 @@ Le nom d'utilisateur MySQL et le mot de passe sont personnels, et ont dù être fo
 </p>
 <h2>Option 2</h2>
 <p align="justify">
+A ecrire...
+Il faut donner les droits d'acces a la base à l'utilisateur,
+<?php if (!$newdbusername) { ?>
+exemple:
+</p>
+<p>
+<code>
+GRANT USAGE ON *.* TO monutilisateur@monserveurweb IDENTIFIED BY 'monpasswd';
+</code>
+<?php } else { ?>
+dans votre cas:
+</p>
+<p>
+<code>
+GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'monpasswd';
+</code>
+<?php } ?>
 </p>
 
 
-<?php  if ($erreur_connect) { ?> <b>Erreur</b>: Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
+
+<?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="mysql">

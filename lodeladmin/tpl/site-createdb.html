@@ -34,10 +34,19 @@
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
 
 <b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b><br>
-L'erreur renvoyée par le serveur MySQL est: [#ERREUR].<p>
-Vous pouvez créer la base de données en utilisant la commande SQL:<br>
-[#COMMAND]<br>
-ou donner les droits à l'utilisateur MySQL de creation de base de données (méthode moin sûre).
+<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
+<p>Vous pouvez créer la base de données en utilisant la commande SQL:</p>
+<p>
+<code>
+[#COMMAND];
+</code>
+<p>et donner les droits "ALL" à l'utilisateur [#DBUSERNAME]@[#DBHOST]";</p>
+<code>
+GRANT ALL ON [#DBNAME].* TO [#DBUSERNAME]@[#DBHOST];
+</code>
+</p>
+
+ou donner les droits à l'utilisateur MySQL de creation de base de données (méthode moins sûre).
 <p><p>
 
 </td></tr></table><br/>

@@ -108,6 +108,8 @@ if ($tache=="createdb") {
     $context[command]="CREATE DATABASE $context[dbname]";
     if (!@mysql_query($context[command])) {
       $context[erreur]=mysql_error();
+      $context[dbusername]=$dbusername;
+      $context[dbhost]=$dbhost;
       require ($home."calcul-page.php");
       calcul_page($context,"site-createdb");
       return;
@@ -270,6 +272,8 @@ if ($tache=="fichier") {
   if (!file_exists($siteconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
     // on essaie de copier alors
     if (!@copy($siteconfigsrc,$siteconfigdest)) {
+      $context[siteconfigsrc]=$siteconfigsrc;
+      $context[siteconfigdest]=$siteconfigdest;
       $context[erreur_ecriture]=1;
       require ($home."calcul-page.php");
       calcul_page($context,"site-fichier");
@@ -282,7 +286,11 @@ if ($tache=="fichier") {
   // ok on a fini, on change le statut de la site
   mysql_select_db($GLOBALS[database]);
   mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
-  back();
+
+  header("location: ".$urlroot.$context[rep]."/lodel/admin");
+
+#  header("location: index.php");
+#  back();
 }
 
 if ($tache) $context[versionrep]=$versionrep;

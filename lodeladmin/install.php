@@ -28,7 +28,8 @@
 
 
 // securise l'entree si le fichier unlockedinstall n'existe pas.
-if (!file_exists("CACHE/unlockedinstall")) {
+
+if (is_executable("CACHE") && !file_exists("CACHE/unlockedinstall")) {
   require("lodelconfig.php"); // le lodelconfig.php doit exister 
   // et permettre un acces a une DB valide... 
   // meme si on reconfigure une nouvelle DB ca doit marcher... 
@@ -62,6 +63,19 @@ if ($tache=="plateform") {
   } else {
     die("le fichier $lodelconfigplatform n'existe pas. Erreur interne.");
   }
+
+  // ok, now, let's guess the urlroot
+  do { // control block
+    $me=$SERVER_[PHP_SELF];
+    if (!$me) $me=$HTTP_SERVER_VARS[PHP_SELF];
+    if (!$me) break;
+    // enleve moi
+    $urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
+    if ($urlroot==$me) die("ERROR: the install.php script is not at the right place");
+    if (LODELROOT!="..") die("ERROR: the lodeladmin has been moved, please report error");
+
+    maj_lodelconfig(array("urlroot"=>$urlroot."/"));
+  } while (0); // end of control bock
 }
 
 //
@@ -184,8 +198,33 @@ if ($tache=="htaccess") {
 
 
 if ($tache=="options") {
-  maj_lodelconfig(array("extensionscripts"=>$extensionscripts,
+  if (!preg_match("/\/$/",$urlroot)) $urlroot.="/";
+  maj_lodelconfig(array("urlroot"=>$urlroot,
+			"extensionscripts"=>$extensionscripts,
 			"usesymlink"=>$usesymlink));
+}
+
+
+
+if ($tache=="downloadlodelconfig") {
+  header("Content-type: application/force-download");
+  header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+  if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) { // from phpMyAdmin
+    header('Content-Disposition: inline; filename="lodelconfig.php"');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+  } else {
+    header('Content-Disposition: attachment; filename="lodelconfig.php"');
+    header('Pragma: no-cache');
+  }
+  readfile($lodelconfig);
+  return;
+}
+
+
+if ($tache=="showlodelconfig") {
+  if (!(@include ("tpl/install-showlodelconfig.html"))) problem_include ("install-showlodelconfig.html");
+  return;
 }
 
 
@@ -331,7 +370,7 @@ if ($htaccess!="non") {
     if (file_exists($dir) && !file_exists($dir."/.htaccess")) array_push($erreur_htaccess,$dir);
   }
   if ($erreur_htaccess) {
-    if (!(@include("tpl/install-htaccess.html"))) probleme_include("install-htaccess.html");
+    if (!(@include("tpl/install-htaccess.html"))) problem_include("install-htaccess.html");
     return;
   }
 }
@@ -341,7 +380,7 @@ if ($htaccess!="non") {
 //
 
 if (!$extensionscripts || !$usesymlink) {
-  if (!(@include("tpl/install-options.html"))) probleme_include("install-options.html");
+  if (!(@include("tpl/install-options.html"))) problem_include("install-options.html");
   return;
 }
 
@@ -368,12 +407,26 @@ $have_is_link=function_exists("is_link"); // fonction is_link existe ?
 #  $file=$dir."/lodelconfig.php";
 
 $file="lodelconfig.php";
-  
-if (@copy($lodelconfig,LODELROOT."/".$file)) {
-  if ($have_chmod) @chmod(LODELROOT."/".$file,0600);
-} else { // erreur, on le note
+
+// check $file is readable
+$rootlodelconfig_exists=file_exists(LODELROOT."/".$file);
+if ($rootlodelconfig_exists && !is_readable(LODELROOT."/".$file)) {
+  $erreur_exists_but_not_readable=1;
   include ("tpl/install-lodelconfig.html");
-}  
+  return;
+}
+
+// compare the two config files
+
+if (!$rootlodelconfig_exists || $textlc!=join('',file(LODELROOT."/".$file))) { // are they different ?
+
+  if (@copy($lodelconfig,LODELROOT."/".$file)) { // let copy
+    if ($have_chmod) @chmod(LODELROOT."/".$file,0600);
+  } else { // error
+    include ("tpl/install-lodelconfig.html");
+    return;
+  }  
+}
 
 
 //
@@ -384,7 +437,7 @@ if (file_exists("CACHE/unlockedinstall") && !@unlink("CACHE/unlockedinstall")) {
   die("Etrange, on peut pas effacer ce fichier, alors qu'on a les droits d'écriture sur le repertoire lodel/admin/CACHE. N'est-ce pas ?");
 }
 
-if (!(@include("tpl/install-fin.html"))) probleme_include("install-fin.html");
+if (!(@include("tpl/install-fin.html"))) problem_include("install-fin.html");
 
 /////////////////////////////////////////////////////////////////
 //                           FONCTIONS                         //
@@ -394,7 +447,7 @@ if (!(@include("tpl/install-fin.html"))) probleme_include("install-fin.html");
 function maj_lodelconfig($var,$val=-1)
 
 {
-  global $lodelconfig;
+  global $lodelconfig,$have_chmod;
   // lit le fichier
   $text=join("",file($lodelconfig));
   $search=array(); $rpl=array();
@@ -414,7 +467,7 @@ function maj_lodelconfig($var,$val=-1)
   if ($newtext==$text) return;
   // ecrit le fichier
   if (!(unlink($lodelconfig)) ) die ("Ne peut pas supprimer $lodelconfig. Erreur interne.");
-   return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0640);
+   return ($f=fopen($lodelconfig,"w")) && fputs($f,$newtext) && fclose($f) && $have_chmod && chmod ($lodelconfig,0600);
 }
 
 
@@ -438,7 +491,7 @@ function mysql_query_file($filename)
   return $err;
 }
 
-function probleme_include($filename)
+function problem_include($filename)
 
 {
 ?>
@@ -449,7 +502,7 @@ Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?php echo $filename; ?>
 <br />
 Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
 
-LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
+LODEL est livré avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 </body>
 </html>
 <?php
@@ -507,7 +560,7 @@ function probleme_droits_fin()
 </p>
 <p></p>
 Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br />
-LODEL est distribué SANS AUCUNE GARANTIE.
+LODEL est livré avec SANS AUCUNE GARANTIE.
   </td>
 </table>
 </body>
