@@ -239,7 +239,7 @@
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<CORPS>
 		    	    	<IF COND="[#NOM]">
-							<a ref="sommaire.html?id=[#PUBLICATION]">
+							<a href="sommaire.html?id=[#PUBLICATION]">
 								<span style="color:Black;">
 									 n&#176; [#NOM] - [#TITRE]
 								</span>
@@ -250,7 +250,7 @@
             	</LOOP>
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
-					<a ref="sommaire.html?id=[#PUBLICATION]">
+					<a href="sommaire.html?id=[#PUBLICATION]">
 						<span style="color:Black;">
 							 n&#176; [#NOM] - [#TITRE]
 						</span>
