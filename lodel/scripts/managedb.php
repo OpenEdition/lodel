@@ -81,7 +81,7 @@ function supprime ($id, $confirmation=FALSE, $mklock=TRUE, $critere="")
 
   // verifie les tables a joindre pour le critere
   // a completer si necessaire
-  if ($critere && preg_match("\btype\b",$critere)) {
+  if ($critere && preg_match("/\btype\b/",$critere)) {
     $tables=$GLOBALS[entitestypesjoin];
   } else {
     $tables=$GLOBALS[tp]."entites";
