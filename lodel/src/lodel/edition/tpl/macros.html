@@ -833,13 +833,13 @@
 	<LOOP NAME="numeros_rubriques" TABLE="publications" TABLE="types" WHERE="idparent='[#ID]'" ORDER="type">
 		<DO>
 			<IF COND="[#COUNT] % 2">
-				<IF COND="[#TPLCREATION] eq 'creation-numero'">
+				<IF COND="[#TPLCREATION] eq 'creation-rubrique'">
 					<div class="ligne_numero1">
 				<ELSE/>
 					<IF COND="[#TPLCREATION] ne 'creation-regroupement'"><div class="ligne_rubrique2"></IF>
 				</IF>
 			<ELSE/>
-				<IF COND="[#TPLCREATION] eq 'creation-numero'">
+				<IF COND="[#TPLCREATION] eq 'creation-rubrique'">
 					<div class="ligne_numero2">
 				<ELSE/>
 					<IF COND="[#TPLCREATION] ne 'creation-regroupement'"><div class="ligne_rubrique1"></IF>
@@ -1026,7 +1026,7 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
+				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
 						|&nbsp;<a href="statut.php?publication=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
@@ -1044,7 +1044,7 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
 						|&nbsp;<a href="statut.php?id=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
@@ -1059,7 +1059,7 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
 						|&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
@@ -1074,7 +1074,7 @@
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
-				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 			</tr>
 		</table>
 	</IF>
