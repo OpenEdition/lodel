@@ -36,8 +36,8 @@ $balises=array ("-" => "-",
 		"pagination"=>"Pagination",
 # champs auteurs
 		"descriptionauteur"=>"Description de l'auteur précédent",
-		"affiliation"=>"<span class=\"affiliation\">",
-		"courriel"=>"<span class=\"courriel\">",
+#		"affiliation"=>"<span class=\"affiliation\">",
+#		"courriel"=>"<span class=\"courriel\">",
 #
 # balises pour l'import de sommaire
 
