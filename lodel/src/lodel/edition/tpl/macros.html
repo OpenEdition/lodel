@@ -823,11 +823,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE">
-	<a href="index.php?id=[#ID]">
+	<IF COND="[#TYPE]!='regroupement'">
+		<a href="index.php?id=[#ID]">
+			<span class="nom_serie">[#NOM]</span>&nbsp;
+			<span class="titre_serie">[#TITRE]</span><br />
+			<span class="type_serie">([#TYPE])</span>
+		</a>
+	<ELSE/>
 		<span class="nom_serie">[#NOM]</span>&nbsp;
 		<span class="titre_serie">[#TITRE]</span><br />
 		<span class="type_serie">([#TYPE])</span>
-	</a>
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_TITRE_TYPE_PARENT">
