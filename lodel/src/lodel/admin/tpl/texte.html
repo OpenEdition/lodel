@@ -21,7 +21,7 @@
 			<td class="texte_intitule">Nom :</td>
 			<td><input size="60" type="text" name="nom" value="[#NOM]"></td>
 		</tr>
-		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom contenant des lettres, des chiffres et des espaces uniquement!</td></tr>]
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom contenant des lettres, des chiffres, le caract&egrave;re "_", et des espaces uniquement!</td></tr>]
 		[(#ERREUR_NOM_EXISTE|true)<tr><td colspan="2" class="message_erreur">Le nom existe déja</td></tr>]
 		<tr>
 			<td class="texte_intitule">Texte :</td>
