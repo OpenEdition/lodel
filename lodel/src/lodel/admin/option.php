@@ -30,7 +30,7 @@
 // gere les options. L'acces est reserve au admin.
 // assure la supression, la restauration des options.
 
-
+ die("desuet");
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
