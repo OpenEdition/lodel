@@ -514,7 +514,9 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 	if ($arr[$i+1]=="p") $arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]);
       } else {
 	$class=strtolower($class);
-	$arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]); // lowercase the class
+	if (!preg_match("/^[tp]\d+$/",$class)) { // required to ensure the compatibility
+	  $arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]); // lowercase the class
+	}
       }
       if ($arr[$i+1]=="span" && preg_match("/^(t\d+|footnote.*|endnote.*|internetlink)$/",$class)) { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
 	$class="";
