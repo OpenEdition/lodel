@@ -28,7 +28,7 @@
 
 # fonction largement reprises de SPIP
 
-
+require_once($home."func.php");
 
 #function cleanurl ($texte)
 #
