@@ -68,6 +68,7 @@ function search(&$context,$funcname,$arguments)
 	 * 	- value : weight calculated
 	 */
 	$we = array();
+	$context['nbresults'] = 0;
 	while(list(, $token) = each($tokens))
 	{
 		if($token == "") //if token is empty or just whitespace --> not search it !
@@ -175,7 +176,7 @@ function search(&$context,$funcname,$arguments)
 	#echo "hey2 :".$sqlc;
 		//print_r($db->GetAll($sqlc));
 		
-		$context['nbresults'] = count($db->GetAll($sqlc));
+		$context['nbresults'] += count($db->GetAll($sqlc));
 		//print_r($row);
 	#echo "Nombre de résultats absolu :".$nbresabs."<br />";
 		$result=$db->execute($sql) or dberror();
