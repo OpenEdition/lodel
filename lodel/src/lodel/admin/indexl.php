@@ -9,16 +9,8 @@ if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...
 $id=intval($id);
-if ($id>0) {
-  $critere="id='$id'";
-  if (!$restore) $critere.=" AND status>0";
-  if ($type) $critere.=" AND type='$type'";
-} else $critere="";
+$critere=$id>0 ? "id='$id'" : "";
 
-
-//
-// ordre
-//
 
 //
 // supression et restauration
@@ -28,7 +20,9 @@ if ($id>0 && ($delete || $restore)) {
   treattrash("indexls",$critere);
   return;
 }
+
 if (!$type) die("probleme interne contacter Ghislain");
+if ($id) $critere.=" AND status>0 AND type='$type'";
 
 //
 // ajoute ou edit

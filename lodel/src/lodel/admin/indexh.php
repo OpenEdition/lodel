@@ -8,18 +8,21 @@ if (!function_exists("authenticate") || !$GLOBALS[admin]) return;
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...
 $id=intval($id);
-if ($id>0) {
-  $critere="id='$id'";
-  if (!$restore) $critere.=" AND status>0";
-  $critere.=" AND type='$type'";
-} else $critere="";
+$critere=$id>0 ? "id='$id'" : "";
 
-if (!$type) die("probleme interne contacter Ghislain");
+//
+// supression et restauration
+//
+if ($id>0 && ($delete || $restore)) { 
+  include ($home."trash.php");
+  treattrash("indexhs",$critere);
+  return;
+}
 
+$critere.=" AND status>0";
 //
 // ordre
 //
-
 if ($id>0 && $dir) {
   include_once($home."connect.php");
   # cherche le parent
@@ -27,17 +30,15 @@ if ($id>0 && $dir) {
   list($parent)=mysql_fetch_row($result);
   chordre("indexhs",$id,"parent='$parent' AND status>0",$dir);
   back();
-//
-// supression et restauration
-//
-} elseif ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
-  treattrash("indexhs",$critere);
-  return;
+}
+
+if (!$type) die("probleme interne contacter Ghislain");
+$critere.=" AND type='$type'";
+
 //
 // ajoute ou edit
 //
-} elseif ($edit) { // modifie ou ajoute
+if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
