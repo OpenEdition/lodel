@@ -121,6 +121,7 @@ if (!file_exists($archivefile)) {
     msg_error("Le téléchargement du fichier $archiveurl n'a pas fonctionné. L'erreur produite est: ".$client->response_code."\<br>Si vous ne pouvez résoudre cette erreur, veuillez télécharger l'archive Lodel et la poser sur le serveur dans le même répertoire que ce script en la renomant \"lodel.zip\". Relancez ensuite ce script d'installation automatique.");
   }
   fclose($fpwrite);
+  @chmod($archivefile,0666 & $chmod);
 }
 unset($client);
 
