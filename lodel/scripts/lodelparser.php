@@ -45,7 +45,7 @@ function parse_loop_extra(&$tables,
 			    &$select,&$where,&$ordre,&$groupby)
 
 {
-  global $site;
+  global $site,$home;
   static $tablefields; // charge qu'une seule fois
 
   // convertion des codes specifiques dans le where
