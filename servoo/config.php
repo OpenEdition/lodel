@@ -10,6 +10,12 @@ $dbpasswd="45mlkj,n";
 # Hote de la BD
 $dbhost="localhost";
 
+# repertoire d'installation de java
+$javapath="/usr/java/j2sdk1.4.1_02";
+
+# repertoire d'installation de OpenOffice
+$openofficepath="/usr/local/OpenOffice.org1.0.3";
+
 # chemin pour la commande zip
 $zipcmd="/usr/bin/zip";
 

@@ -48,7 +48,6 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     // download de fichier
     if (!is_uploaded_file($_FILES[$cmd[1]]['tmp_name'])) die("ERROR: file download");
     $sourcefile=$_FILES[$cmd[1]]['tmp_name'];
-
     // command UPL ----------------
   } elseif ($cmd[0]=="UPL") {
     // que faut-il uploader ?
@@ -67,49 +66,55 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
     // command CVT ----------------
   } elseif ($cmd[0]=="CVT") {
     $type=$cmd[1];
-    if ($type=="HTMLLodel-1.0") {
+#    $t=time();
+    if ($type=="HTMLLodel-1.0") {      
       require_once($home."convert.php");
       $convertedfiles=HTMLLodel($sourcefile,$msg);
     } else die("ERROR: unknow conversion type");
-
+#    error_log("CVT ".(time()-$t)."\n",3,"/tmp/error_log");
     // command ZIP ----------------
   } elseif ($cmd[0]=="ZIP") {
     $ope=$cmd[1];
     // que faut-il zipper ?
     if ($ope=="all") {
-      $azipper=$sourcefiles." ".join(" ",$convertedfiles);
+      $azipper=$convertedfiles;
+      array_push($azipper,$sourcefiles);
     } elseif ($ope=="source") {
-      $azipper=$sourcefiles;
+      $azipper=array($sourcefiles);
     } else { // valeur par defaut
-      $azipper=join(" ",$convertedfiles);
+      $azipper=$convertedfiles;
     }
     // on zip maintenant
     if ($zipcmd) {
       $archive=tempnam("","arch").".zip";
-      system("$zipcmd -rq $archive $azipper 2>$archive.err");
-      if (@file($archive.".err")) die("ERROR: zip error\n".join("",file($archive.".err")));
+      system("$zipcmd -rq $archive ".join(" ",$azipper)." 2>$archive.err");
+      @array_walk($azipper,"unlink");
+      if (filesize($archive.".err")>0) die("ERROR: zip failed<br>".str_replace("\n","<br>",htmlentities(@join("",@file($archive.".err")))));
       if ($ope=="source") { // dans ce cas on met a jour la variable sourcefiles
 	$sourcefiles=$archive;
       } else {
 	$convertedfiles=array($archive);
       }
-    } else die("ERROR: zip unavailable");
+    } else die("ERROR: zip undefined");
     // command UNZIP ----------------
   } elseif ($cmd[0]=="UNZIP")
       // on dezip le premier fichier, on suppose que l'archive contient qu'un fichier
     if ($unzipcmd) {
       $dest=$sourcefile.".unzipped";
       system("$unzipcmd -p $sourcefile >$sourcefile.unzipped 2>$sourcefile.err");
-      
-      if (filesize($sourcefile.".err")>0) die("ERROR: unzip error\n".join("",file($sourcefile.".err")));
+     
+      if (filesize($sourcefile.".err")>0) die("ERROR: unzip failed<br>".str_replace("\n","<br>",htmlentities(@join("",@file($sourcefile.".err")))));
       $sourcefiles=$dest;     
-    } else die("ERROR: unzip unavailable");
+    } else die("ERROR: unzip undefined");
     // command RTN ----------------
     elseif ($cmd[0]=="RTN") {
     $type=$cmd[1];
+    $t=time();
     if ($type=="convertedfile") {
       #echo "fichier $convertedfiles[0]\n";
-      readfile("$convertedfiles[0]");
+      echo "content-length: ".filesize($convertedfiles[0])."\n"; # envoie la longueur
+      readfile($convertedfiles[0]);
+      error_log("RTN ".(time()-$t)." ".date("l dS of F Y h:i:s A")."\n",3,"/tmp/error_log");
       return;
     } elseif ($type=="MSG") {
       $msg=1;

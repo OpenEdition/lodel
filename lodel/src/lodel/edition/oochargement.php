@@ -17,20 +17,28 @@ $context[tache]=$tache=intval($tache);
 if ($file1 && $file1!="none") {
   do {
     // verifie que la variable file1 n'a pas ete hackee
-    if (!is_uploaded_file($file1)) die("Erreur interne");
+    if (!is_uploaded_file($file1)) die(utf8_encode("Le fichier n'est pas un fichier chargé"));
 
+    $t=time();
+    $file1converted=$file1.".converted";
+    $ret=convert($file1,$file1converted);
+    unlink($file1);
+    if ($ret) {
+      $context[erreur_upload]=utf8_encode("Erreur renvoyée par le serveur OO: \"$ret\"");
+      break;
+    }
 
-    $file1=convert($file1);
-
+    if ($msg) { echo "convert: ",time()-$t; flush(); }
     //
     // regarde si le fichier est zipper
     //
-    $fp=fopen($file1,"r") or die("le fichier $file1 ne peut etre ouvert");
+    $fp=fopen($file1converted,"r") or die("le fichier $file1converted ne peut etre ouvert");
     $cle=fread($fp,2);
     if ($cle=="PK") {
-      echo "<li>Decompresse le fichier zippe<br>"; flush();
-      system("/usr/bin/unzip -j -p $file1 >$file1.extracted");
-      $file1.=".extracted";
+      if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
+      system("/usr/bin/unzip -j -p $file1converted >$file1converted.extracted");
+      unlink($file1converted);
+      $file1converted.=".extracted";
     }
     fclose($fp);
     //
@@ -40,9 +48,9 @@ if ($file1 && $file1!="none") {
     include_once($home."balises.php");
     if ($sortieoo || $sortiexmloo || $sortie) $oo=TRUE;
     
-    $newname=OO($file1,$context);
+    $newname=OO($file1converted,$context);
     if (!$newname) {
-      $context[erreur_upload]=1;
+      $context[erreur_upload]="Erreur dans la fonction OO";
       break;
     }
     if ($tache) { // document ancien ?
@@ -53,8 +61,10 @@ if ($file1 && $file1!="none") {
     }
     $idtache=make_tache("Import $file1_name",3,$row,$tache);
 
-    echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
-    return;
+    if ($msg) {
+      echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
+      return;
+    }
 
     header("Location: chkbalisage.php?id=$idtache");
     return;
@@ -73,50 +83,34 @@ calcul_page($context,"oochargement");
 
 
 // schema 1 de conversion
-function convert ($uploadedfile)
+function convert ($uploadedfile,$destfile)
 
 {
-  global $home,$serveuroourl,$serveuroousername,$serveuroopasswd;
+  global $home,$serveuroourl,$serveuroousername,$serveuroopasswd,$unzipcmd;
 
-  //
-  // regarde si le fichier est zipper
-  //
-  $fp=fopen($uploadedfile,"r") or die("le fichier $uploadedfile ne peut etre ouvert");
-  $cle=fread($fp,2);
-  fclose($fp);
-
-  $cmds="DWL file1;";
-  if ($cle=="PK") $cmds.="UNZIP source;";
-  $cmds.="CVT HTMLLodel-1.0; ZIP all; RTN convertedfile;";
+  $cmds.="DWL file1; CVT HTMLLodel-1.0; ZIP all; RTN convertedfile;";
 
   require ($home."serveurfunc.php");
-  $file=upload($serveuroourl,
-	       array("username"=>$serveuroousername,
-		     "passwd"=>$serveuroopasswd,
-		     "commands"=>$cmds),
-	       array($uploadedfile)
-	       );
-  //enleve le header, et on suppose que les donnees sont chunked !
-  #echo $file;exit();
-  $pos=strpos($file,"\r\n\r\n")+4;
-
-  while ($endpos=strpos($file,"\r\n",$pos)) {
-    $chunksize=hexdec(substr($file,$pos,$endpos-$pos));
-    $newfile.=substr($file,$endpos+2,$chunksize);
-    $pos=$endpos+4+$chunksize;
+  $ret=upload($serveuroourl,
+	      array("username"=>$serveuroousername,
+		    "passwd"=>$serveuroopasswd,
+		    "commands"=>$cmds),
+	      array($uploadedfile), # fichier a uploaded
+	      0, # cookies
+	      $destfile
+	      );
+  if ($ret) { # erreur
+    return $ret;
   }
-#  echo $newfile;exit();
-  $destfile=$uploadedfile.".converted";
-#  echo $destfile;
-  writefile($destfile,$newfile);
-  return $destfile;
+
+  return FALSE;
 }
 
 
 function OO ($convertedfile,&$context)
 
 {
-  global $home;
+  global $home,$msg;
 
   $time1=time();
 
@@ -228,7 +222,7 @@ function OO ($convertedfile,&$context)
   return FALSE; }
   $file=traite_multiplelevel($file);
 
-  echo "<li>temps regexp: ".(time()-$time)." s<br>\n";
+  if ($msg) { echo "<li>temps regexp: ".(time()-$time)." s<br>\n"; }
 
   //echo htmlentities($file); exit;
 
@@ -265,7 +259,7 @@ function OO ($convertedfile,&$context)
   $newname="$convertedfile-".rand();
   if (!writefile("$newname.html",$file)) return FALSE;
 
-  echo "Temps total:",time()-$time1,"<br><br>"; flush();
+  if ($msg) { echo "Temps total:",time()-$time1,"<br><br>"; flush(); }
 
   return $newname;
 }

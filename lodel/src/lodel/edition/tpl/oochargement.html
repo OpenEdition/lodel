@@ -64,9 +64,9 @@ function infoChargement(nomFic){
 
 <div style="text-align:center;">
 	<div class="message_erreur">
-		<IF COND="[#ERREUR_FICHIERNONRTF]">
-			ATTENTION<br />Le fichier que vous avez essayé d'importer n'est pas un fichier de type RTF
-		</IF>
+	      <IF COND="[#ERREUR_UPLOAD]"><td class="message_erreur">Une erreur s'est produite pendant le chargement ou de la conversion.<br>[#ERREUR_UPLOAD]
+		    [(#ERREUR_STYLESTABLEAUX|true)<br />Un tableau contient plusieurs styles de paragraphe differents. Veuillez verifier le tagage des tableaux.]
+	      </IF>
 	</div>
 </div>
 <form name="formfic" enctype="multipart/form-data" action="[#URL]" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)" />
@@ -107,9 +107,6 @@ function infoChargement(nomFic){
 					<input class="form" type="submit" name="sortie" value="Sortie de chargement" />
 <!--				</IF> -->
 			</td>
-			<IF COND="[#ERREUR_UPLOAD]"><td class="message_erreur">Une erreur s'est produite pendant le chargement ou de la conversion.
-			[(#ERREUR_STYLESTABLEAUX|true)<br />Un tableau contient plusieurs styles de paragraphe differents. Veuillez verifier le tagage des tableaux.]</td>
-			</IF>
 		</tr>
 	</table>
 	<div align="center" id="info" class="texte_normal">
