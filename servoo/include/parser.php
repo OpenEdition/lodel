@@ -37,6 +37,7 @@ function parse($in,$out)
 class Parser {
 
   var $infilename;
+  var $signature;
   var $variable_regexp="[A-Z][A-Z_0-9]*";
   var $loops=array();
   var $fct_txt;
@@ -76,6 +77,7 @@ function parse ($in,$out)
 
   $this->infilename=$in;
   if (!file_exists($in)) $this->errmsg ("Unable to read file $in");
+  $this->signature=preg_replace("/\W+/","_",$out);
 
   // read the file
   if (!function_exists("file_get_contents")) {
@@ -87,9 +89,6 @@ function parse ($in,$out)
   }
 
   $contents=stripcommentandcr($file);
-
-  $contents = preg_replace("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
-			   '<?php insert_template(\$context,"\\1"); ?>',$contents);
 
   // search the CONTENT tag
   if (preg_match("/<CONTENT\b([^>]*)>/",$contents,$result)) {
@@ -131,6 +130,13 @@ function parse ($in,$out)
 
   // parse  macros
   $this->parse_macros($contents,$macros);
+
+  $contents = preg_replace(array("/<USE\s+TEMPLATEFILE\s*=\s*\"([^\"]+)\"\s*>/",
+				 "/^\s+/m"),
+			   array('<?php insert_template(\$context,"\\1"); ?>',
+				 ""),
+				 $contents);
+
 
   $commands="LOOP|IF|LET|ELSE|DO|DOFIRST|DOLAST|BEFORE|AFTER|ALTERNATIVE|ESCAPE";
   $this->arr=preg_split("/<(\/?(?:$commands))\b([^>]*)>/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
@@ -235,7 +241,7 @@ function parse_texte(&$text)
 	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
       }
     }
-    $text=str_replace ($result[0],'<?php require_once(TOINCLUDE."connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
+    $text=str_replace ($result[0],'<?php require_once("'.TOINCLUDE.'connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
   }
 }
 
@@ -322,7 +328,7 @@ function parse_variable (&$text,$escape="php")
 	$variable="\$context[".strtolower($subresult[1])."]";
       }
       foreach(explode("|",$subresult[2]) as $fct) {
-	if ($fct=="false" || $fct=="true") {
+	if ($fct=="false" || $fct=="true" || $fct=="else") {
 	  break;
 	} elseif ($fct) {
 	  // recupere les arguments de la fonction
@@ -337,6 +343,9 @@ function parse_variable (&$text,$escape="php")
       $code='<?php if (!('.$variable.')) { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($fct=="true") {
       $code='<?php if ('.$variable.') { ?>'.$pre.$post.'<?php } ?>';
+    } elseif ($fct=="else") {
+      if ($escape!="php") $this->errmsg("ERROR: else pipe function can't eb used in this context");
+      $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { echo "$tmpvar"; } else { ?>'.$pre.$post.'<?php } ?>';
     } elseif ($escape=="php") { // traitement normal, php espace
       $code='<?php $tmpvar='.$variable.'; if ($tmpvar) { ?>'.$pre.'<?php echo "$tmpvar"; ?>'.$post.'<?php } ?>';
     } elseif ($escape=="quote") { // normal processing. quotemark esapce.
@@ -432,7 +441,10 @@ function parse_main()
     $this->ind=1;
   }
   while ($this->ind<$this->countarr) {
-    if (substr($this->arr[$this->ind],0,1)=="/") return;
+    if (substr($this->arr[$this->ind],0,1)=="/") {
+      if ($this->arr[$this->ind+1]) $this->errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
+      return;
+    }
     switch($this->arr[$this->ind]) {
     case "LOOP" : $this->parse_loop();
       break;
@@ -582,7 +594,7 @@ function parse_loop()
       $this->loops[$name][type]="sql"; // marque la loop comme etant une loop sql
 
       $this->decode_loop_content($name,&$contents,&$options,$tablesinselect);
-      $this->make_loop_code($name,$tables,
+      $this->make_loop_code($name.'_'.($this->signature),$tables,
 			    $tablesinselect,$extrainselect,
 			    $select,$dontselect,
 			    $where,$order,$limit,$groupby,
@@ -599,7 +611,7 @@ function parse_loop()
 	if ($this->arr[$this->ind]=="LOOP") $looplevel++;
       } while ($this->ind<$this->countarr && $looplevel);
     }
-    $code='<?php loop_'.$name.'($context); ?>';
+    $code='<?php loop_'.$name.'_'.($this->signature).'($context); ?>';
   } else {
     //
     if (!$issql) {// the loop is not defined yet, thus it is a user loop
@@ -618,7 +630,7 @@ function parse_loop()
       //
     } else { // the loop is an sql recurrent loop
       //
-      $code='<?php loop_'.$name.'($context); ?>';
+      $code='<?php loop_'.$name.'_'.($this->signature).'($context); ?>';
       $this->ind+=3;
       if ($this->arr[$this->ind]!="/LOOP") $this->errmsg ("loop $name cannot be defined more than once");
       $this->loops[$name][recursive]=TRUE;
