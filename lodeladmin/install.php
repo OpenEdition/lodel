@@ -510,7 +510,13 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
   // il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
   // les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
 
-  if ($erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql",$erasetables)) {
+  $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql",$erasetables);
+
+  // no error, let's add the translations of the interface.
+  if (!$erreur_createtables)
+    $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init-translations.sql",$erasetables);
+ 
+  if ($erreur_createtables) {
     // mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
     if (@mysql_query($sitesexistsrequest)) {
       if (!@mysql_query("DROP TABLE IF EXISTS $GLOBALS[tableprefix]sites")) { // ok, on n'arrive vraiment a rien faire
@@ -699,23 +705,42 @@ function mysql_query_file($filename,$droptables=false)
   $sqlfile=preg_replace("/#_M?TP_/",$GLOBALS['tableprefix'] ,
 		       file_get_contents($filename));
   if (!$sqlfile) return;
-  $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
-  if (!$sql) return;
+  #$sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
+  #if (!$sql) return;
 
-  foreach ($sql as $cmd) {
-    $cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
-    if ($cmd) {
+  $len=strlen($sqlfile);
+  for ($i=0; $i<$len; $i++) {
+    $c=$sqlfile{$i};
 
-      // should we drop tables before create them ?
-      if ($droptables && preg_match("/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?".$GLOBALS['tableprefix']."(\w+)/",$cmd,$result)) {
-	if (!mysql_query("DROP TABLE IF EXISTS ".$result[1])) {
+    if ($c=='\\') { $i++; continue; } // quoted char
+    if ($c=='#') {
+      for (; $i<$len; $i++) {
+	if ($sqlfile{$i}=="\n") break;
+	$sqlfile{$i}=" ";
+      }      
+    } elseif ($c=="'") {
+      $i++;
+      for (; $i<$len; $i++) {
+	$c=$sqlfile{$i};
+	if ($c=='\\') { $i++; continue; } // quoted char
+	if ($c=="'") break;
+      }
+    } elseif ($c==";") { // end of SQL statment
+      $cmd=trim(substr($sqlfile,$ilast,$i-$ilast));
+      #echo $cmd,"<BR>\n";
+      if ($cmd) {
+	// should we drop tables before create them ?
+	if ($droptables && preg_match("/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?".$GLOBALS['tableprefix']."(\w+)/",$cmd,$result)) {
+	  if (!mysql_query("DROP TABLE IF EXISTS ".$result[1])) {
+	    $err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+	  }
+	}
+	// execute the command
+	if (!mysql_query($cmd)) { 
 	  $err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
 	}
       }
-      // execute the command
-      if (!mysql_query($cmd)) { 
-	$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
-      }
+      $ilast=$i+1;
     }
   }
   return $err;
