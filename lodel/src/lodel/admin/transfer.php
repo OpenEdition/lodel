@@ -640,6 +640,10 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
       #if ($err=chargeinserts("groupesdechamps")) break;
     }
 
+    if (!$tables["$GLOBALS[tp]options"]) {
+      if ($err=create("options")) break;
+    }
+
     if (!$tables["$GLOBALS[tp]users_groupes"]) {
 	if ($err=create("users_groupes")) break;
     }
