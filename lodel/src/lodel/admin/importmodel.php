@@ -100,7 +100,7 @@ if ($fichier && $delete) {
   
   // verifie qu'on peut importer le modele.
   foreach(array_intersect(array("entites","entrees","personnes"),$existingtables) as $table) {
-    $result=mysql_query("SELECT 1 FROM $GLOBLAS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
     if (mysql_num_rows($result)) {
       $context[erreur_table]=$table;
       break;
