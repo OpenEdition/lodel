@@ -145,22 +145,53 @@ class Entities_EditionLogic extends Logic {
 	 $varname=$context['varname'];
 	 if (!$varname) return;
 
+	 $idtype=$context['id'];
 	 //search the type
-	 $dao=getDAO("persontypes");
-	 $vo=$dao->find("type='".$varname."'","class,id");
-	 $class=$vo->class;
+	 //$dao=getDAO("persontypes");
+	 //$vo=$dao->find("type='".$varname."'","class,id");
+	 //$class=$vo->class;
 
-	 foreach($context['persons'][$vo->id] as $degree=>$arr) {
+	 foreach($context['persons'][$idtype] as $degree=>$arr) {
 	   $localcontext=array_merge($context,$arr);
 	   $localcontext['name']=$name;
-	   $localcontext['class']=$class;
 	   $localcontext['classtype']="persons";
 	   $localcontext['degree']=$degree;
 	   call_user_func("code_do_$funcname",$localcontext);
 	 }
        }	  
      /////
+       function loop_entries_in_entities($context,$funcname) 
+       {
+	 global $db;
 
+	 $varname=$context['varname'];
+	 if (!$varname) return;
+
+	 $idtype=$context['id'];
+	 $ref=&$context['entries'][$idtype];
+
+	 // get the entries
+	 $result=$db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='".$idtype."' AND status>-64")) or dberror();
+	 while (!$result->EOF) {
+	   $localcontext=array_merge($context,$result->fields);
+	   $localcontext['checked']=$ref && in_array($result->fields['g_name'],$ref) ? "checked" : "";
+	   call_user_func("code_do_$funcname",$localcontext);
+	   $result->MoveNext();
+	 }
+
+	   /*
+	 foreach($context['entries'][$idtype] as $i=>$arr) {
+	   $localcontext=array_merge($context,$arr);
+	   $localcontext['name']=$name;
+	   $localcontext['class']=$class;
+	   $localcontext['classtype']="entries";
+	   $localcontext['degree']=$i;
+	   call_user_func("code_do_$funcname",$localcontext);
+	 }
+	 */
+       }
+	 
+     /////
      return $ret ? $ret : "_ok";
    }
 
@@ -175,7 +206,7 @@ class Entities_EditionLogic extends Logic {
    {
      global $user,$home;
 
-     if ($context['cancel']) return cancelAction($context,$error);
+     if ($context['cancel']) return $this->cancelAction($context,$error);
 
      $id=$context['id'];
      $idparent=$context['idparent'];
