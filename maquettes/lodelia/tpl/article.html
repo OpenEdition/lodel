@@ -185,15 +185,23 @@
 		<!-- ----------------------------------------------------------------------- -->
 		
 					<IF COND="[#TEXTEPUBLIE]">
+					
+					<div class="titre3">
+						Table des matières
+					</div>
+<LOOP NAME="toc">
+ <IF COND="[#NIVEAU]==1"><div class="toc_section1"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+ <IF COND="[#NIVEAU]==2"><div class="toc_section2"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+ <IF COND="[#NIVEAU]==3"><div class="toc_section3"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+ <IF COND="[#NIVEAU]==4"><div class="toc_section4"><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+ <IF COND="[#NIVEAU]==5"><div class="toc_section5"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+ <IF COND="[#NIVEAU]==6"><div class="toc_section6"><a  href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></div></IF>
+
+</LOOP>
 				
 						<!-- Texte. Si il existe --->
 						<IF COND="[#TEXTE]">
-TOC
-<LOOP NAME="toc">
-<IF COND="[#NIVEAU]==1"><h1><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></h1></IF>
-<IF COND="[#NIVEAU]==2"><h2><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></h2></IF>
-<IF COND="[#NIVEAU]==3"><h3><a href="#tocto[#TOCID]" NAME="tocfrom[#TOCID]">[#TITRE]</a></h3></IF>
-</LOOP>
+
 							<div class="titre3">
 								<IF COND="[#TYPE]!='presentation'">
 									Texte intégral
@@ -213,7 +221,8 @@ TOC
 				
 						<!-- Bibliographie. Si elle existe --->
 						<IF COND="[#BIBLIOGRAPHIE]">
-							<div class="titre3"> 
+
+				<div class="titre3"> 
 								<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
 							</div>
 							<div class="bibliographie">
@@ -302,6 +311,8 @@ TOC
 				
 					<!-- Affiche la description de l'auteur -->		
 					<MACRO NAME="DESCRITION_AUTEUR"> 
+					
+					
 				
 					<!-- Affiche liens de navigation entre les documents  -->						
 					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
