@@ -633,7 +633,7 @@
 <!--[ Cette Macro utilise la macro suivante :                            ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="presenter_documents" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+	<LOOP NAME="presenter_documents" TABLE="documents" WHERE="idparent='[#IDENTITE]'" ORDER="ordre">
 		<DO>
 			<div class="afficherdocument">
 				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
@@ -650,7 +650,7 @@
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
 <!--[ <MACRO NAME="PRESENTER_DOCUMENTS">                                 ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#IDENTITE]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<DO>
 			<div class="titre2">
 				<IF COND="[#TITRE]">
@@ -801,13 +801,14 @@
 <!--[ d'une rubrique.                                                        ]-->
 <!--[ Macro destinée aux sommaires.                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<LOOP NAME="boucle_lister_publications" TABLE="publications" WHERE="idparent='[#ID]'" >
+	<LOOP NAME="boucle_lister_publications" TABLE="publications" WHERE="idparent='[#ID]' AND TYPE!='regroupement'" >
 		<DO>
 			<div class="titre2">
 				<a class="titre2" href="sommaire.html?id=[#ID]">
 					[#NOM]
-				</a>
+				
 				<MACRO NAME="TITRE_PUBLICATION">
+				</a>
 			</div>
 			<div class="afficherdocument">
 				<MACRO NAME="INTRODUCTION_COURTE">
