@@ -221,15 +221,14 @@ ln tpl/fields.html
 ln fieldgroup.php
 ln tpl/fieldgroup.html
 
-ln tpl/types.html
+
+ln tpl/edit_types.html
 
 
-ln entrytype.php
-ln tpl/entrytype.html
+ln tpl/edit_entrytypes.html
 ln tpl/entrytypes.html
 
-ln persontype.php
-ln tpl/persontype.html
+ln tpl/edit_persontypes.html
 ln tpl/persontypes.html
 
 ln backup.php
