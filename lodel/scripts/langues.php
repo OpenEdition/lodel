@@ -8,6 +8,7 @@ $langues=array("fr"=>"français",
 	       "en"=>"anglais",
 	       "es"=>"espagnol",
 	       "de"=>"allemand",
+	       "it"=>"italien",
 	       "ru"=>"russe",
 	       "el"=>"grec");
 
@@ -19,15 +20,19 @@ $langues=array("fr"=>"français",
 
 $langresume=array("resume"=>"fr",
 		  "abstract"=>"en",
-		  ""=>"es",
-		  ""=>"de",
+		  "extracto"=>"es",
+		  "zusammenfassung"=>"de",
+		  "riassunto"=>"it",
 		  ""=>"ru",
 		  ""=>"el");
 
 // les balises et leur signification en clair (pour chkbalises.php)
 
 $balisesresume=array("resume"=>"Résumé",
-		    "abstract"=>"Abstract"
+		    "abstract"=>"Abstract",
+                    "extracto"=>"Extracto",
+                    "zusammenfassung"=>"Zusammenfassung",
+                    "riassunto"=>"Riassunto"
 		    );
 
 //
@@ -38,6 +43,7 @@ $langmotcle=array("motcles"=>"fr",
 		  "keywords"=>array("en","Keywords"),
 		  ""=>"es",
 		  ""=>"de",
+		  ""=>"it",
 		  ""=>"ru",
 		  ""=>"el");
 
