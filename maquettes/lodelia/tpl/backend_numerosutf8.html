@@ -1,0 +1,20 @@
+<USE MACROFILE="macros_technique.html">
+<MACRO NAME="ENTETE_XML">
+
+<rss version="0.92">
+	<channel>
+		<title>Lodelia</title>
+		<link>http://lodelia.revues.org/</link>
+		<description>Actualités scientifiques</description>
+		<language>fr</language>
+		<LOOP NAME="derniers_articles" TABLE="publications" WHERE="status gt 0 AND type='numero'" LIMIT="0,10">
+			<DO>
+				<item>
+					<title>[#NOM]</title>
+					<link>http://[#REVUE].revues.org/sommaire[#IDENTITE].html</link>
+					<description>[#TEXTE]</description>
+				</item>
+			</DO>
+		</LOOP>
+	</channel>
+</rss>
