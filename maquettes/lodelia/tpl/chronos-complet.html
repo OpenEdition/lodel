@@ -54,31 +54,35 @@
 					</div>
 				
 					<div class="titre2">
-						<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-							<DO>
-								<a class="titre2" href="chrono.html?id=[#ID]">
-									[#NOM]
-								</a>
-								&nbsp;|
-							</DO>
+						<LOOP NAME="type_periode" TABLE="typeindexs" WHERE="nom='periode'">
+							<LOOP NAME="periodes" TABLE="indexs" WHERE="id=[#ID]">
+								<DO>
+									<a class="titre2" href="chrono.html?id=[#ID]">
+										[#NOM]
+									</a>
+									&nbsp;|
+								</DO>
+							</LOOP>
 						</LOOP>
 					</div>
 				
-					<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
-						<DO>
-							<div class="titre3">
-								<a name="[#ABREV]">
-									[#NOM]
-								</a>
-							</div>
-							<div class="afficherdocument">
-								<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-									<DO>
-										<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-									</DO>
-								</LOOP>
-							</div>
-						</DO>
+					<LOOP NAME="type_periode2" TABLE="typeindexs" WHERE="nom='periode'">
+						<LOOP NAME="periodes2" TABLE="indexs" WHERE="id=[#ID]">
+							<DO>
+								<div class="titre3">
+									<a name="[#ABREV]">
+										[#NOM]
+									</a>
+								</div>
+								<div class="afficherdocument">
+									<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindex='[#ID]'">
+										<DO>
+											<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+										</DO>
+									</LOOP>
+								</div>
+							</DO>
+						</LOOP>
 					</LOOP>
 				</div>
 			</div>

@@ -20,9 +20,7 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<LOOP NAME="title" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-	<TITLE>Index géographique : [#NOM]</TITLE>
-</LOOP>
+<TITLE>Index géographique : [#NOM]</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_GEO">
 <MACRO NAME="JS_ROLLOVER"> 
@@ -57,7 +55,7 @@
 				</div>
 					
 				<!-- Liste des articles -->
-				<LOOP NAME="articles" TABLE="documents" WHERE="idindexl='[#ID]'">
+				<LOOP NAME="articles" TABLE="documents" WHERE="idindex='[#ID]'">
 					<DO>
 						<div class="afficherdocument">
 							<!-- Liste des documents liés à cette entrée d'index -->
@@ -68,7 +66,7 @@
 			
 				<div class="titre2">
 					<a class="titre2" href="geos-complet.html">
-						>> Index géographique.
+						&gt;&gt; Index g&eacute;ographique.
 					 </a>
 				</div>
 			

@@ -52,31 +52,35 @@
 				</div>
 				
 				<div class="titre2">
-					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-						<DO>	
-							<a class="titre2" href="geo.html?id=[#ID]">
-								[#NOM]
-							</a>
-							&nbsp;|
-						</DO>
+					<LOOP NAME="type_geographie" TABLE="typeindexs" WHERE="nom='geographie'">
+						<LOOP NAME="geographie" TABLE="indexs" WHERE="id=[#ID]">
+							<DO>	
+								<a class="titre2" href="geo.html?id=[#ID]">
+									[#NOM]
+								</a>
+								&nbsp;|
+							</DO>
+						</LOOP>
 					</LOOP>
 				</div>
 				
-				<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-					<DO>
-						<div class="titre3">
-							<a name="[#ABREV]">
-								[#NOM]
-							</a>
-						</div>
-						<div class="afficherdocuemnt"">
-							<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-								<DO>
-									<MACRO NAME="INFOS_DOCUMENT">
-								 </DO>
-							</LOOP>
-						</div>
-					</DO>
+				<LOOP NAME="type_geographie2" TABLE="typeindexs" WHERE="nom='geographie'">
+					<LOOP NAME="geographie2" TABLE="indexs" WHERE="id=[#ID]">
+						<DO>
+							<div class="titre3">
+								<a name="[#ABREV]">
+									[#NOM]
+								</a>
+							</div>
+							<div class="afficherdocuemnt"">
+								<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindex='[#ID]'">
+									<DO>
+										<MACRO NAME="INFOS_DOCUMENT">
+									 </DO>
+								</LOOP>
+							</div>
+						</DO>
+				</LOOP>
 			</LOOP>
 		</div>
 	</div>

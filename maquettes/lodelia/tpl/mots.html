@@ -65,14 +65,16 @@
 						</div>
 			
 			<!-- Boucle permettant d'afficher les mots-clefs -->
-					<LOOP NAME="motcles" TABLE="indexls" WHERE="substring(mot,1,1)='[#LETTRE]'" ORDER="mot">
-						<DO>
-							<div class="afficherdocument">
-								<a href="mot.html?id=[#ID]">
-									[#MOT]
-								</a>
-							</div>
-						</DO>
+					<LOOP NAME="type_motcles2" TABLE="typeindexs" WHERE="nom='motcles'">
+						<LOOP NAME="motcles" TABLE="indexs" WHERE="substring(nom,1,1)='[#LETTRE]'" ORDER="nom">
+							<DO>
+								<div class="afficherdocument">
+									<a href="mot.html?id=[#ID]">
+										[#MOT]
+									</a>
+								</div>
+							</DO>
+						</LOOP>
 					</LOOP>
 				</DO>
 			</LOOP>

@@ -321,9 +321,10 @@ IPR
 <!-- Version 1.0                                                        -->
 <!-- Affichage métadonnées propres à chrono.html.                       -->
 <!-- ****************************************************************** -->
-
-<LOOP NAME="DCtitle" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC" WHERE="id=[#ID]">
-	<meta name="DC.Title" content="Index chronologique : [#NOM]." />
+<LOOP NAME="type_periode" TABLE="typeindexs" WHERE="nom='periode'">
+	<LOOP NAME="DCtitle" TABLE="indexs" WHERE="type=[#ID]">
+		<meta name="DC.Title" content="Index chronologique : [#NOM]." />
+	</LOOP>
 </LOOP>
 <meta NAME="DC.Description" lang="fr" content="Index chronologique." />
 </DEFMACRO>
