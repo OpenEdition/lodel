@@ -59,7 +59,7 @@ class Parser {
 
 function errmsg ($msg,$ind=0) { 
   if ($ind) $line="line ".$this->$linearr[$ind];
-  die("ERROR $line (".$this->infilename."): $msg");
+  die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
 }
 
 function parse_loop_extra(&$tables,
