@@ -59,7 +59,7 @@ function posttraitement(&$context)
       if (is_array($val)) {
 	posttraitement($context[$key]);
       } else {
-	if ($key!="meta") $context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
     }
   }
