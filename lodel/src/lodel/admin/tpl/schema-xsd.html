@@ -18,6 +18,8 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
+<--[ Warning: the loop name must be different for the ones in lodel/edition/xml-classe.html because the two templates can be imported in the same script ]-->
+
 <xsd:schema targetNamespace="http://www.lodel.org"
                 xmlns="http://www.lodel.org"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -32,7 +34,7 @@
 	<xsd:complexType name="articleType">
             <xsd:sequence>
 	<!--[ les groupes de personnes ]-->
-    	<LOOP NAME="typepersonnes" TABLE="typepersonnes" WHERE="statut gt 0" ORDER="ordre">
+    	<LOOP NAME="typepersonnes_xsd" TABLE="typepersonnes" WHERE="statut gt 0" ORDER="ordre">
 		<DO>
             <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
 		      <xsd:complexType>
@@ -44,7 +46,7 @@
 		</DO>
    	</LOOP>
 	<!--[ les groupes d'entrees ]-->
-    	<LOOP NAME="typeentrees" TABLE="typeentrees" WHERE="statut gt 0" ORDER="ordre">
+    	<LOOP NAME="typeentrees_xsd" TABLE="typeentrees" WHERE="statut gt 0" ORDER="ordre">
 	      	<DO>
                 <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
 		     <xsd:complexType>
@@ -57,7 +59,7 @@
 		</DO>
 	</LOOP>
 	<!--[ les groupes de champs ]-->
-	    <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
+	    <LOOP NAME="groupesdechamps_xsd" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       	<DO>
 	        [<xsd:annotation>
 				<xsd:documentation xml:lang="fr">
@@ -68,7 +70,7 @@
 			 <xsd:complexType>
 		            <xsd:sequence>
 
-		<LOOP NAME="champs" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
+		<LOOP NAME="champs_xsd" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
 	    		<DO>
 		        <IF COND="[#COMMENTAIRE]"><xsd:annotation>
 					<xsd:documentation xml:lang="fr">
@@ -140,7 +142,7 @@
 				<xsd:element name="typedoc">
 					<xsd:simpleType>
 						<xsd:restriction base="xsd:string">
-						<LOOP NAME="typedoc" TABLE="types" WHERE="classe='documents' AND statut gt 0">
+						<LOOP NAME="typedoc_xsd" TABLE="types" WHERE="classe='documents' AND statut gt 0">
 							<xsd:enumeration value="[#TYPE]"/>
 						</LOOP>
 						</xsd:restriction>
@@ -185,11 +187,11 @@
 		<xsd:sequence>
 			<xsd:element name="ml" minOccurs="1" maxOccurs="unbounded">
 				<xsd:complexType>
-					<xsd:simpleContent>
+					<xsd:complexContent>
 						<xsd:extension base="LodelTexte">
 							<xsd:attribute name="lang" type="xsd:language" use="required"/>
 						</xsd:extension>
-					</xsd:simpleContent>
+					</xsd:complexContent>
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:sequence>
@@ -202,7 +204,7 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="LodelTexte" mixed="true">
-		<xsd:all minOccurs="0" maxOccurs="unbounded">				    
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">				    
 			<xsd:element name="section1" type="Section"  />
 			<xsd:element name="section2" type="Section"  />
 			<xsd:element name="section3" type="Section"  />
@@ -216,7 +218,7 @@
 			<xsd:group ref="xhtml:block"/>
 			<xsd:group ref="xhtml:phrase"/> <!--[ c'est un peu trop laxiste la suite la ]-->
 			<xsd:group ref="xhtml:fontstyle"/>
-		</xsd:all>
+		</xsd:choice>
 	</xsd:complexType>
 
 

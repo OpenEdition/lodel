@@ -254,45 +254,8 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
   }
 }
 
-/*
-  global $home,$balisesdocument_lieautexte,$balisesdocument_nonlieautexte;
 
-  //
-  // est-ce qu'on veut le texte ?
-  //
-  if (in_array("documents",$tables)) {
-# as-t-on besoin des balises liees au texte ?
-    if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_lieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER)) {
-      $withtextebalises='"'.strtolower(join('","',$result[1])).'"';
-    } else {
-      $withtextebalises="";
-    }
-
-# as-t-on besoin de balises non liees au texte
-    if (preg_match_all("/\[\(?#(".join("|",$balisesdocument_nonlieautexte).")\b/i",$ret[$balise],$result,PREG_PATTERN_ORDER))  {
-      $ret["PRE_".$balise]='$filename="lodel/txt/r2r-$context[id].xml";
-if (file_exists($filename)) {
-include_once ("$GLOBALS[home]/xmlfunc.php");
-$text=join("",file($filename));
-$arr=array("'.strtolower(join('","',$result[1])).'");';
-      if ($withtextebalises) { // on a aussi besoin des balises liees au texte
-	$ret["PRE_".$balise].='if ($context[textepublie] || $GLOBALS[droitvisiteur]) array_push ($arr,'.$withtextebalises.');';
-      }
-      $ret["PRE_".$balise].='$context=array_merge($context,extract_xml($arr,$text)); }';
-    } elseif ($withtextebalises) { // les balises liees au texte seulement... ca permet d'optimiser un minimum. On evite ainsi d'appeler le parser xml quand le texte n'est pas publie.
-      $ret["PRE_".$balise]='if ($context[textepublie] || $GLOBALS[droitvisiteur]) {
-$filename="lodel/txt/r2r-$context[id].xml";
-if (file_exists($filename)) {
-include_once ("$GLOBALS[home]/xmlfunc.php");
-$text=join("",file($filename));
-$context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
-}}';
-    }
-  } // table documents ?
-*/
-// fin fonction decode_content_extra
-
-}
+} // end of the class LodelParser
 
 
 function prefixtablesindatabase(&$table) {

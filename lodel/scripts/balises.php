@@ -129,7 +129,8 @@ $multiplelevel=array(
 # supprimer pour le moment tant que Ted ne lit pas les styles de caracteres
 #		     "affiliation"=>"descriptionauteur",
 #		     "courriel"=>"descriptionauteur",
-
+		     "puce"=>"<*",
+		     "puces"=>"<*",
 		     // l'ordre est important ci-dessous (marche pas avec section\d+)
 		     "section6"=>">*", // non utilise a priori
 		     "section5"=>">*", // non utilise a priori
@@ -204,10 +205,10 @@ function traite_multiplelevel(&$text)
     if ($v=="*") $v="\w+";
 
     if ($dir=="apres") { // entoure par la balise qui suit
-      array_push($search,"/((?:$balouvrante.*?$balfermante"."[\s\n\r]*)*)(<r2r:$v(?:\b[^>]+)?>)/is");
+      array_push($search,"/((?:$balouvrante.*?$balfermante"."[\s\n\r]*)*)(<r2r:$v\b[^>]*>)/is");
       array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui suit
     } elseif ($dir=="avant") {
-      array_push($search,"/(<r2r:$v(?:\b[^>]+)?>)[\s\n\r]*($balouvrante.*?$balfermante)/is");
+      array_push($search,"/(<\/r2r:$v\b[^>]*>)[\s\n\r]*($balouvrante.*?$balfermante)/is");
       array_push($rpl,"\\2\\1"); // permute le bloc avec la balise qui precede
     } else { // entoure par la balise donne dans $v
       array_push($search,"/$balouvrante/i","/$balfermante/i");

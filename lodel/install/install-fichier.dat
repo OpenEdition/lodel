@@ -170,6 +170,7 @@ ln tpl/fonctionsavancees-publication.html
 # xml
 ln xml.php
 ln tpl/xml-classe.html
+ln tpl/xml-valid.html
 
 ###############################################################
 ############# admin

@@ -382,13 +382,13 @@ if (!function_exists("file_get_contents")) {
  * 
  */
 
-function download($filename,$originalname="")
+function download($filename,$originalname="",$contents="")
 
 {
   // taken from phpMyAdmin
   // Download
   if (!$originalname) $originalname=$filename;
-  if (!is_readable($filename)) die ("ERROR: The file \"$filename\" is not readable");
+  if ($filename && !is_readable($filename)) die ("ERROR: The file \"$filename\" is not readable");
   $originalname=preg_replace("/.*\//","",$originalname);
 
   get_PMA_define();
@@ -400,11 +400,12 @@ function download($filename,$originalname="")
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');
   } else {
+    $size=$filename ? filesize($filename) : strlen($contents);
     header('Content-Disposition: attachment; filename="' . $originalname . '"');
-    header('Content-Length: '.filesize($filename).'"');
+    header('Content-Length: '.$size.'"');
     header('Pragma: no-cache');
   }
-  readfile($filename); 
+  if ($filename) { readfile($filename); } else { echo $contents; }
 }
 
 

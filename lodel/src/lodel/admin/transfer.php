@@ -324,8 +324,8 @@ RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
     }
     if ($tables["$GLOBALS[tp]typedocs"]) {
       $err=mysql_query_cmds('
-INSERT INTO _PREFIXTABLE_types (type,titre,tpl,statut,classe,tplcreation)
-          SELECT nom,nom,tpl,statut,"documents","chargement" FROM _PREFIXTABLE_typedocs;
+INSERT INTO _PREFIXTABLE_types (type,titre,tpl,statut,classe,tplcreation,import)
+          SELECT nom,nom,tpl,statut,"documents","document",1 FROM _PREFIXTABLE_typedocs;
 DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
 ');
       if ($err) break;

@@ -26,6 +26,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+
 // charge le fichier xml et
 require("siteconfig.php");
 require ($home."auth.php");
@@ -66,52 +68,45 @@ list($context[documentsannexes])=mysql_fetch_row($result);
 
 # calculate the page and store it into $contents
 
-ob_start();
-include ($home."calcul-page.php");
-calcul_page($context,"xml-classe");
-$contents=ob_get_contents();
-ob_end_clean();
+require_once($home."xmlfunc.php");
 
-$arr=preg_split("/\s*(<(\/?)\w+(?:\s[^>]*)?>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
-#print_r($arr);
+$contents=calculateXML($context);
 
-// "telechargement"
-$originalname="entite-$id.xml";
+if ($valid) {
+  $tmpfile=tempnam($tmpdir,"lodelxml_");
+  writefile($tmpfile.".xml",$contents);
+  $contents=calculateXMLSchema($context);
+  writefile($tmpfile.".xsd",$contents);
+  if (!$zipcmd) die("ERROR: the zip command is required for validating XML using ServOO. Configure lodelconfig.php");
+  system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$tmpfile.err");
+  if (filesize($errfile)>0) die("ERROR: $errormsg<br />".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
 
-# temporairement commente
-#header("Content-type: application/force-download");
-#header("Content-Disposition: attachment; filename=$originalname");
-#header("Content-type: application/$type");
+  @unlink("$tmpfile.xml");
+  @unlink("$tmpfile.xsd");
+  @unlink("$tmpfile.err");
 
-$originalname="xml.xml";
+  $cmds="DWL file1; XVL MSV; RTN convertedfile;";
 
-get_PMA_define();
-header("Content-type: application/force-download");
-header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-// lem9 & loic1: IE need specific headers
-if (PMA_USR_BROWSER_AGENT == 'IE') {
-  header('Content-Disposition: inline; filename="' . $originalname . '"');
-  header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-  header('Pragma: public');
+  require ($home."serveurfunc.php");
+  list($ret,$retval)=upload($servoourl,
+			    array("username"=>$servoousername,
+				  "passwd"=>$servoopasswd,
+				  "commands"=>$cmds),
+			    array($tmpfile.".zip"), # fichier a uploaded
+			    0 # cookies
+			    );
+
+  @unlink("$tmpfile.zip");
+
+  $context[reponse]=str_replace("\n","<br />",htmlentities($ret));
+
+  require_once ($home."calcul-page.php");
+  calcul_page($context,"xml-valid");
 } else {
-  header('Content-Disposition: attachment; filename="' . $originalname . '"');
-#  header('Content-Length: '.filesize($filename).'"');
-  header('Pragma: no-cache');
-}
+  // "telechargement"
+  $originalname="entite-$id.xml";
 
-echo '<?xml version="1.0" encoding="utf-8" ?>
-';
-$tab="";
-for($i=1; $i<count($arr); $i+=3) {
-  if ($arr[$i+1]) $tab=substr($tab,2); // closing tag
-  if (!$arr[$i+1] && $arr[$i+4]) { // opening follow by a closing tags
-    echo $tab.$arr[$i].$arr[$i+2].$arr[$i+3]."\n";
-    $i+=3;
-  } else {
-    echo $tab.$arr[$i],"\n";
-    if (!$arr[$i+1]) $tab.="  ";
-    if (trim($arr[$i+2])) { echo $tab.$arr[$i+2]."\n"; }
-  }
+  download("",$originalname,$contents);
 }
 
 
@@ -165,19 +160,19 @@ function namespace($text)
  */
 
 function callback_ns_attributes($matches){
-	$str = $matches[1];
-	$ns = $matches[2];
-	$arr=preg_split("/\"/",$matches[3]);
-	for($i=0; $i<count($arr); $i+=2) { 
-		if($arr[$i]!=""){
-			$attr = trim(str_replace("=","",$arr[$i]));
-			if ($attr!="lang" && $attr!="space" && $attr!="base"
-			    && $attr!="class" && $attr!="style") 
-				$str.=" ".$ns.":".ltrim($attr)."=\"".$arr[$i+1]."\"";
-			else $str.=$arr[$i]."\"".$arr[$i+1]."\"";
-		}
-	}
-	return $str;
+  $str = $matches[1];
+  $ns = $matches[2];
+  $arr=preg_split("/\"/",$matches[3]);
+  for($i=0; $i<count($arr); $i+=2) { 
+    if(!$arr[$i]){
+      $attr = trim(str_replace("=","",$arr[$i]));
+      if ($attr!="lang" && $attr!="space" && $attr!="base"
+	  && $attr!="class" && $attr!="style") 
+	$str.=" ".$ns.":".ltrim($attr)."=\"".$arr[$i+1]."\"";
+      else $str.=$arr[$i]."\"".$arr[$i+1]."\"";
+    }
+  }
+  return $str;
 }
 
 

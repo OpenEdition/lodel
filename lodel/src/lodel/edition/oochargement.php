@@ -188,6 +188,11 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,"/<(r2rc?:$GLOBALS[stylestransparents])\b([^>]*)>.*?<\/\\1>/");
   array_push($rpl,"");
 
+  // remove empty paragraph
+  array_push($srch,"/<p\b[^>]*\/>/");
+  array_push($rpl,"");
+
+
   //
   
   $translations=array("r2r:notesdebasdepage"=>"r2r:notebaspage",

@@ -118,7 +118,9 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
     $chunk_head=fgets($fp,1024);
     if (!preg_match("/^[A-Fa-f0-9]+\s*\r\n/",$chunk_head)) {
       #while ($chunk_head) { echo ord($chunk_head)," "; $chunk_head=substr($chunk_head,1); }
-      die ("ERROR: chunk head invalid: \"$chunk_head\"");
+      #while (!feof($fp)) { echo "line: ".htmlentities(fgets($fp,1024))."<br />"; }
+      die ("ERROR: chunk head invalid: \"$chunk_head\" eof:".(feof($fp) ? "yes" : "no")."\n");
+      
     }
     $chunksize=hexdec($chunk_head); # lit le chunck size
     #error_log("chunk: \"$chunk_head\" $chunksize\n",3,"/tmp/log");
@@ -151,6 +153,7 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 	  if (!$buf) continue;
 	  $byteread=strlen($buf);
 	} else {
+	  while (!feof($fp)) { echo fgets($fp,1024); }
 	  die("content-length not found: \"$buf\"");
 	}
       }

@@ -26,98 +26,67 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require_once ($home."balises.php");
 
-// fonction pour parser du xml
-
-function myxmlparse(&$text,$startHandler,$endHandler="defaultEndHandler",$charHandler="") {
-
-  $parser = xml_parser_create();
-  xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
-  xml_set_element_handler($parser, $startHandler,$endHandler);
-  if ($charHandler) xml_set_character_data_handler($parser, $charHandler);
-#  xml_set_default_handler($parser, "xml_parse_into_struct_ns_defaultHandler");
-
-  if (!xml_parse($parser, $text)) {
-    echo sprintf("<br>XML error: %s at line %d <br><br>",
-		 xml_error_string(xml_get_error_code($parser)),
-		 xml_get_current_line_number($parser));
-	global $home;
-	include_once ($home."checkxml.php");
-	checkstring($text);
- }
-}
-
-function defaultEndHandler($parser,$name) {}
-
-
-function extract_xml ($balises,&$text)
+function calculateXML ($context)
 
 {
-  $ret=array();
-  if (!is_array($balises)) $balises=array($balises);
-  foreach ($balises as $b) {
-    if ($b!=strtolower($b)) die("Informez Ghislain de ce \"bug\"<BR>balise $b");
+  require_once ($home."calcul-page.php");
+  ob_start();
+  calcul_page($context,"xml-classe","",SITEROOT."lodel/edition/tpl/");
+  $contents=ob_get_contents();
+  ob_end_clean();
 
-    if (preg_match_all ("/<r2r:$b\b([^>]*)>(.*?)<\/r2r:$b>/s",$text,$results,PREG_SET_ORDER)) {
-	foreach ($results as $result) {
-	  /////temporaire... doit devenir du XSL
-	  // avril 03: ca ne deviendra pas du XSL.
-      $result[2]=preg_replace(array(
-				    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
-				    "/<\/r2r:[^>]+>/i"				    				    ),
-			      array(
-				    "<div classe=\"\\1\">",
-				    "</div>"
-				    ),traite_separateur($result[2]));
-      ///// fin temporaire
-      // cherche la langue
-	$lang="";
-      if ($b=="resume" && $result[1]) {
-	// cherche la langue
-	if (preg_match("/lang\s*=\s*\"([^\"]+)\"/i",$result[1],$result2)) {
-	  $lang="_lang".$result2[1];
-	}
+  return indentXML($contents);
+}
+
+
+function calculateXMLSchema ($context)
+
+{
+
+  require_once ($home."calcul-page.php");
+  ob_start();
+  calcul_page($context,"schema-xsd","",SITEROOT."lodel/admin/tpl/");
+  $contents=ob_get_contents();
+  ob_end_clean();
+
+  return indentXML($contents);
+#  return $contents;
+}
+
+
+
+function indentXML ($contents,$output=false)
+
+{
+  $arr=preg_split("/\s*(<(\/?)(?:\w+:)?\w+(?:\s[^>]*)?>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
+
+  $ret='<?xml version="1.0" encoding="utf-8" ?>
+';
+  if ($output) echo $ret;
+  $tab="";
+  for($i=1; $i<count($arr); $i+=3) {
+    if ($arr[$i+1]) $tab=substr($tab,2); // closing tag
+    if (substr($arr[$i],-2)=="/>") { // opening closing tag
+      $out=$tab.$arr[$i].$arr[$i+2]."\n";
+    } else 
+    if (!$arr[$i+1] && $arr[$i+4]) { // opening follow by a closing tags
+      $out=$tab.$arr[$i].$arr[$i+2].$arr[$i+3]."\n";
+      $i+=3;
+    } else {
+      $out=$tab.$arr[$i]."\n";
+      if (!$arr[$i+1]) $tab.="  ";
+      if (trim($arr[$i+2])) {
+	$out.=$tab.$arr[$i+2]."\n";
       }
-      $ret[strtolower($b.$lang)]=$result[2];
     }
+    if ($output) { echo $out; } else { $ret.=$out; };
   }
- }
-  return $ret;
+  if (!$output) return $ret;
 }
 
 
-/*
-// la balise peut etre une liste de balise separé par des |
-function extract_attr(&$texte,$balise) {
 
-  preg_match_all("/<r2r:($balise)(?:\s+(\w+)\s*=\s$\"([^\"]+)\")+>/i",$texte,$results,PREG_SET_ORDER);
 
-  $arrall=array();
 
-  foreach ($results as $result) {
-    $arr[0]=array_shift($result); // tout le match
-    $arr[1]=array_shift($result); // nom de la balise
-    while ($result) {
-      $attrname=array_shift($result);
-      $arr[$attrname]=array_shift($result);
-    }
-    array_push($arrall,$arr);
-  }
-  return $arrall;
-}
-
-// ecrit un tag avec en argument un tableau fournit par extract_attr
-function write_tag($arr) {
-  
-  $str="<".$arr[1];
-
-  foreach ($arr as $k=>$v) {
-    if ($k==0 || $k==1) continue;
-    if ($v) $str.=" $k=\"$v\"";
-  }
-
-  return $str.">";
-}
-*/
 ?>
