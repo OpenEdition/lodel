@@ -223,7 +223,8 @@ function previousnext ($dir,$context,$funcname,$arguments)
   if ($localcontext) {
     call_user_func("code_do_$funcname",$localcontext);
   } else {
-    call_user_func("code_alter_$funcname",$context);
+    if (function_exists("code_alter_$funcname")) 
+      call_user_func("code_alter_$funcname",$context);
   }
 
 
@@ -243,6 +244,87 @@ function loop_next ($context,$funcname,$arguments)
   previousnext("next",$context,$funcname,$arguments);
 }
 
+
+
+/*********************************************************************/
+/*  Loop for reading RSS Flux using Magpie                           */
+/*                                                                   */
+/*  Appeller cette boucle dans le code lodelscript par :             */
+/*  <BOUCLE NAME="topparentdoc">[#ID]</BOUCLE>                       */
+/*********************************************************************/
+
+
+function loop_rss ($context,$funcname,$arguments)
+
+{
+  define ("MAGPIE_CACHE_ON",TRUE);
+  define ("MAGPIE_CACHE_DIR","./CACHE");
+  define ("DIRECTORY_SEPARATOR","/");
+
+  if (!isset($arguments[url])) {
+    if ($GLOBALS[droitvisiteur]) die("ERROR: the loop \"previous\" requires a URL attribut");
+    return;
+  }
+  require_once($home."magpierss/rss_fetch.inc");
+
+  $rss = fetch_rss( $arguments['url'] , $arguments['refresh'] ? $arguments['refresh'] : 3600);
+
+  if (!$rss) {
+    if ($GLOBALS[droitediteur]) {
+      echo "<b>Warning: Erreur de connection RSS sur l'url ",$arguments['url'],"</b><br/>";
+    } else {
+      if ($GLOBALS[contactbug]) @mail($contactbug,"[WARNING] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de connection RSS sur l'url ".$arguments['url']);
+      return;
+    }
+  }
+
+  $localcontext=$context;
+  foreach (array(# obligatoire
+		   "title",
+		   "link",
+		   "description",
+		   # optionel
+		   "language","copyright","managingEditor","webMaster","pubDate","lastBuildDate","category","generator","docs","cloud","ttl","rating","textInput","skipHours","skipDays")
+	     as $v) $localcontext[strtolower($v)]=$rss->channel[$v];
+
+  // special treatment for "image"
+  if ($rss->channel['image']) {
+      $localcontext['image_url']=$rss->channel['image']['url'];
+      $localcontext['image_title']=$rss->channel['image']['title'];
+      $localcontext['image_link']=$rss->channel['image']['link'];
+      $localcontext['image_description']=$rss->channel['image']['description'];
+      $localcontext['image_width']=$rss->channel['image']['link'];
+      if (!$localcontext['image_width']) $localcontext['image_width']=88;
+      if ($localcontext['image_width']>144) $localcontext['image_width']=144;
+      $localcontext['image_height']=$rss->channel['image']['link'];
+      if (!$localcontext['image_height']) $localcontext['image_height']=31;
+      if ($localcontext['image_height']>400) $localcontext['image_height']=400;
+  }
+
+  $localcontext['rssobject']=$rss;
+  call_user_func("code_do_$funcname",$localcontext);
+}
+
+function loop_rssitem($context,$funcname,$arguments)
+
+{
+  // check whether there are some items in the rssobject.
+  if (!$context['rssobject'] || !$context['rssobject']->items) {
+    if (function_exists("code_alter_$funcname")) 
+      call_user_func("code_alter_$funcname",$localcontext);
+    return;
+  }
+
+  // yes, there are, let's loop over them.
+  if (function_exists("code_before_$funcname")) call_user_func("code_before_$funcname",$localcontext);
+  foreach ($context['rssobject']->items as $item) {
+    $localcontext=$context;
+    foreach (array("title","link","description","author","category","comments","enclosure","guid","pubDate","source")
+	     as $v) $localcontext[strtolower($v)]=$item[$v];
+    call_user_func("code_do_$funcname",$localcontext);
+  }
+  if (function_exists("code_after_$funcname")) call_user_func("code_after_$funcname",$localcontext);
+}
 
 
 ?>

@@ -51,6 +51,7 @@ class Parser {
   var $linearr;
   var $currentline;
   var $ind;
+  var $refresh="";
 
   var $isphp; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
@@ -100,11 +101,8 @@ function parse ($in,$out)
       $charset="iso-8859-1";
     }
     // attribut refresh
-    if (preg_match("/\bREFRESH\s*=\s*\"([^\"]+)\"/",$result[1],$result2)) {
-      $refresh=trim($result2[1]);
-      $timere="(?:\d+(:\d\d){0,2})"; // time regexp
-      if (!is_numeric($refresh) && !preg_match("/^$timere(?:,$timere)*$/",$refresh)) $this->errmsg("Invalid refresh time \"$refresh\"");
-    }
+    $this->checkforrefreshattribut($result[1]);
+
     $contents=str_replace($result[0],"",$contents); // efface la balise
   } else {
     $charset="iso-8859-1";
@@ -171,18 +169,20 @@ function parse ($in,$out)
   //
   // refresh manager
   //
-  if ($refresh) {
+  #die("::".$this->refresh);
+
+  if ($this->refresh) {
     $code='<'.'?php if ($GLOBALS[cachedfile] && !$dontcheckrefresh) { $cachetime=filemtime($GLOBALS[cachedfile].".php"); ';
 
     // refresh period in second
-    if (preg_match("/^\d+$/",$refresh)) {
-      $code.=' if($cachetime+'.$refresh.'<time()) return "refresh"; ';
+    if (preg_match("/^\d+$/",$this->refresh)) {
+      $code.=' if($cachetime+'.$this->refresh.'<time()) return "refresh"; ';
 
     // refresh time
     } else {
       $code.='$now=time(); $date=getdate($now);';
 
-      $refreshtimes=preg_split("/,/",$refresh);
+      $refreshtimes=preg_split("/,/",$this->refresh);
       foreach ($refreshtimes as $refreshtime) {
 	$refreshtime=preg_split("/:/",$refreshtime);
 	$code.='$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
@@ -442,12 +442,16 @@ function parse_loop()
       $name=trim($result[2]);
     } elseif ($result[1]=="TABLE") {
       $issqldef=TRUE;
+    } elseif ($result[1]=="REFRESH") {
+	$this->checkforrefreshattribut($result[0]);
     }
   }
 
   if ($issqldef) { // definition of a SQL loop.
     foreach ($results as $result) {
       $value=lodelparserunquote($result[2]);
+      error_log("REFRESH:".$result[1]."\n",3,"/tmp/tlog");
+
       switch ($result[1]) {
       case "NAME":
 	break;
@@ -874,6 +878,27 @@ function parse_escape_code()
   $this->arr[$this->ind]="";
 
   $this->isphp=TRUE;
+}
+
+
+
+function checkforrefreshattribut($text)
+
+{
+  if (preg_match("/\bREFRESH\s*=\s*\"([^\"]+)\"/",$text,$result2)) {
+    $refresh=trim($result2[1]);
+    $timere="(?:\d+(:\d\d){0,2})"; // time regexp
+    if (!is_numeric($refresh) && !preg_match("/^$timere(?:,$timere)*$/",$refresh)) $this->errmsg("Invalid refresh time \"".$refresh."\"");
+  }
+  if (!$this->refresh || 
+      (is_numeric($refresh) && 
+       is_numeric($this->refresh) &&
+       $refresh < $this->refresh)
+      ) {
+    $this->refresh=$refresh;
+  } elseif (!is_numeric($refresh) && !is_numeric($this->refresh)) {
+    $this->refresh.=",".$refresh;
+  }
 }
 
 } // clase Parser
