@@ -53,43 +53,6 @@ function infoChargement(nomFic){
 //-->
 </script>
 
-<!--
-<table width="430" border="0" align="center" cellspacing="4" cellpadding="4">
-<TR><td>
-<div align="center"><span class="titre">Chargement du fichier</span></div><br />
-
-<span class="texte_petit">
-Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.
-
-<form name="formfic" enctype="multipart/form-data" action="chargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)">
-<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
-<input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="tache" value="[#TACHE]">
-<strong>Fichier:</strong></td>
-</tr>
-<TR>
-<td><input type="file" name="htmlfile" size="40"></td>
-[(#ERREUR_UPLOAD|true)<td CLASS="erreur">Une erreur s'est produite pendant le chargement.</td>]</tr>
-<TR><td>
-<br />
-
-<input class="form" type="submit" value="Charger">
-<br />
-<IF COND="[#SUPERADMIN]">
-<br /><br />Super Admin:<br />
-<input class="form" type="submit" name="sortieted" value="Sortie Brute de Ted">
-<input class="form" type="submit" name="sortie" value="Sortie de chargement">
-</IF>
-<div align="center" id='info' style="text-decoration:blink ">
-</div>
-</form>
-<br />
-<br />
-
-<a href="index.php">Revenir</a>
-</td></tr>
-</table>
--->
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
@@ -106,15 +69,15 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 </div>
 
 <form name="formfic" enctype="multipart/form-data" action="chargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)">
-	<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
-	<input type="hidden" name="id" value="[#ID]">
-	<input type="hidden" name="tache" value="[#TACHE]">
+	<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
+	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="tache" value="[#TACHE]" />
 	
 	<br /><br />
 	<table width="430" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
 		<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionner le fichier à charger<br /><br /></td></tr>
 		<tr><td align="center" class="texte_normal">Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.<br /><br /></td></tr>
-		<tr><td align="center"><input type="file" name="htmlfile" size="40"></td></tr>
+		<tr><td align="center"><input type="file" name="htmlfile" size="40" /></td></tr>
 		<tr>
 			<td align="center">
 				<br /><br />
