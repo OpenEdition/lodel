@@ -247,7 +247,7 @@ if ($site) {
 } else {
 	$url=parse_url("http://".$SERVER_NAME.$REQUEST_URI);
 	if ($siteagauche) {
-		if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodel" && $result[1]!="www") {
+		if (preg_match("/^(\w+)\./",$url[host],$result) && $result[1]!="lodeladmin" && $result[1]!="www") {
 		  $context[site]=$site=$result[1];
 		} else {
 		  $context[site]=$site="";
