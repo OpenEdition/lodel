@@ -16,28 +16,30 @@ include_once($home."connect.php");
 $critere=$visiteur ? " AND $GLOBALS[tp]entites.status>=-1" : " AND $GLOBALS[tp]entites.status>0";
 $critere.=" AND $GLOBALS[tp]types.status>0";
 // cherche la publication
+$relocation=FALSE;
+$base="";
 
-
-$result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $publicationstypesjoin WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
-$row=mysql_fetch_assoc($result);
-if (!$row[id]) { header ("Location: not-found.html"); return; }
-
-if (!$row[tpl]) { 
-  header("location: ".makeurlwithid("sommaire",$context[idparent]));
-  return;
+if ($id) {
+  do {
+    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
+    if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
+    $row=mysql_fetch_assoc($result);
+    $base=$row[tpl];
+    if (!$base) { $id=$row[idparent]; $relocation=TRUE; }
+  } while (!$base);
+  if ($relocation) { 
+    header("location: ".makeurlwithid("sommaire",$row[id]));
+    return;
+  }
+  $context=array_merge($context,$row);
+} else {
+  $base="sommaire";
 }
-
-$context=array_merge($context,$row);
-$base=$context[tpl];
-
-
 
 //
 // cherche le numero precedent et le suivant
 //
 export_prevnextpublication (&$context);
-
-
 
 include ($home."cache.php");
 
