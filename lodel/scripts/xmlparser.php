@@ -2,24 +2,6 @@
 
 include_once ("$GLOBALS[home]/func.php");
 
-# function extract_xml ($balises,&$vals,&$index,$lowercase=FALSE)
-# 
-# {
-#   $ret=array();
-#   if (!is_array($balises)) $balises=array($balises);
-#   foreach ($balises as $b) {
-#     if (!$index[$b]) continue;
-#     foreach ($index[$b] as $ind) {
-# 	if ($lowercase) {
-# 	  $ret[strtolower($b)].=$vals[$ind][value];
-# 	} else {
-# 	  $ret[$b].=$vals[$ind][value];
-# 	}
-#     }
-#   }
-#   return $ret;
-# }
-
 
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
 
@@ -31,7 +13,7 @@ function array_last (&$arr)
 function xml_parse_into_struct_ns(&$text,&$values,&$index) {
 
   $parser = xml_parser_create();
-  xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
+  xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0) or die("Parser incorrect");
   xml_set_element_handler($parser, "xml_parse_into_struct_ns_startElement", "xml_parse_into_struct_ns_endElement");
   xml_set_character_data_handler($parser, "xml_parse_into_struct_ns_characterHandler");
 #  xml_set_default_handler($parser, "xml_parse_into_struct_ns_defaultHandler");
@@ -46,12 +28,23 @@ function xml_parse_into_struct_ns(&$text,&$values,&$index) {
 		 xml_error_string(xml_get_error_code($parser)),
 		 xml_get_current_line_number($parser));
 	global $home;
-	include ("$home/checkxml.php");
+	include ($home."checkxml.php");
 	checkstring($text);
  }
   $values=$GLOBALS[into_struct_ns_values];
   $index=$GLOBALS[into_struct_ns_index];
 }
+
+function rebuild_opentag($name,$attrs)
+
+{
+  $ret="<$name";
+  foreach ($attrs as $att => $val) {
+    $ret.=" $att=\"".translate_xmldata($val)."\"";
+  }
+  $ret.=">";
+}
+
 
 
 function xml_parse_into_struct_ns_startElement($parser, $name, $attrs) {
@@ -69,11 +62,7 @@ function xml_parse_into_struct_ns_startElement($parser, $name, $attrs) {
     $GLOBALS[into_struct_ns_data]="";
     $GLOBALS[into_struct_ns_ind]++; 
   } else { # reconstruit le tags
-    $GLOBALS[into_struct_ns_data].="<$name";
-    foreach ($attrs as $att => $val) {
-      $GLOBALS[into_struct_ns_data].=" $att=\"".translate_xmldata($val)."\"";
-    }
-    $GLOBALS[into_struct_ns_data].=">";
+    $GLOBALS[into_struct_ns_data].=rebuild_opentag($name,$attrs);
   }
 }
 

@@ -1,71 +1,81 @@
-<USE MACROFILE="macros.html">
+
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_affichage.html">
+<USE MACROFILE="macros_technique.html">
 <USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html"><!--
-	Index géographique d'un seul niveau (il affiche indistinctement tous les niveaux de l'arbre)
-	(il confond donc dans l'affichage une catégorie avec une sous-catégorie )
-	(on pourra affiner ultérieurement).
-	Auteur : Marin Dacos.
-	Création : septembre 2002.
-	Dernière modification majeure : septembre 2002.
--->
+<USE MACROFILE="macros_navigation.html">
+<USE MACROFILE="macros_presentation.html">
+<USE MACROFILE="macros_revue.html">
+
+
+<!-- ****************************************************************** -->
+<!-- Index géographique d'un seul niveau. Il affiche indistinctement    -->
+<!-- tous les niveaux de l'arbre, il confond donc dans l'affichage une  -->
+<!-- catégorie avec une sous-catégorie. On pourra affiner               -->
+<!-- ultérieurement.                                                    -->
+<!-- Auteur : Marin Dacos.                                              -->
+<!-- Création : septembre 2002.                                         -->
+<!-- Dernière modification majeure : septembre 2002.                    -->
+<!-- ****************************************************************** -->
 
 <MACRO NAME="OUVRIR_HTML">
-<BOUCLE NAME="title" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
+<MACRO NAME="DEFINIR_CHARSET">
+<LOOP NAME="title" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
 	<TITLE>Index géographique : [#NOM]</TITLE>
-</BOUCLE>
-<MACRO NAME="meta">
-<MACRO NAME="INSERER_STYLE">
-<MACRO NAME="js_jumpmenu">
+</LOOP>
+<MACRO NAME="METADONNEES_POUR_INDEX">
+<MACRO NAME="METADONNEES_POUR_GEO">
+<MACRO NAME="JS_ROLLOVER"> 
+<MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-		<td valign="top"> 
-			<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td width="100%" align="center" valign="middle" class="titre">
-						<span class="couleur_dominante1">
-							Index géographique
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td width="100%" class="soustitre">
-						<BOUCLE NAME="geographie" TABLE="indexhs" WHERE="type_geographie" ORDER="ordre DESC">
-							<a href="geo.html?id=[#ID]">
-								[#NOM]
-							</a>
-							&nbsp;|
-						</BOUCLE>
-							<a href="geos-complet.html">
-								Index complet
-							</a>
-					</td>
-				</tr>
-			</table>
+<table class="principale"><tr><td><div class="conteneur">
 
-			<BOUCLE NAME="geographie2" TABLE="indexhs" WHERE="type_geographie"  WHERE="id=[#ID]" ORDER="ordre DESC">
-			<table width="95%" border="0" cellspacing="0" cellpadding="8" align="CENTER" valign="TOP"  bordercolor="Black">
-				<tr>
-					<td ALIGN="CENTER" WIDTH="100%" VALIGN="MIDDLE" class="soustitre">
-						<a name="[#ABREV]">
-							<span class="couleur_dominante1">
-								<strong>
-									[#NOM]
-								</strong>
-							</span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td span class="texte">
-					<BOUCLE NAME="articles" TABLE="documents"  WHERE="ok" WHERE="idindexh='[#ID]'">
-						<MACRO NAME="INFOS_DOCUMENT"><br /><br />
-					</BOUCLE>
-					</td>
-				</tr>
-			</table>
-			</BOUCLE>
-		</td>
-		<MACRO NAME="TRACER_LIGNE_VERTICALE">
-<MACRO NAME="FERMER_TABLE_PRINCIPALE">
+		<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
+		<div class="barrenav">
+			<? insert_template("barre");?> 
+		</div>
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+					
+				<!-- Affichage de l'entrée de l'index géo-->
+				<div class="titre1">
+					[#NOM]
+				</div>
+					
+				<!-- Liste des articles -->
+				<LOOP NAME="articles" TABLE="documents" WHERE="idindexl='[#ID]'">
+					<DO>
+						<div class="afficherdocument">
+							<!-- Liste des documents liés à cette entrée d'index -->
+							<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+						</div>
+					</DO>
+				</LOOP>
+			
+				<div class="titre2">
+					<a class="titre2" href="geos-complet.html">
+						>> Index géographique.
+					 </a>
+				</div>
+			
+				<MACRO NAME="REVUES_ORG">
+			</div>
+		</div>
+	
+</div></td></tr></table>
 <MACRO NAME="FERMER_HTML">
+				

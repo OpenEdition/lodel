@@ -1,242 +1,154 @@
 <USE MACROFILE="macros.html">
-<MACRO NAME="header_head_open">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition d'une publication</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
-<br>
-<br>
-	<span class="titre">
-		<div align="center">Saisie du descriptif 
-		<IF [#TYPE] EQ "serie_lineaire">
-		de la série linéaire
-		</IF>
-		<IF [#TYPE] EQ "serie_hierarchique">
-		de la série hiérarchique
-		</IF>
-		<IF [#TYPE] EQ "numero">
-		du numéro
-		</IF>
-		<IF [#TYPE] EQ "theme">
-		du thème
-		</IF>
-		<IF [#TYPE] EQ "regroupement">
-		du regroupement
-		</IF>
-	  </div>
-	</strong>
-	</span>
-	<br>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
+		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
+		<div style="padding-top:25px;">
+			<span class="texte_ligne_haut_tpl_publication">
+				Edition du descriptif 
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
+				de la série linéaire
+				</IF>
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
+				de la série hiérarchique
+				</IF>
+				<IF COND="[#TYPE] EQ 'numero'">
+				du numéro
+				</IF>
+				<IF COND="[#TYPE] EQ 'theme'">
+				du thème
+				</IF>
+				<IF COND="[#TYPE] EQ 'regroupement'">
+				du regroupement
+				</IF>
+			</span>
+		</div>
+	</div>
+	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
+		<div style="padding-top:10px;">
+			<IF COND="[#TYPE] EQ 'numero'">
+				Numéro parent : 
+			</IF>
+			<IF COND="[#TYPE] EQ 'theme'">
+				Thème parent : 
+			</IF>
+			<IF COND="[#TYPE] EQ 'regroupement'">
+				Regroupement : 
+			</IF>
+			<LOOP NAME="Affiche_Parent" TABLE="publications" WHERE="id='[#PARENT]'">
+				<span class="nom_publi_parente">[#NOM]</span>
+			</LOOP>
+		</div>
+	</div>
+	<div class="ligne_info">
+		<span class="texte_info">L'astérisque (*) indique les champs obligatoires.</span>
+	</div>
+	<form method="post" action="publication.php">
+		[(#ERREUR_PUBLICATION_EXISTE|true)Ce numéro existe déjà]
+		<input type="hidden" name="edit" value="1" />
+		<input type="hidden" name="id" value="[#ID]" />
+		<input type="hidden" name="parent" value="[#PARENT]" />
+		<input type="hidden" name="type" value="[#TYPE]" />
+		<input type="hidden" name="groupe" value="1" />
+		<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]" />
 
-<table width="100%" border="1" cellspacing="0" cellpadding="5" align="CENTER" bordercolor="#C0C0C0">
-	[(#ERREUR_PUBLICATION_EXISTE|true)
-	<TR>
-		<TD COLSPAN="3" CLASS="erreur" ALIGN="center">
-			Ce numéro existe déjà
-		</TD>
-	</TR>
-	]
-<FORM METHOD="POST" ACTION="publication.php">
-	<INPUT TYPE="hidden" name="edit" VALUE="1">
-	<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-	<INPUT TYPE="hidden" name="parent" VALUE="[#PARENT]">
-	<INPUT TYPE="hidden" name="type" VALUE="[#TYPE]">
-	<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
-<TR>
-<TD background="[#SHAREURL]/images/gris.gif">
-		<IF [#TYPE] EQ "serie_lineaire">
-		<strong>Nom de la série</strong>*<br>
-		</IF>
-		<IF [#TYPE] EQ "serie_hierarchique">
-		<strong>Nom de la série</strong>*<br>
-		</IF>
-		<IF [#TYPE] EQ "numero">
-		<strong>Tomaison ou numérotation du numéro</strong>*<br>
-		</IF>
-		<IF [#TYPE] EQ "theme">
-		<strong>Nom abrégé du thème</strong>*<br>
-		</IF>
-		<IF [#TYPE] EQ "regroupement">
-		<strong>Nom abrégé du regroupement</strong>*<br>
-		</IF>
-		<em>L'astérisque indique les champs obligatoires</em>
-
-</TD>
-<TD>
-	<INPUT SIZE="40" TYPE="text" NAME="nom" value="[#NOM]">
-</TD>
-<TD  background="[#SHAREURL]/images/bleu.gif">
-		<IF [#TYPE] EQ "serie_lineaire">
-		<em>Version brève. Exemple : CMR pour "Cahiers du Monde russe"</em>
-		</IF>
-		<IF [#TYPE] EQ "serie_hierarchique">
-		<em>Version brève. Exemple : Les Cahiers pour "Espaces Temps, les Cahiers"</em>
-		</IF>
-		<IF [#TYPE] EQ "numero">
-		<em>Exemple : Tome IV, Vol. 12</em>
-		</IF>
-		<IF [#TYPE] EQ "theme">
-		<em>Exemple : Sociologie des organisations pour "Relecture de la sociologie des organisations"</em>
-		</IF>
-		<IF [#TYPE] EQ "regroupement">
-		<em>Exemple : "I"</em>
-		</IF>
-
-</TD>
-	[(#ERREUR_NOM|true)
-		<TD CLASS="erreur">
-			Il faut preciser un mot ou une publication!
-		</TD>
-	]
-	</TR>
-<tr>
-<TD background="[#SHAREURL]/images/gris.gif">
-	<IF [#TYPE] EQ "serie_lineaire">
-		<strong>Titre de la série</strong><br>
-		</IF>
-		<IF [#TYPE] EQ "serie_hierarchique">
-		<strong>Nom de la série</strong><br>
-		</IF>
-		<IF [#TYPE] EQ "numero">
-		<strong>Titre du numéro </strong><br>
-		</IF>
-		<IF [#TYPE] EQ "theme">
-		<strong>Titre du thème</strong><br>
-		</IF>
-		<IF [#TYPE] EQ "regroupement">
-		<strong>Titre du regroupement</strong><br>
-		</IF>
-		</TD>
-		<TD>
-			<INPUT SIZE="50" TYPE="text" NAME="titre" value="[#TITRE]">
-		</TD>
-<TD  background="[#SHAREURL]/images/bleu.gif">
-	<IF [#TYPE] EQ "serie_lineaire">
-		<em>Version longue. Exemple : "Cahiers du Monde russe"</em>
-		</IF>
-		<IF [#TYPE] EQ "serie_hierarchique">
-		<em>Version longue. Exemple : "Espaces Temps, les Cahiers"</em>
-		</IF>
-		<IF [#TYPE] EQ "numero">
-		<em>Indiquer <u>varia</u> en cas de numéro sans thème dominant</em>
-		</IF>
-		<IF [#TYPE] EQ "theme">
-		<em>Exemple : "Relecture de la sociologie des organisations"</em>
-		</IF>
-		<IF [#TYPE] EQ "regroupement">
-		<em>Exemple : "Première partie"</em>
-		</IF>
-		</TD>
-
-	<TR>
-<TD background="[#SHAREURL]/images/gris.gif">
-			<strong>Sous-titre:</strong>
-		</TD>
-		<TD>
-			<INPUT SIZE="50" TYPE="text" NAME="soustitre" value="[#SOUSTITRE]">
-		</TD>
-		<TD  background="[#SHAREURL]/images/bleu.gif">
-		&nbsp;
-		</TD>
-	</tr>
-	<TR>
-<TD background="[#SHAREURL]/images/gris.gif">
-			<strong>Date officielle de publication :</strong><br>
-		</TD>
-		<TD>
-			<INPUT SIZE="50" TYPE="text" NAME="date" value="[(#DATE|humandate)]">
-		</TD>
-<TD  background="[#SHAREURL]/images/bleu.gif">
-
-			<em>Exemple : "1er janvier 2002"</em>
-		</TD>
-
-	[(#ERREUR_DATE|true)
-		<TD CLASS="erreur">
-			La date est invalide
-		</TD>
-	]
-		</TR>
-	<TR>
-	<TR>
-<TD background="[#SHAREURL]/images/gris.gif">
-			<strong>Directeur:</strong><br>
-		</TD>
-		<TD>
-			<INPUT SIZE="50" TYPE="text" NAME="directeur" value="[#DIRECTEUR]">
-		</TD>
-<TD  background="[#SHAREURL]/images/bleu.gif">
-			<em>Facultatif</em><br>
-		<IF [#TYPE] EQ "regroupement">
-		<em>Très rare dans le cas d'un regroupement</em>
-		</IF>
-		</TD>
-
-	<TR>
-<TD background="[#SHAREURL]/images/gris.gif" valign="top">
-			<strong>Texte d'introduction:</strong><br>
-		</td>
-		<TD>
-			<TEXTAREA NAME="texte" ROWS="20" COLS="60">
-				[#TEXTE]
-			</TEXTAREA>
-		</TD>
-<TD  background="[#SHAREURL]/images/bleu.gif" valign="top">
-
-			<em>Balises HTML autorisées</em><br>
-
-		</td>
-	</TR>
-	<IF [#ID]>
-	<tr>	
-<TD background="[#SHAREURL]/images/gris.gif">
-			<strong>Associer une image</strong>
-		</td>
-		<td align="center" valign="middle"> 
-			<div align="center">
-				<br>
-				<MACRO NAME="Associer_icone_publication">
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
+					<span class="texte_intitule">Nom de la série*</span><br />
+					<span class="texte_info">Version brève. Exemple : CMR pour "Cahiers du Monde russe"</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
+					<span class="texte_intitule">Nom de la série*</span><br />
+					<span class="texte_info">Version brève. Exemple : Les Cahiers pour "Espaces Temps, les Cahiers"</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'numero'">
+					<span class="texte_intitule">Tomaison ou numérotation du numéro*</span><br />
+					<span class="texte_info">Exemple : Tome IV, Vol. 12</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'theme'">
+					<span class="texte_intitule">Nom abrégé du thème*</span><br />
+					<span class="texte_info">Exemple : Sociologie des organisations pour "Relecture de la sociologie des organisations"</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'regroupement'">
+					<span class="texte_intitule">Nom abrégé du regroupement*</span><br />
+					<span class="texte_info">Exemple : "I"</span>
+				</IF>
 			</div>
-		</td>
-<TD  background="[#SHAREURL]/images/bleu.gif">
-		&nbsp;
-		</td>
-	</tr>
-	</IF>
-		<TR>
-<TD background="[#SHAREURL]/images/gris.gif">
-				<strong>Terminer :</strong>
-			</TD>
-			<TD align="center">
-<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)] " >
-</FORM>
-			</TD>
-<td background="[#SHAREURL]/images/bleu.gif">
-			Type : [#TYPE]
-			</td>
-		</TR>
-	<TR>
-<IF [#ID]>
-		<TR>
-<TD background="[#SHAREURL]/images/gris.gif">
-				<strong>Danger :</strong>
-			</TD>
-			<td align="center">
-	<a href="supprime.php?publication=[#ID]">
-		<MACRO NAME="GIF_DETRUIRE"> Supprimer
-	</a>
-			</td>
-<TD  background="[#SHAREURL]/images/bleu.gif">
-			Cette action est irréversible
-			</td>
-		</TR>
-	<TR>
-</IF>
-</TABLE><br>
+			<input size="45" type="text" name="nom" value="[#NOM]">
+			[(#ERREUR_NOM|true)<br /><span class="message_erreur">Saisie incomplète !</span>]
+		</div>
 
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<IF COND="[#TYPE] EQ 'serie_lineaire'">
+					<span class="texte_intitule">Titre de la série</span><br />
+					<span class="texte_info">Version longue. Exemple : "Cahiers du Monde russe"</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
+					<span class="texte_intitule">Nom de la série</span><br />
+					<span class="texte_info">Version longue. Exemple : "Espaces Temps, les Cahiers"</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'numero'">
+					<span class="texte_intitule">Titre du numéro </span><br />
+					<span class="texte_info">Indiquer <u>varia</u> en cas de numéro sans thème dominant</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'theme'">
+					<span class="texte_intitule">Titre du thème</span><br />
+					<span class="texte_info">Exemple : "Relecture de la sociologie des organisations"</span>
+				</IF>
+				<IF COND="[#TYPE] EQ 'regroupement'">
+					<span class="texte_intitule">Titre du regroupement</span><br />
+					<span class="texte_info">Exemple : "Première partie"</span>
+				</IF>
+			</div>
+			<input size="45" type="text" name="titre" value="[#TITRE]">
+		</div>
 
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Sous-titre</span>
+			</div>
+			<input size="45" type="text" name="soustitre" value="[#SOUSTITRE]">
+		</div>
 
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Date officielle de publication</span><br />
+				<span class="texte_info">Exemple : "1er janvier 2002"</span>
+			</div>
+			<input size="45" type="text" name="date" value="[(#DATE|humandate)]">
+			[(#ERREUR_DATE|true)<br /><span class="message_erreur">La date est invalide]</span>
+		</div>
 
+		
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Directeur</span>
+				<IF COND="[#TYPE] EQ 'regroupement'">
+					<br /><span class="texte_info">Très rare dans le cas d'un regroupement</span>
+				</IF>
+			</div>
+			<input size="45" type="text" name="directeur" value="[#DIRECTEUR]">
+		</div>
+		
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Texte d'introduction</span><br />
+				<span class="texte_info">Balises HTML autorisées</span>
+			</div>
+			<textarea name="texte" rows="20" cols="33">[#TEXTE]</textarea>
+		</div>
 
-<MACRO NAME="close_html">
-
-
+		<div class="pied_de_formulaire">
+			<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<IF COND="[#ID]">
+				<input class="form" type="button" value="Supprimer" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />
+			</IF>
+		</div>
+		
+	</form>
+<MACRO NAME="CLOSE_HTML">

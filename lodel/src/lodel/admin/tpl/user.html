@@ -1,142 +1,63 @@
-<USE MACROFILE="macros.html"><MACRO NAME="header_head_open">
+<USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
 <title>Edition - utilisateur</title>
-<MACRO NAME="header_head_close">
-<MACRO NAME="header_logo"> 
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR>
-		<TD class="titre">
-		<div align="center">
-			<br>
-			<b>
-				Editer un utilisateur pour <em>[#REVUE]</em>
-			</b>
-			</div>
-		</td>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un utilisateur</td>
 	</tr>
-</TABLE>
+</table>
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="0" BORDER="1" ALIGN="CENTER">
+<form method="POST" action="user.php">
+	<input type="hidden" name="edit" value="1" />
+	<input type="hidden" name="id" value="[#ID]" />
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_intitule">Nom et prénom :</td>
+			<td><input size="30" type="text" name="nom" value="[#NOM]" /></td>
+		</tr>
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
+		<tr>
+			<td class="texte_intitule">Courriel :</td>
+			<td><input size="30" type="text" name="email" value="[#EMAIL]" /></td>
+		</tr>
+		[(#ERREUR_EMAIL|true)<tr><td colspan="2" class="message_erreur">Le courriel n'est pas valide !</span></td></tr>]
+		<tr>
+			<td class="texte_intitule">Login :</td>
+			<td><input size="30" type="text" name="username" value="[#USERNAME]" /></td>
+		</tr>
+		[(#ERREUR_USERNAME|true)<tr><td colspan="2" class="message_erreur">Le login doit contenir entre 
+		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
+		[(#ERREUR_DUPUSERNAME|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit etre unique. 
+		Le nom que vous avez entrez existe deja.</td></tr>]
+		<tr>
+			<td class="texte_intitule">Mot de passe :</td>
+			<td><input size="30" type="password" name="passwd" value="[#PASSWD]" /></td>
+		</tr>
+		[(#ERREUR_PASSWD|true)<tr><td colspan="2" class="message_erreur">Le mot de passe doit contenir entre 
+		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
+		<tr>
+			<td class="texte_intitule">Privil&egrave;ge :</td>
+			<td><select name="privilege"><? makeselectprivilege(); ?></select></td>
+		<tr>
+		<!--
+		<tr>
+			<td class="texte_intitule">Groupes (inutile pour les admin) :</td>
+			<td><SELECT MULTIPLE SIZE="10" name="groupes[]"><? makeselectgroupes(); ?></SELECT></td>
+		<tr>
+		-->
+		<input type="hidden" name="groupes[0]" value="1">
+	</table>
 
-<FORM METHOD="POST" ACTION="user.php">
-	<INPUT TYPE="hidden" name="edit" VALUE="1">
-	<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-<TR>
-	<TD>
-		<b>
-		Nom et prénom :
-		</b>
-	</TD>
-<TD>
-	<INPUT SIZE="30" TYPE="text" NAME="nom" value="[#NOM]">
-</TD>
-	[
-		(#ERREUR_NOM|true)
-		<TD CLASS="erreur">
-			<font color="Red">
-				Il faut preciser un nom !
-			</font>
-		</TD>
-	]
-</TR>
-<TR>
-	<TD>
-		<b>
-			Courriel
-		</b>
-	</TD>
-<TD>
-	<INPUT SIZE="30" TYPE="text" NAME="email" value="[#EMAIL]">
-</TD>
-	[
-		(#ERREUR_EMAIL|true)
-	<TD CLASS="erreur">
-		<font color="Red">
-			Le courriel n'est pas valide
-		</font>
-	</TD>
-	]
-</TR>
-<TR>
-	<TD>
-		<b>
-		Nom de login:
-		</b>
-	</TD>
-<TD>
-	<INPUT SIZE="30" TYPE="text" NAME="username" value="[#USERNAME]">
-</TD>
-	[
-		(#ERREUR_USERNAME|true)
-	<TD CLASS="erreur">
-		<font color="Red">
-			Le nom de login
-		</font>
-		 doit contenir entre <strong>3 et 8</strong> caractères  (lettres et chiffres uniquement)
-		</TD>
-	]
-	[
-		(#ERREUR_DUPUSERNAME|true)
-		<TD CLASS="erreur">
-			<font color="Red">
-			Le <em>login</em>
-			</font>
-			doit etre unique. Le nom que vous avez entrez existe deja.
-		</TD>
-	]
-</TR>
-<TR>
-	<TD>
-		<b>
-			Mot de passe:
-		</b>
-		</TD>
-	<TD>
-		<INPUT SIZE="30" TYPE="password" NAME="passwd" value="[#PASSWD]">
-	</TD>
-	[
-		(#ERREUR_PASSWD|true)
-		<TD CLASS="erreur">
-			<font color="Red">Le mot de passe</font> doit contenir entre 3 et 8 caractères  (lettres et chiffres uniquement)
-		</TD>
-	]
-</TR>
-<TR>
-	<TD>
-		<b>
-			Privilège:
-		</b>
-	</TD>
-	<TD>
-		<SELECT name="privilege">
-			<? makeselectprivilege(); ?>
-		</SELECT>
-	</TD>
-<tr>
-<TR>
-	<TD>
-		<b>
-			Groupes (inutile pour les admin):
-		</b>
-	</TD>
-	<TD>
-		<SELECT MULTIPLE SIZE="10" NAME="groupes[]"><? makeselectgroupes(); ?></SELECT>
-	</TD>
-<tr>
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]">
+			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='user.php?delete=1&id=[#ID]'" />
+		</IF>
+	</div>
+</form>
 
-
-	<td>
-	&nbsp;<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
-	</FORM>
-	</td>
-	<td>
-	[
-		<A HREF="user.php?delete=1&id=(#ID)">
-			<MACRO NAME="GIF_DETRUIRE">
-			Supprimer
-		</A>
-	]
-	</td>
-</TR>
-</TABLE>
-<MACRO NAME="close_html">
+<MACRO NAME="CLOSE_HTML">
