@@ -1,0 +1,76 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>Types de document</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition des minitextes</td>
+	</tr>
+</table>
+
+<form method="POST" action="texte.php">
+	<input type="hidden" name="edit" value="1" />
+	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="textgroup" value="[#TEXTGROUP]" />
+	<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
+	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_intitule">Langue :</td>
+			<td>[#LANG]</td>
+		</tr>
+
+		<tr>
+			<td class="texte_intitule">Nom :</td>
+	        <IF COND="[#ID]">
+   		        <td>[#NOM]</td>
+
+                <ELSE/>
+			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
+		</IF>
+		</tr>
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom contenant des lettres, des chiffres, le caract&egrave;re "_", et des espaces uniquement!</td></tr>]
+		[(#ERREUR_NOM_EXISTE|true)<tr><td colspan="2" class="message_erreur">Le nom existe déja</td></tr>]
+		<tr>
+			<td class="texte_intitule">Texte :</td>
+			<td><textarea name="texte" rows="3" cols="60">[#TEXTE]</textarea></td>
+		</tr>
+		<!--[[(#ERREUR_ABREV|true)<TD CLASS="erreur">Il faut preciser une abreviation</td>]]-->
+		<tr>
+	</table>
+
+	<div class="pied_de_formulaire">
+		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#ID]">
+			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='texte.php?delete=1&id=[#ID]'" />
+		</IF>
+	</div>
+</form>
+
+<MACRO NAME="CLOSE_HTML">
