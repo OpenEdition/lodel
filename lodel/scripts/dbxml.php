@@ -34,7 +34,7 @@ function enregistre ($context,&$text)
 
   myquote($context);  myquote($lcontext);  myquote($lang);
 
-  lock_write("documents","auteurs","indexs","documents_auteurs","documents_indexs","typeindexs");
+  lock_write("documents","auteurs","entrees","documents_auteurs","documents_entrees","typeentrees");
 
   // recherche l'ordre
   if ($context[ordre]) {
@@ -61,7 +61,7 @@ function enregistre ($context,&$text)
 
   $status=$statusdocument>0 ? 1 : -1;
   enregistre_auteurs($id,$vals,$index,$status);  // ajoute les auteurs
-  enregistre_indexs($id,$vals,$index,$status); // indexs, etc...
+  enregistre_entrees($id,$vals,$index,$status); // indexs, etc...
 
   unlock();
 
@@ -191,14 +191,14 @@ function enregistre_indexls ($iddocument,&$vals,&$index,$status)
 */
 
 
-function enregistre_indexs ($iddocument,&$vals,&$index,$status)
+function enregistre_entrees ($iddocument,&$vals,&$index,$status)
 
 {
   // detruit les liens dans la table documents_indexhs
-  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_indexs WHERE iddocument='$iddocument'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_entrees WHERE iddocument='$iddocument'") or die (mysql_error());
 
   // enregistre les indexs
-  $result=mysql_query("SELECT id,balise,newimportable,useabrev FROM $GLOBALS[tableprefix]typeindexs WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,balise,newimportable,useabrev FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
   while ($typeindex=mysql_fetch_assoc($result)) {    
     $balise=$typeindex[balise];    $type=$typeindex[id];
     if (!$index[$balise]) continue; // s'il n'y a pas d'entrees, on reboucle
@@ -211,28 +211,28 @@ function enregistre_indexs ($iddocument,&$vals,&$index,$status)
       // cherche la langue dans l'attribut sinon valeur par defaut.
       $lang=($tag[attributes] && $tag[attributes][LANG]) ? strtolower($tag[attributes][LANG]) : "fr";
       // cherche l'id de la entree si elle existe
-      $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]indexs WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0");
+      $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0");
 
       if (mysql_num_rows($result2)) { // l'entree exists
 	list($id,$oldstatus)=mysql_fetch_array($result2);
 	if ($status>0 && $oldstatus<0) { // faut-il publier ?
-	  mysql_query("UPDATE $GLOBALS[tableprefix]indexs SET status=1 WHERE id='$id'") or die (mysql_error());	
+	  mysql_query("UPDATE $GLOBALS[tableprefix]entrees SET status=1 WHERE id='$id'") or die (mysql_error());	
 	}
       } elseif ($typeindex[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
 	// oui,il faut ajouter le mot cle
 	$abrev=$typeindex[useabrev] ? strtoupper($entree) : "";
-	mysql_query ("INSERT INTO $GLOBALS[tableprefix]indexs (status,nom,abrev,type,lang) VALUES ('$status','$entree','$abrev','$type','$lang')") or die (mysql_error());
+	mysql_query ("INSERT INTO $GLOBALS[tableprefix]entrees (status,nom,abrev,typeid,lang) VALUES ('$status','$entree','$abrev','$type','$lang')") or die (mysql_error());
 	$id=mysql_insert_id();
       } else {
 	// non, on ne l'ajoute pas... mais il y a une erreur quelque part...
 	$id=0;
-	die ("erreur interne dans enregistre_indexs: type: $balise entree: $entree");
+	die ("erreur interne dans enregistre_entrees: type: $balise entree: $entree");
       }
       // ajoute l'index dans la table documents_indes
       // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
       // une chaine et en faisant la requette a la fin !
       if ($id)
-	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_indexs (idindex,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_entrees (idindex,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
 
     } // tags
   } // balises
