@@ -81,8 +81,7 @@ function boucle_nom_occ_type_doc(&$context,$funcname)
 	$result=mysql_query("SELECT type AS nomtypedoc, COUNT(type) AS nbtypedoc FROM $GLOBALS[tableprefix]documents GROUP BY type") or die (mysql_error());
 	while($row=mysql_fetch_array($result,MYSQL_ASSOC))
 	{
-		$context[nomtypedoc]=$row[nomtypedoc];
-		$context[nbtypedoc]=$row[nbtypedoc];
+		$context=array_merge($context,$row);
     	call_user_func("code_boucle_$funcname",$context);
 	}
 }
@@ -97,8 +96,7 @@ function boucle_nom_occ_type_publi(&$context,$funcname)
 	$result=mysql_query("SELECT type AS nomtypepubli, COUNT(type) AS nbtypepubli FROM $GLOBALS[tableprefix]publications GROUP BY type") or die (mysql_error());
 	while($row=mysql_fetch_array($result,MYSQL_ASSOC))
 	{
-		$context[nomtypepubli]=$row[nomtypepubli];
-		$context[nbtypepubli]=$row[nbtypepubli];
+		$context=array_merge($context,$row);
     	call_user_func("code_boucle_$funcname",$context);
 	}
 }
