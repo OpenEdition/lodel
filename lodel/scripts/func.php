@@ -108,24 +108,26 @@ function rmscript($source) {
 	return eregi_replace("<(\%|\?|( *)script)", "&lt;\\1", $source);
 }
 
+/**
+ *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
+ *   le tableau $context
+ */
 
 function extract_post() {
-  // Extrait toutes les variables passées par la méthode post puis les stocke dans 
-  // le tableau $context
-  global $home;
-	
   foreach ($_POST as $key=>$val) {
-    if (!isset($GLOBALS[context][$key])) // protege
-      $GLOBALS[context][$key]=$val;
+    if (!isset($GLOBALS['context'][$key])) // protege
+      $GLOBALS['context'][$key]=$val;
   }
-  function clean_for_extract_post(&$var) {
-    if (is_array($var)) {
-      array_walk($var,"clean_for_extract_post");
-    } else {
-      $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
-    }
+  array_walk($GLOBALS['context'],"clean_request_variable");
+}
+
+
+function clean_request_variable(&$var) {
+  if (is_array($var)) {
+    array_walk($var,"clean_request_variable");
+  } else {
+    $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
   }
-  array_walk($GLOBALS[context],"clean_for_extract_post");
 }
 
 
@@ -648,7 +650,7 @@ function myhtmlentities($text)
 // Main function to add/modify records 
 //
 
-function setrecord($table,$id,$set,$context)
+function setrecord($table,$id,$set,$context=array())
 
 {
   if ($id>0) { // update
@@ -664,7 +666,7 @@ function setrecord($table,$id,$set,$context)
       mysql_query("UPDATE $GLOBALS[tp]$table SET  $update WHERE id='$id'") or die(mysql_error());
   } else {
     $insert="";$values="";
-    if ($id=="unique") {
+    if (is_string($id) && $id=="unique") {
       $id=uniqueid($table);
       $insert="id";$values="'".$id."'";
     }
