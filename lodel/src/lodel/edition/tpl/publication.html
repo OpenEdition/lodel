@@ -7,25 +7,13 @@
 	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
 		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
 		<div style="padding-top:25px;">
-Nicolas faudrait mettre [ #TITRE] ici a la place des condtions,stp
-			<span class="texte_ligne_haut_tpl_publication">
-				Edition du descriptif 
-				<IF COND="[#TYPE] EQ 'serie_lineaire'">
-				de la série linéaire
-				</IF>
-				<IF COND="[#TYPE] EQ 'serie_hierarchique'">
-				de la série hiérarchique
-				</IF>
-				<IF COND="[#TYPE] EQ 'numero'">
-				du numéro
-				</IF>
-				<IF COND="[#TYPE] EQ 'theme'">
-				du thème
-				</IF>
-				<IF COND="[#TYPE] EQ 'regroupement'">
-				du regroupement
-				</IF>
-			</span>
+			<LOOP NAME="edition_du_descriptif" TABLE="types" WHERE="id=[#IDTYPE]">
+				<DO>
+					<span class="texte_ligne_haut_tpl_publication">
+						[#TITRE] (métadonnées)
+					</span>
+				</DO>
+			</LOOP>
 		</div>
 	</div>
 	<div class="ligne_parent_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_intitule_popup_edition.png);">
