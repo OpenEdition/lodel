@@ -52,21 +52,15 @@
 		[(#ERREUR_TPLCREATE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		  <tr>
 		    <td>
-		      Index disponible pour ce type de publi:<br>
-<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
-		      <LOOP NAME="typeentrees">
-			[#TYPE]: <input type="checkbox" name="typeentree[[#ID]]" [(#CONDITION|true)checked]><br>
-		      </LOOP>
+		    	Index disponible pour ce type de publication :<br />
+				<MACRO NAME="TYPE_ENTREES">
 		    </td>  
 		  </tr>
 
 		  <tr>
 		    <td>
-		      Intervenant disponible pour ce type de publi:<br>
-<!-- faire une macro avec cette boucle. Ghislain 24/08/03  -->
-		      <LOOP NAME="typepersonnes">
-			[#TYPE]: <input type="checkbox" name="typepersonne[[#ID]]" [(#CONDITION|true)checked]><br>
-		      </LOOP>
+		    	Intervenant disponible pour ce type de publication :<br />
+				<MACRO NAME="TYPE_PERSONNES">
 		    </td>  
 		  </tr>
 
