@@ -29,7 +29,6 @@ dirsource $homelodel
 ln styles_lodel.css
 
 dirsource $homesite
-cp styles_site.css
 
 # lie tous les fichiers du repertoire
 ln backend.php
@@ -79,7 +78,6 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln styles_site.css
 ln styles_lodel.css
 
 # les logins
@@ -177,7 +175,6 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln styles_site.css
 ln styles_lodel.css
 
 dirsource $homesite/lodel/edition
