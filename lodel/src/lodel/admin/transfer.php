@@ -284,7 +284,7 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
 	if (!extract_meta("documents")) break;
 	$err=mysql_query_cmds('ALTER TABLE _PREFIXTABLE_documents DROP meta;');
 	if ($err) break;
-	$report.="Transforme meta_image en image dans documents<br>\n";
+	$report.="Transforme meta_image en icone dans documents<br>\n";
       }
     }
     if ($tables["$GLOBALS[tp]publications"]) {
@@ -296,7 +296,7 @@ INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,li
 	if (!extract_meta("publications")) break;
 	$err=mysql_query_cmds('ALTER TABLE _PREFIXTABLE_publications DROP meta;');
 	if ($err) break;
-	$report.="Transforme meta_image en image dans publications<br>\n";
+	$report.="Transforme meta_image en icone dans publications<br>\n";
       }
     }
 
@@ -871,7 +871,7 @@ function extract_meta($classe)
     chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
     unlink($file);
 
-    mysql_query("UPDATE $GLOBALS[tp]$classe SET image='$dest' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or die(mysql_error());
   }
 
   return TRUE;
