@@ -283,7 +283,7 @@ function loop_search(&$context,$funcname,$arguments)
 		call_user_func("code_before_$funcname",$local_context);
 	$dao2 = &getDAO("entities");
 	//call do function with the results
-	print_r($results);
+	#print_r($results);
 	foreach($results as $key => $weight)
 	{
 		$vo = $dao2->getById($key);
