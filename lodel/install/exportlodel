@@ -49,9 +49,9 @@ then
         # bricolage pour precreer le lien vers share 0.6
         mkdir lodel/lodel-0.6
         touch lodel/lodel-0.6/share-0.6
-
-        ln -s lodel/lodel-0.6/share-0.6 .
-        cd lodel/lodel-$1
+	cd lodel
+        ln -s lodel-0.6/share-0.6 .
+        cd lodel-$1
         ln -s ../lodel-0.6/share-0.6 .
         cd ../..
         rm lodel/lodel-0.6/share-0.6
