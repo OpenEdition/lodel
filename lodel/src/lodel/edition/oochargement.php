@@ -167,6 +167,7 @@ function OO_XHTML ($convertedfile,&$context)
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
 		      "puces?"=>"texte",
 		      "bloccitation"=>"citation",
+		      "quotations"=>"citation",
 		      "typedocument"=>"typedoc",
 		      );
 
