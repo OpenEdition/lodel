@@ -1,14 +1,13 @@
 <!-- ************************************************** -->
-<!-- * Macros de l'édition. 2002                      * -->
-<!-- Auteur : Marin Dacos                               -->
+<!-- * Macros de l'édition. 2002                        -->
+<!-- Auteur : Marin Dacos, Nicolas Nutten               -->
 <!-- ************************************************** -->
 
 <DEFMACRO NAME="JS_CONFIRM_DEPUBLICATION">
 	<script type="text/javascript">
 	<!--
 		function confirm_depublication(publi)
-		// Si publi = 1 -> publication sinon -> document.
-		// id -> identifiant du doc ou de la publi à dépublier
+		// Si publi = 1 : publication sinon : document.
 		{
 			var msgdoc="Etes-vous sûr de vouloir dépublier ce document ?";
 			var msgpubli="Etes-vous sûr de vouloir dépublier cette publication ?";
@@ -17,13 +16,11 @@
 				{
 					if(confirm(msgpubli)) return true;
 					else return false; 
-					//location.replace("publi.php?publication="+id);
 				}
 				else
 				{
 					if(confirm(msgdoc)) return true;
 					else return false;
-					//location.replace("publi.php?id="+id);
 				}				
 			}
 		}
@@ -37,7 +34,7 @@
 			<IF COND="[#STATUS]==1">
 				<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">
 					<span class="texte_trespetit_centre">
-						Dépublier
+						D&eacute;publier
 					</span>
 				</a>
 			<ELSE/>
@@ -69,7 +66,7 @@
 			<IF COND="[#STATUS]==1">
 				<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">
 					<span class="texte_trespetit_centre">
-						Dépublier
+						D&eacute;publier
 					</span>
 				</a>
 			<ELSE/>
@@ -555,13 +552,13 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
-			Prête à être publiée
+			Pr&ecirc;te &agrave; publier
 		<ELSE/>
 			<IF COND="[#STATUS]==1">
-				Publiée
+				Publi&eacute;e
 			<ELSE/>
 				<IF COND="[#STATUS]==32">
-					Publiée protégée
+					Publi&eacute;e prot&eacute;g&eacute;e
 				</IF>
 			</IF>
 		</IF>
@@ -573,10 +570,10 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
-			Prêt à être publié
+			Pr&ecirc;t &agrave; publier
 		<ELSE/>
 			<IF COND="[#STATUS]==1">
-				Publié
+				Publi&eacute;
 			</IF>
 		</IF>
 	</IF>
@@ -1057,57 +1054,57 @@
 <DEFMACRO NAME="BOUTONS_STATUT_PUBLICATION">
 	<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
 	<IF COND="[#STATUS]==-32">
-		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-		|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Prête à publiée</a>&nbsp;
-		|&nbsp;<span class="inactif">Publiée</span>&nbsp;
-		|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
+		|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Passer &agrave; &quot;<i>Pr&ecirc;te à publier</i>&quot;</a>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
 	</IF>
 	<IF COND="[#STATUS]==-1">
-		|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Brouillon</a>&nbsp;
-		|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
-		|&nbsp;<span class="inactif">Publiée</span>&nbsp;
-		|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+		|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;te &agrave; publier</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
 	</IF>
 	<IF COND="[#STATUS]==1">
-		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-		|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
-		|&nbsp;<span class="inactif">Publiée</span>&nbsp;
-		|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Publiée protégée</a>&nbsp;|
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;te &agrave; publier</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;
+		|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Prot&eacute;ger</a>&nbsp;|
 	</IF>
 	<IF COND="[#STATUS]==32">
-		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-		|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
-		|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Publiée</a>&nbsp;
-		|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;te &agrave; publier</i>&quot;</span>&nbsp;
+		|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;
+		|&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_STATUT_DOCUMENT">
 	<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
 	<IF COND="[#STATUS]==-32">
-		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-		|&nbsp;<a href="status.php?id=[#ID]&status=pret">Prêt à publié</a>&nbsp;|
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
+		|&nbsp;<a href="status.php?id=[#ID]&status=pret">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</a>&nbsp;|
 	</IF>
 	<IF COND="[#STATUS]==-1">
-		|&nbsp;<a href="status.php?id=[#ID]&status=brouillon">Brouillon</a>&nbsp;
-		|&nbsp;<span class="inactif">Prêt à publié</span>&nbsp;|
+		|&nbsp;<a href="status.php?id=[#ID]&status=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</span>&nbsp;|
 	</IF>
 	<IF COND="[#STATUS]==1">
-		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-		|&nbsp;<span class="inactif">Prêt à publié</span>&nbsp;|
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</span>&nbsp;|
 	</IF>
 	<IF COND="[#STATUS]==32">
-		|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
-		|&nbsp;<span class="inactif">Prêt à publié</span>&nbsp;|
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;
+		|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t &agrave; publier</i>&quot;</span>&nbsp;|
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_STATUT_PUBLICATION">
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="(([#STATUS]==1) AND [#EDITEUR])">
-			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">Dépublier</a>
+			<a href="publi.php?publication=[#ID]" onClick="return confirm_depublication(1);">D&eacute;publier</a>
 		<ELSE/>
-			<span class="inactif">Dépublier</span>
+			<span class="inactif">D&eacute;publier</span>
 		</IF>
 	<ELSE/>
 		<IF COND="(([#STATUS]==-1) AND [#EDITEUR])">
@@ -1121,9 +1118,9 @@
 <DEFMACRO NAME="CHANGER_STATUT_DOCUMENT">
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="(([#STATUS]==1) AND [#EDITEUR])">
-			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">Dépublier</a>
+			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">D&eacute;publier</a>
 		<ELSE/>
-			<span class="inactif">Dépublier</span>
+			<span class="inactif">D&eacute;publier</span>
 		</IF>
 	<ELSE/>
 		<IF COND="(([#STATUS]==-1) AND [#EDITEUR])">
@@ -1313,7 +1310,7 @@
 			</table>
 		</AFTER>
 		<ALTERNATIVE>
-			<span class="texte_info" style="padding-left:80px">Il n'y a aucun document annexe associé à ce document.</span>
+			<span class="texte_info" style="padding-left:80px">Il n'y a aucun document annexe associ&eacute; à ce document.</span>
 		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
@@ -1494,11 +1491,11 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUT_PUBLIE">
-	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_gauche" width="23" height="24" alt="Publié" />
+	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUT_PROTEGE">
-	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publié protégé" />
+	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUT_HORLOGE">
@@ -1664,7 +1661,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_DEPUBLIER">
-	<img src="[#SHAREURL]/images/depublier.gif" alt="Dépublier la publication" name="Dépublier la publication" id="Dépublier la publication" width="32" height="32" border="0">
+	<img src="[#SHAREURL]/images/depublier.gif" alt="D&eacute;publier la publication" name="Dépublier la publication" id="Dépublier la publication" width="32" height="32" border="0">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_INPUT_DEPUBLIER">
