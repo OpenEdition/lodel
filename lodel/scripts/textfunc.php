@@ -342,7 +342,6 @@ function vignette($text,$width)
 
 {
   global $home;
-  return $text;
   //  if (preg_match("/^<img\b[^>]+src=\"([^\">]+)\"/",$text,$result)) $text=$result[1];
   if (!$text) return;
 
@@ -352,9 +351,16 @@ function vignette($text,$width)
   if (defined("SITEROOT")) $text=SITEROOT.$text;
   if (!file_exists($text)) return "file does not exist";
 
+  echo $text,"\n";
+
+
   if (!preg_match("/^(.*)\.([^\.]+)$/",$text,$result)) return "file without extension";
+  echo $text,"\n";
+
   $vignettefile=$result[1]."-small$width.".$result[2];
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
+
+  echo $text,"\n";
   // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
   require_once($home."images.php");
   if (!resize_image($width,$text,$vignettefile,"+")) return "image resizing failed";
