@@ -68,7 +68,7 @@
                       <dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
                       <dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
 		      <dd><strong>[@ADMIN.CREATION_DATE] :</strong> [(#DATE|humandate)]</dd>
-		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION])] ([#VERSION]). [@ADMIN.CHECK_COMPATIBILITY].</div></IF>
+		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])] . [@ADMIN.CHECK_COMPATIBILITY].</div></IF>
 
 
 
