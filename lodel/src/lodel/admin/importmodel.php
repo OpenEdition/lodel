@@ -34,7 +34,7 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 
 
 $context[importdir]=$importdir;
-$fileregexp='(model)-\w+-\d+.sql';
+$fileregexp='(model)-\w+(?:-\d+)?.sql';
 
 $importdirs=array("CACHE",$importdir,$home."../install/plateform");
 
