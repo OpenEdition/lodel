@@ -26,6 +26,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
 function parse($in,$out)
 
 {
@@ -58,7 +59,7 @@ class Parser {
 
 function errmsg ($msg,$ind=0) { 
   if ($ind) $line="line ".$this->$linearr[$ind];
-  die("ERROR $line (".$this->infilename."): $msg");
+  die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
 }
 
 function parse_loop_extra(&$tables,
@@ -123,7 +124,7 @@ function parse ($in,$out)
     } elseif ($sharedir && file_exists($sharedir."/macros/".$macrofile)) {
       $macros.=join('',file($sharedir."/macros/".$macrofile));
     } else {
-      $this->errmsg ("the macro file \"$result[1]\" does exist");
+      $this->errmsg ("the macro file \"$result[1]\" doesn't exist");
     }
   }
   $macros=stripcommentandcr($macros);
@@ -457,7 +458,7 @@ function parse_loop()
 	$arr=preg_split("/,/",$value);
 	if ($arr) {
 	  foreach ($arr as $value) {
-	    array_push($tables,$GLOBALS[tp].trim($value));
+	    array_push($tables,$GLOBALS[tableprefix].trim($value));
 	  }
 	}
 	break;

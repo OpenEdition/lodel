@@ -151,7 +151,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
 
   // postprocessing du fichier XHTML
   
-  $xhtmlfile=$uploadedfile.".xhtml";
+  $xhtmlfile=$uploadedfile.".html";
   if (!file_exists($xhtmlfile)) die("ERROR: second conversion failed");
 
 
@@ -162,6 +162,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
   unset($xhtmllines); // save memory
 
   postprocesscontentXHTML($xhtml,$styles);
+  $xhtmlfile=$uploadedfile.".xhtml";
   writefile($xhtmlfile,$xhtml);
 
   //
@@ -335,13 +336,16 @@ function runWriter2Latex($filename,$extension)
   $errfile="$filename.err";
 #  echo "$errfile $home";
 
-  // malheureusement pour le moment, il faut faire comme ca:
-  $cwd=getcwd();
+//  // malheureusement pour le moment, il faut faire comme ca:
+//  $cwd=getcwd();
+//
+//  $tmpdir=substr($filename,0,strrpos($filename,"/"));
+//  chdir ($tmpdir);
+//  myexec("$javapath/bin/java  -jar $cwd/$home/writer2latex/writer2latex.jar -xhtml -config $cwd/$home/writer2latex/default-config.xml $filename 1>&2",$errfile,"java script Writer2Latex failed");
+  //  chdir($cwd);
 
-  $tmpdir=substr($filename,0,strrpos($filename,"/"));
-  chdir ($tmpdir);
-  myexec("$javapath/bin/java  -jar $cwd/$home/writer2latex/writer2latex.jar -xhtml -config $cwd/$home/writer2latex/default-config.xml $filename 1>&2",$errfile,"java script Writer2Latex failed");
-  chdir($cwd);
+
+  myexec("$javapath/bin/java  -jar $home/writer2latex/writer2latex.jar -xhtml -config $home/writer2latex/default-config.xml $filename 1>&2",$errfile,"java script Writer2Latex failed");
 }
 
 
