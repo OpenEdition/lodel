@@ -4,8 +4,8 @@
  * @author Laurent Jouanneau <jouanneau@netcourrier.com>
  * @copyright 2003-2004 Laurent Jouanneau
  * @module Wiki Renderer
- * @version 2.0.4
- * @since 28/01/2004
+ * @version 2.0.5
+ * @since 16/05/2004
  * http://ljouanneau.com/softs/wikirenderer/
  *
  * This library is free software; you can redistribute it and/or
@@ -26,9 +26,9 @@
 
 class WikiRendererConfig {
   /**
- 	* @var array	liste des tags inline
+    * @var array   liste des tags inline
    */
-	var $inlinetags= array(
+   var $inlinetags= array(
       'strong' =>array('__','__',      null,null),
       'em'     =>array('\'\'','\'\'',  null,null),
       'code'   =>array('@@','@@',      null,null),
@@ -36,9 +36,9 @@ class WikiRendererConfig {
       'cite'   =>array('{{','}}',      array('title'),null),
       'acronym'=>array('??','??',      array('title'),null),
       'link'   =>array('[',']',        array('href','lang','title'),'wikibuildlink'),
-		'image'  =>array('((','))', 		array('src','alt','align','longdesc'),'wikibuildimage'),
+      'image'  =>array('((','))',       array('src','alt','align','longdesc'),'wikibuildimage'),
       'anchor' =>array('~~','~~',      array('name'),'wikibuildanchor')
-	);
+   );
 
    /**
    * liste des balises de type bloc autorisées.
@@ -51,7 +51,7 @@ class WikiRendererConfig {
    var $simpletags = array('%%%'=>'<br />', ':-)'=>'<img src="laugh.png" alt=":-)" />');
 
    /**
-    * @var	integer	niveau minimum pour les balises titres
+    * @var   integer   niveau minimum pour les balises titres
     */
    var $minHeaderLevel=3;
 
@@ -62,7 +62,7 @@ class WikiRendererConfig {
     * false-> !!! = titre , !! = sous titre, ! = sous-sous-titre
     */
    var $headerOrder=false;
-
+   var $escapeSpecialChars=true;
    var $inlineTagSeparator='|';
    var $blocAttributeTag='°°';
 
@@ -107,20 +107,20 @@ function wikibuilddummie($contents, $attr){
 function wikibuildimage($contents, $attr){
    $cnt=count($contents);
    $attribut='';
-	if($cnt > 4) $cnt=4;
-	switch($cnt){
-		case 4:
-      	$attribut.=' longdesc="'.$contents[3].'"';
-		case 3:
-      	if($contents[2]=='l' ||$contents[2]=='L' || $contents[2]=='g' || $contents[2]=='G')
-      		$attribut.=' style="float:left;"';
+   if($cnt > 4) $cnt=4;
+   switch($cnt){
+      case 4:
+         $attribut.=' longdesc="'.$contents[3].'"';
+      case 3:
+         if($contents[2]=='l' ||$contents[2]=='L' || $contents[2]=='g' || $contents[2]=='G')
+            $attribut.=' style="float:left;"';
          elseif($contents[2]=='r' ||$contents[2]=='R' || $contents[2]=='d' || $contents[2]=='D')
-      		$attribut.=' style="float:right;"';
-		case 2:
-      	$attribut.=' alt="'.$contents[1].'"';
-		case 1:
+            $attribut.=' style="float:right;"';
+      case 2:
+         $attribut.=' alt="'.$contents[1].'"';
+      case 1:
       default:
-      	$attribut.=' src="'.$contents[0].'"';
+         $attribut.=' src="'.$contents[0].'"';
          if($cnt == 1) $attribut.=' alt=""';
    }
    return '<img'.$attribut.' />';
@@ -138,10 +138,10 @@ class WRB_list extends WikiRendererBloc {
    var $_previousTag;
    var $_firstItem;
    var $_firstTagLen;
-	var $type='list';
+   var $type='list';
    var $regexp="/^([\*#-]+)(.*)/";
 
-	function open(){
+   function open(){
       $this->_previousTag = $this->_detectMatch[1];
       $this->_firstTagLen = strlen($this->_previousTag);
       $this->_firstItem=true;
@@ -150,24 +150,29 @@ class WRB_list extends WikiRendererBloc {
          return "<ol>\n";
       else
          return "<ul>\n";
-	}
-	function close(){
+   }
+   function close(){
       $t=$this->_previousTag;
       $str='';
 
       for($i=strlen($t); $i >= $this->_firstTagLen; $i--){
           $str.=($t{$i-1}== '#'?"</li></ol>\n":"</li></ul>\n");
       }
-		return $str;
-	}
+      return $str;
+   }
 
-	function getRenderedLine(){
-      $d=strlen($this->_previousTag) - strlen($this->_detectMatch[1]);
+   function getRenderedLine(){
+      $t=$this->_previousTag;
+      $d=strlen($t) - strlen($this->_detectMatch[1]);
       $str='';
 
-      if( $d > 0 ){ // on remonte d'un cran dans la hierarchie...
-         $str=(substr($this->_previousTag, -1, 1) == '#'?"</li></ol>\n</li>\n<li>":"</li></ul>\n</li>\n<li>");
-         $this->_previousTag=substr($this->_previousTag,0,-1); // pour être sur...
+      if( $d > 0 ){ // on remonte d'un ou plusieurs cran dans la hierarchie...
+         $l=strlen($this->_detectMatch[1]);
+         for($i=strlen($t); $i>$l; $i--){
+            $str.=($t{$i-1}== '#'?"</li></ol>\n":"</li></ul>\n");
+         }
+         $str.="</li>\n<li>";
+         $this->_previousTag=substr($this->_previousTag,0,-$d); // pour être sur...
 
       }elseif( $d < 0 ){ // un niveau de plus
          $c=substr($this->_detectMatch[1],-1,1);
@@ -180,7 +185,7 @@ class WRB_list extends WikiRendererBloc {
       $this->_firstItem=false;
       return $str.$this->_renderInlineTag($this->_detectMatch[2]);
 
-	}
+   }
 
 
 }
@@ -190,36 +195,36 @@ class WRB_list extends WikiRendererBloc {
  * traite les signes de types table
  */
 class WRB_table extends WikiRendererBloc {
-	var $type='table';
-	var $regexp="/^\| ?(.*)/";
-	var $_openTag='<table border="1">';
-	var $_closeTag='</table>';
+   var $type='table';
+   var $regexp="/^\| ?(.*)/";
+   var $_openTag='<table border="1">';
+   var $_closeTag='</table>';
 
-	var $_colcount=0;
+   var $_colcount=0;
 
-	function open(){
-		$this->_colcount=0;
-		return $this->_openTag;
-	}
+   function open(){
+      $this->_colcount=0;
+      return $this->_openTag;
+   }
 
 
-	function getRenderedLine(){
+   function getRenderedLine(){
 
-		$result=explode(' | ',trim($this->_detectMatch[1]));
-		$str='';
+      $result=explode(' | ',trim($this->_detectMatch[1]));
+      $str='';
       $t='';
 
-		if((count($result) != $this->_colcount) && ($this->_colcount!=0))
-			$t='</table><table border="1">';
-		$this->_colcount=count($result);
+      if((count($result) != $this->_colcount) && ($this->_colcount!=0))
+         $t='</table><table border="1">';
+      $this->_colcount=count($result);
 
-		for($i=0; $i < $this->_colcount; $i++){
-			$str.='<td>'. $this->_renderInlineTag($result[$i]).'</td>';
-		}
-		$str=$t.'<tr>'.$str.'</tr>';
+      for($i=0; $i < $this->_colcount; $i++){
+         $str.='<td>'. $this->_renderInlineTag($result[$i]).'</td>';
+      }
+      $str=$t.'<tr>'.$str.'</tr>';
 
-		return $str;
-	}
+      return $str;
+   }
 
 }
 
@@ -229,12 +234,12 @@ class WRB_table extends WikiRendererBloc {
 class WRB_hr extends WikiRendererBloc {
 
    var $type='hr';
-	var $regexp='/^={4,} *$/';
-	var $_closeNow=true;
+   var $regexp='/^={4,} *$/';
+   var $_closeNow=true;
 
-	function getRenderedLine(){
-		return '<hr />';
-	}
+   function getRenderedLine(){
+      return '<hr />';
+   }
 
 }
 
@@ -242,35 +247,35 @@ class WRB_hr extends WikiRendererBloc {
  * traite les signes de types titre
  */
 class WRB_title extends WikiRendererBloc {
-	var $type='title';
-	var $regexp="/^(\!{1,3})(.*)/";
-	var $_closeNow=true;
-	var $_minlevel=1;
+   var $type='title';
+   var $regexp="/^(\!{1,3})(.*)/";
+   var $_closeNow=true;
+   var $_minlevel=1;
    var $_order=false;
 
-	function WRB_title(&$wr){
+   function WRB_title(&$wr){
       $this->_minlevel = $wr->config->minHeaderLevel;
       $this->_order = $wr->config->headerOrder;
-		parent::WikiRendererBloc($wr);
-	}
+      parent::WikiRendererBloc($wr);
+   }
 
-	function getRenderedLine(){
+   function getRenderedLine(){
       if($this->_order)
-		   $hx= $this->_minlevel + strlen($this->_detectMatch[1])-1;
+         $hx= $this->_minlevel + strlen($this->_detectMatch[1])-1;
       else
          $hx= $this->_minlevel + 3-strlen($this->_detectMatch[1]);
-		return '<h'.$hx.'>'.$this->_renderInlineTag($this->_detectMatch[2]).'</h'.$hx.'>';
-	}
+      return '<h'.$hx.'>'.$this->_renderInlineTag($this->_detectMatch[2]).'</h'.$hx.'>';
+   }
 }
 
 /**
  * traite les signes de type paragraphe
  */
 class WRB_p extends WikiRendererBloc {
-	var $type='p';
-	var $regexp="/(.*)/";
-	var $_openTag='<p>';
-	var $_closeTag='</p>';
+   var $type='p';
+   var $regexp="/(.*)/";
+   var $_openTag='<p>';
+   var $_closeTag='</p>';
 }
 
 /**
@@ -279,13 +284,13 @@ class WRB_p extends WikiRendererBloc {
 class WRB_pre extends WikiRendererBloc {
 
    var $type='pre';
-	var $regexp="/^ (.*)/";
-	var $_openTag='<pre>';
-	var $_closeTag='</pre>';
+   var $regexp="/^ (.*)/";
+   var $_openTag='<pre>';
+   var $_closeTag='</pre>';
 
    function getRenderedLine(){
-		return $this->_renderInlineTag($this->_detectMatch[1]);
-	}
+      return $this->_renderInlineTag($this->_detectMatch[1]);
+   }
 
 }
 
@@ -294,22 +299,22 @@ class WRB_pre extends WikiRendererBloc {
  * traite les signes de type blockquote
  */
 class WRB_blockquote extends WikiRendererBloc {
-	var $type='bq';
-	var $regexp="/^(\>+)(.*)/";
+   var $type='bq';
+   var $regexp="/^(\>+)(.*)/";
 
-	function open(){
+   function open(){
       $this->_previousTag = $this->_detectMatch[1];
       $this->_firstTagLen = strlen($this->_previousTag);
       $this->_firstLine = true;
-		return str_repeat('<blockquote>',$this->_firstTagLen).'<p>';
-	}
+      return str_repeat('<blockquote>',$this->_firstTagLen).'<p>';
+   }
 
-	function close(){
+   function close(){
       return '</p>'.str_repeat('</blockquote>',strlen($this->_previousTag));
-	}
+   }
 
 
-	function getRenderedLine(){
+   function getRenderedLine(){
 
       $d=strlen($this->_previousTag) - strlen($this->_detectMatch[1]);
       $str='';
@@ -327,7 +332,7 @@ class WRB_blockquote extends WikiRendererBloc {
             $str='<br />';
       }
       return $str.$this->_renderInlineTag($this->_detectMatch[2]);
-	}
+   }
 }
 
 /**
@@ -335,16 +340,16 @@ class WRB_blockquote extends WikiRendererBloc {
  */
 class WRB_definition extends WikiRendererBloc {
 
-	var $type='dfn';
+   var $type='dfn';
    var $regexp="/^;(.*) : (.*)/i";
-	var $_openTag='<dl>';
-	var $_closeTag='</dl>';
+   var $_openTag='<dl>';
+   var $_closeTag='</dl>';
 
-	function getRenderedLine(){
-		$dt=$this->_renderInlineTag($this->_detectMatch[1]);
-		$dd=$this->_renderInlineTag($this->_detectMatch[2]);
+   function getRenderedLine(){
+      $dt=$this->_renderInlineTag($this->_detectMatch[1]);
+      $dd=$this->_renderInlineTag($this->_detectMatch[2]);
       return "<dt>$dt</dt>\n<dd>$dd</dd>\n";
-	}
+   }
 }
 
 ?>
