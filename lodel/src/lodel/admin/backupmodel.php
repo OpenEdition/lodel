@@ -77,6 +77,7 @@ if ($backup) {
   foreach ($tables as $table) {
     fputs($fh,"DELETE FROM ".lodelprefix($table).";\n");
   }
+  $GLOBALS['showcolumns']=true; // use by PMA to print the fields.
   mysql_dump($currentdb,"",$fh,false,false,true,$tables); // get the content
 
   $tables=array("$GLOBALS[tp]documents",
