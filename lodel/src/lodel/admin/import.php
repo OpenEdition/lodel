@@ -6,8 +6,9 @@ authenticate(LEVEL_SUPERADMIN,NORECORDURL);
 $repertoire=$context[repertoire]=$importdir;
 // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 
-if ($fichier && preg_match("/^site-.*-\d+.tar.gz/i",$fichier) && file_exists("$repertoire/$fichier")) {
+if ($fichier && preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$fichier,$result) && file_exists("$repertoire/$fichier")) {
   $fichier="$repertoire/".$fichier;
+  $prefix=$result[1];
 
   // detar dans le repertoire du site
   system("tar zxf $fichier -C ../../ lodel/txt lodel/rtf docannexe 2>&1")!==FALSE or die ("impossible d'executer tar");
@@ -19,7 +20,7 @@ if ($fichier && preg_match("/^site-.*-\d+.tar.gz/i",$fichier) && file_exists("$r
   while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
   //
-   system("tar zxf $fichier -O 'site-*.sql' | $mysqldir/mysql $currentdb -h $dbhost -u $dbusername -p$dbpasswd 2>/tmp/import.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
+   system("tar zxf $fichier -O '$prefix-*.sql' | $mysqldir/mysql $currentdb -h $dbhost -u $dbusername -p$dbpasswd 2>/tmp/import.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
 #   system("tar zxf $fichier -O 'site-*.sql' 2>/tmp/import.tmp | /usr/local/mysql/bin/mysql $currentdb -u $dbusername -p$dbpasswd 2>>/tmp/impot.tmp")!==FALSE or die ("impossible d'executer tar et mysql");
 
 #die (join("<br>",file("/tmp/import.tmp")));
@@ -67,7 +68,7 @@ function loop_fichiers(&$context,$funcname)
   global $repertoire;
   if ( $dir= @opendir($repertoire)) {
     while (($file=readdir($dir))!==FALSE) {
-      if (!preg_match("/^site-.*-\d+.tar.gz/i",$file)) continue;
+      if (!preg_match("/^(site|revue)-.*-\d+.tar.gz/i",$file)) continue;
       $context[nom]=$file;
       call_user_func("code_do_$funcname",$context);
     }
