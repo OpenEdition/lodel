@@ -142,7 +142,7 @@ function makeselectprivilege()
 {
   global $context,$userpriv;
   $arr=array(LEVEL_VISITEUR=>"Visiteur",
-	     LEVEL_REDACTEUR=>"Rédacteur",
+	     LEVEL_REDACTEUR=>"R&eacute;dacteur",
 	     LEVEL_EDITEUR=>"Editeur",
 	     LEVEL_ADMIN=>"Administrateur",
 	     );
