@@ -90,7 +90,7 @@ function textebrut($letexte) {
 function couper($texte,$long) {
 #  $texte = substr($texte, 0, ($long +50) * 3); /* heuristique pour prendre seulement le necessaire */
 
-
+  $GLOBALS['textfunc_hasbeencut']=false;
 
   $open=strpos($texte,"<");
   if ($open===FALSE || $open>$long) return couper_sans_tags($texte,$long);
@@ -126,10 +126,16 @@ function couper_sans_tags($texte,$long) {
 #  if (strlen($texte2) < strlen($texte)) $plus_petit = true;
   
   $texte2 = substr($texte." ", 0, $long);
+  if (strlen($texte2)<strlen($texte)) $GLOBALS['textfunc_hasbeencut']=true;
+
 #  echo ":",$texte2;
   $texte2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $texte2);
-#  if ((strlen($texte2) + 3) < strlen($texte)) $plus_petit = true;
   return trim($texte2);
+}
+
+
+function hasbeencut() {
+  return $GLOBALS['textfunc_hasbeencut'] ? true : false;
 }
 
 #function couper($texte,$long) {
