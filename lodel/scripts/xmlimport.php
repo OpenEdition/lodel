@@ -110,7 +110,7 @@ class XMLImportParser {
       $class=strtolower(get_class($obj));
       #echo $i," ",$arr[$i]," ",$class,"<br>";
 
-      echo $obj->style," ",$obj->surrounding," ",$isave,"<br>";
+      #echo $obj->style," ",$obj->surrounding," ",$isave,"<br>";
       if (!$isave && $class=="internalstylesvo") {
 	$forcenext=false;
 	if ($obj->surrounding=="-*") {
