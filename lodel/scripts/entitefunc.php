@@ -176,12 +176,14 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 	}
 	$entite[$nom]=$str;
       }
+      break;
     case 'image' :
     case 'fichier' :
       // verifie que c'est un nom correct
       if (!preg_match("/^docannexe\/$type\/tmp-\d+\/[^\/]+$/",$entite[$nom])) $erreur[$nom]="filename";
       $files_to_move[$nom]=array(filename=>$entite[$nom],type=>$type,nom=>$nom);
       unset($entite[$nom]); // it must not be update... the old files must be remove later (once everything is checked)
+      break;
     default :
       if (!isset($entite[$nom])) $entite[$nom]=$defaut;
     }
