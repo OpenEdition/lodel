@@ -73,7 +73,12 @@ $serveuroopasswd="ruralia";
 
 
 # type d'URL
-$extensionscripts="php";      # extension .php ou .html pour les scripts accessibles par les internautes$idagauche="";             # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
+# extension .php ou .html pour les scripts accessibles par les internautes.
+# "php" ou "html"
+$extensionscripts="php";
+# position de l'id dans l'URL, a gauche signifie du genre documentXXX.php.
+# "on" ou ""
+$idagauche="";
 
 
 ############################################
