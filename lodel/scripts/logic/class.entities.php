@@ -114,7 +114,12 @@ class EntitiesLogic extends Logic {
 
      // delete the relations
      $this->_deleteSoftRelation($ids);
-
+			
+		//added by Jean Lamy - 2005-02-24
+		// delete the entity from the search_engine table
+		$db->execute(lq("DELETE FROM #_TP_search_engine WHERE identity='".$context['id']."'"));
+		
+			
      update();
 
      return "_back";
