@@ -181,12 +181,21 @@ function propre($letexte) {
 }
 
 
+function formateddate($date,$format) 
+{
+  return strftime($format,"%A %d %B %Y",strtotime($s));
+}
+
+
+
 function humandate($s)
 
 { # verifie que la date est sous forme mysql
- if (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)$/",$s,$result)) {
-   if ($result[1]>9000) return "jamais";
-   if ($result[1]==0) return "";
+
+  if (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)$/",$s,$result)) {
+    if ($result[1]>9000) return "jamais";
+    if ($result[1]==0) return "";
+
    $mois[1]="janvier";
    $mois[2]="février";
    $mois[3]="mars";
