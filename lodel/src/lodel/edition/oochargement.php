@@ -286,7 +286,7 @@ function OO_XHTML ($convertedfile,&$context)
   array_push($srch,
 	     "/<li>\s+(<r2r:puces?".">)/", # remove space between li and puces (need for the looking before)
 	     "/(?<!<li>)(<r2r:puces?".">)/", # look for puce not preceded by a <li>
-	     "/(<\/r2r:puces?".">)(?!\s*<\/li>)/"); # look for puce not preceded by a <li>
+	     "/(<\/r2r:puces?".">)(?!\s*<\/li>)/"); # look for puce not followed by a <li>
   array_push($rpl,
 	     "<li>\\1",
 	     "<li>\\1",
@@ -815,8 +815,8 @@ function traite_multiplelevel($text,$multiplelevel)
 //    if (preg_replace("/^>/","",$v)) { $dir="apres"; } 
 //    elseif (preg_replace("/^</","",$v)) { $dir="avant"; }
 //    else { $dir=""; };
-    if (substr($v,0,1)==">") { $dir="apres"; $v=substr($v,1); } 
-    elseif (substr($v,0,1)=="<") { $dir="avant"; $v=substr($v,1); } 
+    if ($v[0]==">") { $dir="apres"; $v=substr($v,1); } 
+    elseif ($v[0]=="<") { $dir="avant"; $v=substr($v,1); } 
     else { $dir=""; };
 
     if ($v=="*") $v="\w+";

@@ -84,13 +84,6 @@ $GLOBALS['multiplelevel']['texte Lodel']=array(
 					       "titreillustration"=>"texte",
 					       "legendeillustration"=>"texte");
 
-$GLOBALS['multiplelevel'][]=array( // balises speciales
-				  "puce"=>"<*",
-				  "puces"=>"<*",
-				  "separateur"=>">*"
-				  );
-
-
 $GLOBALS['multiplelevel']['Sections']=array(
 					    // l'ordre est important ci-dessous (marche pas avec section\d+)
 					    "section10"=>">*", // non utilise a priori
@@ -104,6 +97,13 @@ $GLOBALS['multiplelevel']['Sections']=array(
 					    "section2"=>">*",
 					    "section1"=>">*"
 					    );
+
+$GLOBALS['multiplelevel'][]=array( // balises speciales
+				  "puce"=>"<*",
+				  "puces"=>"<*",
+				  "separateur"=>">*"
+				  );
+
 
 //
 // Groups of xhtml tags
