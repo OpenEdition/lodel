@@ -179,7 +179,7 @@
 		</LOOP>
 		<tr>
 			<td width="200">&nbsp;</td>
-			<td><input class="form" type="submit" name="plus[[#ID]]" value="   Ajouter [(#TITRE|strtolower)]  "></td>
+			<td><input class="form" type="submit" name="plus[[#ID]]" value="   [@COMMON.ADD] [(#TITRE|strtolower)]  "></td>
 		</tr>
 	</table>
 </DEFMACRO>
@@ -211,7 +211,7 @@
 	  </LOOP>
 	  <div>
 	    <select name="addlanginmltext[[#NOM]]"><?php makeselectlangues(); ?></select>
-	    <input class="form" type="submit" name="reload2" value="Ajouter">
+	    <input class="form" type="submit" name="reload2" value="[@COMMON.ADD]">
 	  </div>
 	</td>
 	<ELSE/>
@@ -364,10 +364,10 @@
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
 	<div class="ligne_formulaire">
 		<div class="intitule_ligne_formulaire">
-			<span class="texte_intitule">[@EDITION.IDENTIFIER]:</span>
+			<span class="texte_intitule">[@EDITION.IDENTIFY]:</span>
 		</div>
 		<input size="45" type="text" name="identifiant" value="[#IDENTIFIANT]">
-		<IF COND="[#ERREUR_IDENTIFIANT]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFIER]</span></IF>
+		<IF COND="[#ERREUR_IDENTIFIANT]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFY]</span></IF>
 	</div>
 </DEFMACRO>
 
@@ -824,9 +824,9 @@
 			<ELSE/>
 				<MACRO NAME="PNG_PLUS">&nbsp;
 				<IF COND="[#IMPORT]==1">
-					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@EDITION.ADD] [#TITRE] |</a>
+					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@COMMON.ADD] [#TITRE] |</a>
 				<ELSE/>
-					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@EDITION.ADD] [#TITRE] |</a>
+					<a href="document.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[@COMMON.ADD] [#TITRE] |</a>
 				</IF>
 			</IF>
 		</DO>
@@ -1216,20 +1216,20 @@
                    <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
 			<a href="publi.php?id=[#ID]" onClick="return confirm_depublication(0);">D&eacute;publier</a>
                     <ELSE/>
-			<span class="inactif">D&eacute;publier</span>
+			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>
 		<ELSE/>
-			<span class="inactif">Prot&eacute;g&eacute;</span>
+			<span class="inactif">[@COMMON.PROTECTED]</span>
 		</IF>
 	<ELSE/>
 		<IF COND="([#STATUT]==-1)">
                    <IF COND="([#DROITEDITEUR] AND [#DROITGROUPE] AND [#IDPARENT]) or [#DROITADMIN]">
-			<a href="publi.php?id=[#ID]&online=1">Publier</a>
+			<a href="publi.php?id=[#ID]&online=1">[@EDITION.PUBLISH]</a>
                    <ELSE/>
-			<span class="inactif">Publier</span>
+			<span class="inactif">[@EDITION.PUBLISH]</span>
                    </IF>
 		<ELSE/>
-			<span class="inactif">Brouillon</span>
+			<span class="inactif">[@EDITION.DRAFT]</span>
 		</IF>
 	</IF>
 </DEFMACRO>

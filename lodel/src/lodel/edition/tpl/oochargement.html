@@ -81,7 +81,7 @@ function infoChargement(nomFic){
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Importation de votre fichier</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@EDITION.IMPORTATION_YOUR_FILE]</td>
 	</tr>
 </table>
 
@@ -106,16 +106,16 @@ function infoChargement(nomFic){
 		<tr>
 			<td align="center">
 				<br />
-				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
+				<input class="form" type="submit" value="[@COMMON.UPLOAD]" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 <br /><br /><br />
 <span class="texte_info_popup">[@EDITION.CONVERSION_TOOLS]:</span><br />
 <a href="http://www.openoffice.org"><MACRO NAME="PNG_LOGO_OO"></a> <a href="http://www.hj-gym.dk/~hj/writer2latex/"><MACRO NAME="PNG_LOGO_W2L"></a>
 				<IF COND="[#DROITADMINLODEL]"> 
 					<br /><br /><span class="texte_info_popup">[@EDITION.BUTTONS_ADMIN_LODEL]</span><br /><br />
 <!--					<input class="form" type="submit" name="sortiexmloo" value="Sortie XML Brute de OpenOffice (fichier content.xml du SXW)" /><br /> -->
-					<input class="form" type="submit" name="sortieoo" value="Sortie de OpenOffice + traitement" /><br />
-					<input class="form" type="submit" name="sortie" value="Sortie de chargement" />
+					<input class="form" type="submit" name="sortieoo" value="[@EDITION.OUTPUT_OO_PLUS_PROCESSING]" /><br />
+					<input class="form" type="submit" name="sortie" value="[@EDITION.OUTPUT_UPLOAD]" />
 				</IF>     
 			</td>
 		</tr>
