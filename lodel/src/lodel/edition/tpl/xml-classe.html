@@ -5,7 +5,7 @@
     <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
 	<gr[#TYPE]>
-	  <LOOP NAME="personnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
+	  <LOOP NAME="lespersonnes" TABLE="personnes" WHERE="identite='[#IDENTITE]' and idtype='[#ID]'" ORDER="ordre">
 	    <DO>
 	      <[#TYPE] ordre="[#ORDRE]">
 		[<prefix>(#PREFIX)</prefix>]
@@ -27,7 +27,7 @@
     <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
 	<gr[#TYPE]>
-	  <LOOP NAME="entrees" TABLE="entrees" WHERE="idtype='[#ID]'" ORDER="ordre">
+	  <LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]'" ORDER="ordre">
 	    <DO>
 	      <[#TYPE]>
 		<nom>[#NOM]</nom>
@@ -44,7 +44,7 @@
     <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       <DO>
 	<[#NOM]>
-	  <LOOP NAME="champs">
+	  <LOOP NAME="valeurs_des_champs">
 	    <DO>
 		<IF COND="[#TYPE] eq 'boolean'">
 		  <[#NOM]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NOM]>
