@@ -253,7 +253,7 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
       $err=create("classes");
 
       // change here the rank for the documents
-      $result=$db->execute(lq("SELECT id FROM #_TP_types WHERE class='documents'")) or die dberror();
+      $result=$db->execute(lq("SELECT id FROM #_TP_types WHERE class='documents'")) or dberror();
       $ids=array();
       while(!$result->EOF) {
 	$ids[]=$result->fields['id'];
