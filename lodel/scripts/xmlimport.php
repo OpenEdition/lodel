@@ -74,7 +74,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
   if ($context[$style]) {
     $type=addslashes($context[$style]);
   } elseif (preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result)) {
-    $type=addslashes($result[1]);
+    $type=addslashes(trim(strip_tags($result[1])));
   }
   if ($type) {
     // recherche l'id du type
