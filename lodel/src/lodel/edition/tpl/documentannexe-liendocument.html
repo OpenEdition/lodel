@@ -78,7 +78,7 @@
 				<tr>
 					<td width="200"><span class="texte_intitule">ID du document :</span></td>
 					<td>
-						[(#ERREUR_DOCUMENTNONEXIST|true)<span class="message_erreur">Le document spécifié n'existe pas !</span>]
+												<IF COND="[#ERREUR_DOCUMENTINEXISTANT]"><span class="message_erreur">Le document spécifié n'existe pas.</span></IF>
 						<div><input name="lien" type="texte" size="5" value="[#LIEN]">&nbsp;<a href="javascript:void(0);">Aide</a></div>
 					</td>
 				</tr>			

@@ -98,7 +98,7 @@ if ($edit) { // modifie ou ajoute
       // cherche si le documents existe
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents WHERE identite='$lien'") or die (mysql_query());
       if (mysql_num_rows($result)<1) {
-	$err=$context[erreur_documentdontexist]=1;
+	$err=$context[erreur_documentinexistant]=1;
       } else {
 	$lien=makeurlwithid ("document",$lien);
       }
@@ -107,7 +107,7 @@ if ($edit) { // modifie ou ajoute
       // cherche si le documents existe
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]publications WHERE identite='$lien'") or die (mysql_query());
       if (mysql_num_rows($result)<1) {
-	$err=$context[erreur_publicationdontexist]=1;
+	$err=$context[erreur_publicationinexistant]=1;
       } else {
 	$lien=makeurlwithid ("sommaire",$lien);
       }
@@ -178,7 +178,7 @@ if (!$tplcreation) {
   if (!mysql_num_rows($result)) die ("type '$type' inconnu");
   list($tplcreation,$context[idtype],$context[type])=mysql_fetch_row($result);
 }
-
+echo $context[type];
 $context[id]=$id;
 
 
