@@ -42,7 +42,7 @@ function checkstring (&$text,$error=0) {
   
   if (!xml_parse($xml_parser, $text)) {
     if (!$error) {
-      echo '<h1>ERROR</h1><p>Le fichier produit n\'est pas XML. Veuillez svp envoyer ce fichier à <a href="mailto:erreurimport@lodel.org">erreurimport@lodel.org<a/><br />En attendant que le problème soit résolu, essayer de changer le stylage de votre fichier.</p><p><hr /></p>';
+      echo '<h1>ERROR</h1><p>Le fichier produit n\'est pas XML. Veuillez svp poster un rapport de bug sur <a href="http://sourceforge.net/projects/lodel/">http://sourceforge.net/projects/lodel<a/>. Pensez &agrave; joindre le fichier.<br />En attendant que le problème soit résolu, essayer de changer le stylage de votre fichier.</p><p><hr /></p>';
 
       checkstring ($text,1);
       return;
