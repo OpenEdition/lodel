@@ -538,41 +538,62 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UNE_SERIE">
-	<div class="ligne_ajouter_serie">
-		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=serie_lineaire">Ajouter une série linéaire</a>
-		<br />
-		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=serie_hierarchique">Ajouter une série hiérarchique</a>
-	</div>
+	<LOOP NAME="entites_de_type_serie" TABLE="types" WHERE="tplcreation='creation-serie'">
+		<BEFORE><div class="ligne_ajouter_serie"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="publication.php?type=[#TYPE]">Ajouter [#TITRE]</a><br />
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UN_NUMERO">
-	<div class="ligne_ajouter_numero">
-		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=numero&idparent=[#ID]">Ajouter un numero</a>
-	</div>
+	<LET VAR="idduparent">[#ID]</LET>
+	<LOOP NAME="entites_de_type_numero" TABLE="types" WHERE="tplcreation='creation-numero'">
+		<BEFORE><div class="ligne_ajouter_numero"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UNE_RUBRIQUE">
-	<div class="ligne_ajouter_rubrique">
-		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=rubrique&idparent=[#ID]">Ajouter une rubrique</a>
-	</div>
+	<LET VAR="idduparent">[#ID]</LET>
+	<LOOP NAME="entites_de_type_rubrique" TABLE="types" WHERE="tplcreation='creation-rubrique'">
+		<BEFORE><div class="ligne_ajouter_rubrique"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UNE_SOUS_RUBRIQUE">
-	<div class="ligne_ajouter_rubrique">
-		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=rubrique&idparent=[#ID]">Ajouter une sous-rubrique</a>
-	</div>
+	<LET VAR="idduparent">[#ID]</LET>
+	<LOOP NAME="entites_de_type_rubrique" TABLE="types" WHERE="tplcreation='creation-rubrique'">
+		<BEFORE><div class="ligne_ajouter_rubrique"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UN_REGROUPEMENT">
-	<div class="ligne_ajouter_regroupement">
-		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=regroupement&idparent=[#ID]">Ajouter un regroupement</a>
-	</div>
+	<LET VAR="idduparent">[#ID]</LET>
+	<LOOP NAME="entites_de_type_regroupement" TABLE="types" WHERE="tplcreation='creation-regroupement'">
+		<BEFORE><div class="ligne_ajouter_regroupement"></BEFORE>
+		<DO>
+			<MACRO NAME="PNG_PLUS">
+			<a href="publication.php?type=[#TYPE]&idparent=[#IDDUPARENT]">Ajouter [#TITRE]</a>
+		</DO>
+		<AFTER></div></AFTER>
+	</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
