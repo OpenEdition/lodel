@@ -34,6 +34,7 @@ if ($id>0 && $dir) {
 //
 } elseif ($id>0 && ($delete || $restore)) { 
   include ("$home/trash.php");
+  die ("il faut utiliser supprime.php a la place");
   treattrash("publications",$critere);
   return;
 //

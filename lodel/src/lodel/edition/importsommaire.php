@@ -155,11 +155,12 @@ function mkxmldocument($text)
 
   if (!writefile("$filename.html",$text)) die ("probleme d'ecriture dans $dir");
 
-  // demande de faire cette tache
-  $taskid=make_tache("mkdocument",2,array("fichier"=>$filename,
-					  "publication"=>$currentpublication));
+  // extrainfo s'appelle en deux temps
+  $row[publication]=$currentpublication;
 
-  array_push($tasks,$taskid);
+  include("$home/extrainfomain.php");
+  $edit=1;
+  include("$home/extrainfomain.php");
 }
 
 ?>

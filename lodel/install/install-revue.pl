@@ -99,6 +99,7 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "editer",
 	      "deplacer",
 	      "publi",
+	      "status",
 	      "extrainfo",
 	      "importsommaire",
 	      "index",
@@ -109,6 +110,7 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "edition-regroupement",
 	      "edition-theme",
 	      "publication",
+	      "publications_protegees",
 	      "supprime",
 	      "macros"
 );

@@ -270,6 +270,18 @@
 			<a href="supprime.php?publication=[#ID]">
 				Détruire
 			</a>
+<!-- ajout sale de ghislain -->
+ Status:[#STATUS]
+
+&nbsp;&nbsp;&nbsp;
+<IF [#STATUS]==-32><A HREF="status.php?publication=[#ID]&status=pret">il est pret</A></IF>
+<IF [#STATUS]==-1><A HREF="status.php?publication=[#ID]&status=brouillon">met en brouillon</A></IF>
+
+<IF [#STATUS]==32><A HREF="status.php?publication=[#ID]&status=deprotege">Deprotege</A></IF>
+<IF [#STATUS]==1><A HREF="status.php?publication=[#ID]&status=protege">Protege</A></IF>
+
+<!-- -->
+
 	</td>
 </DEFMACRO>
 

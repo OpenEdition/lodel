@@ -39,7 +39,7 @@ $cache = "CACHE/$rep_cache/$cache";
 ///$maj=myfilemtime($cache)+10;
 
 // si le fichier de mise-a-jour est plus recent
-if ($maj>=myfilemtime($cache)) {
+if ($maj>=myfilemtime($cache) || $recalcul_templates) {
   include ("$home/calcul-page.php");
   ob_start();
   if ($format && !preg_match("/\W/",$format)) $base.="_".$format;
