@@ -558,7 +558,7 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
 function tmpdir()
 
 {
-  $tmpdir="CACHE/tmp";
+  $tmpdir=defined(TMPDIR) && (TMPDIR) ? TMPDIR : "CACHE/tmp";
   if (!file_exists($tmpdir)) { 
     mkdir($tmpdir,0777  & octdec($GLOBALS[filemask])); 
   }
