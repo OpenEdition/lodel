@@ -81,7 +81,7 @@ function characterHandler($parser,$data)
 
 
 $xml_parser = xml_parser_create();
-xml_set_parser_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
+xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
 xml_set_element_handler($xml_parser, "startElement", "endElement");
 xml_set_character_data_handler($xml_parser, "characterHandler");
 if (!($fp = fopen($row[fichier].".html", "r"))) {
