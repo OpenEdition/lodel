@@ -450,8 +450,6 @@ function parse_loop()
   if ($issqldef) { // definition of a SQL loop.
     foreach ($results as $result) {
       $value=lodelparserunquote($result[2]);
-      error_log("REFRESH:".$result[1]."\n",3,"/tmp/tlog");
-
       switch ($result[1]) {
       case "NAME":
 	break;

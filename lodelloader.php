@@ -125,7 +125,7 @@ if (!$chmod) {
 // Download Lodel
 //
 
-$archiveurl="http://lodeldevel/pactage/lodel-0.7-RC2.zip";
+$archiveurl="http://www.lodel.org/download/lodel-latest.zip";
 $archivefile="lodel.zip";
 if (!file_exists($archivefile)) {
   if (!$hassocket) die("Le téléchargement ne peut pas s'executer automatiquement sur ce serveur. Veuillez télécharger l'archive lodel et la poser sur le serveur en la renomant lodel.zip. Relancez ensuite ce script d'installation.");
