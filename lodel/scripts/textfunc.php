@@ -182,8 +182,15 @@ function propre($letexte) {
 
 
 function formateddate($date,$format) 
+
 {
-  return strftime($format,"%A %d %B %Y",strtotime($s));
+  return strftime($format,strtotime($date));
+}
+
+function formatedtime($time,$format) 
+
+{
+  return strftime($format,$time);
 }
 
 
