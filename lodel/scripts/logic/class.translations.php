@@ -50,8 +50,8 @@ class TranslationsLogic extends Logic {
     * list Action
     */
 
-   function listAction(&$context,&$errro) {
-
+   function listAction(&$context,&$errro) 
+   {
      $context['textgroups']=defined("SITEROOT") ? "site" : "interface";
      return "_ok";
    }

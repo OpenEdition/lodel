@@ -87,16 +87,19 @@ class Controler {
       switch($do) {
       case 'listAction' :
 	recordurl();
-	if ($lo!="translations") { // translation needs to defined a listLogic
-	  $ret='_ok';
-	  break;
-	}
       default:
 	$logic=&getLogic($lo);
 	// create the logic for the table
-	if (!method_exists($logic,$do)) die("ERROR: invalid action");
-	// call the logic action
-	$ret=$logic->$do($context,$error);
+	if (!method_exists($logic,$do)) {
+	  if ($do=="listAction") {
+	    $ret="_ok";
+	  } else {
+	    die("ERROR: invalid action");
+	  }
+	} else {
+	  // call the logic action
+	  $ret=$logic->$do($context,$error);
+	}
       }
       if (!$ret) die("ERROR: invalid return from the logic.");
 

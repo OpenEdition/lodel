@@ -20,6 +20,33 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
+<!--[ -----------------------------------------------------------
+      Afficher les options d'un groupe  
+--------------------------------------------------------------- ]-->
+
+
+<DEFMACRO NAME="AFFICHER_OPTIONS_DU_GROUPE">
+	<!--[ Affiche tous les champs du groupe courant ]-->
+	<LOOP NAME="options" TABLE="options" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
+		<DO>
+		<MACRO NAME="TR_LIST">
+			<td><strong>[(#NAME|nbsp)]</strong></td>
+			<td>[(#TYPE|nbsp)]</td>
+			<td>[(#DEFAULTVALUE|nbsp)]</td>
+			<td align="left" style="color: #CC9933;">
+			<div>
+				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="options">
+                	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="options">
+			</div>
+			</td>
+		</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="5"><span class="texte_info">[@ADMIN.NO_DATAFIELD_GROUP]</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFMACRO>
+
 
 <!--[ Rajout du 25/08/03 Macros pour Ghislain          ]-->
 <!--[ Pour les fichiers typepubli.html et typedoc.html ]-->

@@ -45,12 +45,12 @@ function mkeditlodeltext($name,$textgroup,$lang=-1)
   if ($nrows>10) $nrows=10; // limit for very long text, it's not usefull anyway
 
   echo '<div class="editlodeltext"><label for="texte" style="float: left; width: 10em;">@'.strtoupper($name).'</label>
-<textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" obj=document.getElementById(\'selectstatus'.$id.'\'); obj.selectedIndex=\'2\'; lodeltextchangecolor(obj,\'2\'); " >'.htmlspecialchars($text).'</textarea>
- <select style="background-color: '.lodeltextcolor($status).';" onchange="lodeltextchangecolor(this,this.options[this.selectedIndex].value);" id="selectstatus'.$id.'" name="status['.$id.']">';
+<textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars($text).'</textarea>
+ <select class="select'.lodeltextcolor($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']">';
 
 
   foreach (array(-1,1,2) as $s) {
-    echo '<option style="background-color: '.lodeltextcolor($s).';" value="'.$s.'" ';
+    echo '<option class="select'.lodeltextcolor($s).'" value="'.$s.'" ';
     if ($s==$status) echo "selected ";
     echo '>&nbsp;&nbsp;</option>
 ';
@@ -89,8 +89,26 @@ function lodeltextchangecolor(obj,value) {
 ?>
       }
  } 
+
+  function tachanged(id) {
+obj=document.getElementById('selectstatus'+id);
+obj.selectedIndex='2';
+lodeltextchangecolor(obj,'2');
+  }
+
+  function selectchanged(obj) {
+    lodeltextchangecolor(obj,obj.options[obj.selectedIndex].value);
+  }
 --></script>
+<STYLE TYPE="text/css" MEDIA=screen>
+<!--
+       .selectred { background-color: red; }
+       .selectorange { background-color: orange; }
+       .selectgreen { background-color: green; }
+-->
+</STYLE>
 <?php
+
 }
 
 
