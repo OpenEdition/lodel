@@ -103,7 +103,6 @@ if ($id>0 && $dir) {
 // post-traitement
 posttraitement($context);
 
-include ("$home/status.php");
 include ("$home/calcul-page.php");
 calcul_page($context,"publication");
 
