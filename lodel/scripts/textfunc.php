@@ -510,7 +510,8 @@ function tocss($text,$options="")
 	     '<div class="\\1">',
 	     "</div>");
 
-  return preg_replace($srch,$rpl,traite_separateur($text));
+#  return preg_replace($srch,$rpl,traite_separateur($text));
+  return preg_replace($srch,$rpl,$text);
 }
 
 /**

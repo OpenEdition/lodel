@@ -141,7 +141,7 @@ function parse_loop_extra(&$tables,
       if ($realtable=="session") continue;
 
       if ($realtable=="entities") {
-	$lowstatus='"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[lodeluser][groups]))")';
+	$lowstatus='"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$table.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")';
       } else {
 	$lowstatus="-64";
       }

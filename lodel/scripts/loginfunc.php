@@ -30,7 +30,6 @@
 
 
 function open_session ($login) {
-
   global $lodeluser,$sessionname,$timeout,$cookietimeout;
   global $db,$urlroot,$site;
 
@@ -48,7 +47,7 @@ function open_session ($login) {
   $expire2=time()+$cookietimeout;
 
   usemaindb();
-  if (defined("LEVEL_ADMINLODEL") && $lodeluser['rights']<LEVEL_ADMINLODEL) {
+  //if (defined("LEVEL_ADMINLODEL") && $lodeluser['rights']<LEVEL_ADMINLODEL) {
     //if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
     // verifie que c'est ok
     //$result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
@@ -56,7 +55,7 @@ function open_session ($login) {
     //  //if (function_exists("unlock")) unlock(); 
     //  return "error_sitebloque"; 
     //}
-  }
+  //}
 
   for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme name de session
     // name de la session
@@ -70,7 +69,6 @@ function open_session ($login) {
   if (!setcookie($sessionname,$name,time()+$cookietimeout,$urlroot)) die("Probleme avec setcookie... probablement du texte avant");
 
   usecurrentdb();
-
 }
 
 
@@ -78,7 +76,6 @@ function check_auth ($login,&$passwd,&$site)
 
 {
   global $db,$context,$lodeluser,$home;
-
   do { // block de control
     if (!$login || !$passwd) break;
 
@@ -89,18 +86,20 @@ function check_auth ($login,&$passwd,&$site)
     usemaindb();
     $result=$db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
     usecurrentdb();
+
     if ( ($row=$result->fields) ) {
 
       // le user est dans la base generale
       $site="tous les sites";
-     } elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb']!=DATABASE) { // le user n'est pas dans la base generale
+    } elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb']!=DATABASE) { // le user n'est pas dans la base generale
       if (!$site) break; // si $site n'est pas definie on s'ejecte
       // cherche ensuite dans la base du site
       $result=$db->execute(lq("SELECT * FROM #_TP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
       if (!($row=$result->fields)) break;
      } else {
-       break; // on s'eject
+       break; // on s'ejecte
      }
+
     // pass les variables en global
     $lodeluser['rights']=$row['userrights'];
     $lodeluser['lang']=$row['lang'] ? $row['lang'] : "fr";
@@ -110,7 +109,10 @@ function check_auth ($login,&$passwd,&$site)
     if (defined("LEVEL_ADMIN") && $lodeluser['rights']<LEVEL_ADMIN) { // defined is useful only for the install.php
       $result=$db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$lodeluser['id']."'")) or dberror();
       $lodeluser['groups']="1"; // sont tous dans le groupe "tous"
-      while ( ($row=$result->fields) ) $lodeluser['groups'].=",".$row[0];
+      while ( ($row=$result->fields) ) {
+	$lodeluser['groups'].=",".$row[0];
+	$result->MoveNext();
+      }
     } else {
       $lodeluser['groups']="";
     }
