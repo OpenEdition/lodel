@@ -45,7 +45,8 @@ function pub_edition (&$context,$critere)
       die("vous n'avez pas les droits: sortie 3");
     }
     // cherche l'ordre
-    $ordre=get_ordre_max("publications");
+    $ordre=get_ordre_max("publications","parent='$parent'");
+    //$ordre=get_ordre_max("publications");
     $status=-1; // non publie par defaut
     $meta="";
   }
