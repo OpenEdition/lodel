@@ -4,6 +4,7 @@
 <!-- Marin Dacos. 2002.                                                 -->
 <!-- Nicolas Nutten. 2003.                                              -->
 <!-- Cette librairie contient :                                         -->
+<!-- <MACRO NAME="NOMBRE_DE_TEXTES_INTEGRAUX_PUBLIES">                  -->
 <!-- <MACRO NAME="AFFICHER_NUMEROS_PUBLIES">                            -->
 <!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
 <!-- <MACRO NAME="TITRE_PUBLICATION">                                   -->
@@ -37,12 +38,12 @@
 <!-- <MACRO NAME="CITATION">										    -->
 <!-- <MACRO NAME="LISTER_AUTEURS_DOCUMENT">                             -->
 <!-- <MACRO NAME="DESCRITION_AUTEUR">                                   -->
-<!-- <MACRO NAME="LISTER_RUBRIQUES">                                       -->
+<!-- <MACRO NAME="LISTER_RUBRIQUES">                                    -->
 <!-- <MACRO NAME="DERNIER_NUMERO">                                      -->
 <!-- <MACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">                      -->
 <!-- <MACRO NAME="SOMMAIRE_DERNIER_NUMERO">                             -->
 <!-- <MACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">                  -->
-<!-- <MACRO NAME="DERNIERE_RUBRIQUE">                                       -->
+<!-- <MACRO NAME="DERNIERE_RUBRIQUE">                                   -->
 <!-- <MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">                          -->
 <!-- <MACRO NAME="ICONE_PUBLICATION">                                   -->
 <!-- <MACRO NAME="INTRODUCTION_COMPLETE">                               -->
@@ -50,6 +51,18 @@
 <!-- <MACRO NAME="INTRODUCTION_COURTE_SIMPLE">                          -->
 <!-- <MACRO NAME="TEXTE_INTEGRAL">                                      -->
 <!-- ****************************************************************** -->
+
+<DEFMACRO NAME="NOMBRE_DE_TEXTES_INTEGRAUX_PUBLIES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche le nombre des textes intégraux publiés dans la revue.      -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="nbtip" TABLE="documents" SELECT="count(*) as nbtextesintegraux" WHERE="texte ne '' AND tplcreation='chargement' AND datepubli le NOW() AND statut gt '-1'">
+		<DO>
+			Nombre de textes intégraux publiés : [#NBTEXTESINTEGRAUX]
+		</DO>
+	</LOOP>
+</DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_NUMEROS_PUBLIES">
 <!-- ****************************************************************** -->
