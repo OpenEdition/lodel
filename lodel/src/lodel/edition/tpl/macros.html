@@ -173,25 +173,6 @@
 			Editer<br />métas
 		</strong>
 	</td>
-	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre">
-		<strong>
-			Ajouter<br />image
-		</strong>
-	</td>
-	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
-		<div align="center">
-		<b>
-			Changer<br />le statut
-		</b>
-		</div>
-	</td>
-	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
-		<div align="center">
-		<b>
-			Changer<br />le verrou
-		</b>
-		</div>
-	</td>
 	<td width="74" background="images/bleu.gif" class="texte_trespetit_centre"> 
 		<div align="center">
 		<b>
@@ -330,24 +311,19 @@
 			<MACRO NAME="GIF_EDITER_32">
 		</a>
 	</td>
-	<td width="74" valign="middle" align="center">
-		<a href="metaimage.php?idpublication=[#ID]">
-			<MACRO NAME="GIF_AJOUTER_IMAGE">
-		</a>
-	</td>
-	<td width="74" valign="middle">
-		<MACRO NAME="STATUS">
-	</td>
-	<td width="74" valign="middle" align="center">
-		<MACRO NAME="CHANGER_VERROU_PUBLICATIONS">
-	</td>
 	<td width="74" align="center" valign="middle" class="texte_trespetit">
 		<MACRO NAME="up_down_publication">
 	</td>
 	<td width="74" align="center" valign="middle" class="texte_trespetit">
-		<a href="index.php?format=publisfa">
-			<MACRO NAME="GIF_FONCTIONS_AVANCEES">
-		</a>
+		<div align="center">
+			<IF COND="[#EDITEUR]">
+				<a href="publication.php?format=fonctionsavancees&id=[#ID]">
+					<MACRO NAME="GIF_FONCTIONS_AVANCEES">
+				</a>
+			<ELSE/>
+				<MACRO NAME="GIF_INACTIF">
+			</IF>
+		</div>
 	</td>
 	<td width="74" valign="middle">
 		<div align="center">
@@ -469,9 +445,6 @@
 		</td>
 	  <td width="74" background="images/bleu.gif">&nbsp;</td>
 	  <td width="74" background="images/bleu.gif">&nbsp;</td>
-	  <td width="74" background="images/bleu.gif">&nbsp;</td>
-	  <td width="74" background="images/bleu.gif">&nbsp;</td>
-  	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
   	  <td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -494,9 +467,6 @@
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
     <td width="74" background="images/bleu.gif">&nbsp;</td>
-	<td width="74" background="images/bleu.gif">&nbsp;</td>
-	<td width="74" background="images/bleu.gif">&nbsp;</td>
-	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
     <td width="74" background="images/bleu.gif">&nbsp;</td>
 </tr>	 
@@ -547,9 +517,6 @@
 		</strong>
 		</a>
 	</td>
-	<td width="74" background="images/bleu.gif">&nbsp;</td>
-	<td width="74" background="images/bleu.gif">&nbsp;</td>
-	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
 	<td width="74" background="images/bleu.gif">&nbsp;</td>
@@ -1205,6 +1172,87 @@
 		Associer une icône
 	</a>
 </IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI">
+	<IF COND="[#STATUS]==-32">
+		Brouillon
+	<ELSE/>
+		<IF COND="[#STATUS]==-1">
+			Prête à être publiée
+		<ELSE/>
+			<IF COND="[#STATUS]==1">
+				Publiée
+			<ELSE/>
+				<IF COND="[#STATUS]==32">
+					Publiée protégée
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="CHANGER_STATUS_SWITCH">
+	<div align="center">
+		<span class="texte_trespetit_centre">
+			<IF COND="[#STATUS] gt 0">
+				<IF COND="[#STATUS] eq 1">
+					<a href="#" onClick="confirm_depublication(1,[#ID]);">
+					<!--<a href="publi.php?publication=[#ID]">-->
+						Dépublier
+					</a>
+					&nbsp;/&nbsp;Publier
+				<ELSE/>
+					Dépublier&nbsp;/&nbsp;Publier
+				</IF>
+			<ELSE/>
+				<IF COND="[#STATUS] eq -1">
+					Dépublier&nbsp;/&nbsp;
+					<a href="publi.php?publication=[#ID]&online=1">
+						Publier
+					</a>
+				<ELSE/>
+					Dépublier&nbsp;/&nbsp;Publier
+				</IF>
+			</IF>
+		</span>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="CHANGER_VERROU_SWITCH_PUBLICATIONS">
+	<div align="center">
+		<span class="texte_trespetit_centre">
+			<IF COND="[#STATUS]==-32">
+				Brouillon&nbsp;/&nbsp;
+				<a href="status.php?publication=[#ID]&status=pret">
+					<span class="texte_trespetit_centre">Prête à publier</span>
+				</a>
+				<br />Déprotéger&nbsp;/&nbsp;Protéger
+			</IF>
+			<IF COND="[#STATUS]==-1">
+				<a href="status.php?publication=[#ID]&status=brouillon">
+					<span class="texte_trespetit_centre">Brouillon</span>
+				</a>
+				&nbsp;/&nbsp;Prête à publier
+				<br />Déprotéger&nbsp;/&nbsp;Protéger
+			</IF>
+		
+			<IF COND="[#STATUS]==32">
+				Brouillon&nbsp;/&nbsp;Prête à publier<br />
+				<a href="status.php?publication=[#ID]&status=deprotege">
+					<span class="texte_trespetit_centre">Déprotéger</span>
+				</a>
+				&nbsp;/&nbsp;Protéger
+			</IF>
+			<IF COND="[#STATUS]==1">
+				Brouillon&nbsp;/&nbsp;Prête à publier<br />
+				Déprotéger&nbsp;/&nbsp;
+				<a href="status.php?publication=[#ID]&status=protege">
+					<span class="texte_trespetit_centre">Protéger</span>
+				</a>
+			</IF>
+		</span>
+	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUT">
