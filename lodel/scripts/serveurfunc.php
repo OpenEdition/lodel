@@ -42,6 +42,7 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 {
 #  $t=time();
   $url=parse_url($url);
+  if (!$url[path]) $url[path]="/";
   $bound=md5($files[0].microtime());
 
   $request="POST $url[path] HTTP/1.1\r\nConnection: keep-alive\r\nHost: $url[host]\r\nContent-Type: multipart/form-data; boundary=---------------------------$bound\r\nKeep-Alive: 300";
@@ -68,11 +69,11 @@ function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 
   $request.="Content-length: ".strlen($content)."\r\n".$content."\r\n";
 
-$port=$url[port] ? $url[port] : 80;
-$fp = fsockopen ("$url[host]", $port, $errno, $errstr, 30);
-if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
+  $port=$url[port] ? $url[port] : 80;
+  $fp = fsockopen ("$url[host]", $port, $errno, $errstr, 30);
+  if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
     
- fputs ($fp,$request);
+  if (fputs ($fp,$request)!=strlen($request)) die("ERROR: cannot write to $url[host]:$port\n");
 
 # $fp2=fopen("/tmp/tmp1","w");
 # while (!feof($fp)) { $buf=fread($fp,1024); fwrite($fp2,$buf); }
@@ -82,6 +83,7 @@ if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
   $line="";
   while (!feof($fp) && $line!="\r\n") {
     $line=fgets($fp,1024);
+    #echo "line:".htmlentities($line)."<br/>";
     if (strpos($line,"Transfer-Encoding:")===0 && $line!="Transfer-Encoding: chunked\r\n") die ("Bug a reporter: le transfert encoding n'est pas chunked: <br>".$line);
   }
   if ($outfile) {
@@ -118,7 +120,7 @@ if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
 # exit();
 
       if ($size==0) {
-	if (preg_match("/^ERROR:[^\n\r]+/",$buf,$result)) { return $result[0]; }
+	if (preg_match("/^(ERROR|SAY):/",$buf,$result)) { return $buf; }
 	if (preg_match("/^content-length:\s*(\d+)\s*\r?\n/",$buf,$result)) {
 	  $size=$result[1];
 	  $buf=substr($buf,strlen($result[0]));
