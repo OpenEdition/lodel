@@ -59,7 +59,8 @@ class XMLImportParser {
       foreach ($iss as $is) {
 	// analyse the styles
 	foreach (preg_split("/[,;]/",$is->style) as $style) {
-	  $this->commonstyles[trim($style)]=$is;
+	  $this->_prepare_style($style,$is);
+	  $this->commonstyles[$style]=$is;
 	}
       }
       
@@ -67,8 +68,8 @@ class XMLImportParser {
       $dao=getDAO("characterstyles");
       $css=$dao->findMany("status>0");
       foreach ($css as $cs) {
-	// analyse the styles
 	foreach (preg_split("/[,;]/",$cs->style) as $style) {
+	  $this->_prepare_style($style,$cs);
 	  $this->commonstyles[trim($style)]=$cs;
 	}
       }
@@ -94,35 +95,47 @@ class XMLImportParser {
   {
     $this->handler=$handler; // non-reentrant
 
-    $arr=preg_split("/<(\/?r2r:\w+)>/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
+    $arr=preg_split("/<(\/?)r2r:(\w+)>/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
     $n=count($arr);
 
     unset($string); // save memory
 
+    // make object whereever it is possible.
+    $stylesstack=array();
+    for($i=1; $i<$n; $i+=3) {
+      $opening=$arr[$i]=="/";
+
+      if ($opening) { // opening tag
+	$obj=$this->commonstyles[$arr[$i+1]];
+	if (!$obj) {
+	  array_push($stylesstack,$arr[$i+1]);
+	  continue;
+	}
+	$arr[$i+1]=&$obj;
+	array_push($stylesstack,$arr[$i+1]);
+      } else { // closingtag
+	$arr[$i+1]=array_pop($stylesstack);
+	continue; // nothing to do
+      }
+    }
+
+
+    // second pass
     // process the internalstyles
     // this is an hard piece of code doing no so much... but I find no better way.
-    for($i=1; $i<$n; $i+=2) {
-      $opening=$arr[$i]{1}=="/";
-      $style=substr($arr[$i],strpos($arr[$i],":")+1);
-
-      $obj=$this->commonstyles[$style];
-      if (!$obj) continue;
-
-      // style synonyme. take the first one
-      $style=preg_replace("/[:,;].*$/","",$obj->style);
-      $arr[$i]=($opening ? "" : "/")."r2r:".$style; // rebuild the style
-      
-      if (!$obj || !$opening) continue;
-
+    $isave=false;
+    for($i=1; $i<$n; $i+=3) {
+      if ($arr[$i]=="/" || !is_object($arr[$i+1])) continue;
+      $obj=&$arr[$i+1];
       $class=get_class($obj);
 
-      if (!$isave && $class="internalstyles") {
+      if (!$isave && $class="internalstylesvo") {
 	$forcenext=false;
 	if ($obj->surrounding=="-*") {
 	  // check what is the previous on.
-	  if ($arr[$i-2]{1}!="/" && get_class($this->commonstyles[substr($arr[$i-2],strpos($arr[$i-2],":")+1)])=="tablefields") {
+	  if ($arr[$i-3]!="/" && get_class($arr[$i-2])=="tablefieldsvo") {
 	    // good, put the closing tag further
-	    $closing=array_splice($arr,$i-2,1);
+	    $closing=array_splice($arr,$i-3,2);
 	    array_splice($arr,$i,0,$closing);
 	  } else {
 	    $forcenext=true;
@@ -133,23 +146,26 @@ class XMLImportParser {
 	  $isave=$i; // where to insert the next opening
 	} else {
 	  // surounding is a proper tag
-	  array_splice($arr,$i,0,array("r2r:".$obj->surounding,"")); // opening tag
-	  $i+=2; $n+=2;
-	  array_splice($arr,$i+2,0,array("/r2r:".$obj->surounding,"")); // closing tag
-	  $n+=2;
+	  $obj=$this->commonstyles[$obj->surrounding];
+	  array_splice($arr,$i,0,array("",$obj,"")); // opening tag
+	  $i+=3; $n+=3;
+	  array_splice($arr,$i+3,0,array("/",$obj,"")); // closing tag
+	  $n+=3;
 	}
       } else
-	if ($class="tablefields" && $isave) {
+	if ($class="tablefieldsvo" && $isave) {
 	  // put the opening at $isave
-	  $opening=array_splice($arr,$i,1);
+	  $arr[$i-1].=$arr[$i+2]; // copy data. This is not the most efficient, must the nicest way to do
+	  $arr[$i+2]="";
+	  $opening=array_splice($arr,$i,3);
 	  array_splice($arr,$isave,0,$opening);
 	  $isave=false;
 	} else
 	if ($isave) {
 	  // problem, the group at $isave has to be attached with above.
-	  if ($arr[$isave-2]{1}=="\/" && get_class($this->commonstyles[substr($arr[$isave-2],strpos($arr[$isave-2],":")+1)])=="tablefields") {
-	    $closing=array_splice($arr,$isave-2,1);
-	    array_splice($arr,$i,0,$closing);	    
+	  if ($arr[$isave-3]=="/" && get_class($arr[$isave-2])=="tablefieldsvo") {
+	    $closing=array_splice($arr,$isave-3,2);
+	    array_splice($arr,$i,0,$closing);    
 	    $isave=false;
 	  } else {
 	    // don't know what to do, there is nothing before or after
@@ -162,20 +178,19 @@ class XMLImportParser {
     $datastack=array();
     $classstack=array($this->mainclass);
     $cstyles=&$this->contextstyles[$classstack[0]];
-
     $handler->openClass($classstack[0]);
     
     $i=0;
     do {
-      if ($i % 2 == 0) { // data
+      if ($i % 3 == 0) { // data
 	$larr=preg_split("/<(\/?r2rc:\w+)>/",$arr[$i],-1,PREG_SPLIT_DELIM_CAPTURE);
 	$datastack[0].=$larr[0];
 
 	$nj=count($larr);
-	for($j=1; $j<$nj; $j+=2) {
+	for($j=1; $j< $nj; $j+=3) {
 	  $this->_parseOneStep($larr,$j,$datastack,$classstack,$cstyles);
 	}
-      } else { // style
+      } elseif ($i % 3 ==1)  { // style
 	$this->_parseOneStep($arr,$i,$datastack,$classstack,$cstyles);
       }
       $i++;
@@ -195,44 +210,39 @@ class XMLImportParser {
    * 3/ feed the datastack
    */
 
-  function _parseOneStep (&$arr,&$i,&$datastack,&$classstack,&$cstyles)
+  function _parseOneStep (&$arr,$i,&$datastack,&$classstack,&$cstyles)
 
   {
-    $opening=$arr[$i]{1}=="\/";
-    $style=substr($arr[$i],strpos($arr[$i],":")+1);
+    $opening=$arr[$i]=="/";
+    $obj=$arr[$i+1];
 
     #echo $style,"--<br>";
 
-    if (!$opening && $style==$arr[$i+2]) {
-      // current closing equals next opening... merge
-      $i+=2; // jump to the next one
+    if (!$opening && $obj==$arr[$i+4] || $openning && $obj==$arr[$i-2]) {
+      // current closing equals next opening
+      // or current opening equals last closing
       return;
     }
 
-    $obj=$cstyles[$style];
-    if (!$obj) $this->commonstyles[$style];
-
-    if (!$obj) {
+    if (!is_object($obj)) {
       // unknow style
-      if (!$obj) {
-	$this->handler->unknownParagraphStyle($style,$data);
-	return;
-      }
+      $this->handler->unknownParagraphStyle($obj,$data);
+      return;
     }
 
-    $class=substr(get_class($obj),0,-2); // remove the VO at the end
+    $class=get_class($obj);
     switch($class) {
-    case "internalstyles" :
-    case "characterstyles" :
+    case "internalstylesvo" :
+    case "characterstylesvo" :
       if ($opening) {
 	array_unshift($datastack,"");
       } else {
-	$call="process".$class;
+	$call="process".substr($class,0,-2);
 	$data=array_shift($datastack);	
 	$datastack[0].=$this->handler->$call($obj,$data); // call the method associated with the object class
       }
       break;
-    case "tablefields" :
+    case "tablefieldsvo" :
       if (!$cstyles[$style]) { // context change	 ?
 	$this->handler->closeClass($classstack[0]);
 
@@ -249,8 +259,8 @@ class XMLImportParser {
 	$this->handler->processTableFields($obj,$datastack[0]); // call the method associated with the object class
 	}
       break;
-    case "entrytypes" :
-    case "persontypes" :
+    case "entrytypesvo" :
+    case "persontypesvo" :
       if ($opening) { // opening. Switch the context
 	$this->styles=$this->commonstyles[$class][$obj->name];
       } else {
@@ -260,15 +270,15 @@ class XMLImportParser {
 	
 	$this->handler->openClass($classstack[0],$obj);
 	
-	$call="process".$class;
-	$this->handler->$class($obj,$this->characterStylesParser($datastack[0])); // call the method associated with the object class
+	$call="process".substr($class,0,-2);
+	$this->handler->$call($obj,$this->characterStylesParser($datastack[0])); // call the method associated with the object class
 	$datastack[0]="";
       }
       break;
     default:
       die("ERROR: internal error in XMLImportParser::parse. Unknown class $class");
     }
-    $datastack[0].=$this->handler->processData($arr[$i+1]);
+    $datastack[0].=$this->handler->processData($arr[$i+2]);
   }
 
   /**
@@ -298,14 +308,28 @@ class XMLImportParser {
       }
       // analyse the styles
       foreach (preg_split("/[,;]/",$tf->style) as $style) {
-	list($style,$tf->lang)=explode(":",$style);      
-	$style=trim($style);
-	$this->contextstyles[$class][$style]=$tf;
-	$this->commonstyles[$style]=$tf;
+	$this->_prepare_style($style,$tf);
+	$this->commonstyles[$style]=$this->contextstyles[$class][$style]=$tf;
       }
     }
   }
 
+  /**
+   * Prepare the style for storage
+   */
+  function _prepare_style(&$style,&$obj)
+
+  {
+    $style=strtolower(trim($style));
+    // style synonyme. take the first one
+    list($style,$lang)=explode(":",$obj->style);
+    if ($lang) {
+      $obj->lang=$lang;
+    } else {
+      // style synonyme. take the first one
+      $style=preg_replace("/[:,;].*$/","",$style);
+    }
+  }
 
 } // class XMLImportParser
 
