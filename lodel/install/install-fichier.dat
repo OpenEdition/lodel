@@ -125,7 +125,6 @@ ln publi.php
 #removed by Jean Lamy - 2005-02-08
 #ln status.php
 
-ln filebrowser.php
 ln tpl/filebrowser.html
 ln entitybrowser.php
 ln tpl/entitybrowser.html
@@ -176,6 +175,7 @@ dirsource . # repertoire du site
 ln styles_lodel.css
 
 dirsource $homesite/lodel/edition
+ln tpl/filebrowser.html
 
 # les logins
 dirsource $homesite/lodel/admin

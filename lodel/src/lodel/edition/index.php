@@ -32,7 +32,7 @@ require("siteconfig.php");
 require_once("auth.php");
 authenticate(LEVEL_VISITOR);
 
-if (!$_GET['do'] && !$_POST['do']) {
+if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
   recordurl();
   $context['id']=$id=intval($_GET['id']);
   require_once("view.php");
@@ -66,7 +66,7 @@ if (!$_GET['do'] && !$_POST['do']) {
     // well... nothing to do
   } elseif ($do=="move" || $do=="preparemove" || $do=="changestatus" || $do=="download") {
     $lo="entities_advanced";
-  } elseif ($do=="cleanIndex" || $do=="deleteIndex" || $do=="addIndex"){//added by Jean Lamy | 2005-01-28
+  } elseif ($do=="cleanIndex" || $do=="deleteIndex" || $do=="addIndex"){
   	$lo="entities_index";
   } elseif ($do=="view" || $do=="edit") {
     $lo="entities_edition";
@@ -79,7 +79,8 @@ if (!$_GET['do'] && !$_POST['do']) {
 			     "entities_advanced",
 			     "entities_edition",
 			     "entities_import",
-			     "entities_index", //added 2005-01-28
+			     "entities_index",
+			     "filebrowser",
 			     "tasks"),$lo);
 }
 
