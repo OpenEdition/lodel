@@ -290,7 +290,7 @@ function tocable($text,$level=10)
   function tocable_callback($result) {
       static $tocind=0;
       $tocind++;
-      return '<a href="#tocfrom'.$tocind.'" NAME="tocto'.$tocind.'">'.$result[0].'</a>';
+      return '<a href="#tocfrom'.$tocind.'" name="tocto'.$tocind.'">'.$result[0].'</a>';
   }
   return preg_replace_callback("/<(r2r:section(?:$sect)).*?<\/\\1>/s","tocable_callback",$text);
 }
