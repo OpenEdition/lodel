@@ -35,6 +35,7 @@ UPDATE _PREFIXTABLE_indexls SET status=32, type=2 WHERE type=3;
 # ok c est bon, on peut renomer
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
 RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_entrees;
+DROP TABLE IF EXISTS _PREFIXTABLE_documents_entrees;
 RENAME TABLE _PREFIXTABLE_documents_indexls TO _PREFIXTABLE_documents_entrees;
 # positionne la langue correctement
 UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
