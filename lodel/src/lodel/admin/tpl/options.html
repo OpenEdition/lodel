@@ -3,152 +3,90 @@
 <title>[(#REVUE|nbsp)] Administration</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<br>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">M&eacute;tadonn&eacute;es et options de la revue</td>
+	</tr>
+</table>
+
 <div align="center">
-<table width="800" border="0" cellspacing="4" cellpadding="4" align="center" bordercolor="black">
-<FORM ACTION="options.php" METHOD="POST">
+<form action="options.php" method="POST">
+<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 <tr><td align="center">
-	<table width="600" border="0" cellspacing="4" cellpadding="4" align="center" bordercolor="black">
+	<table style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td colspan="2" align="center">
 				<br /><div class="soustitre"><strong>Métadonnées de la revue</strong></div><br />
 			</td>
 		</tr>
 		<tr>
-			<td>
-				TITRE ACCUEIL
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_title_accueil" value="[#META_TITLE_ACCUEIL]">
-			</td>
+			<td>TITRE ACCUEIL</td>
+			<td><input size="50" type="text" name="meta_title_accueil" value="[#META_TITLE_ACCUEIL]" />	</td>
 		</tr>
 		<tr>
-			<td>
-				DC.PUBLISHER
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_publisher" value="[#META_DC_PUBLISHER]">
-			</td>
+			<td>DC.PUBLISHER</td>
+			<td><input size="50" type="text" name="meta_dc_publisher" value="[#META_DC_PUBLISHER]" /></td>
 		</tr>
 		<tr>
-			<td>
-				DC.PUBLISHER.DETAILS
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_publisher_details">[#META_DC_PUBLISHER_DETAILS]</textarea>
-			</td>
+			<td>DC.PUBLISHER.DETAILS</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_publisher_details">[#META_DC_PUBLISHER_DETAILS]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.PUBLISHER.WEBMASTER
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_publisher_webmaster" value="[#META_DC_PUBLISHER_WEBMASTER]">
-			</td>
+			<td>DC.PUBLISHER.WEBMASTER</td>
+			<td><input size="50" type="text" name="meta_dc_publisher_webmaster" value="[#META_DC_PUBLISHER_WEBMASTER]" /></td>
 		</tr>
 		<tr>
-			<td>
-				DC.PUBLISHER.GRAPHISTE
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_publisher_graphiste" value="[#META_DC_PUBLISHER_GRAPHISTE]">
-			</td>
+			<td>DC.PUBLISHER.GRAPHISTE</td>
+			<td><input size="50" type="text" name="meta_dc_publisher_graphiste" value="[#META_DC_PUBLISHER_GRAPHISTE]" /></td>
 		</tr>
 		<tr>
-			<td>
-				DC.RELATION.ISPARTOF.PORTAIL
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_relation_ispartof_portail" value="[#META_DC_RELATION_ISPARTOF_PORTAIL]">
-			</td>
+			<td>DC.RELATION.ISPARTOF.PORTAIL</td>
+			<td><input size="50" type="text" name="meta_dc_relation_ispartof_portail" value="[#META_DC_RELATION_ISPARTOF_PORTAIL]" /></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description">[#META_DC_DESCRIPTION]</textarea>
-			</td>
+			<td>DC.DESCRIPTION</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description">[#META_DC_DESCRIPTION]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.ACCUEIL
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_accueil">[#META_DC_PUBLISHER_DETAILS]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.ACCUEIL</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_accueil">[#META_DC_PUBLISHER_DETAILS]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.INDEXDEFAUT
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_indexdefaut">[#META_DC_DESCRIPTION_INDEXDEFAUT]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.INDEXDEFAUT</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_indexdefaut">[#META_DC_DESCRIPTION_INDEXDEFAUT]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.SOMMAIRESDEFAUT
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_sommairesdefaut">[#META_DC_DESCRIPTION_SOMMAIRESDEFAUT]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.SOMMAIRESDEFAUT</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_sommairesdefaut">[#META_DC_DESCRIPTION_SOMMAIRESDEFAUT]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.DOCUMENTDEFAUT.FR
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_fr">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_FR]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.FR</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_fr">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_FR]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.DOCUMENTDEFAUT.EN
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_en">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_EN]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.EN</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_en">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_EN]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.DOCUMENTDEFAUT.ES
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_es">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_ES]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.ES</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_es">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_ES]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.DESCRIPTION.DOCUMENTDEFAUT.IT
-			</td>
-			<td>
-				<textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_it">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_IT]</textarea>
-			</td>
+			<td>DC.DESCRIPTION.DOCUMENTDEFAUT.IT</td>
+			<td><textarea cols="40" rows="4" name="meta_dc_description_documentdefaut_it">[#META_DC_DESCRIPTION_DOCUMENTDEFAUT_IT]</textarea></td>
 		</tr>
 		<tr>
-			<td>
-				DC.RIGHTS.DEFAUT
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_rights_defaut" value="[#META_DC_RIGHTS_DEFAUT]">
-			</td>
+			<td>DC.RIGHTS.DEFAUT</td>
+			<td><input size="50" type="text" name="meta_dc_rights_defaut" value="[#META_DC_RIGHTS_DEFAUT]" /></td>
 		</tr>
 		<tr>
-			<td>
-				DC.IDENTIFIER.URLACCUEIL
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_indentifier_urlaccueil" value="[#META_DC_IDENTIFIER_URLACCUEIL]">
-			</td>
+			<td>DC.IDENTIFIER.URLACCUEIL</td>
+			<td><input size="50" type="text" name="meta_dc_indentifier_urlaccueil" value="[#META_DC_IDENTIFIER_URLACCUEIL]" /></td>
 		</tr>
 		<tr>
-			<td>
-				DC.LANGUAGE.DEFAUT
-			</td>
-			<td>
-				<input size="50" type="text" name="meta_dc_language_defaut" value="[#META_DC_LANGUAGE_DEFAUT]">
-			</td>
+			<td>DC.LANGUAGE.DEFAUT</td>
+			<td><input size="50" type="text" name="meta_dc_language_defaut" value="[#META_DC_LANGUAGE_DEFAUT]" /></td>
 		</tr>
 	</table>
 	<tr>
@@ -156,36 +94,33 @@
 			<br /><div class="soustitre"><strong>Options de la revue</strong></div><br />
 		</td>
 	</tr>
-<tr><td>
-<blockquote><blockquote>
-N'accepte pas les périodes: <INPUT TYPE="radio" NAME="option_pasdeperiode" VALUE="1" [(#OPTION_PASDEPERIODE|yes)]> Accepte les périodes: <INPUT TYPE="radio" NAME="option_pasdeperiode" VALUE="0" [(#OPTION_PASDEPERIODE|no)]>
-</blockquote></blockquote>
-</td></tr>
-<tr><td>
-<blockquote><blockquote>
-N'accepte pas les zones géo: <INPUT TYPE="radio" NAME="option_pasdegeographie" VALUE="1" [(#OPTION_PASDEGEOGRAPHIE|yes)]> Accepte les zones géo: <INPUT TYPE="radio" NAME="option_pasdegeographie" VALUE="0" [(#OPTION_PASDEGEOGRAPHIE|no)]>
-</blockquote></blockquote>
-</td></tr>
-<tr><td>
-<blockquote><blockquote>N'accepte pas de mots clés: <INPUT TYPE="radio" NAME="option_pasdemotcle" VALUE="1" [(#OPTION_PASDEMOTCLE|yes)]> Accepte des mots clés: <INPUT TYPE="radio" NAME="option_pasdemotcle" VALUE="0" [(#OPTION_PASDEMOTCLE|no)]>
-</blockquote></blockquote>
-</td></tr>
-<tr><td>
-<blockquote><blockquote>Ordre tenant compte du type de document: <INPUT TYPE="radio" NAME="option_ordrepartypedoc" VALUE="1" [(#OPTION_ORDREPARTYPEDOC|yes)]>
-Ordre  au sein de chaque regroupement<INPUT TYPE="radio" NAME="option_ordrepartypedoc" VALUE="0" [(#OPTION_ORDREPARTYPEDOC|no)]><br><br>
-(Est utile pour la fonction "Up/Down", pour décider de la façon dont on va classer les articles. Soit ce sera selon un ordre au sein des regroupements, soit ce sera dans un ordre au sein des types d'articles.
-</blockquote></blockquote>
-</td></tr>
-<tr><td>
-<blockquote><blockquote>Liste figée de mots clés :<INPUT TYPE="radio" NAME="option_motclefige" VALUE="1" [(#OPTION_MOTCLEFIGE|yes)]> liste libre de mots clés :<INPUT TYPE="radio" NAME="option_motclefige" VALUE="0" [(#OPTION_MOTCLEFIGE|no)]><br>
-</td></tr>
-<tr><td align="center">
-<br />
-<INPUT CLASS="form" TYPE="submit" NAME="edit" VALUE="Modifier">
-<INPUT TYPE="hidden" name="url_retour" VALUE="[#URL_RETOUR]">
-</blockquote></blockquote>
-</td></tr>
-</FORM>
-</TABLE>
+	<tr>
+		<td>N'accepte pas les périodes: <input type="radio" name="option_pasdeperiode" value="1" [(#OPTION_PASDEPERIODE|yes)] /> Accepte les périodes: <input type="radio" name="option_pasdeperiode" value="0" [(#OPTION_PASDEPERIODE|no)] /></td>
+	</tr>
+	<tr>
+		<td>N'accepte pas les zones géo: <input type="radio" name="option_pasdegeographie" value="1" [(#OPTION_PASDEGEOGRAPHIE|yes)] /> Accepte les zones géo: <input type="radio" name="option_pasdegeographie" value="0" [(#OPTION_PASDEGEOGRAPHIE|no)] /></td>
+	</tr>
+	<tr>
+		<td>N'accepte pas de mots clés: <input type="radio" name="option_pasdemotcle" value="1" [(#OPTION_PASDEMOTCLE|yes)] /> Accepte des mots clés: <input type="radio" name="option_pasdemotcle" value="0" [(#OPTION_PASDEMOTCLE|no)] /></td>
+	</tr>
+	<tr>
+		<td>
+			Ordre tenant compte du type de document: <input type="radio" name="option_ordrepartypedoc" value="1" [(#OPTION_ORDREPARTYPEDOC|yes)] /> 
+			Ordre  au sein de chaque regroupement<input type="radio" name="option_ordrepartypedoc" value="0" [(#OPTION_ORDREPARTYPEDOC|no)] /><br /><br />
+			(Est utile pour la fonction "Up/Down", pour décider de la façon dont on va classer les articles.<br />Soit ce sera selon un ordre au sein des regroupements, soit ce sera dans un ordre au sein des types d'articles.
+		</td>
+	</tr>
+	<tr>
+		<td>Liste figée de mots clés :<input type="radio" name="option_motclefige" value="1" [(#OPTION_MOTCLEFIGE|yes)] /> liste libre de mots clés :<input type="radio" name="option_motclefige" value="0" [(#OPTION_MOTCLEFIGE|no)] /></td>
+	</tr>
+	<tr>
+		<td align="center">
+			<input class="form" type="submit" name="edit" value="  Modifier  " />
+			<input class="form" type="submit" name="edit" value="  Annuler  " onClick="javascript:window.history.go(-1)" />
+			<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
+		</td>
+	</tr>
+</table>
+</form>
 </div>
 <MACRO NAME="CLOSE_HTML">

@@ -3,177 +3,148 @@
 <title>Edition - utilisateur</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Gestion des utilisateurs de [(#REVUE|nbsp)]</td>
+	</tr>
+</table>
 
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="0" ALIGN="CENTER">
-<TR>
-	<TD class="titre">
-		Gestion des utilisateurs de<br>
-		<em>
-			[(#REVUE|nbsp)]
-		</em>
-	</td>
-</tr>
-<TR>
-	<TD class="texte_centre">
-			<a href="user.php">
-				<b>Ajouter un utilisateur</b>
-			</a>
-	</td>
-</tr>
-</TABLE>
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
-  <TR>
-  <TD align="center" align="middle">&nbsp;</td>
-    <TD align="center"> 
-    <div align="center">
-		<b>
-	  	Login (identifiant court)
-		</b>
-	</div>
-    </td>
-    <TD align="center"> 
-		<div align="center">
-		<b>
-	  	Nom et prénom
-		</b>
-		</div>
-    </td>
-    <TD align="center"> 
-    <div align="center">
-		<b>
-		Courriel
-		</b>
-	</div>
-    </td>
-    <td>
-      <div align="center">
-	  <img src="images/KDE_txt.gif" width="32" height="32"></div>
-    </td>
-    <td>
-      <div align="center"><img src="images/coplanddetruire.gif" width="32" height="32"></div>
-    </td>
-    <td> 
-      <div align="center"><b>Session</b></div>
-    </td>
-  </tr>
-  <LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="status>0"> 
-  <TR> 
-  <TD align="center" align="middle">
-		<div align="center">
-			<IF COND="[#PRIVILEGE] EQ 64">
-				<a href="user.php?id=[#ID]">
-					<MACRO NAME="GIF_VISAGE_SUPERADMIN">
-				</a>
-				<br>
-				[#USERNAME]	
-			<ELSE/>
-			<IF COND="[#PRIVILEGE] EQ 32">
-				<a href="user.php?id=[#ID]">
-					<MACRO NAME="GIF_VISAGE_ADMIN">
-				</a>
-				<br>
-				Administrateur	
-			<ELSE/>
-			<IF COND="[#PRIVILEGE] EQ 4">
-				<a href="user.php?id=[#ID]">
-					<MACRO NAME="GIF_VISAGE_EDITEUR">
-				</a>
-				<br>
-				Editeur
-			<ELSE/>
-			<IF COND="[#PRIVILEGE] EQ 2">
-				<a href="user.php?id=[#ID]">
-					<MACRO NAME="GIF_VISAGE_REDACTEUR">
-				</a>
-				<br>
-				Rédacteur	
-			<ELSE/>
-			<IF COND="[#PRIVILEGE] EQ 1">
-				<a href="user.php?id=[#ID]">
-					<MACRO NAME="GIF_VISAGE_VISITEUR">
-				</a>
-				<br>
-				Visiteur
-			<ELSE/>
-				<MACRO NAME="GIF_INACTIF">
-				<br>
-				Inactif
-			</IF>
-			</IF>
-			</IF>
-			</IF>
-			</IF>
-			</IF>
-		</div>
-</td>
-    <td> 
-      <div align="center"><font color="navy"><b>[(#USERNAME|nbsp)] </b></font> 
-      </div>
-    </td>
-    <td> 
-      <div align="center">[(#NOM|nbsp)]</div>
-    </td>
-    <td> 
-      <div align="center">[(#EMAIL|nbsp)]</div>
-    </td>
-    <td> 
-      <div align="center"><a href="user.php?id=[#ID]">Modifier</a></div>
-    </td>
-    <td> 
-      <div align="center"><a href="user.php?id=[#ID]&delete=1">Supprimer</a></div>
-    </td>
-    <td> &nbsp;
-     <LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
-        Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[déloguer]</IF></a> 
-        <BR>
-        </LOOP> 
-    </td>
-  </tr>
-  </LOOP> 
+<div class="ligne_ajouter_serie">
+	<MACRO NAME="PNG_MOINS">
+	<a href="user.php">Ajouter un utilisateur</a>
+</div>
+<br /><br />
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td class="texte_noir_gras" align="center">Niveau</td>
+		<td class="texte_noir_gras" align="center">Login</td>
+		<td class="texte_noir_gras" align="center">Nom Pr&eacute;nom</td>
+		<td class="texte_noir_gras" align="center">Courriel</td>
+		<td class="texte_noir_gras" align="center">Session</td>
+		<td>&nbsp;</td>
+	</tr>
+	<LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="status>0">
+		<DO>
+			<tr>
+				<IF COND="[#COUNT] % 2">
+					<td class="ligne_admin1" align="center">
+						<IF COND="[#PRIVILEGE] EQ 64">
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
+						<ELSE/>
+							<IF COND="[#PRIVILEGE] EQ 32">
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur
+							<ELSE/>
+								<IF COND="[#PRIVILEGE] EQ 4">
+									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />Editeur
+								<ELSE/>
+									<IF COND="[#PRIVILEGE] EQ 2">
+										<MACRO NAME="PNG_UTILISATEUR_VERT"><br />R&eacute;dacteur
+									<ELSE/>
+										<IF COND="[#PRIVILEGE] EQ 1">
+											<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />Visiteur
+										</IF>
+									</IF>
+								</IF>
+							</IF>
+						</IF>
+					</td>
+					<td class="ligne_admin1" align="center">[(#USERNAME|nbsp)]</td>
+					<td class="ligne_admin1" align="center">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin1" align="center">[(#EMAIL|nbsp)]</td>
+					<td class="ligne_admin1" align="center">
+						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
+							<DO>
+								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
+							</DO>
+				        </LOOP>
+					</td>	
+					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+						<div>
+							|&nbsp;<a href="user.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+							<a href="user.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+						</div>
+					</td>
+				<ELSE/>
+					<td class="ligne_admin2" align="center">
+						<IF COND="[#PRIVILEGE] EQ 64">
+							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
+						<ELSE/>
+							<IF COND="[#PRIVILEGE] EQ 32">
+								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur
+							<ELSE/>
+								<IF COND="[#PRIVILEGE] EQ 4">
+									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><br />Editeur
+								<ELSE/>
+									<IF COND="[#PRIVILEGE] EQ 2">
+										<MACRO NAME="PNG_UTILISATEUR_VERT"><br />R&eacute;dacteur
+									<ELSE/>
+										<IF COND="[#PRIVILEGE] EQ 1">
+											<MACRO NAME="PNG_UTILISATEUR_GRIS"><br />Visiteur
+										</IF>
+									</IF>
+								</IF>
+							</IF>
+						</IF>
+					</td>
+					<td class="ligne_admin2" align="center">[(#USERNAME|nbsp)]</td>
+					<td class="ligne_admin2" align="center">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin2" align="center">[(#EMAIL|nbsp)]</td>
+					<td class="ligne_admin2" align="center">
+						<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND revue='[#REVUE]'"> 
+							<DO>
+								<div class="texte_info">Expire [(#EXPIRE2|date("d/m/y H:i"))] <a href="session.php?delete=[#ID]"><IF COND="[#EXPIRE2] lt time()">[supprimer]<ELSE/>[d&eacute;loguer]</IF></a></div><br />
+							</DO>
+				        </LOOP>
+					</td>	
+					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+						<div>
+							|&nbsp;<a href="user.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+							<a href="user.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+						</div>
+					</td>
+				</IF>
+			</tr>
+		</DO>
+	</LOOP>
 </table>
 
 <LOOP NAME="users_trash" TABLE="users" ORDER="nom" WHERE="trash">
-<BEFORE>
-<div align="center"><BR><b>Dans la poubelle:</b><BR></div><br>
-<TABLE WIDTH="800" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
-  <TR> 
-      <TD align="center"> 
- 	&nbsp;
-    </td>
-    <TD align="center"> 
-      <div align="center"><b>Nom d'utilisateur</b></div>
-    </td>
-    <TD align="center"> 
-      <div align="center"><b>Nom</b></div>
-    </td>
-    <td> 
-      <div align="center">&nbsp;</div>
-    </td>
-    <td> 
-      <div align="center">&nbsp;</div>
-    </td>
-  </tr></BEFORE>
-  <TR> 
-  <TD align="center" align="middle"><img src="images/triangle.gif" alt="Périodes" border="0"></td>
-    <td> 
-      <div align="center"><font color="navy"><b>[(#USERNAME|nbsp)]</b></font></div>
-    </td>
-    <td> 
-      <div align="center">[#NOM]</div>
-    </td>
-    <td> 
-      <div align="center"><a href="user.php?id=[#ID]&restore=1">Récup&eacute;rer</a></div>
-    </td>
-    <td><a href="user.php?id=[#ID]&delete=2">Supprimer définitivement</a></td>
-  </tr><AFTER>
-</TABLE>
-</AFTER>
+	<BEFORE>
+		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
+			<tr>
+				<td colspan="3" class="message_erreur">Dans la corbeille</td>
+			</tr>
+			<tr>
+				<td class="texte_noir_gras">Nom d'utilisateur</td>
+				<td class="texte_noir_gras">Nom</td>
+				<td>&nbsp;</td>
+			<tr>
+	</BEFORE>
+	<DO>
+		<tr>
+			<IF COND="[#COUNT] % 2">
+				<td class="ligne_admin1">[(#USERNAME|nbsp)]</td>
+				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1" style="color: #CC9933;" align="right">
+					<div>|&nbsp;<a href="user.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
+					<a href="user.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+				</td>
+			<ELSE/>
+				<td class="ligne_admin2">[(#USERNAME|nbsp)]</td>
+				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<div>|&nbsp;<a href="user.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
+					<a href="user.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
+				</td>
+			</IF>
+		</tr>
+	</DO>
+	<AFTER></table></AFTER>
 </LOOP>
-
-
-</CENTER>
-
-</td></tr>
-
-</TABLE>
+<div class="pied_de_formulaire">
+	<form>
+		<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php?id=[#ID]'">
+	</form>
+</div>
 <MACRO NAME="CLOSE_HTML">

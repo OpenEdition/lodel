@@ -3,27 +3,38 @@
 <title>Import</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
-<TABLE WIDTH="600" CELLPADDING="5" CELLSPACING="0" BORDER="0" ALIGN="CENTER">
-<TR>
-	<td>
-		<br><br><br>
-		Il est recommandé de faire une sauvegarde de la base de données avant d'en importer une nouvelle:
-		<a href="backup.php">Sauvegarde</a>
-		<br><br><br>
-		Pour importer une base de donnée, vous devez charger le fichier tar.gz  sur le serveur dans le repertoire de [#REPERTOIRE].
-	</td>
-</tr>
-<TR>
-	<td>
-		Liste des fichiers disponibles:<P>
-		<LOOP NAME="fichiers">
-			>> 	<strong>[#NOM]</strong> >> 
-			<a href="import.php?fichier=[(#NOM|urlencode)]">
-			Importer
-		</a>
-		<BR>
-</LOOP>
-	</td>
-</tr>
-</TABLE>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Importation des donn&eacute;es</td>
+	</tr>
+</table>
+
+<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td>
+			<br /><br />
+			<span class="texte_intitule">Il est recommand&eacute; de faire une sauvegarde de la base de donn&eacute;es avant d'en importer une nouvelle :</span>
+			<div><a href="backup.php">SAUVEGARDE DE LA BASE DE DONNEES</a></div>
+			<br /><br /><br />
+			Pour importer une base de donn&eacute;es, vous devez charger le fichier tar.gz  sur le serveur dans le r&eacute;pertoire de [#REPERTOIRE].
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p>Liste des fichiers disponibles:</p>
+			<LOOP NAME="fichiers">
+				<DO>
+					<div>>>	<strong>[#NOM]</strong> >> <a href="import.php?fichier=[(#NOM|urlencode)]">Importer</a></div><br />
+				</DO>
+			</LOOP>
+		</td>
+	</tr>
+</table>
+<form>
+	<div class="pied_de_formulaire">
+		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />
+	</div>
+</form>
+
 <MACRO NAME="CLOSE_HTML">  

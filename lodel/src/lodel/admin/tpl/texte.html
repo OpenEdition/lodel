@@ -17,12 +17,12 @@
 	<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td><span class="texte_intitule">Nom :</span></td>
+			<td class="texte_intitule">Nom :</td>
 			<td><input size="60" type="text" name="nom" value="[#NOM]"></td>
 		</tr>
 		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
 		<tr>
-			<td><span class="texte_intitule">Texte :</span></td>
+			<td class="texte_intitule">Texte :</td>
 			<td><textarea name="texte" rows="20" cols="60">[#TEXTE]</textarea></td>
 		</tr>
 		<!--[(#ERREUR_ABREV|true)<TD CLASS="erreur">Il faut preciser une abreviation</td>]-->

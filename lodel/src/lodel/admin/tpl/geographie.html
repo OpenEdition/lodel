@@ -16,21 +16,21 @@
 	<input type="hidden" name="id" value="[#ID]">
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td><span class="texte_intitule">Nom :</span></td>
+			<td class="texte_intitule">Nom :</td>
 			<td><input size="30" type="text" name="nom" value="[#NOM]"></td>
 		</tr>
 		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom !</td></tr>]
 		<tr>
-			<td><span class="texte_intitule">Abr&eacute;viation :</span></td>
+			<td class="texte_intitule">Abr&eacute;viation :</td>
 			<td><input size="30" type="text" name="abrev" value="[#ABREV]"></td>
 		</tr>
 		[(#ERREUR_ABREV|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser une abr&eacute;viation !</td></tr>]
 		<tr>
-			<td><span class="texte_intitule">Zone g&eacute;ographique parente :</span></td>
+			<td class="texte_intitule">Zone g&eacute;ographique parente :</td>
 			<td><select name="parent"><option value="0">--</option><? make_selection_geographie(); ?></select></td>
 		</tr>
 		<tr>
-			<td><span class="texte_intitule">Langue :</span></td>
+			<td class="texte_intitule">Langue :</td>
 			<td><select name="lang"><? makeselectlangues_nevernil() ?></select></td>
 		</tr>
 	</table>
