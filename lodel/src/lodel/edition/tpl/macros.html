@@ -1284,6 +1284,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS_PUBLIE">
+<!-- MACRO OBSLOETE !!! -->
 	<div align="center">
 		<span class="texte_trespetit_centre">
 			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
@@ -1314,6 +1315,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS_DEPUBLIE">
+<!-- MACRO OBSLOETE !!! -->
 	<div align="center">
 		<span class="texte_trespetit_centre">
 			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
@@ -1599,6 +1601,20 @@
 	</script>
 </DEFMACRO>
 
+<DEFMACRO NAME="JS_POPUP">
+	<!-- exemple de Javascript pour un Rollover -->
+	<script type="text/javascript">
+	<!--
+	 function popup(url,nom) {
+	 	// remove an attribute if you don't want it to show up
+		// options : menubar,toolbar,location,directories,status,scrollbars,resizable,width=640,height=480
+		 var fenetre = window.open(url,"","scrollbars,width=800,height=600");
+	 }
+	//-->
+	</script>
+</DEFMACRO>
+
+
 <DEFMACRO NAME="CHEMIN_PARCOURU">
 	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
 		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
@@ -1670,7 +1686,8 @@
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT_HORS_REGROUPEMENT">
 	<div class="ligne_ajouter">
 		<MACRO NAME="PNG_MOINS">
-		<a href="chargement.php?id=[#ID]">Ajouter un document (hors regroupement)</a>
+		<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (hors regroupement)</a>
+		<!--<a href="chargement.php?id=[#ID]">Ajouter un document (hors regroupement)</a>-->
 	</div>
 </DEFMACRO>
 
@@ -1681,7 +1698,8 @@
 		<div class="ligne_ajouter_document_dans_un_regroupement2">
 	</IF>
 		<MACRO NAME="PNG_MOINS">
-		<a href="chargement.php?id=[#ID]">Ajouter un document (dans le regroupement)</a>
+		<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (dans le regroupement)</a>
+		<!--<a href="chargement.php?id=[#ID]">Ajouter un document (dans le regroupement)</a>-->
 		</div>
 </DEFMACRO>
 
@@ -1739,6 +1757,36 @@
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
+		</IF>
+	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTONS_STATUT_PUBLICATION">
+	<div class="action_formulaire">
+		<span style="color:black;">Changer le Statut&nbsp;:&nbsp;&nbsp;</span>
+		<IF COND="[#STATUS]==-32">
+			|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+			|&nbsp;<a href="status.php?publication=[#ID]&status=pret">Prête à publiée</a>&nbsp;
+			|&nbsp;<span class="inactif">Publiée</span>&nbsp;
+			|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+		</IF>
+		<IF COND="[#STATUS]==-1">
+			|&nbsp;<a href="status.php?publication=[#ID]&status=brouillon">Brouillon</a>&nbsp;
+			|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
+			|&nbsp;<span class="inactif">Publiée</span>&nbsp;
+			|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
+		</IF>
+		<IF COND="[#STATUS]==1">
+			|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+			|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
+			|&nbsp;<span class="inactif">Publiée</span>&nbsp;
+			|&nbsp;<a href="status.php?publication=[#ID]&status=protege">Publiée protégée</a>&nbsp;|
+		</IF>
+		<IF COND="[#STATUS]==32">
+			|&nbsp;<span class="inactif">Brouillon</span>&nbsp;
+			|&nbsp;<span class="inactif">Prête à publiée</span>&nbsp;
+			|&nbsp;<a href="status.php?publication=[#ID]&status=deprotege">Publiée</a>&nbsp;
+			|&nbsp;<span class="inactif">Publiée protégée</span>&nbsp;|
 		</IF>
 	</div>
 </DEFMACRO>
@@ -2103,6 +2151,13 @@
 	<img src="[#SHAREURL]/images/picto_infos_parent.png" class="picto_gauche" width="24" height="31" />
 </DEFMACRO>
 
+<DEFMACRO NAME="PNG_PICTO_POPUP_EDITION">
+	<img src="[#SHAREURL]/images/picto_popup_edition.png" class="picto_gauche" width="60" height="69" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">
+	<img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" class="picto_gauche" width="4" height="15" />
+</DEFMACRO>
 <!-- ************************************** Fin Rajout intégration maquette ************************************** -->
 
 <DEFMACRO NAME="GIF_PUBLIE">
