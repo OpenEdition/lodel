@@ -221,9 +221,9 @@ if ($tache=="createtables") {
 
   if ($servoourl && $servoourl!="off") {
     $text.="\n";
-    $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','$servoourl','32','1');\n";
-    $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
-    $text.="INSERT INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
+    $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoourl','url','$servoourl','32','1');\n";
+    $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoousername','s','$servoousername','32','1');\n";
+    $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
   }
 
 #  if (file_exists(LODELROOT."lodel/install/inserts-site.sql")) {
@@ -309,6 +309,18 @@ if ($tache=="createrep") {
     }
     @chmod($dir,0777 & octdec($filemask));
   }
+  // on essaie d'ecrire dans tpl si root
+  if ($context[chemin]=="/") {
+    if (!@touch(LODELROOT."tpl/testecriture")) {
+      $context[erreur_tplaccess]=1;
+      require ($home."calcul-page.php");
+      calcul_page($context,"site-createrep");
+      return;
+    } else {
+      unlink(LODELROOT."tpl/testecriture");
+    }
+    //
+  }
   $tache="fichier";
 }
 //
@@ -354,7 +366,11 @@ if ($tache=="fichier") {
     @chmod ($siteconfigdest,0666 & octdec($GLOBALS[filemask]));
   }
   // ok siteconfig est copie.
-  install_fichier($root,LODELROOT."$versionrep/src",LODELROOT);
+  if ($context[chemin]=="/") { // c'est un peu sale ca.
+    install_fichier($root,"$versionrep/src",LODELROOT);
+  } else {
+    install_fichier($root,"../$versionrep/src",LODELROOT);
+  }
 
   // ok on a fini, on change le statut du site
   mysql_select_db($GLOBALS[database]);
@@ -414,6 +430,7 @@ function install_fichier($root,$homesite,$homelodel)
       if (!file_exists($dest1)) {
 	$toroot=preg_replace(array("/^\.\//","/([^\/]+)\//","/[^\/]+$/"),
 			     array("","../",""),"$dirdest/$arg1");
+
 #    print "3 dirdest:$dirdest dirsource:$dirsource toroot:$toroot arg1:$arg1<br>\n";
 	slink("$toroot$dirsource/$arg1",$dest1);
       }
@@ -448,7 +465,10 @@ function slink($src,$dest) {
   if (file_exists($dest) && file_get_contents($dest)==file_get_contents($src)) return;
   // le lien n'existe pas ou on n'y accede pas.
   @unlink($dest); // detruit le lien s'il existe
-  symlink($src,$dest);
+  if (!(@symlink($src,$dest))) {
+    @chmod(basename($dest),0777 & octdec($GLOBALS[filemask]));
+    symlink($src,$dest);
+  }
   if (!file_exists($dest)) die ("impossible d'acceder au fichier $src via le lien symbolique $dest");
 }
 
@@ -485,7 +505,10 @@ function mycopy($src,$dest)
    if (file_exists ($dest) && file_get_contents($dest)==file_get_contents($src)) return;
 
    if (file_exists ($dest)) unlink($dest);
-   copy($src,$dest);
+   if (!(@copy($src,$dest))) {
+     @chmod(basename($dest),0777 & octdec($GLOBALS[filemask]));
+     copy($src,$dest);
+   }
    @chmod($dest,0666 & octdec($filemask));
 }
 

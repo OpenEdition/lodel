@@ -29,7 +29,12 @@
 
 if (!file_exists("lodelconfig.php")) { header("location: lodeladmin/install.php"); exit; }
 
-require ("lodelconfig.php");
+
+if (file_exists("siteconfig.php")) {
+  require ("siteconfig.php");
+} else {
+  require ("lodelconfig.php");
+}
 require_once ($home."auth.php");
 authenticate();
 

@@ -63,7 +63,6 @@ if ($option1) $installoption="1";
 if ($option2) $installoption="2";
 
 
-
 //
 // choix de la plateforme
 // Copie le fichier lodelconfig choisi dans le CACHE
@@ -148,6 +147,8 @@ if ($tache=="admin") {
 }
 
 $protecteddir=array("lodel$versionsuffix",
+		    "CACHE",
+		    "tpl",
 		    "lodeladmin/CACHE",
 		    "lodeladmin/tpl");
 
@@ -237,7 +238,8 @@ if (!$tache) {
 //
 
 // les fonctions de tests existent, donc on peut faire des tests sur les droits
-$dirs=array("lodeladmin/CACHE"=>7,
+$dirs=array("CACHE"=>7,
+	    "lodeladmin/CACHE"=>7,
 	    "lodeladmin/tpl"=>5,
 	    "lodel$versionsuffix"=>5,
 	    "lodel$versionsuffix/install"=>5,
@@ -265,8 +267,11 @@ foreach ($dirs as $dir => $mode) {
 //
 // Check PHP has the needed function 
 //
-if (!function_exists("utf8_encode")) {
-  $erreur[functions]=array("utf8_encode");
+$erreur[functions]=array();
+foreach(array("utf8_encode","mysql_connect") as $fct) {
+  if (!function_exists($fct)) array_push($erreur[functions],$fct);
+}
+if ($erreur[functions]) {
   if (!(include ("tpl/install-php.html"))) problem_include ("install-php.html");
   return;
 }
@@ -308,6 +313,7 @@ if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
 // essaie la connection a la base de donnée
 //
 
+
 if (!$dbusername && !$dbhost) {
   if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
   return;
@@ -316,6 +322,7 @@ if (!$dbusername && !$dbhost) {
   if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
   return;
 }
+
 
 // on cherche si on a une database
 
@@ -335,6 +342,7 @@ $sitesexistsrequest="SELECT id,statut,nom FROM $GLOBALS[tableprefix]sites LIMIT 
 
 if (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
   $erreur_usedatabase=1;
+
   if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
   return;
 } elseif (!@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
