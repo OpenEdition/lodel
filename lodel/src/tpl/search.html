@@ -76,7 +76,7 @@
 		</div>
 	</div>
 	<ELSE/>
-	<LOOP NAME="search">
+	<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
 	<BEFORE>
 	<h1 class="accueil">
 			<MACRO NAME="NOM_SITE">
@@ -114,6 +114,36 @@
 		
 		</div>
 	</DO>
+	<AFTER>
+	<LOOP NAME="affiche_pages">
+		<BEFORE>
+			<div class="pagination" style="text-align : center ; margin : 10px 50px 10px 50px ;  padding : 20px ; border-top : 1px solid #CC9933 ">
+			<IF COND="[#PREVIOUSURL]">
+			<a href="[#PREVIOUSURL]" title="Page précédente">&lt;&lt;</a>
+		</IF>
+			
+		</BEFORE>
+		<DO>
+			<IF COND="[#URLPAGE] NE ''">
+				<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#NUMPAGE]">
+			<ELSE/>
+				<span class="currentpage">
+			</IF>
+			[#NUMPAGE]
+			<IF COND="[#URLPAGE] NE ''">
+				</a>
+			<ELSE/>
+				</span>
+			</IF>
+		</DO>
+		<AFTER>
+		<IF COND="[#NEXTURL]">
+			<a href="[#NEXTURL]" title="Page suivante">&gt;&gt;</a>
+		</IF>
+			</div>
+		</AFTER>
+		</LOOP>
+	</AFTER>
 	<ALTERNATIVE>
 	<h1 class="accueil">
 			<MACRO NAME="NOM_SITE"> 

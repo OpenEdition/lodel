@@ -177,7 +177,12 @@
 <span  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
 <fieldset class="searchfieldset">
 <legend>Recherche avancée</legend>
-
+<select id="qnbresults" name="qnbresults" class="searchfields">
+	<option value="10" <IF COND="[#QNBRESULTS] EQ 10">selected="selected"</IF>>10 résultats par page</option>
+	<option value="20" <IF COND="[#QNBRESULTS] EQ 20">selected="selected"</IF>>20 résultats par page</option>
+	<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 résultats par page</option>
+	<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 résultats par page</option>
+</select>
 <LOOP NAME="listtypes" TABLE="types" WHERE="search=1"ORDER="rank" >
 <BEFORE>
 	&nbsp;Type :&nbsp;
