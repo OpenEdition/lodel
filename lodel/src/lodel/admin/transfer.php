@@ -658,12 +658,12 @@ function isotoutf8 ()
 	} else {
 	  array_push($where,$name."='$valeurs[$i]'");
 	}
-      // S'il y a une modification à faire on lance la requete
-	if($set) {
-	  $requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
-	  if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die(mysql_error()); }
-	}
       } // parcourt les champs
+      // S'il y a une modification à faire on lance la requete
+      if($set) {
+	$requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
+	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die(mysql_error()); }
+      }
     } // parcourt les lignes
   } // parcourt les tables
   return $report;
