@@ -197,13 +197,31 @@
 	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
 		<DO>
 			<IF COND="[#NBDOCUMENTS]">
-				<span class="inactif">Associé à [#NBDOCUMENTS] documents</span>
+				<span class="inactif">
+					<IF COND="[#NBDOCUMENTS] gt 1">
+						Supprimer (Associé à [#NBDOCUMENTS] documents)
+					<ELSE/>
+						Supprimer (Associé à [#NBDOCUMENTS] document)
+					</IF>
+				</span>
 			<ELSE/>
 				<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
 			</IF>
 		</DO>
 	</LOOP>
 </DEFMACRO>
+
+<!-- Macro servant à typedoc.html et typepubli.html     -->
+<DEFMACRO NAME="CHOIX_TYPES_PARENTS">
+	<u>Type de publication et documents<br /> qui peuvent contenir ce type de documents :</u><br />
+	<LOOP NAME="types_parents" TABLE="typeentites_typeentites" WHERE="idtypeentite='[#ID]' AND idtypeentite2=0">
+		<DO><input type="checkbox" name="typeentite[0]" checked></DO>
+		<ALTERNATIVE><input type="checkbox" name="typeentite[0]"></ALTERNATIVE>
+	</LOOP>
+	(base)<br />
+	<MACRO NAME="TYPE_ENTITES">
+</DEFMACRO>
+
 <!-- ************************************************** -->
 
 <!-- ************************************** Rajout intégration maquette ************************************** -->

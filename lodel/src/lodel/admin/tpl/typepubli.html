@@ -54,19 +54,7 @@
 		[(#ERREUR_TPLCREATE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 		  <tr>
 		    <td rowspan="2">
-<!-- debut de la macro -->
-		    	<u>Type de publication et documents<br /> qui peuvent contenir ce type de documents :</u><br />
-			  <LOOP NAME="type_parent" TABLE="typeentites_typeentites" WHERE="idtypeentite='[#ID]' AND idtypeentite2=0">
-			    <DO>
-			      <input type="checkbox" name="typeentite[0]" checked>
-			    </DO>
-			    <ALTERNATIVE>
-			      <input type="checkbox" name="typeentite[0]">
-			    </ALTERNATIVE>
-			  </LOOP>
-			    (base)<br />
-			      <MACRO NAME="TYPE_ENTITES">
-<!-- fin de la macro de la macro -->
+				<MACRO NAME="CHOIX_TYPES_PARENTS">
 		    </td>
 		    <td valign="top">
 		    	<u>Index disponible pour ce type de document :</u><br /><br />
