@@ -73,7 +73,7 @@
 		</span>
 	</div>
 		
-	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="status gt 0" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
+	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="statut gt 0" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
 		<DO>
 			<div class="afficherdocument">
 				<a href="sommaire.html?id=[#ID]">
@@ -820,7 +820,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche le dernier numéro en date. (en fonction du champs date)    -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="status gt 0" LIMIT="0,1">
+	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="statut gt 0" LIMIT="0,1">
 		<DO>
 			<a class="titre2" href="sommaire.html?id=[#ID]">
 				Dernier numéro publié : <br />
@@ -843,7 +843,7 @@
 <!-- (en fonction du champ date de la table publication) -->
 <!-- *************************************************** -->
 	<!--<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">-->	
-	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="status gt 0" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			<div class="extrait">
@@ -869,7 +869,7 @@
 <!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status gt 0" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<div class="titre1">
 				<a class="titre1" href="sommaire.html?id=[#ID]">
@@ -895,7 +895,7 @@
 <!-- <MACRO NAME="PRESENTER_PUBLICATION">                               -->
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="status gt 0" WHERE="type='numero'" LIMIT="0,1">
+	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</DO>
@@ -908,7 +908,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche le dernier thème en date. (en fonction du champs date)     -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="status gt 0" WHERE="type='theme'" LIMIT="0,1">
+	<LOOP NAME="le_dernier_theme" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='theme'" LIMIT="0,1">
 		<DO>
 			<a href="sommaire.html?id=[#ID]">
 				[#NOM]

@@ -8,7 +8,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 $entreetable="$GLOBALS[tp]entrees";
 $typeentreetable="$GLOBALS[tp]typeentrees";
-$result=mysql_query ("SELECT $entreetable.*, tpl FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' AND $entreetable.status>0 AND $typeentreetable.status>0") or die (mysql_error());
+$result=mysql_query ("SELECT $entreetable.*, tpl FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' AND $entreetable.statut>0 AND $typeentreetable.statut>0") or die (mysql_error());
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));
 

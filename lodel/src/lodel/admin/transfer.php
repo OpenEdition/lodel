@@ -10,6 +10,19 @@ $report="";
 if ($confirm) {
   $tables=gettables();
   do { // block de control
+
+    foreach (array_keys($tables) as $table) {
+      $result=mysql_query("SHOW CREATE TABLE $table") or die(mysql_error());
+      if (!mysql_num_rows($result)) { $err="La requete \"SHOW CREATE TABLE $table\" ne renvoie rien"; break; }
+      list($t,$create)=mysql_fetch_row($result);
+      if (preg_match("/^\s*['`]status['`](.*),$/m",$create,$result)) {
+	mysql_query("ALTER TABLE $table CHANGE status statut $result[1]") or die(mysql_error());
+	$report.="change status en statut dans $table<br />\n";
+      }
+    }
+
+
+
     // est-ce que la table des indexhs exists ?
     // on renome
     if ($tables["$GLOBALS[tp]indexls"]) { // il faut modifier et  renomer
@@ -41,7 +54,7 @@ ALTER TABLE _PREFIXTABLE_documents_indexls CHANGE iddocument identite INT UNSIGN
 ALTER TABLE _PREFIXTABLE_indexls CHANGE type	idtype		TINYINT DEFAULT 0 NOT NULL;
 ALTER TABLE _PREFIXTABLE_indexls ADD INDEX index_idtype (idtype);
 # change le type des motcles permanents
-UPDATE _PREFIXTABLE_indexls SET status=32, idtype=2 WHERE idtype=3;
+UPDATE _PREFIXTABLE_indexls SET statut=32, idtype=2 WHERE idtype=3;
 # ok c est bon, on peut renomer
 DROP TABLE IF EXISTS _PREFIXTABLE_entrees;
 RENAME TABLE _PREFIXTABLE_indexls TO _PREFIXTABLE_entrees;
@@ -66,9 +79,9 @@ UPDATE _PREFIXTABLE_entrees SET lang=\'fr\' WHERE lang=\'\';
       $oldparent=array(); // contient l'ancien parent en fonction du nvx id
       while ($row=mysql_fetch_assoc($result)) {
 	myquote($row);
-	if ($row[status]>-32) $row[status]=32; // periode et geo sont permanents
+	if ($row[statut]>-32) $row[statut]=32; // periode et geo sont permanents
 	if (!$row[lang]) $row[lang]="fr";
-	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (idparent,nom,abrev,lang,idtype,ordre,status) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[status]');");
+	$err=mysql_query_cmds("INSERT INTO _PREFIXTABLE_entrees (idparent,nom,abrev,lang,idtype,ordre,statut) VALUES ('$row[parent]','$row[nom]','$row[abrev]','$row[lang]','$row[type]','$row[ordre]','$row[statut]');");
 	if ($err) break 2;
 	$newid=mysql_insert_id();
 	$convid[$row[id]]=$newid;
@@ -118,9 +131,9 @@ DROP TABLE _PREFIXTABLE_indexhs;
     if (!$tables["$GLOBALS[tp]typeentrees"]) { // il faut creer cette table, et les autres...
       if ($err=create("typeentrees")) break;
       $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','chronos','1','0','0','1','ordre','2');
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
-INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','mots','1','1','1','0','nom','1');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','chronos','1','0','0','1','ordre','2');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','geos','1','0','0','1','ordre','3');
+INSERT INTO _PREFIXTABLE_typeentrees (id,type,titre,style,tpl,tplindex,statut,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','mots','1','1','1','0','nom','1');
 ");
 	$report.="Creation de typeentrees<br>\n";
 	if ($err) break;
@@ -208,7 +221,7 @@ RENAME TABLE _PREFIXTABLE_documents_auteurs TO _PREFIXTABLE_entites_personnes;
     if (!$tables["$GLOBALS[tp]typepersonnes"]) {
 	if ($err=create("typepersonnes")) break; // recharge pour les typepersonnes
       $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,tpl,tplindex,status,ordre) VALUES('1','auteur','auteur','auteurs','auteur','auteurs','1','1');
+INSERT INTO _PREFIXTABLE_typepersonnes (id,type,titre,style,tpl,tplindex,statut,ordre) VALUES('1','auteur','auteur','auteurs','auteur','auteurs','1','1');
 ");
       if ($err) break;
       $report.="Creation de typepersonnes<br>\n";
@@ -230,8 +243,8 @@ RENAME TABLE _PREFIXTABLE_typepublis TO _PREFIXTABLE_types;
     }
     if ($tables["$GLOBALS[tp]typedocs"]) {
       $err=mysql_query_cmds('
-INSERT INTO _PREFIXTABLE_types (type,titre,tpl,status,classe,tplcreation)
-          SELECT nom,nom,tpl,status,"documents","chargement" FROM _PREFIXTABLE_typedocs;
+INSERT INTO _PREFIXTABLE_types (type,titre,tpl,statut,classe,tplcreation)
+          SELECT nom,nom,tpl,statut,"documents","chargement" FROM _PREFIXTABLE_typedocs;
 DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
 ');
       if ($err) break;
@@ -267,12 +280,12 @@ DROP TABLE IF EXISTS _PREFIXTABLE_typedocs;
       if ($err=create("entites")) break;
       // on ajoute l'idparent pour pouvoir faire le traitement tranquillement ensuite
       $err=mysql_query_cmds('
-INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,iduser,groupe,ordre,status)
-         SELECT _PREFIXTABLE_documents.id,_PREFIXTABLE_documents.publication+'.$offset.',_PREFIXTABLE_types.id,_PREFIXTABLE_documents.titre,user,1,_PREFIXTABLE_documents.ordre,_PREFIXTABLE_documents.status FROM _PREFIXTABLE_documents,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_documents.type;
+INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,iduser,groupe,ordre,statut)
+         SELECT _PREFIXTABLE_documents.id,_PREFIXTABLE_documents.publication+'.$offset.',_PREFIXTABLE_types.id,_PREFIXTABLE_documents.titre,user,1,_PREFIXTABLE_documents.ordre,_PREFIXTABLE_documents.statut FROM _PREFIXTABLE_documents,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_documents.type;
 ALTER TABLE _PREFIXTABLE_documents CHANGE id identite	INT UNSIGNED DEFAULT 0 NOT NULL  UNIQUE;
 UPDATE _PREFIXTABLE_publications SET parent=parent+'.$offset.' WHERE parent>0;
-INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,groupe,ordre,status)
-         SELECT _PREFIXTABLE_publications.id+'.$offset.',_PREFIXTABLE_publications.parent,_PREFIXTABLE_types.id,_PREFIXTABLE_publications.nom,1,_PREFIXTABLE_publications.ordre,_PREFIXTABLE_publications.status FROM _PREFIXTABLE_publications,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_publications.type;
+INSERT INTO _PREFIXTABLE_entites (id,idparent,idtype,nom,groupe,ordre,statut)
+         SELECT _PREFIXTABLE_publications.id+'.$offset.',_PREFIXTABLE_publications.parent,_PREFIXTABLE_types.id,_PREFIXTABLE_publications.nom,1,_PREFIXTABLE_publications.ordre,_PREFIXTABLE_publications.statut FROM _PREFIXTABLE_publications,_PREFIXTABLE_types WHERE _PREFIXTABLE_types.type=_PREFIXTABLE_publications.type;
 ALTER TABLE _PREFIXTABLE_publications CHANGE id identite	INT UNSIGNED DEFAULT 0 NOT NULL  UNIQUE;
 UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 ');
@@ -281,10 +294,10 @@ UPDATE _PREFIXTABLE_publications SET identite=identite+'.$offset.';
 
       // on commence par les types de document annexes
       $err=mysql_query_cmds("
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALUES('documentannexe-lienfichier','sur un fichier','documentannexe-lienfichier','2','documents',32);
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALUES('documentannexe-liendocument','sur un document interne','documentannexe-liendocument','3','documents',32);
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALUES('documentannexe-lienpublication','sur une publication interne','documentannexe-lienpublication','5','documents',32);
-INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALUES('documentannexe-lienexterne','sur un site externe','documentannexe-lien','6','documents',32);
+INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienfichier','sur un fichier','documentannexe-lienfichier','2','documents',32);
+INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-liendocument','sur un document interne','documentannexe-liendocument','3','documents',32);
+INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienpublication','sur une publication interne','documentannexe-lienpublication','5','documents',32);
+INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,statut) VALUES('documentannexe-lienexterne','sur un site externe','documentannexe-lien','6','documents',32);
 ");
       if ($err) break;
 
@@ -302,7 +315,7 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
 	myquote($row);
 	$idtype=$idtypes[$row[type]];
 	if (!$idtype) { $err="Probleme de detection du type de documentsannexes<br>"; break; }
-	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_entites (idparent,idtype,nom,ordre,status) VALUES ('$row[iddocument]','$idtype','$row[titre]','$row[ordre]','$row[status]')");
+	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_entites (idparent,idtype,nom,ordre,statut) VALUES ('$row[iddocument]','$idtype','$row[titre]','$row[ordre]','$row[statut]')");
 	if ($err) break;
 	$id=mysql_insert_id();
 	$err=mysql_query_cmd("INSERT INTO _PREFIXTABLE_documents (identite,titre,commentaire,lien) VALUES ('$id','$row[titre]','$row[commentaire]','$row[lien]')");
@@ -331,13 +344,13 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
       } while ($idparents);
       $report.="Creation de relations et calcul des parentes<br>";
       $fields=getfields("documents");
-      foreach (array("type","maj","status","ordre","groupe","user","publication") as $f) {
+      foreach (array("type","maj","statut","ordre","groupe","user","publication") as $f) {
 	if ($fields[$f]) {
 	  $err=mysql_query_cmds("ALTER TABLE _PREFIXTABLE_documents DROP $f;");
 	}
       }
       $fields=getfields("publications");
-      foreach (array("id","parent","type","maj","status","ordre","groupe","nom") as $f) {
+      foreach (array("id","parent","type","maj","statut","ordre","groupe","nom") as $f) {
 	if ($fields[$f]) {
 	  $err=mysql_query_cmds("ALTER TABLE _PREFIXTABLE_publications DROP $f;");
 	}
@@ -373,14 +386,14 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
       require_once($home."champfunc.php");
       
       // creer les champs dans les tables correspondantes
-      $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  $GLOBALS[tp]champs.status>0") or die (mysql_error());
+      $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  $GLOBALS[tp]champs.statut>0") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
 	$alter=$fields[$row[classe]][$row[nom]] ? "MODIFY" : "ADD";
 	mysql_query("ALTER TABLE $GLOBALS[tp]$row[classe] $alter $row[nom] ".$sqltype[$row[type]]) or die (mysql_error());
       }
 
       // importe dans les documents
-      $fields=getfields("documents");
+      $fields=getfields("$GLOBALS[tp]documents");
       unset($fields[identite]); // enleve identite
       unset($fields[meta]); // enleve meta
       $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents") or die (mysql_error());
@@ -460,9 +473,12 @@ function gettables()
   // recupere la liste des tables
   $result=mysql_list_tables($GLOBALS[currentdb]);
   $tables=array();
-  while ($row = mysql_fetch_row($result)) $tables[$row[0]]=TRUE;
+  while (list($table) = mysql_fetch_row($result)) {
+    $tables[$table]=TRUE;
+  }
   return $tables;
 }
+
 
 function getfields($table)
 

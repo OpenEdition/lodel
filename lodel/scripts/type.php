@@ -16,7 +16,7 @@ if ($id>0 && ($delete || $restore)) {
   return;
 }
 
-$critere.=" AND status>0";
+$critere.=" AND statut>0";
 
 require($home."typetypefunc.php");
 
@@ -26,7 +26,7 @@ require($home."typetypefunc.php");
 
 if ($id>0 && $dir) {
   # cherche le parent
-  chordre("types",$id,"status>0",$dir);
+  chordre("types",$id,"statut>0",$dir);
   back();
 }
 //
@@ -43,14 +43,14 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     lock_write("types","typeentites_typeentrees","typeentites_typepersonnes");
-    if ($id>0) { // il faut rechercher le status
-      $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tp]types WHERE id='$id'") or die (mysql_error());
-      list($status,$ordre)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut
+      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]types WHERE id='$id'") or die (mysql_error());
+      list($statut,$ordre)=mysql_fetch_array($result);
     } else {
-      $status=1;
+      $statut=1;
       $ordre=get_ordre_max("types");
     }
-    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledit,tplcreation,status,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledit]','$context[tplcreation]','$status','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]types (id,type,titre,classe,tpl,tpledit,tplcreation,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$classe','$context[tpl]','$context[tpledit]','$context[tplcreation]','$statut','$ordre')") or die (mysql_error());
 
     if ($id) {
       typetypes_delete("idtypeentite='$id'");

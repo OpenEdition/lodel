@@ -68,7 +68,7 @@
 						</div>
 			
 			<!-- Boucle permettant d'afficher les mots-clefs -->
-						<LOOP NAME="motcles" TABLE="entrees" WHERE="substring(nom,1,1)='[#LETTRE]' AND type='motcle' AND status gt 0" ORDER="[#TYPE_TRI]">
+						<LOOP NAME="motcles" TABLE="entrees" WHERE="substring(nom,1,1)='[#LETTRE]' AND type='motcle' AND statut gt 0" ORDER="[#TYPE_TRI]">
 							<DO>
 								<div class="afficherdocument">
 									<a href="mot.html?id=[#ID]">

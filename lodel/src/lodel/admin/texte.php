@@ -12,7 +12,7 @@ $id=intval($id);
 if ($id>0) {
   $critere="id='$id'";
 } else $critere="id='$id'";
-if (!$restore) $critere.=" AND status>0";
+if (!$restore) $critere.=" AND statut>0";
 
 if ($id>0 && ($delete || $restore)) { 
   include ($home."trash.php");

@@ -11,23 +11,7 @@ include_once($home."champfunc.php");
 
 
 $id=intval($id);
-$critere=$id>0 ? "$GLOBALS[tp]champs.id='$id'" : "";
-
-//
-// supression et restauration
-//
-if ($id>0 && ($delete || $restore)) { 
-  $delete=2; // destruction complete;
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND $critere") or die (mysql_error());
-  list($nom,$classe)=mysql_fetch_row($result);
-  if (!$nom) die("ERROR: internal error when deleting a field");
-  mysql_query("ALTER TABLE $GLOBALS[tp]$classe DROP COLUMN $nom") or die (mysql_error());
-  include ($home."trash.php");
-  treattrash("champs",$critere);
-  require_once($home."cachefunc.php");
-  removefilesincache(".","../edition","../..");
-  return;
-}
+$critere=$id ? "$GLOBALS[tp]champs.id='$id'" : "";
 
 //
 // ordre
@@ -37,8 +21,27 @@ if ($id>0 && $dir) {
   # cherche le groupe
   $result=mysql_query ("SELECT idgroupe FROM $GLOBALS[tp]champs WHERE $critere") or die (mysql_error());
   list($idgroupe)=mysql_fetch_row($result);
-  chordre("champs",$id,"idgroupe='$idgroupe' AND status>-64",$dir);
+  chordre("champs",$id,"idgroupe='$idgroupe' AND statut>-64",$dir);
   back();
+}
+
+if ($id && !$adminlodel) $critere.=" AND $GLOBALS[tp]champs.statut<32";
+
+
+//
+// supression et restauration
+//
+if ($id>0 && ($delete || $restore)) { 
+  $delete=2; // destruction complete;
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND $critere") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("ERROR: The field does not exist or you are not allowed to delete it.");
+  list($nom,$classe)=mysql_fetch_row($result);
+  mysql_query("ALTER TABLE $GLOBALS[tp]$classe DROP COLUMN $nom") or die (mysql_error());
+  include ($home."trash.php");
+  treattrash("champs",$critere);
+  require_once($home."cachefunc.php");
+  removefilesincache(".","../edition","../..");
+  return;
 }
 
 
@@ -59,9 +62,10 @@ if ($edit) { // modifie ou ajoute
     lock_write("champs",$context[classe],"groupesdechamps");
 
     $alter="";
-    if ($id>0) { // il faut rechercher le status et l'ordre
-      $result=mysql_query("SELECT status,ordre,idgroupe,type,nom,filtrage FROM $GLOBALS[tp]champs WHERE id='$id'") or die (mysql_error());
-      list($status,$ordre,$oldidgroupe,$oldtype,$oldnom,$oldfiltrage)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut et l'ordre
+      $result=mysql_query("SELECT statut,ordre,idgroupe,type,nom,filtrage FROM $GLOBALS[tp]champs WHERE $critere") or die (mysql_error());
+      if (!mysql_num_rows($result)) die("ERROR: The field does not exist or you are not allowed to delete it.");
+      list($statut,$ordre,$oldidgroupe,$oldtype,$oldnom,$oldfiltrage)=mysql_fetch_row($result);
       if ($sqltype[$oldtype]!=$sqltype[$context[type]]) {
 	$alter="MODIFY";
 	if (!$confirmation) { $context[erreur_confirmation_type]=1; break; }
@@ -75,14 +79,14 @@ if ($edit) { // modifie ou ajoute
       $result=mysql_query("SELECT $GLOBALS[tp]champs.id FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND $GLOBALS[tp]champs.nom='$context[nom]' AND classe='$context[classe]'") or die (mysql_error());
       if (mysql_num_rows($result)) { $context[erreur_nom_existe]=1; break; }
       // ok, it does not exist
-      $status=1;
+      $statut=1;
       if (!$context[classe]) die ("Erreur interne. Il manque la classe dans le formulaire");
       $ordre=get_ordre_max("champs"," idgroupe='$context[idgroupe]'");
       $alter="ADD";
     }
-    if ($protege) $status=$id && $status>0 ? 32 : -32;    
+    if ($protege) $statut=$id && $statut>0 ? 32 : -32;    
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,traitement,filtrage,edition,ordre,status) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$status')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,idgroupe,style,type,condition,traitement,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[idgroupe]','$context[style]','$context[type]','$context[condition]','$context[traitement]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
@@ -99,7 +103,8 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.*,classe FROM $GLOBALS[champsgroupesjoin] WHERE  $critere AND $GLOBALS[tp]champs.status>-32") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.*,classe FROM $GLOBALS[champsgroupesjoin] WHERE  $critere AND $GLOBALS[tp]champs.statut>-32") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("ERROR: You are not allowed to delete this field.");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 } else {
   // cherche le classe.
@@ -171,7 +176,7 @@ function make_select($champ, $arr)
   if ($context[$champ]) {
     $mykey=$context[$champ];
   } elseif ($context[id]) {
-    $result=mysql_query("SELECT $champ FROM $GLOBALS[tp]champs WHERE id='$context[id]' AND status>0") or die (mysql_error());
+    $result=mysql_query("SELECT $champ FROM $GLOBALS[tp]champs WHERE id='$context[id]' AND statut>0") or die (mysql_error());
     list($mykey)=mysql_fetch_row($result);
     $mykey=htmlentities($mykey);
   }
@@ -189,7 +194,7 @@ function make_select_groupesdechamps()
   global $context;
 
   if (!$context[classe]) die ("ERROR: internal error in make_select_groupesdechamps");
-  $result=mysql_query("SELECT id,titre FROM $GLOBALS[tp]groupesdechamps WHERE classe='$context[classe]' AND status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,titre FROM $GLOBALS[tp]groupesdechamps WHERE classe='$context[classe]' AND statut>0") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$row[id]==$context[idgroupe] ? " selected" : "";
     echo "<option value=\"$row[id]\"$selected>$row[titre]</option>\n";

@@ -375,14 +375,14 @@ function traite_couple(&$text)
 
   // determine les $virgule_tags
   require_once($home."connect.php");
-  $result=mysql_query("SELECT style FROM typeentrees WHERE status>0") or die(mysql_error());
+  $result=mysql_query("SELECT style FROM typeentrees WHERE statut>0") or die(mysql_error());
   while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
-  $result=mysql_query("SELECT style FROM typepersonnes WHERE status>0") or die(mysql_error());
+  $result=mysql_query("SELECT style FROM typepersonnes WHERE statut>0") or die(mysql_error());
   while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
 
 
   // determine les $multiparagraphe_tags
-  $result=mysql_query("SELECT style FROM champs WHERE status>0") or die(mysql_error());
+  $result=mysql_query("SELECT style FROM champs WHERE statut>0") or die(mysql_error());
   while (list($style)=mysql_fetch_row($result)) $multiparagraphe_tags_arr[]=$style;
 
   $virgule_tags=join("|",$virgule_tags_arr);

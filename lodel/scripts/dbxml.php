@@ -56,13 +56,13 @@ function enregistre ($context,$text)
 
 // valeur par defaut
   $id=$context[iddocument] ? $context[iddocument] : 0;
-  $statusdocument=$context[statusdocument] ? $context[statusdocument] : -1;
+  $statutdocument=$context[statutdocument] ? $context[statutdocument] : -1;
 
   // reverifie ici que le document n'a pas un titre vide... pour pister le bug des documents vide.
   if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document avec titre vide. Envoyer un mail sur lodel-devel: $lcontext[titre]<br><br>".htmlentities($text));
 
   // ecrit dans la base de donnee le document
-  mysql_query ("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,user,status) VALUES ('$id','$context[idparent]','$lcontext[idtype]','$lcontext[titre]','$ordre','$iduser','$statusdocument')") or die (mysql_error());
+  mysql_query ("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,user,statut) VALUES ('$id','$context[idparent]','$lcontext[idtype]','$lcontext[titre]','$ordre','$iduser','$statutdocument')") or die (mysql_error());
 
   if (!$id) $id=mysql_insert_id();
 
@@ -72,9 +72,9 @@ function enregistre ($context,$text)
 
   // ajoutes les personnes, et index
 
-  $status=$statusdocument>0 ? 1 : -1;
-  enregistre_personnes($id,$vals,$index,$status);  // ajoute les personnes
-  enregistre_entrees($id,$vals,$index,$status); // indexs, etc...
+  $statut=$statutdocument>0 ? 1 : -1;
+  enregistre_personnes($id,$vals,$index,$statut);  // ajoute les personnes
+  enregistre_entrees($id,$vals,$index,$statut); // indexs, etc...
 
   unlock();
 
@@ -111,7 +111,7 @@ function extract_langue ($balises,&$vals,&$index,$defaut="")
 }
 
 
-function enregistre_personnes ($identite,&$vals,&$index,$status)
+function enregistre_personnes ($identite,&$vals,&$index,$statut)
 
 {
   // detruit les liens dans la table entites_personnes
@@ -120,7 +120,7 @@ function enregistre_personnes ($identite,&$vals,&$index,$status)
   if (!$index[personne]) return;
 
   // cree un hash avec les informations pour les index
-  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typepersonnes WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) $typepersonnes[$row[type]]=$row;
 
 
@@ -142,14 +142,14 @@ function enregistre_personnes ($identite,&$vals,&$index,$status)
     }
 
     // cherche si l'personne existe deja
-    $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]personnes WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
+    $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]personnes WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
     if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
-      list($id,$oldstatus)=mysql_fetch_array($result); // on recupere sont id et sont status
-      if ($status>0 && $oldstatus<0) { // Faut-il publier l'personne ?
-	mysql_query("UPDATE $GLOBALS[tp]personnes SET status=1 WHERE id='$id'") or die (mysql_error());
+      list($id,$oldstatut)=mysql_fetch_array($result); // on recupere sont id et sont statut
+      if ($statut>0 && $oldstatut<0) { // Faut-il publier l'personne ?
+	mysql_query("UPDATE $GLOBALS[tp]personnes SET statut=1 WHERE id='$id'") or die (mysql_error());
       }
     } else {
-      mysql_query ("INSERT INTO $GLOBALS[tp]personnes (status,nomfamille,prenom) VALUES ('$status','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tp]personnes (statut,nomfamille,prenom) VALUES ('$statut','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
       $id=mysql_insert_id();
     }
   
@@ -168,7 +168,7 @@ function enregistre_personnes ($identite,&$vals,&$index,$status)
 }
 
 
-function enregistre_entrees ($identite,&$vals,&$index,$status)
+function enregistre_entrees ($identite,&$vals,&$index,$statut)
 
 {
   // detruit les liens dans la table entites_indexhs
@@ -177,7 +177,7 @@ function enregistre_entrees ($identite,&$vals,&$index,$status)
   if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
 
   // cree un hash avec les informations pour les index
-  $result=mysql_query("SELECT id,type,newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type,newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) $typeentrees[$row[type]]=$row;
 
 #  print_r($index);
@@ -201,17 +201,17 @@ function enregistre_entrees ($identite,&$vals,&$index,$status)
     // cherche la langue dans l'attribut sinon valeur par defaut.
     $lang=($tag[attributes] && $tag[attributes][lang]) ? strtolower($tag[attributes][lang]) : "fr";
     // cherche l'id de la entree si elle existe
-    $result2=mysql_query("SELECT id,status FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0 AND idtype='$typeentree[id]'") or die(mysql_error());
+    $result2=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND statut>0 AND idtype='$typeentree[id]'") or die(mysql_error());
 
     if (mysql_num_rows($result2)) { // l'entree exists
-      list($id,$oldstatus)=mysql_fetch_array($result2);
-      if ($status>0 && $oldstatus<0) { // faut-il publier ?
-	mysql_query("UPDATE $GLOBALS[tp]entrees SET status=1 WHERE id='$id'") or die (mysql_error());	
+      list($id,$oldstatut)=mysql_fetch_array($result2);
+      if ($statut>0 && $oldstatut<0) { // faut-il publier ?
+	mysql_query("UPDATE $GLOBALS[tp]entrees SET statut=1 WHERE id='$id'") or die (mysql_error());	
       }
     } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
       // oui,il faut ajouter le mot cle
       $abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
-      mysql_query ("INSERT INTO $GLOBALS[tp]entrees (status,nom,abrev,idtype,lang) VALUES ('$status','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,lang) VALUES ('$statut','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
       $id=mysql_insert_id();
     } else {
       // non, on ne l'ajoute pas... mais il y a une erreur quelque part...

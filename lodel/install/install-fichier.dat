@@ -140,7 +140,7 @@ ln tpl/a_editer.html
 ln deplacer.php
 ln tpl/deplacer.html
 ln publi.php
-ln status.php
+ln statut.php
 
 # navigation dans la site
 

@@ -2,7 +2,7 @@
 
 
 //
-// fonction qui renvoie les valeures perennes: status, groupe, ordre, iduser
+// fonction qui renvoie les valeures perennes: statut, groupe, ordre, iduser
 //
 
 function get_variables_perennes($context,$critere) 
@@ -10,25 +10,25 @@ function get_variables_perennes($context,$critere)
 {
     $groupe= ($admin && $context[groupe]) ? intval($context[groupe]) : "groupe";
 
-    $result=mysql_query("SELECT ordre,$groupe,status,iduser FROM $GLOBALS[tp]entites WHERE $critere") or die (mysql_error());
+    $result=mysql_query("SELECT ordre,$groupe,statut,iduser FROM $GLOBALS[tp]entites WHERE $critere") or die (mysql_error());
     if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits: get_variables_perennes"); }
     return mysql_fetch_row($result);
-    // renvoie l'ordre, le groupe, le status
+    // renvoie l'ordre, le groupe, le statut
 }
 
 
 //
-// fonction qui retourne le status d'une entite
+// fonction qui retourne le statut d'une entite
 //
 
-function get_status($id) 
+function get_statut($id) 
 
 {
-    $result=mysql_query("SELECT status FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
+    $result=mysql_query("SELECT statut FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
     if (!mysql_num_rows($result)) die ("l'entites '$id' n'existe pas");
-    list ($status)=mysql_fetch_row($result);
-    return $status;
-    // renvoie l'ordre, le groupe, le status
+    list ($statut)=mysql_fetch_row($result);
+    return $statut;
+    // renvoie l'ordre, le groupe, le statut
 }
 
 
@@ -75,7 +75,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
   // check for errors and build the set
   $sets=array();
   require_once ($home."connect.php");
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.status>0 AND $GLOBALS[tp]groupesdechamps.status>0 $champcritere") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
   while (list($nom,$type,$condition)=mysql_fetch_row($result)) {
     require_once($home."traitements.php");
     if ($condition=="+" && !trim($entite[$nom])) $err=$erreur[$nom]="+";
@@ -126,13 +126,13 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
     $groupeset= ($admin && $context[groupe]) ? ", groupe=".intval($context[groupe]) : "";
     // chage type ?
     $typeset=$context[idtype] ? ",idtype='$context[idtype]'" : "";
-    // change status ?
-    $status=get_status($id);
-    if ($status<=-64 && $context[status]) {
-      $status=intval($context[status]);
-      $statusset=",status='$status' ";
+    // change statut ?
+    $statut=get_statut($id);
+    if ($statut<=-64 && $context[statut]) {
+      $statut=intval($context[statut]);
+      $statutset=",statut='$statut' ";
     }
-    mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statusset WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
     if ($grouperec && $admin) change_groupe_rec($id,$groupe);
 
     foreach ($sets as $nom=>$value) { $sets[$nom]=$nom."=".$value; }
@@ -144,13 +144,13 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
     $groupe=get_groupe($context,$idparent);
     // cherche l'ordre
     $ordre=get_ordre_max("entites","idparent='$idparent'");
-    $status=$context[status] ? intval($context[status]) : -1; // non publie par defaut
+    $statut=$context[statut] ? intval($context[statut]) : -1; // non publie par defaut
     if (!$context[idtype]) { // prend le premier venu
-      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE classe='$classe' AND status>0 ORDER BY ordre LIMIT 0,1") or die(mysql_error());
+      $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE classe='$classe' AND statut>0 ORDER BY ordre LIMIT 0,1") or die(mysql_error());
       if (!mysql_num_rows($result)) die("pas de type valide ?");
       list($context[idtype])=mysql_fetch_row($result);
     }
-    mysql_query("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[nom]','$ordre','$status','$groupe','$iduser')") or die (mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,statut,groupe,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[nom]','$ordre','$statut','$groupe','$iduser')") or die (mysql_error());
 
     require_once($home."managedb.php");
     $id=mysql_insert_id();
@@ -159,8 +159,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
     mysql_query("INSERT INTO $GLOBALS[tp]$classe (identite,".join(",",array_keys($sets)).") VALUES ('$id',".join(",",$sets).")") or die (mysql_error());
   }  
 
-  enregistre_personnes($context,$id,$status,FALSE);
-  enregistre_entrees($context,$id,$status,FALSE);
+  enregistre_personnes($context,$id,$statut,FALSE);
+  enregistre_entrees($context,$id,$statut,FALSE);
   unlock();
 
   return $id;
@@ -168,7 +168,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere,$returnonerror=T
 
 
 
-function enregistre_personnes (&$context,$identite,$status,$lock=TRUE)
+function enregistre_personnes (&$context,$identite,$statut,$lock=TRUE)
 
 {
   if ($lock) lock_write("entites_personnes","personnes");
@@ -185,14 +185,14 @@ function enregistre_personnes (&$context,$identite,$status,$lock=TRUE)
 	$bal[$var]=trim(addslashes(stripslashes(strip_tags($context[$var][$idtype][$ind]))));
       }
       // cherche si l'personne existe deja
-      $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]personnes WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'") or die (mysql_error());
+      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]personnes WHERE nomfamille='".$bal[nomfamille]."' AND prenom='".$bal[prenom]."'") or die (mysql_error());
       if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
-	list($id,$oldstatus)=mysql_fetch_array($result); // on recupere sont id et sont status
-	if ($status>0 && $oldstatus<0) { // Faut-il publier l'personne ?
-	  mysql_query("UPDATE $GLOBALS[tp]personnes SET status=1 WHERE id='$id'") or die (mysql_error());
+	list($id,$oldstatut)=mysql_fetch_array($result); // on recupere sont id et sont statut
+	if ($statut>0 && $oldstatut<0) { // Faut-il publier l'personne ?
+	  mysql_query("UPDATE $GLOBALS[tp]personnes SET statut=1 WHERE id='$id'") or die (mysql_error());
 	}
       } else {
-	mysql_query ("INSERT INTO $GLOBALS[tp]personnes (status,nomfamille,prenom) VALUES ('$status','$bal[nomfamille]','$bal[prenom]')") or die (mysql_error());
+	mysql_query ("INSERT INTO $GLOBALS[tp]personnes (statut,nomfamille,prenom) VALUES ('$statut','$bal[nomfamille]','$bal[prenom]')") or die (mysql_error());
 	$id=mysql_insert_id();
       }
 
@@ -208,7 +208,7 @@ function enregistre_personnes (&$context,$identite,$status,$lock=TRUE)
 
 
 
-function enregistre_entrees (&$context,$identite,$status,$lock=TRUE)
+function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
 
 {
   if ($lock) lock_write("entites_entrees","entrees","typeentrees");
@@ -227,7 +227,7 @@ function enregistre_entrees (&$context,$identite,$status,$lock=TRUE)
 	$entrees=preg_split("/,/",$context[autresentrees][$idtype]);
       }
     } elseif (!$entrees) continue;
-    $result=mysql_query("SELECT newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE status>0 AND id='$idtype'") or die (mysql_error());
+    $result=mysql_query("SELECT newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE statut>0 AND id='$idtype'") or die (mysql_error());
     if (mysql_num_rows($result)!=1) die ("erreur interne");
     $typeentree=mysql_fetch_assoc($result);
 
@@ -236,18 +236,18 @@ function enregistre_entrees (&$context,$identite,$status,$lock=TRUE)
       $entree=trim(addslashes(strip_tags($entree))); 
       if (!$entree) continue; // etrange elle est vide... tant pis
       // cherche l'id de la entree si elle existe
-      $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree')  AND status>0 AND idtype='$idtype'") or die(mysql_error());
+      $result=mysql_query("SELECT id,statut FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree')  AND statut>0 AND idtype='$idtype'") or die(mysql_error());
 
       #echo $entree,":",mysql_num_rows($result),"<br>";
       if (mysql_num_rows($result)) { // l'entree exists
-	list($id,$oldstatus)=mysql_fetch_array($result);
-	if ($status>0 && $oldstatus<0) { // faut-il publier ?
-	  mysql_query("UPDATE $GLOBALS[tp]entrees SET status=abs(status) WHERE id='$id'") or die (mysql_error());	
+	list($id,$oldstatut)=mysql_fetch_array($result);
+	if ($statut>0 && $oldstatut<0) { // faut-il publier ?
+	  mysql_query("UPDATE $GLOBALS[tp]entrees SET statut=abs(statut) WHERE id='$id'") or die (mysql_error());	
 	}
       } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
 	// oui,il faut ajouter le mot cle
 	$abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
-	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (status,nom,abrev,idtype,lang) VALUES ('$status','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
+	mysql_query ("INSERT INTO $GLOBALS[tp]entrees (statut,nom,abrev,idtype,lang) VALUES ('$statut','$entree','$abrev','$idtype','$lang')") or die (mysql_error());
 	$id=mysql_insert_id();
       } else {
 	$id=0;
@@ -302,7 +302,7 @@ function loop_champs($context,$funcname)
 {
   global $erreur;
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]champs WHERE idgroupe='$context[id]' AND status>0 AND edition!='' ORDER BY ordre") or die(mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]champs WHERE idgroupe='$context[id]' AND statut>0 AND edition!='' ORDER BY ordre") or die(mysql_error());
 
   $haveresult=mysql_num_rows($result)>0;
   if ($haveresult) call_user_func("code_before_$funcname",$context);
@@ -424,7 +424,7 @@ function makeselecttype($classe)
 
   if ($context[typedocfixe]) $critere="AND type='$context[typedoc]'";
 
-  $result=mysql_query("SELECT id,type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='$classe' $critere AND type NOT LIKE 'documentannexe-%'") or die (mysql_error());
+  $result=mysql_query("SELECT id,type,titre FROM $GLOBALS[tp]types WHERE statut>0 AND classe='$classe' $critere AND type NOT LIKE 'documentannexe-%'") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$context[idtype]==$row[id] ? " selected" : "";
     $nom=$row[titre] ? $row[titre] : $row[type];

@@ -24,11 +24,11 @@ if ($id>0 && ($delete || $restore)) {
 
 require($home."typetypefunc.php");
 
-$critere.=" AND status>0";
+$critere.=" AND statut>0";
 
 if ($id>0 && $dir) {
   # cherche le parent
-  chordre("typepersonnes",$id,"status>0",$dir);
+  chordre("typepersonnes",$id,"statut>0",$dir);
   back();
 }
 //
@@ -47,15 +47,15 @@ if ($edit) { // modifie ou ajoute
 
     include_once ($home."connect.php");
 
-    if ($id>0) { // il faut rechercher le status
-      $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tp]typepersonnes WHERE id='$id'") or die (mysql_error());
-      list($status,$ordre)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut
+      $result=mysql_query("SELECT statut,ordre FROM $GLOBALS[tp]typepersonnes WHERE id='$id'") or die (mysql_error());
+      list($statut,$ordre)=mysql_fetch_array($result);
     } else {
-      $status=1;
+      $statut=1;
       $ordre=get_ordre_max("typepersonnes");
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]typepersonnes (id,type,titre,style,tpl,tplindex,status,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$status','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]typepersonnes (id,type,titre,style,tpl,tplindex,statut,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$statut','$ordre')") or die (mysql_error());
     if ($id) {
       typetype_delete("typepersonne","idtypepersonne='$id'");
     } else {

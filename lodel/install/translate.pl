@@ -45,6 +45,8 @@ foreach $filename (@ARGV) {
 
   $change+=$file=~s/\[\#SUPERADMIN\]/[\#ADMINLODEL]/g;
   $change+=$file=~s/\[GIF_VISAGE_SUPERADMIN\]/[GIF_VISAGE_ADMINLODEL]/g;
+  $change+=$file=~s/\[\#STATUS\]/[\#STATUT]/g;
+
 
   next unless $change;
   print "$filename:",$change,"\n";

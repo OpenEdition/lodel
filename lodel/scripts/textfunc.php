@@ -293,7 +293,8 @@ function sizeattributs($text)
 function paranumber (&$texte)
 
 {
-  return preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span classe=\"paranum\">".(++$count)."</span>"',$texte);
+  static $paranum_count;
+  return preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span class=\"paranum\">".(++$paranum_count)."</span>"',$texte);
 
     /*
   $p=strpos($texte,"<p>");
@@ -361,7 +362,7 @@ function notes($type,&$texte)
 // fonctions pour le nettoyage de base des champs importes
 //
 
-function lodelbasic($text)
+function tocss($text)
 
 {
   global $home;

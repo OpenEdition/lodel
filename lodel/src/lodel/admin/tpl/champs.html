@@ -32,9 +32,9 @@
 		<td class="texte_noir_gras">Style</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="groupesdocument" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="status gt 0" WHERE="classe='documents'">
+	<LOOP NAME="groupesdocument" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='documents'">
 <tr><td colspan="6"><hr><h2>Groupe: [#TITRE]  ([#NOM])</h2></td></tr>
-	<LOOP NAME="champdocument" TABLE="champs" ORDER="ordre, nom" WHERE="status gt 0" WHERE="idgroupe='[#ID]'">
+	<LOOP NAME="champdocument" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
@@ -93,9 +93,9 @@
 		<td class="texte_noir_gras">Style</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="groupespublication" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="status gt 0" WHERE="classe='publications'">
+	<LOOP NAME="groupespublication" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="statut gt 0" WHERE="classe='publications'">
 <tr><td colspan="6"><hr><h2>Groupe: [#TITRE]  ([#NOM])</h2></td></tr>
-	<LOOP NAME="champpublication" TABLE="champs" ORDER="ordre, nom" WHERE="status gt 0" WHERE="idgroupe='[#ID]'">
+	<LOOP NAME="champpublication" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">

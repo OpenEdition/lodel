@@ -9,7 +9,7 @@ include_once ($home."func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
-$critere=" id='$id' AND status>0";
+$critere=" id='$id' AND statut>0";
 
 mysql_select_db($database) or die (mysql_error());
 if ($lock) { // lock
@@ -21,12 +21,12 @@ if ($lock) { // lock
   if (!$site) die ("erreur lors de l'appel de la locksite. La site est inconnue ou supprimee");
   // delogue tout le monde sauf moi.
   mysql_query ("DELETE FROM $GLOBALS[tp]session WHERE site='$site' AND iduser!='$iduser'") or die (mysql_error());
-  // change le status de la site
-  mysql_query ("UPDATE $GLOBALS[tp]sites SET status=32 WHERE $critere") or die (mysql_error());
+  // change le statut de la site
+  mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=32 WHERE $critere") or die (mysql_error());
   unlock();
 
 } elseif ($unlock) { // unlock
-  mysql_query ("UPDATE $GLOBALS[tp]sites SET status=1 WHERE $critere") or die (mysql_error());
+  mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE $critere") or die (mysql_error());
 } else { die ("lock ou unlock"); }
 
 mysql_select_db($currentdb) or die (mysql_error());

@@ -19,8 +19,8 @@ if(!$nbdocs) $nbdocs=1;  // Evite les divisions par zéro
 
 # ghi ##### if ($nbblocs) {
 // Nombre de documents en brouillon
-# ghi ##### certains de tes tests sur les status ne sont pas correctes. -32 est la limite entre brouillon et pas brouillon. Donc ici la condition est <=-32 je sais que ca marche... pour le moment. Si un jour on utilise les valeurs intermediaires tes stat ne marcheront plus... c'est pas tres grave, mais fait attention a ca parce que ce genre de chose laisse traine des incompatibilite tres difficile a debuguer.
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE status<-1") or die (mysql_error());
+# ghi ##### certains de tes tests sur les statut ne sont pas correctes. -32 est la limite entre brouillon et pas brouillon. Donc ici la condition est <=-32 je sais que ca marche... pour le moment. Si un jour on utilise les valeurs intermediaires tes stat ne marcheront plus... c'est pas tres grave, mais fait attention a ca parce que ce genre de chose laisse traine des incompatibilite tres difficile a debuguer.
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE statut<-1") or die (mysql_error());
 list($context[nbdocsbrouillons])=mysql_fetch_row($result);
 # ghi ####### cette definition est inutile car tu ne te sers q'une fois de nbdocsbrouillons, utilise donc plutot $context[nbdocsbrouillons] directement. Ca permet d'eviter de charger l'espace global. Ca permet surtout de ne pas avoir des variables "inutiles" source de bugs et d'insecurite
 $nbdocsbrouillons=$context[nbdocsbrouillons];
@@ -31,7 +31,7 @@ $context[percdocsbrouillons]=round(($nbdocsbrouillons*100)/$nbdocs);
 # ghi ##### tu peux soit mettre autant de if que de requete sur documents, soit en mettre une unique et mettre toutes tes requetes a l'interieur.
 
 // Nombre de documents prêt à être publiés
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE status>-32 AND status<0") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE statut>-32 AND statut<0") or die (mysql_error());
 list($context[nbdocsprets])=mysql_fetch_row($result);
 $nbdocsprets=$context[nbdocsprets];
 # ghi ##### meme remarque pour le nombre de variables
@@ -40,7 +40,7 @@ $context[percdocsprets]=round(($nbdocsprets*100)/$nbdocs);
 
 // Nombre de documents publiés
 # ghi ##### requete inutile car tu connais le nombre total de doc, et tu as tester les doc negatif... un peu d'arithmetique suffit donc. Epargne les acces DB au maximum.
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE status>0") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]documents WHERE statut>0") or die (mysql_error());
 list($context[nbdocspublies])=mysql_fetch_row($result);
 $nbdocspublies=$context[nbdocspublies];
 # ghi ##### meme remarque pour le nombre de variables
@@ -60,28 +60,28 @@ $nbpublis=$context[nbpublis];
 if(!$nbpublis) $nbpublis=1;  // Evite les divisions par zéro
 
 // Nombre de publications en brouillon
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status<-1") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut<-1") or die (mysql_error());
 list($context[nbpublisbrouillons])=mysql_fetch_row($result);
 $nbpublisbrouillons=$context[nbpublisbrouillons];
 // pourcentage
 $context[percpublisbrouillons]=round(($nbpublisbrouillons*100)/$nbpublis);
 
 // Nombre de publications prêt à être publiées
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status>-32 AND status<0") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut>-32 AND statut<0") or die (mysql_error());
 list($context[nbpublispretes])=mysql_fetch_row($result);
 $nbpublispretes=$context[nbpublispretes];
 // pourcentage
 $context[percpublispretes]=round(($nbpublispretes*100)/$nbpublis);
 
 // Nombre de publications publiées
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status>0 AND status<32") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut>0 AND statut<32") or die (mysql_error());
 list($context[nbpublispubliees])=mysql_fetch_row($result);
 $nbpublispubliees=$context[nbpublispubliees];
 // pourcentage
 $context[percpublispubliees]=round(($nbpublispubliees*100)/$nbpublis);
 
 // Nombre de publications publiées protégées
-$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE status>1") or die (mysql_error());
+$result=mysql_query("SELECT COUNT(*) FROM $GLOBALS[tp]publications WHERE statut>1") or die (mysql_error());
 list($context[nbpublisprotegees])=mysql_fetch_row($result);
 $nbpublisprotegees=$context[nbpublisprotegees];
 // pourcentage

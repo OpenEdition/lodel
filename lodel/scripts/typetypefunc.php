@@ -52,7 +52,7 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname)
     $ordre="type";
   }
 
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$maintable LEFT JOIN $GLOBALS[tp]typeentites_".$relationtable."s ON id$listtype=$GLOBALS[tp]$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $ordre") or die(mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]$maintable LEFT JOIN $GLOBALS[tp]typeentites_".$relationtable."s ON id$listtype=$GLOBALS[tp]$maintable.id AND id$criteretype='$context[id]' WHERE statut>0 ORDER BY $ordre") or die(mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $localcontext=array_merge($context,$row);

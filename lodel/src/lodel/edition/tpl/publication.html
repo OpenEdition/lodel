@@ -7,6 +7,7 @@
 	<div class="ligne_haut_tpl_publication" style="background-image:url([#SHAREURL]/images/fond_haut_popup_edition.png);">
 		<MACRO NAME="PNG_PICTO_POPUP_EDITION">
 		<div style="padding-top:25px;">
+Nicolas faudrait mettre [ #TITRE] ici a la place des condtions,stp
 			<span class="texte_ligne_haut_tpl_publication">
 				Edition du descriptif 
 				<IF COND="[#TYPE] EQ 'serie_lineaire'">
@@ -143,7 +144,7 @@
 		</div>
 
 <!-- boucles sur les groupes de champs -->
-<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='publications' AND status gt 0" ORDER="ordre">
+<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='publications' AND statut gt 0" ORDER="ordre">
 	<LOOP NAME="champs">
 	<BEFORE><!-- information sur le groupe. Ne s'affichissent que s'il y a des champs editable -->
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
@@ -183,7 +184,7 @@
 		
 		<div class="ligne_formulaire">
 	<!-- boucle sur les types de personne -->
-        <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">		    
+        <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">		    
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
 			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
@@ -196,7 +197,7 @@
 		<MACRO NAME="AFFICHE_PERSONNES">
 	</table>
 	</LOOP><!-- fin de la boucle sur les types d'auteurs -->
-        <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre" SELECT="*">
+        <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre" SELECT="*">
 		<br />
 		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 			<tr>

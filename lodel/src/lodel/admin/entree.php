@@ -29,7 +29,7 @@ if ($id>0 && $dir) {
   # cherche le parent
   $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
   list($idparent)=mysql_fetch_row($result);
-  chordre("entrees",$id,"idparent='$idparent' AND status>-64",$dir);
+  chordre("entrees",$id,"idparent='$idparent' AND statut>-64",$dir);
   back();
 }
 
@@ -46,18 +46,18 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     $idparent=intval($context[idparent]);
-    if ($id>0) { // il faut rechercher le status, le type et l'ordre
-      $result=mysql_query("SELECT status,idtype,ordre FROM $GLOBALS[tp]entrees WHERE id='$id'") or die (mysql_error());
-      list($status,$context[idtype],$ordre)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut, le type et l'ordre
+      $result=mysql_query("SELECT statut,idtype,ordre FROM $GLOBALS[tp]entrees WHERE id='$id'") or die (mysql_error());
+      list($statut,$context[idtype],$ordre)=mysql_fetch_array($result);
     } else {
-      $status=1;
+      $statut=1;
       if (!$context[idtype]) die ("Erreur interne. Il manque le type dans le formulaire");
       $context[idtype]=intval($context[idtype]);
       $ordre=get_ordre_max("entrees"," idparent='$idparent' AND idtype='$context[idtype]'");
     }
-    if ($protege) $status=$id && $status>0 ? 32 : -32;    
+    if ($protege) $statut=$id && $statut>0 ? 32 : -32;    
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,lang,status,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[idtype]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,idparent,nom,abrev,ordre,lang,statut,idtype) VALUES ('$id','$idparent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$context[idtype]')") or die (mysql_error());
 
     back();
 
@@ -65,7 +65,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees WHERE $critere AND status>-32") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees WHERE $critere AND statut>-32") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
@@ -77,7 +77,7 @@ if ($context[idtype]) {
 } else die("preciser un type");
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typeentrees WHERE $critere AND status>0") or die (mysql_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typeentrees WHERE $critere AND statut>0") or die (mysql_error());
 if (!mysql_num_rows($result)) die("type incorrecte ($context[idtype],$type)");
 $context= array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 $context[idtype]=$context[type_id]; // importe l'id du type dans type

@@ -127,7 +127,7 @@ function enregistre_publication ($dirname) {
     return $id;
   }
 
-  mysql_query ("INSERT INTO publications (nom,ordre,type,status,parent) VALUES ('$nom','$ordre','numero','-1','1')") or die (mysql_error());
+  mysql_query ("INSERT INTO publications (nom,ordre,type,statut,parent) VALUES ('$nom','$ordre','numero','-1','1')") or die (mysql_error());
 
   return mysql_insert_id();
 }

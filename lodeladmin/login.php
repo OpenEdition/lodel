@@ -27,7 +27,7 @@ if ($login) {
     if ($userpriv<LEVEL_ADMINLODEL) {
       lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
       // verifie que c'est ok
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND status>=32") or die(mysql_error());
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
       if (mysql_num_rows($result)) { $context[erreur_sitebloquee]=1; unlock(); break; }
     }
 
@@ -56,7 +56,7 @@ if ($context[erreur_site_bloquee]) { // on a deja verifie que la site est bloque
 } else { // test si la site est bloquee dans la DB.
   include_once ($home."connect.php");
   mysql_select_db($database);
-  $result=mysql_query("SELECT 1 FROM sites WHERE rep='$site' AND status>=32") or die(mysql_error());
+  $result=mysql_query("SELECT 1 FROM sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
   $context[sitebloquee]=mysql_num_rows($result);
 }
 
@@ -86,7 +86,7 @@ function check_auth (&$site)
     // cherche d'abord dans la base generale.
 #ifndef LODELLIGHT
     mysql_select_db($GLOBALS[database]);
-    $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysal_error());
+    $result=mysql_query ("SELECT id,statut,privilege FROM users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysal_error());
     if ($row=mysql_fetch_assoc($result)) {
       // le user est dans la base generale
       $site="tous les sites";
@@ -95,11 +95,11 @@ function check_auth (&$site)
 
       // cherche ensuite dans la base du site
       mysql_select_db($GLOBALS[currentdb]);
-      $result=mysql_query ("SELECT id,status,privilege FROM users WHERE username='$user' AND passwd='$pass' AND status>0")  or die(mysql_error());
+      $result=mysql_query ("SELECT id,statut,privilege FROM users WHERE username='$user' AND passwd='$pass' AND statut>0")  or die(mysql_error());
       if (!($row=mysql_fetch_assoc($result))) break;
     }
 #else
-#      if (!($result=mysql_query ("SELECT id,status,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
+#      if (!($result=mysql_query ("SELECT id,statut,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND statut>0")))  break;
 #      if (!($row=mysql_fetch_assoc($result))) break;
 #endif
     // pass les variables en global

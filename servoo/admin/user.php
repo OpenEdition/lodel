@@ -33,7 +33,7 @@ if ($edit) {
 
 
 if ($id) {
-  $result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE id='$id' AND status>0")  or die(mysal_error());
+  $result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE id='$id' AND statut>0")  or die(mysal_error());
   $user=mysql_fetch_assoc($result);
   $user[passwd]="";
 }

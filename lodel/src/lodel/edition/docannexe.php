@@ -46,7 +46,7 @@ if ($edit) { // modifie ou ajoute
   // validation
   do {
     if (!$idtype) die("il faut preciser l'idtype");
-    $result=mysql_query("SELECT type FROM $GLOBALS[tp]types WHERE id='$idtype' AND status>0") or die (mysql_error());
+    $result=mysql_query("SELECT type FROM $GLOBALS[tp]types WHERE id='$idtype' AND statut>0") or die (mysql_error());
   if (!mysql_num_rows($result)) die ("type '$type' inconnu (1)");
   list($type)=mysql_fetch_row($result);
 
@@ -135,7 +135,7 @@ if ($edit) { // modifie ou ajoute
 if (!$tplcreation) {
   // cherche le tpl
   $critere=$idtype ? "id='$idtype'" : "type='$type'";
-    $result=mysql_query("SELECT tplcreation,id, type FROM $GLOBALS[tp]types WHERE $critere AND status>0") or die (mysql_error());
+    $result=mysql_query("SELECT tplcreation,id, type FROM $GLOBALS[tp]types WHERE $critere AND statut>0") or die (mysql_error());
   if (!mysql_num_rows($result)) die ("type '$type' inconnu");
   list($tplcreation,$context[idtype],$context[type])=mysql_fetch_row($result);
 }

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	status		TINYINT DEFAULT '-1' NOT NULL,
+	statut		TINYINT DEFAULT '-1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
@@ -71,10 +71,10 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	type		TINYTEXT NOT NULL,		# type du champ
 	condition	TINYTEXT NOT NULL,		# condition
 	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
-	filtrage	TEXT NOT NULL,		# traitement a faire a l'exportation
+	filtrage	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 
-	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
+	statut		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 	maj		TIMESTAMP,
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
 
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
 
-	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
+	statut		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 	maj		TIMESTAMP,
 
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_personnes (
 #	site		TEXT NOT NULL, #
 #	bio		TEXT NOT NULL, # inutile pour le moment
 
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id)
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	email		VARCHAR(255),
 	privilege	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
 
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 
 	maj		TIMESTAMP,
 
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
 	id		TINYINT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64),
 
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 	tpledit		TINYTEXT NOT NULL,			# nom du fichier template pour l'edition de son contenu
 
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
 	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
 
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,	# ordre sert pour l'interface.
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 
 
 	maj		TIMESTAMP,
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 	tplindex	TINYTEXT NOT NULL,			# nom du fichier template pour l'index
 
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,	# ordre sert pour l'interface.
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 
 # options
 	lineaire	TINYINT DEFAULT '0' NOT NULL,
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	idtype		TINYINT DEFAULT '0' NOT NULL,
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_taches (
 	user		INT UNSIGNED DEFAULT '0' NOT NULL,
 	context		TEXT,
 
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id)
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 	nom		VARCHAR(255) NOT NULL,
 	texte		TEXT,
 
-	status		TINYINT DEFAULT '1' NOT NULL,
+	statut		TINYINT DEFAULT '1' NOT NULL,
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id),

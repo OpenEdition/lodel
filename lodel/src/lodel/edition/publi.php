@@ -11,7 +11,7 @@
 
 
 // pour les publications dans l'url on peut recevoir
-// online: si vrai met le status a 1 si faux met le status a 0
+// online: si vrai met le statut a 1 si faux met le statut a 0
 // confirmation: si vrai alors depublie meme si les publications sont protegees
 
 // pour les documents dans l'url on peut recevoir
@@ -27,10 +27,10 @@ include_once ($home."connect.php");
 
 if ($cancel) back();
 
-$status=$online ? 1 : -1;
+$statut=$online ? 1 : -1;
 
-// l'utilisation dans ce script d'un status de +32 ou -32 n'est pas recommander parce qu'il opere de facon recurrente.
-// utiliser plutot status.php pour ajuster le status.
+// l'utilisation dans ce script d'un statut de +32 ou -32 n'est pas recommander parce qu'il opere de facon recurrente.
+// utiliser plutot statut.php pour ajuster le statut.
 
 if ($publication) {
   $id=intval($publication);
@@ -40,7 +40,7 @@ if ($publication) {
 
 require($home."managedb.php");
 
-if (!publi($id,$status,$confirmation)) { // publications protegees ?
+if (!publi($id,$statut,$confirmation)) { // publications protegees ?
   $context[id]=$id;
   // post-traitement
   posttraitement($context);

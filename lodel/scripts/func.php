@@ -15,7 +15,7 @@ function get_tache (&$id)
 
 {
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id' AND status>0") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id' AND statut>0") or die (mysql_error());
   if (!($row=mysql_fetch_assoc($result))) { back(); return; }
   $row=array_merge($row,unserialize($row[context]));
   return $row;

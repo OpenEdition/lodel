@@ -10,7 +10,7 @@ function makefilterfunc()
   // cherche les champs a filtrer
   //
   include ($home."connect.php");
-  $result=mysql_query("SELECT classe,$GLOBALS[tp]champs.nom,filtrage FROM $GLOBALS[champsgroupesjoin] WHERE $GLOBALS[tp]groupesdechamps.status>0 AND $GLOBALS[tp]champs.status>0 AND filtrage!=''") or die (mysql_error());
+  $result=mysql_query("SELECT classe,$GLOBALS[tp]champs.nom,filtrage FROM $GLOBALS[champsgroupesjoin] WHERE $GLOBALS[tp]groupesdechamps.statut>0 AND $GLOBALS[tp]champs.statut>0 AND filtrage!=''") or die (mysql_error());
   while (list($classe,$nom,$filter)=mysql_fetch_row($result)) {
 #echo $classe," ",$nom," ",$filter,"<br>\n";
     // converti filtrage en fonction.
@@ -21,7 +21,7 @@ function makefilterfunc()
 	if ($result2[2]) $result2[2]=",".$result2[2];
 	$filterfunc=$result2[1].'('.$filterfunc.$result2[2].')';
       } else {
-	$this->errmsg("invalid filter function: $filter");
+	die("invalid filter function: $filter");
       }
     }
     $filterfunc="return ".$filterfunc.";";

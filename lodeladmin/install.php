@@ -256,7 +256,7 @@ if (!$database) {
   }
 } 
 
-$sitesexistsrequest="SELECT id,status,nom FROM $GLOBALS[tableprefix]sites LIMIT 1";
+$sitesexistsrequest="SELECT id,statut,nom FROM $GLOBALS[tableprefix]sites LIMIT 1";
 
 if (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
   $erreur_usedatabase=1;
@@ -327,7 +327,7 @@ $dirs=array(".","lodel","lodel/admin");
 $sitedir=array(".","lodel","lodel/edition","lodel/admin");
 
 // cherche les sites qui existent deja et cree le tableau $dirs
-$result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites WHERE status>0");
+$result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites WHERE statut>0");
 while ($row=mysql_fetch_row($result)) {
   foreach ($sitedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
 }

@@ -28,8 +28,8 @@ function parse_loop_extra(&$tables,
 		    "/\(okgroup\)/i"
 		    ),
 	      array(
-		    "status<=0",
-		    "status>0",
+		    "statut<=0",
+		    "statut>0",
 		    '".($GLOBALS[admin] ? "1" : "(groupe IN ($GLOBALS[usergroupes]))")."'
 		    ),$where);
   //
@@ -49,7 +49,7 @@ function parse_loop_extra(&$tables,
   if (in_array("entites",$tables)) {
     if (preg_match("/\bclasse\b/",$where)) {
       array_push($tables,"types");
-      protect2($where,$ordre,"entites","id|status|ordre");
+      protect2($where,$ordre,"entites","id|statut|ordre");
       $jointypesentitesadded=1;
       $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
       ## c'est inutile pour le moment: preg_replace("/\bclasse\b/","$GLOBALS[tp]types.classe",$where).
@@ -57,12 +57,12 @@ function parse_loop_extra(&$tables,
 #  echo "where 1bis:",htmlentities($where),"<br>";
     if (!$jointypesentitesadded && preg_match("/\btype\b/",$where)) {
       array_push($tables,"types");
-      protect2($where,$ordre,"entites","id|status|ordre");
+      protect2($where,$ordre,"entites","id|statut|ordre");
       $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
     }
     if (preg_match("/\bparent\b/",$where)) {
       array_push($tables,"entites as entites_interne2");
-      protect2($where,$ordre,"entites","id|idtype|nom|groupe|user|ordre|status");
+      protect2($where,$ordre,"entites","id|idtype|nom|groupe|user|ordre|statut");
       $where=preg_replace("/\bparent\b/","entites_interne2.nom",$where)." AND entites_interne2.id=$GLOBALS[tp]entites.idparent";
     }
     if (in_array("types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
@@ -70,10 +70,10 @@ function parse_loop_extra(&$tables,
     }
   }// fin de entites
 
-  // verifie le status
-  if (!preg_match("/\bstatus\b/i",$where)) { // test que l'element n'est pas a la poubelle
-    $teststatus=array();
-    if ($where) array_push($teststatus,$where);
+  // verifie le statut
+  if (!preg_match("/\bstatut\b/i",$where)) { // test que l'element n'est pas a la poubelle
+    $teststatut=array();
+    if ($where) array_push($teststatut,$where);
     foreach ($tables as $table) {
       if (preg_match("/\sas\s+(\w+)/",$table,$result)) $table=$result[1];
       if ($table=="session" || 
@@ -82,13 +82,13 @@ function parse_loop_extra(&$tables,
 	  $table=="relations") continue;
 
       if ($table=="entites") {
-	$lowstatus='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
+	$lowstatut='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
       } else {
-	$lowstatus="-64";
+	$lowstatut="-64";
       }
-      array_push($teststatus,"($GLOBALS[tp]$table.status>\".(\$GLOBALS[visiteur] ? $lowstatus : \"0\").\")");
+      array_push($teststatut,"($GLOBALS[tp]$table.statut>\".(\$GLOBALS[visiteur] ? $lowstatut : \"0\").\")");
     }
-    $where=join(" AND ",$teststatus);
+    $where=join(" AND ",$teststatut);
   }
 #  echo "where 2:",htmlentities($where),"<br>";
 
@@ -114,7 +114,7 @@ function parse_loop_extra(&$tables,
 	 $where.=" AND idpersonne=$GLOBALS[tp]personnes.id";
        }
        if (preg_match("/\btype\b/",$where)) {
-	 protect2($where,$ordre,"personnes","id|status");
+	 protect2($where,$ordre,"personnes","id|statut");
 	 protect2($where,$ordre,"entites_personnes","ordre");
 	 array_push($tables,"typepersonnes");
 	 // maintenant, il y a deux solutuions
@@ -133,8 +133,8 @@ function parse_loop_extra(&$tables,
      // entrees
      if (in_array("entrees",$tables)) {
 	if (preg_match("/\btype\b/",$where)) {
-	  protect ($where,"entrees","id|status|ordre");
-	  protect ($ordre,"entrees","id|status|ordre");
+	  protect ($where,"entrees","id|statut|ordre");
+	  protect ($ordre,"entrees","id|statut|ordre");
 	  array_push($tables,"typeentrees");
 	  $where.=" AND $GLOBALS[tp]entrees.idtype=$GLOBALS[tp]typeentrees.id";
 	}
@@ -160,7 +160,7 @@ function parse_loop_extra(&$tables,
       }
       if (in_array("champs",$tables) && preg_match("/\bclasse\b/",$where)) {
 	// on a besoin de la table croise groupesdechamps
-	protect2($where,$ordre,"champs","id|status|ordre");
+	protect2($where,$ordre,"champs","id|statut|ordre");
 	array_push($tables,"groupesdechamps");
 	$where.=" AND $GLOBALS[tp]groupesdechamps.id=$GLOBALS[tp]champs.idgroupe";
 	$extrainselect.=", $GLOBALS[tp]groupesdechamps.classe";

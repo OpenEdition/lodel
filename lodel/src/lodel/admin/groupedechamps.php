@@ -30,7 +30,7 @@ if ($id>0 && $dir) {
   # cherche le groupe
   $result=mysql_query ("SELECT classe FROM $GLOBALS[tp]groupesdechamps WHERE $critere") or die (mysql_error());
   list($classe)=mysql_fetch_row($result);
-  chordre("groupeschamps",$id,"classe='$classe' AND status>-64",$dir);
+  chordre("groupeschamps",$id,"classe='$classe' AND statut>-64",$dir);
   back();
 }
 
@@ -47,23 +47,23 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
     include_once ($home."connect.php");
 
-    if ($id>0) { // il faut rechercher le status et l'ordre
-      $result=mysql_query("SELECT status,ordre,classe FROM $GLOBALS[tp]groupeschamps WHERE id='$id'") or die (mysql_error());
-      list($status,$ordre,$classe)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut et l'ordre
+      $result=mysql_query("SELECT statut,ordre,classe FROM $GLOBALS[tp]groupeschamps WHERE id='$id'") or die (mysql_error());
+      list($statut,$ordre,$classe)=mysql_fetch_array($result);
     } else {
-      $status=1;
+      $statut=1;
       if (!$context[classe]) die ("Erreur interne. Il manque la classe dans le formulaire");
       $ordre=get_ordre_max("groupesdechamps"," classe='$context[classe]'");
     }
-    if ($protege) $status=$id && $status>0 ? 32 : -32;
+    if ($protege) $statut=$id && $statut>0 ? 32 : -32;
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]groupesdechamps (id,nom,titre,classe,ordre,status) VALUES ('$id','$context[nom]','$context[titre]','$context[classe]','$ordre','$status')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]groupesdechamps (id,nom,titre,classe,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[classe]','$ordre','$statut')") or die (mysql_error());
     back();
   } while (0);
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]groupesdechamps WHERE $critere AND status>-32") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]groupesdechamps WHERE $critere AND statut>-32") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 } else {
   // cherche le classe.

@@ -1,5 +1,5 @@
 <?php
-
+die("extrainfofunc.php inutile a enlever du CVS");
 // regexp de reconnaissance des prefix de nom de personne
 
 $prefixregexp="Pr\.|Dr\.";
@@ -114,7 +114,7 @@ function ei_edition($filename,$tache,&$context,&$text,&$entrees,&$autresentrees,
   // recherche les differents type d'entrees
   //
   include_once($home."connect.php");
-  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typeentrees WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
   $groupeentree="<r2r:grentree>";
   while ($row=mysql_fetch_assoc($result)) {
     $groupeentree.=gr_entrees($context,$entrees[$row[id]],$autresentrees[$row[id]],$row[type]);
@@ -123,7 +123,7 @@ function ei_edition($filename,$tache,&$context,&$text,&$entrees,&$autresentrees,
   //
   // recherche les differents type de personnes
   //
-  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typepersonnes WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die (mysql_error());
   $groupepersonne="<r2r:grpersonne>";
   while ($row=mysql_fetch_assoc($result)) {
     $groupepersonne.=gr_personne($context,$row[id],$plus[$row[id]],$row[type]);
@@ -172,10 +172,10 @@ function ei_enregistrement($filename,$tache,&$context,&$text)
   //
   if ($tache[iddocument]) { # efface d'abord
     include_once($home."managedb.php");
-    // recupere les metas et le status
-    $result=mysql_query("SELECT status FROM $GLOBALS[tp]entites WHERE id='$tache[iddocument]'") or die (mysql_error());
-    list($status)=mysql_fetch_row($result);
-    if (!$tache[statusdocument]) $tache[statusdocument]=$status; // recupere le status si necessaire
+    // recupere les metas et le statut
+    $result=mysql_query("SELECT statut FROM $GLOBALS[tp]entites WHERE id='$tache[iddocument]'") or die (mysql_error());
+    list($statut)=mysql_fetch_row($result);
+    if (!$tache[statusdocument]) $tache[statusdocument]=$statut; // recupere le statut si necessaire
     supprime($tache[iddocument],TRUE,TRUE,"type NOT LIKE 'documentannexe-%'"); // supprime le document, mais pas ses docannexes
   } else { # Il n'existe pas, alors on calcule la date
     $context[duree]=intval($context[duree]);
@@ -314,8 +314,8 @@ function makeselecttypedoc()
 
   if ($context[typedocfixe]) $critere="AND type='$context[typedoc]'";
 
-  $result=mysql_query("SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere AND type NOT LIKE 'documentannexe-%'") or die (mysql_error());
-  echo "SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere";
+  $result=mysql_query("SELECT type,titre FROM $GLOBALS[tp]types WHERE statut>0 AND classe='documents' $critere AND type NOT LIKE 'documentannexe-%'") or die (mysql_error());
+  echo "SELECT type,titre FROM $GLOBALS[tp]types WHERE statut>0 AND classe='documents' $critere";
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$context[typedoc]==$row[type] ? " selected" : "";
@@ -419,7 +419,7 @@ function traitepersonnes (&$text)
 
   $oldtags=array(); // pour la suppression dans le texte
 
-  $result1=mysql_query("SELECT style,type FROM $GLOBALS[tp]typepersonnes WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  $result1=mysql_query("SELECT style,type FROM $GLOBALS[tp]typepersonnes WHERE statut>0 ORDER BY ordre") or die (mysql_error());
   while ($typepersonne=mysql_fetch_assoc($result1)) {
     $style=strtolower($typepersonne[style]);
     // accouple les balises personnes et description
@@ -542,7 +542,7 @@ function traiteentrees (&$text)
 
   $oldtags=array(); // pour la suppression dans le texte
 
-  $result1=mysql_query("SELECT style,type FROM $GLOBALS[tp]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  $result1=mysql_query("SELECT style,type FROM $GLOBALS[tp]typeentrees WHERE statut>0 ORDER BY ordre") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result1)) {
     $style=strtolower($row[style]);
     preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results,PREG_SET_ORDER);

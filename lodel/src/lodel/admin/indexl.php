@@ -36,10 +36,10 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
     $context[type]=intval($context[type]);
 
-    if ($id>0) { // il faut rechercher le status
-      $result=mysql_query("SELECT status FROM indexls WHERE id='$id'") or die (mysql_error());
-      list($status)=mysql_fetch_array($result);
-      mysql_query ("REPLACE INTO indexls (id,mot,lang,status,type) VALUES ('$id','$context[mot]','$context[lang]','$status','$context[type]')") or die (mysql_error());
+    if ($id>0) { // il faut rechercher le statut
+      $result=mysql_query("SELECT statut FROM indexls WHERE id='$id'") or die (mysql_error());
+      list($statut)=mysql_fetch_array($result);
+      mysql_query ("REPLACE INTO indexls (id,mot,lang,statut,type) VALUES ('$id','$context[mot]','$context[lang]','$statut','$context[type]')") or die (mysql_error());
     } else {
       // cree les mots cles
       $mots=preg_split("/\s*[,;\n]\s*/",$context[mot]);
@@ -55,7 +55,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM indexls WHERE $critere AND status>-32") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM indexls WHERE $critere AND statut>-32") or die (mysql_error());
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 

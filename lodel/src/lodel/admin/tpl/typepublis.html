@@ -19,6 +19,7 @@
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
+		<td class="texte_noir_gras">Titre du type</td>
 		<td class="texte_noir_gras">Nom du type</td>
 		<td class="texte_noir_gras">Fichier Template</td>
 		<td class="texte_noir_gras">Fichier Template d'Edition</td>
@@ -28,6 +29,7 @@
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
+					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin1">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin1">[#TPL]</td>
 					<td class="ligne_admin1">[(#TPLEDIT|nbsp)]</td>
@@ -38,6 +40,7 @@
 						</div>
 					</td>
 				<ELSE/>
+					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin2">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
 					<td class="ligne_admin2">[(#TPLEDIT|nbsp)]</td>
@@ -63,6 +66,7 @@
 				<td colspan="3" class="message_erreur">Types de publications dans la corbeille</td>
 			</tr>
 			<tr>
+				<td class="texte_noir_gras"><b>Titre</b><br></td>
 				<td class="texte_noir_gras"><b>Nom</b><br></td>
 				<td class="texte_noir_gras"><b>Fichier Template</b><br></td>
 				<td>&nbsp;</td>
@@ -71,6 +75,7 @@
 	<DO>
 		<tr>
 			<IF COND="[#COUNT] % 2">
+				<td class="ligne_admin1">[#TITRE]</td>
 				<td class="ligne_admin1">[#TYPE]</td>
 				<td class="ligne_admin1">[#TPL]</td>
 				<td class="ligne_admin1" style="color: #CC9933;" align="right">
@@ -78,6 +83,7 @@
 					<a href="typepubli.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
+				<td class="ligne_admin2">[#TITRE]</td>
 				<td class="ligne_admin2">[#TYPE]</td>
 				<td class="ligne_admin2">[#TPL]</td>
 				<td class="ligne_admin2" style="color: #CC9933;" align="right">

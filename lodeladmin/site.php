@@ -34,18 +34,18 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
     include_once ($home."connect.php");
 
-    // lit les informations options, status, etc... si le site existe deja
+    // lit les informations options, statut, etc... si le site existe deja
     if ($id) {
-      $result=mysql_query ("SELECT options,status FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
-      list($options,$status)=mysql_fetch_row($result);
+      $result=mysql_query ("SELECT options,statut FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
+      list($options,$statut)=mysql_fetch_row($result);
     } else {
-      $options=""; $status=-32; // -32 signifie en creation
+      $options=""; $statut=-32; // -32 signifie en creation
     }
-    if ($reinstalle) $status=-32;
+    if ($reinstalle) $statut=-32;
 
-    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,soustitre,options,status) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$status')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,nom,rep,soustitre,options,statut) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$statut')") or die (mysql_error());
 
-    if ($status>-32) back(); // on revient, le site n'est pas en creation
+    if ($statut>-32) back(); // on revient, le site n'est pas en creation
 
     if (!$id) $context[id]=$id=mysql_insert_id();
     $tache="createdb"; 
@@ -54,7 +54,7 @@ if ($edit) { // modifie ou ajoute
 
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (statut>0 || statut=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
@@ -241,8 +241,8 @@ if ($tache=="fichier") {
   // ok siteconfig est copier.
   install_fichier($root,"../$versionrep/revue","..");
 
-  // ok on a fini, on change le status de la site
-  mysql_query ("UPDATE $GLOBALS[tp]sites SET status=1 WHERE id='$id'") or die (mysql_error());
+  // ok on a fini, on change le statut de la site
+  mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE id='$id'") or die (mysql_error());
   back();
 }
 

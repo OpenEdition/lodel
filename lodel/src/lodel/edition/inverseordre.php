@@ -9,7 +9,7 @@ die("a reecrire avec entite");
 $parent=intval($parent);
 
 
-$critere="parent='$parent' AND status>-64";
+$critere="parent='$parent' AND statut>-64";
 if (!$admin) $critere.=" AND groupe IN ($usergroupes)";
 
 

@@ -21,7 +21,7 @@ if ($id>0 && ($delete || $restore)) {
 }
 
 
-$critere="id='$id' AND status>0";
+$critere="id='$id' AND statut>0";
 
 //
 // ajoute ou edit
@@ -58,11 +58,11 @@ if ($edit) { // modifie ou ajoute
 
     if ($err) break;
 
-    if ($id>0) { // il faut rechercher le status et (peut etre) le passwd
-      $result=mysql_query("SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
-      list($passwd_db,$status)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut et (peut etre) le passwd
+      $result=mysql_query("SELECT passwd,statut FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
+      list($passwd_db,$statut)=mysql_fetch_array($result);
     } else {
-      $status=1;
+      $statut=1;
     }
     if (!$passwd) { // pas de passwd... on prend celui de la base de donnee
       $passwd=$passwd_db;
@@ -70,7 +70,7 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,email,privilege,status) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$status')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,email,privilege,statut) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$statut')") or die (mysql_error());
 
     if ($context[privilege]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();

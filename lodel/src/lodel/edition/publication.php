@@ -60,7 +60,7 @@ if ($id>0 && $dir) {
   include_once ($home."textfunc.php");
   $context[type]=trim(rmscript(strip_tags($type)));
   if ($context[type]) {
-    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$context[type]' AND status>0") or die (mysql_error());
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$context[type]' AND statut>0") or die (mysql_error());
     if (!mysql_num_rows($result)) die("type inconnu $context[type]");
     list($context[idtype])=mysql_fetch_row($result);
   }

@@ -10,7 +10,7 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$visiteur ? "" : "AND $GLOBALS[tp]entites.status>0 AND $GLOBALS[tp]types.status>0";
+$critere=$visiteur ? "" : "AND $GLOBALS[tp]entites.statut>0 AND $GLOBALS[tp]types.statut>0";
 
 //
 // cherche le document, et le template
@@ -49,7 +49,7 @@ $context=array_merge($context,extract_xml($balises,$text));
 //
 // cherche s'il y a des documents annexe et combien
 //
-$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBAL[tp]entites.status>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[entitestypesjoin] WHERE idparent='$id' AND $GLOBAL[tp]entites.statut>0 AND type LIKE 'documentannexe-%'") or die (mysql_error());
 list($context[documentsannexes])=mysql_fetch_row($result);
 //
 // cherche l'article precedent et le suivant

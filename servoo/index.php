@@ -15,7 +15,7 @@ mysql_connect($dbhost,$dbusername,$dbpasswd) or die (mysql_error());
 mysql_select_db($database)  or die (mysql_error());
 
 // cherche l'utilisateur et verifie son identification
-$result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE username='$username' AND passwd='$passwd' AND status>0")  or die(mysal_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]users WHERE username='$username' AND passwd='$passwd' AND statut>0")  or die(mysal_error());
 $user=mysql_fetch_assoc($result);
 
 if (!$user)  die("ERROR: user not allowed");

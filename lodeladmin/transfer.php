@@ -11,6 +11,17 @@ $report="";
 if ($confirm) {
   $tables=gettables();
   do { // block de control
+    foreach (array_keys($tables) as $table) {
+      $result=mysql_query("SHOW CREATE TABLE $table") or die(mysql_error());
+      if (!mysql_num_rows($result)) { $err="La requete \"SHOW CREATE TABLE $table\" ne renvoie rien"; break; }
+      list($t,$create)=mysql_fetch_row($result);
+      if (preg_match("/^\s*['`]status['`](.*),$/m",$create,$result)) {
+	mysql_query("ALTER TABLE $table CHANGE status statut $result[1]") or die(mysql_error());
+	$report.="change status en statut dans $table<br />\n";
+      }
+    }
+
+
     if ($tables["$GLOBALS[tp]revues"]) {
       $err=mysql_query_cmds("RENAME TABLE _PREFIXTABLE_revues TO _PREFIXTABLE_sites;");
       if ($err) break;

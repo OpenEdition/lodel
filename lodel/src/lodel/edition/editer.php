@@ -23,7 +23,7 @@ if ($id>0 && $dir) {
 } elseif ($edit || $charge) { # prepare l'envoi dans extrainfo
 # on fait une copie dans tmp
 # cherche les info pour creer la tache
-  $result=mysql_query("SELECT idparent,ordre FROM $GLOBALS[tp]entites WHERE id=$id AND status>-64") or die (mysql_error());
+  $result=mysql_query("SELECT idparent,ordre FROM $GLOBALS[tp]entites WHERE id=$id AND statut>-64") or die (mysql_error());
   if ($row=mysql_fetch_assoc($result)) {
     $row[iddocument]=$id;
     if ($edit) {
@@ -40,9 +40,9 @@ if ($id>0 && $dir) {
     header("location: ../../not-found.html");
   }
 } else {
-  # extrait le status de l'article
-  $result=mysql_query("SELECT status FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
-  list($context[status])=mysql_fetch_row($result);
+  # extrait le statut de l'article
+  $result=mysql_query("SELECT statut FROM $GLOBALS[tp]entites WHERE id='$id'") or die (mysql_error());
+  list($context[statut])=mysql_fetch_row($result);
 }
 
 

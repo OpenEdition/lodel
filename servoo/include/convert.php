@@ -70,6 +70,7 @@ function HTMLLodel ($uploadedfile,$msg=TRUE)
 
   // ecrit le fichier content.xml
   if (!writefile("$tmpdir/content.xml",$content)) die("ERROR: writing $tmpdir/content.xml file failed");
+
   if ($msg) {
     echo "<li>Reinsertion du nouveaux fichier content.xml dans le SXW<br>\n";flush();
   }

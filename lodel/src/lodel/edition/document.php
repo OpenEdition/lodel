@@ -49,7 +49,7 @@ if ($idtache) {
     $localcontext=array();
     $localcontext[idparent]=$tache[idparent];
     $localcontext[id]=$tache[iddocument];
-    $localcontext[status]=-64; // car le document n'est pas correcte a priori
+    $localcontext[statut]=-64; // car le document n'est pas correcte a priori
     
     $text=file_get_contents($filename.".html");
     require_once($home."xmlimport.php");
@@ -103,7 +103,7 @@ if ($id>0 && $dir) {
 // ce bloc peut etre appele par plusieurs scripts.
   extract_post();
   $context[entite][nom]=$context[entite][titre];
-  $context[status]=-1;
+  $context[statut]=-1;
   if ($id=enregistre_entite($context,$id,"documents","edition!=''")) { // ca marche... on termine
     //
     // termine en redirigeant correctement

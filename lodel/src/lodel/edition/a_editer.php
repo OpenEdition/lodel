@@ -11,7 +11,7 @@ $id=intval($id);
 if ($edit && $fichier) {
   include ($home."dbxml.php");
   # recupere les informations a fournir a enregistre
-  $result=mysql_query("SELECT publication,ordre,datepubli FROM documents WHERE id=$id AND status>-2") or die (mysql_error());
+  $result=mysql_query("SELECT publication,ordre,datepubli FROM documents WHERE id=$id AND statut>-2") or die (mysql_error());
   if ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
     $row[iddocument]=$id;
     # empeche les tags d'etre coupes

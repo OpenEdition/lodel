@@ -128,7 +128,7 @@ function mkxmldocument($text,$idpublication)
   // ajoute les debuts et fins corrects
   $text='<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$text.'</r2r:article>';
 
-  $localcontext=array("idparent"=>$idpublication,"status"=>-1);
+  $localcontext=array("idparent"=>$idpublication,"statut"=>-1);
   enregistre_entite_from_xml($localcontext,$text,"documents");
 }
 

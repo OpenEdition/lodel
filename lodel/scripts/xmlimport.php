@@ -16,7 +16,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
   $localcontext=$context;
   //xml_parse_into_struct_ns($text,&$vals,&$index);
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,style,type,traitement FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.status>0 AND $GLOBALS[tp]groupesdechamps.status>0") or die (mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,style,type,traitement FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0") or die (mysql_error());
 
   $sets=array();
   while (list($nom,$style,$type,$traitement)=mysql_fetch_row($result)) {
@@ -86,7 +86,7 @@ function enregistre_personnes_from_xml (&$localcontext,$text)
 
 {
   // il faudrait ajouter ici un test sur le type... mais bon, c'est pas facile parce qu'on ne connait pas encore le type !!!
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typepersonnes WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die (mysql_error());
   while (list($idtype,$style)=mysql_fetch_row($result)) {
     // accouple les balises personnes et description
     $text=preg_replace ("/(<\/r2r:$style>)\s*(<r2r:description>.*?<\/r2r:description>)/si","\\2\\1",$text);
@@ -206,7 +206,7 @@ function enregistre_entrees_from_xml (&$localcontext,$text)
 {
   // il faudrait ajouter ici un test sur le type... mais bon, c'est pas facile parce qu'on ne connait pas encore le type !!!
 
-  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,style FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die (mysql_error());
   while (list($idtype,$style)=mysql_fetch_row($result)) {
     preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results2,PREG_SET_ORDER);
     $i=0;

@@ -26,7 +26,7 @@ if ($id>0 && $dir) {
   # cherche le parent
   $result=mysql_query ("SELECT parent FROM indexhs WHERE $critere") or die (mysql_error());
   list($parent)=mysql_fetch_row($result);
-  chordre("indexhs",$id,"parent='$parent' AND status>0",$dir);
+  chordre("indexhs",$id,"parent='$parent' AND statut>0",$dir);
   back();
 }
 
@@ -46,15 +46,15 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     $parent=intval($context[parent]);
-    if ($id>0) { // il faut rechercher le status, le type et l'ordre
-      $result=mysql_query("SELECT status,type,ordre FROM indexhs WHERE id='$id'") or die (mysql_error());
-      list($status,$type,$ordre)=mysql_fetch_array($result);
+    if ($id>0) { // il faut rechercher le statut, le type et l'ordre
+      $result=mysql_query("SELECT statut,type,ordre FROM indexhs WHERE id='$id'") or die (mysql_error());
+      list($statut,$type,$ordre)=mysql_fetch_array($result);
     } else {
-      $status=1;
+      $statut=1;
       $ordre=get_ordre_max("indexhs"," parent='$parent' AND type='$type'");
     }
 
-    mysql_query ("REPLACE INTO indexhs (id,parent,nom,abrev,ordre,lang,status,type) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$type')") or die (mysql_error());
+    mysql_query ("REPLACE INTO indexhs (id,parent,nom,abrev,ordre,lang,statut,type) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$statut','$type')") or die (mysql_error());
 
     back();
 
@@ -62,7 +62,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM indexhs WHERE $critere AND status>-32") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM indexhs WHERE $critere AND statut>-32") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
