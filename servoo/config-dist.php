@@ -74,7 +74,12 @@ $home="include/";
 # la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
 $shareurl="/share";
 
+# Webmaster email address
+define ("WEBMASTER","servoo@revues.org");
 
+
+
+#-----------------------------------------------------------------
 # Nom de la session (cookie)
 $sessionname="sessionservoo";
 
