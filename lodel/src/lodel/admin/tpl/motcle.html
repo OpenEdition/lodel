@@ -3,70 +3,50 @@
 <title>Administration de revue : [(#REVUE|nbsp)]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-  <tr> 
-    <td bgcolor="#FFFFFF" class="titre">
-		<div align="center">
-		<br>
-		<IF COND="[#ID]">
-			<b>
-				Edition d'un mot-clé
-			</b>
-		<ELSE/>
-			<b>
-				Edition d'une liste
-			</b>
-		</IF>
-		</div>
-    </td>
-  </tr>
-  <tr>
-  	<td> 
-		<br><br>
-		<TABLE WIDTH="450" CELLPADDING="5" CELLSPACING="1" BORDER="1" ALIGN="CENTER">
-			<FORM METHOD="POST" ACTION="motcle.php">
-			<INPUT TYPE="hidden" name="edit" VALUE="1">
-			<INPUT TYPE="hidden" name="id" VALUE="[#ID]">
-			<INPUT TYPE="hidden" name="type" VALUE="[#TYPE]">
-			<TR>
-				<TD align="center">
-					<IF COND="[#ID]">
-						<b>
-							Mot:
-						</b>
-					<ELSE/>
-						<b>
-							Liste de mots :
-						</b>
-					</IF>
-				</td>
-				<td>
-					<font color="Navy">
-						<INPUT SIZE="80" TYPE="text" NAME="mot" value="[#MOT]">
-					</FONT>
-				</td>
-				[(#ERREUR_NOM|true)
-				<TD CLASS="erreur">
-					<b>
-					<font color="Red">
-						Il faut preciser un mot !
-					</font>
-					</b>
-				</td>
-				]
-			</tr>
-	</TABLE>
-<br><br>
-<BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE>
-<INPUT CLASS="form" TYPE="submit" VALUE="[Modifier(#ID|true)][Ajouter(#ID|false)]" >
-</FORM>
-<br>
-[
-	<a href="motcle.php?delete=2&id=(#ID)">
-		Supprimer
-	</a>
-]
-</BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">
+			<IF COND="[#ID]">
+				Edition d'un mot-cl&eacute;
+			<ELSE/>
+				Edition d'une liste de mots cl&eacute;s
+			</IF>
+		</td>
+	</tr>
+</table>
+id = [#ID]
+<br /><br />
+<form method="POST" action="motcle.php">
+	<input type="hidden" name="edit" value="1">
+	<input type="hidden" name="id" value="[#ID]">
+	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td>
+				<IF COND="[#ID]">
+					<span class="texte_intitule">Mot Cl&eacute; : </span>
+				<ELSE/>
+					<span class="texte_intitule">Liste de mots cl&eacute;s : </span><br />
+					<span class="texte_info">S&eacute;parer les mots cl&eacute;s par des virgules</span>
+				</IF>
+			</td>
+			<td>
+				<input size="60" type="text" name="mot" value="[#MOT]">
+			</td>
+		</tr>
+		[(#ERREUR_NOM|true)<tr><td class="message_erreur">Il faut pr&eacute;ciser un mot !</td></tr>]
+		<tr>
+			<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
+				<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='motcles.php'" />
+				<IF COND="[#ID]">
+					&nbsp;&nbsp;&nbsp;&nbsp;<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='motcle.php?delete=2&id=[#ID]'" />
+				</IF>
+			</td>
+		</tr>
+	</table>
+</form>
+
 <MACRO NAME="CLOSE_HTML">
  
  
