@@ -79,9 +79,6 @@ $dbhost="dbhost.domain.org";
 $contactbug="";
 
 
-# Repertoire contenant le binaire de mysql
-$mysqldir="/usr/bin";
-
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
 $tableprefix="";
 

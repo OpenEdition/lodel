@@ -39,14 +39,18 @@ if ($backup) {
 
   $dirtotar=array();
 
-  $fh=fopen(tempnam("/tmp","lodeldump_"),"w");
+  $dirlocked=tempnam("/tmp","lodeldump_").".dir"; // this allow to be sure to have a unique dir.
+  mkdir($dirlocked,0700);
+  $outfile="lodel.sql";
+  $fh=fopen($dirlocked."/".$outfile,"w");
   if (!$fh) die ("ERROR: unable to open a temporary file in write mode");
   // sauve la base generale
 
   if (fputs($fh,"DROP DATABASE $database;\nCREATE DATABASE $database;USE $database;\n")===FALSE) die("ERROR: unable to write in the temporary file");
 
-#  lock_write_all($database);
-#  mysql_dump($database,"",TRUE,$fh);
+  lock_write_all($database);
+  mysql_dump($database,"",TRUE,$fh);
+  unlock();
 
   if (!$singledatabase) {
     // cherche les sites
@@ -54,28 +58,34 @@ if ($backup) {
     $result=mysql_query("SELECT rep FROM $GLOBALS[tp]sites") or die (mysql_error());
     while (list($rep)=mysql_fetch_row($result)) {
       $dbname=$database."_".$rep;
-      echo $dbname,"<br>\n"; flush();
+#      echo $dbname,"<br>\n"; flush();
       if (fputs($fh,"DROP DATABASE $dbname;\nCREATE DATABASE $dbname;USE $dbname;\n")===FALSE) die("ERROR: unable to write in the temporary file");
       if (!mysql_select_db($dbname)) die("ERROR: the database $dbname does not exist or is not reactable. This is inconsistent with the sites table of $database. Please solve the problem before backing up.<br/>MySQL replied: ".mysql_error());
+#      echo $dbname," try to locked<br>\n"; flush();
       lock_write_all($dbname);
-      echo $dbname," locked<br>\n"; flush();
+#      echo $dbname," locked, let's dump<br>\n"; flush();
       mysql_dump($dbname,"",TRUE,$fh);
+      unlock();
 
-      array_push($dirtotar,"$rep/lodel/txt","$rep/lodel/rtf","$rep/docannexe");
-      echo $dbname," finish<br>"; flush();
+      if (!$sqlonly) array_push($dirtotar,"$rep/lodel/txt","$rep/lodel/rtf","$rep/docannexe");
+#      echo $dbname," finish<br>"; flush();
     }
   }
+  fclose($fh);
 
   // tar les sites et ajoute la base
   $archivetmp=tempnam("/tmp","lodeldump_");
   $archivefilename="lodel-".date("dmy").".tar.gz";
 
   chdir (LODELROOT);
-  echo "tar czf $archivetmp ".join(" ",$dirtotar)." -C /tmp $outfile\n"; flush();
-#  system("tar czf $archivetmp ".join(" ",$dirtotar)." -C /tmp $outfile")!==FALSE or die ("impossible d'executer tar");
-  chdir ("lodel/admin");
+#  echo "tar czf $archivetmp ".join(" ",$dirtotar)." -C $dirlocked $outfile\n"; flush();
+  system("tar czf $archivetmp ".join(" ",$dirtotar)." -C $dirlocked $outfile")!==FALSE or die ("impossible d'executer tar");
 
-  unlock();
+
+  unlink($dirlocked."/".$outfile);
+  rmdir($dirlocked);
+
+  chdir ("lodeladmin");
 
   download($archivetmp,$archivefilename);
 

@@ -388,7 +388,7 @@ function download($filename,$originalname="")
   // Download
   if (!$originalname) $originalname=$filename;
   if (!is_readable($filename)) die ("ERROR: The file \"$filename\" is not readable");
-
+  $originalname=preg_replace("/.*\//","",$originalname);
 
   get_PMA_define();
   header("Content-type: application/force-download");
@@ -472,37 +472,53 @@ function get_PMA_define()
     }
 }
 
+/**
+ * Save the files associated with a entites (annex file). 
+ *
+ * @param    dir    If $dir is numeric it is the id of the entites. In the other case, $dir should be a temporary directory.
+ *
+ */
 
-function save_annex_file($id,$file,$filename) {
-  if (!$id) die("Internal error in saveuploadedfile id=$id");
+function save_annex_file($dir,$file,$filename) {
 
-  $dir="docannexe/fichier/$id";
+  if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
+  if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
+
   if (!file_exists(SITEROOT.$dir)) {
     if (!@mkdir(SITEROOT.$dir,0755)) die("ERROR: impossible to create the directory \"$dir\"");
   }
+  $filename=preg_replace("/.*\//","",$filename); // take only the name
   $dest=$dir."/".$filename;
-  if (!move_uploaded_file($file,SITEROOT.$dest)) exit();
+  if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
 
   @chmod(SITEROOT.$dest, 0600);
   
   return $dest;
 }
 
+/**
+ * Save the image files associated with a entites (annex file). Check it is a valid image.
+ *
+ * @param    dir    If $dir is numeric it is the id of the entites. In the other case, $dir should be a temporary directory.
+ *
+ */
 
-function save_annex_image($id,$file,$filename) {
-  if (!$id) die("Internal error in saveuploadedfile id=$id");
+function save_annex_image($dir,$file,$filename) {
 
-  $dir="docannexe/image/$id";
+  if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
+  if (is_numeric($dir)) $dir="docannexe/image/$dir";
+
   if (!file_exists(SITEROOT.$dir)) {
     if (!@mkdir(SITEROOT.$dir,0700)) die("ERROR: impossible to create the directory \"$dir\"");
   }
   $info=getimagesize($file);
-  if (!is_array($info)) die("ERROR: the image format has not been recognized");
+  if (!is_array($info)) die("ERROR: the format of the image has not been recognized");
   $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
   $ext=$exts[$info[2]-1];
 
+  $filename=preg_replace(array("/.*\//","/\.\w+$/"),array("",""),$filename); // take only the name, remove the extension
   $dest=$dir."/".$filename.".".$ext;
-  if (!move_uploaded_file($file,SITEROOT.$dest)) exit();
+  if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
 
   @chmod(SITEROOT.$dest, 0600);
   

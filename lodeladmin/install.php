@@ -347,32 +347,28 @@ if (!$extensionscripts || !$usesymlink) {
 $textlc=join('',file($lodelconfig));
 
 // les deux fichiers sont différents, il faut copier le fichier lodelconfig.php
-$dirs=array(".","lodel","lodel/admin");
-$sitedir=array(".","lodel","lodel/edition","lodel/admin");
-
-// cherche les sites qui existent deja et cree le tableau $dirs
-$result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites WHERE statut>0");
-while ($row=mysql_fetch_row($result)) {
-  foreach ($sitedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
-}
+#$dirs=array(".","lodel","lodel/admin");
+#$sitedir=array(".","lodel","lodel/edition","lodel/admin");
+#
+#// cherche les sites qui existent deja et cree le tableau $dirs
+#$result=mysql_query("SELECT rep FROM $GLOBALS[tableprefix]sites WHERE statut>0");
+#while ($row=mysql_fetch_row($result)) {
+#  foreach ($sitedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
+#}
 // ok, on a tout, on lance la copie
 $erreur_lodelconfigdir=array();
 $have_is_link=function_exists("is_link"); // fonction is_link existe ?
-foreach ($dirs as $dir) {
-  $file=$dir."/lodelconfig.php";
-  if (file_exists(LODELROOT."/".$file) && $have_is_link && is_link(LODELROOT."/".$file)) continue; // inutile de copie sur les links
-  if (file_exists(LODELROOT."/".$file) && $textlc==join('',file(LODELROOT."/".$file))) continue; // verifie si le lodelconfig.php existe et s'il est identique
-  if (@copy($lodelconfig,LODELROOT."/".$file)) {
-    if ($have_chmod) @chmod(LODELROOT."/".$file,0600);
-  } else { // erreur, on le note
-    array_push($erreur_lodelconfigdir,$dir);
-  }  
-}
+#foreach ($dirs as $dir) {
+#  $file=$dir."/lodelconfig.php";
 
-if ($erreur_lodelconfigdir) {
+$file="lodelconfig.php";
+  
+if (@copy($lodelconfig,LODELROOT."/".$file)) {
+  if ($have_chmod) @chmod(LODELROOT."/".$file,0600);
+} else { // erreur, on le note
   include ("tpl/install-lodelconfig.html");
-  return;
-}
+}  
+
 
 //
 // ok, c'est fini, on a plus qu'a bloquer l'install

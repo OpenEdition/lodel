@@ -30,18 +30,12 @@
 <tr>
 <td>&nbsp;
 
-<IF COND="[#ARCHIVE]">
-<div align="center"><a href="upload/[#ARCHIVE]"><strong>Cliquez ici pour télécharger</strong></a><br />
 
-l'archive sur votre disque dur (taille [#SIZE]ko).
-<br /><br />
+<div align="center"><a href="backup.php?backup=oui"><strong>Cliquez ici pour lancer la sauvegarde compl&egrave;te</strong></a></div>
 
-<a href="backup.php?terminer=[(#ARCHIVE|urlencode)]"><strong>Cliquez ensuite ici pour terminer</strong></a><br />
-<br />
-Attention : pour des raisons de sécurité, vous <u>devez</u> attendre que le téléchargmenet soit achevé pour cliquer sur terminer.</div>
+<br/>
+<div align="center"><a href="backup.php?backup=oui&sqlonly=oui"><strong>Cliquez ici pour lancer la sauvegarde de la DB seulement</strong></a></div>
 
-<ELSE/><div align="center"><a href="backup.php?backup=1"><strong>Cliquez ici pour lancer la sauvegarde</strong></a></div><br />
-</IF>
 </td>
 </tr>
 </table>

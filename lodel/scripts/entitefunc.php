@@ -104,6 +104,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   require_once ($home."connect.php");
   require_once ($home."champfunc.php");
 
+  // file to move once the document id is know.
+  $files_to_move=array();
+
   $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $champcritere") or die (mysql_error());
   while (list($nom,$type,$condition,$defaut)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
@@ -173,10 +176,17 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
 	}
 	$entite[$nom]=$str;
       }
+    case 'image' :
+    case 'fichier' :
+      // verifie que c'est un nom correct
+      if (!preg_match("/^docannexe\/$type\/tmp-\d+\/[^\/]+$/",$entite[$nom])) $erreur[$nom]="filename";
+      $files_to_move[$nom]=array(filename=>$entite[$nom],type=>$type,nom=>$nom);
+      unset($entite[$nom]); // it must not be update... the old files must be remove later (once everything is checked)
     default :
       if (!isset($entite[$nom])) $entite[$nom]=$defaut;
     }
-    $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
+    if ($entite[$nom])
+      $sets[$nom]="'".addslashes(stripslashes($entite[$nom]))."'"; // this is for security reason, only the authorized $nom are copied into sets. Add also the quote.
   } // end of while over the results
 
   if ($err) { 
@@ -210,6 +220,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     mysql_query("UPDATE $GLOBALS[tp]entites SET nom='$context[nom]' $typeset $groupeset $statutset WHERE id='$id'") or die(mysql_error());
     if ($grouperec && $admin) change_groupe_rec($id,$groupe);
 
+    move_files($id,$files_to_move,&$sets);
+
     foreach ($sets as $nom=>$value) { $sets[$nom]=$nom."=".$value; }
     mysql_query("UPDATE $GLOBALS[tp]$classe SET ".join(",",$sets)." WHERE identite='$id'") or die (mysql_error());
 
@@ -231,6 +243,8 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     $id=mysql_insert_id();
     creeparente($id,$context[idparent],FALSE);
 
+    move_files($id,$files_to_move,&$sets);
+
     mysql_query("INSERT INTO $GLOBALS[tp]$classe (identite,".join(",",array_keys($sets)).") VALUES ('$id',".join(",",$sets).")") or die (mysql_error());
   }  
 
@@ -239,6 +253,23 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   unlock();
 
   return $id;
+}
+
+function move_files($id,$files_to_move,&$sets)
+
+{
+  foreach ($files_to_move as $file) {
+    $src=SITEROOT.$file[filename];
+    $dest=basename($file[filename]); // basename
+    // new path to the file
+    $sets[$file[nom]]="docannexe/$file[type]/$id/$dest";
+    $dest=SITEROOT.$sets[$file[nom]];
+    if ($src==$dest) continue;
+    copy($src,$dest);
+    chmod ($dest,0600);
+    unlink($src);
+    @rmdir(dirname($src)); // do not complain, the directory may not be empty
+  }
 }
 
 

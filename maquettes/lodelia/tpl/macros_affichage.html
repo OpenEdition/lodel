@@ -972,7 +972,11 @@
 			<li>
 				<!-- Titre du doc annexe -->
 				<span class="bold">
+	                                <IF COND="[#TYPE]=='documentannexe-lienfichier'">
+					<a name="[#TITRE]" href="docannexe.html?id=[#ID]">[#TITRE]</a> ([(#LIEN|nicefilesize)])
+	                                <ELSE/>
 					<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+	                                </IF>
 				</span>
 				<p>
 					<!-- Commentaire du doc annexe -->

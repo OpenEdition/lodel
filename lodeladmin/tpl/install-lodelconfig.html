@@ -1,45 +1,37 @@
 <? include("tpl/install-openhtml.html"); ?>
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+<!--
+
+  LODEL - Logiciel d'Edition ELectronique.
+
+  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+
+  Home page: http://www.lodel.org
+
+  E-Mail: lodel@lodel.org
+
+                            All Rights Reserved
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. -->
 
 <!-- ce fichier n'est pas un template -->
 
-Une erreur est intervenue lors de la copie du fichier de configuration "lodelconfig.php" dans les répertoires ci-dessous. Ceci est probablement dù au droits d'ecriture sur ces repertoires. Si vous souhaitez que le serveur fasse l'operation, il faut lui permettre d'écrire dans ces répertoires. Cependant, pour plus de sécurité, il est vivement conseillé de gérer les droits d'accès par vous même et de façon stricte. Dans ce cas, faites la copie à la main du fichier lodel/admin/<?=$lodelconfig ?> (sans y porté aucune modifications) dans les répertoires ci-dessous, et assurer les droits d'écriture et de lecture les plus restreints possibles (lecture pour le serveur, écriture pour personne sinon vous-même).<p>
+Une erreur est intervenue lors de la copie du fichier de configuration "lodelconfig.php" dans le répertoire racine de Lodel. Ceci est probablement dù au droits d'ecriture sur ces repertoires. Si vous souhaitez que le serveur fasse l'operation, il faut lui permettre d'écrire dans ce répertoire. Cependant, pour plus de sécurité, il possible  de gérer les droits d'accès par vous même et de façon stricte. Dans ce cas, faites la copie à la main du fichier lodeladmin/<?=$lodelconfig ?> (sans y porté aucune modifications) dans le repertoire racine de Lodel, et assurer les droits d'écriture et de lecture les plus restreints possibles (lecture pour le serveur, écriture pour personne sinon vous-même).<p>
 
 LODEL ne vient avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 <p>
-<p>
-<p><p>Répertroire (par rapport à la racine de LODEL):<br>
-<?
-
-foreach($erreur_lodelconfigdir as $dir) {
-	      if ($dir==".") { echo " (racine)<br>"; }  else echo "$dir<br>";
-}
-?>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig">

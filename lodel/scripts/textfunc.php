@@ -522,6 +522,26 @@ function imageheight($image)
   } else return 0;
 }
 
+/**
+ * Renvoie la taille d'un fichier, mais formate joliment
+ * avec des kilo et mega
+ */
+
+function nicefilesize($lien)
+{
+  if (defined(SITEROOT)) $lien=SITEROOT.$lien;
+  if (!file_exists($lien)) return "0k";
+  $size=filesize($lien);
+  if ($size<1024) return $size." octets";
+
+  foreach(array("k","M","G","T") as $unit) {
+    $size/=1024.0;
+    if ($size<10) return sprintf("%.1f".$unit,$size);
+    if ($size<1024) return intval($size).$unit;
+  }
+}
+
+
 
 
 ?>
