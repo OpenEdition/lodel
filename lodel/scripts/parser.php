@@ -587,11 +587,16 @@ function decode_loop_content ($name,$tables=array())
 
 #  print_r($vars);
 #  print_r($GLOBALS[tablefields][$table]);
-  foreach($tables as $table) {
+  /*foreach($tables as $table) {
     $varstoselect=array_intersect($GLOBALS[tablefields][$table],$vars);
     $knownvars=array_merge($knownvars,$vartoselect);
     foreach($varstoselect as $vartoselect) array_push($selects,"$table.$vartoselect");
-  }
+  }*/
+  foreach($tables as $table) {
+   $varstoselect=$GLOBALS[tablefields][$table];
+   $knownvars=array_merge($knownvars,$vartoselect);
+   foreach($varstoselect as $vartoselect) array_push($selects,"$table.$vartoselect");
+ }
 
   // compute the vars we don't know at level 1
   $diff=array_diff($this->wantedvars[$loopind][1],$knownvars);
