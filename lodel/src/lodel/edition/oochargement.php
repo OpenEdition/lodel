@@ -559,7 +559,6 @@ function convertHTMLtoUTF8 (&$text)
 		  "shy"=>'\302\255',
  		  "not"=>'\302\254',
 
-
 # ces trois derniers sont a verifier
 	      "laquo"=>'«',
 	      "raquo"=>'»',
