@@ -416,8 +416,8 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
   do {
     $arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
     if ($arr===false) dberror();
-    if (!$arr && $GLOBALS['user']['admin']) {
-      if ($logic) break; // don't try again
+    if (!$GLOBALS['user']['admin'] || $logic) break;
+    if (!$arr) {
       // create the textfield
       require_once($GLOBALS['home']."logic.php");
       $logic=getLogic("texts");
