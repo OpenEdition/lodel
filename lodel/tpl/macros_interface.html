@@ -194,10 +194,20 @@ cp_[#NAME].writeDiv();
 	</LOOP>
 	<ELSE/>
 	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_ENTITIES]</a>
-	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
-	<select id="[#VARNAME][select]" row="3" multiple ></select>
+	<select id="[#VARNAME][select]" row="3" multiple >
 	<LOOP NAME="entities_select">
-		<option value="[#ID]">[#TITLE]</option>
+		<DO>
+		<option value="[#ID]">[#G_TITLE]</option>
+		</DO>
+		<AFTER>
+			</select>
+			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="[#ALL]">
+
+		</AFTER>
+		<ALTERNATIVE>
+			</select>
+			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="">
+		</ALTERNATIVE>
 	</LOOP>
 
 	</IF>

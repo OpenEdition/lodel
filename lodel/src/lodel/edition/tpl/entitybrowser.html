@@ -42,9 +42,10 @@ function sendValues(){
 	var pattern=/(\d+):(.*)/;
 	var chkbox = document.getElementsByName('entities');
 	var s='';
-	while(obj.length) {
-		obj.options[0]=null;
+	while(objselect.length) {
+		objselect.options[0]=null;
 	}		
+	obj.value='';
 	for(i=0; i<chkbox.length; i++){
 		if(chkbox[i].checked) {
 			var result = chkbox[i].value.match(pattern);
@@ -104,7 +105,7 @@ function sendValues(){
 <SCRIPT LANGUAGE="JavaScript">
 <!-- Begin
 
-obj=window.opener.document.getElementById('[#CALLER]');
+obj=window.opener.document.getElementById('[#CALLER][select]');
 <IF COND="[#SINGLE]">
 o=document.getElementById('entities'+obj.value);
 if (o) o.style.backgroundColor='orange';

@@ -126,10 +126,31 @@ class Entities_EditionLogic extends GenericLogic {
        }
      }
      /////
-       function loop_entities_select($context,$funcname)
-       {
-	 if (function_exists("code_alter_$funcname")) call_user_func("code_alter_$funcname",$context);
-       }
+    function loop_entities_select($context,$funcname)
+    {
+      global $db;
+      $varname=$context['varname'];
+      if (!$varname) {
+	if (function_exists("code_alter_$funcname"))
+	  call_user_func("code_alter_$funcname",$context);
+	return;
+      }
+      $ids=preg_split("/,/",$context['entities'][$varname],-1,PREG_SPLIT_NO_EMPTY);
+      $result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE status>-64 AND id ".sql_in_array($ids))) or dberror();
+			   
+
+      while (!$result->EOF) {
+	$localcontext=array_merge($context,$result->fields);
+	call_user_func("code_do_$funcname",$localcontext);
+	$result->MoveNext();
+      }
+
+      if (function_exists("code_after_$funcname")) {
+	$localcontext=$context;
+	$localcontext['all']=$context['entities'][$varname];
+	call_user_func("code_after_$funcname",$localcontext);
+      }
+    }
      /////
 
      $ret = GenericLogic::viewAction($context,$error);
@@ -353,8 +374,8 @@ class Entities_EditionLogic extends GenericLogic {
        $dao=getDAO("tablefields");
        foreach(array_keys($context['entities']) as $name) {
 	 $name=addslashes($name);
-	 $vo=$dao->find("class='".$context['class']."' AND name='".$name."' AND type='entities'");
-	 if (!$vo) trigger_error("invalid name for field of type entities",E_USER_ERROR);
+	 $vofield=$dao->find("class='".$context['class']."' AND name='".$name."' AND type='entities'");
+	 if (!$vofield) trigger_error("invalid name for field of type entities",E_USER_ERROR);
 	 $idrelations=array();
 	 if (is_array($context['entities'][$name])) {
 	   foreach($context['entities'][$name] as $id) {
@@ -571,8 +592,6 @@ class Entities_EditionLogic extends GenericLogic {
      foreach($relations as $k=>$v) {
        $context['entities'][$k]=join(",",$v);
      }
-
-     #print_r($context['persons']);      
   }
 
    // begin{publicfields} automatic generation  //

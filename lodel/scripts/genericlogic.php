@@ -362,7 +362,7 @@ class GenericLogic extends Logic {
 	   $ids=array();
 	   foreach(explode(",",$value) as $id) if ($id>0) $ids[]=intval($id);
 	   $value=$ids;
-	   $count=$GLOBALS['db']->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE status>-64 AND id IN ('".join("','",$value)."')"));
+	   $count=$GLOBALS['db']->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE status>-64 AND id ".sql_in_array($value)));
 	   if ($GLOBALS['db']->errorno()) dberror();
 	   if ($count!=count($value)) die("ERROR: some entities in $name are invalid. Please report the bug");	    
 	   // don't check they exists, the interface ensure it ! (... hum)
