@@ -1,5 +1,5 @@
 <DEFMACRO NAME="HEADER_LOGO">
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,7 +17,7 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
 <BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
@@ -49,8 +49,8 @@
 	</html>
 </DEFMACRO>
 
-<!-- Rajout du 25/08/03 Macros pour Ghislain          -->
-<!-- Pour les fichiers typepubli.html et typedoc.html -->
+<!--[ Rajout du 25/08/03 Macros pour Ghislain          ]-->
+<!--[ Pour les fichiers typepubli.html et typedoc.html ]-->
 <DEFMACRO NAME="TYPE_PERSONNES">
 	<LOOP NAME="typepersonnes">
 		<DO>
@@ -66,11 +66,11 @@
 		</DO>
 	</LOOP>
 </DEFMACRO>
-<!-- Fin Rajout du 25/08/03 ************************* -->
+<!--[ Fin Rajout du 25/08/03 ************************* ]-->
 
-<!-- Macro rajoutée le 17/10/03 *********************** -->
-<!-- Macro servant à typeentree.html et                 -->
-<!-- typepersonne.html                                  -->
+<!--[ Macro rajoutée le 17/10/03 *********************** ]-->
+<!--[ Macro servant à typeentree.html et                 ]-->
+<!--[ typepersonne.html                                  ]-->
 <DEFMACRO NAME="TYPE_ENTITES">
 	<LOOP NAME="typeentites">
 		<DO>
@@ -78,11 +78,11 @@
 		</DO>
 	</LOOP>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macros rajoutées le 20/10/03 ********************* -->
-<!-- Macro servant à typeentrees.html, champs.html      -->
-<!-- typepersonne.html                                  -->
+<!--[ Macros rajoutées le 20/10/03 ********************* ]-->
+<!--[ Macro servant à typeentrees.html, champs.html      ]-->
+<!--[ typepersonne.html                                  ]-->
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
 	<div>
@@ -164,7 +164,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
-	<!-- Affiche tous les champs du groupe courant -->
+	<!--[ Affiche tous les champs du groupe courant ]-->
 	<LOOP NAME="afficherchamps" TABLE="champs" ORDER="ordre, nom" WHERE="statut gt 0" WHERE="idgroupe='[#ID]'">
 		<DO>
 			<tr>
@@ -200,10 +200,10 @@
 		<input type="checkbox" name="protege" checked>
 	</IF>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macro rajoutée le 04/11/03 *********************** -->
-<!-- Macro servant à users.html                         -->
+<!--[ Macro rajoutée le 04/11/03 *********************** ]-->
+<!--[ Macro servant à users.html                         ]-->
 <DEFMACRO NAME="AFFICHER_PRIVILEGE">
 	<IF COND="[#PRIVILEGE] EQ 128">
 		<MACRO NAME="PNG_UTILISATEUR_ORANGE"><br />Administrateur Lodel
@@ -225,19 +225,19 @@
 		</IF>
 	</IF>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macro rajoutée le 25/11/03 *********************** -->
-<!-- Macro servant à entrees.html                       -->
+<!--[ Macro rajoutée le 25/11/03 *********************** ]-->
+<!--[ Macro servant à entrees.html                       ]-->
 <DEFMACRO NAME="AUCUNE_ENTREE_DISPONIBLE">
 	<div class="pas_de_publication">
 		Aucune entrée disponible
 	</div>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macro rajoutée le 03/12/03 *********************** -->
-<!-- Macro servant à typedocs.html                      -->
+<!--[ Macro rajoutée le 03/12/03 *********************** ]-->
+<!--[ Macro servant à typedocs.html                      ]-->
 <DEFMACRO NAME="TYPE_DE_DOCUMENT_UTILISE">
 	<LOOP NAME="typeutilise" TABLE="entites" SELECT="count(*) as nbdocuments" WHERE="idtype='[#ID]'">
 		<DO>
@@ -256,7 +256,7 @@
 	</LOOP>
 </DEFMACRO>
 
-<!-- Macro servant à typedoc.html et typepubli.html     -->
+<!--[ Macro servant à typedoc.html et typepubli.html     ]-->
 <DEFMACRO NAME="CHOIX_TYPES_PARENTS">
 	<u>Type de publication et documents<br /> qui peuvent contenir ce type de documents :</u><br />
 	<LOOP NAME="types_parents" TABLE="typeentites_typeentites" WHERE="idtypeentite='[#ID]' AND idtypeentite2=0">
@@ -266,29 +266,29 @@
 	(base)<br />
 	<MACRO NAME="TYPE_ENTITES">
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macro rajoutée le 04/12/03 *********************** -->
+<!--[ Macro rajoutée le 04/12/03 *********************** ]-->
 <DEFMACRO NAME="COCHER_DECOCHER">
-	<script type="text/javascript">
-	<!--
+	<script type="text/javascript"><!--
+	
 	function setCheckboxes(form, group, check) 	{
 		for (i=0, n=document.forms[form].elements.length; i<n; i++)
 			if (document.forms[form].elements[i].name.indexOf(group) != -1)
 				document.forms[form].elements[i].checked = check;
 	    return true;
 	}
-	//-->
-	</script>
+	//
+	--></script>
 
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- ************************************** Rajout intégration maquette ************************************** -->
+<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
-	<!-- exemple de Javascript pour un Rollover -->
-	<SCRIPT TYPE="text/javascript">
-	<!--
+	<!--[ exemple de Javascript pour un Rollover ]-->
+	<SCRIPT TYPE="text/javascript"><!--
+	
 	/* on pré-charge les image */
 	//img1=new Image(82,18); /* on déclare les images */
 	//img2=new Image(82,18);
@@ -298,8 +298,8 @@
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
-	//-->
-	</SCRIPT>
+	//
+	--></SCRIPT>
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_PLUS">
@@ -322,7 +322,7 @@
 	<img src="[#SHAREURL]/images/logo_lodel_droite.png" width="203" height="75" border="0" vspace="0" hspace="0" />
 </DEFMACRO>
 
-<!-- png accueil -->
+<!--[ png accueil ]-->
 <DEFMACRO NAME="PNG_MENU_ACCUEIL">
 	<img src="[#SHAREURL]/images/menu_accueil.png" id="img_menu_accueil" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
 </DEFMACRO>
@@ -339,7 +339,7 @@
 	<img src="[#SHAREURL]/images/menu_accueil_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
 </DEFMACRO>
 
-<!-- png voir -->
+<!--[ png voir ]-->
 <DEFMACRO NAME="PNG_MENU_VOIR">
 	<img src="[#SHAREURL]/images/menu_voir.png" id="img_menu_voir" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
 </DEFMACRO>
@@ -356,7 +356,7 @@
 	<img src="[#SHAREURL]/images/menu_voir_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
 </DEFMACRO>
 
-<!-- png admin -->
+<!--[ png admin ]-->
 <DEFMACRO NAME="PNG_MENU_ADMIN">
 	<img src="[#SHAREURL]/images/menu_admin.png" id="img_menu_admin" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
 </DEFMACRO>
@@ -373,7 +373,7 @@
 	<img src="[#SHAREURL]/images/menu_admin_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
 </DEFMACRO>
 
-<!-- png aide -->
+<!--[ png aide ]-->
 <DEFMACRO NAME="PNG_MENU_AIDE">
 	<img src="[#SHAREURL]/images/menu_aide.png" id="img_menu_aide" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
 </DEFMACRO>
@@ -390,7 +390,7 @@
 	<img src="[#SHAREURL]/images/menu_aide_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
 </DEFMACRO>
 
-<!-- png deconnecte -->
+<!--[ png deconnecte ]-->
 <DEFMACRO NAME="PNG_MENU_DECONNECTE">
 	<img src="[#SHAREURL]/images/menu_deconnecte.png" id="img_menu_deconnecte" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
 </DEFMACRO>
@@ -407,7 +407,7 @@
 	<img src="[#SHAREURL]/images/menu_deconnecte_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
 </DEFMACRO>
 
-<!-- png maj -->
+<!--[ png maj ]-->
 <DEFMACRO NAME="PNG_MENU_MAJ">
 	<img src="[#SHAREURL]/images/menu_maj.png" id="img_menu_maj" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
 </DEFMACRO>
@@ -424,7 +424,7 @@
 	<img src="[#SHAREURL]/images/menu_maj_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
 </DEFMACRO>
 
-<!-- png recompiler -->
+<!--[ png recompiler ]-->
 <DEFMACRO NAME="PNG_MENU_RECOMPILER">
 	<img src="[#SHAREURL]/images/menu_recompiler.png" id="img_menu_recompiler" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
 </DEFMACRO>
@@ -441,7 +441,7 @@
 	<img src="[#SHAREURL]/images/menu_recompiler_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
 </DEFMACRO>
 
-<!-- png utilisateurs -->
+<!--[ png utilisateurs ]-->
 <DEFMACRO NAME="PNG_UTILISATEUR_GRIS">
 	<img src="[#SHAREURL]/images/utilisateur_gris.png" width="8" height="17" border="0" vspace="0" hspace="0" />
 </DEFMACRO>
@@ -457,4 +457,4 @@
 <DEFMACRO NAME="PNG_UTILISATEUR_ORANGE">
 	<img src="[#SHAREURL]/images/utilisateur_orange.png" width="8" height="17" border="0" vspace="0" hspace="0" />
 </DEFMACRO>
-<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
+<!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->

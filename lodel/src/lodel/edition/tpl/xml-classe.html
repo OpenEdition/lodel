@@ -1,5 +1,5 @@
 <!DOCTYPE article SYSTEM "r2r-xhtml-1.dtd">
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,12 +17,12 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
 <article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">  
 
-<!-- affiche les personnes -->
+<!--[ affiche les personnes ]-->
     <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
 	<gr[#TYPE]>
@@ -42,9 +42,9 @@
 	</gr[#TYPE]>
       </DO>
     </LOOP>
-<!-- -->
+<!--[ ]-->
 
-<!-- affiche les entrees -->
+<!--[ affiche les entrees ]-->
     <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
 	<gr[#TYPE]>
@@ -59,9 +59,9 @@
 	</gr[#TYPE]>
       </DO>
     </LOOP>
-<!-- -->
+<!--[ ]-->
 
-<!-- affiche les champs -->
+<!--[ affiche les champs ]-->
     <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       <DO>
 	<[#NOM]>
@@ -94,6 +94,6 @@
       </DO>
     </LOOP>
 
-<!-- -->
+<!--[ ]-->
   <meta><infoarticle><typedoc>[#TYPE]</typedoc></infoarticle></meta>
 </article>

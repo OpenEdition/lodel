@@ -1,4 +1,4 @@
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -16,34 +16,34 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<!-- ****************************************************************** -->
-<!-- Librairie de présentation                                          -->
-<!-- Auteurs :                                                          -->
-<!-- Marin Dacos. 2002.                                                 -->
-<!-- Nicolas Nutten. 2003.                                              -->
-<!-- Cette librairie contient :                                         -->
-<!-- <MACRO NAME="BOUTON_SIGNALER">                                     -->
-<!-- <MACRO NAME="BOUTON_IMPRIMER">		                                -->
-<!-- <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">                             -->
-<!-- <MACRO NAME="FERMER_TABLE_PRINCIPALE">                             -->
-<!-- <MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">                  -->
-<!-- <MACRO NAME="FERMER_TABLE_PRINCIPALE_IMPRIMABLE">                  -->
-<!-- <MACRO NAME="AFFICHER_LOGO_REVUE_ORG">                             -->
-<!-- <MACRO NAME="TRACER_LIGNE_VERTICALE">                              -->
-<!-- <MACRO NAME="NOM_REVUE">                                           -->
-<!-- <MACRO NAME="DESCRIPTION_REVUE">                                   -->
-<!-- <MACRO NAME="REVUES_ORG">                                          -->
-<!-- <MACRO NAME="TABLE_ALPHABETIQUE">                                  -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Librairie de présentation                                          ]-->
+<!--[ Auteurs :                                                          ]-->
+<!--[ Marin Dacos. 2002.                                                 ]-->
+<!--[ Nicolas Nutten. 2003.                                              ]-->
+<!--[ Cette librairie contient :                                         ]-->
+<!--[ <MACRO NAME="BOUTON_SIGNALER">                                     ]-->
+<!--[ <MACRO NAME="BOUTON_IMPRIMER">		                                ]-->
+<!--[ <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">                             ]-->
+<!--[ <MACRO NAME="FERMER_TABLE_PRINCIPALE">                             ]-->
+<!--[ <MACRO NAME="OUVRIR_TABLE_PRINCIPALE_IMPRIMABLE">                  ]-->
+<!--[ <MACRO NAME="FERMER_TABLE_PRINCIPALE_IMPRIMABLE">                  ]-->
+<!--[ <MACRO NAME="AFFICHER_LOGO_REVUE_ORG">                             ]-->
+<!--[ <MACRO NAME="TRACER_LIGNE_VERTICALE">                              ]-->
+<!--[ <MACRO NAME="NOM_REVUE">                                           ]-->
+<!--[ <MACRO NAME="DESCRIPTION_REVUE">                                   ]-->
+<!--[ <MACRO NAME="REVUES_ORG">                                          ]-->
+<!--[ <MACRO NAME="TABLE_ALPHABETIQUE">                                  ]-->
+<!--[ ****************************************************************** ]-->
 
 <DEFMACRO NAME="BOUTON_SIGNALER">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton proposant de signaler la page en cours à un ami. -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton proposant de signaler la page en cours à un ami. ]-->
+<!--[ ****************************************************************** ]-->
 	
 				<a href="signaler.html?id=[#ID]">
 					<MACRO NAME="IMG_BOUTON_SIGNALER2">
@@ -52,11 +52,11 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_IMPRIMER">		
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton permettant de mettre le document au format       -->
-<!-- d'impression.                                                      -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton permettant de mettre le document au format       ]-->
+<!--[ d'impression.                                                      ]-->
+<!--[ ****************************************************************** ]-->
 	<a href="document.html?id=[#ID]&format=print">
 		<MACRO NAME="IMG_BOUTON_IMPRIMER2">
 	</a>
@@ -64,16 +64,16 @@
 </DEFMACRO>	
 
 <DEFMACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Ouvre la table principale, celle qui englobe toute la page dans    -->
-<!-- une cellule.                                                       -->
-<!-- Il faut penser à ouvrir (et à fermer) cette cellule avec les       -->
-<!-- marqueurs <td>...</td> après avoir appellé cette Macro.            -->
-<!-- ATTENTION : Toute table ouverte doit être refermée !!!             -->
-<!-- Pour refermer cette table veuillez utiliser de préférence la       -->
-<!-- Macro : <MACRO NAME="FERMER_TABLE_PRINCIPALE">                     -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Ouvre la table principale, celle qui englobe toute la page dans    ]-->
+<!--[ une cellule.                                                       ]-->
+<!--[ Il faut penser à ouvrir (et à fermer) cette cellule avec les       ]-->
+<!--[ marqueurs <td>...</td> après avoir appellé cette Macro.            ]-->
+<!--[ ATTENTION : Toute table ouverte doit être refermée !!!             ]-->
+<!--[ Pour refermer cette table veuillez utiliser de préférence la       ]-->
+<!--[ Macro : <MACRO NAME="FERMER_TABLE_PRINCIPALE">                     ]-->
+<!--[ ****************************************************************** ]-->
 <table class="principale">
 	<tr>
 		<td>
@@ -83,12 +83,12 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="FERMER_TABLE_PRINCIPALE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Ferme la table principale.                                         -->
-<!-- ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      -->
-<!-- fermé la cellule principale avec le marqueur </td> !!!             -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Ferme la table principale.                                         ]-->
+<!--[ ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      ]-->
+<!--[ fermé la cellule principale avec le marqueur </td> !!!             ]-->
+<!--[ ****************************************************************** ]-->
 		</div>
 		
 		</td>
@@ -100,15 +100,15 @@
 
 
 <DEFMACRO NAME="AFFICHER_LOGO_REVUE_ORG">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!--  Permet d'afficher le logo avec roll over de Revues.org, ce        -->
-<!--  logo est composé de plusieurs éléments                            -->
-<!--  Utilisation du javascript pour faire fonctionner le roll over		-->
-<!--  Ne fonctionne pas avec Mozilla                                	-->
-<!--  possibilité de faire avec le CSS mais le logo n'apparait pas sous -->
-<!--  Mozilla avec cette technique                                      -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[  Permet d'afficher le logo avec roll over de Revues.org, ce        ]-->
+<!--[  logo est composé de plusieurs éléments                            ]-->
+<!--[  Utilisation du javascript pour faire fonctionner le roll over		]-->
+<!--[  Ne fonctionne pas avec Mozilla                                	]-->
+<!--[  possibilité de faire avec le CSS mais le logo n'apparait pas sous ]-->
+<!--[  Mozilla avec cette technique                                      ]-->
+<!--[ ****************************************************************** ]-->
 	<div class="logo_revuesorg1"> 
 		&nbsp; 
 	</div>
@@ -119,11 +119,11 @@
 		</a>
 	</div>
 
-	<!--<div class="logo_revuesorg1">
+	<!--[<div class="logo_revuesorg1">
 		<a class="logo_revuesorg3" href="http://www.revues.org" target="_blank" title="logo de Revues.org">
 			&nbsp; 
 		</a>
-	</div>-->
+	</div>]-->
 		
 	<div class="logo_revuesorg4" >
 		&nbsp;
@@ -132,62 +132,62 @@
 </DEFMACRO> 
 
 <DEFMACRO NAME="FILET_1"> 	 
-<!-- ****************************************************************** --> 	 
-<!-- Version 1.0                                                        --> 	 
-<!-- Affiche une règle horizontale de type 1.                           --> 	 
-<!-- Pour séparer des parties par exemple.                              --> 	 
-<!-- Pour plus de détails sur ce séparateur, voir sur la feuille de     --> 	 
-<!-- style la classe "filet_1".                                         --> 	 
-<!-- ****************************************************************** --> 	 
+<!--[ ****************************************************************** ]--> 	 
+<!--[ Version 1.0                                                        ]--> 	 
+<!--[ Affiche une règle horizontale de type 1.                           ]--> 	 
+<!--[ Pour séparer des parties par exemple.                              ]--> 	 
+<!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
+<!--[ style la classe "filet_1".                                         ]--> 	 
+<!--[ ****************************************************************** ]--> 	 
         <hr class="filet_1" /> 	 
 </DEFMACRO> 	 
   	 
 <DEFMACRO NAME="FILET_2"> 	 
-<!-- ****************************************************************** --> 	 
-<!-- Version 1.0                                                        --> 	 
-<!-- Affiche une règle horizontale de type 2.                           --> 	 
-<!-- Pour séparer des parties par exemple.                              --> 	 
-<!-- Pour plus de détails sur ce séparateur, voir sur la feuille de     --> 	 
-<!-- style la classe "filet_2".                                         --> 	 
-<!-- ****************************************************************** --> 	 
+<!--[ ****************************************************************** ]--> 	 
+<!--[ Version 1.0                                                        ]--> 	 
+<!--[ Affiche une règle horizontale de type 2.                           ]--> 	 
+<!--[ Pour séparer des parties par exemple.                              ]--> 	 
+<!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
+<!--[ style la classe "filet_2".                                         ]--> 	 
+<!--[ ****************************************************************** ]--> 	 
         <hr class="filet_2" /> 	 
 </DEFMACRO> 	 
  	 
 <DEFMACRO NAME="FILET_3"> 	 
-<!-- ****************************************************************** --> 	 
-<!-- Version 1.0                                                        --> 	 
-<!-- Affiche une règle horizontale de type 3.                           --> 	 
-<!-- Pour séparer des parties par exemple.                              --> 	 
-<!-- Pour plus de détails sur ce séparateur, voir sur la feuille de     --> 	 
-<!-- style la classe "filet_3".                                         --> 	 
-<!-- ****************************************************************** --> 	 
+<!--[ ****************************************************************** ]--> 	 
+<!--[ Version 1.0                                                        ]--> 	 
+<!--[ Affiche une règle horizontale de type 3.                           ]--> 	 
+<!--[ Pour séparer des parties par exemple.                              ]--> 	 
+<!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
+<!--[ style la classe "filet_3".                                         ]--> 	 
+<!--[ ****************************************************************** ]--> 	 
         <hr class="filet_3" /> 	 
 </DEFMACRO>
 
 <DEFMACRO NAME="NOM_REVUE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche le nom de la revue.                                        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche le nom de la revue.                                        ]-->
+<!--[ ****************************************************************** ]-->
 	[#REVUE]
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRIPTION_REVUE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche une Brève description de la revue.                         -->
-<!-- Remplacer le texte entre les '#' par le texte adéquat.             -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche une Brève description de la revue.                         ]-->
+<!--[ Remplacer le texte entre les '#' par le texte adéquat.             ]-->
+<!--[ ****************************************************************** ]-->
 	Une jolie petite revue
 </DEFMACRO>
 
 
 
 <DEFMACRO NAME="REVUES_ORG">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Mention de l'adhésion du site à Revues.org                         -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Mention de l'adhésion du site à Revues.org                         ]-->
+<!--[ ****************************************************************** ]-->
 <div class="revuesorg">
 	Page générée par
 		<a href="http://www.lodel.org">
@@ -202,14 +202,14 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="TABLE_ALPHABETIQUE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Table alphabétique qui peut se placer en début d'index et qui      -->
-<!-- permet d'accélérer la navigation dans la page grâce à des liens    -->
-<!-- internes.                                                          -->
-<!-- Cette Macro utilise la macro suivante :                            -->
-<!-- <MACRO NAME="FILET_2">                                             -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Table alphabétique qui peut se placer en début d'index et qui      ]-->
+<!--[ permet d'accélérer la navigation dans la page grâce à des liens    ]-->
+<!--[ internes.                                                          ]-->
+<!--[ Cette Macro utilise la macro suivante :                            ]-->
+<!--[ <MACRO NAME="FILET_2">                                             ]-->
+<!--[ ****************************************************************** ]-->
 	
 				<a class="alphabet" href="#A">A</a> - 
 				<a class="alphabet" href="#B">B</a> - 

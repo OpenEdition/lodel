@@ -1,4 +1,4 @@
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -16,34 +16,34 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<!-- ************************************************** -->
-<!-- * Macros de l'édition. 2002                        -->
-<!-- Auteur : Marin Dacos, Nicolas Nutten               -->
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
+<!--[ * Macros de l'édition. 2002                        ]-->
+<!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
+<!--[ ************************************************** ]-->
 
-<!-- Macro rajoutée le 23/09/03 *********************** -->
-<!-- Cette macro est utile aux fichiers tpl :           -->
-<!-- document.html                                      -->
+<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
+<!--[ Cette macro est utile aux fichiers tpl :           ]-->
+<!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!-- Met la valeur "true" dans le champ caché "reload"  -->
-<!-- du formulaire, puis fait un submit du formulaire.  -->
-	<script type="text/javascript">
-	<!--
+<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
+<!--[ du formulaire, puis fait un submit du formulaire.  ]-->
+	<script type="text/javascript"><!--
+	
 		function reloadForm(){
 			document.forms[0].reload.value="true";
 			document.forms[0].submit();
 		}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
 <DEFMACRO NAME="JS_CONFIRM_DEPUBLICATION">
-	<script type="text/javascript">
-	<!--
+	<script type="text/javascript"><!--
+	
 		function confirm_depublication(publi)
 		// Si publi = 1 : publication sinon : document.
 		{
@@ -62,11 +62,11 @@
 				}				
 			}
 		}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
-<!-- Macros rajoutées le 11/09/03 ********************* -->
+<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -113,11 +113,11 @@
 		</DO>
 	</LOOP>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macro rajoutée le 17/09/03 *********************** -->
-<!-- Macro servant à publication.html et                -->
-<!-- extrainfo.html                                     -->
+<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
+<!--[ Macro servant à publication.html et                ]-->
+<!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
 		<LOOP NAME="personnes">
@@ -165,11 +165,11 @@
 		</tr>
 	</table>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macros rajoutées le 17/10/03 ********************* -->
-<!-- Macro servant à publication.html et                -->
-<!-- document.html                                      -->
+<!--[ Macros rajoutées le 17/10/03 ********************* ]-->
+<!--[ Macro servant à publication.html et                ]-->
+<!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_EDITION_CHAMPS">
 	<IF COND="[#TYPE] eq 'boolean'">
 		<td><input type="checkbox" name="entite[[#NOM]]" [(#VALUE|true)checked]></td>
@@ -224,16 +224,16 @@
 	<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre entier</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre</td></tr></IF>
 </DEFMACRO>
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
-<!-- Macros rajoutées le 17/11/03 ********************* -->
-<!-- Macros servant à publication.html et               -->
-<!-- document.html                                      -->
+<!--[ Macros rajoutées le 17/11/03 ********************* ]-->
+<!--[ Macros servant à publication.html et               ]-->
+<!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE">
-<!-- Permet de lister tous les champs d'un groupe de    -->
-<!-- champs                                             -->
+<!--[ Permet de lister tous les champs d'un groupe de    ]-->
+<!--[ champs                                             ]-->
 	<LOOP NAME="champs">
-		<BEFORE><!-- information sur le groupe. Ne s'affichent que s'il y a des champs editable -->
+		<BEFORE><!--[ information sur le groupe. Ne s'affichent que s'il y a des champs editable ]-->
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
@@ -287,7 +287,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_TYPES_PERSONNES">
-	<!-- boucle sur les types de personne -->
+	<!--[ boucle sur les types de personne ]-->
 	<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
 		<DO>
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
@@ -334,7 +334,7 @@
 	</table>
 </DEFMACRO>
 
-<!-- ************************************************** -->
+<!--[ ************************************************** ]-->
 
 <DEFMACRO NAME="STATUT">
 	<IF COND="[#STATUT] GT 0">
@@ -504,11 +504,11 @@
 	<IF COND="[#STATUT]==1">&nbsp;-&nbsp;</IF>
 </DEFMACRO>
 
-<!-- ************************************** Rajout intégration maquette ************************************** -->
+<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
-	<!-- exemple de Javascript pour un Rollover -->
-	<script type="text/javascript">
-	<!--
+	<!--[ exemple de Javascript pour un Rollover ]-->
+	<script type="text/javascript"><!--
+	
 	/* on pré-charge les image */
 	//img1=new Image(82,18); /* on déclare les images */
 	//img2=new Image(82,18);
@@ -518,14 +518,14 @@
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_FONCTIONS_ARBORESCENCE">
-	<!-- exemple de Javascript pour un Rollover -->
-	<script type="text/javascript">
-	<!--
+	<!--[ exemple de Javascript pour un Rollover ]-->
+	<script type="text/javascript"><!--
+	
 		function change(obj) {
 			var cat = document.getElementById(obj);
 			var img = document.getElementById('img_' + obj);
@@ -576,14 +576,14 @@
 				affiche(cat.parentNode.id);
 			}
 		}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_AFFICHE_IMAGE">
-	<!-- exemple de Javascript pour un Rollover -->
-	<script type="text/javascript">
-	<!--
+	<!--[ exemple de Javascript pour un Rollover ]-->
+	<script type="text/javascript"><!--
+	
 		function affiche_image(visible) {
 			var dis;
 			
@@ -599,14 +599,14 @@
 				}
 			}
 		}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_TRONQUER">
-	<!-- exemple de Javascript pour un Rollover -->
-	<script type="text/javascript">
-	<!--
+	<!--[ exemple de Javascript pour un Rollover ]-->
+	<script type="text/javascript"><!--
+	
 	function tronquer($long1, $long2, $texte) {
 	        $debut = "" ;
 	        $fin = substr($texte, -$long2);
@@ -619,21 +619,21 @@
 	        }
 	        return $debut.$fin;
 	}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_POPUP">
-	<!-- exemple de Javascript pour une popup -->
-	<script type="text/javascript">
-	<!--
+	<!--[ exemple de Javascript pour une popup ]-->
+	<script type="text/javascript"><!--
+	
 	 function popup(url,nom) {
 	 	// remove an attribute if you don't want it to show up
 		// options : menubar,toolbar,location,directories,statut,scrollbars,resizable,width=640,height=480
 		 var fenetre = window.open(url,"","statut,scrollbars,width=800,height=600");
 	 }
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
 
@@ -690,17 +690,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="JS_AJOUTER_ENTITE">
-	<script type="text/javascript">
-	<!--
+	<script type="text/javascript"><!--
+	
 		function ajouter_entite(obj) {
 			var index = obj.selectedIndex;
 			window.location=obj.options[index].value;
 		}
-	//-->
-	</script>
+	//
+	--></script>
 </DEFMACRO>
 
-<!-- macro ajoutee par Ghislain 30/11/03 -->
+<!--[ macro ajoutee par Ghislain 30/11/03 ]-->
 <DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
 	<div class="lignes_ajouter_entite">
 		<LET VAR="idparentsaved">[#ID]</LET>
@@ -728,8 +728,8 @@
 	</div>
 </DEFMACRO>
 
-<!-- macro ajoutee par Ghislain 30/11/03 -->
-<!-- cette macro n'est pas directement utile pour Revues.org -->
+<!--[ macro ajoutee par Ghislain 30/11/03 ]-->
+<!--[ cette macro n'est pas directement utile pour Revues.org ]-->
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
 	<LET VAR="idparentsaved">[#ID]</LET>
 	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='documents'" ORDER="titre">
@@ -1146,12 +1146,12 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche les documents annexes.                                     -->
-<!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche les documents annexes.                                     ]-->
+<!--[ Cette Macro utilise les macros suivantes :                         ]-->
+<!--[ <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         ]-->
+<!--[ ****************************************************************** ]-->
 	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
 			<table class="table_docannexes">
@@ -1210,7 +1210,7 @@
 	<img src="[#SHAREURL]/images/logo_lodel_droite.png" width="203" height="75" border="0" vspace="0" hspace="0" />
 </DEFMACRO>
 
-<!-- png accueil -->
+<!--[ png accueil ]-->
 <DEFMACRO NAME="PNG_MENU_ACCUEIL">
 	<img src="[#SHAREURL]/images/menu_accueil.png" id="img_menu_accueil" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
 </DEFMACRO>
@@ -1227,7 +1227,7 @@
 	<img src="[#SHAREURL]/images/menu_accueil_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Accueil" />
 </DEFMACRO>
 
-<!-- png voir -->
+<!--[ png voir ]-->
 <DEFMACRO NAME="PNG_MENU_VOIR">
 	<img src="[#SHAREURL]/images/menu_voir.png" id="img_menu_voir" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
 </DEFMACRO>
@@ -1244,7 +1244,7 @@
 	<img src="[#SHAREURL]/images/menu_voir_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Voir" />
 </DEFMACRO>
 
-<!-- png admin -->
+<!--[ png admin ]-->
 <DEFMACRO NAME="PNG_MENU_ADMIN">
 	<img src="[#SHAREURL]/images/menu_admin.png" id="img_menu_admin" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
 </DEFMACRO>
@@ -1261,7 +1261,7 @@
 	<img src="[#SHAREURL]/images/menu_admin_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Administrer" />
 </DEFMACRO>
 
-<!-- png aide -->
+<!--[ png aide ]-->
 <DEFMACRO NAME="PNG_MENU_AIDE">
 	<img src="[#SHAREURL]/images/menu_aide.png" id="img_menu_aide" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
 </DEFMACRO>
@@ -1278,7 +1278,7 @@
 	<img src="[#SHAREURL]/images/menu_aide_gris.png" width="57" height="75" border="0" vspace="0" hspace="0" alt="Aide" />
 </DEFMACRO>
 
-<!-- png deconnecte -->
+<!--[ png deconnecte ]-->
 <DEFMACRO NAME="PNG_MENU_DECONNECTE">
 	<img src="[#SHAREURL]/images/menu_deconnecte.png" id="img_menu_deconnecte" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
 </DEFMACRO>
@@ -1295,7 +1295,7 @@
 	<img src="[#SHAREURL]/images/menu_deconnecte_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Se d&eacute;connecter" />
 </DEFMACRO>
 
-<!-- png maj -->
+<!--[ png maj ]-->
 <DEFMACRO NAME="PNG_MENU_MAJ">
 	<img src="[#SHAREURL]/images/menu_maj.png" id="img_menu_maj" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
 </DEFMACRO>
@@ -1312,7 +1312,7 @@
 	<img src="[#SHAREURL]/images/menu_maj_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Mettre &agrave; jour" />
 </DEFMACRO>
 
-<!-- png recompiler -->
+<!--[ png recompiler ]-->
 <DEFMACRO NAME="PNG_MENU_RECOMPILER">
 	<img src="[#SHAREURL]/images/menu_recompiler.png" id="img_menu_recompiler" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
 </DEFMACRO>
@@ -1329,7 +1329,7 @@
 	<img src="[#SHAREURL]/images/menu_recompiler_gris.png" width="64" height="75" border="0" vspace="0" hspace="0" alt="Recompiler" />
 </DEFMACRO>
 
-<!-- png utilisateurs -->
+<!--[ png utilisateurs ]-->
 <DEFMACRO NAME="PNG_UTILISATEUR_GRIS">
 	<img src="[#SHAREURL]/images/utilisateur_gris.png" width="8" height="17" border="0" vspace="0" hspace="0" />
 </DEFMACRO>
@@ -1346,7 +1346,7 @@
 	<img src="[#SHAREURL]/images/utilisateur_orange.png" width="8" height="17" border="0" vspace="0" hspace="0" />
 </DEFMACRO>
 
-<!-- png editions des series -->
+<!--[ png editions des series ]-->
 <DEFMACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
 	<img src="[#SHAREURL]/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43" />
 </DEFMACRO>
@@ -1355,7 +1355,7 @@
 	<img src="[#SHAREURL]/images/fleche_edition_des_series.png" class="picto_fleche" width="17" height="17" />
 </DEFMACRO>
 
-<!-- png statut -->
+<!--[ png statut ]-->
 <DEFMACRO NAME="PNG_STATUT_BROUILLON">
 	<img src="[#SHAREURL]/images/statut_brouillon.png" class="picto_gauche" width="23" height="24" alt="Brouillon" />
 </DEFMACRO>
@@ -1376,7 +1376,7 @@
 	<img src="[#SHAREURL]/images/statut_horloge.png" class="picto_gauche" width="23" height="24" alt="Programmateur" />
 </DEFMACRO>
 
-<!-- png plié/déplié -->
+<!--[ png plié/déplié ]-->
 <DEFMACRO NAME="PNG_PLUS">
 	<img src="[#SHAREURL]/images/deplie.png" class="picto" width="13" height="14" />
 </DEFMACRO>
@@ -1385,7 +1385,7 @@
 	<img src="[#SHAREURL]/images/plie.png" class="picto" width="13" height="14" />
 </DEFMACRO>
 
-<!-- png divers -->
+<!--[ png divers ]-->
 <DEFMACRO NAME="PNG_PICTO_INFOS_PARENT">
 	<img src="[#SHAREURL]/images/picto_infos_parent.png" class="picto_gauche" width="24" height="31" />
 </DEFMACRO>
@@ -1406,4 +1406,4 @@
 	<img src="[#SHAREURL]/images/annexe_gris.png" class="picto" width="11" height="19" />
 </DEFMACRO>
 
-<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
+<!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->

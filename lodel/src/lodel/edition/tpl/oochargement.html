@@ -1,5 +1,5 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,7 +17,7 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
 <USE MACROFILE="macros.html">
@@ -25,8 +25,8 @@
 <title>Chargement de fichier</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<script>
-<!--
+<script><!--
+
 
 function wait(delay){
 	string="pauseforalert("+delay+");";
@@ -72,8 +72,8 @@ function infoChargement(nomFic){
  }
 }
 
-//-->
-</script>
+//
+--></script>
 
 
 
@@ -116,12 +116,12 @@ function infoChargement(nomFic){
 				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 				<br />
-<!--				<IF COND="[#ADMINLODEL]"> -->
+<!--[				<IF COND="[#ADMINLODEL]"> ]-->
 					<br /><br /><span class="texte_info_popup">Administrateur Lodel</span><br /><br /><br />
 					<input class="form" type="submit" name="sortiexmloo" value="Sortie XML Brute de OpenOffice (fichier content.xml du SXW)" /><br />
 					<input class="form" type="submit" name="sortieoo" value="Sortie Brute de OpenOffice après les 2 conversions" /><br />
 					<input class="form" type="submit" name="sortie" value="Sortie de chargement" />
-<!--				</IF> -->
+<!--[				</IF> ]-->
 			</td>
 		</tr>
 	</table>

@@ -1,5 +1,5 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,7 +17,7 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
 <USE MACROFILE="macros_admin.html">
@@ -33,7 +33,7 @@
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="DESACTIVER_INDEXATION">
 <MACRO NAME="METADONNEES">
-<script language="JavaScript">window.print()</script>
+<script language="JavaScript"><!--window.print()--></script>
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
 
 <table class="principale">
@@ -42,12 +42,12 @@
 			<div>
 	
 				<div class="titre1">
-				<!-- Affichage d'informations dépendant  du type de document -->
+				<!--[ Affichage d'informations dépendant  du type de document ]-->
 		
-					<!-- Affichage d'une barre horizontale (macro-presentation.html) -->
+					<!--[ Affichage d'une barre horizontale (macro-presentation.html) ]-->
 					<hr class="filet_3" />
 		
-					<!-- Affichage du type du document -->
+					<!--[ Affichage du type du document ]-->
 					<IF COND="[#TYPE]=='compte rendu'">
 						Compte-rendu
 					</IF>
@@ -63,7 +63,7 @@
 		
 					<br />
 		
-					<!-- Affichage du titre, surtitre et sous-titre du doc (lien vers article.html) -->
+					<!--[ Affichage du titre, surtitre et sous-titre du doc (lien vers article.html) ]-->
 					<a  href="document.html?id=[#ID]">
 						<IF COND="[#SURTITRE]">
 							[#SURTITRE] <br />
@@ -76,33 +76,33 @@
 								[#SOUSTITRE] <br />
 							</span>
 						</IF>
-						<!-- URL du document -->	
+						<!--[ URL du document ]-->	
 						<span class="pluspetit">
 							http://[#REVUE].revues.org/document.html?id=[#ID]
 						</span>		
 					</a>		
 				
-					<!-- Bouton [E] editer le document  (macros_technique.html) -->	
+					<!--[ Bouton [E] editer le document  (macros_technique.html) ]-->	
 					<MACRO NAME="BOUTON_EDITER_DOCUMENT">
 				
-					<!-- Affichage des auteurs du document du document -->
+					<!--[ Affichage des auteurs du document du document ]-->
 					<br /><br />
 					<IF COND="[#TYPE]=='note de lecture'">
 						Note de lecture par
 					</IF>
-					<!--(macros_affichage.html) -->
+					<!--[(macros_affichage.html) ]-->
 					<MACRO NAME="LISTER_AUTEURS">
 					<br /><br />
 		
-					<!-- Les informations sur la publication ((macros_affichage.html) -->	
+					<!--[ Les informations sur la publication ((macros_affichage.html) ]-->	
 					<MACRO NAME="PARU_DANS">
 		
-					<!-- Affichage d'une barre horizontale (macro-presentation.html) -->	
+					<!--[ Affichage d'une barre horizontale (macro-presentation.html) ]-->	
 					<hr class="filet_3" />	
 				</div>
 		
 	
-				<!-- Notes de la rédaction --->
+				<!--[ Notes de la rédaction -]-->
 				<IF COND="[#NDLR]">
 					<div class="titre3">
 						Notes de la rédaction
@@ -112,7 +112,7 @@
 					</div>
 				</IF>
 				
-				<!-- Historique --->
+				<!--[ Historique -]-->
 				<IF COND="[#HISTORIQUE]">
 					<div class="titre3">
 						Historique
@@ -122,7 +122,7 @@
 					</div>
 				</IF>
 				
-				<!-- Affichage du résumé en français   -->
+				<!--[ Affichage du résumé en français   ]-->
 				<IF COND="[#RESUME:FR]">
 					<div class="titre3">
 						Résumé
@@ -132,7 +132,7 @@
 					</div>		
 				</IF>
 				
-				<!-- Résumé en anglais   -->
+				<!--[ Résumé en anglais   ]-->
 				<IF COND="[#RESUME:EN]">
 					<div class="titre3"> 
 						Abstract
@@ -142,7 +142,7 @@
 					</div>
 				</IF>
 				
-				<!-- Résumé en espagnol   -->
+				<!--[ Résumé en espagnol   ]-->
 				<IF COND="[#RESUME:ES]">
 					<div class="titre3"> 
 						Extracto
@@ -152,7 +152,7 @@
 					</div>
 				</IF>
 				
-				<!-- Résumé en allemand   -->
+				<!--[ Résumé en allemand   ]-->
 				<IF COND="[#RESUME:DE]">
 					<div class="titre3"> 
 						Zusammenfassung
@@ -162,7 +162,7 @@
 					</div>
 				</IF>
 				
-				<!-- Résumé en italien   -->
+				<!--[ Résumé en italien   ]-->
 				<IF COND="[#RESUME:IT]">
 					<div class="titre3"> 
 						Riassunto
@@ -172,13 +172,13 @@
 					</div>
 				</IF>				
 						
-<!-- ----------------------------------------------------------------------- -->
-<!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
-<!-- ----------------------------------------------------------------------- -->
+<!--[ ----------------------------------------------------------------------- ]-->
+<!--[ Cette partie ne s'affiche que si le texte est autorisé à la publication ]-->
+<!--[ ----------------------------------------------------------------------- ]-->
 
 				<IF COND="[#TEXTEPUBLIE]">
 				
-					<!-- Texte. Si il existe --->
+					<!--[ Texte. Si il existe -]-->
 					<IF COND="[#TEXTE]">
 						<div class="titre3">
 							<IF COND="[#TYPE]!='presentation'">
@@ -187,7 +187,7 @@
 						</div>
 						<div class="texte">
 							<IF COND="[#TYPE]=='compte rendu'">
-							<!-- Si il y a une lettrine associée au texte, affichage de cette lettrine --->
+							<!--[ Si il y a une lettrine associée au texte, affichage de cette lettrine -]-->
 								<IF COND="[#META_IMAGE]">
 									<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
 								</IF>
@@ -198,7 +198,7 @@
 						</div>
 					</IF>
 	
-					<!-- Bibliographie. Si elle existe --->
+					<!--[ Bibliographie. Si elle existe -]-->
 					<IF COND="[#BIBLIOGRAPHIE]">
 						<div class="titre3"> 
 							<MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
@@ -208,7 +208,7 @@
 						</div>
 					</IF>
 				
-					<!-- Annexe. Si elle existe --->
+					<!--[ Annexe. Si elle existe -]-->
 					<IF COND="[#ANNEXE]">
 						<div class="titre3"> 
 							Annexes
@@ -218,7 +218,7 @@
 						</div>
 					</IF>
 						
-					<!-- Documents annexes. S'il y en a au moins un --->
+					<!--[ Documents annexes. S'il y en a au moins un -]-->
 					<IF COND="[#DOCUMENTSANNEXES]">
 						<div class="titre3"> 
 							Documents annexes
@@ -234,7 +234,7 @@
 						</div>
 					</IF>
 				
-					<!-- Notes de bas de page. Si elles existent --->
+					<!--[ Notes de bas de page. Si elles existent -]-->
 					<IF COND="[#NOTEBASPAGE]">
 						<div class="titre3">
 							Notes
@@ -244,14 +244,14 @@
 						</div>
 					</IF>
 								
-				<!-- Si le texte n'est pas encore autorisé à être publié -->
+				<!--[ Si le texte n'est pas encore autorisé à être publié ]-->
 				<ELSE/>
 					<p class="texte">
 						Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
 					</p>
 				</IF>			
 		
-				<!-- Affiche la description de l'auteur (macros-affichage.html) -->		
+				<!--[ Affiche la description de l'auteur (macros-affichage.html) ]-->		
 				<MACRO NAME="DESCRITION_AUTEUR">
 		 
 			</div>

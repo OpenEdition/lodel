@@ -1,4 +1,4 @@
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -16,7 +16,7 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 <xsd:schema targetNamespace="http://www.lodel.org"
                 xmlns="http://www.lodel.org"
@@ -27,11 +27,11 @@
 <xsd:import namespace="http://www.w3.org/2002/08/xhtml"
                 schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
 
-<!-- structure general du document -->
+<!--[ structure general du document ]-->
     <xsd:element name="document" type="documentType"/>
 	<xsd:complexType name="documentType">
             <xsd:sequence>
-	<!-- les groupes de personnes -->
+	<!--[ les groupes de personnes ]-->
     	<LOOP NAME="typepersonnes" TABLE="typepersonnes" WHERE="statut gt 0" ORDER="ordre">
 		<DO>
                 <xsd:element name="gr[#TYPE]" minOccurs="0" maxOccurs="1">
@@ -43,7 +43,7 @@
 		</xsd:element>
 		</DO>
    	</LOOP>
-	<!-- les groupes d'entrees -->
+	<!--[ les groupes d'entrees ]-->
     	<LOOP NAME="typeentrees" TABLE="typeentrees" WHERE="statut gt 0" ORDER="ordre">
 	      	<DO>
                 <xsd:element name="gr[#TYPE]" minOccurs="0" maxOccurs="1">
@@ -56,7 +56,7 @@
 
 		</DO>
 	</LOOP>
-	<!-- les groupes de champs -->
+	<!--[ les groupes de champs ]-->
 	    <LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='[#CLASSE]'" ORDER="ordre">
       	<DO>
 	        [<xsd:annotation>
@@ -143,11 +143,11 @@
 
             </xsd:sequence>
         </xsd:complexType>
-    <!-- element document -->
+    <!--[ element document ]-->
 
 
 
-<!-- type GroupePersonne -->
+<!--[ type GroupePersonne ]-->
 
     <xsd:complexType name="typePersonne">
             <xsd:sequence>
@@ -171,7 +171,7 @@
 
 
 
-<!-- type TexteMultiLangue -->
+<!--[ type TexteMultiLangue ]-->
     <xsd:complexType name="TexteMutliLangue">
             <xsd:sequence>
 	        <xsd:element name="ml" type="xsd:string" minOccurs="1" maxOccurs="unbounded">

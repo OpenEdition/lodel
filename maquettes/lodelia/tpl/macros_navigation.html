@@ -1,4 +1,4 @@
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -16,41 +16,41 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<!-- ****************************************************************** -->
-<!-- Librairie de navigation.                                           -->
-<!-- Auteurs :                                                          -->
-<!-- Marin Dacos. 2002.                                                 -->
-<!-- Nicolas Nutten. 2003.                                              -->
-<!-- Cette librairie contient :                                         -->
-<!-- <MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">                       -->
-<!-- <MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">                         -->
-<!-- <MACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">                  -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">              -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">                -->
-<!-- <MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">                        -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">                  -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">                    -->
-<!-- <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS">                           -->
-<!-- <MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">                           -->
-<!-- <MACRO NAME="BOUTON_DOCUMENT_SUIVANT">                             -->
-<!-- <MACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">                     -->
-<!-- <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">                     -->
-<!-- <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">                  -->
-<!-- <MACRO NAME="EXPLORATEUR_RUBRIQUES_PUBLICATIONS">                     -->
-<!-- <MACRO NAME="EXPLORATEUR_RUBRIQUES_DOCUMENT">                         -->
-<!-- <MACRO NAME="EXPLORATEUR">                                         -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Librairie de navigation.                                           ]-->
+<!--[ Auteurs :                                                          ]-->
+<!--[ Marin Dacos. 2002.                                                 ]-->
+<!--[ Nicolas Nutten. 2003.                                              ]-->
+<!--[ Cette librairie contient :                                         ]-->
+<!--[ <MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">                       ]-->
+<!--[ <MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">                         ]-->
+<!--[ <MACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">                  ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">              ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">                ]-->
+<!--[ <MACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">                        ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">                  ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">                    ]-->
+<!--[ <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS">                           ]-->
+<!--[ <MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">                           ]-->
+<!--[ <MACRO NAME="BOUTON_DOCUMENT_SUIVANT">                             ]-->
+<!--[ <MACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">                     ]-->
+<!--[ <MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">                     ]-->
+<!--[ <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">                  ]-->
+<!--[ <MACRO NAME="EXPLORATEUR_RUBRIQUES_PUBLICATIONS">                     ]-->
+<!--[ <MACRO NAME="EXPLORATEUR_RUBRIQUES_DOCUMENT">                         ]-->
+<!--[ <MACRO NAME="EXPLORATEUR">                                         ]-->
+<!--[ ****************************************************************** ]-->
 
 <DEFMACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton qui permet d'accéder à la publication précédente -->
-<!-- si elle existe, sinon le bouton ne s'affiche pas.                  -->
-<!-- ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton qui permet d'accéder à la publication précédente ]-->
+<!--[ si elle existe, sinon le bouton ne s'affiche pas.                  ]-->
+<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
+<!--[ ****************************************************************** ]-->
 	&nbsp;	&nbsp;	&nbsp;
 	<IF COND="[#PREVPUBLICATION]">
 		<? $pos = strpos(strtolower($context[type]), "numero");
@@ -68,12 +68,12 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_PUBLICATION_SUIVANTE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton qui permet d'accéder à la publication suivante   -->
-<!-- si elle existe, sinon le bouton ne s'affiche pas.                  -->
-<!-- ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton qui permet d'accéder à la publication suivante   ]-->
+<!--[ si elle existe, sinon le bouton ne s'affiche pas.                  ]-->
+<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
+<!--[ ****************************************************************** ]-->
 	&nbsp;	&nbsp;	&nbsp;
 	<IF COND="[#NEXTPUBLICATION]">
 		<? $pos = strpos(strtolower($context[type]), "numero");
@@ -91,17 +91,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bloc de navigation sans textes sous les boutons,        -->
-<!-- comprenant une fleche gauche, permettant de naviguer vers les      -->
-<!-- publications précédentes, le petit logo (icône ou autre ...) de la -->
-<!-- revue permettant de revenir sur la page d'accueil et une fleche    -->
-<!-- droite permettant de naviguer vers les publications suivantes.     -->
-<!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">                       -->
-<!-- <MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">                         -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bloc de navigation sans textes sous les boutons,        ]-->
+<!--[ comprenant une fleche gauche, permettant de naviguer vers les      ]-->
+<!--[ publications précédentes, le petit logo (icône ou autre ...) de la ]-->
+<!--[ revue permettant de revenir sur la page d'accueil et une fleche    ]-->
+<!--[ droite permettant de naviguer vers les publications suivantes.     ]-->
+<!--[ Cette Macro utilise les macros suivantes :                         ]-->
+<!--[ <MACRO NAME="BOUTON_PUBLICATION_PRECEDENTE">                       ]-->
+<!--[ <MACRO NAME="BOUTON_PUBLICATION_SUIVANTE">                         ]-->
+<!--[ ****************************************************************** ]-->
 	<table width="330" border="0" cellspacing="0" cellpadding="15" align="CENTER" valign="TOP"  bordercolor="Black" class="navigation">
 		<tr>
 			<td width="15%" align="center">
@@ -120,13 +120,13 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton avec dessous un texte "Numéro/rubrique précédent"   -->
-<!-- permettant d'accéder à la publication précédente. Si elle n'existe -->
-<!-- pas le texte sous le bouton est changé par "Retour à l'accueil".   -->
-<!-- ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton avec dessous un texte "Numéro/rubrique précédent"   ]-->
+<!--[ permettant d'accéder à la publication précédente. Si elle n'existe ]-->
+<!--[ pas le texte sous le bouton est changé par "Retour à l'accueil".   ]-->
+<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
+<!--[ ****************************************************************** ]-->
 	&nbsp;
 	<IF COND="[#PREVPUBLICATION]">
 		<? $pos = strpos(strtolower($context[type]), "numero");
@@ -159,13 +159,13 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton avec dessous un texte "Numéro/rubrique suivant"     -->
-<!-- permettant d'accéder à la publication suivante. Si elle n'existe   -->
-<!-- pas le texte sous le bouton est changé par "Retour à l'accueil".   -->
-<!-- ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton avec dessous un texte "Numéro/rubrique suivant"     ]-->
+<!--[ permettant d'accéder à la publication suivante. Si elle n'existe   ]-->
+<!--[ pas le texte sous le bouton est changé par "Retour à l'accueil".   ]-->
+<!--[ ATTENTION !!! Macro utilisant du PHP !!! NE PAS TOUCHER !!!        ]-->
+<!--[ ****************************************************************** ]-->
 	&nbsp;
 	<IF COND="[#NEXTPUBLICATION]">
 		<? $pos = strpos(strtolower($context[type]), "numero");
@@ -198,17 +198,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_NAVIGATION_PUBLICATIONS">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bloc de navigation comprenant une fleche gauche,        -->
-<!-- permettant de naviguer vers les publications précédentes,          -->
-<!-- le petit logo (icône ou autre ...) de la revue permettant de       -->
-<!-- revenir sur la page d'accueil et une fleche droite permettant de   -->
-<!-- naviguer vers les publications suivantes.                          -->
-<!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">              -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">                -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bloc de navigation comprenant une fleche gauche,        ]-->
+<!--[ permettant de naviguer vers les publications précédentes,          ]-->
+<!--[ le petit logo (icône ou autre ...) de la revue permettant de       ]-->
+<!--[ revenir sur la page d'accueil et une fleche droite permettant de   ]-->
+<!--[ naviguer vers les publications suivantes.                          ]-->
+<!--[ Cette Macro utilise les macros suivantes :                         ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_PRECEDENTE">              ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_PUBLICATION_SUIVANTE">                ]-->
+<!--[ ****************************************************************** ]-->
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" align="CENTER" valign="TOP"  bordercolor="Black">
 		<tr>
 			<td width="33%" class="texte_petit_centre">
@@ -228,12 +228,12 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton avec dessous le texte : "Précédent", permettant  -->
-<!-- d'accéder à la publication précédente. Si elle n'existe pas le     -->
-<!-- texte sous le bouton est changé par "Retour au sommaire".          -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton avec dessous le texte : "Précédent", permettant  ]-->
+<!--[ d'accéder à la publication précédente. Si elle n'existe pas le     ]-->
+<!--[ texte sous le bouton est changé par "Retour au sommaire".          ]-->
+<!--[ ****************************************************************** ]-->
 	<IF COND="[#PREVDOCUMENT]">
 		<a href="[#PREVDOCUMENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
@@ -255,12 +255,12 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton avec dessous le texte : "Suivant", permettant    -->
-<!-- d'accéder à la publication suivante. Si elle n'existe pas le       -->
-<!-- texte sous le bouton est changé par "Retour au sommaire".          -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton avec dessous le texte : "Suivant", permettant    ]-->
+<!--[ d'accéder à la publication suivante. Si elle n'existe pas le       ]-->
+<!--[ texte sous le bouton est changé par "Retour au sommaire".          ]-->
+<!--[ ****************************************************************** ]-->
 	&nbsp;
 	<IF COND="[#NEXTDOCUMENT]">
 		<a href="[#NEXTDOCUMENT]">
@@ -282,17 +282,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bloc de navigation comprenant une fleche gauche,        -->
-<!-- permettant de naviguer vers les documents précédents, le petit     -->
-<!-- logo (icône ou autre ...) de la revue permettant de revenir sur    -->
-<!-- le sommaire et une fleche droite permettant de naviguer vers les   -->
-<!-- documents suivants.                                                -->
-<!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">                  -->
-<!-- <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">                    -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bloc de navigation comprenant une fleche gauche,        ]-->
+<!--[ permettant de naviguer vers les documents précédents, le petit     ]-->
+<!--[ logo (icône ou autre ...) de la revue permettant de revenir sur    ]-->
+<!--[ le sommaire et une fleche droite permettant de naviguer vers les   ]-->
+<!--[ documents suivants.                                                ]-->
+<!--[ Cette Macro utilise les macros suivantes :                         ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">                  ]-->
+<!--[ <MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_SUIVANT">                    ]-->
+<!--[ ****************************************************************** ]-->
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" align="CENTER" valign="TOP"  bordercolor="Black">
 		<tr>
 			<td width="33%" class="texte_petit_centre">
@@ -312,11 +312,11 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton qui permet d'accéder au document précédent si il -->
-<!-- existe, sinon affiche un bouton permettant d'aller au sommaire.    -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton qui permet d'accéder au document précédent si il ]-->
+<!--[ existe, sinon affiche un bouton permettant d'aller au sommaire.    ]-->
+<!--[ ****************************************************************** ]-->
 	<IF COND="[#PREVDOCUMENT]">
 		<a href="[#PREVDOCUMENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT">
@@ -331,11 +331,11 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_DOCUMENT_SUIVANT">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bouton qui permet d'accéder au document suivant si il   -->
-<!-- existe, sinon affiche un bouton permettant d'aller au sommaire.    -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bouton qui permet d'accéder au document suivant si il   ]-->
+<!--[ existe, sinon affiche un bouton permettant d'aller au sommaire.    ]-->
+<!--[ ****************************************************************** ]-->
 	<IF COND="[#NEXTDOCUMENT]">
 		&nbsp;&nbsp;&nbsp;
 		<a href="[#NEXTDOCUMENT]">
@@ -350,17 +350,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BLOC_SOBRE_NAVIGATION_DOCUMENTS">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bloc de navigation sans textes sous les boutons,        -->
-<!-- comprenant une fleche gauche, permettant de naviguer vers les      -->
-<!-- documents précédents, le petit logo (icône ou autre ...) de la     -->
-<!-- revue permettant de revenir sur le sommaire et une fleche droite   -->
-<!-- permettant de naviguer vers les documents suivants.                -->
-<!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">                           -->
-<!-- <MACRO NAME="BOUTON_DOCUMENT_SUIVANT">                             -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bloc de navigation sans textes sous les boutons,        ]-->
+<!--[ comprenant une fleche gauche, permettant de naviguer vers les      ]-->
+<!--[ documents précédents, le petit logo (icône ou autre ...) de la     ]-->
+<!--[ revue permettant de revenir sur le sommaire et une fleche droite   ]-->
+<!--[ permettant de naviguer vers les documents suivants.                ]-->
+<!--[ Cette Macro utilise les macros suivantes :                         ]-->
+<!--[ <MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">                           ]-->
+<!--[ <MACRO NAME="BOUTON_DOCUMENT_SUIVANT">                             ]-->
+<!--[ ****************************************************************** ]-->
 	<table width="330" border="0" cellspacing="0" cellpadding="15" align="CENTER" valign="TOP"  bordercolor="Black" class="navigation">
 		<tr>
 			<td width="15%" align="center">
@@ -379,10 +379,10 @@
 </DEFMACRO>
 
 
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Affiche un bloc de navigation avec textes sans boutons,            -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Affiche un bloc de navigation avec textes sans boutons,            ]-->
+<!--[ ****************************************************************** ]-->
 
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 	<div class="navigation">
@@ -417,30 +417,30 @@
 
 
 <DEFMACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- Insère une barre de navigation verticale.                          -->
-<!-- Pour modifier cette barre de navigation il faut éditer le fichier  -->
-<!-- "barre.html".                                                      -->
-<!-- ATTETION !!! Cette Macro doit être appellée à l'intérieur d'un     -->
-<!-- tableau.                                                           -->
-<!--                                                                    -->
-<!-- Exemple :                                                          -->
-<!-- <table><tr>                                                        -->
-<!--     <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">              -->
-<!-- </tr></table>                                                      -->
-<!-- ou bien :                                                          -->
-<!-- <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">                             -->
-<!--     <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">              -->
-<!-- <MACRO NAME="FERMER_TABLE_PRINCIPALE">                             -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ Insère une barre de navigation verticale.                          ]-->
+<!--[ Pour modifier cette barre de navigation il faut éditer le fichier  ]-->
+<!--[ "barre.html".                                                      ]-->
+<!--[ ATTETION !!! Cette Macro doit être appellée à l'intérieur d'un     ]-->
+<!--[ tableau.                                                           ]-->
+<!--[                                                                    ]-->
+<!--[ Exemple :                                                          ]-->
+<!--[ <table><tr>                                                        ]-->
+<!--[     <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">              ]-->
+<!--[ </tr></table>                                                      ]-->
+<!--[ ou bien :                                                          ]-->
+<!--[ <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">                             ]-->
+<!--[     <MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">              ]-->
+<!--[ <MACRO NAME="FERMER_TABLE_PRINCIPALE">                             ]-->
+<!--[ ****************************************************************** ]-->
 	<? insert_template("barre");?> 
 </DEFMACRO>
 
 <DEFMACRO NAME="EXPLORATEUR_RUBRIQUES_PUBLICATIONS">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ ****************************************************************** ]-->
 	<LET VAR="PUBLICATION_ENCOURS">[#ID]</LET>
 	<LOOP NAME="topparentpubli">
 		<LET VAR="TOP_PARENT">[#ID]</LET>
@@ -449,9 +449,9 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="EXPLORATEUR_RUBRIQUES_DOCUMENT">
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ ****************************************************************** ]-->
 	<LET VAR="PUBLICATION_ENCOURS">[#IDPARENT]</LET>
 	<LOOP NAME="topparentdoc7">
 		<LET VAR="TOP_PARENT">[#ID]</LET>
@@ -461,10 +461,10 @@
 
 <DEFMACRO NAME="EXPLORATEUR">
 <FONT SIZE="-3">Macro EXPLORATEUR a reecrire avec une seule boucle</FONT>
-<!-- ****************************************************************** -->
-<!-- Version 1.0                                                        -->
-<!-- ****************************************************************** -->
-<!--	<LOOP TABLE="publications" WHERE="idparent='[#TOP_PARENT]'" WHERE="type!='serie_hierarchique'" ORDER="ordre DESC">
+<!--[ ****************************************************************** ]-->
+<!--[ Version 1.0                                                        ]-->
+<!--[ ****************************************************************** ]-->
+<!--[	<LOOP TABLE="publications" WHERE="idparent='[#TOP_PARENT]'" WHERE="type!='serie_hierarchique'" ORDER="ordre DESC">
 		<BEFORE>
 			<table width="164" border="0" align="center" cellspacing="1" cellpadding="1">
 		</BEFORE>
@@ -496,21 +496,21 @@
 						</IF>
 					<br />				
 					</IF>
--->
-					<!-- J'affiche tous les articles issus d'un regroupement 
+]-->
+					<!--[ J'affiche tous les articles issus d'un regroupement 
 					car la graphiste propose que tous les regroupements
-					soient toujours dépliés -->
+					soient toujours dépliés ]-->
 
-<!-- Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='regroupement'">
+<!--[ Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='regroupement'">
 						<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 						<br />
 					</LOOP>
--->
-					<!-- J'affiche tous les articles issus d'une rubrique
+]-->
+					<!--[ J'affiche tous les articles issus d'une rubrique
 					seulement si c'est la rubrique en cours 
 					car les rubriques ne se déplient que lorsqu'on les
-					consulte -->
-<!-- Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
+					consulte ]-->
+<!--[ Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
 						<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='rubrique'">
 							<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 							<br />
@@ -523,6 +523,6 @@
 			</table>
 		</AFTER>
 	</LOOP>
--->
+]-->
 </DEFMACRO>
 

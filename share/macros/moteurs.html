@@ -1,5 +1,5 @@
 
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,16 +17,16 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<!-- *************************************************** -->
-<!-- Appel du moteur de recherche                        -->
-<!-- *************************************************** -->
+<!--[ *************************************************** ]-->
+<!--[ Appel du moteur de recherche                        ]-->
+<!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="MOTEUR_RECHERCHE">
 <form action="/cgi-bin/esearch/esearch.pl" method="get">
-      <!---  moteur jaune  // -->
+      <!--[-  moteur jaune  // ]-->
  <b>Chercher</b><br>
 	  <input type="text" size="12" name="search" value="votre recherche" onfocus="if(this.value=='votre recherche')this.value='';" /><input type=hidden name="url_back" value="http://[#REVUE].revues.org/">
  <input type=hidden name="[#REVUE]" value="CHECKED" checked [#REVUE]>
@@ -35,11 +35,11 @@
 </form>
 </DEFMACRO>
 
-<!-- *************************************************** -->
-<!-- Appel du moteur de recherche   In-extenso           -->
-<!-- *************************************************** -->
+<!--[ *************************************************** ]-->
+<!--[ Appel du moteur de recherche   In-extenso           ]-->
+<!--[ *************************************************** ]-->
 <DEFMACRO NAME="IN_EXTENSO">
-	<!-- Appel du moteur de recherche -->
+	<!--[ Appel du moteur de recherche ]-->
 	<table width="98%" border="0" cellspacing="0" cellpadding="2" align="center">
 <form name="In-extenso" method="get" action="http://www.in-extenso.org/search">
 	<tr>

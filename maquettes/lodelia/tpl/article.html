@@ -1,5 +1,5 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,7 +17,7 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
 <USE MACROFILE="macros_admin.html">
@@ -29,11 +29,11 @@
 <USE MACROFILE="macros_revue.html">
 
 
-<!-- ****************************************************************** -->
-<!-- Cette page affiche les documents de type article.                  -->
-<!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
-<!-- Dernière modification majeure en mai 2003.                         -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Cette page affiche les documents de type article.                  ]-->
+<!--[ Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                ]-->
+<!--[ Dernière modification majeure en mai 2003.                         ]-->
+<!--[ ****************************************************************** ]-->
 
 
 <MACRO NAME="OUVRIR_HTML">
@@ -47,33 +47,33 @@
 	<tr>
 		
 		<td class="barrenav">
-		<!-- Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs -->
+		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
+		les navigateurs ]-->
 				<? insert_template("barre");?> 
 		</td>
 		
 		<td class="separation">
 			&nbsp;
 		</td>
-		<!-- Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" -->
+		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" ]-->
 		<td class="corps">
 
-				<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" -->
-				<!--<div class="separation">
+				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" ]-->
+				<!--[<div class="separation">
 					&nbsp;
-				</div>-->
+				</div>]-->
 		
-				<!-- ce div permet d'intégrer le  contenu de la page" -->
+				<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
 				<div class="contenu">
 					
 					
-					<!-- logo de Lodelia-->
+					<!--[ logo de Lodelia]-->
 					<MACRO NAME="IMG_LOGO_LODELIA">
 			
-					<!-- Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
-					titre et nom du numéro, -->		
+					<!--[ Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+					titre et nom du numéro, ]-->		
 					<div class="titre1">
 						<MACRO NAME="PARU_DANS"> 
 						<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
@@ -81,7 +81,7 @@
 			
 			
 					<div class="titre2">
-						<!-- Affiche le type du document-->	
+						<!--[ Affiche le type du document]-->	
 						<div class="titre21">
 						<IF COND="[#TYPE]=='compte rendu'">
 							Compte-rendu
@@ -97,14 +97,14 @@
 						</IF>
 						</div>
 			
-						<!-- Affiche les boutons pour accéder à la page imprimable et la page de signalement-->
+						<!--[ Affiche les boutons pour accéder à la page imprimable et la page de signalement]-->
 						<div class="signalerimprimer">
 							<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
 						</div>
 				
 					</div>
 			
-					<!-- Affiche les infos sur le document: titre, sous-titre, auteur-->
+					<!--[ Affiche les infos sur le document: titre, sous-titre, auteur]-->
 					<div class="afficherdocument">
 						<IF COND="[#TYPE]=='note de lecture'">
 							Note de lecture par
@@ -120,7 +120,7 @@
 						<MACRO NAME="BOUTON_EDITER_DOCUMENT">
 					</div>
 			
-					<!-- Erratum --->
+					<!--[ Erratum -]-->
 					<IF COND="[#ERRATUM]">
 						<div class="titre3">
 							Errata
@@ -131,7 +131,7 @@
 						</div>
 					</IF>
 						
-					<!-- Notes de la rédaction --->
+					<!--[ Notes de la rédaction -]-->
 					<IF COND="[#NDLR]">
 						<div class="titre3">
 							Notes de la rédaction
@@ -142,7 +142,7 @@
 						</div>
 					</IF>
 				
-					<!-- Historique --->
+					<!--[ Historique -]-->
 					<IF COND="[#HISTORIQUE]">
 						<div class="titre3">
 							Historique
@@ -153,7 +153,7 @@
 						</div>
 					</IF>
 				
-					<!-- Affichage du résumé en français   -->
+					<!--[ Affichage du résumé en français   ]-->
 					<IF COND="[#RESUME]">
 						<div class="titre3">
 							Résumé
@@ -163,7 +163,7 @@
 						</div>		
 					</IF>
 					
-					<!-- Résumé en anglais   -->
+					<!--[ Résumé en anglais   ]-->
 					<IF COND="[#ABSTRACT]">
 						<div class="titre3"> 
 							Abstract
@@ -173,7 +173,7 @@
 						</div>
 					</IF>
 				
-					<!-- Résumé en espagnol   -->
+					<!--[ Résumé en espagnol   ]-->
 					<IF COND="[#EXTRACTO]">
 						<div class="titre3"> 
 							Extracto
@@ -183,7 +183,7 @@
 						</div>
 					</IF>
 				
-					<!-- Résumé en allemand   -->
+					<!--[ Résumé en allemand   ]-->
 					<IF COND="[#ZUSAMMENFASSUNG]">
 						<div class="titre3"> 
 							Zusammenfassung
@@ -193,7 +193,7 @@
 						</div>
 					</IF>
 				
-					<!-- Résumé en italien   -->
+					<!--[ Résumé en italien   ]-->
 					<IF COND="[#RIASSUNTO]">
 						<div class="titre3"> 
 							Riassunto
@@ -204,9 +204,9 @@
 					</IF>
 	
 					
-		<!-- ----------------------------------------------------------------------- -->
-		<!-- Cette partie ne s'affiche que si le texte est autorisé à la publication -->
-		<!-- ----------------------------------------------------------------------- -->
+		<!--[ ----------------------------------------------------------------------- ]-->
+		<!--[ Cette partie ne s'affiche que si le texte est autorisé à la publication ]-->
+		<!--[ ----------------------------------------------------------------------- ]-->
 					<IF COND="[#DATEPUBLI] le today()">
 					
 					<div class="titre3">
@@ -222,7 +222,7 @@
 
 </LOOP>
 				
-						<!-- Texte. Si il existe --->
+						<!--[ Texte. Si il existe -]-->
 						<IF COND="[#TEXTE]">
 
 							<div class="titre3">
@@ -242,7 +242,7 @@
 							</div>
 						</IF>
 				
-						<!-- Bibliographie. Si elle existe --->
+						<!--[ Bibliographie. Si elle existe -]-->
 						<IF COND="[#BIBLIOGRAPHIE]">
 
 				<div class="titre3"> 
@@ -253,7 +253,7 @@
 							</div>
 						</IF>
 				
-						<!-- Annexe. Si elle existe --->
+						<!--[ Annexe. Si elle existe -]-->
 						<IF COND="[#ANNEXE]">
 							<div class="titre3"> 
 								Annexes
@@ -263,10 +263,10 @@
 							</div>
 						</IF>
 						
-						<!-- Documents annexes. S'il y en a au moins un --->
+						<!--[ Documents annexes. S'il y en a au moins un -]-->
 								<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 				
-						<!-- Notes de bas de page. Si elles existent --->
+						<!--[ Notes de bas de page. Si elles existent -]-->
 						<IF COND="[#NOTEBASPAGE]">
 							<div class="titre3">
 								Notes bas numériques:
@@ -291,7 +291,7 @@
 							</div>
 
 						</IF>
-						<!-- Notes de fin. Si elles existent --->
+						<!--[ Notes de fin. Si elles existent -]-->
 						<IF COND="[#NOTEFIN]">
 							<div class="titre3">
 								Notes fin numériques:
@@ -317,14 +317,14 @@
 
 						</IF>
 								
-					<!-- Si le texte n'est pas encore autorisé à être publié -->
+					<!--[ Si le texte n'est pas encore autorisé à être publié ]-->
 					<ELSE/>
 						<p class="texte">
 							Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
 						</p>
 					</IF>
 					
-					<!-- Affiche la notice bibliographique du document en cours -->		
+					<!--[ Affiche la notice bibliographique du document en cours ]-->		
 					<div class="titre3">
 						Pour citer cet article
 					</div>
@@ -332,14 +332,14 @@
 						<MACRO NAME="CITATION"> 
 					</div>
 				
-					<!-- Affiche la description de l'auteur -->		
+					<!--[ Affiche la description de l'auteur ]-->		
 					<MACRO NAME="DESCRITION_AUTEUR"> 
 					
 					
 									
 					<MACRO NAME="RECENSIONS">
 
-					<!-- Affiche liens de navigation entre les documents  -->						
+					<!--[ Affiche liens de navigation entre les documents  ]-->						
 					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
 				
 					<MACRO NAME="REVUES_ORG"> 		

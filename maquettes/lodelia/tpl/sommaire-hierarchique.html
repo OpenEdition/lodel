@@ -1,5 +1,5 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
-<!--
+<!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -17,7 +17,7 @@
       GNU General Public License for more details.
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
 <USE MACROFILE="macros.html">
@@ -30,17 +30,17 @@
 <USE MACROFILE="macros_revue.html">
 
 
-<!-- ****************************************************************** -->
-<!-- Sommaire de séries thématiques.                                    -->
-<!-- Auteur : Marin Dacos.                                              -->
-<!-- Date de création : août 2002.                                      -->
-<!-- Dernière modification majeure : septembre 2002.                    -->
-<!-- ****************************************************************** -->
+<!--[ ****************************************************************** ]-->
+<!--[ Sommaire de séries thématiques.                                    ]-->
+<!--[ Auteur : Marin Dacos.                                              ]-->
+<!--[ Date de création : août 2002.                                      ]-->
+<!--[ Dernière modification majeure : septembre 2002.                    ]-->
+<!--[ ****************************************************************** ]-->
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)] Sommaire [#NOM]</title>
-<!-- <MACRO NAME="METADONNEES_POUR_SOMMAIRES"> -->
+<!--[ <MACRO NAME="METADONNEES_POUR_SOMMAIRES"> ]-->
 <MACRO NAME="JS_ROLLOVER">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
@@ -48,28 +48,28 @@
 	<tr>
 		
 		<td class="barrenav">
-		<!-- Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs -->
+		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
+		les navigateurs ]-->
 				<? insert_template("barre");?> 
 		</td>
 	
-		<!-- Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" -->
+		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
+		de class "separation" et class "contenu" ]-->
 		<td class="corps">
 
-				<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" -->
-				<!--<div class="separation">
+				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+				de nav et le contenu de la page" ]-->
+				<!--[<div class="separation">
 					&nbsp;
-				</div>-->
+				</div>]-->
 		
-			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
 			<div class="contenu">
 		
-				<!-- logo de Lodelia-->
+				<!--[ logo de Lodelia]-->
 				<MACRO NAME="IMG_LOGO_LODELIA">
 				
-				<!-- Présente les infos concernant la publication : titre revue, nom et titre du numéro-->
+				<!--[ Présente les infos concernant la publication : titre revue, nom et titre du numéro]-->
 				<MACRO NAME="PRESENTER_PUBLICATION">
 				
 				<MACRO NAME="LISTER_RUBRIQUES">
