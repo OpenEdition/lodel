@@ -109,6 +109,8 @@ function rtf($filename) {
 		      "droits_auteur"=>"droitsauteur",
 		      "type_document"=>"typedoc",
 		      "langue"=>"langues"
+			  "titre_illustration"=>"titreillustration",
+			  "legende_illustration"=>"legendeillustration",
 		      );
   foreach ($translations as $k=>$v) {
     array_push($search,"/<r2r:$k(\b[^>]+)?>/i","/<\/r2r:$k>/i");

@@ -98,6 +98,8 @@ function OO ($uploadedfile)
 		      "droits_auteur"=>"droitsauteur",
 		      "type_document"=>"typedoc",
 		      "langue"=>"langues"
+			  "titre_illustration"=>"titreillustration",
+			  "legende_illustration"=>"legendeillustration",
 		      );
   
   foreach ($translations as $k=>$v) {
