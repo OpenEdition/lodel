@@ -349,18 +349,6 @@ function multilingue($lang,$text)
 }
 
 
-function makeurl ($site="")
-{
-  if (!$site) $site=$GLOBALS[site];
-
-  // very bad function. Must be rewrite !
-  $server=$_SERVER['SERVER_NAME'];
-  if (!$server) $server=$GLOBALS['HTTP_SERVER_VARS']['SERVER_NAME'];
-  $domain=preg_replace("/^[^\.]+\./s","",$server);
-  if ($GLOBALS[siteagauche]) return "http://".$site.$domain;
-  return "http://".$server."/".$site;
-}
-
 
 function vignette($width,$text)
 
