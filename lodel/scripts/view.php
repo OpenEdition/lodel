@@ -136,22 +136,26 @@ class View {
 
      // Calculate the name of the cached file
 
-     $GLOBALS['cachedfile'] = substr(rawurlencode(preg_replace("/#[^#]*$/","",
+     $this->_cachedfile = substr(rawurlencode(preg_replace("/#[^#]*$/","",
 							       $_SERVER['REQUEST_URI'])), 0, 255);
 
-     // The variable $this->_cachedfile must exist and be visible in the global scope
-     // The compiled file need it to know if it must produce cacheable output or direct output.
-     // An object should be created in order to avoid the global scope pollution.
 
-     $cachedir = substr(md5($GLOBALS['cachedfile']), 0, 1);
+     $cachedir = substr(md5($this->_cachedfile), 0, 1);
      if ($GLOBALS['context']['charset']!="utf-8") $cachedir="il1.".$cachedir;
 
 
      if (!file_exists("CACHE/".$cachedir)) {
        mkdir("CACHE/".$cachedir, 0777 & octdec($GLOBALS['filemask']));
      }
-     $GLOBALS['cachedfile'] = "CACHE/".$cachedir."/".$this->_cachedfile;
+     $this->_cachedfile = "CACHE/".$cachedir."/".$this->_cachedfile;
      $this->_extcachedfile=file_exists($this->_cachedfile.".php") ? "php" : "html";
+
+
+     // The variable $cachedfile must exist and be visible in the global scope
+     // The compiled file need it to know if it must produce cacheable output or direct output.
+     // An object should be created in order to avoid the global scope pollution.
+     $GLOBALS['cachedfile']=$this->_cachedfile;
+
 
      if ($maj>=myfilemtime($this->_cachedfile.".".$this->_extcachedfile)) {
        $this->_iscachevalid=true;

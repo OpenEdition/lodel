@@ -386,8 +386,8 @@ function prefixTableName($table)
   $prefixedtable=lq("#_TP_".$table);
   if ($tablefields[$prefixedtable]) {
     return $prefixedtable.$alias;
-  } elseif ($tablefields[DATABASE.".".lq("#_MTP_".$table)]) {
-    return DATABASE.".".lq("#_MTP_".$table).$alias;
+  } elseif ($tablefields[lq("#_MTP_".$table)]) {
+    return lq("#_MTP_".$table).$alias;
   } else {
     return $table.$alias;
   }
