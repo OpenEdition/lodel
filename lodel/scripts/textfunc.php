@@ -281,7 +281,7 @@ function sizeattributs($text)
 function paranumber (&$texte)
 
 {
-  return preg_replace("/(<p\b[^>]*>\s*)+/ie",'"<SPAN CLASS=\"paranum\">".(++$count)."</SPAN>"',$texte);
+  return preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span class=\"paranum\">".(++$count)."</span>"',$texte);
 
     /*
   $p=strpos($texte,"<p>");
