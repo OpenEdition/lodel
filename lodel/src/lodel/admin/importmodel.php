@@ -128,7 +128,7 @@ function loop_fichiers(&$context,$funcname)
 	if ($unzipcmd && $unzipcmd!="pclzip") {
 	  $line=`$unzipcmd $dir/$file -c model.sql`;
 	} else {
-	  require($home."pclzip.lib.php");
+	  require_once($home."pclzip.lib.php");
 	  $archive=new PclZip("$dir/$file");
 	  $arr=$archive->extract(PCLZIP_OPT_BY_NAME,"model.sql",
 				 PCLZIP_OPT_EXTRACT_AS_STRING);
@@ -141,15 +141,15 @@ function loop_fichiers(&$context,$funcname)
 	  $lines=preg_split("/\n/",$result[1]);
 	  $xml="";
 	  foreach ($lines as $line) {
-	    $xml.=substr($line,2);
+	    $xml.=substr($line,2)."\n";
 	  }
 	}
 
 	foreach (array("lodelversion","description","author","date") as $tag) {
-	  if (preg_match("/<$tag>(.*?)<\/$tag>/",$xml,$result)) {
-	    $localcontext[$tag]=str_replace(array("\n","\r","<",">"),
-				       array("<br />","","&lt;","&gt;"),
-				       $result[1]);
+	  if (preg_match("/<$tag>(.*?)<\/$tag>/s",$xml,$result)) {
+	    $localcontext[$tag]=utf8_encode(str_replace(array("\r","<",">","\n"),
+							array("","&lt;","&gt;","<br />"),
+							$result[1]));
 	  }
 	}
 	#echo doubleval($localcontext[lodelversion]), ":",$GLOBALS[version],"<br />\n";

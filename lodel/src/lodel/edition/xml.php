@@ -97,7 +97,7 @@ if ($valid) {
   // "telechargement"
   $originalname="entite-$id.xml";
 
-  download("",$originalname,co$ntents);
+  download("",$originalname,$contents);
 }
 
 
