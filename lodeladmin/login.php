@@ -28,7 +28,7 @@ if ($login) {
       lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
       // verifie que c'est ok
       $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
-      if (mysql_num_rows($result)) { $context[erreur_sitebloquee]=1; unlock(); break; }
+      if (mysql_num_rows($result)) { $context[erreur_sitebloque]=1; unlock(); break; }
     }
 
     for ($i=0; $i<5; $i++) { // essaie cinq fois, au cas ou on ait le meme nom de session
@@ -50,14 +50,14 @@ if ($login) {
 $context[passwd]=$passwd=0;
 
 
-// variable: sitebloquee
-if ($context[erreur_site_bloquee]) { // on a deja verifie que la site est bloquee.
-  $context[sitebloquee]=1;
-} else { // test si la site est bloquee dans la DB.
+// variable: sitebloque
+if ($context[erreur_sitebloque]) { // on a deja verifie que la site est bloque.
+  $context[sitebloque]=1;
+} else { // test si la site est bloque dans la DB.
   include_once ($home."connect.php");
   mysql_select_db($database);
   $result=mysql_query("SELECT 1 FROM sites WHERE rep='$site' AND statut>=32") or die(mysql_error());
-  $context[sitebloquee]=mysql_num_rows($result);
+  $context[sitebloque]=mysql_num_rows($result);
 }
 
 
