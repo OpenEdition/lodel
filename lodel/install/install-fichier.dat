@@ -1,0 +1,249 @@
+
+mkdir CACHE 0770
+mkdir tpl 0750
+mkdir images 0750
+mkdir docannexe 0770
+mkdir lodel 0750
+mkdir lodel/edition 0750
+mkdir lodel/admin 0750
+mkdir lodel/admin/upload 0770
+
+htaccess tpl
+htaccess CACHE
+
+# evite que l'internaute puisse lister ces repertoires
+touch docannexe/index.html
+touch lodel/admin/upload/index.html
+
+###############################################################
+######### repertoire revue
+
+dirdestination .
+dirsource $homelodel
+
+ln lodelconfig.php
+ln styles_lodel.css
+
+dirsource $homerevue
+cp styles_revue.css
+cp images
+ln auteur.php
+
+# lie tous les fichiers du repertoire
+ln auteurs-complet.php
+ln auteurs.php
+
+ln chrono.php
+ln chronos-complet.php
+ln chronos.php
+ln document.php
+ln geo.php
+ln geos-complet.php
+ln geos.php
+ln index.php
+ln mot.php
+ln mots-complet.php
+ln mots.php
+ln signaler.php
+ln sommaire.php
+
+# les templates de la revue doivent etre installe à la main... pour le moment.
+
+dirsource $homelodel/lodel/admin
+ln login.php
+ln logout.php
+
+dirsource $homerevue/lodel/admin
+ln tpl/login.html
+dirsource $homerevue/lodel/edition
+ln tpl/desk.html
+
+#
+
+mkdir lodel 0755
+mkdir lodel/txt 0770
+mkdir lodel/rtf 0770
+
+htaccess lodel/txt
+htaccess lodel/rtf
+
+dirsource $homerevue/lodel
+dirdestination lodel
+
+ln index.php
+
+###############################################################
+########### edition
+
+mkdir lodel/edition 0755
+mkdir lodel/edition/tpl 0755
+mkdir lodel/edition/CACHE 0770
+
+dirdestination lodel/edition
+
+htaccess CACHE
+htaccess tpl
+
+dirsource . # repertoire de la revue
+ln lodelconfig.php
+ln revueconfig.php
+ln styles_revue.css
+ln styles_lodel.css
+
+# les logins
+dirsource $homerevue/lodel/admin
+ln tpl/login.html
+dirsource $homelodel/lodel/admin
+ln login.php
+ln logout.php
+
+# tous les fichier de revue/lodel/edition
+dirsource $homerevue/lodel/edition
+ln maj.php
+ln images
+ln tpl/macros.html
+ln tpl/deskedition.html
+
+# chaine d'importation
+ln abandon.php
+ln chargement.php
+ln tpl/chargement.html
+ln oochargement.php
+ln tpl/oochargement.html
+ln chargesommaire.php
+ln tpl/chargesommaire.html
+ln balisage.php
+ln tpl/balisage.html
+ln chkbalisage.php
+ln tpl/chkbalisage.html
+ln extrainfo.php
+ln tpl/extrainfo.html
+ln importsommaire.php
+
+# satellite des documents
+ln docannexe.php
+ln tpl/docannexe.html
+ln metaimage.php
+ln tpl/metaimage.html
+ln editer.php
+ln tpl/editer.html
+ln a_editer.php
+ln tpl/a_editer.html
+ln deplacer.php
+ln tpl/deplacer.html
+ln publi.php
+ln status.php
+
+# navigation dans la revue
+
+ln index.php
+ln tpl/edition.html
+ln tpl/edition-lineaire.html
+ln tpl/edition-hierarchique.html
+ln tpl/edition-numero.html
+ln tpl/edition-regroupement.html
+ln tpl/edition-theme.html
+
+ln publication.php
+ln tpl/publication.html
+ln tpl/publications_protegees.html
+
+ln supprime.php
+ln tpl/supprime.html
+
+ln fonctionsavancees.php
+ln tpl/fonctionsavancees-document.html
+ln tpl/fonctionsavancees-publication.html
+
+###############################################################
+############# admin
+
+mkdir lodel/admin 0755
+mkdir lodel/admin/tpl 0755
+mkdir lodel/admin/CACHE 0770
+mkdir lodel/admin/upload 0770
+
+dirdestination lodel/admin
+
+htaccess CACHE
+htaccess tpl
+
+dirsource . # repertoire de la revue
+ln lodelconfig.php
+ln revueconfig.php
+ln styles_revue.css
+ln styles_lodel.css
+
+# les logins
+dirsource $homerevue/lodel/admin
+ln tpl/login.html
+dirsource $homelodel/lodel/admin
+ln login.php
+ln logout.php
+
+dirsource $homerevue/lodel/admin
+
+#
+
+ln tpl/macros.html
+ln images
+
+ln index.php
+ln tpl/index.html
+ln tpl/deskadmin.html
+
+ln motcle.php
+ln tpl/motcle.html
+ln motcles.php
+ln tpl/motcles.html
+ln indexl.php
+
+
+ln periode.php
+ln tpl/periode.html
+ln periodes.php
+ln tpl/periodes.html
+ln geographie.php
+ln tpl/geographie.html
+ln geographies.php
+ln tpl/geographies.html
+ln indexh.php
+
+
+ln options.php
+ln tpl/options.html
+
+# R2R
+ln r2rcheck.php
+ln r2renregistre.php
+ln rmdb.php
+
+ln stats.php
+ln texte.php
+ln tpl/texte.html
+ln textes.php
+ln tpl/textes.html
+
+ln typedoc.php
+ln tpl/typedoc.html
+ln typedocs.php
+ln tpl/typedocs.html
+
+ln typepubli.php
+ln tpl/typepubli.html
+ln typepublis.php
+ln tpl/typepublis.html
+
+ln backup.php
+ln tpl/backup.html
+ln import.php
+ln tpl/import.html
+
+ln user.php
+ln tpl/user.html
+ln users.php
+ln tpl/users.html
+
+ln session.php
+ln cleanxml.php
+

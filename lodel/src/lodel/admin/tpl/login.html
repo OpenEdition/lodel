@@ -1,56 +1,37 @@
 <USE MACROFILE="macros.html">
-<macro name="header_head_open">
-<title>Lodel identification</title><macro name="header_head_close">
-<body bgcolor="#FFFFFF" text="Black" vlink="black" link="black" alink="black" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0">
-<br><br><br><br>
-	<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
-		<tr>
-			<td valign="middle" align="center">
-			<center><img src="[#SHAREURL]/images/lodel_small.gif" border="0" alt="Accueil revue"><br>
-<br>
-
-				<table width="400" align="CENTER" cellpadding="5" cellspacing="1" border="0">
-					<tr>
-						<td width="40%">
-							<div align="right"><img src="[#SHAREURL]/images/KDE_users.gif" width="48" height="48" border="0"><br><br>
-
-							</div>
-						</td>
-						<td width="60%"><b><font color="#FF0000" size="+1">Identification</font></b><br>[(#ERREUR_LOGIN|true)<br><br><b> <font color="#800080">Nom d'utilisateur ou mot de passe incorrect</font></b><br>] 
-                [(#ERREUR_OPENSESSION|true)<b><br><font color="#FF0000">Impossible d'ouvrir une session. contactez l'administrateur</font><br></b>] [(#ERREUR_SETCOOKIE|true)<b><br><br>Impossible de poser un cookie</b><br>] [(#ERREUR_TIMEOUT|true)<br><b><font color="#000080">La session a expiré</font></b><br>] [(#ERREUR_PRIVILEGE|true)<b><br><br><font color="#008000">Vous n'avez pas les droits pour acc&eacute;der &agrave; cette 
-                page</font></b><br><br>]
-						</td>
-					</tr>
-					<form action="login.php" method="POST">						
-						<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
-						<tr>
-							<td>
-								<div align="right"><b>Nom d'utilisateur:</b>
-								</div>
-							</td>
-							<td width="60%">								
-								<input type="text" name="login" value="[#LOGIN]">
-							</td>
-						</tr>
-						<tr>
-							<td valign="top">
-								<div align="right"><b>Mot de passe:</b>
-								</div>
-							</td>
-							<td width="60%">								
-								<input type="password" name="passwd">								
-								<input class="form" type="submit" name="submit" value="Loger">
-					</form><br>
-							</td>
-						</tr>
-					<tr>
-						<td>	&nbsp;
-						</td>
-						<td>
-						</td>
-					</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</center><macro name="close_html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<meta name="ROBOTS" content="nofollow, noindex">
+<title>Identification</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<!-- ************************************** Rajout intégration maquette ************************************** -->
+<MACRO NAME="HEADER_LOGO_LOGIN">
+	<div>
+		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
+		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
+	</div>
+	<div id="formulaire">
+		<div id="titre_formulaire">Bienvenue !<br />Merci de vous identifier :</div>
+		<form action="login.php" method="POST">
+			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
+			<div id="champ_formulaire">
+				[(#ERREUR_LOGIN|true)<span class="message_erreur">Nom d'utilisateur ou mot de passe incorrect.</span><br /><br />]
+				[(#ERREUR_OPENSESSION|true)<span class="message_erreur">Impossible d'ouvrir une session. contactez l'administrateur.</span><br /><br />]
+				[(#REVUEBLOQUEE|true)<span class="message_erreur">La revue est bloquee impossible de se loguer (sauf super admin). La revue est probablement en maintenance.</span><br /><br />]
+				[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]
+				[(#ERREUR_TIMEOUT|true)<span class="message_erreur">La session a expiré.</span><br /><br />]
+				[(#ERREUR_PRIVILEGE|true)<span class="message_erreur">Vous n'avez pas les droits pour acc&eacute;der &agrave; cette page.</span><br /><br />]
+				Nom d'utilisateur : <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" /><br /><br />
+				Mot de passe : <input type="password" class="input_formulaire" name="passwd" />
+			</div>
+			<p>
+				<img src="[#SHAREURL]/images/vague.png" alt="" />
+				<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" border="0" alt="Valider" />
+			</p>
+		</form>
+	</div>
+	<!--<div id="credit">
+		<p>LODEL est un logiciel d'édition électronique créé par revues.org</p>
+		<img src="[#SHAREURL]/images/revues.png" alt="" />
+	</div>-->
+<!-- ************************************** Fin Rajout intégration maquette ************************************** -->
+<MACRO NAME="CLOSE_HTML">

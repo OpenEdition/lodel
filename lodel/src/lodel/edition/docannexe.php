@@ -1,9 +1,9 @@
 <?
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
-include ("$home/func.php");
+include ($home."func.php");
 
 $iddocument=intval($iddocument);
 $context[id]=$id=intval($id);
@@ -13,13 +13,12 @@ $context[type]=$type;
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include ("$home/trash.php");
+  include ($home."trash.php");
   treattrash("documentsannexes");
   return;
 }
 
 $critere="id='$id' AND status>0";
-
 
 //
 // ordre
@@ -28,7 +27,7 @@ if ($id>0 && $dir) {
   # cherche le parent
   $result=mysql_query ("SELECT iddocument FROM documentsannexes WHERE $critere") or die (mysql_error());
   list($iddocument)=mysql_fetch_row($result);
-  chordre("documentsannexes",$id,"iddocument='$iddocument'",$dir,"inverse");
+  chordre("documentsannexes",$id,"iddocument='$iddocument'",$dir);
   back();
 }
 
@@ -51,11 +50,11 @@ if ($edit) { // modifie ou ajoute
 	if (!file_exists("../../".$dir)) {
 	  if (!@mkdir("../../".$dir,0755)) die("impossible de creer le repertoire $dir");
 	}
-	$lien=$dir.basename($docfile_name);
+	$lien=$dir."/".basename($docfile_name);
 	copy($docfile,"../../$lien");
       } else {
 	// recherche le lien
-	include_once ("$home/connect.php");
+	include_once ($home."connect.php");
 	$result=mysql_query("SELECT lien FROM documentsannexes WHERE $critere") or die (mysql_error());
 	list($lien)=mysql_fetch_row($result);
       }
@@ -91,7 +90,7 @@ if ($edit) { // modifie ou ajoute
     // fin de chargement
 
     if ($err) break;
-    include_once ("$home/connect.php");
+    include_once ($home."connect.php");
 
     myquote($context);
     mysql_query ("REPLACE INTO documentsannexes (id,iddocument,titre,commentaire,lien,type) VALUES ('$id','$iddocument','$context[titre]','$context[commentaire]','$lien','$type')") or die ("invalid query replace");
@@ -102,7 +101,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ("$home/connect.php");
+  include_once ($home."connect.php");
   $result=mysql_query("SELECT * FROM documentsannexes WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
   if ($context[type]=="liendocument" || $context[type]=="lienpublication") {
@@ -120,7 +119,7 @@ if ($edit) { // modifie ou ajoute
 // post-traitement
 posttraitement($context);
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"docannexe");
 
 

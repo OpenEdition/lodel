@@ -1,8 +1,8 @@
 <?
 
 
-include ("lodelconfig.php");
-include ("$home/auth.php");
+require("revueconfig.php");
+include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
 if ($backup) {
@@ -34,7 +34,7 @@ if ($backup) {
 }
 
 
-include ("$home/calcul-page.php");
+include ($home."calcul-page.php");
 calcul_page($context,"backup");
 
 
