@@ -39,7 +39,7 @@ function makefilterfunc()
   //
   // cherche les champs a filtrer
   //
-  require_once ($home."connect.php");
+  require_once("connect.php");
   $result=$db->execute(lq("SELECT class,name,filtering FROM #_TP_tablefields WHERE status>0 AND filtering!=''")) or dberror();
   while (!$result->EOF) {
     //list($class,$name,$filter)=$result->fields;

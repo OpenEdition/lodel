@@ -35,7 +35,7 @@ include ($home."auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
 include ($home."func.php");
 
-include_once ($home."connect.php");
+include_once("connect.php");
 
 if ($status=="protege") {
   $newstatut=+32;

@@ -31,15 +31,15 @@
 // assure l'edition, la supression, la restauration des utilisateurs.
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-#include_once ($home."func.php");
+#include_once("func.php");
 
 #if ($context[userrights]>=LEVEL_ADMINLODEL) return;
-require($home."userinc.php");
+require("userinc.php");
 
 
-require($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"user");
 
 ?>

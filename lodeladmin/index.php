@@ -30,12 +30,12 @@
 if (!file_exists("../lodelconfig.php")) { header("location: install.php"); exit; }
 
 require("lodelconfig.php");
-require_once($home."auth.php");
+require_once("auth.php");
 authenticate(LEVEL_ADMINLODEL);
 
 $tables=array("texts","translations","texts","users","sites");
 
-require($home."controler.php");
+require("controler.php");
 Controler::Controler($tables);
 
 ?>

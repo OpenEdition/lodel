@@ -28,12 +28,12 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-if (file_exists($home."textfunc_local.php")) require_once($home."textfunc_local.php");
+if (file_exists($home."textfunc_local.php")) require_once("textfunc_local.php");
 
 
 # fonction largement reprises de SPIP
 
-require_once($home."func.php");
+require_once("func.php");
 
 #function cleanurl ($texte)
 #
@@ -330,7 +330,7 @@ function vignette($text,$width)
   if (file_exists($vignettefile) && filemtime($vignettefile)>=filemtime($text)) return $vignettefile;
 
   // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
-  require_once($home."images.php");
+  require_once("images.php");
 
   if (!resize_image($width,$text,$vignettefile,"+")) return "image resizing failed";
 
@@ -480,7 +480,7 @@ function tocss($text,$options="")
 
 {
   global $home;
-  include_once($home."balises.php");
+  include_once("balises.php");
   $srch=array();   $rpl=array();
   if ($options=="heading") {
     array_push($srch,
@@ -542,7 +542,7 @@ function humanlang($text)
 
 {
   global $home;
-  require_once($home."langues.php");
+  require_once("langues.php");
   return $GLOBALS[langues][$text];
 }
 

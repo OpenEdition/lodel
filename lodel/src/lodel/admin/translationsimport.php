@@ -30,16 +30,16 @@
 die("-- a finir --");
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
-require_once($home."func.php");
-require_once($home."validfunc.php");
+require_once("func.php");
+require_once("validfunc.php");
 
-require_once($home."importfunc.php");
+require_once("importfunc.php");
 
 $file=extract_import("translation",$context);
 
-require_once($home."translationfunc.php");
+require_once("translationfunc.php");
 $xmldb=new XMLDB_Translations("interface");
 
 $xmldb->readFromString('

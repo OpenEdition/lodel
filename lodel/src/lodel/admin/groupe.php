@@ -32,7 +32,7 @@
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once($home."func.php");
+include_once("func.php");
 
 
 $id=intval($id);
@@ -69,7 +69,7 @@ if ($edit && !$delete) { // modifie ou ajoute
   do {
     if (!$context[nom]) $err=$context[erreur_nom]=1;
     if ($err) break;
-    include_once ($home."connect.php");
+    include_once("connect.php");
 
     mysql_query ("REPLACE INTO $GLOBALS[tp]groupes (id,nom) VALUES ('$id','$context[nom]')") or die (mysql_error());
 
@@ -79,7 +79,7 @@ if ($edit && !$delete) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ($home."connect.php");
+  include_once("connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]groupes WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }

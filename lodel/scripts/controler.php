@@ -27,7 +27,7 @@
   *     along with this program; if not, write to the Free Software
   *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require_once($home."auth.php");
+require_once("auth.php");
 
 
 class Controler {
@@ -46,12 +46,12 @@ class Controler {
     $do=$therequest['do'];
 
     if ($do=="back") {
-      require_once($home."view.php");
+      require_once("view.php");
       View::back();
       return;
     }
 
-    require_once($home."func.php");
+    require_once("func.php");
 
     extract_post($therequest);
 
@@ -63,7 +63,7 @@ class Controler {
       // get the various common parameters
       foreach(array("class","classtype","type","textgroups") as $var) {
 	if ($therequest[$var]) {
-	  require_once($home."validfunc.php");
+	  require_once("validfunc.php");
 	  if (!validfield($therequest[$var],$var)) die("ERROR: a valid $var name is required");
 	  $context[$var]=$therequest[$var];
 	}
@@ -82,7 +82,7 @@ class Controler {
       if (!preg_match("/^[a-zA-Z]+$/",$do)) die("ERROR: invalid action");
       $do=$do."Action";
 
-      require_once($home."logic.php");
+      require_once("logic.php");
 
       switch($do) {
       case 'listAction' :
@@ -104,7 +104,7 @@ class Controler {
       if (!$ret) die("ERROR: invalid return from the logic.");
 
       // create the view
-      require_once($home."view.php");
+      require_once("view.php");
       $view=&getView();
 
       switch($ret) {
@@ -136,10 +136,10 @@ class Controler {
       }
     } else {
       recordurl();
-      require_once($home."view.php");
+      require_once("view.php");
       $view=&getView();
       $view->renderCached($context,"index");
-      //require($home."calcul-page.php");
+      //require("calcul-page.php");
       //calcul_page($context,"index");
     }
   } // constructor

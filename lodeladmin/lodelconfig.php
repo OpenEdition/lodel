@@ -37,6 +37,8 @@ $versionsuffix=$version ? "-$version" : "";   # versioning
 define("LODELROOT","../");
 
 require(LODELROOT."lodelconfig.php");
+ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
+
 $home=LODELROOT.$home;
 $sharedir=LODELROOT.$sharedir.$versionsuffix;
 $shareurl.=$versionsuffix;

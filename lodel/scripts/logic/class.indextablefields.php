@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require_once($GLOBALS['home']."logic/class.tablefields.php");
+require_once("logic/class.tablefields.php");
 /**
  *  Logic IndexTableField
  */

@@ -30,13 +30,13 @@
 // charge le fichier xml et
 if (!function_exists("authenticate")) {
   require("siteconfig.php");
-  require_once($home."auth.php");
+  require_once("auth.php");
   authenticate();
 }
 
 $id=intval($id);
 
-require_once($home."connect.php");
+require_once("connect.php");
 
 $critere=$user['visitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 
@@ -45,7 +45,7 @@ if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 list($lien,$type)=mysql_fetch_row($result);
 
 if ($type=="documentannexe-lienfichier") {
-  require_once($home."func.php");
+  require_once("func.php");
   download($lien);
   return;
 } else {

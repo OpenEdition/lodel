@@ -32,10 +32,10 @@
 
 die("desuet");
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
 
 $class="publications";
-require($home."entite.php");
+require("entite.php");
 
 ?>

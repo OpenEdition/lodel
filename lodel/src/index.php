@@ -28,10 +28,10 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-require_once($home."auth.php");
+require_once("auth.php");
 authenticate();
 
-require_once($home."view.php");
+require_once("view.php");
 //
 // record the url if logged
 //
@@ -42,15 +42,15 @@ if ($lodeluser['rights']>=LEVEL_VISITOR) recordurl();
 $view=&getView();
 if ($view->renderIfCacheIsValid()) return;
 
-require_once($home."textfunc.php");
+require_once("textfunc.php");
 
 $id=intval($_GET['id']);
 $tpl="index"; // template by default.
 
 if ($id) {
-  require_once($home."connect.php");
+  require_once("connect.php");
   do { // exception block
-    require_once($home."func.php");  
+    require_once("func.php");  
     $class=$db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='".$id."'"));
     if ($db->errorno() && $lodeluser['rights']>LEVEL_VISITOR) dberror();
     if (!$class) break;
@@ -62,7 +62,7 @@ if ($id) {
     } // switch class
   } while(0);
 } else{
-  require_once($home."connect.php");
+  require_once("connect.php");
   $query=preg_replace("/[&?](format|clearcache)=\w+/","",$_SERVER['QUERY_STRING']);
   if($query && !preg_match("/[^a-zA-Z0-9_\/-]/",$query)) {
     // maybe a path to the document
@@ -108,7 +108,7 @@ function printEntities($id,$identifier,&$context)
   //
   // cherche le document, et le template
   //
-  if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
+  if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");
   
   if ($id || $identifier) {
     do {

@@ -34,18 +34,18 @@ include ($home."func.php");
 
 $context[id]=$id=intval($id);
 
-include_once($home."connect.php");
+include_once("connect.php");
 
 
 //
 // get the  document
 //
 $critere=$user['visitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
-if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
+if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");
 
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or dberror();
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-require_once($home."textfunc.php");
+require_once("textfunc.php");
 $context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));
 
 
@@ -95,7 +95,7 @@ foreach (array("to","from","message") as $bal) {
 }
 
 
-include_once ($home."calcul-page.php");
+include_once("calcul-page.php");
 calcul_page($context,"signaler");
 
 ?>

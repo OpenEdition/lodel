@@ -41,7 +41,7 @@ $tplcreation="";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  include_once ($home."connect.php");
+  include_once("connect.php");
   include ($home."managedb.php");
 
   supprime($id,true);
@@ -97,7 +97,7 @@ if ($edit) { // modifie ou ajoute
 	// else, process once we know the id of the document
       } else {
 	// recherche le lien
-	include_once ($home."connect.php");
+	include_once("connect.php");
 	$result=mysql_query("SELECT lien FROM $GLOBALS[tp]documents WHERE identity='$id'") or dberror();
 	list($lien)=mysql_fetch_row($result);
       }
@@ -132,8 +132,8 @@ if ($edit) { // modifie ou ajoute
     // fin de chargement
 
     if ($err) break;
-    require_once ($home."connect.php");
-    require_once($home."entitefunc.php");
+    require_once("connect.php");
+    require_once("entitefunc.php");
     $context[entite][name]=$context[title];
     $context[entite][title]=$context[title];
     $context[entite][texte]=$context[texte];
@@ -162,7 +162,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ($home."connect.php");
+  include_once("connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,$GLOBALS[tp]types.type,tplcreation FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id'") or dberror();
   $context=array_merge($context,mysql_fetch_assoc($result));
   if ($context[type]=="documentannexe-liendocument" || $context[type]=="documentannexe-lienpublication") {

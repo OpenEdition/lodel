@@ -29,9 +29,9 @@
 
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMIN);
-require ($home."func.php");
+require("func.php");
 
 $delete=intval($_GET['delete']);
 $deleteuser=intval($_GET['deleteuser']);
@@ -60,7 +60,7 @@ if ($ids) {
 
 usecurrentdb();
 update();
-require_once($home."view.php");
+require_once("view.php");
 $view=&getView();
 $view->back();
 

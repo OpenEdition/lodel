@@ -31,7 +31,7 @@
 // assure l'edition, la supression, la restauration des periodes.
 
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL);
 
 $context['textgroups']="interface";

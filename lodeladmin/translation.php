@@ -31,17 +31,17 @@
 // manage translation
 
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 
 $context['textgroups']="interface";
 
-require($home."translationinc.php");
+require("translationinc.php");
 
 // post-traitement
 postprocessing($context);
 
-require($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"translation");
 
 

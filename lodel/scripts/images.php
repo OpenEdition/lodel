@@ -61,7 +61,7 @@ function change_image($filename,$id,$class,$champ)
     if ($oldimagefile && file_exists(SITEROOT.$oldimagefile)) unlink(SITEROOT.$oldimagefile);
     $newimagefile="docannexe/img-$class-$champ-$id.$ext";
     //    if ($context[taille]) {
-    //      include_once($home."images.php");
+    //      include_once("images.php");
     //      resize_image($context[taille],$filename,"../../$newimagefile");
     //    } else {
     copy($filename,SITEROOT.$newimagefile);

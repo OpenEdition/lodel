@@ -33,7 +33,7 @@
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include_once ($home."func.php");
+include_once("func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);

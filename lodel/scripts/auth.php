@@ -50,7 +50,7 @@ function authenticate ($level=0)
     $name=addslashes($_COOKIE[$sessionname]);
 
     if (!$name) break;
-    require_once($home."connect.php");
+    require_once("connect.php");
     usemaindb();
     if (!($row=$db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'"))))  break;
     $GLOBALS['idsession']=$idsession=$row['id'];

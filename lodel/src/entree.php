@@ -29,10 +29,10 @@
 
 if (!function_exists("authenticate")) {
   require("siteconfig.php");
-  require_once($home."auth.php");
+  require_once("auth.php");
   authenticate();
 }
-require_once($home."connect.php");
+require_once("connect.php");
 
 $context[id]=$id=intval($id);
 
@@ -41,7 +41,7 @@ $typeentreetable="$GLOBALS[tp]entrytypes";
 
 $critere=$user['visitor'] ?  "" : "AND $entreetable.status>0";
 
-include_once($home."connect.php");
+include_once("connect.php");
 $result=mysql_query ("SELECT $entreetable.*, tpl, type FROM $entreetable,$typeentreetable WHERE $entreetable.idtype=$typeentreetable.id  AND $entreetable.id='$id' $critere AND $typeentreetable.status>0") or dberror();
 if (!mysql_num_rows($result)) { header("location: not-found.html"); exit(); }
 $context=array_merge($context,mysql_fetch_assoc($result));

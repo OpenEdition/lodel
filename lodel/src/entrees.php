@@ -29,11 +29,11 @@
 
 if (!function_exists("authenticate")) {
   require_once("siteconfig.php");
-  require_once($home."auth.php");
+  require_once("auth.php");
   authenticate();
 }
 
-require_once($home."func.php");
+require_once("func.php");
 
 $critere="";
 if ($id) {
@@ -46,7 +46,7 @@ if ($id) {
 
 if ($suffix && !preg_match("/^[\w-]+$/",$suffix)) die("suffix non accepte");
 
-include_once($home."connect.php");
+include_once("connect.php");
 $result=mysql_query ("SELECT * FROM $GLOBALS[tp]entrytypes WHERE $critere AND status>0") or dberror();
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 
@@ -57,7 +57,7 @@ $context[type_tri]=$GLOBALS[tp]."entrees.".$context[type_tri];  // prefix par la
 
 $base=$context[type_tplindex].$suffix;
 
-require ($home."cache.php");
+require("cache.php");
 
 
 function loop_alphabet(&$context,$funcname)

@@ -130,7 +130,7 @@ class PersonTypesLogic extends Logic {
    function _deleteRelatedTables($id) {
      global $home;
 
-     //require_once($home."typetypefunc.php"); 
+     //require_once("typetypefunc.php"); 
      //typetype_delete("persontype","idpersontype='".$id."'");
       
      $dao=&getDAO("tablefields");
@@ -163,7 +163,7 @@ class PersonTypesLogic extends Logic {
 /* loops                             */
 
 function loop_entitytypes($context,$funcname)
-{ require_once($GLOBALS['home']."typetypefunc.php"); 
+{ require_once("typetypefunc.php"); 
   loop_typetable ("entitytype","persontype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);}
 
 

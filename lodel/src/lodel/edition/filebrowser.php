@@ -29,7 +29,7 @@
 
 
 require("siteconfig.php");
-require_once ($home."auth.php");
+require_once("auth.php");
 authenticate(LEVEL_REDACTOR);
 
 define("UPLOADDIR",SITEROOT."CACHE/upload");
@@ -40,7 +40,7 @@ $context['caller']=$_REQUEST['caller'];
 $selectedfiles=is_array($_POST['file']) ? array_keys($_POST['file']) : false;
 
 if (isset($_POST['checkmail'])) {
-  require_once($home."imapfunc.php");
+  require_once("imapfunc.php");
   $context['nbattattachments']=checkmailforattachments();
 
 } elseif ($_POST['delete'] && $selectedfiles) {
@@ -55,7 +55,7 @@ if (isset($_POST['checkmail'])) {
     }
   }
 } elseif ($_POST['resize'] && $_POST['newsize'] && $selectedfiles) {
-  require_once($home."images.php");
+  require_once("images.php");
   $dh=@opendir(UPLOADDIR);
   if (!$dh) die("ERROR: can't open upload directory");
   while( ($file=readdir($dh))!==false ) {
@@ -70,7 +70,7 @@ if (isset($_POST['checkmail'])) {
 
 $nodesk=true;
 
-require($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"filebrowser");
 

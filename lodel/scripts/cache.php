@@ -31,16 +31,16 @@
 die("desuet");
 
 if (!(INC_LODELCONFIG)) die("inc lodelconfig");
-require_once ($home."func.php");
+require_once("func.php");
 
 if (!function_exists("authenticate")) {
-  require ($home."auth.php");
+  require("auth.php");
   authenticate();
 }
 
 
 if ($GLOBALS[user][visitor]) {
-  require ($home."calcul-page.php");
+  require("calcul-page.php");
   calcul_page($context,$base);
   return;
 }
@@ -71,7 +71,7 @@ if ($maj>=myfilemtime($cachedfile.".".$extension)) $recalcul_templates=1;
 
 // si le fichier de mise-a-jour est plus recent
 if ($recalcul_templates) {
-  require_once ($home."calcul-page.php");
+  require_once("calcul-page.php");
   calculate_cache_and_output($context,$base,$cachedfile);
 } elseif ($extension=="php") {
   // execute le cache.
@@ -82,7 +82,7 @@ if ($recalcul_templates) {
 #  echo "return:$ret fichier$cachedfile.php<br/>";
   if ($ret=="refresh") {
     #echo "refresh";
-    require_once ($home."calcul-page.php");
+    require_once("calcul-page.php");
 #    echo "planter?<br/>\n";
     calculate_cache_and_output($context,$base,$cachedfile);
   }

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-if (file_exists($home."loops_local.php")) require_once($home."loops_local.php");
+if (file_exists($home."loops_local.php")) require_once("loops_local.php");
 
 /*********************************************************************/
 /*  Boucle permettant de trouver depuis une publication toutes les   */
@@ -315,7 +315,7 @@ function loop_rss ($context,$funcname,$arguments)
   }
 
 
-  require_once($home."magpierss/rss_fetch.inc");
+  require_once("magpierss/rss_fetch.inc");
 
   $rss = fetch_rss( $arguments['url'] , $arguments['refresh'] ? $arguments['refresh'] : 3600);
 

@@ -42,7 +42,7 @@ authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 do {
 
 // cree la table si necessaire
-  require_once($home."objetfunc.php");
+  require_once("objetfunc.php");
 
   $err=mysql_query_cmds_forobjetfunc('
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (

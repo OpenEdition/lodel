@@ -29,13 +29,13 @@
 
 
 require("siteconfig.php");
-require_once($home."auth.php");
+require_once("auth.php");
 authenticate(LEVEL_VISITOR);
 
 if (!$_GET['do'] && !$_POST['do']) {
   recordurl();
   $context['id']=$id=intval($_GET['id']);
-  require_once($home."view.php");
+  require_once("view.php");
   $view=&getView();
   if ($view->renderIfCacheIsValid()) { return; }
   if ($id) {
@@ -56,7 +56,7 @@ if (!$_GET['do'] && !$_POST['do']) {
   $view->renderCached($context,$base);
   return;
 } else {
-  require($home."controler.php");
+  require("controler.php");
   // automatic logic
   $do=$_GET['do'] ? $_GET['do'] : $_POST['do'];
   $lo=$_GET['lo'] ? $_GET['lo'] : $_POST['lo'];

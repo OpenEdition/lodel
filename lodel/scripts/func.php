@@ -49,7 +49,7 @@ function gettask (&$id)
   $id=intval($id);
   $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
   if ($row===false) dberror();
-  if (!$row) { require_once($home."view.php"); $view=&getView(); $view->back(); return; }
+  if (!$row) { require_once("view.php"); $view=&getView(); $view->back(); return; }
   $row=array_merge($row,unserialize($row['context']));
   return $row;
 }
@@ -375,7 +375,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
   }
   if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
 
-  require_once($GLOBALS['home']."connect.php");
+  require_once("connect.php");
   global $db;
 
   if ($group!="site") {
@@ -394,7 +394,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
     if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
     if (!$arr) {
       // create the textfield
-      require_once($GLOBALS['home']."logic.php");
+      require_once("logic.php");
       $logic=getLogic("texts");
       $logic->createTexts($name,$group);
     }
@@ -755,8 +755,8 @@ function &getDAO($table) {
 
   if ($factory[$table]) return $factory[$table]; // cache
 
-  require_once($GLOBALS['home']."dao.php");
-  require_once($GLOBALS['home']."dao/class.".$table.".php");
+  require_once("dao.php");
+  require_once("dao/class.".$table.".php");
   $daoclass=$table."DAO";
   return $factory[$table]=new $daoclass;
 }
@@ -773,8 +773,8 @@ function &getGenericDAO($table,$idfield)
 
   if ($factory[$table]) return $factory[$table]; // cache
 
-  require_once($GLOBALS['home']."dao.php");
-  require_once($GLOBALS['home']."genericdao.php");
+  require_once("dao.php");
+  require_once("genericdao.php");
 
   return $factory[$table]=new genericDAO ($table,$idfield);
 }

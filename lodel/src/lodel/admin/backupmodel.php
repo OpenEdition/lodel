@@ -29,9 +29,9 @@
 
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMIN);
-require_once($home."func.php");
+require_once("func.php");
 
 
 $context['importdir']=$importdir;
@@ -41,7 +41,7 @@ if ($_POST['backup']) {
 
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
   // lock les tables
-  require($home."backupfunc.php");
+  require("backupfunc.php");
   $uselodelprefix=true;
 
 
@@ -130,7 +130,7 @@ if ($_POST['backup']) {
 }
 
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"backupmodel");
 

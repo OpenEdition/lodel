@@ -34,7 +34,7 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_REDACTOR,NORECORDURL);
 include ($home."func.php");
-require_once($home."utf8.php"); // conversion des caracteres
+require_once("utf8.php"); // conversion des caracteres
 
 $formats=array("sxw","doc","rtf","pdf");
 
@@ -81,7 +81,7 @@ function convert ($uploadedfile,$destfile,$formatconversion)
 {
   global $home;
 
-  require_once($home."serveurfunc.php");
+  require_once("serveurfunc.php");
   $err=contact_servoo("DWL file1; CVT OpenOffice.org $formatconversion; RTN convertedfile;"
 		      ,$uploadedfile,$destfile);
   if ($err) return $err;

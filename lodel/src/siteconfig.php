@@ -32,7 +32,6 @@ require("../lodelconfig.php");
 
 # la version est vide pour lodeldevel
 # sinon mettre la version sous forme numerique entre guillement. exemple: $version="0.4";
-
 $version="0.8";
 
 $site="";
@@ -42,9 +41,11 @@ $site="";
 $versionsuffix=$version ? "-$version" : "";   # versioning
 
 $home="../lodel$versionsuffix/scripts/";
+
 $sharedir="../".$sharedir.$versionsuffix;
 $shareurl.=$versionsuffix;
 
 if (!defined("SITEROOT")) define("SITEROOT","");
 
+ini_set('include_path',SITEROOT.$home .PATH_SEPARATOR . ini_get("include_path"));
 ?>

@@ -29,19 +29,19 @@
 
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMIN);
-require ($home."func.php");
+require("func.php");
 
 
 $context['importdir']=$importdir;
 
 if ($backup) {
-  require_once($home."func.php");
+  require_once("func.php");
 
   // il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
   // lock les tables
-  require($home."backupfunc.php");
+  require("backupfunc.php");
 
 #  lock_write_all($currentdb);
 
@@ -82,7 +82,7 @@ if ($backup) {
       system($zipcmd." -q $archivetmp -j $tmpdir/$outfile");
     }
   } else { // pclzip
-    require($home."pclzip.lib.php");
+    require("pclzip.lib.php");
     $archive=new PclZip ($archivetmp);
     if (!$sqlonly) {
       // function to exclude files and rename directories
@@ -132,7 +132,7 @@ if ($backup) {
 }
 
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"backup");
 

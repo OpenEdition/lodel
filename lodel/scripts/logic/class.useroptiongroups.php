@@ -61,7 +61,7 @@ class UserOptionGroupsLogic extends Logic {
      $dao=&getDAO("options");
      $options=$dao->findMany("idgroup='".$context['id']."'","id,type,defaultvalue,userrights");
 
-     require_once($home."validfunc.php");
+     require_once("validfunc.php");
      foreach ($options as $option) {
        if ($option->type=="passwd" && !trim($context[$option->name])) continue; // empty password means we keep the previous one.
        $valid=validfield($context[$option->name],$option->type,"");

@@ -30,9 +30,9 @@
 die("desuet");
 // calcul le critere pour determiner le texte a editer, restorer, detruire...
 
-require($GLOBALS['home']."func.php");
+require("func.php");
 
-require($home."textgroupfunc.php");
+require("textgroupfunc.php");
 $textgroupswhere=textgroupswhere($context['textgroups']);
 
 $id=intval($id);
@@ -114,7 +114,7 @@ if ($id>0 && $delete) {
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  require_once ($home."connect.php");
+  require_once("connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]texts WHERE $critere AND $textgroupswhere") or die ("error SELECT");
   if (!mysql_num_rows($result)) die("ERROR: incompatible id and textgroups in textinc.php");
   $context=array_merge($context,mysql_fetch_assoc($result));

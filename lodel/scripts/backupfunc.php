@@ -71,17 +71,17 @@ $GLOBALS['strDatabase']="Database";
 $GLOBALS['strTableStructure']="Table structure for table";
 $GLOBALS['strDumpingData'] = "Dumping data for table";
 
-require($home."pma/mysql_wrappers.lib.php");
-require($home."pma/defines.lib.php");
-require($home."pma/defines_php.lib.php");
-require($home."pma/common.lib.php");
-require($home."pma/sql-modified.php");
-#require($home."pma/read_dump.lib.php");
+require("pma/mysql_wrappers.lib.php");
+require("pma/defines.lib.php");
+require("pma/defines_php.lib.php");
+require("pma/common.lib.php");
+require("pma/sql-modified.php");
+#require("pma/read_dump.lib.php");
 
 // parser SQL
-require($home."pma/string.lib.php");
-require($home."pma/sqlparser.data.php");
-require($home."pma/sqlparser.lib.php");
+require("pma/string.lib.php");
+require("pma/sqlparser.data.php");
+require("pma/sqlparser.lib.php");
 
 
 
@@ -235,7 +235,7 @@ function mysql_dump($db,$tables,$output,$fh=0,
 function execute_dump($filename)
 
 {
-  require_once($GLOBALS['home']."func.php");
+  require_once("func.php");
   // constant
   $chunk=16384;
 #  $chunk=2048;
@@ -575,7 +575,7 @@ function backupME($sqlfile,$dirs) {
       system($zipcmd." -q $archivetmp -j $sqlfile");
     }
   } else { // pclzip
-    require($home."pclzip.lib.php");
+    require("pclzip.lib.php");
     $archive=new PclZip ($archivetmp);
     if ($zipdirs) {
       // function to exclude files and rename directories
@@ -644,7 +644,7 @@ function importFromZip ($archive,$accepteddirs,$acceptedexts=array(),$sqlfile=""
       if (filesize($sqlfile)<=0)  return false;
     }
   } else { // use PCLZIP library
-      require($home."pclzip.lib.php");
+      require("pclzip.lib.php");
       $archive=new PclZip($archive);
 
       // functions callback

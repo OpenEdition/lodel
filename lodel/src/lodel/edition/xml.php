@@ -31,16 +31,16 @@
 
 // charge le fichier xml et
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_VISITOR);
-require_once ($home."func.php");
-require_once ($home."textfunc.php");
+require_once("func.php");
+require_once("textfunc.php");
 
 $context[identity]=$context[id]=$id=intval($id);
 $context[class]="documents";
 
-require_once($home."connect.php");
-require_once($home."entitefunc.php");
+require_once("connect.php");
+require_once("entitefunc.php");
 
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or dberror();
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
@@ -54,7 +54,7 @@ list($context[documentsannexes])=mysql_fetch_row($result);
 
 # calculate the page and store it into $contents
 
-require_once($home."xmlfunc.php");
+require_once("xmlfunc.php");
 
 $contents=calculateXML($context);
 
@@ -71,7 +71,7 @@ if ($valid) {
     if (filesize($errfile)>0) die("ERROR: $errormsg<br />".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
     @unlink("$tmpfile.err");
   } else { // PCLZIP library.
-    require($home."pclzip.lib.php");
+    require("pclzip.lib.php");
     $archive=new PclZip($tmpfile.".zip");
     $v_list = $archive->create(array($tmpfile.".xsd",$tmpfile.".xml"));
     if ($v_list == 0) die("ERROR : ".$archive->errorInfo(true));
@@ -81,7 +81,7 @@ if ($valid) {
 
   $cmds="DWL file1; XVL MSV; RTN convertedfile;";
 
-  require ($home."serveurfunc.php");
+  require("serveurfunc.php");
   list($ret,$retval)=contact_servoo($cmds,array($tmpfile.".zip"));
   if ($ret=="noservoo") $ret="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
   
@@ -89,7 +89,7 @@ if ($valid) {
 
   $context[reponse]=str_replace("\n","<br />",htmlentities($ret));
 
-  require_once ($home."calcul-page.php");
+  require_once("calcul-page.php");
   calcul_page($context,"xml-valid");
 } elseif ($view) {
   echo $contents;

@@ -86,7 +86,7 @@ class TableFieldsLogic extends Logic {
    {
      switch($var) {
      case "type" :
-       require_once($GLOBALS['home']."commonselect.php");
+       require_once("commonselect.php");
        makeSelectFieldTypes($context['type']);
        break;
      case "condition" :
@@ -113,7 +113,7 @@ class TableFieldsLogic extends Logic {
        renderOptions($arr,$context['edition']);
        break;
      case "allowedtags" :
-       require_once($GLOBALS['home']."balises.php");
+       require_once("balises.php");
        $groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
        $arr2=array();
        foreach($groups as $k) {
@@ -208,7 +208,7 @@ class TableFieldsLogic extends Logic {
 
    {
      global $home,$lodelfieldtypes,$db;
-     require_once($home."fieldfunc.php");
+     require_once("fieldfunc.php");
 
      // remove the dc for all the other fields
      if ($vo->g_name) {
@@ -234,7 +234,7 @@ class TableFieldsLogic extends Logic {
        }
        if ($alter || $vo->filtering!=$this->oldvo->filtering) {
 	 // should be in view ??
-	 require_once($GLOBALS['home']."cachefunc.php");
+	 require_once("cachefunc.php");
 	 removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
        }
      }
@@ -259,7 +259,7 @@ class TableFieldsLogic extends Logic {
      unset($this->vo);
 
      // should be in the view....
-     require_once($home."cachefunc.php");
+     require_once("cachefunc.php");
      removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
      //
 
@@ -338,7 +338,7 @@ function loop_allowedtags_documentation(&$context,$funcname)
 
 {
   ##$groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
-  require_once($GLOBALS['home']."balises.php");
+  require_once("balises.php");
   foreach($GLOBALS['xhtmlgroups'] as $groupname => $tags) {
     $localcontext=$context;
     $localcontext['count']=$count;

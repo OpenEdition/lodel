@@ -41,7 +41,7 @@ if ($id>0 && $type=="xml") {
  $rep="../sources";
  // cherche le name original du fichier
 
- require($home."tablefields.php");
+ require("tablefields.php");
  $table=$GLOBALS[tp]."documents";
  if ($tablefields[$table] && 
       in_array("fichiersource",$tablefields[$table])) {
@@ -56,7 +56,7 @@ if ($id>0 && $type=="xml") {
 
 if (!file_exists($rep."/".$filename)) die ("le fichier $filename n'existe pas");
 
-require_once($home."func.php");
+require_once("func.php");
 download ($rep."/".$filename,$originalname);
 
 ?>

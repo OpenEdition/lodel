@@ -30,17 +30,17 @@
 die("desuet");
 if (!function_exists("authenticate")) {
   require("siteconfig.php");
-  require_once($home."auth.php");
+  require_once("auth.php");
   authenticate();
 }
-require_once($home."func.php");
+require_once("func.php");
 
 
 $context[id]=$id=intval($id);
 
 
 // cherche le sommaire precedent et le suivant
-include_once($home."connect.php");
+include_once("connect.php");
 
 
 $critere=$user['visitor'] ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
@@ -53,7 +53,7 @@ $base="";
 if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");
 
 if ($id || $identifier) {
-  require_once($home."textfunc.php");
+  require_once("textfunc.php");
   do {
     if ($identifier) {
       $identifier=addslashes(stripslashes($identifier));

@@ -29,15 +29,15 @@
 
 
 require("lodelconfig.php");
-require_once ($home."auth.php");
+require_once("auth.php");
 
 
 if ($login) {
-  require_once($home."func.php");
+  require_once("func.php");
   extract_post();
   do {
-    require_once ($home."connect.php");
-    require_once ($home."loginfunc.php");
+    require_once("connect.php");
+    require_once("loginfunc.php");
     if (!check_auth($context['login'],$context['passwd'],$site)) {
       $context[error_login]=1; break; 
     }
@@ -57,7 +57,7 @@ $context[passwd]=$passwd=0;
 if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
   $context['sitebloque']=1;
 } else { // test si la site est bloque dans la DB.
-  require_once ($home."connect.php");
+  require_once("connect.php");
   usemaindb();
   $context['sitebloque']=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
   usecurrentdb();
@@ -69,7 +69,7 @@ $context[url_retour]=$url_retour;
 $context[error_timeout]=$error_timeout;
 $context[error_privilege]=$error_privilege;
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"login");
 

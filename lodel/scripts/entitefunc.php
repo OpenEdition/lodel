@@ -97,9 +97,9 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
 
   // check for errors and build the set
   $sets=array();
-  require_once ($home."connect.php");
-  require_once ($home."champfunc.php");
-  require_once ($home."validfunc.php");
+  require_once("connect.php");
+  require_once("champfunc.php");
+  require_once("validfunc.php");
 
   // file to move once the document id is know.
   $files_to_move=array();
@@ -108,7 +108,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
   $result=$db->execute(lq("SELECT #_TP_tablefields.name,type,condition,default,allowedtags $champcritere FROM #_TP_tablefields,#_TP_tablefieldgroups WHERE idgroup=#_TP_tablefieldgroups.id AND class='$class' AND #_TP_tablefields.status>0 AND #_TP_tablefieldgroups.status>0 $extrawhere")) or dberror();
   while (!$result->EOF) {
     list($name,$type,$condition,$default,$allowedtags,$critereok)=$result->fields;
-    require_once($home."textfunc.php");
+    require_once("textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
 
     if ( !$champcritere || $critereok) {
@@ -204,7 +204,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     if ($sets) $db->execute(lq("UPDATE #_TP_$class SET ".join(",",$sets)." WHERE identity='$id'")) or dberror();
 
   } else { // INSERT
-    require_once($home."entitefunc.php");
+    require_once("entitefunc.php");
     // cherche le groupe et les rights
     $usergroup=getusergroup($context,$idparent);
     // cherche l'rank
@@ -218,7 +218,7 @@ function enregistre_entite (&$context,$id,$class,$champcritere="",$returnonerror
     $id=uniqueid($class);
     $db->execute(lq("INSERT INTO #_TP_entities (id,idparent,idtype,identifier,rank,status,usergroup,iduser) VALUES ('$id','$idparent','$context[idtype]','$context[identifier]','$rank','$status','$usergroup','$iduser')")) or dberror();
 
-    require_once($home."managedb.php");
+    require_once("managedb.php");
     creeparente($id,$context['idparent'],false);
     move_files($id,$files_to_move,$sets);
 
@@ -386,7 +386,7 @@ function lodel_strip_tags($text,$allowedtags)
 
 {
   global $home;
-  require_once($home."balises.php");
+  require_once("balises.php");
   static $accepted; // cache the accepted balise;
   global $multiplelevel,$xhtmlgroups;
 

@@ -29,11 +29,11 @@
 
 
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 
 $context['textgroups']="interface";
 
-require_once($home."translationsexportinc.php");
+require_once("translationsexportinc.php");
 
 ?>

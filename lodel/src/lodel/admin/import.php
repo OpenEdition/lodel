@@ -28,9 +28,9 @@
    *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL);
-require($home."func.php");
+require("func.php");
 
 $context['importdir']=$importdir;
 $fileregexp='(site|revue)-\w+-\d+.zip';
@@ -58,11 +58,11 @@ if ($fichier) {
     $sqlfile=tempnam(tmpdir(),"lodelimport_");
     $accepteddirs=array("lodel/txt","lodel/rtf","lodel/sources","docannexe/fichier","docannexe/image");
 
-    require_once ($home."backupfunc.php");
+    require_once("backupfunc.php");
 
     if (!importFromZip($fichier,$accepteddirs,array(),$sqlfile)) { $err=$context[error_extract]=1; break; }
 
-    require_once ($home."connect.php");
+    require_once("connect.php");
 
     // drop les tables existantes
     // recupere la liste des tables
@@ -72,7 +72,7 @@ if ($fichier) {
     if (!execute_dump($sqlfile)) $context['error_execute_dump']=$err=$db->errormsg();
     @unlink($sqlfile);
 
-    require_once($home."cachefunc.php");
+    require_once("cachefunc.php");
     removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
     // verifie les .htaccess dans le CACHE
@@ -94,14 +94,14 @@ if ($fichier) {
   } while(0);
 
   if (!$err) { 
-    require_once ($home."view.php"); 
+    require_once("view.php"); 
     touch(SITEROOT."CACHE/maj");
     View::back();
   }
 }
 
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"import");
 

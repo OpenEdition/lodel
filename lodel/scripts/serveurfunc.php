@@ -85,7 +85,7 @@ array('Ş' => 'TH', 'ş' => 'th', 'Ğ' => 'DH', 'ğ' => 'dh', 'ß' => 'ss',
 function upload($url,$vars,$files=0,$cookies=0,$outfile="")
 
 {
-  require($home."Snoopy.class.php");
+  require("Snoopy.class.php");
   $client = new Snoopy();
   $client->agent = "Lodel";
   $client->read_timeout = 60;

@@ -39,7 +39,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
 
   if ($tache=="lodelconfig") $GLOBALS[REQUEST_URI].="?tache=lodelconfig";
 
-  require($home."auth.php");
+  require("auth.php");
   // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
   if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
     @mysql_select_db($database);
@@ -55,7 +55,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
     problem("lodelconfig_but_no_database");
   }
 
-  if ($_REQUEST[installoption]) $installoption=$_REQUEST[installoption]; // overwrite the lodelconfig
+  if ($_REQUEST['installoption']) $installoption=$_REQUEST['installoption']; // overwrite the lodelconfig
 } else {
   error_reporting(E_ERROR | E_WARNING | E_PARSE);
 }
@@ -261,6 +261,7 @@ if ($tache=="admin") {
     return;
   }
   @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
+  if (!$home) die("ERROR: \$home is not defined");
   @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
   @mysql_select_db($database); // selectionne la database
   $adminusername=addslashes($adminusername);
@@ -272,9 +273,9 @@ if ($tache=="admin") {
     return;
   }
   // log this user in 
-  require_once(LODELROOT.$home."adodb/adodb.inc.php");
-  require_once(LODELROOT.$home."connect.php");
-  require(LODELROOT.$home."loginfunc.php");
+  require_once("./lodel-0.8/scripts/connect.php");
+  require_once("connect.php");
+  require("loginfunc.php");
   $site="";
 #    echo $adminusername," ",$pass;
   
@@ -439,8 +440,7 @@ if (file_exists($lodelconfig) && (@include($lodelconfig))) {
 }
 
 // does what ./lodelconfig.php does.
-$home=LODELROOT.$home;
-
+ini_set('include_path',LODELROOT. PATH_SEPARATOR . ini_get("include_path"));
 
 //
 // essaie d'etablir si on accede au script func.php
@@ -454,7 +454,7 @@ if ((@include($home."func.php"))!=568) { // on accede au fichier func.php
 #  }
 #  if (!(@include ("tpl/install-home.html"))) problem_include("install-home.html");
 #  return;
-  die ("ERROR: unable to access the ".$home."func.php file from lodeladmin. Check the file exists and the rights and/or report the bug.");
+  die ("ERROR: unable to access the ".$home."func.php file. Check the file exists and the rights and/or report the bug.");
 }
 
 
@@ -579,7 +579,7 @@ if ($servoourl!="off") {
   if ($servoourl && $servoousername && $servoopasswd) {
     $cmds="VER;";
 
-    require($home."serveurfunc.php");
+    require("serveurfunc.php");
     list($ret,$retvar)=upload($servoourl,
 			      array("username"=>$servoousername,
 				    "passwd"=>$servoopasswd,
@@ -689,8 +689,8 @@ function maj_lodelconfig_var($var,$val,&$text)
 function mysql_query_file($filename,$droptables=false)
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_", $GLOBALS['tableprefix'] ,
-		       join('',file($filename)));
+  $sqlfile=preg_replace("/#_M?TP_/",$GLOBALS['tableprefix'] ,
+		       file_get_contents($filename));
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sql) return;
@@ -754,12 +754,9 @@ function problem_include($filename)
 ?>
 <html>
 <body>
-<b>Impossible d'accéder au fichier <?php echo $filename; ?></b><br />
-Vérifiez que le répertoire tpl ainsi que le fichier tpl/<?php echo $filename; ?> existent et sont accessibles par le serveur web<br>
+<b>Unable to access the file  <?php echo $filename; ?></b><br />
+Please check your directory  tpl and the file tpl/<?php echo $filename; ?> exist and are accessible by the web-serveur. Please report the bug if everything is alright.<br>
 <br />
-Notez que pour assurer une sécurité maximale (mais jamais totale) de LODEL et du serveur, il convient de gérer les droits d'acces de tous les fichiers par vous même.<br>
-
-LODEL est livré avec AUCUNE GARANTIE d'aucune sorte. Lisez le fichier LICENSE s'il vous plait.
 </body>
 </html>
 <?php
@@ -793,22 +790,26 @@ function testdirmode($dir,$mode)
 function problem($msg)
 
 {
+  global $langcache,$lang;
   $messages=array(
-  "version"=>'La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Version recommandée: php 4.3 ou supérieure',
+		  "version"=>sprintf($langcache[$lang]['install.versionphp'],phpversion()),
+  //'La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Version recommandée: php 4.3 ou supérieure',
 
-  "reading_lodelconfig"=>'Le fichier lodelconfig.php n\'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
+		  "reading_lodelconfig"=>$langcache[$lang]['install.reading_lodelconfig'].'<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
+		  //'Le fichier lodelconfig.php n\'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.,
 
-  "lodelconfig_but_no_database"=>'Un fichier de configuration lodelconfig.php a été trouvé dans le répertoire principale de Lodel mais ce fichier ne permet pas actuellement d\'acceder à une base de donnée valide. Si vous souhaitez poursuivre l\'installation, veuillez effacer manuellement. Ensuite, veuillez cliquer sur le bouton "Recharger" de votre navigateur.</form>'
+  "lodelconfig_but_no_database"=>$langcache[$lang]['install.lodelconfig_but_no_database'],
+		  //=>'Un fichier de configuration lodelconfig.php a été trouvé dans le répertoire principale de Lodel mais ce fichier ne permet pas actuellement d\'acceder à une base de donnée valide. Si vous souhaitez poursuivre l\'installation, veuillez effacer manuellement. Ensuite, veuillez cliquer sur le bouton "Recharger" de votre navigateur.</form>'
   );
 
 ?>
 <hmlt>
 <head>
-      <title>Installation de LODEL</title>
+      <title><?php echo $langcache[$lang]['install.install_lodel']; ?></title>
 </head>
 <body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="blue" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
 
-<h1>Installation de LODEL</h1>
+<h1><?php echo $langcache[$lang]['install.install_lodel']; ?></h1>
 
 
 <p align="center">
@@ -821,7 +822,6 @@ function problem($msg)
 </body>
 ?>
 <?php 
-
   die();
 }
 
@@ -829,10 +829,11 @@ function problem($msg)
 function probleme_droits_debut()
 
 {
+  global $langcache,$lang;
 ?>
-<h2>Accès aux répertoires.</h2>
+<h2><?php echo $langcache[$lang]['install.directories_access']; ?></h2>
 <p align="center">
-   <strong>Le serveur n'a pas accès au(x) répertoire(s) suivant(s). Vérifier que ce(s) répertoire(s) existent et que le serveur web (l'utilisateur nobody ou apache ou encore www-data) puisse y accèder en lecture et, si mentioné, ci-dessous y écrire</strong>
+   <strong><?php echo $langcache[$lang]['install.directories_access_speech']; ?></strong>
 </p>
 <ul>
 <?php }
@@ -840,14 +841,17 @@ function probleme_droits_debut()
 function probleme_droits($file,$mode)
 
 {
- echo "<li>Répertoire: $file<br> droits requis: lecture, exécution"; if (($mode & 2) == 2) echo ", <u>écriture</u>";
+  global $langcache,$lang;
+
+  echo "<li>".$langcache[$lang]['install.directory'].": $file<br> ".$langcache[$lang]['install.required_rights'];//."droits requis: lecture, exécution"; 
+  if (($mode & 2) == 2) echo ", <u>".$langcache[$lang]['install.writing']."</u>";  // écriture
  echo "</li>";
 }
 
 function probleme_droits_fin()
 
 {
-  global $installoption;
+  global $installoption,$langcache,$lang;
 ?>
 </ul>
 <p align="center">
@@ -857,9 +861,7 @@ function probleme_droits_fin()
 <input type="submit" value="continuer">
 </form>
 </p>
-<p>
-Notez que pour assurer une sécurité maximale de LODEL et du serveur, il convient de gérer les droits d'accès de tous les fichiers par vous-même.<br />
-LODEL est livré avec SANS AUCUNE GARANTIE.</p>
+<p><?php echo $langcache[$lang]['install.notice_security_directory_rights']; ?></p>
 <?php
  }
 

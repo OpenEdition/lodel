@@ -88,7 +88,7 @@ class View {
      global $home;
 
      if (!$cache) { // calculate the page and that's it !
-       require_once ($home."calcul-page.php");
+       require_once("calcul-page.php");
        calcul_page($context,$tpl);
        return;
      }
@@ -96,7 +96,7 @@ class View {
      if (!isset($this->_iscachevalid)) $this->_iscachevalid();
 
      if (!$this->_iscachevalid) {
-       require_once ($home."calcul-page.php");
+       require_once("calcul-page.php");
        $this->_calculateCacheAndOutput($context,$tpl);
 
        // the cache is valid... do we have a php file ?
@@ -107,7 +107,7 @@ class View {
 	 // c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
 
 	 if ($ret=="refresh") { // does php say we must refresh ?
-	   require_once ($home."calcul-page.php");
+	   require_once("calcul-page.php");
 	   $this->_calculateCacheAndOutput($context,$tpl);
 	 }
        } else { // no, we have a proper html, let read it.
@@ -157,7 +157,7 @@ class View {
      //  $this->_iscachevalid=false;
      //  return false;
      //}
-     require_once($GLOBALS['home']."func.php");
+     require_once("func.php");
 
      if (defined("SITEROOT")) {
        $maj=myfilemtime(SITEROOT."CACHE/maj");
@@ -290,7 +290,7 @@ function renderOptions($arr,$selected)
 
 function generateLangCache($lang,$file,$tags)
 
-{print_R($tag);
+{
   foreach($tags as $tag) {
     $dotpos=strpos($tag,".");
     $group=substr($tag,0,$dotpos);

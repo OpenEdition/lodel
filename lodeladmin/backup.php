@@ -30,8 +30,8 @@
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
-require($home."func.php");
-require($home."backupfunc.php");
+require("func.php");
+require("backupfunc.php");
 
 $context['importdir']=$importdir;
 
@@ -79,7 +79,7 @@ if ($backup) {
   if (operation($operation,$archivetmp,$archivefilename,$context)) return;
 }
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"backup");
 

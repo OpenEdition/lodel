@@ -29,7 +29,7 @@
 
 
 die("desuet");
-require_once($home."func.php");
+require_once("func.php");
 
 // calcul le critere pour determiner le periode a editer, restorer, detruire...
 $id=intval($id);
@@ -37,7 +37,7 @@ if ($id>0) {
   $critere="id='$id'";
 } else $critere="";
 
-require($home."typetypefunc.php");
+require("typetypefunc.php");
 
 if ($id && !$rightadminlodel) $critere.=" AND $GLOBALS[tp]types.status<32";
 //
@@ -46,7 +46,7 @@ if ($id && !$rightadminlodel) $critere.=" AND $GLOBALS[tp]types.status<32";
 if ($id>0 && ($delete || $restore)) { 
 
   do { // block d'exception
-    include_once ($home."connect.php");
+    include_once("connect.php");
     lock_write("types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes","entites","objets");
     // check the type can be deleted.
     $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or dberror();
@@ -86,13 +86,13 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
-    require($home."validfunc.php");
+    require("validfunc.php");
     $context[type]=trim($context[type]);
     if (!$context[type] || !isvalidtype($context[type])) $err=$context[error_type]=1;
     //    if (!$context[tpl]) $err=$context[error_tpl]=1;
     if ($err) break;
 
-    include_once ($home."connect.php");
+    include_once("connect.php");
     lock_write("objets","types","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
 
     // verifie que ce type n'existe pas.
@@ -131,7 +131,7 @@ if ($edit) { // modifie ou ajoute
   } while (0);
 } elseif ($id>0) {
   $id=intval($id);
-  include_once ($home."connect.php");
+  include_once("connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]types WHERE status>-64 AND $critere") or dberror();
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {

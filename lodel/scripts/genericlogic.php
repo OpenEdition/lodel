@@ -69,14 +69,14 @@ class GenericLogic extends Logic {
     // define some loop functions
      /////
 
-     require_once($GLOBALS['home']."langues.php");
+     require_once("langues.php");
 
      function loop_edition_fields($context,$funcname) 
 
      {
        global $db,$home;
 
-       require_once($home."validfunc.php");
+       require_once("validfunc.php");
        if ($context['class']) {
 	 validfield($context['class'],"class");
 	 $class=$context['class'];
@@ -186,7 +186,7 @@ class GenericLogic extends Logic {
      global $home;
 
      // get the fields of class
-     require_once($home."validfunc.php");
+     require_once("validfunc.php");
      if ($context['class']) {
        validfield($context['class'],"class");
        $class=$context['class'];
@@ -210,7 +210,7 @@ class GenericLogic extends Logic {
      // file to move once the document id is know.
      $this->files_to_move=array();
      $this->_publicfields=array();
-     require_once($home."fieldfunc.php");
+     require_once("fieldfunc.php");
      
      foreach ($fields as $field) {
        if ($field->g_name) $this->g_name[$field->g_name]=$field->name; // save the generic field
@@ -471,7 +471,7 @@ function lodel_strip_tags($text,$allowedtags,$k=-1)
   if (is_numeric($allowedtags) && !is_numeric($k)) { $allowedtags=$k; } // for call via array_walk
 
   global $home;
-  require_once($home."balises.php");
+  require_once("balises.php");
   static $accepted; // cache the accepted balise;
   global $multiplelevel,$xhtmlgroups;
 

@@ -34,7 +34,7 @@ die("desuet");
 
 if (!function_exists("authenticate")) die("ERROR: invalid include of userinc.php");
 if ($userrights<LEVEL_ADMIN) return; // secu
-require_once ($home."func.php");
+require_once("func.php");
 
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
@@ -48,7 +48,7 @@ if ($id>0 && ($delete | $restore)) {
     mysql_query ("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or dberror();
   }
 
-  require ($home."trash.php");
+  require("trash.php");
   treattrash("users");
   return;
 }
@@ -85,7 +85,7 @@ if ($edit) { // modifie ou ajoute
     if (!$groupes || !is_array($groupes)) { $context[error_groupes]=$err=1; }
  
     if ($err) break;
-    include_once ($home."connect.php");
+    include_once("connect.php");
 
     // cherche si le username existe deja
     $result=mysql_query("SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or dberror();  
@@ -128,7 +128,7 @@ if ($edit) { // modifie ou ajoute
   } while (0);
   // entre en edition
 } elseif ($id>0) {
-  include_once ($home."connect.php");
+  include_once("connect.php");
   $id=intval($id);
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]users WHERE $critere") or dberror();
   //$context=mysql_fetch_assoc($result);
@@ -137,7 +137,7 @@ if ($edit) { // modifie ou ajoute
   $context[usernamems]=$context[username];
 }
 
-require_once($home."langues.php");
+require_once("langues.php");
 
 
 

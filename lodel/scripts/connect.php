@@ -43,7 +43,7 @@ if (!defined("DATABASE")) {
 // connect to the database server
 //
 
-require_once($GLOBALS['home']."adodb/adodb.inc.php");
+require_once("adodb/adodb.inc.php");
 
 $GLOBALS['db']=ADONewConnection(DBDRIVER);
 $GLOBALS['db']->debug = false;

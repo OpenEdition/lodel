@@ -30,14 +30,14 @@
 // charge le fichier xml et
 if (!function_exists("authenticate")) {
   require("siteconfig.php");
-  require_once ($home."auth.php");
+  require_once("auth.php");
   authenticate();
 }
-require_once($home."func.php");
+require_once("func.php");
 
 $context[id]=$id=intval($id);
 
-include_once($home."connect.php");
+include_once("connect.php");
 
 
 $critere=$user['visitor'] ? "" : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
@@ -52,11 +52,11 @@ if ($identifier) {
 //
 // cherche le document, et le template
 //
-if (!(@include_once("CACHE/filterfunc.php"))) require_once($home."filterfunc.php");
+if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");
 
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[documentstypesjoin] WHERE  $critere") or dberror();
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-require_once($home."textfunc.php");
+require_once("textfunc.php");
 $context=array_merge($context,filtered_mysql_fetch_assoc($context,$result));
 if (!$context[tpl]) { 
   header("location: ".makeurlwithid("document",$context[idparent]));

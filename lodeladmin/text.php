@@ -31,15 +31,15 @@
 // assure l'edition, la supression, la restauration des periodes.
 die("desuet");
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 
 $context['textgroups']="interface";
 
-require ($home."textinc.php");
+require("textinc.php");
 posttraitement($context);
 
-require ($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"text");
 
 ?>

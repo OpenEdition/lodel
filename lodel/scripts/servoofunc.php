@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require_once($home."servooclient.php");
+require_once("servooclient.php");
 
 class ServOO extends ServOO_Client {
 

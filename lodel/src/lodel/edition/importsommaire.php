@@ -70,7 +70,7 @@ foreach(array("titrenumero","nomnumero","typenumero") as $bal) {
   }
 }
 
-require_once($home."xmlimport.php");
+require_once("xmlimport.php");
 
 $parent=mkxmlpublication($numero[nomnumero],
 			 $numero[titrenumero],

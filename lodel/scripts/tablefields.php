@@ -29,7 +29,7 @@
 
 // build the arrays containing tables and fields
 
-require_once($GLOBALS['home']."connect.php");
+require_once("connect.php");
 
 // try first to get the cached array
 if (!(@include("CACHE/tablefields.php"))) {

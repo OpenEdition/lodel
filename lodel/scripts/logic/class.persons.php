@@ -33,7 +33,7 @@
  *  Logic Persons
  */
 
-require_once($GLOBALS['home']."genericlogic.php");
+require_once("genericlogic.php");
 
 class PersonsLogic extends GenericLogic {
 

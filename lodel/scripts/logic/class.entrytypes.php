@@ -178,7 +178,7 @@ class EntryTypesLogic extends Logic {
 /* loops                             */
 
 function loop_entitytypes($context,$funcname)
-{ require_once($GLOBALS['home']."typetypefunc.php"); 
+{ require_once("typetypefunc.php"); 
   loop_typetable ("entitytype","entrytype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);}
 
 

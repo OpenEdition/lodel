@@ -33,7 +33,7 @@ die("desuet");
  *  Logic Relations
  */
 
-  //require_once($GLOBALS['home']."genericlogic.php");
+  //require_once("genericlogic.php");
 
 class RelationsLogic extends Logic {
 

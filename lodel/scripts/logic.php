@@ -282,7 +282,7 @@ class Logic {
    {
      global $db;
 
-     require_once($GLOBALS['home']."validfunc.php");
+     require_once("validfunc.php");
 
      $publicfields=$this->_publicfields();
      foreach($publicfields as $field => $fielddescr) {
@@ -391,7 +391,7 @@ function &getLogic($table) {
 
   if ($factory[$table]) return $factory[$table]; // cache
 
-  require_once($GLOBALS['home']."logic/class.$table.php");
+  require_once("logic/class.$table.php");
   $logicclass=$table."Logic";
   return $factory[$table]=new $logicclass;
 }

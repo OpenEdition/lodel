@@ -28,10 +28,10 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
 
-require_once ($home."func.php");
+require_once("func.php");
 writefile(SITEROOT."CACHE/maj");
 back();
 

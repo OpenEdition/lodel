@@ -29,14 +29,14 @@
 
 // charge le fichier xml et
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_VISITOR);
-require_once ($home."func.php");
-require_once ($home."textfunc.php");
-require_once ($home."xmlfunc.php");
+require_once("func.php");
+require_once("textfunc.php");
+require_once("xmlfunc.php");
 
 
-require_once($home."connect.php");
+require_once("connect.php");
 
 $context[class]="documents";
 

@@ -32,7 +32,7 @@
  *  Logic Entry
  */
 
-require_once($GLOBALS['home']."genericlogic.php");
+require_once("genericlogic.php");
 
 class EntriesLogic extends GenericLogic {
 

@@ -34,7 +34,7 @@ die("desuet");
 require("lodelconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
-include_once ($home."func.php");
+include_once("func.php");
 
 $url_retour="users.php";
 $context[userrights]=LEVEL_ADMINLODEL;

@@ -33,8 +33,8 @@ http://www.nusphere.com
 
 /*require_once('nusoap.php');*/
 /* PEAR Mail_MIME library */
-require_once($GLOBALS['home'].'PEAR/Mail/mimeDecode.php');
-require_once($GLOBALS['home'].'PEAR/Mail/mimePart.php');
+require_once('PEAR/Mail/mimeDecode.php');
+require_once('PEAR/Mail/mimePart.php');
 
 /**
 *

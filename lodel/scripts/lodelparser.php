@@ -32,9 +32,9 @@
 // en general etre ajouter ici
 //
 
-require_once($home."func.php");
-require_once($home."balises.php");
-require_once($home."parser.php");
+require_once("func.php");
+require_once("balises.php");
+require_once("parser.php");
 
 
 class LodelParser extends Parser {
@@ -71,7 +71,7 @@ function parse_loop_extra(&$tables,
 {
   global $site,$home,$db;
   static $tablefields; // charge qu'une seule fois
-  if (!$tablefields) require($home."tablefields.php");
+  if (!$tablefields) require("tablefields.php");
 
 
   // split the SQL parts into quoted/non-quoted par
@@ -280,7 +280,7 @@ function decode_loop_content_extra ($balise,&$content,&$options,$tables)
     $options['sqlfetchassoc']='filtered_mysql_fetch_assoc($context,%s)';
     if (!$this->filterfunc_loaded) {
       $this->filterfunc_loaded=TRUE;
-      $this->fct_txt.='if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");';
+      $this->fct_txt.='if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");';
     }
   }
 }
@@ -360,7 +360,7 @@ function parse_after(&$text)
     $closepos=strpos($text,"</body>");
     if ($closepos===false) return; // no idea what to do...
 
-    $code='<?php if ($context[\'lodeluser\'][\'translationmode\']) { require_once($GLOBALS[home]."translationfunc.php"); mkeditlodeltextJS(); ?>
+    $code='<?php if ($context[\'lodeluser\'][\'translationmode\']) { require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
 <form method="post" action="'.$GLOBALS['home'].'../../lodeladmin/text.php"><input type="hidden" name="edit" value="1">
  <input type="submit" value="[Update]">
 <div id="translationforms">'.join("",$this->translationform).'</div>
@@ -414,7 +414,7 @@ function prefixTableName($table)
 {
   global $home;
   static $tablefields;
-  if (!$tablefields) require($home."tablefields.php");
+  if (!$tablefields) require("tablefields.php");
 
   if (preg_match("/\b((?:\w+\.)?\w+)(\s+as\s+\w+)\b/i",$table,$result)) {
     $table=$result[1];

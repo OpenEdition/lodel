@@ -29,10 +29,10 @@
 
 die("desuet");
 require("siteconfig.php");
-require_once ($home."auth.php");
+require_once("auth.php");
 authenticate(LEVEL_REDACTOR,NORECORDURL);
 
 $class="documents";
-require_once ($home."entite.php");
+require_once("entite.php");
 
 ?>

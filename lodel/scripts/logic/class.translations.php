@@ -127,7 +127,7 @@ class TranslationsLogic extends Logic {
 
    {
      global $home;
-     require_once($home."validfunc.php");
+     require_once("validfunc.php");
 
      $lang=$context['lang'];
      if ($lang!="all" && !validfield($lang,"lang")) die("ERROR: invalid lang");
@@ -136,7 +136,7 @@ class TranslationsLogic extends Logic {
      //lock_write("translations","textes");
 
      $tmpfile=tempnam(tmpdir(),"lodeltranslation");
-     require_once($home."translationfunc.php");
+     require_once("translationfunc.php");
 
      $this->_setTextGroups($context);
      $xmldb=new XMLDB_Translations($context['textgroups'],$lang);
@@ -164,12 +164,12 @@ class TranslationsLogic extends Logic {
      $this->_setTextGroups($context);
      $lang="";
 
-     require_once($home."importfunc.php");
+     require_once("importfunc.php");
      $file=extract_import("translation",$context,"xml");
 
      if ($file) {
-       require_once($home."validfunc.php");
-       require_once($home."translationfunc.php");
+       require_once("validfunc.php");
+       require_once("translationfunc.php");
        $xmldb=new XMLDB_Translations($context['textgroups']);
        
        $xmldb->readFromFile($file);

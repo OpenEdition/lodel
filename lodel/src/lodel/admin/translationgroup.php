@@ -29,11 +29,11 @@
 
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMIN);
-require_once($home."func.php");
-require_once($home."translationfunc.php");
-require_once($home."validfunc.php");
+require_once("func.php");
+require_once("translationfunc.php");
+require_once("validfunc.php");
 
 // post-traitement
 $context['textgroup']=mysql_escape_string($textgroup);

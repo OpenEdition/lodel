@@ -28,7 +28,7 @@
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_sites (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	title		VARCHAR(255) NOT NULL,
 	subtitle	TINYTEXT,
 	name		VARCHAR(64) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_users (
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_session (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	name		VARCHAR(64) BINARY NOT NULL UNIQUE,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 	site		VARCHAR(64) BINARY NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_session (
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_urlstack (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment, # faudrait generer le probleme du overflow
+	id		INT UNSIGNED NOT NULL auto_increment, # faudrait generer le probleme du overflow
 	idsession	INT UNSIGNED DEFAULT '0' NOT NULL,
 	url		MEDIUMBLOB NOT NULL, # url de retour de l'url en cours
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_urlstack (
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_texts (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	name		VARCHAR(255) NOT NULL,  # name
 	contents	TEXT,                   # texte
 
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_texts (
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_translations (
-	id			INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id			INT UNSIGNED NOT NULL auto_increment,
 	lang			CHAR(5) NOT NULL,		# code of the lang
 	title			TINYTEXT,
 	textgroups		VARCHAR(255),

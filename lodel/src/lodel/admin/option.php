@@ -34,8 +34,8 @@
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once($home."func.php");
-include_once($home."optionfunc.php");
+include_once("func.php");
+include_once("optionfunc.php");
 
 
 $id=intval($id);
@@ -56,7 +56,7 @@ if ($id>0 && $delete) {
 // rank
 //
 if ($id>0 && $dir) {
-  include_once($home."connect.php");
+  include_once("connect.php");
   # cherche le parent
   chordre("options",$id,"status>0",$dir);
   back();
@@ -95,7 +95,7 @@ if ($edit) {
 
   } while (0);
 } elseif ($id>0) {
-  include_once ($home."connect.php");
+  include_once("connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]options WHERE $critere") or dberror();
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
@@ -104,7 +104,7 @@ if ($edit) {
 postprocessing($context);
 
 
-#require_once($home."langues.php");
+#require_once("langues.php");
 
 include ($home."calcul-page.php");
 calcul_page($context,"option");

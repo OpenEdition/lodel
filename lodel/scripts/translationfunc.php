@@ -27,7 +27,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require_once($GLOBALS['home']."xmldbfunc.php");
+require_once("xmldbfunc.php");
 
 
 function mkeditlodeltext($name,$textgroup,$lang=-1)

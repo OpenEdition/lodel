@@ -34,7 +34,7 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_REDACTOR);
 include ($home."func.php");
-require_once($home."utf8.php"); // conversion des caracteres
+require_once("utf8.php"); // conversion des caracteres
 
 if ($_POST) {
   $therequest=&$_POST;
@@ -77,7 +77,7 @@ if ($file1) {
     $t=time();
     @chmod($source,0666 & octdec($GLOBALS['filemask'])); 
 
-    require_once($home."servoofunc.php");
+    require_once("servoofunc.php");
 
     $client=new ServOO;
     if ($client->error_message) {
@@ -130,7 +130,7 @@ if ($file1) {
 
     if ($sortiexmloo || $sortie) die(htmlentities($xhtml));
 
-    require_once($home."balises.php");
+    require_once("balises.php");
 
     $fileconverted=$source.".converted";
     if (!writefile($fileconverted,$xhtml)) {
@@ -173,7 +173,7 @@ if ($file1) {
 $context['url']="oochargement.php";
 
 
-require($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"oochargement",!(bool)$_POST);
 

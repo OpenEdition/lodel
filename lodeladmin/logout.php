@@ -28,17 +28,17 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_VISITOR);
 $name=addslashes($_COOKIE[$sessionname]);
 
-require_once ($home."connect.php");
+require_once("connect.php");
 $time=time()-1;
 usemaindb();
 $db->execute(lq("DELETE FROM #_TP_session WHERE name='".$name."'")) or dberror();
 setcookie($sessionname,"",$time,$urlroot);
 
-require_once($home."func.php");
+require_once("func.php");
 
 header ("Location: http://".$_SERVER['SERVER_NAME'].$urlroot);
 exit();

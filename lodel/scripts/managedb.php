@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 die("desuet");
-require_once ($home."func.php");
+require_once("func.php");
 
 //
 // fonctions pour gerer la table relation

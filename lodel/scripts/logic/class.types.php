@@ -140,7 +140,7 @@ class TypesLogic extends Logic {
    function _saveRelatedTables($vo,$context) 
 
    {
-     require_once($GLOBALS['home']."typetypefunc.php");
+     require_once("typetypefunc.php");
 
      if ($context['id']) {
        //typetype_delete("entrytype","identitytype='".$context['id']."'");
@@ -157,7 +157,7 @@ class TypesLogic extends Logic {
    function _deleteRelatedTables($id) {
      global $home;
 
-     require_once($home."typetypefunc.php"); 
+     require_once("typetypefunc.php"); 
 
      if (is_array($id)) {
        $criteria="identitytype IN ('".join("','",$id)."')";
@@ -200,16 +200,16 @@ class TypesLogic extends Logic {
 
 
 //function loop_persontypes($context,$funcname)
-//{ require_once($GLOBALS['home']."typetypefunc.php"); 
+//{ require_once("typetypefunc.php"); 
 //  loop_typetable ("persontype","entitytype",$context,$funcname,$_POST['edit'] ? $context['persontype'] : -1);}
 //
 //function loop_entrytypes($context,$funcname)
-//{ require_once($GLOBALS['home']."typetypefunc.php"); 
+//{ require_once("typetypefunc.php"); 
 //  loop_typetable ("entrytype","entitytype",$context,$funcname,$_POST['edit'] ? $context['entrytype'] : -1);}
 
 
 function loop_entitytypes($context,$funcname)
-{ require_once($GLOBALS['home']."typetypefunc.php"); 
+{ require_once("typetypefunc.php"); 
   #loop_typetable ("entitytype2","entitytype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
 
 loop_typetable ("entitytype2","entitytype",$context,$funcname,$context['entitytype']);

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-if (!file_exists("lodelconfig.php")) { header("location: lodeladmin/install.php"); exit; }
+if (!file_exists("lodelconfig.php")) { header("location: lodeladmin-0.8/install.php"); exit; }
 
 
 if (file_exists("siteconfig.php")) {

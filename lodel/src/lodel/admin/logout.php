@@ -33,7 +33,7 @@ authenticate(LEVEL_VISITOR);
 
 $name=addslashes($_COOKIE[$sessionname]);
 
-require_once ($home."connect.php");
+require_once("connect.php");
 $time=time()-1;
 usemaindb();
 $db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or dberror();

@@ -29,7 +29,7 @@
 
 
 
-require_once($GLOBALS['home']."translationfunc.php");
+require_once("translationfunc.php");
 
 /**
  *  Logic Text

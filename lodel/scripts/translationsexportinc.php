@@ -29,8 +29,8 @@
 
 if (!function_exists("authenticate")) die("ERROR: invalid include of translationsexportinc.php");
 
-require($home."func.php");
-require_once($home."validfunc.php");
+require("func.php");
+require_once("validfunc.php");
 
 //$context[importdir]=$importdir;
 if ($lang!="all" && !isvalidlang($lang)) die("ERROR: invalid lang");
@@ -40,7 +40,7 @@ lock_write("translations","textes");
 
 $tmpfile=tempnam(tmpdir(),"lodeltranslation");
 
-require_once($home."translationfunc.php");
+require_once("translationfunc.php");
 
 $xmldb=new XMLDB_Translations($context['textgroups'],$lang);
 

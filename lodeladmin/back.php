@@ -29,9 +29,9 @@
 
 
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-require($home."func.php");
+require("func.php");
 
 if ($_REQUEST['back']) {
   $back=intval($back); 

@@ -33,7 +33,7 @@
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_ADMIN,NORECORDURL);
-include_once($home."func.php");
+include_once("func.php");
 
 
 $search=array();

@@ -142,7 +142,7 @@ class Entities_AdvancedLogic extends Logic {
 
      ##lock_write("entites","relations","typeentites_typeentites","entites as parent","entites as fils");
 
-     require_once($home."entitiesfunc.php");
+     require_once("entitiesfunc.php");
      if (!checkTypesCompatibility($id,$idparent)) die("ERROR: Can move the entities $id into $idparent. Check the editorial model.");
 
      //
@@ -237,7 +237,7 @@ class Entities_AdvancedLogic extends Logic {
     
     if (!file_exists($dir."/".$filename)) die ("ERROR: the filename $filename does not exists");
 
-    require_once($GLOBALS['home']."func.php");
+    require_once("func.php");
     download ($dir."/".$filename,$originalname);
     exit();
   }

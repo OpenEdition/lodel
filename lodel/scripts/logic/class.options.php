@@ -97,11 +97,11 @@ class OptionsLogic extends Logic {
 
      switch($var) {
      case "userrights":
-       require_once($GLOBALS['home']."commonselect.php");
+       require_once("commonselect.php");
        makeSelectUserRights($context['userrights']);
        break;
      case "type" :
-       require_once($GLOBALS['home']."commonselect.php");
+       require_once("commonselect.php");
        makeSelectFieldTypes($context['type']);
        break;
      }

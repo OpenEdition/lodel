@@ -31,17 +31,17 @@
 // manage translation
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
 
 $context['textgroups']="site";
 
-require($home."translationinc.php");
+require("translationinc.php");
 
 // post-traitement
 postprocessing($context);
 
-require($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"translation");
 
 

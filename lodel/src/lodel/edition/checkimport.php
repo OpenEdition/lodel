@@ -28,18 +28,18 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_REDACTOR);
-require ($home."func.php");
+require("func.php");
 
 $task=gettask($idtask);
 $context['idtask']=$idtask;
 
-//require_once ($home."balises.php");
+//require_once("balises.php");
 
 $textorig=$text=file_get_contents($task['fichier']);
 
-require_once($home."xmlimport.php");
+require_once("xmlimport.php");
 
 $handler=new XMLImportHandler;
 
@@ -51,7 +51,7 @@ $context['tablecontents']=$handler->contents();
 ///$context['urlnext']="index.php?do=xmlimport&idtask=$idtask";
 
 
-require($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"checkimport");
 
@@ -123,8 +123,8 @@ exit;
 
 // /*
 // // ajoute les balises "entrees"
-// require_once ($home."connect.php");
-// require_once($home."champfunc.php");
+// require_once("connect.php");
+// require_once("champfunc.php");
 // $result=mysql_query("SELECT style,title FROM $GLOBALS[tp]entrytypes WHERE status>0");
 // while (list($style,$title)=mysql_fetch_row($result)) { 
 //   $styles=decode_mlstyle($style);
@@ -149,7 +149,7 @@ exit;
 //   $result=mysql_query("SELECT $GLOBALS[tp]tablefields.style,$GLOBALS[tp]tablefields.title,$GLOBALS[tp]tablefields.type FROM $GLOBALS[tp]tablefields,$GLOBALS[tp]tablefieldgroups WHERE idgroup=$GLOBALS[tp]tablefieldgroups.id AND  class='documents' AND $GLOBALS[tp]tablefields.status>0") or dberror();
 // while (list($style,$title,$type)=mysql_fetch_row($result)) { 
 //   if ($type=="mltext") {
-//     require_once($home."champfunc.php");
+//     require_once("champfunc.php");
 //     $styles=decode_mlstyle($style);
 //     foreach($styles as $lang => $style) {
 //       $balises[$style]=$title." ($lang)";
@@ -297,7 +297,7 @@ exit;
 // }
 // 
 // $context[idtask]=$idtask;
-// require ($home."calcul-page.php");
+// require("calcul-page.php");
 // calcul_page($context,"chkbalisage");
 // 
 // 

@@ -31,7 +31,7 @@
 function calculateXML ($context)
 
 {
-  require_once ($home."calcul-page.php");
+  require_once("calcul-page.php");
   ob_start();
   calcul_page($context,"xml-class","",SITEROOT."lodel/edition/tpl/");
   $contents=ob_get_contents();
@@ -45,7 +45,7 @@ function calculateXMLSchema ($context)
 
 {
 
-  require_once ($home."calcul-page.php");
+  require_once("calcul-page.php");
   ob_start();
   calcul_page($context,"schema-xsd","",SITEROOT."lodel/admin/tpl/");
   $contents=ob_get_contents();

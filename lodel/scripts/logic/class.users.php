@@ -76,7 +76,7 @@ class UsersLogic extends Logic {
        renderOptions($arr,$context['usergroups']);
        break;
      case "userrights":
-       require_once($GLOBALS['home']."commonselect.php");
+       require_once("commonselect.php");
        makeSelectUserRights($context['userrights'],SINGLESITE);
        break;
      case "lang" :

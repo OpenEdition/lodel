@@ -29,13 +29,13 @@
 
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 #authenticate(LEVEL_ADMINLODEL);
 authenticate();
 $lodeluser['rights']=128;
-require_once($home."func.php");
-require_once($home."fieldfunc.php");
-require_once($home."connect.php");
+require_once("func.php");
+require_once("fieldfunc.php");
+require_once("connect.php");
 
 $context['confirm']=intval($_POST['confirm']);
 
@@ -656,7 +656,7 @@ ALTER TABLE #_TP_persons ADD idtype INT UNSIGNED NOT NULL DEFAULT \'0\';
 	    $type[$row['idperson']]=$row['idtype'];
 	  } elseif ($type[$row['idperson']]!=$row['idtype']) {
 	    // boring case.
-	    require_once($home."dao.php");
+	    require_once("dao.php");
 	    $dao=&getDAO("persons");
 	    $vo=$dao->getById($row['idperson']);
 	    $vo->id=0; // create a new one
@@ -928,7 +928,7 @@ UPDATE #_TP_objects SET class=\'persontypes\' WHERE class=\'typepersonnes\';
 $context['error']=$err;
 $context['report']=$report;
 
-require($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"transfer");
 
 
@@ -1039,7 +1039,7 @@ function create($table)
 function addfield($classe)
 
 {
-  require_once($GLOBALS['home']."fieldfunc.php");
+  require_once("fieldfunc.php");
   $fields=getfields($classe);
 
   $result=mysql_query("SELECT name,type FROM $GLOBALS[tp]tablefields WHERE class='$classe'") or trigger_error(mysql_error(),E_USER_ERROR);

@@ -30,9 +30,9 @@
 
  die("desuet");if (!function_exists("authenticate")) die("ERROR: invalid include of translationinc.php");
 
-require_once($home."func.php");
-require_once($home."validfunc.php");
-require_once($home."textgroupfunc.php");
+require_once("func.php");
+require_once("validfunc.php");
+require_once("textgroupfunc.php");
 
 $textscritere=textgroupswhere($context['textgroups']);
 
@@ -44,7 +44,7 @@ $critere=$id>0 ? "id='$id'" : "";
 //
 if ($id>0 && $delete) { 
   $delete=2; // destruction en -64;
-  require($home."trash.php");
+  require("trash.php");
 
   $result=mysql_query("SELECT lang FROM $GLOBALS[tp]translations WHERE $critere") or dberror();
   list($lang)=mysql_fetch_row($result);

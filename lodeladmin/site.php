@@ -30,9 +30,9 @@
 // gere un site. L'acces est reserve au adminlodelistrateur.
 
 require("lodelconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-require_once ($home."func.php");
+require_once("func.php");
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 $id=intval($id);
@@ -44,7 +44,7 @@ $context['version']="0.8";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  require ($home."trash.php");
+  require("trash.php");
   treattrash("sites",$critere);
   return;
 }
@@ -65,7 +65,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
     if (!$context['title']) { $context[error_title]=$err=1; }
     if (!$id && (!$context['name'] || preg_match("/\W/",$context['name']))) { $context['error_name']=$err=1; }
     if ($err) break;
-    require_once ($home."connect.php");
+    require_once("connect.php");
 
 
     // verifie qu'on a qu'un site si on est en singledatabase
@@ -98,7 +98,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
     mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
     if ($status>-32) {
-      require($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->back(); // on revient, le site n'est pas en creation
     }
@@ -112,7 +112,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 }
 
 if ($id>0) {
-  require_once ($home."connect.php");
+  require_once("connect.php");
   $result=mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
@@ -166,7 +166,7 @@ if ($task=="version") {
 	  echo "<option value=\"$dir\"$selected>$dir  ($ver)</option>\n";
 	}
       }
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-version");
       return;	
@@ -191,7 +191,7 @@ if ($task=="createdb") {
   do { // bloc de controle
     if ($singledatabase=="on") break;
     // check if the database existe
-    require_once ($home."connect.php");
+    require_once("connect.php");
     $db_list = mysql_list_dbs();
     $i = 0;
     $cnt = mysql_num_rows($db_list);
@@ -211,7 +211,7 @@ if ($task=="createdb") {
     if ($installoption=="2" && !$lodeldo) {
       $context['dbusername']=$dbusername;
       $context['dbhost']=$dbhost;
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-createdb");
       return;
@@ -221,7 +221,7 @@ if ($task=="createdb") {
       $context['error']=mysql_error();
       $context['dbusername']=$dbusername;
       $context['dbhost']=$dbhost;
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-createdb");
       return;
@@ -235,7 +235,7 @@ if ($task=="createdb") {
 
 if ($task=="createtables") {
   if (!$context['name']) die ("probleme interne");
-  require_once ($home."connect.php");
+  require_once("connect.php");
   
   mysql_select_db($context['dbname']);
 
@@ -269,7 +269,7 @@ if ($task=="createtables") {
 	call_user_func("code_do_$funcname",array_merge($context,$localcontext));
       } while ($error);
     }
-    require ($home."view.php");
+    require("view.php");
     $view=&getView();
     $view->render($context,"site-createtables");
     return;
@@ -289,11 +289,11 @@ if ($task=="createtables") {
 #    }
 #
 #    if ($import) {
-#      require_once ($home."backupfunc.php");
+#      require_once("backupfunc.php");
 #      // execute the editorial model
 #      if (!execute_dump($fichier)) $context[error_execute_dump]=$err=mysql_error();
 #      // change the id in order there are minimal and unique
-#      require_once($home."objetfunc.php");
+#      require_once("objetfunc.php");
 #      makeobjetstable();
 #    }
 #  }
@@ -315,7 +315,7 @@ if ($task=="createdir") {
 	$context['error_nonexists']=!file_exists($dir);
 	$context['error_nonaccess']=!@opendir($dir);
       }
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-createdir");
       return;
@@ -324,7 +324,7 @@ if ($task=="createdir") {
     if (!file_exists($dir) && !@mkdir($dir,0777 & octdec($filemask))) {
       // on y arrive pas... pas les droits surement
       $context[error_mkdir]=1;
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-createdir");
       return;
@@ -335,7 +335,7 @@ if ($task=="createdir") {
   if ($context['path']=="/") {
     if (!@writefile(LODELROOT."tpl/testecriture","")) {
       $context['error_tplaccess']=1;
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-createdir");
       return;
@@ -372,7 +372,7 @@ if ($task=="file") {
   // cherche si le fichier n'existe pas ou s'il est different de l'original
   if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache)!=file_get_contents($siteconfigdest)) {
     if ($installoption=="2" && !$lodeldo) {
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-file");
       return;
@@ -383,7 +383,7 @@ if ($task=="file") {
       $context[siteconfigsrc]=$siteconfigcache;
       $context[siteconfigdest]=$siteconfigdest;
       $context[error_writing]=1;
-      require ($home."view.php");
+      require("view.php");
       $view=&getView();
       $view->render($context,"site-file");
       return;	
@@ -398,7 +398,7 @@ if ($task=="file") {
   }
 
   // clear the CACHEs
-  require_once($home."cachefunc.php");
+  require_once("cachefunc.php");
   removefilesincache(LODELROOT,$root,$root."lodel/edition",$root."lodel/admin");
 
   // ok on a fini, on change le status du site
@@ -443,7 +443,7 @@ if ($task=="file") {
 // post-traitement
 postprocessing ($context);
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 $view->render($context,"site");
 

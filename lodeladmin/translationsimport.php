@@ -29,10 +29,10 @@
 
 
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-require_once($home."func.php");
-require_once($home."importfunc.php");
+require_once("func.php");
+require_once("importfunc.php");
 
 $context['textgroups']="interface";
 $lang="";
@@ -40,11 +40,11 @@ $lang="";
 $file=extract_import("translation",$context,"xml");
 
 if ($file) {
-  require_once($home."validfunc.php");
-  require_once($home."importfunc.php");
+  require_once("validfunc.php");
+  require_once("importfunc.php");
 
 
-  require_once($home."translationfunc.php");
+  require_once("translationfunc.php");
   $xmldb=new XMLDB_Translations($context['textgroups']);
 
   $xmldb->readFromFile($file);
@@ -53,7 +53,7 @@ if ($file) {
 }
 
 
-require ($home."calcul-page.php");
+require("calcul-page.php");
 
 calcul_page($context,"translationsimport");
 

@@ -42,9 +42,10 @@ $site="";
 $versionsuffix=$version ? "-$version" : "";   # versioning
 
 $home="lodel$versionsuffix/scripts/";
+
 $sharedir=$sharedir.$versionsuffix;
 $shareurl.=$versionsuffix;
 
 if (!defined("SITEROOT")) define("SITEROOT","");
-
+ini_set('include_path',SITEROOT.$home .PATH_SEPARATOR . ini_get("include_path"));
 ?>

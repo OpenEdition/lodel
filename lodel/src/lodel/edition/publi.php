@@ -51,7 +51,7 @@ include ($home."auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
 include ($home."func.php");
 
-include_once ($home."connect.php");
+include_once("connect.php");
 
 if ($cancel) back();
 
@@ -66,7 +66,7 @@ if ($publication) {
   $id=intval($id);
 }
 
-require($home."managedb.php");
+require("managedb.php");
 
 if (!publi($id,$status,$confirmation)) { // publications protegees ?
   $context[id]=$id;

@@ -35,7 +35,7 @@ authenticate(LEVEL_ADMIN,NORECORDURL);
 # ghi ####### ne pas mettre de NORECORDURL ici
 
 /*
-include_once ($home."connect.php");
+include_once("connect.php");
 
 //////////////////////////////////  Documents
 // Nombre total de documents

@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require_once ($home."func.php");
+require_once("func.php");
 
 if ($class=="publications") {
   $visualisationscript="sommaire";
@@ -45,7 +45,7 @@ if ($idtache) {
   $idtype=0;
 
   if ($tache['massimport']) {
-    require($home."entitemass.php");
+    require("entitemass.php");
     return;
   }
 
@@ -86,7 +86,7 @@ if ($idtache) {
   if ($cancel) {
     if ($ifile>=2) { // on a traiter le premier fichier, c'est a dire le parent
       //il faut donc supprimer le parent et tous ces fils
-      include_once($home."managedb");
+      include_once("managedb");
       supprime($tache[idparent]);
     }
     require("abandon.php");
@@ -101,7 +101,7 @@ if ($idtache) {
     $localcontext[status]=-64; // car le document n'est pas correcte a priori
     // enregistre le name du fichier original. Enleve le repertoire.
 
-    if (!$tablefields) require($home."tablefields.php");
+    if (!$tablefields) require("tablefields.php");
     if ($tablefields && (
 			 !in_array("fichiersource",$tablefields["$GLOBALS[tp]$class"]) ||
 			 !in_array("importversion",$tablefields["$GLOBALS[tp]$class"]))) {
@@ -116,7 +116,7 @@ if ($idtache) {
     // the lodel/sources is fake, only the basename is used.
     
     $text=file_get_contents($filename);
-    require_once($home."xmlimport.php");
+    require_once("xmlimport.php");
     $id=enregistre_entite_from_xml($localcontext,$text,$class);
     updatetask_etape($idtache,3); // etape 3
     $tache[iddocument]=$id;
@@ -137,7 +137,7 @@ if ($idtache) {
   // rien a faire
 }
 
-require_once($home."entitefunc.php");
+require_once("entitefunc.php");
 
 $context[id]=$id=intval($id);
 $context[idparent]=$idparent=intval($idparent);
@@ -215,7 +215,7 @@ if ($id>0 && $dir) {
 // sinon recommence
  // edit
 } elseif ($id>0) {
-  include_once ($home."connect.php");
+  include_once("connect.php");
   $result=mysql_query("SELECT $GLOBALS[tp]$class.*, $GLOBALS[tp]entities.*  FROM $GLOBALS[tp]entities INNER JOIN $GLOBALS[tp]$class ON $GLOBALS[tp]entities.id=$GLOBALS[tp]$class.identity WHERE $GLOBALS[tp]entities.id='$id' $critere") or dberror();
   if (!mysql_num_rows($result)) { header("location: not-found.html"); return; }
   $context[entite]=mysql_fetch_assoc($result);
@@ -224,7 +224,7 @@ if ($id>0 && $dir) {
   extrait_personnes($id,$context);
   extrait_entrees($id,$context);
 } else {
-#  require_once ($home."validfunc.php");
+#  require_once("validfunc.php");
 #  $context[type]=trim($type);
 #  if (!$context[type] || !isvalidtype($context[type])) die("preciser un type valide");
 #  $result=mysql_query("SELECT id,tplcreation FROM $GLOBALS[tp]types WHERE type='$context[type]' AND status>0") or dberror();
@@ -249,9 +249,9 @@ $context[idtache]=intval($idtache);
 
 postprocessing($context);
 
-require_once($home."langues.php");
+require_once("langues.php");
 
-require ($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,$context[tplcreation]);
 
 
@@ -292,13 +292,13 @@ function extract_files(&$context,$class)
   // if no files to upload, return.
   if (!$files['tmp_name']) return;
 
-  require_once($home."connect.php");
+  require_once("connect.php");
   // look for the field we have to download.
   $result=mysql_query("SELECT $GLOBALS[tp]tablefields.name,type FROM $GLOBALS[tp]tablefields,$GLOBALS[tp]tablefieldgroups WHERE idgroup=$GLOBALS[tp]tablefieldgroups.id AND class='$class' AND $GLOBALS[tp]tablefields.status>0 AND $GLOBALS[tp]tablefieldgroups.status>0 AND edition!='' AND (type='image' OR type='fichier')") or dberror();
 
   if (!mysql_num_rows($result)) return;
 
-  require_once($home."func.php");
+  require_once("func.php");
   
   // transfer
   while (list($name,$type)=mysql_fetch_row($result)) {

@@ -28,9 +28,9 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_VISITOR,NORECORDURL);
-require($home."func.php");
+require("func.php");
 
 if ($lang) {
   if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) die("ERROR: invalid lang");
@@ -43,7 +43,7 @@ if ($translationmode) {
 }
 
 update();
-require_once($home."view.php");
+require_once("view.php");
 View::back();
 
 

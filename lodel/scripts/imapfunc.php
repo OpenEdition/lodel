@@ -30,7 +30,7 @@
 
 
 
-require_once($home."func.php");
+require_once("func.php");
 
 function checkmailforattachments()
 

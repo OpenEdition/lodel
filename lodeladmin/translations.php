@@ -29,13 +29,13 @@
 
 die("desuet");
 require("lodelconfig.php");
-require($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMINLODEL);
-require($home."func.php");
+require("func.php");
 
 $context['textgroups']="interface";
 
-require($home."textgroupfunc.php");
+require("textgroupfunc.php");
 $context['textgroupswhere']=textgroupswhere($context['textgroups']);
 
 // post-traitement
@@ -44,7 +44,7 @@ $context['textgroupswhere']=textgroupswhere($context['textgroups']);
 
 postprocessing($context);
 
-require($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"translations");
 
 

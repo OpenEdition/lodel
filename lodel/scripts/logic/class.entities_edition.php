@@ -31,7 +31,7 @@
  *  Logic Entities
  */
 
-require_once($GLOBALS['home']."genericlogic.php");
+require_once("genericlogic.php");
 
 class Entities_EditionLogic extends GenericLogic {
 
@@ -199,7 +199,7 @@ class Entities_EditionLogic extends GenericLogic {
      // iduser
      $context['iduser']=!SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
 
-     require_once($home."entitiesfunc.php");
+     require_once("entitiesfunc.php");
      if (!checkTypesCompatibility($id,$idparent,$idtype)) {
        $error['idtype']="types_compatibility";
        return "_error";

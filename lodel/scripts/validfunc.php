@@ -33,7 +33,7 @@
 function validfield(&$text,$type,$default="")
 
 {
-  require_once($GLOBALS['home']."fieldfunc.php");
+  require_once("fieldfunc.php");
   if ($GLOBALS['lodelfieldtypes']['autostriptags']) {
     $text=strip_tags($text);
   }
@@ -52,13 +52,13 @@ function validfield(&$text,$type,$default="")
   case "classtype" :
     $text=strtolower($text);
     if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$text)) return $type;
-    require_once($GLOBALS['home']."fieldfunc.php");
+    require_once("fieldfunc.php");
     if (reservedword($text)) return "reservedsql";
     break;
   case "tablefield" :
     $text=strtolower($text);
     if (!preg_match("/^[a-z0-9]{2,}$/",$text)) return $type;
-    require_once($GLOBALS['home']."fieldfunc.php");
+    require_once("fieldfunc.php");
     if (reservedword($text)) return "reservedsql";
     break;
     if ($text && !preg_match("/^[a-zA-Z0-9]+$/",$text)) return $type;
@@ -93,7 +93,7 @@ function validfield(&$text,$type,$default="")
   case "date" :
   case "datetime" :
   case "time" :
-    require_once($GLOBALS['home']."date.php");
+    require_once("date.php");
     if ($text) {
       $text=mysqldatetime($text,$type);
       if (!$text) return $type;

@@ -29,12 +29,12 @@
 
 
 require("lodelconfig.php");
-require ($home."auth.php");
+require("auth.php");
 #authenticate(LEVEL_ADMINLODEL,NORECORDURL);
 authenticate();
-require_once($home."func.php");
-require_once($home."champfunc.php");
-require_once($home."connect.php");
+require_once("func.php");
+require_once("champfunc.php");
+require_once("connect.php");
 
 $context['confirm']=intval($confirm);
 
@@ -133,7 +133,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 $context[erreur]=$err;
 $context[report]=$report;
 
-require($home."calcul-page.php");
+require("calcul-page.php");
 calcul_page($context,"transfer");
 
 

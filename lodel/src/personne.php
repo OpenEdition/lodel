@@ -29,7 +29,7 @@
 
 if (!function_exists("authenticate")) {
   require("siteconfig.php");
-  require_once($home."auth.php");
+  require_once("auth.php");
   authenticate();
 }
 
@@ -38,7 +38,7 @@ if (!$type || !preg_match("/[\w-]/",$type)) die("ERROR: unknow type '$type'");
 $context[id]=$id=intval($id);
 $context[type]=$type;
 
-include_once($home."connect.php");
+include_once("connect.php");
 $personnetable="";
 $critere=$user['visitor'] ?  "" : "AND status>0";
 $result=mysql_query ("SELECT * FROM $GLOBALS[tp]persons WHERE id='$id' $critere") or dberror();

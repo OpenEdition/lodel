@@ -488,7 +488,7 @@ class XMLImportParser {
 //  $row=getrow(lq("SELECT * FROM #_TP_$class WHERE identity='$id'"));
 //  if ($row===false) dberror();
 //
-//  require_once($home."func.php");
+//  require_once("func.php");
 //  copy_images($row,"mv_image",$id);
 //
 //
@@ -517,10 +517,10 @@ class XMLImportParser {
 //  $sets=array();
 //  while (!$result->EOF) {
 //    list($name,$style,$type,$traitement)=$result->fields;
-//    require_once($home."textfunc.php");
+//    require_once("textfunc.php");
 //
 //    if ($type=="mltext") { // text multilingue
-//      require_once($home."champfunc.php");
+//      require_once("champfunc.php");
 //      $stylesarr=decode_mlstyle($style);
 //    } else {
 //      $stylesarr=array($style);
@@ -535,7 +535,7 @@ class XMLImportParser {
 //	// type speciaux
 //	/* done in entitefunc.php
 //	if ($type=="date") { // date
-//	  require_once($home."date.php");
+//	  require_once("date.php");
 //	  $value=mysqldate(strip_tags($value));
 //	}
 //	*/
@@ -600,7 +600,7 @@ class XMLImportParser {
 //  $row=getrow(lq("SELECT * FROM #_TP_$class WHERE identity='$id'"));
 //  if ($row===false) dberror();
 //
-//  require_once($home."func.php");
+//  require_once("func.php");
 //  copy_images($row,"mv_image",$id);
 //  myaddslashes($row);
 //  foreach ($row as $field=>$value) { $row[$field]=$field."='".$value."'"; }
@@ -748,7 +748,7 @@ class XMLImportParser {
 //  if (!$localcontext[idtype]) die("Internal ERROR: probleme in enregistre_personnes_from_xml");
 //
 //  $result=$db->execute(lq("SELECT id,style FROM #_TP_entrytypes,#_TP_entitytypes_entrytypes WHERE status>0 AND identrytype=id AND identitytype='$localcontext[idtype]'")) or dberror();
-//  require_once($home."champfunc.php");
+//  require_once("champfunc.php");
 //
 //  while (!$result->EOF) {
 //    list($idtype,$style)=$result->fields;

@@ -32,7 +32,7 @@
  *  Logic Entities
  */
 
-require_once($GLOBALS['home']."logic/class.entities_edition.php");
+require_once("logic/class.entities_edition.php");
 
 class Entities_ImportLogic extends Entities_EditionLogic {
 
@@ -62,7 +62,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
      $idtask=intval($context['idtask']);
      $this->task=$task=gettask($idtask);
-     require_once($GLOBALS['home']."xmlimport.php");
+     require_once("xmlimport.php");
 
      if ($task['identity']) {
        $context['id']=$task['identity'];

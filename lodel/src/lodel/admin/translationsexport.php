@@ -29,11 +29,11 @@
 
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_EDITOR);
-require_once($home."func.php");
-require_once($home."validfunc.php");
-require_once($home."translationfunc.php");
+require_once("func.php");
+require_once("validfunc.php");
+require_once("translationfunc.php");
 
 
 //$context[importdir]=$importdir;
@@ -44,7 +44,7 @@ lock_write("translations","textes");
 
 $tmpfile=tempnam(tmpdir(),"lodeltranslation");
 
-require_once($home."xmldbfunc.php");
+require_once("xmldbfunc.php");
 
 $result=mysql_query("SELECT textgroups FROM $GLOBALS[tp]translations WHERE lang='$lang'") or dberror();
 list($textgroups)=mysql_fetch_row($result); // get the first one

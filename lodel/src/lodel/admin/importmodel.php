@@ -28,9 +28,9 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_ADMIN);
-require ($home."importfunc.php");
+require("importfunc.php");
 #authenticate();
 
 $file=extract_import("model",$context);
@@ -42,9 +42,9 @@ if ($file && $delete) {
   }
   //
 } elseif ($file) {
-  require_once ($home."connect.php");  
-  require_once ($home."backupfunc.php");
-  require ($home."func.php");
+  require_once("connect.php");  
+  require_once("backupfunc.php");
+  require("func.php");
 
   $sqlfile=tempnam(tmpdir(),"lodelimport_");
   $accepteddirs=array("tpl","css","images");
@@ -57,11 +57,11 @@ if ($file && $delete) {
   @unlink($sqlfile);
 
   // change the id in order there are minimal and unique
-  require_once($home."objetfunc.php");
+  require_once("objetfunc.php");
   $err=makeobjetstable();
   if ($err) die($err);
 
-  require_once($home."cachefunc.php");
+  require_once("cachefunc.php");
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
 
   if (!$err) {
@@ -87,7 +87,7 @@ if ($file && $delete) {
 }
 
 
-require ($home."view.php");
+require("view.php");
 $view=&getView();
 
 
@@ -116,7 +116,7 @@ function loop_files(&$context,$funcname)
 	if ($unzipcmd && $unzipcmd!="pclzip") {
 	  $line=`$unzipcmd $dir/$file -c model.sql`;
 	} else {
-	  require_once($home."pclzip.lib.php");
+	  require_once("pclzip.lib.php");
 	  $archive=new PclZip("$dir/$file");
 	  $arr=$archive->extract(PCLZIP_OPT_BY_NAME,"model.sql",
 				 PCLZIP_OPT_EXTRACT_AS_STRING);

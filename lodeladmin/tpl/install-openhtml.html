@@ -35,40 +35,40 @@
 <?php
 switch($current){
 	case "plateform":
-	$msg=getlodeltextcontents("server_configuration_choice","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.server_configuration_choice"];
 	break;
 	case "droits":
-	$msg=getlodeltextcontents("access_to_directory","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.access_to_directory"];
 	break;
 	case "mysql":
-	$msg=getlodeltextcontents("access_to_database_server","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.access_to_database_server"];
 	break;
 	case "database":
-	$msg=getlodeltextcontents("database_choice","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.database_choice"];
 	break;
 	case "admin":
-	$msg=getlodeltextcontents("initial_administrator_creation","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.initial_administrator_creation"];
 	break;
 	case "options":
-	$msg=getlodeltextcontents("options","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.options"];
 	break;
 	case "servoo":
-	$msg=getlodeltextcontents("servoo_configuration","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.servoo_configuration"];
 	break;
 	case "config":
-	$msg=getlodeltextcontents("configuration_file_installation","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.configuration_file_installation"];
 	break;
 	case "showconfig":
-	$msg=getlodeltextcontents("configuration_file_view","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.configuration_file_view"];
 	break;
 	case "start":
-	$msg=getlodeltextcontents("installation_type_choice","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.installation_type_choice"];
 	break;
 	case "fin":
-	$msg=getlodeltextcontents("installation_end","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.installation_end"];
 	break;
 	default:
-	$msg=getlodeltextcontents("install_lodel","install");
+	$msg=$GLOBALS['langcache'][$lang]["install.install_lodel"];
 }
 ?>
 <div id="bandeau"><h3><?php echo $msg; ?></h3></div>

@@ -50,7 +50,7 @@ if ($id) { // document
 } else { die("id ou publication ?"); }
 
 
-include_once ($home."connect.php");
+include_once("connect.php");
 $result=mysql_query("SELECT *, type  FROM $GLOBALS[tp]types, $GLOBALS[tp]entities, $GLOBALS[tp]$class WHERE $GLOBALS[tp]entities.id='$id' AND identity='$id' AND idtype=$GLOBALS[tp]types.id") or dberror();
 $context=array_merge($context,mysql_fetch_assoc($result));
 

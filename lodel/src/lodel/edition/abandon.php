@@ -29,14 +29,14 @@
 
 require_once("siteconfig.php");
 if (!function_exists("authenticate")) {
-  require_once ($home."auth.php");
+  require_once("auth.php");
   authenticate(LEVEL_REDACTOR,NORECORDURL);
 }
 
 // detruit la tache en cours
 $idtache=intval($idtache);
 if ($idtache) {
-  require_once ($home."connect.php");
+  require_once("connect.php");
   mysql_query("DELETE FROM $GLOBALS[tp]tasks WHERE id='$idtache'") or dberror();
 }
 
@@ -44,7 +44,7 @@ if ($redirect) {
   header("Location: $redirect");
   return;
 } else {
-  require_once ($home."func.php"); back();
+  require_once("func.php"); back();
 }
 
 ?>

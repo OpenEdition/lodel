@@ -30,9 +30,9 @@
 // suppression de documents et de publication en assurant la coherence de la base
 die("desuet");
 require("siteconfig.php");
-require ($home."auth.php");
+require("auth.php");
 authenticate(LEVEL_EDITOR,NORECORDURL);
-require_once ($home."func.php");
+require_once("func.php");
 
 
 if ($publication) die("Changer le template... remplacer publication par id");
@@ -40,7 +40,7 @@ $id=intval($id);
 if (!$id) die("ERROR: invalid id of the \"entitie\" to delete");
 
 if ($supprime || $confirmation) {
-  include_once ($home."connect.php");
+  include_once("connect.php");
   include ($home."managedb.php");
 
   if (!supprime($id,$confirmation)) {

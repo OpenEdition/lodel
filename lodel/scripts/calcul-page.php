@@ -28,7 +28,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require_once($GLOBALS[home]."func.php");
+require_once("func.php");
 
 # le $ret ne sert a rien, mais s'il n'est pas la, ma version de php n'aime pas: bug eratique.
 
@@ -42,7 +42,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   global $home,$format;
 
   if ($_REQUEST['clearcache']) {
-    require_once($home."cachefunc.php");   
+    require_once("cachefunc.php");   
     if (defined("SITEROOT")) {
       removefilesincache( SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
     } else {
@@ -64,25 +64,25 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
     if ($GLOBALS['lodeluser']['admin']) $context['templatesrecompiles'].="$base | ";
     if (!defined("TOINCLUDE")) define("TOINCLUDE",$home);
 
-    require_once ($home."lodelparser.php");
+    require_once("lodelparser.php");
     $parser=new LodelParser;
     $parser->parse($base, $template_cache);
   }
 
-  require_once ($GLOBALS['home']."connect.php");
+  require_once("connect.php");
 
   // execute le template php
-  require_once($home."textfunc.php");		
+  require_once("textfunc.php");		
   if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) {
     ob_start();
     require($template_cache);
     $content=ob_get_contents();
     ob_end_clean();
-    require_once ($home."showhtml.php");
+    require_once("showhtml.php");
     echo show_html($content);
     return;
   }
-  require_once($home."loops.php");
+  require_once("loops.php");
 
   if ($context['charset']=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
     require($template_cache);

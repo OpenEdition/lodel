@@ -36,7 +36,7 @@ function deletetotrash($table,$critere)
 {
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
-  include_once ($home."connect.php");
+  include_once("connect.php");
   mysql_query("UPDATE $GLOBALS[tp]$table SET status=-abs(status) WHERE $critere") or dberror();
   return mysql_affected_rows()>0;
 }
@@ -46,7 +46,7 @@ function restorefromtrash($table,$critere)
 {
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
-  include_once ($home."connect.php");
+  include_once("connect.php");
   mysql_query("UPDATE $GLOBALS[tp]$table SET status=abs(status) WHERE $critere") or dberror();
   return mysql_affected_rows()>0;
 }
@@ -56,7 +56,7 @@ function delete($table,$critere)
 {
   global $home;
   if (is_int($critere)) $critere="id='$critere'";
-  include_once ($home."connect.php");
+  include_once("connect.php");
   mysql_query("DELETE FROM $GLOBALS[tp]$table WHERE $critere") or dberror();
   return mysql_affected_rows()>0;
 }
@@ -71,7 +71,7 @@ function treattrash ($table,$critere="",$lock=FALSE)
   if ($delete) {
     if ($delete<2) { 
       if (!deletetotrash($table,$critere)) { die ("entite introuvable"); @Header("Location: not-found.html"); exit(); }
-      include_once($home."func.php");
+      include_once("func.php");
       if ($lock) unlock();
       back();
     }
@@ -80,7 +80,7 @@ function treattrash ($table,$critere="",$lock=FALSE)
     //
     if ($delete>=2) { 
       if (!delete($table,$critere)) { die ("entite introuvable");@Header("Location: not-found.html"); exit(); }
-      include_once($home."func.php");
+      include_once("func.php");
       if ($lock) unlock();
       back();
     }
@@ -90,7 +90,7 @@ function treattrash ($table,$critere="",$lock=FALSE)
 //
   if ($restore) { 
       if (!restorefromtrash($table,$critere)) { die ("entite introuvable");@Header("Location: not-found.html"); exit(); }
-      include_once($home."func.php"); 
+      include_once("func.php"); 
       if ($lock) unlock();
       back();
   }
