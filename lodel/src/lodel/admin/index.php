@@ -32,7 +32,8 @@ require($home."auth.php");
 authenticate(LEVEL_VISITOR);
 
 require($home."controler.php");
-Controler::controler(array("entrytypes","persontypes","entries",
+Controler::controler(array("entrytypes","persontypes",
+			   "entries","persons",
 			   "tablefieldgroups","tablefields","indextablefields",
 			   "translations","texts",
 			   "usergroups","users",

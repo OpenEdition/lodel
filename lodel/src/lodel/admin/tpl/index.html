@@ -121,27 +121,41 @@
 						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.INDEX_ADMINISTRATION]</span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+						[@ADMIN.INDEX]
+						<select onChange="select_url(this)"><option>--</option>
 
-					<LOOP NAME="entrytype" TABLE="entrytypes" WHERE="status gt 0" ORDER="rank">
-						<DO>
-							<tr>
-								<td width="20">&nbsp;</td>
-								<td width="350" class="td_admin">
-									<a href="index.php?do=list&lo=entries&idtype=[#ID]"><span class="texte_orange">[(#TITLE|majuscule)]</span></a>
-								</td>
-								<td width="5">&nbsp;</td>
-							</tr>
+					<LOOP NAME="entrytype" TABLE="entrytypes" WHERE="status gt 0" ORDER="class,rank">
+						<DO>							
+							<option value="index.php?do=list&lo=entries&idtype=[#ID]">[#TITLE]</option>
 						</DO>
 						<ALTERNATIVE>
-							<tr>
-								<td width="20">&nbsp;</td>
-								<td width="350" class="td_admin">
-									[@ADMIN.NO_INDEX_AVAILABLE]
-								</td>
-								<td width="5">&nbsp;</td>
-							</tr>
+							[@ADMIN.NO_INDEX_AVAILABLE]
 						</ALTERNATIVE>
 					</LOOP>
+						</td>
+					<td width="5">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+						[@ADMIN.PERSON_INDEX]
+						<select onChange="select_url(this)"><option>--</option>
+
+					<LOOP NAME="persontypes" TABLE="persontypes" WHERE="status gt 0" ORDER="class,rank">
+						<DO>							
+							<option value="index.php?do=list&lo=persons&idtype=[#ID]">[#TITLE]</option>
+						</DO>
+						<ALTERNATIVE>
+							[@ADMIN.NO_INDEX_AVAILABLE]
+						</ALTERNATIVE>
+					</LOOP>
+						</td>
+					<td width="5">&nbsp;</td>
+					</tr>
+
 				</table>
 			</td>	<!--[ fin de gerer les index ]-->
 		</tr>

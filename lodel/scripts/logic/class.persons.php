@@ -50,6 +50,30 @@ class PersonsLogic extends GenericLogic {
    }
 
 
+  function viewAction(&$context,&$error)
+
+  {
+    if (!$context['id']) $context['status']=32;
+    $context['classtype']="persons";
+    return GenericLogic::viewAction($context,$error);
+  }
+
+
+   /**
+    * list action
+    */
+
+  function listAction(&$context,&$error,$clean=false)
+
+  {
+    $daotype=&getDAO("persontypes");
+    $votype=$daotype->getById($context['idtype']);
+    if (!$votype) die("ERROR: idtype must me known in GenericLogic::viewAction");
+    $this->_populateContext($votype,$context['type']);
+    return "_ok";
+  }
+
+
    /**
     * add/edit Action
     */
@@ -107,6 +131,7 @@ class PersonsLogic extends GenericLogic {
        }
      }
      // populate the persons table
+     if ($dao->rights['protect']) $vo->protect=$context['protected'] ? 1 : 0;
      if ($idtype) $vo->idtype=$idtype;
      $vo->g_firstname=$firstname;
      $vo->g_familyname=$familyname;
@@ -140,7 +165,6 @@ class PersonsLogic extends GenericLogic {
        } else {
 	 $idrelation=$context['idrelation']=$vo->idrelation;
        }
-
 
        $gdao=&getGenericDAO("entities_".$class,"idrelation");
        $gdao->instantiateObject($gvo);

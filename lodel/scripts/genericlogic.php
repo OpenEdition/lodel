@@ -74,18 +74,30 @@ class GenericLogic extends Logic {
      function loop_edition_fields($context,$funcname) 
 
      {
-       global $db;
+       global $db,$home;
+
+       require_once($home."validfunc.php");
+       if ($context['class']) {
+	 validfield($context['class'],"class");
+	 $class=$context['class'];
+       } elseif ($context['type']['class']) {
+	 validfield($context['type']['class'],"class");
+	 $class=$context['type']['class'];
+       } else die("ERROR: internal error in loop_edition_fields");
+       
 
        if ($context['classtype']=="persons") {
-	 $criteria="class='".$context['class']."' OR class='entities_".$context['class']."'";
+	 $criteria="class='".$class."'";
+	 // degree is defined only when the persons is related to a document. Is it a hack ? A little no more...
+	 if (is_numeric($context['degree'])) $criteria.=" OR class='entities_".$class."'";
        } elseif ($context['classtype']=="entries") {
-	 $criteria="class='".$context['class']."'";
+	 $criteria="class='".$class."'";
        } else {
 	 $criteria="idgroup='".$context['id']."'";
+	 $context['idgroup']=$context['id'];
        }
        $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
-
-       print_R($result);
+       
        $haveresult=!empty($result->fields);
        if ($haveresult) call_user_func("code_before_$funcname",$context);
 
@@ -153,7 +165,6 @@ class GenericLogic extends Logic {
        $ret=$this->_populateContextRelatedTables($vo,$context);
      }
 
-
      return $ret ? $ret : "_ok";
    }
 
@@ -175,15 +186,24 @@ class GenericLogic extends Logic {
      global $home;
 
      // get the fields of class
+     require_once($home."validfunc.php");
+     if ($context['class']) {
+       validfield($context['class'],"class");
+       $class=$context['class'];
+     } elseif ($context['type']['class']) {
+       validfield($context['type']['class'],"class");
+       $class=$context['type']['class'];
+     } else die("ERROR: internal error in loop_edition_fields");
+
 
      $daotablefields=&getDAO("tablefields");
-     $fields=$daotablefields->findMany("(class='".$context['class']."' OR class='entities_".$context['class']."') AND status>0 ","",
+     $fields=$daotablefields->findMany("(class='".$class."' OR class='entities_".$class."') AND status>0 ","",
 				       "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
 
      #echo "validateFields: class=".get_class($this)."\n";
      #
      #if (get_class($this)=="entrieslogic") {
-     #  echo "class=".$context['class'];
+     #  echo "class=".$class;
      #  echo "lal";print_R($fields);
      #}
 
@@ -191,7 +211,6 @@ class GenericLogic extends Logic {
      $this->files_to_move=array();
      $this->_publicfields=array();
      require_once($home."fieldfunc.php");
-     require_once($home."validfunc.php");
      
      foreach ($fields as $field) {
        if ($field->g_name) $this->g_name[$field->g_name]=$field->name; // save the generic field

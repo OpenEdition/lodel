@@ -46,9 +46,8 @@ class EntriesLogic extends GenericLogic {
   function viewAction(&$context,&$error)
 
   {
-    //$context['classtype']="entries";
-    //if ($context['id']) XXXXXXX
-    //$context['class']="entries";
+    if (!$context['id']) $context['status']=32;
+    $context['classtype']="entries";
     return GenericLogic::viewAction($context,$error);
   }
 
@@ -116,14 +115,18 @@ class EntriesLogic extends GenericLogic {
 	 $new=false;
 	 $dao->instantiateObject($vo);
 	 $vo->id=$id;
-	 if ($votype->flat) $vo->idparent=0; // force the entry to be at root
        } else {
 	 if (!$votype->newbyimportallowed && !$context['forceaddition']) { return "error_"; }
 	 $new=true;
 	 $vo=$dao->createObject();
 	 $vo->status=$status ? $status : -1;
-	 $vo->idparent=0;
        }
+     }
+     if ($dao->rights['protect']) $vo->protect=$context['protected'] ? 1 : 0;
+     if ($votype->flat) {
+       $vo->idparent=0; // force the entry to be at root
+     } else {
+       $vo->idparent=intval($context['idparent']);
      }
      // populate the entry table
      if ($idtype) $vo->idtype=$idtype;
@@ -163,8 +166,47 @@ class EntriesLogic extends GenericLogic {
   function makeSelect(&$context,$var)
 
   {
+    global $db;
 
+    switch($var) {
+    case 'idparent':
+      $arr=array();
+      $rank=array();
+      $parent=array();
+      $ids=array(0);
+      $l=1;
+      do {
+	$result=$db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND idparent ".sql_in_array($ids)." ORDER BY ".$context['type']['sort'])) or dberror();
+	$ids=array();
+	$i=1;
+	while(!$result->EOF) {
+	  $id=$result->fields['id'];
+	  if ($id!=$context['id']) {
+	    $ids[]=$id;	 
+	    $fullname=$result->fields['g_name'];
+	    $idparent=$result->fields['idparent'];
+	    if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
+	    $d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+	    echo $d," ";
+	    $arr["p$d"]=array($id,$fullname);
+	    $parent[$id]=$fullname;
+	    $i++;
+	  }
+	  $result->MoveNext();
+	}
+	$l*=100;
+      } while ($ids);
+      ksort($arr);
+      $arr2=array("0"=>"--"); // reorganize the array $arr
+      foreach($arr as $row) {
+	$arr2[$row[0]]=$row[1];
+      }
+      renderOptions($arr2);
+      break;
+    }
   }
+
+
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
@@ -197,7 +239,6 @@ class EntriesLogic extends GenericLogic {
 
     // delete 
   }
-
 } // class 
 
 

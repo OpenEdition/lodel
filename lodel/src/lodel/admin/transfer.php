@@ -697,7 +697,7 @@ ALTER TABLE #_TP_entries ADD sortkey VARCHAR(255) NOT NULL;
       $dao=&getDAO("entries");      
       $vos=$dao->findMany("1","","id,g_name");
       foreach($vos as $vo) {
-	$vo->sortkey=makeSortKey(trim($vo->g_familyname)." ".trim($vo->g_firstname));
+	$vo->sortkey=makeSortKey(trim($vo->g_name));
 	$dao->quote($vo);
 	$dao->save($vo);
       }
@@ -840,7 +840,7 @@ INSERT INTO #_TP_'.$class.' (identry,nom) SELECT id,g_name FROM #_TP_entries;
 	  if ($i>0) {
 	    $vo->id=0;
 	    $vo->type=$name;
-	    $vo->title=ucfirst($name);
+	    $vo->title="Index par ".$name;
 	  }
 	  $idtype=$entrytypesdao->save($vo);
 	  $err=mysql_query_cmds('

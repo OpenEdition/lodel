@@ -39,7 +39,7 @@
 
 <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]--><input type="hidden" name="do" value="edit">
-<input type="hidden" name="lo" value="entries">
+<input type="hidden" name="lo" value="persons">
 <fieldset>
   <legend></legend>
   <input type="hidden" name="id" value="[#ID]">
@@ -47,24 +47,8 @@
 
 
    <MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
-  <IF COND="![#TYPE.FLAT]">
-    <label for="idparent">[@COMMON.PARENT_ENTRY]
-        : 
-      </label>
-    <br class="nobr">
-    <select name="idparent" id="idparent">
-      <?php 
-                      makeSelect($context,"idparent","entries","select");
-                  ?>
-    </select>
-    <br />
-    <LOOP NAME="fielderror" FIELD="idparent">
-      <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idparent"></FUNC>
-      </p>
-    </LOOP>
-  </IF>
-  <label for="protected">[@ADMIN.PERMANENT_ENTRY]
+
+  <label for="protected">[@ADMIN.PERMANENT_PERSON]
         : 
       </label>
   <br class="nobr">

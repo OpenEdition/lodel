@@ -86,7 +86,7 @@ class Logic {
      $copyof=getlodeltextcontents("copyof","common");
      if (isset($context['name'])) {
        $context['name']=$copyof."_".$context['name'];
-     } elseif (isset($context['type'])) {
+     } elseif (isset($context['type']) && !is_array($context['type'])) {
        $context['type']=$copyof."_".$context['type'];
      }
      if (isset($context['title'])) {

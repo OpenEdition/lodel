@@ -217,6 +217,8 @@ ln tpl/entries.html
 
 ln tpl/edit_persontypes.html
 ln tpl/persontypes.html
+ln tpl/edit_persons.html
+ln tpl/persons.html
 
 
 ln tpl/edit_tablefieldgroups.html
