@@ -19,7 +19,7 @@ if ($htmlfile && $htmlfile!="none") {
     $fp=fopen($htmlfile,"r") or die("le fichier $htmlfile ne peut etre ouvert");
     $cle=fread($fp,2);
     if ($cle=="PK") {
-      echo "extract<br>"; flush();
+      echo "<li>Decompresse le fichier zippe<br>"; flush();
       system("/usr/bin/unzip -j -p $htmlfile >$htmlfile.extracted");
       $htmlfile.=".extracted";
     }
@@ -43,7 +43,7 @@ if ($htmlfile && $htmlfile!="none") {
     }
     $idtache=make_tache("Import $htmlfile_name",3,$row,$tache);
 
-    echo '<a href="chkbalisage.php?id='.$idtache.'">continue</a>';
+    echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="1">Continuer</font></a>';
     return;
 
     header("Location: chkbalisage.php?id=$idtache");
@@ -66,16 +66,18 @@ function OO ($uploadedfile,&$context)
 {
   global $home;
 
+  echo "<h2>Conversions du fichier importe par OO<h2>";
+  echo "<p>En cas d'arret avant la fin de la 2eme conversion veuillez envoyer les informations sur ldodel-devel</p>";
   $errfile="$uploadedfile.err";
   chmod($uploadedfile,0644); // temporaire, il faut qu'on gere le probleme des droits
   # cette partie n'est pas secur du tout. Il va falloir reflechir fort.
-  echo "1ere conversion<br>\n";flush();
+  echo "<li>1ere conversion format initial->SXW <br>\n";flush();
   $time1=time();
   runDocumentConverter($uploadedfile,"sxw");
   // solution avec unzip, ca serait mieux avec libzip
   // dezip le fichier content
   echo "temps:",time()-$time1,"<br>";
-  echo "unzip process and write<br>\n";flush();
+  echo "<li>unzip le fichier SXW<br>\n";flush();
   $tmpdir=$uploadedfile."_dir";
   mkdir("$tmpdir",0700);
 
@@ -86,20 +88,23 @@ function OO ($uploadedfile,&$context)
   $content=join("",file("$tmpdir/content.xml"));
   if ($GLOBALS[sortiexmloo]) { echo htmlentities($content); exit(); }
   echo "<br>";
+  echo "<li>extraction des styles du fichier content.xml contenu dans le SXW<br>\n";flush();
   // lit et modifie le fichier content.xml
   processcontent($content);
 
   // ecrit le fichier content.xml
   writefile("$tmpdir/content.xml",$content);
+  echo "<br>";
+  echo "<li>Reinsertion du nouveaux fichier content.xml dans le SXW<br>\n";flush();
   system("/usr/bin/zip -j $uploadedfile.sxw $tmpdir/content.xml 2>$errfile") or die("probleme avec zip<br>".@join("",@file($errfile)));
 
   echo "<br>";
   // conversion en HTML
-  echo "2nd conversion<br>\n";flush();
+  echo "<li>2nd conversion SXW->HTML<br>\n";flush();
   $time2=time();
   runDocumentConverter($uploadedfile.".sxw","html");
   echo "temps:",time()-$time2,"<br>";
-  echo "fin<br>\n";flush();
+  echo "fin<br><br>\n";flush();
 
 
   $file=str_replace("\n","",join('',file("$uploadedfile.sxw.html")));
@@ -210,7 +215,7 @@ function OO ($uploadedfile,&$context)
   if (!traite_tableau2($file)) {     $context[erreur_stylestableaux]=1;
   return FALSE; }
   $file=traite_multiplelevel($file);
-  echo "temps regexp: ".(time()-$time)."<br>\n";
+  echo "<li>temps regexp: ".(time()-$time)."<br>\n";
 
   //echo htmlentities($file); exit;
 
@@ -243,7 +248,7 @@ return FALSE; }
     $newname="$uploadedfile-".rand();
   if (!writefile("$newname.html",$file)) return FALSE;
 
-  echo "total:",time()-$time1,"<br>"; flush();
+  echo "Temps total:",time()-$time1,"<br><br>"; flush();
 
   return $newname;
 }
