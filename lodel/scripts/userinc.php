@@ -40,8 +40,12 @@ $id=intval($id);
 //
 // supression et restauration
 //
-if ($id>0 && ($delete || $restore)) { 
-  include ($home."trash.php");
+if ($id>0 && ($delete | $restore)) { 
+  if ($delete>=2) {
+    mysql_query ("DELETE FROM $GLOBALS[tp]users_groupes WHERE iduser='$id'") or die(mysql_error());
+  }
+
+  require ($home."trash.php");
   treattrash("users");
   return;
 }
