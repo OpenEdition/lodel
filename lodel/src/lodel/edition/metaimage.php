@@ -31,7 +31,7 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
 include ($home."func.php");
-include ($home."champfunc.php");
+include ($home."validfunc.php");
 
 if ($idsite) { $id=$context[idsite]=intval($idsite); $classe="sites"; $critere="id='$id'"; $db=$database; $champ="image"; }
 elseif ($iddocument) { $id=$context[iddocument]=intval($iddocument); $classe="documents"; $critere="identite='$id'"; $db=$currentdb; }
