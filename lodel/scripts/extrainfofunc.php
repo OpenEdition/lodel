@@ -6,6 +6,7 @@
 $prefixregexp="Pr\.|Dr\.";
 
 include_once($home."langues.php");
+include_once($home."connect.php");
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -18,9 +19,9 @@ function ei_pretraitement($filename,$row,&$context,&$text)
 
   $text=join("",file ($filename.".html"));
   auteurs2auteur($text);
-  $result=mysql_query("SELECT balise FROM $GLOBALS[tableprefix]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  $result=mysql_query("SELECT style,balise FROM $GLOBALS[tableprefix]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result)) {
-    tags2tag($row[balise],$text);
+    tags2tag($row[style],$row[balise],$text);
   }
 
   //////////  // debut de gestion du bloc titre et meta
@@ -345,7 +346,7 @@ function makeselectindex_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
 
 {
   $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND typeid='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
-  print_r($entrees[1]);
+#  print_r($entrees[1]);
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=(in_array($row[abrev],$entrees[1]) || in_array($row[nom],$entrees[1])) ? " selected" : "";
@@ -483,25 +484,30 @@ function auteurs2auteur (&$text)
 }
 
 
-function tags2tag ($bal,&$text)
+function tags2tag ($style,$balise,&$text)
 
 {
-  $bals=$bal."s";
-  $bal=strtolower($bal);
+  $style=strtolower($style);
+  $balise=strtolower($balise);
 
-  if (preg_match ("/<r2r:$bals>\s*(.*?)\s*<\/r2r:$bals>/si",$text,$result)) {
+  preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results,PREG_SET_ORDER);
+  $groupe="<r2r:gr$balise>\n";
+  $oldtags=array();
+
+  foreach ($results as $result) {
     $val=strip_tags($result[1]);
     $tags=preg_split ("/[,;]/",preg_replace(
 					    array("/^\s*<(p|div)\b[^>]*>/si","/<\/(p|div)\b[^>]*>$/si","/\s+/"),
 					    array("",""," "),$val));
-    $val="<r2r:gr$bal>\n";
     foreach($tags as $tag) {
       # enlever le strip_tages
-      $val.="<r2r:$bal>".trim(strip_tags($tag))."</r2r:$bal>";
+      $groupe.="<r2r:$balise>".trim(strip_tags($tag))."</r2r:$balise>";
     }
-    $val.="</r2r:gr$bal>\n";
-    $text=str_replace($result[0],$val,$text);
+    array_push($oldtags,$result[0]);
   }
+
+  $groupe.="</r2r:gr$balise>\n";
+  $text=str_replace($oldtags,array($groupe),$text); // remplace le premier tag par $groupe et les autres par rien
 }
 
 ?>

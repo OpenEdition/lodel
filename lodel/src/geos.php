@@ -1,7 +1,5 @@
 <?
-require("revueconfig.php");
-
-$base="geos";
-include ($home."baseindex.php");
-
+$type="geographie";
+if (@include("entrees.html")) return;
+require("entrees.php");
 ?>

@@ -54,7 +54,7 @@
 					</div>
 				
 					<div class="titre2">
-						<LOOP NAME="periodes" TABLE="indexhs" WHERE="type='periode'" ORDER="ordre DESC">
+						<LOOP NAME="periodes" TABLE="entrees" WHERE="type='periode'" ORDER="ordre DESC">
 							<DO>
 								<a class="titre2" href="chrono.html?id=[#ID]">
 									[#NOM]
@@ -64,7 +64,7 @@
 						</LOOP>
 					</div>
 				
-					<LOOP NAME="geographie" TABLE="indexhs" WHERE="type='periode'" ORDER="ordre DESC">
+					<LOOP NAME="periode" TABLE="entrees" WHERE="type='periode'" ORDER="ordre DESC">
 						<DO>
 							<div class="titre3">
 								<a name="[#ABREV]">
@@ -72,7 +72,7 @@
 								</a>
 							</div>
 							<div class="afficherdocument">
-								<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+								<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="identree='[#ID]'">
 									<DO>
 										<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 									</DO>

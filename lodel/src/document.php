@@ -40,7 +40,7 @@ $context=array_merge($context,extract_xml($balises,$text));
 //
 // cherche s'il y a des documents annexe et combien
 //
-$result=mysql_query("SELECT count(*) FROM documentsannexes WHERE iddocument='$id' AND status>0") or die (mysql_error());
+$result=mysql_query("SELECT count(*) FROM $GLOBALS[prefixtable]documentsannexes WHERE iddocument='$id' AND status>0") or die (mysql_error());
 list($context[documentsannexes])=mysql_fetch_row($result);
 
 //
@@ -48,13 +48,13 @@ list($context[documentsannexes])=mysql_fetch_row($result);
 //
 
 // suivant:
-$result=mysql_query ("SELECT id FROM documents WHERE publication='$context[publication]' AND ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
+$result=mysql_query ("SELECT id FROM $GLOBALS[prefixtable]documents WHERE publication='$context[publication]' AND ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
 if (mysql_num_rows($result)) {
   list($nextid)=mysql_fetch_row($result);
   $context[nextdocument]="document.html?id=$nextid";
 }
 // precedent:
-$result=mysql_query ("SELECT id FROM documents WHERE publication='$context[publication]' AND ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
+$result=mysql_query ("SELECT id FROM $GLOBALS[prefixtable]documents WHERE publication='$context[publication]' AND ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
 if (mysql_num_rows($result)) {
   list($previd)=mysql_fetch_row($result);
   $context[prevdocument]="document.html?id=$previd";

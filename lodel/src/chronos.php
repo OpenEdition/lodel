@@ -1,7 +1,5 @@
 <?
-require("revueconfig.php");
-
-$base="chronos";
-include ($home."baseindex.php");
-
+$type="periode";
+if (@include("entrees.html")) return;
+require("entrees.php");
 ?>

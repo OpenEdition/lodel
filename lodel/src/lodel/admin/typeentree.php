@@ -39,8 +39,10 @@ if ($edit) { // modifie ou ajoute
   do {
     if (!$context[nom] || !preg_match("/[\w-]/",$context[nom])) $err=$context[erreur_nom]=1;
     if (!$context[tpl]) $err=$context[erreur_tpl]=1;
+    if (!$context[tplindex]) $err=$context[erreur_tplindex]=1;
     if (!$context[titre]) $err=$context[erreur_titre]=1;
-    if (!$context[balise] || preg_match("/\W/",$context[balise])) $err=$context[erreur_balise]=1;
+    if (!$context[balise] || !preg_match("/^[a-zA-Z0-9]*$/",$context[balise])) $err=$context[erreur_balise]=1;
+    if (!$context[style] || !preg_match("/^[a-zA-Z0-9]*$/",$context[style])) $err=$context[erreur_style]=1;
     if ($err) break;
 
     include_once ($home."connect.php");
@@ -53,7 +55,7 @@ if ($edit) { // modifie ou ajoute
       $ordre=get_ordre_max("typeentrees");
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tableprefix]typeentrees (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[nom]','$context[titre]','$context[balise]','$context[tpl]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tableprefix]typeentrees (id,nom,titre,balise,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[nom]','$context[titre]','$context[balise]','$context[style]','$context[tpl]','$context[tplindex]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
     back();
 
   } while (0);

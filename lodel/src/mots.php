@@ -1,7 +1,5 @@
 <?
-require("revueconfig.php");
-
-$base="mots";
-include ($home."baseindex.php");
-
+$type="motcle";
+if (@include("entrees.html")) return;
+require("entrees.php");
 ?>

@@ -132,15 +132,25 @@ ALTER TABLE _PREFIXTABLE_documents_entrees ADD INDEX  index_identree (identree);
       $report.="Conversion de documents_indexs<br>\n";
     }
     if (!$tables["$GLOBALS[prefixtable]typeentrees"]) { // il faut creer cette table, et les autres...
-      // charge l'install
-      $file=$home."../install/init-revue.sql";
-      if (!file_exists($file)) {
-	$err="Le fichier $file n'existe pas !";
-	break;
+      if (!rechargeinit()) break;
+    } else {
+      $fields=getfields("$GLOBALS[prefixtable]typeentrees");
+      if (!$fields[tplindex]) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_typeentrees ADD	tplindex	TINYTEXT NOT NULL;
+');
+	if ($err) break;
+	$report.="Ajout de la colonne tplindex a typeentree<br>\n";
+	if (!rechargeinit()) break; // recharge pour les typeentrees
       }
-      $err=mysql_query_cmds(join('',file($file)));
-      if ($err) break;
-      $report.="Création des tables<br>";
+      if (!$fields[style]) {
+	$err=mysql_query_cmds('
+ALTER TABLE _PREFIXTABLE_typeentrees ADD	style	TINYTEXT NOT NULL;
+');
+	if ($err) break;
+	$report.="Ajout de la colonne style a typeentree<br>\n";
+	if (!rechargeinit()) break; // recharge pour les typeentrees
+      }
     }
     if ($tables["$GLOBALS[prefixtable]documents"]) {
       // cherche les fields de documents 
@@ -219,6 +229,22 @@ function getfields($table)
     $arr[$fieldname]=1;
   }
   return $arr;
+}
+
+function rechargeinit() 
+
+{
+  global $home,$report;
+      // charge l'install
+  $file=$home."../install/init-revue.sql";
+  if (!file_exists($file)) {
+    $err="Le fichier $file n'existe pas !";
+    break;
+  }
+  $err=mysql_query_cmds(join('',file($file)));
+  if ($err) return FALSE;
+  $report.="Création des tables<br>";
+  return TRUE;
 }
 
 ?>

@@ -8,7 +8,7 @@ function parse ($in,$out)
 
 {
   global $sharedir;
-  if (!file_exists($in)) die ("impossible de lire $in");
+  if (!file_exists($in)) die ("Impossible de lire $in");
   $file = join('',file($in));
 
   $contents=stripcommentandcr($file);

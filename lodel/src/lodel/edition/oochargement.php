@@ -107,8 +107,8 @@ function OO ($uploadedfile)
   array_push($rpl,"removeaccentsandspaces('<\\1r2r:\\2>')");
   
 
-
-  $translations=array("mots?_cles?"=>"motcles","notes_de_bas_de_page"=>"notebaspage",
+#"mots?_cles?"=>"motcles",
+  $translations=array("notes_de_bas_de_page"=>"notebaspage",
 		      "title"=>"titre","subtitle"=>"soustitre",
 		      "document"=>"article","resume"=>"resume","auteur"=>"auteurs",
 		      "footnote_text"=>"notebaspage",
@@ -256,8 +256,8 @@ function OO2 ($uploadedfile,&$context)
 
   system("/usr/bin/unzip -d $tmpdir $uploadedfile.sxw content.xml 2>$errfile") or die("probleme avec unzip<br>".@join("",@file($errfile)));
   $content=join("",file("$tmpdir/content.xml"));
-  echo "<br>";
   if ($GLOBALS[sortiexmloo2]) { echo htmlentities($content); exit(); }
+  echo "<br>";
   // lit et modifie le fichier content.xml
   processcontent($content);
 
@@ -295,23 +295,23 @@ function OO2 ($uploadedfile,&$context)
   array_push($srch,"/\[!(\/?)--R2R:([^\]]+)--\]/e");
   array_push($rpl,"removeaccentsandspaces('<\\1r2r:'.strtolower('\\2').'>')");  
 
-  $translations=array("mots?_*cles?"=>"motcles","notes_de_bas_de_page"=>"notebaspage",
+  $translations=array("notesdebasdepage"=>"notebaspage",
 		      "title"=>"titre","subtitle"=>"soustitre",
 		      "document"=>"article","resume"=>"resume","auteur"=>"auteurs",
-		      "footnote_*text"=>"notebaspage",
-		      "corps_*de_*texte\w*"=>"texte","body_text"=>"texte",
+		      "footnotetext"=>"notebaspage",
+		      "corpsdetexte\w*"=>"texte","bodytext"=>"texte",
 		      "introduction"=>"texte","conclusion"=>"texte",
 		      "normal"=>"texte", "normal\s*(web)"=>"texte",
 		      "puces?"=>"texte",
-		      "bloc_*citation"=>"citation",
+		      "bloccitation"=>"citation",
 		      "periode"=>"periodes",
 		      "geographie"=>"geographies",
-		      "description_*auteur"=>"descriptionauteur",
-		      "droits_*auteur"=>"droitsauteur",
-		      "type_*document"=>"typedoc",
+		      "descriptionauteur"=>"descriptionauteur",
+		      "droitsauteur"=>"droitsauteur",
+		      "typedocument"=>"typedoc",
 		      "langue"=>"langues",
-		      "titre_*illustration"=>"titreillustration",
-		      "legende_*illustration"=>"legendeillustration",
+		      "titreillustration"=>"titreillustration",
+		      "legendeillustration"=>"legendeillustration",
 		      );
   
   foreach ($translations as $k=>$v) {
@@ -325,8 +325,8 @@ function OO2 ($uploadedfile,&$context)
 
   // conversion des balises avec publication
   array_push($srch,
-	     "/<r2r:(?:section|heading|titre)_*(\d+\b([^>]*))>/",
-	     "/<\/r2r:(?:section|heading|titre)_*(\d+)>/");
+	     "/<r2r:(?:section|heading|titre)(\d+\b([^>]*))>/",
+	     "/<\/r2r:(?:section|heading|titre)(\d+)>/");
   array_push($rpl,
 	     "<r2r:section\\1>",
 	     "</r2r:section\\1>");
@@ -557,9 +557,9 @@ function convertHTMLtoUTF8 (&$text)
 
 function removeaccentsandspaces($string){
 return strtr(
- strtr(utf8_decode($string),
-  '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ '."\n\t",
-  'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy___'),
+ strtr(utf8_decode(preg_replace("/[\s_]/","",$string)),
+  '¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
+  'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
   '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
 }

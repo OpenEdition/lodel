@@ -26,16 +26,29 @@
 		</tr>
 		[(#ERREUR_TITRE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un titre !</td></tr>]
 		<tr>
-			<td class="texte_intitule">Balise du type d'index :</td>
+			<td class="texte_intitule">Balise du type d'index (*):</td>
 			<td><input size="40" type="text" name="balise" value="[#BALISE]" /></td>
 		</tr>
 		[(#ERREUR_BALISE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser une balise !</td></tr>]
 		<tr>
+			<td class="texte_intitule">Style du type d'index (*):</td>
+			<td><input size="40" type="text" name="style" value="[#STYLE]" /></td>
+		</tr>
+		[(#ERREUR_STYLE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un style !</td></tr>]
+		<tr>
 			<td>
-				<span class="texte_intitule">Nom du fichier template de sommaire :</span><br />
+				<span class="texte_intitule">Nom du fichier template pour les entrées :</span><br />
 				<span class="texte_info">(sans l'extension .html)</span>
 			</td>
 			<td><input size="40" type="text" name="tpl" value="[#TPL]" /></td>
+		</tr>
+		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
+		<tr>
+			<td>
+				<span class="texte_intitule">Nom du fichier template d'index :</span><br />
+				<span class="texte_info">(sans l'extension .html)</span>
+			</td>
+			<td><input size="40" type="text" name="tplindex" value="[#TPLINDEX]" /></td>
 		</tr>
 		[(#ERREUR_TPL|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 <!--		<tr>
@@ -68,4 +81,5 @@
 		</IF>
 	</div>
 </form>
+(*) la balise et le style ne doivent contenir que des lettres non accentuées et des chiffres.<br>Le style défini dans lodel.dot peut contenir des lettres accentuées, l'accent est automatiquement supprimé, et des espaces, automatiquement supprimé. Par exemple le style "Mot clé" dans lodel.dot doit etre défini "motcle" ici.
 <MACRO NAME="CLOSE_HTML">

@@ -31,6 +31,7 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(WHERE\s*=\s*\"[^\"]*)type_periode([^\"]*\")/$1type='periode'$2/g;
   $change+=$file=~s/(WHERE\s*=\s*\"[^\"]*)type_geographie([^\"]*\")/$1type='geographie'$2/g;
   $change+=$file=~s/(TABLE=\"indexls\")/TABLE=\"entrees\" WHERE=\"type='motcle'\"/g;
+  $change+=$file=~s/\[\#MOT\]/[\#NOM]/g;
 
   next unless $change;
   print "$filename:",$change,"\n";

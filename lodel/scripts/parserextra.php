@@ -1,6 +1,4 @@
 <?
-
-
 //
 // traitement particulier des attributs d'une boucle
 // l'essentiel des optimisations et aide a l'uitilisateur doivent
@@ -107,16 +105,6 @@ function parse_boucle_extra(&$tables,&$where,&$ordre)
 	array_push($tables,"users_groupes");
 	$where.=" AND idgroupe=$GLOBALS[tableprefix]groupes.id";
       }
-      if (in_array("indexs",$tables)) {
-	// ca va plus marcher ca!
-	$where=preg_replace(array("/\btype_motcle_permanent\b/i",
-				  "/\btype_motcle\b/i",
-				  "/\btype_tous_motcles\b/i"),
-			    array("type='".TYPE_MOTCLE_PERMANENT."'",
-				  "type='".TYPE_MOTCLE."'",
-				  "(type='".TYPE_MOTCLE_PERMANENT."' OR type='".TYPE_MOTCLE."')"),
-			    $where);
-      }
       if (in_array("users",$tables) && in_array("session",$tables)) {
 	$where.=" AND iduser=$GLOBALS[tableprefix]users.id";
       }
@@ -141,8 +129,6 @@ function parse_variable_extra ($nomvar)
     return '($context[status]<0)';
   } elseif ($nomvar=="OKGROUPE") {
     return '($GLOBALS[admin] || in_array($context[groupe],split(",",$GLOBALS[usergroupes])))';
-  } elseif ($nomvar=="MOT") { // mot est synonyme de nom... utile pour les index
-    return '$context[nom]';
   }
   return FALSE;
 }
