@@ -349,12 +349,10 @@ function install_fichier($root,$homesite,$homelodel)
       $dirdest=$arg1;
     } elseif ($cmd=="mkdir") {
       $arg1=$root.$arg1;
-      if (file_exists($arg1)) {
-	// il existe, on essaie juste de chmoder
-	@chmod($arg1,octdec($arg2));
-      } else {
-	mkdir($arg1,octdec($arg2));
+      if (!file_exists($arg1)) {
+	mkdir($arg1,0777 & octdec($GLOBALS[filemask]));
       }
+      @chmod($arg1,0777 & octdec($GLOBALS[filemask]));
     } elseif ($cmd=="ln" && $usesymlink!="non") {
       if ($dirdest=="." && 
 	  $extensionscripts=="html" &&
@@ -388,7 +386,7 @@ function htaccess ($dir) {
   $text="deny from all\n";
   if (file_exists("$dir/.htaccess") && file_get_contents("$dir/.htaccess")==$text) return;
   writefile ("$dir/.htaccess",$text);
-  @chmod ("$dir/.htaccess",0640);
+  @chmod ("$dir/.htaccess",0666 & octdec($GLOBALS[filemask]));
 }
 
 function slink($src,$dest) {
@@ -407,7 +405,7 @@ function mycopyrec($src,$dest)
   if (is_dir($src)) {
 
     if (!is_dir($dest)) unlink($dest);
-    if (!file_exists($dest)) mkdir($dest,0755 & octdec($filemask));
+    if (!file_exists($dest)) mkdir($dest,0777 & octdec($filemask));
 
     $dir=opendir($src);
     while ($file=readdir($dir)) {
