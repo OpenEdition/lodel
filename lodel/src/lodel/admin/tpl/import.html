@@ -56,6 +56,7 @@
 			<span class="texte_intitule">Il est recommand&eacute; de faire une sauvegarde de la base de donn&eacute;es avant d'en importer une nouvelle :</span>
 			<div><a href="backup.php">SAUVEGARDE DE LA BASE DE DONNEES</a></div>
 			<br /><br /><br />
+		    <IF COND="[#ERREUR_EXTRACT]"><strong>Erreur:</strong> Le fichier archive ne semble pas être un fichier ZIP valide. Veuillez verifier l'intégrité de votre archive.<br /><br /></IF>
 		    <IF COND="[#ERREUR_EXECUTE_DUMP]"><strong>Erreur:</strong> Une erreur est survenue lors de l'importation de la base de donnée. Verifier l'integrité de votre archive. La base installée est sûrement corrompue maintenant. Veuillez importer une archive valide. Erreur envoyée: [#ERREUR_EXECUTE_DUMP]<br /><br /></IF>
 		    <IF COND="[#ERREUR_READING]"><strong>Erreur:</strong> Le fichier archive n'a pas pu être lu ou ne contient pas de fichier.<br /><br /></IF>
 

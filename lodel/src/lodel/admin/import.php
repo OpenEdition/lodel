@@ -72,7 +72,7 @@ if ($fichier) {
 
     if ($unzipcmd && $unzipcmd!="pclzip") {
       $listfiles=`$unzipcmd -Z -1 $fichier`;
-      if (!$listfiles) { $err=1; break; }
+      if (!$listfiles)  { $err=1; $context[erreur_extract]=1; break; }
       $dirs="";
       foreach ($accepteddirs as $dir) {
 	if (preg_match("/^(\.\/)?".str_replace("/",'\/',$dir)."\//m",$listfiles) && file_exists(SITEROOT.$dir)) $dirs.=$dir."/* ".$dir."/*/* ";
@@ -81,7 +81,7 @@ if ($fichier) {
       system ($unzipcmd." -oq $fichier  $dirs");
       if (!chdir ("lodel/admin")) die("ERROR: chdir 2 fails");
       system ($unzipcmd." -qp $fichier  $prefixunix-*.sql >$tmpfile");
-      if (filesize($tmpdir)<=0) { $err=1; break; }
+      if (filesize($tmpfile)<=0)  { $err=1; $context[erreur_extract]=1; break; }
     } else { // PCLZIP
       require($home."pclzip.lib.php");
       $archive=new PclZip($fichier);
@@ -111,8 +111,7 @@ if ($fichier) {
       $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract',
 			PCLZIP_CB_POST_EXTRACT, 'postextract');
 
-      if (filesize($tmpdir)<=0) { $err=1; $context[erreur_extract]=1; break; }
-A METTRE PARTOUT L'eRREUR erreur_extract
+      if (filesize($tmpfile)<=0) { $err=1; $context[erreur_extract]=1; break; }
     }
 
     require_once ($home."connect.php");
