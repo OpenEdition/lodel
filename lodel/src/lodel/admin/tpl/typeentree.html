@@ -11,7 +11,7 @@
 	</tr>
 </table>
 
-<form method="POST" action="typeindex.php" />
+<form method="POST" action="typeentree.php" />
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
@@ -48,7 +48,7 @@
 		[(#ERREUR_TPLEDIT|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom de fichier</td></tr>]
 -->
 		<tr>
-			<td colspan="2">Index linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Index hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /></td>
+			<td colspan="2">Entrée linéaire: <input type="radio" name="lineaire" value="1" [(#LINEAIRE|yes)] /> Entrée hiérarchique: <input type="radio" name="lineaire" value="0" [(#LINEAIRE|no)] /></td>
 		</tr>
 		<tr>
 			<td colspan="2">Import de nouveaux elements possible: <input type="radio" name="newimportable" value="1" [(#NEWIMPORTABLE|yes)] /> Liste figée par l'administrateur: <input type="radio" name="newimportable" value="0" [(#NEWIMPORTABLE|no)] /></td>
@@ -64,7 +64,7 @@
 		<input class="form" type="submit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]    " />&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<IF COND="[#ID]">
-			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='typeindex.php?delete=1&id=[#ID]'" />
+			<input class="form" type="button" value="  Supprimer  " onClick="javascript:window.location='typeentree.php?delete=1&id=[#ID]'" />
 		</IF>
 	</div>
 </form>
