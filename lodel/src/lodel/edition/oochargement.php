@@ -353,7 +353,7 @@ function OO_XHTML ($convertedfile,&$context)
 	     "/<a\s+id=\"Image[^\"]+\"[^>]*\/>/i",
 #	     "/(<img\b[^>]+)border=\"?\d+\"?([^>]*>)/", # efface les border
 #	     "/(<img\b[^>\/]+)\/?".">/i", # met border="0"
-	     "/(<img\b[^>\/]+style=\"[^\"]*)width:\s*1.0ch;height:\s*1.0ch;([^>\/]+\/?".">)/", # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
+	     "/(<img\b[^>\/]+style=\"[^\"]*)width:\s*1.0ch;height:\s*1.0ch;?/", # remove the 1.0ch 1.0ch produce by some OO (?? not clear).
 	     "/<\/?col\b[^>]*>/"
 	     );
 
@@ -364,7 +364,7 @@ function OO_XHTML ($convertedfile,&$context)
 	     "",
 #	     "\\1\\2",
 #	     "\\1border=\"0\" />",
-	     "\\1\\2",
+	     "\\1",
 	     ""
 	     );
 

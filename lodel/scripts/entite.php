@@ -46,6 +46,7 @@ if ($idtache) {
 #  print_r($tache);
   // cherche le fichier a traiter
   if ($tache[fichierdecoupe1]) {  // ca veut dire qu'on a un plusieurs fichiers a traiter, cherche les suivantes
+    #print_r($tache);
     $ifile=0;
     do {
       $ifile++;
@@ -58,7 +59,7 @@ if ($idtache) {
       // recherche l'id du type
       $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$typedoc' AND classe='$classe'") or die (mysql_error());
       if (!mysql_num_rows($result)) die("ERROR: Type incorrect \"$typedoc\". Verifier le stylage et le modele editorial");
-      list($context[idtype])=mysql_fetch_row($result);
+      list($idtype)=mysql_fetch_row($result);
     } else {
       $idtype=intval($tache[idtype]);
     }
