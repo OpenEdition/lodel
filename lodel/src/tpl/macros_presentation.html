@@ -60,15 +60,9 @@
 <!--[ Affiche un bouton permettant de mettre le document au format       ]-->
 <!--[ d'impression.                                                      ]-->
 <!--[ ****************************************************************** ]-->
-<IF COND = "[#IDAGAUCHE] eq ''">
-	<a href="[(#ID|makeurlwithid('document'))]&format=print">
+	<a href="[(#ID|makeurlwithid('document')|mkurl('format=print'))]">
 		<MACRO NAME="IMG_BOUTON_IMPRIMER2">
 	</a>
-<ELSE/>
-<a href="[(#ID|makeurlwithid('document'))]?format=print">
-		<MACRO NAME="IMG_BOUTON_IMPRIMER2">
-</a>
-</IF>
 	<br />
 </DEFMACRO>	
 
