@@ -114,7 +114,7 @@ if ($id>0) {
 
 
 // regexp pour reconnaitre un repertoire de version
-$lodelhomere="/^lodel(-[\w.]+)?$/";
+$lodelhomere="/^lodel(-[\w.]+)$/";
 
 if ($tache=="version") {
   // on verifie que versionrep match bien un repertoire local pour eviter un hack.
