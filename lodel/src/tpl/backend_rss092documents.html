@@ -33,11 +33,11 @@
 		<link>[(#CURRENTURL|dirname)]</link>
 		<description><MACRO NAME="DESCRIPTION_SITE_POUR_METAS"></description>
 		<language>fr</language>
-		<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="status gt 0 AND type NOT LIKE 'documentannexe-%'" LIMIT="0,10">
+		<LOOP NAME="dix_derniers_documents" TABLE="documents" WHERE="status gt 0" LIMIT="0,10">
 			<DO>
 				<item>
-					<title>[#TITLE]</title>
-					<link>[(#CURRENTURL|dirname)]/[(#IDENTITE|makeurlwithid('index'))]</link>
+					<title>[#TITRE]</title>
+					<link>[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid)]</link>
 					<description>[#RESUME:FR]</description>
 				</item>
 			</DO>

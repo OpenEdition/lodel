@@ -97,19 +97,58 @@ function parse_loop_extra(&$tables,
   if ($tablefields[lq("#_TP_classes")]) {
     
     $dao=&getDAO("classes");
-    $classes=$dao->findMany("classtype='entities'");
+    $classes=$dao->findMany("status>0");
     foreach ($classes as $class) {
-      // gere les tables principales liees a entites
+      // manage the linked tables...
+      // do we have the table class in $tables ?
       $ind=array_search($class->class,$tables);
-      if ($ind!==FALSE && $ind!==NULL) {
-	array_push($tables,"entities");
-	// put entites just after the class table
-	array_splice($tablesinselect,$ind+1,0,"entities");
-	protect($selectparts,$class,"title");
-	$where[count($where)-1].=" AND ".$class->class.".identity=entities.id AND class=";
-	$where[]="'".$class->class."'"; // quoted part
-	$where[]="";
+      if ($ind===FALSE || $ind===NULL) continue;
+
+      $alias="alias_".$class->classtype."_".$class->class;
+      $aliastype="aliastype_".$class->classtype."_".$class->class;
+      $aliasbyclasstype[$class->classtype]=$alias;
+
+      switch ($class->classtype) {
+      case "entities":
+	$typetable="types";
+	protect($selectparts,$alias,"id|idtype|identifier|usergroup|iduser|rank|status|idparent|creationdate|modificationdate|g_title");
+	$longid="identity";
+	break;
+      case "entries":
+	$typetable="entrytypes";
+	protect($selectparts,$alias,"id|idtype|g_name|sortkey|rank|status|idparent");
+	$longid="identry";
+	break;
+      case "persons" :
+	$typetable="persontypes";
+	protect($selectparts,$alias,"id|idtype|g_familyname|g_firstname|status");
+	$longid="idperson";
+	break;
+      default:
+	die("ERROR: internal error in lodelparser");
       }
+
+      array_push($tables,
+		 $class->classtype." AS ".$alias,
+		 typestable($class->classtype)." AS ".$aliastype);
+
+      // put entites just after the class table
+      array_splice($tablesinselect,$ind+1,0,$alias);
+
+      $where[count($where)-1].=" AND ".$class->class.".".$longid."=".$alias.".id AND ".$alias.".idtype=".$aliastype.".id AND ".$aliastype.".class=";
+      $where[]="'".$class->class."'"; // quoted part
+      $where[]="";
+      $extrainselect.=", ".$aliastype.".type , ".$aliastype.".class";
+
+      if (preg_match_sql("/\bparent\b/",$where) && 
+	  ($class->classtype=="entities" || $class->classtype=="entries")) {
+	array_push($tables,$class->classtype." AS ".$alias."_parent");
+	$fullid=$class->classtype=="entries" ? "g_name" : "identifier";
+
+	preg_replace_sql("/\bparent\b/",$alias."_parent.".$fullid,$where);
+	$where[count($where)-1].=" AND ".$alias."_parent.id=".$alias.".idparent";
+      }
+
     }
   }
 
@@ -121,30 +160,34 @@ function parse_loop_extra(&$tables,
       $where[count($where)-1].=" AND entities.idtype=types.id";
     }
     if (preg_match_sql("/\bparent\b/",$where)) {
-      array_push($tables,"entities as entities_interne2");
+      array_push($tables,"entities as entities_parent");
       protect($selectparts,"entities","id|idtype|identifier|usergroup|iduser|rank|status|idparent|creationdate|modificationdate|g_title");
-      $where=preg_replace_sql("/\bparent\b/","entities_interne2.identifier",$where)." AND entities_interne2.id=entities.idparent";
+      preg_replace_sql("/\bparent\b/","entities_parent.identifier",$where);
+      $where[count($where)-1].=" AND entities_parent.id=entities.idparent";
     }
     if (in_array("types",$tables)) { // compatibilite avec avant... et puis c est pratique quand meme.
       $extrainselect.=", types.type , types.class";
     }
   }// fin de entities
 
+
   // verifie le status
   if (!preg_match_sql("/\bstatus\b/i",$where)) { // test que l'element n'est pas a la poubelle
     $teststatus=array();
     foreach ($tables as $table) {
-      
+      list($table,$alias)=preg_split("/\s+AS\s+/i",$table);
+      if (!$alias) $alias=$table;
+
       $realtable=$this->prefixTableName($table);
-      if ($tablefields[$realtable] &&
+      if (!$tablefields[$realtable] ||
 	  !in_array("status",$tablefields[$realtable])) continue;
       if ($table=="session") continue;
       if ($table=="entities") {
-	$lowstatus='"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$table.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")';
+	$lowstatus='"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")';
       } else {
 	$lowstatus="-64";
       }
-      $where[count($where)-1].=" AND ($table.status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
+      $where[count($where)-1].=" AND (".$alias.".status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
     }
   }
 #  echo "where 2:",htmlentities($where),"<br>";
@@ -158,32 +201,35 @@ function parse_loop_extra(&$tables,
       // persons and entries
       foreach(array("persons"=>"persontypes",
 		    "entries"=>"entrytypes") as $table=>$typetable) {
-	if (in_array($table,$tables)) {
+	if (in_array($table,$tables) && preg_match_sql("/\b(type|g_type)\b/",$where)) {
+	  protect($selectparts,$table,"id|status|rank");
+	  array_push($tables,$typetable);
+	  $where[count($where)-1].=" AND ".$table.".idtype=".$typetable.".id";
+	}
+	
+	if (in_array($table,$tables) || $aliasbyclasstype[$table]) {
+	  if ($aliasbyclasstype[$table]) $table=$aliasbyclasstype[$table];
 	  // fait ca en premier
 	  if (preg_match_sql("/\b(iddocument|identity)\b/",$where)) {
 	    // on a besoin de la table croisee entities_persons
-	    $alias="entities_".$table."_internal"; // use alias for security
+	    $alias="relation_entities_".$table; // use alias for security
 	    array_push($tables,"relations as ".$alias); ###,"entities_persons");
-	    $where=preg_replace("/\b(iddocument|identity)\b/",$alias.".id1",$where);
+	    #print_R($where);
+	    preg_replace_sql("/\b(iddocument|identity)\b/",$alias.".id1",$where);
+	    #print_R($where);
 	    $where[count($where)-1].=" AND $alias.id2=$table.id";
-	  }
-
-	  if (preg_match_sql("/\b(type|g_type)\b/",$where)) {
-	    protect($selectparts,$table,"id|status|rank");
-	    array_push($tables,$typetable);
-	    $where[count($where)-1].=" AND ".$table.".idtype=".$typetable.".id";
 	  }
 	}
       }
 
-      foreach(array("persons"=>"idpersonne|idperson",
-		    "entries"=>"identree|identry") as $table=>$regexp) {
-	if (in_array("entities",$tables) && preg_match_sql("/\b($regexp)\b/",$where)) {
-	// on a besoin de la table croise entites_personnes
-	  $alias="entities_".$table."_internal2"; // use alias for security
+      foreach(array("persons"=>"idperson",
+		    "entries"=>"identry") as $table=>$regexp) {
+	if (($aliasbyclasstype['entities'] || in_array("entities",$tables)) && preg_match_sql("/\b($regexp)\b/",$where)) {
+	// on a besoin de la table croise relation
+	  $alias="relation2_".$table; // use alias for security
 	  array_push($tables,"relations as ".$alias);
-	  preg_replace("/\b($re)\b/",$alias.".id2",$where);
-	  $where[count($where)-1].=" AND $alias.id1=entities.id";
+	  preg_replace_sql("/\b($regexp)\b/",$alias.".id2",$where);
+	  $where[count($where)-1].=" AND ".$alias.".id1=".($aliasbyclasstype['entities'] ? $aliasbyclasstype['entities'] : "entities").".id";
 	}
       }
 
@@ -195,7 +241,7 @@ function parse_loop_extra(&$tables,
       if (in_array("users",$tables) && in_array("session",$tables)) {
 	$where[count($where)-1].=" AND iduser=users.id";
       }
-     // entrees
+     //
 
     } // site
 
@@ -208,12 +254,11 @@ function parse_loop_extra(&$tables,
   $selectparts['where']=lq($selectparts['where']);
   $extrainselect=lq($extrainselect);
 
-#print_r($tables);
+  $tables=array_map(array(&$this,"prefixTableName"),$tables);
+  $tablesinselect=array_map(array(&$this,"prefixTableName"),$tablesinselect);
+#  array_walk($tables,array(&$this,"prefixTableNameRef"));
+#  array_walk($tablesinselect,array(&$this,"prefixTableNameRef"));
 
-  array_walk($tables,"prefixTableNameRef");
-  array_walk($tablesinselect,"prefixTableNameRef");
-#print_r($tables);
-#echo "--<br>";
 }
 
 
@@ -417,7 +462,9 @@ function parse_after(&$text)
   }
 }
 
-
+#function prefixTableNameRef(&$table) { 
+#  $table2=$this->prefixTableName($table); $table=$table2; // necessaire de passer par table2... sinon ca crash PHP
+#}
 
 function prefixTableName($table)
 
@@ -487,7 +534,7 @@ function sqlsplit($sql)
 } // end of the class LodelParser
 
 
-function prefixTableNameRef(&$table) { $table=LodelParser::prefixTableName($table); }
+#function prefixTableNameRef(&$table) { $table=LodelParser::prefixTableName($table); }
 
 /**
  * Function to prefix automatically the name of a table.
@@ -537,15 +584,26 @@ function preg_match_sql($find,$arr)
 }
 
 
-function preg_replace_sql($find,$rpl,$arr)
+function preg_replace_sql($find,$rpl,&$arr)
 
 {
   $n=count($arr);
   for($i=0;$i<$n;$i+=2) {
-    preg_replace($find,$rpl,$arr[$i]);
+    $arr[$i]=preg_replace($find,$rpl,$arr[$i]);
   }
 }
 
+
+function typestable($classtype) {
+  switch ($classtype) {
+  case "entities":
+    return "types";
+  case "entries":
+    return "entrytypes";
+  case "persons" :
+    return "persontypes";
+  }
+}
 
 
 ?>

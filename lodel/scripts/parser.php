@@ -487,6 +487,9 @@ function parse_LOOP()
 	break;
       case "REQUIRE":
 	break;
+      case "SHOWSQL":
+	$options['showsql']=true;
+	break;
       default:
 	$this->errmsg ("unknown attribut \"".$attr['name']."\" in the loop $name",$this->ind);
       }
@@ -512,7 +515,6 @@ function parse_LOOP()
 
   $selectparts['where']=join(" AND ",$wheres);
   $selectparts['order']=join(",",$orders);
-
   //
   $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
   $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
@@ -521,11 +523,9 @@ function parse_LOOP()
   $this->parse_loop_extra($tables,
 			  $tablesinselect,$extrainselect,
 			  $selectparts);
-
   //
   foreach($selectparts as $k=>$v) { $selectparts[$k]=$this->prefixTablesInSQL($v); }
   $extrainselect=$this->prefixTablesInSQL($extrainselect);
-
 
   if (!$this->loops[$name]['type']) $this->loops[$name]['type']="def"; // toggle the loop as defined, if it is not already
   $issql=$this->loops[$name]['type']=="sql"; // boolean for the SQL loops
@@ -763,7 +763,7 @@ $context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=
 //
   $this->fct_txt.='function loop_'.$name.' ($context)
 {'.$preprocesslimit.'
- $query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; #echo htmlentities($query);
+ $query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '.($options['showsql'] ? 'echo htmlentities($query);' : '').'
   $result='.sprintf($options['sqlquery'],'$query').sprintf($options['sqlerror'],'$query','$name').';
 '.$postmysqlquery.'
  $context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'],'$result').';

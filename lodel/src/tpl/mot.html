@@ -57,7 +57,7 @@
 
 				<!--[ Titre du site ]-->
 				<h1 class="accueil">
-					"[#NAME]" dans <MACRO NAME="NOM_SITE">
+					"[#NOM]" dans <MACRO NAME="NOM_SITE">
 				</h1>
 
 				<LOOP NAME="articles" TABLE="documents" WHERE="identry='[#ID]'" ORDER="datepubli">
@@ -68,7 +68,7 @@
 						</div>
 					</DO>
 				</LOOP>
-					<a href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
+					<a href="[#IDTYPE|makeurlwithid]">
 						&gt;&gt; Index des mots clés.
 					 </a>
 		<div id="footer"><MACRO NAME="LODEL_ORG"></div>

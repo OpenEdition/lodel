@@ -52,10 +52,15 @@ if ($id || $identifier) {
   require_once("connect.php");
   do { // exception block
     require_once("func.php");  
-    $class=$db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='".$id."'"));
-    if ($db->errorno() && $lodeluser['rights']>LEVEL_VISITOR) dberror();
-    if (!$class) break;
-
+    if ($id) {
+      $class=$db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='".$id."'"));
+      if ($db->errorno() && $lodeluser['rights']>LEVEL_VISITOR) dberror();
+      if (!$class) { header ("Location: not-found.html"); return; }
+    } elseif ($identifier) {
+      $class="entities";
+    } else {
+      die("?? strange");
+    }
     switch($class) {
     case 'entities':
       printEntities($id,$identifier,$context);
@@ -65,9 +70,12 @@ if ($id || $identifier) {
       $result=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE id='".$id."' AND status>0")) or dberror();
       $context['type']=$result->fields;
       $view=&getView();
-      $view->renderCached($context,$result->fields['tpl']);
+      $view->renderCached($context,$result->fields['tplindex']);
       exit();
-
+    case 'persons':
+    case 'entries':
+      printIndex($id,$class,$context);
+      break;
     } // switch class
   } while(0);
 } else{
@@ -119,38 +127,83 @@ function printEntities($id,$identifier,&$context)
   //
   if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");
   
-  if ($id || $identifier) {
-    do {
-      if ($identifier) {
-	$identifier=addslashes(stripslashes(substr($identifier,0,255)));
-	$identifier=addslashes(stripslashes($identifier));
-	$where="#_TP_entities.identifier='".$identifier."' ".$critere;
-      } else {
-	$where="#_TP_entities.id='".$id."' ".$critere;
-      }
-      $row=$db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ".$where));
-      if ($row===false) dberror();
-      if (!$row) { header ("Location: not-found.html"); return; }
-      $base=$row['tpl'];
-      if (!$base) { $id=$row['idparent']; $relocation=TRUE; }
-    } while (!$base && !$identifier && $id);    
-
-    if ($relocation) { 
-      header("location: ".makeurlwithid("index",$row['id']));
-      exit;
+  do {
+    if ($identifier) {
+      $identifier=addslashes(stripslashes(substr($identifier,0,255)));
+      $where="#_TP_entities.identifier='".$identifier."' ".$critere;
+    } else {
+      $where="#_TP_entities.id='".$id."' ".$critere;
     }
-    $context=array_merge($context,$row);
-    $row=$db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE identity='".$row['id']."'"));
+    $row=$db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ".$where));
     if ($row===false) dberror();
-    if (!$row) die("ERROR: internal error");
-    merge_and_filter_fields($context,$row['class'],$row);
+    if (!$row) { header ("Location: not-found.html"); return; }
+    $base=$row['tpl'];
+    if (!$base) { $id=$row['idparent']; $relocation=TRUE; }
+  } while (!$base && !$identifier && $id);    
+
+  if ($relocation) { 
+    header("location: ".makeurlwithid("index",$row['id']));
+    exit;
+  }
+  $context=array_merge($context,$row);
+  $row=$db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE identity='".$row['id']."'"));
+  if ($row===false) dberror();
+  if (!$row) die("ERROR: internal error");
+  merge_and_filter_fields($context,$row['class'],$row);
 
 #    print_R($context);
-    $view=&getView();
-    $view->renderCached($context,$base);
-    exit();
-  }
+  $view=&getView();
+  $view->renderCached($context,$base);
+  exit();
 }
+
+function printIndex($id,$classtype,&$context)
+
+{
+  global $lodeluser,$home,$db;
+
+  switch($classtype) {
+  case 'persons':
+    $typetable="#_TP_persontypes";
+    $table="#_TP_persons";
+    $longid="idperson";
+    break;
+  case 'entries':
+    $typetable="#_TP_entrytypes";
+    $table="#_TP_entries";
+    $longid="identry";
+    break;
+  default: 
+    die("ERROR: internal error in printIndex");
+  }
+
+  // get the index
+  $critere=$lodeluser['visitor'] ? "AND status>-64" : "AND status>0";
+  $row=$db->getRow(lq("SELECT * FROM ".$table." WHERE id='".$id."' ".$critere));
+  if ($row===false) dberror();
+  if (!$row) { header ("Location: not-found.html"); return; }
+  $context=array_merge($context,$row);
+
+  // get the type
+  $row=$db->getRow(lq("SELECT * FROM ".$typetable." WHERE id='".$row['idtype']."'".$critere));
+  if ($row===false) dberror();
+  if (!$row) { header ("Location: not-found.html"); return; }
+  $base=$row['tpl'];
+  $context['type']=$row;
+
+  // get the associated table
+  $row=$db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE ".$longid."='".$id."'"));
+  if ($row===false) dberror();
+  if (!$row) die("ERROR: internal error");
+  if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");
+  merge_and_filter_fields($context,$row['class'],$row);
+
+  $view=&getView();
+  $view->renderCached($context,$base);
+  exit();
+}
+
+
 
 function loop_alphabet($context,$funcname)
 
