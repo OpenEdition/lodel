@@ -53,9 +53,14 @@
 	margin-left:auto;
 	height:100%;
 	text-align:left;
-	border-left:1px solid #F33E9D;
-	border-right:1px solid #F33E9D;
+	border-left:1px solid #9C3234;
+	border-right:1px solid #9C3234;
+	border-top:0;
+	border-bottom:0;
+	border-collapse:collapse ;
+    border-spacing:0;
 	margin-bottom:0;
+	margin-top:0;
 	vertical-align:top
  }
  			
@@ -71,8 +76,8 @@
 	width:167;
 	height:100%; 
 	background-color:#EFEFEF;
-	border-right:10px solid #ffffff;
-	
+	border-right:1px solid #9C3234;
+	margin:0;
 	left:0;
 	padding:0;
 	
@@ -98,9 +103,9 @@
 	 * "contenu"
 	 */
 	background-color:#EFEFEF;
-	width:18;
+	width:13;
 	height:100%;
-	border-right:20px solid #ffffff;
+	border-right:17px solid #ffffff;
 	border-left:8px solid #ffffff;
 	float:left;
 	margin:0;
@@ -114,8 +119,9 @@
 	width:auto;
 	height:100%;
 	margin:0;
-	right:0
-}
+	right:0;
+	
+}		
  
  
  /*********************************************************************************************
@@ -127,7 +133,7 @@ table {
 	/*  
 	 * Elements de styles d'une table par défaut 
 	 */
-	border:0; 
+	border:1px solid; 
 	cellspacing:0; 
 	cellpadding:0
 }
