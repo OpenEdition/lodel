@@ -482,7 +482,7 @@ function get_PMA_define()
  *
  */
 
-function save_annex_file($dir,$file,$filename) {
+function save_annex_file($dir,$file,$filename,$uploaded=TRUE) {
 
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
   if (is_numeric($dir)) $dir="docannexe/fichier/$dir";
@@ -493,7 +493,18 @@ function save_annex_file($dir,$file,$filename) {
   $filename=basename($filename); // take only the name
   if (!$file) die("ERROR: save_annex_file file is not set");
   $dest=$dir."/".$filename;
-  if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
+  if ($uploaded) {
+    if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
+  } else {
+    // try to move
+    if (!(@rename($file,SITEROOT.$dest))) {
+      // no that fails,  try then to copy
+      if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
+      // and try to delete
+      @unlink($file);
+    }
+  }
+
 
   @chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
   
@@ -509,16 +520,12 @@ function save_annex_file($dir,$file,$filename) {
 
 function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
 
-  global $tmpdir;
-
   if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
   if (is_numeric($dir)) $dir="docannexe/image/$dir";
-
-  if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");
-  }
   if (!$file) die("ERROR: save_annex_file file is not set");
-  if ($uploaded && $tmpdir && dirname($file)!=$tmpdir) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
+
+  $tmpdir=tmpdir();
+  if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
     $newfile=$tmpdir."/".basename($file);
     if (!move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
     $file=$newfile;
@@ -528,23 +535,34 @@ function save_annex_image($dir,$file,$filename,$uploaded=TRUE) {
   $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
   $ext=$exts[$info[2]-1];
 
+  if (!file_exists(SITEROOT.$dir)) {
+    if (!@mkdir(SITEROOT.$dir,0777  & octdec($GLOBALS[filemask]))) die("ERROR: unable to create the directory \"$dir\"");
+  }
+
   $filename=preg_replace("/\.\w+$/","",basename($filename)); // take only the name, remove the extensio
   $dest=$dir."/".$filename.".".$ext;
-  if ($uploaded) {
-    if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
-  } else {
-    // try to move
-    if (!(@rename($file,SITEROOT.$dest))) {
-      // no, so try to copy
-      if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
-      // and try to delete
-      @unlink($file);
-    }
+  // try to move
+  if (!(@rename($file,SITEROOT.$dest))) {
+    // no that fails,  try then to copy
+    if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
+    // and try to delete
+    @unlink($file);
   }
 
   @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS[filemask]));
   
   return $dest;
+}
+
+
+function tmpdir()
+
+{
+  $tmpdir="CACHE/tmp";
+  if (!file_exists($tmpdir)) { 
+    mkdir($tmpdir,0777  & octdec($GLOBALS[filemask])); 
+  }
+  return $tmpdir;
 }
 
 

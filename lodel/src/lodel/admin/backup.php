@@ -45,14 +45,14 @@ if ($backup) {
 
   $outfile="site-$site.sql";
   $uselodelprefix=true;
-  mysql_dump($currentdb,"/tmp/".$outfile);
+  $tmpdir=tmpdir();
+  mysql_dump($currentdb,$tmpdir"/".$outfile);
 
-  #if (!file_exists("/tmp/$outfile")) die ("erreur dans l'execution de mysqldump");
   # verifie que le fichier n'est pas vide
-  if (filesize("/tmp/$outfile")<=0) die ("ERROR: mysql_dump failed");
+  if (filesize($tmpdir"/".$outfile)<=0) die ("ERROR: mysql_dump failed");
 
   // tar les sites et ajoute la base
-  $archivetmp=tempnam("/tmp","lodeldump_");
+  $archivetmp=tempnam($tmpdir,"lodeldump_");
   $archivefilename="site-$site-".date("dmy").".tar.gz";
 
   chdir ("../..");
@@ -60,9 +60,9 @@ if ($backup) {
 
   $dirs=$sqlonly ? "" : "--exclude=lodel/sources/.htaccess --exclude=docannexe/fichier/.htaccess --exclude=docannexe/image/index.html lodel/sources docannexe";
 
-  system("/bin/tar czf $archivetmp $dirs -C /tmp $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
+  system("/bin/tar czf $archivetmp $dirs -C $tmpdir $outfile")!==FALSE or die ("ERROR: execution of tar command failed");
   if (!file_exists($archivetmp)) die ("ERROR: the tar command does not produce any output");
-  @unlink("/tmp/$outfile"); // delete the sql file
+  @unlink($tmpdir."/".$outfile); // delete the sql file
 
   chdir ("lodel/admin");
   unlock();

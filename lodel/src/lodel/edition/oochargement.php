@@ -50,11 +50,14 @@ if ($file1 && $file1!="none") {
     if (!is_uploaded_file($file1)) die(utf8_encode("Le fichier n'est pas un fichier chargé"));
 
     $t=time();
-    $file1converted=$file1.".converted";
-    list($ret,$convertretvar)=convert($file1,$file1converted);
-    $source=$file1."-source";
-    move_uploaded_file($file1,$source);
+    $tmpdir=tmpdir(); // use here and later.
+    $source=$tmpdir."/".basename($file1)."-source";
+    move_uploaded_file($file1,$source); // move first because some provider does not allow operation in the upload dir
+
+    $fileconverted=$source.".converted";
     $sourceoriginale=$HTTP_POST_FILES['file1']['name'];
+
+    list($ret,$convertretvar)=convert($source,$fileconverted);
 
     // the ServOO should return nothing, if it return, it's an ERROR or a SAY comment.
     if ($ret) {
@@ -66,13 +69,36 @@ if ($file1 && $file1!="none") {
     //
     // regarde si le fichier est zipper
     //
-    $fp=fopen($file1converted,"r") or die("le fichier $file1converted ne peut etre ouvert");
+    $fp=fopen($fileconverted,"r") or die("le fichier $fileconverted ne peut etre ouvert");
     $cle=fread($fp,2);
     if ($cle=="PK") {
       if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
-      system("/usr/bin/unzip -j -p $file1converted >$file1converted.extracted");
-      unlink($file1converted);
-      $file1converted.=".extracted";
+      if ($unzipcmd) { // all this part should be rewritten, put in a proper function, and work either with unzip or ZIP du php.
+	$filesinarchive=preg_split("/\s*\r?\n\s*/",`$unzipcmd -Z -1 $fileconverted`,-1,PREG_SPLIT_NO_EMPTY);
+	$extractfiles=array();
+	// look for the files. Check the extension.
+	$xhtmlfile="";
+	foreach ($filesinarchive as $file) {
+	  if (preg_match("/\.xhtml$/",$file)) { // xhtml
+	    $xhtmlfile=$tmpdir."/".basename($file);
+	    array_push($extractfiles,$file); 
+	  }
+	  if (preg_match("/\.(jpg|gif|png)$/",$file)) 	  // image
+	    array_push($extractfiles,$file);
+	}
+	if (!$xhtmlfile) die("ERROR: xhtml file not found in the archive");
+
+	system("$unzipcmd -qj -d $tmpdir ".escapeshellcmd("$fileconverted ".join(" ",$extractfiles))." 2>&1");
+	@unlink($fileconverted);
+	// setup the rights even if it's temporary
+	$fileconverted=$xhtmlfile;
+	foreach ($extractfiles as $file) {
+	  chmod($tmpdir."/".basename($file),0666 & octdec($GLOBALS[filemask])); 
+	}
+      } else {
+	die("ERROR: \$unzipcmd is not configured.");
+	// TODO: use ZIP du php if available
+      }
     }
     fclose($fp);
     //
@@ -82,18 +108,18 @@ if ($file1 && $file1!="none") {
     require_once($home."balises.php");
     if ($sortieoo || $sortiexmloo || $sortie) $oo=TRUE;
     
-    $newname=OO_XHTML($file1converted,$context);
-    if (!$newname) {
+    $err=OO_XHTML($fileconverted,$context);
+    if ($err) {
       $context[erreur_upload]="Erreur dans la fonction OO";
       break;
     }
-    if ($idtache) { // document ancien ?
+    if ($idtache) { // reimportation of an existing document ?
       $row=get_tache($idtache);
     } else {
       $row=array();
     }
       
-    $row[fichier]=$newname;
+    $row[fichier]=$fileconverted;
     $row[source]=$source;
     $row[sourceoriginale]=$sourceoriginale;
     // build the import
@@ -136,17 +162,17 @@ function convert ($uploadedfile,$destfile)
 {
   global $home,$servoourl,$servoousername,$servoopasswd,$unzipcmd;
 
-  $cmds="DWL file1; CVT XHTMLLodel-1.0; ZIP all; RTN convertedfile;";
+  $cmds="DWL file1; CVT XHTMLLodel-1.0; ZIP converted; RTN convertedfile;";
 
   require ($home."serveurfunc.php");
   $ret=upload($servoourl,
-			     array("username"=>$servoousername,
-				   "passwd"=>$servoopasswd,
-				   "commands"=>$cmds),
-			     array($uploadedfile), # fichier a uploaded
-			     0, # cookies
-			     $destfile
-			     );
+	      array("username"=>$servoousername,
+		    "passwd"=>$servoopasswd,
+		    "commands"=>$cmds),
+	      array($uploadedfile), # fichier a uploaded
+	      0, # cookies
+	      $destfile
+	      );
   if ($ret) { # erreur
     return $ret;
   }
@@ -161,11 +187,11 @@ function OO_XHTML ($convertedfile,&$context)
 
   $time1=time();
 
-  $file=strtr(join('',file($convertedfile)),"\n\r","  ");
+  $file=strtr(file_get_contents($convertedfile),"\n\r","  ");
 
   if ($GLOBALS[sortieoo]) { // on veut la sortie brute
     echo htmlentities($file);
-    return;
+    return true;
   }
 
   convertHTMLtoUTF8($file);
@@ -364,8 +390,7 @@ function OO_XHTML ($convertedfile,&$context)
 
 #  die(htmlentities($file));
 
-  if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1;
-  return FALSE; }
+  if (!traite_tableau2_xhtml($file)) {     $context[erreur_stylestableaux]=1; return true; }
   $file=traite_multiplelevel($file,$GLOBALS[multiplelevel]);
 
 
@@ -497,11 +522,12 @@ function OO_XHTML ($convertedfile,&$context)
     // check the document is well-formed
     //
     include ($home."checkxml.php");
-    if (!checkstring($file)) { echo "fichier: $newname"; return FALSE; }
+    if (!checkstring($file)) { echo "fichier: $fileconverted"; return true; }
 
     function img_copy($imgfile,$ext,$count,$rand) {
+      global $tmpdir;
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
-      copy ("/tmp/$imgfile",$newimgfile) or die ("impossible de copier l'image $newimgfile");
+      rename($tmpdir."/".$imgfile,$newimgfile) or die ("impossible de copier l'image $newimgfile");
       return $newimgfile;
     }
     include_once ($home."func.php");
@@ -510,12 +536,14 @@ function OO_XHTML ($convertedfile,&$context)
     if ($GLOBALS[sortie]) die (htmlentities($file));
 
   // ecrit le fichier
-  $newname="$convertedfile-".rand();
-  if (!writefile("$newname.html",$file)) return FALSE;
+  //$newname="$convertedfile-".rand();
+  //if (!writefile("$newname.html",$file)) return FALSE;
+    if (!writefile($convertedfile,$file)) return true; // ecrase le fichier sortie de la conversion.
 
   if ($msg) { echo "Temps total:",time()-$time1,"<br><br>"; flush(); }
 
-  return $newname;
+  return false; // ok
+  //  return $newname;
 }
 
 

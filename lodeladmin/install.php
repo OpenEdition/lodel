@@ -177,7 +177,8 @@ if ($tache=="options") {
 			"importdir"=>$newimportdir,
 			"extensionscripts"=>$newextensionscripts,
 			"usesymlink"=>$newusesymlink,
-			"filemask"=>$filemask));
+			"filemask"=>$filemask,
+			"unzipcmd"=>$newunzipcmd));
 }
 
 

@@ -73,6 +73,7 @@ require_once($home."xmlfunc.php");
 $contents=calculateXML($context);
 
 if ($valid) {
+  $tmpdir=tmpdir();
   $tmpfile=tempnam($tmpdir,"lodelxml_");
   writefile($tmpfile.".xml",$contents);
   $contents=calculateXMLSchema($context);

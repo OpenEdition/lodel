@@ -107,7 +107,7 @@ if ($idtache) {
 
     // the lodel/sources is fake, only the basename is used.
     
-    $text=file_get_contents($filename.".html");
+    $text=file_get_contents($filename);
     require_once($home."xmlimport.php");
     $id=enregistre_entite_from_xml($localcontext,$text,$classe);
     update_tache_etape($idtache,3); // etape 3

@@ -69,7 +69,8 @@ if ($fichier) {
   $tables=array();
   while ($row = mysql_fetch_row($result)) array_push($tables,$row[0]);
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
-  $tmpfile=tempnam("/tmp","lodelimport_");
+
+  $tmpfile=tempnam(tmpdir(),"lodelimport_");
   system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
   require_once ($home."backupfunc.php");
   if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();

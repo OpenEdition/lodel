@@ -114,7 +114,7 @@ $GLOBALS['xhtmlgroups']['xhtml:block']=array("p",
 					     "div",
 					     "ul","ol","dl","li","dt","dd", # list
 					     "pre", "hr", "blockquote", "address", # blocktext
-					     "fieldset","table");
+					     "fieldset","table","tr","td","th","thead","tfoot","tbody","col","colgroup","caption");
 $GLOBALS['xhtmlgroups']['Lien']=array("a");
 $GLOBALS['xhtmlgroups']['Appel de Note']=array("a"=>"class=\"(foot|end)notecall\"");
 

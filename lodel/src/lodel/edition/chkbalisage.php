@@ -76,7 +76,7 @@ while (list($style,$titre,$type)=mysql_fetch_row($result)) {
 }
 
 
-$textorig=$text=join("",file($tache[fichier].".html"));
+$textorig=$text=join("",file($tache[fichier]));
 
 // cherche les sousbalises, retirent les de $balises et prepare le changement d'ecriture.
 // une sous balises est definie par la presence d'une balise HTML (le caractere < en pratique) ou parce qu'elle est vide dans $balises
@@ -171,12 +171,12 @@ if (count($tablescontent)>1) { // ok il faut decouper le fichier
     $tache["fichierdecoupe$i"]="$tache[fichier]-$i";
     $tache["typedoc$i"]=$bal;
     $text=$startbalise.$text.$endbalise;
-    writefile($tache["fichierdecoupe$i"].".html",$text);
+    writefile($tache["fichierdecoupe$i"],$text);
     $i++;
   }
 
   $tache["fichierdecoupe1"]="$tache[fichier]-1";
-  writefile("$tache[fichierdecoupe1].html",$textorig); // d'abord la partie principale
+  writefile($tache[fichierdecoupe1],$textorig); // d'abord la partie principale
 
   // on est oblige de faire ca pour enregistrer en premier la partie principale pour recuperer l'id qui est le parent des s fichiers
 #  die (htmlentities($texts[main]));

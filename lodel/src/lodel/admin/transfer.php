@@ -90,7 +90,7 @@ if ($droptables) {
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
 
 
-  $tmpfile=tempnam("/tmp","lodelimport_");
+  $tmpfile=tempnam(tmpdir(),"lodelimport_");
   system("tar zxf $fichier -O '$prefix-*.sql' >$tmpfile")!==FALSE or die ("impossible d'executer tar");
   require_once ($home."backupfunc.php");
   if (!execute_dump($tmpfile)) $context[erreur_execute_dump]=$err=mysql_error();
@@ -893,7 +893,6 @@ function convertHTMLtoXHTML ($field,$contents)
 	    preg_match('/^<a\s+name="FN(\d+)"><\/a><a\s+href="#FM(\d+)">(.*?)<\/a>/s',$arr[$i],$result2)) { // c'est bien le debut d'un note
 	  $arr[$i]='<div class="footnotebody"><a class="footnotedefinition" id="ftn'.$result2[1].'" href="#bodyftn'.$result2[2].'">'.$result2[3].'</a>'.substr($arr[$i],strlen($result2[0])).'</div>';
 	} else {
-#writefile("/tmp/t",$arr[$i]);
 	  die("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]));
 	}
       } // toutes les notes

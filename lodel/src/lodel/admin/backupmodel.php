@@ -46,7 +46,7 @@ if ($backup) {
 
   lock_write_all($currentdb);
 
-  $tmpfile=tempnam($tmpdir,"lodelbackupmodel");
+  $tmpfile=tempnam(tmpdir(),"lodelbackupmodel");
   $fh=fopen($tmpfile,"w");
 
   $description='<model>
