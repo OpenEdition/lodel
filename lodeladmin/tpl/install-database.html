@@ -32,18 +32,24 @@
 <p align="center">Configuration de la base de donnée.</p>
 
 
-<h2>Option 1</h2>
+<?php if ($installoption==1) { // OPTION 1 ?>
+<p>[option 1]</p>
 <p align="justify">
-Choisir une base de données ou créez en une nouvelle (si vous avez les droits).
-
-
-Cette base de donnée sera utilisée pour tous les sites si vous cochez la case "base de données unique".
-
-Au contraire, si cette case n'est pas cochée, chaque site aura une base de données propre (à condition d'avoir les droits pour les créer) dont le nom sera dérivé de la base de données principale. Le préfix des tables est surtout utile lorsque vous ne pouvez disposez que d'une base de données pour toutes vos applications (cas fréquent chez les hébérgeurs) dans ce cas le préfix permet de distinguer les tables LODEL de celles des autres applications (préfix a priori le mieux approprié: lodel_).
+Choisir une base de données ou en créer une nouvelle. En général, la base de donnée est créée par l'herbergeur et il n'est pas possible d'en ajouter une nouvelle. Se reporter au support technique de l'hebergeur.<p>
+<p align="justify">
+Le prefix de table est utile lorsqu'une seule base de donnée est disponible (comme c'est souvent le cas chez les hébergeurs) et que d'autres applications partageront la base de donnée avec Lodel. En cas de doute, utiliser "lodel_" comme prefix.
 </p>
-<h2>Option 2</h2>
-<p>
-Vous pouvez utiliser une base de donnée existante. Cependant, il est préférable de créer un base de donnée dédiée à Lodel<?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
+<p align="justify">
+Une installation Lodel peut gérer plusieurs sites, dans ce cas, il faut choisir:
+<ul>
+<li>Une unique base de donnée pour tous les sites.
+<li>Une base de donnée par site, en plus de la base principale.
+</ul>
+</p>
+<?php } else { // OPTION 2 ?>
+<p>[option 2]</p>
+<p align="justify">
+Il est possible d'utiliser une base de donnée existante. Cependant, il est préférable de créer un base de donnée dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
 </p>
 <p>
 <code>
@@ -51,13 +57,25 @@ CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { ec
 </code>
 </p>
 <p>
-Dans tous les cas, il faut donner les droits "ALL" sur cette base à l'utilisateur "<?php echo $dbusername; ?>":
+Dans tous les cas, il faut donner les droits "ALL" sur la base à l'utilisateur "<?php echo $dbusername; ?>":
 <p>
 <p>
 <code>
 GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>.* TO <?php echo "$dbusername@$dbhost";?>;
 </code>
 </p>
+<p align="justify">
+Le prefix de table est utile lorsqu'une seule base de donnée n'est disponible et que d'autres applications partageront la base de donnée avec Lodel. Cette situation n'est recommandée car elle rend difficile les migrations et les restaurations.
+</p>
+<p align="justify">
+Une installation Lodel peut gérer plusieurs sites, dans ce cas, il faut choisir:
+<ul>
+<li>Une unique base de donnée pour tous les sites. Cette option simplifie la creation de nouveaux sites, mais interdit rend plus délicat la restauration en cas de probleme ou le multi-versioning (coexistence de plusieurs sites utilisant différentes version de Lodel). Autrement dit, cette option impose la restauration et la migration de tous les sites simultannements.
+<li>Une base de donnée par site, en plus de la base principale. Cette solution est recommandée, mais une base de donnée devra être créée pour chaque site!
+</ul>
+</p>
+<?php } // fin OPTION 2 ?>
+
 
 <?php  if ($erreur_createdatabase) { ?> <b>Erreur</b>: Impossible de créer ou d'accéder à la base de données "<?php echo $database; ?>". L'erreur produite est: <?php  echo mysql_error(); ?> <?php } ?>
 
@@ -88,12 +106,12 @@ Base de données:<br>
 			</table>
 </td></tr>
 <tr><td>
-Base de donnée unique:<br>
+Base de donnée unique pour tous les sites:<br>
 <input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase) echo "checked"; ?>>
 </td></tr>
 <tr><td>
 Préfix des tables:<br>
-<input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix; ?>">
+<input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
 </td></tr>
 </table>
 <input type="submit" value="continuer">

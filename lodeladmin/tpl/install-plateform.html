@@ -32,16 +32,13 @@
 
 <p align="center">Choix de la configuration.</p>
 
-<h2>Option 1</h2>
+
 <p align="justify">Choisir une des configurations si elle convient à votre serveur ou à votre herbergeur, l'installation sera alors simplifiée. Sinon choisir la configuration par defaut. <p>
 
-<h2>Option 2</h2>
-<p align="justify">Choisir la configuration par defaut.</p>
-
-
-<br /><br />
+<br />
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="plateform">
+<input type="hidden" name="installoption" value="<?php echo $installoption;?>">
 <table border="1" width="75%">
 <tr><td>&nbsp;</td><td>Nom</td><td>Commentaire</td></tr>
 <?php

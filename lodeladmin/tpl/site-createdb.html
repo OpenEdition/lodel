@@ -32,10 +32,12 @@
 </table>
 
 <div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
-
-<b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b><br>
+<h2>Option 1</h2>
+<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
 <p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
-<p>Vous pouvez créer la base de données en utilisant la commande SQL:</p>
+
+<h2>Option 2</h2>
+<p>Veuillez créer la base de données [#DBNAME] en utilisant la commande SQL:</p>
 <p>
 <code>
 [#COMMAND];
@@ -46,9 +48,10 @@ GRANT ALL ON [#DBNAME].* TO [#DBUSERNAME]@[#DBHOST];
 </code>
 </p>
 
-ou donner les droits à l'utilisateur MySQL de creation de base de données (méthode moins sûre).
-<p><p>
-
+<IF [#TACHE]>
+<p><b>LODEL n'a pas réussi a créer la base de données [#DBNAME]</b></p>
+<p>L'erreur renvoyée par le serveur MySQL est: [#ERREUR].</p>
+</IF>
 </td></tr></table><br/>
 
 <form method="post" action="site.php">

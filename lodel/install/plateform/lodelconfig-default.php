@@ -72,7 +72,7 @@ $importdir="/www-bin/revues/import";
 $timeout=120*60;
 
 # Nom de la base de donnees
-$database="lodel";
+$database="";
 
 # Nom d'utilisateur
 $dbusername="";
@@ -106,7 +106,7 @@ define (TYPE_GEOGRAPHIE,4);
 $tableprefix="";
 
 # LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par site. "on" ou "" (ou "off")
-$singledatabase="";
+$singledatabase="on";
 
 
 # Nom de la session (cookie)

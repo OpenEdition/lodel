@@ -39,6 +39,12 @@ if (is_executable("CACHE") && !file_exists("CACHE/unlockedinstall")) {
   authenticate(LEVEL_ADMINLODEL);
 }
 
+//
+// option
+//
+if ($option1) $installoption="1";
+if ($option2) $installoption="2";
+
 
 if (!defined(LODELROOT)) define(LODELROOT,"../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
 $lodelconfig="CACHE/lodelconfig-cfg.php";
@@ -72,9 +78,9 @@ if ($tache=="plateform") {
     // enleve moi
     $urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
     if ($urlroot==$me) die("ERROR: the install.php script is not at the right place");
-    if (LODELROOT!="..") die("ERROR: the lodeladmin has been moved, please report error");
+    if (LODELROOT!="../") die("ERROR: the lodeladmin has been moved, please report error");
 
-    maj_lodelconfig(array("urlroot"=>$urlroot."/"));
+    maj_lodelconfig(array("urlroot"=>$urlroot."/","installoption"=>$installoption));
   } while (0); // end of control bock
 }
 
@@ -564,12 +570,14 @@ function probleme_droits($file,$mode)
 function probleme_droits_fin()
 
 {
+  global $option;
 ?>
 </ul>
 <p></p>
 <p align="center">
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="droits">
+<input type="hidden" name="installoption" value="<?php echo $installoption; ?>">
 <input type="submit" value="continuer">
 </form>
 </p>

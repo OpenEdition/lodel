@@ -29,27 +29,35 @@
 
 <!-- ce fichier n'est pas un template -->
 
-Options
+<h2>Options divers</h2>
+
+<p>Ces options permettent de controler finement le fonctionnement de Lodel. Les valeurs par defaut convinnent pour la plupart des sites:</p>
 
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="options">
 <table border="1">
 
 <tr><td>
-Le chemin de l'url d'acces à la racine de Lodel a été deviné. Veuillez vérifier svp.<br />
+<p>Vérifier que le chemin de l'url vers la racine de Lodel a été deviné correctement.</p>
 <input type="text" size="60" name="urlroot" value="<?php echo $urlroot; ?>">
 </td></tr>
 <tr><td>
-Extension des scripts accessibles par les internautes:<br />
-.php: <input type="radio" name="extensionscripts" value="php" <? if($extensionscripts=="php") echo "checked";?> ><br />
-.html: <input type="radio" name="extensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ><br />
-</td>Choisir l'extension .html permet de cacher l'aspect technique, et d'avoir des URL assez classique. Ceci n'est cependant pas toujours possible car la plupart des serveurs web, se base sur l'extension des fichiers pour savoir les traitements à opérer sur le fichier. Les scripts LODEL sont des scripts PHP, et doivent avoir l'extension .php, sauf si le serveur a été configuré autrement.<td>
-</td></tr>
+<p>Extension des scripts:</p>
+<p>Les scripts Lodel sont des scripts PHP, et il est recommandé d'utiliser l'extension ".php". Cependant pour des raisons esthétiques, il est possible de choisir l'extension ".html". Ceci nécessite une configuration particulière sur le serveur.</p>
+<table>
+<tr>
+<td>.php:</td><td><input type="radio" name="extensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
+</tr><tr>
+<td>.html:</td><td><input type="radio" name="extensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
+</tr>
+</table>
 <tr><td>
-Utiliser des liens symboliques:<br />
+<p>Utiliser des liens symboliques:</p>
+
+<p>Si supporté par le serveur web, certains fichiers peuvent être liés plutôt que copiés. La liaison permet une gestion plus souple des mises à jour, des droits d'accès, etc. Ceci se justifie uniquement si Lodel gère plusieures sites. Il faut configurer le serveur web pour "suivre les liens symboliques" ce qui est généralement considéré comme peu sûr.</p>
+
 oui: <input type="radio" name="usesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> ><br />
 non: <input type="radio" name="usesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> ><br />
-</td>Si supporter par le serveur web, certains fichiers peuvent être liés plutôt que copiés. La liaison permet une gestion plus souple des mises à jour, des droits d'accès, etc. Ceci se justifie uniquement pour les sites avec plusieurs revues qui sont gérés au niveau UNIX.<td>
 </td></tr>
 
 

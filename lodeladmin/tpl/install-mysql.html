@@ -31,32 +31,36 @@
 
 <p align="center">Configuration de l'acces au serveur MySQL.</p>
 
-<h2>Option 1</h2>
+
+<?php if ($installoption==1) { // OPTION 1 ?>
+<p>[option 1]</p>
 <p align="justify">
 Entrer les informations concernant le serveur MySQL. L'adresse du serveur est souvent disponible dans le support technique de l'hebergeur.
 Le nom d'utilisateur MySQL et le mot de passe sont personnels, et ont dù être fourni avec les autres informations concernant le compte ftp et les courriels. Attention, cependant, le nom d'utilisateur MySQL et le mot de passe sont souvent différents du nom d'utilisateur pour l'accès au site ou aux courriels.
 </p>
-<h2>Option 2</h2>
+<?php } else { // OPTION 2 ?>
+<p>[option 2]</p>
 <p align="justify">
-A ecrire...
-Il faut donner les droits d'acces a la base à l'utilisateur,
+Spécifier les paramètres de connection sur le serveur MySQL. L'utilisateur MySQL doit avoir au minimum le droits d'USAGE sur le serveur. Pour créer un utilisateur, utiliser la commande GRANT dans mysql (ou phpMyAdmin).
 <?php if (!$newdbusername) { ?>
-exemple:
+Par exemple:
 </p>
 <p>
 <code>
-GRANT USAGE ON *.* TO monutilisateur@monserveurweb IDENTIFIED BY 'monpasswd';
+GRANT USAGE ON *.* TO monutilisateur@monserveurweb IDENTIFIED BY 'monmotdepasse';
 </code>
 <?php } else { ?>
-dans votre cas:
+Dans votre cas:
 </p>
 <p>
 <code>
-GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'monpasswd';
+GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'monmotdepasse';
 </code>
 <?php } ?>
 </p>
-
+<p>
+</p>
+<?php } // fin OPTION 2 ?>
 
 
 <?php  if ($erreur_connect) { ?> <b>Erreur</b>: <span style="color: red">Connection au serveur <?php  echo $dbhost; ?> impossible. Vérifier les informations entrées. L'erreur produite est: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
