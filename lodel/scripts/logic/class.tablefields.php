@@ -261,6 +261,8 @@ class TableFieldsLogic extends Logic {
 
    {
      global $db,$home;
+     print_r($this->vo);
+     die();
      if (!$this->vo) die("ERROR: internal error in TableFields::deleteAction");
      $db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or dberror();
      unset($this->vo);
