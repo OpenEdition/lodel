@@ -257,6 +257,7 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
       $ids=array();
       while(!$result->EOF) {
 	$ids[]=$result->fields['id'];
+	$result->MoveNext();
       }
       $err=mysql_query_cmds("UPDATE #_TP_entities SET rank=rank+10000 WHERE id IN (".join(",",$ids).")");
       if ($err) break;
