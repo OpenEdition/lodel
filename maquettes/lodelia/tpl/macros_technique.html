@@ -8,6 +8,7 @@
 <!-- <MACRO NAME="FERMER_HTML">                                         -->
 <!-- <MACRO NAME="DEFINIR_CHARSET">                                     -->
 <!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES">                           -->
+<!-- <MACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">                     -->
 <!-- <MACRO NAME="ACTIVER_INDEXATION">                                  -->
 <!-- <MACRO NAME="DESACTIVER_INDEXATION">                               -->
 <!-- <MACRO NAME="FORMULAIRE_RECHERCHE">                                -->
@@ -74,6 +75,22 @@
 <!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
 <!-- ****************************************************************** -->
 	<link rel="stylesheet" href="styles_revue.css">
+	</head>
+	<body> 
+	<IF COND="[#VISITEUR]">
+		<? insert_template("desk");?>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="INSERER_FEUILLE_DE_STYLES_PRINT">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Permet d'appeler la feuille de style CSS de la revue, de fermer    -->
+<!-- l'en-tête de la page HTML puis d'ouvrir le corps de la page et     -->
+<!-- d'afficher le tableau de bord (desk) au sommet de la page pour les -->
+<!-- utilisateurs logués en tant qu'admin, éditeur, rédacteurs, etc ... -->
+<!-- ****************************************************************** -->
+	<link rel="stylesheet" href="styles_revueprint.css">
 	</head>
 	<body> 
 	<IF COND="[#VISITEUR]">
@@ -197,6 +214,26 @@
 	</LOOP>
 </DEFMACRO>
 
+<DEFMACRO NAME="DESCRIPTION_META_SOMMAIRE">
+	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
+		<IF COND="[#TEXTE]">
+			Extrait du premier article du numéro: 
+			[(#TEXTE|supprime_appels_notes|couper(1500))]
+		</ELSE>
+			<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+				<DO>
+					<IF COND="[#TITRE]">
+						[#TITRE],
+					</IF>
+					<IF COND="[#SOUSTITRE]">
+						[#SOUSTITRE]
+					</IF>
+				</DO>
+			</LOOP>
+		</IF>
+	</LOOP>
+</DEF>
+
 <DEFMACRO NAME="DESCRIPTION_REVUE_POUR_METAS">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
@@ -225,6 +262,15 @@ INSEREZ ICI LE NOM DE VOTRE EDITEUR
 <!-- l'indexation par les moteurs. Pensez à personnaliser cette macro.  -->
 <!-- ****************************************************************** -->
 IPR
+</DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à Mot.html.                          -->
+<!-- ****************************************************************** -->
+<meta name="DC.Title" content="[#REVUE]">
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Page d'accueil">
 </DEFMACRO>
 
 <DEFMACRO NAME="METADONNEES_POUR_MOT">
@@ -301,6 +347,32 @@ IPR
 <meta name="DC.Title" content="Index géographique">
 <meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">. Index géographique.">
 </DEFMACRO>
+
+<DEFMACRO NAME="METADONNEES_POUR_SOMMAIRES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affichage métadonnées propres à sommaire.html.                     -->
+<!-- ****************************************************************** -->
+<!-- METADONNEES HTML -->
+<meta name="GENERATOR" content="Lodel 2002, maquettes par Marin Dacos 2002, Nicolas Nutten 2003">
+<meta name="DESCRIPTION" content="<MACRO NAME="DESCRIPTION_REVUE_POUR_METAS">">
+<meta url="http://[#REVUE].revues.org/document.html?id=[#ID]">
+
+<!-- METADONNEES DUBLIN CORE -->
+<meta name="DC.Publisher" content="<MACRO NAME="EDITEUR_REVUE_POUR_METAS">">
+<meta name="DC.Rights" content="<MACRO NAME="DROITS_POUR_METAS">">
+<meta name="DC.Source" content="http://[#REVUE].revues.org/">
+<meta name="DC.Type" content="text">
+<meta name="DC.Format" content="text/html">
+<meta name="DC.Language" content="fr">
+<meta name="DC.Relation" content="http://www.revues.org">
+
+<meta name="DC.Identifier" content="http://[#REVUE].revues.org/sommaire.html?id=[#ID]">
+<meta name="DC.Title" content="Sommaire du numéro [#NOM], [(#TITRE|textebrut|replacequotationmark)] [(#SOUSTITRE|replacequotationmark|textebrut)]">
+<meta name="DC.Date" content="[#DATE]">
+<meta NAME="DC.Description" lang="fr" content="<MACRO NAME="DESCRIPTION_META_SOMMAIRE">
+</DEFMACRO>
+
 
 <DEFMACRO NAME="METADONNEES">
 <!-- ****************************************************************** -->

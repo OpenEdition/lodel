@@ -20,6 +20,7 @@
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- <MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">                     -->
 <!-- <MACRO NAME="AFFICHER_TOUT">                                       -->
+<!-- <MACRO NAME="AFFICHER_SERIE_PRESENTATION">                         -->
 <!-- <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 -->
 <!-- <MACRO NAME="TYPE_ARTICLE">                                        -->
 <!-- <MACRO NAME="TYPE_CHRONIQUE">                                      -->
@@ -56,12 +57,14 @@
 			
 		<div class="titrerevue">
 			Les numéros de <MACRO NAME="NOM_REVUE">
-			<br/ > <MACRO NAME="DESCRIPTION_REVUE">
+			<br/ > 
+			<span class="soustitrerevue">
+				<MACRO NAME="DESCRIPTION_REVUE">
+			</span>
 		</div>
 			
 		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
 			<DO>
-				ccccccccccccccccccccc
 					<div class="afficherdocument">
 					<a href="sommaire.html?id=[#ID]">
 						<!-- TESTE SI ON SE TROUVE DANS LA SERIE DE PRESENTATION -->	
@@ -69,6 +72,7 @@
 					</a>
 					<MACRO NAME="TITRE_PUBLICATION">&nbsp;
 					<MACRO NAME="SOUSTITRE_PUBLICATION">&nbsp;
+					<br />
 					<MACRO NAME="DIRECTEUR_PUBLICATION">
 					<br />
 					<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">
@@ -92,18 +96,12 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#NOM]">
 		
+		[#NOM]
 				
-					[#NOM]
-				
-		
 	<ELSE/>
-		<span class="titre_centre">
-			<a href="index.html">
-				<span class="couleur_1">
-					<MACRO NAME="NOM_REVUE">
-				</span>
-			</a>
-		</span>
+		<a href="index.html">
+			<MACRO NAME="NOM_REVUE">
+		</a>
 	</IF>
 </DEFMACRO>
 
@@ -125,7 +123,9 @@
 <!-- Affiche, s'il existe, le sous-titre d'une publication.             -->
 <!-- ****************************************************************** -->
 	<IF COND="[#SOUSTITRE]">
+	
 		[#SOUSTITRE]
+		
 	</IF>
 </DEFMACRO>
 
@@ -135,7 +135,9 @@
 <!-- Affiche, s'il existe, le directeur d'une publication.              -->
 <!-- ****************************************************************** -->
 	<IF COND="[#DIRECTEUR]">
+	
 		Sous la direction de [#DIRECTEUR]
+		
 	</IF>
 </DEFMACRO>
 
@@ -160,7 +162,7 @@
 		 			
 					<span class="soustitrerevue">
 		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
-				 			</span>
+				 	</span>
 							
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION">
 							
@@ -180,8 +182,7 @@
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Crée un bloc qui affiche le titre du numéro ou du thème, sauf s'il -->
-<!-- est vide, auquel cas il affiche le nom de la revue. Affiche        --> 
-<!-- également le texte d'introduction, s'il existe, avec une lettrine. -->
+<!-- est vide, auquel cas il affiche le nom de la revue.                --> 
 <!-- Cette macro fait appel aux macros suivantes :                      -->
 <!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
@@ -189,33 +190,21 @@
 <!-- <MACRO NAME="SOUSTITRE_PUBLICATION">                               -->
 <!-- <MACRO NAME="DIRECTEUR_PUBLICATION">                               -->
 <!-- ****************************************************************** -->
-<table border="0" cellspacing="0" cellpadding="0" width="561"  bgcolor="#ffffff">
-<tr>
-	<td  valign="middle"  background-color="#E0E0E0">
-		<table  width="561" valign="middle" background-color="#E0E0E0">
-			<tr>
-				<td class="titre1">
-		 			 Sommaire du numéro : <MACRO NAME="NOM_PUBLICATION"> | <MACRO NAME="TITRE_PUBLICATION"> <MACRO NAME="BOUTON_EDITER_PUBLICATION">
-		 		</td>
-			</tr>
-			<tr>
-				<td class="titre1">
-		 <MACRO NAME="SOUSTITRE_PUBLICATION">
-		 		</td>
-			</tr>
-		 	<tr>
-				<td class="titre1">
-		 	<IF COND="[#DIRECTEUR]!=''">
-					<span class="directeur_centre">
-						<MACRO NAME="DIRECTEUR_PUBLICATION">
-					</span>	
-			</IF>
-				</td>
-			</tr>
-		</table>
-	</td>
-</tr>
-</table>					
+				<div class="titrerevue">
+		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
+					 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
+		 			
+					<span class="soustitrerevue">
+		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
+				 	</span>
+							
+					<MACRO NAME="BOUTON_EDITER_PUBLICATION">
+							
+					<p class="directeur_publication">
+		 				<MACRO NAME="DIRECTEUR_PUBLICATION">
+					</p>
+								
+				</div>	
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS">
@@ -497,7 +486,8 @@
 <!-- les séries hierarchiques et leurs thèmes de premier niveau.        -->
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
-	<!-- On liste en premier les séries linéaires. -->
+	<!-- On liste en premier les séries linéaires. Il faut noter l'id de la série que l'on veut afficher dans 
+	WHERE="id='???' de la première boucle-->
 	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre">
 		<BEFORE>
 			<div class="menu1">
@@ -509,7 +499,7 @@
 				[#NOM] 
 			</div>
 			<!-- On liste tous les numéros de la série linéaire courante -->
-			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
+			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre" >
 				<DO>
 					<div class="menu2">
 						<a  class="menu2" href="sommaire.html?id=[#ID]">
@@ -535,7 +525,7 @@
 			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
 				<DO>
 					<div class="menu2">
-							<a href="sommaire.html?id=[#ID]">
+							<a class="menu2" href="sommaire.html?id=[#ID]">
 								[#NOM]
 							</a>
 					</div>
@@ -543,8 +533,44 @@
 			</LOOP>
 		</DO>
 	</LOOP>
+	
 </DEFMACRO>
 
+<DEFMACRO NAME="AFFICHER_SERIE_PRESENTATION">
+
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche la série présentation avec les articles qui sont           -->
+<!-- contenus dans les numéros de cette série.                          -->
+<!-- Il faut mettre en dur l'id de la série                             -->
+<!-- Macro plutôt destinée à la barre de navigation verticale.          -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="aff_series_presentation" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre" WHERE="id='#remplir ici id de la serie presentation#'">
+		<BEFORE>
+			<div class="menu1">
+				Informations :<br/ >
+			</div>
+		</BEFORE>
+		<DO>
+			<!-- On liste tous les numéros de la série linéaire courante -->
+			<LOOP NAME="aff_numero_presentation" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
+				<DO>
+					<LOOP NAME="aff_docpresentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'"  WHERE="status>0" ORDER="ordre">
+						<DO>
+							<div class="menu2">
+								<a  class="menu2" href="document.html?id=[#ID]">
+									[#TITRE]
+								</a>
+							</div>
+						</DO>
+					</LOOP>
+				</DO>
+			</LOOP>
+		</DO>
+	</LOOP>
+</DEFMACRO>
+		
+		
 <DEFMACRO NAME="DOCUMENTS_PAR_TYPES">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
@@ -559,14 +585,12 @@
 <!-- <MACRO NAME="TYPE_CHRONIQUE">                                      -->
 <!-- <MACRO NAME="TYPE_PRESENTATION">                                   -->
 <!-- ****************************************************************** -->
-	<table>
 		<MACRO NAME="TYPE_ARTICLE">
 		<MACRO NAME="TYPE_POSITION_DE_THESE">
 		<MACRO NAME="TYPE_COMPTE_RENDU">
 		<MACRO NAME="TYPE_NOTE_DE_LECTURE">
 		<MACRO NAME="TYPE_CHRONIQUE">
 		<MACRO NAME="TYPE_PRESENTATION">
-	</table>
 </DEFMACRO>
 
 <DEFMACRO NAME="TYPE_ARTICLE">
@@ -579,20 +603,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="article" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='article'" ORDER="ordre">
 		<BEFORE>
-			<tr>
-				<td class="regroupement">
-					<MACRO NAME="FILET_1">
-						Articles
-					<MACRO NAME="FILET_1">
-				</td>
-			</tr>
+			<div class="titre2">
+				Articles
+			</div>
 		</BEFORE> 
 		<DO>
-			<tr> 
-				<td class="texte_sommaire" valign="top">
-					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-				</td>
-			</tr>
+			<div class="afficherdocument">
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</div>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -607,20 +625,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="chr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
 		<BEFORE>
-			<tr>
-				<td class="regroupement">
-					<MACRO NAME="FILET_1">
-						Chroniques
-					<MACRO NAME="FILET_1">
-				</td>
-			</tr>
+			<div class="titre2">
+				Chroniques
+			</div>
 		</BEFORE>
 		<DO>
-			<tr> 
-				<td class="texte_sommaire">
-					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-				</td>
-			</tr>
+			<div class="afficherdocument">
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</div>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -635,20 +647,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="cr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
 		<BEFORE>
-			<tr>
-				<td class="regroupement">
-					<MACRO NAME="FILET_1">
-						Comptes Rendus 
-					<MACRO NAME="FILET_1">
-				</td>
-			</tr>
+			<div class="titre2">
+				Comptes Rendus 
+			</div>
 		</BEFORE> 
 		<DO>
-			<tr> 
-				<td class="texte_sommaire">
-					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-				</td>
-			</tr>
+			<div class="afficherdocument">
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</div>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -663,20 +669,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="pdt" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
 		<BEFORE>
-			<tr>
-				<td class="regroupement">
-					<MACRO NAME="FILET_1">
-						Positions de thèse
-					<MACRO NAME="FILET_1">
-				</td>
-			</tr>
+			<div class="titre2">
+				Positions de thèse
+			</div>
 		</BEFORE>
 		<DO>
-			<tr> 
-				<td class="texte_sommaire" valign="top">
-					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-				</td>
-			</tr>
+			<div class="afficherdocument">
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</div>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -691,20 +691,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="nl" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
 		<BEFORE>
-			<tr>
-				<td class="regroupement">
-					<MACRO NAME="FILET_1">
-						Notes de lecture 
-					<MACRO NAME="FILET_1">
-				</td>
-			</tr>
+			<div class="titre2">
+				Notes de lecture 
+			</div>
 		</BEFORE> 
 		<DO>
-			<tr> 
-				<td class="texte_sommaire">
-					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-				</td>
-			</tr>
+			<div class="afficherdocument">
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</div>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -719,20 +713,14 @@
 <!-- ****************************************************************** -->
 	<LOOP NAME="presentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
 		<BEFORE>
-			<tr>
-				<td class="regroupement">
-					<MACRO NAME="FILET_1">
-						Informations
-					<MACRO NAME="FILET_1">
-				</td>
-			</tr>
+			<div class="titre2">
+				Informations
+			</div>
 		</BEFORE> 
 		<DO>
-			<tr> 
-				<td class="texte_sommaire" valign="top">
-					<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-				</td>
-			</tr>
+			<div class="afficherdocument">
+				<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+			</div>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -944,30 +932,17 @@
 <!-- Macro destinée aux sommaires.                                      -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="boucle_lister_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
-		<BEFORE>
-			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
-		</BEFORE>
 		<DO>
-			<tr>
-				<td width="100%" class="texte_petit">
-					<a href="sommaire.html?id=[#ID]">
-						<strong>
-							<span class="couleur_1">
-								[#NOM]
-							</span>
-						</strong>
-					</a>
-					<span class="couleur_3">
-						<strong><MACRO NAME="TITRE_PUBLICATION"></strong>
-					</span>
-					<MACRO NAME="INTRODUCTION_COURTE">
-					<br />
-				</td>
-			</tr>
+			<div class="titre2">
+				<a class="titre2" href="sommaire.html?id=[#ID]">
+					[#NOM]
+				</a>
+				<MACRO NAME="TITRE_PUBLICATION">
+			</div>
+			<div class="afficherdocument">
+				<MACRO NAME="INTRODUCTION_COURTE">
+			</div>
 		</DO>
-		<AFTER>
-			</table>
-		</AFTER>
 	</LOOP>
 </DEFMACRO>
 
@@ -1004,19 +979,22 @@
 <!-- (en fonction du champ date de la table publication) -->
 <!-- *************************************************** -->
 
-<!--<DEFMACRO NAME="PREMIERE_ARTICLE_ARTICLE_DERNIER_NUMERO">		
+<DEFMACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">		
 	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
-		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication=[#ID]" LIMIT="0,1">
+		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
+			<div class="texte">
 			<b>Extrait</b>  
 			[(#TEXTE|supprime_appels_notes|couper(1500))]
+			
 			<a href="document.html?id=[#ID]">
 			Lire la suite
 			</a>
+			</div>
 			</IF>
 		</LOOP>
 	</LOOP>
-</DEFMACRO>-->
+</DEFMACRO>
 
 
 
