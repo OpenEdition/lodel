@@ -77,7 +77,7 @@ if (!(@include("CACHE/tablefields.php"))) {
 	}
 	$result=$db->MetaTables();
 	foreach($result as $table) {
-	  $fields=$db->MetaColumns($table);
+	  $fields=$db->MetaColumns($table) or dberror();
 	  $table=$prefix.$table;
 
 	  $tablefields[$table]=array();
