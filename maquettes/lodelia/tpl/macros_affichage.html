@@ -450,22 +450,22 @@
 	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre">
 		<BEFORE>
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-			<tr><td><h2>Série Linéaires :</td></tr>
+			<tr><td class="menu1" valign="top" align="left" height="11" width="165" bgcolor="#EFEFEF">Série Linéaires :<br/ ></td></tr>
 		</BEFORE>
 		<CORPS>
 			<tr>
-				<td style="font-family : Verdana, Helvetica, sans-serif, Times New Roman; 
-				font-size : x-small; color : #333333; text-align : left;">
-					[#NOM]
+				<td class="menu1">
+				<br>
+					[#NOM] 
 				</td>
 			</tr>
 			<!-- On liste tous les numéros de la série linéaire courante -->
 			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
 				<CORPS>
 					<tr>
-						<td class="texte_trespetit">
+						<td class="menu2" valign="top" align="right"  width="165" bgcolor="#EFEFEF">
 							<a href="sommaire.html?id=[#ID]">
-								<MACRO NAME="IMG_TRIANGLE">[#NOM]
+								[#NOM]
 							</a>
 						</td>
 					</tr>
@@ -484,12 +484,11 @@
 	<LOOP NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'"  WHERE="status>0" ORDER="ordre">
 		<BEFORE>
 			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-			<tr><td><h2>Série Hiérarchiques :</td></tr>
+			<tr><td class="menu1">Série Hiérarchiques :</td></tr>
 		</BEFORE>
 		<CORPS>
 			<tr>
-				<td style="font-family : Verdana, Helvetica, sans-serif, Times New Roman; 
-				font-size : x-small; color : #333333; text-align : left;">
+				<td class="menu1">
 					[#NOM]
 				</td>
 			</tr>
@@ -497,9 +496,9 @@
 			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
 				<CORPS>
 					<tr>
-						<td class="texte_trespetit">
+						<td class="menu2">
 							<a href="sommaire.html?id=[#ID]">
-								<MACRO NAME="IMG_TRIANGLE">[#NOM]
+								[#NOM]
 							</a>
 						</td>
 					</tr>
@@ -923,9 +922,9 @@
 		<CORPS>
 			<a href="sommaire.html?id=[#ID]">
 				<strong>
-					<span class="couleur_1">
+					
 						Dernier numéro publié : [#NOM] 
-					</span>
+					
 				</strong>
 				<IF COND="[#TITRE]">
 					<em>
