@@ -256,8 +256,7 @@
         size="255"
         description="style qui conduit a cette balises"
         label="[@ADMIN.STYLE]"
-        edittype="style"
-	editcondition="[#CLASSTYPE]=='entities'" />
+        edittype="style" />
 <column name="type"
         type="VARCHAR"
         size="255"
@@ -736,7 +735,7 @@
         size="255"
         required="true"
         label="[@ADMIN.STYLE]"
-	edittype="type" />
+	edittype="style" />
 <column name="surrounding"
         type="VARCHAR"
         size="255"

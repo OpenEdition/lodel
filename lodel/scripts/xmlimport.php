@@ -60,7 +60,7 @@ class XMLImportParser {
 	// analyse the styles
 	foreach (preg_split("/[,;]/",$is->style) as $style) {
 	  $this->_prepare_style($style,$is);
-	  $this->commonstyles[$style]=$is;
+	  if ($style) $this->commonstyles[$style]=$is;
 	}
       }
       
@@ -70,15 +70,12 @@ class XMLImportParser {
       foreach ($css as $cs) {
 	foreach (preg_split("/[,;]/",$cs->style) as $style) {
 	  $this->_prepare_style($style,$cs);
-	  $this->commonstyles[trim($style)]=$cs;
+	  if ($style) $this->commonstyles[$style]=$cs;
 	}
       }
     }
 
     $this->_init_class($class);
-    $this->_init_class("entries","class='entries' or class='entities_entries'");
-    $this->_init_class("persons","class='persons' or class='entities_persons'");
-
     $this->mainclass=$class;
 
     #print_r($this->commonstyles);
@@ -103,36 +100,48 @@ class XMLImportParser {
     // make object whereever it is possible.
     $this->_objectize($arr);
 
+    #print_r($arr);
+
     // second pass
     // process the internalstyles
     // this is an hard piece of code doing no so much... but I find no better way.
+
     $isave=false;
     for($i=1; $i<$n; $i+=3) {
+      #echo "=",$i," ",$arr[$i]," ",$arr[$i+1]," ",get_class($arr[$i+1]),"<br>";
       if ($arr[$i]=="/" || !is_object($arr[$i+1])) continue;
       $obj=&$arr[$i+1];
       $class=get_class($obj);
+      #echo $i," ",$arr[$i]," ",$class,"<br>";
 
-      if (!$isave && $class="internalstylesvo") {
+      if (!$isave && $class=="internalstylesvo") {
 	$forcenext=false;
 	if ($obj->surrounding=="-*") {
+	  #echo "la ",$arr[$i-3];
 	  // check what is the previous on.
-	  if ($arr[$i-3]!="/" && get_class($arr[$i-2])=="tablefieldsvo") {
+	  if ($arr[$i-3]=="/" && get_class($arr[$i-2])=="tablefieldsvo") {
+	    #echo "ila";
 	    // good, put the closing tag further
-	    $closing=array_splice($arr,$i-3,2);
-	    array_splice($arr,$i,0,$closing);
+	    $closing=array_splice($arr,$i-3,3);
+	    $i+=3;
+	    array_splice($arr,$i,0,$closing); // put after the closing internalstyles	    
 	  } else {
 	    $forcenext=true;
+	    #echo "zici";
 	  }
-	  
-	} else 
+	  continue;
+	  #echo $i;
+	  #print_r($arr);	    
+	  #die();
+	}
         if ($forcenext || $obj->surrounding=="*-") {
 	  $isave=$i; // where to insert the next opening
 	} else {
 	  // surounding is a proper tag
-	  $obj=$this->commonstyles[$obj->surrounding];
+	  $obj=&$this->commonstyles[$obj->surrounding];
 	  array_splice($arr,$i,0,array("",$obj,"")); // opening tag
 	  $i+=3; $n+=3;
-	  array_splice($arr,$i+3,0,array("/",$obj,"")); // closing tag
+	  array_splice($arr,$i+6,0,array("/",$obj,"")); // closing tag after the closing internal tag
 	  $n+=3;
 	}
       } else
@@ -153,38 +162,36 @@ class XMLImportParser {
 	  } else {
 	    // don't know what to do, there is nothing before or after
 	  }
-	}
+	}    
     } // for
 
     // proper parser. Launch the handlers
 
     $datastack=array();
     $classstack=array($this->mainclass);
-    $cstyles=&$this->contextstyles[$classstack[0]];
     $handler->openClass($classstack[0]);
 
- 
-    
-    $i=0;
-    do {
-      if ( ($i % 3) == 0) { // data
-	$larr=preg_split("/<(\/?r2rc:\w+)>/",$arr[$i],-1,PREG_SPLIT_DELIM_CAPTURE);
-	$nj=count($larr);
-	$datastack[0].=$larr[0];
+#    print_r($arr);
+#    die();
+#    for($i=1; $i<$n; $i+=3) {
+#      echo "-l",$arr[$i]," ",$arr[$i+1]," ",get_class($arr[$i+1])," ",$arr[$i+1]->style,"<br>";
+#    }
 
-	if ($nj>1) {
-	  $this->_objectize($larr);
-	  for($j=1; $j< $nj; $j+=3) {
-	    $this->_parseOneStep($larr,$j,$datastack,$classstack,$cstyles);
-	  }
+    for($i=1; $i<$n; $i+=3) {
+      $this->_parseOneStep($arr,$i,$datastack,$classstack,"block");
+
+      $larr=preg_split("/<(\/)?r2rc:(\w+)>/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
+      $nj=count($larr);
+      $datastack[0].=$larr[0];
+
+      if ($nj>1) {
+	$this->_objectize($larr);
+	for($j=1; $j<$nj; $j+=3) {
+	  $this->_parseOneStep($larr,$j,$datastack,$classstack,"inline");
+	  $datastack[0].=$larr[$j+2];
 	}
-      } elseif ( ($i % 3) ==1 )  { // style
-	$this->_parseOneStep($arr,$i,$datastack,$classstack,$cstyles);
-	  $i++;
       }
-      $i++;
-    } while ($i<$n);
-
+    }
     // close the last tags
     while($classstack) {
       $handler->closeClass(array_shift($classstack));
@@ -199,11 +206,13 @@ class XMLImportParser {
    * 3/ feed the datastack
    */
 
-  function _parseOneStep (&$arr,$i,&$datastack,&$classstack,&$cstyles)
+  function _parseOneStep (&$arr,$i,&$datastack,&$classstack,$level)
 
   {
+    //echo $classstack[0];
+
     $opening=$arr[$i]!="/";
-    $obj=$arr[$i+1];
+    $obj=&$arr[$i+1];
 
     #echo $style,"--<br>";
 
@@ -220,9 +229,20 @@ class XMLImportParser {
     if (!is_object($obj)) {
       // unknow style
       if ($opening) {
-	$datastack[0]="";
+	if ($level=="inline") {
+	  array_unshift($datastack,"");
+	} else {
+	  $datastack[0]="";
+	}
+      } elseif ($obj=="documents") {
+	// do nothing
       } else {
-	$this->handler->unknownParagraphStyle($obj,$datastack[0]);
+	if ($level=="inline") {
+	  $data=array_shift($datastack);	
+	  $datastack[0].=$this->handler->unknownCharacterStyle($obj,$data);
+	} else {
+	  $datastack[0]=$this->handler->unknownParagraphStyle($obj,$datastack[0]);
+	}
       }
       return;
     }
@@ -240,14 +260,21 @@ class XMLImportParser {
       }
       break;
     case "tablefieldsvo" :
-      if (!$cstyles[$style]) { // context change	 ?
+      $cstyles=&$this->contextstyles[$classstack[0]];
+
+      #print_r($cstyles);
+      #echo "<tr><td>";
+      #echo $obj->style." ".($cstyles[description] ? "yes " :"no ");
+      #echo "<td></tr>";
+
+      if (!$cstyles[$obj->style]) { // context change	 ?
 	$this->handler->closeClass($classstack[0]);
 
 	if (!$this->contextstyles[array_shift($classstack)][$style]) {
 	  // must be in the context below
 	  // if not... problem.
 	  }
-	$cstyles=&$this->contextstyles[$classstack[0]];
+	//$cstyles=&$this->contextstyles[$classstack[0]];
 	// new context
       }
       if ($opening) {
@@ -259,23 +286,30 @@ class XMLImportParser {
     case "entrytypesvo" :
     case "persontypesvo" :
       if ($opening) { // opening. Switch the context
-	$this->styles=$this->commonstyles[$class][$obj->name];
+	$datastack[0]="";
       } else {
 	// change the context
-	array_unshift($datastack,$class="entrytypes" ? "entries" : "persons");
-	$cstyles=&$this->contextstyles[$classstack[0]];
-	
+	array_unshift($classstack,$obj->class);
+	//$cstyles=&$this->contextstyles[$classstack[0]];
+
+	#echo "<tr><td>";
+	#echo $obj->style." ".($cstyles[description] ? "yes " :"no ");
+	#echo "<td></tr>";
+
+#	echo ":".$obj->class;
+#	echo $cstyles;
+#	print_r($this->contextstyles);
+#	die();
 	$this->handler->openClass($classstack[0],$obj);
 	
 	$call="process".substr($class,0,-2);
-	$this->handler->$call($obj,$this->characterStylesParser($datastack[0])); // call the method associated with the object class
+	$this->handler->$call($obj,$datastack[0]); // call the method associated with the object class
 	$datastack[0]="";
       }
       break;
     default:
       die("ERROR: internal error in XMLImportParser::parse. Unknown class $class");
     }
-    $datastack[0].=$this->handler->processData($arr[$i+2]);
   }
 
   /**
@@ -293,21 +327,25 @@ class XMLImportParser {
     // get all the information from the database for all the fields
     $dao=getDAO("tablefields");
     if (!$criteria) $criteria="class='".$class."'";
-    $tfs=$dao->findMany($criteria." AND status>0 AND style!=''");
+    $tfs=$dao->findMany("(".$criteria.") AND status>0");
 
     // create an assoc array style => tf information
     foreach ($tfs as $tf) {
       // is it an index ?
+      #echo $tf->name," ",$tf->type,"<br>";
       if ($tf->type=="entries" || $tf->type=="persons") {
 	// yes, it's an index. Get the object
 	$dao=getDAO($tf->type=="entries" ? "entrytypes" : "persontypes");
 	$tf=$dao->find("type='".$tf->name."'");
+	###echo "class:",$tf->class;
+	$this->_init_class($tf->class,"class='".$tf->class."' OR class='entities_".$tf->class."'");
       }
       // analyse the styles
       foreach (preg_split("/[,;]/",$tf->style) as $style) {
+	###if ($class=="personnes") echo "la--- ".$tf->style." <br>";
 	$this->_prepare_style($style,$tf);
-	$this->commonstyles[$style]=$this->contextstyles[$class][$style]=$tf;
-      }
+	if ($style) $this->commonstyles[$style]=$this->contextstyles[$class][$style]=$tf;
+      }      
     }
   }
 
@@ -338,25 +376,27 @@ class XMLImportParser {
     $n=count($arr);
     for($i=1; $i<$n; $i+=3) {
       $opening=$arr[$i]!="/";
-
+      #echo $opening," ",$arr[$i+1],"<br>";
       if ($opening) { // opening tag
-	$obj=$this->commonstyles[$arr[$i+1]];
-	#print_r($this->commonstyles);
+	$obj=&$this->commonstyles[$arr[$i+1]];
+	#print_r($this->obj);
 	#die();
-	if (!$obj) {
-	  array_push($stylesstack,$arr[$i+1]);
-	  continue;
+	if ($obj) {
+	  $arr[$i+1]=&$obj;
 	}
-	$arr[$i+1]=&$obj;
 	array_push($stylesstack,$arr[$i+1]);
       } else { // closingtag
 	$arr[$i+1]=array_pop($stylesstack);
 	continue; // nothing to do
       }
     }
-    if ($stylesstack) die("ERROR: XML is likely invalid in XMLImportParser::_objectize");
-  }
 
+    if ($stylesstack) {
+      print_r($arr);
+      print_r($stylesstack);
+      die("ERROR: XML is likely invalid in XMLImportParser::_objectize");
+    }
+  }
 } // class XMLImportParser
 
 
@@ -379,7 +419,7 @@ class XmlImportHandler {
 
   function openClass($class,$obj=null) 
   {
-    echo "<tr><td colspan=\"2\" style=\"background-color: green;\">".$class."    ".($obj ? $obj->type : "")."</td></tr>";
+    echo "<tr><td colspan=\"2\" style=\"background-color: green;\">".$class."    ".$obj."  ".($obj ? $obj->type : "")."</td></tr>";
   }
   function closeClass($class) 
   {
@@ -388,7 +428,7 @@ class XmlImportHandler {
 
   function processPersonTypes($obj,$data) 
   {
-    echo "<tr><td style=\"background-color: blue;\">".$obj->name."</td><td>".$data."</td></tr>";
+    echo "<tr><td style=\"background-color: blue;\">".$obj->style."</td><td>".$data."</td></tr>";
   }
   function openPersonTypes($obj) 
   {
@@ -399,16 +439,16 @@ class XmlImportHandler {
     echo "<tr><td colspan=\"2\" style=\"background-color: blue;\">-- fin --</td></tr>";
   }
 
-  function characterStyles($obj,$data) 
+  function processCharacterStyles($obj,$data) 
 
   {
     return "<span style=\"background-color: gray;\">".$data."</span>";
   }
 
-  function internalStyles($obj,$data) 
+  function processInternalStyles($obj,$data) 
 
   {
-    return "--internalstyle--".$obj->style."--".$data."--";
+    return "--internalstyle--".$obj->style."--".$data."-- fin internal style--";
   }
 
   function unknownParagraphStyle($style,$data) {
@@ -416,7 +456,7 @@ class XmlImportHandler {
   }
 
   function unknownCharacterStyle($style,$data) {
-    return $data;
+    return "<span style=\"background-color: #ff8080;\">".$data."</span>";
   }
 }
 

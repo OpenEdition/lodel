@@ -86,19 +86,17 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
     </p>
   </LOOP>
-  <IF COND="[#CLASSTYPE]=='entities'">
-    <label for="style">[@ADMIN.STYLE]
+  <label for="style">[@ADMIN.STYLE]
         : 
       </label>
-    <br class="nobr">
-    <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
-    <br />
-    <LOOP NAME="fielderror" FIELD="style">
-      <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
-      </p>
-    </LOOP>
-  </IF>
+  <br class="nobr">
+  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
+  <br />
+  <LOOP NAME="fielderror" FIELD="style">
+    <p class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE"></FUNC>
+    </p>
+  </LOOP>
   <label for="type">[@ADMIN.TYPE]
         : 
       </label>
