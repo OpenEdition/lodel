@@ -13,7 +13,6 @@ htaccess CACHE
 
 # evite que l'internaute puisse lister ces repertoires
 touch docannexe/index.html
-touch lodel/index.html
 touch lodel/admin/upload/index.html
 
 ###############################################################
@@ -66,6 +65,10 @@ mkdir lodel/rtf 0770
 
 htaccess lodel/txt
 htaccess lodel/rtf
+
+dirdestination lodel
+
+ln index.php
 
 ###############################################################
 ########### edition
