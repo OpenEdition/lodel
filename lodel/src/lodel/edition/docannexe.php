@@ -20,7 +20,6 @@ if ($id>0 && ($delete || $restore)) {
 
 $critere="id='$id' AND status>0";
 
-
 //
 // ordre
 //
@@ -28,7 +27,7 @@ if ($id>0 && $dir) {
   # cherche le parent
   $result=mysql_query ("SELECT iddocument FROM documentsannexes WHERE $critere") or die (mysql_error());
   list($iddocument)=mysql_fetch_row($result);
-  chordre("documentsannexes",$id,"iddocument='$iddocument'",$dir,"inverse");
+  chordre("documentsannexes",$id,"iddocument='$iddocument'",$dir);
   back();
 }
 
