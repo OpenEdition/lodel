@@ -109,6 +109,9 @@ class TableFieldsLogic extends Logic {
 		  "textarea"=>getlodeltextcontents("edit_textarea","admin"),
 		  "fckeditor"=>"FCKEditor",
 		  "select"=>getlodeltextcontents("edit_select","admin"),
+		  "multipleselect"=>getlodeltextcontents("edit_multiple_select","admin"),
+		  "select_radios"=>getlodeltextcontents("edit_select_radio","admin"),
+		  "select_checkboxes"=>getlodeltextcontents("edit_select_checkboxes","admin")
 		  );
        renderOptions($arr,$context['edition']);
        break;
