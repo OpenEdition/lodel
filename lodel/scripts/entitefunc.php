@@ -274,7 +274,7 @@ function move_files($id,$files_to_move,&$sets)
     // new path to the file
     $dirdest="docannexe/$file[type]/$id";
     if (!file_exists(SITEROOT.$dirdest)) {
-      if (!@mkdir(SITEROOT.$dirdest,0700)) die("ERROR: impossible to create the directory \"$dir\"");
+      if (!@mkdir(SITEROOT.$dirdest,0777 & octdec($GLOBALS[filemask]))) die("ERROR: impossible to create the directory \"$dir\"");
     }
     $dest=$dirdest."/".$dest;
     $sets[$file[name]]="'".addslashes($dest)."'";
