@@ -208,6 +208,7 @@ function OO_XHTML ($convertedfile,&$context)
   // autre chgt
 
   array_push($srch,
+	     "/<object>.*?<\/object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span lang
 #	     "/(<a\b[^>]*)sdfixed>/i",
 #	     "/<div type=(?:header|footer)>.*?<\/div>/is",
@@ -224,6 +225,7 @@ function OO_XHTML ($convertedfile,&$context)
 	     );
 
   array_push($rpl,
+	     "",
 	     "\\1",
 #	     "\\1>",
 #	     "",
@@ -374,7 +376,6 @@ function OO_HTML ($convertedfile,&$context)
   // autre chgt
 
   array_push($srch,
-	     "/<object>.*?</object>/is",
 	     "/<span\s*lang=\"[^\"]*\">(.*?)<\/span>/i", # enleve les span
 	     "/(<a\b[^>]*)sdfixed>/i",
 	     "/<div type=(?:header|footer)>.*?<\/div>/is",
@@ -391,7 +392,6 @@ function OO_HTML ($convertedfile,&$context)
 	     );
 
   array_push($rpl,
-	     "",
 	     "\\1",
 	     "\\1>",
 	     "",
