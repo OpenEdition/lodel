@@ -98,7 +98,7 @@ ln tpl/login.html
 ln login.php
 ln logout.php
 
-# tous les fichier de revue/lodel/edition
+# tous les fichier de src/lodel/edition
 dirsource $homesite/lodel/edition
 
 ln maj.php

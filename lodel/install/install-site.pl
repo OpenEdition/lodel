@@ -9,8 +9,8 @@ unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
 }
 $versionsuffix=$version=="devel" ? "" : "-".$version;
 
-$homesite="../lodel$versionsuffix/revue";
-$homesitetpl="../../lodel$versionsuffix/revue";
+$homesite="../lodel$versionsuffix/src";
+$homesitetpl="../../lodel$versionsuffix/src";
 
 unless (-e $homesite) {
   print STDERR "La version '$version' n'existe pas sur le disque\n";
