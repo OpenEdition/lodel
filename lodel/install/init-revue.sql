@@ -1,16 +1,5 @@
 
 
-#DROP TABLE _PREFIXTABLE_publications;
-#DROP TABLE _PREFIXTABLE_typepublis;
-#DROP TABLE _PREFIXTABLE_indexhs;
-#DROP TABLE _PREFIXTABLE_indexls;
-#DROP TABLE _PREFIXTABLE_taches;
-#DROP TABLE _PREFIXTABLE_auteurs;
-#DROP TABLE _PREFIXTABLE_documents;
-#DROP TABLE _PREFIXTABLE_documentsannexes;
-#DROP TABLE typearts;
-#DROP TABLE textes;
-
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
@@ -197,7 +186,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepublis (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeindexs (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
@@ -221,27 +210,14 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeindexs (
 
 
 
-#CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexls (
-#	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
-#	mot		VARCHAR(128) NOT NULL,
-#	lang		CHAR(2) NOT NULL,
-#	type		TINYINT DEFAULT '0' NOT NULL,
-#	ordre		INT DEFAULT '0' NOT NULL,
-#
-#	status		TINYINT DEFAULT '1' NOT NULL,
-#	maj		TIMESTAMP,
-#
-#	PRIMARY KEY (id),
-#	KEY index_mot (mot)
-#);
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexs (
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	parent		INT UNSIGNED DEFAULT '0' NOT NULL,
 	nom		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
 	lang		CHAR(2) NOT NULL,
-	type		TINYINT DEFAULT '0' NOT NULL,
+	typeid		TINYINT DEFAULT '0' NOT NULL,
 	ordre		INT DEFAULT '0' NOT NULL,
 
 	status		TINYINT DEFAULT '1' NOT NULL,
@@ -250,7 +226,8 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexs (
 	PRIMARY KEY (id),
 	KEY index_nom (nom),
 	KEY index_abrev (abrev),
-	KEY index_parent (parent)
+	KEY index_parent (parent),
+	KEY index_typeid (typeid)
 );
 
 
@@ -295,11 +272,11 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_auteurs (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_indexs (
-	idindex			INT UNSIGNED DEFAULT '0' NOT NULL,
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents_entrees (
+	identree		INT UNSIGNED DEFAULT '0' NOT NULL,
 	iddocument		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	KEY index_idindex (idindex),
+	KEY index_identree (identree),
 	KEY index_iddocument (iddocument)
 );
 
@@ -320,9 +297,9 @@ REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('theme','sommaire-
 REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('regroupement','','');
 REPLACE INTO _PREFIXTABLE_typedocs (nom,tpl,status) VALUES('article','article','1');
 REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous');
-REPLACE INTO _PREFIXTABLE_typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','1','0','0','1','ordre','2');
-REPLACE INTO _PREFIXTABLE_typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','1','0','0','1','ordre','3');
-REPLACE INTO _PREFIXTABLE_typeindexs (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','1','1','1','0','nom','1');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('1','periode','période','periode','chrono','1','0','0','1','ordre','2');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('4','geographie','géographie','geographie','geo','1','0','0','1','ordre','3');
+REPLACE INTO _PREFIXTABLE_typeentrees (id,nom,titre,balise,tpl,status,lineaire,newimportable,useabrev,tri,ordre) VALUES('2','motcle','mot clé','motcle','mot','1','1','1','0','nom','1');
 
 #else
 #REPLACE INTO _PREFIXTABLE_typepublis (nom,tpl,tpledit) VALUES('album_photo','sommaire-album','edition-album');

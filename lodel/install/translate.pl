@@ -13,23 +13,24 @@ foreach $filename (@ARGV) {
   close (TXT);
 
   $change=0;
-  $change+= $file=~s/(<\/?)boucle\b/$1LOOP/gi;
-  $change+= $file=~s/(<\/?)avant\b/$1BEFORE/gi;
-  $change+= $file=~s/(<\/?)apres\b/$1AFTER/gi;
-  $change+= $file=~s/(<\/?)premier\b/$1DOFIRST/gi;
-  $change+= $file=~s/(<\/?)dernier\b/$1DOLAST/gi;
-  $change+= $file=~s/(<\/?)first\b/$1DOFIRST/gi;
-  $change+= $file=~s/(<\/?)last\b/$1DOLAST/gi;
-  $change+= $file=~s/(<\/?)corps\b/$1DO/gi;
-  $change+= $file=~s/(<\/?)sinon\b/$1ALTERNATIVE/gi;
-  $change+= $file=~s/<ALTERNATIVE\/>(.*?)<\/LOOP>/$a=$1; if ($a=~m!<LOOP>!) { $&; print STDERR "Attention un alternatif n'a pas ete gere\n"; } else { "<ALTERNATIVE>$a<\/ALTERNATIVE><\/LOOP>"} /gise;
-  $change+= $file=~s/(<\/?)texte\b/$1TEXT/gi;
+# changement pour passer en version 5
+#  $change+= $file=~s/(<\/?)boucle\b/$1LOOP/gi;
+#  $change+= $file=~s/(<\/?)avant\b/$1BEFORE/gi;
+#  $change+= $file=~s/(<\/?)apres\b/$1AFTER/gi;
+#  $change+= $file=~s/(<\/?)premier\b/$1DOFIRST/gi;
+#  $change+= $file=~s/(<\/?)dernier\b/$1DOLAST/gi;
+#  $change+= $file=~s/(<\/?)first\b/$1DOFIRST/gi;
+#  $change+= $file=~s/(<\/?)last\b/$1DOLAST/gi;
+#  $change+= $file=~s/(<\/?)corps\b/$1DO/gi;
+#  $change+= $file=~s/(<\/?)sinon\b/$1ALTERNATIVE/gi;
+#  $change+= $file=~s/<ALTERNATIVE\/>(.*?)<\/LOOP>/$a=$1; if ($a=~m!<LOOP>!) { $&; print STDERR "Attention un alternatif n'a pas ete gere\n"; } else { "<ALTERNATIVE>$a<\/ALTERNATIVE><\/LOOP>"} /gise;
+#  $change+= $file=~s/(<\/?)texte\b/$1TEXT/gi;
+#  $file=~s/<if\s+([^>]+)\s*>/$b=$&; $a=$1; if ($a=~m!COND=!) { $b; } else {  $change++; $a=~y!\"!'!; "<IF COND=\"$a\">"; }/gei;
 
-
-#  $change+= $file=~s/<if\s+([^>]+)\s*>/$a=$1; if ($a=~?COND=?) { $&; } else { $a=~y?\"?'?; "<IF COND=\"$a\">"; }/gei;
-
-
-  $file=~s/<if\s+([^>]+)\s*>/$b=$&; $a=$1; if ($a=~m!COND=!) { $b; } else {  $change++; $a=~y!\"!'!; "<IF COND=\"$a\">"; }/gei;
+#
+  $change+=$file=~s/(WHERE\s*=\s*\"[^\"]*)type_periode([^\"]*\")/$1type='periode'$2/g;
+  $change+=$file=~s/(WHERE\s*=\s*\"[^\"]*)type_geographie([^\"]*\")/$1type='geographie'$2/g;
+  $change+=$file=~s/(TABLE=\"indexls\")/TABLE=\"entrees\" WHERE=\"type='motcle'\"/g;
 
   next unless $change;
   print "$filename:",$change,"\n";

@@ -8,7 +8,7 @@
 //
 
 
-function parse_boucle_extra(&$tables,&$where)
+function parse_boucle_extra(&$tables,&$where,&$ordre)
 
 {
   global $revue;
@@ -69,44 +69,41 @@ function parse_boucle_extra(&$tables,&$where)
 			    $where);
       }
 
+      //
+      // les regexp ci-dessous sont insuffisantes, il faudrait tester que ce n'est pas dans une zone quotee de la clause where !!!!
+      //
+
       // auteurs
-     if (in_array("auteurs",$tables) && strpos($where,"iddocument")!==FALSE) {
+     if (in_array("auteurs",$tables) && preg_match("/\biddocument\b/",$where)) {
 	// on a besoin de la table croise documents_auteurs
 	array_push($tables,"documents_auteurs");
 	$where.=" AND idauteur=auteurs.id";
       }
-      if (in_array("documents",$tables) && strpos($where,"idauteur")!==FALSE) {
+      if (in_array("documents",$tables) && preg_match("/\bidauteur\b/",$where)) {
 	// on a besoin de la table croise documents_auteurs
 	array_push($tables,"documents_auteurs");
 	$where.=" AND iddocument=documents.id";
       }
 
-      // indexhs
-      if (in_array("indexs",$tables) && strpos($where,"iddocument")!==FALSE) {
-	// on a besoin de la table croise documents_indexhs
-	array_push($tables,"documents_indexs");
-	$where.=" AND idindex=indexs.id";
+      // entrees
+      if (in_array("entrees",$tables) && preg_match("/\biddocument\b/",$where)) {
+	// on a besoin de la table croise documents_entrees
+	array_push($tables,"documents_entrees");
+	$where.=" AND identree=$GLOBALS[tableprefix]entrees.id";
       }
 
-      if (in_array("indexs",$tables)) {
-	// ca va plus marcher ca !!!!	
-	$where=preg_replace(array("/type_periode/i","/type_geographie/i"),
-			    array("type='".TYPE_PERIODE."'","type='".TYPE_GEOGRAPHIE."'"),
-			    $where);
+      if (in_array("entrees",$tables) && preg_match("/\btype\b/",$where)) {
+	protect ($where,"entrees","id|status|nom");
+	protect ($ordre,"entrees","id|status|nom");
+	array_push($tables,"typeentrees");
+	$where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typeentrees.nom",$where)." AND $GLOBALS[tableprefix]entrees.typeid=$GLOBALS[tableprefix]typeentrees.id";
       }
-#endif
-
-      if (in_array("indexs",$tables) && strpos($where,"iddocument")!==FALSE) {
-	// on a besoin de la table croise documents_indexls
-	array_push($tables,"documents_indexs");
-	$where.=" AND idindex=$GLOBALS[tableprefix]indexs.id";
-      }
-      if (in_array("documents",$tables) && strpos($where,"idindex")!==FALSE) {
+      if (in_array("documents",$tables) && preg_match("/\bidentree\b/",$where)) {
 	// on a besoin de la table croise documents_auteurs
-	array_push($tables,"documents_indexs");
+	array_push($tables,"documents_entrees");
 	$where.=" AND iddocument=$GLOBALS[tableprefix]documents.id";
       }
-      if (in_array("groupes",$tables) && strpos($where,"iduser")!==FALSE) {
+      if (in_array("groupes",$tables) && preg_match("/\biduser\b/",$where)) {
 	// on a besoin de la table croise users_groupes
 	array_push($tables,"users_groupes");
 	$where.=" AND idgroupe=$GLOBALS[tableprefix]groupes.id";
@@ -261,6 +258,20 @@ function prefix_tablename ($tablename)
 #  //  echo $tablename,"<br>";
 #  return $tablename;
 #endif
+}
+
+function protect (&$sql,$table,$fields)
+
+{
+  // regarde s'il y a des champs, deja
+  if (!preg_match("/\b(?<!\\.)($fields)\b/",$sql)) return;
+
+  // separe la chaine par les quotes qui ne sont pas escapes. 
+  // ajoute un espace au debut pour des raisons de facilite
+  $arr=preg_split("/(?<!\\\)'/",$sql);
+  for($i=0;$i<count($arr);$i+=2)
+    $arr[$i]=preg_replace("/\b(?<!\\.)($fields)\b/","$GLOBALS[prefixtable]$table.\\1",$arr[$i]);
+  $sql=join("'",$arr);
 }
     
 

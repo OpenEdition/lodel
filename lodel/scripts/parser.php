@@ -329,7 +329,7 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 
     //
     // traitement specifique
-    parse_boucle_extra(&$tables,&$where);
+    parse_boucle_extra(&$tables,&$where,&$order);
     //
 
     if ($where) {

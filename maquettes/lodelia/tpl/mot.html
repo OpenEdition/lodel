@@ -47,12 +47,12 @@
 
 				<!-- Titre de la revue -->
 				<div class="titre1">
-					"[#NOM]" dans <MACRO NAME="NOM_REVUE">
+					"[#MOT]" dans <MACRO NAME="NOM_REVUE">
 				</div>
 			
 					
 			
-				<LOOP NAME="articles" TABLE="documents" WHERE="idindex='[#ID]'">
+				<LOOP NAME="articles" TABLE="documents" WHERE="idindexl='[#ID]'">
 					<DO>
 						<div class="afficherdocument">
 							<!-- Liste des documents où apparait ce mot clé -->
@@ -63,7 +63,7 @@
 			
 				<div class="titre2">
 					<a class="titre2" href="mots.html">
-						&gt;&gt; Index des mots cl&eacute;s.
+						>> Index des mots clés.
 					 </a>
 				</div>
 			

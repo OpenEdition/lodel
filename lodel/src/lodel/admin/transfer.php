@@ -104,9 +104,34 @@ DROP TABLE _PREFIXTABLE_indexhs;
 ');
       unlock();
       if ($err) break;
-      $report.="Destruction de la table indexhs et documents_indexhs\n";
+      $report.="Destruction de la table indexhs et documents_indexhs<br>\n";
     }
-    if (!$tables["$GLOBALS[prefixtable]typeindex"]) { // il faut creer cette table, et les autres...
+    if ($tables["$GLOBALS[prefixtable]typeindexs"]) { // il faut renommer cette table
+      $err=mysql_query_cmds('
+RENAME TABLE _PREFIXTABLE_typeindexs TO _PREFIXTABLE_typeentrees;
+');
+      if ($err) break;
+      $report.="Conversion de typeindexs<br>\n";
+    }
+    if ($tables["$GLOBALS[prefixtable]indexs"]) { // il faut renommer cette table
+      $err=mysql_query_cmds('
+RENAME TABLE _PREFIXTABLE_indexs TO _PREFIXTABLE_entrees;
+ALTER TABLE _PREFIXTABLE_entrees CHANGE type	typeid		TINYINT DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_entrees ADD INDEX index_typeid (typeid);
+');
+      if ($err) break;
+      $report.="Conversion de indexs<br>\n";
+    }
+    if ($tables["$GLOBALS[prefixtable]documents_indexs"]) { // il faut renommer cette table
+      $err=mysql_query_cmds('
+RENAME TABLE _PREFIXTABLE_documents_indexs TO _PREFIXTABLE_documents_entrees;
+ALTER TABLE  _PREFIXTABLE_documents_entrees  CHANGE idindex identree		INT UNSIGNED DEFAULT 0 NOT NULL;
+ALTER TABLE _PREFIXTABLE_documents_entrees ADD INDEX  index_identree (identree);
+');
+      if ($err) break;
+      $report.="Conversion de documents_indexs<br>\n";
+    }
+    if (!$tables["$GLOBALS[prefixtable]typeentrees"]) { // il faut creer cette table, et les autres...
       // charge l'install
       $file=$home."../install/init-revue.sql";
       if (!file_exists($file)) {
@@ -125,7 +150,7 @@ DROP TABLE _PREFIXTABLE_indexhs;
 ALTER TABLE _PREFIXTABLE_documents ADD     surtitre	TEXT NOT NULL;
 ');
 	if ($err) break;
-	$report.="Ajout du champ surtitre dans documents\n";
+	$report.="Ajout du champ surtitre dans documents<br>\n";
       }
     }
     if ($tables["$GLOBALS[prefixtable]documents_auteurs"]) {
@@ -136,14 +161,14 @@ ALTER TABLE _PREFIXTABLE_documents ADD     surtitre	TEXT NOT NULL;
 ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     description             TEXT NOT NULL;
 ');
 	if ($err) break;
-	$report.="Ajout du champ description dans documents_auteurs\n";
+	$report.="Ajout du champ description dans documents_auteurs<br>\n";
       }
       if (!$fields[prefix]) {
 	$err=mysql_query_cmds('
 ALTER TABLE _PREFIXTABLE_documents_auteurs ADD     prefix             	VARCHAR(64) NOT NULL;
 ');
 	if ($err) break;
-	$report.="Ajout du champ prefix dans documents_auteurs\n";
+	$report.="Ajout du champ prefix dans documents_auteurs<br>\n";
       }
     }
 

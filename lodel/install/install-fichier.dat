@@ -241,10 +241,10 @@ ln tpl/typepubli.html
 ln typepublis.php
 ln tpl/typepublis.html
 
-ln typeindex.php
-ln tpl/typeindex.html
-ln typeindexs.php
-ln tpl/typeindexs.html
+ln typeentree.php
+ln tpl/typeentree.html
+ln typeentrees.php
+ln tpl/typeentrees.html
 
 ln backup.php
 ln tpl/backup.html
