@@ -132,7 +132,6 @@ if ($edit) { // modifie ou ajoute
     $context[entite][lien]=$lien;
     $context[idparent]=$idparent;
 
-    $newid=enregistre_entite(&$context,$id,"documents","",TRUE);
     $newid=enregistre_entite(&$context,$id,"documents","",FALSE); // ne retourne pas quand il y a une erreur !
 
 #    if ($newid===FALSE) {
