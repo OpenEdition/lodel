@@ -3,7 +3,7 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="600" border="0" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
+<!--<table width="600" border="0" align="center" cellspacing="1" cellpadding="5" bordercolor="#FFFFFF">
 	<tr>
 		<td align="center">
 
@@ -50,6 +50,56 @@
 <br />
 </td>
 </tr>
-</table>
+</table>-->
 
+	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+		<tr>
+			<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
+			<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Chargement de fichier</td>
+		</tr>
+	</table>
+	
+	<div style="text-align:center;">
+		<div class="message_erreur">
+			<IF COND="[#ERREUR_CHARGEMENT]">
+				ATTENTION<br />Erreur de chargement !
+			</IF>
+			<IF COND="[#ERREUR_IMAGE]">
+				ATTENTION<br />Le fichier n'est pas une image !
+			</IF>
+		</div>
+	</div>
+
+	<form enctype="multipart/form-data" action="metaimage.php" method="POST">
+		<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+		<input type="hidden" name="[#IDTYPE]" value="[#ID]">
+		<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
+	
+		<br /><br />
+		<table width="430" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
+			<IF COND="[#IMAGE]">
+				<tr>
+					<td align="center">
+						<img src="../../[#IMAGE]" /><br />
+						<span class="texte_normal">[#IMAGE]</span>
+					</td>
+				</tr>
+			</IF>
+			<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionnez le fichier image à charger<br /><br /><br /></td></tr>
+			<tr><td align="center"><input name="imgfile" type="file" size="30"></td></tr>
+
+			<tr><td align="center">
+				<br /><br />
+				<IF COND="[#IMAGE]">
+					<input class="form" type="submit" name="edit" value="   Modifier   ">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="form" type="submit" name="delete" value=" Supprimer ">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+				<ELSE/>
+					<input class="form" type="submit" name="edit" value="    Ajouter    ">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+				</IF>
+			</td></tr>
+		</table>
+	</form>
+	
 <MACRO NAME="CLOSE_HTML">

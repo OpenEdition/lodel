@@ -117,15 +117,21 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 	<input type="hidden" name="id" value="[#ID]">
 	<input type="hidden" name="tache" value="[#TACHE]">
 	
-	<br /><br /><br /><br />
+	<br /><br />
 	<table width="430" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
 		<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionnez le fichier à charger<br /><br /><br /></td></tr>
-		<tr><td align="center" ><input type="file" name="htmlfile" size="40"></td></tr>
+		<tr><td align="center"><input type="file" name="htmlfile" size="40"></td></tr>
 		<tr>
 			<td align="center">
-				<br />
+				<br /><br />
 				<input class="form" type="submit" value="    Charger    " />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#ID]';" />
+				<LOOP NAME="" TABLE="publications" WHERE="id=[#ID]">
+					<IF COND="[#TYPE]=='regroupement'">
+						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+					<ELSE/>
+						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#ID]';" />
+					</IF>
+				</LOOP>
 				<br />
 				<IF COND="[#SUPERADMIN]">
 					<br /><br /><span class="texte_info_popup">Administrateur Lodel</span><br /><br /><br />
