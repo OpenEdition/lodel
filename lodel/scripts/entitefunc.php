@@ -678,7 +678,8 @@ function loop_mltext($context,$funcname) {
       call_user_func("code_do_$funcname",$localcontext);
     }
   # pas super cette regexp... mais l'argument a deja ete processe !
-  } elseif (preg_match_all("/&lt;r2r:ml lang\s*=&quot;(\w+)&quot;&gt;(.*?)&lt;\/r2r:ml&gt;/s",$context[value],$results,PREG_SET_ORDER)) {
+  } elseif (preg_match_all("/&lt;r2r:ml lang\s*=&quot;(\w+)&quot;&gt;(.*?)&lt;\/r2r:ml&gt;/s",$context[value],$results,PREG_SET_ORDER) ||
+	    preg_match_all("/<r2r:ml lang\s*=\"(\w+)\">(.*?)<\/r2r:ml>/s",$context[value],$results,PREG_SET_ORDER)    ) {
 
     foreach($results as $result) {
       $localcontext=$context;
