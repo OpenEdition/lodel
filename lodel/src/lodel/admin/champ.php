@@ -54,6 +54,7 @@ if ($edit) { // modifie ou ajoute
   do {
     $context[nom]=trim($context[nom]);
     if (!$context[nom] || !isvalidfield($context[nom])) $err=$context[erreur_nom]=1;
+	if (reservedword($context[nom])) $err=$context[erreur_nom_reserve]=1;
     if (!$context[type]) $err=$context[erreur_type]=1;
     $context[style]=trim($context[style]);
     if ($context[type]=="mltext") {

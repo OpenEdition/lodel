@@ -20,8 +20,9 @@
 			<td class="texte_intitule">Nom du champ<br /> 				<span class="texte_info">(identifiant unique)</span>:</td>
 			<td><input size="40" type="text" name="nom" value="[#NOM]" /></td>
 		</tr>
-		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractere accepete: lettres et chiffres uniquement</td></tr>]
+		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptées: lettres et chiffres uniquement</td></tr>]
 		[(#ERREUR_NOM_EXISTE|true)<tr><td colspan="2" class="message_erreur">Ce nom existe deja !</td></tr>]
+		[(#ERREUR_NOM_RESERVE|true)<tr><td colspan="2" class="message_erreur">Ce nom est un mot réservé !</td></tr>]
 		<tr>
 			<td class="texte_intitule">Nom en clair du champ :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>
