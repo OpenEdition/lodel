@@ -459,10 +459,10 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUT]==-1">
-			Pr&ecirc;t &agrave; publier
+			Document pr&ecirc;t &agrave; publier
 		<ELSE/>
 			<IF COND="[#STATUT]==1">
-				Publi&eacute;
+				Document publi&eacute;
 			</IF>
 		</IF>
 	</IF>
@@ -652,18 +652,18 @@
 	</div>
 </DEFMACRO>
 
-<DEFMACRO NAME="AFFICHER_ICONE_STATUT">
+<DEFMACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION">
 	<IF COND="[#STATUT]==-32">
-		<MACRO NAME="PNG_STATUT_BROUILLON">
+		<MACRO NAME="PNG_STATUT_BROUILLON_PUBLICATION">
 	<ELSE/>
 		<IF COND="[#STATUT]==-1">
-			<MACRO NAME="PNG_STATUT_PRET">
+			<MACRO NAME="PNG_STATUT_PRET_PUBLICATION">
 		<ELSE/>
 			<IF COND="[#STATUT]==1">
-				<MACRO NAME="PNG_STATUT_PUBLIE">
+				<MACRO NAME="PNG_STATUT_PUBLIE_PUBLICATION">
 			<ELSE/>
 				<IF COND="[#STATUT]==32">
-					<MACRO NAME="PNG_STATUT_PROTEGE">
+					<MACRO NAME="PNG_STATUT_PROTEGE_PUBLICATION">
 				</IF>
 			</IF>
 		</IF>
@@ -672,20 +672,38 @@
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT">
 	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
-		<MACRO NAME="PNG_STATUT_HORLOGE">
+		<MACRO NAME="PNG_STATUT_HORLOGE_DOCUMENT">
 	<ELSE/>
 		<IF COND="[#STATUT]==-32">
-			<MACRO NAME="PNG_STATUT_BROUILLON">
+			<MACRO NAME="PNG_STATUT_BROUILLON_DOCUMENT">
 		<ELSE/>
 			<IF COND="[#STATUT]==-1">
-				<MACRO NAME="PNG_STATUT_PRET">
+				<MACRO NAME="PNG_STATUT_PRET_DOCUMENT">
 			<ELSE/>
 				<IF COND="[#STATUT]==1">
-					<MACRO NAME="PNG_STATUT_PUBLIE">
+					<MACRO NAME="PNG_STATUT_PUBLIE_DOCUMENT">
 				<ELSE/>
 					<IF COND="[#STATUT]==32">
-						<MACRO NAME="PNG_STATUT_PROTEGE">
+						<MACRO NAME="PNG_STATUT_PROTEGE_DOCUMENT">
 					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_ICONE_STATUT_REGROUPEMENT">
+	<IF COND="[#STATUT]==-32">
+		<MACRO NAME="PNG_STATUT_BROUILLON_REGROUPEMENT">
+	<ELSE/>
+		<IF COND="[#STATUT]==-1">
+			<MACRO NAME="PNG_STATUT_PRET_REGROUPEMENT">
+		<ELSE/>
+			<IF COND="[#STATUT]==1">
+				<MACRO NAME="PNG_STATUT_PUBLIE_REGROUPEMENT">
+			<ELSE/>
+				<IF COND="[#STATUT]==32">
+					<MACRO NAME="PNG_STATUT_PROTEGE_REGROUPEMENT">
 				</IF>
 			</IF>
 		</IF>
@@ -711,7 +729,7 @@
 			<BEFORE>
 				<IF COND="[#NBRESULTATS] ge 4">
 					<MACRO NAME="PNG_PLUS">
-					<span class="texte_orange_gras">Ajouter une publicaton : </span>
+					<span class="texte_orange_gras">Ajouter une publication : </span>
 					&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
 				</IF>
 			</BEFORE>
@@ -791,7 +809,7 @@
 		<ELSE/>
 			<div class="ligne_serie2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUT">
+			<MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION">
 			<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 			<MACRO NAME="NOM_TITRE_TYPE">
 			</div>
@@ -846,7 +864,7 @@
 				</IF>
 			</IF>
 			<IF COND="[#TPLCREATION] ne 'creation-regroupement'">
-				<MACRO NAME="AFFICHER_ICONE_STATUT">
+				<MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION">
 				<MACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 				<a href="index.php?id=[#ID]">
 					<span class="nom_serie">[#NOM]</span>&nbsp;
@@ -868,7 +886,7 @@
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="tplcreation='creation-regroupement'" ORDER="ordre"> 
 		<DOFIRST>
 			<div class="ligne_regroupement1">
-				<MACRO NAME="AFFICHER_ICONE_STATUT">
+				<MACRO NAME="AFFICHER_ICONE_STATUT_REGROUPEMENT">
 				<MACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
 				<MACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
 			</div>
@@ -877,7 +895,7 @@
 		</DOFIRST>
 		<DO>
 			<div class="ligne_regroupement1" style="margin-top:20px">
-				<MACRO NAME="AFFICHER_ICONE_STATUT">
+				<MACRO NAME="AFFICHER_ICONE_STATUT_REGROUPEMENT">
 				<MACRO NAME="BOUTONS_ACTIONS_REGROUPEMENT">
 				<MACRO NAME="NOM_TITRE_TYPE_REGROUPEMENT">
 			</div>
@@ -980,7 +998,7 @@
 	<IF COND="[#STATUT]==-32">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
@@ -995,7 +1013,7 @@
 	<IF COND="[#STATUT]==-1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
@@ -1010,7 +1028,7 @@
 	<IF COND="[#STATUT]==1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:300px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
@@ -1025,7 +1043,7 @@
 	<IF COND="[#STATUT]==32">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_PUBLICATION"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_PUBLI"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
@@ -1043,7 +1061,7 @@
 	<IF COND="[#STATUT]==-32">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
@@ -1058,7 +1076,7 @@
 	<IF COND="[#STATUT]==-1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 				<td>
 					<IF COND="[#DROITEDITEUR]">
@@ -1073,7 +1091,7 @@
 	<IF COND="[#STATUT] GT 0">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
 				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
 			</tr>
 		</table>
@@ -1188,7 +1206,7 @@
 			</table>
 		</AFTER>
 		<ALTERNATIVE>
-			<span class="texte_info" style="padding-left:00px"><MACRO NAME="PNG_ANNEXE_GRIS"> Il n'y a aucun document annexe associ&eacute; à ce document.</span>
+			<span class="texte_info" style="padding-left:00px"><MACRO NAME="PNG_ANNEXE_GRIS_NO"> Il n'y a aucun document annexe associ&eacute; à ce document.</span>
 		</ALTERNATIVE>
 	</LOOP>
 </DEFMACRO>
@@ -1359,25 +1377,67 @@
 	<img src="[#SHAREURL]/images/fleche_edition_des_series.png" class="picto_fleche" width="17" height="17" />
 </DEFMACRO>
 
-<!--[ png statut ]-->
-<DEFMACRO NAME="PNG_STATUT_BROUILLON">
+<!--[ png statut des documents ]-->
+<DEFMACRO NAME="PNG_STATUT_BROUILLON_DOCUMENT">
 	<img src="[#SHAREURL]/images/statut_brouillon.png" class="picto_gauche" width="23" height="24" alt="Brouillon" />
 </DEFMACRO>
 
-<DEFMACRO NAME="PNG_STATUT_PRET">
+<DEFMACRO NAME="PNG_STATUT_PRET_DOCUMENT">
 	<img src="[#SHAREURL]/images/statut_pret.png" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
 </DEFMACRO>
 
-<DEFMACRO NAME="PNG_STATUT_PUBLIE">
+<DEFMACRO NAME="PNG_STATUT_PUBLIE_DOCUMENT">
 	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
 </DEFMACRO>
 
-<DEFMACRO NAME="PNG_STATUT_PROTEGE">
+<DEFMACRO NAME="PNG_STATUT_PROTEGE_DOCUMENT">
 	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
 </DEFMACRO>
 
-<DEFMACRO NAME="PNG_STATUT_HORLOGE">
+<DEFMACRO NAME="PNG_STATUT_HORLOGE_DOCUMENT">
 	<img src="[#SHAREURL]/images/statut_horloge.png" class="picto_gauche" width="23" height="24" alt="Programmateur" />
+</DEFMACRO>
+
+<!--[ png statut des publications ]-->
+<DEFMACRO NAME="PNG_STATUT_BROUILLON_PUBLICATION">
+	<img src="[#SHAREURL]/images/statut_publication_brouillon.gif" class="picto_gauche" width="23" height="24" alt="Brouillon" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_PRET_PUBLICATION">
+	<img src="[#SHAREURL]/images/statut_publication_pret.gif" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_PUBLIE_PUBLICATION">
+	<img src="[#SHAREURL]/images/statut_publication_publie.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_PROTEGE_PUBLICATION">
+	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_HORLOGE_PUBLICATION">
+	<img src="[#SHAREURL]/images/statut_publication_horloge.gif" class="picto_gauche" width="23" height="24" alt="Programmateur" />
+</DEFMACRO>
+
+<!--[ png statut des regroupements ]-->
+<DEFMACRO NAME="PNG_STATUT_BROUILLON_REGROUPEMENT">
+	<img src="[#SHAREURL]/images/statut_regroupement_brouillon.gif" class="picto_gauche" width="23" height="24" alt="Brouillon" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_PRET_REGROUPEMENT">
+	<img src="[#SHAREURL]/images/statut_regroupement_pret.gif" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_PUBLIE_REGROUPEMENT">
+	<img src="[#SHAREURL]/images/statut_regroupement_publie.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_PROTEGE_REGROUPEMENT">
+	<img src="[#SHAREURL]/images/statut_regroupement_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUT_HORLOGE_REGROUPEMENT">
+	<img src="[#SHAREURL]/images/statut_regroupement_horloge.gif" class="picto_gauche" width="23" height="24" alt="Programmateur" />
 </DEFMACRO>
 
 <!--[ png plié/déplié ]-->
@@ -1408,6 +1468,10 @@
 
 <DEFMACRO NAME="PNG_ANNEXE_GRIS">
 	<img src="[#SHAREURL]/images/annexe_gris.png" class="picto" width="11" height="19" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_ANNEXE_GRIS_NO">
+	<img src="[#SHAREURL]/images/annexe_gris_no.png" class="picto" width="11" height="19" />
 </DEFMACRO>
 
 <!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
