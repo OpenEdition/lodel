@@ -298,7 +298,8 @@ class DAO {
    function rightsCriteria($access) {
      if (!isset($this->cache_rightscriteria[$access])) {
 
-       if (array_key_exists("status",get_class_vars($this->table."VO"))) {
+       $classvars=get_class_vars($this->table."VO");
+       if ($classvars && array_key_exists("status",$classvars)) {
 
 	 $this->cache_rightscriteria[$access]=$GLOBALS['user']['visitor'] ? " AND status>-64" : " AND status>0";
 	 if ($access=="write" && $GLOBALS['user']['rights'] < $this->rights['protect'])
@@ -335,14 +336,18 @@ class DAO {
  *
  */
 
-function &getDAO($table) {
+function &getDAO($table,$args=null) {
   static $factory; // cache
 
   if ($factory[$table]) return $factory[$table]; // cache
 
   require_once($GLOBALS['home']."dao/class.".$table.".php");
   $daoclass=$table."DAO";
-  return $factory[$table]=new $daoclass;
+  if (isset($args)) {
+    return $factory[$table]=new $daoclass ($args);
+  } else {
+    return $factory[$table]=new $daoclass;
+  }
 }
 
 ?>

@@ -301,6 +301,7 @@ function loop_rss ($context,$funcname,$arguments)
   define ("MAGPIE_CACHE_ON",TRUE);
   define ("MAGPIE_CACHE_DIR","./CACHE");
   define ("DIRECTORY_SEPARATOR","/");
+  define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 
   if (!isset($arguments['url'])) {
     if ($GLOBALS['user']['visitor']) die("ERROR: the loop \"rss\" requires a URL attribut");

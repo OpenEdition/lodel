@@ -112,6 +112,8 @@ ln tpl/document.html
 ln importsommaire.php
 ln telecharger.php
 
+ln tpl/edit_entities.html
+
 # satellite des documents
 ln docannexe.php
 ln tpl/documentannexe-lienfichier.html

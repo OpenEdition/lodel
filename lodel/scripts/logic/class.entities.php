@@ -56,11 +56,11 @@ class EntitiesLogic extends Logic {
      if (!$vo) die("ERROR: can't find object $id in the table ".$this->maintable);
      $this->_populateContext($vo,$context['entity']);
 
-     $daotype=$this->_getDAO("types");
+     $daotype=getDAO("types");
      $votype=$daotype->getById($vo->idtype);
      $this->_populateContext($vo,$context['type']);
 
-     $daodatatable=getDAO("datatable",$class);
+     $daodatatable=getDAO("datatable",$votype->class);
      $vodatatable=$daodatatable->getById($vo->id);
      $this->_populateContext($vo,$context['entity']);
 
@@ -749,10 +749,12 @@ function makeselectentries_rec($idparent,$rep,$entries,&$context,&$entriestrouve
    /**
     * Used in viewAction to do extra populate in the context 
     */
-   function _populateContextRelatedTables(&$vo,&$context) {
+   function _populateContextRelatedTables(&$vo,&$context) 
 
-     foreach (array("entries"=>"identry","persons"=>"idperson") as $table => $relationid) {     
-       $result=$db->execute(lq("SELECT * FROM #_TP_$table,#_TP_entities_$table WHERE $relationid=id  AND identity='".$vo->id."'")) or dberror();
+   {
+     global $db;
+     foreach (array("entries"=>"E","persons"=>"G") as $table => $nature) {     
+       $result=$db->execute(lq("SELECT * FROM #_TP_$table,#_TP_relations WHERE id2=#_TP_$table.id  AND id1='".$vo->id."' AND nature='".$nature."'")) or dberror();
        while (!$result->EOF) {
 	 $rank=$result->fields['rank'] ? $result->fields['rank'] : (++$rank);
 	 $context[$table][$result->fields['idtype']][$rank]=$result->fields;
