@@ -140,17 +140,20 @@ class Logic {
     * Default implementation
     * $link the fields to make the define the group within which the rank is done.    
     */
-   function changeRankAction(&$context,&$error,$groupfields="",$status="status>0 ")
+   function changeRankAction(&$context,&$error,$groupfields="",$status="status>0")
 
    {
+     $criterias=array();
+
      $id=$context['id'];
      if ($groupfields) {
        $dao=$this->_getMainTableDAO();
        $vo=$dao->getById($id,$groupfields);
-       foreach(explode(",",$groupfields) as $field)  $criteria.=" AND ".$field."='".$vo->$field."'";
+       foreach(explode(",",$groupfields) as $field)  $criterias[]=$field."='".$vo->$field."'";
      }
-     if ($status) $criteria=$status.$criteria;
+     if ($status) $criterias[]=$status;
 
+     $criteria=join(" AND ",$criterias);
      $this->_changeRank($id,$context['dir'],$criteria);
 
      update();
