@@ -185,7 +185,7 @@
 					<MACRO NAME="titres_boutons_publications">
 				</tr>
 				</AVANT>
-			<BOUCLE NAME="affiche_sous_themes" TABLE="publications" WHERE="parent='[#PARENT]'"  WHERE="type='theme'" ORDER="ordre DESC">
+			<BOUCLE NAME="affiche_sous_themes" TABLE="publications" WHERE="parent='[#PARENT]'"  WHERE="type!='regroupement'" ORDER="ordre DESC">
 				<tr>
 					<td width="48" height="32">
 						<div align="center">
@@ -408,6 +408,7 @@
 					[#TITRE]
 				</FONT>
 				</A>" 
+				 <font size="-2">([#TYPE])</font>
 			</TD>
 		<MACRO NAME="TD_pour_lignesalternees_74">
 		<!-- Editer -->
@@ -698,6 +699,12 @@
 				Editer
 			</a>
 			|
+			<IF [#ID]>
+				<a href="metaimage.php?idpublication=[#ID]">
+					Image
+				</a>
+				|
+			</IF>
 		<IF [#STATUS] GT 0>
 			<a href="publi.php?publication=[#ID]&online=0">
 				Dépublier
@@ -1283,6 +1290,10 @@
 
 <DEFMACRO NAME="GIF_ASSOCIER_IMAGE">
 	<img src="[#SHAREURL]/images/KDE_Moc_src.gif" width="32" height="32" border="0" alt="Associer image">
+</DEFMACRO>
+
+<DEFMACRO NAME="GIF_TELECHARGER">
+	<img src="images/disk48.gif" width="32" height="32" border="0" alt="Télécharger le source RTF">
 </DEFMACRO>
 	
 <DEFMACRO NAME="GIF_INPUT_ASSOCIER_IMAGE">
