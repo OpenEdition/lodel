@@ -995,16 +995,16 @@
 <DEFMACRO NAME="BOUTONS_ACTIONS_PUBLICATION">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_PUBLICATION">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>[@EDITION.VISUALIZE_ENTITY]</strong></a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid('sommaire'))]"><strong>[@EDITION.VIEW]</strong></a>&nbsp;
 		<IF COND="([#DROITEDITEUR] AND  [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
 		|&nbsp;<a href="publication.php?id=[#ID]">[@EDITION.EDIT]</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
 		<IF COND="([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.ADVANCED_FUNCTIONS]</a>&nbsp;
+		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
                 <ELSE/>
-		|&nbsp;<span class="inactif">[@EDITION.ADVANCED_FUNCTIONS]</span>&nbsp;
+		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
 		<IF COND="([#STATUT] lt 32) AND (([#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN])">
