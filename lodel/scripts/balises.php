@@ -89,7 +89,7 @@ $multiplelevel=array(
 		     "titredoc"=>"texte",
 		     "legendedoc"=>"texte",
 	 	     "titreillustration"=>"texte",
-	    	 "legendeillustration"=>"texte",
+		     "legendeillustration"=>"texte",
 
 
 		     // les styles description auteurs
@@ -113,7 +113,8 @@ $multiplelevel=array(
 $division="(section\d+)"; # balises qui ne sont pas des paragraphes
 
 # balises qui peuvent etre constituees de plusieurs paragraphes, donc ou chaque paragraphe sera agrege.
-$multiparagraphe_tags="titre|surtitre|soustitre|texte|citation|epigraphe|notebaspage|notefin|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
+# CHANGE: 07/10/03 gerer par la DB
+#$multiparagraphe_tags="titre|surtitre|soustitre|texte|citation|epigraphe|notebaspage|notefin|bibliographie|annexe|titredoc|legendedoc|titreillustration|legendeillustration|droitsauteur|erratum|ndlr|historique|pagination|descriptionauteur";
 
 
 # tags qui admettent des listes separees par des virgules.
@@ -184,24 +185,6 @@ function traite_multiplelevel(&$text)
   return preg_replace ($search,$rpl,$text);
 }
 
-
-function traite_couple(&$text)
-
-{
-  global $virgule_tags,$multiparagraphe_tags;
-
-  $balisere="(?:$multiparagraphe_tags)(?:\(\w+\))?"; # gere les cas avec parenthese
-  return preg_replace (
-		       array(
-			     "/<\/r2r:($virgule_tags)>[\s\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
-			     "/<\/r2r:($balisere)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|[\s\r])*)<r2r:\\1(?:\s[^>]*)?>/is", # les autres tags    
-			     ),
-		       array(
-			     ",",
-			     "",
-			     ),
-		       $text);
-}
 
 //
 // traite les separateurs

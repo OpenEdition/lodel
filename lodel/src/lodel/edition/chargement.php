@@ -1,4 +1,5 @@
 <?php
+die("dplus supporte");
 require("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_REDACTEUR,NORECORDURL);

@@ -162,9 +162,9 @@ function OO ($convertedfile,&$context)
 		      );
   
   foreach ($translations as $k=>$v) {
-    array_push($srch,"/<r2r:$k\b([^>]+)?>/","/<\/r2r:$k>/");
+    array_push($srch,"/<r2r:$k\b([^>]*)>/","/<\/r2r:$k\b([^>]*)>/");
     if ($v) {
-	array_push($rpl,"<r2r:$v\\1>","</r2r:$v>");
+	array_push($rpl,"<r2r:$v\\1>","</r2r:$v\\1>");
     } else {
 	array_push($rpl,"","");
     } 
@@ -223,6 +223,7 @@ function OO ($convertedfile,&$context)
 	     );
 
   $time=time();
+
   $file=preg_replace ($srch,$rpl,$file);
   if (!traite_tableau2($file)) {     $context[erreur_stylestableaux]=1;
   return FALSE; }
@@ -232,7 +233,8 @@ function OO ($convertedfile,&$context)
 
   //echo htmlentities($file); exit;
 
-# enleve les couples de balises r2r.
+  // desuet
+  // enleve les couples de balises r2r.
   $file=traite_couple($file);
 
   // recupere les styles conteneurs (ceux qui ont des parentheses)
@@ -363,6 +365,42 @@ function traite_tableau2(&$text)
   $text=join("",$arr);
   return TRUE;
 }
+
+
+
+function traite_couple(&$text)
+
+{
+  global $home;
+
+  // determine les $virgule_tags
+  require_once($home."connect.php");
+  $result=mysql_query("SELECT style FROM typeentrees WHERE status>0") or die(mysql_error());
+  while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
+  $result=mysql_query("SELECT style FROM typepersonnes WHERE status>0") or die(mysql_error());
+  while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
+
+
+  // determine les $multiparagraphe_tags
+  $result=mysql_query("SELECT style FROM champs WHERE status>0") or die(mysql_error());
+  while (list($style)=mysql_fetch_row($result)) $multiparagraphe_tags_arr[]=$style;
+
+  $virgule_tags=join("|",$virgule_tags_arr);
+  $multiparagraphe_tags=join("|",$multiparagraphe_tags_arr);
+
+  $balisere="(?:$multiparagraphe_tags)(?:\(\w+\))?"; # gere les cas avec parenthese
+  return preg_replace (
+		       array(
+			     "/<\/r2r:($virgule_tags)>[\s\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
+			     "/<\/r2r:($balisere)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|[\s\r])*)<r2r:\\1(?:\s[^>]*)?>/is", # les autres tags    
+			     ),
+		       array(
+			     ",",
+			     "",
+			     ),
+		       $text);
+}
+
 
 
 
