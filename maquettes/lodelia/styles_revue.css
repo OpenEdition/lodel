@@ -461,12 +461,12 @@ A:active {
 
 .spacer {
 	clear:both;
-}
+	width: 775;
 	
-.hr {
-  clear: both;
-  visibility: hidden;
 }
+
+	
+
 
  /********************************************************************************************
  *  Les  class communes à toutes les pages                                                   * 
@@ -736,7 +736,7 @@ A.texte_integral:active {
 	/*  
 	 * 
 	 */
-	width: auto;
+	width: 561;
 	height: auto;
 	font-weight: small;
 	text-align : justify;
