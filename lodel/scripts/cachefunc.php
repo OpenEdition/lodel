@@ -10,7 +10,7 @@ function removefilesincache()
     $rep.="/CACHE";
     $fd=opendir($rep) or die ("Impossible d'ouvrir $rep");
     while ($file=readdir($fd)) {
-      if (substr($file,0,1)==".") continue;
+	  if ((substr($file,0,1)==".") || ($file=="CVS")) continue;
       $file=$rep."/".$file;
       if (is_dir($file)) {
 	$rep2=$file;
