@@ -46,10 +46,13 @@ function pub_edition (&$context,$critere)
 
   mysql_query ("REPLACE INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe) VALUES ('$id','$idparent','$context[idtype]','$context[nom]','$ordre','$status','$groupe')") or die (mysql_error());
 
-  if (!$id) $id=mysql_insert_id();
+  if (!$id) {
+    $id=mysql_insert_id();
+    creeparente($id,$context[idparent],FALSE);
+  }
+
   mysql_query("REPLACE INTO $GLOBALS[tp]publications (identite,titre,soustitre,directeur,texte,date) VALUES ('$id','$context[titre]','$context[soustitre]','$context[directeur]','$context[texte]','$date')") or die (mysql_error());
   require_once($home."managedb.php");
-  creeparente($id,$context[idparent],FALSE);
   
   if ($id && $grouperec && $admin) change_groupe_rec($id,$groupe);
   if (!$id) $id=mysql_insert_id();

@@ -25,7 +25,7 @@ if ($tache[fichierdecoupe1]) {  // ca veut dire qu'on a un plusieurs fichiers a 
   }
 } else { // cas normal ou le fichier n'a pas ete decoupe
   $filename=$tache[fichier];
-  $context[encore]=1;
+  $context[encore]=0;
 }
 
  // on abandonne ?
