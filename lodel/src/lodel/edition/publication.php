@@ -61,9 +61,9 @@ if ($id>0 && $dir) {
       lock_write("publications");
     }
     if ($id>0) { // il faut rechercher le status et l'ordre
-      $result=mysql_query("SELECT ordre,meta,groupe FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
+      $result=mysql_query("SELECT ordre,meta,groupe,status FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
       if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
-      list($ordre,$meta,$groupe)=mysql_fetch_array($result);
+      list($ordre,$meta,$groupe,$status)=mysql_fetch_array($result);
       if ($admin && $context[groupe]) $groupe=$context[groupe];
     } else { 
       // cherche le groupe et les droits
