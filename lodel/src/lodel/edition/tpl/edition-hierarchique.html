@@ -22,7 +22,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition d'une série hiérarchique</title>
+<title>Edition <LOOP NAME="nompourtitre" TABLE="publications" WHERE="id='[#ID]'">[#NOM] [#TITRE] ([#TYPE])</LOOP></title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <!--[ Rajout intégration maquette ]-->
 <MACRO NAME="JS_AJOUTER_ENTITE">
@@ -30,7 +30,7 @@
 <MACRO NAME="JS_AFFICHE_IMAGE">
 <!--[ Fin rajout intégration maquette ]-->
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 	<MACRO NAME="CHEMIN_PARCOURU">
 	<MACRO NAME="NOM_TITRE_TYPE_PARENT">

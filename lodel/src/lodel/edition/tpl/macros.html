@@ -727,21 +727,21 @@
 		<LET VAR="idparentsaved">[#ID]</LET>
 		<LOOP NAME="entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="titre">
 			<BEFORE>
-				<IF COND="[#NBRESULTATS] ge 4">
+				<IF COND="[#NBRESULTATS] ge 6">
 					<MACRO NAME="PNG_PLUS">
 					<span class="texte_orange_gras">Ajouter une publication : </span>
 					&nbsp;&nbsp;&nbsp;<select onchange="ajouter_entite(this)"><option selected></option>
 				</IF>
 			</BEFORE>
 			<DO>
-				<IF COND="[#NBRESULTATS] ge 4">
+				<IF COND="[#NBRESULTATS] ge 6">
 					<option value="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
 				<ELSE/>
 					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE]</a><br />
 				</IF>
 			</DO>
 			<AFTER>
-				<IF COND="[#NBRESULTATS] ge 4">
+				<IF COND="[#NBRESULTATS] ge 6">
 					</select>
 				</IF>
 			</AFTER>
@@ -976,7 +976,7 @@
 <DEFMACRO NAME="BOUTONS_ACTIONS_DOCUMENT">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]">Voir</a>&nbsp;
+		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]"><strong>Voir</strong></a>&nbsp;
 		<IF COND="[#DROITEDITEUR]">
 		|&nbsp;<a href="document.php?id=[#ID]">Métas</a>&nbsp;
 		<ELSE/>
@@ -1154,8 +1154,8 @@
 	<div class="ligne_infos_parent">
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
 		<LOOP NAME="idparent" TABLE="publications" WHERE="id='[#ID]'">
-			<span class="nom_parent">[#NOM]</span>&nbsp;
-			<span class="titre_parent">[#TITRE]</span><br />
+			<span class="nom_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]">[#NOM]</a></span>&nbsp;
+			<span class="titre_parent"><a href="../../[(#ID|makeurlwithid('sommaire'))]"[#TITRE]</a></span><br />
 			<span class="type_parent">([#TYPE])</span>
 		</LOOP>
 	</div>

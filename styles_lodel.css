@@ -298,8 +298,7 @@ div.ligne_haut_tpl_publication,
 div.ligne_parent_tpl_publication,
 .texte_ligne_haut_tpl_publication {
 	font-family: Verdana;
-	font-style:italic;
-	color: #CC9933;
+	color: #728979;
 }
 
 div.ligne_haut_tpl_publication {
@@ -363,6 +362,7 @@ div.intitule_ligne_formulaire {
 	font-size: 10pt;
 	color:#333333;
 }
+
 .texte_noir_gras {
 	font-family: Verdana;
 	font-weight: bold;
@@ -377,6 +377,11 @@ div.intitule_ligne_formulaire {
 	color:#CC9933;
 }
 
+.texte_orange {
+	font-family: Verdana;
+	font-size: 10pt;
+	color:#CC9933;
+}
 .message_erreur {
 	font-family: Verdana;
 	font-size: 10pt;
@@ -393,13 +398,14 @@ div.intitule_ligne_formulaire {
 
 .titre_publi, .nom_publi, .type_publi,.nom_document {
 	font-family: verdana;	
-	color: #CC9933;
+	font-variant: small-caps;
+	font-weight: bold;
+	color: #728979;
 	text-align: left;
 }
 
 .nom_publi {
-	font-size: 12pt;
-	font-weight: bold;
+	font-size: 11pt;
 }
 
 .nom_document {
@@ -438,8 +444,8 @@ div.ligne_statut {
 /******** Styles pour les popup **********/
 .texte_ligne_haut_popup {
 	font-family: Verdana;
-	font-style:italic;
-	color: #CC9933;
+	color: #728979;
+	font-variant : small-caps;
 	padding-left:10px;
 	font-size: 18px;
 	font-weight: bold;
@@ -491,7 +497,7 @@ div.lien_popup a:hover {
 
 .titre_partie_popup {
 	font-family: Verdana;
-	color: #CC9933;
+	color: #728979;
 	font-size: 11px;
 	font-weight: bold;
 	padding-left:10px;
@@ -688,7 +694,7 @@ A:hover {
 {
 	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : large;
-	color : black;
+	color : #728979;
 	text-align : center;
 	font-weight : bold;
 	font-variant : small-caps;
@@ -709,7 +715,7 @@ A:hover {
 {
 	font-family : "Verdana, Helvetica, sans-serif, Times New Roman";
 	font-size : medium;
-	color : black;
+	color : #728979;
 	text-align : center;
 }
 

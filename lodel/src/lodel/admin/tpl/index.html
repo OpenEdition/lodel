@@ -43,26 +43,26 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="users.php"><span class="texte_noir_gras">Utilisateurs et droits</span></a>
+							<a href="users.php"><span class="texte_orange">Utilisateurs et droits</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<!--[<a href="options.php"><span class="texte_noir_gras">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></a></td>]-->
-							<span class="texte_noir_gras"><span class="inactif">M&eacute;tadonn&eacute;es et options (inactif)</span></span> </td>
+							<!--[<a href="options.php"><span class="texte_orange">Editer les m&eacute;tadonn&eacute;es et options de la revue</span></a></td>]-->
+							<span class="texte_orange"><span class="inactif">M&eacute;tadonn&eacute;es et options (inactif)</span></span> </td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Associer une image au site (inactif)</span></span> </td>
+						<td width="350" class="td_admin"><span class="texte_orange"><span class="inactif">Associer une image au site (inactif)</span></span> </td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="textes.php"><span class="texte_noir_gras">Minitextes</span></a>
+							<a href="textes.php"><span class="texte_orange">Minitextes</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -86,7 +86,7 @@
 							<tr>
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
-									<a href="entrees.php?type=[#TYPE]"><span class="texte_noir_gras">[(#TITRE|majuscule)]</span></a>
+									<a href="entrees.php?type=[#TYPE]"><span class="texte_orange">[(#TITRE|majuscule)]</span></a>
 								</td>
 								<td width="5">&nbsp;</td>
 							</tr>
@@ -112,7 +112,7 @@
 					<tr>
 						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
 						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_modele.png" /></td>
-						<td>&nbsp;</td>
+						<td width="10" >&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
@@ -122,14 +122,14 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typeentrees.php"><span class="texte_noir_gras">Types d'index</span></a>
+							<a href="typeentrees.php"><span class="texte_orange">Types d'index</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typepersonnes.php"><span class="texte_noir_gras">Types d'index par personne</span></a>
+							<a href="typepersonnes.php"><span class="texte_orange">Types d'index par personne</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -137,7 +137,7 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="typedocs.php"><span class="texte_noir_gras">Types de documents</span></a>
+							<a href="typedocs.php"><span class="texte_orange">Types de documents</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -145,9 +145,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-								<a href="typepublis.php"><span class="texte_noir_gras">Types de publications</span></a>
+								<a href="typepublis.php"><span class="texte_orange">Types de publications</span></a>
 							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Types de publications</span></span>
+								<span class="texte_orange"><span class="inactif">Types de publications</span></span>
 							</IF>
 						</td>			
 						<td>&nbsp;</td>
@@ -157,9 +157,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=documents"><span class="texte_noir_gras">Champs pour les documents</span></a>
+							<a href="champs.php?classe=documents"><span class="texte_orange">Champs pour les documents</span></a>
 							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Ces champs pour les documents</span></span></span>
+								<span class="texte_orange"><span class="inactif">Ces champs pour les documents</span></span></span>
 			                                </IF>
 						</td>
 						<td>&nbsp;</td>
@@ -168,9 +168,9 @@
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
 							<IF COND="[#DROITREDACTEUR]">
-							<a href="champs.php?classe=publications"><span class="texte_noir_gras">Champs pour les publications</span></a>
+							<a href="champs.php?classe=publications"><span class="texte_orange">Champs pour les publications</span></a>
 							<ELSE/>
-								<span class="texte_noir_gras"><span class="inactif">Champs pour les publications</span></span></span>
+								<span class="texte_orange"><span class="inactif">Champs pour les publications</span></span></span>
 			                                </IF>
 						</td>
 						<td>&nbsp;</td>
@@ -194,48 +194,48 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="backup.php"><span class="texte_noir_gras">Sauvegarde des donn&eacute;es</span></a>
+							<a href="backup.php"><span class="texte_orange">Sauvegarde des donn&eacute;es</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="import.php"><span class="texte_noir_gras">Importation des donn&eacute;es</span></a>
+							<a href="import.php"><span class="texte_orange">Importation des donn&eacute;es</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="importmodel.php"><span class="texte_noir_gras">Importer un mod&egrave;le &eacute;ditorial</span></a>
+							<a href="importmodel.php"><span class="texte_orange">Importer un mod&egrave;le &eacute;ditorial</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="backupmodel.php"><span class="texte_noir_gras">Sauvegarder le mod&egrave;le &eacute;ditorial</span></a>
+							<a href="backupmodel.php"><span class="texte_orange">Sauvegarder le mod&egrave;le &eacute;ditorial</span></a>
 						</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="schema.php"><span class="texte_noir_gras">Télécharger le Schéma XML</span></a>
+							<a href="schema.php"><span class="texte_orange">Télécharger le Schéma XML</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="/phpmyadmin/"><span class="texte_noir_gras">Manipulation de la base de donn&eacute;es</span></a>
+							<a href="/phpmyadmin/"><span class="texte_orange">Manipulation de la base de donn&eacute;es</span></a>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin"><span class="texte_noir_gras"><span class="inactif">Statistiques du site (inactif)</span></span></td>
+						<td width="350" class="td_admin"><span class="texte_orange"><span class="inactif">Statistiques du site (inactif)</span></span></td>
 						<td width="5">&nbsp;</td>
 					</tr>
 				</table>
