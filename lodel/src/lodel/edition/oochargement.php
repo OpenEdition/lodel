@@ -168,8 +168,9 @@ if ($file1) {
 $context['url']="oochargement.php";
 
 
-include ($home."calcul-page.php");
-calcul_page($context,"oochargement");
+require($home."view.php");
+$view=&getView();
+$view->render($context,"oochargement",!(bool)$_POST);
 
 
 
@@ -184,6 +185,7 @@ function imagesnaming($filename,$index,$uservars)
 function lodelprocessing(&$xhtml)
 
 {
+/*
   $arr=preg_split("/(<\/?)soo:(\w+)\b([^>]*>)/",$xhtml,-1,PREG_SPLIT_DELIM_CAPTURE);
   $xhmtl=""; // save memory (not really in fact)
   $count=count($arr);
@@ -219,6 +221,7 @@ function lodelprocessing(&$xhtml)
     }
   }
   $xhtml=join("",$arr);
+*/
   $xhtml=str_replace("&#39;","'",$xhtml);
 
   return false;

@@ -90,15 +90,13 @@ class XMLImportParser {
   {
     $this->handler=&$handler; // non-reentrant
 
-    $arr=preg_split("/<(\/?)r2r:(\w+)>/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
+    $arr=preg_split("/<(\/?)soo:block(>|\s+class=\"\w+\"\s*>)/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
     $n=count($arr);
 
     unset($string); // save memory
 
     // make object whereever it is possible.
     $this->_objectize($arr);
-
-    #print_r($arr);
 
     // second pass
     // process the internalstyles
@@ -112,13 +110,13 @@ class XMLImportParser {
       $class=strtolower(get_class($obj));
       #echo $i," ",$arr[$i]," ",$class,"<br>";
 
+      echo $obj->style," ",$obj->surrounding," ",$isave,"<br>";
       if (!$isave && $class=="internalstylesvo") {
 	$forcenext=false;
 	if ($obj->surrounding=="-*") {
-	  #echo "la ",$arr[$i-3];
+	  echo "la ",$arr[$i-3];
 	  // check what is the previous on.
 	  if ($arr[$i-3]=="/" && strtolower(get_class($arr[$i-2]))=="tablefieldsvo") {
-	    #echo "ila";
 	    // good, put the closing tag further
 	    $closing=array_splice($arr,$i-3,3);
 	    $i+=3;
@@ -143,25 +141,31 @@ class XMLImportParser {
 	  $n+=3;
 	}
       } else
-	if ($class="tablefieldsvo" && $isave) {
+	if ($class=="tablefieldsvo" && $isave) {
 	  // put the opening at $isave
 	  $arr[$i-1].=$arr[$i+2]; // copy data. This is not the most efficient, must the nicest way to do
 	  $arr[$i+2]="";
 	  $opening=array_splice($arr,$i,3);
 	  array_splice($arr,$isave,0,$opening);
 	  $isave=false;
-	} else
+	} /* else
 	if ($isave) {
+	  die("la");
 	  // problem, the group at $isave has to be attached with above.
 	  if ($arr[$isave-3]=="/" && strtolower(get_class($arr[$isave-2]))=="tablefieldsvo") {
 	    $closing=array_splice($arr,$isave-3,2);
 	    array_splice($arr,$i,0,$closing);    
 	    $isave=false;
 	  } else {
+	    die("oups");
 	    // don't know what to do, there is nothing before or after
 	  }
-	}    
+	}
+*/
     } // for
+
+#    print_R($arr);
+#    exit();
 
     // proper parser. Launch the handlers
 
@@ -250,7 +254,6 @@ class XMLImportParser {
       }
       return;
     }
-
     $class=strtolower(get_class($obj));
     switch($class) {
     case "internalstylesvo" :
@@ -259,6 +262,7 @@ class XMLImportParser {
 	array_unshift($datastack,"");
       } else {
 	$call="process".substr($class,0,-2);
+	echo count($datastack);
 	$data=array_shift($datastack);	
 	$datastack[0].=$this->handler->$call($obj,$data); // call the method associated with the object class
       }
@@ -388,11 +392,15 @@ class XMLImportParser {
       $opening=$arr[$i]!="/";
       #echo $opening," ",$arr[$i+1],"<br>";
       if ($opening) { // opening tag
-	$obj=&$this->commonstyles[$arr[$i+1]];
+	if (!preg_match("/class=\"(\w+)\"/",$arr[$i+1],$result)) die("ERROR: in _objectize");
+	$name=$result[1];
+	$obj=&$this->commonstyles[$name];
 	#print_r($this->obj);
 	#die();
 	if ($obj) {
 	  $arr[$i+1]=&$obj;
+	} else {
+	  $arr[$i+1]=$name;
 	}
 	array_push($stylesstack,$arr[$i+1]);
       } else { // closingtag
