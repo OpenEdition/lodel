@@ -145,18 +145,18 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       #}
       break;
     case "int" :
-      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=intval($defaut);
+      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=intval($defaut);
       if (isset($entite[$nom]) && 
 	  (!is_numeric($entite[$nom]) || intval($entite[$nom])!=$entite[$nom])) 
 	$erreur[$nom]="int";
       break;
     case "number" : 
-      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=doubleval($defaut);
+      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=doubleval($defaut);
       if (isset($entite[$nom]) && 
 			!is_numeric($entite[$nom])) $erreur[$nom]="numeric";
       break;
     case "email" : 
-      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=$defaut;
+      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=$defaut;
       if (isset($entite[$nom])) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
@@ -164,7 +164,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       }
       break;
     case "url" : 
-      if (!isset($entite[$nom]) && isset($defaut)) $entite[$nom]=$defaut;
+      if (!isset($entite[$nom]) && $defaut) $entite[$nom]=$defaut;
       if (isset($entite[$nom])) {
 #      $validchar='-!#$%&\'*+\\\\\/0-9=?A-Z^_`a-z{|}~';
 	$validchar='-0-9A-Z_a-z';
