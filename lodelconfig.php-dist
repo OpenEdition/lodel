@@ -1,20 +1,30 @@
 <?
 
+$pathroot="/path/to";
+
+
 # Emplacement des scripts
 # par exemple $home="/var/www/lodel/scripts";
-$home="/path/to/script";
+# ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
+$home="$pathroot/lodel/script";
+
+
+# Adresse de base du site
+$urlsite="http://mywebsite.domain.org";
 
 # Base du site
 # ATTENTION : $urlroot doit toujours se terminer par /, il ne peut etre vide
 $urlroot="/";
 
+
 # URL contenant les fichiers communs partagés
 # par exemple $shareurl="http://lodel.revues.org/share";
-$shareurl="http://mywebsite.domain.org/lodel/share";
+# ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
+$shareurl="$urlsite$urlroot/share";
 
 # Repertoire contenant les fichiers communs partagés
 # par exemplre $sharedir="/var/www/lodel/share";
-$sharedir="/path/to/share";
+$sharedir="$pathroot/share";
 
 # Specifie si le nom de la revue se trouve a gauche dans l'url ou a droite
 # nomrevues.domain.org ou domaine.org/nomrevue
