@@ -91,16 +91,16 @@ if ($fichier && $delete) {
     back();
   }
 } else {
-
-
   // check the table exists
   $result=mysql_list_tables($GLOBALS[currentdb]);
   $existingtables=array();
   while ($row = mysql_fetch_row($result)) array_push($existingtables,$row[0]);
   
   // verifie qu'on peut importer le modele.
-  foreach(array_intersect(array("entites","entrees","personnes"),$existingtables) as $table) {
-    $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
+  foreach(array_intersect(array("$GLOBALS[tp]entites",
+				"$GLOBALS[tp]entrees",
+				"$GLOBALS[tp]personnes"),$existingtables) as $table) {
+    $result=mysql_query("SELECT 1 FROM $table WHERE statut>-64 LIMIT 0,1") or die(mysql_error());
     if (mysql_num_rows($result)) {
       $context[erreur_table]=$table;
       break;
