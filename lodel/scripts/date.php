@@ -152,6 +152,7 @@ function mysqldatetime($s,$type="datetime")
 			 $m,$d,$y);
     }
   }
+  if ($timestamp<=0) return;
 
   if ($type=="date") {
     return date("Y-m-d",$timestamp);
@@ -162,7 +163,7 @@ function mysqldatetime($s,$type="datetime")
   } elseif ($type=="timestamp") {
     return $timestamp;
   } else {
-      die("type inconnu dans mysqldate");
+    die("type inconnu dans mysqldate");
   }
 }
 

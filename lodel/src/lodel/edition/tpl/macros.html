@@ -233,6 +233,8 @@
 <DEFMACRO NAME="AFFICHER_ERREURS_SAISIE">
 	<IF COND="[#ERREUR] eq '+'"><tr><td colspan="2" class="message_erreur">Ce champ est obligatoire</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date valide</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'time'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une heure valide</td></tr></IF>
+	<IF COND="[#ERREUR] eq 'datetime'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date et heure valide</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre entier</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre</td></tr></IF>
 	<IF COND="[#ERREUR] eq 'readerror'"><tr><td colspan="2" class="message_erreur">Le fichier n'existe pas ou n'a pas pu être téléchargé</td></tr></IF>

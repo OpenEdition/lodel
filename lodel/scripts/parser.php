@@ -458,7 +458,7 @@ function parse_loop()
 	$arr=preg_split("/,/",$value);
 	if ($arr) {
 	  foreach ($arr as $value) {
-	    array_push($tables,$GLOBALS[tableprefix].trim($value));
+	    array_push($tables,$GLOBALS['tableprefix'].trim($value));
 	  }
 	}
 	break;

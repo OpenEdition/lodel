@@ -142,6 +142,7 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
       include_once($home."date.php");
       if ($entite[$nom]) {
 	$entite[$nom]=mysqldatetime($entite[$nom],$type);
+	if (!$entite[$nom]) $erreur[$nom]=$type;
       } elseif ($defaut) {
 	$dt=mysqldatetime($defaut,$type);
 	if ($dt) {
