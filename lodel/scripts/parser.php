@@ -532,7 +532,11 @@ function decode_loop_content ($name,$tables=array(),$optimize=TRUE)
       $this->arr[$this->ind+1]="";
     } elseif ($state=="" && $this->arr[$this->ind]=="/LOOP") {
       $isendloop=1; break;
-    }  else $this->errmsg("&lt;$state&gt; not closed in the loop $name",$this->ind);
+    }  elseif ($state) {
+      $this->errmsg("&lt;$state&gt; not closed in the loop $name",$this->ind);
+    } else {
+      $this->errmsg("unexpected &lt;".$this->arr[$this->ind]."&gt; in the loop $name",$this->ind);
+    }
   } while ($this->ind<$this->countarr);
 
 
