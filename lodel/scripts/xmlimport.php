@@ -269,7 +269,6 @@ class XMLImportParser {
 
       if (!$cstyles[$obj->style]) { // context change	 ?
 	$this->handler->closeClass($classstack[0]);
-
 	if (!$this->contextstyles[array_shift($classstack)][$style]) {
 	  // must be in the context below
 	  // if not... problem.

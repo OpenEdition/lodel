@@ -233,7 +233,7 @@ function parse_variable_extra ($prefix,$varname)
       return '($GLOBALS[right][admin] || in_array($context[group],explode(\',\',$GLOBALS[user][groups])))';
     }
     if (preg_match("/^OPTION[_.]/",$varname)) { // options
-      return "getoption('".strtolower(substr($varname,7))."',$context)";
+      return "getoption('".strtolower(substr($varname,7))."')";
     }
   }
 

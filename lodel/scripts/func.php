@@ -355,7 +355,7 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #  return serialize($newoptions);
 #}
 
-function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
+function getoption($name,$extracritere=" AND type!='pass'")
 {
   global $db;
   static $options_cache;
@@ -363,10 +363,11 @@ function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
   if (!$name) return;
 
   if (is_array($name)) {
+    $returnarray=true;
     foreach ($name as $n) {
-      if (strpos(".",$n)!==false) { // this is a context dependent option
-	die("ERROR: context dependent option with array get are not implemented at the moment");
-      }
+#      if (strpos(".",$n)!==false) { // this is a context dependent option
+#	die("ERROR: context dependent option with array get are not implemented at the moment");
+#      }
       if ($options_cache[$n]) { // cached ?
 	$ret[$n]=$options_cache[$n];
       } else { // not cached, get it
@@ -380,19 +381,21 @@ function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
     }
   } else {
     $critere="";
-    // is it a context dependent option ?
-    $dotpos=strpos(".",$name);
-    if ($dotpos!==false) {
-      $class=substr($name,0,$dotpos);
-      $name=substr($name,$dotpos+1);
-      $critere="";
-    }
+#    // is it a context dependent option ?
+#    $dotpos=strpos(".",$name);
+#    if ($dotpos!==false) {
+#      $class=substr($name,0,$dotpos);
+#      $name=substr($name,$dotpos+1);
+#      $critere="";
+#    }
+#    if ($options_cache[$class.".".$name]) // cached ?
+#      return $options_cache[$class.".".$name];
 
-    if ($options_cache[$class.".".$name]) // cached ?
-      return $options_cache[$class.".".$name];
+
+    if ($options_cache[$name]) // cached ?
+      return $options_cache[$name];
     $critere="name='$name'";
   }
-
   $result=$db->execute(lq("SELECT name,value FROM #_TP_options WHERE $critere $extracritere"));
   if (!$result) {
     if ($db->errno()==1146) return; // table does not exists... that can happen during the installation
@@ -405,7 +408,7 @@ function getoption($name,$context=array(),$extracritere=" AND type!='pass'")
     $result->MoveNext();
   }
 
-  if (is_array($name)) {
+  if ($returnarray) {
     return $ret; // return an array
   } else {
     return $ret[$name]; // return a string
