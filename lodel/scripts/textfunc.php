@@ -392,6 +392,16 @@ function removenotes($text)
 }
 
 
+/** 
+ * Fonction qui enleve les images
+ */
+
+function removeimages($text)
+{
+  return preg_replace('/<img\b[^>]*>/',"",$text);
+}
+
+
 /**
  * Fonction qui dit si une date est vide ou non
  */
