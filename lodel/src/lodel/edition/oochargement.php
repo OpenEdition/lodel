@@ -262,7 +262,7 @@ function OO2 ($uploadedfile,&$context)
 
   // ecrit le fichier content.xml
   writefile("$tmpdir/content.xml",$content);
-  system("/usr/bin/zip -j $uploadedfile.sxw $tmpdir/content.xml 2>$errfile") or die("probleme avec unzip<br>".@join("",@file($errfile)));
+  system("/usr/bin/zip -j $uploadedfile.sxw $tmpdir/content.xml 2>$errfile") or die("probleme avec zip<br>".@join("",@file($errfile)));
 
   echo "<br>";
   // conversion en HTML
