@@ -1,4 +1,6 @@
 <?php
+
+die("dbxml.php desuet");
 // fonctions pour enregistrer un document dans la base de donnée
 
 require_once ($home."func.php");
@@ -6,12 +8,13 @@ include_once ($home."xmlparser.php");
 include_once ($home."xmlfunc.php");
 
 
-function enregistre ($context,&$text)
+function enregistre ($context,$text)
 
 {
   #  die(htmlentities($text));
-  global $home,$iduser,$superadmin;
-  if ($superadmin) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs du site.
+  global $home,$iduser;
+
+  if ($GLOBLAS[superadmin]) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs du site.
 
   // enregistre le document
   include_once ($home."connect.php");

@@ -73,7 +73,8 @@ function infoChargement(nomFic){
 <form name="formfic" enctype="multipart/form-data" action="[#URL]" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
 	<input type="hidden" name="idparent" value="[#IDPARENT]" />	
-        <input type="hidden" name="tache" value="[#TACHE]" />
+	<input type="hidden" name="iddocument" value="[#IDDOCUMENT]" />	
+        <input type="hidden" name="idtache" value="[#IDTACHE]" />
 	<IF COND="[#COMMANDS]">
 		    <input type="hidden" name="commands" value="[#COMMANDS]" />
 		    <input type="hidden" name="sessionname" value="[#SESSIONNAME]" />
@@ -92,7 +93,7 @@ function infoChargement(nomFic){
 			<td align="center">
 				<br /><br />
 				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
-<!--Cette boucle ne doit pas etre ecrite comme ca 				<LOOP NAME="publication" TABLE="publications" WHERE="id=[#IDPARENT]">
+Nicolas, cette boucle ne doit pas etre ecrite comme ca 	<!--			<LOOP NAME="publication" TABLE="publications" WHERE="id=[#IDPARENT]">
 					<IF COND="[#TYPE]=='regroupement'">
 						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 					<ELSE/>

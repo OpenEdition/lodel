@@ -8,13 +8,15 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Champs de la table <b>document</b></td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Champs des tables <b>document et publication</b></td>
 	</tr>
 </table>
-
+<h1>Documents</h1>(...j'ai mis du h1 a modifier)
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="typedoc.php?classe=documents">Ajouter un champs a la table document</a>
+	<a href="groupedechamps.php?classe=documents">Ajouter un regroupement de champs pour la table document</a><br />
+	<MACRO NAME="PNG_PLUS">
+	<a href="champ.php?classe=documents">Ajouter un champs a la table document</a>
 </div>
 <br /><br />
  
@@ -27,15 +29,17 @@
 		<td class="texte_noir_gras">Style</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="champdocument" TABLE="champs" ORDER="groupe, ordre" WHERE="status gt 0" WHERE="classe='documents'">
+	<LOOP NAME="groupesdocument" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="status gt 0" WHERE="classe='documents'">
+<tr><td colspan="6"><hr><h2>Groupe: [#TITRE]  ([#NOM])</h2></td></tr>
+	<LOOP NAME="champdocument" TABLE="champs" ORDER="ordre, nom" WHERE="status gt 0" WHERE="idgroupe='[#ID]'">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
 					<td class="ligne_admin1">[#NOM]</td>
-					<td class="ligne_admin1">[#(TITRE|nbsp)]</td>
-					<td class="ligne_admin1">[#(GROUPE|nbsp)]</td>
+					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
+					<td class="ligne_admin1">[(#GROUPE|nbsp)]</td>
 					<td class="ligne_admin1">[#TYPE]</td>
-					<td class="ligne_admin1">[#(STYLE|nbsp)]</td>
+					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
 							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
@@ -44,10 +48,10 @@
 					</td>
 				<ELSE/>
 					<td class="ligne_admin2">[#NOM]</td>
-					<td class="ligne_admin2">[#(TITRE|nbsp)]</td>
-					<td class="ligne_admin2">[#(GROUPE|nbsp)]</td>
+					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
+					<td class="ligne_admin2">[(#GROUPE|nbsp)]</td>
 					<td class="ligne_admin2">[#TYPE]</td>
-					<td class="ligne_admin2">[#(STYLE|nbsp)]</td>
+					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>
 							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
@@ -58,10 +62,70 @@
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="3"><span class="texte_info">Il n'y a pas de champs (très etrange !)</span></td></tr>
+			<tr><td colspan="3"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
 		</ALTERNATIVE>
 	</LOOP>
+	</LOOP>
 </table>
+<!-- la suite est tres similaire... faire une macro -->
+
+<h1>Publications</h1>(...j'ai mis du h1 a modifier)
+<div class="ligne_ajouter_serie">
+	<MACRO NAME="PNG_PLUS">
+	<a href="groupedechamps.php?classe=publications">Ajouter un regroupement de champs pour la table publication</a><br />
+	<MACRO NAME="PNG_PLUS">
+	<a href="champ.php?classe=publications">Ajouter un champs a la table publication</a>
+</div>
+<br /><br />
+ 
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td class="texte_noir_gras">Nom</td>
+		<td class="texte_noir_gras">Titre</td>
+		<td class="texte_noir_gras">Groupe</td>
+		<td class="texte_noir_gras">Type</td>
+		<td class="texte_noir_gras">Style</td>
+		<td>&nbsp;</td>
+	</tr>
+	<LOOP NAME="groupespublication" TABLE="groupesdechamps" ORDER="ordre,titre" WHERE="status gt 0" WHERE="classe='publications'">
+<tr><td colspan="6"><hr><h2>Groupe: [#TITRE]  ([#NOM])</h2></td></tr>
+	<LOOP NAME="champpublication" TABLE="champs" ORDER="ordre, nom" WHERE="status gt 0" WHERE="idgroupe='[#ID]'">
+		<DO>
+			<tr>
+				<IF COND="[#COUNT] % 2">
+					<td class="ligne_admin1">[#NOM]</td>
+					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
+					<td class="ligne_admin1">[(#GROUPE|nbsp)]</td>
+					<td class="ligne_admin1">[#TYPE]</td>
+					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
+					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+						<div>
+							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+							<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+						</div>
+					</td>
+				<ELSE/>
+					<td class="ligne_admin2">[#NOM]</td>
+					<td class="ligne_admin2">[(#TITRE|nbsp)]</td>
+					<td class="ligne_admin2">[(#GROUPE|nbsp)]</td>
+					<td class="ligne_admin2">[#TYPE]</td>
+					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
+					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+						<div>
+							|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+							<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+						</div>
+					</td>
+				</IF>
+			</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="3"><span class="texte_info">Il n'y a pas de champs dans ce groupe</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+	</LOOP>
+</table>
+
 
 
 

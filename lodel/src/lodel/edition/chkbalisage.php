@@ -6,7 +6,7 @@ include ($home."func.php");
 
 if ($cancel) include ("abandon.php");
 
-$tache=get_tache($id);
+$tache=get_tache($idtache);
 
 include ($home."balises.php");
 
@@ -18,6 +18,11 @@ while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 // ajoute les balises "personnes"
 $result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typepersonnes WHERE status>0");
 while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
+
+// ajoute les balises "documents"
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,$GLOBALS[tp]champs.titre FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  classe='documents' AND $GLOBALS[tp]champs.status>0") or die (mysql_error());
+while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
+
 
 //
 ### cette zone n'est plus inutilisee
@@ -166,14 +171,14 @@ if (count($tablescontent)>1) { // ok il faut decouper le fichier
 #  die (htmlentities($texts[main]));
 
   
-  update_tache_context($id,$tache);
+  update_tache_context($idtache,$tache);
 }
 
 
 if (preg_match("/<r2r:(titrenumero|nomnumero|typenumero)>/i",$text)) {
-  $context[urlsuite]="importsommaire.php?id=$id";
+  $context[urlsuite]="importsommaire.php?idtache=$idtache";
 } else {
-  $context[urlsuite]="extrainfo.php?id=$id";
+  $context[urlsuite]="document.php?idtache=$idtache";
 }
 
 
@@ -194,7 +199,7 @@ function loop_partie_fichier($context,$funcname)
   call_user_func("code_do_$funcname",$context);
 }
 
-$context[id]=$id;
+$context[idtache]=$idtache;
 require ($home."calcul-page.php");
 calcul_page($context,"chkbalisage");
 

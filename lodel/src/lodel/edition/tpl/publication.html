@@ -54,7 +54,7 @@
 		<input type="hidden" name="groupe" value="1" />
 		<input type="hidden" name="importsommaire" value="[#IMPORTSOMMAIRE]" />
 
-		<div class="ligne_formulaire">
+<!--		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
 				<IF COND="[#TYPE] EQ 'serie_lineaire'">
 					<span class="texte_intitule">Nom de la série*</span><br />
@@ -133,68 +133,158 @@
 			</div>
 			<input size="45" type="text" name="directeur" value="[#DIRECTEUR]">
 		</div>
-		
-	<!-- boucle sur les types de personne -->
-	<LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">
-		<DO>
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr>
-					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE] <input class="form" type="submit" name="plus[[#ID]]" value="Ajouter"></td>
-				</tr>
-			</table>
-			<br />
-
-			<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
-				<MACRO NAME="AFFICHE_PERSONNES">
-			</table>
-		</DO>
-	</LOOP>
-	<!-- fin de la boucle sur les types d'auteurs -->
-
-	<LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">
-		<DO>
-			<br />
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr>
-					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
-				</tr>
-			</table>
-			<br />
-		
-			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-				<tr>
-					<td width="200" valign="top">[#TITRE] (*) :</td>
-					<td>
-						<select multiple size="10" name="entrees[[#ID]][]"><?php  makeselectentrees($context); // use $context[id]  $context[tri] ?></select><br />
-						<IF COND="[#NEWIMPORTABLE]">
-							<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
-							* noms séparés par des virgules ou point-virgules.
-						<ELSE/>
-							<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
-						</IF>
-					</td>
-				</tr>
-			</table>
-		</DO>
-	</LOOP>
-
-	<div class="ligne_formulaire">
-		<div class="intitule_ligne_formulaire">
-			<span class="texte_intitule">Texte d'introduction</span><br />
-			<span class="texte_info">Balises HTML autorisées</span>
+-->
+		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Nom bref:</span>
+			</div>
+			<input size="45" type="text" name="nom" value="[#NOM]">
+			[(#ERREUR_NOM|true)<br /><span class="message_erreur">Vous devez préciser un nom !</span>]
 		</div>
-		<textarea name="texte" rows="20" cols="33">[#TEXTE]</textarea>
-	</div>
 
-	<div class="pied_de_formulaire">
-		<input class="form" type="submit" name="edit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<IF COND="[#ID]">
-			<input class="form" type="button" value="Supprimer" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />
+Nicolas peux-tu passer ca en div, et en faire une macro car la meme chose est utilisee dans extrainfo
+<!-- boucles sur les groupes de champs -->
+<LOOP NAME="groupesdechamps" TABLE="groupesdechamps" WHERE="classe='publications' AND status gt 0" ORDER="ordre">
+	<LOOP NAME="champs">
+	<BEFORE><!-- information sur le groupe. Ne s'affichissent que s'il y a des champs editable -->
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+		</tr>
+	</table>
+	<br />
+	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+	</BEFORE>
+        <DO>
+		<tr>
+			<td width="200">[#TITRE]:</td>
+		<IF COND="[#EDITION] eq 'text'">
+			<td><input size="70" type="text" name="entite[[#NOM]]" value="[#VALUE]"></td>
 		</IF>
-	</div>
+		<IF COND="[#EDITION] eq 'textarea10'">
+			<td><textarea rows="10" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+		</IF>
+		<IF COND="[#EDITION] eq 'textarea30'">
+			<td><textarea rows="30" cols="70" name="entite[[#NOM]]">[(#VALUE|htmlentities)]</textarea></td>
+		</IF>
+		</tr>
+		<IF COND="[#ERREUR] eq '+'"><tr><td colspan="2" class="message_erreur">Ce champ est obligatoire</td></tr></IF>
+		<IF COND="[#ERREUR] eq 'date'"><tr><td colspan="2" class="message_erreur">Vous devez entrer une date valide</td></tr></IF>
+		<IF COND="[#ERREUR] eq 'int'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre entier</td></tr></IF>
+		<IF COND="[#ERREUR] eq 'numeric'"><tr><td colspan="2" class="message_erreur">Vous devez entrer un nombre</td></tr></IF>
+        </DO>
+        <AFTER>
+	</table>
+        </AFTER>
+    </LOOP>
+</LOOP>
+
+
 		
-</form>
+		<div class="ligne_formulaire">
+	<!-- boucle sur les types de personne -->
+CODE HTML A REPRENDRE STP NICOLAS... surement faire une macro en commun avec extrainfo.html
+        <LOOP NAME="typepersonnes" TABLE="typepersonnes" TABLE="typeentites_typepersonnes" WHERE="idtypepersonne=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre">		    
+	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+		<tr>
+			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE] <input class="form" type="submit" name="plus[[#ID]]" value="Ajouter"></td>
+		</tr>
+	</table>
+	<br />
+
+	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
+
+		<LOOP NAME="personnes">
+			<tr>
+			<td width="200">[#TITRE] [#IND] :</td>
+				    <td>
+				      <table class="table_form_popup">
+					<tr>
+					  <td>Pr&eacute;fixe</td>
+					  <td>Pr&eacute;nom</td>
+					  <td>Nom</td>
+					  </tr>
+					<tr>
+					  <td><input size="5" type="text" name="prefix[[#ID]][[#IND]]" value="[#PREFIX]"></td>
+					  <td><input size="30" type="text" name="prenom[[#ID]][[#IND]]" value="[#PRENOM]"></td>
+					  <td><input size="30" type="text" name="nomfamille[[#ID]][[#IND]]" value="[#NOMFAMILLE]"></td>
+					  </tr>
+				      </table>
+				    </td>
+				    <td rowspan="2">Description:<br />
+				    <textarea name="description[[#ID]][[#IND]]" COLS="20" ROWS="4" readonly>[#DESCRIPTION]</textarea>
+				    </td>
+
+				  </tr>
+				  <tr>
+				    <td></td>
+				    <td>
+				    <table class="table_form_popup" >
+				      <tr>
+					<td>Fonction:</td>
+					<td>Affiliation:</td>
+					<td>Courriel:</td>
+				      </tr>
+				      <tr>
+					<td><INPUT SIZE="20" TYPE="text" NAME="fonction[[#ID]][[#IND]]" value="[#FONCTION]"></td>
+					<td><INPUT SIZE="20" TYPE="text" NAME="affiliation[[#ID]][[#IND]]" value="[#AFFILIATION]"></td>
+					<td><INPUT SIZE="20" TYPE="text" NAME="courriel[[#ID]][[#IND]]" value="[#COURRIEL]"></td>
+				      </tr>
+				      
+				    </table>
+				    </td>
+				</tr>
+		</LOOP>
+	</table>
+	</LOOP><!-- fin de la boucle sur les types d'auteurs -->
+        <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND status gt 0" ORDER="ordre" SELECT="*">
+		<br />
+		<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<tr>
+				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
+			</tr>
+		</table>
+		<br />
+	
+		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
+			<tr>
+				<td width="200" valign="top">[#TITRE] (*) :</td>
+				<td>
+					<select multiple size="10" name="entrees[[#ID]][]"><?php  makeselectentrees($context); // use $context[id]  $context[tri] ?></select><br />
+					<IF COND="[#NEWIMPORTABLE]">
+						<br /><br />Autres : <input size="60" type="text" name="autresentrees[[#ID]]" value="[#AUTRESENTREES]" /><br /><br />
+						* noms séparés par des virgules ou point-virgules.
+					<ELSE/>
+						<IF COND="[#AUTRESENTREES]"><br /><br />Les entrées importées suivantes n'ont pas été trouvées dans l'index : [#AUTRESENTREES]<br /><br /></IF>
+					</IF>
+				</td>
+			</tr>
+		</table>
+	</LOOP>
+
+		</div>
+
+
+
+<!--		<div class="ligne_formulaire">
+			<div class="intitule_ligne_formulaire">
+				<span class="texte_intitule">Texte d'introduction</span><br />
+				<span class="texte_info">Balises HTML autorisées</span>
+			</div>
+			<textarea name="texte" rows="20" cols="33">[#TEXTE]</textarea>
+		</div>
+-->
+
+		<div class="pied_de_formulaire">
+			<input class="form" type="submit" name="edit" value="   [Modifier(#ID|true)][Ajouter(#ID|false)]   " />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<IF COND="[#ID]">
+				<input class="form" type="button" value="Supprimer" onClick="javascript:window.location='supprime.php?publication=[#ID]'" />
+			</IF>
+		</div>
+		
+	</form>
 <MACRO NAME="CLOSE_HTML">

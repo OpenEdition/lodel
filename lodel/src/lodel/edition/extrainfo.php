@@ -46,8 +46,8 @@ require_once($home."extrainfofunc.php");
 // ce bloc peut etre appele par plusieurs scripts.
 
 if ($edit || $plus || $reload) {
-  if (ei_edition($filename,$tache,$context,$text,$entrees,$autresentrees,$plus)) { // ca marche... on termine
-    $iddocument=ei_enregistrement($filename,$tache,$context,$text);
+  if (ei_edition($filename,$tache,$document,$text,$entrees,$autresentrees,$plus)) { // ca marche... on termine
+    $iddocument=ei_enregistrement($filename,$tache,$document,$text);
     //
     // termine en redirigeant correctement
     //

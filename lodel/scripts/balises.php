@@ -6,23 +6,23 @@
 // les ss balises doivent etre associees a une/ou des balises html ou etre vide.
 
 $balises=array ("-" => "-",
-		"titre" => "Titre",
-		"surtitre" => "Surtitre",
-		"soustitre" => "Sous-titre",
-		"auteurs" => "Auteurs",
+#		"titre" => "Titre",
+#		"surtitre" => "Surtitre",
+#		"soustitre" => "Sous-titre",
+#		"auteurs" => "Auteurs",
 #		"motcles" => "Mots Clés",
 #		"periodes" => "Périodes",
 #		"geographies" => "Géographie",
-		"resume" => "Résumé",
-		"texte" => "Texte",
+#		"resume" => "Résumé",
+#		"texte" => "Texte",
 		"citation" => "<blockquote>",
 		"epigraphe" => "Epigraphe",
-		"notebaspage" => "Notes de bas de page",
-		"notefin" => "Notes de fin de document",
+#		"notebaspage" => "Notes de bas de page",
+#		"notefin" => "Notes de fin de document",
 		"typedoc" => "Type de document",
 		"finbalise" => "fin",
-		"bibliographie"=>"Bibliographie",
-		"annexe"=>"Annexe",
+#		"bibliographie"=>"Bibliographie",
+#		"annexe"=>"Annexe",
 		"section1"=>"<h1>",
 		"section2"=>"<h2>",
 		"section3"=>"<h3>",
@@ -33,11 +33,11 @@ $balises=array ("-" => "-",
 		"legendedoc"=>"<i>",
 		"titreillustration"=>"<i>",
 		"legendeillustration"=>"<i>",
-		"droitsauteur"=>"Droits d'auteur",
-		"erratum"=>"Erratum",
-		"ndlr"=>"NDLR",
-		"historique"=>"Historique",
-		"pagination"=>"Pagination",
+#		"droitsauteur"=>"Droits d'auteur",
+#		"erratum"=>"Erratum",
+#		"ndlr"=>"NDLR",
+#		"historique"=>"Historique",
+#		"pagination"=>"Pagination",
 		"langues"=>"Langues",
 # champs auteurs
 		"descriptionauteur"=>"Description de l'auteur précédent",
@@ -57,21 +57,23 @@ $balises=array ("-" => "-",
 # dans les deux tableaux ci-dessous on a la liste des balises qui apparaissent dans les documents, mais qui ne sont pas dans la base de donnee.
 #
 # balises qui ne sont extraites que lorsque le texte est publie.
-$balisesdocument_lieautexte=array("texte",
-				  "notebaspage",
-				  "notefin",
-				  "bibliographie",
-				  "annexe",
-				  "erratum",
-				  "ndlr",
-				  "historique",
-				  );
+
+# CHANGE 14/09/03 c'est maintenant la responsabilite du template
+#$balisesdocument_lieautexte=array("texte",
+#				  "notebaspage",
+#				  "notefin",
+#				  "bibliographie",
+#				  "annexe",
+#				  "erratum",
+#				  "ndlr",
+#				  "historique",
+#				  );
 
 # balises qui sont toujours extraites, meme si le texte n'est pas publie.
-$balisesdocument_nonlieautexte=array("resume",
-				     "droitsauteurs",
-				     "pagination"
-				     );
+#$balisesdocument_nonlieautexte=array("resume",
+#				     "droitsauteurs",
+#				     "pagination"
+#				     );
 
 
 $balisesdocumentassocie=array("objetdelarecension"=>"Objet de la recension",
@@ -115,7 +117,8 @@ $multiparagraphe_tags="titre|surtitre|soustitre|texte|citation|epigraphe|notebas
 
 
 # tags qui admettent des listes separees par des virgules.
-$virgule_tags="auteurs|periodes|geographies|motcles|langues";
+# CHANGE: 07/09/03 gerer par la DB.
+#$virgule_tags="auteurs|periodes|geographies|motcles|langues";
 
 
 

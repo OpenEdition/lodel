@@ -15,15 +15,9 @@ function get_tache (&$id)
 
 {
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id'") or die (mysql_error());
-  if (!($row=mysql_fetch_assoc($result))) { header("Location: index.php"); return; }
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id' AND status>0") or die (mysql_error());
+  if (!($row=mysql_fetch_assoc($result))) { back(); return; }
   $row=array_merge($row,unserialize($row[context]));
-  // verifie que le fichier existe encore
-  if ($row[fichier] && !file_exists($row[fichier].".html")) {
-    // detruit la tache
-    header("location: abandon.php?id=$id");
-  }
-
   return $row;
 }
 
@@ -184,7 +178,7 @@ function copy_images (&$text,$callback,$argument="")
     foreach ($results as $result) {
       $imgfile=$result[1];
       if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<Img src=\"$imglist[$imgfile]\"",$text);
+	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
       } else {
 	$ext=$result[2];
 	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
@@ -319,6 +313,17 @@ function makeurlwithid ($base,$id)
     return $base.".".$GLOBALS[extensionscripts]."?id=".$id;
   }
 }
+
+if (!function_exists("file_get_contents")) {
+  function file_get_contents($file) 
+  {
+    $fp=fopen($file,"r") or die("Impossible to read the file $file");
+    while(!feof($fp)) $res.=fread($fp,2048);
+    fclose($fp);
+    return $res;
+  }
+}
+
 
 
 // valeur de retour, identifiant ce script

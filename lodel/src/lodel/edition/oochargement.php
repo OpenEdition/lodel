@@ -12,7 +12,8 @@ include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 
 $context[idparent]=intval($idparent);
-$context[tache]=$tache=intval($tache);
+$context[iddocument]=intval($iddocument);
+$context[idtache]=$idtache=intval($idtache);
 
 
 if ($file1 && $file1!="none") {
@@ -54,20 +55,27 @@ if ($file1 && $file1!="none") {
       $context[erreur_upload]="Erreur dans la fonction OO";
       break;
     }
-    if ($tache) { // document ancien ?
-      $row=get_tache($tache);
+    if ($idtache) { // document ancien ?
+      $row=get_tache($idtache);
       $row[fichier]=$newname;
     } else {
-      $row=array("idparent"=>$context[idparent],"fichier"=>$newname);
+      $row=array("fichier"=>$newname);
+      if ($context[iddocument]) {
+	$row[iddocument]=$context[iddocument];
+      } elseif ($context[idparent]) {
+	$row[idparent]=$context[idparent];
+      } else {
+	die("probleme dans l'interface, aucune information pour attacher le document ou la publication");
+      }
     }
-    $idtache=make_tache("Import $file1_name",3,$row,$tache);
+    $idtache=make_tache("Import $file1_name",3,$row,$idtache);
 
     if ($msg) {
       echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
       return;
     }
 
-    header("Location: chkbalisage.php?id=$idtache");
+    header("Location: chkbalisage.php?idtache=$idtache");
     return;
   } while (0); // exceptions
 }

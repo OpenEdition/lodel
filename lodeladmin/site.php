@@ -186,9 +186,9 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
       while ($file=readdir($dir)) {
 	if (is_dir("../../".$file) && 
 	    preg_match($lodelhomere,$file) &&
-	    is_dir("../../".$file."/site")) {
-	  if (!(@include("../../$file/site/siteconfig.php"))) {
-	    echo "Warning: Impossible d'ouvrir le fichier $file/site/siteconfig.php<br>";
+	    is_dir("../../".$file."/revue")) {
+	  if (!(@include("../../$file/revue/siteconfig.php"))) {
+	    echo "Warning: Impossible d'ouvrir le fichier $file/revue/siteconfig.php<br>";
 	  } else {
 	    $versions[$file]=$version ? $version : "devel";
 	  }
@@ -202,7 +202,7 @@ if ($tache=="version" || ($tache && !preg_match($lodelhomere,$versionrep))) {
   if ($context[countversions]==1) {// ok, une seule version, on la choisit
     list($versionrep)=array_keys($versions);
   } elseif ($context[countversions]==0) { // aie, aucune version on crach
-    die ("Verifiez le package que vous avez, il manque le repertoire lodel/site. L'installation ne peut etre poursuivie !");
+    die ("Verifiez le package que vous avez, il manque le repertoire lodel/revue. L'installation ne peut etre poursuivie !");
   } else { // il y en a plusieurs, faut choisir
     $context[count]=count($versions);
     function makeselectversion()
@@ -226,12 +226,12 @@ if ($tache) $context[versionrep]=$versionrep;
 if ($tache=="fichier") {
   // on peut installer les fichiers
   $root="../../".$context[rep]."/";
-  $siteconfigsrc=$root."../$versionrep/site/siteconfig.php";
+  $siteconfigsrc=$root."../$versionrep/revue/siteconfig.php";
   $siteconfigdest=$root."siteconfig.php";
   // cherche si le fichier n'existe pas ou s'il est different de l'original
   if (!file_exists($reveconfigdest) || file($siteconfigsrc)!=file($siteconfigdest)) {
     // on essaie de copier alors
-    if (!copy($siteconfigsrc,$siteconfigdest)) {
+    if (!@copy($siteconfigsrc,$siteconfigdest)) {
       $context[erreur_ecriture]=1;
       require ($home."calcul-page.php");
       calcul_page($context,"site-fichier");
@@ -239,7 +239,7 @@ if ($tache=="fichier") {
     }
   }
   // ok siteconfig est copier.
-  install_fichier($root,"../$versionrep/site","..");
+  install_fichier($root,"../$versionrep/revue","..");
 
   // ok on a fini, on change le status de la site
   mysql_query ("UPDATE $GLOBALS[tp]sites SET status=1 WHERE id='$id'") or die (mysql_error());

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	nom		VARCHAR(64) NOT NULL, # nom utilisé en interne
 
 	groupe		TINYINT UNSIGNED DEFAULT '1' NOT NULL,
-	user		INT UNSIGNED DEFAULT '0' NOT NULL,
+	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '-1' NOT NULL,
@@ -44,34 +44,12 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_relations (
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
 	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
-
-	titre		TEXT NOT NULL,
-	soustitre	TEXT NOT NULL,
-	directeur	TINYTEXT,
-	texte		TEXT,
-	textetype	VARCHAR(4),
-
-	date		DATE,
-
 	KEY index_identite (identite)
 );
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
-
-	surtitre	TEXT NOT NULL,
-	titre		TEXT NOT NULL,
-	soustitre	TEXT NOT NULL,
-
-	commentaire	TEXT NOT NULL,		# contient du texte affichable
-	commentairetype	VARCHAR(4) NOT NULL,	# type de traitement a faire pour l'affichage de commentaire
-	lien		TEXT NOT NULL,		# contient le lien vers un fichier
-
-	langresume	VARCHAR(64) NOT NULL, # langues des resumes
-	lang		VARCHAR(64) NOT NULL, # langues dans le texte
-	datepubli	DATE, # date de publication du texte
-
 	KEY index_identite (identite)
 );
 
@@ -85,8 +63,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
-	groupe		VARCHAR(64) NOT NULL,		# groupe auquel appartient ce champ (rien a voir avec les groupes users)
-	classe		VARCHAR(64) NOT NULL,   	# nom de la table complementaire
+	idgroupe	INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
 
@@ -94,6 +71,24 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	type		TINYTEXT NOT NULL,		# type du champ
 	condition	TINYTEXT NOT NULL,		# condition
 	traitement	TINYTEXT NOT NULL,		# traitement de nettoyage a faire
+	edition		TINYTEXT NOT NULL,		# input pour l'edition
+
+	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
+	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,
+	maj		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_nom (nom),
+	KEY index_idgroupe (idgroupe)
+);
+
+
+CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
+	classe		VARCHAR(64) NOT NULL,   	# nom de la table complementaire
+
+	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	ordre		INT UNSIGNED DEFAULT '0' NOT NULL,

@@ -104,15 +104,16 @@ if ($edit) { // modifie ou ajoute
 
     require_once($home."entitefunc.php");
     if ($id>0) { // il faut rechercher le status, l'ordre, le groupe
-      list($ordre,$groupe,$status)=get_variables_perennes($context,$critere);
+      list($ordre,$groupe,$status,$iduser1)=get_variables_perennes($context,$critere);
     } else { 
       $groupe=get_groupe($critere,$idparent);
       // cherche l'ordre
       $ordre=get_ordre_max("entites");
       $status=-1; // non publie par defaut
+      $iduser1=$GLOBALS[superadmin] ? 0 : $iduser;
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe) VALUES ('$id','$idparent','$idtype','$context[titre]','$ordre','$status','$groupe')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe,iduser) VALUES ('$id','$idparent','$idtype','$context[titre]','$ordre','$status','$groupe','$iduser1')") or die (mysql_error());
 
     if (!$id) $id=mysql_insert_id();
     mysql_query ("REPLACE INTO $GLOBALS[tp]documents (identite,titre,commentaire,lien) VALUES ('$id','$context[titre]','$context[commentaire]','$lien')") or die (mysql_error());

@@ -26,6 +26,7 @@ if (!$context[tpl]) {
 
 $base=$context[tpl];
 
+/*
 //
 // charge le fichier XML et extrait les balises
 //
@@ -42,6 +43,7 @@ array_push($balises,"surtitre","titre","soustitre");
 if ($context[textepublie] || $visiteur) $balises=array_merge($balises,$balisesdocument_lieautexte);
 
 $context=array_merge($context,extract_xml($balises,$text));
+*/
 
 //
 // cherche s'il y a des documents annexe et combien

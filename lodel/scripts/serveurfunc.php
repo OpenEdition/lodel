@@ -47,48 +47,70 @@ if (!$fp) die("ERROR: cannot connect to $url[host]:$port\n");
     
  fputs ($fp,$request);
 
+# $fp2=fopen("/tmp/tmp1","w");
+# while (!feof($fp)) { $buf=fread($fp,1024); fwrite($fp2,$buf); }
+# exit();
+
   // lit le header
   $line="";
   while (!feof($fp) && $line!="\r\n") {
     $line=fgets($fp,1024);
     if (strpos($line,"Transfer-Encoding:")===0 && $line!="Transfer-Encoding: chunked\r\n") die ("Bug a reporter: le transfert encoding n'est pas chunked: <br>".$line);
   }
-
-  fgets($fp,1024); # contient la taille du chunk suivant
-  $line=fgets($fp,1024);
-  if (preg_match("/^ERROR:/",$line)) { return $line; }
-  if (!preg_match("/^content-length:\s*(\d+)/",$line,$result)) {
-    echo ("Le content-length n'a pas ete envoye (serveurfunc.php):<br>".$line."<br>");
-    while (!feof($fp) && !preg_match("/^content-length/",$line)) { echo $line=fgets($fp,1024),"<br>"; }
-    exit(1);
-  }
-  $size=$result[1];
-  #echo ":::<br>";
-
   if ($outfile) {
-    if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. probleme de droit contacter Luc ou Ghislain"); }
+    if (file_exists($outfile)) { if (! (unlink($outfile)) ) die ("Ne peut pas supprimer $outfile. Probleme de droit sur les fichiers et repertoire surement"); }
    $fout=fopen($outfile,"w");
    if (!$fout) die("impossible d'ouvrir le fichier $outifle en ecriture");
   }
 
+  $size=0;
   $res="";
-  while (!feof($fp) && $size) {
-    #echo "vide:",fgets($fp,1024),"<br>"; # ligne vide
-    fgets($fp,1024); # ligne vide
-    $chunksize=hexdec(fgets($fp,1024)); # lit le chunck size
-    $size-=$chunksize;
-    #echo "SIZE: $chunksize $size<br>\n";
-    
-    if ($outfile) {
-      while ($chunksize) {
-	$bytetoread=min($chunksize,2048); $chunksize-=$bytetoread;
-	fwrite($fout,fread ($fp,$bytetoread));
-      }
-    } else {
-      $res.=fread ($fp,$chunksize);
-    }
 
-  }
+  if (feof($fp)) die("erreur de transfert");
+
+  do {
+    $chunk_head=fgets($fp,1024);
+    if (!preg_match("/^[A-Fa-f0-9]+\s*\r\n/",$chunk_head)) {
+      #while ($chunk_head) { echo ord($chunk_head)," "; $chunk_head=substr($chunk_head,1); }
+      die ("ERROR: chunk head invalid: \"$chunk_head\"");
+    }
+    $chunksize=hexdec($chunk_head); # lit le chunck size
+    error_log("chunk: \"$chunk_head\" $chunksize\n",3,"/tmp/log");
+    while ($chunksize) {
+      if ($outfile) {
+	$bytetoread=min($chunksize,2048);
+      } else {
+	$bytetoread=$chunksize;
+      }
+      error_log("buf to be read $bytetoread \n",3,"/tmp/log");
+      $buf=fread ($fp,$bytetoread);
+      error_log("buf read $size\n",3,"/tmp/log");
+
+# $fp2=fopen("/tmp/tmp1","w");
+# fwrite($fp2,$buf);
+# exit();
+
+      if ($size==0) {
+	if (preg_match("/^ERROR:[^\n\r]+/",$buf,$result)) { return $result[0]; }
+	if (preg_match("/^content-length:\s*(\d+)\s*\r?\n/",$buf,$result)) {
+	  $size=$result[1];
+	  $buf=substr($buf,strlen($result[0]));
+	} else {
+	  #for($i=0; $i<40; $i++) { echo substr($buf,0,1)," ",ord($buf),"  "; $buf=substr($buf,1);}
+	  die("content-length not found: \"$buf\"");
+	}
+	error_log("content-lenght $size\n",3,"/tmp/log");
+      }
+      if ($outfile) {
+	fwrite($fout,$buf);
+      } else {
+	$res.=$buf;
+      }
+      $chunksize-=$bytetoread;
+      $size-=$bytetoread;
+    }
+    fgets($fp,1024); # ligne vide
+  } while (!feof($fp) && $size>0);
   fclose ($fp);
 
 # echo "tout ",(time()-$t),"<br>\n";

@@ -482,28 +482,28 @@
 <DEFMACRO NAME="AJOUTER_UN_NUMERO">
 	<div class="ligne_ajouter_numero">
 		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=numero&parent=[#ID]">Ajouter un numero</a>
+		<a href="publication.php?type=numero&idparent=[#ID]">Ajouter un numero</a>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UN_THEME">
 	<div class="ligne_ajouter_theme">
 		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=theme&parent=[#ID]">Ajouter un thème</a>
+		<a href="publication.php?type=theme&idparent=[#ID]">Ajouter un thème</a>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UN_SOUS_THEME">
 	<div class="ligne_ajouter_theme">
 		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=theme&parent=[#ID]">Ajouter un sous-thème</a>
+		<a href="publication.php?type=theme&idparent=[#ID]">Ajouter un sous-thème</a>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="AJOUTER_UN_REGROUPEMENT">
 	<div class="ligne_ajouter_regroupement">
 		<MACRO NAME="PNG_PLUS">
-		<a href="publication.php?type=regroupement&parent=[#ID]">Ajouter un regroupement</a>
+		<a href="publication.php?type=regroupement&idparent=[#ID]">Ajouter un regroupement</a>
 	</div>
 </DEFMACRO>
 
@@ -539,8 +539,8 @@
 
 <DEFMACRO NAME="DESCENDRE_MONTER_DOCUMENT">
 	<IF COND="[#EDITEUR]">
-		<a href="editer.php?dir=down&id=[#ID]"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-		<a href="editer.php?dir=up&id=[#ID]"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+		<a href="document.php?dir=down&id=[#ID]"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+		<a href="document.php?dir=up&id=[#ID]"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
 		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
@@ -585,7 +585,7 @@
 		<MACRO NAME="DESCENDRE_MONTER_DOCUMENT">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid('document'))]">Voir</a>&nbsp;
 		<IF COND="[#EDITEUR]">
-		|&nbsp;<a href="editer.php?id=[#ID]&edit=1">Métas</a>&nbsp;
+		|&nbsp;<a href="document.php?id=[#ID]">Métas</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">Métas</span>&nbsp;
 		</IF>

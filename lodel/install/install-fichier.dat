@@ -118,8 +118,10 @@ ln balisage.php
 ln tpl/balisage.html
 ln chkbalisage.php
 ln tpl/chkbalisage.html
-ln extrainfo.php
-ln tpl/extrainfo.html
+#ln extrainfo.php
+#ln tpl/extrainfo.html
+ln document.php
+ln tpl/document.html
 ln importsommaire.php
 ln telecharger.php
 
@@ -241,6 +243,13 @@ ln texte.php
 ln tpl/texte.html
 ln textes.php
 ln tpl/textes.html
+
+ln champ.php
+ln tpl/champ.html
+ln champs.php
+ln tpl/champs.html
+ln groupedechamps.php
+ln tpl/groupedechamps.html
 
 ln typedoc.php
 ln tpl/typedoc.html

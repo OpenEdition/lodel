@@ -343,7 +343,6 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
 	if ($err=create("groupes")) break;
 	$err=mysql_query_cmd("REPLACE INTO _PREFIXTABLE_groupes (id,nom) VALUES('1','tous')");
 	if ($err) break;
-	$report.="Creation de la table groupe<br>\n";
     }
 
     if (!$tables["$GLOBALS[tp]typeentites_typepersonnes"]) {
@@ -354,11 +353,52 @@ INSERT INTO _PREFIXTABLE_types (type,titre,tplcreation,ordre,classe,status) VALU
 	if ($err=create("typeentites_typeentrees")) break;
     }
 
+    if (!$tables["$GLOBALS[tp]groupesdechamps"]) {
+      if ($err=create("groupesdechamps")) break;
+      if ($err=chargeinserts("groupesdechamps")) break;
+    }
+    if (!$tables["$GLOBALS[tp]champs"]) {
+      if ($err=create("champs")) break;
+      if ($err=chargeinserts("champs")) break;
 
-#    if (!$tables["$GLOBALS[tp]champs"]) {
-#	if ($err=create("champs")) break;
-#	
-#    }
+      $fields[documents]=getfields("documents");
+      $fields[publications]=getfields("publications");
+
+      require_once($home."champfunc.php");
+      
+      // creer les champs dans les tables correspondantes
+      $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,classe FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND  $GLOBALS[tp]champs.status>0") or die (mysql_error());
+      while ($row=mysql_fetch_assoc($result)) {
+	$alter=$fields[$row[classe]][$row[nom]] ? "MODIFY" : "ADD";
+	mysql_query("ALTER TABLE $GLOBALS[tp]$row[classe] $alter $row[nom] ".$sqltype[$row[type]]) or die (mysql_error());
+      }
+
+      // importe dans les documents
+      $fields=getfields("documents");
+      unset($fields[identite]); // enleve identite
+      unset($fields[meta]); // enleve meta
+      $result=mysql_query("SELECT identite FROM $GLOBALS[tp]documents") or die (mysql_error());
+      while ($row=mysql_fetch_assoc($result)) {
+	$filename="../txt/r2r-$row[identite].xml";
+	if (!file_exists($filename)) { $err.="Le fichier $filename n'existe pas<br>"; continue; }
+	$file=join("",file($filename));
+	$updates=array();
+	foreach(array_keys($fields) as $field) {
+	  if (preg_match("/<R2R:$field\s*(?:lang=\"fr\")?>(.*?)<\/R2R:$field>/is",$file,$match)) {
+	    array_push($updates," $field='".addslashes($match[1])."'");
+	  }
+	}
+	if ($updates) {
+	  mysql_query("UPDATE $GLOBALS[tp]documents SET ".join(",",$updates)." WHERE identite=$row[identite]") or die (mysql_error());
+	}
+      }
+      if ($err) break;
+    }
+
+    // efface les repertoires CACHE
+    require_once($home."cachefunc.php");
+    removefilesincache(".","../edition","../..");
+
 
     // fini, faire quelque chose
   } while(0);
@@ -385,12 +425,15 @@ function mysql_query_cmd($cmd)
 
 
 // faire attention avec cette fontion... elle supporte pas les ; dans les chaines de caractere...
-function mysql_query_cmds($cmds) 
+function mysql_query_cmds($cmds,$table="") 
 
 {
   $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tp]",$cmds);
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
+  if ($table) { // select the commands operating on the table  $table
+    $sql=preg_grep("/(REPLACE|INSERT)\s+INTO\s+$GLOBALS[tp]$table\s/i",$sql);
+  }
   if (!$sql) return;
 
   foreach ($sql as $cmd) {
@@ -430,21 +473,21 @@ function getfields($table)
 
 
 # pose des problemes... ca ecrase les anciens types
-##function chargeinserts() 
-##
-##{
-##  global $home,$report;
-##      // charge l'install
-##  $file=$home."../install/inserts-site.sql";
-##  if (!file_exists($file)) {
-##    $err="Le fichier $file n'existe pas !";
-##    break;
-##  }
-##  $err=mysql_query_cmds(utf8_encode(join('',file($file))));
-##  if ($err) return $err;
-##  $report.="Création des tables<br>";
-##  return FALSE;
-##}
+function chargeinserts($table)
+
+{
+  global $home,$report;
+      // charge l'install
+  $file=$home."../install/inserts-site.sql";
+  if (!file_exists($file)) {
+    $err="Le fichier $file n'existe pas !";
+    break;
+  }
+  $err=mysql_query_cmds(utf8_encode(join("",file($file))),$table);
+  if ($err) return $err;
+  $report.="Import des insert dans la table $table<br>";
+  return FALSE;
+}
 
 function create($table) 
 

@@ -156,6 +156,15 @@ function parse_loop_extra(&$tables,
       if (in_array("users",$tables) && in_array("session",$tables)) {
 	$where.=" AND iduser=$GLOBALS[tp]users.id";
       }
+      if (in_array("champs",$tables) && preg_match("/\bclasse\b/",$where)) {
+	// on a besoin de la table croise groupesdechamps
+	protect2($where,$ordre,"champs","id|status|ordre");
+	array_push($tables,"groupesdechamps");
+	$where.=" AND $GLOBALS[tp]groupesdechamps.id=$GLOBALS[tp]champs.idgroupe";
+	$extrainselect.=", $GLOBALS[tp]groupesdechamps.classe";
+     }
+     // entrees
+
     } // site
 
     array_walk($tables,"prefixtablesindatabase");
