@@ -30,7 +30,7 @@ if ($id>0 && ($delete || $restore)) {
     if ($err) break;
 
     include_once ($home."connect.php");
-    $result=mysql_query ("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$context[nom]'") or die (mysql_error());
+    $result=mysql_query ("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$context[nom]' AND id!='$id'") or die (mysql_error());
     if (mysql_num_rows($result)>0) $err=$context[erreur_nom_existe]=1;
     if ($err) break;
     
