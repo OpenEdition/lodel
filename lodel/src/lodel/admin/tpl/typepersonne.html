@@ -2,6 +2,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Ajout d'un type d'index par personne</title>
+<MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -12,12 +13,15 @@
 	</tr>
 </table>
 
-<form method="POST" action="typepersonne.php" />
+<form method="POST" name="formulaire_personne" action="typepersonne.php" />
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
-			<td class="texte_intitule">Nom du type :</td>
+			<td>
+				<span class="texte_intitule">Nom du type :</span><br />
+				<span class="texte_info">(identifiant unique)</span>
+			</td>
 			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
 		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptés: lettres, chiffres, _ et -</td></tr>]
@@ -72,6 +76,10 @@
 			<td>
 				Types de publication et de document qui contiennent ce type d'intervenant :<br />
 				<MACRO NAME="TYPE_ENTITES">
+				<div>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_personne', 'typeentite', true);">Tout cocher</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_personne', 'typeentite', false);">Tout décocher</a>
+				</div>
 			</td>  
 		</tr>
 	</table>

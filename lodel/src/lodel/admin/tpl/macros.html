@@ -60,9 +60,13 @@
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
 	<div>
-		<IF COND="abs([#STATUT]) lt 32 or [#ADMINLODEL]">
+		<IF COND="[#ADMINLODEL]">
 			|&nbsp;<a href="champ.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-			<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+			<IF COND="[#STATUT] ge 32">
+				<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+			<ELSE/>
+				<a href="champ.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|
+			</IF>
 		<ELSE/>
 			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
 			<span class="inactif">Supprimer</span>&nbsp;|
@@ -72,15 +76,17 @@
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_GROUPE_DE_CHAMPS">
 	<div>
-		<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
+		<IF COND="[#ADMINLODEL]">
 			|&nbsp;<a href="groupedechamps.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
 				<DO>
 					<IF COND="[#NBCHAMPS]">
 						<span class="inactif">Supprimer</span>&nbsp;|
+					<ELSE/><IF COND="[#STATUT] ge 32">
+						<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
 					<ELSE/>
-						<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>
-					</IF>
+						<a href="groupedechamps.php?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+					</IF></IF>
 				</DO>
 			</LOOP>
 		<ELSE/>
@@ -91,9 +97,13 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_ENTREES">
-	<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
+	<IF COND="[#ADMINLODEL]">
 		|&nbsp;<a href="typeentree.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-		<a href="typeentree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+		<IF COND="[#STATUT] ge 32">
+			<span class="inactif">Supprimer (Protégé)</span>&nbsp;|&nbsp;
+		<ELSE/>
+			<a href="typeentree.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+		</IF>
 	<ELSE/>
 		|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
 		<span class="inactif">Supprimer</span>&nbsp;|&nbsp;
@@ -101,9 +111,13 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
-	<IF COND="abs([#STATUT]) lt 32  or [#ADMINLODEL]">
+	<IF COND="[#ADMINLODEL]">
 		|&nbsp;<a href="typepersonne.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
-		<a href="typepersonne.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+		<IF COND="[#STATUT] ge 32">
+			<span class="inactif">Supprimer (Protégé)</span>&nbsp;|&nbsp;
+		<ELSE/>
+			<a href="typepersonne.php?id=[#ID]&delete=1">Supprimer</a>&nbsp;|&nbsp;
+		</IF>
 	<ELSE/>
 		|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
 		<span class="inactif">Supprimer</span>&nbsp;|&nbsp;
@@ -201,13 +215,13 @@
 			<IF COND="[#NBDOCUMENTS]">
 				<span class="inactif">
 					<IF COND="[#NBDOCUMENTS] gt 1">
-						Supprimer (Associé à [#NBDOCUMENTS] documents)
+						Supprimer (Associé à [#NBDOCUMENTS] documents)&nbsp;|
 					<ELSE/>
-						Supprimer (Associé à [#NBDOCUMENTS] document)
+						Supprimer (Associé à [#NBDOCUMENTS] document)&nbsp;|
 					</IF>
 				</span>
 			<ELSE/>
-				<a href="typedoc.php?id=[#ID]&delete=1">Supprimer</a>
+				<a href="typedoc.php?id=[#ID]&delete=1">Supprimer&nbsp;|</a>
 			</IF>
 		</DO>
 	</LOOP>
@@ -223,7 +237,22 @@
 	(base)<br />
 	<MACRO NAME="TYPE_ENTITES">
 </DEFMACRO>
+<!-- ************************************************** -->
 
+<!-- Macro rajoutée le 04/12/03 *********************** -->
+<DEFMACRO NAME="COCHER_DECOCHER">
+	<script type="text/javascript">
+	<!--
+	function setCheckboxes(form, group, check) 	{
+		for (i=0, n=document.forms[form].elements.length; i<n; i++)
+			if (document.forms[form].elements[i].name.indexOf(group) != -1)
+				document.forms[form].elements[i].checked = check;
+	    return true;
+	}
+	//-->
+	</script>
+
+</DEFMACRO>
 <!-- ************************************************** -->
 
 <!-- ************************************** Rajout intégration maquette ************************************** -->

@@ -2,6 +2,7 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>Types de document</title>
+<MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -12,7 +13,7 @@
 	</tr>
 </table>
 
-<form method="post" action="typedoc.php" />
+<form method="post" name="formulaire_doc" action="typedoc.php" />
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
@@ -39,16 +40,28 @@
 		<tr>
 		    <td rowspan="2">
 				<MACRO NAME="CHOIX_TYPES_PARENTS">
+				<div>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentite', true);">Tout cocher</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentite', false);">Tout décocher</a>
+				</div>
 		    </td>
 		    <td valign="top">
 		    	<u>Index disponible pour ce type de document :</u><br /><br />
 				<MACRO NAME="TYPE_ENTREES">
+				<div>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentree', true);">Tout cocher</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typeentree', false);">Tout décocher</a>
+				</div>
 		    </td>  
 		  </tr>
 		  <tr>
 		    <td valign="top">
 			<u>Intervenant disponible pour ce type de document :</u><br />
 				<MACRO NAME="TYPE_PERSONNES">
+				<div>
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typepersonne', true);">Tout cocher</a>&nbsp;/&nbsp;
+					<a href="javascript:void(0)" onclick="setCheckboxes('formulaire_doc', 'typepersonne', false);">Tout décocher</a>
+				</div>
 		    </td>  
 		  </tr>
 	</table>

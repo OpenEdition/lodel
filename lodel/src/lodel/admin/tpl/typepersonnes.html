@@ -33,11 +33,11 @@
 					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin1">[#TPL]</td>
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
+					<td class="ligne_admin1" style="color: #CC9933;" align="left">
 						<div>
-							<MACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
 							<a href="typepersonne.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 							<a href="typepersonne.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+							<MACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
 						</div>
 					</td>
 				<ELSE/>
@@ -45,12 +45,11 @@
 					<td class="ligne_admin2">[(#TITRE|nbsp)]</t>
 					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
+					<td class="ligne_admin2" style="color: #CC9933;" align="left">
 						<div>
-							<MACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
 							<a href="typepersonne.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 							<a href="typepersonne.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-
+							<MACRO NAME="MODIFIER_SUPPRIMER_TYPE_PERSONNES">
 						</div>
 					</td>
 				</IF>
@@ -79,14 +78,14 @@
 			<IF COND="[#COUNT] % 2">
 				<td class="ligne_admin1">[#TYPE]</td>
 				<td class="ligne_admin1">[#TPL]</td>
-				<td class="ligne_admin1" style="color: #CC9933;" align="right">
+				<td class="ligne_admin1" style="color: #CC9933;" align="left">
 					<div>|&nbsp;<a href="typepersonne.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
 					<a href="typepersonne.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
 				<td class="ligne_admin2">[#TYPE]</td>
 				<td class="ligne_admin2">[#TPL]</td>
-				<td class="ligne_admin2" style="color: #CC9933;" align="right">
+				<td class="ligne_admin2" style="color: #CC9933;" align="left">
 					<div>|&nbsp;<a href="typepersonne.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
 					<a href="typepersonne.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
 				</td>
