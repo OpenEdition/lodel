@@ -160,7 +160,7 @@ function loop_fichiers(&$context,$funcname)
 #							$result[1]));
 	    $localcontext[$tag]=str_replace(array("\r","<",">","\n"),
 					    array("","&lt;","&gt;","<br />"),
-					    $result[1]);
+					    trim($result[1]));
 	  }
 	}
 	#echo doubleval($localcontext[lodelversion]), ":",$GLOBALS[version],"<br />\n";
