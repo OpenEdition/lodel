@@ -237,6 +237,25 @@ img.illus {float: right;}
 div.article {margin-left: 32px;}
 
 
+/************ Styles pour le tpl fonctionsavancees ******/
+div.ligne_form_fa {
+	padding-top:5px;
+	padding-left:70px;
+	padding-bottom:5px;
+	margin-bottom:20px;
+	font-family: Verdana;
+}
+
+div.intitule_ligne_form_fa {
+	width: 400px;
+	float:left;
+}
+
+div.champs_ligne_form_fa {
+	width:auto;
+}
+/************ Fin styles fonctionavancees    *************/
+
 /************ Styles pour le tpl publication **************/
 div.ligne_haut_tpl_publication, 
 div.ligne_parent_tpl_publication,
