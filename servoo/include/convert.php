@@ -505,7 +505,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       } else {
 	$class=strtolower($class);
       }
-      if (preg_match("/^(t\d+|footnote.*|endnote.*|internetlink)$/",$class)) { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
+      if ($arr[$i+1]=="span" && preg_match("/^(t\d+|footnote.*|endnote.*|internetlink)$/",$class)) { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
 	$class="";
       }
       if ($class) {
