@@ -389,7 +389,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
    function unknownCharacterStyle($style,$data) {
      // nothing... let's clean it.
-     return $data;
+     return preg_replace(array("/^<span\b[^>]*>/","/<\/span>$/"),"",$data);
    }
 
    // begin{publicfields} automatic generation  //
