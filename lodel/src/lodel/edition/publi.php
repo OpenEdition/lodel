@@ -41,6 +41,7 @@ if ($publication) {
 
     function boucle_publications_protegees(&$context,$funcname) {
       // cherche les ids
+      if (!$context[publication_protegee]) return;
       $ids=join(",",$context[publication_protegee]);
       $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE id IN ($ids)") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
@@ -62,6 +63,7 @@ if ($publication) {
 
     function boucle_documents_protegees($context,$funcname) {
       // cherche les ids
+      if (!$context[document_protege]) return;
       $ids=join(",",$context[document_protege]);
       $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]documents WHERE id IN ($ids)") or die (mysql_error());
       while ($row=mysql_fetch_assoc($result)) {
