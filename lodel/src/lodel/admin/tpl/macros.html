@@ -161,33 +161,35 @@
 <!--[ Elle devrait convenir dans un grand nombre de cas                ]-->
 
 
-<DEFMACRO NAME="MODIFIER_SUPPRIMER_TRANSLATION">
+<DEFMACRO NAME="MODIFIER_SUPPRIMER_EXPORTER_IMPORTER_TRANSLATION">
 	<div>
 		<IF COND="[#DROITADMIN]">
-					<a href="translation?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-					<a href="translation?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+					<a href="translation.php?id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+					<a href="translation.php?id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
                        <IF COND="([#STATUT] lt 32) or [#DROITADMINLODEL]">
-			|&nbsp;<a href="translation?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
+			|&nbsp;<a href="translation.php?id=[#ID]">Modifier</a>&nbsp;|&nbsp;
 	               <ELSE/>
 			|&nbsp;<span class="inactif>Modifier</span>&nbsp;|&nbsp;
 	               </IF>
-			<LOOP NAME="champutilise" TABLE="champs" SELECT="count(*) as nbchamps" WHERE="idgroupe='[#ID]'">
-				<DO>
-					<IF COND="[#NBCHAMPS]">
-						<span class="inactif">Supprimer</span>&nbsp;|
-					<ELSE/><IF COND="[#STATUT] lt 32">
-						<a href="translation?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
-					<ELSE/>
-						<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
-					</IF></IF>
-				</DO>
-			</LOOP>
+	               <IF COND="[#STATUT] lt 32">
+				<a href="translation?delete=1&id=[#ID]">Supprimer</a>&nbsp;|
+			<ELSE/>
+				<span class="inactif">Supprimer (Protégé)</span>&nbsp;|
+			</IF>
 		<ELSE/>
 			|&nbsp;<span class="inactif">Modifier</span>&nbsp;|&nbsp;
 			<span class="inactif">Supprimer</span>&nbsp;|
 		</IF>
+		<IF COND="[#DROITEDITEUR] and (([#STATUT] lt 32) or [#DROITADMINLODEL])">
+			<a href="translationsexport.php?lang=[#LANG]">Exporter</a>&nbsp;
+			|&nbsp;<a href="translationsimport.php?lang=[#LANG]">Importer</a>&nbsp;|&nbsp;
+               <ELSE/>
+			<span class="inactif>Exporter</span>&nbsp;
+			|&nbsp;<span class="inactif>Importer</span>&nbsp;|&nbsp;
+               </IF>
 	</div>
 </DEFMACRO>
+
 
 
 <DEFMACRO NAME="AFFICHER_GROUPE">
