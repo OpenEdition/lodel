@@ -140,10 +140,18 @@ if ($tache=="mysql") {
 
 if ($tache=="database") {
   $newsingledatabase=$newsingledatabase ? "on" : "";
-  maj_lodelconfig(array("database"=>$newdatabase ? $newdatabase : $createdatabase,
+
+  if ($newdatabase==-1) $newdatabase=$existingdatabase;
+  if ($newdatabase==-2) { 
+    $newdatabase=$createdatabase;
+  } else {
+    $createdatabase="";
+  }
+
+  maj_lodelconfig(array("database"=>$newdatabase,
 			"singledatabase"=>$newsingledatabase,
 			"tableprefix"=>$newtableprefix));
-  if (!$newdatabase) { // il faut creer la database
+  if ($createdatabase) { // il faut creer la database
     @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
     @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
     if (!@mysql_query("CREATE DATABASE $createdatabase")) {
@@ -357,14 +365,17 @@ if (!$dbusername && !$dbhost) {
 
 if (!$database) {
   // cherche les databases
-  if (!($result=@mysql_query("SHOW DATABASES"))) { // probleme ?
-    $erreur_connect=1;
-    if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
-    return;
-  } else { // ok, on a les databases, on demande la database principale
-    if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
-    return;
-  }
+  if (!($resultshowdatabases=@mysql_query("SHOW DATABASES"))) { // probleme ?
+    // non, c'est pas surement pas une erreur de connection. Ca peut etre 
+    // qu'on n'a pas les droits.
+    // donc faut gerer autrement.
+
+    //$erreur_connect=1;
+    //if (!(@include ("tpl/install-mysql.html"))) problem_include("install-mysql.html");
+    //return;
+  } // ok, on a les databases, on demande la database principale
+  if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
+  return;
 } 
 
 $sitesexistsrequest="SELECT id,statut,nom FROM $GLOBALS[tableprefix]sites LIMIT 1";
