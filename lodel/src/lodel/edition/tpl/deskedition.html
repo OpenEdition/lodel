@@ -35,7 +35,7 @@
 	
 					<td width="57" heigth="75"><a href="index.php"><MACRO NAME="PNG_MENU_ACCUEIL_ACTIF"></a></td>
 					
-					<td width="57" heigth="75"><a href="../admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"></a></td>
+					<td width="57" heigth="75"><IF COND="[#DROITADMIN]"><a href="lodel/admin/index.php" onMouseOver="rollover('img_menu_admin','menu_admin_survol.png');" onMouseOut="rollover('img_menu_admin','menu_admin.png');"><MACRO NAME="PNG_MENU_ADMIN"></a><ELSE/><MACRO NAME="PNG_MENU_ADMIN_GRIS"></IF></td>
 		
 					<td width="57" heigth="75"><a href="../../index.[#EXTENSIONSCRIPTS]" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');"><MACRO NAME="PNG_MENU_VOIR"></a></td>
 			
