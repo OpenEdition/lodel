@@ -153,7 +153,7 @@ function loop_fichiers(&$context,$funcname)
 	  }
 	}
 
-	foreach (array("lodelversion","title","description","author","date","version") as $tag) {
+	foreach (array("lodelversion","title","description","author","date","modelversion") as $tag) {
 	  if (preg_match("/<$tag>(.*?)<\/$tag>/s",$xml,$result)) {
 	    $localcontext[$tag]=utf8_encode(str_replace(array("\r","<",">","\n"),
 							array("","&lt;","&gt;","<br />"),
