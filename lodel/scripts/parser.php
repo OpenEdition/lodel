@@ -251,9 +251,9 @@ function parse_cond (&$text,$offset=0) {
 ####    }
 ##### genere la code
 ####
-####    $code='<? if ('.$cond[1].') { ?>'.$if_txt.'<? }';
-####    if ($else_txt) $code.=' else { ?>'.$else_txt.'<? }';
-####    $code.='?>';
+####    $code='<'.'? if ('.$cond[1].') { ?'.'>'.$if_txt.'<'.'? }';
+####    if ($else_txt) $code.=' else { ?'.'>'.$else_txt.'<'.'? }';
+####    $code.='?'.'>';
 ####
 ##### fait le remplacement
 ####
