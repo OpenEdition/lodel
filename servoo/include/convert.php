@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
@@ -31,6 +31,8 @@
 // into the XHTML+Lodel information.
 // Use OO to convert original file into SXW and to convert the SXW.
 // And use writer2latex to convert the SXW into the XHTML
+
+require_once($home."func.php");
 
 function XHTMLLodel ($uploadedfile,$msg=TRUE)
 
@@ -173,6 +175,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
 }
 
 
+/*
 // This fonction convert a file (can be zipped) in a format readable by OO 
 // into the HTML+Lodel information.
 // Use OO to convert original file into SXW and to convert the SXW into the HTML
@@ -180,7 +183,7 @@ function XHTMLLodel ($uploadedfile,$msg=TRUE)
 function HTMLLodel ($uploadedfile,$msg=TRUE)
 
 {
-  global $unzipcmd;
+
   //
   // regarde si le fichier est zipper
   //
@@ -195,7 +198,7 @@ function HTMLLodel ($uploadedfile,$msg=TRUE)
     if (substr_count(`$unzipcmd -Z -1 $f`,"\n")==1) { // combien de fichier dans l'archive ?
       // s'il n'y a q'un fichier alors on le dezippe. S'il y en a plusieurs c'est surement un sxw
       if ($msg) { echo "<li>Decompresse le fichier zippe<br>"; flush(); }
-      system("$unzipcmd -j -p $uploadedfile >$uploadedfile.extracted 2>/dev/null"); 
+      system("$GLOBALS[unzipcmd] -j -p $uploadedfile >$uploadedfile.extracted 2>/dev/null"); 
       // normalement, il ne doit pas y avoir d'erreur parce qu'on a deja fait un unzip
       // en fait c'est pas vrai, on peut avoir des problemes de disque (permission ou disk space).
       $uploadedfile.=".extracted";
@@ -281,7 +284,7 @@ function HTMLLodel ($uploadedfile,$msg=TRUE)
   foreach ($results[1] as $imgfile) array_push($files,$uploadedfiledirname."/".$imgfile);
   return $files;
 }
-
+*/
 
 //
 // fonction qui lance le java qui communique avec OO
@@ -331,7 +334,7 @@ function runWriter2Latex($filename,$extension)
 }
 
 
-
+/*
 //
 // fonction de transformation des styles en balise intermediaire
 // Transformation du HTML
@@ -401,7 +404,7 @@ function processcontentHTML(&$text)
   $text=preg_replace($srch,$rpl,$text);
 }
 
-
+*/
 
 
 //
@@ -415,7 +418,7 @@ function processcontentXHTML(&$content,&$styles)
 
   preg_match_all("/<style:style\s+[^>]*style:name=\"[PT]\d+\"[^>\/]*(?:\/>|>.*?<\/style:style>)/s",$content,$results,PREG_PATTERN_ORDER);
 
-#  print_r($results);
+
 #  echo "\n";
 #  echo $content;
 
@@ -449,6 +452,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
   preg_match_all("/<style:style\s+[^>]*style:name=\"([PT]\d+)\"[^>]*style:parent-style-name=\"([^\"]*)\"/s",$styles,$results,PREG_SET_ORDER);
 
 #  print_r($results);
+#  die("\n");
   foreach($results as $result) {
     $name=removeaccentsandspaces(strtolower($result[2]));
     if ($name) $stylename[$result[1]]=$name;
@@ -470,9 +474,12 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 #      echo join(" ",$stack),"\n";
     } elseif (preg_match('/\bclass="\s*([^"]+)\s*"/',$arr[$i+2],$result)) {
       $class=$result[1];
+#echo "$class ".$stylename[$class]."<br/>";
       $ns=$arr[$i+1]=="p" ? "r2r" : "r2rc";
       if ($stylename[$class]) {
 	$class=$stylename[$class];
+	// for Got's pleasure:
+	if ($arr[$i+1]=="p") $arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]);
       } else {
 	$class=strtolower($class);
       }
@@ -494,7 +501,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       array_push($stack,"");
     }
   }
-
+  #die("");
   $xhtml=join("",$arr);
   
 #  // P
@@ -518,42 +525,6 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 }
 
 
-
-function exec_zip($cmd,$errfile)
-
-{
-  if (!$GLOBALS[zipcmd]) die ("ERROR: zip command not configured");
-  myexec("$GLOBALS[zipcmd] $cmd",$errfile,"zip failed");
-}
-
-function exec_unzip($cmd,$errfile)
-
-{
-  if (!$GLOBALS[unzipcmd]) die ("ERROR: unzip command not configured");
-  myexec("$GLOBALS[unzipcmd] $cmd",$errfile,"unzip failed");
-}
-
-function myexec($cmd,$errfile,$errormsg)
-
-{
-  system($cmd."  2>$errfile");
-  if (filesize($errfile)>0) die("ERROR: $errormsg<br />".str_replace("\n","<br>",htmlentities(@join("",@file($errfile)))));
-}
-
-
-
-if (!function_exists("writefile")) {
-function writefile ($filename,&$text)
-
-{
- //echo "nom de fichier : $filename";
-   if (file_exists($filename)) 
-   { 
-     if (! @unlink($filename) ) die ("ERROR: $filename can not be deleted. Please contact OO server administrator");
-   }
-   return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0644);
-}
-}
 
 
 ?>
