@@ -73,8 +73,8 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	  foreach ($traitements as $traitement) {
 #echo "trait: $traitement";
 	    if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/",$traitement,$result3)) { 
-	      if ($result3[2]) $result3[2]=",".$result3[2];
-	      $func=create_function('$x','return '.$result3[1].'($x'.$result3[2].');');
+	      if ($result3[2]) $result3[2]=$result3[2].",";
+	      $func=create_function('$x','return '.$result3[1].'('.$result3[2].'$x);');
 	      $value=$func($value);
 	    }
 	  }

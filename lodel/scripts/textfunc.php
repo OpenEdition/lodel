@@ -457,6 +457,7 @@ function strip_tags_keepnotes($keeptags,$text=-1)
 
 {
   if (is_numeric($text)) { $text=$keeptags; $keeptags=""; }
+
   $arr=preg_split('/(<span\b[^>]+class="footnotereference"[^>]*>\s*<span\b[^>]+class="footnoteanchor"[^>]*>\s*<a\b[^>]+\bid=\"bodyftn\d+\"[^>]*>.*?<\/a>\s*<\/span>\s*<\/span>)/is',$text,-1,PREG_SPLIT_DELIM_CAPTURE);
   $count=count($arr);
   for($i=0; $i<$count; $i+=2) $arr[$i]=strip_tags($arr[$i],$keeptags);
