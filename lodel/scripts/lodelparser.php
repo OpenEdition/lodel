@@ -221,7 +221,7 @@ function parse_variable_extra ($nomvar)
     return '($GLOBALS[droitadmin] || in_array($context[groupe],explode(\',\',$GLOBALS[usergroupes])))';
   }
   if (substr($nomvar,0,7)=="OPTION_") { // options
-    return 'getoption("'.strtolower(substr($nomvar,7)).'")';
+    return "getoption('".strtolower(substr($nomvar,7))."')";
   }
   return FALSE;
 }
