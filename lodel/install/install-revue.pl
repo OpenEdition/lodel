@@ -157,7 +157,10 @@ slink ("../../../$homerevue/lodel/edition/tpl/macros.html","tpl/macros.html");
 	      "publication",
 	      "publications_protegees",
 	      "supprime",
-	      "macros"
+	      "macros",
+		  "fonctionsavancees",
+		  "fonctionsavancees-document",
+		  "fonctionsavancees-publication"
 );
 
 foreach (@editionfile) {
