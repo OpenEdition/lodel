@@ -77,7 +77,7 @@
 		</span>
 	</div>
 		
-	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="statut gt 0" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
+	<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="statut gt 0" WHERE="tplcreation='creation-numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
 		<DO>
 			<div class="afficherdocument">
 				<a href="sommaire.html?id=[#ID]">
@@ -150,9 +150,10 @@
 <DEFMACRO NAME="PRESENTER_PUBLICATION">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Crée un bloc qui affiche le titre du numéro ou de la rubrique, sauf s'il -->
-<!-- est vide, auquel cas il affiche le nom de la revue. Affiche        --> 
-<!-- également le texte d'introduction, s'il existe, avec une lettrine. -->
+<!-- Crée un bloc qui affiche le titre du numéro ou de la rubrique,     -->
+<!-- sauf s'il est vide, auquel cas il affiche le nom de la revue.      --> 
+<!-- Affiche également le texte d'introduction, s'il existe, avec une   -->
+<!-- lettrine.                                                          -->
 <!-- Cette macro fait appel aux macros suivantes :                      -->
 <!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
@@ -180,8 +181,8 @@
 <DEFMACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
-<!-- Crée un bloc qui affiche le titre du numéro ou de la rubrique, sauf s'il -->
-<!-- est vide, auquel cas il affiche le nom de la revue.                --> 
+<!-- Crée un bloc qui affiche le titre du numéro ou de la rubrique,     -->
+<!-- sauf s'il est vide, auquel cas il affiche le nom de la revue.      --> 
 <!-- Cette macro fait appel aux macros suivantes :                      -->
 <!-- <MACRO NAME="NOM_PUBLICATION">                                     -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION">                           -->
@@ -284,27 +285,27 @@
 <!-- Affiche le titre de la partie Bibliographie (ici "Bibliographie")  -->
 <!-- dans la langue définie pour le texte d'un document.                -->
 <!-- ****************************************************************** -->
-        <IF COND="([#LANG] EQ 'fr') OR ([#LANG] EQ 'FR')">
-                Références bibliographiques
-        <ELSE/>
-                <IF COND="([#LANG] EQ 'en') OR ([#LANG] EQ 'EN')">
-                        Bibliography
-                <ELSE/>
-                        <IF COND="([#LANG] EQ 'it') OR ([#LANG] EQ 'IT')">
-                                Bibliografia
-                        <ELSE/>
-                                <IF COND="([#LANG] EQ 'es') OR ([#LANG] EQ 'ES')">
-                                        Bibliografía
-                                <ELSE/>
-                                        <IF COND="([#LANG] EQ 'de') OR ([#LANG] EQ 'DE')">
-                                                Bibliographie
-                                        <ELSE/>
-                                                Langue de document non définie
-                                        </IF>
-                                </IF>
-                        </IF>
-                </IF>
-        </IF>
+	<IF COND="([#LANG] EQ 'fr') OR ([#LANG] EQ 'FR')">
+		Références bibliographiques
+	<ELSE/>
+		<IF COND="([#LANG] EQ 'en') OR ([#LANG] EQ 'EN')">
+			Bibliography
+		<ELSE/>
+			<IF COND="([#LANG] EQ 'it') OR ([#LANG] EQ 'IT')">
+				Bibliografia
+			<ELSE/>
+				<IF COND="([#LANG] EQ 'es') OR ([#LANG] EQ 'ES')">
+					Bibliografía
+				<ELSE/>
+					<IF COND="([#LANG] EQ 'de') OR ([#LANG] EQ 'DE')">
+						Bibliographie
+					<ELSE/>
+						Langue de document non définie
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_LIGNE_DOCUMENT">
@@ -367,7 +368,6 @@
 <!-- <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      -->
 <!-- <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              -->
 <!-- ****************************************************************** -->
-	
 		<IF COND="[#TYPE]=='article_vide'">
 		  [#TITRE] (Article)
 			<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF>
@@ -389,7 +389,6 @@
 					 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Compte rendu)
 					<br/><MACRO NAME="TEXTE_INTEGRAL">
 					<br /><MACRO NAME="PARU_DANS_SIMPLE"> :
-					
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
 						 <a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> (Position de thèse)
@@ -410,18 +409,17 @@
 	</span>
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
-	
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_TOUT">
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche les séries linéaires et leurs numéros de 1er niveau puis   -->
-<!-- les séries hierarchiques et leurs rubriques de premier niveau.        -->
+<!-- les séries hierarchiques et leurs rubriques de premier niveau.     -->
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
 	<!-- On liste en premier les séries linéaires -->
-	<LOOP NAME="aff_series_line" TABLE="types" TABLE="entites" WHERE="type='numero'">
+	<LOOP NAME="aff_series_line" TABLE="entites" WHERE="type='numero'">
 		<BEFORE>
 			<div class="menu1">Numéros :</div>
 		</BEFORE>
@@ -433,7 +431,7 @@
 	</LOOP>
 	
 	<!-- On liste ensuite les séries hiérarchiques -->
-	<LOOP NAME="aff_series_hier" TABLE="types" TABLE="entites" WHERE="type='rubrique'">
+	<LOOP NAME="aff_series_hier" TABLE="entites" WHERE="type='rubrique'">
 		<BEFORE>
 			<div class="menu1">rubriques :</div>
 		</BEFORE>
@@ -454,16 +452,16 @@
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- Modifiée en octobre 2003 par Nicolas Nutten                        -->  
 <!-- ****************************************************************** -->
-	<LOOP NAME="aff_series_presentation" TABLE="types" TABLE="entites" TABLE="relations" WHERE="id1='#indiquer ici id de la serie presentation#' AND entites.id=id2 AND entites.idtype=types.id AND classe='documents'">
+	<LOOP NAME="aff_series_presentation" TABLE="documents" TABLE="relations" WHERE="id1='#indiquer ici id de la serie presentation#' AND id2=identite AND classe='documents'">
 		<BEFORE>
 			<div class="menu1">
-				Informations :<br/ >
+				Série présentation :<br/ >
 			</div>
 		</BEFORE>
 		<DO>
 			<div class="menu2">
-				<a class="menu2" href="document.html?id=[#ID]">
-					[#NOM]
+				-&nbsp;<a class="menu2" href="document.html?id=[#ID]">
+					[#TITRE]
 				</a>
 			</div>
 		</DO>
@@ -541,7 +539,7 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche les articles de type "compte rendu".                       -->
 <!-- Cette Macro utilise les macros suivantes :                         -->
-<!-- <MACRO NAME="FILET_1">                                        -->
+<!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
 	<LOOP NAME="cr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
