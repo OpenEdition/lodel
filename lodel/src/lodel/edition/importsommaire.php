@@ -167,6 +167,7 @@ function mkxmldocument($text,$publication)
   $context=array();
   ei_pretraitement($filename,$row,$context,$text);
 
+  if (!$context[lang1]) $context[lang1]="fr"; // langue par defaut
   // extraction des motcles, des periodes et des geographies du texte
   $balises=array("motcle","periode","geographie");
 

@@ -91,11 +91,15 @@ function ei_edition($filename,$row,&$context,&$text,&$motcles,&$periodes,&$geogr
 		     $text);
   // change la langue du texte
   $lang=$context[lang1];
-  if ($context[lang2]) $lang.=" ".$context[lang2];
-  if ($context[lang3]) $lang.=" ".$context[lang3];
+  if (preg_match("/<r2r:texte\b/i",$text) && !$lang) {
+    $context[erreur_textesanslangue]=$err=1; 
+  } else {
+    if ($context[lang2]) $lang.=" ".$context[lang2];
+    if ($context[lang3]) $lang.=" ".$context[lang3];
 
-  $text=preg_replace(array("/(<r2r:texte\b[^>]+)\blang\s*=\s*\"[^\"]*\"/i","/(<r2r:texte\b[^>]*?)\s*>/i"),
-		     array("\\1",$lang ? "\\1 lang=\"$lang\">" : "\\1>"),$text);
+    $text=preg_replace(array("/(<r2r:texte\b[^>]+)\blang\s*=\s*\"[^\"]*\"/i","/(<r2r:texte\b[^>]*?)\s*>/i"),
+		       array("\\1",$lang ? "\\1 lang=\"$lang\">" : "\\1>"),$text);
+  }
 
   if ($err || $context[plusauteurs]) {
     writefile ($balisefilename,$text);
