@@ -82,5 +82,5 @@ $sessionname="sessionservoo";
 # en seconde
 $logintimeout=120*60;
 
-
+if (!defined("TOINCLUDE")) define("TOINCLUDE","../include/");
 ?>
