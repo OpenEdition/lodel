@@ -72,12 +72,6 @@
 
 		<LOOP NAME="champs_xsd" TABLE="champs" WHERE="idgroupe='[#ID]'" ORDER="ordre">
 	    		<DO>
-		        <IF COND="[#COMMENTAIRE]"><xsd:annotation>
-					<xsd:documentation xml:lang="fr">
-						[#COMMENTAIRE]
-					</xsd:documentation>
-				</xsd:annotation>
-			</IF>
 			<!--[ define the minOccurs and maxOccurs and put it in [#OCCURS] variable ]-->
 			<IF COND="[#CONDITION]=='+'">
 			  <LET VAR="occurs">minOccurs="1" maxOccurs="unbounded"</LET>
@@ -85,36 +79,36 @@
 			  <LET VAR="occurs">minOccurs="0" maxOccurs="unbounded"</LET>
 			</IF>
 				<IF COND="[#TYPE] eq 'boolean'">
-				<xsd:element name="[#NOM]" type="xsd:boolean" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:boolean</LET>
 				<ELSE/>
 				<IF COND="[#TYPE] eq 'mltext'">
-				<xsd:element name="[#NOM]" type="TexteMultiLangue" [#OCCURS] />
+				<LET VAR="xsdtype">TexteMultiLangue</LET>
 				<ELSE/>
   	        		<IF COND="[#TYPE] eq 'lang'">
-				<xsd:element name="[#NOM]" type="xsd:language" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:language</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'date'">
-				<xsd:element name="[#NOM]" type="xsd:date" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:date</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'datetime'">
-				<xsd:element name="[#NOM]" type="xsd:dateTime" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:dateTime</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'time'">
-				<xsd:element name="[#NOM]" type="xsd:time" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:time</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'int'">
-				<xsd:element name="[#NOM]" type="xsd:int" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:int</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'numeric'">
-				<xsd:element name="[#NOM]" type="xsd:double" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:double</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'image'">
-				<xsd:element name="[#NOM]" type="xsd:anyURI" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:anyURI</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'fichier'">
-				<xsd:element name="[#NOM]" type="xsd:anyURI" [#OCCURS] />
+				<LET VAR="xsdtype">xsd:anyURI</LET>
 				<ELSE/>
-				<xsd:element name="[#NOM]" type="LodelTexte" [#OCCURS] />
+				<LET VAR="xsdtype">LodelTexte</LET>
 				</IF>
 				</IF>
 				</IF>
@@ -125,6 +119,19 @@
 				</IF>
 				</IF>	
 				</IF>
+
+		                 <IF COND="[#COMMENTAIRE]">
+				<xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS]>
+                                <xsd:annotation>
+					<xsd:documentation xml:lang="fr">
+						[#COMMENTAIRE]
+					</xsd:documentation>
+				</xsd:annotation>
+				</xsd:element>
+				<ELSE/>
+				<xsd:element name="[#NOM]" type="[#XSDTYPE]" [#OCCURS] />
+			      </IF>
+
 	    </DO>
 	  </LOOP>
 		            </xsd:sequence>
