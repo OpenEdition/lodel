@@ -30,7 +30,7 @@
 
 
 /**
- *  Logic Entities
+ *  Logic Persons
  */
 
 require_once($GLOBALS['home']."genericlogic.php");

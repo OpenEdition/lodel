@@ -276,11 +276,13 @@ cp_[#NAME].writeDiv();
 <DEFFUNC NAME="EDIT_ENTRIES">
   <div id="entries_[#VARNAME]" class="entrieseditionarea" >
         <LOOP NAME="entrytypes" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND type='[#VARNAME]' AND classes.classtype='entries'">
+        <LET VAR="idtype">[#ID]</LET>
+
 	<!--[ -----------[ SELECT ]---------- ]-->
 	<IF COND="[#EDITION]=='select'">
 	<select name="[#VARNAME][]">
 		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]">[#G_NAME]</option>
+		<option value="[#G_NAME|htmlspecialchars]">[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
 	<ELSE/>
@@ -289,15 +291,15 @@ cp_[#NAME].writeDiv();
 	<FUNC NAME="JS_POOL">
 	<table>
 	<tr><td>
-	<input type="hidden" value="" name="entries[[#IDTYPE]][]" id="entries[[#IDTYPE]][]" />
+	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />
 	<select multiple size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]">[#G_NAME]</option>
+		<option value="[#G_NAME|htmlspecialchars]">[#ROOT][#G_NAME]</option>
 		</LOOP>
 	</select>
 	</td><td>
-		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]][]')"/><br/>
-		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]][]')"/>&nbsp;
+		<input type="button" value="&rarr;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')"/><br/>
+		<input type="button" value="&larr;" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]]')"/>&nbsp;
 <input type="button" value="Modify" onclick="modifymember('pool_member_[#VARNAME]', 'entrees[[#ID]][]')"/>
 	<td>	
 	<select multiple size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
@@ -306,7 +308,7 @@ cp_[#NAME].writeDiv();
 	</tr>
 	<IF COND="[#NEWBYIMPORTALLOWED]">
 	<tr><td></td><td></td>
-	<td><input type="button" value="^" onclick="addmembertxt('member_more_entries_[#VARNAME]', 'pool_member_[#VARNAME]','entries[[#IDTYPE]][]')"/></td></tr>
+	<td><input type="button" value="^" onclick="addmembertxt('member_more_entries_[#VARNAME]', 'pool_member_[#VARNAME]','entries[[#IDTYPE]]')"/></td></tr>
 	<tr><td colspan="3"><input size="50" type="text" id="member_more_entries_[#VARNAME]" name="member_more_entries_[#VARNAME]" /></td></tr>
 	</IF>
 	</table>

@@ -284,7 +284,7 @@ class DAO {
 	 $id=array();
 	 foreach ($result as $row) $id[]=$row['id'];
 	 $nbid=count($id);
-	 print_r($id);
+	 #print_r($id);
 	 #$criteria=$idfield." IN ('".join("','",$id)."')";
        } else {
 	 $nbid=0; // check we have delete at least one

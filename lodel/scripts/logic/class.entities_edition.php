@@ -93,35 +93,36 @@ class Entities_EditionLogic extends GenericLogic {
        }	  
      /////
      function loop_entries_in_entities($context,$funcname) 
-       {
-	 global $db;
+     {
+       $varname=$context['varname'];
+       if (!$varname) return;
 
-	 $varname=$context['varname'];
-	 if (!$varname) return;
+       $idtype=$context['idtype'];
+       $dao=&getDAO("entrytypes");
+       $votype=$dao->getById($idtype,"id,sort,flat");
+       if (!$votype) die("ERROR: internal error in loop_entries_in_entities");
+       $checkarr=&$context['entries'][$idtype];
+       $context['id']=0; // start by the parents
+       loop_entries_in_entities_rec ($context,$funcname,$votype,$checkarr);
+     }
+     
+     function loop_entries_in_entities_rec ($context,$funcname,&$votype,&$checkarr) 
+     {
+       global $db;
+     
+       // get the entries
+       $result=$db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='".$votype->id."' AND idparent='".$context['id']."' AND status>-64 ORDER BY ".$votype->sort)) or dberror();
+       while (!$result->EOF) {
+	 $localcontext=array_merge($context,$result->fields);
+	 $localcontext['checked']=$checkarr && in_array($result->fields['g_name'],$checkarr) ? "checked" : "";
+	 call_user_func("code_do_$funcname",$localcontext);
+	 if (!$votype->flat) 
+	   $localcontext['root'].=$localcontext['g_name']."/";
+	   loop_entries_in_entities_rec ($localcontext,$funcname,$votype,$checkarr);
 
-	 $idtype=$context['idtype'];
-	 $ref=&$context['entries'][$idtype];
-
-	 // get the entries
-	 $result=$db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='".$idtype."' AND status>-64")) or dberror();
-	 while (!$result->EOF) {
-	   $localcontext=array_merge($context,$result->fields);
-	   $localcontext['checked']=$ref && in_array($result->fields['g_name'],$ref) ? "checked" : "";
-	   call_user_func("code_do_$funcname",$localcontext);
-	   $result->MoveNext();
-	 }
-
-	   /*
-	 foreach($context['entries'][$idtype] as $i=>$arr) {
-	   $localcontext=array_merge($context,$arr);
-	   $localcontext['name']=$name;
-	   $localcontext['class']=$class;
-	   $localcontext['classtype']="entries";
-	   $localcontext['degree']=$i;
-	   call_user_func("code_do_$funcname",$localcontext);
-	 }
-	 */
+	 $result->MoveNext();
        }
+     }
 	 
      /////
      return $ret ? $ret : "_ok";
@@ -265,7 +266,9 @@ class Entities_EditionLogic extends GenericLogic {
 	   $itemcontext['idtype']=$idtype;
 	   $itemcontext['status']=$status;
 	   $itemcontext['degree']=$degree++;
-	   $ret=$logic->editAction($itemcontext,$error,CLEAN);
+	   #echo get_class($logic),":: ";
+	   #print_R($logic);
+	   $ret=$logic->editAction($itemcontext,$error,"CLEAN");
 	   if ($ret!="_error" && $itemcontext['id']) {
 	     $ids[$idtype][]=$itemcontext['id'];
 	     if ($itemcontext['idrelation']) $idrelations[]=$itemcontext['idrelation'];

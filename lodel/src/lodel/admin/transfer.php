@@ -498,6 +498,13 @@ ALTER TABLE #_TP_entrytypes DROP useabrevation;
 	if ($err) break;
 	$report.="Supprime useabrevation<br/>";
       }
+
+      $err=mysql_query_cmds('
+UPDATE #_TP_entrytypes SET sort=\'sortkey\' WHERE sort=\'name\';
+UPDATE #_TP_entrytypes SET sort=\'rank\' WHERE sort=\'ordre\';
+');
+      if ($err) break;
+      if (mysql_affected_rows()>0) $report.="modifie sort by name en sort by sortkey<br/>";
     }      
 
 
@@ -595,7 +602,7 @@ ALTER TABLE #_TP_persons ADD sortkey VARCHAR(255) NOT NULL;
       $dao=&getDAO("persons");      
       $vos=$dao->findMany("1","","id,g_familyname,g_firstname");
       foreach($vos as $vo) {
-	$vo->sortkey=makeSortKey(trim($vo->g_familyname)." ".trim($vo->g_firstname));
+	$vo->sortkey=makeSortKey(trim($vo->g_name));
 	$dao->quote($vo);
 	$dao->save($vo);
       }
@@ -604,7 +611,23 @@ ALTER TABLE #_TP_persons ADD sortkey VARCHAR(255) NOT NULL;
     }
   }
 
-
+  if ($tables["$GLOBALS[tp]entries"]) {
+    $fields=getfields("entries");
+    if (!$fields['sortkey']) {
+	$err=mysql_query_cmds('
+ALTER TABLE #_TP_entries ADD sortkey VARCHAR(255) NOT NULL;
+');
+      $dao=&getDAO("entries");      
+      $vos=$dao->findMany("1","","id,g_name");
+      foreach($vos as $vo) {
+	$vo->sortkey=makeSortKey(trim($vo->g_familyname)." ".trim($vo->g_firstname));
+	$dao->quote($vo);
+	$dao->save($vo);
+      }
+      if ($err) break;
+      $report.="Ajout de sortkey a entries<br/>";
+    }
+  }
 
     /////////////////////
     // RELATIONS

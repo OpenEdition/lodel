@@ -67,7 +67,7 @@ class EntryTypesLogic extends Logic {
    {
      switch($var) {
      case "sort" :
-       renderOptions(array("name"=>getlodeltextcontents("alphabetical_order","admin"),
+       renderOptions(array("sortkey"=>getlodeltextcontents("alphabetical_order","admin"),
 			   "rank"=>getlodeltextcontents("order_defined_in_interface","admin"),
 			   "id"=>getlodeltextcontents("order_of_creation","admin"),
 			   ),$context['sort']);

@@ -183,7 +183,12 @@ class GenericLogic extends Logic {
      $fields=$daotablefields->findMany("(class='".$context['class']."' OR class='entities_".$context['class']."') AND status>0 ","",
 				       "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
 
-     #echo "class=".get_class($this);
+     #echo "validateFields: class=".get_class($this)."\n";
+     #
+     #if (get_class($this)=="entrieslogic") {
+     #  echo "class=".$context['class'];
+     #  echo "lal";print_R($fields);
+     #}
 
      // file to move once the document id is know.
      $this->files_to_move=array();
@@ -278,23 +283,45 @@ class GenericLogic extends Logic {
 	   $this->files_to_move[$name]=array('filename'=>$value,'type'=>$type,'name'=>$name);           
 	   break;
 	 case 'persons':
+	 case 'entries' :
 	   // get the type
-	   $dao=&getDAO("persontypes");
+	   if ($type=="persons") {
+	     $dao=&getDAO("persontypes");
+	   } else {
+	     $dao=&getDAO("entrytypes");
+	   }
 	   $vo=$dao->find("type='".$name."'","class,id");
 	   $idtype=$vo->id;
 
-	   $logic=&getLogic("persons"); // the logic is used to validate
-	   $localcontext=&$context['persons'][$idtype];
+	   $logic=&getLogic($type); // the logic is used to validate
+	   $localcontext=&$context[$type][$idtype];
+	   #if ($type=="entries") {
+	   #  echo "localcontext:";
+	   #  print_R($localcontext);
+	   #}
+	   if (!is_array($localcontext)) {
+	     $keys=explode(",",$localcontext);
+	     $localcontext=array();
+	     foreach($keys as $key) {
+	       $localcontext[]=array("g_name"=>$key);
+	     }
+	     #echo "after localcontext:";
+	     #print_R($localcontext);
+	   }
 	   $count=count($localcontext);
 	   for($i=0; $i<$count; $i++) {
 	     if (!$localcontext[$i]) continue;
 	     $localcontext[$i]['class']=$vo->class;
 	     $localcontext[$i]['idtype']=$idtype;
 	     $err=array();
+	     ##echo "logic(".get_class($logic).")";
+	     #echo "ici  ";print_R($localcontext[$i]);
+	     #echo "\n\n";
 	     $logic->validateFields($localcontext[$i],$err);
-	     if ($err) $error['persons'][$idtype][$i]=$err;
+	     if ($err) $error[$type][$idtype][$i]=$err;
 	   }
 	   break;
+
 	 default:
 	   die("ERROR: unable to check the validity of the field ".$field->name." of type ".$field->type);
 	 } // switch
