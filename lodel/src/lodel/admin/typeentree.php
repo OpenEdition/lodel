@@ -37,7 +37,7 @@ if ($edit) { // modifie ou ajoute
   extract_post();
   // validation
   do {
-    if (!$context[nom] || !preg_match("/[\w-]/",$context[nom])) $err=$context[erreur_nom]=1;
+    if (!$context[type] || !preg_match("/[\w-]/",$context[type])) $err=$context[erreur_type]=1;
     if (!$context[tpl]) $err=$context[erreur_tpl]=1;
     if (!$context[tplindex]) $err=$context[erreur_tplindex]=1;
     if (!$context[titre]) $err=$context[erreur_titre]=1;
@@ -47,21 +47,21 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     if ($id>0) { // il faut rechercher le status
-      $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tableprefix]typeentrees WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT status,ordre FROM $GLOBALS[tp]typeentrees WHERE id='$id'") or die (mysql_error());
       list($status,$ordre)=mysql_fetch_array($result);
     } else {
       $status=1;
       $ordre=get_ordre_max("typeentrees");
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tableprefix]typeentrees (id,nom,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[nom]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]typeentrees (id,type,titre,style,tpl,tplindex,status,lineaire,newimportable,useabrev,tri,ordre) VALUES ('$id','$context[type]','$context[titre]','$context[style]','$context[tpl]','$context[tplindex]','$status','$context[lineaire]','$context[newimportable]','$context[useabrev]','$context[tri]','$ordre')") or die (mysql_error());
     back();
 
   } while (0);
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]typeentrees WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]typeentrees WHERE $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 

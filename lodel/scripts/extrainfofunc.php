@@ -12,7 +12,7 @@ include_once($home."connect.php");
 //////////////////////////////////////////////////////////////////////////////
 
 // assure le traitement du fichier lors de l'arrive dans extrainfo
-function ei_pretraitement($filename,$row,&$context,&$text)
+function ei_pretraitement($filename,$tache,&$context,&$text)
 
 {
   global $langresume,$home;
@@ -71,9 +71,9 @@ $text='<'.'?xml version="1.0" encoding="ISO-8859-1" ?'.'>
 '.$text;
 
   if (!writefile ($filename.".balise",$text)) die ("erreur d'ecriture du fichier $filename.balise");
-  if ($row[iddocument]) { # le document existe
+  if ($tache[iddocument]) { # le document existe
 # on recupere la date de publication du texte
-    $result=mysql_query("SELECT datepubli FROM $GLOBALS[tableprefix]documents WHERE id='$row[iddocument]'") or die (mysql_error());
+    $result=mysql_query("SELECT datepubli FROM $GLOBALS[tp]documents WHERE identite='$tache[iddocument]'") or die (mysql_error());
     list($context[datepubli])=mysql_fetch_row($result);
   }
 }
@@ -84,7 +84,7 @@ $text='<'.'?xml version="1.0" encoding="ISO-8859-1" ?'.'>
 //  ou si on souhaite ajouter une personne
 //
 
-function ei_edition($filename,$row,&$context,&$text,&$entrees,&$autresentrees,&$plus)
+function ei_edition($filename,$tache,&$context,&$text,&$entrees,&$autresentrees,&$plus)
 
 {
   global $home;
@@ -107,27 +107,27 @@ function ei_edition($filename,$row,&$context,&$text,&$entrees,&$autresentrees,&$
   if (!$context[titre]) $err=$context[erreur_titre]=1;
   if ($context[datepubli]) {
     include ($home."date.php");
-    $row[datepubli]=mysqldate($context[datepubli]);
-    if (!$row[datepubli]) { $context[erreur_datepubli]=$err=1; }
+    $tache[datepubli]=mysqldate($context[datepubli]);
+    if (!$tache[datepubli]) { $context[erreur_datepubli]=$err=1; }
     // fin de la validation
   }
   //
   // recherche les differents type d'entrees
   //
   include_once($home."connect.php");
-  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typeentrees WHERE status>0") or die (mysql_error());
   $groupeentree="<r2r:grentree>";
   while ($row=mysql_fetch_assoc($result)) {
-    $groupeentree.=gr_entrees($context,$entrees[$row[id]],$autresentrees[$row[id]],$row[nom]);
+    $groupeentree.=gr_entrees($context,$entrees[$row[id]],$autresentrees[$row[id]],$row[type]);
   }
   $groupeentree.="</r2r:grentree>";
   //
   // recherche les differents type de personnes
   //
-  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typepersonnes WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typepersonnes WHERE status>0") or die (mysql_error());
   $groupepersonne="<r2r:grpersonne>";
   while ($row=mysql_fetch_assoc($result)) {
-    $groupepersonne.=gr_personne($context,$row[id],$plus[$row[id]],$row[nom]);
+    $groupepersonne.=gr_personne($context,$row[id],$plus[$row[id]],$row[type]);
   }
   $groupepersonne.="</r2r:grpersonne>";
 
@@ -164,31 +164,31 @@ function ei_edition($filename,$row,&$context,&$text,&$entrees,&$autresentrees,&$
   return TRUE;
 }
 
-function ei_enregistrement($filename,$row,&$context,&$text)
+function ei_enregistrement($filename,$tache,&$context,&$text)
 
 {
   global $home;
   //
   // enregistre
   //
-  if ($row[iddocument]) { # efface d'abord
+  if ($tache[iddocument]) { # efface d'abord
     include_once($home."managedb.php");
     // recupere les metas et le status
-    $result=mysql_query("SELECT meta,status FROM $GLOBALS[tableprefix]documents WHERE id='$row[iddocument]'") or die (mysql_error());
-    list($row[meta],$status)=mysql_fetch_row($result);
-    if (!$row[statusdocument]) $row[statusdocument]=$status; // recupere le status si necessaire
-    supprime_document($row[iddocument],TRUE,FALSE);
+    $result=mysql_query("SELECT status FROM $GLOBALS[tp]entites WHERE id='$tache[iddocument]'") or die (mysql_error());
+    list($status)=mysql_fetch_row($result);
+    if (!$tache[statusdocument]) $tache[statusdocument]=$status; // recupere le status si necessaire
+    supprime($tache[iddocument],TRUE,TRUE,"type NOT LIKE 'documentannexe-%'"); // supprime le document, mais pas ses docannexes
   } else { # Il n'existe pas, alors on calcule la date
     $context[duree]=intval($context[duree]);
     $time=localtime();
     if ($context[dateselect]=="jours") $time[3]+=$context[duree];
     if ($context[dateselect]=="mois") $time[4]+=$context[duree];
     if ($context[dateselect]=="année") $time[5]+=$context[duree];
-    $row[datepubli]=date("Y-m-d",mktime(0,0,0,$time[4]+1,$time[3],$time[5]));
+    $tache[datepubli]=date("Y-m-d",mktime(0,0,0,$time[4]+1,$time[3],$time[5]));
   }
   // enregistre dans la base
   include_once ($home."dbxml.php");
-  $iddocument=enregistre($row,$text);
+  $iddocument=enregistre($tache,$text);
 
   // change le nom des images
   if (!function_exists("img_rename")) {
@@ -315,11 +315,15 @@ function makeselecttypedoc()
 {
   global $context;
 
-  $result=mysql_query("SELECT nom FROM typedocs WHERE status>0") or die (mysql_error());
+  if ($context[typedocfixe]) $critere="AND type='$context[typedoc]'";
+
+  $result=mysql_query("SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere") or die (mysql_error());
+  echo "SELECT type,titre FROM $GLOBALS[tp]types WHERE status>0 AND classe='documents' $critere";
 
   while ($row=mysql_fetch_assoc($result)) {
-    $selected=$context[typedoc]==$row[nom] ? " selected" : "";
-    echo "<option value=\"$row[nom]\"$selected>$row[nom]</option>\n";
+    $selected=$context[typedoc]==$row[type] ? " selected" : "";
+    $nom=$row[titre] ? $row[titre] : $row[type];
+    echo "<option value=\"$row[type]\"$selected>$nom</option>\n";
   }
 }
 
@@ -329,7 +333,7 @@ function makeselectentrees (&$context)
 {
   global $text;
   // recupere les styles
-  $entreere=preg_quote($context[nom]);
+  $entreere=preg_quote($context[type]);
   preg_match_all("/<r2r:entree\s[^>]*?type=\"(?:$entreere)\"[^>]*>(.*?)<\/r2r:entree>/s",$text,$entrees,PREG_PATTERN_ORDER);
 
 #echo "entrees:";  print_r($entrees);
@@ -347,8 +351,7 @@ function makeselectentrees (&$context)
 function makeselectentrees_rec($parent,$rep,$entrees,&$context,&$entreestrouvees)
 
 {
-  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tableprefix]entrees WHERE status>=-1 AND parent='$parent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
-#  print_r($entrees[1]);
+  $result=mysql_query("SELECT id, abrev, nom FROM $GLOBALS[tp]entrees WHERE  parent='$parent' AND idtype='$context[id]' ORDER BY $context[tri]") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=(in_array($row[abrev],$entrees[1]) || in_array($row[nom],$entrees[1])) ? " selected" : "";
@@ -359,30 +362,6 @@ function makeselectentrees_rec($parent,$rep,$entrees,&$context,&$entreestrouvees
   }
 }
 
-
-#function makeselectmotcles()
-#
-#{
-#  global $context,$text;
-#
-#  if (!$context[option_motclefige]) $critere="type=".TYPE_MOTCLE." OR";
-#  $result=mysql_query("SELECT mot FROM indexls WHERE status>=-1 AND ($critere type=".TYPE_MOTCLE_PERMANENT.") GROUP BY mot ORDER BY mot") or die (mysql_error());
-#
-#  # extrait les motcles du texte
-#  preg_match_all("/<r2r:motcle\b[^>]*>(.*?)<\/r2r:motcle\s*>/is",$text,$motcles,PREG_PATTERN_ORDER);
-#
-#  $motclestrouves=array();
-#
-#  while ($row=mysql_fetch_assoc($result)) {
-#    $selected=in_array($row[mot],$motcles[1]) ? " selected" : "";
-#    if ($selected) array_push($motclestrouves,$row[mot]);
-#    echo "<option value=\"$row[mot]\"$selected>$row[mot]</option>\n";
-#  }
-##  print_r($motcles[1]);
-##  print_r($motclestrouves);
-##  print_r(array_diff($motcles[1],$motclestrouves));
-#  if (!$context[option_motclefige]) $GLOBALS[context][autresmotcles]=join(", ",array_diff($motcles[1],$motclestrouves));
-#}
 
 
 
@@ -443,7 +422,7 @@ function traitepersonnes (&$text)
 
   $oldtags=array(); // pour la suppression dans le texte
 
-  $result1=mysql_query("SELECT style,nom FROM $GLOBALS[tableprefix]typepersonnes WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  $result1=mysql_query("SELECT style,type FROM $GLOBALS[tp]typepersonnes WHERE status>0 ORDER BY ordre") or die (mysql_error());
   while ($typepersonne=mysql_fetch_assoc($result1)) {
     $style=strtolower($typepersonne[style]);
     // accouple les balises personnes et description
@@ -566,7 +545,7 @@ function traiteentrees (&$text)
 
   $oldtags=array(); // pour la suppression dans le texte
 
-  $result1=mysql_query("SELECT style,nom FROM $GLOBALS[tableprefix]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
+  $result1=mysql_query("SELECT style,type FROM $GLOBALS[tp]typeentrees WHERE status>0 ORDER BY ordre") or die (mysql_error());
   while ($row=mysql_fetch_assoc($result1)) {
     $style=strtolower($row[style]);
     preg_match_all ("/<r2r:$style>\s*(.*?)\s*<\/r2r:$style>/si",$text,$results,PREG_SET_ORDER);
@@ -575,14 +554,13 @@ function traiteentrees (&$text)
       $tags=preg_split ("/[,;]/",strip_tags($val));
       foreach($tags as $tag) {
 	// enlever le strip_tages
-	$groupe.="<r2r:entree type=\"$row[nom]\">".trim($tag)."</r2r:entree>";
+	$groupe.="<r2r:entree type=\"$row[type]\">".trim($tag)."</r2r:entree>";
       }
       array_push($oldtags,$result[0]);
     }
   }
   $groupe.="</r2r:grentree>\n";
   $text=str_replace($oldtags,array($groupe),$text); // remplace le premier tag par $groupe et les autres par rien
-#  echo "entree:$groupe";
 }
     
 ?>

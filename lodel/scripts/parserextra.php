@@ -6,7 +6,9 @@
 //
 
 
-function parse_boucle_extra(&$tables,&$tablesinselect,&$where,&$ordre,&$groupby)
+function parse_boucle_extra(&$tables,
+			    &$tablesinselect,&$extrainselect,
+			    &$where,&$ordre,&$groupby)
 
 {
   global $revue;
@@ -25,48 +27,71 @@ function parse_boucle_extra(&$tables,&$tablesinselect,&$where,&$ordre,&$groupby)
 		    ),$where);
   //
 
+  // gere les tables principales liees a entites
+  if (in_array("documents",$tables)) {
+    array_push($tables,"entites");
+    array_push($tablesinselect,"entites");
+    $where.=" AND $GLOBALS[tp]documents.identite=$GLOBALS[tp]entites.id AND classe='documents'";
+  }
+  if (in_array("publications",$tables)) {
+    array_push($tables,"entites");
+    array_push($tablesinselect,"entites");
+    $where.=" AND $GLOBALS[tp]publications.identite=$GLOBALS[tp]entites.id AND classe='publications'";
+  }
+#  echo "where 1:",htmlentities($where),"<br>";
+  if (in_array("entites",$tables)) {
+    if (preg_match("/\bclasse\b/",$where)) {
+      array_push($tables,"types");
+      protect2($where,$ordre,"entites","id|status|ordre");
+      $jointypesentitesadded=1;
+      $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
+      ## c'est inutile pour le moment: preg_replace("/\bclasse\b/","$GLOBALS[tp]types.classe",$where).
+    }
+#  echo "where 1bis:",htmlentities($where),"<br>";
+    if (!$jointypesentitesadded && preg_match("/\btype\b/",$where)) {
+      array_push($tables,"types");
+      protect2($where,$ordre,"entites","id|status|ordre");
+      $where.=" AND $GLOBALS[tp]entites.idtype=$GLOBALS[tp]types.id";
+    }
+    if (preg_match("/\bparent\b/",$where)) {
+      array_push($tables,"entites as entites_interne2");
+      protect2($where,$ordre,"entites","id|idtype|nom|groupe|user|ordre|status");
+      $where=preg_replace("/\bparent\b/","entites_interne2.nom",$where)." AND entites_interne2.id=$GLOBALS[tp]entites.idparent";
+    }
+    if (in_array("types",$tables)) { # compatibilite avec avant... et puis c'est pratique quand meme.
+      $extrainselect.=", $GLOBALS[tp]types.type , $GLOBALS[tp]types.classe";
+    }
+  }// fin de entites
+
   // verifie le status
   if (!preg_match("/\bstatus\b/i",$where)) { // test que l'element n'est pas a la poubelle
     $teststatus=array();
     if ($where) array_push($teststatus,$where);
     foreach ($tables as $table) {
-      if ($table=="session") continue;
-      if ($table=="documents" || $table=="publications") {
-	$lowstatus='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tableprefix].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
+      if (preg_match("/\sas\s+(\w+)/",$table,$result)) $table=$result[1];
+      if ($table=="session" || 
+	  $table=="documents" || 
+	  $table=="publications"||
+	  $table=="relations") continue;
+
+      if ($table=="entites") {
+	$lowstatus='"-64".($GLOBALS[admin] ? "" : "*('.$GLOBALS[tp].$table.'.groupe IN ($GLOBALS[usergroupes]))")';
       } else {
 	$lowstatus="-64";
       }
-      array_push($teststatus,"($GLOBALS[tableprefix]$table.status>\".(\$GLOBALS[visiteur] ? $lowstatus : \"0\").\")");
+      array_push($teststatus,"($GLOBALS[tp]$table.status>\".(\$GLOBALS[visiteur] ? $lowstatus : \"0\").\")");
     }
     $where=join(" AND ",$teststatus);
   }
+#  echo "where 2:",htmlentities($where),"<br>";
 
-
-#ifndef LODELLIGHT
     if ($revue) {
-#endif
       ///////// CODE SPECIFIQUE -- gere les tables croisees
       if (in_array("taches",$tables) && in_array("publications",$tables)) $where.=" AND publication=r2r_publications.id";
 
       if (in_array("documents",$tables) && in_array("publications",$tables)) {
-	$where.=" AND publication=$GLOBALS[tableprefix]publications.id";
+	$where.=" AND publication=$GLOBALS[tp]publications.id";
       }
-
-#ifndef LODELLIGHT
-      if (in_array("documentsannexes",$tables)) {
-	$where=preg_replace(array("/\btype_lienfichier\b/i",
-				  "/\btype_liendocument\b/i",
-				  "/\btype_lienpublication\b/i",
-				  "/\btype_lienexterne\b/i",
-				  "/\btype_lieninterne\b/i"),
-			    array("type='".TYPE_LIENFICHIER."'",
-				  "type='".TYPE_LIENDOCUMENT."'",
-				  "type='".TYPE_LIENPUBLICATION."'",
-				  "type='".TYPE_LIENEXTERNE."'",
-				  "(type='".TYPE_LIENDOCUMENT."' OR type='".TYPE_LIENPUBLICATION."')"),
-			    $where);
-      }
-
       //
       // les regexp ci-dessous sont insuffisantes, il faudrait tester que ce n'est pas dans une zone quotee de la clause where !!!!
       //
@@ -78,56 +103,60 @@ function parse_boucle_extra(&$tables,&$tablesinselect,&$where,&$ordre,&$groupby)
 	 // on a besoin de la table croisee documents_personnes
 	 array_push($tables,"documents_personnes");
 	 array_push($tablesinselect,"documents_personnes"); // on veut aussi recuperer les infos qui viennent de cette table
-	 $where.=" AND idpersonne=$GLOBALS[tableprefix]personnes.id";
+	 $where.=" AND idpersonne=$GLOBALS[tp]personnes.id";
        }
        if (preg_match("/\btype\b/",$where)) {
-	 protect2($where,$ordre,"personnes","id|status|nom");
+	 protect2($where,$ordre,"personnes","id|status");
 	 protect2($where,$ordre,"documents_personnes","ordre");
-
 	 array_push($tables,"typepersonnes");
 	 // maintenant, il y a deux solutuions
 	 if (!in_array("documents_personnes",$tables)) { // s'il n'y a pas cette table ca veut dire qu'on veut juste savoir s'il y a au moins une entree, donc il faut faire le groupeby.
 	   array_push($tables,"documents_personnes");
-	   $groupby.=" $GLOBALS[tableprefix]documents_personnes.idpersonne";
+	   $groupby.=" $GLOBALS[tp]documents_personnes.idpersonne";
 	 }
-	 $where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typepersonnes.nom",$where)." AND $GLOBALS[tableprefix]documents_personnes.idtype=$GLOBALS[tableprefix]typepersonnes.id AND $GLOBALS[tableprefix]documents_personnes.idpersonne=$GLOBALS[tableprefix]personnes.id";
+	 $where.=" AND $GLOBALS[tp]documents_personnes.idtype=$GLOBALS[tp]typepersonnes.id AND $GLOBALS[tp]documents_personnes.idpersonne=$GLOBALS[tp]personnes.id";
        }
      }
-     if (in_array("documents",$tables) && preg_match("/\bidpersonne\b/",$where)) {
+     if (in_array("entites",$tables) && preg_match("/\bidpersonne\b/",$where)) {
 	// on a besoin de la table croise documents_personnes
 	array_push($tables,"documents_personnes");
-	$where.=" AND iddocument=documents.id";
+	$where.=" AND iddocument=$GLOBALS[tp]entites.id";
      }
      // entrees
      if (in_array("entrees",$tables)) {
 	if (preg_match("/\btype\b/",$where)) {
-	  protect ($where,"entrees","id|status|nom|ordre");
-	  protect ($ordre,"entrees","id|status|nom|ordre");
+	  protect ($where,"entrees","id|status|ordre");
+	  protect ($ordre,"entrees","id|status|ordre");
 	  array_push($tables,"typeentrees");
-	  $where=preg_replace("/\btype\b/","$GLOBALS[tableprefix]typeentrees.nom",$where)." AND $GLOBALS[tableprefix]entrees.idtype=$GLOBALS[tableprefix]typeentrees.id";
+	  $where.=" AND $GLOBALS[tp]entrees.idtype=$GLOBALS[tp]typeentrees.id";
 	}
 	if (preg_match("/\biddocument\b/",$where)) {
 	  // on a besoin de la table croise documents_entrees
 	  array_push($tables,"documents_entrees");
-	  $where.=" AND identree=$GLOBALS[tableprefix]entrees.id";
+	  $where.=" AND identree=$GLOBALS[tp]entrees.id";
 	}
       }
-      if (in_array("documents",$tables) && preg_match("/\bidentree\b/",$where)) {
+      if (in_array("entites",$tables) && preg_match("/\bidentree\b/",$where)) {
 	// on a besoin de la table croise documents_entrees
 	array_push($tables,"documents_entrees");
-	$where.=" AND iddocument=$GLOBALS[tableprefix]documents.id";
+	$where.=" AND iddocument=$GLOBALS[tp]entites.id";
       }
       if (in_array("groupes",$tables) && preg_match("/\biduser\b/",$where)) {
 	// on a besoin de la table croise users_groupes
 	array_push($tables,"users_groupes");
-	$where.=" AND idgroupe=$GLOBALS[tableprefix]groupes.id";
+	$where.=" AND idgroupe=$GLOBALS[tp]groupes.id";
       }
       if (in_array("users",$tables) && in_array("session",$tables)) {
-	$where.=" AND iduser=$GLOBALS[tableprefix]users.id";
+	$where.=" AND iduser=$GLOBALS[tp]users.id";
       }
-#ifndef LODELLIGHT
     } // revue
-#endif
+
+    array_walk($tables,"prefixtablesindatabase");
+    array_walk($tablesinselect,"prefixtablesindatabase");
+}
+
+function prefixtablesindatabase($table) {
+  if ($table=="revue" || $table=="session") return $GLOBALS[database].".".$table;
 }
 
 
@@ -218,11 +247,11 @@ $context=array_merge($context,extract_xml(array('.$withtextebalises.'),$text));
 // il est aussi possible d'ajouter des champs dans le select $extrafield
 //
 
+/*
 function make_boucle_code_extra($tables)
 
 {
 
-#ifndef LODELLIGHT
   // gestion du changement de database
   if (in_array("revue",$tables) || in_array("session",$tables)) {
     $premysqlquery='mysql_select_db($GLOBALS[database]);';
@@ -238,10 +267,11 @@ function make_boucle_code_extra($tables)
   if (in_array("documents",$tables)) {
     $extrafield=",(datepubli<=NOW()) as textepublie";
   }
-#endif
+
 
   return array($premysqlquery,$postmysqlquery,$extrafield);
 }
+*/
 
 
 
@@ -255,7 +285,7 @@ function prefix_tablename ($tablename)
 #else
 #  preg_match_all("/\b(\w+)\./",$tablename,$result);
 #  foreach ($result[1] as $tbl) {
-#    $tablename=preg_replace ("/\b$tbl\./",$GLOBALS[tableprefix].$tbl.".",$tablename);
+#    $tablename=preg_replace ("/\b$tbl\./",$GLOBALS[tp].$tbl.".",$tablename);
 #  }
 #  //  echo $tablename,"<br>";
 #  return $tablename;
@@ -279,7 +309,7 @@ function protect (&$sql,$table,$fields)
   // ajoute un espace au debut pour des raisons de facilite
   $arr=preg_split("/(?<!\\\)'/",$sql);
   for($i=0;$i<count($arr);$i+=2)
-    $arr[$i]=preg_replace("/\b(?<!\\.)($fields)\b/","$GLOBALS[prefixtable]$table.\\1",$arr[$i]);
+    $arr[$i]=preg_replace("/\b(?<!\\.)($fields)\b/","$GLOBALS[tp]$table.\\1",$arr[$i]);
   $sql=join("'",$arr);
 }
     

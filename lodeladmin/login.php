@@ -1,6 +1,6 @@
 <?
 
-die("lodeldevel est trop instable en ce moment car je fais des changements importants sur le code. Les rapports de bug seraient donc inutiles.<br>Merci de votre comprehension et bonnes vacances merci.<br> Ghislain le 04/08/03");
+#die("lodeldevel est trop instable en ce moment car je fais des changements importants sur le code. Les rapports de bug seraient donc inutiles.<br>Merci de votre comprehension et bonnes vacances merci.<br> Ghislain le 04/08/03");
 
 require("lodelconfig.php");
 include ($home."auth.php");
@@ -28,7 +28,7 @@ if ($login) {
     if ($userpriv<LEVEL_SUPERADMIN) {
       lock_write("revues","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur revue.
       // verifie que c'est ok
-      $result=mysql_query("SELECT 1 FROM $GLOBALS[tableprefix]revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
+      $result=mysql_query("SELECT 1 FROM $GLOBALS[tp]revues WHERE rep='$revue' AND status>=32") or die(mysql_error());
       if (mysql_num_rows($result)) { $context[erreur_revuebloquee]=1; unlock(); break; }
     }
 
@@ -36,7 +36,7 @@ if ($login) {
       // nom de la session
       $name=md5($context[login].microtime());
       // enregistre la session, si ca marche sort de la boucle
-      if (mysql_query("INSERT INTO $GLOBALS[tableprefix]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
+      if (mysql_query("INSERT INTO $GLOBALS[tp]session (name,iduser,revue,context,expire,expire2) VALUES ('$name','$iduser','$revue','$contextstr','$expire','$expire2')")) break;
     }
     unlock();
     if ($i==5) { $context[erreur_opensession]=1; break; }
@@ -100,7 +100,7 @@ function check_auth (&$revue)
       if (!($row=mysql_fetch_assoc($result))) break;
     }
 #else
-#      if (!($result=mysql_query ("SELECT id,status,privilege FROM $GLOBALS[tableprefix]users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
+#      if (!($result=mysql_query ("SELECT id,status,privilege FROM $GLOBALS[tp]users WHERE username='$user' AND passwd='$pass' AND status>0")))  break;
 #      if (!($row=mysql_fetch_assoc($result))) break;
 #endif
     // pass les variables en global
@@ -109,7 +109,7 @@ function check_auth (&$revue)
 
     // cherche les groupes pour les non administrateurs
     if ($userpriv<LEVEL_ADMIN) {
-      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
+      $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tp]users_groupes WHERE iduser='$iduser'") or die(mysql_error());
       $usergroupes="1"; // sont tous dans le groupe "tous"
       while ($row=mysql_fetch_row($result)) $usergroupes.=",".$row[0];
     } else {

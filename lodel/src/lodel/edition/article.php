@@ -28,7 +28,7 @@ if ($id>0) {
 
 if ($id>0 && $dir) {
   # cherche le parent
-  $result=mysql_query ("SELECT publication,type FROM $GLOBALS[tableprefix]documents WHERE id='$id'") or die (mysql_error());
+  $result=mysql_query ("SELECT publication,type FROM $GLOBALS[tp]documents WHERE id='$id'") or die (mysql_error());
   list($publication,$typedoc)=mysql_fetch_row($result);
   chordre("documents",$id,"publication='$publication' $critere2",$dir);
   back();
@@ -73,7 +73,7 @@ if ($id>0 && $dir) {
     $image="";
     if ($id>0) { // il faut rechercher le status et l'ordre
       lock_write("documents");
-#      $result=mysql_query("SELECT ordre,status,meta,image,publication,date,user,groupe FROM $GLOBALS[tableprefix]documents WHERE id='$id'") or die (mysql_error());
+#      $result=mysql_query("SELECT ordre,status,meta,image,publication,date,user,groupe FROM $GLOBALS[tp]documents WHERE id='$id'") or die (mysql_error());
 #      list($ordre,$status,$meta,$image,$publication,$date,$user,$groupe)=mysql_fetch_array($result);
 #      $date="'".$date."'";
 # les metas sont desactives pour le moment#      $meta=addmeta($context,$meta);
@@ -84,10 +84,10 @@ if ($id>0 && $dir) {
 	$image="Photos/img-$id.$ext";
 	$update.=", image='$image'";
       }
-      mysql_query("UPDATE $GLOBALS[tableprefix]documents SET $update WHERE $critere") or die (mysql_error());
+      mysql_query("UPDATE $GLOBALS[tp]documents SET $update WHERE $critere") or die (mysql_error());
       // verifie que le groupe est ok au cas ou...
       if (mysql_affected_rows()==0 && $imgfile) { // dans ce cas c'est suspect, mais pas forcement grave.
-	$result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]documents WHERE $critere") or die (mysql_error());
+	$result=mysql_query("SELECT id FROM $GLOBALS[tp]documents WHERE $critere") or die (mysql_error());
 	if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
 	// ca permet de prevenir une modification de l'image...
       }
@@ -95,20 +95,20 @@ if ($id>0 && $dir) {
       lock_write("documents","publications");
       // cherche le groupe et verifie les droits
       if (!$admin) $critere2="AND groupe IN ($usergroupes)";
-      $result=mysql_query("SELECT groupe FROM $GLOBALS[tableprefix]publications WHERE id='$publication' $critere2") or die (mysql_error());
+      $result=mysql_query("SELECT groupe FROM $GLOBALS[tp]publications WHERE id='$publication' $critere2") or die (mysql_error());
       if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
       list($groupe)=mysql_fetch_row($result);
 
       // cherche l'ordre
       $ordre=get_ordre_max("documents");
 
-      mysql_query ("INSERT INTO $GLOBALS[tableprefix]documents (titre,soustitre,texte,textetype,image,meta,publication,datepubli,ordre,type,status,user,groupe) VALUES ('$context[titre]','$context[soustitre]','$context[texte]','$context[textetype]','','','$publication',NOW(),'$ordre','$context[type]','1','$iduser','$groupe')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tp]documents (titre,soustitre,texte,textetype,image,meta,publication,datepubli,ordre,type,status,user,groupe) VALUES ('$context[titre]','$context[soustitre]','$context[texte]','$context[textetype]','','','$publication',NOW(),'$ordre','$context[type]','1','$iduser','$groupe')") or die (mysql_error());
       // attention, publier par defaut !
 
       $id=mysql_insert_id();
       if ($imgfile) {
 	$image="Photos/img-$id.$ext";
-	mysql_query("UPDATE $GLOBALS[tableprefix]documents SET image='$image' WHERE id='$id'") or die (mysql_error());
+	mysql_query("UPDATE $GLOBALS[tp]documents SET image='$image' WHERE id='$id'") or die (mysql_error());
       }
     }
     // copie du fichier images
@@ -126,7 +126,7 @@ if ($id>0 && $dir) {
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]documents WHERE $critere") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]documents WHERE $critere") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   include_once($home."textfunc.php");
@@ -148,7 +148,7 @@ calcul_page($context,$base);
 #{
 #  global $context;
 #
-#  $result=mysql_query("SELECT nom FROM $GLOBALS[tableprefix]typedocs WHERE status>0") or die (mysql_error());
+#  $result=mysql_query("SELECT nom FROM $GLOBALS[tp]typedocs WHERE status>0") or die (mysql_error());
 #
 #  while ($row=mysql_fetch_assoc($result)) {
 #    $selected=$context[type]==$row[nom] ? " SELECTED" : "";

@@ -69,27 +69,36 @@ function infoChargement(nomFic){
 		</IF>
 	</div>
 </div>
-<form name="formfic" enctype="multipart/form-data" action="oochargement.php" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)" />
+<form name="formfic" enctype="multipart/form-data" action="[#URL]" method=post onsubmit="return infoChargement(document.formfic.htmlfile.value)" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
-	<input type="hidden" name="id" value="[#ID]" />
-	<input type="hidden" name="tache" value="[#TACHE]" />
+	<input type="hidden" name="idparent" value="[#IDPARENT]" />	
+        <input type="hidden" name="tache" value="[#TACHE]" />
+	<IF COND="[#COMMANDS]">
+		    <input type="hidden" name="commands" value="[#COMMANDS]" />
+		    <input type="hidden" name="sessionname" value="[#SESSIONNAME]" />
+		    <input type="hidden" name="session" value="[#SESSION]" />
+		    <input type="hidden" name="username" value="[#SERVEUROOUSERNAME]" />
+		<input type="hidden" name="passwd" value="[#SERVEUROOPASSWD]" />
+
+        </IF>	  
 	
 	<br /><br />
 	<table width="430" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
 		<tr><td align="center" class="sous_titre_popup"><br />S&eacute;lectionner le fichier à charger<br /><br /></td></tr>
 		<tr><td align="center" class="texte_normal">Au cours du processus de téléchargement, l'usage des flèches de navigation du navigateur est déconseillé.<br /><br /></td></tr>
-		<tr><td align="center"><input type="file" name="htmlfile" size="40"></td></tr>
+		<tr><td align="center"><input type="file" name="file1" size="40"></td></tr>
 		<tr>
 			<td align="center">
 				<br /><br />
 				<input class="form" type="submit" value="Charger" />&nbsp;&nbsp;&nbsp;&nbsp;
-				<LOOP NAME="" TABLE="publications" WHERE="id=[#ID]">
+<!--Cette boucle ne doit pas etre ecrite comme ca 				<LOOP NAME="publication" TABLE="publications" WHERE="id=[#IDPARENT]">
 					<IF COND="[#TYPE]=='regroupement'">
-						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 					<ELSE/>
 						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#ID]';" />
 					</IF>
-				</LOOP>
+				</LOOP> -->
+				  
 				<br />
 <!--				<IF COND="[#SUPERADMIN]"> -->
 					<br /><br /><span class="texte_info_popup">Administrateur Lodel</span><br /><br /><br />

@@ -63,10 +63,10 @@
 <!-- Affiche, si on a au moins le niveau "rédacteur", un bouton [E]     -->
 <!-- afin d'éditer un document.                                         -->
 <!-- ****************************************************************** -->
-	<IF COND="[#REDACTEUR]">
-	<LOOP NAME="" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+<!--	<IF COND="[#REDACTEUR]">
+	<LOOP NAME="publication" TABLE="publications" WHERE="id='[#IDPARENT]'"> 
 			<IF COND="[#TYPE]=='regroupement'"> 
-				<LOOP NAME="boucle2_bouton_editer_document" TABLE="publications"  WHERE="id='[#PARENT]'"> 
+				<LOOP NAME="boucle2_bouton_editer_document" TABLE="publications"  WHERE="id='[#IDPARENT]'"> 
 					<a href="lodel/edition/index.php?id=[#ID]">
 							<span class="pluspetit">[E]</span>
 					</a>
@@ -80,6 +80,7 @@
 	</LOOP>
 		
 	</IF>
+-->
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTON_EDITER_PUBLICATION">
@@ -90,7 +91,7 @@
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
 		<IF COND="[#TYPE] EQ 'regroupement'">
-			<a href="lodel/edition/index.php?id=[#PARENT]">
+			<a href="lodel/edition/index.php?id=[#IDPARENT]">
 				<span class="pluspetit">[E]</span>
 			</a>
 		<ELSE/>
@@ -108,10 +109,10 @@
 <!-- afin d'éditer une publication depuis un document.                  -->
 <!-- ****************************************************************** -->
 	<IF COND="[#REDACTEUR]">
-		<LOOP NAME="est_ce_un_regroupement" TABLE="publications" WHERE="id='[#PUBLICATION]'">
+		<LOOP NAME="est_ce_un_regroupement" TABLE="publications" WHERE="id='[#IDPARENT]'">
 			<DO>
 				<IF COND="[#TYPE] eq 'regroupement'">
-					<a href="lodel/edition/index.php?id=[#PARENT]">
+					<a href="lodel/edition/index.php?id=[#IDPARENT]">
 						<span class="pluspetit">[E]</span>
 					</a>
 				<ELSE/>

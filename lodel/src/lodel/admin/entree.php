@@ -28,7 +28,7 @@ if ($id>0 && ($delete || $restore)) {
 if ($id>0 && $dir) {
   include_once($home."connect.php");
   # cherche le parent
-  $result=mysql_query ("SELECT parent FROM $GLOBALS[prefixtable]entrees WHERE $critere") or die (mysql_error());
+  $result=mysql_query ("SELECT parent FROM $GLOBALS[tp]entrees WHERE $critere") or die (mysql_error());
   list($parent)=mysql_fetch_row($result);
   chordre("entrees",$id,"parent='$parent' AND status>-64",$dir);
   back();
@@ -48,7 +48,7 @@ if ($edit) { // modifie ou ajoute
 
     $parent=intval($context[parent]);
     if ($id>0) { // il faut rechercher le status, le type et l'ordre
-      $result=mysql_query("SELECT status,idtype,ordre FROM entrees$GLOBALS[prefixtable] WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query("SELECT status,idtype,ordre FROM entrees$GLOBALS[tp] WHERE id='$id'") or die (mysql_error());
       list($status,$context[idtype],$ordre)=mysql_fetch_array($result);
     } else {
       $status=1;
@@ -56,9 +56,9 @@ if ($edit) { // modifie ou ajoute
       $context[idtype]=intval($context[idtype]);
       $ordre=get_ordre_max("entrees"," parent='$parent' AND idtype='$context[idtype]'");
     }
-    if ($protege) $status=32;
+    if ($protege) $status=$id && $status>0 ? 32 : -32;    
 
-    mysql_query ("REPLACE INTO $GLOBALS[prefixtable]entrees (id,parent,nom,abrev,ordre,lang,status,idtype) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[idtype]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]entrees (id,parent,nom,abrev,ordre,lang,status,idtype) VALUES ('$id','$parent','$context[nom]','$context[abrev]','$ordre','$context[lang]','$status','$context[idtype]')") or die (mysql_error());
 
     back();
 
@@ -66,7 +66,7 @@ if ($edit) { // modifie ou ajoute
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[prefixtable]entrees WHERE $critere AND status>-32") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]entrees WHERE $critere AND status>-32") or die ("erreur SELECT");
   $context=array_merge(mysql_fetch_assoc($result),$context);
 }
 
@@ -78,7 +78,7 @@ if ($context[idtype]) {
 } else die("preciser un type");
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT * FROM $GLOBALS[prefixtable]typeentrees WHERE $critere AND status>0") or die (mysql_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typeentrees WHERE $critere AND status>0") or die (mysql_error());
 if (!mysql_num_rows($result)) die("type incorrecte ($context[idtype],$type)");
 $context= array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 $context[idtype]=$context[type_id]; // importe l'id du type dans type
@@ -100,7 +100,7 @@ function make_selection_entree($parent=0,$rep="")
 {
   global $context;
 
-  $result=mysql_query("SELECT nom,id FROM $GLOBALS[prefixtable]entrees WHERE idtype='$context[idtype]' AND parent='".intval($parent)."' ORDER BY $context[type_tri]") or die (mysql_error());
+  $result=mysql_query("SELECT nom,id FROM $GLOBALS[tp]entrees WHERE idtype='$context[idtype]' AND parent='".intval($parent)."' ORDER BY $context[type_tri]") or die (mysql_error());
   while ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
     $selected=$row[id]==$context[parent] ? " SELECTED" : "";
     echo "<OPTION VALUE=\"$row[id]\"$selected>$rep$row[nom]</OPTION>\n";

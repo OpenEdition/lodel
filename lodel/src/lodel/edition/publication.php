@@ -11,21 +11,22 @@ include($home."func.php");
 // calcul le critere pour determiner le user a editer, restorer, detruire...
 
 $context[id]=$id=intval($id);
-$context[parent]=$parent=intval($parent);
+if ($parent) $idparent=$parent;
+$context[idparent]=$idparent=intval($idparent);
 
-if ($id>0) {
-  $critere="id='$id'";
-  if (!$admin) $critere.=" AND groupe IN ($usergroupes)";
+
+if ($id>0 && !$admin) {
+  $critere=" AND groupe IN ($usergroupes)";
 } else $critere="";
 
 if ($id>0 && $dir) {
-  lock_write("publications");
+  lock_write("entites");
   # cherche le parent
-  $result=mysql_query ("SELECT parent FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
+  $result=mysql_query ("SELECT idparent FROM $GLOBALS[tp]entites WHERE id='$id' $critere") or die (mysql_error());
   if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
-  list($parent)=mysql_fetch_row($result);
-  chordre("publications",$id,"parent='$parent'",$dir);
-  unlock("publications");
+  list($idparent)=mysql_fetch_row($result);
+  chordre("entites",$id,"idparent='$idparent'",$dir);
+  unlock("entites");
   back();
 
 //
@@ -34,7 +35,6 @@ if ($id>0 && $dir) {
 } elseif ($id>0 && ($delete || $restore)) { 
   include ($home."trash.php");
   die ("il faut utiliser supprime.php a la place");
-  treattrash("publications",$critere);
   return;
 //
 // ajoute ou edit
@@ -44,16 +44,22 @@ if ($id>0 && $dir) {
 
   extract_post();
   // edition et sort si ca marche
-  if (pub_edition($context,$critere)) back();
+  if (pub_edition($context,"id='$id'".$critere)) back();
 
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
+  $result=mysql_query("SELECT *, type  FROM  $GLOBALS[publicationstypesjoin] WHERE $GLOBALS[tp]entites.id='$id'  $critere") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 } else {
   include_once ($home."textfunc.php");
-  $context[type]=rmscript(strip_tags($type));
+  $context[type]=trim(rmscript(strip_tags($type)));
+  if ($context[type]) {
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$context[type]' AND status>0") or die (mysql_error());
+    if (!mysql_num_rows($result)) die("type inconnu $context[type]");
+    list($context[idtype])=mysql_fetch_row($result);
+  }
 }
+
 
 // post-traitement
 posttraitement($context);
@@ -67,11 +73,11 @@ function makeselecttype()
 {
   global $context;
 
-  $result=mysql_query("SELECT nom FROM $GLOBALS[tableprefix]typepublis WHERE status>0") or die (mysql_error());
+  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tp]types WHERE classe='publications' AND status>0") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$context[type]==$row[nom] ? " SELECTED" : "";
-    echo "<OPTION VALUE=\"$row[nom]\"$selected>$row[nom]</OPTION>\n";
+    echo "<OPTION VALUE=\"$row[id]\"$selected>$row[titre]</OPTION>\n";
   }
 }
 
@@ -80,7 +86,7 @@ function makeselectgroupes()
 {
   global $context;
       
-  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]groupes") or die (mysql_error());
+  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tp]groupes") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=$context[groupe]==$row[id] ? " SELECTED" : "";
@@ -88,6 +94,20 @@ function makeselectgroupes()
   }
 }
 
+
+/*
+function boucle_personnes(&$context,$funcname)
+
+{
+  global $id; // id de la publication
+
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]personnes,$GLOBALS[tp]documents_personnes WHERE idpersonne=id AND idtype='$context[id]' AND iddocument='$id'") or die(mysql_error());
+  while ($row=mysql_fetch_assoc($result)) {
+    $localcontext=array_merge($context,$row);
+    call_user_func("code_boucle_$funcname",$localcontext);
+  }
+}
+*/
 
 
 ?>

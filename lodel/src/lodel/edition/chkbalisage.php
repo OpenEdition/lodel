@@ -12,11 +12,11 @@ include ($home."balises.php");
 
 // ajoute les balises "entrees"
 include ($home."connect.php");
-$result=mysql_query("SELECT style,titre FROM $GLOBALS[prefixtable]typeentrees WHERE status>0");
+$result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typeentrees WHERE status>0");
 while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 
 // ajoute les balises "personnes"
-$result=mysql_query("SELECT style,titre FROM $GLOBALS[prefixtable]typepersonnes WHERE status>0");
+$result=mysql_query("SELECT style,titre FROM $GLOBALS[tp]typepersonnes WHERE status>0");
 while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 
 //
@@ -63,40 +63,112 @@ while ($row=mysql_fetch_row($result)) { $balises[$row[0]]=$row[1]; }
 #
 #  writefile ($tache[fichier].".html",$text);
 #} else { // lines est non defini, on doit donc lire le fichier xml et l'afficher
-  $text=join("",file($tache[fichier].".html"));
 
-  // cherche les sousbalises, retirent les de $balises et prepare le changement d'ecriture.
-  // une sous balises est definie par la presence d'une balise HTML (le caractere < en pratique)ou parce qu'elle est vide dans $balises
-  $srch=array(); $rpl=array();
-  foreach ($balises as $b=>$v) {
-    if (!$v || strpos($v,"<")!==FALSE) { // sous balises
-      array_push($srch,"/<r2r:$b>/si");array_push($rpl,$v); // balises ouvrante
-      // balises fermante:
-      preg_match_all("/<(\w+)\b[^>]*>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
-      $v="";
-      while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'ordre inverse, et transforme les en balises fermantes
-      array_push($srch,"/<\/r2r:$b>/si");array_push($rpl,$v);
 
-      $balises[$b]=""; // supprime cette sousbalises (ca change rien normalement)
-    }
+
+  $textorig=$text=join("",file($tache[fichier].".html"));
+
+// cherche les sousbalises, retirent les de $balises et prepare le changement d'ecriture.
+// une sous balises est definie par la presence d'une balise HTML (le caractere < en pratique)ou parce qu'elle est vide dans $balises
+$srch=array(); $rpl=array();
+foreach ($balises as $b=>$v) {
+  if (!$v || strpos($v,"<")!==FALSE) { // sous balises
+    array_push($srch,"/<r2r:$b>/si");array_push($rpl,$v); // balises ouvrante
+    // balises fermante:
+    preg_match_all("/<(\w+)\b[^>]*>/",$v,$result,PREG_PATTERN_ORDER); // recupere les balises html (et seulement les balises)
+    $v="";
+    while ($html=array_pop($result[1])) $v.="</$html>";// met les dans l'ordre inverse, et transforme les en balises fermantes
+    array_push($srch,"/<\/r2r:$b>/si");array_push($rpl,$v);
+    
+    $balises[$b]=""; // supprime cette sousbalises (ca change rien normalement)
   }
+}
 
-  array_push($srch,
-	     "/<\/?r2r:article>/",
-	     "/<r2r:([^>]+)>/e",
-	     "/<\/r2r:([^>]+)>/",
+array_push($srch,
+#	     "/<\/?r2r:article>/",
+#	     "/<r2r:([^>]+)>/e",
+#	     "/<\/r2r:([^>]+)>/",
 	     "/<r2rc:([^>]+)>/",
 	     "/<\/r2rc:([^>]+)>/");
 
-  array_push($rpl,
-	     "",
-	     "'<tr valign=\"top\"><td class=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td class=\"chkbalisagetdparagraphe\">'",	     
-	     "</td></tr>\n",
+array_push($rpl,
+#	     "",
+#	     "'<tr valign=\"top\"><td classe=\"chkbalisagetdbalise\">'.\$balises[strtolower('\\1')].'</td><td classe=\"chkbalisagetdparagraphe\">'",	     
+#	     "</td></tr>\n",
 	     "<span style=\"background-color: #F3F3F3;\">",
 	     "</span>");
+
+$text=preg_replace($srch,$rpl,traite_separateur($text));
+
+// detecte les zones balises
+$arr=preg_split("/<(\/?r2r):([^>]+)>/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
+$level=0;
+
+$tablescontent=array(); // contient les contenus des tables
+// on s'assure que la partie principale est la premiere
+$part="main";
+
+// recupere les balises de debut et de fin
+$startbalise="<r2r:$arr[2]>";
+$endbalise="</r2r:".$arr[count($arr)-2].">";
+
+$arr=array_slice($arr,3,-3); // enleve les trois premiers et les trois derniers correspondant aux balises r2r:article
+
+while ($arr) {
+  $subtext=array_shift($arr);
+  if ($subtext=="r2r") {
+    // balise ouvrante
+    $level++;
+    $bal=array_shift($arr);
+    if ($balisesdocumentassocie[$bal]) {
+      $part=$bal;
+    } else {
+      $textbal=$balises[strtolower(trim($bal))];
+      if (!$textbal) $textbal='<div style="color: red">Style "'.$bal.'" non reconnue</div>';
+      $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise">'.$textbal.'</td><td class="chkbalisagetdparagraphe">';
+    }
+  } elseif ($subtext=="/r2r") {
+    // balise fermante
+    $level--;
+    $bal=array_shift($arr);
+    if ($balisesdocumentassocie[$bal]) {
+      $part="main";
+    } else {
+      $tablescontent[$part].="</td></td>\n";
+    }
+  } elseif ($level==0 && trim($subtext)) {
+    // pas bon, zone none reconnuee
+    $tablescontent[$part].='<tr valign="top"><td class="chkbalisagetdbalise"><div style="color: red">ZONE NON TAGUEE</div></td><td class="chkbalisagetdparagraphe">'.$subtext."</td></tr>\n";
+  } else {
+    $tablescontent[$part].=$subtext;
+  }
+}
+
+if (count($tablescontent)>1) { // ok il faut decouper le fichier
+
+  $i=2;
+  foreach (array_keys($balisesdocumentassocie) as $bal) {
+    if (!preg_match_all("/<r2r:$bal>(.*?)<\/r2r:$bal>/s",$textorig,$results,PREG_PATTERN_ORDER)) continue;
+    $text=$startbalise.join("",$results[1]).$endbalise; // construit un fichier propre
+    $textorig=str_replace($results[0],"",$textorig); // supprime les zones
+
+    $tache["fichierdecoupe$i"]="$tache[fichier]-$i";
+    $tache["typedoc$i"]=$bal;
+    $text=$startbalise.$text.$endbalise;
+    writefile($tache["fichierdecoupe$i"].".html",$text);
+    $i++;
+  }
+
+  $tache["fichierdecoupe1"]="$tache[fichier]-1";
+  writefile("$tache[fichierdecoupe1].html",$textorig); // d'abord la partie principale
+
+  // on est oblige de faire ca pour enregistrer en premier la partie principale pour recuperer l'id qui est le parent des s fichiers
+#  die (htmlentities($texts[main]));
+
   
-  $context[fichier]=preg_replace($srch,$rpl,traite_separateur($text));
-#}
+  update_tache_context($id,$tache);
+}
+
 
 if (preg_match("/<r2r:(titrenumero|nomnumero|typenumero)>/i",$text)) {
   $context[urlsuite]="importsommaire.php?id=$id";
@@ -105,8 +177,28 @@ if (preg_match("/<r2r:(titrenumero|nomnumero|typenumero)>/i",$text)) {
 }
 
 
+function boucle_partie_fichier($context,$funcname)
+
+{
+  global $tablescontent,$balisesdocumentassocie;
+
+  foreach ($tablescontent as $part => $context[tablecontent]) {
+    if ($part=="main") continue;
+    $context[part]=$balisesdocumentassocie[$part];
+    call_user_func("code_boucle_$funcname",$context);
+  }
+  // partie principale maintenant
+
+  $context[part]=count($texts)==1 ? "" : "main";
+  $context[tablecontent]=$tablescontent[main];
+  call_user_func("code_boucle_$funcname",$context);
+}
+
 $context[id]=$id;
-include ($home."calcul-page.php");
+require ($home."calcul-page.php");
 calcul_page($context,"chkbalisage");
+
+
+
 
 ?>

@@ -1,4 +1,8 @@
 <?
+#echo "server:";
+#print_r($_SERVER);
+#echo "header:"; print_r(getallheaders());
+#echo "post:"; print_r($HTTP_POST_VARS);
 
 require("revueconfig.php");
 include ($home."auth.php");
@@ -6,23 +10,27 @@ authenticate(LEVEL_REDACTEUR,NORECORDURL);
 include ($home."func.php");
 require_once($home."utf8.php"); // conversion des caracteres
 
-$context[id]=intval($id);
+$context[idparent]=intval($idparent);
 $context[tache]=$tache=intval($tache);
 
-if ($htmlfile && $htmlfile!="none") {
+
+if ($file1 && $file1!="none") {
   do {
-    // verifie que la variable htmlfile n'a pas ete hackee
-    if (strpos(realpath($htmlfile),getenv("TMPDIR"))!=0) die("Erreur interne");
+    // verifie que la variable file1 n'a pas ete hackee
+    if (!is_uploaded_file($file1)) die("Erreur interne");
+
+
+    $file1=convert($file1);
 
     //
     // regarde si le fichier est zipper
     //
-    $fp=fopen($htmlfile,"r") or die("le fichier $htmlfile ne peut etre ouvert");
+    $fp=fopen($file1,"r") or die("le fichier $file1 ne peut etre ouvert");
     $cle=fread($fp,2);
     if ($cle=="PK") {
       echo "<li>Decompresse le fichier zippe<br>"; flush();
-      system("/usr/bin/unzip -j -p $htmlfile >$htmlfile.extracted");
-      $htmlfile.=".extracted";
+      system("/usr/bin/unzip -j -p $file1 >$file1.extracted");
+      $file1.=".extracted";
     }
     fclose($fp);
     //
@@ -31,7 +39,8 @@ if ($htmlfile && $htmlfile!="none") {
 
     include_once($home."balises.php");
     if ($sortieoo || $sortiexmloo || $sortie) $oo=TRUE;
-    $newname=OO($htmlfile,$context);
+    
+    $newname=OO($file1,$context);
     if (!$newname) {
       $context[erreur_upload]=1;
       break;
@@ -40,9 +49,9 @@ if ($htmlfile && $htmlfile!="none") {
       $row=get_tache($tache);
       $row[fichier]=$newname;
     } else {
-      $row=array("publication"=>$context[id],"fichier"=>$newname);
+      $row=array("idparent"=>$context[idparent],"fichier"=>$newname);
     }
-    $idtache=make_tache("Import $htmlfile_name",3,$row,$tache);
+    $idtache=make_tache("Import $file1_name",3,$row,$tache);
 
     echo '<br><a href="chkbalisage.php?id='.$idtache.'"><font size="+1">Continuer</font></a>';
     return;
@@ -52,6 +61,10 @@ if ($htmlfile && $htmlfile!="none") {
   } while (0); // exceptions
 }
 
+#$context[sessionname]=$sessionname;
+#$context[session]=$session;
+#$context[commands]="DWL file1; CVT HTMLLodel-1.0; ZIP all; UPL;";
+$context[url]="oochargement.php";
 
 
 include ($home."calcul-page.php");
@@ -59,55 +72,55 @@ calcul_page($context,"oochargement");
 
 
 
+// schema 1 de conversion
+function convert ($uploadedfile)
+
+{
+  global $home,$serveuroourl,$serveuroousername,$serveuroopasswd;
+
+  //
+  // regarde si le fichier est zipper
+  //
+  $fp=fopen($uploadedfile,"r") or die("le fichier $uploadedfile ne peut etre ouvert");
+  $cle=fread($fp,2);
+  fclose($fp);
+
+  $cmds="DWL file1;";
+  if ($cle=="PK") $cmds.="UNZIP source;";
+  $cmds.="CVT HTMLLodel-1.0; ZIP all; RTN convertedfile;";
+
+  require ($home."serveurfunc.php");
+  $file=upload($serveuroourl,
+	       array("username"=>$serveuroousername,
+		     "passwd"=>$serveuroopasswd,
+		     "commands"=>$cmds),
+	       array($uploadedfile)
+	       );
+  //enleve le header, et on suppose que les donnees sont chunked !
+  #echo $file;exit();
+  $pos=strpos($file,"\r\n\r\n")+4;
+
+  while ($endpos=strpos($file,"\r\n",$pos)) {
+    $chunksize=hexdec(substr($file,$pos,$endpos-$pos));
+    $newfile.=substr($file,$endpos+2,$chunksize);
+    $pos=$endpos+4+$chunksize;
+  }
+#  echo $newfile;exit();
+  $destfile=$uploadedfile.".converted";
+#  echo $destfile;
+  writefile($destfile,$newfile);
+  return $destfile;
+}
 
 
-function OO ($uploadedfile,&$context)
-
+function OO ($convertedfile,&$context)
 
 {
   global $home;
 
-  echo "<h2>Conversions du fichier importe par OO</h2>";
-  echo "<p>En cas d'arret avant la fin de la 2eme conversion veuillez envoyer les informations sur ldodel-devel</p>";
-  $errfile="$uploadedfile.err";
-  chmod($uploadedfile,0644); // temporaire, il faut qu'on gere le probleme des droits
-  # cette partie n'est pas secur du tout. Il va falloir reflechir fort.
-  echo "<li>1ere conversion format initial->SXW <br>\n";flush();
   $time1=time();
-  runDocumentConverter($uploadedfile,"sxw");
-  // solution avec unzip, ca serait mieux avec libzip
-  // dezip le fichier content
-  echo "temps:",time()-$time1," s<br>";
-  echo "<li>unzip le fichier SXW<br>\n";flush();
-  $tmpdir=$uploadedfile."_dir";
-  mkdir("$tmpdir",0700);
 
-  copy($uploadedfile.".sxw",$uploadedfile."-second.sxw"); // copie pour avoir les droits d'ecriture
-  $uploadedfile.="-second";
-
-  system("/usr/bin/unzip -d $tmpdir $uploadedfile.sxw content.xml 2>$errfile") or die("probleme avec unzip<br>".@join("",@file($errfile)));
-  $content=join("",file("$tmpdir/content.xml"));
-  if ($GLOBALS[sortiexmloo]) { echo htmlentities($content); exit(); }
-  echo "<br>";
-  echo "<li>extraction des styles du fichier content.xml contenu dans le SXW<br>\n";flush();
-  // lit et modifie le fichier content.xml
-  processcontent($content);
-
-  // ecrit le fichier content.xml
-  writefile("$tmpdir/content.xml",$content);
-  echo "<li>Reinsertion du nouveaux fichier content.xml dans le SXW<br>\n";flush();
-  system("/usr/bin/zip -j $uploadedfile.sxw $tmpdir/content.xml 2>$errfile") or die("probleme avec zip<br>".@join("",@file($errfile)));
-
-  echo "<br>";
-  // conversion en HTML
-  echo "<li>2nd conversion SXW->HTML<br>\n";flush();
-  $time2=time();
-  runDocumentConverter($uploadedfile.".sxw","html");
-  echo "temps:",time()-$time2," s<br>";
-  echo "fin<br>\n";flush();
-
-
-  $file=strtr(join('',file("$uploadedfile.sxw.html")),"\n\r","  ");
+  $file=strtr(join('',file($convertedfile)),"\n\r","  ");
 
   if ($GLOBALS[sortieoo]) { // on veut la sortie brute
     echo htmlentities($file);
@@ -175,7 +188,6 @@ function OO ($uploadedfile,&$context)
   array_push($srch,"/((?:<\w+[^>]*>\s*)+)<r2r:([^>]+)>(.*?)<\/r2r:\\2>\s*((?:<\/\w+[^>]*>\s*)+)/");
   array_push($rpl,"<r2r:\\2>\\1\\3\\4</r2r:\\2>");
 
-
   // autre chgt
 
   array_push($srch,
@@ -215,21 +227,26 @@ function OO ($uploadedfile,&$context)
   if (!traite_tableau2($file)) {     $context[erreur_stylestableaux]=1;
   return FALSE; }
   $file=traite_multiplelevel($file);
+
   echo "<li>temps regexp: ".(time()-$time)." s<br>\n";
 
   //echo htmlentities($file); exit;
 
 # enleve les couples de balises r2r.
-    $file=traite_couple($file);
+  $file=traite_couple($file);
+
+  // recupere les styles conteneurs (ceux qui ont des parentheses)
+  $file=preg_replace (array("/(<r2r:\w+)\((\w+)\)>/","/(<\/r2r:\w+)\((\w+)\)>/"),
+		      array("<r2r:\\2>\\1>","\\1></r2r:\\2>"),
+		      $file);
+  
 
 # ajoute le debut et la fin
     $file='<r2r:article xmlns:r2r="http://www.lodel.org/xmlns/r2r" xmlns="http://www.w3.org/1999/xhtml">'.$file.'</r2r:article>';
 
-
 # verifie que le document est bien forme
     include ($home."checkxml.php");
-    if (!checkstring($file)) { echo "fichier: $newname"; echo htmlentities($file);
-return FALSE; }
+    if (!checkstring($file)) { echo "fichier: $newname"; return FALSE; }
 
    if ($GLOBALS[sortie]) die (htmlentities($file));
 
@@ -241,11 +258,11 @@ return FALSE; }
       return $newimgfile;
     }
     include_once ($home."func.php");
-    copy_images($file,"img_copy");
+     copy_images($file,"img_copy");
 
 
   // ecrit le fichier
-    $newname="$uploadedfile-".rand();
+  $newname="$uploadedfile-".rand();
   if (!writefile("$newname.html",$file)) return FALSE;
 
   echo "Temps total:",time()-$time1,"<br><br>"; flush();
@@ -315,113 +332,6 @@ return strtr(
   'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'),
 array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
   '¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
-}
-
-
-
-function processcontent(&$text)
-
-{
-  // recupere les conversions de system
-  $convstyle=array();
-  preg_match_all('/<style:style style:name="(P[^\"]+)"[^>]+?style:parent-style-name="([^\"]+)"/',$text,$results,PREG_SET_ORDER);
-  foreach ($results as $result) $convstyle[$result[1]]=$result[2];
-
-  // la solution est un peu lourdre. Il faudrait regarder si un text:p peut contenir ou pas d'uatre text:p ... ca allegerait bcp bcp le travail
-
-  // solution avec split
-  $closere='<\/text:[ph]>';
-  $arr=preg_split("/(<text:[ph]\b[^>]*>|$closere)/",$text,-1,PREG_SPLIT_DELIM_CAPTURE);
-#  echo count($arr),"<br>";
-#  print_r($arr);
-#  exit();
-  $count=count($arr);
-  $stylestack=array();
-  for ($i=1; $i<$count; $i+=2) { // passe tous les delimiteurs
-    if (preg_match("/$closere/",$arr[$i])) {
-      $style=array_pop($stylestack); // recupere la balise fermante
-      $arr[$i]=$style.$arr[$i]; // ajoute la balise fermante
-    } else { // ok c'est un open alors
-      if (preg_match('/\btext:style-name="([^"]+)"[^\/>]*>/',$arr[$i],$result)) { // est-ce qu'il y a un style
-	$style=$result[1];
-	if ($convstyle[$style]) $style=$convstyle[$style];
-	$arr[$i].='[!--R2R:'.$style.'--]';
-	array_push($stylestack,'[!/--R2R:'.$style.'--]');
-      } else { // non pas de style.
-	array_push($stylestack,"");
-      }
-    }
-  }
-#  print_r($arr);
-#  exit();
-  $text=join("",$arr);
-
-  //
-  // process les styles de caracteres
-  //
-  // recupere les conversion de styles de caracteres
-  
-  $convstyle=array();
-  preg_match_all('/<style:style style:name="(T[^\"]+)"[^>]+?style:parent-style-name="([^\"]+)"/',$text,$results,PREG_SET_ORDER);
-  foreach ($results as $result) $convstyle[$result[1]]=$result[2];
-
-  $srch=array();
-  $rpl=array();
-
-  if ($convstyle) {
-    // traite les caracteres en T\d
-    $stylecre=join("|",array_keys($convstyle));
-    array_push($srch,"/(<text:span text:style-name=\"($stylecre)\">)(.*?)(<\/text:span>)/ei");
-    array_push($rpl,'"\\1[!--R2RC:".$convstyle["\\2"]."--]\\3[!/--R2RC:".$convstyle["\\2"]."--]\\4"');
-  }
-
-  array_push($srch,"/(<text:span text:style-name=\"(?!T\d+\")(\w+)\">)(.*?)(<\/text:span>)/i");
-  array_push($rpl,"\\1[!--R2RC:\\2--]\\3[!/--R2RC:\\2--]\\4");
-
-
-  $text=preg_replace($srch,$rpl,$text);
-  
-
-#  print_r($convstyle);
-#  function processcharstyle($result) {
-#    global $convstyle;
-#    echo $result[2],"<br>",$convstyle;
-#    if (preg_match("/^T\d+$/",$result[2]) && !$convstyle[$result[2]]) return $result[0];
-#    return $result[1]."[!--R2RC:$result[2]--]".$result[3]."[!/--R2RC:$result[2]--]".$result[4];
-#  }
-#
-#  $text=preg_replace_callback("/(<text:span text:style-name=\"(\w+)\">)(.*?)(<\/text:span>)/i","processcharstyle",$text);
-#
-
-#  die(htmlentities($text));
-}
-
-
-function runDocumentConverter($filename,$extension)
-
-{
-  global $home;
-
-  # configuration (a mettre dans lodelconfig.php plus tard).
-  $javapath="/usr/java/j2sdk1.4.1_02";
-  $openofficepath="/usr/local/OpenOffice.org1.0.3";
-
-  $errfile="$filename.err";
-
-  if ($extension=="sxw") {
-    $format="StarOffice XML (Writer)";
-  } elseif ($extension=="html") {
-    $format="HTML (StarWriter)";
-  } else die ("probleme interne");
-
-  system("$javapath/bin/java -classpath \"$openofficepath/program/classes/jurt.jar:$openofficepath/program/classes/unoil.jar:$openofficepath/program/classes/ridl.jar:$openofficepath/program/classes/sandbox.jar:$openofficepath/program/classes/juh.jar:$home/oo/classes\" DocumentConverterSimple \"$filename\" \"swriter: $format\" \"$extension\" \"$openofficepath/program/soffice \" 2>$errfile");
-
-  $errcontent=join('',file($errfile));
-  if ($errcontent) {
-    echo "Erreur de lancement d'execution du script java:\n";
-    echo "$errcontent\n";
-    return;
-  }
 }
 
 

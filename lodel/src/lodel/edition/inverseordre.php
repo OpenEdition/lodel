@@ -19,10 +19,10 @@ if (!$admin) $critere=." AND groupe IN ($usergroupes)";
 
 lock_write("publications");
 # cherche tous les enfants
-$result=mysql_query ("SELECT max(ordre) FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
+$result=mysql_query ("SELECT max(ordre) FROM $GLOBALS[tp]publications WHERE $critere") or die (mysql_error());
 if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits"); }
 list($max)=mysql_fetch_row($result);
-mysql_query("UPDATE $GLOBALS[tableprefix]publications SET ordre=$max-ordre WHERE $critere") or die (mysql_error());
+mysql_query("UPDATE $GLOBALS[tp]publications SET ordre=$max-ordre WHERE $critere") or die (mysql_error());
 
 unlock("publications");
 back();

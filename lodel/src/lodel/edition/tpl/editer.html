@@ -17,9 +17,9 @@
 	</span>
 	<div align="center">
 			<LOOP NAME="chercheparent" TABLE="documents" WHERE="id=[#ID]">
-				<LOOP NAME="sort_du_regroupement" TABLE="publications" WHERE="id=[#PUBLICATION]">
+				<LOOP NAME="sort_du_regroupement" TABLE="publications" WHERE="id=[#IDPARENT]">
 					<IF COND="[#TYPE] eq 'regroupement'">
-						<a href="index.php?id=[#PARENT]">
+						<a href="index.php?id=[#IDPARENT]">
 						<u>Parent</u>
 					<ELSE/>
 						<a href="index.php?id=[#ID]">

@@ -1,4 +1,8 @@
 <?
+
+die("en cours de (re)developpement");
+
+
 require("revueconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_EDITEUR,NORECORDURL);
@@ -13,7 +17,7 @@ $table=$type."s";
 $context[idtype]="id".$type;
 $context[id]=$id;
 
-$result=mysql_db_query($db,"SELECT meta FROM $GLOBALS[tableprefix]$table WHERE id='$id'") or die (mysql_error());
+$result=mysql_db_query($db,"SELECT meta FROM $GLOBALS[tp]$table WHERE id='$id'") or die (mysql_error());
 if (!mysql_num_rows($result)) { header("Location: not-found.html"); return; }
 
 list($metastr)=mysql_fetch_row($result);
@@ -45,7 +49,7 @@ do {
 
   $metastr=serialize($meta);
 
-  mysql_db_query($db,"UPDATE $GLOBALS[tableprefix]$table SET meta='$metastr' WHERE id='$id'") or die(mysql_error());
+  mysql_db_query($db,"UPDATE $GLOBALS[tp]$table SET meta='$metastr' WHERE id='$id'") or die(mysql_error());
 
   back();
 

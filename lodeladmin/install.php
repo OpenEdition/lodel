@@ -117,7 +117,7 @@ if ($tache=="admin") {
     $adminusername=addslashes($adminusername);
     $pass=md5($adminpasswd.$adminusername);
 
-    if (!@mysql_query("INSERT INTO $GLOBAL[prefixtable]users (username,passwd,nom,email,privilege) VALUES ('$adminusername','$pass','','',128)")) {
+    if (!@mysql_query("INSERT INTO $GLOBAL[tp]users (username,passwd,nom,email,privilege) VALUES ('$adminusername','$pass','','',128)")) {
       $pass="";  // enleve de la memoire
       $erreur_create=1;
       if (!(@include ("tpl/install-admin.html"))) problem_include("install-admin.html");
@@ -298,7 +298,7 @@ $dirs=array(".","lodel","lodel/admin");
 $revuedir=array(".","lodel","lodel/edition","lodel/admin");
 
 // cherche les revues qui existent deja et cree le tableau $dirs
-$result=mysql_query("SELECT rep FROM $GLOBALS[prefixtable]revues WHERE status>0");
+$result=mysql_query("SELECT rep FROM $GLOBALS[tp]revues WHERE status>0");
 while ($row=mysql_fetch_row($result)) {
   foreach ($revuedir as $dir) { array_push($dirs,$row[0]."/".$dir); }
 }
@@ -366,7 +366,7 @@ function maj_lodelconfig($var,$val=-1)
 function mysql_query_file($filename) 
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tableprefix]",
+  $sqlfile=str_replace("_PREFIXTABLE_","$GLOBALS[tp]",
 		       join('',file($filename)));
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));

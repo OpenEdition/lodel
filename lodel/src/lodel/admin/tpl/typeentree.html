@@ -17,9 +17,9 @@
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td class="texte_intitule">Nom du type d'index :</td>
-			<td><input size="40" type="text" name="nom" value="[#NOM]" /></td>
+			<td><input size="40" type="text" name="type" value="[#TYPE]" /></td>
 		</tr>
-		[(#ERREUR_NOM|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptés: lettres, chiffres, _ et -</td></tr>]
+		[(#ERREUR_TYPE|true)<tr><td colspan="2" class="message_erreur">Il faut pr&eacute;ciser un nom ! Caractères acceptés: lettres, chiffres, _ et -</td></tr>]
 		<tr>
 			<td class="texte_intitule">Titre du type d'index :</td>
 			<td><input size="40" type="text" name="titre" value="[#TITRE]" /></td>

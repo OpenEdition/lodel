@@ -23,11 +23,11 @@
 		<td class="texte_noir_gras">Fichier Template d'Edition</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="typepubli" TABLE="typepublis" WHERE="ok" ORDER="nom">
+	<LOOP NAME="typepubli" TABLE="types" WHERE="ok" WHERE="class='publications'" ORDER="ordre">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin1">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin1">[#TPL]</td>
 					<td class="ligne_admin1">[(#TPLEDIT|nbsp)]</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
@@ -37,7 +37,7 @@
 						</div>
 					</td>
 				<ELSE/>
-					<td class="ligne_admin2">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin2">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
 					<td class="ligne_admin2">[(#TPLEDIT|nbsp)]</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
@@ -55,7 +55,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="typepubli_trash" TABLE="typepublis" ORDER="nom" WHERE="trash">
+<LOOP NAME="typepubli_trash" TABLE="types" ORDER="ordre" WHERE="trash" WHERE="class='publications'">
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>
@@ -70,14 +70,14 @@
 	<DO>
 		<tr>
 			<IF COND="[#COUNT] % 2">
-				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1">[#TYPE]</td>
 				<td class="ligne_admin1">[#TPL]</td>
 				<td class="ligne_admin1" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
 					<a href="typepubli.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
-				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2">[#TYPE]</td>
 				<td class="ligne_admin2">[#TPL]</td>
 				<td class="ligne_admin2" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="typepubli.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;

@@ -26,6 +26,8 @@ function checkstring (&$text,$error=0) {
 		   xml_error_string(xml_get_error_code($xml_parser)),
 		   xml_get_current_line_number($xml_parser));
       echo "L'erreur se situe avant la zone rouge. Elle peut être due à une erreur bien au dessus la ligne donnée par le parser<br>";
+      echo "<br>".htmlentities($text);
+
       xml_parser_free($xml_parser);
       return FALSE;
     }

@@ -8,10 +8,10 @@ if (!$type || !preg_match("/^[\w-]*$/",$type)) die("type incorrecte");
 if ($suffix && !preg_match("/^[\w-]+$/",$suffix)) die("suffix non accepte");
 
 include_once($home."connect.php");
-$result=mysql_query ("SELECT * FROM $GLOBALS[tableprefix]typeentrees WHERE nom='$type' AND status>0") or die (mysql_error());
+$result=mysql_query ("SELECT * FROM $GLOBALS[tp]typeentrees WHERE type='$type' AND status>0") or die (mysql_error());
 $context=array_merge_withprefix($context,"type_",mysql_fetch_assoc($result));
 $context[idtype]=$context[type_id]; // import
-$context[type_tri]=$GLOBALS[tableprefix]."entrees.".$context[type_tri];  // prefix par la table... ca aide
+$context[type_tri]=$GLOBALS[tp]."entrees.".$context[type_tri];  // prefix par la table... ca aide
 
 $base=$context[type_tplindex].$suffix;
 require ($home."cache.php");

@@ -6,6 +6,8 @@ include_once($home."func.php");
 # on sort du UTF-8 par defaut (et uniquement pour le moment)
 $context[charset]="utf-8";
 
+
+
 function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   global $home,$format;
@@ -54,4 +56,15 @@ function insert_template($filename)
   calcul_page($GLOBALS[context],$filename,"");
 }
 
+
+function mymysql_error($query)
+
+{
+  if ($GLOBALS[editeur]) {
+    die("</body>".htmlentities($query)."<br><br>".mysql_error());
+  } else {
+    if ($GLOBALS[contactbug]) @mail($contactbug,"[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]","Erreur de requete sur la page $GLOBALS[REQUEST_URI]<br>".htmlentities($query)."<br><br>".mysql_error());
+    die("Une erreur est survenue dans lors de la génération de cette page. Veuillez nous excusez, nous traitons le probleme le plus rapidement possible");
+  }
+}
 ?>

@@ -48,8 +48,18 @@ $dbpasswd="";
 # Hote de la BD
 $dbhost="";
 
+# contact bug. Adresse mail de la personne contactee automatiquement en cas de bug
+$contactbug="";
+
 # Repertoire contenant le binaire de mysql
 $mysqldir="/usr/bin";
+
+# chemin pour la commande zip
+$zipcmd="/usr/bin/zip";
+
+# chemin pour la commande unzip
+$unzipcmd="/usr/bin/unzip";
+
 
 # type lineaire (table indexls)
 define (TYPE_MOTCLE,2);
@@ -69,12 +79,24 @@ $singledatabase="";
 # Nom de la session (cookie)
 $sessionname="session$database";
 
+
+# type d'URL
+$extensionscripts="";      # extension .php ou .html pour les scripts accessibles par les internautes 
+$idagauche="";             # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
+
+# TEMPORAIRE
+# configuration du serveur OO
+$serveuroourl="http://lodeldevel/serveuroo/index.php";
+$serveuroousername="ruralia@localhost";
+$serveuroopasswd="ruralia";
+
+
+
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration
 $includepath=""; # pour les revues qui ont un include automatique (defini par php.ini)
 $htaccess="on";    # 
-$extensionscripts="";      # extension .php ou .html pour les scripts accessibles par les internautes 
 $usesymlink="";
 
 ############################################

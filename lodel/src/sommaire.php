@@ -14,23 +14,19 @@ $context[id]=$id=intval($id);
 include_once($home."connect.php");
 
 
-$critere=$visiteur ? "WHERE $GLOBALS[tableprefix]publications.status>-2" : "WHERE $GLOBALS[tableprefix]publications.status>0";
+$critere=$visiteur ? " AND $GLOBALS[tp]entites.status>=-1" : " AND $GLOBALS[tp]entites.status>0";
+$critere.=" AND $GLOBALS[tp]types.status>0";
 // cherche la publication
 
 
-do {
-  $result=mysql_query ("SELECT $GLOBALS[tableprefix]publications.*,tpl FROM $GLOBALS[tableprefix]typepublis,$GLOBALS[tableprefix]publications $critere AND type=$GLOBALS[tableprefix]typepublis.nom AND $GLOBALS[tableprefix]publications.id='$id'") or die (mysql_error());
-  $row=mysql_fetch_assoc($result);
-  if (!$row[id]) { header ("Location: not-found.html"); return; }
+$result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entites.*,tpl,type FROM $publicationstypesjoin WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
+$row=mysql_fetch_assoc($result);
+if (!$row[id]) { header ("Location: not-found.html"); return; }
 
-
-  if ($row[type]=="regroupement") { // on travaille sur le parent alors
-    $id=$row[parent];
-  } else {
-    break; // c'est pas un regroupement, alors sort
-  }
-} while (1);
-
+if (!$row[tpl]) { 
+  header("location: ".make_url("sommaire",$context[idparent]));
+  return;
+}
 
 $context=array_merge($context,$row);
 $base=$context[tpl];

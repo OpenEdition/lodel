@@ -4,26 +4,7 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<!--<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-<tr>
-<td align="center">
-<h3>Vérification du balisage</h3><br />
-<blockquote><b>Verifiez que chaque bloc est correctement balisé.</b></blockquote>
 
-
-<div align="center"><a href="abandon.php?id=[#ID]">&lt; Abandonner</a> | <a href="[#URLSUITE]">Continuer &gt;</a>
-</div>
-</td></tr>
-</table>
-<table width="95%" border="1" cellpadding="4" align="center">
-<tr><td><b>Balises</b></td><td><b>Contenu</b></td></tr>
-
-[#FICHIER]
-
-</table>
-
-<div align="center"> <a href="abandon.php?id=[#ID]">&lt; Abandonner</a> | <a href="[#URLSUITE]">Continuer &gt;</a></div>
--->
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
@@ -38,13 +19,20 @@
 	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>
 </table>
 
+<LOOP NAME="partie_fichier">
+<IF COND="[#PART]=='main'">
+<h1>Partie principale</h1>
+<ELSE/>
+<h1>[#PART]</h1>
+</IF>
 <table class="table_popup" width="95%" border="1" cellpadding="4" align="center">
 	<tr>
 		<td><strong>Balises</strong></td>
 		<td><strong>Contenu</strong></td>
 	</tr>
-	[#FICHIER]
+[#TABLECONTENT]
 </table>
+</LOOP>
 
 <table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
 	<tr><td><div align="center" class="lien_popup"><a href="abandon.php?id=[#ID]">&lt; Abandonner</span></a> | <a href="[#URLSUITE]">Continuer &gt;</a></div></td></tr>

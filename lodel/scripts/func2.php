@@ -16,7 +16,7 @@ function get_tache (&$id)
 
 {
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]taches WHERE id='$id'") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id'") or die (mysql_error());
   if (!($row=mysql_fetch_assoc($result))) { header("Location: index.php"); return; }
   $row=array_merge($row,unserialize($row[context]));
   // verifie que le fichier existe encore
@@ -54,7 +54,7 @@ function make_tache($nom,$etape,$context,$id=0)
 {
   global $iduser;
   $contextstr=serialize($context);
-  mysql_query("REPLACE INTO $GLOBALS[tableprefix]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$contextstr')") or die (mysql_error());
+  mysql_query("REPLACE INTO $GLOBALS[tp]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$contextstr')") or die (mysql_error());
   return mysql_insert_id();
 }
 
@@ -63,7 +63,7 @@ function update_taches($id,$etape)
 
 
 {
-  mysql_query("UPDATE $GLOBALS[tableprefix]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
  # ne pas faire ca, car si la tache n'est pas modifiee, il renvoie 0
 # if (mysql_affected_rows()!=1) die ("Erreur d'update de id=$id");
 }
@@ -96,7 +96,7 @@ function get_ordre_max ($table,$where="")
 
 
   include_once ($home."connect.php");
-  $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tableprefix]$table $where") or die (mysql_error());
+  $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tp]$table $where") or die (mysql_error());
   if (mysql_num_rows($result)) list($ordre)=mysql_fetch_array($result);
   if (!$ordre) $ordre=0;
 
@@ -109,7 +109,7 @@ function chordre($table,$id,$critere,$dir,$inverse="")
 
 
 {
-  $table=$GLOBALS[tableprefix].$table;
+  $table=$GLOBALS[tp].$table;
   $dir=$dir=="up" ? -1 : 1;  if ($inverse) $dir=-$dir;
   $desc=$dir>0 ? "" : "DESC";
   $result=mysql_query("SELECT id,ordre FROM $table WHERE $critere ORDER BY ordre $desc") or die (mysql_error());
@@ -213,11 +213,11 @@ function back()
   global $database,$idsession;
 
 
-  $result=mysql_db_query($database,"SELECT id,currenturl FROM $GLOBALS[tableprefix]session WHERE id='$idsession'") or die (mysql_error());
+  $result=mysql_db_query($database,"SELECT id,currenturl FROM $GLOBALS[tp]session WHERE id='$idsession'") or die (mysql_error());
   list ($id,$currenturl)=mysql_fetch_row($result);
 
 
-  mysql_db_query($database,"UPDATE $GLOBALS[tableprefix]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
+  mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
 
 
 #  echo "retourne: $currenturl";
@@ -238,13 +238,13 @@ function export_prevnextpublication (&$context)
 
 
 // suivant:
-  $result=mysql_query ("SELECT id FROM $GLOBALS[tableprefix]publications WHERE parent='$context[parent]' AND ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("SELECT id FROM $GLOBALS[tp]publications WHERE parent='$context[parent]' AND ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     $context[nextpublication]="sommaire.html?id=$nextid";
   }
   // precedent:
-  $result=mysql_query ("SELECT id FROM $GLOBALS[tableprefix]publications WHERE parent='$context[parent]' AND ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("SELECT id FROM $GLOBALS[tp]publications WHERE parent='$context[parent]' AND ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
     $context[prevpublication]="sommaire.html?id=$previd";
@@ -273,7 +273,7 @@ function lock_write()
 
 { 
   $list=func_get_args();
-  mysql_query("LOCK TABLES $GLOBALS[tableprefix]".join (" WRITE ,".$GLOBALS[tableprefix],$list)." WRITE") or die (mysql_error());
+  mysql_query("LOCK TABLES $GLOBALS[tp]".join (" WRITE ,".$GLOBALS[tp],$list)." WRITE") or die (mysql_error());
 }
 
 

@@ -48,16 +48,12 @@ $dbpasswd="lodelpasswd";
 # Hote de la BD
 $dbhost="dbhost.domain.org";
 
+# contact bug. Adresse mail de la personne contactee automatiquement en cas de bug
+$contactbug="";
+
+
 # Repertoire contenant le binaire de mysql
 $mysqldir="/usr/bin";
-
-# type lineaire (table indexls)
-define (TYPE_MOTCLE,2);
-define (TYPE_MOTCLE_PERMANENT,3);
-
-# type hierarchique (table indexhs)
-define (TYPE_PERIODE,1);
-define (TYPE_GEOGRAPHIE,4);
 
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
 $tableprefix="";
@@ -67,6 +63,14 @@ $singledatabase="";
 
 # Nom de la session (cookie)
 $sessionname="session$database";
+
+
+# TEMPORAIRE
+# configuration du serveur OO
+$serveuroourl="http://lodeldevel/serveuroo/index.php";
+$serveuroousername="ruralia@localhost";
+$serveuroopasswd="ruralia";
+
 
 
 ############################################

@@ -17,17 +17,17 @@ if ($lock) { // lock
   // lock la revue en ecriture la revue.
   lock_write ("session","revues");
   // cherche le nom de la revue
-  $result=mysql_query ("SELECT rep FROM  $GLOBALS[tableprefix]revues WHERE $critere") or die (mysql_error());
+  $result=mysql_query ("SELECT rep FROM  $GLOBALS[tp]revues WHERE $critere") or die (mysql_error());
   list($revue)=mysql_fetch_row($result);
   if (!$revue) die ("erreur lors de l'appel de la lockrevue. La revue est inconnue ou supprimee");
   // delogue tout le monde sauf moi.
-  mysql_query ("DELETE FROM $GLOBALS[tableprefix]session WHERE revue='$revue' AND iduser!='$iduser'") or die (mysql_error());
+  mysql_query ("DELETE FROM $GLOBALS[tp]session WHERE revue='$revue' AND iduser!='$iduser'") or die (mysql_error());
   // change le status de la revue
-  mysql_query ("UPDATE $GLOBALS[tableprefix]revues SET status=32 WHERE $critere") or die (mysql_error());
+  mysql_query ("UPDATE $GLOBALS[tp]revues SET status=32 WHERE $critere") or die (mysql_error());
   unlock();
 
 } elseif ($unlock) { // unlock
-  mysql_query ("UPDATE $GLOBALS[tableprefix]revues SET status=1 WHERE $critere") or die (mysql_error());
+  mysql_query ("UPDATE $GLOBALS[tp]revues SET status=1 WHERE $critere") or die (mysql_error());
 } else { die ("lock ou unlock"); }
 
 mysql_select_db($currentdb) or die (mysql_error());

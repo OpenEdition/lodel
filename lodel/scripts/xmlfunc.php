@@ -41,7 +41,7 @@ function extract_xml ($balises,&$text)
 				    "/<r2r:(\w+)(?:\b[^>]+)?>/i", // replace les autres balises r2r par des DIV
 				    "/<\/r2r:[^>]+>/i"				    				    ),
 			      array(
-				    "<div class=\"\\1\">",
+				    "<div classe=\"\\1\">",
 				    "</div>"
 				    ),traite_separateur($result[2]));
       ///// fin temporaire

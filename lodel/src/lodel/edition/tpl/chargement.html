@@ -126,9 +126,9 @@ Au cours du processus de téléchargement, l'usage des flèches de navigation du na
 			<td align="center">
 				<br /><br />
 				<input class="form" type="submit" value="    Charger    " />&nbsp;&nbsp;&nbsp;&nbsp;
-				<LOOP NAME="" TABLE="publications" WHERE="id=[#ID]">
+				<LOOP NAME="publication" TABLE="publications" WHERE="id=[#ID]">
 					<IF COND="[#TYPE]=='regroupement'">
-						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#PARENT]';" />
+						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 					<ELSE/>
 						<input class="form" type="button" value="    Annuler    " onClick="javascript:window.location='index.php?id=[#ID]';" />
 					</IF>

@@ -42,8 +42,8 @@ $balises=array ("-" => "-",
 		"langues"=>"Langues",
 # champs auteurs
 		"descriptionauteur"=>"Description de l'auteur précédent",
-#		"affiliation"=>"<span class=\"affiliation\">",
-#		"courriel"=>"<span class=\"courriel\">",
+#		"affiliation"=>"<span classe=\"affiliation\">",
+#		"courriel"=>"<span classe=\"courriel\">",
 #
 # balises pour l'import de sommaire
 
@@ -57,7 +57,7 @@ $balises=array ("-" => "-",
 #
 # dans les deux tableaux ci-dessous on a la liste des balises qui apparaissent dans les documents, mais qui ne sont pas dans la base de donnee.
 #
-    # balises qui ne sont extraites que lorsque le texte est publie.
+# balises qui ne sont extraites que lorsque le texte est publie.
 $balisesdocument_lieautexte=array("texte",
 				  "notebaspage",
 				  "notefin",
@@ -68,11 +68,15 @@ $balisesdocument_lieautexte=array("texte",
 				  "historique",
 				  );
 
-    # balises qui sont toujours extraites, meme si le texte n'est pas publie.
+# balises qui sont toujours extraites, meme si le texte n'est pas publie.
 $balisesdocument_nonlieautexte=array("resume",
 				     "droitsauteurs",
 				     "pagination"
 				     );
+
+
+$balisesdocumentassocie=array("objetdelarecension"=>"Objet de la recension",
+			      "traduction"=>"de la traduction");
 
 //
 // balises a plusieurs niveaux
@@ -183,10 +187,12 @@ function traite_couple(&$text)
 
 {
   global $virgule_tags,$multiparagraphe_tags;
+
+  $balisere="(?:$multiparagraphe_tags)(?:\(\w+\))?"; # gere les cas avec parenthese
   return preg_replace (
 		       array(
 			     "/<\/r2r:($virgule_tags)>[\s\r]*<r2r:\\1(\s+[^>]+)?>/i",  # les tags a virgule
-			     "/<\/r2r:($multiparagraphe_tags)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|[\s\r])*)<r2r:\\1\b[^>]*>/is", # les autres tags    
+			     "/<\/r2r:($balisere)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|[\s\r])*)<r2r:\\1(?:\s[^>]*)?>/is", # les autres tags    
 			     ),
 		       array(
 			     ",",

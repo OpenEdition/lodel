@@ -144,7 +144,7 @@ Auteur : Marin Dacos. 2002. -->
 <!-- Affiche la publication dont provient un document -->
 <DEFMACRO NAME="PARU_DANS">
 	<!-- Affichage du nom de la publication dans laquelle a paru le document -->
-	<LOOP NAME="publication" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="publication" TABLE="publications" WHERE="id='[#IDPARENT]'"> 
 		. Paru dans 
 		<a href="sommaire.html?id=[#ID]">
 			<font color="Black">
@@ -477,7 +477,7 @@ Attention, cette routine sera changée bientôt
 <!-- -------------------------------- -->
 
 <DEFMACRO NAME="SOUS_THEMES">
-	<LOOP NAME="sous_themes" TABLE="publications" WHERE="parent='[#ID]'"  WHERE="type='theme'">
+	<LOOP NAME="sous_themes" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type='theme'">
 		<BEFORE>
 			<table width="75%" border="0" align="center" cellspacing="0" cellpadding="0">
 				<TR>
@@ -522,7 +522,7 @@ Attention, cette routine sera changée bientôt
 <!-- -------------------------------- -->
 
 <DEFMACRO NAME="LISTE_THEMES">
-	<LOOP NAME="sous_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
+	<LOOP NAME="sous_themes" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='theme'">
 		<BEFORE>
 			<table width="95%" border="0" align="center" cellspacing="5" cellpadding="5">
 		</BEFORE>
@@ -582,7 +582,7 @@ Attention, cette routine sera changée bientôt
 	<!-- Affiche les regroupements puis les articles qu'ils contiennent -->
 	<!-- ------------------------------------------------------------------------ -->
 	
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<table width="95%" border="0" align="center">
 			<TR>
 				<td valign="top" class="partie">
@@ -621,7 +621,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="AUTEURS">
 <!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
 <strong>
-        <LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+        <LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
                 <DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
                 , [#PRENOM] [#NOMFAMILLE]
                 <DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
@@ -635,7 +635,7 @@ Attention, cette routine sera changée bientôt
 <!-- *************************************************** -->
 
 <DEFMACRO NAME="AUTEURS_WITH_URL">
-<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 	<DOFIRST>
@@ -676,7 +676,7 @@ Attention, cette routine sera changée bientôt
 
 <DEFMACRO NAME="AUTEURS_SOMMAIRES">
 <strong>
-<LOOP TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 	<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 	<DOFIRST>
 		<a href="auteur.html?id=[#ID]">
@@ -735,7 +735,7 @@ Attention, cette routine sera changée bientôt
 <form name="pub_menu_A">
 	<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
 	<option value="index.html">Numéros</option>
-	<LOOP NAME="pub_menu_A" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent='21'" ORDER="ordre DESC">
+	<LOOP NAME="pub_menu_A" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="idparent='21'" ORDER="ordre DESC">
 		<option value="sommaire.html?id=[#ID]">[#NOM]</option>
 	</LOOP>
 	</select>
@@ -791,7 +791,7 @@ Attention, cette routine sera changée bientôt
 
 <!-- Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. -->
 <DEFMACRO NAME="LISTE_GRANDS_THEMES_ID2">
-<LOOP NAME="liste_grands_themes_id2" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="parent='2'" ORDER="ordre ASC">
+<LOOP NAME="liste_grands_themes_id2" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="idparent='2'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">[#NOM]<br>
 	</a>
@@ -800,7 +800,7 @@ Attention, cette routine sera changée bientôt
 
 <!-- Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. -->
 <DEFMACRO NAME="LISTE_GRANDS_THEMES_ID19">
-<LOOP NAME="liste_grands_themes_id19" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="parent='19'" ORDER="ordre ASC">
+<LOOP NAME="liste_grands_themes_id19" TABLE="publications" WHERE="ok" WHERE="type='theme'" WHERE="idparent='19'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">[#NOM]<br>
 	</a>
@@ -814,7 +814,7 @@ Attention, cette routine sera changée bientôt
 <!-- Affichage simple -->
 <!-- NUMEROS DE PARENT 1 -->
 <DEFMACRO NAME="LISTE_NUMEROS_ID_1">
-<LOOP NAME="liste_numeros" TABLE="publications" WHERE="ok" WHERE="parent=1" WHERE="type='numero'" ORDER="ordre ASC">
+<LOOP NAME="liste_numeros" TABLE="publications" WHERE="ok" WHERE="idparent=1" WHERE="type='numero'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
 		<MACRO NAME="GIF_TRIANGLE">[#NOM]<br>
 	</a>
@@ -824,7 +824,7 @@ Attention, cette routine sera changée bientôt
 <!-- Affichage plus complet -->
 <DEFMACRO NAME="AFFICHE_NUMEROS">
 <table width="100%" border="0">
-<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
+<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
 	<tr>
 		<td>
 			<IF COND="[#META_IMAGE]">
@@ -1227,7 +1227,7 @@ Attention, cette routine sera changée bientôt
 
 <META NAME="GENERATOR" CONTENT="LODEL 2002">
 <META NAME="DESCRIPTION" CONTENT="Test, revue de démonstration de LODEL. Adhère à la fédération www.revues.org">
-<LOOP NAME="meta_auteurs" TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP NAME="meta_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="author" CONTENT="[#PRENOM] [#NOMFAMILLE]">
 </LOOP>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=[#CHARSET]">
@@ -1236,17 +1236,17 @@ Attention, cette routine sera changée bientôt
 <META NAME="REVISIT-AFTER" CONTENT="12 days">
 <meta name="rating" content="General">
 <meta NAME="ROBOTS" CONTENT="all, follow, index">
-<LOOP NAME="meta_motscles_lineaires" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
-<META NAME="KEYWORDS" CONTENT="[#MOT]">
+<LOOP NAME="meta_motscles_lineaires" TABLE="entrees" WHERE="type='motcle'" WHERE="iddocument='[#ID]'" ORDER="ordre">
+<META NAME="KEYWORDS" CONTENT="[#NOM]">
 </LOOP>
 <!-- METADONNEES DUBLIN CORE -->
 
 <META NAME="DC.Title" CONTENT="[(#TITRE|textebrut)] [(#SOUSTITRE|textebrut)]">
 <META NAME="DC.Publisher" CONTENT="Société historique du Centre-Est">
-<LOOP NAME="meta_dc_motscles" TABLE="indexls" WHERE="iddocument='[#ID]'" ORDER="ordre">
-<META NAME="DC.Subject" CONTENT="[#MOT]">
+<LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="type='motcle'" WHERE="iddocument='[#ID]'" ORDER="ordre">
+<META NAME="DC.Subject" CONTENT="[#NOM]">
 </LOOP>
-<LOOP NAME="meta_dc_auteurs" TABLE="auteurs"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+<LOOP NAME="meta_dc_auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="DC.Creator" CONTENT="[#PRENOM] [#NOMFAMILLE]">
 </LOOP>
 <META NAME="DC.Date" CONTENT="[#DATEPUBLI]">

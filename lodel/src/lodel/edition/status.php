@@ -30,16 +30,14 @@ $critere=$newstatus>0 ? "status>0" : "status<0";
 
 if ($publication) {
   $id=intval($publication);
-
-  mysql_query("UPDATE $GLOBALS[tableprefix]publications SET status=$newstatus WHERE id='$id' AND $critere") or die(mysql_error());
-
 } elseif ($id) {
   $id=intval($id);
-
-  mysql_query("UPDATE $GLOBALS[tableprefix]documents SET status=$newstatus WHERE id='$id' AND $critere") or die(mysql_error());
 } else {
   die("specifier une publication");
 }
+ 
+mysql_query("UPDATE $GLOBALS[tp]entites SET status=$newstatus WHERE id='$id' AND $critere") or die(mysql_error());
+
 
 back();
 return;

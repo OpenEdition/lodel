@@ -36,6 +36,11 @@ foreach $filename (@ARGV) {
 # chgt de auteur en personne
   $change+=$file=~s/(TABLE=\"auteurs\")/TABLE=\"personnes\" WHERE=\"type='auteur'\"/g;
   $change+=$file=~s/(<LOOP[^>]+id)auteur([^>]+>)/$1personne$2/g;
+# chgt du a la fusion publications documents
+  $change+=$file=~s/\[\#PUBLICATION\]/[\#IDPARENT]/g;
+####  $change+=$file=~s/\[\#PARENT\]/[\#IDPARENT]/g;
+  $change+=$file=~s/(<LOOP[^>]+)\bparent\b([^>]+>)/$1idparent$2/g;
+  $change+=$file=~s/(<LOOP[^>]+TABLE\s*=\s*\"documents\"[^>]+)\bpublication\b([^>]+>)/$1idparent$2/g;
 
   next unless $change;
   print "$filename:",$change,"\n";

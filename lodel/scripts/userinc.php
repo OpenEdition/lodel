@@ -57,7 +57,7 @@ if ($edit) { // modifie ou ajoute
     include_once ($home."connect.php");
 
     // cherche si le username existe deja
-    $result=mysql_db_query($db,"SELECT id FROM $GLOBALS[tableprefix]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
+    $result=mysql_db_query($db,"SELECT id FROM $GLOBALS[tp]users WHERE username='$context[username]' AND id!='$id'") or die (mysql_error());  
     if (mysql_num_rows($result)>0) { $context[erreur_dupusername]=$err=1; }
 
     if ($context[privilege]>$userpriv) { $err=1; } // securite
@@ -65,7 +65,7 @@ if ($edit) { // modifie ou ajoute
     if ($err) break;
 
     if ($id>0) { // il faut rechercher le status et (peut etre) le passwd
-      $result=mysql_db_query($db,"SELECT passwd,status FROM $GLOBALS[tableprefix]users WHERE id='$id'") or die (mysql_error());
+      $result=mysql_db_query($db,"SELECT passwd,status FROM $GLOBALS[tp]users WHERE id='$id'") or die (mysql_error());
       list($passwd_db,$status)=mysql_fetch_array($result);
     } else {
       $status=1;
@@ -76,15 +76,15 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_db_query ($db,"REPLACE INTO $GLOBALS[tableprefix]users (id,username,passwd,nom,email,privilege,status) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$status')") or die (mysql_query());
+    mysql_db_query ($db,"REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,email,privilege,status) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[email]','$context[privilege]','$status')") or die (mysql_query());
 
     if ($context[privilege]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();
 
       // change les groupes
-      mysql_db_query($db,"DELETE FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$id'") or die (mysql_error());
+      mysql_db_query($db,"DELETE FROM $GLOBALS[tp]users_groupes WHERE iduser='$id'") or die (mysql_error());
       foreach ($groupes as $groupe) {
-	mysql_query("INSERT INTO $GLOBALS[tableprefix]users_groupes (idgroupe, iduser) VALUES  ('$groupe','$id')") or die (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tp]users_groupes (idgroupe, iduser) VALUES  ('$groupe','$id')") or die (mysql_error());
       }
     }
 
@@ -94,7 +94,7 @@ if ($edit) { // modifie ou ajoute
 } elseif ($id>0) {
   $id=intval($id);
   include_once ($home."connect.php");
-  $result=mysql_db_query($db,"SELECT * FROM $GLOBALS[tableprefix]users WHERE $critere") or die (mysql_error());
+  $result=mysql_db_query($db,"SELECT * FROM $GLOBALS[tp]users WHERE $critere") or die (mysql_error());
   //$context=mysql_fetch_assoc($result);
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
@@ -139,12 +139,12 @@ function makeselectgroupes()
   // cherche les groupes de l'utilisateur
   $groupes=array();
   if ($context[id] && $context[privilege]<LEVEL_ADMIN) {
-    $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tableprefix]users_groupes WHERE iduser='$context[id]'") or die (mysql_error());
+    $result=mysql_query("SELECT idgroupe FROM $GLOBALS[tp]users_groupes WHERE iduser='$context[id]'") or die (mysql_error());
     while ($row=mysql_fetch_row($result)) array_push($groupes,$row[0]);
   }
 
   // cherche le nom des groupes sauf le groupe "tous"
-  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]groupes WHERE id>1") or die (mysql_error());
+  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tp]groupes WHERE id>1") or die (mysql_error());
 
   while ($row=mysql_fetch_assoc($result)) {
     $selected=in_array($row[id],$groupes) ? " SELECTED" : "";

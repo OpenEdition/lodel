@@ -150,12 +150,12 @@
 	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="2">
 		<tr>
 			<td width="48" height="48" align="center" valign="middle"> 
-				<a href="index.php?id=[#PARENT]">
+				<a href="index.php?id=[#IDPARENT]">
 					<MACRO NAME="GIF_NUMERO">
 				</a>
 			</td>
 			<td align="left" width="480" valign="middle">
-				<a href="index.php?id=[#PARENT]">
+				<a href="index.php?id=[#IDPARENT]">
 					<font color="black"><b>Parent</b></font>
 				</a>
 			</td>
@@ -190,7 +190,7 @@
 <DEFMACRO NAME="BOUTONS_PUBLICATION">
 	<td width="100%">
 	<!-- Parent -->
-			<a href="index.php?id=[#PARENT]">
+			<a href="index.php?id=[#IDPARENT]">
 				<u>Parent</u> 
 			</a>
 	</td>
@@ -200,7 +200,7 @@
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 
 	<!--  AFFICHE LES REGROUPEMENTS S'IL Y EN A  -->
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC"> 
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC"> 
 	<tr>
 		<td width="48" background="images/bleu.gif">
 		<IF COND="[#STATUS] GT 0">
@@ -215,12 +215,12 @@
 	</tr>
 
 		<!-- AFFICHE LES ARTICLES DU REGROUPEMENT EN COURS -->
-		<LOOP NAME="articles_regroupement" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+		<LOOP NAME="articles_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 			<MACRO NAME="AFFICHE_ARTICLES">
 		</LOOP>
 		<MACRO NAME="AJOUTER_DOCUMENT_REGROUPEMENT">
-		</LOOP> 
-		<MACRO NAME="CREER_REGROUPEMENT">
+	</LOOP> 
+	<MACRO NAME="CREER_REGROUPEMENT">
 </table>
 </DEFMACRO>
 
@@ -460,7 +460,7 @@
 
 <DEFMACRO NAME="AUTEURS">
 <!-- Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template -->
-	<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+	<LOOP NAME="auteurs" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 		<DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
 		, [#PRENOM] [#NOMFAMILLE]
 		<DOLAST> et [#PRENOM] [#NOMFAMILLE]</DOLAST>
@@ -582,7 +582,7 @@
 <DEFMACRO NAME="CHANGER_STATUS_SWITCH">
 	<div align="center">
 		<span class="texte_trespetit_centre">
-			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
+			<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'">
 				<DO>
 					<IF COND="[#STATUS] gt 0">
 						<IF COND="[#STATUS] eq 1">
@@ -613,7 +613,7 @@
 <!-- MACRO OBSLOETE !!! -->
 	<div align="center">
 		<span class="texte_trespetit_centre">
-			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
+			<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'">
 				<DO>
 					<IF COND="[#STATUS]==-32">
 						Autoriser la dépublication&nbsp;/&nbsp;Interdire la dépublication
@@ -644,7 +644,7 @@
 <!-- MACRO OBSLOETE !!! -->
 	<div align="center">
 		<span class="texte_trespetit_centre">
-			<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'">
+			<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'">
 				<DO>
 					<IF COND="[#STATUS]==-32">
 						Brouillon&nbsp;/&nbsp;
@@ -674,7 +674,7 @@
 <DEFMACRO NAME="CHANGER_VERROU_DOCUMENTS_DEPUBLIE">
 	<div align="center">
 		<span class="texte_trespetit_centre">
-			<LOOP NAME="" TABLE="documents" WHERE="id='[#ID]'">
+			<LOOP NAME="publication" TABLE="documents" WHERE="id='[#ID]'">
 				<DO>
 					<IF COND="[#STATUS]==-32">
 						Brouillon&nbsp;/&nbsp;
@@ -967,7 +967,7 @@
 	<div class="ligne_ajouter">
 		<MACRO NAME="PNG_PLUS">
 		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (hors regroupement)</a>-->
-		<a href="oochargement.php?id=[#ID]">Ajouter un document</a>
+		<a href="oochargement.php?idparent=[#ID]">Ajouter un document</a>
 	</div>
 </DEFMACRO>
 
@@ -979,7 +979,7 @@
 	</IF>
 		<MACRO NAME="PNG_PLUS">
 		<!--<a href="#" onClick="popup('chargement.php?id=[#ID]','chargement')">Ajouter un document (dans le regroupement)</a>-->
-		<a href="oochargement.php?id=[#ID]">Ajouter un document</a>
+		<a href="oochargement.php?idparent=[#ID]">Ajouter un document</a>
 		</div>
 </DEFMACRO>
 
@@ -1028,7 +1028,7 @@
 		</IF>
 		|&nbsp;<a href="fonctionsavancees.php?publication=[#ID]">Fonctions</a>&nbsp;
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_PUBLICATION">&nbsp;
-		<IF COND="[#EDITEUR]">
+		<IF COND="[#EDITEUR] AND [#STATUS] lt 32">
 		|&nbsp;<a href="supprime.php?publication=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1047,7 +1047,7 @@
 		</IF>
 		|&nbsp;<a href="fonctionsavancees.php?id=[#ID]">Fonctions</a>&nbsp;
 		|&nbsp;<MACRO NAME="CHANGER_STATUT_DOCUMENT">&nbsp;
-		<IF COND="[#EDITEUR]">
+		<IF COND="[#EDITEUR] AND [#STATUS] lt 32">
 		|&nbsp;<a href="supprime.php?id=[#ID]">Détruire</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">Détruire</span>&nbsp;|
@@ -1157,7 +1157,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_SERIES">
-	<LOOP NAME="series" TABLE="publications" WHERE="parent=0" ORDER="ordre">
+	<LOOP NAME="series" TABLE="publications" WHERE="idparent='0'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_serie1">
 		<ELSE/>
@@ -1174,7 +1174,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_NUMEROS">
-	<LOOP NAME="numeros" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre"> 
+	<LOOP NAME="numeros" TABLE="publications" WHERE="idparent='[#ID]'" ORDER="ordre"> 
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_numero1">
 		<ELSE/>
@@ -1191,7 +1191,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
-	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_isole1">
 		<ELSE/>
@@ -1205,7 +1205,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	<LOOP NAME="" TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_regroupement1">
 		<ELSE/>
@@ -1219,7 +1219,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_REGROUPEMENTS">
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre"> 
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre"> 
 		<DOFIRST>
 			<div class="ligne_regroupement1">
 				<MACRO NAME="AFFICHER_ICONE_STATUT">
@@ -1242,7 +1242,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_THEMES">
-	<LOOP NAME="themes" TABLE="publications" WHERE="parent=[#ID]" ORDER="ordre"> 
+	<LOOP NAME="themes" TABLE="publications" WHERE="idparent=[#ID]" ORDER="ordre"> 
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_theme1">
 		<ELSE/>
@@ -1259,7 +1259,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_SOUS_THEMES">	
-	<LOOP NAME="affiche_sous_themes" TABLE="publications" WHERE="parent='[#ID]'"  WHERE="type!='regroupement'" ORDER="ordre">
+	<LOOP NAME="affiche_sous_themes" TABLE="publications" WHERE="idparent='[#ID]'"  WHERE="type!='regroupement'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_theme1">
 		<ELSE/>
@@ -1289,7 +1289,7 @@
 <DEFMACRO NAME="NOM_TITRE_TYPE_PARENT">
 	<div class="ligne_infos_parent">
 		<MACRO NAME="PNG_PICTO_INFOS_PARENT">
-		<LOOP NAME="parent" TABLE="publications" WHERE="id='[#ID]'">
+		<LOOP NAME="idparent" TABLE="publications" WHERE="id='[#ID]'">
 			<span class="nom_parent">[#NOM]</span>&nbsp;
 			<span class="titre_parent">[#TITRE]</span><br />
 			<span class="type_parent">([#TYPE])</span>
@@ -1310,7 +1310,7 @@
 <!-- Cette Macro utilise les macros suivantes :                         -->
 <!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]" ORDER="ordre">
+	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
 			<table class="table_docannexes">
 		</BEFORE>
@@ -1325,7 +1325,7 @@
 				</td>
 				<td width="300">
 					<div>
-						<IF COND="[#TYPE] EQ 'lienexterne'">
+						<IF COND="[#TYPE] EQ 'documentannexe-lienexterne'">
 							<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 						<ELSE/>
 							<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>

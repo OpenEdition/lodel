@@ -222,7 +222,7 @@
 			</span>
 		</a>
 	<ELSE/>
-		<a href="sommaire.html?id=[#PUBLICATION]">
+		<a href="sommaire.html?id=[#IDPARENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 			<br />
 			<span style="color:Black;">
@@ -250,7 +250,7 @@
 			</span>
 		</a>
 	<ELSE/>
-		<a href="sommaire.html?id=[#PUBLICATION]">
+		<a href="sommaire.html?id=[#IDPARENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT_SOMMAIRE">
 			<br />
 			<span style="color:Black;">
@@ -278,7 +278,7 @@
 				<MACRO NAME="BOUTON_ET_TEXTE_DOCUMENT_PRECEDENT">
 			</td>
 			<td width="33%" class="texte_petit_centre">
-				<a href="sommaire.html?id=[#PUBLICATION]">
+				<a href="sommaire.html?id=[#IDPARENT]">
 					<MACRO NAME="IMG_ICONE_REVUE">
 					<br />
 				</a>
@@ -302,7 +302,7 @@
 		</a>
 		&nbsp;&nbsp;&nbsp;
 	<ELSE/>
-		<a href="sommaire.html?id=[#PUBLICATION]">
+		<a href="sommaire.html?id=[#IDPARENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_PRECEDENT_SOMMAIRE">
 		</a>
 		&nbsp;&nbsp;&nbsp;
@@ -322,7 +322,7 @@
 		</a>
 	<ELSE/>
 		&nbsp;&nbsp;&nbsp;
-		<a href="sommaire.html?id=[#PUBLICATION]">
+		<a href="sommaire.html?id=[#IDPARENT]">
 			<MACRO NAME="IMG_BOUTON_DOCUMENT_SUIVANT_SOMMAIRE">
 		</a>
 	</IF>
@@ -346,7 +346,7 @@
 				<MACRO NAME="BOUTON_DOCUMENT_PRECEDENT">
 			</td>
 			<td width="70%" align="center">
-				<a name="Sommaire du numéro" id="Sommaire du numéro" href="sommaire.html?id=[#PUBLICATION]">
+				<a name="Sommaire du numéro" id="Sommaire du numéro" href="sommaire.html?id=[#IDPARENT]">
 					<MACRO NAME="IMG_ICONE_REVUE">
 				</a>
 			</td>
@@ -372,7 +372,7 @@
 					</a>
 							
 				<ELSE/>
-					<a class="navigation_precedent" href="sommaire.html?id=[#PUBLICATION]">
+					<a class="navigation_precedent" href="sommaire.html?id=[#IDPARENT]">
 						<< Retour au sommaire
 					</a>
 							
@@ -386,7 +386,7 @@
 					</a>
 				<ELSE/>
 						
-					<a class="navigation_suivant" href="sommaire.html?id=[#PUBLICATION]">
+					<a class="navigation_suivant" href="sommaire.html?id=[#IDPARENT]">
 						 Retour au sommaire >>
 					</a>
 				</IF>
@@ -431,7 +431,7 @@
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- ****************************************************************** -->
-	<LET VAR="PUBLICATION_ENCOURS">[#PUBLICATION]</LET>
+	<LET VAR="PUBLICATION_ENCOURS">[#IDPARENT]</LET>
 	<LOOP NAME="topparentdoc7">
 		<LET VAR="TOP_PARENT">[#ID]</LET>
 		<MACRO NAME="EXPLORATEUR">
@@ -439,10 +439,11 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="EXPLORATEUR">
+<FONT SIZE="-3">Macro EXPLORATEUR a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- ****************************************************************** -->
-	<LOOP TABLE="publications" WHERE="parent='[#TOP_PARENT]'" WHERE="type!='serie_hierarchique'" ORDER="ordre DESC">
+<!--	<LOOP TABLE="publications" WHERE="idparent='[#TOP_PARENT]'" WHERE="type!='serie_hierarchique'" ORDER="ordre DESC">
 		<BEFORE>
 			<table width="164" border="0" align="center" cellspacing="1" cellpadding="1">
 		</BEFORE>
@@ -474,19 +475,22 @@
 						</IF>
 					<br />				
 					</IF>
+-->
 					<!-- J'affiche tous les articles issus d'un regroupement 
 					car la graphiste propose que tous les regroupements
 					soient toujours dépliés -->
-					<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='regroupement'">
+
+<!-- Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='regroupement'">
 						<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 						<br />
 					</LOOP>
+-->
 					<!-- J'affiche tous les articles issus d'un thème
 					seulement si c'est le thème en cours 
 					car les thèmes ne se déplient que lorsqu'on les
 					consulte -->
-					<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
-						<LOOP NAME="" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='theme'">
+<!-- Ghislain: elle est utile cette boucle ? un if ne suffit pas ?					<IF COND="[#ID]==[#PUBLICATION_ENCOURS]">
+						<LOOP NAME="publication" TABLE="publications" WHERE="id='[#ID]'" WHERE="type='theme'">
 							<MACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
 							<br />
 						</LOOP>
@@ -498,5 +502,6 @@
 			</table>
 		</AFTER>
 	</LOOP>
+-->
 </DEFMACRO>
 

@@ -1,0 +1,25 @@
+
+
+CREATE TABLE IF NOT EXISTS users (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
+	passwd		VARCHAR(64) BINARY NOT NULL,
+	url		TINYTEXT,
+	status		TINYINT DEFAULT '1' NOT NULL,
+
+	maj		TIMESTAMP,
+
+	PRIMARY KEY (id),
+	KEY index_username (username)
+);
+
+
+CREATE TABLE IF NOT EXISTS log (
+	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
+	commands	TEXT,
+
+	maj		TIMESTAMP,
+
+	PRIMARY KEY (id)
+);

@@ -9,7 +9,9 @@ function pub_edition (&$context,$critere)
 {
   global $home,$admin,$usergroupes;
 
-  if (!$context[nom]) { $context[erreur_nom]=$err=1; }
+  if (!$context[nom]) $context[erreur_nom]=$err=1;
+  if (!$context[idtype]) die ("pub_edition: manque l'idtype"); 
+
   include_once($home."date.php");
   if ($context[date]) {
     $date=mysqldate($context[date]);
@@ -20,38 +22,34 @@ function pub_edition (&$context,$critere)
   include_once ($home."connect.php");
   
   $id=intval($context[id]);
-  $parent=intval($context[parent]);
+  $idparent=intval($context[idparent]);
 
   if ($id && $context[grouperec] && $admin) {
-    lock_write("publications","documents");
+    lock_write("publications","documents","entites","relations");
   } else {
-    lock_write("publications");
+    lock_write("publications","entites","relations");
   }
-  if ($id>0) { // il faut rechercher le status et l'ordre
+  require_once($home."entitefunc.php");
+  if ($id>0) { // il faut rechercher le status, l'ordre, le groupe
     if (!$critere) die ("erreur interne");
-    $result=mysql_query("SELECT ordre,meta,groupe,status FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
-    if (!mysql_num_rows($result)) { die ("vous n'avez pas les droits: sortie 1"); }
-    list($ordre,$meta,$groupe,$status)=mysql_fetch_array($result);
-    if ($admin && $context[groupe]) $groupe=intval($context[groupe]);
+    list($ordre,$groupe,$status)=get_variables_perennes($context,$critere);
   } else { 
     // cherche le groupe et les droits
-    if ($admin) { // on prend celui qu'on nous donne
-      $groupe=intval($context[groupe]); if (!$groupe) $groupe=1;
-    } elseif ($parent) { // on prend celui du parent
-      $result=mysql_query("SELECT groupe FROM $GLOBALS[tableprefix]publications WHERE id='$parent' AND groupe IN ($usergroupes)") or die (mysql_error());
-      if (!mysql_num_rows($result)) 	die("vous n'avez pas les droits: sortie 2");
-      list($groupe)=mysql_fetch_row($result);
-    } else {
-      die("vous n'avez pas les droits: sortie 3");
-    }
+    $groupe=get_groupe($critere,$idparent);
     // cherche l'ordre
-    $ordre=get_ordre_max("publications");
+    $ordre=get_ordre_max("entites");
     $status=-1; // non publie par defaut
     $meta="";
   }
-  $meta=addmeta($context,$meta);
-  
-  mysql_query ("REPLACE INTO $GLOBALS[tableprefix]publications (id,parent,nom,titre,soustitre,directeur,texte,meta,ordre,type,date,status,groupe) VALUES ('$id','$parent','$context[nom]','$context[titre]','$context[soustitre]','$context[directeur]','$context[texte]','$meta','$ordre','$context[type]','$date','$status','$groupe')") or die (mysql_error());
+#  $meta=addmeta($context,$meta);
+
+
+  mysql_query ("REPLACE INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,status,groupe) VALUES ('$id','$idparent','$context[idtype]','$context[nom]','$ordre','$status','$groupe')") or die (mysql_error());
+
+  if (!$id) $id=mysql_insert_id();
+  mysql_query("REPLACE INTO $GLOBALS[tp]publications (identite,titre,soustitre,directeur,texte,date) VALUES ('$id','$context[titre]','$context[soustitre]','$context[directeur]','$context[texte]','$date')") or die (mysql_error());
+  require_once($home."managedb.php");
+  creeparente($id,$context[idparent],FALSE);
   
   if ($id && $grouperec && $admin) change_groupe_rec($id,$groupe);
   if (!$id) $id=mysql_insert_id();
@@ -65,6 +63,9 @@ function pub_edition (&$context,$critere)
 function change_groupe_rec($id,$groupe)
 
 {
+
+##### a reecrire avec une table temporaire... plus de SQL moins de PHP
+
   // cherche les publis a changer
   $ids=array($id);
   $idparents=array($id);
@@ -72,7 +73,7 @@ function change_groupe_rec($id,$groupe)
   do {
     $idlist=join(",",$idparents);
     // cherche les fils de idparents
-    $result=mysql_query("SELECT id FROM $GLOBALS[tableprefix]publications WHERE parent IN ($idlist)") or die(mysql_error());
+    $result=mysql_query("SELECT id FROM $GLOBALS[tp]entites WHERE parent IN ($idlist)") or die(mysql_error());
 
     $idparents=array();
     while ($row=mysql_fetch_assoc($result)) {
@@ -84,10 +85,8 @@ function change_groupe_rec($id,$groupe)
   // update toutes les publications
   $idlist=join(",",$ids);
 
-  mysql_query("UPDATE $GLOBALS[tableprefix]publications SET groupe='$groupe' WHERE id IN ($idlist)") or die(mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]entites SET groupe='$groupe' WHERE id IN ($idlist)") or die(mysql_error());
   # cherche les ids
-
-  mysql_query("UPDATE $GLOBALS[tableprefix]documents SET groupe='$groupe' WHERE publication IN ($idlist)") or die(mysql_error());
 }
 
 

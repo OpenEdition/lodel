@@ -11,22 +11,20 @@ authenticate(LEVEL_VISITEUR);
 $critere=$admin ? "" : "groupe IN ($usergroupes) AND ";
 
 if ($id) { // document
+   $classe="documents";
    $id=intval($id);
-   $critere.="id='$id'";
-   include_once ($home."connect.php");
-   $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]documents WHERE $critere") or die (mysql_error());
-   $context=array_merge($context,mysql_fetch_assoc($result));
    $base="fonctionsavancees-document";
-
 } elseif ($publication) { // publication
-   $publication=intval($publication);
-   $critere.="id='$publication'";
-   include_once ($home."connect.php");
-   $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]publications WHERE $critere") or die (mysql_error());
-   $context=array_merge($context,mysql_fetch_assoc($result));
+   $classe="publications";
+   $id=intval($publication);
    $base="fonctionsavancees-publication";
-
 } else { die("id ou publication ?"); }
+
+
+include_once ($home."connect.php");
+$result=mysql_query("SELECT *, type  FROM $GLOBALS[tp]types, $GLOBALS[tp]entites, $GLOBALS[tp]$classe WHERE $GLOBALS[tp]entites.id='$id' AND identite='$id' AND idtype=$GLOBALS[tp]types.id") or die (mysql_error());
+$context=array_merge($context,mysql_fetch_assoc($result));
+
 
 include ($home."calcul-page.php");
 calcul_page($context,$base);

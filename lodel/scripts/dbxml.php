@@ -9,7 +9,7 @@ include_once ($home."xmlfunc.php");
 function enregistre ($context,&$text)
 
 {
-  //  die(htmlentities($text));
+  #  die(htmlentities($text));
   global $home,$iduser,$revue,$superadmin;
   if ($superadmin) $iduser=0; // n'enregistre pas l'id des superutilisateur... sinon, on risque de les confondre avec les utilisateurs de la revue.
 
@@ -34,14 +34,20 @@ function enregistre ($context,&$text)
 
   myquote($context);  myquote($lcontext);  myquote($lang);
 
-  lock_write("documents","personnes","entrees","documents_personnes","documents_entrees","typeentrees","typepersonnes");
+  lock_write("entites","documents","personnes","entrees","documents_personnes","documents_entrees","typeentrees","typepersonnes","relations","types");
 
   // recherche l'ordre
   if ($context[ordre]) {
     $ordre=$context[ordre];
   } else { // ajoute apres l'ordre MAX
-    $ordre=get_ordre_max("documents","publication='$context[publication]'");
+    $ordre=get_ordre_max("entites","idparent='$context[idparent]'");
   }
+
+  // recherche l'id du type
+  $result=mysql_query("SELECT id FROM $GLOBALS[tp]types WHERE type='$lcontext[typedoc]'") or die (mysql_error());
+  if (!mysql_num_rows($result)) die("le type de document n'existe pas... probleme dans l'interface");
+  list($lcontext[idtype])=mysql_fetch_row($result);
+
 
 ####  pour modifier un document, il faut le supprimer proprement puis l'inserer. Le systeme doit produire une erreur si le document existe
 
@@ -53,9 +59,13 @@ function enregistre ($context,&$text)
   if (!$lcontext[titre]) die ("Probleme dans dbxml.php. Document avec titre vide. Envoyer un mail sur lodel-devel: $lcontext[titre]<br><br>".htmlentities($text));
 
   // ecrit dans la base de donnee le document
-  mysql_query ("INSERT INTO $GLOBALS[tableprefix]documents (id,status,titre,soustitre,surtitre,intro,langresume,lang,meta,publication,type,ordre,user,datepubli) VALUES ('$id','$statusdocument','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[meta]','$context[publication]','$lcontext[typedoc]','$ordre','$iduser','$context[datepubli]')") or die (mysql_error());
+  mysql_query ("INSERT INTO $GLOBALS[tp]entites (id,idparent,idtype,nom,ordre,user,status) VALUES ('$id','$context[idparent]','$lcontext[idtype]','$lcontext[titre]','$ordre','$iduser','$statusdocument')") or die (mysql_error());
 
-  $id=mysql_insert_id();
+  if (!$id) $id=mysql_insert_id();
+
+  mysql_query ("INSERT INTO $GLOBALS[tp]documents (identite,titre,soustitre,surtitre,intro,langresume,lang,datepubli) VALUES ('$id','$lcontext[titre]','$lcontext[soustitre]','$lcontext[surtitre]','','$lang[resume]','$lang[texte]','$context[datepubli]')") or die (mysql_error());
+  require_once($home."managedb.php");
+  creeparente($id,$context[idparent],FALSE);
 
   // ajoutes les personnes, et index
 
@@ -102,13 +112,13 @@ function enregistre_personnes ($iddocument,&$vals,&$index,$status)
 
 {
   // detruit les liens dans la table documents_personnes
- mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_personnes WHERE iddocument='$iddocument'") or die (mysql_error());
+ mysql_query("DELETE FROM $GLOBALS[tp]documents_personnes WHERE iddocument='$iddocument'") or die (mysql_error());
 
   if (!$index[personne]) return;
 
   // cree un hash avec les informations pour les index
-  $result=mysql_query("SELECT id,nom FROM $GLOBALS[tableprefix]typepersonnes WHERE status>0") or die (mysql_error());
-  while ($row=mysql_fetch_assoc($result)) $typepersonnes[$row[nom]]=$row;
+  $result=mysql_query("SELECT id,type FROM $GLOBALS[tp]typepersonnes WHERE status>0") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result)) $typepersonnes[$row[type]]=$row;
 
 
   foreach($index[personne] as $ind) {
@@ -129,14 +139,14 @@ function enregistre_personnes ($iddocument,&$vals,&$index,$status)
     }
 
     // cherche si l'personne existe deja
-    $result=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]personnes WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
+    $result=mysql_query("SELECT id,status FROM $GLOBALS[tp]personnes WHERE nomfamille='".$context[nomfamille]."' AND prenom='".$context[prenom]."'") or die (mysql_error());
     if (mysql_num_rows($result)>0) { // ok, l'personne existe deja
       list($id,$oldstatus)=mysql_fetch_array($result); // on recupere sont id et sont status
       if ($status>0 && $oldstatus<0) { // Faut-il publier l'personne ?
-	mysql_query("UPDATE $GLOBALS[tableprefix]personnes SET status=1 WHERE id='$id'") or die (mysql_error());
+	mysql_query("UPDATE $GLOBALS[tp]personnes SET status=1 WHERE id='$id'") or die (mysql_error());
       }
     } else {
-      mysql_query ("INSERT INTO $GLOBALS[tableprefix]personnes (status,nomfamille,prenom) VALUES ('$status','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tp]personnes (status,nomfamille,prenom) VALUES ('$status','$context[nomfamille]','$context[prenom]')") or die (mysql_error());
       $id=mysql_insert_id();
     }
   
@@ -150,7 +160,7 @@ function enregistre_personnes ($iddocument,&$vals,&$index,$status)
 
     // ajoute l'personne dans la table documents_personnes
     // ainsi que la description
-    mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_personnes (idpersonne,iddocument,idtype,ordre,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$iddocument','$typepersonne[id]','$ordre','$context[description]','$context[prefix]','$context[affiliation]','$context[fonction]','$context[courriel]')") or die (mysql_error());
+    mysql_query("INSERT INTO $GLOBALS[tp]documents_personnes (idpersonne,iddocument,idtype,ordre,description,prefix,affiliation,fonction,courriel) VALUES ('$id','$iddocument','$typepersonne[id]','$ordre','$context[description]','$context[prefix]','$context[affiliation]','$context[fonction]','$context[courriel]')") or die (mysql_error());
   }
 }
 
@@ -159,13 +169,13 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
 
 {
   // detruit les liens dans la table documents_indexhs
-  mysql_query("DELETE FROM $GLOBALS[tableprefix]documents_entrees WHERE iddocument='$iddocument'") or die (mysql_error());
+  mysql_query("DELETE FROM $GLOBALS[tp]documents_entrees WHERE iddocument='$iddocument'") or die (mysql_error());
 
   if (!$index[entree]) continue; // s'il n'y a pas d'entrees, on reboucle
 
   // cree un hash avec les informations pour les index
-  $result=mysql_query("SELECT id,nom,newimportable,useabrev FROM $GLOBALS[tableprefix]typeentrees WHERE status>0") or die (mysql_error());
-  while ($row=mysql_fetch_assoc($result)) $typeentrees[$row[nom]]=$row;
+  $result=mysql_query("SELECT id,type,newimportable,useabrev FROM $GLOBALS[tp]typeentrees WHERE status>0") or die (mysql_error());
+  while ($row=mysql_fetch_assoc($result)) $typeentrees[$row[type]]=$row;
 
 #  print_r($index);
 #  print_r($vals);
@@ -188,17 +198,17 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
     // cherche la langue dans l'attribut sinon valeur par defaut.
     $lang=($tag[attributes] && $tag[attributes][lang]) ? strtolower($tag[attributes][lang]) : "fr";
     // cherche l'id de la entree si elle existe
-    $result2=mysql_query("SELECT id,status FROM $GLOBALS[tableprefix]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0 AND idtype='$typeentree[id]'") or die(mysql_error());
+    $result2=mysql_query("SELECT id,status FROM $GLOBALS[tp]entrees WHERE (abrev='$entree' OR nom='$entree') AND lang='$lang' AND status>0 AND idtype='$typeentree[id]'") or die(mysql_error());
 
     if (mysql_num_rows($result2)) { // l'entree exists
       list($id,$oldstatus)=mysql_fetch_array($result2);
       if ($status>0 && $oldstatus<0) { // faut-il publier ?
-	mysql_query("UPDATE $GLOBALS[tableprefix]entrees SET status=1 WHERE id='$id'") or die (mysql_error());	
+	mysql_query("UPDATE $GLOBALS[tp]entrees SET status=1 WHERE id='$id'") or die (mysql_error());	
       }
     } elseif ($typeentree[newimportable]) { // l'entree n'existe pas. est-ce qu'on a le droit de l'ajouter ?
       // oui,il faut ajouter le mot cle
       $abrev=$typeentree[useabrev] ? strtoupper($entree) : "";
-      mysql_query ("INSERT INTO $GLOBALS[tableprefix]entrees (status,nom,abrev,idtype,lang) VALUES ('$status','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
+      mysql_query ("INSERT INTO $GLOBALS[tp]entrees (status,nom,abrev,idtype,lang) VALUES ('$status','$entree','$abrev','$typeentree[id]','$lang')") or die (mysql_error());
       $id=mysql_insert_id();
     } else {
       // non, on ne l'ajoute pas... mais il y a une erreur quelque part...
@@ -209,7 +219,7 @@ function enregistre_entrees ($iddocument,&$vals,&$index,$status)
     // on pourrait optimiser un peu ca... en mettant plusieurs values dans 
     // une chaine et en faisant la requette a la fin !
     if ($id)
-      mysql_query("INSERT INTO $GLOBALS[tableprefix]documents_entrees (identree,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
+      mysql_query("INSERT INTO $GLOBALS[tp]documents_entrees (identree,iddocument) VALUES ('$id','$iddocument')") or die (mysql_error());
     
   } // tags
 }

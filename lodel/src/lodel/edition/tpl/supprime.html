@@ -20,9 +20,9 @@
 				<span class="message_erreur">Confirmer la suppression de la publication suivante ?</span><br /><br />
 				<strong>[#NOM]</strong><br /><br /><br /><br />
 				<form action="supprime.php" method="POST">
-					<input type="hidden" name="publication" value="[#ID]">
+					<input type="hidden" name="id" value="[#ID]">
 					<input class="form" type="submit" name="supprime" value="Supprimer">
-					<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#PARENT]';">
+					<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#IDPARENT]';">
 				</form>
 				<br /><br />
 			<ELSE/> 
@@ -32,9 +32,9 @@
 				<form action="supprime.php" method="POST">
 					<input type="hidden" name="id" value="[#ID]">
 					<input class="form" type="submit" name="supprime" value="Supprimer">
-					<LOOP NAME="" TABLE="publications" WHERE="id='[#PUBLICATION]'">
+					<LOOP NAME="publication" TABLE="publications" WHERE="id='[#IDPARENT]'">
 						<IF COND="[#TYPE] EQ 'regroupement'">
-							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#PARENT]';">
+							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#IDPARENT]';">
 						<ELSE/>
 							<input class="form" type="button" name="annule" value="   Annuler   " onClick="javascript:window.location='index.php?id=[#ID]';">
 						</IF>

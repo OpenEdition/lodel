@@ -66,7 +66,7 @@
 			</span>
 		</div>
 			
-		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="parent=[#ID]" ORDER="ordre ASC">
+		<LOOP NAME="liste_numeros_2" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="idparent=[#ID]" ORDER="ordre ASC">
 			<DO>
 					<div class="afficherdocument">
 					<a href="sommaire.html?id=[#ID]">
@@ -216,20 +216,12 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+	<LOOP NAME="paru_dans" TABLE="publications" TABLE="relations" WHERE="id2='[#ID]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
-			<IF COND="[#TYPE]=='regroupement'"> 
-				<LOOP NAME="affiche_numero2" TABLE="publications"  WHERE="id='[#PARENT]'"> 
-					<a class="titre1" href="sommaire.html?id=[#ID]">[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]
-						</IF>
-					</a>
-				</LOOP>
-			<ELSE/>
 					<a class="titre1" href="sommaire.html?id=[#ID]">
 							[#NOM]<IF COND="[#TITRE]"><br /> [#TITRE]
 								</IF>
 					</a>
-			</IF>
 		</DO>
 	</LOOP>
 </DEFMACRO>
@@ -237,6 +229,7 @@
  
 
 <DEFMACRO NAME="PARU_DANS_SIMPLE">
+<FONT SIZE="-3">Macro PARU_DANS_SIMPLE a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la publication d'où provient un document.                  -->
@@ -244,13 +237,13 @@
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">           -->
 <!-- ****************************************************************** -->
-	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
+<!--	<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
-	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
+	            <LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 					<DO>
 		    	    	<IF COND="[#NOM]">
-							<a  href="sommaire.html?id=[#PUBLICATION]">
+							<a  href="sommaire.html?id=[#IDPARENT]">
 								n&#176; [#NOM] 
 								<IF COND="[#TITRE]">
 									- [#TITRE]
@@ -264,7 +257,7 @@
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
 					
-					<a  href="sommaire.html?id=[#PUBLICATION]">
+					<a  href="sommaire.html?id=[#IDPARENT]">
 						
 							 n&#176; [#NOM] 
 							 <IF COND="[#TITRE]">
@@ -277,22 +270,23 @@
 				</IF>
 	        </IF>
 		</DO>
-	</LOOP>
+	</LOOP> -->
 </DEFMACRO>
 
 
 <DEFMACRO NAME="PARU_DANS_SIGNALEMENT">
+<FONT SIZE="-3">Macro PARU_DANS_SIMPLE a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la publication d'où provient un document.                  -->
 <!-- Cette macro fait appel à la macro suivante :                       -->
 <!-- <MACRO NAME="NOM_REVUE">                                           -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+<!--	<LOOP NAME="paru_dans_signaler" TABLE="publications" WHERE="id='[#IDPARENT]'"> 
 		<DO>
 			
 			<IF COND="[#TYPE]=='regroupement'"> 
-				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#PARENT]'">
+				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#IDPARENT]'">
 					<a  href="sommaire.html?id=[#ID]"><MACRO NAME="NOM_REVUE">, n°[#NOM]<IF COND="[#TITRE]">, [#TITRE]</IF>.
 					</a>
 				</LOOP>
@@ -302,7 +296,7 @@
 					</a>
 			</IF>
 		</DO>
-	</LOOP>
+	</LOOP> -->
 </DEFMACRO>
 
 
@@ -325,16 +319,17 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DATE_PUBLICATION_PARENTE">
+<FONT SIZE="-3">Macro DATE_PUBLICATION_PARENTE a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la date de publication parente d'un document, si elle      -->
 <!-- existe sinon n'affiche rien.                                       -->
 <!-- ****************************************************************** -->
-	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
+<!--	<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
 			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
-	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
+	            <LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 					<DO>
 						<IF COND="[#DATE]!='0000-00-00'">
 							Texte publié le : [(#DATE|humandate)]
@@ -347,7 +342,7 @@
 				</IF>
 			</IF>
 		</DO>
-	</LOOP>
+	</LOOP> -->
 </DEFMACRO>
 
 <DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
@@ -501,7 +496,7 @@
 				Numéros
 			</div>
 			<!-- On liste tous les numéros de la série linéaire courante -->
-			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre" >
+			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre" >
 				<DO>
 					<div class="menu2">
 						<a  class="menu2" href="sommaire.html?id=[#ID]">
@@ -524,7 +519,7 @@
 			</div>
 			
 			<!-- On liste tous les thèmes de 1er niveau de la série hiérarchique courante -->
-			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
+			<LOOP NAME="aff_themes" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
 				<DO>
 					<div class="menu2">
 							<a class="menu2" href="sommaire.html?id=[#ID]">
@@ -539,7 +534,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_SERIE_PRESENTATION">
-
+<FONT SIZE="-3">Macro AFFICHER_SERIE_PRESENTATION a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la série présentation avec les articles qui sont           -->
@@ -547,17 +542,17 @@
 <!-- Il faut mettre en dur l'id de la série                             -->
 <!-- Macro plutôt destinée à la barre de navigation verticale.          -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="aff_series_presentation" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre" WHERE="id='#remplir ici id de la serie presentation#'">
+<!--	<LOOP NAME="aff_series_presentation" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre" WHERE="id='#remplir ici id de la serie presentation#'">
 		<BEFORE>
 			<div class="menu1">
 				Informations :<br/ >
 			</div>
 		</BEFORE>
-		<DO>
+		<DO> -->
 			<!-- On liste tous les numéros de la série linéaire courante -->
-			<LOOP NAME="aff_numero_presentation" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
+<!--			<LOOP NAME="aff_numero_presentation" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
 				<DO>
-					<LOOP NAME="aff_docpresentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'"  WHERE="status>0" ORDER="ordre">
+					<LOOP NAME="aff_docpresentation" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='presentation'"  WHERE="status>0" ORDER="ordre">
 						<DO>
 							<div class="menu2">
 								<a  class="menu2" href="document.html?id=[#ID]">
@@ -569,7 +564,7 @@
 				</DO>
 			</LOOP>
 		</DO>
-	</LOOP>
+	</LOOP> -->
 </DEFMACRO>
 		
 		
@@ -603,7 +598,7 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="article" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='article'" ORDER="ordre">
+	<LOOP NAME="article" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='article'" ORDER="ordre">
 		<BEFORE>
 			<div class="titre2">
 				Articles
@@ -625,7 +620,7 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="chr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
+	<LOOP NAME="chr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
 		<BEFORE>
 			<div class="titre2">
 				Chroniques
@@ -647,7 +642,7 @@
 <!-- <MACRO NAME="FILET_1">                                        -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="cr" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
+	<LOOP NAME="cr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
 		<BEFORE>
 			<div class="titre2">
 				Comptes Rendus 
@@ -669,7 +664,7 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="pdt" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
+	<LOOP NAME="pdt" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
 		<BEFORE>
 			<div class="titre2">
 				Positions de thèse
@@ -691,7 +686,7 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="nl" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
+	<LOOP NAME="nl" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
 		<BEFORE>
 			<div class="titre2">
 				Notes de lecture 
@@ -713,7 +708,7 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="presentation" TABLE="documents" WHERE="publication='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
+	<LOOP NAME="presentation" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
 		<BEFORE>
 			<div class="titre2">
 				Informations
@@ -748,7 +743,7 @@
 <!-- Cette Macro utilise la macro suivante :                            -->
 <!-- <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             -->
 <!-- ****************************************************************** -->
-	<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+	<LOOP NAME="presenter_documents" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 	
 	<DO>
 			<div class="afficherdocument"> 
@@ -771,7 +766,7 @@
 <!-- <MACRO NAME="FILET_1">                                             -->
 <!-- <MACRO NAME="PRESENTER_DOCUMENTS">                                 -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="regroupements" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
+	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		
 		<DO>
 				<div class="titre2">
@@ -857,7 +852,7 @@
 <!-- L'affichage est destiné aux sommaires : il permet une respiration. -->
 <!-- ****************************************************************** -->
 		<div class="auteur">
-		<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
+		<LOOP NAME="lister_auteurs_document" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 			<!-- boucle sans titre car elle est parfois appelée 2 fois ds la même page-->
 			<DOFIRST>[#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DOFIRST>
 			<DO>, [#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DO>
@@ -884,17 +879,18 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="CITATION">
+<FONT SIZE="-3">Macro CITATION a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche notice biblio du doc en cours                              -->
 <!-- ****************************************************************** -->
 	
-	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i> 
-	<LOOP NAME="citation" TABLE="publications" WHERE="id='[#PUBLICATION]'"> 
+<!--	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_REVUE">,</i> 
+	<LOOP NAME="citation" TABLE="publications" WHERE="id='[#IDPARENT]'"> 
 		<DO>
 			
 			<IF COND="[#TYPE]=='regroupement'"> 
-				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#PARENT]'"> 
+				<LOOP NAME="affiche_numero3" TABLE="publications"  WHERE="id='[#IDPARENT]'"> 
 					 [#NOM]<IF COND="[#TITRE]">, [#TITRE].
 					</IF>
 				</LOOP>
@@ -905,7 +901,7 @@
 			</IF>
 		</DO>
 	</LOOP>
-	<br />http://[#REVUE].revues.org/document.html?id=[#ID]
+	<br />http://[#REVUE].revues.org/document.html?id=[#ID] -->
 </DEFMACRO>
 
 
@@ -915,11 +911,12 @@
 <!-- Version 1.0                                                        -->
 <!-- Affiche la liste description des auteurs dans le document          -->
 <!-- ****************************************************************** -->
-<LOOP TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
+<LOOP NAME="descrition_auteur" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
  <IF COND="[#DESCRIPTION]">
  	<div class="titre3">
 		Quelques mots à propos de 
-			<LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
+<!-- Ghislain: elle sert a quoi cette deuxieme boucle ? Qu'est-ce que ca a voir avec la description de l'auteur ? -->
+			<LOOP NAME="descrition_auteur2" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
 				<a class="auteur" href="auteur.html?id=[#ID]">
 						
 					[#PRENOM]
@@ -947,7 +944,7 @@
 <!-- d'un thème.                                                        -->
 <!-- Macro destinée aux sommaires.                                      -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="boucle_lister_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'">
+	<LOOP NAME="boucle_lister_themes" TABLE="publications" WHERE="idparent='[#ID]'" WHERE="type='theme'">
 		<DO>
 			<div class="titre2">
 				<a class="titre2" href="sommaire.html?id=[#ID]">
@@ -1001,7 +998,7 @@
 <!-- *************************************************** -->
 	<!--<MACRO NAME="INTRODUCTION_COURTE_SIMPLE">-->	
 	<LOOP NAME="truc" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
-		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
+		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			<div class="extrait">
 				<span class="bold">
@@ -1095,7 +1092,7 @@
 <!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
 <!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
 <!-- ****************************************************************** -->
-	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]" ORDER="ordre">
+	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent=[#ID] AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
 			<ul class="puce">
 		</BEFORE>

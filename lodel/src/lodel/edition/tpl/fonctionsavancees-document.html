@@ -93,7 +93,7 @@
 	<IF COND="[#EDITEUR]">	
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
-				<a href="deplacer.php?iddocument=[#ID]">
+				<a href="deplacer.php?id=[#ID]">
 					<span class="texte_noir_gras">Déplacer ce document</span>
 				</a>
 			</div>
@@ -131,9 +131,19 @@
 	<IF COND="[#EDITEUR]">
 		<div class="ligne_formulaire">
 			<div class="intitule_ligne_formulaire">
-				<a href="docannexe.php?iddocument=[#ID]">
-					<span class="texte_noir_gras">Ajouter des documents annexes</span>
-				</a>
+			<span class="texte_noir_gras">Ajouter un document annexe</span>
+		<form action="docannexe.php" method="POST">
+		  <input type="hidden" name="idparent" value="[#ID]">
+				<select name="type">
+		                <LOOP NAME="boucletypedocannexe" TABLE="types" WHERE="type LIKE 'documentannexe-%'" ORDER="type"> 
+		                 <DOFIRST>
+		                     	<option value="[#TYPE]" selected>[#TITRE]</option>
+		                 </DOFIRST>
+		                 <DO>
+					<option value="[#TYPE]">[#TITRE]</option>
+		                 </DO>
+		                </LOOP>
+				</select><input class="form" type="submit" value=" Ajouter ">
 			</div>
 		</div>
 	<ELSE/>
@@ -162,13 +172,9 @@
 
 	<div class="pied_de_formulaire">
 		<form>
-			<LOOP NAME="" TABLE="publications" WHERE="id=[#PUBLICATION]">
+			<LOOP NAME="publication" TABLE="publications" WHERE="id=[#IDPARENT]">
 				<DO>
-					<IF COND="[#TYPE] EQ 'regroupement'">
-						<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#PARENT]'" />						
-					<ELSE/>
 						<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#ID]'" />
-					</IF>
 				</DO>
 			</LOOP>
 		</form>

@@ -125,7 +125,11 @@ ln telecharger.php
 
 # satellite des documents
 ln docannexe.php
-ln tpl/docannexe.html
+ln tpl/documentannexe-lienfichier.html
+ln tpl/documentannexe-liendocument.html
+ln tpl/documentannexe-lienpublication.html
+ln tpl/documentannexe-lienexterne.html
+
 ln metaimage.php
 ln tpl/metaimage.html
 ln editer.php
@@ -149,11 +153,12 @@ ln tpl/edition-theme.html
 
 ln publication.php
 ln tpl/publication.html
-ln tpl/publications_protegees.html
+ln tpl/publi_erreur.html
 ln inverseordre.php
 
 ln supprime.php
 ln tpl/supprime.html
+ln tpl/supprime_erreur.html
 
 ln fonctionsavancees.php
 ln tpl/fonctionsavancees-document.html

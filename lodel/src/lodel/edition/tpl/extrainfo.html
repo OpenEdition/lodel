@@ -90,7 +90,7 @@
 	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 		<tr>
 			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#NOM]</td>
+			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITRE]</td>
 		</tr>
 	</table>
 	<br />
@@ -174,12 +174,16 @@
 		<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 			<tr>
 				<td align="center">
+<IF COND="[#ENCORE]">
+					<input class="form" type="submit" name="submit" value="     Continuer    "> - 
+					<input class="form" type="submit" name="cancel" value=" Abandonner ">
+<ELSE/>
 					<input class="form" type="submit" name="submit" value="     Terminer    "> - 
 					<input class="form" type="submit" name="visualiserdocument" value="Terminer et visualiser"> - 
-					<!-- <input class="form" type="submit" name="ajouterdocannexe" value="Ajouter des documents annexe"> - -->
 					<input class="form" type="submit" name="cancel" value=" Abandonner ">
 				</td>
 			</tr>
+</IF>
 		</table>
 	</IF>
 

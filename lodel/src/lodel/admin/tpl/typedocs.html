@@ -23,11 +23,11 @@
 		<td class="texte_noir_gras">Fichier Template</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="typeart" TABLE="typedocs" ORDER="nom" WHERE="ok">
+	<LOOP NAME="typeart" TABLE="types" ORDER="ordre" WHERE="ok" WHERE="classe='documents' AND tplcreation='chargement'">
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin1">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin1">[#TPL]</td>
 					<td class="ligne_admin1" style="color: #CC9933;" align="right">
 						<div>
@@ -36,7 +36,7 @@
 						</div>
 					</td>
 				<ELSE/>
-					<td class="ligne_admin2">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin2">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
 					<td class="ligne_admin2" style="color: #CC9933;" align="right">
 						<div>
@@ -53,7 +53,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="typedocs_trash" TABLE="typedocs" ORDER="nom" WHERE="trash">
+<LOOP NAME="typedocs_trash" TABLE="types" ORDER="ordre" WHERE="trash" WHERE="classe='documents' AND tplcreation='chargement'">
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>
@@ -68,14 +68,14 @@
 	<DO>
 		<tr>
 			<IF COND="[#COUNT] % 2">
-				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1">[#TYPE]</td>
 				<td class="ligne_admin1">[#TPL]</td>
 				<td class="ligne_admin1" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="typedoc.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
 					<a href="typedoc.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
-				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2">[#TYPE]</td>
 				<td class="ligne_admin2">[#TPL]</td>
 				<td class="ligne_admin2" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="typedoc.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;

@@ -37,14 +37,14 @@ if ($edit) { // modifie ou ajoute
 
     // lit les informations options, status, etc... si la revue existe deja
     if ($id) {
-      $result=mysql_query ("SELECT options,status FROM $GLOBALS[tableprefix]revues WHERE id='$id'") or die (mysql_error());
+      $result=mysql_query ("SELECT options,status FROM $GLOBALS[tp]revues WHERE id='$id'") or die (mysql_error());
       list($options,$status)=mysql_fetch_row($result);
     } else {
       $options=""; $status=-32; // -32 signifie en creation
     }
     if ($reinstalle) $status=-32;
 
-    mysql_query("REPLACE INTO $GLOBALS[tableprefix]revues (id,nom,rep,soustitre,options,status) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$status')") or die (mysql_error());
+    mysql_query("REPLACE INTO $GLOBALS[tp]revues (id,nom,rep,soustitre,options,status) VALUES ('$id','$context[nom]','$context[rep]','$context[soustitre]','$options','$status')") or die (mysql_error());
 
     if ($status>-32) back(); // on revient, la revue n'est pas en creation
 
@@ -55,7 +55,7 @@ if ($edit) { // modifie ou ajoute
 
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]revues WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]revues WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 
@@ -111,7 +111,7 @@ if ($tache=="createtables") {
     $text.=utf8_encode(join('',file("../install/inserts-revue.sql")));
   }
 
-  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tableprefix],$text);
+  $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
 
   $sqlcmds=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
@@ -243,7 +243,7 @@ if ($tache=="fichier") {
   install_fichier($root,"../$versionrep/revue","..");
 
   // ok on a fini, on change le status de la revue
-  mysql_query ("UPDATE $GLOBALS[tableprefix]revues SET status=1 WHERE id='$id'") or die (mysql_error());
+  mysql_query ("UPDATE $GLOBALS[tp]revues SET status=1 WHERE id='$id'") or die (mysql_error());
   back();
 }
 

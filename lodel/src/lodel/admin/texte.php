@@ -31,7 +31,7 @@ if ($id>0 && ($delete || $restore)) {
     if ($err) break;
     include_once ($home."connect.php");
 
-    mysql_query ("REPLACE INTO $GLOBALS[tableprefix]textes (id,nom,texte) VALUES ('$id','$context[nom]','$context[texte]')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]textes (id,nom,texte) VALUES ('$id','$context[nom]','$context[texte]')") or die (mysql_error());
 
     back();
 
@@ -39,7 +39,7 @@ if ($id>0 && ($delete || $restore)) {
   // entre en edition
 } elseif ($id>0) {
   include_once ($home."connect.php");
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]textes WHERE $critere") or die ("erreur SELECT");
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]textes WHERE $critere") or die ("erreur SELECT");
   $context=array_merge($context,mysql_fetch_assoc($result));
 }
 

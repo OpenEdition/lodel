@@ -155,7 +155,7 @@ function parse_texte(&$text)
     $nom=$result[1]; myquote($nom);
     if ($editeur) {       // cherche si le texte existe
       include_once($home."connect.php");
-      $result2=mysql_query("SELECT id FROM $GLOBALS[tableprefix]textes WHERE nom='$nom'") or die (mysql_error());
+      $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$nom'") or die (mysql_error());
       if (!mysql_num_rows($result2)) { // il faut creer le texte
 	mysql_query("INSERT INTO textes (nom,texte) VALUES ('$nom','')") or die (mysql_error());
       }
@@ -346,9 +346,12 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 
     //
     // traitement specifique
-    $tablesinselect=$tables; // ce sont les tables qui seront demande dans le select. Les autres tables de $tables ne seront pas demandees
+    $tablesinselect=$tables; // ce sont les tables qui seront demandees dans le select. Les autres tables de $tables ne seront pas demandees
+    $extrainselect=""; // texte pour gerer des champs supplementaires dans le select. Doit commencer par ,
     $groupby="";
-    parse_boucle_extra(&$tables,&$tablesinselect,&$where,&$order,&$groupby);
+    parse_boucle_extra(&$tables,
+		       &$tablesinselect,&$extrainselect,
+		       &$where,&$order,&$groupby);
     //
 
     if ($where) {
@@ -365,8 +368,7 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 
 
     if (!$nom) {
-      srand ((double) microtime() * 1000000);
-      $nom="number".rand();
+      die("une boucle n'a pas de nom. Cet attribut est desormais obligatoire.");
     }
 
     if (!$boucles[$nom][type]) $boucles[$nom][type]="def"; # marque la boucle comme definie, s'il elle ne l'ai pas deja
@@ -388,11 +390,13 @@ function parse_boucle (&$text,&$fct_txt,$offset=0)
 
     if ($tables) { // boucle SQL
       // cree un identifiant "presque" unique pour cette boucle
-      $md5boucle=md5($tables.$where.$order.$limit.$attr);
+      $md5boucle=md5(join(" ",$tables).$where.$order.$limit.$attr);
       // verifie que la boucle n'a pas ete defini sous le meme nom avec un contenu different
       if ($issql && $md5boucle!=$boucles[$nom][id]) die ("Impossible de redefinir la boucle $nom avec un code ou des arguments differents");
       if (!$issql) { // on la definit
-	make_boucle_code($nom,$tables,$tablesinselect,$where,$order,$limit,$groupby,$attr,$fct_txt);
+	make_boucle_code($nom,$tables,
+			 $tablesinselect,$extrainselect,
+			 $where,$order,$limit,$groupby,$attr,$fct_txt);
 	$boucles[$nom][id]=$md5boucle; // enregistre l'identifiant qui caracterise la boucle
 	$boucles[$nom][type]="sql"; // marque la boucle comme etant une boucle sql
       }
@@ -436,7 +440,7 @@ function decode_content ($content,$tables=array())
   }
 
   if ($ret["DO"]) {
-    if (trim($content)) die("Une partie du contenu de la boucle $nom n'est pas dans l'une des balises &lt;corps&gt;  &lt;avant&gt;  &lt;apres&gt; &lt;premier&gt; &lt;dernier&gt;<br>");
+    if (trim($content)) die("Une partie du contenu de la boucle $nom n'est pas dans l'une des balises &lt;do&gt;  &lt;before&gt;  &lt;after&gt; &lt;dofirst&gt; &lt;dolast&gt;<br>");
   } else {
     $ret["DO"]=$content;
   }
@@ -463,27 +467,31 @@ function decode_content ($content,$tables=array())
 
 
 
-function make_boucle_code ($nom,$tables,$tablesinselect,$where,$order,$limit,$groupby,$content,&$fct_txt)
+function make_boucle_code ($nom,$tables,
+			   $tablesinselect,$extrainselect,
+			   $where,$order,$limit,$groupby,$content,&$fct_txt)
 
 {
   // traitement particulier additionnel
-  list ($premysqlquery,$postmysqlquery,$select)=make_boucle_code_extra($tables);
+  #### a supprimer list ($premysqlquery,$postmysqlquery,$select)=make_boucle_code_extra($tables);
+  #### et supprimer les variables premysqlqueyr et postmysql query dessous
 
-  $table=$GLOBALS[tableprefix].join (', $GLOBALS[tableprefix]',array_reverse(array_unique($tables)));
+  $table=$GLOBALS[tp].join (', $GLOBALS[tp]',array_reverse(array_unique($tables)));
 
   $contents=decode_content($content,$tablesinselect);
 
   if ($groupby) $groupby="GROUP BY ".$groupby; // besoin de group by ?
 
-  $select=join(".*,",$tablesinselect).".*".$select;
+  $select=join(".*,",$tablesinselect).".*".$extrainselect;
 
-#### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): SELECT '.$select.' FROM '."$table $where $groupby $order $limit".' <br>";
+#### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 
 # genere le code pour parcourir la boucle
   $fct_txt.='function boucle_'.$nom.' ($context)
 {
  $generalcontext=$context;
-'.$premysqlquery.' $result=mysql_query("SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'") or die (mysql_error());
+'.$premysqlquery.' $query="SELECT '.$select.' FROM '."$table $where $groupby $order $limit".'"; #echo htmlentities($query);
+ $result=mysql_query($query) or mymysql_error($query);
 '.$postmysqlquery.'
  $nbrows=mysql_num_rows($result);
  $count=0;
@@ -529,7 +537,6 @@ function make_userdefined_boucle_code ($nom,$content,&$fct_txt)
   if ($contents[AFTER]) {// genere le code de apres
   $fct_txt.='function code_apres_'.$nom.' ($context) { ?>'.$contents[AFTER].'<? }';
  }
- // ajout Julien 18/06/03
   if ($contents[ALTERNATIVE]) {// genere le code de alternative
   $fct_txt.='function code_alter_'.$nom.' ($context) { ?>'.$contents[ALTERNATIVE].'<? }';
  }

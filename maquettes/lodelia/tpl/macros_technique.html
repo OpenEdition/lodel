@@ -193,17 +193,18 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DATE_PUBLICATION_PARENTE_POUR_METAS">
+<FONT SIZE="-3">Macro DATE_PUBLICATION_PARENTE_POUR_METAS a reecrire avec une seule boucle</FONT>
 <!-- ****************************************************************** -->
 <!-- Version 1.0                                                        -->
 <!-- Affiche la date de publication parente d'un document, si elle      -->
 <!-- existe sinon affiche "0000-00-00".                                 -->
 <!-- Cette macro est destinée à l'affichage des métadonnées.            -->
 <!-- ****************************************************************** -->
-	<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'">
+<!--	<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 		<DO>
 			<IF COND="[#TYPE]=='regroupement'">
-			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
-	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
+-->			<!-- Si on est dans un regroupement on remonte au niveau du parent du regroupement -->
+<!--	            <LOOP TABLE="publications" WHERE="id='[#IDPARENT]'">
 					<DO>
 						<IF COND="[#DATE]!='0000-00-00'">
 							<meta name="DC.Date" content="[#DATE]" />
@@ -216,17 +217,18 @@
 				</IF>
 			</IF>
 		</DO>
-	</LOOP>
+	</LOOP> -->
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRIPTION_META_SOMMAIRE">
-	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="publication='[#ID]'" LIMIT="0,1">
+<FONT SIZE="-3">Macro DESCRIPTION_META_SOMMAIRE a reecrire, surtout les deux boucles plus bas</FONT>
+<!--	<LOOP NAME="EXTRAIT_PREMIER_ARTICLE" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			Extrait du premier article du numéro: 
 			[(#TEXTE|removefootnotes|couper(1500)|textebrut|replacequotationmark))]
 		<ELSE/>
-			<LOOP TABLE="publications" WHERE="id='[#PUBLICATION]'" ORDER="ordre">
-				<LOOP TABLE="documents" WHERE="publication='[#ID]'" ORDER="ordre">
+<			<LOOP TABLE="publications" WHERE="id='[#IDPARENT]'" ORDER="ordre">
+				<LOOP TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
 				<DO>
 					<IF COND="[#TITRE]">
 						[#TITRE],
@@ -239,6 +241,7 @@
 			</LOOP>
 		</IF>
 	</LOOP>
+-->
 </DEFMACRO>
 
 <DEFMACRO NAME="DESCRIPTION_REVUE_POUR_METAS">

@@ -16,7 +16,7 @@ function get_tache (&$id)
 
 {
   $id=intval($id);
-  $result=mysql_query("SELECT * FROM $GLOBALS[tableprefix]taches WHERE id='$id'") or die (mysql_error());
+  $result=mysql_query("SELECT * FROM $GLOBALS[tp]taches WHERE id='$id'") or die (mysql_error());
   if (!($row=mysql_fetch_assoc($result))) { header("Location: index.php"); return; }
   $row=array_merge($row,unserialize($row[context]));
   // verifie que le fichier existe encore
@@ -51,14 +51,14 @@ function make_tache($nom,$etape,$context,$id=0)
 {
   global $iduser;
   if (is_array($context)) $context=serialize($context);
-  mysql_query("REPLACE INTO $GLOBALS[tableprefix]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$context')") or die (mysql_error());
+  mysql_query("REPLACE INTO $GLOBALS[tp]taches (id,nom,etape,user,context) VALUES ('$id','$nom','$etape','$iduser','$context')") or die (mysql_error());
   return mysql_insert_id();
 }
 
 function update_tache_etape($id,$etape)
 
 {
-  mysql_query("UPDATE $GLOBALS[tableprefix]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]taches SET etape='$etape' WHERE id='$id'") or die (mysql_error());
  # ne pas faire ca, car si la tache n'est pas modifiee, il renvoie 0
 # if (mysql_affected_rows()!=1) die ("Erreur d'update de id=$id");
 }
@@ -76,7 +76,7 @@ function update_tache_context($id,$newcontext,$previouscontext="")
     $contextstr=serialize($newcontext);
   }
 
-  mysql_query("UPDATE $GLOBALS[tableprefix]taches SET context='$contextstr' WHERE id='$id'") or die (mysql_error());
+  mysql_query("UPDATE $GLOBALS[tp]taches SET context='$contextstr' WHERE id='$id'") or die (mysql_error());
 
 }
 
@@ -115,8 +115,8 @@ function get_ordre_max ($table,$where="")
   if ($where) $where="WHERE ".$where;
 
   include_once ($home."connect.php");
-  $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tableprefix]$table $where") or die (mysql_error());
-  if (mysql_num_rows($result)) list($ordre)=mysql_fetch_array($result);
+  $result=mysql_query ("SELECT MAX(ordre) FROM $GLOBALS[tp]$table $where") or die (mysql_error());
+  if (mysql_num_rows($result)) list($ordre)=mysql_fetch_row($result);
   if (!$ordre) $ordre=0;
 
   return $ordre+1;
@@ -125,16 +125,16 @@ function get_ordre_max ($table,$where="")
 function chordre($table,$id,$critere,$dir,$inverse="")
 
 {
-  $table=$GLOBALS[tableprefix].$table;
+  $table=$GLOBALS[tp].$table;
   $dir=$dir=="up" ? -1 : 1;  if ($inverse) $dir=-$dir;
   $desc=$dir>0 ? "" : "DESC";
   $result=mysql_query("SELECT id,ordre FROM $table WHERE $critere ORDER BY ordre $desc") or die (mysql_error());
 
   $ordre=$dir>0 ? 1 : mysql_num_rows($result);
-  while ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
+  while ($row=mysql_fetch_assoc($result)) {
     if ($row[id]==$id) {
       # intervertit avec le suivant s'il existe
-      if (!($row2=mysql_fetch_array($result,MYSQL_ASSOC))) break;
+      if (!($row2=mysql_fetch_assoc($result))) break;
       mysql_query("UPDATE $table SET ordre='$ordre' WHERE id='$row2[id]'") or die (mysql_error());
       $ordre+=$dir;
     }
@@ -229,10 +229,10 @@ function back()
 {
   global $database,$idsession;
   //echo "idsession = $idsession<br>\n";
-  $result=mysql_db_query($database,"SELECT id,currenturl FROM $GLOBALS[tableprefix]session WHERE id='$idsession'") or die (mysql_error());
+  $result=mysql_db_query($database,"SELECT id,currenturl FROM $GLOBALS[tp]session WHERE id='$idsession'") or die (mysql_error());
   list ($id,$currenturl)=mysql_fetch_row($result);
 
-  mysql_db_query($database,"UPDATE $GLOBALS[tableprefix]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
+  mysql_db_query($database,"UPDATE $GLOBALS[tp]session SET currenturl='' WHERE id='$idsession'") or die (mysql_error());
 
   //echo "retourne: id=$id url=$currenturl";
   header("Location: http://$GLOBALS[SERVER_NAME]$currenturl");exit;
@@ -248,14 +248,16 @@ function export_prevnextpublication (&$context)
 // cherche le numero precedent et le suivant
 //
 
-// suivant:
-  $result=mysql_query ("SELECT id FROM $GLOBALS[tableprefix]publications WHERE parent='$context[parent]' AND ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
+// suivant
+
+  $querybase="SELECT id FROM $GLOBALS[tp]entites WHERE idparent='$context[idparent]' AND";
+  $result=mysql_query ("$querybase ordre>$context[ordre] ORDER BY ordre LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($nextid)=mysql_fetch_row($result);
     $context[nextpublication]="sommaire.html?id=$nextid";
   }
   // precedent:
-  $result=mysql_query ("SELECT id FROM $GLOBALS[tableprefix]publications WHERE parent='$context[parent]' AND ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
+  $result=mysql_query ("$querybase ordre<$context[ordre] ORDER BY ordre DESC LIMIT 0,1") or die (mysql_error());
   if (mysql_num_rows($result)) {
     list($previd)=mysql_fetch_row($result);
     $context[prevpublication]="sommaire.html?id=$previd";
@@ -281,7 +283,7 @@ function lock_write()
 {
 	// Vérouille toutes les tables en écriture
 	$list=func_get_args();
-	mysql_query("LOCK TABLES $GLOBALS[tableprefix]".join (" WRITE ,".$GLOBALS[tableprefix],$list)." WRITE") or die (mysql_error());
+	mysql_query("LOCK TABLES $GLOBALS[tp]".join (" WRITE ,".$GLOBALS[tp],$list)." WRITE") or die (mysql_error());
 }
 
 #function prefix_keys($prefix,$arr)
@@ -308,6 +310,16 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #  return serialize($newoptions);
 #}
 
+
+function make_url ($base,$id)
+
+{
+  if ($GLOBALS[idagauche]) {
+    return $base.$id.".".$GLOBALS[extensionscripts];
+  } else {
+    return $base.".".$GLOBALS[extensionscripts]."?id=".$id;
+  }
+}
 
 
 // valeur de retour, identifiant ce script

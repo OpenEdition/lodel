@@ -28,7 +28,7 @@
 		<DO>
 			<tr>
 				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin1">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin1">[(#TITRE|nbsp)]</td>
 					<td class="ligne_admin1">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin1">[#TPL]</td>
@@ -41,7 +41,7 @@
 						</div>
 					</td>
 				<ELSE/>
-					<td class="ligne_admin2">[(#NOM|nbsp)]</td>
+					<td class="ligne_admin2">[(#TYPE|nbsp)]</td>
 					<td class="ligne_admin2">[(#TITRE|nbsp)]</t>
 					<td class="ligne_admin2">[(#STYLE|nbsp)]</td>
 					<td class="ligne_admin2">[#TPL]</td>
@@ -63,7 +63,7 @@
 	</LOOP>
 </table>
 
-<LOOP NAME="typepersonne_trash" TABLE="typepersonnes" ORDER="nom" WHERE="trash">
+<LOOP NAME="typepersonne_trash" TABLE="typepersonnes" ORDER="type" WHERE="trash">
 	<BEFORE>
 		<table class="table_normale" style="margin-top:30px; margin-bottom:30px;" border="0" cellspacing="0" cellpadding="5">
 			<tr>
@@ -78,14 +78,14 @@
 	<DO>
 		<tr>
 			<IF COND="[#COUNT] % 2">
-				<td class="ligne_admin1">[#NOM]</td>
+				<td class="ligne_admin1">[#TYPE]</td>
 				<td class="ligne_admin1">[#TPL]</td>
 				<td class="ligne_admin1" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="typepersonne.php?id=[#ID]&restore=1">Récupérer</a>&nbsp;|&nbsp;
 					<a href="typepersonne.php?id=[#ID]&delete=2">D&eacute;truire</a>&nbsp;|</div>
 				</td>
 			<ELSE/>
-				<td class="ligne_admin2">[#NOM]</td>
+				<td class="ligne_admin2">[#TYPE]</td>
 				<td class="ligne_admin2">[#TPL]</td>
 				<td class="ligne_admin2" style="color: #CC9933;" align="right">
 					<div>|&nbsp;<a href="typepersonne.php?id=[#ID]&restore=1">R&eacute;cup&eacute;rer</a>&nbsp;|&nbsp;
