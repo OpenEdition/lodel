@@ -340,11 +340,15 @@ function enregistre_entrees (&$context,$identite,$statut,$lock=TRUE)
  if ($statut>-64 && $statut<-1) $statut=-1;
  if ($statut>1) $statut=1;
 
-#  print_r($context[entrees]);
-  if (!$context[entrees]) { if ($lock) unlock(); return; }
+ // put the id's from entrees and autresentrees into idtypes
+ $idtypes=$context[entrees] ? array_keys($context[entrees]) : array();
+ if ($context[autresentrees]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentrees])));
+
+  if (!$idtypes) { if ($lock) unlock(); return; }
 
   // boucle sur les differents entrees
-  foreach ($context[entrees] as $idtype=>$entrees) {
+  foreach ($idtypes as $idtype) {
+    $entrees=$context[entrees][$idtype];
     if ($context[autresentrees][$idtype]) {
       if ($entrees) {
 	$entrees=array_merge($entrees,preg_split("/,/",$context[autresentrees][$idtype]));
