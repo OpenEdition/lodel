@@ -172,12 +172,14 @@
 
 				<div class="titrerevue">
 		 			 Sommaire du numéro: <MACRO NAME="NOM_PUBLICATION"> 
-					 <br /> <MACRO NAME="TITRE_PUBLICATION"> <!--<MACRO NAME="BOUTON_EDITER_PUBLICATION">-->
+					 <br /> <MACRO NAME="TITRE_PUBLICATION"> -
 		 			
-					<p class="soustitrerevue">
+					<span class="soustitrerevue">
 		 				<MACRO NAME="SOUSTITRE_PUBLICATION">
-		 			</p>
-				
+				 			</span>
+							
+					<MACRO NAME="BOUTON_EDITER_PUBLICATION">
+							
 					<p class="directeur_publication">
 		 				<MACRO NAME="DIRECTEUR_PUBLICATION">
 					</p>
@@ -245,8 +247,8 @@
 			<a class="titrerevue" href="sommaire.html?id=[#ID]">
 				
 						<MACRO NAME="NOM_REVUE"> n°[#NOM]
-					<IF COND="[#TITRE]">
-						,
+					<IF COND="[#TITRE]">,
+						
 						[#TITRE]
 					</IF>.
 				
@@ -269,10 +271,10 @@
 	            <LOOP TABLE="publications" WHERE="id='[#PARENT]'">
 					<DO>
 		    	    	<IF COND="[#NOM]">
-							<a href="sommaire.html?id=[#PUBLICATION]">
-								<span style="color:Black;">
+							<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
+								
 									 n&#176; [#NOM] - [#TITRE]
-								</span>
+								
 							</a>
 							<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 						</IF>
@@ -280,10 +282,10 @@
             	</LOOP>
 	        <ELSE/>
     	    	<IF COND="[#NOM]">
-					<a href="sommaire.html?id=[#PUBLICATION]">
-						<span style="color:Black;">
+					<a class="menu2" href="sommaire.html?id=[#PUBLICATION]">
+						
 							 n&#176; [#NOM] - [#TITRE]
-						</span>
+						
 					</a>
 					<MACRO NAME="BOUTON_EDITER_PUBLICATION_DEPUIS_DOCUMENT">
 				</IF>
@@ -461,25 +463,25 @@
 		</IF>
 		<IF COND="[#TYPE]=='article'">
 			<strong>Article <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-			<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+			<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 		<ELSE/>
 			<IF COND="[#TYPE]=='chronique'">
 				<strong>Chronique <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-				<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+				<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 			<ELSE/>
 				<IF COND="[#TYPE]=='compte rendu'">
 					<strong>Compte rendu <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-					<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+					<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 				<ELSE/>
 					<IF COND="[#TYPE]=='position de these'">
 						<strong>Position de thèse <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-						<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+						<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF><</a>
 					<ELSE/>
 						<IF COND="[#TYPE]=='editorial'">
 							<strong>Éditorial <MACRO NAME="PARU_DANS_SIMPLE"> :</strong>
-							<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></span></a>
+							<a class="menu2" href="document.html?id=[#ID]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a>
 						<ELSE/>
-							<a class="menu2" href="document.html?id=[#ID]"><span style="color:Black;">[#TITRE]</span></a>
+							<a class="menu2" href="document.html?id=[#ID]">[#TITRE]</a>
 						</IF>
 					</IF>
 				</IF>
@@ -489,6 +491,9 @@
 	<MACRO NAME="TEXTE_INTEGRAL">
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
 	<MACRO NAME="BOUTON_EDITER_DOCUMENT">
+	<br/>
+	
+
 </DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_TOUT">
@@ -501,69 +506,48 @@
 	<!-- On liste en premier les séries linéaires. -->
 	<LOOP NAME="aff_series_line" TABLE="publications" WHERE="type='serie_lineaire'" WHERE="status>0" ORDER="ordre">
 		<BEFORE>
-			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-			<tr><td class="menu1" valign="top" align="left" height="11" width="165" bgcolor="#EFEFEF">Série Linéaires :<br/ ></td></tr>
+			<div class="menu1">
+				Série Linéaires :<br/ >
+			</div>
 		</BEFORE>
 		<DO>
-			<tr>
-				<td class="menu1">
-				<br>
-					[#NOM] 
-				</td>
-			</tr>
+			<div class="menu1">
+				[#NOM] 
+			</div>
 			<!-- On liste tous les numéros de la série linéaire courante -->
 			<LOOP NAME="aff_la_serie" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='numero'"  WHERE="status>0" ORDER="ordre">
 				<DO>
-					<tr>
-						<td class="menu2" valign="top" align="right"  width="165" bgcolor="#EFEFEF">
-							<a  class="menu2" href="sommaire.html?id=[#ID]">
-								[#NOM]
-							</a>
-						</td>
-					</tr>
+					<div class="menu2">
+						<a  class="menu2" href="sommaire.html?id=[#ID]">
+							[#NOM]
+						</a>
+					</div>
 				</DO>
-				<AFTER>
-					<tr><td>&nbsp;</td></tr>
-				</AFTER>
 			</LOOP>
 		</DO>
-		<AFTER>
-			</table>
-			<p></p>
-		</AFTER>
 	</LOOP>
+	
 	<!-- On liste ensuite les séries hiérarchiques -->
 	<LOOP NAME="aff_series_hier" TABLE="publications" WHERE="type='serie_hierarchique'"  WHERE="status>0" ORDER="ordre">
 		<BEFORE>
-			<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-			<tr><td class="menu1">Série Hiérarchiques :</td></tr>
+			<div class="menu1">Série Hiérarchiques :</div>
 		</BEFORE>
 		<DO>
-			<tr>
-				<td class="menu1">
+			<div class="menu1">
 					[#NOM]
-				</td>
-			</tr>
+			</div>
+			
 			<!-- On liste tous les thèmes de 1er niveau de la série hiérarchique courante -->
 			<LOOP NAME="aff_themes" TABLE="publications" WHERE="parent='[#ID]'" WHERE="type='theme'"  WHERE="status>0" ORDER="ordre">
 				<DO>
-					<tr>
-						<td class="menu2">
+					<div class="menu2">
 							<a href="sommaire.html?id=[#ID]">
 								[#NOM]
 							</a>
-						</td>
-					</tr>
+					</div>
 				</DO>
-				<AFTER>
-					<tr><td>&nbsp;</td></tr>
-				</AFTER>
 			</LOOP>
 		</DO>
-		<AFTER>
-			</table>
-			<p></p>
-		</AFTER>
 	</LOOP>
 </DEFMACRO>
 
@@ -939,16 +923,23 @@
 
 <LOOP TABLE="auteurs" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
  <IF COND="[#DESCRIPTION]">
-	<LOOP TABLE="auteurs"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
-		<a class="auteur" href="auteur.html?id=[#ID]">
+ 	<div class="titre3">
+		Quelques mots à propos de 
+			<LOOP TABLE="auteurs"  WHERE="iddocument='[#IDDOCUMENT]'" ORDER="ordre">
+				<a class="auteur" href="auteur.html?id=[#ID]">
+						
+					[#PRENOM]
+					[#NOMFAMILLE]
 					
-			[#PRENOM]
-			[#NOMFAMILLE]
-					
-		</a>
-	</LOOP>
+				</a>
+			</LOOP>
+	</div>
+ 	<div class="descriptionauteur">
+		
+	
 <br />
-	[#DESCRIPTION]
+				[#DESCRIPTION]
+	</div>
 </IF>
 </LOOP>
 </DEF>

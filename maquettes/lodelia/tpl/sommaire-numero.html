@@ -12,37 +12,45 @@
 <!-- Ce sommaire affiche la liste des articles.                         -->
 <!-- Il permet d'afficher les documents d'un numéro de type linéaire,   -->
 <!-- en classant les articles par regroupement.                         -->
-<!-- Auteur : Marin Dacos. 2002.                                        -->
+<!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
 <!-- ****************************************************************** -->
+
 <MACRO NAME="JS_JUMPMENU">
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
 <title>[(#TITRE|textebrut)] Sommaire [#NOM]</title>
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-</head>
-
-
-
-<body>
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affiche la barre de navigation de la revue -->
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
 		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
 			<div class="separation">
 				&nbsp;
 			</div>
-			<div class="contenu">
-					<MACRO NAME="IMG_LOGO_LODELIA">
 		
-					<MACRO NAME="PRESENTER_PUBLICATION">
-						<br />
-					<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
-						<br />
-				<!--<MACRO NAME="BLOC_SOBRE_NAVIGATION_PUBLICATIONS">-->
-						<br />
-					<MACRO NAME="REVUES_ORG"> -->
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+				
+				<!-- Présente les infos concernant la publication : titre revue, nom et titre du numéro-->
+				<MACRO NAME="PRESENTER_PUBLICATION">
+				
+				<!-- Liste les regroupement et les articles contenus dans le numéro-->
+				<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
+				<br/ >
+				<br />
+				<!--Lien vers Lodel et site de Revues.org-->
+				<MACRO NAME="REVUES_ORG"> 
 			</div>
 		</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">

@@ -9,8 +9,8 @@
 
 <!-- ****************************************************************** -->
 <!-- Cette page affiche les documents de type article.                  -->
-<!-- Auteur : Marin Dacos. Août 2002.                                   -->
-<!-- Dernière modification majeure en septembre 2002.                   -->
+<!-- Auteur : Marin Dacos, Anne Gentil-Beccot. Mai 2003.                -->
+<!-- Dernière modification majeure en mai 2003.                         -->
 <!-- ****************************************************************** -->
 
 <MACRO NAME="JS_JUMPMENU">
@@ -20,22 +20,38 @@
 <title>[(#TITRE|textebrut)]</title>
 <MACRO NAME="METADONNEES">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
+</head>
 
+<body>
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affiche la barre verticale de navigation -->
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<div class="corps">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+		de nav et le contenu de la page" -->
 		<div class="separation">
 			&nbsp;
 		</div>
+		
+		<!-- ce div permet d'intégrer le  contenu de la page" -->
 		<div class="contenu">
+		
+			<!-- logo de Lodelia-->
 			<MACRO NAME="IMG_LOGO_LODELIA">
-						
+			
+			<!-- Affiche les infos concernant la publication dans laquelle est contenu le document: nom de la revue,
+			titre et nom du numéro, -->		
 			<div class="titrerevue">
 				<MACRO NAME="PARU_DANS"> 
 			</div>				
-					
+			
+			
 			<div class="titre2">
+				<!-- Affiche le type du document-->	
 				<div class="titre21">
 						<IF COND="[#TYPE]=='compte rendu'">
 							Compte-rendu
@@ -50,11 +66,13 @@
 							Article
 						</IF>
 				</div>
+				<!-- Affiche les boutons pour accéder à la page imprimable et la page de signalement-->
 				<div class="signalerimprimer">
 					<MACRO NAME="BOUTON_SIGNALER">	&nbsp;<MACRO NAME="BOUTON_IMPRIMER">
 				</div>
 			</div>
 			
+			<!-- Affiche les infos sur le document: titre, sous-titre, auteur-->
 			<div class="afficherdocument">
 						<IF COND="[#TYPE]=='note de lecture'">
 							Note de lecture par
@@ -71,82 +89,58 @@
 						<IF COND="[#SOUSTITRE]">
 						[#SOUSTITRE]
 						</IF>
-						
-						<br>
-						
 			</div>
 			
 			
-				<!-- Affchage du résumé en français   -->
+				<!-- Affichage du résumé en français   -->
 				<IF COND="[#RESUME:FR]">
-				<tr> 
-					<td colspan="2" class="titre3">
+					<div class="titre3">
 						Résumé
-					</td>
-				</tr>
-				<tr> 
-					<td class="resume" colspan="2"> 
-					
-							[#RESUME:FR]
-						
-					</td>
-				</tr>
+					</div>
+					<div class="resume" colspan="2"> 
+						[#RESUME:FR]
+					</div>		
 				</IF>
 			
+								
 				<!-- Résumé en anglais   -->
 				<IF COND="[#RESUME:EN]">
-				<tr> 
-					<td colspan="2" class="titre3"> 
+					<div class="titre3"> 
 						Abstract
-					</td>
-				</tr>
-				<tr> 
-					<td class="resume" colspan="2">
+					</div>
+					<div class="resume" >
 						[#RESUME:EN]
-					</td>
-				</tr>
+					</div>
 				</IF>
 				
 				<!-- Résumé en espagnol   -->
 				<IF COND="[#RESUME:ES]">
-				<tr> 
-					<td colspan="2" class="titre3"> 
+					<div class="titre3"> 
 						Extracto
-					</td>
-				</tr>
-				<tr> 
-					<td class="resume" colspan="2">
+					</div>
+					<div class="resume" colspan="2">
 						[#RESUME:ES]
-					</td>
-				</tr>
+					</div>
 				</IF>
 				
 				<!-- Résumé en allemand   -->
 				<IF COND="[#RESUME:DE]">
-				<tr> 
-					<td colspan="2" class="titre3"> 
+					<div class="titre3"> 
 						Zusammenfassung
-					</td>
-				</tr>
-				<tr> 
-					<td class="resume" colspan="2">
+					</div>
+					<div class="resume" colspan="2">
 						[#RESUME:DE]
-					</td>
-				</tr>
+					</div>
 				</IF>
 				
 				<!-- Résumé en italien   -->
 				<IF COND="[#RESUME:IT]">
-				<tr> 
-					<td colspan="2" class="titre3"> 
+					<div class="titre3"> 
 						Riassunto
-					</td>
-				</tr>
-				<tr> 
-					<td class="resume" colspan="2">
+					</div>
+					<div class="resume" colspan="2">
 						[#RESUME:IT]
-					</td>
-				</tr>
+					</div>
 				</IF>
 	
 					
@@ -158,15 +152,12 @@
 				
 				<!-- Texte. Si il existe --->
 				<IF COND="[#TEXTE]">
-				<tr> 
-					<td colspan="2" class="titre3">
+					<div class="titre3">
 							<IF COND="[#TYPE]!='presentation'">
 								Texte intégral
 							</IF>
-					</td>
-				</tr>
-				<tr> 
-					<td class="texte" colspan="2">
+					</div>
+					<div class="texte">
 							<IF COND="[#TYPE]=='compte rendu'">
 								<IF COND="[#META_IMAGE]">
 									<img src="[#META_IMAGE]" alt="[#NOM]" hspace="4" vspace="4" border="1" align="left">
@@ -176,47 +167,35 @@
 								[(#TEXTE|avantlettrine)]<span class="lettrine">[(#TEXTE|lettrine)]</span>[(#TEXTE|apreslettrine)]
 							</IF>
 				
-					</td>
-				</tr>
+					</div>
 				</IF>
 				
 				<!-- Bibliographie. Si elle existe --->
 				<IF COND="[#BIBLIOGRAPHIE]">
-				<tr> 
-					<td class="titre3"> 
+					<div class="titre3"> 
 						<DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
-					</td>
-				</tr>
-				<tr>
-					<td class="texte">
+					</div>
+					<div class="texte">
 						[#BIBLIOGRAPHIE]
-					</td>
-				</tr>
+					</div>
 				</IF>
 				
 				<!-- Annexe. Si elle existe --->
 				<IF COND="[#ANNEXE]">
-				<tr> 
-					<td class="titre3"> 
+					<div class="titre3"> 
 						Annexes
-					</td>
-				</tr>
-				<tr>
-					<td class="texte">
+					</div>
+					<div class="texte">
 						[#ANNEXE]
-					</td>
-				</tr>
+					</div>
 				</IF>
 						
 				<!-- Documents annexes. S'il y en a au moins un --->
 				<IF COND="[#DOCUMENTSANNEXES]">
-				<tr> 
-					<td class="titre3"> 
+					<div class="titre3"> 
 						Documents annexes
-					</td>
-				</tr>
-				<tr>
-					<td class="texte" >
+					</div>
+					<div class="texte" >
 						Il y a 
 						[#DOCUMENTSANNEXES] document[(#DOCUMENTSANNEXES|pluriel)] 
 						annexé[(#DOCUMENTSANNEXES|pluriel)] à cet article.
@@ -224,60 +203,35 @@
 						<br />
 						<MACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 						<br />
-					</td>
-				</tr>
+					</div>
 				</IF>
 				
 				<!-- Notes de bas de page. Si elles existent --->
 				<IF COND="[#NOTEBASPAGE]">
-				<tr> 
-					<td class="titre3">
+					<div class="titre3">
 						Notes
-					</td>
-				</tr>
-				<tr>
-					<td class="notes" colspan="2"> 
+					</div>
+					<div class="notes"> 
 						[#NOTEBASPAGE]
 						<br />
-					</td>
-				</tr>
+					</div>
 				</IF>
 								
 				<!-- Si le texte n'est pas encore autorisé à être publié -->
 				<ELSE/>
-					<br />
-					<br />
-			
 				<p class="texte">
 					Ce document sera publié en ligne en texte intégral le [(#DATEPUBLI|humandate)].
 				</p>
-					<br />
-					<br />
+					
 				</IF>
-				<tr>
-					<td class="blocblanc">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td class="descritionauteur">
-						
-						<MACRO NAME="DESCRITION_AUTEUR"> 
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
-				</tr>
 				
-		
-		<br />
-		<MACRO NAME="REVUES_ORG"> 		
+				<!-- Affiche la description de l'auteur -->		
+				<MACRO NAME="DESCRITION_AUTEUR"> 
 				
+				<!-- Affiche liens de navigation entre les documents  -->						
+				<MACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
+				
+				<MACRO NAME="REVUES_ORG"> 		
 
 								
 		</div>

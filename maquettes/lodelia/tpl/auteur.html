@@ -23,71 +23,53 @@
 <MACRO NAME="METADONNEES_POUR_AUTEUR">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
-	<!-- Affichage de la barre verticale de navigation -->
+
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<MACRO NAME="TRACER_SEPARATION_VERTICALE">
-	<td width="561" valign="top"  bgcolor="#ffffff">
-		<MACRO NAME="IMG_LOGO_LODELIA">
-			<table border="0" cellspacing="0" cellpadding="0" width="561" >
-				<tr>
-				<!-- Titre de la revue -->
-					<td class="titrerevue" colspan="2">
-						Articles parus dans <MACRO NAME="NOM_REVUE">
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-				<!-- Nom et prénom de l'auteur -->
-					<td class="titre2">
-						[#PRENOM] [#NOMFAMILLE]&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc6">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
-							<BEFORE>
-								<table >
-							</BEFORE>
-								<DO>
-									<tr>
-										<td class="afficherdocument">
-											<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
-										</td>
-									</tr>
-								</DO>
-							<AFTER>
-								</table>
-							</AFTER>
-						</LOOP>
-					</td>
-				</tr>
-				<tr>
-					<td class="blocblanc6"  >
-						&nbsp;
-					</td>
-				</tr>
-			</table>
-						
-				
-		<!-- Affichage de l'ensemble des documents publiés par l'auteur -->
-		
-		<div align="center">
-			<a class="auteur" href="auteurs-complet.html">
-				Index des auteurs
-			</a>
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+		<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+		de nav et le contenu de la page" -->
+		<div class="separation">
+			&nbsp;
 		</div>
-		<br>
-		<MACRO NAME="REVUES_ORG">
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+		
+		<!-- ce div permet d'intégrer le  contenu de la page" -->
+		<div class="contenu">
+		
+			<!-- logo de Lodelia-->
+			<MACRO NAME="IMG_LOGO_LODELIA">
+			
+			<!-- Titre de la revue -->
+			<div class="titrerevue">
+				Articles parus dans <MACRO NAME="NOM_REVUE">
+			</div>
+				
+			<!-- Nom et prénom de l'auteur -->
+			<div class="titre2">
+				[#PRENOM] [#NOMFAMILLE]&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
+			</div>
+				
+			<LOOP NAME="articles" TABLE="documents" WHERE="idauteur='[#ID]'" WHERE="ok" ORDER="datepubli">
+				<DO>
+					<div class="afficherdocument">
+						<!-- Liste des articles publiés par l'auteur dans la revue -->
+						<MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
+					</div>
+				</DO>
+			</LOOP>
+						
+			<div align="center">
+				 <a class="auteur" href="auteurs-complet.html">
+					Index des auteurs
+				 </a>
+		 	 </div>
+		
+			<MACRO NAME="REVUES_ORG">
+		</div>
+	</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">

@@ -1,3 +1,25 @@
+/*********************************************************************************************
+ *  Feuille de style                                                                         * 
+ *  Mai 2003                                                                                 *
+ *********************************************************************************************
+ */
+
+
+body
+{
+	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
+	 *
+	 */
+	 background-color: #BFBFBF;
+	 margin-left : 0;
+	 margin-top : 0;
+	 margin-bottom : 0;
+	 margin-right : 0;
+	 font-size: 8px;
+	 font-family: Arial, Times New Roman,  Verdana, Helvetica, sans-serif;
+	 text-decoration:none;
+}
+
 table {
 	/*  
 	 * Elements de styles d'une table par défaut 
@@ -8,16 +30,451 @@ table {
 	
 }
 
-
-table.premiere  {
+p {
 	/*  
-	 * Elements de styles de la table principale : pas active
+	 * Redéfinit les marges au dessus et en dessous des paragraphes formatés 
+	 * avec la balise <p>
 	 */
-	width: 775;
-	height: 100%;
-	align: center;
-	vertical-align: top;
+	margin-bottom : 3;
+	margin-top : 3;
 }
+ 
+sup {
+	/*
+	 * Redéfinit la taille et la position d'un texte placé en exposant avec
+	 * la balise <sup>
+	 */
+	font-size: small;
+	font-weight: small;
+	vertical-align : 10%;
+}
+
+/*********************************************************************************************
+ *  Les liens Hypertexte                                                                     * 
+ *                                                                                           *
+ *  hover: quand le curseur survole le lien                                                  * 
+ *  link: lien non-visité                                                                    *
+ *  visited: lien visité                                                                     *
+ *  active: lien activé                                                                      *
+ *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit    *
+ *	placer un class dans la balise <a href>:                                                 *
+ *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les        * 
+ *  états du lien (active, hover...).                                                        *
+ *********************************************************************************************
+ */
+
+ 
+ /********************************************************************************************
+  *	style des liens par défaut                                                               *
+  ********************************************************************************************
+  */
+  
+A {
+   	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	color: #9C3234;
+	text-decoration: none;
+}
+
+A:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	
+	color: #666666;
+}
+
+A:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	
+	color: #666666;
+	
+}
+
+
+/*********************************************************************************************
+ *  Les différentes class liées aux éléments de structure des pages.                         * 
+ *   - .barrenav                                                                             *
+ *	 - .corps                                                                                *
+ *	 - .separation                                                                           *
+ *	 - .contenu                                                                              *
+ *********************************************************************************************
+ */
+	
+.barrenav {
+	/*
+	 * Style de la barre de navigation, elle est placée à gauche de l'élément de class "corps"
+	 * grâce à l'attribut "float"
+	 */
+	width: 165; 
+	height: 100%;
+	background-color: #EFEFEF;
+	float: left;
+	border-left: 1px solid #9C3234;
+	border-right: 1px solid #9C3234;
+	margin: 0;
+}
+
+.corps {
+	/*
+	 * Style du bloc placé à droite de la barre de navigation
+	 */
+	width: auto;
+	height: 100%;
+	background-color: #ffffff;
+	border-right: 1px solid #9C3234;
+	margin: 0;
+}
+
+.separation {
+	/*
+	 * Style du bloc marquant une sépération entre la barre de nav et le reste de la page.
+	 * Ce bloc est contenu dans le bloc de class "corps", il se situe à gauche du bloc de class
+	 * "contenu"
+	 */
+	height: 100%;
+	background-color: #EFEFEF;
+	width: 35px;
+	border-right: 20px solid #ffffff;
+	border-left: 8px solid #ffffff;
+	float: left;
+	margin: 0;
+}
+
+.contenu {
+	/*
+	 * Style du bloc pacé à droite du bloc séparation, il est aussi contenu dans la vloc corps.
+	 */
+	width: auto;
+	height: 100%;
+	margin: 0;
+}
+
+ /********************************************************************************************
+ *  Les  class liées aux titres                                                              * 
+ *********************************************************************************************
+ */
+ 	/* Style .titrerevue  
+	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
+	 * A 
+	 */
+.titrerevue {
+	 width: auto;
+	 background-color: #F4F4F4;
+	 font-size: 140%;
+	 font-weight: 300;
+	 text-align: left; 
+	 color: #9C3234;
+	 line-height: 120%;
+	 margin-bottom: 15px;
+}
+
+A.titrerevue {
+	/*  
+	 *	Styles des liens non visités et visités des liens des éléments de classe "titrerevue"
+	 */
+	font-size: 100%;
+	color: #9C3234;
+	text-decoration:none;
+	
+}
+
+A.titrerevue:hover {
+	/*  
+	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
+	 */
+	font-size: 90%;
+	color: #666666;
+	
+	
+}
+
+A.titrerevue:active {
+	/*  
+	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
+	 */
+	font-size: 90%;
+	color: #666666;
+	
+	
+}
+
+/*************************************************************************/
+
+	/* Style .titre2  
+	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
+	 * A 
+	 */
+.titre2 {
+	 width: auto;
+	 height: 20;
+	 background-color: #9C3234;
+	 font-size: small;
+	 font-weight : bold;
+	 text-align: left; 
+	 color: #ffffff;
+	 padding-left:: 10px;
+	 margin-bottom: 7px;
+	 margin-top: 15px;
+	 vertical-align: middle;
+}
+
+A.titre2 {
+	/*  
+	 *	Styles des liens non visités et visités
+	 */
+	font-size: small;
+	font-weight: bold;
+	color: #cccccc;
+	text-indent: 0;
+	margin: 0;
+	vertical-align: middle;
+	
+	
+}
+
+A.titre2:hover {
+	/*  
+	 *	Styles des liens survolés
+	 */
+	font-size: x-small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+	
+}
+A.titre2:active {
+	/*  
+	 *	Style des liens actifs
+	 */
+	font-size: x-small;
+	font-weight: small;
+	color: #ffffff;
+	text-indent: 0;
+	margin: 0;
+}
+
+/***************************************************************************/
+	
+.titre3 {
+	/*  
+	 * Style .titre3 
+	 */
+	width: auto;
+	height: 20;
+	background-color: #EFEFEF;
+	font-size: small;
+	font-weight: bold;
+	color: #9C3234;
+	text-indent : 10;
+	margin-top: 20px;
+}
+
+/*********************************************************************************************
+ *  Les  class utlisées dans la page "sommaire.html"                                         * 
+ *********************************************************************************************
+*/
+
+.soustitrerevue
+{
+	/*  
+	 * Style du soustitre de la publication dans les sommaires
+	 */
+	
+	font-size : 90%;
+	font-weight: normal;
+	font-style: italic;
+}
+ 
+ 
+.directeur_publication {
+	/*  
+	 * Style utilisé pour le directeur de la publication
+	 */
+	padding-left: 20px;
+	font-size: 75%;
+}
+
+.docregroupement {
+	/*
+	 * Style pour les blocs affichant le titre et l'auteur du document.
+	 */
+	width: auto;
+	height: auto;
+}
+
+
+/***************************************************************************************
+ *	Styles concernant l'affichage dans article.html                                    *
+ ***************************************************************************************
+ */
+
+.afficherdocument  {
+	/* 
+	 * Pour afficher les informations sur un document dans article.html.
+	 */
+	width: auto;
+	background-color: #F7F7F7;
+	text-decoration: none;
+	color: #666666;
+	margin-bottom: 10px;
+	
+}
+
+
+.resume
+{
+	/*  
+	 * Style utilisé pour les résumés
+	 */
+	width: auto;
+	height: auto;
+	font-size: x-small;
+	color : #000000;
+	text-align : justify;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-top: 2em;
+	padding-bottom: 2em;
+		
+}
+
+.texte
+{
+	/*  
+	 *
+	 */
+	width: auto;
+	height: auto;
+	font-size: small;
+	font-weight: small;
+	text-align : justify;
+	line-height: 120%;
+	text-indent : 20;
+	padding: 20px;
+	margin: 0;
+}
+
+
+
+
+.descriptionauteur {
+   /*  
+    *	Style de la description de l'auteur appelée dans le document 
+	*/
+	width: auto;
+	height: auto; 
+	font-size: small;
+	font-weight: small;
+	text-align : justify;
+	line-height: 120%;
+	text-indent : 20;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-bottom: 2em;
+	
+	
+}
+
+.navigation {
+	width: auto;
+	height: 20;
+	background-color: #E0E0E0;
+}
+
+
+.navigation_precedent {
+	/*  
+	 *	td aligné à gauche, contenant lien vers document précédent 
+	 */
+	
+	width: 400;
+	background-color: #E0E0E0;
+	font-size: small;
+	text-align: left;
+	vertical-align: middle;
+	font-weight: bold;
+	color: #9C3234;
+	float: left;
+}
+
+.navigation_suivant {
+	/*  
+	 *	td aligné à droite, contenant lien vers document suivant 
+	 */
+	 
+	width: 161;
+	background-color: #E0E0E0;
+	vertical-align: middle;
+	font-size: small;
+	text-align: right;
+	font-weight: bold;
+	color: #9C3234;
+	float: right;
+}
+
+/***************************************************************************************
+ *	Styles concernant l'affichage de la barre de navigation                            *
+ ***************************************************************************************
+ */
+
+.titrebarre
+{
+	/*  
+	 *
+	 */
+	font-size: 110%;
+	width: auto;
+	height: auto;
+	background-color: #EFEFEF;
+	font-weight: 500;
+	text-align : center;
+	font-color : #9C3234;
+	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.
+
+.menu1 {
+	font-size: small%;
+	height: auto;
+	width: auto;
+	font-weight: bold;
+	color: #9C3234;
+	text-align: left;
+	padding-left: 5px;
+	margin-top: 15px;
+	margin-bottom: 5px;
+} 
+
+.menu2 {
+	height: auto;
+	width: auto;
+	font-size: small;
+	font-weight: 500;
+	color: #000000;
+	text-align: right;
+} 
+
+.chercher {
+	
+	font-weight: bold;
+	color: #9C3234;
+	border-bottom: 3px solid #ffffff;
+	border-top: 3px solid #ffffff;
+	padding-top: 5px;
+	background-color: #E7E7E7;
+	padding-left: 2px:
+	
+} 
+
+
 
 A.bouton_statut_publierOFF
 {
@@ -29,6 +486,9 @@ A.bouton_statut_publierOFF
 		
 }
 
+
+
+
 .bouton_statut_publierON
 {
 	/*  
@@ -39,26 +499,7 @@ A.bouton_statut_publierOFF
 	
 }
 
-p
-{
-	/*  
-	 * Redéfinit les marges au dessus et en dessous des paragraphes formatés 
-	 * avec la balise <p>
-	 */
-	margin-bottom : 3;
-	margin-top : 3;
-}
- 
-sup
-{
-	/*
-	 * Redéfinit la taille et la position d'un texte placé en exposant avec
-	 * la balise <sup>
-	 */
-	font-size: small;
-	font-weight: small;
-	vertical-align : 10%;
-}
+
 
 .couleur_1
 {
@@ -119,25 +560,9 @@ sup
 	font-weight: small;
 	text-align : justify;
 	color: #9C3234;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 }
 
-.texte
-{
-	/*  
-	 *
-	 */
-	width: 561;
-	font-size: small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
-	line-height: 120%;
-	text-indent : 20;
-	padding: 20px;
-	
-	
-}
+
 
 .texte_petit
 {
@@ -194,17 +619,7 @@ sup
 	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
-.texte_petit_centre
-{
-	/*  
-	 *
-	 */
-	font-size: small;
-	font-weight: small;
-	text-align : center;
-	font-color : #9C3234;
-	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
-}
+
 
 .texte_trespetit_centre
 {
@@ -214,7 +629,7 @@ sup
 	font-size: xx-small;
 	font-weight: small;
 	text-align : center;
-	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
+	
 }
 
 .texte_sommaire
@@ -254,51 +669,23 @@ sup
 
 
 
-
-
-.soustitrerevue
+.texte_petit_centre
 {
 	/*  
 	 *
 	 */
-	
-	font-size : medium;
-	
-}
-
-.directeur
-{
-	/*  
-	 *
-	 */
-	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
-	color : black;
-	text-align : center;
-	font-weight : bold;
-}
-
-.navigation
-{
-	/*  
-	 *
-	 */
-	font-size: x-small;
+	font-size: small;
 	font-weight: small;
 	text-align : center;
+	font-color : #9C3234;
 	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
 }
 
-.barretitre
-{
-	/*  
-	 *
-	 */
-	font-size: x-small;
-	font-weight: small;
-	text-align : left;
-	font-family: "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
-}
+
+
+
+
+
 
 .citation
 {
@@ -328,16 +715,7 @@ sup
  	 *
  	 */
 
-.chercher {
-	font-size: 10 pt;
-	font-weight: bold;
-	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
-	border-bottom: 3px solid #ffffff;
-	border-top: 3px solid #ffffff;
-	padding-top: 10px;
-	margin-left: 5px;
-} 
+
 
 .bibliographie
 {
@@ -357,6 +735,8 @@ sup
 	/*  
 	 *
 	 */
+	width: auto;
+	height: auto;
 	font-size: x-small;
 	font-weight: small;
 	line-height: 120%;
@@ -380,55 +760,6 @@ sup
 
 
 
-/*********************************************************************************************
- *  Les liens Hypertexte                                                                     * 
- *                                                                                           *
- *  hover: quand le curseur survole le lien                                                  * 
- *  link: lien non-visité                                                                    *
- *  visited: lien visité                                                                     *
- *  active: lien activé                                                                      *
- *	On peut faire des styles de liens. Pour les appliquer aux différents liens, il suffit    *
- *	placer un class dans la balise <a href>:                                                 *
- *  exemple:  <a class="style1" href....> On aura défini avant pour ce style tous les        * 
- *  états du lien (active, hover...).                                                        *
- *********************************************************************************************
- */
-
- 
- /********************************************************************************************
-  *	style des liens par défaut                                                               *
-  ********************************************************************************************
-  */
-  
-   A {
-   	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	
-	font-family: arial, helvetica, sans-serif;
-	text-decoration:none;
-	
-}
-
-A:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	
-	color: #666666;
-	font-family: arial, helvetica, sans-serif;
-	text-decoration:none;
-}
-
-A:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	
-	color: #666666;
-	font-family: arial, helvetica, sans-serif;
-	text-decoration:none;
-}
 
 
 
@@ -444,47 +775,26 @@ A.auteur {
 	/*  
 	 *	Styles des liens non visités 
 	 */
-	font-size: small;
 	text-decoration:none;
-	font-weight: bold;
+	font-weight: 550;
 	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
+	
 }
 
 A.auteur:visited {
 	/*  
 	 *	Styles des liens  visités
 	 */
-	font-size: small;
-	text-decoration:none;
-	font-weight: bold;
 	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
-}
+	}
 
-A.auteur:hover {
+A.auteur:hover , A.auteur:active {
 	/*  
-	 *	Styles des liens survolés
+	 *	Styles des liens survolés et actifs
 	 */
-	font-size: small;
-	text-decoration:none;
-	font-weight: bold;
 	color: #666666;
-	font-family: arial, helvetica, sans-serif;
+	
 }
-
-A.auteur:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-size: small;
-	text-decoration:none;
-	font-weight: bold;
-	color: #666666;
-	font-family: arial, helvetica, sans-serif;
-}
-
-
 
 /*	**************************************************************************
  *	style des liens de class "menu1"                                         *
@@ -496,32 +806,26 @@ A.menu1 {
 	/*  
 	 *	Styles des liens non visités et visités
 	 */
-	font-size: 9 pt;
+	font-size: 113%;
 	text-decoration:none;
 	font-weight: bold;
 	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
+	
 } 
 
 A.menu1:hover {
 	/*  
 	 *	Styles des liens survolés
 	 */
- 	font-size: 9 pt;
-	text-decoration:none;
-	font-weight: bold;
-	color: #333333;
-	font-family: arial, helvetica, sans-serif;
-} 
+ 	color: #333333;
+}
+	 
 A.menu1:active {
 	/*  
 	 *	Style des liens actifs
 	 */
-	font-size: small;
-	text-decoration:none;
-	font-weight: bold;
 	color: #333333;
-	font-family: arial, helvetica, sans-serif;
+	
 } 
 
 
@@ -536,34 +840,34 @@ A.menu2 {
 	/*  
 	 *	Styles des liens non visités et visités
 	 */
-	font-size: small;
-	text-decoration:none;
-	font-weight: bold;
+	font-size: 100%;
+	text-decoration: none;
+	font-weight: 600;
 	color: #666666;
-	font-family: arial, helvetica, sans-serif;
+	
 } 
 
 A.menu2:hover {
 	/*  
 	 *	Styles des liens survolés
 	 */
- 	font-size: small;
+	font-size: 100%;
 	text-decoration:none;
-	font-weight: bold;
-	color: #333333;
-	font-family: arial, helvetica, sans-serif;
+	font-weight: 600;
+ 	color: #333333;
+
 } 
 
 A.menu2:active {
 	/*  
 	 *	Style des liens actifs
 	 */
-	font-size: small;
+	font-size: 100%;
 	text-decoration:none;
-	font-weight: bold;
+	font-weight: 600;
 	color: #333333;
-	font-family: arial, helvetica, sans-serif;
-} 
+	
+}
 
 
 	
@@ -583,7 +887,7 @@ A.texte_integral {
 	font-weight: small;
 	text-align : justify;
 	color: #666666;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
+	font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif;
 }
 
 
@@ -621,7 +925,7 @@ A.petittexte {
 	font-weight: small;
 	text-decoration:none;
 	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
+	
 }
 
 A.petittexte:hover {
@@ -629,7 +933,7 @@ A.petittexte:hover {
 	font-weight: small;
 	text-decoration:none;
 	color: #666666;
-	font-family: arial, helvetica, sans-serif;
+	
 }
 
 A.petittexte:active {
@@ -637,28 +941,14 @@ A.petittexte:active {
 	font-weight: small;
 	text-decoration:none;
 	color: #666666;
-	font-family: arial, helvetica, sans-serif;
-}
-
-
-
-
-
-.resume
-{
-	/*  
-	 *
-	 */
-	font-size: x-small;
-	color : #000000;
-	text-align : justify;
-	padding-left: 2em;
-	padding-right: 2em;
-	padding-top: 2em;
-	padding-bottom: 5em;
-	font-family : Times New Roman, Arial, Verdana, Helvetica, sans-serif, Times New Roman;
 	
 }
+
+
+
+
+
+
 
 .titre
 {
@@ -686,16 +976,7 @@ A.petittexte:active {
 }
 
 
-.regroupement
-{
-	/*  
-	 *
-	 */
-	font-family : "Arial, Verdana, Helvetica, sans-serif, Times New Roman";
-	font-size : small;
-	color : black;
-	text-align : left;
-}
+
 
 .auteur
 {
@@ -703,7 +984,6 @@ A.petittexte:active {
 	 *
 	 */
 	text-align : right;
-	font-family : "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
 	font-size : small;
 	color : 1;
 	text-align : right;
@@ -782,24 +1062,14 @@ A.petittexte:active {
 	text-align : left;
 }
 
-body
-{
-	/*  Définit la couleur d'arrière plan du corps du document HTML ainsi que ses marges
-	 *
-	 */
-	 background-color: #BFBFBF;
-	 margin-left : 0;
-	 margin-top : 0;
-	 margin-bottom : 0;
-	 margin-right : 0;
-}
+
 
 .titre1 {
 	font-size: medium;
 	font-weight: bold;
 	color: #9C3234;
 	background-color: #E0E0E0;
-	font-family: arial, helvetica, sans-serif;
+	
 }
 
 .regroupement2 {
@@ -807,7 +1077,7 @@ body
 	font-weight: bold;
 	color: #cccccc;
 	background-color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
+	
 }
 
 .section1
@@ -903,36 +1173,7 @@ h7
 }
 
 
-	/*Styles des menus dans la barre de navigation
-	 */
-
-.menu1 {
-	font-size: small;
-	font-weight: bold;
-	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
 	
-	
-	
-} 
-.menu2 {
-	font-size: small;
-	font-weight: bold;
-	color: #000000;
-	font-family: arial, helvetica, sans-serif;
-	text-align: right;
-} 
-
-	/* Style du formulaire de recherche
-	 */
-
-.chercher {
-	font-size: 10 pt;
-	font-weight: bold;
-	color: #9C3234;
-	font-family: arial, helvetica, sans-serif;
-	margin-left: 2em;
-}
 
 td {
 	/* Style précisant la taille, la couleur d'arrière plan 
@@ -944,164 +1185,11 @@ td {
 }
 
 
-	/* Style .titrerevue  
-	 * Si on veut changer la couleur de la police, il faut aussi changer cette couleur pour les éléments de
-	 * A 
-	 */
-
-
-table.titrerevue , td.titrerevue  {
 	
-	 width: 100%;
-	 vertical-align: middle;
-	 background-color: #F4F4F4;
-	 font-size: large;
-	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
-	 font-weight : bold;
-	 text-align: left; 
-	 margin-left: 10;
-	 color: #9C3234;
-	 line-height: 150%;
-	 
-}
-
-.titrerevue {
-
-	 width: auto;
-	 background-color: #F4F4F4;
-	 font-size: large;
-	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
-	 font-weight : bold;
-	 text-align: left; 
-	 color: #9C3234;
-	 line-height: 150%;
-	 margin-bottom: 15px;
-	 
-}
 
 
 
-	
-A.titrerevue {
 
-	/*  
-	 *	Styles des liens non visités et visités des liens des éléments de classe "titrerevue"
-	 */
-	
-	color: #9C3234;
-	text-decoration:none;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	
-}
-
-A.titrerevue:hover {
-	/*  
-	 *	Styles des liens survolés des liens des éléments de classe "titrerevue"
-	 */
-	
-	text-decoration:none;
-	color: #666666;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-}
-A.titrerevue:active {
-	/*  
-	 *	Style des liens actifs des liens des éléments de classe "titrerevue"
-	 */
-	
-	text-decoration:none;
-	color: #666666;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-}
-
-td.blocblanc {
-	
-	 width: 561;
-	 height: 15;
-	 vertical-align: top;
-	 background-color: #ffffff;
-	 background-image: url(images/spacer.gif);
-		 
-}
-
-td.blocblanc6 {
-	
-	 width: 561;
-	 height: 6;
-	 vertical-align: top;
-	 background-color: #ffffff;
-	 background-image: url(images/spacer.gif);
-		 
-}
-
-
-
-td.titre2 {
-	
-	 width: 561;
-	 height: 20;
-	 vertical-align: middle;
-	 background-color: #9C3234;
-	 font-size: medium;
-	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
-	 font-weight : bold;
-	 text-align: left; 
-	 color: #ffffff;
-	 text-indent: 10;
-	 margin-left : 10;
-}
-
-.titre2 {
-	
-	 width: auto;
-	 height: 20;
-	 background-color: #9C3234;
-	 font-size: medium;
-	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
-	 font-weight : bold;
-	 text-align: left; 
-	 color: #ffffff;
-	 text-indent: 10;
-	 margin-bottom: 15px;
-	 margin-top: 15px;
-}
-
-/***************************************************************************************
- *	Les liens de class "Titre2"                                                         *
- ***************************************************************************************
- */
-
-
-A.titre2 {
-	/*  
-	 *	Styles des liens non visités et visités
-	 */
-	font-size: small;
-	font-weight: bold;
-	color: #cccccc;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	margin-left : 10;
-}
-
-A.titre2:hover {
-	/*  
-	 *	Styles des liens survolés
-	 */
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #ffffff;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-}
-A.titre2:active {
-	/*  
-	 *	Style des liens actifs
-	 */
-	font-size: x-small;
-	font-weight: small;
-	text-decoration:none;
-	color: #ffffff;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-}
 
 td.signalerimprimer {
 	
@@ -1121,8 +1209,7 @@ td.signalerimprimer {
 	 height: 20;
 	 background-color: #9C3234;
 	 font-size: medium;
-	 font-family: Times New Roman, Arial, Verdana, Helvetica, sans-serif; 
-	 font-weight : bold;
+	  font-weight : bold;
 	 text-align: left; 
 	 color: #ffffff;
 	 text-indent: 10;
@@ -1137,17 +1224,6 @@ td.signalerimprimer {
 	 margin-right:0;
 }
 
-td.titre3 {
-	vertical-align: middle;
-	width: 561;
-	height: 20;
-	background-color: #EFEFEF;
-	font-size: small;
-	font-weight: bold;
-	color: #9C3234;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	text-indent : 10;
-}
 
 
 
@@ -1201,95 +1277,9 @@ A.logo_revuesorg3:hover {
 	margin: 0;
 }
 
-.directeur_publication {
-	padding-left: 20px;
-	font-size: medium;
-}
 
-/***************************************************************************************
- *	Styles concernant l'affichage dans article.html                                    *
- ***************************************************************************************
- */
 
- table.afficherdocument , td.afficherdocument  {
-	/* 
-	 * Pour afficher les informations sur un document dans article.html.
-	 */
-	vertical-align: middle;
-	width: 561;
-	background-color: #F7F7F7;
-	font-size: small;
-	text-decoration: none;
-	font-weight: bold;
-	color: #666666;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	
-}
- 
-.afficherdocument  {
-	/* 
-	 * Pour afficher les informations sur un document dans article.html.
-	 */
-	width: auto;
-	background-color: #F7F7F7;
-	font-size: small;
-	text-decoration: none;
-	font-weight: bold;
-	color: #666666;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	margin-bottom: 5px;
-	
-}
 
-.descriptionauteur {
-   /*  
-    *	Style de la description de l'auteur appelée dans le document 
-	*/
-	 
-	font-size: small;
-	font-weight: small;
-	text-align : justify;
-	font-family: "Times New Roman, Arial, Verdana, Helvetica, sans-serif";
-	line-height: 120%;
-	text-indent : 20;
-	margin-left: 20px;
-}
-
-.navigation_precedent {
-	/*  
-	 *	td aligné à gauche, contenant lien vers document précédent 
-	 */
-	
-	vertical-align: middle;
-	align: left;
-	width: 300;
-	height: 20;
-	background-color: #E0E0E0;
-	font-size: small;
-	text-align: left;
-	font-weight: bold;
-	color: #9C3234;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	padding-left: 1em;
-}
-
-.navigation_suivant {
-	/*  
-	 *	td aligné à droite, contenant lien vers document suivant 
-	 */
-	 
-	vertical-align: middle;
-	align: right;
-	width: 261;
-	height: 20;
-	background-color: #E0E0E0;
-	font-size: small;
-	text-align: right;
-	font-weight: bold;
-	color: #9C3234;
-	font-family: Times New Roman, arial, helvetica, sans-serif;
-	padding-right: 1em;
-}
 
 
 /***************************************************************************************
@@ -1318,54 +1308,16 @@ A.logo_revuesorg3:hover {
 
 
 
-.barrenav {
-
-	width: 165; 
-	height: 100%;
-	background-color: #EFEFEF;
-	float: left;
-	border-left: 1px solid #9C3234;
-	border-right: 1px solid #9C3234;
-	margin: 0;
-}
 
 
 
-.corps {
-	width: auto;
-	height: 100%;
-	background-color: #ffffff;
-	border-right: 1px solid #9C3234;
-	margin: 0;
-}
-
-.separation {
-	height: 100%;
-	background-color: #EFEFEF;
-	width: 18px;
-	border-right: 20px solid #ffffff;
-	border-left: 8px solid #ffffff;
-	float: left;
-	margin: 0;
-}
-
-.contenu {
-	width: auto;
-	height: 100%;
-	margin: 0;
-	
-}
-
-.docregroupement {
-	width: auto;
-	height: auto;
-}
 
 .imageindex {
-	width: 561;
+	padding: 0;
+	width: auto;
 	height: 301;
 	background-image: url(images/image.jpg);
-	margin-right: 0;
+	margin: 0;
 }
 
 

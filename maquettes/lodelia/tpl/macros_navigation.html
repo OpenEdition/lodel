@@ -357,8 +357,15 @@
 	</table>
 </DEFMACRO>
 
+
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche un bloc de navigation avec textes sans boutons,            -->
+<!-- ****************************************************************** -->
+
 <DEFMACRO NAME="BLOC_NAVIGATION_DOCUMENTS_TEXTE">
-		<td class="navigation_precedent">
+	<div class="navigation">
+		<div class="navigation_precedent">
 				<IF COND="[#PREVDOCUMENT]">
 					<a class="navigation_precedent" href="[#PREVDOCUMENT]">
 						<< Article précédent
@@ -370,8 +377,8 @@
 					</a>
 							
 				</IF>
-		</td>
-		<td class="navigation_suivant" class="navigation_suivant">
+		</div>
+		<div class="navigation_suivant" class="navigation_suivant">
 				<IF COND="[#NEXTDOCUMENT]">
 						
 					<a class="navigation_suivant" href="[#NEXTDOCUMENT]">
@@ -383,7 +390,8 @@
 						 Retour au sommaire >>
 					</a>
 				</IF>
-		</td>
+		</div>
+	</div>
 </DEFMACRO>
 
 

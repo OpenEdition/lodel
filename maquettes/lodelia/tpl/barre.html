@@ -1,4 +1,3 @@
-<USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_affichage.html">
 <USE MACROFILE="macros_technique.html">
@@ -17,106 +16,60 @@
 
 
 <div class="barrenav">
-	<table width="165" border="0" align="center" cellspacing="0" cellpadding="0">
+	
 	<MACRO NAME="AFFICHER_LOGO_REVUE_ORG">
-	</table>
 	
-	<table width="100%" border="0" align="center" bgcolor="#EFEFEF">
-		<tr>
-			<td class="texte_petit_centre"> 
-			<br>
-				<a href="index.html">
-					<strong>
+	<div class="titrebarre">
+		<a href="index.html">
+			<MACRO NAME="NOM_REVUE">
+				<br/>
+			<MACRO NAME="DESCRIPTION_REVUE">
+		</a>
+	</div>
+	<div class="chercher">
+		<MACRO NAME="FORMULAIRE_RECHERCHE">
+	</div>
 						
-							<MACRO NAME="NOM_REVUE">
-							<br/>
-							<MACRO NAME="DESCRIPTION_REVUE">
-						
-					</strong>
-				</a>
-				<br/><br/>
-			</td>
-		</tr>
-	</table>
+	<MACRO NAME="AFFICHER_TOUT">
 	
-	<table width="100%" border="0" align="center" valign="top">
-		<tr>
-			<td>
-				<table valign="top" border="0" cellspacing="0" cellpadding="0"  bgcolor="#EFEFEF">
-					
-					<tr>
-						<td valign="middle" width="165" height="100" bgcolor="#E7E7E7" class="chercher" >
-						<strong>
-							<MACRO NAME="FORMULAIRE_RECHERCHE">
-						</strong>
-						</td>
-					</tr>
-					
-				</table>
-			</td>
-		</tr>
-		
-		<tr>
-			<td>
-				<br>
-				<MACRO NAME="AFFICHER_TOUT">
-			</td>
-		</tr>
-		<tr>
-			<td class="menu1" >
-			<MACRO NAME="FILET_1">
+	<div class="menu1">
+		Index
+	</div>
+	
+	<div class="menu2">
+		<a class="menu2" href="geos-complet.html">
+			Géographique
+		</a>
 			<br />
-				Index
-			</td>
-		</tr>
-		<tr>
-			<td class="menu2">
-				<a class="menu2" href="geos-complet.html">
-					Géographique
-				</a>
-				<br />
-				<a class="menu2" href="auteurs-complet.html">
-					Par auteurs
-				</a>
-				<br />
-				<a class="menu2" href="chronos-complet.html">
-					Par périodes
-				</a>
-				<br /><br>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu1">
-			<MACRO NAME="FILET_1">
+		<a class="menu2" href="auteurs-complet.html">
+			Par auteurs
+		</a>
 			<br />
-				Nous écrire
-			</td>
-		</tr>
-		<tr>
-			<td class="menu2">
-				
-				
-				<a class="menu2" href="mailto:lodelia@revues.org">
-					Lodelia@revues.org
-				</a>
-				
-				
-			</td>
-		</tr>
+		<a class="menu2" href="chronos-complet.html">
+			Par périodes
+		</a>
+			<br />
+	</div>
+	
+	<div class="menu1">
+		Nous écrire
+	</div>
 		
-		<tr>
-			<td valign="bottom" class="texte_petit_centre">
-				<br />
-				<MACRO NAME="FILET_1">
-				<br />
-				<a href="lodel/edition/">
-					<span class="texte_trespetit_centre">
-						Lodel (accès réservé)
-					</span>
-				</a>
-			</td>
-		</tr>
-	</table>
+	<div class="menu2">
+		<a class="menu2" href="mailto:lodelia@revues.org">
+			Lodelia@revues.org
+		</a>
+	</div>
+		
+	<br />
+	<MACRO NAME="FILET_1">
+	<br />
+	<a href="lodel/edition/">
+		<div class="texte_trespetit_centre">
+			Lodel (accès réservé)
+		</div>
+	</a>
+		
 </div>
 
 

@@ -1,4 +1,3 @@
-<USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_affichage.html">
 <USE MACROFILE="macros_technique.html">
@@ -17,26 +16,41 @@
 <!-- Dernière modification majeure : Janvier 2003.                      -->
 <!-- ****************************************************************** -->
 
+<MACRO NAME="JS_JUMPMENU">
 
 <MACRO NAME="OUVRIR_HTML">
+<MACRO NAME="DEFINIR_CHARSET">
 <TITLE>Index chronologique</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_CHRONOS">
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
 <MACRO NAME="OUVRIR_TABLE_PRINCIPALE">
+	
+	<!-- Affiche la barre verticale de navigation, celle-ci est contenu dans un div -->
 	<MACRO NAME="INSERER_BARRE_NAVIGATION_VERTICALE">
-	<td valign="top"> 
-		<table width="95%" border="0" cellspacing="0" cellpadding="10" align="CENTER" valign="TOP"  bordercolor="Black">
-			<tr>
-				<td width="100%" align="center" valign="middle" class="titre">
-					<span class="couleur_1">
-						Index chronologique
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td width="100%" class="texte_petit_centre">
+	
+		<!-- Ouvre <div> qui vient se placer à droite de la barre verticale. Ce div contient deux autres div
+		de class "separation" et class "contenu" -->
+		<div class="corps">
+
+			<!-- ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
+			de nav et le contenu de la page" -->
+			<div class="separation">
+				&nbsp;
+			</div>
+		
+			<!-- ce div permet d'intégrer le  contenu de la page" -->
+			<div class="contenu">
+		
+				<!-- logo de Lodelia-->
+				<MACRO NAME="IMG_LOGO_LODELIA">
+				
+				<div class="titrerevue">
+					Index chronologique
+				</div>
+				
+				<div class="titre2">
 					<LOOP NAME="periodes" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
 						<DO>
 							<a href="chrono.html?id=[#ID]">
@@ -45,34 +59,26 @@
 							&nbsp;|
 						</DO>
 					</LOOP>
-				</td>
-			</tr>
-		</table>
+				</div>
+				
 		<LOOP NAME="geographie" TABLE="indexhs" WHERE="type_periode" ORDER="ordre DESC">
 			<DO>
-				<table width="95%" border="0" cellspacing="0" cellpadding="8" align="center" valign="TOP"  bordercolor="Black">
-					<tr>
-						<td align="center" width="50%" valign="MIDDLE" class="soustitre">
-							<span class="couleur_1">
-								<a name="[#ABREV]">
-									[#NOM]
-								</a>
-							</span>
-						</td>
-					</tr>
-					<tr>
-						<td span class="texte_petit">
-							<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
-								<DO>
-									<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
-								</DO>
-							</LOOP>
-						</td>
-					</tr>
-				</table>
+				<div class="titre3">
+					<a name="[#ABREV]">
+						[#NOM]
+					</a>
+				</div>
+				<div class="afficherdocument">
+					<LOOP NAME="articles" TABLE="documents" WHERE="ok" WHERE="idindexh='[#ID]'">
+							<DO>
+								<MACRO NAME="AFFICHER_LIGNE_DOCUMENT">
+							</DO>
+					</LOOP>
+				</div>
+
 			</DO>
 		</LOOP>
-	</td>
-	<MACRO NAME="TRACER_LIGNE_VERTICALE">
+	</div>
+</div>
 <MACRO NAME="FERMER_TABLE_PRINCIPALE">
 <MACRO NAME="FERMER_HTML">
