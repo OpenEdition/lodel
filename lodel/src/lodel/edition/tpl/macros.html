@@ -1219,10 +1219,10 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
-			Prêt à être publiée
+			Prêt à être publié
 		<ELSE/>
 			<IF COND="[#STATUS]==1">
-				Publiée
+				Publié
 			</IF>
 		</IF>
 	</IF>
@@ -1404,6 +1404,67 @@
 	</IF>
 
 	<IF COND="[#STATUS]==1">&nbsp;-&nbsp;</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche les documents annexes.                                     -->
+<!-- Cette Macro utilise les macros suivantes :                         -->
+<!-- <MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">                         -->
+<!-- <MACRO NAME="BOUTON_AJOUTER_DOCUMENT_ANNEXE">                      -->
+<!-- ****************************************************************** -->
+	<LOOP NAME="docannexe" TABLE="documentsannexes" WHERE="iddocument=[#ID]">
+		<BEFORE>
+			<table>
+		</BEFORE>
+		<DO>
+			<tr>
+				<td class="texte_petit">
+					<!-- Titre du doc annexe -->
+					<MACRO NAME="GIF_TRIANGLE">
+					<strong>
+						<a name="[#TITRE]" href="../../[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+					</strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+					<!-- Commentaire du doc annexe -->
+					[#COMMENTAIRE]
+				</td>
+			</tr>
+			<tr>
+				<td class="texte_petit">
+					<MACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+				</td>
+			</tr>
+		</DO>
+		<AFTER>
+			</table>
+		</AFTER>
+	</LOOP>
+</DEFMACRO>
+
+<DEFMACRO NAME="BLOC_EDITER_DOCUMENT_ANNEXE">	
+<!-- ****************************************************************** -->
+<!-- Version 1.0                                                        -->
+<!-- Affiche, si on a au moins le niveau "rédacteur", un bouton         -->
+<!-- [modifier] pour modifier le document annexe ou sa description      -->
+<!-- ainsi que des boutons [haut] [bas] pour changer son ordre.         -->
+<!-- ****************************************************************** -->
+	<IF COND="[#EDITEUR]">
+		<span class="texte_tres_petit">
+			<!-- Modifier -->
+			<a class="admin" href="docannexe.php?id=[#ID]&[#RETOUR]">[modifier]</a>
+			 |
+			<!-- Monter -->
+				<a href="docannexe.php?id=[#ID]&dir=up">[haut]</a>
+			 |
+			<!-- Descendre -->
+				<a href="docannexe.php?id=[#ID]&dir=down">[bas]</a>
+		</span>
+	</IF>
 </DEFMACRO>
 
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
