@@ -146,10 +146,19 @@
  			//AutodetectLanguage (by default will be on true)
  			$context["fck_autodetectlanguage"] = (($parameters[3] && is_bool($parameters[3])) ? $parameters[3] : "true");
  			//Language (by default will be empty)
- 			$context["fck_language"] = ($parameters[3] ? $parameters[3] : "true");
+ 			$context["fck_language"] = ($parameters[3] ? $parameters[3] : "fr");
  			//Advenced mode or not
  			$context["fck_mode"] = (($parameters[4] && $parameters[4]=="advanced") ? $parameters[4] : "simple" );
  				
+ 		}
+ 		else
+ 		{
+ 			$context["fck_width"] = 800;
+ 			$context["fck_height"] = 500;
+ 			$context["fck_skin"] = "default";
+ 			$context["fck_autodetectlanguage"] = "true";
+ 			$context["fck_language"] = "fr";
+ 			$context["fck_mode"] = "simple"
  		}
  	
  	
@@ -161,7 +170,7 @@
     <script>
     	var fck_[#VARNAME]_editor = new FCKeditor('[#VARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
     	<IF COND="[#FCK_MODE] EQ 'simple'">
- 			fck_[#VARNAME]_editor.ToolbarSet("[#FCK_MODE]");
+ 			fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
  		</IF>
  	   	fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
     	fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
