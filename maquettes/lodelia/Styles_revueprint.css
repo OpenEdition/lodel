@@ -935,7 +935,6 @@ A.menu2:active {
 }
 
 .logo_revuesorg3 a {
-	position: fixed;
 	height: 50;
 	width: 165;
 	background-color: #EFEFEF;
@@ -946,7 +945,6 @@ A.menu2:active {
 
 
 .logo_revuesorg3 a:hover  {
-	position: fixed;
 	height: 50;
 	width: 165;
 	background-color: #EFEFEF;
