@@ -48,7 +48,7 @@
     <LOOP NAME="typeentrees" TABLE="typeentrees" TABLE="typeentites_typeentrees" WHERE="idtypeentree=id AND idtypeentite='[#IDTYPE]' AND statut gt 0" ORDER="ordre">
       <DO>
 	<gr[#TYPE]>
-	  <LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]'" ORDER="ordre">
+	  <LOOP NAME="lesentrees" TABLE="entrees" WHERE="idtype='[#ID]' AND identite='[#IDENTITE]'" ORDER="ordre">
 	    <DO>
 	      <[#TYPE]>
 		<nom>[#NOM]</nom>

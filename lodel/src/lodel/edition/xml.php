@@ -28,13 +28,15 @@
 
 // charge le fichier xml et
 require("siteconfig.php");
-include ($home."auth.php");
+require ($home."auth.php");
 authenticate(LEVEL_VISITEUR);
-include ($home."func.php");
+require_once ($home."func.php");
 
-$context[id]=$id=intval($id);
+$context[identite]=$context[id]=$id=intval($id);
+$context[classe]="documents";
 
-include_once($home."connect.php");
+
+require_once($home."connect.php");
 require_once($home."entitefunc.php");
 
 
@@ -55,9 +57,6 @@ require_once($home."entitefunc.php");
 $result=mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entites.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entites.id='$id' $critere") or die (mysql_error());
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 $context=array_merge($context,mysql_fetch_assoc($result));
-
-$context[identite]=$context[id];
-$context[classe]="documents";
 
 //
 // cherche s'il y a des documents annexe et combien
