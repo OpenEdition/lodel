@@ -46,7 +46,7 @@ function parse ($in,$out)
   parse_texte($contents);
 
   $contents='<?
-require("lodelconfig.php");include_once ("$home/connect.php");
+require("revueconfig.php");include_once ("$home/connect.php");
 '.$fct.'?>'.$contents;
 
   $contents=preg_replace(array('/\?><\?/',
