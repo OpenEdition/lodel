@@ -2,8 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -33,67 +34,55 @@
 <title><MACRO NAME="NOM_SITE"></title>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_PAGE_ACCUEIL">
-<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre">
-		</td>
 		
 	
 		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
 		de class "separation" et class "contenu" ]-->
-		<td class="corps">
+
 
 				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
 				de nav et le contenu de la page" ]-->
 				<!--[<div class="separation">
 					&nbsp;
 				</div>]-->
-		
 					<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-					<div class="contenu">
-		
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
+					<div id="contenu">
+				
+
 						<!--[ logo du site]-->
-						<MACRO NAME="IMG_LOGO_SITE">
 			
 						<!--[ Affiche le titre de la revue avec les style titre1  ]-->
-						<div  class="titre1">
+						<h1 class="accueil">
 							<MACRO NAME="NOM_SITE"> 
-						</div>
-				
-						<!--[ Affiche les infos concenrnant le dernier numéro publié avec le style titre2  ]-->
-						<div class="titre2">
-							<MACRO NAME="DERNIER_NUMERO"> 
-						</div>
+						</h1>
 					
 						<!--[ Affiche le premier article du dernier numéro (macros-affichage.html) ]-->
-						<MACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">
+						<MACRO NAME="SOMMAIRE_DERNIER_NUMERO">
 				
 				
 						<!--[ Affiche une image liée à la page d'accueil largeur maximum: 561 ]-->
-						<div class="imageindex">
-							&nbsp;
-						</div>	
 				
 						<!--[ Affiche un mini texte]-->
-						<div>
+						<p class="nouveaute">
 							<TEXT NAME="nouveaute">
-						</div>
+						</p>
 				
 						<!--[ Affiche lien vers Lodel ]-->
-						<div>
-							<MACRO NAME="LODEL_ORG"> 
-						</div>
+			<div id="footer">
+				<MACRO NAME="LODEL_ORG">
+			</div>
 				</div>
-			</td>
-
-	</tr>
-</table>
+				</td></tr>
+				</table>
 
 <MACRO NAME="FERMER_HTML">  

@@ -2,8 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -41,41 +42,30 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>Index chronologique : [#NOM]</TITLE>
+<title>Index chronologique : [#NOM]</title>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_CHRONO">
-<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre"> 
-		</td>
 	
-		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" ]-->
-		<td class="corps">
+		
 
-				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
-				de nav et le contenu de la page" ]-->
-				<!--[<div class="separation">
-					&nbsp;
-				</div>]-->
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
+				<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
+				<div id="contenu">
 		
-		<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-		<div class="contenu">
-		
-			<!--[ logo du site]-->
-			<MACRO NAME="IMG_LOGO_SITE">
 				
 			<!--[ Affichage de l'entrée de l'index par période]-->
-			<div class="titre1">
+			<h1>
 				[#NOM]
-			</div>
+			</h1>
 			
 			<!--[ Liste des articles ]-->
 			<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'" ORDER="datepubli">
@@ -88,17 +78,15 @@
 			</LOOP>
 			
 			<!--[ Lien vers l'index complet ]-->
-			<div class="titre2">
-				<a class="titre2" href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
+				<a href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
 					&gt;&gt; Index par période.
 				 </a>
-			</div>
 			
-			<MACRO NAME="LODEL_ORG">
-	</div>
-			</td>
-
-	</tr>
-</table>
+			<div id="footer">
+				<MACRO NAME="LODEL_ORG">
+			</div>
+				</div>
+				</td></tr>
+				</table>
 
 <MACRO NAME="FERMER_HTML">  

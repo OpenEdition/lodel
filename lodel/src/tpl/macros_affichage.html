@@ -1,8 +1,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -38,6 +39,7 @@
 <!--[ <MACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">                          ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
 <!--[ <MACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">                     ]-->
+<!--[ <MACRO NAME="AFFICHER_TOUT">                                       ]-->
 <!--[ <MACRO NAME="DOCUMENTS_PAR_TYPES">                                 ]-->
 <!--[ <MACRO NAME="TYPE_ARTICLE">                                        ]-->
 <!--[ <MACRO NAME="TYPE_CHRONIQUE">                                      ]-->
@@ -69,7 +71,7 @@
 
 <DEFMACRO NAME="NOMBRE_DE_TEXTES_INTEGRAUX_PUBLIES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche le nombre des textes intégraux publiés dans le site.       ]-->
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="nbtip" TABLE="documents" SELECT="count(*) as nbtextesintegraux" WHERE="texte ne '' AND tplcreation='chargement' AND datepubli le NOW() AND statut gt '-1'">
@@ -81,7 +83,7 @@
 
 <DEFMACRO NAME="AFFICHER_NUMEROS_PUBLIES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste des publications de type numéro, publiées         ]-->
 <!--[ ****************************************************************** ]-->
 	<div class="titre1">
@@ -113,7 +115,7 @@
 
 <DEFMACRO NAME="TITRE_PUBLICATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche, s'il existe, le titre d'une publication.                  ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#TITRE]">
@@ -123,18 +125,18 @@
 
 <DEFMACRO NAME="SOUSTITRE_PUBLICATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche, s'il existe, le sous-titre d'une publication.             ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#SOUSTITRE]">
-		 . [#SOUSTITRE]
+		 [#SOUSTITRE]
 	</IF>
 </DEFMACRO>
 
 
 <DEFMACRO NAME="PRESENTER_PUBLICATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Crée un bloc qui affiche le titre du numéro ou de la rubrique,     ]-->
 <!--[ sauf s'il est vide, auquel cas il affiche le nom du site.          ]--> 
 <!--[ Affiche également le texte d'introduction, s'il existe, avec une   ]-->
@@ -145,23 +147,23 @@
 <!--[ <MACRO NAME="SOUSTITRE_PUBLICATION">                               ]-->
 <!--[ <MACRO NAME="INTRODUCTION_COMPLETE">                               ]-->
 <!--[ ****************************************************************** ]-->
-	<div class="titre1">
+	<h1 class="accueil">
                 <MACRO NAME="TITRE_PUBLICATION">
 		<span class="soustitresite">
 			<MACRO NAME="SOUSTITRE_PUBLICATION">
-	 	</span>
 		<MACRO NAME="BOUTON_EDITER_PUBLICATION">
-	</div>
+	 	</span>
+	</h1>
 	<IF COND="[#INTRODUCTION]">
-		<div class="extrait">
+		<p class="extrait">
 			<MACRO NAME="INTRODUCTION_COMPLETE">
-		</div>
+		</p>
 	</IF>			
 </DEFMACRO>
 
 <DEFMACRO NAME="PRESENTER_PUBLICATION_SANS_INTRODUCTION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Crée un bloc qui affiche le titre du numéro ou de la rubrique,     ]-->
 <!--[ sauf s'il est vide, auquel cas il affiche le nom du site.          ]--> 
 <!--[ Cette macro fait appel aux macros suivantes :                      ]-->
@@ -169,26 +171,29 @@
 <!--[ <MACRO NAME="TITRE_PUBLICATION">                                   ]-->
 <!--[ <MACRO NAME="SOUSTITRE_PUBLICATION">                               ]-->
 <!--[ ****************************************************************** ]-->
-	<div class="titre1">
+	<h1 class="accueil">
 		 Sommaire du numéro: <MACRO NAME="TITRE_PUBLICATION"> 
 		<span class="soustitresite">
-			<MACRO NAME="SOUSTITRE_PUBLICATION">
+			<MACRO NAME="SOUSTITRE_PUBLICATION">		
+			<MACRO NAME="BOUTON_EDITER_PUBLICATION">
+
 	 	</span>
-		<MACRO NAME="BOUTON_EDITER_PUBLICATION">
-	</div>	
+	</h1>	
 </DEFMACRO>
 
 <DEFMACRO NAME="PARU_DANS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la publication d'où provient un document.                  ]-->
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
 <!--[ ****************************************************************** ]-->
         <LOOP NAME="publication_parente" TABLE="publications" WHERE="id='[#IDPARENT]'">
         <DO>
-	<a class="titre1" href="[(#ID|makeurlwithid('sommaire'))]">
+	<h1 class="accueil">
+	<a href="[(#ID|makeurlwithid('sommaire'))]">
 		[#TITRE]
 	</a>
+	</h1>
          </DO>
         </LOOP>
 </DEFMACRO>
@@ -197,7 +202,7 @@
 
 <DEFMACRO NAME="PARU_DANS_SIMPLE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la publication d'où provient un document.                  ]-->
 <!--[ (sobrement, c'est pour les index)                                  ]-->
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
@@ -206,7 +211,7 @@
         <LOOP NAME="paru_dans_simple_publication" TABLE="publications" WHERE="id='[#IDPARENT]'">
         <DO>
    	<IF COND="[#TITRE]">
-	        Paru dans: 
+	        Paru dans : 
 		<a  href="[(#IDPARENT|makeurlwithid('sommaire'))]">
                 [#TITRE]
 		</a>
@@ -220,7 +225,7 @@
 
 <DEFMACRO NAME="INFOS_DOCUMENT">		
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche en une ligne des informations concernant l'article : le ou ]-->
 <!--[ les auteurs, le titre cliquable amenant à l'article et la          ]-->
 <!--[ publication d'où provient l'article.                               ]-->
@@ -238,7 +243,7 @@
 
 <DEFMACRO NAME="DATE_PUBLICATION_PARENTE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la date de publication parente d'un document, si elle      ]-->
 <!--[ existe sinon n'affiche rien.                                       ]-->
 <!--[ ****************************************************************** ]-->
@@ -253,7 +258,7 @@
 
 <DEFMACRO NAME="LANGUE_TITRE_BIBLIOGRAPHIE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche le titre de la partie Bibliographie (ici "Bibliographie")  ]-->
 <!--[ dans la langue définie pour le texte d'un document.                ]-->
 <!--[ ****************************************************************** ]-->
@@ -282,7 +287,7 @@
 
 <DEFMACRO NAME="AFFICHER_LIGNE_DOCUMENT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche en une ligne un point, l'auteur cliquable le titre et des  ]-->
 <!--[ boutons supplémentaires pour les les admin/editeurs/rédacteur.     ]-->
 <!--[ Cette macro est plutôt destinée aux sommaires                      ]-->
@@ -302,7 +307,7 @@
 
 <DEFMACRO NAME="AFFICHER_LIGNE_DOCUMENT_NONCLIQUABLE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche en une ligne un point, l'auteur cliquable le titre et des  ]-->
 <!--[ boutons supplémentaires pour les les admin/editeurs/rédacteur.     ]-->
 <!--[ Cette macro est plutôt destinée aux sommaires                      ]-->
@@ -322,7 +327,7 @@
 
 <DEFMACRO NAME="INFOS_DOCUMENT_SANS_LES_AUTEURS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche en une ligne toutes les informations concernant l'article  ]-->
 <!--[ sans afficher le ou les auteurs. Affiche le titre et le sous-titre ]-->
 <!--[ s'il existe, sous forme de lien amenant à l'article, le type de    ]-->
@@ -335,7 +340,7 @@
 <!--[ <MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">                      ]-->
 <!--[ <MACRO NAME="BOUTON_EDITER_DOCUMENT">                              ]-->
 <!--[ ****************************************************************** ]-->
-		 <a class="menu2" href="[(#ID|makeurlwithid('document'))]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a> ([#TYPE])
+		 <h2><a href="[(#ID|makeurlwithid('document'))]">[#TITRE]<IF COND="[#SOUSTITRE]">. [#SOUSTITRE]</IF></a></h2> ([#TYPE])
 			<br />
         <MACRO NAME="PARU_DANS_SIMPLE"> 
 	<MACRO NAME="BOUTON_STATUT_PUBLIER_DOCUMENT">
@@ -344,7 +349,7 @@
 
 <DEFMACRO NAME="AFFICHER_TOUTES_LES_PUBLICATIONS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les séries linéaires et leurs numéros de 1er niveau puis   ]-->
 <!--[ les séries hierarchiques et leurs rubriques de premier niveau.     ]-->
 <!--[ Macro plutôt destinée à la barre de navigation verticale.          ]-->
@@ -352,15 +357,15 @@
 	<!--[ On liste en premier les séries linéaires ]-->
 	<LOOP NAME="aff_collec" TABLE="publications" WHERE="idparent='0' AND statut gt 0" ORDER="ordre">
 
-			<div class="menu1">
-			<a class="menu2" href="[(#ID|makeurlwithid('sommaire'))]">[#TITRE]</a>
-			</div>
+			<li class="first">
+			<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITRE]</a>
+			</li>
 			
 		
 		<LOOP NAME="aff_publiparente" TABLE="publications" WHERE="idparent='[#ID]' AND statut gt 0" ORDER="ordre">
-			<div class="menu2">
-				<a class="menu2" href="[(#ID|makeurlwithid('sommaire'))]">[#TITRE]</a>
-			</div>
+			<li>
+				<a href="[(#ID|makeurlwithid('sommaire'))]">[#TITRE]</a>
+			</li>
 		</LOOP>
 	</LOOP>
 	
@@ -369,7 +374,7 @@
 
 <DEFMACRO NAME="DOCUMENTS_PAR_TYPES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste des articles en les classant par type.            ]-->
 <!--[ ATTENTION, chaque type est codé en dur, il doivent être adaptés à  ]-->
 <!--[ chaque publication spécifique.                                     ]-->
@@ -391,7 +396,7 @@
 
 <DEFMACRO NAME="TYPE_ARTICLE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les articles de type "article".                            ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -399,9 +404,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="article" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='article'" ORDER="ordre">
 		<BEFORE>
-			<div class="titre2">
+			<h2>
 				Articles
-			</div>
+			</h2>
 		</BEFORE> 
 		<DO>
 			<div class="afficherdocument">
@@ -413,7 +418,7 @@
 		
 <DEFMACRO NAME="TYPE_CHRONIQUE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les articles de type "chronique".                          ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -421,9 +426,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="chr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='chronique'" ORDER="ordre">
 		<BEFORE>
-			<div class="titre2">
+			<h2>
 				Chroniques
-			</div>
+			</h2>
 		</BEFORE>
 		<DO>
 			<div class="afficherdocument">
@@ -435,7 +440,7 @@
 
 <DEFMACRO NAME="TYPE_COMPTE_RENDU">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les articles de type "compte rendu".                       ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -443,9 +448,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="cr" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='compte rendu'" ORDER="ordre">
 		<BEFORE>
-			<div class="titre2">
+			<h2>
 				Comptes Rendus 
-			</div>
+			</h2>
 		</BEFORE> 
 		<DO>
 			<div class="afficherdocument">
@@ -457,7 +462,7 @@
 
 <DEFMACRO NAME="TYPE_POSITION_DE_THESE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les articles de type "position de these".                  ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -465,9 +470,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="pdt" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='position de these'" ORDER="ordre">
 		<BEFORE>
-			<div class="titre2">
+			<h2>
 				Positions de thèse
-			</div>
+			</h2>
 		</BEFORE>
 		<DO>
 			<div class="afficherdocument">
@@ -479,7 +484,7 @@
 
 <DEFMACRO NAME="TYPE_NOTE_DE_LECTURE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les articles de type "note de lecture".                    ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -487,9 +492,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="nl" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='note de lecture'" ORDER="ordre">
 		<BEFORE>
-			<div class="titre2">
+			<h2>
 				Notes de lecture 
-			</div>
+			</h2>
 		</BEFORE> 
 		<DO>
 			<div class="afficherdocument">
@@ -501,7 +506,7 @@
 
 <DEFMACRO NAME="TYPE_PRESENTATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les articles de type "presentation".                       ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -509,9 +514,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="presentation" TABLE="documents" WHERE="idparent='[#ID]'" WHERE="type='presentation'" ORDER="ordre">
 		<BEFORE>
-			<div class="titre2">
+			<h2>
 				Informations
-			</div>
+			</h2>
 		</BEFORE> 
 		<DO>
 			<div class="afficherdocument">
@@ -523,7 +528,7 @@
 
 <DEFMACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Présente les articles puis les regroupements et leurs articles.    ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="PRESENTER_DOCUMENTS">                                 ]-->
@@ -537,7 +542,7 @@
 
 <DEFMACRO NAME="PRESENTER_DOCUMENTS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Présente les articles                                              ]-->
 <!--[ Cette Macro utilise la macro suivante :                            ]-->
 <!--[ <MACRO NAME="AFFICHER_LIGNE_DOCUMENT">                             ]-->
@@ -553,7 +558,7 @@
 
 <DEFMACRO NAME="PRESENTER_REGROUPEMENTS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Présente les regroupements et les articles qu'ils contiennent.     ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="FILET_1">                                             ]-->
@@ -561,11 +566,11 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="regroupements" TABLE="publications" WHERE="idparent='[#IDENTITE]'" WHERE="type='regroupement'" ORDER="ordre DESC">
 		<DO>
-			<div class="titre2">
+			<h2 class="regroup">
 				<IF COND="[#TITRE]">
 					[#TITRE]
 				</IF>
-			</div>
+			</h2>
 			<MACRO NAME="PRESENTER_DOCUMENTS">
 		</DO>
 	</LOOP>
@@ -573,7 +578,7 @@
 
 <DEFMACRO NAME="TITRE_DOCUMENT_CLIQUABLE">  
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche simplement le titre et le sous-titre 						]-->
 <!--[ du document et le rend cliquable.      							]-->
 <!--[ Remarque : Si on veut mettre en ligne des articles vides pour      ]-->
@@ -588,17 +593,28 @@
 		[#TITRE]<IF COND="[#SOUSTITRE]">
 		<br /> [#SOUSTITRE]</IF>
 	<ELSE/>
-		<span class="article">
-		<a class="menu2" href="[(#ID|makeurlwithid('document'))]">
-			[#TITRE]<IF COND="[#SOUSTITRE]"><br /> <div class="soustitre">[#SOUSTITRE]</div></IF>
+		<div class="article">
+		
+		<h3>
+		<a href="[(#ID|makeurlwithid('document'))]">
+			[(#TITRE|removefootnotes)]
 		</a>
-		</span>
+		</h3>
+			<IF COND="[#SOUSTITRE]">
+			 <h4>
+			 <a href="[(#ID|makeurlwithid('document'))]">
+			 [#SOUSTITRE]
+			 </a>
+			 </h4>
+			 </IF>
+		
+		</div>
 	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_DOCUMENT">  
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche simplement le titre et le sous-titre du document 			]-->
 <!--[ ****************************************************************** ]-->
 	[#TITRE]<IF COND="[#SOUSTITRE]"> <br /> [#SOUSTITRE]</IF>
@@ -607,7 +623,7 @@
 
 <DEFMACRO NAME="LISTER_AUTEURS">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste des auteurs d'un document entre virgules.         ]-->
 <!--[ ****************************************************************** ]-->
 	<div class="auteur">
@@ -629,7 +645,7 @@
 
 <DEFMACRO NAME="LISTER_AUTEURS_DOCUMENT">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste des auteurs d'un document entre virgules          ]-->
 <!--[ Les auteurs sont cliquables (lien vers index par auteurs)          ]-->
 <!--[ L'affichage est destiné aux sommaires : il permet une respiration. ]-->
@@ -639,14 +655,14 @@
 			<DOFIRST>[#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DOFIRST>
 			<DO>, [#PRENOM]<span class="smallcaps"> [#NOMFAMILLE]</span></DO>
 			<DOLAST> et [#PRENOM] <span class="smallcaps"> [#NOMFAMILLE]</span></DOLAST>
-			<AFTER><IF COND="[#NOMFAMILLE]"><br /></IF></AFTER>
+			<AFTER><IF COND="[#NOMFAMILLE]"></IF></AFTER>
 		</LOOP>
 	</div>
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_AUTEURS_CITATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste des auteurs d'un document entre virgules, pour 	]-->
 <!--[ la notice bibliographique.                                         ]-->
 <!--[ ****************************************************************** ]-->
@@ -661,10 +677,10 @@
 
 <DEFMACRO NAME="CITATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche notice biblio du doc en cours                              ]-->
 <!--[ ****************************************************************** ]-->
-	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <i><MACRO NAME="NOM_SITE">,</i>
+	<MACRO NAME="LISTER_AUTEURS_CITATION">. &laquo;[#TITRE]&raquo;. <em><MACRO NAME="NOM_SITE">,</em>
 	<LOOP NAME="citation" TABLE="publications" TABLE="relations" WHERE="id2='[#IDPARENT]' AND type!='regroupement' AND id=id1" ORDER="degres"> 
 		<DO>
 			[#TITRE]
@@ -675,28 +691,28 @@
 
 <DEFMACRO NAME="DESCRIPTION_AUTEURS"> 
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la liste description des auteurs dans le document          ]-->
 <!--[ ****************************************************************** ]-->
 <LOOP NAME="description_auteur" TABLE="personnes" WHERE="iddocument='[#ID]'" ORDER="ordre"> 
 	<DO>
 		<IF COND="[#DESCRIPTION]">
-		 	<div class="titre3">
-				Quelques mots à propos de 
-				<a class="auteur" href="auteur.[#EXTENSIONSCRIPTS]?id=[#ID]">
-					[#PRENOM]
+		 	<h4>
+				<strong>Quelques mots à propos de :&nbsp;</strong> 
+				<a class="auteur" href="personne.[#EXTENSIONSCRIPTS]?type=auteur&id=[#ID]">
+					[#PRENOM]&nbsp;
 					<span class="smallcaps">[#NOMFAMILLE]</span>
 				</a>
-			</div>
-		 	<div class="descriptionauteur"><br />[#DESCRIPTION]<br /></div>
+			</h4>
+		 	<div class="descriptionauteur">[#DESCRIPTION]</div>
 				
 		</IF>
 	<IF COND="[#AFFILIATION]">
 	
-	<div class="descriptionauteur"><br />affiliation: [#AFFILIATION] </div>
+	<div class="descriptionauteur">affiliation : [#AFFILIATION] </div>
 	</IF>
 	<IF COND="[#FONCTION]">
-	<div class="descriptionauteur"><br />fontion: [#FONCTION]</div>
+	<div class="descriptionauteur"><br />fontion : [#FONCTION]</div>
 	</IF>
 			
 	</DO>
@@ -705,18 +721,18 @@
 
 <DEFMACRO NAME="LISTER_RUBRIQUES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les rubriques d'une série hiérarchique ou les sous rubriques     ]-->
 <!--[ d'une rubrique.                                                        ]-->
 <!--[ Macro destinée aux sommaires.                                      ]-->
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="boucle_lister_publications" TABLE="publications" WHERE="idparent='[#ID]' AND TYPE!='regroupement'" >
 		<DO>
-			<div class="titre2">
 				<a class="titre2" href="[(#ID|makeurlwithid('sommaire'))]">
+				<h2>
 				<MACRO NAME="TITRE_PUBLICATION">
+				</h2>
 				</a>
-			</div>
 			<div class="afficherdocument">
 				<MACRO NAME="INTRODUCTION_COURTE">
 			</div>
@@ -726,12 +742,12 @@
 
 <DEFMACRO NAME="DERNIER_NUMERO">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche le dernier numéro en date. (en fonction du champs date)    ]-->
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="le_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="type='numero'" WHERE="statut gt 0" LIMIT="0,1">
 		<DO>
-			<a class="titre2" href="[(#ID|makeurlwithid('sommaire'))]">
+			<a  href="[(#ID|makeurlwithid('sommaire'))]">
 				Dernier numéro publié : <br />
 					[#TITRE]
 			</a>
@@ -741,7 +757,7 @@
 
 <DEFMACRO NAME="PREMIER_ARTICLE_DERNIER_NUMERO">	
 <!--[ *************************************************** ]-->
-<!--[    Version 1.0                                      ]-->
+<!--[    version 2.0                                      ]-->
 <!--[    Affiche le premier article du dernier numéro     ]-->
 <!--[ (en fonction du champ date de la table publication) ]-->
 <!--[ *************************************************** ]-->
@@ -750,11 +766,8 @@
 		<LOOP NAME="le_premier_article" TABLE="documents" ORDER="ordre ASC" WHERE="idparent='[#ID]'" LIMIT="0,1">
 		<IF COND="[#TEXTE]">
 			<div class="extrait">
-				<span class="bold">
-					Extrait du premier article :
-				</span>  
 					[(#TEXTE|removefootnotes|couper(1500))]
-				<a href="[(#ID|makeurlwithid('document'))]">
+				<a href="[(#ID|makeurlwithid('document'))]" class="right">
 					Lire la suite
 				</a>
 			</div>
@@ -765,7 +778,7 @@
 
 <DEFMACRO NAME="SOMMAIRE_DERNIER_NUMERO">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche le sommaire du dernier numéro en date. (en fonction du     ]-->
 <!--[ champs date).                                                      ]-->
 <!--[ Cette macro fait appel aux macros suivantes :                      ]-->
@@ -774,11 +787,13 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="sommaire_dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="statut gt 0" WHERE="type='numero'" LIMIT="0,1">
 		<DO>
-			<div class="titre1">
-				<a class="titre1" href="[(#ID|makeurlwithid('sommaire'))]">
-				Sommaire du dernier numéro publié : [#TITRE] 
-				</a>
-			</div>
+			<h2 class="sommaire">
+				
+				<span style="font-size: smaller">Sommaire du dernier numéro en ligne :</span><br />&nbsp;<br />
+<a href="[(#ID|makeurlwithid('sommaire'))]">
+ [#TITRE] 
+				</a><br />&nbsp;<br />
+			</h2>
 			<MACRO NAME="DOCUMENTS_ET_REGROUPEMENTS">
 		</DO>
 	</LOOP>
@@ -786,7 +801,7 @@
 
 <DEFMACRO NAME="SOMMAIRE_SANS_TITRE_DERNIER_NUMERO">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche le sommaire du dernier numéro en date. (en fonction du     ]-->
 <!--[ champs date).                                                      ]-->
 <!--[ Cette macro fait appel aux macros suivantes :                      ]-->
@@ -803,7 +818,7 @@
 
 <DEFMACRO NAME="DERNIERE_RUBRIQUE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche la dernière rubrique en date. (en fonction du champs date)     ]-->
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="le_dernier_rubrique" TABLE="publications" ORDER="Date DESC" WHERE="statut gt 0" WHERE="type='rubrique'" LIMIT="0,1">
@@ -817,7 +832,7 @@
 
 <DEFMACRO NAME="AFFICHER_DOCUMENTS_ANNEXES">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les documents annexes.                                     ]-->
 <!--[ Cette Macro utilise les macros suivantes :                         ]-->
 <!--[ <MACRO NAME="IMG_PUCE">                                            ]-->
@@ -826,9 +841,9 @@
 <!--[ ****************************************************************** ]-->
 	<LOOP NAME="docannexe" TABLE="documents" WHERE="idparent='[#ID]' AND type LIKE 'documentannexe-%'" ORDER="ordre">
 		<BEFORE>
-	<div class="titre3"> 
+	<h4>
 		Documents annexes
-	</div>
+	</h4>
 	<div class="texte" >
 	Il y a [#NBRESULTATS] document[(#NBRESULTATS|pluriel)] annexé[(#NBRESULTATS|pluriel)] à cet article.
 	<br />
@@ -840,9 +855,9 @@
 				<!--[ Titre du doc annexe ]-->
 				<span class="bold">
 	                                <IF COND="[#TYPE]=='documentannexe-lienfichier'">
-					<a name="[#TITRE]" href="docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]</a> ([(#LIEN|nicefilesize)])
+					<a title="[#TITRE]" href="docannexe.[#EXTENSIONSCRIPTS]?id=[#ID]">[#TITRE]</a> ([(#LIEN|nicefilesize)])
 	                                <ELSE/>
-					<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
+					<a title="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 	                                </IF>
 				</span>
 				<p>
@@ -864,7 +879,7 @@
 
 <DEFMACRO NAME="ICONE_PUBLICATION">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche, s'il elle existe, l'icône de la publication.              ]-->
 <!--[ ****************************************************************** ]-->
 	<IF COND="[#ICONE]">
@@ -876,7 +891,7 @@
 
 <DEFMACRO NAME="INTRODUCTION_COMPLETE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche, si elle existe, l'introduction d'une publication, avec    ]-->
 <!--[ une icône et une lettrine.                                         ]-->
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
@@ -890,7 +905,7 @@
 
 <DEFMACRO NAME="INTRODUCTION_COURTE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche avec une icône et une lettrine les 1500 premiers           ]-->
 <!--[ caractères de l'introduction d'une publication.                    ]-->
 <!--[ Cette macro fait appel à la macro suivante :                       ]-->
@@ -912,7 +927,7 @@
 
 <DEFMACRO NAME="INTRODUCTION_COURTE_SIMPLE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche sans lettrine les 1500 premiers caractères de              ]-->
 <!--[ l'introduction d'une publication.                                  ]-->
 <!--[ ****************************************************************** ]-->
@@ -935,7 +950,7 @@
 <DEFMACRO NAME="RECENSIONS">
 
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche les recensions, ou les documents recensés s'il y en a      ]-->
 <!--[ ****************************************************************** ]-->
 
@@ -946,18 +961,18 @@
 					</div>
 <div class="afficherdocument">
 <a class="menu2" href="[(#ID|makeurlwithid('document'))]">[#TITRE] </a>
-<br><br>
+<br /><br />
 </div>
 </LOOP>	
 <LOOP NAME="parent_compterendu2" TABLE="documents" WHERE="idparent='[#ID]'">
 
-		<div class="titre3">
+		<h4>
 						&gt;&gt; Voir l'article recensé :
-					</div>
+					</h4>
 <div class="afficherdocument">
 <a href="[(#ID|makeurlwithid('document'))]">[#NOTICEBIBLIO] </a>
 </div>
-<br><br>
+<br /><br />
 </LOOP>
 					
 				

@@ -40,7 +40,7 @@
 
 <DEFMACRO NAME="BOUTON_SIGNALER">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton proposant de signaler la page en cours à un ami. ]-->
 <!--[ ****************************************************************** ]-->
 	
@@ -52,11 +52,11 @@
 
 <DEFMACRO NAME="BOUTON_IMPRIMER">		
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche un bouton permettant de mettre le document au format       ]-->
 <!--[ d'impression.                                                      ]-->
 <!--[ ****************************************************************** ]-->
-	<a href="[(#ID|makeurlwithid('document'))]&format=print">
+	<a href="[(#ID|makeurlwithid('document'))]?format=print">
 		<MACRO NAME="IMG_BOUTON_IMPRIMER2">
 	</a>
 	<br />
@@ -64,7 +64,7 @@
 
 <DEFMACRO NAME="OUVRIR_TABLE_PRINCIPALE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Ouvre la table principale, celle qui englobe toute la page dans    ]-->
 <!--[ une cellule.                                                       ]-->
 <!--[ Il faut penser à ouvrir (et à fermer) cette cellule avec les       ]-->
@@ -83,7 +83,7 @@
 
 <DEFMACRO NAME="FERMER_TABLE_PRINCIPALE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Ferme la table principale.                                         ]-->
 <!--[ ATTENTION : Avant d'utiliser cette Macro veillez à bien avoir      ]-->
 <!--[ fermé la cellule principale avec le marqueur </td> !!!             ]-->
@@ -97,10 +97,9 @@
 </DEFMACRO>
 
 
-
 <DEFMACRO NAME="FILET_1"> 	 
 <!--[ ****************************************************************** ]--> 	 
-<!--[ Version 1.0                                                        ]--> 	 
+<!--[ version 2.0                                                        ]--> 	 
 <!--[ Affiche une règle horizontale de type 1.                           ]--> 	 
 <!--[ Pour séparer des parties par exemple.                              ]--> 	 
 <!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
@@ -111,7 +110,7 @@
   	 
 <DEFMACRO NAME="FILET_2"> 	 
 <!--[ ****************************************************************** ]--> 	 
-<!--[ Version 1.0                                                        ]--> 	 
+<!--[ version 2.0                                                        ]--> 	 
 <!--[ Affiche une règle horizontale de type 2.                           ]--> 	 
 <!--[ Pour séparer des parties par exemple.                              ]--> 	 
 <!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
@@ -122,7 +121,7 @@
  	 
 <DEFMACRO NAME="FILET_3"> 	 
 <!--[ ****************************************************************** ]--> 	 
-<!--[ Version 1.0                                                        ]--> 	 
+<!--[ version 2.0                                                        ]--> 	 
 <!--[ Affiche une règle horizontale de type 3.                           ]--> 	 
 <!--[ Pour séparer des parties par exemple.                              ]--> 	 
 <!--[ Pour plus de détails sur ce séparateur, voir sur la feuille de     ]--> 	 
@@ -133,7 +132,7 @@
 
 <DEFMACRO NAME="NOM_SITE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Affiche le nom du site.                                            ]-->
 <!--[ ****************************************************************** ]-->
 	[#SITE]
@@ -142,20 +141,20 @@
 
 <DEFMACRO NAME="LODEL_ORG">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Mention de l'adhésion du site à Lodel.org                          ]-->
 <!--[ ****************************************************************** ]-->
 <div class="lodelorg">
-	Page générée par
-		<a href="http://www.lodel.org">
-			 Lodel
+	
+		<a href="http://www.lodel.org" onclick="window.open(this.href); return false;"  title="Page générée par Lodel">
+			<img src="http://www.lodel.org/images/powered.gif" alt="Page générée par Lodel" />
 		</a>
 </div>
 </DEFMACRO>
 
 <DEFMACRO NAME="TABLE_ALPHABETIQUE">
 <!--[ ****************************************************************** ]-->
-<!--[ Version 1.0                                                        ]-->
+<!--[ version 2.0                                                        ]-->
 <!--[ Table alphabétique qui peut se placer en début d'index et qui      ]-->
 <!--[ permet d'accélérer la navigation dans la page grâce à des liens    ]-->
 <!--[ internes.                                                          ]-->

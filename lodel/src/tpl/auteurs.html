@@ -2,8 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -37,26 +38,14 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>Index par auteurs</TITLE>
+<title>Index par auteurs</title>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_AUTEURS">
-<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
 
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre"> 
-		</td>
-		
-		<td class="separation">&nbsp;</td>
 	
 		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
 		de class "separation" et class "contenu" ]-->
-		<td class="corps">
 
 				<!--[ ce div permet d'intégrer les lignes horizontales qui créeent une séparation entre la barre de
 				de nav et le contenu de la page" ]-->
@@ -65,48 +54,55 @@
 				</div>]-->
 		
 				<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-				<div class="contenu">
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
+				<div id="contenu">
 		
 					<!--[ logo du site]-->
-					<MACRO NAME="IMG_LOGO_SITE">
 			
 					<!--[ Titre de la page style "titre1" ]-->
-					<div class="titre1">
+					<h1 class="accueil">
 						Index des auteurs
-					</div>
+					</h1>
 		
-					<div class="titre2">
+					<div class="alphabet">
 						
 							<MACRO NAME="TABLE_ALPHABETIQUE">
 						
 					</div>
-		
+					<dl id="alphabet">
 					<LOOP NAME="alphabet">
-						<div class="titre3">
+						<dt>
 							<a name="[#LETTRE]">
 								[#LETTRE]
 								&nbsp;
 							</a>
-						</div>
+						</dt>
 				
 						<LOOP NAME="auteurs1" TABLE="personnes" WHERE="type='auteur'" WHERE="substring(nomfamille,1,1)='[#LETTRE]'" ORDER="nomfamille,prenom">
-							<div class="afficherdocument">
+							<dd>
 								<IF COND="[#STATUT] ge 1">
-									<a class="auteur" href="personne.[#EXTENSIONSCRIPTS]?id=[#ID]&type=[#TYPE]">
+									<a class="auteur" href="personne.[#EXTENSIONSCRIPTS]?id=[#ID]&amp;type=[#TYPE]">
 										[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>
 									</a>
 								<ELSE/>
 									[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>
 								</IF>
 								<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
-							</div>
+							</dd>
 						</LOOP>
 					</LOOP>
-					<MACRO NAME="LODEL_ORG">
+					</dl>
+		<div id="footer">
+		<MACRO NAME="LODEL_ORG">
 				</div>
-			</td>
-
-	</tr>
+				</div>
+</td></tr>
 </table>
-
 <MACRO NAME="FERMER_HTML">  

@@ -41,31 +41,23 @@
 <TITLE>[#NOM]</TITLE>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_MOTS">
-<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre"> 
-		</td>
-	
-		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
-		de class "separation" et class "contenu" ]-->
-		<td class="corps">		
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
 			<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-			<div class="contenu">
+			<div id="contenu">
 		
-				<!--[ logo du site]-->
-				<MACRO NAME="IMG_LOGO_SITE">
 
 				<!--[ Titre du site ]-->
-				<div class="titre1">
+				<h1 class="accueil">
 					"[#NOM]" dans <MACRO NAME="NOM_SITE">
-				</div>
+				</h1>
 
 				<LOOP NAME="articles" TABLE="documents" WHERE="identree='[#ID]'" ORDER="datepubli">
 					<DO>
@@ -75,18 +67,11 @@
 						</div>
 					</DO>
 				</LOOP>
-			
-				<div class="titre2">
-					<a class="titre2" href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
+					<a href="entrees.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
 						&gt;&gt; Index des mots clés.
 					 </a>
-				</div>
-			
-				<MACRO NAME="LODEL_ORG">
+		<div id="footer"><MACRO NAME="LODEL_ORG"></div>
 		</div>
-			</td>
-
-	</tr>
+</td></tr>
 </table>
-
 <MACRO NAME="FERMER_HTML">  

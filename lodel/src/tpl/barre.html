@@ -2,8 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -32,46 +33,46 @@
 <!--[ ****************************************************************** ]-->
 <!--[ Barre de navigation verticale de la revue.                         ]-->
 <!--[ Auteur : Marin Dacos.                                              ]-->
-<!--[ Date de création : juin 2002.                                      ]-->
+<!--[ Date de création : juin 2002.    
+<!--[ Auteur : Bruno Cénou.                                              ]-->
+<!--[ Date de modification : avril 2004.                                   ]-->
 <!--[ ****************************************************************** ]-->
 
-<div class="menu">	
-	<div class="titrebarre">
-		<a href="index.[#EXTENSIONSCRIPTS]">
-			<span class="bold"><MACRO NAME="NOM_SITE"></span>
-				<br/>
-			<MACRO NAME="DESCRIPTION_SITE">
-		</a>
+<div id="menu">	
+	<div id="titrebarre">
+			<strong><a href="index.[#EXTENSIONSCRIPTS]"><MACRO NAME="NOM_SITE">
+			</a></strong>
+			<span class="description-site">
+			<a href="index.[#EXTENSIONSCRIPTS]"><MACRO NAME="DESCRIPTION_SITE"></a>
+			</span>
 	</div>
-
+<ul id="publications-menu">
 	<MACRO NAME="AFFICHER_TOUTES_LES_PUBLICATIONS">
+</ul>	
 	
-	
-	<div class="index">
-		    <div id="titre">
-		      Index
-		    </div>
-
-		<div class="typepersonne">
+	<dl id="index">
+ 	<dt>Index</dt>
+		<dd>
+		<ul class="typepersonne">
+		<li>
 		<a href="personnes.[#EXTENSIONSCRIPTS]?type=auteur">
 			Par auteurs
 		</a>
-		</div>
+		</li>
+		</ul>
+		<ul class="typeentree">
 		<LOOP NAME="entrees" TABLE="typeentrees" ORDER="ordre">
-			<div class="typeentree">
+			<li>
 			<a href="entrees.[#EXTENSIONSCRIPTS]?id=[#ID]">
 			  [#TITRE]
 			</a>
-			</div>
+			</li>
 		 </LOOP>
-	</div>
-	
+		 </ul>
+		 </dd>
+	</dl>
 	<MACRO NAME="LIEN_SYNDICATION">
-
-	<div class="admin">
-	<a href="lodel/edition">
+	<a href="lodel/edition" class="admin">
 		Lodel (accès réservé)
 	</a>
-	</div>
-		
 </div>

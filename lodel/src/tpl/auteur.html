@@ -2,8 +2,9 @@
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
    Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004 Bruno Cénou
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -39,41 +40,32 @@
 
 <MACRO NAME="OUVRIR_HTML">
 <MACRO NAME="DEFINIR_CHARSET">
-<TITLE>[#PRENOM] [#NOMFAMILLE]</TITLE>
+<title>[#PRENOM] [#NOMFAMILLE]</title>
 <MACRO NAME="METADONNEES_POUR_INDEX">
 <MACRO NAME="METADONNEES_POUR_AUTEUR">
-<MACRO NAME="JS_ROLLOVER"> 
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES">
-
-
-<table class="principale">
-	<tr>
-		
-		<td class="barrenav">
-		<!--[ Ouvre <td> qui insère la barre de navigation. La structuration en <td< est nécessaire car la structuration par <div< n'est pas complètement gérée par tous
-		les navigateurs ]-->
-				<USE TEMPLATEFILE="barre"> 
-		</td>
 	
 		<!--[ Ouvre <td> qui vient se placer à droite de la barre verticale. Cet élément contient deux autres div
 		de class "separation" et class "contenu" ]-->
-		<td class="corps">
-		
+					<table class="main" cellpadding="0" cellspacing="0">
+					<tr>
+					<td class="barre">
+					<div id="barrenav">
+					<USE TEMPLATEFILE="barre">
+					</div>
+					</td>
+					<td class="middle">
 						<!--[ ce div permet d'intégrer le  contenu de la page" ]-->
-						<div class="contenu">
+						<div id="contenu">
 		
-							<!--[ logo du site]-->
-							<MACRO NAME="IMG_LOGO_SITE">
-			
-							<!--[ Titre de la revue ]-->
-							<div class="titre1">
+							<h1 class="accueil">
 								Articles parus dans <MACRO NAME="NOM_SITE">
-							</div>
+							</h1>
 				
 							<!--[ Nom et prénom de l'auteur ]-->
-							<div class="titre2">
+							<h2>
 								[#PRENOM] <span class="smallcaps">[#NOMFAMILLE]</span>&nbsp;&nbsp;	<MACRO NAME="AFFICHER_STATUT_DOCUMENT">
-							</div>
+							</h2>
 				
 							<LOOP NAME="documents" TABLE="documents" WHERE="idpersonne='[#ID]'" ORDER="datepubli">
 								<DO>
@@ -83,18 +75,14 @@
 									</div>
 								</DO>
 							</LOOP>
-						
-							<div class="titre2">
-								 <a class="titre2" class="auteur" href="personnes.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
+					<a href="personnes.[#EXTENSIONSCRIPTS]?type=[#TYPE]">
 									&gt;&gt; Index des auteurs
-								 </a>
-		 					 </div>
-		
-							<MACRO NAME="LODEL_ORG">
+					</a>
+		<div id="footer">
+			<MACRO NAME="LODEL_ORG">
+		</div>
 						</div>
-			</td>
-
-	</tr>
+</td></tr>
 </table>
 
 <MACRO NAME="FERMER_HTML">  
