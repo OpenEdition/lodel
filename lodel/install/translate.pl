@@ -125,6 +125,13 @@ foreach $filename (@ARGV) {
 # changement de statut><=>... en statut eq|ne... dans les WHERE
   $change+=$file=~s/(WHERE\s*=\s*")([^"]*)"/$1.callback($2).'"'/ge;
 
+# changement du nom des differents niveaux d'utilisateur
+   $change+=$file=~s/\[\#ADMINLODEL\]/\[\#DROITADMINLODEL\]/g;
+   $change+=$file=~s/\[\#ADMIN\]/\[\#DROITADMIN\]/g;
+   $change+=$file=~s/\[\#EDITEUR\]/\[\#DROITEDITEUR\]/g;
+   $change+=$file=~s/\[\#REDACTEUR\]/\[\#DROITREDACTEUR\]/g;
+   $change+=$file=~s/\[\#VISITEUR\]/\[\#DROITVISITEUR\]/g;
+
   next unless $change;
   print "$filename:",$change,"\n";
 
