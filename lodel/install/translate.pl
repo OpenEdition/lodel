@@ -63,6 +63,7 @@ foreach $filename (@ARGV) {
   $change+=$file=~s/(WHERE\s*=\s*\"[^\"]*)type_periode([^\"]*\")/$1type='periode'$2/g;
   $change+=$file=~s/(WHERE\s*=\s*\"[^\"]*)type_geographie([^\"]*\")/$1type='geographie'$2/g;
   $change+=$file=~s/(TABLE=\"indexls\")/TABLE=\"entrees\" WHERE=\"type='motcle'\"/g;
+  $change+=$file=~s/idindexl/identree/g;
   $change+=$file=~s/\[\#MOT\]/[\#NOM]/g;
 
 # chgt de auteur en personne
@@ -144,6 +145,23 @@ foreach $filename (@ARGV) {
 # changement de #REVUE en #SITE
   $change+=$file=~s/\[\#REVUE\]/\[\#SITE\]/g;
 
+# changement des index
+  $change+=$file=~s/auteurs\.html/personnes.html\?type=auteur/g;
+  $change+=$file=~s/mots\.html/entrees.html\?type=motcle/g;
+  $change+=$file=~s/geos\.html/entrees.html\?type=geographie/g;
+  $change+=$file=~s/chronos\.html/entrees.html\?type=periode/g;
+
+# changement de #LANG en #LANGUE
+  $change+=$file=~s/\[\#LANG\]/\[\#LANGUE\]/g;
+
+# changement des series en collection
+  $change+=$file=~s/serie_hierarchique/collection/g;
+  $change+=$file=~s/serie_lineaire/collection/g;
+
+# changement de #TEXTEPUBLI
+  $change+=$file=~s/COND="\[\#TEXTEPUBLIE\]"/COND="\[\#DATEPUBLI\] le today\(\)"/g;
+
+#
   next unless $change;
   print "$filename:",$change,"\n";
 
