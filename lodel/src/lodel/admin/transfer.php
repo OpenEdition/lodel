@@ -105,8 +105,8 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 			     "objects (id,class)"=>"objets (id,classe)",
 			     "entities (id,idparent,idtype,identifier,usergroup,iduser,rank,status,upd)"=>"entites (id,idparent,idtype,identifiant,groupe,iduser,ordre,statut,maj)",
 			     "relations (id1,id2,nature,degree)"=>"relations (id1,id2,nature,degres)",
-			     "fields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
-			     "fieldgroups (id,name,class,title,commentaire,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
+			     "tablefields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
+			     "tablefieldgroups (id,name,class,title,commentaire,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
 			     "persons (id,lastname,firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
 			     "users (id,username,passwd,name,email,userrights,lang,status,upd)"=>"users (id,username,passwd,nom,courriel,privilege,lang,statut,maj)",
 			     "usergroups (id,name,status,upd)"=>"groupes (id,nom,statut,maj)",
@@ -153,7 +153,7 @@ UPDATE _PREFIXTABLE_users SET lang=\'fr\'
 	if ($err) break;
       }
       if ($err) break;
-      $report.="efface les anciennes tables";
+      $report.="efface les anciennes tables<br>";
     } // fini la translation
 
     /////////////////////
