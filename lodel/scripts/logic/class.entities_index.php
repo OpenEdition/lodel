@@ -209,7 +209,7 @@ class Entities_IndexLogic extends Logic
 			$context["id"] = $result->fields['id'];
 			$this->addIndexAction($context,$error);
 			$current = time();
-			echo "currenttime=".($current - $start)."<br />";
+			//echo "currenttime=".($current - $start)."<br />";
 			if(($current - $start) < $prudent_timeout)
 				$result->MoveNext();
 			else
