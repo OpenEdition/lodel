@@ -82,7 +82,8 @@ if ($fichier && $delete) {
 
   // change the id in order there are minimal and unique
   require_once($home."objetfunc.php");
-  makeobjetstable();
+  $err=makeobjetstable();
+  if ($err) die($err);
 
   require_once($home."cachefunc.php");
   removefilesincache(SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
