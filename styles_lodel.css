@@ -228,6 +228,12 @@ div.action_formulaire {
 
 .table_docannexes {margin-left: 90px;}
 .table_normale {color: #333333;}
+.table_admin {
+	width:790px;
+	color: #333333;
+	font-family: verdana;	
+	font-size: 10pt;
+}
 
 .table_popup {
 	font-family: verdana;	
