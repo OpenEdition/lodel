@@ -137,6 +137,8 @@ function infoChargement(nomFic){
 		  <ELSE/>
 				<input class="form" type="submit" value="[@COMMON.UPLOAD]" />&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
+		  </IF>
+
 <br /><br /><br />
 <span class="texte_info_popup">[@EDITION.CONVERSION_TOOLS]:</span><br />
 <a href="http://www.openoffice.org"><MACRO NAME="PNG_LOGO_OO"></a> <a href="http://www.hj-gym.dk/~hj/writer2latex/"><MACRO NAME="PNG_LOGO_W2L"></a>
@@ -146,7 +148,6 @@ function infoChargement(nomFic){
 					<input class="form" type="submit" name="sortieoo" value="[@EDITION.OUTPUT_OO_PLUS_PROCESSING]" /><br />
 					<input class="form" type="submit" name="sortie" value="[@EDITION.OUTPUT_UPLOAD]" />
 				</IF>     
-		  </IF>
 			</td>
 		</tr>
 	</table>

@@ -82,7 +82,9 @@ class XMLImportParser {
 
   /**
    * parse the $string and send the data to the $handler object
-   *
+   * This function is a hard piece of work.
+   * I choose not to go to DOM too avoid using lot of memory and processing
+   * to build the tree but I'm not sure to perform much better here.
    */
 
   function parse($string,&$handler)
@@ -164,8 +166,47 @@ class XMLImportParser {
 */
     } // for
 
-#    print_R($arr);
-#    exit();
+    // deal with the non-greedy internalstyle
+    // a little bit hard, isn't it ?
+    for($i=1; $i<$n; $i+=3) {
+      if (!is_object($arr[$i+1])) continue;
+      $obj=&$arr[$i+1];
+      $class=strtolower(get_class($obj));
+      if ($class!="internalstylesvo" || $obj->greedy) continue;
+      if ($arr[$i]=="/") {
+	// closing
+	$in="";
+      } else {
+	$in=$obj->name;
+	$arr2=preg_split("/(<\/?)((?:table|ul|ol|dl|dd|pre|blockquote|object)\b[^>]*>)/",$arr[$i+2],-1,PREG_SPLIT_DELIM_CAPTURE);
+	#print_R($arr2);
+	$arr[$i+2]=$arr2[0];
+	$m=count($arr2);
+	$blockel=0;
+	for($j=1; $j<$m; $j+=3) {
+	  if ($arr2[$j]=='</') { // closing
+	    $arr[$i+2].=$arr2[$j].$arr2[$j+1];
+	    $blockel--;
+	    if ($blockel==0) {
+	      array_splice($arr,$i+3,0,array("",$obj,"")); // opening tag
+	      $i+=3; $n+=3;      
+	    }
+	  } else {
+	    // opening
+	    $blockel++;
+	    if ($blockel==1) {
+	      array_splice($arr,$i+3,0,array("/",$obj,"")); // closing tag
+	      $i+=3; $n+=3;
+	    }
+	    $arr[$i+2].=$arr2[$j].$arr2[$j+1];
+	  }
+	  $arr[$i+2].=$arr2[$j+2];
+	}
+      } // opening
+    }
+
+    #print_R($arr);
+    #exit();
 
     // proper parser. Launch the handlers
 
@@ -219,7 +260,8 @@ class XMLImportParser {
 
     #echo $style,"--<br>";
 
-    if ( (!$opening && $obj==$arr[$i+4]) || ($opening && $obj==$arr[$i-2]) ) {
+    if ( ( (!$opening && $obj==$arr[$i+4]) || ($opening && $obj==$arr[$i-2]) ) &&
+	(strtolower(get_class($obj))!="internalstylesvo" || $obj->greedy) ) {
 
       ##echo $opening," : ",$obj," : ",$arr[$i+4]," : ",$arr[$i-2],"<br>";
       // current closing equals next opening

@@ -78,7 +78,8 @@ class InternalstylesLogic extends Logic {
    function _publicfields() {
      return array("style"=>array("style","+"),
                   "surrounding"=>array("select","+"),
-                  "conversion"=>array("text",""));
+                  "conversion"=>array("text",""),
+                  "greedy"=>array("boolean",""));
              }
    // end{publicfields} automatic generation  //
 

@@ -77,21 +77,22 @@ class XmlImportHandler {
 
   function processEntryTypes($obj,$data) 
   {
-    $this->_contents.="<tr><td style=\"background-color: red;\">".$obj->name."</td><td>".$data."</td></tr>";
+    $this->_contents.='<tr><td class="processentrytypes">'.$obj->style."</td><td>".$data."</td></tr>";
   }
 
   function openClass($class,$obj=null) 
   {
-    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">".$class[0]." ".$class[1]."    ".$obj."  ".($obj ? $obj->type : "")."</td></tr>";
+
+    $this->_contents.="<tr><td colspan=\"2\" class=\"openclass".$class[1]."\">".$class[0]." &darr;</td></tr>";
   }
   function closeClass($class) 
   {
-    $this->_contents.="<tr><td colspan=\"2\" style=\"background-color: green;\">-- fin ".$class[0]." ".$class[1]." --</td></tr>";
+    $this->_contents.='<tr><td colspan="2" class="closeclass'.$class[1].'">'.$class[0].' &uarr;</td></tr>';
   }
 
   function processPersonTypes($obj,$data) 
   {
-    $this->_contents.="<tr><td style=\"background-color: blue;\">".$obj->style."</td><td>".$data."</td></tr>";
+    $this->_contents.='<tr><td class="processpersontypes">'.$obj->style.'</td><td>'.$data.'</td></tr>';
   }
 
   function processCharacterStyles($obj,$data) 
@@ -103,7 +104,7 @@ class XmlImportHandler {
   function processInternalStyles($obj,$data) 
 
   {
-    return "--internalstyle--".$obj->style."--".$data."-- fin internal style--";
+    return '<div class="internalstyleblock"><span class="internalstyle">'.$obj->style.'</span>'.$data."</div>";
   }
 
   function unknownParagraphStyle($style,$data) {

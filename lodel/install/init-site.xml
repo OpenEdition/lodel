@@ -797,6 +797,11 @@
         description="balise vers laquelle le style est convertie"
 	label="[@ADMIN.CONVERSION]"
 	edittype="text" />
+<column name="greedy"
+        type="TINYINT"
+        default="0"
+	label="[@ADMIN.GREEDY]"
+	edittype="boolean" />
 <column name="rank"
         type="INTEGER"
         default="0"

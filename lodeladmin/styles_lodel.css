@@ -829,6 +829,35 @@ fieldset br { clear: left;}
  }
 
 
+/* styles form checkimport */
+.internalstyleblock { 
+  border-left: 1px solid #CC9933;
+}
+
+.internalstyle { 
+  text-decoration: underline; color: #CC9933;
+  font-size: 80%;
+}
+
+.openclassentities, .closeclassentities{ 
+  background-color: #e0ffe0;
+  text-align: center;
+  padding: 0px;
+ }
+
+.processpersontypes, .openclasspersons, .closeclasspersons { 
+  background-color: #e0e0ff;
+  text-align: center;
+  padding: 0px;
+ }
+
+.processentrytypes, .openclassentries, .closeclassentries { 
+  background-color: #ffe0e0;
+  text-align: center;
+  padding: 0px;
+ }
+/* -- */
+
 #lodel-container{
   position: relative;
 }

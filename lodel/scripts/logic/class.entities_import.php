@@ -381,7 +381,13 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    function processInternalStyles($obj,$data) 
      
    {
-     return $obj->conversion.$data.closetags($obj->conversion);
+     if (strpos($obj->conversion,"<li>")!==false) {
+       $conversion=str_replace("<li>","",$obj->conversion);
+       $data=preg_replace(array("/(<p\b)/","/(<\/p>)/"),array("<li>\\1","\\1</li>"),$data);
+     } else {
+       $conversion=$obj->conversion;
+     }
+     return $conversion.$data.closetags($conversion);
    }
 
    function unknownParagraphStyle($style,$data) {

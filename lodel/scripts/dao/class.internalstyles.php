@@ -41,6 +41,7 @@ class internalstylesVO {
    var $style;
    var $surrounding;
    var $conversion;
+   var $greedy;
    var $rank;
    var $status;
    var $upd;
