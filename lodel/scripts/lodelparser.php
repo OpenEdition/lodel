@@ -254,6 +254,7 @@ function parse_loop_extra(&$tables,
 	    if (!in_array($relatedtable,$tables)) {
 	      array_push($tables,$relatedtable);
 	      $where[count($where)-1].=" AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+	      $extrainselect.=", ".$relatedtable.".* ";
 	    }
 	  }
 	}
