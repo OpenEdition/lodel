@@ -36,23 +36,22 @@ function removefilesincache()
   foreach(func_get_args() as $rep) {
     $rep.="/CACHE";
     $fd=opendir($rep) or die ("Impossible d'ouvrir $rep");
-    while ($file=readdir($fd)) {
-	  if ((substr($file,0,1)==".") || ($file=="CVS")) continue;
+    
+    while ( ($file=readdir($fd))!==false ) {
+      #echo $rep," ",$file," ",(substr($file,0,1)==".") || ($file=="CVS"),"<br />";
+
+      if ((substr($file,0,1)==".") || ($file=="CVS")) continue;
       $file=$rep."/".$file;
       if (is_dir($file)) {
 	$rep2=$file;
 	$fd2=opendir($rep2) or die ("Impossible d'ouvrir $file");
-	while ($file=readdir($fd2)) {
+	while ( ($file=readdir($fd2))!==false ) {
 	  if (substr($file,0,1)==".") continue;
 	  $file=$rep2."/".$file;
-	  if (is_file($file)) {
-	    unlink($file);
-	  }
+	  if (is_file($file)) { unlink($file); }
 	}
 	closedir($fd2);
-      } elseif (is_file($file)) {
-	unlink($file);
-      }
+      } elseif (is_file($file)) { unlink($file); }
     }
     closedir($fd);
   }

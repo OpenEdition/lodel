@@ -42,7 +42,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
 
   if ($GLOBALS[recalcul_templates]) {
     require_once($home."cachefunc.php");   
-    removefilesincache((SITEROOT) ? SITEROOT : ".",SITEROOT."lodel/edition",SITEROOT."lodel/admin");
+    removefilesincache( (SITEROOT) ? SITEROOT : ".",SITEROOT."lodel/edition",SITEROOT."lodel/admin");
     $GLOBALS[recalcul_templates]=false; // to avoid to erase the CACHE again
   }
 
