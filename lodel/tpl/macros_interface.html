@@ -811,10 +811,10 @@ function modifymember(members,textfield){
 &nbsp;[@EDITION.SEARCH_IN_STATUS]&nbsp;
 <select  id="qstatus" name="qstatus" class="searchfields">
 	<option value=""> -- [@EDITION.ALL_STATUS] -- </option>
-	<option value="+16" <IF COND="[#QSTATUS] EQ 16">selected="selected"</IF>>[@PROTECTED]</option>
-	<option value="+1" <IF COND="[#QSTATUS] EQ 1">selected="selected"</IF>>[@PUBLISHED]</option>
-	<option value="-1" <IF COND="[#QSTATUS] EQ -1">selected="selected"</IF>>[@READY_FOR_PUBLICATION]</option>
-	<option value="-16" <IF COND="[#QSTATUS] EQ -16">selected="selected"</IF>>[@DRAFT]</option>
+	<option value="+16" <IF COND="[#QSTATUS] EQ 16">selected="selected"</IF>>[@COMMON.PROTECTED]</option>
+	<option value="+1" <IF COND="[#QSTATUS] EQ 1">selected="selected"</IF>>[@COMMON.PUBLISHED]</option>
+	<option value="-1" <IF COND="[#QSTATUS] EQ -1">selected="selected"</IF>>[@COMMON.READY_FOR_PUBLICATION]</option>
+	<option value="-16" <IF COND="[#QSTATUS] EQ -16">selected="selected"</IF>>[@COMMON.DRAFT]</option>
 </select>
 
 &nbsp;[@EDITION.SEARCH_IN_FIELD]&nbsp;
@@ -891,13 +891,13 @@ function modifymember(members,textfield){
 <LOOP NAME="page_scale">
 	<BEFORE>
 		<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
-		
 		<div style="padding-top:10px; text-align : center">
-		
 		<IF COND="[#PREVIOUSURL]">
 			<a href="[#PREVIOUSURL]" title="Page précédente">
 				<img style="border : 0px;" src="[#SHAREURL]/images/triangle2.gif" alt="&lt;&lt;" />
 			</a>
+	<!--[		<img style="vertical-align : middle" src="[#SHAREURL]/images/separateur.png" alt="-" />
+		]-->
 		</IF>
 	</BEFORE>
 	<DO>
@@ -912,9 +912,12 @@ function modifymember(members,textfield){
 		<ELSE/>
 			</span>
 		</IF>
+	
 	</DO>
+	
 	<AFTER>
 		<IF COND="[#NEXTURL]">
+		
 			<a class="linkpage" href="[#NEXTURL]" title="Page suivante">
 				<img style="border : 0px;" src="[#SHAREURL]/images/triangle.gif" alt="&gt;&gt;" />
 			</a>
@@ -926,3 +929,23 @@ function modifymember(members,textfield){
 	</ALTERNATIVE>
 </LOOP>
 </DEFMACRO>
+<!--[*************************************************]-->
+<!--[ Added 2005-03-07																]-->
+<!--[ Javascript for help printing of interface				]-->
+<!--[ edition choice																	]-->
+<!--[*************************************************]-->
+<DEFMACRO NAME="JS_HELP_INTERFACE_EDITION">
+<script type="text/javascript">
+
+	function update_help()
+	{
+		var help_box = document.getElementById('help_interface_edition');
+		var type_of_selection = document.getElementById('edition').value;
+		help_box.innerHTML = "[@COMMON.HELP_EDITION_PARAMETER_" + type_of_selection + "]";
+		return true;
+	}
+
+
+</script>
+</DEFMACRO>
+
