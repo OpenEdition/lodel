@@ -211,7 +211,7 @@ function parse ($in,$out)
   }
 
 
-
+  @unlink($out); // detruit avant d'ecrire.
   $fp=fopen ($out,"w") or $this->errmsg("cannot write file $out");
   fputs($fp,$contents);
   fclose($fp); 
