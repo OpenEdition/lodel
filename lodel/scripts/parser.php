@@ -226,7 +226,7 @@ require_once ($GLOBALS[home]."connect.php");
 function parse_texte(&$text)
 
 {
-  global $home,$editeur,$urlroot,$site;
+  global $home,$editeur;
   preg_match_all("/<TEXT\s*NAME=\"([^\"]+)\"\s*>/",$text,$results,PREG_SET_ORDER);
 #  print_r($results);
   foreach ($results as $result) {
@@ -235,11 +235,10 @@ function parse_texte(&$text)
       include_once($home."connect.php");
       $result2=mysql_query("SELECT id FROM $GLOBALS[tp]textes WHERE nom='$nom'") or $this->errmsg (mysql_error());
       if (!mysql_num_rows($result2)) { // il faut creer le texte
-	mysql_query("INSERT INTO textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
+	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
       }
     }
-    $urlbase=($GLOBALS[siteagauche] || !$site) ? $urlroot : $urlroot.$site."/";
-    $text=str_replace ($result[0],'<?php $result=mysql_query("SELECT id,texte FROM textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><A HREF="'."$urlbase".'lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</A><BR><?php } echo $texte; ?>',$text);
+    $text=str_replace ($result[0],'<?php $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[editeur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo $texte; ?>',$text);
   }
 }
 
