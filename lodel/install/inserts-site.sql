@@ -65,7 +65,9 @@ REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,tr
 
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (31,'fichiersassocies',3,'fichiersassocies','','fichier','','','',1,32);
 REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (32,'datepubli',3,'datepubli','datepubli','date','','','',2,32);
-REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (33,'image',3,'image','','fichier','','','',3,32);
+REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (33,'image',3,'image','','image','','','',3,32);
+REPLACE INTO  _PREFIXTABLE_champs (id,nom,idgroupe,titre,style,type,condition,traitement,edition,ordre,statut) VALUES (34,'fichiersource',3,'fichiersource','','fichier','','','',4,32);
+
 
 ################# PUBLICATIONS #################
 # groupes de champs
