@@ -35,8 +35,7 @@ xslt_set_encoding($xsltproc, 'ISO-8859-1');
 $xmlpath=".";
 $tplpath="../src/lodel/admin/tpl";
 
-$tables=array("entries",
-	      "persontypes",
+$tables=array("persontypes",
 	      "entrytypes",
 	      "types","classes",
 	      "tablefields",

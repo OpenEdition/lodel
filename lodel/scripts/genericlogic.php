@@ -78,11 +78,14 @@ class GenericLogic extends Logic {
 
        if ($context['classtype']=="persons") {
 	 $criteria="class='".$context['class']."' OR class='entities_".$context['class']."'";
+       } elseif ($context['classtype']=="entries") {
+	 $criteria="class='".$context['class']."'";
        } else {
 	 $criteria="idgroup='".$context['id']."'";
        }
        $result=$db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
 
+       print_R($result);
        $haveresult=!empty($result->fields);
        if ($haveresult) call_user_func("code_before_$funcname",$context);
 

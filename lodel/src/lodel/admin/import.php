@@ -28,11 +28,9 @@
    *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-include ($home."auth.php");
+require($home."auth.php");
 authenticate(LEVEL_ADMINLODEL);
-include ($home."func.php");
-#authenticate();
-
+require($home."func.php");
 
 $context['importdir']=$importdir;
 $fileregexp='(site|revue)-\w+-\d+.zip';

@@ -27,7 +27,7 @@
 
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
+CREATE TABLE IF NOT EXISTS #_MTP_sites (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	title		VARCHAR(255) NOT NULL,
 	subtitle	TINYTEXT,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 );
 
 
-CREATE TABLE IF NOT EXISTS #_TP_users (
+CREATE TABLE IF NOT EXISTS #_MTP_users (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS #_TP_users (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
+CREATE TABLE IF NOT EXISTS #_MTP_session (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(64) BINARY NOT NULL UNIQUE,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_urlstack (
+CREATE TABLE IF NOT EXISTS #_MTP_urlstack (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment, # faudrait generer le probleme du overflow
 	idsession	INT UNSIGNED DEFAULT '0' NOT NULL,
 	url		MEDIUMBLOB NOT NULL, # url de retour de l'url en cours
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_urlstack (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
+CREATE TABLE IF NOT EXISTS #_MTP_texts (
 	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	name		VARCHAR(255) NOT NULL,  # name
 	contents	TEXT,                   # texte
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_texts (
 );
 
 
-CREATE TABLE IF NOT EXISTS _PREFIXTABLE_translations (
+CREATE TABLE IF NOT EXISTS #_MTP_translations (
 	id			INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
 	lang			CHAR(5) NOT NULL,		# code of the lang
 	title			TINYTEXT,
@@ -130,4 +130,4 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_translations (
 
 # suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.
 # Administrateur par defaut. mot de passe : admintmp
-#REPLACE INTO _PREFIXTABLE_users (username,passwd,nom,courriel,privilege) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire','',128);
+#REPLACE INTO #_MTP_users (username,passwd,nom,courriel,privilege) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire','',128);

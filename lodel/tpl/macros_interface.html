@@ -68,6 +68,39 @@
 
 
 
+<!--[ ************************************************** ]-->
+
+<!--[ Macros rajoutées le 17/11/03 ********************* ]-->
+<!--[ Macros servant à publication.html et               ]-->
+<!--[ document.html                                      ]-->
+<DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
+<!--[ Permet de lister tous les champs d'un groupe de    ]-->
+<!--[ champs                                             ]-->
+
+	<LOOP NAME="edition_fields">
+		<BEFORE><!--[ information sur le groupe. Ne s'affichent que s'il y a des champs editable ]-->
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+				<tr>
+					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
+				</tr>
+			</table>
+			<br />
+			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0"><tr><td>
+		</BEFORE>
+        <DO>
+	  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+	<br />
+        </DO>
+        <AFTER>
+			</td></tr></table>
+        </AFTER>
+    </LOOP>
+</DEFMACRO>
+
+
+
 
 <!--[ -----------------------------------------------------------
       Widget pour l'edition des differents types de champs

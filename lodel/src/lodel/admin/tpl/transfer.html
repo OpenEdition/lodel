@@ -71,6 +71,12 @@ Opérations qui ont échoué:<br>
 		<input class="form" type="button" value="    Finir / Abandonner    " onClick="window.location='index.php';" />
 </form>
 
+<IF COND="[#VZEROSEPT]">
+   <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
+		<input class="form" type="submit" name="confirm07" value="Revenir en 0.7" />
+</form>
+</IF>
+
 
 <MACRO NAME="CLOSE_HTML">
  

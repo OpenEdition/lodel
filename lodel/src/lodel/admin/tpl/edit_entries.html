@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_ENTRY_INDEX]</title>
@@ -64,38 +65,9 @@
       </p>
     </LOOP>
   </IF>
-  <label for="g_name">[@ADMIN.ENTRY]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="g_name" id="g_name" class="text" value="[#G_NAME]">
-  <br />
-  <LOOP NAME="fielderror" FIELD="g_name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="g_name"></FUNC>
-    </p>
-  </LOOP>
-  <label for="lang">[@COMMON.LANG]
-        : 
-      </label>
-  <br class="nobr">
-  <select name="lang" id="lang">
-    <?php 
-                      makeSelect($context,"lang","entries","lang");
-                  ?>
-  </select>
-  <br />
-  <LOOP NAME="fielderror" FIELD="lang">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
-    </p>
-  </LOOP>
-  <input type="hidden" name="idtype" value="[#IDTYPE]">
-  <LOOP NAME="fielderror" FIELD="idtype">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idtype"></FUNC>
-    </p>
-  </LOOP>
+
+   <MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
+
   <label for="protected">[@ADMIN.PERMANENT_ENTRY]
         : 
       </label>

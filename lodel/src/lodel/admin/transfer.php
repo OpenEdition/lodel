@@ -30,39 +30,147 @@
 
 require("siteconfig.php");
 require ($home."auth.php");
-authenticate(LEVEL_ADMINLODEL);
-#authenticate();
+#authenticate(LEVEL_ADMINLODEL);
+authenticate();
+$lodeluser['rights']=128;
 require_once($home."func.php");
 require_once($home."fieldfunc.php");
 require_once($home."connect.php");
 
 $context['confirm']=intval($_POST['confirm']);
 
+$tables=gettables();
+if ($tables[$GLOBALS[tp]."v07_objets"]) {
+  if ($_POST['confirm07']) {
+    if (!$GLOBALS['tp']) die("ERROR: unsafe operation. Comment this line if your database contains only Lodel tables. If not, you can't continue.");
+    foreach(array_keys($tables) as $table) {
+      if (strpos($table,$GLOBALS['tp']."v07_")===0) {
+	$basename=substr($table,strlen($GLOBALS['tp']."v07_"));
+    $err=mysql_query_cmds('
+DROP TABLE IF EXISTS #_TP_'.$basename.';
+RENAME TABLE #_TP_v07_'.$basename.' TO #_TP_'.$basename.';
+ ');    
+      } elseif (strpos($table,$GLOBALS['tp'])===0) {
+    $err=mysql_query_cmds('
+DROP TABLE IF EXISTS '.$table.';
+ ');    
+      } // sinon rien
+      if ($err) die($err);
+    } // foreach tables
+  } else {
+    $context['vzerosept']=true;
+  }
+}
+
+
 if ($_POST['confirm']) {
   $tables=gettables();
   do { // block de control
+    if ($tables["$GLOBALS[tp]objets"]) {
+      // traductions de la base
+
+      $translationconv=array(
+			     "objects (id,class)"=>"objets (id,classe)",
+			     "entities (id,idparent,idtype,identifier,usergroup,iduser,rank,status,upd)"=>"entites (id,idparent,idtype,identifiant,groupe,iduser,ordre,statut,maj)",
+			     "relations (id1,id2,nature,degree)"=>"relations (id1,id2,nature,degres)",
+			     "tablefields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
+			     "tablefieldgroups (id,name,class,title,comment,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
+			     "persons (id,g_familyname,g_firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
+			     "users (id,username,passwd,name,email,userrights,status,upd)"=>"users (id,username,passwd,nom,courriel,privilege,statut,maj)",
+			     "usergroups (id,name,status,upd)"=>"groupes (id,nom,statut,maj)",
+			     "users_usergroups (idgroup,iduser)"=>"users_groupes (idgroupe,iduser)",
+			     "types (id,type,title,class,tpl,tplcreation,tpledition,import,rank,status,upd)"=>"types (id,type,titre,classe,tpl,tplcreation,tpledition,import,ordre,statut,maj)",
+			     "persontypes (id,type,title,style,titledescription,styledescription,tpl,tplindex,rank,status,upd)"=>"typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,ordre,statut,maj)",
+			     "entrytypes (id,type,title,style,tpl,tplindex,rank,status,flat,newbyimportallowed,useabrevation,sort,upd)"=>"typeentrees (id,type,titre,style,tpl,tplindex,ordre,statut,lineaire,nvimportable,utiliseabrev,tri,maj)",
+			     "entries (id,idparent,g_name,abrev,lang,idtype,rank,status,upd)"=>"entrees (id,idparent,nom,abrev,langue,idtype,ordre,statut,maj)",
+			     "tasks (id,name,step,user,context,status,upd)"=>"taches (id,nom,etape,user,context,statut,maj)",
+			     "texts (id,name,contents,status,upd)"=>"textes (id,nom,texte,statut,maj)",
+			     "entities_persons (idperson,identity,idtype,rank,prefix,description,fonction,affiliation,courriel)"=>"entites_personnes (idpersonne,identite,idtype,ordre,prefix,description,fonction,affiliation,courriel)",
+			     "entities_entries (identry,identity)"=>"entites_entrees (identree,identite)",
+			     "entitytypes_entitytypes (identitytype,identitytype2,condition)"=>"typeentites_typeentites (idtypeentite,idtypeentite2,condition)",
+			     "entitytypes_entrytypes (identitytype,identrytype,condition)"=>"typeentites_typeentrees (idtypeentite,idtypeentree,condition)",
+			     "entitytypes_persontypes (identitytype,idpersontype,condition)"=>"typeentites_typepersonnes (idtypeentite,idtypepersonne,condition)",
+			     "options (id,name,type,value,rank,status,upd)"=>"options (id,nom,type,valeur,ordre,statut,maj)",
+			     #			     "translations (id,lang,title,textgroups,translators,modificationdate,creationdate,rank,status,upd)"=>"translations (id,lang,titre,textgroups,translators,modificationdate,creationdate,ordre,statut,maj)"
+			     "documents"=>"documents",
+			     "publications"=>"publications",
+			     "sites"=>"sites",
+			     "pileurl"=>"pileurl",
+			     );
+
+      $todelete=array();
+      foreach($translationconv as $new=>$old) {
+	list($newtable,$values)=explode(" ",$new);
+	list($oldtable,$select)=explode(" ",$old);
+
+	if (!$tables[$GLOBALS['tp'].$oldtable]) continue;
+
+	if (!$tables[$GLOBALS['tp']."v07_".$oldtable]) {
+	  $err=mysql_query_cmds('
+RENAME TABLE #_TP_'.$oldtable.' TO #_TP_v07_'.$oldtable.';
+ ');
+	  if ($err) break;
+	  } else {
+	    $err=mysql_query_cmds('
+DROP TABLE #_TP_'.$oldtable.';
+ ');
+	    if ($err) break;
+	}	
+	$oldtable="v07_".$oldtable;
+
+	/////////// duplicate the table
+	$db->SetFetchMode(ADODB_FETCH_NUM);
+	list($t,$create)=$db->getRow(lq("SHOW CREATE TABLE #_TP_$oldtable"));
+	$db->SetFetchMode(ADODB_FETCH_ASSOC);
+	if ($select && $values) {
+	  #echo $tables,"<br>";
+	  $select=preg_replace("/[()]/","",$select);
+	  $select_arr=explode(",",$select);
+	  $values_arr=explode(",",preg_replace("/[()]/","",$values));
+	  for($i=0; $i<count($select_arr); $i++) {
+	    $create=str_replace("`$select_arr[$i]`","`$values_arr[$i]`",$create);
+	  }
+	} else {
+	  $values="";
+	  $select="*";
+	}
+	$create=str_replace(lq("`#_TP_$oldtable`"),lq("`#_TP_$newtable`"),$create);
+	#echo $create,"<br>";
+	$err=mysql_query_cmds($create);
+	///////////
+
+	//
+	if ($err) break;
+	$err=mysql_query_cmds("INSERT INTO #_TP_$newtable $values SELECT $select FROM #_TP_$oldtable");
+	if ($err) break;
+	array_push($todelete,$oldtable);
+	$report.="traduction de la table $oldtable<br>\n";
+      }
+      $tables=gettables();
+      if ($err) break;
+    } // fini la translation
 
 
     //
     // add field in text class
     //
-    if ($tables["$GLOBALS[tp]textes"]) {
+    if ($tables["$GLOBALS[tp]texts"]) {
       $textfields=array("lang"=>"CHAR(5) NOT NULL",
 			"textgroup"=>"VARCHAR(10) NOT NULL");
 
-      $fields=getfields("textes");
+      $fields=getfields("texts");
       foreach ($textfields as $f=>$t) {
 	if ($fields[$f]) continue;
 	$err=mysql_query_cmds('
- ALTER TABLE #_TP_textes ADD '.$f.' '.$t.';
- ALTER TABLE #_TP_textes ADD INDEX index_'.$f.' ('.$f.');
+ ALTER TABLE #_TP_texts ADD '.$f.' '.$t.';
+ ALTER TABLE #_TP_texts ADD INDEX index_'.$f.' ('.$f.');
  ');
 	if ($err) break 2;
       }
 
       if (!$fields['textgroup']) {
 	$err=mysql_query_cmds('
- UPDATE #_TP_textes SET textgroup=\'site\'
+ UPDATE #_TP_texts SET textgroup=\'site\'
  ');
 	if ($err) break;
       }
@@ -99,78 +207,7 @@ UPDATE #_TP_users SET lang=\'fr\'
       if ($err=create("translations")) break; // create the translation table
     }
 
-    if ($tables["$GLOBALS[tp]objets"]) {
-      // traductions de la base
-
-      $translationconv=array(
-			     "objects (id,class)"=>"objets (id,classe)",
-			     "entities (id,idparent,idtype,identifier,usergroup,iduser,rank,status,upd)"=>"entites (id,idparent,idtype,identifiant,groupe,iduser,ordre,statut,maj)",
-			     "relations (id1,id2,nature,degree)"=>"relations (id1,id2,nature,degres)",
-			     "tablefields (id,name,idgroup,title,style,type,condition,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd)"=>"champs (id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj)",
-			     "tablefieldgroups (id,name,class,title,comment,status,rank,upd)"=>"groupesdechamps (id,nom,classe,titre,commentaire,statut,ordre,maj)",
-			     "persons (id,g_familyname,g_firstname,status,upd)"=>"personnes (id,nomfamille,prenom,statut,maj)",
-			     "users (id,username,passwd,name,email,userrights,lang,status,upd)"=>"users (id,username,passwd,nom,courriel,privilege,lang,statut,maj)",
-			     "usergroups (id,name,status,upd)"=>"groupes (id,nom,statut,maj)",
-			     "users_usergroups (idgroup,iduser)"=>"users_groupes (idgroupe,iduser)",
-			     "types (id,type,title,class,tpl,tplcreation,tpledition,import,rank,status,upd)"=>"types (id,type,titre,classe,tpl,tplcreation,tpledition,import,ordre,statut,maj)",
-			     "persontypes (id,type,title,style,titledescription,styledescription,tpl,tplindex,rank,status,upd)"=>"typepersonnes (id,type,titre,style,titredescription,styledescription,tpl,tplindex,ordre,statut,maj)",
-			     "entrytypes (id,type,title,style,tpl,tplindex,rank,status,flat,newbyimportallowed,useabrevation,sort,upd)"=>"typeentrees (id,type,titre,style,tpl,tplindex,ordre,statut,lineaire,nvimportable,utiliseabrev,tri,maj)",
-			     "entries (id,idparent,g_name,abrev,lang,idtype,rank,status,upd)"=>"entrees (id,idparent,nom,abrev,langue,idtype,ordre,statut,maj)",
-			     "tasks (id,name,step,user,context,status,upd)"=>"taches (id,nom,etape,user,context,statut,maj)",
-			     "texts (id,name,contents,lang,textgroup,status,upd)"=>"textes (id,nom,texte,lang,textgroup,statut,maj)",
-			     "entities_persons (idperson,identity,idtype,rank,prefix,description,fonction,affiliation,courriel)"=>"entites_personnes (idpersonne,identite,idtype,ordre,prefix,description,fonction,affiliation,courriel)",
-			     "entities_entries (identry,identity)"=>"entites_entrees (identree,identite)",
-			     "entitytypes_entitytypes (identitytype,identitytype2,condition)"=>"typeentites_typeentites (idtypeentite,idtypeentite2,condition)",
-			     "entitytypes_entrytypes (identitytype,identrytype,condition)"=>"typeentites_typeentrees (idtypeentite,idtypeentree,condition)",
-			     "entitytypes_persontypes (identitytype,idpersontype,condition)"=>"typeentites_typepersonnes (idtypeentite,idtypepersonne,condition)",
-			     "options (id,name,type,value,rank,status,upd)"=>"options (id,nom,type,valeur,ordre,statut,maj)",
-			     #			     "translations (id,lang,title,textgroups,translators,modificationdate,creationdate,rank,status,upd)"=>"translations (id,lang,titre,textgroups,translators,modificationdate,creationdate,ordre,statut,maj)"
-			     );
-
-      $todelete=array();
-      foreach($translationconv as $new=>$old) {
-	list($newtable,$values)=explode(" ",$new);
-	list($oldtable,$select)=explode(" ",$old);
-	$select=preg_replace("/[()]/","",$select);
-	$err=mysql_query_cmds('
-DROP TABLE IF EXISTS #_TP_v07_'.$oldtable.';
-RENAME TABLE #_TP_'.$oldtable.' TO #_TP_v07_'.$oldtable.';
- ');
-	$oldtable="v07_".$oldtable;
-	if ($err) break;
-
-	/////////// duplicate the table
-	$db->SetFetchMode(ADODB_FETCH_NUM);
-	list($t,$create)=$db->getRow(lq("SHOW CREATE TABLE #_TP_$oldtable"));
-	$db->SetFetchMode(ADODB_FETCH_ASSOC);
-	$select_arr=explode(",",preg_replace("/[()]/","",$select));
-	$values_arr=explode(",",preg_replace("/[()]/","",$values));
-	for($i=0; $i<count($select_arr); $i++) {
-	  $create=str_replace("`$select_arr[$i]`","`$values_arr[$i]`",$create);
-	}
-	$create=str_replace(lq("`#_TP_$oldtable`"),lq("`#_TP_$newtable`"),$create);
-	$err=mysql_query_cmds($create);
-	///////////
-
-
-	//
-	if ($err) break;
-	$err=mysql_query_cmds("INSERT INTO #_TP_$newtable $values SELECT $select FROM #_TP_$oldtable");
-	if ($err) break;
-	array_push($todelete,$oldtable);
-	$report.="traduction de la table $oldtable<br>\n";
-      }
-      $tables=gettables();
-      if ($err) break;
-      #foreach ($todelete as $table) {
-      #	$err=mysql_query_cmds("DROP TABLE #_TP_$table;");
-      #if ($err) break;
-      #}
-      #if ($err) break;
-      #$report.="efface les anciennes tables<br>";
-    } // fini la translation
   
-
     /////////////////////
     /// publications et documents
     foreach (array("publications","documents") as $classe) {
@@ -541,7 +578,7 @@ ALTER TABLE #_TP_entrytypes DROP useabrevation;
       }
 
       $err=mysql_query_cmds('
-UPDATE #_TP_entrytypes SET sort=\'sortkey\' WHERE sort=\'name\';
+UPDATE #_TP_entrytypes SET sort=\'sortkey\' WHERE sort=\'nom\';
 UPDATE #_TP_entrytypes SET sort=\'rank\' WHERE sort=\'ordre\';
 ');
       if ($err) break;
@@ -796,19 +833,22 @@ INSERT INTO #_TP_'.$class.' (identry,nom) SELECT id,g_name FROM #_TP_entries;
 	$arr=preg_split("/\s*,\s*/",$type->style,-1,PREG_SPLIT_NO_EMPTY);
 	if (count($arr)<=1) continue;
 	// multilingue
-	for($i=1; $i<count($arr); $i++) {
+	for($i=0; $i<count($arr); $i++) {
 	  list($name,$lang)=preg_split("/\s*:\s*/",$arr[$i]);
 	  $vo=$entrytypesdao->getById($type->id); // reload because the table has changed
-	  $vo->id=0;
-	  $vo->type=$name;
-	  $vo->title=ucfirst($name);
+	  $vo->style=$name;
+	  if ($i>0) {
+	    $vo->id=0;
+	    $vo->type=$name;
+	    $vo->title=ucfirst($name);
+	  }
 	  $idtype=$entrytypesdao->save($vo);
 	  $err=mysql_query_cmds('
 UPDATE #_TP_entries SET idtype='.$idtype.' WHERE idtype='.$type->id.' AND lang=\''.$lang.'\'
 ');
 	  if ($err) break 3;
-	  $report.="Ajout des types multi-lingue de ".$vo->type."<br/>";
-	}	
+	  $report.="Ajout des types multilingue de ".$vo->type."<br/>";
+	}
       }
       if ($fields['lang']) {
 	$err=mysql_query_cmds('
@@ -885,8 +925,8 @@ UPDATE #_TP_objects SET class=\'persontypes\' WHERE class=\'typepersonnes\';
 }
 
 
-$context[error]=$err;
-$context[report]=$report;
+$context['error']=$err;
+$context['report']=$report;
 
 require($home."calcul-page.php");
 calcul_page($context,"transfer");
@@ -1084,6 +1124,3 @@ function setrecord($table,$id,$set,$context=array())
 }
 
 ?>
-
-
-

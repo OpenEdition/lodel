@@ -62,7 +62,7 @@ function open_session ($login) {
     // name de la session
     $name=md5($login.microtime());
     // enregistre la session, si ca marche sort de la boucle
-    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2')"));
+    $result=$db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2')")) or dberror();
     if ($result) break; // ok, it's working fine
   }
   //if (function_exists("unlock")) unlock(); 
@@ -119,7 +119,6 @@ function check_auth ($login,&$passwd,&$site)
 
     // efface les donnees de la memoire et protege pour la suite
     $passwd=0;
-
     return true;
   } while (0);
 
