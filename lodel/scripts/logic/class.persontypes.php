@@ -42,10 +42,6 @@ class PersonTypesLogic extends Logic {
    }
 
 
-
-
-
-
    function isdeletelocked($id,$status=0) 
 
    {
@@ -58,24 +54,6 @@ class PersonTypesLogic extends Logic {
        return sprintf(getlodeltextcontents("cannot_delete_hasperson","common"),$count);
      }
      //) { $error["error_has_entities"]=$count; return "back"; }
-   }
-
-
-   /**
-    * makeSelect
-    */
-
-   function makeSelect(&$context,$var)
-
-   {
-     switch($var) {
-     case "sort" :
-       renderOptions(array("name"=>getlodeltextcontents("alphabetical_order","admin"),
-			   "rank"=>getlodeltextcontents("order_defined_in_interface","admin"),
-			   "id"=>getlodeltextcontents("order_of_creation","admin"),
-			   ),$context['sort']);
-       break;
-     }
    }
 
 

@@ -148,19 +148,22 @@
 
 
             <!-- select and lang                   -->
-            <xsl:when test="@edittype='select' or @edittype='lang'">
+            <xsl:when test="@edittype='select' or @edittype='multipleselect' or @edittype='lang'">
                 <p>
                   <xsl:call-template name="label" />
                   <xsl:element name="select">
-                        <xsl:attribute name="name">
-                            <xsl:value-of select="@name"/>
-                        </xsl:attribute>
-                        <phptag>
-                          makeSelect($context,"<xsl:value-of select="@name" />","<xsl:value-of select="$table" />","<xsl:value-of select="@edittype" />");
-                        </phptag>
-                    </xsl:element>
-                 </p>
-                 <xsl:call-template name="error" />
+                    <xsl:attribute name="name">
+                      <xsl:value-of select="@name"/>
+                    </xsl:attribute>
+                    <xsl:if test="@edittype='multipleselect'">
+                      <xsl:attribute name="multiple">multiple</xsl:attribute>
+                    </xsl:if>
+                    <phptag>
+                      makeSelect($context,"<xsl:value-of select="@name" />","<xsl:value-of select="$table" />","<xsl:value-of select="@edittype" />");
+                  </phptag>
+                </xsl:element>
+              </p>
+              <xsl:call-template name="error" />
             </xsl:when>
 
             <xsl:when test="@edittype='special'">

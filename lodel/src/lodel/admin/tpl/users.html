@@ -22,6 +22,7 @@
 
 
 <USE MACROFILE="macros.html">
+<USE MACROFILE="macros2.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_USER_EDITION] [#SITE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
@@ -47,63 +48,39 @@
 		<td class="texte_noir_gras" align="center">[@ADMIN.SESSIONS]</td>
 		<td>&nbsp;</td>
 	</tr>
-	<LOOP NAME="users" TABLE="users" ORDER="nom" WHERE="status gt 0 AND privilege lt 128">
+	<LOOP NAME="users" TABLE="users" ORDER="username" WHERE="status gt 0 AND userrights lt 128">
 		<DO>
-			<tr>
-				<IF COND="[#COUNT] % 2">
-					<td class="ligne_admin1 nom_user"><strong>[(#USERNAME|nbsp)]</strong></td>
-					<td class="ligne_admin1" align="center">
-						<MACRO NAME="AFFICHER_PRIVILEGE">
-					</td>
-					<td class="ligne_admin1" align="center">[(#NOM|nbsp)]</td>
-					<td class="ligne_admin1" align="center">[(#COURRIEL|nbsp)]</td>
-					<td class="ligne_admin1" align="center">
-						<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
-							<DOFIRST>
-								<div class="texte_info"><a href="session.php?deleteuser=[#ID]">[@ADMIN.DELETE_SESSION_LOG]</a></div>
-							</DOFIRST>
-							<ALTERNATIVE>
-								<div class="texte_info">
-									[@ADMIN.NO_SAVED_SESSION]
-								</div>					
-							</ALTERNATIVE>
-				        </LOOP>
+			<MACRO NAME="TR_LIST">
+			<td><strong>[(#USERNAME|nbsp)]</strong></td>
+			<td>
+				<MACRO NAME="AFFICHER_PRIVILEGE">
+			</td>
+			<td>[(#NOM|nbsp)]</td>
+			<td>[(#COURRIEL|nbsp)]</td>
+			<td>
+			<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
+				<DOFIRST>
+				<div class="texte_info"><a href="session.php?deleteuser=[#ID]">[@ADMIN.DELETE_SESSION_LOG]</a></div>
+				</DOFIRST>
+				<ALTERNATIVE>
+					<div class="texte_info">
+					[@ADMIN.NO_SAVED_SESSION]
+					</div>					
+				</ALTERNATIVE>
+		        </LOOP>
 					</td>	
-					<td class="ligne_admin1" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="user.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
-							<a href="user.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
-						</div>
-					</td>
-				<ELSE/>
-					<td class="nom_user" align="left"><strong>[(#USERNAME|nbsp)]</strong></td>
-					<td class="ligne_admin2" align="center">
-						<MACRO NAME="AFFICHER_PRIVILEGE">
-					</td>
-					<td class="ligne_admin2" align="center">[(#NOM|nbsp)]</td>
-					<td class="ligne_admin2" align="center">[(#COURRIEL|nbsp)]</td>
-					<td class="ligne_admin2" align="center">
-						<LOOP NAME="nbsessions2" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT=""> 
-							<DOFIRST>
-								<a href="session.php?deleteuser=[#ID]">[@ADMIN.DELETE_SESSION_LOG]</a>
-							</DOFIRST>
-							<ALTERNATIVE>
-								<div class="texte_info">
-									[@ADMIN.NO_SAVED_SESSION]
-								</div>					
-							</ALTERNATIVE>
-				        </LOOP>
+				<td style="color: #CC9933;" align="left">
+				<div>
 
-					</td>	
-					<td class="ligne_admin2" style="color: #CC9933;" align="right">
-						<div>
-							|&nbsp;<a href="user.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
-							<a href="user.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
-						</div>
-					</td>
-				</IF>
+               			 <FUNC NAME="CHANGE_RANK_BUTTON" TABLE="[#TABLE]">
+				 <FUNC NAME="MODIFY_DELETE_BUTTON" TABLE="[#TABLE]">
+				</div>
+				</td>
 			</tr>
 		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="4"><span class="texte_info">[@ADMIN.NO_USERS]</span></td></tr>
+		</ALTERNATIVE>
 	</LOOP>
 </table>
 

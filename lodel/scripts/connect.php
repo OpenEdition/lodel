@@ -74,8 +74,8 @@ function usemaindb()
 {
   global $db,$maindb,$savedb;
 
-  if (DATABASE==$GLOBALS['currentdb']) return; // nothing to do
-  if ($db->selectDB(DATABASE)) return; // try to selectdb
+  if (DATABASE==$GLOBALS['currentdb']) return false; // nothing to do
+  if ($db->selectDB(DATABASE)) return true; // try to selectdb
 
   if (!$maindb) { // not connected
     $maindb=ADONewConnection(DBDRIVER);
@@ -86,7 +86,7 @@ function usemaindb()
   $savedb=&$db;
   $db=&$maindb;
 
-  return;
+  return true;
 }
 
 

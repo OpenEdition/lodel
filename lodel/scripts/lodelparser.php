@@ -140,10 +140,10 @@ function parse_loop_extra(&$tables,
       }
       if ($tablefields[$realtable] &&
 	  !in_array("status",$tablefields[$realtable])) continue;
-      if ($realtable=="#_TP_session") continue;
+      if ($realtable==lq("#_TP_session")) continue;
 
-      if ($realtable=="#_TP_entities") {
-	$lowstatus='"-64".($GLOBALS[rightadmin] ? "" : "*('.$table.'.groupe IN ($GLOBALS[usergroups]))")';
+      if ($realtable==lq("#_TP_entities")) {
+	$lowstatus='"-64".($GLOBALS[rightadmin] ? "" : "*('.$table.'.usergroup IN ($GLOBALS[usergroups]))")';
       } else {
 	$lowstatus="-64";
       }

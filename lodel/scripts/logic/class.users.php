@@ -45,70 +45,84 @@ class UsersLogic extends Logic {
    function isdeletelocked($id,$status=0) 
 
    {
-     global $db;
-     $count=$db->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE iduser='$id' AND status>-64"));
-     if ($db->errorno)  die($db->errormsg());
-     if ($count==0) {
-       return false;
+     if ($GLOBALS['iduser']==$id && 
+	 ( ($GLOBALS['site'] && $GLOBALS['userrights']<LEVEL_ADMINLODEL) ||
+	   (!$GLOBALS['site'] && $GLOBALS['userrights']==LEVEL_ADMINLODEL))) {
+       return getlodeltextcontents("cannot_delete_current_user","common");
      } else {
-       return sprintf(getlodeltextcontents("cannot_delete_hasentity","common"),$count);
+       return false;
      }
      //) { $error["error_has_entities"]=$count; return "back"; }
    }
 
 
    /**
-    * Change rank action
-    * Default implementation
-    */
-   function changeRankAction(&$context,&$error)
-
-   {
-   }
-
-
-   /**
-    *
+    * make the select for this logic
     */
 
    function makeSelect(&$context,$var)
 
    {
      switch($var) {
-     case "import" :
-       foreach($GLOBALS['importdocument'] as $n=>$v) { $arr[]=getlodeltextcontents($v['title']); }
-       renderOptions($arr,$context['import']);
+     case "groups" :
+       $dao=getDAO("users_groups");
+       $list=$dao->findMany("status>0","rank","id","title");
+       foreach($list as $group) {
+	 $arr[$group->id]=$group->title;
+       }
+       renderOptions($arr,$context['groups']);
        break;
      }
    }
-     
-
+ 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
    /**
     * @private
     */
 
-   /**
-    * Used in editAction to do extra operation after the object has been saved
-    */
-
    function _saveRelatedTables($vo,$context) 
 
    {
-XXXXXXXXXXXXXXXXXX
-      // change les groupes
-      mysql_query("DELETE FROM $GLOBALS[tp]users_usergroups WHERE iduser='$id'") or die($db->errormsg());
-      foreach ($groupes as $groupe) {
-	mysql_query("INSERT INTO $GLOBALS[tp]users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')") or die($db->errormsg());
+     if (!$context['groups']) $context['groups']=array(1);
+
+     // change the groups     
+     // first delete the group
+     $this->_deleteRelatedTables($id);
+     // now add the groups
+      foreach ($context['groups'] as $group) {
+	$group=intval($group);
+	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$groupe','$id')")) or die($db->errormsg());
       }
-    }
    }
 
    function _deleteRelatedTables($id) {
      global $db;
      $db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or die($db->errormsg());
    }
+
+
+   function _validateFields(&$context,&$error) {
+     global $db;
+
+     // check the user has the right equal or higher to the new user
+     if ($GLOBALS['userrights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
+
+     // Check the user is not duplicated in the main table...
+     if (!usemaindb()) return; // use the main db, return if it is the same as the current one.
+
+     $ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND username='".$context['username']."'");
+     if ($db->errorno) die($this->errormsg());
+     usecurrentdb();
+
+     if ($ret) {
+       $error['username']="1"; // report the error on the first field
+       return false;
+     } else {
+       return true;
+     }
+   }
+
 
    // begin{publicfields} automatic generation  //
    function _publicfields() {
@@ -126,7 +140,6 @@ XXXXXXXXXXXXXXXXXX
 
     function _uniqueFields() {  return array(array("user","class"),);  }
    // end{uniquefields} automatic generation  //
-
 
 } // class 
 

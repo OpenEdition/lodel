@@ -418,6 +418,9 @@
         type="TINYINT"
         default="1"
         required="true" />
+<vcolumn name="groups"
+	label="[@ADMIN.USERGROUPS]"
+	edittype="multipleselect" />
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_USER]"
         edittype="boolean" />

@@ -215,11 +215,21 @@ function makeSelect(&$context,$varname,$table,$edittype)
 }
 
 
+/**
+ * render the <option> html tags for normal and multiple select
+ */
+
 function renderOptions($arr,$selected)
 
 {
+  $multipleselect=is_array($selected);
+
   foreach ($arr as $k=>$v) {
-    $s=$k==$selected ? "selected" : "";
+    if ($multipleselect) {
+      $s=in_array($k,$selected) ? "selected" : "";
+    } else {
+      $s=$k==$selected ? "selected" : "";
+    }
     $k=htmlentities($k);
     echo '<option value="'.htmlentities($k).'" '.$s.'>'.$v."</option>\n";
   }

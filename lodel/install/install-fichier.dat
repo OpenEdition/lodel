@@ -224,7 +224,6 @@ ln tpl/fieldgroup.html
 
 ln tpl/edit_types.html
 
-
 ln tpl/edit_entrytypes.html
 ln tpl/entrytypes.html
 
@@ -236,8 +235,7 @@ ln tpl/backup.html
 ln import.php
 ln tpl/import.html
 
-ln user.php
-ln tpl/user.html
+ln tpl/edit_users.html
 ln tpl/users.html
 ln usersettings.php
 
