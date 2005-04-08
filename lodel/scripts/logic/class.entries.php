@@ -130,7 +130,11 @@ class EntriesLogic extends GenericLogic {
      }
      // populate the entry table
      if ($idtype) $vo->idtype=$idtype;
-     $vo->g_name=$context['data'][$this->g_name['index key']];
+
+     $index_key=&$context['data'][$this->g_name['index key']];
+     $index_key=str_replace(","," ",$index_key); // remove the , because it is a separator
+     $vo->g_name=$index_key;
+
      $vo->sortkey=makeSortKey($vo->g_name);
      #print_R($vo);
      $id=$context['id']=$dao->save($vo);
