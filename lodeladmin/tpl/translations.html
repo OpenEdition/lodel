@@ -68,7 +68,7 @@
 			</div>
 			</td>		        
 		        <td>
-		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
+		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup" SELECT="textgroup">
 		             <a href="index.php?do=list&lo=texts&textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
 		        </LOOP>
 		        </td>
