@@ -467,7 +467,7 @@ CREATE TABLE IF NOT EXISTS #_TP_search_engine (
 	identity		INT UNSIGNED NOT NULL DEFAULT '0',
 	tablefield 		VARCHAR(32) NOT NULL DEFAULT '',
 	word			VARCHAR(30) NOT NULL DEFAULT '',
-	WEIGHT 			DOUBLE NOT NULL DEFAULT '0',
+	weight 			DOUBLE NOT NULL DEFAULT '0',
 
 	KEY index_word (word),
 	KEY index_identity (identity)
