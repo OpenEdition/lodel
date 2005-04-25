@@ -33,7 +33,24 @@
 </DEFMACRO>
 
 
-
+<DEFFUNC NAME="PRINT_ERROR_LISTING">
+<LOOP NAME="errors">
+<BEFORE>
+	<a id="top"></a>
+	[@COMMON.ERROR_DETECTED|sprintf([#COUNT])]
+	<ul class="error">
+</BEFORE>
+<DO>
+		<li>
+			<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#VARNAME]">
+			<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
+		</li>
+	</DO>
+<AFTER>
+		</ul>
+</AFTER>
+</LOOP>
+</DEFFUNC>
 
 
 <!--[ -----------------------------------------------------------
@@ -56,7 +73,11 @@
 <IF COND="[#ERROR] eq 'style'">[@COMMON.ERROR_INVALID_STYLE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'mlstyle'">[@COMMON.ERROR_INVALID_MULTILINGUAL_STYLE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'url'">[@COMMON.ERROR_INVALID_URL|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR] eq 'url_malformed'">[@COMMON.ERROR_MALFORMED_URL|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR] eq 'url_baddomainname'">[@COMMON.ERROR_BADDOMAINNAME_URL|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'email'">[@COMMON.ERROR_INVALID_EMAIL|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR] eq 'email_malformed'">[@COMMON.ERROR_MALFORMED_EMAIL|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR] eq 'email_baddomainname'">[@COMMON.ERROR_BADDOMAINNAME_EMAIL|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'tplfile'">[@COMMON.ERROR_INVALID_TPLFILE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'textgroups'">[@COMMON.ERROR_INVALID_TEXTGROUPS|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE|sprintf([#TITLE])]</IF>
@@ -173,14 +194,14 @@
 	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
 	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
  	<MACRO NAME="FCK_EDITOR_PARAMETERS">
-   
+ 	
     <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
     <script>
-    	var fck_[#VARNAME]_editor = new FCKeditor('[#VARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
+    	var fck_[#VARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
     	<IF COND="[#FCK_MODE] EQ 'Simple'">
  			fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 		</IF>
- 	   	fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
+ 			</IF>
+ 		 	fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
     	fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
     	fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
     	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
@@ -189,7 +210,6 @@
     	<?$context["value"] = str_replace("\r","",$context["value"]); ?>
     	fck_[#VARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
     	fck_[#VARNAME]_editor.Create();
-    	
     </script>
     <ELSE/>   
 	<IF COND="[#EDITIONPARAMS] gt 1">
@@ -348,7 +368,10 @@ cp_[#NAME].writeDiv();
 
 <!--[ error managment ]-->
 <LOOP NAME="fielderror" FIELD="[#VARNAME]">
-<p class="error"> <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />  </p>
+<a id="[#VARNAME]"></a>
+<span class="error">
+	 <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+</span>
 </LOOP>
 </DEFFUNC>
 
@@ -476,7 +499,7 @@ cp_[#NAME].writeDiv();
 	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
 	<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
+		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#G_NAME]</option>
 		</LOOP>
 	</select>
 	</td><td>
@@ -942,8 +965,19 @@ function modifymember(members,textfield){
 </select>
 
 &nbsp;[@EDITION.SEARCH_IN_FIELD]&nbsp;
+
 <select id="qfield" name="qfield" class="searchfields">
-	<option value=""> -- [@EDITION.ALL_FIELDS] --</option>
+<option value=""> -- [@EDITION.ALL_FIELDS] --</option>
+<LOOP NAME="list_indexable_fields" TABLE="tablefields" SELECT="class,name,title" WHERE="weight GT 0" ORDER="class,name">
+<DO>
+	<option value="[#CLASS].[#NAME]">[#CLASS] &rarr; [#NAME|ucfirst]</option>
+</DO>
+<ALTERNATIVE>
+	[@EDITION.NO_SEARCHABLE_FIELDS]
+</ALTERNATIVE>
+</LOOP>
+
+<!--[	
 	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>[@COMMON.TITLE]</option>
 	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>[@COMMON.DESCRIPTION]</option>
 	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>[@COMMON.FORMAT]</option>
@@ -952,6 +986,7 @@ function modifymember(members,textfield){
 	<!--<option value="DC.Relation" <IF COND="[#QFIELD] EQ 'DC.Relation'">selected="selected"</IF>>[@COMMON.RELATION]</option>
 	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>[@COMMON.COVERAGE]</option>
 	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>[@COMMON.RIGHTS]</option>-->
+	]-->
 </select>
 
 
