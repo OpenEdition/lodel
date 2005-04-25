@@ -54,6 +54,7 @@ $GLOBALS['lodelsitetables']=array("#_TP_objects",
 				  "#_TP_entitytypes_entitytypes",
 				  "#_TP_options",
 				  "#_TP_optiongroups",
+				  "#_TP_search_engine",
 				  "#_TP_translations",
 				  "#_TP_internalstyles",
 				  "#_TP_characterstyles");
