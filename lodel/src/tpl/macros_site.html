@@ -141,19 +141,16 @@ abus@
 	</select>
 </AFTER>
 </LOOP>
-
+]-->
 &nbsp;Champ : &nbsp;
 <select id="qfield" name="qfield" class="searchfields">
 	<option value=""> -- Tous --</option>
 	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>Titre</option>
-	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>Description</option>
-	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>Format</option>
-	<option value="DC.Source" <IF COND="[#QFIELD] EQ 'DC.Source'">selected="selected"</IF>>Source</option>
-	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>Langue</option>
-	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>Couverture</option>
-	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>Copyrights</option>
+	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>Résumé</option>
+	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>Format de document</option>
+	<option value="DC.Type" <IF COND="[#QFIELD] EQ 'DC.Type'">selected="selected"</IF>>Type de document</option>
 </select>
-]-->
+
 </fieldset>
 </span>
 </form>		
