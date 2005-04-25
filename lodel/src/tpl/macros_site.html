@@ -127,10 +127,11 @@ abus@
 	<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 résultats par page</option>
 	<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 résultats par page</option>
 </select>
+<!--[
 <LOOP NAME="listtypes" TABLE="types" WHERE="search=1"ORDER="rank" >
 <BEFORE>
 	&nbsp;Type :&nbsp;
-	<select  id="qtype" name="qtype" class="searchfields" <!--[onchange="updatefields(this);"]-->>
+	<select  id="qtype" name="qtype" class="searchfields" onchange="updatefields(this);">
 	<option id="[#CLASS]_[#ID]" value=""> -- Tous -- </option>
 </BEFORE>
 <DO>
@@ -152,7 +153,7 @@ abus@
 	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>Couverture</option>
 	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>Copyrights</option>
 </select>
-
+]-->
 </fieldset>
 </span>
 </form>		
