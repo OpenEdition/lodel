@@ -408,7 +408,10 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 #  die("\n");
   foreach($results as $result) {
     $name=removeaccentsandspaces(strtolower($result[2]));
-    if ($name) $stylename[$result[1]]=$name;
+    if ($name) {
+      if ($name=="wwcitation" || $name="citationcar") $name="citation";
+      $stylename[$result[1]]=$name;
+    }
   }
 
   $arr=preg_split("/(<\/?)(p|span)\b([^>]*>)/",$xhtml,-1,PREG_SPLIT_DELIM_CAPTURE);
@@ -443,6 +446,11 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       if ($arr[$i+1]=="span" && preg_match("/^(t\d+|footnote.*|endnote.*|internetlink)$/",$class)) { # on fait comme ca maintenant... je ne sais pas ce que ca va donner !
 	$class="";
       }
+      if ($arr[$i+1]=="span") {
+	$arr[$i+2]=preg_replace("/(style=\"font-size\s*:\s+\d+%;\s+vertical-align)\s*:\s+-\d+%/","\\1:sub",$arr[$i+2]);
+      }
+
+
       if ($class) {
 	$arr[$i]="<$ns:$class>".$arr[$i]; // ajoute au debut
 	if ($singletags) { // balise ouvrante/fermante
