@@ -35,6 +35,7 @@ function validfield(&$text,$type,$default="",$name="")
 {
   static $tmpdir;
   require_once("fieldfunc.php");
+  
   if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
     $text=strip_tags($text);
   }
@@ -121,8 +122,9 @@ function validfield(&$text,$type,$default="",$name="")
     if ($text) {
      /* $validchar='-0-9A-Z_a-z';
       if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$text)) return "email";*/
-      if(!_validEmail($text))
-   			return 'email';
+      $res = _validEmail($text);
+      if($res!==true)
+   			return $res;
  
     }
     break;
@@ -130,8 +132,9 @@ function validfield(&$text,$type,$default="",$name="")
     if (!$text && $default) $text=$default;
     if ($text) 
     {
-    	if(!_validUrl($text))
-    		return "url";
+    	$res = _validUrl($text);
+    	if($res!==true)
+    		return $res;
     	
     /*  $validchar='-0-9A-Z_a-z';
       if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$text)) return "url";*/
@@ -244,17 +247,19 @@ function _validEmail($email)
 	//timeout  
 	$timeout = intval(50*(ini_get("max_execution_time")/100));
 	if (!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $email))
-	return false;
-
+	return "email_malformed";
+	return true;
 	// gets domain name
-	list($username,$domain)=split('@',$email);
+	/*DOMAIN CHECK INACTIF
+	 * 
+	 * list($username,$domain)=split('@',$email);
 	// checks for if MX records in the DNS
 	$mxhosts = array();
 	if(!getmxrr($domain, $mxhosts)) 
 	{
 		// no mx records, ok to check domain
 		if (!@fsockopen($domain,25,$errno,$errstr,$timeout)) 
-			return false;
+			return "email_baddomainname";
 		else 
 			return true;
 	} 
@@ -264,8 +269,8 @@ function _validEmail($email)
 		foreach ($mxhosts as $host) 
 			if (@fsockopen($host,25,$errno,$errstr,$timeout)) 
 				return true;
-		return false;
-	}
+		return "email_baddomainname";
+	}*/
 }
 
 /**
@@ -280,19 +285,22 @@ function _validUrl($url)
 	$parsedurl = parse_url($url);
 	#print_r($parsedurl);
 	if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",@$parsedurl['scheme'])  || empty($parsedurl['host']))
-		return false;
-	else
+		return "url_malformed";
+	return true;
+	/* DOMAIN CHECK INACTIF
+	 * 
+	 * else
 	{
 		if(function_exists('checkdnsrr')) // the function checkdnsrr doest not exists on Windows plateforms
 		{
 			if(checkdnsrr($parsedurl['host'], 'A'))
 				return true;
 			else
-				return false;
+				return "url_baddomainname";
 		}
 		else
 			return true;
-	}
+	}*/
 
 }
 ?>
