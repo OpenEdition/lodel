@@ -32,18 +32,52 @@
 <body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="black" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0">
 </DEFMACRO>
 
-
+<!--[********************************************************]-->
+<!--[ Print a listing of all detected errors in to the form  ]-->
+<!--[********************************************************]-->
 <DEFFUNC NAME="PRINT_ERROR_LISTING">
 <LOOP NAME="errors">
 <BEFORE>
 	<a id="top"></a>
+	<span class="error">
 	[@COMMON.ERROR_DETECTED|sprintf([#COUNT])]
+	</span>
 	<ul class="error">
 </BEFORE>
 <DO>
 		<li>
-			<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#VARNAME]">
-			<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
+			<span class="error">
+			<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]'"> 
+				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+			</LOOP>
+				<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
+			</span>
+		</li>
+	</DO>
+<AFTER>
+		</ul>
+</AFTER>
+</LOOP>
+</DEFFUNC>
+<!--[********************************************************]-->
+<!--[ Print a listing of all detected errors in to the form  ]-->
+<!--[ Defined only for xsl forms generated 									 ]-->
+<!--[********************************************************]-->
+<DEFFUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS">
+	<LOOP NAME="errors">
+<BEFORE>
+	<a id="top"></a>
+	<span class="error">
+	[@COMMON.ERROR_DETECTED|sprintf([#COUNT])]
+	</span>
+	<ul class="error">
+</BEFORE>
+<DO>
+		<li>
+			<span class="error">
+				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#VARNAME]" />
+				<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
+			</span>
 		</li>
 	</DO>
 <AFTER>
@@ -52,12 +86,12 @@
 </LOOP>
 </DEFFUNC>
 
-
 <!--[ -----------------------------------------------------------
       Print error message given the error code
 --------------------------------------------------------------- ]-->
 
 <DEFFUNC NAME="PRINT_ERROR_MESSAGE" REQUIRED="title">
+
 <IF COND="[#ERROR] eq '+'">[@COMMON.ERROR_REQUIRED_FIELD|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq '1'">[@COMMON.ERROR_FIELD_MUST_BE_UNIQUE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'date'">[@COMMON.ERROR_INVALID_DATE|sprintf([#TITLE])]</IF>
@@ -968,7 +1002,7 @@ function modifymember(members,textfield){
 
 <select id="qfield" name="qfield" class="searchfields">
 <option value=""> -- [@EDITION.ALL_FIELDS] --</option>
-<LOOP NAME="list_indexable_fields" TABLE="tablefields" SELECT="class,name,title" WHERE="weight GT 0" ORDER="class,name">
+<!--[<LOOP NAME="list_indexable_fields" TABLE="tablefields" SELECT="class,name,title" WHERE="weight GT 0" ORDER="class,name">
 <DO>
 	<option value="[#CLASS].[#NAME]">[#CLASS] &rarr; [#NAME|ucfirst]</option>
 </DO>
@@ -976,17 +1010,11 @@ function modifymember(members,textfield){
 	[@EDITION.NO_SEARCHABLE_FIELDS]
 </ALTERNATIVE>
 </LOOP>
-
-<!--[	
+]-->
 	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>[@COMMON.TITLE]</option>
 	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>[@COMMON.DESCRIPTION]</option>
 	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>[@COMMON.FORMAT]</option>
-	<option value="DC.Source" <IF COND="[#QFIELD] EQ 'DC.Source'">selected="selected"</IF>>[@COMMON.SOURCE]</option>
 	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>[@COMMON.LANG]</option>
-	<!--<option value="DC.Relation" <IF COND="[#QFIELD] EQ 'DC.Relation'">selected="selected"</IF>>[@COMMON.RELATION]</option>
-	<option value="DC.Coverage" <IF COND="[#QFIELD] EQ 'DC.Coverage'">selected="selected"</IF>>[@COMMON.COVERAGE]</option>
-	<option value="DC.Rights" <IF COND="[#QFIELD] EQ 'DC.Rights'">selected="selected"</IF>>[@COMMON.RIGHTS]</option>-->
-	]-->
 </select>
 
 
@@ -1060,11 +1088,15 @@ function modifymember(members,textfield){
 		</IF>
 	</BEFORE>
 	<DO>
+		<IF COND="[#HOLE] EQ 1">
+			&nbsp;...&nbsp;
+		</IF>
 		<IF COND="[#URLPAGE] NE ''">
 			<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#PAGENUMBER]">
 		<ELSE/>
 			<span class="currentpage">
 		</IF>
+		
 		[#PAGENUMBER]
 		<IF COND="[#URLPAGE] NE ''">
 			</a>
