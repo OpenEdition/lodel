@@ -180,6 +180,7 @@ class Entities_IndexLogic extends Logic
 	 	$fieldValue = $this->_decode_html_entities($fieldValue); //HTML Entities decode
 		$indexs = $this->_cleanAndcountTokens($fieldValue); //clean and count tokens
 		
+		//Indexation de tous les mots.
 		foreach($indexs as  $key => $index)
 	 	{
 			$daoIndex->instantiateObject($voIndex);
@@ -187,7 +188,8 @@ class Entities_IndexLogic extends Logic
 		 	$voIndex->tablefield = $prefixtablefield.$fieldName;
 		 	$voIndex->word = addslashes($key);
 		 	$voIndex->weight = $indexs[$key] * $fieldWeight; //ponderation with field weight
-		 	#print_r($voIndex);
+		# 	if($prefixtablefield=='theme.')
+		 #		print_r($voIndex);
 		 	$daoIndex->save($voIndex,true);
 		}
 	}
@@ -275,41 +277,63 @@ class Entities_IndexLogic extends Logic
 					WHERE r.id2= e.id AND r.id1='$id' AND r.nature='$nature' 
 					AND t.id=e.idtype
 					AND tf.weight > 0
-					ORDER BY e.id";
+					";
 		}
-	
-		
 		#echo "sql=".lq($sql)."<br />";
-		$result = $db->execute(lq($sql));
-		while($result && !$result->EOF)
+		$result = $db->execute(lq($sql)) or dberror();
+		$arr = array();
+		while(!$result->EOF)
 		{
 			$row = $result->fields;
-			$sql2 = "SELECT ".$row['name']." FROM #_TP_".$row['class']." WHERE id".$table2."=".$row['id'];
-			#echo "<pre>sql2=".lq($sql2)."<br /></pre>";
-			$field = $db->getOne(lq($sql2));
-			$this->_indexField($id,$field,$row['name'],$row['weight'],$daoIndex,$row['class'].".");
+			$arr[$row['class']]['id'][$row['id']] = $row['id'] ;
+			$arr[$row['class']]['fieldname'][$row['name']] = $row['weight'];
 			$result->moveNext();
 		}
-		
-		//can't do the following above because I must selection idrelation and not id from the table
+		foreach($arr as $classe => $values)
+		{
+			$cols = implode(",",array_keys($values['fieldname']));
+			$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array($values['id']);
+		#	echo "sql2=$sql2";
+			$result2 = $db->execute(lq($sql2)) or dberror();
+			while(!$result2->EOF)
+			{
+				foreach($result2->fields as $field => $value)
+					$this->_indexField($id,$value,$field,$values['fieldname'][$field],$daoIndex,$classe.".");
+				$result2->moveNext();
+			}
+		}
+		//can't do the following above because I must select idrelation and not id from the table
 		if($nature=='G') //special for nature G, get field from entities_$class table to index
 		{
 			$table2='relation';
 			$sql = "SELECT DISTINCT tf.name, tf.weight, tf.class, r.idrelation AS id 
 							FROM #_TP_relations AS r, #_TP_tablefields AS tf, #_TP_persontypes as t, #_TP_persons as p
 							WHERE r.nature='G' AND r.id1='$id' AND tf.weight > 0 AND t.id=p.idtype AND tf.class=CONCAT('entities_',t.class)" .
-							" ORDER BY r.id";
+							"";
 			#echo "<pre>sql=".lq($sql)."</pre><br />";
-			$result = $db->execute(lq($sql));
-			while($result && !$result->EOF)
+			$result = $db->execute(lq($sql)) or dberror();
+			$arr = array();
+			while(!$result->EOF)
 			{
 				$row = $result->fields;
-				$sql2 = "SELECT ".$row['name']." FROM #_TP_".$row['class']." WHERE id".$table2."=".$row['id'];
-				#echo "<pre>sql2=".lq($sql2)."<br /></pre>";
-				$field = $db->getOne(lq($sql2));
-				$this->_indexField($id,$field,$row['name'],$row['weight'],$daoIndex,$row['class'].".");
+				$arr[$row['class']]['id'][$row['id']] = $row['id'] ;
+				$arr[$row['class']]['fieldname'][$row['name']] = $row['weight'];
 				$result->MoveNext();
 			}
+			foreach($arr as $classe => $values)
+			{
+				$cols = implode(",",array_keys($values['fieldname']));
+				$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array($values['id']);
+			#	echo "sql2=$sql2";
+				$result2 = $db->execute(lq($sql2)) or dberror();
+				while(!$result2->EOF)
+				{
+					foreach($result2->fields as $field => $value)
+						$this->_indexField($id,$value,$field,$values['fieldname'][$field],$daoIndex,$classe.".");
+					$result2->moveNext();
+				}
+			}
+			
 		}//end if nature==G
 	}
 	
