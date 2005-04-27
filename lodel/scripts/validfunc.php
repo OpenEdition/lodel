@@ -120,25 +120,17 @@ function validfield(&$text,$type,$default="",$name="")
     
     if (!$text && $default) $text=$default;
     if ($text) {
-     /* $validchar='-0-9A-Z_a-z';
-      if (!preg_match("/^[$validchar]+@([$validchar]+\.)+[$validchar]+$/",$text)) return "email";*/
-      $res = _validEmail($text);
-      if($res!==true)
-   			return $res;
- 
+      if (!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $text))
+				return "email_malformed";
     }
     break;
   case "url" : 
     if (!$text && $default) $text=$default;
-    if ($text) 
-    {
-    	$res = _validUrl($text);
-    	if($res!==true)
-    		return $res;
-    	
-    /*  $validchar='-0-9A-Z_a-z';
-      if (!preg_match("/^(http|ftp):\/\/([$validchar]+\.)+[$validchar]+/",$text)) return "url";*/
-    }
+    if ($text) {
+    	$parsedurl = parse_url($text);
+			if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",$parsedurl['scheme'])  || empty($parsedurl['host']))
+				return "url_malformed";
+	  }
     break;
   case "boolean" :
     $text=$text ? 1 : 0;
@@ -230,77 +222,5 @@ function validfield(&$text,$type,$default="",$name="")
   }
 
   return true; // validated
-}
-
-/**
- * Function that validate an email adresses
- * Check if the domain exists and if the username is valid
- * Thanks to Alejandro Gervasio and Anonymous Loozah for the article and the code :
- * original source code :http://www.devshed.com/showblog/7775/Email-Address-Verification-with-PHP
- * @param $email email adress to validate
- * 
- */
-
-function _validEmail($email)
-{
-	  // checks proper syntax
-	//timeout  
-	$timeout = intval(50*(ini_get("max_execution_time")/100));
-	if (!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $email))
-	return "email_malformed";
-	return true;
-	// gets domain name
-	/*DOMAIN CHECK INACTIF
-	 * 
-	 * list($username,$domain)=split('@',$email);
-	// checks for if MX records in the DNS
-	$mxhosts = array();
-	if(!getmxrr($domain, $mxhosts)) 
-	{
-		// no mx records, ok to check domain
-		if (!@fsockopen($domain,25,$errno,$errstr,$timeout)) 
-			return "email_baddomainname";
-		else 
-			return true;
-	} 
-	else 
-	{
-		// mx records found
-		foreach ($mxhosts as $host) 
-			if (@fsockopen($host,25,$errno,$errstr,$timeout)) 
-				return true;
-		return "email_baddomainname";
-	}*/
-}
-
-/**
- * Function that validate an url
- * Parse the url to check the scheme and the host.
- * 
- * @param $url Internet adress to be validated
- */
-
-function _validUrl($url)
-{
-	$parsedurl = parse_url($url);
-	#print_r($parsedurl);
-	if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",@$parsedurl['scheme'])  || empty($parsedurl['host']))
-		return "url_malformed";
-	return true;
-	/* DOMAIN CHECK INACTIF
-	 * 
-	 * else
-	{
-		if(function_exists('checkdnsrr')) // the function checkdnsrr doest not exists on Windows plateforms
-		{
-			if(checkdnsrr($parsedurl['host'], 'A'))
-				return true;
-			else
-				return "url_baddomainname";
-		}
-		else
-			return true;
-	}*/
-
 }
 ?>
