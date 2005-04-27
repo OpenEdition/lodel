@@ -128,7 +128,7 @@ function validfield(&$text,$type,$default="",$name="")
     if (!$text && $default) $text=$default;
     if ($text) {
     	$parsedurl = parse_url($text);
-			if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",$parsedurl['scheme'])  || empty($parsedurl['host']))
+			if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",@$parsedurl['scheme'])  || (!@$parsedurl['host']))
 				return "url_malformed";
 	  }
     break;
