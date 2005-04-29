@@ -465,9 +465,15 @@ function parse_LOOP()
 	$orders[]=$value;
 	break;
       case "LIMIT" :
+	if ($selectparts['split']) $this->errmsg("Attribut SPLITRESULTS cannot be used with LIMIT",$this->ind);      
 	if ($selectparts['limit']) $this->errmsg("Attribut LIMIT should occur only once in loop $name",$this->ind);
 	$selectparts['limit']=$value;
 	break;
+			case "SPLIT" :
+  if ($selectparts['limit']) $this->errmsg("Attribut SPLITRESULTS cannot be used with LIMIT",$this->ind);
+  if ($selectparts['split']) $this->errmsg("Attribut SPLITRESULTS should occur only once in loop $name",$this->ind);
+    $selectparts['split']=$value;
+	break;		
       case "GROUPBY" :
 	if ($selectparts['groupby']) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
 	$selectparts['groupby']=$value;
@@ -703,7 +709,7 @@ function make_loop_code ($name,$tables,
   if ($selectparts['groupby']) $selectparts['groupby']="GROUP BY ".$selectparts['groupby']; // besoin de group by ?
 
   // special treatment for limit when only one value is given.
-  $limit=$selectparts['limit'];
+  $limit=$selectparts['split'];
 
 if ($limit && strpos($limit,",")===false) {
   
@@ -726,12 +732,18 @@ $context[nexturl]="";
 '$context[limitinfo] = '.$limit.';'.
 '$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
 ';
-   $limit='".$currentoffset.",'.($limit);
+  $limit='".$currentoffset.",'.($limit);
  } 
+  
   if ($limit) $limit="LIMIT ".$limit;
-
   // traitement particulier additionnel
-
+	//gere le cas simple du LIMIT
+	if(!$limit){
+		$limit = $selectparts['limit']; // n'arrivera que si splitresults n'est pas renseigné
+		if ($limit) $limit="LIMIT ".$limit;
+	}
+	
+		
   # c est plus complique que ca ici, car parfois la table est prefixee par la DB.
 
   // reverse the order in order the first is select in the last.
