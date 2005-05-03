@@ -877,7 +877,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
-	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]' AND type NOT LIKE 'documentannexe-%'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_isole1">
 		<ELSE/>
@@ -891,7 +891,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]' AND type NOT LIKE 'documentannexe-%'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_regroupement1">
 		<ELSE/>
