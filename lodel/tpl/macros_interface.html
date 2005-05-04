@@ -172,31 +172,33 @@
  		
  		if( is_array($parameters) )
  		{
+ 			
+ 			//Advanced mode or not
+ 			if(trim($parameters[0])==="Advanced" || trim($parameters[0])==="Simple" || trim($parameters[0])==="Basic")
+ 				$context["fck_mode"] = trim($parameters[0]);
+ 			else
+ 				$context["fck_mode"] = "Advanced";
  			//Width (by default will be 600px)
- 			$context["fck_width"] = (($parameters[0])  ? intval($parameters[0]) : 600);
+ 			$context["fck_width"] = (($parameters[1])  ? intval($parameters[1]) : 600);
  			//Height (by default will be 400px)
- 			$context["fck_height"] = (($parameters[1]) ? intval($parameters[1]) : 400);
- 			//SkinName (by default will be default :p)
- 			$context["fck_skin"] = (($parameters[2]) ? trim($parameters[2]) : "default");
- 			//AutodetectLanguage (by default will be on true
- 			$context["fck_autodetectlanguage"] = (($parameters[3]) ? $parameters[3] : "true");
+ 			$context["fck_height"] = (($parameters[2]) ? intval($parameters[2]) : 400);
  			//Language (by default will be empty)
- 			$context["fck_language"] = ($parameters[4] ? $parameters[4] : "fr");
- 			//Advenced mode or not
- 			$context["fck_mode"] = (($parameters[5] && $parameters[5]=="Advanced") ? "Default" : "Simple" );
- 				
+ 			$context["fck_language"] = ($parameters[3] ? trim($parameters[3]) : "fr");
+ 			//AutodetectLanguage (by default will be on true
+ 			$context["fck_autodetectlanguage"] = (($parameters[4]) ? trim($parameters[4]) : "true");
+ 			//SkinName (by default will be default :p)
+ 			$context["fck_skin"] = (($parameters[5]) ? trim($parameters[5]) : "silver");
  		}
  		else
  		{
- 			$context["fck_width"] = 800;
- 			$context["fck_height"] = 500;
- 			$context["fck_skin"] = "default";
+ 			$context["fck_width"] = 600;
+ 			$context["fck_height"] = 400;
+ 			$context["fck_skin"] = "silver";
  			$context["fck_autodetectlanguage"] = "true";
  			$context["fck_language"] = "fr";
- 			$context["fck_mode"] = "Simple";
+ 			$context["fck_mode"] = "Advanced";
  		}
- 		
-?>
+ ?>
 </DEFMACRO>
 
 
@@ -232,10 +234,8 @@
     <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
     <script>
     	var fck_[#VARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
-    	<IF COND="[#FCK_MODE] EQ 'Simple'">
- 			fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 			</IF>
- 		 	fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
+    	fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
+ 			fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
     	fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
     	fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
     	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
