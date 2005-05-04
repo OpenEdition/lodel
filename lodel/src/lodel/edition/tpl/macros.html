@@ -115,7 +115,7 @@
 			<tr>
 				<td colspan="2">
 					<div class="ligne_parent_tpl_publication">
-						Les documents suivantes sont protégés :
+						Les documents suivants sont protégés :
 					</div>
 				</td>
 			</tr>
@@ -506,15 +506,21 @@
 		Brouillon
 	<ELSE/>
 		<IF COND="[#STATUT]==-1">
-			Document pr&ecirc;t &agrave; publier
+			Pr&ecirc;t &agrave; publier
 		<ELSE/>
 			<IF COND="[#STATUT]==1">
-				Document publi&eacute;
+				Publi&eacute;
+			<ELSE/>
+				<IF COND="[#STATUT]==32">
+					Prot&eacute;g&eacute;
+				</IF>
 			</IF>
 		</IF>
 	</IF>
 </DEFMACRO>
 
+
+<!--[ desuet
 <DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
 	<IF COND="[#STATUT]==-32">
 		<a href="statut.php?publication=[#ID]&statut=pret">
@@ -553,6 +559,7 @@
 
 	<IF COND="[#STATUT]==1">&nbsp;-&nbsp;</IF>
 </DEFMACRO>
+]-->
 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
@@ -691,7 +698,7 @@
 	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
 		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
 		<div style="padding-top:10px;">
-			<a href="index.php?id=0"><span class="texte_edition_des_series">Edition</span></a>
+			<a href="index.php?id=0"><span class="texte_edition_des_series">Base</span></a>
 			<LOOP NAME="publisparentes">
 				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#IDENTIFIANT]</span></a>
 			</LOOP>
@@ -772,7 +779,7 @@
 <DEFMACRO NAME="AJOUTER_UNE_PUBLICATION">
 	<div class="lignes_ajouter_entite">
 		<LET VAR="idparentsaved">[#ID]</LET>
-		<LOOP NAME="entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="ordre">
+		<LOOP NAME="entites_de_classe_publications" TABLE="types" TABLE="typeentites_typeentites" WHERE="type NOT LIKE 'documentannexe-%'" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe='publications'" ORDER="ordre">
 			<BEFORE>
 				<IF COND="[#NBRESULTATS] ge 6">
 					<MACRO NAME="PNG_PLUS">
@@ -781,7 +788,7 @@
 				</IF>
 			</BEFORE>
 			<DO>
-				<IF COND="[#NBRESULTATS] ge 8">
+				<IF COND="[#NBRESULTATS] ge 6">
 					<option value="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">[#TITRE]</option>
 				<ELSE/>
 					<MACRO NAME="PNG_PLUS">&nbsp;<a href="publication.php?idtype=[#ID][&idparent=(#IDPARENTSAVED)]">Ajouter [#TITRE] |</a> 
@@ -799,7 +806,7 @@
 <DEFMACRO NAME="AJOUTER_UN_DOCUMENT">
         <IF COND="[#DROITADMIN] or [#ID]">
 	<LET VAR="idparentsaved">[#ID]</LET>
-	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe!='publications'" ORDER="ordre">
+	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="typeentites_typeentites" WHERE="type NOT LIKE 'documentannexe-%'" WHERE="idtypeentite=id AND idtypeentite2='[#IDTYPE]' AND classe!='publications'" ORDER="ordre">
 		<BEFORE>
 			<IF COND="[#NBRESULTATS] ge 6">
 				<MACRO NAME="PNG_PLUS">
@@ -870,7 +877,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_HORS_REGROUPEMENT">
-	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+	<LOOP NAME="articles_hors_regroupement" TABLE="documents" WHERE="idparent='[#ID]' AND type NOT LIKE 'documentannexe-%'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_isole1">
 		<ELSE/>
@@ -884,7 +891,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="LISTER_LES_DOCUMENTS_DU_REGROUPEMENT">
-	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]'" ORDER="ordre">
+	<LOOP NAME="documents_du_regroupement" TABLE="documents" WHERE="idparent='[#ID]' AND type NOT LIKE 'documentannexe-%'" ORDER="ordre">
 		<IF COND="[#COUNT] % 2">
 			<div class="ligne_document_regroupement1">
 		<ELSE/>
@@ -1119,44 +1126,64 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_STATUT_DOCUMENT">
-	<IF COND="[#STATUT]==-32">
-		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
-				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
-				<td>
-		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-						|&nbsp;<a href="statut.php?id=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
-					<ELSE/>
-						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
-					</IF>
-				</td>
-			</tr>
-		</table>
-	</IF>
-	<IF COND="[#STATUT]==-1">
-		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
-				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
-				<td>
-		                        <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
-						|&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
-					<ELSE/>
-						|&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
-					</IF>
-				</td>
-			</tr>
-		</table>
-	</IF>
-	<IF COND="[#STATUT] GT 0">
-		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
-			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
-				<td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
-			</tr>
-		</table>
-	</IF>
+  <IF COND="[#STATUT]==-32">
+      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
+              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+              <td>
+                              <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=pret">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</a>&nbsp;|
+                  <ELSE/>
+                      |&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Pr&ecirc;t à publier</i>&quot;</span>&nbsp;|
+                  </IF>
+              </td>
+          </tr>
+      </table>
+  </IF>
+  <IF COND="[#STATUT]==-1">
+      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
+              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+              <td>
+                              <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=brouillon">Passer &agrave; &quot;<i>Brouillon</i>&quot;</a>&nbsp;|&nbsp;
+                  <ELSE/>
+                      |&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Brouillon</i>&quot;</span>&nbsp;|&nbsp;
+                  </IF>
+              </td>
+          </tr>
+      </table>
+  </IF>      <IF COND="[#STATUT]==1">
+      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
+              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+              <td>
+                              <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=protege">Prot&eacute;ger</a>&nbsp;|
+                  <ELSE/>
+                      |&nbsp;<span class="inactif">Prot&eacute;ger</span>&nbsp;|
+                  </IF>
+              </td>
+          </tr>
+      </table>
+  </IF>      <IF COND="[#STATUT]==32">
+      <table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUT_DOCUMENT"></td>
+              <td style="color:#333333; font-weight:bold;width:200px"><MACRO NAME="AFFICHER_LIBELLE_STATUT_DOCUMENT"></td>
+              <td>
+                              <IF COND="([#DROITEDITEUR] AND [#IDPARENT] AND [#DROITGROUPE]) or [#DROITADMIN]">
+                      |&nbsp;<a href="statut.php?id=[#ID]&statut=deprotege">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</a>&nbsp;|&nbsp;
+                  <ELSE/>
+                      |&nbsp;<span class="inactif">Passer &agrave; &quot;<i>Publi&eacute;</i>&quot;</span>&nbsp;|&nbsp;
+                  </IF>
+              </td>
+          </tr>
+      </table>
+  </IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="CHANGER_STATUT_PUBLICATION">

@@ -63,10 +63,12 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	$value=$result2[1];
 
 	// type speciaux
+	/* done in entitefunc.php
 	if ($type=="date") { // date
 	  require_once($home."date.php");
 	  $value=mysqldate(strip_tags($value));
 	}
+	*/
 	#echo "traitement:$traitement";
 	if ($traitement) { // processing ?
 	  $traitements=preg_split("/\|/",$traitement);
@@ -252,7 +254,7 @@ function decodepersonne($personne)
     if ($nom) {
       $prenom=str_replace($nom,"",$personne);
     } else { // sinon coupe apres le premiere espace
-      if (preg_match("/^(.*?)\s+([^\s]+)$/iu",trim($personne),$result)) {
+      if (preg_match("/^(.*?)\s+([^\s]+)$/i",trim($personne),$result)) {
 	$prenom=$result[1]; $nom=$result[2];
       } else $nom=$personne;
     }

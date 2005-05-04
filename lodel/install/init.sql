@@ -28,7 +28,7 @@
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		VARCHAR(255) NOT NULL,
 	soustitre	TINYTEXT,
 	rep		VARCHAR(64) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
 	nom		VARCHAR(64),
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	name		VARCHAR(64) BINARY NOT NULL UNIQUE,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 	site		VARCHAR(64) BINARY NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment, # faudrait generer le probleme du overflow
+	id		INT UNSIGNED NOT NULL auto_increment, # faudrait generer le probleme du overflow
 	idsession	INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	url		CHAR(32) BINARY NOT NULL, # cle md5 de l'url en cours

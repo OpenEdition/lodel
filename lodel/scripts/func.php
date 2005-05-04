@@ -28,14 +28,16 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-function writefile ($filename,&$text)
+function writefile ($filename,$text)
 {
  //echo "nom de fichier : $filename";
    if (file_exists($filename)) 
    { 
      if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
    }
-   return ($f=fopen($filename,"w")) && fputs($f,$text) && fclose($f) && chmod ($filename,0666 & octdec($GLOBALS[filemask]));
+   $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
+   @chmod ($filename,0666 & octdec($GLOBALS[filemask]));
+   return  $ret;
 }
 
 
@@ -57,7 +59,7 @@ function posttraitement(&$context)
       if (is_array($val)) {
 	posttraitement($context[$key]);
       } else {
-	if ($key!="meta") $context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
     }
   }
@@ -225,31 +227,28 @@ function copy_images (&$text,$callback,$argument="",$count=1)
 function copy_images_private (&$text,$callback,$argument,&$count,&$imglist)
 
 {
-    preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"/i",$text,$results,PREG_SET_ORDER);
-    foreach ($results as $result) {
-      $imgfile=$result[1];
-      if (substr($imgfile,0,5)=="http:") continue;
-      if ($imglist[$imgfile]) {
-	$text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
-      } else {
-	$ext=$result[2];
-	$imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
+  preg_match_all("/<img\b[^>]+src=\"([^\"]+\.([^\"\.]+))\"([^>]*>)/i",$text,$results,PREG_SET_ORDER);
+  foreach ($results as $result) {
+    $imgfile=$result[1];
+    if (substr($imgfile,0,5)=="http:") continue;
+    if ($imglist[$imgfile]) {
+      $text=str_replace($result[0],"<img src=\"$imglist[$imgfile]\"",$text);
+    } else {
+      $ext=$result[2];
+      $imglist[$imgfile]=$newimgfile=$callback($imgfile,$ext,$count,$argument);
+      if ($newimgfile) { // ok, the image has been correctly copied
 #	echo "images: $imgfile $newimgfile <br>";
-      	$text=str_replace($result[0],"<img src=\"$newimgfile\"",$text);
+	$text=str_replace($result[0],"<img src=\"$newimgfile\"".$result[3],$text);
 	@chmod(SITEROOT.$newimgfile, 0666  & octdec($GLOBALS['filemask']));
-      	$count++;
-	}
+	$count++;
+      } else { // no, problem copying the image
+	$text=str_replace($result[0],"<span class=\"image_error\">[Image non convertie]</span>",$text);
+      }
     }
+  }
 }
 
 
-//function addmeta(&$meta) # liste variable de valeurs
-//
-//{
-//  $arg=array_shift(func_get_args());
-//  $meta=serialize(array_merge($arg,unserialize($meta)));
-//}
-//
 
 function addmeta(&$arr,$meta="")
 
@@ -408,36 +407,57 @@ if (!function_exists("file_get_contents")) {
  * 
  */
 
+
 function download($filename,$originalname="",$contents="")
 
 {
-  // taken from phpMyAdmin
-  // Download
-  if (!$originalname) $originalname=$filename;
-  if ($filename && !is_readable($filename)) die ("ERROR: The file \"$filename\" is not readable");
-  $originalname=preg_replace("/.*\//","",$originalname);
+  $mimetype = array(
+		    'doc'=>'application/msword',
+		    'htm'=>'text/html',
+		    'html'=>'text/html',
+		    'jpg'=>'image/jpeg',
+		    'gif'=>'image/gif',
+		    'png'=>'image/png',
+		    'pdf'=>'application/pdf',
+		    'txt'=>'text/plain',
+		    'xls'=>'application/vnd.ms-excel'
+		    );
 
-  get_PMA_define();
-// bcenou: DOES NOT WORK WHITH IE MAC
-  $isaMAC = preg_match("/Mac_PowerPC/i", $_SERVER['HTTP_USER_AGENT']);
-  if(!$isaMAC){
-  	header("Content-type: application/force-download");
-  	header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-  }
-  // lem9 & loic1: IE need specific headers
-// bcenou: ONLY FOR IE MAC, DOES NOT WORK WHITH IE WIN
-  if (PMA_USR_BROWSER_AGENT == 'IE' && $isaMAC) {
-    header('Content-Disposition: inline; filename="' . $originalname . '"');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: public');
+  if (!$originalname) $originalname=$filename;
+  $originalname=preg_replace("/.*\//","",$originalname);
+  $ext=substr($originalname,strrpos($originalname,".")+1);
+  $size = $filename ? filesize($filename) : strlen($contents);
+  if($mimetype[$ext]){
+    $mime = $mimetype[$ext];
+    $disposition = "inline";
   } else {
-    $size=$filename ? filesize($filename) : strlen($contents);
-    header('Content-Disposition: attachment; filename="' . $originalname . '"');
-    header('Content-Length: '.$size.'"');
-    header('Pragma: no-cache');
+    $mime = "application/force-download";
+    $disposition = "attachment";
   }
-  if ($filename) { readfile($filename); } else { echo $contents; }
+  if ($filename) {
+    $fp=fopen($filename,"rb");
+    if (!$fp) die ("ERROR: The file \"$filename\" is not readable");
+  }
+  // fix for IE catching or PHP bug issue
+  header("Pragma: public");
+  header("Expires: 0"); // set expiration time
+  header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+
+#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
+#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
+
+  header("Content-type: $mime\n");
+  header("Content-transfer-encoding: binary\n");
+  header("Content-length: ".$size."\n");
+  header("Content-disposition: $disposition; filename=\"$originalname\"\n");
+  sleep(1); // don't know why... (from on uk.php.net)
+  if ($filename) {
+    fpassthru($fp); 
+  } else { 
+    echo $contents; 
+  }
 }
+
 
 // taken from phpMyAdmin 2.5.4
 
@@ -600,7 +620,8 @@ function tmpdir()
   $tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
 
   if (!file_exists($tmpdir)) { 
-    mkdir($tmpdir,0777  & octdec($GLOBALS[filemask])); 
+    mkdir($tmpdir,0777  & octdec($GLOBALS[filemask]));
+    chmod($tmpdir,0777 & octdec($GLOBALS[filemask])); 
   }
   return $tmpdir;
 }

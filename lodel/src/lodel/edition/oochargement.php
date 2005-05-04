@@ -53,6 +53,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
     $tmpdir=tmpdir(); // use here and later.
     $source=$tmpdir."/".basename($file1)."-source";
     move_uploaded_file($file1,$source); // move first because some provider does not allow operation in the upload dir
+    @chmod($source,0666 & octdec($GLOBALS[filemask])); 
 
     $fileconverted=$source.".converted";
     $sourceoriginale=$_FILES['file1']['name'];
@@ -261,6 +262,7 @@ Will be reimplemented using a proper XML parser.
 		      "r2r:introduction"=>"r2r:texte",
 		      "r2r:conclusion"=>"r2r:texte",
 		      "r2r:normal"=>"r2r:texte",
+		      "r2r:default"=>"r2r:texte",
 		      "r2r:normal\s*(web)"=>"r2r:texte",
 		      "r2r:standard"=>"r2r:texte", 
 		      "r2r:bloccitation"=>"r2r:citation",
@@ -465,7 +467,18 @@ Will be reimplemented using a proper XML parser.
 
 
   // remove any wrong caracteres in the r2r
-  $file=preg_replace ("/(<\/?r2rc?:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
+#  $file=preg_replace ("/(<\/?r2rc?:)\w*(&amp;\w*)+>/","\\1invalidcharacters>",$file);
+
+  // very heavy...
+  $arr=preg_split("/(<\/?r2rc?:)([^>]+>)/",$file,-1,PREG_SPLIT_DELIM_CAPTURE);
+
+  for($i=2; $i<count($arr); $i+=3) {
+    $arr[$i]=preg_replace(array("/[^a-z1-9>]/","/^[1-9]*/"),"",$arr[$i]);
+  }
+  $file=join("",$arr);
+
+#  $file=preg_replace (array("/(<\/?r2rc?:)[^a-z1-9>]+>/",
+#			    "\\1invalidcharacters>",$file);
 
   //
   // add the "official" beginning and end of the xml file
@@ -591,6 +604,8 @@ Will be reimplemented using a proper XML parser.
 
     function img_copy($imgfile,$ext,$count,$rand) {
       global $tmpdir;
+      if (!file_exists($tmpdir."/".basename($imgfile))) return false;
+
       $newimgfile="../../docannexe/tmp".$rand."_".$count.".".$ext;
       rename($tmpdir."/".basename($imgfile),$newimgfile) or die ("impossible de copier l'image $imgfile dans $newimgfile");
       return $newimgfile;
@@ -694,31 +709,42 @@ function traite_tableau2_xhtml(&$text)
       if ($level==0) {
 	$arr[$i].="</r2r:$laststyle>";
 	$arr[$istart]="<r2r:$laststyle>".$arr[$istart];
+	$laststyle=""; // on vient de sortir du tableau
       }
-      $laststyle=""; // on vient de sortir du tableau
     } else { // on ouvre
       if ($level==0) $istart=$i;
       $level++;
     }
-    if ($level && preg_match_all("/<\/r2r:(\w+)>/",$arr[$i+1],$results,PREG_SET_ORDER)) {
-      foreach($results as $result) { // cherche si c'est partout le meme style
-	if ($laststyle && $laststyle!=$result[1]) { 
-	  $err=1;
-	  #die($laststyle." ".$result[1]);
-	  break 2;
-	}
-	$laststyle=$result[1];
-      }
-      $arr[$i+1]=preg_replace("/<\/?r2r:$laststyle>/","",$arr[$i+1]); // ok, on efface alors
+
+//    // before we raised an error, now... we don't care.
+//    if ($level && preg_match_all("/<\/r2r:(\w+)>/",$arr[$i+1],$results,PREG_SET_ORDER)) {
+//      foreach($results as $result) { // cherche si c'est partout le meme style
+//	if ($laststyle && $laststyle!=$result[1]) { 
+//	  $err=1;
+//	  #die($laststyle." ".$result[1]);
+//	  break 2;
+//	}
+//	$laststyle=$result[1];
+//	break
+//      }
+//      $arr[$i+1]=preg_replace("/<\/?r2r:$laststyle>/","",$arr[$i+1]); // ok, on efface alors
+//    }
+//    // before we raised an error, now... we don't care.
+    if ($level && preg_match("/<\/r2r:(\w+)>/",$arr[$i+1],$result)) {
+      if (!$laststyle) $laststyle=$result[1];
+      $arr[$i+1]=preg_replace("/<\/?r2r:\w+>/","",$arr[$i+1]); // erase all the styles in the table.
     }
   }
+
   if ($err) {    return FALSE;  }
 
   $text=join("",$arr);
+
   return TRUE;
 }
 
 
+/*
 function traite_tableau2(&$text)
 
 {
@@ -748,7 +774,7 @@ function traite_tableau2(&$text)
   $text=join("",$arr);
   return TRUE;
 }
-
+*/
 
 
 function traite_couple(&$text)
@@ -815,7 +841,7 @@ function convertCSSstyle ($style) {
       $styles[$j]="";
     }
     // indice and superscript
-    if (preg_match("/^font-size:\d\d?%$/",$styles[$j]) && $styles[$j+1]) {
+    if (preg_match("/^font-size:(\d\d?%|\d+(\.\d)?pt)$/",$styles[$j]) && $styles[$j+1]) {
       if ($styles[$j+1]=="vertical-align:sub") {
 	$open.="<sub>";
 	$close.="</sub>".$close;
@@ -899,7 +925,8 @@ function cleanList($text)
     }
     if ($inlist>0) { // in a list
       //      $arr[$i+1]=preg_replace("/<\/?(?:p|div|r2r:puces?)\b[^>]*>/"," ",$arr[$i+1]);
-      $arr[$i+1]=preg_replace("/<\/?r2r:puces?\b[^>]*>/"," ",$arr[$i+1]);
+      //$arr[$i+1]=preg_replace("/<\/?r2r:puces?\b[^>]*>/"," ",$arr[$i+1]);
+      $arr[$i+1]=preg_replace("/<\/?r2r:[^>]+>/"," ",$arr[$i+1]);
     } else { // out of any list
       $arr[$i+1]=addList($arr[$i+1]);
     }

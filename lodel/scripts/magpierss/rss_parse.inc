@@ -167,16 +167,17 @@ class MagpieRSS {
 
 		$parser = @xml_parser_create($charset);
 
-		# Ghislain:
-		# target encoding UTF-8
-		xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
-		
+	
 		if (!is_resource($parser))
 		{
 			$this->error( "Failed to create an instance of PHP's XML parser. " .
 						  "http://www.php.net/manual/en/ref.xml.php",
 						  E_USER_ERROR );
 		}
+
+		# Ghislain:
+		# target encoding UTF-8
+		xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
 
 		
 		$this->parser = $parser;

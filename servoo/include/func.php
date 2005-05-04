@@ -93,6 +93,8 @@ function extract_post() {
       array_walk($var,"clean_for_extract_post");
     } else {
       $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
+      if (get_magic_quotes_gpc()) $var=stripslashes($var);
+      $var=mysql_real_escape_string($var);
     }
   }
   array_walk($GLOBALS[context],"clean_for_extract_post");

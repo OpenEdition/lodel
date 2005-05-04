@@ -169,6 +169,7 @@ foreach ($cmdsarr as $cmd) { // boucle sur les commandes
 #      error_log("fichier $convertedfiles[0]\n",3,"/tmp/log");
       echo "version: ServOO; v".VERSION."; OpenOffice.org v".OPENOFFICEVERSION.";\n";
       echo "content-length: ".filesize($convertedfiles[0])."\n"; # envoie la longueur
+
 #      error_log("filesize".filesize($convertedfiles[0])."\n",3,"/tmp/log");
       readfile($convertedfiles[0]);
       

@@ -98,15 +98,34 @@ function loop_toc($context,$funcname,$arguments)
   }
 
   if (!preg_match_all("/<(r2r:section(\d+))>(.*?)<\/\\1>/is",$arguments[text],$results,PREG_SET_ORDER)) {
-    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) return;
+    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is",$context[texte],$results,PREG_SET_ORDER)) {
+      if (function_exists("code_alter_$funcname")) 
+	call_user_func("code_alter_$funcname",$context);
+      return;
+    }
   }
+
+  if (function_exists("code_before_$funcname")) 
+    call_user_func("code_before_$funcname",$context);
+
+
   foreach($results as $result) {
     $localcontext=$context;
     $localcontext[tocid]=(++$tocid);
     $localcontext[titre]=$result[3];
     $localcontext[niveau]=intval($result[2]);
-    call_user_func("code_do_$funcname",$localcontext);
+    if ($tocid==1 && function_exists("code_dofirst_$funcname")) {
+      call_user_func("code_dofirst_$funcname",$localcontext);
+    } elseif ($tocid==count($results) && function_exists("code_dolast_$funcname")) {
+      call_user_func("code_dolast_$funcname",$localcontext);
+    } else {
+      call_user_func("code_do_$funcname",$localcontext);
+    }
   }
+
+  if (function_exists("code_after_$funcname")) 
+    call_user_func("code_after_$funcname",$context);
+
 }
 
 
@@ -197,7 +216,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
 
   $statutmin=$GLOBALS[droitvisiteur] ? -32 : 0;
 
-  $querybase="SELECT e3.*,t3.type,t3.classe FROM $GLOBALS[tp]entites as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.statut>$statutmin AND e0.statut>$statutmin AND e3.ordre".$compare."e0.ordre AND NOT ((t0.classe='publications') XOR (t3.classe='publications')) ORDER BY e3.ordre ".$sort." LIMIT 0,1";
+  $querybase="SELECT e3.*,t3.type,t3.classe FROM $GLOBALS[tp]entites as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.statut>$statutmin AND e0.statut>$statutmin AND e3.ordre".$compare."e0.ordre AND ".mysql_not_xor("t0.classe='publications'","t3.classe='publications'")." ORDER BY e3.ordre ".$sort." LIMIT 0,1";
 
   do {
     $result=mysql_query ($querybase) or die (mysql_error());
@@ -216,7 +235,7 @@ function previousnext ($dir,$context,$funcname,$arguments)
     // ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
     // not found, well, we look for the next/previous parent above and it's first/last son.
 
-    $result=mysql_query ("SELECT e3.*,t3.type,t3.classe FROM $GLOBALS[tp]entites as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entites as e1, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.ordre".$compare."e1.ordre AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.statut>$statutmin AND e1.statut>$statutmin AND e2.statut>$statutmin AND e3.statut>$statutmin AND NOT ((t0.classe='publications') XOR (t3.classe='publications')) ORDER BY e2.ordre ".$sort.", e3.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
+    $result=mysql_query ("SELECT e3.*,t3.type,t3.classe FROM $GLOBALS[tp]entites as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entites as e1, $GLOBALS[tp]entites as e2, $GLOBALS[tp]entites as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.ordre".$compare."e1.ordre AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.statut>$statutmin AND e1.statut>$statutmin AND e2.statut>$statutmin AND e3.statut>$statutmin AND  ".mysql_not_xor("t0.classe='publications'","t3.classe='publications'")." ORDER BY e2.ordre ".$sort.", e3.ordre ".$sort." LIMIT 0,1") or die (mysql_error());
 
     if (mysql_num_rows($result)) {
       $localcontext=array_merge($context,mysql_fetch_assoc($result));
@@ -230,10 +249,14 @@ function previousnext ($dir,$context,$funcname,$arguments)
     if (function_exists("code_alter_$funcname")) 
       call_user_func("code_alter_$funcname",$context);
   }
-
-
 }
 
+
+function mysql_not_xor($a,$b) 
+
+{
+  return "((($a) AND ($b)) OR (NOT ($a) AND NOT ($b)))";
+}
 
 
 function loop_previous ($context,$funcname,$arguments)

@@ -35,8 +35,8 @@ function makeobjetstable()
 {
   $err=mysql_query_cmds_forobjetfunc('
 DELETE FROM _PREFIXTABLE_objets;
-INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"documents" FROM documents;
-INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"publications" FROM publications;
+INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"documents" FROM _PREFIXTABLE_documents;
+INSERT INTO _PREFIXTABLE_objets (id,classe) SELECT identite,"publications" FROM _PREFIXTABLE_publications;
 ');
   if ($err) return $err;
 
