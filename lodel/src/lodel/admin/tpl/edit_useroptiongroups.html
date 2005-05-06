@@ -54,7 +54,7 @@
 		<IF COND="[#TYPE]=='passwd'"><LET VAR="value"></LET></IF>
 		<!--[ print the group ]-->
 		<label for="[#NAME]">[#NAME] :</label>
-		<FUNC NAME="PRINT_EDIT_FIELD" FULLVARNAME="data[[#NAME]]" VARNAME="[#NAME]" VALUE="[#VALUE]" TYPE="[#TYPE]" />
+		<FUNC NAME="PRINT_EDIT_FIELD" FULLVARNAME="data[[#NAME]]" VARNAME="[#NAME]" VALUE="[#VALUE|htmlspecialchars]" TYPE="[#TYPE]" />
 		<br />
 		</DO>
 		<ALTERNATIVE>

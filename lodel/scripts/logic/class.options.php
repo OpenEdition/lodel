@@ -74,6 +74,7 @@ class OptionsLogic extends Logic {
     if (!$error) $this->clearCache();
     return $ret;
   }
+
    function deleteAction(&$context,&$error)
 
   {
