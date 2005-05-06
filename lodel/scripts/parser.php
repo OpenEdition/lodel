@@ -6,6 +6,7 @@
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
  *
@@ -709,40 +710,34 @@ function make_loop_code ($name,$tables,
   if ($selectparts['groupby']) $selectparts['groupby']="GROUP BY ".$selectparts['groupby']; // besoin de group by ?
 
   // special treatment for limit when only one value is given.
-  $limit=$selectparts['split'];
 
-if ($limit && strpos($limit,",")===false) {
-  
-   $offsetname="offset_".substr(md5($name),0,5);
+  if ($selectparts['split']) {
+    $split=$selectparts['split'];
+    $offsetname="offset_".substr(md5($name),0,5);
    
-   $preprocesslimit='
-    $currentoffset=intval(($_REQUEST[\''.$offsetname.'\'])/'.$limit.')*'.$limit.';';
-   $processlimit='
+    $preprocesslimit='
+    $currentoffset=intval(($_REQUEST[\''.$offsetname.'\'])/'.$split.')*'.$split.';';
+    $processlimit='
    $currenturl=basename($_SERVER[\'SCRIPT_NAME\'])."?";
    $cleanquery=preg_replace("/(^|&)'.$offsetname.'=\d+/","",$_SERVER[\'QUERY_STRING\']);
    if ($cleanquery[0]=="&") $cleanquery=substr($cleanquery,1); 
    if ($cleanquery) $currenturl.=$cleanquery."&";
-if ($context[nbresults]>'.$limit.') {
-$context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$limit.');
+if ($context[nbresults]>'.$split.') {
+$context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$split.');
 //$context[nbresultats]--;$context[nbresults]--;
 } else {
 $context[nexturl]="";
 }'.
 '$context[offsetname] ='.$offsetname.';'.
-'$context[limitinfo] = '.$limit.';'.
-'$context[previousurl]=$currentoffset>='.$limit.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$limit.') : "";
+'$context[limitinfo] = '.$split.';'.
+'$context[previousurl]=$currentoffset>='.$split.' ? $currenturl."'.$offsetname.'=".($currentoffset-'.$split.') : "";
 ';
-  $limit='".$currentoffset.",'.($limit);
- } 
-  
+  $limit='".$currentoffset.",'.($split);
+  } else {
+    $limit = $selectparts['limit'];
+  }
+
   if ($limit) $limit="LIMIT ".$limit;
-  // traitement particulier additionnel
-	//gere le cas simple du LIMIT
-	if(!$limit){
-		$limit = $selectparts['limit']; // n'arrivera que si splitresults n'est pas renseigné
-		if ($limit) $limit="LIMIT ".$limit;
-	}
-	
 		
   # c est plus complique que ca ici, car parfois la table est prefixee par la DB.
 
@@ -820,8 +815,6 @@ $context[nexturl]="";
  '.sprintf($options['sqlfree'],'$result').';
 }
 ';
-
-
 }
 
 

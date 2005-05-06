@@ -4,6 +4,7 @@
  *  ServOO CLient Library
  *
  *  Copyright (c) 2004, Ghislain Picard, Gautier Poupeau, Luc Santeramo
+ *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.servoo.net
  *
@@ -42,6 +43,7 @@ require_once(SERVOOLIBDIR."nusoapmime.php");
  * @package servooclient
  * @author Ghislain Picard, Gautier Poupeau, Luc Santeramo
  * @copyright Copyright (c) 2004, Ghislain Picard, Gautier Poupeau, Luc Santeramo
+ * @copyright Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  */
 
