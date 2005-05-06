@@ -44,8 +44,15 @@
 	<FUNC NAME="SEARCH_ENGINE">
 	<MACRO NAME="CHEMIN_PARCOURU">
 	<FUNC NAME="ADD_AN_ENTITY">
-	
-	<FUNC NAME="LIST_ENTITIES" ID="[#ID]">
+	<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+	<input type="hidden" name="do" value="mass">
+	<FUNC NAME="LIST_ENTITIES" ID="[#ID]" />
+	<div style="text-align: right">
+	<input type="submit" name="delete" value="[@EDITION.MASSDELETE]" />
+	<input type="submit" name="publish" value="[@EDITION.MASSPUBLISH]" />
+	<input type="submit" name="unpublish" value="[@EDITION.MASSUNPUBLISH]" />
+	</div>
+	</form>
 
 <!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
 <MACRO NAME="CLOSE_HTML">

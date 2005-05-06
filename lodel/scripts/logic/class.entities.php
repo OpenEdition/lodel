@@ -85,6 +85,28 @@ class EntitiesLogic extends Logic {
 
 
    /**
+    * Mass operation
+    */
+   function massAction(&$context,&$error)
+
+   {
+     $context['id']=array();
+     foreach(array_keys($context['entity']) as $id) { $context['id'][]=$id; }
+
+     if ($context['delete']) {
+       return $this->deleteAction($context,$error);
+     } elseif ($context['publish']) {
+       $context['status']=1;
+       return $this->publishAction($context,$error);
+     } elseif ($context['unpublish']) {
+       $context['status']=-1;
+       return $this->publishAction($context,$error);
+     }
+     trigger_error("unknow mass operation",E_USER_ERROR);
+   }
+
+
+   /**
     * Delete
     */
 
@@ -279,23 +301,28 @@ class EntitiesLogic extends Logic {
        $hasrights="(1 ".$dao->rightsCriteria($access).") as hasrights";
 
        // get the central object
-       if ($criteria) $criteria="AND ".$criteria;
-       $row=$db->getRow(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$id."' ".$criteria));
-       if ($row===false) dberror();
-       if (!$row['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
+       if ($criteria) $criteria=" AND ".$criteria;
+       $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ WHERE #_TP_entities.id ".sql_in_array($id).$criteria));
 
        // list the entities to delete
-       $ids=array($id);
-       $classes=array($row['class']=>true);
+       $ids=array();
+       $classes=array();
        $softprotectedids=array();
-       if ($row['status']>=16) $softprotectedids[]=$id;
+
+       while (!$result->EOF) {
+	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
+	 $ids[]=$result->fields['id'];
+	 $classes[$result->fields['class']]=true;
+	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];      
+	 $result->MoveNext();
+       }
 
        // check the rights to delete the sons and get their ids
        // criteria to determin if one of the sons is locked
-       $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1='".$id."' AND nature='P' ".$criteria)) or dberror();
-
+       $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1 ".sql_in_array($id)." AND nature='P' ".$criteria)) or dberror();
 
        while (!$result->EOF) {
+	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
 	 $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
 	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];
