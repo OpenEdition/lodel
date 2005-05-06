@@ -274,7 +274,7 @@ class Entities_EditionLogic extends GenericLogic {
      $gvo->identity=$id;
      $this->_moveFiles($id,$this->files_to_move,$gvo);
      $gdao->save($gvo,$new);  // save the related table
-     if ($new) $this->_createRelationWithParents($id,$idparent,false);
+     if ($new) $this->_createRelationWithParents($id,$idparent);
 
      $this->_saveRelatedTables($vo,$context);
 
@@ -538,11 +538,10 @@ class Entities_EditionLogic extends GenericLogic {
      * $idparent is its direct parent.
      */
 
-    function _createRelationWithParents($id,$idparent,$lock=TRUE)
+    function _createRelationWithParents($id,$idparent)
 
     {
       global $db;
-      //if ($lock) lock_write("relations");
       // can't do INSERT SELECT because work on the same table... support for old MySQL version
 
       $result=$db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='".$idparent."' AND nature='P'")) or dberror();

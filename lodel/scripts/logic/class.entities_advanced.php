@@ -189,11 +189,11 @@ class Entities_AdvancedLogic extends Logic {
 
 	 $delete="";
 	 while (!$result->EOF) {
-	   $id1=$result->fields['id2'];
+	   $id2=$result->fields['id2'];
 	   $degree=$result->fields['degree'];
 
 	   $delete.=" (id2='".$id2."' AND degree>".$degree.") OR "; // remove all the parent above $id.
-	   for ($d=0; $d<=$dmax; $d++) { // fore each degree
+	   for ($d=0; $d<=$dmax; $d++) { // for each degree
 	     $values.="('".$parents[$d]."','".$id2."','P','".($degree+$d+1)."'),"; // add all the parent
 	   }
 	   $result->MoveNext();
@@ -203,9 +203,8 @@ class Entities_AdvancedLogic extends Logic {
 	 $values.="('".$idparent."','".$id."','P',1)";
 	 
 	 // delete the relation to the parent 
-	 $db->execute(lq("DELETE FROM #_TP_relations WHERE (".$delete.") AND nature='P'")) or dberror();
-	 $db->execute(lq("REPLACE INTO #_TP_relations (id1,id2,nature,degree) VALUES ".$values)) or dberror();
-	 touch(SITEROOT."CACHE/maj");
+	 if ($delete) $db->execute(lq("DELETE FROM #_TP_relations WHERE (".$delete.") AND nature='P'")) or dberror();
+	 if ($values) $db->execute(lq("REPLACE INTO #_TP_relations (id1,id2,nature,degree) VALUES ".$values)) or dberror();
        }
        //unlock();
 

@@ -291,8 +291,8 @@ class EntitiesLogic extends Logic {
        if ($row['status']>=16) $softprotectedids[]=$id;
 
        // check the rights to delete the sons and get their ids
-       // criteria to determin if on of the sons are locked
-       $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1='".$id."' AND nature='P'".$criteria)) or dberror();
+       // criteria to determin if one of the sons is locked
+       $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1='".$id."' AND nature='P' ".$criteria)) or dberror();
 
 
        while (!$result->EOF) {

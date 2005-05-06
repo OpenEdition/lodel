@@ -117,7 +117,8 @@ class TableFieldsLogic extends Logic {
        break;
      case "allowedtags" :
        require_once("balises.php");
-       $groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
+       ##$groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
+       $groups=array_keys($GLOBALS['xhtmlgroups']);
        $arr2=array();
        foreach($groups as $k) {
 	 if ($k && !is_numeric($k)) $arr2[$k]=$k;
