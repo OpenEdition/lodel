@@ -222,28 +222,56 @@ class EntriesLogic extends GenericLogic {
 
 
    /**
+    * Used in deleteAction to do extra operation before the object is saved.
+    * Usually it gather information used after in _deleteRelatedTables
+    */
+   function _prepareDelete($dao,&$context) 
+
+   {
+     global $db;
+
+    // get the classes
+    $this->classes=array();
+    $result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_entrytypes INNER JOIN #_TP_entries ON idtype=#_TP_entrytypes.id WHERE #_TP_entries.id ".sql_in_array($context['id']))) or dberror();		 
+    while (!$result->EOF) {
+      $this->classes[]=$result->fields['class'];
+      $result->MoveNext();
+    }
+
+    if (isset($context['idrelation'])) {
+      $this->idrelation=$context['idrelation'];
+    } else {
+      $dao=&getDAO("relations");
+      $vos=$dao->findMany("id2 ".sql_in_array($context['id']));
+      $this->idrelation=array();
+      foreach ($vos as $vo) {
+	$this->idrelation[]=$vo->idrelation;
+      }
+    }
+  }
+
+
+   /**
     * Used in deleteAction to do extra operation after the object has been deleted
     */
    function _deleteRelatedTables($id) 
 
-  {
+   {
     global $db;
-    $result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_entrytypes INNER JOIN #_TP_entries ON idtype=#_TP_entrytypes.id WHERE #_TP_entries.id='".$id."'")) or dberror();
-		 
-    while (!$result->EOF) {
-      $class=$result->fields['class'];
 
+    foreach ($this->classes as $class) {
       $gdao=&getGenericDAO($class,"identry");
       $gdao->deleteObject($id);
 
-      $result->MoveNext();
+      //if ($this->idrelation) {
+      //  $gdao=&getGenericDAO("entities_".$class,"idrelation");
+      //  $gdao->deleteObject($this->idrelation);
+      //}
     }
     if ($this->idrelation) {
-      $gdao=&getDAO("relations","idrelation");
-      $gdao->delete("id2 IN ('".join("','",$this->idrelation)."')");
+      $dao=&getDAO("relations");
+      $dao->delete("idrelation ".sql_in_array($this->idrelation));
     }
-
-    // delete 
   }
 } // class 
 
