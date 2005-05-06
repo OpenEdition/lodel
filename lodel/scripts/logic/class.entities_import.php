@@ -288,6 +288,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        break;
      case 'entities':
        // let's import now.
+       #print_R($this->_localcontext);
+       #die();
        $localcontext=array_merge($this->context,$this->_localcontext);
 
        #print_R($localcontext);
@@ -383,8 +385,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 	 } else $name=$data;
        }
      }
-     $this->_currentcontext[$g_name['firstname']]=addslashes(trim($firstname));
-     $this->_currentcontext[$g_name['familyname']]=addslashes(trim($name));
+     $this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
+     $this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
    }
 
    

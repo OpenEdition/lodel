@@ -3272,37 +3272,13 @@
 #	  } else {
 
 
-	  // changed by Ghislain to save memory
-	  if (function_exists("memory_get_usage")) {
-	    $shortinmem=ini_get("memory_limit")-memory_get_usage() < 1.1 * $p_entry['size'];
-	  } elseif (ini_get("memory_limit")>0) {
-	    $shortinmem=ini_get("memory_limit") < 1.5 * $p_entry['size'];
-	  } else {
-	    $shortinmem=true;
-	  }
-
-	  if ($shortinmem) {
-
-	    // read the file piece by piece
-	    $sizetoread=$p_entry['compressed_size'];
-	    while ($sizetoread) {
-	      #$size=$sizetoread > 1040400 ? 1040400 : $sizetoread;
-	      $size=$sizetoread > 16 ? 16 : $sizetoread;
-	      $v_buffer = gzinflate(fread($this->zip_fd, $size));
-	      fwrite($v_dest_file, $v_buffer, $size);
-	      $sizetoread-=$size;
-	    }
-	    fclose($v_dest_file);
-	    unset($v_buffer);	  
-	  } else {
-
 	    // ----- Read the compressed file in a buffer (one shot)
 	    $v_buffer = @fread($this->zip_fd, $p_entry['compressed_size']);
 
 	    // ----- Decompress the file
 	    $v_file_content = gzinflate($v_buffer);
 	    unset($v_buffer);
-	  }
+#	  }
 
 
           // ----- Write the uncompressed data
