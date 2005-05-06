@@ -129,10 +129,17 @@ function extract_post($arr=-1) {
 
 
 function clean_request_variable(&$var) {
+  static $filter;
+
+  if (!$filter) {
+    require_once("class.inputfilter.php");
+    $filter=new InputFilter;
+  }
+
   if (is_array($var)) {
     array_walk($var,"clean_request_variable");
   } else {
-    $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),rmscript(trim($var)));
+    $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),$filter->process(trim($var)));
     if (!get_magic_quotes_gpc()) $var=addslashes($var);
   }
 }
