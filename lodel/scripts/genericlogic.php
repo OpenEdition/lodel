@@ -36,10 +36,6 @@
 
 class GenericLogic extends Logic {
 
-  /**
-   * generic equivalent assoc array
-   */
-  var $g_name;
 
   /** Constructor
    */
@@ -217,7 +213,8 @@ class GenericLogic extends Logic {
      require_once("fieldfunc.php");
      
      foreach ($fields as $field) {
-       if ($field->g_name) $this->g_name[$field->g_name]=$field->name; // save the generic field
+       if ($field->g_name) $this->addGenericEquivalent($class,$field->g_name,$field->name); // save the generic field
+
        $type=$field->type;
        $name=$field->name;
 
@@ -308,17 +305,17 @@ class GenericLogic extends Logic {
 	   }
 	   $logic=&getLogic($type); // the logic is used to validate
 	   if (!is_array($localcontext)) die("ERROR: internal error in GenericLogic::validateFields");
-	   $count=count($localcontext);
-	   for($i=0; $i<$count; $i++) {
-	     if (!$localcontext[$i]) continue;
-	     $localcontext[$i]['class']=$vo->class;
-	     $localcontext[$i]['idtype']=$idtype;
+
+	   foreach(array_keys($localcontext) as $k) {
+	     if (!is_numeric($k) || !$localcontext[$k]) continue;
+	     $localcontext[$k]['class']=$vo->class;
+	     $localcontext[$k]['idtype']=$idtype;
 	     $err=array();
 	     #echo "logic(".get_class($logic).")".$vo->class."   --   ";
 	     #echo "ici  ";print_R($localcontext[$i]);
 	     #echo "\n\n";	     
-	     $logic->validateFields($localcontext[$i],$err);
-	     if ($err) $error[$type][$idtype][$i]=$err;
+	     $logic->validateFields($localcontext[$k],$err);
+	     if ($err) $error[$type][$idtype][$k]=$err;
 	   }
 	   break;
 	 case 'entities':   
@@ -362,8 +359,37 @@ class GenericLogic extends Logic {
     }
 
 
-  function _populateContextRelatedTables($vo,$context)
-  {}
+    /**
+     * function to store permanently a generic equivalent.
+     * These functions simulate a static cache by using a global array
+     * PHP5 would solve the problem
+     */
+
+    function addGenericEquivalent($class,$name,$value)
+
+    {
+      global $genericlogic_g_name;
+
+      $genericlogic_g_name[$class][$name]=$value;
+    }
+
+
+    /**
+     * return the generic equivalent
+     */
+
+    function getGenericEquivalent($class,$name)
+
+    {
+      global $genericlogic_g_name;
+
+      return $genericlogic_g_name[$class][$name];
+    }
+
+
+
+    function _populateContextRelatedTables($vo,$context)
+    {}
 
 
    /**

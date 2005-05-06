@@ -29,7 +29,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-
+die("desuet");
 
 require("siteconfig.php");
 include ($home."auth.php");

@@ -94,7 +94,8 @@ class EntriesLogic extends GenericLogic {
 	 if ($status>-64) return "_error";
        }
      }
-     if (!$this->g_name['index key']) die("ERROR: The generic field 'index key' is required. Please edit your editorial model.");
+     $g_index_key=$this->getGenericEquivalent($class,'index key');
+     if (!$g_index_key) die("ERROR: The generic field 'index key' is required. Please edit your editorial model.");
 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
@@ -107,7 +108,7 @@ class EntriesLogic extends GenericLogic {
 	 $context['id']=$vo->id;
 	 return; // nothing to do.
        } else {
-	 $context['data'][$this->g_name['index key']]=$context['g_name'];
+	 $context['data'][$g_index_key]=$context['g_name'];
        }
      }
 
@@ -132,7 +133,7 @@ class EntriesLogic extends GenericLogic {
      // populate the entry table
      if ($idtype) $vo->idtype=$idtype;
 
-     $index_key=&$context['data'][$this->g_name['index key']];
+     $index_key=&$context['data'][$g_index_key];
      $index_key=str_replace(","," ",$index_key); // remove the , because it is a separator
      $vo->g_name=$index_key;
 

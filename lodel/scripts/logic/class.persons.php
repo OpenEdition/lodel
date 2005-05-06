@@ -38,10 +38,6 @@ require_once("genericlogic.php");
 
 class PersonsLogic extends GenericLogic {
 
-  /**
-   * generic equivalent assoc array
-   */
-  var $g_name;
 
 
   /** Constructor
@@ -105,11 +101,12 @@ class PersonsLogic extends GenericLogic {
      }
 
      foreach(array("firstname","familyname") as $g) {
-       if (!$this->g_name[$g]) trigger_error("ERROR: The generic field $g is required. Please edit your editorial model.",E_USER_ERROR);
-       $$g=trim($context['data'][$this->g_name[$g]]);
+       $equiv[$g]=$this->getGenericEquivalent($class,$g);
+       if (!$equiv[$g]) trigger_error("ERROR: The generic field $g is required. Please edit your editorial model.",E_USER_ERROR);
+       $$g=trim($context['data'][$equiv[$g]]);
      }
 
-     if (!$familyname && !$firstname) { $error[$this->g_name['familyname']]="+"; return "_error"; }
+     if (!$familyname && !$firstname) { $error[$equiv['familyname']]="+"; return "_error"; }
 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();

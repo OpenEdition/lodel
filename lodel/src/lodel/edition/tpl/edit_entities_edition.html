@@ -53,19 +53,19 @@
 	<IF COND="![#ID]"><input type="hidden" name="creationmethod" value="form"></IF><!--[ new entities ]-->
 	<input type="hidden" name="edit" value="1">
 
-	<div class="intitule_ligne_formulaire">
+	<div>
 		<span class="texte_intitule">[@EDITION.DOCUMENT_TYPE] :</span>
+		[#TYPE.TYPE]
 	</div>
-	[#TYPE.TYPE]
-	<br /><br />
-	<div class="intitule_ligne_formulaire">
+	<div>
 		<span class="texte_intitule">[@EDITION.DOCUMENT_CREATION_DATE] :</span>
+		[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]
 	</div>
-	[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]	<br /><br />
-	<div class="intitule_ligne_formulaire">
+
+	<div>
 		<span class="texte_intitule">[@EDITION.DOCUMENT_LAST_UPDATE] :</span>
+		[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])] 
 	</div>
-	[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])] 	<br /><br />
 	
 
 	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">

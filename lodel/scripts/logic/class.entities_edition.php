@@ -255,7 +255,8 @@ class Entities_EditionLogic extends GenericLogic {
      // populate the entity
      if ($idtype) $vo->idtype=$idtype;
      $vo->identifier=$context['identifier'];
-     if ($this->g_name['dc.title']) $vo->g_title=strip_tags($context['data'][$this->g_name['dc.title']],"<em><strong><span><sup><sub>");
+     $dctitle=$this->getGenericEquivalent($class,'dc.title');
+     if ($dctitle) $vo->g_title=strip_tags($context['data'][$dctitle],"<em><strong><span><sup><sub>");
      if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier($id,$vo->g_title);
      if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
      if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
@@ -380,6 +381,7 @@ class Entities_EditionLogic extends GenericLogic {
 	   }
 	 }
        }
+
        // delete relation not used
        if ($ids && !$idrelations) { // new item but relation has not been created
 	 if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
