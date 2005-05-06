@@ -31,6 +31,17 @@ require("siteconfig.php");
 require("auth.php");
 authenticate(LEVEL_VISITOR);
 
+
+if ($_GET['page']) { // call a special page (and template)
+  $page=$_GET['page'];
+  if (strlen($page)>64 || preg_match("/[^a-zA-Z0-9_\/-]/",$page)) die("invalid page");
+  require_once("view.php");
+  $view=&getView();
+  $view->renderCached($context,$page);
+  exit();
+}
+
+
 require("controler.php");
 Controler::controler(array("entrytypes","persontypes",
 			   "entries","persons",

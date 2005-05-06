@@ -51,9 +51,13 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
       if (!$base) $context['id']=$row['id']=$row['idparent'];
     } while (!$base && $idparent);
  } else {
-  $base="edition";
- }
- 
+    if ($_GET['page']) { // call a special page (and template)
+      $base=$_GET['page'];
+      if (strlen($base)>64 || preg_match("/[^a-zA-Z0-9_\/-]/",$base)) die("invalid page");
+    } else {
+      $base="edition";
+    }
+  }
   $view->renderCached($context,$base);
   return;
 } else {

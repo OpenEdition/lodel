@@ -116,21 +116,16 @@ function validfield(&$text,$type,$default="",$name="")
     if ((!isset($text) || $text==="") && $default!=="") $text=doubleval($default);
     if (isset($text) && !is_numeric($text)) return "numeric";
     break;
-  case "email" : 
-    
+  case "email" :     
     if (!$text && $default) $text=$default;
-    if ($text) {
-      if (!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $text))
-				return "email_malformed";
-    }
+    if ($text && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $text)) return "email";
     break;
   case "url" : 
     if (!$text && $default) $text=$default;
     if ($text) {
-    	$parsedurl = parse_url($text);
-			if(!preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",@$parsedurl['scheme'])  || (!@$parsedurl['host']))
-				return "url_malformed";
-	  }
+      $parsedurl = parse_url($text);
+      if(!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i",$parsedurl['scheme'])) return "url";
+    }
     break;
   case "boolean" :
     $text=$text ? 1 : 0;

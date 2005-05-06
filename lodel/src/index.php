@@ -46,6 +46,7 @@ require_once("textfunc.php");
 
 $id=intval($_GET['id']);
 $identifier=$_GET['identifier'];
+$page=$_GET['page'];
 $tpl="index"; // template by default.
 
 if ($id || $identifier) {
@@ -78,7 +79,11 @@ if ($id || $identifier) {
       break;
     } // switch class
   } while(0);
-} else{
+ } elseif ($page) { // call a special page (and template)
+   if (strlen($page)>64 || preg_match("/[^a-zA-Z0-9_\/-]/",$page)) die("invalid page");
+   $view->renderCached($context,$page);
+   exit();
+ } else {
   require_once("connect.php");
   $query=preg_replace("/[&?](format|clearcache)=\w+/","",$_SERVER['QUERY_STRING']);
   if($query && !preg_match("/[^a-zA-Z0-9_\/-]/",$query)) {

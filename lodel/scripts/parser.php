@@ -465,15 +465,15 @@ function parse_LOOP()
 	$orders[]=$value;
 	break;
       case "LIMIT" :
-	if ($selectparts['split']) $this->errmsg("Attribut SPLITRESULTS cannot be used with LIMIT",$this->ind);      
+	if ($selectparts['split']) $this->errmsg("Attribut SPLIT cannot be used with LIMIT",$this->ind);      
 	if ($selectparts['limit']) $this->errmsg("Attribut LIMIT should occur only once in loop $name",$this->ind);
 	$selectparts['limit']=$value;
 	break;
-			case "SPLIT" :
-  if ($selectparts['limit']) $this->errmsg("Attribut SPLITRESULTS cannot be used with LIMIT",$this->ind);
-  if ($selectparts['split']) $this->errmsg("Attribut SPLITRESULTS should occur only once in loop $name",$this->ind);
-    $selectparts['split']=$value;
-	break;		
+      case "SPLIT" :
+	if ($selectparts['limit']) $this->errmsg("Attribut SPLIT cannot be used with LIMIT",$this->ind);
+	if ($selectparts['split']) $this->errmsg("Attribut SPLIT should occur only once in loop $name",$this->ind);
+	$selectparts['split']=$value;
+	break;
       case "GROUPBY" :
 	if ($selectparts['groupby']) $this->errmsg("Attribut GROUPY should occur only once in loop $name",$this->ind);
 	$selectparts['groupby']=$value;
