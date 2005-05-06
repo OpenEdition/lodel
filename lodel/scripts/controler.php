@@ -58,7 +58,7 @@ class Controler {
 
     if ($do) {
       if ($therequest['lo']) $lo=$therequest['lo'];
-      if (!in_array($lo,$logics)) die("ERROR: unknown logic");
+      if ($lo!="texts" && !in_array($lo,$logics)) trigger_error("ERROR: unknown logic",E_USER_ERROR);
       $context['lo']=$lo;
 
       // get the various common parameters
