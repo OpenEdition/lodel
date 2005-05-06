@@ -239,7 +239,7 @@ class InputFilter {
 	  */
 	function decode($source) {
 		// url decode
-		$source = html_entity_decode($source, ENT_QUOTES, "UTF-8");
+	  //$source = html_entity_decode($source, ENT_QUOTES, "utf-8");
 		// convert decimal
 		$source = preg_replace('/&#(\d+);/me',"chr(\\1)", $source);  // decimal notation
 		// convert hex
