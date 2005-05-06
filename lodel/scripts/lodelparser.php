@@ -281,7 +281,10 @@ function parse_loop_extra(&$tables,
   
 
   $selectparts['where']=lq($selectparts['where']);
+  if (preg_match("/\b(count|min|max|avg|bit_and|bit_or|bit_xor|group_concat|std|stddev|stddev_pop|stddev_samp|sum|var_pop|var_samp|variance)\s*\(/i",$selectparts['select'])) $extrainselect=""; // group by function
+
   $extrainselect=lq($extrainselect);
+
 
   $tables=array_map(array(&$this,"prefixTableName"),$tables);
   $tablesinselect=array_map(array(&$this,"prefixTableName"),$tablesinselect);
