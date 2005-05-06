@@ -90,8 +90,9 @@ class EntitiesLogic extends Logic {
    function massAction(&$context,&$error)
 
    {
+     if (!$context['entity']) return "_back";
      $context['id']=array();
-     foreach(array_keys($context['entity']) as $id) { $context['id'][]=$id; }
+     foreach(array_keys($context['entity']) as $id) $context['id'][]=intval($id);
 
      if ($context['delete']) {
        return $this->deleteAction($context,$error);
