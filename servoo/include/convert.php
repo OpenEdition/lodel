@@ -409,7 +409,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
   foreach($results as $result) {
     $name=removeaccentsandspaces(strtolower($result[2]));
     if ($name) {
-      if ($name=="wwcitation" || $name="citationcar") $name="citation";
+      if ($name=="wwcitation" || $name=="citationcar") $name="citation";
       $stylename[$result[1]]=$name;
     }
   }
@@ -440,6 +440,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
       } else {
 	$class=strtolower($class);
 	if (!preg_match("/^[tp]\d+$/",$class)) { // required to ensure the compatibility
+	  if ($class=="wwcitation" || $class=="citationcar") $class="citation";
 	  $arr[$i+2]=str_replace($result[0],'class="'.$class.'"',$arr[$i+2]); // lowercase the class
 	}
       }
@@ -447,7 +448,7 @@ function postprocesscontentXHTML(&$xhtml,$styles)
 	$class="";
       }
       if ($arr[$i+1]=="span") {
-	$arr[$i+2]=preg_replace("/(style=\"font-size\s*:\s+\d+%;\s+vertical-align)\s*:\s+-\d+%/","\\1:sub",$arr[$i+2]);
+	$arr[$i+2]=preg_replace("/(style=\"font-size\s*:\s*\d+%;\s+vertical-align)\s*:\s*-\d+%/","\\1:sub",$arr[$i+2]);
       }
 
 

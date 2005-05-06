@@ -92,7 +92,7 @@ if ($droptables) {
   // recupere la liste des tables
   $result=mysql_list_tables($GLOBALS[currentdb]);
   $tables=array();
-  $dontdrop=array("champs","groupesdechamps","types","typepersonnes","typeentrees","typeentites_typeentites","typeentites_typeentrees","typeentites_typepersonnes");
+  $dontdrop=array("$GLOBALS[tp]champs","$GLOBALS[tp]groupesdechamps","$GLOBALS[tp]types","$GLOBALS[tp]typepersonnes","$GLOBALS[tp]typeentrees","$GLOBALS[tp]typeentites_typeentites","$GLOBALS[tp]typeentites_typeentrees","$GLOBALS[tp]typeentites_typepersonnes");
   while ($row = mysql_fetch_row($result)) if (!in_array($row[0],$dontdrop)) array_push($tables,$row[0]);
   if($tables) mysql_query("DROP TABLE IF EXISTS ".join(",",$tables)) or die(mysql_error()); 
 
