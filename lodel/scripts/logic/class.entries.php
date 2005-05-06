@@ -112,6 +112,17 @@ class EntriesLogic extends GenericLogic {
        }
      }
 
+     $index_key=&$context['data'][$g_index_key];
+     $index_key=str_replace(","," ",$index_key); // remove the , because it is a separator
+
+     if ($context['lo']=="entries") {  // check it does not exist
+       $vo=$dao->find("g_name='".$index_key."' AND idtype='".$idtype."' AND status>-64 AND id!='".$id."'","id");
+       if ($vo->id) {
+	 $error[$g_index_key]="1";
+	 return "_error";
+       }
+     }
+
      if (!$vo) {
        if ($id) { // create or edit the entity
 	 $new=false;
@@ -133,10 +144,7 @@ class EntriesLogic extends GenericLogic {
      // populate the entry table
      if ($idtype) $vo->idtype=$idtype;
 
-     $index_key=&$context['data'][$g_index_key];
-     $index_key=str_replace(","," ",$index_key); // remove the , because it is a separator
      $vo->g_name=$index_key;
-
      $vo->sortkey=makeSortKey($vo->g_name);
      #print_R($vo);
      $id=$context['id']=$dao->save($vo);
