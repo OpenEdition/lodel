@@ -66,7 +66,7 @@ class View {
 
      if ($id) {
        $db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or dberror();
-       $newurl="http://".$_SERVER['SERVER_NAME'].$newurl;
+       $newurl="http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] ? ":".$_SERVER['SERVER_PORT'] : "").$newurl;
      } else {
        $newurl="index.php";
      }

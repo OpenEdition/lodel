@@ -88,7 +88,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
       if (!$context['path']) $context['path']="/".$context['name'];
     }
     if (!$context[url]) {
-      $context[url]="http://".$_SERVER['SERVER_NAME'].preg_replace("/\blodeladmin-\d+(\.\d+)?\/.*/","",$_SERVER['REQUEST_URI']).substr($context['path'],1);
+      $context[url]="http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] ? ":".$_SERVER['SERVER_PORT'] : "").preg_replace("/\blodeladmin-\d+(\.\d+)?\/.*/","",$_SERVER['REQUEST_URI']).substr($context['path'],1);
     }
 
     if ($reinstall) $status=-32;

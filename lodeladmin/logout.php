@@ -41,7 +41,7 @@ setcookie($sessionname,"",$time,$urlroot);
 
 require_once("func.php");
 
-header ("Location: http://".$_SERVER['SERVER_NAME'].$urlroot);
+header ("Location: http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] ? ":".$_SERVER['SERVER_PORT'] : "").$urlroot);
 exit();
 
 ?>

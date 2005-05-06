@@ -43,7 +43,7 @@ if ($_POST['login']) {
     // ouvre une session
     $err=open_session($context['login']);
     if ($err) { $context[$err]=1; break; }
-    header ("Location: http://".$_SERVER['SERVER_NAME'].$url_retour);
+    header ("Location: http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] ? ":".$_SERVER['SERVER_PORT'] : "").$url_retour);
     die ("url_retour: $url_retour");
   } while (0);
 }
