@@ -52,7 +52,6 @@ class UserOptionGroupsLogic extends Logic {
      $this->Logic("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
    }
 
-   /* inutilisée... ??
    function viewAction(&$context,$error) 
 
    {
@@ -70,7 +69,6 @@ class UserOptionGroupsLogic extends Logic {
      }
      return Logic::viewAction($context,$funcname);
    }
-   */
 
 
    function editAction(&$context,&$error)

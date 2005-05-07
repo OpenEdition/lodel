@@ -160,15 +160,7 @@ class TypesLogic extends Logic {
      global $home;
 
      require_once("typetypefunc.php"); 
-
-     if (is_array($id)) {
-       $criteria="identitytype IN ('".join("','",$id)."')";
-     } else {
-       $criteria="identitytype='$id'";
-     }
-
-     //typetype_delete("entrytype",$criteria);
-     //typetype_delete("persontype",$criteria);
+     $criteria="identitytype ".sql_in_array($id);
      typetype_delete("entitytype",$criteria);
    }
 
