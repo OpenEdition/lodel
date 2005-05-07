@@ -45,9 +45,15 @@ $context['version']="0.8";
 // supression et restauration
 //
 if ($id>0 && ($delete || $restore)) { 
-  require("trash.php");
-  treattrash("sites",$critere);
-  return;
+  if ($delete) {
+    mysql_query(lq("UPDATE #_TP_sites SET status=-abs(status) WHERE $critere")) or dberror();
+  } else {
+    mysql_query(lq("UPDATE #_TP_sites SET status=abs(status) WHERE $critere")) or dberror();
+  }
+  update();
+  require("view.php");
+  $view=&getView();
+  $view->back(); // on revient
 }
 //
 // ajoute ou edit
