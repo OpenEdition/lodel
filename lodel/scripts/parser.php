@@ -753,6 +753,7 @@ $context[nexturl]="";
 
     $selectarr=array();
     foreach ($tablesinselect as $t) {
+      if (!$tablefields[$t]) continue;
       $selectforthistable=array_diff($tablefields[$t],$dontselect); // remove dontselect from $tablefields
       if ($selectforthistable) { // prefix with table name
 	array_push($selectarr,"$t.".join(",$t.",$selectforthistable));
