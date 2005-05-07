@@ -291,13 +291,14 @@ function tocable($text,$level=10)
   for($i=2;$i<=$level;$i++) $sect.="|$i";
 
   function tocable_callback($result) {
-      static $tocind=0;
-      $tocind++;
-      return $result[1].'<a href="#tocfrom'.$tocind.'" id="tocto'.$tocind.'">'.$result[3].'</a>'.$result[4];
+    static $tocid=array();
+    $level=intval($result[3]);
+    $sig=$level."n".(++$tocid[$level]);
+    return $result[1].'<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">'.$result[3].'</a>'.$result[4];
   }
 
 #  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
-  return preg_replace_callback("/(<(h(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
+  return preg_replace_callback("/(<(h($sect)\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
 }
 
 

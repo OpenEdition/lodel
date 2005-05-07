@@ -63,15 +63,18 @@ function loop_toc($context,$funcname,$arguments)
   if (function_exists("code_before_$funcname")) 
     call_user_func("code_before_$funcname",$context);
 
-
+  $i=0;
+  $tocid=array();
   foreach($results as $result) {
+    $i++;
     $localcontext=$context;
-    $localcontext['tocid']=(++$tocid);
+    $level=intval($result[2]);
+    $localcontext['level']=$level;
+    $localcontext['tocid']=$level."n".(++$tocid[$level]);
     $localcontext['title']=$result[3];
-    $localcontext['level']=intval($result[2]);
     if ($tocid==1 && function_exists("code_dofirst_$funcname")) {
       call_user_func("code_dofirst_$funcname",$localcontext);
-    } elseif ($tocid==count($results) && function_exists("code_dolast_$funcname")) {
+    } elseif ($i==count($results) && function_exists("code_dolast_$funcname")) {
       call_user_func("code_dolast_$funcname",$localcontext);
     } else {
       call_user_func("code_do_$funcname",$localcontext);
