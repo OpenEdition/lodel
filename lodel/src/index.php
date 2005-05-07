@@ -47,9 +47,11 @@ require_once("textfunc.php");
 
 $id=intval($_GET['id']);
 $identifier=$_GET['identifier'];
-$page=$_GET['page'];
+$page=$_GET['page']; // get only
+$do=$_POST['do']; // post only
 $tpl="index"; // template by default.
 
+  //------------------------------ ID ou IDENTIFIER -------------------
 if ($id || $identifier) {
   require_once("connect.php");
   do { // exception block
@@ -80,10 +82,21 @@ if ($id || $identifier) {
       break;
     } // switch class
   } while(0);
+
+  //------------------------------ PAGE -------------------
  } elseif ($page) { // call a special page (and template)
    if (strlen($page)>64 || preg_match("/[^a-zA-Z0-9_\/-]/",$page)) die("invalid page");
    $view->renderCached($context,$page);
    exit();
+
+  //------------------------------ DO -------------------
+ } elseif ($do) {
+   if ($do=="edit") {
+     require("publicedit.php");
+     exit();
+   } else {
+     die("ERROR: unknown action");
+   }
  } else {
   require_once("connect.php");
   $query=preg_replace("/[&?](format|clearcache)=\w+/","",$_SERVER['QUERY_STRING']);

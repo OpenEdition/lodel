@@ -98,6 +98,8 @@ if ($edit || $maindefault) { // modifie ou ajoute
 
     mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
+    update();
+
     if ($status>-32) {
       require("view.php");
       $view=&getView();
