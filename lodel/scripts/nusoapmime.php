@@ -133,7 +133,12 @@ class soapclientmime extends soapclient {
 
 		    if ($att['data'] == '' && $att['filename'] <> '') {
 		      if ($fd = fopen($att['filename'], 'rb')) {
-			$data = fread($fd, filesize($att['filename']));
+			$size=filesize($att['filename']);
+			if ($size) {
+			  $data = fread($fd, $size);
+			} else {
+			  $data = '';
+			}
 			fclose($fd);
 		      } else {
 			$data = '';
