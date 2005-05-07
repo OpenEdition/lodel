@@ -149,7 +149,6 @@ class EntryTypesLogic extends Logic {
    }
 
 
-
    // begin{publicfields} automatic generation  //   
     function _publicfields() {
      return array("type"=>array("type","+"),

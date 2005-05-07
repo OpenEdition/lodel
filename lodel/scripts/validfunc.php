@@ -169,10 +169,10 @@ function validfield(&$text,$type,$default="",$name="")
     switch($text['radio']) {
     case 'upload':
       // let's upload
-      $files=&$_FILES[$name];
+      $files=&$_FILES['data'];
       // look for an error ?
-      if (!$files || $files['error']['upload'] ||
-	  !$files['tmp_name']['upload'] || $files['tmp_name']['upload']=="none") { 
+      if (!$files || $files['error'][$name]['upload'] ||
+	  !$files['tmp_name'][$name]['upload'] || $files['tmp_name'][$name]['upload']=="none") { 
 	unset($text); 
 	return "upload";
       }
@@ -182,8 +182,8 @@ function validfield(&$text,$type,$default="",$name="")
 	do {  $tmpdir[$type]="docannexe/$type/tmpdir-".rand();  } while (file_exists(SITEROOT.$tmpdir[$type]));
       }
       // let's transfer
-      $text=save_annex_file($type,$tmpdir[$type],$files['tmp_name']['upload'],
-			     $files['name']['upload'],true,true,$err);
+      $text=save_annex_file($type,$tmpdir[$type],$files['tmp_name'][$name]['upload'],
+			     $files['name'][$name]['upload'],true,true,$err);
       if ($err) return $err;
       return true;
     case 'serverfile':
