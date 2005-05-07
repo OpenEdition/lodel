@@ -140,9 +140,9 @@ class EntryTypesLogic extends Logic {
      if (!$this->vo) die("ERROR: internal error in EntryTypesLogic::_prepareDelete");
    }
 
+
    function _deleteRelatedTables($id) {
      global $home;
-
       
      $dao=&getDAO("tablefields");
      $dao->delete("type='entries' AND name='".$this->vo->type."'");
