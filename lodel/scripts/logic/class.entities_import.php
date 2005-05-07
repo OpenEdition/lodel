@@ -265,8 +265,6 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      case 'entries':
        break;
      case 'persons':
-       $this->_localcontext['persons'][$obj->id][]=array(); // add a person
-       $this->_currentcontext=&$this->_localcontext['persons'][$obj->id][count($this->_localcontext['persons'][$obj->id])-1];
        break;
      case 'entities':
        $this->_localcontext=array();
@@ -344,8 +342,10 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    
    function processEntryTypes($obj,$data) 
    {
-     foreach(preg_split("/,/",strip_tags($data)) as $entry) {
-       $this->_localcontext['entries'][$obj->id][]=array("g_name"=>trim(addslashes($entry)));
+     foreach(preg_split("/<\/p>/",$data) as $data2) {     
+       foreach(preg_split("/,/",strip_tags($data2)) as $entry) {
+	 $this->_localcontext['entries'][$obj->id][]=array("g_name"=>trim(addslashes($entry)));
+       }
      }
    }
    
@@ -365,28 +365,38 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      $g_name=$g_name_cache[$obj->class];
      // ok, we have the generic type
 
-     $data=strip_tags($data);
-     if (preg_match("/^\s*(".$this->prefixregexp.")\s/",$data,$result)) {
-       $this->_currentcontext[$g_name['prefix']]=$result[1];
-       $data=str_replace($result[0],"",$data);
-     }
-     // ok, we have the prefix
+     // let's split the paragraph and the comma
+     foreach(preg_split("/<\/p>/",$data) as $data2) { 
+     foreach(preg_split("/,/",strip_tags($data2)) as $person) {
+       if (!trim($person)) continue;
 
-     // try to guess
-     if (!$have_firstname && !$have_familyname) {
-       // ok, on cherche maintenant a separer le name et le firstname
-       $name=$data;
-       while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
-       if ($name) {
-	 $firstname=str_replace($name,"",$data);
-       } else { // sinon coupe apres le premiere espace
-	 if (preg_match("/^(.*?)\s+([^\s]+)$/i",trim($data),$result)) {
-	   $firstname=$result[1]; $name=$result[2];
-	 } else $name=$data;
+       $this->_localcontext['persons'][$obj->id][]=array(); // add a person
+       $this->_currentcontext=&$this->_localcontext['persons'][$obj->id][count($this->_localcontext['persons'][$obj->id])-1];
+
+       
+       if (preg_match("/^\s*(".$this->prefixregexp.")\s/",$person,$result)) {
+	 $this->_currentcontext[$g_name['prefix']]=$result[1];
+	 $person=str_replace($result[0],"",$person);
        }
+       // ok, we have the prefix
+
+       // try to guess
+       if (!$have_firstname && !$have_familyname) {
+	 // ok, on cherche maintenant a separer le name et le firstname
+	 $name=$person;
+	 while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
+	 if ($name) {
+	   $firstname=str_replace($name,"",$person);
+	 } else { // sinon coupe apres le premiere espace
+	   if (preg_match("/^(.*?)\s+([^\s]+)$/i",trim($person),$result)) {
+	     $firstname=$result[1]; $name=$result[2];
+	   } else $name=$person;
+	 }
+       }
+       $this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
+       $this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
+     } // for each person
      }
-     $this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
-     $this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
    }
 
    
