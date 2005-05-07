@@ -81,103 +81,104 @@ class InputFilter {
 	  * @return String $source - 'cleaned' version of input parameter
 	  */
 	function filterTags($source) {
-		// filter pass setup
-		$preTag = NULL;
-		$postTag = $source;
-		// find initial tag's position
-		$tagOpen_start = strpos($source, '<');
-		// interate through string until no tags left
-		while($tagOpen_start !== FALSE) {
-			$preTag .= substr($postTag, 0, $tagOpen_start);
-			$postTag = substr($postTag, $tagOpen_start);
-			$fromTagOpen = substr($postTag, 1);
-			// end of tag
-			$tagOpen_end = strpos($fromTagOpen, '>');
-			if ($tagOpen_end === false) {
-				break;
-			}
-			// next start of tag (for nested tag assessment)
-			$tagOpen_nested = strpos($fromTagOpen, '<');
-			if (($tagOpen_nested !== false) && ($tagOpen_nested < $tagOpen_end)) {
-				$preTag .= substr($postTag, 0, ($tagOpen_nested+1));
-				$postTag = substr($postTag, ($tagOpen_nested+1));
-				$tagOpen_start = strpos($postTag, '<');
-				continue;
-			} 
-			$tagOpen_nested = (strpos($fromTagOpen, '<') + $tagOpen_start + 1);
-			$currentTag = substr($fromTagOpen, 0, $tagOpen_end);
-			$tagLength = strlen($currentTag);
-			if (!$tagOpen_end) {
-				$preTag .= $postTag;
-				$tagOpen_start = strpos($postTag, '<');			
-			}
-			// iterate through tag finding attribute pairs - setup
-			$tagLeft = $currentTag;
-			$attrSet = array();
-			$currentSpace = strpos($tagLeft, ' ');
-			// is end tag
-			if (substr($currentTag, 0, 1) == "/") {
-				$isCloseTag = TRUE;
-				list($tagName) = explode(' ', $currentTag);
-				$tagName = substr($tagName, 1);
-			// is start tag
-			} else {
-				$isCloseTag = FALSE;
-				list($tagName) = explode(' ', $currentTag);
-			}		
-			// excludes all "non-regular" tagnames OR no tagname OR remove if xssauto is on and tag is blacklisted
-			if ((!eregi("^[a-z]*$",$tagName)) || (!$tagName) || ((in_array(strtolower($tagName), $this->tagBlacklist)) && ($this->xssAuto))) {
-				$postTag = substr($postTag, ($tagLength + 2));
-				$tagOpen_start = strpos($postTag, '<');
-				// don't append this tag
-				continue;
-			}
-			// this while is needed to support attribute values with spaces in!
-			while ($currentSpace !== FALSE) {
-				$fromSpace = substr($tagLeft, ($currentSpace+1));
-				$nextSpace = strpos($fromSpace, ' ');
-				$openQuotes = strpos($fromSpace, '"');
-				$closeQuotes = strpos(substr($fromSpace, ($openQuotes+1)), '"') + $openQuotes + 1;
-				// another equals exists
-				if (strpos($fromSpace, '=') !== FALSE) {
-					// opening and closing quotes exists
-					if (($openQuotes !== FALSE) && (strpos(substr($fromSpace, ($openQuotes+1)), '"') !== FALSE))
-						$attr = substr($fromSpace, 0, ($closeQuotes+1));
-					// one or neither exist
-					else $attr = substr($fromSpace, 0, $nextSpace);
-				// no more equals exist
-				} else $attr = substr($fromSpace, 0, $nextSpace);
-				// last attr pair
-				if (!$attr) $attr = $fromSpace;
-				// add to attribute pairs array
-				$attrSet[] = $attr;
-				// next inc
-				$tagLeft = substr($fromSpace, strlen($attr));
-				$currentSpace = strpos($tagLeft, ' ');
-			}
-			// appears in array specified by user
-			$tagFound = in_array(strtolower($tagName), $this->tagsArray);			
-			// remove this tag on condition
-			if ((!$tagFound && $this->tagsMethod) || ($tagFound && !$this->tagsMethod)) {
-				// reconstruct tag with allowed attributes
-				if (!$isCloseTag) {
-					$attrSet = $this->filterAttr($attrSet);
-					$preTag .= '<' . $tagName;
-					for ($i = 0; $i < count($attrSet); $i++)
-						$preTag .= ' ' . $attrSet[$i];
-					// reformat single tags to XHTML
-					if (strpos($fromTagOpen, "</" . $tagName))	$preTag .= '>';
-					else																$preTag .= ' />';
-				// just the tagname
-			    } else $preTag .= '</' . $tagName . '>';
-			}
-			// find next tag's start
-			$postTag = substr($postTag, ($tagLength + 2));
-			$tagOpen_start = strpos($postTag, '<');			
-		}
-		// append any code after end of tags
-		$preTag .= $postTag;
-		return $preTag;
+	  // filter pass setup
+	  $preTag = NULL;
+	  $postTag = $source;
+	  // find initial tag's position
+	  $tagOpen_start = strpos($source, '<');
+	  // interate through string until no tags left
+	  while($tagOpen_start !== FALSE) {
+	    $preTag .= substr($postTag, 0, $tagOpen_start);
+	    $postTag = substr($postTag, $tagOpen_start);
+	    $fromTagOpen = substr($postTag, 1);
+	    // end of tag
+	    $tagOpen_end = strpos($fromTagOpen, '>');
+	    if ($tagOpen_end === false) {
+	      break;
+	    }
+	    // next start of tag (for nested tag assessment)
+	    $tagOpen_nested = strpos($fromTagOpen, '<');
+	    if (($tagOpen_nested !== false) && ($tagOpen_nested < $tagOpen_end)) {
+	      $preTag .= substr($postTag, 0, ($tagOpen_nested+1));
+	      $postTag = substr($postTag, ($tagOpen_nested+1));
+	      $tagOpen_start = strpos($postTag, '<');
+	      continue;
+	    } 
+	    $tagOpen_nested = (strpos($fromTagOpen, '<') + $tagOpen_start + 1);
+	    $currentTag = substr($fromTagOpen, 0, $tagOpen_end);
+	    $tagLength = strlen($currentTag);
+	    if (!$tagOpen_end) {
+	      $preTag .= $postTag;
+	      $tagOpen_start = strpos($postTag, '<');			
+	    }
+	    // iterate through tag finding attribute pairs - setup
+	    $tagLeft = $currentTag;
+	    $attrSet = array();
+	    $currentSpace = strpos($tagLeft, ' ');
+	    // is end tag
+	    if (substr($currentTag, 0, 1) == "/") {
+	      $isCloseTag = TRUE;
+	      list($tagName) = explode(' ', $currentTag);
+	      $tagName = substr($tagName, 1);
+	      // is start tag
+	    } else {
+	      $isCloseTag = FALSE;
+	      list($tagName) = explode(' ', $currentTag);
+	    }		
+	    // excludes all "non-regular" tagnames OR no tagname OR remove if xssauto is on and tag is blacklisted
+	    if ((!preg_match("/^[a-z][a-z0-9]*$/i",$tagName)) || (!$tagName) || ((in_array(strtolower($tagName), $this->tagBlacklist)) && ($this->xssAuto))) {
+	      $postTag = substr($postTag, ($tagLength + 2));
+	      $tagOpen_start = strpos($postTag, '<');
+	      // don't append this tag
+	      continue;
+	    }
+	    // this while is needed to support attribute values with spaces in!
+	    while ($currentSpace !== FALSE) {
+	      $fromSpace = substr($tagLeft, ($currentSpace+1));
+	      $nextSpace = strpos($fromSpace, ' ');
+	      $openQuotes = strpos($fromSpace, '"');
+	      $closeQuotes = strpos(substr($fromSpace, ($openQuotes+1)), '"') + $openQuotes + 1;
+	      // another equals exists
+	      if (strpos($fromSpace, '=') !== FALSE) {
+		// opening and closing quotes exists
+		if (($openQuotes !== FALSE) && (strpos(substr($fromSpace, ($openQuotes+1)), '"') !== FALSE))
+		  $attr = substr($fromSpace, 0, ($closeQuotes+1));
+		// one or neither exist
+		else $attr = substr($fromSpace, 0, $nextSpace);
+		// no more equals exist
+	      } else $attr = substr($fromSpace, 0, $nextSpace);
+	      // last attr pair
+	      if (!$attr) $attr = $fromSpace;
+	      // add to attribute pairs array
+	      $attrSet[] = $attr;
+	      // next inc
+	      $tagLeft = substr($fromSpace, strlen($attr));
+	      $currentSpace = strpos($tagLeft, ' ');
+	    }
+	    // appears in array specified by user
+	    $tagFound = in_array(strtolower($tagName), $this->tagsArray);			
+	    // remove this tag on condition
+	    if ((!$tagFound && $this->tagsMethod) || ($tagFound && !$this->tagsMethod)) {
+	      // reconstruct tag with allowed attributes
+	      if (!$isCloseTag) {
+		$attrSet = $this->filterAttr($attrSet);
+		$preTag .= '<' . $tagName;
+		for ($i = 0; $i < count($attrSet); $i++)
+		  $preTag .= ' ' . $attrSet[$i];
+		// reformat single tags to XHTML
+		#if (strpos($fromTagOpen, "</" . $tagName))	$preTag .= '>';
+		#else $preTag .= ' />';
+		$preTag .= '>';
+		// just the tagname
+	      } else $preTag .= '</' . $tagName . '>';
+	    }
+	    // find next tag's start
+	    $postTag = substr($postTag, ($tagLength + 2));
+	    $tagOpen_start = strpos($postTag, '<');			
+	  }
+	  // append any code after end of tags
+	  $preTag .= $postTag;
+	  return $preTag;
 	}
 
 	/** 
@@ -240,6 +241,7 @@ class InputFilter {
 	function decode($source) {
 		// url decode
 	  //$source = html_entity_decode($source, ENT_QUOTES, "utf-8");
+	  
 		// convert decimal
 		$source = preg_replace('/&#(\d+);/me',"chr(\\1)", $source);  // decimal notation
 		// convert hex

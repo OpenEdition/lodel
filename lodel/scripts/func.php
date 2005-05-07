@@ -133,7 +133,7 @@ function clean_request_variable(&$var) {
 
   if (!$filter) {
     require_once("class.inputfilter.php");
-    $filter=new InputFilter;
+    $filter=new InputFilter(array(),array(),1,1);
   }
 
   if (is_array($var)) {
