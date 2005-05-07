@@ -142,7 +142,10 @@ function mysqldatetime($s,$type="datetime")
     $timestamp=mktime ($arr['tm_hour'],$arr['tm_min'],$arr['tm_sec'],
 		       $arr['tm_mon']+1,$arr['tm_mday'],1900+$arr['tm_year']);
 
-  } elseif ( ($date=mysqldate($s)) ) {
+# etrange:  } elseif ( ($date=mysqldate($s)) ) {
+
+  } else {
+    $date=mysqldate($s);
     if (!$date) $date=date("Y-m-d");
     list($y,$m,$d)=explode("-",$date);
 
