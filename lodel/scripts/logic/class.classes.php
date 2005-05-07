@@ -179,13 +179,17 @@ class ClassesLogic extends Logic {
      $logic=&getLogic(ClassesLogic::typestable($this->vo->classtype));
      $logic->_deleteRelatedTables($ids);
 
-     // delete tablefields
+     // delete tablefields and tablefieldgroups
+     $criteria="class='".$this->vo->class."'";
+     if ($this->vo->classtype=="persons") {
+       $criteria.=" AND class='entities_".$this->vo->class."'";
+     }
      $dao=&getDAO("tablefields");
-     $dao->deleteObjects("class='".$this->vo->class."'");
+     $dao->deleteObjects($criteria);
 
      // delete tablefields
      $dao=&getDAO("tablefieldgroups");
-     $dao->deleteObjects("class='".$this->vo->class."'");
+     $dao->deleteObjects($criteria);
  
      unset($this->vo);
 
