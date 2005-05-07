@@ -182,7 +182,7 @@ class ClassesLogic extends Logic {
      // delete tablefields and tablefieldgroups
      $criteria="class='".$this->vo->class."'";
      if ($this->vo->classtype=="persons") {
-       $criteria.=" AND class='entities_".$this->vo->class."'";
+       $criteria.=" OR class='entities_".$this->vo->class."'";
      }
      $dao=&getDAO("tablefields");
      $dao->deleteObjects($criteria);
