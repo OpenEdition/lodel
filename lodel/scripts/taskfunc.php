@@ -101,6 +101,7 @@ function gettypeandclassfromtask($task,&$context)
     
     if (!$context['class']) die("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask");
     
+
   } else {
     $idtype=$task['idtype'];
     if (!$idtype) die("ERROR: idtype must be given by task in importAction");
