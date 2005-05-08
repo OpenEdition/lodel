@@ -149,16 +149,16 @@ if ($file1) {
 	$row['identity']=$context['identity'];
       } else {
 	$row['idparent']=$context['idparent'];
+	$row['idtype']=$context['idtype'];
       }
-      $row['idtype']=$context['idtype'];
     }
     require_once("taskfunc.php");
-    $idtask=makeTask("Import $file1_name",3,$row,$idtask);
+    $idtask=maketask("Import $file1_name",3,$row,$idtask);
 
-    if ($msg) {
-      echo '<br><a href="checkimport.php?id='.$idtask.'"><font size="+1">Continuer</font></a>';
-      return;
-    }
+    #if ($msg) {
+    #  echo '<br><a href="checkimport.php?id='.$idtask.'"><font size="+1">Continuer</font></a>';
+    #  return;
+    #}
 
     header("Location: checkimport.php?idtask=$idtask");
     return;
