@@ -103,6 +103,7 @@ class DAO {
 	 if ($update) $update.=",";
 	 $update.="$k='".$v."'";
        }
+       echo "debug ghislain:",$update;
        if ($update) {
 	 $db->execute("UPDATE ".$this->sqltable." SET  $update WHERE ".$idfield."='".$vo->$idfield."' ".$this->rightscriteria("write")) or dberror();
        }
