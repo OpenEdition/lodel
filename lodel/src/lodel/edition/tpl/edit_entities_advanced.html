@@ -211,7 +211,11 @@
 		<td colspan="6">
 		<div class="pied_de_formulaire">
 		<form>
+		<IF COND="[#TYPE.DISPLAY]=='advanced'">
+			<input class="form" type="button" value="        Ok        "  onClick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'">
+		<ELSE/>
 			<input class="form" type="button" value="        Ok        " onClick="javascript:window.location='index.php?id=[#IDPARENT]'" />
+		</IF>
 		</form>
 	</div>
 		
