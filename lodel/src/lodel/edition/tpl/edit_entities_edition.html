@@ -86,7 +86,12 @@
 			<td align="center">
 					<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]"> - 
 					<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]"> - 
+
+	<IF COND="[#TYPE.DISPLAY]=='advanced'">
+			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onClick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'">
+	<ELSE/>
 			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onClick="javascript:window.location='index.php?id=[#IDPARENT]'">
+	</IF>
 			</td>
 		</tr>
 	</table>
