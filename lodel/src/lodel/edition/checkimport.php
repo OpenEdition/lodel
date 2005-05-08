@@ -33,8 +33,10 @@ require("auth.php");
 authenticate(LEVEL_REDACTOR);
 require("func.php");
 
+require("taskfunc.php");
 $task=gettask($idtask);
 $context['idtask']=$idtask;
+gettypeandclassfromtask($task,$context);
 
 //require_once("balises.php");
 
@@ -45,7 +47,7 @@ require_once("xmlimport.php");
 $handler=new XMLImportHandler;
 
 $parser=new XMLImportParser();
-$parser->init("documents");
+$parser->init($context['class']);
 $parser->parse($text,$handler);
 
 $context['tablecontents']=$handler->contents();

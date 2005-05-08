@@ -137,12 +137,7 @@ if ($file1) {
       break;
     }
 
-    if ($idtask) { // reimportation of an existing document ?
-      $row=get_task($idtask);
-    } else {
-      $row=array();
-    }
-      
+    $row=array();
     $row['fichier']=$fileconverted;
     $row['source']=$source;
     $row['sourceoriginale']=$sourceoriginale;
@@ -157,6 +152,7 @@ if ($file1) {
       }
       $row['idtype']=$context['idtype'];
     }
+    require_once("taskfunc.php");
     $idtask=makeTask("Import $file1_name",3,$row,$idtask);
 
     if ($msg) {

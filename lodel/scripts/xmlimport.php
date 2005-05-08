@@ -49,7 +49,6 @@ class XMLImportParser {
   function init($class)
   {
     global $home;
-
     
     if (!$this->commonstyles) {
       // get internal styles
@@ -304,7 +303,7 @@ class XMLImportParser {
     switch($class) {
     case "internalstylesvo" :
     case "characterstylesvo" :
-      #if (preg_match("/^[\.;]+/",$obj->style)) break;
+      # if (preg_match("/^[\.;]+/",$obj->style)) break;
       if ($opening) {
 	array_unshift($datastack,"");
       } else {

@@ -62,31 +62,17 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      $this->context=&$context;
 
      $idtask=intval($context['idtask']);
+     require_once("taskfunc.php");
      $this->task=$task=gettask($idtask);
+     gettypeandclassfromtask($task,$context);
+     if ($task['identity']) $context['id']=$task['identity'];
+
      require_once("xmlimport.php");
-
-     if ($task['identity']) {
-       $context['id']=$task['identity'];
-       $row=$db->getRow(lq("SELECT class,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$context['id']."'"));        
-       if ($db->errorno()) dberror();
-       $class=$row['class'];
-       $context['idtype']=$row['idtype'];
-
-       if (!$class) die("ERROR: can't find entity ".$task['identity']." in Entities_ImportLogic::importAction");
-
-     } else {
-       $idtype=$task['idtype'];
-       if (!$idtype) die("ERROR: idtype must be given by task in importAction");
-       // get the type 
-       $dao=&getDAO("types");
-       $votype=$dao->getById($idtype,"class");
-       $class=$votype->class;
-     }
 
      //$this->_init($votype->class);
 
      $parser=new XMLImportParser();
-     $parser->init($class);
+     $parser->init($context['class']);
      $parser->parse(file_get_contents($task['fichier']),$this);
 
      // save the file

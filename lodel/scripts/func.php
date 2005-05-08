@@ -42,20 +42,6 @@ function writefile ($filename,$text)
 }
 
 
-function gettask (&$id)
-
-{
-  global $db;
-
-  $id=intval($id);
-  $row=$db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
-  if ($row===false) dberror();
-  if (!$row) { require_once("view.php"); $view=&getView(); $view->back(); return; }
-  $row=array_merge($row,unserialize($row['context']));
-  return $row;
-}
-
-
 function postprocessing(&$context)
 
 {
@@ -70,48 +56,13 @@ function postprocessing(&$context)
   }
 }
 
-//
-// $context est soit un tableau qui sera serialise soit une chaine deja serialise
-//
 
-function maketask($name,$etape,$context,$id=0)
 
-{
-  global $lodeluser,$db;
-  if (is_array($context)) $context=serialize($context);
-  $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$lodeluser['id']."','$context')")) or dberror();
-  return $db->insert_ID();
-}
-
-function updatetask_step($id,$step)
-
-{
-  global $db;
-  $db->exxecute(lq("UPDATE #_TP_tasks SET step='$step' WHERE id='$id'")) or dberror();
-}
-
-//
-// previouscontext est la chaine serialisee
-// newcontext est un array
-
-function updatetask_context($id,$newcontext,$previouscontext="")
-
-{
-  global $db;
-  if ($previouscontext) { // on merge les deux contextes
-    $contextstr=serialize(array_merge(unserialize($previouscontext),$newcontext));
-  } else {
-    $contextstr=serialize($newcontext);
-  }
-
-  $db->execute(lq("UPDATE #_TP_tasks SET context='$contextstr' WHERE id='$id'")) or dberror();
-
-}
-
-function rmscript($source) {
-	// Remplace toutes les balises ouvrantes susceptibles de lancer un script
-	return eregi_replace("<(\%|\?|( *)script)", "&lt;\\1", $source);
-}
+#desuet
+#function rmscript($source) {
+#	// Remplace toutes les balises ouvrantes susceptibles de lancer un script
+#	return eregi_replace("<(\%|\?|( *)script)", "&lt;\\1", $source);
+#}
 
 /**
  *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
