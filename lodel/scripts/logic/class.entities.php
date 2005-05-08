@@ -118,6 +118,7 @@ class EntitiesLogic extends Logic {
 
      // get the entities to modify and ancillary information
      $this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids);
+     if (!$ids) return "_back";
      // needs confirmation ?
 
      if (!$context['confirm'] && $softprotectedids) {
@@ -164,6 +165,7 @@ class EntitiesLogic extends Logic {
      $access=abs($status)>=32 ? "protect" : "write";
      $this->_getEntityHierarchy($context['id'],$access,"#_TP_entities.status>-16",
 				$ids,$classes,$softprotectedids);
+     if (!$ids) return "_back";
 
      // depublish protected entity ? need confirmation.
      if (!$context['confirm'] && $status<0 && $softprotectedids) {
