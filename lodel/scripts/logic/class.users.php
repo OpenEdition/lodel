@@ -163,6 +163,12 @@ class UsersLogic extends Logic {
      if ($db->errorno()) die($this->errormsg());
      usecurrentdb();
 
+     // check the passwd is given for new user.
+     if (!$context['id'] && !trim($context['passwd'])) {
+       $error['passwd']=1;
+       return false;
+     }
+
      if ($ret) {
        $error['username']="1"; // report the error on the first field
        return false;
