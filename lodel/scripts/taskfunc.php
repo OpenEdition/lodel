@@ -100,11 +100,9 @@ function gettypeandclassfromtask($task,&$context)
     $context['idtype']=$row['idtype'];
     
     if (!$context['class']) die("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask");
-    
-
   } else {
     $idtype=$task['idtype'];
-    if (!$idtype) die("ERROR: idtype must be given by task in importAction");
+    if (!$idtype) die("ERROR: idtype must be given by task in gettypeandclassfromtask");
     // get the type 
     $dao=&getDAO("types");
     $votype=$dao->getById($idtype,"class");

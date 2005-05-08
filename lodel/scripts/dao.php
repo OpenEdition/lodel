@@ -123,7 +123,7 @@ class DAO {
 	 $insert.=$k;
 	 $values.="'".$v."'";
        }
-       echo "debug ghislain:",$values;
+       #echo "debug ghislain:",$values;
        if ($insert) {
 	 $db->execute("REPLACE INTO ".$this->sqltable." (".$insert.") VALUES (".$values.")") or dberror();
 	 if (!$vo->$idfield) $vo->$idfield=$db->insert_id();
