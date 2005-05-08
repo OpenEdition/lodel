@@ -298,7 +298,7 @@ function tocable($text,$level=10)
   }
 
 #  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
-  return preg_replace_callback("/(<(h($sect)\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
+  return preg_replace_callback("/(<(h($sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
 }
 
 
