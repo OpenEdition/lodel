@@ -140,7 +140,7 @@ if ($file1) {
     $row=array();
     $row['fichier']=$fileconverted;
     $row['source']=$source;
-    $row['sourceoriginale']=$sourceoriginale;
+    $row['sourceoriginale']=addslashes($sourceoriginale);
     // build the import
     $row['importversion']=addslashes($convertretvar['version'])."; oochargement $version;";
 
