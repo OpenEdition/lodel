@@ -15,10 +15,16 @@
             <xsl:attribute name="name">lo</xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="@name"/></xsl:attribute>
           </xsl:element>
+          
           <fieldset>
             <legend>
               <xsl:value-of select="@description"/>
             </legend>
+            <xsl:element name="FUNC">
+            	<xsl:attribute name="NAME">PRINT_ERROR_LISTING_XSL_FORMS</xsl:attribute>
+            	<xsl:attribute name="TITLE"></xsl:attribute>
+            </xsl:element>
+            
             <xsl:apply-templates select="column|vcolumn"/>
           </fieldset>
         </xsl:for-each>
@@ -87,8 +93,9 @@
                         <xsl:attribute name="value"><xsl:call-template name="lsvariable" /></xsl:attribute>
                         <xsl:call-template name="javacheck" />
                     </xsl:element>
-                    <br />
+                    
                 <xsl:call-template name="error" />
+                <br />
             </xsl:when>
 
 
@@ -103,8 +110,9 @@
                         <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
                         <xsl:call-template name="javacheck" />
                     </xsl:element>
-                    <br />
+                    
                 <xsl:call-template name="error" />
+                <br />
             </xsl:when>
 
             <!-- input type="checkbox"             -->
@@ -137,8 +145,9 @@
                       <xsl:call-template name="javacheck" />
                     </xsl:element>
                   </xsl:element>
-                  <br />
+                 
                 <xsl:call-template name="error" />
+                 <br />
             </xsl:when>
 
             <!-- textarea                          -->
@@ -155,8 +164,9 @@
                         <xsl:call-template name="javacheck" />
                             <xsl:call-template name="lsvariable" />
                     </xsl:element>
-                    <br />
+                  
                 <xsl:call-template name="error" />
+                  <br />
             </xsl:when>
 
 
@@ -180,8 +190,9 @@
                       makeSelect($context,"<xsl:value-of select="@name" />","<xsl:value-of select="$table" />","<xsl:value-of select="@edittype" />");
                   </phptag>
                 </xsl:element>
-                <br />
+               
               <xsl:call-template name="error" />
+               <br />
             </xsl:when>
 
             <xsl:when test="@edittype='special'">
@@ -227,19 +238,24 @@
     <!--                        -->
 
     <xsl:template name="error">
+    
       <xsl:element name="LOOP">
+     
         <xsl:attribute name="NAME">fielderror</xsl:attribute>
         <xsl:attribute name="FIELD"><xsl:value-of select="@name" /></xsl:attribute>
-        <p class="error">
+				 
+        <xsl:element name="a">
+        	<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
+        </xsl:element>
+        <span class="error">
           <xsl:element name="FUNC">
             <xsl:attribute name="NAME">PRINT_ERROR_MESSAGE</xsl:attribute>
-            <xsl:attribute name="TITLE"><xsl:value-of select="@name" /></xsl:attribute>
+            <xsl:attribute name="TITLE"><xsl:value-of select="@label" /></xsl:attribute>
           </xsl:element>
-        </p>
+        </span>
       </xsl:element>
     </xsl:template>
-
-
+		
     <!--                           -->
     <!-- Make the javacheck script -->
     <!--                           -->
