@@ -47,7 +47,52 @@
 
 
 <br />
+<?php  $context['margin']=0; # initialise la marge 
+?>
 
+<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+<tr>
+	<td class="texte_noir_gras">[@COMMON.OPTIONGROUPS]</td>
+	<td>&nbsp;</td>
+</tr>
+
+<LOOP NAME="listoptiongroups" TABLE="optiongroups" ORDER="rank" WHERE="idparent='[#ID]'" WHERE="status gt -64">
+	<DO>
+		<tr>
+			<td colspan="5">
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
+				<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#TITLE|nbsp)]</span></td>
+				<td align="right" style="color: #CC9933;" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" >
+				<!--[<td background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="ligne_admin2">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#TITLE|nbsp)]</span></td>
+				<td background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="ligne_admin2">
+				]-->
+				<div>
+				 		<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+						 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				</div>
+				</td>
+				</tr>
+			</table>
+			</td>
+		</tr>
+		<tr>	
+        	<td colspan="4">
+	        	<div><MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=options&idgroup=[#ID]">[@ADMIN.ADD_OPTION_TO_THE_GROUP]</a></div>
+               </td>
+		</tr>
+        <?php $context['margin']+=10; ?> <!--[ incrément de la marge ]-->
+        <LET VAR="BARRE">[#BARRE]|</LET>
+      <MACRO NAME="AFFICHER_OPTIONS_DU_GROUPE"> 
+      
+		<LOOP NAME="listoptiongroups"></LOOP>
+	</DO>
+</LOOP>
+</table>
+
+
+<!--[
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td>[@COMMON.NAME]</td>
@@ -58,7 +103,9 @@
 	<LOOP NAME="optiongroups" TABLE="optiongroups" ORDER="rank,title" WHERE="status gt 0">
 
 		<DO>
-		<!--[ print the group ]-->
+	
+		
+		
 		<tr>
 	        <td colspan="5">
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
@@ -86,7 +133,7 @@
 		</DO>
 	</LOOP>
 </table>
-
+]-->
 
 <MACRO NAME="OK_TOINDEX">
 
