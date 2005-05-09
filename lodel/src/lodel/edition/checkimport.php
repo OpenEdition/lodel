@@ -36,7 +36,12 @@ require("func.php");
 require("taskfunc.php");
 $task=gettask($idtask);
 $context['idtask']=$idtask;
+print_R($task);
+
 gettypeandclassfromtask($task,$context);
+
+
+
 
 //require_once("balises.php");
 
