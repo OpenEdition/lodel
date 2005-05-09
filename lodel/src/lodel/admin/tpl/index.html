@@ -66,12 +66,15 @@
 						<td width="350" class="td_admin">
 						[@ADMIN.OPTIONS]
 						<select onChange="select_url(this)"><option>--</option>
-                                       		<LOOP NAME="options" TABLE="optiongroups" WHERE="status gt 0" ORDER="rank">
-							<IF COND="[#LOGIC]">
-							<option value="index.php?do=view&lo=[#LOGIC]&id=[#ID]">[#TITLE]</option>
-							<ELSE/>
-							<option value="index.php?do=view&lo=useroptiongroups&id=[#ID]">[#TITLE]</option>
-							</IF>
+						<LET VAR="ID">0</LET>
+            <LOOP NAME="options" TABLE="optiongroups" WHERE="idparent='[#ID]' AND status gt 0" ORDER="rank">
+						<IF COND="[#LOGIC]">
+							<option value="index.php?do=view&lo=[#LOGIC]&id=[#ID]">[#BARRE][#TITLE]</option>
+						<ELSE/>
+							<option value="index.php?do=view&lo=useroptiongroups&id=[#ID]">[#BARRE][#TITLE]</option>
+						</IF>
+						<LET VAR="BARRE">[#BARRE]&nbsp;&nbsp;|&nbsp;</LET>
+						<LOOP NAME="options"></LOOP>
 						</LOOP>
 						</select>
 						<td>&nbsp;</td>
@@ -298,7 +301,11 @@
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
-							<a href="schema.php"><span class="texte_orange">[@ADMIN.DOWNLOAD_XML_SCHEMA]</span></a>
+						<span class="texte_orange">[@ADMIN.DOWNLOAD_XML_SCHEMA]</span>
+						<select onChange="select_url(this)"><option>--</option>
+							<LOOP NAME="listentitiesclasses" TABLE="classes" WHERE="classtype='entities' AND status GT 0">
+								<option value="index.php?lo=xml&amp;do=generateXSD&amp;class=[#CLASS]">[#TITLE]</option>
+							</LOOP>
 						</td>
 						<td width="5">&nbsp;</td>
 					</tr>
