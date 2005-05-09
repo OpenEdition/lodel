@@ -566,7 +566,7 @@
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
         <table><tr valign="top">
 
-        <IF COND="[#LODELUSER.ADMIN] or [#ID]">
+        <IF COND="[#LODELUSER.REDACTOR]">
 	<LET VAR="idparentsaved">[#ID|intval]</LET>
         <LOOP NAME="classes" TABLE="classes" WHERE="status lt 64" ORDER="rank">
 	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]' AND [#DISPLAYWHERE]" ORDER="rank">
@@ -606,8 +606,7 @@
 	</LOOP>
         </LOOP>
         <ELSE/>
-		<MACRO NAME="PNG_PLUS">
-		<span class="inactif">[@EDITION.ADD_DOCUMENT] : </span>
+		<span class="inactif">&nbsp;</span>
         </IF>
         </tr></table>
 </DEFFUNC>
