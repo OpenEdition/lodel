@@ -314,7 +314,7 @@ class EntitiesLogic extends Logic {
 
        while (!$result->EOF) {
 	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
-	 $ids[]=$result->fields['id'];
+	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
 	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];      
 	 $result->MoveNext();
@@ -326,7 +326,7 @@ class EntitiesLogic extends Logic {
 
        while (!$result->EOF) {
 	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
-	 $ids[]=$result->fields['id'];
+	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
 	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];
 	 $result->MoveNext();
