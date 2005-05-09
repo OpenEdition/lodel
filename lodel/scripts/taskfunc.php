@@ -37,11 +37,12 @@ function maketask($name,$etape,$context,$id=0)
 
 {
   global $lodeluser,$db;
-  if (is_array($context)) $context=serialize($context);
+  if (is_array($context)) $context=addslashes(serialize($context));
   $db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$lodeluser['id']."','$context')")) or dberror();
   return $db->insert_ID();
 }
 
+/*
 function updatetask_step($id,$step)
 
 {
@@ -66,7 +67,7 @@ function updatetask_context($id,$newcontext,$previouscontext="")
   $db->execute(lq("UPDATE #_TP_tasks SET context='$contextstr' WHERE id='$id'")) or dberror();
 
 }
-
+*/
 
 function gettask (&$id)
 

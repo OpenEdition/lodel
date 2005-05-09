@@ -100,6 +100,11 @@ function magic_addslashes($var) {
   return $var;
 }
 
+function magic_stripslashes($var) {
+  if (get_magic_quotes_gpc()) return stripslashes($var);
+  return $var;
+}
+
 
 function get_max_rank ($table,$where="") 
 

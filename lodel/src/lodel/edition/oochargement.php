@@ -140,9 +140,9 @@ if ($file1) {
     $row=array();
     $row['fichier']=$fileconverted;
     $row['source']=$source;
-    $row['sourceoriginale']=magic_addslashes($sourceoriginale);
+    $row['sourceoriginale']=magic_stripslashes($sourceoriginale);
     // build the import
-    $row['importversion']=magic_addslashes($convertretvar['version'])."; oochargement $version;";
+    $row['importversion']=magic_stripslashes($convertretvar['version'])."; oochargement $version;";
     if ($context['identity']) {
       $row['identity']=$context['identity'];
     } else {
@@ -150,8 +150,6 @@ if ($file1) {
       $row['idtype']=$context['idtype'];
     }
     #}
-    print_R($row);
-    echo "magic_gpc",get_magic_quotes_gpc();
     require_once("taskfunc.php");
     #$idtask=maketask("Import $file1_name",3,$row,$idtask);
     $idtask=maketask("Import $file1_name",3,$row);
