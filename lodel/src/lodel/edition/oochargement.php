@@ -144,6 +144,8 @@ if ($file1) {
     // build the import
     $row['importversion']=addslashes($convertretvar['version'])."; oochargement $version;";
 
+    print_R($row);
+    echo $sourceoriginale;
     #if (!$idtask) {
     if ($context['identity']) {
       $row['identity']=$context['identity'];
