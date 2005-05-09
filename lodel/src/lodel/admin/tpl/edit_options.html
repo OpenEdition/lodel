@@ -43,39 +43,40 @@
 <input type="hidden" name="lo" value="options">
 <fieldset>
   <legend>Table des options du site</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-  <br />
   <LOOP NAME="fielderror" FIELD="name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
-    </p>
+    <a id="name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="title">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
-    </p>
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.TITLE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <input type="hidden" name="idgroup" value="[#IDGROUP]">
   <LOOP NAME="fielderror" FIELD="idgroup">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idgroup"></FUNC>
-    </p>
+    <a id="idgroup"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="type">[@ADMIN.TYPE]
         : 
@@ -86,12 +87,12 @@
                       makeSelect($context,"type","options","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="type">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="type"></FUNC>
-    </p>
+    <a id="type"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TYPE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>
@@ -101,34 +102,34 @@
                       makeSelect($context,"userrights","options","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="userrights">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="userrights"></FUNC>
-    </p>
+    <a id="userrights"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_RIGHTS]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="defaultvalue">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="defaultvalue"></FUNC>
-    </p>
+    <a id="defaultvalue"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DEFAULT_VALUE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <br />
   <LOOP NAME="fielderror" FIELD="comment">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
-    </p>
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="protected">[@COMMON.PROTECTED]
         : 
       </label>
@@ -138,12 +139,12 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PROTECTED]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->

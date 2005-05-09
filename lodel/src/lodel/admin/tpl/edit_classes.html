@@ -44,40 +44,41 @@
 <input type="hidden" name="lo" value="classes">
 <fieldset>
   <legend>table qui contient les classes</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
-  <br />
   <LOOP NAME="fielderror" FIELD="class">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="class"></FUNC>
-    </p>
+    <a id="class"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <input type="hidden" name="classtype" value="[#CLASSTYPE]">
   <LOOP NAME="fielderror" FIELD="classtype">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="classtype"></FUNC>
-    </p>
+    <a id="classtype"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="title">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
-    </p>
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
         : 
       </label>
@@ -87,23 +88,23 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <br />
   <LOOP NAME="fielderror" FIELD="comment">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
-    </p>
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->

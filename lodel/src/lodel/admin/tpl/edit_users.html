@@ -44,56 +44,57 @@
 <input type="hidden" name="lo" value="users">
 <fieldset>
   <legend>Table des utilisateurs de lodel</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
-  <br />
   <LOOP NAME="fielderror" FIELD="username">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="username"></FUNC>
-    </p>
+    <a id="username"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIN]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="passwd">[@COMMON.PASSWD]
         : 
       </label>
   <br class="nobr">
   <input type="password" size="30" name="passwd" id="passwd">
-  <br />
   <LOOP NAME="fielderror" FIELD="passwd">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="passwd"></FUNC>
-    </p>
+    <a id="passwd"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PASSWD]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="name">[@ADMIN.LASTNAME_AND_FIRSTNAME]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-  <br />
   <LOOP NAME="fielderror" FIELD="name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
-    </p>
+    <a id="name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.LASTNAME_AND_FIRSTNAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="email">[@ADMIN.EMAIL]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]">
-  <br />
   <LOOP NAME="fielderror" FIELD="email">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="email"></FUNC>
-    </p>
+    <a id="email"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EMAIL]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>
@@ -103,12 +104,12 @@
                       makeSelect($context,"userrights","users","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="userrights">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="userrights"></FUNC>
-    </p>
+    <a id="userrights"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_RIGHTS]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="lang">[@ADMIN.USER_LANG]
         : 
       </label>
@@ -118,12 +119,12 @@
                       makeSelect($context,"lang","users","lang");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="lang">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
-    </p>
+    <a id="lang"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_LANG]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <IF COND="[#SITE] and ![#USER.ADMIN]">
     <label for="usergroups">[@ADMIN.USERGROUPS]
         : 
@@ -134,12 +135,12 @@
                       makeSelect($context,"usergroups","users","multipleselect");
                   ?>
     </select>
-    <br />
     <LOOP NAME="fielderror" FIELD="usergroups">
-      <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="usergroups"></FUNC>
-      </p>
+      <a id="usergroups"></a><span class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USERGROUPS]"></FUNC>
+      </span>
     </LOOP>
+    <br />
   </IF>
   <label for="protected">[@ADMIN.PROTECTED_USER]
         : 
@@ -150,12 +151,12 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->		    

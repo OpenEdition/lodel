@@ -43,11 +43,12 @@
 <input type="hidden" name="lo" value="texts">
 <fieldset>
   <legend>Table des minitextes</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="name">[@COMMON.NAME]
         : 
@@ -58,23 +59,23 @@
       </label>
   <br class="nobr">
   <textarea size="30" name="contents" id="contents" class="text" row="10" cols="60">[#CONTENTS]</textarea>
-  <br />
   <LOOP NAME="fielderror" FIELD="contents">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="contents"></FUNC>
-    </p>
+    <a id="contents"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEXT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <input type="hidden" name="lang" value="[#LANG]">
   <LOOP NAME="fielderror" FIELD="lang">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="lang"></FUNC>
-    </p>
+    <a id="lang"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LANG]"></FUNC>
+    </span>
   </LOOP>
   <input type="hidden" name="textgroup" value="[#TEXTGROUP]">
   <LOOP NAME="fielderror" FIELD="textgroup">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="textgroup"></FUNC>
-    </p>
+    <a id="textgroup"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="protected">[@ADMIN.PROTECTED]
         : 
@@ -85,12 +86,12 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->		    

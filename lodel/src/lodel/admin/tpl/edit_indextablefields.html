@@ -54,11 +54,12 @@
 <input type="hidden" name="lo" value="indextablefields">
 <fieldset>
   <legend></legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="name">[@ADMIN.NAME]
         : 
@@ -69,34 +70,34 @@
                       makeSelect($context,"name","indextablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
-    </p>
+    <a id="name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <input type="hidden" name="class" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="class"></FUNC>
-    </p>
+    <a id="class"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="title">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
-    </p>
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <input type="hidden" name="type" value="[#TYPE]">
   <LOOP NAME="fielderror" FIELD="type">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="type"></FUNC>
-    </p>
+    <a id="type"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="edition">[@ADMIN.INTERFACE_EDITION]
         : 
@@ -107,23 +108,23 @@
                       makeSelect($context,"edition","indextablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="edition">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="edition"></FUNC>
-    </p>
+    <a id="edition"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <br />
   <LOOP NAME="fielderror" FIELD="comment">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
-    </p>
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <IF COND="[#CLASSTYPE]=='entities'">
     <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
         : 
@@ -134,12 +135,12 @@
                       makeSelect($context,"idgroup","indextablefields","select");
                   ?>
     </select>
-    <br />
     <LOOP NAME="fielderror" FIELD="idgroup">
-      <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idgroup"></FUNC>
-      </p>
+      <a id="idgroup"></a><span class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DATAFIELDGROUP]"></FUNC>
+      </span>
     </LOOP>
+    <br />
   </IF>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
         : 
@@ -150,12 +151,12 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->

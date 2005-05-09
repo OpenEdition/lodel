@@ -54,51 +54,52 @@
 <input type="hidden" name="lo" value="tablefields">
 <fieldset>
   <legend>table qui contient les champs supplementaires</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="name">[@ADMIN.NAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-  <br />
   <LOOP NAME="fielderror" FIELD="name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
-    </p>
+    <a id="name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <input type="hidden" name="class" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="class"></FUNC>
-    </p>
+    <a id="class"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="title">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
-    </p>
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="style">[@ADMIN.STYLE]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="style">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="style"></FUNC>
-    </p>
+    <a id="style"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="type">[@ADMIN.TYPE]
         : 
       </label>
@@ -108,12 +109,12 @@
                       makeSelect($context,"type","tablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="type">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="type"></FUNC>
-    </p>
+    <a id="type"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TYPE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="g_name">[@ADMIN.GENERIC_EQUIVALENT]
         : 
       </label>
@@ -123,12 +124,12 @@
                       makeSelect($context,"g_name","tablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="g_name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="g_name"></FUNC>
-    </p>
+    <a id="g_name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GENERIC_EQUIVALENT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="condition">[@ADMIN.CONDITION]
         : 
       </label>
@@ -138,34 +139,34 @@
                       makeSelect($context,"condition","tablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="condition">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="condition"></FUNC>
-    </p>
+    <a id="condition"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CONDITION]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="defaultvalue">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="defaultvalue"></FUNC>
-    </p>
+    <a id="defaultvalue"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DEFAULT_VALUE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="processing">[@ADMIN.PROCESSING_IMPORT]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="processing" id="processing" class="text" value="[#PROCESSING]">
-  <br />
   <LOOP NAME="fielderror" FIELD="processing">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="processing"></FUNC>
-    </p>
+    <a id="processing"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROCESSING_IMPORT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="allowedtags">[@ADMIN.ALLOWED_TAGS]
         : 
       </label>
@@ -175,23 +176,23 @@
                       makeSelect($context,"allowedtags","tablefields","multipleselect");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="allowedtags">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="allowedtags"></FUNC>
-    </p>
+    <a id="allowedtags"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ALLOWED_TAGS]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="filtering">[@ADMIN.AUTOMATIC_FILTERING]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="filtering" id="filtering" class="text" value="[#FILTERING]">
-  <br />
   <LOOP NAME="fielderror" FIELD="filtering">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="filtering"></FUNC>
-    </p>
+    <a id="filtering"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.AUTOMATIC_FILTERING]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="edition">[@ADMIN.INTERFACE_EDITION]
         : 
       </label>
@@ -201,23 +202,23 @@
                       makeSelect($context,"edition","tablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="edition">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="edition"></FUNC>
-    </p>
+    <a id="edition"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
-  <br />
   <LOOP NAME="fielderror" FIELD="editionparams">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="editionparams"></FUNC>
-    </p>
+    <a id="editionparams"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PARAMETER_FOR_EDITION]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="weight">[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]
         : 
       </label>
@@ -227,23 +228,23 @@
                       makeSelect($context,"weight","tablefields","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="weight">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="weight"></FUNC>
-    </p>
+    <a id="weight"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <br />
   <LOOP NAME="fielderror" FIELD="comment">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
-    </p>
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <IF COND="[#CLASSTYPE]=='entities'">
     <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
         : 
@@ -254,12 +255,12 @@
                       makeSelect($context,"idgroup","tablefields","select");
                   ?>
     </select>
-    <br />
     <LOOP NAME="fielderror" FIELD="idgroup">
-      <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idgroup"></FUNC>
-      </p>
+      <a id="idgroup"></a><span class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DATAFIELDGROUP]"></FUNC>
+      </span>
     </LOOP>
+    <br />
   </IF>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
         : 
@@ -270,12 +271,12 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->

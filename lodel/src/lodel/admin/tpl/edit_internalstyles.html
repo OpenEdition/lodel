@@ -44,23 +44,24 @@
 <input type="hidden" name="lo" value="internalstyles">
 <fieldset>
   <legend>Table pour les styles internes</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
   <label for="style">[@ADMIN.STYLE]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="style">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="style"></FUNC>
-    </p>
+    <a id="style"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="surrounding">[@ADMIN.SURROUNDING_STYLE]
         : 
       </label>
@@ -70,23 +71,23 @@
                       makeSelect($context,"surrounding","internalstyles","select");
                   ?>
   </select>
-  <br />
   <LOOP NAME="fielderror" FIELD="surrounding">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="surrounding"></FUNC>
-    </p>
+    <a id="surrounding"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.SURROUNDING_STYLE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="conversion">[@ADMIN.CONVERSION]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="conversion" id="conversion" class="text" value="[#CONVERSION]">
-  <br />
   <LOOP NAME="fielderror" FIELD="conversion">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="conversion"></FUNC>
-    </p>
+    <a id="conversion"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CONVERSION]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="greedy">[@ADMIN.GREEDY]
         : 
       </label>
@@ -96,12 +97,12 @@
     <ELSE/>
     <input type="checkbox" name="greedy" id="greedy">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="greedy">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="greedy"></FUNC>
-    </p>
+    <a id="greedy"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GREEDY]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_TYPE]
         : 
@@ -112,12 +113,12 @@
       <ELSE/>
       <input type="checkbox" name="protected" id="protected">
     </IF>
-    <br />
     <LOOP NAME="fielderror" FIELD="protected">
-      <p class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-      </p>
+      <a id="protected"></a><span class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_TYPE]"></FUNC>
+      </span>
     </LOOP>
+    <br />
   </IF>
 </fieldset>
 
