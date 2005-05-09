@@ -28,13 +28,53 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+function getOptionGroupsPath($idgroup)
+{
+	require_once("dao.php");
+	$dao = &getDAO("optiongroups");
+	while($idgroup) 
+	{
+		$vo=$dao->getById($idgroup,"id,idparent,name");
+		$path[] = $vo->name;
+		$idgroup = $vo->idparent;
+	}
+	if(is_array($path))
+		return array_reverse($path);
+	else
+		return array();
+}
 
-$GLOBALS[options_types]=array("s"=>"Texte",
-			      "pass"=>"Mot de passe",
-			      "url"=>"URL",
-			      "mail"=>"Mail",
-			      "col"=>"Couleur",
-			      "i"=>"Nombre entier");
 
+function cacheOptionsInFile($optionsfile)
+{
+	global $db;
+	//foreach group create a temp array containing the path.
+	$result=$db->execute(lq("SELECT #_TP_options.name,value,defaultvalue , #_TP_optiongroups.id as grpid ,#_TP_optiongroups.name as grpname FROM #_TP_options INNER JOIN #_TP_optiongroups ON #_TP_optiongroups.id=idgroup WHERE #_TP_optiongroups.status > 0 AND #_TP_options.status > 0"));
+  if ($result===false) 
+  {
+		if ($db->errorno()!=1146) dberror();// table does not exists... that can happen during the installation 	
+			$options_cache=array();
+  }
+ // create the cache options file
+  $txt="<"."?php\n\$options_cache=array(\n";
+  $pathOptiongroups = array(); //array 
+  while ($result && !$result->EOF) 
+  {
+		if(isset($pathOptiongroups[$result->fields['grpid']])) // if the path has already been calculated
+			$path = $pathOptiongroups[$result->fields['grpid']];
+		else
+			$pathOptiongroups[$result->fields['grpid']] = $path = getOptionGroupsPath($result->fields['grpid']);
+
+		$optname=implode(".",$path).".".$result->fields['name'];
+		$value=$result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+		$txt.="'".$optname."'=>'".$value."',\n";
+		$options_cache[$optname]=$value;
+		$result->MoveNext();
+  }
+  reset($pathOptiongroups);
+  $txt.=");?".">";
+  writefile($optionsfile,$txt);
+  return $options_cache;
+}
 
 ?>
