@@ -36,7 +36,7 @@
 		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@EDITION.TITLE_DOCUMENT_EDITION]</td>
 	</tr>
 </table>
-
+<FUNC NAME="PRINT_ERROR_LISTING">
 <!--[ Propose OOImport ? ]-->
 <IF COND="![#ID]">
 <LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
