@@ -38,7 +38,7 @@
 </table>
 
 <!--[ Propose OOImport ? ]-->
-<IF COND="![#ID]">
+<IF COND="[#STATUS] le -64">
 <LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
 <div><a href="oochargement.php?idparent=[#IDPARENT]&idtype=[#IDTYPE]">[@EDITION.IMPORT_WITH_SERVOO]</a></div>
 </LOOP>
