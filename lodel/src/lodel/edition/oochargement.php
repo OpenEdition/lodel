@@ -150,6 +150,8 @@ if ($file1) {
       $row['idtype']=$context['idtype'];
     }
     #}
+    print_R($row);
+    echo "magic_gpc",get_magic_quotes_gpc();
     require_once("taskfunc.php");
     #$idtask=maketask("Import $file1_name",3,$row,$idtask);
     $idtask=maketask("Import $file1_name",3,$row);
