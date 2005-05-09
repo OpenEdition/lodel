@@ -181,7 +181,7 @@ class Entities_IndexLogic extends Logic
 		$fieldValue = preg_replace("/<[^>]*>/"," ",$fieldValue);//HTML tags cleaning
 	 	$fieldValue = $this->_decode_html_entities($fieldValue); //HTML Entities decode
 		$indexs = $this->_cleanAndcountTokens($fieldValue); //clean and count tokens
-		
+		print_r($index);
 		//Indexation de tous les mots.
 		foreach($indexs as  $key => $index)
 	 	{
@@ -295,10 +295,11 @@ class Entities_IndexLogic extends Logic
 		{
 			$cols = implode(",",array_keys($values['fieldname']));
 			$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array($values['id']);
-		#	echo "sql2=$sql2";
+			#echo "sql2=$sql2";
 			$result2 = $db->execute(lq($sql2)) or dberror();
 			while(!$result2->EOF)
 			{
+				print_r($result2->fields);
 				foreach($result2->fields as $field => $value)
 					$this->_indexField($id,$value,$field,$values['fieldname'][$field],$daoIndex,$classe.".");
 				$result2->moveNext();
