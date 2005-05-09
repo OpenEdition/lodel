@@ -41,13 +41,66 @@ class OptiongroupsLogic extends Logic {
    function OptiongroupsLogic() {
      $this->Logic("optiongroups");
    }
+	function makeSelect(&$context,$var)
 
+  {
+    global $db;
+
+    switch($var) {
+    case 'idparent':
+      $arr=array();
+      $rank=array();
+      $parent=array();
+      $ids=array(0);
+      $l=1;
+      do {
+	$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or dberror();
+	$ids=array();
+	$i=1;
+	while(!$result->EOF) {
+	  $id=$result->fields['id'];
+	  if ($id!=$context['id']) {
+	    $ids[]=$id;	 
+	    $fullname=$result->fields['title'];
+	    $idparent=$result->fields['idparent'];
+	    if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
+	    $d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+	    //echo $d," ";
+	    $arr["p$d"]=array($id,$fullname);
+	    $parent[$id]=$fullname;
+	    $i++;
+	  }
+	  $result->MoveNext();
+	}
+	$l*=100;
+      } while ($ids);
+      ksort($arr);
+      $arr2=array("0"=>"--"); // reorganize the array $arr
+      foreach($arr as $row) {
+	$arr2[$row[0]]=$row[1];
+      }
+      renderOptions($arr2,$context[$var]);
+      break;
+    }
+  }
+	
+	
+	/**
+    * Change rank action
+    * Default implementation
+    */
+	function changeRankAction(&$context,&$error)
+  {
+		return Logic::changeRankAction(&$context,&$error,"idparent","");
+	}
 
    function isdeletelocked($id,$status=0) 
 
    {
      global $db;
      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_options WHERE idgroup='$id' AND status>-64"));
+     $countgroups = $db->getOne(lq("SELECT count(*) FROM #_TP_optiongroups WHERE idparent='$id' AND status>-64"));
+     $count = $count + $countgroups;
      if ($db->errorno())  dberror();
      if ($count==0) {
        return false;
@@ -56,18 +109,75 @@ class OptiongroupsLogic extends Logic {
      }
      //) { $error["error_has_entities"]=$count; return "_back"; }
    }
-
-
-   /**
+	 
+	 
+	 /**
+	  * _prepareEdit - called before the editAction is performed
+	  */
+	 function _prepareEdit($dao,&$context)
+	 {
+	 	// gather information for the following
+    if ($context['id']) //it is an edition
+    {
+       $this->oldvo=$dao->getById($context['id']);
+       if (!$this->oldvo)
+       	die("ERROR: internal error in OptionGroups::_prepareEdit");
+       if($context['idparent'] != $this->oldvo->idparent) //can't change the parent of an optiongroup !
+       	die("ERROR : Changing the parent of a group is forbidden");
+       
+    }
+    else //it is an add
+    {
+    	//if it is an add - the optiongroup inherit the exportpolicy
+   		if($context['idparent'])
+   		{
+   				$voparent = $dao->getById($context['idparent'],"id,exportpolicy");
+   				$context['exportpolicy'] = $voparent->exportpolicy;
+   		}
+    }
+  }
+	
+	
+	 /**
     * add/edit Action
     */
-
-   function editAction(&$context,&$error,$clean=false)
+  function editAction(&$context,&$error,$clean=false)
   { 
-    $ret=Logic::editAction($context,$error);
-    if (!$error) $this->clearCache();
-    return $ret;
+     $ret=Logic::editAction($context,$error);
+     if (!$error) $this->clearCache();
+    		return $ret;
   }
+  
+  /**
+   * _saveRelatedTables will updates children of the saved optiongroups
+   */
+ 	function _saveRelatedTables($vo,&$context) 
+ 	{
+ 		global $db;
+ 		//if the exportpolicy has been changed update the optiongroups children	
+		$dao=$this->_getMainTableDAO();
+	 	$newpolicy = $vo->exportpolicy;
+	 	$oldpolicy = $context['exportpolicy'] == 'on' ? 1 : 0;
+    if($newpolicy != $oldpolicy)	
+    {
+	  	$ids = array($vo->id);
+	   	do
+	   	{
+	   		$vos = $dao->findMany("exportpolicy <> '$newpolicy' AND idparent ".sql_in_array($ids),"rank DESC","id,idparent,exportpolicy");
+	   		$sqlquery = lq("UPDATE #_TP_optiongroups SET exportpolicy='$newpolicy' WHERE exportpolicy <> '$newpolicy' AND idparent ".sql_in_array($ids));
+	   		$ret = $db->execute($sqlquery);
+	   		$ids = array();
+	   		if($ret!==false) //
+	   			foreach($vos as $vo)
+	   				$ids[] = $vo->id;
+			}
+	   	while($ids);
+    }
+ 	}
+  
+  
+  
+  
    function deleteAction(&$context,&$error)
 
   {
@@ -108,7 +218,7 @@ class OptiongroupsLogic extends Logic {
 
     function _uniqueFields() {  return array(array("name"),);  }
    // end{uniquefields} automatic generation  //
-
+		
 
 } // class 
 
