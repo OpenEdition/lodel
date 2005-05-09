@@ -295,11 +295,11 @@ class Entities_IndexLogic extends Logic
 		{
 			$cols = implode(",",array_keys($values['fieldname']));
 			$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array($values['id']);
-			echo "sql2=$sql2";
+			#echo "sql2=$sql2";
 			$result2 = $db->execute(lq($sql2)) or dberror();
 			while(!$result2->EOF)
 			{
-				print_r($result2->fields);
+				#print_r($result2->fields);
 				foreach($result2->fields as $field => $value)
 					$this->_indexField($id,$value,$field,$values['fieldname'][$field],$daoIndex,$classe.".");
 				$result2->moveNext();
