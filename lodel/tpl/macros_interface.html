@@ -47,7 +47,7 @@
 <DO>
 		<li>
 			<span class="error">
-			<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]'"> 
+			<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'"> 
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
 			</LOOP>
 				<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
