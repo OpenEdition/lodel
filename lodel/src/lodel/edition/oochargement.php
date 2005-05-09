@@ -140,13 +140,9 @@ if ($file1) {
     $row=array();
     $row['fichier']=$fileconverted;
     $row['source']=$source;
-    $row['sourceoriginale']=addslashes($sourceoriginale);
+    $row['sourceoriginale']=magic_addslashes($sourceoriginale);
     // build the import
-    $row['importversion']=addslashes($convertretvar['version'])."; oochargement $version;";
-
-    print_R($row);
-    echo $sourceoriginale;
-    #if (!$idtask) {
+    $row['importversion']=magic_addslashes($convertretvar['version'])."; oochargement $version;";
     if ($context['identity']) {
       $row['identity']=$context['identity'];
     } else {

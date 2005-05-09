@@ -213,5 +213,15 @@ function loop_field_selection_values(&$context,$funcname,$arguments)
 }
 
 
+function mystripslashes (&$var)
+
+{
+  if (is_array($var)) {
+    array_walk($var,"mystripslashes");
+    return $var;
+  } else {
+    return $var=stripslashes($var);
+  }
+}
 
 ?>

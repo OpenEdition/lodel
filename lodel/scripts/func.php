@@ -91,9 +91,13 @@ function clean_request_variable(&$var) {
     array_walk($var,"clean_request_variable");
   } else {
     $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),$filter->process(trim($var)));
-    if (!get_magic_quotes_gpc()) $var=addslashes($var);
+    $var=magic_addslashes($var);
   }
-  
+}
+
+function magic_addslashes($var) {
+  if (!get_magic_quotes_gpc()) return addslashes($var);
+  return $var;
 }
 
 
@@ -154,6 +158,7 @@ function closetags($text)
 }
 
 
+/*
 function myquote (&$var)
 {
   if (is_array($var)) {
@@ -174,17 +179,7 @@ function myaddslashes (&$var)
   }
 }
 
-
-function mystripslashes (&$var)
-
-{
-  if (is_array($var)) {
-    array_walk($var,"mystripslashes");
-    return $var;
-  } else {
-    return $var=stripslashes($var);
-  }
-}
+*/
 
 function myfilemtime($filename)
 

@@ -28,62 +28,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-die("desuet");
-if (!function_exists("authenticate")) {
-  require("siteconfig.php");
-  require_once("auth.php");
-  authenticate();
-}
-require_once("func.php");
-
-
-$context[id]=$id=intval($id);
-
-
-// cherche le sommaire precedent et le suivant
-include_once("connect.php");
-
-
-$critere=$user['visitor'] ? " AND $GLOBALS[tp]entities.status>=-1" : " AND $GLOBALS[tp]entities.status>0";
-$critere.=" AND $GLOBALS[tp]types.status>0";
-// cherche la publication
-$relocation=FALSE;
-$base="";
-
-
-if (!(@include_once("CACHE/filterfunc.php"))) require_once($GLOBALS[home]."filterfunc.php");
-
-if ($id || $identifier) {
-  require_once("textfunc.php");
-  do {
-    if ($identifier) {
-      $identifier=addslashes(stripslashes($identifier));
-      $where="$GLOBALS[tp]entities.identifier='$identifier' ".$critere;
-    } else {
-      $where="$GLOBALS[tp]entities.id='$id' ".$critere;
-    }
-
-    $result=mysql_query("SELECT $GLOBALS[tp]publications.*,$GLOBALS[tp]entities.*,tpl,type FROM $GLOBALS[publicationstypesjoin] WHERE $where") or dberror();
-    if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
-    $row=filtered_mysql_fetch_assoc($context,$result);
-    $base=$row[tpl];
-    if (!$base) { $id=$row[idparent]; $relocation=TRUE; }
-  } while (!$base && !$identifier);
-  if ($relocation) { 
-    header("location: ".makeurlwithid("sommaire",$row[id]));
-    return;
-  }
-  $context=array_merge($context,$row);
-} else {
-  $base="sommaire";
-  if (!file_exists("tpl/".$base.".html")) {
-    header("Location: index.$GLOBALS[extensionscripts]");
-    return;
-  }
-}
-
-
-include ($home."cache.php");
-
+  // compat with 0.7
+require("index.php");
 
 ?>

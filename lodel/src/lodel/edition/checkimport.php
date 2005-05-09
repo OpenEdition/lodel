@@ -39,9 +39,6 @@ $context['idtask']=$idtask;
 
 gettypeandclassfromtask($task,$context);
 
-
-
-
 //require_once("balises.php");
 
 $textorig=$text=file_get_contents($task['fichier']);
