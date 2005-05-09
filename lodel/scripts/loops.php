@@ -356,7 +356,7 @@ function loop_page_scale(&$context,$funcname,$arguments)
 	if(!isset($cache[$funcname]))
 	{
 		$pages = _constructPages($context,$funcname,$arguments);
-		$cache[$funcname] = $page;
+		$cache[$funcname] = $pages;
 	}
 	
 	$local_context = $context;
@@ -369,10 +369,15 @@ function loop_page_scale(&$context,$funcname,$arguments)
 	//call before
 	if(function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname",$local_context);
-				
+	$oldpagenum=1;			
 	foreach($local_context["pages"] as $key => $value)
 	{
 		$local_context["pagenumber"] = $key;
+		if($key-$oldpagenum > 1)
+			$local_context["hole"] = 1;
+		else
+			$local_context["hole"] = 0;
+		$oldpagenum = $key;
 		$local_context["urlpage"] = $value;
 		call_user_func("code_do_$funcname",$local_context);
 	}
@@ -419,6 +424,8 @@ function _constructPages(&$context,$funcname,$arguments)
  		$pages[($i/$arguments['limit']+ 1)] = $urlpage;
  		$i += $arguments['limit'];
  	}
+  
+  
    	
 	//add current page   
   $pages[($currentoffset/$arguments['limit']+ 1)] = "";
@@ -431,7 +438,67 @@ function _constructPages(&$context,$funcname,$arguments)
   	$urlpage = $currenturl.$offsetname."=".$i;
   	$pages[($i/$arguments['limit']+ 1)] = $urlpage;
   }
-   
+  if(count($pages) > 10)
+  {
+		$res = plageDeRecherche($currentoffset/$arguments['limit'],count($pages));
+		foreach($pages as $key=> $value)
+		{
+			if(($key < $res[0] || $key > $res[1]+1) && $key!=1)
+				unset($pages[$key]);
+		}
+			  	
+  }
+  
+  #print_r($pages);
   return $pages;
 }
+/*
+ * Retourne un tableau contenant la première page de la recherche et la dernière
+ * en fonction de la page courante et du nombres de pages total (tiré de In-Extenso)
+ * 
+ */
+function plageDeRecherche ($numPageCourante,$nbPagesTotal)
+{
+	$nbPagesTotal = $nbPagesTotal;
+  $numPageCourante = $numPageCourante + 1;
+  $precision = 4;
+	$res = array();
+	$ecart_inf = 0;
+  $ecart_sup = 0;
+  $ecart_inf= $numPageCourante -1 ;
+  $ecart_sup = abs($numPageCourante - $nbPagesTotal );
+  if($numPageCourante - $precision > 0)
+  {
+  	$res[0] = $numPageCourante - $precision;
+  }
+  else
+  {
+  	$res[0] = 1;
+  }
+  if($ecart_sup < 5)
+  {
+  if($res[0] - ($precision - $ecart_sup) > 0)
+  	$res[0] -= ($precision - $ecart_sup);
+  else
+  	$res[0] = 1;
+  }
+  if($numPageCourante + $precision < $nbPagesTotal)
+  {
+  	$res[1] = $numPageCourante + $precision;
+  }
+  else
+  {
+  	$res[1] = $nbPagesTotal;
+  }
+  if($ecart_inf < 5)
+  {
+  	if($res[1] + ($precision - $ecart_inf) < $nbPagesTotal )
+    	$res[1] += ($precision - $ecart_inf);
+    else
+    	$res[1] = $nbPagesTotal;
+  }
+  return $res;
+}
+
+
 ?>
