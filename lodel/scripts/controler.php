@@ -119,7 +119,7 @@ class Controler {
 	mystripslashes($context);
 	$logic->viewAction($context,$error); // in case anything is needed to be put in the context
 	$context['error']=$error;
-	#print_r($error);
+	print_r($error);
       case '_ok' :
 	if ($do=="listAction") {
 	  $view->renderCached($context,$lo);
