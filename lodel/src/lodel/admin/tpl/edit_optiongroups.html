@@ -43,77 +43,89 @@
 <input type="hidden" name="lo" value="optiongroups">
 <fieldset>
   <legend>Table des groupes d'options</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="id"></FUNC>
-    </p>
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
   </LOOP>
-  <input type="hidden" name="idparent" value="[#IDPARENT]">
+  <label for="idparent">[@COMMON.PARENT_OPTIONGROUPS]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="idparent" id="idparent">
+    <?php 
+                      makeSelect($context,"idparent","optiongroups","select");
+                  ?>
+  </select>
   <LOOP NAME="fielderror" FIELD="idparent">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="idparent"></FUNC>
-    </p>
+    <a id="idparent"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PARENT_OPTIONGROUPS]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-  <br />
   <LOOP NAME="fielderror" FIELD="name">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="name"></FUNC>
-    </p>
+    <a id="name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NAME]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <br />
   <LOOP NAME="fielderror" FIELD="title">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="title"></FUNC>
-    </p>
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.TITLE]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="logic">[@COMMON.LOGIC]
         : 
       </label>
   <br class="nobr">
   <input type="text" size="30" name="logic" id="logic" class="text" value="[#LOGIC]">
-  <br />
   <LOOP NAME="fielderror" FIELD="logic">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="logic"></FUNC>
-    </p>
+    <a id="logic"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIC]"></FUNC>
+    </span>
   </LOOP>
+  <br />
   <label for="comment">[@ADMIN.COMMENT]
         : 
       </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <br />
   <LOOP NAME="fielderror" FIELD="comment">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="comment"></FUNC>
-    </p>
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
   </LOOP>
-  <label for="exportpolicy">[@ADMIN.EXPORT]
+  <br />
+  <IF COND="[#IDPARENT]==0">
+    <label for="exportpolicy">[@ADMIN.EXPORT]
         : 
       </label>
-  <br class="nobr">
-  <IF COND="[#EXPORTPOLICY]">
-    <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
-    <ELSE/>
-    <input type="checkbox" name="exportpolicy" id="exportpolicy">
+    <br class="nobr">
+    <IF COND="[#EXPORTPOLICY]">
+      <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
+      <ELSE/>
+      <input type="checkbox" name="exportpolicy" id="exportpolicy">
+    </IF>
+    <LOOP NAME="fielderror" FIELD="exportpolicy">
+      <a id="exportpolicy"></a><span class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EXPORT]"></FUNC>
+      </span>
+    </LOOP>
+    <br />
   </IF>
-  <br />
-  <LOOP NAME="fielderror" FIELD="exportpolicy">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="exportpolicy"></FUNC>
-    </p>
-  </LOOP>
   <label for="protected">[@COMMON.PROTECTED]
         : 
       </label>
@@ -123,12 +135,12 @@
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">
   </IF>
-  <br />
   <LOOP NAME="fielderror" FIELD="protected">
-    <p class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="protected"></FUNC>
-    </p>
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PROTECTED]"></FUNC>
+    </span>
   </LOOP>
+  <br />
 </fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
