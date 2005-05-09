@@ -144,23 +144,25 @@ if ($file1) {
     // build the import
     $row['importversion']=addslashes($convertretvar['version'])."; oochargement $version;";
 
-    if (!$idtask) {
-      if ($context['identity']) {
-	$row['identity']=$context['identity'];
-      } else {
-	$row['idparent']=$context['idparent'];
-	$row['idtype']=$context['idtype'];
-      }
+    #if (!$idtask) {
+    if ($context['identity']) {
+      $row['identity']=$context['identity'];
+    } else {
+      $row['idparent']=$context['idparent'];
+      $row['idtype']=$context['idtype'];
     }
+    #}
     require_once("taskfunc.php");
-    $idtask=maketask("Import $file1_name",3,$row,$idtask);
+    #$idtask=maketask("Import $file1_name",3,$row,$idtask);
+    $idtask=maketask("Import $file1_name",3,$row);
+
 
     #if ($msg) {
     #  echo '<br><a href="checkimport.php?id='.$idtask.'"><font size="+1">Continuer</font></a>';
     #  return;
     #}
 
-    header("Location: checkimport.php?idtask=$idtask");
+    header("Location: checkimport.php?idtask=".$idtask);
     return;
   } while (0); // exceptions
 }

@@ -32,15 +32,13 @@
 function writefile ($filename,$text)
 {
 # echo "name de fichier : $filename";
-   if (file_exists($filename)) 
-   { 
-     echo " -  file exists";
+   if (file_exists($filename)) { 
      if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de right contacter Luc ou Ghislain");
    }
   $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
    
-   @chmod ($filename,0666 & octdec($GLOBALS['filemask']));
-   return  $ret;
+  @chmod ($filename,0666 & octdec($GLOBALS['filemask']));
+  return  $ret;
 }
 
 
@@ -288,28 +286,10 @@ function getoption($name)
     $optionsfile=SITEROOT."CACHE/options_cache.php";
 	
     if (file_exists($optionsfile)) {
-      include($optionsfile);
-    } 
-    else {
+      require($optionsfile);
+    } else {
       require_once('optionfunc.php');
      $options_cache = cacheOptionsInFile($optionsfile);
-      /*$result=$db->execute(lq("SELECT #_TP_options.name,value,defaultvalue,#_TP_optiongroups.name as grpname FROM #_TP_options INNER JOIN #_TP_optiongroups ON #_TP_optiongroups.id=idgroup WHERE #_TP_optiongroups.status>0 AND #_TP_options.status>0"));
-      if (!$result) {
-				if ($db->errorno()!=1146) dberror(); 	
-				// table does not exists... that can happen during the installation	
-				$options_cache=array();
-      }
-      // create the cache options file
-      $txt="<"."?php\n\$options_cache=array(\n";
-      while ($result && !$result->EOF) {
-				$optname=$result->fields['grpname'].".".$result->fields['name'];
-				$value=$result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
-				$txt.="'".$optname."'=>'".$value."',\n";
-				$options_cache[$optname]=$value;
-				$result->MoveNext();
-      }
-      $txt.=");?".">";
-      writefile($optionsfile,$txt);*/
     }
   }
   if (is_array($name)) {
@@ -317,8 +297,7 @@ function getoption($name)
       if ($options_cache[$n]) $ret[$n]=$options_cache[$n];
     }    
     return $ret;
-  } 
-  else {
+  } else {
     if ($options_cache[$name]) // cached ?
       return $options_cache[$name];
     $critere="name='$name'";
