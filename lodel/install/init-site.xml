@@ -1394,8 +1394,8 @@
         type="INTEGER"
         default="0"
         required="true"
-	edittype="int"
-	visibility="hidden" />
+    label="[@COMMON.PARENT_OPTIONGROUPS]"
+	edittype="select" />
 <column name="name"
         type="VARCHAR"
         size="255"
@@ -1434,7 +1434,8 @@
         default="0"
         required="true"
         label="[@ADMIN.EXPORT]"
-        edittype="boolean" />
+        edittype="boolean"
+        editcondition="[#IDPARENT]==0" />
 <vcolumn name="protected"
 	label="[@COMMON.PROTECTED]"
         edittype="boolean" />
