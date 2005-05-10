@@ -275,13 +275,11 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 #  return serialize($newoptions);
 #}
 
-function getoption($name)
-{
+function getoption($name) {
+
   global $db;
   static $options_cache;
-
   if (!$name) return;
-
   if (!isset($options_cache)) {
     $optionsfile=SITEROOT."CACHE/options_cache.php";
 	
@@ -289,7 +287,7 @@ function getoption($name)
       require($optionsfile);
     } else {
       require_once('optionfunc.php');
-     $options_cache = cacheOptionsInFile($optionsfile);
+     	$options_cache = cacheOptionsInFile($optionsfile);
     }
   }
   if (is_array($name)) {
