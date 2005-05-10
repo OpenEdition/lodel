@@ -517,6 +517,33 @@ function tocss($text,$options="")
   return preg_replace($srch,$rpl,$text);
 }
 
+
+/**
+ * function to format the text given the creationmethod field
+ *
+ */
+
+
+function format($text,$creationmethod="",$creationinfo="")
+
+{
+  if (!$creationmethod) $creationmethod=$GLOBALS['context']['creationmethod'];
+  if (!$creationinfo) $creationinfo=$GLOBALS['context']['creationinfo'];
+
+  if ($creationmethod=="form") {
+    switch($creationinfo) {
+    case 'xhtml' : return $text;
+    case 'wiki' : return wiki($text);
+    case 'bb' : die("not yet implemented");
+    default: die ("ERROR: unknown creationinfo");
+    }
+  }
+  if (substr($creationmethod,0,6)=="servoo") return tocss($text);
+
+  die ("ERROR: unknown creationmethod");
+}
+
+
 /**
  * Permet de savoir si un lien est relatif 
  */ 
@@ -660,7 +687,7 @@ function removespace($text) {
  * affiche l'argument selon le format
  */
 
-function format($text,$format)
+function formatstring($text,$format)
 
 {
   return sprintf($format,$text);
