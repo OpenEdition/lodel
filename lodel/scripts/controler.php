@@ -133,7 +133,7 @@ class Controler {
 	  exit();
 	}
 
-	$view->render($context,$ret);
+	$view->render($context, $ret);
       }
     } else {
       recordurl();
@@ -147,40 +147,36 @@ class Controler {
 
 } // class Controler
 
-
-function loop_errors(&$context,$funcname,$arguments)
-{
+/*
+ * loop_errors and loop_fielderror are used to show potential errors in the forms.
+ * These loops will have to be moved later.
+ */
+function loop_errors (&$context, $funcname, $arguments) {
+	
 	$localcontext=$context;
-	if(is_array($localcontext['error']))
-	{
-		if (function_exists("code_before_$funcname"))
-		{ 
-      $localcontext['count'] = count($localcontext['error']);
-      call_user_func("code_before_$funcname",$localcontext);
+	if(is_array($localcontext['error'])) {
+		if (function_exists("code_before_$funcname")) { 
+      $context['count'] = count($context['error']);
+      call_user_func("code_before_$funcname",$context);
 		}
-   #print_r($localcontext['error']);
-    foreach($localcontext['error'] as $field => $message)
-    {
+
+    foreach($localcontext['error'] as $field => $message) {
     	$localcontext['varname'] = $field;
     	$localcontext['error'] = $message;
     	call_user_func("code_do_$funcname",$localcontext);
-    	
     }  
     
     if (function_exists("code_after_$funcname")) 
-      call_user_func("code_after_$funcname",$localcontext);
+      call_user_func("code_after_$funcname",$context);
       
-	}
-	else
-	{
+	}	else {
 		if (function_exists("code_alter_$funcname")) 
       call_user_func("code_alter_$funcname",$localcontext);
 	}
 }
 
-function loop_fielderror(&$context,$funcname,$arguments)
-
-{
+function loop_fielderror (&$context, $funcname, $arguments) {
+  
   if (!$arguments['field']) die("ERROR: loop fielderror require a field attribute");
   $localcontext=$context;
   $localcontext['error']=$context['error'][$arguments['field']];
@@ -191,9 +187,7 @@ function loop_fielderror(&$context,$funcname,$arguments)
 }
 
 
-function loop_field_selection_values(&$context,$funcname,$arguments)
-
-{
+function loop_field_selection_values (&$context,$funcname,$arguments) {
   //Get values of the list in the editionparams field for the current field
   // and if no editionparams call alter
   if (!isset($context['editionparams'])) die("ERROR: internal error in loop_field_selection_values");
