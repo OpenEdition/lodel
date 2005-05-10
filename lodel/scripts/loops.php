@@ -349,29 +349,25 @@ function loop_rssitem($context,$funcname,$arguments)
  * LOOP_PAGE_SCALE
  * this loop walk on the array pages to print pages number and links 
  */
-function loop_page_scale(&$context,$funcname,$arguments)
-{
+function loop_page_scale (&$context,$funcname,$arguments) {
 	//Local cache
 	static $cache;
-	if(!isset($cache[$funcname]))
-	{
+	if (!isset($cache[$funcname])) {
 		$pages = _constructPages($context,$funcname,$arguments);
 		$cache[$funcname] = $pages;
 	}
 	
 	$local_context = $context;
 	$local_context['pages'] = $pages;
-	if(!$local_context["pages"] || count($local_context["pages"]) == 0)
-	{
+	if (!$local_context["pages"] || count($local_context["pages"]) == 0) {
 		call_user_func("code_alter_$funcname",$local_context);
 		return;
 	}
 	//call before
-	if(function_exists("code_before_$funcname"))
+	if (function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname",$local_context);
 	$oldpagenum=1;			
-	foreach($local_context["pages"] as $key => $value)
-	{
+	foreach ($local_context["pages"] as $key => $value) {
 		$local_context["pagenumber"] = $key;
 		if($key-$oldpagenum > 1)
 			$local_context["hole"] = 1;
