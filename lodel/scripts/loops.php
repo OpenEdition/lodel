@@ -391,12 +391,11 @@ function loop_page_scale(&$context,$funcname,$arguments)
  * construct page listing by given nbresults and currentoffset in the results
  * 
  */
-function _constructPages(&$context,$funcname,$arguments)
-{
+function _constructPages (&$context,$funcname,$arguments) {
 	//get current offset and construct url
 	$arguments['limit'] = $context['limitinfo'];
-	if(!$context['limitinfo'])
-		return;
+	if(!$context['limitinfo']) return;
+	
 	$offsetname=$context['offsetname'];
 	$currentoffset = ($_REQUEST[$offsetname]? $_REQUEST[$offsetname] : 0);
 	$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
@@ -405,12 +404,12 @@ function _constructPages(&$context,$funcname,$arguments)
   if ($cleanquery) $currenturl.=$cleanquery."&";
 
  	//construct next url
- 	if($context['nbresults'] > ($currentoffset+$arguments['limit']))
+ 	if ($context['nbresults'] > ($currentoffset+$arguments['limit']))
  		$context['nexturl']=$currenturl.$offsetname."=".($currentoffset + $arguments['limit']);
  	else
  		$context['nexturl'] = "";
   //construct previous url
-  if($currentoffset > 0)
+  if ($currentoffset > 0)
   	$context['previousurl'] = $currenturl.$offsetname."=".($currentoffset - $arguments['limit']);
   else
   	$context['previousurl'] ="";
@@ -418,47 +417,35 @@ function _constructPages(&$context,$funcname,$arguments)
   $pages = array();
   //previous pages 
    	$i = 0;
- 	while($i + $arguments['limit'] <= intval($currentoffset))
- 	{
+ 	while ($i + $arguments['limit'] <= intval($currentoffset)) {
  		$urlpage = $currenturl.$offsetname."=".$i;
  		$pages[($i/$arguments['limit']+ 1)] = $urlpage;
  		$i += $arguments['limit'];
  	}
-  
-  
-   	
 	//add current page   
-  $pages[($currentoffset/$arguments['limit']+ 1)] = "";
-   
+  $pages[ ($currentoffset/$arguments['limit']+ 1) ] = "";
   //next pages 
   $i = $currentoffset;
-  while($i + $arguments['limit'] < $context['nbresults'])
-  {
+  while ($i + $arguments['limit'] < $context['nbresults']) {
   	$i += $arguments['limit'];
   	$urlpage = $currenturl.$offsetname."=".$i;
   	$pages[($i/$arguments['limit']+ 1)] = $urlpage;
   }
-  if(count($pages) > 10)
-  {
-		$res = plageDeRecherche($currentoffset/$arguments['limit'],count($pages));
-		foreach($pages as $key=> $value)
-		{
-			if(($key < $res[0] || $key > $res[1]+1) && $key!=1)
+  if (count ($pages) > 10) {
+		$res = plageDeRecherche ($currentoffset/$arguments['limit'],count($pages));
+		foreach ($pages as $key=> $value) {
+			if (($key < $res[0] || $key > $res[1]+1) && $key!=1)
 				unset($pages[$key]);
 		}
-			  	
   }
-  
-  #print_r($pages);
   return $pages;
 }
 /*
- * Retourne un tableau contenant la première page de la recherche et la dernière
- * en fonction de la page courante et du nombres de pages total (tiré de In-Extenso)
+ * Return an array with the first and last page taking into account the current
+ * page and the total number of pages (from In-Extenso function)
  * 
  */
-function plageDeRecherche ($numPageCourante,$nbPagesTotal)
-{
+function plageDeRecherche ($numPageCourante,$nbPagesTotal) {
 	$nbPagesTotal = $nbPagesTotal;
   $numPageCourante = $numPageCourante + 1;
   $precision = 4;
@@ -467,38 +454,28 @@ function plageDeRecherche ($numPageCourante,$nbPagesTotal)
   $ecart_sup = 0;
   $ecart_inf= $numPageCourante -1 ;
   $ecart_sup = abs($numPageCourante - $nbPagesTotal );
-  if($numPageCourante - $precision > 0)
-  {
+  if ($numPageCourante - $precision > 0) {
   	$res[0] = $numPageCourante - $precision;
-  }
-  else
-  {
+  } else {
   	$res[0] = 1;
   }
-  if($ecart_sup < 5)
-  {
-  if($res[0] - ($precision - $ecart_sup) > 0)
-  	$res[0] -= ($precision - $ecart_sup);
-  else
-  	$res[0] = 1;
+  if ($ecart_sup < 5) {
+  	if($res[0] - ($precision - $ecart_sup) > 0)
+  		$res[0] -= ($precision - $ecart_sup);
+  	else
+  		$res[0] = 1;
   }
-  if($numPageCourante + $precision < $nbPagesTotal)
-  {
+  if ($numPageCourante + $precision < $nbPagesTotal) {
   	$res[1] = $numPageCourante + $precision;
-  }
-  else
-  {
+  } else {
   	$res[1] = $nbPagesTotal;
   }
-  if($ecart_inf < 5)
-  {
-  	if($res[1] + ($precision - $ecart_inf) < $nbPagesTotal )
+  if ($ecart_inf < 5) {
+  	if ($res[1] + ($precision - $ecart_inf) < $nbPagesTotal )
     	$res[1] += ($precision - $ecart_inf);
     else
     	$res[1] = $nbPagesTotal;
   }
   return $res;
 }
-
-
 ?>
