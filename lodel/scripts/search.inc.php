@@ -27,292 +27,180 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
- 
-
   
 /**
- * search
+ * Search
  * needs following parameters
  * 	- query : query string
  * 	- type (optional) : specific type
  * 	- status (optional) : specific status
  * 
- */  
-function search(&$context,$funcname,$arguments)
-{
-	//TODO
-	//if decided change the system in order to manage strict queries (with quotes)
-	
+ */ 
+  
+function search (&$context,$funcname,$arguments) {
 	
 	require_once("dao.php");
 	global $db;
 	require_once("func.php");
-	if(!$context['query'])
-		return;
+	if(!$context['query']) return;
 	$query = $context['query'];
 	//non alphanum chars cleaning
-   	 //include utf8 quotes at the end
-   	 $regs = "'\.],:\"!\r\t\\/){}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
-#echo "regs=$regs";
-   	 $query = strtr( $query , $regs , preg_replace("/./", " " , $regs ) );
-#echo "string=$string<br />\n";
-   	 //particular case : two letter acronym or initials
-   	 //$query = preg_replace("/\s([A-Z][0-9A-Z]{1,2})\s/", ' \\1___ ', $query);
-	//$query = strtolower( $query );
-			
+  //include utf8 quotes at the end
+  $regs = "'\.],:\"!\r\t\\/){}[|@<>$%«»\342\200\230\342\200\231\342\200\234\342\200\235";
+	$query = strtr( $query , $regs , preg_replace("/./", " " , $regs ) );
 	//cut query string in token
 	$tokens = preg_split("/\s+/", $query );
-#print_r($tokens);
-	 
-	/* we is an array that contains :
-	 * 	- key : entity identifier
-	 * 	- value : weight calculated
-	 */
-	$we = array();
+	#print_r($tokens);
+	$we = array();	// we is an array that contains : key as entity identifier and value as weight
 	$context['nbresults'] = 0;
-	while(list(, $token) = each($tokens))
-	{
-		if($token == "") //if token is empty or just whitespace --> not search it !
-			continue;
-		
-		if($token[0]=='-')
-		{
+	while (list (, $token) = each ($tokens)) {
+		if($token == "") continue;//if token is empty or just whitespace --> not search it !
+		if($token[0]=='-') {
 			$cond = "exclude";
 			$token = substr($token,1);
-		}
-		elseif($token[0]=='+')
-		{
+		}	elseif ($token[0]=='+') {
 			$cond = "include";
 			$token = substr($token,1);
-		}
-		else
-			$cond ="";
+		}	else
+			$cond = 0;
 		
 		//if wildcard * used
-		
-		
-		if( $token[strlen($token)-1] == '*' )
-		{
+		if ( $token[strlen($token)-1] == '*' ) {
 			$end_wildcard = "%";
-			$token = substr($token,0,strlen($token)-1);
-		} 
-		else
-		{
+			$token = substr ($token,0,strlen($token)-1);
+		} else {
 			$end_wildcard = "";
-			
 		}
-		if( $token[0] == '*')
-		{
+		if( $token[0] == '*') {
 			$begin_wildcard = "%";
 			$token = substr($token,1);
-		}
-		else
-		{
+		}	else {
 			$begin_wildcard = "";
-			
 		}
-		
-	
-		//$token = preg_replace("/([A-Z][0-9a-zA-Z]{1,2})$/", ' \\1___ ', $token);	
-	#echo "token=$token";
 		//little hack because oe ligature is not supported in ISO-latin!!
 		$token = strtolower(str_replace(array("\305\223","\305\222"),array("oe","OE"),$token));
 		$token = makeSortKey($token);
 		//foreach word search entities that match this word
 		$dao = &getDAO("search_engine");
-		
-		//Added stemmer
-		/*require_once("class.stemmer.inc.php");
-   	 	$stemmer = new Stemmer();
-   	 	$token = $stemmer->stem($token); */
-		
-		
 		$criteria_index = "word LIKE '$begin_wildcard$token$end_wildcard'";
 		#echo "criteria_index=$criteria_index bim=$end_wildcard";
 		$from = "#_TP_search_engine";
-		if($context['qfield'] && $context['qfield']!="")
-		{
+		if ($context['qfield']) {
+			#echo "qfield :".$context['qfield'];
 			//get all tablefields for q_field specified
 			$dao_dc_fields = &getDAO("tablefields");
 			$vos_dc_fields = $dao_dc_fields->findMany("g_name='".addslashes($context['qfield'])."'");
 			$field_in = array();
 			foreach($vos_dc_fields as $vo_field)
 				$field_in[] = $vo_field->name;
-			//$criteria_index .= "AND tablefield='".$context["q_field"]."'";
 			if($field_in)
-			//$criteria_index .= "AND tablefield IN (".implode(",",$field_in).")";
 				$criteria_index .=" AND tablefield ".sql_in_array($field_in);
-			
-			
 		}
-		if( $context['qtype']!=""  || $context['qstatus']!="" || !$context['lodeluser']['visitor'])
-		{
+		if ($context['qtype'] || $context['qstatus'] || !$context['lodeluser']['visitor']) {
 			$join = "INNER JOIN #_TP_entities ON #_TP_search_engine.identity = #_TP_entities.id";
 		}
-			 	
-		if( $context['qtype']!="" )
-		{
+		if ($context['qtype']) {
 			$criteria_index .=" AND #_TP_entities.idtype ='".intval($context['qtype'])."'";	
 		}
-		if( $context['qstatus']!="" && $context['lodeluser']['visitor'])
-		{
+		if($context['qstatus'] && $context['lodeluser']['visitor'])	{
 			$criteria_index .= " AND #_TP_entities.status ='".intval($context['qstatus'])."'";	
 		}
-		if(!$context['lodeluser']['visitor'])
-		{
+		if (!$context['lodeluser']['visitor']) {
 			$criteria_index .= " AND #_TP_entities.status >= 1";	
 		}
-		
-		
-		
-		#$offsetname="offset_".substr(md5($funcname),0,5);
-		#echo $offsetname;
-		#$offset = ($context[$offsetname] ? intval($context[$offsetname]) : 0);
-		#echo "offset:".$offset;
-		
-		#$limit = " LIMIT $offset,".$arguments['limit'];
-		#echo "limit :".$limit;
 		$groupby = " GROUP BY identity ";
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
-	#echo "hey :".$sql;
-	
+		#echo "hey :".$sql;
 		$sqlc = lq("SELECT identity FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);	
-	#echo "hey2 :".$sqlc;
-		//print_r($db->GetAll($sqlc));
-		
-		#$context['nbresults'] += count($db->GetAll($sqlc));
-		//print_r($row);
-	#echo "Nombre de r�sultats absolu :".$nbresabs."<br />";
 		$result=$db->execute($sql) or dberror();
 		$we_temp = array();
-		//$we_temp = $db->getarray($sql) or dberror();
-		//print_r($we_temp);
-		while(!$result->EOF)
-		{
+		while (!$result->EOF)	{
 			$row = $result->fields;
 			$we_temp[$row['identity']] = $row['weight'];
 			$result->MoveNext();
 		}
 		
-		switch($cond) // differents cases : word inclusion, exclusion and no condition
-		{
+		switch($cond) { // differents cases : word inclusion, exclusion and no condition
 			case "":
-				foreach($we_temp as $id=> $weight)
-				{
+				foreach($we_temp as $id=> $weight) {
 					if($we[$id])
 						$we[$id] += $weight;
 					else
 						$we[$id] = $weight;
 				}
 				break;
-				
 			case "exclude":
-				foreach($we_temp as $id=> $weight)
-				{
+				foreach($we_temp as $id=> $weight) {
 					if($we[$id])
 						unset($we[$id]);
 					
 				}
 				break;
-			
 			case "include" :
-				if( count($we) > 0 )
-				{	foreach($we as $id=>$weight)
-					{
-						if($we_temp[$id])
+				if ( count($we) > 0 ) {
+					foreach ($we as $id=>$weight) {
+					  if($we_temp[$id])
 							$we[$id] += $we_temp[$id];
 						else
 							unset($we[$id]);
 					}
-				}
-				else
-				{
+				}	else {
 					foreach($we_temp as $id=> $weight)
-					{
 						$we[$id] = $weight;
-					}
 				}
 				break;	
 		}//end switch
-		
 	}
-	
-	/*
-	echo "<br />----------------------------<br />";
-	print_r($we);
-	echo "<br />----------------------------<br />";
-	*/
-	
 	asort($we,SORT_NUMERIC);
-	$we = array_reverse($we,true);
-	
-	
-	return $we;
-		
+	return array_reverse($we,true);
 } 
 
 /*
  * LOOP SEARCH 
- * affichage des r�sultats d'une recherche
- * avec gestion de la pagination
+ * print search result using pagination
  * 
  */
-
-
-
-
-
-
 function loop_search(&$context,$funcname,$arguments)
 {
+	if(!$arguments['split']) $arguments['split'] = 10; //split results by 10 by default
 	$local_context = $context;
 	static $cache;
-	if(!isset($cache[$funcname]))
-	{
-		$results = search($local_context,$funcname,$arguments);
-		$local_context['nbresults'] = count($results);
+	if (!isset ($cache[$funcname]))	{
+		$results = search ($local_context,$funcname,$arguments);
+		$context['nbresults'] = count($results);
 		$cache[$funcname] = $results;
 	}
 	$results = $cache[$funcname];
-	
-	#print_r($results);
 	$count = 0;
-	if(!$results || $local_context['nbresults'] == 0)
-	{
-		if(function_exists("code_alter_$funcname"))
+	if (!$results || $context['nbresults'] == 0)	{
+		if (function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname",$local_context);
 		return;
 	}
 	$offsetname="offset_".substr(md5($funcname),0,5);
 	$currentoffset = ($_REQUEST[$offsetname]? $_REQUEST[$offsetname] : 0);
-	$local_context['offsetname'] = $offsetname;
-	$local_context['limitinfo'] = $arguments['limit'];
-	$local_context["resultfrom"] = $currentoffset+1;
-		if($local_context['nbresults'] < ($currentoffset+$arguments['limit']))
-			$local_context["resultto"] = $local_context['nbresults'];
+	#echo "currentoffset :$currentoffset";
+	$context['offsetname'] = $offsetname;
+	$context['limitinfo'] = $arguments['split'];
+	$context["resultfrom"] = $currentoffset+1;
+		if($context['nbresults'] < ($currentoffset+$arguments['split']))
+			$context["resultto"] = $context['nbresults'];
 		else
-			$local_context["resultto"] = $currentoffset+$arguments['limit'];
-#echo $offsetname;
-
+			$context["resultto"] = $currentoffset+$arguments['split'];
 	//call before function
 	if(function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname",$local_context);
+		call_user_func("code_before_$funcname",$context);
 	$dao2 = &getDAO("entities");
 	//call do function with the results
-	#print_r($results);
-	$res = _array_slice_key($results,$currentoffset,$arguments['limit']);
-	#print_r($res);
 	
-	foreach($res as $key => $weight)
-	{
+	$res = _array_slice_key($results,$currentoffset,$arguments['split']);
+	#print_r($results);
+	
+	foreach($res as $key => $weight)	{
 		$vo = $dao2->getById($key);
-		
-		if($vo->id)
-		{
-			#print_r($vo);
+		if($vo->id)	{
 			foreach($vo as $key => $value)
 				$local_context[$key] = $value;
-			#print_r($vo);
 			$local_context['weight'] = $weight;
 			$local_context['idtype'] = $vo->idtype;
 			$dao_type = &getDAO("types");
@@ -328,23 +216,20 @@ function loop_search(&$context,$funcname,$arguments)
 	
 	//call after function
 	if(function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname",$local_context);
+		call_user_func("code_after_$funcname",$context);
 		
 }
-function _array_slice_key($array, $offset, $len=-1){
+function _array_slice_key($array, $offset, $len=-1) {
 
    if (!is_array($array))
        return FALSE;
-
    $length = $len >= 0? $len: count($array);
    $keys = array_slice(array_keys($array), $offset, $length);
    foreach($keys as $key) {
        $return[$key] = $array[$key];
    }
- 
    return $return;
 }
-
 
 /**
  * Results page script - Lodel part
@@ -360,5 +245,4 @@ extract_post($_GET);
 recordurl();	
 $view->renderCached($context,$base);
 return;
-
  ?>
