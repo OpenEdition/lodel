@@ -28,53 +28,48 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-function getOptionGroupsPath($idgroup)
-{
-	require_once("dao.php");
-	$dao = &getDAO("optiongroups");
-	while($idgroup) 
-	{
-		$vo=$dao->getById($idgroup,"id,idparent,name");
-		$path[] = $vo->name;
-		$idgroup = $vo->idparent;
-	}
-	if(is_array($path))
-		return array_reverse($path);
-	else
-		return array();
-}
-
-
-function cacheOptionsInFile($optionsfile)
-{
+function cacheOptionsInFile ($optionsfile) {
+	
 	global $db;
-	//foreach group create a temp array containing the path.
-	$result=$db->execute(lq("SELECT #_TP_options.name,value,defaultvalue , #_TP_optiongroups.id as grpid ,#_TP_optiongroups.name as grpname FROM #_TP_options INNER JOIN #_TP_optiongroups ON #_TP_optiongroups.id=idgroup WHERE #_TP_optiongroups.status > 0 AND #_TP_options.status > 0"));
-  if ($result===false) 
-  {
-		if ($db->errorno()!=1146) dberror();// table does not exists... that can happen during the installation 	
-			$options_cache=array();
-  }
- // create the cache options file
-  $txt="<"."?php\n\$options_cache=array(\n";
-  $pathOptiongroups = array(); //array 
-  while ($result && !$result->EOF) 
-  {
-		if(isset($pathOptiongroups[$result->fields['grpid']])) // if the path has already been calculated
-			$path = $pathOptiongroups[$result->fields['grpid']];
-		else
-			$pathOptiongroups[$result->fields['grpid']] = $path = getOptionGroupsPath($result->fields['grpid']);
-
-		$optname=implode(".",$path).".".$result->fields['name'];
-		$value=$result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+	do {
+		$sql = lq ("SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent ".
+								sql_in_array($ids)." ORDER BY rank");
+		$result = $db->execute($sql);
+		$ids = array(); 
+		$i = 1; $l = 1;
+		while (!$result->EOF) {
+			$id = $result->fields['id'];
+			$name = $result->fields['name'];
+			$idparent = $result->fields['idparent'];
+			$ids[] = $id;
+			if ($idparent) $name = $parent[$idparent].".".$name; 
+			#$d = $rank[$id] = $rank[$idparent]+($i*1.0)/$l;
+			$arr[$id] = $name;
+			$parent[$id] = $name;
+			$l*= 100;
+			$i++;
+			$result->moveNext();
+		}
+	} while($ids);
+	
+	$sql = lq ("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options " .
+						 " WHERE status > 0 ORDER BY rank");
+	$result = $db->execute($sql);
+	$txt="<"."?php\n\$options_cache=array(\n";
+	while (!$result->EOF) {
+		$id = $result->fields['id'];
+		$name = $result->fields['name'];
+		$idgroup = $result->fields['idgroup'];
+		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+		$optname = $arr[$idgroup].".".$name;
 		$txt.="'".$optname."'=>'".$value."',\n";
 		$options_cache[$optname]=$value;
 		$result->MoveNext();
-  }
-  reset($pathOptiongroups);
-  $txt.=");?".">";
-  writefile($optionsfile,$txt);
+	}
+	$txt.=");?".">";
+	#echo "<textarea cols=100 rows=10>$txt</textarea>";
+  $ret = writefile($optionsfile,$txt);
   return $options_cache;
+	
 }
-
 ?>
