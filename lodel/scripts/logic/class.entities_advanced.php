@@ -87,7 +87,7 @@ class Entities_AdvancedLogic extends Logic {
 
      $status=intval($context['status']);
      $dao=$this->_getMainTableDAO();
-     $vo=$dao->find("id='".$context['id']."' AND status*$status>0","status,id");
+     $vo=$dao->find("id='".$context['id']."' AND status*$status>0 AND status<16","status,id");
      if (!$vo) die("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ");
      $vo->status=$status;
      $dao->save($vo);

@@ -235,6 +235,7 @@ class Entities_EditionLogic extends GenericLogic {
      if ($id) {
        $new=false;
        $vo=$dao->getById($id,"id,status");
+       if ($vo->status>=16) die("ERROR: entity is locked. No operation is allowed");
        // change the usergroup of the entity ?
        if ($lodeluser['admin'] && $context['usergroup']) $vo->usergroup=intval($context['usergroup']);
 

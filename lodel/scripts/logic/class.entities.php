@@ -117,8 +117,9 @@ class EntitiesLogic extends Logic {
      global $db;
 
      // get the entities to modify and ancillary information
-     $this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids);
+     $this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
      if (!$ids) return "_back";
+     if ($lockedids)  die("ERROR: some entities are locked in the family. No operation is allowed");
      // needs confirmation ?
 
      if (!$context['confirm'] && $softprotectedids) {
@@ -164,8 +165,10 @@ class EntitiesLogic extends Logic {
      // get the entities to modify and ancillary information
      $access=abs($status)>=32 ? "protect" : "write";
      $this->_getEntityHierarchy($context['id'],$access,"#_TP_entities.status>-8",
-				$ids,$classes,$softprotectedids);
+				$ids,$classes,$softprotectedids,$lockedids);
+
      if (!$ids) return "_back";
+     if ($lockedids && $status<0)  die("ERROR: some entities are locked in the family. No operation is allowed");
 
      // depublish protected entity ? need confirmation.
      if (!$context['confirm'] && $status<0 && $softprotectedids) {
@@ -203,7 +206,7 @@ class EntitiesLogic extends Logic {
 
      // get the entities to modify and ancillary information
      $this->_getEntityHierarchy($context['id'],"write","#_TP_entities.status>-1",
-				$ids,$classes,$softprotectedids);
+				$ids,$classes,$softprotectedids,$lockedids);
      if (!$ids) return "_back";
 
      $criteria=" id IN (".join(",",$ids).")";
@@ -327,7 +330,7 @@ class EntitiesLogic extends Logic {
       * Return the ids, the softprotected entities and the classes they belong
       */
 
-     function _getEntityHierarchy($id,$access,$criteria,&$ids,&$classes,&$softprotectedids) 
+   function _getEntityHierarchy($id,$access,$criteria,&$ids,&$classes,&$softprotectedids,&$lockedids) 
      {
        global $db;
        // check the rights to $access the current entity
@@ -342,12 +345,14 @@ class EntitiesLogic extends Logic {
        $ids=array();
        $classes=array();
        $softprotectedids=array();
+       $lockedids=array();
 
        while (!$result->EOF) {
 	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
 	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
 	 if ($result->fields['status']>=8) $softprotectedids[]=$result->fields['id'];      
+	 if ($result->fields['status']>=16) $lockedids[]=$result->fields['id'];      
 	 $result->MoveNext();
        }
 
@@ -360,6 +365,7 @@ class EntitiesLogic extends Logic {
 	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
 	 if ($result->fields['status']>=8) $softprotectedids[]=$result->fields['id'];
+	 if ($result->fields['status']>=16) $lockedids[]=$result->fields['id'];
 	 $result->MoveNext();
        }
    }
