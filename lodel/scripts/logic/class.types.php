@@ -180,6 +180,7 @@ class TypesLogic extends Logic {
                   "import"=>array("select","+"),
                   "creationstatus"=>array("select","+"),
                   "search"=>array("boolean","+"),
+                  "public"=>array("boolean","+"),
                   "display"=>array("select",""));
              }
    // end{publicfields} automatic generation  //
