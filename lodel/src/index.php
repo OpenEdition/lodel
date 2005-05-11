@@ -48,8 +48,8 @@ require_once("textfunc.php");
 $id=intval($_GET['id']);
 $identifier=$_GET['identifier'];
 $page=$_GET['page']; // get only
-$do=$_POST['do']; // post only
 $tpl="index"; // template by default.
+$do=$_POST['do']; // only from POST
 
   //------------------------------ ID ou IDENTIFIER -------------------
 if ($id || $identifier) {
@@ -91,8 +91,19 @@ if ($id || $identifier) {
 
   //------------------------------ DO -------------------
  } elseif ($do) {
-   if ($do=="edit") {
-     require("publicedit.php");
+   if ($do=="edit" || $do=="view") {
+     unset($_GET['do']); // to be sure.
+     $_GET['id']=$_POST['id']=$_GET['idtype']=0; // to be sure nobody is going to modify something wrong
+     // check for the right to change this document
+     $idtype=int($_POST['idtype']);
+     if (!$idtype) die("ERROR: idtype must be given");
+     require_once("dao.php");
+     $dao=&getDAO("types");
+     $vo=$dao->find("id='$idtype' and public>0 and status>0");
+     if (!$vo) die("ERROR: you are not allow to add this kind of document");
+     $lodeluser['rights']=LEVEL_REDACTOR; // grant temporary
+     require_once("controler.php");
+     Controler::controler(array("entities_edition"));
      exit();
    } else {
      die("ERROR: unknown action");
