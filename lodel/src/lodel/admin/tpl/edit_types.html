@@ -27,6 +27,22 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_EDITION_TYPE] - [#CLASS]</title>
+	<script type="text/javascript"><!--
+	
+		function confirm_public_document(obj)
+		{
+			if (obj.checked) {
+				if (confirm("[@ADMIN.CONFIRM_PUBLIC_DOCUMENT]")) {
+					return true;
+				} else {
+					obj.checked=false;
+					return false;
+				}
+			}
+		}
+	//
+	--></script>
+
 <MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -154,6 +170,21 @@
   <LOOP NAME="fielderror" FIELD="search">
     <a id="search"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INDEX_DOCUMENT]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="public">[@ADMIN.PUBLIC_DOCUMENT]
+        : 
+      </label>
+  <br class="nobr">
+  <IF COND="[#PUBLIC]">
+    <input type="checkbox" name="public" id="public" checked onChange="confirm_public_document(this)();">
+    <ELSE/>
+    <input type="checkbox" name="public" id="public" onChange="confirm_public_document(this)();">
+  </IF>
+  <LOOP NAME="fielderror" FIELD="public">
+    <a id="public"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PUBLIC_DOCUMENT]"></FUNC>
     </span>
   </LOOP>
   <br />

@@ -108,7 +108,9 @@ class TypesLogic extends Logic {
    {
      switch($var) {
      case "import" :
-       foreach($GLOBALS['importdocument'] as $n=>$v) { $arr[]=getlodeltextcontents($v['title']); }
+       foreach($GLOBALS['importdocument'] as $n=>$v) { 
+	 $arr[]=strpos($v['title'],"[@")!==false ? getlodeltextcontents($v['title']) : $v['title']; 
+       }
        renderOptions($arr,$context['import']);
        break;
      case "display" :
@@ -119,10 +121,11 @@ class TypesLogic extends Logic {
        renderOptions($arr,$context['display']);
        break;
      case "creationstatus" :
-       $arr=array("-16"=>getlodeltextcontents("draft","common"),
+       $arr=array("-8"=>getlodeltextcontents("draft","common"),
 		  "-1"=>getlodeltextcontents("ready_for_publication","common"),
 		  "1"=>getlodeltextcontents("published","common"),
-		  "16"=>getlodeltextcontents("protected","common"));
+		  "8"=>getlodeltextcontents("protected","common"),
+		  "17"=>getlodeltextcontents("locked","common"));
        renderOptions($arr,$context['creationstatus']);
        break;
      }

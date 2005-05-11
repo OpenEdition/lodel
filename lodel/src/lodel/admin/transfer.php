@@ -295,8 +295,8 @@ ALTER TABLE #_TP_entities ADD g_title TINYTEXT NOT NULL;
 
       // decrease the protected status!
       	$err=mysql_query_cmds('
-UPDATE #_TP_entities SET status=16 where status=32;
-UPDATE #_TP_entities SET status=-16 where status=-32;
+UPDATE #_TP_entities SET status=8 where status=32;
+UPDATE #_TP_entities SET status=-8 where status=-32;
 ');
 	if ($err) break;
 	if (mysql_affected_rows()>0) $report.="Reduction du statut des publications et documents proteges<br/>";

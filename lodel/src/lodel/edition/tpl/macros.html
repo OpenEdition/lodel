@@ -298,10 +298,7 @@
 
 <DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 
-	<IF COND="[#STATUS]<-16">
-		[@COMMON.LOCKED]
-	<ELSE/>
-	<IF COND="[#STATUS]==-16">
+	<IF COND="[#STATUS]==-8">
 		[@EDITION.DRAFT]
 	<ELSE/>
 	<IF COND="[#STATUS]==-1">
@@ -310,10 +307,13 @@
 	<IF COND="[#STATUS]==1">
 		[@EDITION.PUBLISHED]
 	<ELSE/>
-	<IF COND="[#STATUS]==16">
+	<IF COND="[#STATUS]==8">
 		[@COMMON.PROTECTED]
 	<ELSE/>
+	<IF COND="[#STATUS] ge 16">
 		[@COMMON.LOCKED]
+	<ELSE/>
+		unknow ??
 	</IF>
 	</IF>
 	</IF>
@@ -322,46 +322,6 @@
 </DEFMACRO>
 
 
-<!--[ desuet
-<DEFMACRO NAME="CHANGER_VERROU_PUBLICATIONS">
-	<IF COND="[#STATUS]==-16">
-		<a href="status.php?publication=[#ID]&status=pret">
-			<span class="texte_trespetit_centre">Prêt à publier</span>
-		</a>
-	</IF>
-	<IF COND="[#STATUS]==-1">
-		<a href="status.php?publication=[#ID]&status=brouillon">
-			<span class="texte_trespetit_centre">Brouillon</span>
-		</a>
-	</IF>
-
-	<IF COND="[#STATUS]==16">
-		<a href="status.php?publication=[#ID]&status=deprotege">
-			<span class="texte_trespetit_centre">Déprotéger</span>
-		</a>
-	</IF>
-	<IF COND="[#STATUS]==1">
-		<a href="status.php?publication=[#ID]&status=protege">
-			<span class="texte_trespetit_centre">Protéger</span>
-		</a>
-	</IF>
-</DEFMACRO>
-
-<DEFMACRO NAME="CHANGER_VERROU_DOCUMENTS">
-	<IF COND="[#STATUS]==-16">
-		<a href="status.php?id=[#ID]&status=pret">
-			<span class="texte_trespetit_centre">Déprotéger</span>
-		</a>
-	</IF>
-	<IF COND="[#STATUS]==-1">
-		<a href="status.php?id=[#ID]&status=brouillon">
-			<span class="texte_trespetit_centre">Brouillon</span>
-		</a>
-	</IF>
-
-	<IF COND="[#STATUS]==1">&nbsp;-&nbsp;</IF>
-</DEFMACRO>
-]-->
 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
@@ -515,7 +475,7 @@
 	<ELSE/>
 
         <IF COND="[#CLASS] eq 'publications'">
-	<IF COND="[#STATUS]==-16">
+	<IF COND="[#STATUS]==-8">
 		<MACRO NAME="PNG_STATUS_BROUILLON_PUBLICATION">
 	<ELSE/>
 		<IF COND="[#STATUS]==-1">
@@ -524,14 +484,18 @@
 			<IF COND="[#STATUS]==1">
 				<MACRO NAME="PNG_STATUS_PUBLIE_PUBLICATION">
 			<ELSE/>
-				<IF COND="[#STATUS]==16">
+				<IF COND="[#STATUS]==8">
 					<MACRO NAME="PNG_STATUS_PROTEGE_PUBLICATION">
+				<ELSE/>
+				<IF COND="[#STATUS] ge 16">
+					<MACRO NAME="PNG_STATUS_LOCK_PUBLICATION">
+				</IF>
 				</IF>
 			</IF>
 		</IF>
 	</IF>
         <ELSE/>
-		<IF COND="[#STATUS]==-16">
+		<IF COND="[#STATUS]==-8">
 			<MACRO NAME="PNG_STATUS_BROUILLON_DOCUMENT">
 		<ELSE/>
 			<IF COND="[#STATUS]==-1">
@@ -540,10 +504,15 @@
 				<IF COND="[#STATUS]==1">
 					<MACRO NAME="PNG_STATUS_PUBLIE_DOCUMENT">
 				<ELSE/>
-					<IF COND="[#STATUS]==16">
+					<IF COND="[#STATUS]==8">
 						<MACRO NAME="PNG_STATUS_PROTEGE_DOCUMENT">
+					<ELSE/>
+					<IF COND="[#STATUS] ge 16">
+						<MACRO NAME="PNG_STATUS_LOCK_DOCUMENT">
+					</IF>
 					</IF>
 				</IF>
+
 			</IF>
 		</IF>
 	</IF>
@@ -684,7 +653,7 @@
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
-		<IF COND="(abs([#STATUS]) lt 16) AND [#LODELUSER.EDITOR]">
+		<IF COND="(abs([#STATUS]) lt 8) AND [#LODELUSER.EDITOR]">
 		|&nbsp;<a href="#" onClick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
@@ -696,7 +665,7 @@
 
 
 <DEFMACRO NAME="BOUTONS_STATUS_ENTITIES">
-	<IF COND="[#STATUS]==-16">
+	<IF COND="[#STATUS]==-8">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
@@ -718,7 +687,7 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=-16">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.SET_DRAFT]</span>&nbsp;|&nbsp;
 					</IF>
@@ -733,15 +702,17 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						&nbsp;|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=+16">[@COMMON.PROTECT]</a>&nbsp;|
+						&nbsp;|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=+8">[@COMMON.PROTECT]</a>&nbsp;|
+						|&nbsp;<a href="index.php?do=changelock&id=[#ID]&lock=on">[@EDITION.LOCK]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
+						|&nbsp;<span class="inactif">[@EDITION.LOCK]</span>&nbsp;|&nbsp;
 					</IF>
 				</td>
 			</tr>
 		</table>
 	</IF>
-	<IF COND="[#STATUS]==16">
+	<IF COND="[#STATUS]==8">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
@@ -749,8 +720,25 @@
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
 						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changelock&id=[#ID]&lock=on">[@EDITION.LOCK]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.SET_PUBLISHED]</span>&nbsp;|&nbsp;
+						|&nbsp;<span class="inactif">[@EDITION.LOCK]</span>&nbsp;|&nbsp;
+					</IF>
+				</td>
+			</tr>
+		</table>
+	</IF>
+	<IF COND="[#STATUS] ge 16">
+		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
+				<td style="width:200px">
+		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
+						|&nbsp;<a href="index.php?do=changelock&id=[#ID]&lock=off">[@EDITION.UNLOCK]</a>&nbsp;|&nbsp;
+					<ELSE/>
+						|&nbsp;<span class="inactif">[@EDITION.UNLOCK]</span>&nbsp;|&nbsp;
 					</IF>
 				</td>
 			</tr>
@@ -762,14 +750,18 @@
 
 <DEFMACRO NAME="CHANGER_STATUS_ENTITIES">
 	<IF COND="[#STATUS] GT 0">
-		<IF COND="([#STATUS]==1)">
+		<IF COND="[#STATUS]==1">
                    <IF COND="[#LODELUSER.EDITOR]">
 			<a href="index.php?do=publish&id=[#ID]&status=-1" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
                     <ELSE/>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>
 		<ELSE/>
+		<IF COND="[#STATUS]==8">
 			<span class="inactif">[@COMMON.PROTECTED]</span>
+		<ELSE/>
+			<span class="inactif">[@COMMON.LOCKED]</span>
+		</IF>
 		</IF>
 	<ELSE/>
 		<IF COND="([#STATUS]==-1)">
@@ -1003,6 +995,11 @@
 	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
 </DEFMACRO>
 
+<DEFMACRO NAME="PNG_STATUS_LOCK_DOCUMENT">
+	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />++
+</DEFMACRO>
+
+
 <DEFMACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
 	<img src="[#SHAREURL]/images/statut_horloge.png" class="picto_gauche" width="23" height="24" alt="Programmateur" />
 </DEFMACRO>
@@ -1022,6 +1019,10 @@
 
 <DEFMACRO NAME="PNG_STATUS_PROTEGE_PUBLICATION">
 	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_STATUS_LOCK_PUBLICATION">
+	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />++
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_HORLOGE_PUBLICATION">

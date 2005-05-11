@@ -151,7 +151,7 @@ class EntitiesLogic extends Logic {
    /**
     * Change the status of one entity. Only publish/unpublish is authorized.
     * Can protect recursively also but should not be used.
-    * Do nothing on entites with status below or equal -16.
+    * Do nothing on entites with status below or equal -8.
     */
 
    function publishAction(&$context,&$error)
@@ -163,7 +163,7 @@ class EntitiesLogic extends Logic {
 
      // get the entities to modify and ancillary information
      $access=abs($status)>=32 ? "protect" : "write";
-     $this->_getEntityHierarchy($context['id'],$access,"#_TP_entities.status>-16",
+     $this->_getEntityHierarchy($context['id'],$access,"#_TP_entities.status>-8",
 				$ids,$classes,$softprotectedids);
      if (!$ids) return "_back";
 
@@ -183,6 +183,37 @@ class EntitiesLogic extends Logic {
 
      // changestatus for the relations
      $this->_publishSoftRelation($ids,$status);
+
+     update();
+     return "_back";
+   }
+
+
+   /**
+    * Change the status of one entity. Only lock/unlock is authorized.
+    * Do nothing on entites with status below or equal -1.
+    */
+
+   function changeLockAction(&$context,&$error)
+
+   {
+     global $db;
+
+     $statuschange= $context['lock']=="on" ? "+16" : "-16";
+
+     // get the entities to modify and ancillary information
+     $this->_getEntityHierarchy($context['id'],"write","#_TP_entities.status>-1",
+				$ids,$classes,$softprotectedids);
+     if (!$ids) return "_back";
+
+     $criteria=" id IN (".join(",",$ids).")";
+     if ($statuschange>0) {
+       $criteria.=" AND status>=1 AND status<16";
+     } else {
+       $criteria.=" AND status>=16 AND status<32";
+     }
+
+     $db->execute(lq("UPDATE #_TP_entities SET status=status$statuschange WHERE ".$criteria)) or dberror();
 
      update();
      return "_back";
@@ -316,7 +347,7 @@ class EntitiesLogic extends Logic {
 	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
 	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
-	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];      
+	 if ($result->fields['status']>=8) $softprotectedids[]=$result->fields['id'];      
 	 $result->MoveNext();
        }
 
@@ -328,7 +359,7 @@ class EntitiesLogic extends Logic {
 	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
 	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
 	 $classes[$result->fields['class']]=true;
-	 if ($result->fields['status']>=16) $softprotectedids[]=$result->fields['id'];
+	 if ($result->fields['status']>=8) $softprotectedids[]=$result->fields['id'];
 	 $result->MoveNext();
        }
    }
