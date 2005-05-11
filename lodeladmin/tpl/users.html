@@ -38,7 +38,11 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
+	<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('write')]">
 	<a href="index.php?do=view&lo=users">[@ADMIN.ADD_USER]</a>
+	<ELSE />
+	<span class="inactif">[@ADMIN.ADD_USER]</span>
+	</IF>
 </div>
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">

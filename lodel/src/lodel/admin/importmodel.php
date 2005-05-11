@@ -34,6 +34,14 @@ authenticate(LEVEL_ADMIN);
 require("importfunc.php");
 #authenticate();
 
+
+if ( ($context['error_table']=isimportmodelallowed()) ) {
+    require("view.php");
+    $view=&getView();
+    $view->render($context,"importmodel");
+    exit();
+}
+
 $file=extract_import("model",$context);
 
 if ($file && $delete) {
@@ -69,25 +77,8 @@ if ($file && $delete) {
     if ($frominstall) { header ("location: ../edition/index.php"); die(); }
     back();
   }
-} else {
-  // check the table exists
-  $result=mysql_list_tables($GLOBALS['currentdb']);
-  $existingtables=array();
-  while ($row = mysql_fetch_row($result)) array_push($existingtables,$row[0]);
-  
-  // verifie qu'on peut importer le modele.
-  foreach(array_intersect(array("#_TP_entities",
-				"#_TP_entries",
-				"#_TP_persons"),$existingtables) as $table) {
-    $haveelements=$db->getOne(lq("SELECT 1 FROM $table WHERE status>-64 LIMIT 0,1"));
-    if ($db->errorno) dberror();
-    if ($haveelements) {
-      $context['error_table']=$table;
-      break;
-    }
-    $db->execute(lq("DELETE FROM $table WHERE status<=-64")) or dberror(); // in case...
-  }
 }
+
 
 
 require("view.php");
@@ -230,6 +221,27 @@ function reinitobjetstable()
   return FALSE;
 }
 
+
+function isimportmodelallowed() 
+
+{
+  global $db;
+  #// check the table exists
+  #$result=mysql_list_tables($GLOBALS['currentdb']);
+  #$existingtables=array();
+  #while ($row = mysql_fetch_row($result)) array_push($existingtables,$row[0]);
+  
+  // verifie qu'on peut importer le modele.
+  foreach(array("#_TP_entities",
+		"#_TP_entries",
+		"#_TP_persons") as $table) {
+    $haveelements=$db->getOne(lq("SELECT id FROM $table WHERE status>-64"));
+    if ($db->errorno) continue; // likely the table does not exists
+    if ($haveelements) return $table;
+    $db->execute(lq("DELETE FROM $table WHERE status<=-64")) or dberror(); // in case...
+  }
+  return false;
+}
 
 
 ?>
