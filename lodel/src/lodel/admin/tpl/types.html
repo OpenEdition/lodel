@@ -39,7 +39,11 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
+	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 	<a href="index.php?do=view&lo=types&class=[#CLASS]">[@ADMIN.ADD_TYPE]</a>
+	<ELSE />
+	<span class="inactif">[@ADMIN.ADD_TYPE]</span>
+	</IF>
 </div>
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">

@@ -42,12 +42,21 @@
 <IF COND="[#CLASSTYPE]=='entities'">
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
+	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 	<a href="index.php?do=view&lo=tablefieldgroups&class=[#CLASS]">[@ADMIN.ADD_DATAFIELD_GROUP] [#TITLE]</a>
+	<ELSE />
+	<span class="inactif">[@ADMIN.ADD_DATAFIELD_GROUP]</span>
+	</IF>
 
 </div>
 <ELSE/>
 <div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=tablefields&class=[#CLASS]">[@ADMIN.ADD_FIELD]</a>
+	<MACRO NAME="PNG_PLUS">
+	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+	<a href="index.php?do=view&lo=tablefields&class=[#CLASS]">[@ADMIN.ADD_FIELD]</a>
+	<ELSE />
+	<span class="inactif">[@ADMIN.ADD_FIELD]</span>
+	</IF>
         </td>
 </div>
 </IF>
@@ -87,9 +96,26 @@
 	        <tr>	
         	<td colspan="4">
 	        	<div>
-			    <MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=tablefields&idgroup=[#ID]&class=[#CLASS]">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</a>&nbsp;&nbsp;&nbsp;
-			  <MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=entries">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</a>&nbsp;&nbsp;&nbsp;
-			    <MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=persons">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</a>
+			    <MACRO NAME="PNG_PLUS">
+				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=view&lo=tablefields&idgroup=[#ID]&class=[#CLASS]">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</a>
+				<ELSE />
+				<span class="inactif">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</span>
+				</IF>
+				&nbsp;&nbsp;&nbsp;
+			  <MACRO NAME="PNG_PLUS">
+				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=view&lo=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=entries">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</a>
+				<ELSE />
+				<span class="inactif">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</span>
+				</IF>
+				&nbsp;&nbsp;&nbsp;
+			    <MACRO NAME="PNG_PLUS">
+				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=view&lo=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=persons">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</a>
+				<ELSE />
+				<span class="inactif">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</span>
+				</IF>
 			</div>
                </td>
 		</tr>

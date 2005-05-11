@@ -66,7 +66,14 @@
 			<td>
 			<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
 				<DOFIRST>
-				<div class="texte_info"><a href="session.php?deleteuser=[#ID]">[@ADMIN.DELETE_SESSION_LOG]</a></div>
+				<div class="texte_info">
+				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="session.php?deleteuser=[#ID]">[@ADMIN.DELETE_SESSION_LOG]</a>
+				<ELSE />
+				<span class="inactif">[@ADMIN.DELETE_SESSION_LOG]</span>
+				</IF>
+				</div>
+				
 				</DOFIRST>
 				<ALTERNATIVE>
 					<div class="texte_info">
