@@ -49,7 +49,7 @@ $id=intval($_GET['id']);
 $identifier=$_GET['identifier'];
 $page=$_GET['page']; // get only
 $tpl="index"; // template by default.
-$do=$_POST['do']; // only from POST
+$do=$_POST['do'] ? $_POST['do'] : $_GET['do'];
 
   //------------------------------ ID ou IDENTIFIER -------------------
 if ($id || $identifier) {
@@ -92,10 +92,9 @@ if ($id || $identifier) {
   //------------------------------ DO -------------------
  } elseif ($do) {
    if ($do=="edit" || $do=="view") {
-     unset($_GET['do']); // to be sure.
-     $_GET['id']=$_POST['id']=$_GET['idtype']=0; // to be sure nobody is going to modify something wrong
+     $_GET['id']=$_POST['id']=0; // to be sure nobody is going to modify something wrong
      // check for the right to change this document
-     $idtype=int($_POST['idtype']);
+     $idtype=$_POST['idtype'] ? intval($_POST['idtype']) : intval($_GET['idtype']) ;
      if (!$idtype) die("ERROR: idtype must be given");
      require_once("dao.php");
      $dao=&getDAO("types");
@@ -103,7 +102,7 @@ if ($id || $identifier) {
      if (!$vo) die("ERROR: you are not allow to add this kind of document");
      $lodeluser['rights']=LEVEL_REDACTOR; // grant temporary
      require_once("controler.php");
-     Controler::controler(array("entities_edition"));
+     Controler::controler(array("entities_edition"),"entities_edition");
      exit();
    } else {
      die("ERROR: unknown action");
