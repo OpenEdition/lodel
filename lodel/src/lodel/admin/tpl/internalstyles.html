@@ -37,14 +37,18 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&lo=internalstyles">[@ADMIN.ADD_INTERNALSTYLE]</a>
+		<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+		<a href="index.php?do=view&lo=internalstyles">[@ADMIN.ADD_INTERNALSTYLE]</a>
+		<ELSE />
+		<span class="inactif">[@ADMIN.ADD_INTERNALSTYLE]</span>
+		</IF>
 </div>
 <br /><br />
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
 		<td class="texte_noir_gras" align="left">[@ADMIN.STYLE]</td>
 		<td class="texte_noir_gras" align="center">[@ADMIN.SURROUNDING]</td>
-		<td class="texte_noir_gras" align="center">[@ADMIN.CONVERSION]</td
+		<td class="texte_noir_gras" align="center">[@ADMIN.CONVERSION]</td>
 		<td class="texte_noir_gras" align="center"></td>
 		<td>&nbsp;</td>
 	</tr>
