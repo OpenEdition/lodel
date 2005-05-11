@@ -41,7 +41,11 @@
 
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
+	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 	<a href="index.php?do=view&lo=optiongroups">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</a>
+	<ELSE />
+	<span class="inactif">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</span>
+	</IF>
 
 </div>
 
@@ -79,7 +83,13 @@
 		</tr>
 		<tr>	
         	<td colspan="4">
-	        	<div><MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=options&idgroup=[#ID]">[@ADMIN.ADD_OPTION_TO_THE_GROUP]</a></div>
+	        	<div><MACRO NAME="PNG_PLUS">
+			<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+			<a href="index.php?do=view&lo=options&idgroup=[#ID]">[@ADMIN.ADD_OPTION_TO_THE_GROUP]</a>
+			<ELSE />
+			<span class="inactif">[@ADMIN.ADD_OPTION_TO_THE_GROUP]</span>
+			</IF>
+			</div>
                </td>
 		</tr>
         <?php $context['margin']+=10; ?> <!--[ incrément de la marge ]-->
