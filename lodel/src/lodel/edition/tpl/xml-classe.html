@@ -19,101 +19,50 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+<USE MACROFILE="macros_xml.html" />
 
+<MACRO NAME="root_element" />
 
-<LOOP NAME="URL_SITE_XML" TABLE="sites" WHERE="name='[#SITE]'">
-<document xmlns="[#URL]/schema" xmlns:xhtml="http://www.w3.org/1999/xhtml">  
-</LOOP>
-
-
-
-  <!--[ affiche les personnes ]-->
-  <LOOP NAME="persontypes" TABLE="persontypes" TABLE="typeentites_persontypes" WHERE="idpersontype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
-    <DO>
-	<LOOP NAME="lespersonnes" TABLE="persons" WHERE="identity='[#IDENTITE]' and idtype='[#ID]'" ORDER="rank">
-	  <BEFORE>
-            <gr[(#TYPE|removespace)]>
-          </BEFORE>
-	  <DO>
-	    <[(#TYPE|removespace)] ordre="[#RANK]">
-	    [<prefix>(#PREFIX)</prefix>]
-	    <prenom>[(#PRENOM)]</prenom>
-	    <nomfamille>[(#NOMFAMILLE)]</nomfamille>
-	    [<description>(#DESCRIPTION|namespace)</description>]
-	    [<fonction>(#FONCTION|namespace)</fonction>]
-	    [<affiliation>(#AFFILIATION|namespace)</affiliation>]
-	    [<courriel>(#COURRIEL)</courriel>]
-	    </[(#TYPE|removespace)]>
-	  </DO>
-	  <AFTER>
-            </gr[(#TYPE|removespace)]>
-          </AFTER>
-	</LOOP>
-    </DO>
-  </LOOP>
-  <!--[ ]-->
-
-  <!--[ affiche les entrees ]-->
-  <LOOP NAME="entrytypes" TABLE="entrytypes" TABLE="typeentites_entrytypes" WHERE="identrytype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
-    <DO>
-	<LOOP NAME="lesentrees" TABLE="entries" WHERE="idtype='[#ID]' AND identity='[#IDENTITE]'" ORDER="rank">
-	  <BEFORE>
-            <gr[(#TYPE|removespace)]>
-          </BEFORE>
-	  <DO>
-	    <[(#TYPE|removespace)]>
-	    <nom>[#NAME]</nom>
-	    <abrev>[#ABREV]</abrev>
-	    </[(#TYPE|removespace)]>
-	  </DO>
-	  <AFTER>
-            </gr[(#TYPE|removespace)]>
-          </AFTER>
-	</LOOP>
-    </DO>
-  </LOOP>
-  <!--[ ]-->
-
-  <!--[ affiche les champs ]-->
-  <LOOP NAME="groupesdechamps" SELECT="nom,id" TABLE="fieldgroups" WHERE="class='[#CLASS]'" ORDER="rank">
-    <DO>
-      <[#NAME]>
-      <LOOP NAME="valeurs_des_champs">
+<!--[ affiche les champs ]-->
+<LOOP NAME="groupesdechamps" SELECT="name,id" TABLE="tablefieldgroups" WHERE="class='[#CLASS]'" ORDER="rank">
+<DO>
+	<[#NAME]>
+  <LOOP NAME="fields_values">
 	<DO>
-	  <!--[ transforme some invalide entry ]-->
-	  <IF COND="[#TYPE] eq 'date' and [#VALUE] eq '0000-00-00'"><LET VAR="value"></LET></IF>
-
-	  <!--[ do we need the output this value ? ]-->
-	  <IF COND="[#VALUE] and [#CONDITION]!='+'">
-	    <IF COND="[#TYPE] eq 'boolean'">
-	      <[#NAME]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NAME]>
-	    <ELSE/>
-	    <IF COND="[#TYPE] eq 'mltext'">
-		  <LOOP NAME="mltext">
-		    <DO>
-		      <[#NAME] lang="[#LANG]">[(#VALUE|namespace)]</[#NAME]>
-	            </DO>
-                  </LOOP>
-             <ELSE/>
-             <IF COND="[#TYPE] eq 'lang'">
-	        <[#NAME]>[#VALUE]</[#NAME]>
-            <ELSE/>
-        	<IF COND="[#TYPE] eq 'date'">
-        	  <[#NAME]>[#VALUE]</[#NAME]>
-            <ELSE/>
-	        <[#NAME]>[(#VALUE|namespace)]</[#NAME]>
-            </IF>
-            </IF>
-            </IF>
-            </IF>
-           </IF> <!--[ value n'est pas vide ]-->
-
-        </DO>
-      </LOOP>
-       </[#NAME]>
-      </DO>
-    </LOOP>
-
-  <!--[ ]-->
+	<!--[ transforme some invalide entry ]-->
+	<IF COND="[#TYPE] eq 'persons'">
+     	<!--[ Show all defined persons for the entity]-->
+  	<LOOP NAME="relations_persons" TABLE="relations,persons,persontypes" WHERE="id1=[#IDENTITY] AND nature='G' AND relations.id2=persons.id AND persons.idtype=persontypes.id AND persontypes.type='[#NAME]'">
+ 			<[#NAME]>
+ 			<LOOP NAME="person_fields">
+ 				<MACRO NAME="SHOW_FIELD_VALUE" />
+ 			</LOOP>
+ 			<LOOP NAME="person_relations_fields">
+ 				<MACRO NAME="SHOW_FIELD_VALUE" />
+ 			</LOOP>
+ 			</[#NAME]>
+ 		</LOOP>
+  <ELSE/>
+	<IF COND="[#TYPE] eq 'entries'">
+	    	<!--[ Show all defined entry for the entity]-->
+	 	<LOOP NAME="relations_entries" TABLE="relations,entries,entrytypes" WHERE="id1=[#IDENTITY] AND nature='E' AND relations.id2=entries.id AND entries.idtype=entrytypes.id AND entrytypes.type='[#NAME]'">
+	 	<[#NAME]>
+	 		<LOOP NAME="entry_fields">
+	 			<MACRO NAME="SHOW_FIELD_VALUE" />
+	 		</LOOP>
+	 		</[#NAME]>
+	 	</LOOP>
+	<ELSE/>
+	<IF COND="[#TYPE] eq 'date' and [#VALUE] eq '0000-00-00'"><LET VAR="value"></LET></IF>
+	<!--[ do we need the output this value ? ]-->
+	<MACRO NAME="SHOW_FIELD_VALUE" />
+  </IF>
+  </IF> <!--[ value n'est pas vide ]-->
+	</DO>
+  </LOOP>
+	</[#NAME]>
+</DO>
+</LOOP>
+<!--[ Type of the entity ]-->
   <meta><typedoc>[#TYPE]</typedoc></meta>
-</document>
+</[#CLASS]>
