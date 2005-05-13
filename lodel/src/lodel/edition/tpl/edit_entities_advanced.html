@@ -167,7 +167,7 @@
 						<td width="350" class="td_admin">
 
 	<!--[ Visualisation XML ]-->
-				<a href="xml.php?id=[#ID]&view=1">
+				<a href="index.php?lo=xml&amp;do=generateXML&amp;id=[#ID]&amp;view=1">
 					<span class="texte_orange">[@EDITION.VISUALIZE_XML]</span>
 				</a>
 						</td>
@@ -178,7 +178,7 @@
 						<td width="350" class="td_admin">
 
 		<!--[ Téléchargement source XML ]-->
-				<a href="xml.php?id=[#ID]">
+				<a href="index.php?lo=xml&amp;do=generateXML&amp;id=[#ID]">
 					<span class="texte_orange">[@EDITION.GET_XML_FILE]</span>
 				</a>
 						</td>
@@ -190,7 +190,7 @@
 
 		<!--[ Validation XML ]-->
 	<IF COND="[#LODELUSER.REDACTOR]">
-				<a href="xml.php?id=[#ID]&valid=1">
+				<a href="index.php?lo=xml&amp;do=generateXML&amp;id=[#ID]&amp;valid=1">
 					<span class="texte_orange">[@EDITION.CHECK_XML]</span>
 				</a>
 
