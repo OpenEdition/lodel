@@ -27,12 +27,11 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
-
+	
 
 require("siteconfig.php");
 require_once("auth.php");
 authenticate(LEVEL_VISITOR);
-
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
   recordurl();
   $context['id']=$id=intval($_GET['id']);
@@ -80,13 +79,14 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
   } else {
     $lo="entities";
   }
+  
   Controler::controler(array("entities",
 			     "entities_advanced",
 			     "entities_edition",
 			     "entities_import",
 			     "entities_index",
 			     "filebrowser",
-			     "tasks"),$lo);
+			     "tasks","xml"),$lo);
 }
 
 ?>

@@ -52,7 +52,7 @@ Controler::controler(array("entrytypes","persontypes",
 			   "types","classes",
 			   "options","optiongroups","useroptiongroups","servooconf",
 			   "internalstyles","characterstyles","entities_index",
-			   "filebrowser"));
+			   "filebrowser","xml"));
 
 
 function loop_classtypes ($context,$funcname)
