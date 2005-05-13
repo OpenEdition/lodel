@@ -28,46 +28,43 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-function calculateXML ($context)
-
-{
+/**
+ * Calcul the XML file for an entity
+ * @return the indented XML
+ */
+function calculateXML ($context) {
   require_once("calcul-page.php");
   ob_start();
-  calcul_page($context,"xml-class","",SITEROOT."lodel/edition/tpl/");
+  calcul_page ($context, "xml-classe", "", SITEROOT."lodel/edition/tpl/");
+  $contents=ob_get_contents ();
+  ob_end_clean ();
+  return indentXML ($contents);
+}
+/**
+ * Calcul the XSD scheme for a class of entity
+ * @return the indented XSD
+ */
+function calculateXMLSchema ($context) {
+  require_once("calcul-page.php");
+  ob_start();
+  calcul_page ($context, "schema-xsd", "", SITEROOT."lodel/admin/tpl/");
   $contents=ob_get_contents();
   ob_end_clean();
-
-  return indentXML($contents);
+ return indentXML($contents);
 }
 
 
-function calculateXMLSchema ($context)
-
-{
-
-  require_once("calcul-page.php");
-  ob_start();
-  calcul_page($context,"schema-xsd","",SITEROOT."lodel/admin/tpl/");
-  $contents=ob_get_contents();
-  ob_end_clean();
-
-  return indentXML($contents);
-#  return $contents;
-}
-
-
-
-function indentXML ($contents,$output=false)
-
-{
+/**
+ * Indent an XML content
+ * 
+ */
+function indentXML ($contents, $output = false) {
   $arr=preg_split("/\s*(<(\/?)(?:\w+:)?\w+(?:\s[^>]*)?>)\s*/",$contents,-1,PREG_SPLIT_DELIM_CAPTURE);
-
   $ret='<?xml version="1.0" encoding="utf-8" ?>
 ';
   if ($output) echo $ret;
   $tab="";
-  for($i=1; $i<count($arr); $i+=3) {
+  for ($i=1; $i<count($arr); $i+=3) {
     if ($arr[$i+1]) $tab=substr($tab,2); // closing tag
     if (substr($arr[$i],-2)=="/>") { // opening closing tag
       $out=$tab.$arr[$i].$arr[$i+2]."\n";
@@ -86,22 +83,13 @@ function indentXML ($contents,$output=false)
   }
   if (!$output) return $ret;
 }
-
-
-
-
 /**
- * decode le champs balises.
+ * Decode Balise field
  */
-
-function loop_xsdtypes(&$context,$funcname)
-
-{
-  $balises=preg_split("/;/",$context[balises],-1,PREG_SPLIT_NO_EMPTY);
-
+function loop_xsdtypes(&$context,$funcname) {
+  $balises=preg_split("/;/",$context['allowedtags'],-1,PREG_SPLIT_NO_EMPTY);
   if ($balises) call_user_func("code_before_$funcname",$context);
-
-  foreach($balises as $name) {
+  foreach ($balises as $name) {
     if (is_numeric($name)) continue;
     $localcontext=$context;
     $localcontext['count']=$count;
@@ -112,8 +100,124 @@ function loop_xsdtypes(&$context,$funcname)
   if ($balises) call_user_func("code_after_$funcname",$context);
 }
 
+/**
+ * Loop that select each field with its value for an entity
+ */
+function loop_fields_values(&$context,$funcname) {
+  global $error;
+	global $db;
+  if($context['type']=='persons')
+  	$result=$db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE type='persons' AND status>0 ORDER BY rank")) or dberror();
+  else
+  	$result=$db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank")) or dberror();
+	$haveresult=$result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname")) 
+  	call_user_func("code_before_$funcname",$context);
+	
+	while (!$result->EOF) {
+	  $row = $result->fields;
+	  $sql = lq("SELECT ".$row['name']." FROM #_TP_".$context['class']." WHERE identity='".$context['identity']."'");
+	  $row['value'] = $db->getOne($sql);
+	  $row['identity'] = $context['identity'];
+	  call_user_func("code_do_$funcname",$row);
+	  $result->moveNext();
+	}
+	if ($haveresult && function_exists("code_after_$funcname")) 
+		call_user_func("code_after_$funcname",$context);
+}
 
+/**
+ * Loop that select each field of an entry for an entity
+ */
+function loop_entry_fields (&$context,$funcname) {
+	global $error;
+	global $db;
+	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t, #_TP_entrytypes as et";
+	$sql .=" WHERE et.type='".$context['name']."' AND et.class=t.class";
+#echo "sql=".lq($sql);
+	$result=$db->execute(lq($sql));
+	$haveresult=$result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname")) 
+    	call_user_func("code_before_$funcname",$context);
+	while (!$result->EOF) {
+		$row = $result->fields;
+	  $sql = lq("SELECT ".$row['name']." FROM #_TP_".$row['class']." WHERE identry='".$context['id2']."'");
+#echo "sql=$sql";
+    $row['value'] = $db->getOne($sql);
+    $row['identity'] = $context['identity'];
+    call_user_func("code_do_$funcname",$row);
+    $result->moveNext();
+  }
+  if ($haveresult && function_exists("code_after_$funcname")) 
+    call_user_func("code_after_$funcname",$context);
+}
 
+/**
+ * Loop that select each field of a person for an entity
+ */
+function loop_person_fields (&$context,$funcname) {
+	global $error;
+	global $db;
+	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t, #_TP_persontypes as et";
+	$sql .=" WHERE et.type='".$context['name']."' AND et.class=t.class";
+#echo "sql=".lq($sql);
+	$result=$db->execute(lq($sql));
+	$haveresult=$result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname")) 
+  	call_user_func("code_before_$funcname",$context);
+	while (!$result->EOF) {
+	 	$row = $result->fields;
+	  $sql = lq("SELECT ".$row['name']." FROM #_TP_".$row['class']." WHERE idperson='".$context['id2']."'");
+#echo "sql=$sql";
+    $row['value'] = $db->getOne($sql);
+    $row['identity'] = $context['identity'];
+    call_user_func("code_do_$funcname",$row);
+    $result->moveNext();
+	}
+	if ($haveresult && function_exists("code_after_$funcname")) 
+		call_user_func("code_after_$funcname",$context);
+}
 
+/**
+ * Loop that select each field of a relation between an entity and a person for an entity
+ */
+function loop_person_relations_fields (&$context,$funcname) {
+	global $error;
+	global $db;
+	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t";
+	$sql .=" WHERE t.class='entities_".$context['class']."'";
+#echo "sql=".lq($sql);
+	$result=$db->execute(lq($sql));
+	$haveresult=$result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname")) 
+  	call_user_func("code_before_$funcname",$context);
+	while (!$result->EOF) {
+	 	$row = $result->fields;
+	  $sql = lq("SELECT ".$row['name']." FROM #_TP_".$row['class']." WHERE idrelation='".$context['idrelation']."'");
+#echo "sql=$sql";
+    $row['value'] = $db->getOne($sql);
+    $row['identity'] = $context['identity'];
+    call_user_func("code_do_$funcname",$row);
+    $result->moveNext();
+	}
+	if ($haveresult && function_exists("code_after_$funcname")) 
+		call_user_func("code_after_$funcname",$context);
+}
 
+function loop_valeurs_des_champs_require() { return array("id"); }
+
+/**
+ * Put the XHTML namespace in each tag with no namespace and delete r2r namespace
+ * Met le namespace xhtml pour toutes balises qui n'ont pas de namespace et supprime le namespace r2r.
+ */
+function namespace($text) {
+  $ns="xhtml";
+  // put namespace on each html tag
+  $text = preg_replace(array("/<(\/?)(\w+(\s+[^>]*)?>)/", // add xhtml
+			     "/(<\/?)r2r:/"),   // remove r2r
+		       array("<\\1$ns:\\2",
+			     "\\1"),$text);
+	// then put namespace on each attribute
+	return $text;
+} 
 ?>
