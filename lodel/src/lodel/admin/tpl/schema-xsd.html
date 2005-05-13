@@ -21,73 +21,79 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 <--[ Warning: the loop name must be different for the ones in lodel/edition/xml-class.html because the two templates can be imported in the same script ]-->
-
 <LOOP NAME="URL_SITE" TABLE="sites" WHERE="name='[#SITE]'">
-<xsd:schema targetNamespace="[#URL]/schema"
-	  xmlns="[#URL]/schema"
+<xsd:schema targetNamespace="[#URL]/schema-[#CLASS]"
+	  xmlns="[#URL]/schema-[#CLASS]"
 	  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	  xmlns:xhtml="http://www.w3.org/1999/xhtml"
 	  elementFormDefault="qualified">
 </LOOP>
 
 <xsd:import namespace="http://www.w3.org/1999/xhtml"
-                schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
+            schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
 
 <!--[ structure generale du document ]-->
-    <xsd:element name="document" type="articleType"/>
-	<xsd:complexType name="articleType">
-            <xsd:sequence>
+<xsd:element name="[#CLASS]" type="[#CLASS|ucfirst]Type"/>
+<!--[ Proposition]-->
+<xsd:annotation>
+	<xsd:documentation xml:lang="fr">Element Racine</xsd:documentation>
+	<xsd:documentation xml:lang="en">Top level element</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="[#CLASS|ucfirst]Type">
+	<xsd:sequence>
+	
+	
 	<!--[ les groupes de personnes ]-->
-    	<LOOP NAME="persontypes_xsd" TABLE="persontypes" WHERE="status gt 0" ORDER="rank">
-		<DO>
-            <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
-		      <xsd:complexType>
+  <!--[<LOOP NAME="persontypes_xsd" TABLE="persontypes" WHERE="status gt 0" ORDER="rank">
+	<DO>
+  	<xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
+		<xsd:complexType>
 		        <xsd:sequence>
-		          <xsd:element name="[(#TYPE|removespace)]" type="typePersonne" minOccurs="1" maxOccurs="unbounded" />
+		          <xsd:element name="[(#TYPE|removespace)]" type="type[#CLASS|removespace|ucfirst]" minOccurs="1" maxOccurs="unbounded" />
 		        </xsd:sequence>
 		      </xsd:complexType>
 		    </xsd:element>
 		</DO>
-   	</LOOP>
+   	</LOOP>]-->
 	<!--[ les groupes d'entrees ]-->
-    	<LOOP NAME="entrytypes_xsd" TABLE="entrytypes" WHERE="status gt 0" ORDER="rank">
-	      	<DO>
-                <xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
-		     <xsd:complexType>
-		       <xsd:sequence>
-		           <xsd:element name="[(#TYPE|removespace)]" type="typeEntree" minOccurs="1" maxOccurs="unbounded" />
-		       </xsd:sequence>
-		     </xsd:complexType>
+  <!--[<LOOP NAME="entrytypes_xsd" TABLE="entrytypes" WHERE="status gt 0" ORDER="rank">
+	<DO>
+  	<xsd:element name="gr[(#TYPE|removespace)]" minOccurs="0" maxOccurs="1">
+		<xsd:complexType>
+			<xsd:sequence>
+		  	<xsd:element name="[(#TYPE|removespace)]" type="type[#CLASS|removespace|ucfirst]" minOccurs="1" maxOccurs="unbounded" />
+		   </xsd:sequence>
+		  </xsd:complexType>
 		</xsd:element>
-
-		</DO>
-	</LOOP>
-	<!--[ les groupes de champs ]-->
-	    <LOOP NAME="groupesdechamps_xsd" TABLE="fieldgroups" WHERE="class='[#CLASS]'" ORDER="rank">
-      	<DO>
-			<xsd:element name="[#NAME]">
+	</DO>
+	</LOOP>]-->
+	<!--[ The fieldgroups ]-->
+	<LOOP NAME="groupesdechamps_xsd" TABLE="tablefieldgroups" WHERE="class='[#CLASS]'" ORDER="rank">
+  <DO>
+		<xsd:element name="[#NAME]">
 		<IF COND="[#COMMENTAIRE]">
-	        <xsd:annotation>
+		  <xsd:annotation>
 				<xsd:documentation xml:lang="fr">
 					[#COMMENTAIRE]
 				</xsd:documentation>
 			</xsd:annotation>
 		</IF>
-
-			 <xsd:complexType>
-		            <xsd:sequence>
-
-		<LOOP NAME="champs_xsd" TABLE="fields" WHERE="idgroup='[#ID]'" ORDER="rank">
-	    		<DO>
+	 	<xsd:complexType>
+	    <xsd:sequence>
+	    <!--[ For each fieldgroup, their fields ]-->
+			<LOOP NAME="champs_xsd" TABLE="tablefields" WHERE="idgroup='[#ID]'" ORDER="rank">
+		  <DO>
+		
 			<!--[ define the minOccurs and maxOccurs and put it in [#OCCURS] variable ]-->
 			<IF COND="[#CONDITION]=='+'">
 			  <LET VAR="occurs">minOccurs="1" maxOccurs="unbounded"</LET>
 			<ELSE/>
 			  <LET VAR="occurs">minOccurs="0" maxOccurs="unbounded"</LET>
 			</IF>
-				<IF COND="[#TYPE] eq 'boolean'">
+			<IF COND="[#TYPE] eq 'boolean'">
 				<LET VAR="xsdsimpletype">xsd:boolean</LET>
-				<ELSE/>
+			<ELSE/>
 				<IF COND="[#TYPE] eq 'mltext'">
 				<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
 				<ELSE/>
@@ -107,7 +113,7 @@
 				<LET VAR="xsdsimpletype">xsd:int</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'numeric'">
-				<LET VAR="xsdsimpletype">xsd:double</LET>
+					<LET VAR="xsdsimpletype">xsd:double</LET>
 				<ELSE/>
 		 		<IF COND="[#TYPE] eq 'image'">
 				<LET VAR="xsdsimpletype">xsd:anyURI</LET>
@@ -126,108 +132,287 @@
 				</IF>
 				</IF>	
 				</IF>
-                                 <IF COND="[#XSDTYPE]">
-			         <xsd:element name="[#NAME]" type="[#XSDTYPE]" [#OCCURS]>
-			         <ELSE/>
-			         <xsd:element name="[#NAME]" [#OCCURS]>
-		                 <IF COND="[#COMMENTAIRE]">
-			            <xsd:annotation>
-					<xsd:documentation xml:lang="fr">
-						[#COMMENTAIRE]
-					</xsd:documentation>
-				    </xsd:annotation>
-                                </IF>
-				      <LOOP NAME="xsdtypes"> <!--[ create the complex type ]-->
-					<BEFORE>
-					  <xsd:complexType mixed="true">
-					    <xsd:choice minOccurs="0" maxOccurs="unbounded">
-					</BEFORE>
-					<DO>
-					  <xsd:group ref="[#NAME]" />
-			                 </DO>
-					<AFTER>
-					    </xsd:choice>
-					  </xsd:complexType>
-					</AFTER>
-			              </LOOP>				  
-				 </IF>
+        <IF COND="[#XSDSIMPLETYPE]">
+			    <xsd:element name="[#NAME]" type="[#XSDSIMPLETYPE]" [#OCCURS]>
+			  <ELSE/>
+			  	<IF COND="[#TYPE] eq 'persons' OR [#TYPE] eq 'entries'">
+			  		<LET VAR="typetable"><IF COND="[#TYPE] eq 'persons'">person<ELSE>entry</IF></LET>
+			  		<xsd:element name="[#NAME]" <LOOP NAME="typesentrypersons" TABLE="#_TP_[#TYPETABLE]types" WHERE="type eq '[#NAME]'">type="type[#CLASS|ucfirst]"</LOOP> [#OCCURS]>
+					<ELSE/>
+				    <xsd:element name="[#NAME]" [#OCCURS]>
+				    <IF COND="[#COMMENTAIRE]">
+					  	  <xsd:annotation>
+									<xsd:documentation xml:lang="fr">
+										[#COMMENT]
+									</xsd:documentation>
+						    </xsd:annotation>
+		        </IF>
+						<LOOP NAME="xsdtypes"> <!--[ create the complex type ]-->
+						<BEFORE>
+							<xsd:complexType mixed="true">
+								<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						</BEFORE>
+						<DO>
+									<xsd:group ref="[#NAME]" />
+					   </DO>
+						<AFTER>
+							  </xsd:choice>
+							</xsd:complexType>
+						</AFTER>
+					  </LOOP>
+					 	</IF>				  
+				</IF>
 				</xsd:element>
 	    </DO>
-	  </LOOP>
-		            </xsd:sequence>
-			 </xsd:complexType>
-	        </xsd:element>
-      </DO>
-    </LOOP>
-
-
-
-
+	  	</LOOP>
+		  </xsd:sequence>
+		</xsd:complexType>
+	 </xsd:element>
+   </DO>
+   </LOOP>
+<!--[ *********************** ELEMENT META *********************************]-->
+<!--[ Définition de l'élément meta qui contient tous les types de la classe ]-->
+<!--[ *********************** ELEMENT META *********************************]-->
 		<xsd:element name="meta">
-			<xsd:complexType>
+		<xsd:annotation>
+	<xsd:documentation xml:lang="fr">L'élément meta contient la liste des types de la classe</xsd:documentation>
+	<xsd:documentation xml:lang="en">meta element contains the list of class types</xsd:documentation>
+</xsd:annotation>
+		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="typedoc">
-					<xsd:simpleType>
-						<xsd:restriction base="xsd:string">
-						<LOOP NAME="typedoc_xsd" TABLE="types" WHERE="class='documents' AND status gt 0">
-							<xsd:enumeration value="[#TYPE]"/>
-						</LOOP>
-						</xsd:restriction>
-					</xsd:simpleType>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+					<LOOP NAME="typedoc_xsd" TABLE="types" WHERE="class='[#CLASS]' AND status gt 0">
+						<xsd:enumeration value="[#TYPE]"/>
+					</LOOP>
+					</xsd:restriction>
+				</xsd:simpleType>
 				</xsd:element>
 			</xsd:sequence>
-			</xsd:complexType>
-	    	</xsd:element>
+		</xsd:complexType>
+	  </xsd:element>
 
-            </xsd:sequence>
-        </xsd:complexType>
-    <!--[ element document ]-->
+	</xsd:sequence>
+</xsd:complexType>
+<!--[ End of element document ]-->
 
 
-	<!--[ type GroupePersonne ]-->
+<!--[ Définition des types ]-->
+<LOOP NAME="personnesclassesxsd" TABLE="classes" WHERE="classtype='persons' AND status GT 0">
+<DO>
+<xsd:complexType name="type[#CLASS|ucfirst]">
+<xsd:sequence>
+	<LOOP NAME="personsxsd" TABLE="tablefields" WHERE="class IN('[#CLASS]','entities_[#CLASS]')">
+		<!--[ define the minOccurs and maxOccurs and put it in [#OCCURS] variable ]-->
+		<IF COND="[#CONDITION]=='+'">
+			<LET VAR="occurs">minOccurs="1" maxOccurs="unbounded"</LET>
+		<ELSE/>
+		<LET VAR="occurs">minOccurs="0" maxOccurs="unbounded"</LET>
+		</IF>
+		<IF COND="[#TYPE] eq 'boolean'">
+		<LET VAR="xsdsimpletype">xsd:boolean</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'mltext'">
+		<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'lang'">
+		<LET VAR="xsdsimpletype">xsd:language</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'date'">
+		<LET VAR="xsdsimpletype">xsd:date</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'datetime'">
+		<LET VAR="xsdsimpletype">xsd:dateTime</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'time'">
+		<LET VAR="xsdsimpletype">xsd:time</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'int'">
+		<LET VAR="xsdsimpletype">xsd:int</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'numeric'">
+		<LET VAR="xsdsimpletype">xsd:double</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'image'">
+		<LET VAR="xsdsimpletype">xsd:anyURI</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'fichier'">
+		<LET VAR="xsdsimpletype">xsd:anyURI</LET>
+		<ELSE/>
+		<LET VAR="xsdsimpletype"></LET> <!--[ not a simple type]-->
+		</IF>
+		</IF>
+		</IF>
+		</IF>	
+		</IF>
+		</IF>
+		</IF>
+		</IF>
+		</IF>	
+		</IF>
+		<IF COND="[#XSDSIMPLETYPE]">
+		<xsd:element name="[#NAME]" type="[#XSDSIMPLETYPE]" [#OCCURS]>
+		<ELSE/>
+		<xsd:element name="[#NAME]" [#OCCURS]>
+		<IF COND="[#COMMENTAIRE]">
+		<xsd:annotation>
+		<xsd:documentation xml:lang="fr">
+		[#COMMENT]
+		</xsd:documentation>
+		</xsd:annotation>
+		</IF>
+		<LOOP NAME="xsdtypes"> <!--[ create the complex type ]-->
+		<BEFORE>
+		<xsd:complexType mixed="true">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+		</BEFORE>
+		<DO>
+		<xsd:group ref="[#NAME]" />
+		</DO>
+		<AFTER>
+		</xsd:choice>
+		</xsd:complexType>
+		</AFTER>
+		</LOOP>				  
+		</IF>
+	</xsd:element>
+	</LOOP>
+</xsd:sequence>
+<xsd:attribute name="rank" type="xsd:integer" use="required"/>	
+</xsd:complexType>
+</DO>
+</LOOP> 
 
-    <xsd:complexType name="typePersonne">
-            <xsd:sequence>
-	        <xsd:element name="prefix" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-		<xsd:element name="prenom" type="xsd:string"/>
-		<xsd:element name="nomfamille" type="xsd:string"/>
-	        <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-		<xsd:element name="fonction" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-	        <xsd:element name="affiliation" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-	        <xsd:element name="courriel" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-            </xsd:sequence>
-	    <xsd:attribute name="ordre" type="xsd:integer" use="required"/>
-    </xsd:complexType>
 
-    <xsd:complexType name="typeEntree">
-            <xsd:sequence>
+
+<!--[ type Personne ]-->
+<!--[
+<xsd:complexType name="typePersonne">
+<xsd:sequence>
+ 	<xsd:element name="prefix" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	<xsd:element name="prenom" type="xsd:string"/>
+	<xsd:element name="nomfamille" type="xsd:string"/>
+  <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	<xsd:element name="fonction" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	<xsd:element name="affiliation" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+	<xsd:element name="courriel" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+</xsd:sequence>
+  <xsd:attribute name="ordre" type="xsd:integer" use="required"/>
+</xsd:complexType>
+]-->
+<!--[ type Entree ]-->
+<LOOP NAME="entriesclassesxsd" TABLE="classes" WHERE="classtype='entries'">
+<xsd:complexType name="type[#CLASS|ucfirst]">
+<xsd:sequence>
+	<LOOP NAME="entriesxsd" TABLE="tablefields" WHERE="class='[#CLASS]'">
+		<!--[ define the minOccurs and maxOccurs and put it in [#OCCURS] variable ]-->
+		<IF COND="[#CONDITION]=='+'">
+			<LET VAR="occurs">minOccurs="1" maxOccurs="unbounded"</LET>
+		<ELSE/>
+		<LET VAR="occurs">minOccurs="0" maxOccurs="unbounded"</LET>
+		</IF>
+		<IF COND="[#TYPE] eq 'boolean'">
+		<LET VAR="xsdsimpletype">xsd:boolean</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'mltext'">
+		<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'lang'">
+		<LET VAR="xsdsimpletype">xsd:language</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'date'">
+		<LET VAR="xsdsimpletype">xsd:date</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'datetime'">
+		<LET VAR="xsdsimpletype">xsd:dateTime</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'time'">
+		<LET VAR="xsdsimpletype">xsd:time</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'int'">
+		<LET VAR="xsdsimpletype">xsd:int</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'numeric'">
+		<LET VAR="xsdsimpletype">xsd:double</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'image'">
+		<LET VAR="xsdsimpletype">xsd:anyURI</LET>
+		<ELSE/>
+		<IF COND="[#TYPE] eq 'fichier'">
+		<LET VAR="xsdsimpletype">xsd:anyURI</LET>
+		<ELSE/>
+		<LET VAR="xsdsimpletype"></LET> <!--[ not a simple type]-->
+		</IF>
+		</IF>
+		</IF>
+		</IF>	
+		</IF>
+		</IF>
+		</IF>
+		</IF>
+		</IF>	
+		</IF>
+		<IF COND="[#XSDSIMPLETYPE]">
+		<xsd:element name="[#NAME]" type="[#XSDSIMPLETYPE]" [#OCCURS]>
+		<ELSE/>
+		<xsd:element name="[#NAME]" [#OCCURS]>
+		<IF COND="[#COMMENTAIRE]">
+		<xsd:annotation>
+		<xsd:documentation xml:lang="fr">
+		[#COMMENT]
+		</xsd:documentation>
+		</xsd:annotation>
+		</IF>
+		<LOOP NAME="xsdtypes"> <!--[ create the complex type ]-->
+		<BEFORE>
+		<xsd:complexType mixed="true">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+		</BEFORE>
+		<DO>
+		<xsd:group ref="[#NAME]" />
+		</DO>
+		<AFTER>
+		</xsd:choice>
+		</xsd:complexType>
+		</AFTER>
+		</LOOP>				  
+		</IF>
+	</xsd:element>
+	</LOOP>
+</xsd:sequence>
+</xsd:complexType>
+</LOOP>
+
+
+
+<!--[<xsd:complexType name="typeEntree">
+	<xsd:sequence>
 		<xsd:element name="nom" type="xsd:string"/>
 		<xsd:element name="abrev" type="xsd:string"/>
-            </xsd:sequence>
-    </xsd:complexType>
-
-
-
+  </xsd:sequence>
+</xsd:complexType>
+]-->
 
 <!--[ type TexteMultiLangue ]-->
-	<xsd:complexType name="TexteMultiLangue">
-		<xsd:sequence>
-			<xsd:element name="ml" minOccurs="1" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="typeTexteLodel">
-							<xsd:attribute name="lang" type="xsd:language" use="required"/>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
+<xsd:complexType name="TexteMultiLangue">
+	<xsd:sequence>
+		<xsd:element name="ml" minOccurs="1" maxOccurs="unbounded">
+			<xsd:complexType>
+				<xsd:complexContent>
+					<xsd:extension base="typeTexteLodel">
+						<xsd:attribute name="lang" type="xsd:language" use="required"/>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
 
 
-<!--[ type LodelTexte ]-->
-	<xsd:group name="Sections">
-		<xsd:choice>
+
+<xsd:group name="Sections">
+	<xsd:choice>
 			<xsd:element name="section1" type="Section"  />
 			<xsd:element name="section2" type="Section"  />
 			<xsd:element name="section3" type="Section"  />
@@ -239,13 +424,15 @@
 			<xsd:element name="section9" type="Section"  />
 			<xsd:element name="section10" type="Section"  />
 		</xsd:choice>
-	</xsd:group>
-	<xsd:complexType name="Section" mixed="true">
-		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
-	</xsd:complexType>
+</xsd:group>
 
-	<xsd:group name="texte_Lodel">
-	    <xsd:choice>
+<!--[ type Section ]-->	
+<xsd:complexType name="Section" mixed="true">
+	<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
+</xsd:complexType>
+
+<xsd:group name="texte_Lodel">
+	<xsd:choice>
 		<xsd:element name="citation" type="typeTexteLodel" />
 		<xsd:element name="epigraphe" type="typeTexteLodel" />
 		<xsd:element name="titredoc" type="typeTexteLodel" />
@@ -253,27 +440,30 @@
 		<xsd:element name="titreillustration" type="typeTexteLodel" />
 		<xsd:element name="legendeillustration" type="typeTexteLodel" />
 		<xsd:element name="separateur" type="typeTexteLodel" />
-	    </xsd:choice>
-	</xsd:group>
-	<xsd:complexType name="typeTexteLodel" mixed="true"> <!--[ version plutot permissive ]-->
-	     <xsd:choice>
+	</xsd:choice>
+</xsd:group>
+<!--[ type Texte Lodel ]-->	
+<xsd:complexType name="typeTexteLodel" mixed="true"> <!--[ version plutot permissive ]-->
+	<xsd:choice>
 		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="xhtml:block" />
 		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="Sections" />
 		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="Appel_de_Note" />
 		<xsd:group minOccurs="0" maxOccurs="unbounded" ref="Lien" />
-	     </xsd:choice>
-	</xsd:complexType>
+	</xsd:choice>
+</xsd:complexType>
 
 
-	<xsd:group name="Lien">
-            <xsd:sequence>
-                <xsd:element ref="xhtml:a"/>
-            </xsd:sequence>
-	</xsd:group>
+<xsd:group name="Lien">
+	<xsd:sequence>
+  	<xsd:element ref="xhtml:a"/>
+  </xsd:sequence>
+</xsd:group>
 
-	<xsd:group name="Appel_de_Note">
-            <xsd:sequence>
-                <xsd:element ref="xhtml:a"/>
-            </xsd:sequence>
-	</xsd:group>
+<xsd:group name="Appel_de_Note">
+	<xsd:sequence>
+  	<xsd:element ref="xhtml:a"/>
+  </xsd:sequence>
+</xsd:group>
+
+<!--[ Fin du schéma ]-->
 </xsd:schema>
