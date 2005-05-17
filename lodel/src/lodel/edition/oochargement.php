@@ -784,6 +784,7 @@ function traite_couple(&$text)
 
   // determine les $virgule_tags
   require_once($home."connect.php");
+  $virgule_tags_arr=array();
   $result=mysql_query("SELECT style FROM $GLOBALS[tp]typeentrees WHERE statut>0") or die(mysql_error());
   while (list($style)=mysql_fetch_row($result)) $virgule_tags_arr[]=$style;
   $result=mysql_query("SELECT style FROM $GLOBALS[tp]typepersonnes WHERE statut>0") or die(mysql_error());
