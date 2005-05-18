@@ -116,27 +116,7 @@ class GenericLogic extends Logic {
      /////
 
      /////
-       function loop_mltext(&$context,$funcname) 
-       {
-	 if (is_array($context['value'])) {
-	   foreach($context['value'] as $lang=>$value) {
-	     $localcontext=$context;
-	     $localcontext['lang']=$lang;
-	     $localcontext['value']=$value;
-	     call_user_func("code_do_$funcname",$localcontext);
-	   }
-	   // pas super cette regexp... mais l argument a deja ete processe !
-	 } elseif (preg_match_all("/&lt;r2r:ml lang\s*=&quot;(\w+)&quot;&gt;(.*?)&lt;\/r2r:ml&gt;/s",$context['value'],$results,PREG_SET_ORDER) ||
-		   preg_match_all("/<r2r:ml lang\s*=\"(\w+)\">(.*?)<\/r2r:ml>/s",$context['value'],$results,PREG_SET_ORDER)    ) {
-	   
-	   foreach($results as $result) {
-	     $localcontext=$context;
-	     $localcontext['lang']=$result[1];
-	     $localcontext['value']=$result[2];
-	     call_user_func("code_do_$funcname",$localcontext);
-	   }
-	 }
-
+      
 	 //$lang=$context['addlanginmltext'][$context['name']];
 	 //if ($lang) {
 	 //  $localcontext=$context;
