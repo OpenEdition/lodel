@@ -24,169 +24,323 @@
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
-<MACRO NAME="JS_ROLLOVER">
+<script type="text/javascript">
+	<!--
+	function select_url(obj) {
+		var index = obj.selectedIndex;
+		if (obj.options[index].value) window.location=obj.options[index].value;
+	}
 
-<div id="desk" style="background-image: url([#SHAREURL]/images/bandeau.jpg); background-repeat:no-repeat; background-color:#FFFFFF;">
-<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="318" heigth="75"></td>
+	function switchDisp(obj){
+		var obj = document.getElementById(obj);
+		//alert(obj.className);
+		if(obj.className == "butTextOn"){
+			obj.className = "butText";
+		}else{
+			obj.className = "butTextOn";
+		}
+	}
+	//
+	-->
+</script>
 
-		<td width="431" align="left" heigth="75">
-			<table align="right" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-				<IF COND="[#SITE]">
-					<td width="100%" heigth="75">&nbsp;</td>
-					<td width="57" heigth="75">
-						<a href="[#SITEROOT]lodel/index.php" onMouseOver="rollover('img_menu_accueil','menu_accueil_survol.png');" onMouseOut="rollover('img_menu_accueil','menu_accueil.png');">
-						<IF COND="[#CURRENTURL|strpos('edition')]">
-						<MACRO NAME="PNG_MENU_ACCUEIL_ACTIF">
-						<ELSE/>
-							<MACRO NAME="PNG_MENU_ACCUEIL">
-						</IF>
-							<span class="desk-text">
-								[@COMMON.HOME]
-							</span>
-						</a>
-					</td>
-			
-					<td width="57" heigth="75">
-				
-						<IF COND="![#LODELUSER.REDACTOR]">
-							<MACRO NAME="PNG_MENU_ADMIN_GRIS">
-						<ELSE/>
-							<a href="[#SITEROOT]lodel/admin/index.php">
-							<IF COND="[#CURRENTURL|strpos('admin')]">	
-								<MACRO NAME="PNG_MENU_ADMIN_ACTIF">
-							<ELSE/>
-								<MACRO NAME="PNG_MENU_ADMIN">
-							</IF>
-							</IF>
-								<span class="desk-text">
-									[@COMMON.ADMINISTRATION]
-								</span>
-							</a>
-						
-					</td>
-			
-					<td width="57" heigth="75">
-						<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" onMouseOver="rollover('img_menu_voir','menu_voir_survol.png');" onMouseOut="rollover('img_menu_voir','menu_voir.png');">
-					<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
-							<MACRO NAME="PNG_MENU_VOIR_ACTIF">
-					<ELSE/>
-						<MACRO NAME="PNG_MENU_VOIR">
-					</IF>
-							<span class="desk-text">
-								[@COMMON.VIEW]
-							</span>
-						</a>
-					</td>
+<style type="text/css">
 
-				<ELSE/>
-					<td heigth="75">
-					<script type="text/javascript"><!--
-					
-						function select_url(obj) {
-							var index = obj.selectedIndex;
-							if (obj.options[index].value) window.location=obj.options[index].value;
-						}
-					//
-					--></script>
-					<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
-					<BEFORE>
-						[@LODELADMIN.SITE]:<br/>
-						<IF COND="[#NBRESULTS] gt 3">
-						<select onChange="select_url(this)">		
-						<option>--</option>
-						</IF>		
-					</BEFORE>
-					<DO>
-						<IF COND="[#NBRESULTS] gt 3">
-						<option value="..[#PATH]/lodel/edition/">[#TITLE]</option>
-						<ELSE/>
-						<a href="..[#PATH]/lodel/edition/">[#TITLE]</a><br />
-						</IF>
-					</DO>
-					<AFTER>
-						<IF COND="[#NBRESULTS] gt 3">
-						</select>
-						</IF>		
-					</AFTER>
-	
-					</LOOP>
-					</td>
-					<td width="57" heigth="75"><a href="index.php"><MACRO NAME="PNG_MENU_ADMIN_ACTIF"><span class="desk-text">[@COMMON.ADMINISTRATIONLODEL]</span></a></td>
-				</IF>
+/* Ces styles ne sont pas dans styles_lodel.css qui n'est pas chargée en mode visualisation */
 
-					<td width="57" heigth="75"><a href="http://documentation.lodel.org" target="lodeldoc" onMouseOver="rollover('img_menu_aide','menu_aide_survol.png');" onMouseOut="rollover('img_menu_aide','menu_aide.png');"><MACRO NAME="PNG_MENU_AIDE"><span class="desk-text">[@COMMON.HELP]</span></a></td>
-				</tr>
-			</table>
-		</td>
-		<td width="*" align="left" heigth="75">
-			<table width="100%" align="right" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="100%" heigth="75">&nbsp;</td>
+/****************DESK*************************/
 
-<!--[					<td width="64" heigth="75"><IF COND="[#LODELUSER.EDITOR]"><a href="../edition/maj.php" onMouseOver="rollover('img_menu_maj','menu_maj_survol.png');" onMouseOut="rollover('img_menu_maj','menu_maj.png');"><MACRO NAME="PNG_MENU_MAJ"></a><ELSE/><MACRO NAME="PNG_MENU_MAJ_GRIS"></IF></td>]-->
-			
-					<td width="64" heigth="75"><IF COND="[#LODELUSER.ADMIN]"><a href="[#CLEARCACHEURL]" onMouseOver="rollover('img_menu_recompiler','menu_recompiler_survol.png');" onMouseOut="rollover('img_menu_recompiler','menu_recompiler.png');"><MACRO NAME="PNG_MENU_RECOMPILER"><span class="desk-text">[@COMMON.COMPILE]</span></a><ELSE/><MACRO NAME="PNG_MENU_RECOMPILER_GRIS"><span class="desk-text">[@COMMON.COMPILE]</span></IF></td>
-					<td width="64" heigth="75"><a href="[#SITEROOT]lodel/admin/logout.php" onMouseOver="rollover('img_menu_deconnecte','menu_deconnecte_survol.png');" onMouseOut="rollover('img_menu_deconnecte','menu_deconnecte.png');"><MACRO NAME="PNG_MENU_DECONNECTE"><span class="desk-text">[@COMMON.LOGOUT]<span></a></td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="173" heigth="25" valign="top"></td>
-		
-		<td class="texte_petit_lodelbarre">
-	    Lodel [@COMMON.VERSION] [#VERSION]. [@COMMON.CHARSET] : [#CHARSET].
-			<IF COND="[#TEMPLATESRECOMPILES]">
-				<span class="texte_petit_lodelbarre"> [@COMMON.MODIFIED_TEMPLATES] : [#TEMPLATESRECOMPILES]</span>
+#lodel-desk{
+	background-image: url("[#SHAREURL]/images/bandeau.jpg");
+	background-repeat: no-repeat;
+	background-color: #fff;
+	height: 100px; /*valeur pour IE*/
+	font: 11px verdana, sans-serif !important;
+	text-align: left !important;
+}
+
+/*valeur pour les autres*/
+*>#lodel-desk{
+	height: auto;
+	min-height: 100px;
+}
+
+#lodel-desk a{
+	text-decoration: none;
+	color: #CC9933;
+}
+
+#lodel-desk .butText{
+	display: none;
+}
+
+#lodel-desk  .butTextOn{
+	font-weight: bold;
+	color: #CC9933;
+	padding-top: 3px;
+	height: 1ex;
+	width: 57px;
+	display: block;
+	position: absolute;
+	top: 50;
+	text-align: center;
+}
+
+
+/* Groupe des boutons du desk */
+
+
+#lodel-desk ul, #lodel-desk li{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#lodel-desk ul.group1{
+	margin-left: 50%;
+}
+
+#lodel-desk ul.group2{
+	margin-left: 85%;
+}
+
+#lodel-desk ul li{
+	float: left;
+	width: 57px;
+	display: block;
+}
+
+#lodel-desk ul li a{
+	display: block;
+	width: 57px;
+	text-align: center;
+	height: 53px;
+	background-repeat: no-repeat;
+}
+
+/* Fin boutons du desk */
+
+/* liste sites pour desk lodeladmin */
+
+#lodel-desk ul li.sites{
+	position: absolute;
+	left: 30%;
+	top: 5px;
+	color: #CC9933;
+	font-weight: bold;
+	height: 2ex;
+	z-index: 2;
+}
+
+#lodel-desk ul li.sites, #lodel-desk ul li.sites li{
+	width: auto;
+	height: auto;
+}
+
+#lodel-desk ul li.sites li, #lodel-desk ul li.sites li a{
+	float: none;
+}
+
+#lodel-desk ul li.sites li a{
+	display: inline;
+}
+
+#lodel-desk ul li.sites select{
+	width: 150px;
+	font-size: 11px;
+}
+
+#lodel-desk div.infos{
+	padding: 30px 0 5px 175px;
+	font-size: 90%;
+	width: 82%;
+	border-bottom: 1px dashed #7EA463;
+}
+
+*>#lodel-desk>div.infos{
+	padding-top: 80px;
+}
+
+#lodel-desk #edition{
+	background-image: url("[#SHAREURL]/images/menu_accueil.png");
+}
+
+#lodel-desk #edition_actif{
+	background-image: url("[#SHAREURL]/images/menu_accueil_actif.png");
+}
+
+#lodel-desk #edition:hover{
+	background-image: url("[#SHAREURL]/images/menu_accueil_survol.png");
+}
+
+#lodel-desk #admin{
+	background-image: url("[#SHAREURL]/images/menu_admin.png");
+}
+
+#lodel-desk #admin_actif{
+	background-image: url("[#SHAREURL]/images/menu_admin_actif.png");
+}
+
+#lodel-desk #admin_inactif{
+	background-image: url("[#SHAREURL]/images/menu_admin_gris.png");
+}
+
+#lodel-desk #admin:hover{
+	background-image: url("[#SHAREURL]/images/menu_admin_survol.png");
+}
+
+#lodel-desk #voir{
+	background-image: url("[#SHAREURL]/images/menu_voir.png");
+}
+
+#lodel-desk #voir_actif{
+	background-image: url("[#SHAREURL]/images/menu_voir_actif.png");
+}
+
+#lodel-desk #voir:hover{
+	background-image: url("[#SHAREURL]/images/menu_voir_survol.png");
+}
+
+#lodel-desk #aide{
+	background-image: url("[#SHAREURL]/images/menu_aide.png");
+}
+
+#lodel-desk #aide:hover{
+	background-image: url("[#SHAREURL]/images/menu_aide_survol.png");
+}
+
+#lodel-desk #compile{
+	background-image: url("[#SHAREURL]/images/menu_recompiler.png");
+}
+
+#lodel-desk #compile:hover{
+	background-image: url("[#SHAREURL]/images/menu_recompiler_survol.png");
+}
+
+#lodel-desk #compile_inactif{
+	background-image: url("[#SHAREURL]/images/menu_recompiler_gris.png");
+}
+
+#lodel-desk #logout{
+	background-image: url("[#SHAREURL]/images/menu_deconnecte.png");
+}
+
+#lodel-desk #logout:hover{
+	background-image: url("[#SHAREURL]/images/menu_deconnecte_survol.png");
+}
+
+/****************FIN DESK*************************/
+</style>
+
+<div id="lodel-desk">
+	<ul  class="group1">
+	<IF COND="[#SITE]">
+	<li>
+		<IF COND="[#CURRENTURL|strpos('edition')]">
+		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')">
+		<ELSE/>
+		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')">
+		</IF>
+		</a>
+		<span id="but0" class="butText">[@COMMON.HOME]</span>
+	</li>
+	<li>
+		<IF COND="![#LODELUSER.REDACTOR]">	
+		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')">
+		<ELSE/>
+			<IF COND="[#CURRENTURL|strpos('admin')]">	
+			<a id="admin_actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')">
+			<ELSE/>
+			<a id="admin" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')">
 			</IF>
-		</td>
-
-
-		<td>
-			<table align="right" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td align="right" valign="bottom">
-						<!--[<span class="texte_petit">Publication : </span>]-->
-						<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]'">
-							<DO><span class="texte_petit"><strong>[#NAME]</strong></span></DO>
-						</LOOP>
-
-					</td>
-					<td heigth="25" align="center">
-						<IF COND="[#LODELUSER.ADMINLODEL]">
-							<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp; </span>
-						<ELSE/>
-							<IF COND="[#LODELUSER.ADMIN]">
-								<MACRO NAME="PNG_UTILISATEUR_ORANGE"><span class="texte_petit"> [@COMMON.USER_ADMIN]&nbsp;:&nbsp; </span>
-							<ELSE/>
-								<IF COND="[#LODELUSER.EDITOR]">
-									<MACRO NAME="PNG_UTILISATEUR_JAUNE"><span class="texte_petit"> [@COMMON.USER_EDITOR]&nbsp;:&nbsp; </span>
-								<ELSE/>
-									<IF COND="[#LODELUSER.REDACTOR]">
-										<MACRO NAME="PNG_UTILISATEUR_VERT"><span class="texte_petit"> [@COMMON.USER_WRITER]&nbsp;:&nbsp; </span>
-									<ELSE/>
-										<IF COND="[#LODELUSER.VISITOR]">
-											<MACRO NAME="PNG_UTILISATEUR_GRIS"><span class="texte_petit"> [@COMMON.USER_VISITOR]&nbsp;:&nbsp; </span>
-										</IF>
-									</IF>
-								</IF>
-							</IF>
-						</IF>
-					</td>
-					<td valign="bottom">
-						<span class="texte_petit"><strong>[#LODELUSER.NAME]</strong></span>&nbsp;
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr><td width="100%" height="1" background="[#SHAREURL]/images/separateur.png"></td></tr>
-</table>
+		</IF>
+		</a>
+		<span id="but1" class="butText">[@COMMON.ADMINISTRATION]</span>
+		</li>
+		<li>
+		<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
+		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')">
+		<ELSE/>
+		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')">
+		</IF>
+		</a>
+		<span id="but2" class="butText">[@COMMON.VIEW]</span>
+		</li>
+	<ELSE/>
+	<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
+		<BEFORE>
+		<li class="sites">
+		[@LODELADMIN.SITE]:
+		<select onChange="select_url(this)">		
+		<option>--</option>	
+		</BEFORE>
+		<DO>
+		<option value="..[#PATH]/lodel/edition/">[#TITLE]</option>
+		</DO>
+		<AFTER>
+		</select>
+		</AFTER>
+	</LOOP>
+	<li>
+	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')"></a>
+	<span id="but1" class="butText">[@COMMON.ADMINISTRATIONLODEL]</span>
+	</li>
+	</IF>
+	<li>
+	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but3')">
+	</a>
+	<span class="butText" id="but3">[@COMMON.HELP]</span>
+	</li>
+	</ul>
+	<ul class="group2">
+	<li>		
+	<IF COND="[#LODELUSER.ADMIN]">
+	<a href="[#CLEARCACHEURL]" id="compile" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but4')" onmouseout="switchDisp('but4')">
+	<ELSE/>
+	<a id="compile_inactif" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but4')">
+	</IF>
+	</a>
+	<span class="butText" id="but4">[@COMMON.COMPILE]</span>
+	</li>
+	<li>
+	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')"></a>
+	<span class="butText" id="but5">[@COMMON.LOGOUT]</span>
+	</li>
+	</ul>
+	<div class="infos">
+	Lodel [@COMMON.VERSION] [#VERSION]. [@COMMON.CHARSET] : [#CHARSET].
+	<IF COND="[#TEMPLATESRECOMPILES]">
+	[@COMMON.MODIFIED_TEMPLATES] : [#TEMPLATESRECOMPILES]
+	</IF>
+	<!--[<span class="texte_petit">Publication : </span>]-->
+	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]'">
+		<DO>
+		<strong>[#NAME]</strong>
+		</DO>
+	</LOOP>
+	<IF COND="[#LODELUSER.ADMINLODEL]">
+		<MACRO NAME="PNG_UTILISATEUR_ORANGE">
+		[@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp;
+	<ELSE/>
+		<IF COND="[#LODELUSER.ADMIN]">
+			<MACRO NAME="PNG_UTILISATEUR_ORANGE">
+			 [@COMMON.USER_ADMIN]&nbsp;:&nbsp;
+		<ELSE/>
+			<IF COND="[#LODELUSER.EDITOR]">
+				<MACRO NAME="PNG_UTILISATEUR_JAUNE">
+				[@COMMON.USER_EDITOR]&nbsp;:&nbsp;
+			<ELSE/>
+				<IF COND="[#LODELUSER.REDACTOR]">
+					<MACRO NAME="PNG_UTILISATEUR_VERT"> [@COMMON.USER_WRITER]&nbsp;:&nbsp;
+				<ELSE/>
+					<IF COND="[#LODELUSER.VISITOR]">
+						<MACRO NAME="PNG_UTILISATEUR_GRIS">
+					 [@COMMON.USER_VISITOR]&nbsp;:&nbsp;
+					</IF>
+				</IF>
+			</IF>
+		</IF>
+	</IF>
+	<span class="texte_petit"><strong>[#LODELUSER.NAME]</strong></span>&nbsp;
+	</div>
 </div>
