@@ -34,7 +34,7 @@
      	<!--[ Show all defined persons for the entity]-->
   	<LOOP NAME="relations_persons" TABLE="relations,persons,persontypes" WHERE="id1=[#IDENTITY] AND nature='G' AND relations.id2=persons.id AND persons.idtype=persontypes.id AND persontypes.type='[#NAME]'">
  			<[#NAME]>
- 			<LOOP NAME="person_fields">
+ 			<LOOP NAME="entry_or_persons_fields_values">
  				<MACRO NAME="SHOW_FIELD_VALUE" />
  			</LOOP>
  			<LOOP NAME="person_relations_fields">
@@ -47,7 +47,7 @@
 	    	<!--[ Show all defined entry for the entity]-->
 	 	<LOOP NAME="relations_entries" TABLE="relations,entries,entrytypes" WHERE="id1=[#IDENTITY] AND nature='E' AND relations.id2=entries.id AND entries.idtype=entrytypes.id AND entrytypes.type='[#NAME]'">
 	 	<[#NAME]>
-	 		<LOOP NAME="entry_fields">
+	 		<LOOP NAME="entry_or_persons_fields_values">
 	 			<MACRO NAME="SHOW_FIELD_VALUE" />
 	 		</LOOP>
 	 		</[#NAME]>
