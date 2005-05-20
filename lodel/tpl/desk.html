@@ -237,21 +237,21 @@
 	<IF COND="[#SITE]">
 	<li>
 		<IF COND="[#CURRENTURL|strpos('edition')]">
-		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')">
+		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')" onfocus="switchDisp('but0')" onblur="switchDisp('but0')">
 		<ELSE/>
-		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')">
+		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')" onfocus="switchDisp('but0')" onblur="switchDisp('but0')">
 		</IF>
 		</a>
 		<span id="but0" class="butText">[@COMMON.HOME]</span>
 	</li>
 	<li>
 		<IF COND="![#LODELUSER.REDACTOR]">	
-		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')">
+		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')">
 		<ELSE/>
 			<IF COND="[#CURRENTURL|strpos('admin')]">	
-			<a id="admin_actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')">
+			<a id="admin_actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')">
 			<ELSE/>
-			<a id="admin" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')">
+			<a id="admin" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')">
 			</IF>
 		</IF>
 		</a>
@@ -259,9 +259,9 @@
 		</li>
 		<li>
 		<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
-		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')">
+		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')" onfocus="switchDisp('but2')" onblur="switchDisp('but2')">
 		<ELSE/>
-		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')">
+		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')" onfocus="switchDisp('but2')" onblur="switchDisp('but2')">
 		</IF>
 		</a>
 		<span id="but2" class="butText">[@COMMON.VIEW]</span>
@@ -282,12 +282,12 @@
 		</AFTER>
 	</LOOP>
 	<li>
-	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')"></a>
+	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')"></a>
 	<span id="but1" class="butText">[@COMMON.ADMINISTRATIONLODEL]</span>
 	</li>
 	</IF>
 	<li>
-	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but3')">
+	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but3')" onfocus="switchDisp('but3')" onblur="switchDisp('but3')">
 	</a>
 	<span class="butText" id="but3">[@COMMON.HELP]</span>
 	</li>
@@ -295,15 +295,15 @@
 	<ul class="group2">
 	<li>		
 	<IF COND="[#LODELUSER.ADMIN]">
-	<a href="[#CLEARCACHEURL]" id="compile" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but4')" onmouseout="switchDisp('but4')">
+	<a href="[#CLEARCACHEURL]" id="compile" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but4')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but4')" onblur="switchDisp('but4')">
 	<ELSE/>
-	<a id="compile_inactif" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but4')">
+	<a id="compile_inactif" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but3')" onblur="switchDisp('but4')">
 	</IF>
 	</a>
 	<span class="butText" id="but4">[@COMMON.COMPILE]</span>
 	</li>
 	<li>
-	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')"></a>
+	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')" onfocus="switchDisp('but5')" onblur="switchDisp('but5')"></a>
 	<span class="butText" id="but5">[@COMMON.LOGOUT]</span>
 	</li>
 	</ul>
