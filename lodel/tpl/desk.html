@@ -295,7 +295,7 @@
 	<ul class="group2">
 	<li>		
 	<IF COND="[#LODELUSER.ADMIN]">
-	<a href="[#CLEARCACHEURL]" id="compile" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but4')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but4')" onblur="switchDisp('but4')">
+	<a href="[#CLEARCACHEURL|htmlentities]" id="compile" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but4')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but4')" onblur="switchDisp('but4')">
 	<ELSE/>
 	<a id="compile_inactif" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but3')" onblur="switchDisp('but4')">
 	</IF>
