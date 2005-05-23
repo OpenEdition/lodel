@@ -55,12 +55,13 @@
 	<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
 	<BEFORE>
 	<MACRO NAME="YOUR_SEARCH_BAR">
+	<ul id="listEntities">
 	</BEFORE>
 	<DO>
 		<IF COND="[#COUNT] % 2">
-			<div class="ligne_serie1">
+			<li class="line1">
 		<ELSE/>
-			<div class="ligne_serie2">
+			<li class="line2">
 		</IF>
 		<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
@@ -76,9 +77,10 @@
 		</LOOP>
 		</span>
 		
-		</div>
+		</li>
 	</DO>
 	<AFTER>
+		</ul>
 		<MACRO NAME="BOTTOM_RESULTS_PAGES">
 	</AFTER>
 	<ALTERNATIVE>
