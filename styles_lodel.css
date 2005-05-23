@@ -1031,6 +1031,7 @@ img{
 	position: relative;
 	top: 1.5ex;
 	left: 70%;
+	width: 30%;
 }
 
 *>#entitiesPath>div.queryText>div.searchInfos{
