@@ -328,7 +328,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- ENTITIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&single','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_AN_ENTITY]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
 	<LOOP NAME="entities_select">
 		<DO>
@@ -1026,7 +1026,7 @@ function modifymember(members,textfield){
 <!--[*************************************************]-->
 <DEFMACRO NAME="YOUR_SEARCH_BAR">
 [@COMMON.YOUR_QUERY|sprintf([#QUERY|stripslashes],[#NBRESULTS])]
-<div class="searchinfos">
+<div class="searchInfos">
 <IF COND="[#QTYPE]">
 	<LOOP NAME="print_title_type" TABLE="types" WHERE="id='[#QTYPE]'">
 	[@COMMON.TYPE] <strong>[#TITLE]</strong>
@@ -1053,13 +1053,10 @@ function modifymember(members,textfield){
 </IF>
 
 <IF COND="[#NBRESULTS] GT 0">
-<span style="font-variant :  normal">
 ([@EDITION.SEARCH_RESULTS_INFORMATIONS|sprintf([#RESULTFROM],[#RESULTTO],[#NBRESULTS])])
-</span>
 <ELSE/>
 ([#NBRESULTS] [@COMMON.RESULTS])
 </IF>
-
  
 </div>
 </div>
@@ -1073,11 +1070,10 @@ function modifymember(members,textfield){
 <DEFMACRO NAME="BOTTOM_RESULTS_PAGES">
 <LOOP NAME="page_scale">
 	<BEFORE>
-		<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
-		<div style="padding-top:10px; text-align : center">
+		<div id="navResults" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
 		<IF COND="[#PREVIOUSURL]">
 			<a href="[#PREVIOUSURL]" title="Page précédente">
-				<img style="border : 0px;" src="[#SHAREURL]/images/triangle2.gif" alt="&lt;&lt;" />
+				<img src="[#SHAREURL]/images/triangle2.gif" alt="&lt;&lt;" />
 			</a>
 	<!--[		<img style="vertical-align : middle" src="[#SHAREURL]/images/separateur.png" alt="-" />
 		]-->
@@ -1106,10 +1102,9 @@ function modifymember(members,textfield){
 		<IF COND="[#NEXTURL]">
 		
 			<a class="linkpage" href="[#NEXTURL]" title="Page suivante">
-				<img style="border : 0px;" src="[#SHAREURL]/images/triangle.gif" alt="&gt;&gt;" />
+				<img src="[#SHAREURL]/images/triangle.gif" alt="&gt;&gt;" />
 			</a>
 		</IF>
-	</div>
 	</div>
 	</AFTER>
 	<ALTERNATIVE>

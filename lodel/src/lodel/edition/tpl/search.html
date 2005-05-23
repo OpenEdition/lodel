@@ -41,14 +41,10 @@
 <MACRO NAME="HEADER_LOGO"> 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" QTYPE="[#QTYPE]" QSTATUS="[#QSTATUS]" QFIELD="[#QFIELD]">
-	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
-		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
-		<div style="padding-top:10px;">
-			<span class="texte_edition_des_series">
-			<IF COND="![#QUERY]">
+	<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
+	<div style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;" class="queryText">
+		<IF COND="![#QUERY]">
 			[@WARNING_EMPTY_QUERY]
-			</span>
-			</a>
 		</div>
 	</div>
 	<ELSE/>
