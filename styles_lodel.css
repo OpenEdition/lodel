@@ -938,3 +938,189 @@ span.currentpage
 	width: 350px;
 	float : left;
 }
+
+/*******************************************************************/
+/*	NOUVELLE INTERFACE					   */
+/*******************************************************************/
+
+/* Tout ce qui setrouve au-dessus devra être supprimé une fois l'intégration terminée */
+
+body{
+	background-color: #fff;
+	font-size: 80%;
+	font-family: verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+form, fieldset{
+	margin: 0;
+	padding: 0;
+}
+
+a:link{
+	text-decoration: none;
+	color: #CC9933;
+}
+
+a:visited{
+	text-decoration: none;
+	color: #CC9933;
+}
+
+img{
+	border: none;
+}
+
+/* Permet d'insérer un texte signifiant lorsqu'on utilise une image en bg (par ex)*/
+.hidden{
+	display: none;
+}
+
+/* les styles du desk sont dans desk.html afin de ne pas interférer avec les styles du site */
+
+/* Container general au dessous du desk */
+
+#lodel-container{
+	position: relative;
+	clear: both;
+	padding: 0;
+	margin: 0;
+}
+
+/* Formulaire de recherche */
+
+#search{
+	margin: 20px 5px 5px 5px;
+	width: 80%;
+	font-size: 80%;
+}
+
+#search input{
+	font-size: 100%;
+}
+
+#search fieldset{
+	padding: 1ex .5em !important;
+}
+
+#search fieldset{
+	border: 1px solid #7EA463;
+}
+
+#search fieldset select{
+	font-size: 100%;
+}
+
+/* PAGE EDITION, LISTE DES ENTITES */
+
+/* Chemin parcouru */
+
+#entitiesPath ul{
+	height: 43px;
+	padding-left: 48px;
+}
+
+#entitiesPath ul, #entitiesPath li{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#entitiesPath a{
+	color: #728979;
+	font-weight: bold;
+}
+
+#entitiesPath ul{
+	height: 43px;
+	padding-left: 28px;
+}
+
+#entitiesPath ul li{
+	float: left;
+	padding: 0  .5em 0 1.5em;
+	margin: 1.5ex 0;
+}
+
+/* Ajout d'entités */
+
+
+#addEntity ul, #addEntity li{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#addEntity ul{
+	float: left;
+	margin: 0 1em 0 0;
+}
+
+#addEntity li{
+	padding-left: 15px;
+}
+
+#addEntity li a{
+	font-size: 90%;
+}
+
+
+/* Liste entites */
+
+#listEntities, #listEntities li{
+	padding: 0;
+	margin: 0;
+}
+
+#listEntities{
+	clear: both;
+	margin: 35px 0 0 15px;
+	list-style: none;
+	font-size: 90%;
+}
+
+#listEntities li{
+	padding: .5ex 1em;
+}
+
+#listEntities li.line1{
+	background: #fdfaf1;
+}
+
+#listEntities li.line2{
+	background: #fff;
+}
+
+#listEntities img.picto_gauche{
+	position: relative;
+	left: 0;
+	top: 0;
+	margin-right: .5em;
+}
+
+#listEntities div.action{
+	position: absolute;
+	right: 0;
+	margin: .5ex 1em 0 0;
+	min-width: 40%;
+}
+
+*>#listEntities>*>div.action{
+	margin: -4.5ex 1em 0 0;
+}
+
+#listEntities div.document{
+	margin: -4ex 0 .8ex 35px;
+	width: 55%;
+}
+
+
+#listEntities div.document .titre_document{
+	font-weight: bold;
+}
+
+#listEntities div.document .type_document{
+	font-size: smaller;
+	font-style: italic;
+}
