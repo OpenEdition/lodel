@@ -957,13 +957,14 @@ function modifymember(members,textfield){
 <!--[*************************************************]-->
 <DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
-<form name="search" action="search.php" method="get">
+<form id="search" action="search.php" method="get">
+<fieldset>
 <input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
 <input class="searchbutton" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@EDITION.BUTTON_REFINE_YOUR_SEARCH]<ELSE/>[@EDITION.BUTTON_SEARCH]</IF>" />
 <a href="#" onclick="if(document.getElementById('advanced_search').style.display=='none'){document.getElementById('advanced_search').style.display='inline';} else {document.getElementById('advanced_search').style.display='none';} ">
 	<span class="texte_petit">[@EDITION.SEE_ADVANCED_SEARCH]</span>
 </a>
-<span  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
+<div  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
 <fieldset class="searchfieldset">
 <legend>[@EDITION.ADVANCED_SEARCH]</legend>
 <select id="qnbresults" name="qnbresults" class="searchfields">
@@ -993,9 +994,7 @@ function modifymember(members,textfield){
 	<option value="-1" <IF COND="[#QSTATUS] EQ -1">selected="selected"</IF>>[@COMMON.READY_FOR_PUBLICATION]</option>
 	<option value="-16" <IF COND="[#QSTATUS] EQ -16">selected="selected"</IF>>[@COMMON.DRAFT]</option>
 </select>
-
 &nbsp;[@EDITION.SEARCH_IN_FIELD]&nbsp;
-
 <select id="qfield" name="qfield" class="searchfields">
 <option value=""> -- [@EDITION.ALL_FIELDS] --</option>
 <!--[<LOOP NAME="list_indexable_fields" TABLE="tablefields" SELECT="class,name,title" WHERE="weight GT 0" ORDER="class,name">
@@ -1015,7 +1014,8 @@ function modifymember(members,textfield){
 
 
 </fieldset>
-</span>
+</div>
+</fieldset>
 </form>		
 </DEFFUNC>
 

@@ -44,10 +44,10 @@
 	<FUNC NAME="SEARCH_ENGINE">
 	<MACRO NAME="CHEMIN_PARCOURU">
 	<FUNC NAME="ADD_AN_ENTITY">
-	<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
-	<input type="hidden" name="do" value="mass">
+	<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
 	<FUNC NAME="LIST_ENTITIES" ID="[#ID]" />
 	<div id="massEdit">
+	<input type="hidden" name="do" value="mass" />
 	<input type="submit" name="delete" value="[@EDITION.MASSDELETE]" />
 	<input type="submit" name="publish" value="[@EDITION.MASSPUBLISH]" />
 	<input type="submit" name="unpublish" value="[@EDITION.MASSUNPUBLISH]" />

@@ -655,7 +655,7 @@
                 </IF>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
 		<IF COND="(abs([#STATUS]) lt 8) AND [#LODELUSER.EDITOR]">
-		|&nbsp;<a href="#" onClick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a>&nbsp;|
+		|&nbsp;<a href="#" onclick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a>&nbsp;|
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
 		</IF>
@@ -753,7 +753,7 @@
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="[#STATUS]==1">
                    <IF COND="[#LODELUSER.EDITOR]">
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
+			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
                     <ELSE/>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>

@@ -862,30 +862,7 @@ legend{
 }
 
 
-/* Added for the search engine form*/
-.searchfields
-{
-	font-size : x-small;
-	border : 1px solid gray;
-}
 
-input.searchbutton
-{
-	font-size : x-small;
-}
-.searchnoresults
-{
-	margin-left : 25px ;
-	margin-top : 50px;
-}
-.searchfieldset
-{
-	font-size : x-small;
-	color : #728979;
-	margin : 5px 5px 0px 5px ;
-	background-color: #eee;
-	padding : 3px;
-}
 /* Jean Lamy Added elements for pagination*/
 
 div a.linkpage
@@ -968,29 +945,44 @@ img{
 	margin: 0;
 }
 
-/* Formulaire de recherche */
+/* Search engine form*/
 
 #search{
-	margin: 20px 5px 5px 5px;
-	width: 80%;
+	margin: 0 0 0 0;
+	width: 100%;
 	font-size: 80%;
 }
 
-#search input{
-	font-size: 100%;
+#search fieldset{
+	border: none;
+	width: auto;
 }
 
-#search fieldset{
+#search fieldset.searchfieldset{
 	padding: 1ex .5em !important;
-}
-
-#search fieldset{
 	border: 1px solid #7EA463;
+	margin: 0 0 10ex 0;
 }
 
 #search fieldset select{
 	font-size: 100%;
+	width: 150px;
 }
+
+#search .searchfields{
+	font-size : x-small;
+	border : 1px solid gray;
+}
+
+#search input.searchbutton{
+	font-size : x-small;
+}
+
+#search .searchnoresults{
+	margin-left : 25px ;
+	margin-top : 50px;
+}
+
 
 /* PAGE EDITION, LISTE DES ENTITES */
 
