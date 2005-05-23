@@ -468,7 +468,7 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
+<DEFMACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
 		<MACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
 	<ELSE/>
@@ -494,7 +494,7 @@
 		</IF>
 	</IF>
         <ELSE/>
-		<IF COND="[#STATUS]==-8">
+		<IF COND="[#STATUS]==-16">
 			<MACRO NAME="PNG_STATUS_BROUILLON_DOCUMENT">
 		<ELSE/>
 			<IF COND="[#STATUS]==-1">
@@ -609,7 +609,7 @@
 		<ELSE/>
 			<li class="line2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
+			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			</li>
@@ -669,7 +669,7 @@
 	<IF COND="[#STATUS]==-8">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
@@ -684,7 +684,7 @@
 	<IF COND="[#STATUS]==-1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
@@ -699,7 +699,7 @@
 	<IF COND="[#STATUS]==1">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
@@ -716,7 +716,7 @@
 	<IF COND="[#STATUS]==8">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
@@ -733,7 +733,7 @@
 	<IF COND="[#STATUS] ge 16">
 		<table style="color:#CC9933;font-size:10pt" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES"></td>
+				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">

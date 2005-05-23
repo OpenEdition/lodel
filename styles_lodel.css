@@ -873,11 +873,6 @@ input.searchbutton
 {
 	font-size : x-small;
 }
-.searchinfos
-{
-	text-align : right ; 
-	margin-right : 50px;
-}
 .searchnoresults
 {
 	margin-left : 25px ;
@@ -928,7 +923,7 @@ span.currentpage
 /*	NOUVELLE INTERFACE					   */
 /*******************************************************************/
 
-/* Tout ce qui setrouve au-dessus devra être supprimé une fois l'intégration terminée */
+/* Tout ce qui se trouve au-dessus devra être supprimé une fois l'intégration terminée */
 
 body{
 	background-color: #fff;
@@ -1012,12 +1007,12 @@ img{
 	margin: 0;
 }
 
-#entitiesPath a{
+#entitiesPath a, #entitiesPath .queryText{
 	color: #728979;
 	font-weight: bold;
 }
 
-#entitiesPath ul{
+#entitiesPath ul, #entitiesPath .queryText{
 	height: 43px;
 	padding-left: 28px;
 }
@@ -1026,6 +1021,30 @@ img{
 	float: left;
 	padding: 0  .5em 0 1.5em;
 	margin: 1.5ex 0;
+}
+
+#entitiesPath .queryText{
+	padding: 1.5ex 0 0 4em;
+}
+
+#entitiesPath .queryText .searchInfos{
+	position: relative;
+	top: 1.5ex;
+	left: 70%;
+}
+
+*>#entitiesPath>div.queryText>div.searchInfos{
+	top: -2.5ex;
+}
+
+/* results pages naviguation */
+
+#navResults{
+	height: 33px;
+	text-align: center;
+	margin-top: 3ex;
+	font-size: 80%;
+	padding-top: 10px;
 }
 
 /* Ajout d'entités */
@@ -1039,7 +1058,7 @@ img{
 
 #addEntity ul{
 	float: left;
-	margin: 0 1em 0 0;
+	margin: 0 1em 3ex 0;
 }
 
 #addEntity li{
@@ -1060,7 +1079,7 @@ img{
 
 #listEntities{
 	clear: both;
-	margin: 35px 0 0 15px;
+	margin: 2ex 0 0 15px;
 	list-style: none;
 	font-size: 90%;
 }
