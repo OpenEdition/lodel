@@ -1097,22 +1097,29 @@ img{
 }
 
 #listEntities div.action{
-	position: absolute;
-	right: 0;
-	margin: .5ex 1em 0 0;
+	position: relative;
+	left: 55%;
+	top: -5ex;
+	margin: 0 1em 0 0;
 	min-width: 40%;
 	color: #cc9933;
+	text-align: right;
+	width: 45%;
 }
 
 *>#listEntities>*>div.action{
-	margin: -4.5ex 1em 0 0;
+	top: 0;
+	margin: -3.5ex 1em 0 0;
 }
 
 #listEntities div.document{
-	margin: -4ex 0 .8ex 35px;
+	margin: -9ex 0 .8ex 35px;
 	width: 55%;
 }
 
+*>#listEntities>*>div.document{
+	margin: -3.5ex 0 .8ex 35px;
+}
 
 #listEntities div.document .titre_document{
 	font-weight: bold;
