@@ -51,7 +51,7 @@
 	{
 	window.status='go';
 		var msg='[@EDITION.CONFIRMATION_DELETE] ?';
-		if(confirm(msg)) window.location='index.php?do=delete&id='+id;
+		if(confirm(msg)) window.location='index.php?do=delete&amp;id='+id;
 	}
 	
 	function popup(url) {
@@ -457,14 +457,13 @@
 
 
 <DEFMACRO NAME="CHEMIN_PARCOURU">
-	<div class="edition_des_series" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
-		<MACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
-		<div style="padding-top:10px;">
-			<a href="index.php?id=0"><span class="texte_edition_des_series">[@EDITION.BASE]</span></a>
-			<LOOP NAME="parentsentities">
-				&nbsp;<MACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">&nbsp;<a href="index.php?id=[#ID]"><span class="texte_edition_des_series">[#G_TITLE|nbsp]</span></a>
-			</LOOP>
-		</div>
+	<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
+	<ul style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;">
+		<li><a href="index.php?id=0">[@EDITION.BASE]</a></li>
+		<LOOP NAME="parentsentities">
+			<li style="background:   url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a></li>
+		</LOOP>
+	</ul>
 	</div>
 </DEFMACRO>
 
@@ -533,51 +532,51 @@
 
 <DEFFUNC NAME="ADD_AN_ENTITY" OPTIONAL="displaywhere">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
-        <table><tr valign="top">
-
         <IF COND="[#LODELUSER.REDACTOR]">
 	<LET VAR="idparentsaved">[#ID|intval]</LET>
+	<div id="addEntity">
         <LOOP NAME="classes" TABLE="classes" WHERE="status lt 64" ORDER="rank">
 	<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]' AND [#DISPLAYWHERE]" ORDER="rank">
 		<BEFORE>
-                        <td>
-			<div>
-	                <MACRO NAME="PNG_PLUS">&nbsp;
-                        [#TITLE]:<br/>
-
+			<ul>
+                        <li style="background: url('[#SHAREURL]/images/deplie.png') 0 .5ex no-repeat">
+                        <strong>[#TITLE]:</strong>
+			</li>
 			<IF COND="[#NBRESULTS] gt 3">
-				<select onchange="ajouter_entite(this)"><option selected>--</option>
+				<li><select onchange="ajouter_entite(this)"><option selected>--</option>
 			</IF>
 		</BEFORE>
 		<DO>
 			<IF COND="[#NBRESULTS] gt 3">
 				<IF COND="[#IMPORT]==1">
-	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITLE]</option>
+	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]">[#TITLE]</option>
 				<ELSE/>
-	        		<option value="index.php?do=view&idparent=[#IDPARENTSAVED]&idtype=[#ID]">[#TITLE]</option>
+	        		<option value="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]">[#TITLE]</option>
 				</IF>
 			<ELSE/>
-				<IF COND="[#IMPORT]==1">
-					<a href="oochargement.php?idparent=[#IDPARENTSAVED]&idtype=[#ID]"> [#TITLE] </a>
+				<li>
+				<IF COND="[#IMPORT]==1">	
+				<a href="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"> [#TITLE] </a>
 				<ELSE/>
-					<a href="index.php?do=view&idparent=[#IDPARENTSAVED]&idtype=[#ID]"> [#TITLE] </a>
+				<a href="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"> [#TITLE] </a>
 				</IF>
-                                <br/>
+                                </li>
 			</IF>
 		</DO>
 		<AFTER>
 			<IF COND="[#NBRESULTS] gt 3">
-				</select>
+				</select></li></ul>
+			<ELSE />
+				</ul>
 			</IF>
-			</div>
-                        </td>
 		</AFTER>
+	
 	</LOOP>
         </LOOP>
+	</div>
         <ELSE/>
 		<span class="inactif">&nbsp;</span>
         </IF>
-        </tr></table>
 </DEFFUNC>
 
 
@@ -598,39 +597,41 @@
 </DEFMACRO>
 
 <DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere">
+	<ul id="listEntities">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
-			<IF COND="[#FOLDER]"><div class="unfoldedentities"></IF>
+			<IF COND="[#FOLDER]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
 		<DO>
 		<IF COND="[#COUNT] % 2">
-			<div class="ligne_serie1">
+			<li class="line1">
 		<ELSE/>
-			<div class="ligne_serie2">
+			<li class="line2">
 		</IF>
 			<MACRO NAME="AFFICHER_ICONE_STATUS_ENITIES">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			</div>
+			</li>
 		<IF COND="[#DISPLAY] eq 'unfolded'">
 			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
 		</IF>
 		</DO>
 		<AFTER>
-			<IF COND="[#FOLDER]"></div></IF>			
+			<IF COND="[#FOLDER]"></ul></li></IF>			
 		</AFTER>
 		<ALTERNATIVE>
 			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
 		</ALTERNATIVE>
 	</LOOP>
+	</ul>
 </DEFFUNC>
 
 
 <DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
 	<IF COND="[#LODELUSER.EDITOR]">
-		<a href="index.php?do=changerank&id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-		<a href="index.php?do=changerank&id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+		<a href="index.php?do=changerank&amp;id=[#ID]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+		<a href="index.php?do=changerank&amp;id=[#ID]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 	<ELSE/>
 		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
@@ -643,12 +644,12 @@
 		<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
 		<IF COND="[#LODELUSER.EDITOR]">
-		|&nbsp;<a href="index.php?do=view&id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
+		|&nbsp;<a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
 		<ELSE/>
 		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
 		</IF>
 		<IF COND="[#LODELUSER.EDITOR]">
-		|&nbsp;<a href="index.php?do=view&lo=entities_advanced&id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
+		|&nbsp;<a href="index.php?do=view&amp;lo=entities_advanced&amp;id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
                 <ELSE/>
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
                 </IF>
@@ -672,7 +673,7 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&id=[#ID]&status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+						|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
 					</IF>
@@ -687,7 +688,7 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&amp;id=[#ID]&amp;status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.SET_DRAFT]</span>&nbsp;|&nbsp;
 					</IF>
@@ -702,8 +703,8 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						&nbsp;|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=+8">[@COMMON.PROTECT]</a>&nbsp;|
-						|&nbsp;<a href="index.php?do=changelock&id=[#ID]&lock=on">[@EDITION.LOCK]</a>&nbsp;|&nbsp;
+						&nbsp;|&nbsp;<a href="index.php?do=changestatus&&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
+						|&nbsp;<a href="index.php?do=changelock&amp;id=[#ID]&amp;lock=on">[@EDITION.LOCK]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
 						|&nbsp;<span class="inactif">[@EDITION.LOCK]</span>&nbsp;|&nbsp;
@@ -719,8 +720,8 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&&id=[#ID]&status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
-						|&nbsp;<a href="index.php?do=changelock&id=[#ID]&lock=on">[@EDITION.LOCK]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changestatus&&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changelock&amp;id=[#ID]&amp;lock=on">[@EDITION.LOCK]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.SET_PUBLISHED]</span>&nbsp;|&nbsp;
 						|&nbsp;<span class="inactif">[@EDITION.LOCK]</span>&nbsp;|&nbsp;
@@ -736,7 +737,7 @@
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
 		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changelock&id=[#ID]&lock=off">[@EDITION.UNLOCK]</a>&nbsp;|&nbsp;
+						|&nbsp;<a href="index.php?do=changelock&amp;id=[#ID]&amp;lock=off">[@EDITION.UNLOCK]</a>&nbsp;|&nbsp;
 					<ELSE/>
 						|&nbsp;<span class="inactif">[@EDITION.UNLOCK]</span>&nbsp;|&nbsp;
 					</IF>
@@ -752,7 +753,7 @@
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="[#STATUS]==1">
                    <IF COND="[#LODELUSER.EDITOR]">
-			<a href="index.php?do=publish&id=[#ID]&status=-1" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
+			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onClick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
                     <ELSE/>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
                     </IF>
@@ -766,7 +767,7 @@
 	<ELSE/>
 		<IF COND="([#STATUS]==-1)">
                    <IF COND="[#LODELUSER.EDITOR]">
-			<a href="index.php?do=publish&id=[#ID]&status=1">[@EDITION.PUBLISH]</a>
+			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=1">[@EDITION.PUBLISH]</a>
                    <ELSE/>
 			<span class="inactif">[@EDITION.PUBLISH]</span>
                    </IF>
@@ -809,6 +810,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+	<div class="document">
 	<span class="titre_document">
           <IF COND="[#TPLEDITION]">
                  " <a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a> "
@@ -818,6 +820,7 @@
          </span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 	<span class="type_document">([#TYPE])</span>
+	</div>
 </DEFMACRO>
 
 
@@ -980,74 +983,74 @@
 
 <!--[ png status des documents ]-->
 <DEFMACRO NAME="PNG_STATUS_BROUILLON_DOCUMENT">
-	<img src="[#SHAREURL]/images/statut_brouillon.png" class="picto_gauche" width="23" height="24" alt="Brouillon" />
+	<img src="[#SHAREURL]/images/statut_brouillon.png" class="picto_gauche"   alt="Brouillon" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PRET_DOCUMENT">
-	<img src="[#SHAREURL]/images/statut_pret.png" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
+	<img src="[#SHAREURL]/images/statut_pret.png" class="picto_gauche"   alt="Prêt à publier" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PUBLIE_DOCUMENT">
-	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
+	<img src="[#SHAREURL]/images/statut_publie.png" class="picto_gauche"   alt="Publi&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PROTEGE_DOCUMENT">
-	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
+	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche"   alt="Publi&eacute; prot&eacute;g&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_LOCK_DOCUMENT">
-	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />++
+	<img src="[#SHAREURL]/images/statut_protege.png" class="picto_gauche"   alt="Publi&eacute; prot&eacute;g&eacute;" />++
 </DEFMACRO>
 
 
 <DEFMACRO NAME="PNG_STATUS_HORLOGE_DOCUMENT">
-	<img src="[#SHAREURL]/images/statut_horloge.png" class="picto_gauche" width="23" height="24" alt="Programmateur" />
+	<img src="[#SHAREURL]/images/statut_horloge.png" class="picto_gauche"   alt="Programmateur" />
 </DEFMACRO>
 
 <!--[ png status des publications ]-->
 <DEFMACRO NAME="PNG_STATUS_BROUILLON_PUBLICATION">
-	<img src="[#SHAREURL]/images/statut_publication_brouillon.gif" class="picto_gauche" width="23" height="24" alt="Brouillon" />
+	<img src="[#SHAREURL]/images/statut_publication_brouillon.gif" class="picto_gauche"   alt="Brouillon" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PRET_PUBLICATION">
-	<img src="[#SHAREURL]/images/statut_publication_pret.gif" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
+	<img src="[#SHAREURL]/images/statut_publication_pret.gif" class="picto_gauche"   alt="Prêt à publier" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PUBLIE_PUBLICATION">
-	<img src="[#SHAREURL]/images/statut_publication_publie.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
+	<img src="[#SHAREURL]/images/statut_publication_publie.gif" class="picto_gauche"   alt="Publi&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PROTEGE_PUBLICATION">
-	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
+	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche"   alt="Publi&eacute; prot&eacute;g&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_LOCK_PUBLICATION">
-	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />++
+	<img src="[#SHAREURL]/images/statut_publication_protege.gif" class="picto_gauche"   alt="Publi&eacute; prot&eacute;g&eacute;" />++
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_HORLOGE_PUBLICATION">
-	<img src="[#SHAREURL]/images/statut_publication_horloge.gif" class="picto_gauche" width="23" height="24" alt="Programmateur" />
+	<img src="[#SHAREURL]/images/statut_publication_horloge.gif" class="picto_gauche"   alt="Programmateur" />
 </DEFMACRO>
 
 <!--[ png status des regroupements ]-->
 <DEFMACRO NAME="PNG_STATUS_BROUILLON_REGROUPEMENT">
-	<img src="[#SHAREURL]/images/statut_regroupement_brouillon.gif" class="picto_gauche" width="23" height="24" alt="Brouillon" />
+	<img src="[#SHAREURL]/images/statut_regroupement_brouillon.gif" class="picto_gauche"   alt="Brouillon" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PRET_REGROUPEMENT">
-	<img src="[#SHAREURL]/images/statut_regroupement_pret.gif" class="picto_gauche" width="23" height="24" alt="Prêt à publier" />
+	<img src="[#SHAREURL]/images/statut_regroupement_pret.gif" class="picto_gauche"   alt="Pr&ecirc;t &agrave; publier" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PUBLIE_REGROUPEMENT">
-	<img src="[#SHAREURL]/images/statut_regroupement_publie.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute;" />
+	<img src="[#SHAREURL]/images/statut_regroupement_publie.gif" class="picto_gauche"   alt="Publi&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_PROTEGE_REGROUPEMENT">
-	<img src="[#SHAREURL]/images/statut_regroupement_protege.gif" class="picto_gauche" width="23" height="24" alt="Publi&eacute; prot&eacute;g&eacute;" />
+	<img src="[#SHAREURL]/images/statut_regroupement_protege.gif" class="picto_gauche"   alt="Publi&eacute; prot&eacute;g&eacute;" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_STATUS_HORLOGE_REGROUPEMENT">
-	<img src="[#SHAREURL]/images/statut_regroupement_horloge.gif" class="picto_gauche" width="23" height="24" alt="Programmateur" />
+	<img src="[#SHAREURL]/images/statut_regroupement_horloge.gif" class="picto_gauche"   alt="Programmateur" />
 </DEFMACRO>
 
 <!--[ png plié/déplié ]-->

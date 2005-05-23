@@ -27,7 +27,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 /***************** Ajout intégration maquette Lodel ****************/
-body, div, p, td{
+body{
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
@@ -42,11 +42,6 @@ div a:hover {color: #FFBB03;}
 img.picto, img.picto_statut, img.picto_fleche {
 	border: none;
 	vertical-align: bottom;
-}
-
-img.picto_gauche {
-	float:left;
-	margin-right:10px;
 }
 
 img.picto_fleche {vertical-align:bottom;}
@@ -125,15 +120,14 @@ div.ligne_ajouter_document_dans_un_regroupement1 {background-color: #EFFFEF;}
 div.ligne_ajouter_document_dans_un_regroupement2 {background-color: #EFFFEF;}
 div.lignes_ajouter_entite {background-color: #F5F5F5;}
 /******************** DOCUMENTS **********************/
-.titre_document, .titre_doc_fa, 
-.auteurs_document, .auteurs_doc_fa, 
-.type_document, .type_doc_fa {
+.titre_doc_fa, 
+.auteurs_doc_fa, 
+.type_doc_fa {
 		
 	text-align: left;
 	font-size: 10pt;
 }
 
-.titre_document, .auteurs_document, .type_document {color: #333333;}
 .titre_doc_fa, .auteurs_doc_fa, .type_doc_fa {color: #CC9933;}
 
 .titre_document, .titre_doc_fa {font-weight: bold;}
@@ -207,15 +201,6 @@ div.pas_de_publication {
 	font-style: italic;
 }
 
-div.action {
-		
-	font-size: 10pt;
-	color: #CC9933;
-	float: right;
-	text-align: left;
-	margin-right: 20px;
-	width: 400px;
-}
 
 div.action_formulaire {
 		
@@ -1104,6 +1089,7 @@ img{
 	right: 0;
 	margin: .5ex 1em 0 0;
 	min-width: 40%;
+	color: #cc9933;
 }
 
 *>#listEntities>*>div.action{
@@ -1123,4 +1109,9 @@ img{
 #listEntities div.document .type_document{
 	font-size: smaller;
 	font-style: italic;
+}
+
+#massEdit{
+	text-align: right;
+	padding: 0 3em 8ex 0;
 }
