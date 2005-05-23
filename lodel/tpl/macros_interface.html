@@ -1,12 +1,12 @@
 <DEFMACRO NAME="HEADER_HEAD_OPEN">
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-	<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
+	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
-	<link rel="stylesheet" href="styles_lodel.css">
+	<link rel="stylesheet" href="styles_lodel.css" />
         <IF COND="[#STYLECSS]">
         <style type="text/css">          
            [#STYLECSS]
@@ -25,7 +25,7 @@
 
 
 <DEFMACRO NAME="HEADER_LOGO">
-<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
+<body> 
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_LOGO_LOGIN">
@@ -294,7 +294,7 @@
 			<input type="radio" name="[#FULLVARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
 		</IF>
 		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
-	           <a href="#" onClick="window.open('index.php?lo=filebrowser&do=view&caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
+	           <a href="#" onClick="window.open('index.php?lo=filebrowser &amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
 		 
 	        </td></tr></table>
@@ -368,7 +368,7 @@ cp_[#VARNAME].writeDiv();
 			<input type="radio" name="[#FULLVARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
 		</IF>
 		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile">
-	   <a href="#" onClick="window.open('index.php?lo=filebrowser&do=view&caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
+	   <a href="#" onClick="window.open('index.php?lo=filebrowser &amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
 		</td></tr></table>
 	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]">
