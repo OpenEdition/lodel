@@ -1098,12 +1098,12 @@ img{
 
 #listEntities div.action{
 	position: relative;
-	left: 55%;
+	left: 60%;
 	top: -5ex;
 	margin: 0 1em 0 0;
 	min-width: 40%;
 	color: #cc9933;
-	text-align: right;
+	text-align: left;
 	width: 45%;
 }
 
