@@ -290,11 +290,23 @@ function tocable($text,$level=10)
   $sect="1";
   for($i=2;$i<=$level;$i++) $sect.="|$i";
 
+  if (!function_exists("tocable_callback")) {
   function tocable_callback($result) {
     static $tocid=array();
     $level=intval($result[3]);
     $sig=$level."n".(++$tocid[$level]);
-    return $result[1].'<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">'.$result[3].'</a>'.$result[4];
+    $aopen='<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
+    $aclose='</a>';
+
+    // split the result in order not to contains any a tag
+    $arr=preg_split("/(<a\b[^>]*>.*?</a>)/",$result[3],-1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
+    $ret=$result[1];
+    for ($i=0; $i <count($arr); $i+=2) {
+      if ($arr[$i]) $ret.=$aopen.$arr[i].$aclose;
+      $ret.=$arr[$i+1];
+    }
+    return $ret.$result[4];
+  }
   }
 
 #  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
