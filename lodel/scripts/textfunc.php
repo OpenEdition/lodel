@@ -299,7 +299,7 @@ function tocable($text,$level=10)
     $aclose='</a>';
 
     // split the result in order not to contains any a tag
-    $arr=preg_split("/(<a\b[^>]*>.*?</a>)/",$result[3],-1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
+    $arr=preg_split("/(<a\b[^>]*>.*?<\/a>)/",$result[3],-1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
     $ret=$result[1];
     for ($i=0; $i <count($arr); $i+=2) {
       if ($arr[$i]) $ret.=$aopen.$arr[i].$aclose;
