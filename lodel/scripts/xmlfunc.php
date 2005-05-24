@@ -250,9 +250,6 @@ function loop_person_relations_fields(& $context, $funcname) {
 			call_user_func("code_after_$funcname",$context);*/
 }
 
-function loop_valeurs_des_champs_require() {
-	return array ("id");
-}
 
 /**
  * Put the XHTML namespace in each tag with no namespace and delete r2r namespace
