@@ -39,9 +39,9 @@
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
 		<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-		<a href="index.php?do=view&lo=characterstyles">[@ADMIN.ADD_INTERNALSTYLE]</a>
+		<a href="index.php?do=view&lo=characterstyles">[@ADMIN.ADD_CHARACTERSTYLES]</a>
 		<ELSE />
-		<span class="inactif">[@ADMIN.ADD_INTERNALSTYLE]</span>
+		<span class="inactif">[@ADMIN.ADD_CHARACTERSTYLES]</span>
 		</IF>
 </div>
 <br /><br />
