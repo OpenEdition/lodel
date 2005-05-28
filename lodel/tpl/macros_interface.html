@@ -294,7 +294,7 @@
 			<input type="radio" name="[#FULLVARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
 		</IF>
 		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
-	           <a href="#" onClick="window.open('index.php?lo=filebrowser &amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
+	           <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
 		 
 	        </td></tr></table>
@@ -368,7 +368,7 @@ cp_[#VARNAME].writeDiv();
 			<input type="radio" name="[#FULLVARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
 		</IF>
 		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile">
-	   <a href="#" onClick="window.open('index.php?lo=filebrowser &amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
+	   <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
 		</td></tr></table>
 	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]">
