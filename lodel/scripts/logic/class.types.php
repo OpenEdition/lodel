@@ -69,6 +69,7 @@ class TypesLogic extends Logic {
        $context['tplcreation']="entities";
        return "_ok";
      }
+
      return Logic::viewAction($context,$error);
    }
 

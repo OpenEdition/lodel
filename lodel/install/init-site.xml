@@ -506,7 +506,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_GROUP]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -619,7 +619,7 @@
         required="true" />
 <vcolumn name="usergroups"
 	label="[@ADMIN.USERGROUPS]"
-	editcondition="[#SITE] and ![#USER.ADMIN]"
+	editcondition="[#SITE] and ![#LODELUSER.ADMIN]"
 	edittype="multipleselect" />
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_USER]"
@@ -795,7 +795,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        
@@ -857,9 +857,9 @@
         default="1"
         required="true" />
 <vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_TYPE]"
+        label="[@ADMIN.PROTECTED_INTERNAL_STYLE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_style">
@@ -901,9 +901,9 @@
         default="1"
         required="true" />
 <vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_TYPE]"
+        label="[@ADMIN.PROTECTED_CHARACTERE_STYLE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_style">
@@ -982,7 +982,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean"
-	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="upd"
         type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        
@@ -1072,7 +1072,7 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
-	editcondition="[#USER.RIGHTS] ge [#LO|rights('protect')]" />
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
 <column name="flat"
         type="TINYINT"
         default="0"

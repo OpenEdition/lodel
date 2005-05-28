@@ -103,8 +103,8 @@
     </span>
   </LOOP>
   <br />
-  <IF COND="[#USER.RIGHTS] ge [#LO|rights('protect')]">
-    <label for="protected">[@ADMIN.PROTECTED_TYPE]
+  <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
+    <label for="protected">[@ADMIN.PROTECTED_INTERNAL_STYLE]
         : 
       </label>
     <br class="nobr">
@@ -115,7 +115,7 @@
     </IF>
     <LOOP NAME="fielderror" FIELD="protected">
       <a id="protected"></a><span class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_TYPE]"></FUNC>
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_INTERNAL_STYLE]"></FUNC>
       </span>
     </LOOP>
     <br />
