@@ -29,9 +29,13 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 require("siteconfig.php");
-include ($home."auth.php");
+require_once("auth.php");
 authenticate();
 
-$base="backend";
-include ($home."cache.php");
+require_once("view.php");
+require_once("textfunc.php");
+
+$view->renderCached($context,"backend.php");
+exit();
+
 ?>

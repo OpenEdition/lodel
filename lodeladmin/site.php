@@ -56,6 +56,46 @@ if ($id>0 && ($delete || $restore)) {
   $view->back(); // on revient
 }
 //
+// reinstall all the sites
+//
+
+if ($reinstall=="all") {
+  require_once("connect.php");
+
+  // function to get the version of the site
+  function getsiteversion($dir)
+  { 
+    if (!file_exists($dir."siteconfig.php")) die("ERROR: internal error while reinstalling every site. dir is $dir");
+    include ($dir."siteconfig.php");
+    return $version;
+  }
+
+  $result=$db->execute(lq("SELECT path,name FROM #_MTP_sites WHERE status>0")) or dberror();
+  while(!$result->EOF) {
+    $row=$result->fields;
+    // on peut installer les fichiers
+    if (!$row['path']) $row['path']="/".$row['name'];
+    $root=str_replace("//","/",LODELROOT.$row['path'])."/";
+    $version=getsiteversion($root);
+    if ($row['path']=="/") { // c'est un peu sale ca.
+      install_file($root,"lodel-$version/src","");
+    } else {
+      install_file($root,"../lodel-$version/src",LODELROOT);
+    }
+
+    // clear the CACHEs
+    require_once("cachefunc.php");
+    removefilesincache(LODELROOT,$root,$root."lodel/edition",$root."lodel/admin");
+
+    $result->MoveNext();
+  }
+
+  header("location: ".LODELROOT."index.php");
+  exit();
+}
+
+
+//
 // ajoute ou edit
 //
 
@@ -311,7 +351,7 @@ if ($task=="createtables") {
 }
 
 //
-// Creer le repertoire principale de la site
+// Creer le repertoire principale du site
 //
 
 if ($task=="createdir") {

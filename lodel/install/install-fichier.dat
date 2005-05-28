@@ -32,16 +32,8 @@ dirsource $homesite
 
 # lie tous les fichiers du repertoire
 ln backend.php
-ln entree.php
-ln entrees.php
-ln personne.php
-ln personnes.php
-
-ln document.php
-ln docannexe.php
 ln index.php
 ln signaler.php
-ln sommaire.php
 ln search.php
 
 ### desuet. cp tpl
@@ -99,9 +91,6 @@ ln oochargement.php
 ln tpl/oochargement.html
 ln conversion.php
 ln tpl/conversion.html
-
-#ln chargesommaire.php
-#ln tpl/chargesommaire.html
 
 ln checkimport.php
 ln tpl/checkimport.html
