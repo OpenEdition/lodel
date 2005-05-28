@@ -196,7 +196,7 @@ class EntitiesLogic extends Logic {
     * Change the status of one entity. Only lock/unlock is authorized.
     * Do nothing on entites with status below or equal -1.
     */
-
+   /*
    function changeLockAction(&$context,&$error)
 
    {
@@ -221,7 +221,7 @@ class EntitiesLogic extends Logic {
      update();
      return "_back";
    }
-
+   */
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
