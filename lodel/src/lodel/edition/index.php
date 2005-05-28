@@ -48,7 +48,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
       $idparent=$row['idparent'];
       $context['idtype']=$row['idtype'];
 
-      if (!$base) $context['id']=$row['id']=$row['idparent'];
+      if (!$base) $context['id']=$id=$idparent;
     } while (!$base && $idparent);
  } else {
     if ($_GET['page']) { // call a special page (and template)
