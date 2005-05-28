@@ -409,6 +409,9 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# title
 	type		VARCHAR(255) NOT NULL,		# type du champ
+	edition		TINYTEXT NOT NULL,		# input pour l'edition
+	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
+
 	value		TEXT NOT NULL,	# value
 	defaultvalue	TEXT NOT NULL,	# value
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs

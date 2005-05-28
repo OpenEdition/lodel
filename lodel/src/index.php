@@ -86,6 +86,7 @@ if ($id || $identifier) {
   //------------------------------ PAGE -------------------
  } elseif ($page) { // call a special page (and template)
    if (strlen($page)>64 || preg_match("/[^a-zA-Z0-9_\/-]/",$page)) die("invalid page");
+   require_once("connect.php");
    $view->renderCached($context,$page);
    exit();
 

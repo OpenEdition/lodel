@@ -101,19 +101,8 @@ class TableFieldsLogic extends Logic {
      renderOptions($arr,$context['condition']);
        break;
      case "edition" :
-       $arr=array(
-		  "editable"=>getlodeltextcontents("edit_in_the_interface","admin"),
-		  "importable"=>getlodeltextcontents("no_edit_but_import","admin"),
-		  "none"=>getlodeltextcontents("no_change","admin"),
-		  "display"=>getlodeltextcontents("display_no_edit","admin"),
-		  "textarea"=>getlodeltextcontents("edit_textarea","admin"),
-		  "fckeditor"=>getlodeltextcontents("edit_wysiwyg","admin")." (FCKEditor)",
-		  "select"=>getlodeltextcontents("edit_select","admin"),
-		  "multipleselect"=>getlodeltextcontents("edit_multiple_select","admin"),
-		  "radio"=>getlodeltextcontents("edit_radio","admin"),
-		  "checkbox"=>getlodeltextcontents("edit_checkbox","admin")
-		  );
-       renderOptions($arr,$context['edition']);
+       require_once("commonselect.php");
+       makeSelectEdition($context['edition']);
        break;
      case "allowedtags" :
        require_once("balises.php");

@@ -107,6 +107,10 @@ class OptionsLogic extends Logic {
        require_once("commonselect.php");
        makeSelectFieldTypes($context['type']);
        break;
+     case "edition" :
+       require_once("commonselect.php");
+       makeSelectEdition($context['edition']);
+       break;
      }
    }
      
@@ -141,6 +145,8 @@ class OptionsLogic extends Logic {
                   "title"=>array("text","+"),
                   "idgroup"=>array("int","+"),
                   "type"=>array("select",""),
+                  "edition"=>array("select",""),
+                  "editionparams"=>array("text",""),
                   "userrights"=>array("select","+"),
                   "defaultvalue"=>array("text",""),
                   "comment"=>array("longtext",""));

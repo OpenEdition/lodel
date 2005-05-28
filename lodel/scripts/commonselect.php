@@ -57,3 +57,26 @@ function makeSelectUserRights($value,$adminlodel)
   foreach($arr as $k=>$v) if ($GLOBALS['lodeluser']['rights']>=$k) $arr2[$k]=$v;
   renderOptions($arr2,$value);
 }
+
+
+
+function makeSelectEdition($value)
+
+{
+  $arr=array(
+	     "editable"=>getlodeltextcontents("edit_in_the_interface","admin"),
+	     "importable"=>getlodeltextcontents("no_edit_but_import","admin"),
+	     "none"=>getlodeltextcontents("no_change","admin"),
+	     "display"=>getlodeltextcontents("display_no_edit","admin"),
+	     "textarea"=>getlodeltextcontents("edit_textarea","admin"),
+	     "fckeditor"=>getlodeltextcontents("edit_wysiwyg","admin")." (FCKEditor)",
+	     "select"=>getlodeltextcontents("edit_select","admin"),
+	     "multipleselect"=>getlodeltextcontents("edit_multiple_select","admin"),
+	     "radio"=>getlodeltextcontents("edit_radio","admin"),
+	     "checkbox"=>getlodeltextcontents("edit_checkbox","admin")
+	     );
+  renderOptions($arr,$value);
+}
+
+
+?>

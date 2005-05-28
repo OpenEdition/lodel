@@ -93,6 +93,32 @@
     </span>
   </LOOP>
   <br />
+  <label for="edition">[@ADMIN.INTERFACE_EDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <select name="edition" id="edition">
+    <?php 
+                      makeSelect($context,"edition","options","select");
+                  ?>
+  </select>
+  <LOOP NAME="fielderror" FIELD="edition">
+    <a id="edition"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION]
+        : 
+      </label>
+  <br class="nobr">
+  <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
+  <LOOP NAME="fielderror" FIELD="editionparams">
+    <a id="editionparams"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PARAMETER_FOR_EDITION]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
         : 
       </label>
