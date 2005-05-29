@@ -181,6 +181,7 @@ ln tpl/edit_texts.html
 ln tpl/texts.html
 ln tpl/translations.html
 ln tpl/edit_translations.html
+ln tpl/import_translations.html
 
 ln tpl/edit_types.html
 ln tpl/types.html
