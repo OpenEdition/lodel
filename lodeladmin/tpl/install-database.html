@@ -126,7 +126,7 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 </td></tr>
 <?php if ($installoption>1) { // OPTION superieure a 1 ?>
 <tr><td>
-<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?>[@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES].
+<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?> >[@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES].
 </td></tr>
 <tr><td>
 [@INSTALL.TABLE_PREFIX] : <input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>">
