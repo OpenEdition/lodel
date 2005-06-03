@@ -303,8 +303,13 @@
 	<span class="butText" id="but4">[@COMMON.COMPILE]</span>
 	</li>
 	<li>
+	<IF COND="[#CURRENTURL|strpos('edition')]">
 	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')" onfocus="switchDisp('but5')" onblur="switchDisp('but5')"></a>
 	<span class="butText" id="but5">[@COMMON.LOGOUT]</span>
+	<ELSE />
+	<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')" onfocus="switchDisp('but5')" onblur="switchDisp('but5')"></a>
+	<span class="butText" id="but5">[@COMMON.LOGOUT]</span>
+	</IF>
 	</li>
 	</ul>
 	<div class="infos">
