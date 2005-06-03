@@ -3,7 +3,7 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
@@ -114,7 +114,7 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONTAL="[#TITLE]">
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
          |&nbsp;<a href="index.php?do=view&id=[#ID]&lo=[#LO]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
@@ -124,7 +124,7 @@
 	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
 	  <span class="inactif">[@COMMON.DELETE] ([#LO|isdeletelocked([#ID],[#STATUS])])</span>&nbsp;|&nbsp;
 	  <ELSE/>
-	  <a href="index.php?do=delete&id=[#ID]&lo=[#LO]">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	  <a href="index.php?do=delete&id=[#ID]&lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
 	  </IF>
 	</IF>
 	 <a href="index.php?do=copy&id=[#ID]&lo=[#LO]">[@COMMON.COPY]</a>
@@ -307,11 +307,12 @@ cp_[#NAME].writeDiv();
 --------------------------------------------------------------- ]-->
 
 <DEFMACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
- <IF COND="[#LODELUSER.EDITOR] and (([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL])">
- 	<a href="index.php?do=export&lo=translations&lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
- 	|&nbsp;<a href="index.php?do=import&lo=translations&lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
-<ELSE/>
- 	<span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;
- 	|&nbsp;<span class="inactif">[@ADMIN.IMPORT]</span>&nbsp;|&nbsp;
-</IF>
+  &nbsp;|&nbsp;
+  <IF COND="[#LODELUSER.EDITOR] and (([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL])">
+    <a href="index.php?do=export&lo=translations&lang=[#LANG]">[@ADMIN.EXPORT]</a>&nbsp;
+    |&nbsp;<a href="index.php?do=import&lo=translations&lang=[#LANG]">[@ADMIN.IMPORT]</a>&nbsp;|&nbsp;
+  <ELSE/>
+  <span class="inactif">[@ADMIN.EXPORT]</span>&nbsp;
+  |&nbsp;<span class="inactif">[@ADMIN.IMPORT]</span>&nbsp;|&nbsp;
+  </IF>
 </DEFMACRO>
