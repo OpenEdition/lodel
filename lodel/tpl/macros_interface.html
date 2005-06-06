@@ -59,32 +59,6 @@
 </AFTER>
 </LOOP>
 </DEFFUNC>
-<!--[********************************************************]-->
-<!--[ Print a listing of all detected errors in to the form  ]-->
-<!--[ Defined only for xsl forms generated 									 ]-->
-<!--[********************************************************]-->
-<DEFFUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS">
-	<LOOP NAME="errors">
-<BEFORE>
-	<a id="top"></a>
-	<span class="error">
-	[@COMMON.ERROR_DETECTED|sprintf([#COUNT])]
-	</span>
-	<ul class="error">
-</BEFORE>
-<DO>
-		<li>
-			<span class="error">
-				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#VARNAME]" />
-				<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
-			</span>
-		</li>
-	</DO>
-<AFTER>
-		</ul>
-</AFTER>
-</LOOP>
-</DEFFUNC>
 
 <!--[ -----------------------------------------------------------
       Print error message given the error code
@@ -121,8 +95,8 @@
 
 <!--[ ************************************************** ]-->
 
-<!--[ Macros rajoutées le 17/11/03 ********************* ]-->
-<!--[ Macros servant à publication.html et               ]-->
+<!--[ Macros rajoutï¿½s le 17/11/03 ********************* ]-->
+<!--[ Macros servant ï¿½publication.html et               ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
@@ -1072,7 +1046,7 @@ function modifymember(members,textfield){
 	<BEFORE>
 		<div id="navResults" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
 		<IF COND="[#PREVIOUSURL]">
-			<a href="[#PREVIOUSURL]" title="Page précédente">
+			<a href="[#PREVIOUSURL]" title="Page prï¿½ï¿½ente">
 				<img src="[#SHAREURL]/images/triangle2.gif" alt="&lt;&lt;" />
 			</a>
 	<!--[		<img style="vertical-align : middle" src="[#SHAREURL]/images/separateur.png" alt="-" />
@@ -1084,7 +1058,7 @@ function modifymember(members,textfield){
 			&nbsp;...&nbsp;
 		</IF>
 		<IF COND="[#URLPAGE] NE ''">
-			<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#PAGENUMBER]">
+			<a class="linkpage" href="[#URLPAGE]" title="Page numï¿½o [#PAGENUMBER]">
 		<ELSE/>
 			<span class="currentpage">
 		</IF>
