@@ -43,7 +43,6 @@
 <input type="hidden" name="lo" value="texts">
 <fieldset>
   <legend>Table des minitextes</legend>
-  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -51,12 +50,12 @@
     </span>
   </LOOP>
   <label for="name">[@COMMON.NAME]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr"><span class="admin_display">[#NAME]</span><br />
   <label for="contents">[@ADMIN.TEXT]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <textarea size="30" name="contents" id="contents" class="text" row="10" cols="60">[#CONTENTS]</textarea>
   <LOOP NAME="fielderror" FIELD="contents">
@@ -78,8 +77,8 @@
     </span>
   </LOOP>
   <label for="protected">[@ADMIN.PROTECTED]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

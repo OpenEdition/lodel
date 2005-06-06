@@ -43,7 +43,6 @@
 <input type="hidden" name="lo" value="options">
 <fieldset>
   <legend>Table des options du site</legend>
-  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -51,8 +50,8 @@
     </span>
   </LOOP>
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
@@ -62,8 +61,8 @@
   </LOOP>
   <br />
   <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -79,13 +78,13 @@
     </span>
   </LOOP>
   <label for="type">[@ADMIN.TYPE]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <select name="type" id="type">
     <?php 
-                      makeSelect($context,"type","options","select");
-                  ?>
+            makeSelect($context,"type","options","select");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="type">
     <a id="type"></a><span class="error">
@@ -94,13 +93,13 @@
   </LOOP>
   <br />
   <label for="edition">[@ADMIN.INTERFACE_EDITION]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <select name="edition" id="edition">
     <?php 
-                      makeSelect($context,"edition","options","select");
-                  ?>
+            makeSelect($context,"edition","options","select");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="edition">
     <a id="edition"></a><span class="error">
@@ -109,8 +108,8 @@
   </LOOP>
   <br />
   <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
   <LOOP NAME="fielderror" FIELD="editionparams">
@@ -120,13 +119,13 @@
   </LOOP>
   <br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <select name="userrights" id="userrights">
     <?php 
-                      makeSelect($context,"userrights","options","select");
-                  ?>
+            makeSelect($context,"userrights","options","select");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="userrights">
     <a id="userrights"></a><span class="error">
@@ -135,8 +134,8 @@
   </LOOP>
   <br />
   <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
   <LOOP NAME="fielderror" FIELD="defaultvalue">
@@ -146,8 +145,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
@@ -157,8 +156,8 @@
   </LOOP>
   <br />
   <label for="protected">[@COMMON.PROTECTED]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

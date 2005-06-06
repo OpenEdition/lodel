@@ -25,8 +25,35 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
+
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_EDIT_OPTION_GROUP]</title>
+<script type="text/javascript">
+	var txt;
+	
+	function updateexport ()	{
+		
+		if (document.getElementById ('idparent').value!=0) {
+				document.getElementById('exportpolicy').style.display = 'none';
+				var nodes =  document.getElementsByTagName('label');
+				for (i = 0 ; i < nodes.length ; i++) {
+					if (nodes[i].getAttribute ('for') == 'exportpolicy') {
+						if (nodes[i].innerHTML != '') txt = nodes[i].innerHTML;
+						nodes[i].innerHTML = '';
+					}
+				}
+		}	else {
+			document.getElementById ('exportpolicy').style.display = 'inline';
+			var nodes =  document.getElementsByTagName('label');
+			for (i = 0 ; i < nodes.length ; i++) {
+					if (nodes[i].getAttribute ('for') == 'exportpolicy') {
+						nodes[i].innerHTML = txt;
+					}
+			}
+		}
+		return;
+	}
+</script>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -43,7 +70,6 @@
 <input type="hidden" name="lo" value="optiongroups">
 <fieldset>
   <legend>Table des groupes d'options</legend>
-  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -51,13 +77,13 @@
     </span>
   </LOOP>
   <label for="idparent">[@COMMON.PARENT_OPTIONGROUPS]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
-  <select name="idparent" id="idparent">
+  <select name="idparent" id="idparent" onChange="updateexport();">
     <?php 
-                      makeSelect($context,"idparent","optiongroups","select");
-                  ?>
+            makeSelect($context,"idparent","optiongroups","select");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="idparent">
     <a id="idparent"></a><span class="error">
@@ -66,8 +92,8 @@
   </LOOP>
   <br />
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
@@ -77,8 +103,8 @@
   </LOOP>
   <br />
   <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -88,8 +114,8 @@
   </LOOP>
   <br />
   <label for="logic">[@COMMON.LOGIC]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="logic" id="logic" class="text" value="[#LOGIC]">
   <LOOP NAME="fielderror" FIELD="logic">
@@ -99,8 +125,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
@@ -111,8 +137,8 @@
   <br />
   <IF COND="[#IDPARENT]==0">
     <label for="exportpolicy">[@ADMIN.EXPORT]
-        : 
-      </label>
+      : 
+    </label>
     <br class="nobr">
     <IF COND="[#EXPORTPOLICY]">
       <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
@@ -127,8 +153,8 @@
     <br />
   </IF>
   <label for="protected">[@COMMON.PROTECTED]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

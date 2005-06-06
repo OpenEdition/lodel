@@ -44,7 +44,6 @@
 <input type="hidden" name="lo" value="persontypes">
 <fieldset>
   <legend></legend>
-  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -52,8 +51,8 @@
     </span>
   </LOOP>
   <label for="type">[@ADMIN.NAME_PERSON_TYPE]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="type" id="type" class="text" value="[#TYPE]">
   <LOOP NAME="fielderror" FIELD="type">
@@ -69,8 +68,8 @@
     </span>
   </LOOP>
   <label for="title">[@ADMIN.TITLE_PERSON_TYPE]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -80,8 +79,8 @@
   </LOOP>
   <br />
   <label for="style">[@ADMIN.STYLE_PERSON_TYPE]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
   <LOOP NAME="fielderror" FIELD="style">
@@ -91,13 +90,13 @@
   </LOOP>
   <br />
   <label for="g_type">[@ADMIN.GENERIC_EQUIVALENT]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <select name="g_type" id="g_type">
     <?php 
-                      makeSelect($context,"g_type","persontypes","select");
-                  ?>
+            makeSelect($context,"g_type","persontypes","select");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="g_type">
     <a id="g_type"></a><span class="error">
@@ -106,8 +105,8 @@
   </LOOP>
   <br />
   <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_PERSON]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
   <LOOP NAME="fielderror" FIELD="tpl">
@@ -117,8 +116,8 @@
   </LOOP>
   <br />
   <label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="tplindex" id="tplindex" class="text" value="[#TPLINDEX]">
   <LOOP NAME="fielderror" FIELD="tplindex">
@@ -129,8 +128,8 @@
   <br />
   <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_TYPE]
-        : 
-      </label>
+      : 
+    </label>
     <br class="nobr">
     <IF COND="abs([#STATUS]) ge 32">
       <input type="checkbox" name="protected" id="protected" checked>

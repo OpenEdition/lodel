@@ -31,7 +31,7 @@
 	<LOOP NAME="options" TABLE="options" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
 		<DO>
 		<MACRO NAME="TR_LIST">
-			<td><strong>[(#NAME|nbsp)]</strong></td>
+			<td style="padding-left : [#MARGIN]px"><strong>[(#NAME|nbsp)]</strong></td>
 			<td>[(#TYPE|nbsp)]</td>
 			<td>[(#DEFAULTVALUE|nbsp)]</td>
 			<td align="left" style="color: #CC9933;">
