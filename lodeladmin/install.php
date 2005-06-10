@@ -81,6 +81,9 @@ if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la r
 $lodelconfig="CACHE/lodelconfig-cfg.php";
 
 // does what ./lodelconfig.php does.
+if ( !defined('PATH_SEPARATOR') ) {
+    define('PATH_SEPARATOR', ( substr(PHP_OS, 0, 3) == 'WIN' ) ? ';' : ':');
+}
 ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
 
 
@@ -454,6 +457,7 @@ if (file_exists($lodelconfig) && (@include($lodelconfig))) {
 //
 // essaie d'etablir si on accede au script func.php
 //
+
 if ((@include("func.php"))!=568) { // on accede au fichier func.php
 #  // il faut determiner si on fonctionne avec un $home ou si on fonctionne avec un include automatique.
 #  // essaie de deviner le repertoire absolu
