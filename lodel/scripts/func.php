@@ -86,9 +86,9 @@ function clean_request_variable(&$var) {
     require_once("class.inputfilter.php");
     $filter=new InputFilter(array(),array(),1,1);
   }
-
   if (is_array($var)) {
-    array_walk($var,"clean_request_variable");
+    //array_walk($var,"clean_request_variable"); // array_walk solution requires to much memory...
+    foreach(array_keys($var) as $k) clean_request_variable($var[$k]);
   } else {
     $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),$filter->process(trim($var)));
     $var=magic_addslashes($var);
