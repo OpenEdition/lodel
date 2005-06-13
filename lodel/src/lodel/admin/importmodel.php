@@ -57,8 +57,8 @@ if ($file && $delete) {
   require("func.php");
 
   $sqlfile=tempnam(tmpdir(),"lodelimport_");
-  $accepteddirs=array("tpl","css","images");
-  $acceptedexts=array("html","js","css","png","jpg","jpeg","gif","tiff");
+  $accepteddirs=array("tpl","css","images","js");
+  $acceptedexts=array("html","js","css","png","jpg","jpeg","gif","tiff","js");
 
   if (!importFromZip($file,$accepteddirs,$acceptedexts,$sqlfile)) { $err=$context['error_extract']=1; break; }
 

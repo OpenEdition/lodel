@@ -119,7 +119,7 @@ if ($_POST['backup']) {
   #unlock();
 
   $dirs=array();
-  foreach(array("tpl","css","images") as $dir) if ($context[$dir]) $dirs[]=$dir;
+  foreach(array("tpl","css","images","js") as $dir) if ($context[$dir]) $dirs[]=$dir;
   $zipfile=backupME($tmpfile,$dirs);
 
   $filename="model-$site-".date("dmy").".zip";
