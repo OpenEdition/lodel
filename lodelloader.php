@@ -98,6 +98,65 @@ switch($lang) {
    break;
  case 'en':
  default:
+   $text=array(
+### open
+    'open_title'=>"Loading and installation of Lod<span class=\"or \">e</span>l",
+### intro
+    'intro_welcome'=>"Welcome to the installation process for  <strong>Lodel</strong>, the electronic publishing program",
+
+    'intro_installation'=>"Installation consists of",
+
+    'intro_installation_first_step'=>"automatic download to your  site %s of the latest version of Lodel.",
+
+    'intro_installation_second_step'=>"configuration of Lodel for  your server.",
+
+    'intro_warning_safe_mode'=>"<strong>Warning:</strong> Lodel has  detected that php is functioning in <em>safe_mode</em> on your  server. This will likely hinder proper installation and use of Lodel.  However, you may still attempt installation.",
+
+    'intro_continue'=>"If you wish to continue and if you accept the  conditions of use of Lodel as set out below, please click on  \"Install Lodel\".",
+
+    'intro_condition_of_use_title'=>"Conditions of use of Lodel",
+
+    'intro_condition_of_use'=>"<p>This program is free software;   you may redistribute it and/or modify it in accordance with the terms  of the GNU General Public Licence as published by the Free Software  Foundation&nbsp;; version 2 of the licence, or (at your option) any  subsequent version. </p>
+<p>This program is distributed in the hope that it wil be found  useful, but WITHOUT ANY WARRANTY &nbsp;; without even the implied  warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.<a href=\"http://www.gnu.org/licenses/gpl.txt\">GNU General Public  Licence</a> for more details.</p><p>A copy of the GNU General Public  Licence should have been provided with this program&nbsp;; if this is  not the case, please write to the Free Software Foundation Inc., 675  Mass Ave, Cambridge, MA 02139, USA. </p>",
+
+    'intro_install'=>"Install Lodel",
+### chmod
+
+    'chmod_permission'=>"This script has detected the permissions  that need to be granted to Lodel\u2019s files and directories. It proposes  assigning the following permissions:",
+
+    'chmod_read_write'=>"Read and Write",
+    'chmod_read'=>" Read and Write ",
+    'chmod_write'=>"Write ",
+
+
+    'chmod_user'=>"User",
+    'chmod_group'=>"Group",
+    'chmod_other'=>"Other",
+
+    'chmod_unix_permission'=>"(UNIX: %s for the files and %s for the  directories).",
+
+    'chmod_warming_777'=>"<strong>Warning</strong>: granting \"Other \" Write permissions can, on certain servers, make for a serious  security flaw. If you are in doubt, please seek advice before  continuing.",
+
+    'chmod_reducedchmod'=>"Write permissions have been suppressed  because the server configuration does not allow execution of PHP  scripts with unrestricted Write permissions (which is good for  security). However, it is possible that you may not now be able to  write to or delete files in your directory. You will need to use a  PHP File Manager to do so.",
+
+    'chmod_continue'=>"If these permissions are appropriate, please  click below. The Lodel archive is about to be downloaded and this can  take a little time. Please wait.",
+
+    'chmod_download'=>"Download Lodel",
+
+    'chmod_nodownload'=>"If not, please try expert installation and  do not continue with this process.",
+
+### error
+    'error_lodelconfig_exists'=>"Lodel is already installed in this  directory. If you wish to reinstall, please delete all the files in  this directory except for the file lodelloader.php and rerun this  script in your browser.",
+
+    'error_zlib'=>" The zlib library could not be found on your  server so this automatic installation script cannot proceed. To  install Lodel, please download Lodel, uncompress the archive and then  point your browser at lodeladmin/install.php",
+
+    'error_writeable'=>"The web server does not have Write  permissions for this directory. Using your ftp client please assign  Write permissions to this directory and rerun the script (\"refresh\"  button in your browser)",
+
+    'error_hasnotsocket'=>"Your server configuration does not allow  the automatic download of Lodel. Please download the Lodel archive  and put it on the server in the same directory as this script,  renaming it \"lodel.zip\". Then rerun this script.",
+
+    'error_archivedownload'=>"Download of the file %s has not  worked. The error reported is: %s <br/>If you are unable to resolve  this error, please download the Lodel archive and put it on the  server in the same directory as this script, renaming it \"lodel.zip \". Then rerun the automatic installation script." );
    
 }
 
@@ -150,7 +209,7 @@ if (!$chmod) {
   if ($hassocket) {
     do {
       @chmod($testfile,$chmod);
-      $url="http://".$_SERVER['SERVER_NAME'].preg_replace("/[^\/]+$/","",$_SERVER['REQUEST_URI']).$testfile;
+      $url="http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] ? ":".$_SERVER['SERVER_PORT'] : "").preg_replace("/[^\/]+$/","",$_SERVER['REQUEST_URI']).$testfile;
       $client=new Snoopy;
       $client->read_timeout = 30;
       $client->fetch($url);
