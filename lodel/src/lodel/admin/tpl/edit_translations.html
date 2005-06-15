@@ -43,6 +43,7 @@
 <input type="hidden" name="lo" value="translations">
 <fieldset>
   <legend></legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -50,8 +51,8 @@
     </span>
   </LOOP>
   <label for="lang">[@ADMIN.LANG_CODE]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="5" name="lang" id="lang" class="text" value="[#LANG]">
   <LOOP NAME="fielderror" FIELD="lang">
@@ -61,8 +62,8 @@
   </LOOP>
   <br />
   <label for="title">[@COMMON.LANG]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -78,8 +79,8 @@
     </span>
   </LOOP>
   <label for="translators">[@ADMIN.TRANSLATORS]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="translators" id="translators" class="text" value="[#TRANSLATORS]">
   <LOOP NAME="fielderror" FIELD="translators">
@@ -95,8 +96,8 @@
     </span>
   </LOOP>
   <label for="protected">[@COMMON.PROTECTED]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

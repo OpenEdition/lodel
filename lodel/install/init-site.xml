@@ -778,6 +778,13 @@
         label="[@ADMIN.PUBLIC_DOCUMENT]"
         edittype="boolean" 
 	confirm="confirm_public_document(this)" /> <!-- confirmation is required for this type -->
+<column name="oaireferenced"
+        type="TINYINT"
+        default="0"
+        required="true"
+        description=""
+        label="[@ADMIN.OAI_REFERENCED_DOCUMENT]"
+        edittype="boolean" />
 <column name="display"
         type="VARCHAR"
         size="10"

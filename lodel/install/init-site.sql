@@ -248,6 +248,7 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 	creationstatus	TINYINT DEFAULT '-1' NOT NULL,		# status for the new entities created with this type
 	search		TINYINT DEFAULT '1' NOT NULL,
 	public		TINYINT DEFAULT '0' NOT NULL,
+	oaireferenced	TINYINT DEFAULT '0' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,

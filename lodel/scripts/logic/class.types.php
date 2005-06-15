@@ -182,6 +182,7 @@ class TypesLogic extends Logic {
                   "creationstatus"=>array("select","+"),
                   "search"=>array("boolean","+"),
                   "public"=>array("boolean","+"),
+                  "oaireferenced"=>array("boolean","+"),
                   "display"=>array("select",""));
              }
    // end{publicfields} automatic generation  //

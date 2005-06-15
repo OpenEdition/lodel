@@ -60,6 +60,7 @@
 <input type="hidden" name="lo" value="types">
 <fieldset>
   <legend>Table pour les types d'entites</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -67,8 +68,8 @@
     </span>
   </LOOP>
   <label for="type">[@ADMIN.NAME_TYPE]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="type" id="type" class="text" value="[#TYPE]">
   <LOOP NAME="fielderror" FIELD="type">
@@ -78,8 +79,8 @@
   </LOOP>
   <br />
   <label for="title">[@ADMIN.TITLE_TYPE]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -95,8 +96,8 @@
     </span>
   </LOOP>
   <label for="tpl">[@ADMIN.TEMPLATE_FILE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
   <LOOP NAME="fielderror" FIELD="tpl">
@@ -106,8 +107,8 @@
   </LOOP>
   <br />
   <label for="tplcreation">[@ADMIN.CREATION_TEMPLATE_FILE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="tplcreation" id="tplcreation" class="text" value="[#TPLCREATION]">
   <LOOP NAME="fielderror" FIELD="tplcreation">
@@ -117,8 +118,8 @@
   </LOOP>
   <br />
   <label for="tpledition">[@ADMIN.EDITION_TEMPLATE_FILE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="tpledition" id="tpledition" class="text" value="[#TPLEDITION]">
   <LOOP NAME="fielderror" FIELD="tpledition">
@@ -128,13 +129,13 @@
   </LOOP>
   <br />
   <label for="import">[@ADMIN.IMPORT_WITH_SERVOO]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="import" id="import">
     <?php 
-            makeSelect($context,"import","types","select");
-          ?>
+                      makeSelect($context,"import","types","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="import">
     <a id="import"></a><span class="error">
@@ -143,13 +144,13 @@
   </LOOP>
   <br />
   <label for="creationstatus">[@ADMIN.STATUS_OF_NEW_DOCUMENTS]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="creationstatus" id="creationstatus">
     <?php 
-            makeSelect($context,"creationstatus","types","select");
-          ?>
+                      makeSelect($context,"creationstatus","types","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="creationstatus">
     <a id="creationstatus"></a><span class="error">
@@ -158,8 +159,8 @@
   </LOOP>
   <br />
   <label for="search">[@ADMIN.INDEX_DOCUMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="[#SEARCH]">
     <input type="checkbox" name="search" id="search" checked>
@@ -173,8 +174,8 @@
   </LOOP>
   <br />
   <label for="public">[@ADMIN.PUBLIC_DOCUMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="[#PUBLIC]">
     <input type="checkbox" name="public" id="public" checked onChange="confirm_public_document(this)();">
@@ -187,14 +188,29 @@
     </span>
   </LOOP>
   <br />
+  <label for="oaireferenced">[@ADMIN.OAI_REFERENCED_DOCUMENT]
+        : 
+      </label>
+  <br class="nobr">
+  <IF COND="[#OAIREFERENCED]">
+    <input type="checkbox" name="oaireferenced" id="oaireferenced" checked>
+    <ELSE/>
+    <input type="checkbox" name="oaireferenced" id="oaireferenced">
+  </IF>
+  <LOOP NAME="fielderror" FIELD="oaireferenced">
+    <a id="oaireferenced"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.OAI_REFERENCED_DOCUMENT]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
   <label for="display">[@ADMIN.DISPLAY]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="display" id="display">
     <?php 
-            makeSelect($context,"display","types","select");
-          ?>
+                      makeSelect($context,"display","types","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="display">
     <a id="display"></a><span class="error">
@@ -204,8 +220,8 @@
   <br />
   <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_TYPE]
-      : 
-    </label>
+        : 
+      </label>
     <br class="nobr">
     <IF COND="abs([#STATUS]) ge 32">
       <input type="checkbox" name="protected" id="protected" checked>

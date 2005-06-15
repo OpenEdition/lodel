@@ -44,6 +44,7 @@
 <input type="hidden" name="lo" value="characterstyles">
 <fieldset>
   <legend>Table pour les styles de caracteres</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -51,8 +52,8 @@
     </span>
   </LOOP>
   <label for="style">[@ADMIN.STYLE]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
   <LOOP NAME="fielderror" FIELD="style">
@@ -62,8 +63,8 @@
   </LOOP>
   <br />
   <label for="conversion">[@ADMIN.CONVERSION]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="conversion" id="conversion" class="text" value="[#CONVERSION]">
   <LOOP NAME="fielderror" FIELD="conversion">
@@ -74,8 +75,8 @@
   <br />
   <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_CHARACTERE_STYLE]
-      : 
-    </label>
+        : 
+      </label>
     <br class="nobr">
     <IF COND="abs([#STATUS]) ge 32">
       <input type="checkbox" name="protected" id="protected" checked>

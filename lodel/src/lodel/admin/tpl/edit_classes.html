@@ -44,6 +44,7 @@
 <input type="hidden" name="lo" value="classes">
 <fieldset>
   <legend>table qui contient les classes</legend>
+  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -51,8 +52,8 @@
     </span>
   </LOOP>
   <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
@@ -68,8 +69,8 @@
     </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -79,8 +80,8 @@
   </LOOP>
   <br />
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>
@@ -94,8 +95,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
