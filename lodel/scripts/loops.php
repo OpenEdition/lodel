@@ -468,7 +468,7 @@ function plageDeRecherche($numPageCourante, $nbPagesTotal) {
  * Display multilingual texts. 
  * 
  */
-function loop_mltext(& $context, $funcname) {
+function loop_mltext(&$context, $funcname) {
 	if (is_array($context['value'])) {
 		foreach ($context['value'] as $lang => $value) {
 			$localcontext = $context;
@@ -487,4 +487,27 @@ function loop_mltext(& $context, $funcname) {
 		}
 	}
 }
+
+/*
+ * loop which return the right to perform an action or not
+ *
+ */
+
+function loop_rightonentity(&$context, $funcname, $arguments) 
+
+{
+  if (!isset ($arguments['action'])) {
+    if ($GLOBALS['lodeluser']['visitor'])
+      die("ERROR: the loop \"rightonentity\" requires an ACTION attribut");
+    return;
+  }
+  if (rightonentity($arguments['action'],$context)) {
+    if (function_exists("code_do_$funcname"))
+      call_user_func("code_do_$funcname", $context);
+  } else {
+    if (function_exists("code_alter_$funcname"))
+      call_user_func("code_alter_$funcname", $context);
+  }
+}
+
 ?>

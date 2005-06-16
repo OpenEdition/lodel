@@ -55,7 +55,8 @@ class Entities_EditionLogic extends GenericLogic {
    function viewAction(&$context,&$error)
 
    {
-     if ($context['check'] && $error) return "_error";
+     if ($context['check'] && $error) return "_error";     
+     if (!rightonentity($context['id'] ? "edit" : "create",$context)) die("ERROR: you don't have the right to perform this operation");
 
      // define some loop functions
      /////
@@ -183,7 +184,7 @@ class Entities_EditionLogic extends GenericLogic {
    function editAction(&$context,&$error,$opt=false)
 
    {
-      
+     if (!rightonentity($context['id'] ? "edit" : "create",$context)) die("ERROR: you don't have the right to perform this operation");      
      if ($context['cancel']) return "_back";
      global $lodeluser,$home;
      $id=$context['id'];

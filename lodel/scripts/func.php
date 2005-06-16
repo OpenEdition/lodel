@@ -679,6 +679,63 @@ function makeSortKey($text)
 }
 
 /**
+ *
+ */
+
+
+function rightonentity($action,$context) 
+
+{
+  if ($GLOBALS['lodeluser']['admin']) return true;
+
+  if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
+    // get the group, the status, and the parent
+    $row=$GLOBALS['db']->getRow(lq("SELECT idparent,status,usergroup FROM #_TP_entities WHERE id='".$context['id']."'"));
+    if (!$row) die("ERROR: internal error in rightonentity");
+    $context=array_merge($context,$row);
+  }
+  // groupright ?
+  $groupright=in_array($context['usergroup'],explode(',',$GLOBALS['lodeluser']['groups']));
+
+  if (!$groupright) return false;
+
+  // only admin can work at the base.
+  $editorok=$GLOBALS['lodeluser']['editor'] && $context['idparent'];
+  // redactor are ok, only if they own the document and it is not protected.
+  $redactorok=($context['iduser']==$GLOBALS['lodeluser']['id'] && $GLOBALS['lodeluser']['redactor']) && $context['status']<8 && $context['idparent'];
+
+  switch($action) {
+  case 'create' :
+    return ($GLOBALS['lodeluser']['editor'] ||  ($GLOBALS['lodeluser']['redactor'] && $context['status']<8)) &&  $context['id'];
+    break;
+  case 'delete' :
+    return abs($context['status'])<8 && $editorok;
+    break;
+  case 'edit':
+  case 'advanced' :
+  case 'publish' :
+  case 'move' :
+  case 'changerank' :
+    return $editorok || $redactorok;
+    break;
+  case 'unpublish' :
+  case 'protect' :
+    return $editorok;
+    break;
+  case 'changestatus' :
+    if ($context['status']<0) {
+      return $editorok || $redactorok;
+    } else {
+      return $editorok;
+    }    
+  default:
+    if ($GLOBALS['lodeluser']['visitor'])
+      die("ERROR: unknown action \"$action\" in the loop \"rightonentity\"");
+    return;
+  }
+}
+
+/**
  * generate the SQL criteria depending whether ids is an array or a number
  */
 
@@ -721,6 +778,7 @@ function &getGenericDAO($table,$idfield)
 
   return $factory[$table]=new genericDAO ($table,$idfield);
 }
+
 
 
 

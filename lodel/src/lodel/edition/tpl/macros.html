@@ -525,7 +525,8 @@
 
 <DEFFUNC NAME="ADD_AN_ENTITY" OPTIONAL="displaywhere">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
-        <IF COND="[#LODELUSER.REDACTOR]">
+        <LOOP NAME="rightonentity" ACTION="create">
+	<DO>
 	<LET VAR="idparentsaved">[#ID|intval]</LET>
 	<div id="addEntity">
         <LOOP NAME="classes" TABLE="classes" WHERE="status lt 64" ORDER="rank">
@@ -567,9 +568,11 @@
 	</LOOP>
         </LOOP>
 	</div>
-        <ELSE/>
+	</DO>
+        <ALTERNATIVE>
 		<span class="inactif">&nbsp;</span>
-        </IF>
+        </ALTERNATIVE>
+	</LOOP>
 </DEFFUNC>
 
 
@@ -622,13 +625,16 @@
 
 
 <DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
-	<IF COND="[#LODELUSER.EDITOR]">
+	<LOOP NAME="rightonentity" ACTION="changerank">
+	<DO>
 		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
 		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
-	<ELSE/>
+	</DO>
+	<ALTERNATIVE>
 		<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
-	</IF>
+	</ALTERNATIVE>
+	</LOOP>
 </DEFMACRO>
 
 
@@ -636,22 +642,31 @@
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
 		|&nbsp;<a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
-		<IF COND="[#LODELUSER.EDITOR]">
+		<LOOP NAME="rightonentity" ACTION="edit">
+		<DO>
 		|&nbsp;<a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
-		<ELSE/>
+		</DO>
+		<ALTERNATIVE>
 		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
-		</IF>
-		<IF COND="[#LODELUSER.EDITOR]">
-		|&nbsp;<a href="index.php?do=view&amp;lo=entities_advanced&amp;id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;
-                <ELSE/>
+		</ALTERNATIVE>
+		</LOOP>
+		<LOOP NAME="rightonentity" ACTION="advanced">
+		<DO>
+		|&nbsp;<a href="index.php?do=view&amp;lo=entities_advanced&amp;id=[#ID]">[@EDITION.FUNCTIONS]</a>&nbsp;		
+                </DO>
+		<ALTERNATIVE>
 		|&nbsp;<span class="inactif">[@EDITION.FUNCTIONS]</span>&nbsp;
-                </IF>
+		</ALTERNATIVE>
+                </LOOP>
 		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
-		<IF COND="(abs([#STATUS]) lt 8) AND [#LODELUSER.EDITOR]">
+		<LOOP NAME="rightonentity" ACTION="delete">
+		<DO>
 		|&nbsp;<a href="#" onclick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a>&nbsp;|
-		<ELSE/>
+		</DO>
+		<ALTERNATIVE>
 		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
-		</IF>
+		</ALTERNATIVE>
+		</LOOP>
 	        <input type="checkbox" name="entity[[#ID]]" />
 	</div>
 </DEFMACRO>
@@ -665,11 +680,14 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
-		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
-						|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
-					<ELSE/>
-						|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
-					</IF>
+				<LOOP NAME="rightonentity" ACTION="changestatus">
+				<DO>
+					|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+				</DO>
+				<ALTERNATIVE>
+					|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
+				</ALTERNATIVE>
+				</LOOP>
 				</td>
 			</tr>
 		</table>
@@ -680,11 +698,14 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
-		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
+					<LOOP NAME="rightonentity" ACTION="changestatus">
+					<DO>
 						|&nbsp;<a href="index.php?do=changestatus&&amp;id=[#ID]&amp;status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
-					<ELSE/>
+					</DO>
+					<ALTERNATIVE>
 						|&nbsp;<span class="inactif">[@EDITION.SET_DRAFT]</span>&nbsp;|&nbsp;
-					</IF>
+					</ALTERNATIVE>
+					</LOOP>
 				</td>
 			</tr>
 		</table>
@@ -695,13 +716,16 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
-		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
+					<LOOP NAME="rightonentity" ACTION="changestatus">
+					<DO>
+
 						&nbsp;|&nbsp;<a href="index.php?do=changestatus&&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
 
-					<ELSE/>
+					</DO>
+					<ALTERNATIVE>
 						&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
-
-					</IF>
+					</ALTERNATIVE>
+					</LOOP>
 				</td>
 			</tr>
 		</table>
@@ -712,13 +736,15 @@
 				<td style="width:20px"><MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES"></td>
 				<td style="color:#333333; font-weight:bold;width:120px"><MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES"></td>
 				<td style="width:200px">
-		                        <IF COND="([#LODELUSER.EDITOR] AND [#IDPARENT] AND [#GROUPRIGHT]) or [#LODELUSER.ADMIN]">
+					<LOOP NAME="rightonentity" ACTION="changestatus">
+					<DO>
 						|&nbsp;<a href="index.php?do=changestatus&&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
 
-					<ELSE/>
+					</DO>
+					<ALTERNATIVE>
 						|&nbsp;<span class="inactif">[@EDITION.SET_PUBLISHED]</span>&nbsp;|&nbsp;
-
-					</IF>
+					</ALTERNATIVE>
+					</LOOP>
 				</td>
 			</tr>
 		</table>
@@ -730,11 +756,14 @@
 <DEFMACRO NAME="CHANGER_STATUS_ENTITIES">
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="[#STATUS]==1">
-                   <IF COND="[#LODELUSER.EDITOR]">
+                   <LOOP NAME="rightonentity" ACTION="unpublish">
+		   <DO>
 			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
-                    <ELSE/>
+		   </DO>
+		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
-                    </IF>
+		    </ALTERNATIVE>
+                    </LOOP>		
 		<ELSE/>
 		<IF COND="[#STATUS]==8">
 			<span class="inactif">[@COMMON.PROTECTED]</span>
@@ -744,11 +773,14 @@
 		</IF>
 	<ELSE/>
 		<IF COND="([#STATUS]==-1)">
-                   <IF COND="[#LODELUSER.EDITOR]">
+                   <LOOP NAME="rightonentity" ACTION="publish">
+		   <DO>
 			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=1">[@EDITION.PUBLISH]</a>
-                   <ELSE/>
+		   </DO>
+		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.PUBLISH]</span>
-                   </IF>
+                   </ALTERNATIVE>
+                   </LOOP>
 		<ELSE/>
 			<span class="inactif">[@EDITION.DRAFT]</span>
 		</IF>

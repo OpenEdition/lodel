@@ -60,6 +60,8 @@ class Entities_AdvancedLogic extends Logic {
 
      $id=$context['id'];
      if (!$id) die("ERROR: give the id ");
+     if (!rightonentity("advanced",$context)) die("ERROR: you don't have the right to perform this operation");
+
 
      $dao=$this->_getMainTableDAO();
      $vo=$dao->getById($id);
@@ -104,6 +106,7 @@ class Entities_AdvancedLogic extends Logic {
    function prepareMoveAction(&$context,&$error)
 
    {
+     if (!rightonentity("move",$context)) die("ERROR: you don't have the right to perform this operation");
      function loop_move_right(&$context,$funcname)
      {
        static $cache,$idtypes;
@@ -142,6 +145,8 @@ class Entities_AdvancedLogic extends Logic {
 
    {
      global $db,$home;
+
+     if (!rightonentity("move",$context)) die("ERROR: you don't have the right to perform this operation");
 
      $id=$context['id']; // which entities
      $idparent=intval($context['idparent']); // where to move it

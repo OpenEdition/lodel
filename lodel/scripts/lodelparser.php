@@ -306,7 +306,7 @@ function parse_variable_extra ($prefix,$varname)
   //
   if ($prefix=="#") {
     if ($varname=="GROUPRIGHT") {
-      return '($GLOBALS[right][admin] || in_array($context[group],explode(\',\',$GLOBALS[lodeluser][groups])))';
+      return '($GLOBALS[lodeluser][admin] || in_array($context[usergroup],explode(\',\',$GLOBALS[lodeluser][groups])))';
     }
     if (preg_match("/^OPTION[_.]/",$varname)) { // options
       return "getoption('".strtolower(substr($varname,7))."')";

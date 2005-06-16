@@ -117,6 +117,7 @@ class EntitiesLogic extends Logic {
      global $db;
 
      // get the entities to modify and ancillary information
+     if (!rightonentity("delete",$context)) die("ERROR: you don't have the right to perform this operation");
      $this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
      if (!$ids) return "_back";
      if ($lockedids)  die("ERROR: some entities are locked in the family. No operation is allowed");
@@ -161,6 +162,7 @@ class EntitiesLogic extends Logic {
      global $db;
      $status=intval($context['status']);
      if ($status==0) die("error publishAction");
+     if (!rightonentity($status>0 ? "publish" : "unpublish",$context)) die("ERROR: you don't have the right to perform this operation");
 
      // get the entities to modify and ancillary information
      $access=abs($status)>=32 ? "protect" : "write";
