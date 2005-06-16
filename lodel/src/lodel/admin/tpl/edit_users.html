@@ -44,7 +44,6 @@
 <input type="hidden" name="lo" value="users">
 <fieldset>
   <legend>Table des utilisateurs de lodel</legend>
-  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -52,8 +51,8 @@
     </span>
   </LOOP>
   <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
   <LOOP NAME="fielderror" FIELD="username">
@@ -63,8 +62,8 @@
   </LOOP>
   <br />
   <label for="passwd">[@COMMON.PASSWD]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="password" size="30" name="passwd" id="passwd">
   <LOOP NAME="fielderror" FIELD="passwd">
@@ -74,8 +73,8 @@
   </LOOP>
   <br />
   <label for="name">[@ADMIN.LASTNAME_AND_FIRSTNAME]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
@@ -85,8 +84,8 @@
   </LOOP>
   <br />
   <label for="email">[@ADMIN.EMAIL]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]">
   <LOOP NAME="fielderror" FIELD="email">
@@ -96,13 +95,13 @@
   </LOOP>
   <br />
   <label for="userrights">[@ADMIN.USER_RIGHTS]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <select name="userrights" id="userrights">
     <?php 
-                      makeSelect($context,"userrights","users","select");
-                  ?>
+            makeSelect($context,"userrights","users","select");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="userrights">
     <a id="userrights"></a><span class="error">
@@ -111,13 +110,13 @@
   </LOOP>
   <br />
   <label for="lang">[@ADMIN.USER_LANG]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <select name="lang" id="lang">
     <?php 
-                      makeSelect($context,"lang","users","lang");
-                  ?>
+            makeSelect($context,"lang","users","lang");
+          ?>
   </select>
   <LOOP NAME="fielderror" FIELD="lang">
     <a id="lang"></a><span class="error">
@@ -127,13 +126,13 @@
   <br />
   <IF COND="[#SITE] and ![#LODELUSER.ADMIN]">
     <label for="usergroups">[@ADMIN.USERGROUPS]
-        : 
-      </label>
+      : 
+    </label>
     <br class="nobr">
     <select multiple name="usergroups[]" id="usergroups">
       <?php 
-                      makeSelect($context,"usergroups","users","multipleselect");
-                  ?>
+            makeSelect($context,"usergroups","users","multipleselect");
+          ?>
     </select>
     <LOOP NAME="fielderror" FIELD="usergroups">
       <a id="usergroups"></a><span class="error">
@@ -143,8 +142,8 @@
     <br />
   </IF>
   <label for="protected">[@ADMIN.PROTECTED_USER]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

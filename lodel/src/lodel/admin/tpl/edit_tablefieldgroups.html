@@ -42,7 +42,6 @@
 <input type="hidden" name="lo" value="tablefieldgroups">
 <fieldset>
   <legend>table qui contient les groupes de champs pour le XML</legend>
-  <FUNC NAME="PRINT_ERROR_LISTING_XSL_FORMS" TITLE=""></FUNC>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -50,8 +49,8 @@
     </span>
   </LOOP>
   <label for="name">[@ADMIN.TABLEFIELDGROUP_NAME]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
@@ -67,8 +66,8 @@
     </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -78,8 +77,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-        : 
-      </label>
+      : 
+    </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
@@ -90,8 +89,8 @@
   <br />
   <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_GROUP]
-        : 
-      </label>
+      : 
+    </label>
     <br class="nobr">
     <IF COND="abs([#STATUS]) ge 32">
       <input type="checkbox" name="protected" id="protected" checked>
