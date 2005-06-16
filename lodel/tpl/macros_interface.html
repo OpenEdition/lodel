@@ -1,28 +1,24 @@
 <DEFMACRO NAME="HEADER_HEAD_OPEN">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]" />
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]" />
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
-	<link rel="stylesheet" href="styles_lodel.css" />
-        <IF COND="[#STYLECSS]">
-        <style type="text/css">          
-           [#STYLECSS]
-          
-        </style>
-
-        </IF>
-	</head>
+    <link rel="stylesheet" href="styles_lodel.css" />
+    <IF COND="[#STYLECSS]">
+    <style type="text/css">          
+      [#STYLECSS]
+    </style>
+    </IF>
+  </head>
 </DEFMACRO>
 
 <DEFMACRO NAME="CLOSE_HTML">  
-	</body>
-	</html>
+  </body>
+</html>
 </DEFMACRO>
-
-
 
 <DEFMACRO NAME="HEADER_LOGO">
 <body> 
@@ -32,9 +28,9 @@
 <body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="black" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0">
 </DEFMACRO>
 
-<!--[********************************************************]-->
-<!--[ Print a listing of all detected errors in to the form  ]-->
-<!--[********************************************************]-->
+<!--[ -----------------------------------------------------------
+  Print a listing of all detected errors in to the form  
+--------------------------------------------------------------- ]-->
 <DEFFUNC NAME="PRINT_ERROR_LISTING">
 <LOOP NAME="errors">
 <BEFORE>
@@ -63,9 +59,7 @@
 <!--[ -----------------------------------------------------------
       Print error message given the error code
 --------------------------------------------------------------- ]-->
-
 <DEFFUNC NAME="PRINT_ERROR_MESSAGE" REQUIRED="title">
-
 <IF COND="[#ERROR] eq '+'">[@COMMON.ERROR_REQUIRED_FIELD|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq '1'">[@COMMON.ERROR_FIELD_MUST_BE_UNIQUE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'date'">[@COMMON.ERROR_INVALID_DATE|sprintf([#TITLE])]</IF>
@@ -87,8 +81,8 @@
 <IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'reservedsql'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL|sprintf([#TITLE])]</IF>
-<!--[error: ??? don't know which kind of error ????
-</IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF></IF>]-->
+<IF COND="[#ERROR] eq 'upload'">[@COMMON.ERROR_UPLOAD_FILE]</IF>
+<!--[ Unknown error ]-->
 </DEFFUNC>
 
 
@@ -127,48 +121,46 @@
         </AFTER>
     </LOOP>
 </DEFMACRO>
-<!--[ ************************************************** ]-->
-<!--[ Added 2005-01-28 | parameters management macro     ]-->  
-<!--[ Syntax :																					 ]-->
-<!--[	width,height,skin,autodetectlanguage,language,mode ]-->
-<!--[ example :																					 ]-->
-<!--[	    800,600,silver,true														 ]-->
-<!--[ or																								 ]-->
-<!--[	    100,400, office2003,false,fr									 ]-->
-<!--[ ************************************************** ]-->
+
+<!--[ -----------------------------------------------------------
+  Parameters management macro
+  Syntax : Mode, Width, Height, Language, AutoDetectLanguage, Skin
+  Example :
+          Simple, 800, 600
+        or	
+          Advanced, 800, 600, en, false, Silver
+--------------------------------------------------------------- ]-->
 <DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
-<?
- 		$parameters = explode(",",$context['editionparams']);
- 		
- 		if( is_array($parameters) )
- 		{
- 			
- 			//Advanced mode or not
- 			if(trim($parameters[0])==="Advanced" || trim($parameters[0])==="Simple" || trim($parameters[0])==="Basic")
- 				$context["fck_mode"] = trim($parameters[0]);
- 			else
- 				$context["fck_mode"] = "Advanced";
- 			//Width (by default will be 600px)
- 			$context["fck_width"] = (($parameters[1])  ? intval($parameters[1]) : 600);
- 			//Height (by default will be 400px)
- 			$context["fck_height"] = (($parameters[2]) ? intval($parameters[2]) : 400);
- 			//Language (by default will be empty)
- 			$context["fck_language"] = ($parameters[3] ? trim($parameters[3]) : "fr");
- 			//AutodetectLanguage (by default will be on true
- 			$context["fck_autodetectlanguage"] = (($parameters[4]) ? trim($parameters[4]) : "true");
- 			//SkinName (by default will be default :p)
- 			$context["fck_skin"] = (($parameters[5]) ? trim($parameters[5]) : "silver");
- 		}
- 		else
- 		{
- 			$context["fck_width"] = 600;
- 			$context["fck_height"] = 400;
- 			$context["fck_skin"] = "silver";
- 			$context["fck_autodetectlanguage"] = "true";
- 			$context["fck_language"] = "fr";
- 			$context["fck_mode"] = "Advanced";
- 		}
- ?>
+<?php
+  $parameters = explode(",",$context['editionparams']);
+  if( is_array($parameters) )
+  {
+    //Advanced mode or not
+    if(trim($parameters[0])==="Advanced" || trim($parameters[0])==="Simple" || trim($parameters[0])==="Basic")
+      $context["fck_mode"] = trim($parameters[0]);
+    else
+      $context["fck_mode"] = "Advanced";
+    //Width (by default will be 600px)
+    $context["fck_width"] = (($parameters[1])  ? intval($parameters[1]) : 600);
+    //Height (by default will be 400px)
+    $context["fck_height"] = (($parameters[2]) ? intval($parameters[2]) : 400);
+    //Language (by default will be empty)
+    $context["fck_language"] = ($parameters[3] ? trim($parameters[3]) : "fr");
+    //AutodetectLanguage (by default will be on true
+    $context["fck_autodetectlanguage"] = (($parameters[4]) ? trim($parameters[4]) : "true");
+    //SkinName (by default will be default :p)
+    $context["fck_skin"] = (($parameters[5]) ? trim($parameters[5]) : "silver");
+  }
+  else
+  {
+    $context["fck_width"] = 600;
+    $context["fck_height"] = 400;
+    $context["fck_skin"] = "silver";
+    $context["fck_autodetectlanguage"] = "true";
+    $context["fck_language"] = "fr";
+    $context["fck_mode"] = "Advanced";
+  }
+?>
 </DEFMACRO>
 
 
