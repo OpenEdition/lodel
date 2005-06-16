@@ -50,24 +50,29 @@
 
 /****************DESK*************************/
 
+body{
+	margin: 0;
+	padding: 0;
+}
+
 #lodel-desk{
 	background-image: url("[#SHAREURL]/images/bandeau.jpg");
 	background-repeat: no-repeat;
 	background-color: #fff;
-	height: 100px; /*valeur pour IE*/
+	height: 130px; /*valeur pour IE*/
 	font: 11px verdana, sans-serif !important;
 	text-align: left !important;
+	border-bottom: 1px dashed #728979;
 }
 
 /*valeur pour les autres*/
 *>#lodel-desk{
 	height: auto;
-	min-height: 100px;
+	min-height: 130px;
 }
 
 #lodel-desk a{
 	text-decoration: none;
-	color: #CC9933;
 }
 
 #lodel-desk .butText{
@@ -96,138 +101,67 @@
 	padding: 0;
 }
 
+#lodel-desk ul.group1, #lodel-desk ul.group2{
+	position: absolute;
+	top: 100px;
+	border-right: 1px solid #aaa;
+}
+
 #lodel-desk ul.group1{
-	margin-left: 50%;
+	left: .5em;
 }
 
 #lodel-desk ul.group2{
-	margin-left: 85%;
+	right: .5em;
 }
 
 #lodel-desk ul li{
 	float: left;
-	width: 57px;
+	width: auto;
 	display: block;
 }
 
 #lodel-desk ul li a{
 	display: block;
-	width: 57px;
 	text-align: center;
-	height: 53px;
-	background-repeat: no-repeat;
+	color: #b08000;
+	font-weight: bold;
+	padding: .3ex 1em;
+	border: 1px solid #aaa;
+	border-right: none;
+	background: #fff;
 }
 
 /* Fin boutons du desk */
 
 /* liste sites pour desk lodeladmin */
 
-#lodel-desk ul li.sites{
-	position: absolute;
-	left: 30%;
-	top: 5px;
+#lodel-desk div.sites{
 	color: #CC9933;
 	font-weight: bold;
 	height: 2ex;
 	z-index: 2;
+	position: absolute;
+	left: 320px;
+	top: .5ex;
 }
 
-#lodel-desk ul li.sites, #lodel-desk ul li.sites li{
-	width: auto;
-	height: auto;
-}
 
-#lodel-desk ul li.sites li, #lodel-desk ul li.sites li a{
-	float: none;
-}
 
-#lodel-desk ul li.sites li a{
-	display: inline;
-}
-
-#lodel-desk ul li.sites select{
+#lodel-desk div.sites select{
 	width: 150px;
 	font-size: 11px;
 }
 
 #lodel-desk div.infos{
-	padding: 30px 0 5px 175px;
-	font-size: 90%;
-	width: 82%;
-	border-bottom: 1px dashed #7EA463;
+	position: absolute;
+	right: .5em;
+	top: 1ex;
+	width: 40%;
+	text-align: right;
 }
 
-*>#lodel-desk>div.infos{
-	padding-top: 80px;
-}
 
-#lodel-desk #edition{
-	background-image: url("[#SHAREURL]/images/menu_accueil.png");
-}
-
-#lodel-desk #edition_actif{
-	background-image: url("[#SHAREURL]/images/menu_accueil_actif.png");
-}
-
-#lodel-desk #edition:hover{
-	background-image: url("[#SHAREURL]/images/menu_accueil_survol.png");
-}
-
-#lodel-desk #admin{
-	background-image: url("[#SHAREURL]/images/menu_admin.png");
-}
-
-#lodel-desk #admin_actif{
-	background-image: url("[#SHAREURL]/images/menu_admin_actif.png");
-}
-
-#lodel-desk #admin_inactif{
-	background-image: url("[#SHAREURL]/images/menu_admin_gris.png");
-}
-
-#lodel-desk #admin:hover{
-	background-image: url("[#SHAREURL]/images/menu_admin_survol.png");
-}
-
-#lodel-desk #voir{
-	background-image: url("[#SHAREURL]/images/menu_voir.png");
-}
-
-#lodel-desk #voir_actif{
-	background-image: url("[#SHAREURL]/images/menu_voir_actif.png");
-}
-
-#lodel-desk #voir:hover{
-	background-image: url("[#SHAREURL]/images/menu_voir_survol.png");
-}
-
-#lodel-desk #aide{
-	background-image: url("[#SHAREURL]/images/menu_aide.png");
-}
-
-#lodel-desk #aide:hover{
-	background-image: url("[#SHAREURL]/images/menu_aide_survol.png");
-}
-
-#lodel-desk #compile{
-	background-image: url("[#SHAREURL]/images/menu_recompiler.png");
-}
-
-#lodel-desk #compile:hover{
-	background-image: url("[#SHAREURL]/images/menu_recompiler_survol.png");
-}
-
-#lodel-desk #compile_inactif{
-	background-image: url("[#SHAREURL]/images/menu_recompiler_gris.png");
-}
-
-#lodel-desk #logout{
-	background-image: url("[#SHAREURL]/images/menu_deconnecte.png");
-}
-
-#lodel-desk #logout:hover{
-	background-image: url("[#SHAREURL]/images/menu_deconnecte_survol.png");
-}
 
 /****************FIN DESK*************************/
 </style>
@@ -237,39 +171,51 @@
 	<IF COND="[#SITE]">
 	<li>
 		<IF COND="[#CURRENTURL|strpos('edition')]">
-		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')" onfocus="switchDisp('but0')" onblur="switchDisp('but0')">
+		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
 		<ELSE/>
-		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]" onmouseover="switchDisp('but0')" onmouseout="switchDisp('but0')" onfocus="switchDisp('but0')" onblur="switchDisp('but0')">
+		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
 		</IF>
+		[@COMMON.HOME]
 		</a>
-		<span id="but0" class="butText">[@COMMON.HOME]</span>
 	</li>
 	<li>
 		<IF COND="![#LODELUSER.REDACTOR]">	
-		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')">
+		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
 		<ELSE/>
 			<IF COND="[#CURRENTURL|strpos('admin')]">	
-			<a id="admin_actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')">
+			<a id="admin_actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 			<ELSE/>
-			<a id="admin" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')">
+			<a id="admin" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 			</IF>
 		</IF>
+		[@COMMON.ADMINISTRATION]
 		</a>
-		<span id="but1" class="butText">[@COMMON.ADMINISTRATION]</span>
 		</li>
 		<li>
 		<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
-		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')" onfocus="switchDisp('but2')" onblur="switchDisp('but2')">
+		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.VIEW]">
 		<ELSE/>
-		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]" onmouseover="switchDisp('but2')" onmouseout="switchDisp('but2')" onfocus="switchDisp('but2')" onblur="switchDisp('but2')">
+		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]">
 		</IF>
+		[@COMMON.VIEW]
 		</a>
-		<span id="but2" class="butText">[@COMMON.VIEW]</span>
 		</li>
 	<ELSE/>
+	<li>
+	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" >[@COMMON.ADMINISTRATIONLODEL]</a>
+	</li>
+	</IF>
+	<li>
+	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]">
+	[@COMMON.HELP]
+	</a>
+	</li>
+	</ul>
+
+	<IF COND="![#SITE]">
 	<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
 		<BEFORE>
-		<li class="sites">
+		<div class="sites">
 		[@LODELADMIN.SITE]:
 		<select onChange="select_url(this)">		
 		<option>--</option>	
@@ -279,50 +225,46 @@
 		</DO>
 		<AFTER>
 		</select>
+		</div>
 		</AFTER>
 	</LOOP>
-	<li>
-	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" onmouseover="switchDisp('but1')" onmouseout="switchDisp('but1')" onfocus="switchDisp('but1')" onblur="switchDisp('but1')"></a>
-	<span id="but1" class="butText">[@COMMON.ADMINISTRATIONLODEL]</span>
-	</li>
 	</IF>
-	<li>
-	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but3')" onfocus="switchDisp('but3')" onblur="switchDisp('but3')">
-	</a>
-	<span class="butText" id="but3">[@COMMON.HELP]</span>
-	</li>
-	</ul>
+
 	<ul class="group2">
 	<li>		
 	<IF COND="[#LODELUSER.ADMIN]">
-	<a href="[#CLEARCACHEURL|htmlentities]" id="compile" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but4')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but4')" onblur="switchDisp('but4')">
+	<a href="[#CLEARCACHEURL|htmlentities]" id="compile" title="[@COMMON.COMPILE]">
 	<ELSE/>
-	<a id="compile_inactif" title="[@COMMON.COMPILE]" onmouseover="switchDisp('but3')" onmouseout="switchDisp('but4')" onfocus="switchDisp('but3')" onblur="switchDisp('but4')">
+	<a id="compile_inactif" title="[@COMMON.COMPILE]">
 	</IF>
+	[@COMMON.COMPILE]
 	</a>
-	<span class="butText" id="but4">[@COMMON.COMPILE]</span>
 	</li>
 	<li>
 	<IF COND="[#CURRENTURL|strpos('edition')]">
-	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')" onfocus="switchDisp('but5')" onblur="switchDisp('but5')"></a>
-	<span class="butText" id="but5">[@COMMON.LOGOUT]</span>
+	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]">
+	[@COMMON.LOGOUT]
+	</a>
 	<ELSE />
-	<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]" onmouseover="switchDisp('but5')" onmouseout="switchDisp('but5')" onfocus="switchDisp('but5')" onblur="switchDisp('but5')"></a>
-	<span class="butText" id="but5">[@COMMON.LOGOUT]</span>
+	<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	</IF>
 	</li>
 	</ul>
 	<div class="infos">
-	Lodel [@COMMON.VERSION] [#VERSION]. [@COMMON.CHARSET] : [#CHARSET].
-	<IF COND="[#TEMPLATESRECOMPILES]">
-	[@COMMON.MODIFIED_TEMPLATES] : [#TEMPLATESRECOMPILES]
+	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
+	<IF COND="[#CHARSET] != 'utf-8'">
+ 	<span class="alert">[@COMMON.CHARSET] : [#CHARSET].</span>
 	</IF>
+	<!--[<IF COND="[#TEMPLATESRECOMPILES]">
+	[@COMMON.MODIFIED_TEMPLATES] : [#TEMPLATESRECOMPILES]
+	</IF>]-->
 	<!--[<span class="texte_petit">Publication : </span>]-->
-	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]'">
+	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
 		<DO>
 		<strong>[#NAME]</strong>
 		</DO>
 	</LOOP>
+	<br />
 	<IF COND="[#LODELUSER.ADMINLODEL]">
 		<MACRO NAME="PNG_UTILISATEUR_ORANGE">
 		[@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp;
