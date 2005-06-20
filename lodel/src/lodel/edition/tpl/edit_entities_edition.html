@@ -29,13 +29,10 @@
 <MACRO NAME="JS_SIMULE_SUBMIT">
 <MACRO NAME="JS_EDITION_ENTITIES">
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_edition.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@EDITION.TITLE_DOCUMENT_EDITION]</td>
-	</tr>
-</table>
+<MACRO NAME="HEADER_LOGO">
+	<div id="editEntities" style="background: url('[#SHAREURL]/images/fond_haut_popup_edition.png') repeat-x">
+		<h2 class="formTitle" style="background: url('[#SHAREURL]/images/picto_popup_edition.png') top left no-repeat">[@EDITION.TITLE_DOCUMENT_EDITION]</h2>
+	
 <FUNC NAME="PRINT_ERROR_LISTING">
 <!--[ Propose OOImport ? ]-->
 <IF COND="![#ID]">
@@ -53,27 +50,18 @@
 	<IF COND="![#ID]"><input type="hidden" name="creationmethod" value="form"></IF><!--[ new entities ]-->
 	<input type="hidden" name="edit" value="1">
 
-	<div>
-		<span class="texte_intitule">[@EDITION.ENTITY_TYPE] :</span>
-		[#TYPE.TYPE]
-	</div>
-	<div>
-		<span class="texte_intitule">[@EDITION.DOCUMENT_CREATION_DATE] :</span>
-		[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]
-	</div>
-
-	<div>
-		<span class="texte_intitule">[@EDITION.DOCUMENT_LAST_UPDATE] :</span>
-		[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])] 
-	</div>
-	
-
+	<dl class="infosEntitie">
+		<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
+		<dd>[#TYPE.TYPE]</dd>
+		<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
+		<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
+		<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
+		<dd>[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])]</dd>
 	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
-	<div class="intitule_ligne_formulaire">
-		<span class="texte_intitule">[@EDITION.SYNTAX]:</span>
-	</div>
-		 <select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select>
+		<dt class="select">[@EDITION.SYNTAX]&nbsp;:</dt>
+		<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
 	</IF>
+	</dl>
 	<br />
 	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
 	<br />
@@ -96,4 +84,5 @@
 		</tr>
 	</table>
 </form>
+</div>
 <MACRO NAME="CLOSE_HTML">
