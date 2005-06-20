@@ -142,7 +142,7 @@ class TableFieldsLogic extends Logic {
        $g_namefields=array("Title");
        break;
      case 'entries':
-       $g_namefields=array("Index key");
+       $g_namefields=array("Index key","OAI set");
        break;
      default:
        trigger_error("class type ?",E_USER_ERROR);

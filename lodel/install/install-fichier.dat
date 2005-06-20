@@ -95,15 +95,6 @@ ln tpl/conversion.html
 ln checkimport.php
 ln tpl/checkimport.html
 
-ln document.php
-ln tpl/document.html
-
-# satellite des documents
-ln tpl/documentannexe-lienfichier.html
-ln tpl/documentannexe-liendocument.html
-ln tpl/documentannexe-lienpublication.html
-ln tpl/documentannexe-lienexterne.html
-
 ln tpl/move.html
 
 ln tpl/filebrowser.html
@@ -114,14 +105,6 @@ ln tpl/entitybrowser.html
 
 ln index.php
 ln tpl/edition.html
-
-# creation et modification des publications
-ln tpl/publi_erreur.html
-ln tpl/creation-serie.html
-ln tpl/creation-rubrique.html
-ln tpl/creation-numero.html
-ln tpl/creation-regroupement.html
-
 
 # suppression et fonctions avancees des documents et publications
 ln tpl/delete_confirm.html
