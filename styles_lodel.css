@@ -1134,3 +1134,54 @@ img{
 	text-align: right;
 	padding: 0 3em 8ex 0;
 }
+
+/* PAGE EDITION, EDITION DES ENTITES */
+
+#editEntities{
+
+}
+
+#editEntities h2.formTitle{
+	margin: 0;
+	height: 55px;
+	color: #728979;
+	padding: 2.5ex 0 0 70px;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+#editEntities dl{
+	margin: -1ex 0 2ex 70px;
+	line-height: 200%;
+}
+
+#editEntities dl.infosEntitie dt{
+	float: left;
+	font-weight: bold;
+}
+
+#editEntities dl.infosEntitie dt.select{
+	padding-top: .1ex;
+}
+
+#editEntities fieldset{
+	width: auto;
+	border: none;
+	padding-left: 70px;
+}
+
+#editEntities fieldset legend{
+	padding-left: 1em;
+	padding-top: 4.5ex;
+}
+
+#editEntities fieldset label{
+	text-align: left;
+	display: block;
+	background: red;
+}
+
+#editEntities fieldset label.boolean{
+	display: inline;
+	background: blue;
+}
