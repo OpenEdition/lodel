@@ -1185,3 +1185,9 @@ img{
 #editEntities fieldset label.boolean{
 	display: inline;
 }
+
+fieldset.formButtons{
+	text-align: center;
+	margin-left: -70px;
+	padding-bottom: 4ex;
+}
