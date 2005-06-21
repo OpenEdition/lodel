@@ -69,9 +69,7 @@
 
 
 	<br /><br />
-	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-		<tr>
-			<td align="center">
+	<fieldset class="formButtons">
 					<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
 					<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
 
@@ -80,9 +78,7 @@
 	<ELSE/>
 			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'" />
 	</IF>
-			</td>
-		</tr>
-	</table>
+	</fieldset>
 </form>
 </div>
 <MACRO NAME="CLOSE_HTML">
