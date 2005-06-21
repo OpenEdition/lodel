@@ -90,7 +90,7 @@
 <!--[ ************************************************** ]-->
 
 <!--[ Macros rajoutï¿½s le 17/11/03 ********************* ]-->
-<!--[ Macros servant ï¿½publication.html et               ]-->
+<!--[ Macros servant à publication.html et               ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
@@ -99,24 +99,20 @@
 	<LOOP NAME="edition_fields">
 		<BEFORE><!--[ information sur le groupe. Ne s'affichent que s'il y a des champs editable ]-->
 			<IF COND="[#IDGROUP]">
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr>
-					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
-				</tr>
-			</table>			
-			<br />
-			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0"><tr><td>			
+			<fieldset style="background:url('[#SHAREURL]/images/fond_intitule_popup_edition.png') repeat-x">
+				<legend style="background:url('[#SHAREURL]/images/fleche_verte_popup_edition.png') 0 4.5ex no-repeat">
+				[#TITLE]
+				</legend>					
 			</IF>
 		</BEFORE>
         <DO>
-	  <label for="data[[#NAME]]">[#TITLE] :</label><br class="nobr" />
+	  <label for="[#NAME]" class="[#TYPE]">[#TITLE] :</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 	<br />
         </DO>
         <AFTER>
 	<IF COND="[#IDGROUP]">
-			</td></tr></table>
+	</fieldset>
 	</IF>
         </AFTER>
     </LOOP>
@@ -211,22 +207,22 @@
 	<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
 	<ELSE/>
-		<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]">
+		<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
         </IF>
       </IF>
 
 <ELSE/>
 <!--[ --------------- PASSWD -------------- ]-->
 <IF COND="[#TYPE] eq 'passwd'">
-<input size="50" type="password" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] >
+<input size="50" type="password" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] />
 <ELSE/>
 <!--[ --------------- BOOLEAN -------------- ]-->
 <IF COND="[#TYPE] eq 'boolean'">
-    <input type="checkbox" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes]>
+    <input type="checkbox" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes] />
 <ELSE/>
 <!--[ --------------- INT, NUMBER -------------- ]-->
 <IF COND="[#TYPE] eq 'int' or [#TYPE] eq 'number'">
-    <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" value="[#VALUE]">
+    <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" value="[#VALUE]" />
 <ELSE/>
 <!--[ --------------- MLTEXT -------------- ]-->
 <IF COND="[#TYPE] eq 'mltext'">
@@ -246,7 +242,7 @@
 <ELSE/>
 <!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
 <IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
-	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]">
+	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]" />
 
 <ELSE/>
 <!--[ --------------- IMAGE ------------- ]-->	    

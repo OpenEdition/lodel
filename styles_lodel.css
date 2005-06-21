@@ -773,8 +773,8 @@ textarea.text  {
   height:165px;
   width:300px; }
 
-fieldset .nobr {display:none;}  
-fieldset br { clear: left;}  
+/*fieldset .nobr {display:none;}  
+fieldset br { clear: left;} */ 
 
 
 .unfoldedentities { 
@@ -1168,6 +1168,7 @@ img{
 	width: auto;
 	border: none;
 	padding-left: 70px;
+	padding-top: 4ex;
 }
 
 #editEntities fieldset legend{
@@ -1178,10 +1179,9 @@ img{
 #editEntities fieldset label{
 	text-align: left;
 	display: block;
-	background: red;
+	float: none;
 }
 
 #editEntities fieldset label.boolean{
 	display: inline;
-	background: blue;
 }
