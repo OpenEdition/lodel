@@ -1186,6 +1186,14 @@ img{
 	display: inline;
 }
 
+#entityIdent{
+	margin-left: 70px;
+}
+
+#entityIdent label{
+	font-weight: bold;
+}
+
 fieldset.formButtons{
 	text-align: center;
 	margin-left: -70px;
