@@ -227,11 +227,9 @@
 
 
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
-	<div class="ligne_formulaire">
-		<div class="intitule_ligne_formulaire">
-			<span class="texte_intitule">[@EDITION.IDENTIFIER]:</span>
-		</div>
-		<input size="45" type="text" name="identifier" value="[#IDENTIFIER]">
+	<div id="entityIdent">
+		<label for="identifier">[@EDITION.IDENTIFIER]:</label>
+		<input size="45" type="text" name="identifier" id="identifier" value="[#IDENTIFIER]" />
 		<IF COND="[#ERROR_IDENTIFIER]"><br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFIER]</span></IF>
 	</div>
 </DEFMACRO>
