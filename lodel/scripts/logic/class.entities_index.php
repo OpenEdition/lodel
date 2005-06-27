@@ -120,7 +120,6 @@ class Entities_IndexLogic extends Logic {
    */
   function cleanIndexAction(&$context,&$error) {
     $dao = &getDAO ("search_engine");
-    echo "je clean";
     $dao->deleteObjects("1");    //delete all index lines and return
     return '_ok';
   }
@@ -134,7 +133,6 @@ class Entities_IndexLogic extends Logic {
     global $cleared;
     if($cleared==0)
       if($this->cleanIndexAction($context,$error)=='_ok') {
-        echo "c cleané";
         $cleared = 1;
       }
       else
