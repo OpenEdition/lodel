@@ -32,8 +32,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-//used in index rebuild
-$cleared = 0;
+
  
 /**
  * Entities_Index logic.
@@ -121,6 +120,7 @@ class Entities_IndexLogic extends Logic {
   function cleanIndexAction(&$context,&$error) {
     $dao = &getDAO ("search_engine");
     $dao->deleteObjects("1");    //delete all index lines and return
+    #echo "index cleaning";
     return '_ok';
   }
 
@@ -130,13 +130,13 @@ class Entities_IndexLogic extends Logic {
    */
   function rebuildIndexAction(&$context,&$error) {
     global $db;
-    global $cleared;
-    if($cleared==0)
-      if($this->cleanIndexAction($context,$error)=='_ok') {
-        $cleared = 1;
-      }
-      else
-        return '_error'; //cannot clear it's a problem
+    if (!isset ($context['clean'])) $context['clean'] = 1; # assumed its true
+    $context['clean'] = intval ($context['clean']);
+    if ($context['clean'] == 1) {
+      #echo "cooucou".$context['clean'];
+      if($this->cleanIndexAction($context,$error) != '_ok')
+        return '_error';
+    }
     $timeout = ini_get ("max_execution_time");
     $prudent_timeout = $timeout*0.8;
     $start = time();
@@ -153,7 +153,7 @@ class Entities_IndexLogic extends Logic {
         $result->MoveNext();
       else {
 	//80% du timeout est d�ass� il faut rediriger.
-	header("Location: index.php?do=rebuildIndex&lo=entities_index");
+	header("Location: index.php?do=rebuildIndex&lo=entities_index&clean=0");
       }  		
     }
     return "_back";
