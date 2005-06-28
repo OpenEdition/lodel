@@ -117,6 +117,7 @@ ln tpl/edit_entities_edition.html
 ln xml.php
 ln tpl/xml-classe.html
 ln tpl/xml-valid.html
+ln tpl/edit-xml.html
 
 #search_engine
 ln search.php
