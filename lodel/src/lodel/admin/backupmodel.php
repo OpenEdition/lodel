@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -98,7 +98,7 @@ if ($_POST['backup']) {
   fputs($fh,"DELETE FROM #_TP_optiongroups;\n");
   mysql_dump($currentdb,array("#_TP_optiongroups"),"",$fh,false,false,true,"*","id ".sql_in_array($ids));
   fputs($fh,"DELETE FROM #_TP_options;\n");
-  mysql_dump($currentdb,array("#_TP_options"),"",$fh,false,false,true,"id,idgroup,name,title,type,defaultvalue,comment,userrights,rank,status","idgroup ".sql_in_array($ids)); // select everything but the value
+  mysql_dump($currentdb,array("#_TP_options"),"",$fh,false,false,true,"*","idgroup ".sql_in_array($ids)); // select everything but the value
 
   // get the classe table
   $dao=&getDAO("classes");
