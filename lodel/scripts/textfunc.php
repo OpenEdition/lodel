@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -40,9 +40,9 @@ require_once("func.php");
 #
 #{
 #  $texte=strtr(strtolower($texte),
-#		"ÈÉÊËèéêëÀÁÂÃÄÅÆàáâãäåæÌÍÎÏìíîïÒÓÔÕÖØğòóôõöøÙÚÛÜùúûüÇçıÿİÑñ.,?!' ",
+#		"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,?!' ",
 #		"eeeeeeeeaaaaaaaaaaaaaaiiiiiiiioooooooooooouuuuuuuuccyyynn-------");
-#  $texte=preg_replace (array("/[\200-\377]/","/ß/","/^-/","/--+/"),
+#  $texte=preg_replace (array("/[\200-\377]/","/ï¿½","/^-/","/--+/"),
 #			array("","ss","","-"),$texte);
 #
 #  return urlencode($texte);
@@ -413,7 +413,7 @@ function removeimages($text)
 }
 
 /**
-* Fonction qui enleve les tags spécifiés
+* Fonction qui enleve les tags spï¿½ifiï¿½
 */
 
 function removetags($text, $tags){
@@ -443,7 +443,7 @@ function isadate($text)
 }
 
 /**
- * Fonction qui remplace les guillemets d'un texte par leur name d'entité (&quot;)
+ * Fonction qui remplace les guillemets d'un texte par leur name d'entitï¿½(&quot;)
  */
 function replacequotationmark($text)
 {
@@ -599,7 +599,7 @@ function humanlang($text)
 {
   global $home;
   require_once("lang.php");
-  return $GLOBALS[langues][$text];
+  return $GLOBALS['languages'][strtoupper($text)];
 }
 
 
@@ -613,7 +613,7 @@ function today() {
 
 
 /**
- * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
+ * Retourne le texte si la date est dï¿½assï¿½, sinon retourne une chaine vide.
  */
 
 function hideifearlier($text,$date) {
