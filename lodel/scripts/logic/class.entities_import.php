@@ -100,7 +100,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      } elseif ($this->ret!='_error') {
         echo "couo";
        return "_location: index.php?do=view&id=".$this->id;
-     } else {
+     } else { //ret=error
+        echo "error";
        return "_location: index.php?do=view&id=".$this->id."&check=oui";
      }
    }
