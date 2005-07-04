@@ -92,16 +92,16 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        $dao=&getDAO("tasks");
        $dao->deleteObject($idtask);
      }
-      echo $this->ret;
+      
      if ($this->ret!='_error' && $context['finish']) {
        return $this->ret;
        #return "_back";
       
      } elseif ($this->ret!='_error') {
-        echo "couo";
+        
        return "_location: index.php?do=view&id=".$this->id;
      } else { //ret=error
-        echo "error";
+        
        return "_location: index.php?do=view&id=".$this->id."&check=oui";
      }
    }
