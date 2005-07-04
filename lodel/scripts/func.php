@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -50,7 +50,7 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","Ã‚\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
     }
   }
@@ -65,7 +65,7 @@ function postprocessing(&$context)
 #}
 
 /**
- *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
+ *   Extrait toutes les variables passÃ©es par la mÃ©thode post puis les stocke dans 
  *   le tableau $context
  */
 
@@ -90,7 +90,7 @@ function clean_request_variable(&$var) {
     //array_walk($var,"clean_request_variable"); // array_walk solution requires to much memory...
     foreach(array_keys($var) as $k) clean_request_variable($var[$k]);
   } else {
-    $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),$filter->process(trim($var)));
+    $var=str_replace(array("\n","&nbsp;"),array("","Ã‚\240"),$filter->process(trim($var)));
     $var=magic_addslashes($var);
   }
 }
@@ -235,7 +235,7 @@ function translate_xmldata($data)
 ### use the transaction now.
 #function unlock()
 #{
-#  // Dévérouille toutes les tables vérouillées précédemment par la 
+#  // DÃ©vÃ©rouille toutes les tables vÃ©rouillÃ©es prÃ©cÃ©demment par la 
 #  // fonction lock_write()
 #  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
 #    $db->execute(lq("UNLOCK TABLES") or dberror();
@@ -244,7 +244,7 @@ function translate_xmldata($data)
 #
 #function lock_write()
 #{
-#  // Vérouille toutes les tables en écriture
+#  // VÃ©rouille toutes les tables en Ã©criture
 #  $list=func_get_args();
 #  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
 #     $db->execute(lq("LOCK TABLES #_TP_".join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE") or dberror();
@@ -294,10 +294,10 @@ function getoption($name) {
     foreach ($name as $n) {
       if ($options_cache[$n]) $ret[$n]=$options_cache[$n];
     }    
-    return $ret;
+    return  ($ret);
   } else {
     if ($options_cache[$name]) // cached ?
-      return $options_cache[$name];
+      return  ($options_cache[$name]);
     $critere="name='$name'";
   }
 }
@@ -317,7 +317,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
     }
   }
   if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
-
+  if (!$lang) $lang = $GLOBALS['installlang']; // if no lang is specified choose the default installation language
   require_once("connect.php");
   global $db;
 
@@ -671,11 +671,11 @@ function makeSortKey($text)
 {
   return trim(strtolower(strtr(
 			  strtr(utf8_decode(strip_tags($text)),
-				//'¦´¨¸¾ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ',
-				'ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ',
+				//'Â¦Â´Â¨Â¸Â¾Ã€ÃÃ‚ÃƒÃ„Ã…Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃÃŽÃÃ‘Ã’Ã“Ã”Ã•Ã–Ã˜Ã™ÃšÃ›ÃœÃÃ Ã¡Ã¢Ã£Ã¤Ã¥Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã±Ã²Ã³Ã´ÃµÃ¶Ã¸Ã¹ÃºÃ»Ã¼Ã½Ã¿',
+				'Å Å’Å½Å¡Å“Å¾Å¸Â¥ÂµÃ€ÃÃ‚ÃƒÃ„Ã…Ã†Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃÃŽÃÃÃ‘Ã’Ã“Ã”Ã•Ã–Ã˜Ã™ÃšÃ›ÃœÃÃŸÃ Ã¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã°Ã±Ã²Ã³Ã´ÃµÃ¶Ã¸Ã¹ÃºÃ»Ã¼Ã½Ã¿',
 				'SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy'),
-			  array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
-				'¼' => 'OE', '½' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'))));
+			  array('Ãž' => 'TH', 'Ã¾' => 'th', 'Ã' => 'DH', 'Ã°' => 'dh', 'ÃŸ' => 'ss',
+				'Â¼' => 'OE', 'Â½' => 'oe', 'Ã†' => 'AE', 'Ã¦' => 'ae', 'Âµ' => 'u'))));
 }
 
 /**
