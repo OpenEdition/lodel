@@ -292,12 +292,12 @@ function getoption($name) {
   }
   if (is_array($name)) {
     foreach ($name as $n) {
-      if ($options_cache[$n]) $ret[$n]=$options_cache[$n];
+      if ($options_cache[$n]) $ret[$n]=stripslashes($options_cache[$n]);
     }    
     return  ($ret);
   } else {
     if ($options_cache[$name]) // cached ?
-      return  ($options_cache[$name]);
+      return  stripslashes ($options_cache[$name]);
     $critere="name='$name'";
   }
 }
