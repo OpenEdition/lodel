@@ -292,6 +292,7 @@ function tocable($text,$level=10)
   for($i=2;$i<=$level;$i++) $sect.="|$i";
   if (!function_exists("tocable_callback")) {
   function tocable_callback($result) {
+    print_r($result);
     static $tocid=array();
     $level=intval($result[3]);
     $sig=$level."n".(++$tocid[$level]);
@@ -305,12 +306,13 @@ function tocable($text,$level=10)
       if ($arr[$i]) $ret.=$aopen.$arr[i].$aclose;
       $ret.=$arr[$i+1];
     }
-    return $ret.$result[4];
+    return $ret.$result[3].$result[4];
   }
   }
 
 #  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
-  return preg_replace_callback("/(<(h($sect))\b(?:[^>]*)>)(.*?)(<\/\2>)/s","tocable_callback",$text);
+  #return $text;
+  return preg_replace_callback("/(<(h(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
 }
 
 
