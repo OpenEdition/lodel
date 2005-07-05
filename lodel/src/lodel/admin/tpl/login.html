@@ -4,7 +4,7 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
@@ -21,63 +21,62 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<meta name="ROBOTS" content="nofollow, noindex">
+<meta name="ROBOTS" content="nofollow, noindex" />
 <title>[@COMMON.IDENTIFICATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+<!--[ ************************** Rajout intÃ©ration maquette ************************ ]-->
 <MACRO NAME="HEADER_LOGO_LOGIN">
-	<div>
-		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
-		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
-	</div>
-	<div id="formulaire">
-		<div id="titre_formulaire">
-			[@COMMON.WELCOME_ON] 
-			<LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
-				<DO><span class="texte"><strong>[#TITLE]</strong></span></DO>
-			</LOOP>
-			<br />[@COMMON.DEMAND_IDENTIFICATION] :
-		</div>
-		<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
-			<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
-			<div id="champ_formulaire">
-				<IF COND="[#CHARSET] ne 'utf-8'">
-					<span class="message_erreur">
-						[@COMMON.BROWSER_UTF8].<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8].
-					</span><br /><br />
-				</IF>
-				<IF COND="[#ERROR_LOGIN]">
-					<span class="message_erreur">[@COMMON.INVALID_LOGIN_PASSWORD].</span><br /><br />
-				</IF>
-				<IF COND="[#ERROR_OPENSESSION]">
-					<span class="message_erreur">[@COMMON.ERROR_OPENSESSION].</span><br /><br />
-				</IF>
-				<IF COND="[#ERROR_SITEBLOQUE]">
-					<span class="message_erreur">[@COMMON.BLOCK_SITE].</span><br /><br />
-				</IF>
-				<!--[[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]]-->
-				<IF COND="[#ERROR_TIMEOUT]">
-					<span class="message_erreur">[@COMMON.SESSION_TIMEOUT].</span><br /><br />
-				</IF>
-				<IF COND="[#ERROR_PRIVILEGE]">
-					<span class="message_erreur">[@COMMON.ERROR_RIGHTS].</span><br /><br />
-				</IF>
-				[@COMMON.LOGIN] : <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" /><br /><br />
-				[@COMMON.PASSWORD] : <input type="password" class="input_formulaire" name="passwd" />
-			</div>
-			<p>
-				<img src="[#SHAREURL]/images/vague.png" alt="" />
-				<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" border="0" alt="Valider" />
-			</p>
-		</form>
-	</div>
-	<!--[<div id="credit">
-		<p>LODEL est un logiciel d'édition électronique créé par revues.org</p>
-		<img src="[#SHAREURL]/images/revues.png" alt="" />
-	</div>]-->
-<!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
+  <div>
+    <div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
+      <div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
+    </div>
+    <form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post">
+    <div id="formulaire">
+      <div id="titre_formulaire">
+        [@COMMON.WELCOME_ON] 
+        <LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
+          <DO><span class="texte"><strong>[#TITLE]</strong></span></DO>
+	</LOOP>
+	<br />[@COMMON.DEMAND_IDENTIFICATION] :
+      </div>
+        <input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
+        <div id="champ_formulaire">
+          <IF COND="[#CHARSET] ne 'utf-8'">
+            <span class="message_erreur">
+              [@COMMON.BROWSER_UTF8].<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8].
+            </span>
+            <br /><br />
+          </IF>
+          <IF COND="[#ERROR_LOGIN]">
+            <span class="message_erreur">[@COMMON.INVALID_LOGIN_PASSWORD].</span><br /><br />
+          </IF>
+          <IF COND="[#ERROR_OPENSESSION]">
+            <span class="message_erreur">[@COMMON.ERROR_OPENSESSION].</span><br /><br />
+          </IF>
+          <IF COND="[#ERROR_SITEBLOQUE]">
+            <span class="message_erreur">[@COMMON.BLOCK_SITE].</span><br /><br />
+          </IF>
+          <!--[[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]]-->
+          <IF COND="[#ERROR_TIMEOUT]">
+            <span class="message_erreur">[@COMMON.SESSION_TIMEOUT].</span><br /><br />
+          </IF>
+          <IF COND="[#ERROR_PRIVILEGE]">
+            <span class="message_erreur">[@COMMON.ERROR_RIGHTS].</span><br /><br />
+          </IF>
+          [@COMMON.LOGIN] : 
+          <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" />
+          <br /><br />
+          [@COMMON.PASSWD] : <input type="password" class="input_formulaire" name="passwd" />
+        </div>
+        <p>
+          <img src="[#SHAREURL]/images/vague.png" alt="------" />
+          <input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" alt="Valider" />
+        </p>
+        </form>
+      
+    </div>
+<!--[ ********************** Fin Rajout intÃ©gration maquette ****************** ]-->
 <MACRO NAME="CLOSE_HTML">
