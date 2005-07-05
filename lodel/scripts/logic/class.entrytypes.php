@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -74,7 +74,8 @@ class EntryTypesLogic extends Logic {
 			   ),$context['sort']);
        break;
      case "g_type" :
-       $g_typefields=array("DC.Subject");
+       #$g_typefields=array("DC.Subject");
+      $g_typefields=array("DC.Subject","DC.Coverage", "oai.set");
        $dao=$this->_getMainTableDAO();
        $types=$dao->findMany("status>0","","g_type,title");     
        foreach($types as $type) { $arr[$type->g_type]=$type->title; }
