@@ -6,7 +6,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -116,138 +116,123 @@ function loop_xsdtypes(& $context, $funcname) {
  * Loop that select each field with its value for an entity
  */
 function loop_fields_values(& $context, $funcname) {
-	global $error;
-	global $db;
-	//if($context['type']=='persons')
-	//	$result=$db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE type='persons' AND status>0 ORDER BY rank")) or dberror();
-	//else
-	$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank")) or dberror();
-	$haveresult = $result->NumRows() > 0;
-	if ($haveresult && function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $context);
-	while (!$result->EOF) {
-		$row = $result->fields;
-		if ($row['type'] != 'persons' && $row['type'] != 'entries' && $row['type'] != 'entities')
-			$fieldvalued[] = $row['name'];
-		$fields[] = $row;
-		$result->moveNext();
-	}
-	#print_r($fields);
-	if (is_array($fieldvalued) && count($fieldvalued) > 0) {
-		$sql = lq("SELECT ".implode(',', $fieldvalued)." FROM #_TP_".$context['class']." WHERE identity='".$context['identity']."'");
-		#echo "sql=$sql<br />";
-		$rowsvalued = $db->getRow($sql);
-	}
+  global $error;
+  global $db;
+  $result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank")) or dberror();
+  $haveresult = $result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname"))
+    call_user_func("code_before_$funcname", $context);
+  
+  while (!$result->EOF) {
+    $row = $result->fields;
+    if ($row['type'] != 'persons' && $row['type'] != 'entries' && $row['type'] != 'entities')
+      $fieldvalued[] = $row['name'];
+    $fields[] = $row;
+    $result->moveNext();
+  }
+#print_r($fields);
+  if (is_array($fieldvalued) && count($fieldvalued) > 0) {
+    $sql = lq("SELECT ".implode(',', $fieldvalued)." FROM #_TP_".$context['class']." WHERE identity='".$context['identity']."'");
+  #echo "sql=$sql<br />";
+  $rowsvalued = $db->getRow($sql);
+  }
 
-	foreach ($fields as $row) {
-		//echo "name=$name";
-		$localcontext['name'] = $row['name'];
-		$localcontext['type'] = $row['type'];
-		$localcontext['identity'] = $context['identity'];
-		if ($rowsvalued[$row['name']])
-			$localcontext['value'] = $rowsvalued[$row['name']];
-		call_user_func("code_do_$funcname", $localcontext);
-	}
-	if ($haveresult && function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $context);
+  foreach ($fields as $row) {
+    $localcontext = array();
+    $localcontext['name'] = $row['name'];
+    $localcontext['type'] = $row['type'];
+    $localcontext['identity'] = $context['identity'];
+    if ($rowsvalued[$row['name']])
+      $localcontext['value'] = $rowsvalued[$row['name']];
+    //else
+      //unset($localcontext['value']);
+    call_user_func("code_do_$funcname", $localcontext);
+  }
+
+  if ($haveresult && function_exists("code_after_$funcname"))
+    call_user_func("code_after_$funcname", $context);
 }
 
 function loop_entry_or_persons_fields_values(& $context, $funcname) {
-	global $error;
-	global $db;
+  global $error;
+  global $db;
 
-	if ($context['nature'] == 'G') {
-		$table = '#_TP_persontypes';
-		$id = 'idperson';
-	}
-	elseif ($context['nature'] == 'E') {
-		$table = '#_TP_entrytypes';
-		$id = 'identry';
-	}
-	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t, $table as et";
-	$sql .= " WHERE et.type='".$context['name']."' AND et.class=t.class";
-	$result = $db->execute(lq($sql));
-	$haveresult = $result->NumRows() > 0;
-	if ($haveresult && function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $context);
+  if ($context['nature'] == 'G') {
+    $table = '#_TP_persontypes';
+    $id = 'idperson';
+  }
+  elseif ($context['nature'] == 'E') {
+    $table = '#_TP_entrytypes';
+    $id = 'identry';
+  }
+  $sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t, $table as et";
+  $sql .= " WHERE et.type='".$context['name']."' AND et.class=t.class";
+  $result = $db->execute(lq($sql));
+  $haveresult = $result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname"))
+    call_user_func("code_before_$funcname", $context);
 
-	while (!$result->EOF) {
-		$row = $result->fields;
-		if (!$class)
-			$class = $row['class'];
-		$fields[$row['name']] = $row;
-		$result->moveNext();
-	}
-	$fieldnames = array_keys($fields);
-	if (is_array($fieldnames) && count($fieldnames) > 0) {
-		$sql = lq("SELECT ".implode(',', $fieldnames)." FROM #_TP_".$class." WHERE $id='".$context['id2']."'");
-		$values = $db->getRow($sql);
+  while (!$result->EOF) {
+    $row = $result->fields;
+    if (!$class)
+      $class = $row['class'];
+    $fields[$row['name']] = $row;
+    $result->moveNext();
+  }
+  $fieldnames = array_keys($fields);
+  if (is_array($fieldnames) && count($fieldnames) > 0) {
+    $sql = lq("SELECT ".implode(',', $fieldnames)." FROM #_TP_".$class." WHERE $id='".$context['id2']."'");
+    $values = $db->getRow($sql);
+    foreach ($fields as $key => $row) {
+      $localcontext = array();
+      $localcontext['name'] = $row['name'];
+      if ($values[$row['name']])
+        $localcontext['value'] = $values[$row['name']];
+      else
+        $localcontext['value'] = '';
+      call_user_func("code_do_$funcname", $localcontext);
+    }
+  }
 
-		foreach ($fields as $key => $row) {
-			$localcontext['name'] = $row['name'];
-			if ($values[$row['name']])
-				$localcontext['value'] = $values[$row['name']];
-			else
-				$localcontext['value'] = '';
-			call_user_func("code_do_$funcname", $localcontext);
-		}
-	}
-	if ($haveresult && function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $context);
+if ($haveresult && function_exists("code_after_$funcname"))
+  call_user_func("code_after_$funcname", $context);
+
 }
 /**
  * Loop that select each field of a relation between an entity and a person for an entity
  */
 function loop_person_relations_fields(& $context, $funcname) {
-	global $error;
-	global $db;
-	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t";
-	$sql .= " WHERE t.class='entities_".$context['class']."'";
-	$result = $db->execute(lq($sql));
-	$haveresult = $result->NumRows() > 0;
-	if ($haveresult && function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $context);
+  global $error;
+  global $db;
+  $sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t";
+  $sql .= " WHERE t.class='entities_".$context['class']."'";
+  $result = $db->execute(lq($sql));
+  $haveresult = $result->NumRows() > 0;
+  if ($haveresult && function_exists("code_before_$funcname"))
+    call_user_func("code_before_$funcname", $context);
 
-	while (!$result->EOF) {
-		$row = $result->fields;
-		if (!$class)
-			$class = $row['class'];
-		$fields[$row['name']] = $row;
-		$result->moveNext();
-	}
-	$fieldnames = array_keys($fields);
-	if (is_array($fieldnames) && count($fieldnames) > 0) {
-		$sql = lq("SELECT ".implode(',', $fieldnames)." FROM #_TP_".$row['class']." WHERE idrelation='".$context['idrelation']."'");
-		$values = $db->getRow($sql);
-		foreach ($fields as $key => $row) {
-			$localcontext['name'] = $row['name'];
-			if ($values[$row['name']])
-				$localcontext['value'] = $values[$row['name']];
-			else
-				$localcontext['value'] = '';
-			call_user_func("code_do_$funcname", $localcontext);
-		}
-	}
-	if ($haveresult && function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $context);
+  while (!$result->EOF) {
+    $row = $result->fields;
+    if (!$class)
+      $class = $row['class'];
+    $fields[$row['name']] = $row;
+    $result->moveNext();
+  }
+  $fieldnames = array_keys($fields);
+  if (is_array($fieldnames) && count($fieldnames) > 0) {
+    $sql = lq("SELECT ".implode(',', $fieldnames)." FROM #_TP_".$row['class']." WHERE idrelation='".$context['idrelation']."'");
+    $values = $db->getRow($sql);
+    foreach ($fields as $key => $row) {
+      $localcontext = array();
+      $localcontext['name'] = $row['name'];
+      if ($values[$row['name']])
+        $localcontext['value'] = $values[$row['name']];
+     call_user_func("code_do_$funcname", $localcontext);
+    }
+  }
+  if ($haveresult && function_exists("code_after_$funcname"))
+    call_user_func("code_after_$funcname", $context);
 
-	/*
-	#echo "sql=".lq($sql);
-		$result=$db->execute(lq($sql));
-		$haveresult=$result->NumRows() > 0;
-	  if ($haveresult && function_exists("code_before_$funcname")) 
-	  	call_user_func("code_before_$funcname",$context);
-		while (!$result->EOF) {
-		 	$row = $result->fields;
-		  $sql = lq("SELECT ".$row['name']." FROM #_TP_".$row['class']." WHERE idrelation='".$context['idrelation']."'");
-	#echo "sql=$sql";
-	    $row['value'] = $db->getOne($sql);
-	    $row['identity'] = $context['identity'];
-	    call_user_func("code_do_$funcname",$row);
-	    $result->moveNext();
-		}
-		if ($haveresult && function_exists("code_after_$funcname")) 
-			call_user_func("code_after_$funcname",$context);*/
 }
 
 
@@ -256,12 +241,12 @@ function loop_person_relations_fields(& $context, $funcname) {
  * Met le namespace xhtml pour toutes balises qui n'ont pas de namespace et supprime le namespace r2r.
  */
 function namespace($text) {
-	$ns = "xhtml";
-	// put namespace on each html tag
-		$text = preg_replace(array ("/<(\/?)(\w+(\s+[^>]*)?>)/", // add xhtml
-		"/(<\/?)r2r:/"), // remove r2r
-	array ("<\\1$ns:\\2", "\\1"), $text);
-	// then put namespace on each attribute
-	return $text;
+  $ns = "xhtml";
+  // put namespace on each html tag
+  $text = preg_replace(array ("/<(\/?)(\w+(\s+[^>]*)?>)/", // add xhtml
+    "/(<\/?)r2r:/"), // remove r2r
+    array ("<\\1$ns:\\2", "\\1"), $text);
+  // then put namespace on each attribute
+  return $text;
 }
 ?>
