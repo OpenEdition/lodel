@@ -46,25 +46,25 @@
         <div id="champ_formulaire">
           <IF COND="[#CHARSET] ne 'utf-8'">
             <span class="message_erreur">
-              [@COMMON.BROWSER_UTF8].<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8].
+              [@COMMON.BROWSER_UTF8]<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8]
             </span>
             <br /><br />
           </IF>
           <IF COND="[#ERROR_LOGIN]">
-            <span class="message_erreur">[@COMMON.INVALID_LOGIN_PASSWORD].</span><br /><br />
+            <span class="message_erreur">[@COMMON.INVALID_LOGIN_PASSWORD]</span><br /><br />
           </IF>
           <IF COND="[#ERROR_OPENSESSION]">
-            <span class="message_erreur">[@COMMON.ERROR_OPENSESSION].</span><br /><br />
+            <span class="message_erreur">[@COMMON.ERROR_OPENSESSION]</span><br /><br />
           </IF>
           <IF COND="[#ERROR_SITEBLOQUE]">
-            <span class="message_erreur">[@COMMON.BLOCK_SITE].</span><br /><br />
+            <span class="message_erreur">[@COMMON.BLOCK_SITE]</span><br /><br />
           </IF>
           <!--[[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]]-->
           <IF COND="[#ERROR_TIMEOUT]">
-            <span class="message_erreur">[@COMMON.SESSION_TIMEOUT].</span><br /><br />
+            <span class="message_erreur">[@COMMON.SESSION_TIMEOUT]</span><br /><br />
           </IF>
           <IF COND="[#ERROR_PRIVILEGE]">
-            <span class="message_erreur">[@COMMON.ERROR_RIGHTS].</span><br /><br />
+            <span class="message_erreur">[@COMMON.ERROR_RIGHTS]</span><br /><br />
           </IF>
           [@COMMON.LOGIN] : 
           <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" />
