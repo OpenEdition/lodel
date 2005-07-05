@@ -285,11 +285,11 @@ function humandate($s)
 function tocable($text,$level=10)
 
 {
+  
   static $tocind=0;
 
   $sect="1";
   for($i=2;$i<=$level;$i++) $sect.="|$i";
-
   if (!function_exists("tocable_callback")) {
   function tocable_callback($result) {
     static $tocid=array();
@@ -310,7 +310,7 @@ function tocable($text,$level=10)
   }
 
 #  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
-  return preg_replace_callback("/(<(h($sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
+  return preg_replace_callback("/(<(h($sect))\b(?:[^>]*)>)(.*?)(<\/\2>)/s","tocable_callback",$text);
 }
 
 
@@ -332,13 +332,15 @@ function vignette($text,$width)
   if (!$text) return;
 
   if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/",$text)) {
-    return "invalid path to image";
+    return getlodeltextcontents("ERROR_INVALID_PATH_TO_IMAGE","COMMON");
   }
 
   if (defined("SITEROOT")) $text=SITEROOT.$text;
-  if (!file_exists($text)) return "file does not exist";
+  if (!file_exists($text)) 
+    return getlodeltextcontents("ERROR_FILE_DOES_NOT_EXIST","COMMON");
 
-  if (!preg_match("/^(.*)\.([^\.]+)$/",$text,$result)) return "file without extension";
+  if (!preg_match("/^(.*)\.([^\.]+)$/",$text,$result)) 
+    return getlodeltextcontents("ERROR_FILE_WITHOUT_EXTENSION","COMMON");
 
   $vignettefile=$result[1]."-small$width.".$result[2];
 
@@ -347,8 +349,8 @@ function vignette($text,$width)
   // creer la vignette (de largeur width ou de hauteur width en fonction de la forme
   require_once("images.php");
 
-  if (!resize_image($width,$text,$vignettefile,"+")) return "image resizing failed";
-
+  if (!resize_image($width,$text,$vignettefile,"+"))
+    return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED","COMMON");
   return $vignettefile;
 }
 
