@@ -292,7 +292,7 @@ function tocable($text,$level=10)
   for($i=2;$i<=$level;$i++) $sect.="|$i";
   if (!function_exists("tocable_callback")) {
   function tocable_callback($result) {
-    print_r($result);
+    #print_r($result);
     static $tocid=array();
     $level=intval($result[3]);
     $sig=$level."n".(++$tocid[$level]);
