@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -173,6 +173,7 @@ class Logic {
      global $db,$home;
 
      $id=$context['id'];
+      
      if ($this->isdeletelocked($id)) trigger_error("This object is locked for deletion. Please report the bug",E_USER_ERROR);
      $dao=$this->_getMainTableDAO();
      $this->_prepareDelete($dao,$context);
@@ -349,6 +350,10 @@ class Logic {
     */
    function _populateContext(&$vo,&$context) {
      foreach($vo as $k=>$v) {
+        //Added by Jean - Be carefull using it
+        //if value is a string and we want to view it (or edit it in a form, 
+        //open a form is a view action) then we htmlize it
+       if (is_string($v) && $context['do'] == 'view') $v = htmlspecialchars($v);
        $context[$k]=$v;
      }
    }
