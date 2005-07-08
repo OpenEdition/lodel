@@ -778,6 +778,21 @@ function &getGenericDAO($table,$idfield)
   return $factory[$table]=new genericDAO ($table,$idfield);
 }
 
+/**
+ * Return true if a type can contains other types.
+ * (this function is used in edition, to make entities clicable or not)
+ * @param idtype id of the type
+ */
+function canContainTypes ($idtype) {
+  global $db;
+  //select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2) 
+  //but select only those who can be contains directly (not in advanced function)
+  $sql = "SELECT COUNT(*) as count FROM #_TP_entitytypes_entitytypes , #_TP_types as t WHERE identitytype = t.id AND identitytype2='$idtype' AND t.display!='advanced'";
+  $count = $db->getOne (lq($sql));
+  if ($count === false) return false;
+  if ($count > 0) return true;
+  return false;
+}
 
 
 
