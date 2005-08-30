@@ -47,40 +47,47 @@ function loop_parentsentities(& $context, $funcname, $critere = "") {
 	}
 }
 
+/**
+ * Loop displaying the table of contents (toc)
+ * @param array $context the context containing all the data
+ * @param string $funcname the name of the Lodelscript function to call
+ * @param array $arguments an array that can contain some arguments
+ * @access public
+ */
 function loop_toc($context, $funcname, $arguments) {
-	if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
-		if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
-			if (function_exists("code_alter_$funcname"))
-				call_user_func("code_alter_$funcname", $context);
-			return;
-		}
-	}
+  if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
+    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
+      if (function_exists("code_alter_$funcname"))
+        call_user_func("code_alter_$funcname", $context);
+      return;
+      }
+    }
 
-	if (function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $context);
+  if (function_exists("code_before_$funcname"))
+    call_user_func("code_before_$funcname", $context);
 
-	$i = 0;
-	$tocid = array ();
-	foreach ($results as $result) {
-		$i ++;
-		$localcontext = $context;
-		$level = intval($result[2]);
-		$localcontext['level'] = $level;
-		$localcontext['tocid'] = $level."n". (++ $tocid[$level]);
-		$localcontext['title'] = $result[3];
-		if ($tocid == 1 && function_exists("code_dofirst_$funcname")) {
-			call_user_func("code_dofirst_$funcname", $localcontext);
-		}
-		elseif ($i == count($results) && function_exists("code_dolast_$funcname")) {
-			call_user_func("code_dolast_$funcname", $localcontext);
-		} else {
-			call_user_func("code_do_$funcname", $localcontext);
-		}
-	}
+  $i = 0;
+  $tocid = array ();
 
-	if (function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $context);
+  foreach ($results as $result) {
+    $i ++;
+    $localcontext = $context;
+    $level = intval($result[2]);
+    $localcontext['level'] = $localcontext['niveau'] = $level; //for compatibility
+    $localcontext['tocid'] = $level."n". (++ $tocid[$level]);
+    $localcontext['title'] = $localcontext['titre'] = $result[3]; //for compatibility
+    if ($i == 1 && function_exists("code_dofirst_$funcname")) {
+      call_user_func("code_dofirst_$funcname", $localcontext);
+    }
+    elseif ($i == count($results) && function_exists("code_dolast_$funcname")) {
+      call_user_func("code_dolast_$funcname", $localcontext);
+    } else {
+      call_user_func("code_do_$funcname", $localcontext);
+    }
+  }
 
+  if (function_exists("code_after_$funcname"))
+    call_user_func("code_after_$funcname", $context);
 }
 
 function loop_paragraphs($context, $funcname, $arguments) {

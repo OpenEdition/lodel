@@ -281,43 +281,42 @@ function humandate($s)
   return $ret ? $ret : $s;
 }
 
-
-function tocable($text,$level=10)
-
-{
+/**
+ * Transform headings into toc relative links
+ *
+ * @param string $text the text to transform
+ * @param int $level an integer representing the max level which will be transformed
+ * @return string the transformed text
+ */
+function tocable($text,$level=10) {
   
   static $tocind=0;
-
   $sect="1";
   for($i=2;$i<=$level;$i++) $sect.="|$i";
   if (!function_exists("tocable_callback")) {
-  function tocable_callback($result) {
-    #print_r($result);
-    static $tocid=array();
-    $level=intval($result[3]);
-    $sig=$level."n".(++$tocid[$level]);
-    $aopen='<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
-    $aclose='</a>';
-
-    // split the result in order not to contains any a tag
-    $arr=preg_split("/(<a\b[^>]*>.*?<\/a>)/",$result[3],-1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
-    $ret=$result[1];
+    function tocable_callback($result) {
+    
+      static $tocid=array();
+      $level=intval($result[2][1]);
+      $sig=$level."n".(++$tocid[$level]);
+      $aopen='<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
+      $aclose='</a>';
+      // split the result in order not to contains any a tag
+      $arr=preg_split("/(<a\b[^>]*>.*?<\/a>)/",$result[3],-1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
+      $ret=$result[1];
    
-    $c = count($arr);
-    for ($i = 0 ; $i < $c ; $i+=2) {
-      if ($arr[$i])
-        $ret.= $aopen.$arr[$i].$aclose;
-      if($i+1 < $c)
-        $ret.=$arr[$i+1];
+      $c = count($arr);
+      for ($i = 0 ; $i < $c ; $i+=2) {
+        if ($arr[$i])
+          $ret.= $aopen.$arr[$i].$aclose;
+        if($i+1 < $c)
+          $ret.=$arr[$i+1];
+      }
+      return $ret.$result[4];
     }
-   
-    return $ret.$result[4];
   }
-  }
-
-#  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
-  #return $text;
-  return preg_replace_callback("/(<(h(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
+  return preg_replace_callback ("/(<(r2r:section|h(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s", "tocable_callback", $text);
+  //Nota : the r2r:section is conserved for compatibility with the old ServOO
 }
 
 
