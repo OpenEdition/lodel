@@ -170,8 +170,9 @@ class InputFilter {
 					for ($i = 0; $i < count($attrSet); $i++)
 						$preTag .= ' ' . $attrSet[$i];
 					// reformat single tags to XHTML
-					if (strpos($fromTagOpen, "</" . $tagName)) $preTag .= '>';
-					else $preTag .= ' />';
+					#if (strpos($fromTagOpen, "</" . $tagName)) $preTag .= '>';
+					#else $preTag .= ' />'; 
+                                        $preTag .= '>';
 				// just the tagname
 			    } else $preTag .= '</' . $tagName . '>';
 			}
@@ -197,9 +198,12 @@ class InputFilter {
 			// skip blank spaces in tag
 			if (!$attrSet[$i]) continue;
 			// split into attr name and value
-			$attrSubSet = explode('=', trim($attrSet[$i]));
-			list($attrSubSet[0]) = explode(' ', $attrSubSet[0]);
-			// removes all "non-regular" attr names AND also attr blacklisted
+			#$attrSubSet = explode('=', trim($attrSet[$i]));
+			#list($attrSubSet[0]) = explode(' ', $attrSubSet[0]);
+                        if (preg_match ('/([a-z]*)(?:\=)(.*)/', trim ($attrSet[$i]), $matches)) {
+                          $attrSubSet[0] = $matches[1];
+                          $attrSubSet[1] = $matches[2];
+			   // removes all "non-regular" attr names AND also attr blacklisted
 			if ((!eregi("^[a-z]*$",$attrSubSet[0])) || (($this->xssAuto) && ((in_array(strtolower($attrSubSet[0]), $this->attrBlacklist)) || (substr($attrSubSet[0], 0, 2) == 'on')))) 
 				continue;
 			// xss attr value filtering
@@ -235,7 +239,7 @@ class InputFilter {
 				else if ($attrSubSet[1] == "0") $newSet[] = $attrSubSet[0] . '="0"';
 				// reformat single attributes to XHTML
 				else $newSet[] = $attrSubSet[0] . '="' . $attrSubSet[0] . '"';
-			}	
+			}}	
 		}
 		return $newSet;
 	}
