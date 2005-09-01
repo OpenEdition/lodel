@@ -76,7 +76,7 @@ class XMLImportParser {
     $this->_init_class($class);
     $this->mainclass=$class;
 
-    #print_r($this->commonstyles);
+    
   }
 
 
@@ -91,7 +91,7 @@ class XMLImportParser {
 
   {
     $this->handler=&$handler; // non-reentrant
-
+    $this->handler->commonstyles = $this->commonstyles;
     $arr=preg_split("/<(\/?)soo:block(>|\s+class=\"[^\"]*\"\s*>)/",$string,-1,PREG_SPLIT_DELIM_CAPTURE);
     $n=count($arr);
 
@@ -430,6 +430,7 @@ class XMLImportParser {
   function _prepare_style(&$style,&$obj)
 
   {
+    
     $style=strtolower(trim($style));
     // style synonyme. take the first one
     list($style,$lang)=explode(":",$style);
