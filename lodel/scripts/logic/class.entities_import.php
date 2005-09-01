@@ -74,7 +74,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      $parser=new XMLImportParser();
      $parser->init($context['class']);
      $parser->parse(file_get_contents($task['fichier']),$this);
-
+    #exit(0);
      // save the file
      if (!$this->id) die("ERROR: internal error in Entities_ImportLogic::importAction");
      if ($this->nbdocuments>1) {
@@ -92,7 +92,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        $dao=&getDAO("tasks");
        $dao->deleteObject($idtask);
      }
-      
+      #print_r($task);exit(0);
      if ($this->ret!='_error' && $context['finish']) {
        return $this->ret;
        #return "_back";
@@ -279,7 +279,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
        #die();
        $localcontext=array_merge($this->context,$this->_localcontext);
 
-       #print_R($localcontext);
+       
 
        if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
        if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
@@ -317,8 +317,18 @@ class Entities_ImportLogic extends Entities_EditionLogic {
    function processTableFields($obj,$data) 
    {
      global $db;
-     $data=preg_replace('/(<p\b[^>]+class=")[^"]*"/','\\1'.$obj->style.'"',$data);
-     if ($obj->type=="file" || $obj->type=="image") {
+     static $styles,$styles_string;
+    #print_r($this);
+    #  echo "data=$data<br />";
+    $styles = array_keys ($this->commonstyles);
+    $styles_string = implode('|',$styles);
+    #unset($styles);
+    #echo "styles=$styles_string";
+    # Bug #1208336 is here, the internal styles are replaced by the preg_replace !!
+    # internal style must not be replaced
+     $data=preg_replace('/(<p\b[^>]+class=")[^($styles_string)]{1}[^"]*"/','\\1'.$obj->style.'"',$data);
+   # echo "dataafter=$data<br />"; 
+    if ($obj->type=="file" || $obj->type=="image") {
        // nothing...
      } elseif ($obj->type=="mltext") {
        $lang=$obj->lang ? $obj->lang : $GLOBALS['lodeluser']['lang'];
@@ -395,25 +405,26 @@ class Entities_ImportLogic extends Entities_EditionLogic {
      return $obj->conversion.$data.closetags($obj->conversion);
    }
 
-   function processInternalStyles($obj,$data) 
-     
-   {
-     if (strpos($obj->conversion,"<li>")!==false) {
-       $conversion=str_replace("<li>","",$obj->conversion);
-       $data=preg_replace(array("/(<p\b)/","/(<\/p>)/"),array("<li>\\1","\\1</li>"),$data);
+   function processInternalStyles ($obj,$data) {
 
-     } elseif (preg_match("/<hr\s*\/?>/",$obj->conversion)) {
-       switch (trim(strip_tags($data))) {
-       case '*' : return "<hr width=\"30%\" \ >";
-       case '**' : return "<hr width=\"50%\" \ >";
-       case '***' : return "<hr width=\"80%\" \ >";
-       case '****' : return "<hr \ >";
-       default: return "<hr width=\"10%\" \ >";
-       }
-     } else {
-       $conversion=$obj->conversion;
+     if (strpos ($obj->conversion, "<li>") !== false) {
+       $conversion = str_replace ("<li>", "", $obj->conversion);
+       $data = preg_replace (array ("/(<p\b)/", "/(<\/p>)/"), array ("<li>\\1", "\\1</li>"), $data);
      }
-     return $conversion.$data.closetags($conversion);
+     elseif (preg_match ("/<hr\s*\/?>/", $obj->conversion)) {
+       switch (trim (strip_tags ($data))) {
+         case '*' : return "<hr width=\"30%\" \ >";
+         case '**' : return "<hr width=\"50%\" \ >";
+         case '***' : return "<hr width=\"80%\" \ >";
+         case '****' : return "<hr \ >";
+         default: return "<hr width=\"10%\" \ >";
+       }
+     } 
+     else  {
+       $conversion = $obj->conversion;
+     }
+
+     return $conversion.$data.closetags ($conversion);
    }
 
    function unknownParagraphStyle($style,$data) {
