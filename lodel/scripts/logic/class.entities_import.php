@@ -69,9 +69,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		@unlink ($sourcefile);
 		copy ($task['source'], $sourcefile);
 		@chmod ($sourcefile, 0666 & octdec($GLOBALS['filemask']));
-		// ok
-		// close the task     
-		if ($idtask) {
+		if ($idtask) { // close the task
 			$dao=&getDAO ("tasks");
 			$dao->deleteObject ($idtask);
 		}
@@ -188,6 +186,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
 			$error=array ();
 			$this->ret=$this->editAction ($localcontext, $error, FORCE);
+			#echo "ret1=".$this->ret."<br />";
+			#print_r($error);
 			if (!$this->id) $this->id=$localcontext['id']; // record the first one only
 			// move the source file and the files
 		}
@@ -200,16 +200,20 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 	function processTableFields ($obj, $data) {
 		global $db;
 		static $styles_string;
-		if (!$styles_string) {  
+		if (!$styles_string) { // record all the internal into a string to use it in the following regexp
+			$styles = array();
 			if (is_array ($this->commonstyles)) {
-				$styles = array_keys ($this->commonstyles);
-				$styles_string = implode('|',$styles);
+				foreach ($this->commonstyles as $key => $val) {
+					$class = strtolower (get_class ($val));
+					if ($class == "internalstylesvo") //if internalstyle add it to the array $styles
+						$styles[] = $key;
+				}
+				if (count ($styles) > 0)	$styles_string = implode ('|',$styles);
 				unset($styles);
 			}
 		}
-		# Bug #1208336 is here, the internal styles are replaced by the preg_replace !!
-		# internal style must not be replaced
-		$data=preg_replace ('/(<p\b[^>]+class=")[^($styles_string)]{1}[^"]*"/', '\\1'.$obj->style.'"', $data);
+		// replace all the paragraph containing classes added by Oo except paragraph with internal style
+		$data=preg_replace ('/(<p\b[^>]+class=")(?!'.$styles_string.')/', '\\1'.$obj->style.'"', $data);
 		if ($obj->type=="file" || $obj->type=="image") {
 			// nothing...
 		} elseif ($obj->type=="mltext") {
