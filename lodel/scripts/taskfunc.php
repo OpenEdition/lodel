@@ -89,26 +89,23 @@ function gettask (&$id)
  */
 
 
-function gettypeandclassfromtask($task,&$context)
-
-{
-  global $db;
-
-  if ($task['identity']) {
-    $row=$db->getRow(lq("SELECT class,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$task['identity']."'"));        
-    if ($db->errorno()) dberror();
-    $context['class']=$row['class'];
-    $context['idtype']=$row['idtype'];
-    
-    if (!$context['class']) die("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask");
+function gettypeandclassfromtask($task,&$context) {
+	global $db;
+	if ($task['identity']) {
+		$row=$db->getRow (lq ("SELECT class,idtype,idparent FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$task['identity']."'"));
+	if ($db->errorno()) dberror();
+	$context['class']=$row['class'];
+	$context['idtype']=$row['idtype'];
+	$context['idparent'] = $row['idparent'];
+	if (!$context['class']) die("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask");
   } else {
-    $idtype=$task['idtype'];
-    if (!$idtype) die("ERROR: idtype must be given by task in gettypeandclassfromtask");
-    // get the type 
-    $dao=&getDAO("types");
-    $votype=$dao->getById($idtype,"class");
-    $context['class']=$votype->class;
-  }
+		$idtype=$task['idtype'];
+		if (!$idtype) die ("ERROR: idtype must be given by task in gettypeandclassfromtask");
+		// get the type 
+		$dao=&getDAO ("types");
+		$votype=$dao->getById ($idtype,"class");
+		$context['class']=$votype->class;
+	}
 }
 
 ?>
