@@ -40,7 +40,7 @@
 <div><a href="oochargement.php?idparent=[#IDPARENT]&idtype=[#IDTYPE]">[@EDITION.IMPORT_WITH_SERVOO]</a></div>
 </LOOP>
 </IF>
-
+<br />
 <form enctype="multipart/form-data" method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
 	<input type="hidden" name="do" value="edit" />
 	<input type="hidden" name="id" value="[#ID]" />
@@ -51,21 +51,30 @@
 	<input type="hidden" name="edit" value="1" />
 
 	<dl class="infosEntitie">
+		<!-- [Identifiant ]-->
+		<dt><label for="identifier">[@EDITION.IDENTIFIER]:</label></dt>
+		<dd>
+			<input style="background-color : #eee" size="45" type="text" name="identifier" id="identifier" value="[#IDENTIFIER]" /> ([@EDITION.WARNING_IT_IS_NOT_RECOMMENDED_TO_EDIT_THIS_FIELD])
+			<IF COND="[#ERROR_IDENTIFIER]">
+				<br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFIER]</span>
+			</IF>
+		</dd>
 		<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 		<dd>[#TYPE.TYPE]</dd>
 		<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
 		<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
 		<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
 		<dd>[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])]</dd>
+		
 	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
-		<dt class="select">[@EDITION.SYNTAX]&nbsp;:</dt>
+		<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:</dt>
 		<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
 	</IF>
 	</dl>
 	<br />
 	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
 	<br />
-        <MACRO NAME="AFFICHER_IDENTIFIANT">
+        
 
 
 	<br /><br />
