@@ -29,8 +29,7 @@
 <MACRO NAME="JS_CONFIRM">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-	
-		<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 		<!--[ Partie haute ]-->
 		<tr>
 			<td  width="375" valign="top">
@@ -93,7 +92,7 @@
 								<td width="20">&nbsp;</td>
 								<td width="350" class="td_admin">
 	<IF COND="[#LODELUSER.EDITOR]">	
-				<a href="oochargement.php?iddocument=[#ID]">
+				<a href="oochargement.php?identity=[#ID]&amp;idparent=[#IDPARENT]">
 					<span class="texte_orange">[@EDITION.RELOAD_FILE]</span>
 				</a>
 	<ELSE/>
