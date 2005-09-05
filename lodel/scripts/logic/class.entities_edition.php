@@ -156,7 +156,7 @@ class Entities_EditionLogic extends GenericLogic {
       }
     }
      /////
-
+      #print_r($context);
      $ret = GenericLogic::viewAction($context,$error);
 
      if (!$context['id'] && !$error) { // add
@@ -177,126 +177,117 @@ class Entities_EditionLogic extends GenericLogic {
 
 
 
-   /**
-    * add/edit Action
-    */
+	/**
+	 * add/edit Action
+	 */
+	function editAction (&$context, &$error, $opt=false) {
+		if (!rightonentity($context['id'] ? "edit" : "create",$context)) die ("ERROR: you don't have the right to perform this operation");      
+		if ($context['cancel']) return "_back";
+		global $lodeluser,$home;
+		$id=$context['id'];
+		if ($id && (!isset($context['idparent']) || !isset($context['idtype']))) {
+			$dao=$this->_getMainTableDAO();
+			$vo=$dao->getById($id,"idparent,idtype");
+			$context['idparent']=$vo->idparent;
+			$context['idtype']=$vo->idtype;
+		}
+		$idparent=$context['idparent'];
+		$idtype=$context['idtype'];
+		$status=intval($context['status']);
+		// iduser
+		$context['iduser']=!SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
 
-   function editAction(&$context,&$error,$opt=false)
+		require_once("entitiesfunc.php");
+		if (!checkTypesCompatibility($id,$idparent,$idtype)) {
+			$error['idtype']="types_compatibility";
+			return "_error";
+		}
 
-   {
-     if (!rightonentity($context['id'] ? "edit" : "create",$context)) die("ERROR: you don't have the right to perform this operation");      
-     if ($context['cancel']) return "_back";
-     global $lodeluser,$home;
-     $id=$context['id'];
-     if ($id && (!isset($context['idparent']) || !isset($context['idtype']))) {
-       $dao=$this->_getMainTableDAO();
-       $vo=$dao->getById($id,"idparent,idtype");
-       $context['idparent']=$vo->idparent;
-       $context['idtype']=$vo->idtype;
-     }
-     $idparent=$context['idparent'];
-     $idtype=$context['idtype'];
-     $status=intval($context['status']);
+		// get the class 
+		$daotype = &getDAO ("types");
+		$votype = $daotype->getById ($context['idtype'], "class,creationstatus,search");
+		$class = $context['class']=$votype->class;
+		if (!$class) die ("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
 
-     // iduser
-     $context['iduser']=!SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
+		if (!$this->validateFields ($context, $error)) {
+			// error.
+			// if the entity is imported and will be checked
+			// that's fine, let's continue, if not return an error
+			if ($opt==FORCE) { $status=-64;  $ret="_error"; }
+			if ($status>-64) return "_error";
+		}
 
-     require_once("entitiesfunc.php");
-     if (!checkTypesCompatibility($id,$idparent,$idtype)) {
-       $error['idtype']="types_compatibility";
-       return "_error";
-     }
+		//lock_write($class,"objets","entity","relations",
+		//"entity_personnes","personnes",
+		//"entity_entrees","entrees","entrytypes","types");
 
-     // get the class 
-     $daotype=&getDAO("types");
-     $votype=$daotype->getById($context['idtype'],"class,creationstatus,search");
-     
-     $class=$context['class']=$votype->class;
-     if (!$class) die("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
+		// get the dao for working with the object
+		$dao=$this->_getMainTableDAO();
+		$now=date("Y-m-d H:i:s");
 
-     if (!$this->validateFields($context,$error)) {
-      
-       // error.
-       // if the entity is imported and will be checked
-       // that's fine, let's continue, if not return an error
-       if ($opt==FORCE) { $status=-64;  $ret="_error"; }
-       if ($status>-64) return "_error";
-     }
-      
-     //lock_write($class,"objets","entity","relations",
-     //"entity_personnes","personnes",
-     //"entity_entrees","entrees","entrytypes","types");
+		if ($id) { //edit the entity
+			$new=false;
+			$vo=$dao->getById($id,"id,identifier,status, g_title");
+			if ($vo->status>=16) die("ERROR: entity is locked. No operation is allowed");
+			// change the usergroup of the entity ?
+			if ($lodeluser['admin'] && $context['usergroup']) $vo->usergroup=intval ($context['usergroup']);
 
+			if ($vo->status<=-64) {  // like a creation
+				$vo->status=$votype->creationstatus;
+				$vo->creationdate=$now;
+			}
+		} else { //create the entity
+			$new=true;
+			$vo=$dao->createObject ();
+			$vo->idparent=$idparent;
+			$vo->usergroup=$this->_getUserGroup ($context, $idparent);
+			$vo->iduser=$context['iduser'];
+			$vo->status=$status ? $status : $votype->creationstatus;
+			$vo->creationdate=$now;
+		}
+		$vo->modificationdate=$now;
+		// populate the entity
+		if ($idtype) $vo->idtype=$idtype;
+		// permanent identifier management
+		if (!$vo->identifier)
+			$vo->identifier=$context['identifier'];
+		$dctitle=$this->getGenericEquivalent ($class, 'dc.title');
+		if ($dctitle) $vo->g_title=strip_tags ($context['data'][$dctitle], "<em><strong><span><sup><sub>");
+		if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier ($id, $vo->g_title);
+		
+		if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
+		if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
+		$id=$context['id']=$dao->save($vo);
 
-     // get the dao for working with the object
-     $dao=$this->_getMainTableDAO();
-     $now=date("Y-m-d H:i:s");
+		// change the group recursively
+		//if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$lodelusergroup);
 
-     // create or edit the entity
-     if ($id) {
-       $new=false;
-       $vo=$dao->getById($id,"id,status");
-       if ($vo->status>=16) die("ERROR: entity is locked. No operation is allowed");
-       // change the usergroup of the entity ?
-       if ($lodeluser['admin'] && $context['usergroup']) $vo->usergroup=intval($context['usergroup']);
+		$gdao=&getGenericDAO ($class, "identity");
+		$gdao->instantiateObject ($gvo);
+		$context['data']['id']=$context['id'];
+		$this->_moveImages ($context['data']);
+		$this->_populateObject ($gvo,$context['data']);
+		$gvo->identity=$id;
+		$this->_moveFiles ($id, $this->files_to_move, $gvo);
+		$gdao->save ($gvo, $new);  // save the related table
+		if ($new) $this->_createRelationWithParents ($id, $idparent);
 
-       if ($vo->status<=-64) {  // like a creation
-	 $vo->status=$votype->creationstatus;
-	 $vo->creationdate=$now;
-       }
-     } else {
-       $new=true;
-       $vo=$dao->createObject();
-       $vo->idparent=$idparent;
-       $vo->usergroup=$this->_getUserGroup($context,$idparent);
-       $vo->iduser=$context['iduser'];
-       $vo->status=$status ? $status : $votype->creationstatus;
-       $vo->creationdate=$now;
-     }
-     $vo->modificationdate=$now;
-     // populate the entity
-     if ($idtype) $vo->idtype=$idtype;
-     $vo->identifier=$context['identifier'];
-     $dctitle=$this->getGenericEquivalent($class,'dc.title');
-     if ($dctitle) $vo->g_title=strip_tags($context['data'][$dctitle],"<em><strong><span><sup><sub>");
-     if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier($id,$vo->g_title);
-     if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
-     if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
+		$this->_saveRelatedTables ($vo, $context);
 
-     $id=$context['id']=$dao->save($vo);
+		if ($ret=="_error") return "_error";
+		if ($votype->search) {
+			require_once("class.entities_index.php");
+			$lo_entities_index = new Entities_IndexLogic();
+			$lo_entities_index->addIndexAction($context,$error);
+		}
 
-     // change the group recursively
-     //if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$lodelusergroup);
+		update();
 
-     $gdao=&getGenericDAO($class,"identity");
-     $gdao->instantiateObject($gvo);
-     $context['data']['id']=$context['id'];
-     $this->_moveImages($context['data']);
-     $this->_populateObject($gvo,$context['data']);
-     $gvo->identity=$id;
-     $this->_moveFiles($id,$this->files_to_move,$gvo);
-     $gdao->save($gvo,$new);  // save the related table
-     if ($new) $this->_createRelationWithParents($id,$idparent);
-
-     $this->_saveRelatedTables($vo,$context);
-
-     //unlock();
-
-     if ($ret=="_error") return "_error";
-
-     if ($votype->search) {
-       require_once("class.entities_index.php");
-       $lo_entities_index = new Entities_IndexLogic();
-       $lo_entities_index->addIndexAction($context,$error);
-     }
-
-     update();
-
-     if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
-       return "_location: ".SITEROOT.makeurlwithid($id);
-     }
-     return $ret ? $ret : "_back";
-   }
+		if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
+			return "_location: ".SITEROOT.makeurlwithid($id);
+		}
+		return $ret ? $ret : "_back";
+	} //end of editAction
 
 
    function makeSelect(&$context,$var,$edittype)
