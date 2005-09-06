@@ -28,156 +28,130 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-
+require_once("genericlogic.php");
 /**
  *  Logic Persons
  */
-
-require_once("genericlogic.php");
-
 class PersonsLogic extends GenericLogic {
 
+	/** Constructor
+	 */
+	function PersonsLogic () {
+		$this->GenericLogic ("persons");
+	}
 
 
-  /** Constructor
-   */
-   function PersonsLogic() {
-     $this->GenericLogic("persons");
-   }
+	function viewAction (&$context, &$error) {
+		if (!$context['id']) $context['status']=32;
+		$context['classtype']="persons";
+		return GenericLogic::viewAction ($context, $error);
+	}
 
+	/**
+	 * list action
+	 */
+	function listAction (&$context, &$error, $clean=false) {
+		$daotype=&getDAO ("persontypes");
+		$votype=$daotype->getById ($context['idtype']);
+		if (!$votype) die ("ERROR: idtype must me known in GenericLogic::viewAction");
+		$this->_populateContext ($votype, $context['type']);
+		return "_ok";
+	}
 
-  function viewAction(&$context,&$error)
+	/**
+	 * add/edit Action
+	 */
+	function editAction (&$context, &$error, $clean=false) {
+		global $lodeluser, $home;
+		$id=$context['id'];
+		$idtype=$context['idtype'];
+		if (!$idtype) die ("ERROR: internal error in PersonsLogic::editAction");
+		$status=$context['status'];
+#echo "status=$status"; print_r ($context);
+		// get the class 
+		$daotype=&getDAO ("persontypes");
+		$votype=$daotype->getById ($idtype, "class");
+		$class=$context['class']=$votype->class;
+		#print_r($context);
+		if ($clean!=CLEAN) {
+			if (!$this->validateFields ($context, $error)) {
+			// error.
+			// if the entity is imported and will be checked
+			// that's fine, let's continue, if not return an error
+				if ($status>-64) return "_error";
+			}
+		}
+		foreach (array ("firstname", "familyname") as $g) {
+			$equiv[$g]=$this->getGenericEquivalent($class,$g);
+			if (!$equiv[$g]) trigger_error ("ERROR: The generic field $g is required. Please edit your editorial model.",E_USER_ERROR);
+			$$g=trim($context['data'][$equiv[$g]]);
+		}
 
-  {
-    if (!$context['id']) $context['status']=32;
-    $context['classtype']="persons";
-    return GenericLogic::viewAction($context,$error);
-  }
+		if (!$familyname && !$firstname) { $error[$equiv['familyname']]="+"; return "_error"; }
+		// get the dao for working with the object
+		$dao=$this->_getMainTableDAO();
 
+		if (!$id && ($familyname || $firstname)) {
+			// search if the person exists
+			$vo=$dao->find ("g_familyname='". $familyname. "' AND g_firstname='". $firstname. "'  AND idtype='".$idtype."' AND status>-64","id,status");
+			if( abs($vo->status) == 32) $context['protected'] = 1; //if protected
+			$new=false;
+		}
 
-   /**
-    * list action
-    */
+		if (!$vo) {
+			if ($id) { //edit
+				$new=false;echo "edit!";
+				$dao->instantiateObject($vo);
+				$vo->id=$id;
+			} else { //create
+				$new=true; echo "create!";
+				$vo=$dao->createObject();
+				$vo->status=$status ? $status : -1;
+			}
+		}
+		// populate the persons table
+		if ($dao->rights['protect']) $vo->protect=$context ['protected'] ? 1 : 0;
+		if ($idtype) $vo->idtype=$idtype;
+		$vo->g_firstname=$firstname;
+		$vo->g_familyname=$familyname;
+		$vo->sortkey=makeSortKey ($familyname." ".$firstname);
+		$id=$context['id']=$dao->save($vo);
+		// change the group recursively
+		//if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$usergroup);
 
-  function listAction(&$context,&$error,$clean=false)
+		// save the class table
+		$gdao=&getGenericDAO ($class,"idperson");
+		$gdao->instantiateObject ($gvo);
+		$context['data']['id']=$context['id'];
+		$this->_populateObject ($gvo,$context['data']);
+		$gvo->idperson=$id;
+		$this->_moveFiles ($id, $this->files_to_move, $gvo);
+		$gdao->save ($gvo,$new);  // save the related table
+		// save the entities_class table
+		if ($context['identity']) {
+			$dao=&getDAO ("relations");
+			$vo=$dao->find ("id1='".intval ($context['identity']). "' AND id2='". $id. "' AND nature='G' AND degree='".intval ($context['degree']). "'", "idrelation");
+			if (!$vo) {
+				$dao->instantiateObject ($vo);
+				$vo->id1=intval ($context['identity']);
+				$vo->id2=$id;
+				$vo->degree=intval ($context['degree']);
+				$vo->nature='G';
+				$idrelation=$context['idrelation']=$dao->save($vo);
+			} else {
+				$idrelation=$context['idrelation']=$vo->idrelation;
+			}
 
-  {
-    $daotype=&getDAO("persontypes");
-    $votype=$daotype->getById($context['idtype']);
-    if (!$votype) die("ERROR: idtype must me known in GenericLogic::viewAction");
-    $this->_populateContext($votype,$context['type']);
-    return "_ok";
-  }
+			$gdao=&getGenericDAO("entities_".$class,"idrelation");
+			$gdao->instantiateObject($gvo);
+			$this->_populateObject($gvo,$context['data']);
+			$gvo->idrelation=$idrelation;
+			$gdao->save($gvo,true);  // save the related table
+		}
 
-
-   /**
-    * add/edit Action
-    */
-
-   function editAction(&$context,&$error,$clean=false)
-
-   {
-     global $lodeluser,$home;
-
-
-     $id=$context['id'];
-     $idtype=$context['idtype'];
-     if (!$idtype) die("ERROR: internal error in PersonsLogic::editAction");
-     $status=$context['status'];
-
-     // get the class 
-     $daotype=&getDAO("persontypes");
-     $votype=$daotype->getById($idtype,"class");
-     $class=$context['class']=$votype->class;
-
-     if ($clean!=CLEAN) {
-       if (!$this->validateFields($context,$error)) {
-	 // error.
-	 // if the entity is imported and will be checked
-	 // that's fine, let's continue, if not return an error
-	 if ($status>-64) return "_error";
-       }
-     }
-
-     foreach(array("firstname","familyname") as $g) {
-       $equiv[$g]=$this->getGenericEquivalent($class,$g);
-       if (!$equiv[$g]) trigger_error("ERROR: The generic field $g is required. Please edit your editorial model.",E_USER_ERROR);
-       $$g=trim($context['data'][$equiv[$g]]);
-     }
-
-     if (!$familyname && !$firstname) { $error[$equiv['familyname']]="+"; return "_error"; }
-
-     // get the dao for working with the object
-     $dao=$this->_getMainTableDAO();
-
-     if (!$id && ($familyname || $firstname)) {
-       // search if the person exists
-       $vo=$dao->find("g_familyname='".$familyname."' AND g_firstname='".$firstname."'  AND idtype='".$idtype."' AND status>-64","id");
-       $new=false;
-     }
-
-     if (!$vo) {
-       if ($id) { // create or edit the entity
-	 $new=false;
-	 $dao->instantiateObject($vo);
-	 $vo->id=$id;
-       } else {
-	 $new=true;
-	 $vo=$dao->createObject();
-	 $vo->status=$status ? $status : -1;
-       }
-     }
-     // populate the persons table
-     if ($dao->rights['protect']) $vo->protect=$context['protected'] ? 1 : 0;
-     if ($idtype) $vo->idtype=$idtype;
-     $vo->g_firstname=$firstname;
-     $vo->g_familyname=$familyname;
-     $vo->sortkey=makeSortKey($familyname." ".$firstname);
-     $id=$context['id']=$dao->save($vo);
-     // change the group recursively
-     //if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$usergroup);
-
-     // save the class table
-     $gdao=&getGenericDAO($class,"idperson");
-     $gdao->instantiateObject($gvo);
-     $context['data']['id']=$context['id'];
-     $this->_populateObject($gvo,$context['data']);
-     $gvo->idperson=$id;
-
-     $this->_moveFiles($id,$this->files_to_move,$gvo);
-     $gdao->save($gvo,$new);  // save the related table
-     
-     // save the entities_class table
-
-     if ($context['identity']) {
-       $dao=&getDAO("relations");
-
-       $vo=$dao->find("id1='".intval($context['identity'])."' AND id2='".$id."' AND nature='G' AND degree='".intval($context['degree'])."'","idrelation");
-
-       if (!$vo) {
-	 $dao->instantiateObject($vo);
-	 $vo->id1=intval($context['identity']);
-	 $vo->id2=$id;
-	 $vo->degree=intval($context['degree']);
-	 $vo->nature='G';
-	 $idrelation=$context['idrelation']=$dao->save($vo);
-       } else {
-	 $idrelation=$context['idrelation']=$vo->idrelation;
-       }
-
-       $gdao=&getGenericDAO("entities_".$class,"idrelation");
-       $gdao->instantiateObject($gvo);
-       $this->_populateObject($gvo,$context['data']);
-       $gvo->idrelation=$idrelation;
-       $gdao->save($gvo,true);  // save the related table
-     }
-
-     update();
-     //unlock();
-
-     return "_back";
-   }
+		update();
+		return "_back";
+	}
 
    /*---------------------------------------------------------------*/
    //! Private or protected from this point
@@ -240,7 +214,7 @@ class PersonsLogic extends GenericLogic {
 
     // delete 
   }
-} // class 
+}// class 
 
 /*------------------------------------*/
 /* special function                   */
@@ -249,7 +223,4 @@ class PersonsLogic extends GenericLogic {
 
 /*-----------------------------------*/
 /* loops                             */
-
-
-
 ?>
