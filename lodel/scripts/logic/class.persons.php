@@ -100,11 +100,11 @@ class PersonsLogic extends GenericLogic {
 
 		if (!$vo) {
 			if ($id) { //edit
-				$new=false;echo "edit!";
+				$new=false;
 				$dao->instantiateObject($vo);
 				$vo->id=$id;
 			} else { //create
-				$new=true; echo "create!";
+				$new=true;
 				$vo=$dao->createObject();
 				$vo->status=$status ? $status : -1;
 			}
