@@ -48,13 +48,30 @@ class EntriesLogic extends GenericLogic {
 		$context['classtype']="entries";
 		return GenericLogic::viewAction ($context, $error); //call the parent method
 	}
+	/*function deleteAction(&$context,&$error)
 
+   {     
+     global $db,$home;
+		
+     $id=$context['id'];
+			print_r($context);      
+     if ($this->isdeletelocked($id)) trigger_error("This object is locked for deletion. Please report the bug",E_USER_ERROR);
+     $dao=$this->_getMainTableDAO();
+     $this->_prepareDelete($dao,$context);
+     $dao->deleteObject($id);
+
+     $ret=$this->_deleteRelatedTables($id);
+
+     update();
+
+     return $ret ? $ret : "_back";
+   }*/
 	function isdeletelocked ($id, $status=0) {
 		global $db;
-		//if this entry is used by an entity don't delete it.
-		//$count = $db->getOne(lq("SELECT count(*) FROM #_TP_entries,#_TP_relations WHERE #_TP_relations.id2=#_TP_entries.id AND #_TP_relations.id2='$id' AND status>-64"));
-		// or if this entry has child
-		$count += $db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE idparent='$id' AND status >-64"));
+
+		// if this entry has child or is published
+		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE idparent ".sql_in_array($id)." AND status >-64"));
+		$count += $db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE id='".$id."' AND status=32"));
 		if ($db->errorno())  dberror();
 		if ($count==0) {
 			return false;
@@ -102,7 +119,7 @@ class EntriesLogic extends GenericLogic {
 		if (isset ($context['g_name'])) {
 			if (!$context['g_name']) return "_error"; // empty entry!
 			// search if the entries exists
-			$vo=$dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id");
+			$vo=$dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			if ($vo->id) {
 				$context['id']=$vo->id;
 				return; // nothing to do.
@@ -124,7 +141,7 @@ class EntriesLogic extends GenericLogic {
 		if (!$vo) {
 			if ($id) { // create or edit the entity
 				$new=false;
-				$dao->instantiateObject($vo);
+				$dao->instantiateObject ($vo);
 				$vo->id=$id;
 			} else {
 				if (!$votype->newbyimportallowed && $context['lo']!="entries") { return "_error"; }
