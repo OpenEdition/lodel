@@ -40,7 +40,7 @@ function validfield(&$text,$type,$default="",$name="")
   if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
     $text=strip_tags($text);
   }
-
+  
   switch ($type) {
   case "text" :
   case "tinytext" :
@@ -52,6 +52,10 @@ function validfield(&$text,$type,$default="",$name="")
     if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/",$text)) return $type;
     break;
   case "class" :
+		if (!preg_match ("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) return $type;
+		if (reservedword($text)) return "reservedsql"; // if the class is a reservedword -> error
+		if (reservedByLodel ($text)) return "reservedbylodel"; //if the class is a word reserved by Lodel -> error
+		break;
   case "classtype" :
     $text=strtolower($text);
     if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/",$text)) return $type;

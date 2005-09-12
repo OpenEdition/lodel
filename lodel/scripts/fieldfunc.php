@@ -333,6 +333,43 @@ function reservedword($name) {
 	  );
   return (in_array (strtoupper($name), $reserved_words));
 }
+/**
+ * check if a string contain a word reserved by Lodel
+ * @param string $name the string to check
+ * @return boolean true if $name is contained in the reserved words array
+ */
+function reservedByLodel ($name) {
+	static $reserved_lodel;
+  if (!$reserved_lodel) 
+		$reserved_lodel = 
+			array ("ENTITIES",
+							"ENTRIES",
+							"PERSONS",
+							"CHARACTERSTYLES",
+							"CLASSES",
+							"ENTITYTYPES_ENTITYTYPES",
+							"ENTRYTYPES",
+							"INTERNALSTYLES",
+							"OBJECTS",
+							"OPTIONGROUPS",
+							"OPTIONS",
+							"PERSONTYPES",
+							"RELATIONS",
+							"SEARCH_ENGINE",
+							"SESSION",
+							"SITES",
+							"TABLEFIELDGROUPS",
+							"TABLEFIELDS",
+							"TASKS",
+							"TRANSLATIONS",
+							"TYPES",
+							"URLSTACK",
+							"USERGROUPS",
+							"USERS",
+							"USERS_USERGROUPS"
+						);
+	return (in_array (strtoupper($name), $reserved_lodel)); 
+}
 
 
 

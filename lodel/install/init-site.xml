@@ -193,7 +193,7 @@
         size="64"
         required="true"
         visibility="hidden"
-        edittype="class" />
+        edittype="text" />
 <column name="title"
         type="VARCHAR"
         size="255"
@@ -1176,7 +1176,9 @@
         required="true" />
 <vcolumn name="protected"
         label="[@ADMIN.PERMANENT_ENTRY]"
-        edittype="boolean" />
+        edittype="boolean"
+        
+        />
 <column name="upd"
         type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        

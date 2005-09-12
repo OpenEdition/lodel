@@ -81,6 +81,7 @@
 <IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'reservedsql'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR] eq 'reservedbylodel'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'upload'">[@COMMON.ERROR_UPLOAD_FILE]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
