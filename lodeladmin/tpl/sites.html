@@ -41,7 +41,7 @@
 	<a href="site.php">[@LODELADMIN.ADD_WEBSITE]</a>
 </div>
 <br /><br />
-
+[@LODELADMIN.WEBSITE_ENABLED]
 
 <table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 	<tr>
@@ -53,8 +53,8 @@
 
 <td><a href="[#URL]">[(#TITLE|nbsp)]</a></td>
 <td>
-<a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a>|
-<a href="site.php?id=[#ID]&amp;delete=1">[@COMMON.DELETE]</a>|
+<a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a> |
+<a href="site.php?id=[#ID]&amp;delete=1">[@COMMON.DELETE]</a> |
 <IF COND="[#STATUS] ge 32"><a href="locksite.php?id=[#ID]&amp;unlock=1">[@LODELADMIN.UNLOCKED]</a><ELSE/><a href="locksite.php?id=[#ID]&amp;lock=1">[@LODELADMIN.LOCKED]</a></IF>
 </td>
 </tr>
@@ -77,7 +77,7 @@
 <MACRO NAME="TR_LIST">
 <td><a href="[#URL]">[(#TITLE|nbsp)]</a></td>
 <td>
-<a href="site.php?id=[#ID]&amp;restore=1">[@COMMON.RECOVER]</a>|
+<a href="site.php?id=[#ID]&amp;restore=1">[@COMMON.RECOVER]</a> |
 <a href="site.php?id=[#ID]&amp;delete=1" onclick="return alert('[@COMMON.CONFIRMATION]');">[@COMMON.DELETE]</a>
 
 </td>
