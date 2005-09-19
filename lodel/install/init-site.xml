@@ -753,8 +753,8 @@
         type="TINYINT"
         default="0"
         required="true"
-        description="1=import par servOO"
-        label="[@ADMIN.IMPORT_WITH_SERVOO]"
+        description="1=import par servOO, 0 création par formulaire"
+        label="[@ADMIN.DEFAULT_CREATION_MODE]"
         edittype="select" />
 <column name="creationstatus"
         type="TINYINT"
