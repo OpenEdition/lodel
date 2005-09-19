@@ -72,8 +72,9 @@ class InputFilter {
 	function remove($source) {
 		$loopCounter=0;
 		// provides nested-tag protection
-		while($source != $this->filterTags($source)) {
+		while($source != $this->filterTags($source)) {	
 			$source = $this->filterTags($source);
+	
 			$loopCounter++;
 		}
 		return $source;
@@ -87,6 +88,7 @@ class InputFilter {
 	  */
 	function filterTags($source) {
 		// filter pass setup
+		#echo "sourceici<textarea cols=50>$source</textarea><br />";
 		$preTag = NULL;
 		$postTag = $source;
 		// find initial tag's position
@@ -191,7 +193,8 @@ class InputFilter {
 	  * @param Array $attrSet
 	  * @return Array $newSet
 	  */
-	function filterAttr($attrSet) {	
+	function filterAttr($attrSet) {
+		print_r($attrSet);	
 		$newSet = array();
 		// process attributes
 		for ($i = 0; $i <count($attrSet); $i++) {
@@ -218,7 +221,8 @@ class InputFilter {
 				if ((substr($attrSubSet[1], 0, 1) == "'") && (substr($attrSubSet[1], (strlen($attrSubSet[1]) - 1), 1) == "'"))
 					$attrSubSet[1] = substr($attrSubSet[1], 1, (strlen($attrSubSet[1]) - 2));
 				// strip slashes
-				$attrSubSet[1] = stripslashes($attrSubSet[1]);
+				#echo "test : ".$attrSubSet[1]."<br />";
+				#$attrSubSet[1] = stripslashes($attrSubSet[1]);
 			}
 			// auto strip attr's with "javascript:
 			if (	((strpos(strtolower($attrSubSet[1]), 'expression') !== false) &&	(strtolower($attrSubSet[0]) == 'style')) ||
@@ -241,6 +245,7 @@ class InputFilter {
 				else $newSet[] = $attrSubSet[0] . '="' . $attrSubSet[0] . '"';
 			}}	
 		}
+		print_r($newSet);
 		return $newSet;
 	}
 	
