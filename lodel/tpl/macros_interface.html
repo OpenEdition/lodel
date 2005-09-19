@@ -919,7 +919,7 @@ function modifymember(members,textfield){
 <!--[*************************************************]-->
 <DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
-<form id="search" action="search.php" method="get">
+<form id="searchform" action="search.php" method="get">
 <fieldset>
 <input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
 <input class="searchbutton" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@EDITION.BUTTON_REFINE_YOUR_SEARCH]<ELSE/>[@EDITION.BUTTON_SEARCH]</IF>" />

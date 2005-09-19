@@ -947,38 +947,38 @@ img{
 
 /* Search engine form*/
 
-#search{
-	margin: 0 0 0 0;
+#searchform{
+	margin: 0;
 	width: 100%;
 	font-size: 80%;
 }
 
-#search fieldset{
+#searchform fieldset{
 	border: none;
 	width: auto;
 }
 
-#search fieldset.searchfieldset{
+#searchform fieldset.searchfieldset{
 	padding: 1ex .5em !important;
 	border: 1px solid #7EA463;
-	margin: 0 0 0 0;
+	margin: 0;
 }
 
-#search fieldset select{
+#searchform fieldset select{
 	font-size: 100%;
 	width: 150px;
 }
 
-#search .searchfields{
+#searchform .searchfields{
 	font-size : x-small;
 	border : 1px solid gray;
 }
 
-#search input.searchbutton{
+#searchform input.searchbutton{
 	font-size : x-small;
 }
 
-#search .searchnoresults{
+#searchform .searchnoresults{
 	margin-left : 25px ;
 	margin-top : 50px;
 }
