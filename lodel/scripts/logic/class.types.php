@@ -29,7 +29,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-$GLOBALS['importdocument']=array(
+/*$GLOBALS['importdocument']=array(
 				 0=>array("url"=>"document.php",
 					  "title"=>"[@COMMON.FORM]"),
 
@@ -38,7 +38,7 @@ $GLOBALS['importdocument']=array(
 
 				 //				 100=>array("url"=>"biblioimport.php",
 				 //					    "titre"=>"BibImport")
-				 );
+				 );*/
 
 
 /**
@@ -109,9 +109,13 @@ class TypesLogic extends Logic {
    {
      switch($var) {
      case "import" :
-       foreach($GLOBALS['importdocument'] as $n=>$v) { 
+      /* foreach($GLOBALS['importdocument'] as $n=>$v) {
+			#echo "bla :".strpos($v['title'],"[@"); 
 	 $arr[]=strpos($v['title'],"[@")!==false ? getlodeltextcontents($v['title']) : $v['title']; 
-       }
+       }*/
+			#	print_r($arr);
+			$arr[] = getlodeltextcontents('form','common');
+			$arr[] = getlodeltextcontents('import_from_servoo','common');
        renderOptions($arr,$context['import']);
        break;
      case "display" :
