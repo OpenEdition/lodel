@@ -245,7 +245,7 @@ class InputFilter {
 				else $newSet[] = $attrSubSet[0] . '="' . $attrSubSet[0] . '"';
 			}}	
 		}
-		print_r($newSet);
+		#print_r($newSet);
 		return $newSet;
 	}
 	
