@@ -34,7 +34,7 @@ $GLOBALS['importdocument']=array(
 					  "title"=>"[@COMMON.FORM]"),
 
 				 1=>array("url"=>"oochargement.php",
-					  "title"=>"[@COMMON.IMPORT_FROM_SERVOO")
+					  "title"=>"[@COMMON.IMPORT_FROM_SERVOO]")
 
 				 //				 100=>array("url"=>"biblioimport.php",
 				 //					    "titre"=>"BibImport")
