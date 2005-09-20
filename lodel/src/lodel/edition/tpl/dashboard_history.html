@@ -28,7 +28,7 @@
 <IF COND="[#ID]">
 <title>[@COMMON.EDITION]<LOOP NAME="nompourtitre" TABLE="entities" WHERE="id='[#ID]'">[#IDENTIFIER] [(#G_TITLE|textebrut)]</LOOP></title>
 <ELSE/>
-<title>[(#SITE|strtoupper)].[@COMMON.EDITION_HISTORY]</title>
+<title>[(#SITE|strtoupper)].[@COMMON.HISTORY]</title>
 </IF>
 <MACRO NAME="JS_CONFIRM">
 <!--[ Rajout int?ration maquette ]-->
@@ -43,7 +43,7 @@
 	<ul style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;">
 	
 		<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">[@COMMON.DASHBOARD]</a></li>
-		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title=[@EDITION.HISTORY]">[@EDITION.HISTORY] [@EDITION.HISTORY_DESCRIPTION]</a></li>
+		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title=[@EDITION.HISTORY]">[@COMMON.HISTORY] ([@COMMON.HISTORY_DESCRIPTION])</a></li>
 	
 </ul>
 </div>	
