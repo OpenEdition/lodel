@@ -170,13 +170,22 @@ body{
 	<ul  class="group1">
 	<IF COND="[#SITE]">
 	<li>
-		<IF COND="[#CURRENTURL|strpos('edition')]">
+		<IF COND="[#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('dashboard')]">
 		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
 		<ELSE/>
 		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
 		</IF>
 		[@COMMON.HOME]
 		</a>
+	</li>
+	<li>
+		<IF COND="[#CURRENTURL|strpos('dashboard')]">
+			<a id="dashboard_actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">
+		<ELSE/>
+			<a id="dashboard" href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">	
+		</IF>
+			[@COMMON.DASHBOARD]
+			</a>
 	</li>
 	<li>
 		<IF COND="![#LODELUSER.REDACTOR]">	

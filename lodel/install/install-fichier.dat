@@ -106,6 +106,13 @@ ln tpl/entitybrowser.html
 ln index.php
 ln tpl/edition.html
 
+# le dashboard
+ln tpl/dashboard.html
+ln tpl/dashboard_queue.html
+ln tpl/dashboard_statistics.html
+ln tpl/dashboard_history.html
+
+
 # suppression et fonctions avancees des documents et publications
 ln tpl/delete_confirm.html
 ln tpl/unpublish_confirm.html
