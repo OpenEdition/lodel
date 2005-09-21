@@ -57,6 +57,13 @@ dirdestination lodel
 
 ln index.php
 
+############
+### ajout du formulaire
+dirdestination tpl
+dirsource $homesite/lodel/edition
+ln tpl/edit_entities_edition.html
+ln tpl/macros.html
+
 ###############################################################
 ########### edition
 
