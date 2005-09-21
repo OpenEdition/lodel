@@ -92,18 +92,24 @@ if ($id || $identifier) {
 
   //------------------------------ DO -------------------
  } elseif ($do) {
+		require("controler.php");
    if ($do=="edit" || $do=="view") {
-     $_GET['id']=$_POST['id']=0; // to be sure nobody is going to modify something wrong
+		if($_GET) // to be sure nobody is going to modify something wrong
+			$_GET['id'] = 0;
+		else
+			$_POST['id'] = 0;
      // check for the right to change this document
      $idtype=$_POST['idtype'] ? intval($_POST['idtype']) : intval($_GET['idtype']) ;
      if (!$idtype) die("ERROR: idtype must be given");
      require_once("dao.php");
      $dao=&getDAO("types");
      $vo=$dao->find("id='$idtype' and public>0 and status>0");
+		//	print_r($vo);
      if (!$vo) die("ERROR: you are not allow to add this kind of document");
-     $lodeluser['rights']=LEVEL_REDACTOR; // grant temporary
-     require_once("controler.php");
-     Controler::controler(array("entities_edition"),"entities_edition");
+     $lodeluser['rights']=LEVEL_EDITOR; // grant temporary
+		 $lodeluser['editor'] = 1;
+     $context['lodeluser']= $lodeluser;
+		 Controler::controler(array("entities_edition"),"entities_edition");
      exit();
    } else {
      die("ERROR: unknown action");
