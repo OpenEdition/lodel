@@ -59,7 +59,7 @@ ln index.php
 
 ############
 ### ajout du formulaire
-dirdestination 
+dirdestination . 
 dirsource $homesite/lodel/edition
 ln tpl/edit_entities_edition.html
 ln tpl/macros.html
