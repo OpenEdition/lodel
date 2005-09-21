@@ -81,7 +81,7 @@ function extract_post($arr=-1) {
 
 function clean_request_variable(&$var) {
   static $filter;
-
+  
   if (!$filter) {
     require_once("class.inputfilter.php");
     $filter=new InputFilter(array(),array(),1,1);
@@ -90,13 +90,17 @@ function clean_request_variable(&$var) {
     //array_walk($var,"clean_request_variable"); // array_walk solution requires to much memory...
     foreach(array_keys($var) as $k) clean_request_variable($var[$k]);
   } else {
+    #echo "var=$var<br />";
     $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),$filter->process(trim($var)));
+    #echo "var=$var<br />";
     $var=magic_addslashes($var);
+		
+		$_POST['test'] = $var;
   }
 }
 
 function magic_addslashes($var) {
-  if (!get_magic_quotes_gpc()) return addslashes($var);
+	if (!get_magic_quotes_gpc()) return addslashes($var);
   return $var;
 }
 
@@ -154,12 +158,11 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
  * this function could be smarter.
  */
 
-function closetags($text) 
-{
-  preg_match_all("/<(\w+)\b[^>]*>/",$text,$results,PREG_PATTERN_ORDER);
-  $n=count($results[1]);
-  for($i=$n-1; $i>=0; $i--) $ret.="</".$results[1][$i].">";
-  return $ret;
+function closetags($text) {
+	preg_match_all("/<(\w+)\b[^>]*>/",$text,$results,PREG_PATTERN_ORDER);
+	$n=count($results[1]);
+	for($i=$n-1; $i>=0; $i--) $ret.="</".$results[1][$i].">";
+	return $ret;
 }
 
 
@@ -310,7 +313,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
     if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
     $dotpos=strpos($name,".");
     if ($dotpos) {
-      $group=substr($name,1,$dotpos);
+      $group=substr($name,1,$dotpos); 
       $name=substr($name,$dotpos+1,-1);
     } else {
       die("ERROR: unknow group for getlodeltext");
@@ -357,6 +360,7 @@ function getlodeltextcontents($name,$group="",$lang=-1)
   if ($GLOBALS['langcache'][$lang][$group.".".$name]) {
     return $GLOBALS['langcache'][$lang][$group.".".$name];
   } else {
+		#echo "name=$name,group=$group,id=$id,contents=$contents,status=$status,lang=$lang<br />";
     getlodeltext($name,$group,$id,$contents,$status,$lang);
     return $contents;
   }
@@ -678,61 +682,62 @@ function makeSortKey($text) {
 }
 
 /**
- *
+ * rightonentity check if a user has the rights to perform an action on an entity
+ * @param string $action the action to be performed : create, edit, delete,...
+ * @param array $context the current context
+ * @return boolean true if the user has the right, false ifnot
  */
+function rightonentity ($action, $context) {
+	if ($GLOBALS['lodeluser']['admin']) return true;
 
-
-function rightonentity($action,$context) 
-
-{
-  if ($GLOBALS['lodeluser']['admin']) return true;
-
-  if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
-    // get the group, the status, and the parent
-    $row=$GLOBALS['db']->getRow(lq("SELECT idparent,status,usergroup FROM #_TP_entities WHERE id='".$context['id']."'"));
-    if (!$row) die("ERROR: internal error in rightonentity");
-    $context=array_merge($context,$row);
-  }
+	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
+		// get the group, the status, and the parent
+		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup FROM #_TP_entities WHERE id='".$context['id']."'"));
+	if (!$row) die ("ERROR: internal error in rightonentity");
+	$context = array_merge ($context, $row);
+	}
   // groupright ?
-  $groupright=in_array($context['usergroup'],explode(',',$GLOBALS['lodeluser']['groups']));
+	if ($context['usergroup']) {
+  	$groupright = in_array ($context['usergroup'], explode (',', $GLOBALS['lodeluser']['groups']));
+  	if (!$groupright)return false;
+	}
 
-  if (!$groupright) return false;
+	// only admin can work at the base.
+	$editorok= $GLOBALS['lodeluser']['editor'] && $context['idparent'];
+	// redactor are ok, only if they own the document and it is not protected.
+	$redactorok = ($context['iduser']==$GLOBALS['lodeluser']['id'] && $GLOBALS['lodeluser']['redactor']) && $context['status']<8 && $context['idparent'];
 
-  // only admin can work at the base.
-  $editorok=$GLOBALS['lodeluser']['editor'] && $context['idparent'];
-  // redactor are ok, only if they own the document and it is not protected.
-  $redactorok=($context['iduser']==$GLOBALS['lodeluser']['id'] && $GLOBALS['lodeluser']['redactor']) && $context['status']<8 && $context['idparent'];
+	switch($action) {
+	case 'create' :
+		return ($GLOBALS['lodeluser']['editor'] ||  ($GLOBALS['lodeluser']['redactor'] && $context['status']<8));// &&  $context['id'];
+		break;
+	case 'delete' :
+		return abs($context['status'])<8 && $editorok;
+		break;
+	case 'edit':
+	case 'advanced' :
+	case 'publish' :
+	case 'move' :
+	case 'changerank' :
+		return $editorok || $redactorok;
+		break;
+	case 'unpublish' :
+	case 'protect' :
+		return $editorok;
+		break;
+	case 'changestatus' :
+		if ($context['status']<0) {
+			return $editorok || $redactorok;
+		} else {
+			return $editorok;
+		} 
+	default:
+		if ($GLOBALS['lodeluser']['visitor'])
+			die("ERROR: unknown action \"$action\" in the loop \"rightonentity\"");
+		return;
+	}
+}//end of rightonentity function
 
-  switch($action) {
-  case 'create' :
-    return ($GLOBALS['lodeluser']['editor'] ||  ($GLOBALS['lodeluser']['redactor'] && $context['status']<8)) &&  $context['id'];
-    break;
-  case 'delete' :
-    return abs($context['status'])<8 && $editorok;
-    break;
-  case 'edit':
-  case 'advanced' :
-  case 'publish' :
-  case 'move' :
-  case 'changerank' :
-    return $editorok || $redactorok;
-    break;
-  case 'unpublish' :
-  case 'protect' :
-    return $editorok;
-    break;
-  case 'changestatus' :
-    if ($context['status']<0) {
-      return $editorok || $redactorok;
-    } else {
-      return $editorok;
-    }    
-  default:
-    if ($GLOBALS['lodeluser']['visitor'])
-      die("ERROR: unknown action \"$action\" in the loop \"rightonentity\"");
-    return;
-  }
-}
 
 /**
  * generate the SQL criteria depending whether ids is an array or a number
