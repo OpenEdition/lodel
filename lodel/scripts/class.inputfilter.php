@@ -222,8 +222,9 @@ class InputFilter {
 				if ((substr($attrSubSet[1], 0, 1) == "'") && (substr($attrSubSet[1], (strlen($attrSubSet[1]) - 1), 1) == "'"))
 					$attrSubSet[1] = substr($attrSubSet[1], 1, (strlen($attrSubSet[1]) - 2));
 				// strip slashes
-				#echo "test : ".$attrSubSet[1]."<br />";
-				$attrSubSet[1] = stripslashes($attrSubSet[1]);
+				
+				$attrSubSet[1] = str_replace('\\',"",$attrSubSet[1]);
+				
 			}
 			// auto strip attr's with "javascript:
 			if (	((strpos(strtolower($attrSubSet[1]), 'expression') !== false) &&	(strtolower($attrSubSet[0]) == 'style')) ||
@@ -233,13 +234,16 @@ class InputFilter {
 					(strpos(strtolower($attrSubSet[1]), 'mocha:') !== false) ||
 					(strpos(strtolower($attrSubSet[1]), 'livescript:') !== false) 
 			) continue;
-			$attrSubSet[1] = addslashes($attrSubSet[1]);
+			
 			// if matches user defined array
 			$attrFound = in_array(strtolower($attrSubSet[0]), $this->attrArray);
 			// keep this attr on condition
 			if ((!$attrFound && $this->attrMethod) || ($attrFound && !$this->attrMethod)) {
 				// attr has value
-				if ($attrSubSet[1]) $newSet[] = $attrSubSet[0] . '="' . $attrSubSet[1] . '"';
+				if ($attrSubSet[1]) {
+				#	echo "avant : ".$attrSubSet[1]. "; après : ".addslashes($attrSubSet[1]);
+					$newSet[] = $attrSubSet[0] . '="' . addslashes($attrSubSet[1]) . '"';
+				}
 				// attr has decimal zero as value
 				else if ($attrSubSet[1] == "0") $newSet[] = $attrSubSet[0] . '="0"';
 				// reformat single attributes to XHTML
