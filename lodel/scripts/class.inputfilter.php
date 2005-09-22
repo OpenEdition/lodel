@@ -206,7 +206,7 @@ class InputFilter {
                         if (preg_match ('/([a-z]*)(?:\=)(.*)/', trim ($attrSet[$i]), $matches)) {
                           $attrSubSet[0] = $matches[1];
                           $attrSubSet[1] = $matches[2];
-			echo "subset".$attrSubSet[1]."<br />";
+			#echo "subset".$attrSubSet[1]."<br />";
 			// removes all "non-regular" attr names AND also attr blacklisted
 			if ((!eregi("^[a-z]*$",$attrSubSet[0])) || (($this->xssAuto) && ((in_array(strtolower($attrSubSet[0]), $this->attrBlacklist)) || (substr($attrSubSet[0], 0, 2) == 'on')))) 
 				continue;
