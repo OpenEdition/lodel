@@ -156,42 +156,40 @@ class EntitiesLogic extends Logic {
     * Do nothing on entites with status below or equal -8.
     */
 
-   function publishAction(&$context,&$error)
+	function publishAction (&$context, &$error) {
+		global $db;
+		$status=intval ($context['status']);
+		if ($status==0) die ("error publishAction");
+		if (!rightonentity ($status>0 ? "publish" : "unpublish",$context)) die ("ERROR: you don't have the right to perform this operation");
 
-   {
-     global $db;
-     $status=intval($context['status']);
-     if ($status==0) die("error publishAction");
-     if (!rightonentity($status>0 ? "publish" : "unpublish",$context)) die("ERROR: you don't have the right to perform this operation");
+		// get the entities to modify and ancillary information
+		$access=abs ($status)>=32 ? "protect" : "write";
+		$this->_getEntityHierarchy($context['id'],$access,"#_TP_entities.status>-8",$ids, $classes, $softprotectedids, $lockedids);
 
-     // get the entities to modify and ancillary information
-     $access=abs($status)>=32 ? "protect" : "write";
-     $this->_getEntityHierarchy($context['id'],$access,"#_TP_entities.status>-8",
-				$ids,$classes,$softprotectedids,$lockedids);
+		if (!$ids) return "_back";
+		if ($lockedids && $status<0)  die("ERROR: some entities are locked in the family. No operation is allowed");
 
-     if (!$ids) return "_back";
-     if ($lockedids && $status<0)  die("ERROR: some entities are locked in the family. No operation is allowed");
+		// depublish protected entity ? need confirmation.
+		if (!$context['confirm'] && $status<0 && $softprotectedids) {
+			$context['softprotectedentities']=$softprotectedids;
+			$this->define_loop_protectedentities();
+			return "unpublish_confirm";
+		}
+		$criteria=" id IN (".join(",",$ids).")";
 
-     // depublish protected entity ? need confirmation.
-     if (!$context['confirm'] && $status<0 && $softprotectedids) {
-       $context['softprotectedentities']=$softprotectedids;
-       $this->define_loop_protectedentities();
-       return "unpublish_confirm";
-     }
-     
-     $criteria=" id IN (".join(",",$ids).")";
+		// mais attention, il ne faut pas reduire le status quand on publie
+		if ($status>0) $criteria.=" AND status<'$status'"; 
 
-     // mais attention, il ne faut pas reduire le status quand on publie
-     if ($status>0) $criteria.=" AND status<'$status'"; 
+			$db->execute(lq("UPDATE #_TP_entities SET status=$status WHERE ".$criteria)) or dberror();
 
-     $db->execute(lq("UPDATE #_TP_entities SET status=$status WHERE ".$criteria)) or dberror();
+			// check if the entities have an history field defined
+			$this->_processSpecialFields('history',$context,$status);
 
-     // changestatus for the relations
-     $this->_publishSoftRelation($ids,$status);
-
-     update();
-     return "_back";
-   }
+			// changestatus for the relations
+			$this->_publishSoftRelation($ids,$status);
+			update();
+			return "_back";
+		}
 
 
    /**
@@ -343,12 +341,12 @@ class EntitiesLogic extends Logic {
        if ($criteria) $criteria=" AND ".$criteria;
        $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ WHERE #_TP_entities.id ".sql_in_array($id).$criteria));
 
-       // list the entities to delete
+       // list the entities
        $ids=array();
        $classes=array();
        $softprotectedids=array();
        $lockedids=array();
-
+      
        while (!$result->EOF) {
 	 if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
 	 if ($result->fields['id']>0) $ids[]=$result->fields['id'];
@@ -357,7 +355,7 @@ class EntitiesLogic extends Logic {
 	 if ($result->fields['status']>=16) $lockedids[]=$result->fields['id'];      
 	 $result->MoveNext();
        }
-
+       
        // check the rights to delete the sons and get their ids
        // criteria to determin if one of the sons is locked
        $result=$db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1 ".sql_in_array($id)." AND nature='P' ".$criteria)) or dberror();
@@ -370,6 +368,7 @@ class EntitiesLogic extends Logic {
 	 if ($result->fields['status']>=16) $lockedids[]=$result->fields['id'];
 	 $result->MoveNext();
        }
+         
    }
 
   function define_loop_protectedentities()

@@ -108,10 +108,11 @@ class Logic {
    function editAction(&$context,&$error,$clean=false)
 
    {
-     if ($clean!=CLEAN) {      // validate the forms data
+    
+    if ($clean!=CLEAN) {      // validate the forms data
        if (!$this->validateFields($context,$error)) return "_error";
      }
-
+    #print_r($context); 
      // get the dao for working with the object
      $dao=$this->_getMainTableDAO();
      $id=$context['id']=intval($context['id']);
@@ -173,7 +174,7 @@ class Logic {
      global $db,$home;
 
      $id=$context['id'];
-      
+		
      if ($this->isdeletelocked($id)) trigger_error("This object is locked for deletion. Please report the bug",E_USER_ERROR);
      $dao=$this->_getMainTableDAO();
      $this->_prepareDelete($dao,$context);
@@ -288,7 +289,7 @@ class Logic {
 
    {
      global $db;
-
+     
      require_once("validfunc.php");
 
      $publicfields=$this->_publicfields();
@@ -385,7 +386,57 @@ class Logic {
     * Used in viewAction to do extra populate in the context 
     */
    function _populateContextRelatedTables(&$vo,&$context) {}
-
+	
+	
+	/**
+	 * process of particular type of fields
+	 * @param string $type the type of the field
+	 * @param array $context the context
+	 * @param int $status the status; by default 0 if no status changed
+	 */
+	function _processSpecialFields($type,$context,$status=0) {
+		global $db;
+		$daoentities = &getDAO('entities');
+		$vo = $daoentities->getById($context['id'],'id,idtype');
+		$daotype = &getDAO ("types");
+		$votype = $daotype->getById ($vo->idtype, 'class');
+		$class = $votype->class;
+		unset($vo);unset($votype);
+		$daotablefields=&getDAO("tablefields");
+		$fields=$daotablefields->findMany ("(class='".$class."' OR class='entities_".$class."') AND type='".$type."' AND status>0 ","",    "name, type, class");
+		if($fields && $type=='history') {
+			$updatecrit = "";
+			foreach ($fields as $field) {
+				$value="";
+				$this->_calculateHistoryField ($value, $context, $status);
+				$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT(".$field->name.",'\n".$value."')";
+			}
+			$db->execute (lq ("UPDATE #_TP_$class SET $updatecrit WHERE identity='".$context['id']. "'"));
+		}
+	}
+	/**
+	 * special processing for particular types of field
+	 * @param string $value the current value of the field
+	 * @param array $context the current context
+	 
+	 */
+	function _calculateHistoryField(&$value, &$context, $status=0) {
+		$dao = &getDAO('users');
+		$vo = $dao->getById ($context['lodeluser']['id']);
+		if($context['id']) {//edition or change of status
+			if ($status==0)	$line .= getlodeltextcontents ('editedby', 'common');
+			elseif ($status == 1) $line .= getlodeltextcontents ('publishedby', 'common');
+			elseif ($status == -1) $line .= getlodeltextcontents ('unpublishedby', 'common');
+			elseif ($status == 8) $line .= getlodeltextcontents ('protectedby', 'common');
+			elseif ($status == -8) $line .= getlodeltextcontents ('draftedby','common');
+		}
+		else // creation
+			$line .= getlodeltextcontents ('createdby', 'common');
+		$line .= " ".($vo->name ? $vo->name : $vo->username);
+		$line .= " ".getlodeltextcontents ('on','common')." ".date('d/m/Y H:i');
+		$value .= ($value ? "\n" : "").$line;
+		unset($line);
+	}
 
 } // class Logic
 
@@ -438,5 +489,6 @@ function isdeletelocked($table,$id,$status=0)
   }
   return $cache[$table][$id];
 }
+	
 
 ?>

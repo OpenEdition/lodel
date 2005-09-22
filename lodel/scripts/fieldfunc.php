@@ -31,8 +31,6 @@
 
 
 // If you add a type in this list, please update the XML Schema template
-
-
 $GLOBALS['lodelfieldtypes']=
     array("tinytext"=>     array("sql"=>"tinytext"                               ),
 	  "text"=>         array("sql"=>"text"                                   ),
@@ -57,10 +55,11 @@ $GLOBALS['lodelfieldtypes']=
 	  "username"=>     array(                           "autostriptags"=>true),
 	  "type"=>         array(),
 	  "class"=>        array(),
-	  "tablefield"=>   array(),			       
+	  "tablefield"=>   array(),
 	  "style"=>        array(),
 	  "mlstyle"=>      array(),
-	  "tplfile"=>      array()
+	  "tplfile"=>      array(),
+		"history"=> array("sql"=>"text") # history is a type of field which is automaticly set when used
 	  );
 
 

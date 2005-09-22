@@ -55,7 +55,7 @@ class Entities_EditionLogic extends GenericLogic {
    function viewAction(&$context,&$error)
 
    {
-     if ($context['check'] && $error) return "_error";     
+    if ($context['check'] && $error) return "_error";     
      if (!rightonentity($context['id'] ? "edit" : "create",$context)) die("ERROR: you don't have the right to perform this operation");
 
      // define some loop functions
@@ -273,7 +273,9 @@ class Entities_EditionLogic extends GenericLogic {
 		if ($new) $this->_createRelationWithParents ($id, $idparent);
 
 		$this->_saveRelatedTables ($vo, $context);
-
+		
+		// check if the entities have an history field defined
+		$this->_processSpecialFields ('history', $context);
 		if ($ret=="_error") return "_error";
 		if ($votype->search) {
 			require_once("class.entities_index.php");
@@ -324,178 +326,165 @@ class Entities_EditionLogic extends GenericLogic {
     */
    function _moveImages(&$context) {}
 
-   /**
-    * Used in editAction to do extra operation after the object has been saved
-    */
+	/**
+	 * Used in editAction to do extra operation after the object has been saved
+	 */
+	function _saveRelatedTables($vo,$context) {
+		global $db;
+		if (!$vo->status) {
+			$dao=$this->_getMainTableDAO();
+			$vo=$dao->getById($vo->id,"status,id");
+		}
+		if ($vo->status>-64 && $vo->status<=-1) $status=-1;
+		if ($vo->status>=1) $status=1;
+		#print_r($vo);
+		//
+		// Entries and Persons
+		//
+		foreach (array ("entries"=>"E", "persons"=>"G") as $table=>$nature) {
+			// put the id's from entrees and autresentrees into idtypes
+			$idtypes=$context[$table] ? array_keys ($context[$table]) : array();
+			if (!$idtypes) continue;
+			//if ($context[autresentries]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentries])));
+			$logic=&getLogic ($table);
+			$ids=array();
+			$idrelations=array();
+			foreach ($idtypes as $idtype) {
+				$itemscontext=$context[$table][$idtype];
+				if (!$itemscontext) continue;
+				$degree=1;
+				foreach ($itemscontext as $k=>$itemcontext) {
+					if (!is_numeric($k)) continue;
+					$itemcontext['identity']=$vo->id;
+					$itemcontext['idtype']=$idtype;
+					$itemcontext['status']=$status;
+					$itemcontext['degree']=$degree++;
+					#echo get_class($logic),":: ";
+					#print_R($logic);
+					#print_r($itemcontext);
+					$ret=$logic->editAction($itemcontext,$error,"CLEAN");
+					if ($ret!="_error" && $itemcontext['id']) {
+						$ids[$idtype][]=$itemcontext['id'];
+						if ($itemcontext['idrelation']) $idrelations[]=$itemcontext['idrelation'];
+					}
+				}
+			}
+	
+			// delete relation not used
+			if ($ids && !$idrelations) { // new item but relation has not been created
+				if (!$vo->id) trigger_error ("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
+				$values=array ();
+				$idrelations=array ();
+				foreach ($ids as $ids2) {
+					$degree=1;
+					foreach ($ids2 as $id) {
+						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id."','". $nature."','". ($degree++). "')")) or dberror ();
+						$idrelations[]=$db->insert_id();
+					}
+				}
+			}
+			$criteria=$idrelations ? "AND idrelation NOT IN ('".join ("','", $idrelations). "')" : "";
+			#echo "criteria=$criteria";
+			$this->_deleteSoftRelation ("id1='".$vo->id. "' ". $criteria, $nature);
+		} // foreach entries and persons
 
-   function _saveRelatedTables($vo,$context) 
+		// Entities
+		if ($context['entities']) {
+			$dao=getDAO ("tablefields");
+			foreach (array_keys ($context['entities']) as $name) {
+				$name=addslashes ($name);
+				$vofield=$dao->find("class='".$context['class']."' AND name='".$name."' AND type='entities'");
+				if (!$vofield) trigger_error ("invalid name for field of type entities", E_USER_ERROR);
+				$idrelations=array ();
+				if (is_array($context['entities'][$name])) {
+					foreach ($context['entities'][$name] as $id) {
+						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id. "','". $name. "','0')")) or dberror ();
+						$idrelations[]=$db->insert_id();
+					}
+					//print_R($idrelations);
+				}
+				$criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
+				$this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$name);
+			} // for each entities fields
+		}
+	} //end of function
 
-   {
-     global $db;
+	/**
+	 *
+	 */
+	//most of this should be transfered in the entries and persons logic
+	function _deleteSoftRelation ($ids, $nature="") {
+		global $db;
+		if (is_array ($ids)) {
+			$criteria="id1 IN ('".join ("','", $ids). "')";
+		} elseif (is_numeric ($ids)) {
+			$criteria="id1='". $ids. "'";
+		} else {
+			$criteria=$ids;
+		}
 
-     if (!$vo->status) {
-       $dao=$this->_getMainTableDAO();
-       $vo=$dao->getById($vo->id,"status,id");
-     }
+		if ($nature=="E") {
+			$naturecriteria=" AND nature='E'";
+		} elseif ($nature=="G") {
+			$naturecriteria=" AND nature='G'";
+			$checkjointtable=true;
+		} elseif (strlen ($nature)>1) {
+			$naturecriteria=" AND nature='".$nature."'";
+			$checkjointtable=false;
+		} else  {
+			$naturecriteria=" AND nature IN ('G','E') OR LENGTH(nature)>1";
+			$checkjointtable=true;
+		}
 
-     if ($vo->status>-64 && $vo->status<=-1) $status=-1;
-     if ($vo->status>=1) $status=1;
+		if ($checkjointtable) {
+		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
+		// get the joint table first
+			$dao=&getDAO("relations");
+			$vos=$dao->findMany($criteria.$naturecriteria,"","idrelation");
+			$ids=array();
+			foreach ($vos as $vo) { $ids[]=$vo->idrelation; }
+			if ($ids) {
+				// getting the tables name from persons and persontype would be to long. Let's suppose
+				// the number of classes are low and it is worse trying to delete in all the tables
+				$dao=&getDAO("classes");
+				$tables=$dao->findMany("classtype='persons'","","class");
+				$where="idrelation IN ('".join("','",$ids)."')";
+				foreach($tables as $table) {
+					$db->execute(lq("DELETE FROM #_TP_entities_".$table->class." WHERE ".$where)) or dberror();
+				}
+			}
+		}
+		$db->execute(lq("DELETE FROM #_TP_relations WHERE ".$criteria.$naturecriteria)) or dberror();
 
-     //
-     // Entries and Persons
-     //
-     
-     foreach (array("entries"=>"E","persons"=>"G") as $table=>$nature) {
-       // put the id's from entrees and autresentrees into idtypes
-       $idtypes=$context[$table] ? array_keys($context[$table]) : array();
-       if (!$idtypes) continue;
+		// select all the items not in entities_$table
+		// those with status<=1 must be deleted
+		// thise with status> must be depublished
 
-       //if ($context[autresentries]) $idtypes=array_unique(array_merge($idtypes,array_keys($context[autresentries])));
-       $logic=&getLogic($table);
-       $ids=array();
-       $idrelations=array();
-       foreach ($idtypes as $idtype) {
-	 $itemscontext=$context[$table][$idtype];
-	 if (!$itemscontext) continue;
-	 $degree=1;
+		foreach(array("entries","persons") as $table) {
+			$result=$db->execute (lq ("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or dberror();
+			$idstodelete=array();
+			$idstounpublish=array();
+			while (!$result->EOF) {
+				if (abs ($result->fields['status'])==1) {
+					$idstodelete[]=$result->fields['id']; 
+				} else {
+					$idstounpublish[]=$result->fields['id']; 
+				}
+				$result->MoveNext();
+			}
 
-	 foreach ($itemscontext as $k=>$itemcontext) {
-	   if (!is_numeric($k)) continue;
-	   $itemcontext['identity']=$vo->id;
-	   $itemcontext['idtype']=$idtype;
-	   $itemcontext['status']=$status;
-	   $itemcontext['degree']=$degree++;
-	   #echo get_class($logic),":: ";
-	   #print_R($logic);
-	   $ret=$logic->editAction($itemcontext,$error,"CLEAN");
-	   if ($ret!="_error" && $itemcontext['id']) {
-	     $ids[$idtype][]=$itemcontext['id'];
-	     if ($itemcontext['idrelation']) $idrelations[]=$itemcontext['idrelation'];
-	   }
-	 }
-       }
+			if ($idstodelete) {
+				$logic=&getLogic($table);
+				$localcontext=array("id"=>$idstodelete,"idrelation"=>array());
+				$err=array();
+				$logic->deleteAction($localcontext,$err);
+			}
 
-       // delete relation not used
-       if ($ids && !$idrelations) { // new item but relation has not been created
-	 if (!$vo->id) trigger_error("ERROR: internal error in Entities_EditionLogic::_saveRelatedTables");
-	 $values=array();
-	 $idrelations=array();
-	 foreach ($ids as $ids2) {
-	   $degree=1;
-	   foreach ($ids2 as $id) {
-	     $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('".$id."','".$vo->id."','".$nature."','".($degree++)."')")) or dberror();
-	     $idrelations[]=$db->insert_id();
-	   }
-	   // $values[]="('".$id."','".$vo->id."','".$nature."','".($degree++)."')";
-	 }
-	 //$db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ".join(",",$values))) or dberror();
-	 //$criteria="idrelation < ".$db->insert_id(); // we use the facts that 1/ multiple insert return the first id 2/ idrelation increase necessarly 
-       }
-       $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
-       $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$nature);
-     } // foreach entries and persons
-
-     // Entities
-     if ($context['entities']) {
-       $dao=getDAO("tablefields");
-       foreach(array_keys($context['entities']) as $name) {
-	 $name=addslashes($name);
-	 $vofield=$dao->find("class='".$context['class']."' AND name='".$name."' AND type='entities'");
-	 if (!$vofield) trigger_error("invalid name for field of type entities",E_USER_ERROR);
-	 $idrelations=array();
-	 if (is_array($context['entities'][$name])) {
-	   foreach($context['entities'][$name] as $id) {
-	     $db->execute(lq("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('".$id."','".$vo->id."','".$name."','0')")) or dberror();
-	     $idrelations[]=$db->insert_id();
-	   }
-	   //print_R($idrelations);
-	 }
-	 $criteria=$idrelations ? "AND idrelation NOT IN ('".join("','",$idrelations)."')" : "";
-	 $this->_deleteSoftRelation("id1='".$vo->id."' ".$criteria,$name);
-       } // for each entities fields
-     }
-   }
-
-   /**
-    *
-    */
-    //most of this should be transfered in the entries and persons logic
-   function _deleteSoftRelation($ids,$nature="") {
-     global $db;
-
-     if (is_array($ids)) {
-       $criteria="id1 IN ('".join("','",$ids)."')";
-     } elseif (is_numeric($ids)) {
-       $criteria="id1='".$ids."'";
-     } else {
-       $criteria=$ids;
-     }
-
-     if ($nature=="E") {
-       $naturecriteria=" AND nature='E'";
-     } elseif ($nature=="G") {
-       $naturecriteria=" AND nature='G'";
-       $checkjointtable=true;
-     } elseif (strlen($nature)>1) {
-       $naturecriteria=" AND nature='".$nature."'";
-       $checkjointtable=false;
-     } else  {
-       $naturecriteria=" AND nature IN ('G','E') OR LENGTH(nature)>1";
-       $checkjointtable=true;
-     }
-
-     if ($checkjointtable) {
-       // with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
-       // get the joint table first
-       $dao=&getDAO("relations");
-       $vos=$dao->findMany($criteria.$naturecriteria,"","idrelation");
-       $ids=array();
-       foreach ($vos as $vo) { $ids[]=$vo->idrelation; }
-
-       if ($ids) {
-	 // getting the tables name from persons and persontype would be to long. Let's suppose
-	 // the number of classes are low and it is worse trying to delete in all the tables
-	 $dao=&getDAO("classes");
-	 $tables=$dao->findMany("classtype='persons'","","class");
-	 $where="idrelation IN ('".join("','",$ids)."')";
-	 foreach($tables as $table) {
-	   $db->execute(lq("DELETE FROM #_TP_entities_".$table->class." WHERE ".$where)) or dberror();
-	 }
-       }
-     }
-
-     $db->execute(lq("DELETE FROM #_TP_relations WHERE ".$criteria.$naturecriteria)) or dberror();
-
-     // select all the items not in entities_$table
-     // those with status<=1 must be deleted
-     // thise with status> must be depublished
-
-     foreach(array("entries","persons") as $table) {
-       $result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or dberror();
-  
-       $idstodelete=array();
-       $idstounpublish=array();
-       while (!$result->EOF) {
-	 if (abs($result->fields['status'])==1) {
-	   $idstodelete[]=$result->fields['id']; 
-	 } else {
-	   $idstounpublish[]=$result->fields['id']; 
-	 }
-	 $result->MoveNext();
-       }
-
-       if ($idstodelete) {
-	 $logic=&getLogic($table);
-	 $localcontext=array("id"=>$idstodelete,"idrelation"=>array());
-	 $err=array();
-	 $logic->deleteAction($localcontext,$err);
-       }
-
-       if ($idstounpublish) {
-	 $db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (".join(",",$idstounpublish).") AND status>=32")) or dberror();       
-       }
-     } // tables
-   }
+			if ($idstounpublish) {
+				$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (".join(",",$idstounpublish).") AND status>=32")) or dberror();       
+			}
+		} //end of foreach tables
+	}
 
 
 
@@ -623,21 +612,18 @@ class Entities_EditionLogic extends GenericLogic {
   }
 
 
-   function _calculateIdentifier($id,$title)
-
-   {
-     global $db;
-     $identifier=preg_replace(array("/\W+/","/-+$/"),array("-",""),makeSortKey($title));
-
-     $count=0;
-     do {
-       $result=$db->execute(lq("SELECT 1 FROM #_TP_entities WHERE id!='$id' AND identifier='$identifier' LIMIT 0,1")) or dberror();
-       if (!$result->fields) break;
-       if ($count==0) $identifier.="-";
-       $identifier.=rand(0,10);
-     } while ($count<10);
-     return $identifier;
-   }
+		function _calculateIdentifier($id,$title){
+			global $db;
+			$identifier=preg_replace(array("/\W+/","/-+$/"),array("-",""),makeSortKey($title));
+			$count=0;
+			do {
+				$result=$db->execute(lq("SELECT 1 FROM #_TP_entities WHERE id!='$id' AND identifier='$identifier' LIMIT 0,1")) or dberror();
+				if (!$result->fields) break;
+				if ($count==0) $identifier.="-";
+				$identifier.=rand(0,10);
+			} while ($count<10);
+			return $identifier;
+		}
 
 
 

@@ -42,6 +42,7 @@ function validfield(&$text,$type,$default="",$name="")
   }
   
   switch ($type) {
+	case "history" :
   case "text" :
   case "tinytext" :
   case "longtext" :

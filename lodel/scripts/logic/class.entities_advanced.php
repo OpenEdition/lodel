@@ -82,21 +82,22 @@ class Entities_AdvancedLogic extends Logic {
    }
 
 
-   function changeStatusAction(&$context,&$error)
+function changeStatusAction(&$context,&$error) {
+	//if (isset($context['rec'])) return changeStatusRecAction($context,$error);
+	global $db;
+	$status=intval($context['status']);
+	$dao=$this->_getMainTableDAO();
+	$vo=$dao->find("id='".$context['id']."' AND status*$status>0 AND status<16","status,id");
+	if (!$vo) die("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ");
+	$vo->status=$status;
+	$dao->save($vo);
 
-   {
-     //if (isset($context['rec'])) return changeStatusRecAction($context,$error);
+	// check if the entities have an history field defined
+	$this->_processSpecialFields('history',$context,$status);
 
-     $status=intval($context['status']);
-     $dao=$this->_getMainTableDAO();
-     $vo=$dao->find("id='".$context['id']."' AND status*$status>0 AND status<16","status,id");
-     if (!$vo) die("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ");
-     $vo->status=$status;
-     $dao->save($vo);
-
-     update();
-     return "_back";
-   }
+	update();
+	return "_back";
+}
 
    /**
     * Move an entities in another entities
