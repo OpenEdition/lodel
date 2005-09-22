@@ -194,7 +194,7 @@ class InputFilter {
 	  * @return Array $newSet
 	  */
 	function filterAttr($attrSet) {
-		print_r($attrSet);	
+	#	print_r($attrSet);	
 		$newSet = array();
 		// process attributes
 		for ($i = 0; $i <count($attrSet); $i++) {
