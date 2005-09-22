@@ -222,7 +222,7 @@ class InputFilter {
 					$attrSubSet[1] = substr($attrSubSet[1], 1, (strlen($attrSubSet[1]) - 2));
 				// strip slashes
 				#echo "test : ".$attrSubSet[1]."<br />";
-				#$attrSubSet[1] = stripslashes($attrSubSet[1]);
+				$attrSubSet[1] = stripslashes($attrSubSet[1]);
 			}
 			// auto strip attr's with "javascript:
 			if (	((strpos(strtolower($attrSubSet[1]), 'expression') !== false) &&	(strtolower($attrSubSet[0]) == 'style')) ||
