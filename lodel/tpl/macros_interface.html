@@ -185,7 +185,7 @@
 	</IF>
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
-<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
+<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
 	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
 	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
  	<MACRO NAME="FCK_EDITOR_PARAMETERS">
