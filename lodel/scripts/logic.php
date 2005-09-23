@@ -409,7 +409,12 @@ class Logic {
 			foreach ($fields as $field) {
 				$value="";
 				$this->_calculateHistoryField ($value, $context, $status);
-				$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT(".$field->name.",'\n".$value."')";
+				if (isset ($context['data'][$field->name])) { //if a value for this field is in the context, use it (to allow user to modify the field
+					$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT(".$context['data'][$field->name].",'\n".$value."')";
+				}
+				else {
+					$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT(".$field->name.",'\n".$value."')";
+				}
 			}
 			$db->execute (lq ("UPDATE #_TP_$class SET $updatecrit WHERE identity='".$context['id']. "'"));
 		}
@@ -432,7 +437,7 @@ class Logic {
 		}
 		else // creation
 			$line .= getlodeltextcontents ('createdby', 'common');
-		$line .= " ".($vo->name ? $vo->name : $vo->username);
+		$line .= " ".($vo->name ? $vo->name : ($vo->username ? $vo->username : $context['lodeluser']['name']));
 		$line .= " ".getlodeltextcontents ('on','common')." ".date('d/m/Y H:i');
 		$value .= ($value ? "\n" : "").$line;
 		unset($line);
