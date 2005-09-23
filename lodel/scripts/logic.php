@@ -410,7 +410,7 @@ class Logic {
 				$value="";
 				$this->_calculateHistoryField ($value, $context, $status);
 				if (isset ($context['data'][$field->name])) { //if a value for this field is in the context, use it (to allow user to modify the field
-					$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT(".$context['data'][$field->name].",'\n".$value."')";
+					$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT('".$context['data'][$field->name]."','\n".$value."')";
 				}
 				else {
 					$updatecrit = ($updatecrit ? "," : ""). $field->name."=CONCAT(".$field->name.",'\n".$value."')";
