@@ -59,53 +59,38 @@ function sendValues(){
 //  End -->
 </script>
 <body class="entitybrowser">
-
+<div id="editEntities" style="background: url('/08/share-0.8/images/fond_haut_popup_edition.png') repeat-x">
+		<h2 class="formTitle" style="background: url('/08/share-0.8/images/picto_popup_index.png') top left no-repeat">[@EDITION.BROWSE_AND_CHOOSE_ONE_OR_MANY_ENTITIES]</h2>
+<p>
+<a href="javascript:window.close();">[@EDITION.CLOSE_THE_WINDOW]</a>
+</p>
 <form  method="post" action="entitybrowser.php">
-<input type="hidden" name="caller" value="[#CALLER]">
-
-	<table class="table_form_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
-		<tr>
-			<td>
-			<div>
-				<LET VAR="iddocument">[#ID]</LET>
-				<LET VAR="id">0</LET>
-
-				<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
-					[#BARRE]
-		                        <!--[ on a le droit de la deplacer ici ]-->
-					<span style="margin-left: [#MARGIN]px;">
-						<IF COND="[#SINGLE]">
-						<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE]</a>
-						<ELSE/>
-						<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]">[#G_TITLE]
-						</IF>
-						<br />
-						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
-					</span>
-					<?php  $context[margin]+=10; ?> <!--[ incrément de la marge ]-->
-					<LET VAR="BARRE">[#BARRE]|</LET>
-					<LOOP NAME="entities"></LOOP>
-				</LOOP>
-			<div>
-			</td>
-		</tr>
-	</table>
-
+	<input type="hidden" name="caller" value="[#CALLER]">
+	<LET VAR="iddocument">[#ID]</LET>
+	<LET VAR="id">0</LET>
+	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
+		<BEFORE><ul class="listentities"></BEFORE>
+		<DO>
+			<li>
+			<IF COND="[#SINGLE]">
+				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE]</a>
+			<ELSE/>
+				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]">[#G_TITLE]
+			</IF>
+			<LOOP NAME="entities"></LOOP>
+			</li>
+		</DO>
+		<AFTER></ul></AFTER>
+	</LOOP>
 	<IF COND="![#SINGLE]">
-	<div>
 		<input type="button" value="[@COMMON.SELECT]" onClick="javascript:sendValues();" />
-	</div>
 	</IF>
 </form>
-
-<div>
+<p>
 <a href="javascript:window.close();">[@EDITION.CLOSE_THE_WINDOW]</a>
-</div>
-
-
-<SCRIPT LANGUAGE="JavaScript">
+</p>
+<script type="text/javascript">
 <!-- Begin
-
 obj=window.opener.document.getElementById('[#CALLER][select]');
 <IF COND="[#SINGLE]">
 o=document.getElementById('entities'+obj.value);
@@ -118,7 +103,5 @@ for(i=0; i<obj.length; i++) {
 </IF>
 //  End -->
 </script>
-
-
-</body>
-</html>
+</div>
+</body></html>

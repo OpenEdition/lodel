@@ -290,7 +290,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- ENTITIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
 	<LOOP NAME="entities_select">
 		<DO>
@@ -301,7 +301,7 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<ELSE/>
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_ENTITIES]</a>
+	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_ENTITIES]</a>
 	<select id="[#VARNAME][select]" row="3" multiple >
 	<LOOP NAME="entities_select">
 		<DO>

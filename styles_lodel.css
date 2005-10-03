@@ -1199,3 +1199,11 @@ fieldset.formButtons{
 	margin-left: -70px;
 	padding-bottom: 4ex;
 }
+
+ul.listentities {
+	margin-left : 0px;
+
+}
+ul.listentities li {
+	margin-left : 2px;
+}
