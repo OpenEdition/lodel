@@ -55,7 +55,7 @@ function validfield(&$text,$type,$default="",$name="")
   case "class" :
 		if (!preg_match ("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) return $type;
 		if (reservedword($text)) return "reservedsql"; // if the class is a reservedword -> error
-		if (reservedByLodel ($text)) return "reservedbylodel"; //if the class is a word reserved by Lodel -> error
+		#if (reservedByLodel ($text)) return "reservedbylodel"; //if the class is a word reserved by Lodel -> error
 		break;
   case "classtype" :
     $text=strtolower($text);
