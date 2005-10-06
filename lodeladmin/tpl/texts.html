@@ -47,7 +47,15 @@
 <input type="hidden" name="lang" value="[#LANG]">
 <div id="translationforms">
 <LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="name" SELECT="name,textgroup">
+<BEFORE>
+	<table>
+</BEFORE>
+<DO>
 <?php mkeditlodeltext($context['name'],$context['textgroup'],$context['lang']);?>
+</DO>
+<AFTER>
+	</table>
+</AFTER>
 </LOOP>
 </div>
 <div class="pied_de_formulaire">
