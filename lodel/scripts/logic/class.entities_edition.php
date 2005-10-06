@@ -253,8 +253,12 @@ class Entities_EditionLogic extends GenericLogic {
 			$vo->identifier=$context['identifier'];
 		$dctitle=$this->getGenericEquivalent ($class, 'dc.title');
 		if ($dctitle) $vo->g_title=strip_tags ($context['data'][$dctitle], "<em><strong><span><sup><sub>");
-		if (!$vo->identifier) $vo->identifier=$this->_calculateIdentifier ($id, $vo->g_title);
-		
+		// If Identifier is not set, let's calcul it with the generic title
+		if (!$vo->identifier) 
+			$vo->identifier= $this->_calculateIdentifier ($id, $vo->g_title);
+		else // else simply clean bad chars
+			$vo->identifier= $this->_calculateIdentifier ($id, $vo->identifier);
+
 		if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
 		if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
 		$id=$context['id']=$dao->save($vo);
@@ -616,12 +620,12 @@ class Entities_EditionLogic extends GenericLogic {
 			global $db;
 			$identifier=preg_replace(array("/\W+/","/-+$/"),array("-",""),makeSortKey($title));
 			$count=0;
-			do {
+			/*do {
 				$result=$db->execute(lq("SELECT 1 FROM #_TP_entities WHERE id!='$id' AND identifier='$identifier' LIMIT 0,1")) or dberror();
 				if (!$result->fields) break;
 				if ($count==0) $identifier.="-";
 				$identifier.=rand(0,10);
-			} while ($count<10);
+			} while ($count<10);*/
 			return $identifier;
 		}
 
