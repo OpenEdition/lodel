@@ -32,8 +32,13 @@
 if (file_exists($home."loops_local.php"))
 	require_once ("loops_local.php");
 
-function loop_parentsentities(& $context, $funcname, $critere = "") {
-
+/**
+ * Loop parententities
+ * @param array $context the context containing all the data
+ * @param string $funcname the name of the Lodelscript function to call
+ * @param string $critere the criterions to select the entities
+ */
+function loop_parentsentities (&$context, $funcname, $critere = "") {
 	global $db;
 	$id = intval($context['id']);
 	if (!$id)
@@ -55,50 +60,45 @@ function loop_parentsentities(& $context, $funcname, $critere = "") {
  * @access public
  */
 function loop_toc($context, $funcname, $arguments) {
-  if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
-    if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
-      if (function_exists("code_alter_$funcname"))
-        call_user_func("code_alter_$funcname", $context);
-      return;
-      }
-    }
+	if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
+		if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
+			if (function_exists("code_alter_$funcname"))
+				call_user_func("code_alter_$funcname", $context);
+			return;
+		}
+	}
 
-  if (function_exists("code_before_$funcname"))
-    call_user_func("code_before_$funcname", $context);
+	if (function_exists ("code_before_$funcname"))
+		call_user_func ("code_before_$funcname", $context);
 
-  $i = 0;
-  $tocid = array ();
-
-  foreach ($results as $result) {
-    $i ++;
-    $localcontext = $context;
-    $level = intval($result[2]);
-    $localcontext['level'] = $localcontext['niveau'] = $level; //for compatibility
-    $localcontext['tocid'] = $level."n". (++ $tocid[$level]);
-    $localcontext['title'] = $localcontext['titre'] = $result[3]; //for compatibility
-    if ($i == 1 && function_exists("code_dofirst_$funcname")) {
-      call_user_func("code_dofirst_$funcname", $localcontext);
-    }
-    elseif ($i == count($results) && function_exists("code_dolast_$funcname")) {
-      call_user_func("code_dolast_$funcname", $localcontext);
+	$i = 0; $tocid = array ();
+	foreach ($results as $result) {
+		$i ++;
+		$localcontext = $context;
+		$level = intval ($result[2]);
+		$localcontext['level'] = $localcontext['niveau'] = $level; //for compatibility
+		$localcontext['tocid'] = $level."n". (++ $tocid[$level]);
+		$localcontext['title'] = $localcontext['titre'] = $result[3]; //for compatibility
+		if ($i == 1 && function_exists ("code_dofirst_$funcname")) {
+			call_user_func("code_dofirst_$funcname", $localcontext);
+		} elseif ($i == count($results) && function_exists("code_dolast_$funcname")) {
+			call_user_func ("code_dolast_$funcname", $localcontext);
     } else {
-      call_user_func("code_do_$funcname", $localcontext);
-    }
-  }
+			call_user_func ("code_do_$funcname", $localcontext);
+		}
+	}
 
-  if (function_exists("code_after_$funcname"))
-    call_user_func("code_after_$funcname", $context);
-}
+	if (function_exists("code_after_$funcname"))
+		call_user_func("code_after_$funcname", $context);
+} //end loop toc
 
-function loop_paragraphs($context, $funcname, $arguments) {
+function loop_paragraphs ($context, $funcname, $arguments) {
 	if (!isset ($arguments['text'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
 			die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
 		return;
 	}
-
-	preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is", $arguments['text'], $results, PREG_SET_ORDER);
-
+	preg_match_all ("/<p\b[^>]*>(.*?)<\/p>/is", $arguments['text'], $results, PREG_SET_ORDER);
 	$count = 0;
 	foreach ($results as $result) {
 		$localcontext = $context;
@@ -120,29 +120,21 @@ function loop_extract_images($context, $funcname, $arguments) {
 	} else {
 		$start = 0;
 	}
-
 	$validattrs = array ("src", "alt", "border", "style", "class", "name");
-
 	preg_match_all("/<img\b([^>]*)>/", $arguments['text'], $results, PREG_SET_ORDER);
-
 	if (!$end)
 		$end = count($results);
-
 	$count = 0;
 	for ($j = $start; $j < $end; $j ++) {
 		$result = $results[$j];
 		$localcontext = $context;
 		$attrs = preg_split("/\"/", $result[1]);
-		#    print_r($attrs);
 		$countattrs = 2 * intval(count($attrs) / 2);
 		for ($i = 0; $i < $countattrs; $i += 2) {
 			$attr = trim(str_replace("=", "", $attrs[$i]));
-			#      print_r($attrs[$i]);
-			#      echo ":$attr $attrs[$i]<br>";
 			if (in_array($attr, $validattrs))
 				$localcontext[$attr] = $attrs[$i +1];
 		}
-
 		$localcontext['count'] = (++ $count);
 		$localcontext['image'] = $result[0];
 		call_user_func("code_do_$funcname", $localcontext);
@@ -151,7 +143,6 @@ function loop_extract_images($context, $funcname, $arguments) {
 
 function previousnext($dir, $context, $funcname, $arguments) {
 	global $db;
-
 	if (!isset ($arguments['id'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
 			die("ERROR: the loop \"previous\" requires a ID attribut");
@@ -159,9 +150,7 @@ function previousnext($dir, $context, $funcname, $arguments) {
 	}
 
 	$id = intval($arguments['id']);
-	//
 	// cherche le document precedent ou le suivante
-	//
 	if ($dir == "previous") {
 		$sort = "DESC";
 		$compare = "<";
@@ -171,12 +160,10 @@ function previousnext($dir, $context, $funcname, $arguments) {
 	}
 
 	$statusmin = $GLOBALS['lodeluser']['visitor'] ? -32 : 0;
-
-	#  $querybase="SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.status>$statusmin AND e0.status>$statusmin AND e3.rank".$compare."e0.rank AND ".sql_not_xor("t0.class='publications'","t3.class='publications'")." ORDER BY e3.rank ".$sort; ###." LIMIT 0,1";
-	$querybase = "SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.status>$statusmin AND e0.status>$statusmin AND e3.rank".$compare."e0.rank ORDER BY e3.rank ".$sort; ###." LIMIT 0,1";
+	$querybase = "SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.status>$statusmin AND e0.status>$statusmin AND e3.rank".$compare."e0.rank ORDER BY e3.rank ".$sort;
 
 	do {
-		$row = $db->getRow($querybase);
+		$row = $db->getRow ($querybase);
 		if ($row === false)
 			dberror();
 		if ($row) { // found
@@ -200,8 +187,6 @@ function previousnext($dir, $context, $funcname, $arguments) {
 		$types = join("','", $idtypes);
 		// ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
 		// not found, well, we look for the next/previous parent above and it's first/last son.
-
-		#    $row=$db->getrow(lq("SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.rank".$compare."e1.rank AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin AND e3.status>$statusmin AND  ".sql_not_xor("t0.class='publications'","t3.class='publications'")." ORDER BY e2.rank ".$sort.", e3.rank ".$sort));
 		$row = $db->getrow(lq("SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.rank".$compare."e1.rank AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin AND e3.status>$statusmin ORDER BY e2.rank ".$sort.", e3.rank ".$sort));
 		if ($row === false)
 			dberror();
@@ -219,33 +204,29 @@ function previousnext($dir, $context, $funcname, $arguments) {
 		if (function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $context);
 	}
-}
+} //end loop_previousnext
 
 function sql_not_xor($a, $b) {
 	return "((($a) AND ($b)) OR (NOT ($a) AND NOT ($b)))";
 }
 
-function loop_previous($context, $funcname, $arguments) {
-	previousnext("previous", $context, $funcname, $arguments);
+function loop_previous ($context, $funcname, $arguments) {
+	previousnext ("previous", $context, $funcname, $arguments);
 }
 
 function loop_next($context, $funcname, $arguments) {
-	previousnext("next", $context, $funcname, $arguments);
+	previousnext ("next", $context, $funcname, $arguments);
 }
 
-/*********************************************************************/
-/*  Loop for reading RSS Flux using Magpie                           */
-/*                                                                   */
-/*  Appeller cette boucle dans le code lodelscript par :             */
-/*  <BOUCLE NAME="topparentdoc">[#ID]</BOUCLE>                       */
-/*********************************************************************/
 
-function loop_rss($context, $funcname, $arguments) {
+/**  Loop for reading RSS Flux using Magpie 
+ *
+ */
+function loop_rss ($context, $funcname, $arguments) {
 	define("MAGPIE_CACHE_ON", TRUE);
 	define("MAGPIE_CACHE_DIR", "./CACHE");
 	define("DIRECTORY_SEPARATOR", "/");
 	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
-
 	if (!isset ($arguments['url'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
 			die("ERROR: the loop \"rss\" requires a URL attribut");
@@ -256,11 +237,8 @@ function loop_rss($context, $funcname, $arguments) {
 			die("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ");
 		$arguments['refresh'] = 0;
 	}
-
 	require_once ("magpierss/rss_fetch.inc");
-
 	$rss = fetch_rss($arguments['url'], $arguments['refresh'] ? $arguments['refresh'] : 3600);
-
 	if (!$rss) {
 		if ($GLOBALS['lodeluser']['editor']) {
 			echo "<b>Warning: Erreur de connection RSS sur l'url ", $arguments['url'], "</b><br/>";
@@ -301,7 +279,7 @@ function loop_rss($context, $funcname, $arguments) {
 	call_user_func("code_do_$funcname", $localcontext);
 	if (function_exists("code_after_$funcname"))
 		call_user_func("code_after_$funcname", $context);
-}
+} //end loop_rss
 
 function loop_rssitem($context, $funcname, $arguments) {
 	// check whether there are some items in the rssobject.
@@ -336,13 +314,12 @@ function loop_rssitem($context, $funcname, $arguments) {
 	}
 	if (function_exists("code_after_$funcname"))
 		call_user_func("code_after_$funcname", $localcontext);
-}
+} //end loop rss tiem
 
-/* added 2005-03-09
- * LOOP_PAGE_SCALE
- * this loop walk on the array pages to print pages number and links 
+/**
+ * This loop walk on the array pages to print pages number and links 
  */
-function loop_page_scale(& $context, $funcname, $arguments) {
+function loop_page_scale (& $context, $funcname, $arguments) {
 	//Local cache
 	static $cache;
 	if (!isset ($cache[$funcname])) {
@@ -375,12 +352,12 @@ function loop_page_scale(& $context, $funcname, $arguments) {
 		call_user_func("code_after_$funcname", $local_context);
 }
 
-/*
- * Function _constructPages 
+/**
+ * @private
  * construct page listing by given nbresults and currentoffset in the results
  * 
  */
-function _constructPages(& $context, $funcname, $arguments) {
+function _constructPages (& $context, $funcname, $arguments) {
 	//get current offset and construct url
 	$arguments['limit'] = $context['limitinfo'];
 	if (!$context['limitinfo'])
@@ -432,7 +409,7 @@ function _constructPages(& $context, $funcname, $arguments) {
 	}
 	return $pages;
 }
-/*
+/**
  * Return an array with the first and last page taking into account the current
  * page and the total number of pages (from In-Extenso function)
  * 
@@ -471,7 +448,7 @@ function plageDeRecherche($numPageCourante, $nbPagesTotal) {
 	return $res;
 }
 
-/* function loop_mltext
+/** function loop_mltext
  * Display multilingual texts. 
  * 
  */
@@ -495,34 +472,28 @@ function loop_mltext(&$context, $funcname) {
 	}
 }
 
-/*
+/**
  * loop which return the right to perform an action or not
- *
  */
-
-function loop_rightonentity(&$context, $funcname, $arguments) 
-
-{
-  if (!isset ($arguments['action'])) {
-    if ($GLOBALS['lodeluser']['visitor'])
-      die("ERROR: the loop \"rightonentity\" requires an ACTION attribut");
-    return;
-  }
-  if (rightonentity($arguments['action'],$context)) {
-    if (function_exists("code_do_$funcname"))
-      call_user_func("code_do_$funcname", $context);
-  } else {
-    if (function_exists("code_alter_$funcname"))
-      call_user_func("code_alter_$funcname", $context);
-  }
+function loop_rightonentity (&$context, $funcname, $arguments) {
+	if (!isset ($arguments['action'])) {
+		if ($GLOBALS['lodeluser']['visitor'])
+			die("ERROR: the loop \"rightonentity\" requires an ACTION attribut");
+		return;
+	}
+	if (rightonentity($arguments['action'],$context)) {
+		if (function_exists("code_do_$funcname"))
+			call_user_func("code_do_$funcname", $context);
+	} else {
+		if (function_exists("code_alter_$funcname"))
+			call_user_func("code_alter_$funcname", $context);
+	}
 }
 
-/*
+/**
  * loop_errors and loop_fielderror are used to show potential errors in the forms.
- * 
  */
 function loop_errors (&$context, $funcname, $arguments) {
-	
 	$localcontext=$context;
 	if(is_array($localcontext['error'])) {
 		if (function_exists("code_before_$funcname")) { 
@@ -533,11 +504,9 @@ function loop_errors (&$context, $funcname, $arguments) {
     	$localcontext['varname'] = $field;
     	$localcontext['error'] = $message;
     	call_user_func("code_do_$funcname",$localcontext);
-    }  
-    
+    }
     if (function_exists("code_after_$funcname")) 
       call_user_func("code_after_$funcname",$context);
-      
 	}	else {
 		if (function_exists("code_alter_$funcname")) 
       call_user_func("code_alter_$funcname",$localcontext);
@@ -545,36 +514,30 @@ function loop_errors (&$context, $funcname, $arguments) {
 }
 
 function loop_fielderror (&$context, $funcname, $arguments) {
-  
-  if (!$arguments['field']) die("ERROR: loop fielderror require a field attribute");
-  $localcontext=$context;
-  $localcontext['error']=$context['error'][$arguments['field']];
-
-  if ($localcontext['error']) {
-    call_user_func("code_do_$funcname",$localcontext);
-  }
+	if (!$arguments['field']) die("ERROR: loop fielderror require a field attribute");
+	$localcontext=$context;
+	$localcontext['error']=$context['error'][$arguments['field']];
+	if ($localcontext['error']) {
+		call_user_func("code_do_$funcname",$localcontext);
+	}
 }
 
 
-function loop_field_selection_values (&$context,$funcname,$arguments) {
-  //Get values of the list in the editionparams field for the current field
-  // and if no editionparams call alter
-  if (!isset($context['editionparams'])) die("ERROR: internal error in loop_field_selection_values");
-
-  $arr = explode(",",$context['editionparams']);
-  $choosenvalues = explode(",",$context['value']); //if field contains more than one value (comma separated)
-  foreach($arr as $value) {
-    $value = trim($value);
-    $localcontext=$context;
-    $localcontext['value'] = $value;
-    if(in_array($value,$choosenvalues)) {		
-      $localcontext['checked'] = 'checked="checked"';
-      $localcontext['selected'] = 'selected="selected"';
-    }
-    call_user_func("code_do_$funcname",$localcontext);
-  }
+function loop_field_selection_values (&$context, $funcname, $arguments) {
+	//Get values of the list in the editionparams field for the current field
+	// and if no editionparams call alter
+	if (!isset($context['editionparams'])) die("ERROR: internal error in loop_field_selection_values");
+	$arr = explode(",", $context['editionparams']);
+	$choosenvalues = explode (",", $context['value']); //if field contains more than one value (comma separated)
+	foreach ($arr as $value) {
+		$value = trim($value);
+		$localcontext=$context;
+		$localcontext['value'] = $value;
+		if (in_array ($value, $choosenvalues)) {		
+			$localcontext['checked'] = 'checked="checked"';
+			$localcontext['selected'] = 'selected="selected"';
+		}
+		call_user_func("code_do_$funcname",$localcontext);
+	}
 }
-
-
-
 ?>
