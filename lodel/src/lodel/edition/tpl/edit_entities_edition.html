@@ -54,9 +54,10 @@
 		<!-- [Identifiant ]-->
 		<dt><label for="identifier">[@EDITION.IDENTIFIER]:</label></dt>
 		<dd>
-			<input style="background-color : #eee" size="45" type="text" name="identifier" id="identifier" value="[#IDENTIFIER]" /> ([@EDITION.WARNING_IT_IS_NOT_RECOMMENDED_TO_EDIT_THIS_FIELD])
-			<IF COND="[#ERROR_IDENTIFIER]">
-				<br /><span class="message_erreur">[@COMMON.ERROR_IDENTIFIER]</span>
+			<input size="60" type="text" name="identifier" id="identifier" value="[#IDENTIFIER]" <IF COND="![#ERROR.IDENTIFIER]">disabled="disabled"</IF> /> <!--([@EDITION.WARNING_IT_IS_NOT_RECOMMENDED_TO_EDIT_THIS_FIELD])-->
+			<input id="button_identifier" type="button" value="[@EDITION.ACTIVATE_THE_FIELD_IDENTIFIER]" onclick="if(document.getElementById('identifier').disabled == true) { document.getElementById('identifier').disabled = false; document.getElementById('button_identifier').value='[@EDITION.DESACTIVATE_THE_FIELD_IDENTIFIER]';} else { document.getElementById('identifier').disabled=true; document.getElementById('button_identifier').value='[@EDITION.ACTIVATE_THE_FIELD_IDENTIFIER]'}" />
+			<IF COND="[#ERROR.IDENTIFIER]">
+				<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
 			</IF>
 		</dd>
 		<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>

@@ -249,16 +249,21 @@ class Entities_EditionLogic extends GenericLogic {
 		// populate the entity
 		if ($idtype) $vo->idtype=$idtype;
 		// permanent identifier management
-		if (!$vo->identifier)
-			$vo->identifier=$context['identifier'];
+		#if (!$vo->identifier)
+		#$vo->identifier=$context['identifier'];
 		$dctitle=$this->getGenericEquivalent ($class, 'dc.title');
 		if ($dctitle) $vo->g_title=strip_tags ($context['data'][$dctitle], "<em><strong><span><sup><sub>");
 		// If Identifier is not set, let's calcul it with the generic title
-		if (!$vo->identifier) 
+		if (!$vo->identifier || $context['identifier'] === '') 
 			$vo->identifier= $this->_calculateIdentifier ($id, $vo->g_title);
-		else // else simply clean bad chars
-			$vo->identifier= $this->_calculateIdentifier ($id, $vo->identifier);
-
+		else { // else simply clean bad chars
+			if (is_null ($context['identifier'])) //identifier desactivated
+				$vo->identifier= $this->_calculateIdentifier ($id, $vo->identifier);
+			else // else that means that we have modified it
+				$vo->identifier= $this->_calculateIdentifier ($id, $context['identifier']);
+		}
+		$votemp = $dao->find ("id !='$id' AND identifier='". $vo->identifier. "'", "id, identifier, g_title");
+		if($votemp) { $error['identifier'] = 'identifier'; unset($votemp); $ret = '_error';}
 		if ($context['creationmethod']) $vo->creationmethod=$context['creationmethod'];
 		if ($context['creationinfo']) $vo->creationinfo=$context['creationinfo'];
 		$id=$context['id']=$dao->save($vo);
@@ -280,13 +285,14 @@ class Entities_EditionLogic extends GenericLogic {
 		
 		// check if the entities have an history field defined
 		$this->_processSpecialFields ('history', $context);
+		
 		if ($ret=="_error") return "_error";
 		if ($votype->search) {
 			require_once("class.entities_index.php");
 			$lo_entities_index = new Entities_IndexLogic();
 			$lo_entities_index->addIndexAction($context,$error);
 		}
-
+		
 		update();
 
 		if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
@@ -617,9 +623,10 @@ class Entities_EditionLogic extends GenericLogic {
 
 
 		function _calculateIdentifier($id,$title){
-			global $db;
+			global $db,$error;
 			$identifier=preg_replace(array("/\W+/","/-+$/"),array("-",""),makeSortKey($title));
 			$count=0;
+			
 			/*do {
 				$result=$db->execute(lq("SELECT 1 FROM #_TP_entities WHERE id!='$id' AND identifier='$identifier' LIMIT 0,1")) or dberror();
 				if (!$result->fields) break;
