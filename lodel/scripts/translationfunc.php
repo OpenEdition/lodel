@@ -31,37 +31,27 @@
 require_once("xmldbfunc.php");
 
 
-function mkeditlodeltext($name,$textgroup,$lang=-1)
-
-{
-  list()=getlodeltext($name,$textgroup,$id,$text,$status,$lang);
+function mkeditlodeltext ($name, $textgroup, $lang=-1) {
+  list()=getlodeltext ($name, $textgroup, $id, $text, $status, $lang);
   if (!$id) { # create it ?? 
     return; # to be decided
   }
-
   // determin the number of rows to use for the textarea
   $ncols=100;
-  $nrows=intval(strlen($text)/$ncols);
+  $nrows=intval (strlen ($text)/$ncols);
   if ($nrows<1) $nrows=1;
   if ($nrows>10) $nrows=10; // limit for very long text, it's not usefull anyway
 
-  echo '<div class="editlodeltext"><label for="texte" style="float: left; width: 10em;">@'.strtoupper($name).'</label>
-<textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars($text).'</textarea>
- <select class="select'.lodeltextcolor($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']">';
+  echo '<tr><td><label for="texte" style="">@'.strtoupper($name).'</label></td><td>
+<textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars ($text).'</textarea></td><td>
+ <select class="select'.lodeltextcolor ($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']"></td></tr>';
 
-
-  foreach (array(-1,1,2) as $s) {
-    echo '<option class="select'.lodeltextcolor($s).'" value="'.$s.'" ';
-    if ($s==$status) echo "selected ";
-    echo '>&nbsp;&nbsp;</option>
-';
-  }
-
-  echo '</select></div>
-';
-
-
-
+  foreach (array(-1, 1, 2) as $s) {
+		echo '<option class="select'.lodeltextcolor($s).'" value="'.$s.'" ';
+		if ($s==$status) echo "selected ";
+		echo '>&nbsp;&nbsp;</option>';
+	}
+	echo '</select>';
 ##### reserve ce bout de code
       //
       // Translated texte
