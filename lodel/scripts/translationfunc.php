@@ -44,14 +44,14 @@ function mkeditlodeltext ($name, $textgroup, $lang=-1) {
 
   echo '<tr><td><label for="texte" style="">@'.strtoupper($name).'</label></td><td>
 <textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars ($text).'</textarea></td><td>
- <select class="select'.lodeltextcolor ($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']"></td></tr>';
+ <select class="select'.lodeltextcolor ($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']">';
 
   foreach (array(-1, 1, 2) as $s) {
 		echo '<option class="select'.lodeltextcolor($s).'" value="'.$s.'" ';
 		if ($s==$status) echo "selected ";
 		echo '>&nbsp;&nbsp;</option>';
 	}
-	echo '</select>';
+	echo '</select></td></tr>';
 ##### reserve ce bout de code
       //
       // Translated texte
