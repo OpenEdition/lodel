@@ -427,7 +427,14 @@ class Logic {
 	 */
 	function _calculateHistoryField(&$value, &$context, $status=0) {
 		$dao = &getDAO('users');
-		$vo = $dao->getById ($context['lodeluser']['id']);
+		if($context['lodeluser']['adminlodel']==1) {
+				usemaindb();
+				$vo = $dao->getById ($context['lodeluser']['id']);
+				usecurrentdb();
+		}
+		else {
+			$vo = $dao->getById ($context['lodeluser']['id']);
+		}
 		if($context['id']) {//edition or change of status
 			if ($status==0)	$line .= getlodeltextcontents ('editedby', 'common');
 			elseif ($status == 1) $line .= getlodeltextcontents ('publishedby', 'common');
