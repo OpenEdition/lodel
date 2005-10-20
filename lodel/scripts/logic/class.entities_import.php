@@ -212,8 +212,20 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 				unset($styles);
 			}
 		}
+		if(!function_exists('myfunction')) {
+			function myfunction ($arg0, $arg1, $arg2, $arg3, $styles,$style) {
+				//si on trouve pas $arg(2) dans les styles on remplace le style par le style de l'objet
+				if (strstr ($styles, $arg2)===false) {
+					return '<p class="'.$style.'"';
+				}
+				else {
+					return '<p class="'.$arg2.'"';
+				}
+			}
+		}
+		
 		// replace all the paragraph containing classes added by Oo except paragraph with internal style
-		$data=preg_replace ('/(<p\b[^>]+class=")(?!'.$styles_string.')/', '\\1'.$obj->style.'"', $data);
+		$data=preg_replace ('/(<p\b[^>]+class=")([^"]*)(")/e', "myfunction('\\0', '\\1','\\2','\\3','". $styles_string."','".$obj->style."')", $data);
 		if ($obj->type=="file" || $obj->type=="image") {
 			// nothing...
 		} elseif ($obj->type=="mltext") {
