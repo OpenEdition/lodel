@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -32,36 +33,29 @@
 // liste des langues lodel
 //
 
-$GLOBALS['langues']=array("fr"=>"fran\303\247ais",
-			  "en"=>"anglais",
-			  "es"=>"espagnol",
-			  "de"=>"allemand",
-			  "it"=>"italien",
-			  "ru"=>"russe",
-			  "el"=>"grec");
+$GLOBALS['langues'] = array ("fr" => "fran\303\247ais", "en" => "anglais", "es" => "espagnol", 
+														"de" => "allemand", "it" => "italien", "ru" => "russe", "el" => "grec");
 
-//
 // ne rien modifier ici
-//
 
-function makeselectlangs($lang="") {
-  global $context,$langues;
-  
-  echo "<option value=\"\">--</option>\n";
-  foreach ($langues as $l=>$lang) {
-    $selected=$lang==$l ? " selected" : "";
-    echo "<option value=\"$l\"$selected>$lang</option>\n";
-  }
+function makeselectlangs($lang = "")
+{
+	global $context, $langues;
+
+	echo "<option value=\"\">--</option>\n";
+	foreach ($langues as $l => $lang)	{
+		$selected = $lang == $l ? " selected=\"selected\"" : "";
+		echo "<option value=\"$l\"$selected>$lang</option>\n";
+	}
 }
 
+function makeselectlangs_nevernil($lang = "")
+{
+	global $context, $langues;
 
-function makeselectlangs_nevernil($lang="") {
-  global $context,$langues;
-
-  foreach ($langues as $l=>$lang) {
-    $selected=$lang==$l ? " selected" : "";
-    echo "<option value=\"$l\"$selected>$lang</option>\n";
-  }
+	foreach ($langues as $l => $lang)	{
+		$selected = $lang == $l ? " selected=\"selected\"" : "";
+		echo "<option value=\"$l\"$selected>$lang</option>\n";
+	}
 }
-
 ?>

@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -28,117 +29,98 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-
 // inclue les documents et les publi dans objets
 
 function makeobjetstable()
-
 {
-  global $db;
+	global $db;
 
-  $err=query_cmds_forobjectfunc('
-DELETE FROM #_TP_objets;
-INSERT INTO #_TP_objets (id,class) SELECT identity,"entities" FROM #_TP_entities;
-');
-  if ($err) return $err;
+	$err = query_cmds_forobjectfunc('
+	DELETE FROM #_TP_objets;
+	INSERT INTO #_TP_objets (id,class) SELECT identity,"entities" FROM #_TP_entities;
+	');
+	if ($err)
+		return $err;
 
-  // ajoute un grand nombre a tous les id.
+	// ajoute un grand nombre a tous les id.
 
-  $offset=2000000000;
+	$offset = 2000000000;
 
-  $tables=array(
-		"entities"=>array("idtype"),
-		"types"=>array("id"),
-		"persontypes"=>array("id"),
-		"entrytypes"=>array("id"),
-		"entries"=>array("id","idparent","idtype"),
-		"persons"=>array("id"),
-		"entites_personnes"=>array("idperson","idtype"),
-		"entites_entrees"=>array("identry"),
-		"typeentites_typeentrees"=>array("identrytype","identitytype"),
-		"typeentites_typepersonnes"=>array("idpersontype","identitytype"),
-		"typeentites_typeentites"=>array("identitytype","idtypeentite2")
-		);
+	$tables = array ("entities" => array ("idtype"), "types" => array ("id"), 
+									"persontypes" => array ("id"), "entrytypes" => array ("id"), 
+									"entries" => array ("id", "idparent", "idtype"), "persons" => array ("id"), 
+									"entites_personnes" => array ("idperson", "idtype"), 
+									"entites_entrees" => array ("identry"), 
+									"typeentites_typeentrees" => array ("identrytype", "identitytype"), 
+									"typeentites_typepersonnes" => array ("idpersontype", "identitytype"), 
+									"typeentites_typeentites" => array ("identitytype", "idtypeentite2"));
 
-  foreach ($tables as $table=>$idsname) {
-    foreach ($idsname as $idname) {
-      $err.=query_cmds_forobjetfunc('
- UPDATE #_TP_'.$table.' SET '.$idname.'='.$idname.'+'.$offset.' WHERE '.$idname.'>0;
-');
-      if ($err) return $err;
-    }
-  }
-
-  $conv=array(
-	      "personnes"=>array(
-				 "entites_personnes"=>"idperson",
-				 ),
-	      "entrees"=>array(
-			      "entites_entrees"=>"identry",
-			      "entrees"=>"idparent",
-			      ),
-	      "types"=>array(
-			     "entites"=>"idtype",
-			     "typeentites_typeentites"=>array("identitytype","idtypeentite2"),
-			     "typeentites_typeentrees"=>"identitytype",
-			     "typeentites_typepersonnes"=>"identitytype",
-			     ),
-	      "typepersonnes"=>array(
-				     "typeentites_typepersonnes"=>"idpersontype",
-				     "entites_personnes"=>"idtype",
-				     ),
-	      "typeentrees"=>array(
-				   "typeentites_typeentrees"=>"identrytype",
-				   "entrees"=>"idtype",
-				   )
-	      );
-
-  foreach ($conv as $maintable=>$changes) {
-    $result=$db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
-    #echo "$maintable...\n";
-    while ($id=$result->fields("id")) {
-      #echo "$maintable...$id<br />\n";
-      $newid=uniqueid($maintable);
-      $err.=query_cmds_forobjetfunc('
-UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id.';
- ');
-      if ($err) return $err;
-
-      foreach ($changes as $table=>$idsname) {
-	if (!is_array($idsname)) $idsname=array($idsname);
-	foreach ($idsname as $idname) {
-	  $err.=query_cmds_forobjectfunc('
-UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
-');
-	  if ($err) return $err;
+	foreach ($tables as $table => $idsname)	{
+		foreach ($idsname as $idname)	{
+			$err .= query_cmds_forobjetfunc('
+			 UPDATE #_TP_'.$table.' SET '.$idname.'='.$idname.'+'.$offset.' WHERE '.$idname.'>0;
+			');
+			if ($err)
+				return $err;
+		}
 	}
-      }
-      $result->MoveNext();
-    }
-    #echo "ok<br />";
-     
-  }
 
-  // check all the id have been converted
+	$conv = array ("personnes" => array ("entites_personnes" => "idperson",), 
+									"entrees" => array ("entites_entrees" => "identry", "entrees" => "idparent",), 
+									"types" => array ("entites" => "idtype", 
+																		"typeentites_typeentites" => array ("identitytype", "idtypeentite2"), 
+																		"typeentites_typeentrees" => "identitytype", 
+																		"typeentites_typepersonnes" => "identitytype",),
+									"typepersonnes" => array ("typeentites_typepersonnes" => "idpersontype", 
+																						"entites_personnes" => "idtype",), 
+									"typeentrees" => array ("typeentites_typeentrees" => "identrytype", 
+																					"entrees" => "idtype",));
 
-  $err="";
-  foreach ($tables as $table=>$idsname) {
-    foreach ($idsname as $idname) {
-      $count=$db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
-      if ($count===false) dberror();
+	foreach ($conv as $maintable => $changes)	{
+		$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
+		#echo "$maintable...\n";
+		while ($id = $result->fields("id")) {
+			#echo "$maintable...$id<br />\n";
+			$newid = uniqueid($maintable);
+			$err .= query_cmds_forobjetfunc('
+			UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id.';
+			 ');
+			if ($err)
+				return $err;
 
-      if ($count) $err.="<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n";
-    }
-  }
-  if ($err) return $err;
+			foreach ($changes as $table => $idsname) {
+				if (!is_array($idsname))
+					$idsname = array ($idsname);
+				foreach ($idsname as $idname) {
+					$err .= query_cmds_forobjectfunc('
+					UPDATE #_TP_'.$table.' SET '.$idname.'='.$newid.' WHERE '.$idname.'='.$id.';
+					');
+					if ($err)
+						return $err;
+				}
+			}
+			$result->MoveNext();
+		}
+		#echo "ok<br />";
 
-  return FALSE;
+	}
+
+	// check all the id have been converted
+
+	$err = "";
+	foreach ($tables as $table => $idsname) {
+		foreach ($idsname as $idname)	{
+			$count = $db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
+			if ($count === false)
+				dberror();
+
+			if ($count)
+				$err .= "<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n";
+		}
+	}
+	if ($err)
+		return $err;
+
+	return FALSE;
 }
-
-
-
-
-
-
 ?>

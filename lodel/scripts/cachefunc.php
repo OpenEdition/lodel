@@ -1,11 +1,12 @@
 <?
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -28,46 +29,50 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
 function clearcache()
-
 {
-  if (defined("SITEROOT")) {
-    removefilesincache( SITEROOT,SITEROOT."lodel/edition",SITEROOT."lodel/admin");
-  } else {
-    removefilesincache( "." );
-  }
+	if (defined("SITEROOT")) {
+		removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
+	}	else {
+		removefilesincache(".");
+	}
 }
 
 function removefilesincache()
-
 {
-  // cette fonction pourrait etre ecrite de facon bcp plus simple avec de la recurrence. Pour des raisons de securite/risque de bugs, elle est doublement proteger. 
-  // On ajoute le repertoire CACHE dans le code, ce qui empeche de detruire le contenu d'un autre repertoire. On ne se propage pas de facon recurrente.
-  // 
-  foreach(func_get_args() as $rep) {
-    if (!$rep) $rep=".";
-    $rep.="/CACHE";
-    $fd=opendir($rep) or die ("Impossible d'ouvrir $rep");
-    
-    while ( ($file=readdir($fd))!==false ) {
-      #echo $rep," ",$file," ",(substr($file,0,1)==".") || ($file=="CVS"),"<br />";
+	// cette fonction pourrait etre ecrite de facon bcp plus simple avec de la recurrence. Pour des raisons de securite/risque de bugs, elle est doublement proteger. 
+	// On ajoute le repertoire CACHE dans le code, ce qui empeche de detruire le contenu d'un autre repertoire. On ne se propage pas de facon recurrente.
+	// 
+	foreach (func_get_args() as $rep) {
+		if (!$rep)
+			$rep = ".";
+		$rep .= "/CACHE";
+		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
 
-      if (($file[0]==".") || ($file=="CVS") || ($file=="upload")) continue;
-      $file=$rep."/".$file;
-      if (is_dir($file)) {
-	$rep2=$file;
-	$fd2=opendir($rep2) or die ("Impossible d'ouvrir $file");
-	while ( ($file=readdir($fd2))!==false ) {
-	  if (substr($file,0,1)==".") continue;
-	  $file=$rep2."/".$file;
-	  if (is_file($file)) { unlink($file); }
+		while (($file = readdir($fd)) !== false) {
+			#echo $rep," ",$file," ",(substr($file,0,1)==".") || ($file=="CVS"),"<br />";
+
+			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload"))
+				continue;
+			$file = $rep."/".$file;
+			if (is_dir($file)) {
+				$rep2 = $file;
+				$fd2 = opendir($rep2) or die("Impossible d'ouvrir $file");
+				while (($file = readdir($fd2)) !== false) {
+					if (substr($file, 0, 1) == ".")
+						continue;
+					$file = $rep2."/".$file;
+					if (is_file($file))	{
+						unlink($file);
+					}
+				}
+				closedir($fd2);
+			}	elseif (is_file($file))	{
+				unlink($file);
+			}
+		}
+		closedir($fd);
 	}
-	closedir($fd2);
-      } elseif (is_file($file)) { unlink($file); }
-    }
-    closedir($fd);
-  }
 }
-
 ?>
+

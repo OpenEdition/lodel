@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -28,100 +29,99 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-
-
-require_once("func.php");
+require_once "func.php";
 
 function checkmailforattachments()
-
 {
+	$options = getoption(array ("lodelmail.host", "lodelmail.user", "lodelmail.passwd"), "");
+	if (count($options) != 3 || !$options['lodelmail.host']) {
+		die("ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ");
+	}
 
-  $options=getoption(array("lodelmail.host","lodelmail.user","lodelmail.passwd"),"");
-  if (count($options)!=3 || !$options['lodelmail.host']) {
-    die("ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ");
-  }
+	list ($host, $port) = explode(":", $options['lodelmail.host']);
+	$mailserver = "{".$host.":". ($port ? $port : "110")."/pop3}INBOX";
+	$passwd = $options['lodelmail.passwd'];
+	$user = $options['lodelmail.user'];
 
-  list($host,$port)=explode(":",$options['lodelmail.host']);
-  $mailserver="{".$host.":".($port ? $port : "110")."/pop3}INBOX";
-  $passwd=$options['lodelmail.passwd'];
-  $user=$options['lodelmail.user'];
+	$mbox = imap_open($mailserver, $user, $passwd);
 
-  $mbox=imap_open($mailserver,$user,$passwd);
+	if ($mbox === false) {
+		die(imap_last_error());
+		return;
+	}
 
-  if ($mbox===false) {
-    die(imap_last_error());
-    return;
-  }
+	$nbattachment = 0;
+	$nbmsg = imap_num_msg($mbox);
 
-  $nbattachment=0;
-  $nbmsg=imap_num_msg($mbox);
-    
-  for($msgno=1; $msgno<=$nbmsg; $msgno++) {
-    $nbattachment+=extractattachments($mbox,$msgno,"(je?pg|png|gif|tiff|sxw|doc|rtf|html?)");
-    imap_delete($mbox,$msgno);
-  }
-  imap_expunge($mbox);
+	for ($msgno = 1; $msgno <= $nbmsg; $msgno ++) {
+		$nbattachment += extractattachments($mbox, $msgno, "(je?pg|png|gif|tiff|sxw|doc|rtf|html?)");
+		imap_delete($mbox, $msgno);
+	}
+	imap_expunge($mbox);
 
-  return $nbattachment;
+	return $nbattachment;
 }
 
-
-function extractattachments ($mbox, $mnum, $extre ,$struct=0, $pno ="")
+function extractattachments($mbox, $mnum, $extre, $struct = 0, $pno = "")
 {
-  $nbattachment=0;
+	$nbattachment = 0;
 
-  if ($struct===0) $struct = imap_fetchstructure($mbox, $mnum);
+	if ($struct === 0) {
+		$struct = imap_fetchstructure($mbox, $mnum);
+	}
+	switch ($struct->type) {
+	case 1 : // multipart
+		// look for the subpart
+		$partno = 1;
+		if ($pno) {
+			$pno .= ".";
+		}
+		while (list ($j) = each($struct->parts)) {
+			$nbattachment += extractattachments($mbox, $mnum, $extre, $struct->parts[$j], $pno.$partno);
+			$partno ++;
+		}
+		break;
+	case 2 : // message
+		// decode
+		$nbattachment += extractattachments($mbox, $mnum, $extre, $struct->parts[0], $pno);
+		break;
+	case 5 :
+	default : // other
+		// fetch the body of the part
+		$body = imap_fetchbody($mbox, $mnum, $pno);
 
-  switch ($struct->type)
-    {
-    case 1: // multipart
-      // look for the subpart
-      $partno = 1;
-      if ($pno) $pno.=".";
-      while (list($j) = each ($struct->parts)) {
-	$nbattachment+=extractattachments($mbox, $mnum, $extre, $struct->parts[$j], $pno.$partno);
-	$partno++;
-      }
-      break;
-    case 2: // message
-      // decode
-      $nbattachment+=extractattachments($mbox, $mnum, $extre, $struct->parts[0], $pno);
-      break;
-    case 5:
-    default: // other
-      // fetch the body of the part
-      $body = imap_fetchbody($mbox, $mnum, $pno);
-          
-      // décode
-      if($struct->encoding == 3)
-	$body = imap_base64($body);
-      elseif($struct->encoding == 4)
-	$body = imap_qprint($body);
+		// dcode
+		if ($struct->encoding == 3) {
+			$body = imap_base64($body);
+		}
+		elseif ($struct->encoding == 4) {
+			$body = imap_qprint($body);
+		}
 
-      // get the filename
-      if ($struct->parameters[0]->attribute == "NAME") {
-	$filename=$struct->parameters[0]->value;
-      } else {
-	return; // no filename don't download
-      }
-      $filename=preg_replace("/[^\w\.]/","_",$filename);
-      $extpos=strrpos($filename,".");
-      $ext=substr($filename,$extpos);
+		// get the filename
+		if ($struct->parameters[0]->attribute == "NAME") {
+			$filename = $struct->parameters[0]->value;
+		}	else {
+			return; // no filename don't download
+		}
+		$filename = preg_replace("/[^\w\.]/", "_", $filename);
+		$extpos = strrpos($filename, ".");
+		$ext = substr($filename, $extpos);
 
-      // check the extension is valid
-      if (!preg_match("/^\.".$extre."$/i",$ext)) return;
+		// check the extension is valid
+		if (!preg_match("/^\.".$extre."$/i", $ext)) {
+			return;
+		}
 
-      if (strlen($filename)>127) { // limit the length of the filename
-	$filename=substr($filename,0,127-strlen($ext)).$ext;
-      }
+		if (strlen($filename) > 127) { // limit the length of the filename
+			$filename = substr($filename, 0, 127 - strlen($ext)).$ext;
+		}
 
-      // save the attachment as $filename
-      writefile(SITEROOT."CACHE/upload/".$filename,$body);
-      $nbattachment++;
-      break;
-    }
-  return $nbattachment;
+		// save the attachment as $filename
+		writefile(SITEROOT."CACHE/upload/".$filename, $body);
+		$nbattachment ++;
+		break;
+	}
+	return $nbattachment;
 }
-
 ?>

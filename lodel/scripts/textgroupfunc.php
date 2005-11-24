@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -28,23 +29,18 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-$GLOBALS['textgroups']=array("interface"=>array("common","edition","admin","lodeladmin","install","lodelloader"),
-			     "site"=>array("site"),
-			     );
-
+$GLOBALS['textgroups'] = array ("interface" => array ("common", "edition", "admin", "lodeladmin", "install", "lodelloader"), "site" => array ("site"),);
 
 //-------------------------------------------
 
 function textgroupswhere($textgroups)
-
 {
-  if (!$textgroups) die("ERROR: which textgroups ?");
-  if ($GLOBALS['textgroups'][$textgroups]) {
-    return "textgroup IN ('".join("','",$GLOBALS['textgroups'][$textgroups])."')";
-  } else {
-    die("ERROR: unkown textgroup");
-  }
+	if (!$textgroups)
+		die("ERROR: which textgroups ?");
+	if ($GLOBALS['textgroups'][$textgroups]) {
+		return "textgroup IN ('".join("','", $GLOBALS['textgroups'][$textgroups])."')";
+	} else {
+		die("ERROR: unkown textgroup");
+	}
 }
-
 ?>

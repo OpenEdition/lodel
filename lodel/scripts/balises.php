@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -34,111 +35,39 @@
 // les balises principales doivent etre associe a leur name litteral
 // les ss balises doivent etre associees a une/ou des balises html ou etre vide.
 
-$GLOBALS['balises']=array ("-" => "-",
-		"citation" => "<blockquote>",
-		"epigraphe" => "<div class=\"balisesinternes\">",
-		"typedoc" => "Type de document",
-		"finbalise" => "fin",
-		"section1"=>"<h1>",
-		"section2"=>"<h2>",
-		"section3"=>"<h3>",
-		"section4"=>"<h4>",
-		"section5"=>"<h5>",
-		"section6"=>"<h6>",
-		"titredoc"=>"<i>",
-		"legendedoc"=>"<i>",
-		"titreillustration"=>"<i>",
-		"legendeillustration"=>"<i>",
-		"langues"=>"Langues",
-# champs auteurs
-		"description"=>"Description de l'auteur précédent",
-#
-# balises pour l'import de sommaire
+$GLOBALS['balises'] = array ("-" => "-", "citation" => "<blockquote>", 
+														"epigraphe" => "<div class=\"balisesinternes\">", 
+														"typedoc" => "Type de document", "finbalise" => "fin", 
+														"section1" => "<h1>", "section2" => "<h2>", "section3" => "<h3>", 
+														"section4" => "<h4>", "section5" => "<h5>", "section6" => "<h6>", 
+														"titredoc" => "<i>", "legendedoc" => "<i>", "titreillustration" => "<i>", 
+														"legendeillustration" => "<i>", "langues" => "Langues",
+														# champs auteurs
+														"description" => "Description de l'auteur prcdent",
+														#
+														# balises pour l'import de sommaire
+														"regroupement" => "Regroupement", "titrenumero" => "Titre de la publication",
+														"nomnumero" => "Nom de la publication", 
+														"typenumero" => "Type de la publication");
 
-		"regroupement"=>"Regroupement",
-		"titrenumero"=>"Titre de la publication",
-		"nomnumero"=>"Nom de la publication",
-		"typenumero"=>"Type de la publication"
-		);
-
-//
 // transparent style . Useful for the PDF export
-//
+$GLOBALS['stylestransparents'] = "paragraphetransparent|caracteretransparent";
 
-$GLOBALS['stylestransparents']="paragraphetransparent|caracteretransparent";
-
-
-$GLOBALS['balisesdocumentassocie']=array("objetdelarecension"=>"Objet de la recension",
-			      "traduction"=>"de la traduction");
-
-
-
-//
-// balises a plusieurs niveaux
-// voir les codes ci-dessous
-// temporaire en attendant la 0.8
-
-#$GLOBALS['multiplelevel']['texte Lodel']=array(
-#					       "citation"=>"texte",
-#					       "epigraphe"=>"texte",
-#					       "titredoc"=>"texte",
-#					       "legendedoc"=>"texte",
-#					       "titreillustration"=>"texte",
-#					       "legendeillustration"=>"texte");
-#
-#$GLOBALS['multiplelevel']['Sections']=array(
-#					    // l'rank est important ci-dessous (marche pas avec section\d+)
-#					    "section10"=>">*", // non utilise a priori
-#					    "section9"=>">*", // non utilise a priori
-#					    "section8"=>">*",
-#					    "section7"=>">*",
-#					    "section6"=>">*", // non utilise a priori
-#					    "section5"=>">*", // non utilise a priori
-#					    "section4"=>">*",
-#					    "section3"=>">*",
-#					    "section2"=>">*",
-#					    "section1"=>">*"
-#					    );
-#
-#$GLOBALS['multiplelevel']['']=array( // balises speciales
-#				  "puce"=>"<*",
-#				  "puces"=>"<*",
-#				  "separateur"=>">*"
-#				  );
-
+$GLOBALS['balisesdocumentassocie'] = array ("objetdelarecension" => "Objet de la recension", "traduction" => "de la traduction");
 
 //
 // Groups of xhtml tags
 //
 // temporaire en attendant la 0.8
 
-$GLOBALS['xhtmlgroups']['xhtml:fontstyle']=array("tt", "i", "b", "big", "small");
-$GLOBALS['xhtmlgroups']['xhtml:phrase']=array("em", "strong", "dfn", "code", "q", "samp","kbd", "var", "cite", "abbr", "acronym", "sub", "sup");
-$GLOBALS['xhtmlgroups']['xhtml:special']=array("span", "img", "object", "br", "bdo","map");
-$GLOBALS['xhtmlgroups']['xhtml:block']=array("p", 
-					     "h1", "h2", "h3", "h4", "h5", "h6",  # heading
-					     "div",
-					     "ul","ol","dl","li","dt","dd", # list
-					     "pre", "hr", "blockquote", "address", # blocktext
-					     "fieldset","table","tr","td","th","thead","tfoot","tbody","col","colgroup","caption");
-$GLOBALS['xhtmlgroups']['Lien']=array("a");
-$GLOBALS['xhtmlgroups']['Appel de Note']=array("a"=>"class=\"(foot|end)notecall\"");
-
-
-
-
-//
-// traite les separateurs
-//
-
-#function traite_separateur($text) {
-#  return preg_replace_callback("/<r2r:separateur>(.*?)<\/r2r:separateur>/","convertseparateur",$text);
-#}
-
-//
-// fonction callback de conversion des separateurs en balises HTML
-//
-
-
-
+$GLOBALS['xhtmlgroups']['xhtml:fontstyle'] = array ("tt", "i", "b", "big", "small");
+$GLOBALS['xhtmlgroups']['xhtml:phrase'] = array ("em", "strong", "dfn", "code", "q", "samp", "kbd", "var", "cite", "abbr", "acronym", "sub", "sup");
+$GLOBALS['xhtmlgroups']['xhtml:special'] = array ("span", "img", "object", "br", "bdo", "map");
+	$GLOBALS['xhtmlgroups']['xhtml:block'] = array ("p", "h1", "h2", "h3", "h4", "h5", "h6", # heading
+		"div", "ul", "ol", "dl", "li", "dt", "dd", # list
+		"pre", "hr", "blockquote", "address", # blocktext
+	"fieldset", "table", "tr", "td", "th", "thead", "tfoot", "tbody", "col", "colgroup", "caption");
+$GLOBALS['xhtmlgroups']['Lien'] = array ("a");
+$GLOBALS['xhtmlgroups']['Appel de Note'] = array ("a" => "class=\"(foot|end)notecall\"");
 ?>
+

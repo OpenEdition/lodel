@@ -1,4 +1,5 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
@@ -28,46 +29,48 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-function cacheOptionsInFile ($optionsfile) {
-  global $db;
-  do {
-    $sql = lq ("SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent ".sql_in_array($ids)." ORDER BY rank");
-    $result = $db->execute($sql);
-    $ids = array(); 
-    $i = 1; $l = 1;
-    while (!$result->EOF) {
-      $id = $result->fields['id'];
-      $name = $result->fields['name'];
-      $idparent = $result->fields['idparent'];
-      $ids[] = $id;
-      if ($idparent) $name = $parent[$idparent].".".$name; 
-      #$d = $rank[$id] = $rank[$idparent]+($i*1.0)/$l;
-      $arr[$id] = $name;
-      $parent[$id] = $name;
-      $l*= 100;
-      $i++;
-      $result->moveNext();
-    }
-  } while($ids);
-	
-  $sql = lq ("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options " .
-             " WHERE status > 0 ORDER BY rank");
-  $result = $db->execute($sql);
-  $txt="<"."?php\n\$options_cache=array(\n";
-  while (!$result->EOF) {
-    $id = $result->fields['id'];
-    $name = $result->fields['name'];
-    $idgroup = $result->fields['idgroup'];
-    $value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
-    $optname = $arr[$idgroup].".".$name;
-    clean_request_variable ($value);
-    $txt.="'".$optname."'=>'".addslashes($value)."',\n";
-    $options_cache[$optname]= addslashes($value);
-    $result->MoveNext();
-  }
-  $txt.=");?".">";
-  #echo "<textarea cols=100 rows=10>$txt</textarea>";
-  $ret = writefile($optionsfile,$txt);
-  return $options_cache;	
+function cacheOptionsInFile($optionsfile)
+{
+	global $db;
+	do {
+		$sql = lq("SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent ".sql_in_array($ids)." ORDER BY rank");
+		$result = $db->execute($sql);
+		$ids = array ();
+		$i = 1;
+		$l = 1;
+		while (!$result->EOF) {
+			$id = $result->fields['id'];
+			$name = $result->fields['name'];
+			$idparent = $result->fields['idparent'];
+			$ids[] = $id;
+			if ($idparent)
+				$name = $parent[$idparent].".".$name;
+			#$d = $rank[$id] = $rank[$idparent]+($i*1.0)/$l;
+			$arr[$id] = $name;
+			$parent[$id] = $name;
+			$l *= 100;
+			$i ++;
+			$result->moveNext();
+		}
+	}	while ($ids);
+
+	$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 ORDER BY rank");
+	$result = $db->execute($sql);
+	$txt = "<"."?php\n\$options_cache=array(\n";
+	while (!$result->EOF)	{
+		$id = $result->fields['id'];
+		$name = $result->fields['name'];
+		$idgroup = $result->fields['idgroup'];
+		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+		$optname = $arr[$idgroup].".".$name;
+		clean_request_variable($value);
+		$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
+		$options_cache[$optname] = addslashes($value);
+		$result->MoveNext();
+	}
+	$txt .= ");?".">";
+	#echo "<textarea cols=100 rows=10>$txt</textarea>";
+	$ret = writefile($optionsfile, $txt);
+	return $options_cache;
 }
 ?>

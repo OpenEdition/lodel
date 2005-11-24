@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -28,35 +29,36 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-if (!function_exists("authenticate")) die("ERROR: invalid include of translationsexportinc.php");
+if (!function_exists("authenticate"))
+	die("ERROR: invalid include of translationsexportinc.php");
 
-require("func.php");
-require_once("validfunc.php");
+require_once "func.php";
+require_once "validfunc.php";
 
 //$context[importdir]=$importdir;
-if ($lang!="all" && !isvalidlang($lang)) die("ERROR: invalid lang");
+if ($lang != "all" && !isvalidlang($lang))
+	die("ERROR: invalid lang");
 
 // lock the database
-lock_write("translations","textes");
+lock_write("translations", "textes");
 
-$tmpfile=tempnam(tmpdir(),"lodeltranslation");
+$tmpfile = tempnam(tmpdir(), "lodeltranslation");
 
-require_once("translationfunc.php");
+require_once "translationfunc.php";
 
-$xmldb=new XMLDB_Translations($context['textgroups'],$lang);
+$xmldb = new XMLDB_Translations($context['textgroups'], $lang);
 
 #$ret=$xmldb->saveToString();
 #die($ret);
 
 $xmldb->saveToFile($tmpfile);
 
-$filename="translation-$lang-".date("dmy").".xml";
+$filename = "translation-$lang-".date("dmy").".xml";
 
-download($tmpfile,$filename);
-@unlink ($tmpfile);
+download($tmpfile, $filename);
+@ unlink($tmpfile);
 return;
 
-header ("location: index.php");
+header("location: index.php");
 return;
-
 ?>

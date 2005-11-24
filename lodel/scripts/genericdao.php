@@ -1,11 +1,12 @@
 <?php
+
 /*
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -28,37 +29,40 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
 /**
   * generic DAO
   */
 
-class genericDAO extends DAO {
+class genericDAO extends DAO
+{
 
-  function genericDAO($table,$idfield) {
-     $this->DAO($table,false,$idfield);
-     // create the class
-   }
+	function genericDAO($table, $idfield)
+	{
+		$this->DAO($table, false, $idfield);
+		// create the class
+	}
 
-   /**
-    * Instantiate a new object
-    */
-   function instantiateObject(&$vo) {
-     static $def;
+	/**
+	 * Instantiate a new object
+	 */
+	function instantiateObject(& $vo)
+	{
+		static $def;
 
-     $classname=$this->table."VO";
+		$classname = $this->table."VO";
 
-     if (!$def[$classname]) {
-       eval("class ".$classname." { var $".$this->idfield."; } ");
-       $def[$classname]=true;
-     }
-     
-     $vo=new $classname; // the same name as the table. We don't use factory...
-   }
+		if (!$def[$classname]) {
+			eval ("class ".$classname." { var $".$this->idfield."; } ");
+			$def[$classname] = true;
+		}
 
-   function _rightscriteria($access) {
-     return "";
-   }
+		$vo = new $classname; // the same name as the table. We don't use factory...
+	}
+
+	function _rightscriteria($access)
+	{
+		return "";
+	}
 }
-
 ?>
+

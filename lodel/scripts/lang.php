@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -170,26 +170,26 @@ $GLOBALS['languages']=array(
 
 
 
-function makeselectlangs($selectedlang="") {
-  global $context,$languages;
+function makeselectlangs($selectedlang = "") 
+{
+	global $context,$languages;
   
-  echo "<option value=\"\">--</option>\n";
-  foreach ($languages as $l=>$lang) {
-    $l=strtolower($l);
-    $selected=$selectedlang==$l ? " selected" : "";
-    echo "<option value=\"$l\"$selected>$lang</option>\n";
-  }
+	echo "<option value=\"\">--</option>\n";
+	foreach ($languages as $l=>$lang) {
+		$l = strtolower($l);
+		$selected = $selectedlang == $l ? " selected=\"selected\"" : "";
+		echo "<option value=\"$l\"$selected>$lang</option>\n";
+	}
 }
 
 
-function makeselectlangs_nevernil($selectedlang="") {
-  global $context,$languages;
+function makeselectlangs_nevernil($selectedlang = "") {
+	global $context,$languages;
 
-  foreach ($languages as $l=>$lang) {
-    $l=strtolower($l);
-    $selected=$selectedlang==$l ? " selected" : "";
-    echo "<option value=\"$l\"$selected>$lang</option>\n";
-  }
+	foreach ($languages as $l=>$lang) {
+		$l = strtolower($l);
+		$selected = $selectedlang == $l ? " selected=\"selected\"" : "";
+		echo "<option value=\"$l\"$selected>$lang</option>\n";
+	}
 }
-
 ?>
