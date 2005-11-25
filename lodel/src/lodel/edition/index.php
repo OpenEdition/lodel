@@ -35,8 +35,9 @@ authenticate(LEVEL_VISITOR);
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
   recordurl();
   $context['id']=$id=intval($_GET['id']);
-  require_once("view.php");
-  $view=&getView();
+  require_once "view.php";
+  $view = &View::getView();
+
   if ($view->renderIfCacheIsValid()) { return; }
   if ($id) {
     do {
