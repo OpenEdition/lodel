@@ -36,8 +36,8 @@ require("importfunc.php");
 
 
 if ( ($context['error_table']=isimportmodelallowed()) ) {
-    require("view.php");
-    $view=&getView();
+    require_once "view.php";
+		$view = &View::getView();
     $view->render($context,"importmodel");
     exit();
 }
@@ -81,9 +81,8 @@ if ($file && $delete) {
 
 
 
-require("view.php");
-$view=&getView();
-
+require_once "view.php";
+$view = &View::getView();
 
 if ($frominstall) {
   $context['frominstall']=true;

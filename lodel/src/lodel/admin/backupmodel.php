@@ -133,8 +133,8 @@ if ($_POST['backup']) {
 }
 
 
-require("view.php");
-$view=&getView();
-$view->render($context,"backupmodel");
+require_once "view.php";
+$view = &View::getView();
+$view->render($context, "backupmodel");
 
 ?>

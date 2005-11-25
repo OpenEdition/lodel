@@ -133,9 +133,9 @@ if ($backup) {
 }
 
 
-require("view.php");
-$view=&getView();
-$view->render($context,"backup");
+require_once "view.php";
+$view = &View::getView();
+$view->render($context, "backup");
 
 
 ?>

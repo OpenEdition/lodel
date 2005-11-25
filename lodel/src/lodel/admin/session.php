@@ -61,8 +61,8 @@ if ($ids) {
 
 usecurrentdb();
 update();
-require_once("view.php");
-$view=&getView();
+require_once "view.php";
+$view = &View::getView();
 $view->back();
 
 ?>

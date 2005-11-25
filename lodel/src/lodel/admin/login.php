@@ -66,8 +66,8 @@ $context['url_retour']=$url_retour;
 $context['error_timeout']=$error_timeout;
 $context['error_privilege']=$error_privilege;
 
-require("view.php");
-$view=&getView();
+require_once "view.php";
+$view = &View::getView();
 $view->render($context,"login");
 
 ?>

@@ -55,9 +55,9 @@ $context['tablecontents']=$handler->contents();
 $context['multidoc']=$handler->multidoc;
 ///$context['urlnext']="index.php?do=xmlimport&idtask=$idtask";
 
-require("view.php");
-$view=&getView();
-$view->render($context,"checkimport");
+require_once "view.php";
+$view = &View::getView();
+$view->render($context, "checkimport");
 
 //--------------------------------------------------//
 // definition of the handler to proceduce the table

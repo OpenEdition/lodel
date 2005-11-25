@@ -32,7 +32,6 @@ require("siteconfig.php");
 require_once("auth.php");
 authenticate();
 
-require_once("view.php");
 //
 // record the url if logged
 //
@@ -40,7 +39,8 @@ if ($lodeluser['rights']>=LEVEL_VISITOR) recordurl();
 //
 // get the view and checked the cache.
 //
-$view=&getView();
+require_once "view.php";
+$view = &View::getView();
 if ($view->renderIfCacheIsValid()) return;
 
 require_once("textfunc.php");
@@ -73,7 +73,7 @@ if ($id || $identifier) {
     case 'persontypes':
       $result=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE id='".$id."' AND status>0")) or dberror();
       $context['type']=$result->fields;
-      $view=&getView();
+      $view=&View::getView();
       $view->renderCached($context,$result->fields['tplindex']);
       exit();
     case 'persons':
@@ -109,6 +109,7 @@ if ($id || $identifier) {
      $lodeluser['rights']=LEVEL_EDITOR; // grant temporary
 		 $lodeluser['editor'] = 1;
      $context['lodeluser']= $lodeluser;
+		
 		 Controler::controler(array("entities_edition"),"entities_edition");
      exit();
    } else {
@@ -188,7 +189,7 @@ function printEntities($id,$identifier,&$context)
   merge_and_filter_fields($context,$row['class'],$row);
 
 #    print_R($context);
-  $view=&getView();
+  $view=&View::getView();
   $view->renderCached($context,$base);
   exit();
 }
@@ -234,7 +235,7 @@ function printIndex($id,$classtype,&$context)
   if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");
   merge_and_filter_fields($context,$row['class'],$row);
 
-  $view=&getView();
+  $view=&View::getView();
   $view->renderCached($context,$base);
   exit();
 }

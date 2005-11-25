@@ -102,8 +102,8 @@ if ($file) {
 }
 
 
-require("view.php");
-$view=&getView();
+require_once "view.php";
+$view = &View::getView();
 $view->render($context,"import");
 
 

@@ -42,7 +42,7 @@ require_once ($home."connect.php");
 
 
 require ($home."view.php");
-$view=&getView();
+$view=&View::getView();
 $view->renderCached($context,"index");
 
 ?>

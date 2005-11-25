@@ -31,11 +31,11 @@
 
 
 
-require("siteconfig.php");
+require ("siteconfig.php");
 include ($home."auth.php");
 authenticate(LEVEL_REDACTOR);
-include ($home."func.php");
-require_once("utf8.php"); // conversion des caracteres
+require_once ($home."func.php");
+require_once ("utf8.php"); // conversion des caracteres
 
 if ($_POST) {
   $therequest=&$_POST;
@@ -168,8 +168,8 @@ if ($file1) {
 
 $context['url']="oochargement.php";
 
-require("view.php");
-$view=&getView();
+require_once "view.php";
+$view = &View::getView();
 $view->render($context,"oochargement",!(bool)$_POST);
 
 

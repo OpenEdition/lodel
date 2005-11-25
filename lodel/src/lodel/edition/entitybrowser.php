@@ -42,11 +42,10 @@ $ids=explode(",",$_REQUEST['value']);
 
 $nodesk=true;
 require("view.php");
-$view=New View;
+$view= &View::getView();
 $view->renderCached($context,"entitybrowser");
 
 function getchecked($id)
-
 {
   return in_array($GLOBALS['ids'],$id) ? "checked" : "";
 }
