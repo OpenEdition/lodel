@@ -93,19 +93,19 @@ class LodelParser extends Parser
 		if ($tablefields[lq("#_TP_classes")]) {
 
 			$dao = & getDAO("classes");
-			$classes = $dao->findMany("status>0");
+			$classes = $dao->findMany("status > 0");
 			foreach ($classes as $class) {
 				// manage the linked tables...
 				// do we have the table class in $tables ?
-				$ind = array_search($class-> class, $tables);
+				$ind = array_search($class->class, $tables);
 				if ($ind === FALSE || $ind === NULL) {
 					continue;
 				}
 
-				$alias = "alias_".$class->classtype."_".$class-> class;
-				$aliastype = "aliastype_".$class->classtype."_".$class-> class;
+				$alias = "alias_".$class->classtype."_".$class->class;
+				$aliastype = "aliastype_".$class->classtype."_".$class->class;
 				$aliasbyclasstype[$class->classtype] = $alias;
-				$classbyclasstype[$class->classtype] = $class-> class;
+				$classbyclasstype[$class->classtype] = $class->class;
 
 				switch ($class->classtype) {
 				case "entities" :
@@ -132,8 +132,8 @@ class LodelParser extends Parser
 				// put entites just after the class table
 				array_splice($tablesinselect, $ind +1, 0, $alias);
 
-				$where[count($where) - 1] .= " AND ".$class-> class.".".$longid."=".$alias.".id AND ".$alias.".idtype=".$aliastype.".id AND ".$aliastype.".class=";
-				$where[] = "'".$class-> class."'"; // quoted part
+				$where[count($where) - 1] .= " AND ".$class->class.".".$longid."=".$alias.".id AND ".$alias.".idtype=".$aliastype.".id AND ".$aliastype.".class=";
+				$where[] = "'".$class->class."'"; // quoted part
 				$where[] = "";
 				$extrainselect .= ", ".$aliastype.".type , ".$aliastype.".class";
 
