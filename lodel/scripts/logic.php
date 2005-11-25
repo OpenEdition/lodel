@@ -57,7 +57,7 @@
  * @see controler.php
  * @see view.php
  */
-class Logic 
+class Logic
 {
 	/**#@+
 	 * @access private
@@ -511,7 +511,8 @@ class Logic
 	 * @param string $value the current value of the field
 	 * @param array $context the current context
 	 */
-	function _calculateHistoryField(&$value, &$context, $status = 0) {
+	function _calculateHistoryField(&$value, &$context, $status = 0) 
+	{
 		$dao = &getDAO('users');
 		if($context['lodeluser']['adminlodel'] == 1) {
 			usemaindb();
@@ -543,9 +544,10 @@ class Logic
 				$line .= getlodeltextcontents('createdby', 'common');
 			}
 			$line .= " ". ($vo->name ? $vo->name : ($vo->username ? $vo->username : $context['lodeluser']['name']));
-		$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
-		$value .= ($value ? "\n" : ""). $line;
-		unset($line);
+			$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
+			$value .= ($value ? "\n" : ""). $line;
+			unset($line);
+		}
 	}
 	/**#@-*/
 
@@ -573,15 +575,15 @@ function &getLogic($table)
 /**
  * function returning the right for $access in the table $table
  */
-function rights($table, $access)
-{
-	static $cache;
-	if (!isset($cache[$table][$access])) {
-		$logic = &getLogic($table);
-		$cache[$table][$access] = $logic->rights($access);
+	function rights($table, $access)
+	{
+		static $cache;
+		if (!isset($cache[$table][$access])) {
+			$logic = &getLogic($table);
+			$cache[$table][$access] = $logic->rights($access);
+		}
+		return $cache[$table][$access];
 	}
-	return $cache[$table][$access];
-}
 
 /**
  * Pipe function to test if an object can be deleted or not
