@@ -58,6 +58,7 @@
  * @see logic.php
  * @see controler.php
  */
+
 class View
 {
 	// {{{ properties

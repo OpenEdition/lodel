@@ -92,7 +92,7 @@ class LodelParser extends Parser
 		//
 		if ($tablefields[lq("#_TP_classes")]) {
 
-			$dao = & getDAO("classes");
+			$dao = &getDAO("classes");
 			$classes = $dao->findMany("status > 0");
 			foreach ($classes as $class) {
 				// manage the linked tables...
@@ -103,7 +103,7 @@ class LodelParser extends Parser
 				}
 
 				$alias = "alias_".$class->classtype."_".$class->class;
-				$aliastype = "aliastype_".$class->classtype."_".$class->class;
+				$aliastype = "aliastype_".$class->classtype. "_". $class->class;
 				$aliasbyclasstype[$class->classtype] = $alias;
 				$classbyclasstype[$class->classtype] = $class->class;
 
@@ -127,22 +127,22 @@ class LodelParser extends Parser
 					die("ERROR: internal error in lodelparser");
 				}
 
-				array_push($tables, $class->classtype." AS ".$alias, typestable($class->classtype)." AS ".$aliastype);
+				array_push($tables, $class->classtype. " AS ". $alias, typestable($class->classtype). " AS ". $aliastype);
 
 				// put entites just after the class table
 				array_splice($tablesinselect, $ind +1, 0, $alias);
 
-				$where[count($where) - 1] .= " AND ".$class->class.".".$longid."=".$alias.".id AND ".$alias.".idtype=".$aliastype.".id AND ".$aliastype.".class=";
-				$where[] = "'".$class->class."'"; // quoted part
+				$where[count($where) - 1] .= " AND ". $class->class. ".". $longid."=". $alias. ".id AND ".$alias.".idtype=". $aliastype.".id AND ". $aliastype. ".class=";
+				$where[] = "'". $class->class. "'"; // quoted part
 				$where[] = "";
-				$extrainselect .= ", ".$aliastype.".type , ".$aliastype.".class";
+				$extrainselect .= ", ".$aliastype. ".type , ". $aliastype. ".class";
 
 				if (preg_match_sql("/\bparent\b/", $where) && 
 						($class->classtype == "entities" || $class->classtype == "entries")) {
-					array_push($tables, $class->classtype." AS ".$alias."_parent");
+					array_push($tables, $class->classtype. " AS ". $alias. "_parent");
 					$fullid = $class->classtype == "entries" ? "g_name" : "identifier";
-					preg_replace_sql("/\bparent\b/", $alias."_parent.".$fullid, $where);
-					$where[count($where) - 1] .= " AND ".$alias."_parent.id=".$alias.".idparent";
+					preg_replace_sql("/\bparent\b/", $alias. "_parent.".$fullid, $where);
+					$where[count($where) - 1] .= " AND ". $alias. "_parent.id=". $alias. ".idparent";
 				}
 			}
 		}

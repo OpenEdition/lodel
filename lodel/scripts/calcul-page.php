@@ -38,7 +38,7 @@ require_once "func.php";
 # on sort du UTF-8 par defaut
 # sinon, on applique une regle un peu dictatorialle, c'est l'iso-latin1
 
-function calcul_page(& $context, $base, $cache_rep = "", $base_rep = "tpl/")
+function calcul_page(&$context, $base, $cache_rep = "", $base_rep = "tpl/")
 {
 
 	global $home, $format;
@@ -55,8 +55,9 @@ function calcul_page(& $context, $base, $cache_rep = "", $base_rep = "tpl/")
 
 	$template_cache = $cache_rep."CACHE/tpl_$base.php";
 	$base = $base_rep. $base. ".html";
-	if (!file_exists($base))
+	if (!file_exists($base)) {
 		die("le template $base n'existe pas.");
+	}
 	$template_time = myfilemtime($template_cache);
 
 	if (($template_time <= myfilemtime($base)))	{

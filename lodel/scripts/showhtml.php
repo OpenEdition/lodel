@@ -275,4 +275,3 @@ function show_html($chaine)
 	return $out."</body></html>\n";
 }
 ?>
-

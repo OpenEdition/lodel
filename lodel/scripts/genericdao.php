@@ -65,4 +65,3 @@ class genericDAO extends DAO
 	}
 }
 ?>
-

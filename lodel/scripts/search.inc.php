@@ -38,7 +38,7 @@
  * 
  */
 
-function search(& $context, $funcname, $arguments)
+function search(&$context, $funcname, $arguments)
 {
 
 	require_once ("dao.php");
@@ -246,7 +246,7 @@ include_once ("connect.php");
 require_once ("func.php");
 
 require_once "view.php";
-$view = & View :: getView();
+$view = &View::getView();
 $base = "search";
 extract_post($_GET);
 recordurl();

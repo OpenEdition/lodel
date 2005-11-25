@@ -80,9 +80,9 @@ class Controler
 	 * @param string $lo La logique métier appelée. Par défaut cette valeur est vide
 	 * 
 	 */
-	function Controler($logics,$lo="") 
+	function Controler($logics, $lo = "") 
 	{
-		global $home,$context;
+		global $home, $context;
 		if ($_POST) {
 			$therequest = &$_POST;
 		} else {
@@ -127,8 +127,9 @@ class Controler
 			if (!preg_match("/^[a-zA-Z]+$/", $do)) 
 				die("ERROR: invalid action");
 			$do = $do. "Action";
-
+			
 			require_once "logic.php";
+		
 			switch($do) {
 			case 'listAction' :
 				recordurl();
