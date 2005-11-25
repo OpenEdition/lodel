@@ -199,6 +199,3 @@ $GLOBALS['la'] = $_GET['la'] ? $_GET['la'] : $_POST['la'];
 if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['la']))
 	$GLOBALS['la'] = "";
 ?>
-
-
-
