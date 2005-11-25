@@ -126,7 +126,7 @@ class GenericLogic extends Logic
 		$this->_populateContext($votype, $context['type']);
 
 		if ($id && !$error)	{
-			$gdao = & getGenericDAO($votype-> class, $this->_idfield);
+			$gdao = & getGenericDAO($votype->class, $this->_idfield);
 			$gvo = $gdao->getById($id);
 			if (!$gvo) {
 				die("ERROR: can't find object $id in the associated table. Please report this bug");
@@ -199,7 +199,7 @@ class GenericLogic extends Logic
 					unset ($value);
 					continue;
 				}	else {
-					$value = lodel_strip_tags($field-> default, $field->allowedtags); // default value
+					$value = lodel_strip_tags($field->default, $field->allowedtags); // default value
 						$empty = false;
 				}
 			}
@@ -212,13 +212,13 @@ class GenericLogic extends Logic
 			}
 
 			if ($type != "persons" && $type != "entries" && $type != "entities") {
-				$this->_publicfields[$field-> class][$name] = true; // this field is public
+				$this->_publicfields[$field->class][$name] = true; // this field is public
 			}
 			if ($field->edition == "none") {
 				unset ($value);
 			}
 			if ($empty) {
-				$value = lodel_strip_tags($field-> default, $field->allowedtags); // default value
+				$value = lodel_strip_tags($field->default, $field->allowedtags); // default value
 			}
 			if ($field->condition == "+" && $empty) {
 				$error[$name] = "+"; // required
@@ -229,7 +229,7 @@ class GenericLogic extends Logic
 				$value = trim(strip_tags($value));
 			}
 
-			$valid = validfield($value, $type, $field-> default, $name);
+			$valid = validfield($value, $type, $field->default, $name);
 			if ($valid === true)	{
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {
@@ -275,7 +275,7 @@ class GenericLogic extends Logic
 						if (!is_numeric($k) || !$localcontext[$k]) {
 							continue;
 						}
-						$localcontext[$k]['class'] = $vo-> class;
+						$localcontext[$k]['class'] = $vo->class;
 						$localcontext[$k]['idtype'] = $idtype;
 						$err = array ();
 						$logic->validateFields($localcontext[$k], $err);
