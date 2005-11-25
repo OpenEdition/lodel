@@ -28,20 +28,16 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-// charge le fichier xml et
-require("siteconfig.php");
-require("auth.php");
+require "siteconfig.php";
+require "auth.php";
 authenticate(LEVEL_VISITOR);
-require_once("func.php");
-require_once("textfunc.php");
-require_once("xmlfunc.php");
 
-
-require_once("connect.php");
-
-$context[class]="documents";
-
-$originalname="$site-schema-xml.xsd";
-download("",$originalname,calculateXMLSchema($context));
+require_once "func.php";
+require_once "textfunc.php";
+require_once "xmlfunc.php";
+require_once "connect.php";
+$context[class] = "documents";
+$originalname = "$site-schema-xml.xsd";
+download("", $originalname, calculateXMLSchema($context));
 
 ?>

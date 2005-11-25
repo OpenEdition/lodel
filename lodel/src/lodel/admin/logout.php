@@ -28,19 +28,18 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require("siteconfig.php");
-include ($home."auth.php");
+require "siteconfig.php";
+require_once ($home. "auth.php");
 authenticate(LEVEL_VISITOR);
 
-$name=addslashes($_COOKIE[$sessionname]);
+$name = addslashes($_COOKIE[$sessionname]);
 
-require_once("connect.php");
-$time=time()-1;
+require_once "connect.php";
+$time = time()-1;
 usemaindb();
 $db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or dberror();
 $db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or dberror();
-setcookie($sessionname,"",$time,$urlroot);
+setcookie($sessionname, "", $time,$urlroot);
 
-header ("Location: ".SITEROOT); // la norme ne supporte pas les chemins relatifs !!
-
+header ("Location: ". SITEROOT); // la norme ne supporte pas les chemins relatifs !!
 ?>
