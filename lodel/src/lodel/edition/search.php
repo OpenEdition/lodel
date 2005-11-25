@@ -28,10 +28,10 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require("siteconfig.php");
-require_once("auth.php");
+require "siteconfig.php";
+require_once "auth.php";
 authenticate(LEVEL_VISITOR);
 
-$class="search";
-require_once("search.inc.php");
+$class = "search";
+require_once "search.inc.php";
 ?>

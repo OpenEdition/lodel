@@ -29,25 +29,25 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
-require("siteconfig.php");
-require_once("auth.php");
+require "siteconfig.php";
+require_once "auth.php";
 authenticate(LEVEL_REDACTOR);
 
-define("UPLOADDIR",SITEROOT."CACHE/upload");
+define("UPLOADDIR", SITEROOT. "CACHE/upload");
 
-$context['caller']=$_REQUEST['caller'];
-$context['single']=isset($_REQUEST['single']);
+$context['caller'] = $_REQUEST['caller'];
+$context['single'] = isset($_REQUEST['single']);
 
-$ids=explode(",",$_REQUEST['value']);
+$ids = explode(",",$_REQUEST['value']);
 
-$nodesk=true;
-require("view.php");
-$view= &View::getView();
-$view->renderCached($context,"entitybrowser");
+$nodesk = true;
+require_once "view.php";
+$view = &View::getView();
+$view->renderCached($context, "entitybrowser");
 
 function getchecked($id)
 {
-  return in_array($GLOBALS['ids'],$id) ? "checked" : "";
+  return in_array($GLOBALS['ids'], $id) ? "checked" : "";
 }
 
 ?>
