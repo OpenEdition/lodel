@@ -28,8 +28,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require("siteconfig.php");
-require_once("auth.php");
+require "siteconfig.php";
+require_once "auth.php";
 authenticate();
-require_once("search.inc.php");
+require_once "search.inc.php";
 ?>
