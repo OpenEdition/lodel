@@ -330,7 +330,7 @@ class XMLImportParser
 
 				// change the context
 				$classtype = $class == "entrytypesvo" ? "entries" : "persons";
-				array_unshift($classstack, array ($obj-> class, $classtype));
+				array_unshift($classstack, array ($obj->class, $classtype));
 				$this->handler->openClass($classstack[0], $obj);
 			}	else {
 				$call = "process".substr($class, 0, -2);
