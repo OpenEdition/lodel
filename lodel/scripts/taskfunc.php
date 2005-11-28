@@ -52,7 +52,7 @@ function gettask(& $id)
 		dberror();
 	if (!$row) {
 		require_once "view.php";
-		$view = & View :: getView();
+		$view = &View::getView();
 		$view->back();
 		return;
 	}
@@ -84,7 +84,7 @@ function gettypeandclassfromtask($task, & $context)
 		// get the type 
 		$dao = & getDAO("types");
 		$votype = $dao->getById($idtype, "class");
-		$context['class'] = $votype-> class;
+		$context['class'] = $votype->class;
 	}
 }
 ?>
