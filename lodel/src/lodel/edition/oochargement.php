@@ -34,7 +34,11 @@ authenticate(LEVEL_REDACTOR);
 require_once $home."func.php";
 require_once "utf8.php"; // conversion des caracteres
 
-$therequest = ($_POST ? &$_POST : &$_GET);
+if ($_POST) {
+	$therequest = &$_POST;
+ } else {
+	$therequest = &$_GET;
+}
 
 $context['idparent']  = intval($therequest['idparent']);
 $context['identity']  = $therequest['identity'] ? intval($therequest['identity']) : intval($therequest['iddocument']);
