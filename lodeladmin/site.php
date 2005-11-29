@@ -52,7 +52,7 @@ if ($id>0 && ($delete || $restore)) {
   }
   update();
   require("view.php");
-  $view=&getView();
+  $view=&View::getView();
   $view->back(); // on revient
 }
 //
@@ -148,7 +148,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 
     if ($status>-32) {
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->back(); // on revient, le site n'est pas en creation
     }
 
@@ -216,7 +216,7 @@ if ($task=="version") {
 	}
       }
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-version");
       return;	
     }
@@ -261,7 +261,7 @@ if ($task=="createdb") {
       $context['dbusername']=$dbusername;
       $context['dbhost']=$dbhost;
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-createdb");
       return;
     }
@@ -271,7 +271,7 @@ if ($task=="createdb") {
       $context['dbusername']=$dbusername;
       $context['dbhost']=$dbhost;
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-createdb");
       return;
     }
@@ -319,7 +319,7 @@ if ($task=="createtables") {
       } while ($error);
     }
     require("view.php");
-    $view=&getView();
+    $view=&View::getView();
     $view->render($context,"site-createtables");
     return;
   }
@@ -365,7 +365,7 @@ if ($task=="createdir") {
 	$context['error_nonaccess']=!@opendir($dir);
       }
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-createdir");
       return;
     }
@@ -374,7 +374,7 @@ if ($task=="createdir") {
       // on y arrive pas... pas les droits surement
       $context[error_mkdir]=1;
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-createdir");
       return;
     }
@@ -385,7 +385,7 @@ if ($task=="createdir") {
     if (!@writefile(LODELROOT."tpl/testecriture","")) {
       $context['error_tplaccess']=1;
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-createdir");
       return;
     } else {
@@ -422,7 +422,7 @@ if ($task=="file") {
   if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache)!=file_get_contents($siteconfigdest)) {
     if ($installoption=="2" && !$lodeldo) {
       require("view.php");
-      $view=&getView();
+      $view = &View::getView();
       $view->render($context,"site-file");
       return;
     }
@@ -433,7 +433,7 @@ if ($task=="file") {
       $context[siteconfigdest]=$siteconfigdest;
       $context[error_writing]=1;
       require("view.php");
-      $view=&getView();
+      $view=&View::getView();
       $view->render($context,"site-file");
       return;	
     }
