@@ -492,8 +492,8 @@ if ($task=="file") {
 // post-traitement
 postprocessing ($context);
 
-require("view.php");
-$view=&getView();
+require "view.php";
+$view = &View::getView();
 $view->render($context,"site");
 
 
