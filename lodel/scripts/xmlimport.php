@@ -288,7 +288,7 @@ class XMLImportParser
 				$call = "process".substr($class, 0, -2);
 				#echo count($datastack);
 				$data = array_shift($datastack);
-				$datastack[0] .= $this->handler-> $call ($obj, $data); // call the method associated with the object class
+				$datastack[0] .= $this->handler->$call ($obj, $data); // call the method associated with the object class
 			}
 			break;
 		case "tablefieldsvo" :
@@ -334,7 +334,7 @@ class XMLImportParser
 				$this->handler->openClass($classstack[0], $obj);
 			}	else {
 				$call = "process".substr($class, 0, -2);
-				$this->handler-> $call ($obj, $datastack[0]); // call the method associated with the object class
+				$this->handler->$call ($obj, $datastack[0]); // call the method associated with the object class
 				$datastack[0] = "";
 			}
 			break;
@@ -367,7 +367,7 @@ class XMLImportParser
 				// yes, it's an index. Get the object
 				$dao = & getDAO($tf->type == "entries" ? "entrytypes" : "persontypes");
 				$tf = $dao->find("type='".$tf->name."'");
-				$this->_init_class($tf-> class, "class='".$tf-> class."' OR class='entities_".$tf-> class."'");
+				$this->_init_class($tf->class, "class='".$tf->class."' OR class='entities_".$tf->class. "'");
 			}
 			// analyse the styles of the tablefields
 			foreach (preg_split("/[,;]/", $tf->style) as $style) {
