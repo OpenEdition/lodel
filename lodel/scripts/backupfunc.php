@@ -85,9 +85,9 @@ function dump_site($site, $outfile, $fh = 0)
 	$dao = & getDAO("classes");
 	$vos = $dao->findMany("status>0", "", "class,classtype");
 	foreach ($vos as $vo)	{
-		$tables[] = lq("#_TP_". $vo-> class);
+		$tables[] = lq("#_TP_". $vo->class);
 		if ($vo->classtype == "persons")
-			$tables[] = lq("#_TP_entities_". $vo-> class);
+			$tables[] = lq("#_TP_entities_". $vo->class);
 	}
 
 	mysql_dump($dbname, $tables, $outfile, $fh);
