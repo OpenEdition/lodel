@@ -253,6 +253,7 @@ class GenericLogic extends Logic
 			}
 
 			if ($type != "persons" && $type != "entries" && $type != "entities") {
+				echo "<hr />la<hr/>";
 				$this->_publicfields[$field->class][$name] = true; // this field is public
 			}
 			if ($field->edition == "none") {
@@ -446,6 +447,7 @@ class GenericLogic extends Logic
 			}
 		}
 	}
+	var $_publicfields;
 
 	// begin{publicfields} automatic generation  //
 	function _publicfields()
