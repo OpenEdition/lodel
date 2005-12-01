@@ -256,9 +256,6 @@ class GenericLogic extends Logic
 				
 				$this->_publicfields[$field->class][$name] = true; // this field is public
 			}
-			echo "PUBLICFIELDS<br />";
-			print_r($this->_publicfields);
-			echo "///PUBLICFIELDS<br />";
 			if ($field->edition == "none") {
 				unset ($value);
 			}
@@ -440,10 +437,8 @@ class GenericLogic extends Logic
 	{
 		//print_r($context);
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
-		echo "class=$class";
-		print_r($this);
 		$publicfields = $this->_publicfields();
-		print_r($publicfields);
+		
 		if ($publicfields[$class]) {
 			foreach ($publicfields[$class] as $field => $fielddescr) {
 				$vo->$field = isset($context[$field]) ? $context[$field] : '';
@@ -455,9 +450,6 @@ class GenericLogic extends Logic
 	// begin{publicfields} automatic generation  //
 	function _publicfields()
 	{
-		echo "ici";
-		print_r($this->_publicfields);
-		echo "aussi : ".isset ($this->_publicfields);
 		if (!isset ($this->_publicfields))
 			trigger_error("ERROR: publicfield has not be created in ". get_class($this). "::_publicfields", E_USER_ERROR);
 		return $this->_publicfields;
