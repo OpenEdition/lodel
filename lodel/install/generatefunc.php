@@ -30,25 +30,20 @@
 
 
 
-function replaceInFile($filename,$beginre,$endre,$contents)
-
+function replaceInFile($filename, $beginre, $endre, $contents)
 {
-  if (!file_exists($filename)) return false;
-  $file=file_get_contents($filename);
-  if (!$file) die("probleme avec le fichier $filename");
-  
-  if (!preg_match("/$beginre/",$file)) die("impossible de trouver les begin pour publicfields dans $filename");
-  if (!preg_match("/$endre/",$file)) die("impossible de trouver les end pour publicfields dans $filename");
+	if (!file_exists($filename)) return false;
+	$file = file_get_contents($filename);
+	if (!$file)	die("probleme avec le fichier $filename");
 
-  $file=preg_replace("/($beginre\n?).*?(\n?$endre)/s","\\1".$contents."\\2",$file);
+	if (!preg_match("/$beginre/", $file)) die("impossible de trouver les begin pour publicfields dans $filename");
+  if (!preg_match("/$endre/", $file)) die("impossible de trouver les end pour publicfields dans $filename");
 
-  $fp=fopen($filename,"w");
-  fwrite($fp,$file);
+  $file = preg_replace("/($beginre\n?).*?(\n?$endre)/s", "\\1".$contents."\\2", $file);
+
+  $fp=fopen($filename, "w");
+  fwrite($fp, $file);
   fclose($fp);
-
   return true;
 }
-
-
-
 ?>
