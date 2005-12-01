@@ -1,182 +1,266 @@
 <?php
-
-/*
+/**
+ * Fichier de la classe DAO
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.8
+ * @version CVS:$Id:
+ */
 
 require_once 'connect.php';
+
+
+
+/**
+ * Classe gérant la DAO (Database Abstraction Object)
+ * 
+ * <p>Cette classe définit un ensemble de méthodes permettant d'effectuer les opérations
+ * courantes sur la base de données : sélection, insertion, mise à jour, suppression. Au lieu
+ * d'effectuer soit même les requêtes SQL et de traiter les résultats SQL sous forme de tableau,
+ * les méthodes de cette classe retourne leurs résultat sous forme d'objet : les Virtual Objet
+ *  (VO).</p>
+ * <p>Exemple d'utilisation (factice)
+ * <code>
+ * $dao = new DAO('personnes',true); //instantiation
+ * $vos = $DAO->find("nom LIKE('robert')", "nom", "nom,prenom,mail");
+ * print_r($vos); // affiche toutes les personnes dont le nom contient robert
+ * 
+ * $dao->deleteObject($vo[0]); //suppression du premier objet
+ * </code>
+ *
+ * @package lodel
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @since Classe ajoutée depuis la version 0.8
+ * @see controler.php
+ * @see view.php
+ */
 class DAO
 {
-
+	/**#@+
+	 * @access private
+	 */
 	/**
-	 * Table and class name
+	 * Nom et classe de la table SQL
+	 * @var string
 	 */
 	var $table;
 
 	/**
+	 * Nom de la table avec et préfixe et éventuellement la jointure pour le SELECT
 	 * Table name with the prefix, and potential join for views.
+	 * @var string
 	 */
 	var $sqltable;
 
 	/**
-	 * Uniqueid. True if this table use unique id object
+	 * Uniqueid. Vrai si la table utilise une clé primaire (clé unique).
+	 * @var integer
 	 */
 	var $uniqueid;
 
 	/**
+	 * Tableau associatif avec les droits requis pour lire, écrire et protéger
 	 * Assoc array with the right level required to read, write, protect
+	 * @var array
 	 */
 	var $rights;
 
 	/**
-	 * Assoc array with the right level required to read, write, protect
+	 * Champ identifiant
+	 * @var string
 	 */
 	var $idfield;
+	/**#@-*/
 
-	/** Constructor
+	/**
+	 * Constructeur de classe
+	 *
+	 * Positionne les variables privées de la classe.
+	 *
+	 * @param string $table le nom de la table et de la classe.
+	 * @param boolean $uniqueid Par défaut à 'false'. Indique si la table utilise une clé primaire.
+	 * @param string $idfield Par défaut à 'id'. Indique le nom du champ identifiant
 	 */
 	function DAO($table, $uniqueid = false, $idfield = "id")
 	{
 		$this->table = $table;
-		$this->sqltable = lq("#_TP_").$table;
+		$this->sqltable = lq("#_TP_"). $table;
 		$this->uniqueid = $uniqueid;
 		$this->idfield = $idfield;
 	}
 
 	/**
+	 * Ajout/Modification d'enregistrement
 	 * Main function to add/modify records
+	 *
+	 * @param object &$vo l'objet virtuel à sauvegarder.
+	 * @param boolean $forcecreate Par défaut à false. Indique si on doit forcer la création.
+	 * @return $idfield l'identifiant de l'enregistrement créé ou modifié.
 	 */
-
-	function save(& $vo, $forcecreate = false) // $set,$context=array())
+	function save(&$vo, $forcecreate = false) // $set,$context=array())
 	{
 		global $db, $lodeluser;
 		$idfield = $this->idfield;
 
 		// check the user has the basic right for modifying/creating an object
 		if ($lodeluser['rights'] < $this->rights['write']) {
-			die("ERROR: you don't have the right to modify objects from the table ".$this->table);
+			die('ERROR: you don\'t have the right to modify objects from the table '. $this->table);
 		}
 		// check the user has the right to protect the object
 		if (((isset ($vo->status) && ($vo->status >= 32 || $vo->status <= -32)) || $vo->protect) && 
 					$lodeluser['rights'] < $this->rights['protect']) {
-			die("ERROR: you don't have the right to protect objects from the table ".$this->table);
+			die('ERROR: you don\'t have the right to protect objects from the table '. $this->table);
 		}
-		if (isset ($vo->rank) && $vo->rank == 0) {
-			// initialise the rank
-			$rank = $db->getOne("SELECT MAX(rank) FROM ".$this->sqltable." WHERE status>-64");
+
+		if (isset ($vo->rank) && $vo->rank == 0) { // initialize the rank
+			$rank = $db->getOne('SELECT MAX(rank) FROM '.$this->sqltable.' WHERE status>-64');
 			if ($db->errorno()) {
 				dberror();
 			}
 			$vo->rank = $rank +1;
 		}
-		//
-		if ($vo-> $idfield > 0 && !$forcecreate) { // update
-			$update = "";
+
+		if ($vo->$idfield > 0 && !$forcecreate) { // Update - Mise à jour
+			$update = ''; //critère de mise à jour
 			if (isset ($vo->protect))	{ // special processing for the protection
-				$update = "status=(2*(status>0)-1)". ($vo->protect ? "*32" : "");
+				$update = 'status=(2*(status>0)-1)'. ($vo->protect ? '*32' : ''); //reglage du status
 				unset ($vo->status);
 				unset ($vo->protect);
 			}
-			foreach ($vo as $k => $v)	{
+			foreach ($vo as $k => $v)	{ // ajout de chaque champ à la requete update
 				if (!isset ($v) || $k == $idfield) {
 					continue;
 				}
 				if ($update) {
-					$update .= ",";
+					$update .= ',';
 				}
-				$update .= "$k='".$v."'";
+				$update .= "$k='". $v. "'";
 			}
-			#echo "debug ghislain:",$update;
+			
 			if ($update) {
-				$db->execute("UPDATE ".$this->sqltable." SET  $update WHERE ".$idfield."='".$vo-> $idfield."' ".$this->rightscriteria("write")) or dberror();
+				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". $vo->$idfield. "' ". $this->rightscriteria('write')) or dberror();
 			}
-		}	else	{ // new !
+		}	else	{ // new  - Ajout
 			if (isset ($vo->protect))	{ // special processing for the protection
 				$vo->status = ($vo->status > 0 ? 1 : -1) * ($vo->protect ? 32 : 1);
 				unset ($vo->protect);
 			}
-			$insert = "";
-			$values = "";
-			if ($this->uniqueid && !$vo-> $idfield) {
-				$vo-> $idfield = uniqueid($this->table);
+			$insert = ''; //condition SQL pour INSERT
+			$values = ''; // valeur des champs pour la requete SQL INSERT
+			if ($this->uniqueid && !$vo->$idfield) {
+				$vo->$idfield = uniqueid($this->table);
 			}
 			foreach ($vo as $k => $v)	{
 				if (!isset ($v)) {
 					continue;
 				}
 				if ($insert) {
-					$insert .= ",";
-					$values .= ",";
+					$insert .= ',';
+					$values .= ',';
 				}
 				$insert .= $k;
-				$values .= "'".$v."'";
+				$values .= "'". $v. "'";
 			}
 			#echo "debug ghislain:",$values;
 			if ($insert) {
-				$db->execute("REPLACE INTO ".$this->sqltable." (".$insert.") VALUES (".$values.")") or dberror();
-				if (!$vo-> $idfield) {
-					$vo-> $idfield = $db->insert_id();
+				$db->execute('REPLACE INTO '.$this->sqltable.' ('. $insert. ') VALUES ('. $values. ')') or dberror();
+				if (!$vo->$idfield) {
+					$vo->$idfield = $db->insert_id();
 				}
 			}
 		}
-		return $vo-> $idfield;
+		return $vo->$idfield;
 	}
 
 	/**
+	 * Ajout de slashes dans champ pour la protection des données dans la requête SQL
+	 *
 	 * Quote the field in the object
+	 *
+	 * @param object &$vo Objet virtuel passé par référence
 	 */
-	function quote(& $vo)
+	function quote(&$vo)
 	{
 		foreach ($vo as $k => $v) {
 			if (isset ($v)){
-				$vo-> $k = addslashes($v);
+				$vo->$k = addslashes($v);
 			}
 		}
 	}
 
 	/**
+	 * Récuperer un objet par son identifiant
+	 *
 	 * Function to get a value object
+	 *
+	 * @param integer $id l'identifiant de l'objet
+	 * @param string $select les champs à récuperer
+	 * @return object un objet virtuel contenant les champs de l'objet
+	 * @see fonction find()
 	 */
 	function getById($id, $select = "*")
 	{
-		return $this->find($this->idfield."='$id'", $select);
+		return $this->find($this->idfield. "='$id'", $select);
 	}
 
 	/**
+	 * Récuperer des objects grâce aux identifiants
+	 *
 	 * Function to get many value object
+	 * @param array $ids le tableau des identifiant
+	 * @param string $select les champs à récuperer
+	 * @return array un tableau d'objet virtuels
+	 * @see fonction find(), getById()
 	 */
 	function getByIds($ids, $select = "*")
 	{
-		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('".join("','", $ids)."')" : "='".$ids."'"), "", $select);
+		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('". join("','", $ids). "')" : "='".$ids."'"), '', $select);
 	}
 
 	/**
+	 * Trouver un objet suivant certains critères et en sélectionnant certains champs
+	 *
 	 * Function to get a value object
+	 *
+	 * @param string $criteria les critères SQL de recherche
+	 * @param string $select les critères SQL de sélection (par défaut : SELECT *)
+	 * @return l'objet virtuel trouvé sinon null
 	 */
 	function find($criteria, $select = "*")
 	{
@@ -185,8 +269,6 @@ class DAO
 		//execute select statement
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
 		$row = $db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read"));
-		#echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read");
-		#print_r($row);
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 		if ($row === false) {
 			dberror();
@@ -198,15 +280,20 @@ class DAO
 		// create new vo and call getFromResult
 		$this->instantiateObject($vo);
 		$this->_getFromResult($vo, $row);
-
-		// return vo
 		return $vo;
 	}
 
 	/**
+	 * Trouver un ensemble d'objet correspondant à des critères
+	 *
 	 * Function to get many value object
+	 *
+	 * @param string $criteria les critères SQL de recherches
+	 * @param string $order le critère SQL de tri des résultats. (par défaut vide)
+	 * @param string $select les champs à sélectionner. (par défaut *).
+	 * @return array Un tableau de VO correspondant aux résultats de la requête
 	 */
-	function findMany($criteria, $order = "", $select = "*")
+	function findMany($criteria, $order = '', $select = '*')
 	{
 		global $db;
 
@@ -230,18 +317,21 @@ class DAO
 			$i ++;
 			$result->MoveNext();
 		}
-
 		// return vo's
 		return $vos;
 	}
 
 	/**
+	 * Compter le nombre d'éléments correspondant à tel critère
+	 *
 	 * Return the number of element matching a criteria
+	 *
+	 * @param string $criteria Les critères SQL de la requête.
 	 */
 	function count($criteria)
 	{
 		global $db;
-		$ret = $db->getOne("SELECT count(*) FROM ".$this->sqltable." WHERE ".$criteria);
+		$ret = $db->getOne('SELECT count(*) FROM '.$this->sqltable.' WHERE '.$criteria);
 		if ($db->errorno()) {
 			dberror();
 		}
@@ -249,9 +339,12 @@ class DAO
 	}
 
 	/**
+	 * Crée un nouvel objet virtuel (VO)
 	 * Create a new Value Object
+	 *
+	 * @return object Le VO instancié
 	 */
-	function & createObject()
+	function &createObject()
 	{
 		$this->instantiateObject($vo);
 		if (array_key_exists("status", $vo)) {
@@ -264,69 +357,75 @@ class DAO
 	}
 
 	/**
+	 * Instanciation d'un nouvel objet virtuel (VO)
+	 *
 	 * Instantiate a new object
 	 */
 	function instantiateObject(& $vo)
 	{
-		$classname = $this->table."VO";
+		$classname = $this->table. 'VO';
 		$vo = new $classname; // the same name as the table. We don't use factory...
 	}
 
 	/**
+	 * Suppression d'un objet - fonction qui ne fait qu'appeller deleteObject
 	 * Function to delete an object value.
 	 * @param mixed object or numeric id or an array of ids or criteria
+	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
 	 */
 	function delete($mixed)
 	{
 		return $this->deleteObject($mixed);
 	}
-
-	function deleteObject(& $mixed)
+	/**
+	 * Suppression d'un objet ou d'un tableau d'objet (tableau d'identifiant)
+	 * @param mixed object or numeric id or an array of ids or criteria
+	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
+	 */
+	function deleteObject(&$mixed)
 	{
 		global $db;
 
 		if ($GLOBALS['lodeluser']['rights'] < $this->rights['write']) {
-			trigger_error("ERROR: you don't have the right to delete object from the table ".$this->table, E_USER_ERROR);
+			trigger_error('ERROR: you don\'t have the right to delete object from the table '. $this->table, E_USER_ERROR);
 		}
 		$idfield = $this->idfield;
 		if (is_object($mixed)) {
-			$vo = & $mixed;
-			$id = $vo-> $idfield;
-			$criteria = $idfield."='$id'";
+			$vo = &$mixed;
+			$id = $vo->$idfield;
+			$criteria = $idfield. "='$id'";
 			//set id on vo to 0
-			$vo-> $idfield = 0;
+			$vo->$idfield = 0;
 			$nbid = 1;
 		}	elseif (is_numeric($mixed) && $mixed > 0)	{
 			$id = $mixed;
-			$criteria = $idfield."='$id'";
+			$criteria = $idfield. "='$id'";
 			$nbid = 1;
 		}	elseif (is_array($mixed))	{
 			$id = $mixed;
-			$criteria = $idfield." IN ('".join("','", $id)."')";
+			$criteria = $idfield. " IN ('". join("','", $id). "')";
 			$nbid = count($id);
 		}	elseif (is_string($mixed) && trim($mixed)) {
 			$criteria = lq($mixed);
 			if ($this->uniqueid) {
 				// select before deleting
-				$result = $db->execute("SELECT id FROM ".$this->sqltable."WHERE ($criteria) ".$this->rightscriteria("write")) or dberror();
+				$result = $db->execute('SELECT id FROM '.$this->sqltable."WHERE ($criteria) ". $this->rightscriteria('write')) or dberror();
 				// collect the ids
 				$id = array ();
 				foreach ($result as $row) {
 					$id[] = $row['id'];
 				}
 				$nbid = count($id);
-				#print_r($id);
-				#$criteria=$idfield." IN ('".join("','",$id)."')";
 			}	else {
 				$nbid = 0; // check we have delete at least one
 			}
 		}	else {
-			die("ERROR: DAO::deleteObject does not support the type of mixed");
+			die('ERROR: DAO::deleteObject does not support the type of mixed variable');
 		}
 		//execute delete statement
-		$db->execute("DELETE FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("write")) or dberror();
+		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) or dberror();
 		if ($db->affected_Rows() < $nbid) {
-			trigger_error("ERROR: you don't have the right to delete some objects in table ".$this->table, E_USER_ERROR);
+			trigger_error("ERROR: you don't have the right to delete some objects in table ". $this->table, E_USER_ERROR);
 		}
 		// in theory, this is bad in the $mixed is an array because 
 		// some but not all of the object may have been deleted
@@ -343,7 +442,11 @@ class DAO
 	}
 
 	/**
+	 * Suppression de plusieurs objets suivant un critère particulier
 	 * Function to delete many object value given a criteria
+	 *
+	 * @param string critères SQL pour la suppression
+	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
 	 */
 	function deleteObjects($criteria)
 	{
@@ -367,9 +470,9 @@ class DAO
 			// delete the uniqueid
 			deleteuniqueid($ids);
 		}
-		//echo "sql="."DELETE FROM ".$this->sqltable.$where;
+	
 		//execute delete statement
-		$db->execute("DELETE FROM ".$this->sqltable.$where) or dberror();
+		$db->execute("DELETE FROM ". $this->sqltable. $where) or dberror();
 		if ($db->Affected_Rows() <= 0) {
 			return false; // not the rights
 		}
@@ -377,17 +480,20 @@ class DAO
 	}
 
 	/**
+	 * Récupère le critère SQL correspondant aux droits d'accès en lecture et en écriture
+	 *
 	 * Return the criteria depending on the write/read access
 	 *
+	 * @param string $access le niveau d'accès pour lequel on souhaite avoir le critère SQL
+	 * @return string Le critère SQL correspond au droit d'accès
 	 */
 	function rightsCriteria($access)
 	{
-		if (!isset ($this->cache_rightscriteria[$access])) {
-			$classvars = get_class_vars($this->table."VO");
+		if (!isset($this->cache_rightscriteria[$access])) {
+			$classvars = get_class_vars($this->table. "VO");
 			if ($classvars && array_key_exists("status", $classvars)) {
-				$status = $this->sqltable.".status";
-				###	 $this->cache_rightscriteria[$access]=$GLOBALS['lodeluser']['visitor'] ? " AND $status>-64" : " AND $status>0";
-				$this->cache_rightscriteria[$access] = $GLOBALS['lodeluser']['visitor'] ? "" : " AND $status>0";
+				$status = $this->sqltable. '.status';
+				$this->cache_rightscriteria[$access] = $GLOBALS['lodeluser']['visitor'] ? '' : " AND $status > 0";
 
 				if ($access == "write" && $GLOBALS['lodeluser']['rights'] < $this->rights['protect']) {
 					$this->cache_rightscriteria[$access] .= " AND $status<32 AND $status>-32 ";
@@ -399,17 +505,24 @@ class DAO
 		return $this->cache_rightscriteria[$access];
 	}
 
-	//! Private from this point
+	/**
+	 * Tableau de cache stockant les critères SQL correspondants aux droit d'accès sur les objets
+	 * @see rightsCriteria()
+	 * @access private
+	 */
 	var $cache_rightscriteria;
 
 	/**
-	 * @private
+	 * Remplit un VO depuis une ligne d'un ResultSet SQL
+	 *
+	 * @param objet $vo Le VO à remplir passé par référence
+	 * @param array $row La ligne du ResultSet SQL
+	 * @access private
 	 */
-	function _getFromResult(& $vo, $row)
+	function _getFromResult(&$vo, $row)
 	{
-		//fill vo from the database result set
-		foreach ($row as $k => $v) {
-			$vo-> $k = $v;
+		foreach ($row as $k => $v) {//fill vo from the database result set
+			$vo->$k = $v;
 		}
 	}
 }
