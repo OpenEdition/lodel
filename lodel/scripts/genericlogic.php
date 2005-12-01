@@ -1,42 +1,70 @@
 <?php
+/**
+ * Fichier de la classe Genericlogic
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.8
+ * @version CVS:$Id:
+ */
 
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 /**
- *  GenericLogic 
+ * Classe des logiques métiers générique.
+ * 
+ * <p>Cette classe définit la logique par défaut pour les objets dynamiques de l'interface :
+ * entrées, personnes par exemple</p>
+ *
+ * @package lodel
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @since Classe ajoutée depuis la version 0.8
+ * @see logic.php
  */
 
 class GenericLogic extends Logic
 {
 
-	/** Constructor
+	/** 
+	 * Constructeur de la classe
+	 *
+	 * Définit le nom de la table type pour l'objet ainsi que le nom du champ identifiant unique.
+	 *
+	 * @param string $classtype le type d'objet generique, parmis : entities, entries et persons.
 	 */
 	function GenericLogic($classtype)
 	{
@@ -57,56 +85,66 @@ class GenericLogic extends Logic
 	}
 
 	/**
+	 * Implémentation pour les objets générique de l'action permettant d'appeler l'affichage d'un objet.
+	 *
+	 * Cette fonction récupère les données de l'objet <em>via</em> la DAO de l'objet. Ensuite elle
+	 * met ces données dans le context (utilisation de la fonction privée _populateContext())
+	 * 
 	 * view an object Action
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function viewAction(& $context, & $error)
+	function viewAction(&$context, &$error)
 	{
 		// define some loop functions
 		require_once "lang.php";
-		function loop_edition_fields($context, $funcname)
-		{
-			global $db, $home;
-
-			require_once "validfunc.php";
-			if ($context['class'])	{
-				validfield($context['class'], "class");
-				$class = $context['class'];
-			}	elseif ($context['type']['class'])	{
-				validfield($context['type']['class'], "class");
-				$class = $context['type']['class'];
-			}	else {
-				die("ERROR: internal error in loop_edition_fields");
-			}
-			if ($context['classtype'] == "persons")	{
-				$criteria = "class='".$class."'";
-				// degree is defined only when the persons is related to a document. Is it a hack ? A little no more...
-				if ($context['identifier']) {
-					$criteria .= " OR class='entities_".$class."'";
+		if(!function_exists('loop_edition_fields')) {
+			function loop_edition_fields($context, $funcname)
+			{
+				global $db, $home;
+	
+				require_once "validfunc.php";
+				if ($context['class']) {
+					validfield($context['class'], "class");
+					$class = $context['class'];
+				}	elseif ($context['type']['class'])	{
+					validfield($context['type']['class'], "class");
+					$class = $context['type']['class'];
+				}	else {
+					die("ERROR: internal error in loop_edition_fields");
 				}
-			}	elseif ($context['classtype'] == "entries")	{
-				$criteria = "class='".$class."'";
-			}	else {
-				$criteria = "idgroup='".$context['id']."'";
-				$context['idgroup'] = $context['id'];
-			}
-			$result = $db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
-
-			$haveresult = !empty ($result->fields);
-			if ($haveresult) {
-				call_user_func("code_before_$funcname", $context);
-			}
-
-			#print_r($context);
-			while (!$result->EOF)	{
-				$localcontext = array_merge($context, $result->fields);
-				$name = $result->fields['name'];
-				$localcontext['value'] = $result->fields['edition'] != "display" && is_string($context['data'][$name]) ? htmlspecialchars($context['data'][$name]) : $context['data'][$name];
-				call_user_func("code_do_$funcname", $localcontext);
-				$result->MoveNext();
-			}
-			if ($haveresult) {
-				call_user_func("code_after_$funcname", $context);
-			}
+				if ($context['classtype'] == "persons")	{
+					$criteria = "class='".$class."'";
+					// degree is defined only when the persons is related to a document. Is it a hack ? A little no more...
+					if ($context['identifier']) {
+						$criteria .= " OR class='entities_".$class."'";
+					}
+				}	elseif ($context['classtype'] == "entries")	{
+					$criteria = "class='".$class."'";
+				}	else {
+					$criteria = "idgroup='". $context['id']."'";
+					$context['idgroup'] = $context['id'];
+				}
+				$result = $db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
+	
+				$haveresult = !empty ($result->fields);
+				if ($haveresult) {
+					call_user_func("code_before_$funcname", $context);
+				}
+	
+				#print_r($context);
+				while (!$result->EOF)	{
+					$localcontext = array_merge($context, $result->fields);
+					$name = $result->fields['name'];
+					$localcontext['value'] = $result->fields['edition'] != "display" && is_string($context['data'][$name]) ? htmlspecialchars($context['data'][$name]) : $context['data'][$name];
+					call_user_func("code_do_$funcname", $localcontext);
+					$result->MoveNext();
+				}
+				if ($haveresult) {
+					call_user_func("code_after_$funcname", $context);
+				}
+			} //function }}}
 		}
 		$id = $context['id'];
 		if ($id && !$error) {
@@ -118,7 +156,7 @@ class GenericLogic extends Logic
 			$this->_populateContext($vo, $context);
 		}
 
-		$daotype = & getDAO($this->_typetable);
+		$daotype = &getDAO($this->_typetable);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			die("ERROR: idtype must me known in GenericLogic::viewAction");
@@ -126,7 +164,7 @@ class GenericLogic extends Logic
 		$this->_populateContext($votype, $context['type']);
 
 		if ($id && !$error)	{
-			$gdao = & getGenericDAO($votype->class, $this->_idfield);
+			$gdao = &getGenericDAO($votype->class, $this->_idfield);
 			$gvo = $gdao->getById($id);
 			if (!$gvo) {
 				die("ERROR: can't find object $id in the associated table. Please report this bug");
@@ -138,13 +176,16 @@ class GenericLogic extends Logic
 		return $ret ? $ret : "_ok";
 	}
 
-	/**
-	 * @private
-	 */
+	
 
 	/**
 	 * Validated the public fields and the unicity as usual and in addition the typescompatibility
 	 *
+	 * Validation des champs publics et de l'unicité comme dans la fonction de logic.php. Mais vérifie
+	 * la compatibilité des types d'objet en plus.
+	 *
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
 	 */
 	function validateFields(&$context, &$error)
 	{
@@ -162,7 +203,7 @@ class GenericLogic extends Logic
 			die("ERROR: internal error in loop_edition_fields");
 		}
 
-		$daotablefields = & getDAO("tablefields");
+		$daotablefields = &getDAO("tablefields");
 		$fields = $daotablefields->findMany("(class='".$class."' OR class='entities_".$class."') AND status>0 ", "", "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
 
 		// file to move once the document id is know.
@@ -178,7 +219,7 @@ class GenericLogic extends Logic
 			$name = $field->name;
 
 			// check if the field is required or not, and rise an error if any problem.
-			$value = & $context['data'][$name];
+			$value = &$context['data'][$name];
 			if (!is_array($value)) {
 				$value = trim($value);
 			}
@@ -248,14 +289,14 @@ class GenericLogic extends Logic
 				case 'entries' :
 					// get the type
 					if ($type == "persons") {
-						$dao = & getDAO("persontypes");
+						$dao = &getDAO("persontypes");
 					}	else	{
-						$dao = & getDAO("entrytypes");
+						$dao = &getDAO("entrytypes");
 					}
 					$vo = $dao->find("type='".$name."'", "class,id");
 					$idtype = $vo->id;
 
-					$localcontext = & $context[$type][$idtype];
+					$localcontext = &$context[$type][$idtype];
 					if (!$localcontext) {
 						break;
 					}
@@ -266,7 +307,7 @@ class GenericLogic extends Logic
 							$localcontext[] = array ("g_name" => $key);
 						}
 					}
-					$logic = & getLogic($type); // the logic is used to validate
+					$logic = &getLogic($type); // the logic is used to validate
 					if (!is_array($localcontext)) {
 						die("ERROR: internal error in GenericLogic::validateFields");
 					}
@@ -285,7 +326,7 @@ class GenericLogic extends Logic
 					}
 					break;
 				case 'entities' :
-					$value = & $context['entities'][$name];
+					$value = &$context['entities'][$name];
 					if (!$value) {
 						unset ($context['entities'][$name]);
 						break;
@@ -313,8 +354,17 @@ class GenericLogic extends Logic
 		} // foreach files
 		return empty ($error);
 	}
-
-	function _moveFiles($id, $files_to_move, & $vo)
+	/**#@+
+	 * @access private
+	 */
+	/**
+	 * Déplacement des fichiers associés à l'objet dans le bon répertoire
+	 *
+	 * @param integer $id l'identifiant numérique de l'objet
+	 * @param array $files_to_move un tableau contenant les informations de tous les fichiers (nom et type)
+	 * @param object &$vo l'objet virtuel correspondant à l'objet passé par référence
+	 */
+	function _moveFiles($id, $files_to_move, &$vo)
 	{
 		foreach ($files_to_move as $file)	{
 			$src = SITEROOT.$file['filename'];
@@ -323,23 +373,31 @@ class GenericLogic extends Logic
 				die("ERROR: error in move_files");
 			}
 			// new path to the file
-			$dirdest = "docannexe/".$file['type']."/".$id;
+			$dirdest = "docannexe/". $file['type']. "/". $id;
 			checkdocannexedir($dirdest);
-			$dest = $dirdest."/".$dest;
+			$dest = $dirdest. "/". $dest;
 			$vo-> $file['name'] = addslashes($dest);
-			if ($src == SITEROOT.$dest) {
+			if ($src == SITEROOT. $dest) {
 				continue;
 			}
-			rename($src, SITEROOT.$dest);
-			chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
+			rename($src, SITEROOT. $dest);
+			chmod(SITEROOT. $dest, 0666 &octdec($GLOBALS['filemask']));
 			@rmdir(dirname($src)); // do not complain, the directory may not be empty
 		}
 	}
 
 	/**
-	 * function to store permanently a generic equivalent.
-	 * These functions simulate a static cache by using a global array
-	 * PHP5 would solve the problem
+	 * Définition de l'équivalent générique permanent.
+	 * 
+	 * <p> Cette fonction utilise un cache statique (tableau global). Elle définit l'équivalent
+	 * générique suivant la classe et le nom de l'objet.
+	 * </p>
+	 * <p> Info :These functions simulate a static cache by using a global array
+	 * PHP5 would solve the problem</p>
+	 *
+	 * @param string $class le nom de la classe de l'objet.
+	 * @param string $name le nom du champ.
+	 * @param string $value la valeur associée au champ.
 	 */
 	function addGenericEquivalent($class, $name, $value)
 	{
@@ -348,7 +406,10 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * return the generic equivalent
+	 * Retourne un équivalent générique pour une classe et un champ donné
+	 *
+	 * @param string $class le nom de la classe de l'objet.
+	 * @param string $name le nom du champ.
 	 */
 	function getGenericEquivalent($class, $name)
 	{
@@ -356,6 +417,10 @@ class GenericLogic extends Logic
 		return $genericlogic_g_name[$class][$name];
 	}
 
+	/**
+	 * Implémentation par défaut de _populateContextRelatedTables
+	 *
+	 */
 	function _populateContextRelatedTables($vo, $context)
 	{
 	}
@@ -363,16 +428,17 @@ class GenericLogic extends Logic
 	/**
 	 * Populate the object from the context. Only the public fields are inputted.
 	 * GenericLogic can deal with related table by detecting the class of $vo
-	 * @private
+	 *
+	 * @param object &$vo L'objet virtuel à remplir.
+	 * @param array &$context Le tableau contenant les données.
 	 */
-
-	function _populateObject(& $vo, & $context)
+	function _populateObject(&$vo, &$context)
 	{
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
 		$publicfields = $this->_publicfields();
 		if ($publicfields[$class]) {
 			foreach ($publicfields[$class] as $field => $fielddescr) {
-				$vo-> $field = isset ($context[$field]) ? $context[$field] : "";
+				$vo-> $field = isset($context[$field]) ? $context[$field] : '';
 			}
 		}
 	}
@@ -389,15 +455,24 @@ class GenericLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	// end{uniquefields} automatic generation  //
-
+	/**#@-*/
 } // class 
 
-/*------------------------------------*/
-/* special function                   */
 
+/**
+ *	Fonction de nettoyage des tags XHTML
+ *
+ * <p>Cette fonction nettoie une chaine de ses balises XHTML. Ce nettoyage tiens compte d'une liste
+ * de balises autorisé (attribut allowedtags)</p>
+ *
+ * @param string $text le texte à nettoyer
+ * @param array $allowedtags un tableau contenant la liste des balises autorisées.
+ * @param integer $k par défaut à -1. ???
+ * @return $text le texte nettoyé
+ */
 function lodel_strip_tags($text, $allowedtags, $k = -1)
 {
-	if (is_array($text)) {
+	if (is_array($text)) { //si text est un array alors applique le nettoyage à chaque partie du tableau
 		array_walk($text, "lodel_strip_tags", $allowedtags);
 		return $text;
 	}
