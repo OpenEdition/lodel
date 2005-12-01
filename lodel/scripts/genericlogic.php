@@ -446,6 +446,8 @@ class GenericLogic extends Logic
 	// begin{publicfields} automatic generation  //
 	function _publicfields()
 	{
+		echo "ici";
+		print_r($this->_publicfields);
 		if (!isset ($this->_publicfields))
 			trigger_error("ERROR: publicfield has not be created in ". get_class($this). "::_publicfields", E_USER_ERROR);
 		return $this->_publicfields;
