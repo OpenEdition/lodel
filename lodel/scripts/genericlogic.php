@@ -437,6 +437,7 @@ class GenericLogic extends Logic
 		//print_r($context);
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
 		echo "class=$class";
+		print_r($this);
 		$publicfields = $this->_publicfields();
 		print_r($publicfields);
 		if ($publicfields[$class]) {
