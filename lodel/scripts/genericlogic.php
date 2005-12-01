@@ -204,7 +204,7 @@ class GenericLogic extends Logic
 		}
 
 		$daotablefields = &getDAO("tablefields");
-		$fields = $daotablefields->findMany("(class='".$class."' OR class='entities_".$class."') AND status>0 ", "", "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
+		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
 
 		// file to move once the document id is know.
 		$this->files_to_move = array ();
@@ -376,7 +376,7 @@ class GenericLogic extends Logic
 			$dirdest = "docannexe/". $file['type']. "/". $id;
 			checkdocannexedir($dirdest);
 			$dest = $dirdest. "/". $dest;
-			$vo-> $file['name'] = addslashes($dest);
+			$vo->$file['name'] = addslashes($dest);
 			if ($src == SITEROOT. $dest) {
 				continue;
 			}
@@ -438,7 +438,7 @@ class GenericLogic extends Logic
 		$publicfields = $this->_publicfields();
 		if ($publicfields[$class]) {
 			foreach ($publicfields[$class] as $field => $fielddescr) {
-				$vo-> $field = isset($context[$field]) ? $context[$field] : '';
+				$vo->$field = isset($context[$field]) ? $context[$field] : '';
 			}
 		}
 	}
@@ -447,7 +447,7 @@ class GenericLogic extends Logic
 	function _publicfields()
 	{
 		if (!isset ($this->_publicfields))
-			trigger_error("ERROR: publicfield has not be created in ".get_class($this)."::_publicfields", E_USER_ERROR);
+			trigger_error("ERROR: publicfield has not be created in ". get_class($this). "::_publicfields", E_USER_ERROR);
 		return $this->_publicfields;
 	}
 	// end{publicfields} automatic generation  //
