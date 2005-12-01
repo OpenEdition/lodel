@@ -434,8 +434,11 @@ class GenericLogic extends Logic
 	 */
 	function _populateObject(&$vo, &$context)
 	{
+		print_r($context);
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
+		echo "class=$class";
 		$publicfields = $this->_publicfields();
+		print_r($publicfields);
 		if ($publicfields[$class]) {
 			foreach ($publicfields[$class] as $field => $fielddescr) {
 				$vo->$field = isset($context[$field]) ? $context[$field] : '';
