@@ -58,7 +58,7 @@
 
 class GenericLogic extends Logic
 {
-
+	var $_publicfields_array;
 	/** 
 	 * Constructeur de la classe
 	 *
@@ -253,9 +253,12 @@ class GenericLogic extends Logic
 			}
 
 			if ($type != "persons" && $type != "entries" && $type != "entities") {
-				echo "<hr />la<hr/>";
+				
 				$this->_publicfields[$field->class][$name] = true; // this field is public
 			}
+			echo "PUBLICFIELDS<br />";
+			print_r($this->_publicfields);
+			echo "///PUBLICFIELDS<br />";
 			if ($field->edition == "none") {
 				unset ($value);
 			}
@@ -447,7 +450,7 @@ class GenericLogic extends Logic
 			}
 		}
 	}
-	var $_publicfields;
+	
 
 	// begin{publicfields} automatic generation  //
 	function _publicfields()
