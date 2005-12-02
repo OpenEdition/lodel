@@ -177,9 +177,12 @@ class Entities_EditionLogic extends GenericLogic
 				$context['data'][$field->name] = $field->defaultvalue;
 			}
 		}
-
+	
 		if ($context['check'] && !$error) {
 			$context['status'] = -1;
+			//il semble nécessaire de nettoyer request pour eviter les requetes pétées.
+			require_once('func.php');
+			clean_request_variable($context);
 			return $this->editAction($context, $error);
 		}
 		return $ret ? $ret : "_ok";
@@ -197,6 +200,7 @@ class Entities_EditionLogic extends GenericLogic
 		if ($context['cancel']) {
 			return "_back";
 		}
+		
 		global $lodeluser, $home;
 		$id = $context['id'];
 		if ($id && (!isset($context['idparent']) || !isset($context['idtype']))) {
@@ -296,8 +300,8 @@ class Entities_EditionLogic extends GenericLogic
 		if ($context['creationinfo']) {
 			$vo->creationinfo = $context['creationinfo'];
 		}
+	
 		$id = $context['id'] = $dao->save($vo);
-
 		// change the group recursively
 		$gdao = &getGenericDAO ($class, "identity");
 		$gdao->instantiateObject ($gvo);
@@ -385,7 +389,7 @@ class Entities_EditionLogic extends GenericLogic
 			if (!$idtypes) {
 				continue;
 			}
-			$logic = &getLogic ($table);
+			$logic = &getLogic($table);
 			$ids         = array();
 			$idrelations = array();
 			foreach ($idtypes as $idtype) {
@@ -411,7 +415,6 @@ class Entities_EditionLogic extends GenericLogic
 					}
 				}
 			}
-	
 			// delete relation not used
 			if ($ids && !$idrelations) { // new item but relation has not been created
 				if (!$vo->id) {
@@ -428,12 +431,13 @@ class Entities_EditionLogic extends GenericLogic
 				}
 			}
 			$criteria = $idrelations ? "AND idrelation NOT IN ('". join ("','", $idrelations). "')" : "";
+			
 			#echo "criteria=$criteria";
 			$this->_deleteSoftRelation ("id1='".$vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
-
 		// Entities
 		if ($context['entities']) {
+			
 			$dao = getDAO ("tablefields");
 			foreach (array_keys ($context['entities']) as $name) {
 				$name = addslashes ($name);
