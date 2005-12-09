@@ -30,6 +30,10 @@
 
 // gere les periodes. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des periodes.
+
+/**
+ @deprecated Déprécie depuis la version 0.8
+*/
 die("desuet");
 require("lodelconfig.php");
 require("auth.php");

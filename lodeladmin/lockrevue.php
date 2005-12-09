@@ -1,62 +1,74 @@
 <?
-/*
+/**
+ * Fichier lockrevue - bloquer une revue
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
-
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodeladmin
+ */
 
 // gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
-
-require("lodelconfig.php");
-include ($home."auth.php");
+require 'lodelconfig.php';
+include $home. 'auth.php';
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include_once("func.php");
+include_once 'func.php';
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
-$id=intval($id);
-$critere=" id='$id' AND statut>0";
-
+$id      = intval($id);
+$critere = " id='$id' AND statut>0";
 mysql_select_db($database) or die (mysql_error());
 if ($lock) { // lock
-  // lock la revue en ecriture la revue.
-  lock_write ("session","revues");
-  // cherche le nom de la revue
-  $result=mysql_query ("SELECT rep FROM  $GLOBALS[tp]revues WHERE $critere") or die (mysql_error());
-  list($revue)=mysql_fetch_row($result);
-  if (!$revue) die ("erreur lors de l'appel de la lockrevue. La revue est inconnue ou supprimee");
-  // delogue tout le monde sauf moi.
-  mysql_query ("DELETE FROM $GLOBALS[tp]session WHERE revue='$revue' AND iduser!='$iduser'") or die (mysql_error());
-  // change le statut de la revue
-  mysql_query ("UPDATE $GLOBALS[tp]revues SET statut=32 WHERE $critere") or die (mysql_error());
-  unlock();
+	// lock la revue en ecriture la revue.
+	lock_write ('session', 'revues');
+	// cherche le nom de la revue
+	$result = mysql_query ("SELECT rep FROM  $GLOBALS[tp]revues WHERE $critere") or die (mysql_error());
+	list($revue) = mysql_fetch_row($result);
+	if (!$revue) {
+		die ("erreur lors de l'appel de la lockrevue. La revue est inconnue ou supprimee");
+	}
+
+	// delogue tout le monde sauf moi.
+	mysql_query("DELETE FROM $GLOBALS[tp]session WHERE revue='$revue' AND iduser!='$iduser'") or die (mysql_error());
+
+	// change le statut de la revue
+	mysql_query("UPDATE $GLOBALS[tp]revues SET statut=32 WHERE $critere") or die (mysql_error());
+	unlock();
 
 } elseif ($unlock) { // unlock
-  mysql_query ("UPDATE $GLOBALS[tp]revues SET statut=1 WHERE $critere") or die (mysql_error());
+	mysql_query("UPDATE $GLOBALS[tp]revues SET statut=1 WHERE $critere") or die (mysql_error());
 } else { die ("lock ou unlock"); }
 
 mysql_select_db($currentdb) or die (mysql_error());

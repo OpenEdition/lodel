@@ -30,6 +30,9 @@
 
 // gere les utilisateurs. L'acces est reserve au adminlodelistrateur.
 // assure l'edition, la supression, la restauration des utilisateurs.
+/**
+ @deprecated Déprécie depuis la version 0.8
+*/
 
 die("desuet");
 require("lodelconfig.php");
