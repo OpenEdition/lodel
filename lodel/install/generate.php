@@ -1,35 +1,53 @@
 <?php
-/*
+/**
+ * Fichier utilitaire pour la génération des fichiers de DAO et de Logic
  *
- *  LODEL - Logiciel d'Edition ELectronique.
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * Ce fichier permet de regénérer les fichier du répertoire lodel/scripts/dao et ceux du
+ * répertoire lodel/scripts/logic. Les modifications ne sont pas perdus car seul les parties
+ * entre les blocs "// begin{publicfields} automatic generation  //" et "// end{publicfields}
+ * automatic generation  //" sont régénérés (pour les logiques).
  *
- *  Home page: http://www.lodel.org
+ * Ce script est à lancer en ligne de commande
  *
- *  E-Mail: lodel@lodel.org
+ * PHP version 4
  *
- *                            All Rights Reserved
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * Home page: http://www.lodel.org
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel/install
+ */
 
-
-require_once "generatefunc.php";
+require_once 'generatefunc.php';
 ## to be launch from lodel/scripts
 
 $files = array("init-site.xml", "init.xml");
@@ -39,6 +57,15 @@ $rights = array();
 $uniquefields = array();
 
 
+/**
+ * Cette méthode est appélée quand le parser XML rencontre le début d'un élément.
+ *
+ * Récupère la liste des champs, leurs propriétés pour tous les éléments table
+ *
+ * @param object $parser le parser XML
+ * @param string $name le nom de l'élement qui débute
+ * @param array $attrs les attributs de l'élément
+ */
 function startElement($parser, $name, $attrs)
 {
 	global $table, $tables, $fp, $varlist, $publicfields, $rights, $uniqueid;
@@ -47,8 +74,12 @@ function startElement($parser, $name, $attrs)
 	case "table" :
 	case "vtable" :
 		$table = $attrs['name'];
-		if ($tables[$table]) break;
-		if (!$table) die("nom de table introuvable");
+		if ($tables[$table]) {
+			break;
+		}
+		if (!$table) {
+			die('nom de table introuvable');
+		}
 		$uniqueid = isset($attrs['uniqueid']);
 		$rights=array();
 		if ($attrs['writeright']) $rights[] = "'write'=>LEVEL_". strtoupper($attrs['writeright']);
@@ -59,10 +90,12 @@ function startElement($parser, $name, $attrs)
 		break;
 	case "column" :
 		$varlist[] = $attrs['name'];
-		if (!$attrs['edittype']) break;
-		if ($attrs['label'] || $attrs['visibility'] == "hidden") {
-			$condition = $attrs['required'] == "true" ? "+" : "";
-			$publicfields[] = '"'. $attrs['name']. '" => array("'. $attrs['edittype']. '", "'.$condition. '")';
+		if (!isset($attrs['edittype'])) {
+			break;
+		}
+		if (isset($attrs['label']) || (isset($attrs['visibility']) && $attrs['visibility'] == 'hidden')) {
+			$condition = $attrs['required'] == 'true' ? '+' : '';
+			$publicfields[] = '\''. $attrs['name']. '\' => array(\''. $attrs['edittype']. '\', \''.$condition. '\')';
 		}
 		break;
 	case "unique" :
@@ -75,6 +108,14 @@ function startElement($parser, $name, $attrs)
 	}
 }
 
+/**
+ * Cette méthode est appélée quand le parser XML rencontre la fin de l'élément.
+ *
+ * lorsque on détecte la fin d'un élément table alors on génère la DAO et la logic associée
+ *
+ * @param object $parser le parser XML
+ * @param string $name le nom de l'élement qui débute
+ */
 function endElement($parser, $name)
 {
 	global $table, $tables;
@@ -96,9 +137,10 @@ function endElement($parser, $name)
 	}
 }
 
+//Lancement du parser
 foreach($files as $file) {
 	$xml_parser = xml_parser_create();
-	xml_set_element_handler($xml_parser, "startElement", "endElement");
+	xml_set_element_handler($xml_parser, 'startElement', 'endElement');
 	xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 0);
 	if (!($fp = fopen($file, "r"))) {
 		die("could not open XML input");
@@ -114,7 +156,12 @@ foreach($files as $file) {
 	xml_parser_free($xml_parser);
 }
 
-
+/**
+ * Construction des fichiers de DAO.
+ *
+ * Pour chaque table du fichier XML init-site.xml, un fichier contenant la classe VO et la
+ * classe DAO de la table est créé.
+ */
 function buildDAO() 
 {
 	global $table, $uniqueid, $varlist, $rights;
@@ -124,7 +171,7 @@ function buildDAO()
 /**
  * Classe d\'objet virtuel de la table SQL '.$table.'
  *
- * @package dao
+ * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
@@ -200,12 +247,17 @@ class '. $table. 'DAO extends DAO
 }
 
 
-
+/**
+ * Construction des logics des classes
+ *
+ * Pour chaque table du fichier XML init-site.xml, les fichiers de logic sont modifiés
+ * pour mettre à jour les fonctions _publicfields et _uniquefields
+ */
 function buildLogic()
 {
 	global $table,$publicfields,$uniquefields;
 
-	$filename = "../scripts/logic/class.".$table.".php";
+	$filename = '../scripts/logic/class.'.$table.'.php';
 
 	if (!file_exists($filename)) return;
 	$file = file_get_contents($filename);
@@ -240,7 +292,7 @@ function buildLogic()
 	{ 
 		return array(';
 			foreach ($uniquefields as $unique) {
-				$newunique.='array("'.join('", "',$unique).'"), ';
+				$newunique.='array(\''.join('\', \'',$unique).'\'), ';
 			}
 			$newunique.=");
 	}";
@@ -249,7 +301,11 @@ function buildLogic()
   }
 }
 
-
+/**
+ * Texte de la notice pour les fichiers DAO
+ *
+ * @param string $table le nom de la table
+ */
 function getnotice($table) 
 {
 	return '
@@ -294,6 +350,7 @@ function getnotice($table)
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
+ * @package lodel/dao
  */
 
 //
