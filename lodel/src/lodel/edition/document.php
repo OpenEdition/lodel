@@ -28,6 +28,10 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+/**
+ * @deprecated Déprécié depuis la version 0.8
+ */
+
 die("desuet");
 require("siteconfig.php");
 require_once("auth.php");
