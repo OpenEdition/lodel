@@ -1,51 +1,77 @@
 <?php
+/**
+ * Fichier du parser XML - Analyse les éléments d'un document XML
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ * @since Fichier ajouté depuis la version 0.8
+ */
 
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require_once "func.php";
+require_once 'func.php';
 
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
-
+/**
+ * Retourne le dernier élément d'un tableau
+ *
+ * @param array &$arr le tableau passé par référence
+ * @return le dernier élément du tableau
+ */
 function array_last(& $arr)
 {
-	return $arr[count($arr) - 1];
+	//return $arr[count($arr) - 1];
+	return end($arr); //cette solution semble plus rapide
 }
-
+/**
+ * Analyse une structure XML
+ *
+ * Analyse le fichier XML $text et le place dans deux tableaux : le premier $index contient
+ * des pointeurs sur la position des valeurs correspondantes dans le tableau $values. Ces
+ * deux paramètres sont passés par références.
+ * @param string &$text les données à parser
+ * @param array &$values 
+ * @param array &$index contient des pointeurs sur la position des valeurs correspondantes dans
+ * le tableau values
+ */
 function xml_parse_into_struct_ns(& $text, & $values, & $index)
 {
-
 	$parser = xml_parser_create();
 	xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0) or die("Parser incorrect");
 	xml_set_element_handler($parser, "xml_parse_into_struct_ns_startElement", "xml_parse_into_struct_ns_endElement");
 	xml_set_character_data_handler($parser, "xml_parse_into_struct_ns_characterHandler");
-	#  xml_set_default_handler($parser, "xml_parse_into_struct_ns_defaultHandler");
 
 	$GLOBALS['into_struct_ns_data'] = "";
 	$GLOBALS['into_struct_ns_ind'] = 0;
@@ -62,6 +88,14 @@ function xml_parse_into_struct_ns(& $text, & $values, & $index)
 	$index = $GLOBALS['into_struct_ns_index'];
 }
 
+/**
+ * Reconstruit un tag ouvert
+ *
+ * Construit correctement un tag
+ *
+ * @param string $name le nom du tag
+ * @param array $attrs les attributs du tags
+ */
 function rebuild_opentag($name, $attrs)
 {
 	$ret = "<$name";
@@ -71,6 +105,14 @@ function rebuild_opentag($name, $attrs)
 	$ret .= ">";
 }
 
+/**
+ * Analyse le début d'élément XML
+ *
+ *
+ * @param resource $parser le parser XML
+ * @param string $name le nom de l'élément
+ * @param array $attrs les attributs
+ */
 function xml_parse_into_struct_ns_startElement($parser, $name, $attrs)
 {
 	//  echo $name,"<br>";flush();
@@ -94,6 +136,12 @@ function xml_parse_into_struct_ns_startElement($parser, $name, $attrs)
 	}
 }
 
+/**
+ * Analyse la fin d'un élément XML
+ *
+ * @param resource $parser le parser XML
+ * @param string $name le nom de l'élément
+ */
 function xml_parse_into_struct_ns_endElement($parser, $name)
 {
 
@@ -119,14 +167,16 @@ function xml_parse_into_struct_ns_endElement($parser, $name)
 	}
 }
 
+/**
+ * Analyse les données contenues dans un élément
+ *
+ * @param resource $parser le parser XML
+ * @param string $data les données
+ */
 function xml_parse_into_struct_ns_characterHandler($parser, $data)
 {
 	#  echo $data,"<br>\n";flush();
 	$GLOBALS[into_struct_ns_data] .= translate_xmldata($data);
 }
 
-//function xml____parse_into_struct_ns_characterDefault($parser,$data)
-//
-//{ echo $data,"<br>"; }
-//
 ?>

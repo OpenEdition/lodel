@@ -54,7 +54,7 @@
  * @author Jean Lamy
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Classe ajoutée depuis la version 0.8
  * @see logic.php
  * @see controler.php
  */

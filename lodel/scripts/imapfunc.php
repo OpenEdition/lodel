@@ -1,41 +1,58 @@
 <?php
-
-/*
+/**
+ * Fichier de fonction IMAP
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ */
 
 require_once "func.php";
 
+/**
+ * Retire les pièces jointes des mails sur une boîte mail donnée
+ *
+ * Cette fonction utilise les options lodelmail.host, lodelmail.user, lodelmail.passwd.
+ *
+ * @return le nombre de pièces jointes
+ */
 function checkmailforattachments()
 {
 	$options = getoption(array ("lodelmail.host", "lodelmail.user", "lodelmail.passwd"), "");
 	if (count($options) != 3 || !$options['lodelmail.host']) {
-		die("ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ");
+		die('ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ');
 	}
 
 	list ($host, $port) = explode(":", $options['lodelmail.host']);
@@ -62,10 +79,19 @@ function checkmailforattachments()
 	return $nbattachment;
 }
 
+/**
+ * Extrait les pièces jointes des mails d'une boîte donnée
+ *
+ * @param object $mbox la boîte mail
+ * @param integer $mnum le numéro du mail
+ * @param string $extre extension acceptées
+ * @param integer $struct par défaut 0.la structure des pièces jointes
+ * @param integer $pno par défaut vide la partie des attachements (cas des mails multiparts)
+ *
+ */
 function extractattachments($mbox, $mnum, $extre, $struct = 0, $pno = "")
 {
 	$nbattachment = 0;
-
 	if ($struct === 0) {
 		$struct = imap_fetchstructure($mbox, $mnum);
 	}

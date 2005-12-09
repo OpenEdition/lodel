@@ -86,27 +86,34 @@ function clean_request_variable(&$var) {
     require_once("class.inputfilter.php");
     $filter=new InputFilter(array(),array(),1,1);
   }
+	
   if (is_array($var)) {
     //array_walk($var,"clean_request_variable"); // array_walk solution requires to much memory...
+		#print_r($var);
     foreach(array_keys($var) as $k) clean_request_variable($var[$k]);
   } else {
     #echo "var=$var<br />";
     $var=str_replace(array("\n","&nbsp;"),array("","Â\240"),$filter->process(trim($var)));
     #echo "var=$var<br />";
-    $var=magic_addslashes($var);
-		
-		$_POST['test'] = $var;
+    $var = magic_addslashes($var);
+#		$_POST['test'] = $var;
   }
 }
 
-function magic_addslashes($var) {
-	if (!get_magic_quotes_gpc()) return addslashes($var);
-  return $var;
+function magic_addslashes($var) 
+{
+	if (!get_magic_quotes_gpc()) {
+		$var = addslashes($var);
+	}
+	return $var;
 }
 
-function magic_stripslashes($var) {
-  if (get_magic_quotes_gpc()) return stripslashes($var);
-  return $var;
+function magic_stripslashes($var) 
+{
+	if (get_magic_quotes_gpc()) {
+		$var = stripslashes($var);
+	}
+	return $var;
 }
 
 
@@ -755,14 +762,18 @@ function sql_in_array($ids)
  */
 
 function &getDAO($table) {
-  static $factory; // cache
+	static $factory; // cache
 
-  if ($factory[$table]) return $factory[$table]; // cache
+	if ($factory[$table]) {
+		return $factory[$table]; // cache
+	}
 
-  require_once("dao.php");
-  require_once("dao/class.".$table.".php");
-  $daoclass=$table."DAO";
-  return $factory[$table]=new $daoclass;
+  require_once 'dao.php' ;
+  require_once 'dao/class.'.$table.'.php';
+  $daoclass = $table. 'DAO';
+  
+  $factory[$table] = new $daoclass;
+  return $factory[$table];
 }
 
 /**
@@ -780,7 +791,8 @@ function &getGenericDAO($table,$idfield)
   require_once("dao.php");
   require_once("genericdao.php");
 
-  return $factory[$table]=new genericDAO ($table,$idfield);
+  $factory[$table]=new genericDAO ($table,$idfield);
+  return $factory[$table];
 }
 
 /**

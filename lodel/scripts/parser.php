@@ -71,7 +71,7 @@ class Parser
 	function errmsg($msg, $ind = 0)
 	{
 		if ($ind)
-			$line = "line ".$this-> $linearr[$ind];
+			$line = "line ".$this->$linearr[$ind];
 		die("LODELSCRIPT ERROR $line (".$this->infilename."): $msg");
 	}
 
@@ -396,7 +396,7 @@ class Parser
 				}	else {
 					$methodname = "parse_".$this->arr[$this->ind];
 					if (method_exists($this, $methodname)) {
-						$this-> $methodname ();
+						$this->$methodname ();
 						#call_user_func(array(&$this,$methodname));
 					}	else {
 						$this->errmsg("Unexpected tags ".$this->arr[$this->ind].". No method to call");

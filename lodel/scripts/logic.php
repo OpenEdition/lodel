@@ -53,6 +53,7 @@
  * @author Jean Lamy
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
  * @since Fichier ajouté depuis la version 0.8
  * @see controler.php
  * @see view.php
@@ -568,7 +569,9 @@ function &getLogic($table)
 	}
 	require_once "logic/class.$table.php";
 	$logicclass = $table. 'Logic';
-	return $factory[$table]= new $logicclass;
+	$factory[$table] = new $logicclass;
+	//return $factory[$table]= new $logicclass;
+	return $factory[$table];
 }
 
 

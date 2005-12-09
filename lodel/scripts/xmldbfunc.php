@@ -1,62 +1,136 @@
 <?php
+/**
+ * Fichier de la classe XMLDB
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ * @since Fichier ajouté depuis la version 0.8
+ */
 
-/*
+/**
+ * Classe XMLDB
+ * 
  *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
-
+ * @package lodel
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajoutée depuis la version 0.8
+ */
 class XMLDB
 {
-
-	var $tp; // table prefix
+	/**#@+
+	 * @access private
+	 */
+	/**
+	 * Préfix des tables
+	 * @var string
+	 */
+	var $tp;
+	/**
+	 * Les tables à inclure et les informations sur les relations, elements, tags
+	 * @var array
+	 */
 	var $tables; // contains the table to includes and information of relationshiop,element,tags
-	var $documentroot; // documentroot
+	
+	/**
+	 * Element racine
+	 * @var string
+	 */
+	var $documentroot;
+
+	/**
+	 * L'en-tête
+	 * @var string
+	 */
 	var $header;
 
-	// for the XML parser
-	//
-	var $state;
-	var $tablestack;
-	var $currentrecord;
-	var $rows;
-	var $data;
-	var $joinfieldvaluestack;
-
-	/* Constructor
-	 *
+	/**
+	 * Etat du parser ?
+	 * @var ?
 	 */
-	function XMLDB($documentroot = "", $tableprefix = "")
+	var $state;
+
+	/**
+	 * Pile des tables  (pour le parser XML)
+	 * @var array
+	 */
+	var $tablestack;
+	/**
+	 * Enregistrement courant
+	 * @var array
+	 */
+	
+	var $currentrecord;
+
+	/**
+	 * ?
+	 * @var array
+	 */
+	var $rows;
+	
+	/**
+	 * ?
+	 * @var array
+	 */
+	var $data;
+
+	/**
+	 * Pile des champs de jointures
+	 * @var array
+	 */
+	var $joinfieldvaluestack;
+	/**#@-*/
+
+	/**
+	 * Constructeur
+	 *
+	 *
+	 * @param string $documentroot l'élement racine
+	 * @param string $tableprefix le prefix des tables
+	 */
+	function XMLDB($documentroot = '', $tableprefix = '')
 	{
 		$this->documentroot = $documentroot;
 		$this->tp = $tableprefix;
 	}
 
-	/*
-	 *
+	/**
+	 * Ajout d'une table
 	 */
 	function addTable()
 	{
@@ -66,12 +140,19 @@ class XMLDB
 			$this->tables[$table]['rowtag'] = "row";
 		}
 	}
-
+	/**
+	 * Définit un tag pour une ligne
+	 * @param string $table le nom de la table
+	 * @param string $rowtag ??
+	 */
 	function setRowtag($table, $rowtag)
 	{
 		$this->tables[$table]['rowtag'] = $rowtag;
 	}
 
+	/**
+	 * Ajoute une condition where sur une table
+	 */	
 	function addWhere()
 	{
 		$table = func_get_arg(0);
@@ -81,7 +162,7 @@ class XMLDB
 		}
 	}
 
-	/*
+	/**
 	 * Add Element
 	 * First argument is the tablename
 	 * Others arguments are elements. If argument is an array, it contains the field and the element name. 
@@ -102,13 +183,12 @@ class XMLDB
 		}
 	}
 
-	/*
+	/**
 	 * Add attribut
 	 * First argument is the tablename
 	 * Others arguments are elements. If argument is an array, it contains the field and the element name. 
 	 * If argument is a string, both element and field have the same name
 	 */
-
 	function addAttr()
 	{
 		$table = func_get_arg(0);
@@ -123,14 +203,25 @@ class XMLDB
 			}
 		}
 	}
-
+	/**
+	 * Ajoute une jointure entre une table parent et une table enfant
+	 * 
+	 * @param string $tableparent nom de la table parente
+	 * @param string $parentfield nom du champ parent
+	 * @param string $tablechild nom de la table enfant
+	 * @param string $childfield nom du champ enfant
+	 */
 	function addJoin($tableparent, $parentfield, $tablechild, $childfield)
 	{
 		$this->tables[$tableparent]['join'][$tablechild] = $parentfield;
 		$this->tables[$tablechild]['joinfield'] = $childfield;
 		$this->tables[$tablechild]['child'] = true;
 	}
-
+	/**
+	 * Définition d'un header XML
+	 *
+	 * @param string $xml le header XML
+	 */
 	function addHeader($xml)
 	{
 		$this->header .= $xml;
@@ -140,8 +231,12 @@ class XMLDB
 	/* Methods to create XML file              */
 	/*******************************************/
 
-	/*
+	/**
+	 * Ecrire le XML dans un fichier
+	 *
 	 * Write the XML into a file
+	 *
+	 * @param string $filename le nom du fichier XML
 	 */
 	function saveToFile($filename)
 	{
@@ -151,16 +246,17 @@ class XMLDB
 		$this->saveToString();
 	}
 
-	/*
+	/**
+	 * Ecrire le XML dans une chaine de caractère
 	 *
+	 * @return string le XML
 	 */
-
 	function saveToString()
 	{
-		$this->string = "";
-		$this->_write("<".$this->documentroot.">\n");
+		$this->string = '';
+		$this->_write("<". $this->documentroot. ">\n");
 		if ($this->header)
-			$this->_write("<header>".$this->header."</header>\n");
+			$this->_write("<header>". $this->header. "</header>\n");
 		foreach ($this->tables as $table => $info) {
 			if ($info['child'])
 				continue; # will be processed in with its parent
@@ -170,8 +266,12 @@ class XMLDB
 		return $this->string;
 	}
 
-	/*
+	/**
+	 * Exportation d'une table dans le fichier XML
 	 *
+	 * @param string $table le nom de la table
+	 * @param string $info
+	 * @param string $joinfieldvalue
 	 */
 	function exporttable($table, $info, $joinfieldvalue = "")
 	{
@@ -243,10 +343,14 @@ class XMLDB
 		$this->_write("</$table>\n");
 	}
 
-	/*
+	/**
+	 * Ecriture d'une chaine dans le fichier XML
+	 *
 	 * generic output function
+	 *
+	 * @param string $string la chaîne à écrire
+	 * @access private
 	 */
-
 	function _write($string)
 	{
 		if ($this->fp) {
@@ -256,10 +360,11 @@ class XMLDB
 		}
 	}
 
-	/*******************************************/
-	/* Methods to real XML file                */
-	/*******************************************/
-
+	/**
+	 * Lecture d'un fichier XML (depuis une chaîne)
+	 *
+	 * @param string $xml la chaîne contenant le XML
+	 */
 	function readFromString($xml)
 	{
 
@@ -269,12 +374,16 @@ class XMLDB
 			die(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)));
 		}
 	}
-
+	
+	/**
+	 * Lecture d'un fichier XML (depuis un fichier)
+	 *
+	 * @param string $filename le fichier contenant le XML
+	 */
+	
 	function readFromFile($filename)
 	{
-
 		$xml_parser = $this->_initparser();
-
 		if (!($fp = fopen($filename, "r"))) {
 			die("ERROR: could not open XML input");
 		}
@@ -287,36 +396,45 @@ class XMLDB
 		xml_parser_free($xml_parser);
 	}
 
+	/**
+	 * Initialisation du parser XML
+	 * @access private
+	 */
 	function _initparser()
 	{
 		$xml_parser = xml_parser_create();
-		$this->state = "";
+		$this->state = '';
 		$this->tablestack = array ();
 		$this->joinfieldvaluestack = array ();
 
 		xml_set_object($xml_parser, $this);
 		xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, false);
-		xml_set_element_handler($xml_parser, "startElement", "endElement");
-		xml_set_character_data_handler($xml_parser, "characterData");
+		xml_set_element_handler($xml_parser, 'startElement', 'endElement');
+		xml_set_character_data_handler($xml_parser, 'characterData');
 
 		return $xml_parser;
 	}
-
+	/**
+	 * Insertion d'une ligne
+	 *
+	 * Cette fonction est abstraite. Elle doit être définie dans une classe dérivée.
+	 *
+	 * @param string $currenttable la table courante
+	 * @param  array $rows les données à insérer
+	 */
 	function insertRow($currentable, $rows)
 	{
 		die("Redefined insertRow in a child class. insertRow must return the field used for joining");
 		return null;
 	}
 
-	/*
+	/**
 	 * @internal
 	 * XML Parser handler
 	 */
-
 	function startElement($parser, $name, $attrs)
 	{
 		#echo "<br/>startElement $name ".$this->state."    $currenttable<br/>";
-
 		$currenttable = $this->tablestack[0];
 
 		switch ($this->state) {
@@ -454,26 +572,36 @@ class XMLDB
 			// nothing to do...
 		}
 	}
-
+	/**
+	 * @access private
+	 * @param string $name nom du nouvel enregistrement
+	 */
 	function _newrecord($name)
 	{
 		$this->currentrecord = $name;
 		if (!$this->data)
 			die("ERROR: data should be empty here");
 	}
-
+	/**
+	 * @access private
+	 * @param string $name fin de l'enregistrement
+	 */
 	function _endrecord($name)
 	{
-		$this->currentrecord = "";
-		$this->data = "";
+		$this->currentrecord = '';
+		$this->data = '';
 	}
-
+	/**
+	 * @access private
+	 */
 	function _endrow()
 	{
 		$this->joinfieldvaluestack[0] = $this->insertRow($this->tablestack[0], $this->records);
 		#echo "lala:",$this->tablestack[0],"   ",$this->joinfieldvaluestack[0],"   ";
 	}
-
+	/**
+	 * @access private
+	 */
 	function _newtable($table)
 	{
 		array_unshift($this->tablestack, $table);
@@ -482,13 +610,19 @@ class XMLDB
 		$this->tables[$table]['norowelement'] = count($this->tables[$table]['element']) <= 1 && !$this->tables[$table]['join'];
 
 	}
-
+	/**
+	 * @access private
+	 */
 	function _endtable()
 	{
 		array_shift($this->tablestack);
 		array_shift($this->joinfieldvaluestack);
 	}
-
+	/**
+	 * ??
+	 * @param object $parser
+	 * @param string $data
+	 */
 	function characterData($parser, $data)
 	{
 		$this->data .= $data;

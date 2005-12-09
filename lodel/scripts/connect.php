@@ -1,34 +1,43 @@
 <?php
-
-/*
+/**
+ * Fichier pour gérer la connection à la base de donnée - initialise les connexions
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
-
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ */
 if (!(INC_LODELCONFIG)) {
 	die("inc lodelconfig please"); // security
 }
@@ -44,10 +53,10 @@ if (!defined("DATABASE")) {
 // connect to the database server
 require_once "adodb/adodb.inc.php";
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
-$GLOBALS['db']->debug = false;
+$GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug
 
 if ($GLOBALS['site'] && $GLOBALS['singledatabase'] != "on") {
-	$GLOBALS['currentdb'] = DATABASE."_".$GLOBALS['site'];
+	$GLOBALS['currentdb'] = DATABASE. "_".$GLOBALS['site'];
 } else {
 	$GLOBALS['currentdb'] = DATABASE;
 }
@@ -60,15 +69,23 @@ $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or 
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'];
 
+
+/**
+ * Déclenche une erreur lors d'une erreur concernant la base de données
+ */
 function dberror()
 {
 	global $db;
 	$ret = trigger_error($db->errormsg(), E_USER_ERROR);
 }
 
-$GLOBALS['maindb'] = "";
-$GLOBALS['savedb'] = "";
+$GLOBALS['maindb'] = '';
+$GLOBALS['savedb'] = '';
 
+/**
+ * Positionne la connexion de la base de données sur la table principale (en cas d'installation 
+ * multisite.
+ */
 function usemaindb()
 {
 	global $db, $maindb, $savedb;
@@ -87,11 +104,15 @@ function usemaindb()
 	}
 
 	// set $db as $maindb
-	$savedb = & $db;
-	$db = & $maindb;
+	$savedb = &$db;
+	$db = &$maindb;
 	return true;
 }
 
+/**
+ * Positionne la connexion de la base de données sur la base de données du site (si Lodel est
+ * installé en multisite, l'unique base sinon
+ */
 function usecurrentdb()
 {
 	if (DATABASE == $GLOBALS['currentdb']) {
@@ -101,33 +122,33 @@ function usecurrentdb()
 	if ($db->selectDB($GLOBALS['currentdb'])) {
 		return; // try to selectdb
 	}
-	$db = & $savedb;
+	$db = &$savedb;
 }
 
-// Convenience function
-// Lodel query extension
-//
-
+/**
+ * Lodel Query : 
+ *
+ * Transforme les requêtes en résolvant les jointures et en cherchant les bonnes
+ * tables dans les bases de données (suivant notamment le préfix utilisé pour le nommage des
+ * tables).
+ *
+ * @param string $query la requête à traduire
+ * @return string la requête traduite
+ */
 function lq($query)
 {
 	static $cmd;
 	// the easiest, fats replace
-	$query = str_replace("#_TP_", $GLOBALS['tableprefix'], $query);
+	$query = str_replace('#_TP_', $GLOBALS['tableprefix'], $query);
 	// any other ?
-	if (strpos($query, "#_") !== false)	{
+	if (strpos($query, '#_') !== false)	{
 		if (!$cmd)
-			$cmd = array ("#_MTP_" => DATABASE.".".$GLOBALS['tableprefix'],
-				#			  "#_publicationsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
+			$cmd = array ('#_MTP_' => DATABASE.'.'.$GLOBALS['tableprefix'],
+	'#_entitiestypesjoin_' => "$GLOBALS[tableprefix]types INNER JOIN $GLOBALS[tableprefix]entities ON $GLOBALS[tableprefix]types.id=$GLOBALS[tableprefix]entities.idtype",
 
-		###			"#_documentsjoin_"=>"$GLOBALS[tableprefix]entities INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
+	'#_tablefieldsandgroupsjoin_' => "$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]tablefields ON $GLOBALS[tableprefix]tablefields.idgroup=$GLOBALS[tableprefix]tablefieldgroups.id",
 
-	"#_entitiestypesjoin_" => "$GLOBALS[tableprefix]types INNER JOIN $GLOBALS[tableprefix]entities ON $GLOBALS[tableprefix]types.id=$GLOBALS[tableprefix]entities.idtype",
-
-				#			  "#_publicationstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]publications ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]publications.identity",
-
-		####			"#_documentstypesjoin_"=>"($GLOBALS[entitestypesjoin]) INNER JOIN $GLOBALS[tableprefix]documents ON $GLOBALS[tableprefix]entities.id=$GLOBALS[tableprefix]documents.identity",
-
-	"#_tablefieldsandgroupsjoin_" => "$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]tablefields ON $GLOBALS[tableprefix]tablefields.idgroup=$GLOBALS[tableprefix]tablefieldgroups.id", "#_tablefieldgroupsandclassesjoin_" => "$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]classes ON $GLOBALS[tableprefix]classes.class=$GLOBALS[tableprefix]tablefieldgroups.class",);
+	'#_tablefieldgroupsandclassesjoin_' => "$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]classes ON $GLOBALS[tableprefix]classes.class=$GLOBALS[tableprefix]tablefieldgroups.class");
 
 		$query = strtr($query, $cmd);
 	}
@@ -135,8 +156,13 @@ function lq($query)
 }
 
 /**
+ * Fonction nécessaire pour la gestion des id numériques uniques (dans la table object)
+ *
  * get a unique id
  * fonction for handling unique id
+ *
+ * @param string $table le nom de la table dans laquelle on veut insérer un objet
+ * @return integer Un entier correspondant à l'id inséré.
  */
 function uniqueid($table)
 {
@@ -146,14 +172,18 @@ function uniqueid($table)
 }
 
 /**
- * erase a unique id
+ * Suppression d'un identifiant uniques (table objets)
  *
+ * erase a unique id.
+ * Cette fonction accepte en entrée un id ou un tableau d'id
+ *
+ * @param integer or array un id ou un tableau d'ids.
  */
 function deleteuniqueid($id)
 {
 	global $db;
 	if (is_array($id) && $id)	{
-		$db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id IN (".join(",", $id).")"));
+		$db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id IN (". join(",", $id). ")"));
 	}	else {
 		$db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id='$id'"));
 	}

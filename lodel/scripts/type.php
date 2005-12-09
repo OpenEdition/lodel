@@ -28,6 +28,9 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+/**
+ * @deprecated Fichier déprécié depuis la 0.8
+ */
 
 die("desuet");
 require_once("func.php");

@@ -137,7 +137,7 @@ class DAO
 	{
 		global $db, $lodeluser;
 		$idfield = $this->idfield;
-
+		#print_r($vo);
 		// check the user has the basic right for modifying/creating an object
 		if ($lodeluser['rights'] < $this->rights['write']) {
 			die('ERROR: you don\'t have the right to modify objects from the table '. $this->table);
@@ -172,8 +172,8 @@ class DAO
 				}
 				$update .= "$k='". $v. "'";
 			}
-			
 			if ($update) {
+				$update = 
 				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". $vo->$idfield. "' ". $this->rightscriteria('write')) or dberror();
 			}
 		}	else	{ // new  - Ajout

@@ -1,41 +1,59 @@
 <?php
+/**
+ * Fichier utilitaire de gestion des traductions i18n
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ * @since Fichier ajouté depuis la version 0.8
+ */
 
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+require_once 'xmldbfunc.php';
 
-require_once "xmldbfunc.php";
-
+/**
+ * Affichage des champs textes pour la traduction
+ *
+ * @param string $name le nom du champ
+ * @param string $textgroup le nom du groupe
+ * @param string $lang (par défaut est à -1)
+ */
 function mkeditlodeltext($name, $textgroup, $lang = -1)
 {
 	list () = getlodeltext($name, $textgroup, $id, $text, $status, $lang);
-	if (!$id)	{ # create it ?? 
-		return; # to be decided
+	if (!$id)	{ // create it ?? 
+		return; // to be decided
 	}
 	// determin the number of rows to use for the textarea
 	$ncols = 100;
@@ -70,6 +88,10 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 	# ?'.'>';
 }
 
+/**
+ * Créé la fonction Javascript qui permet de changer la couleur lors de la saisie d'une
+ * traduction. Cela réflète le status de la traduction.
+ */
 function mkeditlodeltextJS()
 {
 ?>
@@ -104,8 +126,13 @@ lodeltextchangecolor(obj,'2');
 </STYLE>
 <?php
 
-
 }
+
+/**
+ * Classe de gestion des traductions.
+ *
+ * Fille de la classe XMLDB
+ */
 
 class XMLDB_Translations extends XMLDB
 {
@@ -114,6 +141,14 @@ class XMLDB_Translations extends XMLDB
 	var $lang;
 	var $currentlang;
 
+	/**
+	 * Constructeur
+	 *
+	 * Construit le fichier XML des traductions pour une langue
+	 *
+	 * @param array $textgroups les groupes de texte des traductions 
+	 * @param string $lang la langue de la traduction
+	 */
 	function XMLDB_Translations($textgroups, $lang = "")
 	{
 		$this->textgroups = $textgroups;
@@ -131,6 +166,13 @@ class XMLDB_Translations extends XMLDB
 		$this->addJoin("translations", "lang", "texts", "lang");
 	}
 
+	/**
+	 * Insertion d'une ligne dans le XML
+	 *
+	 * @param string $table nom de la table concernée : translations ou texts
+	 * @param array $record les données à insérer
+	 *
+	 */
 	function insertRow($table, $record)
 	{
 		global $db;
@@ -157,7 +199,7 @@ class XMLDB_Translations extends XMLDB
 			$vo->textgroups = $this->textgroups;
 			foreach ($record as $k => $v)
 			{
-				$vo-> $k = addslashes($v);
+				$vo->$k = addslashes($v);
 			}
 			$dao->save($vo);
 			#print_R($vo);
@@ -179,7 +221,7 @@ class XMLDB_Translations extends XMLDB
 			$vo = $dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
 			foreach ($record as $k => $v)
 			{
-				$vo-> $k = addslashes($v);
+				$vo->$k = addslashes($v);
 			}
 			$dao->save($vo);
 			return;

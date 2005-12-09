@@ -60,7 +60,7 @@ class InputFilter {
 			// filter source for XSS and other 'bad' code etc.
 			return $this->remove($this->decode($source));
 		// return parameter as given
-		} else return $source;	
+		} else return $source;
 	}
 
 	/** 
@@ -223,7 +223,7 @@ class InputFilter {
 					$attrSubSet[1] = substr($attrSubSet[1], 1, (strlen($attrSubSet[1]) - 2));
 				// strip slashes
 				
-				$attrSubSet[1] = str_replace('\\',"",$attrSubSet[1]);
+				$attrSubSet[1] = str_replace("\\","",$attrSubSet[1]);
 				
 			}
 			// auto strip attr's with "javascript:
@@ -242,7 +242,7 @@ class InputFilter {
 				// attr has value
 				if ($attrSubSet[1]) {
 				#	echo "avant : ".$attrSubSet[1]. "; après : ".addslashes($attrSubSet[1]);
-					$newSet[] = $attrSubSet[0] . '="' . addslashes($attrSubSet[1]) . '"';
+					$newSet[] = $attrSubSet[0] . '="' . $attrSubSet[1] . '"';
 				}
 				// attr has decimal zero as value
 				else if ($attrSubSet[1] == "0") $newSet[] = $attrSubSet[0] . '="0"';

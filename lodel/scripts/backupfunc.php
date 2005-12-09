@@ -82,7 +82,7 @@ function dump_site($site, $outfile, $fh = 0)
 
 	$tables = $GLOBALS['lodelsitetables'];
 
-	$dao = & getDAO("classes");
+	$dao = &getDAO("classes");
 	$vos = $dao->findMany("status>0", "", "class,classtype");
 	foreach ($vos as $vo)	{
 		$tables[] = lq("#_TP_". $vo->class);
@@ -360,7 +360,7 @@ function PMA_convert_display_charset($text)
  *
  * @access  public
  */
-function PMA_splitSqlFile(& $ret, $sql, $release)
+function PMA_splitSqlFile(&$ret, $sql, $release)
 {
 	#    $sql          = trim($sql);
 	$sql_len = strlen($sql);

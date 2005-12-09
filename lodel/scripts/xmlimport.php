@@ -1,50 +1,96 @@
 <?
-
-/*
+/**
+ * Fichier de la classe XMLImport
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ * @since Fichier ajouté depuis la version 0.8
+ */
 
 /**
- * import XMLLodelBasic file in the database
+ * Classe XMLImport
+ * 
+ * Import XMLLodelBasic file in the database
+ *
+ * @package lodel
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajoutée depuis la version 0.8
  */
 class XMLImportParser
 {
+	/**
+	 * Styles principaux
+	 * @var array
+	 */
 	var $commonstyles;
+	
+	/**
+	 * Styles contextuels
+	 * @var array
+	 */
 	var $contextstyles;
+	
+	/**
+	 * Styles courant
+	 * @var array
+	 */
 	var $cstyles;
-	var $mainclass; /** class of the document */
+	
+	/**
+	 * Classe du document
+	 * @var string
+	 */
+	var $mainclass;
 
+	/**
+	 * Constructeur
+	 */
 	function XMLImportParser()
 	{
 	}
 
-	/** Initialize the parser, getting all the styles defined in the ME : internal styles 
+	/**
+	 * Initialisation du parser
+	 *
+	 * Initialize the parser, getting all the styles defined in the ME : internal styles 
 	 * and characterstyles (synonym styles and different language styles are detected).
+	 *
 	 * @param string $class the name of the class of the object (entity) imported
 	 */
 	function init($class)
@@ -52,8 +98,8 @@ class XMLImportParser
 		global $home;
 		if (!$this->commonstyles) {
 			// get internal styles and prepare them (detect synonym styles, same style in different lang)
-			$dao = & getDAO("internalstyles");
-			$iss = $dao->findMany("status>0");
+			$dao = &getDAO("internalstyles");
+			$iss = $dao->findMany("status > 0");
 			foreach ($iss as $is) {
 				// analyse the styles
 				foreach (preg_split("/[,;]/", $is->style) as $style) {
@@ -63,7 +109,7 @@ class XMLImportParser
 				}
 			}
 			// get characterstyles
-			$dao = & getDAO("characterstyles");
+			$dao = &getDAO("characterstyles");
 			$css = $dao->findMany("status>0");
 			foreach ($css as $cs) {
 				foreach (preg_split("/[,;]/", $cs->style) as $style) {
@@ -78,6 +124,8 @@ class XMLImportParser
 	} //end of init()
 
 	/**
+	 * Analyse du contenu XHTML de l'entité
+	 *
 	 * Parse the XHTML contents of the entity and send the data to the $handler object
 	 * This function is a hard piece of work.
 	 * I choose not to go to DOM too avoid using lot of memory and processing
@@ -85,9 +133,9 @@ class XMLImportParser
 	 * @param string $string the string to parse
 	 * @param object &$handler the handler of the parser
 	 */
-	function parse($string, & $handler)
+	function parse($string, &$handler)
 	{
-		$this->handler = & $handler; // non-reentrant
+		$this->handler = &$handler; // non-reentrant
 		# ! Pay attention to the following line ! 
 		$this->handler->commonstyles = $this->commonstyles; //get the styles used to parse the doc
 		$arr = preg_split("/<(\/?)soo:block(>|\s+class=\"[^\"]*\"\s*>)/", $string, -1, PREG_SPLIT_DELIM_CAPTURE); //split the string using the ServOO block <soo:block>
@@ -103,7 +151,7 @@ class XMLImportParser
 
 		unset ($string); // save memory
 		$this->_objectize($arr, true); // make object whereever it is possible.
-
+	
 		// second pass
 		// process the internalstyles
 		// this is an hard piece of code doing no so much... but I find no better way.
@@ -210,8 +258,10 @@ class XMLImportParser
 		$classstack = array (array ($this->mainclass, "entities"));
 		$handler->openClass($classstack[0]);
 		$this->nbdoc = 0;
+		
 		for ($i = 1; $i < $n; $i += 3) {
 			$this->_parseOneStep($arr, $i, $datastack, $classstack, "block");
+			
 			$larr = preg_split("/<(\/)?soo:inline(>|\s+class=\"[^\"]*\"\s*>)/", $arr[$i +2], -1, PREG_SPLIT_DELIM_CAPTURE);
 			$nj = count($larr);
 			$datastack[0] .= $larr[0];
@@ -227,18 +277,23 @@ class XMLImportParser
 		while ($classstack) {
 			$handler->closeClass(array_shift($classstack), $this->nbdoc > 1);
 		}
+	
 	} // end of function parser
 
 	/**
+	 * Première étape du parser
+	 *
 	 * do one step of the parser.
 	 * 1/ call the handler corresponding to the current style/tag/object
 	 * 2/ change the context if required
 	 * 3/ feed the datastack
+	 *
 	 * @param array &$arr ??
 	 * @param integer $i ??
-	 * @param array &$datastack a stack for the data
-	 * @param array &$classstack a stack for the classes used
+	 * @param array &$datastack pile des données
+	 * @param array &$classstack pile des classes utilisées
 	 * @param string $level can be inline or ?
+	 * @access private
 	 */
 	function _parseOneStep(& $arr, $i, & $datastack, & $classstack, $level)
 	{
@@ -344,8 +399,12 @@ class XMLImportParser
 	} //end of _parse_step_one
 
 	/**
+	 * Initialise la classe en cherchant à savoir ce qu'il faut faire avec les styles
+	 * détectés. (suivant les champs définies dans le ME).
+	 *
 	 * Gather information from tablefield to know what to do with the various styles.
 	 * class is the context and criteria is the where to select the tablefields
+	 *
 	 * @param string $class the name of the class to init
 	 * @param string $criteria the possible SQL criterions (by default empty)
 	 */
@@ -379,7 +438,9 @@ class XMLImportParser
 	} //end of init_class
 
 	/**
+	 * Prépare un style pour stocakge en détectant les synonymes et les langues d'un style
 	 * Prepare the style for storage detecting synonyms and same language style
+	 *
 	 * @param string &$style the name of the style
 	 * @param object &$object the VO corresponding to the style
 	 */
@@ -398,7 +459,10 @@ class XMLImportParser
 	}
 
 	/**
+	 * Remplace un style par un objet quand c'est possible
+	 *
 	 * Replace style by object whenever it is possible
+	 *
 	 * @param array &$arr an array containing all the elements of a doc
 	 * @param boolean $blockstyle true if the style is a block style and false if not
 	 */

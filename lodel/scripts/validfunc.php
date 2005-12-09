@@ -1,122 +1,159 @@
 <?
+/**
+ * Fichier utilitaire pour gérer la validation des champs
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ */
 
-/*
- *
- *  LODEL - Logiciel d'Edition ELectronique.
- *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *
- *  Home page: http://www.lodel.org
- *
- *  E-Mail: lodel@lodel.org
- *
- *                            All Rights Reserved
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-function validfield(& $text, $type, $default = "", $name = "")
+/**
+ * Validation des champs
+ *
+ * <p>Validation des caractères autorisés dans les champs suivant leur type
+ * leur nom, et le texte contenu. Par exemple si on a un champ de type email, il faut
+ * vérifier que l'adresse mail est bien formée. Idem pour un champ de type url. Cela appliqué
+ * à tous les types de champs gérés par Lodel (cf. fichier fieldfunc.php)</p>
+ *
+ * @param string $&text le texte à valider. Passé par référence.
+ * @param string $type le type du champ à valider.
+ * @param string $default la valeur par défaut à valider (si le texte est vide). Est vide par défaut
+ * @param string $name le nom du champ
+ * @return boolean true si le champ est valide. false sinon
+ */
+function validfield(&$text, $type, $default = "", $name = "")
 {
 	static $tmpdir;
-	require_once ("fieldfunc.php");
+	require_once 'fieldfunc.php';
 
 	if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
 	}
 
-	switch ($type) {
-	case "history" :
-	case "text" :
-	case "tinytext" :
-	case "longtext" :
-		if (!$text)
+	switch ($type) { //pour chaque type de champ
+	case 'history' :
+	case 'text' :
+	case 'tinytext' :
+	case 'longtext' :
+		if (!$text) {
 			$text = $default;
+		}
 		return true; // always true
 		break;
-	case "type" :
-		if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/", $text))
+	case 'type' :
+		if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/", $text)) {
 			return $type;
+		}
 		break;
-	case "class" :
-		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text))
+	case 'class' :
+		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
-		if (reservedword($text))
-			return "reservedsql"; // if the class is a reservedword -> error
-		#if (reservedByLodel ($text)) return "reservedbylodel"; //if the class is a word reserved by Lodel -> error
+		}
+		if (reservedword($text)) {
+			return 'reservedsql'; // if the class is a reservedword -> error
+		}
 		break;
-	case "classtype" :
+	case 'classtype' :
 		$text = strtolower($text);
-		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text))
+		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
-		require_once ("fieldfunc.php");
-		if (reservedword($text))
-			return "reservedsql";
+		}
+		require_once 'fieldfunc.php';
+		if (reservedword($text)) {
+			return 'reservedsql';
+		}
 		break;
-	case "tablefield" :
+	case 'tablefield' :
 		$text = strtolower($text);
-		if (!preg_match("/^[a-z0-9]{2,}$/", $text))
+		if (!preg_match("/^[a-z0-9]{2,}$/", $text)) {
 			return $type;
-		require_once ("fieldfunc.php");
+		}
+		require_once 'fieldfunc.php';
 		if (reservedword($text))
-			return "reservedsql";
+			return 'reservedsql';
 		break;
-		if ($text && !preg_match("/^[a-zA-Z0-9]+$/", $text))
+		if ($text && !preg_match("/^[a-zA-Z0-9]+$/", $text)) {
 			return $type;
+		}
 		break;
-	case "mlstyle" :
+	case 'mlstyle' :
 		$text = strtolower($text);
 		$stylesarr = preg_split("/[\n,;]/", $text);
 		foreach ($stylesarr as $style) {
 			$style = trim($style);
-			if ($style && !preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/", $style))
+			if ($style && !preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/", $style)) {
 				return $type;
+			}
 		}
 		break;
-	case "style" :
+	case 'style' :
 		if ($text)
 		{
 			$text = strtolower($text);
 			$stylesarr = preg_split("/[\n,;]/", $text);
 			foreach ($stylesarr as $style) {
-				if (!preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?$/", trim($style)))
+				if (!preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?$/", trim($style))) {
 					return $type;
+				}
 			}
 		}
 		break;
-	case "passwd" :
-	case "username" :
+	case 'passwd' :
+	case 'username' :
 		if ($text) {
 			$len = strlen($text);
-			if ($len < 3 || $len > 12 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $text))
+			if ($len < 3 || $len > 12 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $text)) {
 				return $type;
+			}
 		}
 		break;
-	case "lang" :
-		if ($text && !preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/", $text))
+	case 'lang' : //champ de type langue (i.e fr_FR, en_US)
+		if ($text && !preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/", $text)) {
 			return $type;
+		}
 		break;
-	case "date" :
-	case "datetime" :
-	case "time" :
-		require_once ("date.php");
+	case 'date' :
+	case 'datetime' :
+	case 'time' : //vérification des champs date, time et datetime
+		require_once 'date.php';
 		if ($text) {
 			$text = mysqldatetime($text, $type);
-			if (!$text)
+			if (!$text) {
 				return $type;
+			}
 		}	elseif ($default) {
 			$dt = mysqldatetime($default, $type);
 			if ($dt) {
@@ -126,67 +163,76 @@ function validfield(& $text, $type, $default = "", $name = "")
 			}
 		}
 		break;
-	case "int" :
-		if ((!isset ($text) || $text === "") && $default !== "")
+	case 'int' :
+		if ((!isset ($text) || $text === "") && $default !== "") {
 			$text = intval($default);
-		if (isset ($text) && (!is_numeric($text) || intval($text) != $text))
-			return "int";
-		break;
-	case "number" :
-		if ((!isset ($text) || $text === "") && $default !== "")
-			$text = doubleval($default);
-		if (isset ($text) && !is_numeric($text))
-			return "numeric";
-		break;
-	case "email" :
-		if (!$text && $default)
-			$text = $default;
-		if ($text && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $text))
-			return "email";
-		break;
-	case "url" :
-		if (!$text && $default)
-			$text = $default;
-		if ($text) {
-			$parsedurl = parse_url($text);
-			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme']))
-				return "url";
+		}
+		if (isset ($text) && (!is_numeric($text) || intval($text) != $text)) {
+			return 'int';
 		}
 		break;
-	case "boolean" :
+	case 'number' : //nombre
+		if ((!isset ($text) || $text === "") && $default !== "") {
+			$text = doubleval($default);
+		}
+		if (isset ($text) && !is_numeric($text)) {
+			return 'numeric';
+		}
+		break;
+	case 'email' :
+		if (!$text && $default) {
+			$text = $default;
+		}
+		if ($text && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $text)) {
+			return 'email';
+		}
+		break;
+	case 'url' :
+		if (!$text && $default) {
+			$text = $default;
+		}
+		if ($text) {
+			$parsedurl = parse_url($text);
+			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
+				return 'url';
+			}
+		}
+		break;
+	case 'boolean' :
 		$text = $text ? 1 : 0;
 		break;
-	case "tplfile" :
+	case 'tplfile' :
 		$text = trim($text); // should be done elsewhere but to be sure...
-		if (strpos($text, "/") !== false || $text[0] == ".")
+		if (strpos($text, "/") !== false || $text[0] == ".") {
 			return "tplfile";
+		}
 		break;
-	case "color" :
-		if ($text && !preg_match("/^#[A-Fa-f0-9]{3,6}$/", $text))
-			return "color";
+	case 'color' :
+		if ($text && !preg_match("/^#[A-Fa-f0-9]{3,6}$/", $text)) {
+			return 'color';
+		}
 		break;
-	case "entity" :
+	case 'entity' :
 		$text = intval($text);
 		// check it exists
-		$dao = & getDAO("entities");
+		$dao = &getDAO('entities');
 		$vo = $dao->getById($text, "1");
-		if (!$vo)
-			return "entity";
+		if (!$vo) {
+			return 'entity';
+		}
 		break;
-	case "textgroups" :
-		return $text == "site" || $text == "interface";
+	case 'textgroups' :
+		return $text == 'site' || $text == 'interface';
 		break;
-	case "select" :
-	case "multipleselect" :
+	case 'select' :
+	case 'multipleselect' :
 		return true; // cannot validate
-	case "mltext" :
-		if (is_array($text))
-		{
+	case 'mltext' :
+		if (is_array($text)) {
 			$str = "";
-			foreach ($text as $lang => $v)
-			{
+			foreach ($text as $lang => $v) {
 				if ($lang != "empty" && $v)
-					$str .= "<r2r:ml lang=\"".$lang."\">$v</r2r:ml>";
+					$str .= "<r2r:ml lang=\"". $lang. "\">$v</r2r:ml>";
 			}
 			$text = $str;
 		}
@@ -196,11 +242,12 @@ function validfield(& $text, $type, $default = "", $name = "")
 	case 'image' :
 	case 'file' :
 		if (!is_array($text)) {
-			unset ($text);
+			unset($text);
 			return true;
 		}
-		if (!$name)
+		if (!$name) {
 			trigger_error("ERROR: \$name is not set in validfunc.php", E_USER_ERROR);
+		}
 		switch ($text['radio']) {
 		case 'upload' :
 			// let's upload
@@ -208,42 +255,45 @@ function validfield(& $text, $type, $default = "", $name = "")
 			// look for an error ?
 			if (!$files || $files['error'][$name]['upload'] || !$files['tmp_name'][$name]['upload'] || $files['tmp_name'][$name]['upload'] == "none") {
 				unset ($text);
-				return "upload";
+				return 'upload';
 			}
 			// check if the tmpdir is defined
 			if (!$tmpdir[$type]) {
 				// look for a unique dirname.
 				do {
-					$tmpdir[$type] = "docannexe/$type/tmpdir-".rand();
-				}	while (file_exists(SITEROOT.$tmpdir[$type]));
+					$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
+				}	while (file_exists(SITEROOT. $tmpdir[$type]));
 			}
 			// let's transfer
 			$text = save_annex_file($type, $tmpdir[$type], $files['tmp_name'][$name]['upload'], $files['name'][$name]['upload'], true, true, $err);
-			if ($err)
+			if ($err) {
 				return $err;
+			}
 			return true;
 		case 'serverfile' :
 			// check if the tmpdir is defined
 			if (!$tmpdir[$type]) {
 				// look for a unique dirname.
 				do {
-					$tmpdir[$type] = "docannexe/$type/tmpdir-".rand();
-				} while (file_exists(SITEROOT.$tmpdir[$type]));
+					$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
+				} while (file_exists(SITEROOT. $tmpdir[$type]));
 			}
 
 			// let's move
 			$text = basename($text['localfilename']);
 			$text = save_annex_file($type, $tmpdir[$type], SITEROOT."CACHE/upload/$text", $text, false, false, $err);
-			if ($err)
+			if ($err) {
 				return $err;
+			}
 			return true;
 		case 'delete' :
 			$filetodelete = true;
 		case '' :
-			// validate	     
+			// validate
 			$text = $text['previousvalue'];
-			if (!$text)
+			if (!$text) {
 				return true;
+			}
 			if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/", $text)) {
 				die("ERROR: invalid filename of type $type");
 			}

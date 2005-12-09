@@ -1,34 +1,50 @@
 <?php
 
-/*
+/**
+ * Fichier contenant des fontions utilitaires pour le login
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ */
 
+/**
+ * Ouverture d'une session
+ *
+ * @param string $login le nom d'utilisateur
+ */
 function open_session($login)
 {
 	global $lodeluser, $sessionname, $timeout, $cookietimeout;
@@ -39,8 +55,6 @@ function open_session($login)
 		$cookietimeout = 4 * 3600; // to ensure compatibility
 
 	// context
-	// "userrights"=>intval($lodeluserrights),"usergroups"=>$lodelusergroups,"userlang"=>$lodeluserlang,"username"=>$login)
-
 	$lodeluser['name'] = $login;
 
 	$contextstr = addslashes(serialize($lodeluser));
@@ -48,15 +62,6 @@ function open_session($login)
 	$expire2 = time() + $cookietimeout;
 
 	usemaindb();
-	//if (defined("LEVEL_ADMINLODEL") && $lodeluser['rights']<LEVEL_ADMINLODEL) {
-	//if (function_exists("lock_write")) lock_write("sites","session"); // seulement session devrait etre locke en write... mais c'est pas hyper grave vu le peu d'acces sur site.
-	// verifie que c'est ok
-	//$result=$db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
-	//if (!$result) { 
-	//  //if (function_exists("unlock")) unlock(); 
-	//  return "error_sitebloque"; 
-	//}
-	//}
 
 	for ($i = 0; $i < 5; $i ++)	{ // essaie cinq fois, au cas ou on ait le meme name de session
 		// name de la session
@@ -66,7 +71,7 @@ function open_session($login)
 		if ($result)
 			break; // ok, it's working fine
 	}
-	//if (function_exists("unlock")) unlock(); 
+
 	if ($i == 5)
 		return "error_opensession";
 	if (!setcookie($sessionname, $name, time() + $cookietimeout, $urlroot))
@@ -75,6 +80,18 @@ function open_session($login)
 	usecurrentdb();
 }
 
+
+/**
+ * Vérifie que le login et le password sont bon pour le site concerné
+ *
+ * En plus de vérifier qu'un utilisateur peut se connecter, cette fonction met en variables
+ * globales les informations de l'utilisateur
+ *
+ * @param string $login le nom d'utilisateur
+ * @param string &$passwd le mot de passe
+ * @param string &$site le site
+ * @return boolean un booleen indiquant si l'authentification est valide
+ */
 function check_auth($login, & $passwd, & $site)
 {
 	global $db, $context, $lodeluser, $home;
@@ -83,7 +100,7 @@ function check_auth($login, & $passwd, & $site)
 			break;
 
 		$lodelusername = addslashes($login);
-		$pass = md5($passwd.$login);
+		$pass = md5($passwd. $login);
 		// cherche d'abord dans la base generale.
 
 		usemaindb();
@@ -119,7 +136,7 @@ function check_auth($login, & $passwd, & $site)
 				$result->MoveNext();
 			}
 		}	else {
-			$lodeluser['groups'] = "";
+			$lodeluser['groups'] = '';
 		}
 
 		$context['lodeluser'] = $lodeluser; // export info into the context
