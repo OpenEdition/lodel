@@ -1,43 +1,53 @@
 <?php
-/*
-*
-*  LODEL - Logiciel d'Edition ELectronique.
-*
-*  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-*  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-*  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-*  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
-*
-*  Home page: http://www.lodel.org
-*
-*  E-Mail: lodel@lodel.org
-*
-*                            All Rights Reserved
-*
-*     This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU General Public License as published by
-*     the Free Software Foundation; either version 2 of the License, or
-*     (at your option) any later version.
-*
-*     This program is distributed in the hope that it will be useful,
-*     but WITHOUT ANY WARRANTY; without even the implied warranty of
-*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*     GNU General Public License for more details.
-*
-*     You should have received a copy of the GNU General Public License
-*     along with this program; if not, write to the Free Software
-*     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+/**
+ * Backup des données d'un site
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel/source/lodel/admin
+ */
 
-
-require "siteconfig.php";
-require "auth.php";
+require 'siteconfig.php';
+require 'auth.php';
 authenticate(LEVEL_ADMIN);
-require "func.php";
+require 'func.php';
 
 $context['importdir'] = $importdir;
 if ($backup) {
-	require_once "func.php";
-	require_once "backupfunc.php";
+	require_once 'func.php';
+	require_once 'backupfunc.php';
 
 	$outfile = "site-$site.sql";
 	$uselodelprefix = true;
@@ -107,11 +117,11 @@ if ($backup) {
 	if (operation($operation, $archivetmp, $archivefilename, $context)) {
 		return;
 	}
-	header("location: index.php");
+	header('location: index.php');
 	return;
 }
 
-require_once "view.php";
+require_once 'view.php';
 $view = &View::getView();
-$view->render($context, "backup");
+$view->render($context, 'backup');
 ?>
