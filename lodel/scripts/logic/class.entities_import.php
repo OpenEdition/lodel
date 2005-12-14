@@ -38,7 +38,7 @@
  */
 
 
-require_once("logic/class.entities_edition.php");
+require_once 'logic/class.entities_edition.php';
 
 /**
  * Classe de logique des entités (gestion de l'import)
@@ -54,22 +54,36 @@ require_once("logic/class.entities_edition.php");
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class Entities_ImportLogic extends Entities_EditionLogic {
-
-	var $g_name; /** generic equivalent assoc array */
+class Entities_ImportLogic extends Entities_EditionLogic 
+{
+	/**
+	 * Tableau des équivalents génériques
+	 *
+	 * @var array
+	 */
+	var $g_name;
+	
 	var $prefixregexp="Pr\.|Dr\.|Mr\.|Ms\.";
+	
   var $context; // save the current context
+
   var $task;
 
-  /** Constructor */
-	function Entities_ImportLogic() {
+  /**
+	 * Constructeur
+	 */
+	function Entities_ImportLogic()
+	{
 		Entities_EditionLogic::Entities_EditionLogic();
 	}
 
-/**
- * Import edition
- */
-	function importAction (&$context, &$error) {
+	/**
+	 * Importation d'une entité
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function importAction (&$context, &$error) 
+	{
 		global $db;
 		$this->context=&$context;
 		$idtask = intval ($context['idtask']);
@@ -103,21 +117,20 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
 	}
 
-	/**
-	 * @protected
-	 *  Protected from this point
-	 */
 
 	/**
 	 * method to move img link when the new id is known
+	 * @access private
 	 */
-	function _moveImages (&$context) { 
-		$count=1;
-		$dir="";
+	function _moveImages (&$context)
+	{ 
+		$count = 1;
+		$dir = '';
 		$this->_moveImages_rec ($context, $dir, $count); 
 	}
 
-	function _moveImages_rec (&$context, &$dir, &$count) {
+	function _moveImages_rec (&$context, &$dir, &$count) 
+	{
 		foreach (array_keys ($context) as $k) {
 			if (is_array ($context[$k])) {
 				$this->_moveImages_rec ($context[$k], $dir, $count);
@@ -152,7 +165,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
 	}
  
-	function _checkdir ($dir) {
+	function _checkdir ($dir) 
+	{
 		if (!is_dir (SITEROOT.$dir)) {
 			mkdir (SITEROOT.$dir, 0777 & octdec($GLOBALS['filemask']));
 			@chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
@@ -169,7 +183,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 
 	var $_localcontext;
 
-	function openClass ($class, $obj=null, $multidoc=false) {
+	function openClass ($class, $obj=null, $multidoc=false) 
+	{
 		switch ($class[1]) { // classtype
 			case 'entries':
 				break;
@@ -182,7 +197,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
 	}
 
-	function closeClass ($class, $multidoc=false) {
+	function closeClass ($class, $multidoc=false) 
+	{
 		global $db;
 		switch ($class[1]) { // classtype
 		case 'entries':
@@ -214,11 +230,13 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
 	}
 
-	function processData($data) {
+	function processData($data) 
+	{
 		return $data;
 	}
 
-	function processTableFields ($obj, $data) {
+	function processTableFields ($obj, $data) 
+	{
 		global $db;
 		static $styles_string;
 		if (!$styles_string) { // record all the internal into a string to use it in the following regexp
@@ -246,7 +264,7 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
 		
 		// replace all the paragraph containing classes added by Oo except paragraph with internal style
-		$data=preg_replace ('/(<p\b[^>]+class=")([^"]*)(")/e', "myfunction('\\0', '\\1','\\2','\\3','". $styles_string."','".$obj->style."')", $data);
+		$data = preg_replace ('/(<p\b[^>]+class=")([^"]*)(")/e', "myfunction('\\0', '\\1','\\2','\\3','". $styles_string."','".$obj->style."')", $data);
 		if ($obj->type=="file" || $obj->type=="image") {
 			// nothing...
 		} elseif ($obj->type=="mltext") {
@@ -258,7 +276,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		return $data;
 	}
 
-	function processEntryTypes ($obj, $data) {
+	function processEntryTypes ($obj, $data) 
+	{
 		foreach (preg_split ("/<\/p>/", $data) as $data2) {
 			foreach (preg_split ("/,/", strip_tags ($data2)) as $entry) {
 				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
@@ -266,7 +285,8 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
 	}
 
-	function processPersonTypes ($obj, $data) {
+	function processPersonTypes ($obj, $data) 
+	{
 		static $g_name_cache;
 		if (!$g_name_cache[$obj->class]) {  // get the generic type     
 			$dao=&getDAO("tablefields");
@@ -307,13 +327,15 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		}
   }
 
-	function processCharacterStyles ($obj, $data) {
+	function processCharacterStyles ($obj, $data) 
+	{
 		return $obj->conversion.$data.closetags ($obj->conversion);
 	}
 
-	function processInternalStyles ($obj, $data) {
-		if (strpos ($obj->conversion, "<li>") !== false) {
-			$conversion = str_replace ("<li>", "", $obj->conversion);
+	function processInternalStyles ($obj, $data) 
+	{
+		if (strpos ($obj->conversion, '<li>') !== false) {
+			$conversion = str_replace ('<li>', '', $obj->conversion);
 			$data = preg_replace (array ("/(<p\b)/", "/(<\/p>)/"), array ("<li>\\1", "\\1</li>"), $data);
 		}
 		elseif (preg_match ("/<hr\s*\/?>/", $obj->conversion)) {
@@ -331,11 +353,13 @@ class Entities_ImportLogic extends Entities_EditionLogic {
 		return $conversion.$data.closetags ($conversion);
 	}
 
-	function unknownParagraphStyle ($style, $data) {
+	function unknownParagraphStyle ($style, $data) 
+	{
 		// nothing to do ?
 	}
 
-	function unknownCharacterStyle ($style, $data) {
+	function unknownCharacterStyle ($style, $data) 
+	{
 		// nothing... let's clean it.
 		return preg_replace(array("/^<span\b[^>]*>/","/<\/span>$/"),"",$data);
 	}

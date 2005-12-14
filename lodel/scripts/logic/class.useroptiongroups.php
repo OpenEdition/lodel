@@ -71,6 +71,12 @@ class UserOptionGroupsLogic extends Logic {
 		$this->Logic("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
 	}
 
+	/**
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function viewAction(&$context,$error) 
 
 	{
@@ -134,11 +140,14 @@ class UserOptionGroupsLogic extends Logic {
 	}
 
 	/**
-		* Change rank action
-		*/
-	function changeRankAction(&$context,&$error)
+	 * Changement du rang d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function changeRankAction(&$context, &$error)
 	{
-		die("ERROR: forbidden");
+		die('ERROR: forbidden');
 	}
 
 	/**

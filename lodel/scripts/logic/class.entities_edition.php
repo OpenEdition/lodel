@@ -56,20 +56,26 @@ class Entities_EditionLogic extends GenericLogic
 {
 
 	/**
-	* generic equivalent assoc array
-	*/
+	 * Tableau des équivalents génériques
+	 *
+	 * @var array
+	 */
 	var $g_name;
 
-	/** Constructor
-	*/
-	function Entities_EditionLogic() 
+	/**
+	 * Constructeur
+	 */
+	function Entities_EditionLogic()
 	{
-		$this->GenericLogic("entities");
+		$this->GenericLogic('entities');
 	}
 
 	/**
-		* view an object Action
-		*/
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function viewAction(&$context, &$error)
 	{
 		if ($context['check'] && $error) {
@@ -209,14 +215,23 @@ class Entities_EditionLogic extends GenericLogic
 
 
 	/**
-	* add/edit Action
-	*/
-	function editAction (&$context, &$error, $opt = false) {
-		if (!rightonentity($context['id'] ? "edit" : "create",$context)) {
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 *
+	 * Ajout d'une nouvelle entité. Dans un premier temps on vérifie si l'utilisateur
+	 * possède les bons droits pour modifier ou ajouter cette entité. Ensuite les différents
+	 * champs de l'entité sont validés. Si ceux-ci sont valide, alors l'objet est créé dans
+	 * la base de données et les objets liés sont aussi créés : personnes, entrées d'index
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function editAction (&$context, &$error, $opt = false)
+	{
+		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
 			die ("ERROR: you don't have the right to perform this operation");
 		}
 		if ($context['cancel']) {
-			return "_back";
+			return '_back';
 		}
 		
 		global $lodeluser, $home;
@@ -225,7 +240,7 @@ class Entities_EditionLogic extends GenericLogic
 			$dao = $this->_getMainTableDAO();
 			$vo  = $dao->getById($id, "idparent, idtype");
 			$context['idparent'] = $vo->idparent;
-			$context['idtype'] = $vo->idtype;
+			$context['idtype']   = $vo->idtype;
 		}
 		$idparent = $context['idparent'];
 		$idtype   = $context['idtype'];
@@ -233,10 +248,10 @@ class Entities_EditionLogic extends GenericLogic
 		// iduser
 		$context['iduser'] = !SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
 
-		require_once "entitiesfunc.php";
+		require_once 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent, $idtype)) {
-			$error['idtype'] = "types_compatibility";
-			return "_error";
+			$error['idtype'] = 'types_compatibility';
+			return '_error';
 		}
 
 		// get the class 
@@ -352,8 +367,14 @@ class Entities_EditionLogic extends GenericLogic
 		return $ret ? $ret : "_back";
 	} //end of editAction
 
-
-	function makeSelect(&$context,$var,$edittype)
+	/**
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 * @param string $edittype le type d'édition
+	 */
+	function makeSelect(&$context, $var, $edittype)
 	{
 		switch($var) {
 		case 'creationinfo':
@@ -366,22 +387,20 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		switch($edittype) {
 		case 'lang':
-			require_once "lang.php";
+			require_once 'lang.php';
 			makeselectlangs($context[$var]);
 			break;
 		}
 	}
 
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
 	/**
-		* @private
-		*/
-
-	/**
-		* method to move img link when the new id is known
-		*
-		*/
+	 * Déplace les liens images quand un nouvel identifiant est connu
+	 *
+	 * Cette méthode n'est pas définie ici.
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @access private
+	 */
 	function _moveImages(&$context) {}
 
 	/**
@@ -397,16 +416,16 @@ class Entities_EditionLogic extends GenericLogic
 		global $db;
 		if (!$vo->status) {
 			$dao = $this->_getMainTableDAO();
-			$vo  = $dao->getById($vo->id, "status,id");
+			$vo  = $dao->getById($vo->id, 'status,id');
 		}
 		if ($vo->status>-64 && $vo->status<=-1) {
-			$status=-1;
+			$status = -1;
 		}
-		if ($vo->status>=1) {
-			$status=1;
+		if ($vo->status >= 1) {
+			$status = 1;
 		}
 		// Entries and Persons
-		foreach (array ("entries"=>"E", "persons"=>"G") as $table=>$nature) {
+		foreach (array ('entries' => 'E', 'persons' => 'G') as $table => $nature) {
 			// put the id's from entrees and autresentrees into idtypes
 			$idtypes = $context[$table] ? array_keys ($context[$table]) : array();
 			if (!$idtypes) {
@@ -456,15 +475,14 @@ class Entities_EditionLogic extends GenericLogic
 			$criteria = $idrelations ? "AND idrelation NOT IN ('". join ("','", $idrelations). "')" : "";
 			
 			#echo "criteria=$criteria";
-			$this->_deleteSoftRelation ("id1='".$vo->id. "' ". $criteria, $nature);
+			$this->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
 		// Entities
 		if ($context['entities']) {
-			
-			$dao = getDAO ("tablefields");
+			$dao = getDAO('tablefields');
 			foreach (array_keys ($context['entities']) as $name) {
 				$name = addslashes ($name);
-				$vofield = $dao->find("class='".$context['class']."' AND name='".$name."' AND type='entities'");
+				$vofield = $dao->find("class='". $context['class']. "' AND name='". $name. "' AND type='entities'");
 				if (!$vofield) {
 					trigger_error ("invalid name for field of type entities", E_USER_ERROR);
 				}
@@ -482,10 +500,16 @@ class Entities_EditionLogic extends GenericLogic
 	} //end of function
 
 	/**
-	*
-	*/
+	 * Suppression des relations dites 'soft'
+	 *
+	 * Suppression des personnes ou entrées d'indexs liées à une entité
+	 *
+	 * @param array $ids les identifiants des objets liés
+	 * @param string $nature la nature des objets liés
+	 */
 	//most of this should be transfered in the entries and persons logic
-	function _deleteSoftRelation ($ids, $nature = "") {
+	function _deleteSoftRelation ($ids, $nature = '')
+	{
 		global $db;
 		if (is_array ($ids)) {
 			$criteria = "id1 IN ('".join ("','", $ids). "')";
@@ -495,13 +519,13 @@ class Entities_EditionLogic extends GenericLogic
 			$criteria = $ids;
 		}
 
-		if ($nature == "E") {
+		if ($nature == 'E') {
 			$naturecriteria = " AND nature='E'";
-		} elseif ($nature == "G") {
+		} elseif ($nature == 'G') {
 			$naturecriteria = " AND nature='G'";
 			$checkjointtable = true;
 		} elseif (strlen ($nature)>1) {
-			$naturecriteria = " AND nature='".$nature."'";
+			$naturecriteria = " AND nature='". $nature. "'";
 			$checkjointtable = false;
 		} else  {
 			$naturecriteria = " AND nature IN ('G','E') OR LENGTH(nature)>1";
@@ -511,17 +535,17 @@ class Entities_EditionLogic extends GenericLogic
 		if ($checkjointtable) {
 		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
 		// get the joint table first
-			$dao = &getDAO("relations");
-			$vos = $dao->findMany($criteria.$naturecriteria,"","idrelation");
+			$dao = &getDAO('relations');
+			$vos = $dao->findMany($criteria. $naturecriteria, '', 'idrelation');
 			$ids = array();
 			foreach ($vos as $vo) { 
-				$ids[]=$vo->idrelation; 
+				$ids[]= $vo->idrelation; 
 			}
 			if ($ids) {
 				// getting the tables name from persons and persontype would be to long. Let's suppose
 				// the number of classes are low and it is worse trying to delete in all the tables
-				$dao    = &getDAO("classes");
-				$tables = $dao->findMany("classtype='persons'","","class");
+				$dao    = &getDAO('classes');
+				$tables = $dao->findMany("classtype='persons'", '', 'class');
 				$where  = "idrelation IN ('".join("','",$ids)."')";
 				foreach($tables as $table) {
 					$db->execute(lq("DELETE FROM #_TP_entities_". $table->class. " WHERE ". $where)) or dberror();
@@ -533,7 +557,7 @@ class Entities_EditionLogic extends GenericLogic
 		// select all the items not in entities_$table
 		// those with status<=1 must be deleted
 		// thise with status> must be depublished
-		foreach(array("entries", "persons") as $table) {
+		foreach(array('entries', 'persons') as $table) {
 			$result = $db->execute (lq ("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or dberror();
 			$idstodelete    = array();
 			$idstounpublish = array();
@@ -548,7 +572,7 @@ class Entities_EditionLogic extends GenericLogic
 
 			if ($idstodelete) {
 				$logic = &getLogic($table);
-				$localcontext = array("id" => $idstodelete, "idrelation" => array());
+				$localcontext = array('id' => $idstodelete, 'idrelation' => array());
 				$err = array();
 				$logic->deleteAction($localcontext, $err);
 			}
@@ -562,8 +586,12 @@ class Entities_EditionLogic extends GenericLogic
 
 
 	/**
-		* return the usergroup for new entity
-		*/
+	 * Récupère le groupe utilisateur d'une nouvelle entité
+	 * return the usergroup for new entity
+	 *
+	 * @param array $contextle contexte
+	 * @param integer $idparent identifiant du parent
+	 */
 	function _getUserGroup($context, $idparent)
 	{
 		global $lodeluser, $db;
@@ -575,7 +603,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		if ($idparent) { // take the group of the parent
 			$dao = $this->_getMainTableDAO();
-			$vo = $dao->getById($idparent, "id, usergroup");
+			$vo = $dao->getById($idparent, 'id, usergroup');
 			$usergroup = $vo->usergroup;
 			if ($db->errorno()) {
 				dberror();
@@ -591,11 +619,14 @@ class Entities_EditionLogic extends GenericLogic
 	}
 
 	/**
-	* $id is the id of the new entity.
-	* $idparent is its direct parent.
+	 * Création des relations avec les parents d'une entité
+	 *
+	 * Cette méthode crée les relations entre une entité et tous ses ancêtres. 
+	 *
+	 * @param integer identifiant de la nouvelle entité
+	 * @param integer identifiant du parent direct de la nouvelle entité
 	*/
-
-	function _createRelationWithParents($id,$idparent)
+	function _createRelationWithParents($id, $idparent)
 	{
 		global $db;
 		// can't do INSERT SELECT because work on the same table... support for old MySQL version
@@ -609,16 +640,17 @@ class Entities_EditionLogic extends GenericLogic
 		//if ($lock) unlock();
 	}
 
-
-
 	/**
-		* Used in viewAction to do extra populate in the context 
-		*/
+	 * Utilisé dans la méthode viewAction() pour remplir le contexte d'information supplémentaire
+	 *
+	 * @param object &$vo l'objet utilisé dans viewAction
+	 * @param array &$context le contexte, tableau passé par référence
+	 */
 	function _populateContextRelatedTables(&$vo, &$context)
 	{
 		global $db;
-		foreach (array("entries" => array("E", "identry", "entrytypes"),
-				"persons" => array("G", "idperson", "persontypes")) as $table => $info) {
+		foreach (array('entries' => array('E', 'identry', 'entrytypes'),
+				'persons' => array('G', 'idperson', 'persontypes')) as $table => $info) {
 			list($nature, $idfield, $type) = $info;
 			$degree = 0;
 			
@@ -675,12 +707,20 @@ class Entities_EditionLogic extends GenericLogic
 		}
 	}
 
-
+	/**
+	 * Calcul des identifiants littéraux d'une entité
+	 *
+	 * Cette méthode permet de générer un identifiant littéral, utilisé pour les liens permanents
+	 * pour une entité. Elle utilise son titre
+	 *
+	 * @param integer $id identifiant numérique de l'entité
+	 * @param string $title titre générique de l'entité
+	 */
 	function _calculateIdentifier($id, $title)
 	{
 		global $db, $error;
-		$identifier = preg_replace(array("/\W+/", "/-+$/"), array("-", ""), makeSortKey($title));
-		$count=0;
+		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey($title));
+		$count = 0;
 		return $identifier;
 	}
 
@@ -689,7 +729,6 @@ class Entities_EditionLogic extends GenericLogic
 
 	// begin{uniquefields} automatic generation  //
 	// end{uniquefields} automatic generation  //
-
 
 } // class 
 ?>

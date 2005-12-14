@@ -74,8 +74,11 @@ class TypesLogic extends Logic {
 
 
 	/**
-		* view an object Action
-		*/
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function viewAction(&$context,&$error)
 
 	{
@@ -120,13 +123,15 @@ class TypesLogic extends Logic {
 
 
 	/**
-		* Change rank action
-		* Default implementation
-		*/
-	function changeRankAction(&$context,&$error)
+	 * Changement du rang d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function changeRankAction(&$context, &$error)
 
 	{
-		return Logic::changeRankAction(&$context,&$error,"class");
+		return Logic::changeRankAction(&$context, &$error, 'class');
 	}
 
 

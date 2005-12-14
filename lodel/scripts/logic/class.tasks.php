@@ -71,17 +71,27 @@ class TasksLogic extends Logic {
 
 
 	/**
-		* view an object Action
-		*/
-	function viewAction(&$context,&$error) 
-	{ die("TasksLogic::viewAction"); }
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function viewAction(&$context,&$error)
+	{
+		die("TasksLogic::viewAction");
+	}
 
 
 	/**
-		* Change rank action
-		*/
-	function changeRankAction(&$context,&$error)
-	{ die("TasksLogic::changeRankAction"); }
+	 * Changement du rang d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function changeRankAction(&$context, &$error)
+	{
+		die("TasksLogic::changeRankAction");
+	}
 
 	/**
 		* add/edit Action

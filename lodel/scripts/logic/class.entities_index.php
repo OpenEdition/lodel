@@ -53,24 +53,32 @@
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class Entities_IndexLogic extends Logic {
+class Entities_IndexLogic extends Logic 
+{
 	/**
-	* generic equivalent assoc array
-	*/
+	 * Tableau des équivalents génériques
+	 *
+	 * @var array
+	 */
 	var $g_name;
-	/** 
-	* Constructor
-	*/
-	function Entities_IndexLogic () {
-		$this->Logic ("search_engine");
+
+	/**
+	 * Constructeur
+	 */
+	function Entities_IndexLogic ()
+	{
+		$this->Logic ('search_engine');
 	}
 
 	/**
-	* Add an object to the search_engine. An object is added only its type must be indexed 
-	* and if its fields have weight defined > 0
-	* 
-	*/ 
-	function addIndexAction (&$context, &$error) {
+	 * Add an object to the search_engine. An object is added only its type must be indexed 
+	 * and if its fields have weight defined > 0
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	*/
+	function addIndexAction (&$context, &$error)
+	{
 		global $db;
 		//no object identity specified
 		$id = $context['id'];
@@ -112,11 +120,13 @@ class Entities_IndexLogic extends Logic {
 		return "_back";
 	}
 
-/**
-	* delete an objet from the index
-	* needed parameters
-	* 	- object id
-	*/
+	/**
+	 * delete an objet from the index
+	 * needed parameters
+	 * 	- object id
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function deleteIndexAction(&$context,&$error) {
 		$id = $context["id"];
 		if (!$id) die ("ERROR: give the id ");
@@ -128,9 +138,12 @@ class Entities_IndexLogic extends Logic {
 	}
 
 	/**
-	* clean the index of all objet
-	*/
-	function cleanIndexAction(&$context,&$error) {
+	 * clean the index of all objet
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function cleanIndexAction(&$context,&$error)
+	{
 		$dao = &getDAO ("search_engine");
 		$dao->deleteObjects("1");    //delete all index lines and return
 		#echo "index cleaning";
@@ -138,10 +151,13 @@ class Entities_IndexLogic extends Logic {
 	}
 
 	/**
-	* Rebuild entirely the Index
-	* 
-	*/
-	function rebuildIndexAction(&$context,&$error) {
+	 * Rebuild entirely the Index
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function rebuildIndexAction(&$context, &$error) 
+	{
 		global $db;
 		if (!isset ($context['clean'])) $context['clean'] = 1; # assumed its true
 		$context['clean'] = intval ($context['clean']);
@@ -173,16 +189,17 @@ class Entities_IndexLogic extends Logic {
 	}
 
 	/**
-	* index a given field in the database (using dao_index)
-	* @param $id : entity database identifier
-	* @param $fieldValue : the value of the field
-	* @param $fieldName : the name of the field
-	* @param $fieldWeight : the weight used to ponderate the field
-	* @param $daoIndex : the dao to use to save the data
-	* @param $prefixtablefield : empty by default but used to prefix the field 'tablefield' (for entries or persons for example)
-	* 
-	*/
-	function _indexField ($id, $fieldValue, $fieldName, $fieldWeight, $daoIndex, $prefixtablefield="") {
+	 * index a given field in the database (using dao_index)
+	 *
+	 * @param $id : entity database identifier
+	 * @param $fieldValue : the value of the field
+	 * @param $fieldName : the name of the field
+	 * @param $fieldWeight : the weight used to ponderate the field
+	 * @param $daoIndex : the dao to use to save the data
+	 * @param $prefixtablefield : empty by default but used to prefix the field 'tablefield' (for entries or persons for example)
+	 */
+	function _indexField ($id, $fieldValue, $fieldName, $fieldWeight, $daoIndex, $prefixtablefield = '') 
+	{
 
 		if (!$fieldValue) return;
 		$fieldValue = preg_replace ("/<[^>]*>/", " ", $fieldValue);//HTML tags cleaning
@@ -200,24 +217,27 @@ class Entities_IndexLogic extends Logic {
 	}
 
 	/** Private function
-	*  Description : decode HTML entities,
-	* @param $text the text where HTML entities must be decoded
-	* @return $text the text with HTML entities decoded
-	*  
-	*/
-	function _decode_html_entities($text) {
+	 *  Description : decode HTML entities,
+	 * @param $text the text where HTML entities must be decoded
+	 * @return $text the text with HTML entities decoded
+	 * @access private
+	 */
+	function _decode_html_entities($text) 
+	{
 		$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
 		$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
 		return $text;
 	}
 
 	/**
-	*  Split a string into tokens by given regs
-	* @param $string the string to be splitted
-	* @param $regs the regs used to split the string
-	* @return an array of tokens
+	 *  Split a string into tokens by given regs
+	 * @param $string the string to be splitted
+	 * @param $regs the regs used to split the string
+	 * @return an array of tokens
+	 * @access private
 	*/
-	function _splitInTokens ($string, $regs=0) {
+	function _splitInTokens ($string, $regs = 0)
+	{
 		if(!$regs)
 			$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%Â«Â»\342\200\230\342\200\231\342\200\234\342\200\235";
 		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );//non alphanum chars cleaning
@@ -226,13 +246,14 @@ class Entities_IndexLogic extends Logic {
 	}
 
 	/**
-	* Function to split a string into tokens
-	* @param $string the string to be clean and word count
-	* @param $regs the regs used to clean the string
-	* @return an array with for each word its count
-	* 
-	*/
-	function _cleanAndcountTokens ($string, $regs=0) {
+	 * Function to split a string into tokens
+	 * @param $string the string to be clean and word count
+	 * @param $regs the regs used to clean the string
+	 * @return an array with for each word its count
+	 * @access private
+	 */
+	function _cleanAndcountTokens ($string, $regs=0) 
+	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
 		while (list (, $token) = each ($tokens)) {
@@ -251,12 +272,14 @@ class Entities_IndexLogic extends Logic {
 	}
 
 	/**
-	* Generic function to index relations of type entries and persons : E and G relations
-	* @param $id the id of the entity
-	* @param $nature the nature of the relation
-	* @param $daoIndex the DAO object
-	*/
-	function _indexEntitiesRelations ($id, $nature, $daoIndex) {
+	 * Generic function to index relations of type entries and persons : E and G relations
+	 * @param $id the id of the entity
+	 * @param $nature the nature of the relation
+	 * @param $daoIndex the DAO object
+	 * @access private
+	 */
+	function _indexEntitiesRelations ($id, $nature, $daoIndex) 
+	{
 		global $db;
 		if (!$id)return false;
 		if ($nature != 'E' && $nature != 'G') return false;

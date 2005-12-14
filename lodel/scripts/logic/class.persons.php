@@ -62,7 +62,12 @@ class PersonsLogic extends GenericLogic
 		$this->GenericLogic ("persons");
 	}
 
-
+	/**
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function viewAction (&$context, &$error) {
 		if (!$context['id']) $context['status']=32;
 		$context['classtype']="persons";

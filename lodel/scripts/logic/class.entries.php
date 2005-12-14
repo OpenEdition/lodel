@@ -38,7 +38,7 @@
  */
 
 
-require_once("genericlogic.php");
+require_once 'genericlogic.php';
 
 /**
  * Classe de logique des entrées
@@ -54,15 +54,25 @@ require_once("genericlogic.php");
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class EntriesLogic extends GenericLogic {
+class EntriesLogic extends GenericLogic
+{
 
-	/** Constructor */
-	function EntriesLogic () {
-		$this->GenericLogic ("entries");
+	/**
+	 * Constructeur
+	 */
+	function EntriesLogic ()
+	{
+		$this->GenericLogic ('entries');
 	}
 
-
-	function viewAction (&$context, &$error) {
+	/**
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function viewAction (&$context, &$error) 
+	{
 		if (!$context['id']) $context['status']=32; //why ?
 		$context['classtype']="entries";
 		return GenericLogic::viewAction ($context, $error); //call the parent method
@@ -80,7 +90,7 @@ class EntriesLogic extends GenericLogic {
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked ($id, $status=0) 
+	function isdeletelocked ($id, $status = 0)
 	{
 		global $db;
 
@@ -96,45 +106,63 @@ class EntriesLogic extends GenericLogic {
 	}
 
 	/**
-	* List action
-	*/
-	function listAction (&$context, &$error, $clean=false) {
-		$daotype=&getDAO ("entrytypes");
-		$votype=$daotype->getById ($context['idtype']);
-		if (!$votype) die ("ERROR: idtype must me known in GenericLogic::viewAction");
+	 * Appel la liste des objet de cette logic : ici les entrées
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function listAction (&$context, &$error, $clean = false)
+	{
+		$daotype = &getDAO ('entrytypes');
+		$votype = $daotype->getById($context['idtype']);
+		if (!$votype) {
+			die ("ERROR: idtype must me known in GenericLogic::viewAction");
+		}
 		$this->_populateContext ($votype, $context['type']);
-		return "_ok";
+		return '_ok';
 	}
 
 	/**
-	* add/edit Action
-	*/
-	function editAction (&$context, &$error, $clean=false) {
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 *
+	 * Ajout d'une nouvelle entrée
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function editAction (&$context, &$error, $clean=false) 
+	{
 		global $home;
-		$id=$context['id'];
+		$id = $context['id'];
 		$idtype=$context['idtype'];
-		if (!$idtype) die ("ERROR: internal error in EntriesLogic::editAction");
-		$status=$context['status'];
+		if (!$idtype) {
+			die ("ERROR: internal error in EntriesLogic::editAction");
+		}
+		$status = $context['status'];
 		// get the class 
-		$daotype=&getDAO ("entrytypes");
-		$votype=$daotype->getById ($idtype, "class,newbyimportallowed,flat");
-		$class=$context['class']=$votype->class;
+		$daotype = &getDAO ("entrytypes");
+		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat");
+		$class = $context['class']=$votype->class;
 		if ($clean!=CLEAN) {
 			if (!$this->validateFields($context,$error)) {
 				// error.
 				// if the entity is imported and will be checked
 				// that's fine, let's continue, if not return an error
-				if ($status>-64) return "_error";
+				if ($status>-64) {
+					return "_error";
+				}
 			}
 		}
-		$g_index_key=$this->getGenericEquivalent($class,'index key');
-		if (!$g_index_key) die ("ERROR: The generic field 'index key' is required. Please edit your editorial model.");
+		$g_index_key = $this->getGenericEquivalent($class,'index key');
+		if (!$g_index_key) {
+			die ("ERROR: The generic field 'index key' is required. Please edit your editorial model.");
+		}
 		// get the dao for working with the object
-		$dao=$this->_getMainTableDAO ();
+		$dao = $this->_getMainTableDAO ();
 		if (isset ($context['g_name'])) {
-			if (!$context['g_name']) return "_error"; // empty entry!
+			if (!$context['g_name']) return '_error'; // empty entry!
 			// search if the entries exists
-			$vo=$dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
+			$vo = $dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			if ($vo->id) {
 				$context['id']=$vo->id;
 				return; // nothing to do.
@@ -143,13 +171,13 @@ class EntriesLogic extends GenericLogic {
 			}
 		}
 
-		$index_key=&$context['data'][$g_index_key];
-		$index_key=str_replace(","," ",$index_key); // remove the , because it is a separator
-		if ($context['lo']=="entries") {  // check it does not exist
-			$vo=$dao->find("g_name='".$index_key."' AND idtype='".$idtype."' AND status>-64 AND id!='".$id."'","id");
+		$index_key = &$context['data'][$g_index_key];
+		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
+		if ($context['lo'] == 'entries') {  // check it does not exist
+			$vo=$dao->find("g_name='". $index_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			if ($vo->id) {
-				$error[$g_index_key]="1";
-				return "_error";
+				$error[$g_index_key] = "1";
+				return '_error';
 			}
 		}
 
@@ -192,73 +220,78 @@ class EntriesLogic extends GenericLogic {
 
 
 	/**
-	* Change rank action
-	* Default implementation
-	*/
-	function changeRankAction (&$context, &$error) {
-		return Logic::changeRankAction(&$context,&$error,"idparent","");
+	 * Changement du rang d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function changeRankAction (&$context, &$error) 
+	{
+		return Logic::changeRankAction(&$context, &$error, 'idparent', '');
 	}
 
-
-	function makeSelect (&$context, $var) {
+	/**
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 * @param string $edittype le type d'édition
+	 */
+	function makeSelect (&$context, $var) 
+	{
 		global $db;
 		switch($var) {
-			case 'idparent':
-				$arr=array ();
-				$rank=array ();
-				$parent=array ();
-				$ids=array (0);
-				$l=1;
-				do {
-					$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status)>= 32 ORDER BY ". $context['type']['sort'])) or dberror();
-					$ids=array();
-					$i=1;
-					while (!$result->EOF) {
-						$id=$result->fields['id'];
-						$ids[]=$id;	 
-						$fullname=$result->fields['g_name'];
-						$idparent=$result->fields['idparent'];
-						if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;
-						$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
-						$arr["p$d"]=array($id,$fullname);
-						$parent[$id]=$fullname;
-						$i++;
-						$result->MoveNext();
-					} //end while
-					$l*=100;
-				} while ($ids); // end do while
-				ksort ($arr);
-				$arr2=array ("0"=>"--"); // reorganize the array $arr
-				foreach ($arr as $row) {
-					$arr2[$row[0]]=$row[1];
-				}
-				renderOptions ($arr2, $context[$var]);
-				break;
+		case 'idparent':
+			$arr=array ();
+			$rank=array ();
+			$parent=array ();
+			$ids=array (0);
+			$l=1;
+			do {
+				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status)>= 32 ORDER BY ". $context['type']['sort'])) or dberror();
+				$ids=array();
+				$i=1;
+				while (!$result->EOF) {
+					$id=$result->fields['id'];
+					$ids[]=$id;	 
+					$fullname=$result->fields['g_name'];
+					$idparent=$result->fields['idparent'];
+					if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;
+					$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+					$arr["p$d"]=array($id,$fullname);
+					$parent[$id]=$fullname;
+					$i++;
+					$result->MoveNext();
+				} //end while
+				$l*=100;
+			} while ($ids); // end do while
+			ksort ($arr);
+			$arr2=array ("0"=>"--"); // reorganize the array $arr
+			foreach ($arr as $row) {
+				$arr2[$row[0]]=$row[1];
+			}
+			renderOptions ($arr2, $context[$var]);
+			break;
 		}
 	} //end of function
 
-/*---------------------------------------------------------------*/
-//! Private or protected from this point
-/**
-* @private
-*/
-
 	/**
-	* Appelé avant l'action delete
-	*
-	* Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	* préliminaires à une suppression.
-	*
-	* @param object $dao la DAO utilisée
-	* @param array &$context le contexte passé par référénce
-	*/
-	function _prepareDelete ($dao, &$context) {
+	 * Appelé avant l'action delete
+	 *
+	 * Cette méthode est appelée avant l'action delete pour effectuer des vérifications
+	 * préliminaires à une suppression.
+	 *
+	 * @param object $dao la DAO utilisée
+	 * @param array &$context le contexte passé par référénce
+	 * @access private
+	 */
+	function _prepareDelete($dao, &$context) {
 		global $db;
 		// get the classes
-		$this->classes=array ();
-		$result=$db->execute (lq ("SELECT DISTINCT class FROM #_TP_entrytypes INNER JOIN #_TP_entries ON idtype=#_TP_entrytypes.id WHERE #_TP_entries.id ".sql_in_array ($context['id']))) or dberror ();
+		$this->classes = array ();
+		$result = $db->execute (lq ("SELECT DISTINCT class FROM #_TP_entrytypes INNER JOIN #_TP_entries ON idtype=#_TP_entrytypes.id WHERE #_TP_entries.id ".sql_in_array ($context['id']))) or dberror ();
 		while (!$result->EOF) {
-			$this->classes[]=$result->fields['class'];
+			$this->classes[] = $result->fields['class'];
 			$result->MoveNext();
 		}
 
@@ -276,9 +309,10 @@ class EntriesLogic extends GenericLogic {
 
 
 	/**
-	* Used in deleteAction to do extra operation after the object has been deleted
-	*/
-	function _deleteRelatedTables($id) {
+	 * Used in deleteAction to do extra operation after the object has been deleted
+	 */
+	function _deleteRelatedTables($id) 
+	{
 		global $db;
 		foreach ($this->classes as $class) {
 			$gdao=&getGenericDAO ($class, "identry");

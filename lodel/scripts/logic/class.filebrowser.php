@@ -65,7 +65,12 @@ class FileBrowserLogic {
 		if (!$GLOBALS['lodeluser']['redactor']) die("ERROR: you don't have the right to access this feature");
 	}
 
-
+	/**
+	 * Affichage d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function viewAction(&$context,&$error)
 
 	{
