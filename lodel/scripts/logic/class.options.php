@@ -37,18 +37,6 @@
  * @version CVS:$Id$
  */
 
-
-
-function humanfieldtype($text)
-
-{
-  return $GLOBALS['fieldtypes'][$text];
-}
-
-/***/
-
-
-
 /**
  * Classe de logique des options
  * 
@@ -86,17 +74,31 @@ class OptionsLogic extends Logic {
 
 
 	/**
-		* add/edit Action
-		*/
-
-	function editAction(&$context,&$error,$clean=false)
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 *
+	 * Ajout d'une option
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function editAction(&$context, &$error, $clean = false)
 	{ 
-		if (!$context['title']) $context['title']=$context['name'];
-		$ret=Logic::editAction($context,$error);
-		if (!$error) $this->clearCache();
+		if (!$context['title']) {
+			$context['title'] = $context['name'];
+		}
+		$ret = Logic::editAction($context,$error);
+		if (!$error) {
+			$this->clearCache();
+		}
 		return $ret;
 	}
 
+	/**
+	 * Suppression d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function deleteAction(&$context,&$error)
 
 	{
@@ -105,19 +107,22 @@ class OptionsLogic extends Logic {
 		return $ret;
 
 	}
-
+	/**
+	 * Effacement du cache
+	 */
 	function clearCache()
 	{
-		@unlink(SITEROOT."CACHE/options_cache.php");
+		@unlink(SITEROOT. "CACHE/options_cache.php");
 	}
 
 
 	/**
-		*
-		*/
-
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 */
 	function makeSelect(&$context,$var)
-
 	{
 
 		switch($var) {
@@ -135,13 +140,6 @@ class OptionsLogic extends Logic {
 			break;
 		}
 	}
-		
-
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
-	/**
-		* @private
-		*/
 
 	/**
 	* Sauve des données dans des tables liées éventuellement
@@ -151,18 +149,21 @@ class OptionsLogic extends Logic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context) 
-
+	function _saveRelatedTables($vo,$context)
 	{
 		// reinitialise le cache surement.
 	}
 
 
-
-	function _deleteRelatedTables($id) {
+	/**
+	 * Suppression dans les tables liées
+	 *
+	 * @param integer $id identifiant numérique de l'objet supprimé
+	 */
+	function _deleteRelatedTables($id) 
+	{
 		// reinitialise le cache surement.
 	}
-
 
 
 	// begin{publicfields} automatic generation  //
@@ -202,9 +203,9 @@ class OptionsLogic extends Logic {
 
 /*-----------------------------------*/
 /* loops                             */
-
-
-
-
-
+/*-----------------------------------*/
+function humanfieldtype($text)
+{
+	return $GLOBALS['fieldtypes'][$text];
+}
 ?>

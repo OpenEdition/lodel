@@ -75,10 +75,14 @@ class PersonsLogic extends GenericLogic
 	}
 
 	/**
-	 * list action
+	 * Construit la liste des objets de cette logique
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function listAction (&$context, &$error, $clean=false) {
-		$daotype=&getDAO ("persontypes");
+	function listAction (&$context, &$error, $clean = false) 
+	{
+		$daotype = &getDAO ("persontypes");
 		$votype=$daotype->getById ($context['idtype']);
 		if (!$votype) die ("ERROR: idtype must me known in GenericLogic::viewAction");
 		$this->_populateContext ($votype, $context['type']);
@@ -86,9 +90,15 @@ class PersonsLogic extends GenericLogic
 	}
 
 	/**
-	 * add/edit Action
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 *
+	 * Ajout d'un nouvel objet persons
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction (&$context, &$error, $clean=false) {
+	function editAction (&$context, &$error, $clean=false) 
+	{
 		global $lodeluser, $home;
 		$id=$context['id'];
 		$idtype=$context['idtype'];
@@ -164,9 +174,9 @@ class PersonsLogic extends GenericLogic
 				$vo->id2=$id;
 				$vo->degree=intval ($context['degree']);
 				$vo->nature='G';
-				$idrelation=$context['idrelation']=$dao->save($vo);
+				$idrelation=$context['idrelation'] = $dao->save($vo);
 			} else {
-				$idrelation=$context['idrelation']=$vo->idrelation;
+				$idrelation=$context['idrelation'] = $vo->idrelation;
 			}
 
 			$gdao=&getGenericDAO("entities_".$class,"idrelation");
@@ -180,13 +190,6 @@ class PersonsLogic extends GenericLogic
 		return "_back";
 	}
 
-   /*---------------------------------------------------------------*/
-   //! Private or protected from this point
-   /**
-    * @private
-    */
-
-
 	/**
 	 * Appelé avant l'action delete
 	 *
@@ -197,55 +200,53 @@ class PersonsLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référénce
 	 */
 	function _prepareDelete($dao,&$context) 
+	{
+		global $db;
 
-  {
-    global $db;
+		// get the classes
+		$this->classes=array();
+		$result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_persontypes INNER JOIN #_TP_persons ON idtype=#_TP_persontypes.id WHERE #_TP_persons.id ".sql_in_array($context['id']))) or dberror();		 
+		while (!$result->EOF) {
+			$this->classes[]=$result->fields['class'];
+			$result->MoveNext();
+		}
 
-    // get the classes
-    $this->classes=array();
-    $result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_persontypes INNER JOIN #_TP_persons ON idtype=#_TP_persontypes.id WHERE #_TP_persons.id ".sql_in_array($context['id']))) or dberror();		 
-    while (!$result->EOF) {
-      $this->classes[]=$result->fields['class'];
-      $result->MoveNext();
-    }
-
-    if (isset($context['idrelation'])) {
-      $this->idrelation=$context['idrelation'];
-    } else {
-      $dao=&getDAO("relations");
-      $vos=$dao->findMany("id2 ".sql_in_array($context['id']));
-      $this->idrelation=array();
-      foreach ($vos as $vo) {
+		if (isset($context['idrelation'])) {
+			$this->idrelation=$context['idrelation'];
+		} else {
+			$dao=&getDAO("relations");
+			$vos=$dao->findMany("id2 ".sql_in_array($context['id']));
+			$this->idrelation=array();
+			foreach ($vos as $vo) {
 	$this->idrelation[]=$vo->idrelation;
-      }
-    }
-  }
+			}
+		}
+	}
 
+	/**
+	 * Suppression dans les tables liées
+	 *
+	 * @param integer $id identifiant numérique de l'objet supprimé
+	 */
+	function _deleteRelatedTables($id) 
+	{
+		global $db;
+		foreach ($this->classes as $class) {
+			$gdao=&getGenericDAO($class,"idperson");
+			$gdao->deleteObject($id);
 
-   /**
-    * Used in deleteAction to do extra operation after the object has been deleted
-    */
-   function _deleteRelatedTables($id) 
+			if ($this->idrelation) {
+				$gdao=&getGenericDAO("entities_".$class,"idrelation");
+				$gdao->deleteObject($this->idrelation);
+			}
+		}
+		if ($this->idrelation) {
+			$dao=&getDAO("relations");
+			$dao->delete("idrelation ".sql_in_array($this->idrelation));
+		}
 
-  {
-    global $db;
-
-    foreach ($this->classes as $class) {
-      $gdao=&getGenericDAO($class,"idperson");
-      $gdao->deleteObject($id);
-
-      if ($this->idrelation) {
-	$gdao=&getGenericDAO("entities_".$class,"idrelation");
-	$gdao->deleteObject($this->idrelation);
-      }
-    }
-    if ($this->idrelation) {
-      $dao=&getDAO("relations");
-      $dao->delete("idrelation ".sql_in_array($this->idrelation));
-    }
-
-    // delete 
-  }
+		// delete 
+	}
 }// class 
 
 /*------------------------------------*/

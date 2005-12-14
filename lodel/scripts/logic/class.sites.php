@@ -55,102 +55,25 @@
  */
 class SitesLogic extends Logic {
 
-	/** Constructor
-	*/
-	function SitesLogic() {
-		$this->Logic("sites");
+	/**
+	 * Constructeur
+	 */
+	function SitesLogic()
+	{
+		$this->Logic('sites');
 	}
 
-
-
 	/**
-		* make the select for this logic
-		*/
-
-	function makeSelect(&$context,$var)
-
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 */
+	function makeSelect(&$context, $var)
 	{
 		switch($var) {
 		}
 	}
-
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
-	/**
-		* @private
-		*/
-
-/*
-	function _prepareEdit($dao,&$context) 
-
-	{
-	}
-
-
-
-	function _populateContextRelatedTables(&$vo,&$context)
-
-	{
-		if ($vo->siterights<=LEVEL_EDITOR) {
-			$dao=&getDAO("sites_sitegroups");
-			$list=$dao->findMany("idsite='".$vo->id."'","","idgroup");
-			$context['sitegroups']=array();
-			foreach($list as $relationobj) {
-	$context['sitegroups'][]=$relationobj->idgroup;
-			}
-		}
-	}
-
-	function _saveRelatedTables($vo,$context) 
-
-	{
-		global $db;
-		if ($vo->siterights<=LEVEL_EDITOR) {
-			if (!$context['sitegroups']) $context['sitegroups']=array(1);
-
-			// change the sitegroups     
-			// first delete the group
-			$this->_deleteRelatedTables($vo->id);
-			// now add the sitegroups
-			foreach ($context['sitegroups'] as $sitegroup) {
-	$sitegroup=intval($sitegroup);
-	$db->execute(lq("INSERT INTO #_TP_sites_sitegroups (idgroup, idsite) VALUES  ('$sitegroup','$id')")) or dberror();
-			}
-		}
-	}
-
-	function _deleteRelatedTables($id) {
-		global $db;
-		if ($GLOBALS['site']) { // only in the site table
-			$db->execute(lq("DELETE FROM #_TP_sites_sitegroups WHERE idsite='$id'")) or dberror();
-		}
-	}
-
-
-	function validateFields(&$context,&$error) {
-		global $db,$lodelsite;
-
-		if (!Logic::validateFields($context,$error)) return false;
-
-		// check the site has the right equal or higher to the new site
-		if ($lodelsite['rights']<$context['siterights']) die("ERROR: You don't have the right to create a site with rights higher than yours");
-
-		// Check the site is not duplicated in the main table...
-		if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
-
-		$ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND sitename='".$context['sitename']."'");
-		if ($db->errorno()) die($this->errormsg());
-		usecurrentdb();
-
-		if ($ret) {
-			$error['sitename']="1"; // report the error on the first field
-			return false;
-		} else {
-			return true;
-		}
-	}
-*/
-
 
 	// begin{publicfields} automatic generation  //
 	/**
@@ -172,9 +95,4 @@ class SitesLogic extends Logic {
 	// end{uniquefields} automatic generation  //
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
 ?>

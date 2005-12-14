@@ -99,17 +99,6 @@ class TablefieldgroupsLogic extends Logic {
 		return Logic::changeRankAction(&$context, &$error, 'class');
 	}
 
-
-
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
-	/**
-		* @private
-		*/
-
-
-
-
 	// begin{publicfields} automatic generation  //
 	/**
 	* Retourne la liste des champs publics

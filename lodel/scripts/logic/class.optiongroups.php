@@ -55,13 +55,21 @@
  */
 class OptiongroupsLogic extends Logic {
 
-	/** Constructor
-	*/
-	function OptiongroupsLogic() {
+	/**
+	 * Constructor
+	 */
+	function OptiongroupsLogic() 
+	{
 		$this->Logic("optiongroups");
 	}
-	function makeSelect(&$context,$var)
 
+	/**
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 */
+	function makeSelect(&$context, $var)
 	{
 		global $db;
 
@@ -73,32 +81,32 @@ class OptiongroupsLogic extends Logic {
 			$ids=array(0);
 			$l=1;
 			do {
-	$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or dberror();
-	$ids=array();
-	$i=1;
-	while(!$result->EOF) {
-		$id=$result->fields['id'];
-		if ($id!=$context['id']) {
-			$ids[]=$id;	 
-			$fullname=$result->fields['title'];
-			$idparent=$result->fields['idparent'];
-			if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
-			$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
-			//echo $d," ";
-			$arr["p$d"]=array($id,$fullname);
-			$parent[$id]=$fullname;
-			$i++;
-		}
-		$result->MoveNext();
-	}
-	$l*=100;
+				$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or dberror();
+				$ids=array();
+				$i=1;
+				while(!$result->EOF) {
+					$id=$result->fields['id'];
+					if ($id!=$context['id']) {
+						$ids[]=$id;	 
+						$fullname=$result->fields['title'];
+						$idparent=$result->fields['idparent'];
+						if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
+						$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+						//echo $d," ";
+						$arr["p$d"]=array($id,$fullname);
+						$parent[$id]=$fullname;
+						$i++;
+					}
+					$result->MoveNext();
+				}
+				$l*=100;
 			} while ($ids);
 			ksort($arr);
-			$arr2=array("0"=>"--"); // reorganize the array $arr
+			$arr2=array('0' => '--'); // reorganize the array $arr
 			foreach($arr as $row) {
-	$arr2[$row[0]]=$row[1];
+				$arr2[$row[0]] = $row[1];
 			}
-			renderOptions($arr2,$context[$var]);
+			renderOptions($arr2, $context[$var]);
 			break;
 		}
 	}
@@ -127,11 +135,10 @@ class OptiongroupsLogic extends Logic {
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0) 
-
+	function isdeletelocked($id, $status = 0)
 	{
 		global $db;
-		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_options WHERE idgroup='$id' AND status>-64"));
+		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_options WHERE idgroup='$id' AND status>-64"));
 		$countgroups = $db->getOne(lq("SELECT count(*) FROM #_TP_optiongroups WHERE idparent='$id' AND status>-64"));
 		$count = $count + $countgroups;
 		if ($db->errorno())  dberror();
@@ -140,7 +147,6 @@ class OptiongroupsLogic extends Logic {
 		} else {
 			return sprintf(getlodeltextcontents("cannot_delete_hasoptions","admin"),$count);
 		}
-		//) { $error["error_has_entities"]=$count; return "_back"; }
 	}
 	
 	
@@ -176,11 +182,16 @@ class OptiongroupsLogic extends Logic {
 	
 	
 	/**
-		* add/edit Action
-		*/
-	function editAction(&$context,&$error,$clean=false)
-	{ 
-		$ret=Logic::editAction($context,$error);
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 *
+	 * Ajout d'un groupe d'option
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function editAction(&$context, &$error, $clean = false)
+	{
+		$ret = Logic::editAction($context, $error);
 		if (!$error) $this->clearCache();
 				return $ret;
 	}
@@ -217,9 +228,12 @@ class OptiongroupsLogic extends Logic {
 		}
 	}
 	
-	
-	
-	
+	/**
+	 * Suppression d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
 	function deleteAction(&$context,&$error)
 
 	{
@@ -228,22 +242,13 @@ class OptiongroupsLogic extends Logic {
 		return $ret;
 
 	}
-
+	/**
+	 * Effacement du cache
+	 */
 	function clearCache()
 	{
-		@unlink(SITEROOT."CACHE/options_cache.php");
+		@unlink(SITEROOT. "CACHE/options_cache.php");
 	}
-
-
-
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
-	/**
-		* @private
-		*/
-
-
-
 
 	// begin{publicfields} automatic generation  //
 	/**
@@ -275,13 +280,5 @@ class OptiongroupsLogic extends Logic {
 		
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
-
 
 ?>

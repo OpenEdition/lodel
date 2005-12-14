@@ -53,11 +53,14 @@
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class PersonTypesLogic extends Logic {
+class PersonTypesLogic extends Logic
+{
 
-	/** Constructor
-	*/
-	function PersonTypesLogic() {
+	/**
+	 * Constructeur
+	 */
+	function PersonTypesLogic() 
+	{
 		$this->Logic("persontypes");
 	}
 
@@ -84,15 +87,15 @@ class PersonTypesLogic extends Logic {
 		} else {
 			return sprintf(getlodeltextcontents("cannot_delete_hasperson","admin"),$count);
 		}
-		//) { $error["error_has_entities"]=$count; return "_back"; }
 	}
 
-
 	/**
-		* makeSelect
-		*/
-
-	function makeSelect(&$context,$var)
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 */
+	function makeSelect(&$context, $var)
 
 	{
 		switch($var) {
@@ -114,14 +117,6 @@ class PersonTypesLogic extends Logic {
 			renderOptions($arr2,$context['g_type']);
 		}
 	}
-
-
-
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
-	/**
-		* @private
-		*/
 
 	/**
 	* Préparation de l'action Edit

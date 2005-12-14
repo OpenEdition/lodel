@@ -54,10 +54,12 @@
  */
 class TableFieldsLogic extends Logic {
 
-	/** Constructor
-	*/
-	function TableFieldsLogic() {
-		$this->Logic("tablefields");
+	/**
+	 * Constructeur
+	 */
+	function TableFieldsLogic()
+	{
+		$this->Logic('tablefields');
 	}
 
 	/**
@@ -77,14 +79,18 @@ class TableFieldsLogic extends Logic {
 	}
 
 	/**
-		* edit/add an object Action
-		*/
-	function editAction(&$context,&$error)
-
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 *
+	 * Ajout d'un nouveau champ
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function editAction(&$context, &$error)
 	{
 		$this->_getClass($context);
 		// must be done before the validation
-		return Logic::editAction($context,$error);
+		return Logic::editAction($context, $error);
 	}
 
 
@@ -101,106 +107,97 @@ class TableFieldsLogic extends Logic {
 
 
 	/**
-		*
-		*/
-
-	function makeSelect(&$context,$var)
-
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 */
+	function makeSelect(&$context, $var)
 	{
 		switch($var) {
-		case "type" :
-			require_once("commonselect.php");
+		case 'type':
+			require_once 'commonselect.php';
 			makeSelectFieldTypes($context['type']);
 			break;
-		case "condition" :
-			$arr=array(
-			"*"=>getlodeltextcontents("nocondition","admin"),
-			"+"=>getlodeltextcontents("fieldrequired","admin"),
-			"defaultnew"=>getlodeltextcontents("use_default_at_creation only","admin"),
-			"permanent"=>getlodeltextcontents("permanent","admin"),
-			"1"=>getlodeltextcontents("single","admin"),
+		case 'condition':
+			$arr = array(
+			'*' => getlodeltextcontents('nocondition', 'admin'),
+			'+' => getlodeltextcontents('fieldrequired', 'admin'),
+			'defaultnew' => getlodeltextcontents('use_default_at_creation only', 'admin'),
+			'permanent' => getlodeltextcontents('permanent', 'admin'),
+			'1' => getlodeltextcontents('single', 'admin'),
 			);
 		renderOptions($arr,$context['condition']);
 			break;
-		case "edition" :
-			require_once("commonselect.php");
+		case 'edition':
+			require_once 'commonselect.php';
 			makeSelectEdition($context['edition']);
 			break;
-		case "allowedtags" :
-			require_once("balises.php");
-			##$groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
-			$groups=array_keys($GLOBALS['xhtmlgroups']);
-			$arr2=array();
+		case 'allowedtags':
+			require_once 'balises.php';
+			$groups = array_keys($GLOBALS['xhtmlgroups']);
+			$arr2 = array();
 			foreach($groups as $k) {
-	if ($k && !is_numeric($k)) $arr2[$k]=$k;
+				if ($k && !is_numeric($k)) $arr2[$k]=$k;
 			}
 			renderOptions($arr2,$context['allowedtags']);
 			break;
-		case "idgroup" :
-			$arr=array();
+		case 'idgroup':
+			$arr = array();
 			// get the groups having of the same class as idgroup
-			$result=$GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.class=#_TP_classes.class WHERE tfg2.id='".$context['idgroup']."'")) or die($GLOBALS['db']->errormsg());
+			$result = $GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.class=#_TP_classes.class WHERE tfg2.id='".$context['idgroup']."'")) or die($GLOBALS['db']->errormsg());
 			while(!$result->EOF) {
-	$arr[$result->fields['id']]=$result->fields['title'];
-	$result->MoveNext();
+				$arr[$result->fields['id']]=$result->fields['title'];
+				$result->MoveNext();
 			}
-			renderOptions($arr,$context['idgroup']);
+			renderOptions($arr, $context['idgroup']);
 			break;
-	case "g_name" :
+	case 'g_name':
 		if (!$context['classtype']) $this->_getClass($context);
 		switch ($context['classtype']) {
 		case 'entities':
-			$g_namefields=array("DC.Title","DC.Description",
-					"DC.Publisher","DC.Date",
-					"DC.Format","DC.Identifier",
-					"DC.Source","DC.Language",
-					"DC.Relation","DC.Coverage",
-					"DC.Rights");
+			$g_namefields = array('DC.Title', 'DC.Description',
+					'DC.Publisher', 'DC.Date',
+					'DC.Format', 'DC.Identifier',
+					'DC.Source', 'DC.Language',
+					'DC.Relation', 'DC.Coverage',
+					'DC.Rights');
 			break;
 		case 'persons':
-			$g_namefields=array("Firstname","Familyname","Title");
+			$g_namefields = array('Firstname', 'Familyname', 'Title');
 			break;
 		case 'entities_persons':
-			$g_namefields=array("Title");
+			$g_namefields = array('Title');
 			break;
 		case 'entries':
-			$g_namefields=array("Index key");
+			$g_namefields = array('Index key');
 			break;
 		default:
 			trigger_error("class type ?",E_USER_ERROR);
 		}
-//"Creator",
-//"Contributor",
-//"Type"
-		$dao=$this->_getMainTableDAO();
-		$tablefields=$dao->findMany("class='".$context['class']."'","","g_name,title");     
+
+		$dao = $this->_getMainTableDAO();
+		$tablefields = $dao->findMany("class='".$context['class']."'","","g_name,title");     
 		foreach($tablefields as $tablefield) { $arr[$tablefield->g_name]=$tablefield->title; }
 
-		$arr2=array(""=>"--");
+		$arr2 = array(''=>'--');
 		foreach($g_namefields as $g_name) {
 			$lg_name=strtolower($g_name);
 			if ($arr[$lg_name]) {
-	$arr2[$lg_name]=$g_name." &rarr; ".$arr[$lg_name];
+				$arr2[$lg_name]=$g_name." &rarr; ".$arr[$lg_name];
 			} else {
-	$arr2[$lg_name]=$g_name;
+				$arr2[$lg_name]=$g_name;
 			}
 		}
-		renderOptions($arr2,$context['g_name']);
+		renderOptions($arr2, $context['g_name']);
 		break;
 		case 'weight':
-			$arr=array("0"=>getlodeltextcontents("not_indexed","admin"),
-			"1"=>"1","2"=>"2","4"=>"4","8"=>"8");
-			renderOptions($arr,$context['weight']);
+			$arr = array('0' => getlodeltextcontents('not_indexed', 'admin'),
+			'1' => '1', '2' => '2', '4' => '4', '8' => '8');
+			renderOptions($arr, $context['weight']);
 			break;
+		}
 	}
-	}
-
-	/*---------------------------------------------------------------*/
-	//! Private or protected from this point
-	/**
-		* @private
-		*/
-
 
 	/*** In 0.7 we check the field is not moved in another class... it's not 100% required in fact
 		function validateFields(&$context,&$error) {
@@ -290,44 +287,56 @@ class TableFieldsLogic extends Logic {
 		$this->vo=$dao->getById($context['id']);
 		if (!$this->vo) die("ERROR: internal error in TableFields::deleteAction");
 	}
-
+	
+	/**
+	 * Suppression dans les tables liées
+	 *
+	 * @param integer $id identifiant numérique de l'objet supprimé
+	 */
 	function _deleteRelatedTables($id)
-
 	{
-		global $db,$home;
+		global $db, $home;
 
-		if (!$this->vo) die("ERROR: internal error in TableFields::deleteAction");
+		if (!$this->vo) {
+			die("ERROR: internal error in TableFields::deleteAction");
+		}
 		if ($this->vo->type!="entities") {
 			$db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or dberror();
 		}
 		unset($this->vo);
 
 		// should be in the view....
-		require_once("cachefunc.php");
+		require_once 'cachefunc.php';
 		clearcache();
 		//
 
-		return "_back";
+		return '_back';
 	}
 
+	/**
+	 * Récupère la classe d'un groupe de champ
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 */
 	function _getClass(&$context)
-
 	{
 		global $db;
 		if ($context['idgroup']) {
-			$row=$db->getRow(lq("SELECT #_TP_classes.class,classtype FROM #_tablefieldgroupsandclassesjoin_ WHERE #_TP_tablefieldgroups.id='".$context['idgroup']."'")) or dberror();
-			if ($context['class'] && $context['class']!=$row['class']) die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
-			$context['class']=$row['class'];
-			$context['classtype']=$row['classtype'];
-		} else {
-			if (substr($context['class'],0,9)=="entities_") {
-	$class=substr($context['class'],9);
-	$classtype="entities_";
-			} else {
-	$class=$context['class'];
+			$row = $db->getRow(lq("SELECT #_TP_classes.class,classtype FROM #_tablefieldgroupsandclassesjoin_ WHERE #_TP_tablefieldgroups.id='". $context['idgroup']. "'")) or dberror();
+			if ($context['class'] && $context['class'] != $row['class']) {
+				die("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction");
 			}
-			$classtype.=$db->getOne(lq("SELECT classtype FROM #_TP_classes WHERE class='".$class."'"));
-			$context['classtype']=$classtype;
+			$context['class']     = $row['class'];
+			$context['classtype'] = $row['classtype'];
+		} else {
+			if (substr($context['class'],0,9) == 'entities_') {
+				$class = substr($context['class'],9);
+				$classtype = 'entities_';
+			} else {
+				$class = $context['class'];
+			}
+			$classtype.= $db->getOne(lq("SELECT classtype FROM #_TP_classes WHERE class='". $class. "'"));
+			$context['classtype'] = $classtype;
 		}
 	}
 
@@ -335,16 +344,18 @@ class TableFieldsLogic extends Logic {
 		*
 		* Special treatment for allowedtags, from/to the context
 		*/
-	function _populateContext(&$vo,&$context) {
-		Logic::_populateContext($vo,$context);
-		$context['allowedtags']=explode(";",$vo->allowedtags);
-	}
-	function _populateObject(&$vo,&$context) {
-		Logic::_populateObject($vo,$context);
-		$vo->class=$context['class']; // it is safe, we now that !
-		$vo->allowedtags=is_array($context['allowedtags']) ? join(";",$context['allowedtags']) : "";
+	function _populateContext(&$vo,&$context)
+	{
+		Logic::_populateContext($vo, $context);
+		$context['allowedtags'] = explode(';', $vo->allowedtags);
 	}
 
+	function _populateObject(&$vo, &$context)
+	{
+		Logic::_populateObject($vo,$context);
+		$vo->class = $context['class']; // it is safe, we now that !
+		$vo->allowedtags = is_array($context['allowedtags']) ? join(';', $context['allowedtags']) : '';
+	}
 
 	// begin{publicfields} automatic generation  //
 	/**
@@ -387,10 +398,8 @@ class TableFieldsLogic extends Logic {
 
 } // class 
 
-
 /*-----------------------------------*/
 /* loops                             */
-
 function loop_allowedtags_documentation(&$context,$funcname)
 
 {
@@ -408,6 +417,5 @@ function loop_allowedtags_documentation(&$context,$funcname)
 		call_user_func("code_do_$funcname",$localcontext);
 	}
 }
-
 
 ?>
