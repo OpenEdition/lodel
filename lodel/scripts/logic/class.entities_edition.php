@@ -1,39 +1,57 @@
 <?php
-/*
-*
-*  LODEL - Logiciel d'Edition ELectronique.
-*
-*  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-*  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-*  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-*  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
-*
-*  Home page: http://www.lodel.org
-*
-*  E-Mail: lodel@lodel.org
-*
-*                            All Rights Reserved
-*
-*     This program is free software; you can redistribute it and/or modify
-*     it under the terms of the GNU General Public License as published by
-*     the Free Software Foundation; either version 2 of the License, or
-*     (at your option) any later version.
-*
-*     This program is distributed in the hope that it will be useful,
-*     but WITHOUT ANY WARRANTY; without even the implied warranty of
-*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*     GNU General Public License for more details.
-*
-*     You should have received a copy of the GNU General Public License
-*     along with this program; if not, write to the Free Software
-*     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+/**	
+ * Logique des entités - edition
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Home page: http://www.lodel.org
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @package lodel/logic
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.8
+ * @version CVS:$Id$
+ */
 
+require_once 'genericlogic.php';
 /**
-*  Logic Entities
-*/
-
-require_once "genericlogic.php";
-
+ * Classe de logique des entités (gestion de l'édition)
+ * 
+ * @package lodel/logic
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajouté depuis la version 0.8
+ * @see logic.php
+ */
 class Entities_EditionLogic extends GenericLogic 
 {
 
@@ -55,10 +73,10 @@ class Entities_EditionLogic extends GenericLogic
 	function viewAction(&$context, &$error)
 	{
 		if ($context['check'] && $error) {
-			return "_error";
+			return '_error';
 		}
-		if (!rightonentity($context['id'] ? "edit" : "create", $context)) {
-			die("ERROR: you don't have the right to perform this operation");
+		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
+			die('ERROR: you don\'t have the right to perform this operation');
 		}
 
 		// define some loop functions
@@ -367,8 +385,13 @@ class Entities_EditionLogic extends GenericLogic
 	function _moveImages(&$context) {}
 
 	/**
-	* Used in editAction to do extra operation after the object has been saved
-	*/
+	 * Sauve des données dans des tables liées éventuellement
+	 *
+	 * Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	 *
+	 * @param object $vo l'objet qui a été créé
+	 * @param array $context le contexte
+	 */
 	function _saveRelatedTables($vo,$context) 
 	{
 		global $db;
@@ -544,16 +567,15 @@ class Entities_EditionLogic extends GenericLogic
 	function _getUserGroup($context, $idparent)
 	{
 		global $lodeluser, $db;
-		if ($lodeluser['admin']) { // take it from the context. 
+		if ($lodeluser['admin']) { // take it from the context.
 			$usergroup = intval($context['usergroup']);
-			if ($usergroup>0) {
+			if ($usergroup > 0) {
 				return $usergroup;
 			}
 		}
-
 		if ($idparent) { // take the group of the parent
 			$dao = $this->_getMainTableDAO();
-			$vo = $dao->getById($idparent,"usergroup");
+			$vo = $dao->getById($idparent, "id, usergroup");
 			$usergroup = $vo->usergroup;
 			if ($db->errorno()) {
 				dberror();

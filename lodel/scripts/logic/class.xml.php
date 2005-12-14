@@ -1,73 +1,94 @@
 <?php
-  /*
-   *
-   *  LODEL - Logiciel d'Edition ELectronique.
-   *
-   *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
-   *  Home page: http://www.lodel.org
-   *
-   *  E-Mail: lodel@lodel.org
-   *
-   *                            All Rights Reserved
-   *
-   *     This program is free software; you can redistribute it and/or modify
-   *     it under the terms of the GNU General Public License as published by
-   *     the Free Software Foundation; either version 2 of the License, or
-   *     (at your option) any later version.
-   *
-   *     This program is distributed in the hope that it will be useful,
-   *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-   *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   *     GNU General Public License for more details.
-   *
-   *     You should have received a copy of the GNU General Public License
-   *     along with this program; if not, write to the Free Software
-   *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+/**
+ * Logique des fonctionnalités XML
+ *
+ * PHP version 4
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Home page: http://www.lodel.org
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @package lodel/logic
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.8
+ * @version CVS:$Id$
+ */
  
-  /**
-   *  XML Logic
-   */
+/**
+ * Classe de logique des fonctionnalités XML
+ * 
+ * @package lodel/logic
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajouté depuis la version 0.8
+ * @see logic.php
+ */
 class XMLLogic extends Logic {
 
-  /** 
-   * Constructor
-   */
-  function XMLLogic () {
-    $this->Logic ("translations");
-  }
-  
-  /**
-   * Generate the XML for an entity.
-   * Must have context['id'] given
-   */
-  function generateXMLAction (&$context, &$error) {
+	/** 
+	* Constructor
+	*/
+	function XMLLogic () {
+		$this->Logic ("translations");
+	}
+	
+	/**
+	* Generate the XML for an entity.
+	* Must have context['id'] given
+	*/
+	function generateXMLAction (&$context, &$error) {
 
-    if (!$context['id'])
-      die ('ERROR : no id given. Id attribute is required to generate XML file');
+		if (!$context['id'])
+			die ('ERROR : no id given. Id attribute is required to generate XML file');
 
-    global $db;
-    $id=$context['id'];
-    //check if the given id is OK
-    $row = $db->getOne(lq("SELECT 1 FROM #_TP_objects WHERE id='$id' AND class='entities'"));
-    if (!$row) {//if the object is not an entity do not generate XML
-      header ("Location: not-found.html"); return;
-    }
-    $row = $db->getRow(lq("SELECT e.id,t.type,t.class FROM #_TP_entities as e, #_TP_types as t WHERE e.id='$id' AND e.idtype=t.id"));
-    if (!$row) die("Error. Type and Class unknown for this entity");
-    
-    $context['class'] = $class = $row['class'];
-    $context['type'] = $row['type'];
-    $context['identity'] = $id;
+		global $db;
+		$id=$context['id'];
+		//check if the given id is OK
+		$row = $db->getOne(lq("SELECT 1 FROM #_TP_objects WHERE id='$id' AND class='entities'"));
+		if (!$row) {//if the object is not an entity do not generate XML
+			header ("Location: not-found.html"); return;
+		}
+		$row = $db->getRow(lq("SELECT e.id,t.type,t.class FROM #_TP_entities as e, #_TP_types as t WHERE e.id='$id' AND e.idtype=t.id"));
+		if (!$row) die("Error. Type and Class unknown for this entity");
+		
+		$context['class'] = $class = $row['class'];
+		$context['type'] = $row['type'];
+		$context['identity'] = $id;
 
-    require_once ("xmlfunc.php");
-    $context['contents'] =  $contents = calculateXML ($context);
-    // !! BEWARE !!
-    // validation shall be implemented in ServOO first. The code here comes from the 0.7 and is not adapted to the lodel 0.8 and higher.
-    //
-   // validation needed
+		require_once ("xmlfunc.php");
+		$context['contents'] =  $contents = calculateXML ($context);
+		// !! BEWARE !!
+		// validation shall be implemented in ServOO first. The code here comes from the 0.7 and is not adapted to the lodel 0.8 and higher.
+		//
+	// validation needed
 //    if ($context['valid']) {
 //      $contents .= $contents;
 //      $tmpdir = tmpdir ();
@@ -106,31 +127,31 @@ class XMLLogic extends Logic {
 //      calcul_page ($context,"xml-valid");
 //      exit (0);
 //    }	else 
-    if ($context['view'])	{
-      return "_ok";
-    } else  {// "download"
-      download ("", "$class-$id.xml", $contents);
-    }
-  }
-  /**
-   * Generate the XSD Schema for a class
-   * Must have context['class'] given
-   */
-  function generateXSDAction (&$context, &$error) {
-  	
-    if (!$context['class'])
-      die ('ERROR: no class given. Class attribute is required to generate XSD Schema');
-    require('xmlfunc.php');
-    //verif if the given class is OK
-    global $db;
-    $class = $context['class'];
-    $row = $db->getOne (lq ("SELECT id FROM #_TP_classes WHERE class='$class'"));
-    if (!$row) {
-      header ("Location: not-found.html"); return;
-    }
-    $originalname = $context['site']. '-'.$context['class']. '-schema-xml.xsd';
-    $ret = calculateXMLSchema ($context);
-    download ("", $originalname, $ret);
-  }
+		if ($context['view'])	{
+			return "_ok";
+		} else  {// "download"
+			download ("", "$class-$id.xml", $contents);
+		}
+	}
+	/**
+	* Generate the XSD Schema for a class
+	* Must have context['class'] given
+	*/
+	function generateXSDAction (&$context, &$error) {
+		
+		if (!$context['class'])
+			die ('ERROR: no class given. Class attribute is required to generate XSD Schema');
+		require('xmlfunc.php');
+		//verif if the given class is OK
+		global $db;
+		$class = $context['class'];
+		$row = $db->getOne (lq ("SELECT id FROM #_TP_classes WHERE class='$class'"));
+		if (!$row) {
+			header ("Location: not-found.html"); return;
+		}
+		$originalname = $context['site']. '-'.$context['class']. '-schema-xml.xsd';
+		$ret = calculateXMLSchema ($context);
+		download ("", $originalname, $ret);
+	}
 }
 ?>

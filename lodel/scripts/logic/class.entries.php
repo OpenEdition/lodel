@@ -1,40 +1,59 @@
 <?php
-/*
+/**	
+ * Logique des entrées
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Home page: http://www.lodel.org
+ * E-Mail: lodel@lodel.org
  *
- *  E-Mail: lodel@lodel.org
+ * All Rights Reserved
  *
- *                            All Rights Reserved
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
-
-
-/**
- *  Logic Entry
+ * @package lodel/logic
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.8
+ * @version CVS:$Id$
  */
+
 
 require_once("genericlogic.php");
 
+/**
+ * Classe de logique des entrées
+ * 
+ * @package lodel/logic
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajouté depuis la version 0.8
+ * @see logic.php
+ */
 class EntriesLogic extends GenericLogic {
 
 	/** Constructor */
@@ -48,25 +67,21 @@ class EntriesLogic extends GenericLogic {
 		$context['classtype']="entries";
 		return GenericLogic::viewAction ($context, $error); //call the parent method
 	}
-	/*function deleteAction(&$context,&$error)
 
-   {     
-     global $db,$home;
-		
-     $id=$context['id'];
-			print_r($context);      
-     if ($this->isdeletelocked($id)) trigger_error("This object is locked for deletion. Please report the bug",E_USER_ERROR);
-     $dao=$this->_getMainTableDAO();
-     $this->_prepareDelete($dao,$context);
-     $dao->deleteObject($id);
-
-     $ret=$this->_deleteRelatedTables($id);
-
-     update();
-
-     return $ret ? $ret : "_back";
-   }*/
-	function isdeletelocked ($id, $status=0) {
+	/**
+	*  Indique si un objet est protégé en suppression
+	*
+	* Cette méthode indique si un objet, identifié par son identifiant numérique et
+	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
+	* pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	* booleen false.
+	*
+	* @param integer $id identifiant de l'objet
+	* @param integer $status status de l'objet
+	* @return false si l'objet n'est pas protégé en suppression, un message sinon
+	*/
+	function isdeletelocked ($id, $status=0) 
+	{
 		global $db;
 
 		// if this entry has child or is published
@@ -81,8 +96,8 @@ class EntriesLogic extends GenericLogic {
 	}
 
 	/**
-	 * List action
-	 */
+	* List action
+	*/
 	function listAction (&$context, &$error, $clean=false) {
 		$daotype=&getDAO ("entrytypes");
 		$votype=$daotype->getById ($context['idtype']);
@@ -92,8 +107,8 @@ class EntriesLogic extends GenericLogic {
 	}
 
 	/**
-	 * add/edit Action
-	 */
+	* add/edit Action
+	*/
 	function editAction (&$context, &$error, $clean=false) {
 		global $home;
 		$id=$context['id'];
@@ -177,9 +192,9 @@ class EntriesLogic extends GenericLogic {
 
 
 	/**
-	 * Change rank action
-	 * Default implementation
-	 */
+	* Change rank action
+	* Default implementation
+	*/
 	function changeRankAction (&$context, &$error) {
 		return Logic::changeRankAction(&$context,&$error,"idparent","");
 	}
@@ -225,13 +240,18 @@ class EntriesLogic extends GenericLogic {
 /*---------------------------------------------------------------*/
 //! Private or protected from this point
 /**
- * @private
- */
+* @private
+*/
 
-/**
- * Used in deleteAction to do extra operation before the object is saved.
- * Usually it gather information used after in _deleteRelatedTables
- */
+	/**
+	* Appelé avant l'action delete
+	*
+	* Cette méthode est appelée avant l'action delete pour effectuer des vérifications
+	* préliminaires à une suppression.
+	*
+	* @param object $dao la DAO utilisée
+	* @param array &$context le contexte passé par référénce
+	*/
 	function _prepareDelete ($dao, &$context) {
 		global $db;
 		// get the classes
@@ -256,8 +276,8 @@ class EntriesLogic extends GenericLogic {
 
 
 	/**
-	 * Used in deleteAction to do extra operation after the object has been deleted
-	 */
+	* Used in deleteAction to do extra operation after the object has been deleted
+	*/
 	function _deleteRelatedTables($id) {
 		global $db;
 		foreach ($this->classes as $class) {
