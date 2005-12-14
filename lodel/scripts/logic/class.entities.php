@@ -206,7 +206,7 @@ class EntitiesLogic extends Logic
 		global $db;
 		$status = intval ($context['status']);
 		if ($status == 0) {
-			die ("error publishAction");
+			die ("error in publishAction");
 		}
 		if (!rightonentity ($status > 0 ? 'publish' : 'unpublish', $context)) {
 			die ("ERROR: you don't have the right to perform this operation");
@@ -225,23 +225,24 @@ class EntitiesLogic extends Logic
 		}
 
 		// depublish protected entity ? need confirmation.
-		if (!$context['confirm'] && $status<0 && $softprotectedids) {
+		if (!$context['confirm'] && $status < 0 && $softprotectedids) {
 			$context['softprotectedentities'] = $softprotectedids;
 			$this->define_loop_protectedentities();
 			return 'unpublish_confirm';
 		}
-		$criteria=" id IN (".join(",",$ids).")";
+		$criteria=" id IN (". join(",", $ids). ')';
 
 		// mais attention, il ne faut pas reduire le status quand on publie
 		if ($status > 0) {
-			$criteria.= " AND status<'$status'";
+			$criteria.= " AND status < '$status'";
 		}
+		//mise à jour des entités
 		$db->execute(lq("UPDATE #_TP_entities SET status=$status WHERE ". $criteria)) or dberror();
 
 		// check if the entities have an history field defined
 		$this->_processSpecialFields('history', $context, $status);
 
-		// changestatus for the relations
+		//mise à jour des personnes et entrées liées à ces entités
 		$this->_publishSoftRelation($ids, $status);
 		update();
 		return '_back';
@@ -308,15 +309,21 @@ class EntitiesLogic extends Logic
 	 * Mise à jour du status des objets liées (liaisons 'soft', c'est à dire des personnes 
 	 * ou des entrées d'index.
 	 *
+	 * Lors d'une publication c'est simple, le status des entrées ou personnes liées à l'entité
+	 * est mis à +32 ou +1 suivant si l'entrée ou la personne est permanente.
+	 *
+	 * Lors d'une dépublication, c'est plus compliqué, il ne faut pas toucher aux entrées qui ont
+	 * publiées par d'autres entités. Ensuite de la même manière le status est mis à -32 ou -1
+	 *
 	 * @param array les identifiants
-	 * @param integer le status de l'entité
+	 * @param integer le status de l'entité concernée ou des entités concernées
 	 * @access private
 	 */
 	function _publishSoftRelation($ids, $status)
 	{
 		global $db;
-		$criteria = "id1 IN (".join(",",$ids).")";
-		$status = $status>0 ? 1 : -1; // dans les tables le status est seulement a +1 ou -1
+		$criteria = "id1 IN (". join(",", $ids). ")";
+		$status = $status > 0 ? 1 : -1; // dans les tables le status est seulement a +1 ou -1
 		$result = $db->execute(lq("SELECT id2,nature FROM #_TP_relations WHERE nature IN ('E','G') AND ". $criteria)) or dberror();
 		$ids = array();
 		while (!$result->EOF) {
@@ -329,28 +336,28 @@ class EntitiesLogic extends Logic
 		
 		foreach(array_keys($ids) as $nature) {
 			$idlist = join(',', array_keys($ids[$nature]));
-			$table = $nature == 'G' ? "persons" : "entries";
+			$table = $nature == 'G' ? 'persons' : 'entries';
 
 			//------- PUBLISH ---------
 			if ($status > 0) {
-				// easy, simple case.
+				// simple : on doit mettre le status à positif : +32 ou +1 si l'entree ou la personne
+				// est permanente ou non
 				$db->execute(lq("UPDATE #_TP_$table SET status=abs(status) WHERE id IN ($idlist)")) or dberror();
 	
 			//------- UNPUBLISH ---------
-			} else { // status<0
-				// more difficult. Must check whether the items is attached to a publish entities. If yes, it must not be deleted
-	
-				$result=$db->execute(lq("SELECT id1 FROM #_TP_relations INNER JOIN #_TP_entities ON id1=id WHERE #_TP_entities.status>0 AND id2 IN (".$idlist.") AND nature='".$nature."' GROUP BY id2")) or dberror();
+			} else { // status < 0
+				// plus difficile. On vérifie si les entries ou persons sont attachés à des entités publiées.
+				$result =  $db->execute(lq("SELECT id1,id2 FROM #_TP_relations INNER JOIN #_TP_entities ON id1=id WHERE #_TP_entities.status>0 AND id2 IN (". $idlist. ") AND nature='".$nature."' GROUP BY id2")) or dberror();
 				while (!$result->EOF) {
-					unset($ids[$nature][$result->fields['id1']]); // remove the id from the list to unpublish
+					unset($ids[$nature][$result->fields['id2']]); // remove the id from the list to unpublish
 					$result->MoveNext();
 				}
 				if ($ids[$nature]) {
 					$idlist = join(',', array_keys($ids[$nature]));
-					// depublish the items not having being published with another entities.
+					// dépublie les entrées ou personnes qui n'ont pas été publiés par d'autres entités :
 					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist)")) or dberror();
 				}
-			} // status<0
+			} // status < 0
 		} // foreach
 	}
 

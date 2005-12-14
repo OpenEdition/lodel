@@ -424,6 +424,10 @@ class Entities_EditionLogic extends GenericLogic
 		if ($vo->status >= 1) {
 			$status = 1;
 		}
+		//Mise à jour des softs relations
+		$entities_logic = &getLogic('entities');
+		$entities_logic->_publishSoftRelation(array($vo->id), $vo->status);
+
 		// Entries and Persons
 		foreach (array ('entries' => 'E', 'persons' => 'G') as $table => $nature) {
 			// put the id's from entrees and autresentrees into idtypes
@@ -448,7 +452,7 @@ class Entities_EditionLogic extends GenericLogic
 					$itemcontext['idtype']   = $idtype;
 					$itemcontext['status']   = $status;
 					$itemcontext['degree']   = $degree++;
-					$ret = $logic->editAction($itemcontext, $error, "CLEAN");
+					$ret = $logic->editAction($itemcontext, $error, 'CLEAN');
 					if ($ret!="_error" && $itemcontext['id']) {
 						$ids[$idtype][] = $itemcontext['id'];
 						if ($itemcontext['idrelation']) {
