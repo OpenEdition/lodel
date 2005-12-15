@@ -341,8 +341,8 @@ function loop_rss ($context,$funcname,$arguments)
 }
 
 function loop_rssitem($context,$funcname,$arguments)
-
 {
+	
   // check whether there are some items in the rssobject.
   if (!$context['rssobject'] || !$context['rssobject']->items) {
     if (function_exists("code_alter_$funcname")) 
@@ -352,7 +352,6 @@ function loop_rssitem($context,$funcname,$arguments)
 
   // yes, there are, let's loop over them.
   if (function_exists("code_before_$funcname")) call_user_func("code_before_$funcname",$localcontext);
-
   $items=$context['rssobject']->items;
   $context['nbresultats']=count($items);
   $count=0;
@@ -368,8 +367,12 @@ function loop_rssitem($context,$funcname,$arguments)
     $localcontext=$context;
     $count++;
     $localcontext['count']=$count;
-    foreach (array("title","link","description","author","category","comments","enclosure","guid","pubDate","source")
-	     as $v) $localcontext[strtolower($v)]=$item[$v];
+		$item_keys = array_keys($item);
+    /*foreach (array("title","link","description","author","category","comments","enclosure","guid","pubdate","source")
+	     as $v)*/
+		foreach($item_keys as $v) {
+			$localcontext[strtolower($v)] = $item[$v];
+		}
     call_user_func("code_do_$funcname",$localcontext);
   }
   if (function_exists("code_after_$funcname")) call_user_func("code_after_$funcname",$localcontext);
