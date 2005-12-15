@@ -32,7 +32,7 @@
 
 <!--[ Pour activer cette fonctionnalité ajouter l'option "signaler_mail" ]-->
 <!--[ dans le site, et lui attribuer la valeur "actif"                   ]-->
-<IF COND="[#OPTION_SIGNALER_MAIL] eq 'actif'">
+<IF COND="[#OPTION_SIGNALERMAIL] eq 'actif'">
 	<MACRO NAME="OUVRIR_HTML">
 	<title>[(#TITRE|textebrut)]</title>
 	<MACRO NAME="DEFINIR_CHARSET">
@@ -127,5 +127,3 @@
 
 	<MACRO NAME="FERMER_HTML">  
 </IF>
-
-

@@ -23,7 +23,7 @@
 
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition <LOOP NAME="nompourtitre" TABLE="publications" WHERE="id='[#ID]'">[#IDENTIFIANT] [#TITRE] ([#TYPE])</LOOP></title>
+<title>Edition <LOOP NAME="nompourtitre" TABLE="publications" WHERE="id='[#ID]'">[#IDENTIFIANT] [(#TITRE|textebrut)] ([#TYPE])</LOOP></title>
 <MACRO NAME="JS_CONFIRM_DEPUBLICATION">
 <!--[ Rajout intégration maquette ]-->
 <MACRO NAME="JS_AJOUTER_ENTITE">

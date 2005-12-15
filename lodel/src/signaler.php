@@ -76,11 +76,12 @@ if ($envoi) {
     calcul_page($context,"signaler-mail");
     $content=ob_get_contents();
     ob_end_clean();
-
-    //
-    // envoie le mail
-    //
-    if (!mail ($context[to],$context[subject],$content,"From: $context[from]")) { $context[erreur_mail]=1; break; }
+	$headers  = "MIME-Version: 1.0\r\n";
+   	$headers .= "Content-type: text/html; charset=utf-8\r\n";    
+	$headers .= "From: $context[from]\r\n";
+   // envoie le mail
+   //
+   if (!mail ($context[to],$context[subject],$content,$headers)) { $context[erreur_mail]=1; break; }     //
 
     header ("location: ".makeurlwithid($id,"document"));
     return;
