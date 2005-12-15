@@ -30,18 +30,28 @@
 
 include_once($GLOBALS[home]."func.php");
 
+//Fonction qui corrige les urls mals encodées
+function decodeLesURL (&$context)
+{
+	$pattern = '/(<a[^>]* href=")([^"]*)(">)/';
+	if (is_array($context)) {
+		array_walk($context, "decodeLesURL");
+	} elseif(is_string($context)) {
+		$context = preg_replace($pattern.'e', '"\1".urldecode("\2")."\3"', $context);
+	}
+}
+
+
 # le $ret ne sert a rien, mais s'il n'est pas la, ma version de php n'aime pas: bug eratique.
 
 # fonction d'entree pour le calcul d'une page
 
 # on sort du UTF-8 par defaut
 # sinon, on applique une regle un peu dictatorialle, c'est l'iso-latin1
-
 function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
-
   global $home,$format;
-
-  if ($GLOBALS[recalcul_templates]) {
+	decodeLesURL($context);
+	if ($GLOBALS[recalcul_templates]) {
     require_once($home."cachefunc.php");   
     removefilesincache( (SITEROOT) ? SITEROOT : ".",SITEROOT."lodel/edition",SITEROOT."lodel/admin");
     $GLOBALS[recalcul_templates]=false; // to avoid to erase the CACHE again
@@ -68,7 +78,7 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   require_once ($GLOBALS[home]."connect.php");
 
   // execute le template php
-  require_once($home."textfunc.php");		
+  require_once($home."textfunc.php");
   if ($GLOBALS[showhtml] && $GLOBALS[droitvisiteur]) {
     ob_start();
     require($template_cache);
