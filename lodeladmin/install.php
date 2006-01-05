@@ -68,7 +68,7 @@ if (!((bool) ini_get("register_globals"))) { //
   extract($_REQUEST,EXTR_SKIP);
 }
 
-header("Content-type: text/html; charset=iso-8859-1");
+header("Content-type: text/html; charset=utf-8");
 
 //
 // Version of lodel to be installed.
