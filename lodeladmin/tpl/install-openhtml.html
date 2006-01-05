@@ -25,14 +25,14 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-
-
- <title>[@INSTALL.INSTALL_LODEL]</title>
+<title>
+<?php echo $GLOBALS['langcache'][$lang]["install.install_lodel"]; ?>
+</title>
 <link rel="stylesheet" type="text/css" href="css/install.css" />
 </head>
 <body> 
-<h1 id="logo"><img src="images/install_bandeau.jpg" alt="[@INSTALL.LODEL_ELECTRONIC_EDITION_SOFTWARE]" /></h1>
-<h2 id="install">[@INSTALL.INSTALLATION]</h2>
+<h1 id="logo"><img src="images/install_bandeau.jpg" alt="<?php echo $GLOBALS['langcache'][$lang]['install.lodel_electronic_edition_software'];?>" /></h1>
+<h2 id="install"><?php echo $GLOBALS['langcache'][$lang]['install.installation']; ?></h2>
 <?php
 switch($current){
 	case "plateform":
