@@ -268,7 +268,7 @@ function buildLogic()
 	if (preg_match("/$beginre/", $file)) {
 		$newpublicfields='
 	/**
-	 * Retourne la liste des champs publiques
+	 * Retourne la liste des champs publics
 	 * @access private
 	 */
 	function _publicfields() 
