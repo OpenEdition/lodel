@@ -48,7 +48,7 @@
 /**
  * Classe d'objet virtuel de la table SQL entities
  *
- * @package dao
+ * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
@@ -86,7 +86,7 @@ class entitiesVO
  *
  * Fille de la classe DAO
  *
- * @package dao
+ * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
@@ -111,6 +111,16 @@ class entitiesDAO extends DAO
 		$this->DAO("entities", true);
 		$this->rights = array('write'=>LEVEL_REDACTOR, 'protect'=>LEVEL_REDACTOR);
 	}
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -40,17 +40,18 @@
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
+ * @package lodel/dao
  */
 
 //
-// Fichier généré automatiquement le 16-11-2005.
+// Fichier généré automatiquement le 09-01-2006.
 //
 
 
 /**
  * Classe d'objet virtuel de la table SQL tablefieldgroups
  *
- * @package dao
+ * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
@@ -70,6 +71,7 @@ class tablefieldgroupsVO
 	var $name;
 	var $class;
 	var $title;
+	var $altertitle;
 	var $comment;
 	var $status;
 	var $rank;
@@ -82,7 +84,7 @@ class tablefieldgroupsVO
  *
  * Fille de la classe DAO
  *
- * @package dao
+ * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
