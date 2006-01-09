@@ -155,7 +155,7 @@ class DAO
 			}
 			$vo->rank = $rank +1;
 		}
-
+		$this->quote($vo);
 		if ($vo->$idfield > 0 && !$forcecreate) { // Update - Mise à jour
 			$update = ''; //critère de mise à jour
 			if (isset ($vo->protect))	{ // special processing for the protection
@@ -197,7 +197,6 @@ class DAO
 				$insert .= $k;
 				$values .= "'". $v. "'";
 			}
-			#echo "debug ghislain:",$values;
 			if ($insert) {
 				$db->execute('REPLACE INTO '.$this->sqltable.' ('. $insert. ') VALUES ('. $values. ')') or dberror();
 				if (!$vo->$idfield) {
