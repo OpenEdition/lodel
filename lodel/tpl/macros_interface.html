@@ -46,8 +46,11 @@
 			<IF COND="[#VARNAME] eq 'identifier'">
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
-				<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'"> 
-					<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+				<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'">
+					<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+					<IF COND="[#INTERTITLE] EQ ''">
+						<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+					<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
 				</LOOP>
 			</IF>
 				<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
@@ -112,7 +115,8 @@
 			</IF>
 		</BEFORE>
         <DO>
-	  <label for="[#NAME]" class="[#TYPE]">[#TITLE] :</label>
+				<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+	  <label for="[#NAME]" class="[#TYPE]"><IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF> :</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 	<br />
         </DO>
@@ -165,7 +169,31 @@
 ?>
 </DEFMACRO>
 
+<!-- [ Test Jean ]-->
+<DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 
+<IF COND="[#TYPE] eq 'mltext'">
+  <br />
+  <div id="mltext_[#VARNAME]" class="mltexteditionarea">
+	<div id="mltext_[#VARNAME]_for_copy" style="display: none;">
+		<label>XXX</label>
+		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
+		<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
+	</div>
+	<LOOP NAME="mltext"> <!--[ champ multilingue ]-->
+	<div>
+		<label>[(#LANG|humanlang|ucfirst)] :</label>
+		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
+		<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
+	</div>
+	</LOOP>
+	<div>
+		<select onChange="addlanginmltext(this,'[#VARNAME]');"><?php makeselectlangs(); ?></select>
+	</div>
+  </div>
+<br />
+</IF>
+</DEFFUNC>
 
 <!--[ -----------------------------------------------------------
       Widget pour l'edition des differents types de champs
@@ -257,15 +285,15 @@
     <IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td></IF>
     <td>
     <IF COND="[#VALUE]">
-      <input type="radio" name="[#FULLVARNAME][radio]" value="">Conserver l'image courante<br />
-      <input type="radio" name="[#FULLVARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
+      <input type="radio" name="[#FULLVARNAME][radio]" value="" />Conserver l'image courante<br />
+      <input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
     </IF>
-    <input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
-    <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
-    <input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
+    <input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
+    <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
+    <input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />Choisir un fichier sur votre disque: <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
     </td>
   </tr></table>
-  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]">
+  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
 <ELSE/>
 <!--[ --------------- COLOR ------------- ]-->	    
 <IF COND="[#TYPE] eq 'color'">
@@ -275,7 +303,7 @@
 	var cp_[#VARNAME] = new ColorPicker(); // DIV style
 -->
 </script>
-<input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]">
+<input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]" />
 <a href="#" onClick="cp_[#VARNAME].select(document.forms[0].[#VARNAME],'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
 <script language="JavaScript">
 <!--
@@ -296,13 +324,13 @@ cp_[#VARNAME].writeDiv();
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
 	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
-	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]">
+	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
 	<LOOP NAME="entities_select">
 		<DO>
-		<input type="text" id="[#VARNAME][title]" value="[#TITLE]">
+		<input type="text" id="[#VARNAME][title]" value="[#TITLE]" />
 		</DO>
 		<ALTERNATIVE>
-		<input type="text" id="[#VARNAME][title]">
+		<input type="text" id="[#VARNAME][title]" />
 		</ALTERNATIVE>
 	</LOOP>
 	<ELSE/>
@@ -314,12 +342,12 @@ cp_[#VARNAME].writeDiv();
 		</DO>
 		<AFTER>
 			</select>
-			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="[#ALL]">
+			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="[#ALL]" />
 
 		</AFTER>
 		<ALTERNATIVE>
 			</select>
-			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="">
+			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="" />
 		</ALTERNATIVE>
 	</LOOP>
 
@@ -331,14 +359,14 @@ cp_[#VARNAME].writeDiv();
 		<IF COND="[#VALUE]"><tr><td>[@COMMON.FILE] :<strong>[(#VALUE)]</strong></td></tr></IF>
     <tr><td>
 	  <IF COND="[#VALUE]">
-			<input type="radio" name="[#FULLVARNAME][radio]" value="">[@EDITION.KEEP_CURRENT_FILE]<br />
-			<input type="radio" name="[#FULLVARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
+			<input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
+			<input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
 		</IF>
-		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile">
-	   <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]"><br />
-		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
+		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile" />
+	   <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
+		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
 		</td></tr></table>
-	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]">
+	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
 <ELSE/>
 <!--[ --------------- LIST ------------ -------------- ]-->
 <IF COND="[#TYPE] EQ 'list'">
@@ -423,10 +451,10 @@ cp_[#VARNAME].writeDiv();
 	    	</LOOP>
 	</DO>
 	<AFTER>
-            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#MAXDEGREE]">
+            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#MAXDEGREE]" />
 	</AFTER>
 	<ALTERNATIVE>
-            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0">
+            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0" />
 	</ALTERNATIVE>
 	</LOOP>
         <!--[ widget available for adding new persons of this type ]-->
@@ -947,7 +975,7 @@ function modifymember(members,textfield){
 	<option id="[#CLASS]_[#ID]" value=""> -- [@EDITION.ALL_TYPES] -- </option>
 </BEFORE>
 <DO>
-	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#QTYPE]">selected="selected"</IF>>[#TITLE]</option>
+	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#QTYPE]">selected="selected"</IF>><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 </DO>
 <AFTER>
 	</select>
@@ -996,7 +1024,7 @@ function modifymember(members,textfield){
 <div class="searchInfos">
 <IF COND="[#QTYPE]">
 	<LOOP NAME="print_title_type" TABLE="types" WHERE="id='[#QTYPE]'">
-	[@COMMON.TYPE] <strong>[#TITLE]</strong>
+	[@COMMON.TYPE] <strong><MACRO NAME="DISPLAY_ALTERTITLE"></strong>
 	</LOOP>
 </IF>
 <IF COND="[#QFIELD]">
@@ -1098,3 +1126,13 @@ function modifymember(members,textfield){
 </script>
 </DEFMACRO>
 
+<!--[
+Affichage du titre internationalisé.
+Utilise altertitle et le filtre multiligue.
+Si c'est vide alors utilise le champ title
+
+]-->
+<DEFMACRO NAME="DISPLAY_ALTERTITLE">
+	<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+	<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
+</DEFMACRO>
