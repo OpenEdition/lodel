@@ -27,6 +27,7 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_EDITION_TYPE] - [#CLASS]</title>
+<MACRO NAME="JS_EDITION_ENTITIES">
 	<script type="text/javascript"><!--
 	
 		function confirm_public_document(obj)
@@ -88,6 +89,11 @@
     </span>
   </LOOP>
   <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
   <input type="hidden" name="class" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
     <a id="class"></a><span class="error">

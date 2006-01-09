@@ -532,7 +532,7 @@
 		<BEFORE>
 			<ul>
                         <li style="background: url('[#SHAREURL]/images/deplie.png') 0 .5ex no-repeat">
-                        <strong>[#TITLE]:</strong>
+                        <strong><MACRO NAME="DISPLAY_ALTERTITLE"> :</strong>
 			</li>
 			<IF COND="[#NBRESULTS] gt 3">
 				<li><select onchange="ajouter_entite(this)"><option selected>--</option>
@@ -541,16 +541,19 @@
 		<DO>
 			<IF COND="[#NBRESULTS] gt 3">
 				<IF COND="[#IMPORT]==1">
-	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]">[#TITLE]</option>
+	        		<option value="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 				<ELSE/>
-	        		<option value="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]">[#TITLE]</option>
+	        		<option value="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"><LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF></option>
 				</IF>
 			<ELSE/>
 				<li>
 				<IF COND="[#IMPORT]==1">	
-				<a href="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"> [#TITLE] </a>
+				<a href="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"> <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF> </a>
 				<ELSE/>
-				<a href="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"> [#TITLE] </a>
+				<a href="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"> <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF> </a>
 				</IF>
                                 </li>
 			</IF>

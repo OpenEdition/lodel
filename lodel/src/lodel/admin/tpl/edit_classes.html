@@ -27,6 +27,7 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_EDITION_CLASS]</title>
+<MACRO NAME="JS_EDITION_ENTITIES">
 <MACRO NAME="COCHER_DECOCHER">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -51,8 +52,8 @@
     </span>
   </LOOP>
   <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
@@ -68,8 +69,8 @@
     </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -78,9 +79,14 @@
     </span>
   </LOOP>
   <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>
@@ -94,8 +100,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">

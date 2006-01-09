@@ -44,7 +44,7 @@
 	</div>
 	<LOOP NAME="classe" TABLE="classes" WHERE="classtype='entities' AND status gt 0" ORDER="rank">
 	<DO>	
-		<p>[(#TITLE|nbsp)]</p>
+		<p><MACRO NAME="DISPLAY_ALTERTITLE"></p>
 		<LOOP NAME="type" TABLE="types" WHERE="status gt 0" WHERE="class='[#CLASS]'" ORDER="rank">
 		<BEFORE>
 			<table class="table_normale" border="0" cellspacing="0" cellpadding="2">
@@ -59,7 +59,7 @@
 		<DO>
 		<LET VAR="curtotal"></LET>
 		<tr>
-			<td width="100">[(#TITLE|nbsp)]</td>
+			<td width="100"><MACRO NAME="DISPLAY_ALTERTITLE"></td>
 			<LOOP NAME="docpub" TABLE="entities" WHERE="status =1" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
 				<td align="center">[#NBRESULTS]</td>

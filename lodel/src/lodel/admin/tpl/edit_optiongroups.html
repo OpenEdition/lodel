@@ -25,9 +25,9 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
-
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_EDIT_OPTION_GROUP]</title>
+<MACRO NAME="JS_EDITION_ENTITIES">
 <script type="text/javascript">
 	var txt;
 	
@@ -77,13 +77,13 @@
     </span>
   </LOOP>
   <label for="idparent">[@COMMON.PARENT_OPTIONGROUPS]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="idparent" id="idparent">
     <?php 
-            makeSelect($context,"idparent","optiongroups","select");
-          ?>
+                      makeSelect($context,"idparent","optiongroups","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="idparent">
     <a id="idparent"></a><span class="error">
@@ -92,8 +92,8 @@
   </LOOP>
   <br />
   <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
@@ -103,8 +103,8 @@
   </LOOP>
   <br />
   <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -113,9 +113,14 @@
     </span>
   </LOOP>
   <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
   <label for="logic">[@COMMON.LOGIC]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="logic" id="logic" class="text" value="[#LOGIC]">
   <LOOP NAME="fielderror" FIELD="logic">
@@ -125,8 +130,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
@@ -137,8 +142,8 @@
   <br />
   <IF COND="[#IDPARENT]==0">
     <label for="exportpolicy">[@ADMIN.EXPORT]
-      : 
-    </label>
+        : 
+      </label>
     <br class="nobr">
     <IF COND="[#EXPORTPOLICY]">
       <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
@@ -153,8 +158,8 @@
     <br />
   </IF>
   <label for="protected">[@COMMON.PROTECTED]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

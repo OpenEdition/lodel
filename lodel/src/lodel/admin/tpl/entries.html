@@ -47,6 +47,7 @@
 <tr>
 	<td class="texte_noir_gras">[@COMMON.ENTRY]</td>
 	<td>&nbsp;</td>
+	<td class="texte_noir_gras">[@ADMIN.PERMANENT] ?</td>
 </tr>
 
 <LOOP NAME="listentrees" TABLE="entries" ORDER="[#TYPE.SORT]" WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" WHERE="status gt -64">
@@ -61,7 +62,9 @@
 				</IF>
 				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				</div>
-
+			</td>
+			<td class="ligne_admin2" style="color: #CC9933;" align="center">
+				[#STATUS]
 			</td>
 		</tr>
         <?php $context['margin']+=10; ?> <!--[ incrément de la marge ]-->

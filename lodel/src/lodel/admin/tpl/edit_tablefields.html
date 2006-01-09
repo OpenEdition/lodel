@@ -3,7 +3,7 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
@@ -35,8 +35,9 @@
 			</IF>
 		}
 	//
+		
 	--></script>
-
+<MACRO NAME="JS_EDITION_ENTITIES">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -61,8 +62,8 @@
     </span>
   </LOOP>
   <label for="name">[@ADMIN.NAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
@@ -78,8 +79,8 @@
     </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -88,9 +89,14 @@
     </span>
   </LOOP>
   <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
   <label for="style">[@ADMIN.STYLE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
   <LOOP NAME="fielderror" FIELD="style">
@@ -100,13 +106,13 @@
   </LOOP>
   <br />
   <label for="type">[@ADMIN.TYPE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="type" id="type" onChange="confirm_change_type();">
     <?php 
-            makeSelect($context,"type","tablefields","select");
-          ?>
+                      makeSelect($context,"type","tablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="type">
     <a id="type"></a><span class="error">
@@ -115,13 +121,13 @@
   </LOOP>
   <br />
   <label for="g_name">[@ADMIN.GENERIC_EQUIVALENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="g_name" id="g_name">
     <?php 
-            makeSelect($context,"g_name","tablefields","select");
-          ?>
+                      makeSelect($context,"g_name","tablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="g_name">
     <a id="g_name"></a><span class="error">
@@ -130,13 +136,13 @@
   </LOOP>
   <br />
   <label for="condition">[@ADMIN.CONDITION]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="condition" id="condition">
     <?php 
-            makeSelect($context,"condition","tablefields","select");
-          ?>
+                      makeSelect($context,"condition","tablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="condition">
     <a id="condition"></a><span class="error">
@@ -145,8 +151,8 @@
   </LOOP>
   <br />
   <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
   <LOOP NAME="fielderror" FIELD="defaultvalue">
@@ -156,8 +162,8 @@
   </LOOP>
   <br />
   <label for="processing">[@ADMIN.PROCESSING_IMPORT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="processing" id="processing" class="text" value="[#PROCESSING]">
   <LOOP NAME="fielderror" FIELD="processing">
@@ -167,13 +173,13 @@
   </LOOP>
   <br />
   <label for="allowedtags">[@ADMIN.ALLOWED_TAGS]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select multiple name="allowedtags[]" id="allowedtags">
     <?php 
-            makeSelect($context,"allowedtags","tablefields","multipleselect");
-          ?>
+                      makeSelect($context,"allowedtags","tablefields","multipleselect");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="allowedtags">
     <a id="allowedtags"></a><span class="error">
@@ -182,8 +188,8 @@
   </LOOP>
   <br />
   <label for="filtering">[@ADMIN.AUTOMATIC_FILTERING]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="filtering" id="filtering" class="text" value="[#FILTERING]">
   <LOOP NAME="fielderror" FIELD="filtering">
@@ -193,13 +199,13 @@
   </LOOP>
   <br />
   <label for="edition">[@ADMIN.INTERFACE_EDITION]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="edition" id="edition">
     <?php 
-            makeSelect($context,"edition","tablefields","select");
-          ?>
+                      makeSelect($context,"edition","tablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="edition">
     <a id="edition"></a><span class="error">
@@ -208,8 +214,8 @@
   </LOOP>
   <br />
   <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
   <LOOP NAME="fielderror" FIELD="editionparams">
@@ -219,13 +225,13 @@
   </LOOP>
   <br />
   <label for="weight">[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="weight" id="weight">
     <?php 
-            makeSelect($context,"weight","tablefields","select");
-          ?>
+                      makeSelect($context,"weight","tablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="weight">
     <a id="weight"></a><span class="error">
@@ -234,8 +240,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
@@ -246,13 +252,13 @@
   <br />
   <IF COND="[#CLASSTYPE]=='entities'">
     <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
-      : 
-    </label>
+        : 
+      </label>
     <br class="nobr">
     <select name="idgroup" id="idgroup">
       <?php 
-            makeSelect($context,"idgroup","tablefields","select");
-          ?>
+                      makeSelect($context,"idgroup","tablefields","select");
+                  ?>
     </select>
     <LOOP NAME="fielderror" FIELD="idgroup">
       <a id="idgroup"></a><span class="error">
@@ -262,8 +268,8 @@
     <br />
   </IF>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

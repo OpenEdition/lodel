@@ -51,8 +51,8 @@
     </span>
   </LOOP>
   <label for="style">[@ADMIN.STYLE]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
   <LOOP NAME="fielderror" FIELD="style">
@@ -62,13 +62,13 @@
   </LOOP>
   <br />
   <label for="surrounding">[@ADMIN.SURROUNDING_STYLE]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="surrounding" id="surrounding">
     <?php 
-            makeSelect($context,"surrounding","internalstyles","select");
-          ?>
+                      makeSelect($context,"surrounding","internalstyles","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="surrounding">
     <a id="surrounding"></a><span class="error">
@@ -77,8 +77,8 @@
   </LOOP>
   <br />
   <label for="conversion">[@ADMIN.CONVERSION]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="conversion" id="conversion" class="text" value="[#CONVERSION]">
   <LOOP NAME="fielderror" FIELD="conversion">
@@ -88,8 +88,8 @@
   </LOOP>
   <br />
   <label for="greedy">[@ADMIN.GREEDY]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="[#GREEDY]">
     <input type="checkbox" name="greedy" id="greedy" checked>
@@ -104,8 +104,8 @@
   <br />
   <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
     <label for="protected">[@ADMIN.PROTECTED_INTERNAL_STYLE]
-      : 
-    </label>
+        : 
+      </label>
     <br class="nobr">
     <IF COND="abs([#STATUS]) ge 32">
       <input type="checkbox" name="protected" id="protected" checked>

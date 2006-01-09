@@ -61,13 +61,13 @@
     </span>
   </LOOP>
   <label for="name">[@ADMIN.NAME]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="name" id="name">
     <?php 
-            makeSelect($context,"name","indextablefields","select");
-          ?>
+                      makeSelect($context,"name","indextablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="name">
     <a id="name"></a><span class="error">
@@ -82,8 +82,8 @@
     </span>
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
   <LOOP NAME="fielderror" FIELD="title">
@@ -92,6 +92,11 @@
     </span>
   </LOOP>
   <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
   <input type="hidden" name="type" value="[#TYPE]">
   <LOOP NAME="fielderror" FIELD="type">
     <a id="type"></a><span class="error">
@@ -99,13 +104,13 @@
     </span>
   </LOOP>
   <label for="edition">[@ADMIN.INTERFACE_EDITION]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <select name="edition" id="edition">
     <?php 
-            makeSelect($context,"edition","indextablefields","select");
-          ?>
+                      makeSelect($context,"edition","indextablefields","select");
+                  ?>
   </select>
   <LOOP NAME="fielderror" FIELD="edition">
     <a id="edition"></a><span class="error">
@@ -114,8 +119,8 @@
   </LOOP>
   <br />
   <label for="comment">[@ADMIN.COMMENT]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
@@ -126,13 +131,13 @@
   <br />
   <IF COND="[#CLASSTYPE]=='entities'">
     <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
-      : 
-    </label>
+        : 
+      </label>
     <br class="nobr">
     <select name="idgroup" id="idgroup">
       <?php 
-            makeSelect($context,"idgroup","indextablefields","select");
-          ?>
+                      makeSelect($context,"idgroup","indextablefields","select");
+                  ?>
     </select>
     <LOOP NAME="fielderror" FIELD="idgroup">
       <a id="idgroup"></a><span class="error">
@@ -142,8 +147,8 @@
     <br />
   </IF>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
-      : 
-    </label>
+        : 
+      </label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>

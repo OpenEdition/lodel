@@ -82,7 +82,10 @@
 			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
+					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">
+						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
+					</td>
 					<td align="right" style="color: #CC9933;" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" >
 					<div>
 					 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">

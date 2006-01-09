@@ -26,14 +26,6 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[(#SITE|strtoupper)]. [@COMMON.ADMINISTRATION]</title>
-	<script type="text/javascript"><!--
-	
-		function change_language(obj) {
-			var index = obj.selectedIndex;
-			window.location="usersettings.php?lang="+obj.options[index].value;
-		}
-	//
-	--></script>
 <MACRO NAME="JS_SELECT_URL">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -79,23 +71,6 @@
 						</select>
 						<td>&nbsp;</td>
 					</tr>
-					<!--[ Added Index cleaning- 2005-02-24]-->
-					<!--
-                                         <tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-							<td width="350" class="td_admin">
-							<LOOP NAME="checkindex1" TABLE="search_engine"  LIMIT="1">
-							<DO>
-							<a href="index.php?do=cleanIndex&amp;lo=entities_index">
-								<span class="texte_orange">[@ADMIN.INDEX_CLEARING]</span>
-							</a>
-							<DO>
-							<ALTERNATIVE>
-								<em>[@ADMIN.INDEX_CLEARING]</em>
-							</ALTERNATIVE>
-							</LOOP>
-						</td>
-					</tr>-->
 					<!--[Rebuild the index]-->
 					<tr>
 						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
@@ -105,27 +80,6 @@
 							</a>
 						</td>
 					</tr>
-			
-<!--[					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="texts.php"><span class="texte_orange">[@ADMIN.LITTLE_TEXTS]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr> ]-->
-<!--[					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<span class="texte_orange">[@COMMON.LANG_SITE] :</span>
-		                                <select onchange="change_language(this)">
-	                                	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='site'" ORDER="rank">
-		                                <IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
-		                                </LOOP>
-		                                </select>
-
-						</td>
-						<td>&nbsp;</td>
-					</tr>]-->
 					<tr>
 						<td width="20">&nbsp;</td>
 						<td width="350" class="td_admin">
@@ -168,7 +122,7 @@
 
 					<LOOP NAME="entrytype" TABLE="entrytypes" WHERE="status gt 0" ORDER="class,rank">
 						<DO>							
-							<option value="index.php?do=list&lo=entries&idtype=[#ID]">[#TITLE]</option>
+							<option value="index.php?do=list&lo=entries&idtype=[#ID]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 						</DO>
 						<ALTERNATIVE>
 							[@ADMIN.NO_INDEX_AVAILABLE]
@@ -185,7 +139,7 @@
 
 					<LOOP NAME="persontypes" TABLE="persontypes" WHERE="status gt 0" ORDER="class,rank">
 						<DO>							
-							<option value="index.php?do=list&lo=persons&idtype=[#ID]">[#TITLE]</option>
+							<option value="index.php?do=list&lo=persons&idtype=[#ID]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 						</DO>
 						<ALTERNATIVE>
 							[@ADMIN.NO_INDEX_AVAILABLE]
@@ -305,7 +259,7 @@
 						<span class="texte_orange">[@ADMIN.DOWNLOAD_XML_SCHEMA]</span>
 						<select onChange="select_url(this)"><option>--</option>
 							<LOOP NAME="listentitiesclasses" TABLE="classes" WHERE="classtype='entities' AND status GT 0">
-								<option value="index.php?lo=xml&amp;do=generateXSD&amp;class=[#CLASS]">[#TITLE]</option>
+								<option value="index.php?lo=xml&amp;do=generateXSD&amp;class=[#CLASS]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 							</LOOP>
 						</td>
 						<td width="5">&nbsp;</td>

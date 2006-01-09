@@ -25,14 +25,13 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@EDITION.TITLE_DOCUMENT_EDITION]</title>
+<title>[#TYPE.TITLE] : [@EDITION.TITLE_DOCUMENT_EDITION]</title>
 <MACRO NAME="JS_SIMULE_SUBMIT">
 <MACRO NAME="JS_EDITION_ENTITIES">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 	<div id="editEntities" style="background: url('[#SHAREURL]/images/fond_haut_popup_edition.png') repeat-x">
-		<h2 class="formTitle" style="background: url('[#SHAREURL]/images/picto_popup_edition.png') top left no-repeat">[@EDITION.TITLE_DOCUMENT_EDITION]</h2>
-	
+		<h2 class="formTitle" style="background: url('[#SHAREURL]/images/picto_popup_edition.png') top left no-repeat">[#TYPE.TITLE]&nbsp;:&nbsp;[@EDITION.TITLE_DOCUMENT_EDITION]</h2>
 <FUNC NAME="PRINT_ERROR_LISTING">
 <!--[ Propose OOImport ? ]-->
 <IF COND="![#ID]">
@@ -49,17 +48,17 @@
 	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
 	<IF COND="![#ID]"><input type="hidden" name="creationmethod" value="form" /></IF><!--[ new entities ]-->
 	<input type="hidden" name="edit" value="1" />
-
 	<dl class="infosEntitie">
+		<IF COND="[#ID] GT 0">
 		<!-- [Identifiant ]-->
-		<dt><label for="identifier">[@EDITION.IDENTIFIER]:</label></dt>
+		<dt>[@EDITION.IDENTIFIER]&nbsp;:&nbsp;</dt>
 		<dd>
-			<input size="60" type="text" name="identifier" id="identifier" value="[#IDENTIFIER]" <IF COND="![#ERROR.IDENTIFIER]">disabled="disabled"</IF> /> <!--([@EDITION.WARNING_IT_IS_NOT_RECOMMENDED_TO_EDIT_THIS_FIELD])-->
-			<input id="button_identifier" type="button" value="[@EDITION.ACTIVATE_THE_FIELD_IDENTIFIER]" onclick="if(document.getElementById('identifier').disabled == true) { document.getElementById('identifier').disabled = false; document.getElementById('button_identifier').value='[@EDITION.DESACTIVATE_THE_FIELD_IDENTIFIER]';} else { document.getElementById('identifier').disabled=true; document.getElementById('button_identifier').value='[@EDITION.ACTIVATE_THE_FIELD_IDENTIFIER]'}" />
-			<IF COND="[#ERROR.IDENTIFIER]">
+				<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
+				<IF COND="[#ERROR.IDENTIFIER]">
 				<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
 			</IF>
 		</dd>
+		</IF>
 		<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 		<dd>[#TYPE.TYPE]</dd>
 		<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
@@ -75,10 +74,16 @@
 	<br />
 	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
 	<br />
-        
-
-
-	<br /><br />
+	<fieldset style="background:url('/~lamy/lodeldevel/share-0.8/images/fond_intitule_popup_edition.png') repeat-x">
+		<legend style="background:url('/~lamy/lodeldevel/share-0.8/images/fleche_verte_popup_edition.png') 0 4.5ex no-repeat">
+			[@EDITION.MORE_OPTIONS]
+		</legend>
+		<label for="identifier">
+			[@EDITION.IDENTIFIER]
+		</label>
+		<input  name="identifier" id="identifier" value="[#IDENTIFIER]" />
+		<br />
+		</fieldset>
 	<fieldset class="formButtons">
 					<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
 					<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
