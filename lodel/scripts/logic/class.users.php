@@ -221,10 +221,11 @@ class UsersLogic extends Logic {
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('username' => array('username', '+'),
@@ -239,9 +240,9 @@ class UsersLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('username'), );

@@ -310,16 +310,18 @@ class TranslationsLogic extends Logic {
 	}
 
 	function _deleteRelatedTables($id) {
+		//il faut supprimer les texts associés à la traduction
 		// reinitialise le cache surement.
 	}
 
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('lang' => array('text', '+'),
@@ -333,9 +335,9 @@ class TranslationsLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('lang', 'textgroups'), );

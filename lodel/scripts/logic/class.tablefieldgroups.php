@@ -100,15 +100,17 @@ class TablefieldgroupsLogic extends Logic {
 	}
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('name' => array('text', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //
@@ -116,9 +118,9 @@ class TablefieldgroupsLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('name', 'class'), );

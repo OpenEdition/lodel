@@ -67,6 +67,7 @@ class CharacterstylesLogic extends Logic
 	 */
 
 	// begin{publicfields} automatic generation  //
+
 	/**
 	 * Retourne la liste des champs publics
 	 * @access private

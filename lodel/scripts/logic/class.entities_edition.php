@@ -312,14 +312,16 @@ class Entities_EditionLogic extends GenericLogic
 			$vo->g_title = strip_tags ($context['data'][$dctitle], "<em><strong><span><sup><sub>");
 		}
 		// If Identifier is not set, let's calcul it with the generic title
-		if (!$vo->identifier || $context['identifier'] === '') {
+		
+		if (!$vo->identifier || trim($context['identifier']) === '') {
 			$vo->identifier = $this->_calculateIdentifier ($id, $vo->g_title);
 		}	else { // else simply clean bad chars
-			if (is_null ($context['identifier'])) {//identifier desactivated
+
+			/*if (is_null ($context['identifier'])) {//identifier desactivated
 				$vo->identifier = $this->_calculateIdentifier ($id, $vo->identifier);
-			} else {// else that means that we have modified it
+			} else {// else that means that we have modified it*/
 				$vo->identifier= $this->_calculateIdentifier ($id, $context['identifier']);
-			}
+			/*}*/
 		}
 		$votemp = $dao->find ("id !='$id' AND identifier='". $vo->identifier. "'", "id, identifier, g_title");
 		if($votemp) { 
@@ -723,16 +725,21 @@ class Entities_EditionLogic extends GenericLogic
 	function _calculateIdentifier($id, $title)
 	{
 		global $db, $error;
+		#echo $title;
+		#echo latin1utf8($title);
+		//echo "bip".isUTF8($title);
+		//return preg_replace(array("/\W+/", "/-+$/"), array('-', ''),strip_tags(strtolower($title)));
 		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey($title));
-		$count = 0;
+		#echo "<br />".$identifier;
 		return $identifier;
 	}
-
+	
 	// begin{publicfields} automatic generation  //
 	// end{publicfields} automatic generation  //
 
 	// begin{uniquefields} automatic generation  //
 	// end{uniquefields} automatic generation  //
 
-} // class 
+} // class
+
 ?>

@@ -158,15 +158,17 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('name' => array('select', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'type' => array('class', '+'),
 									'edition' => array('select', ''),
 									'comment' => array('longtext', ''),
@@ -177,9 +179,9 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('name', 'class'), );

@@ -167,14 +167,16 @@ class OptionsLogic extends Logic {
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('name' => array('text', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'idgroup' => array('int', '+'),
 									'type' => array('select', ''),
 									'edition' => array('select', ''),
@@ -188,9 +190,9 @@ class OptionsLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('name', 'idgroup'), );

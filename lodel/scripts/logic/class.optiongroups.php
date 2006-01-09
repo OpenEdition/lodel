@@ -251,15 +251,17 @@ class OptiongroupsLogic extends Logic {
 	}
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('idparent' => array('select', '+'),
 									'name' => array('text', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'logic' => array('text', ''),
 									'comment' => array('longtext', ''),
 									'exportpolicy' => array('boolean', '+'));
@@ -269,9 +271,9 @@ class OptiongroupsLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('name'), );

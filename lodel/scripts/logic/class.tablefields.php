@@ -358,15 +358,17 @@ class TableFieldsLogic extends Logic {
 	}
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('name' => array('tablefield', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'style' => array('mlstyle', ''),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
@@ -386,9 +388,9 @@ class TableFieldsLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('name', 'class'), );

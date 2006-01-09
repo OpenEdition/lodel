@@ -184,15 +184,17 @@ class PersonTypesLogic extends Logic
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('type' => array('type', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'style' => array('style', ''),
 									'g_type' => array('select', ''),
 									'tpl' => array('tplfile', ''),
@@ -203,9 +205,9 @@ class PersonTypesLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('type'), );

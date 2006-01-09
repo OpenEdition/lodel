@@ -214,14 +214,16 @@ class TypesLogic extends Logic {
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('type' => array('type', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'class' => array('class', '+'),
 									'tpl' => array('tplfile', ''),
 									'tplcreation' => array('tplfile', ''),
@@ -238,9 +240,9 @@ class TypesLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('type', 'class'), );

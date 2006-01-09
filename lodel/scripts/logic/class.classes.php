@@ -243,15 +243,17 @@ class ClassesLogic extends Logic
 
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('class' => array('class', '+'),
 									'classtype' => array('text', '+'),
 									'title' => array('text', '+'),
+									'altertitle' => array('mltext', '+'),
 									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //
@@ -259,9 +261,9 @@ class ClassesLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	/**
-	* Retourne la liste des champs uniques
-	* @access private
-	*/
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
 	function _uniqueFields() 
 	{ 
 		return array(array('class'), );

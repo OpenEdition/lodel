@@ -76,10 +76,11 @@ class SitesLogic extends Logic {
 	}
 
 	// begin{publicfields} automatic generation  //
+
 	/**
-	* Retourne la liste des champs publics
-	* @access private
-	*/
+	 * Retourne la liste des champs publics
+	 * @access private
+	 */
 	function _publicfields() 
 	{
 		return array('title' => array('text', '+'),
