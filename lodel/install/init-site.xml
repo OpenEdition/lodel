@@ -42,7 +42,7 @@
 </table>
 
 <table name="entities"
-        description="Table des entités"
+        description="Table des entitï¿½"
         uniqueid="yes"
 	writeright="redactor"
 	protectright="redactor">
@@ -201,6 +201,12 @@
         description="name en clair, utiliser dans l interface"
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="status"
         type="TINYINT"
         default="1"
@@ -255,6 +261,13 @@
         description="name en clair, utiliser dans l interface"
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
+<column name="altertitle"
+	type="LONGVARCHAR"
+	required="true"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
+
 <column name="style"
         type="VARCHAR"
         size="255"
@@ -412,6 +425,12 @@
         description="name en clair, utiliser dans l interface"
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="type"
         type="VARCHAR"
         size="255"
@@ -493,6 +512,12 @@
         description="name en clair, utiliser dans l interface"
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="comment"
         type="LONGVARCHAR"
         description="commentaire sur le groupe de champs"
@@ -534,7 +559,7 @@
 
 
 <table name="persons"
-        description="Table des entrées des index par personnes"
+        description="Table des entrï¿½s des index par personnes"
         uniqueid="yes"
 	writeright="redactor"
 	protectright="redactor">
@@ -724,6 +749,12 @@
         required="true"
         label="[@ADMIN.TITLE_TYPE]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="class"
         type="VARCHAR"
         size="64"
@@ -753,7 +784,7 @@
         type="TINYINT"
         default="0"
         required="true"
-        description="1=import par servOO, 0 création par formulaire"
+        description="1=import par servOO, 0 crï¿½tion par formulaire"
         label="[@ADMIN.DEFAULT_CREATION_MODE]"
         edittype="select" />
 <column name="creationstatus"
@@ -953,6 +984,12 @@
         description="name en clair, utiliser dans l interface"
         label="[@ADMIN.TITLE_PERSON_TYPE]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="style"
         type="VARCHAR"
         size="255"
@@ -1043,6 +1080,12 @@
         description="nom en clair, utiliser dans l interface"
         label="[@ADMIN.TITLE_INDEX_TYPE]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_TITLE]"
+	edittype="mltext"/>
 <column name="style"
         type="VARCHAR"
         size="255"
@@ -1333,6 +1376,12 @@
         description="title used in the interface"
         label="[@COMMON.TITLE]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="idgroup"
         type="INTEGER"
         default="0"
@@ -1439,6 +1488,12 @@
         description="title used in the interface"
         label="[@COMMON.TITLE]"
         edittype="text" />
+<column name="altertitle"
+				type="LONGVARCHAR"
+				required="true"
+				description="nom multilingue"
+				label="[@ADMIN.MULTILINGUAL_NAME]"
+	edittype="mltext"/>
 <column name="logic"
         type="VARCHAR"
         size="255"

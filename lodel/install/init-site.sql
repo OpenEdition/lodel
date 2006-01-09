@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
 	g_name		VARCHAR(255) NOT NULL,		# equivalent generic du champ
@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
@@ -236,7 +237,7 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL,
 	title		TINYTEXT NOT NULL,
-
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	class		VARCHAR(64) NOT NULL,   # name de la table complementaire
 
 	tpl		TINYTEXT NOT NULL,			# name du fichier template utilise dans la zone de revue
@@ -291,6 +292,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
@@ -317,6 +319,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	g_type		VARCHAR(255) NOT NULL,		# equivalent generic du type
 
@@ -409,6 +412,7 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# title
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	type		VARCHAR(255) NOT NULL,		# type du champ
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
@@ -435,6 +439,7 @@ CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	idparent	INT UNSIGNED NOT NULL, # parent optiongroup id
 	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
 	title		VARCHAR(255) NOT NULL,		# type du champ
+	altertitle	TEXT NOT NULL,		# titre multilingue
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 	logic		TINYTEXT NOT NULL,		# url to edit the group
 	exportpolicy	TINYINT DEFAULT '1' NOT NULL,

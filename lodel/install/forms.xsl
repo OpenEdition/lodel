@@ -20,10 +20,10 @@
             <legend>
               <xsl:value-of select="@description"/>
             </legend>
-            <xsl:element name="FUNC">
+            <!--[xsl:element name="FUNC">
             	<xsl:attribute name="NAME">PRINT_ERROR_LISTING_XSL_FORMS</xsl:attribute>
             	<xsl:attribute name="TITLE"></xsl:attribute>
-            </xsl:element>
+            </xsl:element]-->
             
             <xsl:apply-templates select="column|vcolumn"/>
           </fieldset>
@@ -73,6 +73,16 @@
             </xsl:when>
 
             <!-- input type="text"                 -->
+	<xsl:when test="@edittype='mltext'">
+		<xsl:call-template name="label" />
+		<xsl:element name="FUNC">
+			<xsl:attribute name="NAME">PRINT_EDIT_FIELD_XSLT</xsl:attribute>
+			<xsl:attribute name="VARNAME"><xsl:value-of select="@name"/></xsl:attribute>
+			<xsl:attribute name="TYPE"><xsl:value-of select="@edittype"/></xsl:attribute>
+			<xsl:attribute name="VALUE"><xsl:call-template name="lsvariable" /></xsl:attribute>
+			<xsl:attribute name="FULLVARNAME"><xsl:value-of select="@name"/></xsl:attribute>
+		</xsl:element>
+	</xsl:when>
             <xsl:when test="@edittype='text' or @edittype='style'  or @edittype='mlstyle' 
                             or @edittype='type' or @edittype='tplfile' or @edittype='username'
                             or @edittype='tablefield' or @edittype='class' or @edittype='email'
