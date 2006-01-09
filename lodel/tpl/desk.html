@@ -43,7 +43,14 @@
 	//
 	-->
 </script>
-
+<script type="text/javascript"><!--
+	
+		function change_language(obj) {
+			var index = obj.selectedIndex;
+			window.location="usersettings.php?lang="+obj.options[index].value;
+		}
+	//
+	--></script>
 <style type="text/css">
 
 /* Ces styles ne sont pas dans styles_lodel.css qui n'est pas charg� en mode visualisation */
@@ -298,5 +305,13 @@ body{
 		</IF>
 	</IF>
 	<span class="texte_petit"><strong>[#LODELUSER.NAME]</strong></span>&nbsp;
+	<br />
+	<!-- [ La langue ]-->
+	<span class="texte_petit"><strong>[@COMMON.INTERFACE_LANGUAGE]</strong></span>&nbsp;
+	<select title="[@COMMON.SELECT_AN_ITEM_TO_CHANGE_THE_LANGUAGE_USED]" class="texte_petit" onchange="change_language(this)">
+		<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
+		<IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		</LOOP>
+	</select>
 	</div>
 </div>
