@@ -111,7 +111,7 @@
 			<fieldset style="background:url('[#SHAREURL]/images/fond_intitule_popup_edition.png') repeat-x">
 				<legend style="background:url('[#SHAREURL]/images/fleche_verte_popup_edition.png') 0 4.5ex no-repeat">
 				[#TITLE]
-				</legend>					
+				</legend>
 			</IF>
 		</BEFORE>
         <DO>
@@ -138,52 +138,51 @@
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
-  $parameters = explode(",",$context['editionparams']);
+  $parameters = explode(',', $context['editionparams']);
   if( is_array($parameters) )
   {
     //Advanced mode or not
-    if(trim($parameters[0])==="Advanced" || trim($parameters[0])==="Simple" || trim($parameters[0])==="Basic")
-      $context["fck_mode"] = trim($parameters[0]);
+    if(trim($parameters[0]) === 'Advanced' || trim($parameters[0]) === 'Simple' || trim($parameters[0]) === 'Basic')
+      $context['fck_mode'] = trim($parameters[0]);
     else
-      $context["fck_mode"] = "Advanced";
+      $context['fck_mode'] = 'Advanced';
     //Width (by default will be 600px)
-    $context["fck_width"] = (($parameters[1])  ? intval($parameters[1]) : 600);
+    $context['fck_width'] = (($parameters[1])  ? intval($parameters[1]) : 600);
     //Height (by default will be 400px)
-    $context["fck_height"] = (($parameters[2]) ? intval($parameters[2]) : 400);
+    $context['fck_height'] = (($parameters[2]) ? intval($parameters[2]) : 400);
     //Language (by default will be empty)
-    $context["fck_language"] = ($parameters[3] ? trim($parameters[3]) : "fr");
-    //AutodetectLanguage (by default will be on true
-    $context["fck_autodetectlanguage"] = (($parameters[4]) ? trim($parameters[4]) : "true");
-    //SkinName (by default will be default :p)
-    $context["fck_skin"] = (($parameters[5]) ? trim($parameters[5]) : "silver");
+    $context['fck_language'] = ($parameters[3] ? trim($parameters[3]) : $context['lodeluser']['lang']);
+    $context['fck_autodetectlanguage'] = 'false';
+		//SkinName (by default will be default :p)
+    $context['fck_skin'] = (($parameters[5]) ? trim($parameters[5]) : 'default');
   }
   else
   {
-    $context["fck_width"] = 600;
-    $context["fck_height"] = 400;
-    $context["fck_skin"] = "silver";
-    $context["fck_autodetectlanguage"] = "true";
-    $context["fck_language"] = "fr";
-    $context["fck_mode"] = "Advanced";
+    $context['fck_width'] = 600;
+    $context['fck_height'] = 400;
+    $context['fck_skin'] = 'default';
+    $context['fck_autodetectlanguage'] = 'false';
+    $context['fck_language'] = $context['lodeluser']['lang'];
+    $context['fck_mode'] = 'Advanced';
   }
 ?>
 </DEFMACRO>
 
 <!-- [ Test Jean ]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
-
+<LET VAR="edition">display</LET>
 <IF COND="[#TYPE] eq 'mltext'">
   <br />
   <div id="mltext_[#VARNAME]" class="mltexteditionarea">
 	<div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 		<label>XXX</label>
-		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
+		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
 		<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
 	</div>
 	<LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	<div>
 		<label>[(#LANG|humanlang|ucfirst)] :</label>
-		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
+		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
 		<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
 	</div>
 	</LOOP>
