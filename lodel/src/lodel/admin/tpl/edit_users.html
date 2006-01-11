@@ -4,7 +4,7 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
@@ -27,6 +27,20 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_USER_EDITION]</title>
+<script type="text/javascript">
+	function checkpasswd() {
+		
+		var pass = document.getElementById('passwd');
+		var confirm = document.getElementById('confirmpasswd');
+		if(pass.value == confirm.value) {
+			return true;
+		}
+		alert('[@ADMIN.PLEASE_CHECK_THE_PASSWORDS_YOU_TYPED]');
+		confirm.focus();
+		return false;
+	}
+
+</script>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -38,12 +52,12 @@
 </table>
 
 						
-<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off" onsubmit="return checkpasswd();">
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="users">
 <fieldset>
-  <legend>Table des utilisateurs de lodel</legend>
+  <legend>[@ADMIN.USER_INFORMATIONS]</legend>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
@@ -61,7 +75,7 @@
     </span>
   </LOOP>
   <br />
-  <label for="passwd">[@COMMON.PASSWD]
+  <label for="passwd">[@COMMON.PASSWD]<span class="optional">(*)</span>
         : 
       </label>
   <br class="nobr">
@@ -69,6 +83,17 @@
   <LOOP NAME="fielderror" FIELD="passwd">
     <a id="passwd"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PASSWD]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="confirmpasswd">[@ADMIN.CONFIRM_PASSWORD]<span class="optional">(*)</span>
+        : 
+      </label>
+  <br class="nobr">
+  <input type="password" size="30" name="confirmpasswd" id="confirmpasswd">
+  <LOOP NAME="fielderror" FIELD="confirmpasswd">
+    <a id="confirmpasswd"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CONFIRM_PASSWORD]"></FUNC>
     </span>
   </LOOP>
   <br />
