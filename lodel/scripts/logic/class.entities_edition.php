@@ -729,7 +729,7 @@ class Entities_EditionLogic extends GenericLogic
 		#echo latin1utf8($title);
 		//echo "bip".isUTF8($title);
 		//return preg_replace(array("/\W+/", "/-+$/"), array('-', ''),strip_tags(strtolower($title)));
-		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey($title));
+		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
 		#echo "<br />".$identifier;
 		return $identifier;
 	}
