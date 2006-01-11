@@ -592,7 +592,7 @@
 
 
 <table name="users"
-        description="Table des utilisateurs de lodel"
+        description="[@ADMIN.USER_INFORMATIONS]"
 	writeright="admin"
 	protectright="adminlodel">
 <column name="id"
@@ -608,9 +608,15 @@
         edittype="username" />
 <column name="passwd"
         type="VARCHAR"
+	required="true"
         size="64"
         label="[@COMMON.PASSWD]"
         edittype="passwd" />
+<vcolumn name="confirmpasswd"
+	 label="[@ADMIN.CONFIRM_PASSWORD]"
+	 required="true"
+	 edittype="passwd"
+	/>
 <column name="name"
         type="VARCHAR"
         size="64"
