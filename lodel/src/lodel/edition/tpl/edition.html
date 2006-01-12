@@ -48,9 +48,9 @@
 	<FUNC NAME="LIST_ENTITIES" ID="[#ID]" />
 	<div id="massEdit">
 	<input type="hidden" name="do" value="mass" />
-	<input type="submit" name="delete" value="[@EDITION.MASSDELETE]" />
-	<input type="submit" name="publish" value="[@EDITION.MASSPUBLISH]" />
-	<input type="submit" name="unpublish" value="[@EDITION.MASSUNPUBLISH]" />
+	<input type="submit" name="delete" value="[@EDITION.MASSDELETE]" onclick="return confirmation();" />
+	<input type="submit" name="publish" value="[@EDITION.MASSPUBLISH]" onclick="return confirmation();" />
+	<input type="submit" name="unpublish" value="[@EDITION.MASSUNPUBLISH]" onclick="return confirmation();" />
 	</div>
 	</form>
 
