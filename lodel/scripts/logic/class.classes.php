@@ -138,6 +138,56 @@ class ClassesLogic extends Logic
 			}
 		}
 	}
+
+	/**
+	 * Implémenation de l'action d'ajout ou d'édition d'un objet.
+	 *
+	 * <p>Cette fonction crée un nouvel objet ou édite un objet existant. Dans un premier temps les
+	 * données sont validées (suivant leur type) puis elles sont rentrées dans la base de données <em>via</em> la DAO associée à l'objet.
+	 * Utilise _prepareEdit() pour effectuer des opérations de préparation avant l'édition de l'objet puis _populateContext() pour ajouter des informations supplémentaires au context. Et enfin _saveRelatedTables() pour sauver d'éventuelles informations dans des tables liées.
+	 * </p>
+	
+	 * add/edit Action
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
+	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 */
+	function editAction(&$context, &$error, $clean = false)
+	{
+		if ($clean != CLEAN) {      // validate the forms data
+			if (!$this->validateFields($context, $error)) {
+				return '_error';
+			}
+		}
+		require_once 'fieldfunc.php';
+		if(reservedByLodel($context['class'])) {
+			$error['class'] = 'reservedsql';
+			return '_error';
+		}
+		// get the dao for working with the object
+		$dao = $this->_getMainTableDAO();
+		$id = $context['id'] = intval($context['id']);
+		$this->_prepareEdit($dao, $context);
+		// create or edit
+		if ($id) {
+			$dao->instantiateObject($vo);
+			$vo->id = $id;
+		} else {
+			$vo = $dao->createObject();
+		}
+		if ($dao->rights['protect']) {
+			$vo->protect = $context['protected'] ? 1 : 0;
+		}
+		// put the context into 
+		$this->_populateObject($vo, $context);
+		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
+		$ret = $this->_saveRelatedTables($vo, $context);
+		
+		require_once 'func.php';
+		update();
+		return $ret ? $ret : "_back";
+	}
 	/**
 	 * Sauve des données dans des tables liées éventuellement
 	 *
