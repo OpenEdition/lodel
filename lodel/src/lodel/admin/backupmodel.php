@@ -102,7 +102,7 @@ if ($_POST['backup']) {
 	fputs($fh, "DELETE FROM #_TP_optiongroups;\n");
 	mysql_dump($currentdb, array("#_TP_optiongroups"), "", $fh, false, false, true, "*", "id ". sql_in_array($ids));
 	fputs($fh, "DELETE FROM #_TP_options;\n");
-	mysql_dump($currentdb,array("#_TP_options"), "", $fh, false, false, true, "*", "idgroup ". sql_in_array($ids)); // select everything but the value
+	mysql_dump($currentdb,array("#_TP_options"), "", $fh, false, false, true, "id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams", "idgroup ". sql_in_array($ids)); // select everything but not the value
 
 	// get the classe table
 	$dao = &getDAO("classes");
