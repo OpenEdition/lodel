@@ -96,8 +96,6 @@ ln tpl/macros2.html
 # chaine d'importation
 ln oochargement.php
 ln tpl/oochargement.html
-ln conversion.php
-ln tpl/conversion.html
 
 ln checkimport.php
 ln tpl/checkimport.html
@@ -128,7 +126,7 @@ ln tpl/edit_entities_advanced.html
 ln tpl/edit_entities_edition.html
 
 # xml
-ln xml.php
+#desuet : ln xml.php
 ln tpl/xml-classe.html
 ln tpl/xml-valid.html
 ln tpl/edit_xml.html
