@@ -40,7 +40,7 @@
  */
 
 require 'lodelconfig.php';
-include $home.'auth.php';
+include $home. 'auth.php';
 authenticate(LEVEL_ADMINLODEL);
 require 'func.php';
 require 'backupfunc.php';
@@ -67,12 +67,20 @@ if ($backup) {
 	mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', TRUE, $fh);
 
 	// find the sites to backup
-	$result = $db->execute(lq('SELECT name FROM #_MTP_sites WHERE status>-32')) or dberror();
+	$errors = array();
+	$result = $db->execute(lq('SELECT name FROM #_MTP_sites WHERE status > -32')) or dberror();
+	chdir(LODELROOT);
 	while (!$result->EOF) {
 		$name = $result->fields['name'];
-		dump_site($name, TRUE, $fh);
+		dump_site($name, TRUE, $errors, $fh);
 		if (!$sqlonly) {
-			array_push($dirtotar, "$name/lodel/sources", "$name/docannexe");
+			//verifie que le repertoire existe
+			if(is_readable("$name/lodel/sources") && is_readable("$name/docannexe")) {
+				array_push($dirtotar, "$name/lodel/sources", "$name/docannexe");
+			} else {
+				$errors['files'] = "the directories  $name/lodel/sources and $name/docannexe are not readable or don't exists any more. They won't be included in the backup.";
+			}
+			
 		}
 		$result->MoveNext();
 	}
@@ -82,9 +90,6 @@ if ($backup) {
 	$archivetmp      = tempnam('/tmp', 'lodeldump_');
 	$archivefilename = 'lodel-'. date('dmy'). '.tar.gz';
 
-	chdir(LODELROOT);
-
-#  echo "tar czf $archivetmp ".join(" ",$dirtotar)." -C $dirlocked $outfile\n"; flush();
 	system("tar czf $archivetmp ". join(' ', $dirtotar). " -C $dirlocked $outfile") !== FALSE or die ("impossible d'executer tar");
 	unlink($dirlocked. '/'. $outfile);
 	rmdir($dirlocked);
@@ -96,6 +101,7 @@ if ($backup) {
 	}
 }
 
+$context['error'] = $errors;
 require 'view.php';
 $view = &View::getView();
 $view->render($context, 'backup');
