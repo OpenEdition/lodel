@@ -33,34 +33,37 @@
 <br /><br /><b>[@LODELADMIN.TITLE_BACKUP]</b></div></td></tr>
 </table>
 
-
-<div align="center"><table width="600" cellpadding="5" cellspacing="0" border="1" align="CENTER">
-<IF COND="[#OUTFILENAME] and ![#ERROR]">
-		    [@LODELADMIN.BACKUP_IS_DONE_ARCHIVE_AIVALABLE_HERE] : [#OUTFILENAME]<br />
-<form method="POST">
-<input class="form" type="button" value="  OK  " onClick="javascript:window.location='index.php'" />
-</form>
+<IF COND="[#OUTFILENAME]">
+	<IF COND="[#ERROR]">
+		[@LODELADMIN.SOME_ERRORS_OCCURS_DURING_THE_BACKUP_PROCESS] :<br />
+	<LOOP NAME="errors">
+		<BEFORE><ul></BEFORE>
+		<DO>
+		<li>[#ERROR]</li>
+		</DO>
+		<AFTER></ul></AFTER>
+	</LOOP>
+	</IF>
+	[@LODELADMIN.BACKUP_IS_DONE_ARCHIVE_AIVALABLE_HERE] : [#OUTFILENAME]<br />
+	<input class="form" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php'" />
 <ELSE/>
-		<IF COND="[#ERROR]">
-		  <p>[@LODELADMIN.ERROR_COPY_FILES_VERIFY_SERVER_CAN_WRITE_OR_ENOUGH_SPACE_DIRECTORY|sprintf([#OUTFILENAME])].</p>
-		</IF>
+	<IF COND="[#ERROR]">
+		<p>[@LODELADMIN.ERROR_COPY_FILES_VERIFY_SERVER_CAN_WRITE_OR_ENOUGH_SPACE_DIRECTORY|sprintf([#OUTFILENAME])].</p>
+	</IF>
 
-<form method="POST" action="backup.php">
-<input type="hidden" name="backup" value="1">
-<tr><td>[@LODELADMIN.SAVE_DATABASE_ONLY]</td><td><input type="checkbox" name="sqlonly" /></td></tr>
-<tr><td>[@LODELADMIN.GET_FILE_OPERATION] :</td><td>
-<select name="operation">
-<option value="download">[@LODELADMIN.DOWNLOAD]</option>
-<IF COND="[#IMPORTDIR]"><option value="importdir">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR]</option></IF>
-<option value="cache">[@LODELADMIN.SAVE_IN_CACHE]</option>
-</select>
-</td></tr>
-</table>
-
-<input class="form" type="submit" value="[@COMMON.SAVE]">
-<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'" />
-</form>
+	<form method="POST" action="backup.php">
+		<input type="hidden" name="backup" value="1">
+		[@LODELADMIN.SAVE_DATABASE_ONLY] :<input type="checkbox" name="sqlonly" /><br />
+		[@LODELADMIN.GET_FILE_OPERATION] :
+		<select name="operation">
+			<option value="download">[@LODELADMIN.DOWNLOAD]</option>
+			<IF COND="[#IMPORTDIR]">
+				<option value="importdir">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR]</option>
+			</IF>
+			<option value="cache">[@LODELADMIN.SAVE_IN_CACHE]</option>
+		</select><br />
+		<input class="form" type="submit" value="[@COMMON.SAVE]" />
+		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'" />
+	</form>
 </IF>
-</div>
-
 <MACRO NAME="CLOSE_HTML">

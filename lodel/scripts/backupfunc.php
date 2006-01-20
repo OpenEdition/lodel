@@ -58,11 +58,19 @@ require "pma/string.lib.php";
 require "pma/sqlparser.data.php";
 require "pma/sqlparser.lib.php";
 
-function dump_site($site, $outfile, $fh = 0)
+/**
+ * Sauvegarde des données d'un site
+ *
+ * @param string $site le nom du site
+ * @param string $outfile le fichier dans lequel écrire le dump SQL
+ * @param resource $fh le descripteur de fichier (par défaut 0)
+ * @param array $error tableau des erreurs
+ */
+function dump_site($site, $outfile, &$error, $fh = 0)
 {
 	global $db;
 
-	if ($site && $GLOBALS['singledatabase'] != "on") {
+	if ($site && $GLOBALS['singledatabase'] != 'on') {
 		$dbname = DATABASE."_".$site;
 		if (!$fh)	{
 			$fh = fopen($outfile, "w");
@@ -75,9 +83,11 @@ function dump_site($site, $outfile, $fh = 0)
 	}	else	{
 		$dbname = DATABASE;
 	}
-	if (!$db->selectDB($dbname))
-		die("ERROR: the database $dbname does not exist or is not reactable. This is inconsistent with the sites table in the database ".DATABASE.". Please solve the problem before backing up.<br/>MySQL said: ".mysql_error());
-
+	if (!$db->selectDB($dbname)) {
+		$error['database'] = 'error : '.$db->ErrorMsg().'<br />';
+		//die("ERROR: the database <em>$dbname</em> does not exist or is not reactable. This is inconsistent with the sites table in the database <em>".DATABASE."</em>. Please solve the problem before backing up.<br />Error is : <pre>". $db->ErrorMsg(). '</pre>');
+		return ;
+	}
 	$GLOBALS['currentprefix'] = "#_TP_";
 
 	$tables = $GLOBALS['lodelsitetables'];
