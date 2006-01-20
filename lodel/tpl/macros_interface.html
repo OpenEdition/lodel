@@ -201,193 +201,89 @@
 <DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <!--[ --------------- CONFIRM--------------------------- ]-->
 <IF COND="[#CONFIRM]">
-<LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
+<LET VAR="eventattr">[#EVENTATTR] onchange="[#CONFIRM]();"</LET>
 </IF>
 <!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
 
 <IF COND="[#EDITION] eq 'display'">
 	<IF COND="[#TYPE] eq 'mltext'"> <!--[ multi-lingue ]-->
-	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-	    <div>[(#LANG|humanlang|ucfirst)] : <span class="displayfield">[#VALUE]</span></div>
-	  </LOOP>
+		<LOOP NAME="mltext"> <!--[ champ multilingue ]-->
+			<div>[(#LANG|humanlang|ucfirst)] : <span class="displayfield">[#VALUE]</span></div>
+		</LOOP>
 	<ELSE/> <!--[ other cases ]-->
-	<span class="displayfield">
-	<IF COND="[#TYPE] ne 'passwd'"><div class="editiondisplay">[#VALUE]</div><ELSE/>*******</IF>
-	<span>
-	</IF>
-<ELSE/>
-<!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
-<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
-	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
-	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
- 	<MACRO NAME="FCK_EDITOR_PARAMETERS">
- 	
-    <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
-    <script>
-    	var fck_[#VARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
-    	fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 			fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
-    	fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
-    	fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
-    	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
-    	fck_[#VARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-    	<?$context["value"] = str_replace("\n","",$context["value"]) ?>
-    	<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-    	fck_[#VARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
-    	fck_[#VARNAME]_editor.Create();
-    </script>
-    <ELSE/>   
-	<IF COND="[#EDITIONPARAMS] gt 1">
-			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
-	<ELSE/>
-		<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
-        </IF>
-      </IF>
-
-<ELSE/>
-<!--[ --------------- PASSWD -------------- ]-->
-<IF COND="[#TYPE] eq 'passwd'">
-<input size="50" type="password" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] />
-<ELSE/>
-<!--[ --------------- BOOLEAN -------------- ]-->
-<IF COND="[#TYPE] eq 'boolean'">
-    <input type="checkbox" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes] />
-<ELSE/>
-<!--[ --------------- INT, NUMBER -------------- ]-->
-<IF COND="[#TYPE] eq 'int' or [#TYPE] eq 'number'">
-    <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" value="[#VALUE]" />
-<ELSE/>
-<!--[ --------------- MLTEXT -------------- ]-->
-<IF COND="[#TYPE] eq 'mltext'">
-  <FUNC NAME="EDIT_MLTEXT">
-<ELSE/>
-<!--[ --------------- LANG,SELECT ------------- ]-->
-<IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
-	      <select name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>
-		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
-	    </select>
-<ELSE/>
-<!--[ --------------- MULTIPLESELECT ------------- ]-->
-<IF COND="[#TYPE] eq 'multipleselect'">
-	      <select name="[#VARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
-		<?php  makeSelect($context,"value","",$context['type']); ?>
-	    </select>
-<ELSE/>
-<!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
-<IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
-	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]" />
-
-<ELSE/>
-<!--[ --------------- IMAGE ------------- ]-->	    
-<IF COND="[#TYPE] eq 'image'">
-  <table><tr>
-    <IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td></IF>
-    <td>
-    <IF COND="[#VALUE]">
-      <input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
-      <input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
-    </IF>
-    <input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
-    <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-    <input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
-    </td>
-  </tr></table>
-  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
-<ELSE/>
-<!--[ --------------- COLOR ------------- ]-->	    
-<IF COND="[#TYPE] eq 'color'">
-<script language="Javascript" src="[#SHAREURL]/js/colorpicker.js"></script>
-<script language="Javascript">
-<!--
-	var cp_[#VARNAME] = new ColorPicker(); // DIV style
--->
-</script>
-<input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]" />
-<a href="#" onClick="cp_[#VARNAME].select(document.forms[0].[#VARNAME],'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
-<script language="JavaScript">
-<!--
-document.forms[0].[#VARNAME].style.backgroundColor='[#VALUE]';
-cp_[#VARNAME].writeDiv();
--->
-</script>
-<ELSE/>
-<!--[ --------------- PERSONS ------------- ]-->	    
-<IF COND="[#TYPE] eq 'persons'">
-<FUNC NAME="EDIT_PERSONS">
-<ELSE/>
-<!--[ --------------- ENTRIES ------------- ]-->	    
-<IF COND="[#TYPE] eq 'entries'">
-<FUNC NAME="EDIT_ENTRIES">
-<ELSE/>
-<!--[ --------------- ENTITIES ------------- ]-->	    
-<IF COND="[#TYPE] eq 'entities'">
-	<IF COND="[#CONDITION]==1">
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
-	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
-	<LOOP NAME="entities_select">
-		<DO>
-		<input type="text" id="[#VARNAME][title]" value="[#TITLE]" />
-		</DO>
-		<ALTERNATIVE>
-		<input type="text" id="[#VARNAME][title]" />
-		</ALTERNATIVE>
-	</LOOP>
-	<ELSE/>
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_ENTITIES]</a>
-	<select id="[#VARNAME][select]" row="3" multiple >
-	<LOOP NAME="entities_select">
-		<DO>
-		<option value="[#ID]">[#G_TITLE]</option>
-		</DO>
-		<AFTER>
-			</select>
-			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="[#ALL]" />
-
-		</AFTER>
-		<ALTERNATIVE>
-			</select>
-			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="" />
-		</ALTERNATIVE>
-	</LOOP>
-
-	</IF>
-<ELSE/>
-<!--[ --------------- FILES ------------- ]-->	
-<IF COND="[#TYPE] eq 'file'">
-		<table>
-		<IF COND="[#VALUE]"><tr><td>[@COMMON.FILE] :<strong>[(#VALUE)]</strong></td></tr></IF>
-    <tr><td>
-	  <IF COND="[#VALUE]">
-			<input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
-			<input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
+		<span class="displayfield">
+		<IF COND="[#TYPE] ne 'passwd'">
+			<div class="editiondisplay">[#VALUE]</div>
+		<ELSE/>
+			*******
 		</IF>
-		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile" />
-	   <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
-		</td></tr></table>
-	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
-<ELSE/>
-<!--[ --------------- LIST ------------ -------------- ]-->
-<IF COND="[#TYPE] EQ 'list'">
-	<MACRO NAME="EDIT_LIST">
-<ELSE/>
-
-???? Don't know how to edit this field. Type: [#TYPE] !
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
-</IF>
+		<span>
+	</IF>
+<ELSE/>	
+	<IF COND="[#TYPE] NE 'text' AND [#TYPE] NE 'tinytext' AND [#TYPE] NE 'longtext' AND [#TYPE] NE 'username' AND [#TYPE] NE 'longtext' AND [#TYPE] NE 'url' AND [#TYPE] NE 'email' AND [#TYPE] NE 'history' AND [#TYPE] NE 'passwd' AND [#TYPE] NE 'boolean' AND [#TYPE] NE 'int' AND [#TYPE] NE 'number' AND [#TYPE] NE 'mltext' AND [#TYPE] NE 'lang' AND [#TYPE] NE 'select' AND [#TYPE] NE 'multipleselect' AND [#TYPE] NE 'date' AND [#TYPE] NE 'datetime' AND [#TYPE] NE 'time' AND [#TYPE] NE 'image' AND [#TYPE] NE 'color' AND [#TYPE] NE 'persons' AND [#TYPE] NE 'entries' AND [#TYPE] NE 'entities' AND [#TYPE] NE 'file' AND [#TYPE] NE 'list'">
+	???? Don't know how to edit this field. Type: [#TYPE] !
+	<ELSE/>
+		<!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
+		<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
+			<MACRO NAME="TEXT_FIELDS">
+		</IF>
+		<!--[ --------------- PASSWD -------------- ]-->
+		<IF COND="[#TYPE] eq 'passwd'">
+			<MACRO NAME="PASSWD_FIELDS">
+		</IF>
+		<!--[ --------------- BOOLEAN -------------- ]-->
+		<IF COND="[#TYPE] eq 'boolean'">
+			<MACRO NAME="BOOLEAN_FIELDS">
+		</IF>
+		<!--[ --------------- INT, NUMBER -------------- ]-->
+		<IF COND="[#TYPE] eq 'int' or [#TYPE] eq 'number'">
+			<MACRO NAME="NUM_FIELDS">
+		</IF>
+		<!--[ --------------- MLTEXT -------------- ]-->
+		<IF COND="[#TYPE] eq 'mltext'">
+			<FUNC NAME="EDIT_MLTEXT">
+		</IF>
+		<!--[ --------------- LANG,SELECT ------------- ]-->
+		<IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
+			<MACRO NAME="SELECT_FIELDS">
+		</IF>
+		<!--[ --------------- MULTIPLESELECT ------------- ]-->
+		<IF COND="[#TYPE] eq 'multipleselect'">
+			<MACRO NAME="MULTIPLE_SELECT_FIELDS">
+		</IF>
+		<!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
+		<IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
+			<MACRO NAME="DATE_FIELDS">
+		</IF>
+		<!--[ --------------- IMAGE ------------- ]-->	    
+		<IF COND="[#TYPE] eq 'image'">
+			<MACRO NAME="IMAGE_FIELDS">
+		</IF>
+		<!--[ --------------- COLOR ------------- ]-->	    
+		<IF COND="[#TYPE] eq 'color'">
+			<MACRO NAME="COLOR_FIELDS">
+		</IF>
+		<!--[ --------------- PERSONS ------------- ]-->	    
+		<IF COND="[#TYPE] eq 'persons'">
+			<FUNC NAME="EDIT_PERSONS">
+		</IF>
+		<!--[ --------------- ENTRIES ------------- ]-->	    
+		<IF COND="[#TYPE] eq 'entries'">
+			<FUNC NAME="EDIT_ENTRIES">
+		</IF>
+		<!--[ --------------- ENTITIES ------------- ]-->	    
+		<IF COND="[#TYPE] eq 'entities'">
+			<MACRO NAME="ENTITIES_FIELDS">
+		</IF>
+		<!--[ --------------- FILES ------------- ]-->	
+		<IF COND="[#TYPE] eq 'file'">
+			<MACRO NAME="FILES_FIELDS">
+		</IF>
+		<!--[ --------------- LIST ------------ -------------- ]-->
+		<IF COND="[#TYPE] EQ 'list'">
+			<MACRO NAME="EDIT_LIST">
+		</IF>
+	</IF>
 </IF>
 
 <!--[ error management ]-->
@@ -1135,3 +1031,146 @@ Si c'est vide alors utilise le champ title
 	<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
 	<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
 </DEFMACRO>
+
+
+<!--[ MACROS used in PRINT_EDIT_FIELD ]-->
+
+<DEFMACRO NAME="TEXT_FIELDS">
+	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
+	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
+ 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
+		<script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
+    		<script type="text/javascript">
+			var fck_[#VARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
+			fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
+					fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
+			fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
+			fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
+			fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
+			fck_[#VARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+			<?$context["value"] = str_replace("\n","",$context["value"]) ?>
+			<?$context["value"] = str_replace("\r","",$context["value"]); ?>
+			fck_[#VARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
+			fck_[#VARNAME]_editor.Create();
+    		</script>
+    	<ELSE/>   
+		<IF COND="[#EDITIONPARAMS] gt 1">
+			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+		<ELSE/>
+			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
+        	</IF>
+      	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="PASSWD_FIELDS">
+	<input size="50" type="password" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] />
+</DEFMACRO>
+
+<DEFMACRO NAME="BOOLEAN_FIELDS">
+	<input type="checkbox" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes] />
+</DEFMACRO>
+
+<DEFMACRO NAME="NUM_FIELDS">
+	<input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" value="[#VALUE]" />
+</DEFMACRO>
+
+<DEFMACRO NAME="SELECT_FIELDS">
+	<select name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>
+		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
+	</select>
+</DEFMACRO>
+
+<DEFMACRO NAME="MULTIPLE_SELECT_FIELDS">
+	<select name="[#VARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
+		<?php  makeSelect($context,"value","",$context['type']); ?>
+	</select>
+</DEFMACRO>
+
+<DEFMACRO NAME="DATE_FIELDS">
+	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]" />
+</DEFMACRO>
+
+<DEFMACRO NAME="IMAGE_FIELDS">
+	<table><tr>
+		<IF COND="[#VALUE]">
+			<td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td>
+		</IF>
+	<td>
+		<IF COND="[#VALUE]">
+			<input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
+			<input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
+		</IF>
+	<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
+	<a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
+	<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
+	</td>
+	</tr></table>
+	<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
+</DEFMACRO>
+
+<DEFMACRO NAME="COLOR_FIELDS">
+	<script type="text/javascript" src="[#SHAREURL]/js/colorpicker.js"></script>
+	<script type="text/javascript">
+	<!--
+		var cp_[#VARNAME] = new ColorPicker(); // DIV style
+	-->
+	</script>
+	<input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]" />
+	<a href="#" onClick="cp_[#VARNAME].select(document.forms[0].[#VARNAME],'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
+	<script type="text/javascript">
+	<!--
+	document.forms[0].[#VARNAME].style.backgroundColor='[#VALUE]';
+	cp_[#VARNAME].writeDiv();
+	-->
+	</script>
+</DEFMACRO>
+
+<DEFMACRO NAME="ENTITIES_FIELDS">
+	<IF COND="[#CONDITION]==1">
+		<a href="#" onclick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single', '[@COMMON.ENTITYBROWSER]', 'width=500,height=500, top=100, left=100, resizable=yes, scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
+		<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
+		<LOOP NAME="entities_select">
+			<DO>
+				<input type="text" id="[#VARNAME][title]" value="[#TITLE]" />
+			</DO>
+			<ALTERNATIVE>
+				<input type="text" id="[#VARNAME][title]" />
+			</ALTERNATIVE>
+		</LOOP>
+	<ELSE/>
+		<a href="#" onclick="window.open('entitybrowser.php?caller=[#VARNAME]', '[@COMMON.ENTITYBROWSER]', 'width=500, height=500, top=100, left=100, resizable=yes, scrollbars=yes');">[@EDITION.CHOOSE_ENTITIES]</a>
+		<select id="[#VARNAME][select]" row="3" multiple >
+		<LOOP NAME="entities_select">
+			<DO>
+				<option value="[#ID]">[#G_TITLE]</option>
+			</DO>
+			<AFTER>
+				</select>
+				<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="[#ALL]" />
+			</AFTER>
+			<ALTERNATIVE>
+				</select>
+				<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="" />
+			</ALTERNATIVE>
+		</LOOP>
+	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="FILES_FIELDS">
+	<table>
+	<IF COND="[#VALUE]">
+		<tr><td>[@COMMON.FILE] :<strong>[(#VALUE)]</strong></td></tr>
+	</IF>
+	<tr><td>
+	<IF COND="[#VALUE]">
+		<input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
+		<input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
+	</IF>
+	<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile" />
+	<a href="#" onclick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]', 'Upload', 'width=400, height=300, top=100, left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
+	<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
+	</td></tr></table>
+	<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
+</DEFMACRO>
+
+<!--[ END MACROS used in PRINT_EDIT_FIELD ]-->
