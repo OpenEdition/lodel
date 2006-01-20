@@ -64,12 +64,14 @@ if ($backup) {
 	}
 
 	$GLOBALS['currentprefix'] = '#_TP_';
+	set_time_limit(60); // pas d'effet en safe mode
 	mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', TRUE, $fh);
 
 	// find the sites to backup
 	$errors = array();
 	$result = $db->execute(lq('SELECT name FROM #_MTP_sites WHERE status > -32')) or dberror();
 	chdir(LODELROOT);
+	set_time_limit(60); // pas d'effet en safe mode
 	while (!$result->EOF) {
 		$name = $result->fields['name'];
 		dump_site($name, TRUE, $errors, $fh);
