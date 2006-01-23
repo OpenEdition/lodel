@@ -218,23 +218,25 @@
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
-	<LET VAR="FCKEDITOR_DIR">[#SITEROOT]lodel/plugins/fckeditor/</LET>
-	<IF COND="[#EDITION] EQ 'fckeditor' AND [#FCKEDITOR_DIR|is_dir]">
+	<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
+	<IF COND="[#EDITION] EQ 'fckeditor'">
  	<MACRO NAME="FCK_EDITOR_PARAMETERS">
- 	
+<?php
+$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
+?>	
     <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
-    <script>
-    	var fck_[#VARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
-    	fck_[#VARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 			fck_[#VARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
-    	fck_[#VARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
-    	fck_[#VARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
-    	fck_[#VARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
-    	fck_[#VARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+    <script type="text/javascript">
+    	var fck_[#FCKVARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
+    	fck_[#FCKVARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
+ 	fck_[#FCKVARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
+    	fck_[#FCKVARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
+    	fck_[#FCKVARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
+    	fck_[#FCKVARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
+    	fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "css/fck_editorarea.css";
     	<?$context["value"] = str_replace("\n","",$context["value"]) ?>
     	<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-    	fck_[#VARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
-    	fck_[#VARNAME]_editor.Create();
+    	fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
+    	fck_[#FCKVARNAME]_editor.Create();
     </script>
     <ELSE/>   
 	<IF COND="[#EDITIONPARAMS] gt 1">
