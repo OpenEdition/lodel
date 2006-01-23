@@ -675,9 +675,13 @@ function nicefilesize($lien)
 
 function wiki($text)
 {
-	require_once ('wikirenderer/WikiRenderer.lib.php');
-	$wkr = new WikiRenderer();
-	return $wkr->render($text);
+	//require_once ('wikirenderer/WikiRenderer.lib.php');
+	require_once('mediawiki/Parser.php');
+	$parser = new ParserMediawiki;
+	$parserOutput = $parser->internalParse($text);
+	print_r($parserOutput);
+	//$wkr = new WikiRenderer();
+	//return $wkr->render($text);
 }
 
 /**
