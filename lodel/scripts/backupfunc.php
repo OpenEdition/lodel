@@ -78,8 +78,8 @@ function dump_site($site, $outfile, &$error, $fh = 0)
 		}
 		if (!$fh)
 			die("ERROR: unable to open file $outfile for writing");
-		if (fputs($fh, "DROP DATABASE $dbname;\nCREATE DATABASE $dbname;USE $dbname;\n") === FALSE)
-			die("ERROR: unable to write in the temporary file");
+		//if (fputs($fh, "DROP DATABASE $dbname;\nCREATE DATABASE $dbname; USE $dbname;\n") === FALSE)
+		//	die("ERROR: unable to write in the temporary file");
 	}	else	{
 		$dbname = DATABASE;
 	}
@@ -607,7 +607,7 @@ function backupME($sqlfile, $dirs)
 	return $archivetmp;
 }
 
-function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = "")
+function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '')
 {
 	global $unzipcmd;
 
@@ -683,8 +683,9 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 			#}
 			return 1;
 		}
-		$archive->user_vars = array ("sqlfile" => $sqlfile, "accepteddirs" => $accepteddirs, "acceptedexts" => $acceptedexts, "tmpdir" => $tmpdir);
+		$archive->user_vars = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
 		$res = $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract', PCLZIP_CB_POST_EXTRACT, 'postextract');
+		echo "ici $res";
 
 		if (!$res)
 			die("ERROR: unable to extract $archive.<br>".$archive->error_string);
