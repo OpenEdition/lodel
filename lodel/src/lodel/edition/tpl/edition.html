@@ -29,7 +29,7 @@
 <IF COND="[#ID]">
 <title>[@COMMON.EDITION]<LOOP NAME="nompourtitre" TABLE="entities" WHERE="id='[#ID]'"> : [#IDENTIFIER] - [(#G_TITLE|textebrut)]</LOOP></title>
 <ELSE/>
-<title>[(#SITE|strtoupper)].[@COMMON.EDITION_INTERFACE]</title>
+<title>[(#SITE|strtoupper)] - [@COMMON.EDITION_INTERFACE]</title>
 </IF>
 <MACRO NAME="JS_CONFIRM">
 <!--[ Rajout int�ration maquette ]-->
