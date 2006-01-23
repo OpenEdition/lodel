@@ -50,11 +50,11 @@
 	<input type="hidden" name="edit" value="1" />
 	<dl class="infosEntitie">
 		<IF COND="[#ID] GT 0">
-		<!-- [Identifiant ]-->
-		<dt>[@EDITION.IDENTIFIER]&nbsp;:&nbsp;</dt>
-		<dd>
-				<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
-				<IF COND="[#ERROR.IDENTIFIER]">
+			<!-- [ Lien permanent ]-->
+			<dt>[@EDITION.PERMANENT_LINK]&nbsp;:&nbsp;</dt>
+			<dd>
+			<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
+			<IF COND="[#ERROR.IDENTIFIER]">
 				<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
 			</IF>
 		</dd>
