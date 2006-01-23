@@ -131,13 +131,14 @@ img{
 
 #entitiesPath ul, #entitiesPath .queryText{
 	height: 43px;
-	padding-left: 28px;
+	padding: 0 0 0 38px;
 }
 
 #entitiesPath ul li{
 	float: left;
-	padding: 0  .5em 0 1.5em;
+	padding: 0;
 	margin: 1.5ex 0;
+	color: #b08000;
 }
 
 #entitiesPath .queryText{
