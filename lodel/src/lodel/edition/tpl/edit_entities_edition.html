@@ -30,8 +30,9 @@
 <MACRO NAME="JS_EDITION_ENTITIES">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
-	<div id="editEntities" style="background: url('[#SHAREURL]/images/fond_haut_popup_edition.png') repeat-x">
-		<h2 class="formTitle" style="background: url('[#SHAREURL]/images/picto_popup_edition.png') top left no-repeat">[#TYPE.TITLE]&nbsp;:&nbsp;[@EDITION.TITLE_DOCUMENT_EDITION]</h2>
+<MACRO NAME="CURRENT_PATH">
+	<div id="editEntities">
+		
 <FUNC NAME="PRINT_ERROR_LISTING">
 <!--[ Propose OOImport ? ]-->
 <IF COND="![#ID]">
@@ -85,8 +86,8 @@
 		<br />
 		</fieldset>
 	<fieldset class="formButtons">
-					<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
-					<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
+		<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
+		<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
 
 	<IF COND="[#TYPE.DISPLAY]=='advanced'">
 			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'" />
