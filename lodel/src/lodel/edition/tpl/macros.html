@@ -464,12 +464,10 @@
 	<ul style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;">
 		<li><a href="index.php?id=0">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li style="background:   url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a></li>
+			<li>&nbsp;&gt;&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a></li>
 		</LOOP>
     <LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-      <li style="background:   url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;">
-        <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a>
-      </li>
+      <li>&nbsp;&gt;&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a></li>
     </LOOP>
 	</ul>
 	</div>
