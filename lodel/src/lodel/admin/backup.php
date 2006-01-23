@@ -52,7 +52,8 @@ if ($backup) {
 	$outfile = "site-$site.sql";
 	$uselodelprefix = true;
 	$tmpdir = tmpdir();
-	dump_site($site, $tmpdir. "/". $outfile);
+	$errors = array();
+	dump_site($site, $tmpdir. "/". $outfile, $errors);
 
 	# verifie que le fichier n'est pas vide
 	if (filesize($tmpdir. "/". $outfile) <= 0) {
