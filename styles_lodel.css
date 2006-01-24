@@ -54,6 +54,10 @@ img{
 	border: none;
 }
 
+br.nobr{
+	display: none;
+}
+
 /* Permet d'insérer un texte signifiant lorsqu'on utilise une image en bg (par ex)*/
 .hidden{
 	display: none;
