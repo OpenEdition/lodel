@@ -198,7 +198,8 @@ img{
 
 #listEntities{
 	clear: both;
-	margin: 2ex 0 0 15px;
+	margin: 2ex 0 0 0;
+	padding: 0;
 	list-style: none;
 	font-size: 90%;
 }
@@ -291,18 +292,22 @@ img{
 }
 
 #editEntities fieldset{
-	width: auto;
-	border: none;
-	padding-left: 70px;
-	padding-top: 4ex;
+	width: 600px;
+	border: 1px solid #cecece;
+	margin: 0 0 3ex 70px;
+	padding: 2ex 1em 2ex 1em;
+	background: #f7f7f7;
 }
 
 #editEntities fieldset legend{
-	padding-left: 1em;
-	padding-top: 4.5ex;
+	padding: 0 .5em;
+	font-weight: bold;
+	color: #333;
+	background: #fff;
 }
 
 #editEntities fieldset label{
+	margin: 2ex 0 .5ex 0;
 	text-align: left;
 	display: block;
 	float: none;
@@ -318,18 +323,4 @@ img{
 
 #entityIdent label{
 	font-weight: bold;
-}
-
-fieldset.formButtons{
-	text-align: center;
-	margin-left: -70px;
-	padding-bottom: 4ex;
-}
-
-ul.listentities {
-	margin-left : 0px;
-
-}
-ul.listentities li {
-	margin-left : 2px;
 }
