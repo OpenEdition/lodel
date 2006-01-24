@@ -451,7 +451,9 @@ cp_[#VARNAME].writeDiv();
 			<br />
 		        </DO>
 	        	<AFTER>
+			<div class="delete">
                         <a href="#" onclick="deletepersons(this); return false;" class="delete">[@COMMON.DELETE]</a>
+			</div>
 			</div>
         		</AFTER>
 	    	</LOOP>
@@ -474,7 +476,9 @@ cp_[#VARNAME].writeDiv();
 			<br />
 		        </DO>
         	<AFTER>
+			<div class="delete">
                         <a href="#" onclick="deletepersons(this,'[#VARNAME]'); return false;" class="delete">[@COMMON.DELETE]</a>
+			</div>
 			</div>
         	</AFTER>
 	    </LOOP>
@@ -627,7 +631,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 		function deletepersons(obj,name) 
 		{
 			// get the edit box
-			obj=obj.parentNode;
+			obj=obj.parentNode.parentNode;
 			var edit=obj.getElementsByTagName("input");
                         var bconfirm=false;
                         for(i=0; i<edit.length; i++) {
@@ -1085,7 +1089,7 @@ function modifymember(members,textfield){
 			&nbsp;...&nbsp;
 		</IF>
 		<IF COND="[#URLPAGE] NE ''">
-			<a class="linkpage" href="[#URLPAGE]" title="Page num�o [#PAGENUMBER]">
+			<a class="linkpage" href="[#URLPAGE]" title="[#PAGENUMBER]">
 		<ELSE/>
 			<span class="currentpage">
 		</IF>
