@@ -323,12 +323,7 @@ class Entities_EditionLogic extends GenericLogic
 				$vo->identifier= $this->_calculateIdentifier ($id, $context['identifier']);
 			/*}*/
 		}
-		$votemp = $dao->find ("id !='$id' AND identifier='". $vo->identifier. "'", "id, identifier, g_title");
-		if($votemp) { 
-			$error['identifier'] = 'identifier'; 
-			unset($votemp); 
-			$ret = '_error';
-		}
+		
 		if ($context['creationmethod']) {
 			$vo->creationmethod = $context['creationmethod'];
 		}
@@ -725,12 +720,7 @@ class Entities_EditionLogic extends GenericLogic
 	function _calculateIdentifier($id, $title)
 	{
 		global $db, $error;
-		#echo $title;
-		#echo latin1utf8($title);
-		//echo "bip".isUTF8($title);
-		//return preg_replace(array("/\W+/", "/-+$/"), array('-', ''),strip_tags(strtolower($title)));
 		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
-		#echo "<br />".$identifier;
 		return $identifier;
 	}
 	
