@@ -65,7 +65,7 @@
 		<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
 		<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
 		<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
-		<dd>[#MODIFICATION|formateddate([@COMMON.DATEFORMAT])]</dd>
+		<dd>[#MODIFICATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
 		
 	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
 		<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:</dt>
