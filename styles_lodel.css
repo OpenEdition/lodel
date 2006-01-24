@@ -322,6 +322,11 @@ br.nobr{
 	display: inline;
 }
 
+#editEntities fieldset label.persons{
+	color: #0e2d7c;
+	font-weight: bold;
+}
+
 #entityIdent{
 	margin-left: 70px;
 }
