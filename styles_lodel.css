@@ -268,8 +268,11 @@ br.nobr{
 
 /* PAGE EDITION, EDITION DES ENTITES */
 
-#editEntities{
-
+#editEntities input:not([type="submit"]), #editEntities textarea, #editEntities select{
+	background: #fff;
+	border: 1px solid #333;
+	font-family: "Courier New", Courier, mono;
+	font-size: 110%;
 }
 
 #editEntities h2.formTitle{
@@ -322,7 +325,7 @@ br.nobr{
 	display: inline;
 }
 
-#editEntities fieldset label.persons{
+#editEntities fieldset label.persons, #editEntities fieldset label.entries, #editEntities fieldset label.mltext{
 	color: #0e2d7c;
 	font-weight: bold;
 }
