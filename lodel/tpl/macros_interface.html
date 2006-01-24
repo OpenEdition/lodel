@@ -158,7 +158,7 @@
     $context['fck_language'] = ($parameters[3] ? trim($parameters[3]) : $context['lodeluser']['lang']);
     $context['fck_autodetectlanguage'] = 'false';
 		//SkinName (by default will be default :p)
-    $context['fck_skin'] = (($parameters[5]) ? trim($parameters[5]) : 'default');
+    $context['fck_skin'] = (($parameters[5]) ? trim($parameters[5]) : 'silver');
   }
   else
   {
@@ -416,16 +416,16 @@ cp_[#VARNAME].writeDiv();
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
     <div ><label class="labelmltext">[(#LANG|humanlang|ucfirst)] :</label> 
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="data[[#VARNAME]][[#LANG]]" VALUE="[#VALUE]" />
-	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
+	<a href="#" onclick="deletelanginmltext(this);return false;" class="delete">[@COMMON.DELETE]</a>
     </div>
   </LOOP>
   <div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 	<label class="labelmltext">XXX</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="data[[#VARNAME]][__lodel_wildcard]" VALUE="" />
-	<a href="#" onClick="deletelanginmltext(this);return false;">[@COMMON.DELETE]</a>
+	<a href="#" onclick="deletelanginmltext(this);return false;" class="delete">[@COMMON.DELETE]</a>
   </div>
   <div>
-	  <select onChange="addlanginmltext(this,'[#VARNAME]');"><?php makeselectlangs(); ?></select>
+	  <select onchange="addlanginmltext(this,'[#VARNAME]');"><?php makeselectlangs(); ?></select>
   </div>
   </div>
 </DEFFUNC>
@@ -451,7 +451,7 @@ cp_[#VARNAME].writeDiv();
 			<br />
 		        </DO>
 	        	<AFTER>
-                        <a href="#" onClick="deletepersons(this); return false;">[@COMMON.DELETE]</a>
+                        <a href="#" onclick="deletepersons(this); return false;" class="delete">[@COMMON.DELETE]</a>
 			</div>
         		</AFTER>
 	    	</LOOP>
@@ -474,11 +474,11 @@ cp_[#VARNAME].writeDiv();
 			<br />
 		        </DO>
         	<AFTER>
-                        <a href="#" onClick="deletepersons(this,'[#VARNAME]'); return false;">[@COMMON.DELETE]</a>
+                        <a href="#" onclick="deletepersons(this,'[#VARNAME]'); return false;" class="delete">[@COMMON.DELETE]</a>
 			</div>
         	</AFTER>
 	    </LOOP>
-         <a href="#" onClick="addpersons(this,'[#VARNAME]'); return false;">[@COMMON.ADD]</a>
+         <a href="#" onClick="addpersons(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
       </LOOP>
   </div>
 </DEFFUNC>

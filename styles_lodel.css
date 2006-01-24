@@ -330,6 +330,14 @@ br.nobr{
 	font-weight: bold;
 }
 
+#editEntities fieldset.formButtons{
+	text-align: right;
+}
+
+#editEntities a.delete{
+	color: red;
+}
+
 #entityIdent{
 	margin-left: 70px;
 }
