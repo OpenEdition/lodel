@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -50,7 +50,7 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","ï¿½240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
     }
   }
@@ -65,7 +65,7 @@ function postprocessing(&$context)
 #}
 
 /**
- *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
+ *   Extrait toutes les variables passï¿½s par la mï¿½hode post puis les stocke dans 
  *   le tableau $context
  */
 
@@ -94,7 +94,7 @@ function clean_request_variable(&$var)
 	}
 	} else {
 		$var = magic_stripslashes($var);
-		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $filter->process(trim($var)));
+		$var = str_replace(array("\n", "&nbsp;"), array("", "ï¿½240"), $filter->process(trim($var)));
   }
 }
 
@@ -241,22 +241,22 @@ function translate_xmldata($data)
 
 
 ### use the transaction now.
-#function unlock()
-#{
-#  // Dévérouille toutes les tables vérouillées précédemment par la 
-#  // fonction lock_write()
-#  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-#    $db->execute(lq("UNLOCK TABLES") or dberror();
-#}
-#
-#
-#function lock_write()
-#{
-#  // Vérouille toutes les tables en écriture
-#  $list=func_get_args();
-#  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-#     $db->execute(lq("LOCK TABLES #_TP_".join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE") or dberror();
-#}
+function unlock()
+{
+  // Déverrouilles toutes les tables vérouillées
+  // fonction lock_write()
+  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
+    $db->execute(lq("UNLOCK TABLES")) or dberror();
+}
+
+
+function lock_write()
+{
+  // Vérouille toutes les tables MySQL en écriture
+  $list = func_get_args();
+  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
+     $db->execute(lq("LOCK TABLES #_TP_". join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE")) or dberror();
+}
 
 function prefix_keys($prefix,$arr)
 
@@ -372,35 +372,44 @@ function getlodeltextcontents($name,$group="",$lang=-1)
 }
 
 
-function makeurlwithid ($id,$base="index")
-
+function makeurlwithid ($id, $base = 'index')
 {
-  if (is_numeric($base)) { $t=$id; $id=$base; $base=$t; } // exchange
-
-  if (defined("URI")) {
-    $uri=URI;
-  } else {
-    // compat 0.7
-    if ($GLOBALS['idagauche']) $uri="leftid";
-  }
-
-  switch($uri) {
-  case 'leftid':
-    return $base.$id.".".$GLOBALS['extensionscripts'];
-    //////////
-  case 'path':
-    $result=$GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='".intval($id)."' ORDER BY degree DESC")) or dberror();
-    while(!$result->EOF) {
-      $path.="/".$result->fields['identifier'];
-      $result->MoveNext();
-    }
-    $path.="/". $GLOBALS['db']->getOne(lq("SELECT identifier FROM #_TP_entities WHERE id='".intval($id)."'"));
-    if ($GLOBALS['db']->errorno()) dberror();
-    return $base.".".$GLOBALS['extensionscripts']."?".$path;
-    //////////
-  default:
-    return $base.".".$GLOBALS['extensionscripts']."?id=".$id;
-  }
+	
+	if (is_numeric($base)) {
+		$t    = $id;
+		$id   = $base;
+		$base = $t;
+	} // exchange
+	if (defined('URI')) {
+		$uri = URI;
+	} else {
+		// compat 0.7
+		if ($GLOBALS['idagauche']) {
+			$uri = 'leftid';
+		}
+	}
+	
+	$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
+		if ($GLOBALS['db']->errorno()) {
+			dberror();
+		}
+	if($class != 'entities')
+		$uri = '';
+	switch($uri) {
+	case 'leftid':
+		return $base. $id. '.'. $GLOBALS['extensionscripts'];
+	//fabrique des urls type index.php?/rubrique/mon-titre
+	case 'path':
+		$id = intval($id);
+		$path = getPath($id,'path');
+		return $path;
+	case 'querystring':
+		$id = intval($id);
+		$path = getPath($id,'querystring');
+		return $path;
+	default:
+		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. $id;
+	}
 }
 
 if (!function_exists("file_get_contents")) {
@@ -412,6 +421,37 @@ if (!function_exists("file_get_contents")) {
     return $res;
   }
 }
+/**
+ * retourne le chemin complet vers une entité
+ *
+ * @param integer $id identifiant numérique de l'entité
+ * @param string $urltype le type d'url utilisé (path,querystring)
+ * @return string le chemin
+ * @since fonction ajoutée en 0.8
+ */
+function getPath($id, $urltype,$base='index')
+{
+	$urltype = 'querystring'; //la version actuelle de lodel ne gère que le type path
+	if($urltype!='path' && $urltype!='querystring') {
+		return;
+	}
+	$id = intval($id);
+		$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or dberror();
+		while(!$result->EOF) {
+			$path.= '/'. $result->fields['identifier'];
+			$result->MoveNext();
+		}
+		$row = $GLOBALS['db']->getRow(lq("SELECT identifier FROM #_TP_entities WHERE id='$id'"));
+		if ($GLOBALS['db']->errorno()) {
+			dberror();
+		}
+		$path.= "/$id-". $row['identifier'];
+		if($urltype == 'path') {
+			return $base. '.'. $GLOBALS['extensionscripts']. $path;
+		}
+		return "$base.". $GLOBALS['extensionscripts']. "?$path";
+}
+
 
 /**
  * sent the header and the file for downloading
@@ -677,11 +717,11 @@ function setrecord($table,$id,$set,$context=array())
 /**
  * Fonction qui indique si une chaine est en utf-8 ou non
  *
- * Cette fonction est insirée de Dotclear et de
+ * Cette fonction est insirï¿½ de Dotclear et de
  * http://w3.org/International/questions/qa-forms-utf-8.html.
  *
- * @param string $string la chaîne à tester
- * @return le résultat de la fonction preg_match c'est à dire false si la chaîne n'est pas en
+ * @param string $string la chaï¿½e ï¿½tester
+ * @return le rï¿½ultat de la fonction preg_match c'est ï¿½dire false si la chaï¿½e n'est pas en
  * UTF8
  */
 function isUTF8($string)
@@ -700,22 +740,22 @@ function isUTF8($string)
 	}
 
 /**
- * Transforme une chaine de caractère UTF8 en minuscules désaccentuées
+ * Transforme une chaine de caractï¿½e UTF8 en minuscules dï¿½accentuï¿½s
  *
- * Cette fonction prends en entrée une chaîne en UTF8 et donne en sortie une chaîne
- * où les accents ont été remplacés par leur équivalent désaccentué. De plus les caractères
- * sont mis en minuscules et les espaces en début et fin de chaîne sont enlevés.
+ * Cette fonction prends en entrï¿½ une chaï¿½e en UTF8 et donne en sortie une chaï¿½e
+ * o les accents ont ï¿½ï¿½remplacï¿½ par leur ï¿½uivalent dï¿½accentuï¿½ De plus les caractï¿½es
+ * sont mis en minuscules et les espaces en dï¿½ut et fin de chaï¿½e sont enlevï¿½.
  *
- * Cette fonction est utilisée pour les entrées d'index ainsi que dans le moteur de recherche
- * et pour le calcul des identifiants littéraux.
+ * Cette fonction est utilisï¿½ pour les entrï¿½s d'index ainsi que dans le moteur de recherche
+ * et pour le calcul des identifiants littï¿½aux.
  *
- * @param string $text le texte à passer en entrée
- * @return le texte transformé en minuscule
+ * @param string $text le texte ï¿½passer en entrï¿½
+ * @return le texte transformï¿½en minuscule
  */
 function makeSortKey($text)
 {
 	$text = strip_tags($text);
-	//remplacement des caractères accentues en UTF8
+	//remplacement des caractï¿½es accentues en UTF8
 	$replacement = array(chr(197).chr(146) => 'OE', chr(197).chr(147) => 'oe',
 											chr(197).chr(160) => 'S',chr(197).chr(189) => 'Z', 
 											chr(197).chr(161) => 's',	chr(197).chr(190) => 'z', 
