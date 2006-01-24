@@ -301,6 +301,7 @@ br.nobr{
 	margin: 0 0 3ex 70px;
 	padding: 2ex 1em 2ex 1em;
 	background: #f7f7f7;
+	font-size: 90%;
 }
 
 #editEntities fieldset legend{
@@ -315,7 +316,6 @@ br.nobr{
 	text-align: left;
 	display: block;
 	float: none;
-	font-size: 90%;
 }
 
 #editEntities fieldset label.boolean{
