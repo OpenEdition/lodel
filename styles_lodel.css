@@ -311,6 +311,7 @@ img{
 	text-align: left;
 	display: block;
 	float: none;
+	font-size: 90%;
 }
 
 #editEntities fieldset label.boolean{
