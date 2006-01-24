@@ -24,6 +24,10 @@
 <body> 
 </DEFMACRO>
 
+<DEFMACRO NAME="INTERTITLE">
+<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
+</DEFMACRO>
+
 <DEFMACRO NAME="HEADER_LOGO_LOGIN">
 <body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="black" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0">
 </DEFMACRO>
@@ -108,15 +112,15 @@
 	<LOOP NAME="edition_fields">
 		<BEFORE><!--[ information sur le groupe. Ne s'affichent que s'il y a des champs editable ]-->
 			<IF COND="[#IDGROUP]">
-			<fieldset style="background:url('[#SHAREURL]/images/fond_intitule_popup_edition.png') repeat-x">
-				<legend style="background:url('[#SHAREURL]/images/fleche_verte_popup_edition.png') 0 4.5ex no-repeat">
-				[#TITLE]
+			<fieldset>
+				<legend>
+				<MACRO NAME="INTERTITLE">
 				</legend>
 			</IF>
 		</BEFORE>
         <DO>
-				<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-	  <label for="[#NAME]" class="[#TYPE]"><IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF> :</label>
+	<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+	  <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"></label>
 	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 	<br />
         </DO>
@@ -218,8 +222,9 @@
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
-	<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
+	
 	<IF COND="[#EDITION] EQ 'fckeditor'">
+	<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
  	<MACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
 $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
@@ -290,8 +295,8 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
       <input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
     </IF>
     <input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
-    <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-    <input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
+    <a href="#" onclick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
+    <input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onchange="document.getElementById('[#VARNAME][radioupload]').click();" />
     </td>
   </tr></table>
   <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
