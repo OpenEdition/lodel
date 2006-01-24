@@ -338,6 +338,11 @@ br.nobr{
 	color: red;
 }
 
+#editEntities div.delete{
+	text-align: right;
+	margin: 2ex 0 0 0;
+}
+
 #entityIdent{
 	margin-left: 70px;
 }
