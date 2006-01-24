@@ -74,13 +74,14 @@ $page       = $_GET['page']; // get only
 $do         = $_POST['do'] ? $_POST['do'] : $_GET['do'];
 $tpl        = "index"; // template by default.
 
+
 // ID ou IDENTIFIER
 if ($id || $identifier) {
 	require_once 'connect.php';
 	do { // exception block
 		require_once 'func.php';
 		if ($id) {
-			$class = $db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='". $id. "'"));
+			$class = $db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 			if ($db->errorno() && $lodeluser['rights'] > LEVEL_VISITOR) {
 				dberror();
 			}
@@ -153,30 +154,17 @@ if ($id || $identifier) {
 	} else {
 		die('ERROR: unknown action');
 	}
-} else { //tente de récupérer le path
+} else {
+	//tente de récupérer le path - parse la query string pour trouver l'entité
+
 	require_once 'connect.php';
 	$query = preg_replace("/[&?](format|clearcache)=\w+/", '', $_SERVER['QUERY_STRING']);
+	
 	if($query && !preg_match("/[^a-zA-Z0-9_\/-]/", $query)) {
 		// maybe a path to the document
 		$path = preg_split("#/#", $query, -1, PREG_SPLIT_NO_EMPTY);
-		$id   = 0;
-		$i    = 0;
-		while ($path[$i]) {
-			$join  = '#_TP_entities as e0';
-			$where = "AND e0.identifier='". $path[$i]. "'";
-			$j     = 1;
-			$i++;
-			while($path[$i] && ($i % 4) ) { // 4 join max
-				$join.= " INNER JOIN #_TP_entities as e$i ON e$i.idparent=e". ($i-1). ".id";
-				$where.= " AND e$i.identifier='". $path[$i]. "'";
-				$i++;
-				$j++;
-			}
-			$id = $db->getOne(lq("SELECT e". ($j-1). ".id FROM ". $join. " WHERE e0.idparent='". $id. "' ". $where));
-			if ($db->errorno()) {
-				dberror();
-			}
-		}
+		$entity = end($path);
+		$id = intval($entity);
 		if ($id) {
 			printEntities($id, '', $context);
 		}
