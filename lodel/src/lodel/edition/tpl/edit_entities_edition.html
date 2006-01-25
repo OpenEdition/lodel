@@ -82,18 +82,18 @@
 		<label for="identifier">
 			[@EDITION.IDENTIFIER]
 		</label>
-		<input  name="identifier" id="identifier" value="[#IDENTIFIER]" />
+		<input  type="text" size="50" name="identifier" id="identifier" value="[#IDENTIFIER]" />
 		<br />
 		</fieldset>
 	<fieldset class="formButtons">
 	<legend>[@COMMON.VALIDATE]</legend>
-		<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" class="noText" /> - 
-		<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]"  class="noText" /> - 
+		<input class="button" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
+		<input class="button" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
 
 	<IF COND="[#TYPE.DISPLAY]=='advanced'">
-			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'"  class="noText"  />
+			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'"  />
 	<ELSE/>
-			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'"  class="noText" />
+			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'" />
 	</IF>
 	</fieldset>
 </form>
