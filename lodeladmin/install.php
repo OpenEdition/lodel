@@ -28,7 +28,6 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
 // securise l'entree
 
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
@@ -228,7 +227,7 @@ if ($tache=="database") {
 	}
       }
     } else {
-      die("L'effacement des tables avec plusieurs bases de donnée n'est pas implementé. Veuillez effacer les bases de données vous même. Merci.");
+      die(utf8_encode("<p>L'effacement des tables avec plusieurs bases de données n'est pas implementé. Veuillez effacer les bases de données vous même. Merci.</p>"));
     }
     // erase the main tables below.
   } else { // normal case
@@ -343,7 +342,9 @@ if ($tache=="options") {
 			"filemask"=>$filemask,
 			"contactbug"=>$newcontactbug,
 			"unzipcmd"=>$newunzipcmd,
-			"zipcmd"=>$newzipcmd));
+			"zipcmd"=>$newzipcmd,
+			"URI"=>$newuri
+			));
 }
 
 
@@ -786,13 +787,12 @@ function guessfilemask() {
 
 
 function include_tpl($file)
-
-
 {
   global $langcache,$installlang;
+	echo "installang=$installlang";
   extract($GLOBALS,EXTR_SKIP);
-
-  if (!$installlang) $installlang="fr";
+	$installlang = $_REQUEST['installlang'];
+	if (!$installlang) $installlang="fr";
   if (!$langcache) {
     if (!(@include ("tpl/install-lang-$installlang.html"))) problem_include("tpl/install-lang-$installlang.html");
   }
@@ -806,8 +806,8 @@ function include_tpl($file)
   $text=preg_replace(array("/\[@(\w+\.\w+)\]/",
 			   "/\[@(\w+\.\w+)\|sprintf\(([^\]\)]+)\)\]/"),
 		     
-		     array($openphp.'echo $langcache[$installlang][strtolower(\'\\1\')];'.$closephp,			   
-			   $openphp.'echo sprintf($langcache[$installlang][strtolower(\'\\1\')],\\2);'.$closephp),
+		     array($openphp.'echo stripslashes($langcache[$installlang][strtolower(\'\\1\')]);'.$closephp,
+			   $openphp.'echo stripslashes(sprintf($langcache[$installlang][strtolower(\'\\1\')],\\2));'.$closephp),
 		     $text);
 
   #echo $text;
@@ -817,12 +817,11 @@ function include_tpl($file)
 
 
 function problem_include($filename)
-
 {
 ?>
 <html>
 <body>
-<b>Unable to access the file  <?php echo $filename; ?></b><br />
+Unable to access the file  <strong><?php echo $filename; ?></strong><br />
 Please check your directory  tpl and the file tpl/<?php echo $filename; ?> exist and are accessible by the web-serveur. Please report the bug if everything is alright.<br>
 <br />
 </body>
@@ -873,7 +872,7 @@ function problem($msg)
   );
 
 ?>
-<hmlt>
+<html>
 <head>
       <title><?php echo $langcache[$installlang]['install.install_lodel']; ?></title>
 </head>
