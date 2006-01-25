@@ -264,7 +264,6 @@ br.nobr{
 #massEdit{
 	text-align: right;
 	padding: 0 3em 8ex 0;
-	background: #fff;
 }
 
 /* PAGE EDITION, EDITION DES ENTITES */
@@ -274,6 +273,10 @@ br.nobr{
 	border: 1px solid #333;
 	font-family: "Courier New", Courier, mono;
 	font-size: 110%;
+}
+
+#editEntities input.noText{
+	border: 0;
 }
 
 #editEntities input:focus, #editEntities textarea:focus, #editEntities select:focus{
@@ -324,7 +327,6 @@ br.nobr{
 	margin: 2ex 0 .5ex 0;
 	text-align: left;
 	display: block;
-	float: none;
 }
 
 #editEntities fieldset label.boolean{

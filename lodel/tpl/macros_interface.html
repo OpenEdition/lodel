@@ -6,6 +6,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
+<script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
     <link rel="stylesheet" href="styles_lodel.css" />
     <IF COND="[#STYLECSS]">
     <style type="text/css">          
@@ -256,7 +257,7 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 <ELSE/>
 <!--[ --------------- BOOLEAN -------------- ]-->
 <IF COND="[#TYPE] eq 'boolean'">
-    <input type="checkbox" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes] />
+    <input type="checkbox" class="noText" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes] />
 <ELSE/>
 <!--[ --------------- INT, NUMBER -------------- ]-->
 <IF COND="[#TYPE] eq 'int' or [#TYPE] eq 'number'">
@@ -289,12 +290,12 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
     <IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td></IF>
     <td>
     <IF COND="[#VALUE]">
-      <input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
-      <input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
+      <input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
+      <input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
     </IF>
-    <input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
+    <input type="radio" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
     <a href="#" onclick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-    <input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onchange="document.getElementById('[#VARNAME][radioupload]').click();" />
+    <input type="radio" class="noText" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onchange="document.getElementById('[#VARNAME][radioupload]').click();" />
     </td>
   </tr></table>
   <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
@@ -363,12 +364,12 @@ cp_[#VARNAME].writeDiv();
 		<IF COND="[#VALUE]"><tr><td>[@COMMON.FILE] :<strong>[(#VALUE)]</strong></td></tr></IF>
     <tr><td>
 	  <IF COND="[#VALUE]">
-			<input type="radio" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
-			<input type="radio" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
+			<input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
+			<input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
 		</IF>
-		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile" />
+		<input type="radio" class="noText" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile" />
 	   <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-		<input type="radio" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
+		<input type="radio" class="noText" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
 		</td></tr></table>
 	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
 <ELSE/>
@@ -701,7 +702,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 		<FUNC NAME="JS_RADIOS">
 		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />	
 		<LOOP NAME="field_selection_values">
-			<input onchange="radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]')" type="radio" 
+			<input onchange="radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]')" type="radio" class="noText" 
 							id="radio_[#VARNAME]" name="radio_[#VARNAME]" 
 							value="[#VALUE]" [#CHECKED] />&nbsp;[#VALUE]
 		</LOOP>
@@ -715,7 +716,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 	<FUNC NAME="JS_CHECKBOXES">
 		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />	
 		<LOOP NAME="field_selection_values">
-			<input onchange="checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]')" type="checkbox" 
+			<input onchange="checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]')" type="checkbox" class="noText" 
 							id="checkbox_[#VARNAME]" name="checkbox_[#VARNAME]" 
 							value="[#VALUE]" [#CHECKED] />&nbsp;[#VALUE]
 		</LOOP>
