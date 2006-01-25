@@ -33,7 +33,18 @@ include 'tpl/install-openhtml.html';
 ]-->
 
 <!--[ ce fichier n'est pas un template ]-->
-<form action="install.php" method="get">
+
+<p>[@INSTALL.LODEL_OPENSOURCE_SOFTWARE_GNU_GPL_LICENSE_NO_WARRANTY_SEE_USE_CONDITIONS].</p>
+<!--[
+Je pense qu'il faudrait rajouter ici un check des prérequis de l'installation :
+- PHP
+- MySQL
+- librairie GD (Warning)
+- librairie Imap (Warning)
+
+
+]-->
+<form action="install.php" method="get" id="langform">
 <label for="lang">
 [@INSTALL.CHOOSE_INSTALLATION_LANGUAGE]
 </label>
@@ -53,17 +64,6 @@ unset($langs);
 ?>
 </select>
 </form>
-<p>[@INSTALL.LODEL_OPENSOURCE_SOFTWARE_GNU_GPL_LICENSE_NO_WARRANTY_SEE_USE_CONDITIONS].</p>
-<!--[
-Je pense qu'il faudrait rajouter ici un check des prérequis de l'installation :
-- PHP
-- MySQL
-- librairie GD (Warning)
-- librairie Imap (Warning)
-
-
-]-->
-
 <h2>1. [@INSTALL.CHOOSE_INSTALLATION_TYPE]</h2>
 <hr />
 <form method="post" action="install.php">
