@@ -212,12 +212,10 @@
 <IF COND="[#EDITION] eq 'display'">
 	<IF COND="[#TYPE] eq 'mltext'"> <!--[ multi-lingue ]-->
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-	    <div>[(#LANG|humanlang|ucfirst)] : <span class="displayfield">[#VALUE]</span></div>
+	    <div>[(#LANG|humanlang|ucfirst)] : <div class="displayfield">[#VALUE]</div></div>
 	  </LOOP>
 	<ELSE/> <!--[ other cases ]-->
-	<span class="displayfield">
-	<IF COND="[#TYPE] ne 'passwd'"><div class="editiondisplay">[#VALUE]</div><ELSE/>*******</IF>
-	<span>
+		<div class="editiondisplay"><IF COND="[#TYPE] ne 'passwd'">[#VALUE]<ELSE/>*******</IF></div>
 	</IF>
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
@@ -443,7 +441,7 @@ cp_[#VARNAME].writeDiv();
         <DO>
 		<LOOP NAME="edition_fields">
 			<BEFORE>
-			<div class="onePerson">
+			<div class="oneItem">
 			</BEFORE>
 		        <DO>
 			  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
@@ -469,7 +467,7 @@ cp_[#VARNAME].writeDiv();
  	<LOOP NAME="edition_fields">
 		<BEFORE>
 	       		<div id="persons_[#VARNAME]_for_copy" style="display:none">
-			<div class="onePerson">
+			<div class="oneItem">
 		</BEFORE>
 		<DO>
 			

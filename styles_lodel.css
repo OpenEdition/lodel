@@ -343,14 +343,19 @@ br.nobr{
 	margin: 2ex 0 0 0;
 }
 
-#editEntities div.onePerson{
+#editEntities div.oneItem, #editEntities div.displayfield{
 	background: #fff;
 	padding: 0 1em 2ex 1em;
 	border: 1px solid #cecece;
 	margin: 2ex 2em 1ex 0;
 }
 
-#editEntities  div.onePerson input:not([type="submit"]), #editEntities div.onePerson textarea, #editEntities div.onePerson select{
+#editEntities div.displayfield{
+	font-family: "Courier New", Courier, mono;
+	font-size: 120%;
+}
+
+#editEntities  div.oneItem input:not([type="submit"]), #editEntities div.oneItem  textarea, #editEntities div.oneItem  select{
 	background: #ecf2fd;
 }
 
