@@ -279,6 +279,18 @@ br.nobr{
 	border: 0;
 }
 
+#editEntities input.button{
+	border: 2px outset #333;
+	background: #f1f5fb;
+	font-family: verdana, sans-serif;
+	font-weight: bold;
+}
+
+#editEntities input.button:focus{
+	border: 2px outset red;
+}
+
+
 #editEntities input:focus, #editEntities textarea:focus, #editEntities select:focus{
 	border: 1px solid red;
 }
