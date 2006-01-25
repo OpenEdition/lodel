@@ -378,6 +378,14 @@ function ajouter_entite(obj) {
 	window.location=obj.options[index].value;
 }
 
+function showFocus() {  
+    this.className = "focusOn";
+}
+
+function hideFocus() {
+    this.className = "focusOff";
+}
+
 /************************************************************************/
 /* END Miscellaneous functions
 /************************************************************************/

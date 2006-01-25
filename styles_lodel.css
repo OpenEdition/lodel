@@ -264,16 +264,22 @@ br.nobr{
 #massEdit{
 	text-align: right;
 	padding: 0 3em 8ex 0;
+	background: #fff;
 }
 
 /* PAGE EDITION, EDITION DES ENTITES */
 
-#editEntities input:not([type="submit"]), #editEntities textarea, #editEntities select{
+#editEntities input, #editEntities textarea, #editEntities select{
 	background: #fff;
 	border: 1px solid #333;
 	font-family: "Courier New", Courier, mono;
 	font-size: 110%;
 }
+
+#editEntities input:focus, #editEntities textarea:focus, #editEntities select:focus{
+	border: 1px solid red;
+}
+
 
 #editEntities h2.formTitle{
 	margin: 0;
@@ -350,13 +356,18 @@ br.nobr{
 	margin: 2ex 2em 1ex 0;
 }
 
+#editEntities div.mlTitle{
+	margin: 3ex 0 -1.5ex 0;
+	color: #0e2d7c;
+}
+
 #editEntities div.displayfield{
 	font-family: "Courier New", Courier, mono;
 	font-size: 120%;
 }
 
-#editEntities  div.oneItem input:not([type="submit"]), #editEntities div.oneItem  textarea, #editEntities div.oneItem  select{
-	background: #ecf2fd;
+#editEntities  div.oneItem input, #editEntities div.oneItem  textarea, #editEntities div.oneItem  select{
+	background: #f1f5fb;
 }
 
 
