@@ -86,13 +86,14 @@
 		<br />
 		</fieldset>
 	<fieldset class="formButtons">
-		<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
-		<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
+	<legend>[@COMMON.VALIDATE]</legend>
+		<input class="form" type="submit" name="soumettre" value="[@EDITION.FINISH]" class="noText" /> - 
+		<input class="form" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]"  class="noText" /> - 
 
 	<IF COND="[#TYPE.DISPLAY]=='advanced'">
-			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'" />
+			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'"  class="noText"  />
 	<ELSE/>
-			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'" />
+			<input class="form" type="submit" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'"  class="noText" />
 	</IF>
 	</fieldset>
 </form>
