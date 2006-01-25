@@ -343,6 +343,18 @@ br.nobr{
 	margin: 2ex 0 0 0;
 }
 
+#editEntities div.onePerson{
+	background: #fff;
+	padding: 0 1em 2ex 1em;
+	border: 1px solid #cecece;
+	margin: 2ex 2em 1ex 0;
+}
+
+#editEntities  div.onePerson input:not([type="submit"]), #editEntities div.onePerson textarea, #editEntities div.onePerson select{
+	background: #ecf2fd;
+}
+
+
 #entityIdent{
 	margin-left: 70px;
 }
