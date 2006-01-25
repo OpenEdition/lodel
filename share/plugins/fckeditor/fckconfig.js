@@ -84,7 +84,7 @@ FCKConfig.ToolbarSets["Advanced"] = [
         ['Link','Unlink'],
         ['TextColor','BGColor'],
         ['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
-        ['Table','Rule','SpecialChar','Smiley'],
+        ['Table','Rule','SpecialChar'],
         ['Style','FontFormat','FontName','FontSize'],
         ['About','-','Source']
 
@@ -97,7 +97,7 @@ FCKConfig.ToolbarSets["Default"] = [
         ['Link','Unlink'],
         ['TextColor','BGColor'],
         ['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
-        ['Table','Rule','SpecialChar','Smiley'],
+        ['Table','Rule','SpecialChar'],
         ['Style','FontFormat','FontName','FontSize'],
         ['About','-','Source']
 
