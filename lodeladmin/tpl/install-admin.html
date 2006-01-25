@@ -1,29 +1,34 @@
 <?php
-$current = "admin";
-include("tpl/install-openhtml.html");
+$current = 'admin';
+include 'tpl/install-openhtml.html';
 ?>
-
+<h2>[@INSTALL.CREATE_INITIAL_ADMIN_AND_CHOOSE_LOGIN_PASSWORD].</h2>
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="center">[@INSTALL.CREATE_INITIAL_ADMIN_AND_CHOOSE_LOGIN_PASSWORD].</p>
-<p></p>
-<?php  if ($erreur_create) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.UNABLE_TO_CONNECT_SERVER_CHECK_ACCESS_INFORMATION_PARAMETERS|sprintf($dbhost)] : <?php  echo mysql_error(); } ?>
+<?php  if ($erreur_create) { ?> 
+	<strong>[@INSTALL.ERROR]</strong>:&nbsp;
+	[@INSTALL.UNABLE_TO_CONNECT_SERVER_CHECK_ACCESS_INFORMATION_PARAMETERS|sprintf($dbhost)] :&nbsp;
+	<?php  echo mysql_error(); } ?>
 
 <form method="post" action="install.php">
-<input type="hidden" name="tache" value="admin" />
-<label for="adminusername">[@INSTALL.LOGIN] :</label>
-<input type="text" size="20" name="adminusername" id="adminusername" value="<?php  echo $adminusername; ?>" />
-<label for="adminpasswd">[@INSTALL.PASSWORD] :</label>
-<input type="password" size="20" name="adminpasswd" id="adminpasswd" value="" />
-<label for="adminpasswd">[@INSTALL.CONFIRM_PASSWORD]:</label>
-<input type="password" size="20" name="adminpasswd2" id="adminpasswd2" value="" />
-<?php  if ($erreur_confirm_passwd) { ?> <b>[@INSTALL.ERROR]</b>: [@INSTALL.THE_TWO_PASSWD_ARE_NOT_IDENTICAL] <?php } ?>
-<label for="lang">[@INSTALL.LANGUAGE]:</label>
-<select name="lang">
-<?php makeSelectLang(); ?>
-</select>
-
-<input type="submit" value="[@INSTALL.CONTINUE]" />
+	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
+	<input type="hidden" name="tache" value="admin" />
+	<label for="adminusername">[@INSTALL.LOGIN] :</label>
+	<input type="text" size="20" name="adminusername" id="adminusername" value="<?php  echo $adminusername; ?>" />
+	<label for="adminpasswd">[@INSTALL.PASSWORD] :</label>
+	<input type="password" size="20" name="adminpasswd" id="adminpasswd" value="" />
+	<label for="adminpasswd">[@INSTALL.CONFIRM_PASSWORD]:</label>
+	<input type="password" size="20" name="adminpasswd2" id="adminpasswd2" value="" />
+	<?php  if ($erreur_confirm_passwd) { ?>
+		<strong>[@INSTALL.ERROR]</strong>:&nbsp;
+		[@INSTALL.THE_TWO_PASSWD_ARE_NOT_IDENTICAL] 
+	<?php } ?>
+	<label for="lang">[@INSTALL.LANGUAGE]:</label>
+	<select id="lang" name="lang">
+		<?php makeSelectLang(); ?>
+	</select>
+	<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 
+<!--[ Inclusion du template de fermeture HTML ]-->
 <?php  include("tpl/install-closehtml.html"); ?>

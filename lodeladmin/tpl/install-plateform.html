@@ -36,35 +36,41 @@ include("tpl/install-openhtml.html");
 
 
 <h2>[@INSTALL.CHOOSE_SERVER_CONFIGURATION].</h2>
-
-      <p align="justify">[@INSTALL.CHOOSE_SERVER_CONFIGURATION_TYPE_COMPATIBLE_WITH_YOUR_PROVIDER] :
-      </p>
-      <hr style="width: 100%; height: 2px;">
+<p align="justify">
+	[@INSTALL.CHOOSE_SERVER_CONFIGURATION_TYPE_COMPATIBLE_WITH_YOUR_PROVIDER] :
+</p>
+<hr style="width: 100%; height: 2px;">
 <form method="post" action="install.php">
-<input type="hidden" name="tache" value="plateform">
-<input type="hidden" name="installoption" value="<?php echo $installoption;?>">
-<table cellspacing="0" cellpadding="0">
-<tr><th>&nbsp;</th><th>[@INSTALL.CONFIGURATION_NAME]</th><th>[@INSTALL.COMMENTS]</th></tr>
+	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
+	<input type="hidden" name="tache" value="plateform" />
+	<input type="hidden" name="installoption" value="<?php echo $installoption;?>">
+	<table cellspacing="0" cellpadding="0">
+	<tr>
+		<th>&nbsp;</th>
+		<th>[@INSTALL.CONFIGURATION_NAME]</th>
+		<th>[@INSTALL.COMMENTS]</th>
+	</tr>
 <?php
-	    $dir=opendir($plateformdir);
-	    while ($file=readdir($dir)) {
-	    $file=$plateformdir."/".$file;
-	    if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
-	    $plateform=$result[1];
-	    preg_match("/\/\*\s*comment\s*\n(.*?)\ncomment\s*\*\//is",join("",file($file)),$result);
-	    $commentaire=$result[1];
-	    if (!$commentaire) $commentaire="&nbsp;";
+	$dir=opendir($plateformdir);
+	while ($file=readdir($dir)) {
+	$file=$plateformdir."/".$file;
+	if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
+	$plateform=$result[1];
+	preg_match("/\/\*\s*comment\s*\n(.*?)\ncomment\s*\*\//is",join("",file($file)),$result);
+	$commentaire=$result[1];
+	if (!$commentaire) $commentaire="&nbsp;";
 ?>
-<tr><td><input type="radio" name="plateform" value="<?php  echo $plateform; ?>"></td><td><?php  echo $plateform; ?></td><td><?php  echo $commentaire; ?></td></tr>
-
+	<tr>
+		<td>
+			<input type="radio" name="plateform" value="<?php  echo $plateform; ?>" />
+		</td>
+		<td><?php  echo $plateform; ?></td><td><?php  echo $commentaire; ?></td>
+	</tr>
 <?php  } ?>
 </table>
 <br />
-<input type="submit" value="[@INSTALL.CONTINUE]">
+	<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
-        <p align="justify">[@INSTALL.HOWTO_CONFIGURE_TO_EASE_INSTALLATION].</p>
-
-        <p align="justify">[@INSTALL.IF_INSTALLATION_SUCCESSFULL_ON_UNLISTED_PROVIDER_LET_IT_KNOWN].</p>
-
+<p align="justify">[@INSTALL.HOWTO_CONFIGURE_TO_EASE_INSTALLATION].</p>
+<p align="justify">[@INSTALL.IF_INSTALLATION_SUCCESSFULL_ON_UNLISTED_PROVIDER_LET_IT_KNOWN].</p>
 <?php  include("tpl/install-closehtml.html"); ?>
-

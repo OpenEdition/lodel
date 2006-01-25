@@ -1,9 +1,8 @@
 <?php
-$current = "mysql";
-include("tpl/install-openhtml.html");
+$current = 'mysql';
+include 'tpl/install-openhtml.html';
 ?>
 <!--[
-
   LODEL - Logiciel d'Edition ELectronique.
 
   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
@@ -33,61 +32,71 @@ include("tpl/install-openhtml.html");
 ]-->
 
 <!--[ ce fichier n'est pas un template ]-->
-
 <h2>[@INSTALL.ACCESS_TO_DATABASE_SERVER].</h2>
-
-
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p align="justify">[@INSTALL.GIVE_INFORMATION_TO_CONNECT_TO_DATABASE].</p>
+	<p align="justify">[@INSTALL.GIVE_INFORMATION_TO_CONNECT_TO_DATABASE].</p>
 <?php } else { // OPTION 2 ?>
-<p>[[@INSTALL.OPTION_2]]</p>
-<p align="justify">
-[@INSTALL.GIVE_SPECIFICATION_TO_CONNECT_TO_DATABASE_SERVER_DATABASE_USER_NEEDS_USAGE_RIGHTS]. 
-[@INSTALL.TO_CREATE_USER_USE_GRANT_COMMAND_IN_DATABASE_SERVER].
-<?php if (!$newdbusername) { ?>
-[@INSTALL.FOR_INSTANCE] :
-</p>
-<p>
-<code>
-GRANT USAGE ON *.* TO monutilisateur@monserveurweb IDENTIFIED BY 'monmotdepasse';
-</code>
-<?php } else { ?>
-[@INSTALL.IN_YOUR_CASE] :
-</p>
-<p>
-<code>
-GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'monmotdepasse';
-</code>
-<?php } ?>
-</p>
-<p>
-</p>
+	<p>[[@INSTALL.OPTION_2]]</p>
+	<p align="justify">
+		[@INSTALL.GIVE_SPECIFICATION_TO_CONNECT_TO_DATABASE_SERVER_DATABASE_USER_NEEDS_USAGE_RIGHTS]. 
+		[@INSTALL.TO_CREATE_USER_USE_GRANT_COMMAND_IN_DATABASE_SERVER].
+	<?php if (!$newdbusername) { ?>
+		[@INSTALL.FOR_INSTANCE] :
+	</p>
+	<p>
+		<code>
+			GRANT USAGE ON *.* TO monutilisateur@monserveurweb IDENTIFIED BY 'monmotdepasse';
+		</code>
+	<?php } else { ?>
+		[@INSTALL.IN_YOUR_CASE] :
+	</p>
+	<p>
+		<code>
+			GRANT USAGE ON *.* TO <?php echo "$newdbusername@$newdbhost";?> IDENTIFIED BY 'monmotdepasse';
+		</code>
+	<?php } ?>
+	</p>
+	<br />
 <?php } // fin OPTION 2 ?>
 
 <hr style="width: 100%; height: 2px;">
 
-<?php  if ($erreur_connect) { ?> <b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.UNABLE_TO_CONNECT_TO_DATABASE_SERVER_ERROR_IS]: <?php  echo mysql_error(); ?> </span><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?>
+	<strong>[@INSTALL.ERROR]</strong> :&nbsp;
+		<span style="color: red">
+			[@INSTALL.UNABLE_TO_CONNECT_TO_DATABASE_SERVER_ERROR_IS]: <?php  echo mysql_error(); ?>
+		</span>
+		<br />
+<?php } ?>
 
 <form method="post" action="install.php">
-<input type="hidden" name="tache" value="mysql" />
-<label for="newdbhost">[@INSTALL.DATABASE_SERVER]</label>
-<input type="text" size="60" name="newdbhost" id="newdbhost" value="<?php  echo $dbhost; ?>" />
-<label for="newdbusername">[@INSTALL.DATABASE_USER]</label>
-<input type="text" size="60" name="newdbusername"  id="newdbusername" value="<?php  echo $dbusername; ?>" />
-<label for="newdbpasswd">[@INSTALL.PASSWORD_FOR_DATABASE_USER]</label>
-<input type="password" size="60" name="newdbpasswd" id="newdbpasswd" value="" /><br />&nbsp;<br />
-<input type="submit" value="[@INSTALL.CONTINUE]" />
+	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
+	<input type="hidden" name="tache" value="mysql" />
+	<label for="newdbhost">[@INSTALL.DATABASE_SERVER]</label>
+	<input type="text" size="60" name="newdbhost" id="newdbhost" value="<?php  echo $dbhost; ?>" />
+	<label for="newdbusername">[@INSTALL.DATABASE_USER]</label>
+	<input type="text" size="60" name="newdbusername"  id="newdbusername" value="<?php  echo $dbusername; ?>" />
+	<label for="newdbpasswd">[@INSTALL.PASSWORD_FOR_DATABASE_USER]</label>
+	<input type="password" size="60" name="newdbpasswd" id="newdbpasswd" value="" />
+	<br /><br />
+	<input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 
-
 <?php if ($installoption==1) { // OPTION 1 ?>
-    <hr style="width: 100%; height: 2px;">
-    <p align="justify"><strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :</strong> [@INSTALL.ADDRESS_GIVEN_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
-        </p>
-        <p align="justify"><strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :</strong> [@INSTALL.INDICATED_BY_YOUR_PROVIDER]. </p>
-        <p align="justify"><strong>[@INSTALL.IF_ANY_DOUBT] : </strong>[@INSTALL.CONTACT_YOUR_PROVIDER]. </p>
-
+	<hr style="width: 100%; height: 2px;">
+	<p align="justify">
+		<strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :&nbsp;</strong>
+		[@INSTALL.ADDRESS_GIVEN_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
+	</p>
+	<p align="justify">
+		<strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :&nbsp;</strong>
+		[@INSTALL.INDICATED_BY_YOUR_PROVIDER].
+	</p>
+	<p align="justify">
+		<strong>[@INSTALL.IF_ANY_DOUBT] :&nbsp;</strong>
+		[@INSTALL.CONTACT_YOUR_PROVIDER].
+	</p>
 <?php } // fin OPTION 1 ?>
 
-
+<!--[ Inclusion du template de fermeture HTML ]-->
 <?php  include("tpl/install-closehtml.html"); ?>

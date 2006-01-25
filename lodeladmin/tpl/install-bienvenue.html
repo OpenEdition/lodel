@@ -1,97 +1,134 @@
 <?php
-$current = "start";
-include("tpl/install-openhtml.html");
+$current = 'start';
+include 'tpl/install-openhtml.html';
 ?>
+
 <!--[
- 
    LODEL - Logiciel d'Edition ELectronique.
- 
+
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- 
+
    Home page: http://www.lodel.org
- 
+
    E-Mail: lodel@lodel.org
- 
+
                              All Rights Reserved
- 
+
       This program is free software; you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
       the Free Software Foundation; either version 2 of the License, or
       (at your option) any later version.
- 
+
       This program is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
- 
+
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
 ]-->
 
 <!--[ ce fichier n'est pas un template ]-->
-
-
+<form action="install.php" method="get">
+<label for="lang">
+[@INSTALL.CHOOSE_INSTALLATION_LANGUAGE]
+</label>
+<select name="installlang" id="installlang" onchange="submit();">
+<?php
+require_once('lang.php');
+$langs = $GLOBALS['installlanguages'];
+foreach($langs as $la => $lang) {
+	$la = strtolower($la);
+	if($la==$installlang) {
+		echo "<option value=\"$la\" selected=\"selected\">$lang</option>";
+	} else {
+		echo "<option value=\"$la\">$lang</option>";
+	}
+}
+unset($langs);
+?>
+</select>
+</form>
 <p>[@INSTALL.LODEL_OPENSOURCE_SOFTWARE_GNU_GPL_LICENSE_NO_WARRANTY_SEE_USE_CONDITIONS].</p>
+<!--[
+Je pense qu'il faudrait rajouter ici un check des prérequis de l'installation :
+- PHP
+- MySQL
+- librairie GD (Warning)
+- librairie Imap (Warning)
 
 
-<h2>[@INSTALL.CHOOSE_INSTALLATION_TYPE]</h2>
-    <hr />
-    <form method="post" action="install.php">
+]-->
+
+<h2>1. [@INSTALL.CHOOSE_INSTALLATION_TYPE]</h2>
+<hr />
+<form method="post" action="install.php">
 	<fieldset>
-      <input type="hidden" name="tache" value="droits" />
-      <?php if ($installing) { ?>
-      <p>[@INSTALL.INSTALLATION_BEGUN_WHAT_TO_DO] :</p>
-      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="continue" value="[@INSTALL.CONTINUE_BEGUN_INSTALLATION]." /></p>
-      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option1" value="[@INSTALL.DO_AGAIN_EASY_INSTALLATION]." /></p>
-      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="erase_and_option2" value="[@INSTALL.DO_AGAIN_ADVANCED_INSTALLATION_FOR_SPECIALISTS]." /></p>
-<?php } else { ?>
-      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="option1" value="[@INSTALL.EASY_INSTALLATION]." /></p>
-      <p>&nbsp;&nbsp;&nbsp; <input type="submit" name="option2" value="[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]." /></p>
-<?php } ?>
-</fieldset>
+		<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
+		<input type="hidden" name="tache" value="droits" />
+		<?php if ($installing) { ?>
+		<p>[@INSTALL.INSTALLATION_BEGUN_WHAT_TO_DO] :</p>
+		<p>&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="continue" value="[@INSTALL.CONTINUE_BEGUN_INSTALLATION]." />
+		</p>
+		<p>&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="erase_and_option1" value="[@INSTALL.DO_AGAIN_EASY_INSTALLATION]." />
+		</p>
+		<p>&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="erase_and_option2" value="[@INSTALL.DO_AGAIN_ADVANCED_INSTALLATION_FOR_SPECIALISTS]." />
+		</p>
+		<?php } else { ?>
+		<p>&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="option1" value="[@INSTALL.EASY_INSTALLATION]." />
+		</p>
+		<p>&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="option2" value="[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]." />
+		</p>
+		<?php } ?>
+	</fieldset>
 </form>
 
-    <hr />
+<hr />
+
 <ul>
 	<li>[@INSTALL.EASY_INSTALLATION_FOR_WEBSITE_PROVIDER]
-        <ul>
-          <li>
-            <strong>[@INSTALL.ADVANTAGE] :</strong>
-	     [@INSTALL.EASY_AND_FAST_OPTION_FOR_PROVIDER_CONTROLLING_FILERIGHTS_SECURITY].
-           </li>
+		<ul>
 			<li>
-			<strong>[@INSTALL.INCONVENIENCE_LOW_SECURITY_LEVEL].</strong>
+				<strong>[@INSTALL.ADVANTAGE] :</strong>
+					[@INSTALL.EASY_AND_FAST_OPTION_FOR_PROVIDER_CONTROLLING_FILERIGHTS_SECURITY].
 			</li>
-        </ul>
-</li>
-     <li>
-          [@INSTALL.ADVANCED_INSTALLATION_FOR_SYSTEM_ADMIN_WORKING_ON_OWN_SERVER].
-     
-        <ul>
-          <li>
-            <strong>[@INSTALL.ADVANTAGE] :</strong>[@INSTALL.SAFE_AND_CONFIGURABLE_INSTALLATION_ALLOW_ACUTE_ADMINISTRATION_FOR_FILERIGHTS_DATABASERIGHTS_AND_OTHER_OPTIONS]. 
-		 </li>
-		<li>
-			<strong>[@INSTALL.DISADVANTAGE] :</strong>[@INSTALL.MORE_COMPLEX_NEED_SYSTEM_ADMIN_SKILLS_READ_COMPLETELY_INSTALLATIONDOC].
-      	</li>
-    </ul>
-</li>
-  </ul>
+			<li>
+				<strong>[@INSTALL.INCONVENIENCE_LOW_SECURITY_LEVEL].</strong>
+			</li>
+		</ul>
+	</li>
+	<li>
+		[@INSTALL.ADVANCED_INSTALLATION_FOR_SYSTEM_ADMIN_WORKING_ON_OWN_SERVER].
+		<ul>
+			<li>
+				<strong>[@INSTALL.ADVANTAGE] :&nbsp;</strong>
+				[@INSTALL.SAFE_AND_CONFIGURABLE_INSTALLATION_ALLOW_ACUTE_ADMINISTRATION_FOR_FILERIGHTS_DATABASERIGHTS_AND_OTHER_OPTIONS].
+			</li>
+			<li>
+				<strong>[@INSTALL.DISADVANTAGE] :&nbsp;</strong>
+				[@INSTALL.MORE_COMPLEX_NEED_SYSTEM_ADMIN_SKILLS_READ_COMPLETELY_INSTALLATIONDOC].
+			</li>
+		</ul>
+	</li>
+</ul>
 
 <hr />
+
 <h2 id="conditions">[@INSTALL.USE_CONDITIONS]</h2>
 
-<p>[@INSTALL.OPENSOURCE_SOFTWARE_GNU_LICENSE]. </p>
-<p>[@INSTALL.NO_WARRANTY_SEE_GNU_GPL_LICENSE]. </p>
-<p>[@INSTALL.GNU_GPL_LICENSE_COPY_PROVIDED_WITH_SOFTWARE_IF_NOT_CONTACT_FSF]. </p>
-
+<p>[@INSTALL.OPENSOURCE_SOFTWARE_GNU_LICENSE].</p>
+<p>[@INSTALL.NO_WARRANTY_SEE_GNU_GPL_LICENSE].</p>
+<p>[@INSTALL.GNU_GPL_LICENSE_COPY_PROVIDED_WITH_SOFTWARE_IF_NOT_CONTACT_FSF].</p>
 <p>[@INSTALL.GNU_GPL_LICENSE_LINK]</p>
 
-
-
-
+<!--[ Inclusion du template de fermeture HTML ]-->
 <?php  include("tpl/install-closehtml.html"); ?>

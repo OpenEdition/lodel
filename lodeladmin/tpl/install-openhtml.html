@@ -26,51 +26,57 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 <title>
-<?php echo $GLOBALS['langcache'][$lang]["install.install_lodel"]; ?>
+<?php 
+	echo $GLOBALS['langcache'][$installlang]['install.install_lodel'];
+?>
 </title>
 <link rel="stylesheet" type="text/css" href="css/install.css" />
 </head>
-<body> 
-<h1 id="logo"><img src="images/install_bandeau.jpg" alt="<?php echo $GLOBALS['langcache'][$lang]['install.lodel_electronic_edition_software'];?>" /></h1>
-<h2 id="install"><?php echo $GLOBALS['langcache'][$lang]['install.installation']; ?></h2>
+<body>
+
+<h1 id="logo"><img src="images/install_bandeau.jpg" alt="<?php echo $GLOBALS['langcache'][$installlang]['install.lodel_electronic_edition_software'];?>" /></h1>
+<h2 id="install"><?php echo $GLOBALS['langcache'][$installlang]['install.installation']; ?></h2>
+
 <?php
 switch($current){
-	case "plateform":
-	$msg=$GLOBALS['langcache'][$lang]["install.server_configuration_choice"];
+case "plateform":
+	$msg="2. ".$GLOBALS['langcache'][$installlang]["install.choose_server_configuration"];
 	break;
-	case "droits":
-	$msg=$GLOBALS['langcache'][$lang]["install.access_to_directory"];
+case "droits":
+	$msg=$GLOBALS['langcache'][$installlang]["install.access_to_directory"];
 	break;
-	case "mysql":
-	$msg=$GLOBALS['langcache'][$lang]["install.access_to_database_server"];
+case "mysql":
+	$msg="3. ".$GLOBALS['langcache'][$installlang]["install.access_to_database_server"];
 	break;
-	case "database":
-	$msg=$GLOBALS['langcache'][$lang]["install.database_choice"];
+case "database":
+	$msg="4. ".$GLOBALS['langcache'][$installlang]["install.database"];
 	break;
-	case "admin":
-	$msg=$GLOBALS['langcache'][$lang]["install.initial_administrator_creation"];
+case "admin":
+	$msg="5. ".$GLOBALS['langcache'][$installlang]["install.create_initial_admin_and_choose_login_password"];
 	break;
-	case "options":
-	$msg=$GLOBALS['langcache'][$lang]["install.options"];
+case "options":
+	$msg="6. ".$GLOBALS['langcache'][$installlang]["install.options"];
 	break;
-	case "servoo":
-	$msg=$GLOBALS['langcache'][$lang]["install.servoo_configuration"];
+case "servoo":
+	$msg=$GLOBALS['langcache'][$installlang]["install.servoo_configuration"];
 	break;
-	case "config":
-	$msg=$GLOBALS['langcache'][$lang]["install.configuration_file_installation"];
+case "config":
+	$msg=$GLOBALS['langcache'][$installlang]["install.configuration_file_installation"];
 	break;
-	case "showconfig":
-	$msg=$GLOBALS['langcache'][$lang]["install.configuration_file_view"];
+case "showconfig":
+	$msg=$GLOBALS['langcache'][$installlang]["install.configuration_file_view"];
 	break;
-	case "start":
-	$msg=$GLOBALS['langcache'][$lang]["install.installation_type_choice"];
+case "start":
+	$msg="1. ".$GLOBALS['langcache'][$installlang]["install.choose_installation_type"];
 	break;
-	case "fin":
-	$msg=$GLOBALS['langcache'][$lang]["install.installation_end"];
+case "fin":
+	$msg=$GLOBALS['langcache'][$installlang]["install.installation_end"];
 	break;
-	default:
-	$msg=$GLOBALS['langcache'][$lang]["install.install_lodel"];
+default:
+	$msg=$GLOBALS['langcache'][$installlang]["install.install_lodel"];
 }
 ?>
-<div id="bandeau"><h3><?php echo $msg; ?></h3></div>
+<div id="bandeau">
+	<h3><?php echo $msg; ?></h3>
+</div>
 <div id="main">
