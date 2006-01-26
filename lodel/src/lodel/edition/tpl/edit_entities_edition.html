@@ -54,7 +54,7 @@
 			<LET VAR="permanent_link">
 			<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
 			</LET>
-			<dt><a href="[#PERMANENT_LINK]" title="[#PERMANENT_LINK]">[@EDITION.PERMANENT_LINK]</a></dt>
+			<dt><a href="#" title="[#PERMANENT_LINK]" onclick="prompt('[@EDITION.PERMANENT_LINK]','[#PERMANENT_LINK|trim]'); return false;">[@EDITION.PERMANENT_LINK]</a></dt>
 			
 			<dd>
 			<IF COND="[#ERROR.IDENTIFIER]">
