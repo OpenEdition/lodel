@@ -305,24 +305,30 @@ br.nobr{
 	font-weight: bold;
 }
 
-#editEntities dl{
-	margin: -1ex 0 2ex 70px;
-	line-height: 200%;
+#infosEntitie{
+	position: absolute;
+	left: 600px;
+	font-size: 90%;
+	width: 300px;
+	border: 1px solid #cecece;
+	margin: 4ex 0 3ex 40px;
+	padding: 2ex 1em 2ex 1em;
+	background: #f7f7f7;
 }
 
-#editEntities dl.infosEntitie dt{
+#infosEntitie dt{
 	float: left;
 	font-weight: bold;
 }
 
-#editEntities dl.infosEntitie dt.select{
+#infosEntitie dt.select{
 	padding-top: .1ex;
 }
 
 #editEntities fieldset{
-	width: 600px;
+	width: 550px;
 	border: 1px solid #cecece;
-	margin: 0 0 3ex 70px;
+	margin: 0 0 3ex 40px;
 	padding: 2ex 1em 2ex 1em;
 	background: #f7f7f7;
 	font-size: 90%;
