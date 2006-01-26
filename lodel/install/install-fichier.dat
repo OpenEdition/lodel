@@ -94,6 +94,9 @@ ln css
 ln tpl/macros.html
 ln tpl/macros2.html
 
+# templates rss dans src/lodel/edition/tpl
+ln tpl/backend_dashboard_history.html
+
 # chaine d'importation
 ln oochargement.php
 ln tpl/oochargement.html
@@ -160,6 +163,7 @@ ln siteconfig.php
 ln tpl/login.html
 ln login.php
 ln logout.php
+ln loginHTTP.php
 #
 
 ln tpl/macros.html
