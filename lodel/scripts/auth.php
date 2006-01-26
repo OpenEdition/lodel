@@ -63,7 +63,7 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
  *
  * @param integer $level Le niveau de l'utilisateur. Par défaut 0
  */
-function authenticate($level = 0)
+function authenticate($level = 0, $mode="")
 {
 	global $context, $lodeluser;
 	global $home, $timeout, $sessionname, $site;
@@ -151,7 +151,12 @@ function authenticate($level = 0)
 	// exception
 	if ($level == 0) {
 		return; // les variables ne sont pas mises... on retourne
-	}	else {
+	}
+	elseif ($mode == 'HTTP') {
+ 		require_once 'loginHTTP.php';
+		return;		
+	}
+	else {
 		header("location: login.php?". $retour);
 		exit;
 	}
