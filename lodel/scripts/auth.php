@@ -245,7 +245,7 @@ $session   = '';
 $context = array ("version" => $GLOBALS['version'],
 									"shareurl" => $GLOBALS['shareurl'],
 									"extensionscripts" => $GLOBALS['extensionscripts'], 
-									"currenturl" => "http://".$_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ":". $_SERVER['SERVER_PORT'] : ""). $_SERVER['REQUEST_URI'],
+									"currenturl" => "http://".$_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
 									"siteroot" => defined("SITEROOT") ? SITEROOT : "",
 									"site" => $site,
 									"charset" => getacceptedcharset($charset),
