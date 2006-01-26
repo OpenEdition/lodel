@@ -435,6 +435,9 @@ cp_[#VARNAME].writeDiv();
 --------------------------------------------------------------- ]-->
 
 <DEFFUNC NAME="EDIT_PERSONS">
+	<div class="add">
+         <a href="#down" onClick="addpersons(this,'[#VARNAME]');" class="add">[@COMMON.ADD]</a>
+	</div>
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
         <LET VAR="idtype">[#ID]</LET>
@@ -484,9 +487,12 @@ cp_[#VARNAME].writeDiv();
 			</div>
         	</AFTER>
 	    </LOOP>
-         <a href="#" onClick="addpersons(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
       </LOOP>
+<a id="down" href="#persons_[#VARNAME]">&nbsp;</a>
   </div>
+	<div class="add">
+         <a href="#down" onclick="addpersons(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
+	</div>
 </DEFFUNC>
 
 

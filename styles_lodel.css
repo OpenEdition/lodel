@@ -363,6 +363,15 @@ br.nobr{
 	margin: 2ex 0 0 0;
 }
 
+#editEntities a.add{
+	color: green;
+}
+
+#editEntities div.add{
+	text-align: right;
+	margin: 2ex 2em 0 0;
+}
+
 #editEntities div.oneItem, #editEntities div.displayfield{
 	background: #fff;
 	padding: 0 1em 2ex 1em;
