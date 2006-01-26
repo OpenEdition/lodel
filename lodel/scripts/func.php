@@ -929,6 +929,96 @@ function mystripslashes (&$var)
 	}
 }
 
+/**
+ * Indentation de code HTML, XML
+ *
+ * @param string $source le code a indenter
+ * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
+ * @return le code indenté proprement :)
+ */
+function _indent_xhtml($source, $indenter = '  ')
+{
+		$search = array("\n", "\r", "\t");
+		$replace = array("", "", "");
+		$source = str_replace($search, $replace, $source);
+    // Remove all space after ">" and before "<".
+		$search = array("/>(\s)*/", "/(\s)*</");
+		$replace = array(">", "<");
+		$source = preg_replace($search, $replace, $source);
+		
+		// Iterate through the source.
+		$level = 0;
+		$source_len = strlen($source);
+		$pt = 0;
+		while ($pt < $source_len) {
+			if ($source{$pt} === '<') {
+				// We have entered a tag.
+				// Remember the point where the tag starts.
+				$started_at = $pt;
+				$tag_level = 1;
+				// If the second letter of the tag is "/", assume its an ending tag.
+				if ($source{$pt+1} === '/') {
+					$tag_level = -1;
+				}
+				// If the second letter of the tag is "!", assume its an "invisible" tag.
+				if ($source{$pt+1} === '!') {
+					$tag_level = 0;
+				}
+				// Iterate throught the source until the end of tag.
+				while ($source{$pt} !== '>') {
+					$pt++;
+				}
+				// If the second last letter is "/", assume its a self ending tag.
+				if ($source{$pt-1} === '/') {
+					$tag_level = 0;
+				}
+				$tag_lenght = $pt+1-$started_at;
+
+				// Decide the level of indention for this tag.
+				// If this was an ending tag, decrease indent level for this tag..
+				if ($tag_level === -1) {
+					$level--;
+				}
+				if ($level<0) {
+					$level = 0;
+				}
+				// Place the tag in an array with proper indention.
+				$array[] = str_repeat($indenter, $level). substr($source, $started_at, $tag_lenght);
+				// If this was a starting tag, increase the indent level after this tag.
+				if ($tag_level === 1) {
+					$level++;
+				}
+				// if it was a self closing tag, dont do shit.
+			}
+			// Were out of the tag.
+			// If next letter exists...
+			if (($pt+1) < $source_len) {
+				// ... and its not an "<".
+				if ($source{$pt+1} !== '<') {
+					$started_at = $pt+1;
+					// Iterate through the source until the start of new tag or until we reach the end of file.
+					while ($source{$pt} !== '<' && $pt < $source_len) {
+						$pt++;
+					}
+					// If we found a "<" (we didnt find the end of file) 
+					if ($source{$pt} === '<') {
+						$tag_lenght = $pt-$started_at;
+						// Place the stuff in an array with proper indention.
+						$array[] = str_repeat($indenter, $level). substr($source, $started_at, $tag_lenght);
+					}
+					// If the next tag is "<", just advance pointer and let the tag indenter take care of it.
+				} else {
+					$pt++;
+				}
+				// If the next letter doesnt exist... Were done... well, almost..
+			} else {
+				break;
+			}
+		}
+		// Replace old source with the new one we just collected into our array.
+		$source = implode($array, "\n");
+		return $source;
+}
 
 
 // valeur de retour identifier ce script

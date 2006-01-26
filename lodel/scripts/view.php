@@ -137,7 +137,7 @@ class View
 		
 		if ($id) {
 			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or dberror();
-			$newurl="http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ":". $_SERVER['SERVER_PORT'] : ""). $newurl;
+			$newurl = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
 		} else {
 				$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
 		}
@@ -169,28 +169,30 @@ class View
 	{
 		global $home;
 		if (!$cache) { // calcul la page si le cache n'existe pas
-			require_once "calcul-page.php";
+			require_once 'calcul-page.php';
 			calcul_page($context, $tpl);
 			return;
 		}
 		// si le fichier de mise-a-jour est plus recent
-		if (!isset($this->_iscachevalid)) $this->_iscachevalid();
+		if (!isset($this->_iscachevalid)) {
+			$this->_iscachevalid();
+		}
 
 		if (!$this->_iscachevalid) {
-			require_once "calcul-page.php";
+			require_once 'calcul-page.php';
 			$this->_calculateCacheAndOutput($context, $tpl);
 			// the cache is valid... do we have a php file ?
 		} else {
-			if ($this->_extcachedfile == "php") {
-				$ret = include $this->_cachedfile.".php";
+			if ($this->_extcachedfile == 'php') {
+				$ret = include $this->_cachedfile. ".php";
 				// c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
-				if ($ret == "refresh") { // does php say we must refresh ?
-					require_once "calcul-page.php";
+				if ($ret == 'refresh') { // does php say we must refresh ?
+					require_once 'calcul-page.php';
 					$this->_calculateCacheAndOutput($context, $tpl);
 				}
 			} else { // no, we have a proper html, let read it.
 				// sinon affiche le cache.
-				readfile($this->_cachedfile. ".html");
+				readfile($this->_cachedfile. '.html');
 			}
 		}
 	}
@@ -205,13 +207,15 @@ class View
 	 */
 	function renderIfCacheIsValid()
 	{
-		if (!$this->_iscachevalid()) return false;
-		if ($this->_extcachedfile == "php") {
-			$ret = include $this->_cachedfile. ".php";
-			if ($ret == "refresh") return false; // does php say we must refresh ?
+		if (!$this->_iscachevalid()) {
+			return false;
+		}
+		if ($this->_extcachedfile == 'php') {
+			$ret = include $this->_cachedfile. '.php';
+			if ($ret == 'refresh') return false; // does php say we must refresh ?
 		} else { // no, we have a proper html, let read it.
 			// sinon affiche le cache.
-			readfile($this->_cachedfile. ".html");
+			readfile($this->_cachedfile. '.html');
 		}
 		return true;
 	}
@@ -228,7 +232,7 @@ class View
 	 */
 	function renderCached(&$context, $tpl)
 	{
-		return $this->render($context,$tpl,true);
+		return $this->render($context, $tpl, true);
 	}
 	// }}}
 
@@ -253,43 +257,44 @@ class View
 		//  $this->_iscachevalid=false;
 		//  return false;
 		//}
-		require_once "func.php";
+		require_once 'func.php';
 		if (defined("SITEROOT")) {
-			$maj = myfilemtime(SITEROOT. "CACHE/maj");
+			$maj = myfilemtime(SITEROOT. 'CACHE/maj');
 		} else {
-			$maj = myfilemtime("CACHE/maj");
+			$maj = myfilemtime('CACHE/maj');
 		}
 
 		// Calcul du nom du fichier en cache
 		$this->_cachedfile = substr(rawurlencode(
-			str_replace("?id=0", "",
+			str_replace('?id=0', '',
 				preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "",
 				$_SERVER['REQUEST_URI'])). "//". $lodeluser['name']. "//". $lodeluser['rights']), 0, 255);
 		//chaque fichier de cache est stocké dans un répertoire
 		$cachedir = substr(md5($this->_cachedfile), 0, 1);
-		if ($GLOBALS['context']['charset'] != "utf-8") $cachedir = "il1.". $cachedir;
-
-		if (!file_exists("CACHE/". $cachedir)) {
-			mkdir("CACHE/". $cachedir, 0777 & octdec($GLOBALS['filemask']));
+		if ($GLOBALS['context']['charset'] != 'utf-8') {
+			$cachedir = "il1.$cachedir";
 		}
-		$this->_cachedfile = "CACHE/". $cachedir. "/". $this->_cachedfile;
-		$this->_extcachedfile = file_exists($this->_cachedfile. ".php") ? "php" : "html";
+
+		if (!file_exists("CACHE/$cachedir")) {
+			mkdir("CACHE/$cachedir", 0777 & octdec($GLOBALS['filemask']));
+		}
+		$this->_cachedfile = "CACHE/$cachedir/". $this->_cachedfile;
+		$this->_extcachedfile = file_exists($this->_cachedfile. '.php') ? 'php' : 'html';
 
 		// The variable $cachedfile must exist and be visible in the global scope
 		// The compiled file need it to know if it must produce cacheable output or direct output.
 		// An object should be created in order to avoid the global scope pollution.
-
 		$GLOBALS['cachedfile'] = $this->_cachedfile;
-		if ($_REQUEST['clearcache']) return false; //force la recompilation du cache
-		if ($maj < myfilemtime($this->_cachedfile. ".". $this->_extcachedfile)) {
+		if ($_REQUEST['clearcache']) {
+			return false; //force la recompilation du cache
+		}
+		if ($maj < myfilemtime($this->_cachedfile. '.'. $this->_extcachedfile)) {
 			$this->_iscachevalid = true;
 			return true;
 		}
 		$this->_iscachevalid = false;
 		return false;
 	}
-
-
 
 	/**
 	 * Calcul le cache et l'affiche
@@ -313,20 +318,20 @@ class View
 		$content = ob_get_contents();
 		ob_end_clean();
 
-		$this->_extcachedfile = substr($content, 0, 5)=='<'. '?php' ? "php" : "html";
-		if ($this->_extcachedfile == "html") {
+		$this->_extcachedfile = substr($content, 0, 5)=='<'. '?php' ? 'php' : 'html';
+		if ($this->_extcachedfile == 'html') {
 			echo $content; // send right now the html. Do other thing later. 
 			flush(); // That may save few milliseconde !
-			@unlink($this->_cachedfile. ".php"); // remove if the php file exists because it has the precedence above.
+			@unlink($this->_cachedfile. '.php'); // remove if the php file exists because it has the precedence above.
 		}
 		// write the file in the cache
-		$f = fopen($this->_cachedfile. ".". $this->_extcachedfile, "w");
+		$f = fopen($this->_cachedfile. '.'. $this->_extcachedfile, 'w');
 		fputs($f, $content);
 		fclose($f);
 		@chmod($dir, 0666 & octdec($GLOBALS['filemask']));
-		if ($this->_extcachedfile == "php") { 
+		if ($this->_extcachedfile == 'php') { 
 			$dontcheckrefresh = 1;
-			include $this->_cachedfile. ".php"; 
+			include $this->_cachedfile. '.php'; 
 		}
 	}
 	// end of public methods}}}
@@ -345,7 +350,7 @@ class View
  * @param string $lo Le nom de la logique appelée
  * @param string $edittype Le type d'édition (par défaut vide)
  */
-function makeSelect(&$context, $varname, $lo, $edittype="")
+function makeSelect(&$context, $varname, $lo, $edittype = '')
 {
 	$logic = &getLogic($lo);
 	$logic->makeSelect($context, $varname, $edittype);

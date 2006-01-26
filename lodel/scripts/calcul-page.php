@@ -51,29 +51,27 @@ require_once 'func.php';
  * bug eratique.
  *
  */
-function calcul_page(&$context, $base, $cache_rep = "", $base_rep = "tpl/")
+function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 {
-
 	global $home, $format;
-
 	if ($_REQUEST['clearcache'])	{
-		require_once "cachefunc.php";
+		require_once 'cachefunc.php';
 		clearcache();
 		$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 	}
 
 	if ($format && !preg_match("/\W/", $format)) {
-		$base .= "_".$format;
+		$base .= "_$format";
 	}
 	$format = ''; // en cas de nouvel appel a calcul_page
 
 	$template_cache = $cache_rep. "CACHE/tpl_$base.php";
-	$base = $base_rep. $base. ".html";
+	$base = $base_rep. $base. '.html';
 	if (!file_exists($base)) {
-		die("le template $base n'existe pas.");
+		die("<code><strong>Error!</strong>  The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist.</code>");
 	}
-	$template_time = myfilemtime($template_cache);
 
+	$template_time = myfilemtime($template_cache);
 	if (($template_time <= myfilemtime($base)))	{
 		if ($GLOBALS['lodeluser']['admin']) {
 			$context['templatesrecompiles'] .= "$base | ";
@@ -88,7 +86,6 @@ function calcul_page(&$context, $base, $cache_rep = "", $base_rep = "tpl/")
 	}
 
 	require_once 'connect.php';
-
 	// execute le template php
 	require_once 'textfunc.php';
 	if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor'])	{
@@ -97,13 +94,20 @@ function calcul_page(&$context, $base, $cache_rep = "", $base_rep = "tpl/")
 		$content = ob_get_contents();
 		ob_end_clean();
 		require_once 'showhtml.php';
-		echo show_html($content);
+		echo _indent_xhtml(show_html($content));
 		return;
 	}
 	require_once 'loops.php';
 
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
+		#$start = microtime();
+		ob_start();
 		require $template_cache;
+		$contents = ob_get_contents();
+		ob_end_clean();
+		echo _indent_xhtml($contents);
+		#$end = microtime();
+		#echo "temps : ". ($end - $start);
 	}
 	else
 	{
@@ -112,7 +116,7 @@ function calcul_page(&$context, $base, $cache_rep = "", $base_rep = "tpl/")
 		require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
-		echo utf8_decode($contents);
+		echo _indent_xhtml(utf8_decode($contents));
 	}
 }
 
@@ -124,12 +128,12 @@ function calcul_page(&$context, $base, $cache_rep = "", $base_rep = "tpl/")
  */
 function insert_template($context, $filename)
 {
-	if (file_exists("tpl/".$filename.".html")) {
+	if (file_exists("tpl/$filename". ".html")) {
 		calcul_page($context, $filename);
-	}	elseif (file_exists($GLOBALS['home']."../tpl/".$filename.".html")) {
-		calcul_page($context, $filename, "", $GLOBALS['home']."../tpl/");
+	}	elseif (file_exists($GLOBALS['home']. "../tpl/$filename". ".html")) {
+		calcul_page($context, $filename, "", $GLOBALS['home']. '../tpl/');
 	} else {
-		die("ERROR: unable to find the file $filename.html");
+		die("<code><strong>Error!</strong> Unable to find the file <span style=\"border-bottom : 1px dotted black\">$filename.html</span></code>");
 	}
 }
 
@@ -139,18 +143,18 @@ function insert_template($context, $filename)
  * @param string $query la requete SQL
  * @param string $tablename le nom de la table SQL (par défaut vide)
  */
-function mymysql_error($query, $tablename = "")
+function mymysql_error($query, $tablename = '')
 {
 	if ($GLOBALS['lodeluser']['editor']) {
 		if ($tablename) {
-			$tablename = "LOOP: ".$tablename." ";
+			$tablename = "LOOP: $tablename ";
 		}
-		die("</body>".$tablename."QUERY: ".htmlentities($query)."<br><br>".mysql_error());
+		die("</body>".$tablename."QUERY: ". htmlentities($query)."<br><br>".mysql_error());
 	}	else {
 		if ($GLOBALS['contactbug']) {
-			@mail($GLOBALS['contactbug'], "[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]", "Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>".htmlentities($query)."<br><br>".mysql_error());
+			@mail($GLOBALS['contactbug'], "[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]", "Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>". htmlentities($query). "<br /><br />".mysql_error());
 		}
-		die("Une error est survenue lors de la g&eacute;n&eacute;ration de cette page. Veuillez nous excuser, nous traitons le probl&egrave;me le plus rapidement possible");
+		die("<code><strong>Error!</strong> An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>");
 	}
 }
 ?>
