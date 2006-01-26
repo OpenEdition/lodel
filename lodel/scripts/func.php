@@ -938,17 +938,16 @@ function mystripslashes (&$var)
  */
 function _indent_xhtml($source, $indenter = '  ')
 {
-		return $source;
+		//return $source;
+		
+		
 		//cette fonction pète les fonctions javascript.
 		// pour l'instant elle est désactivée
-		$search = array("\n", "\r", "\t");
-		$replace = array("", "", "");
-		$source = str_replace($search, $replace, $source);
-    // Remove all space after ">" and before "<".
+		$source = str_replace("\t","",$source);
+		// Remove all space after ">" and before "<".
 		$search = array("/>(\s)*/", "/(\s)*</");
 		$replace = array(">", "<");
 		$source = preg_replace($search, $replace, $source);
-		
 		// Iterate through the source.
 		$level = 0;
 		$source_len = strlen($source);
@@ -1018,10 +1017,26 @@ function _indent_xhtml($source, $indenter = '  ')
 				break;
 			}
 		}
+		
 		// Replace old source with the new one we just collected into our array.
+		#print_r($array);
+		$c = count($array);
+		for($i = 0 ; $i < $c ; $i++) {
+			if(!preg_match("/<script|style [^>]+>/",$array[$i])) {
+				// si c'est pas une balise script {
+				$array[$i+1] = str_replace("\n","",$array[$i+1]);
+			}
+		}
 		$source = implode($array, "\n");
 		return $source;
 }
+
+
+
+// exemple d'appel en ligne de commande:
+#$error = $phraseur_xml->xml_parsefile($xml_parser, $_SERVER['argv'][1]);
+
+
 
 
 // valeur de retour identifier ce script
