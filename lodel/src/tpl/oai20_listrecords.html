@@ -64,7 +64,7 @@
 					<dc:language>[#ID|get_dc_language]</dc:language>
 </IF>
 <LOOP NAME="meta_dc_subject" TABLE="entries, entrytypes" WHERE="identity='[#ID]' AND (g_type='dc.subject' OR g_type='dc.coverage')">
-					<[#G_TYPE|dc_rename]>[#G_NAME|clean_char|strip_set]</[#G_TYPE|dc_rename]>
+					<[#G_TYPE|dc_rename]>[#G_NAME|strip_set]</[#G_TYPE|dc_rename]>
 </LOOP>
 <IF COND="[#SHORT_DATE]">
 					<dc:date>[#CREATIONDATE|formateddate("%Y-%m-%d")]</dc:date>
