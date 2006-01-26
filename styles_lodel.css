@@ -275,6 +275,10 @@ br.nobr{
 	font-size: 110%;
 }
 
+#editEntities a{
+	color: #ff5b04;
+}
+
 #editEntities input.noText{
 	border: 0;
 }
