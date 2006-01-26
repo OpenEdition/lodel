@@ -232,7 +232,7 @@ function getacceptedcharset($charset)
 // import Posted variables for the Register Off case.
 // this should be nicely/safely integrated inside the code, but that's
 // a usefull little hack at the moment
-if (!((bool) ini_get("register_globals"))){
+if (!((bool) ini_get('register_globals'))){
 	extract($_REQUEST, EXTR_SKIP);
 }
 
@@ -242,14 +242,14 @@ $idsession = 0;
 $session   = '';
 
 // tres important d'initialiser le context.
-$context = array ("version" => $GLOBALS['version'],
-									"shareurl" => $GLOBALS['shareurl'],
-									"extensionscripts" => $GLOBALS['extensionscripts'], 
-									"currenturl" => "http://".$_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
-									"siteroot" => defined("SITEROOT") ? SITEROOT : "",
-									"site" => $site,
-									"charset" => getacceptedcharset($charset),
-									"langcache" => array ()); 
+$context = array ('version' => $GLOBALS['version'],
+									'shareurl' => $GLOBALS['shareurl'],
+									'extensionscripts' => $GLOBALS['extensionscripts'], 
+									'currenturl' => 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
+									'siteroot' => defined('SITEROOT') ? SITEROOT : '',
+									'site' => $site,
+									'charset' => getacceptedcharset($charset),
+									'langcache' => array ()); 
 
 if (!$GLOBALS['filemask']) {
 	$GLOBALS['filemask'] = "0700";
