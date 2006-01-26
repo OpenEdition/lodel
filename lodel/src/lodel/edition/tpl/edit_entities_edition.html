@@ -72,7 +72,7 @@
 		<dd>[#MODIFICATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
 		
 	<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
-		<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:</dt>
+		<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:&nbsp;</dt>
 		<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
 	</IF>
 	</dl>
