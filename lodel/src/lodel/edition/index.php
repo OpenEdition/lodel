@@ -42,7 +42,12 @@
 
 require "siteconfig.php";
 require_once "auth.php";
-authenticate(LEVEL_VISITOR);
+if ($_GET['page'] && $_GET['format'] ) {
+		authenticate(LEVEL_VISITOR, 'HTTP');
+	}
+else {
+	authenticate(LEVEL_VISITOR);
+	}
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	recordurl();
 	$context['id'] = $id = intval($_GET['id']);
