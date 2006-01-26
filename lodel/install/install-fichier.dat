@@ -35,6 +35,14 @@ ln backend.php
 ln index.php
 ln signaler.php
 ln search.php
+#gestion du module OAI
+ln oai20.php
+ln tpl/oai20_getrecord.html
+ln tpl/oai20_identify.html
+ln tpl/oai20_listidentifiers.html
+ln tpl/oai20_listmetadataformats.html
+ln tpl/oai20_listrecords.html
+ln tpl/oai20_listsets.html
 
 ### desuet. cp tpl
 
@@ -120,6 +128,7 @@ ln tpl/dashboard.html
 ln tpl/dashboard_queue.html
 ln tpl/dashboard_statistics.html
 ln tpl/dashboard_history.html
+ln tpl/dashboard_rssreader.html
 
 
 # suppression et fonctions avancees des documents et publications
