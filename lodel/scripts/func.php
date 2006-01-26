@@ -1026,6 +1026,7 @@ function _indent_xhtml($source, $indenter = '  ')
 				// si c'est pas une balise script {
 				$array[$i+1] = str_replace("\n","",$array[$i+1]);
 			}
+			$array[$i] = trim($array[$i]);
 		}
 		$source = implode($array, "\n");
 		return $source;
