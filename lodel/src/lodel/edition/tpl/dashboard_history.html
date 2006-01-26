@@ -46,6 +46,8 @@
 		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title=[@EDITION.HISTORY]">[@COMMON.HISTORY] ([@COMMON.HISTORY_DESCRIPTION])</a></li>
 	
 </ul>
+<p><a href="index.[#EXTENSIONSCRIPTS]?page=backend&format=dashboard_history">RSS : dashboard_history.html</a></p>
+
 </div>	
 <LOOP NAME="series_history" TABLE="entities,types" WHERE="types.id=idtype" ORDER="entities.modificationdate DESC" SPLIT="30">
 	<BEFORE>
