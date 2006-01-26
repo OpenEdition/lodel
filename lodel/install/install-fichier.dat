@@ -36,7 +36,7 @@ ln index.php
 ln signaler.php
 ln search.php
 #gestion du module OAI
-ln oai20.php
+ln oai.php
 ln tpl/oai20_getrecord.html
 ln tpl/oai20_identify.html
 ln tpl/oai20_listidentifiers.html
