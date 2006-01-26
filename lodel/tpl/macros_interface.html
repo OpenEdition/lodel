@@ -152,7 +152,7 @@
     else
       $context['fck_mode'] = 'Advanced';
     //Width (by default will be 600px)
-    $context['fck_width'] = (($parameters[1])  ? intval($parameters[1]) : 600);
+    $context['fck_width'] = (($parameters[1])  ? intval($parameters[1]) : 550);
     //Height (by default will be 400px)
     $context['fck_height'] = (($parameters[2]) ? intval($parameters[2]) : 400);
     //Language (by default will be empty)
@@ -436,7 +436,7 @@ cp_[#VARNAME].writeDiv();
 
 <DEFFUNC NAME="EDIT_PERSONS">
 	<div class="add">
-         <a href="#down" onClick="addpersons(this,'[#VARNAME]');" class="add">[@COMMON.ADD]</a>
+         <a href="#down" onClick="addpersons(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
 	</div>
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
@@ -488,11 +488,8 @@ cp_[#VARNAME].writeDiv();
         	</AFTER>
 	    </LOOP>
       </LOOP>
-<a id="down" href="#persons_[#VARNAME]">&nbsp;</a>
+
   </div>
-	<div class="add">
-         <a href="#down" onclick="addpersons(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
-	</div>
 </DEFFUNC>
 
 
