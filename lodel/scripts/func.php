@@ -938,7 +938,7 @@ function mystripslashes (&$var)
  */
 function _indent_xhtml($source, $indenter = '  ')
 {
-		//return $source;
+		return $source;
 		
 		
 		//cette fonction pète les fonctions javascript.
