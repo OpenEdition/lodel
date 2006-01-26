@@ -128,7 +128,7 @@ ln tpl/dashboard.html
 ln tpl/dashboard_queue.html
 ln tpl/dashboard_statistics.html
 ln tpl/dashboard_history.html
-ln tpl/dashboard_rssreader.html
+#ln tpl/dashboard_rssreader.html
 
 
 # suppression et fonctions avancees des documents et publications
