@@ -938,6 +938,9 @@ function mystripslashes (&$var)
  */
 function _indent_xhtml($source, $indenter = '  ')
 {
+		return $source;
+		//cette fonction pète les fonctions javascript.
+		// pour l'instant elle est désactivée
 		$search = array("\n", "\r", "\t");
 		$replace = array("", "", "");
 		$source = str_replace($search, $replace, $source);
