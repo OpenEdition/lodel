@@ -24,14 +24,14 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 ?>
 <rss version="0.92">
   <channel>
-  <LOOP NAME="titre_site" TABLE="sites" WHERE="name='[#SITE]'">
-    <title>Lodel : [#SITE]</title>
-  
-    <link>[(#CURRENTURL|dirname)]</link>
-    <description>Les derniers documents modifiés sur le site
-    [#SITE].</description>
-  </LOOP>
-    <language>fr</language>
+ <IF COND="[#ID]">
+<title>[@COMMON.EDITION]<LOOP NAME="nompourtitre" TABLE="entities" WHERE="id='[#ID]'">[#IDENTIFIER] [(#G_TITLE|textebrut)]</LOOP></title>
+<ELSE/>
+<title>[(#SITE|strtoupper)].[@COMMON.HISTORY]</title>
+</IF> 
+   <link>[(#CURRENTURL|dirname)]</link>
+    <description>[@LODELADMIN.SITE] [#SITE] : [(@COMMON.DASHBOARD|strtolower)] > [(@COMMON.HISTORY|strtolower)] ([@COMMON.HISTORY_DESCRIPTION])</description>
+     <language>fr</language>
 
     <LOOP NAME="series_history" TABLE="entities,types" WHERE="types.id=idtype" ORDER="entities.modificationdate DESC" LIMIT="0,30"> 
     <DO>
