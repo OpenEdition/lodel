@@ -1632,4 +1632,68 @@
 <index-column name="identity" />
 </index>
 </table>
+<!-- Gestion de l'oai -->
+<table name="oai_token"
+			description="Table contenant les tokens pour l'oai"
+			writeright=""
+			protectright=""
+			 >
+<column name="token"
+				type="VARCHAR(14)"
+				default=""
+				required="true"
+				/>
+<column name="query"
+				type="TEXT"
+				default=""
+				required="true"
+				/>
+<column name="metadataprefix"
+				type="VARCHAR(35)"
+				default=""
+				required="true"
+				/>
+<column	name="deliveredrecords"
+				type="INTEGER(11)"
+				default="0"
+				required="true"
+				/>
+<column name="expirationdatetime"
+				type="TIMESTAMP(14)"
+				default=""
+				required="true"
+				/>
+</column>
+<unique name="unique_token">
+<unique-column name="token" />
+</unique>
+</table>
+<table name="oailogs"
+			description="Table contenant les logs pour l'oai"
+			writeright=""
+			protectright=""
+			 >
+	
+<column name="id"
+			 type="INTEGER(11)"
+			 required="true"
+			 primarykey="true"
+			 auto_increment="true";
+			 />
+<column name="host"
+				type="TINYTEXT"
+				default=""
+				required="true"
+				/>
+<column name="date"
+				type="TIMESTAMP(14)"
+				default=""
+				required="true"
+				/>
+<column name="denied"
+				type="TINYINT(4)"
+				default="0"
+				required="true"
+				/>
+</table>
 </database>

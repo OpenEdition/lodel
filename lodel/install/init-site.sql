@@ -484,5 +484,23 @@ CREATE TABLE IF NOT EXISTS #_TP_search_engine (
 	KEY index_identity (identity)
 );
 
+CREATE TABLE IF NOT EXISTS #_TP_oaitokens (
+  token varchar(14) NOT NULL default '',
+  query text NOT NULL,
+  metadataprefix varchar(35) NOT NULL default '',
+  deliveredrecords int(11) NOT NULL default '0',
+  expirationdatetime timestamp(14) NOT NULL,
+  UNIQUE KEY token (token)
+) TYPE=MyISAM;
+
+
+CREATE TABLE IF NOT EXISTS #_TP_oailogs (
+  id int(11) NOT NULL auto_increment,
+  host tinytext NOT NULL,
+  date timestamp(14) NOT NULL,
+  denied tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM AUTO_INCREMENT=566 ;
+
 
 
