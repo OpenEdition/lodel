@@ -27,7 +27,6 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[#TYPE.TITLE] : [@EDITION.TITLE_DOCUMENT_EDITION]</title>
 <MACRO NAME="JS_SIMULE_SUBMIT">
-<MACRO NAME="JS_EDITION_ENTITIES">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 <MACRO NAME="CURRENT_PATH">
@@ -52,13 +51,18 @@
 	<dl id="infosEntitie">
 		<IF COND="[#ID] GT 0">
 			<!-- [ Lien permanent ]-->
-			<dt>[@EDITION.PERMANENT_LINK]&nbsp;:&nbsp;</dt>
-			<dd>
+			<LET VAR="permanent_link">
 			<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
+			</LET>
+			<dt><a href="[#PERMANENT_LINK]" title="[#PERMANENT_LINK]">[@EDITION.PERMANENT_LINK]</a></dt>
+			
+			<dd>
 			<IF COND="[#ERROR.IDENTIFIER]">
+				
 				<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
-			</IF>
-		</dd>
+				
+			</IF>&nbsp;
+			</dd>
 		</IF>
 		<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 		<dd>[#TYPE.TYPE]</dd>
