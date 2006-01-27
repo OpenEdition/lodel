@@ -451,7 +451,15 @@ div.advancedFunc dt.select{
 	clear: both;
 	background: #fff;
 	border: 1px solid #cecece;
+}
+
+#listEntitiesEdit li{
+	margin: 0 0 0 0;
 	padding: 1ex .5em;
+}
+
+#listEntitiesEdit li.line1{
+	background: #f1f5fb;
 }
 
 #listEntitiesEdit .titre_document{
@@ -466,12 +474,13 @@ div.advancedFunc dt.select{
 #listEntitiesEdit .action{
 	font-size: 80%;
 	clear: both;
+	margin: .5ex 0 0 0;
 }
 
 #listEntitiesEdit img{
 	float: left;
 	display: block;
-	margin: 0 1em 0 0 ;
+	margin: 0 1em 1ex 0 ;
 }
 
 #entityIdent{
