@@ -1,33 +1,42 @@
 <?php
-
-/*
+/**
+ * Fichier LodelParser
+ * PHP version 4
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  Home page: http://www.lodel.org
+ * Home page: http://www.lodel.org
  *
- *  E-Mail: lodel@lodel.org
+ * E-Mail: lodel@lodel.org
  *
- *                            All Rights Reserved
+ * All Rights Reserved
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ */
 
 // traitement particulier des attributs d'une loop
 // l'essentiel des optimisations et aide a l'uitilisateur doivent
@@ -38,27 +47,60 @@ require_once "func.php";
 require_once "balises.php";
 require_once "parser.php";
 
+/**
+ * Classe LodelParser
+ * 
+ * Classe utilitaire pour parser le Lodelscript - Fille de la classe Parser
+ *
+ * @package lodel
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajoutée depuis la version 0.8
+ * @see parser.php
+ */
 class LodelParser extends Parser
 {
 	var $filterfunc_loaded = FALSE;
+	/**
+	 * Tableau associatif concernant le status des textes
+	 *
+	 * @var array
+	 */
+	var $textstatus = array ('-1' => ' traduire', '1' => ' revoir', '2' => 'traduit');
+	
+	/**
+	 * Tableau associatif concernant le status associé à la couleur
+	 *
+	 * @var array
+	 */
+	var $colorstatus = array ('-1' => 'red', '1' => 'orange', 2 => 'green');
 
-	var $textstatus = array ("-1" => " traduire", "1" => " revoir", "2" => "traduit");
-	var $colorstatus = array ("-1" => "red", "1" => "orange", 2 => "green");
+	/**
+	 * Liste des langues de la traduction
+	 *
+	 * @var array
+	 */
 	var $translationlanglist = "'fr','en','es','de'";
 
+
+	/**
+	 * Constructeur.
+	 */
 	function LodelParser()
 	{ // constructor
 		$this->Parser();
-		$this->commands[] = "TEXT"; // catch the text
-		$this->variablechar = "@"; // catch the @
+		$this->commands[] = 'TEXT'; // catch the text
+		$this->variablechar = '@'; // catch the @
 
-		if (DBDRIVER == "mysql") {
+		if (DBDRIVER == 'mysql') {
 			$this->codepieces['sqlquery'] = "mysql_query(lq(%s))";
 		}	else { // call the ADODB driver
 			die("DBDRIVER not supported currently for the parser");
 			$this->codepieces['sqlerror'] = "or die($GLOBALS[db]->errormsg())";
 			$this->codepieces['sqlquery'] = "$GLOBALS[db]->execute(%s)";
-			$this->codepieces['sqlfetch'] = "";
+			$this->codepieces['sqlfetch'] = '';
 		}
 	}
 
@@ -424,36 +466,42 @@ class LodelParser extends Parser
 				return; // no idea what to do...
 
 			$code = '<?php if ($context[\'lodeluser\'][\'translationmode\']=="interface") { require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
-			<form method="post" action="index.php"><input type="hidden" name="edit" value="1">
-			<input type="hidden" name="do" value="edit">
-			<input type="hidden" name="lo" value="texts">
-			<input type="submit" value="[Update]">
-			<div id="translationforms">'.join("", $this->translationform).'</div>
-			<input type="submit" value="[Update]"></form>
+			<hr />
+			<form method="post" action="index.php">
+			<input type="hidden" name="edit" value="1" />
+			<input type="hidden" name="do" value="edit" />
+			<input type="hidden" name="lo" value="texts" />
+			<fieldset id="translationforms">
+				<legend>'.getlodeltextcontents('TRANSLATIONS_FOR_THIS_PAGE','lodeladmin') .'</legend>
+			<input type="submit" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
+			<dl><a name="top" href="#bottom"> --bottom -- </a>'.join("", $this->translationform).'<a name="bottom" href="#top"> --top-- </a></dl>
+			<input type="submit" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
+			</fieldset>
+			</form>
 			<?php } ?>';
 
 			$text = substr_replace($text, $code, $closepos, 0);
 		}
 		if ($this->translationtags)	{
 			$text = '<'.'?php
-			  $langfile="CACHE/lang-".$GLOBALS[\'la\']."/".basename(__FILE__);
-			  if (!file_exists($langfile)) {
-			    generateLangCache($GLOBALS[\'la\'],$langfile,array('.join(",", $this->translationtags).'));
-			  } else {
-			    require_once($langfile);
-			  }
-			?'.'>
-			'.$text;
+	$langfile="CACHE/lang-". $GLOBALS[\'la\']. "/". basename(__FILE__);
+	if (!file_exists($langfile)) {
+		generateLangCache($GLOBALS[\'la\'], $langfile, array('. join(',', $this->translationtags).'));
+	} else {
+		require_once($langfile);
+	}
+	?'.'>
+'. $text;
 		}
 
 		// add the code for the desk
 		if (!$GLOBALS['nodesk']) {
 			$deskbegin = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert the desk
-			    calcul_page($context,"desk","",$GLOBALS[\'home\']."../tpl/");
-			?'.'><div id="lodel-container"><'.'?php  } ?'.'>';
+	calcul_page($context,"desk","",$GLOBALS[\'home\']."../tpl/");
+	?'.'><div id="lodel-container"><'.'?php  } ?'.'>';
 
 			$deskend = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert end of the desk
-			?'.'></div><'.'?php  } ?'.'>';
+	?'.'></div><'.'?php  } ?'.'>';
 
 			$bodystarttag = strpos($text, "<body");
 			if ($bodystarttag !== false) {
