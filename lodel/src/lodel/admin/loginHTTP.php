@@ -51,7 +51,12 @@ if ($httpAuth->getHeader())
  	 }
 
 // OK
-else return;
+	else
+	{
+		$httpAuth->reset();
+		$context['password']=$passwd=0;
+		return;
+	}
 }
 
 else $httpAuth->errorLogin();
