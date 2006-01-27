@@ -517,17 +517,6 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="JS_AJOUTER_ENTITE">
-	<script type="text/javascript"><!--
-	
-		function ajouter_entite(obj) {
-			var index = obj.selectedIndex;
-			window.location=obj.options[index].value;
-		}
-	//
-	--></script>
-</DEFMACRO>
-
 <DEFFUNC NAME="ADD_AN_ENTITY" OPTIONAL="displaywhere">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
         <LOOP NAME="rightonentity" ACTION="create">
