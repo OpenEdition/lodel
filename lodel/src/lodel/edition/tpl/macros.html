@@ -621,11 +621,10 @@
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTITIES_EDIT" REQUIRED="id" OPTIONAL="folder,displaywhere">
-	<ul id="listEntitiesEdit">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LOOP NAME="listentitiesedit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
-			<IF COND="[#FOLDER]"><li class="unfoldedentities"><ul></IF>
+			<IF COND="[#FOLDER]"><li class="unfoldedentities"><ul><ELSE /><ul id="listEntitiesEdit"></IF>
 		</BEFORE>
 		<DO>
 		<IF COND="[#COUNT] % 2">
@@ -643,13 +642,12 @@
 		</IF>
 		</DO>
 		<AFTER>
-			<IF COND="[#FOLDER]"></ul></li></IF>			
+			<IF COND="[#FOLDER]"></ul></li><ELSE /></ul></IF>			
 		</AFTER>
 		<ALTERNATIVE>
 			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
 		</ALTERNATIVE>
 	</LOOP>
-	</ul>
 </DEFFUNC>
 
 
