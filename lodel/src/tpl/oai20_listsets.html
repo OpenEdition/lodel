@@ -25,7 +25,7 @@
 
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">	
 	<responseDate>[#OAI_RESPONSEDATE]</responseDate>
-	<request  [#OAI_ARGS]>[(#CURRENTURL|dirname)]/oai20.[#EXTENSIONSCRIPTS]</request>
+	<request  [#OAI_ARGS]>[(#CURRENTURL|dirname)]/oai.[#EXTENSIONSCRIPTS]</request>
 	<LOOP NAME="meta_sets" TABLE="entries, entrytypes" WHERE="g_type='oai.set'">
 		<BEFORE><ListSets></BEFORE>
 		<DO>

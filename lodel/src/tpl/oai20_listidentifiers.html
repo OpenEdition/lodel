@@ -25,7 +25,7 @@
 
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">	
 	<responseDate>[#OAI_RESPONSEDATE]</responseDate>
-	<request[#OAI_ARGS]>[(#CURRENTURL|dirname)]/oai20.[#EXTENSIONSCRIPTS]</request>
+	<request[#OAI_ARGS]>[(#CURRENTURL|dirname)]/oai.[#EXTENSIONSCRIPTS]</request>
 	<ListIdentifiers>
 <LOOP NAME="lister_ident" TABLE="entities" TABLE="types" WHERE="[#OAI_WHERE]" ORDER="entities.id" LIMIT="[#OAI_OFFSET], [#OAI_MAXIDS]">
 		<header>
