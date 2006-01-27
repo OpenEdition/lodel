@@ -56,24 +56,23 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 		return; // to be decided
 	}
 	// determin the number of rows to use for the textarea
-	$ncols = 100;
+	$ncols = 50;
 	$nrows = intval(strlen($text) / $ncols);
 	if ($nrows < 1)
 		$nrows = 1;
 	if ($nrows > 10)
 		$nrows = 10; // limit for very long text, it's not usefull anyway
-
-	echo '<tr><td><label for="texte" style="">@'.strtoupper($name).'</label></td><td>
-	<textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars($text).'</textarea></td><td>
+	echo '<dt><label for="texte" style="">@'.strtoupper($name).'</label></dt>
+	<dd><textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars($text).'</textarea>
 	 <select class="select'.lodeltextcolor($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']">';
 
 	foreach (array (-1, 1, 2) as $s) {
 		echo '<option class="select'.lodeltextcolor($s).'" value="'.$s.'" ';
 		if ($s == $status)
-			echo "selected ";
+			echo "selected=\"selected\" ";
 		echo '>&nbsp;&nbsp;</option>';
 	}
-	echo '</select></td></tr>';
+	echo '</select></dd>';
 	##### reserve ce bout de code - ne pas supprimer
 	//
 	// Translated texte
@@ -213,9 +212,10 @@ class XMLDB_Translations extends XMLDB
 			if (!$record['lang'] || $this->currentlang != $record['lang'])
 				return;
 			// check the textgroup is ok
-			if (!in_array($record['textgroup'], $GLOBALS['translations_textgroups'][$this->textgroups]))
-				die("ERROR: Invalid textgroup");
-
+			if (!in_array($record['textgroup'], $GLOBALS['translations_textgroups'][$this->textgroups])) {
+				print_r($this);
+				die("ERROR: Invalid textgroup : ".$this->textgroups);
+			}
 			// look for the translation
 			$dao = & getDAO("texts");
 			$vo = $dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
