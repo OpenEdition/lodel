@@ -216,6 +216,12 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	background: #f1f5fb;
 }
 
+/* les mises en formes locales doivent être visibles*/
+
+#checkbalisage{
+	font-family: "Courier New", Courier, mono;
+}
+
 /* PAGE EDITION, LISTE DES ENTITES */
 
 /* Chemin parcouru */
