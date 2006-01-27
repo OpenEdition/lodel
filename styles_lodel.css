@@ -125,10 +125,11 @@ fieldset{
 }
 
 fieldset legend{
-	padding: 0 .5em;
+	padding: 0 .5em .2ex .5em;
 	font-weight: bold;
 	color: #333;
 	background: #fff;
+	border: 1px solid #cecece;
 }
 
 fieldset label{
