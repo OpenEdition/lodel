@@ -121,6 +121,12 @@ function trim(inputString) {
 } // Ends the "trim" function
 
 
+function ajouter_entite(obj) {
+			var index = obj.selectedIndex;
+			window.location=obj.options[index].value;
+}
+
+
 // POOL
 
 function addmember(candidats, membres, textfield){	
