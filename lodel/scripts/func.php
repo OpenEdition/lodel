@@ -938,9 +938,14 @@ function mystripslashes (&$var)
  */
 function _indent_xhtml($source, $indenter = '  ')
 {
-		return $source;
-		
-		
+		//detection du header xml
+		if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
+			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
+			require_once 'xmlfunc.php';
+			echo "ici";
+			$source = indentXML($source, false, $indenter);
+			return $source;
+		}
 		//cette fonction pète les fonctions javascript.
 		// pour l'instant elle est désactivée
 		$source = str_replace("\t","",$source);
@@ -1026,7 +1031,6 @@ function _indent_xhtml($source, $indenter = '  ')
 				// si c'est pas une balise script {
 				$array[$i+1] = str_replace("\n","",$array[$i+1]);
 			}
-			$array[$i] = trim($array[$i]);
 		}
 		$source = implode($array, "\n");
 		return $source;

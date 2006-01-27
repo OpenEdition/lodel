@@ -73,12 +73,13 @@ function calculateXMLSchema($context)
  *
  * @param string $contents le contenu à indenter
  * @param boolean $output indique si on affiche ou non le résultat
+ * @param string $indenter la chaine utilisé pour l'indentation
  * @return string le XML indenté
  */
-function indentXML($contents, $output = false)
+function indentXML($contents, $output = false, $indenter= '  ')
 {
-	$arr = preg_split("/\s*(<(\/?)(?:\w+:)?\w+(?:\s[^>]*)?>)\s*/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
-	$ret = '<?xml version="1.0" encoding="utf-8" ?>';
+	$arr = preg_split("/\s*(<(\/?)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)\s*/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$ret = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 	if ($output)
 		echo $ret;
 	$tab = '';
@@ -95,7 +96,7 @@ function indentXML($contents, $output = false)
 			}	else {
 				$out = $tab.$arr[$i]."\n";
 				if (!$arr[$i +1]) {
-					$tab .= "\t";
+					$tab .= "$indenter";
 				}
 				if (trim($arr[$i +2])) {
 					$out .= $tab.$arr[$i +2]."\n";
@@ -109,6 +110,7 @@ function indentXML($contents, $output = false)
 	}
 	if (!$output)
 		return $ret;
+	
 }
 
 /**
