@@ -286,6 +286,16 @@
 							<a href="[#LODELADMINPATH]/index.php"><span class="texte_orange">[@ADMIN.GO_TO_THE_GENERAL_ADMINISTRATION_PAGE]</span></a>
 						</td>
 					</tr>
+					<tr>
+						<td width="20">&nbsp;</td>
+						<td width="350" class="td_admin">
+
+							<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
+							<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</span></a>
+							<ELSE/>
+							<a href="usersettings.php?translationmode=interface"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</span></a>
+							</IF>
+					</tr>
 					</IF>
 					<!--[<IF COND="[#LODELUSER.ADMINLODEL]">
 					<tr>
