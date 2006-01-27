@@ -25,15 +25,15 @@
 
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
 	<responseDate>[#OAI_RESPONSEDATE]</responseDate>
-	<request  [#OAI_ARGS]>[(#CURRENTURL|dirname)]/oai20.[#EXTENSIONSCRIPTS]</request>
+	<request  [#OAI_ARGS]>[(#CURRENTURL|dirname)]/oai.[#EXTENSIONSCRIPTS]</request>
 		<Identify>
 			<LOOP NAME="titre_site" TABLE="sites" WHERE="path='/[#SITE]'">
 				<DO><repositoryName>[#NAME]</repositoryName></DO>
 			</LOOP>
-			<baseURL>[(#CURRENTURL|dirname)]/oai20.[#EXTENSIONSCRIPTS]</baseURL>
+			<baseURL>[(#CURRENTURL|dirname)]/oai.[#EXTENSIONSCRIPTS]</baseURL>
 			<protocolVersion>2.0</protocolVersion>
 			<LOOP NAME="admin" TABLE="options" WHERE="name='oai_adminemail'">
-				<DO><adminEmail>[#VALUE]</adminEmail></DO>
+				<DO><adminEmail><IF COND="[#VALUE] EQ ''">[#DEFAULTVALUE]<ELSE/>[#VALUE]</IF></adminEmail></DO>
 			</LOOP>
 			<LOOP NAME="earliest" TABLE="entities" TABLE="types" WHERE="[#OAI_WHERE]" ORDER="creationdate ASC" LIMIT="0,1">
 				<DO><earliestDatestamp>[#CREATIONDATE|formateddate("%Y-%m-%dT%H:%M:%SZ")]</earliestDatestamp></DO>
