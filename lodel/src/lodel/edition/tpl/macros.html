@@ -620,6 +620,37 @@
 	</ul>
 </DEFFUNC>
 
+<DEFFUNC NAME="LIST_ENTITIES_EDIT" REQUIRED="id" OPTIONAL="folder,displaywhere">
+	<ul id="listEntitiesEdit">
+	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
+	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
+		<BEFORE>
+			<IF COND="[#FOLDER]"><li class="unfoldedentities"><ul></IF>
+		</BEFORE>
+		<DO>
+		<IF COND="[#COUNT] % 2">
+			<li class="line1">
+		<ELSE/>
+			<li class="line2">
+		</IF>
+			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			</li>
+		<IF COND="[#DISPLAY] eq 'unfolded'">
+			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
+		</IF>
+		</DO>
+		<AFTER>
+			<IF COND="[#FOLDER]"></ul></li></IF>			
+		</AFTER>
+		<ALTERNATIVE>
+			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+		</ALTERNATIVE>
+	</LOOP>
+	</ul>
+</DEFFUNC>
+
 
 <DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
 	<LOOP NAME="rightonentity" ACTION="changerank">
