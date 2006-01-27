@@ -64,7 +64,7 @@ br.nobr{
 }
 
 .inactif{
-	color: #ececec;
+	color: #666;
 }
 
 /* les styles du desk sont dans desk.html afin de ne pas interférer avec les styles du site */
@@ -89,6 +89,7 @@ br.nobr{
 #searchform fieldset{
 	border: none;
 	width: auto;
+	background: #fff;
 }
 
 #searchform fieldset.searchfieldset{
