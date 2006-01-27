@@ -113,6 +113,109 @@ br.nobr{
 }
 
 
+/* Formulaires */
+
+fieldset{
+	width: 550px;
+	border: 1px solid #cecece;
+	margin: 0 0 3ex 40px;
+	padding: 2ex 1em 2ex 1em;
+	background: #f7f7f7;
+	font-size: 90%;
+}
+
+fieldset legend{
+	padding: 0 .5em;
+	font-weight: bold;
+	color: #333;
+	background: #fff;
+}
+
+fieldset label{
+	margin: 2ex 0 .5ex 0;
+	text-align: left;
+	display: block;
+}
+
+fieldset label.boolean{
+	display: inline;
+}
+
+fieldset label.persons, fieldset label.entries, fieldset label.mltext{
+	color: #0e2d7c;
+	font-weight: bold;
+}
+
+fieldset.formButtons{
+	text-align: right;
+}
+
+input, textarea, select{
+	background: #fff;
+	border: 1px solid #333;
+	font-family: "Courier New", Courier, mono;
+	font-size: 110%;
+}
+
+input.noText{
+	border: 0;
+}
+
+input.button{
+	border: 2px outset #333;
+	background: #f1f5fb;
+	font-family: verdana, sans-serif;
+	font-weight: bold;
+}
+
+input.button:focus{
+	border: 2px outset red;
+}
+
+
+input:focus, textarea:focus, select:focus{
+	border: 1px solid red;
+}
+
+a.delete{
+	color: red;
+}
+
+div.delete{
+	text-align: right;
+	margin: 2ex 0 0 0;
+}
+
+a.add{
+	color: green;
+}
+
+div.add{
+	text-align: right;
+	margin: 2ex 2em 0 0;
+}
+
+div.oneItem, div.displayfield{
+	background: #fff;
+	padding: 0 1em 2ex 1em;
+	border: 1px solid #cecece;
+	margin: 2ex 2em 1ex 0;
+}
+
+div.mlTitle{
+	margin: 3ex 0 -1.5ex 0;
+	color: #0e2d7c;
+}
+
+div.displayfield{
+	font-family: "Courier New", Courier, mono;
+	font-size: 120%;
+}
+
+div.oneItem input, div.oneItem  textarea, div.oneItem  select{
+	background: #f1f5fb;
+}
+
 /* PAGE EDITION, LISTE DES ENTITES */
 
 /* Chemin parcouru */
@@ -268,36 +371,13 @@ br.nobr{
 
 /* PAGE EDITION, EDITION DES ENTITES */
 
-#editEntities input, #editEntities textarea, #editEntities select{
-	background: #fff;
-	border: 1px solid #333;
-	font-family: "Courier New", Courier, mono;
-	font-size: 110%;
-}
+
 
 #editEntities a{
 	color: #ff5b04;
 }
 
-#editEntities input.noText{
-	border: 0;
-}
 
-#editEntities input.button{
-	border: 2px outset #333;
-	background: #f1f5fb;
-	font-family: verdana, sans-serif;
-	font-weight: bold;
-}
-
-#editEntities input.button:focus{
-	border: 2px outset red;
-}
-
-
-#editEntities input:focus, #editEntities textarea:focus, #editEntities select:focus{
-	border: 1px solid red;
-}
 
 
 #editEntities h2.formTitle{
@@ -328,81 +408,6 @@ br.nobr{
 #infosEntitie dt.select{
 	padding-top: .1ex;
 }
-
-#editEntities fieldset{
-	width: 550px;
-	border: 1px solid #cecece;
-	margin: 0 0 3ex 40px;
-	padding: 2ex 1em 2ex 1em;
-	background: #f7f7f7;
-	font-size: 90%;
-}
-
-#editEntities fieldset legend{
-	padding: 0 .5em;
-	font-weight: bold;
-	color: #333;
-	background: #fff;
-}
-
-#editEntities fieldset label{
-	margin: 2ex 0 .5ex 0;
-	text-align: left;
-	display: block;
-}
-
-#editEntities fieldset label.boolean{
-	display: inline;
-}
-
-#editEntities fieldset label.persons, #editEntities fieldset label.entries, #editEntities fieldset label.mltext{
-	color: #0e2d7c;
-	font-weight: bold;
-}
-
-#editEntities fieldset.formButtons{
-	text-align: right;
-}
-
-#editEntities a.delete{
-	color: red;
-}
-
-#editEntities div.delete{
-	text-align: right;
-	margin: 2ex 0 0 0;
-}
-
-#editEntities a.add{
-	color: green;
-}
-
-#editEntities div.add{
-	text-align: right;
-	margin: 2ex 2em 0 0;
-}
-
-#editEntities div.oneItem, #editEntities div.displayfield{
-	background: #fff;
-	padding: 0 1em 2ex 1em;
-	border: 1px solid #cecece;
-	margin: 2ex 2em 1ex 0;
-}
-
-#editEntities div.mlTitle{
-	margin: 3ex 0 -1.5ex 0;
-	color: #0e2d7c;
-}
-
-#editEntities div.displayfield{
-	font-family: "Courier New", Courier, mono;
-	font-size: 120%;
-}
-
-#editEntities  div.oneItem input, #editEntities div.oneItem  textarea, #editEntities div.oneItem  select{
-	background: #f1f5fb;
-}
-
 
 #entityIdent{
 	margin-left: 70px;
