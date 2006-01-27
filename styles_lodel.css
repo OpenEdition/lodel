@@ -63,6 +63,10 @@ br.nobr{
 	display: none;
 }
 
+.inactif{
+	color: #ececec;
+}
+
 /* les styles du desk sont dans desk.html afin de ne pas interférer avec les styles du site */
 
 /* Container general au dessous du desk */
@@ -440,6 +444,54 @@ div.advancedFunc dt{
 
 div.advancedFunc dt.select{
 	padding-top: .1ex;
+}
+
+div.advancedFunc #listEntities{
+	margin: 2ex 0 0 -185px;
+	padding: 0;
+	list-style: none;
+	font-size: 90%;
+}
+
+div.advancedFunc #listEntities img.picto_gauche{
+	position: relative;
+	left: 0;
+	top: 0;
+	margin-right: .5em;
+}
+
+div.advancedFunc #listEntities div.action{
+	position: relative;
+	left: 60%;
+	top: -5ex;
+	margin: 0 1em 0 0;
+	min-width: 40%;
+	color: #cc9933;
+	text-align: left;
+	width: 45%;
+}
+
+*>div.advancedFunc>#listEntities>*>div.action{
+	top: 0;
+	margin: -3.5ex 1em 0 0;
+}
+
+div.advancedFunc #listEntities div.document{
+	margin: -9ex 0 .8ex 35px;
+	width: 55%;
+}
+
+*>div.advancedFunc>#listEntities>*>div.document{
+	margin: -3.5ex 0 .8ex 35px;
+}
+
+div.advancedFunc #listEntities div.document .titre_document{
+	font-weight: bold;
+}
+
+div.advancedFunc #listEntities div.document .type_document{
+	font-size: smaller;
+	font-style: italic;
 }
 
 #entityIdent{
