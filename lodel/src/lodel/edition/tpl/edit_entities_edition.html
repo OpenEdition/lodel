@@ -31,7 +31,9 @@
 <MACRO NAME="HEADER_LOGO">
 <MACRO NAME="CURRENT_PATH">
 
-<dl id="infosEntitie">
+<div class="advancedFunc first">
+	<h4>[@EDITION.ENTITIE_INFO]</h4>
+	<dl>
 	<IF COND="[#ID] GT 0">
 		<!-- [ Lien permanent ]-->
 		<LET VAR="permanent_link">
@@ -58,7 +60,8 @@
 	<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:&nbsp;</dt>
 	<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
 </IF>
-</dl>
+	</dl>
+</div>
 
 <div id="editEntities">
 		
@@ -137,5 +140,13 @@
 </ul>
 </div>
 
+<div class="advancedFunc">
+<h4>[@EDITION.SPECIAL_DOCUMENTS]</h4>
+<ul>
+	<li><FUNC NAME="ADD_AN_ENTITY"  DISPLAYWHERE="display='advanced'"></li>
+	<li><FUNC NAME="LIST_ENTITIES" ID="[#ID]" DISPLAYWHERE="display='advanced'"></li>
+
+</ul>
+</div>
 
 <MACRO NAME="CLOSE_HTML">
