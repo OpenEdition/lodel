@@ -177,7 +177,7 @@ input:focus, textarea:focus, select:focus{
 	border: 1px solid red;
 }
 
-a.delete{
+* a.delete{
 	color: red;
 }
 
@@ -186,7 +186,7 @@ div.delete{
 	margin: 2ex 0 0 0;
 }
 
-a.add{
+* a.add{
 	color: green;
 }
 
@@ -377,14 +377,22 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 
 /* PAGE EDITION, EDITION DES ENTITES */
 
+#editEntities{
+	float: left;
+	width: 600px;
+}
 
-
-#editEntities a{
+#editEntities a, #infosEntitie a, div.advancedFunc a{
 	color: #ff5b04;
 }
 
+#editEntities a.delete{
+	color: red;
+}
 
-
+#editEntities a.add{
+	color: green;
+}
 
 #editEntities h2.formTitle{
 	margin: 0;
@@ -395,15 +403,31 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	font-weight: bold;
 }
 
-#infosEntitie{
-	position: absolute;
-	left: 600px;
+#infosEntitie, div.advancedFunc{
+	float : right;
 	font-size: 90%;
 	width: 300px;
 	border: 1px solid #cecece;
-	margin: 4ex 0 3ex 40px;
+	margin: 7ex 3em 0 0;
 	padding: 2ex 1em 2ex 1em;
 	background: #f7f7f7;
+}
+
+div.advancedFunc{
+	margin-top: 4ex;
+}
+
+div.advancedFunc h4{
+	margin: -3.5ex 0 1ex 0;
+	padding: 0 .5em 0 .5em;
+	background: #fff;
+	width: 7em;
+}
+
+div.advancedFunc ul, div.advancedFunc li{
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 #infosEntitie dt{
