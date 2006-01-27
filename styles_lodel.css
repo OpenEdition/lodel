@@ -446,52 +446,32 @@ div.advancedFunc dt.select{
 	padding-top: .1ex;
 }
 
-div.advancedFunc #listEntities{
-	margin: 2ex 0 0 -185px;
-	padding: 0;
-	list-style: none;
-	font-size: 90%;
+#listEntitiesEdit{
+	clear: both;
+	margin-left: -185px;
+	background: #fff;
+	border: 1px solid #cecece;
+	padding: 1ex .5em;
 }
 
-div.advancedFunc #listEntities img.picto_gauche{
-	position: relative;
-	left: 0;
-	top: 0;
-	margin-right: .5em;
-}
-
-div.advancedFunc #listEntities div.action{
-	position: relative;
-	left: 60%;
-	top: -5ex;
-	margin: 0 1em 0 0;
-	min-width: 40%;
-	color: #cc9933;
-	text-align: left;
-	width: 45%;
-}
-
-*>div.advancedFunc>#listEntities>*>div.action{
-	top: 0;
-	margin: -3.5ex 1em 0 0;
-}
-
-div.advancedFunc #listEntities div.document{
-	margin: -9ex 0 .8ex 35px;
-	width: 55%;
-}
-
-*>div.advancedFunc>#listEntities>*>div.document{
-	margin: -3.5ex 0 .8ex 35px;
-}
-
-div.advancedFunc #listEntities div.document .titre_document{
+#listEntitiesEdit .titre_document{
 	font-weight: bold;
 }
 
-div.advancedFunc #listEntities div.document .type_document{
-	font-size: smaller;
+#listEntitiesEdit .type_document{
+	font-size: 80%;
 	font-style: italic;
+}
+
+#listEntitiesEdit .action{
+	font-size: 80%;
+	clear: both;
+}
+
+#listEntitiesEdit img{
+	float: left;
+	display: block;
+	margin: 0 1em 0 0 ;
 }
 
 #entityIdent{
