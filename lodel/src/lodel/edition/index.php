@@ -42,7 +42,7 @@
 
 require "siteconfig.php";
 require_once "auth.php";
-if ($_GET['page'] && $_GET['format'] ) {
+if ($_GET['page'] =="backend" && $_GET['format'] ) {
 		authenticate(LEVEL_VISITOR, 'HTTP');
 	}
 else {
