@@ -709,8 +709,7 @@ if(!(in_array($_SERVER['REMOTE_ADDR'], $oai_allowed) || in_array($hostname, $oai
 }
 
 log_access($hostname);
-$xml_header = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>";
-$oai_open = "<OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">
+$oai_open = "<?xml version=\"1.0\" encoding=\"utf-8\"?><OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">
 <responseDate>". gmstrftime('%Y-%m-%dT%TZ', time()). "</responseDate>
 <request>". dirname($context['currenturl']). '/oai20.'. $context['extensionscripts']. "</request>";
 
@@ -741,8 +740,8 @@ while (!$result->EOF) {
 if(!$context['oai_ids']) {
 	$errors .= oai_error('noRecordsMatch');
 	header("Content-type: application/xml");
-	require_once('xmlfunc.php');
-	echo "$xml_header\n". _indent_xhtml($oai_open. $errors. $oai_close);
+	require_once('func.php');
+	echo _indent($oai_open. $errors. $oai_close);
 	exit;
 }
 
@@ -828,8 +827,8 @@ verbs_processing();
  */
 if(isset($errors)) {
 	header("Content-type: application/xml");
-	require_once 'xmlfunc.php';
-	echo "$xml_header\n". _indent_xhtml($oai_open.$errors.$oai_close);
+	require_once('func.php');
+	echo _indent($oai_open.$errors.$oai_close);
   exit;
 }
 
