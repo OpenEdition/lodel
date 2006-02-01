@@ -94,19 +94,19 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		$content = ob_get_contents();
 		ob_end_clean();
 		require_once 'showhtml.php';
-		echo _indent_xhtml(show_html($content));
+		echo _indent(show_html($content));
 		return;
 	}
 	require_once 'loops.php';
 
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
-		#$start = microtime();
+		$start = microtime();
 		ob_start();
 		require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
-		echo _indent_xhtml($contents);
-		#$end = microtime();
+		echo _indent($contents);
+		$end = microtime();
 		#echo "temps : ". ($end - $start);
 	}
 	else
@@ -116,7 +116,7 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
-		echo _indent_xhtml(utf8_decode($contents));
+		echo _indent(utf8_decode($contents));
 	}
 }
 

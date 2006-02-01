@@ -936,18 +936,28 @@ function mystripslashes (&$var)
  * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
  * @return le code indenté proprement :)
  */
-function _indent_xhtml($source, $indenter = '  ')
+function _indent($source, $indenter = '  ')
 {
-		//detection du header xml
-		if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
+	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			require_once 'xmlfunc.php';
-			echo "ici";
 			$source = indentXML($source, false, $indenter);
 			return $source;
 		}
-		//cette fonction pète les fonctions javascript.
-		// pour l'instant elle est désactivée
+	$source = _indent_xhtml($source,$indenter);
+	return $source;
+}
+
+
+/**
+ * Indentation de code XHTML
+ *
+ * @param string $source le code a indenter
+ * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
+ * @return le code indenté proprement :)
+ */
+function _indent_xhtml($source, $indenter = '  ')
+{
 		$source = str_replace("\t","",$source);
 		// Remove all space after ">" and before "<".
 		$search = array("/>(\s)*/", "/(\s)*</");
@@ -1028,22 +1038,13 @@ function _indent_xhtml($source, $indenter = '  ')
 		$c = count($array);
 		for($i = 0 ; $i < $c ; $i++) {
 			if(!preg_match("/<script|style [^>]+>/",$array[$i])) {
-				// si c'est pas une balise script {
-				$array[$i+1] = str_replace("\n","",$array[$i+1]);
+				// si c'est pas une balise script ou style
+				$array[$i+1] = str_replace("\n", "", $array[$i+1]);
 			}
 		}
 		$source = implode($array, "\n");
 		return $source;
 }
-
-
-
-// exemple d'appel en ligne de commande:
-#$error = $phraseur_xml->xml_parsefile($xml_parser, $_SERVER['argv'][1]);
-
-
-
-
 // valeur de retour identifier ce script
 return 568;
 
