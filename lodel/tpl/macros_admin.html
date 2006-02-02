@@ -67,14 +67,15 @@
 --------------------------------------------------------------- ]-->
 
 <DEFMACRO NAME="EDIT_SUBMIT_BAR">
-<div class="pied_de_formulaire">
+<fieldset>
+<legend>[@COMMON.VALIDATION]</legend>
 	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
 	  <IF COND="[#ID]">
 		<IF COND="![#LO|isdeletelocked([#ID],[#STATUS])]">
 			<MACRO NAME="DELETE_BUTTON">
 		</IF>
 	  </IF>
-</div>
+</fieldset>
 </DEFMACRO>
 
 
@@ -82,13 +83,13 @@
       Ok bouton to submit andgo from edit to list action
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="SUBMIT_CANCEL_BUTTON">
-		<IF COND="[#ID]"><input class="form" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="form" type="submit" value="[@COMMON.ADD]" /></IF>
+		<IF COND="[#ID]"><input class="button" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="button" type="submit" value="[@COMMON.ADD]" /></IF>
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 </DEFMACRO>
 
 <DEFMACRO NAME="DELETE_BUTTON">
-		<input class="form" type="button" value="[@COMMON.DELETE]" onClick="javascript:window.location='index.php?do=delete&lo=[#LO]&id=[#ID]'" />
+		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&lo=[#LO]&id=[#ID]'" />
 </DEFMACRO>
 
 
