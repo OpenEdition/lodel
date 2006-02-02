@@ -18,10 +18,9 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
-<USE MACROFILE="macros_xml.html" />
 <?php
-header("Content-type: application/xml");
-echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
+	header("Content-type: application/xml");
+	echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 ?>
 <rss version="0.92">
 <channel>
@@ -30,7 +29,7 @@ echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 	<description>[@LODELADMIN.SITE] [#SITE] : [(@COMMON.DASHBOARD|strtolower)] > [(@COMMON.HISTORY|strtolower)] ([@COMMON.HISTORY_DESCRIPTION])</description>
 	<language>fr</language>
 	
-	<LOOP NAME="entities_history" TABLE="entities" ORDER="modificationdate DESC" LIMIT="0,30"> 
+	<LOOP NAME="dashboard_history" TABLE="entities" ORDER="modificationdate DESC" LIMIT="0,30"> 
 		<DO>
 		<item>
 			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
