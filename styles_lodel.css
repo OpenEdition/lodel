@@ -463,6 +463,7 @@ div.advancedFunc dt.select{
 }
 
 #listEntitiesEdit .titre_document{
+	font-size: 90%;
 	font-weight: bold;
 }
 
