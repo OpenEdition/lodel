@@ -21,21 +21,23 @@
 <?php
 	header("Content-type: application/xml");
 	echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
+	setlocale (LC_ALL, 'en_US');
 ?>
 <rss version="0.92">
 <channel>
-	<title>[(#SITE|strtoupper|htmlspecialchars)].[@COMMON.QUEUE]</title>
-	<link>[(#CURRENTURL|dirname)]</link>
-	<description>[@LODELADMIN.SITE] [#SITE] : [(@COMMON.DASHBOARD|strtolower)] > [(@COMMON.QUEUE|strtolower)] ([@COMMON.QUEUE_DESCRIPTION])</description>
+	<title>[#SITE|strtoupper|htmlspecialchars].[@COMMON.QUEUE]</title>
+	<link>[#CURRENTURL|dirname]</link>
+	<description>[@LODELADMIN.SITE] [#SITE] : [@COMMON.DASHBOARD|strtolower] > [@COMMON.QUEUE|strtolower] ([@COMMON.QUEUE_DESCRIPTION])</description>
 	<language>fr</language>
 	
 	<LOOP NAME="dashboard_queue" TABLE="entities" WHERE="status LT 1 AND status GT -64" ORDER="modificationdate DESC" LIMIT="0,30"> 
 		<DO>
 		<item>
 			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
-			<link>[(#CURRENTURL|dirname)]/index.php?do=view&amp;id=[#ID]</link>
+			<link>[#CURRENTURL|dirname]/index.php?do=view&amp;id=[#ID]</link>
+			<pubDate>[#MODIFICATIONDATE|formateddate('%a, %d %b %Y %T %z')]</pubDate>
 			<description>
-				<IF COND="[#ID|get_dc_fields('description')]">[(#ID|get_dc_fields('description')|textebrut|htmlspecialchars)]</IF>
+				<IF COND="[#ID|get_dc_fields('description')]">[#ID|get_dc_fields('description')|textebrut|htmlspecialchars]</IF>
 			</description>
 			<author>
 				<LOOP NAME="get_author" TABLE="persons" WHERE="identity='[#ID]'" ORDER="degree">
