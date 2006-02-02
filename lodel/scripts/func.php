@@ -1045,6 +1045,50 @@ function _indent_xhtml($source, $indenter = '  ')
 		$source = implode($array, "\n");
 		return $source;
 }
+
+/**
+ * Récupération des champs génériques dc.* associés aux entités
+ *
+ * @param integer $id identifiant numérique de l'entité dont on veut récupérer un champ dc
+ * @param string $dcfield le nom du champ à récupérer (sans le dc.devant). Ex : .'description' pour 'dc.description'
+ * @return le contenu du champ passé dans le paramètre $dcfield
+ */
+
+function get_dc_fields($id, $dcfield)
+{
+	$dcfield = 'dc.' . $dcfield;
+	global $db;
+	if ($result = $db->execute(lq("SELECT #_TP_entities.id, #_TP_types.class, #_TP_tablefields.name, #_TP_tablefields.g_name
+	FROM #_TP_entities, #_TP_types, #_TP_tablefields
+  	WHERE (#_TP_tablefields.g_name = '$dcfield')
+  	AND #_TP_tablefields.class = #_TP_types.class
+  	AND #_TP_entities.idtype = #_TP_types.id
+  	AND #_TP_entities.id = $id")
+	))
+
+	{
+		if ($row = $result->fields)
+			{
+			$id  = $row['id'];
+			$id_class_fields[$id]['class'] = $row['class'];
+			$id_class_fields[$id][$row['g_name']] = $row['name'];
+	
+			if ($id_class_fields[$id][$dcfield])
+				{
+				$class_table = "#_TP_".$id_class_fields[$id]['class'];
+				$field = $id_class_fields[$id][$dcfield];
+				$result =$db->getOne(lq("SELECT $field FROM $class_table WHERE identity = '$id'"));
+				if ($result===false) {
+					dberror();
+					}
+  				}
+  			return $result;
+			} 
+	else return false;
+	}
+else return false;
+}
+
 // valeur de retour identifier ce script
 return 568;
 
