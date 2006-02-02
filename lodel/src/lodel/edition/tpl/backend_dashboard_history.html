@@ -18,32 +18,33 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+<USE MACROFILE="macros_xml.html" />
 <?php
 header("Content-type: application/xml");
 echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
 ?>
 <rss version="0.92">
-  <channel>
- <IF COND="[#ID]">
-<title>[@COMMON.EDITION]<LOOP NAME="nompourtitre" TABLE="entities" WHERE="id='[#ID]'">[#IDENTIFIER] [(#G_TITLE|textebrut)]</LOOP></title>
-<ELSE/>
-<title>[(#SITE|strtoupper)].[@COMMON.HISTORY]</title>
-</IF> 
-   <link>[(#CURRENTURL|dirname)]</link>
-    <description>[@LODELADMIN.SITE] [#SITE] : [(@COMMON.DASHBOARD|strtolower)] > [(@COMMON.HISTORY|strtolower)] ([@COMMON.HISTORY_DESCRIPTION])</description>
-     <language>fr</language>
-
-    <LOOP NAME="series_history" TABLE="entities,types" WHERE="types.id=idtype" ORDER="entities.modificationdate DESC" LIMIT="0,30"> 
-    <DO>
-    <item>
-      <title>[#G_TITLE|textebrut|nbsp]</title>
-      <link>[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid)]</link>
-      <LOOP NAME="entites_particuliere" TABLE="#_TP_[#CLASS]" WHERE="identity='[#ID]'" LIMIT="0,1">
-	<description>[(#RESUME:FR|textebrut)]</description>
+<channel>
+	<title>[(#SITE|strtoupper|htmlspecialchars)].[@COMMON.HISTORY]</title>
+	<link>[(#CURRENTURL|dirname)]</link>
+	<description>[@LODELADMIN.SITE] [#SITE] : [(@COMMON.DASHBOARD|strtolower)] > [(@COMMON.HISTORY|strtolower)] ([@COMMON.HISTORY_DESCRIPTION])</description>
+	<language>fr</language>
+	
+	<LOOP NAME="entities_history" TABLE="entities" ORDER="modificationdate DESC" LIMIT="0,30"> 
+		<DO>
+		<item>
+			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
+			<link>[(#CURRENTURL|dirname)]/index.php?do=view&amp;id=[#ID]</link>
+			<description>
+				<IF COND="[#ID|get_dc_fields('description')]">[(#ID|get_dc_fields('description')|textebrut|htmlspecialchars)]</IF>
+			</description>
+			<author>
+				<LOOP NAME="get_author" TABLE="persons" WHERE="identity='[#ID]'" ORDER="degree">
+					[#G_FIRSTNAME||textebrut|htmlspecialchars] [#G_FAMILYNAME||textebrut|htmlspecialchars]
+				</LOOP>
+			</author>
+		</item>
+		</DO>
 	</LOOP>
-      <author></author>
-    </item>
-    </DO>
-    </LOOP>
-  </channel>
+</channel>
 </rss>
