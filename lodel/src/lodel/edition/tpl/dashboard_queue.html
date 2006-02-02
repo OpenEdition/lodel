@@ -40,6 +40,9 @@
 		<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">[@COMMON.DASHBOARD]</a></li>
 		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title=[@EDITION.QUEUE]"> [@COMMON.QUEUE] ([@COMMON.QUEUE_DESCRIPTION])</a></li>
 	</ul>
+
+<p><a href="index.[#EXTENSIONSCRIPTS]?page=backend&format=dashboard_queue">RSS : dashboard_queue.html</a></p>
+
 </div>
 	<LOOP NAME="series_unpublish" TABLE="entities,types" WHERE="types.id=idtype AND entities.status LT 1 AND entities.status GT -64" ORDER="modificationdate DESC" SPLIT="20">
 	<BEFORE>
