@@ -47,8 +47,6 @@
 	<LOOP NAME="series_unpublish" TABLE="entities,types" WHERE="types.id=idtype AND entities.status LT 1 AND entities.status GT -64" ORDER="modificationdate DESC" SPLIT="20">
 	<BEFORE>
 		<div class="searchInfos">[#NBRESULTS] [@COMMON.RESULTS]</div>
-		<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
-		<input type="hidden" name="do" value="mass" />
 		<ul id="listEntities">	
 	</BEFORE>
 	<DO>
@@ -88,13 +86,6 @@
 	</DO>
 	<AFTER>
 		</ul>
-		<div style="text-align: right">
-			<input type="submit" name="delete" value="[@EDITION.MASSDELETE]" />
-			<input type="submit" name="publish" value="[@EDITION.MASSPUBLISH]" />
-			<input type="submit" name="unpublish" value="[@EDITION.MASSUNPUBLISH]" />
-		</div>
-	
-	</form>
 	<MACRO NAME="BOTTOM_RESULTS_PAGES">			
 	</AFTER>
 	<ALTERNATIVE>
