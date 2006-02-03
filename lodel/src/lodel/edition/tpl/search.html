@@ -33,62 +33,59 @@
 
 <MACRO NAME="JS_CONFIRM">
 <!--[ Rajout intégration maquette ]-->
+
 <MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
 <MACRO NAME="JS_AFFICHE_IMAGE">
 <!--[ Fin rajout intégration maquette ]-->
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
-	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" QTYPE="[#QTYPE]" QSTATUS="[#QSTATUS]" QFIELD="[#QFIELD]">
+	
 	<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
-	<div style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;" class="queryText">
+		<div style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;" class="queryText">
 		<IF COND="![#QUERY]">
 			[@WARNING_EMPTY_QUERY]
+		<ELSE />
+			<MACRO NAME="YOUR_SEARCH_BAR">
+		</IF>
 		</div>
 	</div>
-	<ELSE/>
-	<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
-	<BEFORE>
-	<MACRO NAME="YOUR_SEARCH_BAR">
-	<ul id="listEntities">
-	</BEFORE>
-	<DO>
-		<IF COND="[#COUNT] % 2">
-			<li class="line2">
-		<ELSE/>
-			<li class="line1">
-		</IF>
-		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
-		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" QTYPE="[#QTYPE]" QSTATUS="[#QSTATUS]" QFIELD="[#QFIELD]">
+	<IF COND="[#QUERY]">
+		<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
+			<BEFORE>
+				
+				<ul id="listEntities">
+			</BEFORE>
+			<DO>
+				<IF COND="[#COUNT] % 2">
+					<li class="line2">
+				<ELSE/>
+					<li class="line1">
+				</IF>
+				<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+				<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+				<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 		
-		<span class="type_document">
+				<span class="type_document">
+				<LOOP NAME="parentsentities">
+					<DO>&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
+				</LOOP>
+				</span>
 		
-		<LOOP NAME="parentsentities">
-		<DO>
-			&nbsp;>&nbsp;<a href="index.php?id=[#ID]">[#G_TITLE|nbsp]</a>
-		</DO>
-		
+				</li>
+			</DO>
+			<AFTER>
+				</ul>
+				<MACRO NAME="BOTTOM_RESULTS_PAGES">
+			</AFTER>
+			<ALTERNATIVE>
+				<MACRO NAME="YOUR_SEARCH_BAR">
+				<p class="searchnoresults">
+				[@EDITION.SEARCH_MESSAGE_NO_RESULTS|sprintf([#QUERY])]
+				</p>
+			</ALTERNATIVE>
 		</LOOP>
-		</span>
-		
-		</li>
-	</DO>
-	<AFTER>
-		</ul>
-		<MACRO NAME="BOTTOM_RESULTS_PAGES">
-	</AFTER>
-	<ALTERNATIVE>
-	<MACRO NAME="YOUR_SEARCH_BAR">
-	
-		<p class="searchnoresults">
-		[@EDITION.SEARCH_MESSAGE_NO_RESULTS|sprintf([#QUERY])]
-		</p>
-	</ALTERNATIVE>
-	</LOOP>
-	
-	
-	
 	</IF>
 
 <!--[ ************************************** Fin Rajout intégration maquette ************************************** ]-->
