@@ -198,7 +198,7 @@ class XMLDB_Translations extends XMLDB
 			$vo->textgroups = $this->textgroups;
 			foreach ($record as $k => $v)
 			{
-				$vo->$k = addslashes($v);
+				$vo->$k = $v;
 			}
 			$dao->save($vo);
 			#print_R($vo);
@@ -221,7 +221,7 @@ class XMLDB_Translations extends XMLDB
 			$vo = $dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
 			foreach ($record as $k => $v)
 			{
-				$vo->$k = addslashes($v);
+				$vo->$k = $v;
 			}
 			$dao->save($vo);
 			return;
