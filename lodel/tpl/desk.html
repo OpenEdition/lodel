@@ -24,6 +24,7 @@
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
 <script type="text/javascript">
 	<!--
 	function select_url(obj) {
@@ -167,6 +168,30 @@ body{
 }
 
 /* Fin boutons du desk */
+
+/* moteur */
+
+#lightSearchForm{
+	position: absolute;
+	top: 121px;
+	right: .5em;
+}
+
+#lightSearchForm fieldset{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: auto;
+	background: #fff;
+}
+
+#lightSearchForm input.text, #lightSearchForm input.button{
+	font: normal 90% verdana, sans-serif;
+}
+
+#lightSearchForm input.button{
+	padding-top: 0;
+}
 
 /* liste sites pour desk lodeladmin */
 
@@ -314,6 +339,7 @@ body{
 			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@EDITION.STATISTICS_DESCRIPTION]">[@EDITION.STATISTICS]</a></li>
 		</IF>
 	</ul>
+	<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
 	<div class="infos">
 	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
 	<IF COND="[#CHARSET] != 'utf-8'">

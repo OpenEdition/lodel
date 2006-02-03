@@ -789,6 +789,16 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </form>		
 </DEFFUNC>
 
+<DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
+
+<form id="lightSearchForm" action="search.php" method="get">
+<fieldset>
+<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
+<input class="button small" type="submit" name="submit_s" value="[@COMMON.OK]" />
+</fieldset>
+</form>		
+</DEFFUNC>
+
 
 <!--[*************************************************]-->
 <!--[ Added 2005-02-02																]-->
