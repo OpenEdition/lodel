@@ -320,7 +320,7 @@ body{
 	<ul id="deskContext">
 		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
 			<li><a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a></li>
-			<li><a href="[#SITEROOT]lodel/edition/?page=searchengine">[@COMMON.SEARCH_ENGINE]</a></li>
+			<li><a href="[#SITEROOT]lodel/edition/search.php">[@COMMON.SEARCH_ENGINE]</a></li>
 
 			<LOOP NAME="getFirstEntriesType" TABLE="entrytypes" ORDER="rank" LIMIT="0,1">
 				<li><a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[@EDITION.ENTRIES_EDITION]</a></li>
