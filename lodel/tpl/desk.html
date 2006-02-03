@@ -66,7 +66,7 @@ body{
 	background-image: url("[#SHAREURL]/images/bandeau.jpg");
 	background-repeat: no-repeat;
 	background-color: #fff;
-	height: 130px; /*valeur pour IE*/
+	height: 142px; /*valeur pour IE*/
 	font: 11px verdana, sans-serif !important;
 	text-align: left !important;
 	border-bottom: 1px dashed #728979;
@@ -110,12 +110,13 @@ body{
 
 #lodel-desk ul.group1, #lodel-desk ul.group2{
 	position: absolute;
-	top: 100px;
-	border-right: 1px solid #aaa;
+	top: 99px;
+	border-bottom: 1px solid #aaa;
 }
 
 #lodel-desk ul.group1{
-	left: .5em;
+	left: 0;
+	padding: 0 .5em;
 }
 
 #lodel-desk ul.group2{
@@ -126,6 +127,9 @@ body{
 	float: left;
 	width: auto;
 	display: block;
+	background: #f8f8f8;
+	margin: 0 .5em;
+	height: 20px;
 }
 
 #lodel-desk ul li a{
@@ -135,8 +139,31 @@ body{
 	font-weight: bold;
 	padding: .3ex 1em;
 	border: 1px solid #aaa;
-	border-right: none;
+	border-bottom: none;
+}
+
+#lodel-desk ul li a.actif{
 	background: #fff;
+	border-bottom: 1px solid #fff;
+	color: #0e2d7c;
+}
+
+#lodel-desk #deskContext{
+	position: absolute;
+	top: 121px;
+	left: 0;
+	background: #fff;
+}
+
+#lodel-desk #deskContext li{
+	background: #fff;
+	height: 15px;
+}
+
+#lodel-desk #deskContext li a{
+	border: none;
+	font-weight: normal;
+	color: #0e2d7c;
 }
 
 /* Fin boutons du desk */
@@ -177,18 +204,18 @@ body{
 	<IF COND="[#SITE]">
 	<li>
 		<IF COND="[#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('dashboard')]">
-		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+		<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 		<ELSE/>
-		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+		<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 		</IF>
 		[@COMMON.EDITION]
 		</a>
 	</li>
 	<li>
 		<IF COND="[#CURRENTURL|strpos('dashboard')]">
-			<a id="dashboard_actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">
+			<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">
 		<ELSE/>
-			<a id="dashboard" href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">	
+			<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">	
 		</IF>
 			[@COMMON.DASHBOARD]
 			</a>
@@ -198,9 +225,9 @@ body{
 		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
 		<ELSE/>
 			<IF COND="[#CURRENTURL|strpos('admin')]">	
-			<a id="admin_actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
+			<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 			<ELSE/>
-			<a id="admin" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
+			<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 			</IF>
 		</IF>
 		[@COMMON.ADMINISTRATION]
@@ -208,9 +235,9 @@ body{
 		</li>
 		<li>
 		<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
-		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
+		<a class="actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
 		<ELSE/>
-		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
+		<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
 		</IF>
 		[@COMMON.SITE]
 		</a>
@@ -221,8 +248,8 @@ body{
 	</li>
 	</IF>
 	<li>
-	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.DOCUMENTATION]">
-	[@COMMON.DOCUMENTATION]
+	<a href="[#SITEROOT]lodel/edition/?page=information"  title="[@COMMON.INFORMATION]">
+	[@COMMON.INFORMATION]
 	</a>
 	</li>
 	</ul>
@@ -264,6 +291,28 @@ body{
 	<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	</IF>
 	</li>
+	</ul>
+	<ul id="deskContext">
+		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
+			<li><a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a></li>
+			<li><a href="[#SITEROOT]lodel/edition/?page=searchengine">[@COMMON.SEARCH_ENGINE]</a></li>
+
+			<LOOP NAME="getFirstEntriesType" TABLE="entrytypes" ORDER="rank" LIMIT="0,1">
+				<li><a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[@EDITION.ENTRIES_EDITION]</a></li>
+			</LOOP>
+
+			<LOOP NAME="getFirstPersonsType" TABLE="persontypes" ORDER="rank" LIMIT="0,1">
+				<li><a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]">[@EDITION.PERSONS_EDITION]</a></li>
+			</LOOP>
+			<LOOP NAME="getFirstuseroptiongroups" TABLE="optiongroups" ORDER="rank" LIMIT="0,1" WHERE="logic != 'servooconf'">
+				<li><a href="[#SITEROOT]lodel/admin/index.php?do=view&amp;lo=useroptiongroups&amp;id=[#ID]">[@EDITION.SITE_OPTIONS]</a></li>
+			</LOOP>
+		</IF>
+		<IF COND="[#CURRENTURL|strpos('dashboard')]">
+			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@EDITION.QUEUE_DESCRIPTION]">[@EDITION.QUEUE]</a></li>
+			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@EDITION.HISTORY_DESCRIPTION]">[@EDITION.HISTORY]</a></li>
+			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@EDITION.STATISTICS_DESCRIPTION]">[@EDITION.STATISTICS]</a></li>
+		</IF>
 	</ul>
 	<div class="infos">
 	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
