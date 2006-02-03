@@ -53,7 +53,7 @@
 	--></script>
 <style type="text/css">
 
-/* Ces styles ne sont pas dans styles_lodel.css qui n'est pas chargï¿½ en mode visualisation */
+/* Ces styles ne sont pas dans styles_lodel.css qui n'est pas chargé en mode visualisation */
 
 /****************DESK*************************/
 
@@ -172,7 +172,6 @@ body{
 
 /****************FIN DESK*************************/
 </style>
-
 <div id="lodel-desk">
 	<ul  class="group1">
 	<IF COND="[#SITE]">
@@ -182,7 +181,7 @@ body{
 		<ELSE/>
 		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
 		</IF>
-		[@COMMON.HOME]
+		[@COMMON.EDITION]
 		</a>
 	</li>
 	<li>
@@ -213,7 +212,7 @@ body{
 		<ELSE/>
 		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]">
 		</IF>
-		[@COMMON.VIEW]
+		[@COMMON.SITE]
 		</a>
 		</li>
 	<ELSE/>
@@ -223,7 +222,7 @@ body{
 	</IF>
 	<li>
 	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]">
-	[@COMMON.HELP]
+	[@COMMON.DOCUMENTATION]
 	</a>
 	</li>
 	</ul>
@@ -253,7 +252,7 @@ body{
 	<ELSE/>
 	<a id="compile_inactif" title="[@COMMON.COMPILE]">
 	</IF>
-	[@COMMON.COMPILE]
+	[@COMMON.CLEARCACHE]
 	</a>
 	</li>
 	<li>
