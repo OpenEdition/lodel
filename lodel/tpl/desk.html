@@ -177,9 +177,9 @@ body{
 	<IF COND="[#SITE]">
 	<li>
 		<IF COND="[#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('dashboard')]">
-		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
+		<a id="edition_actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 		<ELSE/>
-		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.HOME]">
+		<a id="edition" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 		</IF>
 		[@COMMON.EDITION]
 		</a>
@@ -208,9 +208,9 @@ body{
 		</li>
 		<li>
 		<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
-		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.VIEW]">
+		<a id="voir_actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
 		<ELSE/>
-		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.VIEW]">
+		<a id="voir" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
 		</IF>
 		[@COMMON.SITE]
 		</a>
@@ -221,7 +221,7 @@ body{
 	</li>
 	</IF>
 	<li>
-	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.HELP]">
+	<a id="aide" href="http://documentation.lodel.org" onclick="window.open(this.href);return(false)" title="[@COMMON.DOCUMENTATION]">
 	[@COMMON.DOCUMENTATION]
 	</a>
 	</li>
@@ -248,9 +248,9 @@ body{
 	<ul class="group2">
 	<li>		
 	<IF COND="[#LODELUSER.ADMIN]">
-	<a href="[#CLEARCACHEURL|htmlentities]" id="compile" title="[@COMMON.COMPILE]">
+	<a href="[#CLEARCACHEURL|htmlentities]" id="compile" title="[@COMMON.CLEARCACHE]">
 	<ELSE/>
-	<a id="compile_inactif" title="[@COMMON.COMPILE]">
+	<a id="compile_inactif" title="[@COMMON.CLEARCACHE]">
 	</IF>
 	[@COMMON.CLEARCACHE]
 	</a>
