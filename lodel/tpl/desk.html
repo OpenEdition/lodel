@@ -364,7 +364,9 @@ body{
 			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@EDITION.STATISTICS_DESCRIPTION]">[@EDITION.STATISTICS]</a></li>
 		</IF>
 	</ul>
-	<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
+	<IF COND="[#SITE]">
+		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
+	</IF>
 	<div class="infos">
 	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
 	<IF COND="[#CHARSET] != 'utf-8'">
