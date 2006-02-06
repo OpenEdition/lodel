@@ -58,7 +58,7 @@
 <input type="hidden" name="lo" value="users">
 <fieldset>
   <legend>[@ADMIN.USER_GENERAL_INFORMATIONS]</legend>
-  <input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+  <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -67,7 +67,7 @@
   <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span> : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="username" id="username" class="text" value="&#10;&#9;&#9;&#9;[#USERNAME]&#10;&#9;&#9;">
+  <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
   <LOOP NAME="fielderror" FIELD="username">
     <a id="username"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIN]"></FUNC>
@@ -97,7 +97,7 @@
   <label for="lastname">[@ADMIN.LASTNAME] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="lastname" id="lastname" class="text" value="&#10;&#9;&#9;&#9;[#LASTNAME]&#10;&#9;&#9;">
+  <input type="text" size="30" name="lastname" id="lastname" class="text" value="[#LASTNAME]">
   <LOOP NAME="fielderror" FIELD="lastname">
     <a id="lastname"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.LASTNAME]"></FUNC>
@@ -107,7 +107,7 @@
   <label for="firstname">[@ADMIN.FIRSTNAME] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="firstname" id="firstname" class="text" value="&#10;&#9;&#9;&#9;[#FIRSTNAME]&#10;&#9;&#9;">
+  <input type="text" size="30" name="firstname" id="firstname" class="text" value="[#FIRSTNAME]">
   <LOOP NAME="fielderror" FIELD="firstname">
     <a id="firstname"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FIRSTNAME]"></FUNC>
@@ -117,7 +117,7 @@
   <label for="email">[@ADMIN.EMAIL] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="email" id="email" class="text" value="&#10;&#9;&#9;&#9;[#EMAIL]&#10;&#9;&#9;">
+  <input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]">
   <LOOP NAME="fielderror" FIELD="email">
     <a id="email"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EMAIL]"></FUNC>
@@ -189,7 +189,7 @@
   <label for="nickname">[@ADMIN.NICKNAME] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="nickname" id="nickname" class="text" value="&#10;&#9;&#9;&#9;[#NICKNAME]&#10;&#9;&#9;">
+  <input type="text" size="30" name="nickname" id="nickname" class="text" value="[#NICKNAME]">
   <LOOP NAME="fielderror" FIELD="nickname">
     <a id="nickname"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NICKNAME]"></FUNC>
@@ -199,9 +199,7 @@
   <label for="biography">[@ADMIN.BIOGRAPHY : 
 		</label>
   <br class="nobr">
-  <textarea size="30" name="biography" id="biography" class="text" row="10" cols="60">
-			[#BIOGRAPHY]
-		</textarea>
+  <textarea size="30" name="biography" id="biography" class="text" row="10" cols="60">[#BIOGRAPHY]</textarea>
   <LOOP NAME="fielderror" FIELD="biography">
     <a id="biography"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.BIOGRAPHY"></FUNC>
@@ -211,7 +209,7 @@
   <label for="professional_website">[@ADMIN.PROFESSIONAL_WEBSITE_TITLE : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="professional_website" id="professional_website" class="text" value="&#10;&#9;&#9;&#9;[#PROFESSIONAL_WEBSITE]&#10;&#9;&#9;">
+  <input type="text" size="30" name="professional_website" id="professional_website" class="text" value="[#PROFESSIONAL_WEBSITE]">
   <LOOP NAME="fielderror" FIELD="professional_website">
     <a id="professional_website"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"></FUNC>
@@ -221,7 +219,7 @@
   <label for="url_professional_website">[@ADMIN.PROFESSIONAL_WEBSITE_URL : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="url_professional_website" id="url_professional_website" class="text" value="&#10;&#9;&#9;&#9;[#URL_PROFESSIONAL_WEBSITE]&#10;&#9;&#9;">
+  <input type="text" size="30" name="url_professional_website" id="url_professional_website" class="text" value="[#URL_PROFESSIONAL_WEBSITE]">
   <LOOP NAME="fielderror" FIELD="url_professional_website">
     <a id="url_professional_website"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROFESSIONAL_WEBSITE_URL"></FUNC>
@@ -231,7 +229,7 @@
   <label for="rss_professional_website">[@ADMIN.RSS_PROFESSIONAL_WEBSITE : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="rss_professional_website" id="rss_professional_website" class="text" value="&#10;&#9;&#9;&#9;[#RSS_PROFESSIONAL_WEBSITE]&#10;&#9;&#9;">
+  <input type="text" size="30" name="rss_professional_website" id="rss_professional_website" class="text" value="[#RSS_PROFESSIONAL_WEBSITE]">
   <LOOP NAME="fielderror" FIELD="rss_professional_website">
     <a id="rss_professional_website"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RSS_PROFESSIONAL_WEBSITE"></FUNC>
@@ -241,7 +239,7 @@
   <label for="personal_website">[@ADMIN.PERSONNAL_WEBSITE] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="personal_website" id="personal_website" class="text" value="&#10;&#9;&#9;&#9;[#PERSONAL_WEBSITE]&#10;&#9;&#9;">
+  <input type="text" size="30" name="personal_website" id="personal_website" class="text" value="[#PERSONAL_WEBSITE]">
   <LOOP NAME="fielderror" FIELD="personal_website">
     <a id="personal_website"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PERSONNAL_WEBSITE]"></FUNC>
@@ -251,7 +249,7 @@
   <label for="url_personal_website">[@ADMIN.PERSONNAL_WEBSITE_URL] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="url_personal_website" id="url_personal_website" class="text" value="&#10;&#9;&#9;&#9;[#URL_PERSONAL_WEBSITE]&#10;&#9;&#9;">
+  <input type="text" size="30" name="url_personal_website" id="url_personal_website" class="text" value="[#URL_PERSONAL_WEBSITE]">
   <LOOP NAME="fielderror" FIELD="url_personal_website">
     <a id="url_personal_website"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PERSONNAL_WEBSITE_URL]"></FUNC>
@@ -261,7 +259,7 @@
   <label for="rss_personal_website">[@ADMIN.RSS_PERSONNAL_WEBSITE : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="rss_personal_website" id="rss_personal_website" class="text" value="&#10;&#9;&#9;&#9;[#RSS_PERSONAL_WEBSITE]&#10;&#9;&#9;">
+  <input type="text" size="30" name="rss_personal_website" id="rss_personal_website" class="text" value="[#RSS_PERSONAL_WEBSITE]">
   <LOOP NAME="fielderror" FIELD="rss_personal_website">
     <a id="rss_personal_website"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RSS_PERSONNAL_WEBSITE"></FUNC>
@@ -271,9 +269,7 @@
   <label for="pgp_key">[@ADMIN.PGP_KEY] : 
 		</label>
   <br class="nobr">
-  <textarea size="30" name="pgp_key" id="pgp_key" class="text" row="10" cols="60">
-			[#PGP_KEY]
-		</textarea>
+  <textarea size="30" name="pgp_key" id="pgp_key" class="text" row="10" cols="60">[#PGP_KEY]</textarea>
   <LOOP NAME="fielderror" FIELD="pgp_key">
     <a id="pgp_key"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PGP_KEY]"></FUNC>
@@ -283,7 +279,7 @@
   <label for="alternate_email">[@ADMIN.ALTERNATIVE_EMAIL] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="alternate_email" id="alternate_email" class="text" value="&#10;&#9;&#9;&#9;[#ALTERNATE_EMAIL]&#10;&#9;&#9;">
+  <input type="text" size="30" name="alternate_email" id="alternate_email" class="text" value="[#ALTERNATE_EMAIL]">
   <LOOP NAME="fielderror" FIELD="alternate_email">
     <a id="alternate_email"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ALTERNATIVE_EMAIL]"></FUNC>
@@ -293,7 +289,7 @@
   <label for="phonenumber">[@ADMIN.PHONE_NUMBER] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="15" name="phonenumber" id="phonenumber" class="text" value="&#10;&#9;&#9;&#9;[#PHONENUMBER]&#10;&#9;&#9;">
+  <input type="text" size="15" name="phonenumber" id="phonenumber" class="text" value="[#PHONENUMBER]">
   <LOOP NAME="fielderror" FIELD="phonenumber">
     <a id="phonenumber"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PHONE_NUMBER]"></FUNC>
@@ -303,7 +299,7 @@
   <label for="im_identifier">[@ADMIN.INSTANT_MESSAGING_IDENTIFIER] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="im_identifier" id="im_identifier" class="text" value="&#10;&#9;&#9;&#9;[#IM_IDENTIFIER]&#10;&#9;&#9;">
+  <input type="text" size="30" name="im_identifier" id="im_identifier" class="text" value="[#IM_IDENTIFIER]">
   <LOOP NAME="fielderror" FIELD="im_identifier">
     <a id="im_identifier"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INSTANT_MESSAGING_IDENTIFIER]"></FUNC>
@@ -313,7 +309,7 @@
   <label for="im_name">[@ADMIN.INSTANT_MESSAGING_NAME] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="im_name" id="im_name" class="text" value="&#10;&#9;&#9;&#9;[#IM_NAME]&#10;&#9;&#9;">
+  <input type="text" size="30" name="im_name" id="im_name" class="text" value="[#IM_NAME]">
   <LOOP NAME="fielderror" FIELD="im_name">
     <a id="im_name"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INSTANT_MESSAGING_NAME]"></FUNC>

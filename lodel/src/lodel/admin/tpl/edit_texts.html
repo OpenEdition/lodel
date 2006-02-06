@@ -41,7 +41,7 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="texts">
-<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<input type="hidden" name="id" value="[#ID]">
 <LOOP NAME="fielderror" FIELD="id">
   <a id="id"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -49,28 +49,24 @@
 </LOOP>
 <label for="name">[@COMMON.NAME] : 
 		</label>
-<br class="nobr"><span class="admin_display">
-			[#NAME]
-		</span><br />
+<br class="nobr"><span class="admin_display">[#NAME]</span><br />
 <label for="contents">[@ADMIN.TEXT] : 
 		</label>
 <br class="nobr">
-<textarea size="30" name="contents" id="contents" class="text" row="10" cols="60">
-			[#CONTENTS]
-		</textarea>
+<textarea size="30" name="contents" id="contents" class="text" row="10" cols="60">[#CONTENTS]</textarea>
 <LOOP NAME="fielderror" FIELD="contents">
   <a id="contents"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEXT]"></FUNC>
   </span>
 </LOOP>
 <br />
-<input type="hidden" name="lang" value="&#10;&#9;&#9;&#9;[#LANG]&#10;&#9;&#9;">
+<input type="hidden" name="lang" value="[#LANG]">
 <LOOP NAME="fielderror" FIELD="lang">
   <a id="lang"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LANG]"></FUNC>
   </span>
 </LOOP>
-<input type="hidden" name="textgroup" value="&#10;&#9;&#9;&#9;[#TEXTGROUP]&#10;&#9;&#9;">
+<input type="hidden" name="textgroup" value="[#TEXTGROUP]">
 <LOOP NAME="fielderror" FIELD="textgroup">
   <a id="textgroup"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>

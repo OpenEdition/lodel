@@ -52,7 +52,7 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="tablefields">
-<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<input type="hidden" name="id" value="[#ID]">
 <LOOP NAME="fielderror" FIELD="id">
   <a id="id"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -61,14 +61,14 @@
 <label for="name">[@ADMIN.NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="name" id="name" class="text" value="&#10;&#9;&#9;&#9;[#NAME]&#10;&#9;&#9;">
+<input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
 <LOOP NAME="fielderror" FIELD="name">
   <a id="name"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
   </span>
 </LOOP>
 <br />
-<input type="hidden" name="class" value="&#10;&#9;&#9;&#9;[#CLASS]&#10;&#9;&#9;">
+<input type="hidden" name="class" value="[#CLASS]">
 <LOOP NAME="fielderror" FIELD="class">
   <a id="class"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -77,7 +77,7 @@
 <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
 <LOOP NAME="fielderror" FIELD="title">
   <a id="title"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
@@ -87,11 +87,11 @@
 <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
 <label for="style">[@ADMIN.STYLE] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="style" id="style" class="text" value="&#10;&#9;&#9;&#9;[#STYLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
 <LOOP NAME="fielderror" FIELD="style">
   <a id="style"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE]"></FUNC>
@@ -143,7 +143,7 @@
 <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="&#10;&#9;&#9;&#9;[#DEFAULTVALUE]&#10;&#9;&#9;">
+<input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
 <LOOP NAME="fielderror" FIELD="defaultvalue">
   <a id="defaultvalue"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DEFAULT_VALUE]"></FUNC>
@@ -153,7 +153,7 @@
 <label for="processing">[@ADMIN.PROCESSING_IMPORT] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="processing" id="processing" class="text" value="&#10;&#9;&#9;&#9;[#PROCESSING]&#10;&#9;&#9;">
+<input type="text" size="30" name="processing" id="processing" class="text" value="[#PROCESSING]">
 <LOOP NAME="fielderror" FIELD="processing">
   <a id="processing"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROCESSING_IMPORT]"></FUNC>
@@ -177,7 +177,7 @@
 <label for="filtering">[@ADMIN.AUTOMATIC_FILTERING] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="filtering" id="filtering" class="text" value="&#10;&#9;&#9;&#9;[#FILTERING]&#10;&#9;&#9;">
+<input type="text" size="30" name="filtering" id="filtering" class="text" value="[#FILTERING]">
 <LOOP NAME="fielderror" FIELD="filtering">
   <a id="filtering"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.AUTOMATIC_FILTERING]"></FUNC>
@@ -201,7 +201,7 @@
 <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="editionparams" id="editionparams" class="text" value="&#10;&#9;&#9;&#9;[#EDITIONPARAMS]&#10;&#9;&#9;">
+<input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
 <LOOP NAME="fielderror" FIELD="editionparams">
   <a id="editionparams"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PARAMETER_FOR_EDITION]"></FUNC>
@@ -225,9 +225,7 @@
 <label for="comment">[@ADMIN.COMMENT] : 
 		</label>
 <br class="nobr">
-<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">
-			[#COMMENT]
-		</textarea>
+<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
 <LOOP NAME="fielderror" FIELD="comment">
   <a id="comment"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>

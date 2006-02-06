@@ -42,7 +42,7 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="entrytypes">
-<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<input type="hidden" name="id" value="[#ID]">
 <LOOP NAME="fielderror" FIELD="id">
   <a id="id"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -51,14 +51,14 @@
 <label for="type">[@ADMIN.NAME_INDEX_TYPE]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="type" id="type" class="text" value="&#10;&#9;&#9;&#9;[#TYPE]&#10;&#9;&#9;">
+<input type="text" size="30" name="type" id="type" class="text" value="[#TYPE]">
 <LOOP NAME="fielderror" FIELD="type">
   <a id="type"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME_INDEX_TYPE]"></FUNC>
   </span>
 </LOOP>
 <br />
-<input type="hidden" name="class" value="&#10;&#9;&#9;&#9;[#CLASS]&#10;&#9;&#9;">
+<input type="hidden" name="class" value="[#CLASS]">
 <LOOP NAME="fielderror" FIELD="class">
   <a id="class"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -67,7 +67,7 @@
 <label for="title">[@ADMIN.TITLE_INDEX_TYPE]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
 <LOOP NAME="fielderror" FIELD="title">
   <a id="title"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TITLE_INDEX_TYPE]"></FUNC>
@@ -77,11 +77,11 @@
 <label for="altertitle">[@ADMIN.MULTILINGUAL_TITLE]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
 <label for="style">[@ADMIN.STYLE_INDEX_TYPE] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="style" id="style" class="text" value="&#10;&#9;&#9;&#9;[#STYLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
 <LOOP NAME="fielderror" FIELD="style">
   <a id="style"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE_INDEX_TYPE]"></FUNC>
@@ -105,7 +105,7 @@
 <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="tpl" id="tpl" class="text" value="&#10;&#9;&#9;&#9;[#TPL]&#10;&#9;&#9;">
+<input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
 <LOOP NAME="fielderror" FIELD="tpl">
   <a id="tpl"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]"></FUNC>
@@ -115,7 +115,7 @@
 <label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_INDEX] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="tplindex" id="tplindex" class="text" value="&#10;&#9;&#9;&#9;[#TPLINDEX]&#10;&#9;&#9;">
+<input type="text" size="30" name="tplindex" id="tplindex" class="text" value="[#TPLINDEX]">
 <LOOP NAME="fielderror" FIELD="tplindex">
   <a id="tplindex"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILENAME_INDEX]"></FUNC>
@@ -141,7 +141,7 @@
 <label for="flat">[@ADMIN.FLAT_INDEX] : 
 		</label>
 <br class="nobr">
-<IF COND="&#10;&#9;&#9;&#9;[#FLAT]&#10;&#9;&#9;">
+<IF COND="[#FLAT]">
   <input type="checkbox" name="flat" id="flat" checked>
   <ELSE/>
   <input type="checkbox" name="flat" id="flat">
@@ -169,7 +169,7 @@
 <label for="newbyimportallowed">[@ADMIN.NEWIMPORTALLOWED] : 
 		</label>
 <br class="nobr">
-<IF COND="&#10;&#9;&#9;&#9;[#NEWBYIMPORTALLOWED]&#10;&#9;&#9;">
+<IF COND="[#NEWBYIMPORTALLOWED]">
   <input type="checkbox" name="newbyimportallowed" id="newbyimportallowed" checked>
   <ELSE/>
   <input type="checkbox" name="newbyimportallowed" id="newbyimportallowed">

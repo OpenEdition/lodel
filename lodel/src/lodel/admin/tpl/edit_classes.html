@@ -42,7 +42,7 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="classes">
-<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<input type="hidden" name="id" value="[#ID]">
 <LOOP NAME="fielderror" FIELD="id">
   <a id="id"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -51,14 +51,14 @@
 <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="class" id="class" class="text" value="&#10;&#9;&#9;&#9;[#CLASS]&#10;&#9;&#9;">
+<input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
 <LOOP NAME="fielderror" FIELD="class">
   <a id="class"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
   </span>
 </LOOP>
 <br />
-<input type="hidden" name="classtype" value="&#10;&#9;&#9;&#9;[#CLASSTYPE]&#10;&#9;&#9;">
+<input type="hidden" name="classtype" value="[#CLASSTYPE]">
 <LOOP NAME="fielderror" FIELD="classtype">
   <a id="classtype"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -67,7 +67,7 @@
 <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
 <LOOP NAME="fielderror" FIELD="title">
   <a id="title"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
@@ -77,7 +77,7 @@
 <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
 <label for="protected">[@ADMIN.PROTECTED_DATAFIELD] : 
 		</label>
 <br class="nobr">
@@ -95,9 +95,7 @@
 <label for="comment">[@ADMIN.COMMENT] : 
 		</label>
 <br class="nobr">
-<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">
-			[#COMMENT]
-		</textarea>
+<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
 <LOOP NAME="fielderror" FIELD="comment">
   <a id="comment"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>

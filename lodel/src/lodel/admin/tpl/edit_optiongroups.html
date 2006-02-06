@@ -67,7 +67,7 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="optiongroups">
-<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<input type="hidden" name="id" value="[#ID]">
 <LOOP NAME="fielderror" FIELD="id">
   <a id="id"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -90,7 +90,7 @@
 <label for="name">[@COMMON.NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="name" id="name" class="text" value="&#10;&#9;&#9;&#9;[#NAME]&#10;&#9;&#9;">
+<input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
 <LOOP NAME="fielderror" FIELD="name">
   <a id="name"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NAME]"></FUNC>
@@ -100,7 +100,7 @@
 <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
 <LOOP NAME="fielderror" FIELD="title">
   <a id="title"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.TITLE]"></FUNC>
@@ -110,11 +110,11 @@
 <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
 <label for="logic">[@COMMON.LOGIC] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="logic" id="logic" class="text" value="&#10;&#9;&#9;&#9;[#LOGIC]&#10;&#9;&#9;">
+<input type="text" size="30" name="logic" id="logic" class="text" value="[#LOGIC]">
 <LOOP NAME="fielderror" FIELD="logic">
   <a id="logic"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIC]"></FUNC>
@@ -124,9 +124,7 @@
 <label for="comment">[@ADMIN.COMMENT] : 
 		</label>
 <br class="nobr">
-<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">
-			[#COMMENT]
-		</textarea>
+<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
 <LOOP NAME="fielderror" FIELD="comment">
   <a id="comment"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
@@ -137,7 +135,7 @@
   <label for="exportpolicy">[@ADMIN.EXPORT] : 
 		</label>
   <br class="nobr">
-  <IF COND="&#10;&#9;&#9;&#9;[#EXPORTPOLICY]&#10;&#9;&#9;">
+  <IF COND="[#EXPORTPOLICY]">
     <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
     <ELSE/>
     <input type="checkbox" name="exportpolicy" id="exportpolicy">

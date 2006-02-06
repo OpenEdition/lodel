@@ -41,7 +41,7 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="options">
-<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<input type="hidden" name="id" value="[#ID]">
 <LOOP NAME="fielderror" FIELD="id">
   <a id="id"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -50,7 +50,7 @@
 <label for="name">[@COMMON.NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="name" id="name" class="text" value="&#10;&#9;&#9;&#9;[#NAME]&#10;&#9;&#9;">
+<input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
 <LOOP NAME="fielderror" FIELD="name">
   <a id="name"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NAME]"></FUNC>
@@ -60,7 +60,7 @@
 <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
 <LOOP NAME="fielderror" FIELD="title">
   <a id="title"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.TITLE]"></FUNC>
@@ -70,8 +70,8 @@
 <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
 		</label>
 <br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
-<input type="hidden" name="idgroup" value="&#10;&#9;&#9;&#9;[#IDGROUP]&#10;&#9;&#9;">
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
+<input type="hidden" name="idgroup" value="[#IDGROUP]">
 <LOOP NAME="fielderror" FIELD="idgroup">
   <a id="idgroup"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
@@ -108,7 +108,7 @@
 <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="editionparams" id="editionparams" class="text" value="&#10;&#9;&#9;&#9;[#EDITIONPARAMS]&#10;&#9;&#9;">
+<input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
 <LOOP NAME="fielderror" FIELD="editionparams">
   <a id="editionparams"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PARAMETER_FOR_EDITION]"></FUNC>
@@ -132,7 +132,7 @@
 <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE] : 
 		</label>
 <br class="nobr">
-<input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="&#10;&#9;&#9;&#9;[#DEFAULTVALUE]&#10;&#9;&#9;">
+<input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
 <LOOP NAME="fielderror" FIELD="defaultvalue">
   <a id="defaultvalue"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DEFAULT_VALUE]"></FUNC>
@@ -142,9 +142,7 @@
 <label for="comment">[@ADMIN.COMMENT] : 
 		</label>
 <br class="nobr">
-<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">
-			[#COMMENT]
-		</textarea>
+<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
 <LOOP NAME="fielderror" FIELD="comment">
   <a id="comment"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
