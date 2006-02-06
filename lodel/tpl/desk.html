@@ -386,6 +386,14 @@ body{
 			</IF>
 			</li>
 			<li>
+			<IF COND="[#CURRENTURL|strpos('public_history')]">
+				<strong>[@COMMON.PUBLIC_HISTORY]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_public_history" title="[@COMMON.PUBLIC_HISTORY_DESCRIPTION]">[@COMMON.PUBLIC_HISTORY]</a>
+			</IF>
+			</li>
+
+			<li>
 			<IF COND="[#CURRENTURL|strpos('statistics')]">
 				<strong>[@EDITION.STATISTICS]</strong>
 			<ELSE/>
