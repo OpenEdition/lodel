@@ -1,0 +1,51 @@
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos   
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+<?php
+	header("Content-type: application/xml");
+	echo "<?xml version=\"1.0\" encoding=\"".$context[charset]."\"?>";
+	setlocale (LC_ALL, 'en_US');
+?>
+<rss version="0.92">
+<channel>
+	<title>[#SITE|strtoupper|htmlspecialchars].[@COMMON.PUBLIC_HISTORY]</title>
+	<link>[#CURRENTURL|dirname]</link>
+	<description>[@LODELADMIN.SITE] [#SITE] : [@COMMON.DASHBOARD|strtolower], [@COMMON.PUBLIC_HISTORY|strtolower] ([@COMMON.PUBLIC_HISTORY_DESCRIPTION])</description>
+	<language>fr</language>
+	
+	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" LIMIT="0,30"> 
+		<DO>
+		<item>
+			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
+			<link>[#CURRENTURL|dirname]/index.php?do=view&amp;id=[#ID]</link>
+			<pubDate>[#MODIFICATIONDATE|formateddate('%a, %d %b %Y %T %z')]</pubDate>
+			<description>
+				<IF COND="[#ID|get_dc_fields('description')]">[#ID|get_dc_fields('description')|textebrut|htmlspecialchars]</IF>
+			</description>
+			<author>
+				<LOOP NAME="get_author" TABLE="persons" WHERE="identity='[#ID]'" ORDER="degree">
+					[#G_FIRSTNAME||textebrut|htmlspecialchars] [#G_FAMILYNAME||textebrut|htmlspecialchars]
+				</LOOP>
+			</author>
+		</item>
+		</DO>
+	</LOOP>
+</channel>
+</rss>
