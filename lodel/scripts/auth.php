@@ -50,6 +50,12 @@ define("LEVEL_EDITOR", 30);
 define("LEVEL_ADMIN", 40);
 define("LEVEL_ADMINLODEL", 128);
 
+// les niveaux d'interface
+define("INTERFACE_ADVANCED", 64);
+define("INTERFACE_NORMAL", 32);
+define("INTERFACE_SIMPLE", 16);
+
+
 // les niveaux d'erreur à afficher
 error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
 
@@ -154,7 +160,7 @@ function authenticate($level = 0, $mode="")
 	}
 	elseif ($mode == 'HTTP') {
  		require_once 'loginHTTP.php';
-		return;		
+		return;
 	}
 	else {
 		header("location: login.php?". $retour);
