@@ -281,7 +281,7 @@ if ($tache=="admin") {
   $pass=md5($adminpasswd.$adminusername);
   if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) die("ERROR: invalid lang");
 
-  if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,name,email,userrights,lang) VALUES ('$adminusername','$pass','','',128,'$lang')")) {
+  if (!@mysql_query("REPLACE INTO $GLOBALS[tableprefix]users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','',128,'$lang')")) {
     $erreur_create=1;
     include_tpl("install-admin.html");
     return;
