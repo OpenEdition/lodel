@@ -113,12 +113,14 @@ abus@
 <!--[ ****************************************************************** ]-->
 <DEFFUNC NAME="SEARCH_ENGINE_PUBLIC" OPTIONAL="query,qstatus,qtype,qfield">
 
-<form name="search" action="search.[#EXTENSIONSCRIPTS]" method="get">
+<form id="search" action="search.[#EXTENSIONSCRIPTS]" method="get">
+	<fieldset>
 	<input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
 	<input class="searchbutton" type="submit" name="submit_s" value="Rechercher" />
 	<a href="#" onclick="if(document.getElementById('advanced_search').style.display=='none'){document.getElementById('advanced_search').style.display='inline';} else {document.getElementById('advanced_search').style.display='none';} ">
 		<span class="texte_petit">avancée</span>
 	</a>
+	</fieldset>
 	<div  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
 		<fieldset class="searchfieldset">
 			<legend>Recherche avancée</legend>
