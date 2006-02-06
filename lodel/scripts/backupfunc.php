@@ -685,7 +685,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		}
 		$archive->user_vars = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
 		$res = $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract', PCLZIP_CB_POST_EXTRACT, 'postextract');
-		echo "ici $res";
+		#echo "ici $res";
 
 		if (!$res)
 			die("ERROR: unable to extract $archive.<br>".$archive->error_string);
