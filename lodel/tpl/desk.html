@@ -167,6 +167,12 @@ body{
 	color: #0e2d7c;
 }
 
+#lodel-desk #deskContext li strong{
+	display: block;
+	color: #0e2d7c;
+	padding: .3ex 1em;
+}
+
 /* Fin boutons du desk */
 
 /* moteur */
@@ -323,14 +329,33 @@ body{
 			<li><a href="[#SITEROOT]lodel/edition/search.php">[@COMMON.SEARCH_ENGINE]</a></li>
 
 			<LOOP NAME="getFirstEntriesType" TABLE="entrytypes" ORDER="rank" LIMIT="0,1">
-				<li><a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[@EDITION.ENTRIES_EDITION]</a></li>
+				<li>
+				<IF COND="[#LO] EQ 'entries'">
+					<strong>[@EDITION.ENTRIES_EDITION]</strong>
+				<ELSE />
+					<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[@EDITION.ENTRIES_EDITION]</a>
+				</IF>
+				</li>
 			</LOOP>
 
 			<LOOP NAME="getFirstPersonsType" TABLE="persontypes" ORDER="rank" LIMIT="0,1">
-				<li><a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]">[@EDITION.PERSONS_EDITION]</a></li>
+				<li>
+				<IF COND="[#LO] EQ 'persons'">
+					<strong>[@EDITION.PERSONS_EDITION]</strong>
+				<ELSE />
+					<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]">[@EDITION.PERSONS_EDITION]</a>
+				</IF>
+				</li>
 			</LOOP>
+
 			<LOOP NAME="getFirstuseroptiongroups" TABLE="optiongroups" ORDER="rank" LIMIT="0,1" WHERE="logic != 'servooconf'">
-				<li><a href="[#SITEROOT]lodel/admin/index.php?do=view&amp;lo=useroptiongroups&amp;id=[#ID]">[@EDITION.SITE_OPTIONS]</a></li>
+				<li>
+				<IF COND="[#LO] EQ 'useroptiongroups'">
+					<strong>[@EDITION.SITE_OPTIONS]</strong>
+				<ELSE />
+					<a href="[#SITEROOT]lodel/admin/index.php?do=view&amp;lo=useroptiongroups&amp;id=[#ID]">[@EDITION.SITE_OPTIONS]</a>
+				</IF>
+				</li>
 			</LOOP>
 		</IF>
 		<IF COND="[#CURRENTURL|strpos('dashboard')]">
