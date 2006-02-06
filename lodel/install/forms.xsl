@@ -257,9 +257,7 @@
 	<!--                        -->
 	<xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
 		<xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" /> 
-		<xsl:template name="lsvariable">
-			[#<xsl:value-of select="translate(normalize-space(@name),$lowercase,$uppercase)"/>]
-		</xsl:template>
+		<xsl:template name="lsvariable">[#<xsl:value-of select="translate(normalize-space(@name),$lowercase,$uppercase)"/>]</xsl:template>
 
 
 <!-- Fin -->
