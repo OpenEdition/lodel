@@ -30,7 +30,7 @@
 	<!--Vgroup -->
 	<xsl:template match="vgroup">
 		<fieldset>
-			<legend><xsl:value-of select="@label"/></legend>
+			<legend><xsl:value-of select="@label" /></legend>
 			<xsl:apply-templates select="column|vcolumn"/>
 		</fieldset>
 	</xsl:template>
