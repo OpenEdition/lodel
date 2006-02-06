@@ -53,7 +53,8 @@
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class SitesLogic extends Logic {
+class SitesLogic extends Logic 
+{
 
 	/**
 	 * Constructeur

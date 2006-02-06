@@ -52,12 +52,13 @@
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class UsersLogic extends Logic {
+class UsersLogic extends Logic 
+{
 
 	/** Constructor
 	*/
 	function UsersLogic() {
-		$this->Logic("users");
+		$this->Logic('users');
 	}
 
 	/**
@@ -95,18 +96,22 @@ class UsersLogic extends Logic {
 
 	{
 		switch($var) {
-		case "usergroups" :       
+		case 'usergroups' :
 			$dao=&getDAO("usergroups");
 			$list=$dao->findMany("status>0","rank,name","id,name");
 			$arr=array();
 			foreach($list as $group) {
 	$arr[$group->id]=$group->name;
 			}
-			if (!$arr) $arr[1]="--";
+			if (!$arr) $arr[1] = '--';
 			renderOptions($arr,$context['usergroups']);
 			break;
-		case "userrights":
-			require_once("commonselect.php");
+		case 'userlevel' :
+			require_once 'commonselect.php';
+			makeSelectUserLevel($context['userlevel']);
+			break;
+		case 'userrights':
+			require_once 'commonselect.php';
 			makeSelectUserRights($context['userrights'],!$GLOBALS['site'] || SINGLESITE);
 			break;
 		case "lang" :
@@ -149,10 +154,10 @@ class UsersLogic extends Logic {
 	{
 		if ($vo->userrights<=LEVEL_EDITOR) {
 			$dao=&getDAO("users_usergroups");
-			$list=$dao->findMany("iduser='".$vo->id."'","","idgroup");
+			$list=$dao->findMany("iduser='". $vo->id."'", "", "idgroup");
 			$context['usergroups']=array();
 			foreach($list as $relationobj) {
-	$context['usergroups'][]=$relationobj->idgroup;
+				$context['usergroups'][] = $relationobj->idgroup;
 			}
 		}
 	}
@@ -229,11 +234,26 @@ class UsersLogic extends Logic {
 	function _publicfields() 
 	{
 		return array('username' => array('username', '+'),
-									'passwd' => array('passwd', ''),
-									'name' => array('text', ''),
+									'passwd' => array('passwd', '+'),
+									'lastname' => array('text', ''),
+									'firstname' => array('text', ''),
 									'email' => array('email', ''),
+									'lang' => array('lang', '+'),
 									'userrights' => array('select', '+'),
-									'lang' => array('lang', '+'));
+									'userlevel' => array('select', '+'),
+									'nickname' => array('text', ''),
+									'biography' => array('longtext', ''),
+									'professional_website' => array('text', ''),
+									'url_professional_website' => array('url', ''),
+									'rss_professional_website' => array('url', ''),
+									'personnal_website' => array('text', ''),
+									'url_personnal_website' => array('url', ''),
+									'rss_personnal_website' => array('url', ''),
+									'pgp_key' => array('longtext', ''),
+									'alternate_email' => array('email', ''),
+									'phonenumber' => array('text', ''),
+									'im_identifier' => array('text', ''),
+									'im_name' => array('text', ''));
 	}
 	// end{publicfields} automatic generation  //
 

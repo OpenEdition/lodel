@@ -333,7 +333,6 @@ class EntitiesLogic extends Logic
 		if (!$ids) {
 			return; // get back, nothing to do
 		}
-		
 		foreach(array_keys($ids) as $nature) {
 			$idlist = join(',', array_keys($ids[$nature]));
 			$table = $nature == 'G' ? 'persons' : 'entries';
@@ -342,6 +341,7 @@ class EntitiesLogic extends Logic
 			if ($status > 0) {
 				// simple : on doit mettre le status à positif : +32 ou +1 si l'entree ou la personne
 				// est permanente ou non
+				
 				$db->execute(lq("UPDATE #_TP_$table SET status=abs(status) WHERE id IN ($idlist)")) or dberror();
 	
 			//------- UNPUBLISH ---------
