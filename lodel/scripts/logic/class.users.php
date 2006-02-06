@@ -141,7 +141,6 @@ class UsersLogic extends Logic
 	* @param array &$context le context passé par référence
 	*/
 	function _prepareEdit($dao,&$context) 
-
 	{
 		// encode the password
 		if ($context['passwd']) $context['passwd']=md5($context['passwd'].$context['username']);
@@ -234,7 +233,7 @@ class UsersLogic extends Logic
 	function _publicfields() 
 	{
 		return array('username' => array('username', '+'),
-									'passwd' => array('passwd', '+'),
+									'passwd' => array('passwd', ''),
 									'lastname' => array('text', ''),
 									'firstname' => array('text', ''),
 									'email' => array('email', ''),
