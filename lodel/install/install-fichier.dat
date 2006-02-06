@@ -105,6 +105,7 @@ ln tpl/macros2.html
 # templates rss dans src/lodel/edition/tpl
 ln tpl/backend_dashboard_history.html
 ln tpl/backend_dashboard_queue.html
+ln tpl/backend_dashboard_public_history.htm
 
 # chaine d'importation
 ln oochargement.php
@@ -129,6 +130,7 @@ ln tpl/dashboard.html
 ln tpl/dashboard_queue.html
 ln tpl/dashboard_statistics.html
 ln tpl/dashboard_history.html
+ln tpl/dashboard_public_history.html
 #ln tpl/dashboard_rssreader.html
 
 
