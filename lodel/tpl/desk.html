@@ -371,9 +371,27 @@ body{
 			</LOOP>
 		</IF>
 		<IF COND="[#CURRENTURL|strpos('dashboard')]">
-			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@EDITION.QUEUE_DESCRIPTION]">[@EDITION.QUEUE]</a></li>
-			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@EDITION.HISTORY_DESCRIPTION]">[@EDITION.HISTORY]</a></li>
-			<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@EDITION.STATISTICS_DESCRIPTION]">[@EDITION.STATISTICS]</a></li>
+			<li>
+			<IF COND="[#CURRENTURL|strpos('queue')]">
+				<strong>[@EDITION.QUEUE]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@EDITION.QUEUE_DESCRIPTION]">[@EDITION.QUEUE]</a>
+			</IF>
+			</li>
+			<li>
+			<IF COND="[#CURRENTURL|strpos('history')]">
+				<strong>[@EDITION.HISTORY]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@EDITION.HISTORY_DESCRIPTION]">[@EDITION.HISTORY]</a>
+			</IF>
+			</li>
+			<li>
+			<IF COND="[#CURRENTURL|strpos('statistics')]">
+				<strong>[@EDITION.STATISTICS]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@EDITION.STATISTICS_DESCRIPTION]">[@EDITION.STATISTICS]</a>
+			</IF>
+			</li>
 		</IF>
 	</ul>
 	<IF COND="[#SITE]">
