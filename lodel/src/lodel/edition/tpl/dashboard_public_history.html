@@ -1,0 +1,104 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C?ou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<IF COND="[#ID]">
+<title>[@COMMON.EDITION]<LOOP NAME="nompourtitre" TABLE="entities" WHERE="id='[#ID]'">[#IDENTIFIER] [(#G_TITLE|textebrut)]</LOOP></title>
+<ELSE/>
+<title>[(#SITE|strtoupper)].[@COMMON.PUBLIC_HISTORY]</title>
+</IF>
+<MACRO NAME="JS_CONFIRM">
+<!--[ Rajout int?ration maquette ]-->
+<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+<MACRO NAME="JS_AFFICHE_IMAGE">
+<!--[ Fin rajout int?ration maquette ]-->
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<!--[<FUNC NAME="SEARCH_ENGINE">]-->
+<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
+	<ul style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;">
+	
+		<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">[@COMMON.DASHBOARD]</a></li>
+		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title=[@EDITION.HISTORY]">[@COMMON.PUBLIC_HISTORY] ([@COMMON.PUBLIC_HISTORY_DESCRIPTION])</a></li>
+	
+</ul>
+<p><a href="index.[#EXTENSIONSCRIPTS]?page=backend&format=dashboard_public_history">RSS : dashboard_public_history.html</a></p>
+
+</div>	
+
+	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" LIMIT="0,30">
+	<BEFORE>
+	<p class="searchInfos">
+			[#NBRESULTS] [@COMMON.RESULTS]
+	</p>
+		<ul id="listEntities">
+		</BEFORE>
+		<DO>
+		<IF COND="[#COUNT] % 2">
+			<li class="line2">
+		<ELSE/>
+			<li class="line1">
+		</IF>
+		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+	<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+	<div class="document">
+	<span class="date">
+		[#MODIFICATIONDATE|formateddate('%d/%m/%Y')]
+	</span>
+	
+	<span class="titre_document">
+          <IF COND="[#TPLEDITION]">
+                 " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
+          <ELSE/>
+                 " [#G_TITLE|textebrut|nbsp] "
+           </IF>
+         </span>&nbsp;
+	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
+		<span class="type_document">([#TYPE])</span>
+		<span class="type_document">
+	<LOOP NAME="parentsentities">
+		<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
+	</LOOP>
+	</span>
+	</li>
+		<IF COND="[#DISPLAY] eq 'unfolded'">
+			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
+		</IF>
+		</DO>
+		<AFTER>
+		</ul>
+			<MACRO NAME="BOTTOM_RESULTS_PAGES">			
+		</AFTER>
+		<ALTERNATIVE>
+			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+		</ALTERNATIVE>
+	</LOOP>
+	
+	
+<!--[ ************************************** Fin Rajout int?ration maquette ************************************** ]-->
+<MACRO NAME="CLOSE_HTML">
+
+
