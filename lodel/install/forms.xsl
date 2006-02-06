@@ -30,7 +30,7 @@
 	<!--Vgroup -->
 	<xsl:template match="vgroup">
 		<fieldset>
-			<legend><xsl:value-of select="@name"/></legend>
+			<legend><xsl:value-of select="@label"/></legend>
 			<xsl:apply-templates select="column|vcolumn"/>
 		</fieldset>
 	</xsl:template>
@@ -43,9 +43,7 @@
 		<xsl:choose>
 			<xsl:when test="@editcondition">
 				<xsl:element name="IF">
-					<xsl:attribute name="COND">
-						<xsl:value-of select="@editcondition"/>
-					</xsl:attribute>
+					<xsl:attribute name="COND"><xsl:value-of select="@editcondition"/></xsl:attribute>
 					<xsl:call-template name="column" />
 				</xsl:element>
 			</xsl:when>
@@ -64,12 +62,8 @@
 			<xsl:when test="@primaryKey='true' or @visibility='hidden'">
 				<xsl:element name="input">
 					<xsl:attribute name="type">hidden</xsl:attribute>
-					<xsl:attribute name="name">
-						<xsl:value-of select="@name"/>
-					</xsl:attribute>
-					<xsl:attribute name="value">
-						<xsl:call-template name="lsvariable" />
-					</xsl:attribute>
+					<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+					<xsl:attribute name="value"><xsl:call-template name="lsvariable" /></xsl:attribute>
 				</xsl:element>
 				<xsl:call-template name="error" />
 			</xsl:when>
@@ -219,9 +213,7 @@
 	<!--                        -->
 	<xsl:template name="label">
 		<xsl:element name="label">
-			<xsl:attribute name="for">
-				<xsl:value-of select="@name"/>
-			</xsl:attribute>
+			<xsl:attribute name="for"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:value-of select="@label"/>
 			<xsl:if test="@required='true' and not(@edittype='select' or @edittype='lang' or @edittype='boolean')">
 				<span class="optional">(*)</span>
