@@ -234,7 +234,7 @@ body{
 	<ul  class="group1">
 	<IF COND="[#SITE]">
 	<li>
-		<IF COND="[#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('dashboard')]">
+		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
 		<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 		<ELSE/>
 		<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
@@ -255,7 +255,7 @@ body{
 		<IF COND="![#LODELUSER.REDACTOR]">	
 		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
 		<ELSE/>
-			<IF COND="[#CURRENTURL|strpos('admin')]">	
+			<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')])">	
 			<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 			<ELSE/>
 			<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
@@ -265,7 +265,7 @@ body{
 		</a>
 		</li>
 		<li>
-		<IF COND="[#CURRENTURL|strpos('admin')] EQ false AND [#CURRENTURL|strpos('edition')] EQ false">	
+		<IF COND="![#CURRENTURL|strpos('admin')] AND ![#CURRENTURL|strpos('edition')]">	
 		<a class="actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
 		<ELSE/>
 		<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
@@ -325,9 +325,20 @@ body{
 	</ul>
 	<ul id="deskContext">
 		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
-			<li><a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a></li>
-			<li><a href="[#SITEROOT]lodel/edition/search.php">[@COMMON.SEARCH_ENGINE]</a></li>
-
+			<li>
+			<IF COND="![#CURRENTURL|strpos('search')] AND ![#LO] AND ![#CURRENTURL|strpos('dashboard')]">
+				<strong>[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a>
+			</IF>
+			</li>
+			<li>
+			<IF COND="[#CURRENTURL|strpos('search')]">
+				<strong>[@COMMON.SEARCH_ENGINE]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/search.php">[@COMMON.SEARCH_ENGINE]</a>
+			</IF>
+			</li>
 			<LOOP NAME="getFirstEntriesType" TABLE="entrytypes" ORDER="rank" LIMIT="0,1">
 				<li>
 				<IF COND="[#LO] EQ 'entries'">
