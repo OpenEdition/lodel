@@ -65,7 +65,8 @@ $tables=array("persontypes",
 	      "optiongroups",
 	      "characterstyles",
 	      "internalstyles",
-	      "translations","texts");
+	      "translations","texts"
+				);
 foreach ($tables as $table) {
   echo "table=$table";
   $parameters=array(

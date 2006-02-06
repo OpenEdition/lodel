@@ -592,9 +592,12 @@
 
 
 <table name="users"
-        description="[@ADMIN.USER_INFORMATIONS]"
+	description="[@ADMIN.USER_INFORMATIONS]"
 	writeright="admin"
 	protectright="adminlodel">
+<vgroup name="general"
+				label="[@ADMIN.USER_GENERAL_INFORMATIONS]"
+				>
 <column name="id"
         type="INTEGER"
         required="true"
@@ -608,38 +611,150 @@
         edittype="username" />
 <column name="passwd"
         type="VARCHAR"
-	required="true"
-        size="64"
+	      size="64"
         label="[@COMMON.PASSWD]"
         edittype="passwd" />
 <vcolumn name="confirmpasswd"
 	 label="[@ADMIN.CONFIRM_PASSWORD]"
-	 required="true"
 	 edittype="passwd"
 	/>
-<column name="name"
+<!--column name="name"
         type="VARCHAR"
         size="64"
         label="[@ADMIN.LASTNAME_AND_FIRSTNAME]"
-        edittype="text" />
+        edittype="text" /-->
+<column name="lastname"
+				type="VARCHAR"
+				size="255"
+				label="[@ADMIN.LASTNAME]"
+				edittype="text" />
+<column name="firstname"
+				type="VARCHAR"
+				size="255"
+				label="[@ADMIN.FIRSTNAME]"
+				edittype="text" />
 <column name="email"
         type="VARCHAR"
         size="255"
         label="[@ADMIN.EMAIL]"
         edittype="email" />
-<column name="userrights"
-        type="TINYINT"
-        default="0"
-        required="true"
-        label="[@ADMIN.USER_RIGHTS]"
-        edittype="select" />
+</vgroup>
+<vgroup name="lodel_informations"
+				label="[@ADMIN.USER_LODEL_INFORMATIONS]">
 <column name="lang"
-        type="CHAR"
-        size="5"
-        required="true"
-        description="user lang"
-        label="[@ADMIN.USER_LANG]"
-        edittype="lang" />
+				type="CHAR"
+				size="5"
+				required="true"
+				description="user lang"
+				label="[@ADMIN.USER_LANG]"
+				edittype="lang" />
+<column name="userrights"
+					type="TINYINT"
+					default="0"
+					required="true"
+					label="[@ADMIN.USER_RIGHTS]"
+        edittype="select" />
+<column name="userlevel"
+				type="TINYINT"
+				default="64"
+				required="true"
+				label="[@ADMIN.USER_LEVEL_OF_USE]"
+				edittype="select" />
+<vcolumn name="protected"
+				label="[@ADMIN.PROTECTED_USER]"
+        edittype="boolean" />
+</vgroup>
+<vgroup name="user_optional"
+				label="[@ADMIN.USER_OPTIONAL_INFORMATION]"
+				>
+<column name="nickname"
+				label="[@ADMIN.NICKNAME]"
+				type="VARCHAR"
+				size="64"
+				edittype="text"
+				/>
+<columns name="function"
+				 label="[@ADMIN.FUNCTION]"
+				 type="VARCHAR"
+				 size="255"
+				 edittype="text"
+				 />
+<column name="biography"
+				label="[@ADMIN.BIOGRAPHY"
+				type="MEDIUMTEXT"
+				edittype="longtext"
+				/>
+<!--column name="photo"
+				label="[@ADMIN.PHOTO]"
+				type="image"
+				edittype="image"
+				/-->
+<column name="professional_website"
+				label="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"
+				type="VARCHAR"
+				size="255"
+				edittype="text"
+				/>
+<column name="url_professional_website"
+				label="[@ADMIN.PROFESSIONAL_WEBSITE_URL"
+				type="VARCHAR"
+				size="255"
+				edittype="url"
+				/>
+<column name="rss_professional_website"
+				label="[@ADMIN.RSS_PROFESSIONAL_WEBSITE"
+				type="VARCHAR"
+				size="255"
+				edittype="url"
+				/>
+<column name="personal_website"
+				label="[@ADMIN.PERSONNAL_WEBSITE]"
+				type="VARCHAR"
+				size="255"
+				edittype="text"
+				/>
+<column name="url_personal_website"
+				label="[@ADMIN.PERSONNAL_WEBSITE_URL]"
+				type="VARCHAR"
+				size="255"
+				edittype="url"
+				/>
+<column name="rss_personal_website"
+				label="[@ADMIN.RSS_PERSONNAL_WEBSITE"
+				type="VARCHAR"
+				size="255"
+				edittype="url"
+				/>
+<column name="pgp_key"
+				label="[@ADMIN.PGP_KEY]"
+				type="MEDIUMTEXT"
+				edittype="longtext"
+				/>
+<column name="alternate_email"
+				label="[@ADMIN.ALTERNATIVE_EMAIL]"
+				type="VARCHAR"
+				size="255"
+				edittype="email"
+				/>
+<column name="phonenumber"
+				label="[@ADMIN.PHONE_NUMBER]"
+				type="VARCHAR"
+				size="15"
+				edittype="text"
+				/>
+<column name="im_identifier"
+				label="[@ADMIN.INSTANT_MESSAGING_IDENTIFIER]"
+				type="VARCHAR"
+				size="100"
+				edittype="text"
+				/>
+<column name="im_name"
+				label="[@ADMIN.INSTANT_MESSAGING_NAME]"
+				type="VARCHAR"
+				size="64"
+				edittype="text"
+				/>
+</vgroup>
 <column name="status"
         type="TINYINT"
         default="1"
@@ -652,9 +767,6 @@
 	label="[@ADMIN.USERGROUPS]"
 	editcondition="[#SITE] and ![#LODELUSER.ADMIN]"
 	edittype="multipleselect" />
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_USER]"
-        edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_username">
@@ -1663,7 +1775,6 @@
 				default=""
 				required="true"
 				/>
-</column>
 <unique name="unique_token">
 <unique-column name="token" />
 </unique>
@@ -1678,7 +1789,7 @@
 			 type="INTEGER(11)"
 			 required="true"
 			 primarykey="true"
-			 auto_increment="true";
+			 auto_increment="true"
 			 />
 <column name="host"
 				type="TINYTEXT"

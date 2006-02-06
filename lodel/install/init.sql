@@ -48,17 +48,36 @@ CREATE TABLE IF NOT EXISTS #_MTP_sites (
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_users (
-	id		INT UNSIGNED NOT NULL auto_increment,
-	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
-	passwd		VARCHAR(64) BINARY NOT NULL,
-	name		VARCHAR(64),
-	email		VARCHAR(255),
-	userrights	TINYINT UNSIGNED DEFAULT '0' NOT NULL,
-	lang		CHAR(5) NOT NULL,       # user lang
+	id												INT UNSIGNED NOT NULL auto_increment,
+	username									VARCHAR(64) BINARY NOT NULL UNIQUE,
+	passwd										VARCHAR(64) BINARY NOT NULL,
+	lastname									VARCHAR(255),
+	firstname 								VARCHAR(255),
+	email											VARCHAR(255),
 
-	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
-	status		TINYINT DEFAULT '1' NOT NULL,
-	upd		TIMESTAMP,
+	lang											CHAR(5) NOT NULL,       # user lang
+	userrights								TINYINT UNSIGNED DEFAULT '0' NOT NULL,
+	userlevel									TINYINT UNSIGNED DEFAULT '32' NOT NULL,
+
+	nickname									VARCHAR(64),
+	function									VARCHAR(255),
+	biography									MEDIUMTEXT,
+	# photo											VARCHAR(255),
+	professional_website			VARCHAR(255),
+	url_professional_website			VARCHAR(255),
+	rss_professional_website	VARCHAR(255),
+	personal_website					VARCHAR(255),
+	url_personal_website					VARCHAR(255),
+	rss_personal_website			VARCHAR(255),
+	pgp_key										MEDIUMTEXT,
+	alternate_email						VARCHAR(255),
+	phonenumber								VARCHAR(15),
+	im_identifier							VARCHAR(100),
+	im_name										VARCHAR(64),
+
+	rank											INT UNSIGNED DEFAULT '0' NOT NULL,
+	status										TINYINT DEFAULT '1' NOT NULL,
+	upd												TIMESTAMP,
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
