@@ -41,75 +41,68 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="translations">
-<fieldset>
-  <legend></legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <LOOP NAME="fielderror" FIELD="id">
-    <a id="id"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="lang">[@ADMIN.LANG_CODE]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="5" name="lang" id="lang" class="text" value="[#LANG]">
-  <LOOP NAME="fielderror" FIELD="lang">
-    <a id="lang"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.LANG_CODE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="title">[@COMMON.LANG]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <LOOP NAME="fielderror" FIELD="title">
-    <a id="title"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LANG]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <input type="hidden" name="textgroups" value="[#TEXTGROUPS]">
-  <LOOP NAME="fielderror" FIELD="textgroups">
-    <a id="textgroups"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="translators">[@ADMIN.TRANSLATORS]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="translators" id="translators" class="text" value="[#TRANSLATORS]">
-  <LOOP NAME="fielderror" FIELD="translators">
-    <a id="translators"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TRANSLATORS]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <input type="hidden" name="creationdate" value="[#CREATIONDATE]">
-  <LOOP NAME="fielderror" FIELD="creationdate">
-    <a id="creationdate"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="protected">[@COMMON.PROTECTED]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
-    <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
-  </IF>
-  <LOOP NAME="fielderror" FIELD="protected">
-    <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PROTECTED]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
+<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="id">
+  <a id="id"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="lang">[@ADMIN.LANG_CODE]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<input type="text" size="5" name="lang" id="lang" class="text" value="&#10;&#9;&#9;&#9;[#LANG]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="lang">
+  <a id="lang"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.LANG_CODE]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="title">[@COMMON.LANG] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="title">
+  <a id="title"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LANG]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<input type="hidden" name="textgroups" value="&#10;&#9;&#9;&#9;[#TEXTGROUPS]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="textgroups">
+  <a id="textgroups"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="translators">[@ADMIN.TRANSLATORS] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="translators" id="translators" class="text" value="&#10;&#9;&#9;&#9;[#TRANSLATORS]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="translators">
+  <a id="translators"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TRANSLATORS]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<input type="hidden" name="creationdate" value="&#10;&#9;&#9;&#9;[#CREATIONDATE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="creationdate">
+  <a id="creationdate"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="protected">[@COMMON.PROTECTED] : 
+		</label>
+<br class="nobr">
+<IF COND="abs([#STATUS]) ge 32">
+  <input type="checkbox" name="protected" id="protected" checked>
+  <ELSE/>
+  <input type="checkbox" name="protected" id="protected">
+</IF>
+<LOOP NAME="fielderror" FIELD="protected">
+  <a id="protected"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PROTECTED]"></FUNC>
+  </span>
+</LOOP>
+<br />
 
 <!--[ end{form} Automatic generated. Don't edit ]-->		    
 	<MACRO NAME="EDIT_SUBMIT_BAR">

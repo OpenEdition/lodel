@@ -52,116 +52,108 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="indextablefields">
-<fieldset>
-  <legend></legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <LOOP NAME="fielderror" FIELD="id">
-    <a id="id"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="name">[@ADMIN.NAME]
-        : 
-      </label>
+<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="id">
+  <a id="id"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="name">[@ADMIN.NAME] : 
+		</label>
+<br class="nobr">
+<select name="name" id="name">
+  <?php 
+						makeSelect($context,"name","indextablefields","select");
+					?>
+</select>
+<LOOP NAME="fielderror" FIELD="name">
+  <a id="name"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<input type="hidden" name="class" value="&#10;&#9;&#9;&#9;[#CLASS]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="class">
+  <a id="class"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="title">
+  <a id="title"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<input type="hidden" name="type" value="&#10;&#9;&#9;&#9;[#TYPE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="type">
+  <a id="type"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="edition">[@ADMIN.INTERFACE_EDITION] : 
+		</label>
+<br class="nobr">
+<select name="edition" id="edition">
+  <?php 
+						makeSelect($context,"edition","indextablefields","select");
+					?>
+</select>
+<LOOP NAME="fielderror" FIELD="edition">
+  <a id="edition"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="comment">[@ADMIN.COMMENT] : 
+		</label>
+<br class="nobr">
+<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">
+			[#COMMENT]
+		</textarea>
+<LOOP NAME="fielderror" FIELD="comment">
+  <a id="comment"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<IF COND="[#CLASSTYPE]=='entities'">
+  <label for="idgroup">[@ADMIN.DATAFIELDGROUP] : 
+		</label>
   <br class="nobr">
-  <select name="name" id="name">
+  <select name="idgroup" id="idgroup">
     <?php 
-                      makeSelect($context,"name","indextablefields","select");
-                  ?>
+						makeSelect($context,"idgroup","indextablefields","select");
+					?>
   </select>
-  <LOOP NAME="fielderror" FIELD="name">
-    <a id="name"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+  <LOOP NAME="fielderror" FIELD="idgroup">
+    <a id="idgroup"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DATAFIELDGROUP]"></FUNC>
     </span>
   </LOOP>
   <br />
-  <input type="hidden" name="class" value="[#CLASS]">
-  <LOOP NAME="fielderror" FIELD="class">
-    <a id="class"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <LOOP NAME="fielderror" FIELD="title">
-    <a id="title"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
-  <input type="hidden" name="type" value="[#TYPE]">
-  <LOOP NAME="fielderror" FIELD="type">
-    <a id="type"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="edition">[@ADMIN.INTERFACE_EDITION]
-        : 
-      </label>
-  <br class="nobr">
-  <select name="edition" id="edition">
-    <?php 
-                      makeSelect($context,"edition","indextablefields","select");
-                  ?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="edition">
-    <a id="edition"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="comment">[@ADMIN.COMMENT]
-        : 
-      </label>
-  <br class="nobr">
-  <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <LOOP NAME="fielderror" FIELD="comment">
-    <a id="comment"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <IF COND="[#CLASSTYPE]=='entities'">
-    <label for="idgroup">[@ADMIN.DATAFIELDGROUP]
-        : 
-      </label>
-    <br class="nobr">
-    <select name="idgroup" id="idgroup">
-      <?php 
-                      makeSelect($context,"idgroup","indextablefields","select");
-                  ?>
-    </select>
-    <LOOP NAME="fielderror" FIELD="idgroup">
-      <a id="idgroup"></a><span class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DATAFIELDGROUP]"></FUNC>
-      </span>
-    </LOOP>
-    <br />
-  </IF>
-  <label for="protected">[@ADMIN.PROTECTED_DATAFIELD]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
-    <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
-  </IF>
-  <LOOP NAME="fielderror" FIELD="protected">
-    <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
+</IF>
+<label for="protected">[@ADMIN.PROTECTED_DATAFIELD] : 
+		</label>
+<br class="nobr">
+<IF COND="abs([#STATUS]) ge 32">
+  <input type="checkbox" name="protected" id="protected" checked>
+  <ELSE/>
+  <input type="checkbox" name="protected" id="protected">
+</IF>
+<LOOP NAME="fielderror" FIELD="protected">
+  <a id="protected"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
+  </span>
+</LOOP>
+<br />
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
 	</table>

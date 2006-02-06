@@ -41,41 +41,36 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="usergroups">
-<fieldset>
-  <legend>Table des groupes d'utilisateurs de lodel</legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <LOOP NAME="fielderror" FIELD="id">
-    <a id="id"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="name">[@ADMIN.GROUP_NAME]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-  <LOOP NAME="fielderror" FIELD="name">
-    <a id="name"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GROUP_NAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="protected">[@ADMIN.PROTECTED_USER_GROUP]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
-    <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
-  </IF>
-  <LOOP NAME="fielderror" FIELD="protected">
-    <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER_GROUP]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
+<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="id">
+  <a id="id"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="name">[@ADMIN.GROUP_NAME] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="name" id="name" class="text" value="&#10;&#9;&#9;&#9;[#NAME]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="name">
+  <a id="name"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GROUP_NAME]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="protected">[@ADMIN.PROTECTED_USER_GROUP] : 
+		</label>
+<br class="nobr">
+<IF COND="abs([#STATUS]) ge 32">
+  <input type="checkbox" name="protected" id="protected" checked>
+  <ELSE/>
+  <input type="checkbox" name="protected" id="protected">
+</IF>
+<LOOP NAME="fielderror" FIELD="protected">
+  <a id="protected"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER_GROUP]"></FUNC>
+  </span>
+</LOOP>
+<br />
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
 

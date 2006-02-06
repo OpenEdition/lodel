@@ -42,173 +42,158 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="entrytypes">
-<fieldset>
-  <legend></legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <LOOP NAME="fielderror" FIELD="id">
-    <a id="id"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="type">[@ADMIN.NAME_INDEX_TYPE]<span class="optional">(*)</span>
-        : 
-      </label>
+<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="id">
+  <a id="id"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="type">[@ADMIN.NAME_INDEX_TYPE]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="type" id="type" class="text" value="&#10;&#9;&#9;&#9;[#TYPE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="type">
+  <a id="type"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME_INDEX_TYPE]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<input type="hidden" name="class" value="&#10;&#9;&#9;&#9;[#CLASS]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="class">
+  <a id="class"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="title">[@ADMIN.TITLE_INDEX_TYPE]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="title">
+  <a id="title"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TITLE_INDEX_TYPE]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="altertitle">[@ADMIN.MULTILINGUAL_TITLE]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<label for="style">[@ADMIN.STYLE_INDEX_TYPE] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="style" id="style" class="text" value="&#10;&#9;&#9;&#9;[#STYLE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="style">
+  <a id="style"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE_INDEX_TYPE]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="g_type">[@ADMIN.GENERIC_EQUIVALENT] : 
+		</label>
+<br class="nobr">
+<select name="g_type" id="g_type">
+  <?php 
+						makeSelect($context,"g_type","entrytypes","select");
+					?>
+</select>
+<LOOP NAME="fielderror" FIELD="g_type">
+  <a id="g_type"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GENERIC_EQUIVALENT]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="tpl" id="tpl" class="text" value="&#10;&#9;&#9;&#9;[#TPL]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="tpl">
+  <a id="tpl"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_INDEX] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="tplindex" id="tplindex" class="text" value="&#10;&#9;&#9;&#9;[#TPLINDEX]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="tplindex">
+  <a id="tplindex"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILENAME_INDEX]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
+  <label for="protected">[@ADMIN.PROTECTED_TYPE] : 
+		</label>
   <br class="nobr">
-  <input type="text" size="30" name="type" id="type" class="text" value="[#TYPE]">
-  <LOOP NAME="fielderror" FIELD="type">
-    <a id="type"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME_INDEX_TYPE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <input type="hidden" name="class" value="[#CLASS]">
-  <LOOP NAME="fielderror" FIELD="class">
-    <a id="class"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="title">[@ADMIN.TITLE_INDEX_TYPE]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <LOOP NAME="fielderror" FIELD="title">
-    <a id="title"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TITLE_INDEX_TYPE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_TITLE]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
-  <label for="style">[@ADMIN.STYLE_INDEX_TYPE]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
-  <LOOP NAME="fielderror" FIELD="style">
-    <a id="style"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE_INDEX_TYPE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="g_type">[@ADMIN.GENERIC_EQUIVALENT]
-        : 
-      </label>
-  <br class="nobr">
-  <select name="g_type" id="g_type">
-    <?php 
-                      makeSelect($context,"g_type","entrytypes","select");
-                  ?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="g_type">
-    <a id="g_type"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GENERIC_EQUIVALENT]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
-  <LOOP NAME="fielderror" FIELD="tpl">
-    <a id="tpl"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="tplindex">[@ADMIN.TEMPLATE_FILENAME_INDEX]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="tplindex" id="tplindex" class="text" value="[#TPLINDEX]">
-  <LOOP NAME="fielderror" FIELD="tplindex">
-    <a id="tplindex"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILENAME_INDEX]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
-    <label for="protected">[@ADMIN.PROTECTED_TYPE]
-        : 
-      </label>
-    <br class="nobr">
-    <IF COND="abs([#STATUS]) ge 32">
-      <input type="checkbox" name="protected" id="protected" checked>
-      <ELSE/>
-      <input type="checkbox" name="protected" id="protected">
-    </IF>
-    <LOOP NAME="fielderror" FIELD="protected">
-      <a id="protected"></a><span class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_TYPE]"></FUNC>
-      </span>
-    </LOOP>
-    <br />
-  </IF>
-  <label for="flat">[@ADMIN.FLAT_INDEX]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="[#FLAT]">
-    <input type="checkbox" name="flat" id="flat" checked>
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
     <ELSE/>
-    <input type="checkbox" name="flat" id="flat">
+    <input type="checkbox" name="protected" id="protected">
   </IF>
-  <LOOP NAME="fielderror" FIELD="flat">
-    <a id="flat"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FLAT_INDEX]"></FUNC>
+  <LOOP NAME="fielderror" FIELD="protected">
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_TYPE]"></FUNC>
     </span>
   </LOOP>
   <br />
-  <label for="edition">[@ADMIN.INTERFACE_EDITION]
-        : 
-      </label>
-  <br class="nobr">
-  <select name="edition" id="edition">
-    <?php 
-                      makeSelect($context,"edition","entrytypes","select");
-                  ?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="edition">
-    <a id="edition"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="newbyimportallowed">[@ADMIN.NEWIMPORTALLOWED]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="[#NEWBYIMPORTALLOWED]">
-    <input type="checkbox" name="newbyimportallowed" id="newbyimportallowed" checked>
-    <ELSE/>
-    <input type="checkbox" name="newbyimportallowed" id="newbyimportallowed">
-  </IF>
-  <LOOP NAME="fielderror" FIELD="newbyimportallowed">
-    <a id="newbyimportallowed"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NEWIMPORTALLOWED]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="sort">[@ADMIN.SORTBY]
-        : 
-      </label>
-  <br class="nobr">
-  <select name="sort" id="sort">
-    <?php 
-                      makeSelect($context,"sort","entrytypes","select");
-                  ?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="sort">
-    <a id="sort"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.SORTBY]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
+</IF>
+<label for="flat">[@ADMIN.FLAT_INDEX] : 
+		</label>
+<br class="nobr">
+<IF COND="&#10;&#9;&#9;&#9;[#FLAT]&#10;&#9;&#9;">
+  <input type="checkbox" name="flat" id="flat" checked>
+  <ELSE/>
+  <input type="checkbox" name="flat" id="flat">
+</IF>
+<LOOP NAME="fielderror" FIELD="flat">
+  <a id="flat"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FLAT_INDEX]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="edition">[@ADMIN.INTERFACE_EDITION] : 
+		</label>
+<br class="nobr">
+<select name="edition" id="edition">
+  <?php 
+						makeSelect($context,"edition","entrytypes","select");
+					?>
+</select>
+<LOOP NAME="fielderror" FIELD="edition">
+  <a id="edition"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="newbyimportallowed">[@ADMIN.NEWIMPORTALLOWED] : 
+		</label>
+<br class="nobr">
+<IF COND="&#10;&#9;&#9;&#9;[#NEWBYIMPORTALLOWED]&#10;&#9;&#9;">
+  <input type="checkbox" name="newbyimportallowed" id="newbyimportallowed" checked>
+  <ELSE/>
+  <input type="checkbox" name="newbyimportallowed" id="newbyimportallowed">
+</IF>
+<LOOP NAME="fielderror" FIELD="newbyimportallowed">
+  <a id="newbyimportallowed"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NEWIMPORTALLOWED]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="sort">[@ADMIN.SORTBY] : 
+		</label>
+<br class="nobr">
+<select name="sort" id="sort">
+  <?php 
+						makeSelect($context,"sort","entrytypes","select");
+					?>
+</select>
+<LOOP NAME="fielderror" FIELD="sort">
+  <a id="sort"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.SORTBY]"></FUNC>
+  </span>
+</LOOP>
+<br />
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
 	<div style="padding-top:20px; padding-left:70px; padding-right:70px;">

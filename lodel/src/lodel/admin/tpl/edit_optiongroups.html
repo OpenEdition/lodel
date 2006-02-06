@@ -67,111 +67,102 @@
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="optiongroups">
-<fieldset>
-  <legend>Table des groupes d'options</legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <LOOP NAME="fielderror" FIELD="id">
-    <a id="id"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="idparent">[@COMMON.PARENT_OPTIONGROUPS]
-        : 
-      </label>
+<input type="hidden" name="id" value="&#10;&#9;&#9;&#9;[#ID]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="id">
+  <a id="id"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+  </span>
+</LOOP>
+<label for="idparent">[@COMMON.PARENT_OPTIONGROUPS] : 
+		</label>
+<br class="nobr">
+<select name="idparent" id="idparent">
+  <?php 
+						makeSelect($context,"idparent","optiongroups","select");
+					?>
+</select>
+<LOOP NAME="fielderror" FIELD="idparent">
+  <a id="idparent"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PARENT_OPTIONGROUPS]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="name">[@COMMON.NAME]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="name" id="name" class="text" value="&#10;&#9;&#9;&#9;[#NAME]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="name">
+  <a id="name"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NAME]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="title">[@COMMON.TITLE]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="title" id="title" class="text" value="&#10;&#9;&#9;&#9;[#TITLE]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="title">
+  <a id="title"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.TITLE]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
+		</label>
+<br class="nobr">
+<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="&#10;&#9;&#9;&#9;[#ALTERTITLE]&#10;&#9;&#9;" FULLVARNAME="altertitle"></FUNC>
+<label for="logic">[@COMMON.LOGIC] : 
+		</label>
+<br class="nobr">
+<input type="text" size="30" name="logic" id="logic" class="text" value="&#10;&#9;&#9;&#9;[#LOGIC]&#10;&#9;&#9;">
+<LOOP NAME="fielderror" FIELD="logic">
+  <a id="logic"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIC]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<label for="comment">[@ADMIN.COMMENT] : 
+		</label>
+<br class="nobr">
+<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">
+			[#COMMENT]
+		</textarea>
+<LOOP NAME="fielderror" FIELD="comment">
+  <a id="comment"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+  </span>
+</LOOP>
+<br />
+<IF COND="[#IDPARENT]==0">
+  <label for="exportpolicy">[@ADMIN.EXPORT] : 
+		</label>
   <br class="nobr">
-  <select name="idparent" id="idparent">
-    <?php 
-                      makeSelect($context,"idparent","optiongroups","select");
-                  ?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="idparent">
-    <a id="idparent"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PARENT_OPTIONGROUPS]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="name">[@COMMON.NAME]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-  <LOOP NAME="fielderror" FIELD="name">
-    <a id="name"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="title">[@COMMON.TITLE]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-  <LOOP NAME="fielderror" FIELD="title">
-    <a id="title"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.TITLE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span>
-        : 
-      </label>
-  <br class="nobr">
-  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
-  <label for="logic">[@COMMON.LOGIC]
-        : 
-      </label>
-  <br class="nobr">
-  <input type="text" size="30" name="logic" id="logic" class="text" value="[#LOGIC]">
-  <LOOP NAME="fielderror" FIELD="logic">
-    <a id="logic"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIC]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="comment">[@ADMIN.COMMENT]
-        : 
-      </label>
-  <br class="nobr">
-  <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-  <LOOP NAME="fielderror" FIELD="comment">
-    <a id="comment"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <IF COND="[#IDPARENT]==0">
-    <label for="exportpolicy">[@ADMIN.EXPORT]
-        : 
-      </label>
-    <br class="nobr">
-    <IF COND="[#EXPORTPOLICY]">
-      <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
-      <ELSE/>
-      <input type="checkbox" name="exportpolicy" id="exportpolicy">
-    </IF>
-    <LOOP NAME="fielderror" FIELD="exportpolicy">
-      <a id="exportpolicy"></a><span class="error">
-        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EXPORT]"></FUNC>
-      </span>
-    </LOOP>
-    <br />
-  </IF>
-  <label for="protected">[@COMMON.PROTECTED]
-        : 
-      </label>
-  <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
+  <IF COND="&#10;&#9;&#9;&#9;[#EXPORTPOLICY]&#10;&#9;&#9;">
+    <input type="checkbox" name="exportpolicy" id="exportpolicy" checked>
     <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
+    <input type="checkbox" name="exportpolicy" id="exportpolicy">
   </IF>
-  <LOOP NAME="fielderror" FIELD="protected">
-    <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PROTECTED]"></FUNC>
+  <LOOP NAME="fielderror" FIELD="exportpolicy">
+    <a id="exportpolicy"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EXPORT]"></FUNC>
     </span>
   </LOOP>
   <br />
-</fieldset>
+</IF>
+<label for="protected">[@COMMON.PROTECTED] : 
+		</label>
+<br class="nobr">
+<IF COND="abs([#STATUS]) ge 32">
+  <input type="checkbox" name="protected" id="protected" checked>
+  <ELSE/>
+  <input type="checkbox" name="protected" id="protected">
+</IF>
+<LOOP NAME="fielderror" FIELD="protected">
+  <a id="protected"></a><span class="error">
+    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PROTECTED]"></FUNC>
+  </span>
+</LOOP>
+<br />
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
 </div>
