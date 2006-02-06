@@ -1037,10 +1037,12 @@ function _indent_xhtml($source, $indenter = '  ')
 		#print_r($array);
 		$c = count($array);
 		for($i = 0 ; $i < $c ; $i++) {
-			if(!preg_match("/<script|style [^>]+>/",$array[$i])) {
+			if(preg_match("/<textarea|pre [^>]+>/",$array[$i])) {
+				$array[$i+1] = trim(str_replace("\n", "", $array[$i+1]));
+			}	elseif(!preg_match("/<script|style [^>]+>/",$array[$i])) {
 				// si c'est pas une balise script ou style
 				$array[$i+1] = str_replace("\n", "", $array[$i+1]);
-			}
+			} 
 		}
 		$source = implode($array, "\n");
 		return $source;
