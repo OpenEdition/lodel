@@ -30,7 +30,7 @@
 	<description>[@LODELADMIN.SITE] [#SITE] : [@COMMON.DASHBOARD|strtolower], [@COMMON.HISTORY|strtolower] ([@COMMON.HISTORY_DESCRIPTION])</description>
 	<language>fr</language>
 	
-	<LOOP NAME="dashboard_history" TABLE="entities" ORDER="modificationdate DESC" LIMIT="0,30"> 
+	<LOOP NAME="dashboard_history" TABLE="entities" ORDER="modificationdate DESC" LIMIT="0,30" WHERE="status LT 64 AND entities.status GT -64"> 
 		<DO>
 		<item>
 			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
@@ -42,6 +42,7 @@
 			<author>
 				<LOOP NAME="get_author" TABLE="persons" WHERE="identity='[#ID]'" ORDER="degree">
 					[#G_FIRSTNAME||textebrut|htmlspecialchars] [#G_FAMILYNAME||textebrut|htmlspecialchars]
+					
 				</LOOP>
 			</author>
 		</item>
