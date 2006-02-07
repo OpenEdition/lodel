@@ -49,7 +49,7 @@
 
 </div>	
 
-	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" LIMIT="0,30">
+	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" SPLIT="30">
 	<BEFORE>
 	<p class="searchInfos">
 			[#NBRESULTS] [@COMMON.RESULTS]
