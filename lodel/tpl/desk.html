@@ -342,7 +342,7 @@ body{
 			</li>
 			<LOOP NAME="getFirstEntriesType" TABLE="entrytypes" ORDER="rank" LIMIT="0,1">
 				<li>
-				<IF COND="[#LO] EQ 'entries'">
+				<IF COND="[#LO] EQ 'entries' AND [#DO] EQ 'list'">
 					<strong>[@EDITION.ENTRIES_EDITION]</strong>
 				<ELSE />
 					<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[@EDITION.ENTRIES_EDITION]</a>
@@ -352,7 +352,7 @@ body{
 
 			<LOOP NAME="getFirstPersonsType" TABLE="persontypes" ORDER="rank" LIMIT="0,1">
 				<li>
-				<IF COND="[#LO] EQ 'persons'">
+				<IF COND="[#LO] EQ 'persons' AND [#DO] EQ 'list'">
 					<strong>[@EDITION.PERSONS_EDITION]</strong>
 				<ELSE />
 					<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]">[@EDITION.PERSONS_EDITION]</a>
