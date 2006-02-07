@@ -41,7 +41,7 @@
 			</description>
 			<author>
 				<LOOP NAME="get_author" TABLE="persons" WHERE="identity='[#ID]'" ORDER="degree">
-					[#G_FIRSTNAME||textebrut|htmlspecialchars] [#G_FAMILYNAME||textebrut|htmlspecialchars]
+					[#G_FIRSTNAME|textebrut|htmlspecialchars] [#G_FAMILYNAME|textebrut|htmlspecialchars]
 					
 				</LOOP>
 			</author>
