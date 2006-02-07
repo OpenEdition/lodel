@@ -379,7 +379,7 @@ body{
 			</IF>
 			</li>
 			<li>
-			<IF COND="[#CURRENTURL|strpos('history')]">
+			<IF COND="[#CURRENTURL|strpos('history')] AND ![#CURRENTURL|strpos('public_history')]">
 				<strong>[@EDITION.HISTORY]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@EDITION.HISTORY_DESCRIPTION]">[@EDITION.HISTORY]</a>
