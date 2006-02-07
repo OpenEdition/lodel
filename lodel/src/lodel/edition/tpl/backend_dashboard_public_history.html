@@ -28,9 +28,8 @@
 	<title>[#SITE|strtoupper|htmlspecialchars].[@COMMON.PUBLIC_HISTORY]</title>
 	<link>[#CURRENTURL|dirname]</link>
 	<description>[@LODELADMIN.SITE] [#SITE] : [@COMMON.DASHBOARD|strtolower], [@COMMON.PUBLIC_HISTORY|strtolower] ([@COMMON.PUBLIC_HISTORY_DESCRIPTION])</description>
-	<language>fr</language>
-	
-	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" LIMIT="0,30"> 
+	<language>fr</language>	
+	<LOOP NAME="dashboard_public_history" TABLE="entities, types" WHERE="types.id=idtype AND types.public=1 AND entities.status LT 64 AND entities.status GT -64 AND types.status LT 64 AND types.status GT -64" LIMIT="0,30" ORDER="modificationdate DESC"> 
 		<DO>
 		<item>
 			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
@@ -41,7 +40,9 @@
 			</description>
 			<author>
 				<LOOP NAME="get_author" TABLE="persons" WHERE="identity='[#ID]'" ORDER="degree">
-					[#G_FIRSTNAME||textebrut|htmlspecialchars] [#G_FAMILYNAME||textebrut|htmlspecialchars]
+					<DO>
+					[#G_FIRSTNAME|textebrut|htmlspecialchars] [#G_FAMILYNAME|textebrut|htmlspecialchars]
+					</DO>
 				</LOOP>
 			</author>
 		</item>
