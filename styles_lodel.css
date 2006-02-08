@@ -240,7 +240,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 }
 
 #entitiesPath a, #entitiesPath .queryText{
-	color: #0e2d7c;
+	color: #ff5b04;
 }
 
 #entitiesPath, #entitiesPath .queryText{
@@ -255,7 +255,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	float: left;
 	padding: 0;
 	margin: .3ex .4em 0 0;
-	color: #ff5b04;
+	color: #333;	
 }
 
 #entitiesPath .queryText{

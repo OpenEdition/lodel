@@ -37,17 +37,15 @@
 <!--[ Fin rajout int?ration maquette ]-->
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<!--[<FUNC NAME="SEARCH_ENGINE">]-->
-<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
-	<ul style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;">
-	
-		<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">[@COMMON.DASHBOARD]</a></li>
-		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title=[@EDITION.HISTORY]">[@COMMON.PUBLIC_HISTORY] ([@COMMON.PUBLIC_HISTORY_DESCRIPTION])</a></li>
-	
-</ul>
-<p><a href="index.php?page=backend&format=dashboard_public_history">RSS : dashboard_public_history.html</a></p>
 
-</div>	
+	<ul id="entitiesPath">
+		<li><strong>[@COMMON.PUBLIC_HISTORY] :</strong> [@COMMON.PUBLIC_HISTORY_DESCRIPTION]</li>
+		<li><FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]"></li>
+	</ul>
+
+
+<p><a href="index.php?page=backend&amp;format=dashboard_public_history">RSS : dashboard_public_history.html</a></p>
+
 
 	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" SPLIT="30">
 	<BEFORE>

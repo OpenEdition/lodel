@@ -34,13 +34,12 @@
 <MACRO NAME="JS_AFFICHE_IMAGE" />
 <MACRO NAME="HEADER_HEAD_CLOSE" />
 <MACRO NAME="HEADER_LOGO" />
-<!--[<FUNC NAME="SEARCH_ENGINE">]-->
-	<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
-	<ul style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;">
-		<li><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard" title="[@COMMON.DASHBOARD]">[@COMMON.DASHBOARD]</a></li>
-		<li style="background: url('[#SHAREURL]/images/fleche_edition_des_series.png') top left no-repeat;"><a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title=[@EDITION.HISTORY]">[@COMMON.STATISTICS] ([@COMMON.STATISTICS_DESCRIPTION])</li>
+
+	<ul id="entitiesPath">
+		<li><strong>[@COMMON.STATISTICS] :</strong> [@COMMON.STATISTICS_DESCRIPTION]</li>
+		<li><FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]"></li>
 	</ul>
-	</div>
+
 	<LOOP NAME="classe" TABLE="classes" WHERE="classtype='entities' AND status gt 0" ORDER="rank">
 	<DO>	
 		<p><MACRO NAME="DISPLAY_ALTERTITLE"></p>
