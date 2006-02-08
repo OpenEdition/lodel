@@ -41,15 +41,16 @@
 <MACRO NAME="HEADER_LOGO"> 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 	
-	<div id="entitiesPath" style="background: url('[#SHAREURL]/images/fond_edition_des_series.png') repeat-x">
-		<div style="background: url('[#SHAREURL]/images/picto_edition_des_series.png') top left no-repeat;" class="queryText">
+	<ul id="entitiesPath">
+		<li>
 		<IF COND="![#QUERY]">
 			[@WARNING_EMPTY_QUERY]
 		<ELSE />
 			<MACRO NAME="YOUR_SEARCH_BAR">
 		</IF>
-		</div>
-	</div>
+		</li>
+		<li><FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]"></li>
+	</ul>
 	<FUNC NAME="SEARCH_ENGINE" QUERY="[#QUERY]" QTYPE="[#QTYPE]" QSTATUS="[#QSTATUS]" QFIELD="[#QFIELD]">
 	<IF COND="[#QUERY]">
 		<LOOP NAME="search" LIMIT="[#QNBRESULTS]">
