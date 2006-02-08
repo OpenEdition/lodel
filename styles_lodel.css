@@ -244,8 +244,8 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 }
 
 #entitiesPath, #actionsOnEntitiesPath, #addEntity, #entitiesPath .queryText{
-	padding: 0 0 0 1em;
-	height: 3.3ex;
+	padding: .5ex 0 0 1em;
+	height: 4ex;
 	font-size: 90%;
 	border-bottom: 1px solid #aaa;
 	background: #f1f5fb;
@@ -281,7 +281,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 
 #actionsOnEntitiesPath ul.actions{
 	position: absolute;
-	top: 0;
+	top: .5ex;
 	right: .5em;
 }
 
