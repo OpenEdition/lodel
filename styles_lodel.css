@@ -232,32 +232,30 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 
 /* Chemin parcouru */
 
-#entitiesPath ul{
-	height: 43px;
-	padding-left: 48px;
-}
 
-#entitiesPath ul, #entitiesPath li{
+#entitiesPath, #entitiesPath li{
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
 #entitiesPath a, #entitiesPath .queryText{
-	color: #728979;
-	font-weight: bold;
+	color: #0e2d7c;
 }
 
-#entitiesPath ul, #entitiesPath .queryText{
-	height: 43px;
-	padding: 0 0 0 38px;
+#entitiesPath, #entitiesPath .queryText{
+	padding: 0 0 0 1em;
+	height: 3.3ex;
+	font-size: 90%;
+	border-bottom: 1px solid #aaa;
+	background: #eee;
 }
 
-#entitiesPath ul li{
+#entitiesPath li{
 	float: left;
 	padding: 0;
-	margin: 1.5ex 0;
-	color: #b08000;
+	margin: .3ex .4em 0 0;
+	color: #ff5b04;
 }
 
 #entitiesPath .queryText{
@@ -490,4 +488,33 @@ div.advancedFunc dt.select{
 
 #entityIdent label{
 	font-weight: bold;
+}
+
+/* moteur */
+
+#lightSearchForm{
+	position: absolute;
+	top: 0;
+	right: .5em;
+}
+
+#lightSearchForm fieldset{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: auto;
+	background: transparent;
+}
+
+#lightSearchForm input.text, #lightSearchForm input.button{
+	font: normal 90% verdana, sans-serif;
+}
+
+#lightSearchForm input.text{
+	border: 1px solid #aaa;
+}
+
+
+#lightSearchForm input.button{
+	padding-top: 0;
 }

@@ -67,16 +67,10 @@ body{
 	background-image: url("[#SHAREURL]/images/bandeau.jpg");
 	background-repeat: no-repeat;
 	background-color: #fff;
-	height: 142px; /*valeur pour IE*/
+	height: 142px;
 	font: 11px verdana, sans-serif !important;
 	text-align: left !important;
-	border-bottom: 1px dashed #728979;
-}
-
-/*valeur pour les autres*/
-*>#lodel-desk{
-	/*height: auto;
-	min-height: 130px;*/
+	border-bottom: 1px solid #aaa;
 }
 
 #lodel-desk a{
@@ -176,29 +170,7 @@ body{
 
 /* Fin boutons du desk */
 
-/* moteur */
 
-#lightSearchForm{
-	position: absolute;
-	top: 121px;
-	right: .5em;
-}
-
-#lightSearchForm fieldset{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	width: auto;
-	background: #fff;
-}
-
-#lightSearchForm input.text, #lightSearchForm input.button{
-	font: normal 90% verdana, sans-serif;
-}
-
-#lightSearchForm input.button{
-	padding-top: 0;
-}
 
 /* liste sites pour desk lodeladmin */
 
@@ -327,7 +299,7 @@ body{
 	<ul id="deskContext">
 		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
 			<li>
-			<IF COND="![#CURRENTURL|strpos('search')] AND ![#LO] AND ![#CURRENTURL|strpos('dashboard')]">
+			<IF COND="![#CURRENTURL|strpos('search')] AND ![#LO] AND ![#CURRENTURL|strpos('dashboard')] AND ![#ID]">
 				<strong>[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a>
@@ -402,9 +374,6 @@ body{
 			</li>
 		</IF>
 	</ul>
-	<IF COND="[#SITE]">
-		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
-	</IF>
 	<div class="infos">
 	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
 	<IF COND="[#CHARSET] != 'utf-8'">
