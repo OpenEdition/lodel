@@ -474,6 +474,15 @@
 	</ul>
 </DEFMACRO>
 
+<DEFMACRO NAME="ACTIONS_ON_CURRENT_PATH">
+	<ul id="actionsOnEntitiesPath">
+		<li class="entitieTitle"><LOOP NAME="getTitle" TABLE="entities" WHERE="id='[#ID]'">[#G_TITLE]</LOOP></li>
+		<li>
+		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
+		</li>
+	</ul>
+</DEFMACRO>
+
 
 <DEFMACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 	<IF COND="[#DATEPUBLI] AND ([#DATEPUBLI] gt today())">
@@ -689,6 +698,33 @@
 		</LOOP>
 	        <!--[<input type="checkbox" name="entity[[#ID]]" /> ]-->
 	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
+	<ul class="actions">
+	<li><a href="../../[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
+	<LOOP NAME="rightonentity" ACTION="edit">
+		<DO>
+			<li><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
+		</DO>
+		<ALTERNATIVE>
+			<li><span class="inactif">[@COMMON.EDIT]</span></li>
+		</ALTERNATIVE>
+	</LOOP>
+	<li>
+	<LOOP NAME="getStatus" TABLE="entities" WHERE="id = [#ID]">
+		<MACRO NAME="CHANGER_STATUS_ENTITIES">
+	</LOOP>
+	</li>
+	<LOOP NAME="rightonentity" ACTION="delete">
+		<DO>
+			<li><a href="#" onclick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a></li>
+		</DO>
+		<ALTERNATIVE>
+			<li><span class="inactif">[@EDITION.DELETE]</span></li>
+		</ALTERNATIVE>
+	</LOOP>
+	</ul>
 </DEFMACRO>
 
 

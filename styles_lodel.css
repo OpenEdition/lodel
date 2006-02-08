@@ -233,17 +233,17 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 /* Chemin parcouru */
 
 
-#entitiesPath, #entitiesPath li{
+#entitiesPath, #entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li{
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-#entitiesPath a, #entitiesPath .queryText{
+#entitiesPath a, #entitiesPath .queryText, #actionsOnEntitiesPath a{
 	color: #ff5b04;
 }
 
-#entitiesPath, #entitiesPath .queryText{
+#entitiesPath, #actionsOnEntitiesPath, #entitiesPath .queryText{
 	padding: 0 0 0 1em;
 	height: 3.3ex;
 	font-size: 90%;
@@ -251,7 +251,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	background: #f8f8f8;
 }
 
-#entitiesPath li{
+#entitiesPath li, #actionsOnEntitiesPath li{
 	float: left;
 	padding: 0;
 	margin: .3ex .4em 0 0;
@@ -269,8 +269,23 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	width: 30%;
 }
 
-*>#entitiesPath>div.queryText>div.searchInfos{
-	top: -2.5ex;
+#actionsOnEntitiesPath{
+	background: #f1f5fb;
+	font-weight: bold;
+}
+
+#actionsOnEntitiesPath li.entitieTitle{
+	font-weight: bold;
+}
+
+#actionsOnEntitiesPath ul.actions{
+	position: absolute;
+	top: 3.5ex;
+	right: .5em;
+}
+
+#actionsOnEntitiesPath ul.actions li{
+	margin-left: 1em;
 }
 
 /* results pages naviguation */

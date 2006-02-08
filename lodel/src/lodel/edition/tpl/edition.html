@@ -42,6 +42,9 @@
 	<!--[ Added 2005-02-02 ]-->
 	<!--[<FUNC NAME="SEARCH_ENGINE">]-->
 	<MACRO NAME="CURRENT_PATH">
+	<IF COND="[#ID]">
+		<MACRO NAME="ACTIONS_ON_CURRENT_PATH">
+	</IF>
 	<FUNC NAME="ADD_AN_ENTITY">
 	<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
 	<FUNC NAME="LIST_ENTITIES" ID="[#ID]" />
