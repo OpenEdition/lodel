@@ -176,6 +176,7 @@ input.button{
 	background: #f1f5fb;
 	font-family: verdana, sans-serif;
 	font-weight: bold;
+	font-size: 90%;
 }
 
 input.button:focus{
