@@ -374,6 +374,10 @@ body{
 			</li>
 		</IF>
 	</ul>
+	<IF COND="[#ID] AND ![#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('admin')]">
+		<!--[ Emplacement de la barre d'actions lors visualisation ]-->
+	</IF>
+
 	<div class="infos">
 	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
 	<IF COND="[#CHARSET] != 'utf-8'">
