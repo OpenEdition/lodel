@@ -272,6 +272,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 #actionsOnEntitiesPath{
 	background: #f1f5fb;
 	font-weight: bold;
+	position: relative;
 }
 
 #actionsOnEntitiesPath li.entitieTitle{
@@ -280,7 +281,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 
 #actionsOnEntitiesPath ul.actions{
 	position: absolute;
-	top: 3.5ex;
+	top: 0;
 	right: .5em;
 }
 
