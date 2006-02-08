@@ -160,6 +160,12 @@ fieldset.formButtons{
 	text-align: right;
 }
 
+fieldset span.error{
+	display: block;
+	color: red;
+	margin: 0;
+}
+
 input, textarea, select{
 	background: #fff;
 	border: 1px solid #333;
