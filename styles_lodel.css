@@ -303,6 +303,11 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	display: inline;
 }
 
+#addEntity li a{
+	color: #ff5b04;
+	font-weight: bold;
+}
+
 #addEntity li select.add{
 	width: 120px;
 }
