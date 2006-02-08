@@ -233,7 +233,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 /* Chemin parcouru */
 
 
-#entitiesPath, #entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li{
+#entitiesPath, #entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li, #addEntity, #addEntity li{
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -243,15 +243,15 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	color: #ff5b04;
 }
 
-#entitiesPath, #actionsOnEntitiesPath, #entitiesPath .queryText{
+#entitiesPath, #actionsOnEntitiesPath, #addEntity, #entitiesPath .queryText{
 	padding: 0 0 0 1em;
 	height: 3.3ex;
 	font-size: 90%;
 	border-bottom: 1px solid #aaa;
-	background: #f8f8f8;
+	background: #f1f5fb;
 }
 
-#entitiesPath li, #actionsOnEntitiesPath li{
+#entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
 	float: left;
 	padding: 0;
 	margin: .3ex .4em 0 0;
@@ -270,7 +270,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 }
 
 #actionsOnEntitiesPath{
-	background: #f1f5fb;
+	background: #e0e7f2;
 	font-weight: bold;
 	position: relative;
 }
@@ -289,6 +289,27 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	margin-left: 1em;
 }
 
+#addEntity{
+	min-height: 3.5ex;
+	background: #e0e7f2;
+	padding-top: .8ex;
+}
+
+#addEntity li{
+	margin: .8ex 1em 0 0;
+	color: #0e2d7c;
+	float: none;
+	display: inline;
+}
+
+#addEntity li select.add{
+	width: 120px;
+}
+
+#addEntity li.actionTitle{
+	font-weight: bold;
+}
+
 /* results pages naviguation */
 
 #navResults{
@@ -297,28 +318,6 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	margin-top: 3ex;
 	font-size: 80%;
 	padding-top: 10px;
-}
-
-/* Ajout d'entités */
-
-
-#addEntity ul, #addEntity li{
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-
-#addEntity ul{
-	float: left;
-	margin: 0 1em 3ex 0;
-}
-
-#addEntity li{
-	padding-left: 15px;
-}
-
-#addEntity li a{
-	font-size: 90%;
 }
 
 
