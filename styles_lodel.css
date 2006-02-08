@@ -534,7 +534,7 @@ div.advancedFunc dt.select{
 
 #lightSearchForm{
 	position: absolute;
-	top: 0;
+	top: .5ex;
 	right: .5em;
 }
 
