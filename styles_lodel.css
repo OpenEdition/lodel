@@ -40,6 +40,10 @@ form, fieldset{
 	padding: 0;
 }
 
+form.entry{
+	margin: 3ex 0 0 0;
+}
+
 a:link{
 	text-decoration: none;
 	color: #CC9933;
