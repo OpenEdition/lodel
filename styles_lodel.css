@@ -248,7 +248,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	height: 3.3ex;
 	font-size: 90%;
 	border-bottom: 1px solid #aaa;
-	background: #eee;
+	background: #f8f8f8;
 }
 
 #entitiesPath li{
@@ -506,15 +506,20 @@ div.advancedFunc dt.select{
 	background: transparent;
 }
 
-#lightSearchForm input.text, #lightSearchForm input.button{
+#lightSearchForm input.text, #lightSearchForm input.button, select.barInfo{
 	font: normal 90% verdana, sans-serif;
 }
 
-#lightSearchForm input.text{
+#lightSearchForm input.text, select.barInfo{
 	border: 1px solid #aaa;
 }
 
 
 #lightSearchForm input.button{
 	padding-top: 0;
+}
+
+select.barInfo{
+	margin: -.3ex 0 0 0;
+	font-size: 100%;
 }
