@@ -28,11 +28,11 @@
 
 
 body{
-	background-color: #fff;
-	font-size: 80%;
-	font-family: verdana, sans-serif;
+	background: #fff;
+	font: normal 80% verdana, sans-serif;
 	margin: 0;
 	padding: 0;
+	color: #333;
 }
 
 form, fieldset{
