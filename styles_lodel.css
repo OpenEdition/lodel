@@ -44,15 +44,13 @@ form.entry{
 	margin: 3ex 0 0 0;
 }
 
-a:link{
+a:link, a:visited{
 	text-decoration: none;
-	border-bottom: 1px dotted #aaa;
 	color: #0e2d7c;
 }
 
-a:visited{
-	text-decoration: none;
-	color: #0e2d7c;
+a:hover{
+	border-bottom: 1px dotted #aaa;
 }
 
 img{
@@ -446,8 +444,9 @@ div.advancedFunc #addEntity select{
 	margin: -3.5ex 1em 0 0;
 }
 
-div.action a{
+div.action a, div.action a:hover{
 	color: #f87b39;
+	text-decoration: none;
 }
 
 #listEntities div.document{
