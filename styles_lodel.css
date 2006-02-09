@@ -449,10 +449,9 @@ div.advancedFunc #addEntity select{
 	left: 60%;
 	top: -5ex;
 	margin: 0 1em 0 0;
-	min-width: 40%;
+	width: 40%;
 	color: #cc9933;
 	text-align: left;
-	width: 45%;
 }
 
 *>#listEntities>*>div.action{
