@@ -67,6 +67,11 @@ br.nobr{
 	display: none;
 }
 
+.spacer{
+	clear: both;
+	float: none;
+}
+
 .inactif{
 	color: #666;
 }
@@ -124,7 +129,7 @@ br.nobr{
 
 /* Formulaires */
 
-fieldset{
+fieldset, dl.entries{
 	width: 550px;
 	border: 1px solid #cecece;
 	margin: 0 0 3ex 40px;
@@ -231,6 +236,25 @@ div.displayfield{
 
 div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	background: #f1f5fb;
+}
+
+dl.entries dt{
+	font-size: 110%;
+	font-weight: bold;
+	margin: 0 0 2ex 0;
+}
+
+dl.entries dd{
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	width: 35%;
+	float: left;
+}
+
+dl.entries dd.actions{
+	margin-left: 45%;
+	text-align: right;
+	clear: both;
 }
 
 /* les mises en formes locales doivent être visibles*/
@@ -348,12 +372,26 @@ div.advancedFunc #addEntity select{
 
 /* results pages naviguation */
 
+#navResults, #navResults li{
+	list-style: none;
+}
+
 #navResults{
-	height: 33px;
 	text-align: center;
-	margin-top: 3ex;
-	font-size: 80%;
-	padding-top: 10px;
+	margin: 3ex 0 0 0;
+	font-size: 90%;
+	padding: .8ex;
+	background: #f1f5fb;
+	border-top: 1px solid #aaa;
+}
+
+#navResults li{
+	display: inline;
+}
+
+#navResults li a{
+	color: #f87b39;
+	font-weight: bold;
 }
 
 

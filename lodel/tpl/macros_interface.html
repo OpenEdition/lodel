@@ -848,42 +848,39 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 <DEFMACRO NAME="BOTTOM_RESULTS_PAGES">
 <LOOP NAME="page_scale">
 	<BEFORE>
-		<div id="navResults" style="background-image:url([#SHAREURL]/images/fond_edition_des_series.png);">
+		<ul id="navResults">
 		<IF COND="[#PREVIOUSURL]">
-			<a href="[#PREVIOUSURL]" title="Page pr��ente">
-				<img src="[#SHAREURL]/images/triangle2.gif" alt="&lt;&lt;" />
-			</a>
-	<!--[		<img style="vertical-align : middle" src="[#SHAREURL]/images/separateur.png" alt="-" />
-		]-->
+			<li>
+			<a href="[#PREVIOUSURL]" title="[@COMMON.PREVIOUS_PAGE]">&nbsp;&lt;&lt;&nbsp;</a>
+			</li>
 		</IF>
 	</BEFORE>
 	<DO>
 		<IF COND="[#HOLE] EQ 1">
-			&nbsp;...&nbsp;
+			<li>&nbsp;...&nbsp;</li>
 		</IF>
 		<IF COND="[#URLPAGE] NE ''">
-			<a class="linkpage" href="[#URLPAGE]" title="[#PAGENUMBER]">
+			<li><a class="linkpage" href="[#URLPAGE]" title="[#PAGENUMBER]">
 		<ELSE/>
-			<span class="currentpage">
+			<li><span class="currentpage">
 		</IF>
 		
 		[#PAGENUMBER]
 		<IF COND="[#URLPAGE] NE ''">
-			</a>
+			</a></li>
 		<ELSE/>
-			</span>
+			</span></li>
 		</IF>
 	
 	</DO>
 	
 	<AFTER>
 		<IF COND="[#NEXTURL]">
-		
-			<a class="linkpage" href="[#NEXTURL]" title="Page suivante">
-				<img src="[#SHAREURL]/images/triangle.gif" alt="&gt;&gt;" />
-			</a>
+		<li>
+			<a class="linkpage" href="[#NEXTURL]" title="[@COMMON.NEXT_PAGE]">&nbsp;&gt;&gt;&nbsp;</a>
+		</li>
 		</IF>
-	</div>
+	</ul>
 	</AFTER>
 	<ALTERNATIVE>
 	</ALTERNATIVE>
