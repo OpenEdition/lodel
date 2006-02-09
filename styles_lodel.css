@@ -343,7 +343,23 @@ dl.entries dd.actions{
 }
 
 #addEntity li select.add{
-	width: 120px;
+	background: #fff6e3;
+	font-style: italic;
+	width: 160px;
+	color: #0e2d7c;
+}
+
+#addEntity li select.add option{
+	background: #fff;
+	font-weight: normal;
+	font-style: normal;
+	color: #333;
+}
+
+#addEntity li select.add option.class{
+	background: #fff6e3;
+	font-style: italic;
+	color: #0e2d7c;
 }
 
 #addEntity li.actionTitle{
@@ -602,6 +618,7 @@ div.advancedFunc dt.select{
 #lightSearchForm input.text, #lightSearchForm input.button, select.barInfo{
 	font: normal 90% verdana, sans-serif;
 }
+
 
 #lightSearchForm input.text, select.barInfo{
 	border: 1px solid #aaa;

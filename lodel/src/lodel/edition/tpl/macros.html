@@ -538,8 +538,8 @@
 			<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]' AND [#DISPLAYWHERE]" ORDER="rank">
 				<BEFORE>
 					<li>
-					<MACRO NAME="DISPLAY_ALTERTITLE"> : 
-					<select onchange="ajouter_entite(this)" class="barInfo add"><option selected>[@COMMON.CHOOSE]</option>
+					<select onchange="ajouter_entite(this)" class="barInfo add">
+						<option selected="selected" class="class"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 				</BEFORE>
 				<DO>
 					<IF COND="[#IMPORT]==1">
