@@ -343,7 +343,7 @@ dl.entries dd.actions{
 }
 
 #addEntity li select.add{
-	background: #fff6e3;
+	/*background: #fff6e3;*/
 	font-style: italic;
 	width: 160px;
 	color: #0e2d7c;
@@ -357,7 +357,7 @@ dl.entries dd.actions{
 }
 
 #addEntity li select.add option.class{
-	background: #fff6e3;
+	/*background: #fff6e3;*/
 	font-style: italic;
 	color: #0e2d7c;
 }
