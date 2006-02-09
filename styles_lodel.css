@@ -693,7 +693,7 @@ table.statistics td.empty{
 
 
 #entries{
-	margin: 0 0 0 2em;
+	margin: 0 3em 0 2em;
 }
 
 #entries ul, #entries li{
@@ -715,7 +715,7 @@ table.statistics td.empty{
 
 #entries ul li div.actions{
 	position: absolute;
-	left: 50%;
+	right: 0;
 	top: 0;
 }
 
