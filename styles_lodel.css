@@ -616,3 +616,49 @@ select.barInfo{
 	margin: -.3ex 0 0 0;
 	font-size: 100%;
 }
+
+/* Statistiques */
+
+table.statistics{
+	border: 0;
+	background: #fff;
+	width: 550px;
+	margin: 0 0 4ex 70px;
+	border-collapse: collapse;
+}
+
+table.statistics caption{
+	font-weight: bold;
+	font-size: 90%;
+	display: block;
+	background: #fff;
+	text-align: left;
+	margin: 2ex 0 1ex 0;
+	color: #28448a;
+}
+
+table.statistics th, table.statistics td{
+	padding: .5ex .5em;
+	text-align: left;
+	vertical-align: top;
+	border: 1px solid #aaa;
+}
+
+table.statistics th.type{
+	font-size: 90%;
+	width: 200px;
+	background: #f1f5fb;
+}
+
+table.statistics th.status{
+	text-align: center;
+	background: #e0e7f2;
+}
+
+table.statistics td{
+	background: #fff;
+}
+
+table.statistics td.empty{
+	border: 0;
+}
