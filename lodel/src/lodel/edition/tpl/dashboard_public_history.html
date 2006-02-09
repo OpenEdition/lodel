@@ -44,14 +44,17 @@
 	</ul>
 
 
-<p><a href="index.php?page=backend&amp;format=dashboard_public_history">RSS : dashboard_public_history.html</a></p>
-
-
 	<LOOP NAME="dashboard_public_history" TABLE="entities, types" ORDER="modificationdate DESC" WHERE="types.id=idtype AND types.public=1" SPLIT="30">
 	<BEFORE>
-	<p class="searchInfos">
-			[#NBRESULTS] [@COMMON.RESULTS]
-	</p>
+		<ul id="actionsOnEntitiesPath">
+		<li>[#NBRESULTS] [@COMMON.RESULTS]</li>
+		<li>
+			<ul  class="actions">
+				<li><a href="index.php?page=backend&amp;format=dashboard_public_history" title="[@COMMON.PAGE_FEED]"><img src="[#SHAREURL]/images/rss.gif" alt="[@COMMON.PAGE_FEED]" /></a></li>
+			</ul>
+		</li>
+		</ul>
+
 		<ul id="listEntities">
 		</BEFORE>
 		<DO>

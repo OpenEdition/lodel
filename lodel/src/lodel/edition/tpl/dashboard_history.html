@@ -41,17 +41,21 @@
 <ul id="entitiesPath">
 		<li><strong>[@COMMON.HISTORY] :</strong> [@COMMON.HISTORY_DESCRIPTION]</li>
 		<li><FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]"></li>
-
 </ul>
 
-<p><a href="index.php?page=backend&amp;format=dashboard_history">RSS : dashboard_history.html</a></p>
+
 
 
 <LOOP NAME="series_history" TABLE="entities,types" WHERE="types.id=idtype" ORDER="entities.modificationdate DESC" SPLIT="30">
 	<BEFORE>
-	<p class="searchInfos">
-			[#NBRESULTS] [@COMMON.RESULTS]
-	</p>
+	<ul id="actionsOnEntitiesPath">
+		<li>[#NBRESULTS] [@COMMON.RESULTS]</li>
+		<li>
+			<ul  class="actions">
+				<li><a href="index.php?page=backend&amp;format=dashboard_history" title="[@COMMON.PAGE_FEED]"><img src="[#SHAREURL]/images/rss.gif" alt="[@COMMON.PAGE_FEED]" /></a></li>
+			</ul>
+		</li>
+	</ul>
 		<ul id="listEntities">
 		</BEFORE>
 		<DO>

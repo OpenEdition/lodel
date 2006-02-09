@@ -42,11 +42,17 @@
 	</ul>
 
 
-<p><a href="index.php?page=backend&amp;format=dashboard_queue">RSS : dashboard_queue.html</a></p>
-
 	<LOOP NAME="series_unpublish" TABLE="entities,types" WHERE="types.id=idtype AND entities.status LT 1 AND entities.status GT -64" ORDER="modificationdate DESC" SPLIT="20">
 	<BEFORE>
-		<div class="searchInfos">[#NBRESULTS] [@COMMON.RESULTS]</div>
+		<ul id="actionsOnEntitiesPath">
+		<li>[#NBRESULTS] [@COMMON.RESULTS]</li>
+		<li>
+			<ul  class="actions">
+				<li><a href="index.php?page=backend&amp;format=dashboard_queue" title="[@COMMON.PAGE_FEED]"><img src="[#SHAREURL]/images/rss.gif" alt="[@COMMON.PAGE_FEED]" /></a></li>
+			</ul>
+		</li>
+		</ul>
+
 		<ul id="listEntities">	
 	</BEFORE>
 	<DO>
