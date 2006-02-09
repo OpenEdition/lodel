@@ -118,20 +118,20 @@
 <DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONTAL="[#TITLE]">
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-         |&nbsp;<a href="index.php?do=view&id=[#ID]&lo=[#LO]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+         <span class="sep">|&nbsp;</span><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.MODIFY]</a><span class="sep">&nbsp;|&nbsp;</span>
 	<IF COND="[#STATUS] ge 32">
-	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|&nbsp;
+	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span><span class="sep">&nbsp;|&nbsp;</span>
        <ELSE/>
 	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="inactif">[@COMMON.DELETE] ([#LO|isdeletelocked([#ID],[#STATUS])])</span>&nbsp;|&nbsp;
+	  <span class="inactif">[@COMMON.DELETE] <!--[([#LO|isdeletelocked([#ID],[#STATUS])])]--></span><span class="sep">&nbsp;|&nbsp;</span>
 	  <ELSE/>
-	  <a href="index.php?do=delete&id=[#ID]&lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
+	  <a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a><span class="sep">&nbsp;|&nbsp;</span>
 	  </IF>
 	</IF>
-	 <a href="index.php?do=copy&id=[#ID]&lo=[#LO]">[@COMMON.COPY]</a>
+	 <a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a>
 <ELSE/>
-	 |&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
-	  <span class="inactif">[@COMMON.DELETE]</span>&nbsp;|&nbsp;<span class="inactif">[@COMMON.COPY]</span>&nbsp;|
+	 |<span class="sep">&nbsp;|&nbsp;</span><span class="inactif">[@COMMON.MODIFY]</span><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="inactif">[@COMMON.DELETE]</span><span class="sep">&nbsp;|&nbsp;</span><span class="inactif">[@COMMON.COPY]</span><span class="sep">&nbsp;|</span>
 </IF>
 	
 </DEFFUNC>

@@ -53,12 +53,21 @@ a:hover{
 	border-bottom: 1px dotted #aaa;
 }
 
+div.actions a{
+	color: #ff5b04;
+}
+
 img{
 	border: none;
 }
 
 br.nobr{
 	display: none;
+}
+
+h2.formHead{
+	font-size: 100%;
+	margin: 2ex 0 2ex 1em;
 }
 
 /* Permet d'insérer un texte signifiant lorsqu'on utilise une image en bg (par ex)*/
@@ -678,3 +687,35 @@ table.statistics td{
 table.statistics td.empty{
 	border: 0;
 }
+
+/* Index and persons entries */
+
+
+
+#entries{
+	margin: 0 0 0 2em;
+}
+
+#entries ul, #entries li{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#entries ul li{
+	font-size: 12px;
+	margin: 2ex 0 0 0;
+	position: relative;
+}
+
+#entries li.level0{
+	border-bottom: 1px solid #aaa;
+	padding-bottom: 2ex;
+}
+
+#entries ul li div.actions{
+	position: absolute;
+	left: 50%;
+	top: 0;
+}
+

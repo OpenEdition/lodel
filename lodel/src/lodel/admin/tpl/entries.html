@@ -29,6 +29,8 @@
 <title>[@ADMIN.ADMINISTRATE_ENTRY_BY] [#TYPE.TITLE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
+
+
 <ul id="entitiesPath">
 	<li>
 	<strong>[@ADMIN.ADMINISTRATE_ENTRY_BY]</strong>
@@ -50,40 +52,29 @@
 	<a href="index.php?do=view&amp;lo=entries&amp;idtype=[#TYPE.ID]">[@ADMIN.ADD_ENTRY]</a>
 	</li>
 </ul>
-<br />
-<?php  $context[margin]=0; # initialise la marge ?>
-
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-<tr>
-	<td class="texte_noir_gras">[@COMMON.ENTRY]</td>
-	<td>&nbsp;</td>
-	<td class="texte_noir_gras">[@ADMIN.PERMANENT] ?</td>
-</tr>
-
-<LOOP NAME="listentrees" TABLE="entries" ORDER="[#TYPE.SORT]" WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" WHERE="status gt -64">
-	<DO>
-		<tr>
-			<td class="ligne_admin2">[#BARRE]<span style="margin-left: [#MARGIN]px;">[#REP][(#G_NAME|nbsp)]</span></td>
-			<td class="ligne_admin2" style="color: #CC9933;" align="right">
-				<div>
-
+<h2 class="formHead">[#TYPE.TITLE]</h2>
+<div id="entries">
+	<LET VAR="IDREC">0</LET>
+	<LOOP NAME="entries" TABLE="entries" WHERE="idtype='[#TYPE.ID]' AND idparent='[#IDREC]'" ORDER="[#TYPE.SORT]">
+	<BEFORE><ul></BEFORE>
+		<DO>
+			<li class="level[#IDPARENT]">
+				[#BARRE][#G_NAME|nbsp]
+				<div class="actions">
 				<IF COND="[#TYPE.SORT]=='rank'">
-	          		<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+	          			<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
 				</IF>
-				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				</div>
-			</td>
-			<td class="ligne_admin2" style="color: #CC9933;" align="center">
-				[#STATUS]
-			</td>
-		</tr>
-        <?php $context['margin']+=10; ?> <!--[ incrément de la marge ]-->
-        <LET VAR="BARRE">[#BARRE]|</LET>
-		<LOOP NAME="listentrees"></LOOP>
-	</DO>
-</LOOP>
-</table>
-
+			<LET VAR="IDREC">[#ID]</LET>
+			<LET VAR="BARRE">[#BARRE]&nbsp;|&nbsp;</LET>
+			<LOOP NAME="entries"></LOOP>
+			</li>
+			
+		</DO>
+	<AFTER></ul></AFTER>
+	</LOOP>
+</div>
 <MACRO NAME="OK_TOINDEX">
 
 <MACRO NAME="CLOSE_HTML">
