@@ -46,12 +46,13 @@ form.entry{
 
 a:link{
 	text-decoration: none;
-	color: #CC9933;
+	border-bottom: 1px dotted #aaa;
+	color: #0e2d7c;
 }
 
 a:visited{
 	text-decoration: none;
-	color: #CC9933;
+	color: #0e2d7c;
 }
 
 img{
@@ -415,7 +416,7 @@ div.advancedFunc #addEntity select{
 }
 
 #listEntities li.line1{
-	background: #fdfaf1;
+	background: #f2f5fa;
 }
 
 #listEntities li.line2{
@@ -443,6 +444,10 @@ div.advancedFunc #addEntity select{
 *>#listEntities>*>div.action{
 	top: 0;
 	margin: -3.5ex 1em 0 0;
+}
+
+div.action a{
+	color: #f87b39;
 }
 
 #listEntities div.document{
