@@ -42,52 +42,52 @@
 
 	<LOOP NAME="classe" TABLE="classes" WHERE="classtype='entities' AND status gt 0" ORDER="rank">
 	<DO>	
-		<p><MACRO NAME="DISPLAY_ALTERTITLE"></p>
 		<LOOP NAME="type" TABLE="types" WHERE="status gt 0" WHERE="class='[#CLASS]'" ORDER="rank">
 		<BEFORE>
-			<table class="table_normale" border="0" cellspacing="0" cellpadding="2">
+			<table class="statistics">
+				<caption><MACRO NAME="DISPLAY_ALTERTITLE"></caption>
 			<tr>
-				<td></td>
-				<td align="center"><img src="[#SHAREURL]/images/statut_publie.png" alt="[@COMMON.PUBLISHED]" title="[@COMMON.PUBLISHED]"/></td>
-				<td align="center"><img src="[#SHAREURL]/images/statut_pret.png" alt="[@COMMON.READY_FOR_PUBLICATION]" title="[@COMMON.READY_FOR_PUBLICATION]" /></td>
-				<td align="center"><img src="[#SHAREURL]/images/statut_brouillon.png" alt="[@COMMON.DRAFT]" title="[@COMMON.DRAFT]" /></td>
-				<td align="center"><img src="[#SHAREURL]/images/statut_protege.png" alt="[@COMMON.PROTECTED]" title="[@COMMON.PROTECTED]" /></td>
+				<td class="empty">&nbsp;</td>
+				<th class="status"><img src="[#SHAREURL]/images/statut_publie.png" alt="[@COMMON.PUBLISHED]" title="[@COMMON.PUBLISHED]"/></td>
+				<th class="status"><img src="[#SHAREURL]/images/statut_pret.png" alt="[@COMMON.READY_FOR_PUBLICATION]" title="[@COMMON.READY_FOR_PUBLICATION]" /></td>
+				<th class="status"><img src="[#SHAREURL]/images/statut_brouillon.png" alt="[@COMMON.DRAFT]" title="[@COMMON.DRAFT]" /></td>
+				<th class="status"><img src="[#SHAREURL]/images/statut_protege.png" alt="[@COMMON.PROTECTED]" title="[@COMMON.PROTECTED]" /></td>
 			</tr>
 		</BEFORE>
 		<DO>
 		<LET VAR="curtotal"></LET>
 		<tr>
-			<td width="100"><MACRO NAME="DISPLAY_ALTERTITLE"></td>
+			<th class="type"><MACRO NAME="DISPLAY_ALTERTITLE"></th>
 			<LOOP NAME="docpub" TABLE="entities" WHERE="status =1" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
-				<td align="center">[#NBRESULTS]</td>
+				<td>[#NBRESULTS]</td>
 			</BEFORE>
 			<ALTERNATIVE>
-				<td align="center">0</td>
+				<td>0</td>
 			</ALTERNATIVE>
 			</LOOP>
 			<LOOP NAME="docnonpub" TABLE="entities" WHERE="status = -1" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
 				
-				<td align="center">[#NBRESULTS]</td></BEFORE>
+				<td>[#NBRESULTS]</td></BEFORE>
 			<ALTERNATIVE>
-				<td align="center">0</td>
+				<td>0</td>
 			</ALTERNATIVE>
 			</LOOP>
 			<LOOP NAME="docbrouillon" TABLE="entities" WHERE="status = -8" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
 			
-			<td align="center">[#NBRESULTS]</td></BEFORE>
+			<td>[#NBRESULTS]</td></BEFORE>
 			<ALTERNATIVE>
-				<td align="center">0</td>
+				<td>0</td>
 			</ALTERNATIVE>
 			</LOOP>
 			<LOOP NAME="docprotege" TABLE="entities" WHERE="status = 8" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
 			
-				<td align="center">[#NBRESULTS]</td></BEFORE>
+				<td>[#NBRESULTS]</td></BEFORE>
 			<ALTERNATIVE>
-				<td align="center">0</td>
+				<td>0</td>
 			</ALTERNATIVE>
 			</LOOP>
 			
