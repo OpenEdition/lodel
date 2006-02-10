@@ -53,26 +53,17 @@
 	</IF>
 	</li>
 </ul>
-<br />
+<h2 class="formHead">[#TYPE.TITLE]</h2>
 
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-<tr>
-	<td class="texte_noir_gras">[@ADMIN.NAME]</td>
-	<td>&nbsp;</td>
-</tr>
+<div id="entries">
 <LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64">
+	<BEFORE><ul></BEFORE>
 	<DO>
-		<tr>
-			<td class="ligne_admin2">[#G_FIRSTNAME] [#G_FAMILYNAME]</span></td>
-			<td class="ligne_admin2" style="color: #CC9933;" align="right">
-				<div>
-				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				</div>
-			</td>
-		</tr>
+		<li>[#G_FIRSTNAME] [#G_FAMILYNAME]<div class="actions"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
 	</DO>
+	<AFTER></ul></AFTER>
 </LOOP>
-</table>
+</div>
 
 <MACRO NAME="OK_TOINDEX">
 
