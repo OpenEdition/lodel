@@ -171,6 +171,10 @@ fieldset label.persons, fieldset label.entries, fieldset label.mltext{
 
 fieldset.formButtons{
 	text-align: right;
+	border: 0;
+	background: transparent;
+	width: auto;
+	margin: 2ex 2em 0 0;
 }
 
 fieldset span.error{
@@ -703,7 +707,7 @@ table.statistics td.empty{
 }
 
 #entries ul li{
-	font-size: 12px;
+	font-size: 11px;
 	margin: 2ex 0 0 0;
 	position: relative;
 }
