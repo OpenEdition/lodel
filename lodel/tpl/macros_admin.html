@@ -119,7 +119,7 @@
 	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span><span class="sep">&nbsp;|&nbsp;</span>
        <ELSE/>
 	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="inactif">[@COMMON.DELETE] <!--[([#LO|isdeletelocked([#ID],[#STATUS])])]--></span><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="inactif">[@COMMON.DELETE] ([#LO|isdeletelocked([#ID],[#STATUS])])])</span><span class="sep">&nbsp;|&nbsp;</span>
 	  <ELSE/>
 	  <a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a><span class="sep">&nbsp;|&nbsp;</span>
 	  </IF>
