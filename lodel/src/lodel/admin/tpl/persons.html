@@ -59,7 +59,7 @@
 <LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64">
 	<BEFORE><ul></BEFORE>
 	<DO>
-		<li>[#G_FIRSTNAME] [#G_FAMILYNAME]<div class="actions"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
+		<li class="level0">[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span><div class="actions"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
 	</DO>
 	<AFTER></ul></AFTER>
 </LOOP>
