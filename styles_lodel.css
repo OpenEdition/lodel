@@ -719,3 +719,7 @@ table.statistics td.empty{
 	top: 0;
 }
 
+#entries ul li .barre{
+	color: #ff5b04;
+}
+

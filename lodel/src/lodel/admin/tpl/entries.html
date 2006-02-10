@@ -59,7 +59,8 @@
 	<BEFORE><ul></BEFORE>
 		<DO>
 			<li class="level[#IDPARENT]">
-				[#BARRE][#G_NAME|nbsp]
+				<IF COND="[#BARRE]"><span class="barre">[#BARRE]&nbsp;</span></IF>
+				[#G_NAME|nbsp]
 				<div class="actions">
 				<IF COND="[#TYPE.SORT]=='rank'">
 	          			<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
@@ -67,7 +68,7 @@
 				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				</div>
 			<LET VAR="IDREC">[#ID]</LET>
-			<LET VAR="BARRE">[#BARRE]&nbsp;|&nbsp;</LET>
+			<LET VAR="BARRE">[#BARRE]&gt;</LET>
 			<LOOP NAME="entries"></LOOP>
 			</li>
 			
