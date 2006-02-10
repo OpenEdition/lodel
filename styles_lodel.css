@@ -731,3 +731,7 @@ table.statistics td.empty{
 	color: #ff5b04;
 }
 
+.familyName{
+	font-variant: small-caps;
+}
+
