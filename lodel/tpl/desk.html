@@ -191,12 +191,32 @@ body{
 	font-size: 11px;
 }
 
-#lodel-desk div.infos{
+#lodel-desk table.infos{
 	position: absolute;
-	right: .5em;
-	top: 1ex;
-	width: 40%;
-	text-align: right;
+	right: 0;
+	top: 0;
+	/*width: 40%;*/
+	font-size: 90%;
+	border: 0;
+	border-collapse: collapse;
+}
+
+#lodel-desk table.infos td, #lodel-desk table.infos th{
+	border: 1px solid #aaa;
+	background: #f2f5fa;
+	padding: 0 .5ex 0 .5ex;
+	vertical-align: middle;
+	height: 15px;
+}
+
+#lodel-desk table.infos th{
+	text-align: left;
+	background: #e0e7f2;
+}
+
+#lodel-desk table.infos td select{
+	border: 1px solid #aaa;
+	font: normal 90% verdana, sans-serif; 
 }
 
 
@@ -378,52 +398,50 @@ body{
 		<!--[ Emplacement de la barre d'actions lors visualisation ]-->
 	</IF>
 
-	<div class="infos">
-	<strong>Lodel [@COMMON.VERSION] [#VERSION]</strong><br />
-	<IF COND="[#CHARSET] != 'utf-8'">
- 	<span class="alert">[@COMMON.CHARSET] : [#CHARSET].</span>
-	</IF>
-	<!--[<IF COND="[#TEMPLATESRECOMPILES]">
-	[@COMMON.MODIFIED_TEMPLATES] : [#TEMPLATESRECOMPILES]
-	</IF>]-->
-	<!--[<span class="texte_petit">Publication : </span>]-->
+	<table class="infos">
+	<tr>
 	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
+		<BEFORE>
+		<th>[@COMMON.SITE]</th>
+		</BEFORE>
 		<DO>
-		<strong>[#NAME]</strong>
+		<td>[#NAME]</td>
 		</DO>
 	</LOOP>
-	<br />
+	</tr>
+	<th>[@COMMON.USER]</th>
+	<td>[#LODELUSER.NAME] <em>(
 	<IF COND="[#LODELUSER.ADMINLODEL]">
-		<MACRO NAME="PNG_UTILISATEUR_ORANGE">
-		[@COMMON.USER_ADMIN_LODEL]&nbsp;:&nbsp;
+		[@COMMON.USER_ADMIN_LODEL]
 	<ELSE/>
 		<IF COND="[#LODELUSER.ADMIN]">
-			<MACRO NAME="PNG_UTILISATEUR_ORANGE">
-			 [@COMMON.USER_ADMIN]&nbsp;:&nbsp;
+			 [@COMMON.USER_ADMIN]
 		<ELSE/>
 			<IF COND="[#LODELUSER.EDITOR]">
-				<MACRO NAME="PNG_UTILISATEUR_JAUNE">
-				[@COMMON.USER_EDITOR]&nbsp;:&nbsp;
+				[@COMMON.USER_EDITOR]
 			<ELSE/>
 				<IF COND="[#LODELUSER.REDACTOR]">
-					<MACRO NAME="PNG_UTILISATEUR_VERT"> [@COMMON.USER_WRITER]&nbsp;:&nbsp;
+					[@COMMON.USER_WRITER]
 				<ELSE/>
 					<IF COND="[#LODELUSER.VISITOR]">
-						<MACRO NAME="PNG_UTILISATEUR_GRIS">
-					 [@COMMON.USER_VISITOR]&nbsp;:&nbsp;
+					 	[@COMMON.USER_VISITOR]
 					</IF>
 				</IF>
 			</IF>
 		</IF>
 	</IF>
-	<span class="texte_petit"><strong>[#LODELUSER.NAME]</strong></span>&nbsp;
-	<br />
+	)</em>
+	</td>
+	<tr>
 	<!-- [ La langue ]-->
-	<span class="texte_petit"><strong>[@COMMON.INTERFACE_LANGUAGE]</strong></span>&nbsp;
-	<select title="[@COMMON.SELECT_AN_ITEM_TO_CHANGE_THE_LANGUAGE_USED]" class="texte_petit" onchange="change_language(this)">
+	<th>[@COMMON.INTERFACE_LANGUAGE]</th>
+	<td>
+	<select title="[@COMMON.SELECT_AN_ITEM_TO_CHANGE_THE_LANGUAGE_USED]" onchange="change_language(this)">
 		<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
-		<IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		<IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected="selected"><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
 		</LOOP>
 	</select>
-	</div>
+	</td>
+	</tr>
+	</table>
 </div>
