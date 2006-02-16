@@ -126,7 +126,7 @@ ln index.php
 ln tpl/edition.html
 
 # le dashboard
-ln tpl/dashboard.html
+#ln tpl/dashboard.html
 ln tpl/dashboard_queue.html
 ln tpl/dashboard_statistics.html
 ln tpl/dashboard_history.html
