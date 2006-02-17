@@ -269,9 +269,11 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			// nothing...
 		} elseif ($obj->type=="mltext") {
 			$lang=$obj->lang ? $obj->lang : $GLOBALS['lodeluser']['lang'];
-			$this->_currentcontext['data'][$obj->name][$lang].=addslashes ($data);
+			//$this->_currentcontext['data'][$obj->name][$lang].=addslashes ($data);
+			$this->_currentcontext['data'][$obj->name][$lang].=$data;
 		} elseif ($obj->style[0]!=".") {
-			$this->_currentcontext['data'][$obj->name].=addslashes ($data);
+			//$this->_currentcontext['data'][$obj->name].=addslashes ($data);
+			$this->_currentcontext['data'][$obj->name].=$data;
 		}
 		return $data;
 	}
@@ -280,7 +282,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	{
 		foreach (preg_split ("/<\/p>/", $data) as $data2) {
 			foreach (preg_split ("/,/", strip_tags ($data2)) as $entry) {
-				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
+				//$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
+				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim ($entry));
 			}
 		}
 	}
@@ -321,8 +324,10 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						} else $name=$person;
 					}
 				}
-				$this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
-				$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
+				//$this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
+				//$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
+				$this->_currentcontext['data'][$g_name['firstname']]=trim($firstname);
+				$this->_currentcontext['data'][$g_name['familyname']]=trim($name);
 			} // for each person
 		}
   }
