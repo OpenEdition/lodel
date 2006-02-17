@@ -181,7 +181,7 @@ function myquote (&$var)
     return $var=addslashes(stripslashes($var));
   }
 }
-
+*/
 function myaddslashes (&$var)
 {
   if (is_array($var)) {
@@ -192,7 +192,7 @@ function myaddslashes (&$var)
   }
 }
 
-*/
+
 
 function myfilemtime($filename)
 
