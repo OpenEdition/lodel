@@ -130,7 +130,13 @@ class PersonsLogic extends GenericLogic
 
 		if (!$id && ($familyname || $firstname)) {
 			// search if the person exists
-			$vo=$dao->find ("g_familyname='". $familyname. "' AND g_firstname='". $firstname. "'  AND idtype='".$idtype."' AND status>-64","id,status");
+			// ajout de slashes pour le SELECT dans la base 
+			$tmpfirstname = $firstname;
+			$tmpfamilyname = $familyname;
+			myaddslashes($tmpfirstname);
+			myaddslashes($tmpfamilyname);
+			$vo=$dao->find ("g_familyname='". $tmpfamilyname. "' AND g_firstname='". $tmpfirstname. "'  AND idtype='".$idtype."' AND status>-64","id,status");
+			//$vo=$dao->find ("g_familyname='". $familyname. "' AND g_firstname='". $firstname. "'  AND idtype='".$idtype."' AND status>-64","id,status");
 			if( abs($vo->status) == 32) $context['protected'] = 1; //if protected
 			$new=false;
 		}
