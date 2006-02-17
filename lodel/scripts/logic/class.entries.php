@@ -162,8 +162,8 @@ class EntriesLogic extends GenericLogic
 		if (isset ($context['g_name'])) {
 			if (!$context['g_name']) return '_error'; // empty entry!
 			// search if the entries exists
-			$tmpgname = $context['g_name'];
-			myaddslashes($tmpgname);
+			$tmpgname = magic_addslashes($context['g_name']);
+			//magic_addslashes($tmpgname);
 			$vo = $dao->find ("g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			//$vo = $dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			if ($vo->id) {
@@ -177,8 +177,8 @@ class EntriesLogic extends GenericLogic
 		$index_key = &$context['data'][$g_index_key];
 		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
 		if ($context['lo'] == 'entries') {  // check it does not exist
-			$tmpindex_key = $index_key;
-			myaddslashes($tmpindex_key);
+			$tmpindex_key = magic_addslashes($index_key);
+			//magic_addslashes($tmpindex_key);
 			$vo=$dao->find("g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			//$vo=$dao->find("g_name='". $index_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			if ($vo->id) {
