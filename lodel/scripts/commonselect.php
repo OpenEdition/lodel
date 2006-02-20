@@ -88,9 +88,10 @@ function makeSelectUserRights($value, $adminlodel)
 }
 function makeSelectUserLevel($value)
 {
-	$arr = array( 16 => getlodeltextcontents('simple', 'common'),
-								32 => getlodeltextcontents('normal', 'common'),
-								64 => getlodeltextcontents('advanced', 'common')
+	$arr = array( INTERFACE_SIMPLE => getlodeltextcontents('simple', 'common'),
+								INTERFACE_NORMAL => getlodeltextcontents('normal', 'common'),
+								INTERFACE_ADVANCED => getlodeltextcontents('advanced', 'common'),
+								INTERFACE_DEBUG => getlodeltextcontents('debug', 'common')
 							);
 	renderOptions($arr, $value);
 }

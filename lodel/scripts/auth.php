@@ -51,6 +51,7 @@ define("LEVEL_ADMIN", 40);
 define("LEVEL_ADMINLODEL", 128);
 
 // les niveaux d'interface
+define("INTERFACE_DEBUG",128);
 define("INTERFACE_ADVANCED", 64);
 define("INTERFACE_NORMAL", 32);
 define("INTERFACE_SIMPLE", 16);
@@ -69,25 +70,26 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
  *
  * @param integer $level Le niveau de l'utilisateur. Par défaut 0
  */
-function authenticate($level = 0, $mode="")
+function authenticate($level = 0, $mode = "")
 {
 	global $context, $lodeluser;
 	global $home, $timeout, $sessionname, $site;
 	global $db;
-
+	
 	$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
 	do { // block de control
 		$name = addslashes($_COOKIE[$sessionname]);
-
 		if (!$name) {
 			break;
 		}
 		require_once "connect.php";
 		usemaindb();
+	
 		if (!($row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'")))) {
+				echo "coucou";
 			break;
 		}
-
+	
 		$GLOBALS['idsession'] = $idsession = $row['id'];
 		$GLOBALS['session'] = $name;
 
@@ -113,7 +115,6 @@ function authenticate($level = 0, $mode="")
 
 		// passe les variables en global
 		$lodeluser = unserialize($row['context']);
-
 		if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
 			header("location: login.php?error_privilege=1&". $retour);
 			exit;
