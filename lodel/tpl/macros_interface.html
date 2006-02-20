@@ -173,9 +173,15 @@
 ?>
 </DEFMACRO>
 
-<!-- [ Test Jean ]-->
+<!--[ *********************************************************** ]-->
+<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien à cause du nom de la
+	variable qui diffère.]-->
+<!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
+<!--[ Champ multilingue ]-->
 <IF COND="[#TYPE] eq 'mltext'">
   <br />
   <div id="mltext_[#VARNAME]" class="mltexteditionarea">
@@ -196,6 +202,24 @@
 	</div>
   </div>
 <br />
+</IF>
+<IF COND="[#TYPE] eq 'image'">
+	<table>
+	<tr>
+	<IF COND="[#VALUE]">
+		<td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td></IF>
+		<td>
+			<IF COND="[#VALUE]">
+				<input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
+				<input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
+			</IF>
+			<input type="radio" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
+			<a href="#" onclick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
+			<input type="radio" class="noText" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onchange="document.getElementById('[#VARNAME][radioupload]').click();" />
+		</td>
+	</tr>
+	</table>
+	<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
 </IF>
 </DEFFUNC>
 
