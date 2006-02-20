@@ -98,26 +98,61 @@
 	<table class="statistics">
 		<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
 	<tr>
-		<th class="status">[@COMMON.NAME]</th>
-		<th class="status">[@COMMON.VERSION]</th>
-	</tr>
-	<tr>
-		<td>[@COMMON.LODEL]</td><td>[#REVISION]</td>
+		<th class="type">Lodel</td><td>[#REVISION]</th>
 	</tr>
 
 	<tr>
-		<td>[@COMMON.SERVER_SOFTWARE]</td><td><?php echo $_SERVER['SERVER_SOFTWARE'];?></td>
+		<th class="type">[@COMMON.SERVER_SOFTWARE]</th><td><?php echo $_SERVER['SERVER_SOFTWARE'];?></td>
 	</tr>
 	<tr>
-		<td>[@COMMON.PHP]</td><td><?php echo phpversion();?></td>
+		<th class="type">PHP</th><td><?php echo phpversion();?></td>
 	</tr>
 	<tr>
-		<td>[@COMMON.MYSQL]</td><td><?php echo mysql_get_server_info();?></td>
+		<th class="type">MySql</th><td><?php echo mysql_get_server_info();?></td>
 	</tr>
 
 	</table>
 
 	<!--[ Tableau recapitulatif des extensions php installees ]-->
-	
+	<table class="statistics">
+		<caption>[@COMMON.PHP_EXTENSIONS]</caption>
+	<tr>
+		<th class="type">GD</th>
+		<td>
+		<?php
+		if($gdinfos = gd_info()){
+			echo "<ul>";
+			foreach($gdinfos as $k => $gdinfo){
+				if($gdinfo){
+					echo "<li>$k : $gdinfo</li>";
+				}
+			}
+			echo "</ul>";
+		}else{
+			echo "GD is not avalaible on this system.";
+		}
+		?>
+		</td>
+	</tr>
+	<tr>
+		<th class="type">mbstring</th>
+		<td>
+		<?php
+		if($mbinfos = mb_get_info(ALL)){
+			echo "<ul>";
+			foreach($mbinfos as $k => $mbinfo){
+				if($mbinfo){
+					echo "<li>$k : $mbinfo</li>";
+				}
+			}
+			echo "</ul>";
+		}else{
+			echo "Mbstring is not avalaible on this system.";
+		}
+		?>
+		</td>
+	</tr>
+
+	</table>
 
 <MACRO NAME="CLOSE_HTML">
