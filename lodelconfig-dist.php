@@ -131,6 +131,7 @@ $htaccess="on";    #
 $filemask="0770";
 $usesymlink="on";
 $installoption="";
+$locale = "fr_FR.UTF8";
 ############################################
 
 # lock les tables.
@@ -141,7 +142,7 @@ define("DONTUSELOCKTABLES",false);
 
 ############################################
 
-setlocale (LC_ALL,"fr_FR.UTF8");
+setlocale (LC_ALL,$locale);
 
 set_magic_quotes_runtime(0);
 ignore_user_abort();
