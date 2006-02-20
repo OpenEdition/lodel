@@ -1091,6 +1091,19 @@ function get_dc_fields($id, $dcfield)
 else return false;
 }
 
+// Tente de récupérer la liste des locales du système dans un tableau
+
+function list_system_locales(){
+	ob_start();
+	if(system('locale -a')){ 
+		$str = ob_get_contents();
+		ob_end_clean();
+		return split("\n", trim($str));
+	}else{
+		return FALSE;
+	}
+}
+
 // valeur de retour identifier ce script
 return 568;
 
