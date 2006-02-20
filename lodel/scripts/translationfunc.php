@@ -212,7 +212,7 @@ class XMLDB_Translations extends XMLDB
 			if (!$record['lang'] || $this->currentlang != $record['lang'])
 				return;
 			// check the textgroup is ok
-			if (!in_array($record['textgroup'], $GLOBALS['translations_textgroups'][$this->textgroups])) {
+			if (!in_array(strtolower($record['textgroup']), $GLOBALS['translations_textgroups'][$this->textgroups])) {
 				print_r($this);
 				die("ERROR: Invalid textgroup : ".$this->textgroups);
 			}
