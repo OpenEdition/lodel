@@ -359,7 +359,6 @@ class Logic
 	function validateFields(&$context, &$error) 
 	{
 		global $db;
-
 		require_once "validfunc.php";
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
@@ -375,7 +374,7 @@ class Logic
 				unset($context[$field]); // remove it
 			} else {
 				require_once 'validfunc.php';
-				$valid = validfield($context[$field], $type, "");
+				$valid = validfield($context[$field], $type, "",$field);
 				if ($valid === false) {
 					die("ERROR: \"$type\" can not be validated in logic.php");
 				}

@@ -588,58 +588,78 @@ function get_PMA_define()
  * @param    dir    If $dir is numeric it is the id of the entites. In the other case, $dir should be a temporary directory.
  *
  */
-
 function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error) 
-
 {
-
-  if ($type!="file" && $type!="image") die("ERROR: type is not a valid file type");
-  if (!$dir) die("Internal error in saveuploadedfile dir=$dir");
-  if (is_numeric($dir)) $dir="docannexe/$type/$dir";
-  if (!$file) die("ERROR: save_annex_file file is not set");
-
-  if ($type=="image") { // check this is really an image
-    if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
-      $tmpdir=tmpdir();
-      $newfile=$tmpdir."/".basename($file);
-      if ($file!=$newfile && !move_uploaded_file($file,$newfile)) die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");    
-      $file=$newfile;
+	if ($type != 'file' && $type != 'image') {
+		die("ERROR: type is not a valid file type");
+	}
+	if (!$dir) {
+		die("Internal error in saveuploadedfile dir=$dir");
+	}
+	if (is_numeric($dir)) {
+		$dir = "docannexe/$type/$dir";
+	}
+	if (!$file) {
+		die("ERROR: save_annex_file file is not set");
+	}
+	if ($type == 'image') { // check this is really an image
+		if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
+			$tmpdir = tmpdir();
+			$newfile=$tmpdir."/".basename($file);
+			if ($file != $newfile && !move_uploaded_file($file, $newfile)) {
+				die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");
+			}
+			$file = $newfile;
     }
-    if (!filesize($file)) { $error="readerror"; return; }
-    $info=getimagesize($file);
-    if (!is_array($info)) { $error="imageformat"; return; }
-    $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
-    $ext=$exts[$info[2]-1];
+		if (!filesize($file)) {
+			$error = 'readerror'; return;
+		}
+		$info = getimagesize($file);
+		if (!is_array($info)) {
+			$error = 'imageformat'; return;
+		}
+		$exts = array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
+    $ext = $exts[$info[2]-1];
+		if (!$ext) { // si l'extension n'est pas bonne
+			$error = 'imageformat'; return;
+		}
+	}
 
-    if (!$ext) { $error="imageformat"; return; }
-  } 
+	checkdocannexedir($dir);
 
-  checkdocannexedir($dir);
+	if ($type == 'image') {
+		$filename = preg_replace("/\.\w+$/", "", basename($filename)); // take only the name, remove the extensio
+		$dest = $dir. '/'. $filename. '.'. $ext;
+	} else {
+		$dest = $dir. '/'. basename($filename);
+	}
 
-  if ($type=="image") {
-    $filename=preg_replace("/\.\w+$/","",basename($filename)); // take only the name, remove the extensio
-    $dest=$dir."/".$filename.".".$ext;
-  } else {
-    $dest=$dir."/".basename($filename);
-  }
-
-  if (!copy($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the file.");
-  // and try to delete
-  if ($move) @unlink($file);
-
-  @chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
-
-  return $dest;
+	if (!copy($file, SITEROOT. $dest)) {
+		die("ERROR: a problem occurs while moving the file.");
+	}
+	// and try to delete
+	if ($move) {
+		@unlink($file);
+	}
+	@chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
+	return $dest;
 }
 
+/**
+ * Vérifie que le répertoire $dir, un répertoire de docannexe existe. Dans le cas
+ * contraire le crée
+ *
+ * @param string $dir le nom du répertoire
+ */
 function checkdocannexedir($dir)
-
 {
-  if (!file_exists(SITEROOT.$dir)) {
-    if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) die("ERROR: impossible to create the directory \"$dir\"");
-    @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
-    writefile(SITEROOT.$dir."/index.html","");
-  }
+	if (!file_exists(SITEROOT.$dir)) {
+		if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) {
+			die("ERROR: impossible to create the directory \"$dir\"");
+		}
+		@chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+		writefile(SITEROOT. $dir. '/index.html', '');
+	}
 }
 
 

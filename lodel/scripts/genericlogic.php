@@ -106,10 +106,10 @@ class GenericLogic extends Logic
 	
 				require_once "validfunc.php";
 				if ($context['class']) {
-					validfield($context['class'], "class");
+					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
 				}	elseif ($context['type']['class'])	{
-					validfield($context['type']['class'], "class");
+					validfield($context['type']['class'], 'class', '', '', 'data');
 					$class = $context['type']['class'];
 				}	else {
 					die("ERROR: internal error in loop_edition_fields");
@@ -194,10 +194,10 @@ class GenericLogic extends Logic
 		// get the fields of class
 		require_once "validfunc.php";
 		if ($context['class']) {
-			validfield($context['class'], "class");
+			validfield($context['class'], 'class', '', '', 'data');
 			$class = $context['class'];
 		}	elseif ($context['type']['class']) {
-			validfield($context['type']['class'], "class");
+			validfield($context['type']['class'], "class", '', '', 'data');
 			$class = $context['type']['class'];
 		}	else {
 			die("ERROR: internal error in loop_edition_fields");
@@ -271,7 +271,7 @@ class GenericLogic extends Logic
 				$value = trim(strip_tags($value));
 			}
 
-			$valid = validfield($value, $type, $field->default, $name);
+			$valid = validfield($value, $type, $field->default, $name, 'data');
 			if ($valid === true)	{
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {
