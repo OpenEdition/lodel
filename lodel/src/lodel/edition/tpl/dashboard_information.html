@@ -120,9 +120,9 @@
 		<th class="type">GD</th>
 		<td>
 		<?php
-		if($gdinfos = gd_info()){
+		if(function_exists("gd_info")){
 			echo "<ul>";
-			foreach($gdinfos as $k => $gdinfo){
+			foreach(gd_info() as $k => $gdinfo){
 				if($gdinfo){
 					echo "<li>$k : $gdinfo</li>";
 				}
@@ -138,9 +138,9 @@
 		<th class="type">mbstring</th>
 		<td>
 		<?php
-		if($mbinfos = mb_get_info(ALL)){
+		if(function_exists("mb_get_info")){
 			echo "<ul>";
-			foreach($mbinfos as $k => $mbinfo){
+			foreach(mb_get_info(ALL) as $k => $mbinfo){
 				if($mbinfo){
 					echo "<li>$k : $mbinfo</li>";
 				}
