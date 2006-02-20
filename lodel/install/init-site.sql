@@ -103,9 +103,10 @@ CREATE TABLE IF NOT EXISTS #_TP_relations (
 
 CREATE TABLE IF NOT EXISTS #_TP_classes (
 	id		INT UNSIGNED NOT NULL auto_increment,
+	icon VARCHAR(255) NOT NULL DEFAULT '',
 	class		VARCHAR(64) NOT NULL UNIQUE,
 	title		TINYTEXT NOT NULL,
-
+	altertitle TEXT NOT NULL DEFAULT '',
 	classtype	VARCHAR(64) NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur la class
 
@@ -254,6 +255,7 @@ CREATE TABLE IF NOT EXISTS #_TP_users_usergroups (
 
 CREATE TABLE IF NOT EXISTS #_TP_types (
 	id		INT UNSIGNED NOT NULL auto_increment,
+	icon VARCHAR(255) NOT NULL DEFAULT '',
 	type		VARCHAR(64) NOT NULL,
 	title		TINYTEXT NOT NULL,
 	altertitle	TEXT NOT NULL,		# titre multilingue
@@ -309,6 +311,7 @@ CREATE TABLE IF NOT EXISTS #_TP_characterstyles (
 
 CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	id		INT UNSIGNED NOT NULL auto_increment,
+	icon VARCHAR(255) NOT NULL DEFAULT '',
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
 	altertitle	TEXT NOT NULL,		# titre multilingue
@@ -334,6 +337,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 
 CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	id		INT UNSIGNED NOT NULL auto_increment,
+	icon VARCHAR(255) NOT NULL DEFAULT '',
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
