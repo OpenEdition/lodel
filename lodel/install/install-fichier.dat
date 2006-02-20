@@ -131,6 +131,7 @@ ln tpl/dashboard_queue.html
 ln tpl/dashboard_statistics.html
 ln tpl/dashboard_history.html
 ln tpl/dashboard_public_history.html
+ln tpl/dashboard_information.html
 #ln tpl/dashboard_rssreader.html
 
 
