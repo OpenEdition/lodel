@@ -208,7 +208,8 @@ class EntryTypesLogic extends Logic
 	 */
 	function _publicfields() 
 	{
-		return array('type' => array('type', '+'),
+		return array('icon' => array('image', ''),
+									'type' => array('type', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
