@@ -262,7 +262,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
 				$files[$name]['size']['upload'] = $_FILES['data']['size'][$name]['upload'];
 				$files[$name]['name']['upload'] = $_FILES['data']['name'][$name]['upload'];
 			}
-			print_r($files);
+			#print_r($files);
 			// look for an error ?
 			if (!$files || $files[$name]['error']['upload'] != 0 || !$files[$name]['tmp_name']['upload'] || $files[$name]['tmp_name']['upload'] == "none") {
 				unset ($text);
