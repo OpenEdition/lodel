@@ -40,25 +40,84 @@
 		<li><FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]"></li>
 	</ul>
 
-			<table class="statistics">
-				<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
-			<tr>
-				<th class="status">[@COMMON.NAME]</th>
-				<th class="status">[@COMMON.VERSION]</th>
-			</tr>
-			<tr>
-				<td>[@COMMON.LODEL]</td><td>[#REVISION]</td>
-			</tr>
+	<!--[ Tableau recapitulatif des infos du site ]-->
+	<table class="statistics">
+		<caption>[@COMMON.SITE_INFOS]</caption>
+	<tr>
+		<th class="type">[@COMMON.SITE_SHORT_NAME]</th><td>[#SITE]</td>
+	</tr>
 
-			<tr>
-				<td>[@COMMON.SERVER_SOFTWARE]</td><td><?php echo $_SERVER['SERVER_SOFTWARE'];?></td>
-			</tr>
-			<tr>
-				<td>[@COMMON.PHP]</td><td><?php echo phpversion();?></td>
-			</tr>
-			<tr>
-				<td>[@COMMON.MYSQL]</td><td><?php echo mysql_get_server_info();?></td>
-			</tr>
+	<tr>
+		<th class="type">[@COMMON.SITE_LONG_NAME]</th>
+		<td>
+		<LOOP NAME="get_long_name" TABLE="sites" WHERE="name = '[#SITE]' AND status GT 0">
+			[#TITLE]
+		</LOOP> 
+		</td>
+	</tr>
+	<tr>
+		<th class="type">[@COMMON.CHARSET]</th><td>[#CHARSET]</td>
+	</tr>
+	<tr>
+		<th class="type">[@COMMON.INSTALL_LANG]</th>
+		<td>
+		<?php  echo $GLOBALS['installlang']; ?>
+		</td>
+	</tr>
+</table>
 
-			</table>
+<table class="statistics">
+		<caption>[@COMMON.SYSTEM_INFOS]</caption>
+	<tr>
+		<th class="type">[@COMMON.CURRENT_LOCALE]</th>
+		<td>
+		<?php  
+			echo $GLOBALS['locale'].'&nbsp;'; 
+		?>
+		</td>
+	</tr>
+
+	<tr>
+		<th class="type">[@COMMON.LOCALES_ON_SYSTEM]</th>
+		<td>
+		<?php  
+		if($locales = list_system_locales()){
+			echo "<ul>\n";
+			foreach($locales as $loc){
+				echo strtolower($loc) == strtolower($GLOBALS['locale']) ? "<li><strong>".utf8_encode($loc)."</strong></li>" : "<li>".utf8_encode($loc)."</li>\n";
+			}
+			echo "</ul>\n";
+		}
+		?>
+		</td>
+	</tr>
+</table>
+
+
+	<!--[ Tableau recapitulatif des versions software ]-->
+	<table class="statistics">
+		<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
+	<tr>
+		<th class="status">[@COMMON.NAME]</th>
+		<th class="status">[@COMMON.VERSION]</th>
+	</tr>
+	<tr>
+		<td>[@COMMON.LODEL]</td><td>[#REVISION]</td>
+	</tr>
+
+	<tr>
+		<td>[@COMMON.SERVER_SOFTWARE]</td><td><?php echo $_SERVER['SERVER_SOFTWARE'];?></td>
+	</tr>
+	<tr>
+		<td>[@COMMON.PHP]</td><td><?php echo phpversion();?></td>
+	</tr>
+	<tr>
+		<td>[@COMMON.MYSQL]</td><td><?php echo mysql_get_server_info();?></td>
+	</tr>
+
+	</table>
+
+	<!--[ Tableau recapitulatif des extensions php installees ]-->
+	
+
 <MACRO NAME="CLOSE_HTML">
