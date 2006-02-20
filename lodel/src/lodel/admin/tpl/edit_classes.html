@@ -38,70 +38,77 @@
 	</tr>
 </table>
 
-<form method="post" name="forms_class" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
+<form method="post" enctype="multipart/form-data" name="forms_class" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="classes">
-<input type="hidden" name="id" value="[#ID]">
-<LOOP NAME="fielderror" FIELD="id">
-  <a id="id"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-  </span>
-</LOOP>
-<label for="class">[@ADMIN.NAME]<span class="optional">(*)</span> : 
+<fieldset>
+  <legend>[@ADMIN.CLASS_FIELDSET_GENERAL]</legend>
+  <input type="hidden" name="id" value="[#ID]">
+  <LOOP NAME="fielderror" FIELD="id">
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
+  </LOOP>
+  <label for="icon">[@ADMIN.ICON] : 
 		</label>
-<br class="nobr">
-<input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
-<LOOP NAME="fielderror" FIELD="class">
-  <a id="class"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
-  </span>
-</LOOP>
-<br />
-<input type="hidden" name="classtype" value="[#CLASSTYPE]">
-<LOOP NAME="fielderror" FIELD="classtype">
-  <a id="classtype"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-  </span>
-</LOOP>
-<label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
+  <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span> : 
 		</label>
-<br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-<LOOP NAME="fielderror" FIELD="title">
-  <a id="title"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
-  </span>
-</LOOP>
-<br />
-<label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
+  <br class="nobr">
+  <input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
+  <LOOP NAME="fielderror" FIELD="class">
+    <a id="class"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <input type="hidden" name="classtype" value="[#CLASSTYPE]">
+  <LOOP NAME="fielderror" FIELD="classtype">
+    <a id="classtype"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
+  </LOOP>
+  <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
 		</label>
-<br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
-<label for="protected">[@ADMIN.PROTECTED_DATAFIELD] : 
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <LOOP NAME="fielderror" FIELD="title">
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
 		</label>
-<br class="nobr">
-<IF COND="abs([#STATUS]) ge 32">
-  <input type="checkbox" name="protected" id="protected" checked>
-  <ELSE/>
-  <input type="checkbox" name="protected" id="protected">
-</IF>
-<LOOP NAME="fielderror" FIELD="protected">
-  <a id="protected"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
-  </span>
-</LOOP>
-<br />
-<label for="comment">[@ADMIN.COMMENT] : 
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
+  <label for="protected">[@ADMIN.PROTECTED_DATAFIELD] : 
 		</label>
-<br class="nobr">
-<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-<LOOP NAME="fielderror" FIELD="comment">
-  <a id="comment"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
-  </span>
-</LOOP>
-<br />
+  <br class="nobr">
+  <IF COND="abs([#STATUS]) ge 32">
+    <input type="checkbox" name="protected" id="protected" checked>
+    <ELSE/>
+    <input type="checkbox" name="protected" id="protected">
+  </IF>
+  <LOOP NAME="fielderror" FIELD="protected">
+    <a id="protected"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="comment">[@ADMIN.COMMENT] : 
+		</label>
+  <br class="nobr">
+  <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
+  <LOOP NAME="fielderror" FIELD="comment">
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+</fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
 	<MACRO NAME="EDIT_SUBMIT_BAR">
