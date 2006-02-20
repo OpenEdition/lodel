@@ -271,11 +271,6 @@ body{
 	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" >[@COMMON.ADMINISTRATIONLODEL]</a>
 	</li>
 	</IF>
-	<li>
-	<a href="[#SITEROOT]lodel/edition/?page=information"  title="[@COMMON.INFORMATION]">
-	[@COMMON.INFORMATION]
-	</a>
-	</li>
 	</ul>
 
 	<IF COND="![#SITE]">
@@ -365,16 +360,16 @@ body{
 		<IF COND="[#CURRENTURL|strpos('dashboard')]">
 			<li>
 			<IF COND="[#CURRENTURL|strpos('queue')]">
-				<strong>[@EDITION.QUEUE]</strong>
+				<strong>[@COMMON.QUEUE]</strong>
 			<ELSE/>
-				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@EDITION.QUEUE_DESCRIPTION]">[@EDITION.QUEUE]</a>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.QUEUE_DESCRIPTION]">[@COMMON.QUEUE]</a>
 			</IF>
 			</li>
 			<li>
 			<IF COND="[#CURRENTURL|strpos('history')] AND ![#CURRENTURL|strpos('public_history')]">
-				<strong>[@EDITION.HISTORY]</strong>
+				<strong>[@COMMON.HISTORY]</strong>
 			<ELSE/>
-				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@EDITION.HISTORY_DESCRIPTION]">[@EDITION.HISTORY]</a>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@COMMON.HISTORY_DESCRIPTION]">[@COMMON.HISTORY]</a>
 			</IF>
 			</li>
 			<li>
@@ -387,11 +382,20 @@ body{
 
 			<li>
 			<IF COND="[#CURRENTURL|strpos('statistics')]">
-				<strong>[@EDITION.STATISTICS]</strong>
+				<strong>[@COMMON.STATISTICS]</strong>
 			<ELSE/>
-				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@EDITION.STATISTICS_DESCRIPTION]">[@EDITION.STATISTICS]</a>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.STATISTICS_DESCRIPTION]">[@COMMON.STATISTICS]</a>
 			</IF>
 			</li>
+
+			<li>
+			<IF COND="[#CURRENTURL|strpos('information')]">
+				<strong>[@COMMON.INFORMATION]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
+			</IF>
+			</li>
+
 		</IF>
 	</ul>
 	<IF COND="[#ID] AND ![#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('admin')]">
