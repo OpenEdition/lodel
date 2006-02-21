@@ -182,12 +182,6 @@
         required="true"
         primaryKey="true"
         autoIncrement="true" />
-<column name="icon"
-				type="VARCHAR"
-				size="255"
-				description="icone de la classe"
-				label="[@ADMIN.ICON]"
-				edittype="image" />
 <column name="class"
         type="VARCHAR"
         size="64"
@@ -694,11 +688,11 @@
 				type="MEDIUMTEXT"
 				edittype="longtext"
 				/>
-<!--column name="photo"
+<column name="photo"
 				label="[@ADMIN.PHOTO]"
 				type="image"
 				edittype="image"
-				/-->
+				/>
 <column name="professional_website"
 				label="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"
 				type="VARCHAR"
@@ -865,12 +859,6 @@
         required="true"
         primaryKey="true"
         autoIncrement="true" />
-<column name="icon"
-				type="VARCHAR"
-				size="255"
-				description="icone du type"
-				label="[@ADMIN.ICON_TYPE]"
-				edittype="image" />
 <column name="type"
         type="VARCHAR"
         size="64"
@@ -1098,12 +1086,6 @@
         required="true"
         primaryKey="true"
         autoIncrement="true" />
-<column name="icon"
-				type="VARCHAR"
-				size="255"
-				description="icone de la classe"
-				label="[@ADMIN.ICON_PERSON_TYPE]"
-				edittype="image" />
 <column name="type"
         type="VARCHAR"
         size="64"
@@ -1200,12 +1182,6 @@
         required="true"
         primaryKey="true"
         autoIncrement="true" />
-<column name="icon"
-				type="VARCHAR"
-				size="255"
-				description="icone de la classe"
-				label="[@ADMIN.ICON_INDEX_TYPE]"
-				edittype="image" />
 <column name="type"
         type="VARCHAR"
         size="64"
