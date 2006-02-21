@@ -1,3 +1,13 @@
+function displayObj(item, obj){
+	var obj = document.getElementById(obj);
+	if(obj.className == "displayOff"){
+		obj.className = "displayOn"
+	}else{
+		obj.className = "displayOff"
+	}
+}
+
+
 
 function showFocus(obj) {  
 	document.getElementById(obj).className = "focusOn";
