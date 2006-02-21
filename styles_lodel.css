@@ -99,45 +99,16 @@ h2.formHead{
 	margin: 0;
 }
 
-/* Search engine form*/
+/* Search engine form */
 
 #searchform{
-	margin: 0;
-	width: 100%;
-	font-size: 80%;
+	margin: 3ex 0 0 0;
 }
 
-#searchform fieldset{
-	border: none;
-	width: auto;
-	background: #fff;
+#searchform input.button{
+	display: block;
+	margin-top: 1ex;
 }
-
-#searchform fieldset.searchfieldset{
-	padding: 1ex .5em !important;
-	border: 1px solid #7EA463;
-	margin: 0;
-}
-
-#searchform fieldset select{
-	font-size: 100%;
-	width: 150px;
-}
-
-#searchform .searchfields{
-	font-size : x-small;
-	border : 1px solid gray;
-}
-
-#searchform input.searchbutton{
-	font-size : x-small;
-}
-
-#searchform .searchnoresults{
-	margin-left : 25px ;
-	margin-top : 50px;
-}
-
 
 /* Formulaires */
 
@@ -150,6 +121,11 @@ fieldset, dl.entries{
 	font-size: 90%;
 }
 
+fieldset fieldset{
+	width: auto;
+	font-size: 100%;
+}
+
 fieldset legend{
 	padding: 0 .5em .2ex .5em;
 	font-weight: bold;
@@ -157,6 +133,16 @@ fieldset legend{
 	background: #fff;
 	border: 1px solid #cecece;
 }
+
+fieldset fieldset legend{
+	width: auto;
+	font-size: 100%;
+	margin-bottom: 1ex;
+	border: none;
+	margin-left: -1em;
+	background: transparent;
+}
+
 
 fieldset label{
 	margin: 2ex 0 .5ex 0;
@@ -233,7 +219,7 @@ div.add{
 	margin: 2ex 2em 0 0;
 }
 
-div.oneItem, div.displayfield{
+.oneItem, div.displayfield, fieldset fieldset{
 	background: #fff;
 	padding: 0 1em 2ex 1em;
 	border: 1px solid #cecece;
@@ -290,7 +276,7 @@ dl.entries dd.actions{
 	margin: 0;
 }
 
-#entitiesPath a, #entitiesPath .queryText, #actionsOnEntitiesPath a{
+#entitiesPath a, #entitiesPath .queryText, #actionsOnEntitiesPath a, a.action{
 	color: #ff5b04;
 }
 
@@ -342,7 +328,6 @@ dl.entries dd.actions{
 
 #addEntity{
 	min-height: 3.5ex;
-	max-height: auto;
 	background: #e0e7f2;
 	padding-top: .8ex;
 }
@@ -734,4 +719,13 @@ table.statistics td.empty{
 .familyName{
 	font-variant: small-caps;
 }
+
+.displayOff{
+	display: none;
+}
+
+.displayOn{
+	display: block;
+}
+
 

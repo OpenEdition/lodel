@@ -753,64 +753,53 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 
 <form id="searchform" action="search.php" method="get">
 <fieldset>
-<input class="searchfields" type="text" name="query" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
-<input class="searchbutton" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@EDITION.BUTTON_REFINE_YOUR_SEARCH]<ELSE/>[@EDITION.BUTTON_SEARCH]</IF>" />
-<a href="#" onclick="if(document.getElementById('advanced_search').style.display=='none'){document.getElementById('advanced_search').style.display='inline';} else {document.getElementById('advanced_search').style.display='none';} ">
-	<span class="texte_petit">[@EDITION.SEE_ADVANCED_SEARCH]</span>
-</a>
-<div  id="advanced_search" <IF COND="![#QSTATUS] AND ![#QTYPE] AND ![#QFIELD]">style="display : none"</IF>>
-<fieldset class="searchfieldset">
+<legend>[@COMMON.SEARCH_ENGINE]</legend>
+<input type="text" name="query"  id="query" size="25" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
+<a href="#" onclick="displayObj(this, 'advancedFields');return false;" class="action">[@EDITION.MORE_OPTIONS]</a>
+<fieldset class="displayOff"  id="advancedFields">
 <legend>[@EDITION.ADVANCED_SEARCH]</legend>
-<select id="qnbresults" name="qnbresults" class="searchfields">
-	<option value="10" <IF COND="[#QNBRESULTS] EQ 10">selected="selected"</IF>>10 [@EDITION.RESULTS_PER_PAGE]</option>
-	<option value="20" <IF COND="[#QNBRESULTS] EQ 20">selected="selected"</IF>>20 [@EDITION.RESULTS_PER_PAGE]</option>
-	<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 [@EDITION.RESULTS_PER_PAGE]</option>
-	<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 [@EDITION.RESULTS_PER_PAGE]</option>
-</select>
-<LOOP NAME="listtypes" TABLE="types" ORDER="rank">
-<BEFORE>
-	&nbsp;[@EDITION.SEARCH_IN_TYPE]&nbsp;
-	<select  id="qtype" name="qtype" class="searchfields" <!--[onchange="updatefields(this);"]-->>
-	<option id="[#CLASS]_[#ID]" value=""> -- [@EDITION.ALL_TYPES] -- </option>
-</BEFORE>
-<DO>
-	<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#QTYPE]">selected="selected"</IF>><MACRO NAME="DISPLAY_ALTERTITLE"></option>
-</DO>
-<AFTER>
+	<label for="qnbresults">[@EDITION.RESULTS_PER_PAGE]</label>
+	<select id="qnbresults" name="qnbresults" class="searchfields">
+		<option value="10" <IF COND="[#QNBRESULTS] EQ 10">selected="selected"</IF>>10 [@EDITION.RESULTS_PER_PAGE]</option>
+		<option value="20" <IF COND="[#QNBRESULTS] EQ 20">selected="selected"</IF>>20 [@EDITION.RESULTS_PER_PAGE]</option>
+		<option value="50" <IF COND="[#QNBRESULTS] EQ 50">selected="selected"</IF>>50 [@EDITION.RESULTS_PER_PAGE]</option>
+		<option value="100" <IF COND="[#QNBRESULTS] EQ 100">selected="selected"</IF>>100 [@EDITION.RESULTS_PER_PAGE]</option>
 	</select>
-</AFTER>
-</LOOP>
-&nbsp;[@EDITION.SEARCH_IN_STATUS]&nbsp;
-<select  id="qstatus" name="qstatus" class="searchfields">
-	<option value=""> -- [@EDITION.ALL_STATUS] -- </option>
-	<option value="+16" <IF COND="[#QSTATUS] EQ 16">selected="selected"</IF>>[@COMMON.PROTECTED]</option>
-	<option value="+1" <IF COND="[#QSTATUS] EQ 1">selected="selected"</IF>>[@COMMON.PUBLISHED]</option>
-	<option value="-1" <IF COND="[#QSTATUS] EQ -1">selected="selected"</IF>>[@COMMON.READY_FOR_PUBLICATION]</option>
-	<option value="-16" <IF COND="[#QSTATUS] EQ -16">selected="selected"</IF>>[@COMMON.DRAFT]</option>
-</select>
-&nbsp;[@EDITION.SEARCH_IN_FIELD]&nbsp;
-<select id="qfield" name="qfield" class="searchfields">
-<option value=""> -- [@EDITION.ALL_FIELDS] --</option>
-<!--[<LOOP NAME="list_indexable_fields" TABLE="tablefields" SELECT="class,name,title" WHERE="weight GT 0" ORDER="class,name">
-<DO>
-	<option value="[#CLASS].[#NAME]">[#CLASS] &rarr; [#NAME|ucfirst]</option>
-</DO>
-<ALTERNATIVE>
-	[@EDITION.NO_SEARCHABLE_FIELDS]
-</ALTERNATIVE>
-</LOOP>
-]-->
-	<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>[@COMMON.TITLE]</option>
-	<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>[@COMMON.DESCRIPTION]</option>
-	<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>[@COMMON.FORMAT]</option>
-	<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>[@COMMON.LANG]</option>
-</select>
-
+	<LOOP NAME="listtypes" TABLE="types" ORDER="rank">
+	<BEFORE>
+		<label for="qtype">[@EDITION.SEARCH_IN_TYPE]</label>
+		<select  id="qtype" name="qtype" class="searchfields" <!--[onchange="updatefields(this);"]-->>
+		<option id="[#CLASS]_[#ID]" value=""> -- [@EDITION.ALL_TYPES] -- </option>
+	</BEFORE>
+	<DO>
+		<option id="[#CLASS]_[#ID]" value="[#ID]"<IF COND="[#ID] EQ [#QTYPE]">selected="selected"</IF>><MACRO NAME="DISPLAY_ALTERTITLE"></option>
+	</DO>
+	<AFTER>
+		</select>
+	</AFTER>
+	</LOOP>
+	<label for="qstatus">[@EDITION.SEARCH_IN_STATUS]</label>
+	<select  id="qstatus" name="qstatus" class="searchfields">
+		<option value=""> -- [@EDITION.ALL_STATUS] -- </option>
+		<option value="+16" <IF COND="[#QSTATUS] EQ 16">selected="selected"</IF>>[@COMMON.PROTECTED]</option>
+		<option value="+1" <IF COND="[#QSTATUS] EQ 1">selected="selected"</IF>>[@COMMON.PUBLISHED]</option>
+		<option value="-1" <IF COND="[#QSTATUS] EQ -1">selected="selected"</IF>>[@COMMON.READY_FOR_PUBLICATION]</option>
+		<option value="-16" <IF COND="[#QSTATUS] EQ -16">selected="selected"</IF>>[@COMMON.DRAFT]</option>
+	</select>
+	<label for="qfield">[@EDITION.SEARCH_IN_FIELD]</label>
+	<select id="qfield" name="qfield" class="searchfields">
+		<option value=""> -- [@EDITION.ALL_FIELDS] --</option>
+		<option value="DC.Title" <IF COND="[#QFIELD] EQ 'DC.Title'">selected="selected"</IF>>[@COMMON.TITLE]</option>
+		<option value="DC.Description" <IF COND="[#QFIELD] EQ 'DC.Description'">selected="selected"</IF>>[@COMMON.DESCRIPTION]</option>
+		<option value="DC.Format" <IF COND="[#QFIELD] EQ 'DC.Format'">selected="selected"</IF>>[@COMMON.FORMAT]</option>
+		<option value="DC.Language" <IF COND="[#QFIELD] EQ 'DC.Language'">selected="selected"</IF>>[@COMMON.LANG]</option>
+	</select>
 
 </fieldset>
-</div>
+<input class="button" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@EDITION.BUTTON_REFINE_YOUR_SEARCH]<ELSE/>[@EDITION.BUTTON_SEARCH]</IF>" />
 </fieldset>
-</form>		
+</form>	
+	
 </DEFFUNC>
 
 <DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
