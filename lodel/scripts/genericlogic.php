@@ -106,10 +106,10 @@ class GenericLogic extends Logic
 	
 				require_once 'validfunc.php';
 				if ($context['class']) {
-					validfield($context['class'], 'class', '', 'class','data');
+					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
 				}	elseif ($context['type']['class'])	{
-					validfield($context['type']['class'], 'class', '', 'class', 'data');
+					validfield($context['type']['class'], 'class', '', '', 'data');
 					$class = $context['type']['class'];
 				}	else {
 					die("ERROR: internal error in loop_edition_fields");
@@ -126,6 +126,7 @@ class GenericLogic extends Logic
 					$criteria = "idgroup='". $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
+				echo $criteria;
 				$result = $db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
 	
 				$haveresult = !empty ($result->fields);
