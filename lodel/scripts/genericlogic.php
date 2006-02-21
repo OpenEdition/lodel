@@ -98,18 +98,18 @@ class GenericLogic extends Logic
 	function viewAction(&$context, &$error)
 	{
 		// define some loop functions
-		require_once "lang.php";
+		require_once 'lang.php';
 		if(!function_exists('loop_edition_fields')) {
 			function loop_edition_fields($context, $funcname)
 			{
 				global $db, $home;
 	
-				require_once "validfunc.php";
+				require_once 'validfunc.php';
 				if ($context['class']) {
-					validfield($context['class'], 'class', '', '','data');
+					validfield($context['class'], 'class', '', 'class','data');
 					$class = $context['class'];
 				}	elseif ($context['type']['class'])	{
-					validfield($context['type']['class'], 'class', '', '', 'data');
+					validfield($context['type']['class'], 'class', '', 'class', 'data');
 					$class = $context['type']['class'];
 				}	else {
 					die("ERROR: internal error in loop_edition_fields");
