@@ -221,8 +221,7 @@ class TypesLogic extends Logic {
 	 */
 	function _publicfields() 
 	{
-		return array('icon' => array('image', ''),
-									'type' => array('type', '+'),
+		return array('type' => array('type', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
 									'class' => array('class', '+'),

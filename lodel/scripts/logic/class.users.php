@@ -242,6 +242,7 @@ class UsersLogic extends Logic
 									'userlevel' => array('select', '+'),
 									'nickname' => array('text', ''),
 									'biography' => array('longtext', ''),
+									'photo' => array('image', ''),
 									'professional_website' => array('text', ''),
 									'url_professional_website' => array('url', ''),
 									'rss_professional_website' => array('url', ''),

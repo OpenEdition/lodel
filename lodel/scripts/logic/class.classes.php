@@ -300,8 +300,7 @@ class ClassesLogic extends Logic
 	 */
 	function _publicfields() 
 	{
-		return array('icon' => array('image', ''),
-									'class' => array('class', '+'),
+		return array('class' => array('class', '+'),
 									'classtype' => array('text', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),

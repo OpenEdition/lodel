@@ -191,8 +191,7 @@ class PersonTypesLogic extends Logic
 	 */
 	function _publicfields() 
 	{
-		return array('icon' => array('image', ''),
-									'type' => array('type', '+'),
+		return array('type' => array('type', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
