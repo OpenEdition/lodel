@@ -52,7 +52,7 @@
 </table>
 
 						
-<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off" onsubmit="return checkpasswd();">
+<form method="POST" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off" onsubmit="return checkpasswd();">
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="users">
