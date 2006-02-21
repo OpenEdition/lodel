@@ -26,6 +26,7 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.TITLE_MOVE_DOCUMENT]</title>
+<MACRO NAME="JS_CONFIRM">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <MACRO NAME="CURRENT_PATH">
@@ -41,7 +42,7 @@
 				<LET VAR="id">0</LET>
 				<LOOP NAME="move_right">
 				<DO>
-					<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]">
+					<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]" onclick="return confirmation();">
 						<em>[@EDITION.BASE]</em>&nbsp;
 					</a><br />
 				</DO>
@@ -57,7 +58,7 @@
 					<!--[ on a le droit de la deplacer ici ]-->
 					<span style="margin-left: [#MARGIN]px;">
 						<IF COND="[#ID] NE [#IDDOCUMENT]">
-						<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]">
+						<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]" onclick="return confirmation();">
 							[#G_TITLE|strip_tags]&nbsp;
 						</a>
 						<ELSE/>
