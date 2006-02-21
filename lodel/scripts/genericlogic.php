@@ -126,7 +126,6 @@ class GenericLogic extends Logic
 					$criteria = "idgroup='". $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
-				echo $criteria;
 				$result = $db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
 	
 				$haveresult = !empty ($result->fields);
@@ -134,7 +133,7 @@ class GenericLogic extends Logic
 					call_user_func("code_before_$funcname", $context);
 				}
 	
-				#print_r($context);
+				print_r($context);
 				while (!$result->EOF)	{
 					$localcontext = array_merge($context, $result->fields);
 					$name = $result->fields['name'];
