@@ -103,7 +103,7 @@ class GenericLogic extends Logic
 			function loop_edition_fields($context, $funcname)
 			{
 				global $db, $home;
-	
+				print_r($context);
 				require_once 'validfunc.php';
 				if ($context['class']) {
 					validfield($context['class'], 'class', '', '','data');
@@ -114,6 +114,7 @@ class GenericLogic extends Logic
 				}	else {
 					die("ERROR: internal error in loop_edition_fields");
 				}
+				print_r($context);
 				if ($context['classtype'] == "persons")	{
 					$criteria = "class='".$class."'";
 					// degree is defined only when the persons is related to a document. Is it a hack ? A little no more...
