@@ -756,7 +756,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 <legend>[@COMMON.SEARCH_ENGINE]</legend>
 <input type="text" name="query"  id="query" size="25" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
 <a href="#" onclick="displayObj(this, 'advancedFields');return false;" class="action">[@EDITION.MORE_OPTIONS]</a>
-<fieldset class="displayOff"  id="advancedFields">
+<fieldset class="<IF COND="![#QUERY]">displayOn<ELSE />displayOff</IF>"  id="advancedFields">
 <legend>[@EDITION.ADVANCED_SEARCH]</legend>
 	<label for="qnbresults">[@EDITION.RESULTS_PER_PAGE]</label>
 	<select id="qnbresults" name="qnbresults" class="searchfields">
