@@ -155,26 +155,40 @@ class Entities_AdvancedLogic extends Logic
 		if (!rightonentity('move', $context)) {
 			die("ERROR: you don't have the right to perform this operation");
 		}
+		/**
+		 * Boucle permettant de savoir si on a le droit de déplacer l'entité IDDOCUMENT (identifiée
+		 * par son type IDTYPE) dans l'entité courante.
+		 * On teste si le type de l'entité courante peut contenir le type de l'entité ID.
+		 * On doit aussi tester si l'entité courante n'est pas un descendant de IDDOCUMENT
+		 *
+		 * @param array $context le context passé par référence
+		 * @param string $funcname le nom de la fonction
+		 */
 		function loop_move_right(&$context,$funcname)
 		{
 			static $cache,$idtypes;
 			global $db,$home;
+
+			//test1 : si le type de l'entité courante peut contenir ce type d'entité
 			if (!isset($cache[$context['idtype']])) {
+				//mise en cache du type du document
 				$idtype = $idtypes[$context['iddocument']];
 				if (!$idtype) { // get the type, we don't have it!
-					
 					$dao = &getDAO("entities");
 					$vo = $dao->getById($context['iddocument'],"idtype");
 					$idtype = $idtypes[$context['iddocument']]=$vo->idtype;
 				}
+				// récupère la condition sur les deux types testé.
 				$condition = $db->getOne(lq("SELECT condition FROM #_TP_entitytypes_entitytypes WHERE identitytype='". $idtype. "' AND identitytype2='". $context['idtype']. "'"));
 				$cache[$context['idtype']] = (boolean)$condition;
 				if ($db->errorno()) {
 					dberror();
 				}
-			} //
-
-			if ($cache[$context['idtype']]) {
+			}
+			//test2 : si l'entité courante est une descendante de l'entité IDDOCUMENT
+			require_once 'entitiesfunc.php';
+			$boolchild = isChild($context['iddocument'], $context['id']);
+			if ($cache[$context['idtype']] && $boolchild) { //si c'est ok
 				if (function_exists("code_do_$funcname")) {
 					call_user_func("code_do_$funcname", $context);
 				}
