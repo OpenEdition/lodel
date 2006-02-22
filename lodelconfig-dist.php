@@ -39,6 +39,11 @@
  * @package lodel
  */
 
+
+# Version exacte de Lodel
+$revision = "0.8";
+
+
 # Racine de lodel sur le systeme
 $pathroot="/path/to";
 
