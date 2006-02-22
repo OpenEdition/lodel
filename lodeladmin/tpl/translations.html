@@ -4,7 +4,7 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
@@ -26,14 +26,14 @@
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@LODELADMIN.TITLE_ADMINISTRATE_TRANSLATION]</title>
+<title>[@ADMIN.TITLE_ADMINISTRATE_TRANSLATION_FOR_SITE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@LODELADMIN.TITLE_ADMINISTRATE_TRANSLATION]</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_ADMINISTRATE_TRANSLATION_FOR_SITE]</td>
 	</tr>
 </table>
 <div class="ligne_ajouter_serie">
@@ -64,12 +64,12 @@
 			<td style="color: #CC9933;" align="left">
 			<div>
               			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"> |
+				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
 			</div>
 			</td>		        
 		        <td>
-		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup" SELECT="textgroup">
+		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
 		             <a href="index.php?do=list&lo=texts&textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
 		        </LOOP>
 		        </td>
@@ -80,56 +80,46 @@
 
 <hr/>
 <h1>[@LODELADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-
-       <LOOP NAME="textgroups">
-       <tr><td colspan="3" class="textgroup"><h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
-       </td></tr>
-
-	      <tr>
-		<td class="texte_noir_gras">[@COMMON.NAME]</td>
-                <LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
-                <td class="texte_noir_gras">[#LANG]</td>
-		</LOOP>
-		<td>&nbsp;</td>
-	      </tr>
-	<LOOP NAME="alltexts">
+<LOOP NAME="textgroups">
+	<h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
+	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_noir_gras">[@COMMON.NAME]</td>
+				<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
+					<td class="texte_noir_gras">[#LANG]</td>
+					<td>&nbsp;</td>
+				</LOOP>
+					
+		</tr>
+		<LOOP NAME="alltexts">
 		<DO>
 			<MACRO NAME="TR_LIST">
-				<td ><IF COND="[#CONTENTS]">[(#CONTENTS|cuttext(30))]<ELSE/>[(#NAME|strtoupper|cuttext(30))]</IF></td>
-		                <LOOP NAME="lang_and_text">
-		                        <td>
-		                            <a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">E</a>
-                                        </td>
-		                
-				<td align="right">
-					<div>
-					<a href="index.php?do=delete&lo=texts&id=[#ID]">[@COMMON.DELETE]</a> (*)
-					</div>
+			<td >
+				<IF COND="[#CONTENTS]">
+					[(#CONTENTS|cuttext(30))]
+				<ELSE/>
+					[(#NAME|strtoupper|cuttext(30))]
+				</IF>
+			</td>
+			<LOOP NAME="lang_and_text">
+				<td>
+					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">E</a>
 				</td>
-				</LOOP>
-                        </tr>
+				<td align="right">
+						<a href="index.php?do=delete&lo=texts&id=[#ID]">[@COMMON.DELETE](*)</a>
+				</td>
+			</LOOP>
+		
 		</DO>
-	</LOOP>
-        </LOOP>
-
-
-	<tr>
-		<td colspan="2" align="center">
-			<span class="texte_info">
-				(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT] &lt;TEXT&gt; [@LODELADMIN_IN_TEMPLATES].<br />
-				[@LODELADMIN.HOWTO_LITTLETEXTS].
-			</span>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
-			<form>
-				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php'">
-			</form>
-		</td>
-	</tr>
-</table>
-
+		</LOOP>
+		</table>
+</LOOP>
+<br /><br />
+<span class="texte_info">
+	(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT] &lt;TEXT&gt; [@LODELADMIN_IN_TEMPLATES].<br />
+	[@LODELADMIN.HOWTO_LITTLETEXTS].
+</span>
+<br /><br />
+<input class="form" type="button" value="[@COMMON.OK]"  onClick="javascript:window.location='index.php'">
 
 <MACRO NAME="CLOSE_HTML">
