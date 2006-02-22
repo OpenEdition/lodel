@@ -476,7 +476,14 @@
 
 <DEFMACRO NAME="ACTIONS_ON_CURRENT_PATH">
 	<ul id="actionsOnEntitiesPath">
-		<li class="entitieTitle"><LOOP NAME="getTitle" TABLE="entities" WHERE="id='[#ID]'">[#G_TITLE]</LOOP></li>
+		<li class="entitieTitle">
+			<LOOP NAME="getTitle" TABLE="entities" WHERE="id='[#ID]'">
+				[#G_TITLE]
+				<ALTERNATIVE>
+					[@EDITION.BASE]
+				</ALTERNATIVE>
+			</LOOP>
+		</li>
 		<li>
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 		</li>
@@ -686,23 +693,25 @@
 	<li><a href="../../[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
 	<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
-			<li><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
+			<IF COND="[#ID]">
+				<li><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
+			</IF>
 		</DO>
 		<ALTERNATIVE>
 			<li><span class="inactif">[@COMMON.EDIT]</span></li>
 		</ALTERNATIVE>
 	</LOOP>
-	<li>
+	
 	<LOOP NAME="getStatus0" TABLE="entities" WHERE="id = [#ID]">
-		<MACRO NAME="CHANGER_STATUS_ENTITIES">
+		<li><MACRO NAME="CHANGER_STATUS_ENTITIES"></li>
 	</LOOP>
-	</li>
+	
 <!--[	<LOOP NAME="rightonentity" ACTION="delete">
 		<DO>
 			<li><a href="#" onclick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a></li>
 		</DO>
 		<ALTERNATIVE>]-->
-			<li><span class="inactif">[@EDITION.DELETE]</span></li>
+			<!--[<li><span class="inactif">[@EDITION.DELETE]</span></li>]-->
 		<!--[</ALTERNATIVE>
 	</LOOP>]-->
 	</ul>
