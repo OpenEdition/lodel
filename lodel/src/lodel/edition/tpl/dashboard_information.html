@@ -72,6 +72,21 @@
 		?>
 		</td>
 	</tr>
+	<tr>
+		<th class="type">[@COMMON.URL_FORM]</th>
+		<td>
+		<?php  
+			echo URI; 
+		?>
+		</td>
+	</tr>
+
+	<tr>
+		<th class="type">[@COMMON.SCRIPTS_EXTENSION]</th>
+		<td>
+		[#EXTENSIONSCRIPTS]
+		</td>
+	</tr>
 
 </table>
 
@@ -99,7 +114,7 @@
 	<table class="statistics">
 		<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
 	<tr>
-		<th class="type">Lodel</td><td>[#REVISION]</th>
+		<th class="type">Lodel</th><td><?php echo $GLOBALS['revision'];?></td>
 	</tr>
 
 	<tr>
@@ -130,7 +145,7 @@
 			}
 			echo "</ul>";
 		}else{
-			echo "GD is not avalaible on this system.";
+			echo "Can't get any information about GD.";
 		}
 		?>
 		</td>
@@ -148,7 +163,7 @@
 			}
 			echo "</ul>";
 		}else{
-			echo "Mbstring is not avalaible on this system.";
+			echo "Can't get any information about mbstring.";
 		}
 		?>
 		</td>
