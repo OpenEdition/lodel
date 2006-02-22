@@ -978,6 +978,7 @@ function _indent($source, $indenter = '  ')
  */
 function _indent_xhtml($source, $indenter = '  ')
 {
+		#return $source;
 		$source = str_replace("\t","",$source);
 		// Remove all space after ">" and before "<".
 		$search = array("/>(\s)*/", "/(\s)*</");
@@ -1058,7 +1059,12 @@ function _indent_xhtml($source, $indenter = '  ')
 		$c = count($array);
 		for($i = 0 ; $i < $c ; $i++) {
 			if(preg_match("/<textarea|pre [^>]+>/",$array[$i])) {
-				$array[$i+1] = trim(str_replace("\n", "", $array[$i+1]));
+				$array[$i+1] = trim($array[$i+1]);
+				$array[$i+2] = trim($array[$i+2]);
+				$array[$i] = $array[$i].$array[$i+1].$array[$i+2];
+				unset($array[$i+1]);
+				unset($array[$i+2]);
+				$i = $i+3;
 			}	elseif(!preg_match("/<script|style [^>]+>/",$array[$i])) {
 				// si c'est pas une balise script ou style
 				$array[$i+1] = str_replace("\n", "", $array[$i+1]);
