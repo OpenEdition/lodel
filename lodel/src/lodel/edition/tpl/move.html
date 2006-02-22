@@ -30,19 +30,15 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <MACRO NAME="CURRENT_PATH">
-	[@EDITION.TITLE_MOVE_DOCUMENT]
-	<br />
-	[@EDITION.HOWTO_MOVE]
-	<!--temporaire - a virer --><br /><br /><br />
-	<table class="table_form_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
-		<tr>
-			<td>
-			<div>
+<ul id="entitiesPath">
+	<li><strong>[@EDITION.TITLE_MOVE_DOCUMENT] :</strong> [@EDITION.HOWTO_MOVE]</li>
+</ul>
+			<div id="move">
 				<LET VAR="iddocument">[#ID]</LET>
 				<LET VAR="id">0</LET>
 				<LOOP NAME="move_right">
 				<DO>
-					<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]" onclick="return confirmation();">
+					<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation();">
 						<em>[@EDITION.BASE]</em>&nbsp;
 					</a><br />
 				</DO>
@@ -51,46 +47,34 @@
 				</ALTERNATIVE>
 				</LOOP>
 				<LOOP NAME="Deplace_document" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
+				<BEFORE><ul></BEFORE>
 				<DO>
 					[#BARRE]
 					<LOOP NAME="move_right">
 					<DO>
 					<!--[ on a le droit de la deplacer ici ]-->
-					<span style="margin-left: [#MARGIN]px;">
+					<li>
 						<IF COND="[#ID] NE [#IDDOCUMENT]">
-						<a href="index.php?do=move&id=[#IDDOCUMENT]&idparent=[#ID]" onclick="return confirmation();">
+						<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation();">
 							[#G_TITLE|strip_tags]&nbsp;
 						</a>
 						<ELSE/>
 							[#G_TITLE|strip_tags]&nbsp;
 						</IF>
-						([#TYPE])
-						<br />
-						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
-					</span>
+						<em>([#TYPE])</em>
 					</DO>
 					<ALTERNATIVE>
 		                        <!--[ on n'a pas le droit de la deplacer ici ]-->
-					<span style="margin-left: [#MARGIN]px;">
-						[#G_TITLE|strip_tags]&nbsp;([#TYPE])
-						<br />
-						<!--[ Cette boucle imbriquée affiche les sous publications ]-->
-					</span>
-
+					<li>
+						[#G_TITLE|strip_tags]&nbsp;<em>([#TYPE])</em>
 					</ALTERNATIVE>
 					</LOOP>
-					<?php  $context[margin]+=10; ?> <!--[ incrément de la marge ]-->
-					<LET VAR="BARRE">[#BARRE]|</LET>
 					<LOOP NAME="Deplace_document"></LOOP>
+					</li>
 				</DO>
+				<AFTER></ul></AFTER>
 				</LOOP>
 			<div>
-			</td>
-		</tr>
-	</table>
-	<br /><br />
-	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?do=view&id=[#IDDOCUMENT]';" />
-	</div>
+	<MACRO NAME="OK_TOINDEX">
 
 <MACRO NAME="CLOSE_HTML">
