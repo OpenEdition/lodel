@@ -47,12 +47,19 @@
 	</li>
 </ul>
 
-<ul id="addEntity">
+<ul id="actionsOnEntitiesPath">
 	<li>
-	<a href="index.php?do=view&amp;lo=entries&amp;idtype=[#TYPE.ID]">[@ADMIN.ADD_ENTRY]</a>
+	<span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]
+	</li>
+	<li>
+		<ul class="actions">
+		<li>
+		<a href="index.php?do=view&amp;lo=entries&amp;idtype=[#TYPE.ID]">[@ADMIN.ADD_ENTRY]</a>
+		</li>
+		</ul>
 	</li>
 </ul>
-<h2 class="formHead"><span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]</h2>
+
 <div id="entries">
 	<LET VAR="IDREC">0</LET>
 	<LOOP NAME="entries" TABLE="entries" WHERE="idtype='[#TYPE.ID]' AND idparent='[#IDREC]'" ORDER="[#TYPE.SORT]">
