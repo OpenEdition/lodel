@@ -465,20 +465,20 @@
 		<LOOP NAME="parentsentities">
 			<li> &gt; <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> </li>
 		</LOOP>
-    <LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-      <li> &gt; <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
-    </LOOP>
-	<li>
+		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
+			<li> &gt; <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+		</LOOP>
+		<li>
 		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
-	</li>
+		</li>
 	</ul>
 </DEFMACRO>
 
 <DEFMACRO NAME="ACTIONS_ON_CURRENT_PATH">
 	<ul id="actionsOnEntitiesPath">
 		<li class="entitieTitle">
-			<LOOP NAME="getTitle" TABLE="entities" WHERE="id='[#ID]'">
-				[#G_TITLE]
+			<LOOP NAME="getTitle" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
+				[#G_TITLE] <em>([#TYPE])</em>
 				<ALTERNATIVE>
 					[@EDITION.BASE]
 				</ALTERNATIVE>

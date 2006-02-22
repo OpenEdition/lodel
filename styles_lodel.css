@@ -316,6 +316,10 @@ dl.entries dd.actions{
 	font-weight: bold;
 }
 
+#actionsOnEntitiesPath li.entitieTitle em{
+	font-weight: normal;
+}
+
 #actionsOnEntitiesPath ul.actions{
 	position: absolute;
 	top: .5ex;
