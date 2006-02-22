@@ -55,25 +55,26 @@
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
 			<IF COND="[#COUNT]%2">
-			<tr class="ligne_admin1">
+				<tr class="ligne_admin1">
 			<ELSE/>
-			<tr class="ligne_admin2">
+				<tr class="ligne_admin2">
 			</IF>
-                        <td>[#TITLE]</td>
-                        <td>[#LANG]</td>
+			<td>[#TITLE]</td>
+			<td>[#LANG]</td>
 			<td style="color: #CC9933;" align="left">
-			<div>
-              			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
-			</div>
-			</td>		        
-		        <td>
-		       <LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
-		             <a href="index.php?do=list&lo=texts&textgroup=[#TEXTGROUP]&lang=[#LANG]">[(#TEXTGROUP|strtoupper)]</a>&nbsp;
-		        </LOOP>
-		        </td>
-                        </tr>
+			</td>
+			<td>
+			<LET VAR="currentlang">[#LANG]</LET>
+			<LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
+				<a href="index.php?do=list&lo=texts&textgroup=[#TEXTGROUP]&lang=[#CURRENTLANG]">
+					[(#TEXTGROUP|strtoupper)]
+				</a>&nbsp;
+			</LOOP>
+		  </td>
+		</tr>
 		</DO>
 	</LOOP>
 </table>
