@@ -80,57 +80,46 @@
 
 <hr/>
 <h1>[@LODELADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-
-       <LOOP NAME="textgroups">
-       <tr><td colspan="3" class="textgroup"><h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
-       </td></tr>
-
-	      <tr>
-		<td class="texte_noir_gras">[@COMMON.NAME]</td>
-                <LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
-                <td class="texte_noir_gras">[#LANG]</td>
-		</LOOP>
-		<td>&nbsp;</td>
-	      </tr>
-	<LOOP NAME="alltexts">
+<LOOP NAME="textgroups">
+	<h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
+	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+		<tr>
+			<td class="texte_noir_gras">[@COMMON.NAME]</td>
+				<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
+					<td class="texte_noir_gras">[#LANG]</td>
+					<td>&nbsp;</td>
+				</LOOP>
+					
+		</tr>
+		<LOOP NAME="alltexts">
 		<DO>
 			<MACRO NAME="TR_LIST">
-				<td ><IF COND="[#CONTENTS]">[(#CONTENTS|cuttext(30))]<ELSE/>[(#NAME|strtoupper|cuttext(30))]</IF></td>
-		                <LOOP NAME="lang_and_text">
-		                        <td>
-		                            <a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">E</a>
-                                        </td>
-                                        <td align="right">
-					 <div>
-					   <a href="index.php?do=delete&lo=texts&id=[#ID]">[@COMMON_DELETE]
-                                           </a> (*)
-					 </div>
+			<td >
+				<IF COND="[#CONTENTS]">
+					[(#CONTENTS|cuttext(30))]
+				<ELSE/>
+					[(#NAME|strtoupper|cuttext(30))]
+				</IF>
+			</td>
+			<LOOP NAME="lang_and_text">
+				<td>
+					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">E</a>
 				</td>
-		                </LOOP>
-				
-                        </tr>
+				<td align="right">
+						<a href="index.php?do=delete&lo=texts&id=[#ID]">[@COMMON.DELETE](*)</a>
+				</td>
+			</LOOP>
+		
 		</DO>
-	</LOOP>
-        </LOOP>
-
-
-	<tr>
-		<td colspan="2" align="center">
-			<span class="texte_info">
-				(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT] &lt;TEXT&gt; [@LODELADMIN_IN_TEMPLATES].<br />
-				[@LODELADMIN.HOWTO_LITTLETEXTS].
-			</span>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" style="padding-top:40px; padding-bottom:40px; text-align:center">
-			<form>
-				<input class="form" type="button" value="    OK    " onClick="javascript:window.location='index.php'">
-			</form>
-		</td>
-	</tr>
-</table>
-
+		</LOOP>
+		</table>
+</LOOP>
+<br /><br />
+<span class="texte_info">
+	(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT] &lt;TEXT&gt; [@LODELADMIN_IN_TEMPLATES].<br />
+	[@LODELADMIN.HOWTO_LITTLETEXTS].
+</span>
+<br /><br />
+<input class="form" type="button" value="[@COMMON.OK]"  onClick="javascript:window.location='index.php'">
 
 <MACRO NAME="CLOSE_HTML">

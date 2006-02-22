@@ -55,81 +55,90 @@ require_once("translationfunc.php");
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class TextsLogic extends Logic {
+class TextsLogic extends Logic 
+{
 
 	/** Constructor
 	*/
-	function TextsLogic() {
+	function TextsLogic() 
+	{
 		$this->Logic("texts");
 	}
 
 	/**
 		* add/edit Action
 		*/
-
-	function editAction(&$context,&$error,$clean=false)
-
+	function editAction(&$context, &$error, $clean = false)
 	{
 		if ($context['id']) {
 			// normal edit
 			return Logic::editAction($context,$error);
 		}
-		// mass edit
-
+		// Sauvegarde massive
 		if (is_array($context['contents'])) {
-			$dao=$this->_getMainTableDAO();
-
-			if ($GLOBALS['lodeluser']['translationmode']!="site") usemaindb();
-
-			foreach ($context['contents'] as $id=>$contents) {
-	if (!is_numeric($id)) continue;
-	$dao->instantiateObject($vo);
-	$vo->contents=preg_replace("/(\r\n\s*){2,}/","<br />",$contents);
-	$vo->id=$id;
-	$vo->status=intval($context['status'][$id]);
-	if (!$vo->status) $vo->status=-1;
-	$dao->save($vo);
+			$dao = $this->_getMainTableDAO();
+			//if ($GLOBALS['lodeluser']['translationmode'] != 'site') {
+			if($context['textgroup'] != 'site') {
+				#echo "mode interface";
+				usemaindb();
 			}
-			if ($GLOBALS['lodeluser']['translationmode']!="site") usecurrentdb();
+			foreach ($context['contents'] as $id=>$contents) {
+				if (!is_numeric($id)) {
+					continue;
+				}
+				$dao->instantiateObject($vo);
+				$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $contents);
+				$vo->id       = $id;
+				$vo->status   = intval($context['status'][$id]);
+				if (!$vo->status) {
+					$vo->status=-1;
+				}
+				$dao->save($vo);
+			}
+			//if ($GLOBALS['lodeluser']['translationmode']!="site") {
+			if($context['textgroup'] != 'site') {
+				#echo "mode interface";
+				usecurrentdb();
+			}
 			update();
 		}
-
-		require_once("cachefunc.php");
+		require_once 'cachefunc.php';
 		clearcache();
-
-		return "_back";
+		return '_back';
 	}
 
 
 	/**
 		* Function to create the text entry for all the languages
 		*/
-
-	function createTexts($name,$textgroup="")
-
+	function createTexts($name, $textgroup = '')
 	{
 		global $db;
 
-		if ($textgroup=="" && is_numeric($name)) {
-			$criteria="#_TP_texts.id='".$name."'";
+		if ($textgroup == '' && is_numeric($name)) {
+			$criteria = "#_TP_texts.id='". $name. "'";
 		} else {
-			$criteria="name='".$name."' AND textgroup='".$textgroup."'";
+			$criteria = "name='". $name. "' AND textgroup='". $textgroup. "'";
 		}
-		if ($textgroup!="site") usemaindb();
+		if ($textgroup != 'site') {
+			usemaindb();
+		}
 
-		$result=$db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND ".$criteria." WHERE #_TP_texts.lang is NULL")) or dberror();
-		$dao=$this->_getMainTableDAO();
+		$result = $db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND ".$criteria." WHERE #_TP_texts.lang is NULL")) or dberror();
+		$dao = $this->_getMainTableDAO();
 
 		while (!$result->EOF) {
 			$dao->instantiateObject($vo);
-			$vo->name=$name;
-			$vo->textgroup=$textgroup;
-			$vo->status=1;
-			$vo->lang=$result->fields['lang'];
+			$vo->name      = $name;
+			$vo->textgroup = $textgroup;
+			$vo->status    = 1;
+			$vo->lang      = $result->fields['lang'];
 			$dao->save($vo);
 			$result->MoveNext();
 		}
-		if ($textgroup!="site") usecurrentdb();
+		if ($textgroup != 'site') {
+			usecurrentdb();
+		}
 	}
 
 	/*---------------------------------------------------------------*/
@@ -146,21 +155,19 @@ class TextsLogic extends Logic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context) 
-
+	function _saveRelatedTables($vo, $context)
 	{
 		if ($vo->id) {
 			$this->createTexts($vo->id);
 		} else {
-			$this->createTexts($vo->name,$vo->textgroup);   
+			$this->createTexts($vo->name,$vo->textgroup);
 		}
 	}
 
-	function _deleteRelatedTables($id) {
+	function _deleteRelatedTables($id) 
+	{
 		// reinitialise le cache surement.
 	}
-
-
 
 	// begin{publicfields} automatic generation  //
 
@@ -180,9 +187,5 @@ class TextsLogic extends Logic {
 		function _uniqueFields() {  return array();  }
 
 
-} // class 
-
-
-
-
+} // class
 ?>
