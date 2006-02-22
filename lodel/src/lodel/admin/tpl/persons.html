@@ -44,16 +44,22 @@
 		</LOOP>
 	</li>
 </ul>
-<ul id="addEntity">
+<ul id="actionsOnEntitiesPath">
 	<li>
-	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-		<a href="index.php?do=view&amp;lo=persons&amp;idtype=[#TYPE.ID]">[@ADMIN.ADD_PERSON]</a>
-	<ELSE />
-		<span class="inactif">[@ADMIN.ADD_PERSON]</span>
-	</IF>
+		<span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]
+	</li>
+	<li>
+		<ul class="actions">
+			<li>
+			<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=view&amp;lo=persons&amp;idtype=[#TYPE.ID]">[@ADMIN.ADD_PERSON]</a>
+			<ELSE />
+				<span class="inactif">[@ADMIN.ADD_PERSON]</span>
+			</IF>
+			</li>
+		</ul>
 	</li>
 </ul>
-<h2 class="formHead"><span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]</h2>
 
 <div id="entries">
 <LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64">
