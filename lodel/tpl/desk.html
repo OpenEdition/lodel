@@ -219,6 +219,12 @@ body{
 	font: normal 90% verdana, sans-serif; 
 }
 
+#lodel-desk #adminLink{
+	position: absolute;
+	right: 1em;
+	top: 60px;
+}
+
 
 
 /****************FIN DESK*************************/
@@ -226,50 +232,47 @@ body{
 <div id="lodel-desk">
 	<ul  class="group1">
 	<IF COND="[#SITE]">
-	<li>
-		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
-		<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
-		<ELSE/>
-		<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
-		</IF>
-		[@COMMON.EDITION]
-		</a>
-	</li>
-	<li>
-		<IF COND="[#CURRENTURL|strpos('dashboard')]">
-			<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">
-		<ELSE/>
-			<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">	
-		</IF>
-			[@COMMON.DASHBOARD]
-			</a>
-	</li>
-	<li>
-		<IF COND="![#LODELUSER.REDACTOR]">	
-		<a id="admin_inactif" href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
-		<ELSE/>
-			<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')])">	
-			<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
-			<ELSE/>
-			<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
-			</IF>
-		</IF>
-		[@COMMON.ADMINISTRATION]
-		</a>
-		</li>
 		<li>
-		<IF COND="![#CURRENTURL|strpos('admin')] AND ![#CURRENTURL|strpos('edition')]">	
-		<a class="actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
-		<ELSE/>
-		<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
-		</IF>
-		[@COMMON.SITE]
-		</a>
+			<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
+			<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			<ELSE/>
+			<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			</IF>
+			[@COMMON.EDITION]
+			</a>
+		</li>
+
+		<li>
+			<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')]">
+				<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">	
+			</IF>
+				[@COMMON.DASHBOARD]
+				</a>
+		</li>
+
+		<li>
+			<IF COND="[#CURRENTURL|strpos('information')] OR [#CURRENTURL|strpos('statistics')]">
+				<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
+			</IF>
+		</li>
+
+		<li>
+			<IF COND="![#CURRENTURL|strpos('admin')] AND ![#CURRENTURL|strpos('edition')]">	
+				<a class="actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
+			<ELSE/>
+				<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
+			</IF>
+			[@COMMON.SITE]
+			</a>
 		</li>
 	<ELSE/>
-	<li>
-	<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" >[@COMMON.ADMINISTRATIONLODEL]</a>
-	</li>
+		<li>
+			<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" >[@COMMON.ADMINISTRATIONLODEL]</a>
+		</li>
 	</IF>
 	</ul>
 
@@ -357,7 +360,7 @@ body{
 				</li>
 			</LOOP>
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('dashboard')]">
+		<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')]">
 			<li>
 			<IF COND="[#CURRENTURL|strpos('queue')]">
 				<strong>[@COMMON.QUEUE]</strong>
@@ -380,6 +383,8 @@ body{
 			</IF>
 			</li>
 
+		</IF>
+		<IF COND="[#CURRENTURL|strpos('information')] OR [#CURRENTURL|strpos('statistics')]">
 			<li>
 			<IF COND="[#CURRENTURL|strpos('statistics')]">
 				<strong>[@COMMON.STATISTICS]</strong>
@@ -387,16 +392,16 @@ body{
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.STATISTICS_DESCRIPTION]">[@COMMON.STATISTICS]</a>
 			</IF>
 			</li>
-
 			<li>
 			<IF COND="[#CURRENTURL|strpos('information')]">
-				<strong>[@COMMON.INFORMATION]</strong>
+				<strong>[@COMMON.TECHNICAL_INFORMATION]</strong>
 			<ELSE/>
-				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.TECHNICAL_INFORMATION_DESCRIPTION]">[@COMMON.TECHNICAL_INFORMATION]</a>
 			</IF>
 			</li>
 
 		</IF>
+
 	</ul>
 	<IF COND="[#ID] AND ![#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('admin')]">
 		<!--[ Emplacement de la barre d'actions lors visualisation ]-->
@@ -450,4 +455,17 @@ body{
 	</td>
 	</tr>
 	</table>
+	<div id="adminLink">
+		<IF COND="![#LODELUSER.REDACTOR]">	
+			<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
+		<ELSE/>
+			<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')])">	
+			<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
+			<ELSE/>
+			<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
+			</IF>
+		</IF>
+		[@COMMON.ADMINISTRATION]
+		</a>
+	</div>
 </div>
