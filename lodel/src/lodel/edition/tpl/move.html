@@ -39,11 +39,11 @@
 				<LOOP NAME="move_right">
 				<DO>
 					<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation();">
-						<em>[@EDITION.BASE]</em>&nbsp;
+						<strong><em>[@EDITION.BASE]</em></strong>
 					</a><br />
 				</DO>
 				<ALTERNATIVE>
-					<em>[@EDITION.BASE]</em>&nbsp;<br />
+					<strong><em>[@EDITION.BASE]</em></strong><br />
 				</ALTERNATIVE>
 				</LOOP>
 				<LOOP NAME="Deplace_document" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
