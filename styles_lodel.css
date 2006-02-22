@@ -280,6 +280,10 @@ dl.entries dd.actions{
 	color: #ff5b04;
 }
 
+#move li em{
+	font-size: 90%;
+}
+
 #entitiesPath, #actionsOnEntitiesPath, #addEntity, #entitiesPath .queryText{
 	padding: .5ex 0 0 1em;
 	height: 4ex;

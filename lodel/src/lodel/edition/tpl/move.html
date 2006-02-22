@@ -56,17 +56,17 @@
 					<li>
 						<IF COND="[#ID] NE [#IDDOCUMENT]">
 						<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation();">
-							[#G_TITLE|strip_tags]&nbsp;
+							[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF>
 						</a>
 						<ELSE/>
-							[#G_TITLE|strip_tags]&nbsp;
+							[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF>
 						</IF>
-						<em>([#TYPE])</em>
+						<em>&nbsp;([#TYPE])</em>
 					</DO>
 					<ALTERNATIVE>
 		                        <!--[ on n'a pas le droit de la deplacer ici ]-->
 					<li>
-						[#G_TITLE|strip_tags]&nbsp;<em>([#TYPE])</em>
+						[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF><em>&nbsp;([#TYPE])</em>
 					</ALTERNATIVE>
 					</LOOP>
 					<LOOP NAME="Deplace_document"></LOOP>
