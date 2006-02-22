@@ -929,3 +929,15 @@ Si c'est vide alors utilise le champ title
 	<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
 	<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
 </DEFMACRO>
+
+
+<!--[
+C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admin !!
+
+]-->
+
+<DEFMACRO NAME="OK_TOINDEX">
+	<fieldset class="formButtons">
+		<input type="button" class="button" value="    OK    " onclick="javascript:window.location='[#SITEROOT]lodel/edition/'" />
+	</fieldset>
+</DEFMACRO>
