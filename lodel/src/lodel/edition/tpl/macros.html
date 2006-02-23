@@ -428,12 +428,30 @@
 
 <DEFMACRO NAME="CURRENT_PATH">
 	<ul id="entitiesPath">
-		<li><a href="index.php?id=0">[@EDITION.BASE]</a></li>
+		<li>
+		<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
+			<a href="index.[#EXTENSIONSCRIPTS]">
+		<ELSE />
+			<a href="index.php?id=0">
+		</IF>
+		[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> </li>
+			<li> &gt; 
+			<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
+				<a href="[#ID|makeurlwithid]">
+			<ELSE />
+				<a href="index.php?id=[#ID]">
+			</IF>
+			[#G_TITLE|textebrut|nbsp]</a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-			<li> &gt; <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+			<li> &gt; 
+			<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
+				<a href="[#ID|makeurlwithid]">
+			<ELSE />
+				<a href="index.php?id=[#ID]">
+			</IF>
+			[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<li>
 		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
