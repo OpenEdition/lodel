@@ -47,8 +47,8 @@ function parse($in, $out)
 
 class Parser
 {
-
-	var $infilename;
+	
+	var $infilename; // nom du template
 	var $signature;
 	var $variable_regexp = "[A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*";
 	var $variablechar; // list of prefix for the variables
@@ -624,7 +624,8 @@ class Parser
 				// clean a little bit, the "" quote
 				$argumentsstr = preg_replace(array ('/""\./', '/\.""/'), array ('', ''), $argumentsstr);
 				// make the loop call
-				$code = '<?php loop_'. $name. '($context,"'. $newname. '",array('.$argumentsstr. ')); ?>';
+				$localtpl = str_replace('.','_',basename($this->infilename)). '_';
+				$code = '<?php loop_'. $name. '($context,"'. $localtpl.$newname. '",array('.$argumentsstr. ')); ?>';
 				//
 			} else	{ // the loop is an sql recurrent loop
 				$code = '<?php loop_'.$name.'_'. ($this->signature). '($context); ?>';
@@ -779,7 +780,6 @@ class Parser
 		//
 		// genere le code pour parcourir la loop
 		//
-
 		$this->fct_txt .= '
 	if(!function_exists("loop_'.$name.'")) {
 		function loop_'.$name.' ($context)
@@ -821,17 +821,19 @@ class Parser
 	function make_userdefined_loop_code($name, $contents)
 	{
 		// cree la fonction loop
+		#echo "infilename=".$this->infilename;
+		$localtpl = str_replace('.','_',basename($this->infilename)). '_';
 		if ($contents['DO']) {
-			$this->fct_txt .= 'function code_do_'.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
+			$this->fct_txt .= 'function code_do_'.$localtpl.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
 		}
 		if ($contents['BEFORE']) { // genere le code de avant
-			$this->fct_txt .= 'function code_before_'.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php }';
+			$this->fct_txt .= 'function code_before_'.$localtpl.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php }';
 		}
 		if ($contents['AFTER'])	{ // genere le code de apres
-			$this->fct_txt .= 'function code_after_'.$name.' ($context) { ?>'.$contents['AFTER'].'<?php }';
+			$this->fct_txt .= 'function code_after_'.$localtpl.$name.' ($context) { ?>'.$contents['AFTER'].'<?php }';
 		}
 		if ($contents['ALTERNATIVE'])	{ // genere le code de alternative
-			$this->fct_txt .= 'function code_alter_'.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php }';
+			$this->fct_txt .= 'function code_alter_'.$localtpl.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php }';
 		}
 		// fin ajout
 	}
