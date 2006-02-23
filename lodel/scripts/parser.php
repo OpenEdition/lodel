@@ -921,7 +921,9 @@ class Parser
 		}
 	}
 
-	# traite les conditions avec IF
+	/**
+	 * Traite les conditions avec IF
+	 */
 	function parse_IF()
 	{
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
@@ -957,6 +959,9 @@ class Parser
 		$this->arr[$this->ind + 1] = '<?php } ?>';
 	}
 
+	/**
+	 * Traite les conditions avec SWITCH
+	 */
 	function parse_SWITCH()
 	{
 		// decode attributs
@@ -965,7 +970,7 @@ class Parser
 			$this->errmsg("Expecting a TEST attribut in the SWITCH tag");
 		$test = $attrs['TEST'];
 		$this->parse_variable($test, false); // parse the attributs
-		$test = replace_conditions($test, "php");
+		$test = replace_conditions($test, 'php');
 
 		$this->_clearposition();
 		$this->arr[$this->ind + 1] = '<?php sitwch ('.$test.') { ';
@@ -977,7 +982,7 @@ class Parser
 
 			$this->parse_main();
 
-			if ($this->arr[$this->ind] == "DO") {
+			if ($this->arr[$this->ind] == 'DO') {
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				if ($attrs['CASE'])	{
 					$this->parse_variable($attrs['CASE'], false); // parse the attributs
@@ -1005,7 +1010,10 @@ class Parser
 		$this->_clearposition();
 		$this->arr[$this->ind + 1] = '<?php } ?>';
 	}
-
+	
+	/**
+	 * Traite les LET
+	 */
 	function parse_LET()
 	{
 
@@ -1029,6 +1037,9 @@ class Parser
 		$this->arr[$this->ind + 1] = '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
 	}
 
+	/**
+	 * Traite les ESCAPE
+	 */
 	function parse_ESCAPE()
 	{
 		$escapeind = $this->ind;
@@ -1047,11 +1058,12 @@ class Parser
 		$this->_clearposition();
 	}
 
+
 	/**
 	 * Accept an array or a string
 	 *
+	 * @access private
 	 */
-
 	function _checkforrefreshattribut($mixed)
 	{
 		if (is_array($mixed))	{
@@ -1076,11 +1088,10 @@ class Parser
 	}
 
 	function prefixTablesInSQL($sql) {
-		if (!method_exists($this, "prefixTableName"))
+		if (!method_exists($this, 'prefixTableName'))
 			return $sql;
 		##echo $sql,"<br>";
-		$n = strlen($sql);
-
+		$n       = strlen($sql);
 		$inquote = false;
 
 		for ($i = 0; $i < $n; $i ++) {
@@ -1110,7 +1121,7 @@ class Parser
 		return $str;
 	}
 
-	function _decode_attributs($text, $options = "")
+	function _decode_attributs($text, $options = '')
 	{
 			// decode attributs
 	$arr = explode('"', $text);
@@ -1134,7 +1145,7 @@ class Parser
 		$this->arr[$this->ind + 2] = preg_replace("/^(\s*\n)/", "", $this->arr[$this->ind + 2]);
 	}
 
-	function _split_file($contents, $action = "insert")
+	function _split_file($contents, $action = 'insert')
 	{
 		$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -1148,10 +1159,10 @@ class Parser
 			$this->ind = 0;
 			$this->currentline = 0;
 			$this->arr = $arr;
-		}	elseif ($action == "insert") {
+		}	elseif ($action == 'insert') {
 			$this->arr[$this->ind + 2] = $arr[count($arr) - 1].$this->arr[$this->ind + 2];
 			array_splice($this->arr, $this->ind + 2, 0, array_slice($arr, 0, -1));
-		}	elseif ($action == "add")	{
+		}	elseif ($action == 'add')	{
 			$this->arr[count($this->arr) - 1] .= $arr[0];
 			$this->arr = array_merge($this->arr, array_slice($arr, 1));
 		}
@@ -1176,7 +1187,7 @@ function quote_code($text)
 	return addcslashes($text, "'");
 }
 
-if (!function_exists("file_get_contents"))
+if (!function_exists('file_get_contents'))
 {
 	function file_get_contents($file)
 	{
