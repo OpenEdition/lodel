@@ -372,7 +372,7 @@ class TableFieldsLogic extends Logic {
 									'style' => array('mlstyle', ''),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
-									'condition' => array('select', '+'),
+									'cond' => array('select', '+'),
 									'defaultvalue' => array('text', ''),
 									'processing' => array('text', ''),
 									'allowedtags' => array('multipleselect', ''),
