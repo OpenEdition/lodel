@@ -201,7 +201,7 @@ class GenericLogic extends Logic
 		}
 
 		$daotablefields = &getDAO("tablefields");
-		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,condition,defaultvalue,allowedtags,edition,g_name");
+		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,cond,defaultvalue,allowedtags,edition,g_name");
 
 		// file to move once the document id is know.
 		$this->files_to_move = array ();
@@ -233,7 +233,7 @@ class GenericLogic extends Logic
 					$field->edition == "none" || $field->edition == "display"))) {
 
 				// in edition interface and field is not editable in the interface
-				if ($field->condition != "+") { // the field is not required.
+				if ($field->cond != "+") { // the field is not required.
 					unset ($value);
 					continue;
 				}	else {
@@ -241,8 +241,8 @@ class GenericLogic extends Logic
 						$empty = false;
 				}
 			}
-			if ($context['id'] > 0 && (($field->condition == "permanent") ||
-					($field->condition == "defaultnew" && $empty))) {
+			if ($context['id'] > 0 && (($field->cond == "permanent") ||
+					($field->cond == "defaultnew" && $empty))) {
 				// or a permanent field
 				// or field is empty and the default value must not be used
 				unset ($value);
@@ -259,7 +259,7 @@ class GenericLogic extends Logic
 			if ($empty) {
 				$value = lodel_strip_tags($field->default, $field->allowedtags); // default value
 			}
-			if ($field->condition == "+" && $empty) {
+			if ($field->cond == "+" && $empty) {
 				$error[$name] = "+"; // required
 				continue;
 			}

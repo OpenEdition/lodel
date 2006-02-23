@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 09-01-2006.
+// Fichier généré automatiquement le 23-02-2006.
 //
 
 
@@ -75,7 +75,7 @@ class tablefieldsVO
 	var $style;
 	var $type;
 	var $g_name;
-	var $condition;
+	var $cond;
 	var $defaultvalue;
 	var $processing;
 	var $allowedtags;

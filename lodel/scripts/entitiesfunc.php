@@ -65,9 +65,9 @@ function checkTypesCompatibility($id, $idparent, $idtype = 0)
 		die("ERROR: id=0 and idtype=0 in EntitiesLogic::_checkTypesCompatibility");
 	}
 	if ($idparent > 0) { // there is a parent
-		$query = "SELECT condition FROM ". $table. " INNER JOIN #_TP_entities as parent ON identitytype2=parent.idtype  WHERE parent.id='". $idparent. "' AND ". $criteria;
+		$query = "SELECT cond FROM ". $table. " INNER JOIN #_TP_entities as parent ON identitytype2=parent.idtype  WHERE parent.id='". $idparent. "' AND ". $criteria;
 	}	else { // no parent, the base.
-		$query = "SELECT condition FROM ". $table. " WHERE identitytype2=0 AND ". $criteria;
+		$query = "SELECT cond FROM ". $table. " WHERE identitytype2=0 AND ". $criteria;
 	}
 	#echo $query;
 	$condition = $db->getOne(lq($query));

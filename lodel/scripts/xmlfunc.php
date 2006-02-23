@@ -207,7 +207,7 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 		$table = '#_TP_entrytypes';
 		$id = 'identry';
 	}
-	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t, $table as et";
+	$sql = "SELECT t.name, t.class, t.type,t.cond FROM #_TP_tablefields as t, $table as et";
 	$sql .= " WHERE et.type='". $context['name']. "' AND et.class=t.class";
 	$result = $db->execute(lq($sql));
 	$haveresult = $result->NumRows() > 0;
@@ -255,7 +255,7 @@ function loop_person_relations_fields(&$context, $funcname)
 {
 	global $error;
 	global $db;
-	$sql = "SELECT t.name, t.class, t.type,t.condition FROM #_TP_tablefields as t";
+	$sql = "SELECT t.name, t.class, t.type,t.cond FROM #_TP_tablefields as t";
 	$sql .= " WHERE t.class='entities_". $context['class']."'";
 	$result = $db->execute(lq($sql));
 	$haveresult = $result->NumRows() > 0;

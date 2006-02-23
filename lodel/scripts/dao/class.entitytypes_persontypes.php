@@ -41,7 +41,7 @@ class entitytypes_persontypesVO
 {
 	var $identitytype;
 	var $idpersontype;
-	var $condition;
+	var $cond;
 
 }
 

@@ -41,7 +41,7 @@ class entitytypes_entitytypesVO
 {
 	var $identitytype;
 	var $identitytype2;
-	var $condition;
+	var $cond;
 
 }
 

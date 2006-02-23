@@ -41,7 +41,7 @@ class entitytypes_entrytypesVO
 {
 	var $identitytype;
 	var $identrytype;
-	var $condition;
+	var $cond;
 
 }
 
