@@ -466,7 +466,7 @@
 			<LOOP NAME="getTitle0" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
 				[#G_TITLE|textebrut|nbsp|couper(130)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
 				<ALTERNATIVE>
-					[@EDITION.BASE]
+					[@EDITION.WEBSITE_BASE]
 				</ALTERNATIVE>
 			</LOOP>
 		</li>
