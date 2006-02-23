@@ -43,39 +43,6 @@
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<DEFMACRO NAME="JS_CONFIRM">
-<script type="text/javascript">
-<!--
-
-	function confirm_delete(id)
-	{
-	window.status='go';
-		var msg='[@EDITION.CONFIRMATION_DELETE] ?';
-		if(confirm(msg)) window.location='index.php?do=delete&id='+id;
-	}
-	
-	function popup(url) {
-		 var fenetre = window.open(url,"","scrollbars,width=400,height=300");
-	 }
-
-	function confirm_depublication()
-	{
-		if(confirm("[@EDITION.CONFIRMATION_UNPUBLISH]")) return true;
-		else return false; 
-	}
-	function confirmation()
-	{
-		if(confirm("[@COMMON.CONFIRMATION]")) {
-			return true;
-		}
-		else {
-			return false; 
-		}
-	}
-	//
-	--></script>
-</DEFMACRO>
-
 
 <!--[ Macros rajoutées le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
@@ -780,7 +747,7 @@
 		<IF COND="[#STATUS]==1">
                    <LOOP NAME="rightonentity" ACTION="unpublish">
 		   <DO>
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication(1);">[@EDITION.UNPUBLISH]</a>
+			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH]')">[@EDITION.UNPUBLISH]</a>
 		   </DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
