@@ -84,7 +84,7 @@ function typetype_insert($identitytype, $idtypetable, $typetable)
 	}
 	$table = $typetable != 'entitytype2' ? $typetable : 'entitytype';
 
-	$db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,condition) VALUES ".join(",", $values))) or dberror();
+	$db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,cond) VALUES ".join(",", $values))) or dberror();
 }
 
 
@@ -108,7 +108,7 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 		if (is_array($checked)) {
 			$localcontext['value'] = $checked[$result->fields['id']] ? 'checked="checked"' : '';
 		} else {
-			$localcontext['value'] = $result->fields['condition'] ? 'checked="checked"' : '';
+			$localcontext['value'] = $result->fields['cond'] ? 'checked="checked"' : '';
 		}
 
 		call_user_func("code_do_$funcname", $localcontext);
