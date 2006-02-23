@@ -240,10 +240,9 @@ function modifymember(members,textfield){
 
 // END POOL
 
-function confirm_delete(id)
+function confirm_delete(id, msg)
 {
-window.status='go';
-	var msg='[@EDITION.CONFIRMATION_DELETE] ?';
+	window.status='go';
 	if(confirm(msg)) window.location='index.php?do=delete&id='+id;
 }
 	
