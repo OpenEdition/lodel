@@ -126,16 +126,16 @@
   </span>
 </LOOP>
 <br />
-<label for="condition">[@ADMIN.CONDITION] : 
+<label for="cond">[@ADMIN.CONDITION] : 
 		</label>
 <br class="nobr">
-<select name="condition" id="condition">
+<select name="cond" id="cond">
   <?php 
-						makeSelect($context,"condition","tablefields","select");
+						makeSelect($context,"cond","tablefields","select");
 					?>
 </select>
-<LOOP NAME="fielderror" FIELD="condition">
-  <a id="condition"></a><span class="error">
+<LOOP NAME="fielderror" FIELD="cond">
+  <a id="cond"></a><span class="error">
     <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CONDITION]"></FUNC>
   </span>
 </LOOP>
