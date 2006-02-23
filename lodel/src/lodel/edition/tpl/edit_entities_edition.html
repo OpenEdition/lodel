@@ -31,6 +31,23 @@
 <MACRO NAME="HEADER_LOGO">
 <MACRO NAME="CURRENT_PATH">
 
+	<!--[ Propose OOImport ? ]-->
+	<IF COND="![#ID]">
+		<LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
+			<BEFORE>
+				<ul id="actionsOnEntitiesPath">
+				<li><ul class="actions">
+			</BEFORE>
+				<li><a href="oochargement.php?idparent=[#IDPARENT]&idtype=[#IDTYPE]">[@EDITION.IMPORT_WITH_SERVOO]</a></li>
+			<AFTER>
+				</ul></li>
+				</ul>
+			</AFTER>
+		</LOOP>
+	<ELSE />
+		<MACRO NAME="ACTIONS_ON_CURRENT_PATH">
+	</IF>
+
 <div class="advancedFunc first">
 	<h4>[@EDITION.ENTITIE_INFO]</h4>
 	<dl>
@@ -66,12 +83,7 @@
 <div id="editEntities">
 		
 <FUNC NAME="PRINT_ERROR_LISTING">
-<!--[ Propose OOImport ? ]-->
-<IF COND="![#ID]">
-<LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
-<div><a href="oochargement.php?idparent=[#IDPARENT]&idtype=[#IDTYPE]">[@EDITION.IMPORT_WITH_SERVOO]</a></div>
-</LOOP>
-</IF>
+
 <br />
 <form enctype="multipart/form-data" method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
 	<input type="hidden" name="do" value="edit" />

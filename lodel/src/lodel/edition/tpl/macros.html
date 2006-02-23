@@ -477,7 +477,7 @@
 <DEFMACRO NAME="ACTIONS_ON_CURRENT_PATH">
 	<ul id="actionsOnEntitiesPath">
 		<li class="entitieTitle">
-			<LOOP NAME="getTitle" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
+			<LOOP NAME="getTitle0" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
 				[#G_TITLE] <em>([#TYPE])</em>
 				<ALTERNATIVE>
 					[@EDITION.BASE]
@@ -693,7 +693,7 @@
 	<li><a href="../../[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
 	<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
-			<IF COND="[#ID]">
+			<IF COND="[#ID] AND ![#DO]">
 				<li><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
 			</IF>
 		</DO>
