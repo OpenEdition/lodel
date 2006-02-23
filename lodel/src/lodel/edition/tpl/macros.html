@@ -446,7 +446,7 @@
 	<ul id="actionsOnEntitiesPath">
 		<li class="entitieTitle">
 			<LOOP NAME="getTitle0" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
-				[#G_TITLE] <em>([#TYPE])</em>
+				[#G_TITLE|textebrut|nbsp|couper(130)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
 				<ALTERNATIVE>
 					[@EDITION.BASE]
 				</ALTERNATIVE>
