@@ -291,11 +291,11 @@
         description="champ generique equivalent"
         label="[@ADMIN.GENERIC_EQUIVALENT]"
         edittype="select"/>
-<column name="condition"
+<column name="cond"
         type="VARCHAR"
-        size="255"
+        size="16"
         required="true"
-        description="condition"
+        description="indique si un champ est obligatoire, ou non"
         label="[@ADMIN.CONDITION]"
         edittype="select" />
 <column name="defaultvalue"
@@ -690,7 +690,8 @@
 				/>
 <column name="photo"
 				label="[@ADMIN.PHOTO]"
-				type="image"
+				type="VARCHAR"
+				size="255"
 				edittype="image"
 				/>
 <column name="professional_website"

@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
 	g_name		VARCHAR(255) NOT NULL,		# equivalent generic du champ
-	condition	TINYTEXT NOT NULL,		# condition d'import
+	cond		VARCHAR(16) NOT NULL,		# condition d'import
 	defaultvalue	TINYTEXT NOT NULL,		# valeur par defaut
 	processing	TINYTEXT NOT NULL,		# traitement a faire a l'import
 	allowedtags 	TINYTEXT NOT NULL,		# balises acceptees
@@ -419,7 +419,7 @@ CREATE TABLE IF NOT EXISTS #_TP_texts (
 CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entitytypes (
 	identitytype		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
 	identitytype2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
-	condition		VARCHAR(16),
+	cond		VARCHAR(16),
 
 	KEY index_identitytype (identitytype),
 	KEY index_identitytype2 (identitytype2)

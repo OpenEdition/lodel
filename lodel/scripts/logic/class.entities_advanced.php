@@ -179,7 +179,7 @@ class Entities_AdvancedLogic extends Logic
 					$idtype = $idtypes[$context['iddocument']]=$vo->idtype;
 				}
 				// récupère la condition sur les deux types testé.
-				$condition = $db->getOne(lq("SELECT condition FROM #_TP_entitytypes_entitytypes WHERE identitytype='". $idtype. "' AND identitytype2='". $context['idtype']. "'"));
+				$condition = $db->getOne(lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='". $idtype. "' AND identitytype2='". $context['idtype']. "'"));
 				$cache[$context['idtype']] = (boolean)$condition;
 				if ($db->errorno()) {
 					dberror();

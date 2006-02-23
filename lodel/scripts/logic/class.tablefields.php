@@ -119,7 +119,7 @@ class TableFieldsLogic extends Logic {
 			require_once 'commonselect.php';
 			makeSelectFieldTypes($context['type']);
 			break;
-		case 'condition':
+		case 'cond':
 			$arr = array(
 			'*' => getlodeltextcontents('nocondition', 'admin'),
 			'+' => getlodeltextcontents('fieldrequired', 'admin'),
@@ -127,7 +127,7 @@ class TableFieldsLogic extends Logic {
 			'permanent' => getlodeltextcontents('permanent', 'admin'),
 			'1' => getlodeltextcontents('single', 'admin'),
 			);
-		renderOptions($arr,$context['condition']);
+		renderOptions($arr,$context['cond']);
 			break;
 		case 'edition':
 			require_once 'commonselect.php';
