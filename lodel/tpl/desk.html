@@ -67,7 +67,7 @@ body{
 	background-image: url("[#SHAREURL]/images/bandeau.jpg");
 	background-repeat: no-repeat;
 	background-color: #fff;
-	height: 142px;
+	min-height: 142px;
 	font: 11px verdana, sans-serif !important;
 	text-align: left !important;
 	border-bottom: 1px solid #aaa;
@@ -225,6 +225,63 @@ body{
 	top: 60px;
 }
 
+#siteContext #entitiesPath, #siteContext #entitiesPath li, #siteContext #actionsOnEntitiesPath, #siteContext #actionsOnEntitiesPath li{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#siteContext #entitiesPath a, #siteContext #actionsOnEntitiesPath a{
+	color: #ff5b04;
+	font-weight: normal;
+	border:none;
+	display: inline;
+}
+
+#siteContext #entitiesPath, #siteContext #actionsOnEntitiesPath{
+	padding: .5ex 0 0 1em;
+	height: 4ex;
+	font-size: 90%;
+	border-bottom: 1px solid #aaa;
+	background: #f1f5fb;
+}
+
+#siteContext #entitiesPath li, #siteContext #actionsOnEntitiesPath li{
+	float: left;
+	padding: 0;
+	margin: .3ex .4em 0 0;
+	color: #333;
+	height: auto;
+	background: transparent;	
+}
+
+#siteContext #lightSearchForm{
+	position: absolute;
+	top: 145px;
+	right: .5em;
+}
+
+#siteContext #lightSearchForm fieldset{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: auto;
+	background: transparent;
+}
+
+#siteContext #lightSearchForm input.text, #siteContext #lightSearchForm input.button, #siteContext select.barInfo{
+	font: normal 90% verdana, sans-serif;
+}
+
+
+#siteContext #lightSearchForm input.text, #siteContext select.barInfo{
+	border: 1px solid #aaa;
+}
+
+
+#siteContext #lightSearchForm input.button{
+	padding-top: 0;
+}
 
 
 /****************FIN DESK*************************/
@@ -403,10 +460,6 @@ body{
 		</IF>
 
 	</ul>
-	<IF COND="[#ID] AND ![#CURRENTURL|strpos('edition')] AND ![#CURRENTURL|strpos('admin')]">
-		<!--[ Emplacement de la barre d'actions lors visualisation ]-->
-	</IF>
-
 	<table class="infos">
 	<tr>
 	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
@@ -468,4 +521,10 @@ body{
 		[@COMMON.ADMINISTRATION]
 		</a>
 	</div>
+
 </div>
+<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
+	<div id="siteContext">
+	<MACRO NAME="CURRENT_PATH" />
+	</div>
+</IF>
