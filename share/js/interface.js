@@ -240,6 +240,32 @@ function modifymember(members,textfield){
 
 // END POOL
 
+function confirm_delete(id)
+{
+window.status='go';
+	var msg='[@EDITION.CONFIRMATION_DELETE] ?';
+	if(confirm(msg)) window.location='index.php?do=delete&id='+id;
+}
+	
+function popup(url) {
+		var fenetre = window.open(url,"","scrollbars,width=400,height=300");
+	}
+
+function confirm_depublication(msg)
+{
+	return(confirm(msg));
+}
+
+function confirmation()
+{
+	if(confirm("[@COMMON.CONFIRMATION]")) {
+		return true;
+	}
+	else {
+		return false; 
+	}
+}
+
 /************************************************************************/
 /* END Miscellaneous functions
 /************************************************************************/
