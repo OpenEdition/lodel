@@ -441,6 +441,7 @@
 	</ul>
 </DEFMACRO>
 
+
 <DEFMACRO NAME="ACTIONS_ON_CURRENT_PATH">
 	<ul id="actionsOnEntitiesPath">
 		<li class="entitieTitle">
@@ -747,7 +748,7 @@
 		<IF COND="[#STATUS]==1">
                    <LOOP NAME="rightonentity" ACTION="unpublish">
 		   <DO>
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH]')">[@EDITION.UNPUBLISH]</a>
+			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034;')">[@EDITION.UNPUBLISH]</a>
 		   </DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
