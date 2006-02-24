@@ -210,33 +210,6 @@
 	</div>
 </DEFMACRO>
 
-
-<!--[ Supprimer le 02/02/04 par Ghislain
-
-<DEFMACRO NAME="AFFICHER_INFORMATIONS_DOCUMENT">
-	<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-		<tr>
-			<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-			<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">Informations sur le document</td>
-		</tr>
-	</table>
-	<br />
-	
-	<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
-		<tr>
-			<td width="200">Type de document</td>
-			<td>
-				<select name="idtype" onChange="reloadForm();"><?php makeselecttype("documents"); ?></select><IF COND="![#IDTYPE]"><font color="red">Veuillez precisez un type pour ce document afin de pouvoir editer correctement tous les champs</IF>
-				<input type="hidden" name="reload" value="">
-			</td>
-		</tr>
-	</table>
-</DEFMACRO>
-]-->
-
-<!--[ ************************************************** ]-->
-
-
 <DEFMACRO NAME="AUTEURS">
 	<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
 		<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
@@ -676,7 +649,9 @@
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 	<ul class="actions">
-	<li><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
+	<IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')]">
+		<li><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
+	</IF>
 	<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
 			<IF COND="[#ID] AND ![#DO]">
@@ -691,15 +666,6 @@
 	<LOOP NAME="getStatus0" TABLE="entities" WHERE="id = [#ID]">
 		<li><MACRO NAME="CHANGER_STATUS_ENTITIES"></li>
 	</LOOP>
-	
-<!--[	<LOOP NAME="rightonentity" ACTION="delete">
-		<DO>
-			<li><a href="#" onclick="confirm_delete('[#ID]')">[@EDITION.DELETE]</a></li>
-		</DO>
-		<ALTERNATIVE>]-->
-			<!--[<li><span class="inactif">[@EDITION.DELETE]</span></li>]-->
-		<!--[</ALTERNATIVE>
-	</LOOP>]-->
 	</ul>
 </DEFMACRO>
 
