@@ -25,33 +25,9 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
-<script type="text/javascript">
-	<!--
-	function select_url(obj) {
-		var index = obj.selectedIndex;
-		if (obj.options[index].value) window.location=obj.options[index].value;
-	}
 
-	function switchDisp(obj){
-		var obj = document.getElementById(obj);
-		//alert(obj.className);
-		if(obj.className == "butTextOn"){
-			obj.className = "butText";
-		}else{
-			obj.className = "butTextOn";
-		}
-	}
-	//
-	-->
-</script>
-<script type="text/javascript"><!--
-	
-		function change_language(obj) {
-			var index = obj.selectedIndex;
-			window.location="usersettings.php?lang="+obj.options[index].value;
-		}
-	//
-	--></script>
+<script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
+
 <style type="text/css">
 
 /* Ces styles ne sont pas dans styles_lodel.css qui n'est pas chargé en mode visualisation */

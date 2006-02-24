@@ -7,7 +7,25 @@ function displayObj(item, obj){
 	}
 }
 
+function select_url(obj) {
+		var index = obj.selectedIndex;
+		if (obj.options[index].value) window.location=obj.options[index].value;
+	}
 
+function switchDisp(obj){
+	var obj = document.getElementById(obj);
+	//alert(obj.className);
+	if(obj.className == "butTextOn"){
+		obj.className = "butText";
+	}else{
+		obj.className = "butTextOn";
+	}
+}
+
+function change_language(obj) {
+	var index = obj.selectedIndex;
+	window.location="usersettings.php?lang="+obj.options[index].value;
+}
 
 function showFocus(obj) {  
 	document.getElementById(obj).className = "focusOn";
