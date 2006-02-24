@@ -5,6 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]" />
 </DEFMACRO>
 
+<DEFMACRO NAME="SITE_ROOT">
+<LOOP NAME="getRoot" TABLE="sites" WHERE="name = '[#SITE]'">[#URL]</LOOP>
+</DEFMACRO>
+
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
 <script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
     <link rel="stylesheet" href="styles_lodel.css" />

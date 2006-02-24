@@ -676,11 +676,11 @@
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 	<ul class="actions">
-	<li><a href="../../[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
+	<li><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
 	<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
 			<IF COND="[#ID] AND ![#DO]">
-				<li><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
+				<li><a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
 			</IF>
 		</DO>
 		<ALTERNATIVE>
@@ -766,7 +766,7 @@
 		<IF COND="[#STATUS]==1">
                    <LOOP NAME="rightonentity" ACTION="unpublish">
 		   <DO>
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?')">[@EDITION.UNPUBLISH]</a>
+			<a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?')">[@EDITION.UNPUBLISH]</a>
 		   </DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
@@ -783,7 +783,7 @@
 		<IF COND="([#STATUS]==-1)">
                    <LOOP NAME="rightonentity" ACTION="publish">
 		   <DO>
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=1">[@EDITION.PUBLISH]</a>
+			<a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=publish&amp;id=[#ID]&amp;status=1">[@EDITION.PUBLISH]</a>
 		   </DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.PUBLISH]</span>

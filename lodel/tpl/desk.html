@@ -283,6 +283,34 @@ body{
 	padding-top: 0;
 }
 
+#siteContext #actionsOnEntitiesPath{
+	background: #e0e7f2;
+	font-weight: bold;
+	position: relative;
+}
+
+#siteContext #actionsOnEntitiesPath li.entitieTitle{
+	font-weight: bold;
+}
+
+#siteContext #actionsOnEntitiesPath li.entitieTitle em{
+	font-weight: normal;
+}
+
+#siteContext #actionsOnEntitiesPath ul.actions{
+	position: absolute;
+	top: .5ex;
+	right: .5em;
+}
+
+#siteContext #actionsOnEntitiesPath ul.actions li{
+	margin-left: 1em;
+	font-weight: bold;
+}
+
+#siteContext #actionsOnEntitiesPath ul.actions li a{
+	font-weight: bold;
+}
 
 /****************FIN DESK*************************/
 </style>
@@ -526,5 +554,6 @@ body{
 <IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
 	<div id="siteContext">
 	<MACRO NAME="CURRENT_PATH" />
+	<MACRO NAME="ACTIONS_ON_CURRENT_PATH" />
 	</div>
 </IF>
