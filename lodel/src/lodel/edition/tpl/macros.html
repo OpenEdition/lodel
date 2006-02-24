@@ -651,11 +651,15 @@
 	<ul class="actions">
 	<IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')]">
 		<li><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
+	<ELSE />
+		<li><span class="inactif">[@COMMON.VIEW]</span></li>
 	</IF>
 	<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
 			<IF COND="[#ID] AND ![#DO]">
 				<li><a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></li>
+			<ELSE />
+				<li><span class="inactif">[@COMMON.EDIT]</span></li>
 			</IF>
 		</DO>
 		<ALTERNATIVE>
@@ -665,6 +669,9 @@
 	
 	<LOOP NAME="getStatus0" TABLE="entities" WHERE="id = '[#ID]'">
 		<li><MACRO NAME="CHANGER_STATUS_ENTITIES"></li>
+		<ALTERNATIVE>
+			<li><span class="inactif">[@COMMON.PROTECTED]</span></li>
+		</ALTERNATIVE>
 	</LOOP>
 	</ul>
 </DEFMACRO>
