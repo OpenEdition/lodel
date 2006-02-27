@@ -6,7 +6,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="SITE_ROOT">
-<LOOP NAME="getRoot" TABLE="sites" WHERE="name = '[#SITE]'">[#URL]</LOOP>
+<LOOP NAME="getRoot" TABLE="sites" WHERE="name = '[#SITE]' AND status GT 0">[#URL]</LOOP>
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
