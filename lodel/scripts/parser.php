@@ -624,7 +624,7 @@ class Parser
 				// clean a little bit, the "" quote
 				$argumentsstr = preg_replace(array ('/""\./', '/\.""/'), array ('', ''), $argumentsstr);
 				// make the loop call
-				$localtpl = str_replace('.','_',basename($this->infilename)). '_';
+				$localtpl = str_replace(array('.','-'),array('_','_'),basename($this->infilename)). '_';
 				$code = '<?php loop_'. $name. '($context,"'. $localtpl.$newname. '",array('.$argumentsstr. ')); ?>';
 				//
 			} else	{ // the loop is an sql recurrent loop
@@ -822,7 +822,7 @@ class Parser
 	{
 		// cree la fonction loop
 		#echo "infilename=".$this->infilename;
-		$localtpl = str_replace('.','_',basename($this->infilename)). '_';
+		$localtpl = str_replace(array('.','-'),array('_','_'),basename($this->infilename)). '_';
 		if ($contents['DO']) {
 			$this->fct_txt .= 'function code_do_'.$localtpl.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
 		}
