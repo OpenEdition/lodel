@@ -70,7 +70,6 @@ if ($file && $delete) {
 
   if (!importFromZip($file, $accepteddirs, $acceptedexts, $sqlfile)) {
 		$err = $context['error_extract'] = 1;
-		break;
 	}
 
   // execute the editorial model
