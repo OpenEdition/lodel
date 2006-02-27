@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 09-01-2006.
+// Fichier généré automatiquement le 23-02-2006.
 //
 
 
@@ -70,10 +70,26 @@ class usersVO
 	var $id;
 	var $username;
 	var $passwd;
-	var $name;
+	var $lastname;
+	var $firstname;
 	var $email;
-	var $userrights;
 	var $lang;
+	var $userrights;
+	var $userlevel;
+	var $nickname;
+	var $biography;
+	var $photo;
+	var $professional_website;
+	var $url_professional_website;
+	var $rss_professional_website;
+	var $personal_website;
+	var $url_personal_website;
+	var $rss_personal_website;
+	var $pgp_key;
+	var $alternate_email;
+	var $phonenumber;
+	var $im_identifier;
+	var $im_name;
 	var $status;
 	var $rank;
 	var $upd;
