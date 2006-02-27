@@ -70,7 +70,6 @@ ln index.php
 dirdestination . 
 dirsource $homesite/lodel/edition
 ln tpl/edit_entities_edition.html
-ln tpl/macros.html
 
 ###############################################################
 ########### edition
@@ -99,8 +98,6 @@ dirsource $homesite/lodel/edition
 ln siteconfig.php
 ln images
 ln css
-ln tpl/macros.html
-ln tpl/macros2.html
 
 # templates rss dans src/lodel/edition/tpl
 ln tpl/backend_dashboard_history.html
@@ -179,7 +176,6 @@ ln logout.php
 ln loginHTTP.php
 #
 
-ln tpl/macros.html
 ln css
 
 ln index.php
