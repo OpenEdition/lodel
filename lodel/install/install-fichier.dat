@@ -98,7 +98,7 @@ dirsource $homesite/lodel/edition
 ln siteconfig.php
 ln images
 ln css
-ln tpl/macros.html
+
 
 # templates rss dans src/lodel/edition/tpl
 ln tpl/backend_dashboard_history.html
