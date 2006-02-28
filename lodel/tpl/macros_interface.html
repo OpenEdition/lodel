@@ -1,34 +1,3 @@
-<DEFMACRO NAME="HEADER_HEAD_OPEN">
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]" />
-</DEFMACRO>
-
-<DEFMACRO NAME="SITE_ROOT">
-<LOOP NAME="getRoot" TABLE="sites" WHERE="name = '[#SITE]' AND status GT 0">[#URL]</LOOP>
-</DEFMACRO>
-
-<DEFMACRO NAME="HEADER_HEAD_CLOSE">  
-<script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
-    <link rel="stylesheet" href="[#SHAREURL]/css/styles_lodel.css" />
-    <IF COND="[#STYLECSS]">
-    <style type="text/css">          
-      [#STYLECSS]
-    </style>
-    </IF>
-  </head>
-</DEFMACRO>
-
-<DEFMACRO NAME="CLOSE_HTML">  
-  </body>
-</html>
-</DEFMACRO>
-
-<DEFMACRO NAME="HEADER_LOGO">
-<body> 
-</DEFMACRO>
-
 <DEFMACRO NAME="INTERTITLE">
 <IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
 </DEFMACRO>
