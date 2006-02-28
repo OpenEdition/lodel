@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 23-02-2006.
+// Fichier généré automatiquement le 28-02-2006.
 //
 
 
@@ -72,15 +72,16 @@ class typesVO
 	var $title;
 	var $altertitle;
 	var $class;
-	var $tpl;
 	var $tplcreation;
-	var $tpledition;
 	var $import;
 	var $creationstatus;
-	var $search;
 	var $public;
-	var $oaireferenced;
+	var $gui_user_complexity;
+	var $tpledition;
 	var $display;
+	var $tpl;
+	var $search;
+	var $oaireferenced;
 	var $rank;
 	var $status;
 	var $upd;

@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 23-02-2006.
+// Fichier généré automatiquement le 28-02-2006.
 //
 
 
@@ -72,16 +72,17 @@ class tablefieldsVO
 	var $class;
 	var $title;
 	var $altertitle;
-	var $style;
 	var $type;
 	var $g_name;
+	var $style;
 	var $cond;
 	var $defaultvalue;
 	var $processing;
 	var $allowedtags;
-	var $filtering;
+	var $gui_user_complexity;
 	var $edition;
 	var $editionparams;
+	var $filtering;
 	var $weight;
 	var $comment;
 	var $idgroup;
