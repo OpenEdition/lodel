@@ -75,13 +75,13 @@ class typesVO
 	var $tplcreation;
 	var $import;
 	var $creationstatus;
-	var $public;
 	var $gui_user_complexity;
 	var $tpledition;
 	var $display;
-	var $tpl;
 	var $search;
+	var $tpl;
 	var $oaireferenced;
+	var $public;
 	var $rank;
 	var $status;
 	var $upd;
