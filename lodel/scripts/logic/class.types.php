@@ -232,13 +232,13 @@ class TypesLogic extends Logic {
 									'tplcreation' => array('tplfile', ''),
 									'import' => array('select', '+'),
 									'creationstatus' => array('select', '+'),
-									'public' => array('boolean', '+'),
 									'gui_user_complexity' => array('select', '+'),
 									'tpledition' => array('tplfile', ''),
 									'display' => array('select', ''),
-									'tpl' => array('tplfile', ''),
 									'search' => array('boolean', '+'),
-									'oaireferenced' => array('boolean', '+'));
+									'tpl' => array('tplfile', ''),
+									'oaireferenced' => array('boolean', '+'),
+									'public' => array('boolean', '+'));
 	}
 	// end{publicfields} automatic generation  //
 
