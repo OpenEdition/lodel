@@ -126,7 +126,7 @@ function check_auth($login, & $passwd, & $site)
 		$lodeluser['rights'] = $row['userrights'];
 		$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
 		$lodeluser['id'] = $row['id'];
-		$lodeluser['level'] = $row['userlevel'];
+		$lodeluser['gui_complexity'] = $row['gui_user_complexity'];
 
 		// cherche les groupes pour les non administrateurs
 		if (defined("LEVEL_ADMIN") && $lodeluser['rights'] < LEVEL_ADMIN)	{ // defined is useful only for the install.php
@@ -146,7 +146,6 @@ function check_auth($login, & $passwd, & $site)
 		$passwd = 0;
 		return true;
 	}	while (0);
-
 	return false;
 }
 ?>
