@@ -122,6 +122,10 @@ class EntryTypesLogic extends Logic
 			}
 			renderOptions($arr2,$context['g_type']);
 			break;
+		case 'gui_user_complexity' :
+			require_once 'commonselect.php';
+			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+			break;
 		case "edition" :
 			$arr=array(
 			"pool"=>getlodeltextcontents("edit_pool","admin"),
@@ -216,6 +220,7 @@ class EntryTypesLogic extends Logic
 									'g_type' => array('select', ''),
 									'tpl' => array('tplfile', ''),
 									'tplindex' => array('tplfile', ''),
+									'gui_user_complexity' => array('select', '+'),
 									'flat' => array('boolean', '+'),
 									'edition' => array('select', ''),
 									'newbyimportallowed' => array('boolean', ''),

@@ -99,6 +99,10 @@ class PersonTypesLogic extends Logic
 
 	{
 		switch($var) {
+		case 'gui_user_complexity' :
+			require_once 'commonselect.php';
+			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+			break;
 		case "g_type" :
 			$g_typefields=array("DC.Creator","DC.Contributor");
 			$dao=$this->_getMainTableDAO();
@@ -107,14 +111,15 @@ class PersonTypesLogic extends Logic
 
 			$arr2=array(""=>"--");
 			foreach($g_typefields as $g_type) {
-	$lg_type=strtolower($g_type);
-	if ($arr[$lg_type]) {
-		$arr2[$lg_type]=$g_type." &rarr; ".$arr[$lg_type];
-	} else {
-		$arr2[$lg_type]=$g_type;
-	}
+				$lg_type=strtolower($g_type);
+				if ($arr[$lg_type]) {
+					$arr2[$lg_type]=$g_type." &rarr; ".$arr[$lg_type];
+				} else {
+					$arr2[$lg_type]=$g_type;
+				}
 			}
 			renderOptions($arr2,$context['g_type']);
+			break;
 		}
 	}
 
@@ -198,7 +203,8 @@ class PersonTypesLogic extends Logic
 									'style' => array('style', ''),
 									'g_type' => array('select', ''),
 									'tpl' => array('tplfile', ''),
-									'tplindex' => array('tplfile', ''));
+									'tplindex' => array('tplfile', ''),
+									'gui_user_complexity' => array('select', '+'));
 	}
 	// end{publicfields} automatic generation  //
 
