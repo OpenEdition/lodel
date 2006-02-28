@@ -360,7 +360,7 @@ class Parser
 	}
 
 	function parse_main()
-	{
+	{	
 		while ($this->ind < $this->countarr) {
 			switch ($this->arr[$this->ind])	{
 			case 'CONTENT' :
@@ -371,13 +371,14 @@ class Parser
 				$this->_clearposition();
 				break;
 			case 'USE' :
+				$siteroot = defined('SITEROOT') ? SITEROOT : '';
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				if ($attrs['MACROFILE']) {
 					$macrofilename = $attrs['MACROFILE'];
 					if (file_exists("tpl/".$macrofilename))	{
 						$contents = file_get_contents("tpl/".$macrofilename);
-					}	elseif ($GLOBALS['sharedir'] && 	file_exists($GLOBALS['sharedir']."/macros/".$macrofilename)) {
-						$contents = file_get_contents($GLOBALS['sharedir']."/macros/".$macrofilename);
+					}	elseif ($GLOBALS['sharedir'] && 	file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
+						$contents = file_get_contents($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename);
 					}	elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename))	{
 						$contents = file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
 					}	else {
