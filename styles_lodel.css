@@ -232,8 +232,12 @@ div.mlTitle{
 }
 
 div.displayfield{
-	font-family: "Courier New", Courier, mono;
+	font-family: Georgia, serif;
 	font-size: 120%;
+}
+
+div.displayfield p{
+	line-height: 150%;
 }
 
 div.oneItem input, div.oneItem  textarea, div.oneItem  select{
