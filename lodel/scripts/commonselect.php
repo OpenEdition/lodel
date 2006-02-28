@@ -86,13 +86,17 @@ function makeSelectUserRights($value, $adminlodel)
 	}
 	renderOptions($arr2, $value);
 }
-function makeSelectUserLevel($value)
+function makeSelectGuiUserComplexity($value)
 {
+	
 	$arr = array( INTERFACE_SIMPLE => getlodeltextcontents('simple', 'common'),
 								INTERFACE_NORMAL => getlodeltextcontents('normal', 'common'),
 								INTERFACE_ADVANCED => getlodeltextcontents('advanced', 'common'),
 								INTERFACE_DEBUG => getlodeltextcontents('debug', 'common')
 							);
+	if(!$value || $value == 0) {
+		$value = INTERFACE_ADVANCED;
+	}
 	renderOptions($arr, $value);
 }
 
