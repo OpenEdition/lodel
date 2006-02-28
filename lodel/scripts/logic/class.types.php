@@ -168,6 +168,10 @@ class TypesLogic extends Logic {
 			"17"=>getlodeltextcontents("locked","common"));
 			renderOptions($arr,$context['creationstatus']);
 			break;
+		case 'gui_user_complexity' :
+			require_once 'commonselect.php';
+			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+			break;
 		}
 	}
 		
@@ -225,15 +229,16 @@ class TypesLogic extends Logic {
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
 									'class' => array('class', '+'),
-									'tpl' => array('tplfile', ''),
 									'tplcreation' => array('tplfile', ''),
-									'tpledition' => array('tplfile', ''),
 									'import' => array('select', '+'),
 									'creationstatus' => array('select', '+'),
-									'search' => array('boolean', '+'),
 									'public' => array('boolean', '+'),
-									'oaireferenced' => array('boolean', '+'),
-									'display' => array('select', ''));
+									'gui_user_complexity' => array('select', '+'),
+									'tpledition' => array('tplfile', ''),
+									'display' => array('select', ''),
+									'tpl' => array('tplfile', ''),
+									'search' => array('boolean', '+'),
+									'oaireferenced' => array('boolean', '+'));
 	}
 	// end{publicfields} automatic generation  //
 

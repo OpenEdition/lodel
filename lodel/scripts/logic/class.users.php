@@ -106,9 +106,9 @@ class UsersLogic extends Logic
 			if (!$arr) $arr[1] = '--';
 			renderOptions($arr,$context['usergroups']);
 			break;
-		case 'userlevel' :
+		case 'gui_user_complexity' :
 			require_once 'commonselect.php';
-			makeSelectUserLevel($context['userlevel']);
+			makeSelectGuiUserComplexity($context['gui_user_complexity']);
 			break;
 		case 'userrights':
 			require_once 'commonselect.php';
@@ -239,7 +239,7 @@ class UsersLogic extends Logic
 									'email' => array('email', ''),
 									'lang' => array('lang', '+'),
 									'userrights' => array('select', '+'),
-									'userlevel' => array('select', '+'),
+									'gui_user_complexity' => array('select', '+'),
 									'nickname' => array('text', ''),
 									'biography' => array('longtext', ''),
 									'photo' => array('image', ''),

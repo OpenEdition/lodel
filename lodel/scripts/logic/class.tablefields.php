@@ -119,6 +119,10 @@ class TableFieldsLogic extends Logic {
 			require_once 'commonselect.php';
 			makeSelectFieldTypes($context['type']);
 			break;
+		case 'gui_user_complexity' :
+			require_once 'commonselect.php';
+			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+			break;
 		case 'cond':
 			$arr = array(
 			'*' => getlodeltextcontents('nocondition', 'admin'),
@@ -369,16 +373,17 @@ class TableFieldsLogic extends Logic {
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
-									'style' => array('mlstyle', ''),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
+									'style' => array('mlstyle', ''),
 									'cond' => array('select', '+'),
 									'defaultvalue' => array('text', ''),
 									'processing' => array('text', ''),
 									'allowedtags' => array('multipleselect', ''),
-									'filtering' => array('text', ''),
+									'gui_user_complexity' => array('select', '+'),
 									'edition' => array('select', ''),
 									'editionparams' => array('text', ''),
+									'filtering' => array('text', ''),
 									'weight' => array('select', ''),
 									'comment' => array('longtext', ''),
 									'idgroup' => array('select', '+'));
