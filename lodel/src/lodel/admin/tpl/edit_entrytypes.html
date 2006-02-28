@@ -76,7 +76,7 @@
     </span>
   </LOOP>
   <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_TITLE]<span class="optional">(*)</span> : 
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
@@ -111,20 +111,9 @@
     </span>
   </LOOP>
   <br />
-  <label for="edition">[@ADMIN.INTERFACE_EDITION] : 
-		</label>
-  <br class="nobr">
-  <select name="edition" id="edition">
-    <?php 
-						makeSelect($context,"edition","entrytypes","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="edition">
-    <a id="edition"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.FIELDSET_CREATION</legend>
   <label for="newbyimportallowed">[@ADMIN.NEWIMPORTALLOWED] : 
 		</label>
   <br class="nobr">
@@ -160,6 +149,23 @@
   <LOOP NAME="fielderror" FIELD="gui_user_complexity">
     <a id="gui_user_complexity"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.FIELDSET_EDITION</legend>
+  <label for="edition">[@ADMIN.INTERFACE_EDITION] : 
+		</label>
+  <br class="nobr">
+  <select name="edition" id="edition">
+    <?php 
+						makeSelect($context,"edition","entrytypes","select");
+					?>
+  </select>
+  <LOOP NAME="fielderror" FIELD="edition">
+    <a id="edition"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_EDITION]"></FUNC>
     </span>
   </LOOP>
   <br />
