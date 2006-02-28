@@ -607,50 +607,65 @@ function backupME($sqlfile, $dirs)
 	return $archivetmp;
 }
 
+/**
+ * Importation d'un ME depuis son archive ZIP
+ *
+ * @param string $archive le chemin vers le fichier ZIP
+ * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
+ * @param array $acceptedexts la liste des types de fichiers acceptés
+ * @param string $sqlfile le nom du fichier SQL à traiter. Vide par défaut
+ */
 function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '')
 {
 	global $unzipcmd;
-
 	$tmpdir = tmpdir();
 
 	// use UNZIP command
 	if ($unzipcmd && $unzipcmd != "pclzip")	{
 		// find files to unzip
 		$listfiles = `$unzipcmd -Z -1 $archive`;
+		$listfilesarray = preg_split("/\n/", `$unzipcmd -Z -1 $archive`);
+		if(!$acceptedexts) {
+			$acceptedexts = array('*');
+		}
 		if (!$listfiles)
 			return false;
-		$dirs = "";
+		$dirs = '';
 		foreach ($accepteddirs as $dir) {
 			if (preg_match("/^(\.\/)?".str_replace("/", '\/', $dir)."\//m", $listfiles) 
 						&& file_exists(SITEROOT.$dir)) {
 				if ($acceptedexts) {
 					foreach ($acceptedexts as $ext)	{
-						$dirs .= $dir."/*.$ext ".$dir."/*/*.$ext ";
+						$dirs .= "\\".$dir."\/\*.$ext ".$dir."\/\*\/\*.$ext ";
 					}
 				}	else {
-					$dirs .= $dir."/* ".$dir."/*/* ";
+					$dirs .= "\\".$dir."\/\* ".$dir."/\*/\* ";
 				}
 			}
 		}
-		if (!chdir(SITEROOT))
-			die("ERROR: chdir fails");
+		#echo "<br />dirs=$dirs<br />";
+		#if (!chdir(SITEROOT))
+		#	die("ERROR: chdir fails");
 
 		// erase the files if there exists
-		$listfiles = preg_split("/\n/", `$unzipcmd -Z -1 $archive $dirs`);
-		foreach ($listfiles as $file)	{
+		#echo "cmd : $unzipcmd -Z -1 $archive $dirs";
+		#$listfilesarray = preg_split("/\n/", `$unzipcmd -Z -1 $archive`);
+		/*foreach ($listfilesarray as $file)	{
 			if (file_exists($file))
 				unlink($file);
-		}
-		//
-		system($unzipcmd." -oq $archive  $dirs");
-		if (!chdir("lodel/admin"))
-			die("ERROR: chdir 2 fails");
+		}*/
+		#echo $unzipcmd." -oq $archive  \\tpl\/\*.html -d ../..";
+		#system($unzipcmd." -oq $archive  $dirs");
+		system($unzipcmd." -oq $archive  $dirs -d ../..");
+		#if (!chdir("lodel/admin"))
+		#  die("ERROR: chdir 2 fails");
 		if ($sqlfile)	{
 			system($unzipcmd." -qp $archive  *.sql >$sqlfile");
 			if (filesize($sqlfile) <= 0)
 				return false;
 		}
-	}	else { // use PCLZIP library
+	}	else {
+		// use PCLZIP library
 		require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 
