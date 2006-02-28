@@ -76,6 +76,7 @@ class persontypesVO
 	var $g_type;
 	var $tpl;
 	var $tplindex;
+	var $gui_user_complexity;
 	var $rank;
 	var $status;
 	var $upd;

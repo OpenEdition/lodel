@@ -74,6 +74,7 @@ class tablefieldsVO
 	var $altertitle;
 	var $type;
 	var $g_name;
+	var $comment;
 	var $style;
 	var $cond;
 	var $defaultvalue;
@@ -82,9 +83,8 @@ class tablefieldsVO
 	var $gui_user_complexity;
 	var $edition;
 	var $editionparams;
-	var $filtering;
 	var $weight;
-	var $comment;
+	var $filtering;
 	var $idgroup;
 	var $status;
 	var $rank;
