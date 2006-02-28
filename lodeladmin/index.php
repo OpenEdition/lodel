@@ -50,7 +50,7 @@ authenticate(LEVEL_ADMINLODEL);
 
 $accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites');
 
-require 'controler.php';
+require_once 'controler.php';
 Controler::Controler($accepted_logics);
 
 ?>
