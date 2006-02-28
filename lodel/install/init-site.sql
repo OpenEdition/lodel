@@ -139,6 +139,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	defaultvalue	TINYTEXT NOT NULL,		# valeur par defaut
 	processing	TINYTEXT NOT NULL,		# traitement a faire a l'import
 	allowedtags 	TINYTEXT NOT NULL,		# balises acceptees
+	gui_user_complexity			TINYINT UNSIGNED DEFAULT '64' NOT NULL,
 	filtering	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
@@ -204,7 +205,7 @@ CREATE TABLE IF NOT EXISTS #_TP_users (
 
 	lang											CHAR(5) NOT NULL,       # user lang
 	userrights								TINYINT UNSIGNED DEFAULT '0' NOT NULL,
-	userlevel									TINYINT UNSIGNED DEFAULT '32' NOT NULL,
+	gui_user_complexity									TINYINT UNSIGNED DEFAULT '64' NOT NULL,
 
 	nickname									VARCHAR(64),
 	function									VARCHAR(255),
@@ -268,6 +269,7 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 	creationstatus	TINYINT DEFAULT '-1' NOT NULL,		# status for the new entities created with this type
 	search		TINYINT DEFAULT '1' NOT NULL,
 	public		TINYINT DEFAULT '0' NOT NULL,
+	gui_user_complexity			TINYINT UNSIGNED DEFAULT '64' NOT NULL,
 	oaireferenced	TINYINT DEFAULT '0' NOT NULL,
 
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
