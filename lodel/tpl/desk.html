@@ -346,7 +346,7 @@ body{
 		<BEFORE>
 		<div class="sites">
 		[@LODELADMIN.SITE]:
-		<select onChange="select_url(this)">		
+		<select onchange="select_url(this)" class="barInfo">		
 		<option>--</option>	
 		</BEFORE>
 		<DO>
@@ -469,16 +469,17 @@ body{
 
 	</ul>
 	<table class="infos">
-	<tr>
+	
 	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
 		<BEFORE>
+		<tr>
 		<th>[@COMMON.SITE]</th>
 		</BEFORE>
 		<DO>
 		<td>[#NAME]</td>
 		</DO>
+		<AFTER></tr></AFTER>
 	</LOOP>
-	</tr>
 	<tr>
 	<th>[@COMMON.USER]</th>
 	<td>[#LODELUSER.NAME] <em>(
@@ -516,6 +517,7 @@ body{
 	</td>
 	</tr>
 	</table>
+	<IF COND="[#SITE]">
 	<div id="adminLink">
 		<IF COND="![#LODELUSER.REDACTOR]">	
 			<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
@@ -529,6 +531,7 @@ body{
 		[@COMMON.ADMINISTRATION]
 		</a>
 	</div>
+	</IF>
 
 </div>
 <IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodeladmin')]">
