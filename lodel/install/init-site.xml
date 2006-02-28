@@ -289,6 +289,11 @@
 				description="champ generique equivalent"
 				label="[@ADMIN.GENERIC_EQUIVALENT]"
         edittype="select" />
+<column name="comment"
+				type="LONGVARCHAR"
+				description="commentaire sur le champs"
+				label="[@ADMIN.COMMENT]"
+        edittype="longtext" />
 </vgroup>
 <vgroup name="grcreation"
 				label="[@ADMIN.FIELDSET_CREATION]">
@@ -345,29 +350,21 @@
 				description="params pour l edition"
 				label="[@ADMIN.PARAMETER_FOR_EDITION]"
         edittype="text" />
+	<column name="weight"
+					type="TINYINT"
+					label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
+        edittype="select" />
 </vgroup>
-<vgroup name="graffichagesite"
-				label="[@ADMIN.SITE_DISPLAY]">
+<vgroup name="grsite"
+				label="[@ADMIN.SITE]">
 <column name="filtering"
 				type="LONGVARCHAR"
 				description="traitement a faire a l exportation"
 				label="[@ADMIN.AUTOMATIC_FILTERING]"
         edittype="text" />
 </vgroup>
-<vgroup name="grindexation"
-				label="[@ADMIN.FIELDSET_INDEXATION]">
-<column name="weight"
-				type="TINYINT"
-				label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
-        edittype="select" />
-</vgroup>
-<vgroup name="grme"
-				label="[@ADMIN.FIELDSET_ME]">
-<column name="comment"
-				type="LONGVARCHAR"
-				description="commentaire sur le champs"
-				label="[@ADMIN.COMMENT]"
-        edittype="longtext" />
+<vgroup name="grprotected"
+				label="[@ADMIN.FIELDSET_PROTECTED]">
 <vcolumn name="protected"
 				 label="[@ADMIN.PROTECTED_DATAFIELD]"
 				 edittype="boolean"
@@ -938,14 +935,6 @@
 					description="status for the new document"
 					label="[@ADMIN.STATUS_OF_NEW_DOCUMENTS]"
 					edittype="select" />
-	<column name="public"
-					type="TINYINT"
-					default="0"
-					required="true"
-					description=""
-					label="[@ADMIN.PUBLIC_DOCUMENT]"
-					edittype="boolean" 
-					confirm="confirm_public_document(this)" /> <!-- confirmation is required for this type -->
 	<column name="gui_user_complexity"
 					type="TINYINT"
 					default="64"
@@ -968,25 +957,22 @@
 				description="Mode d affichage"
 				label="[@ADMIN.DISPLAY]"
         edittype="select" />
+<column name="search"
+				type="TINYINT"
+				default="1"
+				required="true"
+				description=""
+				label="[@ADMIN.INDEX_DOCUMENT]"
+        edittype="boolean" />
 </vgroup>
 <vgroup name="graffichagesite"
-				label="[@ADMIN.FIELDSET_SITE_DISPLAY]">
+				label="[@ADMIN.FIELDSET_SITE]">
 	<column name="tpl"
 					type="VARCHAR"
 					size="255"
 					description="name du fichier template utilise dans la zone de revue"
 					label="[@ADMIN.TEMPLATE_FILE]"
 					edittype="tplfile" />
-</vgroup>
-<vgroup name="grindexation"
-				label="[@ADMIN.FIELDSET_INDEXATION]">
-<column name="search"
-        type="TINYINT"
-        default="1"
-        required="true"
-        description=""
-        label="[@ADMIN.INDEX_DOCUMENT]"
-        edittype="boolean" />
 <column name="oaireferenced"
 				type="TINYINT"
 				default="0"
@@ -994,6 +980,14 @@
 				description=""
 				label="[@ADMIN.OAI_REFERENCED_DOCUMENT]"
         edittype="boolean" />
+<column name="public"
+				type="TINYINT"
+				default="0"
+				required="true"
+				description=""
+				label="[@ADMIN.PUBLIC_DOCUMENT]"
+				edittype="boolean" 
+					confirm="confirm_public_document(this)" /> <!-- confirmation is required for this type -->
 </vgroup>
 <column name="rank"
         type="INTEGER"
@@ -1003,8 +997,8 @@
         type="TINYINT"
         default="1"
         required="true" />
-<vgroup name="grme"
-				label="[@ADMIN.FIELDSET_ME]">
+<vgroup name="grprotected"
+				label="[@ADMIN.FIELDSET_PROTECTED]">
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_TYPE]"
         edittype="boolean" 
@@ -1190,6 +1184,13 @@
         description="name du fichier template pour l index"
         label="[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]"
         edittype="tplfile" />
+<column name="gui_user_complexity"
+				type="TINYINT"
+				default="64"
+				required="true"
+				description="Degré de complexité de l'interface dans lequel un type est affiché"
+				label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+				edittype="select" />
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -1286,6 +1287,13 @@
         description="name du fichier template pour l index"
         label="[@ADMIN.TEMPLATE_FILENAME_INDEX]"
         edittype="tplfile" />
+<column name="gui_user_complexity"
+				type="TINYINT"
+				default="64"
+				required="true"
+				description="Degré de complexité de l'interface dans lequel un type est affiché"
+				label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+				edittype="select" />
 <column name="rank"
         type="INTEGER"
         default="0"

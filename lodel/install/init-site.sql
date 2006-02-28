@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 
 	tpl		TINYTEXT NOT NULL,			# name du fichier template pour l'entree
 	tplindex	TINYTEXT NOT NULL,			# name du fichier template pour l'index
-
+	gui_user_complexity			TINYINT UNSIGNED DEFAULT '64' NOT NULL,
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,	# rank sert pour l'interface.
 	status		TINYINT DEFAULT '1' NOT NULL,
 
@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 
 	tpl		TINYTEXT NOT NULL,			# name du fichier template pour l'entree
 	tplindex	TINYTEXT NOT NULL,			# name du fichier template pour l'index
-
+	gui_user_complexity			TINYINT UNSIGNED DEFAULT '64' NOT NULL,
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,	# rank sert pour l'interface.
 	status		TINYINT DEFAULT '1' NOT NULL,
 
