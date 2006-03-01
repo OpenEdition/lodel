@@ -26,7 +26,7 @@ htaccess docannexe/file
 dirdestination .
 dirsource $homelodel
 
-ln styles_lodel.css
+#ln styles_lodel.css
 
 dirsource $homesite
 
@@ -84,7 +84,7 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln styles_lodel.css
+#ln styles_lodel.css
 
 # les logins
 dirsource $homesite/lodel/admin
@@ -163,7 +163,7 @@ htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
-ln styles_lodel.css
+#ln styles_lodel.css
 
 dirsource $homesite/lodel/edition
 ln tpl/filebrowser.html
