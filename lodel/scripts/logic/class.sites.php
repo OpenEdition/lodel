@@ -136,6 +136,7 @@ class SitesLogic extends Logic
 			$db->execute(lq("DELETE FROM #_MTP_session WHERE site='$site' AND iduser!='$iduser'")) or dberror();
 			// change le statut du site
 			$db->execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE $critere")) or dberror();
+			unlock();
 
 		} else if ($action == 'unlock') { // Déverouillage du site
 
