@@ -243,6 +243,7 @@ function translate_xmldata($data)
 ### use the transaction now.
 function unlock()
 {
+	global $db;
   // Déverrouilles toutes les tables vérouillées
   // fonction lock_write()
   if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
@@ -252,10 +253,11 @@ function unlock()
 
 function lock_write()
 {
+	global $db;
   // Vérouille toutes les tables MySQL en écriture
   $list = func_get_args();
-  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-     $db->execute(lq("LOCK TABLES #_TP_". join (" WRITE ,".$GLOBALS['tp'],$list)." WRITE")) or dberror();
+	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES)
+		$db->execute(lq("LOCK TABLES #_MTP_". join (" WRITE ,"."#_MTP_", $list)." WRITE")) or dberror();
 }
 
 function prefix_keys($prefix,$arr)
