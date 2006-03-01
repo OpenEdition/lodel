@@ -501,7 +501,7 @@ div.advancedFunc #addEntity select{
 	float: left;
 	margin: 0 .5em 0 0;
 	text-align: left;
-	/*font-weight: bold;*/
+	font-weight: normal;
 }
 
 #listEntities div.action div.move{
