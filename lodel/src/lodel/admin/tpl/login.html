@@ -29,54 +29,49 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <!--[ ************************** Rajout intération maquette ************************ ]-->
 <MACRO NAME="HEADER_LOGO_LOGIN">
-  <div>
-    <div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
-      <div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
-    </div>
-    <form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post">
-    <div id="formulaire">
-      <div id="titre_formulaire">
-        [@COMMON.WELCOME_ON] 
-        <LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
-          <DO><span class="texte"><strong>[#TITLE]</strong></span></DO>
-	</LOOP>
-	<br />[@COMMON.DEMAND_IDENTIFICATION] :
-      </div>
-        <input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
-        <div id="champ_formulaire">
-          <IF COND="[#CHARSET] ne 'utf-8'">
-            <span class="message_erreur">
-              [@COMMON.BROWSER_UTF8]<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8]
-            </span>
-            <br /><br />
-          </IF>
-          <IF COND="[#ERROR_LOGIN]">
-            <span class="message_erreur">[@COMMON.INVALID_LOGIN_PASSWORD]</span><br /><br />
-          </IF>
-          <IF COND="[#ERROR_OPENSESSION]">
-            <span class="message_erreur">[@COMMON.ERROR_OPENSESSION]</span><br /><br />
-          </IF>
-          <IF COND="[#ERROR_SITEBLOQUE]">
-            <span class="message_erreur">[@COMMON.BLOCK_SITE]</span><br /><br />
-          </IF>
-          <!--[[(#ERREUR_SETCOOKIE|true)<span class="message_erreur">Impossible de poser un cookie.</span><br /><br />]]-->
-          <IF COND="[#ERROR_TIMEOUT]">
-            <span class="message_erreur">[@COMMON.SESSION_TIMEOUT]</span><br /><br />
-          </IF>
-          <IF COND="[#ERROR_PRIVILEGE]">
-            <span class="message_erreur">[@COMMON.ERROR_RIGHTS]</span><br /><br />
-          </IF>
-          [@COMMON.LOGIN] : 
-          <input type="text" class="input_formulaire" name="login" value="[#LOGIN]" />
-          <br /><br />
-          [@COMMON.PASSWD] : <input type="password" class="input_formulaire" name="passwd" />
-        </div>
-        <p>
-          <img src="[#SHAREURL]/images/vague.png" alt="------" />
-          <input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" alt="Valider" />
-        </p>
-        </form>
-      
-    </div>
+	<div>
+		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
+		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
+	</div>
+	<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post">
+	<fieldset id="formulaire">
+		<legend id="titre_formulaire">[@COMMON.WELCOME_ON]
+			<LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
+			<DO><span class="texte"><strong>[#TITLE]</strong></span></DO>
+			</LOOP>
+		</legend>
+		<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
+		<IF COND="[#CHARSET] ne 'utf-8'">
+			<span class="error">
+				[@COMMON.BROWSER_UTF8]<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8]
+			</span>
+			<br /><br />
+		</IF>
+		<IF COND="[#ERROR_LOGIN]">
+			<span class="error">[@COMMON.INVALID_LOGIN_PASSWORD]</span><br /><br />
+		</IF>
+		<IF COND="[#ERROR_OPENSESSION]">
+			<span class="error">[@COMMON.ERROR_OPENSESSION]</span><br /><br />
+		</IF>
+		<IF COND="[#ERROR_SITE_BLOQUE]">
+			<span class="error">[@COMMON.BLOCK_SITE]</span><br /><br />
+		</IF>
+		<IF COND="[#ERROR_TIMEOUT]">
+			<span class="error">[@COMMON.SESSION_TIMEOUT]</span><br /><br />
+		</IF>
+		<IF COND="[#ERROR_PRIVILEGE]">
+			<span class="error">[@COMMON.ERROR_RIGHTS]</span><br /><br />
+		</IF>
+		<label for="login">[@COMMON.LOGIN]</label>
+		<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN]" />
+		<label for="passwd">[@COMMON.PASSWD]</label>
+		<input type="password" class="input_formulaire" id="passwd" name="passwd" />
+		<p>
+			<img style="border : 0px" src="[#SHAREURL]/images/vague.png" alt="------" />
+			<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" alt="Valider" />
+		</p>
+	</fieldset>
+	</form>
+
 <!--[ ********************** Fin Rajout intégration maquette ****************** ]-->
 <MACRO NAME="CLOSE_HTML">

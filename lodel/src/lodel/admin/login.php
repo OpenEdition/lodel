@@ -48,35 +48,50 @@ if ($_POST['login']) {
 	do {
 		require_once 'connect.php';
 		require_once 'loginfunc.php';
+		require_once 'connect.php';
+		
+			
 		if (!check_auth($context['login'], $context['passwd'], $site)) {
 			$context['error_login'] = 1;
 			break;
 		}
+		//Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
+		if($context['lodeluser']['rights'] < LEVEL_LODELADMIN) {
+			usemaindb();
+			$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
+			usecurrentdb();
+			if($context['site_bloque'] == 1) {
+				$context['error_site_bloque'] = 1;
+				break;
+			}
+		}
+
 		// ouvre une session
 		$err = open_session($context['login']);
 		if ($err) {
 			$context[$err] = 1;
 			break;
 		}
-		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
+		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
 		die ("url_retour: $url_retour");
 	} while (0);
 }
 
 $context['passwd'] = $passwd = 0;
 // variable: sitebloque
-if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
-	$context['sitebloque'] = 1;
-} else { // test si la site est bloque dans la DB.
+/*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
+	$context['site_bloque'] = 1;
+} else { // test si le site est bloque dans la DB.
 	require_once 'connect.php';
 	usemaindb();
-	$context['sitebloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
+	$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
 	usecurrentdb();
-}
+}*/
 
 $context['url_retour']      = $url_retour;
 $context['error_timeout']   = $error_timeout;
 $context['error_privilege'] = $error_privilege;
+
 
 require_once 'view.php';
 $view = &View::getView();
