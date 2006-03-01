@@ -8,8 +8,8 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
  *
  * Home page: http://www.lodel.org
  *
@@ -33,7 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodeladmin
@@ -45,34 +45,39 @@
 require 'lodelconfig.php';
 include $home. 'auth.php';
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-include_once 'func.php';
+require_once 'func.php';
 
-// calcul le critere pour determiner le user a editer, restorer, detruire...
 $id      = intval($id);
-$critere = " id='$id' AND statut>0";
-
+$critere = " id = '$id' AND status > 0";
 mysql_select_db($database) or die (mysql_error());
 if ($lock) { // lock
-	// lock le site en ecriture le site.
+	// lock le site en ecriture
 	lock_write ('session', 'sites');
 	// cherche le nom de la site
-	$result = mysql_query ("SELECT rep FROM  $GLOBALS[tp]sites WHERE $critere") or die (mysql_error());
+	$result = mysql_query ("SELECT path FROM  $GLOBALS[tp]sites WHERE $critere") or die (mysql_error());
 	list($site) = mysql_fetch_row($result);
 	if (!$site) {
 		die ("erreur lors de l'appel de la locksite. La site est inconnue ou supprimee");
 	}
 	// delogue tout le monde sauf moi.
 	mysql_query ("DELETE FROM $GLOBALS[tp]session WHERE site='$site' AND iduser!='$iduser'") or die (mysql_error());
-	// change le statut de la site
-	mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=32 WHERE $critere") or die (mysql_error());
+	// change le statut du site
+	mysql_query ("UPDATE $GLOBALS[tp]sites SET status = 32 WHERE $critere") or die (mysql_error());
 	unlock();
 
 } elseif ($unlock) { // unlock
-	mysql_query ("UPDATE $GLOBALS[tp]sites SET statut=1 WHERE $critere") or die (mysql_error());
+	mysql_query ("UPDATE $GLOBALS[tp]sites SET status = 1 WHERE $critere") or die (mysql_error());
 } else { die ("lock ou unlock"); }
 
 mysql_select_db($currentdb) or die (mysql_error());
 
-back();
+// Nettoyage du cache
+require_once 'cachefunc.php';
+clearcache();
+
+// Appel de la vue précédente
+require_once 'view.php';
+$view = &View::getView();
+$view->back();
 return;
 ?>
