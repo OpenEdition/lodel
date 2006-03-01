@@ -55,7 +55,11 @@
 <td>
 <a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a> |
 <a href="site.php?id=[#ID]&amp;delete=1">[@COMMON.DELETE]</a> |
-<IF COND="[#STATUS] ge 32"><a href="locksite.php?id=[#ID]&amp;unlock=1">[@LODELADMIN.UNLOCKED]</a><ELSE/><a href="locksite.php?id=[#ID]&amp;lock=1">[@LODELADMIN.LOCKED]</a></IF>
+<IF COND="[#STATUS] ge 32">
+	<a href="locksite.php?id=[#ID]&amp;unlock=1">[@LODELADMIN.UNLOCK]</a>
+<ELSE/>
+	<a href="locksite.php?id=[#ID]&amp;lock=1">[@LODELADMIN.LOCK]</a>
+</IF>
 </td>
 </tr>
 </LOOP>
