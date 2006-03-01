@@ -55,8 +55,10 @@ if ($_POST['login']) {
 			$context['error_login'] = 1;
 			break;
 		}
+		
 		//Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
 		if($context['lodeluser']['rights'] < LEVEL_LODELADMIN) {
+			
 			usemaindb();
 			$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
 			usecurrentdb();
@@ -76,13 +78,13 @@ if ($_POST['login']) {
 		die ("url_retour: $url_retour");
 	} while (0);
 }
-
+require_once 'connect.php';
 $context['passwd'] = $passwd = 0;
 // variable: sitebloque
 /*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
 	$context['site_bloque'] = 1;
 } else { // test si le site est bloque dans la DB.
-	require_once 'connect.php';
+	
 	usemaindb();
 	$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
 	usecurrentdb();
