@@ -1552,9 +1552,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<ul class="actions">
 		<li>&nbsp;</li>
 	<IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')]">
-		<li><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
+		<li><strong><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></strong></li>
 	<ELSE />
-		<li><span class="inactif">[@COMMON.VIEW]</span></li>
+		<li><strong><span class="inactif">[@COMMON.VIEW]</span></strong></li>
 	</IF>
 	<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>

@@ -452,6 +452,7 @@ div.advancedFunc #addEntity select{
 #listEntities li{
 	padding: .5ex 1em;
 	position: relative;
+	min-height: 24px;
 }
 
 #listEntities li.line1{
@@ -462,10 +463,23 @@ div.advancedFunc #addEntity select{
 	background: #fff;
 }
 
+#listEntities li.unfoldedentities ul, #listEntities li.unfoldedentities li{
+	list-style: none;
+	font-size: 11px;
+}
+
+#listEntities li.unfoldedentities ul li{
+	/*background: #fff;*/
+}
+
+#listEntities li.unfoldedentities ul{
+	margin: 0 -1em 2ex 0;
+}
+
 #listEntities img.picto_gauche{
-	position: relative;
-	left: 0;
-	top: 0;
+	position: absolute;
+	left: .5em;
+	top: .5ex;
 	margin-right: .5em;
 }
 
@@ -477,8 +491,12 @@ div.advancedFunc #addEntity select{
 	width: auto;
 }
 
+#listEntities li.unfoldedentities div.action{
+	right: 1.7em;
+}
+
 #listEntities div.action span.item, #listEntities div.action div.move, #actionsOnEntitiesPath ul.actions li{
-	width: 6em;
+	width: 70px;
 	display: block;
 	float: left;
 	margin: 0 .5em 0 0;
@@ -500,12 +518,12 @@ div.action a, div.action a:hover{
 }
 
 #listEntities div.document{
-	margin: -9ex 0 .8ex 35px;
+	margin: 0 0 .8ex 35px;
 	width: 55%;
 }
 
-*>#listEntities>*>div.document{
-	margin: -3.5ex 0 .8ex 35px;
+#listEntities li.unfoldedentities div.document{
+	width: 45%;
 }
 
 #listEntities div.document .titre_document{
