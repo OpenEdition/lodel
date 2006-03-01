@@ -30,48 +30,47 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@LODELADMIN.TITLE_EDITION_WEBSITE]</td>
-	</tr>
-</table>
+<ul id="actionsOnEntitiesPath">
+<li>[@LODELADMIN.TITLE_EDITION_WEBSITE]</li>
+</ul>
+<br />&nbsp;<br />
+<form method="post" action="site.php">
 
-
-<form method="POST" action="site.php">
-<input type="hidden" name="edit" value="1">
-<input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="url_retour" value="[#URL_RETOUR]">
 <fieldset>
+<legend>[@COMMON.WEBSITE]</legend>
+<input type="hidden" name="edit" value="1" />
+<input type="hidden" name="id" value="[#ID]" />
+<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
 
 <label for="title">[@LODELADMIN.TITLE_WEBSITE] :</label> <br class="nobr"/>
-<input size="30" type="text" name="title" value="[#TITLE]"><br />
+<input size="30" type="text" name="title" id="title" value="[#TITLE]" /><br />
 <IF COND="[#ERROR_TITLE]">
-	<font color="Red">[@LODELADMIN.ERROR_NAME] !</font><br />
+	<span class="error">[@LODELADMIN.ERROR_NAME] !</span><br />
 </IF>
 
 
 <label for="name">[@LODELADMIN.NAME_WEBSITE]<br/>([@LODELADMIN.HOWTO_NAME_WEBSITE])</label><br class="nobr" />
-<IF COND="[#ID]">[#NAME]<br/>
+<IF COND="[#ID]">
+<input type="text" disabled="disabled" value="[#NAME]" size="30" class="disabled"  id="name" /><br/>
 <ELSE/>
-<input size="30" type="text" name="name" value="[#NAME]"><br/>
+<input size="30" type="text" name="name" id="name" value="[#NAME]" /><br/>
 <IF COND="[#ERROR_NAME]">
-<font color="Red">[@LODELADMIN.ERROR_NAME_DIRECTORY]</font><br/>
+<span class="error">[@LODELADMIN.ERROR_NAME_DIRECTORY]</span><br/>
 </IF>
 </IF>
 
 
 <IF COND="[#ID]">
-<label for="path">[@LODELADMIN.WEBSITE_IN_DIRECTORY]</label><br class="nobr" />
-[#PATH]<br/>
+<label for="atroot">[@LODELADMIN.WEBSITE_IN_DIRECTORY]</label><br class="nobr" />
+<input type="text" disabled="disabled" value="[#PATH]" size="30" class="disabled"  id="atroot" /><br/>
 <ELSE/>
 <LOOP NAME="siteatroot" TABLE="sites" WHERE="path='/' AND status gt -64">
 <ALTERNATIVE>
-<label for="path">[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</label><br class="nobr" />
+<label for="atroot">[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</label><br class="nobr" />
 <IF COND="[#NAME] || [#TITLE]">
-<input size="30" type="checkbox" name="atroot" [(#ATROOT|true)checked] >
+<input type="checkbox"  class="noText" name="atroot"  id="atroot" [(#ATROOT|true)checked] />
 <ELSE/> <!--[ valeur par defaut ]-->
-<input size="30" type="checkbox" name="atroot" checked >
+<input type="checkbox" name="atroot" id="atroot" class="noText" />
 </IF>
 <br/>
 </ALTERNATIVE>
@@ -80,23 +79,28 @@
 
 
 <label for="url">[@LODELADMIN.URL_WEBSITE] :</label><br class="nobr" />
-<input size="30" type="text" name="url" value="[#URL]"><br/>
+<input size="30" type="text" name="url" id="url" value="[#URL]" /><br/>
 
 
 <label for="subtitle">[@LODELADMIN.SUBTITLE_WEBSITE] :</label><br class="nobr" />
-<input size="30" type="text" name="subtitle" value="[#SUBTITLE]"><br/>
+<input size="30" type="text" name="subtitle" id="subtitle" value="[#SUBTITLE]" /><br/>
 
+</fieldset>
 
+<fieldset>
+<legend>[@COMMON.VALIDATION]</legend>
 
 <IF COND="[#ID]">
-<input class="form" type="submit" value="[@COMMON.MODIFY]"> <input class="form" type="submit" name="reinstall" value="[@LODELADMIN.REINSTALL]">
+<input class="button" type="submit" value="[@COMMON.MODIFY]" />&nbsp;-&nbsp;<input class="button" type="submit" name="reinstall" value="[@LODELADMIN.REINSTALL]" />
 <ELSE/>
-<input class="form" type="submit" value="[@COMMON.ADD]">
+<input class="button" type="submit" value="[@COMMON.ADD]" />
 </IF>
 </form>
 
 <IF COND="[#ID]">
-<input class="form" type="submit" value="[@COMMON.DELETE]" onClick="window.location='site.php?delete=1&id=[#ID]';">
+&nbsp;-&nbsp;<input class="button" type="submit" value="[@COMMON.DELETE]" onclick="window.location='site.php?delete=1&amp;id=[#ID]';" />
 </IF>
+
+</fieldset>
 
 <MACRO NAME="CLOSE_HTML">

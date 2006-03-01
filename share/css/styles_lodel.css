@@ -184,6 +184,12 @@ input.noText{
 	border: 0;
 }
 
+input.disabled{
+	border: 1px solid #cecece;
+	color: #333;
+	background: #f1f5fb;
+}
+
 input.button{
 	border: 2px outset #333;
 	background: #f1f5fb;
