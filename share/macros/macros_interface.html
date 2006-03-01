@@ -3,7 +3,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="HEADER_LOGO_LOGIN">
-<body bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" alink="black" onLoad="" marginwidth="0" marginheight="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0">
+<body>
 </DEFMACRO>
 
 <!--[ -----------------------------------------------------------
@@ -1460,8 +1460,8 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<li class="line2">
 		</IF>
 			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
-			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			</li>
 		<IF COND="[#DISPLAY] eq 'unfolded'">
 			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
@@ -1712,8 +1712,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
                  " [#G_TITLE|textebrut|nbsp] "
            </IF>
          </span>&nbsp;
-	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
+	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>
 	<span class="type_document">([#TYPE])</span>
+	<LOOP NAME="getcomments" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 1" ORDER="type, entities.rank">
+		<AFTER><span class="comment" title="[#NBRESULTS] [@COMMON.COMMENTS]"><MACRO NAME="PNG_COMMENT" /> <sup>([#NBRESULTS])</sup></span></AFTER>
+	</LOOP>
+	<br />
+	<LOOP NAME="getannexes" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 0" ORDER="type, entities.rank">
+		<a href="index.php?do=view&amp;id=[#ID]" title="[#G_TITLE|textebrut|nbsp]"><MACRO NAME="PNG_ANNEXE" /></a>
+	</LOOP>
+	
+
 	</div>
 </DEFMACRO>
 
@@ -1880,11 +1889,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <!--[ png editions des series ]-->
 <DEFMACRO NAME="PNG_PICTO_EDITION_DES_SERIES">
-	<img src="[#SHAREURL]/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43" />
+	<img src="[#SHAREURL]/images/picto_edition_des_series.png" class="picto_gauche" width="38" height="43"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_FLECHE_EDITION_DES_SERIES">
-	<img src="[#SHAREURL]/images/fleche_edition_des_series.png" class="picto_fleche" width="17" height="17" />
+	<img src="[#SHAREURL]/images/fleche_edition_des_series.png" class="picto_fleche" width="17" height="17"  alt="" />
 </DEFMACRO>
 
 <!--[ png status des documents ]-->
@@ -1953,44 +1962,48 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <!--[ png plié/déplié ]-->
 <DEFMACRO NAME="PNG_PLUS">
-	<img src="[#SHAREURL]/images/deplie.png" class="picto" width="13" height="14" />
+	<img src="[#SHAREURL]/images/deplie.png" class="picto" width="13" height="14"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_MOINS">
-	<img src="[#SHAREURL]/images/plie.png" class="picto" width="13" height="14" />
+	<img src="[#SHAREURL]/images/plie.png" class="picto" width="13" height="14"  alt="" />
 </DEFMACRO>
 
 <!--[ png divers ]-->
 <DEFMACRO NAME="PNG_PICTO_INFOS_PARENT">
-	<img src="[#SHAREURL]/images/picto_infos_parent.png" class="picto_gauche" width="24" height="31" />
+	<img src="[#SHAREURL]/images/picto_infos_parent.png" class="picto_gauche" width="24" height="31"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_PICTO_POPUP_EDITION">
-	<img src="[#SHAREURL]/images/picto_popup_edition.png" class="picto_gauche" width="60" height="69" />
+	<img src="[#SHAREURL]/images/picto_popup_edition.png" class="picto_gauche" width="60" height="69"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_FLECHE_VERTE_POPUP_EDITION">
-	<img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" class="picto_gauche" width="4" height="15" />
+	<img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" class="picto_gauche" width="4" height="15"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_ANNEXE">
-	<img src="[#SHAREURL]/images/annexe.png" class="picto" width="11" height="19" />
+	<img src="[#SHAREURL]/images/annexe.png" class="picto" width="11" height="19"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_ANNEXE_GRIS">
-	<img src="[#SHAREURL]/images/annexe_gris.png" class="picto" width="11" height="19" />
+	<img src="[#SHAREURL]/images/annexe_gris.png" class="picto" width="11" height="19"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_ANNEXE_GRIS_NO">
-	<img src="[#SHAREURL]/images/annexe_gris_no.png" class="picto" width="11" height="19" />
+	<img src="[#SHAREURL]/images/annexe_gris_no.png" class="picto" width="11" height="19"  alt="" />
+</DEFMACRO>
+
+<DEFMACRO NAME="PNG_COMMENT">
+	<img src="[#SHAREURL]/images/comment.gif" class="picto" width="16" height="14"  alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_LOGO_OO">
-	<img src="images/oo_built_with_banner.png" width="243" height="80" border="0" vspace="0" hspace="0" />
+	<img src="images/oo_built_with_banner.png" width="243" height="80" border="0" vspace="0" alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="PNG_LOGO_W2L">
-	<img src="[#SHAREURL]/images/w2l.png" width="200" height="38" border="0" vspace="0" hspace="0" />
+	<img src="[#SHAREURL]/images/w2l.png" width="200" height="38" border="0" vspace="0" alt="" />
 </DEFMACRO>
 
 <DEFMACRO NAME="NAVBAR_FOR_CHECKIMPORT">
