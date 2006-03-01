@@ -1550,6 +1550,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 	<ul class="actions">
+		<li>&nbsp;</li>
 	<IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')]">
 		<li><a href="<MACRO NAME="SITE_ROOT" />/[(#ID|makeurlwithid)]">[@COMMON.VIEW]</a></li>
 	<ELSE />
@@ -1574,6 +1575,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<li><span class="inactif">[@COMMON.PROTECTED]</span></li>
 		</ALTERNATIVE>
 	</LOOP>
+		<li><span class="inactif">[@COMMON.DELETE]</span></li>
 	</ul>
 </DEFMACRO>
 
