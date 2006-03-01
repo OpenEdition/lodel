@@ -1509,6 +1509,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 <DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
+	<div class="move">
 	<LOOP NAME="rightonentity" ACTION="changerank">
 	<DO>
 		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
@@ -1519,31 +1520,31 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 	</ALTERNATIVE>
 	</LOOP>
+	</div>
 </DEFMACRO>
 
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">
 		<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
-		|&nbsp;<a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a>&nbsp;
+		<span class="item"><a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
 		<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
-		|&nbsp;<a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a>&nbsp;
+		<span class="item"><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></span>
 		</DO>
 		<ALTERNATIVE>
-		|&nbsp;<span class="inactif">[@COMMON.EDIT]</span>&nbsp;
+		<span class="item inactif">[@COMMON.EDIT]</span>
 		</ALTERNATIVE>
 		</LOOP>
-		|&nbsp;<MACRO NAME="CHANGER_STATUS_ENTITIES">&nbsp;
+		<span class="item left"><MACRO NAME="CHANGER_STATUS_ENTITIES"></span>
 		<LOOP NAME="rightonentity" ACTION="delete">
 		<DO>
-		|&nbsp;<a href="#" onclick="confirm_delete('[#ID]', '[@EDITION.CONFIRMATION_DELETE] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?');">[@EDITION.DELETE]</a>&nbsp;|
+		<span class="item"><a href="#" onclick="confirm_delete('[#ID]', '[@EDITION.CONFIRMATION_DELETE] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?');">[@EDITION.DELETE]</a></span>
 		</DO>
 		<ALTERNATIVE>
-		|&nbsp;<span class="inactif">[@EDITION.DELETE]</span>&nbsp;|
+		<span class="item inactif">[@EDITION.DELETE]</span>
 		</ALTERNATIVE>
 		</LOOP>
-	        <!--[<input type="checkbox" name="entity[[#ID]]" /> ]-->
 	</div>
 </DEFMACRO>
 

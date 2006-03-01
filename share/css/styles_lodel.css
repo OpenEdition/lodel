@@ -451,6 +451,7 @@ div.advancedFunc #addEntity select{
 
 #listEntities li{
 	padding: .5ex 1em;
+	position: relative;
 }
 
 #listEntities li.line1{
@@ -469,18 +470,29 @@ div.advancedFunc #addEntity select{
 }
 
 #listEntities div.action{
-	position: relative;
-	left: 60%;
-	top: -5ex;
-	margin: 0 1em 0 0;
-	width: 40%;
+	position: absolute;
+	right: 1em;
+	top: 0;
+	margin: 1.5ex 0 0 0;
+	width: auto
 	color: #cc9933;
+	text-align: right;
+}
+
+#listEntities div.action span.item, #listEntities div.action div.move{
+	width: 6em;
+	display: block;
+	float: left;
+	margin: 0 .5em 0 0;
 	text-align: left;
 }
 
-*>#listEntities>*>div.action{
-	top: 0;
-	margin: -3.5ex 1em 0 0;
+#listEntities div.action div.move{
+	width: 6em;
+}
+
+#listEntities div.action span.item.left{
+	text-align: left;
 }
 
 div.action a, div.action a:hover{
