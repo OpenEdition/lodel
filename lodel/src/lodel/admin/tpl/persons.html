@@ -50,7 +50,7 @@
 	</li>
 	<li>
 		<ul class="actions">
-			<li>
+			<li class="isolated">
 			<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 				<a href="index.php?do=view&amp;lo=persons&amp;idtype=[#TYPE.ID]">[@ADMIN.ADD_PERSON]</a>
 			<ELSE />

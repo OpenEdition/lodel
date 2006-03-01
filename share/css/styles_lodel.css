@@ -344,8 +344,9 @@ dl.entries dd.actions{
 	right: 1.3em;
 }
 
-#actionsOnEntitiesPath ul.actions li{
-	
+#actionsOnEntitiesPath ul.actions li.isolated{
+	width: auto;
+	font-weight: bold;
 }
 
 #addEntity{
