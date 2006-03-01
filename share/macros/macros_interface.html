@@ -1300,6 +1300,10 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 <DEFMACRO NAME="CURRENT_PATH">
+	<IF COND="![#ID]">
+		<LET VAR="id">[#IDPARENT]</LET>
+		<LET VAR="noid">TRUE</LET>
+	</IF>
 	<ul id="entitiesPath">
 		<li>
 		<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
@@ -1330,6 +1334,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
 		</li>
 	</ul>
+	<IF COND="[#NOID]">
+		<LET VAR="id">0</LET>
+	</IF>
 </DEFMACRO>
 
 
