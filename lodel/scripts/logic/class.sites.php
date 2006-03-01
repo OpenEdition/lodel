@@ -76,6 +76,83 @@ class SitesLogic extends Logic
 		}
 	}
 
+	/**
+	 * Bloque un site
+	 *
+	 * Met le status d'un site à 32
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function lockAction(&$context, &$error)
+	{
+		$ret = $this->_lockOrUnlock($context['id'], 'lock');
+		return $ret;
+	}
+
+	/**
+	 * Débloque un site
+	 *
+	 * Met le status d'un site à 1
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function unlockAction(&$context, &$error)
+	{
+		$ret = $this->_lockOrUnlock($context['id'],'unlock');
+		return $ret;
+	}
+
+
+	/**
+	 * Bloque ou débloque
+	 *
+	 * @access private
+	 * @param integer $id identifiant du site
+	 * @param string $action lock ou unlock
+	 */
+	function _lockOrUnlock($id, $action = 'lock')
+	{
+		global $db;
+		if(!$id) {
+			return '_error';
+		}
+		$critere = " id = '$id' AND status > 0";
+		usemaindb();
+
+		if($action == 'lock') // Verouillage du site
+		{
+			//bloque les tables
+			lock_write ('session', 'sites');
+			// cherche le nom du site
+			$dao = &getDAO('sites');
+			$vo = $dao->find($critere, 'path');
+			if (!$vo->path) {
+				$context['error'] = getlodeltextcontent('error_during_lock_site_the_site_may_have_been_deleted', 'lodeladmin');
+				return '_error';
+			}
+			// delogue tout le monde sauf l'utilisateur courant
+			$db->execute(lq("DELETE FROM #_MTP_session WHERE site='$site' AND iduser!='$iduser'")) or dberror();
+			// change le statut du site
+			$db->execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE $critere")) or dberror();
+
+		} else if ($action == 'unlock') { // Déverouillage du site
+
+			$db->execute(lq("UPDATE #_MTP_sites SET status = 1 WHERE $critere")) or dberror();
+			//deverouille les tables
+			unlock();
+
+		} else {
+			die();
+		}
+
+		usecurrentdb();
+		require_once 'cachefunc.php';
+		clearcache();
+		return '_back';
+	}
+
 	// begin{publicfields} automatic generation  //
 
 	/**

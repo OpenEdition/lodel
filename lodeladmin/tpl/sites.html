@@ -56,9 +56,11 @@
 <a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a> |
 <a href="site.php?id=[#ID]&amp;delete=1">[@COMMON.DELETE]</a> |
 <IF COND="[#STATUS] ge 32">
-	<a href="locksite.php?id=[#ID]&amp;unlock=1">[@LODELADMIN.UNLOCK]</a>
+	<!--[<a href="locksite.php?id=[#ID]&amp;unlock=1">[@LODELADMIN.UNLOCK]</a>]-->
+	<a href="index.php?lo=sites&amp;do=unlock&amp;id=[#ID]">[@LODELADMIN.UNLOCK]</a>
 <ELSE/>
-	<a href="locksite.php?id=[#ID]&amp;lock=1">[@LODELADMIN.LOCK]</a>
+	<!--[<a href="locksite.php?id=[#ID]&amp;lock=1">[@LODELADMIN.LOCK]</a>]-->
+	<a href="index.php?lo=sites&amp;do=lock&amp;id=[#ID]">[@LODELADMIN.LOCK]</a>
 </IF>
 </td>
 </tr>
