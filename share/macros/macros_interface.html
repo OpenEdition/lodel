@@ -1719,11 +1719,26 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</LOOP>
 	<br />
 	<LOOP NAME="getannexes" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 0" ORDER="type, entities.rank">
-		<a href="index.php?do=view&amp;id=[#ID]" title="[#G_TITLE|textebrut|nbsp]"><MACRO NAME="PNG_ANNEXE" /></a>
+		<LOOP NAME="rightonentity" ACTION="edit">
+		<a href="index.php?do=view&amp;id=[#ID]" title="[#G_TITLE|textebrut|nbsp]">
+			<MACRO NAME="STATUS_ANNEXE">
+		</a>
+		<ALTERNATIVE>
+			<MACRO NAME="STATUS_ANNEXE">
+		</ALTERNATIVE>
+		</LOOP>
 	</LOOP>
 	
 
 	</div>
+</DEFMACRO>
+
+<DEFMACRO NAME="STATUS_ANNEXE">
+	<IF COND="[#STATUS] GT 0">
+		<MACRO NAME="PNG_ANNEXE" />
+	<ELSE />
+		<MACRO NAME="PNG_ANNEXE_GRIS" />
+	</IF>
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT_EDIT">
