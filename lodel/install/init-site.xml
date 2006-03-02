@@ -1368,7 +1368,7 @@
         type="INTEGER"
         default="0"
         required="true"
-	label="[@COMMON.PARENT_ENTRY]"
+	label="[@COMMON.PARENT_ENTRY][@COMMON.PARENT_ENTRY_MUST_BE_PERMANENT]"
 	edittype="select"
 	editcondition="![#TYPE_FLAT]"/>
 <column name="g_name"
