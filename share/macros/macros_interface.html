@@ -546,10 +546,13 @@ cp_[#VARNAME].writeDiv();
 	</select>
 	</td>
 	<IF COND="[#NEWBYIMPORTALLOWED]">
+	<tr>
+	<td>&nbsp;</td><td>&nbsp;</td>
 	<td>
-	<input type="button" value="[@COMMON.ADD]" onclick="addnewmember('pool_member_[#VARNAME]', 'entries[[#IDTYPE]]', '[@EDITION.ENTER_LIST_OF_WORDS]')"/><br/>
-	<input type="button" value="[@COMMON.MODIFY]" onclick="modifymember('pool_member_[#VARNAME]', 'entries[[#ID]]')"/>
+	<input class="button" type="button" value="[@COMMON.ADD]" onclick="addnewmember('pool_member_[#VARNAME]', 'entries[[#IDTYPE]]', '[@EDITION.ENTER_LIST_OF_WORDS]')"/>&nbsp;&nbsp;&nbsp;
+	<input class="button" type="button" value="[@COMMON.MODIFY]" onclick="modifymember('pool_member_[#VARNAME]', 'entries[[#ID]]')"/>
 	</td>
+	</tr>
 	</IF>
 	</tr>
 	</table>
