@@ -30,246 +30,90 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-		<!--[ Partie haute ]-->
-		<tr>
-			<td  width="375" valign="top">
-				<!--[ *************** Pr��ences *************** ]-->
-				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_preferences.png" /></td>
-						<td background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.CONFIGURATION]</span></td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=users"><span class="texte_orange">[@ADMIN.ADMIN_USER_AND_RIGHTS]</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-						[@ADMIN.OPTIONS]
-						<select onChange="select_url(this)"><option>--</option>
-						<LET VAR="ID">0</LET>
-            <LOOP NAME="options" TABLE="optiongroups" WHERE="idparent='[#ID]' AND status gt 0" ORDER="rank">
-						<IF COND="[#LOGIC]">
-							<option value="index.php?do=view&lo=[#LOGIC]&id=[#ID]">[#BARRE][#TITLE]</option>
-						<ELSE/>
-							<option value="index.php?do=view&lo=useroptiongroups&id=[#ID]">[#BARRE][#TITLE]</option>
-						</IF>
-						<LET VAR="BARRE">[#BARRE]&nbsp;&nbsp;|&nbsp;</LET>
-						<LOOP NAME="options"></LOOP>
-						</LOOP>
-						</select>
-						<td>&nbsp;</td>
-					</tr>
-					<!--[Rebuild the index]-->
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=rebuildIndex&amp;lo=entities_index&clean=1">
-								<span class="texte_orange">[@ADMIN.INDEX_REBUILD]</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=translations"><span class="texte_orange">[@ADMIN.ADMINISTRATE_TRANSLATIONS]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<IF COND="[#LODELUSER.TRANSLATIONMODE]=='site'">
-							<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_SITE]</span></a>
-							<ELSE/>
-							<a href="usersettings.php?translationmode=site"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_SITE]</span></a>
-							</IF>
+<ul id="actionsOnEntitiesPath">
+	<li>[@COMMON.ADMINISTRATION]</li>
+</ul>
 
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-				</table>
-			</td>
-
-		</tr>
-		<!--[ Partie basse ]-->
-		<tr>
-			<td width="375" valign="top">
-				<!--[ *************** Configuration *************** ]-->
-				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
-						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_modele.png" /></td>
-						<td width="10" >&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.ADMIN_EM]</span></td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=classes&classtype=entities"><span class="texte_orange">[@ADMIN.CLASSES_FOR_ENTITIES]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=classes&classtype=entries"><span class="texte_orange">[@ADMIN.CLASSES_FOR_ENTRIES]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=classes&classtype=persons"><span class="texte_orange">[@ADMIN.CLASSES_FOR_PERSONS]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=optiongroups"><span class="texte_orange">[@ADMIN.MANAGE_OPTIONS]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=internalstyles"><span class="texte_orange">[@ADMIN.INTERNALSTYLES]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=characterstyles"><span class="texte_orange">[@ADMIN.CHARACTERSTYLES]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="importmodel.php"><span class="texte_orange">[@ADMIN.IMPORT_EM]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="backupmodel.php"><span class="texte_orange">[@ADMIN.BACKUP_EM]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-
-				</table>
-			</td>
-			<td width="375" valign="top">
-				<!--[ *************** Outils *************** ]-->
-				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="20" height="62" style="padding-top:25px;">&nbsp;</td>
-						<td width="350" height="62" style="padding-top:25px;"><img src="[#SHAREURL]/images/picto_admin_outils.png" /></td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.TOOLS]</span></td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="backup.php"><span class="texte_orange">[@ADMIN.BACKUP_DATA]</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="import.php"><span class="texte_orange">[@ADMIN.IMPORT_DATA]</span></a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-						<span class="texte_orange">[@ADMIN.DOWNLOAD_XML_SCHEMA]</span>
-						<select onChange="select_url(this)"><option>--</option>
-							<LOOP NAME="listentitiesclasses" TABLE="classes" WHERE="classtype='entities' AND status GT 0">
-								<option value="index.php?lo=xml&amp;do=generateXSD&amp;class=[#CLASS]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
-							</LOOP>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<span class="texte_orange">[@COMMON.LANG_INTERFACE] :</span>
-		                                <select onchange="change_language(this)">
-	                                	<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
-		                                <IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
-		                                </LOOP>
-		                                </select>
-
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<IF COND="[#LODELUSER.ADMINLODEL]">
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<?php $context['lodeladminpath']=$GLOBALS['home']."../../lodeladmin".($GLOBALS['version'] ? "-".$GLOBALS['version'] : ""); // this is not wonderfull..... 
-							?>
-							<a href="[#LODELADMINPATH]/index.php"><span class="texte_orange">[@ADMIN.GO_TO_THE_GENERAL_ADMINISTRATION_PAGE]</span></a>
-						</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-
-							<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
-							<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</span></a>
-							<ELSE/>
-							<a href="usersettings.php?translationmode=interface"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</span></a>
-							</IF>
-					</tr>
+	<div class="adminGroup conf">
+		<h4>[@ADMIN.CONFIGURATION]</h4>
+		<ul>
+			<li><a href="index.php?do=list&amp;lo=users">[@ADMIN.ADMIN_USER_AND_RIGHTS]</a></li>
+			<li>[@ADMIN.OPTIONS] : <select onchange="select_url(this)" class="barInfo"><option>--</option>
+				<LET VAR="ID">0</LET>
+				<LOOP NAME="options" TABLE="optiongroups" WHERE="idparent='[#ID]' AND status gt 0" ORDER="rank">
+					<IF COND="[#LOGIC]">
+						<option value="index.php?do=view&amp;lo=[#LOGIC]&amp;id=[#ID]">[#BARRE][#TITLE]</option>
+					<ELSE/>
+						<option value="index.php?do=view&amp;lo=useroptiongroups&amp;id=[#ID]">[#BARRE][#TITLE]</option>
 					</IF>
-					<!--[<IF COND="[#LODELUSER.ADMINLODEL]">
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<?php $context['lodeladminpath']=$GLOBALS['home']."../../lodeladmin".($GLOBALS['version'] ? "-".$GLOBALS['version'] : ""); // this is not wonderfull..... ?>
-							<a href="[#LODELADMINPATH]/index.php?do=list&lo=translations"><span class="texte_orange">[@ADMIN.ADMINISTRATE_INTERFACE_TRANSLATIONS]</span></a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
+					<LET VAR="BARRE">[#BARRE]&nbsp;&nbsp;|&nbsp;</LET>
+					<LOOP NAME="options"></LOOP>
+				</LOOP>
+				</select>
+			</li>
+			<li><a href="index.php?do=rebuildIndex&amp;lo=entities_index&amp;clean=1">[@ADMIN.INDEX_REBUILD]</a></li>
+			<li><a href="index.php?do=list&amp;lo=translations">[@ADMIN.ADMINISTRATE_TRANSLATIONS]</a></li>
+			<li>
+				<IF COND="[#LODELUSER.TRANSLATIONMODE]=='site'">
+					<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_SITE]</span></a>
+				<ELSE/>
+					<a href="usersettings.php?translationmode=site"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_SITE]</span></a>
+				</IF>
+			</li>
+		</ul>
+	</div>
 
-							<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
-							<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</span></a>
-							<ELSE/>
-							<a href="usersettings.php?translationmode=interface"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</span></a>
-							</IF>
-					</tr>
-					</IF>]-->
-				</table>
-			</td> <!-- [ fin des outils ]-->
-		</tr>
-	</table>
+	<div class="adminGroup ME">
+		<h4>[@ADMIN.ADMIN_EM]</h4>
+		<ul>
+			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=entities">[@ADMIN.CLASSES_FOR_ENTITIES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=entries">[@ADMIN.CLASSES_FOR_ENTRIES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=persons">[@ADMIN.CLASSES_FOR_PERSONS]</a></li>
+			<li><a href="index.php?do=list&amp;lo=optiongroups">[@ADMIN.MANAGE_OPTIONS]</a></li>
+			<li><a href="index.php?do=list&amp;lo=internalstyles">[@ADMIN.INTERNALSTYLES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=characterstyles">[@ADMIN.CHARACTERSTYLES]</a></li>
+			<li><a href="importmodel.php">[@ADMIN.IMPORT_EM]</a></li>
+			<li><a href="backupmodel.php">[@ADMIN.BACKUP_EM]</a></li>
+		</ul>
+	</div>
+
+	<div class="adminGroup tools">
+		<h4>[@ADMIN.TOOLS]</h4>
+		<ul>
+			<li><a href="backup.php">[@ADMIN.BACKUP_DATA]</a></li>
+			<li><a href="import.php">[@ADMIN.IMPORT_DATA]</a></li>
+			<li>[@ADMIN.DOWNLOAD_XML_SCHEMA] : 
+				<select onchange="select_url(this)" class="barInfo">
+					<option>--</option>
+				<LOOP NAME="listentitiesclasses" TABLE="classes" WHERE="classtype='entities' AND status GT 0">
+					<option value="index.php?lo=xml&amp;do=generateXSD&amp;class=[#CLASS]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
+				</LOOP>
+				</select>
+			</li>
+			<li>[@COMMON.LANG_INTERFACE] : 
+				<select onchange="change_language(this)" class="barInfo">
+				<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
+					<IF COND="[#LODELUSER.LANG] eq [#LANG]">
+						<option value="[#LANG]" selected="selected">
+					<ELSE/>
+						<option value="[#LANG]">
+					</IF>
+					[#TITLE]</option>
+				</LOOP>
+				</select>
+			</li>
+			<IF COND="[#LODELUSER.ADMINLODEL]">
+				<li>
+				<?php $context['lodeladminpath']=$GLOBALS['home']."../../lodeladmin".($GLOBALS['version'] ? "-".$GLOBALS['version'] : ""); // this is not wonderfull..... 
+				?>
+				<a href="[#LODELADMINPATH]/index.php">[@ADMIN.GO_TO_THE_GENERAL_ADMINISTRATION_PAGE]</a>
+				</li>
+				<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
+					<li><a href="usersettings.php?translationmode=off">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</a>
+				<ELSE/>
+					<li><a href="usersettings.php?translationmode=interface">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</a></li>
+				</IF>
+			</IF>
+		</ul>
+	</div>
 <MACRO NAME="CLOSE_HTML">
