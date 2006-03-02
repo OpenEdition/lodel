@@ -30,63 +30,54 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+<ul id="actionsOnEntitiesPath">
+<li>[@ADMIN.TITLE_CLASSES]</li>
+<li>
+	<ul class="actions">
+		<li class="isolated">
+		<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+			<a href="index.php?do=view&amp;lo=classes&amp;classtype=[#CLASSTYPE]">[@ADMIN.ADD_CLASS]</a>
+		<ELSE />
+			<span class="inactif">[@ADMIN.ADD_CLASS]</span>
+		</IF>
+		</li>
+	</ul>
+</li>
+</ul>
+<br />&nbsp;<br />
+<table class="statistics users">
 	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_CLASSES]</td>
-	</tr>
-</table>
-
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<a href="index.php?do=view&lo=classes&classtype=[#CLASSTYPE]">[@ADMIN.ADD_CLASS]</a>
-	<ELSE />
-	<span class="inactif">[@ADMIN.ADD_CLASS]</span>
-	</IF>
-</div>
-<br /><br />
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">[@ADMIN.CLASS_TITLE]</td>
-		<td class="texte_noir_gras">[@ADMIN.CLASS_NAME]</td>
-		<td>&nbsp;</td>
+		<th class="status">[@ADMIN.CLASS_TITLE]</th>
+		<th class="status">[@ADMIN.CLASS_NAME]</th>
+		<td class="empty">&nbsp;</td>
 	</tr>
 	<LOOP NAME="classes" TABLE="classes" WHERE="classtype='[#CLASSTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
 			<MACRO NAME="TR_LIST">
-				<td><strong><MACRO NAME="DISPLAY_ALTERTITLE"></strong></td>
+				<th class="type"><MACRO NAME="DISPLAY_ALTERTITLE"></th>
 				<td>[(#CLASS|nbsp)]</td>
-				<td style="color: #CC9933;" align="left">
-				<div>
-					<a href="index.php?do=list&lo=tablefieldgroups&class=[#CLASS]">[@COMMON.DATAFIELDS]</a>
-				</div>
+				<td>
+					<a href="index.php?do=list&amp;lo=tablefieldgroups&amp;class=[#CLASS]">[@COMMON.DATAFIELDS]</a>
 				</td>
 				<td style="color: #CC9933;" align="left">
-				<div>
 				<IF COND="[#CLASSTYPE]=='entities'">
-					<a href="index.php?do=list&lo=types&class=[#CLASS]">[@COMMON.TYPES]</a>
+					<a href="index.php?do=list&amp;lo=types&amp;class=[#CLASS]">[@COMMON.TYPES]</a>
 				<ELSE/>
 				<IF COND="[#CLASSTYPE]=='entries'">
-					<a href="index.php?do=list&lo=entrytypes&class=[#CLASS]">[@COMMON.TYPES]</a>
+					<a href="index.php?do=list&amp;lo=entrytypes&amp;class=[#CLASS]">[@COMMON.TYPES]</a>
 				<ELSE/>
-					<a href="index.php?do=list&lo=persontypes&class=[#CLASS]">[@COMMON.TYPES]</a>
+					<a href="index.php?do=list&amp;lo=persontypes&amp;class=[#CLASS]">[@COMMON.TYPES]</a>
 				</IF>
 				</IF>
-
-					
-				</div>
 				</td>
-				<td style="color: #CC9933;" align="left">
-				<div>
+				<td class="actions">
                			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
 				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				</div>
 				</td>
 			</tr>
 		</DO>
 		<ALTERNATIVE>
-			<tr><td colspan="4"><span class="texte_info">[@ADMIN.NO_CLASSES]</span></td></tr>
+			<tr><td colspan="4">[@ADMIN.NO_CLASSES]</td></tr>
 		</ALTERNATIVE>
 	</LOOP>
 </table>

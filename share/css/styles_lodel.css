@@ -735,8 +735,8 @@ table.statistics{
 }
 
 table.statistics.users{
-	width: 90%;
-	margin: 0 auto 4ex auto;
+	width: auto;
+	margin: 0 0 4ex 45px;
 }
 
 table.statistics caption{
@@ -777,6 +777,9 @@ table.statistics td.empty{
 
 table.statistics td.actions a{
 	color: #ff5b04;
+}
+
+table.statistics td.actions{
 	font-size: 90%;
 }
 
