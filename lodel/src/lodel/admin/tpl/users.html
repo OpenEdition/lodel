@@ -68,7 +68,7 @@
 				<DOFIRST>
 				<div class="texte_info">
 				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-				<a href="session.php?deleteuser=[#ID]">[@ADMIN.DELETE_SESSION_LOG]</a>
+				<a href="session.php?deleteuser=[#ID]" class="action">[@ADMIN.DELETE_SESSION_LOG]</a>
 				<ELSE />
 				<span class="inactif">[@ADMIN.DELETE_SESSION_LOG]</span>
 				</IF>
