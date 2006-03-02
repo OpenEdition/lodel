@@ -109,8 +109,8 @@ function infoChargement(nomFic){
 		<input type="radio" id="radioupload" name="fileorigin" value="upload"><input size="40" type="file" name="file1" onChange="document.getElementById('radioupload').click();"><br />
 		<input type="radio" id="serverfile[radioserverfile]" name="fileorigin" value="server">
 	           <input size="40" type="text" id="serverfile[localfilename]" name="localfile">
-	           <a href="javascript:;" onClick="window.open('index.php?lo=filebrowser&do=view&caller=serverfile','Upload','width=450,height=350,top=100,left=100,scrollbars=yes,resizable=yes');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
-		<p class="avert">[@EDITION.CONVERSION_TOOLS] : <a href="http://www.servoo.net/" title="Document converter for Web applications"><strong>ServOO</strong></a></p>
+	           <a href="javascript:;" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=serverfile','Upload','width=450,height=350,top=100,left=100,scrollbars=yes,resizable=yes');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
+		<p class="avert">[@EDITION.CONVERSION_TOOLS] : <a href="http://www.servoo.net/" title="Document converter for Web applications" onclick="window.open(this.href); return false;"><strong>ServOO</strong></a></p>
 	</fieldset>
 
 	<fieldset>
