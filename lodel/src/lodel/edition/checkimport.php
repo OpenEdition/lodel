@@ -106,7 +106,7 @@ class XmlImportHandler {
 		if ($obj->lang) {
 			$title.= "<br />(".$obj->lang.")";
 		}
-		$this->_contents.= "<tr><td>". $title. "</td><td>". $data. "</td></tr>";
+		$this->_contents.= "<tr><th class=\"sideInfo\">". $title. "</th><td>". $data. "</td></tr>";
 		return $data;
 	}
 	/**
@@ -117,7 +117,7 @@ class XmlImportHandler {
 	 */
 	function processEntryTypes ($obj, $data) 
 	{
-		$this->_contents.= '<tr><td class="processentrytypes">'. $obj->style. "</td><td>". $data. "</td></tr>";
+		$this->_contents.= "<tr><th class=\"sideInfo\">". $obj->style. "</th><td>". $data. "</td></tr>";
 	}
 	
 	/**
@@ -146,7 +146,7 @@ class XmlImportHandler {
 	 */
 	function processPersonTypes ($obj, $data) 
 	{
-		$this->_contents.= '<tr><td class="processpersontypes">'. $obj->style. '</td><td>'. $data. '</td></tr>';
+		$this->_contents.= '<tr><th class=\"sideInfo\">'. $obj->style. '</th><td>'. $data. '</td></tr>';
 	}
 	/**
 	 * process the encountered character styles.
@@ -178,7 +178,7 @@ class XmlImportHandler {
 	 */
 	function unknownParagraphStyle ($style, $data) 
 	{
-		$this->_contents.= "<tr><td>Style inconnu: ". $style. "</td><td>". $data. "</td></tr>";
+		$this->_contents.= "<tr><th class=\"sideInfo\">Style inconnu: ". $style. "</th><td>". $data. "</td></tr>";
 	}
 	/**
 	 * process when an unknow character style is encountered
