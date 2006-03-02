@@ -276,7 +276,29 @@ dl.entries dd.actions{
 /* les mises en formes locales doivent être visibles*/
 
 #checkbalisage{
+	border-collapse: collapse;
 	font-family: "Courier New", Courier, mono;
+	width: 750px;
+	margin: 0 0 0 40px;
+}
+
+#checkbalisage td, #checkbalisage th{
+	border: 1px solid #aaa;
+	padding: .5ex .5em;
+	vertical-align: top;
+}
+
+#checkbalisage th{
+	background: #f1f5fb;
+}
+
+#checkbalisage th, #checkbalisage td.openclassentities, #checkbalisage td.closeclassentities, #checkbalisage td.openclasspersons, #checkbalisage td.closeclasspersons{
+	font-weight: bold;
+	font-family: verdana, sans-serif;
+}
+
+#checkbalisage td.openclassentities, #checkbalisage td.closeclassentities, #checkbalisage td.openclasspersons, #checkbalisage td.closeclasspersons{
+	background: #f7f7f7;
 }
 
 /* PAGE EDITION, LISTE DES ENTITES */

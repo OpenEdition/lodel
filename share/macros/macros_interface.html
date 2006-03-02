@@ -2032,19 +2032,21 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 
 <DEFMACRO NAME="NAVBAR_FOR_CHECKIMPORT">
-<table width="100%" border="0" align="center" valign="center" cellspacing="4" cellpadding="4">
-	<tr><td><div align="center" class="lien_popup">
+
 	<form>
-		<input class="form" type="button" value="    [@EDITION.REDO_IMPORT]    " onClick="javascript:window.history.go(-1);">
-		<input class="form" type="button" value="    [@COMMON.CANCEL]    " onClick="javascript:window.location='index.php?do=delete&lo=tasks&id=[#IDTASK]'">
+		<fieldset class="checkBalisage">
+		<legend>[@COMMON.VALIDATION]</legend>
+		<input class="button" type="button" value="    [@EDITION.REDO_IMPORT]    " onClick="javascript:window.history.go(-1);">
+		<input class="button" type="button" value="    [@COMMON.CANCEL]    " onClick="javascript:window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]'">
 		<IF COND="[#MULTIDOC]">
-		<input class="form" type="button" value="    [@COMMON.MULITDOC_IMPORT]    " onClick="javascript:window.location='index.php?do=import&idtask=[#IDTASK]&finish=oui'">
+		<input class="button" type="button" value="    [@COMMON.MULITDOC_IMPORT]    " onClick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui'">
 		<ELSE/>
-		<input class="form" type="button" value="    [@COMMON.NEXT]    " onClick="javascript:window.location='index.php?do=import&idtask=[#IDTASK]'">
-		<input class="form" type="button" value="    [@COMMON.IMPORT]    " onClick="javascript:window.location='index.php?do=import&idtask=[#IDTASK]&finish=oui'">
-		<input class="form" type="button" value="    [@COMMON.IMPORT_AND_VIEW]    " onClick="javascript:window.location='index.php?do=import&idtask=[#IDTASK]&finish=oui&visualiserdocument=oui'">
+		<br />&nbsp;<br />
+		<input class="button" type="button" value="    [@COMMON.NEXT]    " onClick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]'">
+		<input class="button" type="button" value="    [@COMMON.IMPORT]    " onClick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui'">
+		<input class="button" type="button" value="    [@COMMON.IMPORT_AND_VIEW]    " onClick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui&amp;visualiserdocument=oui'">
 		</IF>
+		</fieldset>
 	</form>
-</div></td></tr>
-</table>
+
 </DEFMACRO>
