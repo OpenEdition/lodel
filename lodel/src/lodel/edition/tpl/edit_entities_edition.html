@@ -36,9 +36,10 @@
 		<LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
 			<BEFORE>
 				<ul id="actionsOnEntitiesPath">
+				<li>[@EDITION.FORM_IMPORT]</li>
 				<li><ul class="actions">
 			</BEFORE>
-				<li class="isolated"><a href="oochargement.php?idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]">[@EDITION.IMPORT_WITH_SERVOO]</a></li>
+				<li class="isolated"><a href="oochargement.php?idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]">[@EDITION.FILE_IMPORT]</a></li>
 			<AFTER>
 				</ul></li>
 				</ul>
