@@ -734,6 +734,11 @@ table.statistics{
 	border-collapse: collapse;
 }
 
+table.statistics.users{
+	width: 90%;
+	margin: 0 auto 4ex auto;
+}
+
 table.statistics caption{
 	font-weight: bold;
 	font-size: 90%;
@@ -768,6 +773,11 @@ table.statistics td{
 
 table.statistics td.empty{
 	border: 0;
+}
+
+table.statistics td.actions a{
+	color: #ff5b04;
+	font-size: 90%;
 }
 
 /* Index and persons entries */
