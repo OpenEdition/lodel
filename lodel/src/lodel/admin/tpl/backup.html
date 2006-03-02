@@ -29,29 +29,28 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_BACKUP]</td>
-	</tr>
-</table>
+<ul id="actionsOnEntitiesPath">
+	<li>[@ADMIN.TITLE_BACKUP]</li>
+</ul>
+<br />&nbsp;<br />
+<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
+<fieldset>
+	<legend>[@ADMIN.TITLE_BACKUP]</legend>
+	<input type="hidden" name="backup" value="1">
+	<label for="sqlonly" class="boolean">[@ADMIN.SAVE_DATABASE_ONLY]</label><input class="notxt" type="checkbox" id="sqlonly" name="sqlonly" />
+	<label for="operation">[@ADMIN.GET_FILE_OPERATION] :</label><br class="nobr" />
+	<select name="operation" id="operation" class="barInfo">
+	<option value="download">[@COMMON.DOWNLOAD]</option>
+	<IF COND="[#IMPORTDIR]"><option value="importdir">[@COMMON.SAVE_IN_DIR] [#IMPORTDIR]</option></IF>
+	<option value="cache">[@COMMON.SAVE_IN_DIR] ./CACHE</option>
+	</select>
+</fieldset>
 
-<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
-<input type="hidden" name="backup" value="1">
-	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-<tr><td>[@ADMIN.SAVE_DATABASE_ONLY]</td><td><input type="checkbox" name="sqlonly" /></td></tr>
-<tr><td>[@ADMIN.GET_FILE_OPERATION] :</td><td>
-<select name="operation">
-<option value="download">[@COMMON.DOWNLOAD]</option>
-<IF COND="[#IMPORTDIR]"><option value="importdir">[@COMMON.SAVE_IN_DIR] [#IMPORTDIR]</option></IF>
-<option value="cache">[@COMMON.SAVE_IN_DIR] ./CACHE</option>
-</select>
-</td></tr>
-</table>
-	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="[@COMMON.SAVE]">
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'" />
-	</div>
+<fieldset>
+	<legend>[@COMMON.VALIDATION]</legend>
+	<input class="button" type="submit" value="[@COMMON.SAVE]" />
+	<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php'" />
+</fieldset>
 </form>
 
 <MACRO NAME="CLOSE_HTML">
