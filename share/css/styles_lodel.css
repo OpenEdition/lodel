@@ -297,8 +297,19 @@ dl.entries dd.actions{
 	font-family: verdana, sans-serif;
 }
 
+#checkbalisage th.sideInfo{
+	text-align: left;
+	font-size: 95%;
+}
+
 #checkbalisage td.openclassentities, #checkbalisage td.closeclassentities, #checkbalisage td.openclasspersons, #checkbalisage td.closeclasspersons{
 	background: #f7f7f7;
+	color: #0e2d7c;
+	font-weight: normal;
+}
+
+fieldset.checkBalisage{
+	width: 725px;
 }
 
 /* PAGE EDITION, LISTE DES ENTITES */
