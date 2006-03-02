@@ -39,10 +39,13 @@
  * @package lodeladmin
  */
 
+//# L'ensemble de ce fichier sera à transferer dans une logique (> 0.8)
+//# !!!!!!!!!!!!!!!!!
+
 // gere un site. L'acces est reserve au niveau lodeladmin.
 require 'lodelconfig.php';
 require 'auth.php';
-authenticate(LEVEL_ADMINLODEL,NORECORDURL);
+authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 require_once 'func.php';
 
 // calcul le critere pour determiner le user a editer, restorer, detruire...
@@ -165,7 +168,6 @@ if ($edit || $maindefault) { // modifie ou ajoute
 		mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
 		update();
-
 		if ($status>-32) {
 			require 'view.php';
 			$view = &View::getView();
@@ -179,7 +181,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 	} while (0);
 }
 
-if ($id>0) {
+if ($id > 0) {
 	require_once 'connect.php';
 	$result = mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
 	$context = array_merge($context, mysql_fetch_assoc($result));
@@ -190,6 +192,7 @@ if ($id>0) {
 $lodelhomere = "/^lodel(-[\w.]+)$/";
 
 if ($task == 'version') {
+
 	// on verifie que versiondir match bien un repertoire local pour eviter un hack.
 	// on verifie en meme temps qu'il est bien defini, ce qui correspond quand meme 
 	// a la plupart des cas.
@@ -219,6 +222,7 @@ if ($task == 'version') {
 	}
 	if  (!$versiondir) {
 		$versions = cherche_version();
+	
 		// ok, maintenant on connait les versions
 		$context['countversions'] = count($versions);
 		if ($context['countversions'] == 1) {// ok, une seule version, on la choisit
@@ -235,6 +239,7 @@ if ($task == 'version') {
 					echo "<option value=\"$dir\"$selected>$dir  ($ver)</option>\n";
 				}
 			}
+			
 			require 'view.php';
 			$view = &View::getView();
 			$view->render($context, 'site-version');
@@ -256,6 +261,7 @@ if (defined('DATABASE')) {
 	$database = DATABASE;
 }
 $context['dbname'] = $singledatabase == 'on' ? $database : $database. '_'. $context['name'];
+
 if ($task == 'createdb') {
 	if (!$context['name']) {
 		die ('probleme interne');
@@ -286,6 +292,7 @@ if ($task == 'createdb') {
 		if (defined('DBPASSWD')) {
 			$dbpasswd   = DBPASSWD;
 		}
+
 		$context['command1'] = "CREATE DATABASE $context[dbname]";
 		$context['command2'] = "GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
 		$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
@@ -309,6 +316,7 @@ if ($task == 'createdb') {
 			return;
 		}
 	} while (0);
+
 	$task = 'createtables';
 }
 
@@ -319,10 +327,11 @@ if ($task == 'createtables') {
 	}
 
 	require_once 'connect.php';
-	mysql_select_db($context['dbname']);
+	mysql_select_db($context['dbname']); //selectionne la base de donnée du site
 	if (!file_exists(LODELROOT. "$versiondir/install/init-site.sql")) {
 		die ("impossible de faire l'installation, le fichier init-site.sql est absent");
 	}
+
 	$text = join('', file(LODELROOT. "$versiondir/install/init-site.sql"));
 	$text.= "\n";
 	$sqlfile = lq($text);
@@ -337,6 +346,7 @@ if ($task == 'createtables') {
 			array_push($error, $cmd, mysql_error());
 		}
 	}
+
 	if ($error) {
 		$context['error_createtables'] = $error;
 		function loop_errors_createtables(&$context, $funcname)
@@ -353,6 +363,7 @@ if ($task == 'createtables') {
 		$view->render($context, 'site-createtables');
 		return;
 	}
+	mysql_select_db($database);
 	$task = 'createdir';
 }
 
@@ -361,6 +372,7 @@ if ($task == 'createdir') {
 	if (!$context['path']) {
 		$context['path'] = '/'. $context['name'];
 	}
+
 	$dir = LODELROOT. $context['path'];
 	if (!file_exists($dir) || !@opendir($dir)) {
 		// il faut creer le repertoire rep
@@ -411,7 +423,6 @@ if ($task == 'file') {
 	}
 	$root = str_replace('//', '/', LODELROOT. $context['path']). '/';
 	$siteconfigcache = 'CACHE/siteconfig.php';
-
 	if ($downloadsiteconfig) { // download the siteconfig
 		download($siteconfigcache, 'siteconfig.php');
 		return;
@@ -431,6 +442,7 @@ if ($task == 'file') {
 	if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache) != file_get_contents($siteconfigdest)) {
 		if ($installoption == '2' && !$lodeldo) {
 			require 'view.php';
+			
 			$view = &View::getView();
 			$view->render($context, 'site-file');
 			return;
