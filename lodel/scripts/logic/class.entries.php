@@ -254,7 +254,7 @@ class EntriesLogic extends GenericLogic
 			$ids=array (0);
 			$l=1;
 			do {
-				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status)<= 32 ORDER BY ". $context['type']['sort'])) or dberror();
+				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) or dberror();
 				$ids=array();
 				$i=1;
 				while (!$result->EOF) {
