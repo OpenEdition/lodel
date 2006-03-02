@@ -127,7 +127,7 @@ class XmlImportHandler {
 	 */
 	function openClass ($class, $obj = null) 
 	{
-	$this->_contents.= "<tr><td colspan=\"2\" class=\"openclass". $class[1]. "\">". $class[0]." &darr;</td></tr>";
+	$this->_contents.= "<tr><td colspan=\"2\" class=\"openclass ". $class[1]. "\">". $class[0]." &darr;</td></tr>";
 	}
 
 	function closeClass ($class, $multidoc=false) 
@@ -135,7 +135,7 @@ class XmlImportHandler {
 		if ($multidoc) {
 			$this->multidoc=true;
 		}
-		$this->_contents.= '<tr><td colspan="2" class="closeclass'. $class[1]. '">'. $class[0].' &uarr;</td></tr>';
+		$this->_contents.= '<tr><td colspan="2" class="closeclass '. $class[1]. '">'. $class[0].' &uarr;</td></tr>';
   }
 	
 	/**
@@ -146,7 +146,7 @@ class XmlImportHandler {
 	 */
 	function processPersonTypes ($obj, $data) 
 	{
-		$this->_contents.= '<tr><th class=\"sideInfo\">'. $obj->style. '</th><td>'. $data. '</td></tr>';
+		$this->_contents.= "<tr><th class=\"sideInfo\">". $obj->style. '</th><td>'. $data. '</td></tr>';
 	}
 	/**
 	 * process the encountered character styles.

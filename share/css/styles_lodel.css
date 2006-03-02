@@ -292,7 +292,7 @@ dl.entries dd.actions{
 	background: #f1f5fb;
 }
 
-#checkbalisage th, #checkbalisage td.openclassentities, #checkbalisage td.closeclassentities, #checkbalisage td.openclasspersons, #checkbalisage td.closeclasspersons{
+#checkbalisage th, #checkbalisage td.openclass, #checkbalisage td.closeclass{
 	font-weight: bold;
 	font-family: verdana, sans-serif;
 }
@@ -302,7 +302,7 @@ dl.entries dd.actions{
 	font-size: 95%;
 }
 
-#checkbalisage td.openclassentities, #checkbalisage td.closeclassentities, #checkbalisage td.openclasspersons, #checkbalisage td.closeclasspersons{
+#checkbalisage td.openclass, #checkbalisage td.closeclass{
 	background: #f7f7f7;
 	color: #0e2d7c;
 	font-weight: normal;
