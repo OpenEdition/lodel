@@ -34,7 +34,8 @@
 	<li>[@COMMON.ADMINISTRATION]</li>
 </ul>
 
-	<div class="adminGroup conf">
+	<div id="adminGroup">
+	<div class="conf">
 		<h4>[@ADMIN.CONFIGURATION]</h4>
 		<ul>
 			<li><a href="index.php?do=list&amp;lo=users">[@ADMIN.ADMIN_USER_AND_RIGHTS]</a></li>
@@ -63,21 +64,7 @@
 		</ul>
 	</div>
 
-	<div class="adminGroup ME">
-		<h4>[@ADMIN.ADMIN_EM]</h4>
-		<ul>
-			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=entities">[@ADMIN.CLASSES_FOR_ENTITIES]</a></li>
-			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=entries">[@ADMIN.CLASSES_FOR_ENTRIES]</a></li>
-			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=persons">[@ADMIN.CLASSES_FOR_PERSONS]</a></li>
-			<li><a href="index.php?do=list&amp;lo=optiongroups">[@ADMIN.MANAGE_OPTIONS]</a></li>
-			<li><a href="index.php?do=list&amp;lo=internalstyles">[@ADMIN.INTERNALSTYLES]</a></li>
-			<li><a href="index.php?do=list&amp;lo=characterstyles">[@ADMIN.CHARACTERSTYLES]</a></li>
-			<li><a href="importmodel.php">[@ADMIN.IMPORT_EM]</a></li>
-			<li><a href="backupmodel.php">[@ADMIN.BACKUP_EM]</a></li>
-		</ul>
-	</div>
-
-	<div class="adminGroup tools">
+	<div class="tools">
 		<h4>[@ADMIN.TOOLS]</h4>
 		<ul>
 			<li><a href="backup.php">[@ADMIN.BACKUP_DATA]</a></li>
@@ -116,4 +103,21 @@
 			</IF>
 		</ul>
 	</div>
+
+	<div class="ME">
+		<h4>[@ADMIN.ADMIN_EM]</h4>
+		<ul>
+			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=entities">[@ADMIN.CLASSES_FOR_ENTITIES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=entries">[@ADMIN.CLASSES_FOR_ENTRIES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=classes&amp;classtype=persons">[@ADMIN.CLASSES_FOR_PERSONS]</a></li>
+			<li><a href="index.php?do=list&amp;lo=optiongroups">[@ADMIN.MANAGE_OPTIONS]</a></li>
+			<li><a href="index.php?do=list&amp;lo=internalstyles">[@ADMIN.INTERNALSTYLES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=characterstyles">[@ADMIN.CHARACTERSTYLES]</a></li>
+			<li><a href="importmodel.php">[@ADMIN.IMPORT_EM]</a></li>
+			<li><a href="backupmodel.php">[@ADMIN.BACKUP_EM]</a></li>
+		</ul>
+	</div>
+	</div>
+
+
 <MACRO NAME="CLOSE_HTML">

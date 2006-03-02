@@ -640,6 +640,10 @@ div.advancedFunc dt.select{
 	padding-top: .1ex;
 }
 
+div.advancedFunc dd{
+	margin: 0 0 1ex 0;
+}
+
 #listEntitiesEdit{
 	clear: both;
 	background: #fff;
@@ -813,4 +817,32 @@ table.statistics td.empty{
 	display: block;
 }
 
+
+/**************** Menu général Administration ************************/
+
+#adminGroup{
+	margin: 0 0 0 35px;
+}
+
+#adminGroup div{
+	width: 45%;
+	float: left;
+}
+
+#adminGroup .ME{
+	clear: both;
+	margin-bottom: 5ex;
+}
+
+#adminGroup li{
+	margin-bottom: 1ex;
+}
+
+#adminGroup li select{
+	font-size: 90%;
+}
+
+
+
+/*************** Fin Menu général Administration ********************/
 
