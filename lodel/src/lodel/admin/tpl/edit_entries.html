@@ -21,6 +21,7 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
+<!--[ Ce fichier n'est PAS généré automatiquement ]-->
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
@@ -36,7 +37,7 @@
 
 
 <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" class="entry">
-<!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]--><input type="hidden" name="do" value="edit">
+<input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="entries">
 <fieldset>
   <legend></legend>
@@ -46,7 +47,7 @@
 
    <MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
   <IF COND="![#TYPE.FLAT]">
-    <label for="idparent">[@COMMON.PARENT_ENTRY]
+    <label for="idparent">[@COMMON.PARENT_ENTRY] ([@COMMON.PARENT_ENTRY_MUST_BE_PERMANENT])
         : 
       </label>
     <br class="nobr">
@@ -78,8 +79,6 @@
     </p>
   </LOOP>
 </fieldset>
-
-<!--[ end{form} Automatic generated. Don't edit ]-->
 
 
 	<IF COND="[#ID]">
