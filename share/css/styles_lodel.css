@@ -88,6 +88,10 @@ h2.formHead{
 	color: #666;
 }
 
+.error{
+	color: red;
+}
+
 /* les styles du desk sont dans desk.html afin de ne pas interférer avec les styles du site */
 
 /* Container general au dessous du desk */
