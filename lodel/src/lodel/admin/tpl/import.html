@@ -33,6 +33,7 @@
 	<li>[@ADMIN.DATA_IMPORT]</li>
 </ul>
 <br />&nbsp;<br />
+<form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
 	<IF COND="[#ERROR_HTACCESS]">
 		<div class="error">
 			<p><strong>[@COMMON.ERROR] :</strong> [@ADMIN.IMPORT_OK_BUT_NO_HTACCESS] : [#ERROR_HTACCESS].</p>
@@ -62,18 +63,20 @@
 		</li>
 		<li>
 		  <p>[@ADMIN.LOAD_FILE_POST_PHP_CONFIGURATION] : <?php echo ini_get('post_max_size'); ?></p>
-      <IF COND="[#ERROR_UPLOAD]">[@ADMIN.ERROR_LOADING_FILE] !</IF>
+      <IF COND="[#ERROR_UPLOAD]"><span class="error">[@ADMIN.ERROR_LOADING_FILE]</span></IF>
                   <p>
-    Archive: <form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
-      <input type="file" name="archive" size="40">
-      <input class="button" type="submit" value="[@ADMIN.LOAD]" />
-      </form>
+    <label for="archive">[@COMMON.ARCHIVE]</label>
+      <input type="file" name="archive" id="archive" size="40" />
+      
+      
 		</li>
 	      </ul>
 		</fieldset>
-	<fieldset class="formButtons">
-		<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />
+	<fieldset>
+		<legend>[@COMMON.VALIDATION]</legend>
+		<input class="button" type="submit" value="[@ADMIN.LOAD]" />&nbsp;&nbsp;&nbsp;<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.history.go(-1)" />
 	</fieldset>
+</form>
 </IF>  
 
 
