@@ -29,44 +29,42 @@
 <title>[@ADMIN.TITLE_TYPES] - [@COMMON.CLASS] [#CLASS]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
+<ul id="actionsOnEntitiesPath">
+	<li>
+	[@ADMIN.TITLE_TYPES] : [@COMMON.CLASS] <em>[#CLASS]</em>
+	</li>
+	<li>
+		<ul class="actions">
+			<li class="isolated">
+			<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=view&amp;lo=types&amp;class=[#CLASS]">[@ADMIN.ADD_TYPE]</a>
+			<ELSE />
+				<span class="inactif">[@ADMIN.ADD_TYPE]</span>
+			</IF>
+			</li>
+		</ul>
+	</li>
+</ul>
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+<br />&nbsp;<br />
+<table class="statistics users">
 	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_TYPES] - [@COMMON.CLASS] [#CLASS]</td>
-	</tr>
-</table>
-
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<a href="index.php?do=view&lo=types&class=[#CLASS]">[@ADMIN.ADD_TYPE]</a>
-	<ELSE />
-	<span class="inactif">[@ADMIN.ADD_TYPE]</span>
-	</IF>
-</div>
-<br /><br />
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">[@ADMIN.TYPE_TITLE]</td>
-		<td class="texte_noir_gras">[@ADMIN.TYPE_NAME]</td>
-		<td class="texte_noir_gras">[@ADMIN.TEMPLATE_FILE]</td>
-		<td class="texte_noir_gras">[@ADMIN.TEMPLATE_FILE_TPLEDITION]</td>
-		<td>&nbsp;</td>
+		<th class="status">[@ADMIN.TYPE_TITLE]</th>
+		<th class="status">[@ADMIN.TYPE_NAME]</th>
+		<th class="status">[@ADMIN.TEMPLATE_FILE]</th>
+		<th class="status">[@ADMIN.TEMPLATE_FILE_TPLEDITION]</th>
+		<td class="empty">&nbsp;</td>
 	</tr>
 	<LOOP NAME="typepubli" TABLE="types" WHERE="status gt 0" WHERE="class='[#CLASS]'" ORDER="rank">
 		<DO>
 			<MACRO NAME="TR_LIST">
-				<td><strong><MACRO NAME="DISPLAY_ALTERTITLE"></strong></td>
+				<th class="type"><MACRO NAME="DISPLAY_ALTERTITLE"></th>
 				<td>[(#TYPE|nbsp)]</td>
 				<td>[(#TPL|nbsp)]</td>
 				<td>[(#TPLEDITION|nbsp)]</td>
-				<td style="color: #CC9933;" align="left">
-				<div>
-
+				<td class="actions">
                			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
 				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				</div>
 				</td>
 			</tr>
 		</DO>

@@ -766,6 +766,10 @@ table.statistics th.type{
 	background: #f1f5fb;
 }
 
+table.statistics.users th.type{
+	width: auto;
+}
+
 table.statistics th.status{
 	text-align: center;
 	background: #e0e7f2;
