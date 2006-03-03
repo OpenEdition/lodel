@@ -496,10 +496,10 @@ class Logic
 				$value = "";
 				$this->_calculateHistoryField ($value, $context, $status);
 				if (isset ($context['data'][$field->name])) { //if a value for this field is in the context, use it (to allow user to modify the field
-					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT('". $context['data'][$field->name]. "','\n". $value. "')";
+					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT('". $value. "','\n".$context['data'][$field->name] . "')";
 				}
 				else {
-					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT(".$field->name. ",'\n". $value. "')";
+					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT(".$value. ",'\n".$field->name . "')";
 				}
 			}
 			$db->execute (lq ("UPDATE #_TP_$class SET $updatecrit WHERE identity='". $context['id'].  "'"));
@@ -543,9 +543,12 @@ class Logic
 			default: //creation
 				$line .= getlodeltextcontents('createdby', 'common');
 			}
-			$line .= " ". ($vo->name ? $vo->name : ($vo->username ? $vo->username : $context['lodeluser']['name']));
+			$line .= " ". ($vo->name ? $vo->name : ($vo->username ? $vo->username : $context['lodeluser']['lastname']));
+			#print_r($context['lodeluser']);
+			#$line .= ' '.$context['lodeluser']['username'];
 			$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
-			$value .= ($value ? "\n" : ""). $line;
+			$value = $line;
+			#echo "value=$value";
 			unset($line);
 		}
 	}
