@@ -116,10 +116,10 @@
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
          <span class="sep">|&nbsp;</span><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.MODIFY]</a><span class="sep">&nbsp;|&nbsp;</span>
 	<IF COND="[#STATUS] ge 32">
-	  <span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="inactif">[@COMMON.PROTECTED]</span><span class="sep">&nbsp;|&nbsp;</span>
        <ELSE/>
 	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="inactif">[@COMMON.DELETE] ([#LO|isdeletelocked([#ID],[#STATUS])])</span><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span><span class="sep">&nbsp;|&nbsp;</span>
 	  <ELSE/>
 	  <a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a><span class="sep">&nbsp;|&nbsp;</span>
 	  </IF>
