@@ -29,53 +29,49 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO">
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_BACKUP_EDITORIAL_MODEL]</td>
-	</tr>
-</table>
-
+<ul id="actionsOnEntitiesPath">
+	<li>
+	[@ADMIN.TITLE_BACKUP_EDITORIAL_MODEL]
+	</li>
+</ul>
+<br />&nbsp;<br />
 <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
-<input type="hidden" name="backup" value="1">
 
+<fieldset>
+	<legend>[@ADMIN.INCLUDE_THE_FILES_IN_THE_FOLLOWING_DIRECTORIES]</legend>
+	<input type="checkbox" name="tpl" id="tpl" checked="checked" /><label for="tpl" class="boolean">tpl</label>
+	<input type="checkbox" name="css" id="css" checked="checked" /><label for="css" class="boolean">css</label>
+	<input type="checkbox" name="images" id="images" checked="checked" /><label for="images" class="boolean">images</label>
+	<input type="checkbox" name="js" id="js" checked="checked" /><label for="js" class="boolean">js</label>
+	<input type="hidden" name="backup" value="1" />
+</fieldset>
 
+<fieldset>
+	<legend>[@ADMIN.HOWTO_ME]</legend>
+	<label for="title">[@COMMON.TITLE]</label>
+	<br class="nobr" />
+	<input type="text" size="40" name="title" id="title" value="[#TITLE]" />
+	<br class="nobr" />
+	<label for="description">[@COMMON.DESCRIPTION]</label>
+	<br class="nobr" />
+	<textarea cols="50" rows="6" name="description" id="description">[#DESCRIPTION]</textarea>
+	<br class="nobr" />
+	<label for="author">[@COMMON.AUTHOR]</label>
+	<br class="nobr" />
+	<input type="text" size="30" name="author" id="author" value="[#AUTHOR]" />
+	<br class="nobr" />
+	<label for="modelversion">[@ADMIN.MODELVERSION]</label>
+	<br class="nobr" />
+	<input type="text" size="30" name="modelversion" id="modelversion" value="[#MODELVERSION]" />
 
-<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-<tr><td>[@ADMIN.INCLUDE_THE_FILES_IN_THE_FOLLOWING_DIRECTORIES]:</td><td>
-<input type="checkbox" name="tpl" checked />tpl
-<input type="checkbox" name="css" checked />css
-<input type="checkbox" name="images" checked />images
-<input type="checkbox" name="js" checked />js
-</td></tr>
-</table>
+</fieldset>
 
+<fieldset>
+	<legend>[@COMMON.VALIDATION]</legend>
+	<input class="button" type="submit" value="[@COMMON.SAVE]" />
+	<input class="button" type="button" value="[@COMMON.CANCEL_BACK]" onclick="javascript:window.location='index.php'" />
+</fieldset>
 
-</table>
-
-
-	<div class="pied_de_formulaire">
-		<input class="form" type="submit" value="[@COMMON.SAVE]">
-		<input class="form" type="button" value="[@COMMON.CANCEL_BACK]" onClick="javascript:window.location='index.php'" />
-	</div>
-<hr width="30%" />
-[@ADMIN.HOWTO_ME].
-
-	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-<tr><td>[@COMMON.TITLE] :</td><td><input type="text" size="70" name="title" value="[#TITLE]"></td></tr>
-<tr><td>[@COMMON.DESCRIPTION] :</td><td><textarea cols="60" rows="6" name="description">[#DESCRIPTION]</textarea></td></tr>
-<tr><td>[@COMMON.AUTHOR] :</td><td><input type="text" size="30" name="author" value="[#AUTHOR]"></td></tr>
-<tr><td>[@ADMIN.MODELVERSION] :</td><td><input type="text" size="30" name="modelversion" value="[#MODELVERSION]"></td></tr>
-
-
-<!--[<tr><td>Opération:</td><td>
-<select name="operation">
-<option value="download">[@COMMON.DOWNLOAD]</option>
-<IF COND="[#IMPORTDIR]"><option value="importdir">[@COMMON.SAVE_IN_DIR|sprintf([#IMPORTDIR])]</option></IF>
-<option value="cache">[@COMMON.SAVE_IN_DIR|sprintf("./CACHE")]</option>
-</select>
-</td></tr>]-->
-</table>
 </form>
 
 <MACRO NAME="CLOSE_HTML">
