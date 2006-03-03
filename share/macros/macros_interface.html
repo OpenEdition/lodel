@@ -1307,31 +1307,13 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LET VAR="id">[#IDPARENT]</LET>
 		<LET VAR="noid">TRUE</LET>
 	</IF>
-	<ul id="entitiesPath">
-		<li>
-		<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
-			<a href="index.[#EXTENSIONSCRIPTS]">
-		<ELSE />
-			<a href="index.php?id=0">
-		</IF>
-		[@EDITION.BASE]</a></li>
+	<ul class="entitiesPath">
+		<li><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; 
-			<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
-				<a href="[#ID|makeurlwithid]">
-			<ELSE />
-				<a href="index.php?id=[#ID]">
-			</IF>
-			[#G_TITLE|textebrut|nbsp]</a> </li>
+			<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-			<li> &gt; 
-			<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
-				<a href="[#ID|makeurlwithid]">
-			<ELSE />
-				<a href="index.php?id=[#ID]">
-			</IF>
-			[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+				<li> &gt; <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<li>
 		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
@@ -1340,6 +1322,19 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<IF COND="[#NOID]">
 		<LET VAR="id">0</LET>
 	</IF>
+</DEFMACRO>
+
+<DEFMACRO NAME="CURRENT_PATH_SITE">
+	<ul class="entitiesPath site">
+		<li><a href="index.[#EXTENSIONSCRIPTS]">[@EDITION.BASE]</a></li>
+		<LOOP NAME="parentsentities">
+			<li> &gt; <a href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
+		</LOOP>
+		<LOOP NAME="g_title_entity2" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
+			<li> &gt; <a href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+		</LOOP>
+	</ul>
+
 </DEFMACRO>
 
 

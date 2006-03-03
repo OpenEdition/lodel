@@ -209,20 +209,20 @@ body{
 	top: 60px;
 }
 
-#siteContext #entitiesPath, #siteContext #entitiesPath li, #siteContext #actionsOnEntitiesPath, #siteContext #actionsOnEntitiesPath li{
+#siteContext ul.entitiesPath, #siteContext ul.entitiesPath li, #siteContext #actionsOnEntitiesPath, #siteContext #actionsOnEntitiesPath li{
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-#siteContext #entitiesPath a, #siteContext #actionsOnEntitiesPath a{
+#siteContext ul.entitiesPath a, #siteContext #actionsOnEntitiesPath a{
 	color: #ff5b04;
 	font-weight: normal;
 	border:none;
 	display: inline;
 }
 
-#siteContext #entitiesPath, #siteContext #actionsOnEntitiesPath{
+#siteContext ul.entitiesPath, #siteContext #actionsOnEntitiesPath{
 	padding: .5ex 0 0 1em;
 	height: 4ex;
 	font-size: 90%;
@@ -230,13 +230,17 @@ body{
 	background: #f1f5fb;
 }
 
-#siteContext #entitiesPath li, #siteContext #actionsOnEntitiesPath li{
+#siteContext ul.entitiesPath li, #siteContext #actionsOnEntitiesPath li{
 	float: left;
 	padding: 0;
 	margin: .3ex .4em 0 0;
 	color: #333;
 	height: auto;
 	background: transparent;	
+}
+
+#siteContext ul.entitiesPath.site a{
+	color: green;
 }
 
 #siteContext #lightSearchForm{
@@ -546,5 +550,6 @@ body{
 	<div id="siteContext">
 	<MACRO NAME="CURRENT_PATH" />
 	<MACRO NAME="ACTIONS_ON_CURRENT_PATH" />
+	<MACRO NAME="CURRENT_PATH_SITE" />
 	</div>
 </IF>

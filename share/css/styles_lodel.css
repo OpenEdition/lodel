@@ -321,13 +321,13 @@ fieldset.checkBalisage{
 /* Chemin parcouru */
 
 
-#entitiesPath, #entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li, #addEntity, #addEntity li{
+ul.entitiesPath, ul.entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li, #addEntity, #addEntity li{
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-#entitiesPath a, #entitiesPath .queryText, #actionsOnEntitiesPath a, a.action, #move a{
+ul.entitiesPath a, ul.entitiesPath .queryText, #actionsOnEntitiesPath a, a.action, #move a{
 	color: #ff5b04;
 }
 
@@ -335,7 +335,7 @@ fieldset.checkBalisage{
 	font-size: 90%;
 }
 
-#entitiesPath, #actionsOnEntitiesPath, #addEntity, #entitiesPath .queryText{
+ul.entitiesPath, #actionsOnEntitiesPath, #addEntity, ul.entitiesPath .queryText{
 	padding: .5ex 0 0 1em;
 	height: 4ex;
 	font-size: 90%;
@@ -343,23 +343,24 @@ fieldset.checkBalisage{
 	background: #f1f5fb;
 }
 
-#entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
+ul.entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
 	float: left;
 	padding: 0;
 	margin: .3ex .4em 0 0;
 	color: #333;	
 }
 
-#entitiesPath .queryText{
+ul.entitiesPath .queryText{
 	padding: 1.5ex 0 0 4em;
 }
 
-#entitiesPath .queryText .searchInfos{
+ul.entitiesPath .queryText .searchInfos{
 	position: relative;
 	top: 1.5ex;
 	left: 70%;
 	width: 30%;
 }
+
 
 #actionsOnEntitiesPath{
 	background: #e0e7f2;
