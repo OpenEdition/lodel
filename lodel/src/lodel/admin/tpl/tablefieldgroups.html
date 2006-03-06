@@ -122,25 +122,6 @@
 	</LOOP>
 </table>
 
-<br />
-<IF COND="[#CLASSTYPE]=='persons'">
-[@AMDIN.RELATED_TABLE]:
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS"><a href="index.php?do=view&lo=tablefields&class=entities_[#CLASS]">[@ADMIN.ADD_FIELD]</a>
-        </td>
-</div>
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">[@COMMON.TITLE]</td>
-		<td class="texte_noir_gras">[@COMMON.NAME]</td>
-		<td class="texte_noir_gras">[@COMMON.TYPE]</td>
-		<td class="texte_noir_gras">[@COMMON.STYLE]</td>
-		<td>&nbsp;</td>
-	</tr>
-	<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='entities_[#CLASS]'">
-</table>
-</IF>
-
 
 
 </LOOP>
