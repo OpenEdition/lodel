@@ -795,7 +795,15 @@ table.statistics td.actions{
 }
 
 table.statistics.fields{
-	width: 750px;
+	width: 800px;
+}
+
+table.statistics.fields td{
+	width: 150px;
+}
+
+table.statistics.fields td.actions{
+	width: 350px;
 }
 
 /* Index and persons entries */
