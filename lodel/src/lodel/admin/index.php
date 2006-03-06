@@ -38,7 +38,6 @@
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
-
 require 'siteconfig.php';
 require_once 'lang.php';
 require_once 'auth.php';
@@ -56,6 +55,7 @@ if ($_GET['page']) { // call a special page (and template)
   exit;
 }
 
+
 require_once 'controler.php';
 $authorized_logics = array('entrytypes', 'persontypes',
 					'entries', 'persons',
@@ -65,7 +65,7 @@ $authorized_logics = array('entrytypes', 'persontypes',
 					'types', 'classes',
 					'options', 'optiongroups', 'useroptiongroups', 'servooconf',
 					'internalstyles', 'characterstyles', 'entities_index',
-					'filebrowser', 'xml');
+					'filebrowser', 'xml', 'data');
 Controler::controler($authorized_logics);
 
 function loop_classtypes($context, $funcname)
