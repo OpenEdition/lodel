@@ -56,14 +56,16 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_popup_index.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.TITLE_EDIT_OPTION_GROUP]  [#NAME] </td>
-	</tr>
-</table>
+<ul id="actionsOnEntitiesPath">
+	<li>[@ADMIN.TITLE_EDIT_OPTION_GROUP]  <em>[#NAME]</em> </li>
+</ul>
+<br />&nbsp;<br />
 
 <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
+<fieldset>
+<IF COND="[#TITLE]">
+	<legend>[#TITLE]</legend>
+</IF>
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="optiongroups">
@@ -163,6 +165,7 @@
 <br />
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
+</fieldset>
 </div>
 
 	<MACRO NAME="EDIT_SUBMIT_BAR">
