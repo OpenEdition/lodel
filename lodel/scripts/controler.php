@@ -137,10 +137,10 @@ class Controler
 				$logic = &getLogic($lo);
 				// create the logic for the table
 				if (!method_exists($logic, $do)) {
-					if ($do=="listAction") {
-						$ret="_ok";
+					if ($do == 'listAction') {
+						$ret = '_ok';
 					} else {
-						die("ERROR: invalid action");
+						die('ERROR: invalid action');
 					}
 				} else {
 					// call the logic action
