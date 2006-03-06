@@ -58,11 +58,6 @@
 	</ul>
 	<br />&nbsp;<br />
 
-
-	
-
-	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
-		<BEFORE>
 			<table class="statistics fields">
 			<tr>
 				<th class="status">[@COMMON.TITLE]</th>
@@ -73,8 +68,9 @@
 			</tr>
 			<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
 			</table>
-		</BEFORE>
 
+
+	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
 
 		<DO>
 		<table class="statistics fields">
