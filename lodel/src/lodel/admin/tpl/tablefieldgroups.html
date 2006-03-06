@@ -31,96 +31,93 @@
 <MACRO NAME="HEADER_LOGO"> 
 
 <LOOP NAME="class_name" TABLE="classes" WHERE="class='[#CLASS]'">
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.DEFINITION_DATAFIELDS_IN] <strong>[#TITLE]</strong></td>
-	</tr>
-</table>
+
+	<ul id="actionsOnEntitiesPath">
+		<li>[@ADMIN.DEFINITION_DATAFIELDS_IN] : <em>[#TITLE]</em></li>
+		<li>
+			<ul class="actions">
+				<IF COND="[#CLASSTYPE]=='entities'">
+				<li class="isolated">
+					<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+						<a href="index.php?do=view&amp;lo=tablefieldgroups&amp;class=[#CLASS]">[@ADMIN.ADD_DATAFIELD_GROUP] <em>[#TITLE]</em></a>
+					<ELSE />
+						<span class="inactif">[@ADMIN.ADD_DATAFIELD_GROUP]</span>
+					</IF>
+				</li>
+				<ELSE/>
+				<li class="isolated">
+					<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+						<a href="index.php?do=view&amp;lo=tablefields&amp;class=[#CLASS]">[@ADMIN.ADD_FIELD]</a>
+					<ELSE />
+						<span class="inactif">[@ADMIN.ADD_FIELD]</span>
+					</IF>
+				</li>
+				</IF>
+			</ul>
+		</li>
+	</ul>
+	<br />&nbsp;<br />
 
 
-<IF COND="[#CLASSTYPE]=='entities'">
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<a href="index.php?do=view&lo=tablefieldgroups&class=[#CLASS]">[@ADMIN.ADD_DATAFIELD_GROUP] [#TITLE]</a>
-	<ELSE />
-	<span class="inactif">[@ADMIN.ADD_DATAFIELD_GROUP]</span>
-	</IF>
-
-</div>
-<ELSE/>
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<a href="index.php?do=view&lo=tablefields&class=[#CLASS]">[@ADMIN.ADD_FIELD]</a>
-	<ELSE />
-	<span class="inactif">[@ADMIN.ADD_FIELD]</span>
-	</IF>
-        </td>
-</div>
-</IF>
-
-<br />
-
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td class="texte_noir_gras">[@COMMON.TITLE]</td>
-		<td class="texte_noir_gras">[@COMMON.NAME]</td>
-		<td class="texte_noir_gras">[@COMMON.TYPE]</td>
-		<td class="texte_noir_gras">[@COMMON.STYLE]</td>
-		<td>&nbsp;</td>
-	</tr>
-	<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
+	
 
 	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
+		<BEFORE>
+			<table class="statistics users">
+			<tr>
+				<th class="status">[@COMMON.TITLE]</th>
+				<th class="status">[@COMMON.NAME]</th>
+				<th class="status">[@COMMON.TYPE]</th>
+				<th class="status">[@COMMON.STYLE]</th>
+				<th class="status">[@COMMON.ACTIONS]</th>
+			</tr>
+			<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
+			</table>
+		</BEFORE>
+
 
 		<DO>
-		<!--[ print the group ]-->
+		<table class="statistics users">
 		<tr>
-	        <td colspan="5">
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
-				<tr>
-					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
-					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">
-						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-						<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
-					</td>
-					<td align="right" style="color: #CC9933;" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" >
-					<div>
-					 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-		                         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]" TITLE="[#TITLE]">
-					</div>
-					</td>
-				</tr>
-			</table>
-	        </td>
-		</tr>		
+			<th class="status">
+				<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+				<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
+			</th>
+			<td class="actions" colspan="4">
+				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+		                <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]" TITLE="[#TITLE]">
+			</td>
+		</tr>	
 	        <tr>	
-        	<td colspan="4">
-	        	<div>
+        	<td colspan="5" class="actions">
 			    <MACRO NAME="PNG_PLUS">
 				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-				<a href="index.php?do=view&lo=tablefields&idgroup=[#ID]&class=[#CLASS]">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</a>
+				<a href="index.php?do=view&amp;lo=tablefields&amp;idgroup=[#ID]&amp;class=[#CLASS]">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</a>
 				<ELSE />
 				<span class="inactif">[@ADMIN.ADD_FIELD_TO_THE_GROUP]</span>
 				</IF>
 				&nbsp;&nbsp;&nbsp;
 			  <MACRO NAME="PNG_PLUS">
 				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-				<a href="index.php?do=view&lo=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=entries">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</a>
+				<a href="index.php?do=view&amp;lo=indextablefields&amp;idgroup=[#ID]&amp;class=[#CLASS]&amp;type=entries">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</a>
 				<ELSE />
 				<span class="inactif">[@ADMIN.ADD_ENTRY_TO_THE_GROUP]</span>
 				</IF>
 				&nbsp;&nbsp;&nbsp;
 			    <MACRO NAME="PNG_PLUS">
 				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-				<a href="index.php?do=view&lo=indextablefields&idgroup=[#ID]&class=[#CLASS]&type=persons">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</a>
+				<a href="index.php?do=view&amp;lo=indextablefields&amp;idgroup=[#ID]&amp;class=[#CLASS]&amp;type=persons">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</a>
 				<ELSE />
 				<span class="inactif">[@ADMIN.ADD_PERSON_TO_THE_GROUP]</span>
 				</IF>
-			</div>
                </td>
+		</tr>
+		<tr>
+			<th class="status">[@COMMON.TITLE]</th>
+			<th class="status">[@COMMON.NAME]</th>
+			<th class="status">[@COMMON.TYPE]</th>
+			<th class="status">[@COMMON.STYLE]</th>
+			<th class="status">[@COMMON.ACTIONS]</th>
 		</tr>
 
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup='[#ID]'">

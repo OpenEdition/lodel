@@ -512,8 +512,7 @@ cp_[#NAME].writeDiv();
 			<td>[(#NAME|nbsp)]</td>
 			<td>[(#TYPE|nbsp)]</td>
 			<td>[(#STYLE|nbsp)]</td>
-			<td align="left" style="color: #CC9933;">
-			<div>
+			<td class="actions">
 	                <IF COND="[#TYPE] eq 'entries' || [#TYPE] eq 'persons'">
 				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="indextablefields">
                 	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="indextablefields">
@@ -521,7 +520,6 @@ cp_[#NAME].writeDiv();
 				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="tablefields">
                 	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="tablefields">
 		        </IF>
-			</div>
 			</td>
 		</tr>
 		</DO>
