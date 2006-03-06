@@ -508,7 +508,7 @@ cp_[#NAME].writeDiv();
 		<DO>
 		<MACRO NAME="TR_LIST">
 		<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-			<td><strong><IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF></strong></td>
+			<th class="type"><IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF></th>
 			<td>[(#NAME|nbsp)]</td>
 			<td>[(#TYPE|nbsp)]</td>
 			<td>[(#STYLE|nbsp)]</td>

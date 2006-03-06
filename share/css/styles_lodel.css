@@ -791,7 +791,11 @@ table.statistics td.actions a{
 table.statistics td.actions{
 	font-size: 90%;
 	width: 300px;
-	text-align: center;
+	text-align: right;
+}
+
+table.statistics.fields{
+	width: 750px;
 }
 
 /* Index and persons entries */
