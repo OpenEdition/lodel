@@ -19,13 +19,18 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
-
+<?php
+setlocale(LC_ALL, 'en_US');
+bindtextdomain("en", ".");
+textdomain("en");
+?>
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[(#SITE|strtoupper)]. [@COMMON.ADMINISTRATION]</title>
+<title><?= gettext("Ceci est mon titre %s même avec des accents");?></title>
+<!--title>[(#SITE|strtoupper)]. [@COMMON.ADMINISTRATION]</title-->
 <MACRO NAME="JS_SELECT_URL">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
@@ -67,8 +72,8 @@
 	<div class="tools">
 		<h4>[@ADMIN.TOOLS]</h4>
 		<ul>
-			<li><a href="backup.php">[@ADMIN.BACKUP_DATA]</a></li>
-			<li><a href="import.php">[@ADMIN.IMPORT_DATA]</a></li>
+			<li><a href="index.php?do=backup&amp;lo=data">[@ADMIN.BACKUP_DATA]</a></li>
+			<li><a href="index.php?do=import&amp;lo=data">[@ADMIN.IMPORT_DATA]</a></li>
 			<li>[@ADMIN.DOWNLOAD_XML_SCHEMA] : 
 				<select onchange="select_url(this)" class="barInfo">
 					<option>--</option>
