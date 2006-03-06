@@ -30,24 +30,20 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@ADMIN.DEFINITION_OPTIONS]</td>
-	</tr>
-</table>
-
-
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<a href="index.php?do=view&lo=optiongroups">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</a>
-	<ELSE />
-	<span class="inactif">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</span>
-	</IF>
-
-</div>
+<ul id="actionsOnEntitiesPath">
+	<li>[@ADMIN.DEFINITION_OPTIONS]</li>
+	<li>
+		<ul class="actions">
+			<li class="isolated">
+			<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=view&amp;lo=optiongroups">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</a>
+			<ELSE />
+				<span class="inactif">[@ADMIN.ADD_OPTION_GROUP] [#TITLE]</span>
+			</IF>
+			</li>
+		</ul>
+	</li>
+</ul>
 
 
 <br />
