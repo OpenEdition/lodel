@@ -791,7 +791,7 @@ table.statistics td.actions a{
 table.statistics td.actions{
 	font-size: 90%;
 	width: 300px;
-	text-align: right;
+	text-align: left;
 }
 
 table.statistics.fields{
