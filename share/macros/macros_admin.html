@@ -41,19 +41,9 @@
       Ok button to come back to index.php
 --------------------------------------------------------------- ]-->
 
-<DEFMACRO NAME="OK_TOINDEX">
+<DEFMACRO NAME="OK_TOINDEX_ADMIN">
 	<fieldset class="formButtons">
-		<input type="button" class="button" value="    OK    " onclick="javascript:window.location='[#SITEROOT]lodel/edition/'" />
-	</fieldset>
-</DEFMACRO>
-
-<!--[ --------------------------------------------------------- 
-      Ok button to come back
---------------------------------------------------------------- ]-->
-
-<DEFMACRO NAME="OK_BACK">
-	<fieldset class="formButtons">
-		<input type="button" class="button" value="    OK    " onclick="javascript:window.location='[#SITEROOT]lodel/edition/index.php?do=back'">
+		<input type="button" class="button" value="    OK    " onclick="javascript:window.location='[#SITEROOT]lodel/admin/'" />
 	</fieldset>
 </DEFMACRO>
 
@@ -85,7 +75,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DELETE_BUTTON">
-		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&lo=[#LO]&id=[#ID]'" />
+		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]'" />
 </DEFMACRO>
 
 
