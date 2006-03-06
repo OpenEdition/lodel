@@ -58,7 +58,7 @@ class DataLogic
 	 */
 	function DataLogic()
 	{
-		if (!$GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN) {
+		if ($GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN) {
 			die("ERROR: you don't have the right to access this feature");
 		}
 	}
