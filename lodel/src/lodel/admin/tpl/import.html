@@ -33,18 +33,24 @@
 	<li><span class="intit">[@ADMIN.DATA_IMPORT]</span></li>
 </ul>
 <br />&nbsp;<br />
-<form enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
+<IF COND="[#SUCCESS]">
+<p>[@ADMIN.DATA_IMPORT_SUCCESSFUL]</p>
+<input class="button" type="button" value="[@COMMON.OK]" onclick="javascript:window.location='index.php'" />
+<ELSE/>
+<form enctype="multipart/form-data" action="index.php ?>" method="post"  />
+	<input type="hidden" name="do" value="import" />
+	<input type="hidden" name="lo" value="data"  />
 	<IF COND="[#ERROR_HTACCESS]">
 		<div class="error">
 			<p><strong>[@COMMON.ERROR] :</strong> [@ADMIN.IMPORT_OK_BUT_NO_HTACCESS] : [#ERROR_HTACCESS].</p>
 	    		<p>[@ADMIN.INSTALL_HTACCESS_COMMAND] :<br /><code>deny from all</code><p>
 		</div>
 		<fieldset>
-		<input class="button" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" />
+		<input class="button" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php'" />
 		</fieldset>
 	<ELSE/>
 		<fieldset>
-		[@ADMIN.SAVE_DATABASE_BEFORE_NEW] : <a href="backup.php" class="action">[@ADMIN.SAVE_DATABASE]</a>
+		[@ADMIN.SAVE_DATABASE_BEFORE_NEW] : <a href="index.php?do=backup&amp;lo=data" class="action">[@ADMIN.SAVE_DATABASE]</a>
 			<br /><br /><br />
 		    <IF COND="[#ERROR_EXTRACT]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXTRACT].<br /><br /></IF>
 		    <IF COND="[#ERROR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]<br /><br /></IF>
@@ -57,7 +63,7 @@
 		    <p>[@ADMIN.FILES_LIST] :</p>
 		    <LOOP NAME="files">
    		    <DO>
-		      <div><strong>[#FILENAME]</strong> &gt;&gt; <a class="action" href="import.php?file=[(#FULLFILENAME|urlencode)]">[@ADMIN.IMPORT]</a></div><br />
+		      <div><strong>[#FILENAME]</strong> &gt;&gt; <a class="action" href="index.php?do=import&amp;lo=data&amp;file=[(#FULLFILENAME|urlencode)]">[@ADMIN.IMPORT]</a></div><br />
 		    </DO>
 		    </LOOP>
 		</li>
@@ -80,6 +86,6 @@
 </IF>  
 </form>
 
-
+</IF>
 
 <MACRO NAME="CLOSE_HTML">  

@@ -33,7 +33,17 @@
 	<li><span class="intit">[@ADMIN.TITLE_BACKUP]</span></li>
 </ul>
 <br />&nbsp;<br />
-<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
+
+<IF COND="[#SUCCESS]">
+	<p>
+	[@ADMIN.SAVED_IN]  : <strong>[#OUTFILENAME]</strong>
+	</p>
+	<input class="button" type="button" value="[@COMMON.OK]" onclick="javascript:window.location='index.php'" />
+<ELSE/>
+<!--<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">-->
+<form method="post" action="index.php">
+	<input type="hidden" name="do" value="backup" />
+	<input type="hidden" name="lo" value="data" />
 <fieldset>
 	<legend>[@ADMIN.TITLE_BACKUP]</legend>
 	<input type="hidden" name="backup" value="1">
@@ -49,8 +59,8 @@
 <fieldset>
 	<legend>[@COMMON.VALIDATION]</legend>
 	<input class="button" type="submit" value="[@COMMON.SAVE]" />
-	<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php'" />
+	<input class="button" type="button" value="[@COMMON.BACK]" onclick="javascript:window.location='index.php'" />
 </fieldset>
 </form>
-
+</IF>
 <MACRO NAME="CLOSE_HTML">
