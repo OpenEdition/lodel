@@ -22,27 +22,27 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_old.html">
+<USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@LODELADMIN.TITLE_BACKUP]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
-<tr><td><div align="center">
-<br /><br /><b>[@LODELADMIN.TITLE_BACKUP]</b></div></td></tr>
-</table>
+<ul id="actionsOnEntitiesPath">
+	<li>[@LODELADMIN.TITLE_BACKUP]</li>
+</ul>
+<br />&nbsp;<br />
 
 <IF COND="[#OUTFILENAME]">
 	<IF COND="[#ERROR]">
 		[@LODELADMIN.SOME_ERRORS_OCCURS_DURING_THE_BACKUP_PROCESS] :<br />
-	<LOOP NAME="errors">
-		<BEFORE><ul></BEFORE>
-		<DO>
-		<li>[#ERROR]</li>
-		</DO>
-		<AFTER></ul></AFTER>
-	</LOOP>
+		<LOOP NAME="errors">
+			<BEFORE><ul></BEFORE>
+			<DO>
+			<li>[#ERROR]</li>
+			</DO>
+			<AFTER></ul></AFTER>
+		</LOOP>
 	</IF>
 	[@LODELADMIN.BACKUP_IS_DONE_ARCHIVE_AIVALABLE_HERE] : [#OUTFILENAME]<br />
 	<input class="form" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php'" />
@@ -52,18 +52,25 @@
 	</IF>
 
 	<form method="POST" action="backup.php">
-		<input type="hidden" name="backup" value="1">
-		[@LODELADMIN.SAVE_DATABASE_ONLY] :<input type="checkbox" name="sqlonly" /><br />
-		[@LODELADMIN.GET_FILE_OPERATION] :
-		<select name="operation">
+		<fieldset>
+		<legend>[@LODELADMIN.TITLE_BACKUP]</legend>
+		<input type="hidden" name="backup" value="1" />
+		<label for="sqlonly" class="boolean">[@LODELADMIN.SAVE_DATABASE_ONLY]</label> <input type="checkbox" name="sqlonly" id="sqlonly" /><br class="nobr" />
+		<label for="operation">[@LODELADMIN.GET_FILE_OPERATION]</label>
+		<select name="operation" id="operation">
 			<option value="download">[@LODELADMIN.DOWNLOAD]</option>
 			<IF COND="[#IMPORTDIR]">
 				<option value="importdir">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR]</option>
 			</IF>
 			<option value="cache">[@LODELADMIN.SAVE_IN_CACHE]</option>
-		</select><br />
-		<input class="form" type="submit" value="[@COMMON.SAVE]" />
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'" />
+		</select>
+		</fieldset>
+		<fieldset>
+		<legend>[@COMMON.VALIDATION]</legend>
+		<input class="button" type="submit" value="[@COMMON.SAVE]" />
+		<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php'" />
+		</fieldset>
 	</form>
 </IF>
+</fieldset>
 <MACRO NAME="CLOSE_HTML">
