@@ -30,52 +30,19 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-	<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-		<!--[ Partie haute ]-->
-		<tr>
-			<td  width="375" valign="top">
-				<!--[ *************** Préférences *************** ]-->
-				<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="20" height="62" background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-						<td width="350" height="62" background="[#SHAREURL]/images/fond_haut_admin.png"><img src="[#SHAREURL]/images/picto_admin_preferences.png" /></td>
-						<td background="[#SHAREURL]/images/fond_haut_admin.png">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20" style="padding-bottom:15px;">&nbsp;</td>
-						<td width="350" style="padding-bottom:15px;"><span class="nom_publi">[@ADMIN.CONFIGURATION]</span></td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=users">[@LODELADMIN.MANAGE_LODELADMIN]</a>
-						</td>
-						<td width="5">&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-							<a href="index.php?do=list&lo=sites">[@LODELADMIN.MANAGE_SITES]</a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-						<a href="index.php?do=list&lo=translations">[@LODELADMIN.MANAGE_TRANSLATIONS]</a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td width="20">&nbsp;</td>
-						<td width="350" class="td_admin">
-					        <a href="backup.php">[@LODELADMIN.GENERAL_BACKUP]</a>
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
+<ul id="actionsOnEntitiesPath">
+	<li><span class="intit">[@COMMON.GENERAL_ADMINISTRATION]</span></li>
+</ul>
+
+	<div id="adminGroup">
+		<div class="conf">
+		<h4>[@ADMIN.CONFIGURATION]</h4>
+		<ul>
+			<li><a href="index.php?do=list&amp;lo=users">[@LODELADMIN.MANAGE_LODELADMIN]</a></li>
+			<li><a href="index.php?do=list&amp;lo=sites">[@LODELADMIN.MANAGE_SITES]</a></li>
+			<li><a href="index.php?do=list&amp;lo=translations">[@LODELADMIN.MANAGE_TRANSLATIONS]</a></li>
+			<li><a href="backup.php">[@LODELADMIN.GENERAL_BACKUP]</a></li>
+		</ul>
+		</div>
+	</div>
 <MACRO NAME="CLOSE_HTML">
