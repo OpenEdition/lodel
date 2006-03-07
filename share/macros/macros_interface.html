@@ -213,7 +213,17 @@
 	    <div class="mlTitle">[(#LANG|humanlang|ucfirst)]</div><div class="displayfield">[#VALUE]</div>
 	  </LOOP>
 	<ELSE/> <!--[ other cases ]-->
-		<div class="editiondisplay"><IF COND="[#TYPE] ne 'passwd'">[#VALUE]<ELSE/>*******</IF></div>
+		<div class="displayfield">
+		<IF COND="[#TYPE] ne 'passwd'">
+			<IF COND="[#TYPE] EQ 'longtext'">
+				[#VALUE|removefootnotes|couper(1000)]<IF COND="[#VALUE|hasbeencut]">...</IF>
+			<ELSE />
+				[#VALUE]
+			</IF>
+		<ELSE/>
+			*******
+		</IF>
+		</div>
 	</IF>
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
