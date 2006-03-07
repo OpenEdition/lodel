@@ -531,7 +531,7 @@ ul.listEntities div.action{
 }
 
 ul.listEntities li.unfoldedentities div.action{
-	right: 1.7em;
+	right: .6em;
 }
 
 ul.listEntities div.action span.item, ul.listEntities div.action div.move, #actionsOnEntitiesPath ul.actions li{
