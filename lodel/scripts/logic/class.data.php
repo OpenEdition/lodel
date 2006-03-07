@@ -47,7 +47,7 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
- * @see logic.php
+ * @see backupfunc.php, pma/sql-modified.php
  */
 class DataLogic
 {
@@ -249,6 +249,87 @@ class DataLogic
 		else {
 			return 'backup';
 		}
+	}
+
+	/**
+	 * Backup global des données. Seulement autorisé pour un admin lodel
+	 *
+	 * Cela créé un backup de la base principale mais aussi de tous les sites
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreur, passées par référence
+	 * @return le nom du template utilisé pour cette action : backup
+	 * @todo Trouver une alternative à la commande système tar
+	 */
+	function globalbackupAction(&$context, &$error)
+	{
+		global $db;
+		if($context['lodeluser']['rights'] < 128) {
+			die('ERROR : You d\'ont have the rights to use this feature');
+		}
+		require_once 'backupfunc.php';
+		$context['importdir'] = $GLOBALS['importdir'];
+		$operation = $context['operation'];
+		if ($context['backup']) {
+			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
+			$dirtotar  = array();
+			$dirlocked = tempnam('/tmp', 'lodeldump_'). '.dir'; // this allow to be sure to have a unique dir.
+			mkdir($dirlocked, 0700);
+			$outfile = 'lodel.sql';
+			$fh = fopen($dirlocked. '/'. $outfile, 'w');
+			
+			if (!$fh) {
+				die ("ERROR: unable to open a temporary file in write mode");
+			}
+			// save the main database
+			if (fputs($fh, 'DROP DATABASE '. DATABASE. ";\nCREATE DATABASE ". DATABASE. ";USE ". DATABASE. ";\n") === FALSE) {
+				die("ERROR: unable to write in the temporary file");
+			}
+
+			$GLOBALS['currentprefix'] = '#_MTP_';
+			set_time_limit(60); // pas d'effet en safe mode
+			require_once 'backupfunc.php';
+			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
+			
+			// Trouve les sites a inclure au backup.
+			$errors = array();
+			$result = $db->execute(lq('SELECT name FROM #_MTP_sites WHERE status > -32')) or dberror();
+			chdir(LODELROOT);
+			set_time_limit(60); // pas d'effet en safe mode
+			$GLOBALS['currentprefix'] = '#_TP_';
+			while (!$result->EOF) {
+				$name = $result->fields['name'];
+				if (fputs($fh, 'DROP DATABASE '. $name. ";\nCREATE DATABASE ". $name. ";USE ". $name. ";\n") === FALSE) {
+				die("ERROR: unable to write in the temporary file");
+			}
+				$this->_dump($name, true, $errors, $fh);
+				if (!$context['sqlonly']) {
+					//verifie que le repertoire existe
+					if(is_readable("$name/lodel/sources") && is_readable("$name/docannexe")) {
+						array_push($dirtotar, "$name/lodel/sources", "$name/docannexe");
+					} else {
+						$errors['files'] = "the directories  $name/lodel/sources and $name/docannexe are not readable or don't exists any more. They won't be included in the backup.";
+					}
+				}
+				$result->MoveNext();
+			}
+			fclose($fh);
+			
+
+			// tar les sites et ajoute la base
+			$archivetmp      = tempnam('/tmp', 'lodeldump_');
+			$archivefilename = 'lodel-'. date('dmy'). '.tar.gz';
+			// Attention ce qui suit ne fonctionnera que sous Linux
+			system("tar czf $archivetmp ". join(' ', $dirtotar). " -C $dirlocked $outfile") !== false or die ("impossible d'executer tar");
+			unlink($dirlocked. '/'. $outfile);
+			rmdir($dirlocked);
+			chdir('lodeladmin'. ($version ? '-'. $version : ''));
+			if (operation($operation, $archivetmp, $archivefilename, $context)) {
+				return 'backup';
+			}
+		}
+		$context['error'] = $errors;
+		return 'backup';
 	}
 
 	/**
@@ -488,7 +569,6 @@ class DataLogic
 			if ($vo->classtype == 'persons')
 				$tables[] = lq('#_TP_entities_'. $vo->class);
 		}
-	
 		mysql_dump($dbname, $tables, $outfile, $fh);
 	
 		if ($closefh)
