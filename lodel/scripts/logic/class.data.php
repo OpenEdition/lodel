@@ -254,17 +254,87 @@ class DataLogic
 	/**
 	 * Importation du modèle éditorial
 	 *
+	 * Importe les données contenu dans un fichier ZIP de sauvegarde du ME
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreur, passées par référence
+	 * @return le nom du template utilisé pour cette action : importmodel
 	 */
 	function importmodelAction(&$context, &$error)
 	{
+		//Vérifie que l'on peut bien faire cet import
+		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
+		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
+		if ($context['importdir']) {
+			$GLOBALS['importdirs'][] = $importdir;
+		}
+		$context['importdirs'] = $GLOBALS['importdirs'];
+		$ext = 'zip';
+		$GLOBALS['fileregexp'] = '(model)-\w+(?:-\d+)?.'. $ext;
 
+		if (($context['error_table'] = $this->_isimportmodelallowed()) ) {
+			return 'importmodel';
+		}
+		$file = $this->_extractImport($context);
+		
+		if ($file && $context['delete']) {// extra check. Need more ?
+			if (dirname($file) == 'CACHE') {
+				unlink($file);
+			}
+		} elseif ($file) {
+			require_once 'backupfunc.php';
+			require_once 'func.php';
+			$sqlfile = tempnam(tmpdir(), 'lodelimport_');
+			$accepteddirs = array('tpl', 'css', 'images', 'js');
+			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
+			if (!importFromZip($file, $accepteddirs, $acceptedexts, $sqlfile)) {
+				$err = $context['error_extract'] = 1;
+			}
+			
+			// execute the dump
+			if (!$this->_execute_dump($sqlfile)) {
+				$context['error_execute_dump'] = $err->errormsg();
+			}
+			@unlink($sqlfile);
+			
+			// change the id in order there are minimal and unique
+			$this->_reinitobjetstable();
+
+			//Vide le cache
+			require_once 'cachefunc.php';
+			clearcache();
+			
+			if (!$err) {
+				if ($context['frominstall']) { // si on vient de l'install redirige vers la page d'édition
+					header ('location: ../edition/index.php');
+					exit;
+				} else {
+					$context['success'] = 1;
+					return 'importmodel';
+				}
+			}
+		}
+		#print_r($context);
+		if ($context['frominstall']) {
+			$GLOBALS['nodesk'] = true;
+			return 'importmodel-frominstall';
+		} else {
+				
+				return 'importmodel';
+		}
 	}
 
 
 	/**
 	 * Sauvegarde du modèle éditorial
 	 *
+	 * Sauve les tables du ME dans un dump SQL (table lodel + table créés). Si demandé, inclue
+	 * aussi les templates, les css, les images et les scripts javascript. Le fichier créé est
+	 * de la forme <em>model-site-date.zip</em>.
 	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreur, passées par référence
+	 * @return le nom du template utilisé pour cette action : backupmodel
 	 */
 	function backupmodelAction(&$context, &$error)
 	{
@@ -558,6 +628,131 @@ class DataLogic
 		return $archivetmp;
 	}
 
+
+	/**
+	 * Est-ce que l'on peut importer un ME ?
+	 *
+	 * Vérifie si le site est vide, pour permettre l'import d'un ME
+	 *
+	 * @access private
+	 * @return un booleen false si impossible, le nom de la table sinon
+	 */
+	function _isimportmodelallowed() 
+	{
+		global $db;
+		// verifie qu'on peut importer le modele.
+		$tablestocheck = array('#_TP_entities', '#_TP_entries', '#_TP_persons');
+		foreach($tablestocheck as $table) {
+			$haveelements = $db->getOne(lq("SELECT id FROM $table WHERE status>-64"));
+			if ($db->errorno) {
+				continue; // on fait comme si la table n'existait pas
+			}
+			if ($haveelements) {
+				return $table;
+			}
+			$db->execute(lq("DELETE FROM $table WHERE status<=-64")) or dberror();
+		}
+		return false;
+	}
+
+	/**
+	 * Extraction du fichier ZIP d'import du ME
+	 *
+	 * 
+	 * @param string $footprint le prefix qui doit être contenu dans le nom du fichier
+	 * @param array $context le contexte passé par référence
+	 * @param string $ext l'extension du fichier, par défaut .zip
+	 * @return le nom du fichier d'import
+	 */
+	function _extractImport(&$context, $ext = 'zip')
+	{
+		$archive = $_FILES['archive']['tmp_name'];
+		$context['error_upload'] = $_FILES['archive']['error'];
+		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
+			$file = $_FILES['archive']['name'];
+			if (!preg_match("/^".$GLOBALS['fileregexp']."$/", $file)) {
+				$file = $footprint. '-import-'.date("dmy"). '.'. $ext;
+			}
+	
+			if (!move_uploaded_file($archive, 'CACHE/'.$file)) {
+				die('ERROR: a problem occurs while moving the uploaded file.');
+			}
+			$file = ''; // on repropose la page
+		} elseif ($context['file'] && 
+							preg_match("/^(?:". str_replace("/", "\/", join("|", $GLOBALS['importdirs'])). ")\/". $GLOBALS['fileregexp']. "$/", $context['file'], $result) && 
+							file_exists($context['file']))	{ // fichier sur le disque
+			$file = $context['file'];
+			$prefix = $result[1];
+		}	else	{ // rien
+			$file = '';
+		}
+		return $file;
+	}
+
+
+	/**
+	 * Réinitialisation de la table des objets
+	 */
+	function _reinitobjetstable()
+	{
+		global $db;
+		$db->execute(lq('DELETE FROM #_TP_objects')) or dberror();
+	
+		// ajoute un grand nombre a tous les id.
+		$offset = 2000000000;
+		$tables = array(
+			'classes' => array('id'),
+			'types' => array('id'),
+			'persontypes' => array('id'),
+			'entrytypes' => array('id'),
+			'entitytypes_entitytypes' => array('identitytype', 'identitytype2'),
+			);
+		foreach ($tables as $table => $idsname) {
+			foreach ($idsname as $idname) {
+				$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $idname. '+'. $offset. ' WHERE '.$idname. '>0')) or dberror();
+			}
+		}
+	
+		$conv = array('types' => array('entitytypes_entitytypes' => array('identitytype', 'identitytype2'), ),
+									'persontypes' => array(), 'entrytypes' => array(), 'classes' => array());
+	
+		foreach ($conv as $maintable => $changes) {
+			$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
+			while ( ($id=$result->fields['id']) ) {
+				$newid=uniqueid($maintable);
+				$db->execute(lq('UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id)) or dberror();
+				foreach ($changes as $table => $idsname) {
+					if (!is_array($idsname)) {
+						$idsname = array($idsname);
+					}
+					foreach ($idsname as $idname) {
+						$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $newid. ' WHERE '. $idname. '='. $id)) or dberror();
+					}
+				}
+				$result->MoveNext();
+			}
+		}
+	
+		// check all the id have been converted
+		$err = "";
+		foreach ($tables as $table => $idsname) {
+			foreach ($idsname as $idname) {
+				$count = $db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
+				if ($count === false) {
+					dberror();
+				}
+				if ($count) {
+					die("<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n");
+				}
+			}
+		}
+		if ($err) {
+			return $err;
+		}
+		return false;
+	}
+
+
 }// end of DataLogic class
 
 
@@ -575,6 +770,63 @@ function loop_files(&$context, $funcname)
 				$localcontext = $context;
 				$localcontext['filename']     = $file;
 				$localcontext['fullfilename'] = "$dir/$file";
+				call_user_func("code_do_$funcname", $localcontext);
+			}
+			closedir ($dh);
+		}
+	}
+}
+
+// Définition de la loop pour les fichier du ME
+function loop_files_model(&$context, $funcname)
+{
+	global $fileregexp, $home;
+	#print_r($context);
+	foreach ($context['importdirs'] as $dir) {
+		if ( $dh = @opendir($dir)) {
+			while (($file = readdir($dh)) !== FALSE) {
+				if (!preg_match("/^$fileregexp$/i", $file)) {
+					continue;
+				}
+				$localcontext = $context;
+				$localcontext['filename']     = $file;
+				$localcontext['fullfilename'] = "$dir/$file";
+				if ($dir == "CACHE") {
+					$localcontext['maybedeleted'] = 1;
+				}
+				// open ZIP archive and extract model.sql
+				if ($unzipcmd && $unzipcmd != "pclzip") {
+	  			$line = `$unzipcmd $dir/$file -c model.sql`;
+				} else {
+	  			require_once "pclzip/pclzip.lib.php";
+	  			$archive = new PclZip("$dir/$file");
+	  			$arr = $archive->extract(PCLZIP_OPT_BY_NAME, "model.sql",
+									PCLZIP_OPT_EXTRACT_AS_STRING);
+	  			$line = $arr[0]['content'];
+				}
+				if (!$line) {
+					continue;
+				}
+
+				$xml = "";
+				if (preg_match("/<model>(.*?)<\/model>/s", $line, $result)) {
+	  			$lines = preg_split("/\n/", $result[1]);
+	  			$xml = "";
+	  			foreach ($lines as $line) {
+	    			$xml.= substr($line, 2). "\n";
+	  			}
+				}
+				foreach (array('lodelversion', 'title', 'description', 'author', 'date', 'modelversion') as $tag) {
+					if (preg_match("/<$tag>(.*?)<\/$tag>/s", $xml, $result)) {
+						$localcontext[$tag] = str_replace(array("\r", "<",">", "\n"),
+						array("", "&lt;", "&gt;", "<br />"),
+						trim($result[1]));
+					}
+				}
+				// check only the major version, sub-version are not checked
+				if (doubleval($localcontext['lodelversion']) != doubleval($GLOBALS['version'])) {
+					$localcontext['warning_version'] = 1;
+				}
 				call_user_func("code_do_$funcname", $localcontext);
 			}
 			closedir ($dh);
