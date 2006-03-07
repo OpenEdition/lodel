@@ -85,10 +85,11 @@
 	</IF>
 	</span>
 	</div>
-	<IF COND="[#DISPLAY] eq 'unfolded'">
-		<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
-	</IF>
 	</li>
+	<IF COND="[#DISPLAY] eq 'unfolded'">
+		<li><FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes"></li>
+	</IF>
+	
 	</DO>
 	<AFTER>
 		</ul>

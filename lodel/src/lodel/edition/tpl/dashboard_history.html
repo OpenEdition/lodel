@@ -82,13 +82,13 @@
 			<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
 		</LOOP>
 		</span>
-	</div>
+	</div></li>
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	
 		<IF COND="[#DISPLAY] eq 'unfolded'">
-			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
+			<li><FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes"></li>
 		</IF>
-		</li>
+		
 		</DO>
 		<AFTER>
 		</ul>
