@@ -29,56 +29,67 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="ROBOTS" content="nofollow, noindex" />
-
-
 <title>[@COMMON.LODEL_INSTALL]</title>
 <link rel="stylesheet" type="text/css" href="css/install.css" />
 </head>
 <body> 
-<h1 id="logo"><img src="images/install_bandeau.jpg" alt="Lodel Logiciel d'édition électronique" /></h1>
+<h1 id="logo">
+	<img src="images/install_bandeau.jpg" alt="Lodel Logiciel d'édition électronique" />
+</h1>
 <h2 id="install">[@COMMON.INSTALL]</h2>
-<div id="bandeau"><h3>[@ADMIN.EM_INSTALL]</h3></div>
-<div id="main">
-	  <IF COND="[#ERROR_TABLE]">
-<div id="content">
-	    [@ADMIN.ERROR_TABLE|sprintf([#ERROR_TABLE])]
+<div id="bandeau">
+	<h3>[@ADMIN.EM_INSTALL]</h3>
 </div>
-	<div id="pied_de_formulaire">
-	    <form><input class="form" type="button" value="    Ok    " onClick="javascript:window.location='index.php'" /></form>
-
-	</div>
-	    <ELSE/>
-
-<div id="content">
-<br />
-		    <IF COND="[#ERROR_EXECUTE_DUMP]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]<br /><br /></IF>
-		    <IF COND="[#ERROR_READING]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].<br /><br /></IF>
-
-		    <h3>[@ADMIN.EM_INSTALL].</h3>
-                      [@ADMIN.CHOOSE_EM]
-
-		    <LOOP NAME="files">
+<div id="main">
+	<IF COND="[#ERROR_TABLE]">
+		<div id="content">
+			[@ADMIN.ERROR_TABLE|sprintf([#ERROR_TABLE])]
+		</div>
+		<div id="pied_de_formulaire">
+			<form>
+				<input class="form" type="button" value="[@COMMON.OK" onClick="javascript:window.location='index.php'" />
+			</form>
+		</div>
+	<ELSE/>
+		<div id="content">
+		<br />
+		<IF COND="[#ERROR_EXECUTE_DUMP]">
+			<strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]
+			<br /><br />
+		</IF>
+		<IF COND="[#ERROR_READING]">
+			<strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].
+			<br /><br />
+		</IF>
+		<h3>[@ADMIN.EM_INSTALL].</h3>
+		[@ADMIN.CHOOSE_EM]
+		<LOOP NAME="files_model">
 			<BEFORE><dl></BEFORE>
-   		    <DO>
-
-			<hr />
-                      <div>
-		      <dt><strong>[#TITLE]</strong></dt>
-                      <dd>[#DESCRIPTION]</dd>
-                      <dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
-                      <dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
-                      <dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
-		      <dd><strong>[@ADMIN.CREATION_DATE] :</strong> [(#DATE|humandate)]</dd>
-		      <IF COND="[#WARNING_VERSION]"><div><strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])] . [@ADMIN.VERIFY_COMPATIBILITY].</div></IF>
-
-
-
-                         <div style="text-align: right"><a href="importmodel.php?frominstall=1&file=[(#FULLFILENAME|urlencode)]"><strong>[@ADMIN.INSTALL_EM]</strong></a></div>
-                       </div>
-
-		    </DO>
+			<DO>
+				<hr />
+				<div>
+					<dt>
+						<strong>[#TITLE]</strong>
+					</dt>
+					<dd>[#DESCRIPTION]</dd>
+					<dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
+					<dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
+					<dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
+					<dd><strong>[@ADMIN.CREATION_DATE] :</strong> [(#DATE|humandate)]</dd>
+					<IF COND="[#WARNING_VERSION]">
+						<div>
+							<strong>[@ADMIN.VERSION] :</strong> [@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])] . [@ADMIN.VERIFY_COMPATIBILITY].
+						</div>
+					</IF>
+					<div style="text-align: right">
+						<a href="index.php?do=importmodel&amp;lo=data&amp;frominstall=1&file=[(#FULLFILENAME|urlencode)]">
+							<strong>[@ADMIN.INSTALL_THIS_EDITORIAL_MODEL]</strong>
+						</a>
+					</div>
+				</div>
+			</DO>
 			<AFTER></dl></AFTER>
-		    </LOOP>
+		</LOOP>
 
 <!--[<hr/ >[@ADMIN.CREATE_MY_OWN_OR_USE_ANOTHER_EM].
 			<dl>
@@ -87,8 +98,7 @@
 			</dl>
 ]-->
 </div>
-
-</IF>  
+</IF>
 </div>
 </body>
 </html>

@@ -494,7 +494,7 @@ if ($task == 'file') {
 		$context['path'] = '/'. $context['rep'];
 	}
 	if ($import) {
-		$go = $context['url']. '/lodel/admin/importmodel.php?frominstall=1';
+		$go = $context['url']. "/lodel/admin/index.php?do=importmodel&lo=data&frominstall=1";
 	} else {
 		$go = $context['url']. '/lodel/edition';
 	}

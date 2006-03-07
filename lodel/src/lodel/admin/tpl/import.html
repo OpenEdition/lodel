@@ -37,7 +37,7 @@
 <p>[@ADMIN.DATA_IMPORT_SUCCESSFUL]</p>
 <input class="button" type="button" value="[@COMMON.OK]" onclick="javascript:window.location='index.php'" />
 <ELSE/>
-<form enctype="multipart/form-data" action="index.php ?>" method="post"  />
+<form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="do" value="import" />
 	<input type="hidden" name="lo" value="data"  />
 	<IF COND="[#ERROR_HTACCESS]">
@@ -72,9 +72,7 @@
       <IF COND="[#ERROR_UPLOAD]"><p class="error">[@ADMIN.ERROR_LOADING_FILE]</p></IF>
 
     <label for="archive">[@COMMON.ARCHIVE]</label>
-      <input type="file" name="archive" id="archive" size="40" />
-      
-      
+      <input type="file" name="archive" id="archive" />
 		</li>
 	      </ul>
 		</fieldset>
@@ -82,9 +80,9 @@
 		<legend>[@COMMON.VALIDATION]</legend>
 		<input class="button" type="submit" value="[@ADMIN.LOAD]" />&nbsp;&nbsp;&nbsp;<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.history.go(-1)" />
 	</fieldset>
-
-</IF>  
 </form>
+</IF>
+
 
 </IF>
 

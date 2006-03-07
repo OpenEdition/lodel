@@ -33,71 +33,60 @@
 	<li><span class="intit">[@ADMIN.TITLE_IMPORT_EM]</span></li>
 </ul>
 <br />&nbsp;<br />
-<fieldset>
-<legend>[@ADMIN.TITLE_IMPORT_EM]</legend>
+<IF COND="[#SUCCESS] EQ 1">
+[@ADMIN.THE_EDITORIAL_MODEL_HAS_BEEN_SUCCESSFULY_INSTALLED]
+	<br />
+	<input class="button" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php';" />
+<ELSE/>
+	<fieldset>
+	<legend>[@ADMIN.TITLE_IMPORT_EM]</legend>
 	<IF COND="[#ERROR_TABLE]">
 		<p class="error">[@ADMIN.ERROR_TABLE]</p>
 	<ELSE/>
 		<IF COND="[#ERROR_EXECUTE_DUMP]">
 			<p class="error"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]</p>
 		</IF>
-
 		<IF COND="[#ERROR_READING]">
 			<p class="error"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].</p>
 		</IF>
 		<h3>[@ADMIN.EM_INSTALL].</h3>
-                      [@ADMIN.CHOOSE_EM].
-
-		    <LOOP NAME="files">
+		[@ADMIN.CHOOSE_EM].
+		<LOOP NAME="files_model">
 			<BEFORE><dl></BEFORE>
-   		    <DO>
+			<DO>
+				<hr />
+				<div>
+				<dt><strong>[#TITLE]</strong></dt>
+				<dd>[#DESCRIPTION]</dd>
+				<dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
+				<dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
+				<dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
+				<dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
+				<IF COND="[#WARNING_VERSION]">
+					<div>
+						<strong>[@ADMIN.VERSION] :</strong>[@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])]. [@ADMIN.VERIFY_COMPATIBILITY].
+					</div>
+				</IF>
 
-			<hr />
-                      <div>
-		      <dt><strong>[#TITLE]</strong></dt>
-                      <dd>[#DESCRIPTION]</dd>
-                      <dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
-                      <dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
-                      <dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
-		      <dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
-		      <IF COND="[#WARNING_VERSION]">
-		      <div>
-		      <strong>[@ADMIN.VERSION] :</strong>[@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])]. [@ADMIN.VERIFY_COMPATIBILITY].
-		      </div>
-		      </IF>
-
-
-
-                         <div style="text-align: right"><a href="importmodel.php?frominstall=1&amp;file=[#FULLFILENAME|urlencode]"><strong>[@ADMIN.INSTALL_EM]</strong></a></div>
-                       </div>
-
-		    </DO>
+				<div style="text-align: right"><a href="index.php?do=importmodel&amp;lo=data&amp;file=[#FULLFILENAME|urlencode]"><strong>[@ADMIN.INSTALL_THIS_EDITORIAL_MODEL]</strong></a></div>
+				</div>
+			</DO>
 			<AFTER></dl></AFTER>
-		    </LOOP>
-<hr/ >
-
-		  <p>Ajouter un modèle à la liste ci-dessus:</p>
-      <IF COND="[#ERROR_UPLOAD]"><b>[@COMMON.ERROR]</b> [@ADMIN.UPLOAD_IN] !</IF>
-                  <p>
-    <form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
-      <input type="file" name="archive" size="40" />
-      <input class="form" type="submit" value="[@ADMIN.UPLOAD]" />	  
-    </form>
-
-</td></tr>
-</table>
+		</LOOP>
+		<hr />
+		<p>[@ADD_A_MODEL_TO_THE_ABOVE_LIST] :</p>
+		<IF COND="[#ERROR_UPLOAD]">
+			<strong>[@COMMON.ERROR]</strong> [@ADMIN.UPLOAD_IN]
+		</IF>
+		<form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
+			<input type="file" name="archive" size="40" />
+			<input class="form" type="submit" value="[@ADMIN.UPLOAD]" />
+		</form>
+	</IF>
+	</fieldset>
+	<fieldset>
+		<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+	</fieldset>  
 </IF>
-</fieldset>
-
-
-<fieldset>
-	<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
-</fieldset>  
-
-
 
 <MACRO NAME="CLOSE_HTML">  
-
-
-
-
