@@ -51,7 +51,6 @@ require "pma/defines.lib.php";
 require "pma/defines_php.lib.php";
 require "pma/common.lib.php";
 require "pma/sql-modified.php";
-#require("pma/read_dump.lib.php");
 
 // parser SQL
 require "pma/string.lib.php";
@@ -59,89 +58,19 @@ require "pma/sqlparser.data.php";
 require "pma/sqlparser.lib.php";
 
 /**
- * Sauvegarde des données d'un site
- *
- * @param string $site le nom du site
- * @param string $outfile le fichier dans lequel écrire le dump SQL
- * @param resource $fh le descripteur de fichier (par défaut 0)
- * @param array $error tableau des erreurs
- */
-function dump_site($site, $outfile, &$error, $fh = 0)
-{
-	global $db;
-
-	if ($site && $GLOBALS['singledatabase'] != 'on') {
-		$dbname = DATABASE."_".$site;
-		if (!$fh)	{
-			$fh = fopen($outfile, "w");
-			$closefh = true;
-		}
-		if (!$fh)
-			die("ERROR: unable to open file $outfile for writing");
-		//if (fputs($fh, "DROP DATABASE $dbname;\nCREATE DATABASE $dbname; USE $dbname;\n") === FALSE)
-		//	die("ERROR: unable to write in the temporary file");
-	}	else	{
-		$dbname = DATABASE;
-	}
-	if (!$db->selectDB($dbname)) {
-		$error['database'] = 'error : '.$db->ErrorMsg().'<br />';
-		//die("ERROR: the database <em>$dbname</em> does not exist or is not reactable. This is inconsistent with the sites table in the database <em>".DATABASE."</em>. Please solve the problem before backing up.<br />Error is : <pre>". $db->ErrorMsg(). '</pre>');
-		return ;
-	}
-	$GLOBALS['currentprefix'] = "#_TP_";
-
-	$tables = $GLOBALS['lodelsitetables'];
-
-	$dao = &getDAO("classes");
-	$vos = $dao->findMany("status>0", "", "class,classtype");
-	foreach ($vos as $vo)	{
-		$tables[] = lq("#_TP_". $vo->class);
-		if ($vo->classtype == "persons")
-			$tables[] = lq("#_TP_entities_". $vo->class);
-	}
-
-	mysql_dump($dbname, $tables, $outfile, $fh);
-
-	if ($closefh)
-		fclose($fh);
-}
-
-/**
- * Lock all
- *
- * @param string database to lock
- *
- */
-
-#function lock_write_all($db)
-#
-#{
-#  // recupere la liste des tables
-#  $result=PMA_mysql_list_tables($db) or dberror();
-#  if (!$result) dberror();
-#  $num_tables = mysql_numrows($result);
-#  for($i = 0; $i<$num_tables; $i++) {
-#    $tables[] = PMA_mysql_tablename($result, $i);
-#  }
-#  if (!$tables) die("WARNING: no table to lock in database \"$db\"");
-#  mysql_query("LOCK TABLES ".join (" WRITE ,",$tables)." WRITE") or dberror();
-#}
-
-/**
  * Operation. Propose various way to retrieve/store a file
  *
  */
-
 function operation($operation, $archivetmp, $archivefilename, &$context)
 {
-	if ($operation == "download")	{
+	if ($operation == 'download')	{
 		download($archivetmp, $archivefilename);
 		@ unlink($archivetmp);
 		return TRUE;
-	}	elseif ($operation == "cache" || $operation == "importdir")	{
-		$context[outfilename] = $operation == "cache" ? "CACHE/$archivefilename" : $GLOBALS[importdir]."/$archivefilename";
-		if (!(@ rename($archivetmp, $context[outfilename]))) {
-			$context[error] = 1;
+	}	elseif ($operation == 'cache' || $operation == 'importdir')	{
+		$context['outfilename'] = $operation == 'cache' ? "CACHE/$archivefilename" : $GLOBALS['importdir']."/$archivefilename";
+		if (!(@ rename($archivetmp, $context['outfilename']))) {
+			$context['error'] = 1;
 			return FALSE;
 		}	else	{
 			// ok, continue
@@ -167,8 +96,7 @@ function operation($operation, $archivetmp, $archivefilename, &$context)
  * @access  public
  *
  */
-
-function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true, $contents = true, $select = "*", $where = "")
+function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true, $contents = true, $select = '*', $where = '')
 {
 	if ($fh) {
 		$GLOBALS['mysql_dump_file_handle'] = $fh;
@@ -182,98 +110,67 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 	$err_url = $GLOBALS['PHP_SELF']."?error=1";
 	$crlf = PMA_whichCrlf();
 
-	if (!$tables)
+	if (!$tables) {
 		die("ERROR: tables is not defined in mysql_dump");
-	#    $results = PMA_mysql_list_tables($db);
-	#    if (!$results) dberror();
-	#    $num_tables = @mysql_numrows($results);
-	#    for($i=0; $i<$num_tables; $i++) $tables[]=PMA_mysql_tablename($results,$i);
-	#  }
+	}
 	$num_tables = count($tables);
 
-	if ($where)
-		$where = " WHERE ".$where;
-
-	#} elseif ($export_type == 'database') {
-	PMA_exportDBHeader($db);
-	#    if (isset($table_select)) {
-	#        $tmp_select = implode($table_select, '|');
-	#        $tmp_select = '|' . $tmp_select . '|';
-	#    }
+	if ($where) {
+		$where = ' WHERE '. $where;
+	}
+		PMA_exportDBHeader($db);
 	$i = 0;
 	while ($i < $num_tables) {
 		$table = lq($tables[$i]);
 		$table = preg_replace("/.*\./", "", $table); // remove the reference to the database. PMA do that itself.
-		$local_query = 'SELECT '.$select.' FROM '.PMA_backquote($db).'.'.PMA_backquote($table).$where;
-
-		if ($create)
+		$local_query = 'SELECT '. $select. ' FROM '.PMA_backquote($db). '.'.PMA_backquote($table). $where;
+		if ($create) {
 			PMA_exportStructure($db, $table, $crlf, $err_url);
-		if ($contents)
+		}
+		if ($contents) {
 			PMA_exportData($db, $table, $crlf, $err_url, $local_query);
+		}
 		$i ++;
 	}
 	PMA_exportDBFooter($db);
-
-	if (!$fh)
+	if (!$fh) {
 		fclose($GLOBALS['mysql_dump_file_handle']);
-}
-
-function execute_dump($filename)
-{
-	require_once "func.php";
-	// constant
-	$chunk = 16384;
-	#  $chunk=2048;
-
-	$fh = fopen($filename, "r") or die("ERROR: invalid $filename");
-
-	while (!feof($fh)) {
-		$buf = fread($fh, $chunk);
-		#echo "<font color=\"red\">",htmlentities($buf),"</font>";
-		$pieces = array ();
-		$buf = $lastpiece.$buf; // add the last piece in front of the buffer
-		$fullstatment = PMA_splitSqlFile($pieces, $buf, PMA_MYSQL_INT_VERSION);
-		$pieces_count = count($pieces);
-		$pieces_to_execute = $fullstatment ? $pieces_count : $pieces_count -1;
-
-		#echo "pieces_to_execute=",$pieces_to_execute,"<br />";
-
-		for ($i = 0; $i < $pieces_to_execute; $i ++) {
-			#echo "<li>",$i," ",htmlentities($pieces[$i]),"</li>";
-			// add the prefix
-
-			#if (preg_match("/CREATE/",$pieces[$i])) echo $pieces[$i],"<br />";
-
-			PMA_mysql_query($pieces[$i]) or trigger_error(mysql_error()."<br>".htmlentities($pieces[$i]), E_USER_ERROR);
-			#       if ($result == FALSE) {     
-			#        //      echo $pieces[$i],"<br>\n"; flush();
-			#	return FALSE; }
-		}
-		$lastpiece = $fullstatment ? "" : $pieces[$pieces_count -1];
 	}
-
-	// simple version for small files. Big files exeed memory !!!
-	//PMA_splitSqlFile($pieces, file_get_contents($filename), PMA_MYSQL_INT_VERSION);
-	//$pieces_count = count($pieces);
-	//
-	//for ($i = 0; $i < $pieces_count; $i++) {
-	//  $a_sql_query = $pieces[$i];
-	//  $result = PMA_mysql_query($a_sql_query);
-	//  if ($result == FALSE) {     
-	# //     echo $a_sql_query,"<br>\n"; flush();
-	//    return FALSE; }
-	//} // end for
-
-	return TRUE;
 }
 
-#/**
-# * Remove the actual prefix and add the common prefix
-# *
-# *
-# */
-#
+/**
+ * Parse un dump MySQL et execute les requêtes.
+ *
+ * @param string $url le fichier SQL
+ * @param boolean $ignoreerrors. false par défaut
+ */
+function parse_mysql_dump($url, $ignoreerrors = false) 
+{
+	$file_content = file($url);
+	$query = '';
+	foreach($file_content as $sql_line) {
+		$tsl = trim($sql_line);
+		if (($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#")) {
+			$query .= $sql_line;
+			if(preg_match("/;\s*$/", $sql_line)) {
+				#echo "query:".lq($query)."<br />";
+				$result = mysql_query(lq($query));
+				if (!$result && !$ignoreerrors) die(mysql_error());
+				$query = '';
+			}
+		}
+	}
+}
 
+
+
+/**
+ * Enlève le préfix actuel et ajoute le préfixe par défaut dans une table MySQL
+ *
+ * Cette fonction est utilisée dans les fonctions PMA
+ *
+ * @param string $table le nom de la table
+ */
 function lodelprefix($table)
 {
 	// remove up to the dot
@@ -297,17 +194,13 @@ function lodelprefix($table)
  *
  * @return  bool    Whether output suceeded
  */
-
 function PMA_exportOutputHandler($line)
 {
 	static $time_start;
-
 	$write_result = @ fwrite($GLOBALS['mysql_dump_file_handle'], $line);
 	if (!$write_result || ($write_result != strlen($line)))	{
-		#    $GLOBALS['message'] = sprintf($GLOBALS['strNoSpace'], htmlspecialchars($save_filename));
 		return FALSE;
 	}
-
 	$time_now = time(); // keep the browser alive !
 	if (!$time_start)	{
 		$time_start = $time_now;
@@ -330,7 +223,6 @@ function PMA_exportOutputHandler($line)
  * @access  public
  *
  */
-
 function PMA_convert_charset($what)
 {
 	return $what;
@@ -347,268 +239,13 @@ function PMA_convert_charset($what)
  * @access  public
  *
  */
-
 function PMA_convert_display_charset($text)
 {
 	return $text;
 }
 
-//////// version legerement modifie: suppression des trim et ltrim
 /**
- * Removes comment lines and splits up large sql files into individual queries
- *
- * Last revision: September 23, 2001 - gandon
- * Modified by Ghislain:  trim and ltrim removed
- * Modified by Ghislain:  return TRUE only when it really finish a complete statement.
- *
- * @param   array    the splitted sql commands
- * @param   string   the sql commands
- * @param   integer  the MySQL release number (because certains php3 versions
- *                   can't get the value of a constant from within a function)
- *
- * @return  boolean  always true
- *
- * @access  public
- */
-function PMA_splitSqlFile(&$ret, $sql, $release)
-{
-	#    $sql          = trim($sql);
-	$sql_len = strlen($sql);
-	$char = '';
-	$string_start = '';
-	$in_string = FALSE;
-	$time0 = time();
-
-	$prefixescape = "#_TP_";
-	$oldprefixescape = "__LODELTP__";
-
-	for ($i = 0; $i < $sql_len; ++ $i) {
-		$char = $sql[$i];
-
-		// We are in a string, check for not escaped end of strings except for
-		// backquotes that can't be escaped
-		if ($in_string) {
-			for (;;) {
-				$i = strpos($sql, $string_start, $i);
-				// No end of string found -> add the current substring to the
-				// returned array
-				if (!$i) {
-					$ret[] = $sql;
-					return FALSE;
-				}
-				// Backquotes or no backslashes before quotes: it's indeed the
-				// end of the string -> exit the loop
-				else
-					if ($string_start == '`' || $sql[$i -1] != '\\')
-					{
-						$string_start = '';
-						$in_string = FALSE;
-						break;
-					}
-				// one or more Backslashes before the presumed end of string...
-				else
-				{
-					// ... first checks for escaped backslashes
-					$j = 2;
-					$escaped_backslash = FALSE;
-					while ($i - $j > 0 && $sql[$i - $j] == '\\')
-					{
-						$escaped_backslash = !$escaped_backslash;
-						$j ++;
-					}
-					// ... if escaped backslashes: it's really the end of the
-					// string -> exit the loop
-					if ($escaped_backslash)
-					{
-						$string_start = '';
-						$in_string = FALSE;
-						break;
-					}
-					// ... else loop
-					else
-					{
-						$i ++;
-					}
-				} // end if...elseif...else
-			} // end for
-		} // end if (in string)
-		else
-			if ($char == $prefixescape[0] && // look for prefix table
-			substr($sql, $i, strlen($prefixescape)) == $prefixescape)
-			{
-				// replace
-				$sql = substr($sql, 0, $i).$GLOBALS[tp].substr($sql, $i +strlen($prefixescape));
-				$sql_len = strlen($sql);
-			}
-			else
-				if ($char == $oldprefixescape[0] && // look for prefix table
-				substr($sql, $i, strlen($oldprefixescape)) == $oldprefixescape)
-				{
-					// replace
-					$sql = substr($sql, 0, $i).$GLOBALS[tp].substr($sql, $i +strlen($oldprefixescape));
-					$sql_len = strlen($sql);
-				}
-
-		// We are not in a string, first check for delimiter...
-		else
-			if ($char == ';')
-			{
-				// if delimiter found, add the parsed part to the returned array
-				$ret[] = substr($sql, 0, $i);
-				#            $sql        = ltrim(substr($sql, min($i + 1, $sql_len)));
-				$sql = substr($sql, min($i +1, $sql_len));
-				$sql_len = strlen($sql);
-				if ($sql_len)
-				{
-					$i = -1;
-				}
-				else
-				{
-					// The submited statement(s) end(s) here
-					return TRUE; // c'est bon alors
-				}
-			} // end else if (is delimiter)
-
-		// ... then check for start of a string,...
-		else
-			if (($char == '"') || ($char == '\'') || ($char == '`'))
-			{
-				$in_string = TRUE;
-				$string_start = $char;
-			} // end else if (is start of string)
-
-		// ... for start of a comment (and remove this comment if found)...
-		// ghislain: ajout du cas ou on a des ---
-		else
-			if ($char == '#' || (($char == ' ' || $char == '-') && $i > 1 && $sql[$i -2].$sql[$i -1] == '--'))
-			{
-				// starting position of the comment depends on the comment type
-				$start_of_comment = (($sql[$i] == '#') ? $i : $i -2);
-				// if no "\n" exits in the remaining string, checks for "\r"
-				// (Mac eol style)
-				$end_of_comment = (strpos(' '.$sql, "\012", $i +2)) ? strpos(' '.$sql, "\012", $i +2) : strpos(' '.$sql, "\015", $i +2);
-				if (!$end_of_comment)
-				{
-					// no eol found after '#', add the parsed part to the returned
-					// array if required and exit
-					if ($start_of_comment > 0)
-					{
-						#                    $ret[]    = trim(substr($sql, 0, $start_of_comment));
-						#                    $ret[]    = substr($sql, 0, $start_of_comment);
-						# faut qu'on recupere tout.... pour le traitement ulterieur.
-						$ret[] = $sql;
-					}
-					return FALSE;
-				}
-				else
-				{
-					#                $sql          = substr($sql, 0, $start_of_comment)
-					#                              . ltrim(substr($sql, $end_of_comment));
-					$sql = substr($sql, 0, $start_of_comment).substr($sql, $end_of_comment);
-					$sql_len = strlen($sql);
-					$i --;
-				} // end if...else
-			} // end else if (is comment)
-
-		// ... and finally disactivate the "/*!...*/" syntax if MySQL < 3.22.07
-		else
-			if ($release < 32270 && ($char == '!' && $i > 1 && $sql[$i -2].$sql[$i -1] == '/*'))
-			{
-				$sql[$i] = ' ';
-			} // end else if
-
-		// loic1: send a fake header each 30 sec. to bypass browser timeout
-		$time1 = time();
-		#        if ($time1 >= $time0 + 30) {
-		#            $time0 = $time1;
-		#            header('X-pmaPing: Pong');
-		#        } // end if
-	} // end for
-
-	// add any rest to the returned array
-	if (!empty ($sql) && preg_match('@[^[:space:]]+@', $sql))
-	{
-		$ret[] = $sql;
-		return FALSE;
-	}
-
-	return TRUE;
-} // end of the 'PMA_splitSqlFile()' function
-
-function backupME($sqlfile, $dirs)
-{
-	global $zipcmd;
-
-	if (!is_array($dirs))
-		$dirs = array ();
-
-	$acceptedexts = array ("html", "js", "css", "png", "jpg", "jpeg", "gif", "tiff");
-
-	$tmpdir = tmpdir();
-	$archivetmp = tempnam($tmpdir, "lodeldump_").".zip";
-
-	// search dirs to archive. Dirs must contains file !
-	$zipdirs = array ();
-	foreach ($dirs as $dir)	{
-		if (!file_exists(SITEROOT.$dir))
-			continue;
-		$dh = opendir(SITEROOT.$dir);
-		while (($file = readdir($dh)) && !preg_match("/\.(".join("|", $acceptedexts).")$/", $file))	{
-		}
-		if ($file)
-			$zipdirs[] = $dir;
-		closedir($dh);
-	}
-	//
-
-	if ($zipcmd && $zipcmd != "pclzip")	{
-		if ($zipdirs)	{
-			foreach ($zipdirs as $dir) {
-				foreach ($acceptedexts as $ext)	{
-					$files .= " $dir/*.$ext";
-				}
-			}
-			if (!chdir(SITEROOT))
-				die("ERROR: can't chdir in SITEROOT");
-			$prefixdir = $tmpdir[0] == "/" ? "" : "lodel/admin/";
-			system($zipcmd." -q $prefixdir$archivetmp $files");
-			if (!chdir("lodel/admin"))
-				die("ERROR: can't chdir in lodel/admin");
-			system($zipcmd." -q -g $archivetmp -j $sqlfile");
-		}	else {
-			system($zipcmd." -q $archivetmp -j $sqlfile");
-		}
-	}	else	{ // pclzip
-		require_once "pclzip.lib.php";
-		$archive = new PclZip($archivetmp);
-		if ($zipdirs)	{
-			// function to exclude files and rename directories
-			function preadd($p_event, & $p_header, $user_vars)
-			{
-				$p_header['stored_filename'] = preg_replace("/^".preg_quote($user_vars['tmpdir'], "/")."\//", "", $p_header['stored_filename']);
-
-				#echo $p_header['stored_filename'],"<br>";
-				return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql)$/", $p_header['stored_filename']);
-			}
-			// end of function to exclude files
-			foreach ($zipdirs as $dir) {
-				$files[] = SITEROOT.$dir;
-			}
-			$files[] = $sqlfile;
-			$archive->user_vars = array ("tmpdir" => $tmpdir, "acceptedexts" => $acceptedexts);
-			$res = $archive->create($files, PCLZIP_OPT_REMOVE_PATH, SITEROOT, PCLZIP_CB_PRE_ADD, 'preadd');
-			if (!$res)
-				die("ERROR: Error while creating zip archive: ".$archive->error_string);
-		}	else {
-			$archive->create($sqlfile, PCLZIP_OPT_REMOVE_ALL_PATH);
-		}
-	} // end of pclzip option
-
-	return $archivetmp;
-}
-
-/**
- * Importation d'un ME depuis son archive ZIP
+ * Importation d'un ME ou de données depuis son archive ZIP
  *
  * @param string $archive le chemin vers le fichier ZIP
  * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
@@ -621,7 +258,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 	$tmpdir = tmpdir();
 
 	// use UNZIP command
-	if ($unzipcmd && $unzipcmd != "pclzip")	{
+	if ($unzipcmd && $unzipcmd != 'pclzip')	{
 		// find files to unzip
 		$listfiles = `$unzipcmd -Z -1 $archive`;
 		$listfilesarray = preg_split("/\n/", `$unzipcmd -Z -1 $archive`);
@@ -643,19 +280,6 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 				}
 			}
 		}
-		#echo "<br />dirs=$dirs<br />";
-		#if (!chdir(SITEROOT))
-		#	die("ERROR: chdir fails");
-
-		// erase the files if there exists
-		#echo "cmd : $unzipcmd -Z -1 $archive $dirs";
-		#$listfilesarray = preg_split("/\n/", `$unzipcmd -Z -1 $archive`);
-		/*foreach ($listfilesarray as $file)	{
-			if (file_exists($file))
-				unlink($file);
-		}*/
-		#echo $unzipcmd." -oq $archive  \\tpl\/\*.html -d ../..";
-		#system($unzipcmd." -oq $archive  $dirs");
 		system($unzipcmd." -oq $archive  $dirs -d ../..");
 		#if (!chdir("lodel/admin"))
 		#  die("ERROR: chdir 2 fails");
@@ -666,11 +290,12 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		}
 	}	else {
 		// use PCLZIP library
-		require_once "pclzip.lib.php";
+		require_once 'pclzip/pclzip.lib.php';
+		//require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 
 		// functions callback
-		function preextract($p_event, & $p_header, $user_vars)
+		function preextract($p_event, &$p_header, $user_vars)
 		{ // choose the files to extract
 			//echo $p_header['filename'],"<br>";
 			if (preg_match("/^(\.\/)*.*\.sql$/", $p_header['filename']))	{ // extract the sql file
@@ -690,7 +315,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 			return 0; // don't extract
 		}
 
-		function postextract($p_event, & $p_header, $user_vars)
+		function postextract($p_event, &$p_header, $user_vars)
 		{ // chmod
 			#if ($p_header['filename']!=$user_vars{'sqlfile'} && 
 			#    file_exists($p_header['filename'])) {
@@ -704,6 +329,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 
 		if (!$res)
 			die("ERROR: unable to extract $archive.<br>".$archive->error_string);
+		unset($archive);
 		if (filesize($sqlfile) <= 0)
 			return false;
 	}
