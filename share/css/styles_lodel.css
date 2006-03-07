@@ -475,12 +475,12 @@ div.advancedFunc #addEntity select{
 
 /* Liste entites */
 
-#listEntities, #listEntities li{
+ul.listEntities, ul.listEntities li{
 	padding: 0;
 	margin: 0;
 }
 
-#listEntities{
+ul.listEntities{
 	clear: both;
 	margin: 2ex 0 0 0;
 	padding: 0;
@@ -488,41 +488,41 @@ div.advancedFunc #addEntity select{
 	font-size: 90%;
 }
 
-#listEntities li{
+ul.listEntities li{
 	padding: .5ex 1em;
 	position: relative;
 	min-height: 24px;
 }
 
-#listEntities li.line1{
+ul.listEntities li.line1{
 	background: #f2f5fa;
 }
 
-#listEntities li.line2{
+ul.listEntities li.line2{
 	background: #fff;
 }
 
-#listEntities li.unfoldedentities ul, #listEntities li.unfoldedentities li{
+ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
 	list-style: none;
 	font-size: 11px;
 }
 
-#listEntities li.unfoldedentities ul li{
+ul.listEntities li.unfoldedentities ul li{
 	/*background: #fff;*/
 }
 
-#listEntities li.unfoldedentities ul{
+ul.listEntities li.unfoldedentities ul{
 	margin: 0 -1em 2ex 0;
 }
 
-#listEntities img.picto_gauche{
+ul.listEntities img.picto_gauche{
 	position: absolute;
 	left: .5em;
 	top: .5ex;
 	margin-right: .5em;
 }
 
-#listEntities div.action{
+ul.listEntities div.action{
 	position: absolute;
 	right: 1.3em;
 	top: 0;
@@ -530,11 +530,11 @@ div.advancedFunc #addEntity select{
 	width: auto;
 }
 
-#listEntities li.unfoldedentities div.action{
+ul.listEntities li.unfoldedentities div.action{
 	right: 1.7em;
 }
 
-#listEntities div.action span.item, #listEntities div.action div.move, #actionsOnEntitiesPath ul.actions li{
+ul.listEntities div.action span.item, ul.listEntities div.action div.move, #actionsOnEntitiesPath ul.actions li{
 	width: 70px;
 	display: block;
 	float: left;
@@ -543,11 +543,11 @@ div.advancedFunc #addEntity select{
 	font-weight: normal;
 }
 
-#listEntities div.action div.move{
+ul.listEntities div.action div.move{
 	width: 6em;
 }
 
-#listEntities div.action span.item.left{
+ul.listEntities div.action span.item.left{
 	text-align: left;
 }
 
@@ -556,20 +556,20 @@ div.action a, div.action a:hover{
 	text-decoration: none;
 }
 
-#listEntities div.document{
+ul.listEntities div.document{
 	margin: 0 0 .8ex 35px;
 	width: 55%;
 }
 
-#listEntities li.unfoldedentities div.document{
+ul.listEntities li.unfoldedentities div.document{
 	width: 45%;
 }
 
-#listEntities div.document .titre_document{
+ul.listEntities div.document .titre_document{
 	font-weight: bold;
 }
 
-#listEntities div.document .type_document{
+ul.listEntities div.document .type_document{
 	font-size: smaller;
 	font-style: italic;
 }

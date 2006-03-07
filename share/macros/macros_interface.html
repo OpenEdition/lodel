@@ -1452,7 +1452,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 
 <DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere">
-	<ul id="listEntities">
+	<ul class="listEntities">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
