@@ -75,7 +75,7 @@ class DataLogic
 	{
 		global $db;
 		require_once 'func.php';
-		$context['importdir'] = $GLOBALS['$importdir'];
+		$context['importdir'] = $GLOBALS['importdir'];
 		$context['fileregexp'] = '(site|revue)-\w+-\d+.zip';
 
 		// les répertoires d'import
@@ -95,13 +95,12 @@ class DataLogic
 			$file       = $archive;
 			unset($_FILES);
 		// Ficher déjà sur le disque
-		} elseif ($context['file'] && preg_match("/^(?:". str_replace('/', '\/', join('|', $context['importdirs'])). ")\/".$context['fileregexp']."$/", $context['file'], $result) && file_exists($context['file'])) {
+		} elseif ($context['file'] && preg_match("/^(?:". str_replace("/", "\/", join('|', $context['importdirs'])). ")\/".$context['fileregexp']."$/", $context['file'], $result) && file_exists($context['file'])) {
 			$prefixre = $prefixunix = $result[1];
 			$file = $context['file'];
 		} else { // rien
 			$file = '';
 		}
-
 		if ($file) { // Si on a bien spécifié un fichier
 			do { // control block
 
