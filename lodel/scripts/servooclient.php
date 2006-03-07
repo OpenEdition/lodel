@@ -212,7 +212,7 @@ class ServOO_Client {
 			      $outformat,$outfilename,
 			      $options);
     if (!$ret) return $ret;
-    require_once(SERVOOLIBDIR."pclzip.lib.php"); // use the modified PclZip !!!!!!
+    require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
     $zip=new PclZip($outfilename);
@@ -281,7 +281,7 @@ class ServOO_Client {
 			      $outformat,$outfilename,
 			      $options);
     if (!$ret) return $ret;
-    require_once(SERVOOLIBDIR."pclzip.lib.php"); // use the modified PclZip !!!!!!
+    require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
     $zip=new PclZip($outfilename);
