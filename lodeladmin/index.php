@@ -48,7 +48,7 @@ require 'lodelconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL);
 
-$accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites');
+$accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites', 'data');
 
 require_once 'controler.php';
 Controler::Controler($accepted_logics);
