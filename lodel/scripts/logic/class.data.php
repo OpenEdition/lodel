@@ -314,7 +314,7 @@ class DataLogic
 				$result->MoveNext();
 			}
 			fclose($fh);
-			
+			$db->selectDB(DATABASE); //selectionne la base principale.
 
 			// tar les sites et ajoute la base
 			$archivetmp      = tempnam('/tmp', 'lodeldump_');
@@ -570,7 +570,6 @@ class DataLogic
 				$tables[] = lq('#_TP_entities_'. $vo->class);
 		}
 		mysql_dump($dbname, $tables, $outfile, $fh);
-	
 		if ($closefh)
 			fclose($fh);
 	}
