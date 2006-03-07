@@ -83,21 +83,26 @@ class DataLogic
 		if ($context['importdir']) {
   		$context['importdirs'][] = $context['importdir'];
 		}
-
+		//Si un fichier a été uploadé
+		if($_FILES) {
+		$archive                 = $_FILES['archive']['tmp_name'];
+		$context['error_upload'] = $_FILES['archive']['error'];
+		}
 		// Upload du fichier
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) {
+		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($context['archive'])) {
 			$prefixre   = '(site|revue)';
 			$prefixunix = '{site,revue}';
 			$file       = $archive;
-
+			unset($_FILES);
 		// Ficher déjà sur le disque
 		} elseif ($context['file'] && preg_match("/^(?:". str_replace('/', '\/', join('|', $context['importdirs'])). ")\/".$context['fileregexp']."$/", $context['file'], $result) && file_exists($context['file'])) {
 			$prefixre = $prefixunix = $result[1];
+			$file = $context['file'];
 		} else { // rien
 			$file = '';
 		}
 
-		if ($context['file']) { // Si on a bien spécifié un fichier
+		if ($file) { // Si on a bien spécifié un fichier
 			do { // control block
 
 				set_time_limit(120); //pas d'effet si safe_mode on ; on met le temps à unlimited
@@ -107,7 +112,7 @@ class DataLogic
 				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'docannexe/file', 'docannexe/image');
 		
 				require_once 'backupfunc.php';
-				if (!importFromZip($context['file'], $accepteddirs, array(), $sqlfile)) {
+				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
 					
 					$err = $error['error_extract'] = 'extract';
 					return 'import';
@@ -168,7 +173,7 @@ class DataLogic
 				return 'backup';
 			}
 		
-			// tar le site et ajoute la base
+			// zip le site et ajoute la base
 			$archivetmp      = tempnam($tmpdir, 'lodeldump_'). '.zip';
 			$archivefilename = "site-$site-". date("dmy"). '.zip';
 			$GLOBALS['excludes'] = $excludes        = array('lodel/sources/.htaccess',
@@ -181,6 +186,7 @@ class DataLogic
 			$dirs            = $context['sqlonly'] ? '' : 'lodel/sources docannexe';
 		
 			if ($zipcmd && $zipcmd != 'pclzip') { //Commande ZIP
+
 				if (!$context['sqlonly']) {
 					if (!chdir(SITEROOT)) {
 						die ("ERROR: can't chdir in SITEROOT");
@@ -197,7 +203,6 @@ class DataLogic
 				}
 			} else { // Comande PCLZIP
 
-				//require_once "pclzip.lib.php";
 				require_once 'pclzip/pclzip.lib.php';
 				$archive = new PclZip($archivetmp);
 				if (!$context['sqlonly']) {
@@ -238,7 +243,6 @@ class DataLogic
 			else {
 				$context['success'] = 1;
 				return 'backup';
-				//???
 			}
 			return 'backup';
 		}
@@ -264,9 +268,118 @@ class DataLogic
 	 */
 	function backupmodelAction(&$context, &$error)
 	{
+		$context['importdir'] = $importdir;
+		if ($context['backup']) {
+			if(!$context['title']) {
+				$error['title'] = 'title_required';
+			}
+			if(!$context['description']) {
+				$error['description'] = 'description_required';
+			}
+			if(!$context['author']) {
+				$error['author'] = 'author_required';
+			}
+			if(!$context['modelversion']) {
+				$error['modelversion'] = 'modelversion_required';
+			}
+			if($error) { // Si on detecte des erreurs
+				$context['error'] = $error;
+				return 'backupmodel';
+			}
+			require 'backupfunc.php';
+			$tmpfile        = tmpdir(). '/model.sql';
+			$fh             = fopen($tmpfile, 'w');
+			$description    = '<model>
+			<lodelversion>'. $version. '</lodelversion>
+			<date>'. date("Y-m-d"). '</date>
+			<title>
+			'. myhtmlentities(stripslashes($context['title'])). '
+			</title>
+			<description>
+			'. myhtmlentities(stripslashes($context['description'])). '
+			</description>
+			<author>
+			'. myhtmlentities(stripslashes($context['author'])). '
+			</author>
+			<modelversion>
+			'. myhtmlentities(stripslashes($context['modelversion'])). '
+			</modelversion>
+			</model>
+			';
 		
+			fputs($fh, '# '. str_replace("\n", "\n# ", $description). "\n#------------\n\n");
+			
+			$tables = array('#_TP_classes',
+				'#_TP_tablefields',
+				'#_TP_tablefieldgroups',
+				'#_TP_types',
+				'#_TP_persontypes',
+				'#_TP_entrytypes',
+				'#_TP_entitytypes_entitytypes',
+				'#_TP_characterstyles',
+				'#_TP_internalstyles'); //liste des tables de lodel à sauver.
+			foreach ($tables as $table) {
+				fputs($fh, 'DELETE FROM '. $table. ";\n");
+			}
+			$GLOBALS['currentprefix'] = $currentprefix = '#_TP_';
+			$GLOBALS['showcolumns'] = true; // use by PMA to print the fields.
+			//fait un DUMP de ces tables
+			mysql_dump($currentdb, $tables, '', $fh, false, false, true); // get the content
+			
+			// select the optiongroups to export
+			$dao = &getDAO('optiongroups');
+			$vos = $dao->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
+			$ids = array();
+			foreach($vos as $vo) {
+				$ids[] = $vo->id;
+			}
+			fputs($fh, "DELETE FROM #_TP_optiongroups;\n");
+			mysql_dump($currentdb, array('#_TP_optiongroups'), '', $fh, false, false, true, '*', 'id '. sql_in_array($ids));
+			fputs($fh, "DELETE FROM #_TP_options;\n");
+			mysql_dump($currentdb,array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
+		
+			// Récupère la liste des tables de classe à sauver.
+			$dao = &getDAO('classes');
+			$vos = $dao->findMany('status > 0', '', 'class,classtype');
+			$tables = array();
+			foreach ($vos as $vo) {
+				$tables[] = lq('#_TP_'. $vo->class);
+				if ($vo->classtype == 'persons') {
+					$tables[] = lq('#_TP_entities_'. $vo->class);
+				}
+			}
+			if ($tables) {
+				mysql_dump($currentdb, $tables, '', $fh, true, true, false); // get the table create
+			}
+			// it may be better to recreate the field at the import rather 
+			// than using the created field. It may be more robust. Status quo at the moment.
+			fclose($fh);
+			
+			if (filesize($tmpfile) <= 0) {
+				die ('ERROR: mysql_dump failed');
+			}
+		
+			$dirs = array();
+			$dirstest = array('tpl', 'css', 'images', 'js');
+			foreach($dirstest as $dir) {
+				if ($context[$dir]) {
+					$dirs[] = $dir;
+				}
+			}
+			$zipfile = $this->_backupME($tmpfile, $dirs);
+			$site = $context['site'];
+			$filename  = "model-$site-". date("dmy"). ".zip";
+			$operation = 'download';
+			if (operation($operation, $zipfile, $filename, $context)) {
+				$context['success'] = 1;
+				return 'backupmodel';
+			}
+			@unlink($tmpfile);
+			@unlink($zipfile);
+			return 'backupmodel';
+		}
+		return 'backupmodel';
 	}
-
 
 	/**
 	 * Dump SQL d'un site donné
@@ -365,6 +478,84 @@ class DataLogic
 				fclose ($f);
 			}
 		}
+	}
+
+	/**
+	 * Créé un fichier ZIP du ME contenant le fichier SQL et éventuellement les répertoires
+	 * images, css, js et tpl.
+	 *
+	 * @access private
+	 * @param string $sqlfile le fichier dump SQL
+	 * @param array $dirs la liste des répertoires à inclure.
+	 * @return le nom du fichier ZIP
+	 */
+	function _backupME($sqlfile, $dirs = array())
+	{
+		global $zipcmd;
+	
+		$acceptedexts = array ('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff');
+		$tmpdir = tmpdir();
+		$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
+	
+		// Cherche si les répertoire à zipper contiennent bien des fichiers
+		$zipdirs = array ();
+		foreach ($dirs as $dir)	{
+			if (!file_exists(SITEROOT. $dir))
+				continue;
+			$dh = opendir(SITEROOT. $dir);
+			while (($file = readdir($dh)) && !preg_match("/\.(".join("|", $acceptedexts).")$/", $file))	{
+			}
+			if ($file)
+				$zipdirs[] = $dir;
+			closedir($dh);
+		}
+		//
+	
+		if ($zipcmd && $zipcmd != 'pclzip')	{ //commande ZIP
+			if ($zipdirs)	{
+				foreach ($zipdirs as $dir) {
+					foreach ($acceptedexts as $ext)	{
+						$files .= " $dir/*.$ext";
+					}
+				}
+				if (!chdir(SITEROOT))
+					die("ERROR: can't chdir in SITEROOT");
+				$prefixdir = $tmpdir[0] == '/' ? '' : 'lodel/admin/';
+				system($zipcmd." -q $prefixdir$archivetmp $files");
+				if (!chdir("lodel/admin"))
+					die("ERROR: can't chdir in lodel/admin");
+				system($zipcmd." -q -g $archivetmp -j $sqlfile");
+			}	else {
+				system($zipcmd." -q $archivetmp -j $sqlfile");
+			}
+		}	else	{ // commande PCLZIP
+			//require_once "pclzip.lib.php";
+			require_once 'pclzip/pclzip.lib.php';
+			$archive = new PclZip($archivetmp);
+			if ($zipdirs)	{
+				// function to exclude files and rename directories
+				function preadd($p_event, & $p_header, $user_vars)
+				{
+					$p_header['stored_filename'] = preg_replace("/^".preg_quote($user_vars['tmpdir'], "/")."\//", "", $p_header['stored_filename']);
+	
+					#echo $p_header['stored_filename'],"<br>";
+					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql)$/", $p_header['stored_filename']);
+				}
+				// end of function to exclude files
+				foreach ($zipdirs as $dir) {
+					$files[] = SITEROOT.$dir;
+				}
+				$files[] = $sqlfile;
+				$archive->user_vars = array ('tmpdir' => $tmpdir, 'acceptedexts' => $acceptedexts);
+				$res = $archive->create($files, PCLZIP_OPT_REMOVE_PATH, SITEROOT, PCLZIP_CB_PRE_ADD, 'preadd');
+				if (!$res)
+					die("ERROR: Error while creating zip archive: ".$archive->error_string);
+			}	else {
+				$archive->create($sqlfile, PCLZIP_OPT_REMOVE_ALL_PATH);
+			}
+		} // end of pclzip option
+	
+		return $archivetmp;
 	}
 
 }// end of DataLogic class
