@@ -31,6 +31,10 @@
 /* $Id$ */
 // vim: expandtab sw=4 ts=4 sts=4:
 ##error_reporting(E_ALL);
+
+//Test Jean
+$GLOBALS['extended_ins'] = true;
+
 /**
  * Set of functions used to build SQL dumps of tables
  */
@@ -419,8 +423,7 @@ function PMA_exportStructure($db, $table, $crlf, $error_url, $relation = FALSE, 
           .  '# ' . $GLOBALS['strTableStructure'] . ' ' . $formatted_table_name . $crlf
           .  '#' . $crlf
           .  PMA_getTableDef($db, $table, $crlf, $error_url,  $relation, $comments, $mime) . ';' . $crlf;
-
-    return PMA_exportOutputHandler($dump);
+	return PMA_exportOutputHandler($dump);
 }
 
 
@@ -549,7 +552,6 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
                 $insert_line      = $schema_insert . implode(', ', $values) . ')';
             }
             unset($values);
-
             if (!PMA_exportOutputHandler($insert_line . ((isset($GLOBALS['extended_ins']) && ($current_row < $rows_cnt)) ? ',' : ';') . $crlf)) return FALSE;
 
         } // end while
