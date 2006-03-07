@@ -221,9 +221,9 @@ ln tpl/edit_tablefields.html
 ln tpl/edit_indextablefields.html
 
 
-ln backup.php
+#ln backup.php
 ln tpl/backup.html
-ln import.php
+#ln import.php
 ln tpl/import.html
 
 ln tpl/edit_users.html
@@ -233,10 +233,10 @@ ln usersettings.php
 ln transfer.php
 ln tpl/transfer.html
 
-ln importmodel.php
+#ln importmodel.php
 ln tpl/importmodel.html
 ln tpl/importmodel-frominstall.html
-ln backupmodel.php
+#ln backupmodel.php
 ln tpl/backupmodel.html
 
 ln session.php
