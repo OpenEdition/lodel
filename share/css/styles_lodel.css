@@ -581,6 +581,10 @@ ul.listEntities div.document .type_document{
 
 /* PAGE EDITION, EDITION DES ENTITES */
 
+#editEntitiesAllFunc{
+	width: 1000px;
+}
+
 #editEntities{
 	float: left;
 	width: 600px;
@@ -598,36 +602,22 @@ ul.listEntities div.document .type_document{
 	color: green;
 }
 
-#editEntities h2.formTitle{
-	margin: 0;
-	height: 55px;
-	color: #728979;
-	padding: 2.5ex 0 0 70px;
-	font-variant: small-caps;
-	font-weight: bold;
-}
-
 div.advancedFunc{
 	float : right;
 	font-size: 90%;
 	width: 300px;
 	border: 1px solid #cecece;
-	margin: 4ex 3em 0 0;
+	margin: 6.8ex 3em 0 0;
 	padding: 2ex 1em 2ex 1em;
 	background: #f7f7f7;
 }
-
-div.advancedFunc.first{
-	margin-top: 7ex;
-}
-
-
 
 div.advancedFunc h4{
 	margin: -3.5ex 0 1ex 0;
 	padding: 0 .5em .2ex .5em;
 	background: #fff;
 	border: 1px solid #cecece;
+	font-size: 100%;
 }
 
 div.advancedFunc ul, div.advancedFunc li{

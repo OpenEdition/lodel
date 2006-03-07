@@ -50,41 +50,13 @@
 		<FUNC NAME="ADD_AN_ENTITY">
 	</IF>
 
-<div class="advancedFunc first">
-	<h4>[@EDITION.ENTITIE_INFO]</h4>
-	<dl>
-	<IF COND="[#ID] GT 0">
-		<!-- [ Lien permanent ]-->
-		<LET VAR="permanent_link">
-		<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
-		</LET>
-		<dt><a href="#" title="[#PERMANENT_LINK]" onclick="prompt('[@EDITION.PERMANENT_LINK]','[#PERMANENT_LINK|trim]'); return false;">[@EDITION.PERMANENT_LINK]</a></dt>
-		
-		<dd>
-		<IF COND="[#ERROR.IDENTIFIER]">
-			
-			<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
-			
-		</IF>&nbsp;
-		</dd>
-	</IF>
-	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
-	<dd>[#TYPE.TYPE]</dd>
-	<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
-	<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
-	<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
-	<dd>[#MODIFICATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
-	
-<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
-	<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:&nbsp;</dt>
-	<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
-</IF>
-	</dl>
-</div>
+<div id="editEntitiesAllFunc">
 
 <div id="editEntities">
-		
-<FUNC NAME="PRINT_ERROR_LISTING">
+
+<div class="error">
+	<FUNC NAME="PRINT_ERROR_LISTING">
+</div>
 
 <br />
 <form enctype="multipart/form-data" method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
@@ -121,6 +93,39 @@
 	</fieldset>
 </form>
 </div>
+
+<div class="advancedFunc">
+	<h4>[@EDITION.ENTITIE_INFO]</h4>
+	<dl>
+	<IF COND="[#ID] GT 0">
+		<!-- [ Lien permanent ]-->
+		<LET VAR="permanent_link">
+		<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
+		</LET>
+		<dt><a href="#" title="[#PERMANENT_LINK]" onclick="prompt('[@EDITION.PERMANENT_LINK]','[#PERMANENT_LINK|trim]'); return false;">[@EDITION.PERMANENT_LINK]</a></dt>
+		
+		<dd>
+		<IF COND="[#ERROR.IDENTIFIER]">
+			
+			<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
+			
+		</IF>&nbsp;
+		</dd>
+	</IF>
+	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
+	<dd>[#TYPE.TYPE]</dd>
+	<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
+	<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
+	<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
+	<dd>[#MODIFICATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
+	
+<IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
+	<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:&nbsp;</dt>
+	<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
+</IF>
+	</dl>
+</div>
+
 <div class="advancedFunc">
 <h4>[@EDITION.FUNCTIONS]</h4>
 <ul>
@@ -170,6 +175,8 @@
 		<li><a href="index.php?lo=xml&amp;do=generateXML&amp;id=[#ID]&amp;valid=1">[@EDITION.CHECK_XML]</a></li>
 	</IF>
 </ul>
+</div>
+
 </div>
 
 <MACRO NAME="CLOSE_HTML">
