@@ -626,6 +626,10 @@ div.advancedFunc ul, div.advancedFunc li{
 	list-style: none;
 }
 
+div.advancedFunc li{
+	margin-bottom: 1ex;
+}
+
 div.advancedFunc dt{
 	float: left;
 	font-weight: bold;
