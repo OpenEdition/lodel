@@ -21,18 +21,17 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@LODELADMIN.TITLE_BACKUP]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
+
 <ul id="actionsOnEntitiesPath">
 	<li>[@LODELADMIN.TITLE_BACKUP]</li>
 </ul>
 <br />&nbsp;<br />
-
 <IF COND="[#OUTFILENAME]">
 	<IF COND="[#ERROR]">
 		[@LODELADMIN.SOME_ERRORS_OCCURS_DURING_THE_BACKUP_PROCESS] :<br />
@@ -50,10 +49,20 @@
 	<IF COND="[#ERROR]">
 		<p>[@LODELADMIN.ERROR_COPY_FILES_VERIFY_SERVER_CAN_WRITE_OR_ENOUGH_SPACE_DIRECTORY|sprintf([#OUTFILENAME])].</p>
 	</IF>
-
-	<form method="POST" action="backup.php">
+	<form method="POST" action="index.php">
+		<input type="hidden" name="do" value="globalbackup"  />
+		<input type="hidden" name="lo" value="data" />
 		<fieldset>
 		<legend>[@LODELADMIN.TITLE_BACKUP]</legend>
+		<LOOP NAME="listsites" TABLE="sites">
+			<BEFORE>
+				<ul>
+			</BEFORE>
+			<DO>
+				<li>[#TITLE]</li>
+			</DO>
+			<AFTER></ul></AFTER>
+		</LOOP>
 		<input type="hidden" name="backup" value="1" />
 		<label for="sqlonly" class="boolean">[@LODELADMIN.SAVE_DATABASE_ONLY]</label> <input type="checkbox" name="sqlonly" id="sqlonly" /><br class="nobr" />
 		<label for="operation">[@LODELADMIN.GET_FILE_OPERATION]</label>
