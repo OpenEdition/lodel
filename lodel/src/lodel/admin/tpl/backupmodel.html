@@ -35,7 +35,11 @@
 	</li>
 </ul>
 <br />&nbsp;<br />
-<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
+
+<form method="POST" action="index.php">
+	<input type="hidden" name="do" value="backupmodel" />
+	<input type="hidden" name="lo" value="data"  />
+
 
 <fieldset>
 	<legend>[@ADMIN.INCLUDE_THE_FILES_IN_THE_FOLLOWING_DIRECTORIES]</legend>
@@ -49,27 +53,26 @@
 <fieldset>
 	<legend>[@ADMIN.HOWTO_ME]</legend>
 	<label for="title">[@COMMON.TITLE]</label>
-	<br class="nobr" />
+	<IF COND="[#ERROR.TITLE]"><span class="error">[@ADMIN.THE_TITLE_IS_REQUIRED]</span></IF>
 	<input type="text" size="40" name="title" id="title" value="[#TITLE]" />
-	<br class="nobr" />
-	<label for="description">[@COMMON.DESCRIPTION]</label>
-	<br class="nobr" />
-	<textarea cols="50" rows="6" name="description" id="description">[#DESCRIPTION]</textarea>
-	<br class="nobr" />
-	<label for="author">[@COMMON.AUTHOR]</label>
-	<br class="nobr" />
-	<input type="text" size="30" name="author" id="author" value="[#AUTHOR]" />
-	<br class="nobr" />
-	<label for="modelversion">[@ADMIN.MODELVERSION]</label>
-	<br class="nobr" />
-	<input type="text" size="30" name="modelversion" id="modelversion" value="[#MODELVERSION]" />
 
+	<label for="description">[@COMMON.DESCRIPTION]</label>
+	<IF COND="[#ERROR.DESCRIPTION]"><span class="error">[@ADMIN.THE_DESCRIPTION_IS_REQUIRED]</span></IF>
+	<textarea cols="50" rows="6" name="description" id="description">[#DESCRIPTION]</textarea>
+	
+	<label for="author">[@COMMON.AUTHOR]</label>
+	<IF COND="[#ERROR.AUTHOR]"><span class="error">[@ADMIN.THE_AUTHOR_IS_REQUIRED]</span></IF>
+	<input type="text" size="30" name="author" id="author" value="[#AUTHOR]" />
+
+	<label for="modelversion">[@ADMIN.MODELVERSION]</label>
+	<IF COND="[#ERROR.MODELVERSION]"><span class="error">[@ADMIN.THE_MODELVERSION_IS_REQUIRED]</span></IF>
+	<input type="text" size="30" name="modelversion" id="modelversion" value="[#MODELVERSION]" />
 </fieldset>
 
 <fieldset>
 	<legend>[@COMMON.VALIDATION]</legend>
 	<input class="button" type="submit" value="[@COMMON.SAVE]" />
-	<input class="button" type="button" value="[@COMMON.CANCEL_BACK]" onclick="javascript:window.location='index.php'" />
+	<input class="button" type="button" value="[@COMMON.BACK]" onclick="javascript:window.location='index.php'" />
 </fieldset>
 
 </form>
