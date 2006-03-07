@@ -63,7 +63,7 @@
 			<li class="line1">
 		</IF>
 		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
-	<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+	
 	<div class="document">
 	<span class="date">
 		[#MODIFICATIONDATE|formateddate('%d/%m/%Y')]
@@ -83,10 +83,13 @@
 		<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
 	</LOOP>
 	</span>
-	</li>
+	</div>
+	<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+	
 		<IF COND="[#DISPLAY] eq 'unfolded'">
 			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
 		</IF>
+	</li>
 		</DO>
 		<AFTER>
 		</ul>

@@ -84,10 +84,11 @@
 	[@COMMON.LASTMODIFIED] : [#MODIFICATIONDATE|formateddate('%d/%m/%Y')]
 	</IF>
 	</span>
-	</li>
+	</div>
 	<IF COND="[#DISPLAY] eq 'unfolded'">
 		<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
 	</IF>
+	</li>
 	</DO>
 	<AFTER>
 		</ul>

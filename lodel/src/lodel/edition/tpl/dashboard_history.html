@@ -47,47 +47,48 @@
 
 <LOOP NAME="series_history" TABLE="entities,types" WHERE="types.id=idtype" ORDER="entities.modificationdate DESC" SPLIT="30">
 	<BEFORE>
-	<ul id="actionsOnEntitiesPath">
-		<li>[#NBRESULTS] [@COMMON.RESULTS]</li>
-		<li>
-			<ul  class="actions">
-				<li class="isolated"><a href="index.php?page=backend&amp;format=dashboard_history" title="[@COMMON.PAGE_FEED]"><img src="[#SHAREURL]/images/rss.gif" alt="[@COMMON.PAGE_FEED]" /></a></li>
-			</ul>
-		</li>
-	</ul>
+		<ul id="actionsOnEntitiesPath">
+			<li>[#NBRESULTS] [@COMMON.RESULTS]</li>
+			<li>
+				<ul  class="actions">
+					<li class="isolated"><a href="index.php?page=backend&amp;format=dashboard_history" title="[@COMMON.PAGE_FEED]"><img src="[#SHAREURL]/images/rss.gif" alt="[@COMMON.PAGE_FEED]" /></a></li>
+				</ul>
+			</li>
+		</ul>
+
 		<ul id="listEntities">
-		</BEFORE>
-		<DO>
-		<IF COND="[#COUNT] % 2">
-			<li class="line2">
-		<ELSE/>
-			<li class="line1">
-		</IF>
-		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
-	<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+	</BEFORE>
+
+	<DO>
+	<IF COND="[#COUNT] % 2">
+		<li class="line2">
+	<ELSE/>
+		<li class="line1">
+	</IF>
+	<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 	<div class="document">
-	<span class="date">
-		[#MODIFICATIONDATE|formateddate('%d/%m/%Y')]
-	</span>
-	
+	<span class="date">[#MODIFICATIONDATE|formateddate('%d/%m/%Y')]</span>
 	<span class="titre_document">
-          <IF COND="[#TPLEDITION]">
+	<IF COND="[#TPLEDITION]">
                  " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
-          <ELSE/>
+        <ELSE/>
                  " [#G_TITLE|textebrut|nbsp] "
-           </IF>
-         </span>&nbsp;
+	</IF>
+        </span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span><br />
 		<span class="type_document">([#TYPE])</span>
 		<span class="type_document">
-	<LOOP NAME="parentsentities">
-		<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
-	</LOOP>
-	</span>
-	</li>
+		<LOOP NAME="parentsentities">
+			<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
+		</LOOP>
+		</span>
+	</div>
+		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+	
 		<IF COND="[#DISPLAY] eq 'unfolded'">
 			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
 		</IF>
+		</li>
 		</DO>
 		<AFTER>
 		</ul>
