@@ -22,6 +22,22 @@ function switchDisp(obj){
 	}
 }
 
+function switchUploadType(name, act){
+	var obj = document.getElementById('uploadType');
+	
+	switch(act){
+		case 'serverfile' :
+		case 'upload' :
+			obj.name = name;
+			obj.value = act;
+		break;
+		case 'delete' :
+			obj.name = name;
+			obj.disabled = 'disabled';
+		break;
+	}
+}
+
 function change_language(obj) {
 	var index = obj.selectedIndex;
 	window.location="usersettings.php?lang="+obj.options[index].value;
