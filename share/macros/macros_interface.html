@@ -291,24 +291,29 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]" />
 
 <ELSE/>
-<!--[ --------------- IMAGE ------------- ]-->	    
-<IF COND="[#TYPE] eq 'image'">
+<!--[ ---------------FILE, IMAGE ------------- ]-->	    
+<IF COND="[#TYPE] eq 'image' OR [#TYPE] eq 'file'">
 	<div class="oneItem">
 		<IF COND="[#VALUE]">
 			<div class="imageKeepDelete">
-			<img src="[(#VALUE|vignette(100))]" alt="[#VALUE]" class="imageEdit" />
-			<input type="radio" id="keep" class="noText" name="[#FULLVARNAME][radio]" value="" checked="checked" />
-			<label for="keep" class="boolean">[@EDITION.KEEP_CURRENT_FILE]</label><br />
-			<input type="radio" id="delete" class="noText" name="[#FULLVARNAME][radio]" value="delete" onclick="switchUploadType('[#FULLVARNAME][radio]', 'delete')" />
-			<label for="delete" class="boolean">[@COMMON.DELETE]</label><br />
+			<IF COND="[#TYPE] eq 'file'">
+				[@COMMON.FILE] : <strong><a href="[#VALUE]">[#VALUE]</a></strong> ([#VALUE|nicefilesize])<br />&nbsp;<br />
+			</IF>
+			<IF COND="[#TYPE] eq 'image'">
+				<img src="[(#VALUE|vignette(100))]" alt="[#VALUE]" class="imageEdit" title="[#VALUE]" />
+			</IF>
+			<input type="radio" id="keep[#VARNAME]" class="noText" name="[#FULLVARNAME][radio]" value="" checked="checked" />
+			<label for="keep[#VARNAME]" class="boolean">[@EDITION.KEEP_CURRENT_FILE]</label><br />
+			<input type="radio" id="delete[#VARNAME]" class="noText" name="[#FULLVARNAME][radio]" value="delete" onclick="switchUploadType('uploadType[#VARNAME]', '[#FULLVARNAME][radio]', 'delete')" />
+			<label for="delete[#VARNAME]" class="boolean">[@COMMON.DELETE]</label><br />
 			</div>
 		</IF>
 		
 		<div class="fileUpload">
-			<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />
+			<input type="hidden" class="noText" id="uploadType[#VARNAME]" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />
 			<!--<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />-->
 			<label for="[#VARNAME][upload]">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
-			<input size="40" type="file"  id="[#VARNAME][upload]" name="[#FULLVARNAME][upload]" onchange="switchUploadType('[#FULLVARNAME][radio]','upload');" />
+			<input size="40" type="file"  id="[#VARNAME][upload]" name="[#FULLVARNAME][upload]" onchange="switchUploadType('uploadType[#VARNAME]', '[#FULLVARNAME][radio]','upload');" />
 			<br />
 			<!--<input type="hidden" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" disabled="disabled" />-->
 			<label for="[#VARNAME][localfilename]">
@@ -378,28 +383,13 @@ cp_[#VARNAME].writeDiv();
 
 	</IF>
 <ELSE/>
-<!--[ --------------- FILES ------------- ]-->	
-<IF COND="[#TYPE] eq 'file'">
-		<table>
-		<IF COND="[#VALUE]"><tr><td>[@COMMON.FILE] :<strong>[(#VALUE)]</strong></td></tr></IF>
-    <tr><td>
-	  <IF COND="[#VALUE]">
-			<input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
-			<input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
-		</IF>
-		<input type="radio" class="noText" id="[#VARNAME][radioserverfile]" name="[#FULLVARNAME][radio]" value="serverfile" />
-	   <a href="#" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-		<input type="radio" class="noText" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();" />
-		</td></tr></table>
-	  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
-<ELSE/>
+
 <!--[ --------------- LIST ------------ -------------- ]-->
 <IF COND="[#TYPE] EQ 'list'">
 	<MACRO NAME="EDIT_LIST">
 <ELSE/>
 
 ???? Don't know how to edit this field. Type: [#TYPE] !
-</IF>
 </IF>
 </IF>
 </IF>

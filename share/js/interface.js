@@ -22,9 +22,9 @@ function switchDisp(obj){
 	}
 }
 
-function switchUploadType(name, act){
-	var obj = document.getElementById('uploadType');
-	
+function switchUploadType(item, name, act){
+	var obj = document.getElementById(item);
+
 	switch(act){
 		case 'serverfile' :
 		case 'upload' :
