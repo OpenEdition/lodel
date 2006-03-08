@@ -242,5 +242,5 @@ ln tpl/backupmodel.html
 #ln session.php
 
 # xml schema
-ln schema.php
+#ln schema.php
 ln tpl/schema-xsd.html
