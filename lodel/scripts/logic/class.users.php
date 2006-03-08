@@ -74,7 +74,6 @@ class UsersLogic extends Logic
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
 	function isdeletelocked($id,$status=0) 
-
 	{
 		global $lodeluser;
 		if ($lodeluser['id']==$id && 
@@ -89,9 +88,52 @@ class UsersLogic extends Logic
 
 
 	/**
+	 * Suppression du log des sessions d'un utilisateur
+	 *
+	 * Cette action permet de supprimer soit :
+	 * - toutes les sessions d'un utilisateur, do=deletesession&lo=users&id=xx
+	 * - une session particulière : do=deletesession&lo=users&session=xx
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les erreur éventuelles par référence
+	 */
+	function deletesessionAction(&$context, &$error)
+	{
+		global $db;
+		require_once 'func.php';
+		$id = intval($context['id']);
+		$session     = intval($context['session']);
+		usemaindb(); // les sessions sont stockés dans la base principale
+		$ids = array();
+		if ($id) { //suppression de toutes les sessions
+			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."'")) or dberror();
+			while(!$result->EOF) {
+				$ids[] = $result->fields['id'];
+				$result->MoveNext();
+			}
+		} elseif ($session) { //suppression d'une session
+			$ids[] = $session;
+		} else {
+			die ('ERROR: unknown operation');
+		}
+		
+		if ($ids) {
+			$idstr = join(',', $ids);
+			// remove the session
+			$db->execute(lq("DELETE FROM #_MTP_session WHERE id IN ($idstr)")) or dberror();
+			// remove the url related to the session
+			$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession IN ($idstr)")) or dberror();
+		}
+
+		usecurrentdb();
+		update();
+		return '_back';
+	}
+
+
+	/**
 		* make the select for this logic
 		*/
-
 	function makeSelect(&$context,$var)
 
 	{
