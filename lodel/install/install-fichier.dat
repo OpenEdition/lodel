@@ -2,6 +2,7 @@
 
 
 mkdir CACHE 0777
+mkdir upload 0777
 mkdir tpl 0755
 mkdir css 0755
 mkdir images 0755
