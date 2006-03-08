@@ -58,28 +58,22 @@ function postprocessing(&$context)
 
 
 
-#desuet
-#function rmscript($source) {
-#	// Remplace toutes les balises ouvrantes susceptibles de lancer un script
-#	return eregi_replace("<(\%|\?|( *)script)", "&lt;\\1", $source);
-#}
-
 /**
  *   Extrait toutes les variables passï¿½s par la mï¿½hode post puis les stocke dans 
  *   le tableau $context
  */
-
-function extract_post($arr=-1) {
+function extract_post($arr=-1)
+{
   if (!is_array($arr)) $arr=&$_POST;
   foreach ($arr as $key=>$val) {
     if (!isset($GLOBALS['context'][$key])) // protege
-      $GLOBALS['context'][$key]=$val;
+      $GLOBALS['context'][$key] = $val;
   }
   array_walk($GLOBALS['context'],"clean_request_variable");
 }
 
 
-function clean_request_variable(&$var) 
+function clean_request_variable(&$var)
 {
 	static $filter;
 	if (!$filter) {
@@ -116,7 +110,6 @@ function magic_stripslashes($var)
 
 
 function get_max_rank ($table,$where="") 
-
 {
   if ($where) $where="WHERE ".$where;
 
@@ -128,7 +121,6 @@ function get_max_rank ($table,$where="")
 }
 
 function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
-
 {
   global $db;
 
@@ -162,8 +154,8 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
  * function returning the closing tag corresponding to the opening tag in the sequence
  * this function could be smarter.
  */
-
-function closetags($text) {
+function closetags($text)
+{
 	preg_match_all("/<(\w+)\b[^>]*>/",$text,$results,PREG_PATTERN_ORDER);
 	$n=count($results[1]);
 	for($i=$n-1; $i>=0; $i--) $ret.="</".$results[1][$i].">";
@@ -171,17 +163,6 @@ function closetags($text) {
 }
 
 
-/*
-function myquote (&$var)
-{
-  if (is_array($var)) {
-    array_walk($var,"myquote");
-    return $var;
-  } else {
-    return $var=addslashes(stripslashes($var));
-  }
-}
-*/
 function myaddslashes (&$var)
 {
   if (is_array($var)) {
@@ -195,46 +176,40 @@ function myaddslashes (&$var)
 
 
 function myfilemtime($filename)
-
 {
   return file_exists($filename) ? filemtime($filename) : 0;
 }
 
 
 function update()
-
-{ if (defined("SITEROOT")) {
-    @touch(SITEROOT."CACHE/maj");
-  } else {
-    @touch("CACHE/maj");
-  }
+{
+	if (defined("SITEROOT")) {
+		@touch(SITEROOT."CACHE/maj");
+	} else {
+		@touch("CACHE/maj");
+	}
 }
 
-
-
-
 function addmeta(&$arr,$meta="")
-
 {
-  foreach ($arr as $k=>$v) {
-    if (strpos($k,"meta_")===0) {
-      if (!isset($metaarr)) { // cree le hash des meta
-	  $metaarr=$meta ? unserialize($meta) : array();
-      }
-      if ($v) {
+	foreach ($arr as $k=>$v) {
+		if (strpos($k,"meta_")===0) {
+			if (!isset($metaarr)) { // cree le hash des meta
+		$metaarr=$meta ? unserialize($meta) : array();
+			}
+			if ($v) {
 	$metaarr[$k]=$v;
-      } else {
+			} else {
 	unset($metaarr[$k]);
-      }
-    }
-  }
-  return $metaarr ? serialize($metaarr) : $meta;
+			}
+		}
+	}
+	return $metaarr ? serialize($metaarr) : $meta;
 }
 
 
 
 function translate_xmldata($data) 
-
 {
 	return strtr($data,array("&"=>"&amp;","<" => "&lt;", ">" => "&gt;"));
 }
@@ -244,10 +219,11 @@ function translate_xmldata($data)
 function unlock()
 {
 	global $db;
-  // Déverrouilles toutes les tables vérouillées
-  // fonction lock_write()
-  if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) 
-    $db->execute(lq("UNLOCK TABLES")) or dberror();
+	// Déverrouilles toutes les tables vérouillées
+	// fonction lock_write()
+	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) {
+		$db->execute(lq("UNLOCK TABLES")) or dberror();
+	}
 }
 
 
@@ -261,118 +237,111 @@ function lock_write()
 }
 
 function prefix_keys($prefix,$arr)
-
 {
-  if (!$arr) return $arr;
-  foreach ($arr as $k=>$v) $outarr[$prefix.$k]=$v;
-  return $outarr;
+	if (!$arr) {
+		return $arr;
+	}
+	foreach ($arr as $k=>$v) {
+		$outarr[$prefix.$k]=$v;
+	}
+	return $outarr;
 }
-
 
 function array_merge_withprefix($arr1,$prefix,$arr2)
-
 {
-  if (!$arr2) return $arr1;
-  foreach ($arr2 as $k=>$v) $arr1[$prefix.$k]=$v;
-  return $arr1;
+	if (!$arr2) {
+		return $arr1;
+	}
+	foreach ($arr2 as $k=>$v) {
+		$arr1[$prefix.$k]=$v;
+	}
+	return $arr1;
 }
 
-#function extract_options($context,$listoptions)
-#
-#{
-#  $newoptions=array();
-#  foreach ($listoptions as $opt) { if ($context["option_$opt"]) $newoptions["option_$opt"]=1; }
-#  return serialize($newoptions);
-#}
-
-function getoption($name) {
-
-  global $db;
-  static $options_cache;
-  if (!$name) return;
-  if (!isset($options_cache)) {
-    $optionsfile=SITEROOT."CACHE/options_cache.php";
+function getoption($name)
+{
+	global $db;
+	static $options_cache;
+	if (!$name) return;
+	if (!isset($options_cache)) {
+		$optionsfile=SITEROOT."CACHE/options_cache.php";
 	
-    if (file_exists($optionsfile)) {
-      require($optionsfile);
-    } else {
-      require_once('optionfunc.php');
-     	$options_cache = cacheOptionsInFile($optionsfile);
-    }
-  }
-  if (is_array($name)) {
-    foreach ($name as $n) {
-      if ($options_cache[$n]) $ret[$n]=stripslashes($options_cache[$n]);
-    }    
-    return  ($ret);
-  } else {
-    if ($options_cache[$name]) // cached ?
-      return  stripslashes ($options_cache[$name]);
-    $critere="name='$name'";
-  }
+		if (file_exists($optionsfile)) {
+			require($optionsfile);
+		} else {
+			require_once('optionfunc.php');
+			$options_cache = cacheOptionsInFile($optionsfile);
+		}
+	}
+	if (is_array($name)) {
+		foreach ($name as $n) {
+			if ($options_cache[$n]) $ret[$n]=stripslashes($options_cache[$n]);
+		}    
+		return  ($ret);
+	} else {
+		if ($options_cache[$name]) // cached ?
+			return  stripslashes ($options_cache[$name]);
+		$critere="name='$name'";
+	}
 }
-
 
 function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
-
 {
-  if ($group=="") {
-    if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
-    $dotpos=strpos($name,".");
-    if ($dotpos) {
-      $group=substr($name,1,$dotpos); 
-      $name=substr($name,$dotpos+1,-1);
-    } else {
-      die("ERROR: unknow group for getlodeltext");
-    }
-  }
-  if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
-  if (!$lang) $lang = $GLOBALS['installlang']; // if no lang is specified choose the default installation language
-  require_once("connect.php");
-  global $db;
-
-  if ($group!="site") {
-    usemaindb();
-    $prefix="#_MTP_";
-  } else {
-    $prefix="#_TP_";
-  }
-
-  $critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
-  $logic=false;
-  do {
-    $arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
-    if ($arr===false) dberror();
-    if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
-    if (!$arr) {
-      // create the textfield
-      require_once("logic.php");
-      $logic=getLogic("texts");
-      $logic->createTexts($name,$group);
-    }
-  } while(!$arr);
-
-  if ($group!="site") usecurrentdb();
-
-  $id=$arr['id'];
-  $contents=$arr['contents'];
-  $status=$arr['status'];
-  if (!$contents && $GLOBALS['lodeluser']['visitor']) $contents="@".$name;
+	if ($group=="") {
+		if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
+		$dotpos=strpos($name,".");
+		if ($dotpos) {
+			$group=substr($name,1,$dotpos); 
+			$name=substr($name,$dotpos+1,-1);
+		} else {
+			die("ERROR: unknow group for getlodeltext");
+		}
+	}
+	if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
+	if (!$lang) $lang = $GLOBALS['installlang']; // if no lang is specified choose the default installation language
+	require_once("connect.php");
+	global $db;
+	
+	if ($group!="site") {
+		usemaindb();
+		$prefix="#_MTP_";
+	} else {
+		$prefix="#_TP_";
+	}
+	
+	$critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
+	$logic=false;
+	do {
+		$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
+		if ($arr===false) dberror();
+		if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
+		if (!$arr) {
+			// create the textfield
+			require_once("logic.php");
+			$logic=getLogic("texts");
+			$logic->createTexts($name,$group);
+		}
+	} while(!$arr);
+	
+	if ($group!="site") usecurrentdb();
+	
+	$id=$arr['id'];
+	$contents=$arr['contents'];
+	$status=$arr['status'];
+	if (!$contents && $GLOBALS['lodeluser']['visitor']) $contents="@".$name;
 }
 
 function getlodeltextcontents($name,$group="",$lang=-1)
-
 {
-  if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
-  if ($GLOBALS['langcache'][$lang][$group.".".$name]) {
-    return $GLOBALS['langcache'][$lang][$group.".".$name];
-  } else {
+	if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
+	if ($GLOBALS['langcache'][$lang][$group.".".$name]) {
+		return $GLOBALS['langcache'][$lang][$group.".".$name];
+	} else {
 		#echo "name=$name,group=$group,id=$id,contents=$contents,status=$status,lang=$lang<br />";
-    getlodeltext($name,$group,$id,$contents,$status,$lang);
-    return $contents;
-  }
+		getlodeltext($name,$group,$id,$contents,$status,$lang);
+		return $contents;
+	}
 }
-
 
 function makeurlwithid ($id, $base = 'index')
 {
@@ -462,10 +431,7 @@ function getPath($id, $urltype,$base='index')
  * @param     string   name to send to the browser.
  * 
  */
-
-
 function download($filename,$originalname="",$contents="")
-
 {
   $mimetype = array(
 		    'doc'=>'application/msword',
@@ -519,7 +485,6 @@ function download($filename,$originalname="",$contents="")
 // taken from phpMyAdmin 2.5.4
 
 function get_PMA_define()
-
 {
 
 // Determines platform (OS), browser and version of the user
@@ -666,69 +631,64 @@ function checkdocannexedir($dir)
 
 
 function tmpdir()
-
 {
-  $tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
-
-  if (!file_exists($tmpdir)) { 
-    mkdir($tmpdir,0777  & octdec($GLOBALS['filemask']));
-    chmod($tmpdir,0777 & octdec($GLOBALS['filemask'])); 
-  }
-  return $tmpdir;
+	$tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
+	if (!file_exists($tmpdir)) { 
+		mkdir($tmpdir,0777  & octdec($GLOBALS['filemask']));
+		chmod($tmpdir,0777 & octdec($GLOBALS['filemask'])); 
+	}
+	return $tmpdir;
 }
 
 function myhtmlentities($text)
-
 {
-  return str_replace(array("&","<",">","\""),array("&amp;","&lt;","&gt;","&quot;"),$text);
+	return str_replace(array("&","<",">","\""),array("&amp;","&lt;","&gt;","&quot;"),$text);
 }
 
 
 //
 // Main function to add/modify records 
 //
-
 function setrecord($table,$id,$set,$context=array())
-
 {
-  global $db;
-
-  $table=lq("#_TP_").$table;
-
-  if ($id>0) { // update
-    foreach($set as $k=>$v) {
-      if (is_numeric($k)) { // get it from context
+	global $db;
+	
+	$table=lq("#_TP_").$table;
+	
+	if ($id>0) { // update
+		foreach($set as $k=>$v) {
+			if (is_numeric($k)) { // get it from context
 	$k=$v;
 	$v=$context[$k];
-      }
-      if ($update) $update.=",";
-      $update.="$k=".$db->qstr($v);
-    }
-    if ($update)
-      $db->execute("UPDATE $table SET  $update WHERE id='$id'") or dberror();
-  } else {
-    $insert="";$values="";
-    if (is_string($id) && $id=="unique") {
-      $id=uniqueid($table);
-      $insert="id";$values="'".$id."'";
-    }
-    foreach($set as $k=>$v) {
-      if (is_numeric($k)) { // get it from context
+			}
+			if ($update) $update.=",";
+			$update.="$k=".$db->qstr($v);
+		}
+		if ($update)
+			$db->execute("UPDATE $table SET  $update WHERE id='$id'") or dberror();
+	} else {
+		$insert="";$values="";
+		if (is_string($id) && $id=="unique") {
+			$id=uniqueid($table);
+			$insert="id";$values="'".$id."'";
+		}
+		foreach($set as $k=>$v) {
+			if (is_numeric($k)) { // get it from context
 	$k=$v;
 	$v=$context[$k];
-      }
-      if ($insert) { $insert.=","; $values.=","; }
-      $insert.=$k;
-      $values.=$db->qstr($v);
-    }
-
-    if ($insert) {
-
-      $db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or dberror();
-      if (!$id) $id=$db->insert_id();
-    }
-  }
-  return $id;
+			}
+			if ($insert) { $insert.=","; $values.=","; }
+			$insert.=$k;
+			$values.=$db->qstr($v);
+		}
+	
+		if ($insert) {
+	
+			$db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or dberror();
+			if (!$id) $id=$db->insert_id();
+		}
+	}
+	return $id;
 }
 
 /**
@@ -824,7 +784,8 @@ function makeSortKey($text)
  * @param array $context the current context
  * @return boolean true if the user has the right, false ifnot
  */
-function rightonentity ($action, $context) {
+function rightonentity ($action, $context)
+{
 	if ($GLOBALS['lodeluser']['admin']) return true;
 
 	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
@@ -881,9 +842,8 @@ function rightonentity ($action, $context) {
  */
 
 function sql_in_array($ids) 
-
 {
-  return is_array($ids) ? "IN ('".join("','",$ids)."')" : "='".$ids."'";
+	return is_array($ids) ? "IN ('".join("','",$ids)."')" : "='".$ids."'";
 }
 
 /**
@@ -891,17 +851,15 @@ function sql_in_array($ids)
  *
  */
 
-function &getDAO($table) {
+function &getDAO($table)
+{
 	static $factory; // cache
-
 	if ($factory[$table]) {
 		return $factory[$table]; // cache
 	}
-
   require_once 'dao.php' ;
   require_once 'dao/class.'.$table.'.php';
   $daoclass = $table. 'DAO';
-  
   $factory[$table] = new $daoclass;
   return $factory[$table];
 }
@@ -910,19 +868,16 @@ function &getDAO($table) {
  * generic DAO factory
  *
  */
-
-function &getGenericDAO($table,$idfield)
-
+function &getGenericDAO($table, $idfield)
 {
-  static $factory; // cache
-
-  if ($factory[$table]) return $factory[$table]; // cache
-
-  require_once("dao.php");
-  require_once("genericdao.php");
-
-  $factory[$table]=new genericDAO ($table,$idfield);
-  return $factory[$table];
+	static $factory; // cache
+	if ($factory[$table]) {
+		return $factory[$table]; // cache
+	}
+	require_once 'dao.php';
+	require_once 'genericdao.php';
+	$factory[$table] = new genericDAO ($table,$idfield);
+	return $factory[$table];
 }
 
 /**
@@ -930,15 +885,16 @@ function &getGenericDAO($table,$idfield)
  * (this function is used in edition, to make entities clicable or not)
  * @param idtype id of the type
  */
-function canContainTypes ($idtype) {
-  global $db;
-  //select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2) 
-  //but select only those who can be contains directly (not in advanced function)
-  $sql = "SELECT COUNT(*) as count FROM #_TP_entitytypes_entitytypes , #_TP_types as t WHERE identitytype = t.id AND identitytype2='$idtype' AND t.display!='advanced'";
-  $count = $db->getOne (lq($sql));
-  if ($count === false) return false;
-  if ($count > 0) return true;
-  return false;
+function canContainTypes ($idtype)
+{
+	global $db;
+	//select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2) 
+	//but select only those who can be contains directly (not in advanced function)
+	$sql = "SELECT COUNT(*) as count FROM #_TP_entitytypes_entitytypes , #_TP_types as t WHERE identitytype = t.id AND identitytype2='$idtype' AND t.display!='advanced'";
+	$count = $db->getOne (lq($sql));
+	if ($count === false) return false;
+	if ($count > 0) return true;
+	return false;
 }
 
 function mystripslashes (&$var)
@@ -1083,7 +1039,6 @@ function _indent_xhtml($source, $indenter = '  ')
  * @param string $dcfield le nom du champ à récupérer (sans le dc.devant). Ex : .'description' pour 'dc.description'
  * @return le contenu du champ passé dans le paramètre $dcfield
  */
-
 function get_dc_fields($id, $dcfield)
 {
 	$dcfield = 'dc.' . $dcfield;
@@ -1120,10 +1075,10 @@ else return false;
 }
 
 // Tente de récupérer la liste des locales du système dans un tableau
-
-function list_system_locales(){
+function list_system_locales()
+{
 	ob_start();
-	if(system('locale -a')){ 
+	if(system('locale -a')) {
 		$str = ob_get_contents();
 		ob_end_clean();
 		return split("\n", trim($str));
@@ -1134,5 +1089,4 @@ function list_system_locales(){
 
 // valeur de retour identifier ce script
 return 568;
-
 ?>
