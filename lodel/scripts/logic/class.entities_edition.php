@@ -449,7 +449,8 @@ class Entities_EditionLogic extends GenericLogic
 					$itemcontext['idtype']   = $idtype;
 					$itemcontext['status']   = $status;
 					$itemcontext['degree']   = $degree++;
-					$ret = $logic->editAction($itemcontext, $error, 'CLEAN');
+					//$ret = $logic->editAction($itemcontext, $error, 'CLEAN');
+					$ret = $logic->editAction($itemcontext, $error);
 					if ($ret!="_error" && $itemcontext['id']) {
 						$ids[$idtype][] = $itemcontext['id'];
 						if ($itemcontext['idrelation']) {
