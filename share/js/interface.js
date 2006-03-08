@@ -30,10 +30,10 @@ function switchUploadType(name, act){
 		case 'upload' :
 			obj.name = name;
 			obj.value = act;
+			obj.disabled = "";
 		break;
 		case 'delete' :
 			obj.name = name;
-			obj.disabled = 'disabled';
 		break;
 	}
 }
