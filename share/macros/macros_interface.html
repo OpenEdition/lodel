@@ -293,19 +293,32 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 <ELSE/>
 <!--[ --------------- IMAGE ------------- ]-->	    
 <IF COND="[#TYPE] eq 'image'">
-  <table><tr>
-    <IF COND="[#VALUE]"><td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td></IF>
-    <td>
-    <IF COND="[#VALUE]">
-      <input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="" />[@EDITION.KEEP_CURRENT_FILE]<br />
-      <input type="radio" class="noText" name="[#FULLVARNAME][radio]" value="delete" />[@COMMON.DELETE] <br />
-    </IF>
-    <input type="radio" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" />
-    <a href="#" onclick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]','Upload','width=400,height=300,top=100,left=100');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>&nbsp;&nbsp;<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" /><br />
-    <input type="radio" class="noText" id="[#VARNAME][radioupload]" name="[#FULLVARNAME][radio]" value="upload" />[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK] <input size="40" type="file" name="[#FULLVARNAME][upload]" onchange="document.getElementById('[#VARNAME][radioupload]').click();" />
-    </td>
-  </tr></table>
-  <input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
+	<div class="oneItem">
+		<IF COND="[#VALUE]">
+			<div class="imageKeepDelete">
+			<img src="[(#VALUE|vignette(100))]" alt="[#VALUE]" class="imageEdit" />
+			<input type="radio" id="keep" class="noText" name="[#FULLVARNAME][radio]" value="" checked="checked" />
+			<label for="keep" class="boolean">[@EDITION.KEEP_CURRENT_FILE]</label><br />
+			<input type="radio" id="delete" class="noText" name="[#FULLVARNAME][radio]" value="delete" onclick="switchUploadType('[#FULLVARNAME][radio]', 'delete')" />
+			<label for="delete" class="boolean">[@COMMON.DELETE]</label><br />
+			</div>
+		</IF>
+		
+		<div class="fileUpload">
+			<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" />
+			<!--<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />-->
+			<label for="[#VARNAME][upload]">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
+			<input size="40" type="file"  id="[#VARNAME][upload]" name="[#FULLVARNAME][upload]" onchange="switchUploadType('[#FULLVARNAME][radio]','upload');" />
+			<br />
+			<!--<input type="hidden" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" disabled="disabled" />-->
+			<label for="[#VARNAME][localfilename]">
+			<a href="index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]" onclick="window.open(this.href,'Upload','width=400,height=300,top=100,left=100'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
+			</label><br class="nobr" />
+			<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" class="localChoose" />
+
+			<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
+		</div>
+	</div>
 <ELSE/>
 <!--[ --------------- COLOR ------------- ]-->	    
 <IF COND="[#TYPE] eq 'color'">

@@ -277,6 +277,29 @@ dl.entries dd.actions{
 	clear: both;
 }
 
+/* images de previsualisation dans formulaire edition */
+
+img.imageEdit{
+	display: block;
+	float: left;
+	margin: 1ex 1em;
+	padding: .5ex;
+	border: 1px solid #666;
+}
+
+div.fileUpload{
+	clear: both;
+	margin: 1.5ex 0 0 0;
+}
+
+div.imageKeepDelete{
+	padding: 1ex 0 1ex 0;
+}
+
+input.localChoose{
+	display: none;
+}
+
 /* les mises en formes locales doivent être visibles*/
 
 #checkbalisage{
@@ -610,6 +633,7 @@ div.advancedFunc{
 	margin: 6.8ex 3em 0 0;
 	padding: 2ex 1em 2ex 1em;
 	background: #f7f7f7;
+	overflow: visible;
 }
 
 div.advancedFunc h4{
@@ -618,6 +642,7 @@ div.advancedFunc h4{
 	background: #fff;
 	border: 1px solid #cecece;
 	font-size: 100%;
+	overflow: visible;
 }
 
 div.advancedFunc ul, div.advancedFunc li{
@@ -736,6 +761,17 @@ table.statistics{
 table.statistics.users{
 	width: auto;
 	margin: 0 0 4ex 45px;
+}
+
+table.statistics.fields{
+	width: 350px;
+	margin: 0;
+}
+
+table.statistics.fields th.status{
+	font-size: 80%;
+	height: 20px;
+	width: auto;
 }
 
 table.statistics caption{
