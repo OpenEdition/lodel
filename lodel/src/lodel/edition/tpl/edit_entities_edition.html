@@ -113,7 +113,22 @@
 		</dd>
 	</IF>
 	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
-	<dd>[#TYPE.TYPE]</dd>
+	<dd>
+		<LET VAR="currentidentity">[#ID]</LET>
+		<LET VAR="currentidtype">[#TYPE.ID]</LET>
+		<LET VAR="idparententity">[#IDPARENT]</LET>
+		<LOOP NAME="switchType" TABLE="types" ORDER="class, rank"> 
+			<BEFORE><select name="idtype"></BEFORE>
+			<DO>
+				<IF COND="[#CURRENTIDTYPE] EQ [#ID]">
+					<option value="[#ID]" selected="selected">[#TYPE]</option>
+				<ELSE />
+					<option value="[#ID]">[#TYPE]</option>
+				</IF>
+			</DO>
+			<AFTER></select></AFTER>
+		</LOOP>
+	</dd>
 	<dt>[@EDITION.DOCUMENT_CREATION_DATE]&nbsp;:&nbsp;</dt>
 	<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
 	<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
