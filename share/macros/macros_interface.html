@@ -305,7 +305,7 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 		</IF>
 		
 		<div class="fileUpload">
-			<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" />
+			<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />
 			<!--<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />-->
 			<label for="[#VARNAME][upload]">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
 			<input size="40" type="file"  id="[#VARNAME][upload]" name="[#FULLVARNAME][upload]" onchange="switchUploadType('[#FULLVARNAME][radio]','upload');" />
