@@ -838,7 +838,7 @@ class DataLogic
 function loop_files(&$context, $funcname)
 {
 	#global $importdirs,$fileregexp;
-	$context['importdirs'][] = $GLOBALS['importdir'];
+	#$context['importdirs'][] = $GLOBALS['importdir'];
 	foreach ($context['importdirs'] as $dir) {
 		if ( $dh = @opendir($dir)) {
 			while (($file = readdir($dh)) !== FALSE) {
