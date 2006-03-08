@@ -239,7 +239,7 @@ ln tpl/importmodel-frominstall.html
 #ln backupmodel.php
 ln tpl/backupmodel.html
 
-ln session.php
+#ln session.php
 
 # xml schema
 ln schema.php
