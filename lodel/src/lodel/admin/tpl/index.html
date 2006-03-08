@@ -54,9 +54,9 @@
 			<li><a href="index.php?do=list&amp;lo=translations">[@ADMIN.ADMINISTRATE_TRANSLATIONS]</a></li>
 			<li>
 				<IF COND="[#LODELUSER.TRANSLATIONMODE]=='site'">
-					<a href="usersettings.php?translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_SITE]</span></a>
+					<a href="index.php?do=set&amp;lo=users&amp;translationmode=off"><span class="texte_orange">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_SITE]</span></a>
 				<ELSE/>
-					<a href="usersettings.php?translationmode=site"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_SITE]</span></a>
+					<a href="index.php?do=set&amp;lo=users&amp;translationmode=site"><span class="texte_orange">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_SITE]</span></a>
 				</IF>
 			</li>
 		</ul>
@@ -94,9 +94,9 @@
 				<a href="[#LODELADMINPATH]/index.php">[@ADMIN.GO_TO_THE_GENERAL_ADMINISTRATION_PAGE]</a>
 				</li>
 				<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
-					<li><a href="usersettings.php?translationmode=off">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</a>
+					<li><a href="index.php?do=set&amp;lo=users&amp;translationmode=off">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</a>
 				<ELSE/>
-					<li><a href="usersettings.php?translationmode=interface">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</a></li>
+					<li><a href="index.php?do=set&amp;lo=users&amp;translationmode=interface">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</a></li>
 				</IF>
 			</IF>
 		</ul>

@@ -40,7 +40,7 @@ function switchUploadType(name, act){
 
 function change_language(obj) {
 	var index = obj.selectedIndex;
-	window.location="usersettings.php?lang="+obj.options[index].value;
+	window.location="index.php?do=set&lo=users&lang="+obj.options[index].value;
 }
 
 function showFocus(obj) {  

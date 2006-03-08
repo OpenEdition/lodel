@@ -130,6 +130,44 @@ class UsersLogic extends Logic
 		return '_back';
 	}
 
+	/**
+	 * Permet de régler la langue ou le mode traduction d'un utilisateur
+	 *
+	 * Pour changer la langue d'un utilisateur : lo=users&do=set&lang=fr
+	 * Pour changer le mode traduction : lo=users&do=set&translationmode=off
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les erreur éventuelles par référence
+	 */
+	function setAction(&$context, &$error)
+	{
+		global $db;
+		$lang = $context['lang'];
+		$translationmode = $context['translationmode'];
+		if ($lang) {
+			if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) {
+				die("ERROR: invalid lang");
+			}
+			$db->execute(lq("UPDATE #_TP_users SET lang='$lang'")) or dberror();
+			$this->_setcontext('lang', 'setvalue', $lang);
+		}
+
+		if ($translationmode) {
+			switch($translationmode) {
+			case 'off':
+				$this->_setcontext('translationmode', 'clear');
+				break;
+			case 'site':
+			case 'interface':
+				$this->_setcontext('translationmode', 'setvalue', $translationmode);
+				break;
+			}
+		}
+
+	update();
+	return '_back';
+	}
+
+
 
 	/**
 		* make the select for this logic
@@ -175,6 +213,36 @@ class UsersLogic extends Logic
 	/**
 		* @private
 		*/
+	/**
+	 *
+	 *
+	 */
+	function _setcontext($var, $operation, $value = '')
+	{
+		global $db;
+		usemaindb();
+		$where = "name='". addslashes($_COOKIE[$GLOBALS['sessionname']]). "' AND iduser='". $GLOBALS['lodeluser']['id']. "'";
+		$context = $db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
+		if ($db->errorno()) {
+			dberror();
+		}
+		$arr = unserialize($context);
+		switch ($operation) {
+		case 'toggle' :
+			$arr[$var] = $arr[$var] ? 0 : 1; // toggle
+			break;
+		case 'setvalue' :
+			$arr[$var] = $value;  // set
+			break;
+		case 'clear' :
+			unset($arr[$var]);  // clear
+			break;
+		}
+	
+		$db->execute(lq("UPDATE #_MTP_session SET context='". addslashes(serialize($arr)). "' WHERE ".$where)) or dberror();
+		usecurrentdb();
+	}
+
 	/**
 	* Préparation de l'action Edit
 	*

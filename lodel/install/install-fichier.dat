@@ -91,7 +91,7 @@ dirsource $homesite/lodel/admin
 ln tpl/login.html
 ln login.php
 ln logout.php
-ln usersettings.php
+#ln usersettings.php
 
 # tous les fichier de src/lodel/edition
 dirsource $homesite/lodel/edition
@@ -228,7 +228,7 @@ ln tpl/import.html
 
 ln tpl/edit_users.html
 ln tpl/users.html
-ln usersettings.php
+#ln usersettings.php
 
 ln transfer.php
 ln tpl/transfer.html
