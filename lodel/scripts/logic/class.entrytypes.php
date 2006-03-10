@@ -98,27 +98,29 @@ class EntryTypesLogic extends Logic
 
 	{
 		switch($var) {
-		case "sort" :
-			renderOptions(array("sortkey"=>getlodeltextcontents("alphabetical_order","admin"),
-				"rank"=>getlodeltextcontents("order_defined_in_interface","admin"),
-				"id"=>getlodeltextcontents("order_of_creation","admin"),
+		case 'sort' :
+			renderOptions(array('sortkey' => getlodeltextcontents('alphabetical_order', 'admin'),
+				'rank' => getlodeltextcontents('order_defined_in_interface', 'admin'),
+				'id'   => getlodeltextcontents('order_of_creation', 'admin'),
 				),$context['sort']);
 			break;
-		case "g_type" :
+		case 'g_type' :
 			#$g_typefields=array("DC.Subject");
-			$g_typefields=array("DC.Subject","DC.Coverage", "oai.set");
+			$g_typefields=array('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
 			$dao=$this->_getMainTableDAO();
-			$types=$dao->findMany("status>0","","g_type,title");     
-			foreach($types as $type) { $arr[$type->g_type]=$type->title; }
+			$types=$dao->findMany('status > 0', '','g_type,title');
+			foreach($types as $type) {
+				$arr[$type->g_type]=$type->title;
+			}
 
-			$arr2=array(""=>"--");
+			$arr2 = array('' => '--');
 			foreach($g_typefields as $g_type) {
-	$lg_type=strtolower($g_type);
-	if ($arr[$lg_type]) {
-		$arr2[$lg_type]=$g_type." &rarr; ".$arr[$lg_type];
-	} else {
-		$arr2[$lg_type]=$g_type;
-	}
+				$lg_type = strtolower($g_type);
+				if ($arr[$lg_type]) {
+					$arr2[$lg_type] = $g_type." &rarr; ".$arr[$lg_type];
+				} else {
+					$arr2[$lg_type] = $g_type;
+				}
 			}
 			renderOptions($arr2,$context['g_type']);
 			break;
@@ -126,17 +128,16 @@ class EntryTypesLogic extends Logic
 			require_once 'commonselect.php';
 			makeSelectGuiUserComplexity($context['gui_user_complexity']);
 			break;
-		case "edition" :
-			$arr=array(
-			"pool"=>getlodeltextcontents("edit_pool","admin"),
-			"multipleselect"=>getlodeltextcontents("edit_multipleselect","admin"),
-			"select"=>getlodeltextcontents("edit_select","admin"),
+		case 'edition' :
+			$arr = array(
+			'pool' => getlodeltextcontents('edit_pool', 'admin'),
+			'multipleselect' => getlodeltextcontents('edit_multipleselect', 'admin'),
+			'select' => getlodeltextcontents('edit_select', 'admin'),
 			);
 			renderOptions($arr,$context['edition']);
 			break;
 		}
 	}
-
 
 	/*---------------------------------------------------------------*/
 	//! Private or protected from this point
@@ -152,7 +153,6 @@ class EntryTypesLogic extends Logic
 	* @param array &$context le context passé par référence
 	*/
 	function _prepareEdit($dao,&$context)
-
 	{
 		// gather information for the following
 		if ($context['id']) {
@@ -170,8 +170,7 @@ class EntryTypesLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-		function _saveRelatedTables($vo,$context) 
-
+	function _saveRelatedTables($vo,$context) 
 	{
 		if ($vo->type!=$this->oldvo->type) {
 			// name has changed
@@ -188,18 +187,18 @@ class EntryTypesLogic extends Logic
 	* @param array &$context le contexte passé par référénce
 	*/
 	function _prepareDelete($dao,&$context)
-
-	{     
+	{
 		// gather information for the following
 		$this->vo=$dao->getById($context['id']);
 		if (!$this->vo) die("ERROR: internal error in EntryTypesLogic::_prepareDelete");
 	}
 
 
-	function _deleteRelatedTables($id) {
+	function _deleteRelatedTables($id)
+	{
 		global $home;
 			
-		$dao=&getDAO("tablefields");
+		$dao = &getDAO('tablefields');
 		$dao->delete("type='entries' AND name='".$this->vo->type."'");
 	}
 
@@ -216,14 +215,14 @@ class EntryTypesLogic extends Logic
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
-									'style' => array('style', ''),
 									'g_type' => array('select', ''),
+									'flat' => array('boolean', '+'),
+									'newbyimportallowed' => array('boolean', ''),
+									'style' => array('style', ''),
+									'gui_user_complexity' => array('select', '+'),
+									'edition' => array('select', ''),
 									'tpl' => array('tplfile', ''),
 									'tplindex' => array('tplfile', ''),
-									'gui_user_complexity' => array('select', '+'),
-									'flat' => array('boolean', '+'),
-									'edition' => array('select', ''),
-									'newbyimportallowed' => array('boolean', ''),
 									'sort' => array('select', '+'));
 	}
 	// end{publicfields} automatic generation  //
@@ -248,8 +247,9 @@ class EntryTypesLogic extends Logic
 /* loops                             */
 
 function loop_entitytypes($context,$funcname)
-{ require_once("typetypefunc.php"); 
-	loop_typetable ("entitytype","entrytype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);}
+{ require_once 'typetypefunc.php'; 
+	loop_typetable ('entitytype', 'entrytype', $context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
+}
 
 
 
