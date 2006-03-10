@@ -52,7 +52,8 @@
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class TableFieldsLogic extends Logic {
+class TableFieldsLogic extends Logic 
+{
 
 	/**
 	 * Constructeur
@@ -157,21 +158,22 @@ class TableFieldsLogic extends Logic {
 			renderOptions($arr, $context['idgroup']);
 			break;
 	case 'g_name':
+		require_once 'fieldfunc.php';
 		if (!$context['classtype']) $this->_getClass($context);
 		switch ($context['classtype']) {
 		case 'entities':
-			$g_namefields = array('DC.Title', 'DC.Description',
+			$g_namefields = $GLOBALS['g_entities_fields'];/*array('DC.Title', 'DC.Description',
 					'DC.Publisher', 'DC.Date',
 					'DC.Format', 'DC.Identifier',
 					'DC.Source', 'DC.Language',
 					'DC.Relation', 'DC.Coverage',
-					'DC.Rights');
+					'DC.Rights','generic_icon');*/
 			break;
 		case 'persons':
-			$g_namefields = array('Firstname', 'Familyname', 'Title');
+			$g_namefields = $GLOBALS['g_persons_fields'];#array('Firstname', 'Familyname', 'Title');
 			break;
 		case 'entities_persons':
-			$g_namefields = array('Title');
+			$g_namefields = $GLOBALS['g_entities_persons_fields'];# array('Title');
 			break;
 		case 'entries':
 			$g_namefields = array('Index key');
@@ -375,6 +377,7 @@ class TableFieldsLogic extends Logic {
 									'altertitle' => array('mltext', '+'),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
+									'comment' => array('longtext', ''),
 									'style' => array('mlstyle', ''),
 									'cond' => array('select', '+'),
 									'defaultvalue' => array('text', ''),
@@ -383,9 +386,8 @@ class TableFieldsLogic extends Logic {
 									'gui_user_complexity' => array('select', '+'),
 									'edition' => array('select', ''),
 									'editionparams' => array('text', ''),
-									'filtering' => array('text', ''),
 									'weight' => array('select', ''),
-									'comment' => array('longtext', ''),
+									'filtering' => array('text', ''),
 									'idgroup' => array('select', '+'));
 	}
 	// end{publicfields} automatic generation  //

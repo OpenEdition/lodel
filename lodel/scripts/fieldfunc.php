@@ -40,6 +40,38 @@
  * @since Fichier ajouté depuis la version 0.8
  */
 
+//Gestion des champs génériques
+
+// Champs génériques pour les types d'index
+$GLOBALS['g_entrytypes_fields'] = array ('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
+// Champs génériques pour les types d'index de personnes
+$GLOBALS['g_persontypes_fields'] = array("DC.Creator","DC.Contributor");
+//Champs génériques pour les entités
+$GLOBALS['g_entities_fields'] = array(
+					// Champs Dublin Core
+					'DC.Title',
+					'DC.Description',
+					'DC.Publisher',
+					'DC.Date',
+					'DC.Format',
+					'DC.Identifier',
+					'DC.Source',
+					'DC.Type',
+					'DC.Language',
+					'DC.Relation',
+					'DC.Coverage',
+					'DC.Rights',
+					'generic_icon');
+//Champs génériques pour les entrées d'index
+$GLOBALS['g_entries_fields'] = array('Index key');
+//Champs génériques pour les entrées d'index de personnes
+$GLOBALS['g_persons_fields'] = array('Firstname', 'Familyname', 'Title');
+//Champs génériques pour les champs liés aux personnes et aux entités
+$GLOBALS['g_entities_persons_fields'] = array('Title');
+
+
+
+
 // If you add a type in this list, please update the XML Schema template
 	$GLOBALS['lodelfieldtypes'] = 
 		array ('tinytext' => array ('sql' => 'tinytext'),
@@ -109,7 +141,7 @@ function reservedword($name)
 														'AUTO_INCREMENT', 'BDB', 'BEFORE', 'BERKELEYDB', 'BETWEEN', 'BIGINT', 
 														'BINARY', 'BLOB', 'BOTH', 'BTREE', 'BY', 'CALL', 'CASCADE', 'CASE', 
 														'CHANGE', 'CHAR', 'CHARACTER', 'CHECK', 'CLASSE', 'COLLATE', 'COLUMN', 
-														'COLUMNS', 'CONNECTION', 'CONSTRAINT', 'CREATE', 'CROSS', 'CURRENT_DATE', 
+														'COLUMNS', 'CONDITION', 'CONNECTION', 'CONSTRAINT', 'CREATE', 'CROSS', 'CURRENT_DATE', 
 														'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'CURSOR', 'DATABASE', 'DATABASES', 
 														'DAY_HOUR', 'DAY_MICROSECOND', 'DAY_MINUTE', 'DAY_SECOND', 'DEC', 'DECIMAL', 
 														'DECLARE', 'DEFAULT', 'DELAYED', 'DELETE', 'DESC', 'DESCRIBE', 'DISTINCT', 
@@ -159,7 +191,7 @@ function reservedByLodel($name)
 														'ENTITYTYPES_ENTITYTYPES', 'ENTRYTYPES', 'INTERNALSTYLES', 'OBJECTS', 
 														'OPTIONGROUPS', 'OPTIONS', 'PERSONTYPES', 'RELATIONS', 'SEARCH_ENGINE', 
 														'SESSION', 'SITES', 'TABLEFIELDGROUPS', 'TABLEFIELDS', 'TASKS', 
-														'TRANSLATIONS', 'TYPES', 'URLSTACK', 'USERGROUPS', 'USERS', 
+														'TRANSLATIONS', 'TYPES', 'TEXTS', 'URLSTACK', 'USERGROUPS', 'USERS', 
 														'USERS_USERGROUPS');
 	}
 	return (in_array(strtoupper($name), $reserved_lodel));

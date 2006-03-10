@@ -103,13 +103,16 @@ class PersonTypesLogic extends Logic
 			require_once 'commonselect.php';
 			makeSelectGuiUserComplexity($context['gui_user_complexity']);
 			break;
-		case "g_type" :
-			$g_typefields=array("DC.Creator","DC.Contributor");
+		case 'g_type' :
+			require_once 'fieldfunc.php';
+			$g_typefields = $GLOBALS['g_persontypes_fields'];
 			$dao=$this->_getMainTableDAO();
-			$types=$dao->findMany("status>0","","g_type,title");     
-			foreach($types as $type) { $arr[$type->g_type]=$type->title; }
+			$types = $dao->findMany('status > 0', '', 'g_type, title');
+			foreach($types as $type){
+				$arr[$type->g_type] = $type->title;
+			}
 
-			$arr2=array(""=>"--");
+			$arr2 = array('' => '--');
 			foreach($g_typefields as $g_type) {
 				$lg_type=strtolower($g_type);
 				if ($arr[$lg_type]) {
@@ -200,11 +203,11 @@ class PersonTypesLogic extends Logic
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', '+'),
-									'style' => array('style', ''),
 									'g_type' => array('select', ''),
+									'style' => array('style', ''),
+									'gui_user_complexity' => array('select', '+'),
 									'tpl' => array('tplfile', ''),
-									'tplindex' => array('tplfile', ''),
-									'gui_user_complexity' => array('select', '+'));
+									'tplindex' => array('tplfile', ''));
 	}
 	// end{publicfields} automatic generation  //
 

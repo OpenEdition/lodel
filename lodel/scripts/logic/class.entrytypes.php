@@ -106,7 +106,8 @@ class EntryTypesLogic extends Logic
 			break;
 		case 'g_type' :
 			#$g_typefields=array("DC.Subject");
-			$g_typefields=array('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
+			require_once 'fieldfunc.php';
+			$g_typefields = $GLOBALS['g_entrytypes_fields'];#array('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
 			$dao=$this->_getMainTableDAO();
 			$types=$dao->findMany('status > 0', '','g_type,title');
 			foreach($types as $type) {
