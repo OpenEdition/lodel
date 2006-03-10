@@ -46,14 +46,18 @@
 	[@LODELADMIN.BACKUP_IS_DONE_ARCHIVE_AIVALABLE_HERE] : [#OUTFILENAME]<br />
 	<input class="form" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php'" />
 <ELSE/>
-	<IF COND="[#ERROR]">
-		<p>[@LODELADMIN.ERROR_COPY_FILES_VERIFY_SERVER_CAN_WRITE_OR_ENOUGH_SPACE_DIRECTORY|sprintf([#OUTFILENAME])].</p>
-	</IF>
+	
 	<form method="POST" action="index.php">
 		<input type="hidden" name="do" value="globalbackup"  />
 		<input type="hidden" name="lo" value="data" />
 		<fieldset>
 		<legend>[@LODELADMIN.TITLE_BACKUP]</legend>
+		<IF COND="[#ERROR]">
+		<p class="error">
+			<!--[[@LODELADMIN.ERROR_COPY_FILES_VERIFY_SERVER_CAN_WRITE_OR_ENOUGH_SPACE_DIRECTORY|sprintf([#IMPORTDIR])].]-->
+			[@COMMON.ERROR_WHILE_TRYING_TO_ACCESS_DIRECTORY_PLEASE_VERIFY_WRITING_RIGHTS|sprintf([#IMPORTDIR])]
+		</p>
+	</IF>
 		<LOOP NAME="listsites" TABLE="sites">
 			<BEFORE>
 				<ul>
@@ -69,7 +73,11 @@
 		<select name="operation" id="operation">
 			<option value="download">[@LODELADMIN.DOWNLOAD]</option>
 			<IF COND="[#IMPORTDIR]">
+				<IF COND="[#IMPORTDIR|is_writable]">
 				<option value="importdir">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR]</option>
+				<ELSE/>
+				<option value="importdir" disabled="disabled">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR] ([@COMMON.NOT_WRITABLE])</option>
+				</IF>
 			</IF>
 			<option value="cache">[@LODELADMIN.SAVE_IN_CACHE]</option>
 		</select>
