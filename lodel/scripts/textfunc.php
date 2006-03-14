@@ -735,6 +735,20 @@ function defaultvalue($var1, $var2)
 
 
 /**
+ * Fonction utilisée ci dessous pour la numérotation des paragraphes
+ */
+function replacement($arg0, $arg1, $arg2, $arg3, $count)
+{
+	static $count;
+	
+	
+	++$count;
+	$repl = $arg1. 'id="pn'.$count.'"'.$arg2;
+	$repl .= '<span class="paranumber">'.$count.'</span>';
+	return $repl;
+}
+
+/**
  * Filtre de numérotation des paragraphes
  * 
  * Ajoute un <span class="paramnumber"> contenant une ancre avec le numéro du paragraphe
@@ -744,7 +758,12 @@ function defaultvalue($var1, $var2)
 function paranumber(&$texte)
 {
   static $paranum_count;
-	$texte = preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span class=\"paranumber\"><a id=\"pn".(++$paranum_count)."\" name=\"pn".($paranum_count)."\">". ($paranum_count). "</a></span>"', $texte);
+	$regexp = "/(<p\b[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|table)/ie";
+	preg_match($regexp,$texte,$matches);
+	#print_r($matches);exit;
+	#$texte = preg_replace($regexp, '"\\0"."<span class=\"paranumber\">". (++$paranum_count). "</span>"', $texte);
+	$texte = preg_replace($regexp, 'replacement("\\0","\\1","\\2","\\3",1)', $texte);
+	#echo $texte;exit;
 	return $texte;
 }
 
