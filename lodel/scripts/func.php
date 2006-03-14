@@ -1023,7 +1023,7 @@ function _indent_xhtml($source, $indenter = '  ')
 				unset($array[$i+1]);
 				unset($array[$i+2]);
 				$i = $i+3;
-			}	elseif(!preg_match("/<script|style [^>]+>/",$array[$i])) {
+			}	elseif(!preg_match("/<script|style [^>]+>/i",$array[$i])) {
 				// si c'est pas une balise script ou style
 				$array[$i+1] = str_replace("\n", "", $array[$i+1]);
 			} 
@@ -1085,6 +1085,87 @@ function list_system_locales()
 	}else{
 		return FALSE;
 	}
+}
+
+/**
+ * Récupère les champs génériques définis pour une entité
+ *
+ * Stocke les champs génériques définis pour une entité dans un sous tableau de $context : generic
+ *
+ * @param array $context le contexte passé par référence
+ */
+function getgenericfields(&$context)
+{
+	global $db;
+	#print_r($context);
+	$sql = lq("SELECT name,g_name, defaultvalue FROM #_TP_tablefields WHERE class='". $context['class'])."' AND g_name!=''";
+	$row = $db->getArray($sql);
+	#print_r($row);
+	foreach ($row as $elem) {
+		$fields[] = $elem['name'];
+		$generic[$elem['name']] = $elem['g_name'];
+	}
+	//Retrouve les valeurs de $fields
+	$sql = lq("SELECT ".join(',', $fields). ' FROM #_TP_'.$context['class']. " WHERE identity='".$context['id']."'");
+	#echo "sql=$sql";
+	$row = $db->getRow($sql);
+	foreach ($row as $key => $value) {
+		$values[$key] = $value;
+	}
+	//Contruit le tableau des champs génériques avec leur valeur
+	foreach($generic as $name => $g_name) {
+		$g_name = str_replace('.','_',$g_name);
+		$context['generic'][$g_name] = $values[$name];
+	}
+	unset($fields);
+	unset($values);
+	unset($generic);
+	#print_r($context['generic']);exit;
+
+	// -- Traitement des indexs -- 
+	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
+	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_entrytypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
+	#echo "sql=$sql";exit;
+	$row = $db->getArray($sql);
+	foreach ($row as $elem) {
+		$fields[] = $elem['type'];
+		$generic[$elem['type']] = $elem['g_type'];
+	}
+	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+	$sql = lq("SELECT e.g_name, et.type FROM #_TP_entries as e, #_TP_relations as r, #_TP_entrytypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
+	#echo "sql=$sql";
+	$array = $db->getArray($sql);
+	foreach($array as $row) {
+		if($cle = $generic[$row['type']]) {
+			$cle = str_replace('.','_',$cle);
+			$context['generic'][$cle][] = $row['g_name'];
+		}
+	}
+	
+	// -- Traitement des personnes --
+	unset($fields);
+	unset($generic);
+	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
+	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_persontypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
+	#echo "sql=$sql";
+	$row = $db->getArray($sql);
+	foreach ($row as $elem) {
+		$fields[] = $elem['type'];
+		$generic[$elem['type']] = $elem['g_type'];
+	}
+	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+	$sql = lq("SELECT e.g_firstname, e.g_familyname, et.type FROM #_TP_persons as e, #_TP_relations as r, #_TP_persontypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
+	#echo "sql=$sql";
+	$array = $db->getArray($sql);
+	foreach($array as $row) {
+		if($cle = $generic[$row['type']]) {
+			$cle = str_replace('.','_',$cle);
+			$context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
+		}
+	}
+
+
+	return $context; // pas nécessaire le context est passé par référence
 }
 
 // valeur de retour identifier ce script
