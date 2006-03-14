@@ -39,6 +39,8 @@
 * @package lodel
 */
 
+
+
 makefilterfunc();
 require_once 'CACHE/filterfunc.php';
 
@@ -53,10 +55,10 @@ function makefilterfunc()
 	// cherche les champs a filtrer	
 	$result = $db->execute(lq("SELECT class,name,filtering FROM #_TP_tablefields WHERE status > 0 AND filtering!=''")) or dberror();
 	while (!$result->EOF)	{
-		$row == $result->fields;
-
+		$row = $result->fields;
 		// convert filter into a function
-		$filters = preg_split("/\|/", $row['filter']);
+		$filters = preg_split("/\|/", $row['filtering']);
+		#$filters = explode('|',$row['filter']);
 		$filterfunc = '$x';
 		foreach ($filters as $filter)	{
 			if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/", $filter, $result2)) {
@@ -75,16 +77,15 @@ function makefilterfunc()
 			} // do nothing if $filter is empty
 		}
 		$filterfunc = "return ". $filterfunc. ";";
-		$filterstr .= "'". $row['class']. $row['name']. "=>'". addcslashes($filterfunc, "'"). "',";
-
+		$filterstr .= "'". $row['class'].'.'. $row['name']. "' => '". addcslashes($filterfunc, "'")."',";
+			#echo "filterstr=$filterstr";
 		$result->MoveNext();
 	}
-	
 	// build the function with filtering
 	// to update with ADODB
 	$fp = fopen("CACHE/filterfunc.php", "w");
 	fputs($fp, '<'.'?php function filtered_mysql_fetch_assoc($context, $result) {
-		$filters = array('.$filterstr.');
+			$filters = array('.$filterstr.');
 		$count = mysql_num_fields($result);
 		$row = mysql_fetch_row($result);
 		if (!$row) return array();
@@ -122,5 +123,6 @@ function makefilterfunc()
 	}
 	?'.'>');
 	fclose($fp);
+
 }
 ?>
