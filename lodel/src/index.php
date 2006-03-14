@@ -54,7 +54,6 @@ require 'siteconfig.php';
 //gestion de l'authentification
 require_once 'auth.php';
 authenticate();
-
 // record the url if logged
 if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
@@ -192,9 +191,6 @@ function printEntities($id, $identifier, &$context)
 	$critere = $lodeluser['visitor'] ? 'AND #_TP_entities.status>-64' : 'AND #_TP_entities.status>0 AND #_TP_types.status>0';
 
 	// cherche le document, et le template
-	if (!(@include_once('CACHE/filterfunc.php'))) {
-		require_once 'filterfunc.php';
-	}
 	do {
 		if ($identifier) {
 			$identifier = addslashes(stripslashes(substr($identifier, 0, 255)));
@@ -229,8 +225,12 @@ function printEntities($id, $identifier, &$context)
 	if (!$row) {
 		die("ERROR: internal error");
 	}
-	merge_and_filter_fields($context, $row['class'], $row);
-
+	if (!(@include_once('CACHE/filterfunc.php'))) {
+		require_once 'filterfunc.php';
+	}
+	//Merge $row et applique les filtres définis dans le ME
+	merge_and_filter_fields($context, $context['class'], $row);
+	getgenericfields($context); // met les champs génériques de l'entité dans le contexte
 	$view=&View::getView();
 	$view->renderCached($context, $base);
 	exit;
@@ -296,7 +296,7 @@ function printIndex($id, $classtype, &$context)
 		require_once "filterfunc.php";
 	}
 	merge_and_filter_fields($context, $row['class'], $row);
-
+	#getgenericfields($context);
 	$view = &View::getView();
 	$view->renderCached($context, $base);
 	exit;
