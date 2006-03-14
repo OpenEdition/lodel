@@ -208,12 +208,13 @@
 						required="true"
 						label="[@ADMIN.USER_RIGHTS]"
 						edittype="select" />
-		<column name="userlevel"
+		<column name="gui_user_complexity"
 						type="TINYINT"
 						default="64"
 						required="true"
-						label="[@ADMIN.USER_LEVEL_OF_USE]"
-						edittype="select" />
+						description="Complexité de l'interface graphique de l'utilisateur"
+						label="[@ADMIN.GUI_USER_COMPLEXITY]"
+				edittype="select" />
 		<vcolumn name="protected"
 						 label="[@ADMIN.PROTECTED_USER]"
 						 edittype="boolean" />
@@ -238,11 +239,12 @@
 						type="MEDIUMTEXT"
 						edittype="longtext"
 						/>
-		<!--column name="photo"
-							 label="[@ADMIN.PHOTO]"
-							 type="image"
-							 edittype="image"
-							 /-->
+		<column name="photo"
+						label="[@ADMIN.PHOTO]"
+						type="VARCHAR"
+						size="255"
+						edittype="image"
+				/>
 		<column name="professional_website"
 						label="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"
 						type="VARCHAR"

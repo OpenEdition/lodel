@@ -57,12 +57,12 @@ CREATE TABLE IF NOT EXISTS #_MTP_users (
 
 	lang											CHAR(5) NOT NULL,       # user lang
 	userrights								TINYINT UNSIGNED DEFAULT '0' NOT NULL,
-	userlevel									TINYINT UNSIGNED DEFAULT '32' NOT NULL,
+	gui_user_complexity									TINYINT UNSIGNED DEFAULT '64' NOT NULL,
 
 	nickname									VARCHAR(64),
 	function									VARCHAR(255),
 	biography									MEDIUMTEXT,
-	# photo											VARCHAR(255),
+	photo											VARCHAR(255),
 	professional_website			VARCHAR(255),
 	url_professional_website			VARCHAR(255),
 	rss_professional_website	VARCHAR(255),
