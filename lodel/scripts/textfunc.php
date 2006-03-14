@@ -758,6 +758,7 @@ function replacement($arg0, $arg1, $arg2, $arg3, $count)
 function paranumber(&$texte)
 {
   static $paranum_count;
+	//Regexp : cherche les paragraphes à numéroter, en ignorant les paragraphes contenant une image ou un tableau
 	$regexp = "/(<p\b[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|table)/ie";
 	preg_match($regexp,$texte,$matches);
 	#print_r($matches);exit;
