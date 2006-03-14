@@ -38,6 +38,11 @@ ln signaler.php
 ln search.php
 #gestion du module OAI
 ln oai.php
+
+#Sitemap
+dirsource $homelodel/lodel
+ln tpl/sitemap.html
+
 #ln tpl/oai20_getrecord.html
 #ln tpl/oai20_identify.html
 #ln tpl/oai20_listidentifiers.html
