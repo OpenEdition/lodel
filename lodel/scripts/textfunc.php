@@ -732,4 +732,21 @@ function defaultvalue($var1, $var2)
 {
 	return $var1 ? $var1 : $var2;
 }
+
+
+/**
+ * Filtre de numérotation des paragraphes
+ * 
+ * Ajoute un <span class="paramnumber"> contenant une ancre avec le numéro du paragraphe
+ *
+ * @param string $texte le texte à numéroté passé par référence
+ */
+function paranumber(&$texte)
+{
+  static $paranum_count;
+	$texte = preg_replace("/(<p\b[^>]*>\s*)+/ie",'"\\0<span class=\"paranumber\"><a id=\"pn".(++$paranum_count)."\" name=\"pn".($paranum_count)."\">". ($paranum_count). "</a></span>"', $texte);
+	return $texte;
+}
+
+
 ?>
