@@ -318,7 +318,7 @@ function loop_rssitem($context, $funcname, $arguments)
 		$localcontext = $context;
 		$count ++;
 		$localcontext['count'] = $count;
-		foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "pubDate", "source") as $v)
+		foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "pubdate", "source") as $v)
 			$localcontext[strtolower($v)] = $item[$v];
 		call_user_func("code_do_$funcname", $localcontext);
 	}
@@ -561,4 +561,41 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 		call_user_func("code_do_$funcname", $localcontext);
 	}
 }
+
+/**
+ * Parcours un tableau passé en argument de la LOOP : 
+ * <LOOP NAME="foreach" ARRAY="[#MONARRAY]">
+ * On considère que le tableau est passé par l'argument array
+ * 
+ */
+function loop_foreach(&$context, $funcname, $arguments)
+{
+	$localcontext = $context;
+	if(!$arguments['array']) {
+		call_user_func("code_alter_$funcname", $localcontext);
+	}
+	if(!is_array($arguments['array'])) {
+		call_user_func("code_alter_$funcname", $localcontext);
+	}
+	$localcontext['count'] = count($arguments['array']);
+	//Le before
+	if (function_exists("code_before_$funcname")) {
+		call_user_func("code_before_$funcname", $context);
+	}
+	// Parcours du tableau
+	foreach($arguments['array'] as $key => $value) {
+		$localcontext['key'] = $key;
+		$localcontext['value'] = $value;
+		call_user_func("code_do_$funcname", $localcontext);
+	}
+		
+	//L'after
+	if (function_exists("code_before_$funcname")) {
+		call_user_func("code_before_$funcname", $context);
+	}
+
+	
+}
+
+
 ?>
