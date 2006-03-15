@@ -155,17 +155,17 @@
     </span>
   </LOOP>
   <br />
-  <label for="userlevel">[@ADMIN.USER_LEVEL_OF_USE] : 
+  <label for="gui_user_complexity">[@ADMIN.USER_LEVEL_OF_USE] : 
 		</label>
   <br class="nobr">
-  <select name="userlevel" id="userlevel">
+  <select name="gui_user_complexity" id="gui_user_complexity">
     <?php 
-						makeSelect($context,"userlevel","users","select");
+						makeSelect($context,"gui_user_complexity","users","select");
 					?>
   </select>
-  <LOOP NAME="fielderror" FIELD="userlevel">
-    <a id="userlevel"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_LEVEL_OF_USE]"></FUNC>
+  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
+    <a id="gui_user_complexity"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GUI_USER_COMPLEXITY]"></FUNC>
     </span>
   </LOOP>
   <br />
