@@ -245,6 +245,7 @@ class Entities_EditionLogic extends GenericLogic
 		$idparent = $context['idparent'];
 		$idtype   = $context['idtype'];
 		$status   = intval($context['status']);
+		$this->_authorizedStatus($status);
 		// iduser
 		$context['iduser'] = !SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
 
