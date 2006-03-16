@@ -1546,11 +1546,13 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">
-		<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
-		<span class="item"><a href="../../[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
+		<IF COND="[#LO] != 'entries' AND ![#CURRENTURL|strpos('dashboard')]">
+			<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
+		</IF>
+		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
 		<LOOP NAME="rightonentity" ACTION="edit">
 		<DO>
-		<span class="item"><a href="index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></span>
+		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=view&amp;id=[#ID]">[@COMMON.EDIT]</a></span>
 		</DO>
 		<ALTERNATIVE>
 		<span class="item inactif">[@COMMON.EDIT]</span>
@@ -1607,7 +1609,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+				|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 			</DO>
 			<ALTERNATIVE>
 				|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
@@ -1619,7 +1621,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
+				|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
 			</DO>
 			<ALTERNATIVE>
 				|&nbsp;<span class="inactif">[@EDITION.SET_DRAFT]</span>&nbsp;|&nbsp;
@@ -1632,7 +1634,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
 
-				&nbsp;|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
+				&nbsp;|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
 
 			</DO>
 			<ALTERNATIVE>
@@ -1645,7 +1647,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a href="index.php?do=changestatus&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
+				|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
 	
 			</DO>
 			<ALTERNATIVE>

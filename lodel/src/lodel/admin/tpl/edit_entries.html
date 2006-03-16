@@ -37,20 +37,20 @@
 
 
 <form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" class="entry">
-<input type="hidden" name="do" value="edit">
-<input type="hidden" name="lo" value="entries">
-<fieldset>
-  <legend>[#TYPE.TITLE]</legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <input type="hidden" name="idtype" value="[#IDTYPE]">
 
+<fieldset>
+	<legend>[#TYPE.TITLE]</legend>
+	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="idtype" value="[#IDTYPE]" />
+	<input type="hidden" name="do" value="edit" />
+	<input type="hidden" name="lo" value="entries" />
 
    <MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
   <IF COND="![#TYPE.FLAT]">
     <label for="idparent">[@COMMON.PARENT_ENTRY] ([@COMMON.PARENT_ENTRY_MUST_BE_PERMANENT])
         : 
       </label>
-    <br class="nobr">
+    <br class="nobr" />
     <select name="idparent" id="idparent">
       <?php 
                       makeSelect($context,"idparent","entries","select");
@@ -90,7 +90,30 @@
 	<ELSE/>
 	<FUNC NAME="EDIT_SUBMIT_BAR">
 	</IF>
-	</div>
 	</form>
+
+<hr />
+
+<LOOP NAME="getlinkedentities" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = 'E'">
+	<BEFORE>
+		<ul class="listEntities">
+	</BEFORE>
+	<DO>
+		<IF COND="[#COUNT] % 2">
+			<li class="line1">
+		<ELSE/>
+			<li class="line2">
+		</IF>
+		<LOOP NAME="getentitieinfo" TABLE="entities" WHERE="id = '[#ID1]'" ORDER="modificationdate DESC">
+			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+		</LOOP>
+		</li>
+
+	</DO>
+	<AFTER><ul class="listEntities"></AFTER>
+</LOOP>
+
 
 <MACRO NAME="CLOSE_HTML">
