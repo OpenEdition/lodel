@@ -552,7 +552,12 @@ class Logic
 			unset($line);
 		}
 	}
-	
+
+/**
+	 * Vérification de la valeur du statut (champ status dans les tables)
+	 * @param int $status la valeur du statut à insérer dans la base
+	 * @return bool true si le paramètre $status correspond à une valeur autorisée, sinon déclenche une erreur php
+	 */
 	function _authorizedStatus($status){
 	//echo $this->maintable . '<p>' . $status . '<p>';
 			switch ($this->maintable) {
