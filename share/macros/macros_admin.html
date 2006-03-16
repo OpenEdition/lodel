@@ -160,9 +160,9 @@
 </DEFMACRO>
 
 
-<DEFMACRO NAME="NOMBRE_ENTITES_LIEES">
-	<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = 'E'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
-</DEFMACRO>
+<DEFFUNC NAME="NOMBRE_ENTITES_LIEES" REQUIRED="id, nature">
+	<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
+</DEFFUNC>
 
 
 <!--[ -----------------------------------------------------------
