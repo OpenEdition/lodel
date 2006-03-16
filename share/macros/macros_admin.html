@@ -179,6 +179,12 @@
 			<LOOP NAME="getentitieinfo" TABLE="entities, types" WHERE="entities.id = '[#ID1]' AND idtype=types.id" ORDER="modificationdate DESC">
 				<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 				<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+				<div class="fil">
+				<LOOP NAME="parentsentities">
+					<DOFIRST><a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DOFIRST>
+					<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
+				</LOOP>
+				</div>
 				<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			</LOOP>
 			</li>

@@ -597,6 +597,12 @@ ul.listEntities div.document .type_document{
 	font-style: italic;
 }
 
+ul.listEntities div.fil{
+	font-size: smaller;
+	font-style: italic;
+	margin: 0 0 0 30px;
+}
+
 #massEdit{
 	text-align: right;
 	padding: 0 3em 8ex 0;
