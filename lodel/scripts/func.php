@@ -1132,13 +1132,15 @@ function getgenericfields(&$context)
 		$generic[$elem['type']] = $elem['g_type'];
 	}
 	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
-	$sql = lq("SELECT e.g_name, et.type FROM #_TP_entries as e, #_TP_relations as r, #_TP_entrytypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
-	#echo "sql=$sql";
-	$array = $db->getArray($sql);
-	foreach($array as $row) {
-		if($cle = $generic[$row['type']]) {
-			$cle = str_replace('.','_',$cle);
-			$context['generic'][$cle][] = $row['g_name'];
+	if(count($fields) > 0) {
+		$sql = lq("SELECT e.g_name, et.type FROM #_TP_entries as e, #_TP_relations as r, #_TP_entrytypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
+		#echo "sql=$sql";
+		$array = $db->getArray($sql);
+		foreach($array as $row) {
+			if($cle = $generic[$row['type']]) {
+				$cle = str_replace('.','_',$cle);
+				$context['generic'][$cle][] = $row['g_name'];
+			}
 		}
 	}
 	
@@ -1153,14 +1155,16 @@ function getgenericfields(&$context)
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
 	}
-	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
-	$sql = lq("SELECT e.g_firstname, e.g_familyname, et.type FROM #_TP_persons as e, #_TP_relations as r, #_TP_persontypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
-	#echo "sql=$sql";
-	$array = $db->getArray($sql);
-	foreach($array as $row) {
-		if($cle = $generic[$row['type']]) {
-			$cle = str_replace('.','_',$cle);
-			$context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
+	if(count($fields) > 0) {
+		//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+		$sql = lq("SELECT e.g_firstname, e.g_familyname, et.type FROM #_TP_persons as e, #_TP_relations as r, #_TP_persontypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
+		#echo "sql=$sql";
+		$array = $db->getArray($sql);
+		foreach($array as $row) {
+			if($cle = $generic[$row['type']]) {
+				$cle = str_replace('.','_',$cle);
+				$context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
+			}
 		}
 	}
 
