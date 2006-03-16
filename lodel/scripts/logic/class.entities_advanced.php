@@ -126,7 +126,7 @@ class Entities_AdvancedLogic extends Logic
 	{
 		global $db;
 		$status = intval($context['status']);
-		$this->_authorizedStatus($status);
+		$this->_isAuthorizedStatus($status);
 		$dao = $this->_getMainTableDAO();
 		$vo  = $dao->find("id='". $context['id']. "' AND status*$status>0 AND status<16", 'status,id');
 		if (!$vo) {
