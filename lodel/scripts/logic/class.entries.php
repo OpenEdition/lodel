@@ -80,6 +80,34 @@ class EntriesLogic extends GenericLogic
 		return GenericLogic::viewAction ($context, $error); //call the parent method
 	}
 
+
+	/**
+	 * Publication d'une entrée (index ET persons)
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	function publishAction(&$context, &$error)
+	{
+		global $db;
+		$dao = $this->_getMainTableDAO();
+		$vo  = $dao->find('id=' . $context['id'], 'status,id');
+		if (!$vo) {
+			die("ERROR: interface error in EntriesLogic::publishAction ");
+		}
+		
+		if ($vo->status <= 0) {
+			$vo->status = abs($vo->status);
+		} else {
+			$vo->status = -abs($vo->status);
+		}
+		
+		$dao->save($vo);		
+		update();
+		return '_back';
+	}
+
+
 	/**
 	*  Indique si un objet est protégé en suppression (index seulement)
 	*
