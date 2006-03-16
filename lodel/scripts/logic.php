@@ -558,26 +558,28 @@ class Logic
 	 * @param int $status la valeur du statut à insérer dans la base
 	 * @return bool true si le paramètre $status correspond à une valeur autorisée, sinon déclenche une erreur php
 	 */
-	function _authorizedStatus($status){
+	function _isAuthorizedStatus($status)
+	{
 	//echo $this->maintable . '<p>' . $status . '<p>';
 			switch ($this->maintable) {
 				case 'entities' :
-					$this->_authorizedStatus = array (-64, -8, -1, 1, 8);
+					$this->_authorizedStatus = array(-64, -8, -1, 1, 8);
 					break;
 				case 'persons' :
 				case 'entries' :
-					$this->_authorizedStatus = array (-64, -32, -1, 1, 32);
+					$this->_authorizedStatus = array(-64, -32, -1, 1, 32);
 					break;
 				case 'texts' :
-					$this->_authorizedStatus = array (-1, 1, 2);
+					$this->_authorizedStatus = array(-1, 1, 2);
 					break;
 				default : trigger_error("ERROR: Cannot find authorized status", E_USER_ERROR);
 					
 			}
-			if(in_array($status, $this->_authorizedStatus) || $status == 0) {
+			if (in_array($status, $this->_authorizedStatus) || $status == 0) {
 				return true;
+			} else {
+				trigger_error("ERROR: Invalid status ! ", E_USER_ERROR);
 			}
-			else trigger_error("ERROR: Invalid status ! ", E_USER_ERROR);
 	}
 	/**#@-*/
 
