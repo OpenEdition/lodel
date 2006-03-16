@@ -871,6 +871,10 @@ table.statistics.fields td.actions{
 	color: #ff5b04;
 }
 
+#entries .numInfo{
+	font-size: 90%;
+}
+
 .familyName{
 	font-variant: small-caps;
 }
