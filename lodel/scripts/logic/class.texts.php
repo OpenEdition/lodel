@@ -89,7 +89,9 @@ class TextsLogic extends Logic
 				$dao->instantiateObject($vo);
 				$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $contents);
 				$vo->id       = $id;
-				$vo->status   = intval($context['status'][$id]);
+				$status = intval($context['status'][$id]);
+				$this->_authorizedStatus($status);
+				$vo->status   = $status;
 				if (!$vo->status) {
 					$vo->status=-1;
 				}
