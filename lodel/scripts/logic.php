@@ -552,6 +552,28 @@ class Logic
 			unset($line);
 		}
 	}
+	
+	function _authorizedStatus($status){
+	//echo $this->maintable . '<p>' . $status . '<p>';
+			switch ($this->maintable) {
+				case 'entities' :
+					$this->_authorizedStatus = array (-64, -8, -1, 1, 8);
+					break;
+				case 'persons' :
+				case 'entries' :
+					$this->_authorizedStatus = array (-64, -32, -1, 1, 32);
+					break;
+				case 'texts' :
+					$this->_authorizedStatus = array (-1, 1, 2);
+					break;
+				default : trigger_error("ERROR: Cannot find authorized status", E_USER_ERROR);
+					
+			}
+			if(in_array($status, $this->_authorizedStatus) || $status == 0) {
+				return true;
+			}
+			else trigger_error("ERROR: Invalid status ! ", E_USER_ERROR);
+	}
 	/**#@-*/
 
 } // class Logic }}}
