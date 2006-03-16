@@ -67,7 +67,7 @@
 		<DO>
 			<li class="level[#IDPARENT]">
 				<IF COND="[#BARRE]"><span class="barre">[#BARRE]&nbsp;</span></IF>
-				[#G_NAME|nbsp]
+				[#G_NAME|nbsp] <span class="numInfo">(<MACRO NAME="NOMBRE_ENTITES_LIEES" />)</span>
 				<div class="actions">
 				<IF COND="[#TYPE.SORT]=='rank'">
 	          			<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">

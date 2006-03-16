@@ -160,6 +160,10 @@
 </DEFMACRO>
 
 
+<DEFMACRO NAME="NOMBRE_ENTITES_LIEES">
+	<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = 'E'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
+</DEFMACRO>
+
 
 <!--[ -----------------------------------------------------------
       Print error message given the error code
