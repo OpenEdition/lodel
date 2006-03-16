@@ -92,11 +92,11 @@
 	</IF>
 	</form>
 
-<hr />
+
 
 <LOOP NAME="getlinkedentities" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = 'E'">
 	<BEFORE>
-		<ul class="listEntities">
+		<hr /><ul class="listEntities">
 	</BEFORE>
 	<DO>
 		<IF COND="[#COUNT] % 2">
