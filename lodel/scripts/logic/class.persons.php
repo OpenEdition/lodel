@@ -37,7 +37,7 @@
  * @version CVS:$Id$
  */
 
-require_once("genericlogic.php");
+require_once("class.entries.php");
 
 /**
  * Classe de logique des personnes
@@ -50,45 +50,21 @@ require_once("genericlogic.php");
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutée depuis la version 0.8
  * @see logic.php
  */
-class PersonsLogic extends GenericLogic
+class PersonsLogic extends EntriesLogic
 {
 
 	/** Constructor
 	 */
 	function PersonsLogic () {
-		$this->GenericLogic ("persons");
+		$this->EntriesLogic('persons');
+		$this->daoname = 'persontypes';
+		$this->idtype = 'idperson';
 	}
 
-	/**
-	 * Affichage d'un objet
-	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
-	 */
-	function viewAction (&$context, &$error) {
-		if (!$context['id']) $context['status']=32;
-		$context['classtype']="persons";
-		return GenericLogic::viewAction ($context, $error);
-	}
-
-	/**
-	 * Construit la liste des objets de cette logique
-	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
-	 */
-	function listAction (&$context, &$error, $clean = false) 
-	{
-		$daotype = &getDAO ("persontypes");
-		$votype=$daotype->getById ($context['idtype']);
-		if (!$votype) die ("ERROR: idtype must me known in GenericLogic::viewAction");
-		$this->_populateContext ($votype, $context['type']);
-		return "_ok";
-	}
-
+		
 	/**
 	 * Ajout d'un nouvel objet ou Edition d'un objet existant
 	 *
@@ -196,63 +172,6 @@ class PersonsLogic extends GenericLogic
 		return "_back";
 	}
 
-	/**
-	 * Appelé avant l'action delete
-	 *
-	 * Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	 * préliminaires à une suppression.
-	 *
-	 * @param object $dao la DAO utilisée
-	 * @param array &$context le contexte passé par référénce
-	 */
-	function _prepareDelete($dao,&$context) 
-	{
-		global $db;
-
-		// get the classes
-		$this->classes=array();
-		$result=$db->execute(lq("SELECT DISTINCT class FROM #_TP_persontypes INNER JOIN #_TP_persons ON idtype=#_TP_persontypes.id WHERE #_TP_persons.id ".sql_in_array($context['id']))) or dberror();		 
-		while (!$result->EOF) {
-			$this->classes[]=$result->fields['class'];
-			$result->MoveNext();
-		}
-
-		if (isset($context['idrelation'])) {
-			$this->idrelation=$context['idrelation'];
-		} else {
-			$dao=&getDAO("relations");
-			$vos=$dao->findMany("id2 ".sql_in_array($context['id']));
-			$this->idrelation=array();
-			foreach ($vos as $vo) {
-	$this->idrelation[]=$vo->idrelation;
-			}
-		}
-	}
-
-	/**
-	 * Suppression dans les tables liées
-	 *
-	 * @param integer $id identifiant numérique de l'objet supprimé
-	 */
-	function _deleteRelatedTables($id) 
-	{
-		global $db;
-		foreach ($this->classes as $class) {
-			$gdao=&getGenericDAO($class,"idperson");
-			$gdao->deleteObject($id);
-
-			if ($this->idrelation) {
-				$gdao=&getGenericDAO("entities_".$class,"idrelation");
-				$gdao->deleteObject($this->idrelation);
-			}
-		}
-		if ($this->idrelation) {
-			$dao=&getDAO("relations");
-			$dao->delete("idrelation ".sql_in_array($this->idrelation));
-		}
-
-		// delete 
-	}
 }// class 
 
 /*------------------------------------*/
