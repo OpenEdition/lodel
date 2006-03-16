@@ -274,10 +274,10 @@ function modifymember(members,textfield){
 
 // END POOL
 
-function confirm_delete(id, msg)
+function confirm_delete(id, msg, rootdir)
 {
 	window.status='go';
-	if(confirm(msg)) window.location='index.php?do=delete&id='+id;
+	if(confirm(msg)) window.location=rootdir+'/index.php?do=delete&id='+id;
 }
 	
 function popup(url) {

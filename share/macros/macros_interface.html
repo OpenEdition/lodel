@@ -1561,7 +1561,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<span class="item left"><MACRO NAME="CHANGER_STATUS_ENTITIES"></span>
 		<LOOP NAME="rightonentity" ACTION="delete">
 		<DO>
-		<span class="item"><a href="#" onclick="confirm_delete('[#ID]', '[@EDITION.CONFIRMATION_DELETE] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?');">[@EDITION.DELETE]</a></span>
+		<span class="item"><a href="#" onclick="confirm_delete('[#ID]', '[@EDITION.CONFIRMATION_DELETE] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?','<MACRO NAME="SITE_ROOT">/lodel/edition');">[@EDITION.DELETE]</a></span>
 		</DO>
 		<ALTERNATIVE>
 		<span class="item inactif">[@EDITION.DELETE]</span>
