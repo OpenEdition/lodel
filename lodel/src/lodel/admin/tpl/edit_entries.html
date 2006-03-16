@@ -104,7 +104,7 @@
 		<ELSE/>
 			<li class="line2">
 		</IF>
-		<LOOP NAME="getentitieinfo" TABLE="entities" WHERE="id = '[#ID1]'" ORDER="modificationdate DESC">
+		<LOOP NAME="getentitieinfo" TABLE="entities, types" WHERE="entities.id = '[#ID1]' AND idtype=types.id" ORDER="modificationdate DESC">
 			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
