@@ -1546,7 +1546,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">
-		<IF COND="[#LO] != 'entries' AND ![#CURRENTURL|strpos('dashboard')]">
+		<IF COND="![#LO] AND ![#CURRENTURL|strpos('dashboard')]">
 			<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
 		</IF>
 		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>

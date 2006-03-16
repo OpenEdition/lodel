@@ -63,6 +63,7 @@
       </p>
     </LOOP>
   </IF>
+<br />
   <label for="protected" class="boolean">[@ADMIN.PERMANENT_ENTRY] : </label>
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked="checked" />
@@ -94,26 +95,6 @@
 
 
 
-<LOOP NAME="getlinkedentities" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = 'E'">
-	<BEFORE>
-		<hr /><ul class="listEntities">
-	</BEFORE>
-	<DO>
-		<IF COND="[#COUNT] % 2">
-			<li class="line1">
-		<ELSE/>
-			<li class="line2">
-		</IF>
-		<LOOP NAME="getentitieinfo" TABLE="entities, types" WHERE="entities.id = '[#ID1]' AND idtype=types.id" ORDER="modificationdate DESC">
-			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
-			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-		</LOOP>
-		</li>
-
-	</DO>
-	<AFTER><ul class="listEntities"></AFTER>
-</LOOP>
-
+<FUNC NAME="LISTE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />
 
 <MACRO NAME="CLOSE_HTML">

@@ -45,11 +45,10 @@
 
 
    <MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
-
-  <label for="protected">[@ADMIN.PERMANENT_PERSON]
+<br />
+  <label for="protected" class="boolean">[@ADMIN.PERMANENT_PERSON]
         : 
       </label>
-  <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>
     <ELSE/>
@@ -78,7 +77,8 @@
 	<ELSE/>
 	<FUNC NAME="EDIT_SUBMIT_BAR">
 	</IF>
-	</div>
 	</form>
+
+<FUNC NAME="LISTE_ENTITES_LIEES" ID="[#ID]" NATURE="G" />
 
 <MACRO NAME="CLOSE_HTML">

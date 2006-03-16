@@ -165,6 +165,31 @@
 </DEFFUNC>
 
 
+<DEFFUNC NAME="LISTE_ENTITES_LIEES" REQUIRED="id, nature">
+	<LOOP NAME="getlinkedentities" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'">
+		<BEFORE>
+			<hr /><ul class="listEntities">
+		</BEFORE>
+		<DO>
+			<IF COND="[#COUNT] % 2">
+				<li class="line1">
+			<ELSE/>
+				<li class="line2">
+			</IF>
+			<LOOP NAME="getentitieinfo" TABLE="entities, types" WHERE="entities.id = '[#ID1]' AND idtype=types.id" ORDER="modificationdate DESC">
+				<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+				<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+				<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+			</LOOP>
+			</li>
+	
+		</DO>
+		<AFTER></ul></AFTER>
+	</LOOP>
+<DEFFUNC>
+
+
+
 <!--[ -----------------------------------------------------------
       Print error message given the error code
 --------------------------------------------------------------- ]-->
