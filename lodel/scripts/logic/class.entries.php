@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entrées
+ * Logique des entrées et des personnes
  *
  * PHP version 4
  *
@@ -60,13 +60,15 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Constructeur
 	 */
-	function EntriesLogic ()
+	function EntriesLogic ($logicname = 'entries')
 	{
-		$this->GenericLogic ('entries');
+		$this->GenericLogic ($logicname);
+		$this->daoname = 'entrytypes';
+		$this->idtype = 'identry';
 	}
 
 	/**
-	 * Affichage d'un objet
+	 * Affichage d'un objet (index ET persons)
 	 *
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
@@ -74,12 +76,12 @@ class EntriesLogic extends GenericLogic
 	function viewAction (&$context, &$error) 
 	{
 		if (!$context['id']) $context['status']=32; //why ?
-		$context['classtype']="entries";
+		$context['classtype']=$this->maintable;
 		return GenericLogic::viewAction ($context, $error); //call the parent method
 	}
 
 	/**
-	*  Indique si un objet est protégé en suppression
+	*  Indique si un objet est protégé en suppression (index seulement)
 	*
 	* Cette méthode indique si un objet, identifié par son identifiant numérique et
 	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
@@ -106,14 +108,14 @@ class EntriesLogic extends GenericLogic
 	}
 
 	/**
-	 * Appel la liste des objet de cette logic : ici les entrées
+	 * Appel la liste des objet de cette logic : ici les entrées (index ET persons)
 	 *
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
 	function listAction (&$context, &$error, $clean = false)
 	{
-		$daotype = &getDAO ('entrytypes');
+		$daotype = &getDAO ($this->daoname);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			die ("ERROR: idtype must me known in GenericLogic::viewAction");
@@ -123,7 +125,7 @@ class EntriesLogic extends GenericLogic
 	}
 
 	/**
-	 * Ajout d'un nouvel objet ou Edition d'un objet existant
+	 * Ajout d'un nouvel objet ou Edition d'un objet existant (index seulement)
 	 *
 	 * Ajout d'une nouvelle entrée
 	 *
@@ -226,7 +228,7 @@ class EntriesLogic extends GenericLogic
 
 
 	/**
-	 * Changement du rang d'un objet
+	 * Changement du rang d'un objet (index seulement)
 	 *
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
@@ -237,7 +239,7 @@ class EntriesLogic extends GenericLogic
 	}
 
 	/**
-	 * Construction des balises select HTML pour cet objet
+	 * Construction des balises select HTML pour cet objet (index seulement)
 	 *
 	 * @param array &$context le contexte, tableau passé par référence
 	 * @param string $var le nom de la variable du select
@@ -282,7 +284,7 @@ class EntriesLogic extends GenericLogic
 	} //end of function
 
 	/**
-	 * Appelé avant l'action delete
+	 * Appelé avant l'action delete (index ET persons)
 	 *
 	 * Cette méthode est appelée avant l'action delete pour effectuer des vérifications
 	 * préliminaires à une suppression.
@@ -295,7 +297,11 @@ class EntriesLogic extends GenericLogic
 		global $db;
 		// get the classes
 		$this->classes = array ();
-		$result = $db->execute (lq ("SELECT DISTINCT class FROM #_TP_entrytypes INNER JOIN #_TP_entries ON idtype=#_TP_entrytypes.id WHERE #_TP_entries.id ".sql_in_array ($context['id']))) or dberror ();
+
+		// $this->daoname = persontypes OU entrytypes
+		// $this->maintable = persons OU entries
+		$result = $db->execute (lq ("SELECT DISTINCT class FROM #_TP_". $this->daoname . " INNER JOIN #_TP_" . $this->maintable . " ON idtype=#_TP_" . $this->daoname . ".id WHERE #_TP_" .$this->maintable. ".id ".sql_in_array ($context['id']))) or dberror ();
+
 		while (!$result->EOF) {
 			$this->classes[] = $result->fields['class'];
 			$result->MoveNext();
@@ -304,7 +310,7 @@ class EntriesLogic extends GenericLogic
 		if (isset($context['idrelation'])) {
 			$this->idrelation=$context['idrelation'];
 		} else {
-			$dao=&getDAO ("relations");
+			$dao=&getDAO ('relations');
 			$vos=$dao->findMany ("id2 ".sql_in_array ($context['id']));
 			$this->idrelation=array ();
 			foreach ($vos as $vo) {
@@ -315,18 +321,26 @@ class EntriesLogic extends GenericLogic
 
 
 	/**
-	 * Used in deleteAction to do extra operation after the object has been deleted
+	 * Used in deleteAction to do extra operation after the object has been deleted (index ET persons)
 	 */
 	function _deleteRelatedTables($id) 
 	{
 		global $db;
 		foreach ($this->classes as $class) {
-			$gdao=&getGenericDAO ($class, "identry");
+			$gdao=&getGenericDAO ($class, $this->idtype);
 			$gdao->deleteObject ($id);
+		
+			if($this->maintable == 'persons') {
+				if ($this->idrelation) {
+					$gdao=&getGenericDAO("entities_".$class,"idrelation");
+					$gdao->deleteObject($this->idrelation);
+				}
+			}
 		}
+
 		if ($this->idrelation) {
-			$dao=&getDAO ("relations");
-			$dao->delete ("idrelation ". sql_in_array ($this->idrelation));
+			$dao=&getDAO ('relations');
+			$dao->delete ('idrelation '. sql_in_array ($this->idrelation));
 		}
 	}
 } // class 
