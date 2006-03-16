@@ -36,11 +36,11 @@
 </ul>
 
 
-<form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" class="entry">
+<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" class="entry">
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="entries">
 <fieldset>
-  <legend></legend>
+  <legend>[#TYPE.TITLE]</legend>
   <input type="hidden" name="id" value="[#ID]">
   <input type="hidden" name="idtype" value="[#IDTYPE]">
 
@@ -63,14 +63,11 @@
       </p>
     </LOOP>
   </IF>
-  <label for="protected">[@ADMIN.PERMANENT_ENTRY]
-        : 
-      </label>
-  <br class="nobr">
+  <label for="protected" class="boolean">[@ADMIN.PERMANENT_ENTRY] : </label>
   <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
+    <input type="checkbox" name="protected" id="protected" checked="checked" />
     <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
+    <input type="checkbox" name="protected" id="protected" />
   </IF>
   <br />
   <LOOP NAME="fielderror" FIELD="protected">
