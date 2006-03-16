@@ -30,23 +30,6 @@ body{
 	color: #0e2d7c;
 }
 
-#lodel-desk .butText{
-	display: none;
-}
-
-#lodel-desk  .butTextOn{
-	font-weight: bold;
-	color: #CC9933;
-	padding-top: 3px;
-	height: 1ex;
-	width: 57px;
-	display: block;
-	position: absolute;
-	top: 50;
-	text-align: center;
-}
-
-
 /* Groupe des boutons du desk */
 
 
