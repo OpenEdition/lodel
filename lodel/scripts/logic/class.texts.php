@@ -90,7 +90,7 @@ class TextsLogic extends Logic
 				$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $contents);
 				$vo->id       = $id;
 				$status = intval($context['status'][$id]);
-				$this->_authorizedStatus($status);
+				$this->_isAuthorizedStatus($status);
 				$vo->status   = $status;
 				if (!$vo->status) {
 					$vo->status=-1;

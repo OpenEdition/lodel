@@ -205,7 +205,7 @@ class EntitiesLogic extends Logic
 	{
 		global $db;
 		$status = intval ($context['status']);
-		$this->_authorizedStatus($status);
+		$this->_isAuthorizedStatus($status);
 		if ($status == 0) {
 			die ("error in publishAction");
 		}
