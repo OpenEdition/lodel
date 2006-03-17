@@ -126,33 +126,25 @@
 </DEFFUNC>
 
 <DEFMACRO NAME="CHANGE_ENTRIES_STATUS">
-	<IF COND="[#STATUS] GT 0">
-		<IF COND="[#STATUS]==1">
-                   <LOOP NAME="rightonentity" ACTION="unpublish">
-		   <DO>
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH] : \n&#034;[#G_NAME|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?')">[@EDITION.UNPUBLISH]</a>
-		   </DO>
+	<IF COND="([#STATUS] EQ 1) OR ([#STATUS] EQ 32)">
+		 <LOOP NAME="rightonentity" ACTION="unpublish">
+		   	<DO>
+				<a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a>
+		   	</DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
 		    </ALTERNATIVE>
-                    </LOOP>		
-		<ELSE/>
-		<IF COND="[#STATUS]==8">
-			<span class="inactif">[@COMMON.PROTECTED]</span>
-		<ELSE/>
-			<span class="inactif">unknown???</span>
-		</IF>
-		</IF>
+                   </LOOP>	
 	<ELSE/>
-		<IF COND="([#STATUS]==-1)">
-                   <LOOP NAME="rightonentity" ACTION="publish">
-		   <DO>
-			<a href="index.php?do=publish&amp;id=[#ID]&amp;status=1">[@EDITION.PUBLISH]</a>
-		   </DO>
-		    <ALTERNATIVE>
-			<span class="inactif">[@EDITION.PUBLISH]</span>
-                   </ALTERNATIVE>
-                   </LOOP>
+		<IF COND="([#STATUS] EQ -1) OR ([#STATUS] EQ -32) ">
+	 		<LOOP NAME="rightonentity" ACTION="publish">
+	  			<DO>
+					<a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]">[@EDITION.PUBLISH]</a>
+	   			</DO>
+		    		<ALTERNATIVE>
+					<span class="inactif">[@EDITION.PUBLISH]</span>
+                   		</ALTERNATIVE>
+			</LOOP>
 		<ELSE/>
 			<span class="inactif">[@EDITION.DRAFT]</span>
 		</IF>
