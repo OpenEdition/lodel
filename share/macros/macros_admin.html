@@ -106,7 +106,7 @@
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 
 	
-	<MACRO NAME="CHANGER_STATUS_ENTRIES">
+	<MACRO NAME="CHANGE_ENTRIES_STATUS">
          <span class="sep">|&nbsp;</span><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.MODIFY]</a><span class="sep">&nbsp;|&nbsp;</span>
 	<IF COND="[#STATUS] ge 32">
 	  <span class="inactif">[@COMMON.PROTECTED]</span><span class="sep">&nbsp;|&nbsp;</span>
@@ -125,7 +125,7 @@
 	
 </DEFFUNC>
 
-<DEFMACRO NAME="CHANGER_STATUS_ENTRIES">
+<DEFMACRO NAME="CHANGE_ENTRIES_STATUS">
 	<IF COND="[#STATUS] GT 0">
 		<IF COND="[#STATUS]==1">
                    <LOOP NAME="rightonentity" ACTION="unpublish">
