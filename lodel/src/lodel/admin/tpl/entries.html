@@ -60,7 +60,7 @@
 	</li>
 </ul>
 
-<div>
+<div id="entries">
 	<LET VAR="IDREC">0</LET>
 	<LOOP NAME="entries" TABLE="entries" WHERE="idtype='[#TYPE.ID]' AND idparent='[#IDREC]'" ORDER="[#TYPE.SORT]">
 	<BEFORE><ul class="listEntities"></BEFORE>
