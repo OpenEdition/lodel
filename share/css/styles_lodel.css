@@ -545,7 +545,7 @@ ul.listEntities img.picto_gauche{
 	margin-right: .5em;
 }
 
-ul.listEntities div.action{
+div.action{
 	position: absolute;
 	right: 1.3em;
 	top: 0;
@@ -557,7 +557,7 @@ ul.listEntities li.unfoldedentities div.action{
 	right: .6em;
 }
 
-ul.listEntities div.action span.item, ul.listEntities div.action div.move, #actionsOnEntitiesPath ul.actions li{
+div.action span.item, div.action div.move, #actionsOnEntitiesPath ul.actions li{
 	width: 70px;
 	display: block;
 	float: left;
@@ -566,11 +566,11 @@ ul.listEntities div.action span.item, ul.listEntities div.action div.move, #acti
 	font-weight: normal;
 }
 
-ul.listEntities div.action div.move{
+div.action div.move{
 	width: 6em;
 }
 
-ul.listEntities div.action span.item.left{
+div.action span.item.left{
 	text-align: left;
 }
 
@@ -867,10 +867,10 @@ table.statistics.fields td.actions{
 	padding-bottom: 2ex;
 }
 
-#entries ul li div.actions{
+#entries ul li div.action{
 	position: absolute;
 	right: 0;
-	top: 0;
+	top: -1.5ex;
 }
 
 #entries ul li .barre{

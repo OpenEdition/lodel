@@ -86,8 +86,8 @@
 
 <DEFFUNC NAME="CHANGE_RANK_BUTTON" REQUIRED="LO">
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<a href="index.php?do=changerank&id=[#ID]&lo=[#LO]&dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
-	<a href="index.php?do=changerank&id=[#ID]&lo=[#LO]&dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
+	<a href="index.php?do=changerank&amp;id=[#ID]&amp;lo=[#LO]&amp;dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="picto" width="11" height="8" alt="bas" onmouseover="src='[#SHAREURL]/images/fleche_bas_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_bas.png'" /></a>
+	<a href="index.php?do=changerank&amp;id=[#ID]&amp;lo=[#LO]&amp;dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="picto" width="11" height="8" alt="haut" onmouseover="src='[#SHAREURL]/images/fleche_haut_survol.png'" onmouseout="src='[#SHAREURL]/images/fleche_haut.png'" /></a>
 <ELSE />
 	<img src="[#SHAREURL]/images/fleche_bas_gris.png" width="11" height="8" class="picto" alt="Inactif" />
 	<img src="[#SHAREURL]/images/fleche_haut_gris.png" width="11" height="8" class="picto" alt="Inactif" />
@@ -107,20 +107,20 @@
 
 	
 	<MACRO NAME="CHANGE_ENTRIES_STATUS">
-         <span class="sep">|&nbsp;</span><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.MODIFY]</a><span class="sep">&nbsp;|&nbsp;</span>
+         <span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.MODIFY]</a></span>
 	<IF COND="[#STATUS] ge 32">
-	  <span class="inactif">[@COMMON.PROTECTED]</span><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="item inactif">[@COMMON.PROTECTED]</span>
        <ELSE/>
 	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="item inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span>
 	  <ELSE/>
-	  <a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a><span class="sep">&nbsp;|&nbsp;</span>
+	  <span class="item"><a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a></span>
 	  </IF>
 	</IF>
-	 <a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a>
+	 <span class="item"><a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a></span>
 <ELSE/>
-	 |<span class="sep">&nbsp;|&nbsp;</span><span class="inactif">[@COMMON.MODIFY]</span><span class="sep">&nbsp;|&nbsp;</span>
-	  <span class="inactif">[@COMMON.DELETE]</span><span class="sep">&nbsp;|&nbsp;</span><span class="inactif">[@COMMON.COPY]</span><span class="sep">&nbsp;|</span>
+	 <span class="item inactif">[@COMMON.MODIFY]</span>
+	  <span class="item inactif">[@COMMON.DELETE]</span><span class="item inactif">[@COMMON.COPY]</span>
 </IF>
 	
 </DEFFUNC>
@@ -129,24 +129,24 @@
 	<IF COND="([#STATUS] EQ 1) OR ([#STATUS] EQ 32)">
 		 <LOOP NAME="rightonentity" ACTION="unpublish">
 		   	<DO>
-				<a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a>
+				<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a></span>
 		   	</DO>
 		    <ALTERNATIVE>
-			<span class="inactif">[@EDITION.UNPUBLISH]</span>
+			<span class="item inactif">[@EDITION.UNPUBLISH]</span>
 		    </ALTERNATIVE>
                    </LOOP>	
 	<ELSE/>
 		<IF COND="([#STATUS] EQ -1) OR ([#STATUS] EQ -32) ">
 	 		<LOOP NAME="rightonentity" ACTION="publish">
 	  			<DO>
-					<a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]">[@EDITION.PUBLISH]</a>
+					<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]">[@EDITION.PUBLISH]</a></span>
 	   			</DO>
 		    		<ALTERNATIVE>
-					<span class="inactif">[@EDITION.PUBLISH]</span>
+					<span class="item inactif">[@EDITION.PUBLISH]</span>
                    		</ALTERNATIVE>
 			</LOOP>
 		<ELSE/>
-			<span class="inactif">[@EDITION.DRAFT]</span>
+			<span class="item inactif">[@EDITION.DRAFT]</span>
 		</IF>
 	</IF>
 </DEFMACRO>
