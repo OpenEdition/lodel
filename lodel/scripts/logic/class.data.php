@@ -281,7 +281,7 @@ class DataLogic
 				die ("ERROR: unable to open a temporary file in write mode");
 			}
 			// save the main database
-			if (fputs($fh, 'DROP DATABASE '. DATABASE. ";\nCREATE DATABASE ". DATABASE. ";USE ". DATABASE. ";\n") === FALSE) {
+			if (fputs($fh, 'DROP DATABASE IF EXISTS '. DATABASE. ";\nCREATE DATABASE ". DATABASE. ";USE ". DATABASE. ";\n") === FALSE) {
 				die("ERROR: unable to write in the temporary file");
 			}
 
@@ -298,7 +298,7 @@ class DataLogic
 			$GLOBALS['currentprefix'] = '#_TP_';
 			while (!$result->EOF) {
 				$name = $result->fields['name'];
-				if (fputs($fh, 'DROP DATABASE '. $name. ";\nCREATE DATABASE ". $name. ";USE ". $name. ";\n") === FALSE) {
+				if (fputs($fh, 'DROP DATABASE IF EXISTS '. $name. ";\nCREATE DATABASE ". $name. ";USE ". $name. ";\n") === FALSE) {
 				die("ERROR: unable to write in the temporary file");
 			}
 				$this->_dump($name, true, $errors, $fh);
