@@ -79,6 +79,8 @@
 			<strong>[@COMMON.ERROR]</strong> [@ADMIN.UPLOAD_IN]
 		</IF>
 		<form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
+			<input type="hidden" name="do" value="importmodel" />
+			<input type="hidden" name="lo" value="data" />
 			<input type="file" name="archive" size="40" />
 			<input class="form" type="submit" value="[@ADMIN.UPLOAD]" />
 		</form>
