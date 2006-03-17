@@ -116,7 +116,7 @@ h2.formHead{
 
 /* Formulaires */
 
-fieldset, dl.entries{
+fieldset{
 	width: 550px;
 	border: 1px solid #cecece;
 	margin: 0 0 3ex 40px;
@@ -256,25 +256,6 @@ div.displayfield span{
 
 div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	background: #f1f5fb;
-}
-
-dl.entries dt{
-	font-size: 110%;
-	font-weight: bold;
-	margin: 0 0 2ex 0;
-}
-
-dl.entries dd{
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
-	width: 35%;
-	float: left;
-}
-
-dl.entries dd.actions{
-	margin-left: 45%;
-	text-align: right;
-	clear: both;
 }
 
 /* images de previsualisation dans formulaire edition */
@@ -854,39 +835,12 @@ table.statistics.fields td.actions{
 
 
 
-#entries, #move{
+#move{
 	margin: 5ex 3em 0 2em;
 }
 
-#entries ul, #entries li{
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-#entries ul li{
-	font-size: 11px;
-	margin: 2ex 0 0 0;
-	position: relative;
-}
-
-#entries li.level0{
-	border-bottom: 1px solid #aaa;
-	padding-bottom: 2ex;
-}
-
-#entries ul li div.action{
-	position: absolute;
-	right: 0;
-	top: -1.5ex;
-}
-
-#entries ul li .barre{
-	color: #ff5b04;
-}
-
-#entries .numInfo{
-	font-size: 90%;
+#entries .barre{
+	color: #fb6b20;
 }
 
 .familyName{
