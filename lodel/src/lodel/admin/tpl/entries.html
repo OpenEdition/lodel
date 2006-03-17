@@ -60,12 +60,16 @@
 	</li>
 </ul>
 
-<div id="entries">
+<div>
 	<LET VAR="IDREC">0</LET>
 	<LOOP NAME="entries" TABLE="entries" WHERE="idtype='[#TYPE.ID]' AND idparent='[#IDREC]'" ORDER="[#TYPE.SORT]">
-	<BEFORE><ul></BEFORE>
+	<BEFORE><ul class="listEntities"></BEFORE>
 		<DO>
-			<li class="level[#IDPARENT]">
+			<IF COND="[#COUNT] % 2">
+			<li class="line1">
+			<ELSE/>
+			<li class="line2">
+			</IF>
 				<IF COND="[#BARRE]"><span class="barre">[#BARRE]&nbsp;</span></IF>
 				[#G_NAME|nbsp] <span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
 				<div class="action">

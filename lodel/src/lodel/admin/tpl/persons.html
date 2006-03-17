@@ -61,11 +61,17 @@
 	</li>
 </ul>
 
-<div id="entries">
+<div>
 <LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64">
-	<BEFORE><ul></BEFORE>
+	<BEFORE><ul class="listEntities"></BEFORE>
 	<DO>
-		<li class="level0">[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span>
+		<IF COND="[#COUNT] % 2">
+			<li class="line1">
+		<ELSE/>
+			<li class="line2">
+		</IF>
+
+		[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span>
 		 <span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="G" />)</span>
 		<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
 	</DO>
