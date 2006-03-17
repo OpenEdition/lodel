@@ -109,7 +109,7 @@ class EntriesLogic extends GenericLogic
 
 
 	/**
-	*  Indique si un objet est protégé en suppression (index seulement)
+	*  Indique si un objet est protégé en suppression (index ET persons)
 	*
 	* Cette méthode indique si un objet, identifié par son identifiant numérique et
 	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
@@ -122,11 +122,15 @@ class EntriesLogic extends GenericLogic
 	*/
 	function isdeletelocked ($id, $status = 0)
 	{
+		/*if ($this->maintable == 'persons') {
+			die("ERROR in EntriesLogic:: function isdeletelocked is not valid for persons logic");
+		}*/
 		global $db;
 
-		// if this entry has child or is published
-		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE idparent ".sql_in_array($id)." AND status >-64"));
-		$count += $db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE id='".$id."' AND status=32"));
+		// if this entry has child
+		// OR is published AND permanent (status=32)
+		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_" . $this->maintable . " WHERE idparent ".sql_in_array($id)." AND status >-64"));
+		$count += $db->getOne(lq("SELECT count(*) FROM #_TP_" . $this->maintable . " WHERE id='".$id."' AND status=32"));
 		if ($db->errorno())  dberror();
 		if ($count==0) {
 			return false;
@@ -162,6 +166,9 @@ class EntriesLogic extends GenericLogic
 	 */
 	function editAction (&$context, &$error, $clean=false) 
 	{
+	if ($this->maintable == 'persons') {
+			die("ERROR in EntriesLogic:: function isdeletelocked is not valid for persons logic");
+		}
 		global $home;
 		$id = $context['id'];
 		$idtype=$context['idtype'];
@@ -263,6 +270,9 @@ class EntriesLogic extends GenericLogic
 	 */
 	function changeRankAction (&$context, &$error) 
 	{
+		if ($this->maintable == 'persons') {
+			die("ERROR in EntriesLogic:: function changeRankAction is not valid for persons logic");
+		}
 		return Logic::changeRankAction(&$context, &$error, 'idparent', '');
 	}
 
@@ -275,6 +285,9 @@ class EntriesLogic extends GenericLogic
 	 */
 	function makeSelect (&$context, $var) 
 	{
+		if ($this->maintable == 'persons') {
+			die("ERROR in EntriesLogic:: function makeSelect is not valid for persons logic");
+		}
 		global $db;
 		switch($var) {
 		case 'idparent':
