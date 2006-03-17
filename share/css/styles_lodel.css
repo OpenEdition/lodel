@@ -557,13 +557,21 @@ ul.listEntities li.unfoldedentities div.action{
 	right: .6em;
 }
 
-div.action span.item, div.action div.move, #actionsOnEntitiesPath ul.actions li{
+td.actions span.item, div.action span.item, div.action div.move, #actionsOnEntitiesPath ul.actions li{
 	width: 70px;
 	display: block;
 	float: left;
 	margin: 0 .5em 0 0;
 	text-align: left;
 	font-weight: normal;
+}
+
+td.actions span.item{
+	width: 60px;
+}
+
+td.actions span.item.rank{
+	width: 30px;
 }
 
 div.action div.move{
