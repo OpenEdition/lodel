@@ -100,8 +100,8 @@ if ($option2) $installoption="2";
 // Test the PHP version
 //
 preg_match("/^\d+\.\d+/",phpversion(),$result);
-if (doubleval($result[0]<4.1)) {
-  probleme_version();
+if (doubleval($result[0]<4.1) || doubleval($result[0]>=5.0)) {
+  probleme('version');
   exit;
 }
 
@@ -862,7 +862,7 @@ function problem($msg)
   global $langcache,$installlang;
   $messages=array(
 		  "version"=>sprintf($langcache[$installlang]['install.versionphp'],phpversion()),
-  //'La version de php sur votre serveur est trop ancienne pour le fonctionnement correcte de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Version recommandée: php 4.3 ou supérieure',
+  //'La version de php sur votre serveur ne permet pas un fonctionnement correct de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Versions recommandées : php 4.3 (ou supérieure), et inférieure à 5',
 
 		  "reading_lodelconfig"=>$langcache[$installlang]['install.reading_lodelconfig'].'<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
 		  //'Le fichier lodelconfig.php n\'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.,
