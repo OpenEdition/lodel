@@ -597,5 +597,73 @@ function loop_foreach(&$context, $funcname, $arguments)
 	
 }
 
+/**
+ * Liste les types compatibles pour une entité. Cette boucle permet de construire
+ * la liste de modification du type d'une entité. 
+ * 
+ * Elle vérifie les types que peut contenir le type parent (si on est pas à la racine).
+ * Si l'entité contient des enfants, elle vérifie
+ * aussi que les enfants peuvent contenir un type.
+ *
+ * @param array $context le contexte passé par référence
+ * @param string $funcname le nom de la fonction loop
+ * @param array $arguments les arguments éventuels
+ */
+function loop_compatible_types(&$context, $funcname, $arguments)
+{
+	global $db;
+	static $compatible_types;
+	require_once 'entitiesfunc.php';
+	//<LOOP SELECT="t.id, t.title, t.type, ee.identitytype" NAME="switchType" TABLE="entities as e, types as t, entitytypes_entitytypes as ee" WHERE="e.id='[#IDPARENT]' and e.idtype=ee.identitytype2 and ee.identitytype=t.id AND t.class='textes'" ORDER="t.rank">
 
+	if(!$compatible_types) {
+		//selectionne tous les types de la classe
+		$sql = lq("SELECT * FROM #_TP_types WHERE class='".$context['type']['class']."'");
+		$compatible_types = array();
+		$types = $db->getArray($sql);
+		foreach ($types as $row) {
+			if(checkTypesCompatibility(0, $context['idparent'],$row['id'])) {
+				//pour chaque enfant il faut tester si il peut être contenu dans le type testé.
+				#echo "test de ".$row['title'];
+				if(childCanBeInThisType($row['id'],$context['id'])) {
+					$compatible_types[] = $row;
+				}
+			}
+		}
+	}
+	$localcontext = $context;
+	if($compatible_types && count($compatible_types) > 0) {
+		if (function_exists("code_before_$funcname")) {
+			call_user_func("code_before_$funcname", $context);
+		}
+		foreach($compatible_types as $type) {
+			$localcontext = array_merge($localcontext,$type);
+			call_user_func("code_do_$funcname", $localcontext);
+		}
+		if (function_exists("code_after_$funcname")) {
+			call_user_func("code_after_$funcname", $context);
+		}
+	} else {
+		if(function_exists("code_alter_$funcname")) {
+		call_user_func("code_alter_$funcname", $localcontext);
+	}
+	}
+}
+
+function childCanBeInThisType($type,$id)
+{
+	global $db;
+	$sql = lq("SELECT id,idtype FROM #_TP_entities WHERE idparent='$id'");
+	$entities = $db->getArray($sql);
+	//pour chaque entité on teste si elle peut être contenu dans $type
+	foreach($entities as $entity) {
+		$query = lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='".$entity['idtype']."' AND identitytype2='".$type."'");
+		#echo "query=$query";
+		$condition = $db->getOne($query);
+		if(!$condition) {
+			return false;
+		}
+	}
+	return true;
+}
 ?>
