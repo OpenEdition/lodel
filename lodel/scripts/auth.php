@@ -84,9 +84,9 @@ function authenticate($level = 0, $mode = "")
 		}
 		require_once "connect.php";
 		usemaindb();
-	
+		
+
 		if (!($row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'")))) {
-				echo "coucou";
 			break;
 		}
 	
@@ -268,6 +268,7 @@ if (!$GLOBALS['filemask']) {
 }
 header("Content-type: text/html; charset=". $context['charset']);
 
+// Langue ?
 $GLOBALS['la'] = $_GET['la'] ? $_GET['la'] : $_POST['la'];
 if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['la'])) {
 	$GLOBALS['la'] = '';
