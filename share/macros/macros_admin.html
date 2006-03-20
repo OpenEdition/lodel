@@ -138,8 +138,9 @@
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 
-	
-	<MACRO NAME="CHANGE_ENTRIES_STATUS">
+	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
+		<MACRO NAME="CHANGE_ENTRIES_STATUS">
+	</IF>
          <span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.MODIFY]</a></span>
 	<IF COND="[#STATUS] ge 32">
 	  <span class="item inactif">[@COMMON.PROTECTED]</span>
