@@ -1,8 +1,8 @@
 <?php
 // --------------------------------------------------------------------------------
-// PhpConcept Library - Zip Module 2.4
+// PhpConcept Library - Zip Module 2.1
 // --------------------------------------------------------------------------------
-// License GNU/LGPL - Vincent Blavet - November 2004
+// License GNU/LGPL - Vincent Blavet - December 2003
 // http://www.phpconcept.net
 // --------------------------------------------------------------------------------
 //
@@ -63,7 +63,7 @@
 // --------------------------------------------------------------------------------
 
   // ----- Global variables
-  $g_pclzip_version = "2.4";
+  $g_pclzip_version = "2.1";
 
   // ----- Error codes
   //   -1 : Unable to open file in binary write mode
@@ -98,9 +98,6 @@
   define( 'PCLZIP_ERR_INVALID_ARCHIVE_ZIP', -14 );
   define( 'PCLZIP_ERR_MISSING_OPTION_VALUE', -15 );
   define( 'PCLZIP_ERR_INVALID_OPTION_VALUE', -16 );
-  define( 'PCLZIP_ERR_ALREADY_A_DIRECTORY', -17 );
-  define( 'PCLZIP_ERR_UNSUPPORTED_COMPRESSION', -18 );
-  define( 'PCLZIP_ERR_UNSUPPORTED_ENCRYPTION', -19 );
 
   // ----- Options values
   define( 'PCLZIP_OPT_PATH', 77001 );
@@ -118,11 +115,6 @@
   define( 'PCLZIP_OPT_ADD_COMMENT', 77013 );
   define( 'PCLZIP_OPT_PREPEND_COMMENT', 77014 );
   define( 'PCLZIP_OPT_EXTRACT_IN_OUTPUT', 77015 );
-  define( 'PCLZIP_OPT_REPLACE_NEWER', 77016 );
-  define( 'PCLZIP_OPT_STOP_ON_ERROR', 77017 );
-  // Having big trouble with crypt. Need to multiply 2 long int
-  // which is not correctly supported by PHP ...
-  //define( 'PCLZIP_OPT_CRYPT', 77018 );
 
   // ----- Call backs values
   define( 'PCLZIP_CB_PRE_EXTRACT', 78001 );
@@ -150,7 +142,7 @@
   //   extract() : Extract the content of the archive
   //   properties() : List the properties of the archive
   // --------------------------------------------------------------------------------
-   class PclZip
+  class PclZip
   {
     // ----- Filename of the zip file
     var $zipname = '';
@@ -162,12 +154,7 @@
     var $error_code = 1;
     var $error_string = '';
 
-
-		var $user_vars;
-    // ----- Current status of the magic_quotes_runtime
-    // This value store the php configuration for magic_quotes
-    // The class can then disable the magic_quotes and reset it after
-    var $magic_quotes_status;
+    var $user_vars;
 
   // --------------------------------------------------------------------------------
   // Function : PclZip()
@@ -191,7 +178,6 @@
     // ----- Set the attributes
     $this->zipname = $p_zipname;
     $this->zip_fd = 0;
-    $this->magic_quotes_status = -1;
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 1);
@@ -277,9 +263,7 @@
                                                    PCLZIP_CB_PRE_ADD => 'optional',
                                                    PCLZIP_CB_POST_ADD => 'optional',
                                                    PCLZIP_OPT_NO_COMPRESSION => 'optional',
-                                                   PCLZIP_OPT_COMMENT => 'optional'
-                                                   //, PCLZIP_OPT_CRYPT => 'optional'
-												   ));
+                                                   PCLZIP_OPT_COMMENT => 'optional' ));
         if ($v_result != 1) {
           //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
           return 0;
@@ -442,9 +426,7 @@
                                                    PCLZIP_OPT_NO_COMPRESSION => 'optional',
                                                    PCLZIP_OPT_COMMENT => 'optional',
                                                    PCLZIP_OPT_ADD_COMMENT => 'optional',
-                                                   PCLZIP_OPT_PREPEND_COMMENT => 'optional'
-                                                   //, PCLZIP_OPT_CRYPT => 'optional'
-												   ));
+                                                   PCLZIP_OPT_PREPEND_COMMENT => 'optional' ));
         if ($v_result != 1) {
           //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
           return 0;
@@ -491,6 +473,7 @@
 
     // ----- Look if the $p_filelist is really an array
     $p_result_list = array();
+
     if (is_array($p_filelist))
     {
       // ----- Call the create fct
@@ -647,14 +630,13 @@
 
     // ----- Set default values
     $v_options = array();
-//    $v_path = "./";
-    $v_path = '';
+    $v_path = "./";
     $v_remove_path = "";
     $v_remove_all_path = false;
 
     // ----- Look for variable options arguments
     $v_size = func_num_args();
-		    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "$v_size arguments passed to the method");
+    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "$v_size arguments passed to the method");
 
     // ----- Default values for option
     $v_options[PCLZIP_OPT_EXTRACT_AS_STRING] = FALSE;
@@ -682,10 +664,7 @@
                                                    PCLZIP_OPT_BY_PREG => 'optional',
                                                    PCLZIP_OPT_BY_INDEX => 'optional',
                                                    PCLZIP_OPT_EXTRACT_AS_STRING => 'optional',
-                                                   PCLZIP_OPT_EXTRACT_IN_OUTPUT => 'optional',
-                                                   PCLZIP_OPT_REPLACE_NEWER => 'optional'
-                                                   ,PCLZIP_OPT_STOP_ON_ERROR => 'optional'
-												    ));
+                                                   PCLZIP_OPT_EXTRACT_IN_OUTPUT => 'optional' ));
         if ($v_result != 1) {
           //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
           return 0;
@@ -806,8 +785,7 @@
 
     // ----- Set default values
     $v_options = array();
-//    $v_path = "./";
-    $v_path = '';
+    $v_path = "./";
     $v_remove_path = "";
     $v_remove_all_path = false;
 
@@ -840,10 +818,7 @@
                                                    PCLZIP_OPT_ADD_PATH => 'optional',
                                                    PCLZIP_CB_PRE_EXTRACT => 'optional',
                                                    PCLZIP_CB_POST_EXTRACT => 'optional',
-                                                   PCLZIP_OPT_SET_CHMOD => 'optional',
-                                                   PCLZIP_OPT_REPLACE_NEWER => 'optional'
-                                                   ,PCLZIP_OPT_STOP_ON_ERROR => 'optional'
-												   ));
+                                                   PCLZIP_OPT_SET_CHMOD => 'optional' ));
         if ($v_result != 1) {
           //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
           return 0;
@@ -931,15 +906,10 @@
   // Function :
   //   delete([$p_option, $p_option_value, ...])
   // Description :
-  //   This method removes files from the archive.
-  //   If no parameters are given, then all the archive is emptied.
   // Parameters :
-  //   None or optional arguments.
+  //   None
   // Options :
   //   PCLZIP_OPT_BY_INDEX :
-  //   PCLZIP_OPT_BY_NAME :
-  //   PCLZIP_OPT_BY_EREG : 
-  //   PCLZIP_OPT_BY_PREG :
   // Return Values :
   //   0 on failure,
   //   The list of the files which are still present in the archive.
@@ -966,37 +936,51 @@
     $v_size = func_num_args();
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "$v_size arguments passed to the method");
 
-    // ----- Look for arguments
-    if ($v_size > 0) {
-      // ----- Get the arguments
-      $v_arg_list = &func_get_args();
+    // ----- Look for no arguments
+    if ($v_size <= 0) {
+        // ----- Error log
+        PclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Missing arguments");
 
-      // ----- Parse the options
-      $v_result = $this->privParseOptions($v_arg_list, $v_size, $v_options,
+        // ----- Return
+        //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0, PclZip::errorInfo());
+        return 0;
+    }
+
+    // ----- Get the arguments
+    $v_arg_list = &func_get_args();
+
+    // ----- Parse the options
+    $v_result = $this->privParseOptions($v_arg_list, $v_size, $v_options,
                                         array (PCLZIP_OPT_BY_NAME => 'optional',
                                                PCLZIP_OPT_BY_EREG => 'optional',
                                                PCLZIP_OPT_BY_PREG => 'optional',
                                                PCLZIP_OPT_BY_INDEX => 'optional' ));
-      if ($v_result != 1) {
-          //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
-          return 0;
-      }
+    if ($v_result != 1) {
+        //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
+        return 0;
     }
 
-    // ----- Magic quotes trick
-    $this->privDisableMagicQuotes();
+    // ----- Check that at least one rule is set
+    if (   (!isset($v_options[PCLZIP_OPT_BY_NAME]))
+        && (!isset($v_options[PCLZIP_OPT_BY_EREG]))
+        && (!isset($v_options[PCLZIP_OPT_BY_PREG]))
+        && (!isset($v_options[PCLZIP_OPT_BY_INDEX]))) {
+        // ----- Error log
+        PclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "At least one filtering rule must be set");
+
+        // ----- Return
+        //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0, PclZip::errorInfo());
+        return 0;
+    }
 
     // ----- Call the delete fct
     $v_list = array();
-    if (($v_result = $this->privDeleteByRule($v_list, $v_options)) != 1) {
-      $this->privSwapBackMagicQuotes();
+    if (($v_result = $this->privDeleteByRule($v_list, $v_options)) != 1)
+    {
       unset($v_list);
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0, PclZip::errorInfo());
       return(0);
     }
-
-    // ----- Magic quotes trick
-    $this->privSwapBackMagicQuotes();
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_list);
@@ -1043,12 +1027,8 @@
     // ----- Reset the error handler
     $this->privErrorReset();
 
-    // ----- Magic quotes trick
-    $this->privDisableMagicQuotes();
-
     // ----- Check archive
     if (!$this->privCheckFormat()) {
-      $this->privSwapBackMagicQuotes();
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
       return(0);
     }
@@ -1066,8 +1046,6 @@
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Open file in binary read mode");
       if (($this->zip_fd = @fopen($this->zipname, 'rb')) == 0)
       {
-        $this->privSwapBackMagicQuotes();
-        
         // ----- Error log
         PclZip::privErrorLog(PCLZIP_ERR_READ_OPEN_FAIL, 'Unable to open archive \''.$this->zipname.'\' in binary read mode');
 
@@ -1080,7 +1058,6 @@
       $v_central_dir = array();
       if (($v_result = $this->privReadEndCentralDir($v_central_dir)) != 1)
       {
-        $this->privSwapBackMagicQuotes();
         //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, 0);
         return 0;
       }
@@ -1093,9 +1070,6 @@
       $v_prop['nb'] = $v_central_dir['entries'];
       $v_prop['status'] = 'ok';
     }
-
-    // ----- Magic quotes trick
-    $this->privSwapBackMagicQuotes();
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_prop);
@@ -1268,9 +1242,7 @@
                       PCLZIP_ERR_BAD_CHECKSUM => 'PCLZIP_ERR_BAD_CHECKSUM',
                       PCLZIP_ERR_INVALID_ARCHIVE_ZIP => 'PCLZIP_ERR_INVALID_ARCHIVE_ZIP',
                       PCLZIP_ERR_MISSING_OPTION_VALUE => 'PCLZIP_ERR_MISSING_OPTION_VALUE',
-                      PCLZIP_ERR_INVALID_OPTION_VALUE => 'PCLZIP_ERR_INVALID_OPTION_VALUE',
-                      PCLZIP_ERR_UNSUPPORTED_COMPRESSION => 'PCLZIP_ERR_UNSUPPORTED_COMPRESSION',
-                      PCLZIP_ERR_UNSUPPORTED_ENCRYPTION => 'PCLZIP_ERR_UNSUPPORTED_ENCRYPTION' );
+                      PCLZIP_ERR_INVALID_OPTION_VALUE => 'PCLZIP_ERR_INVALID_OPTION_VALUE' );
 
     if (isset($v_name[$this->error_code])) {
       $v_value = $v_name[$this->error_code];
@@ -1465,7 +1437,6 @@
         // ----- Look for options that request an EREG or PREG expression
         case PCLZIP_OPT_BY_EREG :
         case PCLZIP_OPT_BY_PREG :
-        //case PCLZIP_OPT_CRYPT :
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
@@ -1595,6 +1566,7 @@
               }
               else {
                   // ----- Error log
+
                   PclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Too many values in index range for option '".PclZipUtilOptionText($p_options_list[$i])."'");
 
                   // ----- Return
@@ -1635,8 +1607,6 @@
         case PCLZIP_OPT_EXTRACT_AS_STRING :
         case PCLZIP_OPT_NO_COMPRESSION :
         case PCLZIP_OPT_EXTRACT_IN_OUTPUT :
-        case PCLZIP_OPT_REPLACE_NEWER :
-        case PCLZIP_OPT_STOP_ON_ERROR :
           $v_result_list[$p_options_list[$i]] = true;
           //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "".PclZipUtilOptionText($p_options_list[$i])." = '".$v_result_list[$p_options_list[$i]]."'");
         break;
@@ -1750,9 +1720,6 @@
     //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, "PclZip::privCreate", "list, result_list, add_dir='$p_add_dir', remove_dir='$p_remove_dir'");
     $v_result=1;
     $v_list_detail = array();
-    
-    // ----- Magic quotes trick
-    $this->privDisableMagicQuotes();
 
     // ----- Open the file in write mode
     if (($v_result = $this->privOpenFd('wb')) != 1)
@@ -1767,9 +1734,6 @@
 
     // ----- Close
     $this->privCloseFd();
-
-    // ----- Magic quotes trick
-    $this->privSwapBackMagicQuotes();
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -1801,16 +1765,10 @@
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
     }
-    // ----- Magic quotes trick
-    $this->privDisableMagicQuotes();
-
     // ----- Open the zip file
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Open file in binary read mode");
     if (($v_result=$this->privOpenFd('rb')) != 1)
     {
-      // ----- Magic quotes trick
-      $this->privSwapBackMagicQuotes();
-
       // ----- Return
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
@@ -1821,10 +1779,10 @@
     if (($v_result = $this->privReadEndCentralDir($v_central_dir)) != 1)
     {
       $this->privCloseFd();
-      $this->privSwapBackMagicQuotes();
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
     }
+
 
     // ----- Go to beginning of File
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Position in file : ".ftell($this->zip_fd)."'");
@@ -1839,7 +1797,6 @@
     if (($v_zip_temp_fd = @fopen($v_zip_temp_name, 'wb')) == 0)
     {
       $this->privCloseFd();
-      $this->privSwapBackMagicQuotes();
 
       PclZip::privErrorLog(PCLZIP_ERR_READ_OPEN_FAIL, 'Unable to open temporary file \''.$v_zip_temp_name.'\' in binary write mode');
 
@@ -1874,7 +1831,6 @@
       fclose($v_zip_temp_fd);
       $this->privCloseFd();
       @unlink($v_zip_temp_name);
-      $this->privSwapBackMagicQuotes();
 
       // ----- Return
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -1905,7 +1861,6 @@
           fclose($v_zip_temp_fd);
           $this->privCloseFd();
           @unlink($v_zip_temp_name);
-          $this->privSwapBackMagicQuotes();
 
           // ----- Return
           //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -1938,7 +1893,6 @@
     {
       // ----- Reset the file list
       unset($v_header_list);
-      $this->privSwapBackMagicQuotes();
 
       // ----- Return
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -1955,9 +1909,6 @@
 
     // ----- Close the temporary file
     @fclose($v_zip_temp_fd);
-
-    // ----- Magic quotes trick
-    $this->privSwapBackMagicQuotes();
 
     // ----- Delete the zip file
     // TBC : I should test the result ...
@@ -2130,20 +2081,23 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Before add, list have $v_nb elements");
 
     // ----- Loop on the files
-    for ($j=0; ($j<count($p_list)) && ($v_result==1); $j++) {
+    for ($j=0; ($j<count($p_list)) && ($v_result==1); $j++)
+    {
       // ----- Recuperate the filename
       $p_filename = PclZipUtilTranslateWinPath($p_list[$j], false);
 
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Looking for file [$p_filename]");
 
       // ----- Skip empty file names
-      if ($p_filename == "") {
+      if ($p_filename == "")
+      {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Skip empty filename");
         continue;
       }
 
       // ----- Check the filename
-      if (!file_exists($p_filename)) {
+      if (!file_exists($p_filename))
+      {
         // ----- Error log
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File '$p_filename' does not exists");
         PclZip::privErrorLog(PCLZIP_ERR_MISSING_FILE, "File '$p_filename' does not exists");
@@ -2152,6 +2106,19 @@
         //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
         return PclZip::errorCode();
       }
+
+      /* This test is done later
+      // ----- Check the path length
+      if (strlen($p_filename) > 0xFF)
+      {
+        // ----- Error log
+        PclZip::privErrorLog(-5, "File name is too long (max. 255) : '$p_filename'");
+
+        // ----- Return
+        //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
+        return PclZip::errorCode();
+      }
+      */
 
       // ----- Look if it is a file or a dir with no all pathnre move
       if ((is_file($p_filename)) || ((is_dir($p_filename)) && !$p_remove_all_dir)) {
@@ -2168,7 +2135,7 @@
       }
 
       // ----- Look for directory
-      if (@is_dir($p_filename))
+      if (is_dir($p_filename))
       {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "$p_filename is a directory");
 
@@ -2179,52 +2146,45 @@
           $v_path = "";
 
         // ----- Read the directory for files and sub-directories
-        if ($p_hdir = @opendir($p_filename)) {
-//          $p_hitem = @readdir($p_hdir); // '.' directory
-//          $p_hitem = @readdir($p_hdir); // '..' directory
-          while (($p_hitem = @readdir($p_hdir)) !== false) {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Looking for $p_hitem in the directory");
+        $p_hdir = @opendir($p_filename);
+	if (!$p_hdir) {
+	  return $v_result ;
+	}
+        $p_hitem = readdir($p_hdir); // '.' directory
+        $p_hitem = readdir($p_hdir); // '..' directory
+        while (($p_hitem = readdir($p_hdir)) !== false)
+        {
+          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Looking for $p_hitem in the directory");
 
-            // ----- Skip '.' and '..'
-            if (($p_hitem == '.') || ($p_hitem == '..')) {
-                continue;
+          // ----- Look for a file
+          if (is_file($v_path.$p_hitem))
+          {
+            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Add the file '".$v_path.$p_hitem."'");
+
+            // ----- Add the file
+            if (($v_result = $this->privAddFile($v_path.$p_hitem, $v_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_options)) != 1)
+            {
+              // ----- Return status
+              //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
+              return $v_result;
             }
 
-            // ----- Look for a file
-            if (@is_file($v_path.$p_hitem)) {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Add the file '".$v_path.$p_hitem."'");
-
-              // ----- Add the file
-              if (($v_result = $this->privAddFile($v_path.$p_hitem, $v_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_options)) != 1) {
-                // ----- Return status
-                //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-                return $v_result;
-              }
-
-              // ----- Store the file infos
-              $p_result_list[$v_nb++] = $v_header;
-            }
-
-            // ----- Recursive call to privAddFileList()
-            else if (@is_dir($v_path.$p_hitem)) {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Add the directory '".$v_path.$p_hitem."'");
-
-              // ----- Need an array as parameter
-              $p_temp_list[0] = $v_path.$p_hitem;
-              $v_result = $this->privAddFileList($p_temp_list, $p_result_list,
-			                                     $p_add_dir, $p_remove_dir,
-												 $p_remove_all_dir, $p_options);
-
-              // ----- Update the number of elements of the list
-              $v_nb = sizeof($p_result_list);
-            }
-
-            // ----- Unsupported file types
-            else {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Unsupported file type");
-            }
+            // ----- Store the file infos
+            $p_result_list[$v_nb++] = $v_header;
           }
-          @closedir($p_hdir);
+
+          // ----- Recursive call to privAddFileList()
+          else
+          {
+            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "Add the directory '".$v_path.$p_hitem."'");
+
+            // ----- Need an array as parameter
+            $p_temp_list[0] = $v_path.$p_hitem;
+            $v_result = $this->privAddFileList($p_temp_list, $p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_options);
+
+            // ----- Update the number of elements of the list
+            $v_nb = sizeof($p_result_list);
+          }
         }
 
         // ----- Free memory for the recursive loop
@@ -2233,6 +2193,7 @@
         unset($p_hitem);
       }
     }
+
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "After add, list have $v_nb elements");
 
     // ----- Return
@@ -2313,6 +2274,19 @@
 
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_stored_filename', strlen ".strlen($v_stored_filename));
 
+    /* filename length moved after call-back in release 1.3
+    // ----- Check the path length
+    if (strlen($v_stored_filename) > 0xFF)
+    {
+      // ----- Error log
+      PclZip::privErrorLog(-5, "Stored file name is too long (max. 255) : '$v_stored_filename'");
+
+      // ----- Return
+      //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
+      return PclZip::errorCode();
+    }
+    */
+
     // ----- Set the file properties
     clearstatcache();
     $p_header['version'] = 20;
@@ -2328,9 +2302,7 @@
     $p_header['comment_len'] = 0;
     $p_header['disk'] = 0;
     $p_header['internal'] = 0;
-//    $p_header['external'] = (is_file($p_filename)?0xFE49FFE0:0x41FF0010);
-    $p_header['external'] = (is_file($p_filename)?0x00000000:0x00000010);
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Header external extension '".sprintf("0x%X",$p_header['external'])."'");
+    $p_header['external'] = (is_file($p_filename)?0xFE49FFE0:0x41FF0010);
     $p_header['offset'] = 0;
     $p_header['filename'] = $p_filename;
     $p_header['stored_filename'] = $v_stored_filename;
@@ -2338,7 +2310,6 @@
     $p_header['comment'] = '';
     $p_header['status'] = 'ok';
     $p_header['index'] = -1;
-
 
     // ----- Look for pre-add callback
     if (isset($p_options[PCLZIP_CB_PRE_ADD])) {
@@ -2351,7 +2322,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_ADD].'(PCLZIP_CB_PRE_ADD, $v_local_header, $this->user_vars);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_ADD].'(PCLZIP_CB_PRE_ADD, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Change the file status
         $p_header['status'] = "skipped";
@@ -2382,7 +2353,6 @@
       // ----- Look for a file
       if (is_file($p_filename))
       {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "'".$p_filename."' is a file");
         // ----- Open the source file
         if (($v_file = @fopen($p_filename, "rb")) == 0) {
           PclZip::privErrorLog(PCLZIP_ERR_READ_OPEN_FAIL, "Unable to open file '$p_filename' in binary read mode");
@@ -2391,55 +2361,26 @@
         }
 
         if ($p_options[PCLZIP_OPT_NO_COMPRESSION]) {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File will not be compressed");
           // ----- Read the file content
           $v_content_compressed = @fread($v_file, $p_header['size']);
 
           // ----- Calculate the CRC
-          $p_header['crc'] = @crc32($v_content_compressed);
-
-          // ----- Set header parameters
-          $p_header['compressed_size'] = $p_header['size'];
-          $p_header['compression'] = 0;
+          $p_header['crc'] = crc32($v_content_compressed);
         }
         else {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File will be compressed");
           // ----- Read the file content
           $v_content = @fread($v_file, $p_header['size']);
 
           // ----- Calculate the CRC
-          $p_header['crc'] = @crc32($v_content);
+          $p_header['crc'] = crc32($v_content);
 
           // ----- Compress the file
-          $v_content_compressed = @gzdeflate($v_content);
+          $v_content_compressed = gzdeflate($v_content);
+        }
 
-          // ----- Set header parameters
-          $p_header['compressed_size'] = strlen($v_content_compressed);
-          $p_header['compression'] = 8;
-        }
-        
-        // ----- Look for encryption
-        /*
-        if ((isset($p_options[PCLZIP_OPT_CRYPT]))
-		    && ($p_options[PCLZIP_OPT_CRYPT] != "")) {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File need to be crypted ....");
-          
-          // Should be a random header
-          $v_header = 'xxxxxxxxxxxx';
-	      $v_content_compressed = PclZipUtilZipEncrypt($v_content_compressed,
-		                                           $p_header['compressed_size'],
-	                                               $v_header,
-												   $p_header['crc'],
-												   "test");
-												   
-          $p_header['compressed_size'] += 12;
-          $p_header['flag'] = 1;
-          
-          // ----- Add the header to the data
-          $v_content_compressed = $v_header.$v_content_compressed;
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Size after header : ".strlen($v_content_compressed)."");
-        }
-        */
+        // ----- Set header parameters
+        $p_header['compressed_size'] = strlen($v_content_compressed);
+        $p_header['compression'] = 8;
 
         // ----- Call the header generation
         if (($v_result = $this->privWriteFileHeader($p_header)) != 1) {
@@ -2448,31 +2389,23 @@
           return $v_result;
         }
 
-        // ----- Write the compressed (or not) content
-        /* Try to speed up the code
-        $v_binary_data = pack('a'.$p_header['compressed_size'],
-		                      $v_content_compressed);
+        // ----- Write the compressed content
+        $v_binary_data = pack('a'.$p_header['compressed_size'], $v_content_compressed);
         @fwrite($this->zip_fd, $v_binary_data, $p_header['compressed_size']);
-        */
-        @fwrite($this->zip_fd, 
-		        $v_content_compressed, $p_header['compressed_size']);
         
         // ----- Close the file
         @fclose($v_file);
       }
 
       // ----- Look for a directory
-      else {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "'".$p_filename."' is a folder");
-        // ----- Look for directory last '/'
-        if (@substr($p_header['stored_filename'], -1) != '/') {
-          $p_header['stored_filename'] .= '/';
-        }
-
+      else
+      {
         // ----- Set the file properties
+        $p_header['filename'] .= '/';
+        $p_header['stored_filename'] .= '/';
+        $p_header['filename_len']++;
         $p_header['size'] = 0;
-        //$p_header['external'] = 0x41FF0010;   // Value for a folder : to be checked
-        $p_header['external'] = 0x00000010;   // Value for a folder : to be checked
+        $p_header['external'] = 0x41FF0010;   // Value for a folder : to be checked
 
         // ----- Call the header generation
         if (($v_result = $this->privWriteFileHeader($p_header)) != 1)
@@ -2494,7 +2427,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_POST_ADD].'(PCLZIP_CB_POST_ADD, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_POST_ADD].'(PCLZIP_CB_POST_ADD, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Ignored
         $v_result = 1;
@@ -2537,13 +2470,10 @@
     $v_mdate = (($v_date['year']-1980)<<9) + ($v_date['mon']<<5) + $v_date['mday'];
 
     // ----- Packed data
-    $v_binary_data = pack("VvvvvvVVVvv", 0x04034b50,
-	                      $p_header['version_extracted'], $p_header['flag'],
+    $v_binary_data = pack("VvvvvvVVVvv", 0x04034b50, $p_header['version'], $p_header['flag'],
                           $p_header['compression'], $v_mtime, $v_mdate,
-                          $p_header['crc'], $p_header['compressed_size'],
-						  $p_header['size'],
-                          strlen($p_header['stored_filename']),
-						  $p_header['extra_len']);
+                          $p_header['crc'], $p_header['compressed_size'], $p_header['size'],
+                          strlen($p_header['stored_filename']), $p_header['extra_len']);
 
     // ----- Write the first 148 bytes of the header in the archive
     fputs($this->zip_fd, $v_binary_data, 30);
@@ -2587,15 +2517,11 @@
     $v_mdate = (($v_date['year']-1980)<<9) + ($v_date['mon']<<5) + $v_date['mday'];
 
     // ----- Packed data
-    $v_binary_data = pack("VvvvvvvVVVvvvvvVV", 0x02014b50,
-	                      $p_header['version'], $p_header['version_extracted'],
-                          $p_header['flag'], $p_header['compression'],
-						  $v_mtime, $v_mdate, $p_header['crc'],
+    $v_binary_data = pack("VvvvvvvVVVvvvvvVV", 0x02014b50, $p_header['version'], $p_header['version_extracted'],
+                          $p_header['flag'], $p_header['compression'], $v_mtime, $v_mdate, $p_header['crc'],
                           $p_header['compressed_size'], $p_header['size'],
-                          strlen($p_header['stored_filename']),
-						  $p_header['extra_len'], $p_header['comment_len'],
-                          $p_header['disk'], $p_header['internal'],
-						  $p_header['external'], $p_header['offset']);
+                          strlen($p_header['stored_filename']), $p_header['extra_len'], $p_header['comment_len'],
+                          $p_header['disk'], $p_header['internal'], $p_header['external'], $p_header['offset']);
 
     // ----- Write the 42 bytes of the header in the zip file
     fputs($this->zip_fd, $v_binary_data, 46);
@@ -2632,9 +2558,7 @@
     $v_result=1;
 
     // ----- Packed data
-    $v_binary_data = pack("VvvvvVVv", 0x06054b50, 0, 0, $p_nb_entries,
-	                      $p_nb_entries, $p_size,
-						  $p_offset, strlen($p_comment));
+    $v_binary_data = pack("VvvvvVVv", 0x06054b50, 0, 0, $p_nb_entries, $p_nb_entries, $p_size, $p_offset, strlen($p_comment));
 
     // ----- Write the 22 bytes of the header in the zip file
     fputs($this->zip_fd, $v_binary_data, 22);
@@ -2662,16 +2586,10 @@
     //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, "PclZip::privList", "list");
     $v_result=1;
 
-    // ----- Magic quotes trick
-    $this->privDisableMagicQuotes();
-
     // ----- Open the zip file
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Open file in binary read mode");
     if (($this->zip_fd = @fopen($this->zipname, 'rb')) == 0)
     {
-      // ----- Magic quotes trick
-      $this->privSwapBackMagicQuotes();
-      
       // ----- Error log
       PclZip::privErrorLog(PCLZIP_ERR_READ_OPEN_FAIL, 'Unable to open archive \''.$this->zipname.'\' in binary read mode');
 
@@ -2684,7 +2602,6 @@
     $v_central_dir = array();
     if (($v_result = $this->privReadEndCentralDir($v_central_dir)) != 1)
     {
-      $this->privSwapBackMagicQuotes();
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
     }
@@ -2696,8 +2613,6 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Position in file : ".ftell($this->zip_fd)."'");
     if (@fseek($this->zip_fd, $v_central_dir['offset']))
     {
-      $this->privSwapBackMagicQuotes();
-
       // ----- Error log
       PclZip::privErrorLog(PCLZIP_ERR_INVALID_ARCHIVE_ZIP, 'Invalid archive size');
 
@@ -2713,7 +2628,6 @@
       // ----- Read the file header
       if (($v_result = $this->privReadCentralFileHeader($v_header)) != 1)
       {
-        $this->privSwapBackMagicQuotes();
         //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
         return $v_result;
       }
@@ -2726,9 +2640,6 @@
 
     // ----- Close the zip file
     $this->privCloseFd();
-
-    // ----- Magic quotes trick
-    $this->privSwapBackMagicQuotes();
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -2797,14 +2708,8 @@
     //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, "PclZip::privExtractByRule", "path='$p_path', remove_path='$p_remove_path', remove_all_path='".($p_remove_all_path?'true':'false')."'");
     $v_result=1;
 
-    // ----- Magic quotes trick
-    $this->privDisableMagicQuotes();
-
     // ----- Check the path
-    if (   ($p_path == "")
-	    || (   (substr($p_path, 0, 1) != "/")
-		    && (substr($p_path, 0, 3) != "../")
-			&& (substr($p_path,1,2)!=":/")))
+    if (($p_path == "") || ((substr($p_path, 0, 1) != "/") && (substr($p_path, 0, 3) != "../") && (substr($p_path,1,2)!=":/")))
       $p_path = "./".$p_path;
 
     // ----- Reduce the path last (and duplicated) '/'
@@ -2830,7 +2735,6 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Open file in binary read mode");
     if (($v_result = $this->privOpenFd('rb')) != 1)
     {
-      $this->privSwapBackMagicQuotes();
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
     }
@@ -2841,7 +2745,6 @@
     {
       // ----- Close the zip file
       $this->privCloseFd();
-      $this->privSwapBackMagicQuotes();
 
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
       return $v_result;
@@ -2864,7 +2767,6 @@
       {
         // ----- Close the zip file
         $this->privCloseFd();
-        $this->privSwapBackMagicQuotes();
 
         // ----- Error log
         PclZip::privErrorLog(PCLZIP_ERR_INVALID_ARCHIVE_ZIP, 'Invalid archive size');
@@ -2881,7 +2783,6 @@
       {
         // ----- Close the zip file
         $this->privCloseFd();
-        $this->privSwapBackMagicQuotes();
 
         //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
         return $v_result;
@@ -2976,68 +2877,8 @@
           //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Extract with no rule (extract all)");
           $v_extract = true;
       }
-
-	  // ----- Check compression method
-	  if (   ($v_extract)
-	      && (   ($v_header['compression'] != 8)
-		      && ($v_header['compression'] != 0))) {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Unsupported compression method (".$v_header['compression'].")");
-          $v_header['status'] = 'unsupported_compression';
-
-          // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-          if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
-		      && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "PCLZIP_OPT_STOP_ON_ERROR is selected, extraction will be stopped");
-
-              $this->privSwapBackMagicQuotes();
-              
-              PclZip::privErrorLog(PCLZIP_ERR_UNSUPPORTED_COMPRESSION,
-			                       "Filename '".$v_header['stored_filename']."' is "
-				  	    	  	   ."compressed by an unsupported compression "
-				  	    	  	   ."method (".$v_header['compression'].") ");
-
-              //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
-              return PclZip::errorCode();
-		  }
-	  }
-	  
-	  // ----- Check encrypted files
-	  if (($v_extract) && (($v_header['flag'] & 1) == 1)) {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Unsupported file encryption");
-          $v_header['status'] = 'unsupported_encryption';
-
-          // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-          if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
-		      && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "PCLZIP_OPT_STOP_ON_ERROR is selected, extraction will be stopped");
-
-              $this->privSwapBackMagicQuotes();
-
-              PclZip::privErrorLog(PCLZIP_ERR_UNSUPPORTED_ENCRYPTION,
-			                       "Unsupported encryption for "
-				  	    	  	   ." filename '".$v_header['stored_filename']
-								   ."'");
-
-              //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
-              return PclZip::errorCode();
-		  }
-	  }
-
-      // ----- Look for real extraction
-      if (($v_extract) && ($v_header['status'] != 'ok')) {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "No need for extract");
-          $v_result = $this->privConvertHeader2FileInfo($v_header,
-		                                        $p_file_list[$v_nb_extracted++]);
-          if ($v_result != 1) {
-              $this->privCloseFd();
-              $this->privSwapBackMagicQuotes();
-              //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-              return $v_result;
-          }
-
-          $v_extract = false;
-      }
       
+
       // ----- Look for real extraction
       if ($v_extract)
       {
@@ -3051,8 +2892,6 @@
         {
           // ----- Close the zip file
           $this->privCloseFd();
-
-          $this->privSwapBackMagicQuotes();
 
           // ----- Error log
           PclZip::privErrorLog(PCLZIP_ERR_INVALID_ARCHIVE_ZIP, 'Invalid archive size');
@@ -3070,7 +2909,6 @@
           $v_result1 = $this->privExtractFileAsString($v_header, $v_string);
           if ($v_result1 < 1) {
             $this->privCloseFd();
-            $this->privSwapBackMagicQuotes();
             //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result1);
             return $v_result1;
           }
@@ -3080,7 +2918,6 @@
           {
             // ----- Close the zip file
             $this->privCloseFd();
-            $this->privSwapBackMagicQuotes();
 
             //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
             return $v_result;
@@ -3104,7 +2941,6 @@
           $v_result1 = $this->privExtractFileInOutput($v_header, $p_options);
           if ($v_result1 < 1) {
             $this->privCloseFd();
-            $this->privSwapBackMagicQuotes();
             //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result1);
             return $v_result1;
           }
@@ -3112,7 +2948,6 @@
           // ----- Get the only interesting attributes
           if (($v_result = $this->privConvertHeader2FileInfo($v_header, $p_file_list[$v_nb_extracted++])) != 1) {
             $this->privCloseFd();
-            $this->privSwapBackMagicQuotes();
             //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
             return $v_result;
           }
@@ -3131,7 +2966,6 @@
 											  $p_options);
           if ($v_result1 < 1) {
             $this->privCloseFd();
-            $this->privSwapBackMagicQuotes();
             //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result1);
             return $v_result1;
           }
@@ -3141,7 +2975,6 @@
           {
             // ----- Close the zip file
             $this->privCloseFd();
-            $this->privSwapBackMagicQuotes();
 
             //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
             return $v_result;
@@ -3157,7 +2990,6 @@
 
     // ----- Close the zip file
     $this->privCloseFd();
-    $this->privSwapBackMagicQuotes();
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -3170,9 +3002,6 @@
   // Description :
   // Parameters :
   // Return Values :
-  //
-  // 1 : ... ?
-  // PCLZIP_ERR_USER_ABORTED(2) : User ask for extraction stop in callback
   // --------------------------------------------------------------------------------
   function privExtractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
   {
@@ -3190,23 +3019,10 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Found file '".$v_header['filename']."', size '".$v_header['size']."'");
 
     // ----- Check that the file header is coherent with $p_entry info
-    if ($this->privCheckFileHeaders($v_header, $p_entry) != 1) {
-        // TBC
-    }
+    // TBC
 
     // ----- Look for all path to remove
     if ($p_remove_all_path == true) {
-        // ----- Look for folder entry that not need to be extracted
-        if (($p_entry['external']&0x00000010)==0x00000010) {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "The entry is a folder : need to be filtered");
-
-            $p_entry['status'] = "filtered";
-
-            //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-            return $v_result;
-        }
-
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "All path is removed");
         // ----- Get the basename of the path
         $p_entry['filename'] = basename($p_entry['filename']);
     }
@@ -3214,7 +3030,7 @@
     // ----- Look for path to remove
     else if ($p_remove_path != "")
     {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Look for some path to remove");
+      //if (strcmp($p_remove_path, $p_entry['filename'])==0)
       if (PclZipUtilPathInclusion($p_remove_path, $p_entry['filename']) == 2)
       {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "The folder is the same as the removed path '".$p_entry['filename']."'");
@@ -3256,7 +3072,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header, $this->user_vars);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Change the file status
         $p_entry['status'] = "skipped";
@@ -3277,6 +3093,7 @@
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "New filename is '".$p_entry['filename']."'");
     }
 
+    // ----- Trace
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting file (with path) '".$p_entry['filename']."', size '$v_header[size]'");
 
     // ----- Look if extraction should be done
@@ -3294,21 +3111,10 @@
 
         // ----- Change the file status
         $p_entry['status'] = "already_a_directory";
-        
-        // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-        // For historical reason first PclZip implementation does not stop
-        // when this kind of error occurs.
-        if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
-		    && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "PCLZIP_OPT_STOP_ON_ERROR is selected, extraction will be stopped");
 
-            PclZip::privErrorLog(PCLZIP_ERR_ALREADY_A_DIRECTORY,
-			                     "Filename '".$p_entry['filename']."' is "
-								 ."already used by an existing directory");
-
-            //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
-            return PclZip::errorCode();
-		}
+        // ----- Return
+        ////--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
+        //return $v_result;
       }
       // ----- Look if file is write protected
       else if (!is_writeable($p_entry['filename']))
@@ -3318,53 +3124,22 @@
         // ----- Change the file status
         $p_entry['status'] = "write_protected";
 
-        // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-        // For historical reason first PclZip implementation does not stop
-        // when this kind of error occurs.
-        if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
-		    && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "PCLZIP_OPT_STOP_ON_ERROR is selected, extraction will be stopped");
-
-            PclZip::privErrorLog(PCLZIP_ERR_WRITE_OPEN_FAIL,
-			                     "Filename '".$p_entry['filename']."' exists "
-								 ."and is write protected");
-
-            //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
-            return PclZip::errorCode();
-		}
+        // ----- Return
+        ////--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
+        //return $v_result;
       }
 
       // ----- Look if the extracted file is older
       else if (filemtime($p_entry['filename']) > $p_entry['mtime'])
       {
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Existing file '".$p_entry['filename']."' is newer (".date("l dS of F Y h:i:s A", filemtime($p_entry['filename'])).") than the extracted file (".date("l dS of F Y h:i:s A", $p_entry['mtime']).")");
+
         // ----- Change the file status
-        if (   (isset($p_options[PCLZIP_OPT_REPLACE_NEWER]))
-		    && ($p_options[PCLZIP_OPT_REPLACE_NEWER]===true)) {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "PCLZIP_OPT_REPLACE_NEWER is selected, file will be replaced");
-		}
-		else {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File will not be replaced");
-            $p_entry['status'] = "newer_exist";
+        $p_entry['status'] = "newer_exist";
 
-            // ----- Look for PCLZIP_OPT_STOP_ON_ERROR
-            // For historical reason first PclZip implementation does not stop
-            // when this kind of error occurs.
-            if (   (isset($p_options[PCLZIP_OPT_STOP_ON_ERROR]))
-		        && ($p_options[PCLZIP_OPT_STOP_ON_ERROR]===true)) {
-                //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "PCLZIP_OPT_STOP_ON_ERROR is selected, extraction will be stopped");
-
-                PclZip::privErrorLog(PCLZIP_ERR_WRITE_OPEN_FAIL,
-			             "Newer version of '".$p_entry['filename']."' exists "
-					    ."and option PCLZIP_OPT_REPLACE_NEWER is not selected");
-
-                //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
-                return PclZip::errorCode();
-		    }
-		}
-      }
-      else {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Existing file '".$p_entry['filename']."' is older than the extrated one - will be replaced by the extracted one (".date("l dS of F Y h:i:s A", filemtime($p_entry['filename'])).") than the extracted file (".date("l dS of F Y h:i:s A", $p_entry['mtime']).")");
+        // ----- Return
+        ////--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
+        //return $v_result;
       }
     }
 
@@ -3397,11 +3172,13 @@
       // ----- Do the extraction (if not a folder)
       if (!(($p_entry['external']&0x00000010)==0x00000010))
       {
+
         // ----- Look for not compressed file
-        if ($p_entry['compression'] == 0) {
+        if ($p_entry['compressed_size'] == $p_entry['size'])
+        {
           //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting an un-compressed file");
 
-		  // ----- Opening destination file
+          // ----- Opening destination file
           if (($v_dest_file = @fopen($p_entry['filename'], 'wb')) == 0)
           {
             //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Error while opening '".$p_entry['filename']."' in write binary mode");
@@ -3414,7 +3191,7 @@
             return $v_result;
           }
 
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Read '".$p_entry['size']."' bytes");
+          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Reading '".$p_entry['size']."' bytes");
 
           // ----- Read the file by PCLZIP_READ_BLOCK_SIZE octets blocks
           $v_size = $p_entry['compressed_size'];
@@ -3422,12 +3199,9 @@
           {
             $v_read_size = ($v_size < PCLZIP_READ_BLOCK_SIZE ? $v_size : PCLZIP_READ_BLOCK_SIZE);
             //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Read $v_read_size bytes");
-            $v_buffer = @fread($this->zip_fd, $v_read_size);
-            /* Try to speed up the code
+            $v_buffer = fread($this->zip_fd, $v_read_size);
             $v_binary_data = pack('a'.$v_read_size, $v_buffer);
             @fwrite($v_dest_file, $v_binary_data, $v_read_size);
-            */
-            @fwrite($v_dest_file, $v_buffer, $v_read_size);            
             $v_size -= $v_read_size;
           }
 
@@ -3436,50 +3210,12 @@
 
           // ----- Change the file mtime
           touch($p_entry['filename'], $p_entry['mtime']);
-          
-
         }
-        else {
-          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting a compressed file (Compression method ".$p_entry['compression'].")");
-          // ----- TBC
-          // Need to be finished
-          if (($p_entry['flag'] & 1) == 1) {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "File is encrypted");
-            /*
-              // ----- Read the encryption header
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Read 12 encryption header bytes");
-              $v_encryption_header = @fread($this->zip_fd, 12);
-              
-              // ----- Read the encrypted & compressed file in a buffer
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Read '".($p_entry['compressed_size']-12)."' compressed & encrypted bytes");
-              $v_buffer = @fread($this->zip_fd, $p_entry['compressed_size']-12);
-              
-              // ----- Decrypt the buffer
-              $this->privDecrypt($v_encryption_header, $v_buffer,
-			                     $p_entry['compressed_size']-12, $p_entry['crc']);
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Buffer is '".$v_buffer."'");
-              */
-          }
-          else {
-              //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Read '".$p_entry['compressed_size']."' compressed bytes");
-              // ----- Read the compressed file in a buffer (one shot)
-              $v_buffer = @fread($this->zip_fd, $p_entry['compressed_size']);
-          }
-          
-          // ----- Decompress the file
-          $v_file_content = @gzinflate($v_buffer);
-          unset($v_buffer);
-          if ($v_file_content === FALSE) {
-            //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Unable to inflate compressed file");
+        else
+        {
+          // ----- Trace
+          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting a compressed file");
 
-            // ----- Change the file status
-            // TBC
-            $p_entry['status'] = "error";
-            
-            //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-            return $v_result;
-          }
-          
           // ----- Opening destination file
           if (($v_dest_file = @fopen($p_entry['filename'], 'wb')) == 0) {
             //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Error while opening '".$p_entry['filename']."' in write binary mode");
@@ -3491,6 +3227,61 @@
             return $v_result;
           }
 
+          //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Reading '".$p_entry['size']."' bytes");
+
+
+#	  // changed by Ghislain to save memory
+#	  if (function_exists("memory_get_usage")) {
+#	    $shortinmem=ini_get("memory_limit")-memory_get_usage() < 1.1 * $p_entry['size'];
+#	  } elseif (ini_get("memory_limit")>0) {
+#	    $shortinmem=ini_get("memory_limit") < 1.5 * $p_entry['size'];
+#	  } else {
+#	    $shortinmem=true;
+#	  }
+#
+#	  if ($shortinmem) {
+#	    // we write the compressed file on the disk
+#	    if (($v_dest_file_tmp = fopen($p_entry['filename'].".tmp", 'wb')) == 0) {
+#	      $p_entry['status'] = "write_error";
+#	      return $v_result;
+#	    }
+#	    // read the file piece by piece
+#	    $sizetoread=$p_entry['compressed_size'];
+#	    while ($sizetoread) {
+#	      $size=$sizetoread > 1040400 ? 1040400 : $sizetoread;
+#	      $v_buffer = fread($this->zip_fd, $size);
+#	      fwrite($v_dest_file_tmp, $v_buffer, $size);
+#	      $sizetoread-=$size;
+#	    }
+#	    fclose($v_dest_file_tmp);
+#
+#	    // open the compressed file
+#	    if (($v_dest_file_tmp = @gzopen($p_entry['filename'].".tmp", 'rb')) == 0) {
+#	      $p_entry['status'] = "write_error";
+#	      return $v_result;
+#	    }
+#	    // read and decompress the compressed piece by piece
+#	    while (!gzeof($v_dest_file_tmp)) {
+#	      $v_buffer = @gzread($v_dest_file_tmp, 1040400);
+#	      @fwrite($v_dest_file, $v_buffer);	      
+#	    }
+#	    @fclose($v_dest_file_tmp);
+#	    unset($v_buffer);	  
+#	    die($p_entry['filename'].".tmp");
+#	    unlink ($p_entry['filename'].".tmp");
+#
+#	  } else {
+
+
+	    // ----- Read the compressed file in a buffer (one shot)
+	    $v_buffer = @fread($this->zip_fd, $p_entry['compressed_size']);
+
+	    // ----- Decompress the file
+	    $v_file_content = gzinflate($v_buffer);
+	    unset($v_buffer);
+#	  }
+
+
           // ----- Write the uncompressed data
           @fwrite($v_dest_file, $v_file_content, $p_entry['size']);
           unset($v_file_content);
@@ -3499,7 +3290,7 @@
           @fclose($v_dest_file);
 
           // ----- Change the file mtime
-          @touch($p_entry['filename'], $p_entry['mtime']);
+          touch($p_entry['filename'], $p_entry['mtime']);
         }
 
         // ----- Look for chmod option
@@ -3507,7 +3298,7 @@
           //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "chmod option activated '".$p_options[PCLZIP_OPT_SET_CHMOD]."'");
 
           // ----- Change the mode of the file
-          @chmod($p_entry['filename'], $p_options[PCLZIP_OPT_SET_CHMOD]);
+          chmod($p_entry['filename'], $p_options[PCLZIP_OPT_SET_CHMOD]);
         }
 
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extraction done");
@@ -3530,7 +3321,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header, $this->user_vars);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header,$this->user_vars);');
 
       // ----- Look for abort result
       if ($v_result == 2) {
@@ -3565,9 +3356,7 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Found file '".$v_header['filename']."', size '".$v_header['size']."'");
 
     // ----- Check that the file header is coherent with $p_entry info
-    if ($this->privCheckFileHeaders($v_header, $p_entry) != 1) {
-        // TBC
-    }
+    // TBC
 
     // ----- Look for pre-extract callback
     if (isset($p_options[PCLZIP_CB_PRE_EXTRACT])) {
@@ -3580,7 +3369,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_PRE_EXTRACT].'(PCLZIP_CB_PRE_EXTRACT, $v_local_header,$this->user_vars);');
       if ($v_result == 0) {
         // ----- Change the file status
         $p_entry['status'] = "skipped";
@@ -3656,7 +3445,7 @@
       // ----- Call the callback
       // Here I do not use call_user_func() because I need to send a reference to the
       // header.
-      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header);');
+      eval('$v_result = '.$p_options[PCLZIP_CB_POST_EXTRACT].'(PCLZIP_CB_POST_EXTRACT, $v_local_header,$this->user_vars);');
 
       // ----- Look for abort result
       if ($v_result == 2) {
@@ -3693,34 +3482,34 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Found file '".$v_header['filename']."', size '".$v_header['size']."'");
 
     // ----- Check that the file header is coherent with $p_entry info
-    if ($this->privCheckFileHeaders($v_header, $p_entry) != 1) {
-        // TBC
-    }
+    // TBC
 
+    // ----- Trace
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting file in string (with path) '".$p_entry['filename']."', size '$v_header[size]'");
 
     // ----- Do the extraction (if not a folder)
     if (!(($p_entry['external']&0x00000010)==0x00000010))
     {
       // ----- Look for not compressed file
-//      if ($p_entry['compressed_size'] == $p_entry['size'])
-      if ($p_entry['compression'] == 0) {
+      if ($p_entry['compressed_size'] == $p_entry['size'])
+      {
+        // ----- Trace
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting an un-compressed file");
         //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Reading '".$p_entry['size']."' bytes");
 
         // ----- Reading the file
-        $p_string = @fread($this->zip_fd, $p_entry['compressed_size']);
+        $p_string = fread($this->zip_fd, $p_entry['compressed_size']);
       }
-      else {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting a compressed file (compression method '".$p_entry['compression']."')");
+      else
+      {
+        // ----- Trace
+        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Extracting a compressed file");
 
         // ----- Reading the file
-        $v_data = @fread($this->zip_fd, $p_entry['compressed_size']);
+        $v_data = fread($this->zip_fd, $p_entry['compressed_size']);
         
         // ----- Decompress the file
-        if (($p_string = @gzinflate($v_data)) === FALSE) {
-            // TBC
-        }
+        $p_string = gzinflate($v_data);
       }
 
       // ----- Trace
@@ -3805,20 +3594,16 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Extra field : \''.bin2hex($p_header['extra']).'\'');
 
     // ----- Extract properties
-    $p_header['version_extracted'] = $v_data['version'];
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Version need to extract : ('.$p_header['version_extracted'].') \''.($p_header['version_extracted']/10).'.'.($p_header['version_extracted']%10).'\'');
     $p_header['compression'] = $v_data['compression'];
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Compression method : \''.$p_header['compression'].'\'');
+    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Compression method : \''.bin2hex($p_header['compression']).'\'');
     $p_header['size'] = $v_data['size'];
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Size : \''.$p_header['size'].'\'');
     $p_header['compressed_size'] = $v_data['compressed_size'];
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Compressed Size : \''.$p_header['compressed_size'].'\'');
     $p_header['crc'] = $v_data['crc'];
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'CRC : \''.sprintf("0x%X", $p_header['crc']).'\'');
+    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'CRC : \''.$p_header['crc'].'\'');
     $p_header['flag'] = $v_data['flag'];
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Flag : \''.$p_header['flag'].'\'');
-    $p_header['filename_len'] = $v_data['filename_len'];
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Filename_len : \''.$p_header['filename_len'].'\'');
 
     // ----- Recuperate date in UNIX format
     $p_header['mdate'] = $v_data['mdate'];
@@ -3845,6 +3630,10 @@
       $p_header['mtime'] = time();
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Date is actual : \''.date("d/m/y H:i:s", $p_header['mtime']).'\'');
     }
+
+    // ----- Other informations
+    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Compression type : ".$v_data['compression']);
+    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Version : ".$v_data['version']);
 
     // TBC
     //for(reset($v_data); $key = key($v_data); next($v_data)) {
@@ -3945,7 +3734,7 @@
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Version need to extract : \''.($p_header['version_extracted']/10).'.'.($p_header['version_extracted']%10).'\'');
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Size : \''.$p_header['size'].'\'');
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Compressed Size : \''.$p_header['compressed_size'].'\'');
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'CRC : \''.sprintf("0x%X", $p_header['crc']).'\'');
+    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'CRC : \''.$p_header['crc'].'\'');
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Flag : \''.$p_header['flag'].'\'');
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Offset : \''.$p_header['offset'].'\'');
 
@@ -3982,65 +3771,13 @@
     // ----- Look if it is a directory
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Internal (Hex) : '".sprintf("Ox%04X", $p_header['internal'])."'");
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, "External (Hex) : '".sprintf("Ox%04X", $p_header['external'])."' (".(($p_header['external']&0x00000010)==0x00000010?'is a folder':'is a file').')');
-    if (substr($p_header['filename'], -1) == '/') {
-      //$p_header['external'] = 0x41FF0010;
-      $p_header['external'] = 0x00000010;
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Force folder external : \''.sprintf("Ox%04X", $p_header['external']).'\'');
+    if (substr($p_header['filename'], -1) == '/')
+    {
+      $p_header['external'] = 0x41FF0010;
+      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Force folder external : \''.$p_header['external'].'\'');
     }
 
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Header of filename : \''.$p_header['filename'].'\'');
-
-    // ----- Return
-    //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-    return $v_result;
-  }
-  // --------------------------------------------------------------------------------
-
-  // --------------------------------------------------------------------------------
-  // Function : privCheckFileHeaders()
-  // Description :
-  // Parameters :
-  // Return Values :
-  //   1 on success,
-  //   0 on error;
-  // --------------------------------------------------------------------------------
-  function privCheckFileHeaders(&$p_local_header, &$p_central_header)
-  {
-    //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, "PclZip::privCheckFileHeaders", "");
-    $v_result=1;
-
-	// ----- Check the static values
-	// TBC
-	if ($p_local_header['filename'] != $p_central_header['filename']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "filename" : TBC To Be Completed');
-	}
-	if ($p_local_header['version_extracted'] != $p_central_header['version_extracted']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "version_extracted" : TBC To Be Completed');
-	}
-	if ($p_local_header['flag'] != $p_central_header['flag']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "flag" : TBC To Be Completed');
-	}
-	if ($p_local_header['compression'] != $p_central_header['compression']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "compression" : TBC To Be Completed');
-	}
-	if ($p_local_header['mtime'] != $p_central_header['mtime']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "mtime" : TBC To Be Completed');
-	}
-	if ($p_local_header['filename_len'] != $p_central_header['filename_len']) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Bad check "filename_len" : TBC To Be Completed');
-	}
-
-	// ----- Look for flag bit 3
-	if (($p_local_header['flag'] & 8) == 8) {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Purpose bit flag bit 3 set !');
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'File size, compression size and crc found in central header');
-        $p_local_header['size'] = $p_central_header['size'];
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Size : \''.$p_local_header['size'].'\'');
-        $p_local_header['compressed_size'] = $p_central_header['compressed_size'];
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Compressed Size : \''.$p_local_header['compressed_size'].'\'');
-        $p_local_header['crc'] = $p_central_header['crc'];
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'CRC : \''.sprintf("0x%X", $p_local_header['crc']).'\'');
-	}
 
     // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
@@ -4183,23 +3920,16 @@
 
     // ----- Check the global size
     //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Comment length : ".$v_data['comment_size']);
-    if (($v_pos + $v_data['comment_size'] + 18) != $v_size) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "The central dir is not at the end of the archive. Some trailing bytes exists after the archive.");
+    if (($v_pos + $v_data['comment_size'] + 18) != $v_size)
+    {
+      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "Fail to find the right signature");
 
-	  // ----- Removed in release 2.2 see readme file
-	  // The check of the file size is a little too strict.
-	  // Some bugs where found when a zip is encrypted/decrypted with 'crypt'.
-	  // While decrypted, zip has training 0 bytes
-	  if (0) {
       // ----- Error log
-      PclZip::privErrorLog(PCLZIP_ERR_BAD_FORMAT,
-	                       'The central dir is not at the end of the archive.'
-						   .' Some trailing bytes exists after the archive.');
+      PclZip::privErrorLog(PCLZIP_ERR_BAD_FORMAT, "Fail to find the right signature");
 
       // ----- Return
       //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, PclZip::errorCode(), PclZip::errorInfo());
       return PclZip::errorCode();
-	  }
     }
 
     // ----- Get comment
@@ -4393,10 +4123,6 @@
               }
           }
       }
-      else {
-        //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "No argument mean remove all file");
-      	$v_found = true;
-      }
 
       // ----- Look for deletion
       if ($v_found)
@@ -4455,8 +4181,7 @@
             //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 5, "Position after fseek : ".ftell($this->zip_fd)."'");
 
             // ----- Read the file header
-            $v_local_header = array();
-            if (($v_result = $this->privReadFileHeader($v_local_header)) != 1) {
+            if (($v_result = $this->privReadFileHeader($v_header_list[$i])) != 1) {
                 // ----- Close the zip file
                 $this->privCloseFd();
                 $v_temp_zip->privCloseFd();
@@ -4466,13 +4191,6 @@
                 //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
                 return $v_result;
             }
-            
-            // ----- Check that local file header is same as central file header
-            if ($this->privCheckFileHeaders($v_local_header,
-			                                $v_header_list[$i]) != 1) {
-                // TBC
-            }
-            unset($v_local_header);
 
             // ----- Write the file header
             if (($v_result = $v_temp_zip->privWriteFileHeader($v_header_list[$i])) != 1) {
@@ -4962,112 +4680,9 @@
       PclErrorReset();
     }
     else {
-      $this->error_code = 0;
+      $this->error_code = 1;
       $this->error_string = '';
     }
-  }
-  // --------------------------------------------------------------------------------
-
-  // --------------------------------------------------------------------------------
-  // Function : privDecrypt()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // --------------------------------------------------------------------------------
-  function privDecrypt($p_encryption_header, &$p_buffer, $p_size, $p_crc)
-  {
-    //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, 'PclZip::privDecrypt', "size=".$p_size."");
-    $v_result=1;
-    
-    // ----- To Be Modified ;-)
-    $v_pwd = "test";
-    
-    $p_buffer = PclZipUtilZipDecrypt($p_buffer, $p_size, $p_encryption_header,
-	                                 $p_crc, $v_pwd);
-    
-    // ----- Return
-    //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-    return $v_result;
-  }
-  // --------------------------------------------------------------------------------
-
-  // --------------------------------------------------------------------------------
-  // Function : privDisableMagicQuotes()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // --------------------------------------------------------------------------------
-  function privDisableMagicQuotes()
-  {
-    //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, 'PclZip::privDisableMagicQuotes', "");
-    $v_result=1;
-
-    // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
-	    || (!function_exists("set_magic_quotes_runtime"))) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Functions *et_magic_quotes_runtime are not supported");
-      //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-      return $v_result;
-	}
-
-    // ----- Look if already done
-    if ($this->magic_quotes_status != -1) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "magic_quote already disabled");
-      //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-      return $v_result;
-	}
-
-	// ----- Get and memorize the magic_quote value
-	$this->magic_quotes_status = @get_magic_quotes_runtime();
-    //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Current magic_quotes_runtime status is '".($this->magic_quotes_status==0?'disable':'enable')."'");
-
-	// ----- Disable magic_quotes
-	if ($this->magic_quotes_status == 1) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Disable magic_quotes");
-	  @set_magic_quotes_runtime(0);
-	}
-
-    // ----- Return
-    //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-    return $v_result;
-  }
-  // --------------------------------------------------------------------------------
-
-  // --------------------------------------------------------------------------------
-  // Function : privSwapBackMagicQuotes()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // --------------------------------------------------------------------------------
-  function privSwapBackMagicQuotes()
-  {
-    //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, 'PclZip::privSwapBackMagicQuotes', "");
-    $v_result=1;
-
-    // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
-	    || (!function_exists("set_magic_quotes_runtime"))) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Functions *et_magic_quotes_runtime are not supported");
-      //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-      return $v_result;
-	}
-
-    // ----- Look if something to do
-    if ($this->magic_quotes_status != -1) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "magic_quote not modified");
-      //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-      return $v_result;
-	}
-
-	// ----- Swap back magic_quotes
-	if ($this->magic_quotes_status == 1) {
-      //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Enable back magic_quotes");
-  	  @set_magic_quotes_runtime($this->magic_quotes_status);
-	}
-
-    // ----- Return
-    //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
-    return $v_result;
   }
   // --------------------------------------------------------------------------------
 
@@ -5087,59 +4702,33 @@
     $v_result = "";
 
     // ----- Look for not empty path
-    if ($p_dir != "") {
+    if ($p_dir != "")
+    {
       // ----- Explode path by directory names
       $v_list = explode("/", $p_dir);
 
       // ----- Study directories from last to first
-      $v_skip = 0;
-      for ($i=sizeof($v_list)-1; $i>=0; $i--) {
+      for ($i=sizeof($v_list)-1; $i>=0; $i--)
+      {
         // ----- Look for current path
-        if ($v_list[$i] == ".") {
+        if ($v_list[$i] == ".")
+        {
           // ----- Ignore this directory
           // Should be the first $i=0, but no check is done
         }
-        else if ($v_list[$i] == "..") {
-		  $v_skip++;
+        else if ($v_list[$i] == "..")
+        {
+          // ----- Ignore it and ignore the $i-1
+          $i--;
         }
-        else if ($v_list[$i] == "") {
-		  // ----- First '/' i.e. root slash
-		  if ($i == 0) {
-            $v_result = "/".$v_result;
-		    if ($v_skip > 0) {
-		        // ----- It is an invalid path, so the path is not modified
-		        // TBC
-		        $v_result = $p_dir;
-                //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, "Invalid path is unchanged");
-                $v_skip = 0;
-		    }
-		  }
-		  // ----- Last '/' i.e. indicates a directory
-		  else if ($i == (sizeof($v_list)-1)) {
-            $v_result = $v_list[$i];
-		  }
-		  // ----- Double '/' inside the path
-		  else {
-            // ----- Ignore only the double '//' in path,
-            // but not the first and last '/'
-		  }
+        else if (($v_list[$i] == "") && ($i!=(sizeof($v_list)-1)) && ($i!=0))
+        {
+          // ----- Ignore only the double '//' in path,
+          // but not the first and last '/'
         }
-        else {
-		  // ----- Look for item to skip
-		  if ($v_skip > 0) {
-		    $v_skip--;
-		  }
-		  else {
-            $v_result = $v_list[$i].($i!=(sizeof($v_list)-1)?"/".$v_result:"");
-		  }
-        }
-      }
-      
-      // ----- Look for skip
-      if ($v_skip > 0) {
-        while ($v_skip > 0) {
-            $v_result = '../'.$v_result;
-            $v_skip--;
+        else
+        {
+          $v_result = $v_list[$i].($i!=(sizeof($v_list)-1)?"/".$v_result:"");
         }
       }
     }
@@ -5348,19 +4937,58 @@
   function PclZipUtilOptionText($p_option)
   {
     //--(MAGIC-PclTrace)--//PclTraceFctStart(__FILE__, __LINE__, "PclZipUtilOptionText", "option='".$p_option."'");
-    
-    $v_list = get_defined_constants();
-    for (reset($v_list); $v_key = key($v_list); next($v_list)) {
-	  $v_prefix = substr($v_key, 0, 10);
-	  if ((($v_prefix == 'PCLZIP_OPT') || ($v_prefix == 'PCLZIP_CB_'))
-	      && ($v_list[$v_key] == $p_option)) {
-          //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_key);
-          return $v_key;
-	    }
-    }
-    
-    $v_result = 'Unknown';
 
+    switch ($p_option) {
+      case PCLZIP_OPT_PATH :
+        $v_result = 'PCLZIP_OPT_PATH';
+      break;
+      case PCLZIP_OPT_ADD_PATH :
+        $v_result = 'PCLZIP_OPT_ADD_PATH';
+      break;
+      case PCLZIP_OPT_REMOVE_PATH :
+        $v_result = 'PCLZIP_OPT_REMOVE_PATH';
+      break;
+      case PCLZIP_OPT_REMOVE_ALL_PATH :
+        $v_result = 'PCLZIP_OPT_REMOVE_ALL_PATH';
+      break;
+      case PCLZIP_OPT_EXTRACT_AS_STRING :
+        $v_result = 'PCLZIP_OPT_EXTRACT_AS_STRING';
+      break;
+      case PCLZIP_OPT_SET_CHMOD :
+        $v_result = 'PCLZIP_OPT_SET_CHMOD';
+      break;
+      case PCLZIP_OPT_BY_NAME :
+        $v_result = 'PCLZIP_OPT_BY_NAME';
+      break;
+      case PCLZIP_OPT_BY_INDEX :
+        $v_result = 'PCLZIP_OPT_BY_INDEX';
+      break;
+      case PCLZIP_OPT_BY_EREG :
+        $v_result = 'PCLZIP_OPT_BY_EREG';
+      break;
+      case PCLZIP_OPT_BY_PREG :
+        $v_result = 'PCLZIP_OPT_BY_PREG';
+      break;
+
+
+      case PCLZIP_CB_PRE_EXTRACT :
+        $v_result = 'PCLZIP_CB_PRE_EXTRACT';
+      break;
+      case PCLZIP_CB_POST_EXTRACT :
+        $v_result = 'PCLZIP_CB_POST_EXTRACT';
+      break;
+      case PCLZIP_CB_PRE_ADD :
+        $v_result = 'PCLZIP_CB_PRE_ADD';
+      break;
+      case PCLZIP_CB_POST_ADD :
+        $v_result = 'PCLZIP_CB_POST_ADD';
+      break;
+
+      default :
+        $v_result = 'Unknown';
+    }
+
+    // ----- Return
     //--(MAGIC-PclTrace)--//PclTraceFctEnd(__FILE__, __LINE__, $v_result);
     return $v_result;
   }
@@ -5379,19 +5007,20 @@
   // --------------------------------------------------------------------------------
   function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter=true)
   {
-    if (stristr(php_uname(), 'windows')) {
+    if (defined('PHP_OS') && stristr(PHP_OS, 'win')) {
+#    if (stristr(php_uname(), 'windows')) {
       // ----- Look for potential disk letter
       if (($p_remove_disk_letter) && (($v_position = strpos($p_path, ':')) != false)) {
-          $p_path = substr($p_path, $v_position+1);
+	$p_path = substr($p_path, $v_position+1);
       }
       // ----- Change potential windows directory separator
       if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0,1) == '\\')) {
-          $p_path = strtr($p_path, '\\', '/');
+	$p_path = strtr($p_path, '\\', '/');
       }
     }
     return $p_path;
   }
-  // --------------------------------------------------------------------------------
-
+// --------------------------------------------------------------------------------
 
 ?>
+
