@@ -61,31 +61,7 @@
 </ul>
 
 <div id="entries">
-	<LET VAR="IDREC">0</LET>
-	<LOOP NAME="entries" TABLE="entries" WHERE="idtype='[#TYPE.ID]' AND idparent='[#IDREC]'" ORDER="[#TYPE.SORT]">
-	<BEFORE><ul class="listEntities"></BEFORE>
-		<DO>
-			<IF COND="[#COUNT] % 2">
-			<li class="line1">
-			<ELSE/>
-			<li class="line2">
-			</IF>
-				<IF COND="[#BARRE]"><span class="barre">[#BARRE]&nbsp;</span></IF>
-				[#G_NAME|nbsp] <span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
-				<div class="action">
-				<IF COND="[#TYPE.SORT]=='rank'">
-	          			<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				</IF>
-				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				</div>
-			<LET VAR="IDREC">[#ID]</LET>
-			<LET VAR="BARRE">[#BARRE]&gt;</LET>
-			<LOOP NAME="entries"></LOOP>
-			</li>
-			
-		</DO>
-	<AFTER></ul></AFTER>
-	</LOOP>
+	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]">
 </div>
 <MACRO NAME="OK_TOINDEX_ADMIN">
 
