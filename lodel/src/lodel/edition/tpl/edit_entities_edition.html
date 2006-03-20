@@ -116,13 +116,13 @@
 	<dd>
 	<LOOP NAME="compatible_types">
 		<BEFORE><select name="idtype"></BEFORE>
-		<DO>
+		
 			<IF COND="[#CURRENTIDTYPE] EQ [#ID]">
 			<option value="[#ID]" selected="selected">[#TITLE]</option>
 			<ELSE />
 			<option value="[#ID]">[#TITLE]</option>
 			</IF>
-		</DO>
+		
 		<AFTER></select></AFTER>
         </LOOP>
 	</dd>
