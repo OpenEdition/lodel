@@ -78,7 +78,40 @@
 		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]'" />
 </DEFMACRO>
 
-
+<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder">
+	
+	<LOOP NAME="series" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="[#TYPE.SORT]">
+		<BEFORE>
+			<IF COND="[#FOLDER]">
+				<li class="unfoldedentities"><ul class="listEntities">
+			<ELSE />
+				<ul class="listEntities">
+			</IF>
+		</BEFORE>
+		<DO>
+		<IF COND="[#COUNT] % 2">
+			<li class="line1">
+		<ELSE/>
+			<li class="line2">
+		</IF>
+			[#G_NAME|nbsp] <span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+			<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+			<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
+			</li>
+		
+		</DO>
+		<AFTER>
+			<IF COND="[#FOLDER]">
+				</ul></li>
+			<ELSE />
+				</ul>
+			</IF>			
+		</AFTER>
+		<ALTERNATIVE>
+			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+		</ALTERNATIVE>
+	</LOOP>
+</DEFFUNC>
 
 <!--[ -----------------------------------------------------------
       Arrow up/down to change order
@@ -158,7 +191,7 @@
 
 
 <DEFFUNC NAME="LISTE_ENTITES_LIEES" REQUIRED="id, nature">
-	<LOOP NAME="getlinkedentities" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'">
+	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id">
 		<BEFORE>
 			<hr /><ul class="listEntities">
 		</BEFORE>
@@ -168,7 +201,6 @@
 			<ELSE/>
 				<li class="line2">
 			</IF>
-			<LOOP NAME="getentitieinfo" TABLE="entities, types" WHERE="entities.id = '[#ID1]' AND idtype=types.id" ORDER="modificationdate DESC">
 				<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
 				<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 				<div class="fil">
@@ -178,13 +210,12 @@
 				</LOOP>
 				</div>
 				<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-			</LOOP>
 			</li>
 	
 		</DO>
 		<AFTER></ul></AFTER>
 	</LOOP>
-<DEFFUNC>
+</DEFFUNC>
 
 
 
