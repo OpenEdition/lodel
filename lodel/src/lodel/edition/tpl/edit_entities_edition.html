@@ -52,6 +52,8 @@
 
 <div id="editEntitiesAllFunc">
 
+<form enctype="multipart/form-data" method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
+
 <div id="editEntities">
 
 <div class="error">
@@ -59,7 +61,7 @@
 </div>
 
 <br />
-<form enctype="multipart/form-data" method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
+
 	<input type="hidden" name="do" value="edit" />
 	<input type="hidden" name="id" value="[#ID]" />
 	<IF COND="[#IDTACHE]"><input type="hidden" name="idtache" value="[#IDTACHE]" /></IF>
@@ -91,7 +93,7 @@
 			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'" />
 	</IF>
 	</fieldset>
-</form>
+
 </div>
 
 <div class="advancedFunc">
@@ -114,15 +116,14 @@
 	</IF>
 	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 	<dd>
+	<LET VAR="currentidtype">[#IDTYPE]</LET>
 	<LOOP NAME="compatible_types">
 		<BEFORE><select name="idtype"></BEFORE>
-		
 			<IF COND="[#CURRENTIDTYPE] EQ [#ID]">
-			<option value="[#ID]" selected="selected">[#TITLE]</option>
+				<option value="[#ID]" selected="selected">[#TITLE]</option>
 			<ELSE />
-			<option value="[#ID]">[#TITLE]</option>
+				<option value="[#ID]">[#TITLE]</option>
 			</IF>
-		
 		<AFTER></select></AFTER>
         </LOOP>
 	</dd>
@@ -137,7 +138,7 @@
 </IF>
 	</dl>
 </div>
-
+</form>
 <div class="advancedFunc">
 <h4>[@EDITION.FUNCTIONS]</h4>
 <ul>
