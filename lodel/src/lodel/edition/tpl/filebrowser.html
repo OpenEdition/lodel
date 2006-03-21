@@ -47,7 +47,7 @@ function sendValue(s){
 <input type="hidden" name="do" value="submit">
 <table class="fileInfo">
 <tr>
-<th>[@EDITION.FILENAME][#CALLER]</th>
+<th>[@EDITION.FILENAME] <span class="info">([@EDITION.SELECT])</span></th>
 <th>[@EDITION.FILESIZE]</th>
 <th>[@EDITION.IMAGESIZE]</th>
 <td>&nbsp;</td>
@@ -56,12 +56,12 @@ function sendValue(s){
 <LOOP NAME="filelist">
 <DO>
 <tr>
-<td class="filename">[#NAME]</td>
+<td class="filename"><a href="#" onclick="sendValue('[(#NAME|addslashes)]');" class="action">[#NAME]</a></td>
 <td class="filesize">[#SIZE]</td>
 <td class="imagesize">[#IMAGESIZE]</td>
-<td class="action"><div><a href="#" onclick="sendValue('[(#NAME|addslashes)]');">[@EDITION.SELECT]</a> | 
-<input type="checkbox" name="file[[#NAME|htmlentities]]" [#CHECKED]>
-</div></td>
+<td class="action">
+<input type="checkbox" name="file[[#NAME|htmlentities]]" [#CHECKED] />
+</td>
 </tr>
 </DO>
 
@@ -69,25 +69,27 @@ function sendValue(s){
 </table>
 
 <div class="delete">
-<input type="submit" name="delete" value="[@COMMON.DELETE]" class="button" />
+<input type="submit" name="delete" value="[@EDITION.DELETE]" class="button" />
 </div>
+
+<div class="resize">
+<input type="text" name="newsize" value="500">
+<input type="submit" name="resize" value="[@EDITION.RESIZEIMAGES]" class="button" />
+</div>
+
 <?php if (function_exists("imap_open")) { ?>
 <div class="checkmail">
 <input type="submit" name="checkmail" value="[@EDITION.CHECKMAIL]" class="button" />
 <IF COND="[(#NBATTATTACHMENTS|isset)]">[@EDITION.NB_ATTACHED_FILES_ARE_UPLOADED|sprintf([#NBATTATTACHMENTS])]</IF>
 </div>
 <?php } ?>
-<div class="resize">
-<input type="text" name="newsize" value="500">
-<input type="submit" name="resize" value="[@EDITION.RESIZEIMAGES]" class="button" />
-</div>
 
 </form>
 
 
 
-<div>
-<a onclick="window.close();">[@EDITION.CLOSE_THE_WINDOW]</a>
+<div class="close">
+<a href="#" onclick="window.close();" class="action">[@EDITION.CLOSE_THE_WINDOW]</a>
 </div>
 
 </body>

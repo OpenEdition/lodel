@@ -65,6 +65,11 @@ br.nobr{
 	display: none;
 }
 
+table{
+	border: 0;
+	border-collapse: collapse;
+}
+
 h2.formHead{
 	font-size: 100%;
 	margin: 2ex 0 2ex 1em;
@@ -751,11 +756,9 @@ select.barInfo{
 /* Statistiques */
 
 table.statistics{
-	border: 0;
 	background: #fff;
 	width: 550px;
 	margin: 0 0 4ex 70px;
-	border-collapse: collapse;
 }
 
 table.statistics.users{
@@ -834,6 +837,49 @@ table.statistics.fields td{
 
 table.statistics.fields td.actions{
 	width: 350px;
+}
+
+#filebrowser table.fileInfo{
+	width: 100%;
+}
+
+#filebrowser table.fileInfo th, table.fileInfo td{
+	text-align: left;
+	border: 1px solid #aaa;
+	padding: .3em;
+}
+
+#filebrowser table.fileInfo th{
+	background: #e0e7f2;
+}
+
+#filebrowser table.fileInfo span.info{
+	font-size: 90%;
+	font-weight: normal;
+}
+
+#filebrowser div.resize{
+	float: left;
+	width: 65%;
+	margin: 2ex 0 0 0;
+}
+
+#filebrowser div.delete{
+	text-align: right;
+	float: right;
+	width: 35%;
+	margin: 2ex 0 0 0;
+}
+
+#filebrowser div.checkmail{
+	clear: both;
+	text-align: right;
+	margin: 7ex 0 0 0;
+}
+
+div.close{
+	text-align: right;
+	margin: 2ex 1em 0 0;
 }
 
 /* Index and persons entries */
