@@ -71,9 +71,9 @@ if ($_POST['fileorigin'] == "upload" && $_FILES['file1'] && $_FILES['file1']['tm
 	$tmpdir = tmpdir(); // use here and later.
 	$source = $tmpdir. "/". basename($file1). "-source";
 	move_uploaded_file($file1, $source); // move first because some provider does not allow operation in the upload dir
-} elseif ($_POST['fileorigin'] == "server" && $_POST['localfile']) {
+} elseif ($_POST['fileorigin'] == "serverfile" && $_POST['localfile']) {
 	$sourceoriginale = basename($_POST['localfile']);
-	$file1           = SITEROOT. "CACHE/upload/". $sourceoriginale;
+	$file1           = SITEROOT. "upload/". $sourceoriginale;
 	$tmpdir          = tmpdir(); // use here and later.
 	$source          = $tmpdir. "/". basename($file1). "-source";
 	copy($file1, $source);
