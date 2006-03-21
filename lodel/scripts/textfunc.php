@@ -27,6 +27,10 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
+
+if (file_exists($home."textfunc_local.php")) require_once($home."textfunc_local.php");
+
+
 # fonction largement reprises de SPIP
 
 require_once($home."func.php");
@@ -51,8 +55,10 @@ function pluriel($texte)
 function lettrine($texte)
 
 {
-  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/su","\\1<span class=\"lettrine\">\\2</span>",$texte);
+  //return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/su","\\1<span class=\"lettrine\">\\2</span>",$texte);
   // utf-8 ok
+
+  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)([\w\"])/s","\\1<span class=\"lettrine\">\\2</span>",$texte);
 
 }
 
@@ -69,8 +75,10 @@ function nbsp($texte)
 function majuscule($texte)
 
 {
-  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/sue",'"\\1".strtoupper("\\2")',$texte);
+  //return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/sue",'"\\1".strtoupper("\\2")',$texte);
   // utf-8 ok
+
+  return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/se",'"\\1".strtoupper("\\2")',$texte);
 }
 
 
@@ -291,9 +299,10 @@ function tocable($text,$level=10)
   function tocable_callback($result) {
       static $tocind=0;
       $tocind++;
-      return '<a href="#tocfrom'.$tocind.'" name="tocto'.$tocind.'">'.$result[0].'</a>';
+      return $result[1].'<a href="#tocfrom'.$tocind.'" id="tocto'.$tocind.'">'.$result[3].'</a>'.$result[4];
   }
-  return preg_replace_callback("/<(r2r:section(?:$sect)).*?<\/\\1>/s","tocable_callback",$text);
+
+  return preg_replace_callback("/(<(r2r:section(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s","tocable_callback",$text);
 }
 
 ## version souple qui travaille sur les div... mais c'est une mauvaise habitude.
@@ -478,7 +487,7 @@ function tocss($text,$options="")
   $srch=array();   $rpl=array();
   if ($options=="heading") {
     array_push($srch,
-	       "/<r2r:section(\d+)\b[^>]*>/",
+	       "/<r2r:section(\d+\b[^>]*)>/",
 	       "/<\/r2r:section(\d+)>/");
     array_push($rpl,
 	       '<h\\1>',
@@ -546,7 +555,7 @@ function humanlang($text)
  */
 
 function today() {
-	return date("Y-m-d");
+	return date("Y-m-d H:i:s");
 }
 
 

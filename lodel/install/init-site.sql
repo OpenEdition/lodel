@@ -32,7 +32,7 @@
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	classe		VARCHAR(255),
 
 	PRIMARY KEY (id)
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
 
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 #
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
 	idgroupe	INT UNSIGNED DEFAULT '0' NOT NULL,
 
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
-	condition	TINYTEXT NOT NULL,		# condition
+	cond		TINYTEXT NOT NULL,		# cond (condition)
 	defaut		TINYTEXT NOT NULL,		# valeur par defaut
 	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
 	balises         TINYTEXT NOT NULL,		# balises acceptees
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		VARCHAR(64) NOT NULL,		# nom/identifiant unique
 	classe		VARCHAR(64) NOT NULL,   	# nom de la table complementaire
 
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_personnes (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 #	prefix		TINYTEXT NOT NULL,
 	nomfamille	TINYTEXT NOT NULL,
 	prenom		TINYTEXT NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_personnes (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	username	VARCHAR(64) BINARY NOT NULL UNIQUE,
 	passwd		VARCHAR(64) BINARY NOT NULL,
 	nom		VARCHAR(64),
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 );
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		VARCHAR(64),
 
 	statut		TINYINT DEFAULT '1' NOT NULL,
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL,
 	titre		TINYTEXT NOT NULL,
 
@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
 	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	type		VARCHAR(64) NOT NULL UNIQUE,	# nom/identifiant unique
 	titre		TINYTEXT NOT NULL,		# nom en clair, utiliser dans l'interface
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	nom		VARCHAR(255) NOT NULL,
 	abrev		VARCHAR(15) NOT NULL,
@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_taches (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		TINYTEXT NOT NULL,
 	etape		TINYINT NOT NULL DEFAULT '0',
 	user		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_taches (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		VARCHAR(255) NOT NULL,
 	texte		TEXT,
 
@@ -345,7 +345,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
 	idtypeentite2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
-	condition		VARCHAR(16),
+	cond			VARCHAR(16),
 
 	KEY index_idtypeentite (idtypeentite),
 	KEY index_idtypeentite2 (idtypeentite2)
@@ -356,7 +356,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
-	condition		VARCHAR(16),
+	cond			VARCHAR(16),
 
 	KEY index_idtypeentree (idtypeentree),
 	KEY index_idtypeentite (idtypeentite)
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
-	condition		VARCHAR(16),
+	cond			VARCHAR(16),
 
 	KEY index_idtypepersonne (idtypepersonne),
 	KEY index_idtypeentite (idtypeentite)
@@ -374,7 +374,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
-	id		INT UNSIGNED DEFAULT '0' NOT NULL auto_increment,
+	id		INT UNSIGNED NOT NULL auto_increment,
 	nom		VARCHAR(255) NOT NULL UNIQUE,		# nom/identifiant unique
 	type		CHAR(4),
 
