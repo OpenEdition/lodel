@@ -622,7 +622,6 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 		foreach ($types as $row) {
 			if(checkTypesCompatibility(0, $context['idparent'],$row['id'])) {
 				//pour chaque enfant il faut tester si il peut être contenu dans le type testé.
-				#echo "test de ".$row['title'];
 				if(childCanBeInThisType($row['id'],$context['id'])) {
 					$compatible_types[] = $row;
 				}
