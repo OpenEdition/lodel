@@ -51,6 +51,25 @@
  */
 class DataLogic
 {
+
+	/**
+	 * Prefix du fichier (pour l'import de ME et l'import de données)
+	 * @var string
+	 */
+	var $filePrefix;
+
+	/**
+	 * Expression régulière pour filtrer les fichiers pour un import
+	 * @var string
+	 */
+	var $fileRegexp;
+
+	/**
+	 * Extension du fichier d'import
+	 * @var string
+	 */
+	var $fileExtension;
+
 	/**
 	 * Constructeur
 	 *
@@ -61,6 +80,7 @@ class DataLogic
 		if ($GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN) {
 			die("ERROR: you don't have the right to access this feature");
 		}
+		$this->fileExtension = 'zip';
 	}
 
 	/**
@@ -76,7 +96,7 @@ class DataLogic
 		global $db;
 		require_once 'func.php';
 		$context['importdir'] = $GLOBALS['importdir'];
-		$context['fileregexp'] = '(site|revue)-\w+-\d+.zip';
+		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-\w+-\d+.'. $this->fileExtension;
 
 		// les répertoires d'import
 		$context['importdirs'] = array('CACHE');
@@ -95,7 +115,7 @@ class DataLogic
 			$file       = $archive;
 			unset($_FILES);
 		// Ficher déjà sur le disque
-		} elseif ($context['file'] && preg_match("/^(?:". str_replace("/", "\/", join('|', $context['importdirs'])). ")\/".$context['fileregexp']."$/", $context['file'], $result) && file_exists($context['file'])) {
+		} elseif ($context['file'] && preg_match("/^(?:". str_replace("/", "\/", join('|', $context['importdirs'])). ")\/".$this->fileRegexp."$/", $context['file'], $result) && file_exists($context['file'])) {
 			$prefixre = $prefixunix = $result[1];
 			$file = $context['file'];
 		} else { // rien
@@ -327,6 +347,7 @@ class DataLogic
 				return 'backup';
 			}
 		}
+		
 		$context['error'] = $errors;
 		return 'backup';
 	}
@@ -349,12 +370,13 @@ class DataLogic
 			$GLOBALS['importdirs'][] = $importdir;
 		}
 		$context['importdirs'] = $GLOBALS['importdirs'];
-		$ext = 'zip';
-		$GLOBALS['fileregexp'] = '(model)-\w+(?:-\d+)?.'. $ext;
-
+		$this->fileExtension = 'zip';
+		$this->fileRegexp = $GLOBALS['fileregexp'] = '(model)-\w+(?:-\d+)?.'. $this->fileExtension; //restriction sur le nom du ZIP
+		
 		if (($context['error_table'] = $this->_isimportmodelallowed()) ) {
 			return 'importmodel';
 		}
+		$this->filePrefix = 'model';
 		$file = $this->_extractImport($context);
 		
 		if ($file && $context['delete']) {// extra check. Need more ?
@@ -742,22 +764,22 @@ class DataLogic
 	 * @param string $ext l'extension du fichier, par défaut .zip
 	 * @return le nom du fichier d'import
 	 */
-	function _extractImport(&$context, $ext = 'zip')
+	function _extractImport(&$context)
 	{
 		$archive = $_FILES['archive']['tmp_name'];
 		$context['error_upload'] = $_FILES['archive']['error'];
 		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
 			$file = $_FILES['archive']['name'];
-			if (!preg_match("/^".$GLOBALS['fileregexp']."$/", $file)) {
-				$file = $footprint. '-import-'.date("dmy"). '.'. $ext;
+			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
+				$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
 			}
-	
+			
 			if (!move_uploaded_file($archive, 'CACHE/'.$file)) {
 				die('ERROR: a problem occurs while moving the uploaded file.');
 			}
 			$file = ''; // on repropose la page
 		} elseif ($context['file'] && 
-							preg_match("/^(?:". str_replace("/", "\/", join("|", $GLOBALS['importdirs'])). ")\/". $GLOBALS['fileregexp']. "$/", $context['file'], $result) && 
+							preg_match("/^(?:". str_replace("/", "\/", join("|", $GLOBALS['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
 							file_exists($context['file']))	{ // fichier sur le disque
 			$file = $context['file'];
 			$prefix = $result[1];
