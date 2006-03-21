@@ -297,7 +297,7 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 		<IF COND="[#VALUE]">
 			<div class="imageKeepDelete">
 			<IF COND="[#TYPE] eq 'file'">
-				[@COMMON.FILE] : <strong><a href="[#VALUE]">[#VALUE]</a></strong> ([#VALUE|nicefilesize])<br />&nbsp;<br />
+				[@COMMON.FILE] : <strong><a href="<MACRO NAME="SITE_ROOT" />/[#VALUE]">[#VALUE]</a></strong> ([#VALUE|nicefilesize])<br />&nbsp;<br />
 			</IF>
 			<IF COND="[#TYPE] eq 'image'">
 				<img src="[(#VALUE|vignette(100))]" alt="[#VALUE]" class="imageEdit" title="[#VALUE]" />
