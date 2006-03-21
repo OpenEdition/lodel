@@ -201,7 +201,7 @@ class EntriesLogic extends GenericLogic
 			// search if the entries exists
 			$tmpgname = $context['g_name'];
 			myaddslashes($tmpgname);
-			$vo = $dao->find ("g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64","id,status");
+			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			//$vo = $dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			if ($vo->id) {
 				$context['id']=$vo->id;
@@ -216,7 +216,7 @@ class EntriesLogic extends GenericLogic
 		if ($context['lo'] == 'entries') {  // check it does not exist
 			$tmpindex_key = $index_key;
 			myaddslashes($tmpindex_key);
-			$vo=$dao->find("g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
+			$vo=$dao->find("BINARY g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			//$vo=$dao->find("g_name='". $index_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			if ($vo->id) {
 				$error[$g_index_key] = "1";
