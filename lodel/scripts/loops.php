@@ -614,8 +614,6 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 	global $db;
 	static $compatible_types;
 	require_once 'entitiesfunc.php';
-	//<LOOP SELECT="t.id, t.title, t.type, ee.identitytype" NAME="switchType" TABLE="entities as e, types as t, entitytypes_entitytypes as ee" WHERE="e.id='[#IDPARENT]' and e.idtype=ee.identitytype2 and ee.identitytype=t.id AND t.class='textes'" ORDER="t.rank">
-
 	if(!$compatible_types) {
 		//selectionne tous les types de la classe
 		$sql = lq("SELECT * FROM #_TP_types WHERE class='".$context['type']['class']."'");
@@ -650,9 +648,20 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 	}
 }
 
+/**
+ * Test si un type $type peut être  appliqué à une entité $id suivant le type de ses enfants.
+ *
+ * Cette fonction est utilisée dans loop_compatible type
+ *
+ * @param integer $type l'identifiant du type
+ * @param integer $id l'identifiant de l'entité
+ */
 function childCanBeInThisType($type,$id)
 {
 	global $db;
+	if($id == 0) { //si id = 0 cela veut dire qu'on est en création d'entité
+		return true;
+	}
 	$sql = lq("SELECT id,idtype FROM #_TP_entities WHERE idparent='$id'");
 	$entities = $db->getArray($sql);
 	//pour chaque entité on teste si elle peut être contenu dans $type
