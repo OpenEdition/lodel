@@ -78,7 +78,7 @@ find $DIRS $EXTRADIRS \
         -o -name '#*#' \
         -o -name '.#' \
         -o -name '*.old' \
-        -o -name 'OLD*' | tar -p --gzip --create --file $FILE --exclude-from=- $DIRS $EXTRADIRS lodel/lodelconfig-dist.php lodel/index.php lodel/styles_lodel.css lodel/COPYING
+        -o -name 'OLD*' | tar -p --gzip --create --file $FILE --exclude-from=- $DIRS $EXTRADIRS lodel/lodelconfig-dist.php lodel/index.php lodel/COPYING
 
 # restauration des noms des repertoires
 mv lodel/lodel-$1 lodel/lodel
