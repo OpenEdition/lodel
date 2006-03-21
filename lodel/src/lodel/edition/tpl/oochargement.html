@@ -97,7 +97,9 @@ function infoChargement(nomFic){
 <br />&nbsp;<br />
 <form name="formfic" enctype="multipart/form-data" action="[#URL]" method="post" onsubmit="return infoChargement(document.formfic.file1.value)" />
 	<fieldset>
+	
 	<legend>[@EDITION.SELECT_FILE_TO_UPLOAD]</legend>
+	<div class="oneItem">
 	<input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
 	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
 	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
@@ -106,19 +108,25 @@ function infoChargement(nomFic){
 	<IF COND="[#LODELTAGS]"><input type="hidden" name="lodeltags" value="[#LODELTAGS]" /></IF>	
 
 		<p class="avert">[@EDITION.ADVICE_UPLOADING]</p>
-		<input type="radio" id="radioupload" name="fileorigin" value="upload"><input size="40" type="file" name="file1" onChange="document.getElementById('radioupload').click();"><br />
-		<input type="radio" id="serverfile[radioserverfile]" name="fileorigin" value="server">
-	           <input size="40" type="text" id="serverfile[localfilename]" name="localfile">
-	           <a href="javascript:;" onClick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=serverfile','Upload','width=450,height=350,top=100,left=100,scrollbars=yes,resizable=yes');">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
-		<p class="avert">[@EDITION.CONVERSION_TOOLS] : <a href="http://www.servoo.net/" title="Document converter for Web applications" onclick="window.open(this.href); return false;"><strong>ServOO</strong></a></p>
+	<div class="fileUpload">
+		<input type="hidden" id="fileorigin" name="fileorigin" value="upload" />
+		<label for="file1">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
+		<input size="40" type="file" name="file1" id="file1" onchange="switchUploadType('file1', 'file1','upload');" /><br />
+		<label for="localfile"><a href="#" class="action" onclick="window.open('index.php?lo=filebrowser&amp;do=view&amp;caller=serverfile','Upload','width=450,height=350,top=100,left=100,scrollbars=yes,resizable=yes'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a></label>
+	        <input size="40" type="text" id="localfile" name="localfile" class="localChoose" />
+	           
+	</div>
+		
+	</div>
+<p class="avert">[@EDITION.CONVERSION_TOOLS] : <a href="http://www.servoo.net/" title="Document converter for Web applications" onclick="window.open(this.href); return false;"><strong>ServOO</strong></a></p>
 	</fieldset>
-
+	
 	<fieldset>
 		<legend>[@COMMON.VALIDATION]</legend>
 		  <IF COND="[#NOSERVOO]">
 		    [@EDITION.ERROR_NOSERVOO_CONFIGURED_HOWTO_CONFIGURE]
 		    <IF COND="[#LODELUSER.ADMIN]">
-		    <a href="../admin/index.php?do=view&lo=servooconf">[@EDITION.CONFIGURE]</a>
+		    <a href="../admin/index.php?do=view&amp;lo=servooconf">[@EDITION.CONFIGURE]</a>
 		    </IF>
 		  <ELSE/>
 				<input class="button" type="submit" value="[@COMMON.UPLOAD]" />&nbsp;&nbsp;&nbsp;&nbsp;
