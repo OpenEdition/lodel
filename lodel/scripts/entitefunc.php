@@ -109,9 +109,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     list($idparent,$context[idtype])=mysql_fetch_row($result);
   }
   if ($idparent>0) {
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite='$context[idtype]'") or die(mysql_error());
+    $result=mysql_query("SELECT cond FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite='$context[idtype]'") or die(mysql_error());
   } else {
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites WHERE idtypeentite2=0 AND idtypeentite='$context[idtype]'") or die(mysql_error());
+    $result=mysql_query("SELECT cond FROM $GLOBALS[tp]typeentites_typeentites WHERE idtypeentite2=0 AND idtypeentite='$context[idtype]'") or die(mysql_error());
 
   }
   if (mysql_num_rows($result)<=0) die("ERROR: Entities of type $context[idtype] are not allowed in entity $idparent");
@@ -133,13 +133,13 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
   $files_to_move=array();
   
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,condition,defaut,balises $champcritere FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $extrawhere") or die (mysql_error());
-  while (list($nom,$type,$condition,$defaut,$balises,$critereok)=mysql_fetch_row($result)) {
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type,cond,defaut,balises $champcritere FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe' AND $GLOBALS[tp]champs.statut>0 AND $GLOBALS[tp]groupesdechamps.statut>0 $extrawhere") or die (mysql_error());
+  while (list($nom,$type,$cond,$defaut,$balises,$critereok)=mysql_fetch_row($result)) {
     require_once($home."textfunc.php");
     // check if the field is required or not, and rise an error if any problem.
 
     if ( !$champcritere || $critereok) {
-      if ($condition=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
+      if ($cond=="+" && !trim($entite[$nom])) $erreur[$nom]="+";
     } else {
       $entite[$nom]="";
     }

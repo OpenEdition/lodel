@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
-	condition	TINYTEXT NOT NULL,		# condition
+	cond		TINYTEXT NOT NULL,		# cond (condition)
 	defaut		TINYTEXT NOT NULL,		# valeur par defaut
 	traitement	TINYTEXT NOT NULL,		# traitement a faire a l'import
 	balises         TINYTEXT NOT NULL,		# balises acceptees
@@ -345,7 +345,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
 	idtypeentite2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
-	condition		VARCHAR(16),
+	cond			VARCHAR(16),
 
 	KEY index_idtypeentite (idtypeentite),
 	KEY index_idtypeentite2 (idtypeentite2)
@@ -356,7 +356,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
-	condition		VARCHAR(16),
+	cond			VARCHAR(16),
 
 	KEY index_idtypeentree (idtypeentree),
 	KEY index_idtypeentite (idtypeentite)
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
-	condition		VARCHAR(16),
+	cond			VARCHAR(16),
 
 	KEY index_idtypepersonne (idtypepersonne),
 	KEY index_idtypeentite (idtypeentite)
