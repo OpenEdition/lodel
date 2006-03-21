@@ -88,7 +88,7 @@
 		<input class="button" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
 
 	<IF COND="[#TYPE.DISPLAY]=='advanced'">
-			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&lo=entities_advanced&id=[#IDPARENT]'"  />
+			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&amp;lo=entities_advanced&amp;id=[#IDPARENT]'"  />
 	<ELSE/>
 			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'" />
 	</IF>
@@ -140,7 +140,7 @@
 </div>
 </form>
 
-<IF COND="[#ID]">
+<IF COND="[#ID] AND [#STATUS] GT -64">
 
 <div class="advancedFunc">
 <h4>[@EDITION.FUNCTIONS]</h4>
