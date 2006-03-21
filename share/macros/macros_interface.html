@@ -317,9 +317,9 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 			<br />
 			<!--<input type="hidden" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" disabled="disabled" />-->
 			<label for="[#VARNAME][localfilename]">
-			<a href="index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]" onclick="window.open(this.href,'Upload','width=400,height=300,top=100,left=100'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
+			<a href="index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]" onclick="window.open(this.href,'Upload','width=600,height=300,top=0,left=0'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
 			</label><br class="nobr" />
-			<input size="40" type="text" id="[#VARNAME][localfilename]" name="[#FULLVARNAME][localfilename]" class="localChoose" />
+			<input size="40" type="text" id="[#VARNAME]localfilename" name="[#FULLVARNAME][localfilename]" class="localChoose" />
 
 			<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
 		</div>

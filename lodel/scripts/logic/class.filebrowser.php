@@ -38,7 +38,7 @@
  */
 
 
-define("UPLOADDIR",SITEROOT."CACHE/upload");
+define("UPLOADDIR",SITEROOT."upload");
 
 $GLOBALS['nodesk']=true;
 
@@ -158,7 +158,7 @@ function loop_filelist($context,$funcname)
 		if (!@mkdir(UPLOADDIR,0777 & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"UPLOADDIR\"");
 		@chmod(UPLOADDIR,0777 & octdec($GLOBALS['filemask']));
 		$dh=@opendir(UPLOADDIR);
-		if (!$dh) die("ERROR: can't open CACHE/upload dir");
+		if (!$dh) die("ERROR: can't open \"UPLOADDIR\" dir");
 	}
 
 	while( ($file=readdir($dh))!==false ) {

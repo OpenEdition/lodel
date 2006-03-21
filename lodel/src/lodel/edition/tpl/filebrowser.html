@@ -20,35 +20,36 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-<html>
-<head>
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.FILEBROWSER]</title>
-<link rel="stylesheet" href="styles_lodel.css" type="text/css">
-</head>
-<SCRIPT LANGUAGE="JavaScript">
-<!-- Begin
+<script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<script type="text/javascript">
 function sendValue(s){
-	obj=window.opener.document.getElementById('[#CALLER][localfilename]');
-	if (obj) obj.value=s;
-	obj=window.opener.document.getElementById('[#CALLER][radioserverfile]');
-	obj.click();
+	obj=window.opener.document.getElementById('[#CALLER]localfilename');
+	if(obj){
+		obj.value=s;
+		obj.className="localChooseON";
+	}
+	obj=window.opener.document.getElementById('uploadType[#CALLER]');
+	obj.value = 'serverfile'; 
+	obj.disabled = ''; 
 	window.close();
 }
-//  End -->
 </script>
-<body class="filebrowser">
+<body id="filebrowser">
 
 <form  method="post" action="index.php">
 <input type="hidden" name="caller" value="[#CALLER]">
 <input type="hidden" name="lo" value="filebrowser">
 <input type="hidden" name="do" value="submit">
-<table>
+<table class="fileInfo">
 <tr>
-<td>[@EDITION.FILENAME]</td>
-<td>[@EDITION.FILESIZE]</td>
-<td>[@EDITION.IMAGESIZE]</td>
+<th>[@EDITION.FILENAME][#CALLER]</th>
+<th>[@EDITION.FILESIZE]</th>
+<th>[@EDITION.IMAGESIZE]</th>
 <td>&nbsp;</td>
 </tr>
 
@@ -58,7 +59,7 @@ function sendValue(s){
 <td class="filename">[#NAME]</td>
 <td class="filesize">[#SIZE]</td>
 <td class="imagesize">[#IMAGESIZE]</td>
-<td class="action"><div><a href="#" onClick="sendValue('[(#NAME|addslashes)]');">[@EDITION.SELECT]</a> | 
+<td class="action"><div><a href="#" onclick="sendValue('[(#NAME|addslashes)]');">[@EDITION.SELECT]</a> | 
 <input type="checkbox" name="file[[#NAME|htmlentities]]" [#CHECKED]>
 </div></td>
 </tr>
@@ -68,17 +69,17 @@ function sendValue(s){
 </table>
 
 <div class="delete">
-<input type="submit" name="delete" value="[@COMMON.DELETE]">
+<input type="submit" name="delete" value="[@COMMON.DELETE]" class="button" />
 </div>
 <?php if (function_exists("imap_open")) { ?>
 <div class="checkmail">
-<input type="submit" name="checkmail" value="[@EDITION.CHECKMAIL]">
+<input type="submit" name="checkmail" value="[@EDITION.CHECKMAIL]" class="button" />
 <IF COND="[(#NBATTATTACHMENTS|isset)]">[@EDITION.NB_ATTACHED_FILES_ARE_UPLOADED|sprintf([#NBATTATTACHMENTS])]</IF>
 </div>
 <?php } ?>
 <div class="resize">
 <input type="text" name="newsize" value="500">
-<input type="submit" name="resize" value="[@EDITION.RESIZEIMAGES]">
+<input type="submit" name="resize" value="[@EDITION.RESIZEIMAGES]" class="button" />
 </div>
 
 </form>
@@ -86,7 +87,7 @@ function sendValue(s){
 
 
 <div>
-<a href="javascript:window.close();">[@EDITION.CLOSE_THE_WINDOW]</a>
+<a onclick="window.close();">[@EDITION.CLOSE_THE_WINDOW]</a>
 </div>
 
 </body>

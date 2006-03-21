@@ -281,6 +281,11 @@ input.localChoose{
 	display: none;
 }
 
+input.localChooseON{
+	display: inline;
+}
+
+
 /* les mises en formes locales doivent être visibles*/
 
 #checkbalisage{

@@ -294,7 +294,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
 			// let's move
 			$text = basename($text['localfilename']);
 			require_once 'func.php';
-			$text = save_annex_file($type, $tmpdir[$type], SITEROOT."CACHE/upload/$text", $text, false, false, $err);
+			$text = save_annex_file($type, $tmpdir[$type], SITEROOT."upload/$text", $text, false, false, $err);
 			if ($err) {
 				return $err;
 			}
