@@ -39,13 +39,13 @@
  * @package lodel/source/lodel/admin
  */
 
-require 'siteconfig.php';
-require_once $home. 'auth.php';
+include 'siteconfig.php';
+include 'auth.php';
 authenticate(LEVEL_VISITOR);
 
 $name = addslashes($_COOKIE[$sessionname]);
 
-require_once 'connect.php';
+include_once 'connect.php';
 $time = time()-1;
 usemaindb();
 $db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or dberror();
