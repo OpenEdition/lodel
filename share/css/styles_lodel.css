@@ -931,7 +931,17 @@ div.close{
 	font-size: 90%;
 }
 
-
-
 /*************** Fin Menu général Administration ********************/
 
+/************************** oochargement *****************************/
+
+#uploadMsg{
+	text-align: left;
+	padding: 1em;
+	font-weight: bold;
+	position: absolute;
+	left: 40px;
+	top: 0;
+	border: 3px solid #aaa;
+	background: #fff;
+}

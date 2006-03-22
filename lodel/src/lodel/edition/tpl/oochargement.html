@@ -28,55 +28,6 @@
 <title>[@EDITION.SERVOO_IMPORT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<script><!--
-
-
-function wait(delay){
-	string="pauseforalert("+delay+");";
-	setTimeout(string,delay);
-}
-
-
-function infoChargement(nomFic){
-  if(nomFic == "")
-  {
-	      // nothing to do
-  }
-  else
-  {
-	  var colData = "";
-	  colData = "<br /><br /><font color='navy' size='2' face='Arial'>";
-	  colData += "<b>Le fichier</b><br />";
-//	  colData += nomFic + "<br />";	
-	  colData += "<b>est en cours de téléchargement</b>";
-	
-	
-	  
-	  if (document.getElementById) 
-	  {
-		// IE 5 et NN 6 code
-		document.getElementById('info').innerHTML = colData;
-		document.getElementById('info').style.visibility = "visible";
-
-	  }
-	  else 
-	  	if (document.layers) // IE4 code
-	  	{
-	    		document.layers['info'].document.open();
-	    		document.layers['info'].document.write(colData);
-	    		document.layers['info'].document.close();
-	    		document.layers['info'].visibility = "show";
-	  	}
-	  	else // NN4 code
-	  	{
-	    		document.all.info.innerHTML = colData;
-	    		document.all['info'].style.visibility= "visible";
-	  	}	 
- }
-}
-
-//
---></script>
 
 <MACRO NAME="CURRENT_PATH">
 <ul id="actionsOnEntitiesPath">
@@ -90,12 +41,14 @@ function infoChargement(nomFic){
 </IF>
 </ul>
 <IF COND="[#ERROR]">
-	<div class="message_erreur">
+	<div class="error">
 		[@EDITION.ERROR_UPLOADLING]<br />[#ERROR]
 	</div>
 </IF>
 <br />&nbsp;<br />
-<form name="formfic" enctype="multipart/form-data" action="[#URL]" method="post" onsubmit="return infoChargement(document.formfic.file1.value)" />
+<div id="uploadMsg" class="displayOff">
+</div>
+<form name="formfic" enctype="multipart/form-data" action="[#URL]" method="post" onsubmit="showProcessMsg('uploadMsg', '[@COMMON.WAIT_FILE_IS_UPLOADING]')" />
 	<fieldset>
 	
 	<legend>[@EDITION.SELECT_FILE_TO_UPLOAD]</legend>
@@ -129,7 +82,7 @@ function infoChargement(nomFic){
 		    <a href="../admin/index.php?do=view&amp;lo=servooconf">[@EDITION.CONFIGURE]</a>
 		    </IF>
 		  <ELSE/>
-				<input class="button" type="submit" value="[@COMMON.UPLOAD]" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="button" type="submit" value="[@COMMON.UPLOAD]" onclick="this.value='[@COMMON.WAIT_FILE_IS_UPLOADING]'; this.disabled='disabled'" />&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 		  </IF>
 	</fieldset>

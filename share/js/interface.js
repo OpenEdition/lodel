@@ -51,6 +51,12 @@ function hideFocus(obj) {
 	document.getElementById(obj).className = "focusOff";
 }
 
+function showProcessMsg(obj, msg){
+	obj = document.getElementById(obj);
+	obj.innerHTML = msg;
+	obj.className = 'displayOn';
+}
+
 function addlanginmltext(obj,name){
 	var index = obj.selectedIndex;
 	var lang = obj.options[index].value;
