@@ -101,7 +101,7 @@ if ($option2) $installoption="2";
 //
 preg_match("/^\d+\.\d+/",phpversion(),$result);
 if (doubleval($result[0]<4.1) || doubleval($result[0]>=5.0)) {
-  probleme('version');
+  problem('version');
   exit;
 }
 
@@ -859,7 +859,15 @@ function testdirmode($dir,$mode)
 function problem($msg)
 
 {
-  global $langcache,$installlang;
+  global $langcache;
+
+$installlang = $_REQUEST['installlang'];
+if (!$installlang) $installlang="fr";
+
+if (!$langcache) {
+	if (!(@include ("tpl/install-lang-$installlang.html"))) problem_include("tpl/install-lang-$installlang.html");
+  	}
+
   $messages=array(
 		  "version"=>sprintf($langcache[$installlang]['install.versionphp'],phpversion()),
   //'La version de php sur votre serveur ne permet pas un fonctionnement correct de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Versions recommandées : php 4.3 (ou supérieure), et inférieure à 5',
