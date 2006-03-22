@@ -38,6 +38,7 @@
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
+include_once 'func.php';
 
 // {{{ class
 /**
@@ -123,6 +124,7 @@ class View
 	 */
 	function back($back = 1)
 	{
+		#echo "back=$back";
 		global $db, $idsession;
 		#     $url=preg_replace("/[\?&]clearcache=[^&]*/","",$_SERVER['REQUEST_URI']);
 		#     if (get_magic_quotes_gpc()) $url=stripslashes($url);
@@ -133,6 +135,7 @@ class View
 		// la profondeur indiquée (offset)
 		$result = $db->selectLimit(lq("SELECT id, url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"), 1, $offset) or dberror();
 		$row = $result->fetchRow();
+		#print_r($row);
 		$id = $row['id'];	$newurl = $row['url'];
 		
 		if ($id) {
@@ -141,13 +144,13 @@ class View
 		} else {
 				$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
 		}
-
+		#echo "newurl=$newurl";exit;
 		if (!headers_sent()) {
 			header("location: ".$newurl);
 			exit;
 		} else { // si probleme
 			echo "<h2>Warnings seem to appear on this page. You may go on anyway by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
-		exit;
+			exit;
 		}
 	//usecurrentdb();
 	}//end of back function
@@ -167,9 +170,11 @@ class View
 	 */
 	function render(&$context, $tpl, $cache = false)
 	{
+
 		global $home;
 		if (!$cache) { // calcul la page si le cache n'existe pas
-			require_once 'calcul-page.php';
+
+			include_once 'calcul-page.php';
 			calcul_page($context, $tpl);
 			return;
 		}
@@ -177,17 +182,16 @@ class View
 		if (!isset($this->_iscachevalid)) {
 			$this->_iscachevalid();
 		}
-
 		if (!$this->_iscachevalid) {
-			require_once 'calcul-page.php';
+			include_once 'calcul-page.php';
 			$this->_calculateCacheAndOutput($context, $tpl);
 			// the cache is valid... do we have a php file ?
 		} else {
 			if ($this->_extcachedfile == 'php') {
-				$ret = include $this->_cachedfile. ".php";
+				$ret = include $this->_cachedfile. '.php';
 				// c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
 				if ($ret == 'refresh') { // does php say we must refresh ?
-					require_once 'calcul-page.php';
+					include_once 'calcul-page.php';
 					$this->_calculateCacheAndOutput($context, $tpl);
 				}
 			} else { // no, we have a proper html, let read it.
@@ -257,8 +261,8 @@ class View
 		//  $this->_iscachevalid=false;
 		//  return false;
 		//}
-		require_once 'func.php';
-		if (defined("SITEROOT")) {
+		include_once 'func.php';
+		if (defined('SITEROOT')) {
 			$maj = myfilemtime(SITEROOT. 'CACHE/maj');
 		} else {
 			$maj = myfilemtime('CACHE/maj');
@@ -390,7 +394,7 @@ function renderOptions($arr, $selected)
 function generateLangCache($lang, $file, $tags)
 {
 	foreach($tags as $tag) {
-		$dotpos = strpos($tag, ".");
+		$dotpos = strpos($tag, '.');
 		$group  = substr($tag, 0, $dotpos);
 		$name   = substr($tag, $dotpos+1);
 
@@ -401,7 +405,7 @@ function generateLangCache($lang, $file, $tags)
 		@mkdir($dir, 0777 & octdec($GLOBALS['filemask']));
 		@chmod($dir, 0777 & octdec($GLOBALS['filemask']));
 	}
-	require_once "func.php"; //ce require n'est pas forcément utile mais on sait jamais
+	#include_once 'func.php'; //ce require n'est pas forcément utile mais on sait jamais
 	writefile($file, '<'.'?php if (!$GLOBALS[\'langcache\'][\''. $lang. '\']) $GLOBALS[\'langcache\'][\''. $lang. '\']=array(); $GLOBALS[\'langcache\'][\''. $lang. '\']+=array('. $txt. '); ?'. '>');
 }
 ?>

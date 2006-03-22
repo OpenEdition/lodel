@@ -39,7 +39,7 @@
  * @package lodel
  */
 
-require_once 'func.php';
+#require_once 'func.php';
 
 /**
  * Fonction de calcul d'une page
@@ -55,7 +55,7 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 {
 	global $home, $format;
 	if ($_REQUEST['clearcache'])	{
-		require_once 'cachefunc.php';
+		include_once 'cachefunc.php';
 		clearcache();
 		$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 	}
@@ -83,11 +83,13 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		require_once 'lodelparser.php';
 		$parser = new LodelParser;
 		$parser->parse($base, $template_cache);
-	}
 
-	require_once 'connect.php';
+	}
+	
+	#include 'connect.php';
 	// execute le template php
-	require_once 'textfunc.php';
+	include_once 'textfunc.php';
+		
 	if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor'])	{
 		ob_start();
 		require $template_cache;
@@ -97,16 +99,16 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		echo _indent(show_html($content));
 		return;
 	}
-	require_once 'loops.php';
+	include_once 'loops.php';
 
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
-		$start = microtime();
+		#$start = microtime();
 		ob_start();
 		require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
 		echo _indent($contents);
-		$end = microtime();
+		#$end = microtime();
 		#echo "temps : ". ($end - $start);
 	}
 	else
@@ -118,6 +120,7 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		ob_end_clean();
 		echo _indent(utf8_decode($contents));
 	}
+		
 }
 
 /**

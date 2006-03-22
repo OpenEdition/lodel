@@ -38,12 +38,13 @@
  * @version CVS:$Id:
  * @package lodel/source/lodel/edition
  */
-	
 
-require "siteconfig.php";
-require_once "auth.php";
-if ($_GET['page'] =="backend" && $_GET['format'] ) {
-		authenticate(LEVEL_VISITOR, 'HTTP');
+
+
+include ('siteconfig.php');
+include ('auth.php');
+if ($_GET['page'] == 'backend' && $_GET['format'] ) {
+	authenticate(LEVEL_VISITOR, 'HTTP');
 	}
 else {
 	authenticate(LEVEL_VISITOR);
@@ -51,7 +52,7 @@ else {
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	recordurl();
 	$context['id'] = $id = intval($_GET['id']);
-	require_once "view.php";
+	require 'view.php';
 	$view = &View::getView();
 
 	if ($view->renderIfCacheIsValid()) { 
@@ -81,33 +82,44 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 				die("invalid page");
 			}
 		} else {
-			$base = "edition";
+			$base = 'edition';
 		}
 	}
 	$view->renderCached($context, $base);
 	return;
 } else {
 	
-	require_once "controler.php";
+	require 'controler.php';
 	// automatic logic
 	$do = $_GET['do'] ? $_GET['do'] : $_POST['do'];
 	$lo = $_GET['lo'] ? $_GET['lo'] : $_POST['lo'];
-	if ($lo) {
-		// well... nothing to do
-	} elseif ($do == "move" || $do == "preparemove" || $do == "changestatus" || $do == "download") {
-		$lo = "entities_advanced";
-	} elseif ($do == "cleanIndex" || $do == "deleteIndex" || $do == "addIndex") {
-		$lo = "entities_index";
-	} elseif ($do == "view" || $do == "edit") {
-		$lo = "entities_edition";
-	} elseif ($do == "import") {
-		$lo = "entities_import";
-	} else {
-		$lo = "entities";
+	
+	if(!$lo) {
+		switch ($do) { // Detection automatique de la logique en fonction de l'action
+			case 'move':
+			case 'preparemove':
+			case 'changestatus':
+			case 'download':
+				$lo = 'entities_advanced';
+				break;
+			case 'cleanIndex':
+			case 'deleteIndex':
+			case 'addIndex':
+				$lo = 'entities_index';
+				break;
+			case 'view':
+			case 'edit':
+				$lo = 'entities_edition';
+				break;
+			case 'import':
+				$lo = 'entities_import';
+				break;
+			default :
+				$lo = 'entities';
+		}
 	}
 	
-	Controler::controler(array("entities", "entities_advanced", "entities_edition", "entities_import",
-													"entities_index", "filebrowser",	"tasks", "xml", "users"), $lo);
+	Controler::controler(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser',	'tasks', 'xml', 'users'), $lo);
 }
 
 ?>

@@ -38,9 +38,9 @@
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
-require 'siteconfig.php';
-require_once 'lang.php';
-require_once 'auth.php';
+include 'siteconfig.php';
+include 'lang.php';
+include 'auth.php';
 authenticate(LEVEL_VISITOR);
 
 
@@ -49,14 +49,14 @@ if ($_GET['page']) { // call a special page (and template)
   if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
 		die('invalid page');
 	}
-  require_once 'view.php';
+  require 'view.php';
   $view = &View::getView();
   $view->renderCached($context, $page);
   exit;
 }
 
 
-require_once 'controler.php';
+require 'controler.php';
 $authorized_logics = array('entrytypes', 'persontypes',
 					'entries', 'persons',
 					'tablefieldgroups', 'tablefields', 'indextablefields',

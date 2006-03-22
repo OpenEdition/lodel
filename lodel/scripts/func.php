@@ -287,6 +287,7 @@ function getoption($name)
 
 function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 {
+	
 	if ($group=="") {
 		if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
 		$dotpos=strpos($name,".");
@@ -315,7 +316,9 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 		$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
 		if ($arr===false) dberror();
 		if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
+		
 		if (!$arr) {
+			
 			// create the textfield
 			require_once("logic.php");
 			$logic=getLogic("texts");

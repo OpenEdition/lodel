@@ -44,7 +44,7 @@ if (file_exists($home."textfunc_local.php"))
 
 # fonction largement reprises de SPIP
 
-require_once 'func.php';
+#include_once 'func.php';
 
 function pluriel($texte)
 {

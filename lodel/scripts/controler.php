@@ -80,7 +80,7 @@ class Controler
 	 * @param string $lo La logique métier appelée. Par défaut cette valeur est vide
 	 * 
 	 */
-	function Controler($logics, $lo = "") 
+	function Controler($logics, $lo = '')
 	{
 		global $home, $context;
 		if ($_POST) {
@@ -89,101 +89,109 @@ class Controler
 			$therequest = &$_GET;
 		}
 		#print_r($therequest);
-		$do=$therequest['do'];
-		if ($do=="back") {
-			require_once "view.php";
+		$do = $therequest['do'];
+
+		if ($do == 'back') {
+			require 'view.php';
 			View::back(2); //revient 2 rang en arrière dans l'historique.
 			return;
 		}
 
-		require_once "func.php";
-		extract_post($therequest);
+		include 'func.php';
+		extract_post($therequest); // nettoyage des valeurs issues de formulaire
 
 		if ($do) {
-			if ($therequest['lo']) $lo = $therequest['lo'];
-			if ($lo!="texts" && !in_array($lo,$logics)) trigger_error("ERROR: unknown logic", E_USER_ERROR);
+			if ($therequest['lo']) {
+				$lo = $therequest['lo'];
+			}
+			if ($lo != 'texts' && !in_array($lo, $logics)) {
+				trigger_error("ERROR: unknown logic", E_USER_ERROR);
+			}
 			$context['lo'] = $lo;
 
 			// get the various common parameters
-			foreach (array("class", "classtype", "type", "textgroups") as $var) {
+			include 'validfunc.php';
+			foreach (array('class', 'classtype', 'type', 'textgroups') as $var) {
 				if ($therequest[$var]) {
-					require_once "validfunc.php";
-					if (!validfield($therequest[$var],$var))
+					if (!validfield($therequest[$var], $var))
 						die("ERROR: a valid $var name is required");
 					$context[$var] = $therequest[$var];
 				}
 			}
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int.
-			foreach (array("id", "idgroup", "idclass", "idparent") as $var) {
+			foreach (array('id', 'idgroup', 'idclass', 'idparent') as $var) {
 				$context[$var] = intval($therequest[$var]);
 			}
       // dir
-			if ($therequest['dir'] && ($therequest['dir'] == "up" || 
-					$therequest['dir'] == "down" || 
+			if ($therequest['dir'] && ($therequest['dir'] == 'up' || 
+					$therequest['dir'] == 'down' || 
 					is_numeric($therequest['dir']))) 
 				$context['dir'] = $therequest['dir'];
 
 			// valid the request
 			if (!preg_match("/^[a-zA-Z]+$/", $do)) 
 				die("ERROR: invalid action");
-			$do = $do. "Action";
+			$do = $do. 'Action';
 			
-			require_once "logic.php";
-		
+			require_once 'logic.php';
+			// que fait-on suivant l'action demandée
 			switch($do) {
-			case 'listAction' :
-				recordurl();
-			default:
-				$logic = &getLogic($lo);
-				// create the logic for the table
-				if (!method_exists($logic, $do)) {
-					if ($do == 'listAction') {
-						$ret = '_ok';
+				case 'listAction' :
+					recordurl(); //enregistre l'url dans la pile
+				case 'viewAction' :
+					recordurl();
+				default:
+					$logic = &getLogic($lo);
+					// create the logic for the table
+					if (!method_exists($logic, $do)) {
+						if ($do == 'listAction') {
+							$ret = '_ok';
+						} else {
+							die('ERROR: invalid action');
+						}
 					} else {
-						die('ERROR: invalid action');
+						// call the logic action
+						$ret = $logic->$do($context, $error);
 					}
-				} else {
-					// call the logic action
-					$ret = $logic->$do($context, $error);
-				}
 			}
-			if (!$ret) die("ERROR: invalid return from the logic.");
+			if (!$ret) {
+				die('ERROR: invalid return from the logic.');
+			}
 
-			// create the view
-			require_once "view.php";
+			//Appel de la vue nécessaire
+			require 'view.php';
 			$view = &View::getView();
 			switch($ret) {
-			case '_back' :
-				$view->back();
-				break;
-      case '_error' :
-				// hum... needs to remove the slashes... don't really like that, because some value may still 
-				// come from  database or lodel. Doing this way is not a security issue but may forbide
-				// user to use \' in there text
-				require_once "func.php";
-				mystripslashes($context);
-				$logic->viewAction($context, $error); // in case anything is needed to be put in the context
-				$context['error'] = $error;
-				print_r($error);
-			case '_ok' :
-				if ($do == "listAction") {
-					$view->renderCached($context, $lo);
-				} else {
-					$view->render($context, "edit_". $lo);
-				}
-				break;
+				case '_back' :
+					$view->back();
+					break;
+      	case '_error' :
+					// hum... needs to remove the slashes... don't really like that, because some value may still 
+					// come from  database or lodel. Doing this way is not a security issue but may forbide
+					// user to use \' in there text
+					#require_once 'func.php';
+					mystripslashes($context);
+					$logic->viewAction($context, $error); // in case anything is needed to be put in the context
+					$context['error'] = $error;
+					print_r($error);
+				case '_ok' :
+					if ($do == 'listAction') {
+						$view->renderCached($context, $lo);
+					} else {
+						$view->render($context, "edit_$lo");
+					}
+					break;
 			default:
-				if (strpos($ret,"_location:")===0) {
-					header(substr($ret,1));
-					exit();
+				if (strpos($ret, '_location:') === 0) {
+					header(substr($ret, 1));
+					exit;
 				}
 				$view->render($context, $ret);
 			}
 		} else {
-			recordurl();
-			require_once "view.php";
+			require 'view.php';
 			$view = &View::getView();
-			$view->renderCached($context,"index");
+			$view->renderCached($context, 'index');
 		}
   } // constructor }}}
 
