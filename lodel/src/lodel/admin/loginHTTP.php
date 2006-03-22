@@ -28,9 +28,9 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-require("siteconfig.php");
-require_once("auth.php");
-require_once("class.authHTTP.php");
+include 'siteconfig.php';
+include 'auth.php';
+require 'class.authHTTP.php';
 
 $httpAuth = new AuthHTTP();
 if ($httpAuth->getHeader())
@@ -38,11 +38,11 @@ if ($httpAuth->getHeader())
 	// récupère les identifiants (login/password) du header
 	$identifiers = $httpAuth->getIdentifiers();
 
-	require_once("func.php");
+	include 'func.php';
 	extract_post($identifiers);
 
-	require_once("connect.php");
-	require_once("loginfunc.php");
+	include 'connect.php';
+	include 'loginfunc.php';
 
 	// les identifiants ne correspondent pas à un utilisateur Lodel
 	if (!check_auth($context['login'],$context['password'],$site))
@@ -54,7 +54,7 @@ if ($httpAuth->getHeader())
 	else
 	{
 		$httpAuth->reset();
-		$context['password']=$passwd=0;
+		$context['password'] = $passwd = 0;
 		return;
 	}
 }
