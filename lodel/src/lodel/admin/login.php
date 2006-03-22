@@ -39,26 +39,21 @@
  * @package lodel/source/lodel/admin
  */
 
-require 'siteconfig.php';
-require_once 'auth.php';
+include 'siteconfig.php';
+include 'auth.php';
 
 if ($_POST['login']) {
-	require_once 'func.php';
+	include 'func.php';
 	extract_post();
+	include 'connect.php';
+	include 'loginfunc.php';
 	do {
-		require_once 'connect.php';
-		require_once 'loginfunc.php';
-		require_once 'connect.php';
-		
-			
 		if (!check_auth($context['login'], $context['passwd'], $site)) {
 			$context['error_login'] = 1;
 			break;
 		}
-		
 		//Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
 		if($context['lodeluser']['rights'] < LEVEL_LODELADMIN) {
-			
 			usemaindb();
 			$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
 			usecurrentdb();
@@ -78,7 +73,8 @@ if ($_POST['login']) {
 		die ("url_retour: $url_retour");
 	} while (0);
 }
-require_once 'connect.php';
+
+include_once 'connect.php';
 $context['passwd'] = $passwd = 0;
 // variable: sitebloque
 /*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
@@ -95,7 +91,7 @@ $context['error_timeout']   = $error_timeout;
 $context['error_privilege'] = $error_privilege;
 
 
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->render($context, 'login');
 ?>
