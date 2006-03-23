@@ -112,6 +112,7 @@ function search(&$context, $funcname, $arguments)
 		if (!$context['lodeluser']['visitor']) {
 			$criteria_index .= " AND #_TP_entities.status >= 1";
 		}
+		$criteria_index .= "AND #_TP_entities.status != -64";
 		$groupby = " GROUP BY identity ";
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
 		#echo "hey :".$sql;
