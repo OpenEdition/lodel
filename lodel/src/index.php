@@ -52,7 +52,7 @@
 
 require 'siteconfig.php';
 //gestion de l'authentification
-require_once 'auth.php';
+require 'auth.php';
 authenticate();
 // record the url if logged
 if ($lodeluser['rights'] >= LEVEL_VISITOR) {
@@ -60,18 +60,18 @@ if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 }
 
 // get the view and check the cache.
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 if ($view->renderIfCacheIsValid()) {
 	return;
 }
 
-require_once 'textfunc.php';
+require 'textfunc.php';
 $id         = intval($_GET['id']);
 $identifier = $_GET['identifier'];
 $page       = $_GET['page']; // get only
 $do         = $_POST['do'] ? $_POST['do'] : $_GET['do'];
-$tpl        = "index"; // template by default.
+$tpl        = 'index'; // template by default.
 
 
 // ID ou IDENTIFIER
@@ -120,9 +120,9 @@ if ($id || $identifier) {
 	$view->renderCached($context, $page);
 	exit;
 
-//DO
+//Appel d'une action via le model MVC
 } elseif ($do) {
-		require_once 'controler.php';
+		require 'controler.php';
 	if ($do == 'edit' || $do == 'view') {
 		if($_GET) {// to be sure nobody is going to modify something wrong
 			$_GET['id'] = 0;
@@ -136,7 +136,7 @@ if ($id || $identifier) {
 			die('ERROR: idtype must be given');
 		}
 
-		require_once 'dao.php';
+		require 'dao.php';
 		$dao = &getDAO('types');
 		$vo = $dao->find("id='$idtype' and public>0 and status>0");
 		if (!$vo) {
@@ -171,7 +171,6 @@ if ($id || $identifier) {
 		// rien à faire.
 	}
 }
-
 
 $view->renderCached($context, 'index');
 
