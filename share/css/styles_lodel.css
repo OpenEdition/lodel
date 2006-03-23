@@ -945,3 +945,7 @@ div.close{
 	border: 3px solid #aaa;
 	background: #fff;
 }
+
+.error.servoo{
+	margin: 1ex 0 1ex 40px;
+}

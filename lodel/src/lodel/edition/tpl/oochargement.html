@@ -40,12 +40,16 @@
 	</li>
 </IF>
 </ul>
-<IF COND="[#ERROR]">
-	<div class="error">
-		[@EDITION.ERROR_UPLOADLING]<br />[#ERROR]
-	</div>
-</IF>
+
 <br />&nbsp;<br />
+
+<IF COND="[#ERROR]">
+	<dl class="error servoo">
+		<dt>[@EDITION.ERROR_UPLOADLING]</dt>
+		<dd>[#ERROR]</dd>
+	</dl>
+</IF>
+
 <div id="uploadMsg" class="displayOff">
 </div>
 <form name="formfic" enctype="multipart/form-data" action="[#URL]" method="post" onsubmit="showProcessMsg('uploadMsg', '[@COMMON.WAIT_FILE_IS_UPLOADING]')" />
