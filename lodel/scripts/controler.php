@@ -83,7 +83,7 @@ class Controler
 	function Controler($logics, $lo = '')
 	{
 		global $home, $context;
-		cleanEntities();
+		#cleanEntities();
 		if ($_POST) {
 			$therequest = &$_POST;
 		} else {
@@ -138,7 +138,7 @@ class Controler
 			switch($do) {
 				case 'listAction' :
 					recordurl(); //enregistre l'url dans la pile
-				case 'viewAction' :
+				#case 'viewAction' :
 					#recordurl();
 				default:
 					$logic = &getLogic($lo);
