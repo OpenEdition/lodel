@@ -95,7 +95,7 @@
         <DO>
 	<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
 	  <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"></label><br class="nobr" />
-	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
 	<br />
         </DO>
         <AFTER>
@@ -364,11 +364,11 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<ELSE/>
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_ENTITIES]</a>
-	<select id="[#VARNAME][select]" row="3" multiple >
+	
+	<select id="[#VARNAME]_select" row="3" multiple="multiple" >
 	<LOOP NAME="entities_select">
 		<DO>
-		<option value="[#ID]">[#G_TITLE]</option>
+		<option value="[#ID]">[#G_TITLE|couper(60)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></option>
 		</DO>
 		<AFTER>
 			</select>
@@ -380,7 +380,8 @@ cp_[#VARNAME].writeDiv();
 			<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" value="" />
 		</ALTERNATIVE>
 	</LOOP>
-
+	<br /><br />
+	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=565,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
 	</IF>
 <ELSE/>
 

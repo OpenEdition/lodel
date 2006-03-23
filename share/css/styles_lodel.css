@@ -879,7 +879,9 @@ table.statistics.fields td.actions{
 
 div.close{
 	text-align: right;
-	margin: 2ex 1em 0 0;
+	margin: 2ex 1em 2ex 0;
+	font-weight: bold;
+	font-size: 90%;
 }
 
 /* Index and persons entries */
@@ -948,4 +950,11 @@ div.close{
 
 .error.servoo{
 	margin: 1ex 0 1ex 40px;
+}
+
+/********************** Entitiebrowser et Filebrowser ************************/
+
+#browser fieldset{
+	margin-left: 10px;
+	width: 500px;
 }
