@@ -39,7 +39,7 @@
  * @version CVS:$Id$
  */
 
-require_once "auth.php" ;
+require_once 'auth.php';
 
 // {{{ class
 /**
@@ -83,6 +83,7 @@ class Controler
 	function Controler($logics, $lo = '')
 	{
 		global $home, $context;
+		cleanEntities();
 		if ($_POST) {
 			$therequest = &$_POST;
 		} else {
@@ -96,8 +97,7 @@ class Controler
 			View::back(2); //revient 2 rang en arrière dans l'historique.
 			return;
 		}
-
-		include 'func.php';
+		require_once 'func.php';
 		extract_post($therequest); // nettoyage des valeurs issues de formulaire
 
 		if ($do) {
@@ -110,7 +110,7 @@ class Controler
 			$context['lo'] = $lo;
 
 			// get the various common parameters
-			include 'validfunc.php';
+			require 'validfunc.php';
 			foreach (array('class', 'classtype', 'type', 'textgroups') as $var) {
 				if ($therequest[$var]) {
 					if (!validfield($therequest[$var], $var))
@@ -139,7 +139,7 @@ class Controler
 				case 'listAction' :
 					recordurl(); //enregistre l'url dans la pile
 				case 'viewAction' :
-					recordurl();
+					#recordurl();
 				default:
 					$logic = &getLogic($lo);
 					// create the logic for the table
@@ -195,5 +195,28 @@ class Controler
 		}
   } // constructor }}}
 
+	/**
+	 * Nettoyage des entités à -64. Cette fonction est appelée à chaque fois.
+	 *
+	 *
+	 */
+	
+
 } // }}}
+
+/*function cleanEntities() CETTE FONCTION N'EST PAS BONNE
+{
+		global $db;
+		$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64');
+		$result = $db->execute($mysql);
+		while(!$result->EOF) {
+			$ids[] = $result->fields['id'];
+			$result->MoveNext();
+		}
+		$context['id'] = $ids;
+		require 'logic.php';
+		require 'func.php';
+		$logic = &getLogic('entities');
+		$logic->deleteAction($context, $error);
+	}*/ 
 ?>
