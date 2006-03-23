@@ -138,11 +138,13 @@ function changeNameAttributes(obj,index)
 	for(i=0; i<obj.childNodes.length; i++) {
 		var child=obj.childNodes[i];
 		if (child.getAttribute) {
-		var name=child.getAttribute('name');
-		if (name) {
-			newname=name.replace(/__lodel_wildcard/gi,index);
-			child.setAttribute('id',newname);
-			child.setAttribute('name',newname);
+		var content=child.innerHTML;
+		
+		if (content) {
+// 			alert(content);
+			newcontent=content.replace(/__lodel_wildcard/gi,index);
+// 			alert(newcontent);
+			child.innerHTML = newcontent;
 		}
 		}
 	}
