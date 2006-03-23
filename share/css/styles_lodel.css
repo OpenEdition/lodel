@@ -259,6 +259,10 @@ div.displayfield span{
 	background: #f1f5fb;
 }
 
+div.displayfield.longtext{
+	background: #fdfceb;
+}
+
 div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	background: #f1f5fb;
 }
