@@ -253,9 +253,10 @@ div.displayfield{
 
 div.displayfield p{
 	line-height: 150%;
+	color: #333;
 }
 
-div.displayfield span{
+div.displayfield span, div.displayfield strong, div.displayfield em{
 	background: #f1f5fb;
 }
 
@@ -710,12 +711,27 @@ div.advancedFunc dd{
 	font-size: 80%;
 	clear: both;
 	margin: .5ex 0 0 0;
+	position: static;
+}
+
+#listEntitiesEdit .action span.item, #listEntitiesEdit .action .move{
+	display: inline;
+	float: none;
+	width: auto;
 }
 
 #listEntitiesEdit img{
 	float: left;
 	display: block;
 	margin: 0 1em 1ex 0 ;
+}
+
+#listEntitiesEdit .titre_document a{
+	color: #0e2d7c;
+}
+
+#listEntitiesEdit .auteurs_document{
+	font-size: 90%;
 }
 
 #entityIdent{

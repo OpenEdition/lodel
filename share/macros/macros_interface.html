@@ -447,7 +447,7 @@ cp_[#VARNAME].writeDiv();
 
 <DEFFUNC NAME="EDIT_PERSONS">
 	<div class="add">
-         <a href="#down" onClick="addpersons(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
+         <a href="#down" onclick="addpersons(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
 	</div>
   <div id="persons_[#VARNAME]" class="personseditionarea" >
         <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
@@ -1547,7 +1547,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">
-		<IF COND="![#LO] AND ![#CURRENTURL|strpos('dashboard')]">
+		<IF COND="(![#LO] AND ![#CURRENTURL|strpos('dashboard')]) OR [#DO] EQ 'view'">
 			<MACRO NAME="DESCENDRE_MONTER_ENTITIES">
 		</IF>
 		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
