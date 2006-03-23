@@ -354,15 +354,15 @@ ul.entitiesPath a, ul.entitiesPath .queryText, #actionsOnEntitiesPath a, a.actio
 }
 
 ul.entitiesPath, #actionsOnEntitiesPath, #addEntity, ul.entitiesPath .queryText{
-	padding: .5ex 0 0 1em;
-	height: 4ex;
+	padding: .5ex 0 .5ex 1em;
+	min-height: 3.5ex;
 	font-size: 90%;
 	border-bottom: 1px solid #aaa;
 	background: #f1f5fb;
 }
 
 ul.entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
-	float: left;
+	display: inline;
 	padding: 0;
 	margin: .3ex .4em 0 0;
 	color: #333;	
@@ -377,6 +377,10 @@ ul.entitiesPath .queryText .searchInfos{
 	top: 1.5ex;
 	left: 70%;
 	width: 30%;
+}
+
+ul.entitiesPath{
+	padding-right: 210px;
 }
 
 
@@ -961,4 +965,10 @@ div.close{
 #browser fieldset{
 	margin-left: 10px;
 	width: 500px;
+}
+
+/************** FCK ***************************/
+
+#eWysiwygCell{
+	background: #fff;
 }
