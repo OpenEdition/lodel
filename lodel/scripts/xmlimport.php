@@ -98,8 +98,8 @@ class XMLImportParser
 		global $home;
 		if (!$this->commonstyles) {
 			// get internal styles and prepare them (detect synonym styles, same style in different lang)
-			$dao = &getDAO("internalstyles");
-			$iss = $dao->findMany("status > 0");
+			$dao = &getDAO('internalstyles');
+			$iss = $dao->findMany('status > 0');
 			foreach ($iss as $is) {
 				// analyse the styles
 				foreach (preg_split("/[,;]/", $is->style) as $style) {
@@ -109,8 +109,8 @@ class XMLImportParser
 				}
 			}
 			// get characterstyles
-			$dao = &getDAO("characterstyles");
-			$css = $dao->findMany("status>0");
+			$dao = &getDAO('characterstyles');
+			$css = $dao->findMany('status > 0');
 			foreach ($css as $cs) {
 				foreach (preg_split("/[,;]/", $cs->style) as $style) {
 					$this->_prepare_style($style, $cs);
@@ -162,11 +162,11 @@ class XMLImportParser
 				continue;
 			$obj = & $arr[$i +1];
 			$class = strtolower(get_class($obj));
-			if (!$isave && $class == "internalstylesvo") {
+			if (!$isave && $class == 'internalstylesvo') {
 				$forcenext = false;
 				if ($obj->surrounding == "-*") {
 					// check what is the previous on.
-					if ($arr[$i -3] == "/" && strtolower(get_class($arr[$i -2])) == "tablefieldsvo") {
+					if ($arr[$i -3] == "/" && strtolower(get_class($arr[$i -2])) == 'tablefieldsvo') {
 						// good, put the closing tag further
 						$closing = array_splice($arr, $i -3, 3);
 						$i += 3;
@@ -181,34 +181,21 @@ class XMLImportParser
 				} else {
 					// surrounding is a proper tag
 					$obj = & $this->commonstyles[$obj->surrounding];
-					array_splice($arr, $i, 0, array ("", $obj, "")); // opening tag
+					array_splice($arr, $i, 0, array ('', $obj, '')); // opening tag
 					$i += 3;
 					$n += 3;
-					array_splice($arr, $i +6, 0, array ("/", $obj, "")); // closing tag after the closing internal tag
+					array_splice($arr, $i +6, 0, array ("/", $obj, '')); // closing tag after the closing internal tag
 					$n += 3;
 				}
 			}	else
-				if ($class == "tablefieldsvo" && $isave) {
+				if ($class == 'tablefieldsvo' && $isave) {
 					// put the opening at $isave
 					$arr[$i -1] .= $arr[$i +2]; // copy data. This is not the most efficient, must the nicest way to do
-					$arr[$i +2] = "";
+					$arr[$i +2] = '';
 					$opening = array_splice($arr, $i, 3);
 					array_splice($arr, $isave, 0, $opening);
 					$isave = false;
-				} /* else
-										if ($isave) {
-											die("la");
-											// problem, the group at $isave has to be attached with above.
-											if ($arr[$isave-3]=="/" && strtolower(get_class($arr[$isave-2]))=="tablefieldsvo") {
-												$closing=array_splice($arr,$isave-3,2);
-												array_splice($arr,$i,0,$closing);    
-												$isave=false;
-											} else {
-												die("oups");
-												// don't know what to do, there is nothing before or after
-											}
-										}
-									*/
+				}
 		} // end for
 
 		// deal with the non-greedy internalstyle
@@ -219,11 +206,11 @@ class XMLImportParser
 				continue;
 			$obj = & $arr[$i +1];
 			$class = strtolower(get_class($obj));
-			if ($class != "internalstylesvo" || $obj->greedy)
+			if ($class != 'internalstylesvo' || $obj->greedy)
 				continue;
 			if ($arr[$i] == "/") {
 				// closing
-				$in = "";
+				$in = '';
 			}	else {
 				$in = $obj->name;
 				$arr2 = preg_split("/(<\/?)((?:table|ul|ol|dl|dd|pre|blockquote|object)\b[^>]*>)/", $arr[$i +2], -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -243,7 +230,7 @@ class XMLImportParser
 						// opening
 						$blockel ++;
 						if ($blockel == 1) {
-							array_splice($arr, $i +3, 0, array ("/", $obj, "")); // closing tag
+							array_splice($arr, $i +3, 0, array ("/", $obj, '')); // closing tag
 							$i += 3;
 							$n += 3;
 						}
@@ -255,12 +242,12 @@ class XMLImportParser
 		}
 		// proper parser. Launch the handlers
 		$datastack = array ();
-		$classstack = array (array ($this->mainclass, "entities"));
+		$classstack = array (array ($this->mainclass, 'entities'));
 		$handler->openClass($classstack[0]);
 		$this->nbdoc = 0;
 		
 		for ($i = 1; $i < $n; $i += 3) {
-			$this->_parseOneStep($arr, $i, $datastack, $classstack, "block");
+			$this->_parseOneStep($arr, $i, $datastack, $classstack, 'block');
 			
 			$larr = preg_split("/<(\/)?soo:inline(>|\s+class=\"[^\"]*\"\s*>)/", $arr[$i +2], -1, PREG_SPLIT_DELIM_CAPTURE);
 			$nj = count($larr);
@@ -268,7 +255,7 @@ class XMLImportParser
 			if ($nj > 1) {
 				$this->_objectize($larr, false);
 				for ($j = 1; $j < $nj; $j += 3) {
-					$this->_parseOneStep($larr, $j, $datastack, $classstack, "inline");
+					$this->_parseOneStep($larr, $j, $datastack, $classstack, 'inline');
 					$datastack[0] .= $larr[$j +2];
 				}
 			}
@@ -300,25 +287,23 @@ class XMLImportParser
 		//echo $classstack[0];
 		$opening = $arr[$i] != "/";
 		$obj = & $arr[$i +1];
-		if (((!$opening && $obj == $arr[$i +4]) || ($opening && $obj == $arr[$i -2])) && (strtolower(get_class($obj)) != "internalstylesvo" || $obj->greedy)) {
+		if (((!$opening && $obj == $arr[$i +4]) || ($opening && $obj == $arr[$i -2])) && (strtolower(get_class($obj)) != 'internalstylesvo' || $obj->greedy)) {
 			// current closing equals next opening
 			// or current opening equals last closing
 			return;
-		} # else {
-		#  echo $obj,"<br>";
-		#}
+		}
 		if (!is_object($obj)) {
 			// unknow style
 			if ($opening) {
-				if ($level == "inline") {
-					array_unshift($datastack, "");
+				if ($level == 'inline') {
+					array_unshift($datastack, '');
 				} else {
 					$datastack[0] = "";
 				}
-			} elseif ($obj == "documents") {
+			} elseif ($obj == 'documents') {
 				// do nothing
 			} else {
-				if ($level == "inline") {
+				if ($level == 'inline') {
 					$data = array_shift($datastack);
 					$datastack[0] .= $this->handler->unknownCharacterStyle($obj, $data);
 				} else {
@@ -334,67 +319,64 @@ class XMLImportParser
 		}
 		$class = strtolower(get_class($obj));
 		switch ($class) {
-		case "internalstylesvo" :
-		case "characterstylesvo" :
-			# if (preg_match("/^[\.;]+/",$obj->style)) break;
-			if ($opening) {
-				array_unshift($datastack, "");
-			} else {
-				$call = "process".substr($class, 0, -2);
-				#echo count($datastack);
-				$data = array_shift($datastack);
-				$datastack[0] .= $this->handler->$call ($obj, $data); // call the method associated with the object class
-			}
-			break;
-		case "tablefieldsvo" :
-			#echo ": ".$classstack[0][0]." ".$obj->style." ".$classstack[0][0]." :";
-			$cstyles = & $this->contextstyles[$classstack[0][0]];
-			if (!$cstyles[$obj->style]) { // context change	 ?
-				$this->handler->closeClass($classstack[0]);
-				$cl = array_shift($classstack);
-				if (!$this->contextstyles[$cl[0]][$obj->style]) {
-					// must be in the context below
-					// if not... problem.
+			case 'internalstylesvo' :
+			case 'characterstylesvo' :
+				if ($opening) {
+					array_unshift($datastack, '');
+				} else {
+					$call = 'process'. substr($class, 0, -2);
+					#echo count($datastack);
+					$data = array_shift($datastack);
+					$datastack[0] .= $this->handler->$call ($obj, $data); // call the method associated with the object class
 				}
-				// new context
-			}
-			if ($opening) {
-				if ($obj->g_name == "dc.title" && count($classstack) == 1) {
-					$this->nbdoc++;
-					if ($this->nbdoc > 1) {
-						$this->handler->closeClass($classstack[0], true);
-						$this->handler->openClass($classstack[0], null, true);
-					}
-				}
-				array_unshift($datastack, "");
-			} else {
-				$data = array_shift($datastack);
-				$datastack[0] .= $this->handler->processTableFields($obj, $data); // call the method associated with the object class
-			}
 			break;
-		case "entrytypesvo" :
-		case "persontypesvo" :
-			#echo ":- ".$classstack[0][0]." ".$obj->style." ".$classstack[0][0]." -:";
-			if ($opening) { // opening. Switch the lowest context
-				// close up to the base
-				while (count($classstack) > 1) {
+			case 'tablefieldsvo' :
+				$cstyles = & $this->contextstyles[$classstack[0][0]];
+				if (!$cstyles[$obj->style]) { // context change	 ?
 					$this->handler->closeClass($classstack[0]);
-					array_shift($classstack);
+					$cl = array_shift($classstack);
+					if (!$this->contextstyles[$cl[0]][$obj->style]) {
+						// must be in the context below
+						// if not... problem.
+					}
+					// new context
 				}
-				array_unshift($datastack, "");
-
-				// change the context
-				$classtype = $class == "entrytypesvo" ? "entries" : "persons";
-				array_unshift($classstack, array ($obj->class, $classtype));
-				$this->handler->openClass($classstack[0], $obj);
-			}	else {
-				$call = "process".substr($class, 0, -2);
-				$this->handler->$call ($obj, $datastack[0]); // call the method associated with the object class
-				$datastack[0] = "";
-			}
-			break;
-		default :
-			die("ERROR: internal error in XMLImportParser::parse. Unknown class $class");
+				if ($opening) {
+					if ($obj->g_name == 'dc.title' && count($classstack) == 1) {
+						$this->nbdoc++;
+						if ($this->nbdoc > 1) {
+							$this->handler->closeClass($classstack[0], true);
+							$this->handler->openClass($classstack[0], null, true);
+						}
+					}
+					array_unshift($datastack, '');
+				} else {
+					$data = array_shift($datastack);
+					$datastack[0] .= $this->handler->processTableFields($obj, $data); // call the method associated with the object class
+				}
+				break;
+			case 'entrytypesvo' :
+			case 'persontypesvo' :
+				if ($opening) { // opening. Switch the lowest context
+					// close up to the base
+					while (count($classstack) > 1) {
+						$this->handler->closeClass($classstack[0]);
+						array_shift($classstack);
+					}
+					array_unshift($datastack, "");
+	
+					// change the context
+					$classtype = $class == 'entrytypesvo' ? 'entries' : 'persons';
+					array_unshift($classstack, array ($obj->class, $classtype));
+					$this->handler->openClass($classstack[0], $obj);
+				}	else {
+					$call = 'process'. substr($class, 0, -2);
+					$this->handler->$call ($obj, $datastack[0]); // call the method associated with the object class
+					$datastack[0] = '';
+				}
+				break;
+			default :
+				die("ERROR: internal error in XMLImportParser::parse. Unknown class $class");
 		}
 	} //end of _parse_step_one
 
@@ -408,23 +390,24 @@ class XMLImportParser
 	 * @param string $class the name of the class to init
 	 * @param string $criteria the possible SQL criterions (by default empty)
 	 */
-	function _init_class($class, $criteria = "")
+	function _init_class($class, $criteria = '')
 	{
 		if ($this->contextstyles[$class])
 			return; // already done
 
 		// get all the information from the database for all the fields
-		$dao = & getDAO("tablefields");
-		if (!$criteria)
+		$dao = &getDAO('tablefields');
+		if (!$criteria) {
 			$criteria = "class='".$class."'";
+		}
 		$tfs = $dao->findMany("(".$criteria.") AND status>0");
 
 		// create an assoc array style => tf information
 		foreach ($tfs as $tf) {
 			// is it an index ?
-			if ($tf->type == "entries" || $tf->type == "persons") {
+			if ($tf->type == 'entries' || $tf->type == 'persons') {
 				// yes, it's an index. Get the object
-				$dao = & getDAO($tf->type == "entries" ? "entrytypes" : "persontypes");
+				$dao = &getDAO($tf->type == 'entries' ? 'entrytypes' : 'persontypes');
 				$tf = $dao->find("type='".$tf->name."'");
 				$this->_init_class($tf->class, "class='".$tf->class."' OR class='entities_".$tf->class. "'");
 			}
@@ -454,7 +437,7 @@ class XMLImportParser
 			$obj->style = $style;
 		} else {
 			// style synonyme. take the first one
-			$obj->style = preg_replace("/[:,;].*$/", "", $obj->style);
+			$obj->style = preg_replace("/[:,;].*$/", '', $obj->style);
 		}
 	}
 

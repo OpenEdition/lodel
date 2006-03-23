@@ -39,10 +39,10 @@
  * @package lodel/source/lodel/edition
  */
 
-require "siteconfig.php";
-require_once "auth.php";
+require 'siteconfig.php';
+require 'auth.php';
 authenticate(LEVEL_VISITOR);
 
-$class = "search";
-require_once "search.inc.php";
+$class = 'search';
+include 'search.inc.php';
 ?>

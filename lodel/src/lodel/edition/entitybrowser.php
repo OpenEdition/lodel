@@ -41,7 +41,7 @@
 
 
 require 'siteconfig.php';
-require_once 'auth.php';
+require 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
 define('UPLOADDIR', SITEROOT. 'CACHE/upload');
@@ -52,7 +52,7 @@ $context['single'] = isset($_REQUEST['single']);
 $ids = explode(',', $_REQUEST['value']);
 
 $nodesk = true;
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->renderCached($context, 'entitybrowser');
 

@@ -39,11 +39,11 @@
  * @package lodel/source/lodel/edition
  */
 
-require "siteconfig.php";
-require_once $home."auth.php";
+require 'siteconfig.php';
+require 'auth.php';
 authenticate(LEVEL_REDACTOR);
-require_once $home."func.php";
-require_once "utf8.php"; // conversion des caracteres
+require 'func.php';
+require 'utf8.php'; // conversion des caracteres
 
 if ($_POST) {
 	$therequest = &$_POST;
@@ -62,20 +62,20 @@ if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
 	return;
 }
 
-if ($_POST['fileorigin'] == "upload" && $_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name']!="none") {
+if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name'] != 'none') {
 	$file1 = $_FILES['file1']['tmp_name'];
 	if (!is_uploaded_file($file1)) {
 		die(utf8_encode("Le fichier n'est pas un fichier chargé"));
 	}
 	$sourceoriginale = $_FILES['file1']['name'];
 	$tmpdir = tmpdir(); // use here and later.
-	$source = $tmpdir. "/". basename($file1). "-source";
+	$source = $tmpdir. "/". basename($file1). '-source';
 	move_uploaded_file($file1, $source); // move first because some provider does not allow operation in the upload dir
-} elseif ($_POST['fileorigin'] == "serverfile" && $_POST['localfile']) {
+} elseif ($_POST['fileorigin'] == 'serverfile' && $_POST['localfile']) {
 	$sourceoriginale = basename($_POST['localfile']);
-	$file1           = SITEROOT. "upload/". $sourceoriginale;
+	$file1           = SITEROOT. 'upload/'. $sourceoriginale;
 	$tmpdir          = tmpdir(); // use here and later.
-	$source          = $tmpdir. "/". basename($file1). "-source";
+	$source          = $tmpdir. "/". basename($file1). '-source';
 	copy($file1, $source);
 } else {
 	$file1           = '';
@@ -83,7 +83,7 @@ if ($_POST['fileorigin'] == "upload" && $_FILES['file1'] && $_FILES['file1']['tm
 	$source          = '';
 }
 
-require_once "servoofunc.php";
+require 'servoofunc.php';
 $client = new ServOO;
 
 if ($client->error_message) {
@@ -99,14 +99,14 @@ if ($client->error_message) {
 			preg_match("/\.(\w+)$/", $sourceoriginale, $result);
 			$ext = $result[1];
 
-			$options = array("block" => true,	"inline" => true);
-			$outformat = $sortiexhtml ? "W2L-XHTML" : "W2L-XHTMLLodel";
-			$xhtml = $client->convertToXHTML($source, $ext, $outformat, $tmpdir, "",
-													$options, array("allowextensions" => "xhtml|jpg|png|gif"),
-													"imagesnaming", // callback
-													SITEROOT. "docannexe/tmp". rand()); // base name for the images
+			$options = array('block' => true,	'inline' => true);
+			$outformat = $sortiexhtml ? 'W2L-XHTML' : 'W2L-XHTMLLodel';
+			$xhtml = $client->convertToXHTML($source, $ext, $outformat, $tmpdir, '',
+													$options, array('allowextensions' => 'xhtml|jpg|png|gif'),
+													'imagesnaming', // callback
+													SITEROOT. 'docannexe/tmp'. rand()); // base name for the images
 			if ($xhtml === false) {
-				if (strpos($client->error_message, "Not well-formed XML") !== false) {
+				if (strpos($client->error_message, 'Not well-formed XML') !== false) {
 					$arr = preg_split("/\n/", $client->error_message);
 					$l = -3;
 					foreach ($arr as $t) {
@@ -133,8 +133,8 @@ if ($client->error_message) {
 			die(htmlentities($xhtml));
 		}
 
-		require_once "balises.php";
-		$fileconverted = $source. ".converted";
+		require 'balises.php';
+		$fileconverted = $source. '.converted';
 		if (!writefile($fileconverted, $xhtml)) {
 			$context['error'] = 'unable to write converted file';
 			break;
@@ -153,7 +153,7 @@ if ($client->error_message) {
 			$row['idtype']        = $context['idtype'];
 		}
 		
-		require_once "taskfunc.php";
+		require 'taskfunc.php';
 		$idtask = maketask("Import $file1_name", 3, $row);
 
 		header("Location: checkimport.php?idtask=". $idtask);
@@ -161,11 +161,13 @@ if ($client->error_message) {
 	} while (0); // exceptions
 }
 
-$context['url'] = "oochargement.php";
+$context['url'] = 'oochargement.php';
 
-require_once "view.php";
+require 'view.php';
 $view = &View::getView();
-$view->render($context, "oochargement", !(bool)$_POST);
+$view->render($context, 'oochargement', !(bool)$_POST);
+
+
 
 function imagesnaming($filename, $index, $uservars)
 {
