@@ -939,7 +939,7 @@ function _indent($source, $indenter = '  ')
  */
 function _indent_xhtml($source, $indenter = '  ')
 {
-		return $source;
+		#return $source;
 		$source = str_replace("\t","",$source);
 		// Remove all space after ">" and before "<".
 		$search = array("/>(\s)*/", "/(\s)*</");
