@@ -792,13 +792,19 @@ table.statistics.users{
 
 table.statistics.fields{
 	width: 350px;
-	margin: 0;
+	margin: 0 0 4ex 40px;
 }
 
 table.statistics.fields th.status{
 	font-size: 80%;
 	height: 20px;
-	width: auto;
+	width: 240px;
+}
+
+table.statistics.fields th.status.group{
+	font-size: 90%;
+	background: #aaa;
+	color: #fff;
 }
 
 table.statistics caption{
