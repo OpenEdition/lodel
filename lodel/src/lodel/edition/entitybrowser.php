@@ -44,7 +44,7 @@ require 'siteconfig.php';
 require 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
-define('UPLOADDIR', SITEROOT. 'CACHE/upload');
+define('UPLOADDIR', SITEROOT. 'upload');
 
 $context['caller'] = $_REQUEST['caller'];
 $context['single'] = isset($_REQUEST['single']);
