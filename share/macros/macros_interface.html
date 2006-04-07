@@ -312,11 +312,11 @@ $context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['v
 		<div class="fileUpload">
 			<input type="hidden" class="noText" id="uploadType[#VARNAME]" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />
 			<!--<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />-->
-			<label for="[#VARNAME][upload]">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
-			<input size="40" type="file"  id="[#VARNAME][upload]" name="[#FULLVARNAME][upload]" onchange="switchUploadType('uploadType[#VARNAME]', '[#FULLVARNAME][radio]','upload');" />
+			<label for="[#VARNAME]upload">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
+			<input size="40" type="file"  id="[#VARNAME]upload" name="[#FULLVARNAME][upload]" onclick="switchUploadType('uploadType[#VARNAME]', '[#FULLVARNAME][radio]', 'upload')" />
 			<br />
 			<!--<input type="hidden" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" disabled="disabled" />-->
-			<label for="[#VARNAME][localfilename]">
+			<label for="[#VARNAME]localfilename">
 			<a href="index.php?lo=filebrowser&amp;do=view&amp;caller=[#VARNAME]" onclick="window.open(this.href,'Upload','width=600,top=0,left=0,scrollbars=yes,resizable=yes'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a>
 			</label><br class="nobr" />
 			<input size="40" type="text" id="[#VARNAME]localfilename" name="[#FULLVARNAME][localfilename]" class="localChoose" />
@@ -1117,7 +1117,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</LOOP>
 </DEFMACRO>
 
-
+<DEFMACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES_APERCU">
+	<LOOP NAME="tablefieldgroupsapercu" TABLE="tablefieldgroups" WHERE="class='[#TYPE.CLASS]' AND status gt 0" ORDER="rank">
+		<MACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
+	</LOOP>
+</DEFMACRO>
 
 <DEFMACRO NAME="AFFICHER_IDENTIFIANT">
 	<div id="entityIdent">
