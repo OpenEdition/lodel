@@ -223,7 +223,9 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 		$fields[$row['name']] = $row;
 		$result->moveNext();
 	}
-	$fieldnames = array_keys($fields);
+	
+	if (is_array($fields)&& count($fields) > 0) $fieldnames = array_keys($fields);
+	//$fieldnames = array_keys($fields);
 	if (is_array($fieldnames) && count($fieldnames) > 0) {
 		$sql = lq("SELECT ". implode(',', $fieldnames). " FROM #_TP_". $class. " WHERE $id='". $context['id2']."'");
 		$values = $db->getRow($sql);
@@ -271,7 +273,9 @@ function loop_person_relations_fields(&$context, $funcname)
 		$fields[$row['name']] = $row;
 		$result->moveNext();
 	}
-	$fieldnames = array_keys($fields);
+
+	if (is_array($fields)&& count($fields) > 0) $fieldnames = array_keys($fields);	
+	//$fieldnames = array_keys($fields);
 	if (is_array($fieldnames) && count($fieldnames) > 0) {
 		$sql = lq("SELECT ". implode(',', $fieldnames). " FROM #_TP_". $row['class']. " WHERE idrelation='". $context['idrelation']. "'");
 		$values = $db->getRow($sql);
