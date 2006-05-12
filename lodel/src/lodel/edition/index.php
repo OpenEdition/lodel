@@ -43,13 +43,18 @@
 
 include ('siteconfig.php');
 include ('auth.php');
+
+// Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
 if ($_GET['page'] == 'backend' && $_GET['format'] ) {
 	authenticate(LEVEL_VISITOR, 'HTTP');
 	}
 else {
 	authenticate(LEVEL_VISITOR);
 	}
+
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
+	require_once ('entitiesfunc.php');
+	cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
 	recordurl();
 	$context['id'] = $id = intval($_GET['id']);
 	require 'view.php';
