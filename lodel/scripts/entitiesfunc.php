@@ -33,6 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
@@ -97,5 +98,33 @@ function isChild($idref, $idcurrent)
 	}
 	return $idrelation ? false : true; // si on a une relation (descendance) retourne false
 }
+
+
+/**
+ * Suppression des entités à -64 dont la dernière modification remonte à + de 12 h. Cette fonction est  appelée dans index.php (côté édition), lorsqu'il n'y a ni $do, ni $lo dans la requete (lorsque le controler n'est pas appelé).
+ *
+ * Cette fonction appelle l'action delete de la logique des entités.
+ *
+ * @see class.entities.php
+ */
+
+function cleanEntities ()
+{
+		global $db;
+		$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64 AND upd < DATE_SUB(NOW(), INTERVAL 12 HOUR)');
+		$result = $db->execute($mysql);
+		while(!$result->EOF) {
+			$ids[] = $result->fields['id'];
+			$result->MoveNext();
+		}
+		require 'logic.php';
+		//require 'func.php';
+		$logic = &getLogic('entities');
+			foreach($ids as $id) {
+				$context['id'] = $id;
+				$logic->deleteAction($context, $error);
+			}
+}
+
 
 ?>
