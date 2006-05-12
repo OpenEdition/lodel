@@ -118,7 +118,7 @@ function cleanEntities ()
 			$result->MoveNext();
 		}
 		require 'logic.php';
-		//require 'func.php';
+		require 'func.php';
 		$logic = &getLogic('entities');
 			foreach($ids as $id) {
 				$context['id'] = $id;
