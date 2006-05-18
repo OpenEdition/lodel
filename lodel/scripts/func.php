@@ -981,8 +981,10 @@ function _indent_xhtml($source, $indenter = '  ')
 				if ($level<0) {
 					$level = 0;
 				}
+
 				// Place the tag in an array with proper indention.
 				$array[] = str_repeat($indenter, $level). substr($source, $started_at, $tag_lenght);
+
 				// If this was a starting tag, increase the indent level after this tag.
 				if ($tag_level === 1) {
 					$level++;
@@ -1003,6 +1005,7 @@ function _indent_xhtml($source, $indenter = '  ')
 					if ($source{$pt} === '<') {
 						$tag_lenght = $pt-$started_at;
 						// Place the stuff in an array with proper indention.
+
 						$array[] = str_repeat($indenter, $level). substr($source, $started_at, $tag_lenght);
 					}
 					// If the next tag is "<", just advance pointer and let the tag indenter take care of it.
@@ -1018,7 +1021,53 @@ function _indent_xhtml($source, $indenter = '  ')
 		// Replace old source with the new one we just collected into our array.
 		#print_r($array);
 		$c = count($array);
+
+		$addit = 0;
+
 		for($i = 0 ; $i < $c ; $i++) {
+
+
+		/* ajouté pour FCK 
+		 * Le parseur ne doit pas prendre en compte le texte de FCK car le javascript n'est 
+		 * pas pris en compte à cause d'un retour à la ligne initié par la fonction "implode".
+		 * L'astuce trouvée est de faire une seule chaine avec les éléments concernant 
+		 * le texte FCK. A savoir nom de variable et valeur du texte. 
+		 */
+
+			/* on parse le tableau pour connaitre la position de début des éléments texte FCK
+			*/
+			if(preg_match("/fck_introduction_editor.Value = \"/",$array[$i])) {
+				$addit = 1;
+				/* on détermine le nombre d'éléments texte FCK
+				 * on se sert de la balise "</script>" parce qu'elle est facile à matcher
+				 * et qu'elle confirme bien la fin des éléments texte FCK
+				 */ 
+				while(!preg_match("/<\/script>/", $array[$i+$addit])) {	
+					$addit++;
+				}
+
+				/* on rassemble tous les éléments texte FCK en une seule chaine, en supprimant
+				 * tous les espaces et autres caractères de retour à la ligne avec la fonction
+				 * "trim"
+				 */
+				for($j = 1 ; $j < $addit ; $j++) {
+					$array[$i+$j] = trim($array[$i+$j]);	
+		  			$array[$i] = $array[$i].$array[$i+$j];
+				}
+
+				/* un autre problème est que, quand on rassemble tous les éléments texte FCK du 
+				 * tableau dans une seule case du tableau, les autres éléments sont toujours présents. 
+				 * Une idée est de mettre une chaîne vide qui sera prise en compte avec la fonction "implode" 
+				 * et se transformer en retour à la ligne. On remplace les anciens éléments texte par les éléments 
+				 * qui  doivent suivre.
+				 */
+				for($k = 0 ; $k < $addit ; $k++) {
+					$array[$i+1+$k] = $array[$i+$addit+$k];
+				}
+			}
+
+
+
 			if(preg_match("/<textarea|pre [^>]+>/",$array[$i])) {
 				$array[$i+1] = trim($array[$i+1]);
 				$array[$i+2] = trim($array[$i+2]);
