@@ -8,8 +8,8 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
  *
  * Home page: http://www.lodel.org
  *
@@ -33,7 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -71,7 +71,9 @@ function majuscule($texte)
 
 function textebrut($letexte)
 {
-	$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", " ", $letexte);
+	//$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", "", $letexte);
+	$letexte = strip_tags($letexte);
+	$letexte = preg_replace("/&nbsp;|[\n\r\t])+/", " ", $letexte);
 	return $letexte;
 }
 
@@ -737,7 +739,7 @@ function defaultvalue($var1, $var2)
 
 
 /**
- * Fonction utilisée ci dessous pour la numérotation des paragraphes
+ * Fonction utilisï¿½ ci dessous pour la numï¿½otation des paragraphes
  */
 function replacement($arg0, $arg1, $arg2, $arg3, $count)
 {
@@ -751,16 +753,16 @@ function replacement($arg0, $arg1, $arg2, $arg3, $count)
 }
 
 /**
- * Filtre de numérotation des paragraphes
+ * Filtre de numï¿½otation des paragraphes
  * 
- * Ajoute un <span class="paramnumber"> contenant une ancre avec le numéro du paragraphe
+ * Ajoute un <span class="paramnumber"> contenant une ancre avec le numï¿½o du paragraphe
  *
- * @param string $texte le texte à numéroté passé par référence
+ * @param string $texte le texte ï¿½numï¿½otï¿½passï¿½par rï¿½ï¿½ence
  */
 function paranumber(&$texte)
 {
   static $paranum_count;
-	//Regexp : cherche les paragraphes à numéroter, en ignorant les paragraphes contenant une image ou un tableau
+	//Regexp : cherche les paragraphes ï¿½numï¿½oter, en ignorant les paragraphes contenant une image ou un tableau
 	$regexp = "/(<p\b[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|table)/ie";
 	preg_match($regexp,$texte,$matches);
 	#print_r($matches);exit;
