@@ -72,8 +72,8 @@ function majuscule($texte)
 function textebrut($letexte)
 {
 	//$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", "", $letexte);
+	$letexte = preg_replace("/(&nbsp;|[\n\r\t])+/", " ", $letexte);
 	$letexte = strip_tags($letexte);
-	$letexte = preg_replace("/&nbsp;|[\n\r\t])+/", " ", $letexte);
 	return $letexte;
 }
 
