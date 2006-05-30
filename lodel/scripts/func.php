@@ -219,7 +219,7 @@ function translate_xmldata($data)
 function unlock()
 {
 	global $db;
-	// Déverrouilles toutes les tables vérouillées
+	// Dï¿½errouilles toutes les tables vï¿½ouillï¿½s
 	// fonction lock_write()
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) {
 		$db->execute(lq("UNLOCK TABLES")) or dberror();
@@ -230,7 +230,7 @@ function unlock()
 function lock_write()
 {
 	global $db;
-  // Vérouille toutes les tables MySQL en écriture
+  // Vï¿½ouille toutes les tables MySQL en ï¿½riture
   $list = func_get_args();
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES)
 		$db->execute(lq("LOCK TABLES #_MTP_". join (" WRITE ,"."#_MTP_", $list)." WRITE")) or dberror();
@@ -396,16 +396,14 @@ if (!function_exists("file_get_contents")) {
   }
 }
 /**
- * retourne le chemin complet vers une entité
- *
- * @param integer $id identifiant numérique de l'entité
- * @param string $urltype le type d'url utilisé (path,querystring)
+ * retourne le chemin complet vers une entitï¿½ *
+ * @param integer $id identifiant numï¿½ique de l'entitï¿½ * @param string $urltype le type d'url utilisï¿½(path,querystring)
  * @return string le chemin
- * @since fonction ajoutée en 0.8
+ * @since fonction ajoutï¿½ en 0.8
  */
 function getPath($id, $urltype,$base='index')
 {
-	$urltype = 'querystring'; //la version actuelle de lodel ne gère que le type path
+	$urltype = 'querystring'; //la version actuelle de lodel ne gï¿½e que le type path
 	if($urltype!='path' && $urltype!='querystring') {
 		return;
 	}
@@ -616,10 +614,10 @@ function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error)
 }
 
 /**
- * Vérifie que le répertoire $dir, un répertoire de docannexe existe. Dans le cas
- * contraire le crée
+ * Vï¿½ifie que le rï¿½ertoire $dir, un rï¿½ertoire de docannexe existe. Dans le cas
+ * contraire le crï¿½
  *
- * @param string $dir le nom du répertoire
+ * @param string $dir le nom du rï¿½ertoire
  */
 function checkdocannexedir($dir)
 {
@@ -914,8 +912,8 @@ function mystripslashes (&$var)
  * Indentation de code HTML, XML
  *
  * @param string $source le code a indenter
- * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
- * @return le code indenté proprement :)
+ * @param string $indenter les caractï¿½es ï¿½utiliser pour l'indentation. Par dï¿½aut deux espaces.
+ * @return le code indentï¿½proprement :)
  */
 function _indent($source, $indenter = '  ')
 {
@@ -930,166 +928,122 @@ function _indent($source, $indenter = '  ')
 }
 
 
-/**
- * Indentation de code XHTML
- *
- * @param string $source le code a indenter
- * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
- * @return le code indenté proprement :)
- */
-function _indent_xhtml($source, $indenter = '  ')
+
+// Function to seperate multiple tags one line (used by function _indent_xhtml)
+function fix_newlines_for_clean_html($fixthistext)
 {
-		#return $source;
-		$source = str_replace("\t","",$source);
-		// Remove all space after ">" and before "<".
-		$search = array("/>(\s)*/", "/(\s)*</");
-		$replace = array(">", "<");
-		$source = preg_replace($search, $replace, $source);
-		// Iterate through the source.
-		$level = 0;
-		$source_len = strlen($source);
-		$pt = 0;
-		while ($pt < $source_len) {
-			if ($source{$pt} === '<') {
-				// We have entered a tag.
-				// Remember the point where the tag starts.
-				$started_at = $pt;
-				$tag_level = 1;
-				// If the second letter of the tag is "/", assume its an ending tag.
-				if ($source{$pt+1} === '/') {
-					$tag_level = -1;
-				}
-				// If the second letter of the tag is "!", assume its an "invisible" tag.
-				if ($source{$pt+1} === '!') {
-					$tag_level = 0;
-				}
-				// Iterate throught the source until the end of tag.
-				while ($source{$pt} !== '>') {
-					$pt++;
-				}
-				// If the second last letter is "/", assume its a self ending tag.
-				if ($source{$pt-1} === '/') {
-					$tag_level = 0;
-				}
-				$tag_lenght = $pt+1-$started_at;
+	$fixthistext_array = explode("\n", $fixthistext);
+	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
 
-				// Decide the level of indention for this tag.
-				// If this was an ending tag, decrease indent level for this tag..
-				if ($tag_level === -1) {
-					$level--;
-				}
-				if ($level<0) {
-					$level = 0;
-				}
-
-				// Place the tag in an array with proper indention.
-				$array[] = str_repeat($indenter, $level). substr($source, $started_at, $tag_lenght);
-
-				// If this was a starting tag, increase the indent level after this tag.
-				if ($tag_level === 1) {
-					$level++;
-				}
-				// if it was a self closing tag, dont do shit.
-			}
-			// Were out of the tag.
-			// If next letter exists...
-			if (($pt+1) < $source_len) {
-				// ... and its not an "<".
-				if ($source{$pt+1} !== '<') {
-					$started_at = $pt+1;
-					// Iterate through the source until the start of new tag or until we reach the end of file.
-					while ($source{$pt} !== '<' && $pt < $source_len) {
-						$pt++;
-					}
-					// If we found a "<" (we didnt find the end of file) 
-					if ($source{$pt} === '<') {
-						$tag_lenght = $pt-$started_at;
-						// Place the stuff in an array with proper indention.
-
-						$array[] = str_repeat($indenter, $level). substr($source, $started_at, $tag_lenght);
-					}
-					// If the next tag is "<", just advance pointer and let the tag indenter take care of it.
-				} else {
-					$pt++;
-				}
-				// If the next letter doesnt exist... Were done... well, almost..
-			} else {
-				break;
-			}
+ 		// Exception for fckeditor
+		if (preg_match("/fck_introduction_editor/", $unfixedtextvalue))
+		{
+			$fixedtext_array[$unfixedtextkey] = $unfixedtextvalue;
 		}
 		
-		// Replace old source with the new one we just collected into our array.
-		#print_r($array);
-		$c = count($array);
-
-		$addit = 0;
-
-		for($i = 0 ; $i < $c ; $i++) {
-
-
-		/* ajouté pour FCK 
-		 * Le parseur ne doit pas prendre en compte le texte de FCK car le javascript n'est 
-		 * pas pris en compte à cause d'un retour à la ligne initié par la fonction "implode".
-		 * L'astuce trouvée est de faire une seule chaine avec les éléments concernant 
-		 * le texte FCK. A savoir nom de variable et valeur du texte. 
-		 */
-
-			/* on parse le tableau pour connaitre la position de début des éléments texte FCK
-			*/
-			if(preg_match("/fck_introduction_editor.Value = \"/",$array[$i])) {
-				$addit = 1;
-				/* on détermine le nombre d'éléments texte FCK
-				 * on se sert de la balise "</script>" parce qu'elle est facile à matcher
-				 * et qu'elle confirme bien la fin des éléments texte FCK
-				 */ 
-				while(!preg_match("/<\/script>/", $array[$i+$addit])) {	
-					$addit++;
-				}
-
-				/* on rassemble tous les éléments texte FCK en une seule chaine, en supprimant
-				 * tous les espaces et autres caractères de retour à la ligne avec la fonction
-				 * "trim"
-				 */
-				for($j = 1 ; $j < $addit ; $j++) {
-					$array[$i+$j] = trim($array[$i+$j]);	
-		  			$array[$i] = $array[$i].$array[$i+$j];
-				}
-
-				/* un autre problème est que, quand on rassemble tous les éléments texte FCK du 
-				 * tableau dans une seule case du tableau, les autres éléments sont toujours présents. 
-				 * Une idée est de mettre une chaîne vide qui sera prise en compte avec la fonction "implode" 
-				 * et se transformer en retour à la ligne. On remplace les anciens éléments texte par les éléments 
-				 * qui  doivent suivre.
-				 */
-				for($k = 0 ; $k < $addit ; $k++) {
-					$array[$i+1+$k] = $array[$i+$addit+$k];
-				}
-			}
-
-
-
-			if(preg_match("/<textarea|pre [^>]+>/",$array[$i])) {
-				$array[$i+1] = trim($array[$i+1]);
-				$array[$i+2] = trim($array[$i+2]);
-				$array[$i] = $array[$i].$array[$i+1].$array[$i+2];
-				unset($array[$i+1]);
-				unset($array[$i+2]);
-				$i = $i+3;
-			}	elseif(!preg_match("/<script|style [^>]+>/i",$array[$i])) {
-				// si c'est pas une balise script ou style
-				$array[$i+1] = str_replace("\n", "", $array[$i+1]);
-			} 
+		//Makes sure empty lines are ignores
+		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
+		{
+			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
+			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
 		}
-		$source = implode($array, "\n");
-		return $source;
+		
+	}
+	
+	return implode("\n", $fixedtext_array);
 }
 
 /**
- * Récupération des champs génériques dc.* associés aux entités
+ * Indentation de code XHTML
  *
- * @param integer $id identifiant numérique de l'entité dont on veut récupérer un champ dc
- * @param string $dcfield le nom du champ à récupérer (sans le dc.devant). Ex : .'description' pour 'dc.description'
- * @return le contenu du champ passé dans le paramètre $dcfield
+ * @param string $uncleanhtml le code a indenter
+ * @param string $indent les caractï¿½es ï¿½utiliser pour l'indentation. Par dï¿½aut deux espaces.
+ * @return le code indentï¿½proprement :)
+ */
+
+
+function _indent_xhtml ($uncleanhtml, $indent = "  ")
+{
+	//Set wanted indentation
+	//$indent = "    ";
+
+
+	//Uses previous function to seperate tags
+	$fixed_uncleanhtml = fix_newlines_for_clean_html($uncleanhtml);
+	$uncleanhtml_array = explode("\n", $fixed_uncleanhtml); 
+	
+	//Sets no indentation
+	$indentlevel = 0;
+	foreach ($uncleanhtml_array as $uncleanhtml_key => $currentuncleanhtml)
+	{
+		//Removes all indentation
+		$currentuncleanhtml = preg_replace("/\t+/", "", $currentuncleanhtml);
+		$currentuncleanhtml = preg_replace("/^\s+/", "", $currentuncleanhtml);
+		
+		$replaceindent = "";
+		
+		//Sets the indentation from current indentlevel
+		for ($o = 0; $o < $indentlevel; $o++)
+		{
+			$replaceindent .= $indent;
+		}
+		
+		//If self-closing tag, simply apply indent
+		if (preg_match("/<(.+)\/>/", $currentuncleanhtml))
+		{ 
+			$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+		}
+		//If doctype declaration, simply apply indent
+		else if (preg_match("/<!(.*)>/", $currentuncleanhtml))
+		{ 
+			$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+		}
+		//If opening AND closing tag on same line, simply apply indent
+		else if (preg_match("/<[^\/](.*)>/", $currentuncleanhtml) && preg_match("/<\/(.*)>/", $currentuncleanhtml))
+		{ 
+			$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+		}
+		//If closing HTML tag or closing JavaScript clams, decrease indentation and then apply the new level
+		else if (preg_match("/<\/(.*)>/", $currentuncleanhtml) || preg_match("/^(\s|\t)*\}{1}(\s|\t)*$/", $currentuncleanhtml))
+		{
+			$indentlevel--;
+			$replaceindent = "";
+			for ($o = 0; $o < $indentlevel; $o++)
+			{
+				$replaceindent .= $indent;
+			}
+			
+			$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+		}
+		//If opening HTML tag AND not a stand-alone tag, or opening JavaScript clams, increase indentation and then apply new level
+		else if ((preg_match("/<[^\/](.*)>/", $currentuncleanhtml) && !preg_match("/<(link|meta|base|br|img|hr)(.*)>/", $currentuncleanhtml)) || preg_match("/^(\s|\t)*\{{1}(\s|\t)*$/", $currentuncleanhtml))
+		{
+			$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+			
+			$indentlevel++;
+			$replaceindent = "";
+			for ($o = 0; $o < $indentlevel; $o++)
+			{
+				$replaceindent .= $indent;
+			}
+		}
+		else
+		//Else, only apply indentation
+		{$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;}
+	}
+	//Return single string seperated by newline
+
+	return implode("\n", $cleanhtml_array);	
+}
+
+
+
+/**
+ * Rï¿½upï¿½ation des champs gï¿½ï¿½iques dc.* associï¿½ aux entitï¿½
+ *
+ * @param integer $id identifiant numï¿½ique de l'entitï¿½dont on veut rï¿½upï¿½er un champ dc
+ * @param string $dcfield le nom du champ ï¿½rï¿½upï¿½er (sans le dc.devant). Ex : .'description' pour 'dc.description'
+ * @return le contenu du champ passï¿½dans le paramï¿½re $dcfield
  */
 function get_dc_fields($id, $dcfield)
 {
@@ -1126,7 +1080,7 @@ function get_dc_fields($id, $dcfield)
 else return false;
 }
 
-// Tente de récupérer la liste des locales du système dans un tableau
+// Tente de rï¿½upï¿½er la liste des locales du systï¿½e dans un tableau
 function list_system_locales()
 {
 	ob_start();
@@ -1140,11 +1094,10 @@ function list_system_locales()
 }
 
 /**
- * Récupère les champs génériques définis pour une entité
+ * Rï¿½upï¿½e les champs gï¿½ï¿½iques dï¿½inis pour une entitï¿½ *
+ * Stocke les champs gï¿½ï¿½iques dï¿½inis pour une entitï¿½dans un sous tableau de $context : generic
  *
- * Stocke les champs génériques définis pour une entité dans un sous tableau de $context : generic
- *
- * @param array $context le contexte passé par référence
+ * @param array $context le contexte passï¿½par rï¿½ï¿½ence
  */
 function getgenericfields(&$context)
 {
@@ -1164,7 +1117,7 @@ function getgenericfields(&$context)
 	foreach ($row as $key => $value) {
 		$values[$key] = $value;
 	}
-	//Contruit le tableau des champs génériques avec leur valeur
+	//Contruit le tableau des champs gï¿½ï¿½iques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
 		$context['generic'][$g_name] = $values[$name];
@@ -1175,7 +1128,7 @@ function getgenericfields(&$context)
 	#print_r($context['generic']);exit;
 
 	// -- Traitement des indexs -- 
-	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
+	//Rï¿½upï¿½e maintenant les valeurs des champs gï¿½ï¿½iques des entrï¿½s d'index associï¿½s et des personnes associï¿½s
 	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_entrytypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
 	#echo "sql=$sql";exit;
 	$row = $db->getArray($sql);
@@ -1183,7 +1136,7 @@ function getgenericfields(&$context)
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
 	}
-	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+	//Retrouve les valeurs des entrï¿½s en utilisant le g_name de la table entries
 	if(count($fields) > 0) {
 		$sql = lq("SELECT e.g_name, et.type FROM #_TP_entries as e, #_TP_relations as r, #_TP_entrytypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
 		#echo "sql=$sql";
@@ -1199,7 +1152,7 @@ function getgenericfields(&$context)
 	// -- Traitement des personnes --
 	unset($fields);
 	unset($generic);
-	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
+	//Rï¿½upï¿½e maintenant les valeurs des champs gï¿½ï¿½iques des entrï¿½s d'index associï¿½s et des personnes associï¿½s
 	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_persontypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
 	#echo "sql=$sql";
 	$row = $db->getArray($sql);
@@ -1208,7 +1161,7 @@ function getgenericfields(&$context)
 		$generic[$elem['type']] = $elem['g_type'];
 	}
 	if(count($fields) > 0) {
-		//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+		//Retrouve les valeurs des entrï¿½s en utilisant le g_name de la table entries
 		$sql = lq("SELECT e.g_firstname, e.g_familyname, et.type FROM #_TP_persons as e, #_TP_relations as r, #_TP_persontypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
@@ -1221,7 +1174,7 @@ function getgenericfields(&$context)
 	}
 
 
-	return $context; // pas nécessaire le context est passé par référence
+	return $context; // pas nï¿½essaire le context est passï¿½par rï¿½ï¿½ence
 }
 
 // valeur de retour identifier ce script
