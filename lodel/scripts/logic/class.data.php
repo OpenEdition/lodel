@@ -29,37 +29,37 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutï¿½depuis la version 0.8
  * @version CVS:$Id$
  */
 
 /**
- * Classe de logique permettant de gérer les backup et import de données et de ME
+ * Classe de logique permettant de gï¿½er les backup et import de donnï¿½s et de ME
  * 
  * @package lodel/logic
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutï¿½depuis la version 0.8
  * @see backupfunc.php, pma/sql-modified.php
  */
 class DataLogic
 {
 
 	/**
-	 * Prefix du fichier (pour l'import de ME et l'import de données)
+	 * Prefix du fichier (pour l'import de ME et l'import de donnï¿½s)
 	 * @var string
 	 */
 	var $filePrefix;
 
 	/**
-	 * Expression régulière pour filtrer les fichiers pour un import
+	 * Expression rï¿½uliï¿½e pour filtrer les fichiers pour un import
 	 * @var string
 	 */
 	var $fileRegexp;
@@ -73,7 +73,7 @@ class DataLogic
 	/**
 	 * Constructeur
 	 *
-	 * Interdit l'accès aux utilisateurs qui ne sont pas ADMIN
+	 * Interdit l'accï¿½ aux utilisateurs qui ne sont pas ADMIN
 	 */
 	function DataLogic()
 	{
@@ -84,12 +84,12 @@ class DataLogic
 	}
 
 	/**
-	 * Importation des données
+	 * Importation des donnï¿½s
 	 *
-	 * Cette fonction importe les données issus d'un backup de lodel : le dump SQL, les fichiers associés (si ils ont été sauvegardés).
+	 * Cette fonction importe les donnï¿½s issus d'un backup de lodel : le dump SQL, les fichiers associï¿½ (si ils ont ï¿½ï¿½sauvegardï¿½).
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreur, passées par référence
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+	 * @param array $error les ï¿½entuelles erreur, passï¿½s par rï¿½ï¿½ence
 	 */
 	function importAction(&$context, &$error)
 	{
@@ -98,12 +98,12 @@ class DataLogic
 		$context['importdir'] = $GLOBALS['importdir'];
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-\w+-\d+.'. $this->fileExtension;
 
-		// les répertoires d'import
+		// les rï¿½ertoires d'import
 		$context['importdirs'] = array('CACHE');
 		if ($context['importdir']) {
   		$context['importdirs'][] = $context['importdir'];
 		}
-		//Si un fichier a été uploadé
+		//Si un fichier a ï¿½ï¿½uploadï¿½		
 		if($_FILES) {
 		$archive                 = $_FILES['archive']['tmp_name'];
 		$context['error_upload'] = $_FILES['archive']['error'];
@@ -114,20 +114,20 @@ class DataLogic
 			$prefixunix = '{site,revue}';
 			$file       = $archive;
 			unset($_FILES);
-		// Ficher déjà sur le disque
+		// Ficher dï¿½ï¿½sur le disque
 		} elseif ($context['file'] && preg_match("/^(?:". str_replace("/", "\/", join('|', $context['importdirs'])). ")\/".$this->fileRegexp."$/", $context['file'], $result) && file_exists($context['file'])) {
 			$prefixre = $prefixunix = $result[1];
 			$file = $context['file'];
 		} else { // rien
 			$file = '';
 		}
-		if ($file) { // Si on a bien spécifié un fichier
+		if ($file) { // Si on a bien spï¿½ifiï¿½un fichier
 			do { // control block
 
-				set_time_limit(120); //pas d'effet si safe_mode on ; on met le temps à unlimited
+				set_time_limit(120); //pas d'effet si safe_mode on ; on met le temps ï¿½unlimited
 				//nom du fichier SQL
 				$sqlfile = tempnam(tmpdir(), 'lodelimport_');
-				//noms des répertoires acceptés
+				//noms des rï¿½ertoires acceptï¿½
 				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'docannexe/file', 'docannexe/image');
 		
 				require_once 'backupfunc.php';
@@ -138,7 +138,7 @@ class DataLogic
 				}
 				#require_once 'connect.php';
 				// drop les tables existantes
-				$db->execute(lq('DROP TABLE IF EXISTS '. join(',', $GLOBALS['lodelsitetables']))) or dberror();
+				//$db->execute(lq('DROP TABLE IF EXISTS '. join(',', $GLOBALS['lodelsitetables']))) or dberror();
 				//execution du dump SQL
 				if (!$this->_execute_dump($sqlfile)) {
 					$error['error_execute_dump'] = $err = $db->errormsg();
@@ -162,18 +162,18 @@ class DataLogic
 	}
 
 	/**
-	 * Sauvegarde des données
+	 * Sauvegarde des donnï¿½s
 	 *
-	 * Fait un dump de la base de données du site et si indiqué sauve aussi les fichiers annexes et source.
+	 * Fait un dump de la base de donnï¿½s du site et si indiquï¿½sauve aussi les fichiers annexes et source.
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreur, passées par référence
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+	 * @param array $error les ï¿½entuelles erreur, passï¿½s par rï¿½ï¿½ence
 	 */
 	function backupAction(&$context, &$error)
 	{
 		$context['importdir'] = $GLOBALS['importdir'];
 		#print_r($context);
-		if ($context['backup']) { // si on a demandé le backup
+		if ($context['backup']) { // si on a demandï¿½le backup
 			require_once 'func.php';
 			require_once 'backupfunc.php';
 			$site = $context['site'];
@@ -271,14 +271,14 @@ class DataLogic
 	}
 
 	/**
-	 * Backup global des données. Seulement autorisé pour un admin lodel
+	 * Backup global des donnï¿½s. Seulement autorisï¿½pour un admin lodel
 	 *
-	 * Cela créé un backup de la base principale mais aussi de tous les sites
+	 * Cela crï¿½ un backup de la base principale mais aussi de tous les sites
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreur, passées par référence
-	 * @return le nom du template utilisé pour cette action : backup
-	 * @todo Trouver une alternative à la commande système tar
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+	 * @param array $error les ï¿½entuelles erreur, passï¿½s par rï¿½ï¿½ence
+	 * @return le nom du template utilisï¿½pour cette action : backup
+	 * @todo Trouver une alternative ï¿½la commande systï¿½e tar
 	 */
 	function globalbackupAction(&$context, &$error)
 	{
@@ -353,18 +353,18 @@ class DataLogic
 	}
 
 	/**
-	 * Importation du modèle éditorial
+	 * Importation du modï¿½e ï¿½itorial
 	 *
-	 * Importe les données contenu dans un fichier ZIP de sauvegarde du ME
+	 * Importe les donnï¿½s contenu dans un fichier ZIP de sauvegarde du ME
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreur, passées par référence
-	 * @return le nom du template utilisé pour cette action : importmodel
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+	 * @param array $error les ï¿½entuelles erreur, passï¿½s par rï¿½ï¿½ence
+	 * @return le nom du template utilisï¿½pour cette action : importmodel
 	 */
 	function importmodelAction(&$context, &$error)
 	{
-		//Vérifie que l'on peut bien faire cet import
-		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
+		//Vï¿½ifie que l'on peut bien faire cet import
+		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import dï¿½ini dans la conf
 		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $importdir;
@@ -407,7 +407,7 @@ class DataLogic
 			clearcache();
 			
 			if (!$err) {
-				if ($context['frominstall']) { // si on vient de l'install redirige vers la page d'édition
+				if ($context['frominstall']) { // si on vient de l'install redirige vers la page d'ï¿½ition
 					header ('location: ../edition/index.php');
 					exit;
 				} else {
@@ -428,15 +428,15 @@ class DataLogic
 
 
 	/**
-	 * Sauvegarde du modèle éditorial
+	 * Sauvegarde du modï¿½e ï¿½itorial
 	 *
-	 * Sauve les tables du ME dans un dump SQL (table lodel + table créés). Si demandé, inclue
-	 * aussi les templates, les css, les images et les scripts javascript. Le fichier créé est
+	 * Sauve les tables du ME dans un dump SQL (table lodel + table crï¿½s). Si demandï¿½ inclue
+	 * aussi les templates, les css, les images et les scripts javascript. Le fichier crï¿½ est
 	 * de la forme <em>model-site-date.zip</em>.
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreur, passées par référence
-	 * @return le nom du template utilisé pour cette action : backupmodel
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+	 * @param array $error les ï¿½entuelles erreur, passï¿½s par rï¿½ï¿½ence
+	 * @return le nom du template utilisï¿½pour cette action : backupmodel
 	 */
 	function backupmodelAction(&$context, &$error)
 	{
@@ -489,7 +489,7 @@ class DataLogic
 				'#_TP_entrytypes',
 				'#_TP_entitytypes_entitytypes',
 				'#_TP_characterstyles',
-				'#_TP_internalstyles'); //liste des tables de lodel à sauver.
+				'#_TP_internalstyles'); //liste des tables de lodel ï¿½sauver.
 			foreach ($tables as $table) {
 				fputs($fh, 'DELETE FROM '. $table. ";\n");
 			}
@@ -510,7 +510,7 @@ class DataLogic
 			fputs($fh, "DELETE FROM #_TP_options;\n");
 			mysql_dump($currentdb,array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
 		
-			// Récupère la liste des tables de classe à sauver.
+			// Rï¿½upï¿½e la liste des tables de classe ï¿½sauver.
 			$dao = &getDAO('classes');
 			$vos = $dao->findMany('status > 0', '', 'class,classtype');
 			$tables = array();
@@ -554,12 +554,11 @@ class DataLogic
 	}
 
 	/**
-	 * Dump SQL d'un site donné
-	 *
+	 * Dump SQL d'un site donnï¿½	 *
 	 * @access private
 	 * @param string $site le nom du site
-	 * @param string $outfile le fichier dans lequel écrire le dump SQL
-	 * @param resource $fh le descripteur de fichier (par défaut 0)
+	 * @param string $outfile le fichier dans lequel ï¿½rire le dump SQL
+	 * @param resource $fh le descripteur de fichier (par dï¿½aut 0)
 	 * @param array $error tableau des erreurs
 	 */
 	function _dump($site, $outfile, &$error, $fh = 0)
@@ -596,14 +595,13 @@ class DataLogic
 	}
 
 	/**
-	 * Execute un dump (fichier SQL) pointé par $url
+	 * Execute un dump (fichier SQL) pointï¿½par $url
 	 *
-	 * @todo vérifier que cette fonction ne prends pas trop de place en mémoire.
+	 * @todo vï¿½ifier que cette fonction ne prends pas trop de place en mï¿½oire.
 	 * @access private
 	 * @param string $url le fichier SQL
-	 * @param boolean $ignoreerrors. false par défaut
-	 * @return true si le dump a bien été executé
-	 */
+	 * @param boolean $ignoreerrors. false par dï¿½aut
+	 * @return true si le dump a bien ï¿½ï¿½executï¿½	 */
 	function _execute_dump($url, $ignoreerrors = false) 
 	{
 		$file_content = file($url);
@@ -613,7 +611,7 @@ class DataLogic
 			if (($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#")) {
 				$query .= $sql_line;
 				if(preg_match("/;\s*$/", $sql_line)) {
-					#echo "query:".lq($query)."<br />";
+					#echo "query : ".lq($query)."<br />";
 					$result = mysql_query(lq($query));
 					if (!$result && !$ignoreerrors) die(mysql_error());
 					$query = '';
@@ -624,9 +622,9 @@ class DataLogic
 	}
 
 	/**
-	 * Vérifie les fichiers CACHE et .htaccess et recré les .htaccess.
+	 * Vï¿½ifie les fichiers CACHE et .htaccess et recrï¿½les .htaccess.
 	 *
-	 * @param array $context le contexte passé par référence.
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence.
 	 */
 	function _checkFiles(&$context)
 	{
@@ -651,12 +649,12 @@ class DataLogic
 	}
 
 	/**
-	 * Créé un fichier ZIP du ME contenant le fichier SQL et éventuellement les répertoires
+	 * Crï¿½ un fichier ZIP du ME contenant le fichier SQL et ï¿½entuellement les rï¿½ertoires
 	 * images, css, js et tpl.
 	 *
 	 * @access private
 	 * @param string $sqlfile le fichier dump SQL
-	 * @param array $dirs la liste des répertoires à inclure.
+	 * @param array $dirs la liste des rï¿½ertoires ï¿½inclure.
 	 * @return le nom du fichier ZIP
 	 */
 	function _backupME($sqlfile, $dirs = array())
@@ -667,7 +665,7 @@ class DataLogic
 		$tmpdir = tmpdir();
 		$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
 	
-		// Cherche si les répertoire à zipper contiennent bien des fichiers
+		// Cherche si les rï¿½ertoire ï¿½zipper contiennent bien des fichiers
 		$zipdirs = array ();
 		foreach ($dirs as $dir)	{
 			if (!file_exists(SITEROOT. $dir))
@@ -732,7 +730,7 @@ class DataLogic
 	/**
 	 * Est-ce que l'on peut importer un ME ?
 	 *
-	 * Vérifie si le site est vide, pour permettre l'import d'un ME
+	 * Vï¿½ifie si le site est vide, pour permettre l'import d'un ME
 	 *
 	 * @access private
 	 * @return un booleen false si impossible, le nom de la table sinon
@@ -759,16 +757,16 @@ class DataLogic
 	 * Extraction du fichier ZIP d'import du ME
 	 *
 	 * 
-	 * @param string $footprint le prefix qui doit être contenu dans le nom du fichier
-	 * @param array $context le contexte passé par référence
-	 * @param string $ext l'extension du fichier, par défaut .zip
+	 * @param string $footprint le prefix qui doit ï¿½re contenu dans le nom du fichier
+	 * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+	 * @param string $ext l'extension du fichier, par dï¿½aut .zip
 	 * @return le nom du fichier d'import
 	 */
 	function _extractImport(&$context)
 	{
 		$archive = $_FILES['archive']['tmp_name'];
 		$context['error_upload'] = $_FILES['archive']['error'];
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
+		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a ï¿½ï¿½uploadï¿½			
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
 				$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
@@ -791,7 +789,7 @@ class DataLogic
 
 
 	/**
-	 * Réinitialisation de la table des objets
+	 * Rï¿½nitialisation de la table des objets
 	 */
 	function _reinitobjetstable()
 	{
@@ -856,7 +854,7 @@ class DataLogic
 }// end of DataLogic class
 
 
-//Définition de la LOOP sur les fichiers d'import détectés
+//Dï¿½inition de la LOOP sur les fichiers d'import dï¿½ectï¿½
 function loop_files(&$context, $funcname)
 {
 	#global $importdirs,$fileregexp;
@@ -877,7 +875,7 @@ function loop_files(&$context, $funcname)
 	}
 }
 
-// Définition de la loop pour les fichier du ME
+// Dï¿½inition de la loop pour les fichier du ME
 function loop_files_model(&$context, $funcname)
 {
 	global $fileregexp, $home;
