@@ -604,14 +604,20 @@ class DataLogic
 	 * @return true si le dump a bien ��execut�	 */
 	function _execute_dump($url, $ignoreerrors = false) 
 	{
+		global $db;
 		$file_content = file($url);
+		//print_r($file_content);
 		$query = '';
 		foreach($file_content as $sql_line) {
 			$tsl = trim($sql_line);
 			if (($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#")) {
 				$query .= $sql_line;
 				if(preg_match("/;\s*$/", $sql_line)) {
-					echo "query : ".lq($query)."<br />";
+					//echo "query : ".lq($query)."";
+					//$result = mysql_query(lq($query));
+					$query = str_replace(';', '', $query);
+					//echo "query : ".lq($query)."";
+					//$result = $db->execute(lq($query));
 					$result = mysql_query(lq($query));
 					if (!$result && !$ignoreerrors) die(mysql_error());
 					$query = '';
