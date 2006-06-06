@@ -936,7 +936,7 @@ function fix_newlines_for_clean_html($fixthistext)
 	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
 
  		// Exception for fckeditor
-		if (preg_match("/fck_introduction_editor/", $unfixedtextvalue))
+		if (preg_match("/fck_.+editor/", $unfixedtextvalue))
 		{
 			$fixedtext_array[$unfixedtextkey] = $unfixedtextvalue;
 		}
