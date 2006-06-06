@@ -613,12 +613,10 @@ class DataLogic
 			if (($sql_line != "") && (substr($tsl, 0, 2) != "--") && (substr($tsl, 0, 1) != "#")) {
 				$query .= $sql_line;
 				if(preg_match("/;\s*$/", $sql_line)) {
+					$query = preg_replace("/;\s*$/", '', $query);
 					//echo "query : ".lq($query)."";
+					$result = $db->execute(lq($query));
 					//$result = mysql_query(lq($query));
-					$query = str_replace(';', '', $query);
-					//echo "query : ".lq($query)."";
-					//$result = $db->execute(lq($query));
-					$result = mysql_query(lq($query));
 					if (!$result && !$ignoreerrors) die(mysql_error());
 					$query = '';
 				}
