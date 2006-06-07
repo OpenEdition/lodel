@@ -36,7 +36,7 @@
 
 ###define("OLDLODELPREFIX","__LODELTP__");
 
-$GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entities", "#_TP_relations", "#_TP_tablefields", "#_TP_tablefieldgroups", "#_TP_persons", "#_TP_users", "#_TP_usergroups", "#_TP_users_usergroups", "#_TP_types", "#_TP_persontypes", "#_TP_entrytypes", "#_TP_entries", "#_TP_tasks", "#_TP_texts", "#_TP_entitytypes_entitytypes", "#_TP_options", "#_TP_optiongroups", "#_TP_search_engine", "#_TP_translations", "#_TP_internalstyles", "#_TP_characterstyles");
+$GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entities", "#_TP_relations", "#_TP_tablefields", "#_TP_tablefieldgroups", "#_TP_persons", "#_TP_users", "#_TP_usergroups", "#_TP_users_usergroups", "#_TP_types", "#_TP_persontypes", "#_TP_entrytypes", "#_TP_entries", "#_TP_tasks", "#_TP_texts", "#_TP_entitytypes_entitytypes", "#_TP_options", "#_TP_optiongroups", "#_TP_search_engine", "#_TP_translations", "#_TP_internalstyles", "#_TP_characterstyles", "#_TP_oailogs", "#_TP_oaitokens");
 
 $GLOBALS['lodelbasetables'] = array ("#_MTP_sites", "#_MTP_users", "#_MTP_urlstack", "#_MTP_session");
 
@@ -139,10 +139,10 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 }
 
 /**
- * Parse un dump MySQL et execute les requêtes.
+ * Parse un dump MySQL et execute les requï¿½es.
  *
  * @param string $url le fichier SQL
- * @param boolean $ignoreerrors. false par défaut
+ * @param boolean $ignoreerrors. false par dï¿½aut
  */
 function parse_mysql_dump($url, $ignoreerrors = false) 
 {
@@ -165,9 +165,9 @@ function parse_mysql_dump($url, $ignoreerrors = false)
 
 
 /**
- * Enlève le préfix actuel et ajoute le préfixe par défaut dans une table MySQL
+ * Enlï¿½e le prï¿½ix actuel et ajoute le prï¿½ixe par dï¿½aut dans une table MySQL
  *
- * Cette fonction est utilisée dans les fonctions PMA
+ * Cette fonction est utilisï¿½ dans les fonctions PMA
  *
  * @param string $table le nom de la table
  */
@@ -245,12 +245,12 @@ function PMA_convert_display_charset($text)
 }
 
 /**
- * Importation d'un ME ou de données depuis son archive ZIP
+ * Importation d'un ME ou de donnï¿½s depuis son archive ZIP
  *
  * @param string $archive le chemin vers le fichier ZIP
- * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
- * @param array $acceptedexts la liste des types de fichiers acceptés
- * @param string $sqlfile le nom du fichier SQL à traiter. Vide par défaut
+ * @param array $accepteddirs la liste des rï¿½ertoires acceptï¿½ dans l'archive ZIP
+ * @param array $acceptedexts la liste des types de fichiers acceptï¿½
+ * @param string $sqlfile le nom du fichier SQL ï¿½traiter. Vide par dï¿½aut
  */
 function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '')
 {
