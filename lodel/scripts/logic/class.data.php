@@ -589,7 +589,11 @@ class DataLogic
 			if ($vo->classtype == 'persons')
 				$tables[] = lq('#_TP_entities_'. $vo->class);
 		}
+		// dump structure + données
 		mysql_dump($dbname, $tables, $outfile, $fh);
+		// dump structure seulement
+		$tables_nodatadump = $GLOBALS['lodelsitetables_nodatadump'];
+		mysql_dump($dbname, $tables_nodatadump, $outfile, $fh, $create = true, $drop = true, $contents = false);
 		if ($closefh)
 			fclose($fh);
 	}
