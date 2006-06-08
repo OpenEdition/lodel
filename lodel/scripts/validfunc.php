@@ -51,7 +51,7 @@
  * @param string $type le type du champ ï¿½valider.
  * @param string $default la valeur par dï¿½aut ï¿½valider (si le texte est vide). Est vide par dï¿½aut
  * @param string $name le nom du champ
- * @param string $usedata indique si le context utilise le sous tableau data pour stocker les données
+ * @param string $usedata indique si le context utilise le sous tableau data pour stocker les donnï¿½s
  * @return boolean true si le champ est valide. false sinon
  */
 function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
@@ -194,7 +194,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
 			$text = $default;
 		}
 		if ($text) {
-			$parsedurl = parse_url($text);
+			$parsedurl = @parse_url($text);
 			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
 				return 'url';
 			}
