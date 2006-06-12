@@ -1,6 +1,6 @@
 <?
 /**
- * Fichier utilitaire pour gï¿½er la validation des champs
+ * Fichier utilitaire pour gérer la validation des champs
  *
  * PHP version 4
  *
@@ -8,8 +8,8 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
  * Home page: http://www.lodel.org
  *
@@ -33,7 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -43,15 +43,15 @@
 /**
  * Validation des champs
  *
- * <p>Validation des caractï¿½es autorisï¿½ dans les champs suivant leur type
+ * <p>Validation des caractères autorisés dans les champs suivant leur type
  * leur nom, et le texte contenu. Par exemple si on a un champ de type email, il faut
- * vï¿½ifier que l'adresse mail est bien formï¿½. Idem pour un champ de type url. Cela appliquï¿½ * ï¿½tous les types de champs gï¿½ï¿½ par Lodel (cf. fichier fieldfunc.php)</p>
+ * vérifier que l'adresse mail est bien formée. Idem pour un champ de type url. Cela appliqué  à tous les types de champs gérés par Lodel (cf. fichier fieldfunc.php)</p>
  *
- * @param string $&text le texte ï¿½valider. Passï¿½par rï¿½ï¿½ence.
- * @param string $type le type du champ ï¿½valider.
- * @param string $default la valeur par dï¿½aut ï¿½valider (si le texte est vide). Est vide par dï¿½aut
+ * @param string $&text le texte à valider. Passé par référence.
+ * @param string $type le type du champ à valider.
+ * @param string $default la valeur par défaut à valider (si le texte est vide). Est vide par défaut
  * @param string $name le nom du champ
- * @param string $usedata indique si le context utilise le sous tableau data pour stocker les donnï¿½s
+ * @param string $usedata indique si le context utilise le sous tableau data pour stocker les données
  * @return boolean true si le champ est valide. false sinon
  */
 function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
@@ -149,7 +149,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
 		break;
 	case 'date' :
 	case 'datetime' :
-	case 'time' : //vï¿½ification des champs date, time et datetime
+	case 'time' : //vérification des champs date, time et datetime
 		require_once 'date.php';
 		if ($text) {
 			$text = mysqldatetime($text, $type);

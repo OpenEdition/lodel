@@ -8,8 +8,8 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
  * Home page: http://www.lodel.org
  *
@@ -33,7 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cï¿½ou, Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -407,7 +407,7 @@ function removeimages($text)
 }
 
 /**
-* Fonction qui enleve les tags spï¿½ifiï¿½
+* Fonction qui enleve les tags spécifiés
 */
 
 function removetags($text, $tags)
@@ -437,7 +437,7 @@ function isadate($text)
 }
 
 /**
- * Fonction qui remplace les guillemets d'un texte par leur name d'entitï¿½(&quot;)
+ * Fonction qui remplace les guillemets d'un texte par leur name d'entité (&quot;)
  */
 function replacequotationmark($text)
 {
@@ -603,7 +603,7 @@ function today()
 }
 
 /**
- * Retourne le texte si la date est dï¿½assï¿½, sinon retourne une chaine vide.
+ * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
  */
 
 function hideifearlier($text, $date)
@@ -739,7 +739,7 @@ function defaultvalue($var1, $var2)
 
 
 /**
- * Fonction utilisï¿½ ci dessous pour la numï¿½otation des paragraphes
+ * Fonction utilisée ci dessous pour la numérotation des paragraphes
  */
 function replacement($arg0, $arg1, $arg2, $arg3, $count)
 {
@@ -753,16 +753,16 @@ function replacement($arg0, $arg1, $arg2, $arg3, $count)
 }
 
 /**
- * Filtre de numï¿½otation des paragraphes
+ * Filtre de numérotation des paragraphes
  * 
- * Ajoute un <span class="paramnumber"> contenant une ancre avec le numï¿½o du paragraphe
+ * Ajoute un <span class="paramnumber"> contenant une ancre avec le numéro du paragraphe
  *
- * @param string $texte le texte ï¿½numï¿½otï¿½passï¿½par rï¿½ï¿½ence
+ * @param string $texte le texte à numéroter passé par référence
  */
 function paranumber(&$texte)
 {
   static $paranum_count;
-	//Regexp : cherche les paragraphes ï¿½numï¿½oter, en ignorant les paragraphes contenant une image ou un tableau
+	//Regexp : cherche les paragraphes à numéroter, en ignorant les paragraphes contenant une image ou un tableau
 	$regexp = "/(<p\b[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|table)/ie";
 	preg_match($regexp,$texte,$matches);
 	#print_r($matches);exit;
