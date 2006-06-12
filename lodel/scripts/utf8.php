@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier utilitaire pour gérer l'UTF-8
+ * Fichier utilitaire pour gÃ©rer l'UTF-8
  *
  * PHP version 4
  *
@@ -8,8 +8,8 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno CÃ©nou, Jean Lamy
  *
  * Home page: http://www.lodel.org
  *
@@ -33,7 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno CÃ©nou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -41,13 +41,13 @@
 
 
 /**
- * Conversion des entités HTML en UTF-8
+ * Conversion des entitÃ©s HTML en UTF-8
  *
- * <p>Cette fonction utilitaire permet de transformer toutes les entités HTML d'un texte en
+ * <p>Cette fonction utilitaire permet de transformer toutes les entitÃ©s HTML d'un texte en
  * UTF-8.</p>
  *
- * @param string &$text le texte à transformer (par référence).
- * @return le texte transformé.
+ * @param string &$text le texte Ã  transformer (par rÃ©fÃ©rence).
+ * @return le texte transformÃ©
  */
 function convertHTMLtoUTF8(&$text)
 {
@@ -136,7 +136,7 @@ function convertHTMLtoUTF8(&$text)
 				"ldquo"=>"\342\200\234",
 				"rdquo"=>"\342\200\235",
 				"deg"=>'Â°',
-				"nbsp"=>"Â\240",
+				"nbsp"=>"Ã‚\240",
 				"mdash"=>"\342\200\224",
 				"ndash"=>"\342\200\223",
 
