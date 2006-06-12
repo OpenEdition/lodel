@@ -6,7 +6,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cnou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -39,7 +39,7 @@
 // liste des tables a sauvegarder lors d'un backup de site (dump structure + donnees)
 $GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entities", "#_TP_relations", "#_TP_tablefields", "#_TP_tablefieldgroups", "#_TP_persons", "#_TP_users", "#_TP_usergroups", "#_TP_users_usergroups", "#_TP_types", "#_TP_persontypes", "#_TP_entrytypes", "#_TP_entries", "#_TP_tasks", "#_TP_texts", "#_TP_entitytypes_entitytypes", "#_TP_options", "#_TP_optiongroups", "#_TP_search_engine", "#_TP_translations", "#_TP_internalstyles", "#_TP_characterstyles", "#_TP_oailogs", "#_TP_oaitokens");
 
-// liste des tables a sauvegarder lors d'un backup de site (dump de la structure seulement, pas des donnÃ©es)
+// liste des tables a sauvegarder lors d'un backup de site (dump de la structure seulement, pas des donnees)
 $GLOBALS['lodelsitetables_nodatadump'] = array ("#_TP_search_engine");
 
 $GLOBALS['lodelbasetables'] = array ("#_MTP_sites", "#_MTP_users", "#_MTP_urlstack", "#_MTP_session");
@@ -143,10 +143,10 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 }
 
 /**
- * Parse un dump MySQL et execute les requï¿½es.
+ * Parse un dump MySQL et execute les requêtes.
  *
  * @param string $url le fichier SQL
- * @param boolean $ignoreerrors. false par dï¿½aut
+ * @param boolean $ignoreerrors. false par défaut
  */
 function parse_mysql_dump($url, $ignoreerrors = false) 
 {
@@ -169,9 +169,9 @@ function parse_mysql_dump($url, $ignoreerrors = false)
 
 
 /**
- * Enlï¿½e le prï¿½ix actuel et ajoute le prï¿½ixe par dï¿½aut dans une table MySQL
+ * Enlève le préfixe actuel et ajoute le préfixe par défaut dans une table MySQL
  *
- * Cette fonction est utilisï¿½ dans les fonctions PMA
+ * Cette fonction est utilisée dans les fonctions PMA
  *
  * @param string $table le nom de la table
  */
@@ -249,12 +249,12 @@ function PMA_convert_display_charset($text)
 }
 
 /**
- * Importation d'un ME ou de donnï¿½s depuis son archive ZIP
+ * Importation d'un ME ou de données depuis son archive ZIP
  *
  * @param string $archive le chemin vers le fichier ZIP
- * @param array $accepteddirs la liste des rï¿½ertoires acceptï¿½ dans l'archive ZIP
- * @param array $acceptedexts la liste des types de fichiers acceptï¿½
- * @param string $sqlfile le nom du fichier SQL ï¿½traiter. Vide par dï¿½aut
+ * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
+ * @param array $acceptedexts la liste des types de fichiers acceptés
+ * @param string $sqlfile le nom du fichier SQL à traiter. Vide par défaut
  */
 function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '')
 {
