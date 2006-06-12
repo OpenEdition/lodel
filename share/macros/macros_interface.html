@@ -800,7 +800,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 	</IF>
 		<fieldset>
 			<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
-			<input class="button small" type="submit" name="submit_s" value="[@COMMON.OK]" />
+			<input class="lightSearch" type="submit" name="submit_s" value="[@COMMON.OK]" />
 		</fieldset>
 	</form>	
 	
@@ -1337,9 +1337,6 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 				<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
-		<li>
-		<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
-		</li>
 	</ul>
 	<IF COND="[#NOID]">
 		<LET VAR="id">0</LET>

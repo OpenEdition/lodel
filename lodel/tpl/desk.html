@@ -30,10 +30,30 @@
 
 <style type="text/css">
 	@import url("[#SHAREURL]/css/styles_desk.css");
+	#lodel-desk{
+		background-image: url("[#SHAREURL]/images/bg_top.png");
+		background-repeat: repeat-x;
+	}
+	#lodel-desk ul li a{
+		background: #0096b7 url("[#SHAREURL]/images/bg_li_group1.png") top left no-repeat;
+	}
+	#lodel-desk ul li.admin a{
+		background: #0075ab url("[#SHAREURL]/images/bg_li_admin_group1.png") top left no-repeat;
+	}
+	#lodel-desk ul li a.actif, #lodel-desk ul li a:hover{
+		background: #e18600 url("[#SHAREURL]/images/bg_li_group1_on.png") top left no-repeat;
+	}
+	#lodel-desk ul.group2 a#logout{
+		background: transparent url("[#SHAREURL]/images/bg_logout.png") top left no-repeat;
+	}
+	#lodel-desk ul.group2 a#clearcache{
+		background: transparent url("[#SHAREURL]/images/bg_clearcache.png") top left no-repeat;
+	}
+
 </style>
 
 <div id="lodel-desk">
-	<h1>Lodel, logiciel d'édition électronique</h1>
+	<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/></h1>
 	<ul  class="group1">
 	<IF COND="[#SITE]">
 		<li>
@@ -73,6 +93,22 @@
 			[@COMMON.SITE]
 			</a>
 		</li>
+		
+		<li class="admin">
+			<IF COND="![#LODELUSER.REDACTOR]">	
+				<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
+			<ELSE/>
+				<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')])">	
+					<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
+				<ELSE/>
+					<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
+				</IF>
+			</IF>
+			[@COMMON.ADMINISTRATION]
+			</a>
+		</li>
+	
+
 	<ELSE/>
 		<li>
 			<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" >[@COMMON.ADMINISTRATIONLODEL]</a>
@@ -99,25 +135,23 @@
 	</IF>
 
 	<ul class="group2">
-	<li>		
-	<IF COND="[#LODELUSER.ADMIN]">
-	<a href="[#CLEARCACHEURL|htmlentities]" id="compile" title="[@COMMON.CLEARCACHE]">
-	<ELSE/>
-	<a id="compile_inactif" title="[@COMMON.CLEARCACHE]">
-	</IF>
-	[@COMMON.CLEARCACHE]
-	</a>
-	</li>
 	<li>
 	<IF COND="![#CURRENTURL|strpos('admin')]">
-	<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]">
-	[@COMMON.LOGOUT]
-	</a>
+		<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	<ELSE />
-	<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
+		<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	</IF>
 	</li>
+	<li>		
+	<IF COND="[#LODELUSER.ADMIN]">
+		<a href="[#CLEARCACHEURL|htmlentities]" id="clearcache" title="[@COMMON.CLEARCACHE]">
+	<ELSE/>
+		<a id="compile_inactif" title="[@COMMON.CLEARCACHE]">
+	</IF>
+		[@COMMON.CLEARCACHE]</a>
+	</li>
 	</ul>
+
 	<ul id="deskContext">
 		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
 			<li>
@@ -205,8 +239,14 @@
 			</li>
 
 		</IF>
+		<IF COND="[#SITE]">
+			<li>
+				<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
+			</li>
+		</IF>
 
 	</ul>
+
 	<table class="infos">
 	
 	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
@@ -244,8 +284,8 @@
 	)</em>
 	</td>
 	</tr>
-	<tr>
-	<!-- [ La langue ]-->
+	<!--[<tr>
+	
 	<th>[@COMMON.INTERFACE_LANGUAGE]</th>
 	<td>
 	<select title="[@COMMON.SELECT_AN_ITEM_TO_CHANGE_THE_LANGUAGE_USED]" onchange="change_language(this)">
@@ -254,23 +294,8 @@
 		</LOOP>
 	</select>
 	</td>
-	</tr>
+	</tr>]-->
 	</table>
-	<IF COND="[#SITE]">
-	<div id="adminLink">
-		<IF COND="![#LODELUSER.REDACTOR]">	
-			<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
-		<ELSE/>
-			<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')])">	
-			<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
-			<ELSE/>
-			<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
-			</IF>
-		</IF>
-		[@COMMON.ADMINISTRATION]
-		</a>
-	</div>
-	</IF>
 
 </div>
 <IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodeladmin')]">
