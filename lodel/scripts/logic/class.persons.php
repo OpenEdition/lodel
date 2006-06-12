@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
