@@ -742,36 +742,6 @@ div.advancedFunc dd{
 	font-weight: bold;
 }
 
-/* moteur */
-
-#lightSearchForm{
-	position: absolute;
-	top: .5ex;
-	right: .5em;
-}
-
-#lightSearchForm fieldset{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	width: auto;
-	background: transparent;
-}
-
-#lightSearchForm input.text, #lightSearchForm input.button, select.barInfo{
-	font: normal 90% verdana, sans-serif;
-}
-
-
-#lightSearchForm input.text, select.barInfo{
-	border: 1px solid #aaa;
-}
-
-
-#lightSearchForm input.button{
-	padding-top: 0;
-}
-
 select.barInfo{
 	margin: -.3ex 0 0 0;
 	font-size: 100%;

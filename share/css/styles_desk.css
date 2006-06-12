@@ -11,17 +11,16 @@ body{
 #lodel-desk{
 	/*background-image: url("[#SHAREURL]/images/bandeau.jpg");
 	background-repeat: no-repeat;*/
-	background-color: #fff;
-	height: 142px;
+	background-color: #d4d7cc;
+	height: 124px;
 	font: 11px verdana, sans-serif !important;
 	text-align: left !important;
-	border-bottom: 1px solid #aaa;
 	color: #333;
 }
 
 #lodel-desk h1{
-	margin: 0 0 0 0;
-	padding: 1ex 0 0 .5em;
+	margin: 0;
+	padding: 0;
 }
 
 
@@ -41,8 +40,7 @@ body{
 
 #lodel-desk ul.group1, #lodel-desk ul.group2{
 	position: absolute;
-	top: 99px;
-	border-bottom: 1px solid #aaa;
+	top: 65px;
 }
 
 #lodel-desk ul.group1{
@@ -51,6 +49,7 @@ body{
 }
 
 #lodel-desk ul.group2{
+	top: 60px;
 	right: .5em;
 }
 
@@ -58,59 +57,63 @@ body{
 	float: left;
 	width: auto;
 	display: block;
-	background: #f1f5fb;
-	margin: 0 .5em;
+	margin: 0 .4em 0 0;
 	height: 20px;
 }
 
 #lodel-desk ul li a{
 	display: block;
+	float: left;
 	text-align: center;
-	color: #666;
+	color: #98e8f4;
 	font-weight: bold;
-	padding: 2px 1em 0 1em;
-	border: 1px solid #aaa;
-	border-bottom: none;
+	padding: 1ex 1em 1ex 1em;
 	height: 17px;
 }
 
-#lodel-desk ul li a.actif{
-	background: #fff;
-	border-bottom: 1px solid #fff;
-	color: #0e2d7c;
+#lodel-desk ul li a.actif, #lodel-desk ul li a:hover{
+	color: #ffff00;
 }
 
-#lodel-desk ul li a:hover{
-	color: #0e2d7c;
+#lodel-desk ul.group2 a#logout, #lodel-desk ul.group2 a#clearcache{
+	height: 16px;
+	padding: 0 0 0 20px;
+	font-weight: normal;
+	color: #000;
+	margin-right: 1em;
 }
 
-#lodel-desk ul li a.actif:hover{
-	border-bottom: 1px solid #fff;
+#lodel-desk ul.group2 a#logout:hover, #lodel-desk ul.group2 a#clearcache:hover{
+	color: #666;
 }
 
 #lodel-desk #deskContext{
 	position: absolute;
-	top: 121px;
+	top: 98px;
 	left: 0;
-	background: #fff;
+	background: #e18600;
+	width: 100%;
+	height: auto;
 }
 
 #lodel-desk #deskContext li{
-	background: #fff;
-	height: 15px;
+	height: auto;
 	margin: 0;
+	background: #e18600;
 }
 
 #lodel-desk #deskContext li a{
-	border: none;
+	background: transparent;
 	font-weight: normal;
-	color: #0e2d7c;
+	color: #fff;
+	padding: .8ex 1em;
+	margin: 0;
 }
 
 #lodel-desk #deskContext li strong{
 	display: block;
-	color: #0e2d7c;
-	padding: .3ex 1em;
+	color:  #ffff00;
+	padding: 1ex 1em;
 }
 
 /* Fin boutons du desk */
@@ -129,8 +132,6 @@ body{
 	top: .5ex;
 }
 
-
-
 #lodel-desk div.sites select{
 	width: 150px;
 	font-size: 11px;
@@ -147,27 +148,17 @@ body{
 }
 
 #lodel-desk table.infos td, #lodel-desk table.infos th{
-	border: 1px solid #aaa;
-	background: #f2f5fa;
-	padding: 0 .5ex 0 .5ex;
+	border: 1px solid #848484;
+	border-left: 0;
+	background: #c3c3c3;
+	padding: .7ex .7em;
 	vertical-align: middle;
 	height: 15px;
 }
 
 #lodel-desk table.infos th{
+	border-right: 3px solid #848484;
 	text-align: left;
-	background: #e0e7f2;
-}
-
-#lodel-desk table.infos td select{
-	border: 1px solid #aaa;
-	font: normal 90% verdana, sans-serif; 
-}
-
-#lodel-desk #adminLink{
-	position: absolute;
-	right: 1em;
-	top: 60px;
 }
 
 #siteContext ul.entitiesPath, #siteContext ul.entitiesPath li, #siteContext #actionsOnEntitiesPath, #siteContext #actionsOnEntitiesPath li{
@@ -204,32 +195,13 @@ body{
 	color: green;
 }
 
-#siteContext #lightSearchForm{
-	position: absolute;
-	top: 145px;
-	right: .5em;
-}
-
-#siteContext #lightSearchForm fieldset{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	width: auto;
-	background: transparent;
-}
-
-#siteContext #lightSearchForm input.text, #siteContext #lightSearchForm input.button, #siteContext select.barInfo{
+#siteContext select.barInfo{
 	font: normal 90% verdana, sans-serif;
 }
 
 
-#siteContext #lightSearchForm input.text, #siteContext select.barInfo{
+#siteContext select.barInfo{
 	border: 1px solid #aaa;
-}
-
-
-#siteContext #lightSearchForm input.button{
-	padding-top: 0;
 }
 
 #siteContext #actionsOnEntitiesPath{
@@ -263,6 +235,41 @@ body{
 
 #siteContext .inactif{
 	color: #666;
+}
+
+/* moteur */
+
+#lightSearchForm{
+	position: absolute;
+	top: 0;
+	right: 0;
+	text-align: right;
+}
+
+#lightSearchForm fieldset{
+	margin: 0;
+	padding: .7ex 1em .7ex 3em;
+	border: 0;
+	width: auto;
+	background: #828486;
+}
+
+#lightSearchForm input.text, #lightSearchForm input.lightSearch, select.barInfo{
+	font: normal 90% verdana, sans-serif;
+}
+
+
+select.barInfo{
+	border: 1px solid #aaa;
+}
+
+
+#lightSearchForm input.lightSearch{
+	border: 0;
+	font-weight: bold;
+	background: transparent;
+	color: #fff;
+	font-size: 12px;
 }
 
 /****************FIN DESK*************************/
