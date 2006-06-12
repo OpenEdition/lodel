@@ -113,17 +113,21 @@ function cleanEntities ()
 		global $db;
 		$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64 AND upd < DATE_SUB(NOW(), INTERVAL 12 HOUR)');
 		$result = $db->execute($mysql);
+		$ids = array();
 		while(!$result->EOF) {
 			$ids[] = $result->fields['id'];
 			$result->MoveNext();
 		}
-		require 'logic.php';
-		require 'func.php';
-		$logic = &getLogic('entities');
+		
+		if (is_array($ids)) {
+			require 'logic.php';
+			require 'func.php';
+			$logic = &getLogic('entities');
 			foreach($ids as $id) {
 				$context['id'] = $id;
 				$logic->deleteAction($context, $error);
-			}
+				}
+		}
 }
 
 
