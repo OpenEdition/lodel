@@ -563,7 +563,7 @@ class Logic
 	//echo $this->maintable . '<p>' . $status . '<p>';
 			switch ($this->maintable) {
 				case 'entities' :
-					$this->_authorizedStatus = array(-64, -8, -1, 1, 8);
+					$this->_authorizedStatus = array(-64, -8, -1, 1, 8, 17, 24);
 					break;
 				case 'persons' :
 				case 'entries' :
