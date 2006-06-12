@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -50,7 +50,7 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","ï¿½240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
       }
     }
   }
@@ -59,7 +59,7 @@ function postprocessing(&$context)
 
 
 /**
- *   Extrait toutes les variables passï¿½s par la mï¿½hode post puis les stocke dans 
+ *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
  *   le tableau $context
  */
 function extract_post($arr=-1)
@@ -88,7 +88,7 @@ function clean_request_variable(&$var)
 	}
 	} else {
 		$var = magic_stripslashes($var);
-		$var = str_replace(array("\n", "&nbsp;"), array("", "ï¿½240"), $filter->process(trim($var)));
+		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $filter->process(trim($var)));
   }
 }
 
@@ -219,7 +219,7 @@ function translate_xmldata($data)
 function unlock()
 {
 	global $db;
-	// Dï¿½errouilles toutes les tables vï¿½ouillï¿½s
+	// Déverrouille toutes les tables verrouillées
 	// fonction lock_write()
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) {
 		$db->execute(lq("UNLOCK TABLES")) or dberror();
@@ -230,7 +230,7 @@ function unlock()
 function lock_write()
 {
 	global $db;
-  // Vï¿½ouille toutes les tables MySQL en ï¿½riture
+  // Verrouille toutes les tables MySQL en écriture
   $list = func_get_args();
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES)
 		$db->execute(lq("LOCK TABLES #_MTP_". join (" WRITE ,"."#_MTP_", $list)." WRITE")) or dberror();
@@ -396,14 +396,14 @@ if (!function_exists("file_get_contents")) {
   }
 }
 /**
- * retourne le chemin complet vers une entitï¿½ *
- * @param integer $id identifiant numï¿½ique de l'entitï¿½ * @param string $urltype le type d'url utilisï¿½(path,querystring)
+ * retourne le chemin complet vers une entitées *
+ * @param integer $id identifiant numérique de l'entitée * @param string $urltype le type d'url utilisée(path,querystring)
  * @return string le chemin
- * @since fonction ajoutï¿½ en 0.8
+ * @since fonction ajoutée en 0.8
  */
 function getPath($id, $urltype,$base='index')
 {
-	$urltype = 'querystring'; //la version actuelle de lodel ne gï¿½e que le type path
+	$urltype = 'querystring'; //la version actuelle de lodel ne gère que le type path
 	if($urltype!='path' && $urltype!='querystring') {
 		return;
 	}
@@ -614,10 +614,10 @@ function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error)
 }
 
 /**
- * Vï¿½ifie que le rï¿½ertoire $dir, un rï¿½ertoire de docannexe existe. Dans le cas
- * contraire le crï¿½
+ * Vérifie que le répertoire $dir, un répertoire de docannexe existe. Dans le cas
+ * contraire le crée
  *
- * @param string $dir le nom du rï¿½ertoire
+ * @param string $dir le nom du répertoire
  */
 function checkdocannexedir($dir)
 {
@@ -700,11 +700,11 @@ function setrecord($table,$id,$set,$context=array())
 /**
  * Fonction qui indique si une chaine est en utf-8 ou non
  *
- * Cette fonction est insirï¿½ de Dotclear et de
+ * Cette fonction est inspirée de Dotclear et de
  * http://w3.org/International/questions/qa-forms-utf-8.html.
  *
- * @param string $string la chaï¿½e ï¿½tester
- * @return le rï¿½ultat de la fonction preg_match c'est ï¿½dire false si la chaï¿½e n'est pas en
+ * @param string $string la chaîne à tester
+ * @return le résultat de la fonction preg_match c'est-a-dire false si la chaine n'est pas en
  * UTF8
  */
 function isUTF8($string)
@@ -723,22 +723,22 @@ function isUTF8($string)
 	}
 
 /**
- * Transforme une chaine de caractï¿½e UTF8 en minuscules dï¿½accentuï¿½s
+ * Transforme une chaine de caractère UTF8 en minuscules désaccentuées
  *
- * Cette fonction prends en entrï¿½ une chaï¿½e en UTF8 et donne en sortie une chaï¿½e
- * o les accents ont ï¿½ï¿½remplacï¿½ par leur ï¿½uivalent dï¿½accentuï¿½ De plus les caractï¿½es
- * sont mis en minuscules et les espaces en dï¿½ut et fin de chaï¿½e sont enlevï¿½.
+ * Cette fonction prends en entrée une chaîne en UTF8 et donne en sortie une chaîne
+ * o les accents ont été remplacés par leur équivalent désaccentué. De plus les caractères
+ * sont mis en minuscules et les espaces en début et fin de chaine sont enlevés.
  *
- * Cette fonction est utilisï¿½ pour les entrï¿½s d'index ainsi que dans le moteur de recherche
- * et pour le calcul des identifiants littï¿½aux.
+ * Cette fonction est utilisée pour les entrees d'index ainsi que dans le moteur de recherche
+ * et pour le calcul des identifiants littéraux.
  *
- * @param string $text le texte ï¿½passer en entrï¿½
- * @return le texte transformï¿½en minuscule
+ * @param string $text le texte à passer en entrée
+ * @return le texte transformé en minuscule
  */
 function makeSortKey($text)
 {
 	$text = strip_tags($text);
-	//remplacement des caractï¿½es accentues en UTF8
+	//remplacement des caractères accentues en UTF8
 	$replacement = array(chr(197).chr(146) => 'OE', chr(197).chr(147) => 'oe',
 											chr(197).chr(160) => 'S',chr(197).chr(189) => 'Z', 
 											chr(197).chr(161) => 's',	chr(197).chr(190) => 'z', 
@@ -912,8 +912,8 @@ function mystripslashes (&$var)
  * Indentation de code HTML, XML
  *
  * @param string $source le code a indenter
- * @param string $indenter les caractï¿½es ï¿½utiliser pour l'indentation. Par dï¿½aut deux espaces.
- * @return le code indentï¿½proprement :)
+ * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
+ * @return le code indenté proprement
  */
 function _indent($source, $indenter = '  ')
 {
@@ -961,8 +961,8 @@ function fix_newlines_for_clean_html($fixthistext)
  * Indentation de code XHTML
  *
  * @param string $uncleanhtml le code a indenter
- * @param string $indent les caractï¿½es ï¿½utiliser pour l'indentation. Par dï¿½aut deux espaces.
- * @return le code indentï¿½proprement :)
+ * @param string $indent les caractères à utiliser pour l'indentation. Par déffaut deux espaces.
+ * @return le code indenté proprement
  */
 
 
@@ -1044,11 +1044,11 @@ function _indent_xhtml ($uncleanhtml, $indent = "  ")
 
 
 /**
- * Rï¿½upï¿½ation des champs gï¿½ï¿½iques dc.* associï¿½ aux entitï¿½
+ * Récupération des champs génériques dc.* associés aux entités
  *
- * @param integer $id identifiant numï¿½ique de l'entitï¿½dont on veut rï¿½upï¿½er un champ dc
- * @param string $dcfield le nom du champ ï¿½rï¿½upï¿½er (sans le dc.devant). Ex : .'description' pour 'dc.description'
- * @return le contenu du champ passï¿½dans le paramï¿½re $dcfield
+ * @param integer $id identifiant numéique de l'entité dont on veut récupérer un champ dc
+ * @param string $dcfield le nom du champ à récupérer (sans le dc.devant). Ex : .'description' pour 'dc.description'
+ * @return le contenu du champ passé dans le paramètre $dcfield
  */
 function get_dc_fields($id, $dcfield)
 {
@@ -1085,7 +1085,7 @@ function get_dc_fields($id, $dcfield)
 else return false;
 }
 
-// Tente de rï¿½upï¿½er la liste des locales du systï¿½e dans un tableau
+// Tente de recupérer la liste des locales du système dans un tableau
 function list_system_locales()
 {
 	ob_start();
@@ -1099,10 +1099,10 @@ function list_system_locales()
 }
 
 /**
- * Rï¿½upï¿½e les champs gï¿½ï¿½iques dï¿½inis pour une entitï¿½ *
- * Stocke les champs gï¿½ï¿½iques dï¿½inis pour une entitï¿½dans un sous tableau de $context : generic
+ * Récupère les champs génériques définis pour une entité *
+ * Stocke les champs génériques définis pour une entité dans un sous tableau de $context : generic
  *
- * @param array $context le contexte passï¿½par rï¿½ï¿½ence
+ * @param array $context le contexte passé  par référence
  */
 function getgenericfields(&$context)
 {
@@ -1122,7 +1122,7 @@ function getgenericfields(&$context)
 	foreach ($row as $key => $value) {
 		$values[$key] = $value;
 	}
-	//Contruit le tableau des champs gï¿½ï¿½iques avec leur valeur
+	//Contruit le tableau des champs génériques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
 		$context['generic'][$g_name] = $values[$name];
@@ -1133,7 +1133,7 @@ function getgenericfields(&$context)
 	#print_r($context['generic']);exit;
 
 	// -- Traitement des indexs -- 
-	//Rï¿½upï¿½e maintenant les valeurs des champs gï¿½ï¿½iques des entrï¿½s d'index associï¿½s et des personnes associï¿½s
+	//Récupère maintenant les valeurs des champs génériques des entrées d'index associés et des personnes associées
 	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_entrytypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
 	#echo "sql=$sql";exit;
 	$row = $db->getArray($sql);
@@ -1141,7 +1141,7 @@ function getgenericfields(&$context)
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
 	}
-	//Retrouve les valeurs des entrï¿½s en utilisant le g_name de la table entries
+	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
 	if(count($fields) > 0) {
 		$sql = lq("SELECT e.g_name, et.type FROM #_TP_entries as e, #_TP_relations as r, #_TP_entrytypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
 		#echo "sql=$sql";
@@ -1157,7 +1157,7 @@ function getgenericfields(&$context)
 	// -- Traitement des personnes --
 	unset($fields);
 	unset($generic);
-	//Rï¿½upï¿½e maintenant les valeurs des champs gï¿½ï¿½iques des entrï¿½s d'index associï¿½s et des personnes associï¿½s
+	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
 	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_persontypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
 	#echo "sql=$sql";
 	$row = $db->getArray($sql);
@@ -1166,7 +1166,7 @@ function getgenericfields(&$context)
 		$generic[$elem['type']] = $elem['g_type'];
 	}
 	if(count($fields) > 0) {
-		//Retrouve les valeurs des entrï¿½s en utilisant le g_name de la table entries
+		//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
 		$sql = lq("SELECT e.g_firstname, e.g_familyname, et.type FROM #_TP_persons as e, #_TP_relations as r, #_TP_persontypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
@@ -1179,7 +1179,7 @@ function getgenericfields(&$context)
 	}
 
 
-	return $context; // pas nï¿½essaire le context est passï¿½par rï¿½ï¿½ence
+	return $context; // pas nécessaire le context est passé par référence
 }
 
 // valeur de retour identifier ce script
