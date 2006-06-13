@@ -248,7 +248,7 @@ body{
 
 #lightSearchForm fieldset{
 	margin: 0;
-	padding: .7ex 1em .7ex 3em;
+	padding: 3px 15px 4px 25px;
 	border: 0;
 	width: auto;
 	background: #828486;
@@ -256,6 +256,7 @@ body{
 
 #lightSearchForm input.text, #lightSearchForm input.lightSearch, select.barInfo{
 	font: normal 90% verdana, sans-serif;
+	border: 1px solid #333;
 }
 
 
