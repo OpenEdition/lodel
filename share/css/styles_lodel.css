@@ -425,14 +425,15 @@ ul.entitiesPath{
 }
 
 #addEntity{
-	min-height: 3.5ex;
-	background: #e0e7f2;
-	padding-top: .8ex;
+	height: auto;
+	background: #fff;
+	padding: 1.5em 1em 1.5em 4em;
+	border: 0;
 }
 
 #addEntity li{
 	margin: .8ex 1em 0 0;
-	color: #0e2d7c;
+	color: #8a8a8a;
 	float: none;
 	display: inline;
 }
@@ -445,8 +446,8 @@ ul.entitiesPath{
 #addEntity li select.add{
 	/*background: #fff6e3;*/
 	font-style: italic;
-	width: 160px;
-	color: #0e2d7c;
+	width: 140px;
+	color: #0075ab;
 }
 
 #addEntity li select.add option{
@@ -459,7 +460,7 @@ ul.entitiesPath{
 #addEntity li select.add option.class{
 	/*background: #fff6e3;*/
 	font-style: italic;
-	color: #0e2d7c;
+	color: #0075ab;
 }
 
 #addEntity li.actionTitle{
