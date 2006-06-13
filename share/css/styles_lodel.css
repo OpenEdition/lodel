@@ -513,6 +513,11 @@ div.advancedFunc #addEntity select{
 
 /* Liste entites */
 
+#listEntities{
+	margin: 0 0 0 4em;
+	padding-bottom: 8ex;
+}
+
 ul.listEntities, ul.listEntities li{
 	padding: 0;
 	margin: 0;
@@ -526,22 +531,21 @@ ul.listEntities{
 }
 
 ul.listEntities li{
-	padding: .5ex 1em;
+	padding: .5ex 0;
 	position: relative;
 	height: 48px;
+	background: #e9e9e9;
+	border-bottom: 1px solid #dadbdc;
 }
 
-*>ul.listEntities>*>li{
+*>ul.listEntities>*>li, *>ul.listEntities>li{
 	height: auto;
 	min-height: 48px;
 }
 
-ul.listEntities li.line1{
-	background: #f2f5fa;
-}
-
-ul.listEntities li.line2{
+ul.listEntities li ul li{
 	background: #fff;
+	border: 0;
 }
 
 ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
@@ -554,7 +558,7 @@ ul.listEntities li.unfoldedentities ul li{
 }
 
 ul.listEntities li.unfoldedentities ul{
-	margin: 0 -1em 2ex 0;
+	margin: 0 1em 2ex 0;
 }
 
 ul.listEntities img.picto_gauche{
@@ -718,10 +722,6 @@ div.advancedFunc dd{
 #listEntitiesEdit li{
 	margin: 0 0 0 0;
 	padding: 1ex .5em;
-}
-
-#listEntitiesEdit li.line1{
-	background: #f1f5fb;
 }
 
 #listEntitiesEdit .titre_document{
