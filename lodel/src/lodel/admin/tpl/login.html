@@ -25,16 +25,18 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <meta name="ROBOTS" content="nofollow, noindex" />
+<style type="text/css">
+body{
+	background: #cbcec5 url("[#SHAREURL]/images/bg_top.png") top left repeat-x;
+}
+</style>
 <title>[@COMMON.IDENTIFICATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<!--[ ************************** Rajout intÃ©ration maquette ************************ ]-->
 <MACRO NAME="HEADER_LOGO_LOGIN">
-	<div>
-		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
-		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
-	</div>
+	<div id="loginscreen">
+		<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/></h1>
 	<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post">
-	<fieldset id="formulaire">
+	<fieldset>
 		<legend id="titre_formulaire">[@COMMON.WELCOME_ON]
 			<LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
 			<DO><span class="texte"><strong>[#TITLE]</strong></span></DO>
@@ -66,12 +68,11 @@
 		<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN]" />
 		<label for="passwd">[@COMMON.PASSWD]</label>
 		<input type="password" class="input_formulaire" id="passwd" name="passwd" />
-		<p>
-			<img style="border : 0px" src="[#SHAREURL]/images/vague.png" alt="------" />
-			<input type="image" value="Valider" src="[#SHAREURL]/images/bouton_valider.png" alt="Valider" />
+		<p class="login">
+			<input type="submit" value="Valider" alt="Valider" class="button" />
 		</p>
 	</fieldset>
 	</form>
+</div>
 
-<!--[ ********************** Fin Rajout intÃ©gration maquette ****************** ]-->
 <MACRO NAME="CLOSE_HTML">
