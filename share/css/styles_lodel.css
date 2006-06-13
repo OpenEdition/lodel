@@ -469,7 +469,7 @@ ul.entitiesPath{
 
 div.advancedFunc #addEntity{
 	height: auto;
-	padding-bottom: 2ex;
+	padding: 0 0 2ex 1em;
 	background: #f1f5fb;
 	border: 1px solid #fff;
 	border-right: 1px solid #aaa;
@@ -520,7 +520,6 @@ ul.listEntities, ul.listEntities li{
 
 ul.listEntities{
 	clear: both;
-	margin: 2ex 0 0 0;
 	padding: 0;
 	list-style: none;
 	font-size: 90%;
@@ -529,7 +528,12 @@ ul.listEntities{
 ul.listEntities li{
 	padding: .5ex 1em;
 	position: relative;
-	min-height: 24px;
+	height: 48px;
+}
+
+*>ul.listEntities>*>li{
+	height: auto;
+	min-height: 48px;
 }
 
 ul.listEntities li.line1{
@@ -591,6 +595,14 @@ td.actions span.item.rank{
 
 div.action div.move{
 	width: 6em;
+}
+
+div.action div.move img{
+	display: block;
+}
+
+div.action div.move img.haut{
+	margin-bottom: .7ex;
 }
 
 div.action span.item.left{
