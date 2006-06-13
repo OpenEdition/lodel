@@ -1189,6 +1189,27 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</IF>
 </DEFMACRO>
 
+<DEFFUNC NAME="STATUS_ICON" REQUIRED="status">
+
+	<IF COND="[#STATUS]==-8">
+		<img class="statusIcon" src="[#SHAREURL]/images/draft.gif" alt="[@EDITION.DRAFT]" title="[@EDITION.DRAFT]" />
+	<ELSE/>
+	<IF COND="[#STATUS]==-1">
+		<img class="statusIcon" src="[#SHAREURL]/images/ready.gif" alt="[@EDITION.READY_TO_BE_PUBLISHED]" title="[@EDITION.READY_TO_BE_PUBLISHED]" />
+	<ELSE/>
+	<IF COND="[#STATUS]==1">
+		<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
+	<ELSE/>
+	<IF COND="[#STATUS]==8">
+		<img class="statusIcon" src="[#SHAREURL]/images/locked.gif" alt="[@EDITION.PROTECTED]" title="[@EDITION.PROTECTED]" />
+	<ELSE/>
+		unknow ??
+	</IF>
+	</IF>
+	</IF>
+	</IF>
+</DEFFUNC>
+
 
 
 <!--[ ************************************** Rajout intégration maquette ************************************** ]-->
@@ -1361,9 +1382,10 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<ul id="actionsOnEntitiesPath">
 		<li class="entitieTitle">
 			<LOOP NAME="getTitle0" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				[#G_TITLE|textebrut|nbsp|couper(130)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
 				<ALTERNATIVE>
-					[@EDITION.WEBSITE_BASE]
+					<FUNC NAME="STATUS_ICON" STATUS="1">[@EDITION.WEBSITE_BASE]
 				</ALTERNATIVE>
 			</LOOP>
 		</li>

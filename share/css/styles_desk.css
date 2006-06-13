@@ -40,7 +40,7 @@ body{
 
 #lodel-desk ul.group1, #lodel-desk ul.group2{
 	position: absolute;
-	top: 65px;
+	top: 66px;
 }
 
 #lodel-desk ul.group1{
@@ -57,7 +57,7 @@ body{
 	float: left;
 	width: auto;
 	display: block;
-	margin: 0 .4em 0 0;
+	margin: 0 .3em 0 0;
 	height: 20px;
 }
 
@@ -213,6 +213,7 @@ body{
 
 #siteContext #actionsOnEntitiesPath li.entitieTitle{
 	font-weight: bold;
+	color: #ed8400;
 }
 
 #siteContext #actionsOnEntitiesPath li.entitieTitle em{

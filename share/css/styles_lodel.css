@@ -347,7 +347,6 @@ fieldset.checkBalisage{
 
 ul.entitiesPath, ul.entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li, #addEntity, #addEntity li{
 	list-style: none;
-	padding: 0;
 	margin: 0;
 }
 
@@ -387,7 +386,7 @@ ul.entitiesPath .queryText .searchInfos{
 
 ul.entitiesPath{
 	margin-top: 1.5em;
-	
+	padding-top: 1ex;
 }
 
 
@@ -400,10 +399,18 @@ ul.entitiesPath{
 
 #actionsOnEntitiesPath li.entitieTitle{
 	font-weight: bold;
+	color: #ed8400;
+	padding-left: 3em;
 }
 
 #actionsOnEntitiesPath li.entitieTitle em{
 	font-weight: normal;
+}
+
+#actionsOnEntitiesPath li img.statusIcon{
+	display: block;
+	position: absolute;
+	top: 1.6em;
 }
 
 #actionsOnEntitiesPath ul.actions{
