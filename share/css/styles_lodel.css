@@ -46,11 +46,11 @@ form.entry{
 
 a:link, a:visited{
 	text-decoration: none;
-	color: #0e2d7c;
+	color: #000;
 }
 
 a:hover{
-	border-bottom: 1px dotted #aaa;
+	color: #666;
 }
 
 div.actions a{
@@ -351,8 +351,8 @@ ul.entitiesPath, ul.entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesP
 	margin: 0;
 }
 
-ul.entitiesPath a, ul.entitiesPath .queryText, #actionsOnEntitiesPath a, a.action, #move a{
-	color: #ff5b04;
+ul.entitiesPath .queryText, #actionsOnEntitiesPath a, a.action, #move a{
+	color: #ed8400;
 }
 
 #move li em{
@@ -363,8 +363,8 @@ ul.entitiesPath, #actionsOnEntitiesPath, #addEntity, ul.entitiesPath .queryText{
 	padding: .5ex 0 .5ex 1em;
 	min-height: 3.5ex;
 	font-size: 90%;
-	border-bottom: 1px solid #aaa;
-	background: #f1f5fb;
+	border-bottom: 1px solid #dadbdc;
+	background: #e5e8e3;
 }
 
 ul.entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
@@ -386,14 +386,16 @@ ul.entitiesPath .queryText .searchInfos{
 }
 
 ul.entitiesPath{
-	padding-right: 210px;
+	margin-top: 1.5em;
+	
 }
 
 
 #actionsOnEntitiesPath{
-	background: #e0e7f2;
 	font-weight: bold;
 	position: relative;
+	background: #fff;
+	padding: 1.5em 1em 1.3em 1em;
 }
 
 #actionsOnEntitiesPath li.entitieTitle{
@@ -406,7 +408,7 @@ ul.entitiesPath{
 
 #actionsOnEntitiesPath ul.actions{
 	position: absolute;
-	top: .5ex;
+	top: 1.5em;
 	right: 1.3em;
 }
 
@@ -587,8 +589,8 @@ div.action span.item.left{
 	text-align: left;
 }
 
-div.action a, div.action a:hover{
-	color: #f87b39;
+div.action a{
+	color: #0075ab;
 	text-decoration: none;
 }
 
