@@ -341,132 +341,6 @@ fieldset.checkBalisage{
 	width: 725px;
 }
 
-/* PAGE EDITION, LISTE DES ENTITES */
-
-/* Chemin parcouru */
-
-
-ul.entitiesPath, ul.entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li, #addEntity, #addEntity li{
-	list-style: none;
-	margin: 0;
-}
-
-ul.entitiesPath .queryText, #actionsOnEntitiesPath a, a.action, #move a{
-	color: #ed8400;
-}
-
-#move li em{
-	font-size: 90%;
-}
-
-ul.entitiesPath, #actionsOnEntitiesPath, #addEntity, ul.entitiesPath .queryText{
-	padding: .5ex 0 .5ex 1em;
-	min-height: 3.5ex;
-	font-size: 90%;
-	border-bottom: 1px solid #dadbdc;
-	background: #e5e8e3;
-}
-
-ul.entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
-	display: inline;
-	padding: 0;
-	margin: .3ex .4em 0 0;
-	color: #333;	
-}
-
-ul.entitiesPath .queryText{
-	padding: 1.5ex 0 0 4em;
-}
-
-ul.entitiesPath .queryText .searchInfos{
-	position: relative;
-	top: 1.5ex;
-	left: 70%;
-	width: 30%;
-}
-
-ul.entitiesPath{
-	margin-top: 1.5em;
-	padding-top: 1ex;
-}
-
-
-#actionsOnEntitiesPath{
-	font-weight: bold;
-	position: relative;
-	background: #fff;
-	padding: 1.5em 1em 1.3em 1em;
-}
-
-#actionsOnEntitiesPath li.entitieTitle{
-	font-weight: bold;
-	color: #ed8400;
-	padding-left: 3em;
-}
-
-#actionsOnEntitiesPath li.entitieTitle em{
-	font-weight: normal;
-}
-
-#actionsOnEntitiesPath li img.statusIcon{
-	display: block;
-	position: absolute;
-	top: 1.6em;
-}
-
-#actionsOnEntitiesPath ul.actions{
-	position: absolute;
-	top: .8ex;
-	right: 1.3em;
-}
-
-#actionsOnEntitiesPath ul.actions li.isolated{
-	width: auto;
-	font-weight: bold;
-}
-
-#addEntity{
-	height: auto;
-	background: #fff;
-	padding: 1.5em 1em 1.5em 4em;
-	border: 0;
-}
-
-#addEntity li{
-	margin: .8ex 1em 0 0;
-	color: #8a8a8a;
-	float: none;
-	display: inline;
-}
-
-#addEntity li a{
-	color: #ff5b04;
-	font-weight: bold;
-}
-
-#addEntity li select.add{
-	/*background: #fff6e3;*/
-	font-style: italic;
-	width: 140px;
-	color: #0075ab;
-}
-
-#addEntity li select.add option{
-	background: #fff;
-	font-weight: normal;
-	font-style: normal;
-	color: #333;
-}
-
-#addEntity li select.add option.class{
-	/*background: #fff6e3;*/
-	font-style: italic;
-	color: #0075ab;
-}
-
-#addEntity li.actionTitle{
-	font-weight: bold;
-}
 
 div.advancedFunc #addEntity{
 	height: auto;
@@ -581,7 +455,7 @@ ul.listEntities li.unfoldedentities div.action{
 	right: .6em;
 }
 
-td.actions span.item, div.action span.item, div.action div.move, #actionsOnEntitiesPath ul.actions li{
+td.actions span.item, div.action span.item, div.action div.move{
 	width: 70px;
 	display: block;
 	float: left;

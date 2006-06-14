@@ -100,11 +100,11 @@ body{
 #lodel-desk #deskContext li{
 	height: auto;
 	margin: 0;
-	background: #e18600;
 }
 
 #lodel-desk #deskContext li a{
 	background: transparent;
+	background-image: none;
 	font-weight: normal;
 	color: #fff;
 	padding: 5px 10px 4px 10px;
@@ -162,81 +162,162 @@ body{
 	text-align: left;
 }
 
-#siteContext ul.entitiesPath, #siteContext ul.entitiesPath li, #siteContext #actionsOnEntitiesPath, #siteContext #actionsOnEntitiesPath li{
+
+
+ul.entitiesPath, ul.entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesPath li{
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	text-align: left;
 }
 
-#siteContext ul.entitiesPath a, #siteContext #actionsOnEntitiesPath a{
-	color: #ff5b04;
-	font-weight: normal;
-	border:none;
-	display: inline;
+#siteContext a{
+	color: #000;
 }
 
-#siteContext ul.entitiesPath, #siteContext #actionsOnEntitiesPath{
-	padding: .5ex 0 0 1em;
-	height: 4ex;
-	font-size: 90%;
-	border-bottom: 1px solid #aaa;
-	background: #f1f5fb;
-}
-
-#siteContext ul.entitiesPath li, #siteContext #actionsOnEntitiesPath li{
-	float: left;
-	padding: 0;
-	margin: .3ex .4em 0 0;
-	color: #333;
-	height: auto;
-	background: transparent;	
+#siteContext a:hover, #siteContext ul.entitiesPath.site a:hover{
+	color: #666;
 }
 
 #siteContext ul.entitiesPath.site a{
-	color: green;
-}
-
-#siteContext select.barInfo{
-	font: normal 90% verdana, sans-serif;
+	color: #0096b7;
+	margin: 0;
 }
 
 
-#siteContext select.barInfo{
-	border: 1px solid #aaa;
+
+.inactif{
+	color: #666;
 }
 
-#siteContext #actionsOnEntitiesPath{
-	background: #e0e7f2;
-	font-weight: bold;
-	position: relative;
-}
-
-#siteContext #actionsOnEntitiesPath li.entitieTitle{
-	font-weight: bold;
+ul.entitiesPath .queryText, #actionsOnEntitiesPath a, a.action, #move a{
 	color: #ed8400;
 }
 
-#siteContext #actionsOnEntitiesPath li.entitieTitle em{
+#move li em{
+	font-size: 90%;
+}
+
+ul.entitiesPath, #actionsOnEntitiesPath, #addEntity, ul.entitiesPath .queryText{
+	padding: .5ex 0 .5ex 1em;
+	min-height: 3.5ex;
+	font-size: 90%;
+	border-bottom: 1px solid #dadbdc;
+	background: #e5e8e3;
+}
+
+ul.entitiesPath li, #actionsOnEntitiesPath li, #addEntity li{
+	display: inline;
+	padding: 0;
+	margin: .3ex .4em 0 0;
+	color: #333;	
+}
+
+ul.entitiesPath .queryText{
+	padding: 1.5ex 0 0 4em;
+}
+
+ul.entitiesPath .queryText .searchInfos{
+	position: relative;
+	top: 1.5ex;
+	left: 70%;
+	width: 30%;
+}
+
+ul.entitiesPath{
+	margin-top: 1.5em;
+	padding-top: 1ex;
+}
+
+#siteContext ul.entitiesPath{
+	margin-top: 0;
+}
+
+
+#actionsOnEntitiesPath{
+	font-weight: bold;
+	position: relative;
+	background: #fff;
+	padding: 1.5em 1em 1.3em 1em;
+}
+
+#actionsOnEntitiesPath li.entitieTitle{
+	font-weight: bold;
+	color: #ed8400;
+	padding-left: 3em;
+}
+
+#actionsOnEntitiesPath li.entitieTitle em{
 	font-weight: normal;
 }
 
-#siteContext #actionsOnEntitiesPath ul.actions{
+#actionsOnEntitiesPath li img.statusIcon{
+	display: block;
 	position: absolute;
-	top: .5ex;
-	right: .5em;
+	top: 1.6em;
 }
 
-#siteContext #actionsOnEntitiesPath ul.actions li{
-	margin-left: 1em;
+#actionsOnEntitiesPath ul.actions{
+	position: absolute;
+	top: .8ex;
+	right: 1.3em;
+}
+
+#actionsOnEntitiesPath ul.actions li.isolated{
+	width: auto;
 	font-weight: bold;
 }
 
-#siteContext #actionsOnEntitiesPath ul.actions li a{
+#addEntity{
+	height: auto;
+	background: #fff;
+	padding: 1.5em 1em 1.5em 4em;
+	border: 0;
+}
+
+#addEntity li{
+	margin: .8ex 1em 0 0;
+	color: #8a8a8a;
+	float: none;
+	display: inline;
+}
+
+#addEntity li a{
+	color: #ff5b04;
 	font-weight: bold;
 }
 
-#siteContext .inactif{
-	color: #666;
+#addEntity li select.add{
+	/*background: #fff6e3;*/
+	font-style: italic;
+	width: 140px;
+	color: #0075ab;
+}
+
+#addEntity li select.add option{
+	background: #fff;
+	font-weight: normal;
+	font-style: normal;
+	color: #333;
+}
+
+#addEntity li select.add option.class{
+	/*background: #fff6e3;*/
+	font-style: italic;
+	color: #0075ab;
+}
+
+#addEntity li.actionTitle{
+	font-weight: bold;
+}
+
+#actionsOnEntitiesPath ul.actions li{
+	width: 70px;
+	display: block;
+	float: left;
+	margin: 2ex .5em 0 0;
+	text-align: left;
+	font-weight: normal;
 }
 
 /* moteur */
