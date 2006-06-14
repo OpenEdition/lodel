@@ -46,6 +46,7 @@
 
 <LOOP NAME="series_history" TABLE="entities,types" WHERE="types.id=idtype" ORDER="entities.modificationdate DESC" SPLIT="30">
 	<BEFORE>
+		<div id="listEntities">
 		<ul id="actionsOnEntitiesPath">
 			<li>[#NBRESULTS] [@COMMON.RESULTS]</li>
 			<li>
@@ -91,6 +92,7 @@
 		</DO>
 		<AFTER>
 		</ul>
+		</div>
 			<MACRO NAME="BOTTOM_RESULTS_PAGES">			
 		</AFTER>
 		<ALTERNATIVE>
@@ -98,6 +100,5 @@
 		</ALTERNATIVE>
 	</LOOP>
 	
-	
-<!--[ ************************************** Fin Rajout int?ration maquette ************************************** ]-->
+
 <MACRO NAME="CLOSE_HTML">

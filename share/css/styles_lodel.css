@@ -513,7 +513,7 @@ div.advancedFunc #addEntity select{
 
 /* Liste entites */
 
-#listEntities{
+#listEntities, #entries{
 	margin: 0 0 0 4em;
 	padding-bottom: 8ex;
 }
@@ -584,7 +584,7 @@ td.actions span.item, div.action span.item, div.action div.move, #actionsOnEntit
 	width: 70px;
 	display: block;
 	float: left;
-	margin: 0 .5em 0 0;
+	margin: 2ex .5em 0 0;
 	text-align: left;
 	font-weight: normal;
 }
@@ -599,6 +599,7 @@ td.actions span.item.rank{
 
 div.action div.move{
 	width: 6em;
+	margin-top: 0;
 }
 
 div.action div.move img{
@@ -619,7 +620,7 @@ div.action a{
 }
 
 ul.listEntities div.document{
-	margin: 0 0 .8ex 35px;
+	margin: 1ex 0 .8ex 35px;
 	width: 55%;
 }
 
