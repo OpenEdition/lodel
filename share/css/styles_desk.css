@@ -171,6 +171,10 @@ ul.entitiesPath, ul.entitiesPath li, #actionsOnEntitiesPath, #actionsOnEntitiesP
 	text-align: left;
 }
 
+ul.entitiesPath li.this{
+	color: #666;
+}
+
 #siteContext a{
 	color: #000;
 }
