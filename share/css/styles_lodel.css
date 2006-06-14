@@ -213,12 +213,13 @@ input.button{
 }
 
 input.button:focus{
-	border: 2px outset red;
+	border: 2px outset #e18600;
 }
 
 
 input:focus, textarea:focus{
-	border: 1px solid red;
+	border: 1px solid #e18600;
+	background: #faf2e6;
 }
 
 * a.delete{
@@ -415,7 +416,7 @@ ul.entitiesPath{
 
 #actionsOnEntitiesPath ul.actions{
 	position: absolute;
-	top: 1.5em;
+	top: .8ex;
 	right: 1.3em;
 }
 
